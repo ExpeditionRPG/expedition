@@ -1,5 +1,4 @@
-# The App for Expedition: 
-## The Roleplaying Card Game
+## The App for Expedition: The Roleplaying Card Game
 
 If you encounter any bugs with the app or have feedback, please drop an issue!
 
