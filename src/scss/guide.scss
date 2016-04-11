@@ -1,0 +1,202 @@
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+@import 'material.min';
+
+@font-face {
+  font-family: 'capitals';
+  src: url('/fonts/capitals.woff') format('woff');
+}
+$font-header: "capitals", serif;
+$font-body: "minion-pro", serif;
+$text-color: black;
+
+section {
+  @extend .section--center, .mdl-grid, .mdl-grid--no-spacing, .mdl-shadow--2dp, .mdl-color--white;
+}
+
+section .mdl-grid {
+  width: 90%;
+}
+
+section .card {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  border-radius: 0.25in !important;
+}
+
+section .rotate .card {
+  transform: rotate(-90deg);
+  margin: -0.5in 0.5in;
+}
+
+.demo-layout-transparent .mdl-layout__header,
+.demo-layout-transparent .mdl-layout__drawer-button {
+  color: white;
+}
+
+.mdl-badge[data-badge], .mdl-badge-left[data-badge] {
+  white-space: inherit;
+  margin-right: auto;
+}
+
+.mdl-badge[data-badge]:after {
+  display: none;
+}
+
+.middle-align {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+@media (max-width: 839px)
+{
+  .mdl-cell.svg {
+    width: 100%;
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+}
+
+.mdl-cell.svg {
+  img {
+    width: 100%;
+    max-width: 100px;
+    vertical-align: middle;
+    margin-left: auto;
+    margin-right: auto;
+  }
+} 
+
+span.badges-visible {
+
+  .mdl-badge[data-badge]:after {
+    display: webkit-flex;
+    display: ms-flexbox;
+    display: flex;
+  }
+
+  .card .mdl-badge-left {
+    @extend .mdl-badge;
+  }
+
+  section .card .mdl-badge:after {
+    top: 0px;
+  }
+
+  section .card .mdl-badge-left:after {
+    right:auto;
+    left:-25px;
+    top: 0px !important;
+  }
+
+}
+
+section .middle-align {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    width: 0px;
+}
+
+#cardlist a {
+  color: inherit;
+}
+
+.page-content {
+  @extend .mdl-color--grey-100;
+}
+
+section.header {
+  @extend .mdl-color--grey-800;
+  
+  h2 {
+    color: #FFF;
+    font-family: $font-header;
+  }
+}
+
+.mdl-layout__header {
+  
+  font-family: $font-header;
+}
+
+.mdl-card__title-text {
+  font-family: $font-body;
+}
+
+.mdl-card__supporting-text {
+  font-family: $font-body;
+  color: $text-color;
+}
+
+p, ul, ol {
+  font-family: $font-body;
+  font-size: 1.2em;
+}
+
+p.inline {
+  display: inline;
+  margin-left: 4px;
+}
+
+h1 {
+  font-family: $font-header;
+  text-align:center;
+  margin-bottom: -25px;
+}
+
+h2 {
+  font-family: $font-body;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 0;
+  display: inline-block;
+}
+
+h4 {
+  text-align: center;
+  font-family: $font-header;
+  margin-bottom: -20px;
+}
+
+#logo {
+  width: 150px;
+}
+
+#logo-main {
+  width: 200px;
+}
+ 
+main > .mdl-layout__tab-panel {
+  padding: 8px;
+  padding-top: 48px;
+}
+.mdl-card {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+.mdl-layout__content section:not(:last-of-type) {
+  position: relative;
+  margin-bottom: 20px;
+}
+section.section--center {
+  max-width: 860px;
+} 

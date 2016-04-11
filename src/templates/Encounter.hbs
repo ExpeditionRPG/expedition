@@ -1,0 +1,26 @@
+<div class="card front {{ cardType }} {{ class }}">
+  <div class="contents">
+    <header>
+      <div class="health mdl-badge" data-badge="1">{{ health }} {{> icon img='hp_white_small' }}</div>
+      <div class="name">{{{ name }}}</div>
+    </header>
+    <article>
+      {{#if ongoing1}}
+        <div class="ongoing mdl-badge-left" data-badge="2">{{{ ongoing1 }}}</div>
+      {{/if}}
+      {{#if ongoing2}}
+        <div class="ongoing ongoing2">{{{ ongoing2 }}}</div>
+      {{/if}}
+      {{#if Surge}}
+        <div class="surge mdl-badge-left" data-badge="3"><strong>Surge: </strong>{{{ Surge }}}</div>
+      {{/if}}
+    </article>
+    <footer>
+      <div class="flavortext">{{{ flavortext }}}</div>
+      <!--<div class="tier mdl-badge" data-badge="4">{{romanize tier }}</div>-->
+      <div class="cardType">{{ class }}</div>
+      <div class="tier">{{romanize tier }}</div>
+    </footer>
+    {{{healthCounter health}}}
+  </div>
+</div>

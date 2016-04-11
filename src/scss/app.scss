@@ -1,0 +1,435 @@
+a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+
+@import url(http://fonts.googleapis.com/css?family=Merienda+One); /* Logo text */
+@import url(http://fonts.googleapis.com/css?family=Lora); /* body text */
+@import url(http://fonts.googleapis.com/css?family=Oxygen); /* buttons */
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans+Mono); /* numbers */
+
+$background-color: #161211;
+$text-color: #FFF0F0;
+$accent-color: #373232;
+$base: 1vh;
+$base-font: 1.7vw;
+
+$giant: 16*$base;
+$giant-font: 16*$base-font;
+$huge: 6*$base;
+$huge-font: 6*$base-font;
+$large: 5*$base;
+$large-font: 5*$base-font;
+$normal: 4*$base;
+$normal-font: 4*$base-font;
+$small: 3*$base;
+$small-font: 3*$base-font;
+$tiny: 1*$base;
+
+* {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+*:focus {
+  outline: none;
+}
+html, body {
+  width: 100%;
+  height: 100%;
+
+  background: $background-color;
+  font-family: 'Lora', serif;
+  font-size: $normal-font;
+  color: $text-color;
+  text-align: center;
+}
+#logo {
+  max-height: 60%;
+  max-width: 80%;
+}
+h1 {
+  font-size: $giant-font;
+  font-weight: bold;
+}
+h2 {
+  font-size: $huge-font;
+  font-weight: normal;
+  padding: $small;
+}
+h3 {
+  font-size: $large-font;
+  padding: $tiny;
+}
+p {
+  line-height: 1.2;
+  padding-bottom: $normal;
+  font-weight: normal;
+  text-align: left;
+}
+.number {
+  font-family: 'Droid Sans Mono', sans-serif;
+}
+.fancy {
+  font-family: 'Merienda One', cursive;
+}
+.center {
+  text-align: center;
+  margin: auto;
+}
+.flash {
+  animation: flash 0.5s infinite;
+}
+.fadeIn {
+  animation: fadein 1s;
+}
+
+
+button {
+  font-size: $large-font;
+  font-family: 'Oxygen', sans-serif;
+  background: white;
+  border: none;
+  border-radius: 1px;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &.selected {
+    background: $text-color !important;
+    color: $background-color !important;
+  }
+
+  &.disabled {
+    opacity: 0.5;
+  }
+}
+
+
+#pages {
+  z-index: 1000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: black;
+
+  li.page {
+    height: 100%;
+    width: 100%;
+  }
+
+  li:not(:first-child) {
+    display: none;
+  }
+
+  header {
+    font-size: $huge-font;
+    line-height: 1.2;
+    height: 10vh;
+    padding: 5%;
+  }
+
+  article {
+    position: absolute;
+    top: 10vh;
+    bottom: 10vh;
+    left: 0;
+    right: 0;
+    padding: 5vw;
+  }
+
+  footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 10vh;
+    padding: 1vh 5vw;
+
+    button {
+      margin: auto;
+
+      &.previous {
+        float: left;
+      }
+      &.next:not(.center) {
+        float: right;
+      }
+    }
+  }
+
+  button {
+    color: white;
+    margin: $small;
+    background: black;
+    border: 1px white solid;
+  }
+
+  #party-size-selector {
+    margin-top: 20vh;
+
+    * {
+      display: inline-block;
+      border: none;
+    }
+    .party-size-button {
+      font-size: $giant-font * 0.75;
+    }
+  }
+
+  .difficulty-level {
+    padding: 2 * $tiny;
+    margin: $small 0;
+    text-align: left;
+
+    button {
+      margin: auto;
+      display: block;
+    }
+
+    label {
+      display: block;
+      text-align: center;
+      margin: auto;
+      font-size: $small-font;
+      padding-top: $tiny;
+    }
+  }
+
+  .tutorial {
+    img {
+      max-width: 100%;
+      max-height: 35%;
+    }
+
+    .tutorialProgress {
+      padding-top: 3%;
+    }
+  }
+}
+
+#party {
+  width: 100%;
+  height: 100%;
+
+  #partyContents {
+    padding-top: 25vh;
+  }
+
+  #surgeText {
+    color: #ac0b15;
+    font-weight: bold;
+    background: white;
+    padding: 0;
+    margin-top: -10vh;
+
+    h2 {
+      font-weight: bold;
+    }
+
+    p {
+      text-align: center;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+#metadata {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+#guide {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #DDD;
+  background: #0F0F0A;
+
+  button {
+    margin: 1vh;
+  }
+
+  #controls {
+    text-align: right;
+
+    #home {
+      float: left;
+    }
+  }
+
+  table {
+    width: 100%;
+  }
+
+  #enemies {
+    background: black;
+    transition: background 0.3s ease-out;
+  }
+
+  .enemy {
+    border-collapse: collapse;
+    text-align: center;
+
+    .label {
+      padding-top: $small;
+      font-size: $huge-font;
+    }
+
+    .controls {
+      width: 100%;
+      height: 100%;
+
+      .control {
+        font-size: $huge-font;
+        padding: 2vh;
+        width: 40%;
+        margin: auto;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: none;
+  background: white;
+  color: black;
+  opacity: 0.94;
+
+  transition: background 0.1s;
+
+  h2 {
+    font-family: 'Merienda One', cursive;
+  }
+
+  .overlayText {
+    position: absolute;
+    top: 50%;
+    left: 2%;
+    right: 2%;
+    transform: translateY(-50%);
+
+    h1 {
+      font-weight: bold;
+    }
+
+    #combatTimer {
+      font-size: 250%;
+    }
+
+    #damageIcon {
+      display: block;
+      margin: auto;
+    }
+  }
+
+  p {
+    text-align: center;
+  }
+
+  &.damage {
+    background: red !important;
+  }
+  &.damage:after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    z-index: 999;
+
+    background: no-repeat center center;
+    background-size: 80% 80%;
+    background-image: url(../img/encounter.svg);
+  }
+
+  &#surgeOverlay {
+    background: #633;
+    color: white;
+  }
+
+  &#combatOverlay {
+    &.overtime {
+      background: red;
+      transition: background 0.3s;
+    }
+  }
+}
+
+
+
+
+
+
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@-moz-keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@-webkit-keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes flash {
+  0% { background: white; }
+  50% { background: red; }
+  100% { background: white; }
+}
+@-moz-keyframes flash {
+  0% { background: white; }
+  50% { background: red; }
+  100% { background: white; }
+}
+@-webkit-keyframes flash {
+  0% { background: white; }
+  50% { background: red; }
+  100% { background: white; }
+}
+
+
+#oversize {
+  display: none;
+}
+
+@media (min-width:1025px) {
+  #oversize {
+    z-index: 9999;
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: black;
+    padding: 25% 5% 5% 5%;
+
+    p {
+      font-size: 16px;
+      text-align: center;
+    }
+    a {
+      color: white;
+    }
+  }
+}

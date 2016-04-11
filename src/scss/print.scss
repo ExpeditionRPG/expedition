@@ -1,0 +1,62 @@
+@import 'generate';
+
+body {
+  margin: 0;
+  background: white;
+}
+
+#topbar {
+  display: none;
+}
+
+.page {
+  page-break-before: always;
+  background: white;
+
+  &.fronts {
+    background: white;
+  }
+
+  &.backs {
+    height: auto;
+  }
+}
+
+body:not(.printer) {
+  .backs {
+    transform: scale(-1, 1);
+
+    .card {
+      transform: scale(-1, 1);
+    }
+    .Encounter, .Adventurer { /* Don't flip horizontal cards */
+      transform: scale(-1, 1) rotate(180deg);
+    }
+  }
+}
+
+.printer {
+  .card.back {
+    &.Adventurer, &.Encounter {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.card {
+  &.front {
+    border: $border solid white;
+  }
+
+  &.Helper svg {
+    /*margin: -0.01in 0 0.01in 0;*/
+  }
+}
+
+body.printandplay .printInstructions {
+  display: block;
+}
+
+.inline_icon {
+  margin-bottom: -0.05in;
+}

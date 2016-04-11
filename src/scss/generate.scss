@@ -1,0 +1,82 @@
+@import 'cards';
+
+/*
+Green 305744
+Brown 311B00
+Blue (cold) - 311B00
+Red (fire) - A71300
+Yellow (electric) - FFF94B
+Purple (arcane) - 491543
+*/
+
+/* === THE PAGE === */
+body {
+  margin-top: 40px;
+
+  background: lighten($text-color, 10%);
+  font-size: 0; /* hack for display-inline gap */
+  font-family: $font-body;
+  color: $text-color;
+}
+.page {
+  width: 7.5in;
+  margin: auto;
+  background: black;
+  position: relative;
+}
+@page {
+  size: letter;
+  margin: 0.23in 0.48in;
+  background: white;
+}
+#topbar {
+  z-index: 100;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 35px;
+  text-align: center;
+  background: white;
+  box-sizing: border-box;
+  padding: 5px;
+  border-bottom: 1px solid black;
+  font-size: 12px;
+
+  #logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 35px;
+  }
+}
+
+.printInstructions {
+  display: none;
+  width: 7.5in;
+  height: 8in;
+  background: white;
+  margin: auto;
+  font-size: 16px;
+  line-height: 1.2;
+  page-break-after: always;
+
+  #instructionLogo {
+    width: 5.5in;
+    margin: auto;
+    display: block;
+  }
+
+  h1 {
+    font-size: 180%;
+    text-align: center;
+  }
+
+  ol {
+    width: 4.25in;
+    margin: auto;
+    list-style-type: upper-roman;
+
+    li {
+      margin-top: 0.25in;
+    }
+  }
+}

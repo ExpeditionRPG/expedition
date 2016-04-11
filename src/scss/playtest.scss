@@ -1,0 +1,234 @@
+a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+
+/* FONTS - BODY */
+@import url(http://fonts.googleapis.com/css?family=Lora:400,400italic,700);
+$font-body: 'Lora', serif;
+
+$card-width: 250px;
+$loading-size: 100px;
+
+* {
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+
+body {
+	margin: 0;
+	overflow: hidden;
+}
+
+#incompatible, noscript {
+	z-index: 99999;
+	font-family: $font-body;
+	position: absolute;
+    width: 70%;
+    left: 15%;
+    line-height: 1.5em;
+    top: 40%;
+    text-align: center;
+
+    a {
+    	font-weight: bold;
+    	display: inline-block;
+    	margin-top: 5%;
+    	padding: 1% 2%;
+    	font-size: 125%;
+    	background: white;
+    	border: 1px solid black;
+    	color: black;
+    	text-decoration: none;
+    }
+}
+
+#overlay {
+	font-family: $font-body;
+	position:fixed;
+	height: 100%;
+	width: 100%;
+	font-size: 2em;
+
+	#loading {
+		width: $loading-size;
+		height: $loading-size;
+		position:absolute;
+		left: 50%;
+		top: 50%;
+		margin-left: -$loading-size/2;
+		margin-top: -$loading-size/2;
+		color: #000 !important;
+		text-align: center;
+		font-size: 0.5em;
+
+
+
+		img {
+			opacity: 0.0;
+			-webkit-animation: pulsate 2s linear;
+			-webkit-animation-iteration-count: infinite; 
+			@-webkit-keyframes pulsate {
+			    0%   {-webkit-transform: scale(1.0); opacity: 0.0;}
+			    50% {-webkit-transform: scale(1.0); opacity: 1.0;}
+			    100% {-webkit-transform: scale(1.0); opacity: 0.0;}
+			}
+		}
+	}
+
+
+	#center {
+		position: absolute;
+		top: 50%;
+		left: 25%;
+		width: 50%;
+		height: 150px;
+		margin-top: -75px;
+		text-align: center;
+		cursor: default;
+
+		div, span {
+			box-shadow: 0px 0px 80px #fff;
+			background: rgba(255,255,255,0.5);
+			display: inline-block;
+		}
+
+		#helpText {
+			color: #999;
+			font-size: 0.5em;
+		}
+
+	}
+
+	#encounter {
+		margin-top: 50px;
+
+		.card {
+			display:block;
+			margin-left: auto;
+			margin-right: auto;
+			width: $card-width;
+		}
+	}
+
+	#abilities {
+		position: absolute;
+		bottom: 30px;
+		width: 0px;
+		left: 50%;
+		margin-left: -125px;
+
+		.card {
+			position: absolute;
+			display: block;
+			cursor: pointer;
+			width: $card-width;
+		}
+
+	}
+
+	#extras {
+		position: absolute;
+		bottom: 1%;
+		right: 1%;
+    left: 0;
+    text-align: right;
+
+      a {
+    		color: #0A0101;
+    		text-decoration: none;
+    		font-size: 80%;
+        padding-left: 1.5%;
+    		
+    		&:hover {
+    			text-decoration: underline;
+    		}
+      }
+	}
+
+	#healthCounter {
+		font-size: 1.2em;
+		color: #0A0101;
+		position: absolute;
+		top:30px;
+		right: 50%;
+		width: 0px;
+
+		font-family: 'Permanent Marker', cursive;
+
+		div {
+			margin-left: $card-width/2 + 20px;
+			text-decoration: line-through;
+		}
+
+		div:last-of-type {
+			text-decoration: none;
+		}
+	}
+}
+
+
+.fade {
+	-webkit-transition: opacity 2s ease-in-out;
+       -moz-transition: opacity 2s ease-in-out;
+        -ms-transition: opacity 2s ease-in-out;
+         -o-transition: opacity 2s ease-in-out;
+            transition: opacity 2s ease-in-out;
+}
+
+.hidden {
+	display: none;
+}
+
+.transparent {
+	opacity: 0;
+}
+
+/* Squeeze the last bit of height out for smaller displays */
+@media ( max-height: 950px ) and ( min-height: 830px ), ( max-width: 1000px ) and ( min-width: 900px ) {
+    #overlay {
+
+    	font-size: 1.75em;
+
+    	#center {
+    		margin-top: -63px;
+    	}
+
+    	#healthCounter {
+    		right: 52%;
+    	}
+
+    	.card.front.Encounter {
+	    	transform-origin: center top;
+	    }
+	    .card.front.Ability {
+	    	transform-origin: center bottom;
+	    }
+    }
+}
+
+/* Ridiculous squeezing */
+@media ( max-height: 829px ) and ( min-height: 700px ), ( max-width: 899px ) and ( min-width: 800px ) {
+    #overlay {
+
+    	font-size: 1.5em;
+
+    	#center {
+    		margin-top: -63px;
+    	}
+
+    	#healthCounter {
+    		right: 52.5%;
+    	}
+
+    	.card.front.Encounter {
+	    	transform-origin: center top;
+	    }
+	    .card.front.Ability {
+	    	transform-origin: center bottom;
+	    }
+    }
+}

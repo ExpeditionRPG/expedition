@@ -1,0 +1,455 @@
+<!doctype html>
+<!--
+  Material Design Lite
+  Copyright 2015 Google Inc. All rights reserved.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+      https://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Expedition - Adventurer's Handbook</title>
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png">
+
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/guide.css">
+    <link rel="stylesheet" href="css/cards.css">
+
+    <script src="https://use.typekit.net/qvq0phl.js"></script>
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+  </head>
+  <body>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header mdl-color--grey-900">
+        <div class="mdl-layout__header-row">
+          <!-- Title -->
+          <span class="mdl-layout-title">Explorer's Handbook</span>
+          <!-- Add spacer, to align navigation to the right -->
+          <div class="mdl-layout-spacer"></div>
+          <!-- Navigation. We hide it in small screens. -->
+          <nav class="mdl-navigation mdl-layout--large-screen-only">
+            <a class="mdl-navigation__link" href="http://app.expeditiongame.com">The App</a>
+            <a class="mdl-navigation__link" href="http://expeditiongame.com">Main Page</a>
+            <a class="mdl-navigation__link" href="http://guides.expeditiongame.com">Guide's Guide</a>
+          </nav>
+        </div>
+      </header>
+      <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title"><img id="logo" src="img/logo.png" /></span>
+        <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="#welcome">Welcome</a>
+            <a class="mdl-navigation__link" href="#cards">The Cards</a>
+            <a class="mdl-navigation__link" href="#setup">Setting Up</a>
+            <a class="mdl-navigation__link" href="#explore">Exploring</a>
+            <a class="mdl-navigation__link" href="#combat">Combat</a>
+          </nav>
+      </div>
+      <main class="mdl-layout__content">
+          <div class="page-content mdl-layout__tab-panel is-active">
+            <section id="welcome" class="header">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Welcome!</h2>
+              </div>
+            </section>
+            
+            <section id="intro">
+              <div class="mdl-grid">
+                <div class="mdl-cell svg mdl-cell--2-col">
+                  <img src="img/icon/roll.svg"></img>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <p>
+                    This handbook only takes a couple minutes to read through, and will teach you everything you need to know in order
+                    to enjoy the game as an Adventurer.
+                  </p>
+                  <p>
+                    Want to be the Guide, or to learn more? See our <a href="guides.expeditiongame.com">Guide for Guides</a>.
+                  </p>
+                </div>
+              </div>
+            </section>
+            
+            <section id="cards" class="header">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">The Cards</h2>
+              </div>
+            </section>
+            <span class="badges-visible">
+              <section id="adventurers">
+                <div class="mdl-card__title">
+                  <h2 class="mdl-card__title-text">Adventurer Cards</h2>
+                </div>
+                <div class="mdl-grid">
+                  <div class="mdl-cell mdl-cell--6-col">
+                    <span class="cardfront rotate" data-card="Adventurer" data-title="The Pack Rat">
+                      <div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active"></div>
+                    </span>
+                  </div>
+                  <div class="mdl-cell mdl-cell--6-col">
+                    <p>
+                      <strong>Adventurers</strong> represent you and your party. Every adventurer has their own 
+                      role and special skills - it's up to you to realize them.
+                    </p>
+                    <ol>
+                      <li> <strong>Name</strong>: what your character is called in the realm. You'll have to fill in this dashed section yourself.
+                      <li> <strong>Health</strong>: the amount of health you start with is next to the heart. Use a paper clip to keep track of your current health by sliding it along the edge.
+                      <li> <strong>Level</strong>: you start at level 1. If you earn a level through your adventuring, you'll flip your card over to level 2.
+                      <li> <strong>Bonuses</strong>: you get a bonus to any roleplaying rolls that you can make fit these categories.
+                    </ol>
+                  </div>
+                </div>
+              </section>
+              <section id="encounters">
+                <div class="mdl-card__title">
+                  <h2 class="mdl-card__title-text">Encounter Cards</h2>
+                </div>
+                <div class="mdl-grid">
+                  <div class="mdl-cell cardfront rotate mdl-cell--6-col" data-card="Encounter" data-title="Dire Bear">
+                    <div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active"></div>
+                  </div>
+                  <div class="mdl-cell mdl-cell--6-col">
+                    <p>
+                      <strong>Encounters</strong> are the various beings played by
+                      your Guide to represent key story characters, or enemies lying in wait.
+                    </p>
+                    <ol>
+                      <li><strong>Health</strong>: the enemy's starting health.
+                      <li><strong>Strengths/Weaknesses</strong>: against types of damage or situations.
+                      <li><strong>Surge</strong>: their special attack or action.
+                      <li><strong>Tier</strong>: a roman numeral indicating difficulty.
+                    </ol>
+                  </div>
+                </div>
+              </section>
+              <section id="abilities">
+                <div class="mdl-card__title">
+                  <h2 class="mdl-card__title-text">Ability Cards</h2>
+                </div>
+                <div class="mdl-grid">
+                  <div class="mdl-cell cardfront mdl-cell--6-col" data-card="Ability" data-title="Magic Missile">
+                    <div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active"></div>
+                  </div>
+                  <div class="mdl-cell mdl-cell--6-col">
+                    <p>
+                      <strong>Abilities</strong> are actions you make during combat. 
+                      They can be offensive or defensive, target yourself or others, and may or may not fail catastrophically when used.
+                    </p>
+                    <ol>
+                      <li><strong>Damage Type</strong>: the type of damage dealt. Enemies may be weak to certain types. 
+                      <li><strong>Risk</strong>: You need to roll at least as high as this number to succeed.
+                      <li><strong>Target(s)</strong>: how many enemies or allies are affected.
+                      <li><strong>Damage or Health</strong>: how much you hurt or heal your target.
+                    </ol>
+                  </div>
+                </div>
+              </section>
+              <section id="loot">
+                <div class="mdl-card__title">
+                  <h2 class="mdl-card__title-text">Loot Cards</h2>
+                </div>
+                <div class="mdl-grid">
+                  <div class="mdl-cell cardfront mdl-cell--6-col" data-card="Loot" data-title="Blackbriar Reserve">
+                    <div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active"></div>
+                  </div>
+                  <div class="mdl-cell mdl-cell--6-col">
+                    <p>
+                      <strong>Loot</strong> are tools, weapons, and other tangible items. 
+                      They can be used at any time to heal, damage enemies, or advance the plot.
+                    </p>
+                    <ol>
+                      <li><strong>Cost</strong>: the buy / sell value.
+                      <li><strong>Usage</strong>: how often it can be used.
+                      <li><strong>Effects</strong>: choose from one of these when you use the Loot.
+                    </ol>
+                  </div>
+                </div>
+              </section>
+            </span>
+            <br/>
+            
+            <section id="setup" class="header">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Setting Up</h2>
+              </div>
+            </section>
+            <section id="choose-adventurer">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">1. Choose an Explorer</h2>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell svg mdl-cell--2-col">
+                  <img src="img/icon/adventurer.svg"></img>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <p>
+                    Everyone in your party needs an Explorer Card. 
+                  </p>
+                  <ul>
+                      <li><strong>Select</strong> one Explorer from the deck and pass the deck along.
+                      <li><strong>Keep</strong> this card face up in front of you.
+                  </ul>
+                </div>
+              </div>
+            </section>
+            <section id="choose-abilities">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">2. Learn 6 Abilities</h2>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell svg mdl-cell--2-col">
+                  <span class="middle-align"></span>
+                  <img src="img/icon/ranger.svg"></img>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <p>
+                    Pick your abilities from a <strong>single Ability deck</strong> such as Ranged or Magic.
+                  </p>
+                  <ul>
+                      <li><strong>Draw three</strong> Ability cards.
+                      <li><strong>Keep one</strong> that you think would be the most useful.
+                      <li><strong>Discard</strong> the others to the bottom of the deck. 
+                      <li><strong>Repeat</strong> until you have six Ability cards in your hand.
+                      <li><strong>Place</strong> them face down in a deck near your Explorer card.
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            <section id="explore" class="header">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Exploring</h2>
+              </div>
+            </section>
+            
+            <section id="guide">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Your Environment</h2>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell svg mdl-cell--2-col">
+                  <span class="middle-align"></span>
+                  <img src="img/icon/fire.svg"></img>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <p>
+                    <strong>Your Guide controls the world</strong>, and you affect the world through them. 
+                  </p>
+                  <ul>
+                    <li>The Guide sets up the story, environment, and challenges for you to overcome.
+                    <li>Ask them questions about your quest and your surroundings if you're unclear on what to do next.
+                    <li>You may control your character's actions, but your Guide controls the world's reaction. Exercise caution.
+                  </ul>
+                </div>
+              </div>
+            </section>
+            <section id="getcreative">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Get Creative</h2>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell svg mdl-cell--2-col">
+                  <span class="middle-align"></span>
+                  <img src="img/icon/fae.svg"></img>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <p>
+                    Expedition is a game with <strong>open rules:</strong>
+                  </p>
+                  <ul>
+                    <li>You can make your character do whatever you want. Just tell your Guide, and it'll happen.
+                    <li>Use the environment to your advantage - if you find a cloth tent, 
+                        try setting it on fire or ripping through it.
+                    <li>Creativity applies to combat, too! Your action doesn't have to be an Ability card every round.
+                    <li>Try crafting your roleplaying action to fit one of the Skills on your Explorer card to captialize on your roll bonuses.
+                  </ul>
+                </div>
+              </div>
+            </section>  
+            
+            <section id="combat" class="header">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Combat</h2>
+              </div>
+            </section>
+            <section id="combat-overview">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Overview</h2>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell svg mdl-cell--2-col">
+                  <span class="middle-align"></span>
+                  <img src="img/icon/physical.svg"></img>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <p>
+                    Every Encounter is a series of Rounds. Combat continues until one side prevails.
+                  </p>
+                  <ul>
+                    <li>Every round, you'll play an Ability or make up your own action.
+                    <li>Choose your abilities quickly - damage increases the longer you deliberate.
+                    <li>There are no take-backsies. Once you've played a card, that decision is final.
+                  </ul>
+                </div>
+              </div>
+            </section>
+           
+            <section id="rounds">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Rounds</h2>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col">
+                  <img src="img/round_step1.svg" class="bullet-svg"/>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <div class="middle-align"></div>
+                  <p><strong>Draw</strong> three abilities from the top of your ability deck.</p>
+                </div>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col">
+                  <img src="img/round_step2.svg" class="bullet-svg"/>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <div class="middle-align"></div>
+                  <p><strong>Play</strong> an Ability from your hand. Some cards may let you play more than one.</p>
+                </div>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col">
+                  <img src="img/round_step4.svg" class="bullet-svg"/>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <div class="middle-align"></div>
+                  <p><strong>Roll</strong> a D20 and resolve your ability.</p>
+                </div>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col">
+                  <img src="img/round_step5.svg" class="bullet-svg"/>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <div class="middle-align"></div>
+                  <p><strong>Shuffle</strong> all of your Ability cards back into your deck.</p>
+                </div>
+              </div>
+            </section>
+
+            <section id="resolution">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Round Resolution</h2>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col">
+                  <img src="img/resolve_step1.svg" class="bullet-svg"/>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <div class="middle-align"></div>
+                  <p>Your roll must <strong>meet or exceed</strong> the card's risk for your ability to succeed.</p>
+                </div>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col">
+                  <img src="img/resolve_step2.svg" class="bullet-svg"/>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <div class="middle-align"></div>
+                  <p>Rolling a 20 is a critical success. Unless otherwise indicated, your ability's <strong>effects are doubled.</strong></p>
+                </div>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col">
+                  <img src="img/resolve_step3.svg" class="bullet-svg"/>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <div class="middle-align"></div>
+                  <p>Rolling a 1 is a critical failure. Unless otherwise indicated, your ability's <strong>effects are reversed.</strong> 
+                  The negative effects target you; positive effects target the enemy.</p>
+                </div>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col">
+                  <img src="img/resolve_step4.svg" class="bullet-svg"/>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <div class="middle-align"></div>
+                  <p>Be sure to roleplay what your adventurer did!</p>
+                </div>
+              </div>
+            </section> 
+            <section id="damage">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Damage</h2>
+              </div>
+              <div class="mdl-grid">
+                <div class="mdl-cell svg mdl-cell--2-col">
+                  <span class="middle-align"></span>
+                  <img src="img/icon/damage.svg"></img>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                  <p>
+                    At the end of every round, you may take damage. This damage adds up. 
+                  </p>
+                  <ul>
+                    <li>If your character runs out of Health, they are knocked out until the end of the Encounter or a fellow adventurer revives them. 
+                    <li>KO'd characters may rejoin combat after a few rounds at the Guide's discretion.
+                    <li>If the entire party gets wiped out, the enemy (i.e. the Guide) determines your fate. 
+                    <li>KO'd characters usually awaken at half Health if their party survives the encounter.
+                  </p>
+                </div>
+              </div>
+            </section> 
+          </div>
+        </main>
+      </div>
+    <script src="js/material.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="js/tabletop.js"></script>
+    <script src="js/handlebars.js"></script>
+    <script src="js/handlebars.swag.js"></script>
+    <script src="js/templates.js"></script>
+    <script src="js/partials.js"></script>
+    <script src="js/cards.js"></script>
+    <script src="js/svg.js"></script>
+    <script src="js/handbook.js"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-47408800-4', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </body>
+</html>
+
+
+  
+  
