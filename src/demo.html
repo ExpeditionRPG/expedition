@@ -1,3 +1,4 @@
+<!--TODO: UPDATE -->
 <!DOCTYPE html>
 <html>
   <head>
@@ -81,7 +82,7 @@
       <script type="text/javascript" src="js/demo/game.js"></script>
       <script type="text/javascript" src="js/demo/dice.js"></script>
       <script type="text/javascript" src="js/demo/world.js"></script>
-      
+
     <script>
       var world = null;
       var game = null;
@@ -89,7 +90,7 @@
       function assertSheetsLoaded() {
         for (var page in templates) {
           if (!sheets[page] || sheets[page].elements.length <= 1) {
-            return "An error occurred. Please try reloading the page."; 
+            return "An error occurred. Please try reloading the page.";
           }
         }
       }
@@ -98,7 +99,7 @@
         //https://github.com/mrdoob/three.js/blob/master/examples/js/Detector.js
         var hasWebGL = true;
         try {
-          var canvas = document.createElement( 'canvas' ); 
+          var canvas = document.createElement( 'canvas' );
           hasWebGL = ( window.WebGLRenderingContext && ( canvas.getContext( 'webgl' ) || canvas.getContext( 'experimental-webgl' )));
         } catch ( e ) {
           if (window.WebGLRenderingContext || true) {
@@ -120,7 +121,7 @@
             return "The Expedition demo requires a larger screen.<br/>Try maximizing your window or zooming out, then refreshing.";
           }
         }
-        
+
       }
 
       function showError(errorText) {
@@ -128,7 +129,7 @@
         $("#extras").remove();
       }
 
-      (function init() {        
+      (function init() {
         Tabletop.init({
           key: '1dizpALvuAVxe4J_9NGk14GzAqlwapc94w3HgUD0rLWo', // sheet must be published to the web
           callback: function(d, t) {
@@ -150,7 +151,7 @@
                 game = new Game();
                 game.stateStart();
               } catch (e) {
-                showError("An error occurred. Your device may not be compatible with the demo."); 
+                showError("An error occurred. Your device may not be compatible with the demo.");
               }
             });
 
