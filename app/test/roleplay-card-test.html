@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+  <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+  <script src="../bower_components/test-fixture/test-fixture-mocha.js"></script>
+  <script src="../bower_components/iron-test-helpers/mock-interactions.js"></script>
+  <script src="scripts/testdom.js"></script>
+  <link rel="import" href="../bower_components/polymer/polymer.html">
+  <link rel="import" href="../elements.html">
+</head>
+<body>
+
+  <test-fixture id="basic">
+    <template>
+      <roleplay-card></roleplay-card>
+    </template>
+  </test-fixture>
+
+  <script>
+    suite('roleplay-card tests', function() {
+      var f;
+
+      setup(function() {
+        f = fixture('basic');
+      });
+
+      /* UNTESTED
+      var eventChain = function() {
+        var result = function() {};
+
+        for (var i = arguments.length - 1; i >= 0; i--) {
+          var node = arguments[i][0];
+          var evtName = arguments[i][1];
+          var fn = arguments[i][2];
+
+          result = function() {
+            node.addEventListener(evtName, function(e) {
+              e.target.removeEventListener(e.type, arguments.callee);
+
+              fn();
+
+              result();
+            });
+          }
+        }
+
+        result();
+      }
+      */
+
+      test('has all stages of hero\'s journey', function() {
+        assert.isDefined(f.$.intro);
+        assert.isDefined(f.$.stasis);
+        assert.isDefined(f.$.triggers);
+        assert.isDefined(f.$.surprises);
+        assert.isDefined(f.$.choices);
+        assert.isDefined(f.$.climax);
+        assert.isDefined(f.$.resolution);
+      });
+
+      test('can progress through all stages with Next buttons', function(done) {
+        assert.isTrue(hasInnerText(f.$.intro.querySelectorAll("a"), "Next"));
+        assert.isTrue(hasInnerText(f.$.stasis.querySelectorAll("a"), "Next"));
+        assert.isTrue(hasInnerText(f.$.triggers.querySelectorAll("a"), "Next"));
+        assert.isTrue(hasInnerText(f.$.surprises.querySelectorAll("a"), "Next"));
+        assert.isTrue(hasInnerText(f.$.choices.querySelectorAll("a"), "Next"));
+        assert.isTrue(hasInnerText(f.$.climax.querySelectorAll("a"), "Next"));
+        
+        MockInteractions.tap(f.$.intro.querySelector("a"));
+        f.addEventListener('animFinish', function() {
+          done();
+        });
+        
+      });
+
+      test('return on resolution goes to climax', function(done) {
+        f.$.resolution.dispatchEvent(new CustomEvent('return'));
+        f.addEventListener('animFinish', function() {
+          assert.isTrue(isVisible(f.$.climax));
+          done();
+        })
+      });
+
+      test('return on climax goes to choices', function(done) {
+        f.$.climax.dispatchEvent(new CustomEvent('return'));
+        f.addEventListener('animFinish', function() {
+          assert.isTrue(isVisible(f.$.choices));
+          done();
+        })
+      });
+
+      test('return on choices goes to surprises', function(done) {
+        f.$.choices.dispatchEvent(new CustomEvent('return'));
+        f.addEventListener('animFinish', function() {
+          assert.isTrue(isVisible(f.$.surprises));
+          done();
+        })
+      });
+
+      test('return on triggers goes to stasis', function(done) {
+        f.$.triggers.dispatchEvent(new CustomEvent('return'));
+        f.addEventListener('animFinish', function() {
+          assert.isTrue(isVisible(f.$.stasis));
+          done();
+        })
+      });
+
+      test('return on stasis goes to intro', function(done) {
+        throw new Error('unimplemented');
+      });
+
+      test('return on intro propagates', function(done) {
+        f.addEventListener('return', function() {
+          done();
+        })
+        f.$.intro.dispatchEvent(new CustomEvent('return'));
+      });
+
+      test('all stages after stasis have button for Encounter', function() {
+        assert.isTrue(hasInnerText(f.$.triggers.querySelectorAll("a"), "Encounter"));
+        assert.isTrue(hasInnerText(f.$.surprises.querySelectorAll("a"), "Encounter"));
+        assert.isTrue(hasInnerText(f.$.choices.querySelectorAll("a"), "Encounter"));
+        assert.isTrue(hasInnerText(f.$.climax.querySelectorAll("a"), "Encounter"));
+        assert.isTrue(hasInnerText(f.$.resolution.querySelectorAll("a"), "Encounter"));
+      });
+
+      test('encounter is marked as custom', function() {
+        assert.isTrue(f.$.encounter.hasAttribute('custom'));
+      });
+
+      test('final stage "end" button resets journey and propagates return()', function(done) {
+        MockInteractions.tap(f.$.resolution.querySelectorAll("a")[1]);
+        f.addEventListener('return', function() {
+          done();
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

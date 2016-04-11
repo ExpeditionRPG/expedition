@@ -1,0 +1,170 @@
+<dom-module id="combat-timer-card">
+  <style>
+    :host {
+      background-color: var(--background-color-dark-primary);
+    };
+  </style>
+  <template>
+    <canvas id="touchArea"></canvas>
+  </template>
+  <script>
+    /*global GlobalsBehaviour */
+    // TODO: Less magic numbers all over this file
+    Polymer({
+      is: 'combat-timer-card',
+      behaviors: [GlobalsBehaviour],
+      ready: function() {
+        this.active = false;
+
+        this._roundDamage = 0;
+        this._lastAttackMillis = 0;
+        this._timerStartMillis = 0;
+        this._lastRenderMillis = 0;
+        this._flashText = null;
+        this._flashAlpha = 0;
+        this._touches = [];
+
+        var h = window.innerHeight;
+        var w = window.innerWidth;
+        this._xBot = h; 
+        this._xMid = w/2;
+        this._yMid = h/2;
+
+        // Setup canvas element and touch listeners
+        var canvas = this.$.touchArea;
+        this.ctx = canvas.getContext('2d');
+        this.ctx.canvas.width = w;
+        this.ctx.canvas.height = h;
+        canvas.addEventListener('touchstart', this._touchEvent.bind(this));
+        canvas.addEventListener('touchmove', this._touchEvent.bind(this));
+        canvas.addEventListener('touchend', this._touchEvent.bind(this));
+      },
+      start: function() {
+        this.active = true;
+        this._timerStartMillis = Date.now();
+        this._setFlashText("Attack!");
+        this._lastRenderMillis = this._timerStartMillis;
+        this._roundDamage = this.logic.startingDamage();
+        this._renderLoop();
+      },
+      stop: function() {
+        this.active = false; // Signal the render loop to end
+      },
+      _touchEvent: function(e) {
+        this._touches = e.touches;
+        // Note that we aren't using globals.adventurers here. 
+        // We want to stop the timer using the number of *alive* adventurers.
+        if (!this.globals.multitouch || this._touches.length >= this.adventurers) {
+          this.stop();
+        }
+        e.preventDefault();
+      },
+      _drawDamage: function() {
+        this.ctx.font = "120px MarkoOne";
+        this.ctx.fillStyle = "rgb(255,255,255)";
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        this.ctx.fillText(this._roundDamage, this._xMid, this._yMid);
+
+        if (this.logic.getNextSurgeRounds() < 1.0) {
+          this.ctx.font = "40px MarkoOne";
+          this.ctx.fillText("Surge", this._xMid, this._yMid + 90);
+          this.ctx.fillText("Imminent", this._xMid, this._yMid + 150);
+        }
+      },
+      _drawTouchPoints: function() {
+        var radius = 36;
+        this.ctx.fillStyle = "rgb(200,0,0)";
+        for (var i = 0; i < this._touches.length; i++) {
+          this.ctx.beginPath();
+          this.ctx.arc(this._touches[i].clientX, this._touches[i].clientY, radius, 0, 2 * Math.PI, false);
+          this.ctx.fill();
+        }
+      },
+      _drawHelp: function() {
+        if (!this.globals.showhelp) {
+          return;
+        }
+        this.ctx.fillStyle = "rgb(255,255,255)";
+        this.ctx.font = "20px MinionPro";
+        if (this.globals.multitouch) {
+          this.ctx.fillText("Play your action", this._xMid, this._xBot - 70);
+          this.ctx.fillText("then put your finger down", this._xMid, this._xBot - 40);
+        } else {
+          this.ctx.fillText("Tap to stop the timer", this._xMid, this._xBot - 40);
+        }
+      },
+      _drawFlashText: function(ddt) {
+        if (!this._flashText) {
+          return;
+        }
+        this._flashAlpha -= ddt / 1000.0; //Fades 100% in 1000ms
+        if (this._flashAlpha <= 0) {
+          this._flashText = null;
+        }
+        var v = (this._flashAlpha > 1) ? (2.0-this._flashAlpha) : this._flashAlpha;
+        this.ctx.fillStyle = "rgba(255,255,255," + v + ")";
+        this.ctx.font = "50px MarkoOne";
+        this.ctx.fillText(this._flashText, this._xMid, this._yMid - 120);
+      },
+      _drawBackground: function() {
+        if (this._flashText !== null) {
+          var dt = Math.floor((Date.now() - this._lastAttackMillis) * 255 / 1000);
+          var v = Math.max(0, 255 - dt);
+          if (this._flashText === "Hit!") {
+            this.ctx.fillStyle = "rgb(" + v + ",0,0)";
+          } else { // Miss!
+            this.ctx.fillStyle = "rgb(" + [v,v,v].join(',') + ")";
+          }
+        } else {
+          this.ctx.fillStyle = "rgb(0,0,0)";
+        }
+        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+      },
+      _setFlashText: function(text) {
+        this._flashText = text;
+        this._flashAlpha = 1.5;
+        console.log(this._flashText);
+      },
+      _renderLoop: function() {
+        var now = Date.now();
+        var dt = now - this._lastRenderMillis;
+
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        var damageDelta = this.logic.stochasticDamage(dt);
+        if (damageDelta !== undefined) {
+          this._roundDamage += damageDelta;
+          this._lastAttackMillis = now;
+          this._setFlashText(["Miss!", "Hit!", "Hit!"][damageDelta]);
+        }
+
+        this._drawBackground();
+        this._drawDamage();
+        this._drawFlashText(dt);
+        this._drawHelp();
+        this._drawTouchPoints();
+
+        if (!this.active) {
+          this.fire("stopped", {
+            "turnTimeMillis": now - this._timerStartMillis, 
+            "roundDamage": this._roundDamage
+          });
+          return;
+        }
+
+        this._lastRenderMillis = now;
+        requestAnimationFrame(this._renderLoop.bind(this));
+      },
+      properties: {
+        logic: Object,
+        adventurers: Number,
+        active: {
+          type: Number,
+          notify: true,
+          value: false
+        }
+      }
+    });
+  </script>
+
+</dom-module>

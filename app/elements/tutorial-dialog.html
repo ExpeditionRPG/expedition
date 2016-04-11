@@ -1,0 +1,32 @@
+<dom-module id="tutorial-dialog">
+  <style>
+    #label {
+      padding-bottom: var(--vh-large);
+    }
+  </style>
+  <template>
+    <expedition-dialog title="Tutorial" id="dialog" modal>
+      <tutorial-section id="section"></tutorial-section>
+    </expedition-dialog>
+  </template>
+  <script>
+    /*global GlobalsBehaviour */
+    Polymer({
+      is: 'tutorial-dialog',
+      behaviors: [GlobalsBehaviour],
+      tryOpen: function(section) {
+        console.log(section);
+        if (this.globals.helplevel !== 2 || this.globals.tutorialVisibility[section] === false) {
+          return;
+        }
+        if (!this.$.section.valid(section)) {
+          return;
+        }
+        this.$.section.section = section;
+        this.globals.tutorialVisibility[this.$.section.section] = false;
+        this.$.dialog.open();
+      },
+    });
+  </script>
+</dom-module>
+

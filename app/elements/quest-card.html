@@ -1,0 +1,226 @@
+<dom-module id="quest-card">
+  <style>
+    :host ::content instruction {
+      display: block;
+      padding: var(--vw-small);
+    };
+    :host ::content comment {
+      display: none;
+    };
+  </style>
+  <template>
+    <iron-ajax
+      id="questFetcher"
+      url="{{url}}"
+      handle-as="text"
+      on-response="_onQuestFetch"></iron-ajax>
+
+    <expedition-card-set id="pages" initial="adventurersetup">
+      <expedition-card
+        title="Coming Soon"
+        icon="damage"
+        id="coming_soon"
+        data-route="comingsoon">
+        <p>This quest is coming soon - please check back later!</p>
+      </expedition-card>
+
+
+      <expedition-card
+        title="Adventurer Setup"
+        icon="adventurer"
+        id="adventurer_setup"
+        data-route="adventurersetup">
+
+        <p>At this time:</p>
+        <ol>
+          <li><strong>Select</strong> one Adventurer from the deck and pass the deck along.
+          <li><strong>Keep</strong> this card face up in front of you.
+        </ol>
+        <a on-tap="next" data-target="questsetup">Next</a>
+      </expedition-card>
+
+      <expedition-card
+        title="Player setup"
+        icon="cards"
+        id="setup"
+        data-route="questsetup">
+
+        <p>At this time:</p>
+        <ol>
+          <li><strong>Draw</strong> the starting abilities listed on the Adventurer card.
+          <li><strong>Read</strong> the drawn cards and understand what they do.
+          <li><strong>Shuffle</strong> them into a stack face-down in front of you.
+          <li><strong>Take</strong> a single D20 die for later rolls.
+        </ol>
+
+        <p>
+          During your adventure, pass this device to your right whenever you make
+          a decision or hit the "Next" button during the story.
+        </p>
+
+        <a on-tap="startQuest">Next</a>
+      </expedition-card>
+
+      <!--TODO: Double-buffered dialogs? -->
+      <dialog-card
+        id="dialog"
+        data-route="questdialog"
+        data-target="endgame"
+        icon="{{_icon}}"
+        title="{{_title}}"
+        on-tap="_onChoice">
+        <article id="contents"></article>
+      </dialog-card>
+
+      <combat-card
+        id="combat"
+        data-route="combat"
+        on-return="_onCombatEnd"
+        encounter="{{_encounter}}"
+        icon="{{_combaticon}}">
+      </combat-card>
+
+      <expedition-card
+        id="endgame"
+        title="End Game"
+        icon="adventurer"
+        data-route="endgame">
+
+        <template is="dom-if" if="{{_isWin}}">
+        <p>
+          Congratulations! All players draw 1 random Loot and learn a new ability:
+        </p>
+        <ul>
+          <li>Draw 3 Ability cards from a deck of your choosing.
+          <li>Choose 1 of these cards and insert it in your personal deck.
+          <li>Place the remaining 2 cards at the bottom of the original deck.
+          <li>Discard any abilities from your personal deck as desired.
+        </ul>
+        </template>
+
+        <template is="dom-if" if="{{!_isWin}}">
+        <p>
+          The quest may be over, but your journey doesn't have to be... all players discard their cards and begin again.
+        </p>
+        </template>
+
+        <a on-tap="_endQuest">Back to Quests</a>
+      </expedition-card>
+
+    </expedition-card-set>
+  </template>
+  <script>
+    /*global questParser */
+    /*global GlobalsBehaviour */
+    Polymer({
+      is: 'quest-card',
+      behaviors: [GlobalsBehaviour],
+      listeners: {
+        'globals-changed': '_onGlobalChanged'
+      },
+      ready: function(content) {
+        this._icon = "";
+        this._combaticon = "";
+        this._title = "";
+        this._encounter = [];
+        this._isWin = undefined;
+        
+        this._parser = new questParser();
+        // Reset to selection screen and fetch content
+        if (this.url) {
+          this.$.questFetcher.generateRequest();
+          this.$.pages.next("adventurersetup");
+        } else if (content !== undefined) {
+          this._onQuestFetch({detail: {response: content}});
+          this.$.pages.next("adventurersetup");
+        } else {
+          this.$.pages.next("comingsoon");
+        }
+      },
+      _onQuestFetch: function(evt) {
+        var div = document.createElement('div');
+        div.innerHTML = evt.detail.response;
+        Polymer.dom(this).appendChild(div);
+      },
+      _onGlobalChanged: function(evt) {
+        if (evt.detail.path === 'globals.showhelp') {
+          if (evt.detail.value === true) {
+            this.$.pages.ready();
+          } else {
+            this.startQuest();
+          }
+        }
+      },
+      startQuest: function() {
+        // TODO: Make a more gradual fade-in animation, particularly with
+        // help text off
+        this._handleParser(this._parser.init(this.getEffectiveChildren()[0]));
+      },
+      _endQuest: function() {
+        this.fire('return');
+        this._isWin = undefined;
+        this._parser = new questParser();
+        this.$.pages.reset();
+      },
+      next: function(e) {
+        console.log(e.currentTarget.dataset.target);
+        this.$.pages.next(e.currentTarget.dataset.target);
+      },
+      _onCombatEnd: function(e) {
+        // Suppress combat resolution on regular "back button" presses, instead
+        // using the default event handler.
+        if (typeof(e.detail) !== "boolean") {
+          return;
+        }
+        this._handleParser(this._parser.choiceEvent((e.detail) ? 'win' : 'lose'));
+        e.stopPropagation();
+      },
+      _onChoice: function(e) {
+        if (e.target.localName !== 'a') {
+          return;
+        }
+        var idx = Array.prototype.indexOf.call(e.target.parentNode.children, e.target);
+        if (idx < 0) {
+          return;
+        }
+        this._handleParser(this._parser.choiceEvent(idx));
+      },
+      _handleParser: function(p) {
+        switch(p.type) {
+          case 'end':
+            this._doEnd(p);
+            break;
+          case 'dialog':
+            this._doDialog(p);
+            break;
+          case 'encounter':
+            this._doCombat(p);
+            break;
+          default:
+            throw new Error('unknown parser response ' + p);
+        }
+      },
+      _doEnd: function(p) {
+        // TODO: Win/lose propagation
+        console.log(p.contents);
+        this._isWin = p.contents;
+        this.$.pages.next('endgame');
+      },
+      _doCombat: function(p) {
+        this.$.combat.ready();
+        this._encounter = p.contents;
+        this._combaticon = p.icon;
+        this.$.pages.next('combat');
+      },
+      _doDialog: function(p) {
+        anim = (this.$.pages.getCurrentPage() === 'questdialog') ? null :  "instant";
+        this.$.dialog.next(p, anim);
+        this.$.pages.next('questdialog');
+      },
+      properties: {
+        url: String
+      }
+    });
+  </script>
+
+</dom-module>

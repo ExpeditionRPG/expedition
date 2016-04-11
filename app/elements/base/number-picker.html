@@ -1,0 +1,40 @@
+<dom-module id="number-picker">
+  <style>
+    :host paper-icon-button {
+      width: var(--vw-huge);
+      height: var(--vw-huge);
+    };
+  </style>
+  <template>
+    <div class="input">
+      <div class="value">
+        <paper-icon-button id="dec" icon="icons:chevron-left" on-tap="dec"></paper-icon-button>
+        <div id="label" class="label">{{ label }}: <span id="value">{{value}}</span></div>
+        <paper-icon-button id="inc" icon="icons:chevron-right" on-tap="inc"></paper-icon-button>
+      </div>
+    </div>
+    <div class="subtext" id="subtext"><content></content></div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'number-picker',
+      inc: function() {
+        this.value++;
+        this.fire('update');
+      },
+      dec: function() {
+        this.value = Math.max(0, this.value - 1);
+        this.fire('update');
+      },
+      properties: {
+        value: {
+          type: Number,
+          notify: true
+        },
+        label: String
+      },
+    });
+  </script>
+
+</dom-module>

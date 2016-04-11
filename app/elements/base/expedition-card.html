@@ -1,0 +1,208 @@
+<dom-module id="expedition-card">
+  <style>
+    .title {
+      font-family: var(--font-header);
+      font-size: var(--font-size-title);
+      background-color: var(--background-color-accent);
+      padding: 0;
+      line-height: var(--vw-huge);
+    }
+
+    .title > #title {
+      display: inline-block;
+    }
+
+    .title #return {
+      float: left;
+    }
+
+    :host.dark .title {
+      background-color: var(--background-color-dark-accent);
+    }
+
+    :host.dark .content ::content a,
+    :host.dark .content ::content expedition-checkbox,
+    :host.dark .content ::content number-picker,
+    :host.dark .content ::content expedition-picker {
+      background-color: var(--background-color-dark-interactive);
+    };
+
+    :host.dark .content ::content a:active {
+      background-color: var(--background-color-dark-active);
+    }
+
+    svg, img {
+      position: absolute;
+      height: 30%;
+      width: auto;
+      right: 0;
+      top: 50%;
+      /* margin-right: -10%; */ /* TODO: Re-shift this once we figure out why it's breaking overflow */
+      margin-top: -25%;
+      opacity: var(--icon-watermark-opacity);
+    }
+
+    .article {
+      @apply(--layout-flex);
+      overflow-y: auto;
+      padding: var(--vw-base);
+      font-family: var(--font-body);
+      font-size: var(--font-size-flavortext);
+    }
+
+    .content {
+      margin: var(--vw-large);
+    }
+
+    .card {
+      height: 100%;
+      @apply(--layout-vertical);
+    }
+
+    .scrollbox {
+      @apply(--layout-vertical);
+      position: relative;
+    }
+
+    .scrollbox:before {
+      content: "";
+      position: absolute;
+      width: var(--vw-huge);
+      height: var(--vw-large);
+      border-top: var(--border-size) solid var(--border-color-primary);
+      border-left: var(--border-size) solid var(--border-color-primary);
+    }
+
+    .scrollbox:after {
+      content: "";
+      position:absolute;
+      bottom: 0;
+      right: 0;
+      width: var(--vw-huge);
+      height: var(--vw-large);
+      border-right: var(--border-size) solid var(--border-color-primary);
+      border-bottom: var(--border-size) solid var(--border-color-primary);
+    }
+
+    #menubtn {
+      float: right;
+      margin-right: var(--vw-base);
+      padding: 0;
+      font-family: var(--font-body);
+      font-size: var(--font-size-interactive);
+    }
+
+    :host .spacer {
+      height: 2*var(--vh-base);
+    };
+
+    /* Dark theme variant */
+
+    :host.dark svg {
+      fill: var(--font-color-dark-primary);
+    };
+
+    :host.dark {
+      background-color: black;
+      color: var(--font-color-dark-primary);
+    }
+
+    :host.dark .scrollbox:before, :host.dark .scrollbox:after {
+      border-color: var(--border-color-dark-primary);
+    }
+
+    paper-item:focus:after, paper-item:focus:before {
+      background: transparent !important;
+    }
+  </style>
+  <template>
+    <div class="card">
+      <template is="dom-if" if="{{_icon}}">
+        <img id="bgimg" src="images/{{_icon}}.svg"></img>
+      </template>
+      <div class="spacer ios_only"></div>
+      <div class="title">
+          <paper-icon-button id="return" icon="icons:chevron-left" on-tap="_return"></paper-icon-button>
+          <paper-menu-button id="menubtn" vertical-align="top" horizontal-align="right" on-paper-dropdown-open="_onMenuOpen">
+            <paper-icon-button icon="icons:menu" class="dropdown-trigger"></paper-icon-button>
+            <paper-menu id="menu" class="dropdown-content" on-tap="_onMenuEvent">
+              <paper-item data-dialog="home">Home</paper-item>
+              <paper-item data-dialog="settings">Settings</paper-item>
+              <paper-item data-dialog="feedback">Feedback</a>
+            </paper-menu>
+          </paper-menu-button>
+          <div id="title">{{title}}</div>
+      </div>
+      <div class="article">
+        <div class="scrollbox">
+          <div class="content" id="content"><content></content></div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    /*global SVGInjector */
+    Polymer({
+      is: 'expedition-card',
+      ready: function() {
+        // For dark cards, we need to mutate the icon path.
+        this._icon = "";
+
+        if (this.dark) {
+          this.className = "dark";
+        }
+        this._onIconChange();  
+      },
+      scrollToTop: function() {
+        this.querySelector(".article").scrollTop = 0;
+      },
+      _onIconChange: function() {
+        if (this.icon) {
+          this._icon = (this.dark) ? this.icon + "_white" : this.icon;
+
+          // Allow the template time to render
+          Polymer.dom.flush();
+          
+          SVGInjector(this.querySelector('#bgimg'), {}, null);
+        }
+      },
+      _onMenuOpen: function() {
+        this.$.menu.select(-1);
+      },
+      _onMenuEvent: function(e) {
+        switch (e.target.dataset.dialog) {
+          case "settings":
+            document.getElementById("settings").open();
+            break;
+          case "home":
+            this.fire('home');
+            break;
+          case "feedback":
+            if (window.platform === 'android' || window.platform === 'ios') {
+              window.open('http://www.expeditiongame.com/contact/', '_system');
+            } else {
+              window.location='http://www.expeditiongame.com/contact/';
+            }
+            break;
+          default:
+            throw new Error("Unknown menu option");
+        }
+      },
+      _return: function() {
+        this.fire('return');
+      },
+      properties: {
+        icon: {
+          type: String,
+          observer: "_onIconChange",
+        },
+        dark: {
+          type: Boolean,
+          value: false
+        },
+      }
+    });
+  </script>
+
+</dom-module>

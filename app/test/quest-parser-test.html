@@ -1,0 +1,376 @@
+<!doctype html>
+<html>
+<head>
+  <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+  <script src="../bower_components/test-fixture/test-fixture-mocha.js"></script>
+  <script src="../bower_components/iron-test-helpers/mock-interactions.js"></script>
+  <script src="scripts/testdom.js"></script>
+  <link rel="import" href="../bower_components/polymer/polymer.html">
+  <link rel="import" href="../elements.html">
+</head>
+<body>
+
+  <test-fixture id="end">
+    <template>
+      <div><end title="endtitle" icon="endicon" win><p>The End</p></end></div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="endBadRoleplay">
+    <template>
+      <div><end win><roleplay></roleplay></end></div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="endBadEncounter">
+    <template>
+      <div><end win><encounter></encounter></end></div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="endBadChoice">
+    <template>
+      <div><end win><choice></choice></end></div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="endBadEnd">
+    <template>
+      <div><end win><end lose></end></end></div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="endBadAttr">
+    <template>
+      <div><end></end></div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="roleplay">
+    <template>
+      <div>
+        <roleplay title="rptitle" icon="rpicon"><p>Dialog</p></end>
+      </div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="roleplayChoice">
+    <template>
+      <div>
+        <roleplay><choice>1</choice><choice>2</choice></end>
+      </div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="roleplayCustomEndChoice">
+    <template>
+      <div>
+        <roleplay><choice>End</choice></end>
+      </div>
+    </template>
+  </test-fixture>
+  
+  <test-fixture id="roleplayChoiceNoInner">
+    <template>
+      <div>
+        <roleplay><choice></choice></end>
+      </div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="encounterNoChoices">
+    <template>
+      <div>
+        <encounter icon="eicon">
+          <e>1</e>
+          <e>2</e>
+        </encounter>
+      </div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="encounterNoEnemies">
+    <template>
+      <div>
+        <encounter icon="eicon">
+          <choice win></choice><choice lose></choice>
+        </encounter>
+      </div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="encounterWinOnly">
+    <template>
+      <div>
+        <encounter icon="eicon">
+          <e>1</e><choice win></choice>
+        </encounter>
+      </div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="encounterLoseOnly">
+    <template>
+      <div>
+        <encounter icon="eicon">
+          <e>1</e><choice lose></choice>
+        </encounter>
+      </div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="encounterInvalidChoice">
+    <template>
+      <div>
+        <encounter icon="eicon">
+          <e>1</e><choice win></choice><choice lose></choice><choice></choice>
+        </encounter>
+      </div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="encounterInvalidElement">
+    <template>
+      <div>
+        <encounter icon="eicon">
+          <e>1</e><choice win></choice><choice lose></choice><div></div>
+        </encounter>
+      </div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="encounter">
+    <template>
+      <div>
+        <encounter icon="eicon">
+          <e>1</e><e>2</e>
+          <choice win><roleplay><p>win</p></roleplay></choice>
+          <choice lose><roleplay><p>lose</p></roleplay></choice>
+        </encounter>
+      </div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="choiceNoInterior">
+    <template>
+      <div>
+          <choice>Test</choice>
+      </div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="choiceInChoice">
+    <template>
+      <div>
+          <choice><choice></choice></choice>
+      </div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="choiceEvent">
+    <template>
+      <div>
+        <roleplay>
+          <choice>
+            Test Choice
+            <roleplay><p>test</p></roleplay>
+          </choice>
+        </roleplay>
+      </div>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="badChoiceEvent">
+    <template>
+      <div>
+        <roleplay>
+          <div id="target"></div>
+        </roleplay>
+      </div>
+    </template>
+  </test-fixture>
+
+  <script>
+    suite('quest_parser tests', function() {
+      var f;
+
+      setup(function() {
+        fEnd = fixture('end');
+        fRoleplay = fixture('roleplay');
+        fEncounter = fixture('encounter');
+      });
+
+      test('<end> sets title and icon', function() {
+        var result = (new questParser()).init(fEnd);
+        assert.equal(result.title, 'endtitle');
+        assert.equal(result.icon, 'endicon'); 
+      });
+
+      test('<end> returns ending dialog text with end button', function() {
+        var result = (new questParser()).init(fEnd);
+        assert.equal(result.type, 'dialog');
+        assert.equal(result.contents.innerHTML, "<p>The End</p><a>End</a>")
+      });
+
+      test('<end> throws if any other special tags within', function() {
+        var fixtures = ['endBadEnd', 'endBadChoice', 'endBadEncounter', 'endBadRoleplay'];
+        for (var i = 0; i < fixtures.length; i++) {
+          assert.throws(function() {
+            (new questParser()).init(fixture(fixtures[i]));
+          },
+          Error, "<end> cannot contain tag");
+        }
+      });
+
+      test ('<end> must have win or lose attribute', function() {
+        assert.throws(function() {
+          (new questParser()).init(fixture('endBadAttr'));
+        },
+        Error, "<end> must have win or lose attribute");
+      });
+
+      test('<roleplay> sets title and icon', function() {
+        var result = (new questParser()).init(fRoleplay);
+        assert.equal(result.title, 'rptitle');
+        assert.equal(result.icon, 'rpicon'); 
+      });
+
+      test('<roleplay> without <choice> has inner text and Next button', function() {
+        var result = (new questParser()).init(fRoleplay);
+        assert.equal(result.type, 'dialog');
+        assert.equal(result.contents.innerHTML, "<p>Dialog</p><a>Next</a>")
+      });
+
+      test('<roleplay> displays choices as buttons', function() {
+        var result = (new questParser()).init(fixture('roleplayChoice'));
+        assert.equal(result.contents.innerHTML, "<a>1</a><a>2</a>")
+      });
+
+      test('<roleplay> throws if <choice> text is "End"', function() {
+        assert.throws(function() {
+          (new questParser()).init(fixture('roleplayCustomEndChoice'));
+        },
+        Error, "<choice> text cannot be \"End\"");
+      });
+
+      test('<roleplay> throws if no inner text in <choice>', function() {
+        assert.throws(function() {
+          (new questParser()).init(fixture('roleplayChoiceNoInner'));
+        },
+        Error, "<choice> must contain choice text");
+      });
+
+      test('<choice> throws if no special tag within', function() {
+        assert.throws(function() {
+          (new questParser()).init(fixture('choiceNoInterior'));
+        },
+        Error, "<choice> without id must have at least one of");
+      });
+
+      test('<choice goto> jumps to target with id', function() {
+        throw new Error("Unimplemented");
+      });
+
+      test('<choice goto> without matching target throws', function() {
+        throw new Error("Unimplemented");
+      });
+
+      test('<choice> throws if choice within', function() {
+        assert.throws(function() {
+          (new questParser()).init(fixture('choiceInChoice'));
+        },
+        Error, "<choice> node cannot have <choice> child");
+      });
+
+      test('<encounter> sets icon', function() {
+        var result = (new questParser()).init(fEncounter);
+        assert.equal(result.icon, "eicon");
+      });
+
+      test('<encounter> returns enemies', function() {
+        var result = (new questParser()).init(fEncounter);
+        assert.equal(result.type, 'encounter');
+        assert.deepEqual(result.contents, ["1", "2"]);
+      });
+
+      test('<encounter> requires enemies', function() {
+        assert.throws(function() {
+          (new questParser()).init(fixture('encounterNoEnemies'));
+        },
+        Error, "<encounter> has no <e> children");
+      });
+
+      test('<encounter> requires win/lose choices', function() {
+        assert.throws(function() {
+          (new questParser()).init(fixture('encounterWinOnly'));
+        },
+        Error, "<encounter> missing <choice lose> child");
+
+        assert.throws(function() {
+          (new questParser()).init(fixture('encounterLoseOnly'));
+        },
+        Error, "<encounter> missing <choice win> child");
+      });
+
+      test('<encounter> throws on choice without win/lose', function() {
+        assert.throws(function() {
+          (new questParser()).init(fixture('encounterInvalidChoice'));
+        },
+        Error, "Encounter choice without win/lose attribute");
+      });
+
+      test('<encounter> throws on element neither <e> nor <choice>', function() {
+        assert.throws(function() {
+          (new questParser()).init(fixture('encounterInvalidElement'));
+        },
+        Error, "Invalid child element");
+      });
+
+      test('choiceEvent throws on bad data', function() {
+        assert.throws(function() {
+          var p = (new questParser());
+          p.choiceEvent("test");
+        }, 
+        Error, "Invalid choiceEvent");
+      });
+
+      test('choiceEvent enters first child node', function() {
+        var p = new questParser();
+        p.init(fixture('choiceEvent'));
+        var result = p.choiceEvent(0);
+        assert.equal(result.type, 'dialog');
+        assert.equal(result.contents.innerHTML, '<p>test</p><a>Next</a>');
+      });
+
+      test('choiceEvent returns end type when end choice reached', function() {
+        var p = new questParser();
+        p.init(fEnd);
+        assert.equal(p.choiceEvent(0).type, 'end');
+      });
+
+      test('choiceEvent selects win choice on win', function() {
+        var p = new questParser();
+        p.init(fEncounter);
+        var result = p.choiceEvent('win');
+        assert.equal(result.type, 'dialog');
+        assert.equal(result.contents.innerHTML, '<p>win</p><a>Next</a>');
+      });
+
+      test('choiceEvent selects lose choice on lose', function() {
+        var p = new questParser();
+        p.init(fEncounter);
+        var result = p.choiceEvent('lose');
+        assert.equal(result.type, 'dialog');
+        assert.equal(result.contents.innerHTML, '<p>lose</p><a>Next</a>');
+      });
+
+      test('<e show-if=""> is properly (and safely) evaluated', function() {
+        throw new Error("Unimplemented");
+      });
+
+    });
+  </script>
+
+</body>
+</html>

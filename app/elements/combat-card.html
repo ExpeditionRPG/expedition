@@ -1,0 +1,383 @@
+<dom-module id="combat-card">
+  <style>
+    :host h3 {
+      text-align: center;
+    }
+  </style>
+  <template>
+    <expedition-card-set id="pages" initial="combatsetup">
+      <!-- Initialization cards -->
+      <expedition-card title="Draw Enemies" data-route="combatsetup" icon="{{icon}}" dark>
+        <template is="dom-if" if="{{!custom}}">
+          <p>Prepare to fight:</p>
+          <!-- TODO: Maybe have this be more like an expedition-item that mimics the encounter card layout -->
+          <template is="dom-repeat" id="encounterlist" items="{{_resolvedEncounter}}">
+            <expedition-static-input label="{{item.name}}">(Tier {{item.tier}} {{item.class}})</expedition-static-input>
+          </template>
+        </template>
+        <template is="dom-if" if="{{globals.helplevel}}">
+          <template is="dom-if" if="{{!custom}}">
+            <p>Draw the enemies listed above. Place in the center and put tokens on their maximum Health.</p>
+          </template>
+          <template is="dom-if" if="{{custom}}">
+            <p>Draw enemies to fight from the Encounter deck and enter their total tier below.</p>
+            <p>A standard encounter should have a tier of  {{globals.adventurers}} (the number of adventurers).</p>
+          </template>
+        </template>
+        <template is="dom-if" if="{{custom}}">
+          <number-picker label="Tier Sum" class="enemies" on-update="_onTierSumChange" value="{{tierSum}}">
+            Enter the total tier of enemies to fight.
+          </number-picker>
+        </template>
+        <template is="dom-if"
+        <template is="dom-if" if="{{tierSum}}">
+          <a data-target="prepforcombat" on-tap="next">Next</a>
+        </template>
+        <template is="dom-if" if="{{!tierSum}}">
+          <a class="disabled">Enter Tier Sum to continue.</a>
+        </template>
+      </expedition-card>
+
+      <expedition-card title="Prepare for Combat" data-route="prepforcombat" icon="{{icon}}" on-return="prev" dark>
+        <template is="dom-if" if="{{globals.helplevel}}">
+          <p>All players must shuffle their ability decks.</p>
+          <p>Draw - but don't look at - the top 3 abilities.</p>
+          <p>When you begin combat:</p>
+          <ul>
+            <li>Look at your hand of 3 cards and play one face up on the table.
+            <template is="dom-if" if="{{globals.multitouch}}">
+              <li>Place your finger on the screen.
+              <li>When all fingers are down, the timer will stop.
+            </template>
+            <template is="dom-if" if="{{!globals.multitouch}}">
+              <li>Tell everyone you're done.
+              <li>When everyone is done, tap the app to stop the timer.
+            </template>
+            <li>The longer you take, the more chances the enemy will have to attack you.
+          </ul>
+        </template>
+        <h3>Ready to begin?</h3>
+        <a data-target="combattimer" on-tap="next">Start Timer</a>
+      </expedition-card>
+
+      <!-- Mid-combat Cards -->
+      <combat-timer-card
+          id="timer"
+          on-stopped="_onTimerStopped"
+          logic="{{_logic}}"
+          adventurers="{{adventurers}}"
+          data-route="combattimer">
+      </combat-timer-card>
+
+      <expedition-card title="Enemy Surge!" id="surgecard" data-route="combatsurge" icon="{{icon}}" on-return="_returnConfirm" dark>
+        <h3>An enemy surge occurs!</h3>
+        <template is="dom-if" if="{{globals.helplevel}}">
+          <p>
+            Immediately follow the surge action listed on all remaining Encounter cards. Some Encounters' surges may also apply after they've been killed.
+          </p>
+          <p>
+            Surge effects happen before abilities. Abilities that apply "this round" do not affect surges (but loot still does). If you are killed during a surge, do not resolve your abilities.
+          </p>
+        </template>
+        <a data-target="combatroll" on-tap="next">Next</a>
+      </expedition-card>
+
+      <expedition-card title="Roll &amp; Resolve" data-route="combatroll" icon="{{icon}}" on-return="prev" dark>
+        <template is="dom-if" if="{{!globals.helplevel}}">
+          Resolve all played abilities.
+        </template>
+        <template is="dom-if" if="{{globals.helplevel}}">
+          <p>
+            Roll a die for each ability with a "<img class="inline_icon" src="../images/roll_white_small.svg"></img> &gt; X" and resolve the cards' effects.
+          </p>
+        </template>
+        <a data-target="combatadjust" on-tap="next">Next</a>
+      </expedition-card>
+
+      <expedition-card title="Enemy Strength" data-route="combatadjust" icon="{{icon}}" on-return="prev" dark>
+        <number-picker label="Tier Sum" class="enemies" value="{{tierSum}}" on-update="_onTierSumChange">
+          Set this to the combined tier of the remaining enemies. You are victorious when this reaches zero.
+        </number-picker>
+        <template is="dom-if" if="{{_isTerminalState(adventurers, tierSum)}}">
+          <a class="disabled">End Encounter (Victory)</a>
+          <a data-target="combatdmg" on-tap="next">Next</a>
+        </template>
+        <template is="dom-if" if="{{!_isTerminalState(adventurers, tierSum)}}">
+          <a class="end" data-target="combatend" on-tap="next">End Encounter (Victory)</a>
+          <a class="disabled">Next</a>
+        </template>
+      </expedition-card>
+
+      <expedition-card title="Take Damage" id="combatdmg" data-route="combatdmg" icon="{{icon}}" on-return="prev" dark>
+        <h3>All adventurers:</h3>
+        <h3>{{_roundStats.roundDamage}} Damage</h3>
+
+        <template is="dom-if" if="{{globals.helplevel}}">
+          <p>Slide your Adventurer health down {{_roundStats.roundDamage}} space(s).</p>
+          <p>You are knocked out if the token reaches zero - after you resolve this turn, you cannot play further cards until the end of the Encounter.</p>
+        </template>
+
+        <number-picker label="Adventurers" class="adventurers" value="{{adventurers}}">
+          Set this to the number of adventurers still fighting. You are defeated when this reaches zero.
+        </number-picker>
+        <template is="dom-if" if="{{_isTerminalState(adventurers, tierSum)}}">
+          <a class="disabled">End Encounter (Defeat)</a>
+          <a data-target="prepforcombat" on-tap="next">Next</a>
+        </template>
+        <template is="dom-if" if="{{!_isTerminalState(adventurers, tierSum)}}">
+          <a class="end" data-target="combatend" on-tap="next">End Encounter (Defeat)</a>
+          <a class="disabled">Next</a>
+        </template>
+      </expedition-card>
+
+      <expedition-card title="{{endType}}" data-route="combatend" icon="{{icon}}" on-return="return" dark>
+        <article>
+          <template is="dom-if" if="{{_isVictory}}">
+            <template is="dom-if" if="{{globals.helplevel}}">
+              <p>
+                <strong>All adventurers heal to full health.</strong>
+              </p>
+            </template>
+
+            <template is="dom-if" if="{{canLevelUp}}">
+              <p>
+                For this Encounter, the party may choose to forego loot and instead learn new abilities.
+              </p>
+              <template is="dom-if" if="{{globals.helplevel}}">
+                <ul>
+                  <li>Draw 3 Ability cards from a deck of their choosing.
+                  <li>Choose 1 of these cards and insert it in their personal deck.
+                  <li>Place the remaining 2 cards at the bottom of the original deck.
+                  <li>Discard any abilities from their personal deck as desired.
+                </ul>
+              </template>
+              <p>Otherwise...</p>
+            </template>
+
+            <p>
+              <strong>Draw loot for your party:</strong>
+            </p>
+            <ul>
+              <template is="dom-repeat" items="{{loot}}">
+                <li><strong>Tier {{item.tier}} Loot: Draw {{item.count}}</strong>
+              </template>
+            </ul>
+            <template is="dom-if" if="{{globals.helplevel}}">
+              <p>Loot can be used at any time and does not cost an action (unless specified).</p>
+            </template>
+          </template>
+
+          <div>
+            <p>
+              You fought valiantly for {{summary.numRounds}} rounds ({{summary.totalTimeSeconds}} seconds), taking an average of {{summary.avgRoundSeconds}} seconds per attack.
+            </p>
+            <p>
+              At its peak, you battled a maxium Tier of {{summary.maxTier}}, and received {{summary.totalDamage}} total damage.
+            </p>
+          </div>
+
+          <template is="dom-if" if="{{!custom}}">
+            <a on-tap="return">Next</a>
+          </template>
+          <template is="dom-if" if="{{custom}}">
+            <a on-tap="return">Return to menu</a>
+            <a on-tap="_newEncounter">New encounter</a>
+          </template>
+        </article>
+
+      </expedition-card>
+
+    </expedition-card-set>
+    <expedition-dialog title="End Encounter?" id="returnDialog" class="combat-dialog" dark>
+      <a dialog-confirm on-tap="next" data-target="combatend">End Encounter (Victory)</a>
+      <a dialog-confirm on-tap="next" data-target="combatend">End Encounter (Defeat)</a>
+    </expedition-dialog>
+
+    <expedition-dialog id="nag" class="combat-dialog" dark>
+      <p>Remember, taking more time gives enemies more time to attack you.</p>
+    </expedition-dialog>
+  </template>
+  <script>
+    /*global Encounter */
+    /*global GlobalsBehaviour */
+    /*global dataGlobal */
+    Polymer({
+      is: 'combat-card',
+      behaviors: [GlobalsBehaviour],
+      listeners: {
+        'pages.animFinish': '_onAnimFinish'
+      },
+      ready: function() {
+        this._logic = new Encounter();
+        this._isVictory = null;
+        this._roundStats = null;
+        this.maxSuggestedRoundMillis = 20000; // If the round takes this long, nag them.
+
+        // Used when resetting state. animFinish needs to know when
+        // we're resetting entirely or just going back to the first page.
+        this._isReady = true;
+
+        // Freeze the number of adventurers so we can
+        // increment/decrement to track alive/dead adventurers
+        this.adventurers = this.globals.adventurers;
+
+        this.tierSum = 0;
+        this.icon = "";
+        this.encounter = [];
+      },
+      _newEncounter: function() {
+        // This is the only value shown on the next page.
+        // Reset it now so people don't see it switch.
+        this.tierSum = 0;
+
+        // Trigger ready animation, but don't reset state until we
+        // move away from the end page (less visual glitching).
+        this._isReady = false;
+        this.$.pages.ready();
+      },
+      _returnConfirm: function(e) {
+        e.stopPropagation();
+        this.$.returnDialog.open();
+      },
+      return: function(e) {
+        this._logic.sendStats();
+        this._roundStats = null;
+        this._isReady = false;
+        this.fire('return', this._isVictory);
+        this.$.pages.reset();
+        e.stopPropagation();
+      },
+      _isTerminalState: function() {
+        return this.tierSum && this.adventurers;
+      },
+      next: function(e) {
+        // Close the dialog if we're navigating by a dialog-click
+        if (this.$.returnDialog.isOpen()) {
+          this.$.returnDialog.close();
+        }
+        var target = e.currentTarget.dataset.target;
+        var noDebounce = (target === 'combattimer');
+
+        if (!this.$.pages.next(target, e.currentTarget.dataset.anim, noDebounce)) {
+          return;
+        }
+
+        this.tierSum = this._logic.getTier();
+        if (target === 'combatend') {
+          this._isVictory = (e.currentTarget.innerHTML.indexOf("Victory") !== -1) ? true : false;
+          this.endType = (this._isVictory) ? "Victory" : "Defeat";
+          if (this._isVictory) {
+            this.tierSum = 0;
+            this.canLevelUp = this._logic.canLevelUp();
+            this.loot = this._logic.generateLoot();
+          } else { // Defeat
+            this.adventurers = 0;
+          }
+          this.summary = this._logic.getSummary();
+          console.log(this.summary);
+        }
+        if (target === 'combattimer') {
+          // If was a surge this past round, reset the time until next surge
+          if (this._roundStats && this._roundStats.nextSurgeRounds === 0) {
+            this._logic.resetSurgeCounter();
+          }
+
+          this.$.timer.start();
+          this._logic.beginRound();
+        }
+        e.stopPropagation();
+      },
+      prev: function(e) {
+        var p = Polymer.dom(e.srcElement).previousSibling;
+        while (p.tagName !== "EXPEDITION-CARD") {
+          p = p.previousSibling;
+        }
+
+        // If backing into surge and wasn't surge, act as if this is the terminal card
+        if (p.dataset.route === "combatsurge" && this._roundStats.nextSurgeRounds !== 0) {
+          this._returnConfirm(e);
+          return;
+        }
+
+        // If we've already been through a round, navigate to combatdmg instead
+        if (p.dataset.route === "combatsetup" && this._roundStats !== null) {
+          p = this.$.combatdmg;
+        }
+
+        this.$.pages.prev(p.dataset.route);
+        e.stopPropagation();
+      },
+      isSurge: function() {
+        // Exposed for testing
+        return (this._roundStats.nextSurgeRounds === 0);
+      },
+      setMaxSuggestedRoundMillis: function(ms) {
+        // Exposed for testing
+        this.maxSuggestedRoundMIllis = ms;
+      },
+      // TODO: Once combat_mechanics has parseEncounter call parseTier, adjust these observers
+      _onEncounterChange: function() {
+        var resolved = [];
+        var tierSum = 0;
+        this.encounter.forEach(function(e) {
+          if (!e.tier) {
+            e = dataGlobal.encounters[e.name];
+
+            if (e === undefined) {
+              throw new Error('Could not find in global encounters: ' + e.name);
+            }
+          }
+          resolved.push(e);
+          tierSum += e.tier;
+        });
+        this._resolvedEncounter = resolved;
+        this.tierSum = tierSum;
+      },
+      _onIconChange: function() {
+        // TODO: BG icon change should cause re-render.
+        throw new Error('unimplemented');
+      },
+      _onTierSumChange: function() {
+        this._logic.setTierSum(this.tierSum);
+      },
+      _onTimerStopped: function(e) {
+        // Update round stats according to elapsed time.
+        this._roundStats = this._logic.endRound(e.detail);
+
+        // If was a surge last round, or is now a surge, reroute to surge screen
+        // and add surge time to details
+        if (this._roundStats.nextSurgeRounds === 0) {
+          this.$.pages.next('combatsurge');
+        } else {
+          this.$.pages.next('combatroll');
+        }
+
+        if (e.detail.turnTimeMillis > this.maxSuggestedRoundMillis) {
+          // TODO: Dialog on surge as well
+          this.$.nag.open();
+        }
+      },
+      _onAnimFinish: function() {
+        if (this.$.pages.getCurrentPage() === this.$.pages.initial && !this._isReady) {
+          this.ready();
+        }
+      },
+      properties: {
+        encounter: {
+          type: Object,
+          observer: "_onEncounterChange",
+        },
+        tierSum: {
+          type: Number,
+          observer: "_onTierSumChange",
+        },
+        icon: String,
+        custom: {
+          type: Boolean,
+          value: false
+        }
+      }
+    });
+  </script>
+
+</dom-module>

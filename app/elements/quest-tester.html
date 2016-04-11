@@ -1,0 +1,117 @@
+<dom-module id="quest-tester">
+  <style>
+    :host ::content instruction {
+      display: block;
+      padding: var(--vw-small);
+    };
+    :host ::content comment {
+      display: none;
+    };
+
+    #fileselect {
+      position: fixed;
+      top: -100em;
+    }
+
+    #urlchooser a {
+      display: inline-block;
+      float: right;
+    }
+
+    #url {
+      display: inline-block;
+      font-size: var(--font-size-interactive);
+      padding: var(--vh-base) 0;
+      font-family: var(--font-body);
+      border: var(--border-size) solid var(--border-color-accent);
+      line-height: 1.2em;
+      margin-top: var(--vh-base);
+    }
+  </style>
+  <template>
+    <expedition-card-set id="pages" initial="intro" title="Play Style">
+      <expedition-card title="Custom Quest" data-route="intro" icon="adventurer">
+        <p>
+          Select a local file or provide a URL to begin a custom quest!
+        </p>
+        <label> <!-- Clicking anywhere inside the label opens the input -->
+        <a>
+          Select a local file
+          <input id="fileselect" type="file" name="fileselect" on-change="_onFileSelected" />
+        </a>
+        </label>
+        <a on-tap="_openURLChooser">
+          Load from a URL
+        </a>
+        <a on-tap="_onLearnMore">
+          Learn More
+        </a>
+      </expedition-card>
+      <quest-card on-return="ready" id="tmpquest" data-route="tmpquest"></quest-card>
+      <expedition-card title="Learn More" data-route="learnmore" icon="cards" on-return="_return">
+        <p>
+          Interested in creating your own custom quest? See the quest format spec and our example quest for details.
+        </p>
+        <p>
+          When designing quests, we recommend using a desktop with Chrome and emulating a mobile device to catch
+          error messages when the quest loads.
+        </p>
+        <p>
+          Please remember that this is a beta feature - enhancements and bugfixes are on the way, and your feedback is greatly appreciated!
+        </p>
+        <a target="_blank" href="../quests/oust_albanus.txt">Example Quest</a>
+        <a target="_blank" href="../quests/quest_spec.txt">Quest Format Spec</a>
+        <a target="_blank" href="https://developers.google.com/web/tools/chrome-devtools/iterate/device-mode/?hl=en">Chrome Mobile Emulation</a>
+      </expedition-card>
+    </expedition-card-set>
+    <expedition-dialog title="Choose URL" id="urlchooser" modal>
+      <input id="url" type="text" name="url"/>
+      <a on-tap="_onURLButtonClick">&nbsp;</a>
+    </expedition-dialog>
+  </template>
+  <script>
+    /*global GlobalsBehaviour */
+    Polymer({
+      is: 'quest-tester',
+      behaviors: [GlobalsBehaviour],
+      ready: function() {
+        this.$.fileselect.value = "";
+        this.$.url.value = "";
+        Polymer.dom(this.$.tmpquest).innerHTML = "";
+        this.$.pages.ready();
+      },
+      _return: function(e) {
+        this.$.pages.prev("intro");
+        e.stopPropagation();
+      },
+      _openURLChooser: function() {
+        this.$.urlchooser.open();
+      },
+      _onLearnMore: function() {
+        this.$.pages.next('learnmore');
+      },
+      _onFileSelected: function() {
+        var f = new FileReader();
+        f.onloadend = function() {
+          console.log(this.$.fileselect.files[0].name);
+          this.$.tmpquest.ready(f.result);
+          this.$.pages.next('tmpquest');
+        }.bind(this);
+        f.readAsText(this.$.fileselect.files[0]);
+      },
+      _onURLButtonClick: function() {
+        var url = this.querySelector("#url").value;
+
+        // TODO: This is blecherous and you should be ashamed. Make this better.
+        if (url.indexOf("http://") !== 0) {
+          url = "http://" + url;
+        }
+        this.$.tmpquest.url = url;
+
+        this.$.urlchooser.close();
+        this.$.tmpquest.ready();
+        this.$.pages.next('tmpquest');
+      }
+    });
+  </script>
+</dom-module>

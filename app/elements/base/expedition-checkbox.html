@@ -1,0 +1,35 @@
+<dom-module id="expedition-checkbox">
+  <style>
+  </style>
+  <template>
+    <div class="input">
+      <div id="label" class="label">{{label}} <paper-checkbox id="value" class="value" checked="{{value}}"></paper-checkbox></div>
+    </div>
+    <div id="subtext" class="subtext"><content></content></div>
+  </template>
+
+  <script>
+    // TODO: Better checkbox style
+    Polymer({
+      is: 'expedition-checkbox',
+      listeners: {
+        'tap': 'check'
+      },
+      check: function(e) {
+        if (e.target.id === "checkboxContainer") {
+          return;
+        }
+        this.value = !this.value;
+      },
+      properties: {
+        value: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+        label: String
+      },
+    });
+  </script>
+
+</dom-module>

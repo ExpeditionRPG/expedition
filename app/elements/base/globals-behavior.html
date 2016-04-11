@@ -1,0 +1,68 @@
+// jshint ignore: start
+<script>
+// TODO: Move this and base UI components to a base/ folder, and consolidate quest and ui folders.
+var instances = [];
+
+// Load JSON settings - synchronously, so that
+// they're guaranteed to be available.
+// TODO: this is being deprecated, so change it
+var xhttp = new XMLHttpRequest();
+xhttp.open("GET", "scripts/globals.json", false); //WEB & IOS
+xhttp.send();
+
+dataGlobal = JSON.parse(xhttp.responseText);
+
+
+GlobalsBehaviour = {
+  properties: {
+    globals: {
+      type: Object,
+      notify: true,
+      value: dataGlobal
+    }
+  },
+
+  ready: function() {
+    var _setOrig = this.set;
+    var _notifyPathOrig = this.notifyPath;
+    //this.resolveUrl
+
+    this.set = function() {
+      _setOrig.apply(this, arguments);
+      if (arguments[0].split(".")[0] === "globals") {
+        this.invokeInstances(_notifyPathOrig, arguments);
+        this.fire('globals-changed', arguments[1] /*{path: "globals.xxxx", value: newValue}*/);
+      }
+    };
+    this.notifyPath = function(path, value) {
+      _notifyPathOrig.apply(this, arguments);
+      if (arguments[0].split(".")[0] === "globals") {
+        this.invokeInstances(_notifyPathOrig, arguments);
+      }
+    };
+  },
+
+  invokeInstances: function(fn, args) {
+    var i;
+    for (i = 0; i < instances.length; i++) {
+      instance = instances[i];
+      if (instance !== this) {
+        fn.apply(instance, args);
+      }
+    }
+  },
+
+  attached: function() {
+    instances.push(this);
+  },
+
+  detached: function() {
+    var i;
+    i = instances.indexOf(this);
+    if (i >= 0) {
+      instances.splice(i, 1);
+    }
+  }
+};
+
+</script>

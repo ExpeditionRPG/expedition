@@ -1,0 +1,103 @@
+<!--TODO: Sanitize this and get it parsin' -->
+<roleplay title="The town is ill">
+  <p>You are in front of a witch's hut. You've come here to find a cure for the illness that has suddenly sprung upon your town. It has already infected many of your closest friends, and you hope to stop it before it is too late.</p>
+  <p>Nobody in the town trusts the witch - and many blame her for the illness - but no doctor in town has been able to help. She is your last hope.</p>
+  <p>You knock on her door. She open it catiously, and asks why you've come.</p>
+
+  <choice>
+   <p>Stop infecting the town!</p>
+    <roleplay title="Stop infecting the town!">
+      <p>And why, dearie, would you think I'm the cause?</p>
+      <choice>
+        <p>Because you're a witch!</p>
+        <roleplay title="She's a witch!">
+          <p>How did you know it was me? I'll have to kill you so that you don't bring the guard here.</p>
+        </roleplay>
+        <encounter>
+          <e count=1>Shapeshifter</e>
+          <choice win>
+            <end title="Quest successful">
+              <p>The shapeshifter collapses to the ground, disappearing in a puff of smoke.</p>
+              <p>You carefully search the hut, finding the poison that caused the disease, as well as the antidote.</p>
+              <p>You bring the antidote back to the town and cure the disease.</p>
+            </end>
+          </choice>
+          <choice lose>
+            <end title="">
+              <p>As your consciousness fades, the witch stands over you, laughing maniacally.</p>
+            </end>
+          </choice>
+        </encounter>
+      </choice>
+      <choice>
+        <p>Can you help us?</p>
+      </choice>
+    </roleplay>
+  </choice>
+  <choice>
+    <p>We were hoping you could help.</p>
+  </choice>
+</roleplay>
+
+<roleplay title="Brewing a potion">
+  <p>Sure, I'll help - but making the antidote is a difficult process. Bring me a cup of coffee (fa-coffee) and we can get started.</p>
+  <choice>
+    <p>Grab (fa-coffee)</p>
+  </choice>
+  <choice>
+    <p>Grab (fa-coffee) and steal a (fa-book)</p>
+
+    <roleplay title="Stealing a book">
+      <p>The witch doesn't notice as you slip an expensive-looking spellbook into your bag.</p>
+      <set-state stole-book>true</set-state>
+    </roleplay>
+  </choice>
+</roleplay>
+
+<roleplay title="Brewing a potion">
+  <p>Thank you! While you're up, can you grab me the vial marked with the symbol (fa-ils)?</p>
+  <choice>
+    <p>I don't see it on your shelf.</p>
+  </choice>
+</roleplay>
+
+<roleplay title="Brewing a potion">
+  <p>Ah, I must be running low! Check in my closet in the back.</p>
+  <choice>
+    <p>Grab vial of (fa-ra)</p>
+    <roleplay title="The wrong vial!">
+      <p>You purposefully... or accidentally... grab the wrong vial from the witch's closet.</p>
+      <set-state wrong-vial>true</set-state>
+      <choice>
+        <p>Hand the vial to the witch.</p>
+      </choice>
+    </roleplay>
+  </choice>
+  <choice>
+    <p>Grab vial of (fa-ils)</p>
+  </choice>
+</roleplay>
+
+<roleplay title="Brewing a potion">
+  <p>The witch takes the vial from you and, without looking, pours it into her vat.</p>
+</roleplay>
+
+<!--TODO puzzle - ???
+  // stealing the book turns out to be good - if you have it, it shows you the key to the puzzle (else: I wonder if that book would've helped?)
+-->
+
+<roleplay title="The potion is ready">
+  <p>Well, there we go, the potion is complete! Just one final stir, and....</p>
+  <choice show-if="wrong-vial">
+    <p>Hold your breath</p>
+    <end title="The potion is complete!">
+      <p>Would you look at that! One genuine antidote!</p>
+    </end>
+  </choice>
+  <choice show-if="!wrong-vial">
+    <p>Hold your breath</p>
+    <end title="It's a trap!">
+      <p>The vat EXPLODES! As the witch mutters "ah, crabnuts, must've used the wrong vial...", you wonder why you ever trusted her...</p>
+    </end>
+  </choice>
+</roleplay>

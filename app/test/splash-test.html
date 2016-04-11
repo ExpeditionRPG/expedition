@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+  <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+  <script src="../bower_components/test-fixture/test-fixture-mocha.js"></script>
+  <script src="../bower_components/iron-test-helpers/mock-interactions.js"></script>
+  <script src="scripts/testdom.js"></script>
+  <link rel="import" href="../bower_components/polymer/polymer.html">
+  <link rel="import" href="../elements.html">
+</head>
+<body>
+
+  <test-fixture id="basic">
+    <template>
+      
+    </template>
+  </test-fixture>
+
+  <script>
+    suite('splash screen tests', function() {
+      var f;
+
+      setup(function() {
+        dataGlobal = {};
+        f = fixture('basic');
+      });
+
+      test('feedback link is resolvable', function() {
+        throw new Error('unimplemented');
+      });
+
+      test('"get the cards" is resolvable', function() {
+        throw new Error('unimplemented');
+      });
+      
+      test('beta branding shows version from config.xml', function() {
+        throw new Error('unimplemented');
+      });
+    });
+  </script>
+
+</body>
+</html>

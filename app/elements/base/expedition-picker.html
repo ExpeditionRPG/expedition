@@ -1,0 +1,62 @@
+<dom-module id="expedition-picker">
+  <style>
+    :host paper-icon-button {
+      width: var(--vw-huge);
+      height: var(--vw-huge);
+    };
+  </style>
+  <template>
+    <div class="input">
+      <div class="value">
+        <paper-icon-button id="dec" icon="icons:chevron-left" on-tap="dec"></paper-icon-button>
+        <div id="label" class="label">{{ label }}</div>
+        <paper-icon-button id="inc" icon="icons:chevron-right" on-tap="inc"></paper-icon-button>
+      </div>
+    </div>
+    <div class="subtext" id="subtext">{{_subtext}}</div>
+  </template>
+  <script>
+    Polymer({
+      is: 'expedition-picker',
+      ready: function() {
+        this._choices = [];
+        this._subtext = "";
+        var cs = this.getEffectiveChildren();
+        for (var i = 0; i < cs.length; i++) {
+          var c = cs[i];
+          this._choices.push({
+            value: c.getAttribute('id'),
+            label: c.children[0].textContent,
+            subtext: c.children[1].textContent
+          });
+        }
+
+        this._update();
+      },
+      inc: function() {
+        this.value = (this.value + 1) % this._choices.length;
+        this._update();
+      },
+      dec: function() {
+        this.value = (this.value + this._choices.length - 1) % this._choices.length;
+        this._update();
+      },
+      _update: function() {
+        if (this.value === undefined) {
+          return;
+        }
+        this.label = this._choices[this.value].label;
+        this._subtext = this._choices[this.value].subtext;
+        this.fire('update');
+      },
+      properties: {
+        value: {
+          type: Number,
+          notify: true,
+        },
+        label: String
+      },
+    });
+  </script>
+
+</dom-module>

@@ -1,0 +1,40 @@
+<dom-module id="expedition-settings">
+  <style>
+  	:host > *:not(:first-child) {
+  		margin-top: var(--vh-base);
+  	};
+  </style>
+  <template>
+    <number-picker label="Adventurers" value="{{globals.adventurers}}">
+		The number of players with Adventurer cards.
+	</number-picker>
+	<expedition-checkbox label="Multitouch" value="{{globals.multitouch}}">
+		All players must hold their finger on the screen to end combat. Otherwise, a single tap will end combat.
+	</expedition-checkbox>
+	<expedition-picker id="picker" label="Show Help" value="{{globals.helplevel}}">
+		<div id="helpnone">
+			<div>No Help</div>
+			<div>For advanced players only! Hides all instructional text.</div>
+		</div>
+		<div id="helpsome">
+			<div>Some Help</div>
+			<div>Hides basic pop-up messages, but keeps the important rules.</div>
+		</div>
+		<div id="helpfull">
+			<div>Full Help</div>
+			<div>Recommended for beginners - show rules and descriptive pop-ups.</div>
+		</div>
+	</expedition-picker>
+  </template>
+  <script>
+  	/*global GlobalsBehaviour */
+    Polymer({
+    	is: 'expedition-settings',
+	    behaviors: [GlobalsBehaviour],
+	    ready: function() {},
+      	properties: {}
+    });
+  </script>
+
+</dom-module>
+

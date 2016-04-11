@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+  <script src="../bower_components/test-fixture/test-fixture-mocha.js"></script>
+  <script src="../bower_components/iron-test-helpers/mock-interactions.js"></script>
+  <script src="scripts/testdom.js"></script>
+  <link rel="import" href="../bower_components/polymer/polymer.html">
+  <link rel="import" href="../elements.html">
+</head>
+<body>
+
+  <test-fixture id="basic">
+    <template>
+      <expedition-detail-list>
+        Test Content
+      </expedition-detail-list>
+    </template>
+  </test-fixture>
+
+  <script>
+    suite('expedition-picker tests', function() {
+      var f;
+
+      setup(function() {
+        f = fixture('basic');
+      });
+
+	  test('Can increment back to start', function() {
+        throw new Error('unimplemented');
+      });
+
+      test('Can decrement back to start', function() {
+        throw new Error('unimplemented');
+      });
+
+      test('Can change the index (value) externally', function() {
+        throw new Error('unimplemented');
+      });
+    });
+  </script>
+
+</body>
+</html>

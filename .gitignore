@@ -1,8 +1,11 @@
 node_modules
-platforms
+docs
 plugins
 dist
+hooks
 www
 bower_components
 .tmp
 Thumbs.db
+*.apk
+platforms

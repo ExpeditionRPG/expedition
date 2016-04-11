@@ -1,0 +1,38 @@
+<dom-module id="expedition-static-input">
+  <style>
+    /*
+    #value, #label {
+      display: inline;
+      flex: 0;
+      -webkit-flex: 0;
+    }
+    #subtext {
+      display: inline-block;
+    }
+    */
+  </style>
+  <template>
+    <div class="input">
+      <template is="dom-if" if="{{value}}">
+        <div id="value" class="value">{{value}}</div>
+      </template>
+      <div id="label" class="label">{{ label }}</div>
+      <div class="subtext" id="subtext"><content></content></div>
+    </div>
+    
+  </template>
+
+  <script>
+    Polymer({
+      is: 'expedition-static-input',
+      properties: {
+        value: {
+          type: String,
+          notify: true
+        },
+        label: String
+      },
+    });
+  </script>
+
+</dom-module>

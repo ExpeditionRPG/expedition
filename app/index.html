@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="Polymer Starter Kit" />
+  <title>Expedition</title>
+  <meta name="description" content="The Roleplaying Card Game" />
+
+  <!-- Twitter Card data -->
+  <meta name="twitter:card" content="The Roleplaying Card Game">
+  <meta name="twitter:site" content="@expeditionrpg">
+  <meta name="twitter:title" content="Expedition Card Game">
+  <meta name="twitter:description" content="A card-based party game with cooperative roleplaying for adventurers of all levels!">
+  <meta name="twitter:creator" content="@ToddMedema">
+  <meta name="twitter:image" content="images/touch/icon-120x120.png">
+
+  <!-- Open Graph data -->
+  <meta property="og:title" content="Expedition" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="http://expeditiongame.com/" />
+  <meta property="og:image" content="images/touch/icon-120x120.png" />
+  <meta property="og:description" content="A card-based party game with cooperative roleplaying for adventurers of all levels!" /> 
+
+  <!-- Chrome for Android theme color -->
+  <meta name="theme-color" content="#222222">
+
+  <!-- Web Application Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Tile color for Win8 -->
+  <meta name="msapplication-TileColor" content="#222222">
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="PSK">
+  <link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Polymer Starter Kit">
+  <link rel="apple-touch-icon" href="images/touch/apple-touch-icon-152x152.png">
+
+  <!-- Tile icon for Win8 (144x144) -->
+  <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+
+   <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+  <script type="text/javascript" charset="utf-8">
+
+  // Wait for device API libraries to load
+  //
+  document.addEventListener("deviceready", onDeviceReady, false);
+
+  // device APIs are available
+  function onDeviceReady() {
+    var p = device.platform.toLowerCase();
+    if (/android/i.test(p)) {
+      window.platform = "android";
+      document.body.className += " android";
+    } else if (/iphone|ipad|ipod/i.test(p)) {
+      window.platform = "ios";
+      document.body.className += " ios";
+    }
+  }
+
+  </script>
+
+  <!-- global user settings -->
+  <script id="globals" type="application/json" src="scripts/globals.json"></script>
+
+  <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <!-- endbuild -->
+
+  <!-- will be replaced with elements/elements.vulcanized.html -->
+  <link rel="import" href="elements.html">
+  <!-- endreplace-->
+
+  <style is="custom-style">
+
+    body {
+      background-color: var(--paper-grey-200);
+      overflow:hidden;
+    }
+
+    #app {
+      width: 100%;
+      max-width: var(--card-width);
+      max-height: var(--card-height);
+      margin-left: auto;
+      margin-right: auto;
+      overflow:hidden;
+    }
+
+    #splash {
+      margin: auto;
+      padding: var(--vw-base);
+      height: 98% !important; /* Prevent slight scroll */
+    }
+
+    #splash #beta {
+      position:absolute;
+      bottom: var(--vh-base);
+      color: var(--font-color-faded);
+      text-align: center;
+      width: 100%;
+      font-size: var(--font-size-flavortext);
+    }
+
+    #splash iron-image {
+      --iron-image-width: 100%;
+    }
+
+    expedition-icon-set, #splash {
+      height: 100%;
+    }
+
+    #device-unsupported {
+      text-align: center;
+    }
+  </style>
+</head>
+<body unresolved class="fullbleed layout vertical center-justified">
+  <span id="browser-sync-binding"></span>
+  <template is="dom-bind" id="app">
+    <expedition-card-set id="pages" initial="splash" title="Play Style" icon="cards" on-return="showSetup">
+      <!-- TODO: splash screen should be a polymer element for testability -->
+      <div id="splash" data-route="splash" class="layout vertical center-justified">
+        <div id="beta">v1.0.6</div>
+        <iron-image id="logo" src="images/logo-frameless.png" fade></iron-image>
+        <template is="dom-if" if="{{ready}}">
+          <a on-tap="getcards">Print the Cards</a>
+          <template is="dom-if" if="{{isMobile}}">
+            <a on-tap="next" data-target="setup">Begin!</a>
+          </template>
+        </template>
+        <template is="dom-if" if="{{!isMobile}}">
+          <h3 id="device-unsupported">Device not supported. Please open on an Android or iOS device.</h3>
+        </template>
+      </div>
+
+      <expedition-card title="Setup" icon="adventurer" data-route="setup" on-return="showSplash">
+        <p>
+          To begin, tell us who's playing and how:
+        </p>
+        <div class="layout vertical">
+          <expedition-settings></expedition-settings>
+        </div>
+        <a on-tap="next" data-target="_select">Next</a>
+      </expedition-card>
+
+      <!-- Ideas: http://www.trollmystic.com/pub/2012/03/03/event-generator/ -->
+      <expedition-card-set id="featured" title="Featured Quests" icon="cards"
+        data-title="Featured Quests" on-return="showSelect"
+        data-info="No Guide needed - everyone plays as adventurers."
+        data-route="featured">
+        <header>
+          <p>
+            Select a quest below:
+          </p>
+        </header>
+
+        <quest-card
+          title="Oust Albanus"
+          data-info="Your party encounters a smelly situation."
+          on-return="showFeatured"
+          data-route="albanus"
+          url="quests/oust_albanus.txt">
+        </quest-card>
+        
+        <quest-card
+          title="Mistress Malaise"
+          data-info="Mystery, Misfortune, and a Mistress."
+          on-return="showFeatured"
+          data-route="malaise"
+          url="quests/mistress_malaise.txt">
+        </quest-card>
+        
+      </expedition-card-set>
+
+      <roleplay-card
+        title="Guided Adventure"
+        data-info="For beginner and intermediate Guides - a quest framework."
+        on-return="showSelect"
+        data-route="guided">
+      </roleplay-card>
+
+      <combat-card
+        title="Custom Encounter"
+        data-info="For experienced Guides - only the combat system is provided."
+        on-return="showSelect"
+        data-route="custom" custom>
+      </combat-card>
+
+      <quest-tester
+        title="Custom Quest (BETA)" 
+        data-info="Upload a quest file from your phone or the internet."
+        on-return="showSelect"
+        data-route="custom_quest">
+      </quest-tester>
+
+    </expedition-card-set>
+
+    <expedition-dialog title="Settings" id="settings">
+      <expedition-settings></expedition-settings>
+    </expedition-dialog>
+    <tutorial-dialog id="tutorial" modal></expedition-dialog>
+  </template>
+<!-- build:js scripts/app.js -->
+  <script src="scripts/app.js"></script>
+<!-- endbuild-->
+</body>
+</html>
