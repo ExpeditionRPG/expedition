@@ -1,15 +1,18 @@
 <div class="card front {{{ cardType }}} {{{ class }}}" id="{{camelCase name }}">
   <div class="contents">
     <header>
-      <div class="name">{{{ name }}}</div>
-      {{#if type}}
-        <div class="abilityType">{{{ type }}}</div>
+      <div class="name">{{{ typeicon }}} {{{ name }}}</div>
+      <!-- {{#if type}}
+        <div class="abilityType">{{{ typeicon }}}</div>
       {{else}}
-        <div class="abilityType">DO</div>
-      {{/if}}
+        <div class="abilityType"></div>
+      {{/if}} -->
     </header>
     <article>
       <div class="indicators">
+        <div class="description">
+          {{{ class }}} - {{{ type }}}
+        </div>
         <div class="risk">
           <strong>{{> icon img='roll_small' }} <span class="symbol">&ge;</span> {{{ risk }}}</strong>
         </div>

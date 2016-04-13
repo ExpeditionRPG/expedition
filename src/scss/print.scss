@@ -11,11 +11,7 @@ body {
 
 .page {
   page-break-before: always;
-  background: white;
-
-  &.fronts {
-    background: white;
-  }
+  background: black;
 
   &.backs {
     height: auto;
@@ -45,7 +41,7 @@ body:not(.printer) {
 
 .card {
   &.front {
-    border: $border solid white;
+    border: $border solid black;
   }
 
   &.Helper svg {

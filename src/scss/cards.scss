@@ -56,7 +56,7 @@ body.printer {
     margin-bottom: 0;
   }
   .card {
-    border-radius: 0 !important;
+    border-radius: 0in !important;
     &.front, &.back {
       border: $border solid white;
     }
@@ -93,7 +93,7 @@ body.hideBacks {
   font-family: $font-body;
   font-size: $base;
 
-  /*border-radius: 2 * $border;  poker card border radius, on top of the border width */
+  border-radius: 2 * $border;  /* poker card border radius, on top of the border width */
 
   strong .symbol {
     font-weight: normal;
@@ -112,6 +112,11 @@ body.hideBacks {
     .indicators {
       font-weight: bold;
       font-family: $font-header;
+
+      .description {
+        font-weight: normal;
+        font-family: $font-body;
+      }
     }
 
     strong {
@@ -148,7 +153,11 @@ body.hideBacks {
     }
   }
 
-  &.front, &.back {
+  &.back {
+    border: $border solid white;
+    border-radius: 0;
+  }
+  &.front {
     border: $border solid $text-color;
   }
 
@@ -205,7 +214,7 @@ body.hideBacks {
       position: absolute;
       top: 0;
       left: 0;
-      width: 0.35in;
+      width: 0.68in;
       height: 1.1in;
       border-top: $border-weight solid $text-color;
       border-left: $border-weight solid $text-color;
@@ -473,7 +482,10 @@ footer {
 .card.front:after {
   @extend .card-background;
   opacity: 0.10;
-  background-position: 98% 50%;
+  background-position: 98% 8%;
+}
+.card.front.Loot:after {
+  background-position: 98% 20%;
 }
 .card.front.Encounter:after, .card.front.Adventurer:after {
   @extend .card-background;

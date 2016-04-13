@@ -4,8 +4,8 @@ var forPrinter = false; // set via url param
 
 var selectOptions = {
   threat: [],
-  template: [],
   class: [],
+  template: [],
 };
 var filters, filterList, filterCount;
 function fetchFilters() {
@@ -24,6 +24,15 @@ function fetchFilters() {
     }
   }
   filterCount = filterList.length;
+
+  if (filterCount > 0) {
+    var docTitle = '';
+    Object.keys(filters).forEach(function (key) {
+      docTitle += filters[key] + '-';
+    });
+    docTitle = docTitle.slice(0, -1);
+    document.title = docTitle;
+  }
 }
 
 
