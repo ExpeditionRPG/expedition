@@ -2,7 +2,7 @@
 <roleplay title="A Holy Order" icon="magic">
   <p>
     Your party is a group of crusaders of the Order of Retribution, a holy order tasked with eliminating the undead presence that has recently grown across the land. An order has come from your superiors of a mission in the distant town of Brustwick, but your purpose there is unknown.
-  </p> 
+  </p>
   <p>
     Your contact for this mission is Brother Pell, a confidant and long-time friend who lives in Brustwick and knows much about goings-on in the town and the surrounding area.
   </p>
@@ -11,7 +11,7 @@
   <p>
     After several days' journey, you make it to the outskirts of the town just as the sun begins to set.
   </p>
-  <p> 
+  <p>
     As you walk towards Pell's house, you look around you; the run-down and dilapidated buildings loom imposingly, a fine mist rises from the ground, and a musty, moldy odor permeates the place.
   </p>
   <p>
@@ -20,7 +20,7 @@
 </roleplay>
 <roleplay title="Brother Pell", icon="adventurer">
   <p>
-    The door creaks open, and Brother Pell ushers your group in. 
+    The door creaks open, and Brother Pell ushers your group in.
   </p>
   <p>
     Pell is... not what you expected. The joyous face you remember feasting, training, and fighting with in the Order has been replaced by a haggard, sickly one with sallow, sunken eyes.
@@ -40,19 +40,19 @@
     Ever since then, the town has grown more blighted, townsfolk have fallen ill, decayed bands of the undead are spotted on the town outskirts, and Malaise herself has aged backwards in time, becoming hauntingly beautiful.
   </p>
   <p>
-    The evidence is clear: Malaise has become an immortal lich. 
+    The evidence is clear: Malaise has become an immortal lich.
   </p>
 </roleplay>
 <roleplay title="The Job" icon="d20">
   <p>
-    After days of spying on Malaise, Pell believes he has found her phylactery - the magical vessel in which she stored her soul when she became undead. 
+    After days of spying on Malaise, Pell believes he has found her phylactery - the magical vessel in which she stored her soul when she became undead.
   </p>
   <p>
     The phylactery must be kept close to the lich and the spell renewed frequently, and Pell has seen her take frequent trips to the mausoleum of the governor. The place is shrouded in wards, trap spells, and magical locks that can only be designed to keep everyone away from something very valuable.
   </p>
   <p>
     If your party can travel to the mausoleum and find the phylactery, Pell can perform the unbinding ritual to release the soul from its container and make Malaise capable of being slain.
-  </p> 
+  </p>
   <p>
     You begin the hunt immediately.
   </p>
@@ -87,7 +87,7 @@
     </roleplay>
     <roleplay title="Inside the Tomb" icon="undead">
       <p>
-        You take a deep breath of the damp air outside and venture within. 
+        You take a deep breath of the damp air outside and venture within.
       </p>
       <p>
         As you go deeper, you find each of the three bandits in turn, victim to the magical traps and wards set up by Malaise. You try not to think of the state the bodies are in, but make careful note of how they died and safely navigate the dangers of the outer rooms.
@@ -102,7 +102,7 @@
     Attempt to incapacitate them.
     <roleplay title="Subterfuge" icon="bandit">
       <p>
-        Your party quickly takes cover behind some nearby headstones and sneaks towards the group. 
+        Your party quickly takes cover behind some nearby headstones and sneaks towards the group.
       </p>
 
       <instruction>One of your party must roll a die at this time.</instruction>
@@ -115,8 +115,8 @@
             You sneak up on the shady figures and take them out silently.
           </p>
           <p>
-            After a quick check you can confirm they're still breathing. Searching their pockets, you find a piece of parchment listing what appears to be the locations of various traps within. Paper in hand, you proceed into the tomb. 
-          </p> 
+            After a quick check you can confirm they're still breathing. Searching their pockets, you find a piece of parchment listing what appears to be the locations of various traps within. Paper in hand, you proceed into the tomb.
+          </p>
         </roleplay>
       </choice>
 
@@ -132,7 +132,7 @@
           <choice win>
             <roleplay>
               <p>
-                Searching the slain, you find a piece of parchment listing what appears to be the locations of various traps within. Paper in hand, you proceed into the tomb. 
+                Searching the slain, you find a piece of parchment listing what appears to be the locations of various traps within. Paper in hand, you proceed into the tomb.
               </p>
             </roleplay>
           </choice>
@@ -175,13 +175,12 @@
   <p>
     You take the phylactery from the pedestal and search the rest of the room, finding some additional supplies.
 
-    <instruction>At this time, draw from the loot deck until you find two Tier I loot cards.</instruction>
-    <instruction>Keep these two cards and discard the rest.</instruction>
+    <instruction>At this time, draw two random Tier I loot cards from the loot deck.</instruction>
   </p>
 </roleplay>
 <roleplay title="The Party Emerges" icon="adventurer">
   <p>
-    You emerge from the tomb, taking a moment to breath the (mostly) fresh air. What you mistook for a headstone begins to move, shocking you out of complacency.
+    You emerge from the tomb, taking a moment to breathe the (mostly) fresh air. What you mistook for a headstone begins to move, shocking you out of complacency.
   </p>
   <p>
     The moving headstone is actually an old, feeble woman, who was apparently waiting for you to emerge. She calls herself Malaise, and begs for you to listen.
@@ -198,13 +197,13 @@
     A man by the name of Pell.
   </p>
   <p>
-    With a wistful smile, she opens the box you looted from the mausoleum and reveals a couple earrings and some cosmetics. Pell must have warded the grave and planted the false phylactery as a trap for adventurers to distract them from his real identity.
+    With a wistful smile, she opens the box you looted from the mausoleum and reveals an empty glass bottle. Pell must have warded the grave and planted the false phylactery as a trap for adventurers to distract them from his real identity.
   </p>
   <p>
     Dejected and betrayed, you ask her where Pell hid his phylactery. She mentions that she doesn't know for sure, but it should be somewhere close to him if the lore is true.
   </p>
   <p>
-    Then she stops, eyes wide in shock, as a sword emerges from her chest. 
+    Then she stops, eyes wide in shock, as a sword emerges from her chest.
   </p>
 </roleplay>
 <encounter icon="undead">
@@ -231,13 +230,13 @@
 <comment>Act IV: Returning to Pell</comment>
 <roleplay title="Change of Plans" icon="d20">
   <p>
-    Your only hope is that Pell has hidden the phylactery somewhere within his house - but you don't know exactly where.
+    Your only hope is that Pell has hidden the real phylactery somewhere within his house - but you don't know exactly where.
   </p>
   <p>
-    You entertain the thought of kicking down the door and incapacitating him with sheer numbers, but you don't know how a slain lich reacts with an intact phylactery. 
+    You entertain the thought of kicking down the door and incapacitating him with sheer numbers, but you don't know how a slain lich reacts with an intact phylactery.
   </p>
   <p>
-    On the other hand, you could send some of your party to sneak into the house, and distract Pell at the entrance by asking for a place to recover after a failed assault on the Mausoleum resulted in some party members being "slain". If any part of the bluff fails, you may not have your full party to fight with.
+    On the other hand, you could send some of your party to sneak into the house. Meanwhile, the others could distract Pell at the entrance, asking for a place to recover after a failed assault on the Mausoleum resulted in some party members being "slain". If any part of the bluff fails, you may not have your full party to fight with.
   </p>
   <p>
     It's a tough decision.
@@ -254,7 +253,7 @@
 
 <roleplay title="The Direct Approach" icon="damage" id="planA">
   <p>
-    You march up to the entrance of Pell's house, kick down the door, and enter with weapons drawn. 
+    You march up to the entrance of Pell's house, kick down the door, and enter with weapons drawn.
   </p>
   <p>
     Pell stands up from his dining table, sees your intent, and with a word summons a small band of undead minions.
@@ -270,7 +269,7 @@
   <choice win>
     <end win>
       <p>
-        Broken and bleeding, Pell utters a final dark curse. You feel your reactions slow, and you barely miss grasping the lich as he runs upstairs, takes the phylactery from your posession, and escapes out the open window into the night.
+        Broken and bleeding, Pell utters a final dark curse. You feel your reactions slow, and you barely miss grasping the lich as he runs upstairs, takes the phylactery from your possession, and escapes out the open window into the night.
       </p>
       <p>
         You curse your luck. Brustwick has been freed from the undead menace for now... but you expect it won't be long before Pell continues his necromancy somewhere else.
@@ -324,13 +323,13 @@
         As pell gives his last, dying gasp, the phylactery shatters under a final blow. A shockwave from the box knocks your party to the ground, unconscious.
       </p>
       <p>
-        When you manage to open your eyes once more, light peeks through the windows of Pell's house. You emerge to see a beautiful, natural sunrise. No mysterious fog or moldy smells remain. 
+        When you manage to open your eyes once more, light peeks through the windows of Pell's house. You emerge to see a beautiful, natural sunrise. No mysterious fog or moldy smells remain.
       </p>
       <p>
         The townsfolk of Brustwick begin to emerge from their homes - they see the change, learn of Pell, and a celebration soon erupts.
       </p>
       <p>
-        You participate in the festivities for a while, but then begin the long trek back home. You can't wait to tell the Order about your victory!
+        You participate in the festivities for a while, then begin the long trek back home. You can't wait to tell the Order about your victory!
       </p>
     </end>
   </choice>
