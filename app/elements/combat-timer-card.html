@@ -40,7 +40,6 @@
         canvas.addEventListener('touchend', this._touchEvent.bind(this));
       },
       start: function() {
-        console.log(this);
         this.active = true;
         this._timerStartMillis = Date.now();
         this._setFlashText("Attack!");
