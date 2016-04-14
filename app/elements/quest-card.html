@@ -213,7 +213,7 @@
         this.$.pages.next('combat');
       },
       _doDialog: function(p) {
-        anim = (this.$.pages.getCurrentPage() === 'questdialog') ? null :  "instant";
+        var anim = (this.$.pages.getCurrentPage() === 'questdialog') ? null :  "instant";
         this.$.dialog.next(p, anim);
         this.$.pages.next('questdialog');
       },

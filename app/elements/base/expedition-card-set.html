@@ -88,7 +88,10 @@
         }
 
         // "instant" animation should skip animating.
-        if (anim !== "instant") {
+        if (anim === "instant") {
+          this._exitAnim = "";
+          this._entryAnim = "";
+        } else {
           if (!anim) {
             anim = "slide-left";
           }
@@ -105,9 +108,6 @@
               this._exitAnim = "slide-right-animation";
               this._entryAnim = "slide-from-left-animation";
           }
-        } else {
-          this._exitAnim = "";
-          this._entryAnim = "";
         }
 
         var tutorial = document.getElementById("tutorial");
