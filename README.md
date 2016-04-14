@@ -4,11 +4,11 @@ If you encounter any bugs with the cards or code, or have feedback on how to imp
 
 ### Setup
 
-Requires NodeJS
+Requires [NodeJS](https://nodejs.org/en/download/)
 
 1. Clone the repo
 2. Run `npm install` to install dependencies
 3. Run `gulp` to build and watch development files
 4. Enjoy the cards at `localhost:8000`
 
-Cards are generated using this Google Sheet: https://docs.google.com/spreadsheets/d/1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM/edit?usp=sharing
+Cards are generated using this [Google Sheet](https://docs.google.com/spreadsheets/d/1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM/edit?usp=sharing)
