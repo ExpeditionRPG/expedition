@@ -13,10 +13,10 @@ Purple (arcane) - 491543
 body {
   margin-top: 40px;
 
-  background: lighten($text-color, 10%);
+  background: lighten(black, 20%);
   font-size: 0; /* hack for display-inline gap */
   font-family: $font-body;
-  color: $text-color;
+  color: black;
 }
 .page {
   width: 7.5in;
