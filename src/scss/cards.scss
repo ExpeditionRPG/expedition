@@ -19,7 +19,7 @@ $base: 10.5pt;
 $small: 9pt;
 $border: 0.125in; /* this changes when manufacturing (0.125" normally, 0.25" with bleed), hence.... */
 $edge: 0.125in;
-$padding: 6pt;
+$padding: 12pt;
 $tiny: 2pt;
 $thin: 0.8pt;
 $border-weight: 1.1pt; /* note that this also needs to be changed in banner SVG files */
@@ -165,10 +165,11 @@ body.hideBacks {
   header {
 
     position: relative;
-    padding: 3*$tiny $edge 0 $edge;
+    padding: 12pt $edge 0 $edge;
 
     font-size: $large;
     font-family: $font-header;
+    text-align: center;
 
     .name {
       letter-spacing: -0.5pt;
@@ -207,10 +208,10 @@ body.hideBacks {
     position: relative;
     clear: left;
     margin: 0 $edge $edge $edge;
-    padding: $padding 0 $padding $padding;
+    padding: 4pt $padding 0 $padding;
     line-height: 1.2;
 
-    &:before {
+    /*&:before {
       content: "";
       position: absolute;
       top: 0;
@@ -219,7 +220,7 @@ body.hideBacks {
       height: 1.1in;
       border-top: $border-weight solid black;
       border-left: $border-weight solid black;
-    }
+    }*/
 
     /* Top left indicators */
     .indicators {
@@ -258,8 +259,8 @@ body.hideBacks {
     position: absolute;
     left: $edge; bottom: $border; right: $edge;
     height: $footer-height;
-    border-right: $thin solid black;
-    border-bottom: $thin solid black;
+    /*border-right: $thin solid black;
+    border-bottom: $thin solid black;*/
 
     font-size: $small;
 
