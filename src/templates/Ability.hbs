@@ -1,7 +1,9 @@
 <div class="card front {{{ cardType }}} {{{ class }}}" id="{{camelCase name }}">
   <div class="contents">
     <header>
-      <div class="name">{{{ typeicon }}} {{{ name }}}</div>
+      <div class="typeicon">{{{ typeicon }}}</div>
+      <div class="name">{{{ name }}}</div>
+      <div class="classicon">{{{ classicon }}}</div>
       <!-- {{#if type}}
         <div class="abilityType">{{{ typeicon }}}</div>
       {{else}}
@@ -10,9 +12,9 @@
     </header>
     <article>
       <div class="indicators">
-        <div class="description">
+        <!-- <div class="description">
           {{{ class }}} - {{{ type }}}
-        </div>
+        </div> -->
         <div class="risk">
           <strong>{{> icon img='roll_small' }} <span class="symbol">&ge;</span> {{{ risk }}}</strong>
         </div>

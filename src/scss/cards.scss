@@ -20,6 +20,7 @@ $small: 9pt;
 $border: 0.125in; /* this changes when manufacturing (0.125" normally, 0.25" with bleed), hence.... */
 $edge: 0.125in;
 $padding: 12pt;
+$top-padding: 16pt;
 $tiny: 2pt;
 $thin: 0.8pt;
 $border-weight: 1.1pt; /* note that this also needs to be changed in banner SVG files */
@@ -165,30 +166,26 @@ body.hideBacks {
   header {
 
     position: relative;
-    padding: 12pt $edge 0 $edge;
+    margin: $top-padding $edge 0 $edge;
 
     font-size: $large;
     font-family: $font-header;
     text-align: center;
 
-    .name {
-      letter-spacing: -0.5pt;
+    .typeicon {
+      position: absolute;
+      left: $padding;
+      top: 0;
     }
 
-    .abilityType {
+    .classicon {
       position: absolute;
+      right: $padding;
       top: 0;
-      right: $edge;
-      width: 0.325in;
-      padding: $padding 0;
-      background: url(../img/ability-banner.svg) no-repeat;
+    }
 
-      .svg {
-        margin: 0;
-        padding: 0 0 0 .0375in;
-        width: 0.25in;
-        height: auto;
-      }
+    .name {
+      letter-spacing: -0.5pt;
     }
 
     .health {
@@ -271,11 +268,11 @@ body.hideBacks {
       right: 0;
       bottom: 0;
       left: 0;
-      padding: $padding;
+      padding: 0.8*$padding $padding;
       z-index: 999;
     }
 
-    .cardType, .tier {
+   /* .cardType, .tier {
       font-family: $font-header;
       font-size: 0.8*$small;
       position: absolute;
@@ -286,7 +283,7 @@ body.hideBacks {
       letter-spacing: 0.5px;
       line-height: 1;
       background: white;
-    }
+    }*/
   }
 
   .hp-tracker-vertical {
