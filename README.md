@@ -26,14 +26,11 @@ With Node.js installed, run the following one liner from the root of the reposit
 npm install -g gulp bower && npm install && bower install
 ```
 
-For building native apps, you will also need to install cordova and plugins:
+For building native apps, you will also need to set up cordova:
 
 ```sh
 npm install -g cordova
-cordova plugin add cordova-plugin-device cordova-plugin-inappbrowser cordova-plugin-whitelist
-
-cordova platform add android
-cordova platform add ios
+./project.sh
 ```
 
 ### Development workflow

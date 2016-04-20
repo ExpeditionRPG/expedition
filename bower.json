@@ -7,6 +7,7 @@
     "paper-elements": "PolymerElements/paper-elements#^1.0.1",
     "platinum-elements": "PolymerElements/platinum-elements#^1.1.0",
     "neon-elements": "PolymerElements/neon-elements#^1.0.0",
+    "neon-animation": "PolymerElements/neon-animation#=1.1.0",
     "page": "visionmedia/page.js#~1.6.3",
     "more-routing": "PolymerLabs/more-routing#~1.0.0",
     "progress-bubble": "~1.1.0"
@@ -16,6 +17,7 @@
     "test-fixture": "PolymerElements/test-fixture#^1.0.0"
   },
   "resolutions": {
-    "polymer": "^1.2.1"
+    "polymer": "^1.2.1",
+    "web-animations-js": "2.1.3"
   }
 }
