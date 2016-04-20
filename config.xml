@@ -27,10 +27,10 @@
         <application android:debuggable="true" />
     </gap:config-file>
     
-    <icon src="www/images/icon/ic_launcher_ldpi.png" width="36" height="36" />
-    <icon src="www/images/icon/ic_launcher_mdpi.png" width="48" height="48" />
-    <icon src="www/images/icon/ic_launcher_hdpi.png" width="72" height="72" />
-    <icon src="www/images/icon/ic_launcher_xhdpi.png" width="96" height="96" />
-    <icon src="www/images/icon/ic_launcher_xxhdpi.png" width="144" height="144" />
-    <icon src="www/images/icon/ic_launcher_xxxhdpi.png" width="192" height="192" />
+    <icon src="www/images/icon/android-icon-36x36.png" width="36" height="36" />
+    <icon src="www/images/icon/android-icon-48x48.png" width="48" height="48" />
+    <icon src="www/images/icon/android-icon-72x72.png" width="72" height="72" />
+    <icon src="www/images/icon/android-icon-96x96.png" width="96" height="96" />
+    <icon src="www/images/icon/android-icon-144x144.png" width="144" height="144" />
+    <icon src="www/images/icon/android-icon-192x192.png" width="192" height="192" />
 </widget>

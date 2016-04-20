@@ -16,6 +16,8 @@ Requires a NodeJS version above 0.12.x. Check your Node.js version.
 node --version
 ```
 
+Building the iOS app requires a mac, and cordova setup scripts currently work for unix-like environments only (Linux + Mac).
+
 ### Install dependencies
 
 #### Quick-start
