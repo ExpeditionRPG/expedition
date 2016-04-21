@@ -69,7 +69,7 @@ Encounter.prototype.beginRound = function() {
   this._roundLog.push(this._stats);
 };
 
-Encounter.prototype.randomAttackDamage = function() {
+Encounter.prototype._randomAttackDamage = function() {
 
   // D = Damage per ddt (0, 1, or 2 discrete)
   // M = miss, H = hit, C = crit, P(M) + P(H) + P(C) = 1
@@ -93,7 +93,7 @@ Encounter.prototype.randomAttackDamage = function() {
 // Also ensure there's an interval between this and subsequent damage.
 Encounter.prototype.startingDamage = function() {
   this._nextDamageMillis = this._nextAttack(this._stats.tierDmgRate);
-  return Encounter.prototype.randomAttackDamage();
+  return Encounter.prototype._randomAttackDamage();
 };
 
 // Returns undefined, 0, 1, or 2 damage based on the time delta
@@ -105,7 +105,7 @@ Encounter.prototype.stochasticDamage = function(ddt) {
   }
 
   this._nextDamageMillis = this._nextAttack(this._stats.tierDmgRate);
-  var dmg = Encounter.prototype.randomAttackDamage();
+  var dmg = Encounter.prototype._randomAttackDamage();
   this._roundDamage += dmg;
   return dmg;
 };
