@@ -65,8 +65,27 @@ Encounter.prototype.canLevelUp = function() {
 
 Encounter.prototype.beginRound = function() {
   // Must happen at the *start* of every round.
-  this._roundCount++; 
+  this._roundCount++;
   this._roundLog.push(this._stats);
+};
+
+Encounter.prototype._randomAttackDamage = function() {
+
+  // D = Damage per ddt (0, 1, or 2 discrete)
+  // M = miss, H = hit, C = crit, P(M) + P(H) + P(C) = 1
+  // E[D] = Expected damage for a single second
+  // P(C) = 1/3 * P(H)
+  // P(M) = 1 - 4/3 * P(H)
+  // E[D] = 0 * P(M) + 1 * P(H) + 2 * P(C) = 0.9
+
+  var r = Math.random();
+  if (r < 0.2) {
+    return 0;
+  } else if (r < 0.3) {
+    return 2;
+  } else { // r >= 0.3
+    return 1;
+  }
 };
 
 // Add a bit of base damage at the beginning of the round to prevent
@@ -74,7 +93,7 @@ Encounter.prototype.beginRound = function() {
 // Also ensure there's an interval between this and subsequent damage.
 Encounter.prototype.startingDamage = function() {
   this._nextDamageMillis = this._nextAttack(this._stats.tierDmgRate);
-  return 1;
+  return Encounter.prototype._randomAttackDamage();
 };
 
 // Returns undefined, 0, 1, or 2 damage based on the time delta
@@ -85,22 +104,8 @@ Encounter.prototype.stochasticDamage = function(ddt) {
     return;
   }
 
-  // D = Damage per ddt (0, 1, or 2 discrete)
-  // M = miss, H = hit, C = crit, P(M) + P(H) + P(C) = 1
-  // E[D] = Expected damage for a single second
-  // P(C) = 1/3 * P(H)
-  // P(M) = 1 - 4/3 * P(H)
-  // E[D] = 0 * P(M) + 1 * P(H) + 2 * P(C) = 5/3 * P(H) = 1
-  var r = Math.random();
-  var dmg;
-  if (r < 0.2) {
-    dmg = 0;
-  } else if (r < 0.4) {
-    dmg = 2;
-  } else { // r >= 0.4
-    dmg = 1;
-  }
   this._nextDamageMillis = this._nextAttack(this._stats.tierDmgRate);
+  var dmg = Encounter.prototype._randomAttackDamage();
   this._roundDamage += dmg;
   return dmg;
 };
@@ -210,6 +215,6 @@ Encounter.prototype._calculateCombatStats = function(tier) {
 Encounter.prototype._nextAttack = function(rateParameter) {
   // Inverse geometric PMF
   return Math.min(Math.max(
-    -Math.log(1.0 - Math.random()) * 1000 / rateParameter, 
+    -Math.log(1.0 - Math.random()) * 1000 / rateParameter,
     1000), 7000);
 };
