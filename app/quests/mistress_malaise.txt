@@ -235,7 +235,7 @@
       <p>
         You open the box that Brother Pell had asked you to retrieve. Instead of a phylactery, it contains an empty glass bottle. It was a trap!
       </p>
-      <p>Brother Pell's misdirection can only mean one thing. That he is the lich.</p>
+      <p>Brother Pell's misdirection can only mean one thing: That he is the lich.</p>
     </roleplay>
   </choice>
 </roleplay>
