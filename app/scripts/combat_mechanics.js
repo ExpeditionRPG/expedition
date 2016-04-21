@@ -27,9 +27,9 @@ Encounter.prototype.setTierSum = function(tier) {
 
 Encounter.prototype.generateLoot = function() {
   var loot = [
-    {tier: 1, count: 0},
-    {tier: 2, count: 0},
-    {tier: 3, count: 0}
+    {tier: 1, tierNumeral: "I", count: 0},
+    {tier: 2, tierNumeral: "II", count: 0},
+    {tier: 3, tierNumeral: "III", count: 0}
     ];
   var tier = this.getSummary().maxTier;
 

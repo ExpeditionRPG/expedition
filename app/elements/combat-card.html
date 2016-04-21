@@ -141,7 +141,7 @@
 
             <template is="dom-if" if="{{canLevelUp}}">
               <p>
-                For this Encounter, the party may choose to forego loot and instead learn new abilities.
+                For this Encounter, you may choose to forego loot and instead learn new abilities.
               </p>
               <template is="dom-if" if="{{globals.helplevel}}">
                 <ul>
@@ -159,7 +159,7 @@
             </p>
             <ul>
               <template is="dom-repeat" items="{{loot}}">
-                <li><strong>Tier {{item.tier}} Loot: Draw {{item.count}}</strong>
+                <li><strong>Draw {{item.count}} Tier {{item.tierNumeral}} Loot</strong>
               </template>
             </ul>
             <template is="dom-if" if="{{globals.helplevel}}">
@@ -169,10 +169,7 @@
 
           <div>
             <p>
-              You fought valiantly for {{summary.numRounds}} rounds ({{summary.totalTimeSeconds}} seconds), taking an average of {{summary.avgRoundSeconds}} seconds per attack.
-            </p>
-            <p>
-              At its peak, you battled a maxium Tier of {{summary.maxTier}}, and received {{summary.totalDamage}} total damage.
+              You fought a maxium Tier of {{summary.maxTier}} for {{summary.numRounds}} rounds ({{summary.totalTimeSeconds}} seconds), averaging {{summary.avgRoundSeconds}} seconds per attack and receiving {{summary.totalDamage}} total damage.
             </p>
           </div>
 
