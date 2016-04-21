@@ -185,47 +185,60 @@
   <p>
     The moving headstone is actually an old, feeble woman, who was apparently waiting for you to emerge. She calls herself Malaise, and begs for you to listen.
   </p>
-  <p>
-    Against your better judgement, you do.
-  </p>
-</roleplay>
-<roleplay title="Malaise Unmasked" icon="adventurer">
-  <p>
-    Malaise begins to tell a rather different story from Pell's - that the sickness began after her departure, but that the surge in undead activity is the fault of an old resident of Brustwick. A man skilled in binding rituals.
-  </p>
-  <p>
-    A man by the name of Pell.
-  </p>
-  <p>
-    With a wistful smile, she opens the box you looted from the mausoleum and reveals an empty glass bottle. Pell must have warded the grave and planted the false phylactery as a trap for adventurers to distract them from his real identity.
-  </p>
-  <p>
-    Dejected and betrayed, you ask her where Pell hid his phylactery. She mentions that she doesn't know for sure, but it should be somewhere close to him if the lore is true.
-  </p>
-  <p>
-    Then she stops, eyes wide in shock, as a sword emerges from her chest.
-  </p>
-</roleplay>
-<encounter icon="undead">
-  <e>Wight</e>
-  <e>Zombie Hand</e>
-  <e>Zombie</e>
-  <choice win>
-    <roleplay title="Change of Plans" icon="d20">
+
+  <choice>
+    Listen to her story
+    <roleplay title="Malaise Unmasked" icon="adventurer">
       <p>
-        Wiping the viscera from your weapons, you stop to catch your breath. Malaise is dead, but the lich Pell still lives.
+        Malaise begins to tell a rather different story from Pell's - that the sickness began after her departure, but that the surge in undead activity is the fault of an old resident of Brustwick. A man skilled in binding rituals.
       </p>
       <p>
-        It appears that your plans have changed.
+        A man by the name of Pell.
+      </p>
+      <p>
+        With a wistful smile, she opens the box you looted from the mausoleum and reveals an empty glass bottle. Pell must have warded the grave and planted the false phylactery as a trap for adventurers to distract them from his real identity.
+      </p>
+      <p>
+        Dejected and betrayed, you ask her where Pell hid his phylactery. She mentions that she doesn't know for sure, but it should be somewhere close to him if the lore is true.
+      </p>
+      <p>
+        Then she stops, eyes wide in shock, as a sword emerges from her chest.
       </p>
     </roleplay>
+    <encounter icon="undead">
+      <e>Wight</e>
+      <e>Zombie Hand</e>
+      <e>Zombie</e>
+      <choice win>
+        <roleplay title="Change of Plans" icon="d20">
+          <p>
+            Wiping the viscera from your weapons, you stop to catch your breath. Malaise is dead, but the lich Pell still lives.
+          </p>
+          <p>
+            It appears that your plans have changed.
+          </p>
+        </roleplay>
+      </choice>
+      <choice lose>
+        <end lose>
+          <p>Your party is no match for the onslaught of undead. You quickly succumb.</p>
+        </end>
+      </choice>
+    </encounter>
   </choice>
-  <choice lose>
-    <end lose>
-      <p>Your party is no match for the onslaught of undead. You quickly succumb.</p>
-    </end>
+
+  <choice>
+    Attack her before she can speak
+    <roleplay title="Death of Malaise">
+      <p>You leap at her before she has the chance to speak, slaying the old woman with a single blow.</p>
+      <p>You step back in surprise. A lich should not have been slain so easily...</p>
+      <p>
+        You open the box that Brother Pell had asked you to retrieve. Instead of a phylactery, it contains an empty glass bottle. It was a trap!
+      </p>
+      <p>Brother Pell's misdirection can only mean one thing: That he is the lich.</p>
+    </roleplay>
   </choice>
-</encounter>
+</roleplay>
 
 <comment>Act IV: Returning to Pell</comment>
 <roleplay title="Change of Plans" icon="d20">
@@ -236,7 +249,7 @@
     You entertain the thought of kicking down the door and incapacitating him with sheer numbers, but you don't know how a slain lich reacts with an intact phylactery.
   </p>
   <p>
-    On the other hand, you could send some of your party to sneak into the house. Meanwhile, the others could distract Pell at the entrance, asking for a place to recover after a failed assault on the Mausoleum resulted in some party members being "slain". If any part of the bluff fails, you may not have your full party to fight with.
+    On the other hand, you could send some of your party to sneak into the house. Meanwhile, the others could distract Pell at the entrance by asking for a place to recover, claiming that the rest of the party was "slain" after a failed assault on the Mausoleum. If any part of the bluff fails, you may not have your full party to fight with.
   </p>
   <p>
     It's a tough decision.
@@ -269,7 +282,7 @@
   <choice win>
     <end win>
       <p>
-        Broken and bleeding, Pell utters a final dark curse. You feel your reactions slow, and you barely miss grasping the lich as he runs upstairs, takes the phylactery from your possession, and escapes out the open window into the night.
+        Broken and bleeding, Pell utters a final dark curse. You feel your reactions slow and you barely miss grasping the lich as he runs upstairs. He takes the phylactery from his room, leaps through his window and escapes into the night.
       </p>
       <p>
         You curse your luck. Brustwick has been freed from the undead menace for now... but you expect it won't be long before Pell continues his necromancy somewhere else.

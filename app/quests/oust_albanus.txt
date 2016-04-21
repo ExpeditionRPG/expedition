@@ -57,15 +57,14 @@
 
           <p>
             Searching through the pockets of your fallen foes, you discover a worn map fragment that
-            might solve this mystery, as well as 10 coins each for you and your comrades.
+            might solve this mystery.
           </p>
 
           <p>
             The fragment is a map of the town, with a big red X marked
             on several of the streets.
           </p>
-        </roleplay>
-        <roleplay title="The Map">
+
           <p>
             Curious, you head to the nearest red X, finding an open manhole cover leading to the
             sewers below the town. The bandits must have come from down there.
@@ -76,24 +75,6 @@
             <roleplay title="The Map">
               <p>
                 Down the fetid hole you go...
-              </p>
-            </roleplay>
-          </choice>
-          <choice>
-            Look for somewhere to spend your blood money.
-            <roleplay title="Shopping">
-              <p>
-                You find a nearby merchant who, despite the blood on your hands and money,
-                sees fit to trade with you.
-              </p>
-
-              <instruction>Draw 8 Tier I Loot cards and place them face up on the table.</instruction>
-              <instruction>Each player may choose one card from the selection.</instruction>
-              <instruction>When done, discard the remaining loot.</instruction>
-            </roleplay>
-            <roleplay title="Shopping">
-              <p>
-                Having purchased your goods, you proceed down the manhole...
               </p>
             </roleplay>
           </choice>
@@ -280,9 +261,9 @@
       </p>
       <p>
         You slump back to the ground, and pass out.
-      </p> 
+      </p>
     </roleplay>
-    <end win>
+    <end win title="A Cheesy Ending">
       <p>
         Awakening some time later, you find yourself in Gruyere's apothecary house; the local herbalist took you in and treated your wounds, free of charge.
       </p>
@@ -315,12 +296,12 @@
           You put the last of the bandits to death, amazed that you made it out of captivity alive.
           </p>
           <p>
-          You've found the cheese, and slain Albanus - time to head back to the villagers and collect your reward. 
+          You've found the cheese, and slain Albanus - time to head back to the villagers and collect your reward.
           </p>
         </roleplay>
         <end title="Return" win>
           <p>
-            You emerge from the sewers, bloodied and battered. 
+            You emerge from the sewers, bloodied and battered.
             Villagers gather around and cheer as you share your good news.
           </p>
           <p>
