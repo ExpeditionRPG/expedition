@@ -90,6 +90,9 @@
           <p>
             Roll a die for each ability with a "<img class="inline_icon" src="../images/roll_white_small.svg"></img> &gt; X" and resolve the cards' effects.
           </p>
+          <p>
+            Adventurers may resolve their abilities in any order, and may apply the effects of their abilities (such as roll modifiers) retroactively to other abilities used this round.
+          </p>
         </template>
         <a data-target="combatadjust" on-tap="next">Next</a>
       </expedition-card>
@@ -114,7 +117,7 @@
 
         <template is="dom-if" if="{{globals.helplevel}}">
           <p>Slide your Adventurer health down {{_roundStats.roundDamage}} space(s).</p>
-          <p>You are knocked out if the token reaches zero - after you resolve this turn, you cannot play further cards until the end of the Encounter.</p>
+          <p>If you reach zero health, you are knocked out. After you resolve this turn, you cannot play further cards until the end of the Encounter.</p>
         </template>
 
         <number-picker label="Adventurers" class="adventurers" value="{{adventurers}}">
@@ -141,17 +144,16 @@
 
             <template is="dom-if" if="{{canLevelUp}}">
               <p>
-                For this Encounter, the party may choose to forego loot and instead learn new abilities.
+                You feel more knowledgeable! Adventurers may learn a new ability at this time:
               </p>
               <template is="dom-if" if="{{globals.helplevel}}">
                 <ul>
-                  <li>Draw 3 Ability cards from a deck of their choosing.
-                  <li>Choose 1 of these cards and insert it in their personal deck.
-                  <li>Place the remaining 2 cards at the bottom of the original deck.
-                  <li>Discard any abilities from their personal deck as desired.
+                  <li>You may discard one of your current abilities.
+                  <li>Draw 3 Ability cards from one of the decks listed on your Adventurer card.
+                  <li>Choose 1 of these cards and insert it into your ability deck.
+                  <li>Place the remaining 2 cards at the bottom of the deck you drew from.
                 </ul>
               </template>
-              <p>Otherwise...</p>
             </template>
 
             <p>
