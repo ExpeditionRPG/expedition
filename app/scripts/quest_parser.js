@@ -188,7 +188,7 @@ questParser.prototype._loadDialogNode = function(node) {
       }
 
       var text = c.childNodes[0];
-      c = document.createElement('a');
+      c = document.createElement('paper-button');
       c.appendChild(text);
       numChoices++;
     }
@@ -197,7 +197,7 @@ questParser.prototype._loadDialogNode = function(node) {
 
   // Append a generic "Next" button if there were no choices.
   if (numChoices === 0) {
-    child = document.createElement('a');
+    child = document.createElement('paper-button');
     child.innerHTML = (node.localName === "end") ? "End" : "Next";
     contents.appendChild(child);
   }

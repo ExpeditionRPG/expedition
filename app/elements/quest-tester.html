@@ -35,17 +35,17 @@
           Select a local file or provide a URL to begin a custom quest!
         </p>
         <label> <!-- Clicking anywhere inside the label opens the input -->
-        <a>
+        <paper-button>
           Select a local file
           <input id="fileselect" type="file" name="fileselect" on-change="_onFileSelected" />
-        </a>
+        </paper-button>
         </label>
-        <a on-tap="_openURLChooser">
+        <paper-button on-tap="_openURLChooser">
           Load from a URL
-        </a>
-        <a on-tap="_onLearnMore">
+        </paper-button>
+        <paper-button on-tap="_onLearnMore">
           Learn More
-        </a>
+        </paper-button>
       </expedition-card>
       <quest-card on-return="ready" id="tmpquest" data-route="tmpquest"></quest-card>
       <expedition-card title="Learn More" data-route="learnmore" icon="cards" on-return="_return">
@@ -59,14 +59,14 @@
         <p>
           Please remember that this is a beta feature - enhancements and bugfixes are on the way, and your feedback is greatly appreciated!
         </p>
-        <a target="_blank" href="../quests/oust_albanus.txt">Example Quest</a>
-        <a target="_blank" href="../quests/quest_spec.txt">Quest Format Spec</a>
-        <a target="_blank" href="https://developers.google.com/web/tools/chrome-devtools/iterate/device-mode/?hl=en">Chrome Mobile Emulation</a>
+        <paper-button target="_blank" href="../quests/oust_albanus.txt">Example Quest</paper-button>
+        <paper-button target="_blank" href="../quests/quest_spec.txt">Quest Format Spec</paper-button>
+        <paper-button target="_blank" href="https://developers.google.com/web/tools/chrome-devtools/iterate/device-mode/?hl=en">Chrome Mobile Emulation</paper-button>
       </expedition-card>
     </expedition-card-set>
     <expedition-dialog title="Choose URL" id="urlchooser" modal>
       <input id="url" type="text" name="url"/>
-      <a on-tap="_onURLButtonClick">&nbsp;</a>
+      <paper-button on-tap="_onURLButtonClick">&nbsp;</paper-button>
     </expedition-dialog>
   </template>
   <script>
