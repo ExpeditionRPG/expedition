@@ -1,15 +1,5 @@
 <dom-module id="expedition-item">
   <style>
-    .item {
-      @apply(--layout-horizontal);
-      padding: var(--vw-large);
-      border: var(--border-size) solid var(--border-color-accent);
-      background-color: var(--background-color-interactive);
-    }
-    .item:active {
-      background-color: var(--background-color-active);
-      border-color: var(--border-size) solid var(--border-color-accent);
-    };
     .pad {
       padding-left: var(--vw-base);
       @apply(--layout-flex-3);
@@ -23,20 +13,12 @@
     :host ::content div {
       font-size: var(--font-size-flavortext);
     }
-    .item div img {
-      @apply(--layout-flex-1);
-      width: var(--arrow-size);
-      height: var(--arrow-size);
-    }
   </style>
 
   <template>
-    <div class="item">
+    <expedition-button>
       <div id="subtext" class="pad"><content></content></div>
-      <div class="layout vertical">
-        <img src="../../images/arrow_small.svg" class="layout flex"></img>
-      </div>
-    </div>
+    </expedition-button>
   </template>
   <script>
     Polymer({

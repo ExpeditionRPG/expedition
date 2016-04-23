@@ -98,57 +98,13 @@
   :root paper-icon-button {
     height: var(--vw-huge);
     width: var(--vw-huge);
+    padding: var(--vw-base);
   };
 
   :root p {
     margin-top: 0;
     margin-bottom: var(--vh-base);
   };
-
-  :root a, :root paper-button {
-    display: block;
-    font-family: var(--font-body);
-    font-size: var(--font-size-interactive);
-    padding: var(--vw-base) !important;
-    padding-top: var(--vh-base) !important;
-    padding-bottom: var(--vh-base) !important;
-    padding-right: var(--vh-large) !important;
-    margin-top: var(--vh-base) !important;
-    border: var(--border-size) solid var(--border-color-accent);
-    background-color: var(--background-color-interactive);
-    text-align: left;
-    text-transform: none;
-    text-decoration:none;
-    color: inherit;
-  }
-
-  :root paper-button.keyboard-focus {
-    font-weight: inherit;
-  };
-
-  :root a:after, :root paper-button:after {
-    content: '';
-    float: right;
-    padding-right: var(--vw-base);
-    display: block;
-    height: var(--icon-size);
-    width: var(--icon-size);
-    background-image: url(../images/arrow_small.svg);
-    background-size: var(--arrow-size);
-    background-repeat: no-repeat;
-    margin-top: -var(--vh-small);
-    margin-right: -var(--vh-large);
-  }
-
-  :root a.disabled, :root paper-button.disabled {
-    color: var(--font-color-faded);
-    border: var(--border-size) solid var(--font-color-faded);
-  };
-
-  :root a:not(.disabled):active {
-    background-color: var(--background-color-active);
-    border: var(--border-size) solid var(--border-color-primary);
-  }
 
   :root .input {
     @apply(--layout-horizontal);

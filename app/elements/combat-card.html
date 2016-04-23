@@ -31,10 +31,10 @@
         </template>
         <template is="dom-if"
         <template is="dom-if" if="{{tierSum}}">
-          <paper-button data-target="prepforcombat" on-tap="next">Next</paper-button>
+          <expedition-button data-target="prepforcombat" on-tap="next">Next</expedition-button>
         </template>
         <template is="dom-if" if="{{!tierSum}}">
-          <paper-button class="disabled">Enter Tier Sum to continue.</paper-button>
+          <expedition-button class="disabled">Enter Tier Sum to continue.</expedition-button>
         </template>
       </expedition-card>
 
@@ -57,7 +57,7 @@
           </ul>
         </template>
         <h3>Ready to begin?</h3>
-        <paper-button data-target="combattimer" on-tap="next">Start Timer</paper-button>
+        <expedition-button data-target="combattimer" on-tap="next">Start Timer</expedition-button>
       </expedition-card>
 
       <!-- Mid-combat Cards -->
@@ -79,7 +79,7 @@
             Surge effects happen before abilities. Abilities that apply "this round" do not affect surges (but loot still does). If you are killed during a surge, do not resolve your abilities.
           </p>
         </template>
-        <paper-button data-target="combatroll" on-tap="next">Next</paper-button>
+        <expedition-button data-target="combatroll" on-tap="next">Next</expedition-button>
       </expedition-card>
 
       <expedition-card title="Roll &amp; Resolve" data-route="combatroll" icon="{{icon}}" on-return="prev" dark>
@@ -91,7 +91,7 @@
             Roll a die for each ability with a "<img class="inline_icon" src="../images/roll_white_small.svg"></img> &gt; X" and resolve the cards' effects.
           </p>
         </template>
-        <paper-button data-target="combatadjust" on-tap="next">Next</paper-button>
+        <expedition-button data-target="combatadjust" on-tap="next">Next</expedition-button>
       </expedition-card>
 
       <expedition-card title="Enemy Strength" data-route="combatadjust" icon="{{icon}}" on-return="prev" dark>
@@ -99,12 +99,12 @@
           Set this to the combined tier of the remaining enemies. You are victorious when this reaches zero.
         </number-picker>
         <template is="dom-if" if="{{_isTerminalState(adventurers, tierSum)}}">
-          <paper-button class="disabled">End Encounter (Victory)</paper-button>
-          <paper-button data-target="combatdmg" on-tap="next">Next</paper-button>
+          <expedition-button class="disabled">End Encounter (Victory)</expedition-button>
+          <expedition-button data-target="combatdmg" on-tap="next">Next</expedition-button>
         </template>
         <template is="dom-if" if="{{!_isTerminalState(adventurers, tierSum)}}">
-          <paper-button class="end" data-target="combatend" on-tap="next">End Encounter (Victory)</paper-button>
-          <paper-button class="disabled">Next</paper-button>
+          <expedition-button class="end" data-target="combatend" on-tap="next">End Encounter (Victory)</expedition-button>
+          <expedition-button class="disabled">Next</expedition-button>
         </template>
       </expedition-card>
 
@@ -121,12 +121,12 @@
           Set this to the number of adventurers still fighting. You are defeated when this reaches zero.
         </number-picker>
         <template is="dom-if" if="{{_isTerminalState(adventurers, tierSum)}}">
-          <paper-button class="disabled">End Encounter (Defeat)</paper-button>
-          <paper-button data-target="prepforcombat" on-tap="next">Next</paper-button>
+          <expedition-button class="disabled">End Encounter (Defeat)</expedition-button>
+          <expedition-button data-target="prepforcombat" on-tap="next">Next</expedition-button>
         </template>
         <template is="dom-if" if="{{!_isTerminalState(adventurers, tierSum)}}">
-          <paper-button class="end" data-target="combatend" on-tap="next">End Encounter (Defeat)</paper-button>
-          <paper-button class="disabled">Next</paper-button>
+          <expedition-button class="end" data-target="combatend" on-tap="next">End Encounter (Defeat)</expedition-button>
+          <expedition-button class="disabled">Next</expedition-button>
         </template>
       </expedition-card>
 
@@ -174,11 +174,11 @@
           </div>
 
           <template is="dom-if" if="{{!custom}}">
-            <paper-button on-tap="return">Next</paper-button>
+            <expedition-button on-tap="return">Next</expedition-button>
           </template>
           <template is="dom-if" if="{{custom}}">
-            <paper-button on-tap="return">Return to menu</paper-button>
-            <paper-button on-tap="_newEncounter">New encounter</paper-button>
+            <expedition-button on-tap="return">Return to menu</expedition-button>
+            <expedition-button on-tap="_newEncounter">New encounter</expedition-button>
           </template>
         </article>
 
@@ -186,8 +186,8 @@
 
     </expedition-card-set>
     <expedition-dialog title="End Encounter?" id="returnDialog" class="combat-dialog" dark>
-      <paper-button dialog-confirm on-tap="next" data-target="combatend">End Encounter (Victory)</paper-button>
-      <paper-button dialog-confirm on-tap="next" data-target="combatend">End Encounter (Defeat)</paper-button>
+      <expedition-button dialog-confirm on-tap="next" data-target="combatend">End Encounter (Victory)</expedition-button>
+      <expedition-button dialog-confirm on-tap="next" data-target="combatend">End Encounter (Defeat)</expedition-button>
     </expedition-dialog>
 
     <expedition-dialog id="nag" class="combat-dialog" dark>
