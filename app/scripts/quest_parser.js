@@ -189,7 +189,7 @@ questParser.prototype._loadDialogNode = function(node) {
 
       var text = c.childNodes[0];
       c = document.createElement('expedition-button');
-      c.appendChild(text);
+      Polymer.dom(c).appendChild(text);
       numChoices++;
     }
     contents.appendChild(c);
@@ -198,7 +198,7 @@ questParser.prototype._loadDialogNode = function(node) {
   // Append a generic "Next" button if there were no choices.
   if (numChoices === 0) {
     child = document.createElement('expedition-button');
-    child.innerHTML = (node.localName === "end") ? "End" : "Next";
+    Polymer.dom(child).innerHTML = (node.localName === "end") ? "End" : "Next";
     contents.appendChild(child);
   }
 

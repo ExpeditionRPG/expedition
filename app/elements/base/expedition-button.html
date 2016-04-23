@@ -63,7 +63,7 @@
   </style>
 
   <template>
-    <paper-button class="horizontal layout center">
+    <paper-button on-tap="_onTap" class="horizontal layout center">
       <div class="flex"><content></content></div>
       <iron-icon icon="icons:chevron-right"></iron-icon>
     </paper-button>
@@ -71,7 +71,11 @@
   <script>
     Polymer({
       is: 'expedition-button',
-      properties: {}
+      properties: {},
+      _onTap: function(e) {
+        this.fire('tap');
+        e.stopPropagation();
+      }
     });
   </script>
 
