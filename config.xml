@@ -27,7 +27,7 @@
         <application android:debuggable="true" />
     </gap:config-file>
 
-    <preference name="android-minSdkVersion" value="21"/> //android 5.0
+    <preference name="android-minSdkVersion" value="19"/> //android 4.4
 
     <icon src="www/images/icon/android-icon-36x36.png" width="36" height="36" />
     <icon src="www/images/icon/android-icon-48x48.png" width="48" height="48" />
