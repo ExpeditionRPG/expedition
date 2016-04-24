@@ -35,7 +35,7 @@
         this._exitAnim = "";
         this._route = this.initial;
         this._lastNavigation = 0;
-        this.debounceMillis = 1000;
+        this.debounceMillis = 500;
       },
       listeners: {
         'home': 'reset'
@@ -123,7 +123,6 @@
         var targetElem = this.querySelector("*[data-route='"+target+"']");
         console.log(targetElem);
         if (targetElem !== null && targetElem.scrollToTop !== undefined) {
-          console.log("Scrolling to top");
           targetElem.scrollToTop();
         }
 

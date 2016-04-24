@@ -11,6 +11,27 @@
     this.isAndroid = (/android/i.test(navigator.userAgent));
     this.isIos = (/iphone|ipad|ipod/i.test(navigator.userAgent));
     this.isMobile = this.isAndroid || this.isIos;
+    document.addEventListener("backbutton", app.onBackKeyDown, false);
+  };
+  app.onBackKeyDown = function() {
+    // This is neither elegant nor efficient, but it works well. When native
+    // back button is pressed, loop through all expedition-card elements and 
+    // manually trigger a "return" event from the first expedition-card found
+    // that's "visible".
+
+    // Using querySelectorAll globally like this doesn't work on mobile (returns empty list)
+    // but it works just fine on Android, which is the only time this code will be called.
+    var cards = document.querySelectorAll("expedition-card");
+    for (var i = 0; i < cards.length; i++) {
+      var style = getComputedStyle(cards[i]);
+      var isVisible = (style.display !== 'none' && style.visibility !== 'hidden' && 
+        style.opacity !== 0 && (cards[i].offsetWidth !== 0 || cards[i].offsetHeight !== 0));
+
+      if (isVisible) {
+        cards[i].fire("return");
+        return;
+      }
+    }
   };
   app.getcards = function() {
     if (window.platform === 'android' || window.platform === 'ios') {
