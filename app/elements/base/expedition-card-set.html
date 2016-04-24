@@ -1,7 +1,7 @@
 <dom-module id="expedition-card-set">
   <style>
     :host, neon-animated-pages {
-      height: 100%;
+      height: 100vh; /* Must use vh as older Android versions do not respect percent width for some reason. */
     }
     :host #select .listitem:not(:first-child) {
       margin-top: var(--vh-base);
