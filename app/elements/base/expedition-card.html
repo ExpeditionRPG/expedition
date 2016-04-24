@@ -21,6 +21,7 @@
     }
 
     :host.dark .content ::content a,
+    :host.dark .content ::content paper-button,
     :host.dark .content ::content expedition-checkbox,
     :host.dark .content ::content number-picker,
     :host.dark .content ::content expedition-picker {
@@ -128,7 +129,7 @@
             <paper-menu id="menu" class="dropdown-content" on-tap="_onMenuEvent">
               <paper-item data-dialog="home">Home</paper-item>
               <paper-item data-dialog="settings">Settings</paper-item>
-              <paper-item data-dialog="feedback">Feedback</a>
+              <paper-item data-dialog="feedback">Feedback</paper-item>
             </paper-menu>
           </paper-menu-button>
           <div id="title">{{title}}</div>

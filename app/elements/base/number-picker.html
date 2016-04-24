@@ -7,9 +7,9 @@
   </style>
   <template>
     <div class="input">
-      <div class="value">
+      <div class="value layout horizontal">
         <paper-icon-button id="dec" icon="icons:chevron-left" on-tap="dec"></paper-icon-button>
-        <div id="label" class="label">{{ label }}: <span id="value">{{value}}</span></div>
+        <div id="label" class="label flex">{{ label }}: <span id="value">{{value}}</span></div>
         <paper-icon-button id="inc" icon="icons:chevron-right" on-tap="inc"></paper-icon-button>
       </div>
     </div>

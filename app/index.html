@@ -131,9 +131,9 @@
         <div id="beta">v1.0.7</div>
         <iron-image id="logo" src="images/logo-frameless.png" fade></iron-image>
         <template is="dom-if" if="{{ready}}">
-          <a on-tap="getcards">Print the Cards</a>
+          <expedition-button on-tap="getcards">Print the Cards</expedition-button>
           <template is="dom-if" if="{{isMobile}}">
-            <a on-tap="next" data-target="setup">Begin!</a>
+            <expedition-button on-tap="next" data-target="setup">Begin!</expedition-button>
           </template>
         </template>
         <template is="dom-if" if="{{!isMobile}}">
@@ -148,7 +148,7 @@
         <div class="layout vertical">
           <expedition-settings></expedition-settings>
         </div>
-        <a on-tap="next" data-target="_select">Next</a>
+        <expedition-button on-tap="next" data-target="_select">Next</expedition-button>
       </expedition-card>
 
       <!-- Ideas: http://www.trollmystic.com/pub/2012/03/03/event-generator/ -->

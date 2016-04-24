@@ -37,7 +37,7 @@
           <li><strong>Clip</strong> a health tracking clip onto your Adventurer card at full health.
           <li><strong>Keep</strong> this card face up in front of you.
         </ol>
-        <a on-tap="next" data-target="questsetup">Next</a>
+        <expedition-button on-tap="next" data-target="questsetup">Next</expedition-button>
       </expedition-card>
 
       <expedition-card
@@ -60,7 +60,7 @@
           a decision or hit the "Next" button during the story (not during combat).
         </p>
 
-        <a on-tap="startQuest">Next</a>
+        <expedition-button on-tap="startQuest">Next</expedition-button>
       </expedition-card>
 
       <!--TODO: Double-buffered dialogs? -->
@@ -106,7 +106,7 @@
         </p>
         </template>
 
-        <a on-tap="_endQuest">Back to Quests</a>
+        <expedition-button on-tap="_endQuest">Back to Quests</expedition-button>
       </expedition-card>
 
     </expedition-card-set>
@@ -178,7 +178,7 @@
         e.stopPropagation();
       },
       _onChoice: function(e) {
-        if (e.target.localName !== 'a') {
+        if (e.target.localName !== 'expedition-button') {
           return;
         }
         var idx = Array.prototype.indexOf.call(e.target.parentNode.children, e.target);

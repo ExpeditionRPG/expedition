@@ -1,0 +1,82 @@
+<dom-module id="expedition-button">
+  <style>
+
+    paper-button {
+      display: block;
+      font-family: var(--font-body);
+      font-size: var(--font-size-interactive);
+      padding: var(--vw-base) !important;
+      padding-top: var(--vh-base) !important;
+      padding-bottom: var(--vh-base) !important;
+      margin: 0;
+      margin-top: var(--vh-base) !important;
+      border: var(--border-size) solid var(--border-color-accent);
+      background-color: var(--background-color-interactive);
+      text-align: left;
+      text-transform: none;
+      text-decoration:none;
+      color: inherit;
+    }
+
+    paper-button.keyboard-focus {
+      font-weight: inherit;
+    };
+
+    iron-icon {
+      width: var(--arrow-size);
+      height: var(--arrow-size);
+    }
+
+    :host.disabled paper-button {
+      color: var(--font-color-faded);
+      border: var(--border-size) solid var(--font-color-faded);
+    };
+
+    .item {
+      @apply(--layout-horizontal);
+      padding: var(--vw-large);
+      border: var(--border-size) solid var(--border-color-accent);
+      background-color: var(--background-color-interactive);
+    }
+    .item:active {
+      background-color: var(--background-color-active);
+      border-color: var(--border-size) solid var(--border-color-accent);
+    };
+    .pad {
+      padding-left: var(--vw-base);
+      @apply(--layout-flex-3);
+      @apply(--layout-vertical);
+    }
+    :host #subtext ::content h1 {
+      margin: 0;
+      margin-bottom: var(--vh-small);
+      font-size: var(--font-size-interactive);
+    }
+    :host ::content div {
+      font-size: var(--font-size-flavortext);
+    }
+    .item div img {
+      @apply(--layout-flex-1);
+      width: var(--arrow-size);
+      height: var(--arrow-size);
+    }
+  </style>
+
+  <template>
+    <paper-button on-tap="_onTap" class="horizontal layout center">
+      <div class="flex"><content></content></div>
+      <iron-icon icon="icons:chevron-right"></iron-icon>
+    </paper-button>
+  </template>
+  <script>
+    Polymer({
+      is: 'expedition-button',
+      properties: {},
+      _onTap: function(e) {
+        this.fire('tap');
+        e.stopPropagation();
+      }
+    });
+  </script>
+
+</dom-module>
