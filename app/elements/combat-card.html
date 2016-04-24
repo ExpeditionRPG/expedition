@@ -40,7 +40,7 @@
 
       <expedition-card title="Prepare for Combat" data-route="prepforcombat" icon="{{icon}}" on-return="prev" dark>
         <template is="dom-if" if="{{globals.helplevel}}">
-          <p>All players must shuffle their ability decks.</p>
+          <p>Shuffle ALL of your abilities back into your deck.</p>
           <p>Draw - but don't look at - the top 3 abilities.</p>
           <p>When you begin combat:</p>
           <ul>
@@ -76,7 +76,7 @@
             Immediately follow the surge action listed on all remaining Encounter cards. Some Encounters' surges may also apply after they've been killed.
           </p>
           <p>
-            Surge effects happen before abilities. Abilities that apply "this round" do not affect surges (but loot still does). If you are killed during a surge, do not resolve your abilities.
+            Surge effects happen before abilities. Abilities that apply "this round" do not affect surges (however, Loot may still be used during a surge). If you are killed during a surge, do not resolve your abilities.
           </p>
         </template>
         <a data-target="combatroll" on-tap="next">Next</a>
