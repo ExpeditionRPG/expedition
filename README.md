@@ -1,6 +1,6 @@
 ## The App for Expedition: The Roleplaying Card Game
 
-If you encounter any bugs with the app or have feedback, please drop an issue!
+If you encounter any bugs with the app or have feedback, please [drop an issue](https://github.com/Fabricate-IO/expedition-app/issues/new)!
 
 ## Getting Started
 
