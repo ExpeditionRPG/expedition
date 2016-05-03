@@ -18,7 +18,7 @@
     You find Pell's home and knock at the door, anxious to get inside.
   </p>
 </roleplay>
-<roleplay title="Brother Pell", icon="adventurer">
+<roleplay title="Brother Pell" icon="adventurer">
   <p>
     The door creaks open, and Brother Pell ushers your group in.
   </p>
