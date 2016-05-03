@@ -1,6 +1,6 @@
 ## The Card Generator for Expedition: The Roleplaying Card Game
 
-If you encounter any bugs with the cards or code, or have feedback on how to improve them, please drop an issue!
+If you encounter any bugs with the cards or code, or have feedback on how to improve them, please [drop an issue](https://github.com/Fabricate-IO/expedition-cards/issues/new)!
 
 ### Setup
 
@@ -11,4 +11,4 @@ Requires [NodeJS](https://nodejs.org/en/download/)
 3. Run `gulp` to build and watch development files
 4. Enjoy the cards at `localhost:8000`
 
-Cards are generated using this [Google Sheet](https://docs.google.com/spreadsheets/d/1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM/edit?usp=sharing)
+Cards are generated using [this Google Sheet](https://docs.google.com/spreadsheets/d/1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM/edit?usp=sharing)
