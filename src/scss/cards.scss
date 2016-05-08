@@ -477,9 +477,6 @@ strong .symbol {
   width: 2.5in - 2*$border;
 }
 
-.card.Loot { &:before, &:after {
-  background-image: url(../img/icon/loot.svg) !important;
-}}
 .card.Encounter.Bandit, { &:before, &:after {
   background-image: url(../img/icon/bandit_white.svg) !important;
 }}
@@ -530,4 +527,17 @@ strong .symbol {
 }}
 .card.back.Helper { &:before {
     background-image: url(../img/backs/helper.jpg) !important;
+}}
+
+.card.front.Loot { &:before {
+    background-image: url(../img/fronts/loot.jpg) !important;
+}}
+.card.back.Loot.tier1 { &:before {
+    background-image: url(../img/backs/loot-1.jpg) !important;
+}}
+.card.back.Loot.tier2 { &:before {
+    background-image: url(../img/backs/loot-2.jpg) !important;
+}}
+.card.back.Loot.tier3 { &:before {
+    background-image: url(../img/backs/loot-3.jpg) !important;
 }}
