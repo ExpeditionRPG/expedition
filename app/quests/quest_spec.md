@@ -81,11 +81,13 @@ Concludes the adventure, offering only the option to return to the menu to selet
 The end element behaves similar to the roleplay element, except it may only contain flavor text; that is, no choices, encounters, or further roleplaying.
 
 It has one mandatory attribute pick one:
-* **`win** -- this is a winning conclusion to the quest's end
+
+* **`win`** -- this is a winning conclusion to the quest's end
 * **`lose`** -- this is a losing conclusion to the quest's end
 _Omitting, even accidently, shows no text and ends the quest.
 
 And it has three optional attributes:
+
 * **`icon`** -- an image shown in the background of the text, used simply to provide visual flavor so text isn't visually boring
 * **`title`** -- a title shown for the page of text
 * **`id`** -- a symbolic label, used as the destination of a choice's goto
