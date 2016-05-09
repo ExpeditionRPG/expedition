@@ -109,6 +109,14 @@ It also have two optional attributes:
 
 Encounters _must_ have a win condition and a lose condition, but may not offer a choice. This gets particularly confusing as `<choice win>` and `<choice lose>` are mandatory, but `<choice>` without either attribute is illegal.
 
+### Text Elements
+
+* **p** -- paragraph
+* **instruction** -- instructional text, not shown to advanced players
+* **b** -- bold
+* **i** -- italic
+
+
 
 Quest BNF
 ---------
