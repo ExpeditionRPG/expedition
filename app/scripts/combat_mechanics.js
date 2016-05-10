@@ -88,28 +88,6 @@ Encounter.prototype._randomAttackDamage = function() {
   }
 };
 
-// Add a bit of base damage at the beginning of the round to prevent
-// people breaking the game by playing something immediately.
-// Also ensure there's an interval between this and subsequent damage.
-Encounter.prototype.startingDamage = function() {
-  this._nextDamageMillis = this._nextAttack(this._stats.tierDmgRate);
-  return Encounter.prototype._randomAttackDamage();
-};
-
-// Returns undefined, 0, 1, or 2 damage based on the time delta
-// between the last call to this function.
-Encounter.prototype.stochasticDamage = function(ddt) {
-  this._nextDamageMillis -= ddt;
-  if (this._nextDamageMillis > 0) {
-    return;
-  }
-
-  this._nextDamageMillis = this._nextAttack(this._stats.tierDmgRate);
-  var dmg = Encounter.prototype._randomAttackDamage();
-  this._roundDamage += dmg;
-  return dmg;
-};
-
 function clone(obj) {
   if (null === obj || "object" !== typeof obj) {
     return obj;
@@ -136,15 +114,22 @@ Encounter.prototype.resetSurgeCounter = function() {
 
 Encounter.prototype.endRound = function(s) {
   s = clone(s);
+  this._totalTimeMillis += s.turnTimeMillis;
   s.totalTimeMillis = this._totalTimeMillis;
   s.adventurers = dataGlobal.adventurers;
   s.expectedDamage = Math.ceil(s.turnTimeMillis * (this._stats.tierDmgRate) / 1000);
   s.nextSurgeRounds = this.getNextSurgeRounds(s.turnTimeMillis);
-  s.tier = this.tier;
+  s.tier = this.getTier();
 
+  // enemies each get to hit once - twice if the party took too long
+  s.roundDamage = 0;
+  for (var i = 0; i < s.tier; i++) {
+    s.roundDamage += this._randomAttackDamage();
+    if (s.timeRemainingMillis < 0) {
+      s.roundDamage += this._randomAttackDamage();
+    }
+  }
 
-  this._totalTimeMillis += s.turnTimeMillis;
-  console.log(s);
   this._roundLog.push(s);
   return s;
 };
