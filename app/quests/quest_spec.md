@@ -112,7 +112,7 @@ Encounters _must_ have a win condition and a lose condition, but may not offer a
 ### Text Elements
 
 * **p** -- paragraph
-* **instruction** -- instructional text, not shown to advanced players
+* **instruction** -- instructional text, similar to paragraph, but styled differently to break the fourth wall and tell the players to do something, rather than the characters about the story plot
 * **b** -- bold
 * **i** -- italic
 
