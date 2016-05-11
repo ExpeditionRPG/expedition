@@ -59,11 +59,12 @@ Handlebars.registerHelper('healthCounter', function (health) {
 
   var max = false;
   if (health === 'max') {
-    health = 23;
+    health = 31;
     max = true;
   }
 
-  var output = '<ul class="hp-tracker-vertical">';
+  var output = '<ul class="hp-tracker-vertical-right">';
+  var temp = ''; // temp storage for when we have to output in reverse in horizontal and vertical-right
   var outputted = (max) ? -1 : 0; // put one extra on the vertical to fill out max
   var horizontal = false;
   while (health > 0) {
@@ -71,16 +72,20 @@ Handlebars.registerHelper('healthCounter', function (health) {
 
     if (outputted < 9) { // vert-horiz transition point
       output += "<li>" + health + "</li>";
-    }
-    else {
-      if (outputted === 9) {
-        output += '</ul><ul class="hp-tracker-horizontal">';
-      }
-      output += "<li>" + health + "</li>";
+    } else if (outputted === 9) {
+      output += '</ul><table class="hp-tracker-horizontal"><tr>';
+      temp = "<td>" + health + "</td>";
+    } else if (outputted < 20) {
+      temp = "<td>" + health + "</td>" + temp;
+    } else if (outputted === 20) {
+      output += temp + '</tr></table><ul class="hp-tracker-vertical-left">';
+      temp = "<li>" + health + "</li>";
+    } else {
+      temp = "<li>" + health + "</li>" + temp;
     }
     outputted++;
   }
-  output += "</ul>";
+  output += temp + "</ul>";
   return output;
 });
 

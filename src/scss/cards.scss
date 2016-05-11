@@ -111,7 +111,26 @@ strong .symbol {
   }
 }
 
-.hp-tracker-vertical {
+.hp-tracker-vertical-left {
+
+  list-style: none;
+  text-align: right;
+  display: block;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  bottom: 0.2in;
+  left: $border;
+  z-index: 99;
+  font-size: $base;
+
+  li {
+    line-height: 1;
+    padding-bottom: 4.3pt;
+  }
+}
+
+.hp-tracker-vertical-right {
 
   list-style: none;
   text-align: right;
@@ -135,16 +154,15 @@ strong .symbol {
   list-style: none;
   display: block;
   margin: 0;
-  padding: 0 14pt 0.03in 0;
+  padding: 0 10pt 0.03in 0;
   position: absolute;
   right: $border;
   bottom: 0.1in;
   font-size: $base;
+  text-align: center;
 
-  li {
-    display: inline-block;
-    float: right;
-    padding-left: 8.6pt;
+  td {
+    width: 0.24in;
   }
 }
 
@@ -228,6 +246,7 @@ strong .symbol {
 
       display: table;
       height: 1.65in;
+      width: 100%;
 
       .child {
         display: table-cell;
@@ -362,8 +381,10 @@ strong .symbol {
   }
 
   &.Loot {
-    .abilityType {
-      width: 0.28in;
+
+    text-align: center;
+
+    footer {
       text-align: center;
     }
   }
@@ -412,8 +433,8 @@ strong .symbol {
     opacity: 0.6;
   }
 
-  .hp-tracker-vertical {
-    top: 0.11in;
+  .hp-tracker-vertical-right {
+    top: 0.04in;
   }
 
   .hp-tracker-vertical, .hp-tracker-horizontal {
@@ -477,7 +498,7 @@ strong .symbol {
   width: 2.5in - 2*$border;
 }
 
-.card.Encounter.Bandit, { &:before, &:after {
+/*.card.Encounter.Bandit, { &:before, &:after {
   background-image: url(../img/icon/bandit_white.svg) !important;
 }}
 .card.Encounter.Beast, { &:before, &:after {
@@ -488,7 +509,7 @@ strong .symbol {
 }}
 .card.Encounter.Undead, { &:before, &:after {
   background-image: url(../img/icon/undead_white.svg) !important;
-}}
+}}*/
 
 
 .card.front, .card.back {
@@ -540,4 +561,11 @@ strong .symbol {
 }}
 .card.back.Loot.tier3 { &:before {
     background-image: url(../img/backs/loot-3.jpg) !important;
+}}
+
+/*.card.front.Encounter { &:before {
+    background-image: url(../img/fronts/loot.jpg) !important;
+}}*/
+.card.back.Undead.tier1 { &:before {
+    background-image: url(../img/backs/undead-1.jpg) !important;
 }}

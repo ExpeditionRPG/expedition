@@ -3,7 +3,7 @@
 var forPrinter = false; // set via url param
 
 var selectOptions = {
-  threat: [],
+  tier: [],
   class: [],
   template: [],
 };
