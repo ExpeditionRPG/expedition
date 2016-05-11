@@ -59,9 +59,9 @@
         <p>
           Please remember that this is a beta feature - enhancements and bugfixes are on the way, and your feedback is greatly appreciated!
         </p>
-        <expedition-button target="_blank" href="../quests/oust_albanus.txt">Example Quest</expedition-button>
-        <expedition-button target="_blank" href="../quests/quest_spec.txt">Quest Format Spec</expedition-button>
-        <expedition-button target="_blank" href="https://developers.google.com/web/tools/chrome-devtools/iterate/device-mode/?hl=en">Chrome Mobile Emulation</expedition-button>
+        <expedition-button on-tap="_openBrowserExampleQuest">Example Quest</expedition-button>
+        <expedition-button on-tap="_openBrowserQuestSpec">Quest Format Spec</expedition-button>
+        <expedition-button on-tap="_openBrowserDeviceEmulation">Chrome Mobile Emulation</expedition-button>
       </expedition-card>
     </expedition-card-set>
     <expedition-dialog title="Choose URL" id="urlchooser" modal>
@@ -86,6 +86,15 @@
       },
       _openURLChooser: function() {
         this.$.urlchooser.open();
+      },
+      _openBrowserDeviceEmulation: function() {
+        window.open('https://developers.google.com/web/tools/chrome-devtools/iterate/device-mode/?hl=en');
+      },
+      _openBrowserExampleQuest: function() {
+        window.open('../quests/oust_albanus.txt');
+      },
+      _openBrowserQuestSpec: function() {
+        window.open('../quests/quest_spec.txt');
       },
       _onLearnMore: function() {
         this.$.pages.next('learnmore');
