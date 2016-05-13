@@ -73,7 +73,18 @@
       is: 'expedition-button',
       properties: {},
       _onTap: function(e) {
-        this.fire('tap');
+        var target = e.target;
+        while (target.nodeName.toLowerCase() !== 'body' && target.nodeName.toLowerCase() !== 'expedition-button') {
+          target = target.parentNode;
+        }
+
+        if (target.getAttribute('href')) {
+          window.open(target.getAttribute('href'));
+        }
+        else {
+          this.fire('tap');
+        }
+
         e.stopPropagation();
       }
     });
