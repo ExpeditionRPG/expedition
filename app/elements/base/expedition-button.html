@@ -74,7 +74,7 @@
       properties: {},
       _onTap: function(e) {
         var target = e.target;
-        while (target.nodeName.toLowerCase() !== 'body' && target.nodeName.toLowerCase() !== 'expedition-button') {
+        while (target && target.nodeName.toLowerCase() !== 'expedition-button') {
           target = target.parentNode;
         }
 
