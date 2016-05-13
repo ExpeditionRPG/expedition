@@ -78,7 +78,7 @@
           target = target.parentNode;
         }
 
-        if (target.getAttribute('href')) {
+        if (target && target.getAttribute('href')) {
           window.open(target.getAttribute('href'));
         }
         else {
