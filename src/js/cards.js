@@ -59,7 +59,7 @@ Handlebars.registerHelper('healthCounter', function (health) {
 
   var max = false;
   if (health === 'max') {
-    health = 31;
+    health = 23;
     max = true;
   }
 
@@ -70,14 +70,14 @@ Handlebars.registerHelper('healthCounter', function (health) {
   while (health > 0) {
     health--; //subtract HP first, since we're already showing the max HP at the top
 
-    if (outputted < 9) { // vert-horiz transition point
+    if (outputted < 5) {
       output += "<li>" + health + "</li>";
-    } else if (outputted === 9) {
+    } else if (outputted === 5) { // vert-horiz transition point
       output += '</ul><table class="hp-tracker-horizontal"><tr>';
       temp = "<td>" + health + "</td>";
-    } else if (outputted < 20) {
+    } else if (outputted < 16) {
       temp = "<td>" + health + "</td>" + temp;
-    } else if (outputted === 20) {
+    } else if (outputted === 16) { // horiz-vert transition
       output += temp + '</tr></table><ul class="hp-tracker-vertical-left">';
       temp = "<li>" + health + "</li>";
     } else {
