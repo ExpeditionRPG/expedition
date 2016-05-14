@@ -75,6 +75,9 @@ Within the roleplay element is simple HTML, primarily consisting of one or more 
 
 But it can also contain instructions to the players (`<instruction>`), as well as a list of choices (`<choice>`).
 
+What's not necessarily obvious is that it's posible to interlace
+text and choices, so you actually can have text after a choice.
+
 #### `<end>`
 Concludes the adventure, offering only the option to return to the menu to selet another quest to play. Final rewards are doled out to the players.
 
