@@ -144,7 +144,7 @@ ACTIONCHOICE := <choice> CONSEQUENCE </choice>
 
 CONSEQUENCE := FLAVORTEXT [ROLEPLAY] [ENCOUNTER] [END]
 
-ENCOUNTER := <encounter [ICON] [ID]> ENEMIES FLAVORTEXT WIN_ENCOUNTER LOSE_ENCOUNTER </encounter>
+ENCOUNTER := <encounter [ICON] [ID]> ENEMIES WIN_ENCOUNTER LOSE_ENCOUNTER </encounter>
 
 WIN_ENCOUNTER := <choice win GOTO> FLAVORTEXT </choice> | <choice win> CONSEQUENCE </choice> 
 LOSE_ENOUNCTER := choice lose GOTO> FLAVORTEXT </choice> | <choice win> CONSEQUENCE </choice> 
