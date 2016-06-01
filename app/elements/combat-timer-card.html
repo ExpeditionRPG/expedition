@@ -17,12 +17,11 @@
         this.active = false;
 
         this._roundTimeRemaining = 0;
-        this._roundTimer = 10000; // starting round time, varies with difficulty
+        this._roundTimeTotalMillis = 10000; // starting round time. TODO change based on difficulty
         this._roundDamage = 0;
         this._lastAttackMillis = 0;
         this._timerStartMillis = 0;
         this._lastRenderMillis = 0;
-        this._flashText = null;
         this._flashAlpha = 0;
         this._touches = [];
 
@@ -44,9 +43,8 @@
       start: function() {
         this.active = true;
         this._timerStartMillis = Date.now();
-        this._setFlashText("Attack!");
         this._lastRenderMillis = this._timerStartMillis;
-        this._roundTimeRemaining = this._roundTimer;
+        this._roundTimeRemaining = this._roundTimeTotalMillis;
         this._renderLoop();
       },
       stop: function() {
@@ -62,19 +60,19 @@
         e.preventDefault();
       },
       _drawTimer: function() {
-        var tempTimer = this._roundTimeRemaining/1000;
-        if (Math.abs(tempTimer) < 10) {
-          tempTimer = tempTimer.toFixed(1);
+        var formattedTimer = this._roundTimeRemaining/1000;
+        if (formattedTimer < 10 && formattedTimer > 0) {
+          formattedTimer = formattedTimer.toFixed(1);
         }
         else {
-          tempTimer = tempTimer.toFixed(0);
+          formattedTimer = formattedTimer.toFixed(0);
         }
 
         this.ctx.font = "110px MarkoOne";
         this.ctx.fillStyle = "rgb(255,255,255)";
         this.ctx.textAlign = "center";
         this.ctx.textBaseline = "middle";
-        this.ctx.fillText(tempTimer + 's', this._xMid, this._yMid);
+        this.ctx.fillText(formattedTimer + 's', this._xMid, this._yMid);
 
         if (this.logic.getNextSurgeRounds() < 1.0) {
           this.ctx.font = "40px MarkoOne";
@@ -105,23 +103,12 @@
         }
       },
       _drawBackground: function() {
-        if (this._flashText !== null) {
-          var dt = Math.floor((Date.now() - this._lastAttackMillis) * 255 / 1000);
-          var v = Math.max(0, 255 - dt);
-          if (this._flashText === "Hit!") {
-            this.ctx.fillStyle = "rgb(" + v + ",0,0)";
-          } else { // Miss!
-            this.ctx.fillStyle = "rgb(" + [v,v,v].join(',') + ")";
-          }
+        if (this._roundTimeRemaining < 0) {
+          this.ctx.fillStyle = "rgb(255,0,0)";
         } else {
           this.ctx.fillStyle = "rgb(0,0,0)";
         }
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-      },
-      _setFlashText: function(text) {
-        this._flashText = text;
-        this._flashAlpha = 1.5;
-        console.log(this._flashText);
       },
       _renderLoop: function() {
         var now = Date.now();

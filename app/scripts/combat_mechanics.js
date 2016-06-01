@@ -88,6 +88,20 @@ Encounter.prototype._randomAttackDamage = function() {
   }
 };
 
+Encounter.prototype._roundAttackDamage = function (s) {
+  // enemies each get to hit once - twice if the party took too long
+  // TODO tweak the overtime penalty based on difficulty
+  var damage = 0;
+  var attackCount = s.tier;
+  if (s.timeRemainingMillis < 0) {
+    attackCount *= 2;
+  }
+  for (var i = 0; i < attackCount; i++) {
+    damage += this._randomAttackDamage();
+  }
+  return damage;
+};
+
 function clone(obj) {
   if (null === obj || "object" !== typeof obj) {
     return obj;
@@ -120,15 +134,7 @@ Encounter.prototype.endRound = function(s) {
   s.expectedDamage = Math.ceil(s.turnTimeMillis * (this._stats.tierDmgRate) / 1000);
   s.nextSurgeRounds = this.getNextSurgeRounds(s.turnTimeMillis);
   s.tier = this.getTier();
-
-  // enemies each get to hit once - twice if the party took too long
-  s.roundDamage = 0;
-  for (var i = 0; i < s.tier; i++) {
-    s.roundDamage += this._randomAttackDamage();
-    if (s.timeRemainingMillis < 0) {
-      s.roundDamage += this._randomAttackDamage();
-    }
-  }
+  s.roundDamage = this._roundAttackDamage(s);
 
   this._roundLog.push(s);
   return s;
