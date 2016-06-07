@@ -2,6 +2,7 @@
   <div class="contents">
     <header>
       <div class="name mdl-badge-left" data-badge="1">{{{ name }}}</div>
+      <div class="health">12 {{> icon img='hp_small' }}</div>
     </header>
     <article>
       <div class="adventurertext mdl-badge-left" data-badge="4"><div class="child">
@@ -15,20 +16,6 @@
     <footer>
       <div class="flavortext mdl-badge-left">{{{ flavortext }}}</div>
     </footer>
-    <ul class="hp-tracker-horizontal">
-      <li>12
-      <li>11
-      <li>10
-      <li>9
-      <li>8
-      <li>7
-      <li>6
-      <li>5
-      <li>4
-      <li>3
-      <li>2
-      <li>1
-      <li>0
-    </ul>
+    {{{healthCounter 12}}}
   </div>
 </div>

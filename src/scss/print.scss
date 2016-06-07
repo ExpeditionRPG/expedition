@@ -41,7 +41,7 @@ body:not(.printer) {
 
 .card {
   &.front {
-    border: $border solid black;
+    /*border: $border solid black;*/
   }
 
   &.Helper svg {
@@ -54,5 +54,5 @@ body.printandplay .printInstructions {
 }
 
 .inline_icon {
-  margin-bottom: -0.05in;
+  margin-bottom: -0.02in;
 }

@@ -1,4 +1,4 @@
-<div class="card front {{{ cardType }}} tier{{ tier }}" id="{{camelCase name }}">
+<div class="card front {{{ cardType }}} tier{{ tier }} {{#if tracker}}tracker{{/if}}" id="{{camelCase name }}">
   <div class="contents">
     <header>
       <div class="name">{{{ name }}}</div>
@@ -16,5 +16,6 @@
       <div class="flavortext">{{{ flavortext }}}</div>
       <!-- <div class="cardType">{{ cardType }}</div> -->
     </footer>
+    {{#if tracker}}{{{lootCounter tracker}}}{{/if}}
   </div>
 </div>

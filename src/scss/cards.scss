@@ -19,7 +19,7 @@ $text-color: #2e200f;
 $bold: 700;
 
 $huge: 22pt;
-$large: 13pt;
+$large: 12pt;
 $base: 10.5pt;
 $small: 9pt;
 $border: 0.125in; /* interior padding, important things should go inside of this */
@@ -88,8 +88,15 @@ body.hideBacks {
   }
 }
 
-strong .symbol {
-  font-weight: normal;
+strong {
+
+  font-family: $font-header;
+  font-size: 100%;
+  font-weight: bold;
+
+  .symbol {
+    font-weight: normal;
+  }
 }
 
 .tier {
@@ -123,6 +130,10 @@ strong .symbol {
   left: $border;
   z-index: 99;
   font-size: $base;
+
+  &.countdown {
+    top: 0.17in;
+  }
 
   li {
     line-height: 1;
@@ -166,6 +177,27 @@ strong .symbol {
   }
 }
 
+.adventurer-hp-tracker {
+
+  font-size: $base;
+  font-family: $font-body;
+  list-style: none;
+  text-align: right;
+  display: block;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0in;
+  right: $border;
+  z-index: 99;
+  font-size: $base;
+
+  li {
+    line-height: 1;
+    padding-bottom: 4.3pt;
+  }
+}
+
 
 /* ===== THE CARDS ===== */
 
@@ -182,8 +214,9 @@ strong .symbol {
   font-size: $base;
   color: $text-color;
 
-  border-radius: 2 * $border;  /* poker card border radius, on top of the border width */
-
+  /*border-radius: 2 * $border;  /* poker card border radius, on top of the border width */
+  overflow: hidden;
+/*
   &.back {
     border: $border solid white;
     border-radius: 0;
@@ -191,7 +224,7 @@ strong .symbol {
 
   &.front {
     border: $border solid black;
-  }
+  }*/
 
   header {
 
@@ -208,8 +241,10 @@ strong .symbol {
     }
 
     .health {
-      float: right;
-      padding-left: $tiny;
+
+      position: absolute;
+      top: 0;
+      right: 0;
 
       .svg {
         margin: 0;
@@ -232,14 +267,6 @@ strong .symbol {
       /* fixed height for this box for consistent card layout */
       height: .5in;
       font-weight: bold;
-    }
-
-    .ongoing {
-      margin-bottom: $base;
-    }
-
-    .ongoing2 {
-      margin-top: -0.5 * $base;
     }
 
     .abilitytext {
@@ -286,33 +313,31 @@ strong .symbol {
       width: 3.5in - 2*$border;
       height: 2.5in - 2*$border;
       transform: rotate(90deg);
-      transform-origin: 34.8% 44.5%; /* the magic raio??? */
+      transform-origin: 36% 48%; /* the magic raio??? */
       margin: $border;
       box-sizing: border-box;
       position: relative;
     }
 
     article {
+      padding-left: 16pt;
       padding-right: 16pt;
     }
 
     footer {
       border-right: none;
-      bottom: 0.275in;
+      bottom: 0.25in;
       right: 0.315in;
+      left: 16pt;
     }
   }
 
   &.Ability {
 
-    strong {
-      font-family: $font-header;
-      font-size: 100%;
-    }
-
     header {
 
       padding: 0;
+      text-align: center;
 
       .typeicon {
         position: absolute;
@@ -354,9 +379,29 @@ strong .symbol {
 
   &.Encounter {
 
+    header {
+      padding-right: 0;
+    }
+
     article {
       &:before {
         border-color: white;
+      }
+
+      .type {
+        /*padding-bottom: $base;*/
+      }
+
+      .ongoing {
+        margin-top: $base;
+      }
+
+      .ongoing2 {
+        /*margin-top: $base;*/
+      }
+
+      .surge {
+        padding-top: $base;
       }
     }
 
@@ -384,6 +429,10 @@ strong .symbol {
 
     text-align: center;
 
+    &.tracker {
+      padding: 0 0.15in;
+    }
+
     footer {
       text-align: center;
     }
@@ -405,6 +454,14 @@ strong .symbol {
   text-align: center;
   font-size: $huge;
   font-family: $font-header;
+
+  .naming {
+    font-family: $font-body;
+    color: #F6EECA;
+    opacity: 0.7;
+    font-size: 10pt;
+    position: absolute;
+  }
 
   .cardType {
     position: absolute;
@@ -433,6 +490,13 @@ strong .symbol {
     opacity: 0.6;
   }
 
+  &.horizontal {
+
+    .contents {
+      transform-origin: 35% 50%; /* the magic raio??? */
+    }
+  }
+
   .hp-tracker-vertical-right {
     /*top: 0.04in;*/
   }
@@ -448,6 +512,36 @@ strong .symbol {
     }
     .class {
       bottom: 0.2in;
+    }
+  }
+
+  &.Adventurer {
+    .naming {
+      top: 0;
+      right: 0;
+    }
+  }
+
+  &.Ability {
+    .naming {
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  }
+
+  &.Encounter {
+    .hp-tracker-vertical-right {
+      top: 0;
+    }
+  }
+
+  &.Loot {
+    .naming {
+      color: #F7F7F7;
+      bottom: 0;
+      left: 0;
+      right: 0;
     }
   }
 }
@@ -467,55 +561,17 @@ strong .symbol {
   }
 }
 
-.card-background {
-  content: "";
-  position: absolute;
-  top: 0; bottom: 0; left: 0; right: 0;
-
-  background: no-repeat center center;
-  background-size: 1in 1in;
-}
-
-.card.front.Encounter:after {
-  @extend .card-background;
-  opacity: 0.1;
-  transform: rotate(90deg);
-  height: 1in;
-  width: 1in;
-  top: 2.5in;
-  left: 0.75in;
-}
-.card.front.Encounter:after {
-  opacity: 0.3;
-}
-.card.back:after {
-  @extend .card-background;
-}
-.card.back.Encounter:after {
-  @extend .card-background;
-  transform: rotate(90deg);
-  height: 3.5in - 2*$border;
-  width: 2.5in - 2*$border;
-}
-
-/*.card.Encounter.Bandit, { &:before, &:after {
-  background-image: url(../img/icon/bandit_white.svg) !important;
-}}
-.card.Encounter.Beast, { &:before, &:after {
-  background-image: url(../img/icon/beast_white.svg) !important;
-}}
-.card.Encounter.Fae, { &:before, &:after {
-  background-image: url(../img/icon/fae_white.svg) !important;
-}}
-.card.Encounter.Undead, { &:before, &:after {
-  background-image: url(../img/icon/undead_white.svg) !important;
-}}*/
-
 
 .card.front, .card.back {
   border: 0;
   &:before {
-    @extend .card-background;
+    content: "";
+    position: absolute;
+    top: -0.125in; left: -0.125in;
+    width: 2.75in;
+    height: 3.75in;
+
+    background: no-repeat center center;
     background-size: 2.75in 3.75in;
   }
 }
@@ -566,6 +622,39 @@ strong .symbol {
 .card.front.Encounter { &:before {
   background-image: url(../img/fronts/encounter.jpg) !important;
 }}
+.card.back.Beast.tier1 { &:before {
+  background-image: url(../img/backs/beast-1.jpg) !important;
+}}
+.card.back.Beast.tier2 { &:before {
+  background-image: url(../img/backs/beast-2.jpg) !important;
+}}
+.card.back.Beast.tier3 { &:before {
+  background-image: url(../img/backs/beast-3.jpg) !important;
+}}
+.card.back.Bandit.tier1 { &:before {
+  background-image: url(../img/backs/bandit-1.jpg) !important;
+}}
+.card.back.Bandit.tier2 { &:before {
+  background-image: url(../img/backs/bandit-2.jpg) !important;
+}}
+.card.back.Bandit.tier3 { &:before {
+  background-image: url(../img/backs/bandit-3.jpg) !important;
+}}
+.card.back.Fae.tier1 { &:before {
+  background-image: url(../img/backs/fae-1.jpg) !important;
+}}
+.card.back.Fae.tier2 { &:before {
+  background-image: url(../img/backs/fae-2.jpg) !important;
+}}
+.card.back.Fae.tier3 { &:before {
+  background-image: url(../img/backs/fae-3.jpg) !important;
+}}
 .card.back.Undead.tier1 { &:before {
   background-image: url(../img/backs/undead-1.jpg) !important;
+}}
+.card.back.Undead.tier2 { &:before {
+  background-image: url(../img/backs/undead-3.jpg) !important;
+}}
+.card.back.Undead.tier3 { &:before {
+  background-image: url(../img/backs/undead-3.jpg) !important;
 }}

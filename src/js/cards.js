@@ -70,9 +70,9 @@ Handlebars.registerHelper('healthCounter', function (health) {
   while (health > 0) {
     health--; //subtract HP first, since we're already showing the max HP at the top
 
-    if (outputted < 8) {
+    if (outputted < 9) {
       output += "<li>" + health + "</li>";
-    } else if (outputted === 8) { // vert-horiz transition point
+    } else if (outputted === 9) { // vert-horiz transition point
       output += '</ul><table class="hp-tracker-horizontal"><tr>';
       temp = "<td>" + health + "</td>";
     } else if (outputted < 21) {
@@ -86,6 +86,28 @@ Handlebars.registerHelper('healthCounter', function (health) {
     outputted++;
   }
   output += temp + "</ul>";
+  return output;
+});
+
+Handlebars.registerHelper('lootCounter', function (count) {
+
+  var output = '<ul class="hp-tracker-vertical-right">';
+  var temp = ''; // temp storage for when we have to output in reverse in horizontal and vertical-right
+  var outputted = 0;
+  var horizontal = false;
+  while (count > 0) {
+    if (outputted < 10) {
+      output += "<li>" + count + "</li>";
+    } else if (outputted === 10) { // vert-horiz transition point
+      output += '</ul><ul class="hp-tracker-vertical-left countdown">';
+      output += "<li>" + count + "</li>";
+    } else {
+      output += "<li>" + count + "</li>";
+    }
+    outputted++;
+    count--;
+  }
+  output += "</ul>";
   return output;
 });
 
