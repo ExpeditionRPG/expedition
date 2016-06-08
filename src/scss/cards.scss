@@ -15,6 +15,7 @@ Minion pro font requires typekit snippet
 */
 
 $text-color: #2e200f;
+$text-color-white: #eee;
 
 $bold: 700;
 
@@ -38,7 +39,6 @@ $footer-height: 0.4in;
 
 $font-header: "Cinzel", serif !important;
 $font-body: "minion-pro", serif !important;
-
 
 body.printer {
 
@@ -99,6 +99,11 @@ strong {
   }
 }
 
+svg {
+  fill: $text-color;
+  stroke: $text-color;
+}
+
 .tier {
   font-family: $font-header !important;
 }
@@ -149,7 +154,7 @@ strong {
   margin: 0;
   padding: 0;
   position: absolute;
-  top: 0.17in;
+  top: 0.2in;
   right: $border;
   z-index: 99;
   font-size: $base;
@@ -267,6 +272,7 @@ strong {
       /* fixed height for this box for consistent card layout */
       height: .5in;
       font-weight: bold;
+      text-align: center;
     }
 
     .abilitytext {
@@ -368,6 +374,33 @@ strong {
     }
   }
 
+  &.Helper {
+
+    article {
+      padding-top: 0.2in;
+    }
+
+    .inline_icon {
+      height: 1.4 * $icon-width;
+      line-height: 1.4 * $icon-width;
+      margin-top: 0.055in;
+      margin-bottom: -0.055in;
+
+      .svg {
+        height: 1.4 * $icon-width;
+      }
+    }
+
+    br {
+      display: block;
+      margin: 0;
+      padding: 0;
+      height: 0.1in;
+      line-height: 0in;
+      content: "";
+    }
+  }
+
   &.Adventurer {
 
     text-align: center;
@@ -379,25 +412,18 @@ strong {
 
   &.Encounter {
 
+    svg {
+      fill: $text-color-white;
+      stroke: $text-color-white;
+    }
+
     header {
       padding-right: 0;
     }
 
     article {
-      &:before {
-        border-color: white;
-      }
-
-      .type {
-        /*padding-bottom: $base;*/
-      }
-
       .ongoing {
         margin-top: $base;
-      }
-
-      .ongoing2 {
-        /*margin-top: $base;*/
       }
 
       .surge {
@@ -405,23 +431,8 @@ strong {
       }
     }
 
-    footer {
-      border-color: white;
-
-      .cardType {
-        background-color: black;
-      }
-
-      .tier {
-        background-color: black;
-        left: 43%;
-        right: 43%;
-        text-align: center;
-        font-size: 120%;
-        font-weight: $bold;
-        padding: 0;
-        margin-bottom: -0.035in;
-      }
+    .health, .hp-tracker {
+      color: #CFCFCF;
     }
   }
 
@@ -550,14 +561,14 @@ strong {
 /* ===== BACKGROUNDS ===== */
 
 .Encounter {
-  color: white;
+  color: $text-color-white;
   background: black;
   border-radius: 0 !important;
   &.front, &.back {
     border-color: black !important;
   }
   svg {
-    fill: white;
+    fill: $text-color-white;
   }
 }
 

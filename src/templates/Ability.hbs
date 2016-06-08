@@ -16,7 +16,7 @@
           {{{ class }}} - {{{ type }}}
         </div> -->
         <div class="risk">
-          <strong>{{> icon img='roll_small' }} <span class="symbol">&ge;</span> {{{ risk }}}</strong>
+          <strong>{{> icon img='d20_small' }} <span class="symbol">&ge;</span> {{{ risk }}}</strong>
         </div>
         <!-- {{> icon img='roll_small' }}
         {{#is risk 'X'}}
@@ -49,19 +49,19 @@
           </div>
           {{#if crithit }}
             <div class="crithit">
-              <strong>{{> icon img='roll_small' }} <span class="symbol">&ge;</span> 20:</strong> {{{ crithit }}}
+              <strong>{{> icon img='d20_small' }} <span class="symbol">&ge;</span> 20:</strong> {{{ crithit }}}
             </div>
             <br/>
           {{/if}}
           {{#if miss }}
             <div class="miss">
-              <strong>{{> icon img='roll_small' }} <span class="symbol"><</span> {{{ risk }}}:</strong> {{{ miss }}}
+              <strong>{{> icon img='d20_small' }} <span class="symbol"><</span> {{{ risk }}}:</strong> {{{ miss }}}
             </div>
             <br/>
           {{/if}}
           {{#if critmiss }}
             <div class="critmiss">
-              <strong>{{> icon img='roll_small' }} <span class="symbol">&le;</span> 1:</strong> {{{ critmiss }}}
+              <strong>{{> icon img='d20_small' }} <span class="symbol">&le;</span> 1:</strong> {{{ critmiss }}}
             </div>
           {{/if}}
         </div>

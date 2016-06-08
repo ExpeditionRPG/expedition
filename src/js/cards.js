@@ -63,7 +63,7 @@ Handlebars.registerHelper('healthCounter', function (health) {
     max = true;
   }
 
-  var output = '<ul class="hp-tracker-vertical-right">';
+  var output = '<ul class="hp-tracker hp-tracker-vertical-right">';
   var temp = ''; // temp storage for when we have to output in reverse in horizontal and vertical-right
   var outputted = (max) ? -1 : 0; // put one extra on the vertical to fill out max
   var horizontal = false;
@@ -73,12 +73,12 @@ Handlebars.registerHelper('healthCounter', function (health) {
     if (outputted < 9) {
       output += "<li>" + health + "</li>";
     } else if (outputted === 9) { // vert-horiz transition point
-      output += '</ul><table class="hp-tracker-horizontal"><tr>';
+      output += '</ul><table class="hp-tracker hp-tracker-horizontal"><tr>';
       temp = "<td>" + health + "</td>";
     } else if (outputted < 21) {
       temp = "<td>" + health + "</td>" + temp;
     } else if (outputted === 21) { // horiz-vert transition
-      output += temp + '</tr></table><ul class="hp-tracker-vertical-left">';
+      output += temp + '</tr></table><ul class="hp-tracker hp-tracker-vertical-left">';
       temp = "<li>" + health + "</li>";
     } else {
       temp = "<li>" + health + "</li>" + temp;
@@ -172,9 +172,6 @@ function cleanCardData(template_id, card) {
         // Replace #ability with the icon image
         card[property] = card[property].replace(/#\w*/mg, function replacer (match) {
           var src = "/img/icon/"+match.substring(1);
-          if (card.cardType === 'Encounter') {
-            src += '_white';
-          }
           src += '_small.svg';
 
           return '<img class="svg inline_icon" src="' + src + '"></img>';
