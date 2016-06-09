@@ -55,7 +55,15 @@ Handlebars.registerHelper("camelCase", function (str) {
   }).replace(/\s+/g, '').replace(/'/, '');
 });
 
+// generate U-shaped healthCounters with two special cases:
+  // 10 health should fit into a single sidge
+  // the number of numbers that fit onto the bottom track depends on the number of single vs double digit numbers
+    // (since they have different widths)
 Handlebars.registerHelper('healthCounter', function (health) {
+
+  var digitWidth = [0, 16, 23];
+  var maxWidth = 269;
+  var outputtedWidth = 0;
 
   var max = false;
   if (health === 'max') {
@@ -70,16 +78,19 @@ Handlebars.registerHelper('healthCounter', function (health) {
   while (health > 0) {
     health--; //subtract HP first, since we're already showing the max HP at the top
 
-    if (outputted < 9) {
+    if (outputted < 9 || (outputted === 9 && health === 0)) {
       output += "<li>" + health + "</li>";
     } else if (outputted === 9) { // vert-horiz transition point
       output += '</ul><table class="hp-tracker hp-tracker-horizontal"><tr>';
       temp = "<td>" + health + "</td>";
-    } else if (outputted < 21) {
+      outputtedWidth += digitWidth[health.toString().length];
+    } else if (outputtedWidth + digitWidth[health.toString().length] < maxWidth) {
       temp = "<td>" + health + "</td>" + temp;
-    } else if (outputted === 21) { // horiz-vert transition
+      outputtedWidth += digitWidth[health.toString().length];
+    } else if (maxWidth > 0) { // horiz-vert transition
       output += temp + '</tr></table><ul class="hp-tracker hp-tracker-vertical-left">';
       temp = "<li>" + health + "</li>";
+      maxWidth = 0;
     } else {
       temp = "<li>" + health + "</li>" + temp;
     }

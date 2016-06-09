@@ -178,7 +178,8 @@ svg {
   text-align: center;
 
   td {
-    width: 0.24in;
+    /*width: 0.24in;*/
+    padding: 0.05in;
   }
 }
 
@@ -642,7 +643,10 @@ svg {
 .card.back.Beast.tier3 { &:before {
   background-image: url(../img/backs/beast-3.jpg) !important;
 }}
-.card.back.Bandit.tier1 { &:before {
+.card.back.Bandit { &:before {
+  background-image: url(../img/backs/bandit.jpg) !important;
+}}
+/*.card.back.Bandit.tier1 { &:before {
   background-image: url(../img/backs/bandit-1.jpg) !important;
 }}
 .card.back.Bandit.tier2 { &:before {
@@ -650,7 +654,7 @@ svg {
 }}
 .card.back.Bandit.tier3 { &:before {
   background-image: url(../img/backs/bandit-3.jpg) !important;
-}}
+}}*/
 .card.back.Fae.tier1 { &:before {
   background-image: url(../img/backs/fae-1.jpg) !important;
 }}
