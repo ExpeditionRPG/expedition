@@ -1,8 +1,7 @@
-<div class="card front {{{ cardType }}} tier{{ tier }} {{#if tracker}}tracker{{/if}}" id="{{camelCase name }}">
+<div class="card front vertical {{{ cardType }}} tier{{ tier }} {{#if tracker}}tracker{{/if}}" id="{{camelCase name }}">
   <div class="contents">
     <header>
       <div class="name">{{{ name }}}</div>
-      <!-- <div class="abilityType mdl-badge" data-badge="1">{{{romanize tier }}}</div> -->
     </header>
     <article>
       <div class="indicators">
@@ -10,11 +9,10 @@
         <div>{{{ usewhen }}}</div>
       </div>
       <br/>
-      <div class="abilitytext mdl-badge-left" data-badge="3"><div class="child">{{{ text }}}</div></div>
+      <div class="abilitytext mdl-badge-left">{{{ text }}}</div>
     </article>
     <footer>
       <div class="flavortext">{{{ flavortext }}}</div>
-      <!-- <div class="cardType">{{ cardType }}</div> -->
     </footer>
     {{#if tracker}}{{{lootCounter tracker}}}{{/if}}
   </div>

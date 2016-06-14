@@ -51,20 +51,26 @@ body.printer {
   .printInstructions {
     display: none !important;
   }
+
   .page {
     width: 2.75in !important;
     height: 3.75in !important;
   }
+
   .card {
+
     width: 2.75in !important;
     height: 3.75in !important;
     border: 0 !important;
+
     &.front, &.back {
       border: 0;
     }
+
     &.Encounter {
       border: 0;
     }
+
     .flavortext {
       margin-bottom: 0;
     }
@@ -74,8 +80,10 @@ body.printer {
 body.printandplay {
 
   .card.Encounter {
+
     background-color: #444;
     border-color: #444 !important;
+
     footer .tier, footer .cardType {
       background-color: #444;
     }
@@ -109,6 +117,7 @@ svg {
 }
 
 .inline_icon {
+
   height: $icon-width;
   line-height: $icon-width;
   width: auto;
@@ -178,7 +187,6 @@ svg {
   text-align: center;
 
   td {
-    /*width: 0.24in;*/
     padding: 0.05in;
   }
 }
@@ -219,18 +227,7 @@ svg {
   font-family: $font-body;
   font-size: $base;
   color: $text-color;
-
-  /*border-radius: 2 * $border;  /* poker card border radius, on top of the border width */
   overflow: hidden;
-/*
-  &.back {
-    border: $border solid white;
-    border-radius: 0;
-  }
-
-  &.front {
-    border: $border solid black;
-  }*/
 
   header {
 
@@ -255,6 +252,8 @@ svg {
       .svg {
         margin: 0;
         padding-left: 0.04in;
+        margin-top: 0.04in;
+        margin-bottom: -0.04in;
       }
     }
   }
@@ -268,7 +267,6 @@ svg {
     padding: 4pt $padding 0 $padding;
     line-height: 1.2;
 
-    /* Top left indicators */
     .indicators {
       /* fixed height for this box for consistent card layout */
       height: .5in;
@@ -286,12 +284,12 @@ svg {
         display: table-cell;
         vertical-align: middle;
       }
+    }
 
-      br {
-        display: block;
-        margin: 7px 0;
-        content: "";
-      }
+    br {
+      display: block;
+      margin: 7px 0;
+      content: "";
     }
   }
 
@@ -347,6 +345,7 @@ svg {
       text-align: center;
 
       .typeicon {
+
         position: absolute;
         left: $padding - 6pt;
         top: -2pt;
@@ -358,6 +357,7 @@ svg {
       }
 
       .classicon {
+
         position: absolute;
         right: $padding - 7pt;
         top: -2pt;
@@ -374,6 +374,18 @@ svg {
       }
     }
 
+    article {
+
+      .preamble {
+        min-height: 0.65in;
+        text-align: center;
+      }
+
+      .rng {
+        min-height: 0.65in;
+      }
+    }
+
     footer {
       text-align: center;
     }
@@ -386,6 +398,7 @@ svg {
     }
 
     .inline_icon {
+
       height: 1.4 * $icon-width;
       line-height: 1.4 * $icon-width;
       margin-top: 0.055in;
@@ -489,23 +502,6 @@ svg {
     bottom: 0.5in; left: 0; right: 0;
   }
 
-  .website {
-    position: absolute;
-    bottom: 0.16in; left: 0; right: 0;
-    font-size: 75%;
-    font-weight: normal;
-  }
-
-  .version {
-    font-size: 12px;
-    font-weight: normal;
-    position: absolute;
-    top: 0.01in;
-    left: 0;
-    right: 0;
-    opacity: 0.6;
-  }
-
   &.horizontal {
 
     .contents {
@@ -514,7 +510,6 @@ svg {
   }
 
   .hp-tracker-horizontal {
-    /*padding: 0 10pt 0.03in 10pt;*/
     padding-right: 14pt;
   }
 
@@ -629,15 +624,6 @@ svg {
 .card.back.Loot { &:before {
   background-image: url(../img/backs/loot.jpg) !important;
 }}
-/*.card.back.Loot.tier1 { &:before {
-  background-image: url(../img/backs/loot-1.jpg) !important;
-}}
-.card.back.Loot.tier2 { &:before {
-  background-image: url(../img/backs/loot-2.jpg) !important;
-}}
-.card.back.Loot.tier3 { &:before {
-  background-image: url(../img/backs/loot-3.jpg) !important;
-}}*/
 
 .card.front.Encounter { &:before {
   background-image: url(../img/fronts/encounter.jpg) !important;
@@ -645,48 +631,12 @@ svg {
 .card.back.Beast { &:before {
   background-image: url(../img/backs/beast.jpg) !important;
 }}
-/*.card.back.Beast.tier1 { &:before {
-  background-image: url(../img/backs/beast-1.jpg) !important;
-}}
-.card.back.Beast.tier2 { &:before {
-  background-image: url(../img/backs/beast-2.jpg) !important;
-}}
-.card.back.Beast.tier3 { &:before {
-  background-image: url(../img/backs/beast-3.jpg) !important;
-}}*/
 .card.back.Bandit { &:before {
   background-image: url(../img/backs/bandit.jpg) !important;
 }}
-/*.card.back.Bandit.tier1 { &:before {
-  background-image: url(../img/backs/bandit-1.jpg) !important;
-}}
-.card.back.Bandit.tier2 { &:before {
-  background-image: url(../img/backs/bandit-2.jpg) !important;
-}}
-.card.back.Bandit.tier3 { &:before {
-  background-image: url(../img/backs/bandit-3.jpg) !important;
-}}*/
 .card.back.Fae { &:before {
   background-image: url(../img/backs/fae.jpg) !important;
 }}
-/*.card.back.Fae.tier1 { &:before {
-  background-image: url(../img/backs/fae-1.jpg) !important;
-}}
-.card.back.Fae.tier2 { &:before {
-  background-image: url(../img/backs/fae-2.jpg) !important;
-}}
-.card.back.Fae.tier3 { &:before {
-  background-image: url(../img/backs/fae-3.jpg) !important;
-}}*/
 .card.back.Undead { &:before {
   background-image: url(../img/backs/undead.jpg) !important;
 }}
-/*.card.back.Undead.tier1 { &:before {
-  background-image: url(../img/backs/undead-1.jpg) !important;
-}}
-.card.back.Undead.tier2 { &:before {
-  background-image: url(../img/backs/undead-3.jpg) !important;
-}}
-.card.back.Undead.tier3 { &:before {
-  background-image: url(../img/backs/undead-3.jpg) !important;
-}}*/

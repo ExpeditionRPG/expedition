@@ -1,9 +1,6 @@
-<div class="card back {{ cardType }} tier{{ tier }}">
+<div class="card back vertical {{ cardType }} tier{{ tier }}">
   <div class="contents">
-    <!-- <div class="cardType">{{ cardType }}</div>
-    <div class="class">{{romanize tier }}</div>
-    <div class="version">{{version version }}</div> -->
-    <!-- <img class="svg logo" src="/img/icon/logo.svg" /> -->
     {{#if naming }}<div class="naming">{{ naming }}</div>{{/if}}
+    <div class="tier">{{romanize tier }}</div>
   </div>
 </div>
