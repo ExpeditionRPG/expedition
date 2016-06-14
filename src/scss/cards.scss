@@ -131,7 +131,7 @@ svg {
   margin: 0;
   padding: 0;
   position: absolute;
-  bottom: 0.25in;
+  bottom: 0.21in;
   left: $border;
   z-index: 99;
   font-size: $base;
@@ -373,6 +373,10 @@ svg {
         padding-right: 24pt;
       }
     }
+
+    footer {
+      text-align: center;
+    }
   }
 
   &.Helper {
@@ -509,8 +513,9 @@ svg {
     }
   }
 
-  .hp-tracker-vertical-right {
-    /*top: 0.04in;*/
+  .hp-tracker-horizontal {
+    /*padding: 0 10pt 0.03in 10pt;*/
+    padding-right: 14pt;
   }
 
   .hp-tracker-vertical, .hp-tracker-horizontal {
@@ -621,7 +626,10 @@ svg {
 .card.front.Loot { &:before {
   background-image: url(../img/fronts/loot.jpg) !important;
 }}
-.card.back.Loot.tier1 { &:before {
+.card.back.Loot { &:before {
+  background-image: url(../img/backs/loot.jpg) !important;
+}}
+/*.card.back.Loot.tier1 { &:before {
   background-image: url(../img/backs/loot-1.jpg) !important;
 }}
 .card.back.Loot.tier2 { &:before {
@@ -629,12 +637,15 @@ svg {
 }}
 .card.back.Loot.tier3 { &:before {
   background-image: url(../img/backs/loot-3.jpg) !important;
-}}
+}}*/
 
 .card.front.Encounter { &:before {
   background-image: url(../img/fronts/encounter.jpg) !important;
 }}
-.card.back.Beast.tier1 { &:before {
+.card.back.Beast { &:before {
+  background-image: url(../img/backs/beast.jpg) !important;
+}}
+/*.card.back.Beast.tier1 { &:before {
   background-image: url(../img/backs/beast-1.jpg) !important;
 }}
 .card.back.Beast.tier2 { &:before {
@@ -642,7 +653,7 @@ svg {
 }}
 .card.back.Beast.tier3 { &:before {
   background-image: url(../img/backs/beast-3.jpg) !important;
-}}
+}}*/
 .card.back.Bandit { &:before {
   background-image: url(../img/backs/bandit.jpg) !important;
 }}
@@ -655,7 +666,10 @@ svg {
 .card.back.Bandit.tier3 { &:before {
   background-image: url(../img/backs/bandit-3.jpg) !important;
 }}*/
-.card.back.Fae.tier1 { &:before {
+.card.back.Fae { &:before {
+  background-image: url(../img/backs/fae.jpg) !important;
+}}
+/*.card.back.Fae.tier1 { &:before {
   background-image: url(../img/backs/fae-1.jpg) !important;
 }}
 .card.back.Fae.tier2 { &:before {
@@ -663,8 +677,11 @@ svg {
 }}
 .card.back.Fae.tier3 { &:before {
   background-image: url(../img/backs/fae-3.jpg) !important;
+}}*/
+.card.back.Undead { &:before {
+  background-image: url(../img/backs/undead.jpg) !important;
 }}
-.card.back.Undead.tier1 { &:before {
+/*.card.back.Undead.tier1 { &:before {
   background-image: url(../img/backs/undead-1.jpg) !important;
 }}
 .card.back.Undead.tier2 { &:before {
@@ -672,4 +689,4 @@ svg {
 }}
 .card.back.Undead.tier3 { &:before {
   background-image: url(../img/backs/undead-3.jpg) !important;
-}}
+}}*/
