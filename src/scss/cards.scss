@@ -63,8 +63,22 @@ body.printer {
     height: 3.75in !important;
     border: 0 !important;
 
+    .contents {
+      width: 2.5in;
+      height: 3.5in;
+      top: 0.125in;
+      left: 0.125in;
+      position: absolute;
+    }
+
     &.front, &.back {
+
       border: 0;
+
+      &:before {
+        top: 0;
+        left: 0;
+      }
     }
 
     &.Encounter {
