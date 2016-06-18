@@ -474,6 +474,10 @@ svg {
 
     &.tracker {
       padding: 0 0.15in;
+
+      footer {
+        bottom: 0.28in;
+      }
     }
 
     footer {
@@ -506,14 +510,9 @@ svg {
     position: absolute;
   }
 
-  .cardType {
+  .tier {
     position: absolute;
-    top: 0.5in; left: 0; right: 0;
-  }
-
-  .class {
-    position: absolute;
-    bottom: 0.5in; left: 0; right: 0;
+    bottom: 0.95in; left: 0; right: 0;
   }
 
   &.horizontal {
@@ -635,22 +634,63 @@ svg {
 .card.front.Loot { &:before {
   background-image: url(../img/fronts/loot.jpg) !important;
 }}
-.card.back.Loot { &:before {
-  background-image: url(../img/backs/loot.jpg) !important;
-}}
+.card.back.Loot {
+
+  .tier {
+    bottom: 0.95in;
+    color: #EBB956;
+  }
+
+  &:before {
+    background-image: url(../img/backs/loot.jpg) !important;
+  }
+}
 
 .card.front.Encounter { &:before {
   background-image: url(../img/fronts/encounter.jpg) !important;
 }}
-.card.back.Beast { &:before {
-  background-image: url(../img/backs/beast.jpg) !important;
-}}
-.card.back.Bandit { &:before {
-  background-image: url(../img/backs/bandit.jpg) !important;
-}}
-.card.back.Fae { &:before {
-  background-image: url(../img/backs/fae.jpg) !important;
-}}
-.card.back.Undead { &:before {
-  background-image: url(../img/backs/undead.jpg) !important;
-}}
+.card.back.Encounter {
+  .tier {
+    bottom: 0.325in;
+  }
+}
+.card.back.Beast {
+
+  .tier {
+    color: #BE1D2F;
+  }
+
+  &:before {
+    background-image: url(../img/backs/beast.jpg) !important;
+  }
+}
+.card.back.Bandit {
+
+  .tier {
+    color: #FEDE1A;
+  }
+
+  &:before {
+    background-image: url(../img/backs/bandit.jpg) !important;
+  }
+}
+.card.back.Fae {
+
+  .tier {
+    color: #AB499B;
+  }
+
+  &:before {
+    background-image: url(../img/backs/fae.jpg) !important;
+  }
+}
+.card.back.Undead {
+
+  .tier {
+    color: #00A652;
+  }
+
+  &:before {
+    background-image: url(../img/backs/undead.jpg) !important;
+  }
+}

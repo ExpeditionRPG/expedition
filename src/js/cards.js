@@ -100,25 +100,39 @@ Handlebars.registerHelper('healthCounter', function (health) {
   return output;
 });
 
+// same thing as hp tracker, but with different transition points. TODO make unified function that takes in count and transition points
+// also post-increments instead of pre-increments, so maybe pass an output range (ie loot is 20-1, HP is 19-0)
 Handlebars.registerHelper('lootCounter', function (count) {
 
-  var output = '<ul class="hp-tracker-vertical-right">';
+  var digitWidth = [0, 16, 23];
+  var maxWidth = 269;
+  var outputtedWidth = 0;
+
+  var output = '<ul class="hp-tracker hp-tracker-vertical-right">';
   var temp = ''; // temp storage for when we have to output in reverse in horizontal and vertical-right
   var outputted = 0;
   var horizontal = false;
   while (count > 0) {
-    if (outputted < 10) {
+    if (outputted < 15 || (outputted === 15 && count === 0)) {
       output += "<li>" + count + "</li>";
-    } else if (outputted === 10) { // vert-horiz transition point
-      output += '</ul><ul class="hp-tracker-vertical-left countdown">';
-      output += "<li>" + count + "</li>";
+    } else if (outputted === 15) { // vert-horiz transition point
+      output += '</ul><table class="hp-tracker hp-tracker-horizontal"><tr>';
+      temp = "<td>" + count + "</td>";
+      outputtedWidth += digitWidth[count.toString().length];
+    } else if (outputtedWidth + digitWidth[count.toString().length] < maxWidth) {
+      temp = "<td>" + count + "</td>" + temp;
+      outputtedWidth += digitWidth[count.toString().length];
+    } else if (maxWidth > 0) { // horiz-vert transition
+      output += temp + '</tr></table><ul class="hp-tracker hp-tracker-vertical-left">';
+      temp = "<li>" + count + "</li>";
+      maxWidth = 0;
     } else {
-      output += "<li>" + count + "</li>";
+      temp = "<li>" + count + "</li>" + temp;
     }
     outputted++;
-    count--;
+    count--; //subtract count last, so that we get all the values
   }
-  output += "</ul>";
+  output += temp + "</ul>";
   return output;
 });
 
