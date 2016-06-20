@@ -144,7 +144,7 @@
 
             <template is="dom-if" if="{{canLevelUp}}">
               <p>
-                You feel more knowledgeable! Adventurers may learn a new ability at this time:
+                You feel more knowledgeable! Each Adventurer may learn a new ability at this time:
               </p>
               <template is="dom-if" if="{{globals.helplevel}}">
                 <ul>
@@ -157,7 +157,7 @@
             </template>
 
             <p>
-              <strong>Draw loot for your party:</strong>
+              <strong>The party draws the following Loot:</strong>
             </p>
             <ul>
               <template is="dom-repeat" items="{{loot}}">
@@ -165,6 +165,7 @@
               </template>
             </ul>
             <template is="dom-if" if="{{globals.helplevel}}">
+              <p>Loot drawn at the end of an Encounter is for the entire party. It may either be divided amongst Adventurers or kept in a shared Loot pile.</p>
               <p>Loot can be used at any time and does not cost an action (unless specified).</p>
             </template>
           </template>
