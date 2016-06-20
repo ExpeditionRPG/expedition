@@ -79,35 +79,27 @@ Encounter.prototype._randomAttackDamage = function() {
   // E[D] = 0 * P(M) + 1 * P(H) + 2 * P(C) = 0.9
 
   var r = Math.random();
-  if (r < 0.2) {
+  if (r < 0.4) {
     return 0;
-  } else if (r < 0.3) {
+  } else if (r < 0.5) {
     return 2;
-  } else { // r >= 0.3
+  } else { // r >= 0.5
     return 1;
   }
 };
 
-// Add a bit of base damage at the beginning of the round to prevent
-// people breaking the game by playing something immediately.
-// Also ensure there's an interval between this and subsequent damage.
-Encounter.prototype.startingDamage = function() {
-  this._nextDamageMillis = this._nextAttack(this._stats.tierDmgRate);
-  return Encounter.prototype._randomAttackDamage();
-};
-
-// Returns undefined, 0, 1, or 2 damage based on the time delta
-// between the last call to this function.
-Encounter.prototype.stochasticDamage = function(ddt) {
-  this._nextDamageMillis -= ddt;
-  if (this._nextDamageMillis > 0) {
-    return;
+Encounter.prototype._roundAttackDamage = function (s) {
+  // enemies each get to hit once - twice if the party took too long
+  // TODO tweak the overtime penalty based on difficulty
+  var damage = 0;
+  var attackCount = s.tier;
+  if (s.timeRemainingMillis < 0) {
+    attackCount *= 2;
   }
-
-  this._nextDamageMillis = this._nextAttack(this._stats.tierDmgRate);
-  var dmg = Encounter.prototype._randomAttackDamage();
-  this._roundDamage += dmg;
-  return dmg;
+  for (var i = 0; i < attackCount; i++) {
+    damage += this._randomAttackDamage();
+  }
+  return damage;
 };
 
 function clone(obj) {
@@ -136,15 +128,14 @@ Encounter.prototype.resetSurgeCounter = function() {
 
 Encounter.prototype.endRound = function(s) {
   s = clone(s);
+  this._totalTimeMillis += s.turnTimeMillis;
   s.totalTimeMillis = this._totalTimeMillis;
   s.adventurers = dataGlobal.adventurers;
   s.expectedDamage = Math.ceil(s.turnTimeMillis * (this._stats.tierDmgRate) / 1000);
   s.nextSurgeRounds = this.getNextSurgeRounds(s.turnTimeMillis);
-  s.tier = this.tier;
+  s.tier = this.getTier();
+  s.roundDamage = this._roundAttackDamage(s);
 
-
-  this._totalTimeMillis += s.turnTimeMillis;
-  console.log(s);
   this._roundLog.push(s);
   return s;
 };
