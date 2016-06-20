@@ -29,7 +29,7 @@ $height: 3.5in;
 $width: 2.5in;
 $edge: 0.125in;
 $padding: 12pt;
-$top-padding: 14.5pt;
+$top-padding: 0.19in;
 $tiny: 2pt;
 $thin: 0.8pt;
 $border-weight: 1.1pt; /* note that this also needs to be changed in banner SVG files */
@@ -59,16 +59,14 @@ body.printer {
 
   .card {
 
-    width: 2.75in !important;
-    height: 3.75in !important;
+    width: $width !important;
+    height: $height !important;
     border: 0 !important;
+    padding: 0 !important;
 
     .contents {
-      width: 2.5in;
-      height: 3.5in;
-      top: 0.125in;
-      left: 0.125in;
-      position: absolute;
+      top: $bleed;
+      left: $bleed;
     }
 
     &.front, &.back {
@@ -81,12 +79,12 @@ body.printer {
       }
     }
 
-    &.Encounter {
-      border: 0;
-    }
+    &.horizontal {
 
-    .flavortext {
-      margin-bottom: 0;
+      .contents {
+        height: 2.25in;
+        width: 3.25in;
+      }
     }
   }
 }
@@ -127,7 +125,7 @@ svg {
 }
 
 .tier {
-  font-family: $font-header !important;
+  font-family: $font-header;
 }
 
 .inline_icon {
@@ -243,11 +241,17 @@ svg {
   color: $text-color;
   overflow: hidden;
 
+  .contents {
+    position: relative;
+    height: 3.25in;
+    width: 2.25in;
+    margin-left: 0.125in;
+  }
+
   header {
 
     position: relative;
     margin: $top-padding $edge 3pt $edge;
-    padding: 0 $padding;
 
     .name {
       font-size: $large;
@@ -278,7 +282,7 @@ svg {
     position: relative;
     clear: left;
     margin: 0 $edge $edge $edge;
-    padding: 4pt $padding 0 $padding;
+    padding-top: 4pt;
     line-height: 1.2;
 
     .indicators {
@@ -321,7 +325,6 @@ svg {
       right: 0;
       bottom: 0;
       left: 0;
-      padding: 0.8*$padding $padding;
       z-index: 999;
     }
   }
@@ -333,9 +336,14 @@ svg {
       height: 2.5in - 2*$border;
       transform: rotate(90deg);
       transform-origin: 36% 48%; /* the magic raio??? */
-      margin: $border;
+      /*margin: $border;*/
       box-sizing: border-box;
       position: relative;
+    }
+
+    header {
+      padding-left: 16pt;
+      padding-right: 16pt;
     }
 
     article {
@@ -361,7 +369,7 @@ svg {
       .typeicon {
 
         position: absolute;
-        left: $padding - 6pt;
+        left: -3pt;
         top: -2pt;
 
         svg {
@@ -373,7 +381,7 @@ svg {
       .classicon {
 
         position: absolute;
-        right: $padding - 7pt;
+        right: -4pt;
         top: -2pt;
 
         svg {
@@ -383,8 +391,8 @@ svg {
       }
 
       .name {
-        padding-left: 29pt;
-        padding-right: 24pt;
+        padding-left: 20pt;
+        padding-right: 19pt;
       }
     }
 
@@ -433,6 +441,12 @@ svg {
     }
   }
 
+  &.Adventurer, &.Encounter {
+    .flavortext {
+      padding: 0.8*$padding $padding;
+    }
+  }
+
   &.Adventurer {
 
     text-align: center;
@@ -473,10 +487,22 @@ svg {
     text-align: center;
 
     &.tracker {
-      padding: 0 0.15in;
+
+      article {
+        padding: 0 0.15in;
+      }
+
+      .hp-tracker-vertical-right {
+        top: 0.02in;
+      }
 
       footer {
+
         bottom: 0.28in;
+
+        .flavortext {
+          padding: 0.8*$padding $padding;
+        }
       }
     }
 
@@ -505,7 +531,7 @@ svg {
   .naming {
     font-family: $font-body;
     color: #F6EECA;
-    opacity: 0.7;
+    opacity: 0.6;
     font-size: 10pt;
     position: absolute;
   }
@@ -513,12 +539,14 @@ svg {
   .tier {
     position: absolute;
     bottom: 0.95in; left: 0; right: 0;
+    text-align: center;
   }
 
   &.horizontal {
 
     .contents {
       transform-origin: 35% 50%; /* the magic raio??? */
+      margin-top: 0.125in;
     }
   }
 
@@ -542,7 +570,8 @@ svg {
 
   &.Adventurer {
     .naming {
-      top: 0;
+      bottom: -0.04in;
+      left: 0;
       right: 0;
     }
   }
@@ -557,7 +586,13 @@ svg {
 
   &.Encounter {
     .hp-tracker-vertical-right {
-      top: 0;
+      top: 0.10in;
+    }
+    .hp-tracker-horizontal {
+      bottom: 0;
+    }
+    .hp-tracker-vertical-left {
+      bottom: 0.09in;
     }
   }
 
@@ -637,7 +672,7 @@ svg {
 .card.back.Loot {
 
   .tier {
-    bottom: 0.95in;
+    bottom: 0.71in;
     color: #EBB956;
   }
 
@@ -651,7 +686,8 @@ svg {
 }}
 .card.back.Encounter {
   .tier {
-    bottom: 0.325in;
+    left: 0.03in;
+    bottom: 0.41in;
   }
 }
 .card.back.Beast {
