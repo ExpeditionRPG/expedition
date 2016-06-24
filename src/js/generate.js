@@ -139,7 +139,7 @@ function makeCards (template, cards) {
 
   for (var i = 0, l = cards.length; i < l; i++) {
 
-    var card = cards[i], filteredOut;
+    var card = cards[i], filteredOut = false;
     card.template = template;
 
     if (card.Comment !== "") {
