@@ -1,14 +1,15 @@
-// Card Filters
-
-var forPrinter = false; // set via url param
-
 var selectOptions = {
+  export: ['Print-n-Play', 'DriveThruCards', 'AdMagic-Fronts', 'AdMagic-Backs', 'Hide-Backs'],
   tier: [],
   class: [],
   template: [],
 };
 var filters, filterList, filterCount;
+var cardData, tabletop, sheets; // vars for rendering cards
+
+
 function fetchFilters() {
+
   var match,
       pl     = /\+/g,  // Regex for replacing addition symbol with a space
       search = /([^&=]+)=?([^&]*)/g,
@@ -16,45 +17,51 @@ function fetchFilters() {
       query  = window.location.search.substring(1);
   filters = {};
   filterList = [];
+
   while (match = search.exec(query)) {
     var f = decode(match[1]);
-    if (f !== 'printer' && f !== 'printandplay' && f !== 'hideBacks') {
-      filters[f] = decode(match[2]);
-      filterList.push(f);
-    }
+    filters[f] = decode(match[2]);
+    filterList.push(f);
   }
-  filterCount = filterList.length;
 
-  if (filterCount > 0) {
+  if (filterList.length > 0) {
     var docTitle = '';
     Object.keys(filters).forEach(function (key) {
       docTitle += filters[key] + '-';
     });
     docTitle = docTitle.slice(0, -1);
     document.title = docTitle;
+
+    $("body").removeClass("DriveThruCards printandplay hideBacks");
+    switch (filters.export) {
+      case 'DriveThruCards':
+        $("body").addClass("DriveThruCards");
+      break;
+      case 'Print-n-Play':
+        $("body").addClass("printandplay");
+      break;
+      case 'Hide-Backs':
+        $("body").addClass("hideBacks");
+      break;
+    }
   }
 }
 
 
-var cardCount, fronts, backs, cardData, tabletop, sheets; // vars for rendering cards
-
-
 (function init() {
-  console.log('init');
-  if (window.location.search.indexOf("printer") !== -1) {
-    forPrinter = true;
-    $("body").addClass("printer");
-  }
-  if (window.location.search.indexOf("printandplay") !== -1) {
-    $("body").addClass("printandplay");
-  }
-  if (window.location.search.indexOf("hideBacks") !== -1) {
-    $("body").addClass("hideBacks");
-  }
+
   loadTable();
+
+  $("#resetFilters").click(function() {
+    $("#dynamicFilters select").find("option[value='']").attr('selected', true);
+    history.replaceState({}, document.title, '?');
+    render();
+  });
 })();
 
+
 function loadTable() {
+
   Tabletop.init({
     key: '1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
     callback: function(data, tabletop) {
@@ -78,7 +85,7 @@ function loadTable() {
       render();
 
       // Remove past filters
-      $("#filters select").remove();
+      $("#dynamicFilters select").remove();
       for (var field in selectOptions) {
         selectOptions[field] = selectOptions[field].sort();
         makeFilter(field, selectOptions[field]);
@@ -88,16 +95,11 @@ function loadTable() {
       $("#loading").remove();
     }, simpleSheet: true
   });
-  $("#resetFilters").click(function() {
-    $("#filters select").find("option[value='']").attr('selected', true);
-    history.replaceState({}, document.title, '?');
-    render();
-  });
 }
 
 function render() {
-  $(".page").remove(); // clear out any cards from past renders
-  cardCount = 0;
+
+  $(".page").remove(); // clear render area
   fetchFilters();
 
   var sorted = [];
@@ -109,7 +111,6 @@ function render() {
     sorted[i] = sheets[sorted[i]];
   }
 
-  // iterate through and display, render IMG as SVG when done
   for (var i = 0, l = sorted.length; i < l; i++) {
     var sheet = sorted[i];
     makeCards(sheet.name, sheet.elements);
@@ -117,7 +118,11 @@ function render() {
 }
 
 function makeCards (template, cards) {
+
   var templateCount = 0;
+  var cardCount = 0;
+  var fronts, backs;
+
   for (var i = 0, l = cards.length; i < l; i++) {
     var card = cards[i], filteredOut = false;
 
@@ -143,9 +148,8 @@ function makeCards (template, cards) {
       continue;
     }
 
-// SPLIT CARDS 9 TO A PAGE
-// Note: comment this if loop out to do 1 per page
-    if (cardCount % 9 === 0 || forPrinter) {
+    // split cards 9 to a page
+    if (cardCount % 9 === 0 || filters.export === 'DriveThruCards') {
       fronts = $('<div class="page fronts"></div>');
       backs = $('<div class="page backs"></div>');
       $("body").append(fronts);
@@ -181,7 +185,7 @@ function makeFilter (title, values) {
   }
   el.change(function(e) {
     var params = {};
-    $("#filters select").each(function(i, elem) {
+    $("#dynamicFilters select").each(function(i, elem) {
       if ($(this).val() !== '') {
         params[$(this).data('filter')] = $(this).val();
       }
@@ -190,11 +194,12 @@ function makeFilter (title, values) {
     })
     render();
   });
-  $("#filters").prepend(el);
+  $("#dynamicFilters").prepend(el);
   if (filters[title]) {
-    $("#filters select[data-filter='" + title + "']").find("option[value='" + filters[title] + "']").attr('selected', true);
+    $("#dynamicFilters select[data-filter='" + title + "']").find("option[value='" + filters[title] + "']").attr('selected', true);
   }
 }
+
 
 // also in cards.js
 function camelCase (str) {

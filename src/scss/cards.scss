@@ -40,9 +40,9 @@ $footer-height: 0.4in;
 $font-header: "Cinzel", serif !important;
 $font-body: "minion-pro", serif !important;
 
-body.printer {
+body.DriveThruCards {
 
-  /* For the printer - @ 2.75"x3.75"*/
+  /* For DriveThruCards - @ 2.75"x3.75"*/
 
   $bleed: 0.125in; /* background art should extend to here */
   $height: 3.5in + 2 * $bleed;
@@ -339,6 +339,7 @@ svg {
       /*margin: $border;*/
       box-sizing: border-box;
       position: relative;
+      margin-left: .0525in;
     }
 
     header {

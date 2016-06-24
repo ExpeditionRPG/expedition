@@ -18,7 +18,7 @@ body {
   }
 }
 
-body:not(.printer) {
+body:not(.DriveThruCards) {
   .backs {
     transform: scale(-1, 1);
 
@@ -31,7 +31,7 @@ body:not(.printer) {
   }
 }
 
-.printer {
+.DriveThruCards {
   .card.back {
     &.Adventurer, &.Encounter {
       transform: rotate(180deg);
