@@ -19,6 +19,7 @@ body {
 }
 
 body:not(.DriveThruCards) {
+
   .backs {
     transform: scale(-1, 1);
 
@@ -32,20 +33,12 @@ body:not(.DriveThruCards) {
 }
 
 .DriveThruCards {
+
   .card.back {
+
     &.Adventurer, &.Encounter {
       transform: rotate(180deg);
     }
-  }
-}
-
-.card {
-  &.front {
-    /*border: $border solid black;*/
-  }
-
-  &.Helper svg {
-    /*margin: -0.01in 0 0.01in 0;*/
   }
 }
 

@@ -40,9 +40,7 @@ $footer-height: 0.4in;
 $font-header: "Cinzel", serif !important;
 $font-body: "minion-pro", serif !important;
 
-body.DriveThruCards {
-
-  /* For DriveThruCards - @ 2.75"x3.75"*/
+body.singlePage {
 
   $bleed: 0.125in; /* background art should extend to here */
   $height: 3.5in + 2 * $bleed;
@@ -104,6 +102,12 @@ body.printandplay {
 
 body.hideBacks {
   .backs {
+    display: none;
+  }
+}
+
+body.hideFronts {
+  .fronts {
     display: none;
   }
 }

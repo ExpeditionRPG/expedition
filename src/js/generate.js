@@ -4,7 +4,7 @@ var selectOptions = {
   class: [],
   template: [],
 };
-var filters, filterList, filterCount;
+var filters, filterList;
 var cardData, tabletop, sheets; // vars for rendering cards
 
 
@@ -21,7 +21,34 @@ function fetchFilters() {
   while (match = search.exec(query)) {
     var f = decode(match[1]);
     filters[f] = decode(match[2]);
-    filterList.push(f);
+    if (f !== 'export') {
+      filterList.push(f);
+    }
+  }
+
+  switch (filters.export) {
+    case 'DriveThruCards':
+      $("body").addClass("DriveThruCards");
+      filters.singlePage = true;
+    break;
+    case 'Print-n-Play':
+      $("body").addClass("printandplay");
+    break;
+    case 'Hide-Backs':
+      $("body").addClass("hideBacks");
+    break;
+    case 'AdMagic-Fronts':
+      $("body").addClass("hideBacks");
+      filters.singlePage = true;
+    break;
+    case 'AdMagic-Backs':
+      $("body").addClass("hideFronts");
+      filters.singlePage = true;
+    break;
+  }
+
+  if (filters.singlePage) {
+    $("body").addClass("singlePage");
   }
 
   if (filterList.length > 0) {
@@ -31,19 +58,6 @@ function fetchFilters() {
     });
     docTitle = docTitle.slice(0, -1);
     document.title = docTitle;
-
-    $("body").removeClass("DriveThruCards printandplay hideBacks");
-    switch (filters.export) {
-      case 'DriveThruCards':
-        $("body").addClass("DriveThruCards");
-      break;
-      case 'Print-n-Play':
-        $("body").addClass("printandplay");
-      break;
-      case 'Hide-Backs':
-        $("body").addClass("hideBacks");
-      break;
-    }
   }
 }
 
@@ -55,7 +69,7 @@ function fetchFilters() {
   $("#resetFilters").click(function() {
     $("#dynamicFilters select").find("option[value='']").attr('selected', true);
     history.replaceState({}, document.title, '?');
-    render();
+    location.reload();
   });
 })();
 
@@ -124,7 +138,9 @@ function makeCards (template, cards) {
   var fronts, backs;
 
   for (var i = 0, l = cards.length; i < l; i++) {
-    var card = cards[i], filteredOut = false;
+
+    var card = cards[i], filteredOut;
+    card.template = template;
 
     if (card.Comment !== "") {
       continue;
@@ -137,19 +153,23 @@ function makeCards (template, cards) {
     }
 
     // define filters / skips here
-    card.template = template;
-    for (var j = 0; j < filterCount; j++) {
+    for (var j = 0; j < filterList.length; j++) {
       if (card[filterList[j]] !== filters[filterList[j]]) {
         filteredOut = true;
         continue;
+      }
+    }
+    if (filters.export === 'AdMagic-Backs') {
+      if (card.class === cards[i-1].class && card.tier === cards[i-1].tier && cards[i-1].Comment === "") {
+        filteredOut = true;
       }
     }
     if (filteredOut) {
       continue;
     }
 
-    // split cards 9 to a page
-    if (cardCount % 9 === 0 || filters.export === 'DriveThruCards') {
+    // split cards 9 to a page unless singlePage
+    if (cardCount % 9 === 0 || filters.singlePage) {
       fronts = $('<div class="page fronts"></div>');
       backs = $('<div class="page backs"></div>');
       $("body").append(fronts);
@@ -158,26 +178,18 @@ function makeCards (template, cards) {
 
     fronts.append(renderCardFront(template, card));
     backs.append(renderCardBack(template, card));
-    if (card.template === "Ability" || card.template === "Loot") {
-      var el = $("#" + camelCase(card.name));
-      var text = el.find(".abilitytext");
-      var textHeight = text.height();
-      if (!textHeight) {
-        console.log("Error reading height of " + card.name);
-      }
-      else if (textHeight > 160) {
-        console.log("Potential overflow on " + card.name)
-      }
-    }
+
     cardCount++;
     templateCount++;
   }
+
   console.log(templateCount + " " + template + " cards, " + cardCount + " total");
   SVGInjector(document.querySelectorAll('img.svg'), {});
 }
 
 
 function makeFilter (title, values) {
+
   var el = $("<select data-filter='" + title + "'></select>");
   el.append("<option value=''>All " + title + "</option>");
   for (var v in values) {
@@ -191,8 +203,8 @@ function makeFilter (title, values) {
       }
     }).promise().done(function() {
       history.replaceState({}, document.title, '?' + jQuery.param(params));
+      location.reload();
     })
-    render();
   });
   $("#dynamicFilters").prepend(el);
   if (filters[title]) {
@@ -203,7 +215,7 @@ function makeFilter (title, values) {
 
 // also in cards.js
 function camelCase (str) {
-  return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
+  return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (letter, index) {
     return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
   }).replace(/\s+/g, '').replace(/'/, '');
 }
