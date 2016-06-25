@@ -57,7 +57,6 @@
           this._route = this.initial;
           return;
         }
-        console.log("Animation Finished");
         this.fire('animFinish');
       },
       categoryTap: function(e) {
@@ -121,7 +120,7 @@
 
         // Scroll to the top of the target before switching over, if we can.
         var targetElem = this.querySelector("*[data-route='"+target+"']");
-        console.log(targetElem);
+
         if (targetElem !== null && targetElem.scrollToTop !== undefined) {
           targetElem.scrollToTop();
         }
