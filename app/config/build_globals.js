@@ -13,11 +13,13 @@ var docID = "1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM";
 
 function parseEncounters(rows) {
   var result = {};
+  console.log("Parsing encounters...");
   rows.forEach(function(row) {
     if (row.Comment) {
       return;
     }
-    result[row.Name] = {name: row.Name, health: parseInt(row.health), tier: parseInt(row.tier), class: row.class};
+    console.log(row.name);
+    result[row.name] = {name: row.name, health: parseInt(row.health), tier: parseInt(row.tier), class: row.class};
   });
   return result;
 }
@@ -25,7 +27,6 @@ function parseEncounters(rows) {
 function main(rows) {
   var globals = require(src); //Provides dataGlobal variable
   globals.encounters = parseEncounters(rows);
-  
   fs.writeFile(dest, JSON.stringify(globals, null, 2), function(err) {
     if (err) {
       console.log(err);

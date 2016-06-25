@@ -13,10 +13,10 @@ var questParser = function() {
 
 questParser.prototype.init = function(root) {
   if (root === undefined) {
-    throw new Error("Quest has invalid root node");    
+    throw new Error("Quest has invalid root node");
   }
   this.root = root;
-  
+
   console.log("Checking for bad entries");
   var badEntries = this._getInvalidNodesAndAttributes(root);
   if (!this._isEmptyObject(badEntries)) {
@@ -28,6 +28,8 @@ questParser.prototype.init = function(root) {
   if (!this._isEmptyObject(duplicateIDs)) {
     throw new Error("Found nodes with duplicate ids: " + JSON.stringify(duplicateIDs));
   }
+
+  // TODO(scott): Add check for proper resolution of encounter enemies
 
   this.path = [root.children[0]];
   return this._loadCurrentNode();
@@ -107,7 +109,7 @@ questParser.prototype._loadChoiceNode = function(node) {
   if (!hasControlChild) {
     throw new Error("<choice> without goto attribute must have at least one of <encounter/end/roleplay>");
   }
-  
+
   // If we're on a "choice" node, dive in to the first choice.
   this.path.push(node.children[0]);
   return this._loadCurrentNode();
@@ -271,14 +273,14 @@ questParser.prototype._getInvalidNodesAndAttributes = function(node) {
 // Returns a map of id->[element] of all duplicate elements with the same IDs.
 questParser.prototype._getDuplicateIds = function(node) {
   var map = this._generateIdMapping(node);
-  
+
   var results = {};
   Object.keys(map).forEach(function(k) {
     if (map[k].length > 1) {
       results[k] = map[k];
     }
   });
-  
+
   return results;
 };
 

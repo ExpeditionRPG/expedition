@@ -321,11 +321,10 @@
         var tierSum = 0;
         this.encounter.forEach(function(e) {
           if (!e.tier) {
-            e = dataGlobal.encounters[e.name];
-
-            if (e === undefined) {
+            if (dataGlobal.encounters[e.name] === undefined) {
               throw new Error('Could not find in global encounters: ' + e.name);
             }
+            e = dataGlobal.encounters[e.name];
           }
           resolved.push(e);
           tierSum += e.tier;
