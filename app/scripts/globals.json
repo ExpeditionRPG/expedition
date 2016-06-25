@@ -1,8 +1,8 @@
 {
   "adventurers": 4,
-  "tutorialVisibility": {},
   "helplevel": 2,
   "multitouch": true,
+  "tutorialVisibility": {},
   "encounters": {
     "Thief": {
       "name": "Thief",
@@ -96,7 +96,7 @@
     },
     "Giant Spider": {
       "name": "Giant Spider",
-      "health": 18,
+      "health": 14,
       "tier": 2,
       "class": "Beast"
     },
@@ -120,7 +120,7 @@
     },
     "Troll": {
       "name": "Troll",
-      "health": 22,
+      "health": 26,
       "tier": 4,
       "class": "Beast"
     },
@@ -132,7 +132,7 @@
     },
     "Korrigan Elf": {
       "name": "Korrigan Elf",
-      "health": 8,
+      "health": 7,
       "tier": 1,
       "class": "Fae"
     },
@@ -180,7 +180,7 @@
     },
     "Rift Walker": {
       "name": "Rift Walker",
-      "health": 22,
+      "health": 20,
       "tier": 4,
       "class": "Fae"
     },
@@ -208,8 +208,8 @@
       "tier": 1,
       "class": "Undead"
     },
-    "Viking": {
-      "name": "Viking",
+    "Undead Viking": {
+      "name": "Undead Viking",
       "health": 12,
       "tier": 2,
       "class": "Undead"
