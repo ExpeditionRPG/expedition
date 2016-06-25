@@ -147,10 +147,11 @@
         Polymer.dom(this).appendChild(div);
       },
       _onGlobalChanged: function(evt) {
-        if (evt.detail.path === 'globals.showhelp') {
-          if (evt.detail.value === true) {
+        if (evt.detail.path === 'globals.helplevel' && this.getEffectiveChildren()[0] !== undefined && !this._parser.isStarted()) {
+          if (evt.detail.value >= 1) {
             this.$.pages.ready();
           } else {
+            // Do not show help text
             this.startQuest();
           }
         }
