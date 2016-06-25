@@ -20,17 +20,27 @@
     Polymer({
       is: 'number-picker',
       inc: function() {
-        this.value++;
+        this.value = Math.min(this.value+1, this.max);
         this.fire('update');
       },
       dec: function() {
-        this.value = Math.max(0, this.value - 1);
+        this.value = Math.max(this.value - 1, this.min);
         this.fire('update');
       },
       properties: {
         value: {
           type: Number,
           notify: true
+        },
+        max: {
+          type: Number,
+          notify: true,
+          value: Infinity
+        },
+        min: {
+          type: Number,
+          notify: true,
+          value: 0
         },
         label: String
       },

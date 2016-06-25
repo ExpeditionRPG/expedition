@@ -120,7 +120,7 @@
           <p>If you reach zero health, you are knocked out. After you resolve this turn, you cannot play further cards until the end of the Encounter.</p>
         </template>
 
-        <number-picker label="Adventurers" class="adventurers" value="{{adventurers}}">
+        <number-picker label="Adventurers" class="adventurers" value="{{adventurers}}" max="{{globals.adventurers}}">
           Set this to the number of adventurers still fighting. You are defeated when this reaches zero.
         </number-picker>
         <template is="dom-if" if="{{_isTerminalState(adventurers, tierSum)}}">
