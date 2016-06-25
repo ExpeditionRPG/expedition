@@ -31,17 +31,17 @@
           });
         }
 
-        this._update();
+        this.update();
       },
       inc: function() {
         this.value = (this.value + 1) % this._choices.length;
-        this._update();
+        this.update();
       },
       dec: function() {
         this.value = (this.value + this._choices.length - 1) % this._choices.length;
-        this._update();
+        this.update();
       },
-      _update: function() {
+      update: function() {
         if (this.value === undefined) {
           return;
         }

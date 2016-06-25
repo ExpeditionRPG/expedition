@@ -31,8 +31,15 @@
     Polymer({
     	is: 'expedition-settings',
 	    behaviors: [GlobalsBehaviour],
+      listeners: {
+        'globals-changed': '_onGlobalChanged'
+      },
 	    ready: function() {},
-      	properties: {}
+      _onGlobalChanged: function(evt) {
+        // For some reason, the picker does not update despite the global state changing.
+        this.$.picker.update();
+      },
+      properties: {}
     });
   </script>
 
