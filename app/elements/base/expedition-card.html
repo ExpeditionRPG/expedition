@@ -34,11 +34,11 @@
 
     svg, img {
       position: absolute;
-      height: 30%;
-      width: auto;
+      height: calc(3 * var(--vh-huge));
+      width: calc(3 * var(--vh-huge));
       right: 0;
-      top: 50%;
-      /* margin-right: -10%; */ /* TODO: Re-shift this once we figure out why it's breaking overflow */
+      bottom: var(--vh-huge);
+      margin-right: -10%;
       margin-top: -25%;
       opacity: var(--icon-watermark-opacity);
     }
@@ -63,6 +63,7 @@
     .scrollbox {
       @apply(--layout-vertical);
       position: relative;
+      min-height: 90vh;
     }
 
     .scrollbox:before {
@@ -118,9 +119,6 @@
   </style>
   <template>
     <div class="card">
-      <template is="dom-if" if="{{_icon}}">
-        <img id="bgimg" src="images/{{_icon}}.svg"></img>
-      </template>
       <div class="spacer ios_only"></div>
       <div class="title">
           <paper-icon-button id="return" icon="icons:chevron-left" on-tap="_return"></paper-icon-button>
@@ -136,6 +134,9 @@
       </div>
       <div class="article">
         <div class="scrollbox">
+          <template is="dom-if" if="{{_icon}}">
+            <img id="bgimg" src="images/{{_icon}}.svg"></img>
+          </template>
           <div class="content" id="content"><content></content></div>
         </div>
       </div>
