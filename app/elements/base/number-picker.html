@@ -4,13 +4,18 @@
       width: var(--vw-huge);
       height: var(--vw-huge);
     };
+
+    .hidden {
+      /* We want to explicitly hide the arrows without displacing anything, so display:none doesn't work here. */
+      visibility: hidden;
+    }
   </style>
   <template>
     <div class="input">
       <div class="value layout horizontal">
-        <paper-icon-button id="dec" icon="icons:chevron-left" on-tap="dec"></paper-icon-button>
+        <paper-icon-button id="dec" icon="icons:chevron-left" on-tap="dec" class$="{{hideIfMin(value)}}"></paper-icon-button>
         <div id="label" class="label flex">{{ label }}: <span id="value">{{value}}</span></div>
-        <paper-icon-button id="inc" icon="icons:chevron-right" on-tap="inc"></paper-icon-button>
+        <paper-icon-button id="inc" icon="icons:chevron-right" on-tap="inc" class$="{{hideIfMax(value)}}"></paper-icon-button>
       </div>
     </div>
     <div class="subtext" id="subtext"><content></content></div>
@@ -20,17 +25,33 @@
     Polymer({
       is: 'number-picker',
       inc: function() {
-        this.value++;
+        this.value = Math.min(this.value+1, this.max);
         this.fire('update');
       },
       dec: function() {
-        this.value = Math.max(0, this.value - 1);
+        this.value = Math.max(this.value - 1, this.min);
         this.fire('update');
+      },
+      hideIfMin: function(val) {
+        return (val == this.min) ? "hidden" : "";
+      },
+      hideIfMax: function(val) {
+        return (val == this.max) ? "hidden" : "";
       },
       properties: {
         value: {
           type: Number,
           notify: true
+        },
+        max: {
+          type: Number,
+          notify: true,
+          value: Infinity
+        },
+        min: {
+          type: Number,
+          notify: true,
+          value: 0
         },
         label: String
       },
