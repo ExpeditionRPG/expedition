@@ -105,8 +105,10 @@
         Your party quickly takes cover behind some nearby headstones and sneaks towards the group.
       </p>
 
-      <instruction>One of your party must roll a die at this time.</instruction>
-      <instruction>Choose a next action based on the result of that roll:</instruction>
+      <instruction>
+        <p>One of your party must roll a die at this time.</p>
+        <p>Choose a next action based on the result of that roll:</p>
+      </instruction>
 
       <choice>
         Rolled above 10
@@ -319,12 +321,14 @@
   </p>
 </roleplay>
 <roleplay title="The Phylactery">
-  <instruction>Choose up to two players. Those players are the phylactery group.</instruction>
-  <instruction>The phylactery group must only attack the phylactery until it's destroyed. When it is, they may join combat.</instruction>
-  <instruction>The phylactery group does not take round damage, but is still affected by surges.</instruction>
-  <instruction>Players not in the phylactery group may not attack the phylactery.</instruction>
-  <instruction>At this time, draw a tier III Undead encounter and place it face-down with full health. This is the phylactery.</instruction>
-  <instruction>The encounter is over when all enemies and the phylactery are destroyed.</instruction>
+  <instruction>
+    <p>Choose up to two players. Those players are the phylactery group.</p>
+    <p>The phylactery group must only attack the phylactery until it's destroyed. When it is, they may join combat.</p>
+    <p>The phylactery group does not take round damage, but is still affected by surges.</p>
+    <p>Players not in the phylactery group may not attack the phylactery.</p>
+    <p>At this time, draw a tier III Undead encounter and place it face-down with full health. This is the phylactery.</p>
+    <p>The encounter is over when all enemies and the phylactery are destroyed.</p>
+  </instruction>
 </roleplay>
 <encounter icon="undead">
   <e>Lich</e>
