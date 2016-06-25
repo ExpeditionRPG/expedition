@@ -147,13 +147,12 @@
     Polymer({
       is: 'expedition-card',
       ready: function() {
-        // For dark cards, we need to mutate the icon path.
         this._icon = "";
 
         if (this.dark) {
           this.className = "dark";
         }
-        this._onIconChange();  
+        this._onIconChange();
       },
       scrollToTop: function() {
         this.querySelector(".article").scrollTop = 0;
@@ -164,7 +163,6 @@
 
           // Allow the template time to render
           Polymer.dom.flush();
-          
           SVGInjector(this.querySelector('#bgimg'), {}, null);
         }
       },
