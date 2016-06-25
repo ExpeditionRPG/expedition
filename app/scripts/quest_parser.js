@@ -66,6 +66,20 @@ questParser.prototype.choiceEvent = function(choice) {
   return this._loadCurrentNode();
 };
 
+questParser.prototype.back = function() {
+  if (this.path.length <= 1) {
+    return null;
+  }
+
+  // Pop the most recent node, as well as all preceding choice nodes
+  // until we come to something we can actually display.
+  do {
+    this.path.pop();
+  } while (this.path[this.path.length-1].localName === "choice");
+
+  return this._loadCurrentNode();
+};
+
 questParser.prototype._loadCurrentNode = function() {
   var node = this.path[this.path.length - 1];
   switch(node.localName) {
@@ -78,8 +92,6 @@ questParser.prototype._loadCurrentNode = function() {
     case "end":
       return this._loadEndNode(node);
     case "comment":
-      console.log("Comment found, skipping to next element");
-      console.log(node);
       this.path.push(this._findNextNode(node));
       return this._loadCurrentNode();
     default:
@@ -89,7 +101,6 @@ questParser.prototype._loadCurrentNode = function() {
 
 questParser.prototype._loadChoiceNode = function(node) {
   // If choice is empty and has id attribute, jump to the destination element.
-  console.log(node);
   if (node.children.length === 0 && node.hasAttribute('goto')) {
     this.path.push(this.root.querySelector("#"+node.getAttribute('goto')));
     return this._loadCurrentNode();

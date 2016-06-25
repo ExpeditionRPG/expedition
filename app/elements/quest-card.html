@@ -43,6 +43,7 @@
       <expedition-card
         title="Player setup"
         icon="cards"
+        on-return="_onPlayerSetupReturn"
         id="setup"
         data-route="questsetup">
 
@@ -70,6 +71,7 @@
         data-target="endgame"
         icon="{{_icon}}"
         title="{{_title}}"
+        on-return="_onDialogReturn"
         on-tap="_onChoice">
         <article id="contents"></article>
       </dialog-card>
@@ -165,16 +167,16 @@
         this.$.pages.reset();
       },
       next: function(e) {
-        console.log(e.currentTarget.dataset.target);
         this.$.pages.next(e.currentTarget.dataset.target);
       },
       _onCombatEnd: function(e) {
-        // Suppress combat resolution on regular "back button" presses, instead
-        // using the default event handler.
-        if (typeof(e.detail) !== "boolean") {
-          return;
+        // Suppress combat resolution on regular "back button" presses, treating it
+        // like a back button from dialog instead of following the default handler.
+        if (typeof(e.detail) !== 'boolean') {
+          this._onDialogReturn(e);
+        } else {
+          this._handleParser(this._parser.choiceEvent((e.detail) ? 'win' : 'lose'));
         }
-        this._handleParser(this._parser.choiceEvent((e.detail) ? 'win' : 'lose'));
         e.stopPropagation();
       },
       _onChoice: function(e) {
@@ -187,37 +189,48 @@
         }
         this._handleParser(this._parser.choiceEvent(idx));
       },
-      _handleParser: function(p) {
+      _onDialogReturn: function(e) {
+        this._handleParser(this._parser.back(), 'slide-right');
+        e.stopPropagation();
+      },
+      _onPlayerSetupReturn: function(e) {
+        this.$.pages.prev('adventurersetup');
+        e.stopPropagation();
+      },
+      _handleParser: function(p, anim) {
         switch(p.type) {
           case 'end':
-            this._doEnd(p);
+            this._doEnd(p, anim);
             break;
           case 'dialog':
-            this._doDialog(p);
+            this._doDialog(p, anim);
             break;
           case 'encounter':
-            this._doCombat(p);
+            this._doCombat(p, anim);
             break;
           default:
             throw new Error('unknown parser response ' + p);
         }
       },
-      _doEnd: function(p) {
+      _doEnd: function(p, anim) {
         // TODO: Win/lose propagation
         console.log(p.contents);
         this._isWin = p.contents;
-        this.$.pages.next('endgame');
+        this.$.pages.next('endgame', anim);
       },
-      _doCombat: function(p) {
+      _doCombat: function(p, anim) {
         this.$.combat.ready();
         this._encounter = p.contents;
         this._combaticon = p.icon;
-        this.$.pages.next('combat');
+        this.$.pages.next('combat', anim);
       },
-      _doDialog: function(p) {
-        var anim = (this.$.pages.getCurrentPage() === 'questdialog') ? null :  "instant";
-        this.$.dialog.next(p, anim);
-        this.$.pages.next('questdialog');
+      _doDialog: function(p, anim) {
+        if (this.$.pages.getCurrentPage() === 'questdialog') {
+          this.$.dialog.next(p, anim);
+        } else {
+          this.$.dialog.next(p, 'instant');
+          this.$.pages.next('questdialog', anim);
+        }
       },
       properties: {
         url: String
