@@ -13,9 +13,9 @@
   <template>
     <div class="input">
       <div class="value layout horizontal">
-        <paper-icon-button id="dec" icon="icons:chevron-left" on-tap="dec" class$="{{hideIfMin(value)}}"></paper-icon-button>
+        <paper-icon-button id="dec" icon="icons:chevron-left" on-click="dec" class$="{{hideIfMin(value)}}"></paper-icon-button>
         <div id="label" class="label flex">{{ label }}: <span id="value">{{value}}</span></div>
-        <paper-icon-button id="inc" icon="icons:chevron-right" on-tap="inc" class$="{{hideIfMax(value)}}"></paper-icon-button>
+        <paper-icon-button id="inc" icon="icons:chevron-right" on-click="inc" class$="{{hideIfMax(value)}}"></paper-icon-button>
       </div>
     </div>
     <div class="subtext" id="subtext"><content></content></div>
@@ -27,10 +27,12 @@
       inc: function() {
         this.value = Math.min(this.value+1, this.max);
         this.fire('update');
+        this.$.inc.blur();
       },
       dec: function() {
         this.value = Math.max(this.value - 1, this.min);
         this.fire('update');
+        this.$.dec.blur();
       },
       hideIfMin: function(val) {
         return (val == this.min) ? "hidden" : "";
