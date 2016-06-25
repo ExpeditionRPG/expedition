@@ -191,7 +191,7 @@ questParser.prototype._loadDialogNode = function(node) {
   this._loopChildren(node, function(tag, c) {
     c = c.cloneNode(true);
 
-    // Convert "choice" tags to <a></a>
+    // Convert "choice" tags to <expedition-button> tags
     if (tag === "choice") {
       if (!c.childNodes.length) {
         throw new Error("<choice> must contain choice text");
@@ -205,6 +205,15 @@ questParser.prototype._loadDialogNode = function(node) {
       Polymer.dom(c).appendChild(text);
       numChoices++;
     }
+
+    // Convert "instruction" tags to <expedition-indicator> tags.
+    if (tag === "instruction") {
+      var text = c.childNodes[0];
+      c = document.createElement('expedition-indicator');
+      c.setAttribute('icon', 'adventurer');
+      Polymer.dom(c).appendChild(text)
+    }
+
     contents.appendChild(c);
   });
 

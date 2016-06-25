@@ -10,8 +10,11 @@
 
   /* Import custom fonts */
   @font-face {
-    font-family: 'MarkoOne';
-    src: url("../fonts/MarkoOne-Regular.ttf") format('truetype');
+    font-family: 'CinzelBold';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Cinzel-Bold'), url(../fonts/Cinzel-Bold.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
   }
 
   @font-face {
@@ -77,14 +80,14 @@
     --icon-width: 0.15in;
     --footer-height: 0.4in;
 
-    --font-header: 'MarkoOne', serif !important;
+    --font-header: 'CinzelBold', serif !important;
     --font-body: 'MinionPro', serif !important;
     --font-bold-weight: 700;
   }
 
-  :root body:not(.android) .android_only, 
-  :root body:not(.ios) .ios_only, 
-  :root body.android .web_only, 
+  :root body:not(.android) .android_only,
+  :root body:not(.ios) .ios_only,
+  :root body.android .web_only,
   :root body.ios .web_only {
     display: none;
   };
