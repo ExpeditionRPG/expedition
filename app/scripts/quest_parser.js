@@ -35,6 +35,10 @@ questParser.prototype.init = function(root) {
   return this._loadCurrentNode();
 };
 
+questParser.prototype.isStarted = function() {
+  return (this.path.length > 1);
+}
+
 questParser.prototype.choiceEvent = function(choice) {
   var that = this;
   var parent = this.path[this.path.length - 1];
