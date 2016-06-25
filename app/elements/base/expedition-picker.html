@@ -8,9 +8,9 @@
   <template>
     <div class="input">
       <div class="value horizontal layout">
-        <paper-icon-button id="dec" icon="icons:chevron-left" on-tap="dec"></paper-icon-button>
+        <paper-icon-button id="dec" icon="icons:chevron-left" on-click="dec"></paper-icon-button>
         <div id="label" class="label flex">{{ label }}</div>
-        <paper-icon-button id="inc" icon="icons:chevron-right" on-tap="inc"></paper-icon-button>
+        <paper-icon-button id="inc" icon="icons:chevron-right" on-click="inc"></paper-icon-button>
       </div>
     </div>
     <div class="subtext" id="subtext">{{_subtext}}</div>
@@ -36,10 +36,12 @@
       inc: function() {
         this.value = (this.value + 1) % this._choices.length;
         this.update();
+        this.$.inc.blur();
       },
       dec: function() {
         this.value = (this.value + this._choices.length - 1) % this._choices.length;
         this.update();
+        this.$.dec.blur();
       },
       update: function() {
         if (this.value === undefined) {
