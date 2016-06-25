@@ -208,10 +208,11 @@ questParser.prototype._loadDialogNode = function(node) {
 
     // Convert "instruction" tags to <expedition-indicator> tags.
     if (tag === "instruction") {
-      var text = c.childNodes[0];
+      var inner = document.createElement('span');
+      inner.innerHTML = c.innerHTML;
       c = document.createElement('expedition-indicator');
       c.setAttribute('icon', 'adventurer');
-      Polymer.dom(c).appendChild(text)
+      Polymer.dom(c).appendChild(inner);
     }
 
     contents.appendChild(c);

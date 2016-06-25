@@ -190,7 +190,12 @@
         this._handleParser(this._parser.choiceEvent(idx));
       },
       _onDialogReturn: function(e) {
-        this._handleParser(this._parser.back(), 'slide-right');
+        var p = this._parser.back();
+        // If we're at the start of the quest, fall back to the default handler.
+        if (p === null) {
+          return;
+        }
+        this._handleParser(p, 'slide-right');
         e.stopPropagation();
       },
       _onPlayerSetupReturn: function(e) {
