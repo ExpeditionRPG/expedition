@@ -356,13 +356,13 @@ svg {
       /*margin: $border;*/
       box-sizing: border-box;
       position: relative;
-      margin-left: 0;
+      margin-left: 0.1in;
     }
 
-    &.back {
+    &.front.Encounter {
 
       .contents {
-        margin-left: .1in;
+        margin-left: 0;
       }
     }
 
