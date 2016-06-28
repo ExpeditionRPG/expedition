@@ -55,6 +55,22 @@ Handlebars.registerHelper("camelCase", function (str) {
   }).replace(/\s+/g, '').replace(/'/, '');
 });
 
+// generates a bottom tracker, fits up to 14; inclusive 0-count
+Handlebars.registerHelper('horizontalCounter', function (count) {
+
+
+  var output = '';
+  var outputted = 0;
+
+  while (count >= 0) {
+
+    output += "<span>" + outputted + "</span>";
+    count--;
+    outputted++;
+  }
+  return output;
+});
+
 // generate U-shaped healthCounters with two special cases:
   // 10 health should fit into a single sidge
   // the number of numbers that fit onto the bottom track depends on the number of single vs double digit numbers
@@ -74,7 +90,7 @@ Handlebars.registerHelper('healthCounter', function (health) {
   var output = '<ul class="hp-tracker hp-tracker-vertical-right">';
   var temp = ''; // temp storage for when we have to output in reverse in horizontal and vertical-right
   var outputted = (max) ? -1 : 0; // put one extra on the vertical to fill out max
-  var horizontal = false;
+
   while (health > 0) {
     health--; //subtract HP first, since we're already showing the max HP at the top
 
@@ -111,7 +127,7 @@ Handlebars.registerHelper('lootCounter', function (count) {
   var output = '<ul class="hp-tracker hp-tracker-vertical-right">';
   var temp = ''; // temp storage for when we have to output in reverse in horizontal and vertical-right
   var outputted = 0;
-  var horizontal = false;
+
   while (count > 0) {
     if (outputted < 15 || (outputted === 15 && count === 0)) {
       output += "<li>" + count + "</li>";

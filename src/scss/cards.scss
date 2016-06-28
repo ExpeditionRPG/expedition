@@ -190,7 +190,7 @@ svg {
   }
 }
 
-.hp-tracker-horizontal {
+.hp-tracker-horizontal, .counter-horizontal {
 
   list-style: none;
   display: block;
@@ -204,6 +204,19 @@ svg {
 
   td {
     padding: 0.05in;
+  }
+}
+
+.counter-horizontal {
+  margin: auto;
+  padding: 0;
+  left: 0;
+  right: 0;
+  bottom: -0.1in;
+
+  span {
+    padding: 0 0.05in;
+    display: inline-block;
   }
 }
 
@@ -447,8 +460,13 @@ svg {
   }
 
   &.Adventurer, &.Encounter {
+
     .flavortext {
-      padding: 0.8*$padding $padding;
+      padding: 0 $padding;
+    }
+
+    &.bottomBar .flavortext {
+      padding-bottom: 0.8*$padding;
     }
   }
 
@@ -456,8 +474,14 @@ svg {
 
     text-align: center;
 
+    .adventurertext {
+      margin-top: 0.25in;
+    }
+
     footer {
       text-align: center;
+      right: 0.1in;
+      left: 0.1in;
     }
   }
 

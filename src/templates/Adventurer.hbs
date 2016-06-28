@@ -1,8 +1,7 @@
-<div class="card front horizontal {{{ cardType }}}" id="{{{camelCase name}}}">
+<div class="card front horizontal {{{ cardType }}} bottomBar" id="{{{camelCase name}}}">
   <div class="contents">
     <header>
       <div class="name">{{{ name }}}</div>
-      <div class="health">{{> icon img='health_small' }} 12</div>
     </header>
     <article>
       <div class="adventurertext" ><div class="child">
@@ -14,8 +13,11 @@
       </div></div>
     </article>
     <footer>
-      <div class="flavortext mdl-badge-left">{{{ flavortext }}}</div>
+      <div class="flavortext">{{{ flavortext }}}</div>
+      <div class="counter counter-horizontal">
+        {{> icon img='health_small' }}
+        {{{horizontalCounter 12}}}
+      </div>
     </footer>
-    {{{healthCounter 12}}}
   </div>
 </div>
