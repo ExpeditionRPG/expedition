@@ -281,7 +281,7 @@ svg {
     .health {
 
       position: absolute;
-      top: 0;
+      top: -0.03in;
       right: 0;
 
       .svg {
@@ -356,7 +356,14 @@ svg {
       /*margin: $border;*/
       box-sizing: border-box;
       position: relative;
-      margin-left: .0525in;
+      margin-left: 0;
+    }
+
+    &.back {
+
+      .contents {
+        margin-left: .1in;
+      }
     }
 
     header {
@@ -549,6 +556,7 @@ svg {
   }
 }
 
+
 /* ===== THE CARD BACKS ===== */
 
 .card.back {
@@ -599,7 +607,8 @@ svg {
 
   &.Adventurer {
     .naming {
-      bottom: -0.04in;
+      color: white;
+      bottom: 0;
       left: 0;
       right: 0;
     }
