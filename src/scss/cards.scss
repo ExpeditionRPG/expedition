@@ -51,25 +51,20 @@ body.singlePage {
   }
 
   .page {
-    width: 2.75in !important;
-    height: 3.75in !important;
+    width: $width !important;
+    height: $height !important;
   }
 
   .card {
 
     width: $width !important;
     height: $height !important;
-    border: 0 !important;
     padding: 0 !important;
-
-    .contents {
-      top: $bleed;
-      left: $bleed;
-    }
+    /*border: 2 * $bleed solid black;*/
+    /* ONLY FOR TAKING SCREENSHOTS */
+    /*border-radius: $bleed;*/
 
     &.front, &.back {
-
-      border: 0;
 
       &:before {
         top: 0;
@@ -77,27 +72,49 @@ body.singlePage {
       }
     }
 
-    &.horizontal {
+    .contents {
+      top: $bleed;
+      left: $bleed;
+    }
+
+    &.front.horizontal {
 
       .contents {
         height: 2.25in;
         width: 3.25in;
+        margin: 0;
+      }
+    }
+
+    &.Ability {
+      border-color: #E5DFBF;
+    }
+
+    &.Adventurer {
+      border-color: #D3D3D3;
+      &.back {
+        border-color: #B6B7B2;
+      }
+    }
+
+    &.Encounter {
+      border-color: #2A292E;
+    }
+
+    &.Helper {
+      border-color: #E5DFBF;
+    }
+
+    &.Loot {
+      border-color: #F2EFEA;
+      &.back {
+        border-color: #4E3025;
       }
     }
   }
 }
 
 body.printandplay {
-
-  .card.Encounter {
-
-    background-color: #444;
-    border-color: #444 !important;
-
-    footer .tier, footer .cardType {
-      background-color: #444;
-    }
-  }
 }
 
 body.hideBacks {
@@ -466,7 +483,8 @@ svg {
     }
   }
 
-  &.Adventurer, &.Encounter {
+  /* Cards with trackers */
+  &.Adventurer, &.Encounter, &.Loot {
 
     .flavortext {
       padding: 0 $padding;
@@ -532,12 +550,10 @@ svg {
         top: 0.02in;
       }
 
-      footer {
+      &.bottomBar {
 
-        bottom: 0.28in;
-
-        .flavortext {
-          padding: 0.8*$padding $padding;
+        footer {
+          bottom: 0.28in;
         }
       }
     }
@@ -648,12 +664,9 @@ svg {
 /* ===== BACKGROUNDS ===== */
 
 .Encounter {
+
   color: $text-color-white;
-  background: black;
-  border-radius: 0 !important;
-  &.front, &.back {
-    border-color: black !important;
-  }
+
   svg {
     fill: $text-color-white;
   }
@@ -661,7 +674,7 @@ svg {
 
 
 .card.front, .card.back {
-  border: 0;
+
   &:before {
     content: "";
     position: absolute;
@@ -725,7 +738,7 @@ svg {
 .card.back.Encounter {
   .tier {
     left: 0.03in;
-    bottom: 0.47in;
+    bottom: 0.44in;
   }
 }
 .card.back.Beast {
