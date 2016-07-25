@@ -1,4 +1,4 @@
-<div class="card front horizontal {{ cardType }} {{ class }} tier{{ tier }} {{#gt health 10}}bottomBar{{/gt}}">
+<div class="card front horizontal {{ cardType }} {{ class }} tier{{ tier }} {{#gt health 10}}bottomBar{{/gt}} {{#is health '10'}}hp10{{/is}}">
   <div class="contents">
     <header>
       <div class="health">{{> icon img='health_small' }} {{ health }}</div>

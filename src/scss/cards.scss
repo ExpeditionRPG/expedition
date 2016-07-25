@@ -473,6 +473,10 @@ svg {
       }
     }
 
+    .item {
+      margin-top: 0.025in;
+    }
+
     br {
       display: block;
       margin: 0;
@@ -534,6 +538,10 @@ svg {
     .health, .hp-tracker {
       color: #CFCFCF;
     }
+
+    &.hp10 .hp-tracker-vertical-right li {
+      padding-bottom: 0.042in;
+    }
   }
 
   &.Loot {
@@ -544,6 +552,10 @@ svg {
 
       article {
         padding: 0 0.15in;
+      }
+
+      .hp-tracker {
+        color: #888;
       }
 
       .hp-tracker-vertical-right {
