@@ -340,8 +340,11 @@ svg {
 
     br {
       display: block;
-      margin: 7px 0;
       content: "";
+
+      &.padded {
+        margin: 7px 0;
+      }
     }
   }
 
@@ -455,6 +458,18 @@ svg {
     }
   }
 
+  &.Loot {
+    .abilitytext {
+      height: auto;
+      min-height: 0.4in;
+    }
+
+    .rng {
+      min-height: 0.65in;
+      text-align: left;
+    }
+  }
+
   &.Helper {
 
     article {
@@ -481,7 +496,7 @@ svg {
       display: block;
       margin: 0;
       padding: 0;
-      height: 0.1in;
+      height: 0.08in;
       line-height: 0in;
       content: "";
     }
@@ -750,13 +765,13 @@ svg {
 .card.back.Encounter {
   .tier {
     left: 0.03in;
-    bottom: 0.44in;
+    bottom: 0.48in;
   }
 }
 .card.back.Beast {
 
   .tier {
-    color: #BE1D2F;
+    color: #ec1f24;
   }
 
   &:before {
@@ -776,7 +791,7 @@ svg {
 .card.back.Fae {
 
   .tier {
-    color: #AB499B;
+    color: #df3f95;
   }
 
   &:before {
@@ -786,7 +801,7 @@ svg {
 .card.back.Undead {
 
   .tier {
-    color: #00A652;
+    color: #70c25e;
   }
 
   &:before {

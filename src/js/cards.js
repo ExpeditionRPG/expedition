@@ -179,11 +179,34 @@ function cleanCardData(template_id, card) {
     if (card.abilitytext) { // bold ability STATEMENTS:
       card.abilitytext = card.abilitytext.replace(/(.*:)/g, boldCapture);
     }
+    if (card.roll) { // bold loot STATEMENTS:
+      card.roll = card.roll.replace(/(.*:)/g, boldCapture);
+    }
 
-    Object.keys(card).forEach(function(property) {
-      if (card[property] === '-') { card[property] = ''; } // remove '-' proprties
+    Object.keys(card).forEach(function parseProperties (property) {
+
+      if (card[property] === '-') { // remove '-' proprties
+        card[property] = '';
+      }
       else {
-        card[property] = card[property].replace(/(?:\r\n|\r|\n)/g, '<br />'); // turn linebreaks into BR's
+        // replace CSV line breaks with BR's - padded if: above and below OR's, below end of </strong>, above start of <strong>
+        // otherwise just a normal BR
+        card[property] = card[property].replace(/(\n(<strong>))|((<\/strong>)\n)|(\n(OR)\n)|(\n)/mg, function (whole, capture, match) {
+          if (whole.indexOf('<strong>') !== -1) {
+            return '<br class="padded"/>' + whole;
+          }
+          else if (whole.indexOf('</strong>') !== -1) {
+            return whole + '<br class="padded"/>';
+          }
+          else if (whole.indexOf('OR') !== -1) {
+            return '<br class="padded"/>' + whole + '<br class="padded"/>';
+          }
+          else {
+            return whole + '<br />';
+          }
+        });
+
+
 
         // Expand &macro's
         card[property] = card[property].replace(/&[a-zA-Z0-9;]*/mg, function replacer (match) {

@@ -18,13 +18,13 @@
         <div class="hit">
           <strong>Success:</strong>
           {{{ hit }}}
-          <br/>
+          <br class="padded" />
         </div>
         {{#if abilitytext }}
           <div>
             {{{ abilitytext }}}
           </div>
-          <br/>
+          <br class="padded" />
         {{/if}}
       </div>
       <div class="rng">
@@ -32,13 +32,13 @@
           <div class="crithit">
             <strong>{{> icon img='d20_small' }} <span class="symbol">&ge;</span> 20:</strong> {{{ crithit }}}
           </div>
-          <br/>
+          <br class="padded" />
         {{/if}}
         {{#if miss }}
           <div class="miss">
             <strong>{{> icon img='d20_small' }} <span class="symbol"><</span> {{{ risk }}}:</strong> {{{ miss }}}
           </div>
-          <br/>
+          <br class="padded" />
         {{/if}}
         {{#if critmiss }}
           <div class="critmiss">
