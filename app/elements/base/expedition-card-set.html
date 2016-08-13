@@ -9,11 +9,11 @@
   </style>
   <template>
     <neon-animated-pages attr-for-selected="data-route" selected="{{_route}}"
-        entry-animation="{{_entryAnim}}" exit-animation="{{_exitAnim}}" on-neon-animation-finish="_onNeonAnimationFinish" on-return="onReturn" class="layout flex">
+        entry-animation="{{_entryAnim}}" exit-animation="{{_exitAnim}}" on-neon-animation-finish="_onNeonAnimationFinish" on-return="onReturn" on-newdata="_buildCategoryList" class="layout flex">
       <span data-route="_transition"></span>
       <expedition-card id="select" title="{{title}}" data-route="_select" icon="{{icon}}">
         <content select="header"></content>
-        <template is="dom-repeat" items="{{_categoryList()}}">
+        <template is="dom-repeat" items="{{categoryList}}">
           <div class="listitem">
           <expedition-item on-tap="categoryTap" data-target$="{{item.route}}">
             <h1>{{item.title}}</h1>
@@ -36,11 +36,12 @@
         this._route = this.initial;
         this._lastNavigation = 0;
         this.debounceMillis = 500;
+        this._buildCategoryList();
       },
       listeners: {
         'home': 'reset'
       },
-      _categoryList: function() {
+      _buildCategoryList: function() {
         var children = [];
         this.getEffectiveChildren().forEach(function(child) {
           var title = (child.title) ? child.title : child.dataset.title;
@@ -50,7 +51,7 @@
           }
           children.push({title: title, subtitle: child.dataset.info, route: child.dataset.route, icon: icon});
         });
-        return children;
+        this.categoryList = children;
       },
       _onNeonAnimationFinish: function() {
         if (this._route === '_transition') {

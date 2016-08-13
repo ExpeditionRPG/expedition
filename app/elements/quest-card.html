@@ -12,7 +12,7 @@
     <iron-ajax
       id="questFetcher"
       url="{{url}}"
-      handle-as="text"
+      handle-as="xml"
       on-response="_onQuestFetch"></iron-ajax>
 
     <expedition-card-set id="pages" initial="adventurersetup">
@@ -113,9 +113,16 @@
         }
       },
       _onQuestFetch: function(evt) {
-        var div = document.createElement('div');
-        div.innerHTML = evt.detail.response;
-        Polymer.dom(this).appendChild(div);
+        var quest = evt.detail.response.children[0];
+        Polymer.dom(this).appendChild(quest);
+
+        // Grab the metadata
+        // TODO(scott): Apply player and time duration info here as well.
+        this.title = quest.getAttribute('title');
+        this.setAttribute("data-info", quest.getAttribute('summary'));
+
+        // Let any upstream expedition-card-set know that we now have properly set data.
+        this.fire("newdata");
       },
       _onGlobalChanged: function(evt) {
         if (evt.detail.path === 'globals.difficulty' && this.getEffectiveChildren()[0] !== undefined && !this._parser.isStarted()) {
@@ -204,7 +211,9 @@
         }
       },
       properties: {
-        url: String
+        url: String,
+        title: String,
+        "data-info": String,
       }
     });
   </script>

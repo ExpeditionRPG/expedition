@@ -264,9 +264,9 @@ questParser.prototype._loopChildren = function(node, cb) {
 questParser.prototype._getInvalidNodesAndAttributes = function(node) {
   var results = {};
 
-  // Quests must be one of <event/comment/encounter/roleplay/p/e/end>
-  if (["DIV", "SPAN", "B", "I", "EVENT", "ENCOUNTER", "ROLEPLAY", "P", "E",
-       "END", "COMMENT", "INSTRUCTION"].indexOf(
+  // Quests must only contain these tags:
+  if (["quest", "div", "span", "b", "i", "event", "encounter", "roleplay", "p", "e",
+       "end", "comment", "instruction"].indexOf(
         node.tagName) === -1) {
     results[node.tagName] = (results[node.tagName] || 0) + 1;
   }
