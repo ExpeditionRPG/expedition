@@ -15,7 +15,7 @@
       is: 'tutorial-dialog',
       behaviors: [GlobalsBehaviour],
       tryOpen: function(section) {
-        if (this.globals.helplevel !== 2 || this.globals.tutorialVisibility[section] === false) {
+        if (this.globals.difficultySettings[this.globals.difficulty].helpLevel !== 2 || this.globals.tutorialVisibility[section] === false) {
           return;
         }
         if (!this.$.section.valid(section)) {

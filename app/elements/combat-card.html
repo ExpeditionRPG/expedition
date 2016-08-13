@@ -15,7 +15,7 @@
             <expedition-static-input label="{{item.name}}">(Tier {{item.tier}} {{item.class}})</expedition-static-input>
           </template>
         </template>
-        <template is="dom-if" if="{{globals.helplevel}}">
+        <template is="dom-if" if="{{verbose}}">
           <template is="dom-if" if="{{!custom}}">
             <p>Draw the enemies listed above. Place in the center and put tokens on their maximum Health.</p>
           </template>
@@ -39,7 +39,7 @@
       </expedition-card>
 
       <expedition-card title="Prepare for Combat" data-route="prepforcombat" icon="{{icon}}" on-return="prev" dark>
-        <template is="dom-if" if="{{globals.helplevel}}">
+        <template is="dom-if" if="{{verbose}}">
           <p>Shuffle ALL of your abilities back into your deck.</p>
           <p>Draw - but don't look at - the top 3 abilities.</p>
           <p>When you begin combat:</p>
@@ -71,7 +71,7 @@
 
       <expedition-card title="Enemy Surge!" id="surgecard" data-route="combatsurge" icon="{{icon}}" on-return="_returnConfirm" dark>
         <h3>An enemy surge occurs!</h3>
-        <template is="dom-if" if="{{globals.helplevel}}">
+        <template is="dom-if" if="{{verbose}}">
           <p>
             Immediately follow the surge action listed on all remaining Encounter cards. Some Encounters' surges may also apply after they've been killed.
           </p>
@@ -83,10 +83,10 @@
       </expedition-card>
 
       <expedition-card title="Roll &amp; Resolve" data-route="combatroll" icon="{{icon}}" on-return="prev" dark>
-        <template is="dom-if" if="{{!globals.helplevel}}">
+        <template is="dom-if" if="{{!verbose}}">
           Resolve all played abilities.
         </template>
-        <template is="dom-if" if="{{globals.helplevel}}">
+        <template is="dom-if" if="{{verbose}}">
           <p>
             Roll a die for each ability with a "<img class="inline_icon" src="../images/roll_white_small.svg"></img> &gt; X" and resolve the cards' effects.
           </p>
@@ -115,7 +115,7 @@
         <h3>All adventurers:</h3>
         <h3>{{_roundStats.roundDamage}} Damage</h3>
 
-        <template is="dom-if" if="{{globals.helplevel}}">
+        <template is="dom-if" if="{{verbose}}">
           <p>Slide your Adventurer health down {{_roundStats.roundDamage}} space(s).</p>
           <p>If you reach zero health, you are knocked out. After you resolve this turn, you cannot play further cards until the end of the Encounter.</p>
         </template>
@@ -136,7 +136,7 @@
       <expedition-card title="{{endType}}" data-route="combatend" icon="{{icon}}" on-return="return" dark>
         <article>
           <template is="dom-if" if="{{_isVictory}}">
-            <template is="dom-if" if="{{globals.helplevel}}">
+            <template is="dom-if" if="{{verbose}}">
               <p>
                 <strong>All adventurers heal to full health.</strong>
               </p>
@@ -146,7 +146,7 @@
               <p>
                 You feel more knowledgeable! Each Adventurer may learn a new ability at this time:
               </p>
-              <template is="dom-if" if="{{globals.helplevel}}">
+              <template is="dom-if" if="{{verbose}}">
                 <ul>
                   <li>You may discard one of your current abilities.
                   <li>Draw 3 Ability cards from one of the decks listed on your Adventurer card.
@@ -164,7 +164,7 @@
                 <li><strong>Draw {{item.count}} Tier {{item.tierNumeral}} Loot</strong>
               </template>
             </ul>
-            <template is="dom-if" if="{{globals.helplevel}}">
+            <template is="dom-if" if="{{verbose}}">
               <p>Loot drawn at the end of an Encounter is for the entire party. It may either be divided amongst Adventurers or kept in a shared Loot pile.</p>
               <p>Loot can be used at any time and does not cost an action (unless specified).</p>
             </template>
@@ -205,7 +205,8 @@
       is: 'combat-card',
       behaviors: [GlobalsBehaviour],
       listeners: {
-        'pages.animFinish': '_onAnimFinish'
+        'pages.animFinish': '_onAnimFinish',
+        'globals-changed': '_onGlobalChanged',
       },
       ready: function() {
         this._logic = new Encounter();
@@ -282,7 +283,7 @@
             this._logic.resetSurgeCounter();
           }
 
-          this.$.timer.start();
+          this.$.timer.start(this.globals.difficultySettings[this.globals.difficulty]);
           this._logic.beginRound();
         }
         e.stopPropagation();
@@ -341,7 +342,7 @@
       },
       _onTimerStopped: function(e) {
         // Update round stats according to elapsed time.
-        this._roundStats = this._logic.endRound(e.detail);
+        this._roundStats = this._logic.endRound(e.detail, this.globals.difficultySettings[this.globals.difficulty]);
 
         // If was a surge last round, or is now a surge, reroute to surge screen
         // and add surge time to details
@@ -360,6 +361,9 @@
         if (this.$.pages.getCurrentPage() === this.$.pages.initial && !this._isReady) {
           this.ready();
         }
+      },
+      _onGlobalChanged: function() {
+        this.verbose = this.globals.difficultySettings[this.globals.difficulty].helpLevel > 0;
       },
       properties: {
         encounter: {

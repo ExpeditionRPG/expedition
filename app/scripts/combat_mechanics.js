@@ -88,9 +88,8 @@ Encounter.prototype._randomAttackDamage = function() {
   }
 };
 
-Encounter.prototype._roundAttackDamage = function (s) {
+Encounter.prototype._roundAttackDamage = function (s, difficulty) {
   // enemies each get to hit once - twice if the party took too long
-  // TODO tweak the overtime penalty based on difficulty
   var damage = 0;
   var attackCount = s.tier;
   if (s.timeRemainingMillis < 0) {
@@ -99,7 +98,9 @@ Encounter.prototype._roundAttackDamage = function (s) {
   for (var i = 0; i < attackCount; i++) {
     damage += this._randomAttackDamage();
   }
-  return damage;
+
+  // Scale according to difficulty, then round to whole number.
+  return Math.round(damage * difficulty.damageMultiplier);
 };
 
 function clone(obj) {
@@ -126,7 +127,7 @@ Encounter.prototype.resetSurgeCounter = function() {
   // TODO: This function should take an (optional) number of rounds to reset to.
 };
 
-Encounter.prototype.endRound = function(s) {
+Encounter.prototype.endRound = function(s, difficulty) {
   s = clone(s);
   this._totalTimeMillis += s.turnTimeMillis;
   s.totalTimeMillis = this._totalTimeMillis;
@@ -134,7 +135,7 @@ Encounter.prototype.endRound = function(s) {
   s.expectedDamage = Math.ceil(s.turnTimeMillis * (this._stats.tierDmgRate) / 1000);
   s.nextSurgeRounds = this.getNextSurgeRounds(s.turnTimeMillis);
   s.tier = this.getTier();
-  s.roundDamage = this._roundAttackDamage(s);
+  s.roundDamage = this._roundAttackDamage(s, difficulty);
 
   this._roundLog.push(s);
   return s;
