@@ -235,7 +235,8 @@ questParser.prototype._loadDialogNode = function(node) {
 questParser.prototype._findNextNode = function(node) {
   while (true) {
     var sibling = node.nextElementSibling;
-    if (sibling !== null && sibling.localName !== "event" && sibling.localName !== "comment") {
+    // Skip events, comments, and event-driven neighbors.
+    if (sibling !== null && sibling.localName !== "event" && sibling.localName !== "comment" && !sibling.hasAttribute('on')) {
       return sibling;
     }
 
