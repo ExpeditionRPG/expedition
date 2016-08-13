@@ -35,7 +35,7 @@
         'globals-changed': '_onGlobalChanged'
       },
 	    ready: function() {},
-      _onGlobalChanged: function(evt) {
+      _onGlobalChanged: function() {
         // For some reason, the picker does not update despite the global state changing.
         this.$.picker.update();
       },
