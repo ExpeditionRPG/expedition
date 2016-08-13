@@ -37,7 +37,7 @@ questParser.prototype.init = function(root) {
 
 questParser.prototype.isStarted = function() {
   return (this.path.length > 1);
-}
+};
 
 questParser.prototype.choiceEvent = function(choice) {
   var that = this;

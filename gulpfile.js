@@ -80,12 +80,6 @@ var optimizeHtmlTask = function (src, dest) {
     .pipe($.if('*.css', $.cssmin()))
     .pipe(assets.restore())
     .pipe($.useref())
-    // Minify any HTML
-    .pipe($.if('*.html', $.minifyHtml({
-      quotes: true,
-      empty: true,
-      spare: true
-    })))
     // Output files
     .pipe(gulp.dest(dest))
     .pipe($.size({title: 'html'}));
