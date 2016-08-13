@@ -1,6 +1,6 @@
 {
   "adventurers": 4,
-  "helplevel": 2,
+  "difficulty": 0,
   "multitouch": true,
   "tutorialVisibility": {},
   "encounters": {
@@ -244,5 +244,37 @@
       "tier": 4,
       "class": "Undead"
     }
-  }
+  },
+  "difficultySettings": [
+    {
+      "name": "Tutorial",
+      "roundTimeMillis": 20000,
+      "damageMultiplier": 0.5,
+      "helpLevel": 2
+    },
+    {
+      "name": "Easy",
+      "roundTimeMillis": 15000,
+      "damageMultiplier": 0.75,
+      "helpLevel": 1
+    },
+    {
+      "name": "Normal",
+      "roundTimeMillis": 10000,
+      "damageMultiplier": 1,
+      "helpLevel": 0
+    },
+    {
+      "name": "Hard",
+      "roundTimeMillis": 7000,
+      "damageMultiplier": 1.5,
+      "helpLevel": 0
+    },
+    {
+      "name": "Impossible",
+      "roundTimeMillis": 5000,
+      "damageMultiplier": 2,
+      "helpLevel": 0
+    }
+  ]
 }

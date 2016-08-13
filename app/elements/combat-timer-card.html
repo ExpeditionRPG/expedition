@@ -17,7 +17,7 @@
         this.active = false;
 
         this._roundTimeRemaining = 0;
-        this._roundTimeTotalMillis = 10000; // starting round time. TODO change based on difficulty
+        this._roundTimeTotalMillis = null; // starting round time (set by difficulty)
         this._roundDamage = 0;
         this._lastAttackMillis = 0;
         this._timerStartMillis = 0;
@@ -40,10 +40,11 @@
         canvas.addEventListener('touchmove', this._touchEvent.bind(this));
         canvas.addEventListener('touchend', this._touchEvent.bind(this));
       },
-      start: function() {
+      start: function(difficulty) {
         this.active = true;
         this._timerStartMillis = Date.now();
         this._lastRenderMillis = this._timerStartMillis;
+        this._roundTimeTotalMillis = difficulty.roundTimeMillis;
         this._roundTimeRemaining = this._roundTimeTotalMillis;
         this._renderLoop();
       },

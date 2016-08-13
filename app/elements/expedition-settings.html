@@ -11,19 +11,27 @@
 	<expedition-checkbox label="Multitouch" value="{{globals.multitouch}}">
 		All players must hold their finger on the screen to end combat. Otherwise, a single tap will end combat.
 	</expedition-checkbox>
-	<expedition-picker id="picker" label="Show Help" value="{{globals.helplevel}}">
-		<div id="helpnone">
-			<div>No Help</div>
-			<div>For advanced players only! Hides all instructional text.</div>
+	<expedition-picker id="picker" label="Difficulty" value="{{globals.difficulty}}">
+		<div id="tutorial">
+      <div>Tutorial</div>
+      <div>Recommended for beginners - extra guidance is given.</div>
 		</div>
-		<div id="helpsome">
-			<div>Some Help</div>
-			<div>Hides basic pop-up messages, but keeps the important rules.</div>
+		<div id="easy">
+			<div>Easy</div>
+			<div>Enemies go easy on you, and hints are given for setup and combat.</div>
 		</div>
-		<div id="helpfull">
-			<div>Full Help</div>
-			<div>Recommended for beginners - show rules and descriptive pop-ups.</div>
+		<div id="normal">
+			<div>Normal</div>
+      <div>Expedition as it was meant to be played. Experienced adventurers start here!</div>
 		</div>
+    <div id="hard">
+      <div>Hard</div>
+      <div>Enemies are relentless; a true challenge for seasoned adventurers only.</div>
+    </div>
+    <div id="impossible">
+      <div>Impossible</div>
+      <div>You will almost surely die, so make your death a glorious one!</div>
+    </div>
 	</expedition-picker>
   </template>
   <script>
