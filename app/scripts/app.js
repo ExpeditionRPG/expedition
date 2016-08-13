@@ -15,19 +15,25 @@
   };
   app.onBackKeyDown = function() {
     // This is neither elegant nor efficient, but it works well. When native
-    // back button is pressed, loop through all expedition-card elements and 
+    // back button is pressed, loop through all expedition-card elements and
     // manually trigger a "return" event from the first expedition-card found
     // that's "visible".
 
     // Using querySelectorAll globally like this doesn't work on mobile (returns empty list)
     // but it works just fine on Android, which is the only time this code will be called.
-    var cards = document.querySelectorAll("expedition-card");
+    var cards = document.querySelectorAll("expedition-card, #splash");
     for (var i = 0; i < cards.length; i++) {
       var style = getComputedStyle(cards[i]);
-      var isVisible = (style.display !== 'none' && style.visibility !== 'hidden' && 
+      var isVisible = (style.display !== 'none' && style.visibility !== 'hidden' &&
         style.opacity !== 0 && (cards[i].offsetWidth !== 0 || cards[i].offsetHeight !== 0));
 
       if (isVisible) {
+        // If we hit back on the splash screen, close the app.
+        if (cards[i].id === "splash") {
+          navigator.app.exitApp();
+          return;
+        }
+
         cards[i].fire("return");
         return;
       }
