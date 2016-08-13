@@ -24,7 +24,6 @@
         <p>This quest is coming soon - please check back later!</p>
       </expedition-card>
 
-
       <expedition-card
         title="Adventurer Setup"
         icon="adventurer"
@@ -64,7 +63,6 @@
         <expedition-button on-tap="startQuest">Next</expedition-button>
       </expedition-card>
 
-      <!--TODO: Double-buffered dialogs? -->
       <dialog-card
         id="dialog"
         data-route="questdialog"
@@ -72,7 +70,7 @@
         icon="{{_icon}}"
         title="{{_title}}"
         on-return="_onDialogReturn"
-        on-tap="_onChoice">
+        on-tap="_onButton">
         <article id="contents"></article>
       </dialog-card>
 
@@ -83,33 +81,6 @@
         encounter="{{_encounter}}"
         icon="{{_combaticon}}">
       </combat-card>
-
-      <expedition-card
-        id="endgame"
-        title="End Game"
-        icon="adventurer"
-        data-route="endgame">
-
-        <template is="dom-if" if="{{_isWin}}">
-        <p>
-          Congratulations! Each Adventurer may draw 1 random Tier 1 Loot and learn a new ability:
-        </p>
-        <ul>
-          <li>Draw 3 Ability cards from a deck of your choosing.
-          <li>Choose 1 of these cards and insert it in your personal deck.
-          <li>Place the remaining 2 cards at the bottom of the original deck.
-          <li>Discard one ability from your deck if desired.
-        </ul>
-        </template>
-
-        <template is="dom-if" if="{{!_isWin}}">
-        <p>
-          The quest may be over, but your journey doesn't have to be... all players discard their cards and begin again.
-        </p>
-        </template>
-
-        <expedition-button on-tap="_endQuest">Back to Quests</expedition-button>
-      </expedition-card>
 
     </expedition-card-set>
   </template>
@@ -176,11 +147,11 @@
         if (typeof(e.detail) !== 'boolean') {
           this._onDialogReturn(e);
         } else {
-          this._handleParser(this._parser.choiceEvent((e.detail) ? 'win' : 'lose'));
+          this._handleParser(this._parser.handleEvent((e.detail) ? 'win' : 'lose'));
         }
         e.stopPropagation();
       },
-      _onChoice: function(e) {
+      _onButton: function(e) {
         if (e.target.localName !== 'expedition-button') {
           return;
         }
@@ -188,7 +159,7 @@
         if (idx < 0) {
           return;
         }
-        this._handleParser(this._parser.choiceEvent(idx));
+        this._handleParser(this._parser.handleEvent(idx));
       },
       _onDialogReturn: function(e) {
         var p = this._parser.back();
@@ -206,7 +177,7 @@
       _handleParser: function(p, anim) {
         switch(p.type) {
           case 'end':
-            this._doEnd(p, anim);
+            this._endQuest();
             break;
           case 'dialog':
             this._doDialog(p, anim);
@@ -217,12 +188,6 @@
           default:
             throw new Error('unknown parser response ' + p);
         }
-      },
-      _doEnd: function(p, anim) {
-        // TODO: Win/lose propagation
-        console.log(p.contents);
-        this._isWin = p.contents;
-        this.$.pages.next('endgame', anim);
       },
       _doCombat: function(p, anim) {
         this.$.combat.ready();
