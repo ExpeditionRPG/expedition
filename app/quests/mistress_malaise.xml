@@ -83,7 +83,7 @@
       What do you do?
     </p>
 
-    <event text="Call out to them.">
+    <choice text="Call out to them.">
       <roleplay title="A Strange Arrival" icon="bandit">
         <p>
           You shout out to them, announcing your presence. They appear startled and disappear inside.
@@ -106,9 +106,9 @@
           Towards the end of a long corridor, you find one last door into the mausoleum's innermost chamber. You hear a creaking sound as you press against the door - but the noise didn't come from the door...
         </p>
       </roleplay>
-    </event>
+    </choice>
 
-    <event text="Attempt to incapacitate them.">
+    <choice text="Attempt to incapacitate them.">
       <roleplay title="Subterfuge" icon="bandit">
         <p>
           Your party quickly takes cover behind some nearby headstones and sneaks towards the group.
@@ -119,7 +119,7 @@
           <p>Choose a next action based on the result of that roll:</p>
         </instruction>
 
-        <event text="Rolled above 10">
+        <choice text="Rolled above 10">
           <roleplay title="Hit and Run" icon="bandit">
             <p>
               You sneak up on the shady figures and take them out silently.
@@ -128,29 +128,33 @@
               After a quick check you can confirm they're still breathing. Searching their pockets, you find a piece of parchment listing what appears to be the locations of various traps within. Paper in hand, you proceed into the tomb.
             </p>
           </roleplay>
-        </event>
+        </choice>
 
-        <event text="Rolled 10 or below">
+        <choice text="Rolled 10 or below">
           <roleplay title="Bad Timing" icon="bandit">
             <p>The shady figures sense your presence and draw their weapons.</p>
           </roleplay>
-          <encounter icon="bandit">
+          <combat icon="bandit">
             <e>Archer</e>
             <e>Rogue</e>
             <e>Brigand</e>
-            <roleplay on="win">
-              <p>
-                Searching the slain, you find a piece of parchment listing what appears to be the locations of various traps within. Paper in hand, you proceed into the tomb.
-              </p>
-            </roleplay>
-            <roleplay on="lose">
-              <p>
-                As the world fades to black, your last thought is of the dishonor you've brought the Order.
-              </p>
-              <end></end>
-            </roleplay>
-          </encounter>
-        </event>
+            <event on="win">
+              <roleplay>
+                <p>
+                  Searching the slain, you find a piece of parchment listing what appears to be the locations of various traps within. Paper in hand, you proceed into the tomb.
+                </p>
+              </roleplay>
+            </event>
+            <event on="lose">
+              <roleplay>
+                <p>
+                  As the world fades to black, your last thought is of the dishonor you've brought the Order.
+                </p>
+                <end></end>
+              </roleplay>
+            </event>
+          </combat>
+        </choice>
       </roleplay>
       <roleplay title="Inside the Tomb" icon="undead">
         <p>
@@ -160,26 +164,29 @@
           You hear a creaking sound as you press against the door - but the noise didn't come from the door...
         </p>
       </roleplay>
-    </event>
+    </choice>
   </roleplay>
 
-  <comment> This encounter is reached regardless of the state of the bandits. </comment>
-  <encounter icon="undead">
+  <comment> This combat is reached regardless of the state of the bandits. </comment>
+  <combat icon="undead">
     <e>Zombie</e>
     <e>Skeleton Mage</e>
-
-    <roleplay on="win" title="Taking Stock" icon="loot">
-      <p>
-        The undead fiends lay slain at your feet - and resting on a podium in the center of the room is what could only be the phylactery mentioned by Brother Pell.
-      </p>
-    </roleplay>
-    <roleplay on="lose">
-      <p>
-        The undead fiends let out an unearthly shriek of victory as the last of your party falls.
-      </p>
-      <end></end>
-    </roleplay>
-  </encounter>
+    <event on="win">
+      <roleplay title="Taking Stock" icon="loot">
+        <p>
+          The undead fiends lay slain at your feet - and resting on a podium in the center of the room is what could only be the phylactery mentioned by Brother Pell.
+        </p>
+      </roleplay>
+    </event>
+    <event on="lose">
+      <roleplay>
+        <p>
+          The undead fiends let out an unearthly shriek of victory as the last of your party falls.
+        </p>
+        <end></end>
+      </roleplay>
+    </event>
+  </combat>
   <roleplay title="The Phylactery" icon="loot">
     <p>
       You take the phylactery from the pedestal and search the rest of the room, finding some additional supplies.
@@ -195,7 +202,7 @@
       The moving headstone is actually an old, feeble woman, who was apparently waiting for you to emerge. She calls herself Malaise, and begs for you to listen.
     </p>
 
-    <event text="Listen to her story">
+    <choice text="Listen to her story">
       <roleplay title="Malaise Unmasked" icon="adventurer">
         <p>
           Malaise begins to tell a rather different story from Pell's - that the sickness began after her departure, but that the surge in undead activity is the fault of an old resident of Brustwick. A man skilled in binding rituals.
@@ -213,28 +220,32 @@
           Then she stops, eyes wide in shock, as a sword emerges from her chest.
         </p>
       </roleplay>
-      <encounter icon="undead">
+      <combat icon="undead">
         <e>Wight</e>
         <e>Zombie Hand</e>
         <e>Zombie</e>
-        <roleplay on="win" title="Change of Plans" icon="d20">
-          <p>
-            Wiping the viscera from your weapons, you stop to catch your breath. Malaise is dead, but the lich Pell still lives.
-          </p>
-          <p>
-            It appears that your plans have changed.
-          </p>
-        </roleplay>
-        <roleplay on="lose">
-          <p>
-            Your party is no match for the onslaught of undead. You quickly succumb.
-          </p>
-          <end></end>
-        </roleplay>
-      </encounter>
-    </event>
+        <event on="win">
+          <roleplay title="Change of Plans" icon="d20">
+            <p>
+              Wiping the viscera from your weapons, you stop to catch your breath. Malaise is dead, but the lich Pell still lives.
+            </p>
+            <p>
+              It appears that your plans have changed.
+            </p>
+          </roleplay>
+        </event>
+        <event on="lose">
+          <roleplay>
+            <p>
+              Your party is no match for the onslaught of undead. You quickly succumb.
+            </p>
+            <end></end>
+          </roleplay>
+        </event>
+      </combat>
+    </choice>
 
-    <event text="Attack her before she can speak">
+    <choice text="Attack her before she can speak">
       <roleplay title="Death of Malaise">
         <p>
           You leap at her before she has the chance to speak, slaying the old woman with a single blow.
@@ -249,7 +260,7 @@
           Brother Pell's misdirection can only mean one thing: That he is the lich.
         </p>
       </roleplay>
-    </event>
+    </choice>
   </roleplay>
 
   <comment>Act IV: Returning to Pell</comment>
@@ -267,8 +278,8 @@
       It's a tough decision.
     </p>
 
-    <event text="Take the direct approach." goto="planA"></event>
-    <event text="Split your party to look for the phylactery." goto="planB"></event>
+    <choice text="Take the direct approach." goto="planA"></choice>
+    <choice text="Split your party to look for the phylactery." goto="planB"></choice>
   </roleplay>
 
   <roleplay title="The Direct Approach" icon="damage" id="planA">
@@ -282,7 +293,7 @@
       Any doubts you had are gone. Enraged at his betrayal, you attack.
     </p>
   </roleplay>
-  <encounter icon="undead">
+  <combat icon="undead">
     <e>Lich</e>
     <e>Zombie</e>
     <e>Skeleton Swordsman</e>
@@ -301,7 +312,7 @@
       </roleplay>
     </event>
     <event on="lose" goto="pelldefeat"></event>
-  </encounter>
+  </combat>
 
   <roleplay title="A Cunning Plan" icon="undead" id="planB">
     <p>
@@ -338,35 +349,38 @@
         At this time, draw a tier III Undead encounter and place it face-down with full health. This is the phylactery.
       </p>
       <p>
-        The encounter is over when all enemies and the phylactery are destroyed.
+        Combat is ended when all enemies and the phylactery are destroyed.
       </p>
     </instruction>
   </roleplay>
-  <encounter icon="undead">
+  <combat icon="undead">
     <e>Lich</e>
     <e>Zombie</e>
     <e>Skeleton Swordsman</e>
-    <roleplay on="win">
-      <p>
-        As pell gives his last, dying gasp, the phylactery shatters under a final blow. A shockwave from the box knocks your party to the ground, unconscious.
-      </p>
-      <p>
-        When you manage to open your eyes once more, light peeks through the windows of Pell's house. You emerge to see a beautiful, natural sunrise. No mysterious fog or moldy smells remain.
-      </p>
-      <p>
-        The townsfolk of Brustwick begin to emerge from their homes - they see the change, learn of Pell, and a celebration soon erupts.
-      </p>
-      <p>
-        You participate in the festivities for a while, then begin the long trek back home. You can't wait to tell the Order about your victory!
-      </p>
-      <end></end>
-    </roleplay>
-
-    <roleplay on="lose" id="pelldefeat">
-      <p>
-        Pell has defeated you - he quickly reanimates your bodies, to become new fodder for the next adventurer looking to slay the lich of Brustwick.
-      </p>
-      <end></end>
-    </roleplay>
-  </encounter>
+    <event on="win">
+      <roleplay>
+        <p>
+          As pell gives his last, dying gasp, the phylactery shatters under a final blow. A shockwave from the box knocks your party to the ground, unconscious.
+        </p>
+        <p>
+          When you manage to open your eyes once more, light peeks through the windows of Pell's house. You emerge to see a beautiful, natural sunrise. No mysterious fog or moldy smells remain.
+        </p>
+        <p>
+          The townsfolk of Brustwick begin to emerge from their homes - they see the change, learn of Pell, and a celebration soon erupts.
+        </p>
+        <p>
+          You participate in the festivities for a while, then begin the long trek back home. You can't wait to tell the Order about your victory!
+        </p>
+        <end></end>
+      </roleplay>
+    </event>
+    <event on="lose">
+      <roleplay id="pelldefeat">
+        <p>
+          Pell has defeated you - he quickly reanimates your bodies, to become new fodder for the next adventurer looking to slay the lich of Brustwick.
+        </p>
+        <end></end>
+      </roleplay>
+    </event>
+  </combat>
 </quest>

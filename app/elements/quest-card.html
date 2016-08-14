@@ -166,7 +166,7 @@
         if (idx < 0) {
           return;
         }
-        this._handleParser(this._parser.handleEvent(idx));
+        this._handleParser(this._parser.handleChoice(idx));
       },
       _onDialogReturn: function(e) {
         var p = this._parser.back();
@@ -189,11 +189,11 @@
           case 'dialog':
             this._doDialog(p, anim);
             break;
-          case 'encounter':
+          case 'combat':
             this._doCombat(p, anim);
             break;
           default:
-            throw new Error('unknown parser response ' + p);
+            throw new Error('unknown parser response ' + JSON.stringify(p));
         }
       },
       _doCombat: function(p, anim) {

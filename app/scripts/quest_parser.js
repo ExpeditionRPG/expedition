@@ -29,7 +29,7 @@ questParser.prototype.init = function(root) {
     throw new Error("Found nodes with duplicate ids: " + JSON.stringify(duplicateIDs));
   }
 
-  // TODO(scott): Add check for proper resolution of encounter enemies
+  // TODO(scott): Add check for proper resolution of combat enemies
 
   this.path = [root.children[0]];
   return this._loadCurrentNode();
@@ -39,50 +39,47 @@ questParser.prototype.isStarted = function() {
   return (this.path.length > 1);
 };
 
-// The passed event parameter is either:
-// - An integer indicating the index of the event in the parent element.
-// - A string indicating which event to fire based on the "on" attribute.
+// The passed event parameter is a string indicating which event to fire based on the "on" attribute.
 questParser.prototype.handleEvent = function(event) {
   var parent = this.path[this.path.length - 1];
-
-  if (typeof event === "number") {
-    if (!parent.children[event] || parent.children[event].localName !== "event") {
-      // Happens on lookup error or default "Next"/"End" event
-      if (this._loopChildren(parent, function(tag) { if (tag === "end") return true; })) {
-        return this._loadEndNode();
-      }
-      this.path.push(this._findNextNode(parent));
-    } else {
-      this.path.push(parent.children[event]);
+  var child = this._loopChildren(parent, function(tag, c) {
+    if (c.hasAttribute('on') && c.getAttribute('on') == event) {
+      return c;
     }
-  } else if (typeof event === "string") { // event is string
-    var child = this._loopChildren(parent, function(tag, c) {
-      if (c.hasAttribute('on') && c.getAttribute('on') == event) {
-        return c;
-      }
-    });
+  });
 
-    if (!child) {
-      throw new Error("Could not find child with on='"+event+"'");
-    }
-
-    this.path.push(child);
-  } else {
-    throw new Error("Invalid event type " + (typeof event));
+  if (!child) {
+    throw new Error("Could not find child with on='"+event+"'");
   }
+  this.path.push(child);
   return this._loadCurrentNode();
 };
+
+// The passed choice parameter is an integer indicating the index of the choice in the parent element.
+questParser.prototype.handleChoice = function(choice) {
+  var parent = this.path[this.path.length - 1];
+  if (!parent.children[choice] || parent.children[choice].localName !== "choice") {
+    // Happens on lookup error or default "Next"/"End" event
+    if (this._loopChildren(parent, function(tag) { if (tag === "end") return true; })) {
+      return this._loadEndNode();
+    }
+    this.path.push(this._findNextNode(parent));
+  } else {
+    this.path.push(parent.children[choice]);
+  }
+  return this._loadCurrentNode();
+}
 
 questParser.prototype.back = function() {
   if (this.path.length <= 1) {
     return null;
   }
 
-  // Pop the most recent node, as well as all preceding event nodes
+  // Pop the most recent node, as well as all preceding choice nodes
   // until we come to something we can actually display.
   do {
     this.path.pop();
-  } while (this.path[this.path.length-1].localName === "event");
+  } while (this.path[this.path.length-1].localName === "event" || (this.path[this.path.length-1].localName === "choice"));
 
   return this._loadCurrentNode();
 };
@@ -90,10 +87,12 @@ questParser.prototype.back = function() {
 questParser.prototype._loadCurrentNode = function() {
   var node = this.path[this.path.length - 1];
   switch(node.localName) {
+    case "choice":
+      return this._loadChoiceNode(node);
     case "event":
       return this._loadEventNode(node);
-    case "encounter":
-      return this._loadEncounterNode(node);
+    case "combat":
+      return this._loadCombatNode(node);
     case "roleplay":
       return this._loadDialogNode(node);
     case "end":
@@ -106,6 +105,11 @@ questParser.prototype._loadCurrentNode = function() {
   }
 };
 
+questParser.prototype._loadChoiceNode = function(node) {
+  // The action on a choice node is functionally the same as an event node.
+  return this._loadEventNode(node);
+}
+
 questParser.prototype._loadEventNode = function(node) {
   // If event is empty and has a goto, jump to the destination element with that id.
   if (node.children.length === 0 && node.hasAttribute('goto')) {
@@ -116,16 +120,16 @@ questParser.prototype._loadEventNode = function(node) {
   // Validate the event node (must not have an event child and must control something)
   var hasControlChild = false;
   this._loopChildren(node, function(tag) {
-    if (tag === 'event') {
-      throw new Error("<event> node cannot have <event> child");
+    if (tag === 'event' | tag === 'choice') {
+      throw new Error("Node cannot have <event> or <choice> child");
     }
 
-    if (tag === 'encounter' || tag === 'end' || tag === 'roleplay') {
+    if (tag === 'combat' || tag === 'end' || tag === 'roleplay') {
       hasControlChild = true;
     }
   });
   if (!hasControlChild) {
-    throw new Error("<event> without goto attribute must have at least one of <encounter> or <roleplay>");
+    throw new Error("Node without goto attribute must have at least one of <combat> or <roleplay>");
   }
 
   // Dive in to the first element.
@@ -133,8 +137,8 @@ questParser.prototype._loadEventNode = function(node) {
   return this._loadCurrentNode();
 };
 
-questParser.prototype._loadEncounterNode = function(node) {
-  var encounter = [];
+questParser.prototype._loadCombatNode = function(node) {
+  var combat = [];
 
   // Track win and lose events for validation
   var winEventCount = 0;
@@ -142,7 +146,7 @@ questParser.prototype._loadEncounterNode = function(node) {
   this._loopChildren(node, function(tag, c) {
     switch (tag) {
       case 'e':
-        encounter.push({name: c.textContent});
+        combat.push({name: c.textContent});
         break;
       case 'event':
       case 'roleplay':
@@ -155,21 +159,21 @@ questParser.prototype._loadEncounterNode = function(node) {
   });
 
   if (winEventCount !== 1) {
-    throw new Error("<encounter> must have exactly one child with on='win'");
+    throw new Error("<combat> must have exactly one child with on='win'");
   }
 
   if (loseEventCount !== 1) {
-    throw new Error("<encounter> must have exactly one child with on='lose'");
+    throw new Error("<combat> must have exactly one child with on='lose'");
   }
 
-  if (!encounter.length) {
-    throw new Error("<encounter> has no <e> children");
+  if (!combat.length) {
+    throw new Error("<combat> has no <e> children");
   }
 
   return {
-    'type': 'encounter',
+    'type': 'combat',
     'icon': node.getAttribute('icon'),
-    'contents': encounter
+    'contents': combat
   };
 };
 
@@ -188,15 +192,19 @@ questParser.prototype._loadDialogNode = function(node) {
   this._loopChildren(node, function(tag, c) {
     c = c.cloneNode(true);
 
-    // Convert "event" tags to <expedition-button> tags
-    if (tag === "event") {
+    // Convert "choice" tags to <expedition-button> tags
+    if (tag === "choice") {
       if (!c.hasAttribute('text')) {
-        throw new Error("<event> inside <roleplay> must have 'text' attribute");
+        throw new Error("<choice> inside <roleplay> must have 'text' attribute");
       }
       var text = c.getAttribute('text');
       c = document.createElement('expedition-button');
       Polymer.dom(c).textContent = text;
       numEvents++;
+    }
+
+    if (tag === "event") {
+      throw new Error("<roleplay> cannot contain <event>.");
     }
 
     if (tag === "end") {
@@ -265,7 +273,7 @@ questParser.prototype._getInvalidNodesAndAttributes = function(node) {
   var results = {};
 
   // Quests must only contain these tags:
-  if (["quest", "div", "span", "b", "i", "event", "encounter", "roleplay", "p", "e",
+  if (["quest", "div", "span", "b", "i", "choice", "event", "combat", "roleplay", "p", "e",
        "end", "comment", "instruction"].indexOf(
         node.tagName) === -1) {
     results[node.tagName] = (results[node.tagName] || 0) + 1;
