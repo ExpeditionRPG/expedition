@@ -17,19 +17,19 @@ questParser.prototype.init = function(root) {
   }
   this.root = root;
 
-  console.log("Checking for bad entries");
   var badEntries = this._getInvalidNodesAndAttributes(root);
   if (!this._isEmptyObject(badEntries)) {
     throw new Error("Found invalid nodes and attributes: " + JSON.stringify(badEntries));
   }
 
-  console.log("Checking duplicate IDs");
   var duplicateIDs = this._getDuplicateIds(root);
   if (!this._isEmptyObject(duplicateIDs)) {
     throw new Error("Found nodes with duplicate ids: " + JSON.stringify(duplicateIDs));
   }
 
   // TODO(scott): Add check for proper resolution of combat enemies
+
+  this._parser = math.parser();
 
   this.path = [root.children[0]];
   return this._loadCurrentNode();
@@ -43,10 +43,10 @@ questParser.prototype.isStarted = function() {
 questParser.prototype.handleEvent = function(event) {
   var parent = this.path[this.path.length - 1];
   var child = this._loopChildren(parent, function(tag, c) {
-    if (c.hasAttribute('on') && c.getAttribute('on') == event) {
+    if (c.getAttribute('on') === event && this._isEnabled(c)) {
       return c;
     }
-  });
+  }.bind(this));
 
   if (!child) {
     throw new Error("Could not find child with on='"+event+"'");
@@ -55,18 +55,30 @@ questParser.prototype.handleEvent = function(event) {
   return this._loadCurrentNode();
 };
 
-// The passed choice parameter is an integer indicating the index of the choice in the parent element.
+// The passed choice parameter is an number indicating the choice number in the XML element, including conditional choices.
 questParser.prototype.handleChoice = function(choice) {
   var parent = this.path[this.path.length - 1];
-  if (!parent.children[choice] || parent.children[choice].localName !== "choice") {
-    // Happens on lookup error or default "Next"/"End" event
-    if (this._loopChildren(parent, function(tag) { if (tag === "end") return true; })) {
-      return this._loadEndNode();
+
+  // Scan the parent node to find the choice with the right number
+  var idx = 0;
+  var choiceIdx = -1;
+  for (; idx < parent.children.length; idx++) {
+    if (parent.children[idx].localName === "choice") {
+      choiceIdx++;
     }
-    this.path.push(this._findNextNode(parent));
-  } else {
-    this.path.push(parent.children[choice]);
+
+    // When we find our choice, push it onto the stack and load it.
+    if (choiceIdx === choice) {
+      this.path.push(parent.children[idx]);
+      return this._loadCurrentNode();
+    }
   }
+
+  // This happens on lookup error or default "Next"/"End" event
+  if (this._loopChildren(parent, function(tag) { if (tag === "end") return true; })) {
+    return this._loadEndNode();
+  }
+  this.path.push(this._findNextNode(parent));
   return this._loadCurrentNode();
 }
 
@@ -77,9 +89,10 @@ questParser.prototype.back = function() {
 
   // Pop the most recent node, as well as all preceding choice nodes
   // until we come to something we can actually display.
+  // Operations are also skipped (don't want back button to have side effects)
   do {
     this.path.pop();
-  } while (this.path[this.path.length-1].localName === "event" || (this.path[this.path.length-1].localName === "choice"));
+  } while (this._isControlNode(this.path[this.path.length-1]) || !this._isEnabled(this.path[this.path.length-1]) || this.path[this.path.length-1].localName === "op");
 
   return this._loadCurrentNode();
 };
@@ -87,6 +100,8 @@ questParser.prototype.back = function() {
 questParser.prototype._loadCurrentNode = function() {
   var node = this.path[this.path.length - 1];
   switch(node.localName) {
+    case "op":
+      return this._loadOpNode(node);
     case "choice":
       return this._loadChoiceNode(node);
     case "event":
@@ -105,10 +120,18 @@ questParser.prototype._loadCurrentNode = function() {
   }
 };
 
+questParser.prototype._loadOpNode = function(node) {
+  this._parser.eval(node.textContent);
+
+  // After evaluation, move on to the next node.
+  this.path.push(this._findNextNode(node));
+  return this._loadCurrentNode();
+};
+
 questParser.prototype._loadChoiceNode = function(node) {
   // The action on a choice node is functionally the same as an event node.
   return this._loadEventNode(node);
-}
+};
 
 questParser.prototype._loadEventNode = function(node) {
   // If event is empty and has a goto, jump to the destination element with that id.
@@ -150,20 +173,20 @@ questParser.prototype._loadCombatNode = function(node) {
         break;
       case 'event':
       case 'roleplay':
-        winEventCount += (c.getAttribute('on') === 'win') ? 1 : 0;
-        loseEventCount += (c.getAttribute('on') === 'lose') ? 1 : 0;
+        winEventCount += (c.getAttribute('on') === 'win' && this._isEnabled(c)) ? 1 : 0;
+        loseEventCount += (c.getAttribute('on') === 'lose' && this._isEnabled(c)) ? 1 : 0;
         break;
       default:
         throw new Error("Invalid child element: " + tag);
     }
-  });
+  }.bind(this));
 
-  if (winEventCount !== 1) {
-    throw new Error("<combat> must have exactly one child with on='win'");
+  if (winEventCount === 0) {
+    throw new Error("<combat> must have at least one conditionally true child with on='win'");
   }
 
-  if (loseEventCount !== 1) {
-    throw new Error("<combat> must have exactly one child with on='lose'");
+  if (loseEventCount === 0) {
+    throw new Error("<combat> must have at least one conditionally true child with on='lose'");
   }
 
   if (!combat.length) {
@@ -183,14 +206,41 @@ questParser.prototype._loadEndNode = function(node) {
   };
 };
 
+questParser.prototype._isEnabled = function(node) {
+  // Comments are never visible.
+  if (node.localName === "comment") {
+    return false;
+  }
+
+  // We check for truthiness here, so nonzero numbers are true, etc.
+  return !node.hasAttribute('if') || this._parser.eval("boolean(" + node.getAttribute('if') + ")");
+};
+
 questParser.prototype._loadDialogNode = function(node) {
   // Append elements to contents
   var numEvents = 0;
   var hasEndNode = false;
   var child;
   var contents = document.createElement('span');
+
+  // Keep track of the number of choice nodes seen, so we can
+  // select a choice without worrying about the state of the quest scope.
+  var idx = -1;
+
   this._loopChildren(node, function(tag, c) {
     c = c.cloneNode(true);
+
+    if (tag === "choice") {
+      idx++;
+    }
+
+    // Skip elements that aren't visible
+    if (!this._isEnabled(c)) {
+      return;
+    }
+
+    // TODO(scott): Deep-parse all operations inside the dialog and convert them into
+    // their values.
 
     // Convert "choice" tags to <expedition-button> tags
     if (tag === "choice") {
@@ -199,6 +249,7 @@ questParser.prototype._loadDialogNode = function(node) {
       }
       var text = c.getAttribute('text');
       c = document.createElement('expedition-button');
+      c.setAttribute('data-choice', idx);
       Polymer.dom(c).textContent = text;
       numEvents++;
     }
@@ -221,7 +272,7 @@ questParser.prototype._loadDialogNode = function(node) {
     }
 
     contents.appendChild(c);
-  });
+  }.bind(this));
 
   // Append a generic "Next" button if there were no events,
   // or an "End" button if there's also an <End> tag.
@@ -239,12 +290,16 @@ questParser.prototype._loadDialogNode = function(node) {
   };
 };
 
+questParser.prototype._isControlNode = function(node) {
+  return node.localName === "choice" || node.localName === "event" || node.hasAttribute('on');
+}
 
 questParser.prototype._findNextNode = function(node) {
   while (true) {
     var sibling = node.nextElementSibling;
-    // Skip events, comments, and event-driven neighbors.
-    if (sibling !== null && sibling.localName !== "event" && sibling.localName !== "comment" && !sibling.hasAttribute('on')) {
+
+    // Skip control elements and conditionally false elements
+    if (sibling !== null && !this._isControlNode(sibling) && this._isEnabled(sibling)) {
       return sibling;
     }
 
@@ -273,7 +328,7 @@ questParser.prototype._getInvalidNodesAndAttributes = function(node) {
   var results = {};
 
   // Quests must only contain these tags:
-  if (["quest", "div", "span", "b", "i", "choice", "event", "combat", "roleplay", "p", "e",
+  if (["op", "quest", "div", "span", "b", "i", "choice", "event", "combat", "roleplay", "p", "e",
        "end", "comment", "instruction"].indexOf(
         node.tagName) === -1) {
     results[node.tagName] = (results[node.tagName] || 0) + 1;

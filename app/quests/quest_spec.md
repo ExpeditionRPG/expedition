@@ -133,11 +133,11 @@ END := <end></end>
 
 FLAVORTEXT := HTML_ELEMENT HTML_ELEMENT*
 HTML_ELEMENT := PARAGRAPH | DIV | SPAN | BOLD | ITALIC
-PARAGRAPH := <p> STRING </p>
-DIV := <div> STRING </div>
-SPAN := <span> STRING </span>
-BOLD := <b> STRING </b>
-ITALIC := <i> STRING </i>
+PARAGRAPH := <p [IF]> STRING </p>
+DIV := <div [IF]> STRING </div>
+SPAN := <span [IF]> STRING </span>
+BOLD := <b [IF]> STRING </b>
+ITALIC := <i [IF]> STRING </i>
 
 INSTRUCTION : <instruction [IF]> STRING </instruction>
 
@@ -149,7 +149,7 @@ ON_LOSE := "on" = "lose"
 
 TITLE := "title" = STRING
 
-OPERATION := <op> STRING </op>
+OPERATION := <op [IF]> STRING </op>
 IF := "if" = STRING
 
 ICON := "icon" = AN_ICON

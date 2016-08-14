@@ -1,0 +1,31 @@
+<quest
+  title="test quest"
+  summary="this is a test">
+  <op>x = 0</op>
+  <roleplay id="root">
+    <p>Test</p>
+
+    <p if="x == 5">Custom thing that isn't normally shown!</p>
+
+    <choice text="Thing">
+      <op>x=5</op>
+      <roleplay>
+        <p>Did a thing</p>
+        <choice text="Back" goto="root"></choice>
+      </roleplay>
+    </choice>
+    <choice if="x == 5" text="Do a conditional thing!">
+      <roleplay>
+        <p>Conditional thing done.</p>
+        <end></end>
+      </roleplay>
+    </choice>
+    <choice text="Another nonconditional thing">
+      <op>x=2</op>
+      <roleplay>
+        <p>Did a bad thing</p>
+        <choice text="Back" goto="root"></choice>
+      </roleplay>
+    </choice>
+  </roleplay>
+</quest>
