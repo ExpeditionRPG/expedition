@@ -162,11 +162,7 @@
         if (e.target.localName !== 'expedition-button') {
           return;
         }
-        var idx = Array.prototype.indexOf.call(e.target.parentNode.children, e.target);
-        if (idx < 0) {
-          return;
-        }
-        this._handleParser(this._parser.handleChoice(idx));
+        this._handleParser(this._parser.handleChoice(parseInt(e.target.getAttribute('data-choice'))));
       },
       _onDialogReturn: function(e) {
         var p = this._parser.back();
