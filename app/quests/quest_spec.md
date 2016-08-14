@@ -7,30 +7,14 @@ Quest files are used to build custom roleplaying scenarios with the Expedition A
 About the Syntax
 ----------------
 
-While the files *look* like XML, they do not parse as valid XML. (Perhaps this will change in the future.)
+* A quest file is a valid XML file, with a single <quest> element providing metadata and enclosing the quest logic.
 
-1. There is no single root element.
-2. Play usually follows sequential peer elements, although some content appears nested.
-3. Some parameters don't have values, and are assumed to be boolean true when present.
+The flow of a quest through the XML elements is as follows:
 
-
-### Counter Examples
-
-Not all of the files are quests.  At some point, these may be moved into another directory.
-
-You may find some examples of what _not_ to do
-in the following files:
-
-  * bad_goto.txt -- There's more than one element with the same `id`; `id`s should be unique.
-
-  * bad_malicious.txt -- A sample of JavaScript injection that performs an alert.
-
-
-### Tests
-
-There are other files that exist merely as tests. These, too, may be moved into another directory at some point.
-
-  * goto_test.txt - Performs a jump using a choice to another place in the question.
+* Start at the first <roleplay> element within the root.
+* If the user clicks a choice or combat ends in victory/defeat, follow the choice or roleplay element matching that event.
+* Otherwise, show the next neighboring element. If there are no neighboring elements, look at the neighbor of the element's
+  parent, then the neighbor of the parent's parent, etc.
 
 ### Quests as Examples
 
@@ -40,16 +24,14 @@ Several quests exist, which additionally serve as examples of how to use the que
 
   * oust_albanus.txt -- The town's cheese supply is being stolen, you need to find and stop the raiders. *Mostly linear content, but shows several nesting levels deep for choices.*
 
-  * ill_town.txt -- A mysterious illness has befallen a town.  *This adventure shows a new construct that's still being tested, called the `show-if` attribute on the `<choice>` element; it is used in conjuction with a new `<set-state>` element to carry game state between elments and make conditional content.*
-
-
 General Gaming Phase Structure
 ------------------------------
+
 * Flavor text (`<roleplay>`) is presented to the players. Usually it contains blocks of plain HTML.
 * If there is no decision, a Next button is presented to the user and gameplay falls through to the next sequential element.
 * Decisions are offered with multiple choices (`<choice>`).
-* These often lead to an encounter (`<encounter>`) which features one or more enemies (`<e>`) that must be defeated. *The game handles the mechanic details.*
-* The encounter continues until it can resolve in only one of two ways, with a win (`<choice win>`) or a (`<choice lose>`).
+* These often lead to combat (`<combat>`) which features one or more enemies (`<e>`) that must be defeated. *The game handles the mechanic details.*
+* The encounter continues until it can resolve in only one of two ways, with a win or a lose (`<event on="win">` or `<event on="lose">`).
 * Eventually the story line resolves (`<end>`), and the player is allowed to select a new quest.
 
 The quest is primarily a sequential path through the storyline, with nesting of elements within a choice to branch or the use of `goto`s to hop around in a non-linear fashion.
@@ -57,15 +39,17 @@ The quest is primarily a sequential path through the storyline, with nesting of 
 
 Quest Elements
 --------------
-There are only a handful of elements.  Certain elements may have an `id` attribute, which must be unique across all elements.
+There are only a handful of elements.  Certain elements may have an `id` attribute, which must be unique across all elements and is referenced by `<event>` tags with `goto` attributes.
 
 #### `<comment>`
+
 Anything in a comment element is ignored. Uses these for anotating quest files.
 
 #### `<roleplay>`
+
 This is not a verb, nor does it instruct the game to do anything. Rather it is for literal roleplaying: providing flavor text to set the context of the battles and move the story forward.
 
-The roleplay element may have three optional attributes:
+The roleplay element may have four optional attributes:
 
 * **`icon`** -- an image shown in the background of the text, used simply to provide visual flavor so text isn't visually boring
 * **`title`** -- a title shown for the page of text
@@ -73,44 +57,43 @@ The roleplay element may have three optional attributes:
 
 Within the roleplay element is simple HTML, primarily consisting of one or more paragraphs (`<p> ... </p>`).
 
-But it can also contain instructions to the players (`<instruction>`), as well as a list of choices (`<choice>`).
+But it can also contain instructions to the players (`<instruction>`), as well as a list of events (`<event>`).
 
 What's not necessarily obvious is that it's posible to interlace
 text and choices, so you actually can have text after a choice.
 
 #### `<end>`
-Concludes the adventure, offering only the option to return to the menu to selet another quest to play. Final rewards are doled out to the players.
 
-The end element behaves similar to the roleplay element, except it may only contain flavor text; that is, no choices, encounters, or further roleplaying.
+Concludes the adventure, returning to the menu to select another quest to play.
 
-It has one mandatory attribute pick one:
+This element must not have any attributes or inner content. Consider it a concluding mark at the end of your quest.
 
-* **`win`** -- this is a winning conclusion to the quest's end
-* **`lose`** -- this is a losing conclusion to the quest's end
-_Omitting, even accidently, shows no text and ends the quest.
+#### `<event>`
 
-And it has three optional attributes:
+The event element functions as a way to gather multiple roleplay or combat elements together as the timeline after a specific event occurs, such as winning a combat. Every event has an `on` attribute that indicates when that branch of the story is chosen.
 
-* **`icon`** -- an image shown in the background of the text, used simply to provide visual flavor so text isn't visually boring
-* **`title`** -- a title shown for the page of text
-* **`id`** -- a symbolic label, used as the destination of a choice's goto
+Currently supported `on` attributes:
 
-#### `<choice>`
-The choice element is, unfortunately, overloaded in purpose. The primary function is obvious: present an option to the players, and if selected, execute it.  This may either be to `goto` another element, or to perform a nested `<roleplay>` action, perform an `<encounter>`, or `<end>` the adventure story line.
+* **`win`** -- when an encounter is won.
+* **`lose`** -- when an encounter is lost.
 
-However, the choice element can also be used to detect win and lose conditions of an encounter.  Such elements contain _either_ the attribute `win` or `lose`.
+It may either be used to `goto` another element (using the value in its `goto` attribute to look up the id of the target element), or to perform one or more enclosed `<roleplay>` or `<combat>` actions. Typically, events are found only inside of encounters.
 
-The choice element may also have a `goto` attribute, which is a reference to the `id` attribute in roleplay, encounter, or end elements.
+It is not valid to have an `<event>` inside of another event - they must at least by separated in the heirarchy by a `<roleplay>` element.
 
-#### `<encounter>`
+#### `<combat>`
+
 Has the players battle one or more monsters, as specified by `<e>` elements.
 
-It also have two optional attributes:
+It may have two optional attributes:
 
 * **`icon`** -- an image shown in the background of the text, used simply to provide visual flavor so text isn't visually boring
-* **`id`** -- a symbolic label, used as the destination of a choice's goto
+* **`id`** -- a symbolic label, used as the destination of an event's `goto`
 
-Encounters _must_ have a win condition and a lose condition, but may not offer a choice. This gets particularly confusing as `<choice win>` and `<choice lose>` are mandatory, but `<choice>` without either attribute is illegal.
+All non-`<e>` elements must be `<event>` elements, with an `on` attribute that indicates at what time the element should be displayed.
+
+Currently, there are only "win" and "lose" events for combat. There *must* be exactly one element with `on="win"` and exactly
+one with `on="lose"`, although that may be the same element. No two elements may have the same `on` value; there must only be a single outcome for each event.
 
 ### Text Elements
 
@@ -119,65 +102,63 @@ Encounters _must_ have a win condition and a lose condition, but may not offer a
 * **b** -- bold
 * **i** -- italic
 
-
-
 Quest BNF
 ---------
-It looks like the grammar for quests is still being refined and augmented. What follows is _not_ a formal BNF notation, but rather an attempt to capture general intent.
+The grammar for quests is still being refined and augmented. What follows is _not_ a formal BNF notation, but rather an attempt to capture general intent.
 
 ```
-QUEST := ELEMENTS
+QUEST := PARTS
 
-ELEMENTS := ELEMENT | ELEMENTS ELEMENT
-ELEMENT := COMMENT | ROLEPLAY | CHOICE | ENCOUNTER | END
+PARTS := PART PART*
+PART := COMMENT | ROLEPLAY | COMBAT | OPERATION
 
 COMMENT := <comment> STRING </comment>
 
-ROLEPLAY := <roleplay [ICON] [TITLE] [ID]> SCENARIO </roleplay>
-
+ROLEPLAY := <roleplay [IF] [ICON] [TITLE] [ID]> SCENARIO </roleplay>
 SCENARIO := CONTENT | SCENARIO CONTENT
-CONTENT := FLAVORTEXT | INSTRUCTION | COMMENT | CHOICE
+CONTENT := FLAVORTEXT | INSTRUCTION | COMMENT | CHOICE | MATH | END
 
-CHOICE := JUMPCHOICE | ACTIONCHOICE
-JUMPCHOICE := <choice GOTO> FLAVORTEXT </choice>
-ACTIONCHOICE := <choice> CONSEQUENCE </choice>
+CHOICE := <choice [IF] TEXT [GOTO]> PARTS </choice>
+EVENT := <event [IF] ON GOTO></event> | <event [IF] ON> PARTS </event>
+WIN_EVENT := <event [IF] ON_WIN> PART </event> | <event [IF] ON_WIN GOTO></event>
+LOSE_EVENT := <event [IF] ON_LOSE> PART </event> | <event [IF] ON_LOSE GOTO></event>
 
-CONSEQUENCE := FLAVORTEXT [ROLEPLAY] [ENCOUNTER] [END]
+COMBAT := <encounter [IF] [ICON] [ID]> ENEMIES WIN_EVENT LOSE_EVENT </encounter>
+ENEMIES := ENEMY ENEMY*
+ENEMY := <e [IF]> MONSTER </e>
+MONSTER := "Archer" | "Aspic Viper" | ...
 
-ENCOUNTER := <encounter [ICON] [ID]> ENEMIES WIN_ENCOUNTER LOSE_ENCOUNTER </encounter>
 
-WIN_ENCOUNTER := <choice win GOTO> FLAVORTEXT </choice> | <choice win> CONSEQUENCE </choice> 
-LOSE_ENOUNCTER := choice lose GOTO> FLAVORTEXT </choice> | <choice win> CONSEQUENCE </choice> 
+END := <end></end>
 
-END := <end [ICON] [TITLE] [ID] OUTCOME> FLAVORTEXT </end>
-OUTCOME := "win" | "lose"
-
-FLAVORTEXT := HTML_ELEMENT | FLAVORTEXT HTML_ELEMENT
-HTML_ELEMENT := PARAGRAPH | DIV | SPAN | BOLD | ITALIC 
-
+FLAVORTEXT := HTML_ELEMENT HTML_ELEMENT*
+HTML_ELEMENT := PARAGRAPH | DIV | SPAN | BOLD | ITALIC
 PARAGRAPH := <p> STRING </p>
 DIV := <div> STRING </div>
 SPAN := <span> STRING </span>
 BOLD := <b> STRING </b>
 ITALIC := <i> STRING </i>
 
-INSTRUCTION : <instruction> STRING </instruction>
+INSTRUCTION : <instruction [IF]> STRING </instruction>
 
 GOTO := "goto" = LABEL
 
-ENEMIES := ENEMY | ENEMIES ENEMY
-ENEMY := <e> MONSTER </e>
-MONSTER := "Archer" | "Aspic Viper" | "Bear Matriarch" | "Bluecap Faery" | "Brigand" | "Captain" | "Dire Wolf" | "Duergar" | "Floating Skull" | "Footpad" | "Giant Rat" | "Giant Spider" | "Highwayman" | "Imp" | "Korrigan Elf" | "Lich" | "Magic Mushroom" | "Nightblade" | "Quartermaster" | "Rift Walker" | "Rogue" | "Satyr" | "Shapeshifter" | "Skeletal Rat" | "Skeleton Mage" | "Skeleton Swordsman" | "Spider" | "Thief" | "Troll" | "Vampire" | "Veteran" | "Viking" | "Void Imp" | "Wight" | "Wild Bear" | "Wild Wolf" | "Will o' the Wisp" | "Wolfman" | "Zombie Hand" | "Zombie"
+ON := "on" = LABEL
+ON_WIN := "on" = "win"
+ON_LOSE := "on" = "lose"
 
-TITLE := "title" = '"' STRING '"'
+TITLE := "title" = STRING
 
-ICON := "icon" = '"' AN_ICON '"'
-AN_ICON := "adventurer" | "arrow" | "bandit" | "beast" | "cards" | "d20" | "damage" | "fae" | "hp" | "logo" | "loot" | "magic" | "melee" | "music" | "ranged" | "roll" | "target" | "undead"
+OPERATION := <op> STRING </op>
+IF := "if" = STRING
 
-ID := "id" = '"' LABEL '"'
+ICON := "icon" = AN_ICON
+AN_ICON := "adventurer" | "arrow" | ...
 
-LABEL := /[-A-Za-z0-9_]+/
-STRING := /.+/
+ID := "id" = LABEL
+
+LABEL := "/[-A-Za-z0-9_]+/"
+STRING := "/.+/"
 
 ```
 
@@ -189,20 +170,6 @@ See the .SVG files in `app/images`.
 
 Future Improvements
 -------------------
-Admittedly, the language is evolving and calls out for some general cleaning up.
 
-* It would be nice if the win and loss conditions weren't implemented
-  by the choice construct.
-
-* The `set-state` and `show-if` constructs could be flushed out more.
-
-* It would be nice if the language were legal XML. This would make
-  present attributes with no values illegal and standardize on
-  a single representation. Plus, it would mean that a DTD could be
-  published and any numerous XML editors could be used to create the
+* Publish a DTD so any of numerous XML editors could be used to create the
   files, making quest creations far easier.
-
-* XML itself, however, is quiet verbose. It may do well to develop a
-  game-specific domain language that isn't tied to implementation
-  details. Such a language would be more terse, while allowing for
-  adventuring quite complex scenarios.
