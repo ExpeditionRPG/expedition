@@ -4,6 +4,7 @@
       display: block;
       padding: var(--vw-small);
     };
+    /* TODO: Handle comments better (using html style comments?) */
     :host ::content comment {
       display: none;
     };
@@ -101,6 +102,8 @@
         this._isWin = undefined;
 
         this._parser = new questParser();
+        this._parser.setGameState(this.globals);
+
         // Reset to selection screen and fetch content
         if (this.url) {
           this.$.questFetcher.generateRequest();
@@ -132,6 +135,9 @@
             // Do not show help text
             this.startQuest();
           }
+        }
+        if (this._parser) {
+          this._parser.setGameState(this.globals);
         }
       },
       startQuest: function() {
@@ -197,6 +203,10 @@
         this._encounter = p.contents;
         this._combaticon = p.icon;
         this.$.pages.next('combat', anim);
+      },
+      _doCombatAction: function() {
+        // TODO: Set encounters, optionally go to combat end, etc.
+        throw new Error('Combat actions not yet implemented');
       },
       _doDialog: function(p, anim) {
         if (this.$.pages.getCurrentPage() === 'questdialog') {

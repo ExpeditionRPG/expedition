@@ -31,7 +31,7 @@ General Gaming Phase Structure
 * If there is no decision, a Next button is presented to the user and gameplay falls through to the next sequential element.
 * Decisions are offered with multiple choices (`<choice>`).
 * These often lead to combat (`<combat>`) which features one or more enemies (`<e>`) that must be defeated. *The game handles the mechanic details.*
-* The encounter continues until it can resolve in only one of two ways, with a win or a lose (`<event on="win">` or `<event on="lose">`).
+* The combat continues until it can resolve in only one of two ways, with a win or a lose (`<event on="win">` or `<event on="lose">`).
 * Eventually the story line resolves (`<end>`), and the player is allowed to select a new quest.
 
 The quest is primarily a sequential path through the storyline, with nesting of elements within a choice to branch or the use of `goto`s to hop around in a non-linear fashion.
@@ -123,7 +123,7 @@ EVENT := <event [IF] ON GOTO></event> | <event [IF] ON> PARTS </event>
 WIN_EVENT := <event [IF] ON_WIN> PART </event> | <event [IF] ON_WIN GOTO></event>
 LOSE_EVENT := <event [IF] ON_LOSE> PART </event> | <event [IF] ON_LOSE GOTO></event>
 
-COMBAT := <encounter [IF] [ICON] [ID]> ENEMIES WIN_EVENT LOSE_EVENT </encounter>
+COMBAT := <combat [IF] [ICON] [ID]> ENEMIES WIN_EVENT LOSE_EVENT </combat>
 ENEMIES := ENEMY ENEMY*
 ENEMY := <e [IF]> MONSTER </e>
 MONSTER := "Archer" | "Aspic Viper" | ...
@@ -167,6 +167,28 @@ See the JSON object defined in `app/scripts/globals.json` and look at the keys t
 
 #### Icons
 See the .SVG files in `app/images`.
+
+#### Operations
+Operations (using the `<op>` element) are based on [MathJS](http://mathjs.org/) and allow for mathematical and variable operations.
+Every quest has a context (i.e. it starts a new MathJS parser) where variables can be stored.
+
+There are some basic functions that may be called under certain contexts to retrieve information about the state of the quest:
+
+**NOTE: These are not yet implemented. Stay tuned!**
+
+Any time:
+
+*  **`adventurerCount(alive_only)`** -- the number of adventurers. Pass "true" to get living adventurers (valid only during combat).
+
+During combat:
+
+*  **`tierSum(x)`** -- the current total tier of the combat. Provide a number argument to set the tier sum.
+*  **`roundCount()`** -- the number of rounds of combat already elapsed.
+*  **`surgeCount()`** -- the number of surges already elapsed.
+*  **`enemies(x)`** -- the number of enemies as an array, e.g. `["Skeleton Archer", "Giant Rat"]`. Provide a number argument to set the enemy list.
+
+Also note that `_gamestate_` is a reserved variable and is not to be used.
+
 
 Future Improvements
 -------------------
