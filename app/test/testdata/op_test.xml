@@ -17,8 +17,16 @@
     <choice if="x == 5" text="Do a conditional thing!">
       <roleplay>
         <p>Conditional thing done.</p>
-        <end></end>
       </roleplay>
+      <combat>
+        <e>Giant Rat</e>
+
+        <event on="win"></event>
+        <event on="lose"></event>
+        <event on="round">
+          <op>combat.set({adventurers: 5, encounters: ["big bat"], tier: 4});</op>
+        </event>
+      </combat>
     </choice>
     <choice text="Another nonconditional thing">
       <op>x=2</op>

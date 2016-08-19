@@ -35,6 +35,14 @@ questParser.prototype.init = function(root) {
   return this._loadCurrentNode();
 };
 
+questParser.prototype.setGameState = function(state) {
+  if (!this._parser) {
+    return;
+  }
+  this._parser.eval('_gamestate_ = ' + JSON.stringify(state));
+  // TODO: Include helper functions for accessing game state vars
+}
+
 questParser.prototype.isStarted = function() {
   return (this.path.length > 1);
 };
@@ -110,8 +118,8 @@ questParser.prototype._loadCurrentNode = function() {
       return this._loadCombatNode(node);
     case "roleplay":
       return this._loadDialogNode(node);
-    case "end":
-      return this._loadEndNode(node);
+    case "trigger":
+      return this._loadTriggerNode(node);
     case "comment":
       this.path.push(this._findNextNode(node));
       return this._loadCurrentNode();
@@ -147,7 +155,7 @@ questParser.prototype._loadEventNode = function(node) {
       throw new Error("Node cannot have <event> or <choice> child");
     }
 
-    if (tag === 'combat' || tag === 'end' || tag === 'roleplay') {
+    if (tag === 'combat' || tag === 'trigger' || tag === 'roleplay') {
       hasControlChild = true;
     }
   });
@@ -193,6 +201,8 @@ questParser.prototype._loadCombatNode = function(node) {
     throw new Error("<combat> has no <e> children");
   }
 
+  // TODO: Add modifiable combat scope.
+
   return {
     'type': 'combat',
     'icon': node.getAttribute('icon'),
@@ -200,9 +210,9 @@ questParser.prototype._loadCombatNode = function(node) {
   };
 };
 
-questParser.prototype._loadEndNode = function(node) {
+questParser.prototype._loadTriggerNode = function(node) {
   return {
-    type: 'end'
+    type: node.textContent
   };
 };
 
@@ -219,7 +229,6 @@ questParser.prototype._isEnabled = function(node) {
 questParser.prototype._loadDialogNode = function(node) {
   // Append elements to contents
   var numEvents = 0;
-  var hasEndNode = false;
   var child;
   var contents = document.createElement('span');
 
@@ -258,10 +267,6 @@ questParser.prototype._loadDialogNode = function(node) {
       throw new Error("<roleplay> cannot contain <event>.");
     }
 
-    if (tag === "end") {
-      hasEndNode = true;
-    }
-
     // Convert "instruction" tags to <expedition-indicator> tags.
     if (tag === "instruction") {
       var inner = document.createElement('span');
@@ -277,8 +282,20 @@ questParser.prototype._loadDialogNode = function(node) {
   // Append a generic "Next" button if there were no events,
   // or an "End" button if there's also an <End> tag.
   if (numEvents === 0) {
+    // Handle custom generic next button text based on if we're heading into a trigger node.
+    var nextNode = this._findNextNode(node);
+    var buttonText = "Next";
+    if (nextNode && nextNode.localName === "trigger") {
+      switch(nextNode.textContent.toLowerCase()) {
+        case "end":
+          buttonText = "End";
+          break;
+        default:
+          throw new Error("Unknown trigger content " + nextNode.textContent);
+      }
+    }
     child = document.createElement('expedition-button');
-    Polymer.dom(child).innerHTML = (hasEndNode) ? "End" : "Next";
+    Polymer.dom(child).innerHTML = buttonText;
     contents.appendChild(child);
   }
 
@@ -328,8 +345,8 @@ questParser.prototype._getInvalidNodesAndAttributes = function(node) {
   var results = {};
 
   // Quests must only contain these tags:
-  if (["op", "quest", "div", "span", "b", "i", "choice", "event", "combat", "roleplay", "p", "e",
-       "end", "comment", "instruction"].indexOf(
+  if (["op", "quest", "div", "span", "b", "i", "choice", "event", "combat", "roleplay", "p", "e", "em",
+       "trigger", "comment", "instruction"].indexOf(
         node.tagName) === -1) {
     results[node.tagName] = (results[node.tagName] || 0) + 1;
   }
