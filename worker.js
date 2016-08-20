@@ -63,9 +63,27 @@ function subscribe () {
     if (err) {
       throw err;
     }
-    if (message.action === 'processBook') {
-      logging.info('Received request to process book ' + message.bookId);
+    if (message.action === 'toMarkdown') {
+      /*
+      try {
+        res.end(toXML(req.body), 'utf-8');
+      } catch (e) {
+        console.log(e);
+        serverError(res, 500, e);
+      }
+      */
+      logging.info('Convert to markdown: ' + message.bookId);
       processBook(message.bookId);
+    } else if (message.action === 'toXML') {
+      /*
+      try {
+        res.end(toMarkdown(req.body), 'utf-8');
+      } catch (e) {
+        console.log(e);
+        serverError(res, 500, e);
+      }
+      */
+      logging.info('Convert to XML: ' + message.bookID)
     } else {
       logging.warn('Unknown request', message);
     }

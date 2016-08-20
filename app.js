@@ -72,7 +72,8 @@ var setupSession = function(app) {
 
 var setupRoutes = function(app) {
   app.get('/', routes.index);
-  app.get('/page/:page/:skip', routes.page);
+  app.post('/toMarkdown', routs.toMarkdown);
+  app.post('/toXML', routs.toXML);
 
   // Set /public as our static content dir
   app.use("/", express.static(__dirname + "/public/"));

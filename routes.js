@@ -21,6 +21,23 @@ module.exports = {
   page: function(req, res) {
     // Render as JSON
     res.send({hello: "world"});
-  }
+  },
 
+  toMarkdown: function(req, res) {
+    try {
+      res.end(toMarkdown(req.body), 'utf-8');
+    } catch (e) {
+      console.log(e);
+      res.end(500);
+    }
+  },
+
+  toXML: function(req, res) {
+    try {
+      res.end(toXML(req.body), 'utf-8');
+    } catch (e) {
+      console.log(e);
+      res.end(500);
+    }
+  }
 }
