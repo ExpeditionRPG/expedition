@@ -1,0 +1,7 @@
+{
+  "GCLOUD_PROJECT": "expedition-quest-ide",
+  "OAUTH2_CLIENT_ID": "545484140970-r95j0rmo8q1mefo0pko6l3v6p4s771ul.apps.googleusercontent.com",
+  "OAUTH2_CLIENT_SECRET": "_XrII_A4y4k4GJV5EwctBHI2",
+  "OAUTH2_CALLBACK": "http://localhost:8080/auth/google/callback",
+  "CLOUD_BUCKET": "expedition-quest-ide"
+}

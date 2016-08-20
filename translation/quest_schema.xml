@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="quest" type="QuestType"/>
+
+<xs:complexType name="QuestType">
+  <xs:sequence><xs:choice maxOccurs="unbounded" minOccurs="1">
+    <xs:element name="roleplay" type="RoleplayType"/>
+    <xs:element name="combat" type="CombatType"/>
+    <xs:element name="comment" type="xs:string"/>
+    <xs:element name="op" type="OpType"/>
+    <xs:element name="trigger" type="TriggerType"/>
+  </xs:choice></xs:sequence>
+  <xs:attribute name="title" type="xs:string"></xs:attribute>
+  <xs:attribute name="author" type="xs:string"></xs:attribute>
+  <xs:attribute name="email" type="xs:string"></xs:attribute>
+  <xs:attribute name="summary" type="xs:string"></xs:attribute>
+  <xs:attribute name="url" type="xs:string"></xs:attribute>
+  <xs:attribute name="recommended-max-players" type="xs:integer"></xs:attribute>
+  <xs:attribute name="recommended-min-players" type="xs:integer"></xs:attribute>
+  <xs:attribute name="min-time-minutes" type="xs:integer"></xs:attribute>
+  <xs:attribute name="max-time-minutes" type="xs:integer"></xs:attribute>
+</xs:complexType>
+
+<xs:complexType name="RoleplayType">
+  <xs:sequence><xs:choice maxOccurs="unbounded" minOccurs="1">
+    <xs:element name="p" type="PType"/>
+    <xs:element name="b" type="PType"/>
+    <xs:element name="i" type="PType"/>
+    <xs:element name="u" type="PType"/>
+    <xs:element name="choice" type="ChoiceType"/>
+    <xs:element name="comment" type="xs:string"/>
+    <xs:element name="instruction" type="InstructionType"/>
+  </xs:choice></xs:sequence>
+  <xs:attribute name="id" type="xs:string"></xs:attribute>
+  <xs:attribute name="title" type="xs:string"></xs:attribute>
+  <xs:attribute name="icon" type="xs:string"></xs:attribute>
+</xs:complexType>
+
+<xs:complexType name="ChoiceType">
+  <xs:sequence><xs:choice maxOccurs="unbounded" minOccurs="0">
+    <xs:element name="roleplay" type="RoleplayType"/>
+    <xs:element name="combat" type="CombatType"/>
+    <xs:element name="trigger" type="TriggerType"/>
+  </xs:choice></xs:sequence>
+  <xs:attribute name="text" type="xs:string"></xs:attribute>
+  <xs:attribute name="goto" type="xs:string"></xs:attribute>
+</xs:complexType>
+
+<xs:complexType name="CombatType">
+  <xs:sequence><xs:choice maxOccurs="unbounded" minOccurs="1">
+    <xs:element name="e" type="xs:string"/>
+    <xs:element name="event" type="EventType"/>
+  </xs:choice></xs:sequence>
+  <xs:attribute name="icon" type="xs:string"></xs:attribute>
+</xs:complexType>
+
+<xs:complexType name="EventType">
+  <xs:sequence><xs:choice maxOccurs="unbounded" minOccurs="0">
+    <xs:element name="roleplay" type="RoleplayType"/>
+    <xs:element name="combat" type="CombatType"/>
+    <xs:element name="trigger" type="TriggerType"/>
+  </xs:choice></xs:sequence>
+  <xs:attribute name="on" type="xs:string"></xs:attribute>
+  <xs:attribute name="goto" type="xs:string"></xs:attribute>
+</xs:complexType>
+
+<xs:complexType name="InstructionType" mixed="true">
+  <xs:sequence maxOccurs="unbounded" minOccurs="0">
+    <xs:element name="p" type="xs:string"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="PType" mixed="true">
+  <xs:sequence maxOccurs="unbounded" minOccurs="0">
+    <xs:choice>
+      <xs:element name="p" type="PType"/>
+      <xs:element name="b" type="PType"/>
+      <xs:element name="i" type="PType"/>
+      <xs:element name="u" type="PType"/>
+      <xs:element name="em" type="PType"/>
+      <xs:element name="strong" type="PType"/>
+    </xs:choice>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:simpleType name="TriggerType">
+  <xs:restriction base="xs:string">
+    <xs:pattern value="end|win|lose"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="OpType">
+  <xs:restriction base="xs:string"/>
+</xs:simpleType>
+
+</xs:schema>
