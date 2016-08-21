@@ -1,6 +1,7 @@
 var fs = require('fs');
 var toMarkdown = require('./to_markdown');
 var toXML = require('./to_xml');
+var toGraph = require('./to_graph');
 
 var readConvertWrite = function(input_file, node_transform, output_file, verbose) {
   fs.readFile(input_file, 'utf8', function(err, data) {
@@ -38,6 +39,8 @@ if (require.main === module) {
     readConvertWrite(argv._[0], toXML, argv._[1], argv.v);
   } else if (input_ext === '.xml' && output_ext === '.md') {
     readConvertWrite(argv._[0], toMarkdown, argv._[1], argv.v);
+  } else if (input_ext === '.xml' && output_ext === '.json') {
+    readConvertWrite(argv._[0], toGraph, argv._[1], argv.v);
   } else {
     throw new Error("No valid conversion from *"+input_ext+" to *"+output_ext);
   }

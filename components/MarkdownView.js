@@ -7,9 +7,22 @@ import 'brace/theme/twilight';
 
 // See https://github.com/securingsincity/react-ace
 export default class MarkdownView extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {data: ""};
+  }
+
+  componentDidMount() {
+    $.get(this.props.url, function(result) {
+      this.setState({data: result});
+    }.bind(this)).fail(function(err) {
+      console.log(err);
+    });
+  }
 
   onChange(newValue) {
-    console.log('change', newValue);
+    console.log('change');
   }
 
   render() {
@@ -21,6 +34,7 @@ export default class MarkdownView extends React.Component {
         onChange={this.onChange}
         width="100%"
         height="100%"
+        value={this.state.data}
         name="markdown-editor"
         editorProps={{$blockScrolling: true}}
       />

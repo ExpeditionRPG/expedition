@@ -20,6 +20,9 @@
   position: relative;
 }
 
+.graphcontainer svg {
+  overflow: visible;
+}
 
 .graphcontainer .node {
   position: absolute;

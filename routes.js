@@ -2,7 +2,8 @@ var JSX = require('babel-core/register')({
   presets: ['es2015', 'react']
 });
 var React = require('react');
-var QuestIDE = require('./components/QuestIDE');
+var fs = require('fs');
+
 
 module.exports = {
 
@@ -11,11 +12,17 @@ module.exports = {
     //  QuestIDE({})
     //);
 
-    // Render our 'home' template
-    res.render('home', {
-      state: JSON.stringify({test: "hello world"}) // Pass current state to client side
+    fs.readFile('translation/examples/oust_albanus.md', 'utf8', function(err, mddata) {
+      fs.readFile('translation/examples/oust_albanus.xml', 'utf8', function(err, xmldata) {
+        // Render our 'home' template
+        res.render('home', {
+          state: JSON.stringify({
+            markdown: mddata,
+            xml: xmldata
+          }) // Pass current state to client side
+        });
+      });
     });
-
   },
 
   page: function(req, res) {

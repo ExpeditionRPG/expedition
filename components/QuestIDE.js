@@ -71,13 +71,13 @@ export default class QuestIDE extends React.Component {
               tabTemplate={TabTemplate}
               contentContainerStyle={styles.tabcontainer} >
           <Tab label="Markdown" >
-            <MarkdownView/>
+            <MarkdownView url="example/oust_albanus.md" />
           </Tab>
           <Tab label="XML View">
-            <XMLView/>
+            <XMLView url="example/oust_albanus.xml" />
           </Tab>
           <Tab label="Graph View">
-            <GraphView/>
+            <GraphView url="example/oust_albanus.json"/>
           </Tab>
           <Tab label="Adventurer View">
             <AdventurerView/>
