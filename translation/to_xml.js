@@ -105,6 +105,8 @@ var traverseAndAppend = function(parent, children, context) {
   var i = 0;
   while (i < children.length) {
     var node = children.eq(i);
+    var result;
+
     if (node.is(BRANCH_WRAPPER)) {
       // Transparently unwrap branches so the elements appear inline.
       traverseAndAppend(parent, node.children(), context);
@@ -263,7 +265,6 @@ var toQuest = function(node, nodes, context) {
 
 var convertQuestMarkdownToXML = function(text, verbose) {
   format.debug_info = verbose;
-  console.log(text);
 
   var md = cheerio.load("<quest>" + markdown.toHTML(text) + "</quest>");
   var md_quest = md('quest');

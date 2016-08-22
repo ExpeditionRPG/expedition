@@ -13,22 +13,6 @@ var styles = {
 };
 
 export default class GraphView extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {data: {
-      nodes: [],
-      connections: []
-    }};
-  }
-
-  componentDidMount() {
-    $.get(this.props.url, function(result) {
-      this.setState({data: result});
-    }.bind(this)).fail(function(err) {
-      console.log(err);
-    });
-  }
 
   onNodeMove(nid, pos) {
 
@@ -41,10 +25,11 @@ export default class GraphView extends React.Component {
   }
 
   render() {
-    if (this.state.data.nodes.length) {
+    if (this.props.data !== "loading") {
+      var parsed = JSON.parse(this.props.data);
       return (
         <div className="graphcontainer">
-          <ReactNodeGraph data={this.state.data}
+          <ReactNodeGraph data={parsed}
             onNodeMove={(nid, pos)=>this.onNodeMove(nid, pos)}
             onNodeStartMove={(nid)=>this.onNodeStartMove(nid)}
             onNewConnector={(n1,o,n2,i)=>this.onNewConnector(n1,o,n2,i)}

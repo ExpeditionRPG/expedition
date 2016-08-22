@@ -43,7 +43,7 @@
     "@google/cloud-trace": "*",
     "async": "*",
     "babel-core": "^6.13.2",
-    "body-parser": "*",
+    "body-parser": "^1.15.2",
     "bowser": "^1.4.4",
     "cheerio": "^0.20.0",
     "connect-memcached": "*",

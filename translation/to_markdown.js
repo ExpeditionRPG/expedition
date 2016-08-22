@@ -88,7 +88,7 @@ function formatCombat(node, context) {
     context.icon = meta.icon;
   }
 
-  result = format.at(context, "_combat_ " + JSON.stringify(meta) + "\n");
+  var result = format.at(context, "_combat_ " + JSON.stringify(meta) + "\n");
   return result + traverse(node.children(":not(e)"), context);
 }
 
@@ -99,7 +99,7 @@ function formatTrigger(node, context) {
 
 function formatQuest(node, context) {
   // Parse headers
-  result = format.at(context, "# " + node.attr('title'));
+  var result = format.at(context, "# " + node.attr('title'));
 
   var attrs = [
     "summary",

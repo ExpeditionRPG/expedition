@@ -1,6 +1,6 @@
 
 // ---------------- Utilities ----------------
-debug_info = false;
+var debug_info = false;
 
 var formatAt = function(context, text) {
   var prefix = "";

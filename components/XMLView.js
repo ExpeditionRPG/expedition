@@ -6,36 +6,29 @@ import 'brace/mode/xml';
 import 'brace/theme/twilight';
 
 // See https://github.com/securingsincity/react-ace
-// And https://ace.c9.io/#nav=howto
 export default class XMLView extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {data: ""};
-  }
-
-  componentDidMount() {
-    $.get(this.props.url, function(result) {
-      this.setState({data: new XMLSerializer().serializeToString(result)});
-    }.bind(this)).fail(function(err) {
-      console.log(err);
-    });
-  }
-
   onChange(newValue) {
     console.log('change');
+  }
+
+  getValue() {
+    if (this.ace.editor) {
+      return this.ace.editor.getValue();
+    }
+    return null;
   }
 
   render() {
     return (
       <AceEditor
+        ref={(ref) => this.ace = ref}
         mode="xml"
         theme="twilight"
-        fontSize="20px"
+        fontSize={20}
         onChange={this.onChange}
         width="100%"
         height="100%"
-        value={this.state.data}
+        value={this.props.data}
         name="xml-editor"
         editorProps={{$blockScrolling: true}}
       />

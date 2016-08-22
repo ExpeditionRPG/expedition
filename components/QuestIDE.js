@@ -1,5 +1,6 @@
 import React from 'react';
-import {Tabs, Tab} from 'material-ui/Tabs';
+import {Tab} from 'material-ui/Tabs';
+import ManualTabs from './ManualTabs';
 import AppBar from 'material-ui/AppBar';
 import Avatar from 'material-ui/Avatar';
 import GraphView from './GraphView';
@@ -49,16 +50,38 @@ class TabTemplate extends React.Component {
 
 export default class QuestIDE extends React.Component {
 
-  onNodeMove(nid, pos) {
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      quest_md: "# Oust albanus\nauthor: scott\n\n_herp_\n\nderp\n\n**end**",
+      quest_xml: "",
+      quest_graph: ""
+    };
   }
 
-  onNodeStartMove(nid) {
+  onChangeAttempt(prev, next, cb) {
+    if (prev === "graph" || prev === "adventurer") {
+      return cb();
+    }
 
-  }
+    console.log(prev + " to " + next);
+    var data;
+    if (prev === "md") {
+      data = this.markdownView.getValue();
+    } else if (prev === "xml") {
+      data = this.xmlView.getValue();
+    }
 
-  onNewConnector(n1,o,n2,i) {
-
+    // Convert things
+    $.post("/quest/123/"+prev+"/"+next, data, function(result) {
+      var st = {};
+      st["quest_"+next] = result;
+      this.setState(st);
+      cb();
+    }.bind(this)).fail(function(err) {
+      console.log(err);
+    });
   }
 
   render(){
@@ -67,22 +90,23 @@ export default class QuestIDE extends React.Component {
         <AppBar title="Expedition" iconElementRight={
           <Avatar icon={<FileFolder />} />
         }/>
-        <Tabs style={styles.tabsroot}
+        <ManualTabs style={styles.tabsroot}
               tabTemplate={TabTemplate}
+              onChangeAttempt={this.onChangeAttempt.bind(this)}
               contentContainerStyle={styles.tabcontainer} >
-          <Tab label="Markdown" >
-            <MarkdownView url="example/oust_albanus.md" />
+          <Tab label="Markdown" value="md">
+            <MarkdownView data={this.state.quest_md} ref={(ref) => this.markdownView = ref} />
           </Tab>
-          <Tab label="XML View">
-            <XMLView url="example/oust_albanus.xml" />
+          <Tab label="XML View" value="xml">
+            <XMLView data={this.state.quest_xml} ref={(ref) => this.xmlView = ref} />
           </Tab>
-          <Tab label="Graph View">
-            <GraphView url="example/oust_albanus.json"/>
+          <Tab label="Graph View" value="graph">
+            <GraphView data={this.state.quest_graph} />
           </Tab>
-          <Tab label="Adventurer View">
+          <Tab label="Adventurer View" value="adventurer">
             <AdventurerView/>
           </Tab>
-        </Tabs>
+        </ManualTabs>
       </div>
     );
   }

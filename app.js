@@ -28,12 +28,15 @@ var passport = require('passport');
 var config = require('./config');
 var logging = require('./lib/logging');
 var routes = require('./routes');
+var bodyParser = require('body-parser')
 
 var app = express();
 
 // Add the request logger before anything else so that it can
 // accurately log requests.
 app.use(logging.requestLogger);
+
+app.use(bodyParser.text({type:"*/*"}));
 
 app.disable('etag');
 
@@ -71,9 +74,9 @@ var setupSession = function(app) {
 };
 
 var setupRoutes = function(app) {
-  app.post('/toMarkdown', routes.toMarkdown);
-  app.post('/toXML', routes.toXML);
   app.get('/', routes.index);
+  app.get('/quest/:quest/:type', routes.getQuest);
+  app.post('/quest/:quest/:intype/:outtype', routes.updateQuest);
 
   // Set /public as our static content dir
   app.use("/", express.static(__dirname + "/public/"));

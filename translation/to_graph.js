@@ -115,7 +115,7 @@ function triggerNode(node, global_context) {
 function questNode(node, global_context) {
   var idx = global_context.idx++;
   // Parse headers
-  result = {
+  var result = {
     'idx': idx,
     'type': 'quest'
   };

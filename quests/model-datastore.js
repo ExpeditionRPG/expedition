@@ -15,12 +15,12 @@
 
 var gcloud = require('gcloud');
 var config = require('../config');
-var background = require('../lib/background');
+//var background = require('../lib/background');
 
 var ds = gcloud.datastore({
   projectId: config.get('GCLOUD_PROJECT')
 });
-var kind = 'Book';
+var kind = 'Quest';
 
 // Translates from Datastore's entity format to
 // the format expected by the application.
@@ -118,11 +118,10 @@ function listBy (userId, limit, token, cb) {
   });
 }
 
-// Creates a new book or updates an existing book with new data. The provided
-// data is automatically translated into Datastore format. The book will be
+// Creates a new quest or updates an existing quest with new data. The provided
+// data is automatically translated into Datastore format. The quest will be
 // queued for background processing.
-// [START update]
-function update (id, data, queueBook, cb) {
+function update (id, data, process, cb) {
   var key;
   if (id) {
     key = ds.key([kind, parseInt(id, 10)]);
@@ -142,14 +141,13 @@ function update (id, data, queueBook, cb) {
         return cb(err);
       }
       data.id = entity.key.id;
-      if (queueBook) {
-        background.queueBook(data.id);
+      if (process) {
+        //background.queueBook(data.id);
       }
       cb(null, data);
     }
   );
 }
-// [END update]
 
 function read (id, cb) {
   var key = ds.key([kind, parseInt(id, 10)]);
