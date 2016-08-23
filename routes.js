@@ -64,14 +64,20 @@ module.exports = {
       return;
     }
 
-    if (req.params.intype === 'xml' && req.params.outtype === 'md') {
-      res.end(toMarkdown(req.body));
-    } else if (req.params.intype === 'md' && req.params.outtype === 'xml') {
-      res.end(toXML(req.body));
-    } else if (req.params.intype === 'xml' && req.params.outtype === 'graph') {
-      res.end(toGraph(req.body));
-    } else {
-      res.end('ERR INVALID');
-    };
+    try {
+      if (req.params.intype === 'xml' && req.params.outtype === 'md') {
+        res.end(toMarkdown(req.body));
+      } else if (req.params.intype === 'md' && req.params.outtype === 'xml') {
+        res.end(toXML(req.body));
+      } else if (req.params.intype === 'xml' && req.params.outtype === 'graph') {
+        res.end(toGraph(req.body));
+      } else if (req.params.intype === 'md' && req.params.outtype === 'graph') {
+        res.end(toGraph(toXML(req.body)));
+      } else {
+        throw new Error("Invalid translation from " + req.params.intype + " to " + req.params.outtype);
+      };
+    } catch (e) {
+      res.status(500).end(e.toString());
+    }
   }
 }

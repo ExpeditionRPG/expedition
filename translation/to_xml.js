@@ -3,6 +3,7 @@ var cheerio = require('cheerio');
 var fs = require('fs');
 var prettifyHTML = require("html").prettyPrint;
 var format = require('./format');
+var htmlToMarkdown = require('to-markdown');
 
 // ----------------------------------------------------------
 // These are the regular HTML elements that markdown creates.
@@ -32,7 +33,11 @@ var parseTrigger = function(node) {
 // Parse the JSON string directly after a header element.
 var parseAttributes = function(node) {
   if (parseHeader(node) && node.contents().eq(1).text()) {
-    return JSON.parse(node.contents().eq(1).text());
+    try {
+      return JSON.parse(node.contents().eq(1).text());
+    } catch (e) {
+      throw new Error("Failed to get attributes from line: \"" + htmlToMarkdown(node.html()) + "\"");
+    }
   };
 };
 
@@ -127,7 +132,7 @@ var traverseAndAppend = function(parent, children, context) {
     } else if (isInstruction(node)) {
       result = toInstruction(node, context);
     } else {
-      throw new Error("Unexpected tag name " + node.get(0).tagName);
+      throw new Error("Could not parse: \"" + htmlToMarkdown(node.html()) + "\" (seen as a " + node.get(0).tagName + " element)");
     }
 
     parent.append(result.node);

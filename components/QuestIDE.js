@@ -8,6 +8,7 @@ import XMLView from './XMLView';
 import AdventurerView from './AdventurerView';
 import MarkdownView from './MarkdownView';
 import FileFolder from 'material-ui/svg-icons/file/folder';
+import Snackbar from 'material-ui/Snackbar';
 
 const styles = {
   container: {
@@ -53,35 +54,60 @@ export default class QuestIDE extends React.Component {
   constructor(props) {
     super(props);
 
+    this.dirty = false;
+
     this.state = {
       quest_md: "# Oust albanus\nauthor: scott\n\n_herp_\n\nderp\n\n**end**",
       quest_xml: "",
-      quest_graph: ""
+      quest_graph: "",
+      quest_adventurer: "",
+      error: false
     };
   }
 
+  markDirty() {
+    this.dirty = true;
+    console.log("dirty");
+  }
+
   onChangeAttempt(prev, next, cb) {
-    if (prev === "graph" || prev === "adventurer") {
+    var data;
+    if (prev === "md") {
+      this.state.quest_md = this.markdownView.getValue();
+      data = this.state.quest_md;
+    } else if (prev === "xml") {
+      this.state.quest_xml = this.xmlView.getValue();
+      data = this.state.quest_xml;
+    } else if (prev === "graph" || prev === "adventurer") {
+      if (next === 'xml' && !this.state.quest_xml.length && this.state.quest_md.length) {
+        prev = "md";
+        data = this.state.quest_md;
+      } else if (next === 'md' && !this.state.quest_md.length && this.state.quest_xml.length) {
+        prev = "xml";
+        data = this.state.quest_xml;
+      } else {
+        return cb();
+      }
+    } else if (next === "graph" || next === "adventurer") {
       return cb();
     }
 
-    console.log(prev + " to " + next);
-    var data;
-    if (prev === "md") {
-      data = this.markdownView.getValue();
-    } else if (prev === "xml") {
-      data = this.xmlView.getValue();
+    if (!this.dirty && this.state["quest_"+next].length) {
+      return cb();
     }
 
     // Convert things
+    console.log("Fetching translation: " + prev + " -> " + next);
     $.post("/quest/123/"+prev+"/"+next, data, function(result) {
-      var st = {};
+      var st = {error: false};
       st["quest_"+next] = result;
       this.setState(st);
+      this.dirty = false;
       cb();
     }.bind(this)).fail(function(err) {
       console.log(err);
-    });
+      this.setState({error: err.statusText + " (" + err.status + "): " + err.responseText});
+    }.bind(this));
   }
 
   render(){
@@ -95,10 +121,10 @@ export default class QuestIDE extends React.Component {
               onChangeAttempt={this.onChangeAttempt.bind(this)}
               contentContainerStyle={styles.tabcontainer} >
           <Tab label="Markdown" value="md">
-            <MarkdownView data={this.state.quest_md} ref={(ref) => this.markdownView = ref} />
+            <MarkdownView data={this.state.quest_md} ref={(ref) => this.markdownView = ref} onChange={this.markDirty.bind(this)} />
           </Tab>
           <Tab label="XML View" value="xml">
-            <XMLView data={this.state.quest_xml} ref={(ref) => this.xmlView = ref} />
+            <XMLView data={this.state.quest_xml} ref={(ref) => this.xmlView = ref} onChange={this.markDirty.bind(this)} />
           </Tab>
           <Tab label="Graph View" value="graph">
             <GraphView data={this.state.quest_graph} />
@@ -107,6 +133,13 @@ export default class QuestIDE extends React.Component {
             <AdventurerView/>
           </Tab>
         </ManualTabs>
+        <Snackbar
+          open={this.state.error}
+          style="width: 50%"
+          message={this.state.error}
+          autoHideDuration={10000}
+          onRequestClose={this.handleRequestClose}
+        />
       </div>
     );
   }

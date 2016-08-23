@@ -1,6 +1,8 @@
 var cheerio = require('cheerio');
 var format = require('./format');
 
+// TODO: Provide line numbers and descriptive errors
+
 function formatRoleplay(node, context) {
   var result = "";
 
