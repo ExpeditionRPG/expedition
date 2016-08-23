@@ -74,9 +74,7 @@ var setupSession = function(app) {
 };
 
 var setupRoutes = function(app) {
-  app.get('/', routes.index);
-  app.get('/quest/:quest/:type', routes.getQuest);
-  app.post('/quest/:quest/:intype/:outtype', routes.updateQuest);
+  app.use(routes);
 
   // Set /public as our static content dir
   app.use("/", express.static(__dirname + "/public/"));

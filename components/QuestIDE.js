@@ -56,11 +56,14 @@ export default class QuestIDE extends React.Component {
 
     this.dirty = false;
 
+    var auth = JSON.parse(document.getElementById("initial-state").textContent);
+
     this.state = {
       quest_md: "# Oust albanus\nauthor: scott\n\n_herp_\n\nderp\n\n**end**",
       quest_xml: "",
       quest_graph: "",
       quest_adventurer: "",
+      auth: auth,
       error: false
     };
   }
@@ -111,11 +114,24 @@ export default class QuestIDE extends React.Component {
   }
 
   render(){
+    var user_details;
+    if (this.state.auth.profile) {
+      user_details = (
+        <span>
+          <span>{this.state.auth.profile.displayName}</span>
+          <Avatar src={this.state.auth.profile.image} />
+          <a href={this.state.auth.logout}>Logout</a>
+        </span>
+      );
+    } else {
+      user_details = (
+        <a href={this.state.auth.login}>Login with Google</a>
+      );
+    }
+
     return (
       <div className="expedition-quest-ide" style={styles.container}>
-        <AppBar title="Expedition" iconElementRight={
-          <Avatar icon={<FileFolder />} />
-        }/>
+        <AppBar title="Expedition" iconElementRight={user_details}/>
         <ManualTabs style={styles.tabsroot}
               tabTemplate={TabTemplate}
               onChangeAttempt={this.onChangeAttempt.bind(this)}
