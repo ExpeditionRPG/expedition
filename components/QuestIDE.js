@@ -1,23 +1,25 @@
 import React from 'react';
 import {Tab} from 'material-ui/Tabs';
-import ManualTabs from './ManualTabs';
 import AppBar from 'material-ui/AppBar';
 import Avatar from 'material-ui/Avatar';
-import GraphView from './GraphView';
-import XMLView from './XMLView';
-import AdventurerView from './AdventurerView';
-import MarkdownView from './MarkdownView';
 import FileFolder from 'material-ui/svg-icons/file/folder';
 import Snackbar from 'material-ui/Snackbar';
-import Drawer from 'material-ui/Drawer';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
 import IconMenu from 'material-ui/IconMenu';
 import PersonOutlineIcon from 'material-ui/svg-icons/social/person-outline';
-import timeAgo from 'time-ago';
 
-var timeFormatter = timeAgo();
+// Translation components
+import convertQuest from '../translation/convert';
+
+// Custom components
+import ManualTabs from './ManualTabs';
+import QuestList from './QuestList';
+import QuestSaver from './QuestSaver';
+import TextView from './TextView';
+import GraphView from './GraphView';
+import AdventurerView from './AdventurerView';
 
 const styles = {
   container: {
@@ -38,7 +40,6 @@ const styles = {
   }
 };
 
-
 // Override tab template to allow for full height display.
 class TabTemplate extends React.Component {
   render() {
@@ -58,139 +59,6 @@ class TabTemplate extends React.Component {
   }
 }
 
-// TODO: Actually use markDirty and move this to its own file.
-class QuestSaver extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      ago_interval: setInterval(this.updateAgo.bind(this), 10000),
-      timeout: null,
-      saving: false,
-      last_save_ts: null,
-      last_save_text: null,
-    };
-
-    // TODO: Preload last_save when prop is set.
-  }
-
-  markDirty() {
-    if (!this.props.signedIn) {
-      return;
-    }
-    if (this.state.timeout) {
-      clearTimeout(this.state.timeout);
-    }
-    setTimeout(this.state.timeout, this.save);
-    this.setState({timeout: timeout});
-  }
-
-  save() {
-    if (!this.props.signedIn) {
-      return;
-    }
-    if (this.state.timeout) {
-      clearTimeout(this.state.timeout);
-    }
-    this.setState({timeout: null, saving: true});
-
-    // Call into the parent to get saved data
-    var savedata = this.props.onQuestStateRequest();
-    console.log(savedata);
-    $.post("/quest/" + savedata.type + "/" + this.props.id, savedata.data, function(result_quest_id) {
-      this.props.onQuestIdChange(result_quest_id);
-      this.setState({saving: false, last_save_ts: Date.now()});
-      this.updateAgo();
-    }.bind(this)).fail(function(err) {
-      console.log(err);
-      this.setState({saving: false, error: err.statusText + " (" + err.status + "): " + err.responseText});
-    }.bind(this));
-
-    // TODO: Check if dirtied while we were saving.
-  }
-
-  updateAgo() {
-    if (this.state.last_save_ts) {
-      this.setState({last_save_text: timeFormatter.ago(this.state.last_save_ts)});
-    }
-  }
-
-
-  render() {
-    var text;
-    // Show saving text on timeout, not on actual save.
-    if (!this.state.timeout) {
-      if (this.state.last_save_text) {
-        text = "Last saved " + this.state.last_save_text;
-      } else {
-        if (!this.props.signedIn) {
-          text = "Log in to save.";
-        } else {
-          text = "Not yet saved."
-        }
-      }
-    } else {
-      text = "Saving...";
-    }
-    // TODO: Error tooltip.
-    return (
-      <span style={{cursor: 'pointer'}} onTouchTap={this.save.bind(this)}>{text}</span>
-    )
-  }
-}
-
-// TODO: Move this to its own file.
-class QuestDrawer extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      error: null,
-      quests: []
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.open) {
-      // Do fetch of menu items
-      $.get("/quests/0", function(result) {
-        this.setState(JSON.parse(result));
-      }.bind(this)).fail(function(err) {
-        console.log(err);
-        this.setState({error: err.statusText + " (" + err.status + "): " + err.responseText});
-      }.bind(this));
-    }
-  }
-
-  render() {
-    var body;
-
-    if (this.state.error) {
-      body = <div>{this.state.error}</div>;
-    } else if (this.state.quests.length === 0) {
-      body = <div>No saved quests.</div>
-    } else {
-      body = [];
-      for (var i = 0; i < this.state.quests.length; i++) {
-        var id = this.state.quests[i].id;
-        body.push(<MenuItem key={i} onTouchTap={() => this.props.onQuestSelect(id)} value={id}>
-          <div>{this.state.quests[i].meta.title}</div>
-          <div>{this.state.quests[i].meta.summary}</div>
-        </MenuItem>);
-      }
-    }
-
-    return (
-      <Drawer docked={false} onRequestChange={this.props.onRequestChange} open={this.props.open}>
-        <h1>{this.state.quests.length} Saved Quests</h1>
-        <Menu>
-          {body}
-        </Menu>
-      </Drawer>
-    )
-  }
-}
-
 export default class QuestIDE extends React.Component {
 
   constructor(props) {
@@ -200,12 +68,16 @@ export default class QuestIDE extends React.Component {
 
     var auth = JSON.parse(document.getElementById("initial-state").textContent);
 
+    var test_filler = '<quest title="Oust albanus" author="scott">\n  <roleplay title="herp">\n    <p>derp</p>\n  </roleplay>\n  <trigger>end</trigger>\n</quest>';
+
+    this.quest = {
+      xml:  test_filler,
+      md: convertQuest(test_filler, "xml", "md"),
+      graph: convertQuest(test_filler, "xml", "graph")
+    };
+
     this.state = {
       id: null,
-      quest_md: "# Oust albanus\nauthor: scott\n\n_herp_\n\nderp\n\n**end**",
-      quest_xml: "",
-      quest_graph: "",
-      quest_adventurer: "",
       auth: auth,
       drawer_open: false,
       tab: 'md',
@@ -213,87 +85,64 @@ export default class QuestIDE extends React.Component {
     };
   }
 
+  onHTTPError(err) {
+    console.log(err);
+    this.setState({error: err.statusText + " (" + err.status + "): " + err.responseText});
+  }
+
   markDirty() {
     this.dirty = true;
     console.log("dirty");
   }
 
+  syncQuestState(current) {
+    try {
+      if (this.dirty) {
+        var alternate = (current === "md") ? "xml" : "md";
+        this.quest[alternate] = convertQuest(this.quest[current], current, alternate);
+
+        // Produce the graph data as well (xml is cheapest)
+        this.quest.graph = convertQuest(this.quest.xml, "xml", "graph");
+        this.dirty = false;
+      }
+      return true;
+    } catch (err) {
+      console.log(err);
+      this.setState({error: err.toString()});
+    }
+  }
+
   loadQuest(id) {
+    // TODO: Show "save existing quest" dialog before overwriting with new quest.
+    console.log("Loading quest " + id);
     $.get("/quest/"+id, function(json) {
       console.log(json);
       var result = JSON.parse(json);
-      var st = {
-        error: false,
-        id: result.id,
-        quest_md: result.markdown,
-        quest_xml: result.xml
-      };
-
-      if (this.state.tab === 'md') {
-        this.markdownView.setValue(result.markdown);
-      } else if (this.state.tab === 'xml') {
-        this.xmlView.setValue(result.xml);
+      this.quest = {
+        xml: result.xml,
+        md: convertQuest(result.xml, "xml", "md"),
+        graph: convertQuest(result.xml, "xml", "graph")
       }
-
-      this.setState(st);
       this.dirty = false;
-    }.bind(this)).fail(function(err) {
-      console.log(err);
-      this.setState({error: err.statusText + " (" + err.status + "): " + err.responseText});
-    }.bind(this));
+      this.setState({id: result.id, error: false, drawer_open: false});
+    }.bind(this)).fail(this.onHTTPError.bind(this));
   }
 
-  getQuestState() {
-    if (this.state.tab === 'md') {
-      return {type: this.state.tab, data: this.markdownView.getValue()};
-    } else if (this.state.tab === 'xml') {
-      return {type: this.state.tab, data: this.xmlView.getValue()};
+  onChangeAttempt(prev, next, cb) {
+    // Sync markdown and xml representations if we suspect either changed.
+    if (!this.syncQuestState(prev)) {
+      return;
     }
+    this.setState({tab: next, error: false});
+    return cb();
   }
 
-  onChangeAttempt(_, next, cb) {
-    // TODO: Refactor to use getQuestState
-    var data;
-    if (prev === "md") {
-      this.state.quest_md = this.markdownView.getValue();
-      data = this.state.quest_md;
-    } else if (prev === "xml") {
-      this.state.quest_xml = this.xmlView.getValue();
-      data = this.state.quest_xml;
-    } else if (prev === "graph" || prev === "adventurer") {
-      if (next === 'xml' && !this.state.quest_xml.length && this.state.quest_md.length) {
-        prev = "md";
-        data = this.state.quest_md;
-      } else if (next === 'md' && !this.state.quest_md.length && this.state.quest_xml.length) {
-        prev = "xml";
-        data = this.state.quest_xml;
-      } else {
-        return cb();
-      }
-    } else if (next === "graph" || next === "adventurer") {
-      return cb();
+  onQuestStateRequest() {
+    if (!this.syncQuestState(this.state.tab)) {
+      return;
     }
-
-    if (!this.dirty && this.state["quest_"+next].length) {
-      return cb();
-    }
-
-    // Convert things
-    console.log("Fetching translation: " + prev + " -> " + next);
-    $.post("/quest/123/"+prev+"/"+next, data, function(result) {
-      var st = {error: false, tab: next};
-      st["quest_"+next] = result;
-      this.setState(st);
-      this.dirty = false;
-      cb();
-    }.bind(this)).fail(function(err) {
-      console.log(err);
-      this.setState({error: err.statusText + " (" + err.status + "): " + err.responseText});
-    }.bind(this));
-  }
-
-  toggleDrawer() {
-    this.setState({drawer_open: !this.state.drawer_open});
+    console.log(this.quest);
+    return this.quest.xml;
   }
 
   handleMenu(event, value) {
@@ -314,11 +163,7 @@ export default class QuestIDE extends React.Component {
         $.post("/delete/" + this.state.id, function(result) {
           console.log(result);
           // TODO: Set actual quest state n'at
-        }.bind(this)).fail(function(err) {
-          console.log(err);
-          // TODO: Share this in a member function.
-          this.setState({error: err.statusText + " (" + err.status + "): " + err.responseText});
-        }.bind(this));
+        }.bind(this)).fail(this.onHTTPError.bind(this));
         break;
       case "help":
         throw new Error("Unimplemented");
@@ -360,38 +205,55 @@ export default class QuestIDE extends React.Component {
     }
 
     // TODO: in help menu mention signed in by this.state.auth.profile.displayName
-
+    // TODO: Actually use questsaver markDirty
     return (
       <div className="expedition-quest-ide" style={styles.container}>
         <AppBar
-          title={<span><span>Expedition</span> <QuestSaver id={this.state.id} signedIn={this.state.auth.profile} onQuestStateRequest={this.getQuestState.bind(this)} onQuestIdChange={(id) => this.setState({'id': id})}/></span>}
-          onLeftIconButtonTouchTap={this.toggleDrawer.bind(this)}
-          iconElementRight={user_details}/>
-        <QuestDrawer
+          title="Expedition"
+          onLeftIconButtonTouchTap={() => this.setState({drawer_open: !this.state.drawer_open})}
+          iconElementRight={
+            <span>
+              <QuestSaver
+                id={this.state.id}
+                onHTTPError={this.onHTTPError.bind(this)}
+                signedIn={this.state.auth.profile}
+                onQuestStateRequest={this.onQuestStateRequest.bind(this)}
+                onQuestIdChange={(id) => this.setState({'id': id})}/>
+              {user_details}
+            </span>
+          }/>
+        <QuestList
+          onHTTPError={this.onHTTPError.bind(this)}
           onRequestChange={(open) => this.setState({drawer_open: open})}
           onQuestSelect={this.loadQuest.bind(this)}
           open={this.state.drawer_open}>
-        </QuestDrawer>
+        </QuestList>
         <ManualTabs style={styles.tabsroot}
               tabTemplate={TabTemplate}
               onChangeAttempt={this.onChangeAttempt.bind(this)}
               contentContainerStyle={styles.tabcontainer}
               value={this.state.tab}>
           <Tab label="Markdown" value="md">
-            <MarkdownView ref={(ref) => this.markdownView = ref} onChange={this.markDirty.bind(this)} />
+            <TextView
+              mode="markdown"
+              value={this.quest.md}
+              onChange={(data) => {this.quest.md = data; this.dirty=true;}} />
           </Tab>
           <Tab label="XML View" value="xml">
-            <XMLView ref={(ref) => this.xmlView = ref} onChange={this.markDirty.bind(this)} />
+            <TextView
+              mode="xml"
+              value={this.quest.xml}
+              onChange={(data) => {this.quest.xml = data; this.dirty=true;}} />
           </Tab>
           <Tab label="Graph View" value="graph">
-            <GraphView />
+            <GraphView data={this.quest.graph} />
           </Tab>
           <Tab label="Adventurer View" value="adventurer">
             <AdventurerView/>
           </Tab>
         </ManualTabs>
         <Snackbar
-          open={this.state.error}
+          open={Boolean(this.state.error)}
           style={{width: "50%"}}
           message={this.state.error}
           autoHideDuration={10000}

@@ -3,6 +3,23 @@ var toMarkdown = require('./to_markdown');
 var toXML = require('./to_xml');
 var toGraph = require('./to_graph');
 
+var convertQuest = function(data, intype, outtype) {
+  // XML <=> Markdown
+  // XML => Graph
+  // Markdown => Graph
+  if (intype === 'xml' && outtype === 'md') {
+    return toMarkdown(data);
+  } else if (intype === 'md' && outtype === 'xml') {
+    return toXML(data);
+  } else if (intype === 'xml' && outtype === 'graph') {
+    return toGraph(data);
+  } else if (intype === 'md' && outtype === 'graph') {
+    return toGraph(toXML(data));
+  } else {
+    throw new Error("Invalid translation from " + intype + " to " + outtype);
+  }
+};
+
 var readConvertWrite = function(input_file, node_transform, output_file, verbose) {
   fs.readFile(input_file, 'utf8', function(err, data) {
     if (err) {
@@ -45,5 +62,5 @@ if (require.main === module) {
     throw new Error("No valid conversion from *"+input_ext+" to *"+output_ext);
   }
 } else {
-  module.exports = convertQuestXMLToMarkdown;
+  module.exports = convertQuest;
 }

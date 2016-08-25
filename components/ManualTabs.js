@@ -1,5 +1,9 @@
 'use strict';
 
+// This is a generated file from the material-ui Tabs.js module.
+// Mods have been made to introduce an onChangeAttempt() handler
+// that gates the switching action via callback.
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });

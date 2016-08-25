@@ -57,43 +57,24 @@ router.get('/quest/:quest', function(req, res) {
   });
 });
 
-router.post('/quest/:type/:quest', function(req, res) {
-  // Convert the passed data to the remaining types (xml, md, graph)
-  // and save the datas.
-
+router.post('/quest/:quest', function(req, res) {
   if (!res.locals.profile) {
     return res.status(500).end("You are not signed in. Please sign in to save your quest.");
   }
 
-  var quest = {
-    created: Date.now()
-  };
   try {
-    if (req.params.type === 'xml') {
-      quest = {
-        xml: req.body,
-        markdown: toMarkdown(req.body),
-        meta: toMeta(req.body)
-      };
-    } else if (req.params.type === 'md') {
-      var xml = toXML(req.body);
-      quest = {
-        xml: xml,
-        markdown: req.body,
-        meta: toMeta(xml)
-      };
-    } else {
-      throw new Error("Unknown quest format " + req.params.type);
-    }
-
-    model.update(res.locals.profile.id, req.params.quest, quest, false, function(err, data) {
+    quest = {
+      meta: toMeta(req.body),
+      xml: req.body,
+      created: Date.now()
+    };
+    model.update(res.locals.profile.id, req.params.quest, quest, function(err, data) {
       if (err) {
         throw new Error(err);
       }
       console.log("Saved quest " + data.id);
       res.end(data.id.toString());
     });
-
   } catch(e) {
     console.log(e);
     res.status(500).end(e.toString());
@@ -117,34 +98,6 @@ router.post('/delete/:quest', function(req, res) {
 
   } catch(e) {
     console.log(e);
-    res.status(500).end(e.toString());
-  }
-});
-
-router.post('/quest/:quest/:intype/:outtype', function(req, res) {
-  var quest = {
-    id: req.params.quest,
-  }
-
-  // TODO: User quota check
-  if (req.params.intype === req.params.outtype) {
-    res.end('ERR SAME TYPE');
-    return;
-  }
-
-  try {
-    if (req.params.intype === 'xml' && req.params.outtype === 'md') {
-      res.end(toMarkdown(req.body));
-    } else if (req.params.intype === 'md' && req.params.outtype === 'xml') {
-      res.end(toXML(req.body));
-    } else if (req.params.intype === 'xml' && req.params.outtype === 'graph') {
-      res.end(toGraph(req.body));
-    } else if (req.params.intype === 'md' && req.params.outtype === 'graph') {
-      res.end(toGraph(toXML(req.body)));
-    } else {
-      throw new Error("Invalid translation from " + req.params.intype + " to " + req.params.outtype);
-    };
-  } catch (e) {
     res.status(500).end(e.toString());
   }
 });

@@ -103,9 +103,8 @@ function getOwnedQuests (userId, limit, token, cb) {
 
 // Creates a new quest or updates an existing quest with new data. The provided
 // data is automatically translated into Datastore format.
-// The quest will be queued for background processing.
 // TODO: This should automatically keep versions, and not store data directly.
-function update (user, id, data, process, cb) {
+function update (user, id, data, cb) {
   var key;
   if (id !== undefined && id !== "null") {
     console.log("Updating quest " + id + " owned by " + user);
@@ -130,9 +129,6 @@ function update (user, id, data, process, cb) {
         return cb(err);
       }
       data.id = entity.key.id;
-      if (process) {
-        //background.queueBook(data.id);
-      }
       cb(null, data);
     }
   );
@@ -202,6 +198,5 @@ module.exports = {
   update: update,
   tombstone: tombstone,
   unsafedelete: _delete,
-  list: list,
   getOwnedQuests: getOwnedQuests
 };

@@ -414,7 +414,7 @@ function convertQuestXMLToGraphJSON(text, verbose) {
   var global_context = {idx: 0, nodes: [], cache: {}};
   questNode($("quest"), global_context);
   resolveIDs(global_context);
-  return JSON.stringify(linkify(global_context));
+  return linkify(global_context);
 }
 
 module.exports = convertQuestXMLToGraphJSON;

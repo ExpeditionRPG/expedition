@@ -25,22 +25,17 @@ export default class GraphView extends React.Component {
   }
 
   render() {
-    if (this.props.data !== "loading") {
-      var parsed = JSON.parse(this.props.data);
-      return (
-        <div className="graphcontainer">
-          <ReactNodeGraph data={parsed}
-            onNodeMove={(nid, pos)=>this.onNodeMove(nid, pos)}
-            onNodeStartMove={(nid)=>this.onNodeStartMove(nid)}
-            onNewConnector={(n1,o,n2,i)=>this.onNewConnector(n1,o,n2,i)}
-          />
-          <FloatingActionButton style={styles.fab}>
-            <ContentAdd />
-          </FloatingActionButton>
-        </div>
-      );
-    } else {
-      return (<div>Loading</div>);
-    }
+    return (
+      <div className="graphcontainer">
+        <ReactNodeGraph data={this.props.data}
+          onNodeMove={(nid, pos)=>this.onNodeMove(nid, pos)}
+          onNodeStartMove={(nid)=>this.onNodeStartMove(nid)}
+          onNewConnector={(n1,o,n2,i)=>this.onNewConnector(n1,o,n2,i)}
+        />
+        <FloatingActionButton style={styles.fab}>
+          <ContentAdd />
+        </FloatingActionButton>
+      </div>
+    );
   }
 }
