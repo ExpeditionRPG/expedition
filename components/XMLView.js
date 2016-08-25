@@ -7,11 +7,18 @@ import 'brace/theme/twilight';
 
 // See https://github.com/securingsincity/react-ace
 export default class XMLView extends React.Component {
+  // TODO: Merge this with markdownview.
   getValue() {
-    if (this.ace.editor) {
+    if (this.ace) {
       return this.ace.editor.getValue();
     }
-    return null;
+    return "";
+  }
+
+  setValue(value) {
+    if (this.ace) {
+      this.ace.editor.setValue(value);
+    }
   }
 
   render() {
@@ -24,8 +31,8 @@ export default class XMLView extends React.Component {
         onChange={this.props.onChange}
         width="100%"
         height="100%"
-        value={this.props.data}
         name="xml-editor"
+        value={this.getValue()}
         editorProps={{$blockScrolling: true}}
       />
     );

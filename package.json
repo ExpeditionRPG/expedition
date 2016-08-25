@@ -78,6 +78,7 @@
     "recompose": "^0.20.2",
     "request": "^2.74.0",
     "simple-assign": "^0.1.0",
+    "time-ago": "^0.1.0",
     "to-markdown": "^3.0.1",
     "w3c-blob": "0.0.1",
     "warning": "^3.0.0",

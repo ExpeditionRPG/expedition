@@ -20,8 +20,10 @@ var config = require('../config');
 var ds = gcloud.datastore({
   projectId: config.get('GCLOUD_PROJECT')
 });
-var kind = 'Quest';
+var user_kind = 'User';
+var quest_kind = 'Quest';
 
+// TODO: Decommision this.
 // Translates from Datastore's entity format to
 // the format expected by the application.
 //
@@ -43,6 +45,7 @@ function fromDatastore (obj) {
   return obj.data;
 }
 
+// TODO: Decommision this.
 // Translates from the application's format to the datastore's
 // extended entity property format. It also handles marking any
 // specified properties as non-indexed. Does not translate the key.
@@ -82,30 +85,10 @@ function toDatastore (obj, nonIndexed) {
   return results;
 }
 
-// Lists all quests in the Datastore sorted alphabetically by title.
-// The ``limit`` argument determines the maximum amount of results to
-// return per page. The ``token`` argument allows requesting additional
-// pages. The callback is invoked with ``(err, quests, nextPageToken)``.
-function list (limit, token, cb) {
-  var q = ds.createQuery([kind])
-    .limit(limit)
-    .order('title')
-    .start(token);
-
-  ds.runQuery(q, function (err, entities, nextQuery) {
-    if (err) {
-      return cb(err);
-    }
-    var hasMore = entities.length === limit ? nextQuery.startVal : false;
-    cb(null, entities.map(fromDatastore), hasMore);
-  });
-}
-
-// Similar to ``list``, but only lists the quests created by the specified
-// user.
-function listBy (userId, limit, token, cb) {
-  var q = ds.createQuery([kind])
-    .filter('createdById =', userId)
+function getOwnedQuests (userId, limit, token, cb) {
+  var q = ds.createQuery([quest_kind])
+    .hasAncestor(ds.key([user_kind, parseInt(userId, 10)]))
+    .filter('tombstone', null)
     .limit(limit)
     .start(token);
 
@@ -119,15 +102,21 @@ function listBy (userId, limit, token, cb) {
 }
 
 // Creates a new quest or updates an existing quest with new data. The provided
-// data is automatically translated into Datastore format. The quest will be
-// queued for background processing.
-function update (id, data, process, cb) {
+// data is automatically translated into Datastore format.
+// The quest will be queued for background processing.
+// TODO: This should automatically keep versions, and not store data directly.
+function update (user, id, data, process, cb) {
   var key;
-  if (id) {
-    key = ds.key([kind, parseInt(id, 10)]);
+  if (id !== undefined && id !== "null") {
+    console.log("Updating quest " + id + " owned by " + user);
+    key = ds.key([user_kind, parseInt(user, 10), quest_kind, parseInt(id, 10)]);
   } else {
-    key = ds.key(kind);
+    key = ds.key([user_kind, parseInt(user, 10), quest_kind]);
+    console.log("Saving new quest owned by " + user);
   }
+
+  // Tombstone must be explicitly set for indexing purposes.
+  data.tombstone = null;
 
   var entity = {
     key: key,
@@ -149,8 +138,43 @@ function update (id, data, process, cb) {
   );
 }
 
-function read (id, cb) {
-  var key = ds.key([kind, parseInt(id, 10)]);
+function tombstone (user, id, cb) {
+  var transaction = ds.transaction();
+
+  // Done inside a transaction to prevent concurrency bugs on read-modify-write.
+  transaction.run(function (err) {
+    if (err) {
+      return cb(err);
+    }
+
+    var quest_key = ds.key([user_kind, parseInt(user, 10), quest_kind, parseInt(id, 10)]);
+
+    transaction.get(quest_key, function (err, quest) {
+      if (err) {
+        return transaction.rollback(function (_err) {
+          return cb(_err || err);
+        });
+      }
+
+      if (!quest) {
+        // Nothing to do
+        return cb();
+      }
+
+      quest.data.tombstone = Date.now();
+      transaction.save(quest);
+      transaction.commit(function (err) {
+        if (err) {
+          return cb(err);
+        }
+        cb(); // The transaction completed successfully.
+      });
+    });
+  });
+}
+
+function read (user, id, cb) {
+  var key = ds.key([user_kind, parseInt(user, 10), quest_kind, parseInt(id, 10)]);
   ds.get(key, function (err, entity) {
     if (err) {
       return cb(err);
@@ -165,8 +189,8 @@ function read (id, cb) {
   });
 }
 
-function _delete (id, cb) {
-  var key = ds.key([kind, parseInt(id, 10)]);
+function _delete (user, id, cb) {
+  var key = ds.key([user_kind, parseInt(user, 10), quest_kind, parseInt(id, 10)]);
   ds.delete(key, cb);
 }
 
@@ -176,7 +200,8 @@ module.exports = {
   },
   read: read,
   update: update,
-  delete: _delete,
+  tombstone: tombstone,
+  unsafedelete: _delete,
   list: list,
-  listBy: listBy
+  getOwnedQuests: getOwnedQuests
 };
