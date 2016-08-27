@@ -7,13 +7,26 @@ class QuestSaver extends React.Component {
     super(props);
 
     this.state = {
-      ago_interval: setInterval(this.updateAgo.bind(this), 1000),
+      ago_interval: setInterval(this.updateAgo.bind(this), 60000),
       timeout: null,
       saving: false,
       last_save_text: null,
     };
 
     // TODO: Preload last_save when prop is set.
+  }
+
+  componentWillUnmount() {
+    if (this.state.timeout) {
+      clearTimeout(this.state.timeout);
+      clearInterval(this.state.ago_interval);
+    }
+  }
+
+  componentWillReceiveProps(new_props) {
+    if (new_props.lastSave !== this.props.lastSave) {
+      this.updateAgo(new_props.lastSave);
+    }
   }
 
   markDirty() {
@@ -23,8 +36,7 @@ class QuestSaver extends React.Component {
     if (this.state.timeout) {
       clearTimeout(this.state.timeout);
     }
-    setTimeout(this.state.timeout, this.save);
-    this.setState({timeout: timeout});
+    this.setState({timeout: setTimeout(this.save.bind(this), 5000)});
   }
 
   save() {
@@ -39,9 +51,12 @@ class QuestSaver extends React.Component {
     }.bind(this));
   }
 
-  updateAgo() {
-    if (this.props.lastSave) {
-      this.setState({last_save_text: timeFormatter.ago(this.props.lastSave)});
+  updateAgo(lastSave) {
+    if (!lastSave) {
+      lastSave = this.props.lastSave;
+    }
+    if (lastSave) {
+      this.setState({last_save_text: timeFormatter.ago(lastSave)});
     }
   }
 

@@ -136,7 +136,6 @@ export default class QuestIDE extends React.Component {
   }
 
   newQuest() {
-    // Ask for confirmation if dirty.
     if (this.dirty) {
       this.setState({new_quest_dialog: true});
       return;
@@ -254,6 +253,13 @@ export default class QuestIDE extends React.Component {
     }
   }
 
+  markDirty() {
+    this.dirty = true;
+    if (this.saver) {
+      this.saver.markDirty();
+    }
+  }
+
   render(){
     var user_details;
     if (this.state.auth.profile) {
@@ -299,19 +305,20 @@ export default class QuestIDE extends React.Component {
             <TextView
               mode="markdown"
               value={this.quest.md}
-              onChange={(data) => {this.quest.md = data; this.dirty=true;}} />
+              onChange={(data) => {this.quest.md = data; this.markDirty()}} />
           </Tab>
           <Tab label="XML View" value="xml">
             <TextView
               mode="xml"
               value={this.quest.xml}
-              onChange={(data) => {this.quest.xml = data; this.dirty=true;}} />
+              onChange={(data) => {this.quest.xml = data; this.markDirty()}} />
           </Tab>
         </ManualTabs>
         <QuestSaver
           id={this.state.id}
           signedIn={this.state.auth.profile}
           lastSave={this.state.last_save}
+          ref={(s) => this.saver = s}
           onSaveRequest={this.saveQuest.bind(this)}/>
         <Snackbar
           open={Boolean(this.state.error)}
