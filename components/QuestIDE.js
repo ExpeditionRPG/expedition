@@ -9,6 +9,7 @@ import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
 import IconMenu from 'material-ui/IconMenu';
 import PersonOutlineIcon from 'material-ui/svg-icons/social/person-outline';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 // Translation components
 import convertQuest from '../translation/convert';
@@ -16,6 +17,7 @@ import convertQuest from '../translation/convert';
 // Custom components
 import ManualTabs from './ManualTabs';
 import QuestList from './QuestList';
+import {UserDialog, ConfirmNewQuestDialog, ConfirmLoadQuestDialog} from './Dialogs';
 import QuestSaver from './QuestSaver';
 import TextView from './TextView';
 import GraphView from './GraphView';
@@ -39,6 +41,8 @@ const styles = {
     height: "100%"
   }
 };
+
+var QUEST_SPEC_URL = "https://github.com/Fabricate-IO/expedition-quest-ide/blob/master/translation/quest_spec.md";
 
 // Override tab template to allow for full height display.
 class TabTemplate extends React.Component {
@@ -80,6 +84,7 @@ export default class QuestIDE extends React.Component {
       id: null,
       auth: auth,
       drawer_open: false,
+      user_dialog: false,
       tab: 'md',
       error: false
     };
@@ -88,11 +93,6 @@ export default class QuestIDE extends React.Component {
   onHTTPError(err) {
     console.log(err);
     this.setState({error: err.statusText + " (" + err.status + "): " + err.responseText});
-  }
-
-  markDirty() {
-    this.dirty = true;
-    console.log("dirty");
   }
 
   syncQuestState(current) {
@@ -112,20 +112,97 @@ export default class QuestIDE extends React.Component {
     }
   }
 
-  loadQuest(id) {
-    // TODO: Show "save existing quest" dialog before overwriting with new quest.
+  loadQuest(event, id) {
+    // Ask for confirmation if dirty.
+    if (this.dirty) {
+      this.setState({load_quest_dialog: id});
+      return;
+    }
+
     console.log("Loading quest " + id);
-    $.get("/quest/"+id, function(json) {
-      console.log(json);
-      var result = JSON.parse(json);
-      this.quest = {
-        xml: result.xml,
-        md: convertQuest(result.xml, "xml", "md"),
-        graph: convertQuest(result.xml, "xml", "graph")
-      }
-      this.dirty = false;
-      this.setState({id: result.id, error: false, drawer_open: false});
+    $.get("/quest/"+id, function(raw_result) {
+      var result = JSON.parse(raw_result);
+      $.get(result.url, function(xml) {
+        this.quest = {
+          url: result.url,
+          xml: xml,
+          md: convertQuest(xml, "xml", "md"),
+          //graph: convertQuest(result.xml, "xml", "graph")
+        }
+        this.dirty = false;
+        this.setState({id: result.id, last_save: result.modified, error: false, drawer_open: false});
+      }.bind(this)).fail(this.onHTTPError.bind(this));
     }.bind(this)).fail(this.onHTTPError.bind(this));
+  }
+
+  newQuest() {
+    // Ask for confirmation if dirty.
+    if (this.dirty) {
+      this.setState({new_quest_dialog: true});
+      return;
+    }
+
+    this.quest = {
+      xml: "",
+      md: "",
+    };
+    this.dirty = false;
+    this.setState({id: null, error: false, drawer_open: false});
+  }
+
+  deleteQuest() {
+    $.post("/delete/" + this.state.id, function(result) {
+      console.log(result);
+      // TODO: Set actual quest state n'at
+      this.dirty = false;
+      this.setState({id: null, last_save: null, error: false, drawer_open: false});
+      this.newQuest();
+    }.bind(this)).fail(this.onHTTPError.bind(this));
+  }
+
+  saveQuest(cb) {
+    if (!this.state.auth.profile) {
+      if (cb) {
+        cb(false);
+      }
+      // TODO: Error?
+      return;
+    }
+    this.setState({saving: true});
+
+    // Sync the quest state to ensure we're up to date.
+    if (!this.syncQuestState(this.state.tab)) {
+      return;
+    }
+    console.log(this.quest);
+
+    if (this.quest.xml === undefined) {
+      return this.onHTTPError({
+        statusText: "ERR",
+        status: "internal",
+        responseText: "Could not sync quest state."
+      });
+    }
+    $.post("/quest/" + this.state.id, this.quest.xml, function(result_quest_id) {
+      this.setState({saving: false, last_save: Date.now(), id: result_quest_id});
+      if (cb) {
+        cb(true);
+      }
+    }.bind(this)).fail(function(err) {
+      this.setState({saving: false});
+      this.onHTTPError(err);
+    }.bind(this));
+  }
+
+  downloadQuest() {
+    if (!this.quest.url) {
+      return this.onHTTPError({
+        statusText: "ERR",
+        status: "internal",
+        responseText: "Quest has no saved data."
+      });
+    }
+    window.open(this.quest.url, '_blank');
   }
 
   onChangeAttempt(prev, next, cb) {
@@ -137,36 +214,40 @@ export default class QuestIDE extends React.Component {
     return cb();
   }
 
-  onQuestStateRequest() {
-    if (!this.syncQuestState(this.state.tab)) {
-      return;
+  onLoadQuestDialogClose(choice) {
+    if (choice === true) {
+      this.saveQuest(function() {this.loadQuest(null, this.state.load_quest_dialog);}.bind(this));
+    } else if (choice === false) {
+      this.dirty = false;
+      this.loadQuest(null, this.state.load_quest_dialog);
     }
-    console.log(this.quest);
-    return this.quest.xml;
+    this.setState({load_quest_dialog: false});
+  }
+
+  onNewQuestDialogClose(choice) {
+    if (choice === true) {
+      this.saveQuest(this.newQuest.bind(this));
+    } else if (choice === false) {
+      this.dirty = false;
+      this.newQuest();
+    }
+    this.setState({new_quest_dialog: false});
   }
 
   handleMenu(event, value) {
+    // TODO: Add revisions ability
     switch(value) {
-      case "sign_out":
-        window.location = this.state.auth.logout;
-        break;
-      case "sign_in":
-        window.location = this.state.auth.login;
-        break;
       case "new":
-        throw new Error("Unimplemented");
-        break;
-      case "revisions":
-        throw new Error("Unimplemented");
-        break;
+        return this.newQuest();
+      case "save":
+        return this.saveQuest();
       case "delete":
-        $.post("/delete/" + this.state.id, function(result) {
-          console.log(result);
-          // TODO: Set actual quest state n'at
-        }.bind(this)).fail(this.onHTTPError.bind(this));
-        break;
+        return this.deleteQuest();
+      case "download":
+        return this.downloadQuest();
       case "help":
-        throw new Error("Unimplemented");
+        window.open(QUEST_SPEC_URL, '_blank');
+        return;
         break;
       default:
         throw new Error("Could not handle unknown menu value " + value);
@@ -176,56 +257,37 @@ export default class QuestIDE extends React.Component {
   render(){
     var user_details;
     if (this.state.auth.profile) {
-      user_details = (
-        <span>
-          <IconMenu
-            iconButtonElement={<Avatar src={this.state.auth.profile.image} />}
-            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-            targetOrigin={{horizontal: 'right', vertical: 'top'}}
-            onChange={this.handleMenu.bind(this)}>
-            <MenuItem value="new" primaryText="New" />
-            <MenuItem value="revisions" primaryText="Revisions" />
-            <MenuItem value="delete" primaryText="Delete" />
-            <MenuItem value="help" primaryText="Help" />
-            <Divider />
-            <MenuItem value="sign_out" primaryText={"Sign Out"} />
-          </IconMenu>
-        </span>
-      );
+      user_details = (<Avatar src={this.state.auth.profile.image} onTouchTap={() => this.setState({user_dialog: true})}/>);
     } else {
-      user_details = (
-        <IconMenu
-          iconButtonElement = {<Avatar icon={<PersonOutlineIcon />} />}
-          anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-          targetOrigin={{horizontal: 'right', vertical: 'top'}}
-          onChange={this.handleMenu.bind(this)}>
-          <MenuItem value="sign_in" primaryText={"Sign in with Google"} />
-        </IconMenu>
-      );
+      user_details = (<Avatar icon={<PersonOutlineIcon />} onTouchTap={() => this.setState({user_dialog: true})}/>);
     }
 
     // TODO: in help menu mention signed in by this.state.auth.profile.displayName
     // TODO: Actually use questsaver markDirty
     return (
       <div className="expedition-quest-ide" style={styles.container}>
+        <UserDialog
+          open={this.state.user_dialog}
+          auth={this.state.auth}
+          onRequestClose={() => this.setState({user_dialog: false})}
+        />
+        <ConfirmNewQuestDialog
+          open={this.state.new_quest_dialog}
+          onRequestClose={this.onNewQuestDialogClose.bind(this)}
+        />
+        <ConfirmLoadQuestDialog
+          open={this.state.load_quest_dialog}
+          onRequestClose={this.onLoadQuestDialogClose.bind(this)}
+        />
         <AppBar
-          title="Expedition"
+          title="Expedition Quest Editor"
           onLeftIconButtonTouchTap={() => this.setState({drawer_open: !this.state.drawer_open})}
-          iconElementRight={
-            <span>
-              <QuestSaver
-                id={this.state.id}
-                onHTTPError={this.onHTTPError.bind(this)}
-                signedIn={this.state.auth.profile}
-                onQuestStateRequest={this.onQuestStateRequest.bind(this)}
-                onQuestIdChange={(id) => this.setState({'id': id})}/>
-              {user_details}
-            </span>
-          }/>
+          iconElementRight={user_details} />
         <QuestList
           onHTTPError={this.onHTTPError.bind(this)}
           onRequestChange={(open) => this.setState({drawer_open: open})}
           onQuestSelect={this.loadQuest.bind(this)}
+          onMenuSelect={this.handleMenu.bind(this)}
           open={this.state.drawer_open}>
         </QuestList>
         <ManualTabs style={styles.tabsroot}
@@ -245,13 +307,12 @@ export default class QuestIDE extends React.Component {
               value={this.quest.xml}
               onChange={(data) => {this.quest.xml = data; this.dirty=true;}} />
           </Tab>
-          <Tab label="Graph View" value="graph">
-            <GraphView data={this.quest.graph} />
-          </Tab>
-          <Tab label="Adventurer View" value="adventurer">
-            <AdventurerView/>
-          </Tab>
         </ManualTabs>
+        <QuestSaver
+          id={this.state.id}
+          signedIn={this.state.auth.profile}
+          lastSave={this.state.last_save}
+          onSaveRequest={this.saveQuest.bind(this)}/>
         <Snackbar
           open={Boolean(this.state.error)}
           style={{width: "50%"}}
@@ -263,5 +324,16 @@ export default class QuestIDE extends React.Component {
     );
   }
 }
+
+
+/*
+TODO: Extra tabs
+          <Tab label="Graph View" value="graph">
+            <GraphView data={this.quest.graph} />
+          </Tab>
+          <Tab label="Adventurer View" value="adventurer">
+            <AdventurerView/>
+          </Tab>
+*/
 
 export default QuestIDE;

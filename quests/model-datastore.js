@@ -16,6 +16,7 @@
 var gcloud = require('gcloud');
 var config = require('../config');
 //var background = require('../lib/background');
+var cloudstorage = require('../lib/cloudstorage');
 
 var ds = gcloud.datastore({
   projectId: config.get('GCLOUD_PROJECT')
@@ -104,22 +105,51 @@ function getOwnedQuests (userId, limit, token, cb) {
 // Creates a new quest or updates an existing quest with new data. The provided
 // data is automatically translated into Datastore format.
 // TODO: This should automatically keep versions, and not store data directly.
-function update (user, id, data, cb) {
-  var key;
-  if (id !== undefined && id !== "null") {
-    console.log("Updating quest " + id + " owned by " + user);
-    key = ds.key([user_kind, parseInt(user, 10), quest_kind, parseInt(id, 10)]);
-  } else {
-    key = ds.key([user_kind, parseInt(user, 10), quest_kind]);
-    console.log("Saving new quest owned by " + user);
+function update (user, id, quest, xml, cb) {
+  // Tombstone must be explicitly set for indexing purposes.
+  quest.tombstone = null;
+  quest.modified = Date.now();
+
+  if (!xml) {
+    return cb("Could not update - no xml data.")
   }
 
-  // Tombstone must be explicitly set for indexing purposes.
-  data.tombstone = null;
+  if (id === undefined || id === "null") {
+    var key = ds.key([user_kind, parseInt(user, 10), quest_kind]);
+    console.log("Saving new quest owned by " + user);
+
+    // Do a mini-save to storage to get the new ID
+    var entity = {key: key, data: []};
+    ds.save(entity, function(err) {
+      if (err) {
+        return cb(err);
+      }
+      update(user, entity.key.id, quest, xml, cb);
+    });
+    return;
+  }
+
+  // Invariant: quest ID is present after this point.
+  console.log("Updating quest " + id + " owned by " + user);
+  var key = ds.key([user_kind, parseInt(user, 10), quest_kind, parseInt(id, 10)]);
+
+  var cloud_storage_data = {
+    gcsname: user + "/" + id + "/" + Date.now() + ".xml",
+    buffer: xml
+  }
+
+  // We can run this in parallel with the Datastore model.
+  cloudstorage.upload(cloud_storage_data, function(err, data) {
+    if (err) {
+      console.log(err);
+    }
+  });
+
+  quest.url = cloudstorage.getPublicUrl(cloud_storage_data.gcsname);
 
   var entity = {
     key: key,
-    data: toDatastore(data, ['description'])
+    data: toDatastore(quest, ['description'])
   };
 
   ds.save(
@@ -128,8 +158,9 @@ function update (user, id, data, cb) {
       if (err) {
         return cb(err);
       }
-      data.id = entity.key.id;
-      cb(null, data);
+
+      quest.id = entity.key.id;
+      cb(null, quest);
     }
   );
 }

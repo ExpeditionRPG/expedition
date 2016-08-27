@@ -6,7 +6,6 @@ var toXML = require('./translation/to_xml');
 var toGraph = require('./translation/to_graph');
 var toMeta = require('./translation/to_meta');
 var model = require('./quests/model-datastore');
-var cloudstorage = require('./lib/cloudstorage');
 var passport = require('passport');
 var oauth2 = require('./lib/oauth2');
 var express =require('express');
@@ -31,7 +30,7 @@ router.get('/', function(req, res) {
 router.get('/quests/:token', function(req, res) {
   var token = req.params.token;
   if (!res.locals.profile) {
-    return res.status(500).end("You are not signed in. Please sign in to view saved quests.");
+    res.send(JSON.stringify([]));
   }
 
   model.getOwnedQuests(res.locals.profile.id, QUESTS_FETCH_COUNT, req.params.token, function(err, quests, nextToken) {
@@ -52,7 +51,7 @@ router.get('/quest/:quest', function(req, res) {
     if (err) {
       return res.status(500).end(err.toString());
     }
-
+    console.log(entity);
     res.end(JSON.stringify(entity));
   });
 });
@@ -65,14 +64,15 @@ router.post('/quest/:quest', function(req, res) {
   try {
     quest = {
       meta: toMeta(req.body),
-      xml: req.body,
       created: Date.now()
     };
-    model.update(res.locals.profile.id, req.params.quest, quest, function(err, data) {
+
+    model.update(res.locals.profile.id, req.params.quest, quest, req.body, function(err, data) {
       if (err) {
         throw new Error(err);
       }
       console.log("Saved quest " + data.id);
+      console.log(data);
       res.end(data.id.toString());
     });
   } catch(e) {
