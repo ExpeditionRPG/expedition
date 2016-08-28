@@ -56,6 +56,29 @@ router.get('/quest/:quest', function(req, res) {
   });
 });
 
+router.get('/raw/:user/:quest', function(req, res) {
+  model.read(req.params.user, req.params.quest, function(err, entity) {
+    if (err || entity.published !== true) {
+      return res.status(500).end(err);
+    }
+    console.log(entity);
+    res.header('Location', entity.url);
+    res.status(301).end();
+  });
+});
+
+router.post('/published/:quest/:published', function(req, res) {
+  if (!res.locals.profile) {
+    res.status(500).end("You are not signed in. Please sign in to publish/unpublish this quest.");
+  }
+  model.setPublishedState(res.locals.profile.id, req.params.quest, req.params.published, function(err, shortUrl) {
+    if (err) {
+      return res.status(500).end(err);
+    }
+    res.end(shortUrl);
+  });
+});
+
 router.post('/quest/:quest', function(req, res) {
   if (!res.locals.profile) {
     return res.status(500).end("You are not signed in. Please sign in to save your quest.");

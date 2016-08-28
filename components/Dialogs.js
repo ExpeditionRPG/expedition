@@ -64,7 +64,23 @@ export class ConfirmLoadQuestDialog extends YesNoDialog {
   }
 }
 
-
+export class PublishQuestDialog extends React.Component {
+  render() {
+    return (
+      <Dialog
+        title="Published!"
+        actions={<RaisedButton
+          label="Sign In"
+          primary={true}
+          onTouchTap={() => this.props.onRequestClose()}
+        />}
+        modal={false}
+        open={Boolean(this.props.open)}>
+        Your quest has been published. You can access it at: <a href={this.props.shortUrl}>{this.props.shortUrl}</a>
+      </Dialog>
+    );
+  }
+}
 
 export class UserDialog extends React.Component {
   render() {

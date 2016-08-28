@@ -106,6 +106,7 @@ class QuestList extends React.Component {
         <Menu onChange={this.props.onMenuSelect}>
           <MenuItem value="new" primaryText="New" />
           <MenuItem value="save" primaryText="Save" />
+          <MenuItem value="publish" primaryText="Publish" />
           <MenuItem value="download" primaryText="Download" />
           <MenuItem value="delete" primaryText="Delete" />
           <MenuItem value="help" primaryText="Help" />

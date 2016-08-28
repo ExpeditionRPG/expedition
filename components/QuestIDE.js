@@ -17,7 +17,7 @@ import convertQuest from '../translation/convert';
 // Custom components
 import ManualTabs from './ManualTabs';
 import QuestList from './QuestList';
-import {UserDialog, ConfirmNewQuestDialog, ConfirmLoadQuestDialog} from './Dialogs';
+import {UserDialog, ConfirmNewQuestDialog, PublishQuestDialog, ConfirmLoadQuestDialog} from './Dialogs';
 import QuestSaver from './QuestSaver';
 import TextView from './TextView';
 import GraphView from './GraphView';
@@ -190,6 +190,20 @@ export default class QuestIDE extends React.Component {
     }.bind(this));
   }
 
+  publishQuest() {
+    if (!this.state.id) {
+      return this.onHTTPError({
+        statusText: "ERR",
+        status: "internal",
+        responseText: "Quest has no saved data."
+      });
+    }
+
+    $.post("/published/" + this.state.id + "/true", function(short_url) {
+      this.setState({publish_quest_dialog: true, shortUrl: short_url});
+    }.bind(this)).fail(this.onHTTPError.bind(this));
+  }
+
   downloadQuest() {
     if (!this.quest.url) {
       return this.onHTTPError({
@@ -230,6 +244,10 @@ export default class QuestIDE extends React.Component {
     this.setState({new_quest_dialog: false});
   }
 
+  onPublishQuestDialogClose(choice) {
+    this.setState({publish_quest_dialog: false});
+  }
+
   handleMenu(event, value) {
     // TODO: Add revisions ability
     switch(value) {
@@ -239,6 +257,8 @@ export default class QuestIDE extends React.Component {
         return this.saveQuest();
       case "delete":
         return this.deleteQuest();
+      case "publish":
+        return this.publishQuest();
       case "download":
         return this.downloadQuest();
       case "help":
@@ -281,6 +301,11 @@ export default class QuestIDE extends React.Component {
         <ConfirmLoadQuestDialog
           open={this.state.load_quest_dialog}
           onRequestClose={this.onLoadQuestDialogClose.bind(this)}
+        />
+        <PublishQuestDialog
+          open={this.state.publish_quest_dialog}
+          onRequestClose={this.onPublishQuestDialogClose.bind(this)}
+          shortUrl={this.state.shortUrl}
         />
         <AppBar
           title="Expedition Quest Editor"
