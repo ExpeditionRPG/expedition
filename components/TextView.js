@@ -21,10 +21,19 @@ export default class TextView extends React.Component {
     }
   }
 
+  onRef(ref) {
+    this.ace = ref;
+
+    // Keep the editor focused when it's shown.
+    if (this.ace) {
+      ref.editor.focus();
+    }
+  }
+
   render() {
     return (
       <AceEditor
-        ref={(ref) => this.ace = ref}
+        ref={this.onRef.bind(this)}
         mode={this.props.mode}
         theme="twilight"
         fontSize={20}
