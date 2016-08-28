@@ -72,13 +72,7 @@ export default class QuestIDE extends React.Component {
 
     var auth = JSON.parse(document.getElementById("initial-state").textContent);
 
-    var test_filler = '<quest title="Quest Title" author="Your Name" email="email@example.com" summary="Quest summary" url="yoursite.com" recommended-min-players="2" recommended-max-players="4" min-time-minutes="20" max-time-minutes="40">\n  <roleplay title="Roleplay Title">\n    <p>roleplay text</p>\n  </roleplay>\n  <trigger>end</trigger>\n</quest>';
-
-    this.quest = {
-      xml:  test_filler,
-      md: convertQuest(test_filler, "xml", "md"),
-      graph: convertQuest(test_filler, "xml", "graph")
-    };
+    this.test_filler = '<quest title="Quest Title" author="Your Name" email="email@example.com" summary="Quest summary" url="yoursite.com" recommended-min-players="2" recommended-max-players="4" min-time-minutes="20" max-time-minutes="40">\n  <roleplay title="Roleplay Title">\n    <p>roleplay text</p>\n  </roleplay>\n  <trigger>end</trigger>\n</quest>';
 
     this.state = {
       id: null,
@@ -88,6 +82,8 @@ export default class QuestIDE extends React.Component {
       tab: 'md',
       error: false
     };
+
+    this.newQuest();
   }
 
   onHTTPError(err) {
@@ -142,8 +138,9 @@ export default class QuestIDE extends React.Component {
     }
 
     this.quest = {
-      xml: "",
-      md: "",
+      xml:  this.test_filler,
+      md: convertQuest(this.test_filler, "xml", "md"),
+      graph: convertQuest(this.test_filler, "xml", "graph")
     };
     this.dirty = false;
     this.setState({id: null, error: false, drawer_open: false});
