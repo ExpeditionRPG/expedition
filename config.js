@@ -49,7 +49,7 @@ nconf
 
     OAUTH2_CLIENT_ID: '',
     OAUTH2_CLIENT_SECRET: '',
-    OAUTH2_CALLBACK: 'http://localhost:8080/auth/google/callback',
+    OAUTH2_CALLBACK: 'http://expedition-quest-ide.appspot.com/auth/google/callback',
 
     // Port the HTTP server
     PORT: 8080,

@@ -60,9 +60,17 @@ var setupSession = function(app) {
   // In production use the App Engine Memcache instance to store session data,
   // otherwise fallback to the default MemoryStore in development.
   if (config.get('NODE_ENV') === 'production') {
-    sessionConfig.store = new MemcachedStore({
-      hosts: [config.get('MEMCACHE_URL')]
-    });
+    var memAddr = process.env.MEMCACHE_PORT_11211_TCP_ADDR;
+    var memPort = process.env.MEMCACHE_PORT_11211_TCP_PORT;
+    if (!memAddr || !memPort) {
+      sessionConfig.store = new MemcachedStore({
+        hosts: [config.get('MEMCACHE_URL')]
+      });
+    } else {
+      sessionConfig.store = new MemcachedStore({
+        hosts: [memAddr + ":" + memPort]
+      });
+    }
   }
 
   app.use(session(sessionConfig));
