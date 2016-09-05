@@ -9,7 +9,6 @@ var options = {
     'webpack-dev-server/client?http://localhost:8081',
     'webpack/hot/only-dev-server',
     './app/react.js',
-    //'./app/styles/main.less'
   ],
   contentBase: "./app",
   output: {

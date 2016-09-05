@@ -13,8 +13,8 @@
 
 'use strict';
 
-// Activate Google Cloud Trace and Debug when in production
 if (process.env.NODE_ENV === 'production') {
+  // Activate Google Cloud Trace and Debug when in production
   require('@google/cloud-trace').start();
   require('@google/cloud-debug');
 }
@@ -24,9 +24,6 @@ var express = require('express');
 var exphbs = require('express-handlebars');
 var proxy = require('proxy-middleware');
 var url = require('url');
-var webpack = require('webpack');
-var WebpackDevServer = require('webpack-dev-server');
-var webpack_config = require('../webpack.config');
 var session = require('express-session');
 var MemcachedStore = require('connect-memcached')(session);
 var passport = require('passport');
@@ -34,6 +31,7 @@ var config = require('./config');
 var logging = require('./lib/logging');
 var routes = require('./routes');
 var bodyParser = require('body-parser')
+
 
 var app = express();
 
@@ -89,8 +87,15 @@ var setupSession = function(app) {
 var setupRoutes = function(app) {
   app.use(routes);
 
-  // Set a catch-all route and proxy the request for static assets
-  app.use('/', proxy(url.parse('http://localhost:8081/')));
+  if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'prodtest') {
+    // Set a catch-all route and proxy the request for static assets
+    console.log("Proxying static requests");
+    app.use('/', proxy(url.parse('http://localhost:8081/')));
+  } else {
+    // TODO: Serve files from dist/
+    app.use('/assets', express.static('app/assets'));
+    app.use(express.static('dist'));
+  }
 };
 
 var setupLogging = function(app) {
@@ -120,18 +125,24 @@ if (module === require.main) {
   setupLogging(app);
 
   // Setup webpack-dev-server & proxy requests
-  console.log("Content base " + webpack_config.contentBase);
-  var server = new WebpackDevServer(webpack(webpack_config), {
-    publicPath: webpack_config.output.publicPath,
-    contentBase: webpack_config.contentBase,
-    hot: true,
-    quiet: false,
-    noInfo: false,
-    historyApiFallback: true
-  });
+  if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'prodtest') {
+    var webpack_config = require('./webpack.config');
+    var webpack = require('webpack');
+    var WebpackDevServer = require('webpack-dev-server');
+    var server = new WebpackDevServer(webpack(webpack_config), {
+      publicPath: webpack_config.output.publicPath,
+      contentBase: webpack_config.contentBase,
+      hot: true,
+      quiet: false,
+      noInfo: false,
+      historyApiFallback: true
+    });
 
-  // Start the server
-  server.listen(8081, "localhost", function() {});
+    // Start the server
+    server.listen(8081, "localhost", function() {});
+    console.log("Webpack listening on 8080");
+  }
+
   var server = app.listen(config.get('PORT'), function () {
     var port = server.address().port;
     console.log('App listening on port %s', port);

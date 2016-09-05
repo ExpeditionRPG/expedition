@@ -1,10 +1,10 @@
 var React = require('react');
 var fs = require('fs');
 
-var toMarkdown = require('../translation/to_markdown');
-var toXML = require('../translation/to_xml');
-var toGraph = require('../translation/to_graph');
-var toMeta = require('../translation/to_meta');
+var toMarkdown = require('./translation/to_markdown');
+var toXML = require('./translation/to_xml');
+var toGraph = require('./translation/to_graph');
+var toMeta = require('./translation/to_meta');
 var model = require('./quests/model-datastore');
 var passport = require('passport');
 var oauth2 = require('./lib/oauth2');
@@ -18,7 +18,6 @@ router.use(oauth2.template);
 var QUESTS_FETCH_COUNT = 100;
 
 router.get('/', function(req, res) {
-  console.log(res.locals);
   res.render('home', {
     // Pass current state to client side.
     // res.locals is set by oauth2 and includes user display info and login/out links.
@@ -30,7 +29,6 @@ router.get('/', function(req, res) {
 
 router.get('/quests/:token', function(req, res) {
   var token = req.params.token;
-  console.log(res.locals);
   if (!res.locals.profile) {
     return res.send(JSON.stringify([]));
   }
@@ -53,7 +51,6 @@ router.get('/quest/:quest', function(req, res) {
     if (err) {
       return res.status(500).end(err.toString());
     }
-    console.log(entity);
     res.end(JSON.stringify(entity));
   });
 });
@@ -63,7 +60,6 @@ router.get('/raw/:user/:quest', function(req, res) {
     if (err || entity.published !== true) {
       return res.status(500).end(err);
     }
-    console.log(entity);
     res.header('Location', entity.url);
     res.status(301).end();
   });
@@ -97,7 +93,6 @@ router.post('/quest/:quest', function(req, res) {
         throw new Error(err);
       }
       console.log("Saved quest " + data.id);
-      console.log(data);
       res.end(data.id.toString());
     });
   } catch(e) {

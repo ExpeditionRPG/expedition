@@ -5,16 +5,19 @@ var webpack = require('webpack')
 var options = {
   debug: false,
   entry: [
-    './react.js',
+    './app/react.js',
   ],
+  contentBase: "./app",
   output: {
-    path: __dirname + '/.tmp/assets/',
-    filename: '[name].js'
+    path: __dirname + '/dist/',
+    filename: 'bundle.js'
   },
   module: {
     loaders: [
+      { test: /\.css$/, loader: "file" },
       { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' },
-      { test: /\.jsx$/, loader: 'jsx?harmony', exclude: /node_modules/ }
+      { test: /\.json$/, loader: 'json-loader' },
+      { test: /\.js$/, loaders: ['react-hot', 'jsx', 'babel'], exclude: /node_modules/ },
     ]
   },
   plugins: [
