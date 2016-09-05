@@ -12,6 +12,9 @@ xhttp.send();
 
 dataGlobal = JSON.parse(xhttp.responseText);
 
+// Have gulp render in the contents of scripts/globals.json
+// dataGlobal = null;
+// GULP:dataGlobal
 
 GlobalsBehaviour = {
   properties: {
@@ -25,7 +28,6 @@ GlobalsBehaviour = {
   ready: function() {
     var _setOrig = this.set;
     var _notifyPathOrig = this.notifyPath;
-    //this.resolveUrl
 
     this.set = function() {
       _setOrig.apply(this, arguments);

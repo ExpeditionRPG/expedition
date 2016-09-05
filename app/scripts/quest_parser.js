@@ -83,7 +83,7 @@ questParser.prototype.handleChoice = function(choice) {
   }
 
   // This happens on lookup error or default "Next"/"End" event
-  if (this._loopChildren(parent, function(tag) { if (tag === "end") return true; })) {
+  if (this._loopChildren(parent, function(tag) { if (tag === "end") { return true; }})) {
     return this._loadEndNode();
   }
   this.path.push(this._findNextNode(parent));

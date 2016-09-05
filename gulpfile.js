@@ -48,14 +48,6 @@ var styleTask = function (stylesPath, srcs) {
     .pipe($.size({title: stylesPath}));
 };
 
-var jshintTask = function (src) {
-  return gulp.src(src)
-    .pipe($.jshint.extract()) // Extract JS from .html files
-    .pipe($.jshint())
-    .pipe($.jshint.reporter('jshint-stylish'))
-    .pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
-};
-
 var imageOptimizeTask = function (src, dest) {
   return gulp.src(src)
     .pipe($.imagemin({
@@ -90,14 +82,11 @@ gulp.task('styles', function () {
   return styleTask('styles', ['**/*.css']);
 });
 
-gulp.task('elements', function () {
-  return styleTask('elements', ['**/*.css']);
-});
-
 // Lint JavaScript
 gulp.task('jshint', function () {
-  return jshintTask([
+  return gulp.src([
       'app/scripts/**/*.js',
+      '!app/scripts/**/*.min.js',
       'app/elements/**/*.js',
       'app/elements/**/*.html',
       'gulpfile.js'
@@ -126,7 +115,6 @@ gulp.task('copy', function () {
   var bower = gulp.src([
     'app/bower_components/**/*'
   ]).pipe(gulp.dest('www/bower_components'));
-
 
   var elements = gulp.src(['app/elements/**/*.html',
                            'app/elements/**/*.css',
@@ -227,7 +215,7 @@ gulp.task('clean', function (cb) {
 });
 
 // Watch files for changes & reload
-gulp.task('serve', ['styles', 'elements', 'images'], function () {
+gulp.task('serve', ['styles', 'images'], function () {
   browserSync({
     port: 5000,
     notify: false,
@@ -255,7 +243,6 @@ gulp.task('serve', ['styles', 'elements', 'images'], function () {
 
   gulp.watch(['app/**/*.html'], reload);
   gulp.watch(['app/styles/**/*.css'], ['styles', reload]);
-  gulp.watch(['app/elements/**/*.css'], ['elements', reload]);
   gulp.watch(['app/{scripts,elements}/**/{*.js,*.html}'], ['jshint']);
   gulp.watch(['app/images/**/*'], reload);
 });
@@ -288,7 +275,6 @@ gulp.task('default', ['clean'], function (cb) {
   // Uncomment 'cache-config' after 'rename-index' if you are going to use service workers.
   runSequence(
     ['copy', 'styles'],
-    'elements',
     ['jshint', 'images', 'fonts', 'html'],
     'vulcanize','rename-index', 'remove-old-build-index', // 'cache-config',
     cb);
