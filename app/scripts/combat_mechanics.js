@@ -142,7 +142,6 @@ Encounter.prototype.endRound = function(s, difficulty) {
 };
 
 Encounter.prototype.sendStats = function() {
-  console.log("TODO: Send completed combat stats to server");
   console.log(this._roundLog);
 };
 
@@ -168,7 +167,6 @@ Encounter.prototype.getSummary = function() {
     s.numRounds++;
     s.totalDamage += end.roundDamage;
     s.maxSingleRoundDmg = Math.max(s.maxSingleRoundDmg,  end.roundDamage);
-    // TODO: More metrics here
   }
 
   s.avgRoundSeconds = (s.totalTimeSeconds / s.numRounds).toFixed(1);

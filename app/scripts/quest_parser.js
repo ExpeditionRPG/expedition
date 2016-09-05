@@ -41,7 +41,7 @@ questParser.prototype.setGameState = function(state) {
   }
   this._parser.eval('_gamestate_ = ' + JSON.stringify(state));
   // TODO: Include helper functions for accessing game state vars
-}
+};
 
 questParser.prototype.isStarted = function() {
   return (this.path.length > 1);
@@ -88,7 +88,7 @@ questParser.prototype.handleChoice = function(choice) {
   }
   this.path.push(this._findNextNode(parent));
   return this._loadCurrentNode();
-}
+};
 
 questParser.prototype.back = function() {
   if (this.path.length <= 1) {
@@ -309,7 +309,7 @@ questParser.prototype._loadDialogNode = function(node) {
 
 questParser.prototype._isControlNode = function(node) {
   return node.localName === "choice" || node.localName === "event" || node.hasAttribute('on');
-}
+};
 
 questParser.prototype._findNextNode = function(node) {
   while (true) {

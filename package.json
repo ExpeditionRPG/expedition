@@ -1,5 +1,10 @@
 {
-  "private": true,
+  "name": "expedition-app",
+  "version": "1.0.7",
+  "description": "The App for Expedition: The Roleplaying Card Game",
+  "homepage": "http://expeditionrpg.com",
+  "bugs": "https://github.com/Fabricate-IO/expedition-app/issues",
+  "license": "CC-BY-NC-ND-4.0",
   "devDependencies": {
     "browser-sync": "^2.7.7",
     "connect-history-api-fallback": "^1.1.0",

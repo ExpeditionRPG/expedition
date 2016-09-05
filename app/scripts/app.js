@@ -41,7 +41,7 @@
   };
   app.getcards = function() {
     if (window.platform === 'android' || window.platform === 'ios') {
-      window.open('http://cards.expeditiongame.com/', '_system');
+      window.open('http://expeditionrpg.com/', '_system');
     } else {
       window.location='http://cards.expeditiongame.com/';
     }
@@ -65,9 +65,5 @@
   app.showSetup = function(e) {
     this.$.pages.prev("setup");
     e.stopPropagation();
-  };
-  app.sendFeedback = function() {
-    console.log("TODO: Send feedback");
-    this.$.pages.next("setup");
   };
 })(document);

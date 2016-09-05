@@ -66,7 +66,7 @@
     </expedition-card-set>
     <expedition-dialog title="Choose URL" id="urlchooser" modal>
       <input id="url" type="text" name="url"/>
-      <expedition-button on-tap="_onURLButtonClick">&nbsp;</expedition-button>
+      <expedition-button on-tap="_onURLButtonClick">Submit</expedition-button>
     </expedition-dialog>
   </template>
   <script>
@@ -102,9 +102,12 @@
       _onURLButtonClick: function() {
         var url = this.querySelector("#url").value;
 
-        // TODO: This is blecherous and you should be ashamed. Make this better.
-        if (url.indexOf("http://") !== 0) {
+        if (url.indexOf("http://") !== 0 && url.indexOf("https://") !== 0) {
           url = "http://" + url;
+        }
+        // URL validation regex from http://stackoverflow.com/a/8317014
+        if (/^(?:(?:(?:https?):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$/i.test(url) === false) {
+          return alert('URL invalid. Please enter a valid URL.');
         }
         this.$.tmpquest.url = url;
 

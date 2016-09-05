@@ -7,7 +7,7 @@ var instances = [];
 // they're guaranteed to be available.
 // TODO: this is being deprecated, so change it
 var xhttp = new XMLHttpRequest();
-xhttp.open("GET", "scripts/globals.json", false); //WEB & IOS
+xhttp.open("GET", "scripts/globals.json", false); // WEB & IOS
 xhttp.send();
 
 dataGlobal = JSON.parse(xhttp.responseText);
