@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import theme from './components/theme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import QuestIDE from './components/QuestIDE';
+import Main from './components/Main';
 
 // Needed for onTouchTap
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -15,7 +15,7 @@ var initialState = JSON.parse(document.getElementById('initial-state').innerHTML
 // Render the components, picking up where react left off on the server
 ReactDOM.render(
   <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-    <QuestIDE initial={initialState}/>
+    <Main initial={initialState}/>
   </MuiThemeProvider>,
   document.getElementById('react-app')
 );

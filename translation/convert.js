@@ -4,20 +4,20 @@ var toXML = require('./to_xml');
 var toGraph = require('./to_graph');
 
 var convertQuest = function(data, intype, outtype) {
-  // XML <=> Markdown
-  // XML => Graph
-  // Markdown => Graph
-  if (intype === 'xml' && outtype === 'md') {
+  if (intype === 'XML' && outtype === 'MARKDOWN') {
     return toMarkdown(data);
-  } else if (intype === 'md' && outtype === 'xml') {
+  } else if (intype === 'MARKDOWN' && outtype === 'XML') {
     return toXML(data);
+  } else {
+    throw new Error("Invalid translation from " + intype + " to " + outtype);
+  }
+  /*
   } else if (intype === 'xml' && outtype === 'graph') {
     return toGraph(data);
   } else if (intype === 'md' && outtype === 'graph') {
     return toGraph(toXML(data));
-  } else {
-    throw new Error("Invalid translation from " + intype + " to " + outtype);
   }
+  */
 };
 
 var readConvertWrite = function(input_file, node_transform, output_file, verbose) {

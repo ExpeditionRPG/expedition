@@ -1,6 +1,5 @@
 var markdown = require("markdown").markdown;
 var cheerio = require('cheerio');
-var fs = require('fs');
 var prettifyHTML = require("html").prettyPrint;
 var format = require('./format');
 var htmlToMarkdown = require('to-markdown');

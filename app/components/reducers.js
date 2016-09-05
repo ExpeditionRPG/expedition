@@ -1,76 +1,64 @@
-import React from 'react';
-import {Tab} from 'material-ui/Tabs';
-import AppBar from 'material-ui/AppBar';
-import Avatar from 'material-ui/Avatar';
-import FileFolder from 'material-ui/svg-icons/file/folder';
-import Snackbar from 'material-ui/Snackbar';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
-import IconMenu from 'material-ui/IconMenu';
-import PersonOutlineIcon from 'material-ui/svg-icons/social/person-outline';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import { combineReducers } from 'redux'
+import { SET_CODE_VIEW, SET_DIRTY, SET_DIALOG, CodeViews, QuestActions, DialogIDs, TOGGLE_DRAWER } from './actions'
+import toXML from '../../translation/to_xml'
 
-// Translation components
-import convertQuest from '../translation/convert';
+const xml_filler = '<quest title="Quest Title" author="Your Name" email="email@example.com" summary="Quest summary" url="yoursite.com" recommended-min-players="2" recommended-max-players="4" min-time-minutes="20" max-time-minutes="40">\n  <roleplay title="Roleplay Title">\n    <p>roleplay text</p>\n  </roleplay>\n  <trigger>end</trigger>\n</quest>';
 
-// Custom components
-import ManualTabs from './ManualTabs';
-import QuestList from './QuestList';
-import {UserDialog, ConfirmNewQuestDialog, PublishQuestDialog, ConfirmLoadQuestDialog} from './Dialogs';
-import QuestSaver from './QuestSaver';
-import TextView from './TextView';
-import GraphView from './GraphView';
-import AdventurerView from './AdventurerView';
-
-const styles = {
-  container: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column"
-  },
-  tabsroot: {
-    flex: 1,
-    minHeight: 0,
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  tabcontainer: {
-    overflowY: 'auto',
-    height: "100%"
-  }
-};
-
-var QUEST_SPEC_URL = "https://github.com/Fabricate-IO/expedition-quest-ide/blob/master/translation/quest_spec.md";
-
-// Override tab template to allow for full height display.
-class TabTemplate extends React.Component {
-  render() {
-      if (!this.props.selected) {
-          return null;
-      }
-
-      const styles = {
-        background: "#121212",
-        overflowY: 'auto',
-        height: "100%"
+function code(state = {xml: xml_filler, view: CodeViews.XML, error: null}, action) {
+  switch (action.type) {
+    case SET_CODE_VIEW:
+      try {
+        console.log("Code reducer view " + action.currview);
+        if (action.currview === CodeViews.MARKDOWN) {
+          var converted = toXML(action.currcode);
+          action.cb();
+          return {xml: converted, view: action.nextview, error: null};
+        } else {
+          return {xml: action.currcode, view: action.nextview, error: null};
+        }
+      } catch (e) {
+        return {xml: (action.currview === CodeViews.XML) ? action.currcode : state.xml, view: state.view, error: e};
       };
-
-      return <div style={styles}>
-        {this.props.children}
-      </div>;
+    default:
+      return state;
   }
 }
 
-export default class QuestIDE extends React.Component {
+function dirty(state = false, action) {
+  switch (action.type) {
+    case SET_DIRTY:
+      return action.is_dirty;
+    default:
+      return state;
+  }
+}
+
+function drawer(state = {open: false, isFetching: false, quests: null, error: null}, action) {
+  switch (action.type) {
+    case TOGGLE_DRAWER:
+      return {open: !state.open, isFetching: true, quests: null}; // TODO: Fetch
+    default:
+      return state;
+  }
+}
+
+/*
+if (nextProps.open && !this.props.open) {
+  // TODO: Actually use tokens
+  $.get("/quests/0", function(result) {
+    this.setState(JSON.parse(result));
+  }.bind(this)).fail(function(err) {
+    this.setState({quests: []});
+    this.props.onHTTPError(err);
+  }.bind(this));
+}
 
   constructor(props) {
     super(props);
 
     this.dirty = false;
 
-    var auth = JSON.parse(document.getElementById("initial-state").textContent);
+
 
     this.test_filler = '<quest title="Quest Title" author="Your Name" email="email@example.com" summary="Quest summary" url="yoursite.com" recommended-min-players="2" recommended-max-players="4" min-time-minutes="20" max-time-minutes="40">\n  <roleplay title="Roleplay Title">\n    <p>roleplay text</p>\n  </roleplay>\n  <trigger>end</trigger>\n</quest>';
 
@@ -215,15 +203,6 @@ export default class QuestIDE extends React.Component {
     window.open(this.quest.url, '_blank');
   }
 
-  onChangeAttempt(prev, next, cb) {
-    // Sync markdown and xml representations if we suspect either changed.
-    if (!this.syncQuestState(prev)) {
-      return;
-    }
-    this.setState({tab: next, error: false});
-    return cb();
-  }
-
   onLoadQuestDialogClose(choice) {
     if (choice === true) {
       this.saveQuest(function() {this.loadQuest(null, this.state.load_quest_dialog);}.bind(this));
@@ -270,13 +249,6 @@ export default class QuestIDE extends React.Component {
     }
   }
 
-  markDirty() {
-    this.dirty = true;
-    if (this.saver) {
-      this.saver.markDirty();
-    }
-  }
-
   render(){
     var user_details;
     if (this.state.auth.profile) {
@@ -289,80 +261,53 @@ export default class QuestIDE extends React.Component {
     // TODO: Actually use questsaver markDirty
     return (
       <div className="expedition-quest-ide" style={styles.container}>
-        <UserDialog
-          open={this.state.user_dialog}
-          auth={this.state.auth}
-          onRequestClose={() => this.setState({user_dialog: false})}
-        />
-        <ConfirmNewQuestDialog
-          open={this.state.new_quest_dialog}
-          onRequestClose={this.onNewQuestDialogClose.bind(this)}
-        />
-        <ConfirmLoadQuestDialog
-          open={this.state.load_quest_dialog}
-          onRequestClose={this.onLoadQuestDialogClose.bind(this)}
-        />
-        <PublishQuestDialog
-          open={this.state.publish_quest_dialog}
-          onRequestClose={this.onPublishQuestDialogClose.bind(this)}
-          shortUrl={this.state.shortUrl}
-        />
-        <AppBar
-          title="Expedition Quest Editor"
-          onLeftIconButtonTouchTap={() => this.setState({drawer_open: !this.state.drawer_open})}
-          iconElementRight={user_details} />
-        <QuestList
-          onHTTPError={this.onHTTPError.bind(this)}
-          onRequestChange={(open) => this.setState({drawer_open: open})}
-          onQuestSelect={this.loadQuest.bind(this)}
-          onMenuSelect={this.handleMenu.bind(this)}
-          open={this.state.drawer_open}>
-        </QuestList>
-        <ManualTabs style={styles.tabsroot}
-              tabTemplate={TabTemplate}
-              onChangeAttempt={this.onChangeAttempt.bind(this)}
-              contentContainerStyle={styles.tabcontainer}
-              value={this.state.tab}>
-          <Tab label="Markdown" value="md">
-            <TextView
-              mode="markdown"
-              value={this.quest.md}
-              onChange={(data) => {this.quest.md = data; this.markDirty()}} />
-          </Tab>
-          <Tab label="XML View" value="xml">
-            <TextView
-              mode="xml"
-              value={this.quest.xml}
-              onChange={(data) => {this.quest.xml = data; this.markDirty()}} />
-          </Tab>
-        </ManualTabs>
-        <QuestSaver
-          id={this.state.id}
-          signedIn={this.state.auth.profile}
-          lastSave={this.state.last_save}
-          ref={(s) => this.saver = s}
-          onSaveRequest={this.saveQuest.bind(this)}/>
-        <Snackbar
-          open={Boolean(this.state.error)}
-          style={{width: "50%"}}
-          message={this.state.error}
-          autoHideDuration={10000}
-          onRequestClose={this.handleRequestClose}
-        />
+
+
+
+        <QuestIDEContainer/>
       </div>
     );
+  } */
+
+function quest(state = {id: null, isFetching: false, meta: null, error: null}, action) {
+  switch(action.type) {
+    // TODO: Implement
+    case QuestActions.LOAD:
+      return state;
+    case QuestActions.DELETE:
+      return state;
+    case QuestActions.SAVE:
+      return state;
+    case QuestActions.PUBLISH:
+      return state;
+    case QuestActions.DOWNLOAD:
+      return state;
+    default:
+      return state;
   }
 }
 
+function dialogs(state = {
+  [DialogIDs.USER]: false,
+  [DialogIDs.CONFIRM_NEW_QUEST]: false,
+  [DialogIDs.CONFIRM_LOAD_QUEST]: false,
+  [DialogIDs.PUBLISH_QUEST]: false},
+  action) {
 
-/*
-TODO: Extra tabs
-          <Tab label="Graph View" value="graph">
-            <GraphView data={this.quest.graph} />
-          </Tab>
-          <Tab label="Adventurer View" value="adventurer">
-            <AdventurerView/>
-          </Tab>
-*/
+  switch (action.type) {
+    case SET_DIALOG:
+      return {...state, [DialogIDs.USER]: action.shown};
+    default:
+      return state;
+  }
+}
 
-export default QuestIDE;
+const questIDEApp = combineReducers({
+  code,
+  dirty,
+  drawer,
+  dialogs,
+  quest
+})
+
+export default questIDEApp

@@ -1,0 +1,6 @@
+<quest title="Oust Albanus" author="semartin">
+  <roleplay title="This is a quest">
+    <p>Herp de derp</p>
+  </roleplay>
+  <trigger>end</trigger>
+</quest>

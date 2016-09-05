@@ -1,10 +1,10 @@
 var React = require('react');
 var fs = require('fs');
 
-var toMarkdown = require('./translation/to_markdown');
-var toXML = require('./translation/to_xml');
-var toGraph = require('./translation/to_graph');
-var toMeta = require('./translation/to_meta');
+var toMarkdown = require('../translation/to_markdown');
+var toXML = require('../translation/to_xml');
+var toGraph = require('../translation/to_graph');
+var toMeta = require('../translation/to_meta');
 var model = require('./quests/model-datastore');
 var passport = require('passport');
 var oauth2 = require('./lib/oauth2');

@@ -102,4 +102,12 @@ QuestSaver.contextTypes = {
   muiTheme: PropTypes.object.isRequired,
 };
 
+/*<QuestSaver
+id={id}
+signedIn={auth.profile}
+lastSave={meta.last_save}
+ref={(s) => this.saver = s}
+onSaveRequest={this.saveQuest.bind(this)}/>
+*/
+
 export default QuestSaver;

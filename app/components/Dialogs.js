@@ -1,7 +1,9 @@
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import {DialogIDs} from './actions';
 
+// TODO: <MenuItem value="help" primaryText="Help" />
 /*
 <IconMenu
             iconButtonElement={<Avatar src={this.state.auth.profile.image} />}
@@ -50,21 +52,21 @@ class YesNoDialog extends React.Component {
   }
 }
 
-export class ConfirmNewQuestDialog extends YesNoDialog {
+class ConfirmNewQuestDialog extends YesNoDialog {
   constructor(props) {
     super(props)
     this.title = "Save changes before creating new quest?";
   }
 }
 
-export class ConfirmLoadQuestDialog extends YesNoDialog {
+class ConfirmLoadQuestDialog extends YesNoDialog {
   constructor(props) {
     super(props)
     this.title = "Save changes before loading new quest?";
   }
 }
 
-export class PublishQuestDialog extends React.Component {
+class PublishQuestDialog extends React.Component {
   render() {
     return (
       <Dialog
@@ -82,9 +84,9 @@ export class PublishQuestDialog extends React.Component {
   }
 }
 
-export class UserDialog extends React.Component {
+class UserDialog extends React.Component {
   render() {
-    var signed_in = Boolean(this.props.auth.profile);
+    var signed_in = Boolean(this.props.userName);
     var title;
     var actions = [
       <RaisedButton
@@ -95,12 +97,12 @@ export class UserDialog extends React.Component {
     ];
 
     if (signed_in) {
-      title = "Signed In As " + this.props.auth.profile.displayName;
+      title = "Signed In As " + this.props.userName;
       actions.push(
         <RaisedButton
           label="Sign Out"
           primary={true}
-          onTouchTap={() => window.location = this.props.auth.logout}
+          onTouchTap={() => window.location = this.props.user.logout}
         />);
     } else {
       title = "Not Signed In";
@@ -108,7 +110,7 @@ export class UserDialog extends React.Component {
         <RaisedButton
           label="Sign In"
           primary={true}
-          onTouchTap={() => window.location = this.props.auth.login}
+          onTouchTap={() => window.location = this.props.user.login}
         />);
     }
 
@@ -124,3 +126,31 @@ export class UserDialog extends React.Component {
     );
   }
 }
+
+const Dialogs = ({open, user_name, short_url, onRequestClose}) => {
+  console.log(open);
+  return (
+    <span>
+      <UserDialog
+        open={open[DialogIDs.USER]}
+        userName={user_name}
+        onRequestClose={(choice) => onRequestClose(DialogIDs.USER, choice)}
+      />
+      <ConfirmNewQuestDialog
+        open={open[DialogIDs.CONFIRM_NEW_QUEST]}
+        onRequestClose={(choice) => onRequestClose(DialogIDs.CONFIRM_NEW_QUEST, choice)}
+      />
+      <ConfirmLoadQuestDialog
+        open={open[DialogIDs.CONFIRM_LOAD_QUEST]}
+        onRequestClose={(choice) => onRequestClose(DialogIDs.CONFIRM_LOAD_QUEST, choice)}
+      />
+      <PublishQuestDialog
+        open={open[DialogIDs.PUBLISH_QUEST]}
+        onRequestClose={(choice) => onRequestClose(DialogIDs.PUBLISH_QUEST, choice)}
+        shortUrl={short_url}
+      />
+    </span>
+  );
+}
+
+export default Dialogs;
