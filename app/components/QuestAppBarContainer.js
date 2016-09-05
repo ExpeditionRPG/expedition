@@ -4,7 +4,7 @@ import QuestAppBar from './QuestAppBar'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    user_image: (state.user) ? state.user.image : null,
+    user_image: (state.user.profile) ? state.user.profile.image : null,
   };
 }
 

@@ -19,11 +19,13 @@ import questIDEApp from './reducers'
 
 // Initialize the global redux store
 let auth = JSON.parse(document.getElementById("initial-state").textContent);
-let store_init = {};
-if (auth.user) {
-  store_init = {user: auth.profile.user, login: auth.login, logout: auth.logout};
-}
-let store = createStore(questIDEApp, store_init, window.devToolsExtension && window.devToolsExtension()); //, DevTools.instrument());
+let store = createStore(questIDEApp, {
+  user: {
+    profile: auth.profile,
+    login: auth.login,
+    logout: auth.logout
+  }
+}, window.devToolsExtension && window.devToolsExtension()); //, DevTools.instrument());
 
 if (module.hot) {
   module.hot.accept('./reducers', () =>

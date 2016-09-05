@@ -1,10 +1,6 @@
 import {Tab} from 'material-ui/Tabs';
-import ManualTabs from './ManualTabs';
-import TextView from './TextView';
-import GraphView from './GraphView';
-import AdventurerView from './AdventurerView';
-import Snackbar from 'material-ui/Snackbar';
-import QuestSaver from './QuestSaver';
+import ManualTabs from './base/ManualTabs';
+import TextView from './base/TextView';
 import {CodeViews} from './actions';
 
 const styles = {
@@ -41,12 +37,6 @@ const QuestIDE = ({ dirty, text, error, tab, onTabChange, onDirty, onErrorClose 
           value={text}
           onChange={(text) => onDirty(dirty, text)} />
       </div>
-      <Snackbar
-        open={Boolean(error)}
-        style={{width: "50%"}}
-        message={error}
-        autoHideDuration={10000}
-      />
     </span>
   );
 }

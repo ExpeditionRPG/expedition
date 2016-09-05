@@ -17,17 +17,11 @@ function getVisibleCode(xml = "", tab) {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  buffer = getVisibleCode(state.code.xml, state.code.view);
-
-  let error_text = "";
-  if (state.code.error) {
-    error_text = state.code.error.toString();
-  }
+  buffer = getVisibleCode(state.editor.xml, state.editor.view);
 
   return {
     text: buffer,
-    error: error_text,
-    tab: state.code.view,
+    tab: state.editor.view,
     dirty: state.dirty
   };
 }

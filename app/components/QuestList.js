@@ -10,7 +10,7 @@ import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit';
 import AddIcon from 'material-ui/svg-icons/content/add';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import Subheader from 'material-ui/Subheader';
-import {QuestActions} from './actions';
+import {NEW_QUEST, SAVE_QUEST, PUBLISH_QUEST, DELETE_QUEST, DOWNLOAD_QUEST} from './actions';
 
 let SelectableList = MakeSelectable(List);
 
@@ -83,11 +83,11 @@ const QuestList = ({open, quests, onQuestSelect, onMenuSelect, onDrawerRequestCh
       </Toolbar>
       <Subheader>Edit</Subheader>
       <Menu onChange={onMenuSelect}>
-        <MenuItem value={QuestActions.NEW} primaryText="New" />
-        <MenuItem value={QuestActions.SAVE} primaryText="Save" />
-        <MenuItem value={QuestActions.PUBLISH} primaryText="Publish" />
-        <MenuItem value={QuestActions.DOWNLOAD} primaryText="Download" />
-        <MenuItem value={QuestActions.DELETE} primaryText="Delete" />
+        <MenuItem value={NEW_QUEST} primaryText="New" />
+        <MenuItem value={SAVE_QUEST} primaryText="Save" />
+        <MenuItem value={PUBLISH_QUEST} primaryText="Publish" />
+        <MenuItem value={DOWNLOAD_QUEST} primaryText="Download" />
+        <MenuItem value={DELETE_QUEST} primaryText="Delete" />
       </Menu>
       <Divider/>
       {body}

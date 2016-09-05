@@ -72,7 +72,7 @@ class PublishQuestDialog extends React.Component {
       <Dialog
         title="Published!"
         actions={<RaisedButton
-          label="Sign In"
+          label="OK"
           primary={true}
           onTouchTap={() => this.props.onRequestClose()}
         />}
@@ -84,9 +84,32 @@ class PublishQuestDialog extends React.Component {
   }
 }
 
+class ErrorDialog extends React.Component {
+  render() {
+
+    var errors = [];
+    for (var i = 0; i < this.props.errors.length; i++) {
+      errors.push(<div key={i}>{this.props.errors[i].toString()}</div>);
+    }
+
+    return (
+      <Dialog
+        title="ERROR"
+        actions={<RaisedButton
+          label="OK"
+          primary={true}
+          onTouchTap={() => this.props.onRequestClose()}
+        />}
+        modal={false}
+        open={Boolean(this.props.open)}>
+        {errors}
+      </Dialog>
+    );
+  }
+}
+
 class UserDialog extends React.Component {
   render() {
-    var signed_in = Boolean(this.props.userName);
     var title;
     var actions = [
       <RaisedButton
@@ -96,13 +119,13 @@ class UserDialog extends React.Component {
       />,
     ];
 
-    if (signed_in) {
+    if (this.props.userName) {
       title = "Signed In As " + this.props.userName;
       actions.push(
         <RaisedButton
           label="Sign Out"
           primary={true}
-          onTouchTap={() => window.location = this.props.user.logout}
+          onTouchTap={this.props.onSignIn}
         />);
     } else {
       title = "Not Signed In";
@@ -110,7 +133,7 @@ class UserDialog extends React.Component {
         <RaisedButton
           label="Sign In"
           primary={true}
-          onTouchTap={() => window.location = this.props.user.login}
+          onTouchTap={this.props.onSignOut}
         />);
     }
 
@@ -127,27 +150,35 @@ class UserDialog extends React.Component {
   }
 }
 
-const Dialogs = ({open, user_name, short_url, onRequestClose}) => {
-  console.log(open);
+const Dialogs = ({open, user_name, short_url, errors, onRequestClose, onConfirm, onSignIn, onSignOut}) => {
   return (
     <span>
       <UserDialog
         open={open[DialogIDs.USER]}
         userName={user_name}
-        onRequestClose={(choice) => onRequestClose(DialogIDs.USER, choice)}
+        onSignIn={onSignIn}
+        onSignOut={onSignOut}
+        onRequestClose={() => onRequestClose(DialogIDs.USER)}
       />
       <ConfirmNewQuestDialog
         open={open[DialogIDs.CONFIRM_NEW_QUEST]}
-        onRequestClose={(choice) => onRequestClose(DialogIDs.CONFIRM_NEW_QUEST, choice)}
+        onConfirm={() => onConfirm(DialogIDs.CONFIRM_NEW_QUEST)}
+        onRequestClose={() => onRequestClose(DialogIDs.CONFIRM_NEW_QUEST)}
       />
       <ConfirmLoadQuestDialog
         open={open[DialogIDs.CONFIRM_LOAD_QUEST]}
-        onRequestClose={(choice) => onRequestClose(DialogIDs.CONFIRM_LOAD_QUEST, choice)}
+        onConfirm={() => onConfirm(DialogIDs.CONFIRM_LOAD_QUEST)}
+        onRequestClose={() => onRequestClose(DialogIDs.CONFIRM_LOAD_QUEST)}
       />
       <PublishQuestDialog
         open={open[DialogIDs.PUBLISH_QUEST]}
-        onRequestClose={(choice) => onRequestClose(DialogIDs.PUBLISH_QUEST, choice)}
+        onRequestClose={() => onRequestClose(DialogIDs.PUBLISH_QUEST)}
         shortUrl={short_url}
+      />
+      <ErrorDialog
+        open={open[DialogIDs.ERROR]}
+        onRequestClose={() => onRequestClose(DialogIDs.ERROR)}
+        errors={errors}
       />
     </span>
   );

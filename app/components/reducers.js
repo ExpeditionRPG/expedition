@@ -1,24 +1,57 @@
 import { combineReducers } from 'redux'
-import { SET_CODE_VIEW, SET_DIRTY, SET_DIALOG, CodeViews, QuestActions, DialogIDs, TOGGLE_DRAWER } from './actions'
+import {
+  SET_CODE_VIEW,
+  SET_DIRTY,
+  SET_DIALOG,
+  SIGN_IN,
+  SIGN_OUT,
+  TOGGLE_DRAWER,
+  CodeViews,
+  NEW_QUEST,
+  DELETE_QUEST,
+  LOAD_QUEST,
+  DOWNLOAD_QUEST,
+  PUBLISH_QUEST,
+  SAVE_QUEST,
+  DialogIDs } from './actions'
 import toXML from '../../translation/to_xml'
 
 const xml_filler = '<quest title="Quest Title" author="Your Name" email="email@example.com" summary="Quest summary" url="yoursite.com" recommended-min-players="2" recommended-max-players="4" min-time-minutes="20" max-time-minutes="40">\n  <roleplay title="Roleplay Title">\n    <p>roleplay text</p>\n  </roleplay>\n  <trigger>end</trigger>\n</quest>';
 
-function code(state = {xml: xml_filler, view: CodeViews.XML, error: null}, action) {
+var reducer_errors = [];
+
+function editor(state = {xml: xml_filler, view: CodeViews.XML, id: null, isFetching: false, meta: null}, action) {
   switch (action.type) {
     case SET_CODE_VIEW:
       try {
-        console.log("Code reducer view " + action.currview);
         if (action.currview === CodeViews.MARKDOWN) {
           var converted = toXML(action.currcode);
           action.cb();
-          return {xml: converted, view: action.nextview, error: null};
+          return {xml: converted, view: action.nextview};
         } else {
-          return {xml: action.currcode, view: action.nextview, error: null};
+          return {xml: action.currcode, view: action.nextview};
         }
       } catch (e) {
-        return {xml: (action.currview === CodeViews.XML) ? action.currcode : state.xml, view: state.view, error: e};
+        reducer_errors.push(e);
+        return {xml: (action.currview === CodeViews.XML) ? action.currcode : state.xml, view: state.view};
       };
+    case NEW_QUEST:
+      return state;
+    case LOAD_QUEST:
+      return state;
+    case DELETE_QUEST:
+      return state;
+    case SAVE_QUEST:
+      return state;
+    case PUBLISH_QUEST:
+      return state;
+    case DOWNLOAD_QUEST:
+      if (!state.meta) {
+        reducer_errors.push(new Error("No quest data available to download. Please save your quest first."));
+      } else {
+        window.open(state.meta.url, '_blank');
+      }
+      return state;
     default:
       return state;
   }
@@ -222,73 +255,12 @@ if (nextProps.open && !this.props.open) {
     }
     this.setState({new_quest_dialog: false});
   }
+*/
 
-  onPublishQuestDialogClose(choice) {
-    this.setState({publish_quest_dialog: false});
-  }
-
-  handleMenu(event, value) {
-    // TODO: Add revisions ability
-    switch(value) {
-      case "new":
-        return this.newQuest();
-      case "save":
-        return this.saveQuest();
-      case "delete":
-        return this.deleteQuest();
-      case "publish":
-        return this.publishQuest();
-      case "download":
-        return this.downloadQuest();
-      case "help":
-        window.open(QUEST_SPEC_URL, '_blank');
-        return;
-        break;
-      default:
-        throw new Error("Could not handle unknown menu value " + value);
-    }
-  }
-
-  render(){
-    var user_details;
-    if (this.state.auth.profile) {
-      user_details = (<Avatar src={this.state.auth.profile.image} onTouchTap={() => this.setState({user_dialog: true})}/>);
-    } else {
-      user_details = (<Avatar icon={<PersonOutlineIcon />} onTouchTap={() => this.setState({user_dialog: true})}/>);
-    }
-
-    // TODO: in help menu mention signed in by this.state.auth.profile.displayName
-    // TODO: Actually use questsaver markDirty
-    return (
-      <div className="expedition-quest-ide" style={styles.container}>
-
-
-
-        <QuestIDEContainer/>
-      </div>
-    );
-  } */
-
-function quest(state = {id: null, isFetching: false, meta: null, error: null}, action) {
-  switch(action.type) {
-    // TODO: Implement
-    case QuestActions.LOAD:
-      return state;
-    case QuestActions.DELETE:
-      return state;
-    case QuestActions.SAVE:
-      return state;
-    case QuestActions.PUBLISH:
-      return state;
-    case QuestActions.DOWNLOAD:
-      return state;
-    default:
-      return state;
-  }
-}
 
 function dialogs(state = {
   [DialogIDs.USER]: false,
+  [DialogIDs.ERROR]: false,
   [DialogIDs.CONFIRM_NEW_QUEST]: false,
   [DialogIDs.CONFIRM_LOAD_QUEST]: false,
   [DialogIDs.PUBLISH_QUEST]: false},
@@ -302,12 +274,41 @@ function dialogs(state = {
   }
 }
 
+function user(state = {}, action) {
+  switch(action.type) {
+    // TODO
+    case SIGN_IN:
+      window.location = state.login;
+      return state;
+    case SIGN_OUT:
+      window.location = state.logout;
+      return state;
+    default:
+      return state;
+  }
+}
+
+function errors(state = {}, action) {
+  // Transfer accumulated errors into state.
+  var errs = reducer_errors;
+  reducer_errors = [];
+  return errs;
+}
+
 const questIDEApp = combineReducers({
-  code,
+  editor,
   dirty,
   drawer,
+  user,
   dialogs,
-  quest
-})
+  errors
+});
 
+/*
+const questIDEApp = function(state, action) {
+  reducer_errors = [];
+  var result = combined_reducers(state, action);
+  result.errors = reducer_errors;
+}
+*/
 export default questIDEApp

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import {questAction, QuestActions, toggleDrawer} from './actions'
+import {questAction, LOAD_QUEST, toggleDrawer} from './actions'
 import QuestList from './QuestList'
 import {PropTypes} from 'react';
 
@@ -23,9 +23,9 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onQuestSelect: (id) => {
-      dispatch(questAction(QuestActions.LOAD, id));
+      dispatch(questAction(LOAD_QUEST, id));
     },
-    onMenuSelect: (action) => {
+    onMenuSelect: (evt, action) => {
       dispatch(questAction(action));
     },
     onDrawerRequestChange: (drawer_state) => {
