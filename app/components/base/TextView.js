@@ -27,6 +27,11 @@ export default class TextView extends React.Component {
     // Keep the editor focused when it's shown.
     if (this.ace) {
       ref.editor.focus();
+
+      // "Automatically scrolling cursor into view after selection change
+      // this will be disabled in the next version set
+      // editor.$blockScrolling = Infinity to disable this message"
+      ref.editor.$blockScrolling = Infinity;
     }
   }
 
