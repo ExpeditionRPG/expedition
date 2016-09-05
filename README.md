@@ -57,7 +57,9 @@ gulp test:local
 
 This runs the unit tests defined in the `app/test` directory through [web-component-tester](https://github.com/Polymer/web-component-tester).
 
-To run tests Java 7 or higher is required. To update Java go to http://www.oracle.com/technetwork/java/javase/downloads/index.html and download ***JDK*** and install it.
+Tests require Java 7 or higher. To update Java go to http://www.oracle.com/technetwork/java/javase/downloads/index.html and download ***JDK*** and install it.
+
+Tests require Chrome. Please make sure you have the Chrome browser installed and up-to-date on your system.
 
 #### Build for Web
 

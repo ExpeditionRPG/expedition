@@ -10,9 +10,8 @@
       <expedition-card title="Draw Enemies" data-route="combatsetup" icon="{{icon}}" dark>
         <template is="dom-if" if="{{!custom}}">
           <p>Prepare to fight:</p>
-          <!-- TODO: Maybe have this be more like an expedition-item that mimics the encounter card layout -->
           <template is="dom-repeat" id="encounterlist" items="{{_resolvedEncounter}}">
-            <expedition-static-input label="{{item.name}}">(Tier {{item.tier}} {{item.class}})</expedition-static-input>
+            <expedition-list-item label="{{item.name}}">(Tier {{item.tier}} {{item.class}})</expedition-list-item>
           </template>
         </template>
         <template is="dom-if" if="{{verbose}}">

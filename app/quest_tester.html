@@ -96,7 +96,7 @@
       --iron-image-width: 100%;
     }
 
-    expedition-icon-set, #splash {
+    #splash {
       height: 100%;
     }
 
@@ -121,7 +121,7 @@
           Or load from a URL:
           <input id="url" type="text" name="url"/>
           <button onclick="{{onURLButtonClick}}">Load</button>
-                  
+
         </p>
       </expedition-card>
       <quest-card on-return="onReturn" id="tmpquest" data-route="tmpquest"></quest-card>
@@ -159,7 +159,7 @@
         var url = document.querySelector("#url").value;
         xhttp.open("GET", url, true); // async
         xhttp.send();
-        
+
         xhttp.onload = function(e) {
           if (xhttp.status !== 200) {
             throw new Error("Bad request - status " + xhttp.status);

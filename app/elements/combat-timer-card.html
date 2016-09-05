@@ -9,7 +9,6 @@
   </template>
   <script>
     /*global GlobalsBehaviour */
-    // TODO: Less magic numbers all over this file
     Polymer({
       is: 'combat-timer-card',
       behaviors: [GlobalsBehaviour],
@@ -18,11 +17,8 @@
 
         this._roundTimeRemaining = 0;
         this._roundTimeTotalMillis = null; // starting round time (set by difficulty)
-        this._roundDamage = 0;
-        this._lastAttackMillis = 0;
         this._timerStartMillis = 0;
         this._lastRenderMillis = 0;
-        this._flashAlpha = 0;
         this._touches = [];
 
         var h = window.innerHeight;

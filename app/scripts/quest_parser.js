@@ -41,7 +41,7 @@ questParser.prototype.setGameState = function(state) {
   }
   this._parser.eval('_gamestate_ = ' + JSON.stringify(state));
   // TODO: Include helper functions for accessing game state vars
-}
+};
 
 questParser.prototype.isStarted = function() {
   return (this.path.length > 1);
@@ -83,12 +83,12 @@ questParser.prototype.handleChoice = function(choice) {
   }
 
   // This happens on lookup error or default "Next"/"End" event
-  if (this._loopChildren(parent, function(tag) { if (tag === "end") return true; })) {
+  if (this._loopChildren(parent, function(tag) { if (tag === "end") { return true; }})) {
     return this._loadEndNode();
   }
   this.path.push(this._findNextNode(parent));
   return this._loadCurrentNode();
-}
+};
 
 questParser.prototype.back = function() {
   if (this.path.length <= 1) {
@@ -151,7 +151,7 @@ questParser.prototype._loadEventNode = function(node) {
   // Validate the event node (must not have an event child and must control something)
   var hasControlChild = false;
   this._loopChildren(node, function(tag) {
-    if (tag === 'event' | tag === 'choice') {
+    if (tag === 'event' || tag === 'choice') {
       throw new Error("Node cannot have <event> or <choice> child");
     }
 
@@ -309,7 +309,7 @@ questParser.prototype._loadDialogNode = function(node) {
 
 questParser.prototype._isControlNode = function(node) {
   return node.localName === "choice" || node.localName === "event" || node.hasAttribute('on');
-}
+};
 
 questParser.prototype._findNextNode = function(node) {
   while (true) {

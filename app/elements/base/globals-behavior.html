@@ -3,15 +3,7 @@
 // TODO: Move this and base UI components to a base/ folder, and consolidate quest and ui folders.
 var instances = [];
 
-// Load JSON settings - synchronously, so that
-// they're guaranteed to be available.
-// TODO: this is being deprecated, so change it
-var xhttp = new XMLHttpRequest();
-xhttp.open("GET", "scripts/globals.json", false); //WEB & IOS
-xhttp.send();
-
-dataGlobal = JSON.parse(xhttp.responseText);
-
+dataGlobal = {}; // Gulp renders in the contents of scripts/globals.json
 
 GlobalsBehaviour = {
   properties: {
@@ -25,7 +17,6 @@ GlobalsBehaviour = {
   ready: function() {
     var _setOrig = this.set;
     var _notifyPathOrig = this.notifyPath;
-    //this.resolveUrl
 
     this.set = function() {
       _setOrig.apply(this, arguments);
