@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Expedition Card Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <link href='css/generate.css' rel='stylesheet' type='text/css'>
+    <link href='css/app.css' rel='stylesheet' type='text/css'>
     <link href='css/print.css' rel='stylesheet' type='text/css' media="print">
     <script src="https://use.typekit.net/qvq0phl.js"></script>
     <script>try{Typekit.load({ async: true });}catch(e){}</script>
@@ -17,10 +17,10 @@
       <a href="http://expeditiongame.com" target="_blank">
         <img id="logo" src="img/logo.svg" />
       </a>
+      <button onclick="loadTable()" style="float: right;">Refresh cards</button>
       <div id="filters">
         <span id="dynamicFilters"></span>
-        <button id="resetFilters">Reset Filters</button>
-        --<a href="javascript:loadTable();">Reload</a>
+        <button onclick="resetFilters()">Reset Filters</button>
       </div>
     </header>
 
@@ -39,16 +39,15 @@
       <p class="center">Blank page for printing purposes. Save paper by only printing pages 3+!</p>
     </div>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="js/jquery.query.js"></script>
-    <script src="js/handlebars.js"></script>
-    <script src="js/handlebars.swag.js"></script>
+    <script src="js/libs/jquery-3.1.0.min.js"></script>
+    <script src="js/libs/jquery.query.js"></script>
+    <script src="js/libs/handlebars.js"></script>
+    <script src="js/libs/handlebars.swag.js"></script>
+    <script src="js/libs/tabletop.js"></script>
+    <script src="js/libs/svg.js"></script>
     <script src="js/templates.js"></script>
     <script src="js/partials.js"></script>
-    <script src="js/tabletop.js"></script>
-    <script src="js/svg.js"></script>
-    <script src="js/cards.js"></script>
-    <script src="js/generate.js"></script>
+    <script src="js/app.js"></script>
     <!--<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
     Breaks when deployed to S3 -->
     <script>
