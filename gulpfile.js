@@ -1,19 +1,17 @@
-"use strict";
-
-var gulp = require('gulp');
-var runSequence = require('run-sequence');
-var rimraf = require('gulp-rimraf');
-var changed = require('gulp-changed');
-var browserSync = require('browser-sync').create();
-var imagemin = require('gulp-imagemin');
-var pngquant = require('imagemin-pngquant');
-var sass = require('gulp-sass');
-var autoprefixer = require('gulp-autoprefixer');
-var minifyCss = require('gulp-minify-css');
-var handlebars = require('gulp-handlebars');
-var wrap = require('gulp-wrap');
-var declare = require('gulp-declare');
-var concat = require('gulp-concat');
+const gulp = require('gulp');
+const runSequence = require('run-sequence');
+const rimraf = require('gulp-rimraf');
+const changed = require('gulp-changed');
+const browserSync = require('browser-sync').create();
+const imagemin = require('gulp-imagemin');
+const pngquant = require('imagemin-pngquant');
+const sass = require('gulp-sass');
+const autoprefixer = require('gulp-autoprefixer');
+const minifyCss = require('gulp-minify-css');
+const handlebars = require('gulp-handlebars');
+const wrap = require('gulp-wrap');
+const declare = require('gulp-declare');
+const concat = require('gulp-concat');
 
 
 gulp.task('default', ['watch']);
