@@ -6,6 +6,13 @@
 
 /* ===== DATA AND FILTERS ===== */
 
+var templates = { // will be rendered into UI in this order
+  Helper: this.Expedition.templates.Helper,
+  Adventurer: this.Expedition.templates.Adventurer,
+  Ability: this.Expedition.templates.Ability,
+  Encounter: this.Expedition.templates.Encounter,
+  Loot: this.Expedition.templates.Loot,
+};
 var selectOptions = {
   export: ['Print-n-Play', 'DriveThruCards', 'AdMagic-Fronts', 'AdMagic-Backs', 'Hide-Backs'],
   tier: [],
@@ -14,12 +21,11 @@ var selectOptions = {
 };
 var filters, filterList;
 
-function fetchFilters() {
+function getParams() {
 
   var match,
-      pl     = /\+/g,  // Regex for replacing addition symbol with a space
       search = /([^&=]+)=?([^&]*)/g,
-      decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+      decode = function (s) { return decodeURIComponent(s.replace(/\+/g, " ")); }, // replace + with a space
       query  = window.location.search.substring(1);
   filters = {};
   filterList = [];
@@ -34,27 +40,14 @@ function fetchFilters() {
 
   switch (filters.export) {
     case 'DriveThruCards':
-      $("body").addClass("DriveThruCards");
       filters.singlePage = true;
     break;
-    case 'Print-n-Play':
-      $("body").addClass("printandplay");
-    break;
-    case 'Hide-Backs':
-      $("body").addClass("hideBacks");
-    break;
     case 'AdMagic-Fronts':
-      $("body").addClass("hideBacks");
       filters.singlePage = true;
     break;
     case 'AdMagic-Backs':
-      $("body").addClass("hideFronts");
       filters.singlePage = true;
     break;
-  }
-
-  if (filters.singlePage) {
-    $("body").addClass("singlePage");
   }
 
   if (filterList.length > 0) {
@@ -67,43 +60,46 @@ function fetchFilters() {
   }
 }
 
-function makeFilters () {
+function buildFilters () {
 
   $("#dynamicFilters select").remove();
   for (var field in selectOptions) {
     selectOptions[field] = selectOptions[field].sort();
-    makeFilter(field, selectOptions[field]);
+    buildFilter(field, selectOptions[field]);
   }
 
-  function makeFilter (title, values) {
+  function buildFilter (title, values) {
 
     var el = $("<select data-filter='" + title + "'></select>");
     el.append("<option value=''>All " + title + "</option>");
     for (var v in values) {
       el.append("<option value='" + values[v] + "'>" + values[v] + "</option>");
     }
-    el.change(function(e) {
-      var params = {};
-      $("#dynamicFilters select").each(function(i, elem) {
-        if ($(this).val() !== '') {
-          params[$(this).data('filter')] = $(this).val();
-        }
-      }).promise().done(function() {
-        history.replaceState({}, document.title, '?' + jQuery.param(params));
-        location.reload();
-      })
-    });
+    el.change(onFilterChange);
     $("#dynamicFilters").prepend(el);
     if (filters[title]) {
       $("#dynamicFilters select[data-filter='" + title + "']").find("option[value='" + filters[title] + "']").attr('selected', true);
     }
+  }
+
+  function onFilterChange (e) {
+
+    var params = {};
+    $("#dynamicFilters select").each(function (i, elem) {
+      if ($(this).val() !== '') {
+        params[$(this).data('filter')] = $(this).val();
+      }
+    }).promise().done(function () {
+      history.replaceState({}, document.title, '?' + jQuery.param(params));
+      render();
+    });
   }
 }
 
 function resetFilters () {
   $("#dynamicFilters select").find("option[value='']").attr('selected', true);
   history.replaceState({}, document.title, '?');
-  fetchFilters();
+  getParams();
   render();
 }
 
@@ -111,14 +107,10 @@ function loadTable() {
 
   Tabletop.init({
     key: '1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
-    callback: function(data, tabletop) {
-      console.log('done!');
+    callback: function (data, tabletop) {
 
-      cardData = data; // save these in case we need them later (ie re-running rendering)
       sheets = tabletop.sheets();
-
-      // assert load worked
-      for (var page in templates) {
+      for (var page in templates) { // validate loaded data
         if (!sheets[page]) {
           return alert('Failed to sheet: ' + page);
         }
@@ -129,9 +121,11 @@ function loadTable() {
         selectOptions.template.push(page);
       }
 
+      cardData = data;
       render();
-      makeFilters(); // TODO why does this have to be called after render?
+      buildFilters(); // TODO why does this have to be called after render?
           // Any data manipulation / analysis should be done in loadTable, or sub-function
+
       $("#loading").remove();
     }, simpleSheet: true
   });
@@ -145,10 +139,33 @@ function loadTable() {
 
 var cardData, tabletop, sheets;
 
-function render() {
+function render () {
 
-  $(".page").remove(); // clear render area
-  fetchFilters();
+  $(".page").remove();
+  getParams();
+
+  $("body").removeClass();
+  switch (filters.export) {
+    case 'DriveThruCards':
+      $("body").addClass("DriveThruCards");
+    break;
+    case 'Print-n-Play':
+      $("body").addClass("printandplay");
+    break;
+    case 'Hide-Backs':
+      $("body").addClass("hideBacks");
+    break;
+    case 'AdMagic-Fronts':
+      $("body").addClass("hideBacks");
+    break;
+    case 'AdMagic-Backs':
+      $("body").addClass("hideFronts");
+    break;
+  }
+
+  if (filters.singlePage) {
+    $("body").addClass("singlePage");
+  }
 
   var sorted = [];
 
@@ -161,11 +178,11 @@ function render() {
 
   for (var i = 0, l = sorted.length; i < l; i++) {
     var sheet = sorted[i];
-    makeCards(sheet.name, sheet.elements);
+    buildCards(sheet.name, sheet.elements);
   }
 }
 
-function makeCards (template, cards) {
+function buildCards (template, cards) {
 
   var templateCount = 0;
   var cardCount = 0;
@@ -219,29 +236,124 @@ function makeCards (template, cards) {
 
   console.log(templateCount + " " + template + " cards, " + cardCount + " total");
   SVGInjector(document.querySelectorAll('img.svg'), {});
-}
 
-function renderCardFront (template, card) {
-  card = cleanCardData(template, card);
-  if (template === "Helper" && card.Face === "back") {
-    return this.Expedition.templates[template + '-back'](card);
-  } else {
-    return this.Expedition.templates[template](card);
+  function renderCardFront (template, card) {
+    card = cleanCardData(template, card);
+    if (template === "Helper" && card.Face === "back") {
+      return this.Expedition.templates[template + '-back'](card);
+    } else {
+      return this.Expedition.templates[template](card);
+    }
+  }
+
+  function renderCardBack (template, card) {
+    card = cleanCardData(template, card);
+    if (template === "Helper" && card.Face === "back") {
+      return this.Expedition.templates[template](card);
+    } else {
+      return this.Expedition.templates[template + '-back'](card);
+    }
+  }
+
+  function cleanCardData (template_id, card) {
+
+    card.cardType = template_id;
+
+    if (!card.rendered) {
+      if (card.text) { // bold ability STATEMENTS:
+        card.text = card.text.replace(/(.*:)/g, boldCapture);
+      }
+      if (card.abilitytext) { // bold ability STATEMENTS:
+        card.abilitytext = card.abilitytext.replace(/(.*:)/g, boldCapture);
+      }
+      if (card.roll) { // bold loot STATEMENTS:
+        card.roll = card.roll.replace(/(.*:)/g, boldCapture);
+      }
+
+      Object.keys(card).forEach(function parseProperties (property) {
+
+        if (card[property] === '-') { // remove '-' proprties
+          card[property] = '';
+        }
+        else {
+          // replace CSV line breaks with BR's - padded if: above and below OR's, below end of </strong>, above start of <strong>
+          // otherwise just a normal BR
+          card[property] = card[property].replace(/(\n(<strong>))|((<\/strong>)\n)|(\n(OR)\n)|(\n)/mg, function (whole, capture, match) {
+            if (whole.indexOf('<strong>') !== -1) {
+              return '<br class="padded"/>' + whole;
+            }
+            else if (whole.indexOf('</strong>') !== -1) {
+              return whole + '<br class="padded"/>';
+            }
+            else if (whole.indexOf('OR') !== -1) {
+              return '<br class="padded"/>' + whole + '<br class="padded"/>';
+            }
+            else {
+              return whole + '<br />';
+            }
+          });
+
+
+
+          // Expand &macro's
+          card[property] = card[property].replace(/&[a-zA-Z0-9;]*/mg, function replacer (match) {
+            switch (match.substring(1)) {
+              case 'crithit':
+                return '#roll <span class="symbol">&ge;</span> 20';
+              break;
+              case 'hit':
+                return '#roll <span class="symbol">&ge;</span> $risk';
+              break;
+              case 'miss':
+                return '#roll <span class="symbol">&lt;</span> $risk';
+              break;
+              case 'critmiss':
+                return '#roll <span class="symbol">&le;</span> 1';
+              break;
+              // >, <, etc
+              case 'geq;': return '≥'; break;
+              case 'lt;': return '<'; break;
+              case 'leq;': return '≤'; break;
+              case 'gt;': return '>'; break;
+            }
+            console.log("BROKEN MACRO: " + match.substring(1));
+            return 'BROKEN MACRO';
+          });
+
+          // Replace #ability with the icon image
+          card[property] = card[property].replace(/#\w*/mg, function replacer (match) {
+            var src = "/img/icon/"+match.substring(1);
+            src += '_small.svg';
+
+            return '<img class="svg inline_icon" src="' + src + '"></img>';
+          });
+
+          // Replace $var with variable value
+          card[property] = card[property].replace(/\$\w*/mg, function replacer (match) {
+            return card[match.substring(1)];
+          });
+        }
+      });
+
+      if (card.Effect) { // put ORs in divs
+        card.Effect = card.Effect.replace(/OR<br \/>/g, function (whole, capture, match) {
+          return '<div class="or"><span>OR</span></div>';
+        });
+      }
+      card.rendered = true;
+    }
+
+    return card;
+  }
+
+  function boldCapture (whole, capture, match) {
+    return '<strong>' + capture + '</strong>';
   }
 }
 
-function renderCardBack (template, card) {
-  card = cleanCardData(template, card);
-  if (template === "Helper" && card.Face === "back") {
-    return this.Expedition.templates[template](card);
-  } else {
-    return this.Expedition.templates[template + '-back'](card);
-  }
-}
 
 
-
-/* ===== HELPERS, PARTIALS, TEMPLATES, HELPERS ===== */
+/* ===== HANDLEBARS HELPERS, PARTIALS ===== */
 
 Swag.registerHelpers(); // lots of handlebars helpers: https://github.com/elving/swag
 
@@ -270,7 +382,7 @@ Handlebars.registerHelper("version", function (version) {
 });
 
 Handlebars.registerHelper("camelCase", function (str) {
-  return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
+  return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (letter, index) {
     return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
   }).replace(/\s+/g, '').replace(/'/, '');
 });
@@ -374,111 +486,4 @@ Handlebars.registerHelper('lootCounter', function (count) {
 
 for (var key in this.Expedition.partials) {
   Handlebars.registerPartial(key, this.Expedition.partials[key]);
-}
-
-// register card templates
-
-var templates = { // will be rendered into UI in this order
-  Helper: this.Expedition.templates.Helper,
-  Adventurer: this.Expedition.templates.Adventurer,
-  Ability: this.Expedition.templates.Ability,
-  Encounter: this.Expedition.templates.Encounter,
-  Loot: this.Expedition.templates.Loot,
-};
-
-// Helper functions
-
-function cleanCardData(template_id, card) {
-
-  card.cardType = template_id;
-
-  if (!card.rendered) {
-    if (card.text) { // bold ability STATEMENTS:
-      card.text = card.text.replace(/(.*:)/g, boldCapture);
-    }
-    if (card.abilitytext) { // bold ability STATEMENTS:
-      card.abilitytext = card.abilitytext.replace(/(.*:)/g, boldCapture);
-    }
-    if (card.roll) { // bold loot STATEMENTS:
-      card.roll = card.roll.replace(/(.*:)/g, boldCapture);
-    }
-
-    Object.keys(card).forEach(function parseProperties (property) {
-
-      if (card[property] === '-') { // remove '-' proprties
-        card[property] = '';
-      }
-      else {
-        // replace CSV line breaks with BR's - padded if: above and below OR's, below end of </strong>, above start of <strong>
-        // otherwise just a normal BR
-        card[property] = card[property].replace(/(\n(<strong>))|((<\/strong>)\n)|(\n(OR)\n)|(\n)/mg, function (whole, capture, match) {
-          if (whole.indexOf('<strong>') !== -1) {
-            return '<br class="padded"/>' + whole;
-          }
-          else if (whole.indexOf('</strong>') !== -1) {
-            return whole + '<br class="padded"/>';
-          }
-          else if (whole.indexOf('OR') !== -1) {
-            return '<br class="padded"/>' + whole + '<br class="padded"/>';
-          }
-          else {
-            return whole + '<br />';
-          }
-        });
-
-
-
-        // Expand &macro's
-        card[property] = card[property].replace(/&[a-zA-Z0-9;]*/mg, function replacer (match) {
-          switch (match.substring(1)) {
-            case 'crithit':
-              return '#roll <span class="symbol">&ge;</span> 20';
-            break;
-            case 'hit':
-              return '#roll <span class="symbol">&ge;</span> $risk';
-            break;
-            case 'miss':
-              return '#roll <span class="symbol">&lt;</span> $risk';
-            break;
-            case 'critmiss':
-              return '#roll <span class="symbol">&le;</span> 1';
-            break;
-            // >, <, etc
-            case 'geq;': return '≥'; break;
-            case 'lt;': return '<'; break;
-            case 'leq;': return '≤'; break;
-            case 'gt;': return '>'; break;
-          }
-          console.log("BROKEN MACRO: " + match.substring(1));
-          return 'BROKEN MACRO';
-        });
-
-        // Replace #ability with the icon image
-        card[property] = card[property].replace(/#\w*/mg, function replacer (match) {
-          var src = "/img/icon/"+match.substring(1);
-          src += '_small.svg';
-
-          return '<img class="svg inline_icon" src="' + src + '"></img>';
-        });
-
-        // Replace $var with variable value
-        card[property] = card[property].replace(/\$\w*/mg, function replacer (match) {
-          return card[match.substring(1)];
-        });
-      }
-    });
-
-    if (card.Effect) { // put ORs in divs
-      card.Effect = card.Effect.replace(/OR<br \/>/g, function (whole, capture, match) {
-        return '<div class="or"><span>OR</span></div>';
-      });
-    }
-    card.rendered = true;
-  }
-
-  return card;
-}
-
-function boldCapture (whole, capture, match) {
-  return '<strong>' + capture + '</strong>';
 }
