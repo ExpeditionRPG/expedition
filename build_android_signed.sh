@@ -1,11 +1,12 @@
 #!/bin/bash
+# Requires that android-release-key.keystore be in the directory above
 # Tutorial:
 # http://developer.android.com/tools/publishing/app-signing.html#signing-manually
 
 # To generate a new key:
 # keytool -genkey -v -keystore android-release-key.keystore -alias expedition_android -keyalg RSA -keysize 2048 -validity 10000
 
-rm expedition.apk
+rm platforms/android/build/outputs/apk/expedition.apk
 
 # Building the release package
 cordova build --release android
@@ -17,4 +18,4 @@ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../android-rele
 jarsigner -verify -verbose -certs platforms/android/build/outputs/apk/android-release-unsigned.apk
 
 # Aligning memory blocks (takes less RAM on app)
-../zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk expedition.apk
+../zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk platforms/android/build/outputs/apk/expedition.apk
