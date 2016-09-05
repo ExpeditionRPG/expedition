@@ -179,14 +179,16 @@
             this.fire('home');
             break;
           case "feedback":
+            url = 'http://www.expeditiongame.com/contact/?utm_source=webapp&utm_medium=app';
             if (window.platform === 'android' || window.platform === 'ios') {
-              window.open('http://www.expeditiongame.com/contact/', '_system');
+              window.open(url, '_system');
             } else {
-              window.location='http://www.expeditiongame.com/contact/';
+              window.location = url;
             }
             break;
           default:
             throw new Error("Unknown menu option");
+            break;
         }
       },
       _return: function() {
