@@ -121,7 +121,7 @@ gulp.task('copy', function () {
                            'app/elements/**/*.js'])
     .pipe(gulp.dest('www/elements'));
 
-  var quests = gulp.src(['app/quests/*'])
+  var quests = gulp.src(['app/quests/**/*'])
     .pipe(gulp.dest('www/quests'));
 
   var scripts = gulp.src(['app/scripts/*'])
@@ -139,6 +139,14 @@ gulp.task('copy', function () {
 
   return merge(app, bower, elements, scripts, quests, vulcanized, swBootstrap, swToolbox)
     .pipe($.size({title: 'copy'}));
+});
+
+// Render globals.json into globals-behavior.html to eliminate need for synchronous network call
+gulp.task('renderGlobals', function () {
+  return gulp.src('app/elements/base/globals-behavior.html')
+    .pipe($.replace('dataGlobal = {};', 'dataGlobal = ' + fs.readFileSync('./app/scripts/globals.json')))
+    .pipe(gulp.dest('.tmp/elements/base'))
+    .pipe(gulp.dest('www/elements/base'));
 });
 
 // Copy web fonts to www
@@ -215,7 +223,7 @@ gulp.task('clean', function (cb) {
 });
 
 // Watch files for changes & reload
-gulp.task('serve', ['styles', 'images'], function () {
+gulp.task('serve', ['styles', 'renderGlobals', 'images'], function () {
   browserSync({
     port: 5000,
     notify: false,
@@ -275,6 +283,7 @@ gulp.task('default', ['clean'], function (cb) {
   // Uncomment 'cache-config' after 'rename-index' if you are going to use service workers.
   runSequence(
     ['copy', 'styles'],
+    'renderGlobals',
     ['jshint', 'images', 'fonts', 'html'],
     'vulcanize','rename-index', 'remove-old-build-index', // 'cache-config',
     cb);

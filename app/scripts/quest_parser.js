@@ -151,7 +151,7 @@ questParser.prototype._loadEventNode = function(node) {
   // Validate the event node (must not have an event child and must control something)
   var hasControlChild = false;
   this._loopChildren(node, function(tag) {
-    if (tag === 'event' | tag === 'choice') {
+    if (tag === 'event' || tag === 'choice') {
       throw new Error("Node cannot have <event> or <choice> child");
     }
 
