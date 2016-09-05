@@ -22,7 +22,6 @@ if (process.env.NODE_ENV === 'production') {
 var path = require('path');
 var express = require('express');
 var exphbs = require('express-handlebars');
-var proxy = require('proxy-middleware');
 var url = require('url');
 var session = require('express-session');
 var MemcachedStore = require('connect-memcached')(session);
@@ -31,7 +30,6 @@ var config = require('./config');
 var logging = require('./lib/logging');
 var routes = require('./routes');
 var bodyParser = require('body-parser')
-
 
 var app = express();
 
@@ -87,9 +85,10 @@ var setupSession = function(app) {
 var setupRoutes = function(app) {
   app.use(routes);
 
-  if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'prodtest') {
+  if (process.env.NODE_ENV === 'dev') {
     // Set a catch-all route and proxy the request for static assets
     console.log("Proxying static requests");
+    var proxy = require('proxy-middleware');
     app.use('/', proxy(url.parse('http://localhost:8081/')));
   } else {
     // TODO: Serve files from dist/
@@ -125,7 +124,7 @@ if (module === require.main) {
   setupLogging(app);
 
   // Setup webpack-dev-server & proxy requests
-  if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'prodtest') {
+  if (process.env.NODE_ENV === 'dev') {
     var webpack_config = require('./webpack.config');
     var webpack = require('webpack');
     var WebpackDevServer = require('webpack-dev-server');

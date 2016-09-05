@@ -1,8 +1,8 @@
 {
-  "name": "nodejs-getting-started",
+  "name": "expedition-quest-ide",
   "version": "1.0.0",
-  "description": "End to end sample for running Node.JS applications on Google Cloud Platform",
-  "repository": "https://github.com/GoogleCloudPlatform/nodejs-getting-started",
+  "description": "IDE for Expedition Quest Creation",
+  "repository": "https://github.com/Fabricate-IO/expedition-quest-ide",
   "private": true,
   "main": "react.js",
   "scripts": {
@@ -12,21 +12,7 @@
     "test": "mocha test/index.js -t 30000",
     "init-cloudsql": "node books/model-cloudsql.js"
   },
-  "author": "Google Inc.",
-  "contributors": [
-    {
-      "name": "Jon Wayne Parrott",
-      "email": "jonwayne@google.com"
-    },
-    {
-      "name": "Jonathan Simon",
-      "email": "jbsimon@google.com"
-    },
-    {
-      "name": "Jason Dobry",
-      "email": "jdobry@google.com"
-    }
-  ],
+  "author": "Fabricate.IO",
   "license": "Apache Version 2.0",
   "semistandard": {
     "globals": [
@@ -59,6 +45,7 @@
     "nconf": "^0.8.4",
     "passport": "^0.3.2",
     "passport-google-oauth20": "^1.0.0",
+    "proxy-middleware": "^0.15.0",
     "react": "^15.3.1",
     "react-ace": "^3.5.0",
     "react-dom": "^15.3.1",
@@ -72,6 +59,7 @@
     "time-ago": "^0.1.0",
     "to-markdown": "^3.0.1",
     "warning": "^3.0.0",
+    "webpack": "^1.13.2",
     "winston": "^2.2.0"
   },
   "devDependencies": {
