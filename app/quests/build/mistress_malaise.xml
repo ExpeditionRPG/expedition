@@ -11,6 +11,32 @@ max-time-minutes="60">
       friend who lives in Brustwick and knows much about goings-on in the town
       and the surrounding area.</p>
   </roleplay>
+  <combat icon="undead">
+    <e>Lich</e>
+    <e>Zombie</e>
+    <e>Skeleton Swordsman</e>
+    <event on="win">
+      <roleplay title="The Phylactery" icon="undead">
+        <p>As pell gives his last, dying gasp, the phylactery shatters under a final
+          blow. A shockwave from the box knocks your party to the ground, unconscious.</p>
+        <p>When you manage to open your eyes once more, light peeks through the windows
+          of Pell&apos;s house. You emerge to see a beautiful, natural sunrise. No
+          mysterious fog or moldy smells remain.</p>
+        <p>The townsfolk of Brustwick begin to emerge from their homes - they see
+          the change, learn of Pell, and a celebration soon erupts.</p>
+        <p>You participate in the festivities for a while, then begin the long trek
+          back home. You can&apos;t wait to tell the Order about your victory!</p>
+      </roleplay>
+      <trigger>end</trigger>
+    </event>
+    <event on="lose">
+      <roleplay title="Defeated" id="pelldefeat2" icon="undead">
+        <p>Pell has defeated you - he quickly reanimates your bodies, to become new
+          fodder for the next adventurer looking to slay the lich of Brustwick.</p>
+      </roleplay>
+      <trigger>end</trigger>
+    </event>
+  </combat>
   <roleplay title="Arrival" icon="adventurer">
     <p>After several days&apos; journey, you make it to the outskirts of the
       town just as the sun begins to set.</p>
