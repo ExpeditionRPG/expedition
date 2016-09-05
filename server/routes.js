@@ -18,6 +18,7 @@ router.use(oauth2.template);
 var QUESTS_FETCH_COUNT = 100;
 
 router.get('/', function(req, res) {
+  console.log(res.locals);
   res.render('home', {
     // Pass current state to client side.
     // res.locals is set by oauth2 and includes user display info and login/out links.
@@ -29,8 +30,9 @@ router.get('/', function(req, res) {
 
 router.get('/quests/:token', function(req, res) {
   var token = req.params.token;
+  console.log(res.locals);
   if (!res.locals.profile) {
-    res.send(JSON.stringify([]));
+    return res.send(JSON.stringify([]));
   }
 
   model.getOwnedQuests(res.locals.profile.id, QUESTS_FETCH_COUNT, req.params.token, function(err, quests, nextToken) {
@@ -106,8 +108,11 @@ router.post('/quest/:quest', function(req, res) {
 
 router.post('/delete/:quest', function(req, res) {
   if (!res.locals.profile) {
-    res.status(500).end("You are not signed in. Please sign in to delete this quest.");
-    return;
+    return res.status(500).end("You are not signed in. Please sign in to delete this quest.");
+  }
+
+  if (!req.params.quest) {
+    return res.status(500).end("No quest ID given for deletion.");
   }
 
   try {

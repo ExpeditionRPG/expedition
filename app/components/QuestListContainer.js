@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import {questAction, LOAD_QUEST, toggleDrawer} from './actions'
+import {questAction, LOAD_QUEST, setDrawer} from './actions'
 import QuestList from './QuestList'
 import {PropTypes} from 'react';
 
@@ -13,6 +13,10 @@ QuestIDE.contextTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    logged_in: Boolean(state.user.profile),
+    id: state.editor.id,
+    xml: state.editor.xml,
+    dirty: state.dirty,
     open: state.drawer.open,
     quests: state.drawer.quests,
     palette: {alternateTextColor: "#FFF", primary3Color: "black"}
@@ -22,14 +26,14 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onQuestSelect: (id) => {
-      dispatch(questAction(LOAD_QUEST, id));
+    onQuestSelect: (id, dirty, xml) => {
+      dispatch(questAction(LOAD_QUEST, false, id, dirty, xml));
     },
-    onMenuSelect: (evt, action) => {
-      dispatch(questAction(action));
+    onMenuSelect: (action, id, dirty, xml) => {
+      dispatch(questAction(action, false, id, dirty, xml));
     },
-    onDrawerRequestChange: (drawer_state) => {
-      dispatch(toggleDrawer());
+    onDrawerRequestChange: () => {
+      dispatch(setDrawer(false));
     }
   };
 }

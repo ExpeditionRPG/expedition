@@ -46,9 +46,9 @@ const styles = {
   }
 }
 
-const QuestList = ({open, quests, onQuestSelect, onMenuSelect, onDrawerRequestChange, palette}) => {
+const QuestList = ({logged_in, id, xml, dirty, open, quests, onQuestSelect, onMenuSelect, onDrawerRequestChange, palette}) => {
   var body;
-  if (quests === null) {
+  if (quests === null || quests === undefined) {
     body = <CircularProgress />;
   } else if (quests.length === 0) {
     body = <div>No saved quests.</div>
@@ -67,8 +67,8 @@ const QuestList = ({open, quests, onQuestSelect, onMenuSelect, onDrawerRequestCh
       );
     }
     body =
-      <SelectableList onChange={onQuestSelect.bind(this)}>
-        <Subheader>{quests.length + " Saved Quests"}</Subheader>
+      <SelectableList onChange={(event, id) => onQuestSelect(id, dirty, xml)}>
+        <Subheader>{quests.length + " Saved Quest" + ((quests.length > 1) ? "s" : "")}</Subheader>
         {menu}
       </SelectableList>;
   }
@@ -82,12 +82,12 @@ const QuestList = ({open, quests, onQuestSelect, onMenuSelect, onDrawerRequestCh
         </ToolbarGroup>
       </Toolbar>
       <Subheader>Edit</Subheader>
-      <Menu onChange={onMenuSelect}>
+      <Menu onChange={(event, action) => onMenuSelect(action, id, dirty, xml)}>
         <MenuItem value={NEW_QUEST} primaryText="New" />
-        <MenuItem value={SAVE_QUEST} primaryText="Save" />
-        <MenuItem value={PUBLISH_QUEST} primaryText="Publish" />
-        <MenuItem value={DOWNLOAD_QUEST} primaryText="Download" />
-        <MenuItem value={DELETE_QUEST} primaryText="Delete" />
+        <MenuItem value={SAVE_QUEST} primaryText="Save" disabled={!logged_in} />
+        <MenuItem value={PUBLISH_QUEST} primaryText="Publish" disabled={!logged_in} />
+        <MenuItem value={DOWNLOAD_QUEST} primaryText="Download" disabled={!logged_in} />
+        <MenuItem value={DELETE_QUEST} primaryText="Delete" disabled={!logged_in} />
       </Menu>
       <Divider/>
       {body}

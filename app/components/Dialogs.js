@@ -27,17 +27,17 @@ class YesNoDialog extends React.Component {
       <RaisedButton
         label="Yes"
         primary={true}
-        onTouchTap={() => this.props.onRequestClose(true)}
+        onTouchTap={() => this.props.onConfirm(true)}
       />,
       <RaisedButton
         label="No"
         primary={true}
-        onTouchTap={() => this.props.onRequestClose(false)}
+        onTouchTap={() => this.props.onConfirm(false)}
       />,
       <RaisedButton
         label="Cancel"
         primary={true}
-        onTouchTap={() => this.props.onRequestClose(null)}
+        onTouchTap={this.props.onRequestClose}
       />
     ];
     return (
@@ -150,7 +150,7 @@ class UserDialog extends React.Component {
   }
 }
 
-const Dialogs = ({open, user_name, short_url, errors, onRequestClose, onConfirm, onSignIn, onSignOut}) => {
+const Dialogs = ({id, xml, open, user_name, short_url, errors, onRequestClose, onConfirmSave, onSignIn, onSignOut}) => {
   return (
     <span>
       <UserDialog
@@ -162,12 +162,12 @@ const Dialogs = ({open, user_name, short_url, errors, onRequestClose, onConfirm,
       />
       <ConfirmNewQuestDialog
         open={open[DialogIDs.CONFIRM_NEW_QUEST]}
-        onConfirm={() => onConfirm(DialogIDs.CONFIRM_NEW_QUEST)}
+        onConfirm={(choice) => onConfirmSave(DialogIDs.CONFIRM_NEW_QUEST, choice, id, xml)}
         onRequestClose={() => onRequestClose(DialogIDs.CONFIRM_NEW_QUEST)}
       />
       <ConfirmLoadQuestDialog
         open={open[DialogIDs.CONFIRM_LOAD_QUEST]}
-        onConfirm={() => onConfirm(DialogIDs.CONFIRM_LOAD_QUEST)}
+        onConfirm={(choice) => onConfirmSave(DialogIDs.CONFIRM_LOAD_QUEST, choice, id, xml)}
         onRequestClose={() => onRequestClose(DialogIDs.CONFIRM_LOAD_QUEST)}
       />
       <PublishQuestDialog

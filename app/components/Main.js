@@ -4,6 +4,7 @@ import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
 import IconMenu from 'material-ui/IconMenu';
+import thunkMiddleware from 'redux-thunk';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { Provider } from 'react-redux';
 
@@ -14,18 +15,20 @@ import QuestIDEContainer from './QuestIDEContainer';
 import DialogsContainer from './DialogsContainer';
 import {UserDialog, ConfirmNewQuestDialog, PublishQuestDialog, ConfirmLoadQuestDialog} from './Dialogs';
 
-import { createStore } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import questIDEApp from './reducers'
 
 // Initialize the global redux store
-let auth = JSON.parse(document.getElementById("initial-state").textContent);
+var initialState = document.getElementById("initial-state");
+let auth = (initialState) ? JSON.parse(initialState.textContent) : {};
 let store = createStore(questIDEApp, {
-  user: {
-    profile: auth.profile,
-    login: auth.login,
-    logout: auth.logout
-  }
-}, window.devToolsExtension && window.devToolsExtension()); //, DevTools.instrument());
+    user: {
+      profile: auth.profile,
+      login: auth.login,
+      logout: auth.logout
+    }
+  },
+  compose(applyMiddleware(thunkMiddleware), window.devToolsExtension && window.devToolsExtension()));
 
 if (module.hot) {
   module.hot.accept('./reducers', () =>

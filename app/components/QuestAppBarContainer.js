@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import {setDialog, DialogIDs, toggleDrawer} from './actions'
+import {setDialog, DialogIDs, setDrawer} from './actions'
 import QuestAppBar from './QuestAppBar'
 
 const mapStateToProps = (state, ownProps) => {
@@ -11,7 +11,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onDrawerToggle: () => {
-      dispatch(toggleDrawer());
+      dispatch(setDrawer(true));
     },
     onUserDialogRequest: () => {
       dispatch(setDialog(DialogIDs.USER, true));
