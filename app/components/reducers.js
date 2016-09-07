@@ -24,20 +24,12 @@ import {
   PUBLISH_QUEST,
   SAVE_QUEST,
   DialogIDs } from './actions'
-import toXML from '../../translation/to_xml'
+import {toXML} from '../../translation/to_xml'
+import {toMarkdown} from '../../translation/to_markdown'
 import {pushError, consumeErrors} from './error'
+import {getBuffer, setBuffer, xml_filler} from './buffer'
 
-const xml_filler = '<quest title="Quest Title" author="Your Name" email="email@example.com" summary="Quest summary" url="yoursite.com" recommended-min-players="2" recommended-max-players="4" min-time-minutes="20" max-time-minutes="40">\n  <roleplay title="Roleplay Title">\n    <p>roleplay text</p>\n  </roleplay>\n  <trigger>end</trigger>\n</quest>';
 const editor_initial_state = {xml: xml_filler, view: CodeViews.XML, id: null, url: null, last_save: null};
-
-// Global text buffer for render-less updates of editor.
-var buffer;
-export function getBuffer() {
-  return buffer;
-}
-export function setBuffer(text) {
-  buffer = text;
-}
 
 function editor(state = editor_initial_state, action) {
   switch (action.type) {
@@ -45,25 +37,20 @@ function editor(state = editor_initial_state, action) {
       try {
         if (action.currview === CodeViews.MARKDOWN) {
           var converted = toXML(action.currcode);
+          setBuffer(converted);
           action.cb();
           return {xml: converted, view: action.nextview};
-        } else {
+        } else if (action.currview === CodeViews.XML) {
+          // Going to markdown view
+          var converted = toMarkdown(action.currcode);
+          setBuffer(converted);
+          action.cb();
           return {xml: action.currcode, view: action.nextview};
         }
       } catch (e) {
         pushError(e);
         return {xml: (action.currview === CodeViews.XML) ? action.currcode : state.xml, view: state.view};
       };
-    case SET_DRAWER:
-      // When drawer is opened, sync state so we can properly save
-      if (!action.is_open) {
-        return state;
-      }
-      console.log('sync');
-      return {...state, xml: (state.view === CodeViews.MARKDOWN) ? toXML(getBuffer()) : getBuffer()};
-    case SET_DIRTY:
-      console.log(getBuffer());
-      return {...state, xml: (state.view === CodeViews.MARKDOWN) ? toXML(getBuffer()) : getBuffer()};
     case RECEIVE_QUEST_LOAD:
       return {
         id: action.id,
@@ -73,6 +60,7 @@ function editor(state = editor_initial_state, action) {
       };
     case NEW_QUEST:
     case RECEIVE_QUEST_DELETE:
+      setBuffer(xml_filler);
       return editor_initial_state;
     case DOWNLOAD_QUEST:
       if (!state.url) {

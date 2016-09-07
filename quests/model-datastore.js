@@ -29,7 +29,7 @@ var quest_kind = 'Quest';
 
 function getRawXMLUrl(user, quest) {
   if (config.get('NODE_ENV') === 'production') {
-    return "http://expedition-quest-ide/raw/" + user + "/" + quest;
+    return "http://expedition-quest-ide.appspot.com/raw/" + user + "/" + quest;
   } else {
     return "http://localhost:8080/raw/" + user + "/" + quest;
   }

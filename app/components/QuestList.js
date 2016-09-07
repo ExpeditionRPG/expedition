@@ -46,7 +46,7 @@ const styles = {
   }
 }
 
-const QuestList = ({logged_in, id, xml, dirty, open, quests, onQuestSelect, onMenuSelect, onDrawerRequestChange, palette}) => {
+const QuestList = ({logged_in, id, view, dirty, open, quests, onQuestSelect, onMenuSelect, onDrawerRequestChange, palette}) => {
   var body;
   if (quests === null || quests === undefined) {
     body = <CircularProgress />;
@@ -67,7 +67,7 @@ const QuestList = ({logged_in, id, xml, dirty, open, quests, onQuestSelect, onMe
       );
     }
     body =
-      <SelectableList onChange={(event, id) => onQuestSelect(id, dirty, xml)}>
+      <SelectableList onChange={(event, id) => onQuestSelect(id, dirty, view)}>
         <Subheader>{quests.length + " Saved Quest" + ((quests.length > 1) ? "s" : "")}</Subheader>
         {menu}
       </SelectableList>;
@@ -82,7 +82,7 @@ const QuestList = ({logged_in, id, xml, dirty, open, quests, onQuestSelect, onMe
         </ToolbarGroup>
       </Toolbar>
       <Subheader>Edit</Subheader>
-      <Menu onChange={(event, action) => onMenuSelect(action, id, dirty, xml)}>
+      <Menu onChange={(event, action) => onMenuSelect(action, id, dirty, view)}>
         <MenuItem value={NEW_QUEST} primaryText="New" />
         <MenuItem value={SAVE_QUEST} primaryText="Save" disabled={!logged_in} />
         <MenuItem value={PUBLISH_QUEST} primaryText="Publish" disabled={!logged_in} />

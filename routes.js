@@ -60,6 +60,8 @@ router.get('/raw/:user/:quest', function(req, res) {
     if (err || entity.published !== true) {
       return res.status(500).end(err);
     }
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Content-Type', 'text/xml');
     res.header('Location', entity.url);
     res.status(301).end();
   });

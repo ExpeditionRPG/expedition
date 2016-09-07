@@ -1,27 +1,11 @@
 import { connect } from 'react-redux'
 import {setCodeView, setDirty, CodeViews} from './actions'
 import {pushError} from './error'
-import {getBuffer, setBuffer} from './reducers'
+import {getBuffer, setBuffer} from './buffer'
 import QuestIDE from './QuestIDE'
 import toMarkdown from '../../translation/to_markdown'
 
-function getVisibleCode(xml = "", tab) {
-  switch (tab) {
-    case CodeViews.XML:
-      return xml;
-    case CodeViews.MARKDOWN:
-      try {
-        return toMarkdown(xml);
-      } catch (e) {
-        pushError(e);
-      }
-    default:
-      return xml;
-  }
-}
-
 const mapStateToProps = (state, ownProps) => {
-  setBuffer(getVisibleCode(state.editor.xml, state.editor.view));
   return {
     text: getBuffer(),
     tab: state.editor.view,

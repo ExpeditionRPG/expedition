@@ -1,4 +1,6 @@
-import {pushHTTPError} from './error'
+import {pushError, pushHTTPError} from './error'
+import {getBuffer} from './buffer'
+import {toXML} from '../../translation/to_xml'
 
 export const SET_CODE_VIEW = 'SET_CODE_VIEW';
 export const SET_DIRTY = 'SET_DIRTY';
@@ -101,9 +103,22 @@ function loadQuest(dispatch, id) {
 
 export const REQUEST_QUEST_SAVE = 'REQUEST_QUEST_SAVE';
 export const RECEIVE_QUEST_SAVE = 'RECEIVE_QUEST_SAVE';
-export function saveQuest(dispatch, id, xml, cb) {
+export function saveQuest(dispatch, id, view, cb) {
+  // Pull from the text buffer for maximum freshness.
+  var data = getBuffer();
+  if (view === CodeViews.MARKDOWN) {
+    var err = null;
+    try {
+      data = toXML(data);
+    } catch (e) {
+      pushError(e);
+      dispatch(setDialog(DialogIDs.ERROR, true));
+      return;
+    }
+  }
+
   dispatch({type: REQUEST_QUEST_SAVE, id});
-  return $.post("/quest/" + id, xml, function(result_quest_id) {
+  return $.post("/quest/" + id, data, function(result_quest_id) {
     dispatch({type: RECEIVE_QUEST_SAVE, id: result_quest_id});
     if (cb) {
       cb(result_quest_id);
@@ -130,7 +145,7 @@ function publishQuest(dispatch, id) {
   }).fail(pushHTTPError);
 }
 
-export function questAction(action, force, id, dirty, xml) {
+export function questAction(action, force, id, dirty, view) {
   return dispatch => {
     // Show confirmation dialogs for certain actions if
     // we have a dirty editor.
@@ -151,7 +166,7 @@ export function questAction(action, force, id, dirty, xml) {
       case LOAD_QUEST:
         return loadQuest(dispatch, id);
       case SAVE_QUEST:
-        return saveQuest(dispatch, id, xml);
+        return saveQuest(dispatch, id, view);
       case DELETE_QUEST:
         return deleteQuest(dispatch, id);
       case PUBLISH_QUEST:

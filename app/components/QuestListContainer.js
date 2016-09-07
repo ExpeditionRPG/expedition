@@ -15,7 +15,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     logged_in: Boolean(state.user.profile),
     id: state.editor.id,
-    xml: state.editor.xml,
+    view: state.editor.view,
     dirty: state.dirty,
     open: state.drawer.open,
     quests: state.drawer.quests,
@@ -26,11 +26,11 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onQuestSelect: (id, dirty, xml) => {
-      dispatch(questAction(LOAD_QUEST, false, id, dirty, xml));
+    onQuestSelect: (id, dirty, view) => {
+      dispatch(questAction(LOAD_QUEST, false, id, dirty, view));
     },
-    onMenuSelect: (action, id, dirty, xml) => {
-      dispatch(questAction(action, false, id, dirty, xml));
+    onMenuSelect: (action, id, dirty, view) => {
+      dispatch(questAction(action, false, id, dirty, view));
     },
     onDrawerRequestChange: () => {
       dispatch(setDrawer(false));

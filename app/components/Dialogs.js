@@ -2,6 +2,8 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {DialogIDs} from './actions';
+import {MarkdownParserError} from '../../translation/to_xml'
+import {XMLParserError} from '../../translation/to_markdown'
 
 // TODO: <MenuItem value="help" primaryText="Help" />
 /*
@@ -89,12 +91,23 @@ class ErrorDialog extends React.Component {
 
     var errors = [];
     for (var i = 0; i < this.props.errors.length; i++) {
-      errors.push(<div key={i}>{this.props.errors[i].toString()}</div>);
+      var error = this.props.errors[i];
+      console.log(error.stack);
+
+      if (error instanceof MarkdownParserError || error instanceof XMLParserError) {
+        errors.push(<div key={i}>
+          <strong>{error.name}: "{error.message}"</strong>
+          <div><strong>Line:</strong> {error.line}</div>
+          <div><strong>Usage:</strong> {error.usage}</div>
+        </div>);
+        continue;
+      }
+      errors.push(<div key={i}>{error.toString()}</div>);
     }
 
     return (
       <Dialog
-        title="ERROR"
+        title="Errors Occurred"
         actions={<RaisedButton
           label="OK"
           primary={true}

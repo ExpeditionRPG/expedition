@@ -17,6 +17,15 @@ var INSTRUCTION_ELEM = "blockquote";
 // ----------------------------------------------------------
 // Parser helpers
 
+function MarkdownParserError(message, html, usage) {
+    this.name = 'MarkdownParserError';
+    this.message = message;
+    this.stack = (new Error()).stack;
+    this.line = htmlToMarkdown(html)
+    this.usage = usage;
+}
+MarkdownParserError.prototype = new Error;
+
 var parseHeader = function(node) {
   if (node.is(TEXT_ELEM) && node.contents().eq(0).is(HEADER_ELEM)) {
     return node.contents().eq(0).text().trim();
@@ -30,14 +39,26 @@ var parseTrigger = function(node) {
 };
 
 // Parse the JSON string directly after a header element.
+var PARSE_EXAMPLE_SYNTAX = "_roleplay title_ {\"id\": \"string\", \"icon\": \"adventurer\"}";
 var parseAttributes = function(node) {
-  if (parseHeader(node) && node.contents().eq(1).text()) {
-    try {
-      return JSON.parse(node.contents().eq(1).text());
-    } catch (e) {
-      throw new Error("Failed to get attributes from line: \"" + htmlToMarkdown(node.html()) + "\"");
-    }
-  };
+  if (!parseHeader(node) || node.contents().length === 1) {
+    return;
+  }
+
+  if (node.contents().length !== 2) {
+    throw new MarkdownParserError("Too many elements", node.html(), PARSE_EXAMPLE_SYNTAX);
+  }
+
+  var attribute_text = node.contents().eq(1).text();
+  if (attribute_text.trim() === "") {
+    return;
+  }
+
+  try {
+    return JSON.parse(attribute_text);
+  } catch (e) {
+    throw new MarkdownParserError("Failed to get attributes", node.html(), PARSE_EXAMPLE_SYNTAX);
+  }
 };
 
 var firstChildText = function(node) {
@@ -131,7 +152,7 @@ var traverseAndAppend = function(parent, children, context) {
     } else if (isInstruction(node)) {
       result = toInstruction(node, context);
     } else {
-      throw new Error("Could not parse: \"" + htmlToMarkdown(node.html()) + "\" (seen as a " + node.get(0).tagName + " element)");
+      throw new MarkdownParserError("Could not parse line (seen as a " + node.get(0).tagName + " element)", node.html(), "none");
     }
 
     parent.append(result.node);
@@ -280,4 +301,7 @@ var convertQuestMarkdownToXML = function(text, verbose) {
   return prettifyHTML(quest_root.html(), {indent_size: 2});
 };
 
-module.exports = convertQuestMarkdownToXML;
+module.exports = {
+  toXML: convertQuestMarkdownToXML,
+  MarkdownParserError: MarkdownParserError
+};
