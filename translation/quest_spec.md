@@ -102,6 +102,133 @@ one with `on="lose"`, although that may be the same element. No two elements may
 * **b** -- bold
 * **i** -- italic
 
+### Markdown Shorthand
+
+There's a more concise version of the quest syntax in Markdown that readily translates to XML and back.
+
+Example of `<quest>` usage:
+
+**XML**
+```xml
+<quest title="Quest Title" summary="Quest summary" author="Your Name"
+email="email@example.com" url="yoursite.com" recommended-min-players="2"
+recommended-max-players="4" min-time-minutes="20" max-time-minutes="40">
+...
+</quest>
+```
+
+**MARKDOWN**
+```markdown
+# Quest Title
+summary: Quest summary
+author: Your Name
+email: email@example.com
+url: yoursite.com
+recommended-min-players: 2
+recommended-max-players: 4
+min-time-minutes: 20
+max-time-minutes: 40
+
+...
+```
+
+Example of `<roleplay>` and `<choice>` usage:
+
+**XML**
+```xml
+<roleplay title="Title" icon="icon" id="id">
+  <p>roleplay text</p>
+  <choice text="choice 1">
+    <roleplay title="Title" icon="icon">
+      <p>Inner roleplay 1</p>
+    </roleplay>
+  </choice>
+  <choice text="choice 2">
+    <roleplay title="modified title" icon="icon">
+      <p>Inner roleplay 2</p>
+    </roleplay>
+  </choice>
+  <choice text="choice 3" goto="id"></choice>
+</roleplay>
+```
+
+**MARKDOWN**
+```markdown
+_Title_ {"icon":"icon","id":"id"}
+
+roleplay text
+
+*   choice 1
+
+    Inner roleplay 1
+
+*   choice 2
+
+    _modified title_
+
+    Inner roleplay 2
+
+*   choice 3 {"goto":"id"}
+```
+
+Example of `<combat>` usage:
+
+**XML**
+```xml
+<combat icon="beast">
+  <e>Skeleton Archer</e>
+  <e>Giant Spider</e>
+  <event on="win">
+    <roleplay title="you win" icon="beast">
+      <p>Win roleplay</p>
+    </roleplay>
+  </event>
+  <event on="lose">
+    <roleplay title="you lose" icon="beast">
+      <p>Lose roleplay</p>
+    </roleplay>
+  </event>
+</combat>
+```
+
+**MARKDOWN**
+```markdown
+_combat_ {"enemies":["Skeleton Archer","Giant Spider"],"icon":"beast"}
+
+*   on win
+
+    _you win_
+
+    Win roleplay
+
+*   on lose
+
+    _you lose_
+
+    Lose roleplay
+```
+
+Example of `<trigger>` and `<instruction>` usage:
+
+**XML**
+```xml
+<trigger>end</trigger>
+
+<instruction>
+  <p>Hello</p>
+  <p>Second line</p>
+</instruction>
+```
+
+**MARKDOWN**
+```markdown
+**end**
+
+> Instruction
+
+> Second line
+```
+
 Quest BNF
 ---------
 The grammar for quests is still being refined and augmented. What follows is _not_ a formal BNF notation, but rather an attempt to capture general intent.
