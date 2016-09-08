@@ -1,5 +1,8 @@
+var renderArea;
+
 (function init() {
 
+  renderArea = $("#renderArea");
   loadTable();
 })();
 
@@ -141,7 +144,7 @@ var cardData, tabletop, sheets;
 
 function render () {
 
-  $(".page").remove();
+  renderArea.html('');
   getParams();
 
   $("body").removeClass();
@@ -223,8 +226,8 @@ function buildCards (template, cards) {
     if (cardCount % 9 === 0 || filters.singlePage) {
       fronts = $('<div class="page fronts"></div>');
       backs = $('<div class="page backs"></div>');
-      $("body").append(fronts);
-      $("body").append(backs);
+      renderArea.append(fronts);
+      renderArea.append(backs);
     }
 
     fronts.append(renderCardFront(template, card));
@@ -322,7 +325,7 @@ function buildCards (template, cards) {
 
           // Replace #ability with the icon image
           card[property] = card[property].replace(/#\w*/mg, function replacer (match) {
-            var src = "/img/icon/"+match.substring(1);
+            var src = "/themes/official/images/icon/"+match.substring(1);
             src += '_small.svg';
 
             return '<img class="svg inline_icon" src="' + src + '"></img>';

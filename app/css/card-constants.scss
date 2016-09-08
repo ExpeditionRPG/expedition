@@ -1,0 +1,13 @@
+/*
+Some useful card style constants. Can be overwritten in your template's constants.scss,
+just redefine them after the import constants line.
+*/
+
+$card-height: 3.5in;
+$card-width: 2.5in;
+$border: 0.125in; /* interior padding, important things should go inside of this */
+$bleed: 0; /* this becomes .125in when manufacturing */
+$edge: 0.125in;
+
+$text-color: #2e200f;
+$text-color-white: #eee;

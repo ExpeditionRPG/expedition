@@ -1,0 +1,30 @@
+/*
+NOTE: Minion pro font requires typekit snippet
+Green 305744
+Brown 311B00
+Blue (cold) - 311B00
+Red (fire) - A71300
+Yellow (electric) - FFF94B
+Purple (arcane) - 491543
+*/
+
+@import '../../../css/card-constants.scss';
+@import url(https://fonts.googleapis.com/css?family=Cinzel:400,700);
+
+/* TODO change these to size-huge? */
+$huge: 22pt;
+$large: 12pt;
+$base: 10.5pt;
+$small: 9pt;
+
+$padding: 12pt;
+$top-padding: 0.19in;
+$tiny: 2pt;
+$thin: 0.8pt;
+$border-weight: 1.1pt; /* note that this also needs to be changed in banner SVG files */
+
+$icon-width: 0.15in;
+$footer-height: 0.4in;
+
+$font-header: "Cinzel", serif !important;
+$font-body: "minion-pro", serif !important;

@@ -20,12 +20,14 @@ gulp.task('default', ['watch']);
 // watch for changes
 gulp.task('watch', ['build'], function() {
 
-  gulp.watch(['app/img/**'], ['img']);
-  gulp.watch(['app/scss/**'], ['css']);
-  gulp.watch(['app/*.html'], ['html']);
-  gulp.watch(['app/js/**/*'], ['js']);
+  gulp.watch(['app/img/**/*'], ['app-img']);
+  gulp.watch(['app/css/**/*'], ['app-css']);
+  gulp.watch(['app/*.html'], ['app-html']);
+  gulp.watch(['app/js/**/*'], ['app-js']);
   gulp.watch(['app/templates/*.hbs'], ['templates']);
   gulp.watch(['app/partials/*.hbs'], ['partials']);
+  gulp.watch(['app/themes/*/styles/**/*'], ['themes-css']);
+  gulp.watch(['app/themes/*/images/**/*'], ['themes-images']);
 
   browserSync.init({
     port: 8000,
@@ -42,12 +44,18 @@ gulp.task('watch', ['build'], function() {
 });
 
 
+
+// TODO split into building the app vs themes
 gulp.task('build', function(cb) {
   runSequence(
       'clean',
-      ['img', 'css', 'html', 'js', 'templates', 'partials'],
+      ['app', 'themes', 'templates', 'partials'],
       cb);
 });
+
+
+gulp.task('app', ['app-css', 'app-html', 'app-img', 'app-js'])
+gulp.task('themes', ['themes-css', 'themes-img']);
 
 
 gulp.task('clean', function() {
@@ -56,66 +64,81 @@ gulp.task('clean', function() {
 });
 
 
-gulp.task('img', function() {
+function renderImg(src, dest) {
+  return gulp.src(src)
+      .pipe(changed(dest))
+      .pipe(imagemin({
+        svgoPlugins: [{removeViewBox: false}],
+        use: [pngquant()]
+      }))
+      .pipe(gulp.dest(dest))
+      .pipe(browserSync.stream());
+}
+
+gulp.task('app-img', function() {
   gulp.src(['app/favicon.ico'])
         .pipe(gulp.dest('dist'));
+  return renderImg(['app/img/**/*'], 'dist/img');
+});
 
-  return gulp.src(['app/img/**'])
-        .pipe(changed('dist/img'))
-        .pipe(imagemin({
-          svgoPlugins: [{removeViewBox: false}],
-          use: [pngquant()]
-        }))
-        .pipe(gulp.dest('dist/img'))
-        .pipe(browserSync.stream());
+gulp.task('themes-img', function() {
+  return renderImg(['app/themes/*/images/**/*'], 'dist/themes');
 });
 
 
-gulp.task('css', function() {
-  return gulp.src(['app/scss/*.scss'])
-        .pipe(changed('dist/css'))
-        .pipe(sass().on('error', sass.logError))
-        .pipe(autoprefixer({
-            browsers: ['last 2 versions']
-        }))
-        .pipe(minifyCss())
-        .pipe(gulp.dest('dist/css'))
-        .pipe(browserSync.stream());
+function renderCSS (src, dest) {
+  return gulp.src(src)
+      .pipe(changed(dest))
+      .pipe(sass().on('error', sass.logError))
+      .pipe(autoprefixer({
+          browsers: ['last 2 versions']
+      }))
+      .pipe(minifyCss())
+      .pipe(gulp.dest(dest))
+      .pipe(browserSync.stream());
+}
+
+gulp.task('app-css', function() {
+  return renderCSS(['app/css/*.scss'], 'dist/css');
+});
+
+gulp.task('themes-css', function() {
+  return renderCSS(['app/themes/*/styles/**/*.scss'], 'dist/themes');
 });
 
 
-gulp.task('html', function() {
+gulp.task('app-html', function() {
   return gulp.src(['app/*.html'])
-        .pipe(changed('dist'))
-        .pipe(gulp.dest('dist'))
-        .pipe(browserSync.stream());
+      .pipe(changed('dist'))
+      .pipe(gulp.dest('dist'))
+      .pipe(browserSync.stream());
 });
 
 
-gulp.task('js', function() {
+gulp.task('app-js', function() {
   return gulp.src(['app/js/**/*.js'])
-        .pipe(changed('dist/js'))
-        .pipe(gulp.dest('dist/js'))
-        .pipe(browserSync.stream());
+      .pipe(changed('dist/js'))
+      .pipe(gulp.dest('dist/js'))
+      .pipe(browserSync.stream());
 });
 
 
 gulp.task('templates', function(){
-  gulp.src(['app/templates/*.hbs'])
-    .pipe(handlebars())
-    .pipe(wrap('Handlebars.template(<%= contents %>)'))
-    .pipe(declare({
-      namespace: 'Expedition.templates',
-      noRedeclare: true, // Avoid duplicate declarations
-    }))
-    .pipe(concat('templates.js'))
-    .pipe(gulp.dest('dist/js/'))
-    .pipe(browserSync.stream());
+  return gulp.src(['app/templates/*.hbs'])
+      .pipe(handlebars())
+      .pipe(wrap('Handlebars.template(<%= contents %>)'))
+      .pipe(declare({
+        namespace: 'Expedition.templates',
+        noRedeclare: true, // Avoid duplicate declarations
+      }))
+      .pipe(concat('templates.js'))
+      .pipe(gulp.dest('dist/js/'))
+      .pipe(browserSync.stream());
 });
 
 
 gulp.task('partials', function(){
-  gulp.src(['app/partials/*.hbs'])
+  return gulp.src(['app/partials/*.hbs'])
     .pipe(handlebars())
     .pipe(wrap('Handlebars.template(<%= contents %>)'))
     .pipe(declare({

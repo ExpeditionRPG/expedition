@@ -7,6 +7,10 @@ body {
   display: none;
 }
 
+#renderArea {
+  margin: 0;
+}
+
 .page {
   page-break-before: always;
   background: black;

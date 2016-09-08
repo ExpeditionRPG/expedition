@@ -1,0 +1,52 @@
+@import 'card-constants.scss';
+
+.card {
+
+  height: $card-height;
+  width: $card-width;
+  position: relative;
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: bottom;
+  background: white;
+  color: $text-color;
+  overflow: hidden;
+
+  svg {
+    fill: $text-color;
+    stroke: $text-color;
+  }
+
+  &.horizontal {
+
+    .contents {
+      width: $card-height - 2*$border;
+      height: $card-width - 2*$border;
+      transform: rotate(90deg);
+      transform-origin: 36% 48%; /* the magic raio??? */
+      box-sizing: border-box;
+      position: relative;
+      margin-left: 0.1in;
+    }
+  }
+
+  &.back {
+
+    &.horizontal {
+
+      .contents {
+        transform-origin: 35% 50%; /* the magic raio??? */
+        margin-top: 0.125in;
+      }
+    }
+  }
+
+  &.Encounter {
+
+    color: $text-color-white;
+
+    svg {
+      fill: $text-color-white;
+    }
+  }
+}

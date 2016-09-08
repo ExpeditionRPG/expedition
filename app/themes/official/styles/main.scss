@@ -1,64 +1,24 @@
-@import url(https://fonts.googleapis.com/css?family=Cinzel:400,700);
-/*@import url(https://fonts.googleapis.com/css?family=EB+Garamond);*/
-/*@import url(https://fonts.googleapis.com/css?family=Marko+One);*/
-/*@font-face {
-  font-family: 'markoone';
-  src: url('/fonts/markoone.tff') format('tff');
-}
-*/
-
-/* CSS RESET */
-a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
-
-/* NOTE:
-Minion pro font requires typekit snippet
-*/
-
-$text-color: #2e200f;
-$text-color-white: #eee;
-
-$bold: 700;
-
-$huge: 22pt;
-$large: 12pt;
-$base: 10.5pt;
-$small: 9pt;
-$border: 0.125in; /* interior padding, important things should go inside of this */
-$bleed: 0; /* this becomes .125in when manufacturing */
-$height: 3.5in;
-$width: 2.5in;
-$edge: 0.125in;
-$padding: 12pt;
-$top-padding: 0.19in;
-$tiny: 2pt;
-$thin: 0.8pt;
-$border-weight: 1.1pt; /* note that this also needs to be changed in banner SVG files */
-
-$icon-width: 0.15in;
-$footer-height: 0.4in;
-
-$font-header: "Cinzel", serif !important;
-$font-body: "minion-pro", serif !important;
+@import 'constants.scss';
 
 body.singlePage {
 
   $bleed: 0.125in; /* background art should extend to here */
-  $height: 3.5in + 2 * $bleed;
-  $width: 2.5in + 2 * $bleed;
+  $card-height: 3.5in + 2 * $bleed;
+  $card-width: 2.5in + 2 * $bleed;
 
   .printInstructions {
     display: none !important;
   }
 
   .page {
-    width: $width !important;
-    height: $height !important;
+    width: $card-width !important;
+    height: $card-height !important;
   }
 
   .card {
 
-    width: $width !important;
-    height: $height !important;
+    width: $card-width !important;
+    height: $card-height !important;
     padding: 0 !important;
     /*border: 2 * $bleed solid black;*/
     /* ONLY FOR TAKING SCREENSHOTS */
@@ -114,21 +74,6 @@ body.singlePage {
   }
 }
 
-body.printandplay {
-}
-
-body.hideBacks {
-  .backs {
-    display: none;
-  }
-}
-
-body.hideFronts {
-  .fronts {
-    display: none;
-  }
-}
-
 strong {
 
   font-family: $font-header;
@@ -140,10 +85,7 @@ strong {
   }
 }
 
-svg {
-  fill: $text-color;
-  stroke: $text-color;
-}
+
 
 .tier {
   font-family: $font-header;
@@ -263,17 +205,8 @@ svg {
 
 .card {
 
-  height: $height;
-  width: $width;
-  position: relative;
-  box-sizing: border-box;
-  display: inline-block;
-  vertical-align: bottom;
-  background: white;
   font-family: $font-body;
   font-size: $base;
-  color: $text-color;
-  overflow: hidden;
 
   .contents {
     position: relative;
@@ -367,17 +300,6 @@ svg {
   }
 
   &.horizontal {
-
-    .contents {
-      width: 3.5in - 2*$border;
-      height: 2.5in - 2*$border;
-      transform: rotate(90deg);
-      transform-origin: 36% 48%; /* the magic raio??? */
-      /*margin: $border;*/
-      box-sizing: border-box;
-      position: relative;
-      margin-left: 0.1in;
-    }
 
     &.front.Encounter {
 
@@ -622,14 +544,6 @@ svg {
     text-align: center;
   }
 
-  &.horizontal {
-
-    .contents {
-      transform-origin: 35% 50%; /* the magic raio??? */
-      margin-top: 0.125in;
-    }
-  }
-
   .hp-tracker-horizontal {
     padding-right: 14pt;
   }
@@ -690,16 +604,6 @@ svg {
 
 /* ===== BACKGROUNDS ===== */
 
-.Encounter {
-
-  color: $text-color-white;
-
-  svg {
-    fill: $text-color-white;
-  }
-}
-
-
 .card.front, .card.back {
 
   &:before {
@@ -715,37 +619,37 @@ svg {
 }
 
 .card.front.Ability { &:before {
-  background-image: url(../img/fronts/ability.jpg) !important;
+  background-image: url(../images/fronts/ability.jpg) !important;
 }}
 .card.back.Magic { &:before {
-  background-image: url(../img/backs/ability-magic.jpg) !important;
+  background-image: url(../images/backs/ability-magic.jpg) !important;
 }}
 .card.back.Melee { &:before {
-  background-image: url(../img/backs/ability-melee.jpg) !important;
+  background-image: url(../images/backs/ability-melee.jpg) !important;
 }}
 .card.back.Music { &:before {
-  background-image: url(../img/backs/ability-music.jpg) !important;
+  background-image: url(../images/backs/ability-music.jpg) !important;
 }}
 .card.back.Ranged { &:before {
-  background-image: url(../img/backs/ability-ranged.jpg) !important;
+  background-image: url(../images/backs/ability-ranged.jpg) !important;
 }}
 
 .card.front.Adventurer { &:before {
-  background-image: url(../img/fronts/adventurer.jpg) !important;
+  background-image: url(../images/fronts/adventurer.jpg) !important;
 }}
 .card.back.Adventurer { &:before {
-  background-image: url(../img/backs/adventurer.jpg) !important;
+  background-image: url(../images/backs/adventurer.jpg) !important;
 }}
 
 .card.front.Helper { &:before {
-  background-image: url(../img/fronts/helper.jpg) !important;
+  background-image: url(../images/fronts/helper.jpg) !important;
 }}
 .card.back.Helper { &:before {
-  background-image: url(../img/backs/helper.jpg) !important;
+  background-image: url(../images/backs/helper.jpg) !important;
 }}
 
 .card.front.Loot { &:before {
-  background-image: url(../img/fronts/loot.jpg) !important;
+  background-image: url(../images/fronts/loot.jpg) !important;
 }}
 .card.back.Loot {
 
@@ -755,12 +659,12 @@ svg {
   }
 
   &:before {
-    background-image: url(../img/backs/loot.jpg) !important;
+    background-image: url(../images/backs/loot.jpg) !important;
   }
 }
 
 .card.front.Encounter { &:before {
-  background-image: url(../img/fronts/encounter.jpg) !important;
+  background-image: url(../images/fronts/encounter.jpg) !important;
 }}
 .card.back.Encounter {
   .tier {
@@ -775,7 +679,7 @@ svg {
   }
 
   &:before {
-    background-image: url(../img/backs/beast.jpg) !important;
+    background-image: url(../images/backs/beast.jpg) !important;
   }
 }
 .card.back.Bandit {
@@ -785,7 +689,7 @@ svg {
   }
 
   &:before {
-    background-image: url(../img/backs/bandit.jpg) !important;
+    background-image: url(../images/backs/bandit.jpg) !important;
   }
 }
 .card.back.Fae {
@@ -795,7 +699,7 @@ svg {
   }
 
   &:before {
-    background-image: url(../img/backs/fae.jpg) !important;
+    background-image: url(../images/backs/fae.jpg) !important;
   }
 }
 .card.back.Undead {
@@ -805,6 +709,6 @@ svg {
   }
 
   &:before {
-    background-image: url(../img/backs/undead.jpg) !important;
+    background-image: url(../images/backs/undead.jpg) !important;
   }
 }
