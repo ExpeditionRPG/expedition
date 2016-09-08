@@ -32,7 +32,7 @@ Most exposition and world building takes place in `roleplay` cards, which occupy
 
 User `choice`s are displayed at the bottom of the `roleplay` card as rectangular buttons of text, and describe potential actions the user or party can take at that time.
 
-![Roleplay card with choices](quest_roleplay_card.png "Roleplay card with choices")
+![Roleplay card with choices](images/quest_roleplay_card.png "Roleplay card with choices")
 *Fig 1: Roleplay card with choices*
 
 In Markdown, roleplay cards are written using `_underscores_` to denote a title and subsequent lines for text. Note that only lines of text separated by whitespace will be
@@ -140,7 +140,7 @@ _combat_ {"enemies":["Archer","Veteran"],"icon":"bandit"}
     **end**
 ```
 
-![Combat card](quest_combat_card.png "Combat card")
+![Combat card](images/quest_combat_card.png "Combat card")
 *Fig 2: Combat card*
 
 Hopefully you're seeing a pattern here. Combat cards are exactly like roleplay cards, except their title is `_combat_`.
@@ -160,7 +160,7 @@ transports the user back to the quest menu.
 Sometimes you need to tell your players stuff about the rules and mechanics of your quest, without writing it in character. To keep in-character and out-of-character
 text separate, there are `instruction` tags:
 
-![Instruction tag](quest_instruction.png "Instruction tag")
+![Instruction tag](images/quest_instruction.png "Instruction tag")
 *Fig 3: Instruction tag*
 
 These are denoted by `>` prefixes in markdown, like so:
