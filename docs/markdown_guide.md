@@ -4,7 +4,9 @@ Welcome, fearless mortal, to the Expedition Quest Editor! Use this tool to craft
 
 Quests can be written in two languages - [Markdown](http://daringfireball.net/projects/markdown/) and [XML](https://www.w3.org/XML/). The editor makes
 it trivial to convert between these languages at a whim, by selecting the tab marked with that language. For the sake of getting started quickly,
-this tutorial will focus on using Markdown to craft a custom quest. (TODO: Add link to XML guide).
+this tutorial will focus on using Markdown to craft a custom quest.
+
+*XML Guide Coming Soon! Check back here for a link.*
 
 ## In The Beginning: Quest Metadata
 
