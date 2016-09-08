@@ -20,12 +20,12 @@ gulp.task('default', ['watch']);
 // watch for changes
 gulp.task('watch', ['build'], function() {
 
-  gulp.watch(['src/img/**'], ['img']);
-  gulp.watch(['src/scss/**'], ['css']);
-  gulp.watch(['src/*.html'], ['html']);
-  gulp.watch(['src/js/**/*'], ['js']);
-  gulp.watch(['src/templates/*.hbs'], ['templates']);
-  gulp.watch(['src/partials/*.hbs'], ['partials']);
+  gulp.watch(['app/img/**'], ['img']);
+  gulp.watch(['app/scss/**'], ['css']);
+  gulp.watch(['app/*.html'], ['html']);
+  gulp.watch(['app/js/**/*'], ['js']);
+  gulp.watch(['app/templates/*.hbs'], ['templates']);
+  gulp.watch(['app/partials/*.hbs'], ['partials']);
 
   browserSync.init({
     port: 8000,
@@ -57,10 +57,10 @@ gulp.task('clean', function() {
 
 
 gulp.task('img', function() {
-  gulp.src(['src/favicon.ico'])
+  gulp.src(['app/favicon.ico'])
         .pipe(gulp.dest('dist'));
 
-  return gulp.src(['src/img/**'])
+  return gulp.src(['app/img/**'])
         .pipe(changed('dist/img'))
         .pipe(imagemin({
           svgoPlugins: [{removeViewBox: false}],
@@ -72,7 +72,7 @@ gulp.task('img', function() {
 
 
 gulp.task('css', function() {
-  return gulp.src(['src/scss/*.scss'])
+  return gulp.src(['app/scss/*.scss'])
         .pipe(changed('dist/css'))
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer({
@@ -85,7 +85,7 @@ gulp.task('css', function() {
 
 
 gulp.task('html', function() {
-  return gulp.src(['src/*.html'])
+  return gulp.src(['app/*.html'])
         .pipe(changed('dist'))
         .pipe(gulp.dest('dist'))
         .pipe(browserSync.stream());
@@ -93,7 +93,7 @@ gulp.task('html', function() {
 
 
 gulp.task('js', function() {
-  return gulp.src(['src/js/**/*.js'])
+  return gulp.src(['app/js/**/*.js'])
         .pipe(changed('dist/js'))
         .pipe(gulp.dest('dist/js'))
         .pipe(browserSync.stream());
@@ -101,7 +101,7 @@ gulp.task('js', function() {
 
 
 gulp.task('templates', function(){
-  gulp.src(['src/templates/*.hbs'])
+  gulp.src(['app/templates/*.hbs'])
     .pipe(handlebars())
     .pipe(wrap('Handlebars.template(<%= contents %>)'))
     .pipe(declare({
@@ -115,7 +115,7 @@ gulp.task('templates', function(){
 
 
 gulp.task('partials', function(){
-  gulp.src(['src/partials/*.hbs'])
+  gulp.src(['app/partials/*.hbs'])
     .pipe(handlebars())
     .pipe(wrap('Handlebars.template(<%= contents %>)'))
     .pipe(declare({
