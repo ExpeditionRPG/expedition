@@ -28,7 +28,10 @@ let store = createStore(questIDEApp, {
       logout: auth.logout
     }
   },
-  compose(applyMiddleware(thunkMiddleware), window.devToolsExtension && window.devToolsExtension()));
+  compose(
+    applyMiddleware(thunkMiddleware),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+  ));
 
 if (module.hot) {
   module.hot.accept('./reducers', () =>
