@@ -2,49 +2,7 @@
 
 body.singlePage {
 
-  $bleed: 0.125in; /* background art should extend to here */
-  $card-height: 3.5in + 2 * $bleed;
-  $card-width: 2.5in + 2 * $bleed;
-
-  .printInstructions {
-    display: none !important;
-  }
-
-  .page {
-    width: $card-width !important;
-    height: $card-height !important;
-  }
-
   .card {
-
-    width: $card-width !important;
-    height: $card-height !important;
-    padding: 0 !important;
-    /*border: 2 * $bleed solid black;*/
-    /* ONLY FOR TAKING SCREENSHOTS */
-    /*border-radius: $bleed;*/
-
-    &.front, &.back {
-
-      &:before {
-        top: 0;
-        left: 0;
-      }
-    }
-
-    .contents {
-      top: $bleed;
-      left: $bleed;
-    }
-
-    &.front.horizontal {
-
-      .contents {
-        height: 2.25in;
-        width: 3.25in;
-        margin: 0;
-      }
-    }
 
     &.Ability {
       border-color: #E5DFBF;
@@ -75,36 +33,11 @@ body.singlePage {
 }
 
 strong {
-
   font-family: $font-header;
-  font-size: 100%;
-  font-weight: bold;
-
-  .symbol {
-    font-weight: normal;
-  }
 }
-
-
 
 .tier {
   font-family: $font-header;
-}
-
-.inline_icon {
-
-  height: $icon-width;
-  line-height: $icon-width;
-  width: auto;
-  display: inline-block;
-  vertical-align: initial;
-  margin: 0.014in 0 -0.014in 0;
-  padding: 0 0.01in; /* prevents icon truncation */
-
-  .svg {
-    height: $icon-width;
-    width: auto;
-  }
 }
 
 .hp-tracker-vertical-left {
@@ -118,7 +51,7 @@ strong {
   bottom: 0.21in;
   left: $border;
   z-index: 99;
-  font-size: $base;
+  font-size: $text-size-content;
 
   &.countdown {
     top: 0.17in;
@@ -141,7 +74,7 @@ strong {
   top: 0.2in;
   right: $border;
   z-index: 99;
-  font-size: $base;
+  font-size: $text-size-content;
 
   li {
     line-height: 1;
@@ -158,7 +91,7 @@ strong {
   position: absolute;
   right: $border;
   bottom: 0.1in;
-  font-size: $base;
+  font-size: $text-size-content;
   text-align: center;
 
   td {
@@ -181,7 +114,7 @@ strong {
 
 .adventurer-hp-tracker {
 
-  font-size: $base;
+  font-size: $text-size-content;
   font-family: $font-body;
   list-style: none;
   text-align: right;
@@ -189,10 +122,10 @@ strong {
   margin: 0;
   padding: 0;
   position: absolute;
-  top: 0in;
+  top: 0;
   right: $border;
   z-index: 99;
-  font-size: $base;
+  font-size: $text-size-content;
 
   li {
     line-height: 1;
@@ -206,7 +139,6 @@ strong {
 .card {
 
   font-family: $font-body;
-  font-size: $base;
 
   .contents {
     position: relative;
@@ -221,7 +153,7 @@ strong {
     margin: $top-padding $edge 3pt $edge;
 
     .name {
-      font-size: $large;
+      font-size: $text-size-front-title;
       font-family: $font-header;
       font-weight: 700;
       letter-spacing: -0.5pt;
@@ -286,7 +218,6 @@ strong {
     position: absolute;
     left: $edge; bottom: $border; right: $edge;
     height: $footer-height;
-    font-size: $small;
     text-align: left;
 
     .flavortext {
@@ -453,22 +384,17 @@ strong {
 
   &.Encounter {
 
-    svg {
-      fill: $text-color-white;
-      stroke: $text-color-white;
-    }
-
     header {
       padding-right: 0;
     }
 
     article {
       .ongoing {
-        margin-top: $base;
+        margin-top: $text-size-content;
       }
 
       .surge {
-        padding-top: $base;
+        padding-top: $text-size-content;
       }
     }
 
@@ -527,7 +453,7 @@ strong {
 .card.back {
 
   text-align: center;
-  font-size: $huge;
+  font-size: $text-size-back-title;
   font-family: $font-header;
 
   .naming {
@@ -549,7 +475,7 @@ strong {
   }
 
   .hp-tracker-vertical, .hp-tracker-horizontal {
-    font-size: $base;
+    font-size: $text-size-content;
     font-family: $font-body;
   }
 
