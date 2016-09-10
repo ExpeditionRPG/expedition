@@ -117,7 +117,7 @@ gulp.task('app-html', () => {
 
 gulp.task('app-js', () => {
   return Merge(
-    gulp.src(['/dist/js/templates.js', '/dist/js/partials.js', 'app/js/app.js'])
+    gulp.src(['dist/js/templates.js', 'dist/js/partials.js', 'app/js/app.js'])
         .pipe(concat('app.js'))
         .pipe(gulp.dest('dist/js'))
         .pipe(browserSync.stream()),
@@ -130,7 +130,7 @@ gulp.task('app-js', () => {
 
 
 gulp.task('templates', () =>{
-  return gulp.src(['app/templates/*.hbs'])
+  return gulp.src(['app/themes/*/templates/*.hbs'])
       .pipe(handlebars())
       .pipe(wrap('Handlebars.template(<%= contents %>)'))
       .pipe(declare({
@@ -144,7 +144,7 @@ gulp.task('templates', () =>{
 
 
 gulp.task('partials', () =>{
-  return gulp.src(['app/partials/*.hbs'])
+  return gulp.src(['app/themes/*/partials/*.hbs'])
     .pipe(handlebars())
     .pipe(wrap('Handlebars.template(<%= contents %>)'))
     .pipe(declare({
