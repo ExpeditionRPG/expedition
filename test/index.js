@@ -40,6 +40,13 @@ describe('components', () => {
   require('../app/components/QuestList.test');
 })
 
+describe('component containers', () => {
+  require('../app/components/DialogsContainer.test')
+  require('../app/components/QuestAppBarContainer.test')
+  require('../app/components/QuestIDEContainer.test')
+  require('../app/components/QuestListContainer.test')
+})
+
 /*
 
 var config = require('./config');
