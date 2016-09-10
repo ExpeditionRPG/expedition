@@ -23,13 +23,13 @@ describe('editor', () => {
     expect(cb_called).toBe(true);
   })
 
-  it('stores converted XML and switch to XML view', () => {})
+  it('stores converted XML and switch to XML view')
 
-  it('saves loaded quest data', () => {})
+  it('saves loaded quest data')
 
-  it('resets on new quest', () => {})
+  it('resets on new quest')
 
-  it('resets on quest deletion', () => {})
+  it('resets on quest deletion')
 
-  it('triggers quest download', () => {})
+  it('triggers quest download')
 })

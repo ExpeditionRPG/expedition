@@ -1,7 +1,7 @@
 import expect from 'expect'
 
 describe('setDrawer', () => {
-  it('fetches quests on open', () => {})
+  it('fetches quests on open')
 
-  it('dispatches open/close', () => {})
+  it('dispatches open/close')
 })
