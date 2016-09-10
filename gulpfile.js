@@ -12,11 +12,11 @@ const handlebars = require('gulp-handlebars');
 const wrap = require('gulp-wrap');
 const declare = require('gulp-declare');
 const concat = require('gulp-concat');
+
 const Merge = require('merge2');
 
 
 gulp.task('default', ['watch']);
-
 
 gulp.task('watch', ['build'], () => {
 
@@ -47,7 +47,7 @@ gulp.task('watch', ['build'], () => {
 gulp.task('build', (cb) => {
   runSequence(
     'clean',
-    ['templates', 'partials'],
+    'themes-handlebars',
     ['app', 'themes', ],
     cb
   );
@@ -117,7 +117,7 @@ gulp.task('app-html', () => {
 
 gulp.task('app-js', () => {
   return Merge(
-    gulp.src(['dist/js/templates.js', 'dist/js/partials.js', 'app/js/app.js'])
+    gulp.src(['dist/js/handlebars-helpers.js', 'app/js/app.js'])
         .pipe(concat('app.js'))
         .pipe(gulp.dest('dist/js'))
         .pipe(browserSync.stream()),
@@ -129,29 +129,18 @@ gulp.task('app-js', () => {
 });
 
 
-gulp.task('templates', () =>{
-  return gulp.src(['app/themes/*/templates/*.hbs'])
+gulp.task('themes-handlebars', () =>{
+  return gulp.src(['app/themes/*/templates/*.hbs', 'app/themes/*/partials/*.hbs'])
       .pipe(handlebars())
       .pipe(wrap('Handlebars.template(<%= contents %>)'))
       .pipe(declare({
-        namespace: 'Expedition.templates',
+        namespace: 'Expedition',
         noRedeclare: true, // Avoid duplicate declarations
+        processName: function(filepath) {
+          return declare.processNameByPath(filepath.replace('app\\themes\\',''));
+        }
       }))
-      .pipe(concat('templates.js'))
+      .pipe(concat('handlebars-helpers.js'))
       .pipe(gulp.dest('dist/js/'))
       .pipe(browserSync.stream());
-});
-
-
-gulp.task('partials', () =>{
-  return gulp.src(['app/themes/*/partials/*.hbs'])
-    .pipe(handlebars())
-    .pipe(wrap('Handlebars.template(<%= contents %>)'))
-    .pipe(declare({
-      namespace: 'Expedition.partials',
-      noRedeclare: true, // Avoid duplicate declarations
-    }))
-    .pipe(concat('partials.js'))
-    .pipe(gulp.dest('dist/js/'))
-    .pipe(browserSync.stream());
 });

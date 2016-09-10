@@ -9,12 +9,14 @@ var renderArea;
 
 /* ===== DATA AND FILTERS ===== */
 
+var theme = 'official';
+
 var templates = { // will be rendered into UI in this order
-  Helper: this.Expedition.templates.Helper,
-  Adventurer: this.Expedition.templates.Adventurer,
-  Ability: this.Expedition.templates.Ability,
-  Encounter: this.Expedition.templates.Encounter,
-  Loot: this.Expedition.templates.Loot,
+  Helper: this.Expedition[theme].templates.Helper,
+  Adventurer: this.Expedition[theme].templates.Adventurer,
+  Ability: this.Expedition[theme].templates.Ability,
+  Encounter: this.Expedition[theme].templates.Encounter,
+  Loot: this.Expedition[theme].templates.Loot,
 };
 var selectOptions = {
   export: ['Print-n-Play', 'DriveThruCards', 'AdMagic-Fronts', 'AdMagic-Backs', 'Hide-Backs'],
@@ -243,18 +245,18 @@ function buildCards (template, cards) {
   function renderCardFront (template, card) {
     card = cleanCardData(template, card);
     if (template === "Helper" && card.Face === "back") {
-      return this.Expedition.templates[template + '-back'](card);
+      return this.Expedition[theme].templates[template + '-back'](card);
     } else {
-      return this.Expedition.templates[template](card);
+      return this.Expedition[theme].templates[template](card);
     }
   }
 
   function renderCardBack (template, card) {
     card = cleanCardData(template, card);
     if (template === "Helper" && card.Face === "back") {
-      return this.Expedition.templates[template](card);
+      return this.Expedition[theme].templates[template](card);
     } else {
-      return this.Expedition.templates[template + '-back'](card);
+      return this.Expedition[theme].templates[template + '-back'](card);
     }
   }
 
@@ -487,6 +489,8 @@ Handlebars.registerHelper('lootCounter', function (count) {
   return output;
 });
 
-for (var key in this.Expedition.partials) {
-  Handlebars.registerPartial(key, this.Expedition.partials[key]);
+// TODO do this on each theme change
+
+for (var key in this.Expedition[theme].partials) {
+  Handlebars.registerPartial(key, this.Expedition[theme].partials[key]);
 }
