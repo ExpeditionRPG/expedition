@@ -4,8 +4,10 @@ const Changed = require('gulp-changed');
 const Concat = require('gulp-concat');
 const Declare = require('gulp-declare');
 const Gulp = require('gulp');
+const GulpIf = require('gulp-if');
 const Handlebars = require('gulp-handlebars');
 const Imagemin = require('gulp-imagemin');
+const Insert = require('gulp-insert');
 const Merge = require('merge2');
 const MinifyCss = require('gulp-minify-css');
 const PngQuant = require('imagemin-pngquant');
@@ -56,8 +58,7 @@ Gulp.task('themes', ['themes-css', 'themes-handlebars', 'themes-img']);
 
 
 Gulp.task('clean', () => {
-  return Gulp.src('./dist', { read: false })
-      .pipe(Rimraf());
+  return Gulp.src('./dist', { read: false }).pipe(Rimraf());
 });
 
 
@@ -73,8 +74,7 @@ function renderImg (src, dest) {
 }
 
 Gulp.task('app-img', () => {
-  Gulp.src(['app/favicon.ico'])
-        .pipe(Gulp.dest('dist'));
+  Gulp.src('app/favicon.ico').pipe(Gulp.dest('dist'));
   return renderImg(['app/img/**/*'], 'dist/img');
 });
 
@@ -83,24 +83,34 @@ Gulp.task('themes-img', () => {
 });
 
 
-function renderCSS (src, dest) {
-  return Gulp.src(src)
-      .pipe(Changed(dest))
+Gulp.task('app-css', () => {
+  return Gulp.src('app/css/*.scss')
+      .pipe(Changed('dist/css'))
       .pipe(Sass().on('error', Sass.logError))
       .pipe(Autoprefixer({
-          browsers: ['last 2 versions']
+          browsers: ['last 2 versions'],
       }))
       .pipe(MinifyCss())
-      .pipe(Gulp.dest(dest))
+      .pipe(Gulp.dest('dist/css'))
       .pipe(BrowserSync.stream());
-}
-
-Gulp.task('app-css', () => {
-  return renderCSS(['app/css/*.scss'], 'dist/css');
 });
 
+
 Gulp.task('themes-css', () => {
-  return renderCSS(['app/themes/*/styles/**/*.scss'], 'dist/themes');
+  return Gulp.src(['app/themes/*/styles/**/*.scss'])
+      .pipe(Insert.transform((contents, file) => {
+        const themeName = extractThemeName(file.path);
+        contents = contents.replace(/url\(\.\./g, "url(/themes/" + themeName + "/"); // modify URL paths
+        return '#renderArea[data-theme="' + themeName + '"] {' + contents + '}';
+      }))
+      .pipe(Sass().on('error', Sass.logError))
+      .pipe(Autoprefixer({
+          browsers: ['last 2 versions'],
+      }))
+      .pipe(MinifyCss())
+      .pipe(Concat('themes.css'))
+      .pipe(Gulp.dest('dist/css'))
+      .pipe(BrowserSync.stream());
 });
 
 
@@ -135,3 +145,10 @@ Gulp.task('themes-handlebars', () =>{
       .pipe(Gulp.dest('dist/js/'))
       .pipe(BrowserSync.stream());
 });
+
+
+function extractThemeName (filepath) {
+  const encoded = filepath.split('\\').join('\\'); // double backslashes to safely encode them
+  const themeNameRegex = /themes[\\//]([-_a-zA-Z0-9]*)/;
+  return encoded.match(themeNameRegex)[1];
+}
