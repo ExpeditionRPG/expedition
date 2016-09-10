@@ -12,6 +12,7 @@ const styles = {
 }
 
 // TODO: The app is in polymer... so iframe it?
+// TODO: Refactor this
 export default class AdventurerView extends React.Component {
 
   render() {

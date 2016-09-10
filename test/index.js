@@ -31,6 +31,15 @@ describe('actions', () => {
   require('../app/actions/user.test');
 })
 
+// TODO: Test base components once they're well defined
+
+describe('components', () => {
+  require('../app/components/Dialogs.test');
+  require('../app/components/QuestAppBar.test');
+  require('../app/components/QuestIDE.test');
+  require('../app/components/QuestList.test');
+})
+
 /*
 
 var config = require('./config');

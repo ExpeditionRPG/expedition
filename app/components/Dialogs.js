@@ -1,3 +1,4 @@
+import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -54,21 +55,21 @@ class YesNoDialog extends React.Component {
   }
 }
 
-class ConfirmNewQuestDialog extends YesNoDialog {
+export class ConfirmNewQuestDialog extends YesNoDialog {
   constructor(props) {
     super(props)
     this.title = "Save changes before creating new quest?";
   }
 }
 
-class ConfirmLoadQuestDialog extends YesNoDialog {
+export class ConfirmLoadQuestDialog extends YesNoDialog {
   constructor(props) {
     super(props)
     this.title = "Save changes before loading new quest?";
   }
 }
 
-class PublishQuestDialog extends React.Component {
+export class PublishQuestDialog extends React.Component {
   render() {
     return (
       <Dialog
@@ -86,7 +87,7 @@ class PublishQuestDialog extends React.Component {
   }
 }
 
-class ErrorDialog extends React.Component {
+export class ErrorDialog extends React.Component {
   render() {
 
     var errors = [];
@@ -121,7 +122,7 @@ class ErrorDialog extends React.Component {
   }
 }
 
-class UserDialog extends React.Component {
+export class UserDialog extends React.Component {
   render() {
     var title;
     var actions = [
@@ -163,6 +164,7 @@ class UserDialog extends React.Component {
   }
 }
 
+// TODO: Input args should be way shorter than this
 const Dialogs = ({id, xml, open, user_name, login_url, logout_url, short_url, errors, onRequestClose, onConfirmSave, onSignIn, onSignOut}) => {
   console.log("Login url " + login_url);
   return (
