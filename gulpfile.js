@@ -12,13 +12,13 @@ const handlebars = require('gulp-handlebars');
 const wrap = require('gulp-wrap');
 const declare = require('gulp-declare');
 const concat = require('gulp-concat');
+const Merge = require('merge2');
 
 
 gulp.task('default', ['watch']);
 
 
-// watch for changes
-gulp.task('watch', ['build'], function() {
+gulp.task('watch', ['build'], () => {
 
   gulp.watch(['app/img/**/*'], ['app-img']);
   gulp.watch(['app/css/**/*'], ['app-css']);
@@ -44,13 +44,13 @@ gulp.task('watch', ['build'], function() {
 });
 
 
-
-// TODO split into building the app vs themes
-gulp.task('build', function(cb) {
+gulp.task('build', (cb) => {
   runSequence(
-      'clean',
-      ['app', 'themes', 'templates', 'partials'],
-      cb);
+    'clean',
+    ['templates', 'partials'],
+    ['app', 'themes', ],
+    cb
+  );
 });
 
 
@@ -58,13 +58,13 @@ gulp.task('app', ['app-css', 'app-html', 'app-img', 'app-js'])
 gulp.task('themes', ['themes-css', 'themes-img']);
 
 
-gulp.task('clean', function() {
+gulp.task('clean', () => {
   return gulp.src('./dist', { read: false })
       .pipe(rimraf());
 });
 
 
-function renderImg(src, dest) {
+function renderImg (src, dest) {
   return gulp.src(src)
       .pipe(changed(dest))
       .pipe(imagemin({
@@ -75,13 +75,13 @@ function renderImg(src, dest) {
       .pipe(browserSync.stream());
 }
 
-gulp.task('app-img', function() {
+gulp.task('app-img', () => {
   gulp.src(['app/favicon.ico'])
         .pipe(gulp.dest('dist'));
   return renderImg(['app/img/**/*'], 'dist/img');
 });
 
-gulp.task('themes-img', function() {
+gulp.task('themes-img', () => {
   return renderImg(['app/themes/*/images/**/*'], 'dist/themes');
 });
 
@@ -98,16 +98,16 @@ function renderCSS (src, dest) {
       .pipe(browserSync.stream());
 }
 
-gulp.task('app-css', function() {
+gulp.task('app-css', () => {
   return renderCSS(['app/css/*.scss'], 'dist/css');
 });
 
-gulp.task('themes-css', function() {
+gulp.task('themes-css', () => {
   return renderCSS(['app/themes/*/styles/**/*.scss'], 'dist/themes');
 });
 
 
-gulp.task('app-html', function() {
+gulp.task('app-html', () => {
   return gulp.src(['app/*.html'])
       .pipe(changed('dist'))
       .pipe(gulp.dest('dist'))
@@ -115,15 +115,21 @@ gulp.task('app-html', function() {
 });
 
 
-gulp.task('app-js', function() {
-  return gulp.src(['app/js/**/*.js'])
-      .pipe(changed('dist/js'))
-      .pipe(gulp.dest('dist/js'))
-      .pipe(browserSync.stream());
+gulp.task('app-js', () => {
+  return Merge(
+    gulp.src(['/dist/js/templates.js', '/dist/js/partials.js', 'app/js/app.js'])
+        .pipe(concat('app.js'))
+        .pipe(gulp.dest('dist/js'))
+        .pipe(browserSync.stream()),
+    gulp.src(['app/js/**/*.js', '!app/js/app.js'])
+        .pipe(changed('dist/js'))
+        .pipe(gulp.dest('dist/js'))
+        .pipe(browserSync.stream())
+  );
 });
 
 
-gulp.task('templates', function(){
+gulp.task('templates', () =>{
   return gulp.src(['app/templates/*.hbs'])
       .pipe(handlebars())
       .pipe(wrap('Handlebars.template(<%= contents %>)'))
@@ -137,7 +143,7 @@ gulp.task('templates', function(){
 });
 
 
-gulp.task('partials', function(){
+gulp.task('partials', () =>{
   return gulp.src(['app/partials/*.hbs'])
     .pipe(handlebars())
     .pipe(wrap('Handlebars.template(<%= contents %>)'))
