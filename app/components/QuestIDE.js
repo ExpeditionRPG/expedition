@@ -1,7 +1,7 @@
 import {Tab} from 'material-ui/Tabs';
 import ManualTabs from './base/ManualTabs';
 import TextView from './base/TextView';
-import {CodeViews} from './actions';
+import {CodeViews} from '../actions/ActionTypes';
 
 const styles = {
   container: {
@@ -23,6 +23,7 @@ const styles = {
 };
 
 const QuestIDE = ({ dirty, text, error, tab, onTabChange, onDirty, onErrorClose }) => {
+  console.log(tab.toLowerCase());
   return (
     <span style={{width: "100%", height: "100%"}}>
       <ManualTabs style={styles.tabsroot}
@@ -33,7 +34,7 @@ const QuestIDE = ({ dirty, text, error, tab, onTabChange, onDirty, onErrorClose 
       </ManualTabs>
       <div style={styles.tabcontainer}>
         <TextView
-          mode="xml"
+          mode={tab.toLowerCase()}
           value={text}
           onChange={(text) => onDirty(dirty, text)} />
       </div>

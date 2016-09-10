@@ -1,7 +1,8 @@
 import { connect } from 'react-redux'
-import {setCodeView, setDirty, CodeViews} from './actions'
-import {pushError} from './error'
-import {getBuffer, setBuffer} from './buffer'
+import {setCodeView, setDirty} from '../actions/editor'
+import {CodeViews} from '../actions/ActionTypes'
+import {pushError} from '../error'
+import {getBuffer, setBuffer} from '../buffer'
 import QuestIDE from './QuestIDE'
 import toMarkdown from '../../translation/to_markdown'
 

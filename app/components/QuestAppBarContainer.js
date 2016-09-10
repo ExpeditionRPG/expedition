@@ -1,5 +1,7 @@
 import { connect } from 'react-redux'
-import {setDialog, DialogIDs, setDrawer} from './actions'
+import {DialogIDs} from '../actions/ActionTypes'
+import {setDialog} from '../actions/dialog'
+import {setDrawer} from '../actions/drawer'
 import QuestAppBar from './QuestAppBar'
 
 const mapStateToProps = (state, ownProps) => {

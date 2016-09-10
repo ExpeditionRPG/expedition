@@ -10,6 +10,8 @@ var passport = require('passport');
 var oauth2 = require('./lib/oauth2');
 var express =require('express');
 
+// TODO: Rate limit all routers
+
 // Use the oauth middleware to automatically get the user's profile
 // information and expose login/logout URLs to templates.
 var router = express.Router();
@@ -26,6 +28,10 @@ router.get('/', function(req, res) {
 });
 
 // TODO: Abstract all these auth checks and try/catch boilerplate into middleware.
+
+router.get('/locals', function(req, res) {
+  return res.send(JSON.stringify(res.locals));
+});
 
 router.get('/quests/:token', function(req, res) {
   var token = req.params.token;

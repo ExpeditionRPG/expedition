@@ -1,7 +1,7 @@
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import {DialogIDs} from './actions';
+import {DialogIDs} from '../actions/ActionTypes';
 import {MarkdownParserError} from '../../translation/to_xml'
 import {XMLParserError} from '../../translation/to_markdown'
 
@@ -138,7 +138,7 @@ class UserDialog extends React.Component {
         <RaisedButton
           label="Sign Out"
           primary={true}
-          onTouchTap={this.props.onSignIn}
+          onTouchTap={this.props.onSignOut}
         />);
     } else {
       title = "Not Signed In";
@@ -146,7 +146,7 @@ class UserDialog extends React.Component {
         <RaisedButton
           label="Sign In"
           primary={true}
-          onTouchTap={this.props.onSignOut}
+          onTouchTap={this.props.onSignIn}
         />);
     }
 
@@ -163,14 +163,15 @@ class UserDialog extends React.Component {
   }
 }
 
-const Dialogs = ({id, xml, open, user_name, short_url, errors, onRequestClose, onConfirmSave, onSignIn, onSignOut}) => {
+const Dialogs = ({id, xml, open, user_name, login_url, logout_url, short_url, errors, onRequestClose, onConfirmSave, onSignIn, onSignOut}) => {
+  console.log("Login url " + login_url);
   return (
     <span>
       <UserDialog
         open={open[DialogIDs.USER]}
         userName={user_name}
-        onSignIn={onSignIn}
-        onSignOut={onSignOut}
+        onSignIn={() => onSignIn(login_url)}
+        onSignOut={() => onSignOut(logout_url)}
         onRequestClose={() => onRequestClose(DialogIDs.USER)}
       />
       <ConfirmNewQuestDialog

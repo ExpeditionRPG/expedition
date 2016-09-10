@@ -10,7 +10,7 @@ import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit';
 import AddIcon from 'material-ui/svg-icons/content/add';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import Subheader from 'material-ui/Subheader';
-import {NEW_QUEST, SAVE_QUEST, PUBLISH_QUEST, DELETE_QUEST, DOWNLOAD_QUEST} from './actions';
+import {NEW_QUEST, LOAD_QUEST, SAVE_QUEST, PUBLISH_QUEST, DELETE_QUEST, DOWNLOAD_QUEST} from '../actions/ActionTypes';
 
 let SelectableList = MakeSelectable(List);
 
@@ -46,7 +46,7 @@ const styles = {
   }
 }
 
-const QuestList = ({logged_in, id, view, dirty, open, quests, onQuestSelect, onMenuSelect, onDrawerRequestChange, palette}) => {
+const QuestList = ({logged_in, editor, quest, dirty, open, quests, onQuestSelect, onMenuSelect, onDrawerRequestChange, palette}) => {
   var body;
   if (quests === null || quests === undefined) {
     body = <CircularProgress />;
@@ -67,7 +67,7 @@ const QuestList = ({logged_in, id, view, dirty, open, quests, onQuestSelect, onM
       );
     }
     body =
-      <SelectableList onChange={(event, id) => onQuestSelect(id, dirty, view)}>
+      <SelectableList onChange={(event, id) => onMenuSelect(LOAD_QUEST, dirty, editor, quest)}>
         <Subheader>{quests.length + " Saved Quest" + ((quests.length > 1) ? "s" : "")}</Subheader>
         {menu}
       </SelectableList>;
@@ -82,7 +82,7 @@ const QuestList = ({logged_in, id, view, dirty, open, quests, onQuestSelect, onM
         </ToolbarGroup>
       </Toolbar>
       <Subheader>Edit</Subheader>
-      <Menu onChange={(event, action) => onMenuSelect(action, id, dirty, view)}>
+      <Menu onChange={(event, action) => onMenuSelect(action, dirty, editor, quest)}>
         <MenuItem value={NEW_QUEST} primaryText="New" />
         <MenuItem value={SAVE_QUEST} primaryText="Save" disabled={!logged_in} />
         <MenuItem value={PUBLISH_QUEST} primaryText="Publish" disabled={!logged_in} />

@@ -47,7 +47,7 @@ export default class TextView extends React.Component {
         height="100%"
         name={this.props.mode + "-editor"}
         value={this.props.value}
-        setOptions={{wrapBehavioursEnabled: true, wrap: true}}
+        setOptions={{wrapBehavioursEnabled: true, wrap: true, tabSize: 4, useSoftTabs: true}}
         editorProps={{$blockScrolling: true}}
       />
     );
