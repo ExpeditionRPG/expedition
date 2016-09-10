@@ -1,35 +1,33 @@
-const gulp = require('gulp');
-const runSequence = require('run-sequence');
-const rimraf = require('gulp-rimraf');
-const changed = require('gulp-changed');
-const browserSync = require('browser-sync').create();
-const imagemin = require('gulp-imagemin');
-const pngquant = require('imagemin-pngquant');
-const sass = require('gulp-sass');
-const autoprefixer = require('gulp-autoprefixer');
-const minifyCss = require('gulp-minify-css');
-const handlebars = require('gulp-handlebars');
-const wrap = require('gulp-wrap');
-const declare = require('gulp-declare');
-const concat = require('gulp-concat');
-
+const Autoprefixer = require('gulp-autoprefixer');
+const BrowserSync = require('browser-sync').create();
+const Changed = require('gulp-changed');
+const Concat = require('gulp-concat');
+const Declare = require('gulp-declare');
+const Gulp = require('gulp');
+const Handlebars = require('gulp-handlebars');
+const Imagemin = require('gulp-imagemin');
 const Merge = require('merge2');
+const MinifyCss = require('gulp-minify-css');
+const PngQuant = require('imagemin-pngquant');
+const Rimraf = require('gulp-rimraf');
+const RunSequence = require('run-sequence');
+const Sass = require('gulp-sass');
+const Wrap = require('gulp-wrap');
 
 
-gulp.task('default', ['watch']);
+Gulp.task('default', ['watch']);
 
-gulp.task('watch', ['build'], () => {
+Gulp.task('watch', ['build'], () => {
 
-  gulp.watch(['app/img/**/*'], ['app-img']);
-  gulp.watch(['app/css/**/*'], ['app-css']);
-  gulp.watch(['app/*.html'], ['app-html']);
-  gulp.watch(['app/js/**/*'], ['app-js']);
-  gulp.watch(['app/templates/*.hbs'], ['templates']);
-  gulp.watch(['app/partials/*.hbs'], ['partials']);
-  gulp.watch(['app/themes/*/styles/**/*'], ['themes-css']);
-  gulp.watch(['app/themes/*/images/**/*'], ['themes-images']);
+  Gulp.watch(['app/img/**/*'], ['app-img']);
+  Gulp.watch(['app/css/**/*'], ['app-css']);
+  Gulp.watch(['app/*.html'], ['app-html']);
+  Gulp.watch(['app/js/**/*'], ['app-js']);
+  Gulp.watch(['app/themes/*/templates/**/*', 'app/themes/*/partials/**/*'], ['themes-handlebars']);
+  Gulp.watch(['app/themes/*/styles/**/*'], ['themes-css']);
+  Gulp.watch(['app/themes/*/images/**/*'], ['themes-images']);
 
-  browserSync.init({
+  BrowserSync.init({
     port: 8000,
     server: {
       baseDir: "./dist"
@@ -44,103 +42,96 @@ gulp.task('watch', ['build'], () => {
 });
 
 
-gulp.task('build', (cb) => {
-  runSequence(
+Gulp.task('build', (cb) => {
+  RunSequence(
     'clean',
-    'themes-handlebars',
-    ['app', 'themes', ],
+    ['themes', 'app'],
     cb
   );
 });
 
 
-gulp.task('app', ['app-css', 'app-html', 'app-img', 'app-js'])
-gulp.task('themes', ['themes-css', 'themes-img']);
+Gulp.task('app', ['app-css', 'app-html', 'app-img', 'app-js'])
+Gulp.task('themes', ['themes-css', 'themes-handlebars', 'themes-img']);
 
 
-gulp.task('clean', () => {
-  return gulp.src('./dist', { read: false })
-      .pipe(rimraf());
+Gulp.task('clean', () => {
+  return Gulp.src('./dist', { read: false })
+      .pipe(Rimraf());
 });
 
 
 function renderImg (src, dest) {
-  return gulp.src(src)
-      .pipe(changed(dest))
-      .pipe(imagemin({
+  return Gulp.src(src)
+      .pipe(Changed(dest))
+      .pipe(Imagemin({
         svgoPlugins: [{removeViewBox: false}],
-        use: [pngquant()]
+        use: [PngQuant()]
       }))
-      .pipe(gulp.dest(dest))
-      .pipe(browserSync.stream());
+      .pipe(Gulp.dest(dest))
+      .pipe(BrowserSync.stream());
 }
 
-gulp.task('app-img', () => {
-  gulp.src(['app/favicon.ico'])
-        .pipe(gulp.dest('dist'));
+Gulp.task('app-img', () => {
+  Gulp.src(['app/favicon.ico'])
+        .pipe(Gulp.dest('dist'));
   return renderImg(['app/img/**/*'], 'dist/img');
 });
 
-gulp.task('themes-img', () => {
+Gulp.task('themes-img', () => {
   return renderImg(['app/themes/*/images/**/*'], 'dist/themes');
 });
 
 
 function renderCSS (src, dest) {
-  return gulp.src(src)
-      .pipe(changed(dest))
-      .pipe(sass().on('error', sass.logError))
-      .pipe(autoprefixer({
+  return Gulp.src(src)
+      .pipe(Changed(dest))
+      .pipe(Sass().on('error', Sass.logError))
+      .pipe(Autoprefixer({
           browsers: ['last 2 versions']
       }))
-      .pipe(minifyCss())
-      .pipe(gulp.dest(dest))
-      .pipe(browserSync.stream());
+      .pipe(MinifyCss())
+      .pipe(Gulp.dest(dest))
+      .pipe(BrowserSync.stream());
 }
 
-gulp.task('app-css', () => {
+Gulp.task('app-css', () => {
   return renderCSS(['app/css/*.scss'], 'dist/css');
 });
 
-gulp.task('themes-css', () => {
+Gulp.task('themes-css', () => {
   return renderCSS(['app/themes/*/styles/**/*.scss'], 'dist/themes');
 });
 
 
-gulp.task('app-html', () => {
-  return gulp.src(['app/*.html'])
-      .pipe(changed('dist'))
-      .pipe(gulp.dest('dist'))
-      .pipe(browserSync.stream());
+Gulp.task('app-html', () => {
+  return Gulp.src(['app/*.html'])
+      .pipe(Changed('dist'))
+      .pipe(Gulp.dest('dist'))
+      .pipe(BrowserSync.stream());
 });
 
 
-gulp.task('app-js', () => {
-  return Merge(
-    gulp.src(['dist/js/handlebars-helpers.js', 'app/js/app.js'])
-        .pipe(concat('app.js'))
-        .pipe(gulp.dest('dist/js'))
-        .pipe(browserSync.stream()),
-    gulp.src(['app/js/**/*.js', '!app/js/app.js'])
-        .pipe(changed('dist/js'))
-        .pipe(gulp.dest('dist/js'))
-        .pipe(browserSync.stream())
-  );
+Gulp.task('app-js', () => {
+  return Gulp.src(['app/js/**/*.js'])
+      .pipe(Changed('dist/js'))
+      .pipe(Gulp.dest('dist/js'))
+      .pipe(BrowserSync.stream());
 });
 
 
-gulp.task('themes-handlebars', () =>{
-  return gulp.src(['app/themes/*/templates/*.hbs', 'app/themes/*/partials/*.hbs'])
-      .pipe(handlebars())
-      .pipe(wrap('Handlebars.template(<%= contents %>)'))
-      .pipe(declare({
+Gulp.task('themes-handlebars', () =>{
+  return Gulp.src(['app/themes/*/templates/*.hbs', 'app/themes/*/partials/*.hbs'])
+      .pipe(Handlebars())
+      .pipe(Wrap('Handlebars.template(<%= contents %>)'))
+      .pipe(Declare({
         namespace: 'Expedition',
-        noRedeclare: true, // Avoid duplicate declarations
+        noReDeclare: true, // Avoid duplicate declarations
         processName: function(filepath) {
-          return declare.processNameByPath(filepath.replace('app\\themes\\',''));
+          return Declare.processNameByPath(filepath.replace('app\\themes\\',''));
         }
       }))
-      .pipe(concat('handlebars-helpers.js'))
-      .pipe(gulp.dest('dist/js/'))
-      .pipe(browserSync.stream());
+      .pipe(Concat('Handlebars-helpers.js'))
+      .pipe(Gulp.dest('dist/js/'))
+      .pipe(BrowserSync.stream());
 });
