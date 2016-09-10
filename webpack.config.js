@@ -8,8 +8,11 @@ var options = {
   entry: [
     'webpack-dev-server/client?http://localhost:8081',
     'webpack/hot/only-dev-server',
-    './app/react.js',
+    './app/react.tsx',
   ],
+  resolve: {
+    extensions: ['', '.js', '.ts', '.tsx']
+  },
   contentBase: "./app",
   output: {
     path: __dirname + '/dist/',
@@ -26,6 +29,11 @@ var options = {
       { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.js$/, loaders: ['react-hot', 'jsx', 'babel'], exclude: /node_modules/ },
+      { test: /\.tsx$/, loaders: ['react-hot', 'ts-loader?jsx=true'], exclude: /node_modules/ },
+    ],
+    preLoaders: [
+        // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+        { test: /\.js$/, loader: "source-map-loader" }
     ]
   },
   // recordsPath: __dirname + '/app/[hash].hot-update.json',
