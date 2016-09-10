@@ -26,7 +26,7 @@ function loadQuest(dispatch, id) {
   }).fail(pushHTTPError);
 }
 
-export function saveQuest(dispatch, id, view, cb) {
+function saveQuest(dispatch, id, view, cb) {
   // Pull from the text buffer for maximum freshness.
   var data = getBuffer();
   if (view === CodeViews.MARKDOWN) {

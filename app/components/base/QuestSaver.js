@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react';
 import timeAgo from 'time-ago';
 var timeFormatter = timeAgo();
 
+// TODO: Refactor this whole dang thing
 class QuestSaver extends React.Component {
   constructor(props) {
     super(props);

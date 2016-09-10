@@ -1,3 +1,9 @@
-describe('user', () => {
-  it('')
+import expect from 'expect'
+
+describe('followUserAuthLink', () => {
+  it('opens popup')
+
+  it('fetches /locals when popup closed')
+
+  it('dispatches when fetch to /locals completes')
 })

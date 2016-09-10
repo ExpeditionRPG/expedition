@@ -1,15 +1,13 @@
 import expect from 'expect'
 
-describe('editor', () => {
-
-  it('sets dirty flag', () => {
+describe('setCodeView', () => {
+  it('creates action', () => {
 
   })
+})
 
-  describe('setCodeView', () => {
-    it('creates the action', () => {
+describe('setDirty', () => {
+  it('creates action', () => {
 
-    })
   })
-
 })

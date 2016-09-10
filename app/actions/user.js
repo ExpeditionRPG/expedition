@@ -1,6 +1,6 @@
 import {SET_PROFILE_META} from '../ActionTypes'
 
-export function setProfileMeta(profile, login, logout) {
+function setProfileMeta(profile, login, logout) {
   return {type: SET_PROFILE_META, profile, login, logout};
 }
 

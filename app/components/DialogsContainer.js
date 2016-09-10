@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import {NEW_QUEST, LOAD_QUEST, DialogIDs} from '../actions/ActionTypes'
 import {setDialog} from '../actions/dialog'
 import {followUserAuthLink} from '../actions/user'
-import {questAction, saveQuest} from '../actions/quest'
+import {questAction} from '../actions/quest'
 import Dialogs from './Dialogs'
 
 const mapStateToProps = (state, ownProps) => {
@@ -38,9 +38,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
       if (choice === true) {
         console.log("Dispatch with save");
+        // TODO make quest action
+        /*
         return saveQuest(dispatch, id, xml, function(saved_id) {
           dispatch(action);
         });
+        */
       } else if (choice === false) {
         console.log("Dispatch without save");
         return dispatch(action);
