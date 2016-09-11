@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import Drawer from 'material-ui/Drawer';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';

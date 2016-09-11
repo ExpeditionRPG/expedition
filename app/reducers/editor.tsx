@@ -1,9 +1,10 @@
 import { combineReducers } from 'redux'
 import {SET_CODE_VIEW, RECEIVE_QUEST_LOAD, NEW_QUEST, RECEIVE_QUEST_DELETE} from '../actions/ActionTypes'
-import {toXML} from '../../translation/to_xml'
-import {toMarkdown} from '../../translation/to_markdown'
 import {pushError, consumeErrors} from '../error'
 import {getBuffer, setBuffer, xml_filler} from '../buffer'
+
+var toXML: any = (require('../../translation/to_xml') as any).toXML;
+var toMarkdown: any = (require('../../translation/to_markdown') as any).toMarkdown;
 
 export function editor(state = {xml: xml_filler, view: 'XML'}, action: any): any {
   switch (action.type) {

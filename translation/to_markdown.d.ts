@@ -1,4 +1,4 @@
 declare module "to_markdown" {
-  export function toMarkdown(text: string, verbose: boolean): string;
+  export var toMarkdown: any;
   export var XMLParserError: any;
 }

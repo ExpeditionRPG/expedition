@@ -7,7 +7,7 @@ import {user} from './user'
 import {dialogs} from './dialogs'
 import {errors} from './errors'
 
-export const questIDEApp = combineReducers({
+const questIDEApp = combineReducers({
   editor,
   quest,
   dirty,
@@ -16,3 +16,5 @@ export const questIDEApp = combineReducers({
   dialogs,
   errors
 });
+
+export default questIDEApp;

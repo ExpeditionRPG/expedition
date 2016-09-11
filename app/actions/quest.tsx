@@ -11,8 +11,7 @@ import {setDialog} from './dialog'
 import {pushError, pushHTTPError} from '../error'
 import {getBuffer} from '../buffer'
 
-/// <reference path="../../translation/to_xml.d.ts" />
-import {toXML} from 'to_xml'
+var toXML: any = require('../../translation/to_xml')
 
 function receiveQuestData(result: {id:string, url:string, modified:string}, xml: string): any {
   return {

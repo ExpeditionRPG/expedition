@@ -1,5 +1,6 @@
-import React from 'react';
-import {Tabs, Tab} from 'material-ui/Tabs';
+import * as React from 'react';
+import {Tab} from 'material-ui/Tabs';
+var ManualTabs: any = (require('./base/ManualTabs') as any).default;
 import TextView from './base/TextView';
 import {CodeViewType} from '../actions/ActionTypes';
 
@@ -22,16 +23,17 @@ const styles = {
   }
 };
 
+console.log(ManualTabs);
+
 const QuestIDE = ({ dirty, text, error, tab, onTabChange, onDirty, onErrorClose }: any): JSX.Element => {
-  console.log(tab.toLowerCase());
   return (
     <span style={{width: "100%", height: "100%"}}>
-      <Tabs style={styles.tabsroot}
-          onChange={onTabChange}
+      <ManualTabs style={styles.tabsroot}
+          onChangeAttempt={onTabChange}
           value={tab}>
         <Tab label="Markdown" value={'MARKDOWN'}/>
         <Tab label="XML View" value={'XML'}/>
-      </Tabs>
+      </ManualTabs>
       <div style={styles.tabcontainer}>
         <TextView
           mode={tab.toLowerCase()}

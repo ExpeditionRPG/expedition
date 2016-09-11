@@ -20,7 +20,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): any =
   };
 }
 
-export const QuestAppBarContainer = connect(
+const QuestAppBarContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(QuestAppBar);
+
+export default QuestAppBarContainer;

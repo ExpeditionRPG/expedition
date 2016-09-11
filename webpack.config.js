@@ -11,7 +11,7 @@ var options = {
     './app/react.tsx',
   ],
   resolve: {
-    extensions: ['', '.js', '.ts', '.tsx']
+    extensions: ['', '.js', '.ts', '.tsx', '.json']
   },
   contentBase: "./app",
   output: {
@@ -28,8 +28,7 @@ var options = {
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' },
       { test: /\.json$/, loader: 'json-loader' },
-      { test: /\.js$/, loaders: ['react-hot', 'jsx', 'babel'], exclude: /node_modules/ },
-      { test: /\.tsx$/, loaders: ['react-hot', 'ts-loader?jsx=true'], exclude: /node_modules/ },
+      { test: /\.tsx$/, loaders: ['react-hot', 'awesome-typescript-loader'], exclude: /node_modules/ },
     ],
     preLoaders: [
         // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.

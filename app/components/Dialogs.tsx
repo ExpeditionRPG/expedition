@@ -1,9 +1,10 @@
-import React from 'react';
+import * as React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import {MarkdownParserError} from 'to_xml'
-import {XMLParserError} from 'to_markdown'
+
+var XMLParserError: any = (require('../../translation/to_markdown') as any).XMLParserError;
+var MarkdownParserError: any = (require('../../translation/to_xml') as any).MarkdownParserError;
 
 // TODO: <MenuItem value="help" primaryText="Help" />
 /*

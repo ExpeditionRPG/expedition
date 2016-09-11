@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import PersonOutlineIcon from 'material-ui/svg-icons/social/person-outline';
 import AppBar from 'material-ui/AppBar';
 import Avatar from 'material-ui/Avatar';

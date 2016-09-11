@@ -5,8 +5,7 @@ import {pushError} from '../error'
 import {getBuffer, setBuffer} from '../buffer'
 import QuestIDE from './QuestIDE'
 
-
-import toMarkdown from 'to_markdown'
+var toMarkdown: any = require('../../translation/to_markdown')
 
 const mapStateToProps = (state: any, ownProps: any): any => {
   return {
