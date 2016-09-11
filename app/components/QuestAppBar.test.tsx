@@ -1,5 +1,5 @@
 import expect from 'expect'
-import React from 'react'
+import * as React from 'react'
 import QuestAppBar from './QuestAppBar'
 
 describe('QuestAppBar', () => {

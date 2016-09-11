@@ -1,10 +1,15 @@
-import expect from 'expect'
+/// <reference path="../../typings/expect/expect.d.ts" />
+/// <reference path="../../typings/jasmine/jasmine.d.ts" />
+/// <reference path="../../typings/custom/require.d.ts" />
+
+var expect:any = require('expect')
 import {editor} from './editor'
 import {setCodeView} from '../actions/editor'
 import {xml_filler} from '../buffer'
 
 describe('editor', () => {
   it('returns initial state', () => {
+    console.log(expect);
     expect(
       editor(undefined, {})
     ).toEqual({xml: xml_filler, view: 'XML'});

@@ -1,17 +1,18 @@
-// Copyright 2015-2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/// <reference path="../typings/redux/redux.d.ts" />
+/// <reference path="../typings/redux-thunk/redux-thunk.d.ts" />
+/// <reference path="../typings/react-redux/react-redux.d.ts" />
+/// <reference path="../typings/react/react-dom.d.ts" />
+/// <reference path="../typings/material-ui/material-ui.d.ts" />
+/// <reference path="../typings/react-tap-event-plugin/react-tap-event-plugin.d.ts" />
+/// <reference path="../typings/jquery/jquery.d.ts" />
+/// <reference path="../typings/es6-shim/es6-shim.d.ts" />
 
-'use strict';
+/// <reference path="../typings/custom/require.d.ts" />
+/// <reference path="../typings/custom/react-ace.d.ts" />
+/// <reference path="../typings/custom/brace.d.ts" />
+
+/// <reference path="../typings/jasmine/jasmine.d.ts" />
+/// <reference path="../typings/expect/expect.d.ts" />
 
 describe('reducers', () => {
   require('../app/reducers/dialogs.test');

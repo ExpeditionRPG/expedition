@@ -11,6 +11,7 @@
 /// <reference path="../typings/custom/react-ace.d.ts" />
 /// <reference path="../typings/custom/brace.d.ts" />
 
+// TODO: Investigate removing tests from the compilation path
 /// <reference path="../typings/jasmine/jasmine.d.ts" />
 /// <reference path="../typings/expect/expect.d.ts" />
 
