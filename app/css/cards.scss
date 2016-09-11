@@ -119,22 +119,22 @@ body.singlePage {
     &.front, &.back {
 
       &:before {
-        top: 0;
-        left: 0;
+        top: 0 !important;
+        left: 0 !important;
       }
     }
 
     .contents {
-      top: $bleed;
-      left: $bleed;
+      top: $bleed !important;
+      left: $bleed !important;
     }
 
     &.front.horizontal {
 
       .contents {
-        height: 2.25in;
-        width: 3.25in;
-        margin: 0;
+        height: 2.25in !important;
+        width: 3.25in !important;
+        margin: 0 !important;
       }
     }
   }
