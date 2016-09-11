@@ -1,21 +1,21 @@
 import { connect } from 'react-redux'
 import {setCodeView, setDirty} from '../actions/editor'
-import {CodeViewType} from '../actions/ActionTypes'
+import {CodeViewType, AppState} from '../reducers/StateTypes'
 import {pushError} from '../error'
 import {getBuffer, setBuffer} from '../buffer'
-import QuestIDE from './QuestIDE'
+import QuestIDE, {QuestIDEStateProps, QuestIDEDispatchProps} from './QuestIDE'
 
 var toMarkdown: any = require('../../translation/to_markdown')
 
-const mapStateToProps = (state: any, ownProps: any): any => {
+const mapStateToProps = (state: AppState, ownProps: any): QuestIDEStateProps => {
   return {
     text: getBuffer(),
-    tab: state.editor.view,
+    view: state.editor.view,
     dirty: state.dirty
   };
 }
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): any => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestIDEDispatchProps => {
   return {
     onTabChange: (currTab: CodeViewType, nextTab: CodeViewType, cb: any) => {
       dispatch(setCodeView(currTab, getBuffer(), nextTab, cb));

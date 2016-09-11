@@ -1,30 +1,28 @@
 import { connect } from 'react-redux'
-import {NEW_QUEST, LOAD_QUEST, DialogIDType} from '../actions/ActionTypes'
+import {NEW_QUEST, LOAD_QUEST} from '../actions/ActionTypes'
+import {DialogIDType, DialogsType, AppState} from '../reducers/StateTypes'
 import {setDialog} from '../actions/dialog'
 import {followUserAuthLink} from '../actions/user'
 import {questAction, saveQuest} from '../actions/quest'
-import Dialogs from './Dialogs'
+import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
 
-const mapStateToProps = (state: any, ownProps: any): any => {
-  let open_dialogs: any = Object.assign({}, state.dialogs);
+const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
+  let open_dialogs: DialogsType = Object.assign({}, state.dialogs);
   open_dialogs['ERROR'] = Boolean(state.errors.length > 0);
   return {
     open: open_dialogs,
-    user_name: (state.user.profile) ? state.user.profile.displayName : null,
-    login_url: state.user.login,
-    logout_url: state.user.logout,
-    short_url: state.shorturl,
-    id: state.editor.id,
+    user: state.user,
+    quest: state.quest,
     errors: state.errors
   };
 }
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): any => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DialogsDispatchProps => {
   return {
-    onRequestClose: (dialog: DialogIDType) => {
+    onRequestClose: (dialog: DialogIDType): void => {
       dispatch(setDialog(dialog, false));
     },
-    onConfirmSave: (dialog: DialogIDType, choice: boolean, id: string) => {
+    onConfirmSave: (dialog: DialogIDType, choice: boolean, id: string): void => {
       var action: any = null;
       switch(dialog) {
         case 'CONFIRM_NEW_QUEST':
@@ -38,12 +36,12 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): any =
       }
       if (choice === true) {
         console.log("Dispatch with save");
-        return saveQuest(dispatch, id, 'XML', function(saved_id: string) {
+        saveQuest(dispatch, id, 'XML', function(saved_id: string) {
           dispatch(action);
         });
       } else if (choice === false) {
         console.log("Dispatch without save");
-        return dispatch(action);
+        dispatch(action);
       }
     },
     onSignIn: (link: string) => {

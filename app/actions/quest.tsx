@@ -1,11 +1,11 @@
 import {
   NEW_QUEST, LOAD_QUEST, SAVE_QUEST, DELETE_QUEST, PUBLISH_QUEST, DOWNLOAD_QUEST,
-  REQUEST_QUEST_LOAD, RECEIVE_QUEST_LOAD,
-  REQUEST_QUEST_SAVE, RECEIVE_QUEST_SAVE,
-  REQUEST_QUEST_DELETE, RECEIVE_QUEST_DELETE,
-  REQUEST_QUEST_PUBLISH, RECEIVE_QUEST_PUBLISH,
-  CodeViewType
+  RequestQuestLoadAction, ReceiveQuestLoadAction,
+  RequestQuestSaveAction, ReceiveQuestSaveAction,
+  RequestQuestDeleteAction, ReceiveQuestDeleteAction,
+  RequestQuestPublishAction, ReceiveQuestPublishAction,
 } from './ActionTypes'
+import {CodeViewType, QuestType} from '../reducers/StateTypes'
 
 import {setDialog} from './dialog'
 import {pushError, pushHTTPError} from '../error'
@@ -13,28 +13,28 @@ import {getBuffer} from '../buffer'
 
 var toXML: any = (require('../../translation/to_xml') as any).default
 
-function receiveQuestLoad(result: {id:string, url:string, modified:string}, xml: string): any {
-  return {
-    type: RECEIVE_QUEST_LOAD,
-    id: result.id,
-    url: result.url,
-    last_save: result.modified,
-    xml: xml
-  };
+function receiveQuestLoad(quest: QuestType ): ReceiveQuestLoadAction {
+  return {type: 'RECEIVE_QUEST_LOAD', quest};
 }
 
-function loadQuest(dispatch: Redux.Dispatch<any>, id: string): any {
+function loadQuest(dispatch: Redux.Dispatch<any>, id: string): JQueryPromise<any> {
   // We only load quests when the drawer is open.
-  dispatch({type: REQUEST_QUEST_LOAD, id});
-  return $.get("/quest/"+id, function(raw_result) {
+  dispatch({type: 'REQUEST_QUEST_LOAD', id});
+  return $.get("/quest/"+id, function(raw_result: string) {
     var result = JSON.parse(raw_result);
-    $.get(result.url, function(xml) {
-      dispatch(receiveQuestLoad(result, xml));
+    $.get(result.url, function(xml: string) {
+      let quest: QuestType = {
+        id: result.id,
+        url: result.url,
+        last_save: parseInt(result.modified),
+        xml: xml
+      };
+      dispatch(receiveQuestLoad(quest));
     }).fail(pushHTTPError);
   }).fail(pushHTTPError);
 }
 
-export function saveQuest(dispatch: Redux.Dispatch<any>, id: string, view: CodeViewType, cb: any): any {
+export function saveQuest(dispatch: Redux.Dispatch<any>, id: string, view: CodeViewType, cb: ((id:string)=>void)): JQueryPromise<any> {
   // Pull from the text buffer for maximum freshness.
   var data = getBuffer();
   if (view === 'MARKDOWN') {
@@ -48,31 +48,31 @@ export function saveQuest(dispatch: Redux.Dispatch<any>, id: string, view: CodeV
     }
   }
 
-  dispatch({type: REQUEST_QUEST_SAVE, id});
+  dispatch({type: 'REQUEST_QUEST_SAVE', id} as RequestQuestSaveAction);
   return $.post("/quest/" + id, data, function(result_quest_id: string) {
-    dispatch({type: RECEIVE_QUEST_SAVE, id: result_quest_id});
+    dispatch({type: 'RECEIVE_QUEST_SAVE', id: result_quest_id} as ReceiveQuestSaveAction);
     if (cb) {
       cb(result_quest_id);
     }
   }).fail(pushHTTPError);
 }
 
-function deleteQuest(dispatch: Redux.Dispatch<any>, id: string): any {
-  dispatch({type: REQUEST_QUEST_DELETE, id});
+function deleteQuest(dispatch: Redux.Dispatch<any>, id: string): JQueryPromise<any> {
+  dispatch({type: 'REQUEST_QUEST_DELETE', id} as RequestQuestDeleteAction);
   console.log(pushHTTPError);
-  $.post("/delete/" + id).done(function(result) {
-    dispatch({type: RECEIVE_QUEST_DELETE, id, result});
+  return $.post("/delete/" + id).done(function(result) {
+    dispatch({type: 'RECEIVE_QUEST_DELETE', id, result} as ReceiveQuestDeleteAction);
   }).fail(function(err) {pushHTTPError(err)});
 }
 
-function publishQuest(dispatch: Redux.Dispatch<any>, id: string): any {
-  dispatch({type: REQUEST_QUEST_PUBLISH, id});
-  $.post("/published/" + id + "/true", function(short_url) {
-    dispatch({type: RECEIVE_QUEST_PUBLISH, id, short_url});
+function publishQuest(dispatch: Redux.Dispatch<any>, id: string): JQueryPromise<any> {
+  dispatch({type: 'REQUEST_QUEST_PUBLISH', id} as RequestQuestPublishAction);
+  return $.post("/published/" + id + "/true", function(short_url) {
+    dispatch({type: 'RECEIVE_QUEST_PUBLISH', id, short_url} as ReceiveQuestPublishAction);
   }).fail(pushHTTPError);
 }
 
-function downloadQuest(dispatch: Redux.Dispatch<any>, url: string): any {
+function downloadQuest(dispatch: Redux.Dispatch<any>, url: string): void {
   if (!url) {
     pushError(new Error("No quest data available to download. Please save your quest first."));
   } else {
@@ -80,8 +80,8 @@ function downloadQuest(dispatch: Redux.Dispatch<any>, url: string): any {
   }
 }
 
-export function questAction(action: string, force: boolean, dirty: boolean, editor: {view: CodeViewType}, quest: {id: string, url: string}): any {
-  return (dispatch: Redux.Dispatch<any>) => {
+export function questAction(action: string, force: boolean, dirty: boolean, view: CodeViewType, quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
+  return (dispatch: Redux.Dispatch<any>): any => {
     // Show confirmation dialogs for certain actions if
     // we have a dirty editor.
     if (dirty && !force) {
@@ -101,7 +101,7 @@ export function questAction(action: string, force: boolean, dirty: boolean, edit
       case LOAD_QUEST:
         return loadQuest(dispatch, quest.id);
       case SAVE_QUEST:
-        return saveQuest(dispatch, quest.id, editor.view, ()=>{});
+        return saveQuest(dispatch, quest.id, view, ()=>{});
       case DELETE_QUEST:
         return deleteQuest(dispatch, quest.id);
       case PUBLISH_QUEST:

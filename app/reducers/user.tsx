@@ -1,12 +1,16 @@
-import {SET_PROFILE_META} from '../actions/ActionTypes'
+import {SET_PROFILE_META, SetProfileMetaAction} from '../actions/ActionTypes'
+import {UserType} from './StateTypes'
 
-export function user(state: any = {profile: null, login: null, logout: null}, action: any): any {
+const default_state: UserType = {profile: null, login: null, logout: null};
+
+export function user(state: UserType = default_state, action: Redux.Action): UserType {
   switch(action.type) {
     case SET_PROFILE_META:
+      let profile_action = (action as SetProfileMetaAction);
       return {
-        profile: action.profile,
-        login: action.login || state.login,
-        logout: action.logout || state.logout
+        profile: profile_action.user.profile,
+        login: profile_action.user.login || state.login,
+        logout: profile_action.user.logout || state.logout
       };
     default:
       return state;

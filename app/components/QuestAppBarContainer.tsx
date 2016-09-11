@@ -1,15 +1,14 @@
 import { connect } from 'react-redux'
 import {setDialog} from '../actions/dialog'
 import {setDrawer} from '../actions/drawer'
-import QuestAppBar from './QuestAppBar'
+import {AppState} from '../reducers/StateTypes'
+import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
 
-const mapStateToProps = (state: any, ownProps: any): any => {
-  return {
-    user_image: (state.user.profile) ? state.user.profile.image : null,
-  };
+const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps => {
+  return {user: state.user};
 }
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): any => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestAppBarDispatchProps => {
   return {
     onDrawerToggle: () => {
       dispatch(setDrawer(true));

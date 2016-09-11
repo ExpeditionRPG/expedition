@@ -1,3 +1,5 @@
+/// <reference path="../../typings/expect/expect.d.ts" />
+/// <reference path="../../typings/jasmine/jasmine.d.ts" />
 import expect from 'expect'
 import * as React from 'react'
 import Dialogs from './Dialogs'

@@ -1,7 +1,11 @@
+/// <reference path="../../typings/react/react.d.ts" />
 import * as React from 'react';
 import Dialog from 'material-ui/Dialog';
+import {TouchTapEventHandler} from 'material-ui';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import {UserType, QuestType, DialogsType, DialogIDType} from '../reducers/StateTypes';
+import {ErrorType} from '../error';
 
 var XMLParserError: any = (require('../../translation/to_markdown') as any).XMLParserError;
 var MarkdownParserError: any = (require('../../translation/to_xml') as any).MarkdownParserError;
@@ -21,8 +25,8 @@ var MarkdownParserError: any = (require('../../translation/to_xml') as any).Mark
 
 interface YesNoDialogProps extends React.Props<any> {
   open: boolean;
-  onRequestClose: any;
-  onConfirm: (result: boolean)=>any;
+  onRequestClose: ()=>void;
+  onConfirm: (result: boolean) => void;
 }
 
 class YesNoDialog extends React.Component<YesNoDialogProps, {}> {
@@ -103,14 +107,14 @@ export class PublishQuestDialog extends React.Component<PublishQuestDialogProps,
 
 interface ErrorDialogProps extends React.Props<any> {
   open: boolean;
-  errors: any[];
-  onRequestClose: any;
+  errors: ErrorType[];
+  onRequestClose: ()=>void;
 }
 
 export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
   render() {
 
-    var errors: any[] = [];
+    var errors: ErrorType[] = [];
     for (var i = 0; i < this.props.errors.length; i++) {
       var error = this.props.errors[i];
       console.log(error.stack);
@@ -145,9 +149,9 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
 interface UserDialogProps extends React.Props<any> {
   open: boolean;
   userName: string;
-  onSignOut: any;
-  onSignIn: any;
-  onRequestClose: any;
+  onSignOut: ()=>void;
+  onSignIn: ()=>void;
+  onRequestClose: ()=>void;
 }
 
 export class UserDialog extends React.Component<UserDialogProps, {}> {
@@ -192,36 +196,52 @@ export class UserDialog extends React.Component<UserDialogProps, {}> {
   }
 }
 
+export interface DialogsStateProps {
+  open: DialogsType;
+  user: UserType;
+  quest: QuestType;
+  errors: ErrorType[];
+};
+
+export interface DialogsDispatchProps {
+  onRequestClose: (dialog: DialogIDType)=>any;
+  onConfirmSave: (dialog: DialogIDType, choice: boolean, id: string)=>any; // TODO make these void
+  onSignIn: (link: string)=>void;
+  onSignOut: (link: string)=>void;
+}
+
+interface DialogsProps extends DialogsStateProps, DialogsDispatchProps {}
+
 // TODO: Input args should be way shorter than this
-const Dialogs = ({id, open, user_name, login_url, logout_url, short_url, errors, onRequestClose, onConfirmSave, onSignIn, onSignOut} : any): JSX.Element => {
+const Dialogs = (props: DialogsProps): JSX.Element => {
   return (
     <span>
       <UserDialog
-        open={open['USER']}
-        userName={user_name}
-        onSignIn={() => onSignIn(login_url)}
-        onSignOut={() => onSignOut(logout_url)}
-        onRequestClose={() => onRequestClose('USER')}
+        open={props.open['USER']}
+        userName={props.user.profile.displayName}
+        onSignIn={() => props.onSignIn(props.user.login)}
+        onSignOut={() => props.onSignOut(props.user.logout)}
+        onRequestClose={() => props.onRequestClose('USER')}
       />
       <ConfirmNewQuestDialog
-        open={open['CONFIRM_NEW_QUEST']}
-        onConfirm={(choice) => onConfirmSave('CONFIRM_NEW_QUEST', choice, id)}
-        onRequestClose={() => onRequestClose('CONFIRM_NEW_QUEST')}
+        open={props.open['CONFIRM_NEW_QUEST']}
+        onConfirm={(choice) => props.onConfirmSave('CONFIRM_NEW_QUEST', choice, props.quest.id)}
+        onRequestClose={() => props.onRequestClose('CONFIRM_NEW_QUEST')}
       />
       <ConfirmLoadQuestDialog
-        open={open['CONFIRM_LOAD_QUEST']}
-        onConfirm={(choice) => onConfirmSave('CONFIRM_LOAD_QUEST', choice, id)}
-        onRequestClose={() => onRequestClose('CONFIRM_LOAD_QUEST')}
+        open={props.open['CONFIRM_LOAD_QUEST']}
+        onConfirm={(choice) => props.onConfirmSave('CONFIRM_LOAD_QUEST', choice, props.quest.id)}
+        onRequestClose={() => props.onRequestClose('CONFIRM_LOAD_QUEST')}
       />
       <PublishQuestDialog
-        open={open['PUBLISH_QUEST']}
-        onRequestClose={() => onRequestClose('PUBLISH_QUEST')}
-        shortUrl={short_url}
+        open={props.open['PUBLISH_QUEST']}
+        onRequestClose={() => props.onRequestClose('PUBLISH_QUEST')}
+        shortUrl={props.quest.short_url}
       />
       <ErrorDialog
-        open={open['ERROR']}
-        onRequestClose={() => onRequestClose('ERROR')}
-        errors={errors}
+        open={props.open['ERROR']}
+        onRequestClose={() => props.onRequestClose('ERROR')}
+        errors={props.errors}
       />
     </span>
   );

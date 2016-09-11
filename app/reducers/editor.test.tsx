@@ -11,7 +11,7 @@ describe('editor', () => {
   it('returns initial state', () => {
     console.log(expect);
     expect(
-      editor(undefined, {})
+      editor(undefined, {type: 'INVALID'})
     ).toEqual({xml: xml_filler, view: 'XML'});
   })
 
