@@ -9,63 +9,62 @@ var renderArea;
 
 /* ===== DATA AND FILTERS ===== */
 
-var theme = 'official';
-
-var templates = { // will be rendered into UI in this order
-  Helper: this.Expedition[theme].templates.Helper,
-  Adventurer: this.Expedition[theme].templates.Adventurer,
-  Ability: this.Expedition[theme].templates.Ability,
-  Encounter: this.Expedition[theme].templates.Encounter,
-  Loot: this.Expedition[theme].templates.Loot,
-};
-var filters, filterList;
-var filterOptions = {
-  theme: ['official', 'cats'],
-  // theme: Object.keys(this.Expedition),
-  export: ['Print-and-Play', 'DriveThruCards', 'AdMagic-Fronts', 'AdMagic-Backs', 'Hide-Backs'],
-  tier: [],
-  class: [],
-  template: [],
-};
-var filterDefaults = { // for filters with defaults, don't have an "all" option
-  theme: 'official',
-  export: 'Print-and-Play',
-};
-var cardFilters = ['tier', 'class', 'template']; // UI filters that filter card data
+var templates = {},
+    filters = {},
+    filterList = [],
+    filterOptions = {
+      theme: Object.keys(this.Expedition),
+      export: ['Print-and-Play', 'DriveThruCards', 'AdMagic-Fronts', 'AdMagic-Backs', 'Hide-Backs'],
+      tier: [],
+      class: [],
+      template: [],
+    },
+    filterDefaults = { // for filters with defaults, don't have an "all" option
+      theme: 'official',
+      export: 'Print-and-Play',
+    },
+    cardFilters = ['tier', 'class', 'template']; // UI filters that filter card data
 
 function getParams() {
 
   var match,
+      matches = {}, // temporarily store query matches
       search = /([^&=]+)=?([^&]*)/g,
       decode = function (s) { return decodeURIComponent(s.replace(/\+/g, " ")); }, // replace + with a space
-      query  = window.location.search.substring(1);
+      query  = window.location.search.substring(1),
+      oldFilters = JSON.parse(JSON.stringify(filters));
   filters = {};
   filterList = [];
 
   while (match = search.exec(query)) {
-    var f = decode(match[1]);
-    filters[f] = decode(match[2]);
-    if (cardFilters.indexOf(f) !== -1) {
-      filterList.push(f);
-    }
+    var key = decode(match[1]);
+    var value = decode(match[2]);
+    matches[key] = value;
   }
 
+  Object.assign(filters, filterDefaults, matches);
+  Object.keys(filters).forEach((key) => {
+    var oldValue = oldFilters[key];
+    if (cardFilters.indexOf(key) !== -1) {
+      filterList.push(key);
+    }
+    if (key === 'theme' && oldValue !== filters[key]) {
+      onThemeChange();
+    }
+  });
+
   switch (filters.export) {
-    case 'DriveThruCards':
-      filters.singlePage = true;
-    break;
-    case 'AdMagic-Fronts':
-      filters.singlePage = true;
-    break;
     case 'AdMagic-Backs':
+    case 'AdMagic-Fronts':
+    case 'DriveThruCards':
       filters.singlePage = true;
     break;
   }
 
   if (filterList.length > 0) {
-    var docTitle = '';
+    var docTitle = 'Expedition Card Creator: ';
     Object.keys(filters).forEach(function (key) {
-      docTitle += filters[key] + '-';
+      docTitle += filters[key] + ' ';
     });
     docTitle = docTitle.slice(0, -1);
     document.title = docTitle;
@@ -111,12 +110,33 @@ function buildFilters () {
   }
 }
 
+
+function onThemeChange () {
+
+  Object.keys(Handlebars.partials).forEach((key) => {
+    Handlebars.unregisterPartial(key);
+  });
+  Object.keys(this.Expedition[filters.theme].partials).forEach((key) => {
+    Handlebars.registerPartial(key, this.Expedition[filters.theme].partials[key]);
+  });
+  renderArea.attr('data-theme', filters.theme);
+  templates = { // will be rendered into UI in this order
+    Helper: this.Expedition[filters.theme].templates.Helper,
+    Adventurer: this.Expedition[filters.theme].templates.Adventurer,
+    Ability: this.Expedition[filters.theme].templates.Ability,
+    Encounter: this.Expedition[filters.theme].templates.Encounter,
+    Loot: this.Expedition[filters.theme].templates.Loot,
+  };
+}
+
+
 function resetFilters () {
   $("#dynamicFilters select").find("option[value='']").attr('selected', true);
   history.replaceState({}, document.title, '?');
   getParams();
   render();
 }
+
 
 function loadTable() {
 
@@ -158,8 +178,6 @@ function render () {
 
   getParams();
   renderArea.html('');
-console.log(filters.theme)
-  renderArea.attr('data-theme', filters.theme);
 
   $("body").removeClass();
   switch (filters.export) {
@@ -257,18 +275,18 @@ function buildCards (template, cards) {
   function renderCardFront (template, card) {
     card = cleanCardData(template, card);
     if (template === "Helper" && card.Face === "back") {
-      return this.Expedition[theme].templates[template + '-back'](card);
+      return this.Expedition[filters.theme].templates[template + '-back'](card);
     } else {
-      return this.Expedition[theme].templates[template](card);
+      return this.Expedition[filters.theme].templates[template](card);
     }
   }
 
   function renderCardBack (template, card) {
     card = cleanCardData(template, card);
     if (template === "Helper" && card.Face === "back") {
-      return this.Expedition[theme].templates[template](card);
+      return this.Expedition[filters.theme].templates[template](card);
     } else {
-      return this.Expedition[theme].templates[template + '-back'](card);
+      return this.Expedition[filters.theme].templates[template + '-back'](card);
     }
   }
 
@@ -339,7 +357,7 @@ function buildCards (template, cards) {
 
           // Replace #ability with the icon image
           card[property] = card[property].replace(/#\w*/mg, function replacer (match) {
-            var src = "/themes/official/images/icon/"+match.substring(1);
+            var src = "/themes/" + filters.theme + "/images/icon/" + match.substring(1);
             src += '_small.svg';
 
             return '<img class="svg inline_icon" src="' + src + '"></img>';
@@ -500,9 +518,3 @@ Handlebars.registerHelper('lootCounter', function (count) {
   output += temp + "</ul>";
   return output;
 });
-
-// TODO do this on each theme change
-
-for (var key in this.Expedition[theme].partials) {
-  Handlebars.registerPartial(key, this.Expedition[theme].partials[key]);
-}
