@@ -9,6 +9,7 @@ Purple (arcane) - 491543
 */
 
 @import '../../../css/card-constants.scss';
+@import url(https://fonts.googleapis.com/css?family=Cinzel:400,700);
 
 /* These are too vague to be easily graspable.... */
 $padding: 12pt;
@@ -19,3 +20,6 @@ $border-weight: 1.1pt; /* note that this also needs to be changed in banner SVG 
 
 $footer-height: 0.4in;
 
+$font-header: "Cinzel", serif !important;
+$font-body: "minion-pro", serif !important;
+$text-color: black;

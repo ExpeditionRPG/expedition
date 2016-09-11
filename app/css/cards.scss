@@ -11,6 +11,7 @@
   background: white;
   overflow: hidden;
   color: $text-color;
+  font-family: $font-body;
   font-size: $text-size-content;
 
   /* General classes */
@@ -71,6 +72,10 @@
   }
 
   &.back {
+
+    text-align: center;
+    font-size: $text-size-back-title;
+    font-family: $font-header;
 
     &.horizontal {
 

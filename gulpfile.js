@@ -21,7 +21,7 @@ Gulp.task('default', ['watch']);
 
 Gulp.task('watch', ['build'], () => {
 
-  Gulp.watch(['app/img/**/*'], ['app-img']);
+  Gulp.watch(['app/img/**/*'], ['app-images']);
   Gulp.watch(['app/css/**/*'], ['app-css']);
   Gulp.watch(['app/*.html'], ['app-html']);
   Gulp.watch(['app/js/**/*'], ['app-js']);
@@ -53,8 +53,8 @@ Gulp.task('build', (cb) => {
 });
 
 
-Gulp.task('app', ['app-css', 'app-html', 'app-img', 'app-js'])
-Gulp.task('themes', ['themes-css', 'themes-handlebars', 'themes-img']);
+Gulp.task('app', ['app-css', 'app-html', 'app-images', 'app-js'])
+Gulp.task('themes', ['themes-css', 'themes-handlebars', 'themes-images']);
 
 
 Gulp.task('clean', () => {
@@ -62,7 +62,7 @@ Gulp.task('clean', () => {
 });
 
 
-function renderImg (src, dest) {
+function renderImages (src, dest) {
   return Gulp.src(src)
       .pipe(Changed(dest))
       .pipe(Imagemin({
@@ -73,13 +73,13 @@ function renderImg (src, dest) {
       .pipe(BrowserSync.stream());
 }
 
-Gulp.task('app-img', () => {
+Gulp.task('app-images', () => {
   Gulp.src('app/favicon.ico').pipe(Gulp.dest('dist'));
-  return renderImg(['app/img/**/*'], 'dist/img');
+  return renderImages(['app/img/**/*'], 'dist/img');
 });
 
-Gulp.task('themes-img', () => {
-  return renderImg(['app/themes/*/images/**/*'], 'dist/themes');
+Gulp.task('themes-images', () => {
+  return renderImages(['app/themes/*/images/**/*'], 'dist/themes');
 });
 
 

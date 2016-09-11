@@ -413,7 +413,7 @@ Handlebars.registerHelper("dots", function (num) {
 
 Handlebars.registerHelper("version", function (version) {
   var today = new Date();
-  return "BETA " + today.getDate() + '/' + (today.getMonth()+1) + '/' + today.getFullYear().toString().substr(2,2);
+  return today.getDate() + '/' + (today.getMonth()+1) + '/' + today.getFullYear().toString().substr(2,2);
 });
 
 Handlebars.registerHelper("camelCase", function (str) {

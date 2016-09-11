@@ -1,0 +1,40 @@
+<!-- <div class="card front vertical {{{ cardType }}}" id="{{camelCase name }}">
+  <div class="contents">
+    <header>
+      <div class="name">{{{ name }}}</div>
+      <div class="abilityType mdl-badge" data-badge="1">{{{romanize tier }}}</div>
+    </header>
+    <article>
+      <div class="indicators">
+        <div>{{{ numberuses }}}</div>
+        <div>{{{ usewhen }}}</div>
+      </div>
+      <br/>
+      <div class="abilitytext mdl-badge-left" data-badge="3"><div class="child">{{{ text }}}</div></div>
+    </article>
+    <footer>
+      <div class="flavortext">{{{ flavortext }}}</div>
+      <div class="cardType">{{ cardType }}</div>
+    </footer>
+  </div>
+</div> -->
+<div class="card front vertical {{{ cardType }}} tier{{ tier }} {{#if tracker}}tracker{{/if}} {{#gt tracker 14}}bottomBar{{/gt}}" id="{{camelCase name }}">
+  <div class="contents">
+    <header>
+      <div class="name">{{{ name }}}</div>
+    </header>
+    <article>
+      <div class="indicators">
+        <div>{{{ numberuses }}}</div>
+        <div>{{{ usewhen }}}</div>
+      </div>
+      <br class="padded" />
+      <div class="abilitytext">{{{ text }}}</div>
+      <div class="rng">{{{roll}}}</div>
+    </article>
+    <footer>
+      <div class="flavortext">{{{ flavortext }}}</div>
+    </footer>
+    {{#if tracker}}{{{lootCounter tracker}}}{{/if}}
+  </div>
+</div>

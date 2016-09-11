@@ -3,6 +3,8 @@ Some useful card style constants. Can be overwritten in your template's constant
 just redefine them after the import constants line.
 */
 
+@import url(https://fonts.googleapis.com/css?family=Cinzel:400,700);
+
 /* Dimensional sizes */
 $card-height: 3.5in;
 $card-width: 2.5in;
@@ -12,6 +14,9 @@ $edge: 0.125in;
 $icon-width: 0.15in;
 
 /* Text contants */
+$font-header: "Cinzel", serif !important;
+$font-body: "minion-pro", serif !important;
+
 $text-color: #2e200f;
 $text-color-white: #eee;
 $text-size-back-title: 22pt;
