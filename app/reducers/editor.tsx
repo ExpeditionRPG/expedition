@@ -30,6 +30,7 @@ export function editor(state = {xml: xml_filler, view: 'XML'}, action: any): any
         };
       };
     case RECEIVE_QUEST_LOAD:
+      setBuffer(action.xml);
       return Object.assign({}, state, {xml: action.xml});
     case NEW_QUEST:
     case RECEIVE_QUEST_DELETE:

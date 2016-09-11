@@ -71,7 +71,7 @@ const QuestList = ({logged_in, editor, quest, dirty, open, quests, onQuestSelect
       );
     }
     body =
-      <SelectableList onChange={(event: any, id: string) => onMenuSelect(LOAD_QUEST, dirty, editor, quest)}>
+      <SelectableList onChange={(event: any, id: string) => onMenuSelect(LOAD_QUEST, dirty, editor, {id: id})}>
         <Subheader>{quests.length + " Saved Quest" + ((quests.length > 1) ? "s" : "")}</Subheader>
         {menu}
       </SelectableList>;

@@ -23,8 +23,6 @@ const styles = {
   }
 };
 
-console.log(ManualTabs);
-
 const QuestIDE = ({ dirty, text, error, tab, onTabChange, onDirty, onErrorClose }: any): JSX.Element => {
   return (
     <span style={{width: "100%", height: "100%"}}>

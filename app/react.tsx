@@ -37,7 +37,7 @@ injectTapEventPlugin();
 // Redux libraries
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 
 // Custom components
 import QuestAppBarContainer from './components/QuestAppBarContainer';
@@ -57,13 +57,9 @@ let initialState: Object = {
   }
 };
 
-let middleware = compose(
-  applyMiddleware(thunk)
-);
-
-// TODO: Get devtools extension working again
-//const enhancer = window['devToolsExtension'] ? window['devToolsExtension']()(createStore) : createStore;
-const store: any = createStore(questIDEApp, initialState, middleware);
+let devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
+let middleware = applyMiddleware(thunk);
+const store: any = middleware(devtools(createStore))(questIDEApp, initialState);
 
 if (module.hot) {
   module.hot.accept('./reducers/CombinedReducers', () => {
@@ -73,8 +69,6 @@ if (module.hot) {
     store.replaceReducer(updated);
   });
 }
-
-console.log(ReactDOM);
 
 // Render the components, picking up where react left off on the server
 ReactDOM.render(

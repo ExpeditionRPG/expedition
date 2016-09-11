@@ -193,7 +193,7 @@ export class UserDialog extends React.Component<UserDialogProps, {}> {
 }
 
 // TODO: Input args should be way shorter than this
-const Dialogs = ({id, xml, open, user_name, login_url, logout_url, short_url, errors, onRequestClose, onConfirmSave, onSignIn, onSignOut} : any): JSX.Element => {
+const Dialogs = ({id, open, user_name, login_url, logout_url, short_url, errors, onRequestClose, onConfirmSave, onSignIn, onSignOut} : any): JSX.Element => {
   return (
     <span>
       <UserDialog
@@ -205,12 +205,12 @@ const Dialogs = ({id, xml, open, user_name, login_url, logout_url, short_url, er
       />
       <ConfirmNewQuestDialog
         open={open['CONFIRM_NEW_QUEST']}
-        onConfirm={(choice) => onConfirmSave('CONFIRM_NEW_QUEST', choice, id, xml)}
+        onConfirm={(choice) => onConfirmSave('CONFIRM_NEW_QUEST', choice, id)}
         onRequestClose={() => onRequestClose('CONFIRM_NEW_QUEST')}
       />
       <ConfirmLoadQuestDialog
         open={open['CONFIRM_LOAD_QUEST']}
-        onConfirm={(choice) => onConfirmSave('CONFIRM_LOAD_QUEST', choice, id, xml)}
+        onConfirm={(choice) => onConfirmSave('CONFIRM_LOAD_QUEST', choice, id)}
         onRequestClose={() => onRequestClose('CONFIRM_LOAD_QUEST')}
       />
       <PublishQuestDialog

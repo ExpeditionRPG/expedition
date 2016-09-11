@@ -11,9 +11,9 @@ import {setDialog} from './dialog'
 import {pushError, pushHTTPError} from '../error'
 import {getBuffer} from '../buffer'
 
-var toXML: any = require('../../translation/to_xml')
+var toXML: any = (require('../../translation/to_xml') as any).default
 
-function receiveQuestData(result: {id:string, url:string, modified:string}, xml: string): any {
+function receiveQuestLoad(result: {id:string, url:string, modified:string}, xml: string): any {
   return {
     type: RECEIVE_QUEST_LOAD,
     id: result.id,
@@ -29,12 +29,12 @@ function loadQuest(dispatch: Redux.Dispatch<any>, id: string): any {
   return $.get("/quest/"+id, function(raw_result) {
     var result = JSON.parse(raw_result);
     $.get(result.url, function(xml) {
-      dispatch(receiveQuestData(result, xml));
+      dispatch(receiveQuestLoad(result, xml));
     }).fail(pushHTTPError);
   }).fail(pushHTTPError);
 }
 
-function saveQuest(dispatch: Redux.Dispatch<any>, id: string, view: CodeViewType, cb: any): any {
+export function saveQuest(dispatch: Redux.Dispatch<any>, id: string, view: CodeViewType, cb: any): any {
   // Pull from the text buffer for maximum freshness.
   var data = getBuffer();
   if (view === 'MARKDOWN') {

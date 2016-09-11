@@ -20,3 +20,17 @@ describe('questAction', () => {
 
   it('downloads')
 })
+
+describe('saveQuest', () => {
+  it('converts md to xml')
+
+  it('passes xml through')
+
+  it('dispatches on request')
+
+  it('dispatches on response')
+
+  it('Runs cb() after successful save')
+
+  it('Does not run cb() if save failed')
+})

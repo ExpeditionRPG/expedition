@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import {NEW_QUEST, LOAD_QUEST, DialogIDType} from '../actions/ActionTypes'
 import {setDialog} from '../actions/dialog'
 import {followUserAuthLink} from '../actions/user'
-import {questAction} from '../actions/quest'
+import {questAction, saveQuest} from '../actions/quest'
 import Dialogs from './Dialogs'
 
 const mapStateToProps = (state: any, ownProps: any): any => {
@@ -15,7 +15,6 @@ const mapStateToProps = (state: any, ownProps: any): any => {
     logout_url: state.user.logout,
     short_url: state.shorturl,
     id: state.editor.id,
-    xml: state.editor.xml,
     errors: state.errors
   };
 }
@@ -25,7 +24,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): any =
     onRequestClose: (dialog: DialogIDType) => {
       dispatch(setDialog(dialog, false));
     },
-    onConfirmSave: (dialog: DialogIDType, choice: boolean, id: string, xml: string) => {
+    onConfirmSave: (dialog: DialogIDType, choice: boolean, id: string) => {
       var action: any = null;
       switch(dialog) {
         case 'CONFIRM_NEW_QUEST':
@@ -39,12 +38,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): any =
       }
       if (choice === true) {
         console.log("Dispatch with save");
-        // TODO make quest action
-        /*
-        return saveQuest(dispatch, id, xml, function(saved_id) {
+        return saveQuest(dispatch, id, 'XML', function(saved_id: string) {
           dispatch(action);
         });
-        */
       } else if (choice === false) {
         console.log("Dispatch without save");
         return dispatch(action);
