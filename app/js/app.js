@@ -18,13 +18,20 @@ var templates = { // will be rendered into UI in this order
   Encounter: this.Expedition[theme].templates.Encounter,
   Loot: this.Expedition[theme].templates.Loot,
 };
-var selectOptions = {
-  export: ['Print-n-Play', 'DriveThruCards', 'AdMagic-Fronts', 'AdMagic-Backs', 'Hide-Backs'],
+var filters, filterList;
+var filterOptions = {
+  theme: ['official', 'cats'],
+  // theme: Object.keys(this.Expedition),
+  export: ['Print-and-Play', 'DriveThruCards', 'AdMagic-Fronts', 'AdMagic-Backs', 'Hide-Backs'],
   tier: [],
   class: [],
   template: [],
 };
-var filters, filterList;
+var filterDefaults = { // for filters with defaults, don't have an "all" option
+  theme: 'official',
+  export: 'Print-and-Play',
+};
+var cardFilters = ['tier', 'class', 'template']; // UI filters that filter card data
 
 function getParams() {
 
@@ -38,7 +45,7 @@ function getParams() {
   while (match = search.exec(query)) {
     var f = decode(match[1]);
     filters[f] = decode(match[2]);
-    if (f !== 'export') {
+    if (cardFilters.indexOf(f) !== -1) {
       filterList.push(f);
     }
   }
@@ -68,20 +75,23 @@ function getParams() {
 function buildFilters () {
 
   $("#dynamicFilters select").remove();
-  for (var field in selectOptions) {
-    selectOptions[field] = selectOptions[field].sort();
-    buildFilter(field, selectOptions[field]);
+  for (var field in filterOptions) {
+    filterOptions[field] = filterOptions[field].sort();
+    buildFilter(field, filterOptions[field]);
   }
 
   function buildFilter (title, values) {
 
     var el = $("<select data-filter='" + title + "'></select>");
-    el.append("<option value=''>All " + title + "</option>");
+    if (filterDefaults[title] == null) {
+      el.append("<option value=''>All " + title + "</option>");
+    }
     for (var v in values) {
       el.append("<option value='" + values[v] + "'>" + values[v] + "</option>");
     }
     el.change(onFilterChange);
     $("#dynamicFilters").prepend(el);
+    el.val(filterDefaults[title]);
     if (filters[title]) {
       $("#dynamicFilters select[data-filter='" + title + "']").find("option[value='" + filters[title] + "']").attr('selected', true);
     }
@@ -123,7 +133,7 @@ function loadTable() {
           return alert('No cards loaded for: ' + page);
         }
 
-        selectOptions.template.push(page);
+        filterOptions.template.push(page);
       }
 
       cardData = data;
@@ -146,15 +156,17 @@ var cardData, tabletop, sheets;
 
 function render () {
 
-  renderArea.html('');
   getParams();
+  renderArea.html('');
+console.log(filters.theme)
+  renderArea.attr('data-theme', filters.theme);
 
   $("body").removeClass();
   switch (filters.export) {
     case 'DriveThruCards':
       $("body").addClass("DriveThruCards");
     break;
-    case 'Print-n-Play':
+    case 'Print-and-Play':
       $("body").addClass("printandplay");
     break;
     case 'Hide-Backs':
@@ -202,9 +214,9 @@ function buildCards (template, cards) {
       continue;
     }
 
-    for (var field in selectOptions) {
-      if (card[field] && selectOptions[field].indexOf(card[field]) === -1) {
-        selectOptions[field].push(card[field]);
+    for (var field in filterOptions) {
+      if (card[field] && filterOptions[field].indexOf(card[field]) === -1) {
+        filterOptions[field].push(card[field]);
       }
     }
 
