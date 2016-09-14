@@ -113,10 +113,10 @@
       },
       _onQuestFetch: function(evt) {
         var quest;
-        if (typeof evt.detail.response !== "string") {
+        if (evt.detail.response && typeof evt.detail.response !== "string") {
           quest = evt.detail.response.children[0];
         } else {
-          quest = new DOMParser().parseFromString(evt.detail.response, 'text/xml').children[0];
+          quest = new DOMParser().parseFromString(evt.detail.xhr.responseText, 'text/xml').children[0];
         }
         Polymer.dom(this).appendChild(quest);
 
