@@ -1,7 +1,8 @@
 import { connect } from 'react-redux'
-import {setDialog} from '../actions/dialog'
+import {showHelp} from '../actions/dialog'
 import {setDrawer} from '../actions/drawer'
-import {AppState} from '../reducers/StateTypes'
+import {followUserAuthLink} from '../actions/user'
+import {AppState, UserType} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps => {
@@ -13,8 +14,15 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
     onDrawerToggle: () => {
       dispatch(setDrawer(true));
     },
-    onUserDialogRequest: () => {
-      dispatch(setDialog('USER', true));
+    onUserDialogRequest: (user: UserType) => {
+      if (user.profile) {
+        dispatch(followUserAuthLink(user.logout));
+      } else {
+        dispatch(followUserAuthLink(user.login));
+      }
+    },
+    onHelpRequest: () => {
+      dispatch(showHelp());
     }
   };
 }

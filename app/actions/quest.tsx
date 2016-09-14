@@ -25,8 +25,9 @@ function loadQuest(dispatch: Redux.Dispatch<any>, id: string): JQueryPromise<any
     $.get(result.url, function(xml: string) {
       let quest: QuestType = {
         id: result.id,
+        meta: result.meta,
         url: result.url,
-        last_save: parseInt(result.modified),
+        modified: parseInt(result.modified),
         xml: xml
       };
       dispatch(receiveQuestLoad(quest));

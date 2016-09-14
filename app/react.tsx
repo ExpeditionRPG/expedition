@@ -42,7 +42,7 @@ import { createStore, applyMiddleware } from 'redux';
 
 // Custom components
 import QuestAppBarContainer from './components/QuestAppBarContainer';
-import QuestListContainer from './components/QuestListContainer';
+import QuestDrawerContainer from './components/QuestDrawerContainer';
 import QuestIDEContainer from './components/QuestIDEContainer';
 import DialogsContainer from './components/DialogsContainer';
 import questIDEApp from './reducers/CombinedReducers';
@@ -78,7 +78,7 @@ ReactDOM.render(
       <div style={{width: "100%", height: "100%"}}>
         <QuestAppBarContainer/>
         <QuestIDEContainer/>
-        <QuestListContainer/>
+        <QuestDrawerContainer/>
         <DialogsContainer/>
       </div>
     </Provider>

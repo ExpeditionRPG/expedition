@@ -11,7 +11,6 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
   open_dialogs['ERROR'] = Boolean(state.errors.length > 0);
   return {
     open: open_dialogs,
-    user: state.user,
     quest: state.quest,
     errors: state.errors
   };
@@ -43,12 +42,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
         console.log("Dispatch without save");
         dispatch(action);
       }
-    },
-    onSignIn: (link: string) => {
-      dispatch(followUserAuthLink(link));
-    },
-    onSignOut: (link: string) => {
-      dispatch(followUserAuthLink(link));
     }
   };
 }

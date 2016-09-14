@@ -14,11 +14,20 @@ export interface QuestType {
   id?: string;
   url?: string;
   xml?: string;
-  last_save?: number;
+  created?: number;
+  modified?: number;
+  published?: boolean;
   short_url?: string;
   meta?: {
     title: string,
-    summary: string
+    summary: string,
+    recommendedMinPlayers: string,
+    recommendedMaxPlayers: string,
+    email: string,
+    url: string,
+    minTimeMinutes: string,
+    maxTimeMinutes: string,
+    author: string
   }
 };
 

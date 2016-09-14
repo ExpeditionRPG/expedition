@@ -6,4 +6,6 @@ describe('QuestAppBar', () => {
   it('Shows user icon')
 
   it('calls onDrawerToggle on drawer tap')
+
+  it('shows help dialog on help icon tap')
 })

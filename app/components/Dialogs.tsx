@@ -146,59 +146,8 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
   }
 }
 
-interface UserDialogProps extends React.Props<any> {
-  open: boolean;
-  userName: string;
-  onSignOut: ()=>void;
-  onSignIn: ()=>void;
-  onRequestClose: ()=>void;
-}
-
-export class UserDialog extends React.Component<UserDialogProps, {}> {
-  render(): JSX.Element {
-    let title: string = "";
-    var actions: JSX.Element[] = [
-      <RaisedButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={this.props.onRequestClose}
-      />,
-    ];
-
-    if (this.props.userName) {
-      title = "Signed In As " + this.props.userName;
-      actions.push(
-        <RaisedButton
-          label="Sign Out"
-          primary={true}
-          onTouchTap={this.props.onSignOut}
-        />);
-    } else {
-      title = "Not Signed In";
-      actions.push(
-        <RaisedButton
-          label="Sign In"
-          primary={true}
-          onTouchTap={this.props.onSignIn}
-        />);
-    }
-
-    return (
-      <Dialog
-        title={title}
-        actions={actions}
-        modal={false}
-        open={Boolean(this.props.open)}
-        onRequestClose={this.props.onRequestClose}
-        >
-      </Dialog>
-    );
-  }
-}
-
 export interface DialogsStateProps {
   open: DialogsType;
-  user: UserType;
   quest: QuestType;
   errors: ErrorType[];
 };
@@ -206,8 +155,6 @@ export interface DialogsStateProps {
 export interface DialogsDispatchProps {
   onRequestClose: (dialog: DialogIDType)=>any;
   onConfirmSave: (dialog: DialogIDType, choice: boolean, id: string)=>any; // TODO make these void
-  onSignIn: (link: string)=>void;
-  onSignOut: (link: string)=>void;
 }
 
 interface DialogsProps extends DialogsStateProps, DialogsDispatchProps {}
@@ -216,13 +163,6 @@ interface DialogsProps extends DialogsStateProps, DialogsDispatchProps {}
 const Dialogs = (props: DialogsProps): JSX.Element => {
   return (
     <span>
-      <UserDialog
-        open={props.open['USER']}
-        userName={props.user.profile.displayName}
-        onSignIn={() => props.onSignIn(props.user.login)}
-        onSignOut={() => props.onSignOut(props.user.logout)}
-        onRequestClose={() => props.onRequestClose('USER')}
-      />
       <ConfirmNewQuestDialog
         open={props.open['CONFIRM_NEW_QUEST']}
         onConfirm={(choice) => props.onConfirmSave('CONFIRM_NEW_QUEST', choice, props.quest.id)}

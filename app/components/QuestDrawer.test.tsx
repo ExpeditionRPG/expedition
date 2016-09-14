@@ -1,8 +1,8 @@
 import expect from 'expect'
 import * as React from 'react'
-import QuestList from './QuestList'
+import QuestDrawer from './QuestDrawer'
 
-describe('QuestList', () => {
+describe('QuestDrawer', () => {
   it('renders if open')
 
   it('hides if closed')

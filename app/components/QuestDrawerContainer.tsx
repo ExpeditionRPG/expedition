@@ -3,10 +3,10 @@ import {QuestActionType} from '../actions/ActionTypes'
 import {CodeViewType, DirtyType, QuestType, AppState} from '../reducers/StateTypes'
 import {questAction} from '../actions/quest'
 import {setDrawer} from '../actions/drawer'
-import QuestList, {QuestListStateProps, QuestListDispatchProps} from './QuestList'
+import QuestDrawer, {QuestDrawerStateProps, QuestDrawerDispatchProps} from './QuestDrawer'
 import {PropTypes} from 'react';
 
-const mapStateToProps = (state: AppState, ownProps: any): QuestListStateProps => {
+const mapStateToProps = (state: AppState, ownProps: any): QuestDrawerStateProps => {
   return {
     quest: state.quest,
     drawer: state.drawer,
@@ -16,7 +16,7 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestListStateProps =>
   };
 }
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestListDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestDrawerDispatchProps => {
   return {
     onMenuSelect: (action: QuestActionType, dirty: DirtyType, view: CodeViewType, quest: QuestType) => {
       dispatch(questAction(action, false, dirty, view, quest));
@@ -27,9 +27,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
   };
 }
 
-const QuestListContainer = connect(
+const QuestDrawerContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(QuestList);
+)(QuestDrawer);
 
-export default QuestListContainer
+export default QuestDrawerContainer

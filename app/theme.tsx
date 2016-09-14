@@ -23,7 +23,7 @@ let theme: any = {
     secondaryTextColor: lightGreen700,
     canvasColor: darkBlack,
     borderColor: grey800,
-    disabledColor: fade(darkBlack, 0.3),
+    disabledColor: fade(grey100, 0.3),
     pickerHeaderColor: lightGreen700,
     clockCircleColor: fade(darkBlack, 0.07),
     shadowColor: darkBlack,

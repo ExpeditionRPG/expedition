@@ -5,3 +5,7 @@ describe('setDrawer', () => {
 
   it('dispatches open/close')
 })
+
+describe('showHelp', () => {
+  it('shows help')
+})

@@ -1,6 +1,6 @@
 import expect from 'expect'
 
-describe('QuestListContainer', () => {
+describe('QuestDrawerContainer', () => {
   it('maps state')
 
   it('dispatches quest action with onMenuSelect')
