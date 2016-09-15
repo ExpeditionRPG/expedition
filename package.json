@@ -28,6 +28,7 @@
     "@google/cloud-debug": "*",
     "@google/cloud-trace": "*",
     "babel-core": "^6.13.2",
+    "base62": "^1.1.1",
     "body-parser": "^1.15.2",
     "brace": "^0.8.0",
     "cheerio": "^0.20.0",

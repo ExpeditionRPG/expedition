@@ -22,13 +22,14 @@ function loadQuest(dispatch: Redux.Dispatch<any>, id: string): JQueryPromise<any
   dispatch({type: 'REQUEST_QUEST_LOAD', id});
   return $.get("/quest/"+id, function(raw_result: string) {
     var result = JSON.parse(raw_result);
-    $.get(result.url, function(xml: string) {
+    $.get(result.url, function(data: string) {
+      console.log(data);
       let quest: QuestType = {
         id: result.id,
         meta: result.meta,
         url: result.url,
         modified: parseInt(result.modified),
-        xml: xml
+        xml: data
       };
       dispatch(receiveQuestLoad(quest));
     }).fail(pushHTTPError);

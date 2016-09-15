@@ -84,7 +84,7 @@ export class ConfirmLoadQuestDialog extends YesNoDialog {
 interface PublishQuestDialogProps extends React.Props<any> {
   open: boolean;
   onRequestClose: any;
-  shortUrl: string;
+  quest: QuestType;
 }
 
 export class PublishQuestDialog extends React.Component<PublishQuestDialogProps, {}> {
@@ -99,7 +99,8 @@ export class PublishQuestDialog extends React.Component<PublishQuestDialogProps,
         />}
         modal={false}
         open={Boolean(this.props.open)}>
-        Your quest has been published. You can access it at: <a href={this.props.shortUrl}>{this.props.shortUrl}</a>
+        Your quest has been published, with ID {this.props.quest.id}.<br/>
+        Enter this into the Expedition App to load your custom quest.
       </Dialog>
     );
   }
@@ -176,7 +177,7 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
       <PublishQuestDialog
         open={props.open['PUBLISH_QUEST']}
         onRequestClose={() => props.onRequestClose('PUBLISH_QUEST')}
-        shortUrl={props.quest.short_url}
+        quest={props.quest}
       />
       <ErrorDialog
         open={props.open['ERROR']}

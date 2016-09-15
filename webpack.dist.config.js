@@ -5,19 +5,26 @@ var webpack = require('webpack')
 var options = {
   debug: false,
   entry: [
-    './app/react.js',
+    './app/react.tsx',
   ],
   contentBase: "./app",
+  resolve: {
+    extensions: ['', '.js', '.ts', '.tsx', '.json']
+  },
   output: {
     path: __dirname + '/dist/',
     filename: 'bundle.js'
   },
   module: {
     loaders: [
-      { test: /\.css$/, loader: "file" },
+      { test: /\.css$/, loader: 'style-loader!css-loader' },
       { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' },
       { test: /\.json$/, loader: 'json-loader' },
-      { test: /\.js$/, loaders: ['react-hot', 'jsx', 'babel'], exclude: /node_modules/ },
+      { test: /\.tsx$/, loaders: ['react-hot', 'awesome-typescript-loader'], exclude: /node_modules/ },
+    ],
+    preLoaders: [
+        // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+        { test: /\.js$/, loader: "source-map-loader" }
     ]
   },
   plugins: [

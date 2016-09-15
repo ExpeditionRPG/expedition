@@ -18,8 +18,8 @@ var config = require('../config');
 //var background = require('../lib/background');
 var cloudstorage = require('../lib/cloudstorage');
 
-var GoogleURL = require('google-url');
-var googleUrl = new GoogleURL( { key: 'AIzaSyDG8iPmQJwzosr_D1OfGcbyg4oigXwfGAA' });
+// We use base62 for encoding/decoding datastore keys into something more easily typeable on a mobile device.
+var Base62 = require('base62');
 
 var ds = gcloud.datastore({
   projectId: config.get('GCLOUD_PROJECT')
@@ -53,7 +53,7 @@ function getRawXMLUrl(user, quest) {
 //     property: value
 //   }
 function fromDatastore (obj) {
-  obj.data.id = obj.key.id;
+  obj.data.id = Base62.encode(obj.key.id);
   return obj.data;
 }
 
@@ -81,11 +81,11 @@ function fromDatastore (obj) {
 //       excludeFromIndexes: true
 //     }
 //   ]
-function toDatastore (obj, nonIndexed) {
+function toDatastore (obj, user, nonIndexed) {
   nonIndexed = nonIndexed || [];
   var results = [];
   Object.keys(obj).forEach(function (k) {
-    if (obj[k] === undefined) {
+    if (obj[k] === undefined || obj[k] === 'user') {
       return;
     }
     results.push({
@@ -94,12 +94,22 @@ function toDatastore (obj, nonIndexed) {
       excludeFromIndexes: nonIndexed.indexOf(k) !== -1
     });
   });
+
+  results.push({
+    name: 'user',
+    value: user,
+    excludeFromIndexes: false
+  });
   return results;
+}
+
+function toFullKey(quest) {
+  return ds.key([quest_kind, Base62.decode(quest)]);
 }
 
 function getOwnedQuests (userId, limit, token, cb) {
   var q = ds.createQuery([quest_kind])
-    .hasAncestor(ds.key([user_kind, String(userId)]))
+    .filter('user', String(userId))
     .filter('tombstone', null)
     .limit(limit)
     .start(token);
@@ -125,97 +135,102 @@ function update (user, id, quest, xml, cb) {
     return cb("Could not update - no xml data.")
   }
 
-  if (id === undefined || id === "null") {
-    var key = ds.key([user_kind, String(user), quest_kind]);
+  if (id === undefined || id === "null" || id === "undefined") {
+    var key = ds.key([quest_kind]);
     console.log("Saving new quest owned by " + user);
 
     // Do a mini-save to storage to get the new ID
-    var entity = {key: key, data: []};
+    var entity = {key: key, data: toDatastore({}, user)};
     ds.save(entity, function(err) {
       if (err) {
         return cb(err);
       }
-      update(user, entity.key.id, quest, xml, cb);
+      update(user, fromDatastore(entity).id, quest, xml, cb);
     });
     return;
   }
 
-  // Invariant: quest ID is present after this point.
-  console.log("Updating quest " + id + " owned by " + user);
-  var key = ds.key([user_kind, String(user), quest_kind, parseInt(id, 10)]);
-
-  var cloud_storage_data = {
-    gcsname: user + "/" + id + "/" + Date.now() + ".xml",
-    buffer: xml
-  }
-
-  // We can run this in parallel with the Datastore model.
-  cloudstorage.upload(cloud_storage_data, function(err, data) {
-    if (err) {
-      console.log(err);
-    }
-  });
-
-  quest.url = cloudstorage.getPublicUrl(cloud_storage_data.gcsname);
-
-  var entity = {
-    key: key,
-    data: toDatastore(quest, ['description'])
-  };
-
-  ds.save(
-    entity,
-    function (err) {
-      if (err) {
-        return cb(err);
-      }
-
-      quest.id = entity.key.id;
-      cb(null, quest);
-    }
-  );
-}
-
-function setPublishedState(user, id, published, cb) {
-  googleUrl.shorten(getRawXMLUrl(user, id), function( err, shortUrl ) {
+  // Not transactional - auth checking shouldn't cause race conditions.
+  read(user, id, function(err, entity) {
     if (err) {
       return cb(err);
     }
 
-    var transaction = ds.transaction();
+    if(entity.user !== user) {
+      return cb(new Error("You do not own this quest."));
+    }
 
-    // Done inside a transaction to prevent concurrency bugs on read-modify-write.
-    transaction.run(function (err) {
+    // Invariant: quest ID is present after this point
+    // and quest is owned
+    console.log("Updating quest " + id + " owned by " + user);
+
+    var cloud_storage_data = {
+      gcsname: user + "/" + id + "/" + Date.now() + ".xml",
+      buffer: xml
+    }
+
+    // We can run this in parallel with the Datastore model.
+    cloudstorage.upload(cloud_storage_data, function(err, data) {
       if (err) {
-        return cb(err);
+        console.log(err);
       }
-
-      var quest_key = ds.key([user_kind, String(user), quest_kind, parseInt(id, 10)]);
-
-      transaction.get(quest_key, function (err, quest) {
-        if (err) {
-          return transaction.rollback(function (_err) {
-            return cb(_err || err);
-          });
-        }
-
-        if (!quest) {
-          // Nothing to do
-          return cb();
-        }
-
-        quest.data.published = Boolean(published);
-        transaction.save(quest);
-        transaction.commit(function (err) {
-          if (err) {
-            return cb(err);
-          }
-          cb(null, shortUrl); // The transaction completed successfully.
-        });
-      });
     });
 
-    cb(err, shortUrl);
+    quest.url = cloudstorage.getPublicUrl(cloud_storage_data.gcsname);
+
+    var entity = {
+      key: toFullKey(id),
+      data: toDatastore(quest, user)
+    };
+
+    ds.save(
+      entity,
+      function (err) {
+        if (err) {
+          return cb(err);
+        }
+
+        quest.id = fromDatastore(entity).id;
+        cb(null, quest);
+      }
+    );
+  });
+}
+
+function setPublishedState(user, id, published, cb) {
+  var transaction = ds.transaction();
+
+  // Done inside a transaction to prevent concurrency bugs on read-modify-write.
+  transaction.run(function (err) {
+    if (err) {
+      return cb(err);
+    }
+
+    transaction.get(toFullKey(id), function (err, quest) {
+      if (err) {
+        return transaction.rollback(function (_err) {
+          return cb(_err || err);
+        });
+      }
+
+      if (!quest) {
+        // Nothing to do
+        return cb();
+      }
+
+      if (quest.data.user !== user) {
+        return cb(new Error("Cannot publish quest you do not own."));
+      }
+
+      quest.data.published = (published) ? Date.now() : undefined;
+      transaction.save(quest);
+      transaction.commit(function (err) {
+        if (err) {
+          return cb(err);
+        }
+        cb(null, id); // The transaction completed successfully.
+      });
+    });
   });
 }
 
@@ -228,9 +243,7 @@ function tombstone (user, id, cb) {
       return cb(err);
     }
 
-    var quest_key = ds.key([user_kind, String(user), quest_kind, parseInt(id, 10)]);
-
-    transaction.get(quest_key, function (err, quest) {
+    transaction.get(toFullKey(id), function (err, quest) {
       if (err) {
         return transaction.rollback(function (_err) {
           return cb(_err || err);
@@ -240,6 +253,10 @@ function tombstone (user, id, cb) {
       if (!quest) {
         // Nothing to do
         return cb();
+      }
+
+      if (quest.data.user !== user) {
+        return cb(new Error("Cannot publish quest you do not own."));
       }
 
       quest.data.tombstone = Date.now();
@@ -255,12 +272,26 @@ function tombstone (user, id, cb) {
 }
 
 function read (user, id, cb) {
-  var key = ds.key([user_kind, String(user), quest_kind, parseInt(id, 10)]);
-  ds.get(key, function (err, entity) {
+  ds.get(toFullKey(id), function (err, entity) {
     if (err) {
       return cb(err);
     }
-    if (!entity) {
+    if (!entity || entity.data.user !== user) {
+      return cb({
+        code: 404,
+        message: 'Not found'
+      });
+    }
+    cb(null, fromDatastore(entity));
+  });
+}
+
+function readPublished(id, cb) {
+ ds.get(toFullKey(id), function (err, entity) {
+    if (err) {
+      return cb(err);
+    }
+    if (!entity || !entity.data.published) {
       return cb({
         code: 404,
         message: 'Not found'
@@ -271,8 +302,7 @@ function read (user, id, cb) {
 }
 
 function _delete (user, id, cb) {
-  var key = ds.key([user_kind, String(user), quest_kind, parseInt(id, 10)]);
-  ds.delete(key, cb);
+  ds.delete(toFullKey(id), cb);
 }
 
 module.exports = {
@@ -280,6 +310,7 @@ module.exports = {
     update(null, data, queueBook, cb);
   },
   read: read,
+  readPublished: readPublished,
   update: update,
   tombstone: tombstone,
   unsafedelete: _delete,

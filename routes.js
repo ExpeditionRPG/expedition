@@ -30,6 +30,8 @@ router.get('/', function(req, res) {
 // TODO: Abstract all these auth checks and try/catch boilerplate into middleware.
 
 router.get('/locals', function(req, res) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Content-Type', 'application/json');
   return res.send(JSON.stringify(res.locals));
 });
 
@@ -61,9 +63,9 @@ router.get('/quest/:quest', function(req, res) {
   });
 });
 
-router.get('/raw/:user/:quest', function(req, res) {
-  model.read(req.params.user, req.params.quest, function(err, entity) {
-    if (err || entity.published !== true) {
+router.get('/raw/:quest', function(req, res) {
+  model.readPublished(req.params.quest, function(err, entity) {
+    if (err) {
       return res.status(500).end(err);
     }
     res.header('Access-Control-Allow-Origin', '*');
