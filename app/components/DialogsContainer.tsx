@@ -2,7 +2,6 @@ import { connect } from 'react-redux'
 import {NEW_QUEST, LOAD_QUEST} from '../actions/ActionTypes'
 import {DialogIDType, DialogsType, AppState} from '../reducers/StateTypes'
 import {setDialog} from '../actions/dialog'
-import {followUserAuthLink} from '../actions/user'
 import {questAction, saveQuest} from '../actions/quest'
 import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
 

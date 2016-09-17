@@ -50,17 +50,29 @@ import questIDEApp from './reducers/CombinedReducers';
 // Initialize the global redux store
 var initialStateElem = document.getElementById("initial-state");
 let auth = (initialStateElem) ? JSON.parse(initialStateElem.textContent) : {};
+console.log(auth);
 let initialState: Object = {
   user: {
-    profile: auth.profile,
-    login: auth.login,
-    logout: auth.logout
+    id: auth.id,
+    displayName: auth.name,
+    image: auth.image
   }
 };
 
 let devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
 let middleware = applyMiddleware(thunk);
 const store: any = middleware(devtools(createStore))(questIDEApp, initialState);
+
+declare var gapi: any;
+function initAuth(): void {
+  gapi.client.setApiKey("AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8");
+  gapi.auth2.init({
+      client_id: "545484140970-r95j0rmo8q1mefo0pko6l3v6p4s771ul.apps.googleusercontent.com",
+      scope: "profile"
+  });
+}
+gapi.load('client:auth2', initAuth);
+
 
 if (module.hot) {
   module.hot.accept('./reducers/CombinedReducers', () => {

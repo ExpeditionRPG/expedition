@@ -21,8 +21,8 @@ export interface QuestType {
   meta?: {
     title: string,
     summary: string,
-    recommendedMinPlayers: string,
-    recommendedMaxPlayers: string,
+    minPlayers: string,
+    maxPlayers: string,
     email: string,
     url: string,
     minTimeMinutes: string,
@@ -49,13 +49,9 @@ export interface DrawerType {
 };
 
 export interface UserType {
-  profile?: {
-    id: string,
-    displayName: string,
-    image: string
-  };
-  login: string;
-  logout: string
+  id?: string,
+  displayName?: string,
+  image?: string
 };
 
 export type ErrorsType = ErrorType[];

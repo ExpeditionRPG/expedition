@@ -140,15 +140,16 @@ function formatQuest(node, context) {
       "author",
       "email",
       "url",
-      "recommended-min-players",
-      "recommended-max-players",
+      "min-players",
+      "max-players",
       "min-time-minutes",
       "max-time-minutes"
     ];
     for (var i = 0; i < attrs.length; i++) {
       var v = node.attr(attrs[i]);
       if (v) {
-        result += format.at(context, attrs[i]+": " + v);
+        var formatted_attr = attrs[i].replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+        result += format.at(context, formatted_attr+": " + v);
       }
     }
     result += "\n";

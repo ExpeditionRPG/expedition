@@ -87,7 +87,7 @@ var setupRoutes = function(app) {
 
   if (process.env.NODE_ENV === 'dev') {
     // Set a catch-all route and proxy the request for static assets
-    console.log("Proxying static requests");
+    console.log("Proxying static requests to webpack");
     var proxy = require('proxy-middleware');
     app.use('/', proxy(url.parse('http://localhost:8081/')));
   } else {

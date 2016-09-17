@@ -131,6 +131,8 @@ function update (user, id, quest, xml, cb) {
   quest.tombstone = null;
   quest.modified = Date.now();
 
+  // TODO: Validate here
+
   if (!xml) {
     return cb("Could not update - no xml data.")
   }

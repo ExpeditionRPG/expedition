@@ -24,10 +24,10 @@ interface QuestAppBarProps extends QuestAppBarStateProps, QuestAppBarDispatchPro
 
 const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   var user_item: JSX.Element;
-  if (props.user.profile && props.user.profile.image) {
+  if (props.user && props.user.image) {
     user_item = (
       <MenuItem primaryText="Sign Out" leftIcon={
-        <Avatar src={props.user.profile.image} />
+        <Avatar src={props.user.image} />
       } onTouchTap={() => props.onUserDialogRequest(props.user)} />
     );
   } else {

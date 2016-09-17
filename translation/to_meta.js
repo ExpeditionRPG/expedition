@@ -1,6 +1,7 @@
 var cheerio = require('cheerio');
 
 function formatQuest(node, context) {
+  // TODO: Dedupe this against to_markdown
   // Parse headers
   var result = {};
 
@@ -10,15 +11,16 @@ function formatQuest(node, context) {
     "author",
     "email",
     "url",
-    "recommended-min-players",
-    "recommended-max-players",
+    "min-players",
+    "max-players",
     "min-time-minutes",
     "max-time-minutes"
   ];
   for (var i = 0; i < attrs.length; i++) {
     var v = node.attr(attrs[i]);
     if (v) {
-      result[attrs[i]] = v;
+      var formatted_attr = attrs[i].replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+      result[formatted_attr] = v;
     }
   }
   return result;

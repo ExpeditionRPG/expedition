@@ -116,8 +116,7 @@ const QuestDrawer = (props: QuestDrawerProps): JSX.Element => {
   }
 
 
-
-  let logged_in: boolean = Boolean(props.user.profile);
+  let logged_in: boolean = Boolean(props.user.id);
 
 
   let login_message: JSX.Element = (<span/>);
