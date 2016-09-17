@@ -29,17 +29,35 @@
     }
   </style>
   <template>
-    <expedition-card title="Custom Quest" data-route="intro" icon="adventurer">
+    <expedition-card title="Public Quests" data-route="intro" icon="adventurer">
       <template is="dom-if" if="{{!logged_in}}">
-        <expedition-button on-tap="_onLogin">Login with Google</expedition-button>
+        <p>
+          <strong>Online Play Disclaimer</strong>
+        </p>
+        <p>
+          Public quests are published by other adventurers like yourselves. We offer no guarantees
+          of completeness, correctness of grammar, or sensibility for any of the quests you are about to see.
+        </p>
+        <p>
+          If you do encounter a faulty quest, please help the community and report it.
+        </p>
+        <p>
+          We use your basic Google account information to show quests you've specifically published.
+        </p>
+        <expedition-button on-tap="_onLogin">Continue with Google</expedition-button>
       </template>
       <template is="dom-if" if="{{logged_in}}">
-        Search: <input type="text" id="search"/>
+        Search: <input type="text" id="search" on-change="_onSearchTextChange"/>
         <select id="searchtype">
           <option value="all">All Quests</option>
           <option value="self">Self Published</option>
         </select>
+        <expedition-button on-tap="_onSearchTap">Search</expedition-button>
         <hr/>
+        <template is="dom-if" if="{{loading}}">
+          <!--TODO Add Spinner-->
+          Loading...
+        </template>
         <template is="dom-repeat" id="encounterlist" items="{{quests}}">
           <expedition-item on-tap="_onQuestTap" data-target$="{{index}}">
             <h1>{{item.meta.title}}</h1>
@@ -60,7 +78,17 @@
         <div>{{quest.created}}</div>
         <div>{{quest.published}}</div>
       </template>
-      <expedition-button on-tap="_onQuestPlay" data-target$="{{quest}}">Play!</expedition-button>
+      <expedition-button on-tap="_onQuestPlay" data-target$="{{quest}}">Play</expedition-button>
+      <template is="dom-if" if="{{!quest.reported}}" restamp="true">
+        <expedition-button on-tap="_onQuestReport" data-targets$="{{quest}}">
+          Report
+        </expedition-button>
+      </template>
+      <template is="dom-if" if="{{quest.reported}}" restamp="true">
+        <expedition-button data-targets$="{{quest}}" class="disabled">
+          Thank you for your feedback.
+        </expedition-button>
+      </template>
     </expedition-dialog>
   </template>
   <script>
@@ -78,11 +106,13 @@
         ExpeditionAPI.login(function(locals) {
           this.logged_in = ExpeditionAPI.isLoggedIn();
           console.log(locals);
+          this.loading = true;
           ExpeditionAPI.getOwnedQuests(function(result) {
             if (result.error) {
               console.log(result.error);
             }
             console.log(result.quests);
+            this.loading = false;
             this.quests = result.quests;
           }.bind(this));
         }.bind(this));
@@ -118,6 +148,7 @@
           num_players: quest.meta.minPlayers + '-' + quest.meta.maxPlayers,
           created: this._formatDate(quest.created),
           published: this._formatDate(quest.published),
+          reported: false,
           user_owned: Boolean(quest.user === ExpeditionAPI.getLoggedInUser())
         };
       },
@@ -132,8 +163,21 @@
         this.$.quest_details.close();
         this.fire('quest-select', quest);
       },
+      _onQuestReport: function(e) {
+        console.log("Reported!");
+        this.set('quest.reported', true);
+      },
+      _onSearchTextChange: function() {
+        this.debounce('search', this._onSearch.bind(this), 300);
+      },
+      _onSearchTap: function() {
+        this.debounce('search', this._onSearch.bind(this), 0);
+      },
       _onSearch: function() {
-        // TODO
+        console.log("TODO SEARCH");
+      },
+      properties: {
+        quest: Object
       }
     });
   </script>

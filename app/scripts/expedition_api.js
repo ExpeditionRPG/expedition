@@ -9,6 +9,8 @@ var ExpeditionAPI = {
     gapi.auth2.init({
         client_id: this.CLIENT_ID,
         scope: this.SCOPES
+    }).then(function() {
+      console.log(gapi.auth2.getAuthInstance().isSignedIn);
     });
   },
   isLoggedIn: function() {
@@ -72,6 +74,9 @@ var ExpeditionAPI = {
     xhr.send();
   },
   searchPublishedQuests: function(search) {
+    console.log("TODO");
+  },
+  sendFeedback: function(search) {
     console.log("TODO");
   }
 }

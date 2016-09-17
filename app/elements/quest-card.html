@@ -148,6 +148,7 @@
         this._handleParser(this._parser.init(this.getEffectiveChildren()[0]));
       },
       _endQuest: function() {
+        // TODO: Show feedback dialog and send feedback only if quest was loaded remotely.
         this.fire('return');
         this._isWin = undefined;
         this._parser = new questParser();
