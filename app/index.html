@@ -157,30 +157,37 @@
         <expedition-button on-tap="next" data-target="_select">Next</expedition-button>
       </expedition-card>
 
+      <quest-card
+        id="global_quest"
+        on-return="showSelect"
+        data-route="quest"
+        url="{{quest.xml_url}}">
+      </quest-card>
+
       <!-- Ideas: http://www.trollmystic.com/pub/2012/03/03/event-generator/ -->
-      <expedition-card-set id="featured" title="Featured Quests" icon="cards"
+      <expedition-card id="featured"
+        data-route="featured"
+        title="Featured Quests"
+        icon="cards"
         data-title="Featured Quests" on-return="showSelect"
-        data-info="No Guide needed - everyone plays as adventurers."
-        data-route="featured">
+        data-info="No Guide needed - everyone plays as adventurers.">
         <header>
           <p>
             Select a quest below:
           </p>
         </header>
 
-        <quest-card
-          url="quests/build/oust_albanus.xml"
-          on-return="showFeatured"
-          data-route="albanus">
-        </quest-card>
+        <expedition-item on-tap="onFeaturedQuestChoice" data-url="quests/build/oust_albanus.xml">
+          <h1>Oust Albanus</h1>
+          <div>Your party encounters a smelly situation.</div>
+        </expedition-item>
 
-        <quest-card
-          url="quests/build/mistress_malaise.xml"
-          on-return="showFeatured"
-          data-route="malaise">
-        </quest-card>
+        <expedition-item on-tap="onFeaturedQuestChoice" data-url="quests/build/mistress_malaise.xml">
+          <h1>Mistress Malaise</h1>
+          <div>Mystery, Misfortune, and a Mistress.</div>
+        </expedition-item>
 
-      </expedition-card-set>
+      </expedition-card>
 
       <quest-search
         title="Public Quests"
@@ -189,13 +196,6 @@
         on-return="showSelect"
         data-route="public">
       </quest-search>
-
-      <quest-tester
-        title="Custom Quest"
-        data-info="Upload a quest file from your phone or the internet."
-        on-return="showSelect"
-        data-route="custom_quest">
-      </quest-tester>
 
       <roleplay-card
         title="Guided Adventure"
@@ -211,13 +211,14 @@
         data-route="custom" custom>
       </combat-card>
 
-      <!-- TODO use this globally -->
-      <quest-card
-        id="global_quest"
-        on-return="showFeatured"
-        data-route="quest"
-        url="{{quest.xml_url}}">
-      </quest-card>
+      <quest-tester
+        title="Custom Quest"
+        data-info="Upload a quest file from your phone or the internet."
+        on-return="showSelect"
+        on-url="onQuestURLLoad"
+        on-file="onQuestFileLoad"
+        data-route="custom_quest">
+      </quest-tester>
 
     </expedition-card-set>
 

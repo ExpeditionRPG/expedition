@@ -104,12 +104,12 @@
         // TODO: Dialog to verify quest change
         if (this.url) {
           this.$.questFetcher.generateRequest();
-          this.$.pages.next("adventurersetup");
+          this.$.pages.next("adventurersetup", "instant");
         } else if (content !== undefined) {
-          this._onQuestFetch({detail: {response: content}});
-          this.$.pages.next("adventurersetup");
+          this._onQuestFetch({detail: {xhr: {responseText: content}}});
+          this.$.pages.next("adventurersetup", "instant");
         } else {
-          this.$.pages.next("comingsoon");
+          this.$.pages.next("comingsoon", "instant");
         }
       },
       _onQuestFetch: function(evt) {

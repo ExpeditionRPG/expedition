@@ -57,19 +57,35 @@
     this.$.pages.prev("splash");
     e.stopPropagation();
   };
-  app.showFeatured = function(e) {
-    this.$.pages.prev("featured");
-    this.$.featured.reset();
-    e.stopPropagation();
-  };
   app.showSetup = function(e) {
     this.$.pages.prev("setup");
     e.stopPropagation();
   };
   app.onPublicQuestChoice = function(e, detail) {
-    this.quest = JSON.parse(detail);
+    this._loadQuest(JSON.parse(detail));
+    e.stopPropagation();
+  };
+  app.onFeaturedQuestChoice = function(e) {
+    this._loadQuest({
+      xml_url: e.currentTarget.dataset.url
+    });
+    e.stopPropagation();
+  };
+  app.onQuestURLLoad = function(e, detail) {
+    this._loadQuest({
+      xml_url: detail
+    });
+  };
+  app._loadQuest = function(quest) {
+    console.log("Loading quest");
+    this.quest = quest;
     this.$.pages.next("quest");
     this.$.global_quest.ready();
+  };
+  app.onQuestFileLoad = function(e, detail) {
+    console.log("File load");
+    this.$.pages.next("quest");
+    this.$.global_quest.ready(detail);
     e.stopPropagation();
   };
 })(document);

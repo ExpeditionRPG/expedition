@@ -49,8 +49,8 @@
       <template is="dom-if" if="{{logged_in}}">
         Search: <input type="text" id="search" on-change="_onSearchTextChange"/>
         <select id="searchtype">
+          <option value="self" selected>Your Quests</option>
           <option value="all">All Quests</option>
-          <option value="self">Self Published</option>
         </select>
         <expedition-button on-tap="_onSearchTap">Search</expedition-button>
         <hr/>
