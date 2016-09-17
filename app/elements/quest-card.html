@@ -101,6 +101,7 @@
         this._parser.setGameState(this.globals);
 
         // Reset to selection screen and fetch content
+        // TODO: Dialog to verify quest change
         if (this.url) {
           this.$.questFetcher.generateRequest();
           this.$.pages.next("adventurersetup");

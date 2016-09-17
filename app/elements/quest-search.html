@@ -1,0 +1,140 @@
+<dom-module id="quest-search">
+  <style>
+    :host ::content instruction {
+      display: block;
+      padding: var(--vw-small);
+    };
+    :host ::content comment {
+      display: none;
+    };
+
+    #fileselect {
+      position: fixed;
+      top: -100em;
+    }
+
+    #questchooser a {
+      display: inline-block;
+      float: right;
+    }
+
+    #quest {
+      display: inline-block;
+      font-size: var(--font-size-interactive);
+      padding: var(--vh-base) 0;
+      font-family: var(--font-body);
+      border: var(--border-size) solid var(--border-color-accent);
+      line-height: 1.2em;
+      margin-top: var(--vh-base);
+    }
+  </style>
+  <template>
+    <expedition-card title="Custom Quest" data-route="intro" icon="adventurer">
+      <template is="dom-if" if="{{!logged_in}}">
+        <expedition-button on-tap="_onLogin">Login with Google</expedition-button>
+      </template>
+      <template is="dom-if" if="{{logged_in}}">
+        Search: <input type="text" id="search"/>
+        <select id="searchtype">
+          <option value="all">All Quests</option>
+          <option value="self">Self Published</option>
+        </select>
+        <hr/>
+        <template is="dom-repeat" id="encounterlist" items="{{quests}}">
+          <expedition-item on-tap="_onQuestTap" data-target$="{{index}}">
+            <h1>{{item.meta.title}}</h1>
+            <div>{{item.meta.summary}}</div>
+          </expedition-item>
+        </template>
+      </template>
+    </expedition-card>
+    <expedition-dialog title="{{quest.title}}" id="quest_details">
+      <div><b>Summary:</b> {{quest.summary}}</div>
+      <div><b>Last update:</b> {{quest.modified}}</div>
+      <div><b>URL:</b> <a href="{{quest.url}}" target="_blank">{{quest.shorturl}}</a></div>
+      <div><b>Author: </b> {{quest.author}}</div>
+      <div><b>Email: </b> {{quest.email}}</div>
+      <div><b>Play time:</b> {{quest.play_period}}</div>
+      <div><b>Players:</b> {{quest.num_players}}</div>
+      <template is="dom-if" if="{{quest.user_owned}}">
+        <div>{{quest.created}}</div>
+        <div>{{quest.published}}</div>
+      </template>
+      <expedition-button on-tap="_onQuestPlay" data-target$="{{quest}}">Play!</expedition-button>
+    </expedition-dialog>
+  </template>
+  <script>
+    /*global GlobalsBehaviour */
+    /*global ExpeditionAPI */
+    Polymer({
+      is: 'quest-search',
+      behaviors: [GlobalsBehaviour],
+      ready: function() {
+        this.logged_in = ExpeditionAPI.isLoggedIn();
+        this.quests=[];
+        this.user_owned_quest = false;
+      },
+      _onLogin: function() {
+        ExpeditionAPI.login(function(locals) {
+          this.logged_in = ExpeditionAPI.isLoggedIn();
+          console.log(locals);
+          ExpeditionAPI.getOwnedQuests(function(result) {
+            if (result.error) {
+              console.log(result.error);
+            }
+            console.log(result.quests);
+            this.quests = result.quests;
+          }.bind(this));
+        }.bind(this));
+      },
+      _truncate(s, n) {
+        return s.substr(0,n-1)+(s.length>n?'&hellip;':'');
+      },
+      _formatDate: function(unix_timestamp) {
+        if (!unix_timestamp) {
+          return "unknown";
+        }
+        return new Date(parseInt(unix_timestamp)).toISOString().split('T')[0];
+      },
+      _formatPlayPeriod: function(min_minutes, max_minutes) {
+        if (min_minutes > 60 && max_minutes > 60) {
+          return Math.round(min_minutes / 60) + '-' + Math.round(max_minutes / 60) + " hours";
+        } else {
+          return min_minutes + '-' + max_minutes + " minutes";
+        }
+      },
+      _formattedQuest: function(quest) {
+        return {
+          id: quest.id,
+          xml_url: quest.url,
+          title: quest.meta.title,
+          summary: quest.meta.summary,
+          modified: this._formatDate(quest.modified),
+          url: quest.meta.url,
+          shorturl: this._truncate(quest.meta.url, 20),
+          author: quest.meta.author,
+          email: quest.meta.email,
+          play_period: this._formatPlayPeriod(quest.meta.minTimeMinutes, quest.meta.maxTimeMinutes),
+          num_players: quest.meta.minPlayers + '-' + quest.meta.maxPlayers,
+          created: this._formatDate(quest.created),
+          published: this._formatDate(quest.published),
+          user_owned: Boolean(quest.user === ExpeditionAPI.getLoggedInUser())
+        };
+      },
+      _onQuestTap: function(e) {
+        var idx = e.currentTarget.dataset.target;
+        this.quest = this._formattedQuest(this.quests[idx]);
+        this.$.quest_details.open();
+      },
+      _onQuestPlay: function(e) {
+        var quest = e.currentTarget.dataset.target;
+        console.log(quest);
+        this.$.quest_details.close();
+        this.fire('quest-select', quest);
+      },
+      _onSearch: function() {
+        // TODO
+      }
+    });
+  </script>
+</dom-module>

@@ -66,4 +66,10 @@
     this.$.pages.prev("setup");
     e.stopPropagation();
   };
+  app.onPublicQuestChoice = function(e, detail) {
+    this.quest = JSON.parse(detail);
+    this.$.pages.next("quest");
+    this.$.global_quest.ready();
+    e.stopPropagation();
+  };
 })(document);

@@ -67,7 +67,11 @@
 
   </script>
 
+  <script type="text/javascript" src="scripts/gapi.min.js"></script>
+
   <script type="text/javascript" src="scripts/math.min.js"></script>
+
+  <script type="text/javascript" src="scripts/expedition_api.js"></script>
 
   <!-- global user settings -->
   <script id="globals" type="application/json" src="scripts/globals.json"></script>
@@ -178,6 +182,21 @@
 
       </expedition-card-set>
 
+      <quest-search
+        title="Public Quests"
+        data-info="Browse quests published by adventurers around the world."
+        on-quest-select="onPublicQuestChoice"
+        on-return="showSelect"
+        data-route="public">
+      </quest-search>
+
+      <quest-tester
+        title="Custom Quest"
+        data-info="Upload a quest file from your phone or the internet."
+        on-return="showSelect"
+        data-route="custom_quest">
+      </quest-tester>
+
       <roleplay-card
         title="Guided Adventure"
         data-info="For beginner and intermediate Guides - a quest framework."
@@ -192,14 +211,16 @@
         data-route="custom" custom>
       </combat-card>
 
-      <quest-tester
-        title="Custom Quest (BETA)"
-        data-info="Upload a quest file from your phone or the internet."
-        on-return="showSelect"
-        data-route="custom_quest">
-      </quest-tester>
+      <quest-card
+        id="global_quest"
+        on-return="showFeatured"
+        data-route="quest"
+        url="{{quest.xml_url}}">
+      </quest-card>
 
     </expedition-card-set>
+
+    <!-- TODO: Expose quest-card here and use it globally -->
 
     <expedition-dialog title="Settings" id="settings">
       <expedition-settings></expedition-settings>
