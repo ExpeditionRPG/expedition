@@ -22,8 +22,8 @@ CREATE TABLE quests (
   meta_maxTimeMinutes INT,
   meta_minPlayers INT,
   meta_minTimeMinutes INT,
-  meta_summary VARCHAR(1024),
-  meta_title VARCHAR(255),
+  meta_summary VARCHAR(1024) CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI,
+  meta_title VARCHAR(255) CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI,
   meta_url VARCHAR(2048),
   modified TIMESTAMP NULL DEFAULT NULL,
   published TIMESTAMP NULL DEFAULT NULL,
@@ -81,6 +81,8 @@ function searchQuests(userId, params, cb) {
     cb(new Error("Search params not given"));
   }
 
+  var connection = getConnection();
+
   var filter_string = "";
   var filter_vars = [];
 
@@ -101,6 +103,13 @@ function searchQuests(userId, params, cb) {
     filter_vars.push(players);
   }
 
+  if (params.search) {
+    var params_like = "%" + params.search + "%";
+    filter_string += " AND (meta_title LIKE ? OR meta_summary LIKE ?)";
+    filter_vars.push(params_like);
+    filter_vars.push(params_like);
+  }
+
   if (params.token) {
     console.log("TODO Start token " + token)
   }
@@ -109,7 +118,6 @@ function searchQuests(userId, params, cb) {
   filter_string += " LIMIT ?";
   filter_vars.push(limit);
 
-  var connection = getConnection();
   var query = connection.query('SELECT * FROM `quests` WHERE tombstone IS NULL' + filter_string, filter_vars, function(err, results) {
     if (err) {
       return cb(err);
