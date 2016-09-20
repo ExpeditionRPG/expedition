@@ -59,19 +59,21 @@ var ExpeditionAPI = {
     xhr.withCredentials = true;
     xhr.send();
   },
-  getOwnedQuests: function(cb) {
+  searchQuests: function(params, cb) {
     if (!this.isLoggedIn()) {
       throw new Error("Not logged in!");
     }
+
     var xhr = new XMLHttpRequest();
     // TODO: Pagination
-    xhr.open('GET', this.URL_BASE + "/quests/0", true);
+    xhr.open('POST', this.URL_BASE + "/quests", true);
+
     xhr.setRequestHeader('Content-Type', 'text/plain');
     xhr.onload = function() {
       cb(JSON.parse(xhr.responseText));
     };
     xhr.withCredentials = true;
-    xhr.send();
+    xhr.send(JSON.stringify(params));
   },
   searchPublishedQuests: function(search) {
     console.log("TODO");

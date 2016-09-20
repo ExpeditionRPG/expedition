@@ -47,12 +47,7 @@
         <expedition-button on-tap="_onLogin">Continue with Google</expedition-button>
       </template>
       <template is="dom-if" if="{{logged_in}}">
-        Search: <input type="text" id="search" on-change="_onSearchTextChange"/>
-        <select id="searchtype">
-          <option value="self" selected>Your Quests</option>
-          <option value="all">All Quests</option>
-        </select>
-        <expedition-button on-tap="_onSearchTap">Search</expedition-button>
+        <expedition-button on-tap="_onFilterTap">Filter Search</expedition-button>
         <hr/>
         <template is="dom-if" if="{{loading}}">
           <!--TODO Add Spinner-->
@@ -60,8 +55,8 @@
         </template>
         <template is="dom-repeat" id="encounterlist" items="{{quests}}">
           <expedition-item on-tap="_onQuestTap" data-target$="{{index}}">
-            <h1>{{item.meta.title}}</h1>
-            <div>{{item.meta.summary}}</div>
+            <h1>{{item.meta_title}}</h1>
+            <div>{{item.meta_summary}}</div>
           </expedition-item>
         </template>
       </template>
@@ -80,15 +75,29 @@
       </template>
       <expedition-button on-tap="_onQuestPlay" data-target$="{{quest}}">Play</expedition-button>
       <template is="dom-if" if="{{!quest.reported}}" restamp="true">
-        <expedition-button on-tap="_onQuestReport" data-targets$="{{quest}}">
-          Report
-        </expedition-button>
+        <expedition-button on-tap="_onQuestReport" data-targets$="{{quest}}">Report</expedition-button>
       </template>
       <template is="dom-if" if="{{quest.reported}}" restamp="true">
         <expedition-button data-targets$="{{quest}}" class="disabled">
-          Thank you for your feedback.
+          Quest reported.
         </expedition-button>
       </template>
+    </expedition-dialog>
+    <expedition-dialog title="Filter Search" id="filter_search">
+      <div>
+        Visibility:
+        <select id="visibility">
+          <option value="self" selected>Your Quests</option>
+          <option value="all">All Quests</option>
+        </select>
+      </div>
+      <div>
+        Search: <input type="text" id="search_text"/>
+      </div>
+      <div>
+        # Players: <input type="number" id="num_players"/>
+      </div>
+      <expedition-button id="search" on-tap="_onSearch">Search</expedition-button>
     </expedition-dialog>
   </template>
   <script>
@@ -107,7 +116,7 @@
           this.logged_in = ExpeditionAPI.isLoggedIn();
           console.log(locals);
           this.loading = true;
-          ExpeditionAPI.getOwnedQuests(function(result) {
+          ExpeditionAPI.searchQuests({owner: ExpeditionAPI.getLoggedInUser().id}, function(result) {
             if (result.error) {
               console.log(result.error);
             }
@@ -120,11 +129,11 @@
       _truncate(s, n) {
         return s.substr(0,n-1)+(s.length>n?'&hellip;':'');
       },
-      _formatDate: function(unix_timestamp) {
-        if (!unix_timestamp) {
+      _formatDate: function(rfc_datetime) {
+        if (!rfc_datetime) {
           return "unknown";
         }
-        return new Date(parseInt(unix_timestamp)).toISOString().split('T')[0];
+        return rfc_datetime.split('T')[0];
       },
       _formatPlayPeriod: function(min_minutes, max_minutes) {
         if (min_minutes > 60 && max_minutes > 60) {
@@ -137,15 +146,15 @@
         return {
           id: quest.id,
           xml_url: quest.url,
-          title: quest.meta.title,
-          summary: quest.meta.summary,
+          title: quest.meta_title,
+          summary: quest.meta_summary,
           modified: this._formatDate(quest.modified),
-          url: quest.meta.url,
-          shorturl: this._truncate(quest.meta.url, 20),
-          author: quest.meta.author,
-          email: quest.meta.email,
-          play_period: this._formatPlayPeriod(quest.meta.minTimeMinutes, quest.meta.maxTimeMinutes),
-          num_players: quest.meta.minPlayers + '-' + quest.meta.maxPlayers,
+          url: quest.meta_url,
+          shorturl: this._truncate(quest.meta_url, 20),
+          author: quest.meta_author,
+          email: quest.meta_email,
+          play_period: this._formatPlayPeriod(quest.meta_minTimeMinutes, quest.meta_maxTimeMinutes),
+          num_players: quest.meta_minPlayers + '-' + quest.meta_maxPlayers,
           created: this._formatDate(quest.created),
           published: this._formatDate(quest.published),
           reported: false,
@@ -170,11 +179,36 @@
       _onSearchTextChange: function() {
         this.debounce('search', this._onSearch.bind(this), 300);
       },
-      _onSearchTap: function() {
-        this.debounce('search', this._onSearch.bind(this), 0);
+      _onFilterTap: function() {
+        this.$.filter_search.open();
       },
       _onSearch: function() {
-        console.log("TODO SEARCH");
+        var params = {};
+
+        var visibility = this.$.visibility.value;
+        if (visibility === "self") {
+          params.owner = ExpeditionAPI.getLoggedInUser().id;
+        }
+
+        var num_players = this.$.num_players.value;
+        if (num_players) {
+          params.players = parseInt(num_players);
+        }
+
+        var search_text = this.$.search_text.value;
+        if (search_text) {
+          params.search = search_text;
+        }
+
+        this.$.filter_search.close();
+        ExpeditionAPI.searchQuests(params, function(result) {
+          if (result.error) {
+            console.log(result.error);
+          }
+          console.log(result.quests);
+          this.loading = false;
+          this.quests = result.quests;
+        }.bind(this));
       },
       properties: {
         quest: Object
