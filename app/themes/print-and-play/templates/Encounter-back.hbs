@@ -1,9 +1,9 @@
-<div class="card back dark horizontal {{ class }} {{ cardType }}">
+<div class="card back dark horizontal {{ class }} {{ cardType }} tier{{ tier }}">
   <div class="contents">
-    <div class="cardType">{{ class }}</div>
-    <div class="class">{{romanize tier }}</div>
-    <div class="website">ExpeditionRPG.com</div>
-    <div class="version">{{version version }}</div>
+    <h1>{{ class }}</h1>
+    <h2>{{ cardType }}</h2>
     {{{healthCounter 'max' }}}
+    {{#if naming }}<div class="naming">{{ naming }}</div>{{/if}}
+    <div class="tier">{{romanize tier }}</div>
   </div>
 </div>

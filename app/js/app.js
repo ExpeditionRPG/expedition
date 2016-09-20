@@ -219,7 +219,6 @@ function render () {
 
 function buildCards (template, cards) {
 
-  var templateCount = 0;
   var cardCount = 0;
   var fronts, backs;
 
@@ -266,10 +265,9 @@ function buildCards (template, cards) {
     backs.append(renderCardBack(template, card));
 
     cardCount++;
-    templateCount++;
   }
 
-  console.log(templateCount + " " + template + " cards, " + cardCount + " total");
+  console.log(cardCount + " " + template + " cards rendered");
   SVGInjector(document.querySelectorAll('img.svg'), {});
 
   function renderCardFront (template, card) {
@@ -327,8 +325,6 @@ function buildCards (template, cards) {
               return whole + '<br />';
             }
           });
-
-
 
           // Expand &macro's
           card[property] = card[property].replace(/&[a-zA-Z0-9;]*/mg, function replacer (match) {

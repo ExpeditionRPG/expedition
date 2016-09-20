@@ -1,7 +1,6 @@
 <div class="card back horizontal {{ class }} {{ cardType }}">
   <div class="contents">
-    <div class="cardType">{{ cardType }}</div>
-    <div class="website">ExpeditionRPG.com</div>
-    <div class="version">{{version version }}</div>
+    <h1>{{ cardType }}</h1>
+    {{#if naming }}<div class="naming">{{ naming }}</div>{{/if}}
   </div>
 </div>
