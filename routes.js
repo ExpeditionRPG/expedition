@@ -5,7 +5,7 @@ var toMarkdown = require('./translation/to_markdown');
 var toXML = require('./translation/to_xml');
 var toGraph = require('./translation/to_graph');
 var toMeta = require('./translation/to_meta');
-var model = require('./quests/model-datastore');
+var model = require('./quests/model');
 var passport = require('passport');
 var oauth2 = require('./lib/oauth2');
 var express =require('express');
@@ -18,7 +18,6 @@ var express =require('express');
 var router = express.Router();
 router.use(oauth2.template);
 
-var QUESTS_FETCH_COUNT = 100;
 var ALLOWED_CORS = "http://localhost:5000";
 
 router.get('/', function(req, res) {
@@ -31,7 +30,7 @@ router.get('/', function(req, res) {
 
 // TODO: Abstract all these auth checks and try/catch boilerplate into middleware.
 
-router.get('/quests/:token', function(req, res) {
+router.post('/quests', function(req, res) {
   var token = req.params.token;
   if (!res.locals.id) {
     res.header('Access-Control-Allow-Origin', ALLOWED_CORS);
@@ -39,10 +38,19 @@ router.get('/quests/:token', function(req, res) {
     return res.send(JSON.stringify([]));
   }
 
-  model.getOwnedQuests(res.locals.id, QUESTS_FETCH_COUNT, req.params.token, function(err, quests, nextToken) {
+  var params;
+  try {
+    params = JSON.parse(req.body);
+  } catch (e) {
+    console.log(e);
+    return res.status(500).end("Search Error");
+  }
+
+  model.searchQuests(res.locals.id, params, function(err, quests, nextToken) {
     if (err) {
       res.header('Access-Control-Allow-Origin', ALLOWED_CORS);
-      res.status(500).end(err);
+      console.log(err);
+      return res.status(500).end("Search Error");
     }
     result = {error: err, quests: quests, nextToken: nextToken};
     console.log("Found " + quests.length + " quests for user " + res.locals.id);
@@ -65,9 +73,9 @@ router.get('/quest/:quest', function(req, res) {
 });
 
 router.get('/raw/:quest', function(req, res) {
-  model.readPublished(req.params.quest, function(err, entity) {
+  model.read(null, req.params.quest, function(err, entity) {
     if (err) {
-      return res.status(500).end(err);
+      return res.status(500).end(err.toString());
     }
     res.header('Access-Control-Allow-Origin', ALLOWED_CORS);
     res.header('Content-Type', 'text/xml');
@@ -80,9 +88,9 @@ router.post('/published/:quest/:published', function(req, res) {
   if (!res.locals.id) {
     res.status(500).end("You are not signed in. Please sign in to publish/unpublish this quest.");
   }
-  model.setPublishedState(res.locals.id, req.params.quest, req.params.published, function(err, shortUrl) {
+  model.publish(res.locals.id, req.params.quest, req.params.published, function(err, shortUrl) {
     if (err) {
-      return res.status(500).end(err);
+      return res.status(500).end(err.toString());
     }
     res.end(shortUrl);
   });
@@ -94,17 +102,15 @@ router.post('/quest/:quest', function(req, res) {
   }
 
   try {
-    quest = {
-      meta: toMeta(req.body),
-      created: Date.now()
-    };
+    quest = toMeta(req.body);
+    quest.created = Date.now();
 
-    model.update(res.locals.id, req.params.quest, quest, req.body, function(err, data) {
+    model.update(res.locals.id, req.params.quest, quest, req.body, function(err, id) {
       if (err) {
         throw new Error(err);
       }
-      console.log("Saved quest " + data.id);
-      res.end(data.id.toString());
+      console.log("Saved quest " + id);
+      res.end(id.toString());
     });
   } catch(e) {
     console.log(e);

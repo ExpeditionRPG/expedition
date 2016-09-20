@@ -11,8 +11,8 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps 
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestAppBarDispatchProps => {
   return {
-    onDrawerToggle: () => {
-      dispatch(setDrawer(true));
+    onDrawerToggle: (user: UserType) => {
+      dispatch(setDrawer(user.id, true));
     },
     onUserDialogRequest: (user: UserType) => {
       if (user.id) {

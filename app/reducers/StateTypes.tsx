@@ -14,21 +14,19 @@ export interface QuestType {
   id?: string;
   url?: string;
   xml?: string;
-  created?: number;
-  modified?: number;
-  published?: boolean;
+  created?: string;
+  modified?: string;
+  published?: string;
   short_url?: string;
-  meta?: {
-    title: string,
-    summary: string,
-    minPlayers: string,
-    maxPlayers: string,
-    email: string,
-    url: string,
-    minTimeMinutes: string,
-    maxTimeMinutes: string,
-    author: string
-  }
+  meta_title?: string,
+  meta_summary?: string,
+  meta_minPlayers?: number,
+  meta_maxPlayers?: number,
+  meta_email?: string,
+  meta_url?: string,
+  meta_minTimeMinutes?: number,
+  meta_maxTimeMinutes?: number,
+  meta_author?: string
 };
 
 export type DirtyType = boolean;

@@ -21,17 +21,10 @@ function loadQuest(dispatch: Redux.Dispatch<any>, id: string): JQueryPromise<any
   // We only load quests when the drawer is open.
   dispatch({type: 'REQUEST_QUEST_LOAD', id});
   return $.get("/quest/"+id, function(raw_result: string) {
-    var result = JSON.parse(raw_result);
+    var result: QuestType = JSON.parse(raw_result);
     $.get(result.url, function(data: string) {
-      console.log(data);
-      let quest: QuestType = {
-        id: result.id,
-        meta: result.meta,
-        url: result.url,
-        modified: parseInt(result.modified),
-        xml: data
-      };
-      dispatch(receiveQuestLoad(quest));
+      result.xml = data;
+      dispatch(receiveQuestLoad(result));
     }).fail(pushHTTPError);
   }).fail(pushHTTPError);
 }

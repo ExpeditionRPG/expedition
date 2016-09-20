@@ -6,7 +6,7 @@
   "private": true,
   "main": "react.js",
   "scripts": {
-    "start": "webpack-dashboard -- node ${SCRIPT:-app.js}",
+    "start": "node ${SCRIPT:-app.js}",
     "monitor": "nodemon ${SCRIPT:-app.js}",
     "deploy": "gcloud app deploy app.yaml",
     "test": "mocha --require ts-node/register --recursive test/index.ts",
@@ -44,6 +44,7 @@
     "lodash": "^4.15.0",
     "markdown": "^0.5.0",
     "material-ui": "^0.15.4",
+    "mysql": "^2.11.1",
     "nconf": "^0.8.4",
     "passport": "^0.3.2",
     "passport-google-id-token": "^0.4.0",

@@ -10,16 +10,20 @@ function receiveQuestList(json: {quests: QuestType[], nextToken: string}): Recei
   };
 }
 
-function fetchQuestList(dispatch: Redux.Dispatch<any>): JQueryPromise<any> {
+function fetchQuestList(user: string, dispatch: Redux.Dispatch<any>): JQueryPromise<any> {
   dispatch({type: 'REQUEST_QUEST_LIST'} as RequestQuestListAction);
-  return $.get("/quests/0").done((data: string) => dispatch(receiveQuestList(JSON.parse(data)))); // TODO: Add fail
+  var data: {owner?: string} = {};
+  if (user) {
+    data.owner = user;
+  }
+  return $.post("/quests", JSON.stringify(data)).done((data: string) => dispatch(receiveQuestList(JSON.parse(data)))); // TODO: Add fail
 }
 
-export function setDrawer(is_open: boolean): ((dispatch: Redux.Dispatch<any>) => JQueryPromise<any>) {
+export function setDrawer(user: string, is_open: boolean): ((dispatch: Redux.Dispatch<any>) => JQueryPromise<any>) {
   return (dispatch: Redux.Dispatch<any>) => {
     dispatch({type: 'SET_DRAWER', is_open} as SetDrawerAction);
     if (is_open) {
-      return fetchQuestList(dispatch);
+      return fetchQuestList(user, dispatch);
     }
   }
 }

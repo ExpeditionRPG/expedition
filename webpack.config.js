@@ -1,7 +1,7 @@
 'use strict'
 
 var webpack = require('webpack')
-var DashboardPlugin = require('webpack-dashboard/plugin');
+//var DashboardPlugin = require('webpack-dashboard/plugin');
 
 var options = {
   cache: true,
@@ -38,7 +38,7 @@ var options = {
   },
   // recordsPath: __dirname + '/app/[hash].hot-update.json',
   plugins: [
-    new DashboardPlugin(),
+    //new DashboardPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
     new webpack.optimize.CommonsChunkPlugin('init.js')

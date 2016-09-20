@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       dispatch(questAction(action, false, dirty, view, quest));
     },
     onDrawerRequestChange: () => {
-      dispatch(setDrawer(false));
+      dispatch(setDrawer("", false));
     }
   };
 }

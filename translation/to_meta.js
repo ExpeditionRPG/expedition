@@ -16,11 +16,18 @@ function formatQuest(node, context) {
     "min-time-minutes",
     "max-time-minutes"
   ];
+
   for (var i = 0; i < attrs.length; i++) {
     var v = node.attr(attrs[i]);
     if (v) {
       var formatted_attr = attrs[i].replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
-      result[formatted_attr] = v;
+
+      // TODO: Clean up this later
+      if (v === 'min-players' || v === 'max-players' || v === 'min-time-minutes' || v === 'max-time-minutes') {
+        v = parseInt(v);
+      }
+
+      result['meta_' + formatted_attr] = v;
     }
   }
   return result;

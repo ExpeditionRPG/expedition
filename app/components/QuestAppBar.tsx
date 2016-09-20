@@ -15,7 +15,7 @@ export interface QuestAppBarStateProps {
 };
 
 export interface QuestAppBarDispatchProps {
-  onDrawerToggle: ()=>void;
+  onDrawerToggle: (user: UserType)=>void;
   onUserDialogRequest: (user: UserType)=>void;
   onHelpRequest: ()=>void;
 }
@@ -40,7 +40,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   return (
     <AppBar
       title="Expedition Quest Editor"
-      onLeftIconButtonTouchTap={props.onDrawerToggle}
+      onLeftIconButtonTouchTap={() => props.onDrawerToggle(props.user)}
       iconElementRight={
         <IconMenu
           iconButtonElement={

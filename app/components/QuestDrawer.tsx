@@ -88,19 +88,19 @@ const QuestDrawer = (props: QuestDrawerProps): JSX.Element => {
     var menu: JSX.Element[] = [];
     for (var i = 0; i < props.drawer.quests.length; i++) {
       var quest = props.drawer.quests[i];
+
+      // TODO: <!--<div><TimeAgo date={Date.parse(quest.modified)} /></div>-->
       menu.push(
         <ListItem
           key={i}
           value={quest.id}
           leftIcon={<ModeEditIcon/>}
           disabled={props.quest.id === quest.id}
-          primaryText={quest.meta.title}
+          primaryText={quest.meta_title}
           secondaryTextLines={2}
           secondaryText={
             <div>
-              <div><TimeAgo date={quest.modified} /></div>
-              <div>{quest.meta.summary}</div>
-
+              <div>{quest.meta_summary}</div>
             </div>}
         />
       );

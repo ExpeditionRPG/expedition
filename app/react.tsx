@@ -50,7 +50,6 @@ import questIDEApp from './reducers/CombinedReducers';
 // Initialize the global redux store
 var initialStateElem = document.getElementById("initial-state");
 let auth = (initialStateElem) ? JSON.parse(initialStateElem.textContent) : {};
-console.log(auth);
 let initialState: Object = {
   user: {
     id: auth.id,
