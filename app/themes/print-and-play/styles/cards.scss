@@ -443,12 +443,12 @@ strong {
   }
 
   h1 {
-    top: 1in;
+    top: 0.75in;
   }
 
   h2 {
     font-size: 75%;
-    bottom: 1in;
+    bottom: 0.6in;
   }
 
   .naming {
@@ -457,8 +457,8 @@ strong {
     font-size: 10pt;
     position: absolute;
     bottom: $thin;
-      left: 0;
-      right: 0;
+    left: 0;
+    right: 0;
   }
 
   .tier {
@@ -488,7 +488,7 @@ strong {
   &.Adventurer {
 
     h1 {
-      top: 0.9in;
+      top: 0.45in;
     }
   }
 
@@ -522,107 +522,63 @@ strong {
   &:before {
     content: "";
     position: absolute;
-    top: -0.125in; left: -0.125in;
-    width: 2.75in;
-    height: 3.75in;
+    top: 1.125in; left: .625in;
+    width: 1in;
+    height: 1in;
 
     background: no-repeat center center;
-    background-size: 2.75in 3.75in;
+    background-size: 1in 1in;
   }
 }
-/*
-.card.front.Ability { &:before {
-  background-image: url(../images/fronts/ability.jpg) !important;
-}}
+
 .card.back.Magic { &:before {
-  background-image: url(../images/backs/ability-magic.jpg) !important;
+  background-image: url(../images/icon/magic.svg) !important;
 }}
 .card.back.Melee { &:before {
-  background-image: url(../images/backs/ability-melee.jpg) !important;
+  background-image: url(../images/icon/melee.svg) !important;
 }}
 .card.back.Music { &:before {
-  background-image: url(../images/backs/ability-music.jpg) !important;
+  background-image: url(../images/icon/music.svg) !important;
 }}
 .card.back.Ranged { &:before {
-  background-image: url(../images/backs/ability-ranged.jpg) !important;
+  background-image: url(../images/icon/ranged.svg) !important;
 }}
 
-.card.front.Adventurer { &:before {
-  background-image: url(../images/fronts/adventurer.jpg) !important;
-}}
 .card.back.Adventurer { &:before {
-  background-image: url(../images/backs/adventurer.jpg) !important;
+  left: 0.4in;
+  background-image: url(../images/icon/adventurer_rotated.svg) !important;
 }}
 
-.card.front.Helper { &:before {
-  background-image: url(../images/fronts/helper.jpg) !important;
-}}
 .card.back.Helper { &:before {
-  background-image: url(../images/backs/helper.jpg) !important;
+  background-image: url(../images/icon/helper.svg) !important;
 }}
 
-.card.front.Loot { &:before {
-  background-image: url(../images/fronts/loot.jpg) !important;
-}}
 .card.back.Loot {
 
   .tier {
-    bottom: 0.71in;
-    color: #EBB956;
+    bottom: 0.55in;
   }
 
   &:before {
-    background-image: url(../images/backs/loot.jpg) !important;
+    background-image: url(../images/icon/loot.svg) !important;
   }
 }
 
-.card.front.Encounter { &:before {
-  background-image: url(../images/fronts/encounter.jpg) !important;
-}}
 .card.back.Encounter {
   .tier {
     left: 0.03in;
-    bottom: 0.48in;
+    bottom: 0.33in;
   }
 }
-.card.back.Beast {
-
-  .tier {
-    color: #ec1f24;
-  }
-
-  &:before {
-    background-image: url(../images/backs/beast.jpg) !important;
-  }
+.card.back.Beast:before {
+  background-image: url(../images/icon/beast_white_rotated.svg) !important;
 }
-.card.back.Bandit {
-
-  .tier {
-    color: #FEDE1A;
-  }
-
-  &:before {
-    background-image: url(../images/backs/bandit.jpg) !important;
-  }
+.card.back.Bandit:before {
+  background-image: url(../images/icon/bandit_white_rotated.svg) !important;
 }
-.card.back.Fae {
-
-  .tier {
-    color: #df3f95;
-  }
-
-  &:before {
-    background-image: url(../images/backs/fae.jpg) !important;
-  }
+.card.back.Fae:before {
+  background-image: url(../images/icon/fae_white_rotated.svg) !important;
 }
-.card.back.Undead {
-
-  .tier {
-    color: #70c25e;
-  }
-
-  &:before {
-    background-image: url(../images/backs/undead.jpg) !important;
-  }
+.card.back.Undead:before {
+  background-image: url(../images/icon/undead_white_rotated.svg) !important;
 }
-*/

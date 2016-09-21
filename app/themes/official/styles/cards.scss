@@ -522,9 +522,6 @@ strong {
   }
 }
 
-.card.front.Ability { &:before {
-  background-image: url(../images/fronts/ability.jpg) !important;
-}}
 .card.back.Magic { &:before {
   background-image: url(../images/backs/ability-magic.jpg) !important;
 }}
@@ -567,9 +564,6 @@ strong {
   }
 }
 
-.card.front.Encounter { &:before {
-  background-image: url(../images/fronts/encounter.jpg) !important;
-}}
 .card.back.Encounter {
   .tier {
     left: 0.03in;
