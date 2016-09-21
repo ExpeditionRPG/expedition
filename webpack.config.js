@@ -1,7 +1,7 @@
 'use strict'
 
 var webpack = require('webpack')
-//var DashboardPlugin = require('webpack-dashboard/plugin');
+var DashboardPlugin = require('webpack-dashboard/plugin');
 
 var options = {
   cache: true,
@@ -32,13 +32,11 @@ var options = {
       { test: /\.tsx$/, loaders: ['react-hot', 'awesome-typescript-loader'], exclude: /node_modules/ },
     ],
     preLoaders: [
-        // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
         { test: /\.js$/, loader: "source-map-loader" }
     ]
   },
-  // recordsPath: __dirname + '/app/[hash].hot-update.json',
   plugins: [
-    //new DashboardPlugin(),
+    new DashboardPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
     new webpack.optimize.CommonsChunkPlugin('init.js')
