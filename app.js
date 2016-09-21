@@ -54,7 +54,7 @@ var setupSession = function(app) {
   var sessionConfig = {
     resave: false,
     saveUninitialized: false,
-    secret: config.get('SECRET'),
+    secret: config.get('SESSION_SECRET'),
     signed: true
   };
 

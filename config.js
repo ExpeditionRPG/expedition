@@ -58,10 +58,7 @@ nconf
     MYSQL_PASSWORD: 's@upCntLZ7QXUBDwGxB5',
     MYSQL_HOST: '173.255.117.144',
 
-    SECRET: 'keyboardcat',
-
-    SUBSCRIPTION_NAME: 'shared-worker-subscription',
-    TOPIC_NAME: 'book-process-queue'
+    SESSION_SECRET: '',
   });
 
 // Check for required settings
