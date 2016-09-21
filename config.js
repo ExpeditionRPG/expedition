@@ -49,14 +49,14 @@ nconf
 
     OAUTH2_CLIENT_ID: '',
     OAUTH2_CLIENT_SECRET: '',
-    OAUTH2_CALLBACK: 'http://expedition-quest-ide.appspot.com/auth/google/callback',
+    OAUTH2_CALLBACK: '',
 
     // Port the HTTP server
     PORT: 8080,
 
-    MYSQL_USER: 'root',
-    MYSQL_PASSWORD: 's@upCntLZ7QXUBDwGxB5',
-    MYSQL_HOST: '173.255.117.144',
+    MYSQL_USER: '',
+    MYSQL_PASSWORD: '',
+    MYSQL_HOST: '',
 
     SESSION_SECRET: '',
   });
