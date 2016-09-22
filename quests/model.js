@@ -35,7 +35,7 @@ CREATE TABLE quests (
 
 'use strict';
 
-var gcloud = require('gcloud');
+var gcloud = require('google-cloud');
 var config = require('../config');
 //var background = require('../lib/background');
 var mysql = require('mysql');
