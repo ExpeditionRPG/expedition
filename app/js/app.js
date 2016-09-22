@@ -1,4 +1,5 @@
 var renderArea;
+var filters = {};
 
 (function init() {
 
@@ -104,6 +105,13 @@ function buildFilters () {
         params[$(this).data('filter')] = $(this).val();
       }
     }).promise().done(function () {
+// TODO think of a better / unified way to do filter changes, ie passing a specific single key-value
+// rather than re-reading the state of the UI
+// (for example of why this is needed, see how setSource has to replicate this functionality)
+// bonus points: based on what filter changed, loadTable or render
+      if (filters.googleSheetId != null) {
+        params.googleSheetId = filters.googleSheetId;
+      }
       history.replaceState({}, document.title, '?' + jQuery.param(params));
       render();
     });
@@ -138,10 +146,25 @@ function resetFilters () {
 }
 
 
+function setSource () {
+  var sheetWebLink = prompt('Enter your Google Sheet URL (make sure to use the "Publish To Web" option)');
+
+  if (sheetWebLink == null || sheetWebLink == '') {
+    return;
+  }
+
+  filters.googleSheetId = sheetWebLink.replace('https://docs.google.com/spreadsheets/d/', '')
+      .replace('/pubhtml', '');
+// TODO this should use the same onFilterChange function, which should also handle loadTable
+  history.replaceState({}, document.title, '?' + jQuery.param(filters));
+  loadTable();
+}
+
+
 function loadTable() {
 
   Tabletop.init({
-    key: '1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
+    key: filters.googleSheetId || '1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
     callback: function (data, tabletop) {
 
       sheets = tabletop.sheets();
