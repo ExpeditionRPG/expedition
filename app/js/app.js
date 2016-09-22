@@ -44,7 +44,7 @@ function getParams() {
   }
 
   Object.assign(filters, filterDefaults, matches);
-  Object.keys(filters).forEach((key) => {
+  Object.keys(filters).forEach(function (key) {
     var oldValue = oldFilters[key];
     if (cardFilters.indexOf(key) !== -1) {
       filterList.push(key);
@@ -121,10 +121,10 @@ function buildFilters () {
 
 function onThemeChange () {
 
-  Object.keys(Handlebars.partials).forEach((key) => {
+  Object.keys(Handlebars.partials).forEach(function (key) {
     Handlebars.unregisterPartial(key);
   });
-  Object.keys(this.Expedition[filters.theme].partials).forEach((key) => {
+  Object.keys(this.Expedition[filters.theme].partials).forEach(function (key) {
     Handlebars.registerPartial(key, this.Expedition[filters.theme].partials[key]);
   });
   renderArea.attr('data-theme', filters.theme);
