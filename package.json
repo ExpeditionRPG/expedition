@@ -6,7 +6,9 @@
   "private": true,
   "main": "react.js",
   "scripts": {
-    "start": "webpack-dashboard -- node ${SCRIPT:-app.js}",
+    "start": "node ${SCRIPT:-app.js}",
+    "dev-dash": "NODE_ENV=dev webpack-dashboard -- node ${SCRIPT:-app.js}",
+    "dev": "NODE_ENV=dev node ${SCRIPT:-app.js}",
     "monitor": "nodemon ${SCRIPT:-app.js}",
     "deploy": "gcloud app deploy app.yaml",
     "test": "mocha --require ts-node/register --recursive test/index.ts",
