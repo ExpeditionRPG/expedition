@@ -1,10 +1,15 @@
+var Joi = require('joi-browser');
+
+
 var renderArea;
 var filters = {};
+
 
 (function init() {
 
   renderArea = $("#renderArea");
-  loadTable();
+  loadTable(); // TODO because this is run before getParams, it'll fail to use the URL-specified sheet on the first load
+  wireUI();
 })();
 
 
@@ -14,7 +19,7 @@ var templates = {},
     filters = {},
     filterList = [],
     filterOptions = {
-      theme: Object.keys(this.Expedition),
+      theme: Object.keys(window.Expedition),
       export: ['Print-and-Play', 'DriveThruCards', 'AdMagic-Fronts', 'AdMagic-Backs', 'Hide-Backs'],
       tier: [],
       class: [],
@@ -119,21 +124,27 @@ function buildFilters () {
 }
 
 
+function wireUI () {
+  $("#refreshCards").click(loadTable);
+  $("#setSource").click(setSource);
+}
+
+
 function onThemeChange () {
 
   Object.keys(Handlebars.partials).forEach(function (key) {
     Handlebars.unregisterPartial(key);
   });
-  Object.keys(this.Expedition[filters.theme].partials).forEach(function (key) {
-    Handlebars.registerPartial(key, this.Expedition[filters.theme].partials[key]);
+  Object.keys(window.Expedition[filters.theme].partials).forEach(function (key) {
+    Handlebars.registerPartial(key, window.Expedition[filters.theme].partials[key]);
   });
   renderArea.attr('data-theme', filters.theme);
   templates = { // will be rendered into UI in this order
-    Helper: this.Expedition[filters.theme].templates.Helper,
-    Adventurer: this.Expedition[filters.theme].templates.Adventurer,
-    Ability: this.Expedition[filters.theme].templates.Ability,
-    Encounter: this.Expedition[filters.theme].templates.Encounter,
-    Loot: this.Expedition[filters.theme].templates.Loot,
+    Helper: window.Expedition[filters.theme].templates.Helper,
+    Adventurer: window.Expedition[filters.theme].templates.Adventurer,
+    Ability: window.Expedition[filters.theme].templates.Ability,
+    Encounter: window.Expedition[filters.theme].templates.Encounter,
+    Loot: window.Expedition[filters.theme].templates.Loot,
   };
 }
 
@@ -147,27 +158,34 @@ function resetFilters () {
 
 
 function setSource () {
+  // Official production sheet link: https://docs.google.com/spreadsheets/d/1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM/pubhtml
   var sheetWebLink = prompt('Enter your Google Sheet URL (make sure to use the "Publish To Web" option)');
 
-  if (sheetWebLink == null || sheetWebLink == '') {
-    return;
-  }
+  Joi.validate(sheetWebLink, Joi.string().uri(), function (err, value) {
 
-  filters.googleSheetId = sheetWebLink.replace('https://docs.google.com/spreadsheets/d/', '')
-      .replace('/pubhtml', '');
-// TODO this should use the same onFilterChange function, which should also handle loadTable
-  history.replaceState({}, document.title, '?' + jQuery.param(filters));
-  loadTable();
+    if (err) {
+      return alert (err);
+    }
+
+    filters.googleSheetId = value.replace('https://docs.google.com/spreadsheets/d/', '')
+        .replace('/pubhtml', '');
+  // TODO this should use the same onFilterChange function, which should also handle loadTable
+    history.replaceState({}, document.title, '?' + jQuery.param(filters));
+    loadTable();
+  });
 }
 
 
 function loadTable() {
 
+  $("#loading").show();
+  renderArea.html('');
+
   Tabletop.init({
     key: filters.googleSheetId || '1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
     callback: function (data, tabletop) {
 
-      sheets = tabletop.sheets();
+      var sheets = tabletop.sheets();
       for (var page in templates) { // validate loaded data
         if (!sheets[page]) {
           return alert('Failed to sheet: ' + page);
@@ -179,12 +197,12 @@ function loadTable() {
         filterOptions.template.push(page);
       }
 
-      cardData = data;
-      render();
+      render(sheets);
       buildFilters(); // TODO why does this have to be called after render?
+          // Because filterOptions gets populated in render, BAD!
           // Any data manipulation / analysis should be done in loadTable, or sub-function
 
-      $("#loading").remove();
+      $("#loading").hide();
     }, simpleSheet: true
   });
 }
@@ -195,9 +213,7 @@ function loadTable() {
 
 /* ===== RENDER CARDS FUNCTIONS ===== */
 
-var cardData, tabletop, sheets;
-
-function render () {
+function render (sheets) {
 
   getParams();
   renderArea.html('');
@@ -296,18 +312,18 @@ function buildCards (template, cards) {
   function renderCardFront (template, card) {
     card = cleanCardData(template, card);
     if (template === "Helper" && card.Face === "back") {
-      return this.Expedition[filters.theme].templates[template + '-back'](card);
+      return window.Expedition[filters.theme].templates[template + '-back'](card);
     } else {
-      return this.Expedition[filters.theme].templates[template](card);
+      return window.Expedition[filters.theme].templates[template](card);
     }
   }
 
   function renderCardBack (template, card) {
     card = cleanCardData(template, card);
     if (template === "Helper" && card.Face === "back") {
-      return this.Expedition[filters.theme].templates[template](card);
+      return window.Expedition[filters.theme].templates[template](card);
     } else {
-      return this.Expedition[filters.theme].templates[template + '-back'](card);
+      return window.Expedition[filters.theme].templates[template + '-back'](card);
     }
   }
 

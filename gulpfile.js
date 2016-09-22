@@ -14,6 +14,7 @@ const PngQuant = require('imagemin-pngquant');
 const Rimraf = require('gulp-rimraf');
 const RunSequence = require('run-sequence');
 const Sass = require('gulp-sass');
+const Webpack = require('webpack-stream');
 const Wrap = require('gulp-wrap');
 
 
@@ -123,10 +124,18 @@ Gulp.task('app-html', () => {
 
 
 Gulp.task('app-js', () => {
-  return Gulp.src(['app/js/**/*.js'])
-      .pipe(Changed('dist/js'))
-      .pipe(Gulp.dest('dist/js'))
-      .pipe(BrowserSync.stream());
+  // return Gulp.src(['app/js/**/*.js'])
+  //     .pipe(Changed('dist/js'))
+  return Merge(
+    Gulp.src(['app/js/**/*.js'])
+        .pipe(Changed('dist/js'))
+        .pipe(Gulp.dest('dist/js'))
+        .pipe(BrowserSync.stream()),
+    Gulp.src('app/js/app.js')
+        .pipe(Webpack(require('./webpack.config.js')))
+        .pipe(Gulp.dest('dist/js'))
+        .pipe(BrowserSync.stream())
+    );
 });
 
 

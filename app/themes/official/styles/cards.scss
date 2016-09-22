@@ -522,6 +522,9 @@ strong {
   }
 }
 
+.card.front.Ability { &:before {
+  background-image: url(../images/fronts/ability.jpg) !important;
+}}
 .card.back.Magic { &:before {
   background-image: url(../images/backs/ability-magic.jpg) !important;
 }}
@@ -553,7 +556,6 @@ strong {
   background-image: url(../images/fronts/loot.jpg) !important;
 }}
 .card.back.Loot {
-
   .tier {
     bottom: 0.71in;
     color: #EBB956;
@@ -564,6 +566,9 @@ strong {
   }
 }
 
+.card.front.Encounter { &:before {
+  background-image: url(../images/fronts/encounter.jpg) !important;
+}}
 .card.back.Encounter {
   .tier {
     left: 0.03in;
