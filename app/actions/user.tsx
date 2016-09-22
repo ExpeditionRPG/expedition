@@ -15,7 +15,7 @@ export function loginUser(): ((dispatch: Redux.Dispatch<any>)=>void) {
       var name: string = basic_profile.getName();
       var image: string = basic_profile.getImageUrl();
 
-      $.post('http://localhost:8080/auth/google', JSON.stringify({id_token, name, image}), function(data) {
+      $.post('/auth/google', JSON.stringify({id_token, name, image}), function(data) {
         dispatch(setProfileMeta({
           id: data,
           displayName: name,
@@ -29,7 +29,7 @@ export function loginUser(): ((dispatch: Redux.Dispatch<any>)=>void) {
 export function logoutUser(): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
     gapi.auth2.getAuthInstance().signOut().then(function() {
-      $.post('http://localhost:8080/auth/logout', function(data) {
+      $.post('/auth/logout', function(data) {
         dispatch(setProfileMeta({}));
       });
     });
