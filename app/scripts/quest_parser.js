@@ -4,6 +4,7 @@
    where all arguments except 'type' are optional.
    See quests/quest_spec.txt for specification.
 */
+/*global math */
 
 var questParser = function() {
   this.path = [];

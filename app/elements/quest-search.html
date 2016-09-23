@@ -27,78 +27,91 @@
       line-height: 1.2em;
       margin-top: var(--vh-base);
     }
+
+    .pad {
+      padding-left: var(--vw-base);
+      @apply(--layout-flex-3);
+      @apply(--layout-vertical);
+    }
+
+    .centered {
+      text-align: center;
+    }
+    .centered h3 {
+      margin: 0;
+    }
+    .centered .author {
+      font-size: var(--font-size-flavortext);
+      margin-bottom: var(--vw-large);
+    }
+
+
   </style>
   <template>
-    <expedition-card title="Public Quests" data-route="intro" icon="adventurer">
-      <template is="dom-if" if="{{!logged_in}}">
-        <p>
-          <strong>Online Play Disclaimer</strong>
-        </p>
-        <p>
-          Public quests are published by other adventurers like yourselves. We offer no guarantees
-          of completeness, correctness of grammar, or sensibility for any of the quests you are about to see.
-        </p>
-        <p>
-          If you do encounter a faulty quest, please help the community and report it.
-        </p>
-        <p>
-          We use your basic Google account information to show quests you've specifically published.
-        </p>
-        <expedition-button on-tap="_onLogin">Continue with Google</expedition-button>
-      </template>
-      <template is="dom-if" if="{{logged_in}}">
-        <expedition-button on-tap="_onFilterTap">Filter Search</expedition-button>
-        <hr/>
+    <expedition-card-set id="pages" initial="intro">
+      <expedition-card title="Public Quests" data-route="intro" icon="adventurer">
+        <template is="dom-if" if="{{!loggedIn}}">
+          <p>
+            <strong>Online Play Disclaimer</strong>
+          </p>
+          <p>
+            Public quests are published by other adventurers like yourselves. We offer no guarantees
+            of completeness, correctness of grammar, or sensibility for any of the quests you are about to see.
+          </p>
+          <p>
+            We use your basic Google account information to show quests you've specifically published.
+          </p>
+          <expedition-button on-tap="_onLogin">Continue with Google</expedition-button>
+        </template>
+        <template is="dom-if" if="{{loggedIn}}">
+          <paper-dropdown-menu label="Visibility">
+            <paper-menu class="dropdown-content" selected="{{visibility}}" selected="0">
+              <paper-item>Your Quests</paper-item>
+              <paper-item>All Quests</paper-item>
+            </paper-menu>
+          </paper-dropdown-menu>
+          <expedition-input label="Search Text" type="text" value="{{searchText}}"></expedition-input>
+          <expedition-input label="# Players" type="number" value="{{numPlayers}}" numeric></expedition-input>
+          <expedition-button id="search" on-tap="_onSearch">Search</expedition-button>
+        </template>
+      </expedition-card>
+      <expedition-card title="Search Results"  data-route="results" on-return="prev">
         <template is="dom-if" if="{{loading}}">
           <!--TODO Add Spinner-->
           Loading...
         </template>
-        <template is="dom-repeat" id="encounterlist" items="{{quests}}">
+        <template is="dom-repeat" items="{{quests}}">
           <expedition-item on-tap="_onQuestTap" data-target$="{{index}}">
             <h1>{{item.meta_title}}</h1>
             <div>{{item.meta_summary}}</div>
           </expedition-item>
         </template>
-      </template>
-    </expedition-card>
-    <expedition-dialog title="{{quest.title}}" id="quest_details">
-      <div><b>Summary:</b> {{quest.summary}}</div>
-      <div><b>Last update:</b> {{quest.modified}}</div>
-      <div><b>URL:</b> <a href="{{quest.url}}" target="_blank">{{quest.shorturl}}</a></div>
-      <div><b>Author: </b> {{quest.author}}</div>
-      <div><b>Email: </b> {{quest.email}}</div>
-      <div><b>Play time:</b> {{quest.play_period}}</div>
-      <div><b>Players:</b> {{quest.num_players}}</div>
-      <template is="dom-if" if="{{quest.user_owned}}">
-        <div>{{quest.created}}</div>
-        <div>{{quest.published}}</div>
-      </template>
-      <expedition-button on-tap="_onQuestPlay" data-target$="{{quest}}">Play</expedition-button>
-      <template is="dom-if" if="{{!quest.reported}}" restamp="true">
-        <expedition-button on-tap="_onQuestReport" data-targets$="{{quest}}">Report</expedition-button>
-      </template>
-      <template is="dom-if" if="{{quest.reported}}" restamp="true">
-        <expedition-button data-targets$="{{quest}}" class="disabled">
-          Quest reported.
-        </expedition-button>
-      </template>
-    </expedition-dialog>
-    <expedition-dialog title="Filter Search" id="filter_search">
-      <div>
-        Visibility:
-        <select id="visibility">
-          <option value="self" selected>Your Quests</option>
-          <option value="all">All Quests</option>
-        </select>
-      </div>
-      <div>
-        Search: <input type="text" id="search_text"/>
-      </div>
-      <div>
-        # Players: <input type="number" id="num_players"/>
-      </div>
-      <expedition-button id="search" on-tap="_onSearch">Search</expedition-button>
-    </expedition-dialog>
+        <template is="dom-if" if="{{!quests.length}}">
+          No quests found.
+        </template>
+      </expedition-card>
+      <expedition-card title="Quest Details"  data-route="details" on-return="prev">
+        <div class="centered">
+          <h3>{{quest.title}}</h3>
+          <div class="author">{{quest.author}}</div>
+          <p>
+            {{quest.summary}}
+          </p>
+        </div>
+        <expedition-indicator icon="helper">
+          <div>URL: <a href="{{quest.url}}" target="_blank">{{quest.shorturl}}</a></div>
+          <div>Email: {{quest.email}}</div>
+          <div>Players: {{quest.num_players}}</div>
+          <div>Play time: {{quest.play_period}}</div>
+          <div>Last update: {{quest.modified}}</div>
+          <template is="dom-if" if="{{quest.user_owned}}">
+            <div>{{quest.created}}</div>
+            <div>{{quest.published}}</div>
+          </template>
+        </expedition-indicator>
+        <expedition-button on-tap="_onQuestPlay" data-target$="{{quest}}">Play</expedition-button>
+      </expedition-card>
+    </expedition-card-set>
   </template>
   <script>
     /*global GlobalsBehaviour */
@@ -107,41 +120,41 @@
       is: 'quest-search',
       behaviors: [GlobalsBehaviour],
       ready: function() {
-        this.logged_in = ExpeditionAPI.isLoggedIn();
+        this.loggedIn = ExpeditionAPI.isLoggedIn();
         this.quests=[];
-        this.user_owned_quest = false;
+        this.userOwnedQuest = false;
       },
       _onLogin: function() {
         ExpeditionAPI.login(function(locals) {
-          this.logged_in = ExpeditionAPI.isLoggedIn();
+          this.loggedIn = ExpeditionAPI.isLoggedIn();
           console.log(locals);
           this.loading = true;
           ExpeditionAPI.searchQuests({owner: ExpeditionAPI.getLoggedInUser().id}, function(result) {
             if (result.error) {
               console.log(result.error);
             }
-            console.log(result.quests);
             this.loading = false;
             this.quests = result.quests;
           }.bind(this));
         }.bind(this));
       },
-      _truncate(s, n) {
+      _truncate: function(s, n) {
         return s.substr(0,n-1)+(s.length>n?'&hellip;':'');
       },
-      _formatDate: function(rfc_datetime) {
-        if (!rfc_datetime) {
+      _formatDate: function(rfcDateTime) {
+        if (!rfcDateTime) {
           return "unknown";
         }
-        return rfc_datetime.split('T')[0];
+        return rfcDateTime.split('T')[0];
       },
-      _formatPlayPeriod: function(min_minutes, max_minutes) {
-        if (min_minutes > 60 && max_minutes > 60) {
-          return Math.round(min_minutes / 60) + '-' + Math.round(max_minutes / 60) + " hours";
+      _formatPlayPeriod: function(minMinutes, maxMinutes) {
+        if (minMinutes > 60 && maxMinutes > 60) {
+          return Math.round(minMinutes / 60) + '-' + Math.round(maxMinutes / 60) + " hours";
         } else {
-          return min_minutes + '-' + max_minutes + " minutes";
+          return minMinutes + '-' + maxMinutes + " minutes";
         }
       },
+      /* jshint ignore:start */
       _formattedQuest: function(quest) {
         return {
           id: quest.id,
@@ -161,54 +174,46 @@
           user_owned: Boolean(quest.user === ExpeditionAPI.getLoggedInUser())
         };
       },
+      /* jshint ignore:end */
       _onQuestTap: function(e) {
         var idx = e.currentTarget.dataset.target;
         this.quest = this._formattedQuest(this.quests[idx]);
-        this.$.quest_details.open();
+        this.$.pages.next('details');
       },
       _onQuestPlay: function(e) {
         var quest = e.currentTarget.dataset.target;
-        console.log(quest);
-        this.$.quest_details.close();
         this.fire('quest-select', quest);
-      },
-      _onQuestReport: function(e) {
-        console.log("Reported!");
-        this.set('quest.reported', true);
-      },
-      _onSearchTextChange: function() {
-        this.debounce('search', this._onSearch.bind(this), 300);
-      },
-      _onFilterTap: function() {
-        this.$.filter_search.open();
       },
       _onSearch: function() {
         var params = {};
 
-        var visibility = this.$.visibility.value;
-        if (visibility === "self") {
+        if (this.visibility === "Your Quests") {
           params.owner = ExpeditionAPI.getLoggedInUser().id;
         }
-
-        var num_players = this.$.num_players.value;
-        if (num_players) {
-          params.players = parseInt(num_players);
+        if (this.numPlayers) {
+          params.players = parseInt(this.numPlayers);
+        }
+        if (this.searchText) {
+          params.search = this.searchText;
         }
 
-        var search_text = this.$.search_text.value;
-        if (search_text) {
-          params.search = search_text;
-        }
-
-        this.$.filter_search.close();
         ExpeditionAPI.searchQuests(params, function(result) {
           if (result.error) {
             console.log(result.error);
           }
-          console.log(result.quests);
           this.loading = false;
           this.quests = result.quests;
         }.bind(this));
+        this.$.pages.next('results');
+      },
+      prev: function(e) {
+        // TODO: Dedupe this across various elements.
+        var p = Polymer.dom(e.srcElement).previousSibling;
+        while (p.tagName !== "EXPEDITION-CARD") {
+          p = p.previousSibling;
+        }
+        this.$.pages.prev(p.dataset.route);
+        e.stopPropagation();
       },
       properties: {
         quest: Object

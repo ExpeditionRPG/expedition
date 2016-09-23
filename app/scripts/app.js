@@ -65,6 +65,7 @@
     this._loadQuest(JSON.parse(detail));
     e.stopPropagation();
   };
+  /* jshint ignore:start */
   app.onFeaturedQuestChoice = function(e) {
     this._loadQuest({
       xml_url: e.currentTarget.dataset.url
@@ -76,16 +77,17 @@
       xml_url: detail
     });
   };
+  /* jshint ignore:end */
   app._loadQuest = function(quest) {
     console.log("Loading quest");
     this.quest = quest;
     this.$.pages.next("quest");
-    this.$.global_quest.ready();
+    this.$.globalQuest.ready();
   };
   app.onQuestFileLoad = function(e, detail) {
     console.log("File load");
     this.$.pages.next("quest");
-    this.$.global_quest.ready(detail);
+    this.$.globalQuest.ready(detail);
     e.stopPropagation();
   };
 })(document);
