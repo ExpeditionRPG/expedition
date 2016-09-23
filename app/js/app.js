@@ -1,3 +1,4 @@
+var Data = require('./data');
 var Joi = require('joi-browser');
 
 
@@ -30,6 +31,7 @@ var templates = {},
       export: 'Print-and-Play',
     },
     cardFilters = ['tier', 'class', 'template']; // UI filters that filter card data
+        // TODO this is also defined in data.js
 
 function getParams() {
 
@@ -78,6 +80,8 @@ function getParams() {
 }
 
 function buildFilters () {
+
+  console.log(filterOptions);
 
   $("#dynamicFilters select").remove();
   for (var field in filterOptions) {
@@ -181,29 +185,13 @@ function loadTable() {
   $("#loading").show();
   renderArea.html('');
 
-  Tabletop.init({
-    key: filters.googleSheetId || '1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
-    callback: function (data, tabletop) {
+  Data.loadTable(filters.googleSheetId || '1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM', function (err, sheets) {
 
-      var sheets = tabletop.sheets();
-      for (var page in templates) { // validate loaded data
-        if (!sheets[page]) {
-          return alert('Failed to sheet: ' + page);
-        }
-        if (sheets[page].elements.length <= 1) {
-          return alert('No cards loaded for: ' + page);
-        }
+    $.extend(filterOptions, Data.generateFilterOptions(sheets));
 
-        filterOptions.template.push(page);
-      }
-
-      render(sheets);
-      buildFilters(); // TODO why does this have to be called after render?
-          // Because filterOptions gets populated in render, BAD!
-          // Any data manipulation / analysis should be done in loadTable, or sub-function
-
-      $("#loading").hide();
-    }, simpleSheet: true
+    render(sheets);
+    buildFilters();
+    $("#loading").hide();
   });
 }
 
@@ -252,11 +240,11 @@ function render (sheets) {
 
   for (var i = 0, l = sorted.length; i < l; i++) {
     var sheet = sorted[i];
-    buildCards(sheet.name, sheet.elements);
+    renderCards(sheet.name, sheet.elements);
   }
 }
 
-function buildCards (template, cards) {
+function renderCards (template, cards) {
 
   var cardCount = 0;
   var fronts, backs;
@@ -268,12 +256,6 @@ function buildCards (template, cards) {
 
     if (card.Comment !== "") {
       continue;
-    }
-
-    for (var field in filterOptions) {
-      if (card[field] && filterOptions[field].indexOf(card[field]) === -1) {
-        filterOptions[field].push(card[field]);
-      }
     }
 
     // define filters / skips here
