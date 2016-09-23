@@ -124,8 +124,6 @@ Gulp.task('app-html', () => {
 
 
 Gulp.task('app-js', () => {
-  // return Gulp.src(['app/js/**/*.js'])
-  //     .pipe(Changed('dist/js'))
   return Merge(
     Gulp.src(['app/js/**/*.js'])
         .pipe(Changed('dist/js'))
