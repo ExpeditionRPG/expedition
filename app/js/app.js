@@ -4,6 +4,7 @@ var Joi = require('joi-browser');
 
 var renderArea;
 var filters = {};
+var cardData = null;
 
 
 (function init() {
@@ -80,8 +81,6 @@ function getParams() {
 }
 
 function buildFilters () {
-
-  console.log(filterOptions);
 
   $("#dynamicFilters select").remove();
   for (var field in filterOptions) {
@@ -189,7 +188,9 @@ function loadTable() {
 
     $.extend(filterOptions, Data.generateFilterOptions(sheets));
 
-    render(sheets);
+    cardData = sheets;
+
+    render();
     buildFilters();
     $("#loading").hide();
   });
@@ -201,7 +202,7 @@ function loadTable() {
 
 /* ===== RENDER CARDS FUNCTIONS ===== */
 
-function render (sheets) {
+function render () {
 
   getParams();
   renderArea.html('');
@@ -235,7 +236,7 @@ function render (sheets) {
     sorted[sorted.length] = key;
   }
   for (var i = 0, l = sorted.length; i < l; i++) { // sort by type in order listed in var templates
-    sorted[i] = sheets[sorted[i]];
+    sorted[i] = cardData[sorted[i]];
   }
 
   for (var i = 0, l = sorted.length; i < l; i++) {
