@@ -130,6 +130,7 @@ function buildFilters () {
 function wireUI () {
   $("#refreshCards").click(loadTable);
   $("#setSource").click(setSource);
+  $("#resetFilters").click(resetFilters);
 }
 
 

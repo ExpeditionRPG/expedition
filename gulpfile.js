@@ -101,7 +101,7 @@ Gulp.task('themes-css', () => {
   return Gulp.src(['app/themes/*/styles/**/*.scss'])
       .pipe(Insert.transform((contents, file) => {
         const themeName = extractThemeName(file.path);
-        contents = contents.replace(/url\(\.\./g, "url(/themes/" + themeName + "/"); // modify URL paths
+        contents = contents.replace(/url\(\.\./g, "url(../themes/" + themeName ); // modify URL paths
         return '#renderArea[data-theme="' + themeName + '"] {' + contents + '}';
       }))
       .pipe(Sass().on('error', Sass.logError))
@@ -148,7 +148,7 @@ Gulp.task('themes-handlebars', () =>{
           return Declare.processNameByPath(filepath.replace('app\\themes\\',''));
         }
       }))
-      .pipe(Concat('Handlebars-helpers.js'))
+      .pipe(Concat('handlebars-helpers.js'))
       .pipe(Gulp.dest('dist/js/'))
       .pipe(BrowserSync.stream());
 });
