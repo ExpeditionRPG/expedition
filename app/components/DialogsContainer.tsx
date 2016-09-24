@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import {NEW_QUEST, LOAD_QUEST} from '../actions/ActionTypes'
-import {DialogIDType, DialogsType, AppState} from '../reducers/StateTypes'
-import {setDialog} from '../actions/dialog'
-import {questAction, saveQuest} from '../actions/quest'
+import {DialogIDType, DialogsType, ShareType, AppState} from '../reducers/StateTypes'
+import {setDialog} from '../actions/dialogs'
+import {questAction, saveQuest, setQuestShare} from '../actions/quest'
 import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
 
 const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
@@ -41,6 +41,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
         console.log("Dispatch without save");
         dispatch(action);
       }
+    },
+    onShareChange: (share: ShareType, id: string): void => {
+      dispatch(setQuestShare(id, share));
     }
   };
 }

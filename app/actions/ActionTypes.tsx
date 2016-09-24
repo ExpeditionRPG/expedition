@@ -1,10 +1,11 @@
-import {UserType, QuestType, CodeViewType, DialogIDType} from '../reducers/StateTypes'
+import {UserType, QuestType, CodeViewType, DialogIDType, ShareType} from '../reducers/StateTypes'
 
 export const NEW_QUEST: string = 'NEW_QUEST';
 export const LOAD_QUEST: string = 'LOAD_QUEST';
 export const DELETE_QUEST: string = 'DELETE_QUEST';
 export const SAVE_QUEST: string = 'SAVE_QUEST';
 export const PUBLISH_QUEST: string = 'PUBLISH_QUEST';
+export const SHARE_QUEST: string = 'SHARE_QUEST';
 export const DOWNLOAD_QUEST: string = 'DOWNLOAD_QUEST';
 export type QuestActionType = 'NEW_QUEST' | 'LOAD_QUEST' | 'DELETE_QUEST' | 'SAVE_QUEST' | 'PUBLISH_QUEST' | 'DOWNLOAD_QUEST';
 
@@ -87,17 +88,18 @@ export interface ReceiveQuestDeleteAction extends Redux.Action {
   id: string;
 }
 
-export const REQUEST_QUEST_PUBLISH: string = 'REQUEST_QUEST_PUBLISH';
-export interface RequestQuestPublishAction extends Redux.Action {
-  type: 'REQUEST_QUEST_PUBLISH';
+export const REQUEST_QUEST_SHARE: string = 'REQUEST_QUEST_SHARE';
+export interface RequestQuestShareAction extends Redux.Action {
+  type: 'REQUEST_QUEST_SHARE';
   id: string;
+  share: ShareType;
 }
 
-export const RECEIVE_QUEST_PUBLISH: string = 'RECEIVE_QUEST_PUBLISH';
-export interface ReceiveQuestPublishAction extends Redux.Action {
-  type: 'RECEIVE_QUEST_PUBLISH';
+export const RECEIVE_QUEST_SHARE: string = 'RECEIVE_QUEST_SHARE';
+export interface ReceiveQuestShareAction extends Redux.Action {
+  type: 'RECEIVE_QUEST_SHARE';
   id: string;
-  short_url: string;
+  share: ShareType;
 }
 
 export const REQUEST_QUEST_LIST: string = 'REQUEST_QUEST_LIST';

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import {showHelp} from '../actions/dialog'
+import {showHelp} from '../actions/dialogs'
 import {setDrawer} from '../actions/drawer'
 import {logoutUser, loginUser} from '../actions/user'
 import {AppState, UserType} from '../reducers/StateTypes'

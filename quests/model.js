@@ -27,6 +27,7 @@ CREATE TABLE quests (
   meta_url VARCHAR(2048),
   modified TIMESTAMP NULL DEFAULT NULL,
   published TIMESTAMP NULL DEFAULT NULL,
+  shared TIMESTAMP NULL DEFAULT NULL,
   tombstone TIMESTAMP NULL DEFAULT NULL,
   url VARCHAR(2048),
   user VARCHAR(255)
@@ -202,14 +203,25 @@ function save(entity, cb) {
   console.log("TODO: SAVE");
 }
 
-function publish(user, id, published, cb) {
+function share(user, id, share, cb) {
+  var query;
+  if (share === 'PRIVATE') {
+    query = 'UPDATE quests SET published=NULL, shared=NULL WHERE user=? AND id=? LIMIT 1';
+  } else if (share === 'UNLISTED') {
+    query = 'UPDATE quests SET published=NULL, shared=NOW() WHERE user=? AND id=? LIMIT 1';
+  } else if (share === 'PUBLIC') {
+    query = 'UPDATE quests SET published=NOW(), shared=NOW() WHERE user=? AND id=? LIMIT 1';
+  } else {
+    return new Error("Unknown share setting " + share);
+  }
+
   var connection = getConnection();
-  connection.query('UPDATE quests SET published=' + ((published) ? 'NOW()' : 'NULL') + ' WHERE user=? AND id=? LIMIT 1', [user, toFullKey(id)],
+  connection.query(query, [user, toFullKey(id)],
     function(err, result) {
       if (err) {
         return cb(err);
       }
-      cb(null, published);
+      cb(null, share);
     }
   );
   return connection.end();
@@ -262,5 +274,5 @@ module.exports = {
   update: update,
   tombstone: tombstone,
   searchQuests: searchQuests,
-  publish: publish
+  share: share
 };

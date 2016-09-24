@@ -10,7 +10,7 @@ import FlatButton from 'material-ui/FlatButton';
 import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
 import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit';
 import CloudDownloadIcon from 'material-ui/svg-icons/file/cloud-download';
-import PublishIcon from 'material-ui/svg-icons/editor/publish';
+import LockIcon from 'material-ui/svg-icons/action/lock';
 import SaveIcon from 'material-ui/svg-icons/content/save';
 import AddIcon from 'material-ui/svg-icons/content/add';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
@@ -18,6 +18,7 @@ import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'mat
 import Subheader from 'material-ui/Subheader';
 import {NEW_QUEST, LOAD_QUEST, SAVE_QUEST, PUBLISH_QUEST, DELETE_QUEST, DOWNLOAD_QUEST, QuestActionType} from '../actions/ActionTypes';
 import {QuestType, DirtyType, DrawerType, CodeViewType, UserType} from '../reducers/StateTypes'
+import theme from '../theme';
 
 var TimeAgo:any = require('timeago-react');
 
@@ -127,9 +128,9 @@ const QuestDrawer = (props: QuestDrawerProps): JSX.Element => {
   // TODO add relatable icons
   return (
     <Drawer docked={false} onRequestChange={props.onDrawerRequestChange} open={props.drawer.open} width={styles.drawer.width}>
-      <Toolbar style={{backgroundColor: styles.palette.primary3Color}}>
+      <Toolbar style={{backgroundColor: theme.palette.primary3Color}}>
         <ToolbarGroup>
-          <ToolbarTitle style={{color: styles.palette.alternateTextColor}} text="Quest Options"/>
+          <ToolbarTitle style={{color: theme.palette.alternateTextColor}} text="Quest Options"/>
         </ToolbarGroup>
       </Toolbar>
       <Divider/>
@@ -139,7 +140,7 @@ const QuestDrawer = (props: QuestDrawerProps): JSX.Element => {
         <MenuItem value={NEW_QUEST} primaryText="New" leftIcon={<AddIcon/>} />
         <MenuItem value={SAVE_QUEST} primaryText="Save" disabled={!logged_in} leftIcon={<SaveIcon/>} />
         <MenuItem value={DOWNLOAD_QUEST} primaryText="Download" disabled={!logged_in || !props.quest.id} leftIcon={<CloudDownloadIcon/>} />
-        <MenuItem value={PUBLISH_QUEST} primaryText="Publish" disabled={!logged_in || !props.quest.id} leftIcon={<PublishIcon/>} />
+        <MenuItem value="SHARE_SETTINGS" primaryText="Share" disabled={!logged_in || !props.quest.id} leftIcon={<LockIcon/>} />
         <MenuItem value={DELETE_QUEST} primaryText="Delete" disabled={!logged_in || !props.quest.id} leftIcon={<DeleteIcon/>} />
       </Menu>
       <Divider/>

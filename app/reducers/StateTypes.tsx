@@ -1,9 +1,11 @@
 import {ErrorType} from '../error'
 // TODO: URL type?
 
-export type DialogIDType = 'USER' | 'ERROR' | 'CONFIRM_NEW_QUEST' | 'CONFIRM_LOAD_QUEST' | 'PUBLISH_QUEST';
+export type DialogIDType = 'USER' | 'ERROR' | 'CONFIRM_NEW_QUEST' | 'CONFIRM_LOAD_QUEST' | 'SHARE_SETTINGS';
 
 export type CodeViewType = 'XML' | 'MARKDOWN';
+
+export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 
 export interface EditorType {
     xml: string;
@@ -17,6 +19,7 @@ export interface QuestType {
   created?: string;
   modified?: string;
   published?: string;
+  shared?: string;
   short_url?: string;
   meta_title?: string,
   meta_summary?: string,
@@ -36,7 +39,7 @@ export interface DialogsType {
   ERROR: boolean;
   CONFIRM_NEW_QUEST: boolean;
   CONFIRM_LOAD_QUEST: boolean;
-  PUBLISH_QUEST: boolean;
+  SHARE_SETTINGS: boolean;
   [key: string]: boolean;
 }
 

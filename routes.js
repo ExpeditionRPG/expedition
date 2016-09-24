@@ -18,7 +18,7 @@ var express =require('express');
 var router = express.Router();
 router.use(oauth2.template);
 
-var ALLOWED_CORS = "http://localhost:5000";
+var ALLOWED_CORS = "http://semartin.local:5000";
 
 router.get('/', function(req, res) {
   res.render('home', {
@@ -84,11 +84,11 @@ router.get('/raw/:quest', function(req, res) {
   });
 });
 
-router.post('/published/:quest/:published', function(req, res) {
+router.post('/share/:quest/:share', function(req, res) {
   if (!res.locals.id) {
-    res.status(500).end("You are not signed in. Please sign in to publish/unpublish this quest.");
+    res.status(500).end("You are not signed in. Please sign in to share this quest.");
   }
-  model.publish(res.locals.id, req.params.quest, req.params.published, function(err, shortUrl) {
+  model.share(res.locals.id, req.params.quest, req.params.share, function(err, shortUrl) {
     if (err) {
       return res.status(500).end(err.toString());
     }
