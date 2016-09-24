@@ -81,6 +81,7 @@
       },
       close: function() {
         this.$.dialog.close();
+        this.fire('dialog-close');
         this._open = false;
       },
       isOpen: function() {

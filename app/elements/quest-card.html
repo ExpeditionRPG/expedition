@@ -121,11 +121,6 @@
         }
         Polymer.dom(this).appendChild(quest);
 
-        // Grab the metadata
-        // TODO(scott): Apply player and time duration info here as well.
-        this.title = quest.getAttribute('title');
-        this.setAttribute("data-info", quest.getAttribute('summary'));
-
         // Let any upstream expedition-card-set know that we now have properly set data.
         this.fire("newdata");
       },
@@ -221,8 +216,6 @@
       },
       properties: {
         url: String,
-        title: String,
-        "data-info": String,
       }
     });
   </script>

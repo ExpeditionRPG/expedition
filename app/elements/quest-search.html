@@ -1,5 +1,5 @@
 <dom-module id="quest-search">
-  <style>
+  <style is="custom-style">
     :host ::content instruction {
       display: block;
       padding: var(--vw-small);
@@ -45,45 +45,61 @@
       margin-bottom: var(--vw-large);
     }
 
-
+    paper-dropdown-menu, paper-input {
+      --paper-input-container-input: {
+        font-family: inherit;
+        font-size: inherit;
+      }
+      --paper-input-container-label: {
+        font-family: var(--font-header);
+      }
+    }
   </style>
   <template>
     <expedition-card-set id="pages" initial="intro">
       <expedition-card title="Public Quests" data-route="intro" icon="adventurer">
-        <template is="dom-if" if="{{!loggedIn}}">
-          <p>
-            <strong>Online Play Disclaimer</strong>
-          </p>
-          <p>
-            Public quests are published by other adventurers like yourselves. We offer no guarantees
-            of completeness, correctness of grammar, or sensibility for any of the quests you are about to see.
-          </p>
-          <p>
-            We use your basic Google account information to show quests you've specifically published.
-          </p>
-          <expedition-button on-tap="_onLogin">Continue with Google</expedition-button>
-        </template>
-        <template is="dom-if" if="{{loggedIn}}">
-          <paper-dropdown-menu label="Visibility">
-            <paper-menu class="dropdown-content" selected="{{visibility}}" selected="0">
-              <paper-item>Your Quests</paper-item>
-              <paper-item>All Quests</paper-item>
-            </paper-menu>
-          </paper-dropdown-menu>
-          <expedition-input label="Search Text" type="text" value="{{searchText}}"></expedition-input>
-          <expedition-input label="# Players" type="number" value="{{numPlayers}}" numeric></expedition-input>
-          <expedition-button id="search" on-tap="_onSearch">Search</expedition-button>
-        </template>
+        <div class="input">
+          <div class="value vertical layout">
+            <paper-input class="expedition-search-field" label="Search author, title, or id" value="{{searchText}}">
+              <iron-icon icon="search" suffix></iron-icon>
+            </paper-input>
+            <paper-dropdown-menu class="expedition-search-field" label="Order By">
+              <paper-menu class="dropdown-content" selected="{{order}}" attr-for-selected="value">
+                <paper-item value="-published">Newest</paper-item>
+                <paper-item value="+meta_title">Title</paper-item>
+                <paper-item value="-meta_maxTimeMinutes">Play Time (longest)</paper-item>
+                <paper-item value="+meta_minTimeMinutes">Play Time (shortest)</paper-item>
+              </paper-menu>
+            </paper-dropdown-menu>
+            <paper-dropdown-menu class="expedition-search-field" label="Within">
+              <paper-menu class="dropdown-content" selected="{{recency}}" attr-for-selected="value">
+                <paper-item value="inf">All Time</paper-item>
+                <paper-item value="31536000">Past Year</paper-item>
+                <paper-item value="2592000">Past Month</paper-item>
+                <paper-item value="604800">Past Week</paper-item>
+                <paper-item value="86400">Past 24 hours</paper-item>
+                <paper-item value="3600">Past hour</paper-item>
+              </paper-menu>
+            </paper-dropdown-menu>
+              <expedition-checkbox label="Owned Only" value="{{selfOwned}}">
+                Show public, unlisted, and private quests owned by you.
+              </expedition-checkbox>
+          </div>
+        </div>
+        <expedition-button id="search" on-tap="_onSearch">Search</expedition-button>
       </expedition-card>
       <expedition-card title="Search Results"  data-route="results" on-return="prev">
         <template is="dom-if" if="{{loading}}">
-          <!--TODO Add Spinner-->
           Loading...
         </template>
         <template is="dom-repeat" items="{{quests}}">
           <expedition-item on-tap="_onQuestTap" data-target$="{{index}}">
-            <h1>{{item.meta_title}}</h1>
-            <div>{{item.meta_summary}}</div>
+            <h1>{{item.title}}</h1>
+            <div>by {{item.author}}</div>
+            <div>{{item.num_players}} players, {{item.play_period}}</div>
+            <template is="dom-if" if="{{item.abnormal_share_state}}">
+              <div><strong>{{item.abnormal_share_state}}</div></div>
+            </template>
           </expedition-item>
         </template>
         <template is="dom-if" if="{{!quests.length}}">
@@ -112,6 +128,19 @@
         <expedition-button on-tap="_onQuestPlay" data-target$="{{quest}}">Play</expedition-button>
       </expedition-card>
     </expedition-card-set>
+    <expedition-dialog title="Disclaimer" id="disclaimer" on-dialog-close="_onDialogClose">
+      <p>
+        Community quests are published by other adventurers like yourselves. We offer no guarantees
+        of completeness, correctness of grammar, or sanity in any of the quests you are about to see.
+      </p>
+      <p>
+        We use your basic Google account information as your identity when rating quests and to show your
+        own (unpublished) quests. You can continue without logging in, but you will only be able to play
+        a small selection of offline, featured quests.
+      </p>
+      <expedition-button on-tap="_onLogin">Continue with Google</expedition-button>
+      <expedition-button on-tap="_onDefault">Show default quests only</expedition-button>
+    </expedition-dialog>
   </template>
   <script>
     /*global GlobalsBehaviour */
@@ -123,20 +152,49 @@
         this.loggedIn = ExpeditionAPI.isLoggedIn();
         this.quests=[];
         this.userOwnedQuest = false;
+        this.order = "-published";
+        this.recency = "inf";
+        this.FEATURED = [
+          {
+            xml_url: "quests/build/oust_albanus.xml",
+            title: "Oust Albanus",
+            summary: "Your party encounters a smelly situation.",
+            author: "Scott Martin",
+            email: "smartin015@gmail.com",
+            play_period: this._formatPlayPeriod(20, 40),
+            num_players: '2-4'
+          },
+          {
+            xml_url: "quests/build/mistress_malaise.xml",
+            title: "Mistress Malaise",
+            summary: "Mystery, Misfortune, and a Mistress.",
+            author: "Scott Martin",
+            email: "smartin015@gmail.com",
+            play_period: this._formatPlayPeriod(20, 40),
+            num_players: '2-4'
+          }
+        ];
+      },
+      _onDefault: function() {
+        this.$.disclaimer.close();
+        this.$.pages.next('results');
+        this.quests = this.FEATURED;
       },
       _onLogin: function() {
         ExpeditionAPI.login(function(locals) {
           this.loggedIn = ExpeditionAPI.isLoggedIn();
           console.log(locals);
           this.loading = true;
-          ExpeditionAPI.searchQuests({owner: ExpeditionAPI.getLoggedInUser().id}, function(result) {
-            if (result.error) {
-              console.log(result.error);
-            }
-            this.loading = false;
-            this.quests = result.quests;
-          }.bind(this));
+          this.$.disclaimer.close();
+          this._onSearch();
         }.bind(this));
+      },
+      _onDialogClose: function() {
+        console.log("herp");
+        if (!ExpeditionAPI.isLoggedIn()) {
+          console.log("Derp");
+          this.showCommunity = false;
+        }
       },
       _truncate: function(s, n) {
         return s.substr(0,n-1)+(s.length>n?'&hellip;':'');
@@ -154,6 +212,15 @@
           return minMinutes + '-' + maxMinutes + " minutes";
         }
       },
+      _formatAbnormalShareState: function(published, shared) {
+        if (!published && !shared) {
+          return "PRIVATE";
+        }
+        if (!published && shared) {
+          return "UNLISTED";
+        }
+        return null;
+      },
       /* jshint ignore:start */
       _formattedQuest: function(quest) {
         return {
@@ -170,6 +237,7 @@
           num_players: quest.meta_minPlayers + '-' + quest.meta_maxPlayers,
           created: this._formatDate(quest.created),
           published: this._formatDate(quest.published),
+          abnormal_share_state: this._formatAbnormalShareState(quest.published, quest.shared),
           reported: false,
           user_owned: Boolean(quest.user === ExpeditionAPI.getLoggedInUser())
         };
@@ -177,7 +245,7 @@
       /* jshint ignore:end */
       _onQuestTap: function(e) {
         var idx = e.currentTarget.dataset.target;
-        this.quest = this._formattedQuest(this.quests[idx]);
+        this.quest = this.quests[idx];
         this.$.pages.next('details');
       },
       _onQuestPlay: function(e) {
@@ -185,16 +253,28 @@
         this.fire('quest-select', quest);
       },
       _onSearch: function() {
+        if (!ExpeditionAPI.isLoggedIn()) {
+          this.$.disclaimer.open();
+          return;
+        }
         var params = {};
 
-        if (this.visibility === "Your Quests") {
+        if (this.selfOwned) {
           params.owner = ExpeditionAPI.getLoggedInUser().id;
         }
-        if (this.numPlayers) {
-          params.players = parseInt(this.numPlayers);
-        }
+
+        params.players = this.globals.adventurers;
+
         if (this.searchText) {
           params.search = this.searchText;
+        }
+
+        if (this.recency && this.recency !== "inf") {
+          params.published_after = Math.floor(Date.now() / 1000) - parseInt(this.recency);
+        }
+
+        if (this.order) {
+          params.order = this.order;
         }
 
         ExpeditionAPI.searchQuests(params, function(result) {
@@ -202,7 +282,8 @@
             console.log(result.error);
           }
           this.loading = false;
-          this.quests = result.quests;
+          this.quests = result.quests.map(this._formattedQuest.bind(this));
+          console.log(this.quests);
         }.bind(this));
         this.$.pages.next('results');
       },
@@ -216,7 +297,8 @@
         e.stopPropagation();
       },
       properties: {
-        quest: Object
+        quest: Object,
+        showCommunity: Boolean,
       }
     });
   </script>

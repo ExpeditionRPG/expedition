@@ -12,6 +12,8 @@
     this.isIos = (/iphone|ipad|ipod/i.test(navigator.userAgent));
     this.isMobile = this.isAndroid || this.isIos;
     document.addEventListener("backbutton", app.onBackKeyDown, false);
+
+    ExpeditionAPI._silentLoginCordova();
   };
   app.onBackKeyDown = function() {
     // This is neither elegant nor efficient, but it works well. When native

@@ -165,33 +165,9 @@
       </quest-card>
 
       <!-- Ideas: http://www.trollmystic.com/pub/2012/03/03/event-generator/ -->
-      <expedition-card id="featured"
-        data-route="featured"
-        title="Featured Quests"
-        icon="cards"
-        data-title="Featured Quests" on-return="showSelect"
-        data-info="No Guide needed - everyone plays as adventurers.">
-        <header>
-          <p>
-            Select a quest below:
-          </p>
-        </header>
-
-        <expedition-item on-tap="onFeaturedQuestChoice" data-url="quests/build/oust_albanus.xml">
-          <h1>Oust Albanus</h1>
-          <div>Your party encounters a smelly situation.</div>
-        </expedition-item>
-
-        <expedition-item on-tap="onFeaturedQuestChoice" data-url="quests/build/mistress_malaise.xml">
-          <h1>Mistress Malaise</h1>
-          <div>Mystery, Misfortune, and a Mistress.</div>
-        </expedition-item>
-
-      </expedition-card>
-
       <quest-search
-        title="Public Quests"
-        data-info="Browse quests published by adventurers around the world."
+        title="Full Quests"
+        data-info="Browse featured and community quests."
         on-quest-select="onPublicQuestChoice"
         on-return="showSelect"
         data-route="public">
