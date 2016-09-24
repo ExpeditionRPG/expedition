@@ -154,6 +154,7 @@
         this.userOwnedQuest = false;
         this.order = "-published";
         this.recency = "inf";
+        /* jshint ignore:start */
         this.FEATURED = [
           {
             xml_url: "quests/build/oust_albanus.xml",
@@ -174,6 +175,7 @@
             num_players: '2-4'
           }
         ];
+        /* jshint ignore:end */
       },
       _onDefault: function() {
         this.$.disclaimer.close();
@@ -270,7 +272,9 @@
         }
 
         if (this.recency && this.recency !== "inf") {
+          /* jshint ignore:start */
           params.published_after = Math.floor(Date.now() / 1000) - parseInt(this.recency);
+          /* jshint ignore:end */
         }
 
         if (this.order) {
