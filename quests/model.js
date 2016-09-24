@@ -84,7 +84,7 @@ function searchQuests(userId, params, cb) {
 
   var connection = getConnection();
 
-  var filter_string = "";
+  var filter_string = "SELECT * FROM `quests` WHERE tombstone IS NULL";
   var filter_vars = [];
 
   if (params.owner) {
@@ -111,15 +111,31 @@ function searchQuests(userId, params, cb) {
     filter_vars.push(params_like);
   }
 
+  if (params.published_after) {
+    filter_string += " AND UNIX_TIMESTAMP(published) > ?";
+    filter_vars.push(parseInt(params.published_after));
+  }
+
   if (params.token) {
     console.log("TODO Start token " + token)
+  }
+
+  if (params.order) {
+    filter_string += " ORDER BY " + connection.escapeId(params.order.substr(1)) + " " + ((params.order[0] === '+') ? "ASC" : "DESC");
   }
 
   var limit = Math.max(params.limit || 0, 100);
   filter_string += " LIMIT ?";
   filter_vars.push(limit);
 
-  var query = connection.query('SELECT * FROM `quests` WHERE tombstone IS NULL' + filter_string, filter_vars, function(err, results) {
+  // Also search for unlisted quests and list them first if we have an exact match on ID
+  // and the search string is base62-like. These results will be displayed first.
+  if (params.search && params.search.match(/^[A-Za-z0-9]+$/)) {
+    filter_string = "(SELECT * FROM `quests` WHERE id=? AND shared IS NOT NULL AND tombstone IS NULL LIMIT 1) UNION (" + filter_string + ")";
+    filter_vars.unshift(toFullKey(params.search));
+  }
+
+  var query = connection.query(filter_string, filter_vars, function(err, results) {
     if (err) {
       return cb(err);
     }

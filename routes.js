@@ -49,6 +49,7 @@ router.post('/quests', function(req, res) {
   model.searchQuests(res.locals.id, params, function(err, quests, nextToken) {
     if (err) {
       res.header('Access-Control-Allow-Origin', ALLOWED_CORS);
+      res.header('Access-Control-Allow-Credentials', 'true');
       console.log(err);
       return res.status(500).end("Search Error");
     }
