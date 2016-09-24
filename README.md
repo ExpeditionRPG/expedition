@@ -72,8 +72,11 @@ Web files are output in the www/ folder.
 #### Build for Android
 
 ```sh
+chmod +x build_android_signed.sh
 gulp && cordova build android
 ```
+
+Note that, when deploying Android, you'll need to update `android-versionCode` in `config.xml`, not just `version`.
 
 #### Build for iOS
 
