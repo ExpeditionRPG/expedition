@@ -134,7 +134,7 @@
     <expedition-card-set id="pages" initial="splash" title="Play Style" icon="cards" on-return="showSetup">
       <!-- TODO: splash screen should be a polymer element for testability -->
       <div id="splash" data-route="splash" class="layout vertical center-justified">
-        <div id="version">v1.0.7</div>
+        <div id="version">v1.0.9</div>
         <iron-image id="logo" src="images/logo-frameless.png" fade></iron-image>
         <template is="dom-if" if="{{ready}}">
           <expedition-button on-tap="getcards">Get the Cards</expedition-button>
@@ -186,15 +186,6 @@
         on-return="showSelect"
         data-route="custom" custom>
       </combat-card>
-
-      <quest-tester
-        title="Custom Quest"
-        data-info="Upload a quest file from your phone or the internet."
-        on-return="showSelect"
-        on-url="onQuestURLLoad"
-        on-file="onQuestFileLoad"
-        data-route="custom_quest">
-      </quest-tester>
 
     </expedition-card-set>
 

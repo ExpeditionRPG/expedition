@@ -30,7 +30,7 @@ questParser.prototype.init = function(root) {
 
   // TODO(scott): Add check for proper resolution of combat enemies
 
-  this._parser = math.parser();
+  this._parser = math.parser(); // jshint ignore:line
 
   this.path = [root.children[0]];
   return this._loadCurrentNode();
