@@ -1,0 +1,99 @@
+/* NOTE:
+Minion pro font requires typekit snippet
+*/
+
+@import 'cards.scss';
+
+a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+
+body {
+  margin-top: 40px;
+
+  background: lighten(black, 20%);
+  font-size: 0; /* hack for display-inline gap */
+  font-family: "minion-pro", serif !important;
+  color: black;
+}
+
+.page {
+  width: 7.5in;
+  margin: auto;
+  background: black;
+  position: relative;
+}
+
+@page {
+  size: letter;
+  margin: 0.23in 0.48in;
+  background: white;
+}
+
+#topbar {
+  z-index: 10000;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 35px;
+  text-align: center;
+  background: white;
+  box-sizing: border-box;
+  padding: 5px;
+  border-bottom: 1px solid black;
+  font-size: 12px;
+
+  #logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 35px;
+  }
+}
+
+/* Formatting options - TODO move these to #renderArea */
+
+body.hideBacks {
+  .backs {
+    display: none;
+  }
+}
+
+body.hideFronts {
+  .fronts {
+    display: none;
+  }
+}
+
+#renderArea {
+  margin-top: 20px;
+}
+
+.printInstructions {
+  display: none;
+  width: 7.5in;
+  height: 8in;
+  background: white;
+  margin: auto;
+  font-size: 16px;
+  line-height: 1.2;
+  page-break-after: always;
+
+  #instructionLogo {
+    width: 5.5in;
+    margin: auto;
+    display: block;
+  }
+
+  h1 {
+    font-size: 180%;
+    text-align: center;
+  }
+
+  ol {
+    width: 4.25in;
+    margin: auto;
+    list-style-type: upper-roman;
+
+    li {
+      margin-top: 0.25in;
+    }
+  }
+}

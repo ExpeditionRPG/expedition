@@ -1,0 +1,23 @@
+<div class="card front horizontal {{{ cardType }}} bottomBar" id="{{{camelCase name}}}">
+  <div class="contents">
+    <header>
+      <div class="name">{{{ name }}}</div>
+    </header>
+    <article>
+      <div class="adventurertext" ><div class="child">
+        <div>
+          <strong>Starting abilities:</strong>
+          <br class="padded" />
+          {{{ startingabilities }}}
+        </div>
+      </div></div>
+    </article>
+    <footer>
+      <div class="flavortext">{{{ flavortext }}}</div>
+      <div class="counter counter-horizontal">
+        {{> icon img='health_small' }}
+        {{{horizontalCounter 12}}}
+      </div>
+    </footer>
+  </div>
+</div>

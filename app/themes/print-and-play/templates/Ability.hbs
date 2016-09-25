@@ -1,0 +1,56 @@
+<div class="card front vertical {{{ cardType }}} {{{ class }}}" id="{{camelCase name }}">
+  <div class="contents">
+    <header>
+      <div class="typeicon">{{{ typeicon }}}</div>
+      <div class="name">{{{ name }}}</div>
+      <div class="classicon">
+        <div class="icon"><img class="svg" src="/themes/official/images/icon/{{lowercase class }}_small.svg"/></div>
+      </div>
+    </header>
+    <article>
+      <div class="indicators">
+        <div class="risk">
+          <strong>{{> icon img='d20_small' }} <span class="symbol">&ge;</span> {{{ risk }}}</strong>
+        </div>
+        <div class="target">
+          {{> icon img='target_small' }} {{{ target }}}
+        </div>
+      </div>
+      <div class="preamble">
+        <div class="hit">
+          <strong>Success:</strong>
+          {{{ hit }}}
+          <br class="padded" />
+        </div>
+        {{#if abilitytext }}
+          <div>
+            {{{ abilitytext }}}
+          </div>
+          <br class="padded" />
+        {{/if}}
+      </div>
+      <div class="rng">
+        {{#if crithit }}
+          <div class="crithit">
+            <strong>{{> icon img='d20_small' }} <span class="symbol">&ge;</span> 20:</strong> {{{ crithit }}}
+          </div>
+          <br class="padded" />
+        {{/if}}
+        {{#if miss }}
+          <div class="miss">
+            <strong>{{> icon img='d20_small' }} <span class="symbol"><</span> {{{ risk }}}:</strong> {{{ miss }}}
+          </div>
+          <br class="padded" />
+        {{/if}}
+        {{#if critmiss }}
+          <div class="critmiss">
+            <strong>{{> icon img='d20_small' }} <span class="symbol">&le;</span> 1:</strong> {{{ critmiss }}}
+          </div>
+        {{/if}}
+      </div>
+    </article>
+    <footer>
+      <div class="flavortext">{{{ flavortext }}}</div>
+    </footer>
+  </div>
+</div>

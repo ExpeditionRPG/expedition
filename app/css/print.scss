@@ -1,0 +1,53 @@
+body {
+  margin: 0;
+  background: white;
+}
+
+#topbar {
+  display: none;
+}
+
+#renderArea {
+  margin: 0;
+}
+
+.page {
+  page-break-before: always;
+  background: black;
+
+  &.backs {
+    height: auto;
+  }
+}
+
+body:not(.DriveThruCards) {
+
+  .backs {
+    transform: scale(-1, 1);
+
+    .card {
+      transform: scale(-1, 1);
+    }
+    .Encounter, .Adventurer { /* Don't flip horizontal cards */
+      transform: scale(-1, 1) rotate(180deg);
+    }
+  }
+}
+
+.DriveThruCards {
+
+  .card.back {
+
+    &.Adventurer, &.Encounter {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+body.printandplay .printInstructions {
+  display: block;
+}
+
+.inline_icon {
+  margin-bottom: -0.02in;
+}
