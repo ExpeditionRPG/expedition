@@ -1,6 +1,6 @@
 /*global gapi */
 var ExpeditionAPI = {
-  URL_BASE: "http://semartin.local:8080", //"http://expedition-quest-ide.appspot.com", //
+  URL_BASE: "http://expedition-quest-ide.appspot.com",
   API_KEY: "AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8",
   SCOPES: "profile",
   CLIENT_ID: "545484140970-r95j0rmo8q1mefo0pko6l3v6p4s771ul.apps.googleusercontent.com",
