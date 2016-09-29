@@ -7,3 +7,5 @@ Making your own cards is easy! The card creator uses Google Sheets as its data s
 3. Copy the publish link.
 4. Open the card creator website, hit "Set Source" in the top right, and paste your publish link.
 5. Voila! Your cards should now be imported; you can select whichever theme you'd like, review the cards for appearance and accuracy, then print with `Ctrl + P` / `Command + P`
+
+Note: we recommend disabling your ad blocker for the card creator website - they've been known to cause issues with it.
