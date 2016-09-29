@@ -170,6 +170,10 @@ function setSource () {
   // Official production sheet link: https://docs.google.com/spreadsheets/d/1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM/pubhtml
   var sheetWebLink = prompt('Enter your Google Sheet URL (make sure to use the "Publish To Web" option)');
 
+  if (sheetWebLink == null || sheetWebLink == '') {
+    return;
+  }
+
   Joi.validate(sheetWebLink, Joi.string().uri(), function (err, value) {
 
     if (err) {
