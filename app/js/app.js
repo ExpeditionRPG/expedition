@@ -201,8 +201,9 @@ function loadTable(invisible) {
   }
   cardDataTimestamp = Date.now();
 
+  $("#loading").fadeIn();
+
   if (invisible == undefined || !invisible) {
-    $("#loading").show();
     renderArea.hide();
   }
 
@@ -215,8 +216,8 @@ function loadTable(invisible) {
 
     render(getParams(), cardData);
     buildFilters();
-    $("#loading").hide();
     renderArea.show();
+    setTimeout(function () { $("#loading").fadeOut(); }, 100); // wait for UI to settle
   });
 }
 
