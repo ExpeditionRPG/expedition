@@ -6,6 +6,7 @@ var Helpers = require('./helpers');
 var renderArea;
 var filters = {};
 var cardData = null;
+var cardDataTimestamp = 0;
 
 var templates = {},
     filters = {},
@@ -126,16 +127,17 @@ function buildFilters () {
       }
 // TODO only store params in URL that're different than the default
       history.replaceState({}, document.title, '?' + jQuery.param(params));
-      render(getParams());
+      render(getParams(), cardData);
     });
   }
 }
 
 
 function wireUI () {
-  $("#refreshCards").click(loadTable);
-  $("#setSource").click(setSource);
-  $("#resetFilters").click(resetFilters);
+  $("#refreshCards").click(function () { loadTable(); });
+  $("#setSource").click(function () { setSource(); });
+  $("#resetFilters").click(function () { resetFilters(); });
+  window.onfocus = function() { loadTable(true); };
 }
 
 
@@ -162,7 +164,7 @@ function resetFilters () {
   $("#dynamicFilters select").find("option[value='']").attr('selected', true);
   history.replaceState({}, document.title, '?');
   getParams();
-  render(getParams());
+  render(getParams(), cardData);
 }
 
 
@@ -190,10 +192,19 @@ function setSource () {
 
 
 // wrapper around loading table data that manages the UI
-function loadTable() {
+// if invisible is set to true, update in the background / don't hide the render area
+function loadTable(invisible) {
 
-  $("#loading").show();
-  renderArea.html('');
+  // rate limit to once per 2 seconds
+  if (Date.now() - cardDataTimestamp < 2000) {
+    return;
+  }
+  cardDataTimestamp = Date.now();
+
+  if (invisible == undefined || !invisible) {
+    $("#loading").show();
+    renderArea.hide();
+  }
 
 // TODO doing the || default shouldn't be necessary - need to run getParams before calling loadTable for the first time
   Data.loadTable(filters.googleSheetId || filterDefaults.googleSheetId, function (err, sheets) {
@@ -202,9 +213,10 @@ function loadTable() {
 
     cardData = sheets;
 
-    render(getParams());
+    render(getParams(), cardData);
     buildFilters();
     $("#loading").hide();
+    renderArea.show();
   });
 }
 
@@ -215,7 +227,7 @@ function loadTable() {
 /* ===== RENDER CARDS FUNCTIONS ===== */
 
 // Render the cards into the UI based on the current filters
-function render (filters) {
+function render (filters, sheets) {
 
   renderArea.html('');
 
@@ -248,7 +260,7 @@ function render (filters) {
     sorted[sorted.length] = key;
   }
   for (var i = 0, l = sorted.length; i < l; i++) {
-    var sheet = cardData[sorted[i]];
+    var sheet = sheets[sorted[i]];
     renderSheet(sheet.name, sheet.elements, filters);
   }
 }
