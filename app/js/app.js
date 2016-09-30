@@ -1,36 +1,21 @@
-var Data = require('./data');
 var Joi = require('joi-browser');
+
+var CONSTANTS = require('./constants');
+var State = require('./state');
 var Helpers = require('./helpers');
 
 
-var renderArea;
-var filters = {};
-var cardData = null;
-var cardDataTimestamp = 0;
-
-var templates = {},
-    filters = {},
-    filterList = [],
+var filters = {},
     filterOptions = {
       theme: Object.keys(window.Expedition),
       export: ['Print-and-Play', 'DriveThruCards', 'AdMagic-Fronts', 'AdMagic-Backs', 'Hide-Backs'],
       tier: [],
       class: [],
       template: [],
-    },
-    filterDefaults = { // for filters with defaults, don't have an "all" option
-      theme: 'official',
-      export: 'Print-and-Play',
-      googleSheetId: '1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
-    },
-    cardFilters = ['tier', 'class', 'template']; // UI filters that filter card data
-        // TODO this is also defined in data.js
-
+    };
 
 (function init() {
-
-  renderArea = $("#renderArea");
-  loadTable(); // TODO because this is run before getParams, it'll fail to use the URL-specified sheet on the first load
+  updateSheets(); // TODO because this is run before getParams, it'll fail to use the URL-specified sheet on the first load
   wireUI();
 })();
 
@@ -44,9 +29,9 @@ function getParams() {
       search = /([^&=]+)=?([^&]*)/g,
       decode = function (s) { return decodeURIComponent(s.replace(/\+/g, " ")); }, // replace + with a space
       query  = window.location.search.substring(1),
+      filterCount = 0,
       oldFilters = JSON.parse(JSON.stringify(filters));
   filters = {};
-  filterList = [];
 
   while (match = search.exec(query)) {
     var key = decode(match[1]);
@@ -54,11 +39,11 @@ function getParams() {
     matches[key] = value;
   }
 
-  Object.assign(filters, filterDefaults, matches);
+  Object.assign(filters, CONSTANTS.filterDefaults, matches);
   Object.keys(filters).forEach(function (key) {
     var oldValue = oldFilters[key];
-    if (cardFilters.indexOf(key) !== -1) {
-      filterList.push(key);
+    if (CONSTANTS.cardFilters.indexOf(key) !== -1) {
+      filterCount ++;
     }
     if (key === 'theme' && oldValue !== filters[key]) {
       onThemeChange();
@@ -73,7 +58,7 @@ function getParams() {
     break;
   }
 
-  if (filterList.length > 0) {
+  if (filterCount > 0) {
     var docTitle = 'Expedition Card Creator: ';
     Object.keys(filters).forEach(function (key) {
       docTitle += filters[key] + ' ';
@@ -96,7 +81,7 @@ function buildFilters () {
   function buildFilter (title, values) {
 
     var el = $("<select data-filter='" + title + "'></select>");
-    if (filterDefaults[title] == null) {
+    if (CONSTANTS.filterDefaults[title] == null) {
       el.append("<option value=''>All " + title + "</option>");
     }
     for (var v in values) {
@@ -104,7 +89,7 @@ function buildFilters () {
     }
     el.change(onFilterChange);
     $("#dynamicFilters").prepend(el);
-    el.val(filterDefaults[title]);
+    el.val(CONSTANTS.filterDefaults[title]);
     if (filters[title]) {
       $("#dynamicFilters select[data-filter='" + title + "']").find("option[value='" + filters[title] + "']").attr('selected', true);
     }
@@ -121,23 +106,23 @@ function buildFilters () {
 // TODO think of a better / unified way to do filter changes, ie passing a specific single key-value
 // rather than re-reading the state of the UI
 // (for example of why this is needed, see how setSource has to replicate this functionality)
-// bonus points: based on what filter changed, loadTable or render
+// bonus points: based on what filter changed, updateSheets or render
       if (filters.googleSheetId != null) {
         params.googleSheetId = filters.googleSheetId;
       }
 // TODO only store params in URL that're different than the default
       history.replaceState({}, document.title, '?' + jQuery.param(params));
-      render(getParams(), cardData);
+      render(getParams(), State.sheets);
     });
   }
 }
 
 
 function wireUI () {
-  $("#refreshCards").click(function () { loadTable(); });
+  $("#refreshCards").click(function () { updateSheets(); });
   $("#setSource").click(function () { setSource(); });
   $("#resetFilters").click(function () { resetFilters(); });
-  window.onfocus = function() { loadTable(true); };
+  window.onfocus = function() { updateSheets(true); };
 }
 
 
@@ -149,14 +134,7 @@ function onThemeChange () {
   Object.keys(window.Expedition[filters.theme].partials).forEach(function (key) {
     Handlebars.registerPartial(key, window.Expedition[filters.theme].partials[key]);
   });
-  renderArea.attr('data-theme', filters.theme);
-  templates = { // will be rendered into UI in this order
-    Helper: window.Expedition[filters.theme].templates.Helper,
-    Adventurer: window.Expedition[filters.theme].templates.Adventurer,
-    Ability: window.Expedition[filters.theme].templates.Ability,
-    Encounter: window.Expedition[filters.theme].templates.Encounter,
-    Loot: window.Expedition[filters.theme].templates.Loot,
-  };
+  $("#renderArea").attr('data-theme', filters.theme);
 }
 
 
@@ -164,7 +142,7 @@ function resetFilters () {
   $("#dynamicFilters select").find("option[value='']").attr('selected', true);
   history.replaceState({}, document.title, '?');
   getParams();
-  render(getParams(), cardData);
+  render(getParams(), State.sheets);
 }
 
 
@@ -184,39 +162,33 @@ function setSource () {
 
     filters.googleSheetId = value.replace('https://docs.google.com/spreadsheets/d/', '')
         .replace('/pubhtml', '');
-  // TODO this should use the same onFilterChange function, which should also handle loadTable
+  // TODO this should use the same onFilterChange function, which should also handle updateSheets
     history.replaceState({}, document.title, '?' + jQuery.param(filters));
-    loadTable();
+    updateSheets();
   });
 }
 
 
 // wrapper around loading table data that manages the UI
 // if invisible is set to true, update in the background / don't hide the render area
-function loadTable(invisible) {
+function updateSheets(invisible) {
 
-  // rate limit to once per 2 seconds
-  if (Date.now() - cardDataTimestamp < 2000) {
-    return;
-  }
-  cardDataTimestamp = Date.now();
+
 
   $("#loading").fadeIn();
 
   if (invisible == undefined || !invisible) {
-    renderArea.hide();
+    $("#renderArea").hide();
   }
 
-// TODO doing the || default shouldn't be necessary - need to run getParams before calling loadTable for the first time
-  Data.loadTable(filters.googleSheetId || filterDefaults.googleSheetId, function (err, sheets) {
+// TODO doing the || default shouldn't be necessary - need to run getParams before calling updateSheets for the first time
+  State.updateSheets(filters.googleSheetId || CONSTANTS.filterDefaults.googleSheetId, function (err, sheets) {
 
-    $.extend(filterOptions, Data.generateFilterOptions(sheets));
+    $.extend(filterOptions, State.generateFilterOptions(sheets));
 
-    cardData = sheets;
-
-    render(getParams(), cardData);
+    render(getParams(), sheets);
     buildFilters();
-    renderArea.show();
+    $("#renderArea").show();
     setTimeout(function () { $("#loading").fadeOut(); }, 100); // wait for UI to settle
   });
 }
@@ -230,7 +202,7 @@ function loadTable(invisible) {
 // Render the cards into the UI based on the current filters
 function render (filters, sheets) {
 
-  renderArea.html('');
+  $("#renderArea").html('');
 
   $("body").removeClass();
   switch (filters.export) {
@@ -257,8 +229,8 @@ function render (filters, sheets) {
 
   var sorted = [];
 
-  for (var key in templates) {
-    sorted[sorted.length] = key;
+  for (var i = 0, l = CONSTANTS.cardTemplates.length; i < l; i++) {
+    sorted[sorted.length] = CONSTANTS.cardTemplates[i];
   }
   for (var i = 0, l = sorted.length; i < l; i++) {
     var sheet = sheets[sorted[i]];
@@ -282,9 +254,10 @@ function renderSheet (template, cards, filters) {
       continue;
     }
 
-    // define filters / skips here
-    for (var j = 0; j < filterList.length; j++) {
-      if (card[filterList[j]] !== filters[filterList[j]]) {
+    // filter out / skip cards
+    for (var i = 0, l = CONSTANTS.cardFilters.length; i < l; i++) {
+      var key = CONSTANTS.cardFilters[i];
+      if (filters[key] != null && card[key] !== filters[key]) {
         filteredOut = true;
         continue;
       }
@@ -302,8 +275,8 @@ function renderSheet (template, cards, filters) {
     if (cardCount % 9 === 0 || filters.singlePage) {
       fronts = $('<div class="page fronts"></div>');
       backs = $('<div class="page backs"></div>');
-      renderArea.append(fronts);
-      renderArea.append(backs);
+      $("#renderArea").append(fronts);
+      $("#renderArea").append(backs);
     }
 
     fronts.append(renderCardFront(template, card));
