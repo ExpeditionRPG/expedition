@@ -47,6 +47,11 @@ body {
   }
 }
 
+button a {
+  text-decoration: none;
+  color: black;
+}
+
 /* Formatting options - TODO move these to #renderArea */
 
 body.hideBacks {
