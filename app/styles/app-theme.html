@@ -22,6 +22,38 @@
     src: url("../fonts/Minion Pro Regular.ttf") format('truetype');
   }
 
+  .NEXT-enter {
+    transform: translate(100%);
+  }
+  .NEXT-enter.NEXT-enter-active {
+    transform: translate(0%);
+    transition: transform 300ms ease-in-out;
+  }
+  .NEXT-leave {
+    position:absolute;
+    transform: translate(0%);
+  }
+  .NEXT-leave.NEXT-leave-active {
+    transform: translate(-100%);
+    transition: transform 300ms ease-in-out;
+  }
+
+  .PREV-enter {
+    transform: translate(-100%);
+  }
+  .PREV-enter.PREV-enter-active {
+    transform: translate(0%);
+    transition: transform 300ms ease-in-out;
+  }
+  .PREV-leave {
+    position:absolute;
+    transform: translate(0%);
+  }
+  .PREV-leave.PREV-leave-active {
+    transform: translate(100%);
+    transition: transform 300ms ease-in-out;
+  }
+
   /*
    Polymer includes a shim for CSS Custom Properties that we can use for application theming.
    Below, you'll find the default palette for the Polymer Starter Kit layout. Feel free to play

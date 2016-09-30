@@ -76,6 +76,8 @@
   <!-- global user settings -->
   <script id="globals" type="application/json" src="scripts/globals.json"></script>
 
+  <script src="https://npmcdn.com/jquery@3.1.0/dist/jquery.min.js"></script>
+
   <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
   <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
   <!-- endbuild -->
@@ -129,73 +131,8 @@
   </style>
 </head>
 <body unresolved class="fullbleed layout vertical center-justified">
-  <span id="browser-sync-binding"></span>
-  <template is="dom-bind" id="app">
-    <expedition-card-set id="pages" initial="splash" title="Play Style" icon="cards" on-return="showSetup">
-      <!-- TODO: splash screen should be a polymer element for testability -->
-      <div id="splash" data-route="splash" class="layout vertical center-justified">
-        <div id="version">v1.0.9</div>
-        <iron-image id="logo" src="images/logo-frameless.png" fade></iron-image>
-        <template is="dom-if" if="{{ready}}">
-          <expedition-button on-tap="getcards">Get the Cards</expedition-button>
-          <template is="dom-if" if="{{isMobile}}">
-            <expedition-button on-tap="next" data-target="setup">Begin!</expedition-button>
-          </template>
-        </template>
-        <template is="dom-if" if="{{!isMobile}}">
-          <h3 id="device-unsupported">Device not supported. Please open on an Android or iOS device.</h3>
-        </template>
-      </div>
-
-      <expedition-card title="Setup" icon="adventurer" data-route="setup" on-return="showSplash">
-        <p>
-          To begin, tell us who's playing and how:
-        </p>
-        <div class="layout vertical">
-          <expedition-settings></expedition-settings>
-        </div>
-        <expedition-button on-tap="next" data-target="_select">Next</expedition-button>
-      </expedition-card>
-
-      <quest-card
-        id="globalQuest"
-        on-return="showSelect"
-        data-route="quest"
-        url="{{quest.xml_url}}">
-      </quest-card>
-
-      <!-- Ideas: http://www.trollmystic.com/pub/2012/03/03/event-generator/ -->
-      <quest-search
-        title="Full Quests"
-        data-info="Browse featured and community quests."
-        on-quest-select="onPublicQuestChoice"
-        on-return="showSelect"
-        data-route="public">
-      </quest-search>
-
-      <roleplay-card
-        title="Guided Adventure"
-        data-info="For beginner and intermediate Guides - a quest framework."
-        on-return="showSelect"
-        data-route="guided">
-      </roleplay-card>
-
-      <combat-card
-        title="Custom Encounter"
-        data-info="For experienced Guides - only the combat system is provided."
-        on-return="showSelect"
-        data-route="custom" custom>
-      </combat-card>
-
-    </expedition-card-set>
-
-    <expedition-dialog title="Settings" id="settings">
-      <expedition-settings></expedition-settings>
-    </expedition-dialog>
-    <tutorial-dialog id="tutorial" modal></expedition-dialog>
-  </template>
-<!-- build:js scripts/app.js -->
-  <script src="scripts/app.js"></script>
-<!-- endbuild-->
+  <section id="react-app" style="width:100%; height:100%;"></div>
+  <script type="text/javascript" src="init.js"></script>
+  <script type="text/javascript" src="bundle.js"></script>
 </body>
 </html>
