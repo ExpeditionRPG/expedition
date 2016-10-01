@@ -69,6 +69,11 @@ export interface SearchResponseAction extends Redux.Action {
   receivedAt: number;
 }
 
+export interface ViewQuestAction extends Redux.Action {
+  type: 'VIEW_QUEST';
+  quest: QuestDetails;
+}
+
 export interface UserLoginAction extends Redux.Action {
   type: 'USER_LOGIN';
   user: UserState;

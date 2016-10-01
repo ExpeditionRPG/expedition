@@ -17,7 +17,7 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
     }
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this._drawTouchPoints(e.touches);
-    e.preventDefault();
+    //e.preventDefault();
   }
 
   _drawTouchPoints(touches: any) {

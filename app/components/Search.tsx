@@ -2,19 +2,22 @@ import * as React from 'react'
 import Card from './base/Card'
 import Button from './base/Button'
 import Checkbox from './base/Checkbox'
-import {SearchSettings, SearchPhase, SearchState} from '../reducers/StateTypes'
+import {SearchSettings, SearchPhase, SearchState, UserState} from '../reducers/StateTypes'
 import TextField from 'material-ui/TextField'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import {QuestDetails} from '../reducers/QuestTypes.tsx'
 
 export interface SearchStateProps extends SearchState {
+  numPlayers: number;
+  user: UserState;
   search: SearchSettings;
 }
 
 export interface SearchDispatchProps {
   onLoginRequest: () => void;
-  onSearch: (settings: SearchSettings) => void;
+  onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => void;
+  onQuest: (quest: QuestDetails) => void;
   onPlay: (quest: QuestDetails) => void;
   onReturn: () => void;
   onOwnedChange: (checked: boolean) => void;
@@ -25,8 +28,10 @@ export interface SearchProps extends SearchStateProps, SearchDispatchProps {};
 // We make this a react component to hold a bit of state and avoid sending
 // redux actions for every single change to input.
 interface SearchSettingsCardProps {
+  numPlayers: number;
+  user: UserState;
   search: SearchSettings;
-  onSearch: (settings: SearchSettings) => void;
+  onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => void;
   onReturn: () => void;
 }
 class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
@@ -79,14 +84,14 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
           </DropDownMenu>
         </div>
 
-        <Button onTouchTap={() => this.props.onSearch(this.state)}>Search</Button>
+        <Button onTouchTap={() => this.props.onSearch(this.props.numPlayers, this.props.user, this.state)}>Search</Button>
       </Card>
     );
   }
 }
 
 function renderSettings(props: SearchProps): JSX.Element {
-  return (<SearchSettingsCard search={props.search} onReturn={props.onReturn} onSearch={props.onSearch}/>);
+  return (<SearchSettingsCard search={props.search} onReturn={props.onReturn} onSearch={props.onSearch} user={props.user} numPlayers={props.numPlayers}/>);
 }
 
 function formatPlayPeriod(minMinutes: number, maxMinutes: number): string {
@@ -109,16 +114,16 @@ function renderResults(props: SearchProps): JSX.Element {
     }
 
     return (
-      <Button key={index} onTouchTap={() => this.props.onListSelect(result)} key={index}>
+      <Button key={index} onTouchTap={() => props.onQuest(result)}>
         <h1>{result.meta_title}</h1>
         <div>by {result.meta_author}</div>
-        <div>{quest.meta_minPlayers}-{quest.meta_maxPlayers} players, {formatPlayPeriod(result.meta_minTimeMinutes, result.meta_maxTimeMinutes)}</div>
+        <div>{result.meta_minPlayers}-{result.meta_maxPlayers} players, {formatPlayPeriod(result.meta_minTimeMinutes, result.meta_maxTimeMinutes)}</div>
         {abnormalShare}
       </Button>
     );
   });
 
-  let hint = (props.results.length > 0) : ("Found " + props.results.length + " results.") : "No results found. Please broaden your search.";
+  let hint = (props.results.length > 0) ? ("Found " + props.results.length + " results.") : "No results found. Please broaden your search.";
 
   return (
     <Card title="Search Results" onReturn={props.onReturn}>

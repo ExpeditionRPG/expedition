@@ -13,8 +13,8 @@
 /// <reference path="../typings/jasmine/jasmine.d.ts" />
 /// <reference path="../typings/expect/expect.d.ts" />
 
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 
 // So we can hot reload
 declare var require: any;
@@ -26,23 +26,27 @@ declare var window:any;
 // Cordova device
 declare var device: any;
 
+// For gapi login
+declare var gapi: any;
+
 // Material UI theming libs
-import theme from './theme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import theme from './theme'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
 // Needed for onTouchTap
 var injectTapEventPlugin = require('react-tap-event-plugin');
 injectTapEventPlugin();
 
 // Redux libraries
-import thunk from 'redux-thunk';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk'
+import { Provider } from 'react-redux'
+import { createStore, applyMiddleware } from 'redux'
 
 // Custom components
-import Main from './components/base/Main';
-import expeditionApp from './reducers/CombinedReducers';
+import Main from './components/base/Main'
+import expeditionApp from './reducers/CombinedReducers'
+import {authSettings} from './constants'
 
 let devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
 let middleware = applyMiddleware(thunk);
@@ -66,16 +70,15 @@ function onDeviceReady() {
 }
 
 // TODO: API Auth
-/*
-gapi.client.setApiKey(this.API_KEY);
-gapi.auth2.init({
-    client_id: this.CLIENT_ID,
-    scope: this.SCOPES
-}).then(function() {
-  console.log(gapi.auth2.getAuthInstance().isSignedIn);
+gapi.load('client:auth2', function() {
+  gapi.client.setApiKey(authSettings.apiKey);
+  gapi.auth2.init({
+      client_id: authSettings.clientId,
+      scope: authSettings.scopes,
+  }).then(function() {
+    console.log(gapi.auth2.getAuthInstance().isSignedIn);
+  });
 });
-gapi.load('client:auth2', ExpeditionAPI.init.bind(ExpeditionAPI));
-*/
 
 /*
 if (module.hot) {

@@ -1,5 +1,6 @@
-import {EventAction, ChoiceAction, InitQuestAction, CombatTimerStopAction, CombatDefeatAction, CombatVictoryAction, TierSumDeltaAction, AdventurerDeltaAction} from './ActionTypes'
+import {EventAction, ChoiceAction, InitQuestAction, CombatTimerStopAction, CombatDefeatAction, CombatVictoryAction, TierSumDeltaAction, AdventurerDeltaAction, ViewQuestAction} from './ActionTypes'
 import {XMLElement} from '../reducers/StateTypes'
+import {QuestDetails} from '../reducers/QuestTypes'
 
 export function handleCombatTimerStop(elapsedMillis: number): CombatTimerStopAction {
   return {type: 'COMBAT_TIMER_STOP', elapsedMillis};
@@ -33,10 +34,7 @@ export function adventurerDelta(delta: number): AdventurerDeltaAction {
   return {type: 'ADVENTURER_DELTA', delta};
 }
 
-/*
-function questResultToAction(result: QuestResult): NavigateAction | ReturnAction {
-  if (result.name === 'TRIGGER' && loadTriggerNode(result.node).name === 'end') {
-    return {type: 'RETURN', before: 'QUEST_START'};
-  }
-  return navigateTo(Object.assign({}, result, {entry: 'NEXT'}));
-}*/
+// TODO: This should probably go in a "search" actions file.
+export function viewQuest(quest: QuestDetails): ViewQuestAction {
+  return {type: 'VIEW_QUEST', quest};
+}
