@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import {AppState, XMLElement} from '../reducers/StateTypes'
 import {CombatPhaseNameType, MidCombatPhase} from '../reducers/QuestTypes'
 import {changeSetting} from '../actions/settings'
-import {toPrevious, toCard, toCombatPhase} from '../actions/card'
+import {toPrevious, toCard} from '../actions/card'
 import {handleEvent, handleCombatTimerStop, combatDefeat, combatVictory, tierSumDelta, adventurerDelta} from '../actions/quest'
 import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
 
@@ -26,14 +26,14 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       } else if (phase === 'VICTORY') {
         dispatch(combatVictory());
       }
-      dispatch(toCombatPhase(phase));
+      dispatch(toCard('QUEST_CARD', phase));
     },
     onTimerStop: (elapsedMillis: number, surge: boolean) => {
       dispatch(handleCombatTimerStop(elapsedMillis));
       if (surge) {
-        dispatch(toCombatPhase('SURGE'));
+        dispatch(toCard('QUEST_CARD', 'SURGE'));
       } else {
-        dispatch(toCombatPhase('RESOLVE_ABILITIES'));
+        dispatch(toCard('QUEST_CARD', 'RESOLVE_ABILITIES'));
       }
     },
     onEvent: (event: string) => {

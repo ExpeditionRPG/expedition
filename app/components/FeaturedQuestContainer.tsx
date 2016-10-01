@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import {ListCardType, ListItemType, AppState} from '../reducers/StateTypes'
 import {changeSetting} from '../actions/settings'
-import {toPrevious} from '../actions/card'
+import {toPrevious, toCard} from '../actions/card'
 import {loadQuestXML} from '../actions/web'
 import ListCard, {ListCardDispatchProps} from './base/ListCard'
 
@@ -21,7 +21,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): ListC
   return {
     onListSelect(item: ListItemType): void {
       if (item.value === 'global') {
-        console.log('TODO: GLOBAL QUESTS');
+        dispatch(toCard('SEARCH_CARD'));
         return;
       }
       dispatch(loadQuestXML(item.value));

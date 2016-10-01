@@ -1,6 +1,8 @@
 import { card } from './card'
 import { quest } from './quest'
 import { settings } from './settings'
+import { search } from './search'
+import { user } from './user'
 import { AppState } from './StateTypes'
 import { ReturnAction } from '../actions/ActionTypes'
 
@@ -50,6 +52,8 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
     card: card(state.card, action),
     quest: quest(state, action),
     settings: settings(state.settings, action),
+    search: search(state.search, action),
+    user: user(state.user, action),
   };
   return newState;
 }

@@ -1,303 +1,251 @@
-/*
-<dom-module id="quest-search">
-  <style is="custom-style">
-    :host ::content instruction {
-      display: block;
-      padding: var(--vw-small);
-    };
-    :host ::content comment {
-      display: none;
-    };
+import * as React from 'react'
+import Card from './base/Card'
+import Button from './base/Button'
+import Checkbox from './base/Checkbox'
+import {SearchSettings, SearchPhase, SearchState} from '../reducers/StateTypes'
+import TextField from 'material-ui/TextField'
+import DropDownMenu from 'material-ui/DropDownMenu'
+import MenuItem from 'material-ui/MenuItem'
+import {QuestDetails} from '../reducers/QuestTypes.tsx'
 
-    #fileselect {
-      position: fixed;
-      top: -100em;
-    }
+export interface SearchStateProps extends SearchState {
+  search: SearchSettings;
+}
 
-    #questchooser a {
-      display: inline-block;
-      float: right;
-    }
+export interface SearchDispatchProps {
+  onLoginRequest: () => void;
+  onSearch: (settings: SearchSettings) => void;
+  onPlay: (quest: QuestDetails) => void;
+  onReturn: () => void;
+  onOwnedChange: (checked: boolean) => void;
+}
 
-    #quest {
-      display: inline-block;
-      font-size: var(--font-size-interactive);
-      padding: var(--vh-base) 0;
-      font-family: var(--font-body);
-      border: var(--border-size) solid var(--border-color-accent);
-      line-height: 1.2em;
-      margin-top: var(--vh-base);
-    }
+export interface SearchProps extends SearchStateProps, SearchDispatchProps {};
 
-    .pad {
-      padding-left: var(--vw-base);
-      @apply(--layout-flex-3);
-      @apply(--layout-vertical);
-    }
+// We make this a react component to hold a bit of state and avoid sending
+// redux actions for every single change to input.
+interface SearchSettingsCardProps {
+  search: SearchSettings;
+  onSearch: (settings: SearchSettings) => void;
+  onReturn: () => void;
+}
+class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
+  state: SearchSettings;
 
-    .centered {
-      text-align: center;
-    }
-    .centered h3 {
-      margin: 0;
-    }
-    .centered .author {
-      font-size: var(--font-size-flavortext);
-      margin-bottom: var(--vw-large);
-    }
+  constructor(props: SearchSettingsCardProps) {
+    super(props)
+    this.state = this.props.search;
+  }
 
-    paper-dropdown-menu, paper-input {
-      --paper-input-container-input: {
-        font-family: inherit;
-        font-size: inherit;
-      }
-      --paper-input-container-label: {
-        font-family: var(--font-header);
-      }
-    }
-  </style>
-  <template>
-    <expedition-card-set id="pages" initial="intro">
-      <expedition-card title="Public Quests" data-route="intro" icon="adventurer">
-        <div class="input">
-          <div class="value vertical layout">
-            <paper-input class="expedition-search-field" label="Search author, title, or id" value="{{searchText}}">
-              <iron-icon icon="search" suffix></iron-icon>
-            </paper-input>
-            <paper-dropdown-menu class="expedition-search-field" label="Order By">
-              <paper-menu class="dropdown-content" selected="{{order}}" attr-for-selected="value">
-                <paper-item value="-published">Newest</paper-item>
-                <paper-item value="+meta_title">Title</paper-item>
-                <paper-item value="-meta_maxTimeMinutes">Play Time (longest)</paper-item>
-                <paper-item value="+meta_minTimeMinutes">Play Time (shortest)</paper-item>
-              </paper-menu>
-            </paper-dropdown-menu>
-            <paper-dropdown-menu class="expedition-search-field" label="Within">
-              <paper-menu class="dropdown-content" selected="{{recency}}" attr-for-selected="value">
-                <paper-item value="inf">All Time</paper-item>
-                <paper-item value="31536000">Past Year</paper-item>
-                <paper-item value="2592000">Past Month</paper-item>
-                <paper-item value="604800">Past Week</paper-item>
-                <paper-item value="86400">Past 24 hours</paper-item>
-                <paper-item value="3600">Past hour</paper-item>
-              </paper-menu>
-            </paper-dropdown-menu>
-              <expedition-checkbox label="Owned Only" value="{{selfOwned}}">
-                Show public, unlisted, and private quests owned by you.
-              </expedition-checkbox>
-          </div>
+  onChange(attrib: string, value: string) {
+    this.setState({[attrib]: value});
+  }
+
+  render() {
+    return (
+      <Card title="Public Quests" icon="adventurer" onReturn={this.props.onReturn}>
+        <div>
+          Quests where author, title, or ID contains
+          <TextField id="text" hintText="some text" hintStyle={{color: '#555555'}} onChange={(e: any) => this.onChange('text', e.target.value)} value={this.state.text}/>
         </div>
-        <expedition-button id="search" on-tap="_onSearch">Search</expedition-button>
-      </expedition-card>
-      <expedition-card title="Search Results"  data-route="results" on-return="prev">
-        <template is="dom-if" if="{{loading}}">
-          Loading...
-        </template>
-        <template is="dom-repeat" items="{{quests}}">
-          <expedition-item on-tap="_onQuestTap" data-target$="{{index}}">
-            <h1>{{item.title}}</h1>
-            <div>by {{item.author}}</div>
-            <div>{{item.num_players}} players, {{item.play_period}}</div>
-            <template is="dom-if" if="{{item.abnormal_share_state}}">
-              <div><strong>{{item.abnormal_share_state}}</div></div>
-            </template>
-          </expedition-item>
-        </template>
-        <template is="dom-if" if="{{!quests.length}}">
-          No quests found.
-        </template>
-      </expedition-card>
-      <expedition-card title="Quest Details"  data-route="details" on-return="prev">
-        <div class="centered">
-          <h3>{{quest.title}}</h3>
-          <div class="author">by {{quest.author}}</div>
-          <p>
-            {{quest.summary}}
-          </p>
+        <div>
+          published within
+
+          <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('age', v)} value={this.state.age}>
+            <MenuItem value="inf" primaryText="all time"/>
+            <MenuItem value="31536000" primaryText="the past year"/>
+            <MenuItem value="2592000" primaryText="the past month"/>
+            <MenuItem value="604800" primaryText="the past week"/>
+            <MenuItem value="86400" primaryText="the past 24 hours"/>
+            <MenuItem value="3600" primaryText="the past hour"/>
+          </DropDownMenu>
         </div>
-        <expedition-indicator icon="helper">
-          <div>URL: <a href="{{quest.url}}" target="_blank">{{quest.shorturl}}</a></div>
-          <div>Email: {{quest.email}}</div>
-          <div>Players: {{quest.num_players}}</div>
-          <div>Play time: {{quest.play_period}}</div>
-          <div>Last update: {{quest.modified}}</div>
-          <template is="dom-if" if="{{quest.user_owned}}">
-            <div>{{quest.created}}</div>
-            <div>{{quest.published}}</div>
-          </template>
-        </expedition-indicator>
-        <expedition-button on-tap="_onQuestPlay" data-target$="{{quest}}">Play</expedition-button>
-      </expedition-card>
-    </expedition-card-set>
-    <expedition-dialog title="Disclaimer" id="disclaimer" on-dialog-close="_onDialogClose">
+        <div>
+          ordered by
+
+          <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('order', v)} value={this.state.order}>
+            <MenuItem value="-published" primaryText="Newest"/>
+            <MenuItem value="+meta_title" primaryText="Title"/>
+            <MenuItem value="-meta_maxTimeMinutes" primaryText="Play Time (longest)"/>
+            <MenuItem value="+meta_minTimeMinutes" primaryText="Play Time (shortest)"/>
+          </DropDownMenu>
+        </div>
+        <div>
+          created by
+
+          <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('owner', v)} value={this.state.owner}>
+            <MenuItem value="self" primaryText="You"/>
+            <MenuItem value="anyone" primaryText="Anyone"/>
+          </DropDownMenu>
+        </div>
+
+        <Button onTouchTap={() => this.props.onSearch(this.state)}>Search</Button>
+      </Card>
+    );
+  }
+}
+
+function renderSettings(props: SearchProps): JSX.Element {
+  return (<SearchSettingsCard search={props.search} onReturn={props.onReturn} onSearch={props.onSearch}/>);
+}
+
+function formatPlayPeriod(minMinutes: number, maxMinutes: number): string {
+  if (minMinutes > 60 && maxMinutes > 60) {
+    return Math.round(minMinutes / 60) + '-' + Math.round(maxMinutes / 60) + " hours";
+  } else {
+    return minMinutes + '-' + maxMinutes + " minutes";
+  }
+}
+
+function renderResults(props: SearchProps): JSX.Element {
+  let items: JSX.Element[] = props.results.map(function(result: QuestDetails, index: number) {
+
+    let abnormalShare: JSX.Element = (<span></span>);
+    if (!result.published && !result.shared) {
+      return (<div><strong>PRIVATE</strong></div>);
+    }
+    if (!result.published && result.shared) {
+      return (<div><strong>UNLISTED</strong></div>);
+    }
+
+    return (
+      <Button key={index} onTouchTap={() => this.props.onListSelect(result)} key={index}>
+        <h1>{result.meta_title}</h1>
+        <div>by {result.meta_author}</div>
+        <div>{quest.meta_minPlayers}-{quest.meta_maxPlayers} players, {formatPlayPeriod(result.meta_minTimeMinutes, result.meta_maxTimeMinutes)}</div>
+        {abnormalShare}
+      </Button>
+    );
+  });
+
+  let hint = (props.results.length > 0) : ("Found " + props.results.length + " results.") : "No results found. Please broaden your search.";
+
+  return (
+    <Card title="Search Results" onReturn={props.onReturn}>
+      {hint}
+      {items}
+    </Card>
+  );
+}
+
+function renderDetails(props: SearchProps): JSX.Element {
+  let details: JSX.Element = <span></span>
+
+  /*
+  details =
+    <Indicator icon="helper">
+      <div>URL: <a href="{props.selected.url}" target="_blank">{props.selected.shorturl}</a></div>
+      <div>Email: {props.selected.email}</div>
+      <div>Players: {props.selected.num_players}</div>
+      <div>Play time: {props.selected.play_period}</div>
+      <div>Last update: {props.selected.modified}</div>
+      <template is="dom-if" if="{{quest.user_owned}}">
+        <div>{props.selected.created}</div>
+        <div>{props.selected.published}</div>
+      </template>
+    </Indicator>
+  */
+  return (
+    <Card title="Quest Details" onReturn={props.onReturn}>
+      <div class="centered">
+        <h3>{props.selected.meta_title}</h3>
+        <div class="author">by {props.selected.meta_author}</div>
+        <p>
+          {props.selected.meta_summary}
+        </p>
+      </div>
+      {details}
+      <Button onTouchTap={(e)=>props.onPlay(props.selected)}>Play</Button>
+    </Card>
+  );
+}
+
+function renderDisclaimer(props: SearchProps): JSX.Element {
+  return (
+    <Card title="Disclaimer" onReturn={props.onReturn}>
       <p>
         Community quests are published by other adventurers like yourselves. We offer no guarantees
         of completeness, correctness of grammar, or sanity in any of the quests you are about to see.
       </p>
       <p>
         We use your basic Google account information as your identity when rating quests and to show your
-        own (unpublished) quests. You can continue without logging in, but you will only be able to play
-        a small selection of offline, featured quests.
+        own (unpublished) quests. You must log in to continue.
       </p>
-      <expedition-button on-tap="_onLogin">Continue with Google</expedition-button>
-      <expedition-button on-tap="_onDefault">Show default quests only</expedition-button>
-    </expedition-dialog>
-  </template>
-  <script>
-    Polymer({
-      is: 'quest-search',
-      behaviors: [GlobalsBehaviour],
-      ready: function() {
-        this.loggedIn = ExpeditionAPI.isLoggedIn();
-        this.quests=[];
-        this.userOwnedQuest = false;
-        this.order = "-published";
-        this.recency = "inf";
-        this.FEATURED = [
-          {
-            xml_url: "quests/build/oust_albanus.xml",
-            title: "Oust Albanus",
-            summary: "Your party encounters a smelly situation.",
-            author: "Scott Martin",
-            email: "smartin015@gmail.com",
-            play_period: this._formatPlayPeriod(20, 40),
-            num_players: '2-4'
-          },
-          {
-            xml_url: "quests/build/mistress_malaise.xml",
-            title: "Mistress Malaise",
-            summary: "Mystery, Misfortune, and a Mistress.",
-            author: "Scott Martin",
-            email: "smartin015@gmail.com",
-            play_period: this._formatPlayPeriod(20, 40),
-            num_players: '2-4'
-          }
-        ];
-      },
-      _onDefault: function() {
-        this.$.disclaimer.close();
-        this.$.pages.next('results');
-        this.quests = this.FEATURED;
-      },
-      _onLogin: function() {
-        ExpeditionAPI.login(function(locals) {
-          this.loggedIn = ExpeditionAPI.isLoggedIn();
-          console.log(locals);
-          this.loading = true;
-          this.$.disclaimer.close();
-          this._onSearch();
-        }.bind(this));
-      },
-      _onDialogClose: function() {
-        console.log("herp");
-        if (!ExpeditionAPI.isLoggedIn()) {
-          console.log("Derp");
-          this.showCommunity = false;
-        }
-      },
-      _truncate: function(s, n) {
-        return s.substr(0,n-1)+(s.length>n?'&hellip;':'');
-      },
-      _formatDate: function(rfcDateTime) {
-        if (!rfcDateTime) {
-          return "unknown";
-        }
-        return rfcDateTime.split('T')[0];
-      },
-      _formatPlayPeriod: function(minMinutes, maxMinutes) {
-        if (minMinutes > 60 && maxMinutes > 60) {
-          return Math.round(minMinutes / 60) + '-' + Math.round(maxMinutes / 60) + " hours";
-        } else {
-          return minMinutes + '-' + maxMinutes + " minutes";
-        }
-      },
-      _formatAbnormalShareState: function(published, shared) {
-        if (!published && !shared) {
-          return "PRIVATE";
-        }
-        if (!published && shared) {
-          return "UNLISTED";
-        }
-        return null;
-      },
-      _formattedQuest: function(quest) {
-        return {
-          id: quest.id,
-          xml_url: quest.url,
-          title: quest.meta_title,
-          summary: quest.meta_summary,
-          modified: this._formatDate(quest.modified),
-          url: quest.meta_url,
-          shorturl: this._truncate(quest.meta_url, 20),
-          author: quest.meta_author,
-          email: quest.meta_email,
-          play_period: this._formatPlayPeriod(quest.meta_minTimeMinutes, quest.meta_maxTimeMinutes),
-          num_players: quest.meta_minPlayers + '-' + quest.meta_maxPlayers,
-          created: this._formatDate(quest.created),
-          published: this._formatDate(quest.published),
-          abnormal_share_state: this._formatAbnormalShareState(quest.published, quest.shared),
-          reported: false,
-          user_owned: Boolean(quest.user === ExpeditionAPI.getLoggedInUser())
-        };
-      },
-      _onQuestTap: function(e) {
-        var idx = e.currentTarget.dataset.target;
-        this.quest = this.quests[idx];
-        this.$.pages.next('details');
-      },
-      _onQuestPlay: function(e) {
-        var quest = e.currentTarget.dataset.target;
-        this.fire('quest-select', quest);
-      },
-      _onSearch: function() {
-        if (!ExpeditionAPI.isLoggedIn()) {
-          this.$.disclaimer.open();
-          return;
-        }
-        var params = {};
+      <Button onTouchTap={(e)=>props.onLoginRequest()}>Continue with Google</Button>
+    </Card>
+  );
+}
 
-        if (this.selfOwned) {
-          params.owner = ExpeditionAPI.getLoggedInUser().id;
-        }
+/*
+:host ::content instruction {
+  display: block;
+  padding: var(--vw-small);
+};
+:host ::content comment {
+  display: none;
+};
 
-        params.players = this.globals.adventurers;
+#fileselect {
+  position: fixed;
+  top: -100em;
+}
 
-        if (this.searchText) {
-          params.search = this.searchText;
-        }
+#questchooser a {
+  display: inline-block;
+  float: right;
+}
 
-        if (this.recency && this.recency !== "inf") {
-          params.published_after = Math.floor(Date.now() / 1000) - parseInt(this.recency);
-        }
+#quest {
+  display: inline-block;
+  font-size: var(--font-size-interactive);
+  padding: var(--vh-base) 0;
+  font-family: var(--font-body);
+  border: var(--border-size) solid var(--border-color-accent);
+  line-height: 1.2em;
+  margin-top: var(--vh-base);
+}
 
-        if (this.order) {
-          params.order = this.order;
-        }
+.pad {
+  padding-left: var(--vw-base);
+  @apply(--layout-flex-3);
+  @apply(--layout-vertical);
+}
 
-        ExpeditionAPI.searchQuests(params, function(result) {
-          if (result.error) {
-            console.log(result.error);
-          }
-          this.loading = false;
-          this.quests = result.quests.map(this._formattedQuest.bind(this));
-          console.log(this.quests);
-        }.bind(this));
-        this.$.pages.next('results');
-      },
-      prev: function(e) {
-        // TODO: Dedupe this across various elements.
-        var p = Polymer.dom(e.srcElement).previousSibling;
-        while (p.tagName !== "EXPEDITION-CARD") {
-          p = p.previousSibling;
-        }
-        this.$.pages.prev(p.dataset.route);
-        e.stopPropagation();
-      },
-      properties: {
-        quest: Object,
-        showCommunity: Boolean,
-      }
-    });
-  </script>
-</dom-module>
+.centered {
+  text-align: center;
+}
+.centered h3 {
+  margin: 0;
+}
+.centered .author {
+  font-size: var(--font-size-flavortext);
+  margin-bottom: var(--vw-large);
+}
+
+paper-dropdown-menu, paper-input {
+  --paper-input-container-input: {
+    font-family: inherit;
+    font-size: inherit;
+  }
+  --paper-input-container-label: {
+    font-family: var(--font-header);
+  }
+}
 */
+
+const Search = (props: SearchProps): JSX.Element => {
+  switch(props.phase) {
+    case "DISCLAIMER":
+      return renderDisclaimer(props);
+    case "SETTINGS":
+      return renderSettings(props);
+    case "SEARCH":
+      return renderResults(props);
+    case "DETAILS":
+      return renderDetails(props);
+    default:
+      throw new Error("Unknown search phase " + props.phase);
+  }
+}
+
+export default Search;

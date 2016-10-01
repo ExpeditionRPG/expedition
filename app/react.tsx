@@ -66,6 +66,16 @@ function onDeviceReady() {
 }
 
 // TODO: API Auth
+/*
+gapi.client.setApiKey(this.API_KEY);
+gapi.auth2.init({
+    client_id: this.CLIENT_ID,
+    scope: this.SCOPES
+}).then(function() {
+  console.log(gapi.auth2.getAuthInstance().isSignedIn);
+});
+gapi.load('client:auth2', ExpeditionAPI.init.bind(ExpeditionAPI));
+*/
 
 /*
 if (module.hot) {

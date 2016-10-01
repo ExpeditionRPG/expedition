@@ -9,6 +9,7 @@ import FeaturedQuestContainer from '../FeaturedQuestContainer'
 import QuestStartContainer from '../QuestStartContainer'
 import RoleplayContainer from '../RoleplayContainer'
 import CombatContainer from '../CombatContainer'
+import SearchContainer from '../SearchContainer'
 import {getNodeCardType, RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../scripts/QuestParser'
 
 var ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
@@ -56,11 +57,9 @@ export default class Main extends React.Component<MainProps, {}> {
           throw new Error('Unknown quest card name ' + name);
         }
         break;
-      /*
       case 'SEARCH_CARD':
-        return <SearchContainer/>;
-
-      */
+        card = <SearchContainer phase={state.search.phase} />;
+        break;
       default:
         throw new Error('Unknown card ' + state.card);
     }

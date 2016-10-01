@@ -66,7 +66,6 @@
     </paper-dialog>
   </template>
   <script>
-    /*global GlobalsBehaviour */
     Polymer({
       is: 'expedition-dialog',
       behaviors: [GlobalsBehaviour],
