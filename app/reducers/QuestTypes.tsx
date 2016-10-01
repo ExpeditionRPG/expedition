@@ -35,7 +35,7 @@ export interface CombatAttack {
   damage: number;
 }
 
-export type MidCombatPhaseNameType = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER'
+export type MidCombatPhaseNameType = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER'
 export type EndCombatPhaseNameType = 'VICTORY' | 'DEFEAT';
 
 export interface MidCombatPhase {

@@ -2,6 +2,8 @@ import {QuestDetails, CombatDetails, CombatDifficultyType, CombatPhaseNameType} 
 
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
+export type ViewModeType = 'BEGINNER' | 'EXPERT';
+
 export interface XMLElement {
   remove(): void;
   children: XMLElement[];
@@ -23,7 +25,7 @@ export interface XMLElement {
 export interface SettingsType {
   numPlayers: number;
   difficulty: CombatDifficultyType;
-  viewMode: 'BEGINNER' | 'EXPERT';
+  viewMode: ViewModeType;
 }
 
 export type CardName = 'QUEST_START' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD';

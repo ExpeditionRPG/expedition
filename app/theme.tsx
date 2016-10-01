@@ -63,7 +63,11 @@ let theme: any = {
   border: {
     primary: "0.03in solid #000000",
     accent: "0.03in solid #CCCCCC",
-    colorDarkPrimary: "#CCCCCC",
+    faded: "0.03in solid #777777",
+  },
+  inlineIcon: {
+    width: "5vw",
+    marginBottom: "-0.5vw",
   },
   colors: {
     // TODO: Consolidate this with the palette

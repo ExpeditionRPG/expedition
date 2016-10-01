@@ -44,6 +44,24 @@ export interface CombatTimerStopAction {
   elapsedMillis: number;
 }
 
+export interface CombatDefeatAction {
+  type: 'COMBAT_DEFEAT';
+}
+
+export interface CombatVictoryAction {
+  type: 'COMBAT_VICTORY';
+}
+
+export interface TierSumDeltaAction {
+  type: 'TIER_SUM_DELTA';
+  delta: number;
+}
+
+export interface AdventurerDeltaAction {
+  type: 'ADVENTURER_DELTA';
+  delta: number;
+}
+
 export interface RequestQuestSearchAction extends Redux.Action {
   type: 'REQUEST_QUEST_SEARCH';
 }

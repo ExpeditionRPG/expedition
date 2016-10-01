@@ -33,6 +33,12 @@ function getDifficultySettings(difficulty: CombatDifficultyType): CombatDifficul
   }
 }
 
+export function isSurgeRound(details: CombatDetails): boolean {
+  let rounds = (details.phase as MidCombatPhase).roundCount;
+  let surgePd = details.settings.surgePeriod;
+  return (surgePd - (rounds % surgePd + 1)) === 0;
+}
+
 export function generateCombatAttack(details: CombatDetails, elapsedMillis: number): CombatAttack {
   let phase = details.phase as MidCombatPhase;
 
@@ -52,12 +58,12 @@ export function generateCombatAttack(details: CombatDetails, elapsedMillis: numb
   damage = Math.round(damage * details.settings.damageMultiplier);
 
   return {
-    surge: (details.settings.surgePeriod - ((phase.roundCount % details.settings.surgePeriod) + 1)) === 0,
+    surge: isSurgeRound(details),
     damage,
   }
 }
 
-function _generateLoot(maxTier: number): Loot[] {
+export function generateLoot(maxTier: number): Loot[] {
   var loot: Loot[] = [
     {tier: 1, count: 0},
     {tier: 2, count: 0},

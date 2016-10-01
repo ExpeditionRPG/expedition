@@ -9,9 +9,6 @@ import theme from '../../theme';
 
 /*
 <style>
-    :host.dark .title {
-      background-color: var(--background-color-dark-accent);
-    }
     :host.dark .content ::content a,
     :host.dark .content ::content paper-button,
     :host.dark .content ::content expedition-checkbox,
@@ -26,15 +23,6 @@ import theme from '../../theme';
     :host.dark svg {
       fill: var(--font-color-dark-primary);
     };
-
-    :host.dark {
-      background-color: black;
-      color: var(--font-color-dark-primary);
-    }
-
-    :host.dark .scrollbox:before, :host.dark .scrollbox:after {
-      border-color: var(--border-color-dark-primary);
-    }
 */
 
 interface ExpeditionCardProps extends React.Props<any> {
@@ -42,6 +30,7 @@ interface ExpeditionCardProps extends React.Props<any> {
   onReturn?: () => any;
   title?: string;
   icon?: string;
+  dark?: boolean;
 }
 
 export default class ExpeditionCard extends React.Component<ExpeditionCardProps, {}> {
@@ -64,7 +53,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
         fontSize: theme.fontSize.flavortext,
       },
       titleContainer: {
-        backgroundColor: theme.colors.backgroundColorAccent,
+        backgroundColor: (this.props.dark) ? theme.colors.backgroundColorDarkAccent: theme.colors.backgroundColorAccent,
         padding: 0,
         lineHeight: theme.vw.huge,
       },
@@ -80,6 +69,8 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
         height: "100%",
         display: 'flex',
         flexDirection: 'column',
+        backgroundColor: (this.props.dark) ? 'black' : 'inherit',
+        color: (this.props.dark) ? theme.colors.fontColorDarkPrimary : theme.colors.fontColorPrimary,
       },
       menu: {
         float: 'right',
@@ -91,8 +82,8 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
         position: 'absolute',
         width: theme.vw.huge,
         height: theme.vw.large,
-        borderTop: theme.border.primary,
-        borderLeft: theme.border.primary,
+        borderTop: (this.props.dark) ? theme.border.accent : theme.border.primary,
+        borderLeft: (this.props.dark) ? theme.border.accent : theme.border.primary,
       },
       scrollboxBottom: {
         position: 'absolute',
@@ -100,8 +91,8 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
         right: 0,
         width: theme.vw.huge,
         height: theme.vw.large,
-        borderRight: theme.border.primary,
-        borderBottom: theme.border.primary,
+        borderRight: (this.props.dark) ? theme.border.accent : theme.border.primary,
+        borderBottom: (this.props.dark) ? theme.border.accent : theme.border.primary,
       },
       watermark: {
         position: 'absolute',

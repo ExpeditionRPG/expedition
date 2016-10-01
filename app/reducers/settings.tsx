@@ -12,7 +12,6 @@ export function settings(state: SettingsType = initial_state, action: Redux.Acti
   switch(changeAction.name) {
     case 'numPlayers':
       return Object.assign({}, state, {numPlayers: (changeAction.value as number)});
-
   }
   return state;
 }

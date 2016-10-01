@@ -51,7 +51,7 @@ export default class Main extends React.Component<MainProps, {}> {
           card = <RoleplayContainer node={state.quest.node} icon={roleplay.icon} title={roleplay.title} content={roleplay.content} actions={roleplay.actions}/>;
         } else if (name === 'COMBAT') {
           let combat: CombatResult = loadCombatNode(state.quest.node);
-          card = <CombatContainer node={state.quest.node} combat={state.quest.combat} phase={state.card.phase} icon={combat.icon} />;
+          card = <CombatContainer node={state.quest.node} combat={state.quest.combat} phase={state.card.phase} icon={combat.icon} viewMode={state.settings.viewMode} />;
         } else {
           throw new Error('Unknown quest card name ' + name);
         }
