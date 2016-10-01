@@ -10,8 +10,8 @@ const mapStateToProps = (state: AppState, ownProps: ListCardType): ListCardType 
     title: "Featured Quests",
     hint: "Select a quest below to get started, or continue to browse online quests.",
     items: [
-      {primaryText: 'Oust Albanus', secondaryText: 'Your party encounters a smelly situation.', value: 'quests/build/oust_albanus.xml'},
-      {primaryText: 'Mistress Malaise', secondaryText: 'Mystery, Misfortune, and a Mistress.', value: 'quests/build/mistress_malaise.xml'},
+      {primaryText: 'Oust Albanus', secondaryText: 'Your party encounters a smelly situation.', value: 'quests/oust_albanus.xml'},
+      {primaryText: 'Mistress Malaise', secondaryText: 'Mystery, Misfortune, and a Mistress.', value: 'quests/mistress_malaise.xml'},
       {primaryText: 'Browse Global Quests', secondaryText: 'See quests created by other adventurers around the world.', value: 'global'},
     ]
   };

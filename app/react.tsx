@@ -23,6 +23,9 @@ declare var module: any;
 // For dev tools extension
 declare var window:any;
 
+// Cordova device
+declare var device: any;
+
 // Material UI theming libs
 import theme from './theme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -45,6 +48,22 @@ let devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() 
 let middleware = applyMiddleware(thunk);
 const store: any = middleware(devtools(createStore))(expeditionApp, {});
 console.log(store);
+
+// Wait for device API libraries to load
+//
+document.addEventListener("deviceready", onDeviceReady, false);
+
+// device APIs are available
+function onDeviceReady() {
+  var p = device.platform.toLowerCase();
+  if (/android/i.test(p)) {
+    window.platform = "android";
+    document.body.className += " android";
+  } else if (/iphone|ipad|ipod/i.test(p)) {
+    window.platform = "ios";
+    document.body.className += " ios";
+  }
+}
 
 // TODO: API Auth
 

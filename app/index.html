@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <meta name="generator" content="Polymer Starter Kit" />
   <title>Expedition</title>
   <meta name="description" content="The Roleplaying Card Game" />
 
@@ -47,88 +46,15 @@
   <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
 
   <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-  <script type="text/javascript" charset="utf-8">
-
-  // Wait for device API libraries to load
-  //
-  document.addEventListener("deviceready", onDeviceReady, false);
-
-  // device APIs are available
-  function onDeviceReady() {
-    var p = device.platform.toLowerCase();
-    if (/android/i.test(p)) {
-      window.platform = "android";
-      document.body.className += " android";
-    } else if (/iphone|ipad|ipod/i.test(p)) {
-      window.platform = "ios";
-      document.body.className += " ios";
-    }
-  }
-
-  </script>
 
   <script type="text/javascript" src="scripts/gapi.min.js"></script>
-
   <script type="text/javascript" src="scripts/math.min.js"></script>
-
   <script type="text/javascript" src="scripts/expedition_api.js"></script>
-
-  <!-- global user settings -->
   <script id="globals" type="application/json" src="scripts/globals.json"></script>
-
   <script src="https://npmcdn.com/jquery@3.1.0/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="scripts/svg.js"></script>
+  <link rel="stylesheet" type="text/css" href="theme.css"/>
 
-  <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
-  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-  <!-- endbuild -->
-
-  <!-- will be replaced with elements/elements.vulcanized.html -->
-  <link rel="import" href="elements.html">
-  <!-- endreplace-->
-
-  <style is="custom-style">
-
-    body {
-      background-color: var(--paper-grey-200);
-      overflow:hidden;
-    }
-
-    #app {
-      width: 100%;
-      max-width: var(--card-width);
-      max-height: var(--card-height);
-      margin-left: auto;
-      margin-right: auto;
-      overflow:hidden;
-    }
-
-    #splash {
-      margin: auto;
-      padding: var(--vw-base);
-      height: 98% !important; /* Prevent slight scroll */
-    }
-
-    #splash #version {
-      position:absolute;
-      bottom: var(--vh-base);
-      color: var(--font-color-faded);
-      text-align: center;
-      width: 100%;
-      font-size: var(--font-size-flavortext);
-    }
-
-    #splash iron-image {
-      --iron-image-width: 100%;
-    }
-
-    #splash {
-      height: 100%;
-    }
-
-    #device-unsupported {
-      text-align: center;
-    }
-  </style>
 </head>
 <body unresolved class="fullbleed layout vertical center-justified">
   <section id="react-app" style="width:100%; height:100%;"></div>
