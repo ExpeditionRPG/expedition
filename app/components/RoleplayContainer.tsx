@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
-import {AppState, QuestAction} from '../reducers/StateTypes'
-import {changeSetting} from '../actions/settings'
-import {toPrevious, handleQuestChoice} from '../actions/card'
-import {XMLElement, loadRoleplayNode} from '../scripts/QuestParser'
+import {AppState, XMLElement} from '../reducers/StateTypes'
+import {toPrevious, toCard} from '../actions/card'
+import {loadTriggerNode, handleChoice as handleChoiceInPlace} from '../scripts/QuestParser'
+import {handleChoice} from '../actions/quest'
 import Roleplay, {RoleplayStateProps, RoleplayDispatchProps} from './Roleplay'
 
 const mapStateToProps = (state: AppState, ownProps: RoleplayStateProps): RoleplayStateProps => {
@@ -12,7 +12,12 @@ const mapStateToProps = (state: AppState, ownProps: RoleplayStateProps): Rolepla
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): RoleplayDispatchProps => {
   return {
     onChoice: (node: XMLElement, index: number) => {
-      dispatch(handleQuestChoice(node, index));
+      if (loadTriggerNode(handleChoiceInPlace(node, index)).name === 'end') {
+        dispatch(toPrevious('QUEST_START'));
+      } else {
+        dispatch(handleChoice(index));
+        dispatch(toCard('QUEST_CARD'));
+      }
     },
     onReturn: () => {
       dispatch(toPrevious());

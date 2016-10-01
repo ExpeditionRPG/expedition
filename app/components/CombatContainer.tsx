@@ -1,21 +1,32 @@
 import { connect } from 'react-redux'
-import {AppState, QuestAction} from '../reducers/StateTypes'
+import {AppState, XMLElement} from '../reducers/StateTypes'
+import {CombatPhaseNameType} from '../reducers/QuestTypes'
 import {changeSetting} from '../actions/settings'
-import {toPrevious, toCombat, handleQuestEvent} from '../actions/card'
-import {XMLElement, CombatPhase, loadCombatNode} from '../scripts/QuestParser'
+import {toPrevious, toCard, toCombatPhase} from '../actions/card'
+import {handleEvent} from '../actions/quest'
+import {handleCombatTimerStop} from '../actions/quest'
 import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
 
 const mapStateToProps = (state: AppState, ownProps: CombatStateProps): CombatStateProps => {
+  // Set only the dynamic props (# alive players, round time total)
+  //if ()
+  //numAlivePlayers: number;
+  //roundTimeTotalMillis: number;
   return ownProps;
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CombatDispatchProps => {
   return {
-    onNext: (node: XMLElement, phase: CombatPhase) => {
-      dispatch(toCombat(node, phase)); // TODO
+    onNext: (phase: CombatPhaseNameType) => {
+      dispatch(toCombatPhase(phase));
     },
-    onEvent: (node: XMLElement, event: string) => {
-      dispatch(handleQuestEvent(node, event));
+    onTimerStop: (elapsedMillis: number) => {
+      dispatch(handleCombatTimerStop(elapsedMillis));
+      dispatch(toCombatPhase('RESOLVE_ABILITIES'));
+    },
+    onEvent: (event: string) => {
+      dispatch(handleEvent(event));
+      dispatch(toCard('QUEST_CARD'));
     },
     onReturn: () => {
       dispatch(toPrevious());

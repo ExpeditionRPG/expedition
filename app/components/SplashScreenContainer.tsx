@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import {AppState} from '../reducers/StateTypes'
 import {changeSetting} from '../actions/settings'
-import {toFeaturedQuests} from '../actions/card'
+import {toCard} from '../actions/card'
 import SplashScreen, {SplashScreenStateProps, SplashScreenDispatchProps} from './SplashScreen'
 
 const mapStateToProps = (state: AppState, ownProps: any): SplashScreenStateProps => {
@@ -12,7 +12,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Splas
   return {
     onPlayerCountSelect: (numPlayers: number) => {
       dispatch(changeSetting('numPlayers', numPlayers));
-      dispatch(toFeaturedQuests());
+      dispatch(toCard('FEATURED_QUESTS'));
     }
   };
 }

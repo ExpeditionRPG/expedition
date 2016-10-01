@@ -1,14 +1,14 @@
 import * as React from 'react'
 import Card from './base/Card'
 import Button from './base/Button'
-import {XMLElement} from '../scripts/QuestParser'
+import {XMLElement} from '../reducers/StateTypes'
 
 export interface QuestStartStateProps {
-  firstElem: XMLElement;
+  node: XMLElement;
 }
 
 export interface QuestStartDispatchProps {
-  onNext: (firstElem: XMLElement) => void;
+  onNext: (node: XMLElement) => void;
   onReturn: () => void;
 }
 
@@ -18,7 +18,7 @@ const QuestStart = (props: QuestStartProps): JSX.Element => {
   return (
     <Card title="Quest Start" onReturn={props.onReturn}>
       TODO: Setup instructions
-      <Button onTouchTap={() => props.onNext(props.firstElem)}>Next</Button>
+      <Button onTouchTap={() => props.onNext(props.node)}>Next</Button>
     </Card>
   );
 }

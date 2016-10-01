@@ -1,14 +1,15 @@
 import * as React from 'react'
 import theme from '../../theme'
 
-import {CardNameType, TransitionType, AppState, QuestAction} from '../../reducers/StateTypes'
+import {AppStateWithHistory} from '../../reducers/CombinedReducers'
+import {TransitionType} from '../../reducers/StateTypes'
 import SplashScreenContainer from '../SplashScreenContainer'
 import Card from './Card'
 import FeaturedQuestContainer from '../FeaturedQuestContainer'
 import QuestStartContainer from '../QuestStartContainer'
 import RoleplayContainer from '../RoleplayContainer'
 import CombatContainer from '../CombatContainer'
-import {RoleplayResult, loadRoleplayNode, CombatPhase, CombatResult, loadCombatNode} from '../../scripts/QuestParser'
+import {getNodeCardType, RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../scripts/QuestParser'
 
 var ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
 
@@ -17,58 +18,62 @@ interface MainProps extends React.Props<any> {
 }
 
 export default class Main extends React.Component<MainProps, {}> {
-  state: {key: CardNameType, transition: TransitionType, card: JSX.Element};
+  state: {key: number, transition: TransitionType, card: JSX.Element};
 
   constructor(props: MainProps) {
     super(props);
-    this.state = {key: 'SPLASH_CARD', transition: 'INSTANT', card: <SplashScreenContainer/>};
+    this.state = {key: 0, transition: 'INSTANT', card: <SplashScreenContainer/>};
     this.props.store.subscribe(this.handleChange.bind(this));
   }
 
   handleChange() {
-    let state: AppState = this.props.store.getState();
-    let stateCard = state.card[state.card.length - 1];
-    console.log(stateCard);
-    if (stateCard && stateCard.name !== this.state.key) {
-      let card: JSX.Element = null;
-      switch(stateCard.name) {
-        case 'SPLASH_CARD':
-          card = <SplashScreenContainer/>;
-          break;
-        case 'TEST_CARD': // TODO REMOVE
-          card = <Card title="Herp">Derp</Card>;
-          break;
-        case 'FEATURED_QUESTS':
-          card = <FeaturedQuestContainer/>;
-          break;
-        case 'QUEST_START':
-          card = <QuestStartContainer/>;
-          break;
-        case 'ROLEPLAY':
-          let roleplay: RoleplayResult = loadRoleplayNode((stateCard as QuestAction).node);
-          card = <RoleplayContainer node={roleplay.node} icon={roleplay.icon} title={roleplay.title} content={roleplay.content} actions={roleplay.actions}/>;
-          break;
-        case 'COMBAT':
-          let phase: CombatPhase = (stateCard as QuestAction).phase;
-          if (!phase) {
-            throw new Error('Combat card had no phase');
-          }
-          let combat: CombatResult = loadCombatNode((stateCard as QuestAction).node);
-          card = <CombatContainer node={combat.node} phase={phase} icon={combat.icon} enemies={combat.enemies} />;
-          break;
-
-        /*
-        case 'SEARCH_CARD':
-          return <SearchContainer/>;
-
-        */
-        default:
-          throw new Error('Unknown card ' + stateCard.name);
-      }
-
-      // Append current timestamp to key to allow for completely unique key values.
-      this.setState({key: stateCard.name + Date.now(), transition: stateCard.entry, card: card});
+    let state: AppStateWithHistory = this.props.store.getState();
+    if (!state.card || state.card.ts === this.state.key) {
+      return;
     }
+
+    let card: JSX.Element = null;
+    switch(state.card.name) {
+      case 'SPLASH_CARD':
+        card = <SplashScreenContainer/>;
+        break;
+      case 'FEATURED_QUESTS':
+        card = <FeaturedQuestContainer/>;
+        break;
+      case 'QUEST_START':
+        card = <QuestStartContainer/>;
+        break;
+      case 'QUEST_CARD':
+        let name = getNodeCardType(state.quest.node);
+        console.log(name);
+        if (name === 'ROLEPLAY') {
+          let roleplay: RoleplayResult = loadRoleplayNode(state.quest.node);
+          card = <RoleplayContainer node={state.quest.node} icon={roleplay.icon} title={roleplay.title} content={roleplay.content} actions={roleplay.actions}/>;
+        } else if (name === 'COMBAT') {
+          let combat: CombatResult = loadCombatNode(state.quest.node);
+          card = <CombatContainer node={state.quest.node} combat={state.quest.combat} phase={state.card.phase} icon={combat.icon} />;
+        } else {
+          throw new Error('Unknown quest card name ' + name);
+        }
+        break;
+      /*
+      case 'SEARCH_CARD':
+        return <SearchContainer/>;
+
+      */
+      default:
+        throw new Error('Unknown card ' + state.card);
+    }
+
+    let transition: TransitionType = 'NEXT';
+    if (state._return) {
+      transition = 'PREV';
+    } else if (state.card.name === 'SPLASH_CARD') {
+      transition = 'INSTANT';
+    }
+
+    // Append current timestamp to key to allow for completely unique key values.
+    this.setState({key: state.card.ts, transition, card});
   }
 
   render() {

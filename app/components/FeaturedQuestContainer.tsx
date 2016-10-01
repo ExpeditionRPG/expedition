@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
-import {ListCardType, ListItemType, CardActionType, AppState} from '../reducers/StateTypes'
+import {ListCardType, ListItemType, AppState} from '../reducers/StateTypes'
 import {changeSetting} from '../actions/settings'
-import {toTestCard, toPrevious} from '../actions/card'
-import {loadQuestXML} from '../actions/quest'
+import {toPrevious} from '../actions/card'
+import {loadQuestXML} from '../actions/web'
 import ListCard, {ListCardDispatchProps} from './base/ListCard'
 
 const mapStateToProps = (state: AppState, ownProps: ListCardType): ListCardType => {

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Card from './base/Card'
 import Button from './base/Button'
-import {XMLElement} from '../scripts/QuestParser'
+import {XMLElement} from '../reducers/StateTypes'
 
 export interface RoleplayStateProps {
   node: XMLElement;

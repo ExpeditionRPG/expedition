@@ -6,32 +6,9 @@
 */
 /*global math */
 import * as React from 'react'
-
-export interface XMLElement {
-  remove(): void;
-  children: XMLElement[];
-  getAttribute(attrib: string): string;
-  hasAttribute(attrib: string): boolean;
-  appendChild(child: XMLElement): void;
-  cloneNode(deep: boolean): XMLElement;
-  localName: string;
-  tagName: string;
-  parentNode: XMLElement;
-  textContent: string;
-  attributes: {name: string}[];
-  innerHTML: string;
-  setAttribute(attrib: string, value: any): void;
-  nextElementSibling?: XMLElement;
-  querySelector(query: string): XMLElement;
-}
-
-export type CombatPhase = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER' | 'VICTORY' | 'DEFEAT';
-
-export interface QuestResult {
-  name: 'COMBAT' | 'ROLEPLAY' | 'TRIGGER';
-  node: XMLElement;
-  phase?: CombatPhase;
-}
+import {XMLElement} from '../reducers/StateTypes'
+import {QuestCardName} from '../reducers/QuestTypes'
+import {ChoiceAction, EventAction} from '../actions/ActionTypes'
 
 export interface TriggerResult {
   node: XMLElement;
@@ -39,7 +16,6 @@ export interface TriggerResult {
 }
 
 export interface RoleplayResult {
-  node: XMLElement;
   icon: string;
   title: string;
   content: JSX.Element;
@@ -47,11 +23,11 @@ export interface RoleplayResult {
 }
 
 export interface Enemy {
-  name: string
+  name: string,
+  tier: number,
 }
 
 export interface CombatResult {
-  node: XMLElement;
   icon: string;
   enemies: Enemy[];
 }
@@ -85,12 +61,12 @@ questParser.prototype.setGameState = function(state) {
 };
 */
 
-export function init(root: XMLElement): QuestResult {
+export function init(root: XMLElement): XMLElement {
   return _loadNode(root.children[0]);
 }
 
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
-export function handleEvent(parent: XMLElement, event: string): QuestResult {
+export function handleEvent(parent: XMLElement, event: string): XMLElement {
   var child = _loopChildren(parent, function(tag: string, c: XMLElement) {
     if (c.getAttribute('on') === event && _isEnabled(c)) {
       return c;
@@ -104,7 +80,7 @@ export function handleEvent(parent: XMLElement, event: string): QuestResult {
 };
 
 // The passed choice parameter is an number indicating the choice number in the XML element, including conditional choices.
-export function handleChoice(parent: XMLElement, choice: number): QuestResult {
+export function handleChoice(parent: XMLElement, choice: number): XMLElement {
 
   // Scan the parent node to find the choice with the right number
   var idx = 0;
@@ -127,7 +103,18 @@ export function handleChoice(parent: XMLElement, choice: number): QuestResult {
   return _loadNode(_findNextNode(parent));
 };
 
-function _loadNode(node: XMLElement): QuestResult {
+export function getNodeCardType(node: XMLElement): QuestCardName {
+  switch(node.localName) {
+    case 'roleplay':
+      return 'ROLEPLAY';
+    case 'combat':
+      return 'COMBAT';
+    default:
+      throw new Error("Could not get node card type for node " + node.localName);
+  }
+}
+
+function _loadNode(node: XMLElement): XMLElement {
   switch(node.localName) {
     //case "op":
     // return _loadOpNode(node);
@@ -136,11 +123,11 @@ function _loadNode(node: XMLElement): QuestResult {
     case "event":
       return _loadEventNode(node);
     case "combat":
-      return {name: 'COMBAT', node, phase: 'DRAW_ENEMIES'};
+      return node;
     case "roleplay":
-      return {name: 'ROLEPLAY', node};
+      return node;
     case "trigger":
-      return {name: 'TRIGGER', node};
+      return node;
     case "comment":
       return _loadNode(_findNextNode(node));
     default:
@@ -158,12 +145,12 @@ questParser.prototype._loadOpNode = function(node: XMLElement) {
 };
 */
 
-function _loadChoiceNode(node: XMLElement): QuestResult {
+function _loadChoiceNode(node: XMLElement): XMLElement {
   // The action on a choice node is functionally the same as an event node.
   return _loadEventNode(node);
 };
 
-function _loadEventNode(node: XMLElement): QuestResult {
+function _loadEventNode(node: XMLElement): XMLElement {
   // If event is empty and has a goto, jump to the destination element with that id.
   if (node.children.length === 0 && node.hasAttribute('goto')) {
     return _loadNode(node.querySelector("#"+node.getAttribute('goto')));
@@ -197,7 +184,8 @@ export function loadCombatNode(node: XMLElement): CombatResult {
   _loopChildren(node, function(tag: string, c: XMLElement) {
     switch (tag) {
       case 'e':
-        enemies.push({name: c.textContent});
+        // TODO: Dynamically assign tier here
+        enemies.push({name: c.textContent, tier: 1});
         break;
       case 'event':
       case 'roleplay':
@@ -224,7 +212,6 @@ export function loadCombatNode(node: XMLElement): CombatResult {
   // TODO: Add modifiable combat scope.
 
   return {
-    node,
     icon: node.getAttribute('icon'),
     enemies,
   };
@@ -323,7 +310,6 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
   }
 
   return {
-    node,
     title: node.getAttribute('title'),
     icon: node.getAttribute('icon'),
     content: <span dangerouslySetInnerHTML={{__html: children.innerHTML}} />,

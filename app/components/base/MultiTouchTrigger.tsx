@@ -48,7 +48,6 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
   }
 
   render() {
-    // TODO: Child components
     return (
        <canvas style={{position: 'absolute'}} ref={this.setupCanvas.bind(this)} />
     );
