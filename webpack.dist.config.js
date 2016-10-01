@@ -12,7 +12,7 @@ var options = {
     extensions: ['', '.js', '.ts', '.tsx', '.json']
   },
   output: {
-    path: __dirname + '/dist/',
+    path: __dirname + '/www/',
     filename: 'bundle.js'
   },
   module: {
@@ -20,7 +20,7 @@ var options = {
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' },
       { test: /\.json$/, loader: 'json-loader' },
-      { test: /\.tsx$/, loaders: ['react-hot', 'awesome-typescript-loader'], exclude: /node_modules/ },
+      { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /node_modules/ },
     ],
     preLoaders: [
         // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.

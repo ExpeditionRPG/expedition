@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import {AppState, XMLElement} from '../reducers/StateTypes'
 import {toPrevious, toCard} from '../actions/card'
-import {loadTriggerNode, handleChoice as handleChoiceInPlace} from '../scripts/QuestParser'
+import {loadTriggerNode, handleChoice as handleChoiceInPlace} from '../QuestParser'
 import {handleChoice} from '../actions/quest'
 import Roleplay, {RoleplayStateProps, RoleplayDispatchProps} from './Roleplay'
 

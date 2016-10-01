@@ -82,19 +82,8 @@ gulp.task('styles', function () {
   return styleTask('styles', ['**/*.css']);
 });
 
-// Lint JavaScript
-gulp.task('jshint', function () {
-  return gulp.src([
-      'app/scripts/**/*.js',
-      '!app/scripts/**/*.min.js',
-      'app/elements/**/*.js',
-      'app/elements/**/*.html',
-      'gulpfile.js'
-    ])
-    .pipe($.jshint.extract()) // Extract JS from .html files
-    .pipe($.jshint())
-    .pipe($.jshint.reporter('jshint-stylish'))
-    .pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
+// Pack JavaScript with webpack
+gulp.task('js', function () {
 });
 
 // Optimize images
@@ -139,14 +128,6 @@ gulp.task('copy', function () {
 
   return merge(app, bower, elements, scripts, quests, vulcanized, swBootstrap, swToolbox)
     .pipe($.size({title: 'copy'}));
-});
-
-// Render globals.json into globals-behavior.html to eliminate need for synchronous network call
-gulp.task('renderGlobals', function () {
-  return gulp.src('app/elements/base/globals-behavior.html')
-    .pipe($.replace('dataGlobal = {};', 'dataGlobal = ' + fs.readFileSync('./app/scripts/globals.json')))
-    .pipe(gulp.dest('.tmp/elements/base'))
-    .pipe(gulp.dest('www/elements/base'));
 });
 
 // Copy web fonts to www
@@ -283,8 +264,7 @@ gulp.task('default', ['clean'], function (cb) {
   // Uncomment 'cache-config' after 'rename-index' if you are going to use service workers.
   runSequence(
     ['copy', 'styles'],
-    'renderGlobals',
-    ['jshint', 'images', 'fonts', 'html'],
+    ['js', 'images', 'fonts', 'html'],
     'vulcanize','rename-index', 'remove-old-build-index', // 'cache-config',
     cb);
 });

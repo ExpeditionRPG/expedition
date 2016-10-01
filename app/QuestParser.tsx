@@ -6,9 +6,9 @@
 */
 /*global math */
 import * as React from 'react'
-import {XMLElement} from '../reducers/StateTypes'
-import {QuestCardName} from '../reducers/QuestTypes'
-import {ChoiceAction, EventAction} from '../actions/ActionTypes'
+import {XMLElement} from './reducers/StateTypes'
+import {QuestCardName} from './reducers/QuestTypes'
+import {ChoiceAction, EventAction} from './actions/ActionTypes'
 
 export interface TriggerResult {
   node: XMLElement;

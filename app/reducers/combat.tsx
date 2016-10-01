@@ -1,6 +1,6 @@
 import {CombatDifficultyType, CombatDifficultySettings, CombatAttack, MidCombatPhase, EndCombatPhase, Enemy, Loot, CombatDetails} from './QuestTypes'
 import {InitCombatAction, CombatTimerStopAction} from '../actions/ActionTypes'
-import {handleChoice, loadCombatNode} from '../scripts/QuestParser'
+import {handleChoice, loadCombatNode} from '../QuestParser'
 
 function getDifficultySettings(difficulty: CombatDifficultyType): CombatDifficultySettings {
   switch(difficulty) {

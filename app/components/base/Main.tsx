@@ -11,7 +11,7 @@ import RoleplayContainer from '../RoleplayContainer'
 import CombatContainer from '../CombatContainer'
 import SearchContainer from '../SearchContainer'
 import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
-import {getNodeCardType, RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../scripts/QuestParser'
+import {getNodeCardType, RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../QuestParser'
 
 var ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
 

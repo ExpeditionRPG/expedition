@@ -2,7 +2,7 @@ import {QuestState, AppState} from './StateTypes'
 import {AppStateWithHistory} from './CombinedReducers'
 import {MidCombatPhase, isCombatPhase} from './QuestTypes'
 import {InitQuestAction, ChoiceAction, EventAction, CombatTimerStopAction, TierSumDeltaAction, AdventurerDeltaAction, NavigateAction} from '../actions/ActionTypes'
-import {handleChoice, handleEvent, getNodeCardType, loadCombatNode} from '../scripts/QuestParser'
+import {handleChoice, handleEvent, getNodeCardType, loadCombatNode} from '../QuestParser'
 import {initCombat, generateCombatAttack, generateLoot} from './combat'
 
 function computeMaxTier(history: AppState[]) {
