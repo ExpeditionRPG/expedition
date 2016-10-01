@@ -152,9 +152,9 @@ function renderDetails(props: SearchProps): JSX.Element {
   */
   return (
     <Card title="Quest Details" onReturn={props.onReturn}>
-      <div class="centered">
+      <div style={{textAlign: 'center'}}>
         <h3>{props.selected.meta_title}</h3>
-        <div class="author">by {props.selected.meta_author}</div>
+        <div style={{fontStyle: 'italic'}}>by {props.selected.meta_author}</div>
         <p>
           {props.selected.meta_summary}
         </p>

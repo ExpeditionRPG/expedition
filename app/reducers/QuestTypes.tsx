@@ -37,7 +37,9 @@ export interface CombatAttack {
 
 export type MidCombatPhaseNameType = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER'
 export type EndCombatPhaseNameType = 'VICTORY' | 'DEFEAT';
-
+export function isCombatPhase(phase: string) : boolean {
+  return ['DRAW_ENEMIES', 'PREPARE', 'TIMER', 'SURGE', 'RESOLVE_ABILITIES', 'ENEMY_TIER', 'PLAYER_TIER', 'VICTORY', 'DEFEAT'].indexOf(phase) !== -1;
+}
 export interface MidCombatPhase {
   enemies: Enemy[];
   mostRecentAttack?: CombatAttack;
@@ -50,10 +52,11 @@ export interface EndCombatPhase {
   levelUp: boolean;
 }
 
-export type CombatPhase = MidCombatPhase | EndCombatPhase;
+export type CombatPhaseDetails = MidCombatPhase | EndCombatPhase;
 export type CombatPhaseNameType = MidCombatPhaseNameType | EndCombatPhaseNameType;
 
 export interface CombatDetails {
   settings: CombatDifficultySettings;
-  phase?: CombatPhase;
+  details: CombatPhaseDetails
+  phase?: CombatPhaseNameType;
 }

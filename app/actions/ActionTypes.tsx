@@ -27,10 +27,9 @@ export interface EventAction extends Redux.Action {
   event: string;
 }
 
-export interface ChangeSettingAction extends Redux.Action {
-  type: 'CHANGE_SETTING';
-  name: SettingNameType;
-  value: any;
+export interface ChangeSettingsAction extends Redux.Action {
+  type: 'CHANGE_SETTINGS';
+  settings: any;
 }
 
 export interface InitCombatAction extends Redux.Action {

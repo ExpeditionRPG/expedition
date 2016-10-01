@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import {AppState, XMLElement} from '../reducers/StateTypes'
 import {CombatPhaseNameType, MidCombatPhase} from '../reducers/QuestTypes'
-import {changeSetting} from '../actions/settings'
 import {toPrevious, toCard} from '../actions/card'
 import {handleEvent, handleCombatTimerStop, combatDefeat, combatVictory, tierSumDelta, adventurerDelta} from '../actions/quest'
 import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
@@ -13,8 +12,9 @@ const mapStateToProps = (state: AppState, ownProps: CombatStateProps): CombatSta
   //numAlivePlayers: number;
   //roundTimeTotalMillis: number;
   return Object.assign({}, ownProps, {
-    tier: (state.quest.combat.phase as MidCombatPhase).tier || (ownProps.combat.phase as MidCombatPhase).tier,
-    numAliveAdventurers: (state.quest.combat.phase as MidCombatPhase).numAliveAdventurers || (ownProps.combat.phase as MidCombatPhase).numAliveAdventurers,
+    tier: (state.quest.combat.details as MidCombatPhase).tier || (ownProps.combat.details as MidCombatPhase).tier,
+    numAliveAdventurers: (state.quest.combat.details as MidCombatPhase).numAliveAdventurers || (ownProps.combat.details as MidCombatPhase).numAliveAdventurers,
+    multitouch: state.settings.multitouch,
   });
 }
 

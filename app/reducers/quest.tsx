@@ -1,7 +1,7 @@
 import {QuestState, AppState} from './StateTypes'
 import {AppStateWithHistory} from './CombinedReducers'
-import {MidCombatPhase} from './QuestTypes'
-import {InitQuestAction, ChoiceAction, EventAction, CombatTimerStopAction, TierSumDeltaAction, AdventurerDeltaAction} from '../actions/ActionTypes'
+import {MidCombatPhase, isCombatPhase} from './QuestTypes'
+import {InitQuestAction, ChoiceAction, EventAction, CombatTimerStopAction, TierSumDeltaAction, AdventurerDeltaAction, NavigateAction} from '../actions/ActionTypes'
 import {handleChoice, handleEvent, getNodeCardType, loadCombatNode} from '../scripts/QuestParser'
 import {initCombat, generateCombatAttack, generateLoot} from './combat'
 
@@ -9,7 +9,7 @@ function computeMaxTier(history: AppState[]) {
   let histIdx: number = history.length-1;
   let maxTier = 0;
   while(history[histIdx].quest.combat !== undefined && histIdx > 0) {
-    var tier = (history[histIdx].quest.combat.phase as MidCombatPhase).tier;
+    var tier = (history[histIdx].quest.combat.details as MidCombatPhase).tier;
     if (!tier) {
       histIdx--;
       continue;
@@ -34,17 +34,25 @@ export function quest(state: AppStateWithHistory, action: Redux.Action): QuestSt
       return newState;
     case 'EVENT':
       return Object.assign({}, state.quest, {node: handleEvent(state.quest.node, (action as EventAction).event)});
+    case 'NAVIGATE':
+      let phase = (action as NavigateAction).phase;
+      if (isCombatPhase(phase)) {
+        let newState = Object.assign({}, state.quest);
+        newState.combat = Object.assign({}, newState.combat, {phase});
+        return newState;
+      }
+      return state.quest;
     case 'COMBAT_TIMER_STOP':
       // TODO: Calculate round results
       var newState = Object.assign({}, state.quest);
       let elapsedMillis: number = (action as CombatTimerStopAction).elapsedMillis;
-      (newState.combat.phase as MidCombatPhase).mostRecentAttack = generateCombatAttack(state.quest.combat, elapsedMillis);
-      (newState.combat.phase as MidCombatPhase).roundCount++;
+      (newState.combat.details as MidCombatPhase).mostRecentAttack = generateCombatAttack(state.quest.combat, elapsedMillis);
+      (newState.combat.details as MidCombatPhase).roundCount++;
       return newState;
     case 'COMBAT_DEFEAT':
       var newState = Object.assign({}, state.quest);
       newState.combat = Object.assign({}, newState.combat);
-      newState.combat.phase = {
+      newState.combat.details = {
         loot: [],
         levelUp: false,
       };
@@ -53,7 +61,7 @@ export function quest(state: AppStateWithHistory, action: Redux.Action): QuestSt
       var newState = Object.assign({}, state.quest);
       newState.combat = Object.assign({}, newState.combat);
       var maxTier = computeMaxTier(state._history);
-      newState.combat.phase = {
+      newState.combat.details = {
         loot: generateLoot(maxTier),
         levelUp: (state.settings.numPlayers <= maxTier)
       }
@@ -61,11 +69,13 @@ export function quest(state: AppStateWithHistory, action: Redux.Action): QuestSt
     case 'TIER_SUM_DELTA':
       var newState = Object.assign({}, state.quest);
       newState.combat = Object.assign([], newState.combat);
-      newState.combat.phase.tier += (action as TierSumDeltaAction).delta;
+      newState.combat.details.tier += (action as TierSumDeltaAction).delta;
+      return newState;
     case 'ADVENTURER_DELTA':
       var newState = Object.assign({}, state.quest);
       newState.combat = Object.assign([], newState.combat);
-      newState.combat.phase.numAliveAdventurers += (action as AdventurerDeltaAction).delta;
+      newState.combat.details.numAliveAdventurers += (action as AdventurerDeltaAction).delta;
+      return newState;
     default:
       return state.quest;
   }

@@ -33,19 +33,19 @@ function getDifficultySettings(difficulty: CombatDifficultyType): CombatDifficul
   }
 }
 
-export function isSurgeRound(details: CombatDetails): boolean {
-  let rounds = (details.phase as MidCombatPhase).roundCount;
-  let surgePd = details.settings.surgePeriod;
+export function isSurgeRound(combat: CombatDetails): boolean {
+  let rounds = (combat.details as MidCombatPhase).roundCount;
+  let surgePd = combat.settings.surgePeriod;
   return (surgePd - (rounds % surgePd + 1)) === 0;
 }
 
-export function generateCombatAttack(details: CombatDetails, elapsedMillis: number): CombatAttack {
-  let phase = details.phase as MidCombatPhase;
+export function generateCombatAttack(combat: CombatDetails, elapsedMillis: number): CombatAttack {
+  let phase = combat.details as MidCombatPhase;
 
   // enemies each get to hit once - twice if the party took too long
   let damage = 0;
   let attackCount = phase.tier;
-  if (details.settings.roundTimeMillis - elapsedMillis < 0) {
+  if (combat.settings.roundTimeMillis - elapsedMillis < 0) {
     attackCount *= 2;
   }
 
@@ -55,10 +55,10 @@ export function generateCombatAttack(details: CombatDetails, elapsedMillis: numb
   }
 
   // Scale according to multiplier, then round to whole number.
-  damage = Math.round(damage * details.settings.damageMultiplier);
+  damage = Math.round(damage * combat.settings.damageMultiplier);
 
   return {
-    surge: isSurgeRound(details),
+    surge: isSurgeRound(combat),
     damage,
   }
 }
@@ -120,7 +120,8 @@ export function initCombat(enemies: Enemy[], numPlayers: number, difficulty: Com
   }
 
   return {
-    phase: {
+    phase: 'DRAW_ENEMIES',
+    details: {
       enemies,
       roundCount: 0,
       numAliveAdventurers: numPlayers,

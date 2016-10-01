@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import {ListCardType, ListItemType, AppState} from '../reducers/StateTypes'
-import {changeSetting} from '../actions/settings'
 import {toPrevious, toCard} from '../actions/card'
 import {loadQuestXML} from '../actions/web'
 import ListCard, {ListCardDispatchProps} from './base/ListCard'

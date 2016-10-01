@@ -1,17 +1,12 @@
 import {SettingsType} from './StateTypes'
-import {ChangeSettingAction} from '../actions/ActionTypes'
+import {ChangeSettingsAction} from '../actions/ActionTypes'
 
-const initial_state: SettingsType = {numPlayers: 0, difficulty: 'EASY', viewMode: 'BEGINNER'};
+const initial_state: SettingsType = {numPlayers: 1, difficulty: 'EASY', viewMode: 'BEGINNER', multitouch: true};
 
 export function settings(state: SettingsType = initial_state, action: Redux.Action): SettingsType {
-  if (action.type !== 'CHANGE_SETTING') {
+  if (action.type !== 'CHANGE_SETTINGS') {
     return state;
   }
 
-  let changeAction = (action as ChangeSettingAction);
-  switch(changeAction.name) {
-    case 'numPlayers':
-      return Object.assign({}, state, {numPlayers: (changeAction.value as number)});
-  }
-  return state;
+  return Object.assign({}, state, (action as ChangeSettingsAction).settings);
 }

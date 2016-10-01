@@ -1,6 +1,7 @@
 import * as React from 'react'
 import theme from '../theme'
 import MultiTouchTrigger from './base/MultiTouchTrigger'
+import Button from './base/Button'
 
 interface PlayerCounterProps extends React.Props<any> {
   debounceMillis: number;
@@ -34,6 +35,7 @@ export interface SplashScreenStateProps {};
 
 export interface SplashScreenDispatchProps {
   onPlayerCountSelect: (numPlayers: number) => void;
+  onNoMultiTouch: (touches: any) => any;
 }
 
 interface SplashScreenProps extends SplashScreenStateProps, SplashScreenDispatchProps {}
@@ -54,15 +56,17 @@ const styles = {
     top: '50%',
     marginTop: '-10%',
     height: '20%',
-  },
-  version: {
-    position: 'absolute',
-    bottom: theme.vh.base,
     color: theme.colors.fontColorFaded,
-    textAlign: 'center',
-    width: '100%',
     fontSize: theme.fontSize.flavortext,
+    textAlign: 'center'
   },
+  noMultiButton: {
+    position: 'absolute',
+    bottom: theme.vh.small,
+    color: theme.colors.fontColorFaded,
+    width: '100%',
+    textAlign: 'center',
+  }
 };
 
 const SplashScreen = (props: SplashScreenProps): JSX.Element => {
@@ -71,9 +75,12 @@ const SplashScreen = (props: SplashScreenProps): JSX.Element => {
       <div style={styles.center}>
         <img style={{width: '100%'}} src="images/logo-frameless.png"></img>
         <div>All players put a finger on the screen to begin.</div>
+        <div>v1.0.9</div>
       </div>
-      <div style={styles.version} >v1.0.9</div>
       <PlayerCounter onPlayerCountSelect={props.onPlayerCountSelect} debounceMillis={1000} />
+      <div onTouchTap={props.onNoMultiTouch} style={styles.noMultiButton}>
+        No MultiTouch? Click here!
+      </div>
     </div>
   );
 }

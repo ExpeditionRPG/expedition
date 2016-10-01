@@ -38,9 +38,10 @@ export interface SettingsType {
   numPlayers: number;
   difficulty: CombatDifficultyType;
   viewMode: ViewModeType;
+  multitouch: boolean;
 }
 
-export type CardName = 'QUEST_START' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD';
+export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD';
 export interface CardState {
   name: CardName;
   phase?: CombatPhaseNameType;

@@ -6,8 +6,11 @@ import {authSettings} from '../constants'
 
 export function loadQuestXML(url: string) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    $.get(url, function(data: XMLElement) {
-      dispatch(initQuest(data.children[0]));
+    $.get(url, function(data: XMLElement | string) {
+      if (typeof data === 'string') {
+        data = (new DOMParser().parseFromString(data as string, 'text/xml')) as any as XMLElement;
+      }
+      dispatch(initQuest((data as XMLElement).children[0]));
       dispatch(toCard('QUEST_START'));
     });
   };
@@ -42,6 +45,10 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
     xhr.onload = function() {
       var response: any = JSON.parse(xhr.responseText);
       console.log(response);
+      if (response.error) {
+        throw new Error(response.error);
+      }
+
       dispatch({
         type: 'SEARCH_RESPONSE',
         quests: response.quests,

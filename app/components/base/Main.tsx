@@ -10,6 +10,7 @@ import QuestStartContainer from '../QuestStartContainer'
 import RoleplayContainer from '../RoleplayContainer'
 import CombatContainer from '../CombatContainer'
 import SearchContainer from '../SearchContainer'
+import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
 import {getNodeCardType, RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../scripts/QuestParser'
 
 var ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
@@ -38,6 +39,9 @@ export default class Main extends React.Component<MainProps, {}> {
       case 'SPLASH_CARD':
         card = <SplashScreenContainer/>;
         break;
+      case 'PLAYER_COUNT_SETTING':
+        card = <PlayerCountSettingContainer/>;
+        break;
       case 'FEATURED_QUESTS':
         card = <FeaturedQuestContainer/>;
         break;
@@ -52,7 +56,7 @@ export default class Main extends React.Component<MainProps, {}> {
           card = <RoleplayContainer node={state.quest.node} icon={roleplay.icon} title={roleplay.title} content={roleplay.content} actions={roleplay.actions}/>;
         } else if (name === 'COMBAT') {
           let combat: CombatResult = loadCombatNode(state.quest.node);
-          card = <CombatContainer node={state.quest.node} combat={state.quest.combat} phase={state.card.phase} icon={combat.icon} viewMode={state.settings.viewMode} />;
+          card = <CombatContainer node={state.quest.node} combat={state.quest.combat} phase={state.quest.combat.phase} icon={combat.icon} viewMode={state.settings.viewMode} />;
         } else {
           throw new Error('Unknown quest card name ' + name);
         }

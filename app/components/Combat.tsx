@@ -13,6 +13,7 @@ export interface CombatStateProps {
   combat: CombatDetails;
   tier: number;
   numAliveAdventurers: number;
+  multitouch: boolean;
   phase: CombatPhaseNameType;
   icon: string;
   viewMode: ViewModeType;
@@ -38,7 +39,7 @@ const numerals: {[k: number]: string;} = {
 };
 
 function renderDrawEnemies(props: CombatProps): JSX.Element {
-  let enemies: JSX.Element[] = (props.combat.phase as MidCombatPhase).enemies.map(function(enemy: Enemy, index: number) {
+  let enemies: JSX.Element[] = (props.combat.details as MidCombatPhase).enemies.map(function(enemy: Enemy, index: number) {
     return (
       <div key={index}>{enemy.name} (Tier {numerals[enemy.tier]})</div>
     );
@@ -153,7 +154,7 @@ function renderEnemyTier(props: CombatProps): JSX.Element {
 
 function renderPlayerTier(props: CombatProps): JSX.Element {
   let helpText: JSX.Element = (<span></span>);
-  let mostRecentAttack = (props.combat.phase as MidCombatPhase).mostRecentAttack;
+  let mostRecentAttack = (props.combat.details as MidCombatPhase).mostRecentAttack;
   let damage = (mostRecentAttack) ? mostRecentAttack.damage : -1;
 
   if (props.viewMode === 'BEGINNER') {
@@ -184,7 +185,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
 function renderVictory(props: CombatProps): JSX.Element {
   var contents: JSX.Element[] = [];
-  var endPhase = (props.combat.phase as EndCombatPhase);
+  var endPhase = (props.combat.details as EndCombatPhase);
 
   if (props.viewMode === 'BEGINNER') {
     contents.push(
@@ -264,7 +265,7 @@ const Combat = (props: CombatProps): JSX.Element => {
         <TimerCard
           dark={true}
           surgeWarning={surge}
-          numPlayers={(props.combat.phase as MidCombatPhase).numAliveAdventurers}
+          numPlayers={(props.multitouch) ? (props.combat.details as MidCombatPhase).numAliveAdventurers : 1}
           roundTimeTotalMillis={props.combat.settings.roundTimeMillis}
           onTimerStop={(ms: number) => props.onTimerStop(ms, surge)} />
       );
