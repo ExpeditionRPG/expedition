@@ -40,9 +40,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       dispatch(handleEvent(event));
       dispatch(toCard('QUEST_CARD'));
     },
-    onReturn: () => {
-      dispatch(toPrevious());
-    },
     onTierSumDelta: (delta: number) => {
       dispatch(tierSumDelta(delta));
     },

@@ -1,11 +1,12 @@
-import * as React from 'react';
-import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import ChevronLeftIcon from 'material-ui/svg-icons/navigation/chevron-left';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-
-import theme from '../../theme';
+import * as React from 'react'
+import IconButton from 'material-ui/IconButton'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import ChevronLeftIcon from 'material-ui/svg-icons/navigation/chevron-left'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import {store} from '../../store'
+import {toPrevious} from '../../actions/card'
+import theme from '../../theme'
 
 /*
 <style>
@@ -25,6 +26,7 @@ import theme from '../../theme';
     };
 */
 
+// If onMenuSelect or onReturn is not set, default dispatch behavior is used.
 interface ExpeditionCardProps extends React.Props<any> {
   onMenuSelect?: (value: string) => any;
   onReturn?: () => any;
@@ -38,6 +40,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
 
   constructor(props: any) {
     super(props);
+
     this.style = {
       scrollbox: {
         position: "relative",
@@ -107,6 +110,26 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     };
   }
 
+  onReturn() {
+    if (this.props && this.props.onReturn) {
+      return this.props.onReturn();
+    }
+    store.dispatch(toPrevious());
+  }
+
+  onMenuSelect(value: string) {
+    if (this.props && this.props.onMenuSelect) {
+      return this.props.onMenuSelect(value);
+    }
+
+    switch(value) {
+      case 'HOME':
+        return store.dispatch(toPrevious('SPLASH_CARD', false));
+      default:
+        throw new Error('Unknown menu option ' + value);
+    }
+  }
+
   render() {
     var icon: JSX.Element = <span></span>;
     if (this.props.icon) {
@@ -114,17 +137,16 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     }
 
     // TODO: Spacer ios-only as first child of card style
+    // TODO: Add 'settings' and 'feedback' menu options.
     return (
       <div style={this.style.card}>
         <div style={this.style.titleContainer}>
-            <IconButton style={{float: 'left'}} onTouchTap={this.props.onReturn}><ChevronLeftIcon/></IconButton>
+            <IconButton style={{float: 'left'}} onTouchTap={this.onReturn}><ChevronLeftIcon/></IconButton>
             <IconMenu
               style={this.style.menu}
               iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-              onChange={(event: any, value: string)=>this.props.onMenuSelect(value)}>
+              onChange={(event: any, value: string)=>this.onMenuSelect(value)}>
                 <MenuItem value="HOME" primaryText="Home"/>
-                <MenuItem value="SETTINGS" primaryText="Settings"/>
-                <MenuItem value="FEEDBACK" primaryText="Feedback"/>
             </IconMenu>
             <div style={this.style.titleText}>{this.props.title}</div>
         </div>

@@ -13,7 +13,6 @@ export interface RoleplayStateProps {
 
 export interface RoleplayDispatchProps {
   onChoice: (node: XMLElement, index: number) => void;
-  onReturn: () => void;
 }
 
 export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps {};
@@ -25,7 +24,7 @@ const Roleplay = (props: RoleplayProps): JSX.Element => {
     );
   });
   return (
-    <Card title={props.title} onReturn={props.onReturn}>
+    <Card title={props.title}>
       {props.content}
       {buttons}
     </Card>

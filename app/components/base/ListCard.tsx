@@ -28,7 +28,6 @@ const styles = {
 };
 
 export interface ListCardDispatchProps {
-  onReturn: () => any;
   onListSelect: (item: ListItemType) => any;
 }
 
@@ -47,7 +46,7 @@ export default class ListCard extends React.Component<ListCardProps, {}> {
       );
     });
     return (
-      <Card onReturn={this.props.onReturn} title={this.props.title}>
+      <Card title={this.props.title}>
         {this.props.hint}
         {items}
       </Card>

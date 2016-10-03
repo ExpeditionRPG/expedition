@@ -1,4 +1,4 @@
-import {CardState, SettingNameType, XMLElement, TransitionType, UserState, SearchPhase} from '../reducers/StateTypes'
+import {CardState, CardName, SettingNameType, XMLElement, TransitionType, UserState, SearchPhase} from '../reducers/StateTypes'
 import {QuestDetails, Enemy, CombatPhaseNameType} from '../reducers/QuestTypes'
 
 export interface NavigateAction extends Redux.Action {
@@ -9,7 +9,8 @@ export interface NavigateAction extends Redux.Action {
 
 export interface ReturnAction extends Redux.Action {
   type: 'RETURN';
-  before?: string;
+  to: CardName;
+  before?: boolean;
 };
 
 export interface InitQuestAction extends Redux.Action {

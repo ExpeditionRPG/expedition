@@ -9,7 +9,6 @@ export interface PlayerCountSettingStateProps {
 
 export interface PlayerCountSettingDispatchProps {
   onDelta: (numPlayers: number, delta: number) => void;
-  onReturn: () => void;
   onNext: () => void;
 }
 
@@ -17,7 +16,7 @@ export interface PlayerCountSettingProps extends PlayerCountSettingStateProps, P
 
 const PlayerCountSetting = (props: PlayerCountSettingProps): JSX.Element => {
   return (
-    <Card title='Player Count' onReturn={props.onReturn}>
+    <Card title='Player Count'>
       <NumberPicker label="Adventurers" onIncrement={(e)=>props.onDelta(props.numPlayers, 1)} onDecrement={(e)=>props.onDelta(props.numPlayers, -1)} value={props.numPlayers}>
         Set this to the number of players, then hit the Next button.
       </NumberPicker>

@@ -25,7 +25,6 @@ export interface CombatDispatchProps {
   onTierSumDelta: (delta: number) => void;
   onAdventurerDelta: (delta: number) => void;
   onEvent: (event: string) => void;
-  onReturn: () => void;
 }
 
 export interface CombatProps extends CombatStateProps, CombatDispatchProps {};
@@ -55,7 +54,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title='Draw Enemies' dark={true} onReturn={props.onReturn}>
+    <Card title='Draw Enemies' dark={true}>
       Prepare to Fight:
 
       {enemies}
@@ -86,7 +85,7 @@ function renderPrepare(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title='Prepare for Combat' dark={true} onReturn={props.onReturn}>
+    <Card title='Prepare for Combat' dark={true}>
       {helpText}
       <p>Ready to begin?</p>
       <Button dark={true} onTouchTap={() => props.onNext('TIMER')}>Start Timer</Button>
@@ -109,7 +108,7 @@ function renderSurge(props: CombatProps): JSX.Element {
     );
   }
   return (
-    <Card title='Enemy Surge!' dark={true} onReturn={props.onReturn}>
+    <Card title='Enemy Surge!' dark={true}>
       <h3>An enemy surge occurs!</h3>
       {helpText}
       <Button dark={true} onTouchTap={() => props.onNext('RESOLVE_ABILITIES')}>Next</Button>
@@ -132,7 +131,7 @@ function renderResolve(props: CombatProps): JSX.Element {
     );
   }
   return (
-    <Card title='Roll & Resolve' dark={true} onReturn={props.onReturn}>
+    <Card title='Roll & Resolve' dark={true}>
       {helpText}
       <Button dark={true} onTouchTap={() => props.onNext('ENEMY_TIER')}>Next</Button>
     </Card>
@@ -141,7 +140,7 @@ function renderResolve(props: CombatProps): JSX.Element {
 
 function renderEnemyTier(props: CombatProps): JSX.Element {
   return (
-    <Card title='Enemy Strength' dark={true} onReturn={props.onReturn}>
+    <Card title='Enemy Strength' dark={true}>
       <NumberPicker label="Tier Sum" dark={true} onIncrement={(e)=>props.onTierSumDelta(1)} onDecrement={(e)=>props.onTierSumDelta(-1)} value={props.tier}>
         Set this to the combined tier of the remaining enemies. You are victorious when this reaches zero.
       </NumberPicker>
@@ -167,7 +166,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title='Take Damage' dark={true} onReturn={props.onReturn}>
+    <Card title='Take Damage' dark={true}>
       <h3 style={{textAlign: 'center'}}>All adventurers:</h3>
       <h3 style={{textAlign: 'center'}}>{damage} Damage</h3>
 
@@ -235,7 +234,7 @@ function renderVictory(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title='Victory' dark={true} onReturn={props.onReturn}>
+    <Card title='Victory' dark={true}>
       {contents}
       <Button dark={true} onTouchTap={() => props.onEvent('win')}>Next</Button>
     </Card>
@@ -244,7 +243,7 @@ function renderVictory(props: CombatProps): JSX.Element {
 
 function renderDefeat(props: CombatProps): JSX.Element {
   return (
-    <Card title='Defeat' dark={true} onReturn={props.onReturn}>
+    <Card title='Defeat' dark={true}>
       Your party was defeated.
       <Button dark={true} onTouchTap={() => props.onEvent('lose')}>Next</Button>
     </Card>
