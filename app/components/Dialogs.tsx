@@ -4,8 +4,14 @@ import Dialog from 'material-ui/Dialog';
 import {TouchTapEventHandler} from 'material-ui';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import {UserType, QuestType, DialogsType, DialogIDType} from '../reducers/StateTypes';
+import {UserType, QuestType, ShareType, DialogsType, DialogIDType} from '../reducers/StateTypes';
+import IconButton from 'material-ui/IconButton';
+import Paper from 'material-ui/Paper';
+import Toggle from 'material-ui/Toggle';
+import LinkIcon from 'material-ui/svg-icons/content/link';
 import {ErrorType} from '../error';
+import theme from '../theme';
+import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 
 var XMLParserError: any = (require('../../translation/to_markdown') as any).XMLParserError;
 var MarkdownParserError: any = (require('../../translation/to_xml') as any).MarkdownParserError;
@@ -81,26 +87,89 @@ export class ConfirmLoadQuestDialog extends YesNoDialog {
   }
 }
 
-interface PublishQuestDialogProps extends React.Props<any> {
+interface SharingSettingsDialogProps extends React.Props<any> {
   open: boolean;
   onRequestClose: any;
   quest: QuestType;
+  onShareChange: (sharing: ShareType, id: string)=>void;
 }
 
-export class PublishQuestDialog extends React.Component<PublishQuestDialogProps, {}> {
+export class SharingSettingsDialog extends React.Component<SharingSettingsDialogProps, {}> {
+  style: any;
+
+  constructor(props: any) {
+    super(props);
+    this.style = {
+      shareToggle: {
+        marginBottom: "30px"
+      },
+      halfpanel: {
+        width: "50%",
+        float: "left",
+      },
+      block: {
+        width: "50%",
+        float: "right",
+        marginBottom: 40,
+        padding: 20,
+        background: theme.palette.primary2Color,
+        textAlign: "center",
+      },
+      radiobutton: {
+        marginBottom: 10,
+      },
+    };
+  }
+
   render() {
+    var status: JSX.Element = <span></span>;
+    var selected: string;
+    if (!this.props.quest.published && !this.props.quest.shared) {
+      status = (<h2>Quest is Private</h2>);
+      selected = 'PRIVATE';
+    } else if (this.props.quest.published) {
+      status = (<h2>Quest is Public</h2>);
+      selected = 'PUBLIC';
+    } else { // this.props.quest.shared
+      status = (
+        <span>
+          <h2>Quest is Unlisted</h2>
+          <h3>Quest ID: "<strong>{this.props.quest.id}</strong>"</h3>
+          <p>Enter this ID into the search box in the App to load your quest.</p>
+        </span>
+      );
+      selected = 'UNLISTED';
+    }
     return (
       <Dialog
-        title="Published!"
+        title="Sharing Settings"
         actions={<RaisedButton
-          label="OK"
+          label="Ok"
           primary={true}
           onTouchTap={() => this.props.onRequestClose()}
         />}
         modal={false}
         open={Boolean(this.props.open)}>
-        Your quest has been published, with ID {this.props.quest.id}.<br/>
-        Enter this into the Expedition App to load your custom quest.
+        <RadioButtonGroup name="shareSetting" defaultSelected={selected} onChange={(e: any, value: ShareType)=>this.props.onShareChange(value, this.props.quest.id)} style={this.style.halfpanel}>
+          <RadioButton
+            value="PRIVATE"
+            label={<span><strong>Private</strong><div>No other users except for yourself can view this quest.</div></span>}
+            style={this.style.radiobutton}
+          />
+          <RadioButton
+            value="UNLISTED"
+            label={<span><strong>Unlisted</strong><div>Players may play this quest by entering the Quest ID into the search bar of the App.</div></span>}
+            style={this.style.radiobutton}
+          />
+          <RadioButton
+            value="PUBLIC"
+            label={<span><strong>Public</strong><div>The quest is shown as part of normal search results.</div></span>}
+            style={this.style.radiobutton}
+          />
+        </RadioButtonGroup>
+        <Paper style={this.style.block} zDepth={2} >
+          {status}
+        </Paper>
       </Dialog>
     );
   }
@@ -154,8 +223,9 @@ export interface DialogsStateProps {
 };
 
 export interface DialogsDispatchProps {
-  onRequestClose: (dialog: DialogIDType)=>any;
-  onConfirmSave: (dialog: DialogIDType, choice: boolean, id: string)=>any; // TODO make these void
+  onRequestClose: (dialog: DialogIDType)=>void;
+  onConfirmSave: (dialog: DialogIDType, choice: boolean, id: string)=>void;
+  onShareChange: (share: ShareType, id: string)=>void;
 }
 
 interface DialogsProps extends DialogsStateProps, DialogsDispatchProps {}
@@ -174,9 +244,10 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         onConfirm={(choice) => props.onConfirmSave('CONFIRM_LOAD_QUEST', choice, props.quest.id)}
         onRequestClose={() => props.onRequestClose('CONFIRM_LOAD_QUEST')}
       />
-      <PublishQuestDialog
-        open={props.open['PUBLISH_QUEST']}
-        onRequestClose={() => props.onRequestClose('PUBLISH_QUEST')}
+      <SharingSettingsDialog
+        open={props.open['SHARE_SETTINGS']}
+        onRequestClose={() => props.onRequestClose('SHARE_SETTINGS')}
+        onShareChange={props.onShareChange}
         quest={props.quest}
       />
       <ErrorDialog

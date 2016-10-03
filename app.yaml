@@ -14,6 +14,21 @@
 runtime: nodejs
 vm: true
 
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 5
+  cool_down_period_sec: 120
+  cpu_utilization:
+    target_utilization: 0.5
+
 # Temporary setting to keep gcloud from uploading node_modules
 skip_files:
  - ^node_modules$
+
+health_check:
+  enable_health_check: False
+
+resources:
+  cpu: .5
+  memory_gb: 0.5
+  disk_size_gb: 10

@@ -1,13 +1,13 @@
 import {
-  NEW_QUEST, LOAD_QUEST, SAVE_QUEST, DELETE_QUEST, PUBLISH_QUEST, DOWNLOAD_QUEST,
+  NEW_QUEST, LOAD_QUEST, SAVE_QUEST, DELETE_QUEST, DOWNLOAD_QUEST,
   RequestQuestLoadAction, ReceiveQuestLoadAction,
   RequestQuestSaveAction, ReceiveQuestSaveAction,
   RequestQuestDeleteAction, ReceiveQuestDeleteAction,
-  RequestQuestPublishAction, ReceiveQuestPublishAction,
+  RequestQuestShareAction, ReceiveQuestShareAction,
 } from './ActionTypes'
-import {CodeViewType, QuestType} from '../reducers/StateTypes'
+import {CodeViewType, QuestType, ShareType} from '../reducers/StateTypes'
 
-import {setDialog} from './dialog'
+import {setDialog} from './dialogs'
 import {pushError, pushHTTPError} from '../error'
 import {getBuffer} from '../buffer'
 
@@ -52,19 +52,21 @@ export function saveQuest(dispatch: Redux.Dispatch<any>, id: string, view: CodeV
   }).fail(pushHTTPError);
 }
 
+export function setQuestShare(id: string, share: ShareType): ((dispatch: Redux.Dispatch<any>)=>any) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    dispatch({type: 'REQUEST_QUEST_SHARE', id, share} as RequestQuestShareAction);
+    return $.post("/share/" + id + "/" + share, function(result: ShareType) {
+      dispatch({type: 'RECEIVE_QUEST_SHARE', id, share: result} as ReceiveQuestShareAction);
+    }).fail(pushHTTPError);
+  }
+}
+
 function deleteQuest(dispatch: Redux.Dispatch<any>, id: string): JQueryPromise<any> {
   dispatch({type: 'REQUEST_QUEST_DELETE', id} as RequestQuestDeleteAction);
   console.log(pushHTTPError);
   return $.post("/delete/" + id).done(function(result) {
     dispatch({type: 'RECEIVE_QUEST_DELETE', id, result} as ReceiveQuestDeleteAction);
   }).fail(function(err) {pushHTTPError(err)});
-}
-
-function publishQuest(dispatch: Redux.Dispatch<any>, id: string): JQueryPromise<any> {
-  dispatch({type: 'REQUEST_QUEST_PUBLISH', id} as RequestQuestPublishAction);
-  return $.post("/published/" + id + "/true", function(short_url) {
-    dispatch({type: 'RECEIVE_QUEST_PUBLISH', id, short_url} as ReceiveQuestPublishAction);
-  }).fail(pushHTTPError);
 }
 
 function downloadQuest(dispatch: Redux.Dispatch<any>, url: string): void {
@@ -97,10 +99,10 @@ export function questAction(action: string, force: boolean, dirty: boolean, view
         return loadQuest(dispatch, quest.id);
       case SAVE_QUEST:
         return saveQuest(dispatch, quest.id, view, ()=>{});
+      case 'SHARE_SETTINGS':
+        return dispatch(setDialog('SHARE_SETTINGS', true));
       case DELETE_QUEST:
         return deleteQuest(dispatch, quest.id);
-      case PUBLISH_QUEST:
-        return publishQuest(dispatch, quest.id);
       case DOWNLOAD_QUEST:
         return downloadQuest(dispatch, quest.url);
       default:

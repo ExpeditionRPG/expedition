@@ -1,4 +1,4 @@
-import {RECEIVE_QUEST_LIST, ReceiveQuestListAction, SET_DRAWER, SetDrawerAction, NEW_QUEST, REQUEST_QUEST_LOAD, REQUEST_QUEST_SAVE, REQUEST_QUEST_DELETE, REQUEST_QUEST_PUBLISH} from '../actions/ActionTypes'
+import {RECEIVE_QUEST_LIST, ReceiveQuestListAction, SET_DRAWER, SetDrawerAction, NEW_QUEST, REQUEST_QUEST_LOAD, REQUEST_QUEST_SAVE, REQUEST_QUEST_DELETE} from '../actions/ActionTypes'
 import {DrawerType} from './StateTypes'
 
 const initial_state: DrawerType = {open: false, quests: null, receivedAt: null};
@@ -22,7 +22,6 @@ export function drawer(state: DrawerType = initial_state, action: Redux.Action):
     case REQUEST_QUEST_LOAD:
     case REQUEST_QUEST_SAVE:
     case REQUEST_QUEST_DELETE:
-    case REQUEST_QUEST_PUBLISH:
       return Object.assign({}, state, {open: false});
     default:
       return state;

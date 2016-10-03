@@ -1,4 +1,4 @@
-import {RECEIVE_QUEST_LOAD, ReceiveQuestLoadAction, NEW_QUEST, RECEIVE_QUEST_DELETE, RECEIVE_QUEST_PUBLISH, ReceiveQuestPublishAction} from '../actions/ActionTypes'
+import {RECEIVE_QUEST_LOAD, ReceiveQuestLoadAction, NEW_QUEST, RECEIVE_QUEST_DELETE, RECEIVE_QUEST_SHARE, ReceiveQuestShareAction} from '../actions/ActionTypes'
 import {QuestType} from './StateTypes'
 
 const initial_state: QuestType = {};
@@ -10,9 +10,18 @@ export function quest(state: QuestType = initial_state, action: Redux.Action): Q
     case NEW_QUEST:
     case RECEIVE_QUEST_DELETE:
       return initial_state;
-    case RECEIVE_QUEST_PUBLISH:
-      let publish_action = (action as ReceiveQuestPublishAction);
-      return Object.assign({}, state, {short_url: publish_action.short_url});
+    case RECEIVE_QUEST_SHARE:
+      let share_action = (action as ReceiveQuestShareAction);
+      var now = (new Date()).getTime();
+      switch(share_action.share) {
+        case 'PRIVATE':
+          return Object.assign({}, state, {shared: null, published: null});
+        case 'UNLISTED':
+          return Object.assign({}, state, {shared: now, published: null});
+        case 'PUBLIC':
+          return Object.assign({}, state, {shared: now, published: now});
+      }
+      return state;
     default:
       return state;
   }
