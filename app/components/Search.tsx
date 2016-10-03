@@ -19,7 +19,6 @@ export interface SearchDispatchProps {
   onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => void;
   onQuest: (quest: QuestDetails) => void;
   onPlay: (quest: QuestDetails) => void;
-  onReturn: () => void;
   onOwnedChange: (checked: boolean) => void;
 }
 
@@ -32,7 +31,6 @@ interface SearchSettingsCardProps {
   user: UserState;
   search: SearchSettings;
   onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => void;
-  onReturn: () => void;
 }
 class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
   state: SearchSettings;
@@ -48,7 +46,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
 
   render() {
     return (
-      <Card title="Public Quests" icon="adventurer" onReturn={this.props.onReturn}>
+      <Card title="Public Quests" icon="adventurer">
         <div>
           Quests where author, title, or ID contains
           <TextField id="text" hintText="some text" hintStyle={{color: '#555555'}} onChange={(e: any) => this.onChange('text', e.target.value)} value={this.state.text}/>
@@ -91,7 +89,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
 }
 
 function renderSettings(props: SearchProps): JSX.Element {
-  return (<SearchSettingsCard search={props.search} onReturn={props.onReturn} onSearch={props.onSearch} user={props.user} numPlayers={props.numPlayers}/>);
+  return (<SearchSettingsCard search={props.search} onSearch={props.onSearch} user={props.user} numPlayers={props.numPlayers}/>);
 }
 
 function formatPlayPeriod(minMinutes: number, maxMinutes: number): string {
@@ -126,7 +124,7 @@ function renderResults(props: SearchProps): JSX.Element {
   let hint = (props.results.length > 0) ? ("Found " + props.results.length + " results.") : "No results found. Please broaden your search.";
 
   return (
-    <Card title="Search Results" onReturn={props.onReturn}>
+    <Card title="Search Results">
       {hint}
       {items}
     </Card>
@@ -151,7 +149,7 @@ function renderDetails(props: SearchProps): JSX.Element {
     </Indicator>
   */
   return (
-    <Card title="Quest Details" onReturn={props.onReturn}>
+    <Card title="Quest Details">
       <div style={{textAlign: 'center'}}>
         <h3>{props.selected.meta_title}</h3>
         <div style={{fontStyle: 'italic'}}>by {props.selected.meta_author}</div>
@@ -167,7 +165,7 @@ function renderDetails(props: SearchProps): JSX.Element {
 
 function renderDisclaimer(props: SearchProps): JSX.Element {
   return (
-    <Card title="Disclaimer" onReturn={props.onReturn}>
+    <Card title="Disclaimer">
       <p>
         Community quests are published by other adventurers like yourselves. We offer no guarantees
         of completeness, correctness of grammar, or sanity in any of the quests you are about to see.

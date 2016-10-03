@@ -9,14 +9,13 @@ export interface QuestStartStateProps {
 
 export interface QuestStartDispatchProps {
   onNext: (node: XMLElement) => void;
-  onReturn: () => void;
 }
 
 export interface QuestStartProps extends QuestStartStateProps, QuestStartDispatchProps {};
 
 const QuestStart = (props: QuestStartProps): JSX.Element => {
   return (
-    <Card title="Quest Start" onReturn={props.onReturn}>
+    <Card title="Quest Start">
       <p>At this time:</p>
       <ol>
         <li><strong>Select</strong> one Adventurer from the deck and pass the deck along.</li>

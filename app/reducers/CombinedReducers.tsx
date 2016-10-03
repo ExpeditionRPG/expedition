@@ -23,11 +23,13 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
     if (action.type === 'RETURN') {
       let pastStateIdx: number = state._history.length-1;
 
-      let before: string = (action as ReturnAction).before;
-      if (before) {
-        while(pastStateIdx > 0 && state._history[pastStateIdx].card.name !== before) {
+      let returnAction = action as ReturnAction;
+      if (returnAction.to) {
+        while(pastStateIdx > 0 && state._history[pastStateIdx].card.name !== returnAction.to) {
           pastStateIdx--;
         }
+      }
+      if (returnAction.before) {
         pastStateIdx--;
       }
 

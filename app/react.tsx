@@ -20,14 +20,13 @@ import * as ReactDOM from 'react-dom'
 declare var require: any;
 declare var module: any;
 
-// For dev tools extension
-declare var window:any;
-
 // Cordova device
 declare var device: any;
+declare var window:any;
 
 // For gapi login
 declare var gapi: any;
+
 
 // Material UI theming libs
 import theme from './theme'
@@ -38,20 +37,12 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme'
 var injectTapEventPlugin = require('react-tap-event-plugin');
 injectTapEventPlugin();
 
-// Redux libraries
-import thunk from 'redux-thunk'
 import { Provider } from 'react-redux'
-import { createStore, applyMiddleware } from 'redux'
 
 // Custom components
 import Main from './components/base/Main'
-import expeditionApp from './reducers/CombinedReducers'
 import {authSettings} from './constants'
-
-let devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
-let middleware = applyMiddleware(thunk);
-const store: any = middleware(devtools(createStore))(expeditionApp, {});
-console.log(store);
+import {store} from './store'
 
 // Wait for device API libraries to load
 //

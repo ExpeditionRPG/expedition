@@ -13,15 +13,12 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Rolep
   return {
     onChoice: (node: XMLElement, index: number) => {
       if (loadTriggerNode(handleChoiceInPlace(node, index)).name === 'end') {
-        dispatch(toPrevious('QUEST_START'));
+        dispatch(toPrevious('QUEST_START', true));
       } else {
         dispatch(handleChoice(index));
         dispatch(toCard('QUEST_CARD'));
       }
     },
-    onReturn: () => {
-      dispatch(toPrevious());
-    }
   };
 }
 

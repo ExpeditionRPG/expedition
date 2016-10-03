@@ -24,9 +24,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): ListC
         return;
       }
       dispatch(loadQuestXML(item.value));
-    },
-    onReturn(): void {
-      dispatch(toPrevious());
     }
   };
 }

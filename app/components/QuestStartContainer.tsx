@@ -13,9 +13,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
   return {
     onNext: (node: XMLElement) => {
       dispatch(toCard('QUEST_CARD'));
-    },
-    onReturn: () => {
-      dispatch(toPrevious());
     }
   };
 }

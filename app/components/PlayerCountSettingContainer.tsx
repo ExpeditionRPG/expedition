@@ -16,9 +16,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Playe
       dispatch(changeSettings({multitouch: false}));
       dispatch(toCard('FEATURED_QUESTS'));
     },
-    onReturn: () => {
-      dispatch(toPrevious());
-    },
     onDelta: (numPlayers: number, delta: number) => {
       numPlayers += delta;
       if (numPlayers <= 0 || numPlayers > 6) {

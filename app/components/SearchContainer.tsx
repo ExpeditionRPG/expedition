@@ -28,9 +28,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
     onPlay: (quest: QuestDetails) => {
       dispatch(loadQuestXML(quest.url));
     },
-    onReturn: () => {
-      dispatch(toPrevious());
-    },
     onOwnedChange: (checked: boolean) => {
       console.log("TODO");
     }
