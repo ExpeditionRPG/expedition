@@ -50,18 +50,6 @@ export interface CardState {
 
 export type TransitionType = 'NEXT' | 'PREV' | 'INSTANT';
 
-export interface ListItemType {
-  value: string;
-  primaryText: string;
-  secondaryText: string;
-}
-
-export interface ListCardType {
-  hint: string;
-  title: string;
-  items: ListItemType[];
-}
-
 export interface QuestState {
   details?: QuestDetails;
   combat?: CombatDetails;

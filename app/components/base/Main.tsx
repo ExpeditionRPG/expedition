@@ -5,7 +5,7 @@ import {AppStateWithHistory} from '../../reducers/CombinedReducers'
 import {TransitionType} from '../../reducers/StateTypes'
 import SplashScreenContainer from '../SplashScreenContainer'
 import Card from './Card'
-import FeaturedQuestContainer from '../FeaturedQuestContainer'
+import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
 import QuestStartContainer from '../QuestStartContainer'
 import RoleplayContainer from '../RoleplayContainer'
 import CombatContainer from '../CombatContainer'
@@ -43,7 +43,7 @@ export default class Main extends React.Component<MainProps, {}> {
         card = <PlayerCountSettingContainer/>;
         break;
       case 'FEATURED_QUESTS':
-        card = <FeaturedQuestContainer/>;
+        card = <FeaturedQuestsContainer/>;
         break;
       case 'QUEST_START':
         card = <QuestStartContainer/>;

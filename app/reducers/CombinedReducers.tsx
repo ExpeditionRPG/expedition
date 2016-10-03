@@ -33,7 +33,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         pastStateIdx--;
       }
 
-      let newState: AppStateWithHistory = Object.assign({}, state._history[pastStateIdx]);
+      let newState: AppStateWithHistory = Object.assign({_history: [], _return: null}, state._history[pastStateIdx]);
       newState._history = state._history.slice(0, pastStateIdx);
       newState.settings = state.settings; // global settings should not be rewound.
       newState._return = true;

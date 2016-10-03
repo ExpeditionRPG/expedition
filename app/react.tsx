@@ -5,7 +5,6 @@
 /// <reference path="../typings/material-ui/material-ui.d.ts" />
 /// <reference path="../typings/react-tap-event-plugin/react-tap-event-plugin.d.ts" />
 /// <reference path="../typings/jquery/jquery.d.ts" />
-/// <reference path="../typings/es6-shim/es6-shim.d.ts" />
 
 // TODO: Investigate removing tests from the compilation path
 /// <reference path="../typings/jasmine/jasmine.d.ts" />
