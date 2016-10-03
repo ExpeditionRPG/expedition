@@ -6,7 +6,7 @@ If you encounter any bugs with the app or have feedback, please [drop an issue](
 
 We're very friendly to pull requests! Simply fork the repository, create a new branch, make your desired changes and test them out on your local, then submit a PR.
 
-Priorities are indicated via the "Assigned" field on issues and pull requests. Having someone assigned to it indicates that it's a current top priority and currently being worked on. Issues that are definitively low priorty / no plans to be addressed for 6 months+ should be closed and labeled as "wontfix".
+Priorities are indicated via the "Assigned" field on issues and pull requests. Having someone assigned to it indicates that it's a current top priority and currently being worked on. Issues that are definitively low priorty / no plans to be addressed for 6 months+ should be labeled as "wontfix" and closed.
 
 Question? Email us at contact@fabricate.io
 
@@ -14,11 +14,13 @@ Question? Email us at contact@fabricate.io
 
 ### Requirements
 
-Requires a NodeJS version above 0.12.x. Check your Node.js version.
+Requires a NodeJS version above 0.12.x:
 
 ```sh
 node --version
 ```
+
+When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 
 Building the iOS app requires a mac, and cordova setup scripts currently work for unix-like environments only (Linux + Mac).
 
@@ -29,7 +31,7 @@ Building the iOS app requires a mac, and cordova setup scripts currently work fo
 With Node.js installed, run the following one liner from the root of the repository:
 
 ```sh
-npm install -g gulp bower && npm install && bower install
+npm install -g gulp && npm install
 ```
 
 For building native apps, you will also need to set up cordova:
@@ -44,7 +46,7 @@ npm install -g cordova
 #### Serve / watch
 
 ```sh
-gulp serve
+NODE_ENV=dev node ${SCRIPT:-app.js}
 ```
 
 This outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
@@ -52,7 +54,7 @@ This outputs an IP address you can use to locally test and another that can be u
 #### Run tests
 
 ```sh
-gulp test:local
+npm run test
 ```
 
 This runs the unit tests defined in the `app/test` directory through [web-component-tester](https://github.com/Polymer/web-component-tester).

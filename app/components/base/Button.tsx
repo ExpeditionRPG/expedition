@@ -27,6 +27,7 @@ export default class Button extends React.Component<ButtonProps, {}> {
       textTransform: 'none',
       textDecoration: 'none',
       color: (this.props.disabled) ? theme.colors.fontColorFaded : 'inherit',
+      lineHeight: 1.2,
     }
   }
 

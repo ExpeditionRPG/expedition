@@ -103,8 +103,8 @@ max-time-minutes="60">
             <p>The shady figures sense your presence and draw their weapons.</p>
           </roleplay>
           <combat icon="bandit">
-            <e>Archer</e>
-            <e>Rogue</e>
+            <e>Footpad</e>
+            <e>Thief</e>
             <e>Brigand</e>
             <event on="win">
               <roleplay title="Bad Timing" icon="bandit">

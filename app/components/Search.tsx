@@ -6,7 +6,7 @@ import {SearchSettings, SearchPhase, SearchState, UserState} from '../reducers/S
 import TextField from 'material-ui/TextField'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
-import {QuestDetails} from '../reducers/QuestTypes.tsx'
+import {QuestDetails} from '../reducers/QuestTypes'
 
 export interface SearchStateProps extends SearchState {
   numPlayers: number;

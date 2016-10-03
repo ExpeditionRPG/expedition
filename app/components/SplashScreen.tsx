@@ -56,30 +56,41 @@ const styles = {
     top: '50%',
     marginTop: '-10%',
     height: '20%',
-    color: theme.colors.fontColorFaded,
+    color: theme.colors.fontColor,
     fontSize: theme.fontSize.flavortext,
     textAlign: 'center'
   },
+  logo: {
+    position: 'absolute',
+    top: theme.vh.small,
+    left: theme.vh.small,
+    right: theme.vh.small,
+  },
   noMultiButton: {
     position: 'absolute',
-    bottom: theme.vh.small,
+    bottom: 0,
+    left: 0,
+    right: 0,
     color: theme.colors.fontColorFaded,
-    width: '100%',
+    padding: theme.vh.small,
+    margin: 'auto',
     textAlign: 'center',
+    border: '1px solid #ccc',
   }
 };
 
 const SplashScreen = (props: SplashScreenProps): JSX.Element => {
   return (
     <div style={styles.card}>
-      <div style={styles.center}>
+      <div style={styles.logo}>
         <img style={{width: '100%'}} src="images/logo-frameless.png"></img>
-        <div>All players put a finger on the screen to begin.</div>
-        <div>v1.0.9</div>
+      </div>
+      <div style={styles.center}>
+        <div>To Begin:<br/>All players hold one finger on the screen.</div>
       </div>
       <PlayerCounter onPlayerCountSelect={props.onPlayerCountSelect} debounceMillis={1000} />
       <div onTouchTap={props.onNoMultiTouch} style={styles.noMultiButton}>
-        No MultiTouch? Click here!
+        No Multi-touch? Click here!
       </div>
     </div>
   );
