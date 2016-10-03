@@ -7,6 +7,7 @@ import TextField from 'material-ui/TextField'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import {QuestDetails} from '../reducers/QuestTypes'
+import theme from '../theme'
 
 export interface SearchStateProps extends SearchState {
   numPlayers: number;
@@ -23,6 +24,13 @@ export interface SearchDispatchProps {
 }
 
 export interface SearchProps extends SearchStateProps, SearchDispatchProps {};
+
+const styles = {
+  resultTitle: {
+    margin: 0,
+    fontSize: theme.fontSize.interactive,
+  }
+}
 
 // We make this a react component to hold a bit of state and avoid sending
 // redux actions for every single change to input.
@@ -105,26 +113,31 @@ function renderResults(props: SearchProps): JSX.Element {
 
     let abnormalShare: JSX.Element = (<span></span>);
     if (!result.published && !result.shared) {
-      return (<div><strong>PRIVATE</strong></div>);
+      abnormalShare = (<strong>(PRIVATE)</strong>);
     }
     if (!result.published && result.shared) {
-      return (<div><strong>UNLISTED</strong></div>);
+      abnormalShare = (<strong>(UNLISTED)</strong>);
     }
 
     return (
       <Button key={index} onTouchTap={() => props.onQuest(result)}>
-        <h1>{result.meta_title}</h1>
+        <h1 style={styles.resultTitle}>{result.meta_title} {abnormalShare}</h1>
         <div>by {result.meta_author}</div>
         <div>{result.meta_minPlayers}-{result.meta_maxPlayers} players, {formatPlayPeriod(result.meta_minTimeMinutes, result.meta_maxTimeMinutes)}</div>
-        {abnormalShare}
       </Button>
     );
   });
 
-  let hint = (props.results.length > 0) ? ("Found " + props.results.length + " results.") : "No results found. Please broaden your search.";
+  let hint: JSX.Element = (<span></span>);
+  if (props.results.length === 0) {
+    hint = <div>
+      <div>No results found.</div>
+      <div>Try broadening your search.</div>
+    </div>;
+  }
 
   return (
-    <Card title="Search Results">
+    <Card title={props.results.length + " Results"}>
       {hint}
       {items}
     </Card>
