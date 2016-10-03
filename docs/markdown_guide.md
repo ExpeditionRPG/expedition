@@ -159,6 +159,11 @@ At the end of the lose event, there's a `**end**` tag. This is called a `trigger
 In this case, we're signaling that this is the end of the quest, since the party's dead and gone. In this case, the trigger displays a singular "End" choice that
 transports the user back to the quest menu.
 
+Now, with encounters, there's an additional factor we have to consider: balance. We can't have our brand-new adventurers fight the Bandit Captain on their first fight! Not only would they not have enough loot and skill to defeat him, but it'd ruin the pacing of the quest (after all, what's there to fight above the leader?).
+
+Here's what we recommend for a well-balanced quest: all possible first encounters have a sum tier of 2-3, the mid-quest fights slowly increase in difficulty from 4-6, and the final boss fight should be around 6-8.
+That being said, these are just guidelines! You can absolutely mess with your players - upon first arriving at the town and hearing of the Bandit encampment, they could decide to charge straight in and fight the Captain and his minions. They'll lose, of course, but that doesn't mean they can't try!
+
 ## Orders from Above: Instruction Sections
 
 Sometimes you need to tell your players stuff about the rules and mechanics of your quest, without writing it in character. To keep in-character and out-of-character
