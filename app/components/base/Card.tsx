@@ -42,15 +42,22 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     super(props);
 
     this.style = {
+      childWrapper: {
+        margin: theme.vw.large,
+        marginTop: theme.vw.small,
+        marginBottom: '9vw',
+        position: 'relative',
+      },
       scrollbox: {
-        position: "relative",
-        minHeight: "90vh",
+        position: 'relative',
+        // minHeight: '90vh',
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
       },
       article: {
         display: 'flex',
+        position: 'relative',
         overflowY: 'auto',
         padding: theme.vw.base,
         fontSize: theme.fontSize.flavortext,
@@ -90,8 +97,8 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
       },
       scrollboxBottom: {
         position: 'absolute',
-        bottom: 0,
-        right: 0,
+        bottom: '-6vw',
+        right: '-6vw',
         width: theme.vw.huge,
         height: theme.vw.large,
         borderRight: (this.props.dark) ? theme.border.accent : theme.border.primary,
@@ -154,11 +161,11 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
           <div style={this.style.scrollboxTop}/>
           <div style={this.style.scrollbox}>
             {icon}
-            <div style={{margin: theme.vw.large}}>
+            <div style={this.style.childWrapper}>
               {this.props.children}
+              <div style={this.style.scrollboxBottom}/>
             </div>
           </div>
-          <div style={this.style.scrollboxBottom}/>
         </div>
       </div>
     );
