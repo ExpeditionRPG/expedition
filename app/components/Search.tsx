@@ -171,8 +171,11 @@ function renderDisclaimer(props: SearchProps): JSX.Element {
         of completeness, correctness of grammar, or sanity in any of the quests you are about to see.
       </p>
       <p>
-        We use your basic Google account information as your identity when rating quests and to show your
-        own (unpublished) quests. You must log in to continue.
+        We use your Google email as your identity when rating quests and to show your
+        own (unpublished) quests.
+      </p>
+      <p>
+        You must log in to continue:
       </p>
       <Button onTouchTap={(e)=>props.onLoginRequest()}>Continue with Google</Button>
     </Card>

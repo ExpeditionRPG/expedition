@@ -228,7 +228,7 @@ function renderVictory(props: CombatProps): JSX.Element {
     contents.push(
       <span key="c6">
         <p>Loot drawn at the end of an Encounter is for the entire party. It may either be divided amongst Adventurers or kept in a shared Loot pile.</p>
-        <p>Loot can be used at any time and does not cost an action (unless specified).</p>
+        <p>Loot can be used at any time and does not cost an action (unless otherwise specified).</p>
       </span>
     );
   }

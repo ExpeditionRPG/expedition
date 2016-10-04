@@ -83,6 +83,7 @@ export interface UserState {
 }
 
 export interface AppState {
+  _history: any;
   card: CardState;
   settings: SettingsType;
   quest: QuestState;

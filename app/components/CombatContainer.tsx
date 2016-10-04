@@ -7,7 +7,6 @@ import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
 
 const mapStateToProps = (state: AppState, ownProps: CombatStateProps): CombatStateProps => {
   // Set only the dynamic props (# alive players, tier sum)
-
   //if ()
   //numAlivePlayers: number;
   //roundTimeTotalMillis: number;
