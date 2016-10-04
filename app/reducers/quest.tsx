@@ -71,11 +71,17 @@ export function quest(state: AppStateWithHistory, action: Redux.Action): QuestSt
       newState = Object.assign({}, state.quest);
       newState.combat = Object.assign([], newState.combat);
       (newState.combat.details as MidCombatPhase).tier += (action as TierSumDeltaAction).delta;
+      if ((newState.combat.details as MidCombatPhase).tier < 0) {
+        (newState.combat.details as MidCombatPhase).tier = 0;
+      }
       return newState;
     case 'ADVENTURER_DELTA':
       newState = Object.assign({}, state.quest);
       newState.combat = Object.assign([], newState.combat);
       (newState.combat.details as MidCombatPhase).numAliveAdventurers += (action as AdventurerDeltaAction).delta;
+      if ((newState.combat.details as MidCombatPhase).numAliveAdventurers < 0) {
+        (newState.combat.details as MidCombatPhase).numAliveAdventurers = 0;
+      }
       return newState;
     default:
       return state.quest;
