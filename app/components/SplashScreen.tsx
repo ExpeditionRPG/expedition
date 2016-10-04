@@ -13,7 +13,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
 
   onTouchChange(numFingers: number) {
     if (this.timeout) {
-      clearTimeout(this.timeout)
+      clearTimeout(this.timeout);
     }
 
     if (numFingers > 0) {

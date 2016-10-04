@@ -17,7 +17,7 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
     }
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this._drawTouchPoints(e.touches);
-    //e.preventDefault();
+    e.preventDefault();
   }
 
   _drawTouchPoints(touches: any) {
@@ -27,6 +27,9 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
       this.ctx.beginPath();
       this.ctx.arc(touches[i].clientX, touches[i].clientY, radius, 0, 2 * Math.PI, false);
       this.ctx.fill();
+      this.ctx.beginPath();
+      this.ctx.arc(touches[i].clientX, touches[i].clientY, 1.2 * radius, 0, 2 * Math.PI, false);
+      this.ctx.stroke();
     }
   }
 
@@ -44,7 +47,6 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
     this.canvas.addEventListener('touchend', this._touchEvent.bind(this));
 
     this._touchEvent({touches: [], preventDefault: ()=>{}});
-
   }
 
   render() {
