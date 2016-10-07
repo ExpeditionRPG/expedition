@@ -6,8 +6,6 @@ import {event, handleCombatTimerStop, combatDefeat, combatVictory, tierSumDelta,
 import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps): CombatStateProps => {
-  // Set only the dynamic props (# alive players, tier sum)
-
   var maxTier = 0;
   let histIdx: number = state._history.length-1;
   while(state._history[histIdx].combat !== undefined && histIdx > 0) {

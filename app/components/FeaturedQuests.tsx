@@ -51,7 +51,9 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
 
   return (
     <Card title="Featured Quests">
-      Select a quest below to get started, or click Advanced Play below for more options.
+      <p>
+        Select a quest below to get started, or click Advanced Play below for more options.
+      </p>
       {items}
       <Button onTouchTap={()=>props.onAdvancedPlay()}>Advanced Play</Button>
     </Card>

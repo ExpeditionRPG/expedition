@@ -54,12 +54,11 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
 
   return (
     <Card title='Draw Enemies' dark={true}>
-      Prepare to Fight:
-
+      <p>
+        Prepare to Fight:
+      </p>
       {enemies}
-
       {helpText}
-
       <Button dark={true} onTouchTap={() => props.onNext('PREPARE')}>Next</Button>
     </Card>
   );
@@ -86,7 +85,7 @@ function renderPrepare(props: CombatProps): JSX.Element {
   return (
     <Card title='Prepare for Combat' dark={true}>
       {helpText}
-      <p>Ready to begin?</p>
+      <h2 style={{textAlign: 'center'}}>Ready to begin?</h2>
       <Button dark={true} onTouchTap={() => props.onNext('TIMER')}>Start Timer</Button>
     </Card>
   );
@@ -226,7 +225,7 @@ function renderVictory(props: CombatProps): JSX.Element {
     contents.push(
       <span key="c6">
         <p>Loot drawn at the end of an Encounter is for the entire party. It may either be divided amongst Adventurers or kept in a shared Loot pile.</p>
-        <p>Loot can be used at any time and does not cost an action (unless specified).</p>
+        <p>Loot can be used at any time and does not cost an action (unless otherwise specified).</p>
       </span>
     );
   }

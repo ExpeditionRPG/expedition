@@ -1,4 +1,10 @@
-
+test('Loot returns viable value with tier sum = 1', function() {
+  var loot = calculateLoot({
+    tier: 1,
+  });
+  // TODO assert valid
+  throw new Error 'Not finished implementing';
+});
 
 
 /*
