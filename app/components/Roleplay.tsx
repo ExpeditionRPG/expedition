@@ -1,31 +1,31 @@
 import * as React from 'react'
 import Card from './base/Card'
 import Button from './base/Button'
-import {XMLElement} from '../reducers/StateTypes'
+import {XMLElement, SettingsType} from '../reducers/StateTypes'
+import {Choice} from '../reducers/QuestTypes'
+import {RoleplayResult} from '../QuestParser'
 
 export interface RoleplayStateProps {
   node: XMLElement;
-  icon: string;
-  title: string;
-  content: JSX.Element;
-  actions: {text: string, idx: number}[];
+  roleplay: RoleplayResult;
+  settings: SettingsType;
 }
 
 export interface RoleplayDispatchProps {
-  onChoice: (node: XMLElement, index: number) => void;
+  onChoice: (settings: SettingsType, node: XMLElement, index: number) => void;
 }
 
 export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps {};
 
 const Roleplay = (props: RoleplayProps): JSX.Element => {
-  var buttons: JSX.Element[] = props.actions.map(function(action: {text: string, idx: number}): JSX.Element {
+  var buttons: JSX.Element[] = props.roleplay.choices.map(function(choice: Choice): JSX.Element {
     return (
-      <Button key={action.idx} onTouchTap={() => props.onChoice(props.node, action.idx)}>{action.text}</Button>
+      <Button key={choice.idx} onTouchTap={() => props.onChoice(props.settings, props.node, choice.idx)}>{choice.text}</Button>
     );
   });
   return (
-    <Card title={props.title}>
-      {props.content}
+    <Card title={props.roleplay.title}>
+      {props.roleplay.content}
       {buttons}
     </Card>
   );

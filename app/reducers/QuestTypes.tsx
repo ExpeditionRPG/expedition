@@ -20,7 +20,7 @@ export interface QuestDetails {
 
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';
 
-export type CombatDifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
+export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
 export interface CombatDifficultySettings {
   roundTimeMillis: number,
   surgePeriod: number,
@@ -29,6 +29,13 @@ export interface CombatDifficultySettings {
 
 export type Enemy = {name: string, tier: number};
 export type Loot = {tier: number, count: number};
+
+
+export interface Choice {
+  text: string;
+  idx: number;
+  isCombat: boolean;
+}
 
 export interface CombatAttack {
   surge: boolean;
@@ -48,15 +55,12 @@ export interface MidCombatPhase {
   tier: number;
 }
 export interface EndCombatPhase {
-  loot: Loot[];
-  levelUp: boolean;
+  loot?: Loot[];
+  levelUp?: boolean;
 }
 
-export type CombatPhaseDetails = MidCombatPhase | EndCombatPhase;
 export type CombatPhaseNameType = MidCombatPhaseNameType | EndCombatPhaseNameType;
 
-export interface CombatDetails {
-  settings: CombatDifficultySettings;
-  details: CombatPhaseDetails
+export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {
   phase?: CombatPhaseNameType;
 }

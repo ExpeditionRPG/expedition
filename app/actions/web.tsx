@@ -10,7 +10,7 @@ export function loadQuestXML(url: string) {
       if (typeof data === 'string') {
         data = (new DOMParser().parseFromString(data as string, 'text/xml')) as any as XMLElement;
       }
-      dispatch(initQuest((data as XMLElement).children[0]));
+      dispatch(initQuest((data as XMLElement).children[0].children[0]));
       dispatch(toCard('QUEST_START'));
     });
   };

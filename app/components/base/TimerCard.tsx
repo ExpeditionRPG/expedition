@@ -51,6 +51,10 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
   }
 
   onTouchChange(numFingers: number) {
+    if (!this.interval) {
+      return;
+    }
+
     if (numFingers === this.props.numPlayers) {
       console.log("Clearing interval");
       clearInterval(this.interval);

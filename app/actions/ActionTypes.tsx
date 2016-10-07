@@ -1,9 +1,10 @@
 import {CardState, CardName, SettingNameType, XMLElement, TransitionType, UserState, SearchPhase} from '../reducers/StateTypes'
-import {QuestDetails, Enemy, CombatPhaseNameType} from '../reducers/QuestTypes'
+import {QuestDetails, Enemy, CombatPhaseNameType, DifficultyType} from '../reducers/QuestTypes'
 
 export interface NavigateAction extends Redux.Action {
   type: 'NAVIGATE';
   to: CardState;
+
   phase?: CombatPhaseNameType | SearchPhase;
 };
 
@@ -13,19 +14,9 @@ export interface ReturnAction extends Redux.Action {
   before?: boolean;
 };
 
-export interface InitQuestAction extends Redux.Action {
-  type: 'INIT_QUEST';
+export interface QuestNodeAction extends Redux.Action {
+  type: 'QUEST_NODE';
   node: XMLElement;
-}
-
-export interface ChoiceAction extends Redux.Action {
-  type: 'CHOICE';
-  choice: number;
-};
-
-export interface EventAction extends Redux.Action {
-  type: 'EVENT';
-  event: string;
 }
 
 export interface ChangeSettingsAction extends Redux.Action {
@@ -36,7 +27,8 @@ export interface ChangeSettingsAction extends Redux.Action {
 export interface InitCombatAction extends Redux.Action {
   type: 'INIT_COMBAT';
   numPlayers: number;
-  enemies: Enemy[];
+  difficulty: DifficultyType;
+  node: XMLElement;
 }
 
 export interface CombatTimerStopAction extends Redux.Action {
@@ -50,6 +42,8 @@ export interface CombatDefeatAction extends Redux.Action {
 
 export interface CombatVictoryAction extends Redux.Action {
   type: 'COMBAT_VICTORY';
+  numPlayers: number;
+  maxTier: number;
 }
 
 export interface TierSumDeltaAction extends Redux.Action {

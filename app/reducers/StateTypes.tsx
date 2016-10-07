@@ -1,4 +1,4 @@
-import {QuestDetails, CombatDetails, CombatDifficultyType, CombatPhaseNameType} from './QuestTypes'
+import {QuestDetails, CombatState, DifficultyType, CombatPhaseNameType} from './QuestTypes'
 
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
@@ -36,7 +36,7 @@ export function isSearchPhase(phase: string) : boolean {
 
 export interface SettingsType {
   numPlayers: number;
-  difficulty: CombatDifficultyType;
+  difficulty: DifficultyType;
   viewMode: ViewModeType;
   multitouch: boolean;
 }
@@ -52,7 +52,6 @@ export type TransitionType = 'NEXT' | 'PREV' | 'INSTANT';
 
 export interface QuestState {
   details?: QuestDetails;
-  combat?: CombatDetails;
   node?: XMLElement;
 }
 
@@ -72,9 +71,14 @@ export interface UserState {
 
 export interface AppState {
   card: CardState;
+  combat: CombatState;
   settings: SettingsType;
   quest: QuestState;
   search: SearchState;
   user: UserState;
 }
 
+export interface AppStateWithHistory extends AppState {
+  _history: AppState[];
+  _return: boolean;
+}

@@ -1,18 +1,24 @@
-import { card } from './card'
-import { quest } from './quest'
-import { settings } from './settings'
-import { search } from './search'
-import { user } from './user'
-import { AppState } from './StateTypes'
-import { ReturnAction } from '../actions/ActionTypes'
+import {card} from './card'
+import {quest} from './quest'
+import {settings} from './settings'
+import {search} from './search'
+import {combat} from './combat'
+import {user} from './user'
+import {AppStateWithHistory, AppState} from './StateTypes'
+import {ReturnAction} from '../actions/ActionTypes'
 
-
-export interface AppStateWithHistory extends AppState {
-  _history: AppState[];
-  _return: boolean;
+function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppState {
+  return {
+    card: card(state.card, action),
+    quest: quest(state.quest, action),
+    combat: combat(state.combat, action),
+    settings: settings(state.settings, action),
+    search: search(state.search, action),
+    user: user(state.user, action),
+  };
 }
 
-export default function combinedReducerWithHistory(state: AppStateWithHistory, action: Redux.Action): Object {
+export default function combinedReducerWithHistory(state: AppStateWithHistory, action: Redux.Action): AppStateWithHistory {
   let history: AppState[] = [];
 
   if (state !== undefined) {
@@ -33,29 +39,19 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         pastStateIdx--;
       }
 
-      let newState: AppStateWithHistory = Object.assign({_history: [], _return: null}, state._history[pastStateIdx]);
-      newState._history = state._history.slice(0, pastStateIdx);
-      newState.settings = state.settings; // global settings should not be rewound.
-      newState._return = true;
-      return newState;
+      return Object.assign({}, state._history[pastStateIdx], {
+        _history: state._history.slice(0, pastStateIdx),
+        settings: state.settings, // global settings should not be rewound.
+        _return: true}) as AppStateWithHistory;
     }
 
-    history = Object.assign([], state._history);
+    history = state._history.slice();
     if (action.type === 'NAVIGATE') {
       // Otherwise, save a copy of existing state to _history whenever we go to a new card
-      history.push(Object.assign({}, state, {_history: undefined, _return: undefined, settings: undefined}));
+      history.push(Object.assign(state, {_history: undefined, _return: undefined, settings: undefined}) as AppStateWithHistory);
     }
   }
 
   // Run the reducers on the new action
-  let newState: AppStateWithHistory = {
-    _history: history,
-    _return: false,
-    card: card(state.card, action),
-    quest: quest(state, action),
-    settings: settings(state.settings, action),
-    search: search(state.search, action),
-    user: user(state.user, action),
-  };
-  return newState;
+  return Object.assign(combinedReduce(state, action), {_history: history, _return: false}) as AppStateWithHistory;
 }

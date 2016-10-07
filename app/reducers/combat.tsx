@@ -1,8 +1,9 @@
-import {CombatDifficultyType, CombatDifficultySettings, CombatAttack, MidCombatPhase, EndCombatPhase, Enemy, Loot, CombatDetails} from './QuestTypes'
-import {InitCombatAction, CombatTimerStopAction} from '../actions/ActionTypes'
-import {handleChoice, loadCombatNode} from '../QuestParser'
+import {DifficultyType, CombatDifficultySettings, CombatAttack, MidCombatPhase, EndCombatPhase, Enemy, Loot, CombatState, isCombatPhase, CombatPhaseNameType} from './QuestTypes'
+import {AppState} from './StateTypes'
+import {InitCombatAction, CombatTimerStopAction, TierSumDeltaAction, AdventurerDeltaAction, NavigateAction, CombatVictoryAction} from '../actions/ActionTypes'
+import {handleChoice, loadCombatNode, CombatResult} from '../QuestParser'
 
-function getDifficultySettings(difficulty: CombatDifficultyType): CombatDifficultySettings {
+function getDifficultySettings(difficulty: DifficultyType): CombatDifficultySettings {
   switch(difficulty) {
     case 'EASY':
     return {
@@ -33,19 +34,17 @@ function getDifficultySettings(difficulty: CombatDifficultyType): CombatDifficul
   }
 }
 
-export function isSurgeRound(combat: CombatDetails): boolean {
-  let rounds = (combat.details as MidCombatPhase).roundCount;
-  let surgePd = combat.settings.surgePeriod;
+export function isSurgeRound(combat: CombatState): boolean {
+  let rounds = combat.roundCount;
+  let surgePd = combat.surgePeriod;
   return (surgePd - (rounds % surgePd + 1)) === 0;
 }
 
-export function generateCombatAttack(combat: CombatDetails, elapsedMillis: number): CombatAttack {
-  let phase = combat.details as MidCombatPhase;
-
+export function generateCombatAttack(combat: CombatState, elapsedMillis: number): CombatAttack {
   // enemies each get to hit once - twice if the party took too long
   let damage = 0;
-  let attackCount = phase.tier;
-  if (combat.settings.roundTimeMillis - elapsedMillis < 0) {
+  let attackCount = combat.tier;
+  if (combat.roundTimeMillis - elapsedMillis < 0) {
     attackCount *= 2;
   }
 
@@ -55,7 +54,7 @@ export function generateCombatAttack(combat: CombatDetails, elapsedMillis: numbe
   }
 
   // Scale according to multiplier, then round to whole number.
-  damage = Math.round(damage * combat.settings.damageMultiplier);
+  damage = Math.round(damage * combat.damageMultiplier);
 
   return {
     surge: isSurgeRound(combat),
@@ -113,20 +112,55 @@ function _randomAttackDamage() {
   }
 };
 
-export function initCombat(enemies: Enemy[], numPlayers: number, difficulty: CombatDifficultyType): CombatDetails {
-  let tierSum: number = 0;
-  for (let enemy of enemies) {
-    tierSum += enemy.tier;
+export function combat(state: CombatState, action: Redux.Action): CombatState {
+  var newState: CombatState;
+  switch(action.type) {
+    case 'INIT_COMBAT':
+      let tierSum: number = 0;
+      let combatAction = action as InitCombatAction;
+      let result: CombatResult = loadCombatNode(combatAction.node);
+      for (let enemy of result.enemies) {
+        tierSum += enemy.tier;
+      }
+      return Object.assign({
+        phase: 'DRAW_ENEMIES' as CombatPhaseNameType,
+        enemies: result.enemies,
+        roundCount: 0,
+        numAliveAdventurers: combatAction.numPlayers,
+        tier: tierSum,
+      }, getDifficultySettings(combatAction.difficulty));
+    case 'NAVIGATE':
+      let phase = (action as NavigateAction).phase;
+      if (isCombatPhase(phase)) {
+        return Object.assign({}, state, {phase});
+      }
+      return state;
+    case 'COMBAT_TIMER_STOP':
+      let elapsedMillis: number = (action as CombatTimerStopAction).elapsedMillis;
+      return Object.assign({}, state, {
+        mostRecentAttack: generateCombatAttack(state, elapsedMillis),
+        roundCount: state.roundCount + 1,
+      });
+    case 'COMBAT_DEFEAT':
+      return Object.assign({}, state, {
+        loot: [],
+        levelUp: false,
+      });
+    case 'COMBAT_VICTORY':
+      let victoryAction = action as CombatVictoryAction;
+      return Object.assign({}, state, {
+        loot: generateLoot(victoryAction.maxTier),
+        levelUp: (victoryAction.numPlayers <= victoryAction.maxTier)
+      });
+    case 'TIER_SUM_DELTA':
+      return Object.assign({}, state, {
+        tier: state.tier + (action as TierSumDeltaAction).delta,
+      });
+    case 'ADVENTURER_DELTA':
+      return Object.assign({}, state, {
+        numAliveAdventurers: state.numAliveAdventurers + (action as AdventurerDeltaAction).delta,
+      });
+    default:
+      return state;
   }
-
-  return {
-    phase: 'DRAW_ENEMIES',
-    details: {
-      enemies,
-      roundCount: 0,
-      numAliveAdventurers: numPlayers,
-      tier: tierSum,
-    },
-    settings: getDifficultySettings(difficulty)
-  };
 }

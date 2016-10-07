@@ -31,6 +31,7 @@ var options = {
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
+    //new webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
     new webpack.optimize.CommonsChunkPlugin('init.js'),
     new webpack.DefinePlugin({
       'process.env': {

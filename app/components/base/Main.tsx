@@ -1,8 +1,7 @@
 import * as React from 'react'
 import theme from '../../theme'
 
-import {AppStateWithHistory} from '../../reducers/CombinedReducers'
-import {TransitionType} from '../../reducers/StateTypes'
+import {AppStateWithHistory, TransitionType} from '../../reducers/StateTypes'
 import SplashScreenContainer from '../SplashScreenContainer'
 import Card from './Card'
 import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
@@ -50,13 +49,12 @@ export default class Main extends React.Component<MainProps, {}> {
         break;
       case 'QUEST_CARD':
         let name = getNodeCardType(state.quest.node);
-        console.log(name);
         if (name === 'ROLEPLAY') {
           let roleplay: RoleplayResult = loadRoleplayNode(state.quest.node);
-          card = <RoleplayContainer node={state.quest.node} icon={roleplay.icon} title={roleplay.title} content={roleplay.content} actions={roleplay.actions}/>;
+          card = <RoleplayContainer node={state.quest.node} roleplay={roleplay}/>;
         } else if (name === 'COMBAT') {
           let combat: CombatResult = loadCombatNode(state.quest.node);
-          card = <CombatContainer node={state.quest.node} combat={state.quest.combat} phase={state.quest.combat.phase} icon={combat.icon} viewMode={state.settings.viewMode} />;
+          card = <CombatContainer node={state.quest.node} icon={combat.icon} combat={state.combat}/>;
         } else {
           throw new Error('Unknown quest card name ' + name);
         }

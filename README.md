@@ -31,7 +31,7 @@ Building the iOS app requires a mac, and cordova setup scripts currently work fo
 With Node.js installed, run the following one liner from the root of the repository:
 
 ```sh
-npm install -g gulp && npm install
+npm install -g gulp && npm install && npm install webpack -g
 ```
 
 For building native apps, you will also need to set up cordova:
@@ -66,6 +66,7 @@ Tests require Chrome. Please make sure you have the Chrome browser installed and
 #### Build for Web
 
 ```sh
+webpack --config ./webpack.dist.config.js
 gulp
 ```
 
@@ -74,6 +75,7 @@ Web files are output in the www/ folder.
 #### Build for Android
 
 ```sh
+webpack --config ./webpack.dist.config.js
 chmod +x build_android_signed.sh
 gulp && cordova build android
 ```
@@ -83,5 +85,11 @@ Note that, when deploying Android, you'll need to update `android-versionCode` i
 #### Build for iOS
 
 ```sh
+webpack --config ./webpack.dist.config.js
 gulp && cordova build ios
 ```
+
+#### Troubleshooting builds
+
+If you're having trouble with UglifyJS when running `webpack -p`, try removing webpack's dependence on uglify-js and letting
+the dev-dependency version be used (see [here](https://github.com/mishoo/UglifyJS2/issues/448)).

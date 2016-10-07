@@ -7,8 +7,7 @@
 /*global math */
 import * as React from 'react'
 import {XMLElement} from './reducers/StateTypes'
-import {QuestCardName} from './reducers/QuestTypes'
-import {ChoiceAction, EventAction} from './actions/ActionTypes'
+import {QuestCardName, Enemy, Choice} from './reducers/QuestTypes'
 
 export interface TriggerResult {
   node: XMLElement;
@@ -19,12 +18,7 @@ export interface RoleplayResult {
   icon: string;
   title: string;
   content: JSX.Element;
-  actions: {text: string, idx: number}[];
-}
-
-export interface Enemy {
-  name: string,
-  tier: number,
+  choices: Choice[];
 }
 
 export interface CombatResult {
@@ -242,7 +236,7 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
   // Append elements to contents
   var numEvents = 0;
   var child: XMLElement;
-  var actions: {text: string, idx: number}[] = [];
+  var choices: Choice[] = [];
   var children: XMLElement = ((document.createElement('span') as any) as XMLElement);
 
   // Keep track of the number of choice nodes seen, so we can
@@ -264,13 +258,13 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
     // TODO(scott): Deep-parse all operations inside the dialog and convert them into
     // their values.
 
-    // Accumulate "choice" tags in actions[]
+    // Accumulate "choice" tags in choices[]
     if (tag === "choice") {
       if (!c.hasAttribute('text')) {
         throw new Error("<choice> inside <roleplay> must have 'text' attribute");
       }
       var text = c.getAttribute('text');
-      actions.push({text, idx});
+      choices.push({text, idx, isCombat: false}); // TODO
       numEvents++;
       return;
     }
@@ -306,14 +300,14 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
           throw new Error("Unknown trigger content " + nextNode.textContent);
       }
     }
-    actions.push({text: buttonText, idx: 0});
+    choices.push({text: buttonText, idx: 0, isCombat: false}); // TODO
   }
 
   return {
     title: node.getAttribute('title'),
     icon: node.getAttribute('icon'),
     content: <span dangerouslySetInnerHTML={{__html: children.innerHTML}} />,
-    actions,
+    choices,
   };
 };
 
