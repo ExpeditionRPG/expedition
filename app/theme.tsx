@@ -28,6 +28,9 @@ let theme: any = {
     clockCircleColor: fade(darkBlack, 0.07),
     shadowColor: darkBlack,
   },
+  checkbox: {
+    checkedColor: darkBlack,
+  },
   vw: {
     huge: "12vw",
     large: "6vw",

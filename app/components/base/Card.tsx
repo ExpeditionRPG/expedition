@@ -5,7 +5,7 @@ import MenuItem from 'material-ui/MenuItem'
 import ChevronLeftIcon from 'material-ui/svg-icons/navigation/chevron-left'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import {store} from '../../store'
-import {toPrevious} from '../../actions/card'
+import {toCard, toPrevious} from '../../actions/card'
 import theme from '../../theme'
 
 /*
@@ -132,6 +132,8 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     switch(value) {
       case 'HOME':
         return store.dispatch(toPrevious('SPLASH_CARD', false));
+      case 'SETTINGS':
+        return store.dispatch(toCard('SETTINGS'));
       default:
         throw new Error('Unknown menu option ' + value);
     }
@@ -154,6 +156,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
               iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
               onChange={(event: any, value: string)=>this.onMenuSelect(value)}>
                 <MenuItem value="HOME" primaryText="Home"/>
+                <MenuItem value="SETTINGS" primaryText="Settings"/>
             </IconMenu>
             <div style={this.style.titleText}>{this.props.title}</div>
         </div>

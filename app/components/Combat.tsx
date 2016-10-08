@@ -3,10 +3,10 @@ import Card from './base/Card'
 import Button from './base/Button'
 import theme from '../theme'
 import {isSurgeRound} from '../reducers/combat'
-import {XMLElement, ViewModeType, SettingsType} from '../reducers/StateTypes'
+import {XMLElement, SettingsType} from '../reducers/StateTypes'
 import {CombatPhaseNameType, MidCombatPhase, EndCombatPhase, CombatState, Enemy, Loot} from '../reducers/QuestTypes'
 import TimerCard from './base/TimerCard'
-import NumberPicker from './base/NumberPicker'
+import Picker from './base/Picker'
 
 export interface CombatStateProps {
   node: XMLElement;
@@ -44,7 +44,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
   });
 
   let helpText: JSX.Element = <span></span>;
-  if (props.settings.viewMode === 'BEGINNER') {
+  if (props.settings.showHelp) {
     helpText = (
       <p>
         Draw the enemies listed above. Place in the center and put tokens on their maximum Health.
@@ -66,7 +66,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
 
 function renderPrepare(props: CombatProps): JSX.Element {
   let helpText: JSX.Element = (<span></span>);
-  if (props.settings.viewMode === 'BEGINNER') {
+  if (props.settings.showHelp) {
     helpText = (
       <span>
         <p>Shuffle ALL of your abilities back into your deck.</p>
@@ -93,7 +93,7 @@ function renderPrepare(props: CombatProps): JSX.Element {
 
 function renderSurge(props: CombatProps): JSX.Element {
   let helpText: JSX.Element = (<span></span>);
-  if (props.settings.viewMode === 'BEGINNER') {
+  if (props.settings.showHelp) {
     helpText = (
       <span>
         <p>
@@ -116,7 +116,7 @@ function renderSurge(props: CombatProps): JSX.Element {
 
 function renderResolve(props: CombatProps): JSX.Element {
   let helpText: JSX.Element = (<p>Resolve all played abilities.</p>);
-  if (props.settings.viewMode === 'BEGINNER') {
+  if (props.settings.showHelp) {
     helpText = (
       <span>
         <p>
@@ -139,9 +139,9 @@ function renderResolve(props: CombatProps): JSX.Element {
 function renderEnemyTier(props: CombatProps): JSX.Element {
   return (
     <Card title='Enemy Strength' dark={true}>
-      <NumberPicker label="Tier Sum" dark={true} onIncrement={(e)=>props.onTierSumDelta(1)} onDecrement={(e)=>props.onTierSumDelta(-1)} value={props.combat.tier}>
+      <Picker label="Tier Sum" dark={true} onDelta={(i: number)=>props.onTierSumDelta(i)} value={props.combat.tier}>
         Set this to the combined tier of the remaining enemies. You are victorious when this reaches zero.
-      </NumberPicker>
+      </Picker>
 
       <Button dark={true} onTouchTap={() => props.onVictory(props.maxTier, props.settings)} disabled={props.combat.tier > 0}>End Encounter (Victory)</Button>
       <Button dark={true} onTouchTap={() => props.onNext('PLAYER_TIER')} disabled={props.combat.tier <= 0}>Next</Button>
@@ -154,7 +154,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
   var mostRecentAttack = props.combat.mostRecentAttack;
   var damage = (mostRecentAttack) ? mostRecentAttack.damage : -1;
 
-  if (props.settings.viewMode === 'BEGINNER') {
+  if (props.settings.showHelp) {
     helpText = (
       <span>
         <p>Slide your Adventurer health down {damage} space(s).</p>
@@ -170,9 +170,9 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
       {helpText}
 
-      <NumberPicker label="Adventurers" dark={true} onIncrement={(e)=>props.onAdventurerDelta(1)} onDecrement={(e)=>props.onAdventurerDelta(-1)} value={props.combat.numAliveAdventurers}>
+      <Picker label="Adventurers" dark={true} onDelta={(i: number)=>props.onAdventurerDelta(1)} value={props.combat.numAliveAdventurers}>
         Set this to the number of adventurers still fighting. You are defeated when this reaches zero.
-      </NumberPicker>
+      </Picker>
 
       <Button dark={true} onTouchTap={() => props.onDefeat()} disabled={props.combat.numAliveAdventurers > 0}>End Encounter (Defeat)</Button>
       <Button dark={true} onTouchTap={() => props.onNext('PREPARE')} disabled={props.combat.numAliveAdventurers <= 0}>Next</Button>
@@ -183,7 +183,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 function renderVictory(props: CombatProps): JSX.Element {
   var contents: JSX.Element[] = [];
 
-  if (props.settings.viewMode === 'BEGINNER') {
+  if (props.settings.showHelp) {
     contents.push(
       <p key="c1">
         <strong>All adventurers heal to full health.</strong>
@@ -197,7 +197,7 @@ function renderVictory(props: CombatProps): JSX.Element {
         You feel more knowledgeable! Each Adventurer may learn a new ability at this time:
       </p>
     );
-    if (props.settings.viewMode === 'BEGINNER') {
+    if (props.settings.showHelp) {
       contents.push(
         <ul key="c3">
           <li>You may discard one of your current abilities.</li>
@@ -221,7 +221,7 @@ function renderVictory(props: CombatProps): JSX.Element {
 
   contents.push(<ul key="c5">{renderedLoot}</ul>);
 
-  if (props.settings.viewMode === 'BEGINNER') {
+  if (props.settings.showHelp) {
     contents.push(
       <span key="c6">
         <p>Loot drawn at the end of an Encounter is for the entire party. It may either be divided amongst Adventurers or kept in a shared Loot pile.</p>

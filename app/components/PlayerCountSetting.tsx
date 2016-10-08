@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Card from './base/Card'
 import Button from './base/Button'
-import NumberPicker from './base/NumberPicker'
+import Picker from './base/Picker'
 
 export interface PlayerCountSettingStateProps {
   numPlayers: number;
@@ -17,9 +17,9 @@ export interface PlayerCountSettingProps extends PlayerCountSettingStateProps, P
 const PlayerCountSetting = (props: PlayerCountSettingProps): JSX.Element => {
   return (
     <Card title='Player Count'>
-      <NumberPicker label="Adventurers" onIncrement={(e)=>props.onDelta(props.numPlayers, 1)} onDecrement={(e)=>props.onDelta(props.numPlayers, -1)} value={props.numPlayers}>
+      <Picker label="Adventurers" onDelta={(i: number)=>props.onDelta(props.numPlayers, i)} value={props.numPlayers}>
         Set this to the number of players, then hit the Next button.
-      </NumberPicker>
+      </Picker>
       <Button disabled={props.numPlayers===0} onTouchTap={() => props.onNext()}>Next</Button>
     </Card>
   );

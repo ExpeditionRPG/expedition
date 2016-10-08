@@ -4,15 +4,14 @@ import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import theme from '../../theme';
 
-interface NumberPickerProps extends React.Props<any> {
+interface PickerProps extends React.Props<any> {
   dark?: boolean;
-  value: number;
+  value: number | string;
   label: string;
-  onDecrement: (e:any) => any;
-  onIncrement: (e:any) => any;
+  onDelta: (i: number) => any;
 }
 
-export default class NumberPicker extends React.Component<NumberPickerProps, {}> {
+export default class Picker extends React.Component<PickerProps, {}> {
   style: any;
 
   constructor(props: any) {
@@ -54,9 +53,9 @@ export default class NumberPicker extends React.Component<NumberPickerProps, {}>
     return (
       <div style={this.style.picker}>
         <div style={this.style.pickerControls}>
-          <IconButton style={{float: 'left'}} onTouchTap={(e) => this.props.onDecrement(e)} ><ChevronLeft color={this.style.iconColor} /></IconButton>
+          <IconButton style={{float: 'left'}} onTouchTap={(e) => this.props.onDelta(-1)} ><ChevronLeft color={this.style.iconColor} /></IconButton>
           <div style={this.style.value}>{this.props.label}: {this.props.value}</div>
-          <IconButton style={{float: 'right'}} onTouchTap={(e) => this.props.onIncrement(e)}><ChevronRight color={this.style.iconColor} /></IconButton>
+          <IconButton style={{float: 'right'}} onTouchTap={(e) => this.props.onDelta(1)}><ChevronRight color={this.style.iconColor} /></IconButton>
         </div>
         <div style={this.style.subtext} id="subtext">{this.props.children}</div>
       </div>

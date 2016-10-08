@@ -1,30 +1,57 @@
-/*
+import * as React from 'react'
+import Card from './base/Card'
+import {SettingsType} from '../reducers/StateTypes'
+import {DifficultyType} from '../reducers/QuestTypes'
+import Picker from './base/Picker'
+import Checkbox from './base/Checkbox'
 
-<number-picker label="Adventurers" value="{{globals.adventurers}}" min=1 max=6>
-The number of players with Adventurer cards.
-</number-picker>
-<expedition-checkbox label="Multitouch" value="{{globals.multitouch}}">
-All players must hold their finger on the screen to end combat. Otherwise, a single tap will end combat.
-</expedition-checkbox>
-<expedition-picker id="picker" label="Difficulty" value="{{globals.difficulty}}">
-<div id="tutorial">
-  <div>Tutorial</div>
-  <div>Recommended for beginners - extra guidance is given.</div>
-</div>
-<div id="easy">
-  <div>Easy</div>
-  <div>Enemies go easy on you, and hints are given for setup and combat.</div>
-</div>
-<div id="normal">
-  <div>Normal</div>
-  <div>Expedition as it was meant to be played. Experienced adventurers start here!</div>
-</div>
-<div id="hard">
-  <div>Hard</div>
-  <div>Enemies are relentless; a true challenge for seasoned adventurers only.</div>
-</div>
-<div id="impossible">
-  <div>Impossible</div>
-  <div>You will almost surely die, so make your death a glorious one!</div>
-</div>
-*/
+export interface SettingsStateProps extends SettingsType {}
+
+export interface SettingsDispatchProps {
+  onShowHelpChange: (change: boolean) => void;
+  onMultitouchChange: (change: boolean) => void;
+  onPlayerDelta: (numPlayers: number, i: number) => void;
+  onDifficultyDelta: (difficulty: DifficultyType, i: number) => void;
+}
+
+export interface SettingsProps extends SettingsStateProps, SettingsDispatchProps {};
+
+const difficultyText: { [v: string]: any } = [
+  {title: "Easy", text: "Enemies go easy on you."},
+  {title: "Normal", text: "Expedition as it was meant to be played. Experienced adventurers start here!"},
+  {title: "Hard", text: "Enemies are relentless; a true challenge for seasoned adventurers only."},
+  {title: "Impossible", text: "You will almost surely die, so make your death a glorious one!"}
+];
+
+const Settings = (props: SettingsProps): JSX.Element => {
+  console.log(props.difficulty);
+  var difficultyIdx = ["EASY", "NORMAL", "HARD", "IMPOSSIBLE"].indexOf(props.difficulty);
+  console.log(difficultyIdx);
+
+  var multitouchText = (props.multitouch) ? "All players must hold their finger on the screen to end combat." : "A single player may tap the screen once to end combat.";
+  var helpText = (props.showHelp) ? "Setup and combat hints are shown." : "Setup and combat hints are hidden.";
+  return (
+    <Card title="Settings">
+
+      <Picker label="Adventurers" value={props.numPlayers} onDelta={(i: number)=>props.onPlayerDelta(props.numPlayers, i)}>
+        The number of players with Adventurer cards.
+      </Picker>
+
+      <Checkbox label="Multitouch" value={props.multitouch} onChange={props.onMultitouchChange}>
+        {multitouchText}
+      </Checkbox>
+
+      <Picker label="Level" value={difficultyText[difficultyIdx].title} onDelta={(i: number)=>props.onDifficultyDelta(props.difficulty, i)}>
+        {difficultyText[difficultyIdx].text}
+      </Picker>
+
+      <Checkbox label="Show Help" value={props.showHelp} onChange={props.onShowHelpChange}>
+        {helpText}
+      </Checkbox>
+    </Card>
+  );
+}
+
+export default Settings;
+
+

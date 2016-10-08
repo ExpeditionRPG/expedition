@@ -10,6 +10,7 @@ import RoleplayContainer from '../RoleplayContainer'
 import CombatContainer from '../CombatContainer'
 import SearchContainer from '../SearchContainer'
 import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
+import SettingsContainer from '../SettingsContainer'
 import {getNodeCardType, RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../QuestParser'
 
 var ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
@@ -61,6 +62,9 @@ export default class Main extends React.Component<MainProps, {}> {
         break;
       case 'SEARCH_CARD':
         card = <SearchContainer phase={state.search.phase} />;
+        break;
+      case 'SETTINGS':
+        card = <SettingsContainer />;
         break;
       default:
         throw new Error('Unknown card ' + state.card);

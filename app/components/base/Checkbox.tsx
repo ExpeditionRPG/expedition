@@ -1,5 +1,8 @@
 import * as React from 'react'
 import theme from '../../theme'
+import FlatButton from 'material-ui/FlatButton'
+import CheckBoxIcon from 'material-ui/svg-icons/toggle/check-box'
+import CheckBoxOutlineIcon from 'material-ui/svg-icons/toggle/check-box-outline-blank'
 
 const styles = {
   container: {
@@ -26,26 +29,61 @@ const styles = {
 export interface CheckboxProps {
   label: string;
   value: boolean;
+  dark?: boolean;
   onChange: (checked: boolean) => any;
 }
 
-export default class Checkbox extends React.Component<CheckboxProps, {}> {
+class ExpeditionCheckbox extends React.Component<CheckboxProps, {}> {
+  style: any;
+
+  constructor(props: any) {
+    super(props);
+    this.style = {
+      checkbox: {
+        height: 'auto',
+        display: 'block',
+        fontSize: theme.fontSize.interactive,
+        padding: theme.vw.base,
+        paddingTop: theme.vh.base,
+        paddingBottom: theme.vh.base,
+        margin: 0,
+        marginTop: theme.vh.base,
+        border: theme.border.accent,
+        backgroundColor: (this.props.dark) ? theme.colors.backgroundColorDarkInteractive : theme.colors.backgroundColorInteractive,
+        textAlign: 'center',
+        textTransform: 'none',
+        textDecoration: 'none',
+        color: 'inherit',
+        width: '100%',
+      },
+      label: {
+        fontSize: theme.fontSize.interactive,
+        fontFamily: theme.card.headerFont,
+      },
+      icon: {
+        display: "inline-block",
+        top: theme.vh.tiny,
+        marginLeft: theme.vh.tiny,
+        position: "relative",
+      },
+      subtext: {
+        fontSize: theme.fontSize.flavortext,
+      },
+    };
+  }
+
   render() {
+    var icon = (this.props.value) ? <CheckBoxIcon/> :  <CheckBoxOutlineIcon/>;
     return (
-      <div>
-        TODO Checkbox {this.props.label}
-        {this.props.children}
-      </div>
+      <FlatButton onTouchTap={(e) => this.props.onChange(!this.props.value)} style={this.style.checkbox}>
+        <div>
+          <span style={this.style.label}>{this.props.label}</span>
+          <span style={this.style.icon}>{icon}</span>
+        </div>
+        <div style={this.style.subtext} id="subtext">{this.props.children}</div>
+      </FlatButton>
     );
   }
 }
 
-/*
-
-<div class="input">
-      <div id="label" class="label">
-        {{label}} <paper-checkbox id="value" class="value" checked="{{value}}"></paper-checkbox>
-      </div>
-    </div>
-    <div id="subtext" class="subtext"><content></content></div>
-*/
+export default ExpeditionCheckbox;

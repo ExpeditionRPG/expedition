@@ -2,8 +2,6 @@ import {QuestDetails, CombatState, DifficultyType, CombatPhaseNameType} from './
 
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
-export type ViewModeType = 'BEGINNER' | 'EXPERT';
-
 export interface XMLElement {
   remove(): void;
   children: XMLElement[];
@@ -37,11 +35,11 @@ export function isSearchPhase(phase: string) : boolean {
 export interface SettingsType {
   numPlayers: number;
   difficulty: DifficultyType;
-  viewMode: ViewModeType;
+  showHelp: boolean;
   multitouch: boolean;
 }
 
-export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD';
+export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS';
 export interface CardState {
   name: CardName;
   phase?: CombatPhaseNameType;
