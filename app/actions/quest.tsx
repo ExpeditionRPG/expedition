@@ -69,8 +69,8 @@ export function tierSumDelta(delta: number): TierSumDeltaAction {
   return {type: 'TIER_SUM_DELTA', delta};
 }
 
-export function adventurerDelta(delta: number): AdventurerDeltaAction {
-  return {type: 'ADVENTURER_DELTA', delta};
+export function adventurerDelta(numPlayers: number, delta: number): AdventurerDeltaAction {
+  return {type: 'ADVENTURER_DELTA', delta, numPlayers};
 }
 
 // TODO: This should probably go in a "search" actions file.

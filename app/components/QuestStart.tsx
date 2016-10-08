@@ -13,6 +13,7 @@ export interface QuestStartDispatchProps {
 
 export interface QuestStartProps extends QuestStartStateProps, QuestStartDispatchProps {};
 
+// TODO: Refactor this into a QUEST_CARD
 const QuestStart = (props: QuestStartProps): JSX.Element => {
   return (
     <Card title="Quest Start">

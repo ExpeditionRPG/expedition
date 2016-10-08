@@ -18,7 +18,7 @@ export interface SettingsProps extends SettingsStateProps, SettingsDispatchProps
 
 const difficultyText: { [v: string]: any } = [
   {title: "Easy", text: "Enemies go easy on you."},
-  {title: "Normal", text: "Expedition as it was meant to be played. Experienced adventurers start here!"},
+  {title: "Normal", text: "Expedition as it was meant to be played. Adventurers start here!"},
   {title: "Hard", text: "Enemies are relentless; a true challenge for seasoned adventurers only."},
   {title: "Impossible", text: "You will almost surely die, so make your death a glorious one!"}
 ];

@@ -23,7 +23,7 @@ export interface CombatDispatchProps {
   onTimerStop: (elapsedMillis: number, surge: boolean) => void;
   onPostTimerReturn: () => void;
   onTierSumDelta: (delta: number) => void;
-  onAdventurerDelta: (delta: number) => void;
+  onAdventurerDelta: (numPlayers: number, delta: number) => void;
   onEvent: (node: XMLElement, event: string) => void;
 }
 
@@ -171,7 +171,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
       {helpText}
 
-      <Picker label="Adventurers" dark={true} onDelta={(i: number)=>props.onAdventurerDelta(1)} value={props.combat.numAliveAdventurers}>
+      <Picker label="Adventurers" dark={true} onDelta={(i: number)=>props.onAdventurerDelta(props.settings.numPlayers, i)} value={props.combat.numAliveAdventurers}>
         Set this to the number of adventurers still fighting. You are defeated when this reaches zero.
       </Picker>
 
@@ -240,9 +240,15 @@ function renderVictory(props: CombatProps): JSX.Element {
 }
 
 function renderDefeat(props: CombatProps): JSX.Element {
+  var helpText = <span></span>
+  if (props.settings.showHelp) {
+    helpText = <p>Remember, you can adjust combat difficulty at any time in the settings menu at the top right of the app.</p>
+  }
+
   return (
     <Card title='Defeat' dark={true}>
-      Your party was defeated.
+      <p>Your party was defeated.</p>
+      {helpText}
       <Button dark={true} onTouchTap={() => props.onEvent(props.node, 'lose')}>Next</Button>
     </Card>
   );

@@ -59,8 +59,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     onTierSumDelta: (delta: number) => {
       dispatch(tierSumDelta(delta));
     },
-    onAdventurerDelta: (delta: number) => {
-      dispatch(adventurerDelta(delta));
+    onAdventurerDelta: (numPlayers: number, delta: number) => {
+      dispatch(adventurerDelta(numPlayers, delta));
     },
   };
 }

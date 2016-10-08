@@ -55,6 +55,7 @@ export interface TierSumDeltaAction extends Redux.Action {
 export interface AdventurerDeltaAction extends Redux.Action {
   type: 'ADVENTURER_DELTA';
   delta: number;
+  numPlayers: number;
 }
 
 export interface SearchResponseAction extends Redux.Action {

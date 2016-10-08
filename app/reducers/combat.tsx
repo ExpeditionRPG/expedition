@@ -153,13 +153,17 @@ export function combat(state: CombatState, action: Redux.Action): CombatState {
         levelUp: (victoryAction.numPlayers <= victoryAction.maxTier)
       });
     case 'TIER_SUM_DELTA':
-      return Object.assign({}, state, {
-        tier: state.tier + (action as TierSumDeltaAction).delta,
-      });
+      let newTierCount = state.tier + (action as TierSumDeltaAction).delta;
+      if (newTierCount < 0) {
+        return state;
+      }
+      return Object.assign({}, state, {tier: newTierCount});
     case 'ADVENTURER_DELTA':
-      return Object.assign({}, state, {
-        numAliveAdventurers: state.numAliveAdventurers + (action as AdventurerDeltaAction).delta,
-      });
+      let newAdventurerCount = state.numAliveAdventurers + (action as AdventurerDeltaAction).delta;
+      if (newAdventurerCount > (action as AdventurerDeltaAction).numPlayers || newAdventurerCount < 0) {
+        return state;
+      }
+      return Object.assign({}, state, {numAliveAdventurers: newAdventurerCount});
     default:
       return state;
   }
