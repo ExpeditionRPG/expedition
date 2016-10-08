@@ -34,7 +34,7 @@ export function choice(settings: SettingsType, node: XMLElement, index: number) 
       case 'TRIGGER':
         let name: string = loadTriggerNode(nextNode).name;
         if (name === 'end') {
-          return dispatch(toPrevious('QUEST_START', true));
+          return dispatch(toPrevious('QUEST_START', undefined, true));
         }
         throw new Error('invalid trigger ' + name);
       case 'COMBAT':

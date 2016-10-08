@@ -49,6 +49,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       }
       dispatch(handleCombatTimerStop(elapsedMillis));
     },
+    onPostTimerReturn: () => {
+      // Return to the "Ready for Combat?" card instead of doing the timed round again.
+      dispatch(toPrevious('QUEST_CARD', 'PREPARE'));
+    },
     onEvent: (node: XMLElement, evt: string) => {
       dispatch(event(node, evt));
     },

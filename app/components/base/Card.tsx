@@ -131,7 +131,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
 
     switch(value) {
       case 'HOME':
-        return store.dispatch(toPrevious('SPLASH_CARD', false));
+        return store.dispatch(toPrevious('SPLASH_CARD', undefined, false));
       case 'SETTINGS':
         return store.dispatch(toCard('SETTINGS'));
       case 'FEEDBACK':
@@ -154,7 +154,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     return (
       <div style={this.style.card}>
         <div style={this.style.titleContainer}>
-            <IconButton style={{float: 'left'}} onTouchTap={this.onReturn}><ChevronLeftIcon/></IconButton>
+            <IconButton style={{float: 'left'}} onTouchTap={() => this.onReturn()}><ChevronLeftIcon/></IconButton>
             <IconMenu
               style={this.style.menu}
               iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}

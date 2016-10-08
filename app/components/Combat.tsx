@@ -21,6 +21,7 @@ export interface CombatDispatchProps {
   onDefeat: () => void;
   onVictory: (maxTier: number, settings: SettingsType) => void;
   onTimerStop: (elapsedMillis: number, surge: boolean) => void;
+  onPostTimerReturn: () => void;
   onTierSumDelta: (delta: number) => void;
   onAdventurerDelta: (delta: number) => void;
   onEvent: (node: XMLElement, event: string) => void;
@@ -106,7 +107,7 @@ function renderSurge(props: CombatProps): JSX.Element {
     );
   }
   return (
-    <Card title='Enemy Surge!' dark={true}>
+    <Card title='Enemy Surge!' dark={true} onReturn={props.onPostTimerReturn}>
       <h3>An enemy surge occurs!</h3>
       {helpText}
       <Button dark={true} onTouchTap={() => props.onNext('RESOLVE_ABILITIES')}>Next</Button>
@@ -129,7 +130,7 @@ function renderResolve(props: CombatProps): JSX.Element {
     );
   }
   return (
-    <Card title='Roll & Resolve' dark={true}>
+    <Card title='Roll & Resolve' dark={true} onReturn={props.onPostTimerReturn}>
       {helpText}
       <Button dark={true} onTouchTap={() => props.onNext('ENEMY_TIER')}>Next</Button>
     </Card>

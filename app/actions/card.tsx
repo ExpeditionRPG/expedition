@@ -6,6 +6,6 @@ export function toCard(name: CardName, phase: CombatPhaseNameType | SearchPhase 
   return {type: 'NAVIGATE', to: {name, ts: Date.now()}, phase};
 }
 
-export function toPrevious(name: CardName = undefined, before: boolean = false): ReturnAction {
-  return {type: 'RETURN', to: name, before};
+export function toPrevious(name: CardName = undefined, phase: CombatPhaseNameType | SearchPhase = undefined, before: boolean = false): ReturnAction {
+  return {type: 'RETURN', to: name, phase, before};
 }

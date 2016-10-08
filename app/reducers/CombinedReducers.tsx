@@ -18,6 +18,13 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
   };
 }
 
+function isReturnState(state: AppState, action: ReturnAction): boolean {
+  let matchesName = state.card.name === action.to;
+  let matchesCombatPhase = (action.phase && state.combat && action.phase === state.combat.phase);
+  let matchesSearchPhase = (action.phase && state.search && action.phase === state.search.phase);
+  return (matchesName && (!action.phase || matchesCombatPhase || matchesSearchPhase));
+}
+
 export default function combinedReducerWithHistory(state: AppStateWithHistory, action: Redux.Action): AppStateWithHistory {
   let history: AppState[] = [];
 
@@ -31,7 +38,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
 
       let returnAction = action as ReturnAction;
       if (returnAction.to) {
-        while(pastStateIdx > 0 && state._history[pastStateIdx].card.name !== returnAction.to) {
+        while(pastStateIdx > 0 && !isReturnState(state._history[pastStateIdx], returnAction)) {
           pastStateIdx--;
         }
       }

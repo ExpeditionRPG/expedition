@@ -11,6 +11,7 @@ export interface NavigateAction extends Redux.Action {
 export interface ReturnAction extends Redux.Action {
   type: 'RETURN';
   to: CardName;
+  phase?: CombatPhaseNameType | SearchPhase;
   before?: boolean;
 };
 
