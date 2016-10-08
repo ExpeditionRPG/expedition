@@ -134,6 +134,10 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
         return store.dispatch(toPrevious('SPLASH_CARD', false));
       case 'SETTINGS':
         return store.dispatch(toCard('SETTINGS'));
+      case 'FEEDBACK':
+        var url = 'http://www.expeditiongame.com/contact/?utm_source=webapp&utm_medium=app';
+        window.open(url, '_system');
+        break;
       default:
         throw new Error('Unknown menu option ' + value);
     }
@@ -157,6 +161,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
               onChange={(event: any, value: string)=>this.onMenuSelect(value)}>
                 <MenuItem value="HOME" primaryText="Home"/>
                 <MenuItem value="SETTINGS" primaryText="Settings"/>
+                <MenuItem value="FEEDBACK" primaryText="Feedback"/>
             </IconMenu>
             <div style={this.style.titleText}>{this.props.title}</div>
         </div>
