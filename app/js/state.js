@@ -126,11 +126,12 @@ exports.updateState = function (key, value) {
 
 function fetchParamsFromUrl () {
 
+  var url = window.location.search.substring(1);
   var match;
   var search = /([^&=]+)=?([^&]*)/g;
   var decode = function (s) { return decodeURIComponent(s.replace(/\+/g, " ")); }; // replace + with a space
 
-  while (match = search.exec(window.location.search.substring(1))) {
+  while (match = search.exec(url)) {
     var key = decode(match[1]);
     var value = decode(match[2]);
     exports.updateState(key, value);
@@ -162,7 +163,7 @@ function saveParamsToUrl () {
 
   for (var key in exports.filters) {
     var filter = exports.filters[key];
-    if (filter.value !== filter.default) {
+    if (filter.value !== filter.default && filter.value !== '') {
       params[key] = filter.value;
     }
   }
