@@ -31,15 +31,18 @@ Building the iOS app requires a mac, and cordova setup scripts currently work fo
 With Node.js installed, run the following one liner from the root of the repository:
 
 ```sh
-npm install -g gulp && npm install && npm install webpack -g
+npm install -g gulp webpack && npm install
 ```
 
 For building native apps, you will also need to set up cordova:
 
 ```sh
 npm install -g cordova
+webpack --config ./webpack.dist.config.js
 ./project.sh
 ```
+
+(Webpack must be run to generate the www/ folder, which is required to generate a Cordova project)
 
 ### Development workflow
 
@@ -50,6 +53,8 @@ NODE_ENV=dev node ${SCRIPT:-app.js}
 ```
 
 This outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
+
+When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 
 #### Run tests
 
@@ -67,7 +72,6 @@ Tests require Chrome. Please make sure you have the Chrome browser installed and
 
 ```sh
 webpack --config ./webpack.dist.config.js
-gulp
 ```
 
 Web files are output in the www/ folder.
@@ -77,17 +81,24 @@ Web files are output in the www/ folder.
 ```sh
 webpack --config ./webpack.dist.config.js
 chmod +x build_android_signed.sh
-gulp && cordova build android
+cordova build android
 ```
 
-Note that, when deploying Android, you'll need to update `android-versionCode` in `config.xml`, not just `version`.
+Notes:
+
+- building Android requires the Android SDK
+- when deploying Android, you'll need to update `android-versionCode` in `config.xml`, not just `version`.
 
 #### Build for iOS
 
 ```sh
 webpack --config ./webpack.dist.config.js
-gulp && cordova build ios
+cordova build ios
 ```
+
+Notes:
+
+- must be done on a Mac with XCode installed
 
 #### Troubleshooting builds
 
