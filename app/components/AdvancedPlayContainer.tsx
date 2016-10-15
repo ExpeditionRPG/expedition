@@ -8,10 +8,6 @@ import AdvancedPlay, {AdvancedPlayStateProps, AdvancedPlayDispatchProps} from '.
 
 const mapStateToProps = (state: AppState, ownProps: AdvancedPlayStateProps): AdvancedPlayStateProps => {
   return {
-    quests: [
-      {meta_title: 'Oust Albanus', meta_summary: 'Your party encounters a smelly situation.', url: 'quests/oust_albanus.xml'},
-      {meta_title: 'Mistress Malaise', meta_summary: 'Mystery, Misfortune, and a Mistress.', url: 'quests/mistress_malaise.xml'},
-    ],
     settings: state.settings,
   };
 }

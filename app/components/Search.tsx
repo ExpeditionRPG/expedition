@@ -77,9 +77,9 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
 
           <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('order', v)} value={this.state.order}>
             <MenuItem value="-published" primaryText="Newest"/>
-            <MenuItem value="+meta_title" primaryText="Title"/>
-            <MenuItem value="-meta_maxTimeMinutes" primaryText="Play Time (longest)"/>
-            <MenuItem value="+meta_minTimeMinutes" primaryText="Play Time (shortest)"/>
+            <MenuItem value="+metaTitle" primaryText="Title"/>
+            <MenuItem value="-metaMaxTimeMinutes" primaryText="Play Time (longest)"/>
+            <MenuItem value="+metaMinTimeMinutes" primaryText="Play Time (shortest)"/>
           </DropDownMenu>
         </p>
         <p>
@@ -121,9 +121,9 @@ function renderResults(props: SearchProps): JSX.Element {
 
     return (
       <Button key={index} onTouchTap={() => props.onQuest(result)}>
-        <h1 style={styles.resultTitle}>{result.meta_title} {abnormalShare}</h1>
-        <div>by {result.meta_author}</div>
-        <div>{result.meta_minPlayers}-{result.meta_maxPlayers} players, {formatPlayPeriod(result.meta_minTimeMinutes, result.meta_maxTimeMinutes)}</div>
+        <h1 style={styles.resultTitle}>{result.metaTitle} {abnormalShare}</h1>
+        <div>by {result.metaAuthor}</div>
+        <div>{result.metaMinPlayers}-{result.metaMaxPlayers} players, {formatPlayPeriod(result.metaMinTimeMinutes, result.metaMaxTimeMinutes)}</div>
       </Button>
     );
   });
@@ -164,10 +164,10 @@ function renderDetails(props: SearchProps): JSX.Element {
   return (
     <Card title="Quest Details">
       <div style={{textAlign: 'center'}}>
-        <h3>{props.selected.meta_title}</h3>
-        <div style={{fontStyle: 'italic'}}>by {props.selected.meta_author}</div>
+        <h3>{props.selected.metaTitle}</h3>
+        <div style={{fontStyle: 'italic'}}>by {props.selected.metaAuthor}</div>
         <p>
-          {props.selected.meta_summary}
+          {props.selected.metaSummary}
         </p>
       </div>
       {details}
@@ -194,63 +194,6 @@ function renderDisclaimer(props: SearchProps): JSX.Element {
     </Card>
   );
 }
-
-/*
-:host ::content instruction {
-  display: block;
-  padding: var(--vw-small);
-};
-:host ::content comment {
-  display: none;
-};
-
-#fileselect {
-  position: fixed;
-  top: -100em;
-}
-
-#questchooser a {
-  display: inline-block;
-  float: right;
-}
-
-#quest {
-  display: inline-block;
-  font-size: var(--font-size-interactive);
-  padding: var(--vh-base) 0;
-  font-family: var(--font-body);
-  border: var(--border-size) solid var(--border-color-accent);
-  line-height: 1.2em;
-  margin-top: var(--vh-base);
-}
-
-.pad {
-  padding-left: var(--vw-base);
-  @apply(--layout-flex-3);
-  @apply(--layout-vertical);
-}
-
-.centered {
-  text-align: center;
-}
-.centered h3 {
-  margin: 0;
-}
-.centered .author {
-  font-size: var(--font-size-flavortext);
-  margin-bottom: var(--vw-large);
-}
-
-paper-dropdown-menu, paper-input {
-  --paper-input-container-input: {
-    font-family: inherit;
-    font-size: inherit;
-  }
-  --paper-input-container-label: {
-    font-family: var(--font-header);
-  }
-}
-*/
 
 const Search = (props: SearchProps): JSX.Element => {
   switch(props.phase) {

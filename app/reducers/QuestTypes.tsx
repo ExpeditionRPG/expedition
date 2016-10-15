@@ -1,21 +1,22 @@
 export interface QuestDetails {
   id?: string;
-  url?: string;
   xml?: string;
+  draftUrl?: string;
+  publishedUrl?: string;
   created?: string;
   modified?: string;
   published?: string;
   shared?: string;
-  short_url?: string;
-  meta_title?: string,
-  meta_summary?: string,
-  meta_minPlayers?: number,
-  meta_maxPlayers?: number,
-  meta_email?: string,
-  meta_url?: string,
-  meta_minTimeMinutes?: number,
-  meta_maxTimeMinutes?: number,
-  meta_author?: string
+  shortUrl?: string;
+  metaTitle?: string,
+  metaSummary?: string,
+  metaMinPlayers?: number,
+  metaMaxPlayers?: number,
+  metaEmail?: string,
+  metaUrl?: string,
+  metaMinTimeMinutes?: number,
+  metaMaxTimeMinutes?: number,
+  metaAuthor?: string
 };
 
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';

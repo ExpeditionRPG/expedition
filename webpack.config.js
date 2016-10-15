@@ -25,15 +25,18 @@ var options = {
     reasons: true
   },
   module: {
+    preLoaders: [
+      { test: /\.js$/, loader: "source-map-loader" }
+    ],
     loaders: [
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /node_modules/ },
     ],
-    preLoaders: [
-        { test: /\.js$/, loader: "source-map-loader" }
-    ]
+    postLoaders: [
+      { test: /\.tsx$/, loaders: ['babel'], exclude: /node_modules/ },
+    ],
   },
   plugins: [
     new DashboardPlugin(),
