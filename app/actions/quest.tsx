@@ -11,7 +11,7 @@ import {setDialog} from './dialogs'
 import {pushError, pushHTTPError} from '../error'
 import {getBuffer} from '../buffer'
 
-var toXML: any = (require('../../translation/to_xml') as any).default
+var toXML: any = (require('../../translation/to_xml') as any).toXML;
 
 function receiveQuestLoad(quest: QuestType ): ReceiveQuestLoadAction {
   return {type: 'RECEIVE_QUEST_LOAD', quest};

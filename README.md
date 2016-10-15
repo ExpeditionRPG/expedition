@@ -20,20 +20,22 @@ Now install the repo:
 ```shell
 git clone https://github.com/Fabricate-IO/expedition-app
 
-npm install
+npm install -g gulp webpack && npm install
 
 cp /path/to/your/config.json ./config.json
 ```
 
-To run with webpack-dashboard:
-```shell
-npm run dev-dash
+### Development workflow
+
+#### Serve / watch
+
+```sh
+NODE_ENV=dev node ${SCRIPT:-app.js}
 ```
 
-To run (no dashboard)
-```shell
-npm run dev
-```
+This outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
+
+When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 
 The IDE automatically loads `config.json` on start - this is excluded from the repo as it holds secrets unfit for mortal eyes.
 
