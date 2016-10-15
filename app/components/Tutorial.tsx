@@ -42,7 +42,7 @@
     <li>You can make your character do whatever you want. Just tell your Guide, and it'll happen.
     <li>Use the environment to your advantage - if you find a cloth tent,
     try setting it on fire or ripping through it.
-    <li>Creativity applies to combat, too! Your action doesn't have to be an Ability card every round.
+    <li>Creativity applies to combat, too! Your action doesn't have to be an ability card every round.
   </ul>
 </div>
 
@@ -50,12 +50,12 @@
   <p>
     At the end of some battles, you get <strong>Loot</strong>.
     Loot can be used at any time - inside or outside of combat - to heal, damage enemies, or advance the plot.
-    Using Loot is instantaneous and does not prevent you from using an ability during combat.
+    Using loot is instantaneous and does not prevent you from using an ability during combat.
   </p>
   <ol>
     <li><strong>Tier</strong>: the relative power of the loot.
     <li><strong>Usage</strong>: how often it can be used.
-    <li><strong>Effects</strong>: choose from one of these when you use the Loot.
+    <li><strong>Effects</strong>: choose from one of these when you use the loot.
   </ol>
 </div>
 
@@ -73,13 +73,13 @@
 
 <div id="prepforcombat">
   <p>
-    Every Encounter is a series of Rounds. Combat continues until one side prevails.
+    Every encounter is a series of Rounds. Combat continues until one side prevails.
   </p>
   <ul>
-    <li>Every round, you'll play one Ability. (Note: Some Abilities may allow you to play additional cards)
+    <li>Every round, you'll play one ability. (Note: Some abilities may allow you to play additional cards)
     <li>Choose your abilities quickly - damage increases the longer you deliberate.
     <li>There are no take-backsies. Once you've played a card, that decision is final.
-    <li>At the end of each round of combat, re-shuffle all of your Ability cards back into your deck, including the Ability you played this round.
+    <li>At the end of each round of combat, re-shuffle all of your ability cards back into your deck, including the Ability you played this round.
   </ul>
 </div>
 

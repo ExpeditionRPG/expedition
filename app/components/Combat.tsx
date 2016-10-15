@@ -65,7 +65,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
   if (props.settings.showHelp) {
     helpText = (
       <p>
-        Draw the enemies listed above. Place in the center and put tokens on their maximum Health.
+        Draw the enemies listed above. Place in the center and put tokens on their maximum health.
       </p>
     );
   }
@@ -115,10 +115,10 @@ function renderSurge(props: CombatProps): JSX.Element {
     helpText = (
       <span>
         <p>
-          Immediately follow the surge action listed on all remaining Encounter cards. Some Encounters' surges may also apply after they've been killed.
+          Immediately follow the surge action listed on all remaining encounter cards. Some encounters' surges may also apply after they've been killed.
         </p>
         <p>
-          Surge effects happen before abilities. Abilities that apply "this round" do not affect surges (however, Loot may still be used during a surge). If you are killed during a surge, do not resolve your abilities.
+          Surge effects happen before abilities. Abilities that apply "this round" do not affect surges (however, loot may still be used during a surge). If you are killed during a surge, do not resolve your abilities.
         </p>
       </span>
     );
@@ -161,7 +161,7 @@ function renderEnemyTier(props: CombatProps): JSX.Element {
         Set this to the combined tier of the remaining enemies. You are victorious when this reaches zero.
       </Picker>
 
-      <Button dark={true} onTouchTap={() => props.onVictory(props.card.name, props.maxTier, props.settings)} disabled={props.combat.tier > 0}>End Encounter (Victory)</Button>
+      <Button dark={true} onTouchTap={() => props.onVictory(props.card.name, props.maxTier, props.settings)} disabled={props.combat.tier > 0}>End encounter (Victory)</Button>
       <Button dark={true} onTouchTap={() => props.onNext(props.card.name, 'PLAYER_TIER')} disabled={props.combat.tier <= 0}>Next</Button>
     </Card>
   );
@@ -176,7 +176,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
     helpText = (
       <span>
         <p>Slide your Adventurer health down {damage} space(s).</p>
-        <p>If you reach zero health, you are knocked out. After you resolve this turn, you cannot play further cards until the end of the Encounter.</p>
+        <p>If you reach zero health, you are knocked out. After you resolve this turn, you cannot play further cards until the end of the encounter.</p>
       </span>
     );
   }
@@ -192,7 +192,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
         Set this to the number of adventurers still fighting. You are defeated when this reaches zero.
       </Picker>
 
-      <Button dark={true} onTouchTap={() => props.onDefeat(props.card.name)} disabled={props.combat.numAliveAdventurers > 0}>End Encounter (Defeat)</Button>
+      <Button dark={true} onTouchTap={() => props.onDefeat(props.card.name)} disabled={props.combat.numAliveAdventurers > 0}>End encounter (Defeat)</Button>
       <Button dark={true} onTouchTap={() => props.onNext(props.card.name, 'PREPARE')} disabled={props.combat.numAliveAdventurers <= 0}>Next</Button>
     </Card>
   );
@@ -219,7 +219,7 @@ function renderVictory(props: CombatProps): JSX.Element {
       contents.push(
         <ul key="c3">
           <li>You may discard one of your current abilities.</li>
-          <li>Draw 3 Ability cards from one of the decks listed on your Adventurer card.</li>
+          <li>Draw 3 ability cards from one of the decks listed on your Adventurer card.</li>
           <li>Choose 1 of these cards and insert it into your ability deck.</li>
           <li>Place the remaining 2 cards at the bottom of the deck you drew from.</li>
         </ul>
@@ -229,14 +229,14 @@ function renderVictory(props: CombatProps): JSX.Element {
 
   contents.push(
     <p key="c4">
-      <strong>The party draws the following Loot:</strong>
+      <strong>The party draws the following loot:</strong>
     </p>
   );
 
   let renderedLoot: JSX.Element[] = [];
   if (props.combat.loot) {
     renderedLoot = props.combat.loot.map(function(loot: Loot, index: number) {
-      return (<li key={index}><strong>Draw {loot.count} Tier {numerals[loot.tier]} Loot</strong></li>)
+      return (<li key={index}><strong>Draw {loot.count} tier {numerals[loot.tier]} Loot</strong></li>)
     });
   }
 
@@ -245,7 +245,7 @@ function renderVictory(props: CombatProps): JSX.Element {
   if (props.settings.showHelp) {
     contents.push(
       <span key="c6">
-        <p>Loot drawn at the end of an Encounter is for the entire party. It may either be divided amongst Adventurers or kept in a shared Loot pile.</p>
+        <p>Loot drawn at the end of an encounter is for the entire party. It may either be divided amongst Adventurers or kept in a shared loot pile.</p>
         <p>Loot can be used at any time and does not cost an action (unless otherwise specified).</p>
       </span>
     );
