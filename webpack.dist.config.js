@@ -1,6 +1,7 @@
 'use strict'
 
 var webpack = require('webpack')
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var options = {
   debug: false,
@@ -37,7 +38,15 @@ var options = {
       'process.env': {
         NODE_ENV: JSON.stringify('production')
       }
-    })
+    }),
+    new CopyWebpackPlugin([
+        { from: 'app/images', to: 'images'},
+        { from: 'app/quests', to: 'quests'},
+        { from: 'app/scripts', to: 'scripts' },
+        { from: 'app/fonts', to: 'fonts'},
+        { from: 'app/index.html' },
+        { from: 'app/theme.css' },
+    ]),
   ]
 }
 

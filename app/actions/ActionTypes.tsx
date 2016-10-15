@@ -9,7 +9,7 @@ export interface NavigateAction extends Redux.Action {
 export interface ReturnAction extends Redux.Action {
   type: 'RETURN';
   to: CardState;
-  before?: boolean;
+  before: boolean;
 };
 
 export interface QuestNodeAction extends Redux.Action {

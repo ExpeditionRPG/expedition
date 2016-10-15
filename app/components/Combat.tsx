@@ -138,7 +138,7 @@ function renderResolve(props: CombatProps): JSX.Element {
     helpText = (
       <span>
         <p>
-          Roll a die for each ability with a "<img style={theme.inlineIcon} src="../images/roll_white_small.svg"></img> &gt; X" and resolve the cards' effects.
+          Roll a die for each ability with a "<img style={theme.inlineIcon} src="images/roll_white_small.svg"></img> &gt; X" and resolve the cards' effects.
         </p>
         <p>
           Adventurers may resolve their abilities in any order, and may apply the effects of their abilities (such as roll modifiers) retroactively to other abilities used this round.
