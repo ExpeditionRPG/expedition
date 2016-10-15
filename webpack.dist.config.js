@@ -1,6 +1,6 @@
 'use strict'
 
-var webpack = require('webpack')
+var webpack = require('webpack');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var options = {
@@ -10,7 +10,7 @@ var options = {
   ],
   contentBase: "./app",
   resolve: {
-    extensions: ['', '.js', '.ts', '.tsx', '.json']
+    extensions: ['', '.js', '.ts', '.tsx', '.json'],
   },
   output: {
     path: __dirname + '/www/',
@@ -50,7 +50,7 @@ var options = {
         { from: 'app/index.html' },
         { from: 'app/theme.css' },
     ]),
-  ]
-}
+  ],
+};
 
-module.exports = options
+module.exports = options;

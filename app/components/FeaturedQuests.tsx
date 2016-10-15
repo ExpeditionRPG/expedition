@@ -42,8 +42,8 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
     return (
       <Button onTouchTap={() => props.onQuestSelect(quest)} key={index}>
         <div style={styles.container}>
-          <div style={styles.metaTitle}>{quest.meta_title}</div>
-          <div style={styles.metaSummary}>{quest.meta_summary}</div>
+          <div style={styles.metaTitle}>{quest.metaTitle}</div>
+          <div style={styles.metaSummary}>{quest.metaSummary}</div>
         </div>
       </Button>
     );
