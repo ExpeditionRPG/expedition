@@ -25,14 +25,18 @@ export default class Main extends React.Component<MainProps, {}> {
 
   constructor(props: MainProps) {
     super(props);
-    this.state = {key: 0, transition: 'INSTANT', card: <SplashScreenContainer/>};
+    this.state = this.getUpdatedState();
     this.props.store.subscribe(this.handleChange.bind(this));
   }
 
-  handleChange() {
+  getUpdatedState() {
     let state: AppStateWithHistory = this.props.store.getState();
-    if (!state.card || state.card.ts === this.state.key) {
-      return;
+    if (state === undefined) {
+      return {key: 0, transition: 'INSTANT' as TransitionType, card: <SplashScreenContainer/>};
+    }
+
+    if (!state.card || (this.state && state.card.ts === this.state.key)) {
+      return this.state;
     }
 
     let card: JSX.Element = null;
@@ -83,9 +87,11 @@ export default class Main extends React.Component<MainProps, {}> {
     } else if (state.card.name === 'SPLASH_CARD') {
       transition = 'INSTANT';
     }
+    return {key: state.card.ts, transition, card};
+  }
 
-    // Append current timestamp to key to allow for completely unique key values.
-    this.setState({key: state.card.ts, transition, card});
+  handleChange() {
+    this.setState(this.getUpdatedState());
   }
 
   render() {
@@ -104,48 +110,3 @@ export default class Main extends React.Component<MainProps, {}> {
     );
   }
 }
-
-
-/*
-<template is="dom-bind" id="app">
-    <expedition-card-set id="pages" initial="splash" title="Play Style" icon="cards" on-return="showSetup">
-      <!-- TODO: splash screen should be a polymer element for testability -->
-
-      <quest-card
-        id="globalQuest"
-        on-return="showSelect"
-        data-route="quest"
-        url="{{quest.xml_url}}">
-      </quest-card>
-
-      <!-- Ideas: http://www.trollmystic.com/pub/2012/03/03/event-generator/ -->
-      <quest-search
-        title="Full Quests"
-        data-info="Browse featured and community quests."
-        on-quest-select="onPublicQuestChoice"
-        on-return="showSelect"
-        data-route="public">
-      </quest-search>
-
-      <roleplay-card
-        title="Guided Adventure"
-        data-info="For beginner and intermediate Guides - a quest framework."
-        on-return="showSelect"
-        data-route="guided">
-      </roleplay-card>
-
-      <combat-card
-        title="Custom Encounter"
-        data-info="For experienced Guides - only the combat system is provided."
-        on-return="showSelect"
-        data-route="custom" custom>
-      </combat-card>
-
-    </expedition-card-set>
-
-    <expedition-dialog title="Settings" id="settings">
-      <expedition-settings></expedition-settings>
-    </expedition-dialog>
-    <tutorial-dialog id="tutorial" modal></expedition-dialog>
-  </template>
-  */

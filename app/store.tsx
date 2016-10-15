@@ -10,3 +10,10 @@ let middleware = applyMiddleware(thunk);
 
 export const store: any = middleware(devtools(createStore))(expeditionApp, {});
 console.log(store);
+
+if (module.hot) {
+  module.hot.accept('./reducers/CombinedReducers', () => {
+    let updated = require('./reducers/CombinedReducers').default;
+    store.replaceReducer(updated);
+  });
+}
