@@ -8,6 +8,7 @@
 import * as React from 'react'
 import {XMLElement} from './reducers/StateTypes'
 import {QuestCardName, Enemy, Choice} from './reducers/QuestTypes'
+import {encounters} from './Encounters'
 
 export interface TriggerResult {
   node: XMLElement;
@@ -179,8 +180,10 @@ export function loadCombatNode(node: XMLElement): CombatResult {
   _loopChildren(node, function(tag: string, c: XMLElement) {
     switch (tag) {
       case 'e':
-        // TODO: Dynamically assign tier here
-        enemies.push({name: c.textContent, tier: 1});
+        if (!encounters[c.textContent]) {
+          throw new Error("Unknown enemy " + c.textContent);
+        }
+        enemies.push({name: c.textContent, tier: encounters[c.textContent].tier});
         break;
       case 'event':
       case 'roleplay':
