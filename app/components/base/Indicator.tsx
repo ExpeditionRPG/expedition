@@ -1,50 +1,46 @@
-/*
+import * as React from 'react';
+import theme from '../../theme';
 
-<dom-module id="expedition-indicator">
-  <style>
-    svg, img {
-      width: var(--vw-large);
-      height: var(--vh-large);
-      display: inline-block;
-    }
+interface IndicatorProps extends React.Props<any> {
+  icon?: string;
+}
 
-    :host .indicator-text {
-      font-style: italic;
-      padding-left: var(--vw-base);
-      padding-top: var(--vw-small);
-    };
+export default class Indicator extends React.Component<IndicatorProps, {}> {
+  style: any;
 
-    :host.dark svg {
-      fill: var(--font-color-dark-primary);
-    };
-
-    :host.dark {
-      background-color: black;
-      color: var(--font-color-dark-primary);
-    }
-  </style>
-
-  <template>
-    <div class="layout horizontal start"><img id="bgimg" src="images/{{_icon}}_small.svg"></img><div class="flex indicator-text"><content></content></div></div>
-  </template>
-  <script>
-    Polymer({
-      is: 'expedition-indicator',
-      ready: function() {
-        this._icon = "";
-
-        if (this.dark) {
-          this.className = "dark";
-        }
-        this._onIconChange();
+  constructor(props: any) {
+    super(props);
+    this.style = {
+      container: {
+        display: 'flex',
+        flexDirection: 'row',
       },
-      _onIconChange: function() {
-        if (this.icon) {
-          this._icon = (this.dark) ? this.icon + "_white" : this.icon;
+      icon: {
+        width: theme.vw.large,
+        height: theme.vw.large,
+        display: 'inline-block',
+      },
+      indicatorText: {
+        fontStyle: 'italic',
+        paddingLeft: theme.vw.base,
+        paddingRight: theme.vw.large,
+      }
+    };
+  }
 
-          // Allow the template time to render
-          Polymer.dom.flush();
+  render() {
+    var icon: JSX.Element = <span></span>;
+    console.log(this.props);
+    if (this.props.icon) {
+      // Wrap in a "p" tag to have same padding as inner text
+      icon = <p><img style={this.style.icon} src={"images/" + this.props.icon + "_small.svg"}></img></p>;
+    }
 
-          SVGInjector(this.querySelector('#bgimg'), {}, null);
-        }
-        */
+    return (
+      <div style={this.style.container}>
+        {icon}
+        <div style={this.style.indicatorText}>{this.props.children}</div>
+      </div>
+    );
+  }
+}

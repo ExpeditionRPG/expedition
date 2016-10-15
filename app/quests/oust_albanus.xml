@@ -139,7 +139,9 @@ max-time-minutes="40">
       and his cronies are huddled by a fire in the center of the room. You and
       your troupe are off in a corner, battered and wounded but still among the
       living.</p>
-    <instruction>All players now have 6 HP</instruction>
+    <instruction>
+      <p>All players now have 6 HP</p>
+    </instruction>
   </roleplay>
   <roleplay title="Desperation" icon="bandit">
     <p>You begin searching for some way out of this mess. You managed to slip
@@ -181,7 +183,9 @@ max-time-minutes="40">
           both thrash about the room for some time, and embers are strewn everywhere.
           Eventually the remaining three bandits slay the rampaging rat, but they&apos;re
           visibly shaken from seeing their comrade roasted alive.</p>
-        <instruction>In the next combat, all enemies start at 1/2 their health.</instruction>
+        <instruction>
+          <p>In the next combat, all enemies start at 1/2 their health.</p>
+        </instruction>
       </roleplay>
       <combat icon="bandit">
         <e>Captain</e>

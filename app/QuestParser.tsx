@@ -18,6 +18,7 @@ export interface RoleplayResult {
   icon: string;
   title: string;
   content: JSX.Element;
+  instruction?: JSX.Element;
   choices: Choice[];
 }
 
@@ -238,6 +239,7 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
   var child: XMLElement;
   var choices: Choice[] = [];
   var children: XMLElement = ((document.createElement('span') as any) as XMLElement);
+  var instruction: JSX.Element = null;
 
   // Keep track of the number of choice nodes seen, so we can
   // select a choice without worrying about the state of the quest scope.
@@ -273,13 +275,10 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
       throw new Error("<roleplay> cannot contain <event>.");
     }
 
-    // Convert "instruction" tags to <expedition-indicator> tags.
+    // Convert "instruction" tags to <indicator> tags.
     if (tag === "instruction") {
-      var inner = ((document.createElement('span') as any) as XMLElement);
-      inner.innerHTML = c.innerHTML;
-      c = ((document.createElement('expedition-indicator') as any) as XMLElement);
-      c.setAttribute('icon', 'adventurer');
-      c.appendChild(inner);
+      instruction = <span dangerouslySetInnerHTML={{__html: c.innerHTML}} />;
+      return;
     }
 
     children.appendChild(c);
@@ -308,6 +307,7 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
     icon: node.getAttribute('icon'),
     content: <span dangerouslySetInnerHTML={{__html: children.innerHTML}} />,
     choices,
+    instruction,
   };
 };
 

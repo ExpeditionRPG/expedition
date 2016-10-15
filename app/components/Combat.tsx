@@ -54,7 +54,10 @@ function renderSelectTier(props: CombatProps): JSX.Element {
 function renderDrawEnemies(props: CombatProps): JSX.Element {
   let enemies: JSX.Element[] = props.combat.enemies.map(function(enemy: Enemy, index: number) {
     return (
-      <h2 style={{textAlign: 'center'}} key={index}>{enemy.name} (Tier {numerals[enemy.tier]})</h2>
+      <h2 style={{textAlign: 'center'}} key={index}>
+        <span style={{display: 'inline-block', marginRight:'2vw'}}>{enemy.name}</span>
+        <span style={{display: 'inline-block'}}>(Tier {numerals[enemy.tier]})</span>
+      </h2>
     );
   });
 
