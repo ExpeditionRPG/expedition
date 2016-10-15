@@ -147,7 +147,7 @@ function _loadChoiceNode(node: XMLElement): XMLElement {
 function _loadEventNode(node: XMLElement): XMLElement {
   // If event is empty and has a goto, jump to the destination element with that id.
   if (node.children.length === 0 && node.hasAttribute('goto')) {
-    return _loadNode(node.querySelector("#"+node.getAttribute('goto')));
+    return _loadNode(_findRootNode(node).querySelector("#"+node.getAttribute('goto')));
   }
 
   // Validate the event node (must not have an event child and must control something)
@@ -314,6 +314,13 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
 function _isControlNode(node: XMLElement) {
   return node.localName === "choice" || node.localName === "event" || node.hasAttribute('on');
 };
+
+function _findRootNode(node: XMLElement) {
+  while(node !== null && node.localName !== "quest") {
+    node = node.parentNode;
+  }
+  return node;
+}
 
 function _findNextNode(node: XMLElement) {
   while (true) {

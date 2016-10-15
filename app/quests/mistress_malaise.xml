@@ -87,8 +87,10 @@ max-time-minutes="60">
       <roleplay title="Subterfuge" icon="bandit">
         <p>Your party quickly takes cover behind some nearby headstones and sneaks
           towards the group.</p>
-        <p>&gt; One of your party must roll a die at this time. &gt; Choose a next
-          action based on the result of that roll:</p>
+        <instruction>
+          <p>One of your party must roll a die at this time.</p>
+          <p>Choose a next action based on the result of that roll:</p>
+        </instruction>
         <choice text="Rolled above 10">
           <roleplay title="Hit and Run" icon="bandit">
             <p>You sneak up on the shady figures and take them out silently.</p>
@@ -122,6 +124,8 @@ max-time-minutes="60">
             </event>
           </combat>
         </choice>
+      </roleplay>
+      <roleplay title="Inside the Tomb" icon="undead">
         <p>It&apos;s immediately clear that you wouldn&apos;t have stood a chance
           without foreknowledge of the traps within. Dodging spring traps, rusty
           spikes, and magical flames, you make your way to the innermost chamber.</p>
@@ -152,9 +156,7 @@ max-time-minutes="60">
     <p>You take the phylactery from the pedestal and search the rest of the room,
       finding some additional supplies.</p>
     <instruction>
-      <roleplay title="The Phylactery" icon="loot">
         <p>At this time, draw two random Tier I loot cards from the loot deck.</p>
-      </roleplay>
     </instruction>
   </roleplay>
   <roleplay title="The Party Emerges" icon="adventurer">
@@ -271,17 +273,15 @@ max-time-minutes="60">
   </roleplay>
   <roleplay title="The Phylactery" icon="undead">
     <instruction>
-      <roleplay title="The Phylactery" icon="undead">
-        <p>Choose up to two players. Those players are the phylactery group.</p>
-        <p>The phylactery group must only attack the phylactery until it&apos;s destroyed.
-          When it is, they may join combat.</p>
-        <p>The phylactery group does not take round damage, but is still affected
-          by surges.</p>
-        <p>Players not in the phylactery group may not attack the phylactery.</p>
-        <p>At this time, draw a tier III Undead encounter and place it face-down
-          with full health. This is the phylactery.</p>
-        <p>Combat is ended when all enemies and the phylactery are destroyed.</p>
-      </roleplay>
+      <p>Choose up to two players. Those players are the phylactery group.</p>
+      <p>The phylactery group must only attack the phylactery until it&apos;s destroyed.
+        When it is, they may join combat.</p>
+      <p>The phylactery group does not take round damage, but is still affected
+        by surges.</p>
+      <p>Players not in the phylactery group may not attack the phylactery.</p>
+      <p>At this time, draw a tier III Undead encounter and place it face-down
+        with full health. This is the phylactery.</p>
+      <p>Combat is ended when all enemies and the phylactery are destroyed.</p>
     </instruction>
   </roleplay>
   <combat icon="undead">
