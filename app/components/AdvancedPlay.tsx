@@ -28,7 +28,6 @@ const styles = {
 };
 
 export interface AdvancedPlayStateProps {
-  quests: QuestDetails[];
   settings: SettingsType;
 }
 
