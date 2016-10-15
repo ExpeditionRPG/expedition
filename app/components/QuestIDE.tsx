@@ -36,17 +36,15 @@ export interface QuestIDEDispatchProps {
 
 interface QuestIDEProps extends QuestIDEStateProps, QuestIDEDispatchProps {}
 
-// Navigation tabs:
-// <ManualTabs style={styles.tabsroot}
-//     onChangeAttempt={props.onTabChange}
-//     value={props.view}>
-//   <Tab label="Markdown" value={'MARKDOWN'}/>
-// </ManualTabs>
-
 const QuestIDE = (props: QuestIDEProps): JSX.Element => {
   return (
     <span style={{width: "100%", height: "100%"}}>
-
+      <ManualTabs style={styles.tabsroot}
+          onChangeAttempt={props.onTabChange}
+          value={props.view}>
+        <Tab label="Markdown" value={'MARKDOWN'}/>
+        <Tab label="XML View" value={'XML'}/>
+      </ManualTabs>
       <div style={styles.tabcontainer}>
         <TextView
           mode={props.view.toLowerCase()}
