@@ -156,7 +156,7 @@ max-time-minutes="60">
     <p>You take the phylactery from the pedestal and search the rest of the room,
       finding some additional supplies.</p>
     <instruction>
-        <p>At this time, draw two random Tier I loot cards from the loot deck.</p>
+        <p>At this time, draw two random tier I loot cards from the loot deck.</p>
     </instruction>
   </roleplay>
   <roleplay title="The Party Emerges" icon="adventurer">
