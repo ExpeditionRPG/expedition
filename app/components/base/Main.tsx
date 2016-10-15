@@ -1,7 +1,7 @@
 import * as React from 'react'
 import theme from '../../theme'
 
-import {AppStateWithHistory, TransitionType} from '../../reducers/StateTypes'
+import {AppStateWithHistory, TransitionType, SearchPhase} from '../../reducers/StateTypes'
 import SplashScreenContainer from '../SplashScreenContainer'
 import Card from './Card'
 import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
@@ -11,6 +11,7 @@ import CombatContainer from '../CombatContainer'
 import SearchContainer from '../SearchContainer'
 import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
 import SettingsContainer from '../SettingsContainer'
+import AdvancedPlayContainer from '../AdvancedPlayContainer'
 import {getNodeCardType, RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../QuestParser'
 
 var ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
@@ -55,13 +56,19 @@ export default class Main extends React.Component<MainProps, {}> {
           card = <RoleplayContainer node={state.quest.node} roleplay={roleplay}/>;
         } else if (name === 'COMBAT') {
           let combat: CombatResult = loadCombatNode(state.quest.node);
-          card = <CombatContainer node={state.quest.node} icon={combat.icon} combat={state.combat}/>;
+          card = <CombatContainer card={state.card} node={state.quest.node} icon={combat.icon} combat={state.combat}/>;
         } else {
           throw new Error('Unknown quest card name ' + name);
         }
         break;
+      case 'ADVANCED':
+        card = <AdvancedPlayContainer />;
+        break;
+      case 'CUSTOM_COMBAT':
+        card = <CombatContainer card={state.card} custom={true}/>;
+        break;
       case 'SEARCH_CARD':
-        card = <SearchContainer phase={state.search.phase} />;
+        card = <SearchContainer phase={state.card.phase as SearchPhase} />;
         break;
       case 'SETTINGS':
         card = <SettingsContainer />;

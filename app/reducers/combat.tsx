@@ -1,4 +1,4 @@
-import {DifficultyType, CombatDifficultySettings, CombatAttack, MidCombatPhase, EndCombatPhase, Enemy, Loot, CombatState, isCombatPhase, CombatPhaseNameType} from './QuestTypes'
+import {DifficultyType, CombatDifficultySettings, CombatAttack, MidCombatPhase, EndCombatPhase, Enemy, Loot, CombatState, isCombatPhase} from './QuestTypes'
 import {AppState} from './StateTypes'
 import {InitCombatAction, CombatTimerStopAction, TierSumDeltaAction, AdventurerDeltaAction, NavigateAction, CombatVictoryAction} from '../actions/ActionTypes'
 import {handleChoice, loadCombatNode, CombatResult} from '../QuestParser'
@@ -114,27 +114,21 @@ function _randomAttackDamage() {
 
 export function combat(state: CombatState, action: Redux.Action): CombatState {
   var newState: CombatState;
+  // TODO: Difficulty settings should change with settings change.
   switch(action.type) {
     case 'INIT_COMBAT':
       let tierSum: number = 0;
       let combatAction = action as InitCombatAction;
-      let result: CombatResult = loadCombatNode(combatAction.node);
-      for (let enemy of result.enemies) {
+      let enemies: Enemy[] =  (combatAction.node) ? loadCombatNode(combatAction.node).enemies : [];
+      for (let enemy of enemies) {
         tierSum += enemy.tier;
       }
       return Object.assign({
-        phase: 'DRAW_ENEMIES' as CombatPhaseNameType,
-        enemies: result.enemies,
+        enemies: enemies,
         roundCount: 0,
         numAliveAdventurers: combatAction.numPlayers,
         tier: tierSum,
       }, getDifficultySettings(combatAction.difficulty));
-    case 'NAVIGATE':
-      let phase = (action as NavigateAction).phase;
-      if (isCombatPhase(phase)) {
-        return Object.assign({}, state, {phase});
-      }
-      return state;
     case 'COMBAT_TIMER_STOP':
       let elapsedMillis: number = (action as CombatTimerStopAction).elapsedMillis;
       return Object.assign({}, state, {

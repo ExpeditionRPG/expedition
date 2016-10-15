@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Featu
       dispatch(loadQuestXML(quest.url));
     },
     onAdvancedPlay(): void {
-      dispatch(toCard('SEARCH_CARD'));
+      dispatch(toCard('ADVANCED'));
     }
   };
 }

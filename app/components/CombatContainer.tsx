@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import {AppStateWithHistory, XMLElement, SettingsType} from '../reducers/StateTypes'
+import {AppStateWithHistory, XMLElement, SettingsType, CardName} from '../reducers/StateTypes'
 import {CombatPhaseNameType, MidCombatPhase} from '../reducers/QuestTypes'
 import {toPrevious, toCard} from '../actions/card'
 import {event, handleCombatTimerStop, combatDefeat, combatVictory, tierSumDelta, adventurerDelta} from '../actions/quest'
@@ -10,48 +10,59 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
   let histIdx: number = state._history.length-1;
   while(state._history[histIdx].combat !== undefined && histIdx > 0) {
     var tier = state._history[histIdx].combat.tier;
-    if (!tier || state._history[histIdx].combat.phase !== 'PREPARE') {
+    if (!tier || state._history[histIdx].card.phase !== 'PREPARE') {
       histIdx--;
       continue;
     }
     maxTier = Math.max(maxTier, tier);
     histIdx--;
   }
-  console.log(maxTier);
 
-  return {
-    combat: Object.assign({}, ownProps.combat, {tier: state.combat.tier, numAliveAdventurers: state.combat.numAliveAdventurers}),
-    node: ownProps.node,
-    maxTier: maxTier,
-    icon: ownProps.icon,
-    settings: state.settings,
-  };
+  if (ownProps.custom) {
+    return {
+      custom: true,
+      card: ownProps.card,
+      settings: state.settings,
+      maxTier: maxTier,
+      combat: state.combat || {enemies: [], roundCount: 0, numAliveAdventurers: 0, tier: 0, roundTimeMillis: 0, surgePeriod: 0, damageMultiplier: 0},
+    };
+  } else {
+    return {
+      custom: false,
+      card: ownProps.card,
+      combat: Object.assign({}, ownProps.combat, {tier: state.combat.tier, numAliveAdventurers: state.combat.numAliveAdventurers}),
+      node: ownProps.node,
+      maxTier: maxTier,
+      icon: ownProps.icon,
+      settings: state.settings,
+    };
+  }
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CombatDispatchProps => {
   return {
-    onNext: (phase: CombatPhaseNameType) => {
-      dispatch(toCard('QUEST_CARD', phase));
+    onNext: (cardName: CardName, phase: CombatPhaseNameType) => {
+      dispatch(toCard(cardName, phase));
     },
-    onVictory: (maxTier: number, settings: SettingsType) => {
-      dispatch(toCard('QUEST_CARD', 'VICTORY'));
+    onVictory: (cardName: CardName, maxTier: number, settings: SettingsType) => {
+      dispatch(toCard(cardName, 'VICTORY'));
       dispatch(combatVictory(settings.numPlayers, maxTier));
     },
-    onDefeat: () => {
-      dispatch(toCard('QUEST_CARD', 'DEFEAT'));
+    onDefeat: (cardName: CardName) => {
+      dispatch(toCard(cardName, 'DEFEAT'));
       dispatch(combatDefeat());
     },
-    onTimerStop: (elapsedMillis: number, surge: boolean) => {
+    onTimerStop: (cardName: CardName, elapsedMillis: number, surge: boolean) => {
       if (surge) {
-        dispatch(toCard('QUEST_CARD', 'SURGE'));
+        dispatch(toCard(cardName, 'SURGE'));
       } else {
-        dispatch(toCard('QUEST_CARD', 'RESOLVE_ABILITIES'));
+        dispatch(toCard(cardName, 'RESOLVE_ABILITIES'));
       }
       dispatch(handleCombatTimerStop(elapsedMillis));
     },
-    onPostTimerReturn: () => {
+    onPostTimerReturn: (cardName: CardName) => {
       // Return to the "Ready for Combat?" card instead of doing the timed round again.
-      dispatch(toPrevious('QUEST_CARD', 'PREPARE'));
+      dispatch(toPrevious(cardName, 'PREPARE'));
     },
     onEvent: (node: XMLElement, evt: string) => {
       dispatch(event(node, evt));
@@ -61,6 +72,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     },
     onAdventurerDelta: (numPlayers: number, delta: number) => {
       dispatch(adventurerDelta(numPlayers, delta));
+    },
+    onCustomEnd: () => {
+      dispatch(toPrevious('CUSTOM_COMBAT', 'DRAW_ENEMIES', false));
     },
   };
 }

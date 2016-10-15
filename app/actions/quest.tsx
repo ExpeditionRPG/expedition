@@ -28,8 +28,8 @@ export function initCombat(node: XMLElement, settings: SettingsType): InitCombat
 export function choice(settings: SettingsType, node: XMLElement, index: number) {
   return (dispatch: Redux.Dispatch<any>): any => {
     var nextNode: XMLElement = handleChoice(node, index);
-    console.log(nextNode.tagName);
     var after: Redux.Action;
+    var phase: any = undefined;
     switch (nextNode.tagName.toUpperCase()) {
       case 'TRIGGER':
         let name: string = loadTriggerNode(nextNode).name;
@@ -39,12 +39,13 @@ export function choice(settings: SettingsType, node: XMLElement, index: number) 
         throw new Error('invalid trigger ' + name);
       case 'COMBAT':
         after = initCombat(nextNode, settings);
+        phase = 'DRAW_ENEMIES';
         break;
       default:
         after = {type: 'QUEST_NODE', node: nextNode} as QuestNodeAction;
     }
     // Every choice has an effect.
-    dispatch(toCard('QUEST_CARD'));
+    dispatch(toCard('QUEST_CARD', phase));
     dispatch(after);
   }
 }

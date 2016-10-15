@@ -79,7 +79,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
         height: "100%",
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: (this.props.dark) ? 'black' : 'inherit',
+        backgroundColor: (this.props.dark) ? 'black' : '#eeeeee',
         color: (this.props.dark) ? theme.colors.fontColorDarkPrimary : theme.colors.fontColorPrimary,
       },
       menu: {

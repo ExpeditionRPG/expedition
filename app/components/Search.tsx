@@ -10,6 +10,7 @@ import {QuestDetails} from '../reducers/QuestTypes'
 import theme from '../theme'
 
 export interface SearchStateProps extends SearchState {
+  phase: SearchPhase;
   numPlayers: number;
   user: UserState;
   search: SearchSettings;
@@ -55,11 +56,11 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
   render() {
     return (
       <Card title="Public Quests" icon="adventurer">
-        <div>
-          Quests where author, title, or ID contains
+        <p>
+          Quests for {this.props.numPlayers} adventurer(s) where author, title, or ID contains
           <TextField id="text" hintText="some text" hintStyle={{color: '#555555'}} onChange={(e: any) => this.onChange('text', e.target.value)} value={this.state.text}/>
-        </div>
-        <div>
+        </p>
+        <p>
           published within
 
           <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('age', v)} value={this.state.age}>
@@ -70,8 +71,8 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             <MenuItem value="86400" primaryText="the past 24 hours"/>
             <MenuItem value="3600" primaryText="the past hour"/>
           </DropDownMenu>
-        </div>
-        <div>
+        </p>
+        <p>
           ordered by
 
           <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('order', v)} value={this.state.order}>
@@ -80,16 +81,15 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             <MenuItem value="-meta_maxTimeMinutes" primaryText="Play Time (longest)"/>
             <MenuItem value="+meta_minTimeMinutes" primaryText="Play Time (shortest)"/>
           </DropDownMenu>
-        </div>
-        <div>
+        </p>
+        <p>
           created by
 
           <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('owner', v)} value={this.state.owner}>
             <MenuItem value="self" primaryText="You"/>
             <MenuItem value="anyone" primaryText="Anyone"/>
           </DropDownMenu>
-        </div>
-
+        </p>
         <Button onTouchTap={() => this.props.onSearch(this.props.numPlayers, this.props.user, this.state)}>Search</Button>
       </Card>
     );

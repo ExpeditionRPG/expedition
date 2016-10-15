@@ -61,6 +61,4 @@ export interface EndCombatPhase {
 
 export type CombatPhaseNameType = MidCombatPhaseNameType | EndCombatPhaseNameType;
 
-export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {
-  phase?: CombatPhaseNameType;
-}
+export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {}

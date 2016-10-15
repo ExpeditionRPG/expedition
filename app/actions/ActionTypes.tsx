@@ -4,14 +4,11 @@ import {QuestDetails, Enemy, CombatPhaseNameType, DifficultyType} from '../reduc
 export interface NavigateAction extends Redux.Action {
   type: 'NAVIGATE';
   to: CardState;
-
-  phase?: CombatPhaseNameType | SearchPhase;
 };
 
 export interface ReturnAction extends Redux.Action {
   type: 'RETURN';
-  to: CardName;
-  phase?: CombatPhaseNameType | SearchPhase;
+  to: CardState;
   before?: boolean;
 };
 
@@ -29,7 +26,7 @@ export interface InitCombatAction extends Redux.Action {
   type: 'INIT_COMBAT';
   numPlayers: number;
   difficulty: DifficultyType;
-  node: XMLElement;
+  node?: XMLElement;
 }
 
 export interface CombatTimerStopAction extends Redux.Action {
