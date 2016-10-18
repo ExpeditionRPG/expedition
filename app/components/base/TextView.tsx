@@ -7,7 +7,6 @@ import 'brace/mode/markdown';
 import 'brace/theme/twilight';
 
 interface TextViewProps extends React.Props<any> {
-  mode: string;
   onChange: any;
   value: string;
 }
@@ -48,13 +47,13 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     return (
       <AceEditor
         ref={this.onRef.bind(this)}
-        mode={this.props.mode}
+        mode="markdown"
         theme="twilight"
         fontSize={20}
         onChange={this.props.onChange}
         width="100%"
         height="100%"
-        name={this.props.mode + "-editor"}
+        name={"editor"}
         value={this.props.value}
         setOptions={{wrapBehavioursEnabled: true, wrap: true, tabSize: 4, useSoftTabs: true}}
         editorProps={{$blockScrolling: true}}

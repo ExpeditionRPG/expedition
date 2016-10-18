@@ -103,10 +103,34 @@ router.post('/quest/:quest', function(req, res) {
   }
 
   try {
-    quest = toMeta(req.body);
+    quest = toMeta.fromMarkdown(req.body);
     quest.created = Date.now();
+    console.log(quest);
 
     model.update(res.locals.id, req.params.quest, quest, req.body, function(err, id) {
+      if (err) {
+        throw new Error(err);
+      }
+      console.log("Saved quest " + id);
+      res.end(id.toString());
+    });
+  } catch(e) {
+    console.log(e);
+    res.status(500).end(e.toString());
+  }
+});
+
+router.post('/publish/:quest', function(req, res) {
+  if (!res.locals.id) {
+    return res.status(500).end("You are not signed in. Please sign in to save your quest.");
+  }
+
+  try {
+    quest = toMeta.fromXML(req.body);
+    quest.created = Date.now();
+    console.log(quest);
+
+    model.publish(res.locals.id, req.params.quest, quest, req.body, function(err, id) {
       if (err) {
         throw new Error(err);
       }

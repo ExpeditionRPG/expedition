@@ -1,9 +1,9 @@
-import {SET_PROFILE_META, SetProfileMetaAction} from './ActionTypes'
-import {UserType} from '../reducers/StateTypes'
+import {SetProfileMetaAction} from './ActionTypes'
+import {UserState} from '../reducers/StateTypes'
 
 declare var gapi: any;
 
-function setProfileMeta(user: UserType): SetProfileMetaAction {
+function setProfileMeta(user: UserState): SetProfileMetaAction {
   return {type: 'SET_PROFILE_META', user};
 }
 

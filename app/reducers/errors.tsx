@@ -1,7 +1,7 @@
 import {consumeErrors} from '../error'
-import {ErrorsType} from './StateTypes'
+import {ErrorsState} from './StateTypes'
 
-export function errors(state: ErrorsType = [], action: Redux.Action): ErrorsType {
+export function errors(state: ErrorsState = [], action: Redux.Action): ErrorsState {
   // Transfer accumulated errors into state.
   return consumeErrors();
 }

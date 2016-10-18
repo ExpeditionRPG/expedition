@@ -1,4 +1,4 @@
-export const xml_filler: string = '<quest title="Quest Title" author="Your Name" email="email@example.com" summary="Quest summary" url="yoursite.com" min-players="2" max-players="4" min-time-minutes="20" max-time-minutes="40">\n  <roleplay title="Roleplay Title">\n    <p>roleplay text</p>\n  </roleplay>\n  <trigger>end</trigger>\n</quest>';
+export const xml_filler: string = "# Quest Title \nsummary: Quest summary\nauthor: Your Name\nemail: email@example.com\nurl: yoursite.com\nminPlayers: 2\nmaxPlayers: 4\nminTimeMinutes: 20\nmaxTimeMinutes: 40\n\n_Roleplay Title_\n\nroleplay text\n\n**end**";
 
 // Global text buffer for render-less updates of editor.
 var buffer: string = xml_filler;

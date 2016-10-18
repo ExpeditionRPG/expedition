@@ -1,68 +1,68 @@
 import {ErrorType} from '../error'
 // TODO: URL type?
 
-export type DialogIDType = 'USER' | 'ERROR' | 'CONFIRM_NEW_QUEST' | 'CONFIRM_LOAD_QUEST' | 'SHARE_SETTINGS';
-
-export type CodeViewType = 'XML' | 'MARKDOWN';
+export type DialogIDType = 'USER' | 'ERROR' | 'CONFIRM_NEW_QUEST' | 'CONFIRM_LOAD_QUEST' | 'SHARE_SETTINGS' | 'PUBLISHED';
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 
-export interface EditorType {
+export interface EditorState {
     xml: string;
-    view: CodeViewType;
 }
 
 export interface QuestType {
   id?: string;
-  url?: string;
   xml?: string;
+  md?: string;
+  draftUrl?: string;
+  publishedUrl?: string;
   created?: string;
   modified?: string;
   published?: string;
   shared?: string;
-  short_url?: string;
-  meta_title?: string,
-  meta_summary?: string,
-  meta_minPlayers?: number,
-  meta_maxPlayers?: number,
-  meta_email?: string,
-  meta_url?: string,
-  meta_minTimeMinutes?: number,
-  meta_maxTimeMinutes?: number,
-  meta_author?: string
+  shortUrl?: string;
+  metaTitle?: string,
+  metaSummary?: string,
+  metaMinPlayers?: number,
+  metaMaxPlayers?: number,
+  metaEmail?: string,
+  metaUrl?: string,
+  metaMinTimeMinutes?: number,
+  metaMaxTimeMinutes?: number,
+  metaAuthor?: string
 };
 
-export type DirtyType = boolean;
+export type DirtyState = boolean;
 
-export interface DialogsType {
+export interface DialogsState {
   USER: boolean;
   ERROR: boolean;
   CONFIRM_NEW_QUEST: boolean;
   CONFIRM_LOAD_QUEST: boolean;
   SHARE_SETTINGS: boolean;
+  PUBLISHED: boolean;
   [key: string]: boolean;
 }
 
-export interface DrawerType {
+export interface DrawerState {
   open: boolean;
   quests: QuestType[];
   receivedAt?: number;
 };
 
-export interface UserType {
+export interface UserState {
   id?: string,
   displayName?: string,
   image?: string
 };
 
-export type ErrorsType = ErrorType[];
+export type ErrorsState = ErrorType[];
 
 export interface AppState {
-  editor: EditorType;
+  editor: EditorState;
   quest: QuestType;
-  dirty: DirtyType;
-  drawer: DrawerType;
-  user: UserType;
-  dialogs: DialogsType;
-  errors: ErrorsType;
+  dirty: DirtyState;
+  drawer: DrawerState;
+  user: UserState;
+  dialogs: DialogsState;
+  errors: ErrorsState;
 }

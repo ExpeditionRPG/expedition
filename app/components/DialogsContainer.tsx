@@ -1,12 +1,12 @@
 import { connect } from 'react-redux'
 import {NEW_QUEST, LOAD_QUEST} from '../actions/ActionTypes'
-import {DialogIDType, DialogsType, ShareType, AppState} from '../reducers/StateTypes'
+import {DialogIDType, DialogsState, ShareType, AppState} from '../reducers/StateTypes'
 import {setDialog} from '../actions/dialogs'
 import {questAction, saveQuest, setQuestShare} from '../actions/quest'
 import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
 
 const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
-  let open_dialogs: DialogsType = Object.assign({}, state.dialogs);
+  let open_dialogs: DialogsState = Object.assign({}, state.dialogs);
   open_dialogs['ERROR'] = Boolean(state.errors.length > 0);
   return {
     open: open_dialogs,
@@ -24,17 +24,18 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
       var action: any = null;
       switch(dialog) {
         case 'CONFIRM_NEW_QUEST':
-          action = questAction(NEW_QUEST, true, false, null, null);
+          action = questAction(NEW_QUEST, true, false, null);
           break;
         case 'CONFIRM_LOAD_QUEST':
-          action = questAction(LOAD_QUEST, true, false, null, {id: id, url: null});
+          // TODO: Should this really be null draftUrl?
+          action = questAction(LOAD_QUEST, true, false, {id: id, draftUrl: null});
           break;
         default:
           throw Error("Unknown dialog confirmation: " + dialog);
       }
       if (choice === true) {
         console.log("Dispatch with save");
-        saveQuest(dispatch, id, 'XML', function(saved_id: string) {
+        saveQuest(dispatch, id, function(saved_id: string) {
           dispatch(action);
         });
       } else if (choice === false) {

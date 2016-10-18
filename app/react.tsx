@@ -55,7 +55,7 @@ let initialState: Object = {
     id: auth.id,
     displayName: auth.name,
     image: auth.image
-  }
+  },
 };
 
 let devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;

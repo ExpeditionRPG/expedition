@@ -1,5 +1,5 @@
 var fs = require('fs');
-var toMarkdown = require('./to_markdown');
+var toMarkdown = require('./to_markdown').toMarkdown;
 var toXML = require('./to_xml');
 var toGraph = require('./to_graph');
 

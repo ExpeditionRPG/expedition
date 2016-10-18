@@ -4,7 +4,7 @@ import Dialog from 'material-ui/Dialog';
 import {TouchTapEventHandler} from 'material-ui';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import {UserType, QuestType, ShareType, DialogsType, DialogIDType} from '../reducers/StateTypes';
+import {QuestType, ShareType, DialogsState, DialogIDType} from '../reducers/StateTypes';
 import IconButton from 'material-ui/IconButton';
 import Paper from 'material-ui/Paper';
 import Toggle from 'material-ui/Toggle';
@@ -216,8 +216,32 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
   }
 }
 
+interface PublishedDialogProps extends React.Props<any> {
+  open: boolean;
+  onRequestClose: ()=>void;
+}
+
+export class PublishedDialog extends React.Component<PublishedDialogProps, {}> {
+  render() {
+    return (
+      <Dialog
+        title="Published!"
+        actions={<RaisedButton
+          label="OK"
+          primary={true}
+          onTouchTap={() => this.props.onRequestClose()}
+        />}
+        modal={false}
+        open={Boolean(this.props.open)}>
+        Your quest has been published and is now visible in the Expedition App.
+      </Dialog>
+    );
+  }
+}
+
+
 export interface DialogsStateProps {
-  open: DialogsType;
+  open: DialogsState;
   quest: QuestType;
   errors: ErrorType[];
 };
@@ -254,6 +278,10 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         open={props.open['ERROR']}
         onRequestClose={() => props.onRequestClose('ERROR')}
         errors={props.errors}
+      />
+      <PublishedDialog
+        open={props.open['PUBLISHED']}
+        onRequestClose={() => props.onRequestClose('PUBLISHED')}
       />
     </span>
   );

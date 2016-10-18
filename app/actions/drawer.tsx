@@ -12,7 +12,7 @@ function receiveQuestList(json: {quests: QuestType[], nextToken: string}): Recei
 
 function fetchQuestList(user: string, dispatch: Redux.Dispatch<any>): JQueryPromise<any> {
   dispatch({type: 'REQUEST_QUEST_LIST'} as RequestQuestListAction);
-  var data: {owner?: string} = {};
+  var data: any = {ide: true};
   if (user) {
     data.owner = user;
   }

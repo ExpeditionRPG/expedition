@@ -1,4 +1,4 @@
-import {UserType, QuestType, CodeViewType, DialogIDType, ShareType} from '../reducers/StateTypes'
+import {UserState, QuestType, DialogIDType, ShareType} from '../reducers/StateTypes'
 
 export const NEW_QUEST: string = 'NEW_QUEST';
 export const LOAD_QUEST: string = 'LOAD_QUEST';
@@ -18,96 +18,83 @@ export const DrawerActions = {
   TOGGLE: 'TOGGLE'
 };
 
-export const SET_PROFILE_META: string = 'SET_PROFILE_META';
 export interface SetProfileMetaAction {
   type: 'SET_PROFILE_META';
-  user: UserType;
+  user: UserState;
 }
 
-export const SET_DIALOG: string = 'SET_DIALOG';
 export interface SetDialogAction extends Redux.Action {
   type: 'SET_DIALOG';
   dialog: DialogIDType;
   shown: boolean;
 }
 
-export const SET_CODE_VIEW: string = 'SET_CODE_VIEW';
-export interface SetCodeViewAction extends Redux.Action {
-  type: 'SET_CODE_VIEW';
-  currview: CodeViewType;
-  currcode: string;
-  nextview: CodeViewType;
-  cb: ()=>any
-}
-
-export const SET_DIRTY: string = 'SET_DIRTY';
 export interface SetDirtyAction extends Redux.Action {
   type: 'SET_DIRTY';
   is_dirty: boolean;
 }
 
-export const SET_DRAWER: string = 'SET_DRAWER';
 export interface SetDrawerAction extends Redux.Action {
   type: 'SET_DRAWER'
   is_open: boolean;
 }
 
-export const REQUEST_QUEST_LOAD: string = 'REQUEST_QUEST_LOAD';
 export interface RequestQuestLoadAction extends Redux.Action {
   type: 'REQUEST_QUEST_LOAD';
   id: string;
 }
 
-export const RECEIVE_QUEST_LOAD: string = 'RECEIVE_QUEST_LOAD';
 export interface ReceiveQuestLoadAction extends Redux.Action {
   type: 'RECEIVE_QUEST_LOAD';
   quest: QuestType;
 }
 
-export const REQUEST_QUEST_SAVE: string = 'REQUEST_QUEST_SAVE';
 export interface RequestQuestSaveAction extends Redux.Action {
   type: 'REQUEST_QUEST_SAVE';
   id: string;
 }
 
-export const RECEIVE_QUEST_SAVE: string = 'RECEIVE_QUEST_SAVE';
 export interface ReceiveQuestSaveAction extends Redux.Action {
   type: 'RECEIVE_QUEST_SAVE';
   id: string;
 }
 
-export const REQUEST_QUEST_DELETE: string = 'REQUEST_QUEST_DELETE';
+export interface RequestQuestPublishAction extends Redux.Action {
+  type: 'REQUEST_QUEST_PUBLISH';
+  id: string;
+}
+
+export interface ReceiveQuestPublishAction extends Redux.Action {
+  type: 'RECEIVE_QUEST_PUBLISH';
+  id: string;
+}
+
 export interface RequestQuestDeleteAction extends Redux.Action {
   type: 'REQUEST_QUEST_DELETE';
   id: string;
 }
 
-export const RECEIVE_QUEST_DELETE: string = 'RECEIVE_QUEST_DELETE';
 export interface ReceiveQuestDeleteAction extends Redux.Action {
   type: 'RECEIVE_QUEST_DELETE';
   id: string;
 }
 
-export const REQUEST_QUEST_SHARE: string = 'REQUEST_QUEST_SHARE';
 export interface RequestQuestShareAction extends Redux.Action {
   type: 'REQUEST_QUEST_SHARE';
   id: string;
   share: ShareType;
 }
 
-export const RECEIVE_QUEST_SHARE: string = 'RECEIVE_QUEST_SHARE';
 export interface ReceiveQuestShareAction extends Redux.Action {
   type: 'RECEIVE_QUEST_SHARE';
   id: string;
   share: ShareType;
 }
 
-export const REQUEST_QUEST_LIST: string = 'REQUEST_QUEST_LIST';
 export interface RequestQuestListAction extends Redux.Action {
   type: 'REQUEST_QUEST_LIST';
 }
 
-export const RECEIVE_QUEST_LIST: string = 'RECEIVE_QUEST_LIST';
 export interface ReceiveQuestListAction extends Redux.Action {
   type: 'RECEIVE_QUEST_LIST';
   quests: QuestType[];

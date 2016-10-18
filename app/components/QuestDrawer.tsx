@@ -11,13 +11,14 @@ import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
 import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit';
 import CloudDownloadIcon from 'material-ui/svg-icons/file/cloud-download';
 import LockIcon from 'material-ui/svg-icons/action/lock';
+import PublishIcon from 'material-ui/svg-icons/editor/publish';
 import SaveIcon from 'material-ui/svg-icons/content/save';
 import AddIcon from 'material-ui/svg-icons/content/add';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import Subheader from 'material-ui/Subheader';
-import {NEW_QUEST, LOAD_QUEST, SAVE_QUEST, PUBLISH_QUEST, DELETE_QUEST, DOWNLOAD_QUEST, QuestActionType} from '../actions/ActionTypes';
-import {QuestType, DirtyType, DrawerType, CodeViewType, UserType} from '../reducers/StateTypes'
+import {QuestActionType} from '../actions/ActionTypes';
+import {QuestType, DirtyState, DrawerState, UserState} from '../reducers/StateTypes'
 import theme from '../theme';
 
 var TimeAgo:any = require('timeago-react');
@@ -65,15 +66,14 @@ const styles = {
 }
 
 export interface QuestDrawerStateProps {
-  drawer: DrawerType
+  drawer: DrawerState
   quest: QuestType;
-  dirty: DirtyType;
-  view: CodeViewType;
-  user: UserType;
+  dirty: DirtyState;
+  user: UserState;
 };
 
 export interface QuestDrawerDispatchProps {
-  onMenuSelect: (action: QuestActionType, dirty: boolean, view: CodeViewType, quest: QuestType) => void;
+  onMenuSelect: (action: QuestActionType, dirty: boolean, quest: QuestType) => void;
   onDrawerRequestChange: () => void;
 }
 
@@ -97,11 +97,11 @@ const QuestDrawer = (props: QuestDrawerProps): JSX.Element => {
           value={quest.id}
           leftIcon={<ModeEditIcon/>}
           disabled={props.quest.id === quest.id}
-          primaryText={quest.meta_title}
+          primaryText={quest.metaTitle || "Unnamed Quest"}
           secondaryTextLines={2}
           secondaryText={
             <div>
-              <div>{quest.meta_summary}</div>
+              <div>{quest.metaSummary}</div>
             </div>}
         />
       );
@@ -109,7 +109,7 @@ const QuestDrawer = (props: QuestDrawerProps): JSX.Element => {
     quest_list = (
       <div>
         <Subheader>{props.drawer.quests.length + " Saved Quest" + ((props.drawer.quests.length > 1) ? "s" : "")}</Subheader>
-        <SelectableList defaultValue={props.quest.id} onChange={(event: any, id: string) => props.onMenuSelect('LOAD_QUEST', props.dirty, props.view, {id: id})}>
+        <SelectableList defaultValue={props.quest.id} onChange={(event: any, id: string) => props.onMenuSelect('LOAD_QUEST', props.dirty, {id: id})}>
           {menu}
         </SelectableList>
       </div>
@@ -125,7 +125,7 @@ const QuestDrawer = (props: QuestDrawerProps): JSX.Element => {
     login_message = (<FlatButton label="Sign In to persist your quests" secondary={true} />);
   }
 
-  // TODO add relatable icons
+  // TODO: Sharing <MenuItem value="SHARE_SETTINGS" primaryText="Share" disabled={!logged_in || !props.quest.id} leftIcon={<LockIcon/>} />
   return (
     <Drawer docked={false} onRequestChange={props.onDrawerRequestChange} open={props.drawer.open} width={styles.drawer.width}>
       <Toolbar style={{backgroundColor: theme.palette.primary3Color}}>
@@ -136,12 +136,12 @@ const QuestDrawer = (props: QuestDrawerProps): JSX.Element => {
       <Divider/>
       <Subheader>Edit</Subheader>
       {login_message}
-      <Menu onChange={(event: any, action: QuestActionType) => props.onMenuSelect(action, props.dirty, props.view, props.quest)}>
-        <MenuItem value={NEW_QUEST} primaryText="New" leftIcon={<AddIcon/>} />
-        <MenuItem value={SAVE_QUEST} primaryText="Save" disabled={!logged_in} leftIcon={<SaveIcon/>} />
-        <MenuItem value={DOWNLOAD_QUEST} primaryText="Download" disabled={!logged_in || !props.quest.id} leftIcon={<CloudDownloadIcon/>} />
-        <MenuItem value="SHARE_SETTINGS" primaryText="Share" disabled={!logged_in || !props.quest.id} leftIcon={<LockIcon/>} />
-        <MenuItem value={DELETE_QUEST} primaryText="Delete" disabled={!logged_in || !props.quest.id} leftIcon={<DeleteIcon/>} />
+      <Menu onChange={(event: any, action: QuestActionType) => props.onMenuSelect(action, props.dirty, props.quest)}>
+        <MenuItem value="NEW_QUEST" primaryText="New" leftIcon={<AddIcon/>} />
+        <MenuItem value="SAVE_QUEST" primaryText="Save" disabled={!logged_in} leftIcon={<SaveIcon/>} />
+        <MenuItem value="DOWNLOAD_QUEST" primaryText="Download" disabled={!logged_in || !props.quest.id} leftIcon={<CloudDownloadIcon/>} />
+        <MenuItem value="PUBLISH_QUEST" primaryText="Publish" disabled={!logged_in || !props.quest.id} leftIcon={<PublishIcon/>} />
+        <MenuItem value="DELETE_QUEST" primaryText="Delete" disabled={!logged_in || !props.quest.id} leftIcon={<DeleteIcon/>} />
       </Menu>
       <Divider/>
       {quest_list}

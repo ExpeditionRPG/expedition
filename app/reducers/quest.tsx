@@ -1,16 +1,16 @@
-import {RECEIVE_QUEST_LOAD, ReceiveQuestLoadAction, NEW_QUEST, RECEIVE_QUEST_DELETE, RECEIVE_QUEST_SHARE, ReceiveQuestShareAction} from '../actions/ActionTypes'
+import {ReceiveQuestLoadAction, ReceiveQuestShareAction} from '../actions/ActionTypes'
 import {QuestType} from './StateTypes'
 
 const initial_state: QuestType = {};
 
 export function quest(state: QuestType = initial_state, action: Redux.Action): QuestType {
   switch(action.type) {
-    case RECEIVE_QUEST_LOAD:
+    case 'RECEIVE_QUEST_LOAD':
       return (action as ReceiveQuestLoadAction).quest;
-    case NEW_QUEST:
-    case RECEIVE_QUEST_DELETE:
+    case 'NEW_QUEST':
+    case 'RECEIVE_QUEST_DELETE':
       return initial_state;
-    case RECEIVE_QUEST_SHARE:
+    case 'RECEIVE_QUEST_SHARE':
       let share_action = (action as ReceiveQuestShareAction);
       var now = (new Date()).getTime();
       switch(share_action.share) {

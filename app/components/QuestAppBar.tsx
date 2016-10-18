@@ -4,19 +4,19 @@ import IconButton from 'material-ui/IconButton';
 import HelpOutlineIcon from 'material-ui/svg-icons/action/help-outline';
 import AppBar from 'material-ui/AppBar';
 import Avatar from 'material-ui/Avatar';
-import {UserType} from '../reducers/StateTypes';
+import {UserState} from '../reducers/StateTypes';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 
 export interface QuestAppBarStateProps {
-  user: UserType;
+  user: UserState;
 };
 
 export interface QuestAppBarDispatchProps {
-  onDrawerToggle: (user: UserType)=>void;
-  onUserDialogRequest: (user: UserType)=>void;
+  onDrawerToggle: (user: UserState)=>void;
+  onUserDialogRequest: (user: UserState)=>void;
   onHelpRequest: ()=>void;
 }
 
