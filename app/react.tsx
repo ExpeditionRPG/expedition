@@ -2,6 +2,7 @@
 /// <reference path="../typings/redux-thunk/redux-thunk.d.ts" />
 /// <reference path="../typings/react-redux/react-redux.d.ts" />
 /// <reference path="../typings/react/react-dom.d.ts" />
+/// <reference path="../typings/react/react-router.d.ts" />
 /// <reference path="../typings/material-ui/material-ui.d.ts" />
 /// <reference path="../typings/react-tap-event-plugin/react-tap-event-plugin.d.ts" />
 /// <reference path="../typings/jquery/jquery.d.ts" />
@@ -17,7 +18,8 @@
 
 
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import { Router, Route, Link, hashHistory } from 'react-router';
 
 // So we can hot reload
 declare var require: any;
@@ -41,10 +43,11 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 
 // Custom components
+import DialogsContainer from './components/DialogsContainer';
+import SplashContainer from './components/SplashContainer';
 import QuestAppBarContainer from './components/QuestAppBarContainer';
 import QuestDrawerContainer from './components/QuestDrawerContainer';
 import QuestIDEContainer from './components/QuestIDEContainer';
-import DialogsContainer from './components/DialogsContainer';
 import questIDEApp from './reducers/CombinedReducers';
 
 // Initialize the global redux store
@@ -66,11 +69,30 @@ declare var gapi: any;
 function initAuth(): void {
   gapi.client.setApiKey("AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8");
   gapi.auth2.init({
-      client_id: "545484140970-r95j0rmo8q1mefo0pko6l3v6p4s771ul.apps.googleusercontent.com",
-      scope: "profile"
+    client_id: "545484140970-r95j0rmo8q1mefo0pko6l3v6p4s771ul.apps.googleusercontent.com",
+    scope: "profile"
+  }).then(function() {
+    // Render the components, picking up where react left off on the server
+    render(
+      <Router history={hashHistory}>
+        <Route path="/" component={SplashPage}></Route>
+        <Route path="/app" component={AppPage} onEnter={requireAuth}></Route>
+      </Router>,
+      document.getElementById('react-app')
+    );
   });
 }
 gapi.load('client:auth2', initAuth);
+
+
+function requireAuth(nextState: any, replace: any): void {
+  if (gapi.auth2 == null || !gapi.auth2.getAuthInstance().isSignedIn.get()) {
+    replace({
+      pathname: '/',
+      state: { nextPathname: nextState.location.pathname }
+    });
+  }
+}
 
 
 if (module.hot) {
@@ -82,17 +104,34 @@ if (module.hot) {
   });
 }
 
-// Render the components, picking up where react left off on the server
-ReactDOM.render(
-  <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-    <Provider store={store}>
-      <div style={{width: "100%", height: "100%"}}>
-        <QuestAppBarContainer/>
-        <QuestIDEContainer/>
-        <QuestDrawerContainer/>
-        <DialogsContainer/>
-      </div>
-    </Provider>
-  </MuiThemeProvider>,
-  document.getElementById('react-app')
-);
+
+const AppPage = React.createClass({
+  render() {
+    return (
+      <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
+        <Provider store={store}>
+          <div style={{width: "100%", height: "100%"}}>
+            <QuestAppBarContainer/>
+            <QuestIDEContainer/>
+            <QuestDrawerContainer/>
+            <DialogsContainer/>
+          </div>
+        </Provider>
+      </MuiThemeProvider>
+    )
+  }
+});
+
+const SplashPage = React.createClass({
+  render() {
+    return (
+      <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
+        <Provider store={store}>
+          <div style={{width: "100%", height: "100%"}}>
+            <SplashContainer/>
+          </div>
+        </Provider>
+      </MuiThemeProvider>
+    )
+  }
+});

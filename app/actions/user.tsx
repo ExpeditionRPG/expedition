@@ -1,5 +1,7 @@
-import {SetProfileMetaAction} from './ActionTypes'
-import {UserState} from '../reducers/StateTypes'
+import { hashHistory } from 'react-router';
+
+import {SetProfileMetaAction} from './ActionTypes';
+import {UserState} from '../reducers/StateTypes';
 
 declare var gapi: any;
 
@@ -21,6 +23,7 @@ export function loginUser(): ((dispatch: Redux.Dispatch<any>)=>void) {
           displayName: name,
           image: image
         }));
+        hashHistory.push('/app');
       });
     });
   }
@@ -29,9 +32,8 @@ export function loginUser(): ((dispatch: Redux.Dispatch<any>)=>void) {
 export function logoutUser(): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
     gapi.auth2.getAuthInstance().signOut().then(function() {
-      $.post('/auth/logout', function(data) {
-        dispatch(setProfileMeta({}));
-      });
+      dispatch(setProfileMeta({}));
+      hashHistory.push('/');
     });
   }
 }

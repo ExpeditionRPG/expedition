@@ -23,20 +23,6 @@ export interface QuestAppBarDispatchProps {
 interface QuestAppBarProps extends QuestAppBarStateProps, QuestAppBarDispatchProps {}
 
 const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
-  var user_item: JSX.Element;
-  if (props.user && props.user.image) {
-    user_item = (
-      <MenuItem primaryText="Sign Out" leftIcon={
-        <Avatar src={props.user.image} />
-      } onTouchTap={() => props.onUserDialogRequest(props.user)} />
-    );
-  } else {
-    user_item = (
-      <MenuItem primaryText="Sign In" leftIcon={
-        <PersonOutlineIcon />
-      } onTouchTap={() => props.onUserDialogRequest(props.user)} />);
-  }
-
   return (
     <AppBar
       title="Expedition Quest Creator"
@@ -50,7 +36,12 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
           anchorOrigin={{horizontal: 'right', vertical: 'top'}}
         >
           <MenuItem primaryText="Help" leftIcon={<HelpOutlineIcon/>} onTouchTap={props.onHelpRequest} />
-          {user_item}
+          <MenuItem primaryText="Sign Out"
+            leftIcon={
+              <Avatar src={props.user.image} />
+            }
+            onTouchTap={() => props.onUserDialogRequest(props.user)}
+          />
         </IconMenu>
       } />
   );
