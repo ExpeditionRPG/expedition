@@ -1,6 +1,8 @@
 var React = require('react');
 var fs = require('fs');
+var querystring = require('querystring');
 
+var config = require('./config');
 var toMarkdown = require('./translation/to_markdown');
 var toXML = require('./translation/to_xml');
 var toGraph = require('./translation/to_graph');
@@ -8,7 +10,7 @@ var toMeta = require('./translation/to_meta');
 var model = require('./quests/model');
 var passport = require('passport');
 var oauth2 = require('./lib/oauth2');
-var express =require('express');
+var express = require('express');
 
 // TODO: Rate limit all routers
 // TODO: SSL
@@ -20,17 +22,59 @@ router.use(oauth2.template);
 
 var ALLOWED_CORS = "http://semartin.local:5000";
 
+function isAuthenticated(req, res, next) {
+  if (req.user != null)
+    return next();
+  res.redirect('/');
+}
+
+
 router.get('/', function(req, res) {
-  res.render('home', {
+
+// console.log(req)
+
+  if (req.user != null) {
+    return res.redirect('/app');
+  }
+
+// res.render('app', {
+//   // Pass current state to client side.
+//   // res.locals is set by oauth2 and includes user display info.
+//   state: JSON.stringify(res.locals),
+// });
+  res.render('splash', {});
+});
+
+router.get('/app', isAuthenticated, function(req, res) {
+  res.render('app', {
     // Pass current state to client side.
     // res.locals is set by oauth2 and includes user display info.
-    state: JSON.stringify(res.locals)
+    state: JSON.stringify(res.locals),
   });
 });
 
+router.get('/login', function(req, res) {
+  var params = querystring.stringify({
+    response_type: 'token',
+    client_id: config.get('OAUTH2_CLIENT_ID'),
+    redirect_uri: 'http://localhost:8080/auth/google/callback',
+    scope: 'profile',
+    include_granted_scopes: true,
+  });
+  res.redirect('https://accounts.google.com/o/oauth2/v2/auth?' + params);
+});
+
+
+router.get('/auth/google/callback', function(req, res) {
+  res.redirect('/');
+});
+
+
 // TODO: Abstract all these auth checks and try/catch boilerplate into middleware.
+// Idea: use a validation library like Joi to validate params
 
 router.post('/quests', function(req, res) {
+
   var token = req.params.token;
   if (!res.locals.id) {
     res.header('Access-Control-Allow-Origin', ALLOWED_CORS);

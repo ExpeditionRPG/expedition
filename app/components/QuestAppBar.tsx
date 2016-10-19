@@ -39,7 +39,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
 
   return (
     <AppBar
-      title="Expedition Quest Editor"
+      title="Expedition Quest Creator"
       onLeftIconButtonTouchTap={() => props.onDrawerToggle(props.user)}
       iconElementRight={
         <IconMenu

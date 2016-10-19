@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Expedition Quest Creator</title>
+    <link href="//cdn.muicss.com/mui-0.9.1/css/mui.min.css" rel="stylesheet" type="text/css" />
+    <script src="//cdn.muicss.com/mui-0.9.1/js/mui.min.js"></script>
+    <style>
+      html, body {
+        height: 100%;
+      }
+      html, body, input, textarea, buttons {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+      }
+      header {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 2;
+      }
+      #content-wrapper {
+        min-height: 100%;
+        margin-bottom: -100px;
+        padding-bottom: 100px;
+      }
+      footer {
+        height: 100px;
+        background-color: #eee;
+        border-top: 1px solid #e0e0e0;
+        padding-top: 35px;
+      }
+
+      /* custom coloring */
+      html, body {
+        background-color: #212121;
+        color: white;
+      }
+      a {
+        color: white;
+      }
+      a:hover {
+        color: #CCC;
+      }
+      button.mui-btn {
+        background-color: #424242;
+        color: rgb(174, 213, 129);
+      }
+      button.mui-btn:hover {
+        background-color: #616161;
+        text-decoration: none;
+        color: rgb(174, 213, 129);
+      }
+      .mui-appbar, footer {
+        background-color: #424242;
+      }
+      footer {
+        border-color: #616161;
+      }
+      footer a {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mui-appbar mui--z1">
+      <div class="mui-container">
+        <table width="100%">
+          <tr class="mui--appbar-height">
+            <td class="mui--text-title">Expedition Quest Creator</td>
+            <td align="right">
+              <a href="/login">Login</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </header>
+    <div id="content-wrapper" class="mui--text-center">
+      <div class="mui--appbar-height"></div>
+      <br>
+      <br>
+      <div class="mui--text-display3">Create your own quests</div>
+      <br>
+      <br>
+      <a href="/login"><button class="mui-btn mui-btn--raised">Get started</button></a>
+      <br>
+      <a href="https://github.com/Fabricate-IO/expedition-quest-ide/blob/master/docs/markdown_guide.md">learn more</a>
+      <br>
+      <br>
+      <br>
+      <img src="/assets/img/app-screenshot.png" style="box-shadow: 0 0 10px #616161;"/>
+      <br>
+      <br>
+      <br>
+    </div>
+    <footer>
+      <div class="mui-container mui--text-center">
+        Part of <a href="http://expeditionrpg.com">Expedition: The Roleplaying Card Game</a>. Created by <a href="http://fabricate.io">Fabricate.io</a>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<!-- <a href="/login">Login</a> -->
