@@ -18,8 +18,8 @@
 
 
 import * as React from 'react';
-import { render } from 'react-dom';
-import { Router, Route, Link, hashHistory } from 'react-router';
+import {render} from 'react-dom';
+import {Router, Route, Link, hashHistory} from 'react-router';
 
 // So we can hot reload
 declare var require: any;
@@ -39,8 +39,8 @@ injectTapEventPlugin();
 
 // Redux libraries
 import thunk from 'redux-thunk';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import {Provider} from 'react-redux';
+import {createStore, applyMiddleware} from 'redux';
 
 // Custom components
 import DialogsContainer from './components/DialogsContainer';

@@ -1,7 +1,7 @@
-import { connect } from 'react-redux'
-import { showHelp } from '../actions/dialogs'
-import { setDrawer } from '../actions/drawer'
-import { logoutUser } from '../actions/user'
+import {connect} from 'react-redux'
+import {showHelp} from '../actions/dialogs'
+import {setDrawer} from '../actions/drawer'
+import {logoutUser} from '../actions/user'
 import {AppState, UserState} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
 

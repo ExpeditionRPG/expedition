@@ -1,7 +1,7 @@
-import { connect } from 'react-redux'
-import { loginUser } from '../actions/user'
+import {connect} from 'react-redux'
+import {loginUser} from '../actions/user'
 import {AppState, UserState} from '../reducers/StateTypes'
-import Splash, { SplashDispatchProps } from './Splash'
+import Splash, {SplashDispatchProps} from './Splash'
 
 const mapStateToProps = (state: AppState, ownProps: any): any => {
   return {user: state.user};

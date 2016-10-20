@@ -28,6 +28,12 @@ const styles = {
     opacity: 0.8,
     textDecoration: 'none',
   },
+  screenshot: {
+    boxShadow: '0 0 10px #616161',
+    width: '70%',
+    margin: 'auto',
+    display: 'block',
+  },
 };
 
 
@@ -59,7 +65,7 @@ const Splash = (props: any): JSX.Element => {
             learn more
           </a>
         </div>
-        <img src="/assets/img/app-screenshot.png" style={{'boxShadow': '0 0 10px #616161', 'width': '70%', 'margin': 'auto', 'display': 'block'}}/>
+        <img src="/assets/img/app-screenshot.png" style={styles.screenshot}/>
       </div>
     </div>
   );
