@@ -116,16 +116,7 @@ const QuestDrawer = (props: QuestDrawerProps): JSX.Element => {
     );
   }
 
-
-  let logged_in: boolean = Boolean(props.user.id);
-
-
-  let login_message: JSX.Element = (<span/>);
-  if (!logged_in) {
-    login_message = (<FlatButton label="Sign In to persist your quests" secondary={true} />);
-  }
-
-  // TODO: Sharing <MenuItem value="SHARE_SETTINGS" primaryText="Share" disabled={!logged_in || !props.quest.id} leftIcon={<LockIcon/>} />
+  // TODO: Sharing <MenuItem value="SHARE_SETTINGS" primaryText="Share" disabled={!props.quest.id} leftIcon={<LockIcon/>} />
   return (
     <Drawer docked={false} onRequestChange={props.onDrawerRequestChange} open={props.drawer.open} width={styles.drawer.width}>
       <Toolbar style={{backgroundColor: theme.palette.primary3Color}}>
@@ -134,14 +125,11 @@ const QuestDrawer = (props: QuestDrawerProps): JSX.Element => {
         </ToolbarGroup>
       </Toolbar>
       <Divider/>
-      <Subheader>Edit</Subheader>
-      {login_message}
       <Menu onChange={(event: any, action: QuestActionType) => props.onMenuSelect(action, props.dirty, props.quest)}>
         <MenuItem value="NEW_QUEST" primaryText="New" leftIcon={<AddIcon/>} />
-        <MenuItem value="SAVE_QUEST" primaryText="Save" disabled={!logged_in} leftIcon={<SaveIcon/>} />
-        <MenuItem value="DOWNLOAD_QUEST" primaryText="Download" disabled={!logged_in || !props.quest.id} leftIcon={<CloudDownloadIcon/>} />
-        <MenuItem value="PUBLISH_QUEST" primaryText="Publish" disabled={!logged_in || !props.quest.id} leftIcon={<PublishIcon/>} />
-        <MenuItem value="DELETE_QUEST" primaryText="Delete" disabled={!logged_in || !props.quest.id} leftIcon={<DeleteIcon/>} />
+        <MenuItem value="SAVE_QUEST" primaryText="Save" leftIcon={<SaveIcon/>} />
+        <MenuItem value="PUBLISH_QUEST" primaryText="Publish" disabled={!props.quest.id} leftIcon={<PublishIcon/>} />
+        <MenuItem value="DELETE_QUEST" primaryText="Delete" disabled={!props.quest.id} leftIcon={<DeleteIcon/>} />
       </Menu>
       <Divider/>
       {quest_list}
