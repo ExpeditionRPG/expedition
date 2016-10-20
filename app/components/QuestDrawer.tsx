@@ -1,25 +1,26 @@
-import * as React from 'react';
-import Drawer from 'material-ui/Drawer';
-import Menu from 'material-ui/Menu';
-import Paper from 'material-ui/Paper';
-import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
-import {List, ListItem, MakeSelectable} from 'material-ui/List';
-import CircularProgress from 'material-ui/CircularProgress';
-import FlatButton from 'material-ui/FlatButton';
-import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
-import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit';
-import CloudDownloadIcon from 'material-ui/svg-icons/file/cloud-download';
-import LockIcon from 'material-ui/svg-icons/action/lock';
-import PublishIcon from 'material-ui/svg-icons/editor/publish';
-import SaveIcon from 'material-ui/svg-icons/content/save';
-import AddIcon from 'material-ui/svg-icons/content/add';
-import DeleteIcon from 'material-ui/svg-icons/action/delete';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import Subheader from 'material-ui/Subheader';
-import {QuestActionType} from '../actions/ActionTypes';
+import * as React from 'react'
+import Drawer from 'material-ui/Drawer'
+import Menu from 'material-ui/Menu'
+import Paper from 'material-ui/Paper'
+import MenuItem from 'material-ui/MenuItem'
+import Divider from 'material-ui/Divider'
+import {List, ListItem, MakeSelectable} from 'material-ui/List'
+import CircularProgress from 'material-ui/CircularProgress'
+import FlatButton from 'material-ui/FlatButton'
+import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar'
+import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit'
+import HelpOutlineIcon from 'material-ui/svg-icons/action/help-outline'
+import CloudDownloadIcon from 'material-ui/svg-icons/file/cloud-download'
+import LockIcon from 'material-ui/svg-icons/action/lock'
+import PublishIcon from 'material-ui/svg-icons/editor/publish'
+import SaveIcon from 'material-ui/svg-icons/content/save'
+import AddIcon from 'material-ui/svg-icons/content/add'
+import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card'
+import Subheader from 'material-ui/Subheader'
+import {QuestActionType} from '../actions/ActionTypes'
 import {QuestType, DirtyState, DrawerState, UserState} from '../reducers/StateTypes'
-import theme from '../theme';
+import theme from '../theme'
 
 var TimeAgo:any = require('timeago-react');
 
@@ -75,6 +76,7 @@ export interface QuestDrawerStateProps {
 export interface QuestDrawerDispatchProps {
   onMenuSelect: (action: QuestActionType, dirty: boolean, quest: QuestType) => void;
   onDrawerRequestChange: () => void;
+  onHelpRequest: ()=>void;
 }
 
 interface QuestDrawerProps extends QuestDrawerStateProps, QuestDrawerDispatchProps {}
@@ -130,6 +132,7 @@ const QuestDrawer = (props: QuestDrawerProps): JSX.Element => {
         <MenuItem value="SAVE_QUEST" primaryText="Save" leftIcon={<SaveIcon/>} />
         <MenuItem value="PUBLISH_QUEST" primaryText="Publish" disabled={!props.quest.id} leftIcon={<PublishIcon/>} />
         <MenuItem value="DELETE_QUEST" primaryText="Delete" disabled={!props.quest.id} leftIcon={<DeleteIcon/>} />
+        <MenuItem primaryText="Help" leftIcon={<HelpOutlineIcon/>} onTouchTap={props.onHelpRequest} />
       </Menu>
       <Divider/>
       {quest_list}

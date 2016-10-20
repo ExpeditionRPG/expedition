@@ -86,7 +86,8 @@ gapi.load('client:auth2', initAuth);
 
 
 function requireAuth(nextState: any, replace: any): void {
-  if (gapi.auth2 == null || !gapi.auth2.getAuthInstance().isSignedIn.get()) {
+  const user = store.getState().user;
+  if (gapi.auth2 == null || !gapi.auth2.getAuthInstance().isSignedIn.get() || user.id == null) {
     replace({
       pathname: '/',
       state: { nextPathname: nextState.location.pathname }

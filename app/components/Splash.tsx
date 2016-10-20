@@ -39,7 +39,7 @@ const styles = {
 
 const Splash = (props: any): JSX.Element => {
   return (
-    <div style={{'background': '#141414'}}>
+    <div style={{'background': '#141414', 'height': '100%'}}>
       <AppBar
         title="Expedition Quest Creator"
         showMenuIconButton={false}
