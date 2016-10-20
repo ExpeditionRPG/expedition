@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import {connect} from 'react-redux'
 import {QuestActionType} from '../actions/ActionTypes'
 import {DirtyState, QuestType, AppState} from '../reducers/StateTypes'
 import {questAction} from '../actions/quest'

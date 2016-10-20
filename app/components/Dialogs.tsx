@@ -183,7 +183,6 @@ interface ErrorDialogProps extends React.Props<any> {
 
 export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
   render() {
-
     var errors: ErrorType[] = [];
     for (var i = 0; i < this.props.errors.length; i++) {
       var error = this.props.errors[i];

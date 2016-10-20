@@ -57,6 +57,7 @@
     "react-dom": "^15.3.1",
     "react-node-graph": "https://github.com/legionmaster/react-node-graph.git#256a6e269208b8c4d01dc0662a49e8225d1153e6",
     "react-redux": "^4.4.5",
+    "react-router": "^2.8.1",
     "react-tap-event-plugin": "^1.0.0",
     "redux": "^3.5.2",
     "redux-thunk": "^2.1.0",

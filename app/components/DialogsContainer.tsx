@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import {connect} from 'react-redux'
 import {NEW_QUEST, LOAD_QUEST} from '../actions/ActionTypes'
 import {DialogIDType, DialogsState, ShareType, AppState} from '../reducers/StateTypes'
 import {setDialog} from '../actions/dialogs'
