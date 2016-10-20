@@ -12,6 +12,9 @@ import {setDialog} from './dialogs'
 import {pushError, pushHTTPError} from '../error'
 import {getBuffer} from '../buffer'
 
+// Loaded on index.html
+type realtimeUtils = any;
+
 var toXML: any = (require('../../translation/to_xml') as any).toXML;
 
 function receiveQuestLoad(quest: QuestType ): ReceiveQuestLoadAction {
