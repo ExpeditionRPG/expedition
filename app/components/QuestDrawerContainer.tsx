@@ -1,10 +1,11 @@
+import {PropTypes} from 'react'
 import {connect} from 'react-redux'
 import {QuestActionType} from '../actions/ActionTypes'
-import {DirtyState, QuestType, AppState} from '../reducers/StateTypes'
-import {questAction} from '../actions/quest'
+import {showHelp} from '../actions/dialogs'
 import {setDrawer} from '../actions/drawer'
+import {questAction} from '../actions/quest'
+import {DirtyState, QuestType, AppState} from '../reducers/StateTypes'
 import QuestDrawer, {QuestDrawerStateProps, QuestDrawerDispatchProps} from './QuestDrawer'
-import {PropTypes} from 'react';
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestDrawerStateProps => {
   return {
@@ -22,7 +23,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
     },
     onDrawerRequestChange: () => {
       dispatch(setDrawer("", false));
-    }
+    },
+    onHelpRequest: () => {
+      dispatch(showHelp());
+    },
   };
 }
 
