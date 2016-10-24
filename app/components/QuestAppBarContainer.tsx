@@ -1,4 +1,5 @@
 import {connect} from 'react-redux'
+import {showHelp} from '../actions/dialogs'
 import {setDrawer} from '../actions/drawer'
 import {logoutUser} from '../actions/user'
 import {AppState, UserState} from '../reducers/StateTypes'
@@ -15,6 +16,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
   return {
     onDrawerToggle: (user: UserState) => {
       dispatch(setDrawer(user.id, true));
+    },
+    onHelpRequest: () => {
+      dispatch(showHelp());
     },
     onUserDialogRequest: (user: UserState) => {
       dispatch(logoutUser());

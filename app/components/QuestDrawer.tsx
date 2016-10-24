@@ -64,7 +64,7 @@ const styles = {
     alternateTextColor: "#FFF",
     primary3Color: "black"
   }
-}
+};
 
 export interface QuestDrawerStateProps {
   drawer: DrawerState
@@ -76,7 +76,7 @@ export interface QuestDrawerStateProps {
 export interface QuestDrawerDispatchProps {
   onMenuSelect: (action: QuestActionType, dirty: boolean, quest: QuestType) => void;
   onDrawerRequestChange: () => void;
-  onHelpRequest: ()=>void;
+  onHelpRequest: () => void;
 }
 
 interface QuestDrawerProps extends QuestDrawerStateProps, QuestDrawerDispatchProps {}

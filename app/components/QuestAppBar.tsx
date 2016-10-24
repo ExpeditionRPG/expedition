@@ -1,10 +1,27 @@
 import * as React from 'react'
-import IconButton from 'material-ui/IconButton'
+
 import AppBar from 'material-ui/AppBar'
 import Avatar from 'material-ui/Avatar'
-import {QuestType, UserState} from '../reducers/StateTypes'
+import FlatButton from 'material-ui/FlatButton'
+import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
+import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar'
+
+import {grey900} from 'material-ui/styles/colors';
+
+import {QuestType, UserState} from '../reducers/StateTypes'
+
+
+const styles = {
+  button: {
+    marginLeft: 0,
+    marginRight: 0,
+  },
+  toolbar: {
+    background: grey900,
+  },
+};
 
 
 export interface QuestAppBarStateProps {
@@ -14,6 +31,7 @@ export interface QuestAppBarStateProps {
 
 export interface QuestAppBarDispatchProps {
   onDrawerToggle: (user: UserState)=>void;
+  onHelpRequest: () => void;
   onUserDialogRequest: (user: UserState)=>void;
 }
 
@@ -42,6 +60,16 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
           </IconMenu>
         }
       />
+      <Toolbar style={styles.toolbar}>
+        <ToolbarGroup firstChild={true}>
+          <FlatButton style={styles.button} label="New" />
+          <FlatButton style={styles.button} label="Publish" />
+          <FlatButton style={styles.button} label="Unpublish" />
+          <FlatButton style={styles.button} label="Open in Drive" />
+          <FlatButton style={styles.button} label="Help" onTouchTap={props.onHelpRequest} />
+          <FlatButton style={styles.button} label="All changes saved" disabled={true} />
+        </ToolbarGroup>
+      </Toolbar>
     </span>
   );
 }
