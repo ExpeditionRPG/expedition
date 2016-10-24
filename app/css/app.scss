@@ -40,10 +40,9 @@ body {
   font-size: 12px;
 
   #logo {
-    position: absolute;
-    top: 0;
-    left: 0;
     height: 35px;
+    float: left;
+    margin-top: -6px;
   }
 }
 
