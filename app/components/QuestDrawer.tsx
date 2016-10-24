@@ -133,6 +133,7 @@ const QuestDrawer = (props: QuestDrawerProps): JSX.Element => {
         <MenuItem value="PUBLISH_QUEST" primaryText="Publish" disabled={!props.quest.id} leftIcon={<PublishIcon/>} />
         <MenuItem value="DELETE_QUEST" primaryText="Delete" disabled={!props.quest.id} leftIcon={<DeleteIcon/>} />
         <MenuItem primaryText="Help" leftIcon={<HelpOutlineIcon/>} onTouchTap={props.onHelpRequest} />
+        <a href="http://expeditiongame.com/contact" target="_blank"><MenuItem>Send Feedback</MenuItem></a>
       </Menu>
       <Divider/>
       {quest_list}

@@ -1,15 +1,14 @@
 import * as React from 'react'
-import PersonOutlineIcon from 'material-ui/svg-icons/social/person-outline'
 import IconButton from 'material-ui/IconButton'
 import AppBar from 'material-ui/AppBar'
 import Avatar from 'material-ui/Avatar'
-import {UserState} from '../reducers/StateTypes'
+import {QuestType, UserState} from '../reducers/StateTypes'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 
 
 export interface QuestAppBarStateProps {
+  quest: QuestType;
   user: UserState;
 };
 
@@ -22,24 +21,28 @@ interface QuestAppBarProps extends QuestAppBarStateProps, QuestAppBarDispatchPro
 
 const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   const loginText = 'Logged in as ' + props.user.displayName;
+  const questTitle = props.quest.metaTitle || 'unsaved quest';
   return (
-    <AppBar
-      title="Expedition Quest Creator"
-      onLeftIconButtonTouchTap={() => props.onDrawerToggle(props.user)}
-      iconElementRight={
-        <IconMenu
-          iconButtonElement={
-            <IconButton iconStyle={{'width': '24px', 'height': '24px' }}><Avatar src={props.user.image}/></IconButton>
-          }
-          targetOrigin={{horizontal: 'right', vertical: 'top'}}
-          anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-        >
-          <MenuItem primaryText={loginText} disabled={true}/>
-          <MenuItem primaryText="Sign Out"
-            onTouchTap={() => props.onUserDialogRequest(props.user)}
-          />
-        </IconMenu>
-      } />
+    <span style={{width: "100%", height: "100%"}}>
+      <AppBar
+        title={questTitle}
+        onLeftIconButtonTouchTap={() => props.onDrawerToggle(props.user)}
+        iconElementRight={
+          <IconMenu
+            iconButtonElement={
+              <IconButton iconStyle={{'width': '24px', 'height': '24px' }}><Avatar src={props.user.image}/></IconButton>
+            }
+            targetOrigin={{horizontal: 'right', vertical: 'top'}}
+            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+          >
+            <MenuItem primaryText={loginText} disabled={true}/>
+            <MenuItem primaryText="Sign Out"
+              onTouchTap={() => props.onUserDialogRequest(props.user)}
+            />
+          </IconMenu>
+        }
+      />
+    </span>
   );
 }
 
