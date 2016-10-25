@@ -1,4 +1,5 @@
 import * as React from 'react'
+
 import Drawer from 'material-ui/Drawer'
 import Menu from 'material-ui/Menu'
 import Paper from 'material-ui/Paper'
@@ -18,6 +19,7 @@ import AddIcon from 'material-ui/svg-icons/content/add'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card'
 import Subheader from 'material-ui/Subheader'
+
 import {QuestActionType} from '../actions/ActionTypes'
 import {QuestType, DirtyState, DrawerState, UserState} from '../reducers/StateTypes'
 import theme from '../theme'

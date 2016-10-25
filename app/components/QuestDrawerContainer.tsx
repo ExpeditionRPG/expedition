@@ -1,11 +1,13 @@
 import {PropTypes} from 'react'
 import {connect} from 'react-redux'
+
 import {QuestActionType} from '../actions/ActionTypes'
 import {showHelp} from '../actions/dialogs'
 import {setDrawer} from '../actions/drawer'
 import {questAction} from '../actions/quest'
 import {DirtyState, QuestType, AppState} from '../reducers/StateTypes'
 import QuestDrawer, {QuestDrawerStateProps, QuestDrawerDispatchProps} from './QuestDrawer'
+
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestDrawerStateProps => {
   return {

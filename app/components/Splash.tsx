@@ -1,11 +1,11 @@
-import * as React from 'react';
+import * as React from 'react'
 
-import loginUser from '../actions/user';
-import {UserState} from '../reducers/StateTypes';
+import loginUser from '../actions/user'
+import {UserState} from '../reducers/StateTypes'
 
-import AppBar from 'material-ui/AppBar';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
+import AppBar from 'material-ui/AppBar'
+import FlatButton from 'material-ui/FlatButton'
+import RaisedButton from 'material-ui/RaisedButton'
 
 
 export interface SplashDispatchProps {

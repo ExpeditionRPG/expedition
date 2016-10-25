@@ -1,7 +1,10 @@
-import * as React from 'react';
-import {Tab} from 'material-ui/Tabs';
-import TextView from './base/TextView';
+import * as React from 'react'
+
+import {Tab} from 'material-ui/Tabs'
+
+import TextView from './base/TextView'
 import {DirtyState} from '../reducers/StateTypes'
+
 
 const styles = {
   container: {

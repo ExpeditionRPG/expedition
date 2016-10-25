@@ -8,18 +8,18 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar'
 
-import {grey900} from 'material-ui/styles/colors';
+import {grey900} from 'material-ui/styles/colors'
 
 import {QuestType, UserState} from '../reducers/StateTypes'
 
 
 const styles = {
   button: {
-    marginLeft: 0,
-    marginRight: 0,
+    margin: '4px 0',
   },
   toolbar: {
     background: grey900,
+    height: '44px',
   },
 };
 
@@ -64,7 +64,6 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
         <ToolbarGroup firstChild={true}>
           <FlatButton style={styles.button} label="New" />
           <FlatButton style={styles.button} label="Publish" />
-          <FlatButton style={styles.button} label="Unpublish" />
           <FlatButton style={styles.button} label="Open in Drive" />
           <FlatButton style={styles.button} label="Help" onTouchTap={props.onHelpRequest} />
           <FlatButton style={styles.button} label="All changes saved" disabled={true} />
