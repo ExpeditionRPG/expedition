@@ -22,9 +22,6 @@ var express = require('express');
 var router = express.Router();
 router.use(oauth2.template);
 
-var ALLOWED_CORS = "http://semartin.local:5000";
-
-
 router.get('/', function(req, res) {
   res.render('app', {
     state: JSON.stringify(res.locals),
@@ -35,7 +32,7 @@ router.post('/quests', function(req, res) {
 
   var token = req.params.token;
   if (!res.locals.id) {
-    res.header('Access-Control-Allow-Origin', ALLOWED_CORS);
+    res.header('Access-Control-Allow-Origin', config.get('CORS_URL'));
     res.header('Access-Control-Allow-Credentials', 'true');
     return res.send(JSON.stringify([]));
   }
@@ -50,14 +47,14 @@ router.post('/quests', function(req, res) {
 
   model.searchQuests(res.locals.id, params, function(err, quests, nextToken) {
     if (err) {
-      res.header('Access-Control-Allow-Origin', ALLOWED_CORS);
+      res.header('Access-Control-Allow-Origin', config.get('CORS_URL'));
       res.header('Access-Control-Allow-Credentials', 'true');
       console.log(err);
       return res.status(500).end("Search Error");
     }
     result = {error: err, quests: quests, nextToken: nextToken};
     console.log("Found " + quests.length + " quests for user " + res.locals.id);
-    res.header('Access-Control-Allow-Origin', ALLOWED_CORS);
+    res.header('Access-Control-Allow-Origin', config.get('CORS_URL'));
     res.header('Access-Control-Allow-Credentials', 'true');
     res.send(JSON.stringify(result));
   });
@@ -68,7 +65,7 @@ router.get('/raw/:quest', function(req, res) {
     if (err) {
       return res.status(500).end(err.toString());
     }
-    res.header('Access-Control-Allow-Origin', ALLOWED_CORS);
+    res.header('Access-Control-Allow-Origin', config.get('CORS_URL'));
     res.header('Content-Type', 'text/xml');
     res.header('Location', entity.url);
     res.status(301).end();
