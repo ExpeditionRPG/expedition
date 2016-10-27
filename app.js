@@ -24,7 +24,7 @@ var express = require('express');
 var exphbs = require('express-handlebars');
 var url = require('url');
 var session = require('express-session');
-var MemcachedStore = require('connect-memcached')(session);
+//var MemcachedStore = require('connect-memcached')(session);
 var passport = require('passport');
 var config = require('./config');
 var logging = require('./lib/logging');
@@ -60,7 +60,7 @@ var setupSession = function(app) {
 
   // In production use the App Engine Memcache instance to store session data,
   // otherwise fallback to the default MemoryStore in development.
-  if (config.get('NODE_ENV') === 'production') {
+  if (config.get('MEMCACHED')) {
     var memAddr = process.env.MEMCACHE_PORT_11211_TCP_ADDR;
     var memPort = process.env.MEMCACHE_PORT_11211_TCP_PORT;
     if (!memAddr || !memPort) {
