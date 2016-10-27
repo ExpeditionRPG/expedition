@@ -7,7 +7,7 @@ export const SAVE_QUEST: string = 'SAVE_QUEST';
 export const PUBLISH_QUEST: string = 'PUBLISH_QUEST';
 export const SHARE_QUEST: string = 'SHARE_QUEST';
 export const DOWNLOAD_QUEST: string = 'DOWNLOAD_QUEST';
-export type QuestActionType = 'NEW_QUEST' | 'LOAD_QUEST' | 'DELETE_QUEST' | 'SAVE_QUEST' | 'PUBLISH_QUEST' | 'DOWNLOAD_QUEST';
+export type QuestActionType = 'NEW_QUEST' | 'LOAD_QUEST' | 'SAVE_QUEST' | 'PUBLISH_QUEST' | 'UNPUBLISH_QUEST' | 'DRIVE_VIEW' | 'FEEDBACK' | 'HELP';
 
 export const SIGN_IN: string = 'SIGN_IN';
 export const SIGN_OUT: string = 'SIGN_OUT';
@@ -39,11 +39,6 @@ export interface SetDrawerAction extends Redux.Action {
   is_open: boolean;
 }
 
-export interface RequestQuestLoadAction extends Redux.Action {
-  type: 'REQUEST_QUEST_LOAD';
-  id: string;
-}
-
 export interface ReceiveQuestLoadAction extends Redux.Action {
   type: 'RECEIVE_QUEST_LOAD';
   quest: QuestType;
@@ -51,53 +46,30 @@ export interface ReceiveQuestLoadAction extends Redux.Action {
 
 export interface RequestQuestSaveAction extends Redux.Action {
   type: 'REQUEST_QUEST_SAVE';
-  id: string;
+  quest: QuestType;
 }
 
 export interface ReceiveQuestSaveAction extends Redux.Action {
   type: 'RECEIVE_QUEST_SAVE';
-  id: string;
+  quest: QuestType;
 }
 
 export interface RequestQuestPublishAction extends Redux.Action {
   type: 'REQUEST_QUEST_PUBLISH';
-  id: string;
+  quest: QuestType;
 }
 
 export interface ReceiveQuestPublishAction extends Redux.Action {
   type: 'RECEIVE_QUEST_PUBLISH';
-  id: string;
+  quest: QuestType;
 }
 
-export interface RequestQuestDeleteAction extends Redux.Action {
-  type: 'REQUEST_QUEST_DELETE';
-  id: string;
+export interface RequestQuestUnpublishAction extends Redux.Action {
+  type: 'REQUEST_QUEST_UNPUBLISH';
+  quest: QuestType;
 }
 
-export interface ReceiveQuestDeleteAction extends Redux.Action {
-  type: 'RECEIVE_QUEST_DELETE';
-  id: string;
-}
-
-export interface RequestQuestShareAction extends Redux.Action {
-  type: 'REQUEST_QUEST_SHARE';
-  id: string;
-  share: ShareType;
-}
-
-export interface ReceiveQuestShareAction extends Redux.Action {
-  type: 'RECEIVE_QUEST_SHARE';
-  id: string;
-  share: ShareType;
-}
-
-export interface RequestQuestListAction extends Redux.Action {
-  type: 'REQUEST_QUEST_LIST';
-}
-
-export interface ReceiveQuestListAction extends Redux.Action {
-  type: 'RECEIVE_QUEST_LIST';
-  quests: QuestType[];
-  nextToken: string;
-  receivedAt: number;
+export interface ReceiveQuestUnpublishAction extends Redux.Action {
+  type: 'RECEIVE_QUEST_UNPUBLISH';
+  quest: QuestType;
 }

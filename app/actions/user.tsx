@@ -2,38 +2,47 @@ import {hashHistory} from 'react-router';
 
 import {SetProfileMetaAction} from './ActionTypes';
 import {UserState} from '../reducers/StateTypes';
+import {loadQuestFromURL} from './quest';
+import {realtimeUtils} from '../auth';
 
-declare var gapi: any;
+declare var window: any;
 
 function setProfileMeta(user: UserState): SetProfileMetaAction {
   return {type: 'SET_PROFILE_META', user};
 }
 
-export function loginUser(): ((dispatch: Redux.Dispatch<any>)=>void) {
+export function loginUser(showPrompt: boolean): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
-    gapi.auth2.getAuthInstance().signIn().then(function(googleUser: any) {
-      var id_token = googleUser.getAuthResponse().id_token;
-      var basic_profile = googleUser.getBasicProfile();
-      var name: string = basic_profile.getName();
-      var image: string = basic_profile.getImageUrl();
+    realtimeUtils.authorize(function(response:any){
+      if (response.error){
+        dispatch(setProfileMeta({loggedIn: false}));
+      } else {
+        window.gapi.client.load('plus','v1', function(){
+          var request = window.gapi.client.plus.people.get({
+            'userId': 'me'
+          });
+          request.execute(function(res: any) {
+            $.post('/auth/google', JSON.stringify({id_token: response.id_token, name: res.displayName, image: res.image.url}), function(data) {
+              dispatch(setProfileMeta({
+                loggedIn: true,
+                id: data,
+                displayName: res.displayName,
+                image: res.image.url,
+              }));
 
-      $.post('/auth/google', JSON.stringify({id_token, name, image}), function(data) {
-        dispatch(setProfileMeta({
-          id: data,
-          displayName: name,
-          image: image
-        }));
-        hashHistory.push('/app');
-      });
-    });
+              loadQuestFromURL(dispatch);
+            });
+          });
+        });
+      }
+    }, showPrompt);
   }
 }
 
 export function logoutUser(): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
-    gapi.auth2.getAuthInstance().signOut().then(function() {
-      dispatch(setProfileMeta({}));
-      hashHistory.push('/');
-    });
+    window.gapi.auth.setToken(null);
+    window.gapi.auth.signOut();
+    window.location.reload();
   }
 }

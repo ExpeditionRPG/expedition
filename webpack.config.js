@@ -39,8 +39,11 @@ var options = {
     new DashboardPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
-    new webpack.optimize.CommonsChunkPlugin('init.js')
-  ]
-}
+    new webpack.optimize.CommonsChunkPlugin('init.js'),
+    new webpack.DefinePlugin({
+      VERSION: JSON.stringify(require('./package.json').version)
+    }),
+  ],
+};
 
 module.exports = options

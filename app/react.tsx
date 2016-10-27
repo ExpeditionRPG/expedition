@@ -19,7 +19,6 @@
 
 import * as React from 'react';
 import {render} from 'react-dom';
-import {Router, Route, Link, hashHistory} from 'react-router';
 
 // So we can hot reload
 declare var require: any;
@@ -27,6 +26,8 @@ declare var module: any;
 
 // For dev tools extension
 declare var window:any;
+
+declare var unescape: any;
 
 // Material UI theming libs
 import theme from './theme';
@@ -43,96 +44,45 @@ import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 
 // Custom components
-import DialogsContainer from './components/DialogsContainer';
-import SplashContainer from './components/SplashContainer';
-import QuestAppBarContainer from './components/QuestAppBarContainer';
-import QuestDrawerContainer from './components/QuestDrawerContainer';
-import QuestIDEContainer from './components/QuestIDEContainer';
+import MainContainer from './components/MainContainer';
 import questIDEApp from './reducers/CombinedReducers';
-
-// Initialize the global redux store
-var initialStateElem = document.getElementById("initial-state");
-let auth = (initialStateElem) ? JSON.parse(initialStateElem.textContent) : {};
-let initialState: Object = {
-  user: {
-    id: auth.id,
-    displayName: auth.name,
-    image: auth.image
-  },
-};
+import {loginUser} from './actions/user';
 
 let devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
 let middleware = applyMiddleware(thunk);
-const store: any = middleware(devtools(createStore))(questIDEApp, initialState);
+const store: any = middleware(devtools(createStore))(questIDEApp, {});
 
-declare var gapi: any;
-function initAuth(): void {
-  gapi.client.setApiKey("AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8");
-  gapi.auth2.init({
-    client_id: "545484140970-r95j0rmo8q1mefo0pko6l3v6p4s771ul.apps.googleusercontent.com",
-    scope: "profile"
-  }).then(function() {
-    // Render the components, picking up where react left off on the server
-    render(
-      <Router history={hashHistory}>
-        <Route path="/" component={SplashPage}></Route>
-        <Route path="/app" component={AppPage} onEnter={requireAuth}></Route>
-      </Router>,
-      document.getElementById('react-app')
-    );
-  });
-}
-gapi.load('client:auth2', initAuth);
-
-
-function requireAuth(nextState: any, replace: any): void {
-  const user = store.getState().user;
-  if (gapi.auth2 == null || !gapi.auth2.getAuthInstance().isSignedIn.get() || user.id == null) {
-    replace({
-      pathname: '/',
-      state: { nextPathname: nextState.location.pathname }
-    });
+if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
+  // Try to parse from google drive menu action, e.g.
+  //?state=%7B"ids":%5B"0BzrQOdaJcH9MeDhic2ctdFNSdjg"%5D,"action":"open","userId":"106667818352266772866"%7D
+  try {
+    var doc_json = JSON.parse(unescape(window.location.search).match(/\?state=(.*)/)[1]);
+  } catch (e) {
+    console.log("Failed to parse anticipated Drive open URI: " + window.location.search);
   }
+  window.location.href = "/#" + doc_json.ids[0];
 }
 
+
+window.gapi.load('client,client:auth2,drive-realtime,drive-share', function() {
+  window.gapi.client.load('drive', 'v2', function() {
+    store.dispatch(loginUser(false));
+  });
+});
 
 if (module.hot) {
   module.hot.accept('./reducers/CombinedReducers', () => {
     console.log("Updating reducers");
     let updated = require('./reducers/CombinedReducers');
-    console.log(updated)
     store.replaceReducer(updated);
   });
 }
 
-
-const AppPage = React.createClass({
-  render() {
-    return (
-      <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-        <Provider store={store}>
-          <div style={{width: "100%", height: "100%"}}>
-            <QuestAppBarContainer/>
-            <QuestIDEContainer/>
-            <QuestDrawerContainer/>
-            <DialogsContainer/>
-          </div>
-        </Provider>
-      </MuiThemeProvider>
-    )
-  }
-});
-
-const SplashPage = React.createClass({
-  render() {
-    return (
-      <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-        <Provider store={store}>
-          <div style={{width: "100%", height: "100%"}}>
-            <SplashContainer/>
-          </div>
-        </Provider>
-      </MuiThemeProvider>
-    )
-  }
-});
+render(
+  <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
+    <Provider store={store}>
+      <MainContainer></MainContainer>
+    </Provider>
+  </MuiThemeProvider>,
+  document.getElementById('react-app')
+);

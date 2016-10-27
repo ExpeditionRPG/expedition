@@ -27,11 +27,11 @@ const styles = {
 
 export interface QuestIDEStateProps {
   dirty: DirtyState;
-  text: string;
+  realtime: any;
 };
 
 export interface QuestIDEDispatchProps {
-  onDirty: (dirty: DirtyState, text: string) => void;
+  onDirty: (realtime: any, dirty: DirtyState, text: string) => void;
 }
 
 interface QuestIDEProps extends QuestIDEStateProps, QuestIDEDispatchProps {}
@@ -41,8 +41,8 @@ const QuestIDE = (props: QuestIDEProps): JSX.Element => {
     <span style={{width: "100%", height: "100%"}}>
       <div style={styles.tabcontainer}>
         <TextView
-          value={props.text}
-          onChange={(text: string) => props.onDirty(props.dirty, text)} />
+          realtime={props.realtime}
+          onChange={(text: string) => props.onDirty(props.realtime, props.dirty, text)} />
       </div>
     </span>
   );

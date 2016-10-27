@@ -13,7 +13,7 @@
 
 /*
 CREATE TABLE quests (
-  id INT NOT NULL AUTO_INCREMENT,
+  id VARCHAR(255) NOT NULL,
   PRIMARY KEY(id),
   created TIMESTAMP,
   modified TIMESTAMP NULL DEFAULT NULL,
@@ -42,6 +42,7 @@ var config = require('../config');
 //var background = require('../lib/background');
 var mysql = require('mysql');
 var cloudstorage = require('../lib/cloudstorage');
+var toMeta = require('../translation/to_meta');
 
 // We use base62 for encoding/decoding datastore keys into something more easily typeable on a mobile device.
 var Base62 = require('base62');
@@ -69,24 +70,13 @@ function getRawXMLUrl(user, quest) {
   }
 }
 
-function fromDatastore (obj) {
-  obj.id = Base62.encode(obj.id);
-  return obj;
-}
-
-function toFullKey(quest) {
-  return Base62.decode(quest);
-}
-
 function searchQuests(userId, params, cb) {
   if (!params) {
     cb(new Error("Search params not given"));
   }
 
   var connection = getConnection();
-
-  var table = (params.ide) ? "quests" : "published";
-  var filter_string = "SELECT * FROM `" + table + "` WHERE tombstone IS NULL";
+  var filter_string = "SELECT * FROM `quests` WHERE tombstone IS NULL";
   var filter_vars = [];
 
   if (params.owner) {
@@ -133,8 +123,8 @@ function searchQuests(userId, params, cb) {
   // Also search for unlisted quests and list them first if we have an exact match on ID
   // and the search string is base62-like. These results will be displayed first.
   if (params.search && params.search.match(/^[A-Za-z0-9]+$/)) {
-    filter_string = "(SELECT * FROM `published` WHERE id=? AND shared IS NOT NULL AND tombstone IS NULL LIMIT 1) UNION (" + filter_string + ")";
-    filter_vars.unshift(toFullKey(params.search));
+    filter_string = "(SELECT * FROM `quests` WHERE id=? AND shared IS NOT NULL AND tombstone IS NULL LIMIT 1) UNION (" + filter_string + ")";
+    filter_vars.unshift(params.search);
   }
 
   var query = connection.query(filter_string, filter_vars, function(err, results) {
@@ -142,104 +132,12 @@ function searchQuests(userId, params, cb) {
       return cb(err);
     }
     var hasMore = results.length === limit ? token + results.length : false;
-    cb(null, results.map(fromDatastore), hasMore);
+    cb(null, results, hasMore);
   });
   console.log(query.sql);
   return connection.end();
 }
-
-// Creates a new quest or updates an existing quest with new data. The provided
-// data is automatically translated into Datastore format.
-// TODO: This should automatically keep versions, and not store data directly.
-function update(user, id, quest, md, cb) {
-  // TODO: Validate here
-
-  if (!md) {
-    return cb("Could not update - no md data.")
-  }
-
-  var connection = getConnection();
-
-  if (id === undefined || id === "null" || id === "undefined") {
-    console.log("Saving new quest owned by " + user);
-
-    // Do a mini-save to storage to get the new ID
-    connection.query(
-      'INSERT INTO `quests` (created, user) VALUES (NOW(), ?)', [user],
-      function (err, result) {
-        if (err) {
-          return cb(err);
-        }
-        return update(user, Base62.encode(result.insertId), quest, md, cb);
-      }
-    );
-    return connection.end();
-  }
-
-  // Invariant: quest ID is present after this point
-  console.log("Updating quest " + id + " owned by " + user);
-
-  var cloud_storage_data = {
-    gcsname: user + "/" + id + "/" + Date.now() + ".md",
-    buffer: md
-  }
-
-  // We can run this in parallel with the Datastore model.
-  cloudstorage.upload(cloud_storage_data, function(err, data) {
-    if (err) {
-      console.log(err);
-    }
-  });
-
-  quest.draftUrl = cloudstorage.getPublicUrl(cloud_storage_data.gcsname);
-  var params = ['draftUrl', 'metaAuthor', 'metaEmail', 'metaMaxPlayers', 'metaMaxTimeMinutes', 'metaMinPlayers', 'metaMinTimeMinutes', 'metaSummary', 'metaTitle', 'metaUrl'];
-  var values = [];
-  for (var i = 0; i < params.length; i++) {
-    values.push(quest[params[i]]);
-    params[i] += "=?";
-  }
-  values.push(user);
-  values.push(toFullKey(id));
-
-
-  // Tombstone must be explicitly set for indexing purposes.
-  // Modified will always be the current time.
-  var query = connection.query(
-    'UPDATE `quests` SET tombstone=NULL,modified=NOW(),' + params.join(',') + ' WHERE user=? AND id=? LIMIT 1', values, function(err, result) {
-      if (err) {
-        return cb(err);
-      }
-      cb(null, id);
-  });
-  console.log(query.sql);
-  return connection.end();
-}
-
-function share(user, id, share, cb) {
-  var query;
-  if (share === 'PRIVATE') {
-    query = 'UPDATE quests SET published=NULL, shared=NULL WHERE user=? AND id=? LIMIT 1';
-  } else if (share === 'UNLISTED') {
-    query = 'UPDATE quests SET published=NULL, shared=NOW() WHERE user=? AND id=? LIMIT 1';
-  } else if (share === 'PUBLIC') {
-    query = 'UPDATE quests SET published=NOW(), shared=NOW() WHERE user=? AND id=? LIMIT 1';
-  } else {
-    return new Error("Unknown share setting " + share);
-  }
-
-  var connection = getConnection();
-  connection.query(query, [user, toFullKey(id)],
-    function(err, result) {
-      if (err) {
-        return cb(err);
-      }
-      cb(null, share);
-    }
-  );
-  return connection.end();
-}
-
-function publish(user, id, quest, xml, cb) {
+function publish(user, id, xml, cb) {
   // TODO: Validate here
 
   if (!xml) {
@@ -267,90 +165,54 @@ function publish(user, id, quest, xml, cb) {
     }
   });
 
-  var publishedUrl = cloudstorage.getPublicUrl(cloud_storage_data.gcsname);
+  var meta = toMeta.fromXML(xml);
 
-  // Update publish fields on the quest itself
-  var query = connection.query(
-    'UPDATE `quests` SET published=NOW(), publishedUrl=? WHERE user=? AND id=? LIMIT 1', [publishedUrl, user, toFullKey(id)], function(err, result) {
-      if (err) {
-        return cb(err);
-      }
-
-      // Then create a snapshot of the quest the way it currently is (this is what's displayed publicly)
-      var query = connection.query('REPLACE INTO `published` SELECT * FROM `quests` WHERE user=? AND id=? LIMIT 1', [user, toFullKey(id)], function(err, result) {
-        if (err) {
-          return cb(err);
-        }
-        cb(null, id);
-      });
-      console.log(query.sql);
-
-      return connection.end();
-  });
-  console.log(query.sql);
-}
-
-function share(user, id, share, cb) {
-  var query;
-  if (share === 'PRIVATE') {
-    query = 'UPDATE quests SET published=NULL, shared=NULL WHERE user=? AND id=? LIMIT 1';
-  } else if (share === 'UNLISTED') {
-    query = 'UPDATE quests SET published=NULL, shared=NOW() WHERE user=? AND id=? LIMIT 1';
-  } else if (share === 'PUBLIC') {
-    query = 'UPDATE quests SET published=NOW(), shared=NOW() WHERE user=? AND id=? LIMIT 1';
-  } else {
-    return new Error("Unknown share setting " + share);
+  meta.user = user;
+  meta.id = user + '_' + id;
+  meta.publishedUrl = cloudstorage.getPublicUrl(cloud_storage_data.gcsname);
+  var params = ['id', 'user', 'publishedUrl', 'metaAuthor', 'metaEmail', 'metaMaxPlayers', 'metaMaxTimeMinutes', 'metaMinPlayers', 'metaMinTimeMinutes', 'metaSummary', 'metaTitle', 'metaUrl'];
+  var columns = params.join(',');
+  var values = [];
+  var basevalues = [];
+  for (var i = 0; i < params.length; i++) {
+    values.push(meta[params[i]]);
+    basevalues.push('?');
+  }
+  for (var i = 0; i < params.length; i++) {
+    values.push(meta[params[i]]);
+    params[i] += "=?";
   }
 
-  var connection = getConnection();
-  connection.query(query, [user, toFullKey(id)],
-    function(err, result) {
-      if (err) {
-        return cb(err);
-      }
-      cb(null, share);
-    }
-  );
-  return connection.end();
-}
-
-function tombstone(user, id, cb) {
-  var connection = getConnection();
-  var query = connection.query('UPDATE `quests` SET tombstone=NOW() WHERE user=? AND id=? LIMIT 1', [user, toFullKey(id)],
-      function(err, result) {
+  var query = connection.query('INSERT INTO `quests` ('+ columns +',published) VALUES (' + basevalues.join(',') + ',NOW()) ON DUPLICATE KEY UPDATE ' + params.join(',') + ',published=NOW()', values, function(err, result) {
     if (err) {
       return cb(err);
     }
-
-    // Then create a snapshot of the quest the way it currently is (this is what's displayed publicly)
-    var query = connection.query('REPLACE INTO `published` SELECT * FROM `quests` WHERE user=? AND id=? LIMIT 1', [user, toFullKey(id)], function(err, result) {
-      if (err) {
-        return cb(err);
-      }
-      cb(null);
-    });
-    console.log(query.sql);
-
-    return connection.end();
+    cb(null, id);
   });
   console.log(query.sql);
+  return connection.end();
 }
 
-function read(loggedInUser, id, cb) {
+function unpublish(user, id, cb) {
+  if (id === undefined) {
+    throw new Error('Invalid Quest ID');
+  }
   var connection = getConnection();
 
-  // If we have a user (i.e. internal read), set, don't require quests to be published.
-  var query_string;
-  var query_values;
-  if (loggedInUser) {
-    query_string = 'SELECT * FROM `quests` WHERE user=? AND id=? LIMIT 1';
-    query_values = [loggedInUser, toFullKey(id)];
-  } else {
-    query_string = 'SELECT * FROM `quests` WHERE id=? AND published IS NOT NULL LIMIT 1';
-    query_values = [toFullKey(id)];
-  }
+  console.log("Unpublishing quest " + id + " owned by " + user);
+  var query = connection.query('DELETE FROM `quests` WHERE id=?', [user + '_' + id], function(err, result) {
+    if (err) {
+      return cb(err);
+    }
+    cb(null, id);
+  });
+  console.log(query.sql);
+  return connection.end();
+}
 
-  connection.query(query_string, query_values, function(err, results) {
+function read(id, cb) {
+  var connection = getConnection();
+  connection.query('SELECT * FROM `quests` WHERE id=? LIMIT 1', [id], function(err, results) {
     if (err) {
       return cb(err);
     }
@@ -361,16 +223,14 @@ function read(loggedInUser, id, cb) {
         message: 'Not found'
       });
     }
-    cb(null, fromDatastore(results[0]));
+    cb(null, results[0]);
   });
   return connection.end();
 }
 
 module.exports = {
   read: read,
-  update: update,
-  tombstone: tombstone,
   searchQuests: searchQuests,
-  share: share,
-  publish: publish
+  publish: publish,
+  unpublish: unpublish,
 };
