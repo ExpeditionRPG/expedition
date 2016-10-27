@@ -12,6 +12,7 @@ import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import HelpOutlineIcon from 'material-ui/svg-icons/action/help-outline'
 import CloudDownloadIcon from 'material-ui/svg-icons/file/cloud-download'
 import LockIcon from 'material-ui/svg-icons/action/lock'
+import FeedbackIcon from 'material-ui/svg-icons/action/feedback'
 import PublishIcon from 'material-ui/svg-icons/editor/publish'
 import SaveIcon from 'material-ui/svg-icons/content/save'
 import AddIcon from 'material-ui/svg-icons/content/add'
@@ -76,7 +77,6 @@ export interface QuestDrawerStateProps {
 export interface QuestDrawerDispatchProps {
   onMenuSelect: (action: QuestActionType, dirty: boolean, quest: QuestType) => void;
   onDrawerRequestChange: () => void;
-  onHelpRequest: ()=>void;
 }
 
 interface QuestDrawerProps extends QuestDrawerStateProps, QuestDrawerDispatchProps {}
@@ -96,8 +96,8 @@ const QuestDrawer = (props: QuestDrawerProps): JSX.Element => {
         <MenuItem value="PUBLISH_QUEST" primaryText="Publish" leftIcon={<PublishIcon/>} />
         <MenuItem value="UNPUBLISH_QUEST" primaryText="Unpublish" leftIcon={<PublishIcon/>} />
         <MenuItem value="DRIVE_VIEW" primaryText="Go To Drive" leftIcon={<AddIcon/>} />
-        <MenuItem primaryText="Help" leftIcon={<HelpOutlineIcon/>} onTouchTap={props.onHelpRequest} />
-        <a href="http://expeditiongame.com/contact" target="_blank"><MenuItem>Send Feedback</MenuItem></a>
+        <MenuItem value="FEEDBACK" primaryText="Send Feedback" leftIcon={<FeedbackIcon/>}/>
+        <MenuItem value="HELP" primaryText="Help" leftIcon={<HelpOutlineIcon/>} />
       </Menu>
     </Drawer>
   )

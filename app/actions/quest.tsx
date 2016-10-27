@@ -15,6 +15,7 @@ import {realtimeUtils} from '../auth'
 declare var window: any;
 
 var toXML: any = (require('../../translation/to_xml') as any).toXML;
+var toMeta: any = require('../../translation/to_meta');
 
 function receiveQuestLoad(quest: QuestType ): ReceiveQuestLoadAction {
   return {type: 'RECEIVE_QUEST_LOAD', quest};
@@ -47,8 +48,6 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
   const boundary = '-------314159265358979323846';
   const delimiter = "\r\n--" + boundary + "\r\n";
   const close_delim = "\r\n--" + boundary + "--";
-
-  // TODO: Set quest title based on metadata
 
   text = QUEST_DOCUMENT_HEADER + text;
   var base64Data = btoa(text);
@@ -111,7 +110,13 @@ export function loadQuest(dispatch: any, docid?: string) {
   realtimeUtils.load(docid, function(doc: any) {
     window.location.hash=docid;
     var md = doc.getModel().getRoot().get('markdown');
-    dispatch(receiveQuestLoad({id: docid, mdRealtime: md}));
+
+    var text: string = md.getText();
+    var quest = toMeta.fromMarkdown(text) as QuestType;
+    quest.id = docid;
+    quest.mdRealtime = md;
+
+    dispatch(receiveQuestLoad(quest));
   },
   function(model: any) {
     var string = model.createString();
@@ -141,8 +146,18 @@ export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)
 export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_SAVE', quest} as RequestQuestSaveAction);
-    updateDriveFile(quest.id, {}, quest.mdRealtime.getText(), function() {
-      dispatch({type: 'RECEIVE_QUEST_SAVE', quest} as ReceiveQuestSaveAction);
+
+    var text: string = quest.mdRealtime.getText();
+    var meta = toMeta.fromMarkdown(text) as QuestType;
+
+    // For all metadata values, see https://developers.google.com/drive/v2/reference/files
+    var fileMeta = {
+      title: meta.metaTitle,
+      description: meta.metaSummary,
+    };
+
+    updateDriveFile(quest.id, fileMeta, text, function() {
+      dispatch({type: 'RECEIVE_QUEST_SAVE', quest: meta} as ReceiveQuestSaveAction);
     });
   };
 }
