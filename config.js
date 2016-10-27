@@ -61,6 +61,8 @@ nconf
     SESSION_SECRET: '',
   });
 
+console.log(nconf.get());
+
 // Check for required settings
 checkConfig('GCLOUD_PROJECT');
 checkConfig('CLOUD_BUCKET');
