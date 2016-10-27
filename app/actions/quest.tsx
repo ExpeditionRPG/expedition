@@ -74,10 +74,6 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
 }
 
 export function loadQuestFromURL(dispatch: Redux.Dispatch<any>) {
-  // TODO: Accept URLs of the following format (i.e. from Drive "open with" user interaction):
-  //?state=%7B"ids":%5B"0BzrQOdaJcH9MeDhic2ctdFNSdjg"%5D,"action":"open","userId":"106667818352266772866"%7D
-
-  // When user is logged in, create a new quest if there's not one already.
   if (window.location.hash) {
     loadQuest(dispatch, window.location.hash.substr(1));
   } else {
