@@ -32,10 +32,14 @@ nconf
     'PORT',
     'SECRET',
     'SUBSCRIPTION_NAME',
-    'TOPIC_NAME'
+    'TOPIC_NAME',
+    'MYSQL_USER',
+    'MYSQL_PASSWORD',
+    'MYSQL_HOST',
+    'SESSION_SECRET',
   ])
   // 3. Config file
-  .file({ file: path.join(__dirname, 'config.json') })
+  //.file({ file: path.join(__dirname, 'config.json') })
   // 4. Defaults
   .defaults({
     // Typically you will create a bucket with the same name as your project ID.
