@@ -11,7 +11,7 @@ const mapStateToProps = (state: AppState, ownProps: any): any => {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SplashDispatchProps => {
   return {
     onLogin: (user: UserState) => {
-      dispatch(loginUser());
+      dispatch(loginUser(true));
     },
   };
 }

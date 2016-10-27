@@ -1,18 +1,15 @@
 import {ErrorType} from '../error'
 // TODO: URL type?
 
-export type DialogIDType = 'USER' | 'ERROR' | 'CONFIRM_NEW_QUEST' | 'CONFIRM_LOAD_QUEST' | 'SHARE_SETTINGS' | 'PUBLISHED';
+export type DialogIDType = 'ERROR' | 'PUBLISHED' | 'UNPUBLISHED';
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
-
-export interface EditorState {
-    xml: string;
-}
 
 export interface QuestType {
   id?: string;
   xml?: string;
   md?: string;
+  mdRealtime?: any;
   draftUrl?: string;
   publishedUrl?: string;
   created?: string;
@@ -36,20 +33,17 @@ export type DirtyState = boolean;
 export interface DialogsState {
   USER: boolean;
   ERROR: boolean;
-  CONFIRM_NEW_QUEST: boolean;
-  CONFIRM_LOAD_QUEST: boolean;
-  SHARE_SETTINGS: boolean;
   PUBLISHED: boolean;
+  UNPUBLISHED: boolean;
   [key: string]: boolean;
 }
 
 export interface DrawerState {
   open: boolean;
-  quests: QuestType[];
-  receivedAt?: number;
 };
 
 export interface UserState {
+  loggedIn?: boolean,
   id?: string,
   displayName?: string,
   image?: string
@@ -58,7 +52,6 @@ export interface UserState {
 export type ErrorsState = ErrorType[];
 
 export interface AppState {
-  editor: EditorState;
   quest: QuestType;
   dirty: DirtyState;
   drawer: DrawerState;
