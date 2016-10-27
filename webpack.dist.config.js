@@ -24,8 +24,8 @@ var options = {
     ],
     preLoaders: [
         // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-        { test: /\.js$/, loader: "source-map-loader" }
-    ]
+        { test: /\.js$/, loader: "source-map-loader" },
+    ],
   },
   plugins: [
     new webpack.optimize.DedupePlugin(),
@@ -34,10 +34,11 @@ var options = {
     new webpack.optimize.CommonsChunkPlugin('init.js'),
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      }
-    })
-  ]
-}
+        NODE_ENV: JSON.stringify('production'),
+      },
+      VERSION: JSON.stringify(require('./package.json').version)
+    }),
+  ],
+};
 
-module.exports = options
+module.exports = options;
