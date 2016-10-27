@@ -41,10 +41,8 @@ export function loginUser(showPrompt: boolean): ((dispatch: Redux.Dispatch<any>)
 
 export function logoutUser(): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
-    window.gapi.auth.signOut();
     window.gapi.auth.setToken(null);
-    // window.gapi.auth2.getAuthInstance().signOut().then(function() {
-      window.location.reload();
-    // });
+    window.gapi.auth.signOut();
+    window.location.reload();
   }
 }
