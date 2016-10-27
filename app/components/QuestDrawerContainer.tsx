@@ -30,8 +30,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         case 'UNPUBLISH_QUEST':
           return dispatch(unpublishQuest(quest));
         case 'DRIVE_VIEW':
-          // TODO: Actually search for this quest's title (scrape from load)
-          window.open('https://drive.google.com/drive/search?q=Expedition');
+          window.open('https://drive.google.com/drive/search?q=' + quest.metaTitle);
           break;
         case 'HELP':
           window.open(MARKDOWN_GUIDE_URL, '_blank');

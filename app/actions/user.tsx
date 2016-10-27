@@ -14,18 +14,25 @@ function setProfileMeta(user: UserState): SetProfileMetaAction {
 export function loginUser(showPrompt: boolean): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
     realtimeUtils.authorize(function(response:any){
-      if(response.error){
+      if (response.error){
         dispatch(setProfileMeta({loggedIn: false}));
       } else {
-        $.post('/auth/google', JSON.stringify({id_token: response.id_token, name: "Test", image: ""}), function(data) {
-          dispatch(setProfileMeta({
-            loggedIn: true,
-            id: data,
-            displayName: "Test",
-            image: ""
-          }));
+        window.gapi.client.load('plus','v1', function(){
+          var request = window.gapi.client.plus.people.get({
+            'userId': 'me'
+          });
+          request.execute(function(res: any) {
+            $.post('/auth/google', JSON.stringify({id_token: response.id_token, name: res.displayName, image: res.image.url}), function(data) {
+              dispatch(setProfileMeta({
+                loggedIn: true,
+                id: data,
+                displayName: res.displayName,
+                image: res.image.url,
+              }));
 
-          loadQuestFromURL(dispatch);
+              loadQuestFromURL(dispatch);
+            });
+          });
         });
       }
     }, showPrompt);
