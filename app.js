@@ -78,6 +78,8 @@ var setupSession = function(app) {
 
   // OAuth2
   app.use(passport.initialize());
+
+  // TODO: Use postgres session storage (to prevent session loss due to restarting task)
   app.use(passport.session());
   app.use(require('./lib/oauth2').router);
 };
