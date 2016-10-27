@@ -5,7 +5,10 @@ import {AppState, UserState} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps => {
-  return {user: state.user};
+  return {
+    quest: state.quest,
+    user: state.user,
+  };
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestAppBarDispatchProps => {
