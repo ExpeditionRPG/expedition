@@ -5,7 +5,6 @@ import {DirtyState} from '../reducers/StateTypes'
 import DialogsContainer from './DialogsContainer';
 import SplashContainer from './SplashContainer';
 import QuestAppBarContainer from './QuestAppBarContainer';
-import QuestDrawerContainer from './QuestDrawerContainer';
 import QuestIDEContainer from './QuestIDEContainer';
 
 const styles = {
@@ -46,7 +45,6 @@ const Main = (props: MainProps): JSX.Element => {
       <div style={{width: "100%", height: "100%"}}>
         <QuestAppBarContainer/>
         <QuestIDEContainer/>
-        <QuestDrawerContainer/>
         <DialogsContainer/>
       </div>
     );

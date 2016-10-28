@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux'
 import {quest} from './quest'
 import {dirty} from './dirty'
-import {drawer} from './drawer'
 import {user} from './user'
 import {dialogs} from './dialogs'
 import {errors} from './errors'
@@ -9,7 +8,6 @@ import {errors} from './errors'
 const questIDEApp = combineReducers({
   quest,
   dirty,
-  drawer,
   user,
   dialogs,
   errors

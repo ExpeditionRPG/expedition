@@ -1,7 +1,6 @@
 import {connect} from 'react-redux'
 
 import {QuestActionType} from '../actions/ActionTypes'
-import {setDrawer} from '../actions/drawer'
 import {saveQuest, publishQuest, unpublishQuest} from '../actions/quest'
 import {logoutUser} from '../actions/user'
 import {AppState, DirtyState, QuestType, UserState} from '../reducers/StateTypes'
@@ -20,9 +19,6 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps 
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestAppBarDispatchProps => {
   return {
-    onDrawerToggle: (user: UserState) => {
-      dispatch(setDrawer(user.id, true));
-    },
     onMenuSelect: (action: QuestActionType, dirty: DirtyState, quest: QuestType) => {
       switch(action) {
         case 'SAVE_QUEST':

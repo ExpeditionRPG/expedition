@@ -37,7 +37,6 @@ export interface QuestAppBarStateProps {
 };
 
 export interface QuestAppBarDispatchProps {
-  onDrawerToggle: (user: UserState)=>void;
   onMenuSelect: (action: QuestActionType, dirty: boolean, quest: QuestType) => void;
   onUserDialogRequest: (user: UserState)=>void;
 }

@@ -38,10 +38,6 @@ export interface DialogsState {
   [key: string]: boolean;
 }
 
-export interface DrawerState {
-  open: boolean;
-};
-
 export interface UserState {
   loggedIn?: boolean,
   id?: string,
@@ -54,7 +50,6 @@ export type ErrorsState = ErrorType[];
 export interface AppState {
   quest: QuestType;
   dirty: DirtyState;
-  drawer: DrawerState;
   user: UserState;
   dialogs: DialogsState;
   errors: ErrorsState;

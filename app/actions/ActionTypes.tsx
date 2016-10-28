@@ -12,12 +12,6 @@ export type QuestActionType = 'NEW_QUEST' | 'LOAD_QUEST' | 'SAVE_QUEST' | 'PUBLI
 export const SIGN_IN: string = 'SIGN_IN';
 export const SIGN_OUT: string = 'SIGN_OUT';
 
-export const DrawerActions = {
-  OPEN: 'OPEN',
-  CLOSE: 'CLOSE',
-  TOGGLE: 'TOGGLE'
-};
-
 export interface SetProfileMetaAction {
   type: 'SET_PROFILE_META';
   user: UserState;
@@ -32,11 +26,6 @@ export interface SetDialogAction extends Redux.Action {
 export interface SetDirtyAction extends Redux.Action {
   type: 'SET_DIRTY';
   is_dirty: boolean;
-}
-
-export interface SetDrawerAction extends Redux.Action {
-  type: 'SET_DRAWER'
-  is_open: boolean;
 }
 
 export interface ReceiveQuestLoadAction extends Redux.Action {
