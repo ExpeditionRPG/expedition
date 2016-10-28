@@ -63,6 +63,16 @@ if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
   window.location.href = "/#" + doc_json.ids[0];
 }
 
+window.onbeforeunload = function () {
+  console.log((store.getState().dirty === false) || true)
+  if (store.getState().dirty === true) {
+    return false;
+  }
+
+  return null;
+
+  // return (store.getState().dirty === false) || true;
+}
 
 window.gapi.load('client,client:auth2,drive-realtime,drive-share', function() {
   window.gapi.client.load('drive', 'v2', function() {
