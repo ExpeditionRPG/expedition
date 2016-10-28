@@ -46,6 +46,8 @@ interface QuestAppBarProps extends QuestAppBarStateProps, QuestAppBarDispatchPro
 const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   const loginText = 'Logged in as ' + props.user.displayName;
   const questTitle = props.quest.metaTitle || 'unsaved quest';
+console.log(props.dirty)
+  const savingText = (props.dirty) ? 'Unsaved changes' : 'All changes saved';
   return (
     <span style={{width: "100%", height: "100%"}}>
       <AppBar
@@ -76,7 +78,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
           <FlatButton style={styles.button} label="View in Drive" onTouchTap={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.dirty, props.quest)} />
           <FlatButton style={styles.button} label="Send Feedback" onTouchTap={(event: any) => props.onMenuSelect('FEEDBACK', props.dirty, props.quest)} />
           <FlatButton style={styles.button} label="Help" onTouchTap={(event: any) => props.onMenuSelect('HELP', props.dirty, props.quest)} />
-          <FlatButton style={styles.button} label=" " disabled={true} />
+          <FlatButton style={styles.button} label={savingText} disabled={true} />
         </ToolbarGroup>
       </Toolbar>
     </span>
