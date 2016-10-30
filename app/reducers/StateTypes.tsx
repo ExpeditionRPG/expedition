@@ -11,21 +11,19 @@ export interface QuestType {
   md?: string;
   mdRealtime?: any;
   draftUrl?: string;
-  publishedUrl?: string;
+  publishedurl?: string;
   created?: string;
   modified?: string;
   published?: string;
-  shared?: string;
-  shortUrl?: string;
-  metaTitle?: string,
-  metaSummary?: string,
-  metaMinPlayers?: number,
-  metaMaxPlayers?: number,
-  metaEmail?: string,
-  metaUrl?: string,
-  metaMinTimeMinutes?: number,
-  metaMaxTimeMinutes?: number,
-  metaAuthor?: string
+  title?: string,
+  summary?: string,
+  minplayers?: number,
+  maxplayers?: number,
+  email?: string,
+  url?: string,
+  mintimeminutes?: number,
+  maxtimeminutes?: number,
+  author?: string
 };
 
 export type DirtyState = boolean;

@@ -21,7 +21,7 @@ interface QuestAppBarProps extends QuestAppBarStateProps, QuestAppBarDispatchPro
 
 const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   const loginText = 'Logged in as ' + props.user.displayName;
-  const questTitle = props.quest.metaTitle || 'unsaved quest';
+  const questTitle = props.quest.title || 'unsaved quest';
   return (
     <span style={{width: "100%", height: "100%"}}>
       <AppBar
