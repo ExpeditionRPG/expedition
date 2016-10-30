@@ -3,7 +3,7 @@ import * as React from 'react'
 import {Tab} from 'material-ui/Tabs'
 
 import TextView from './base/TextView'
-import {DirtyState} from '../reducers/StateTypes'
+import {DirtyState, QuestType} from '../reducers/StateTypes'
 
 
 const styles = {
@@ -29,14 +29,14 @@ const styles = {
 export interface QuestIDEStateProps {
   dirty: DirtyState;
   realtime: any;
+  quest: QuestType;
 };
 
 export interface QuestIDEDispatchProps {
-  onDirty: (realtime: any, dirty: DirtyState, text: string) => void;
+  onDirty: (realtime: any, dirty: DirtyState, quest: QuestType, text: string) => void;
 }
 
 interface QuestIDEProps extends QuestIDEStateProps, QuestIDEDispatchProps {}
-
 
 
 const QuestIDE = (props: QuestIDEProps): JSX.Element => {
@@ -45,7 +45,7 @@ const QuestIDE = (props: QuestIDEProps): JSX.Element => {
       <div style={styles.tabcontainer}>
         <TextView
           realtime={props.realtime}
-          onChange={(text: string) => props.onDirty(props.realtime, props.dirty, text)} />
+          onChange={(text: string) => props.onDirty(props.realtime, props.dirty, props.quest, text)} />
       </div>
     </span>
   );
