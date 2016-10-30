@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         case 'UNPUBLISH_QUEST':
           return dispatch(unpublishQuest(quest));
         case 'DRIVE_VIEW':
-          window.open('https://drive.google.com/drive/search?q=' + quest.metaTitle);
+          window.open('https://drive.google.com/drive/search?q=' + quest.title);
           break;
         case 'HELP':
           window.open(MARKDOWN_GUIDE_URL, '_blank');

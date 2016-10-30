@@ -29,6 +29,7 @@ nconf
     'OAUTH2_CLIENT_ID',
     'OAUTH2_CLIENT_SECRET',
     'OAUTH2_CALLBACK',
+    'DATABASE_URL',
     'PORT',
     'SECRET',
     'SUBSCRIPTION_NAME',
@@ -55,6 +56,8 @@ nconf
     OAUTH2_CLIENT_ID: '',
     OAUTH2_CLIENT_SECRET: '',
     OAUTH2_CALLBACK: '',
+
+    DATABASE_URL: 'postgres://semartin@localhost/semartin?ssl=true',
 
     // Port the HTTP server
     PORT: 8080,
