@@ -34720,8 +34720,8 @@ webpackJsonp([1,0],[
 	        var meta = toMeta.fromMarkdown(text);
 	        // For all metadata values, see https://developers.google.com/drive/v2/reference/files
 	        var fileMeta = {
-	            title: meta.metaTitle,
-	            description: meta.metaSummary,
+	            title: meta.title,
+	            description: meta.summary,
 	        };
 	        updateDriveFile(quest.id, fileMeta, text, function () {
 	            dispatch({ type: 'RECEIVE_QUEST_SAVE', quest: meta });
@@ -63575,8 +63575,7 @@ webpackJsonp([1,0],[
 	  var meta = node.children().eq(1).text().split('\n');
 	  for(var i = 0; i < meta.length; i++) {
 	    var kv = meta[i].split(":");
-	    var hyphenated_key = kv[0].trim().replace(/([a-z][A-Z])/g, function (g) { return g[0] + '-' + g[1].toLowerCase() });
-	    quest.attr(hyphenated_key, kv[1].trim());
+	    quest.attr(kv[0].toLowerCase(), kv[1].trim());
 	  }
 
 	  // Exclude quest metadata elements in children
@@ -64112,7 +64111,7 @@ webpackJsonp([1,0],[
 	;
 	var QuestAppBar = function (props) {
 	    var loginText = 'Logged in as ' + props.user.displayName;
-	    var questTitle = props.quest.metaTitle || 'unsaved quest';
+	    var questTitle = props.quest.title || 'unsaved quest';
 	    return (React.createElement("span", {style: { width: "100%", height: "100%" }}, React.createElement(AppBar_1.default, {title: questTitle, onLeftIconButtonTouchTap: function () { return props.onDrawerToggle(props.user); }, iconElementRight: React.createElement(IconMenu_1.default, {iconButtonElement: React.createElement(IconButton_1.default, {iconStyle: { 'width': '24px', 'height': '24px' }}, React.createElement(Avatar_1.default, {src: props.user.image})), targetOrigin: { horizontal: 'right', vertical: 'top' }, anchorOrigin: { horizontal: 'right', vertical: 'top' }}, React.createElement(MenuItem_1.default, {primaryText: loginText, disabled: true}), React.createElement(MenuItem_1.default, {primaryText: "Sign Out", onTouchTap: function () { return props.onUserDialogRequest(props.user); }}))})));
 	};
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -64257,7 +64256,7 @@ webpackJsonp([1,0],[
 	                case 'UNPUBLISH_QUEST':
 	                    return dispatch(quest_1.unpublishQuest(quest));
 	                case 'DRIVE_VIEW':
-	                    window.open('https://drive.google.com/drive/search?q=' + quest.metaTitle);
+	                    window.open('https://drive.google.com/drive/search?q=' + quest.title);
 	                    break;
 	                case 'HELP':
 	                    window.open(constants_1.MARKDOWN_GUIDE_URL, '_blank');
@@ -100891,20 +100890,6 @@ webpackJsonp([1,0],[
 
 	var cheerio = __webpack_require__(82);
 
-	function formatXMLKey(key) {
-	  return {
-	    'title': 'metaTitle',
-	    'summary': 'metaSummary',
-	    'min-players': 'metaMinPlayers',
-	    'max-players': 'metaMaxPlayers',
-	    'email': 'metaEmail',
-	    'url': 'metaUrl',
-	    'min-time-minutes': 'metaMinTimeMinutes',
-	    'max-time-minutes': 'metaMaxTimeMinutes',
-	    'author': 'metaAuthor'
-	  }[key] || key;
-	}
-
 	function formatQuest(node, context) {
 	  // TODO: Dedupe this against to_markdown
 	  // Parse headers
@@ -100916,10 +100901,10 @@ webpackJsonp([1,0],[
 	    "author",
 	    "email",
 	    "url",
-	    "min-players",
-	    "max-players",
-	    "min-time-minutes",
-	    "max-time-minutes"
+	    "minplayers",
+	    "maxplayers",
+	    "mintimeminutes",
+	    "maxtimeminutes"
 	  ];
 
 	  for (var i = 0; i < attrs.length; i++) {
@@ -100928,33 +100913,19 @@ webpackJsonp([1,0],[
 	      var formatted_attr = attrs[i].replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
 
 	      // TODO: Clean up this later
-	      if (v === 'min-players' || v === 'max-players' || v === 'min-time-minutes' || v === 'max-time-minutes') {
+	      if (v === 'minplayers' || v === 'maxplayers' || v === 'mintimeminutes' || v === 'maxtimeminutes') {
 	        v = parseInt(v);
 	      }
 
-	      result[formatXMLKey(attrs[i])] = v;
+	      result[attrs[i]] = v;
 	    }
 	  }
 	  return result;
 	}
 
-	function formatKey(key) {
-	  return {
-	    'title': 'metaTitle',
-	    'summary': 'metaSummary',
-	    'minPlayers': 'metaMinPlayers',
-	    'maxPlayers': 'metaMaxPlayers',
-	    'email': 'metaEmail',
-	    'url': 'metaUrl',
-	    'minTimeMinutes': 'metaMinTimeMinutes',
-	    'maxTimeMinutes': 'metaMaxTimeMinutes',
-	    'author': 'metaAuthor'
-	  }[key] || key;
-	}
-
 	function convertQuestMarkdownToMetadata(text) {
 	  var split = text.split('\n');
-	  result = {metaTitle: split[0].substr(1).trim()};
+	  result = {title: split[0].substr(1).trim()};
 	  for(var i = 1; i < split.length; i++) {
 	    console.log(line);
 	    var line = split[i].trim();
@@ -100962,7 +100933,7 @@ webpackJsonp([1,0],[
 	      return result;
 	    }
 	    var kv = line.split(":");
-	    result[formatKey(kv[0].trim())] = kv[1].trim();
+	    result[kv[0].trim().toLowerCase()] = kv[1].trim();
 	  }
 	  console.log(result);
 	  return result;
