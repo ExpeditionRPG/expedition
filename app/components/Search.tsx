@@ -56,11 +56,11 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
   render() {
     return (
       <Card title="Public Quests" icon="adventurer">
-        <p>
+        <div>
           Quests for {this.props.numPlayers} adventurer(s) where author, title, or ID contains
           <TextField id="text" hintText="some text" hintStyle={{color: '#555555'}} onChange={(e: any) => this.onChange('text', e.target.value)} value={this.state.text}/>
-        </p>
-        <p>
+        </div>
+        <div>
           published within
 
           <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('age', v)} value={this.state.age}>
@@ -71,8 +71,8 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             <MenuItem value="86400" primaryText="the past 24 hours"/>
             <MenuItem value="3600" primaryText="the past hour"/>
           </DropDownMenu>
-        </p>
-        <p>
+        </div>
+        <div>
           ordered by
 
           <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('order', v)} value={this.state.order}>
@@ -81,15 +81,15 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             <MenuItem value="-metaMaxTimeMinutes" primaryText="Play Time (longest)"/>
             <MenuItem value="+metaMinTimeMinutes" primaryText="Play Time (shortest)"/>
           </DropDownMenu>
-        </p>
-        <p>
+        </div>
+        <div>
           created by
 
           <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('owner', v)} value={this.state.owner}>
             <MenuItem value="self" primaryText="You"/>
             <MenuItem value="anyone" primaryText="Anyone"/>
           </DropDownMenu>
-        </p>
+        </div>
         <Button onTouchTap={() => this.props.onSearch(this.props.numPlayers, this.props.user, this.state)}>Search</Button>
       </Card>
     );
