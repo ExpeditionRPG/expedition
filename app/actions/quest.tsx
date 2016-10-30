@@ -75,7 +75,7 @@ export function loadQuestFromURL(userid: string, dispatch: Redux.Dispatch<any>) 
 }
 
 
-export function newQuest(dispatch: any) {
+export function newQuest(userid: string, dispatch: any) {
   var insertHash = {
     'resource': {
       mimeType: "text/plain",
@@ -85,7 +85,7 @@ export function newQuest(dispatch: any) {
   };
   window.gapi.client.drive.files.insert(insertHash).execute(function(createResponse: {id: string}) {
     updateDriveFile(createResponse.id, {}, "", function() {
-      loadQuest(dispatch, createResponse.id);
+      loadQuest(userid, dispatch, createResponse.id);
     });
   });
 }
@@ -103,10 +103,9 @@ function getPublishedQuestMeta(published_id: string, cb: (meta: QuestType)=>any)
 
 export function loadQuest(userid: string, dispatch: any, docid?: string) {
   if (docid === null) {
-    console.log("No docid, creating new quest");
-    return newQuest(dispatch);
+    console.log("Creating new quest");
+    return newQuest(userid, dispatch);
   }
-
   realtimeUtils.load(docid, function(doc: any) {
     window.location.hash=docid;
     var md = doc.getModel().getRoot().get('markdown');
