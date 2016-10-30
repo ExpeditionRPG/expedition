@@ -17,16 +17,13 @@
 describe('reducers', () => {
   require('../app/reducers/dialogs.test');
   require('../app/reducers/dirty.test');
-  require('../app/reducers/drawer.test');
-  require('../app/reducers/editor.test');
   require('../app/reducers/errors.test');
   require('../app/reducers/quest.test');
   require('../app/reducers/user.test');
 });
 
 describe('actions', () => {
-  require('../app/actions/dialog.test');
-  require('../app/actions/drawer.test');
+  require('../app/actions/dialogs.test');
   require('../app/actions/editor.test');
   require('../app/actions/quest.test');
   require('../app/actions/user.test');
@@ -38,14 +35,12 @@ describe('components', () => {
   require('../app/components/Dialogs.test');
   require('../app/components/QuestAppBar.test');
   require('../app/components/QuestIDE.test');
-  require('../app/components/QuestList.test');
 })
 
 describe('component containers', () => {
   require('../app/components/DialogsContainer.test')
   require('../app/components/QuestAppBarContainer.test')
   require('../app/components/QuestIDEContainer.test')
-  require('../app/components/QuestListContainer.test')
 })
 
 /*

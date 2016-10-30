@@ -1,11 +1,14 @@
+/// <reference path="../../typings/expect/expect.d.ts" />
+/// <reference path="../../typings/jasmine/jasmine.d.ts" />
+/// <reference path="../../typings/custom/require.d.ts" />
+
 import expect from 'expect'
-import * as React from 'react'
 import QuestAppBar from './QuestAppBar'
 
 describe('QuestAppBar', () => {
   it('Shows user icon')
 
-  it('calls onDrawerToggle on drawer tap')
+  it('Shows quest title')
 
-  it('shows help dialog on help icon tap')
+  it('...test each toolbar button')
 })
