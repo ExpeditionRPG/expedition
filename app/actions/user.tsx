@@ -30,7 +30,7 @@ export function loginUser(showPrompt: boolean): ((dispatch: Redux.Dispatch<any>)
                 image: res.image.url,
               }));
 
-              loadQuestFromURL(dispatch);
+              loadQuestFromURL(res.id, dispatch);
             });
           });
         });

@@ -70,12 +70,8 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
   request.execute(callback);
 }
 
-export function loadQuestFromURL(dispatch: Redux.Dispatch<any>) {
-  if (window.location.hash) {
-    loadQuest(dispatch, window.location.hash.substr(1));
-  } else {
-    loadQuest(dispatch, null);
-  }
+export function loadQuestFromURL(userid: string, dispatch: Redux.Dispatch<any>) {
+  loadQuest(userid, dispatch, (window.location.hash) ? window.location.hash.substr(1) : null);
 }
 
 
@@ -94,7 +90,18 @@ export function newQuest(dispatch: any) {
   });
 }
 
-export function loadQuest(dispatch: any, docid?: string) {
+function getPublishedQuestMeta(published_id: string, cb: (meta: QuestType)=>any) {
+  $.post('/quests', JSON.stringify({id: published_id}), function(result: any) {
+    result = JSON.parse(result);
+    if (result.error) {
+      throw new Error(result.error);
+    }
+
+    cb(result.quests[0] as QuestType);
+  });
+}
+
+export function loadQuest(userid: string, dispatch: any, docid?: string) {
   if (docid === null) {
     console.log("No docid, creating new quest");
     return newQuest(dispatch);
@@ -103,13 +110,13 @@ export function loadQuest(dispatch: any, docid?: string) {
   realtimeUtils.load(docid, function(doc: any) {
     window.location.hash=docid;
     var md = doc.getModel().getRoot().get('markdown');
-
     var text: string = md.getText();
-    var quest = toMeta.fromMarkdown(text) as QuestType;
-    quest.id = docid;
-    quest.mdRealtime = md;
-
-    dispatch(receiveQuestLoad(quest));
+    getPublishedQuestMeta(userid + '_' + docid, function(quest: QuestType) {
+      quest = Object.assign(quest || {}, toMeta.fromMarkdown(text));
+      quest.id = docid;
+      quest.mdRealtime = md;
+      dispatch(receiveQuestLoad(quest));
+    });
   },
   function(model: any) {
     var string = model.createString();
@@ -131,6 +138,7 @@ export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)
 
     dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
     return $.post("/publish/" + quest.id, data, function(result_quest_id: string) {
+      quest.published = (new Date(Date.now()).toISOString());
       dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
     }).fail(pushHTTPError);
   }
@@ -159,6 +167,7 @@ export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_UNPUBLISH', quest} as RequestQuestUnpublishAction);
     return $.post("/unpublish/" + quest.id, function(result_quest_id: string) {
+      quest.published = undefined;
       dispatch({type: 'RECEIVE_QUEST_UNPUBLISH', quest} as ReceiveQuestUnpublishAction);
     }).fail(pushHTTPError);
   };
