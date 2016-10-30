@@ -29,10 +29,13 @@ nconf
     'OAUTH2_CLIENT_ID',
     'OAUTH2_CLIENT_SECRET',
     'OAUTH2_CALLBACK',
+    'DATABASE_URL',
     'PORT',
     'SECRET',
     'SUBSCRIPTION_NAME',
-    'TOPIC_NAME'
+    'TOPIC_NAME',
+    'SESSION_SECRET',
+    'CORS_URL',
   ])
   // 3. Config file
   .file({ file: path.join(__dirname, 'config.json') })
@@ -51,14 +54,13 @@ nconf
     OAUTH2_CLIENT_SECRET: '',
     OAUTH2_CALLBACK: '',
 
+    DATABASE_URL: 'postgres://semartin@localhost/semartin?ssl=true',
+
     // Port the HTTP server
     PORT: 8080,
 
-    MYSQL_USER: '',
-    MYSQL_PASSWORD: '',
-    MYSQL_HOST: '',
-
     SESSION_SECRET: '',
+    CORS_URL: 'http://semartin.local:5000'
   });
 
 // Check for required settings

@@ -145,8 +145,8 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
 
     // For all metadata values, see https://developers.google.com/drive/v2/reference/files
     var fileMeta = {
-      title: meta.metaTitle,
-      description: meta.metaSummary,
+      title: meta.title,
+      description: meta.summary,
     };
 
     updateDriveFile(quest.id, fileMeta, text, function() {

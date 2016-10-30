@@ -13,18 +13,12 @@
 
 'use strict';
 
-if (process.env.NODE_ENV === 'production') {
-  // Activate Google Cloud Trace and Debug when in production
-  require('@google/cloud-trace').start();
-  require('@google/cloud-debug');
-}
-
 var path = require('path');
 var express = require('express');
 var exphbs = require('express-handlebars');
 var url = require('url');
 var session = require('express-session');
-var MemcachedStore = require('connect-memcached')(session);
+//var MemcachedStore = require('connect-memcached')(session);
 var passport = require('passport');
 var config = require('./config');
 var logging = require('./lib/logging');
@@ -58,26 +52,12 @@ var setupSession = function(app) {
     signed: true
   };
 
-  // In production use the App Engine Memcache instance to store session data,
-  // otherwise fallback to the default MemoryStore in development.
-  if (config.get('NODE_ENV') === 'production') {
-    var memAddr = process.env.MEMCACHE_PORT_11211_TCP_ADDR;
-    var memPort = process.env.MEMCACHE_PORT_11211_TCP_PORT;
-    if (!memAddr || !memPort) {
-      sessionConfig.store = new MemcachedStore({
-        hosts: [config.get('MEMCACHE_URL')]
-      });
-    } else {
-      sessionConfig.store = new MemcachedStore({
-        hosts: [memAddr + ":" + memPort]
-      });
-    }
-  }
-
   app.use(session(sessionConfig));
 
   // OAuth2
   app.use(passport.initialize());
+
+  // TODO: Use postgres session storage (to prevent session loss due to restarting task)
   app.use(passport.session());
   app.use(require('./lib/oauth2').router);
 };

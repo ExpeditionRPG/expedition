@@ -15,23 +15,19 @@
 CREATE TABLE quests (
   id VARCHAR(255) NOT NULL,
   PRIMARY KEY(id),
-  created TIMESTAMP,
-  modified TIMESTAMP NULL DEFAULT NULL,
   published TIMESTAMP NULL DEFAULT NULL,
-  shared TIMESTAMP NULL DEFAULT NULL,
   tombstone TIMESTAMP NULL DEFAULT NULL,
-  draftUrl VARCHAR(2048),
-  publishedUrl VARCHAR(2048),
-  user VARCHAR(255),
-  metaAuthor VARCHAR(255),
-  metaEmail VARCHAR(255),
-  metaMaxPlayers INT,
-  metaMaxTimeMinutes INT,
-  metaMinPlayers INT,
-  metaMinTimeMinutes INT,
-  metaSummary VARCHAR(1024) CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI,
-  metaTitle VARCHAR(255) CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI,
-  metaUrl VARCHAR(2048)
+  publishedurl VARCHAR(2048),
+  userid VARCHAR(255),
+  author VARCHAR(255),
+  email VARCHAR(255),
+  maxplayers INT,
+  maxtimeminutes INT,
+  minplayers INT,
+  mintimeminutes INT,
+  summary VARCHAR(1024),
+  title VARCHAR(255),
+  url VARCHAR(2048)
 );
 */
 
@@ -39,35 +35,22 @@ CREATE TABLE quests (
 
 var gcloud = require('google-cloud');
 var config = require('../config');
-//var background = require('../lib/background');
-var mysql = require('mysql');
+var pg = require('pg');
+var namedPG = require('node-postgres-named');
+
+pg.defaults.ssl = true;
 var cloudstorage = require('../lib/cloudstorage');
 var toMeta = require('../translation/to_meta');
 
 // We use base62 for encoding/decoding datastore keys into something more easily typeable on a mobile device.
 var Base62 = require('base62');
 
-function getConnection() {
-  return mysql.createConnection({
-    database: 'quests',
-    host: config.get('MYSQL_HOST'),
-    user: config.get('MYSQL_USER'),
-    password: config.get('MYSQL_PASSWORD')
+function connect(cb) {
+  pg.connect(config.get('DATABASE_URL'), function(err, client) {
+    if (err) throw err;
+    namedPG.patch(client);
+    cb(client);
   });
-}
-
-//var ds = gcloud.datastore({
-//  projectId: config.get('GCLOUD_PROJECT')
-//});
-//var user_kind = 'User';
-//var quest_kind = 'Quest';
-
-function getRawXMLUrl(user, quest) {
-  if (config.get('NODE_ENV') === 'production') {
-    return "http://expedition-quest-ide.appspot.com/raw/" + user + "/" + quest;
-  } else {
-    return "http://localhost:8080/raw/" + user + "/" + quest;
-  }
 }
 
 function searchQuests(userId, params, cb) {
@@ -75,37 +58,32 @@ function searchQuests(userId, params, cb) {
     cb(new Error("Search params not given"));
   }
 
-  var connection = getConnection();
-  var filter_string = "SELECT * FROM `quests` WHERE tombstone IS NULL";
-  var filter_vars = [];
+  var filter_query = 'SELECT * FROM quests WHERE tombstone IS NULL';
+  var filter_params = {};
 
   if (params.owner) {
-    filter_string += " AND user=?";
-    filter_vars.push(params.owner);
+    filter_query += ' AND userid=$userid';
+    filter_params['userid'] = params.owner;
   }
 
   // Require results to be published if we're not querying our own quests
   if (params.owner !== userId || userId == "") {
-    filter_string += " AND published IS NOT NULL";
+    filter_query += ' AND published IS NOT NULL';
   }
 
   if (params.players) {
-    var players = parseInt(params.players);
-    filter_string += " AND metaMinPlayers <= ? AND metaMaxPlayers >= ?";
-    filter_vars.push(players);
-    filter_vars.push(players);
+    filter_query += ' AND minplayers <= $players AND maxplayers >= $players';
+    filter_params['players'] = parseInt(params.players);
   }
 
   if (params.search) {
-    var params_like = "%" + params.search + "%";
-    filter_string += " AND (metaTitle LIKE ? OR metaSummary LIKE ?)";
-    filter_vars.push(params_like);
-    filter_vars.push(params_like);
+    filter_query += ' AND (title LIKE $searchtext OR summary LIKE $searchtext)';
+    filter_params['searchtext'] = "%" + params.search + "%";
   }
 
   if (params.published_after) {
-    filter_string += " AND UNIX_TIMESTAMP(published) > ?";
-    filter_vars.push(parseInt(params.published_after));
+    filter_query += ' AND EXTRACT(EPOCH FROM published) > $after';
+    filter_params['after'] = parseInt(params.published_after);
   }
 
   if (params.token) {
@@ -113,48 +91,43 @@ function searchQuests(userId, params, cb) {
   }
 
   if (params.order) {
-    filter_string += " ORDER BY " + connection.escapeId(params.order.substr(1)) + " " + ((params.order[0] === '+') ? "ASC" : "DESC");
+    filter_query += ' ORDER BY $order ' + ((params.order[0] === '+') ? "ASC" : "DESC");
+    filter_params['order'] = params.order.substr(1);
   }
 
   var limit = Math.max(params.limit || 0, 100);
-  filter_string += " LIMIT ?";
-  filter_vars.push(limit);
+  filter_query += ' LIMIT $limit';
+  filter_params['limit'] = limit;
 
-  // Also search for unlisted quests and list them first if we have an exact match on ID
-  // and the search string is base62-like. These results will be displayed first.
-  if (params.search && params.search.match(/^[A-Za-z0-9]+$/)) {
-    filter_string = "(SELECT * FROM `quests` WHERE id=? AND shared IS NOT NULL AND tombstone IS NULL LIMIT 1) UNION (" + filter_string + ")";
-    filter_vars.unshift(params.search);
-  }
-
-  var query = connection.query(filter_string, filter_vars, function(err, results) {
-    if (err) {
-      return cb(err);
-    }
-    var hasMore = results.length === limit ? token + results.length : false;
-    cb(null, results, hasMore);
+  connect(function(connection) {
+    console.log(filter_query);
+    console.log(filter_params);
+    var query = connection.query(filter_query, filter_params, function(err, results) {
+      if (err) {
+        return cb(err);
+      }
+      var hasMore = results.rows.length === limit ? token + results.rows.length : false;
+      cb(null, results.rows, hasMore);
+    });
+    console.log(query.sql);
   });
-  console.log(query.sql);
-  return connection.end();
 }
-function publish(user, id, xml, cb) {
+function publish(user, docid, xml, cb) {
   // TODO: Validate here
 
   if (!xml) {
     return cb("Could not publish - no xml data.")
   }
 
-  if (id === undefined) {
+  if (docid === undefined) {
     throw new Error('Invalid Quest ID');
   }
 
-  var connection = getConnection();
-
   // Invariant: quest ID is present after this point
-  console.log("Publishing quest " + id + " owned by " + user);
+  console.log("Publishing quest " + docid + " owned by " + user);
 
   var cloud_storage_data = {
-    gcsname: user + "/" + id + "/" + Date.now() + ".xml",
+    gcsname: user + "/" + docid + "/" + Date.now() + ".xml",
     buffer: xml
   }
 
@@ -167,65 +140,65 @@ function publish(user, id, xml, cb) {
 
   var meta = toMeta.fromXML(xml);
 
-  meta.user = user;
-  meta.id = user + '_' + id;
-  meta.publishedUrl = cloudstorage.getPublicUrl(cloud_storage_data.gcsname);
-  var params = ['id', 'user', 'publishedUrl', 'metaAuthor', 'metaEmail', 'metaMaxPlayers', 'metaMaxTimeMinutes', 'metaMinPlayers', 'metaMinTimeMinutes', 'metaSummary', 'metaTitle', 'metaUrl'];
+  meta.userid = user;
+  meta.id = user + '_' + docid;
+  meta.publishedurl = cloudstorage.getPublicUrl(cloud_storage_data.gcsname);
+  var params = ['id', 'userid', 'publishedurl', 'author', 'email', 'maxplayers', 'maxtimeminutes', 'minplayers', 'mintimeminutes', 'summary', 'title', 'url'];
   var columns = params.join(',');
-  var values = [];
-  var basevalues = [];
+  var interleaved = [];
   for (var i = 0; i < params.length; i++) {
-    values.push(meta[params[i]]);
-    basevalues.push('?');
-  }
-  for (var i = 0; i < params.length; i++) {
-    values.push(meta[params[i]]);
-    params[i] += "=?";
+    interleaved.push(params[i] + '=$' + params[i]);
+    params[i] = '$' + params[i];
   }
 
-  var query = connection.query('INSERT INTO `quests` ('+ columns +',published) VALUES (' + basevalues.join(',') + ',NOW()) ON DUPLICATE KEY UPDATE ' + params.join(',') + ',published=NOW()', values, function(err, result) {
-    if (err) {
-      return cb(err);
-    }
-    cb(null, id);
+  connect(function(connection) {
+    var query_text = 'INSERT INTO quests ('+ columns +',published,tombstone) VALUES (' + params.join(',') + ',NOW(),NULL) ON CONFLICT (id) DO UPDATE SET ' + interleaved.join(',') + ',published=NOW(),tombstone=NULL';
+    var q = connection.query(query_text, meta, function(err, result) {
+      if (err) {
+        return cb(err);
+      }
+      cb(null, meta.id);
+    });
+    console.log(q.text);
   });
-  console.log(query.sql);
-  return connection.end();
 }
 
-function unpublish(user, id, cb) {
-  if (id === undefined) {
+function unpublish(user, docid, cb) {
+  if (docid === undefined) {
     throw new Error('Invalid Quest ID');
   }
-  var connection = getConnection();
 
-  console.log("Unpublishing quest " + id + " owned by " + user);
-  var query = connection.query('DELETE FROM `quests` WHERE id=?', [user + '_' + id], function(err, result) {
-    if (err) {
-      return cb(err);
-    }
-    cb(null, id);
+  console.log("Unpublishing quest " + docid + " owned by " + user);
+  connect(function(connection) {
+    var id = user + '_' + docid;
+    var q = connection.query('UPDATE quests SET tombstone=NOW() WHERE id=$id', {id: id}, function(err, result) {
+      if (err) {
+        return cb(err);
+      }
+      cb(null, id);
+    });
+    console.log(q.text);
   });
-  console.log(query.sql);
-  return connection.end();
 }
 
 function read(id, cb) {
-  var connection = getConnection();
-  connection.query('SELECT * FROM `quests` WHERE id=? LIMIT 1', [id], function(err, results) {
-    if (err) {
-      return cb(err);
-    }
+  connect(function(connection) {
+    var q = connection.query('SELECT * FROM quests WHERE id=$id LIMIT 1', {id: id}, function(err, results) {
+      if (err) {
+        return cb(err);
+      }
 
-    if (results.length !== 1) {
-      return cb({
-        code: 404,
-        message: 'Not found'
-      });
-    }
-    cb(null, results[0]);
+      if (results.length !== 1) {
+        return cb({
+          code: 404,
+          message: 'Not found'
+        });
+      }
+      cb(null, results[0]);
+    });
+
+    console.log(q.text);
   });
-  return connection.end();
 }
 
 module.exports = {

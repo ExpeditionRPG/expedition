@@ -278,8 +278,7 @@ var toQuest = function(node, nodes, context) {
   var meta = node.children().eq(1).text().split('\n');
   for(var i = 0; i < meta.length; i++) {
     var kv = meta[i].split(":");
-    var hyphenated_key = kv[0].trim().replace(/([a-z][A-Z])/g, function (g) { return g[0] + '-' + g[1].toLowerCase() });
-    quest.attr(hyphenated_key, kv[1].trim());
+    quest.attr(kv[0].toLowerCase(), kv[1].trim());
   }
 
   // Exclude quest metadata elements in children

@@ -1,23 +1,22 @@
+import {PropTypes} from 'react'
 import {connect} from 'react-redux'
-
 import {QuestActionType} from '../actions/ActionTypes'
+import {setDrawer} from '../actions/drawer'
 import {saveQuest, publishQuest, unpublishQuest} from '../actions/quest'
-import {logoutUser} from '../actions/user'
-import {AppState, DirtyState, QuestType, UserState} from '../reducers/StateTypes'
-import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
-
+import {DirtyState, QuestType, AppState} from '../reducers/StateTypes'
+import QuestDrawer, {QuestDrawerStateProps, QuestDrawerDispatchProps} from './QuestDrawer'
 import {MARKDOWN_GUIDE_URL} from '../constants'
 
-
-const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps => {
+const mapStateToProps = (state: AppState, ownProps: any): QuestDrawerStateProps => {
   return {
-    dirty: state.dirty,
     quest: state.quest,
-    user: state.user,
+    drawer: state.drawer,
+    dirty: state.dirty,
+    user: state.user
   };
 }
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestAppBarDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestDrawerDispatchProps => {
   return {
     onMenuSelect: (action: QuestActionType, dirty: DirtyState, quest: QuestType) => {
       switch(action) {
@@ -43,15 +42,15 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
           throw new Error("Could not handle menu action " + action);
       }
     },
-    onUserDialogRequest: (user: UserState) => {
-      dispatch(logoutUser());
+    onDrawerRequestChange: () => {
+      dispatch(setDrawer("", false));
     },
   };
 }
 
-const QuestAppBarContainer = connect(
+const QuestDrawerContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(QuestAppBar);
+)(QuestDrawer);
 
-export default QuestAppBarContainer;
+export default QuestDrawerContainer
