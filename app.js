@@ -12,7 +12,7 @@
 // limitations under the License.
 
 'use strict';
-
+var nr = require('newrelic');
 var path = require('path');
 var express = require('express');
 var exphbs = require('express-handlebars');

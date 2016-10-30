@@ -35,7 +35,6 @@ nconf
     'SUBSCRIPTION_NAME',
     'TOPIC_NAME',
     'SESSION_SECRET',
-    'CORS_URL',
   ])
   // 3. Config file
   .file({ file: path.join(__dirname, 'config.json') })
@@ -60,7 +59,6 @@ nconf
     PORT: 8080,
 
     SESSION_SECRET: '',
-    CORS_URL: 'http://semartin.local:5000'
   });
 
 // Check for required settings
