@@ -1,11 +1,12 @@
-import * as React from 'react';
-import AceEditor from 'react-ace';
+import * as React from 'react'
+import brace from 'brace'
+import AceEditor from 'react-ace'
+
+import 'brace/mode/xml'
+import 'brace/mode/markdown'
+import 'brace/theme/twilight'
 
 const { Range } = (require('brace') as any).acequire('ace/range');
-
-import 'brace/mode/xml';
-import 'brace/mode/markdown';
-import 'brace/theme/twilight';
 
 interface TextViewProps extends React.Props<any> {
   onChange: any;

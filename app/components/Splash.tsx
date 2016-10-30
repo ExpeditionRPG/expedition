@@ -1,11 +1,11 @@
-import * as React from 'react';
+import * as React from 'react'
 
-import loginUser from '../actions/user';
-import {UserState} from '../reducers/StateTypes';
+import loginUser from '../actions/user'
+import {UserState} from '../reducers/StateTypes'
 
-import AppBar from 'material-ui/AppBar';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
+import AppBar from 'material-ui/AppBar'
+import FlatButton from 'material-ui/FlatButton'
+import RaisedButton from 'material-ui/RaisedButton'
 
 
 export interface SplashDispatchProps {
@@ -39,7 +39,7 @@ const styles = {
 
 const Splash = (props: any): JSX.Element => {
   return (
-    <div style={{'background': '#141414', 'height': '100%'}}>
+    <div style={{'background': '#141414'}}>
       <AppBar
         title="Expedition Quest Creator"
         showMenuIconButton={false}
@@ -65,7 +65,9 @@ const Splash = (props: any): JSX.Element => {
             learn more
           </a>
         </div>
-        <img src="/assets/img/app-screenshot.png" style={styles.screenshot}/>
+        <div style={{'background': '#141414'}}>
+          <img src="/assets/img/app-screenshot.png" style={styles.screenshot}/>
+        </div>
       </div>
     </div>
   );

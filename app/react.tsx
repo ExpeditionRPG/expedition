@@ -20,6 +20,8 @@
 import * as React from 'react';
 import {render} from 'react-dom';
 
+import {saveQuest} from './actions/quest';
+
 // So we can hot reload
 declare var require: any;
 declare var module: any;
@@ -63,6 +65,28 @@ if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
   window.location.href = "/#" + doc_json.ids[0];
 }
 
+// alert user if they try to close the page with unsaved changes
+window.onbeforeunload = function () {
+  if (store.getState().dirty === true) {
+    return false;
+  }
+  return null;
+}
+
+// Ctrl + S to save
+window.addEventListener('keydown', function checkForCtrlS (event: any) {
+  if (event.ctrlKey || event.metaKey) {
+    switch (String.fromCharCode(event.which).toLowerCase()) {
+      case 's':
+        event.preventDefault();
+        const state = store.getState();
+        if (state.dirty) {
+          store.dispatch(saveQuest(state.quest));
+        }
+        break;
+    }
+  }
+});
 
 window.gapi.load('client,client:auth2,drive-realtime,drive-share', function() {
   window.gapi.client.load('drive', 'v2', function() {

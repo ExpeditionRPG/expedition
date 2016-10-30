@@ -1,17 +1,19 @@
 /// <reference path="../../typings/react/react.d.ts" />
-import * as React from 'react';
-import Dialog from 'material-ui/Dialog';
-import {TouchTapEventHandler} from 'material-ui';
-import FlatButton from 'material-ui/FlatButton';
+import * as React from 'react'
+import {TouchTapEventHandler} from 'material-ui'
+
+import Dialog from 'material-ui/Dialog'
+import FlatButton from 'material-ui/FlatButton'
+import IconButton from 'material-ui/IconButton'
+import LinkIcon from 'material-ui/svg-icons/content/link'
+import Paper from 'material-ui/Paper'
+import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import RaisedButton from 'material-ui/RaisedButton';
-import {QuestType, ShareType, DialogsState, DialogIDType} from '../reducers/StateTypes';
-import IconButton from 'material-ui/IconButton';
-import Paper from 'material-ui/Paper';
-import Toggle from 'material-ui/Toggle';
-import LinkIcon from 'material-ui/svg-icons/content/link';
-import {ErrorType} from '../error';
-import theme from '../theme';
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+import Toggle from 'material-ui/Toggle'
+
+import {ErrorType} from '../error'
+import {QuestType, ShareType, DialogsState, DialogIDType} from '../reducers/StateTypes'
+import theme from '../theme'
 
 var XMLParserError: any = (require('../../translation/to_markdown') as any).XMLParserError;
 var MarkdownParserError: any = (require('../../translation/to_xml') as any).MarkdownParserError;
