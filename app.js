@@ -13,12 +13,6 @@
 
 'use strict';
 
-if (process.env.CLOUD_DEBUG) {
-  // Activate Google Cloud Trace and Debug when in production
-  require('@google/cloud-trace').start();
-  require('@google/cloud-debug');
-}
-
 var path = require('path');
 var express = require('express');
 var exphbs = require('express-handlebars');
@@ -57,22 +51,6 @@ var setupSession = function(app) {
     secret: config.get('SESSION_SECRET'),
     signed: true
   };
-
-  // In production use the App Engine Memcache instance to store session data,
-  // otherwise fallback to the default MemoryStore in development.
-  if (config.get('MEMCACHED')) {
-    var memAddr = process.env.MEMCACHE_PORT_11211_TCP_ADDR;
-    var memPort = process.env.MEMCACHE_PORT_11211_TCP_PORT;
-    if (!memAddr || !memPort) {
-      sessionConfig.store = new MemcachedStore({
-        hosts: [config.get('MEMCACHE_URL')]
-      });
-    } else {
-      sessionConfig.store = new MemcachedStore({
-        hosts: [memAddr + ":" + memPort]
-      });
-    }
-  }
 
   app.use(session(sessionConfig));
 

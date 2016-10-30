@@ -46,7 +46,6 @@ var toMeta = require('../translation/to_meta');
 var Base62 = require('base62');
 
 function connect(cb) {
-  console.log(config.get('DATABASE_URL'));
   pg.connect(config.get('DATABASE_URL'), function(err, client) {
     if (err) throw err;
     namedPG.patch(client);

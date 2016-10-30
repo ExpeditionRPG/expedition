@@ -34,9 +34,6 @@ nconf
     'SECRET',
     'SUBSCRIPTION_NAME',
     'TOPIC_NAME',
-    'MYSQL_USER',
-    'MYSQL_PASSWORD',
-    'MYSQL_HOST',
     'SESSION_SECRET',
     'CORS_URL',
   ])
@@ -61,10 +58,6 @@ nconf
 
     // Port the HTTP server
     PORT: 8080,
-
-    MYSQL_USER: '',
-    MYSQL_PASSWORD: '',
-    MYSQL_HOST: '',
 
     SESSION_SECRET: '',
     CORS_URL: 'http://semartin.local:5000'
