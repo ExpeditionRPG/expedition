@@ -4,14 +4,14 @@
 
 var expect: any = require('expect')
 import {SetDialogAction} from './ActionTypes'
-import {setDialog} from './dialog'
+import {setDialog} from './dialogs'
 
 describe('setDialog', () => {
   it('creates action', () => {
-    expect(setDialog('USER', true)
+    expect(setDialog('ERROR', true)
     ).toEqual({
       type: 'SET_DIALOG',
-      dialog: 'USER',
+      dialog: 'ERROR',
       shown: true
     } as SetDialogAction)
   })
