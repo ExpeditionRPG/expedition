@@ -8,6 +8,7 @@ var config = require('./config');
  * See lib/config.defaults.js in the agent distribution for a more complete
  * description of configuration variables and their potential values.
  */
+console.log("LICENSE KEY IS: " + config.get('NEW_RELIC_LICENSE_KEY'));
 exports.config = {
   /**
    * Array of application names.
