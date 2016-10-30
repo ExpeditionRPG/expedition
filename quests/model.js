@@ -61,6 +61,11 @@ function searchQuests(userId, params, cb) {
   var filter_query = 'SELECT * FROM quests WHERE tombstone IS NULL';
   var filter_params = {};
 
+  if (params.id) {
+    filter_query += ' AND id=$id';
+    filter_params['id'] = params.id;
+  }
+
   if (params.owner) {
     filter_query += ' AND userid=$userid';
     filter_params['userid'] = params.owner;

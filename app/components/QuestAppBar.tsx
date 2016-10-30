@@ -73,7 +73,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
           <FlatButton style={styles.button} label="New" onTouchTap={(event: any) => props.onMenuSelect('NEW_QUEST', props.dirty, props.quest)} />
           <FlatButton style={styles.button} label="Save" onTouchTap={(event: any) => props.onMenuSelect('SAVE_QUEST', props.dirty, props.quest)} />
           <FlatButton style={styles.button} label="Publish" onTouchTap={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.dirty, props.quest)} />
-          {props.quest.publishedurl != null && <FlatButton style={styles.button} label="Unpublish" onTouchTap={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.dirty, props.quest)} />}
+          <FlatButton style={styles.button} label="Unpublish" onTouchTap={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.dirty, props.quest)} disabled={!Boolean(props.quest.published)} />
           <FlatButton style={styles.button} label="View in Drive" onTouchTap={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.dirty, props.quest)} />
           <FlatButton style={styles.button} label="Send Feedback" onTouchTap={(event: any) => props.onMenuSelect('FEEDBACK', props.dirty, props.quest)} />
           <FlatButton style={styles.button} label="Help" onTouchTap={(event: any) => props.onMenuSelect('HELP', props.dirty, props.quest)} />

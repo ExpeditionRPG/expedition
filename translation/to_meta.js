@@ -37,7 +37,6 @@ function convertQuestMarkdownToMetadata(text) {
   var split = text.split('\n');
   result = {title: split[0].substr(1).trim()};
   for(var i = 1; i < split.length; i++) {
-    console.log(line);
     var line = split[i].trim();
     if (line === '') {
       return result;
@@ -45,7 +44,6 @@ function convertQuestMarkdownToMetadata(text) {
     var kv = line.split(":");
     result[kv[0].trim().toLowerCase()] = kv[1].trim();
   }
-  console.log(result);
   return result;
 }
 
