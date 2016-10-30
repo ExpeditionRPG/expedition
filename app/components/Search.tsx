@@ -111,19 +111,11 @@ function formatPlayPeriod(minMinutes: number, maxMinutes: number): string {
 function renderResults(props: SearchProps): JSX.Element {
   let items: JSX.Element[] = props.results.map(function(result: QuestDetails, index: number) {
 
-    let abnormalShare: JSX.Element = (<span></span>);
-    if (!result.published && !result.shared) {
-      abnormalShare = (<strong>(PRIVATE)</strong>);
-    }
-    if (!result.published && result.shared) {
-      abnormalShare = (<strong>(UNLISTED)</strong>);
-    }
-
     return (
       <Button key={index} onTouchTap={() => props.onQuest(result)}>
-        <h1 style={styles.resultTitle}>{result.metaTitle} {abnormalShare}</h1>
-        <div>by {result.metaAuthor}</div>
-        <div>{result.metaMinPlayers}-{result.metaMaxPlayers} players, {formatPlayPeriod(result.metaMinTimeMinutes, result.metaMaxTimeMinutes)}</div>
+        <h1 style={styles.resultTitle}>{result.title}</h1>
+        <div>by {result.author}</div>
+        <div>{result.minplayers}-{result.maxplayers} players, {formatPlayPeriod(result.mintimeminutes, result.maxtimeminutes)}</div>
       </Button>
     );
   });
@@ -164,10 +156,10 @@ function renderDetails(props: SearchProps): JSX.Element {
   return (
     <Card title="Quest Details">
       <div style={{textAlign: 'center'}}>
-        <h3>{props.selected.metaTitle}</h3>
-        <div style={{fontStyle: 'italic'}}>by {props.selected.metaAuthor}</div>
+        <h3>{props.selected.title}</h3>
+        <div style={{fontStyle: 'italic'}}>by {props.selected.author}</div>
         <p>
-          {props.selected.metaSummary}
+          {props.selected.summary}
         </p>
       </div>
       {details}

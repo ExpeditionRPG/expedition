@@ -8,7 +8,7 @@ const styles = {
   container: {
     paddingLeft: theme.vw.base,
   },
-  metaSummary: {
+  summary: {
     display: 'flex',
     paddingLeft: theme.vw.base,
     flex: '3',
@@ -16,7 +16,7 @@ const styles = {
     margin: 0,
     fontSize: theme.fontSize.flavortext,
   },
-  metaTitle: {
+  title: {
     lineHeight: '1.2em',
     fontFamily: theme.card.headerFont,
     display: 'block',
@@ -42,8 +42,8 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
     return (
       <Button onTouchTap={() => props.onQuestSelect(quest)} key={index}>
         <div style={styles.container}>
-          <div style={styles.metaTitle}>{quest.metaTitle}</div>
-          <div style={styles.metaSummary}>{quest.metaSummary}</div>
+          <div style={styles.title}>{quest.title}</div>
+          <div style={styles.summary}>{quest.summary}</div>
         </div>
       </Button>
     );
