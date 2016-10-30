@@ -25,6 +25,7 @@ const styles = {
   }
 };
 
+
 export interface QuestIDEStateProps {
   dirty: DirtyState;
   realtime: any;
@@ -35,6 +36,8 @@ export interface QuestIDEDispatchProps {
 }
 
 interface QuestIDEProps extends QuestIDEStateProps, QuestIDEDispatchProps {}
+
+
 
 const QuestIDE = (props: QuestIDEProps): JSX.Element => {
   return (
