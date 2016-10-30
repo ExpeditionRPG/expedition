@@ -56,8 +56,10 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
   render() {
     return (
       <Card title="Public Quests" icon="adventurer">
-        <div>
+        <p>
           Quests for {this.props.numPlayers} adventurer(s) where author, title, or ID contains
+        </p>
+        <div>
           <TextField id="text" hintText="some text" hintStyle={{color: '#555555'}} onChange={(e: any) => this.onChange('text', e.target.value)} value={this.state.text}/>
         </div>
         <div>
