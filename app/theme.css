@@ -1,0 +1,54 @@
+@font-face {
+  font-family: 'CinzelBold';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Cinzel-Bold'), url(fonts/Cinzel-Bold.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+@font-face {
+  font-family: 'MinionPro';
+  src: url("fonts/Minion Pro Regular.ttf") format('truetype');
+}
+
+body {
+  background-color: #eeeeee;
+  overflow:hidden;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'MinionPro';
+}
+
+.NEXT-enter {
+  transform: translate(100%);
+}
+.NEXT-enter.NEXT-enter-active {
+  transform: translate(0%);
+  transition: transform 300ms ease-in-out;
+}
+.NEXT-leave {
+  position:absolute;
+  transform: translate(0%);
+}
+.NEXT-leave.NEXT-leave-active {
+  transform: translate(-100%);
+  transition: transform 300ms ease-in-out;
+}
+
+.PREV-enter {
+  transform: translate(-100%);
+}
+.PREV-enter.PREV-enter-active {
+  transform: translate(0%);
+  transition: transform 300ms ease-in-out;
+}
+.PREV-leave {
+  position:absolute;
+  transform: translate(0%);
+}
+.PREV-leave.PREV-leave-active {
+  transform: translate(100%);
+  transition: transform 300ms ease-in-out;
+}

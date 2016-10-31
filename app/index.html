@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <meta name="generator" content="Polymer Starter Kit" />
   <title>Expedition</title>
   <meta name="description" content="The Roleplaying Card Game" />
 
@@ -47,167 +46,17 @@
   <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
 
   <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-  <script type="text/javascript" charset="utf-8">
 
-  // Wait for device API libraries to load
-  //
-  document.addEventListener("deviceready", onDeviceReady, false);
-
-  // device APIs are available
-  function onDeviceReady() {
-    var p = device.platform.toLowerCase();
-    if (/android/i.test(p)) {
-      window.platform = "android";
-      document.body.className += " android";
-    } else if (/iphone|ipad|ipod/i.test(p)) {
-      window.platform = "ios";
-      document.body.className += " ios";
-    }
-  }
-
-  </script>
-
+  <script type="text/javascript" src="scripts/gapi.min.js"></script>
   <script type="text/javascript" src="scripts/math.min.js"></script>
+  <script src="https://npmcdn.com/jquery@3.1.0/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="scripts/svg.js"></script>
+  <link rel="stylesheet" type="text/css" href="theme.css"/>
 
-  <!-- global user settings -->
-  <script id="globals" type="application/json" src="scripts/globals.json"></script>
-
-  <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
-  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-  <!-- endbuild -->
-
-  <!-- will be replaced with elements/elements.vulcanized.html -->
-  <link rel="import" href="elements.html">
-  <!-- endreplace-->
-
-  <style is="custom-style">
-
-    body {
-      background-color: var(--paper-grey-200);
-      overflow:hidden;
-    }
-
-    #app {
-      width: 100%;
-      max-width: var(--card-width);
-      max-height: var(--card-height);
-      margin-left: auto;
-      margin-right: auto;
-      overflow:hidden;
-    }
-
-    #splash {
-      margin: auto;
-      padding: var(--vw-base);
-      height: 98% !important; /* Prevent slight scroll */
-    }
-
-    #splash #version {
-      position:absolute;
-      bottom: var(--vh-base);
-      color: var(--font-color-faded);
-      text-align: center;
-      width: 100%;
-      font-size: var(--font-size-flavortext);
-    }
-
-    #splash iron-image {
-      --iron-image-width: 100%;
-    }
-
-    #splash {
-      height: 100%;
-    }
-
-    #device-unsupported {
-      text-align: center;
-    }
-  </style>
 </head>
 <body unresolved class="fullbleed layout vertical center-justified">
-  <span id="browser-sync-binding"></span>
-  <template is="dom-bind" id="app">
-    <expedition-card-set id="pages" initial="splash" title="Play Style" icon="cards" on-return="showSetup">
-      <!-- TODO: splash screen should be a polymer element for testability -->
-      <div id="splash" data-route="splash" class="layout vertical center-justified">
-        <div id="version">v1.0.9</div>
-        <iron-image id="logo" src="images/logo-frameless.png" fade></iron-image>
-        <template is="dom-if" if="{{ready}}">
-          <expedition-button on-tap="getcards">Get the Cards</expedition-button>
-          <template is="dom-if" if="{{isMobile}}">
-            <expedition-button on-tap="next" data-target="setup">Begin!</expedition-button>
-          </template>
-        </template>
-        <template is="dom-if" if="{{!isMobile}}">
-          <h3 id="device-unsupported">Device not supported. Please open on an Android or iOS device.</h3>
-        </template>
-      </div>
-
-      <expedition-card title="Setup" icon="adventurer" data-route="setup" on-return="showSplash">
-        <p>
-          To begin, tell us who's playing and how:
-        </p>
-        <div class="layout vertical">
-          <expedition-settings></expedition-settings>
-        </div>
-        <expedition-button on-tap="next" data-target="_select">Next</expedition-button>
-      </expedition-card>
-
-      <!-- Ideas: http://www.trollmystic.com/pub/2012/03/03/event-generator/ -->
-      <expedition-card-set id="featured" title="Featured Quests" icon="cards"
-        data-title="Featured Quests" on-return="showSelect"
-        data-info="No Guide needed - everyone plays as adventurers."
-        data-route="featured">
-        <header>
-          <p>
-            Select a quest below:
-          </p>
-        </header>
-
-        <quest-card
-          url="quests/build/oust_albanus.xml"
-          on-return="showFeatured"
-          data-route="albanus">
-        </quest-card>
-
-        <quest-card
-          url="quests/build/mistress_malaise.xml"
-          on-return="showFeatured"
-          data-route="malaise">
-        </quest-card>
-
-      </expedition-card-set>
-
-      <roleplay-card
-        title="Guided Adventure"
-        data-info="For beginner and intermediate Guides - a quest framework."
-        on-return="showSelect"
-        data-route="guided">
-      </roleplay-card>
-
-      <combat-card
-        title="Custom Encounter"
-        data-info="For experienced Guides - only the combat system is provided."
-        on-return="showSelect"
-        data-route="custom" custom>
-      </combat-card>
-
-      <quest-tester
-        title="Custom Quest"
-        data-info="Upload a quest file from the Quest Creator."
-        on-return="showSelect"
-        data-route="custom_quest">
-      </quest-tester>
-
-    </expedition-card-set>
-
-    <expedition-dialog title="Settings" id="settings">
-      <expedition-settings></expedition-settings>
-    </expedition-dialog>
-    <tutorial-dialog id="tutorial" modal></expedition-dialog>
-  </template>
-<!-- build:js scripts/app.js -->
-  <script src="scripts/app.js"></script>
-<!-- endbuild-->
+  <section id="react-app" style="width:100%; height:100%;"></div>
+  <script type="text/javascript" src="init.js"></script>
+  <script type="text/javascript" src="bundle.js"></script>
 </body>
 </html>

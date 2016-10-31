@@ -6,7 +6,7 @@ If you encounter any bugs with the app or have feedback, please [drop an issue](
 
 We're very friendly to pull requests! Simply fork the repository, create a new branch, make your desired changes and test them out on your local, then submit a PR.
 
-Priorities are indicated via the "Assigned" field on issues and pull requests. Having someone assigned to it indicates that it's a current top priority and currently being worked on. Issues that are definitively low priorty / no plans to be addressed for 6 months+ should be closed and labeled as "wontfix".
+Priorities are indicated via the "Assigned" field on issues and pull requests. Having someone assigned to it indicates that it's a current top priority and currently being worked on. Issues that are definitively low priorty / no plans to be addressed for 6 months+ should be labeled as "wontfix" and closed.
 
 Question? Email us at contact@fabricate.io
 
@@ -14,11 +14,13 @@ Question? Email us at contact@fabricate.io
 
 ### Requirements
 
-Requires a NodeJS version above 0.12.x. Check your Node.js version.
+Requires a NodeJS version above 0.12.x:
 
 ```sh
 node --version
 ```
+
+When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 
 Building the iOS app requires a mac, and cordova setup scripts currently work for unix-like environments only (Linux + Mac).
 
@@ -29,30 +31,35 @@ Building the iOS app requires a mac, and cordova setup scripts currently work fo
 With Node.js installed, run the following one liner from the root of the repository:
 
 ```sh
-npm install -g gulp bower && npm install && bower install
+npm install -g gulp webpack && npm install
 ```
 
 For building native apps, you will also need to set up cordova:
 
 ```sh
 npm install -g cordova
+webpack --config ./webpack.dist.config.js
 ./project.sh
 ```
+
+(Webpack must be run to generate the www/ folder, which is required to generate a Cordova project)
 
 ### Development workflow
 
 #### Serve / watch
 
 ```sh
-gulp serve
+NODE_ENV=dev node ${SCRIPT:-app.js}
 ```
 
 This outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
 
+When running on Windows, must be run within a Unix-like shell (such as Git Bash)
+
 #### Run tests
 
 ```sh
-gulp test:local
+npm run test
 ```
 
 This runs the unit tests defined in the `app/test` directory through [web-component-tester](https://github.com/Polymer/web-component-tester).
@@ -64,7 +71,7 @@ Tests require Chrome. Please make sure you have the Chrome browser installed and
 #### Build for Web
 
 ```sh
-gulp
+webpack --config ./webpack.dist.config.js
 ```
 
 Web files are output in the www/ folder.
@@ -72,14 +79,28 @@ Web files are output in the www/ folder.
 #### Build for Android
 
 ```sh
+webpack --config ./webpack.dist.config.js
 chmod +x build_android_signed.sh
-gulp && cordova build android
+cordova build android
 ```
 
-Note that, when deploying Android, you'll need to update `android-versionCode` in `config.xml`, not just `version`.
+Notes:
+
+- building Android requires the Android SDK
+- when deploying Android, you'll need to update `android-versionCode` in `config.xml`, not just `version`.
 
 #### Build for iOS
 
 ```sh
-gulp && cordova build ios
+webpack --config ./webpack.dist.config.js
+cordova build ios
 ```
+
+Notes:
+
+- must be done on a Mac with XCode installed
+
+#### Troubleshooting builds
+
+If you're having trouble with UglifyJS when running `webpack -p`, try removing webpack's dependence on uglify-js and letting
+the dev-dependency version be used (see [here](https://github.com/mishoo/UglifyJS2/issues/448)).

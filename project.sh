@@ -218,6 +218,9 @@ if [[ $init = 1 ]] || [[ $plugins = 1 ]] ; then
 
         message_info "Adding iOS Export Compliance Plugin..."
         cordova plugin add https://github.com/andres-torres-marroquin/cordova-plugin-ios-no-export-compliance.git
+
+        message_info "Adding Google Plus Plugin..."
+        cordova plugin add cordova-plugin-googleplus
 fi
 
 # ----
