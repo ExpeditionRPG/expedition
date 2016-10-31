@@ -23,7 +23,7 @@ function registerUserAndIdToken(user: {name: string, image: string}, idToken: st
 
 function loginWeb(cb: (user:UserState)=>any) {
   var that = this;
-  gapi.auth2.getAuthInstance().signIn().then(function(googleUser: any) {
+  gapi.auth2.getAuthInstance().signIn({redirect_uri: 'postmessage'}).then(function(googleUser: any) {
     var idToken: string = googleUser.getAuthResponse().id_token;
     var basicProfile: any = googleUser.getBasicProfile();
     registerUserAndIdToken({
