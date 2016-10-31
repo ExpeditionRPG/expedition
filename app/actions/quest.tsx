@@ -1,5 +1,5 @@
 import {
-  NEW_QUEST, LOAD_QUEST, SAVE_QUEST, DELETE_QUEST, DOWNLOAD_QUEST,
+  NEW_QUEST, LOAD_QUEST, SAVE_QUEST,
   ReceiveQuestLoadAction,
   RequestQuestSaveAction, ReceiveQuestSaveAction,
   RequestQuestPublishAction, ReceiveQuestPublishAction,
@@ -126,17 +126,19 @@ export function loadQuest(userid: string, dispatch: any, docid?: string) {
 
 export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    var data = quest.mdRealtime.getText();
+    var text = quest.mdRealtime.getText();
     try {
-      data = toXML(data, false);
+      text = toXML(text, false);
+      dispatch({type: 'QUEST_VALID', quest});
     } catch (e) {
+      dispatch({type: 'QUEST_INVALID', quest})
       pushError(e);
       dispatch(setDialog('ERROR', true));
       return;
     }
 
     dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
-    return $.post("/publish/" + quest.id, data, function(result_quest_id: string) {
+    return $.post("/publish/" + quest.id, text, function(result_quest_id: string) {
       quest.published = (new Date(Date.now()).toISOString());
       dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
     }).fail(pushHTTPError);
@@ -148,8 +150,14 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
     dispatch({type: 'REQUEST_QUEST_SAVE', quest} as RequestQuestSaveAction);
 
     var text: string = quest.mdRealtime.getText();
-    var meta = toMeta.fromMarkdown(text) as QuestType;
+    try {
+      const validationCheck = toXML(text, false);
+      dispatch({type: 'QUEST_VALID', quest});
+    } catch (e) {
+      dispatch({type: 'QUEST_INVALID', quest});
+    }
 
+    var meta = toMeta.fromMarkdown(text) as QuestType;
     // For all metadata values, see https://developers.google.com/drive/v2/reference/files
     var fileMeta = {
       title: meta.title,

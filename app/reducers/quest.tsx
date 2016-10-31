@@ -17,6 +17,10 @@ export function quest(state: QuestType = initial_state, action: Redux.Action): Q
       return Object.assign({}, state, (action as ReceiveQuestUnpublishAction).quest);
     case 'NEW_QUEST':
       return initial_state;
+    case 'QUEST_VALID':
+      return Object.assign({}, state, {valid: true});
+    case 'QUEST_INVALID':
+      return Object.assign({}, state, {valid: false});
     default:
       return state;
   }
