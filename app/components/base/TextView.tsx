@@ -6,7 +6,11 @@ import 'brace/mode/xml'
 import 'brace/mode/markdown'
 import 'brace/theme/twilight'
 
-const { Range } = (require('brace') as any).acequire('ace/range');
+var acequire: any = (require('brace') as any).acequire;
+const { Range } = acequire('ace/range');
+
+import { QDLMode } from './QDLMode'
+var mode = new QDLMode();
 
 interface TextViewProps extends React.Props<any> {
   onChange: any;
@@ -44,6 +48,16 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       // this will be disabled in the next version set
       // editor.$blockScrolling = Infinity to disable this message"
       ref.editor.$blockScrolling = Infinity;
+
+      // Set our custom mode.
+      ref.editor.getSession().$mode = mode;
+      ref.editor.getSession().bgTokenizer.setTokenizer(mode.getTokenizer());
+
+      // Additional configuration
+      ref.editor.setOption('tabSize', 2);
+      ref.editor.setOption('wrapBehavioursEnabled', true);
+      ref.editor.setOption('wrap', true);
+      ref.editor.setOption('useSoftTabs', true);
     }
   }
 
@@ -109,7 +123,6 @@ export default class TextView extends React.Component<TextViewProps, {}> {
         height="100%"
         name={"editor"}
         value={text}
-        setOptions={{wrapBehavioursEnabled: true, wrap: true, tabSize: 2, useSoftTabs: true}}
         editorProps={{$blockScrolling: true}}
       />
     );
