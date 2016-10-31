@@ -35,6 +35,7 @@ CREATE TABLE quests (
 
 var gcloud = require('google-cloud');
 var config = require('../config');
+const url = require('url')
 var pg = require('pg');
 var namedPG = require('node-postgres-named');
 
@@ -42,7 +43,19 @@ pg.defaults.ssl = true;
 var cloudstorage = require('../lib/cloudstorage');
 var toMeta = require('../translation/to_meta');
 
-var pool = new pg.Pool(config.get('DATABASE_URL'));
+
+const urlparams = url.parse(config.get('DATABASE_URL'));
+const userauth = urlparams.auth.split(':');
+const poolconfig = {
+  user: userauth[0],
+  password: userauth[1],
+  host: urlparams.hostname,
+  port: urlparams.port,
+  database: urlparams.pathname.split('/')[1],
+  ssl: true
+};
+
+var pool = new pg.Pool(poolconfig);
 namedPG.patch(pool);
 
 // We use base62 for encoding/decoding datastore keys into something more easily typeable on a mobile device.
