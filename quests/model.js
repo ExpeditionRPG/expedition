@@ -112,8 +112,6 @@ function searchQuests(userId, params, cb) {
   filter_query += ' LIMIT $limit';
   filter_params['limit'] = limit;
 
-  console.log(filter_query);
-  console.log(filter_params);
   var query = pool.query(filter_query, filter_params, function(err, results) {
     if (err) {
       return cb(err);
@@ -121,7 +119,7 @@ function searchQuests(userId, params, cb) {
     var hasMore = results.rows.length === limit ? token + results.rows.length : false;
     cb(null, results.rows, hasMore);
   });
-  console.log(query.sql);
+  console.log(query.text);
 }
 function publish(user, docid, xml, cb) {
   // TODO: Validate here
