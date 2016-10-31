@@ -35,6 +35,7 @@ CREATE TABLE quests (
 
 var gcloud = require('google-cloud');
 var config = require('../config');
+const url = require('url')
 var pg = require('pg');
 var namedPG = require('node-postgres-named');
 
@@ -42,16 +43,23 @@ pg.defaults.ssl = true;
 var cloudstorage = require('../lib/cloudstorage');
 var toMeta = require('../translation/to_meta');
 
+
+const urlparams = url.parse(config.get('DATABASE_URL'));
+const userauth = urlparams.auth.split(':');
+const poolconfig = {
+  user: userauth[0],
+  password: userauth[1],
+  host: urlparams.hostname,
+  port: urlparams.port,
+  database: urlparams.pathname.split('/')[1],
+  ssl: true
+};
+
+var pool = new pg.Pool(poolconfig);
+namedPG.patch(pool);
+
 // We use base62 for encoding/decoding datastore keys into something more easily typeable on a mobile device.
 var Base62 = require('base62');
-
-function connect(cb) {
-  pg.connect(config.get('DATABASE_URL'), function(err, client) {
-    if (err) throw err;
-    namedPG.patch(client);
-    cb(client);
-  });
-}
 
 function searchQuests(userId, params, cb) {
   if (!params) {
@@ -104,18 +112,14 @@ function searchQuests(userId, params, cb) {
   filter_query += ' LIMIT $limit';
   filter_params['limit'] = limit;
 
-  connect(function(connection) {
-    console.log(filter_query);
-    console.log(filter_params);
-    var query = connection.query(filter_query, filter_params, function(err, results) {
-      if (err) {
-        return cb(err);
-      }
-      var hasMore = results.rows.length === limit ? token + results.rows.length : false;
-      cb(null, results.rows, hasMore);
-    });
-    console.log(query.sql);
+  var query = pool.query(filter_query, filter_params, function(err, results) {
+    if (err) {
+      return cb(err);
+    }
+    var hasMore = results.rows.length === limit ? token + results.rows.length : false;
+    cb(null, results.rows, hasMore);
   });
+  console.log(query.text);
 }
 function publish(user, docid, xml, cb) {
   // TODO: Validate here
@@ -156,16 +160,14 @@ function publish(user, docid, xml, cb) {
     params[i] = '$' + params[i];
   }
 
-  connect(function(connection) {
-    var query_text = 'INSERT INTO quests ('+ columns +',published,tombstone) VALUES (' + params.join(',') + ',NOW(),NULL) ON CONFLICT (id) DO UPDATE SET ' + interleaved.join(',') + ',published=NOW(),tombstone=NULL';
-    var q = connection.query(query_text, meta, function(err, result) {
-      if (err) {
-        return cb(err);
-      }
-      cb(null, meta.id);
-    });
-    console.log(q.text);
+  var query_text = 'INSERT INTO quests ('+ columns +',published,tombstone) VALUES (' + params.join(',') + ',NOW(),NULL) ON CONFLICT (id) DO UPDATE SET ' + interleaved.join(',') + ',published=NOW(),tombstone=NULL';
+  var q = pool.query(query_text, meta, function(err, result) {
+    if (err) {
+      return cb(err);
+    }
+    cb(null, meta.id);
   });
+  console.log(q.text);
 }
 
 function unpublish(user, docid, cb) {
@@ -174,36 +176,32 @@ function unpublish(user, docid, cb) {
   }
 
   console.log("Unpublishing quest " + docid + " owned by " + user);
-  connect(function(connection) {
-    var id = user + '_' + docid;
-    var q = connection.query('UPDATE quests SET tombstone=NOW() WHERE id=$id', {id: id}, function(err, result) {
-      if (err) {
-        return cb(err);
-      }
-      cb(null, id);
-    });
-    console.log(q.text);
+  var id = user + '_' + docid;
+  var q = pool.query('UPDATE quests SET tombstone=NOW() WHERE id=$id', {id: id}, function(err, result) {
+    if (err) {
+      return cb(err);
+    }
+    cb(null, id);
   });
+  console.log(q.text);
 }
 
 function read(id, cb) {
-  connect(function(connection) {
-    var q = connection.query('SELECT * FROM quests WHERE id=$id LIMIT 1', {id: id}, function(err, results) {
-      if (err) {
-        return cb(err);
-      }
+  var q = pool.query('SELECT * FROM quests WHERE id=$id LIMIT 1', {id: id}, function(err, results) {
+    if (err) {
+      return cb(err);
+    }
 
-      if (results.length !== 1) {
-        return cb({
-          code: 404,
-          message: 'Not found'
-        });
-      }
-      cb(null, results[0]);
-    });
-
-    console.log(q.text);
+    if (results.length !== 1) {
+      return cb({
+        code: 404,
+        message: 'Not found'
+      });
+    }
+    cb(null, results[0]);
   });
+
+  console.log(q.text);
 }
 
 module.exports = {
