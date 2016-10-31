@@ -8,8 +8,8 @@ import FeaturedQuests, {FeaturedQuestsStateProps, FeaturedQuestsDispatchProps} f
 const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): FeaturedQuestsStateProps => {
   return {
     quests: [
-      {metaTitle: 'Oust Albanus', metaSummary: 'Your party encounters a smelly situation.', publishedUrl: 'quests/oust_albanus.xml'},
-      {metaTitle: 'Mistress Malaise', metaSummary: 'Mystery, Misfortune, and a Mistress.', publishedUrl: 'quests/mistress_malaise.xml'},
+      {title: 'Oust Albanus', summary: 'Your party encounters a smelly situation.', publishedurl: 'quests/oust_albanus.xml'},
+      {title: 'Mistress Malaise', summary: 'Mystery, Misfortune, and a Mistress.', publishedurl: 'quests/mistress_malaise.xml'},
     ]
   };
 }
@@ -17,7 +17,7 @@ const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): F
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): FeaturedQuestsDispatchProps => {
   return {
     onQuestSelect(quest: QuestDetails): void {
-      dispatch(loadQuestXML(quest.publishedUrl));
+      dispatch(loadQuestXML(quest.publishedurl));
     },
     onAdvancedPlay(): void {
       dispatch(toCard('ADVANCED'));

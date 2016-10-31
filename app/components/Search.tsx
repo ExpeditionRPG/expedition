@@ -58,9 +58,11 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
       <Card title="Public Quests" icon="adventurer">
         <p>
           Quests for {this.props.numPlayers} adventurer(s) where author, title, or ID contains
-          <TextField id="text" hintText="some text" hintStyle={{color: '#555555'}} onChange={(e: any) => this.onChange('text', e.target.value)} value={this.state.text}/>
         </p>
-        <p>
+        <div>
+          <TextField id="text" hintText="some text" hintStyle={{color: '#555555'}} onChange={(e: any) => this.onChange('text', e.target.value)} value={this.state.text}/>
+        </div>
+        <div>
           published within
 
           <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('age', v)} value={this.state.age}>
@@ -71,8 +73,8 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             <MenuItem value="86400" primaryText="the past 24 hours"/>
             <MenuItem value="3600" primaryText="the past hour"/>
           </DropDownMenu>
-        </p>
-        <p>
+        </div>
+        <div>
           ordered by
 
           <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('order', v)} value={this.state.order}>
@@ -81,15 +83,15 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             <MenuItem value="-metaMaxTimeMinutes" primaryText="Play Time (longest)"/>
             <MenuItem value="+metaMinTimeMinutes" primaryText="Play Time (shortest)"/>
           </DropDownMenu>
-        </p>
-        <p>
+        </div>
+        <div>
           created by
 
           <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('owner', v)} value={this.state.owner}>
             <MenuItem value="self" primaryText="You"/>
             <MenuItem value="anyone" primaryText="Anyone"/>
           </DropDownMenu>
-        </p>
+        </div>
         <Button onTouchTap={() => this.props.onSearch(this.props.numPlayers, this.props.user, this.state)}>Search</Button>
       </Card>
     );
@@ -111,19 +113,11 @@ function formatPlayPeriod(minMinutes: number, maxMinutes: number): string {
 function renderResults(props: SearchProps): JSX.Element {
   let items: JSX.Element[] = props.results.map(function(result: QuestDetails, index: number) {
 
-    let abnormalShare: JSX.Element = (<span></span>);
-    if (!result.published && !result.shared) {
-      abnormalShare = (<strong>(PRIVATE)</strong>);
-    }
-    if (!result.published && result.shared) {
-      abnormalShare = (<strong>(UNLISTED)</strong>);
-    }
-
     return (
       <Button key={index} onTouchTap={() => props.onQuest(result)}>
-        <h1 style={styles.resultTitle}>{result.metaTitle} {abnormalShare}</h1>
-        <div>by {result.metaAuthor}</div>
-        <div>{result.metaMinPlayers}-{result.metaMaxPlayers} players, {formatPlayPeriod(result.metaMinTimeMinutes, result.metaMaxTimeMinutes)}</div>
+        <h1 style={styles.resultTitle}>{result.title}</h1>
+        <div>by {result.author}</div>
+        <div>{result.minplayers}-{result.maxplayers} players, {formatPlayPeriod(result.mintimeminutes, result.maxtimeminutes)}</div>
       </Button>
     );
   });
@@ -164,10 +158,10 @@ function renderDetails(props: SearchProps): JSX.Element {
   return (
     <Card title="Quest Details">
       <div style={{textAlign: 'center'}}>
-        <h3>{props.selected.metaTitle}</h3>
-        <div style={{fontStyle: 'italic'}}>by {props.selected.metaAuthor}</div>
+        <h3>{props.selected.title}</h3>
+        <div style={{fontStyle: 'italic'}}>by {props.selected.author}</div>
         <p>
-          {props.selected.metaSummary}
+          {props.selected.summary}
         </p>
       </div>
       {details}
