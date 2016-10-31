@@ -4,6 +4,8 @@ import expeditionApp from './reducers/CombinedReducers'
 
 // For dev tools extension
 declare var window:any;
+declare var require:any;
+declare var module:any;
 
 let devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
 let middleware = applyMiddleware(thunk);

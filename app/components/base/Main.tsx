@@ -15,6 +15,7 @@ import AdvancedPlayContainer from '../AdvancedPlayContainer'
 import {getNodeCardType, RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../QuestParser'
 
 var ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
+declare var require:any;
 
 interface MainProps extends React.Props<any> {
   store: any;
