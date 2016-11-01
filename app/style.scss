@@ -60,10 +60,12 @@
 
 $whuge: 12vw;
 $wlarge: 6vw;
+$wicon: 5vw;
 $wbase: 2vw;
 $wsmall: 1vw;
 $wtiny: 0.5vw;
 
+$hwatermark: 36vh;
 $hhuge: 12vh;
 $hlarge: 6vh;
 $hbase: 2vh;
@@ -73,6 +75,7 @@ $htiny: 0.5vh;
 $tinteractive: 5.5vw;
 $tflavor: 4.7vw;
 $ttitle: 6.2vw;
+$ttimervalue: 24vw;
 $headerfont: CinzelBold, serif;
 
 $font_color_primary: #000000;
@@ -108,18 +111,11 @@ body {
 }
 
 .inline_icon {
-  width: 5vw;
-  margin-bottom: -0.5vw;
+  width: $wicon;
+  margin-bottom: -$wtiny;
 }
 
 .base_button {
-  &.dark > button {
-    background-color: $bg_dark_interactive !important;
-  }
-  &.disabled > button {
-    border: $border_faded !important;
-    color: $font_color_faded !important;
-  }
   > button {
     display: block !important;
     height: auto  !important;
@@ -139,6 +135,10 @@ body {
     line-height: 1.2  !important;
     > div {
       display: block !important;
+    }
+    &:disabled {
+      border: $border_faded !important;
+      color: $font_color_faded !important;
     }
   }
 }
@@ -162,6 +162,14 @@ body {
     }
     .title_container {
       background-color: $bg_dark_accent;
+    }
+
+    .base_button > button, .base_checkbox button, .base_picker {
+      background-color: $bg_dark_interactive !important;
+
+      svg {
+        color: white !important;
+      }
     }
   }
   .child_wrapper {
@@ -190,19 +198,20 @@ body {
       width: 100%;
       > img {
         position: absolute;
-        height: 36vh;
-        width: 36vh;
+        height: $hwatermark;
+        width: $hwatermark;
         right: 0;
         bottom: $hhuge;
         margin-right: -10%;
         margin-top: -25%;
         opacity: 0.2;
       }
+      overflow-x: hidden;
     }
     .scrollbox_bottom {
       position: absolute;
-      bottom: -6vw;
-      right: -6vw;
+      bottom: -$wlarge;
+      right: -$wlarge;
       width: $whuge;
       height: $wlarge;
       border-right: $border_primary;
@@ -231,9 +240,6 @@ body {
 };
 
 .base_checkbox {
-  &.dark button {
-    background-color: $bg_dark_interactive !important;
-  }
   button {
     height: auto !important;
     display: block !important;
@@ -292,13 +298,6 @@ body {
 }
 
 .base_picker {
-  &.dark {
-    background-color: $bg_dark_interactive;
-
-    svg {
-      color: white !important;
-    }
-  }
   height: auto;
   display: block;
   font-size: $tinteractive;
@@ -345,13 +344,13 @@ body {
   background-color: inherit;
   color: inherit;
   .value {
-    font-size: 110px;
+    font-size: $ttimervalue;
     font-family: $headerfont;
     text-align: center;
     position: absolute;
     width: 100%;
     top: 50%;
-    margin-top: -55px;
+    margin-top: -$ttimervalue/2;
   }
   .surge_warning {
     text-align: center;
