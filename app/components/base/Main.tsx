@@ -96,7 +96,7 @@ export default class Main extends React.Component<MainProps, {}> {
 
   render() {
     var cards: any = [
-      <div style={{position: 'absolute', width: '100%', height: '100%'}} key={this.state.key}>
+      <div className="base_main" key={this.state.key}>
           {this.state.card}
       </div>
     ];

@@ -26,13 +26,6 @@ export interface SearchDispatchProps {
 
 export interface SearchProps extends SearchStateProps, SearchDispatchProps {};
 
-const styles = {
-  resultTitle: {
-    margin: 0,
-    fontSize: theme.fontSize.interactive,
-  }
-}
-
 // We make this a react component to hold a bit of state and avoid sending
 // redux actions for every single change to input.
 interface SearchSettingsCardProps {
@@ -115,7 +108,7 @@ function renderResults(props: SearchProps): JSX.Element {
 
     return (
       <Button key={index} onTouchTap={() => props.onQuest(result)}>
-        <h1 style={styles.resultTitle}>{result.title}</h1>
+        <h1 className="search result_title">{result.title}</h1>
         <div>by {result.author}</div>
         <div>{result.minplayers}-{result.maxplayers} players, {formatPlayPeriod(result.mintimeminutes, result.maxtimeminutes)}</div>
       </Button>
@@ -157,9 +150,9 @@ function renderDetails(props: SearchProps): JSX.Element {
   */
   return (
     <Card title="Quest Details">
-      <div style={{textAlign: 'center'}}>
+      <div className="search details">
         <h3>{props.selected.title}</h3>
-        <div style={{fontStyle: 'italic'}}>by {props.selected.author}</div>
+        <div class="author">by {props.selected.author}</div>
         <p>
           {props.selected.summary}
         </p>

@@ -51,13 +51,13 @@ export default class Picker extends React.Component<PickerProps, {}> {
 
   render() {
     return (
-      <div style={this.style.picker}>
-        <div style={this.style.pickerControls}>
-          <IconButton style={{float: 'left'}} onTouchTap={(e) => this.props.onDelta(-1)} ><ChevronLeft color={this.style.iconColor} /></IconButton>
-          <div style={this.style.value}>{this.props.label}: {this.props.value}</div>
-          <IconButton style={{float: 'right'}} onTouchTap={(e) => this.props.onDelta(1)}><ChevronRight color={this.style.iconColor} /></IconButton>
+      <div className={"base_picker" + ((this.props.dark) ? " dark" : "")}>
+        <div className="controls">
+          <IconButton onTouchTap={(e) => this.props.onDelta(-1)}><ChevronLeft/></IconButton>
+          <div className="value">{this.props.label}: {this.props.value}</div>
+          <IconButton onTouchTap={(e) => this.props.onDelta(1)}><ChevronRight/></IconButton>
         </div>
-        <div style={this.style.subtext} id="subtext">{this.props.children}</div>
+        <div className="subtext" id="subtext">{this.props.children}</div>
       </div>
     );
   }

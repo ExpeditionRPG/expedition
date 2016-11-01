@@ -4,28 +4,6 @@ import Card from './base/Card'
 import Button from './base/Button'
 import {QuestDetails} from '../reducers/QuestTypes'
 
-const styles = {
-  container: {
-    paddingLeft: theme.vw.base,
-  },
-  summary: {
-    display: 'flex',
-    paddingLeft: theme.vw.base,
-    flex: '3',
-    lineHeight: '1.2em',
-    margin: 0,
-    fontSize: theme.fontSize.flavortext,
-  },
-  title: {
-    lineHeight: '1.2em',
-    fontFamily: theme.card.headerFont,
-    display: 'block',
-    fontSize: theme.fontSize.interactive,
-    marginBottom: theme.vh.small,
-    top: 0,
-  },
-};
-
 export interface FeaturedQuestsStateProps {
   quests: QuestDetails[];
 }
@@ -41,16 +19,16 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
   let items: JSX.Element[] = props.quests.map((quest: QuestDetails, index: number): JSX.Element => {
     return (
       <Button onTouchTap={() => props.onQuestSelect(quest)} key={index}>
-        <div style={styles.container}>
-          <div style={styles.title}>{quest.title}</div>
-          <div style={styles.summary}>{quest.summary}</div>
+        <div className="featured_quest">
+          <div className="title">{quest.title}</div>
+          <div className="summary">{quest.summary}</div>
         </div>
       </Button>
     );
   });
 
   return (
-    <Card title="Featured Quests">
+    <Card title="Featured Quests" icon="adventurer">
       <p>
         Select a quest below to get started, or click Advanced Play below for more options.
       </p>

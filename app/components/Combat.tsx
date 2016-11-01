@@ -54,9 +54,9 @@ function renderSelectTier(props: CombatProps): JSX.Element {
 function renderDrawEnemies(props: CombatProps): JSX.Element {
   let enemies: JSX.Element[] = props.combat.enemies.map(function(enemy: Enemy, index: number) {
     return (
-      <h2 style={{textAlign: 'center'}} key={index}>
-        <span style={{display: 'inline-block', marginRight:'2vw'}}>{enemy.name}</span>
-        <span style={{display: 'inline-block'}}>(Tier {numerals[enemy.tier]})</span>
+      <h2 className="combat draw_enemies center" key={index}>
+        <span>{enemy.name}</span>
+        <span>(Tier {numerals[enemy.tier]})</span>
       </h2>
     );
   });
@@ -103,7 +103,7 @@ function renderPrepare(props: CombatProps): JSX.Element {
   return (
     <Card title='Prepare for Combat' dark={true}>
       {helpText}
-      <h2 style={{textAlign: 'center'}}>Ready to begin?</h2>
+      <h2 className="combat center">Ready to begin?</h2>
       <Button dark={true} onTouchTap={() => props.onNext(props.card.name, 'TIMER')}>Start Timer</Button>
     </Card>
   );
@@ -138,7 +138,7 @@ function renderResolve(props: CombatProps): JSX.Element {
     helpText = (
       <span>
         <p>
-          Roll a die for each ability with a "<img style={theme.inlineIcon} src="images/roll_white_small.svg"></img> &gt; X" and resolve the cards' effects.
+          Roll a die for each ability with a "<img className="inline_icon" src="images/roll_white_small.svg"></img> &gt; X" and resolve the cards' effects.
         </p>
         <p>
           Adventurers may resolve their abilities in any order, and may apply the effects of their abilities (such as roll modifiers) retroactively to other abilities used this round.
@@ -183,8 +183,8 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
   return (
     <Card title='Take Damage' dark={true}>
-      <h3 style={{textAlign: 'center'}}>All adventurers:</h3>
-      <h3 style={{textAlign: 'center'}}>{damage} Damage</h3>
+      <h3 className="combat center">All adventurers:</h3>
+      <h3 className="combat center">{damage} Damage</h3>
 
       {helpText}
 
