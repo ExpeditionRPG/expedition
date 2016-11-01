@@ -13,7 +13,6 @@ interface TimerCardProps extends React.Props<any> {
 export default class TimerCard extends React.Component<TimerCardProps, {}> {
   interval: any;
   state: {startTimeMillis: number, timeRemaining: number};
-  style: any;
 
   constructor(props: TimerCardProps) {
     super(props)
@@ -23,31 +22,6 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
       console.log(this.props.roundTimeTotalMillis + " - " + this.state.startTimeMillis);
       this.setState({timeRemaining: this.props.roundTimeTotalMillis - (Date.now() - this.state.startTimeMillis)});
     }, 100);
-
-    this.style = {
-      container: {
-        width: '100%',
-        height: '100%',
-        backgroundColor: (this.props.dark) ? 'black' : 'inherit',
-      },
-      timerValue: {
-        fontSize: '110px',
-        fontFamily: theme.card.headerFont,
-        textAlign: 'center',
-        position: 'absolute',
-        width: '100%',
-        top: '50%',
-        marginTop: '-55px',
-        color: (this.props.dark) ? 'white' : 'inherit',
-      },
-      surgeWarning: {
-        textAlign: 'center',
-        position: 'absolute',
-        width: '100%',
-        top: '60%',
-        color: (this.props.dark) ? 'white' : 'inherit',
-      }
-    }
   }
 
   onTouchChange(numFingers: number) {
@@ -72,10 +46,10 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
     else {
       formattedTimer = timeRemainingSec.toFixed(0);
     }
-    var surgeWarning = (this.props.surgeWarning) ? (<h3 style={this.style.surgeWarning}>Surge Imminent</h3>) : (<span></span>);
+    var surgeWarning = (this.props.surgeWarning) ? (<h3 className="surge_warning">Surge Imminent</h3>) : (<span></span>);
     return (
-      <div style={this.style.container}>
-        <div style={this.style.timerValue}>{formattedTimer}s</div>
+      <div className={"base_timer_card" + ((this.props.dark) ? " dark" : "")}>
+        <div className="value">{formattedTimer}s</div>
         {surgeWarning}
         <MultiTouchTrigger onTouchChange={this.onTouchChange.bind(this)} />
       </div>

@@ -1,0 +1,474 @@
+// These are styles for the Expedition App.
+// TODO: Update this to match the new card style
+
+// ===============================================
+// Font setup
+// ===============================================
+
+@font-face {
+  font-family: 'CinzelBold';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Cinzel-Bold'), url(fonts/Cinzel-Bold.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+@font-face {
+  font-family: 'MinionPro';
+  src: url("fonts/Minion Pro Regular.ttf") format('truetype');
+}
+
+// ===============================================
+// Transitional animation classes
+// ===============================================
+
+.NEXT-enter {
+  transform: translate(100%);
+}
+.NEXT-enter.NEXT-enter-active {
+  transform: translate(0%);
+  transition: transform 300ms ease-in-out;
+}
+.NEXT-leave {
+  position:absolute;
+  transform: translate(0%);
+}
+.NEXT-leave.NEXT-leave-active {
+  transform: translate(-100%);
+  transition: transform 300ms ease-in-out;
+}
+
+.PREV-enter {
+  transform: translate(-100%);
+}
+.PREV-enter.PREV-enter-active {
+  transform: translate(0%);
+  transition: transform 300ms ease-in-out;
+}
+.PREV-leave {
+  position:absolute;
+  transform: translate(0%);
+}
+.PREV-leave.PREV-leave-active {
+  transform: translate(100%);
+  transition: transform 300ms ease-in-out;
+}
+
+// ===============================================
+// Constants
+// ===============================================
+
+$whuge: 12vw;
+$wlarge: 6vw;
+$wicon: 5vw;
+$wbase: 2vw;
+$wsmall: 1vw;
+$wtiny: 0.5vw;
+
+$hwatermark: 36vh;
+$hhuge: 12vh;
+$hlarge: 6vh;
+$hbase: 2vh;
+$hsmall: 1vh;
+$htiny: 0.5vh;
+
+$tinteractive: 5.5vw;
+$tflavor: 4.7vw;
+$ttitle: 6.2vw;
+$ttimervalue: 24vw;
+$headerfont: CinzelBold, serif;
+
+$font_color_primary: #000000;
+$font_color_faded: #777777;
+$font_color_dark_primary: #FFFFFF;
+
+$border_primary: 0.03in solid #000000;
+$border_accent: 0.03in solid #CCCCCC;
+$border_faded: 0.03in solid #777777;
+
+$bg_primary: #FFFFFF;
+$bg_accent: rgb(220, 220, 220);
+$bg_interactive: rgba(255, 255, 255, 0.7);
+$bg_active: rgba(255, 255, 255, 0.9);
+$bg_dark_primary: rgb(20, 20, 20);
+$bg_dark_accent: rgb(60, 60, 60);
+$bg_dark_interactive: rgba(0, 0, 0, 0.7);
+$bg_dark_active: rgba(30, 30, 30, 1.0);
+$bg_surge_primary: #CC0000;
+
+// ===============================================
+// Base/General Styles
+// ===============================================
+
+body {
+  background-color: #eeeeee;
+  overflow:hidden;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: MinionPro;
+}
+
+.inline_icon {
+  width: $wicon;
+  margin-bottom: -$wtiny;
+}
+
+.base_button {
+  > button {
+    display: block !important;
+    height: auto  !important;
+    width: 100%  !important;
+    font-size: $tinteractive  !important;
+    padding: $wbase  !important;
+    padding-top: $hbase  !important;
+    padding-bottom: $hbase  !important;
+    margin: 0  !important;
+    margin-top: $hbase  !important;
+    border: $border_accent  !important;
+    background-color: $bg_interactive  !important;
+    text-align: left  !important;
+    text-transform: none  !important;
+    text-decoration: none  !important;
+    color: inherit  !important;
+    line-height: 1.2  !important;
+    > div {
+      display: block !important;
+    }
+    &:disabled {
+      border: $border_faded !important;
+      color: $font_color_faded !important;
+    }
+  }
+}
+
+.base_card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #eeeeee;
+  color: $font_color_primary;
+  &.dark {
+    background-color: black;
+    color: $font_color_dark_primary;
+    .scrollbox_top {
+      border-top: $border_accent;
+      border-left: $border_accent;
+    }
+    .scrollbox_bottom {
+      border-right: $border_accent;
+      border-bottom: $border_accent;
+    }
+    .title_container {
+      background-color: $bg_dark_accent;
+    }
+
+    .base_button > button, .base_checkbox button, .base_picker {
+      background-color: $bg_dark_interactive !important;
+
+      svg {
+        color: white !important;
+      }
+    }
+  }
+  .child_wrapper {
+    margin: $wlarge;
+    margin-top: $wsmall;
+    margin-bottom: 9vw;
+    position: relative;
+  }
+  .article {
+    display: flex;
+    position: relative;
+    overflow-y: auto;
+    padding: $wbase;
+    font-size: $tflavor;
+    .scrollbox_top {
+      position: absolute;
+      width: $whuge;
+      height: $wlarge;
+      border-top: $border_primary;
+      border-left: $border_primary;
+    }
+    .scrollbox {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      > img {
+        position: absolute;
+        height: $hwatermark;
+        width: $hwatermark;
+        right: 0;
+        bottom: $hhuge;
+        margin-right: -10%;
+        margin-top: -25%;
+        opacity: 0.2;
+      }
+      overflow-x: hidden;
+    }
+    .scrollbox_bottom {
+      position: absolute;
+      bottom: -$wlarge;
+      right: -$wlarge;
+      width: $whuge;
+      height: $wlarge;
+      border-right: $border_primary;
+      border-bottom: $border_primary;
+    }
+  }
+  .title_container {
+    background-color: $bg_accent;
+    padding: 0;
+    line-height: $whuge;
+    > button {
+      float: left;
+    }
+    .menu {
+      float: right;
+      margin-right: $wbase;
+      padding: 0;
+      font-size: $tinteractive;
+    }
+    .title {
+      font-family: $headerfont;
+      font-size: $ttitle;
+      display: inline-block;
+    }
+  }
+};
+
+.base_checkbox {
+  button {
+    height: auto !important;
+    display: block !important;
+    font-size: $tinteractive !important;
+    padding: $wbase !important;
+    padding-top: $hbase !important;
+    padding-bottom: $hbase !important;
+    margin: 0 !important;
+    margin-top: $hbase !important;
+    border: $border_accent !important;
+    background-color: $bg_interactive !important;
+    text-align: center !important;
+    text-transform: none !important;
+    text-decoration: none !important;
+    color: inherit !important;
+    width: 100% !important;
+  }
+  .label {
+    font-size: $tinteractive;
+    font-family: $headerfont;
+  }
+  .icon {
+    display: inline-block;
+    top: $htiny;
+    margin-left: $htiny;
+    position: relative;
+  }
+  .subtext {
+    font-size: $tflavor;
+  }
+}
+
+.base_indicator {
+  display: flex;
+  flex-direction: row;
+  p > img {
+    width: $wlarge;
+    height: $wlarge;
+    display: inline-block;
+  }
+  .text {
+    font-style: italic;
+    padding-left: $wbase;
+    padding-right: $wlarge;
+  }
+}
+
+.base_main {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.base_multi_touch_trigger {
+  position: absolute;
+}
+
+.base_picker {
+  height: auto;
+  display: block;
+  font-size: $tinteractive;
+  padding: $wbase;
+  padding-top: $hbase;
+  padding-bottom: $hbase;
+  margin: 0;
+  margin-top: $hbase;
+  border: $border_accent;
+  background-color: $bg_interactive;
+  text-align: center;
+  text-transform: none;
+  text-decoration: none;
+  color: inherit;
+  .subtext {
+    font-size: $tflavor;
+  }
+  .value {
+    flex: 10;
+    margin-top: $hsmall;
+    font-family: $headerfont;
+  }
+  .controls {
+    display: flex;
+    flex-direction: row;
+
+    :first-child {
+      float: left;
+    }
+
+    :last-child {
+      float: right;
+    }
+  }
+}
+
+.base_timer_card {
+  &.dark {
+    color: white;
+    background-color: black;
+  }
+  width: 100%;
+  height: 100%;
+  background-color: inherit;
+  color: inherit;
+  .value {
+    font-size: $ttimervalue;
+    font-family: $headerfont;
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    margin-top: -$ttimervalue/2;
+  }
+  .surge_warning {
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    top: 60%;
+  }
+}
+
+// ===============================================
+// Card-specific styles
+// ===============================================
+
+.advanced_play {
+  padding-left: $wbase;
+
+  .summary {
+    display: flex;
+    padding-left: $wbase;
+    flex: 3;
+    line-height: 1.2em;
+    margin: 0;
+    font-size: $tflavor;
+  }
+  .title {
+    line-height: 1.2em,;
+    display: block;
+    font-size: $tinteractive;
+    margin-bottom: $hsmall;
+    font-family: $headerfont;
+    top: 0;
+  }
+}
+
+.combat {
+  &.center {
+    text-align: center;
+  }
+  &.draw_enemies {
+    span {
+      display: 'inline-block';
+      &:first-child {
+        margin-right: $wbase;
+      }
+    }
+  }
+}
+
+.featured_quest {
+  padding-left: $wbase;
+  .summary {
+    display: flex;
+    padding-left: $wbase;
+    flex: 3;
+    line-height: 1.2em;
+    margin: 0;
+    font-size: $tflavor;
+  }
+  .title {
+    line-height: 1.2em;
+    font-family: $headerfont;
+    display: block;
+    font-size: $tinteractive;
+    margin-bottom: $hsmall;
+    top: 0;
+  }
+}
+
+.search {
+  .result_title {
+    margin: 0;
+    font-size: $tinteractive;
+  }
+  .details {
+    text-align: center;
+
+    .author {
+      font-style: italic;
+    }
+  }
+}
+
+.splash_screen {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  .center {
+    width: 90%;
+    left: 50%;
+    margin-left: -45%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 50%;
+    margin-top: -10%;
+    height: 20%;
+    color: $font_color_primary;
+    font-size: $tflavor;
+    text-align: center;
+  }
+  .logo {
+    position: absolute;
+    top: $hsmall;
+    left: $hsmall;
+    right: $hsmall;
+    img {
+      width: 100%;
+    }
+  }
+  .no_multi_button {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: $font_color_faded;
+    padding: $hsmall;
+    margin: auto;
+    text-align: center;
+    border: 1px solid #ccc;
+  }
+}
