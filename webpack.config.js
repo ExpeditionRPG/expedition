@@ -11,6 +11,7 @@ var options = {
     'webpack-dev-server/client?http://localhost:8081',
     'webpack/hot/only-dev-server',
     './app/react.tsx',
+    './app/style.scss',
   ],
   resolve: {
     extensions: ['', '.js', '.ts', '.tsx', '.json']

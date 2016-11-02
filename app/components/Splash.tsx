@@ -12,34 +12,9 @@ export interface SplashDispatchProps {
   onLogin: (user: UserState)=>void;
 }
 
-
-const styles = {
-  h1: {
-    color: 'white',
-    fontSize: '2em',
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  learnMore: {
-    margin: '0.8em auto 2.5em auto',
-  },
-  learnMoreLink: {
-    color: 'white',
-    opacity: 0.8,
-    textDecoration: 'none',
-  },
-  screenshot: {
-    boxShadow: '0 0 10px #616161',
-    width: '70%',
-    margin: 'auto',
-    display: 'block',
-  },
-};
-
-
 const Splash = (props: any): JSX.Element => {
   return (
-    <div style={{'background': '#141414', 'height': '100%'}}>
+    <div className="splash">
       <AppBar
         title="Expedition Quest Creator"
         showMenuIconButton={false}
@@ -50,23 +25,20 @@ const Splash = (props: any): JSX.Element => {
           />
         }
       />
-      <div style={{'textAlign': 'center'}}>
-        <h1 style={styles.h1}>Create your own quests</h1>
+      <div className="body">
+        <h1>Create your own quests</h1>
         <RaisedButton
           label="Get Started"
           primary={true}
           onTouchTap={() => props.onLogin()}
         />
-        <div style={styles.learnMore}>
-          <a style={styles.learnMoreLink}
-            href="https://github.com/Fabricate-IO/expedition-quest-ide/blob/master/docs/markdown_guide.md"
-            target="_blank"
-          >
+        <div className="learnMore">
+          <a href="https://github.com/Fabricate-IO/expedition-quest-ide/blob/master/docs/markdown_guide.md" target="_blank">
             learn more
           </a>
         </div>
-        <div style={{'background': '#141414'}}>
-          <img src="/assets/img/app-screenshot.png" style={styles.screenshot}/>
+        <div clasName="screenshot">
+          <img src="/assets/img/app-screenshot.png"/>
         </div>
       </div>
     </div>

@@ -21,16 +21,9 @@ var appStoreView: any = {
   }
 };
 
-const styles = {
-  mobileContainer: {
-    maxWidth: 380,
-    maxHeight: 720
-  }
-};
-
 const App = (props: any): JSX.Element => {
   return (
-    <div style={styles.mobileContainer}>
+    <div className="app">
       <Main store={appStoreView}/>
     </div>
   );

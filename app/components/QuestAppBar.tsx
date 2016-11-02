@@ -48,7 +48,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   const questTitle = props.quest.title || 'unsaved quest';
   const savingText = (props.dirty) ? 'Unsaved changes' : 'All changes saved';
   return (
-    <span style={{width: "100%", height: "100%"}}>
+    <span className="quest_app_bar">
       <AppBar
         title={questTitle}
         showMenuIconButton={false}
@@ -68,16 +68,16 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
           </IconMenu>
         }
       />
-      <Toolbar style={styles.toolbar}>
+      <Toolbar className="toolbar">
         <ToolbarGroup firstChild={true}>
-          <FlatButton style={styles.button} label="New" onTouchTap={(event: any) => props.onMenuSelect('NEW_QUEST', props.dirty, props.quest)} />
-          <FlatButton style={styles.button} label="Save" onTouchTap={(event: any) => props.onMenuSelect('SAVE_QUEST', props.dirty, props.quest)} />
-          <FlatButton style={styles.button} label="Publish" onTouchTap={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.dirty, props.quest)} />
-          <FlatButton style={styles.button} label="Unpublish" onTouchTap={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.dirty, props.quest)} disabled={!Boolean(props.quest.published)} />
-          <FlatButton style={styles.button} label="View in Drive" onTouchTap={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.dirty, props.quest)} />
-          <FlatButton style={styles.button} label="Send Feedback" onTouchTap={(event: any) => props.onMenuSelect('FEEDBACK', props.dirty, props.quest)} />
-          <FlatButton style={styles.button} label="Help" onTouchTap={(event: any) => props.onMenuSelect('HELP', props.dirty, props.quest)} />
-          <FlatButton style={styles.button} label={savingText} disabled={true} />
+          <FlatButton label="New" onTouchTap={(event: any) => props.onMenuSelect('NEW_QUEST', props.dirty, props.quest)} />
+          <FlatButton label="Save" onTouchTap={(event: any) => props.onMenuSelect('SAVE_QUEST', props.dirty, props.quest)} />
+          <FlatButton label="Publish" onTouchTap={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.dirty, props.quest)} />
+          <FlatButton label="Unpublish" onTouchTap={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.dirty, props.quest)} disabled={!Boolean(props.quest.published)} />
+          <FlatButton label="View in Drive" onTouchTap={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.dirty, props.quest)} />
+          <FlatButton label="Send Feedback" onTouchTap={(event: any) => props.onMenuSelect('FEEDBACK', props.dirty, props.quest)} />
+          <FlatButton label="Help" onTouchTap={(event: any) => props.onMenuSelect('HELP', props.dirty, props.quest)} />
+          <FlatButton label={savingText} disabled={true} />
         </ToolbarGroup>
       </Toolbar>
     </span>
