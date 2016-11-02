@@ -14,6 +14,7 @@ import SettingsContainer from '../SettingsContainer'
 import AdvancedPlayContainer from '../AdvancedPlayContainer'
 import {getNodeCardType, RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../QuestParser'
 import {getStore} from '../../store'
+import { Provider } from 'react-redux'
 
 var ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
 
@@ -101,12 +102,14 @@ export default class Main extends React.Component<MainProps, {}> {
     ];
     return (
       <div className="app_container">
-        <ReactCSSTransitionGroup
-          transitionName={this.state.transition}
-          transitionEnterTimeout={300}
-          transitionLeaveTimeout={300}>
-          {cards}
-        </ReactCSSTransitionGroup>
+        <Provider store={getStore()}>
+          <ReactCSSTransitionGroup
+            transitionName={this.state.transition}
+            transitionEnterTimeout={300}
+            transitionLeaveTimeout={300}>
+            {cards}
+          </ReactCSSTransitionGroup>
+        </Provider>
       </div>
     );
   }
