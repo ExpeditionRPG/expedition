@@ -4,18 +4,23 @@ import {SearchSettings, UserState} from '../reducers/StateTypes'
 import {toCard} from './card'
 import {authSettings} from '../constants'
 
-export function loadQuestXML(url: string) {
+export function fetchQuestXML(url: string) {
   return (dispatch: Redux.Dispatch<any>): any => {
     $.get(url, function(data: XMLElement | string) {
-      if (typeof data === 'string') {
-        data = (new DOMParser().parseFromString(data as string, 'text/xml')) as any as XMLElement;
-      }
-      dispatch(initQuest((data as XMLElement).children[0].children[0]));
-      dispatch(toCard('QUEST_START'));
+      dispatch(loadQuestXML(data));
     });
   };
 }
 
+export function loadQuestXML(data: XMLElement | string) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    if (typeof data === 'string') {
+      data = (new DOMParser().parseFromString(data as string, 'text/xml')) as any as XMLElement;
+    }
+    dispatch(initQuest((data as XMLElement).children[0].children[0]));
+    dispatch(toCard('QUEST_START'));
+  };
+}
 
 export function search(numPlayers: number, user: UserState, search: SearchSettings) {
   return (dispatch: Redux.Dispatch<any>): any => {

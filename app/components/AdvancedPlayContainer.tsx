@@ -2,7 +2,6 @@ import { connect } from 'react-redux'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {AppState, SettingsType} from '../reducers/StateTypes'
 import {toCard} from '../actions/card'
-import {loadQuestXML} from '../actions/web'
 import {initCombat} from '../actions/quest'
 import AdvancedPlay, {AdvancedPlayStateProps, AdvancedPlayDispatchProps} from './AdvancedPlay'
 
