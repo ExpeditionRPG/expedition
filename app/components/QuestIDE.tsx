@@ -4,7 +4,7 @@ import {Tab} from 'material-ui/Tabs'
 
 import TextView from './base/TextView'
 import {DirtyState, QuestType} from '../reducers/StateTypes'
-
+import AppContainer from './AppContainer'
 
 const styles = {
   container: {
@@ -21,7 +21,9 @@ const styles = {
   },
   tabcontainer: {
     overflowY: 'auto',
-    height: "100%"
+    height: "100%",
+    display: "flex",
+    flexDirection: "row",
   }
 };
 
@@ -40,6 +42,7 @@ interface QuestIDEProps extends QuestIDEStateProps, QuestIDEDispatchProps {}
 
 
 const QuestIDE = (props: QuestIDEProps): JSX.Element => {
+  // TODO: Add AppContainer
   return (
     <span style={{width: "100%", height: "100%"}}>
       <div style={styles.tabcontainer}>
