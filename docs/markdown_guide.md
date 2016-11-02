@@ -2,7 +2,7 @@
 
 Welcome, fearless mortal, to the Expedition Quest Editor! Use this tool to craft custom quests of dangerous deeds and awful alliteration with speed and ease.
 
-Quests are written in [Markdown](http://daringfireball.net/projects/markdown/).
+Quests are written in [Markdown](http://daringfireball.net/projects/markdown/). Here's a complete example quest: [Mistress Malaise](https://raw.githubusercontent.com/Fabricate-IO/expedition-quest-ide/master/docs/examples/mistress_malaise.md).
 
 ## In The Beginning: Quest Metadata
 
