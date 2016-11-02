@@ -7,15 +7,31 @@ declare var window:any;
 declare var require:any;
 declare var module:any;
 
-let devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
-let middleware = applyMiddleware(thunk);
+var store: any = null;
 
-export const store: any = middleware(devtools(createStore))(expeditionApp, {});
-console.log(store);
+export function installStore(createdStore: any) {
+  store = createdStore;
+}
 
-if (module && module.hot) {
-  module.hot.accept('./reducers/CombinedReducers', () => {
-    let updated = require('./reducers/CombinedReducers').default;
-    store.replaceReducer(updated);
-  });
+function createAppStore() {
+
+  let devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
+  let middleware = applyMiddleware(thunk);
+
+  installStore(middleware(devtools(createStore))(expeditionApp, {}));
+
+  if (module && module.hot) {
+    module.hot.accept('./reducers/CombinedReducers', () => {
+      let updated = require('./reducers/CombinedReducers').default;
+      store.replaceReducer(updated);
+    });
+  }
+}
+
+export function getStore() {
+  if (store !== null) {
+    return store;
+  }
+  createAppStore();
+  return store;
 }

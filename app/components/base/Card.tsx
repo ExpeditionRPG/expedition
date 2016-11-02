@@ -4,7 +4,7 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import ChevronLeftIcon from 'material-ui/svg-icons/navigation/chevron-left'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import {store} from '../../store'
+import {getStore} from '../../store'
 import {toCard, toPrevious} from '../../actions/card'
 import theme from '../../theme'
 
@@ -23,7 +23,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     if (this.props && this.props.onReturn) {
       return this.props.onReturn();
     }
-    store.dispatch(toPrevious());
+    getStore().dispatch(toPrevious());
   }
 
   onMenuSelect(value: string) {
@@ -33,9 +33,9 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
 
     switch(value) {
       case 'HOME':
-        return store.dispatch(toPrevious('SPLASH_CARD', undefined, false));
+        return getStore().dispatch(toPrevious('SPLASH_CARD', undefined, false));
       case 'SETTINGS':
-        return store.dispatch(toCard('SETTINGS'));
+        return getStore().dispatch(toCard('SETTINGS'));
       case 'FEEDBACK':
         var url = 'http://www.expeditiongame.com/contact/?utm_source=webapp&utm_medium=app';
         window.open(url, '_system');
