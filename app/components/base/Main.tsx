@@ -13,12 +13,11 @@ import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
 import SettingsContainer from '../SettingsContainer'
 import AdvancedPlayContainer from '../AdvancedPlayContainer'
 import {getNodeCardType, RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../QuestParser'
+import {getStore} from '../../store'
 
 var ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
 
-interface MainProps extends React.Props<any> {
-  store: any;
-}
+interface MainProps extends React.Props<any> {}
 
 export default class Main extends React.Component<MainProps, {}> {
   state: {key: number, transition: TransitionType, card: JSX.Element};
@@ -26,11 +25,11 @@ export default class Main extends React.Component<MainProps, {}> {
   constructor(props: MainProps) {
     super(props);
     this.state = this.getUpdatedState();
-    this.props.store.subscribe(this.handleChange.bind(this));
+    getStore().subscribe(this.handleChange.bind(this));
   }
 
   getUpdatedState() {
-    let state: AppStateWithHistory = this.props.store.getState();
+    let state: AppStateWithHistory = getStore().getState();
     if (state === undefined) {
       return {key: 0, transition: 'INSTANT' as TransitionType, card: <SplashScreenContainer/>};
     }

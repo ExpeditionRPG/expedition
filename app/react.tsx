@@ -83,7 +83,7 @@ let render = () => {
   ReactDOM.render(
     <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
       <Provider store={getStore()}>
-          <Main store={getStore()}/>
+          <Main/>
       </Provider>
     </MuiThemeProvider>,
     base
