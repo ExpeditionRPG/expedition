@@ -102,12 +102,14 @@ export default class Main extends React.Component<MainProps, {}> {
       </div>
     ];
     return (
-      <ReactCSSTransitionGroup
-        transitionName={this.state.transition}
-        transitionEnterTimeout={300}
-        transitionLeaveTimeout={300}>
-        {cards}
-      </ReactCSSTransitionGroup>
+      <div className="app_container">
+        <ReactCSSTransitionGroup
+          transitionName={this.state.transition}
+          transitionEnterTimeout={300}
+          transitionLeaveTimeout={300}>
+          {cards}
+        </ReactCSSTransitionGroup>
+      </div>
     );
   }
 }
