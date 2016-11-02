@@ -20,15 +20,17 @@ interface QuestIDEProps extends QuestIDEStateProps, QuestIDEDispatchProps {}
 
 
 const QuestIDE = (props: QuestIDEProps): JSX.Element => {
-  // TODO: Add AppContainer
   return (
-    <span className="quest_ide">
-      <div>
+    <div className="quest_ide">
+      <div className="editor">
         <TextView
           realtime={props.realtime}
           onChange={(text: string) => props.onDirty(props.realtime, props.dirty, props.quest, text)} />
       </div>
-    </span>
+      <div className="preview">
+        <AppContainer/>
+      </div>
+    </div>
   );
 }
 

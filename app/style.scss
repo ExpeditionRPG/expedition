@@ -47,11 +47,17 @@ html, body, #react-app {
 .quest_ide {
   width: 100%;
   height: 100%;
-  > div {
-    overflow-y: auto;
-    height: 100%;
-    display: flex;
-    flex-direction: row;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: row;
+
+  .editor {
+    flex: 1;
+    position: relative;
+  }
+  .preview {
+    position: relative;
+    flex: 0 0 560px;
   }
 }
 
