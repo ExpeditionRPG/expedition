@@ -33,6 +33,14 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
     }
   }
 
+  _mouseDownEvent() {
+    this.props.onTouchChange(1);
+  }
+
+  _mouseUpEvent() {
+    this.props.onTouchChange(0);
+  }
+
   setupCanvas(ref: any) {
     // Setup canvas element and touch listeners
     this.canvas = ref;
@@ -45,6 +53,8 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
     this.canvas.addEventListener('touchstart', this._touchEvent.bind(this));
     this.canvas.addEventListener('touchmove', this._touchEvent.bind(this));
     this.canvas.addEventListener('touchend', this._touchEvent.bind(this));
+    this.canvas.addEventListener('mousedown', this._mouseDownEvent.bind(this));
+    this.canvas.addEventListener('mouseup', this._mouseDownEvent.bind(this));
 
     this._touchEvent({touches: [], preventDefault: ()=>{}});
   }

@@ -43,7 +43,7 @@ import { Provider } from 'react-redux'
 
 // Custom components
 import {authSettings} from './constants'
-import {store} from './store'
+import {getStore} from './store'
 import {toPrevious} from './actions/card'
 
 // Wait for device API libraries to load
@@ -61,7 +61,7 @@ function onDeviceReady() {
   }
 
   document.addEventListener("backbutton", function() {
-    store.dispatch(toPrevious());
+    getStore().dispatch(toPrevious());
   }, false);
 }
 
@@ -82,8 +82,8 @@ let render = () => {
   ReactDOM.unmountComponentAtNode(base);
   ReactDOM.render(
     <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-      <Provider store={store}>
-          <Main store={store}/>
+      <Provider store={getStore()}>
+          <Main store={getStore()}/>
       </Provider>
     </MuiThemeProvider>,
     base
