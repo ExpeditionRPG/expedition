@@ -126,12 +126,14 @@ $border_faded: 0.03in solid #777777;
 
 $bg_primary: #eeeeee;
 $bg_inactive: #222222;
+$bg_titlebar: rgba(255, 255, 255, 0.5);
 $bg_accent: rgb(220, 220, 220);
-$bg_interactive: rgba(255, 255, 255, 0.7);
+$bg_interactive: rgba(255, 255, 255, 0.5);
 $bg_active: rgba(255, 255, 255, 0.9);
 $bg_dark_primary: rgb(20, 20, 20);
+$bg_dark_titlebar: rgba(100, 100, 100, 0.5);
 $bg_dark_accent: rgb(60, 60, 60);
-$bg_dark_interactive: rgba(0, 0, 0, 0.7);
+$bg_dark_interactive: rgba(0, 0, 0, 0.5);
 $bg_dark_active: rgba(30, 30, 30, 1.0);
 $bg_surge_primary: #CC0000;
 
@@ -189,9 +191,13 @@ body {
     display: flex;
     flex-direction: column;
     background-color: $bg_primary;
+    background-image: url(/images/papyrus-tiled.jpg);
+    background-size: 100% auto;
+    background-repeat: repeat;
     color: $font_color_primary;
     &.dark {
       background-color: black;
+      background-image: url(/images/encounter-tiled.jpg);
       color: $font_color_dark_primary;
       .scrollbox_top {
         border-top: $border_accent;
@@ -202,7 +208,7 @@ body {
         border-bottom: $border_accent;
       }
       .title_container {
-        background-color: $bg_dark_accent;
+        background-color: $bg_dark_titlebar;
       }
 
       .base_button > button, .base_checkbox button, .base_picker {
@@ -260,7 +266,7 @@ body {
       }
     }
     .title_container {
-      background-color: $bg_accent;
+      background-color: $bg_titlebar;
       padding: 0;
       line-height: width(huge);
       > button {
