@@ -2,11 +2,9 @@ import {UserState, QuestType, DialogIDType, ShareType} from '../reducers/StateTy
 
 export const NEW_QUEST: string = 'NEW_QUEST';
 export const LOAD_QUEST: string = 'LOAD_QUEST';
-export const DELETE_QUEST: string = 'DELETE_QUEST';
 export const SAVE_QUEST: string = 'SAVE_QUEST';
 export const PUBLISH_QUEST: string = 'PUBLISH_QUEST';
-export const SHARE_QUEST: string = 'SHARE_QUEST';
-export const DOWNLOAD_QUEST: string = 'DOWNLOAD_QUEST';
+export const UNPUBLISH_QUEST: string = 'UNPUBLISH_QUEST';
 export type QuestActionType = 'NEW_QUEST' | 'LOAD_QUEST' | 'SAVE_QUEST' | 'PUBLISH_QUEST' | 'UNPUBLISH_QUEST' | 'DRIVE_VIEW' | 'FEEDBACK' | 'HELP';
 
 export const SIGN_IN: string = 'SIGN_IN';

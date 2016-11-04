@@ -10,21 +10,10 @@ import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
 export interface AppDispatchProps {
 }
 
-var testState = CombinedReducers({} as AppStateWithHistory, {type: "herp"});
-
-var appStoreView: any = {
-  getState: function() {
-    return testState;
-  },
-  subscribe: function() {
-    return;
-  }
-};
-
 const App = (props: any): JSX.Element => {
   return (
     <div className="app">
-      <Main store={appStoreView}/>
+      <Main/>
     </div>
   );
 };

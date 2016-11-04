@@ -1,4 +1,5 @@
 import {ErrorType} from '../error'
+import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
 // TODO: URL type?
 
 export type DialogIDType = 'ERROR' | 'PUBLISHED' | 'UNPUBLISHED';
@@ -23,7 +24,8 @@ export interface QuestType {
   url?: string,
   mintimeminutes?: number,
   maxtimeminutes?: number,
-  author?: string
+  author?: string,
+  valid?: boolean,
 };
 
 export type DirtyState = boolean;
@@ -36,19 +38,22 @@ export interface DialogsState {
   [key: string]: boolean;
 }
 
+export type ErrorsState = ErrorType[];
+
 export interface UserState {
   loggedIn?: boolean,
   id?: string,
   displayName?: string,
   image?: string
-};
-
-export type ErrorsState = ErrorType[];
+}
 
 export interface AppState {
-  quest: QuestType;
-  dirty: DirtyState;
-  user: UserState;
   dialogs: DialogsState;
+  dirty: DirtyState;
   errors: ErrorsState;
+  quest: QuestType;
+  user: UserState;
+  preview: AppStateWithHistory;
 }
+
+export type ValidState = boolean;
