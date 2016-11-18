@@ -90,45 +90,13 @@ var renderRoleplayLines = function(elem: any, lines: string[]): any {
     }
   }
   // TODO: Deeper markdown rendering of lines.
-  /*
-    '/(\*\*|__)(.*?)\1/' => '<strong>\2</strong>',            // bold
-
-    '/(\*|_)(.*?)\1/' => '<em>\2</em>',                       // emphasis
-
-  var i = 0;
-  while (i < lines.length) {
-    var line = lines[i];
-    if (line === '') {
-      i++;
-      continue;
-    }
-
-    var j = i;
-    while (lines[j] !== '' && j < lines.length) {
-      j++;
-    }
-    agg = lines.slice(i, i-j).join(' ');
-
-    if (agg.indexOf('* ') === 0 && next) {
-        var celem = cheerio.load('<choice>');
-        var choice = celem('choice');
-        console.log(next);
-        choice.append(next.render);
-        elem.append(choice);
-        usedNext = true;
-        continue;
-    } else
-      elem.append('<p>' + line + '</p>');
-    }
-    i++;
-  }
-  */
+  // '/(\*\*|__)(.*?)\1/' => '<strong>\2</strong>',            // bold
+  // '/(\*|_)(.*?)\1/' => '<em>\2</em>',                       // emphasis
   return null;
 }
 
 var toRoleplay = function(blocks: Block[]): BlockError[] {
-  var elem = cheerio.load('<roleplay>');
-  var roleplay = elem('roleplay');
+  var roleplay = cheerio.load('<roleplay>')('roleplay');
 
   var titleText = blocks[0].lines[0].match(REGEXP_ITALIC);
   if (titleText) {
@@ -139,7 +107,6 @@ var toRoleplay = function(blocks: Block[]): BlockError[] {
 
   // The only inner stuff
   var i = 0;
-  console.log(blocks.length + ' blocks, starting with line ' + blocks[0].startLine);
   while (i < blocks.length) {
     var block = blocks[i];
     if (block.render) {
@@ -219,43 +186,7 @@ var toCombat = function(blocks: Block[]): BlockError[] {
 
     }
   }
-
-
   blocks[0].render = combat;
-  console.log("COMABATA");
-
-  /*
-
-
-  var attribs = parseAttributes(node);
-
-  // Add enemies as <e>, and delete it from attributes
-  for (var i = 0; i < attribs.enemies.length; i++) {
-    combat.append("<e>" + attribs.enemies[i] + "</e>");
-  }
-  delete attribs.enemies;
-
-  applyAttributes(combat, attribs, context, ["icon"]);
-  format.dbg(context, elem.html());
-
-  var toEvent = function(blocks: Block[]): BlockError[] {
-    var data = firstChildText(node).split('{');
-    var condition = data[0].split(" ")[1].trim();
-    var attribs = (data[1]) ? JSON.parse('{'+data[1]) : {};
-    var elem = cheerio.load('<event on="'+condition+'"></event>');
-    var event = elem("event");
-
-    applyAttributes(event, attribs);
-    format.dbg(context, elem.html());
-
-    traverseAndAppend(event, node.children().slice(1), format.indent(context));
-    return {node: event, consumed: 1};
-  };
-
-  // Get the event nodes (initially this is a BRANCH_WRAP, so there's only one)
-  traverseAndAppend(combat, nodes.eq(1), format.indent(context));
-  return {node: combat, consumed: 2};
-  */
   return [];
 };
 
@@ -263,8 +194,7 @@ var toTrigger = function(blocks: Block[]): BlockError[] {
   var errors: BlockError[] = [];
   var text = blocks[0].lines[0].match(REGEXP_ITALIC);
   if (text) {
-    var elem = cheerio.load('<trigger>'+text[1]+'</trigger>');
-    blocks[0].render = elem('trigger');
+    blocks[0].render = cheerio.load('<trigger>'+text[1]+'</trigger>')('trigger');;
   } else {
     errors.push({
       blockGroup: blocks,
@@ -286,8 +216,7 @@ var toTrigger = function(blocks: Block[]): BlockError[] {
 
 var toQuest = function(blocks: Block[]): BlockError[] {
   var errors: BlockError[] = [];
-  var elem = cheerio.load('<quest>');
-  var quest = elem('quest');
+  var quest = cheerio.load('<quest>')('quest');
   quest.attr('title', blocks[0].lines[0].substr(1));
   for(var i = 1; i < blocks[0].lines.length && blocks[0].lines[i] !== ''; i++) {
     var kv = blocks[0].lines[i].split(":");

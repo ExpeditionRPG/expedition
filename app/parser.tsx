@@ -28,40 +28,23 @@ export interface BlockError {
 declare type BlockMap = {[line:string]: Block};
 declare type Renderer = (blocks: Block[]) => BlockError[];
 
-export function debugRender(blocks: Block[]): BlockError[] {
-  var result = "";
-  var blockTexts: string[] = [];
-  for (let b of blocks) {
-    if (b.render) {
-      blockTexts.push(b.render);
-      continue;
-    }
-    var indent = '';
-    for (var i = 0; i < b.indent; i++) {
-      indent += '  ';
-    }
-
-    blockTexts.push(indent + b.lines.join("\n" + indent));
-  }
-
-
-  blocks[0].render = indent + "==============\n" + blockTexts.join('\n' + indent + '----------\n') + "\n" + indent + "==============";
-  return [];
-}
 // LiveParser is a stateful QDL parsing utility that handles incremental changes in
 // quest code, compiling only as needed and allowing for real-time updates in the
 // companion app.
 export  class LiveParser {
   private liveDom: any;
   private liveLine: number;
-  // JS objects may only have string keys
+
   private blockMap: BlockMap;
+  private blockLines: string[];
+
   public valid: boolean;
   private renderer: Renderer;
   private result: any;
 
   constructor(renderer: Renderer) {
     this.blockMap = {};
+    this.blockLines = [];
     this.renderer = renderer;
     this.valid = true;
     this.liveDom = null;
@@ -153,9 +136,15 @@ export  class LiveParser {
     // Add the final block
     this.blockMap[currBlock.startLine] = currBlock;
 
+    // Compute index array
+    this.blockLines = Object.keys(this.blockMap).sort(function(a: any, b: any){return a-b;})
+
+
     // For debugging
-    for(let bm of Object.keys(this.blockMap)) {
-      console.log(this.blockMap[bm].startLine + '\t' + this.blockMap[bm].indent + '\t' + this.blockMap[bm].lines);
+    console.log('#\tLine#\tIndent\tLines');
+    for(var i = 0; i < this.blockLines.length; i++) {
+      var bm = this.blockLines[i];
+      console.log(i + '\t' + bm + '\t' + this.blockMap[bm].indent + '\t' + this.blockMap[bm].lines);
     }
 
     var errors = this.render();
@@ -171,9 +160,8 @@ export  class LiveParser {
     // Group blocks by indent.
     // Blocks are grouped up to the maximum indent level
     var groups: {[indent:string]: number[][]} = {};
-    var blockLines = Object.keys(this.blockMap).sort(function(a: any, b: any){return a-b;});
-    for (var i = 0; i < blockLines.length; i++) {
-      var curr = this.blockMap[blockLines[i]];
+    for (var i = 0; i < this.blockLines.length; i++) {
+      var curr = this.blockMap[this.blockLines[i]];
 
       if (!groups[curr.indent]) {
         groups[curr.indent] = [[]];
@@ -202,10 +190,9 @@ export  class LiveParser {
     var errors: BlockError[] = [];
 
     var groups = this._getBlockGroups();
-    console.log("Groups:");
+    console.log("Block groups:");
     console.log(groups);
 
-    var blockLines = Object.keys(this.blockMap).sort(function(a: any, b: any){return a-b;});
     var indents = Object.keys(groups).sort();
 
     // Step through indents from most to least,
@@ -229,7 +216,7 @@ export  class LiveParser {
     // Do final processing (e.g. putting all values inside of the first block <quest> tag)
     Array.prototype.push.apply(errors, this._finalize(groups[indents[0]]));
 
-    this.result = this.blockMap[blockLines[0]].render;
+    this.result = this.blockMap[this.blockLines[0]].render;
     return errors;
   }
 
@@ -237,23 +224,18 @@ export  class LiveParser {
     // Precondition: All blocks with indent greater than the starting block
     // have already been rendered and has a .render property set (i.e. not undefined)
 
-    // TODO: Dedupe other instances of blockLines
-    var blockLines = Object.keys(this.blockMap).sort(function(a: any, b: any){return a-b;});
-
     // Base indent is determined by the start block.
-    var baseIndent = this.blockMap[blockLines[startBlockIdx]].indent;
-
-    console.log(startBlockIdx + " to " + endBlockIdx);
+    var baseIndent = this.blockMap[this.blockLines[startBlockIdx]].indent;
 
     // We must check if the block *after* endBlockIdx is nextIndent-ed, because this indicates
     // more blocks must be added to the render list.
     // In this case, we redefine endBlockIdx to be the last nextIndent block before
     // the next baseIndent block.
-    var afterBlock = this.blockMap[blockLines[endBlockIdx+1]];
+    var afterBlock = this.blockMap[this.blockLines[endBlockIdx+1]];
     if (afterBlock && ''+afterBlock.indent === nextIndent) {
       do {
         endBlockIdx++;
-        afterBlock = this.blockMap[blockLines[endBlockIdx+1]];
+        afterBlock = this.blockMap[this.blockLines[endBlockIdx+1]];
       } while(afterBlock && afterBlock.indent > baseIndent);
     }
 
@@ -262,7 +244,7 @@ export  class LiveParser {
     var toRender: Block[] = [];
 
     for (var i = startBlockIdx; i <= endBlockIdx; i++) {
-      var block = this.blockMap[blockLines[i]];
+      var block = this.blockMap[this.blockLines[i]];
 
       // Add unrendered baseIndent blocks and meaningfully-rendered nextIndent blocks.
       if (block.render === undefined) {
@@ -284,11 +266,10 @@ export  class LiveParser {
 
   _finalize(zeroIndentGroups: number[][]) {
     var toRender: Block[] = [];
-    var blockLines = Object.keys(this.blockMap).sort(function(a: any, b: any){return a-b;});
 
     // Append the first blocks in each group to the render list.
     for (var i = 0; i < zeroIndentGroups.length; i++) {
-      toRender.push(this.blockMap[blockLines[zeroIndentGroups[i][0]]]);
+      toRender.push(this.blockMap[this.blockLines[zeroIndentGroups[i][0]]]);
     }
 
     // The renderer finalizes these top-level rendered blocks.
@@ -309,55 +290,3 @@ export  class LiveParser {
     throw new Error("TODO");
   }
 }
-
-
-/* _isTitleBlock(block: Block): Boolean {
-    throw new Error("TODO");
-  }
-
- _isTitleBlock(block: Block): Boolean {
-    throw new Error("TODO");
-  }
-
-
-_renderXML(): BlockError[] {
-  var errors: BlockError[] = [];
-
-  // Starting at the deepest indentation and working upwards, render any block groups that are missing XML.
-  var orderedIndents: string[] = Object.keys(this.blockGroups).sort().reverse();
-  for (let indent of orderedIndents) {
-    for (let blockGroup of this.blockGroups[indent]) {
-      // Add line error if first block is not a #Quest block
-      if (blockGroup[0].startLine == 0 && !this._isTitleBlock(blockGroup[0])) {
-        errors.push({
-          blockGroup: blockGroup,
-          error: "Quest must begin with a quest header.",
-          example: "# Quest"
-        });
-      }
-
-      // TODO: Add line errors for:
-      // - Unexpected #Quest Title block somewhere in the middle.
-      // - Previous block before any **end** section having choice nodes (not going directly to end)
-      // - etc.
-
-      this._renderBlockGroup(blockGroup);
-    }
-  }
-  throw new Error("TODO");
-}
-
- _renderBlockGroup(blockGroup: Block[]) {
-  // For each block, convert the stripped markdown code into XML:
-  // - _Title_ with text becomes <roleplay>
-  // - _combat_ becomes <combat>
-  // - Choices/events are added appropriately
-  // - ...etc.
-  //
-  // Line gaps between blocks (if there are any) are fulfilled by
-  // the previously-rendered blocks in _blockByLine.
-  // An exception is thrown if a block doesn't have a neighboring,
-  // rendered block.
-  throw new Error("TODO");
-}
-*/
