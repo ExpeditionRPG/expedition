@@ -6,6 +6,24 @@ export type DialogIDType = 'ERROR' | 'PUBLISHED' | 'UNPUBLISHED';
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 
+export interface XMLElement {
+  remove(): void;
+  children: XMLElement[];
+  getAttribute(attrib: string): string;
+  hasAttribute(attrib: string): boolean;
+  appendChild(child: XMLElement): void;
+  cloneNode(deep: boolean): XMLElement;
+  localName: string;
+  tagName: string;
+  parentNode: XMLElement;
+  textContent: string;
+  attributes: {name: string}[];
+  innerHTML: string;
+  setAttribute(attrib: string, value: any): void;
+  nextElementSibling?: XMLElement;
+  querySelector(query: string): XMLElement;
+}
+
 export interface QuestType {
   id?: string;
   xml?: string;

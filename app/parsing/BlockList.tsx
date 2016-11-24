@@ -52,11 +52,7 @@ export class BlockList {
     var indent = 0;
     var startLine = 0;
     var prevEmpty = false;
-    var currBlock: Block = {
-      lines: [],
-      indent: 0,
-      startLine: 0,
-    };
+    var currBlock: Block = null;
     for (var lineNumber = 0; lineNumber < split.length; lineNumber++) {
       var line = split[lineNumber];
       var indent = 0;
@@ -67,7 +63,9 @@ export class BlockList {
       if (line[indent] === undefined) {
         // Track all-whitespace lines.
         prevEmpty = true;
-        currBlock.lines.push('');
+        if (currBlock) {
+          currBlock.lines.push('');
+        }
         continue;
       }
 
@@ -75,10 +73,14 @@ export class BlockList {
       // - String starting with "_" after any whitespace
       // - String with less whitespace than the start of the string
       // - "empty" (or all whitespace) line followed by line with more indent.
-      if (line[indent] === '_'
+      if (!currBlock || line[indent] === '_'
         || indent < currBlock.indent
         || (indent > currBlock.indent && prevEmpty)) {
-        this.blocks.push(currBlock);
+
+        if (currBlock) {
+          this.blocks.push(currBlock);
+        }
+
         currBlock = {
           lines: [],
           indent: indent,
@@ -92,7 +94,9 @@ export class BlockList {
     }
 
     // Add the final block
-    this.blocks.push(currBlock);
+    if (currBlock) {
+      this.blocks.push(currBlock);
+    }
 
     // Compute index array
     this.length = this.blocks.length;

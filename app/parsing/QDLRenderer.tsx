@@ -3,6 +3,11 @@ import {BlockRenderer} from './BlockRenderer'
 import {Block, BlockList} from './BlockList'
 import {BlockMsg, BlockMsgHandler} from './BlockMsg'
 
+const REGEXP_ITALIC = /\_(.*)\_.*/;
+const REGEXP_EVENT = /\* on (.*)/;
+
+const ERR_PREFIX = "Internal XML Parse Error: ";
+
 export class QDLRenderer {
   private renderer: BlockRenderer;
   private result: any;
@@ -50,6 +55,11 @@ export class QDLRenderer {
 
   render(blockList: BlockList) {
     this.msg = new BlockMsgHandler();
+    if (blockList.length === 0) {
+      this.msg.err("No quest blocks found", "404");
+      this.result = null;
+      return;
+    }
     this.blockList = blockList;
 
     var groups = this._getBlockGroups();
@@ -195,18 +205,184 @@ export class QDLRenderer {
 
 
     if (headerLine[0] === '#') {
-      this.renderer.toQuest(blocks, msg);
+      this.toQuest(blocks, msg);
     } else if (headerLine.indexOf('_combat_') === 0) { // Combat card
-      this.renderer.toCombat(blocks, msg);
+      this.toCombat(blocks, msg);
     } else if (headerLine.indexOf('_end_') === 0) { // End trigger
-      this.renderer.toTrigger(blocks, msg);
+      this.toTrigger(blocks, msg);
     } else { // Roleplay header
-      this.renderer.toRoleplay(blocks, msg);
+      this.toRoleplay(blocks, msg);
     }
 
     return msg.finalize();
   }
 
+  private toRoleplay(blocks: Block[], msg: BlockMsgHandler) {
+    var titleText = blocks[0].lines[0].match(REGEXP_ITALIC);
+
+    var attribs: {[k: string]: string} = {};
+    if (titleText) {
+      attribs['title'] = titleText[1];
+
+      // TODO:
+      //this.applyAttributes(roleplay, blocks[0].lines[0]);
+
+      blocks[0].lines = blocks[0].lines.splice(1);
+    }
+
+    // The only inner stuff
+    var i = 0;
+    var body: (string|{text: string, choice: any})[] = [];
+    while (i < blocks.length) {
+      var block = blocks[i];
+      if (block.render) {
+        // Only the blocks within choices should be rendered at this point.
+        throw new Error(ERR_PREFIX + "found unexpected block with render");
+      }
+
+      // Append rendered stuff
+      var lines = this.collate(block.lines);
+      var choice: {text: string, choice: any};
+      for (let line of lines) {
+        if (line.indexOf('* ') === 0) {
+          choice = {text: line.substr(1).trim(), choice: []};
+          // TODO: Assert end of lines.
+        } else {
+          body.push(line);
+        }
+      }
+
+      if (choice) {
+        // If we ended in a choice, continue through subsequent blocks until we end
+        // up outside the choice block again.
+        var inner = blocks[++i];
+        while (i < blocks.length && inner.indent !== block.indent) {
+          if (!inner.render) {
+            throw new Error(ERR_PREFIX + "found unexpected block with no render");
+          }
+          choice.choice.push(inner.render);
+          i++;
+          inner = blocks[i];
+        }
+        body.push(choice);
+      } else {
+        i++;
+      }
+    }
+
+    blocks[0].render = this.renderer.toRoleplay(attribs, body);
+  };
+
+  private toQuest(blocks: Block[], msg: BlockMsgHandler) {
+    var title = blocks[0].lines[0].substr(1);
+
+    var attribs: {[k: string]: string} = {};
+    for(var i = 1; i < blocks[0].lines.length && blocks[0].lines[i] !== ''; i++) {
+      var kv = blocks[0].lines[i].split(":");
+      attribs[kv[0].toLowerCase()] = kv[1].trim();
+    }
+
+    blocks[0].render = this.renderer.toQuest(title, attribs);
+    // TODO: Disallow multiple blocks in quest root
+    if (blocks.length !== 1) {
+      msg.err(
+        'quest block group cannot contain multiple blocks',
+        '404'
+      );
+    }
+  }
+
+  private toTrigger(blocks: Block[], msg: BlockMsgHandler) {
+    var text = blocks[0].lines[0].match(REGEXP_ITALIC);
+    if (text) {
+      blocks[0].render = this.renderer.toTrigger(text[1]);
+    } else {
+      msg.err(
+        'could not parse trigger value from trigger',
+        '404',
+        blocks[0].startLine
+      );
+    }
+
+    if (blocks.length !== 1) {
+      msg.err(
+        'trigger block group cannot contain multiple blocks',
+        '404'
+      );
+    }
+  }
+
+  private toCombat(blocks: Block[], msg: BlockMsgHandler) {
+    var data = this.extractJSON(blocks[0].lines[0]);
+
+    if (!data.enemies) {
+      msg.err(
+        "combat block has no enemies listed",
+        "404",
+        blocks[0].startLine
+      );
+      data.enemies = [];
+    }
+    blocks[0].lines.shift();
+
+    var events: any = {};
+    var currEvent: string = null;
+    for (var i = 0; i < blocks.length; i++) {
+      var block = blocks[i];
+      if (block.render) {
+        if (!currEvent) {
+          msg.err(
+            "found inner block of combat block without an event bullet",
+            "404",
+            block.startLine
+          );
+          continue;
+        }
+        if (!events[currEvent]) {
+          events[currEvent] = [];
+        }
+        events[currEvent].push(block);
+        continue;
+      }
+
+      for (var j = 0; j < block.lines.length; j++) {
+        var line = block.lines[j];
+        if (line === '') {
+          continue;
+        }
+
+        // We should only ever see event blocks within the combat block.
+        // These blocks are only single lines.
+        var m = line.match(REGEXP_EVENT);
+        if (!m) {
+          // TODO: Return error here
+          msg.err(
+            "lines within combat block must be event bullets; instead found \""+line+"\"",
+            "404",
+            block.startLine + j
+          );
+          continue;
+        }
+        currEvent = m[1];
+      }
+    }
+
+    if (!events['win']) {
+      msg.err(
+        "combat block must have 'win' event",
+        "404"
+      );
+      events['win'] = []; // TODO: End block here.
+    }
+    if (!events['lose']) {
+      msg.err(
+        "combat block must have 'lose' event",
+        "404"
+      );
+    }
+
+    blocks[0].render = this.renderer.toCombat(data.enemies, events);
+  }
 
   _finalize(zeroIndentGroups: number[][]): BlockMsg[] {
     var toRender: Block[] = [];
@@ -223,5 +399,26 @@ export class QDLRenderer {
     this.renderer.finalize(toRender, msg);
 
     return msg.finalize();
+  }
+
+  private extractJSON(line: string): any {
+    var m = line.match(/(\{.*\})/);
+    if (!m) {
+      return {};
+    }
+    return JSON.parse(m[0]);
+  }
+  private collate(lines: string[]): string[] {
+    var result: string[] = [''];
+    for (var i = 0; i < lines.length; i++) {
+      if (lines[i] === '') {
+        continue;
+      }
+      if (lines[i-1] === '' && result[result.length-1] !== '') {
+        result.push('');
+      }
+      result[result.length-1] += (result[result.length-1] !== '') ? ' ' + lines[i] : lines[i];
+    }
+    return result;
   }
 }

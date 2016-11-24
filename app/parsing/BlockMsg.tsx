@@ -21,8 +21,10 @@ export interface BlockMsg {
 export function prettifyMsg(msg: BlockMsg): string {
   var result = "";
 
+  var line = msg.line || (msg.blockGroup[0] && msg.blockGroup[0].startLine);
+
   result += msg.type.toUpperCase();
-  result += " L" + (msg.line || (msg.blockGroup[0] && msg.blockGroup[0].startLine) || "none");
+  result += " L" + ((line !== undefined) ? line : "none");
   result += " (" + msg.blockGroup.length + " blocks):\n";
   result += msg.text;
 
@@ -81,7 +83,7 @@ export class BlockMsgHandler {
   }
 
   finalize(): BlockMsg[] {
-    if (this.debug) {
+    if (this.debug.length > 0) {
       this.msg(
         this.context,
         'debug',
@@ -93,12 +95,15 @@ export class BlockMsgHandler {
   }
 
   private msg(group: Block[], type: 'warning'|'error'|'debug', text: string, url: string, line?: number) {
-    this.messages.push({
+    var message: BlockMsg = {
       blockGroup: group,
       type: type,
       text: text,
-      line: line,
-      url: url,
-    });
+      url: url
+    };
+    if (line) {
+      message.line = line;
+    }
+    this.messages.push(message);
   }
 };

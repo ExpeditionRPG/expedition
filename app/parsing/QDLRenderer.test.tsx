@@ -26,10 +26,12 @@ describe('QDLRenderer', () => {
   // - Ensure all paths end with an "end" trigger
   // - Ensure all combat events make sense (currently "win" and "lose")
   // - Ensure all combat enemies are valid (use whitelist)
+  // - Ensure all combats have win/lose events
   // - Validate roleplay attributes (w/ whitelist)
   // - Validate choice attributes (w/ whitelist)
   // - Errors if no combat enemies
   // - Errors if inner combat block w/o event bullet
+  // it('returns error if no enemies');
 
 
   it('parses basic QDL to XML', () => {
@@ -41,5 +43,4 @@ describe('QDLRenderer', () => {
     expect(msgs['error']).toEqual([]);
     expect(msgs['warning']).toEqual([]);
   });
-  //it('Handles wiping out intermediate block');
 })
