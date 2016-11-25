@@ -196,6 +196,7 @@ body {
     background-size: 100% auto;
     background-repeat: repeat;
     color: $font_color_primary;
+    overflow-y: scroll;
     &.dark {
       background-color: black;
       background-image: url(/images/encounter-tiled.jpg);
@@ -230,9 +231,7 @@ body {
       position: relative;
     }
     .article {
-      display: flex;
       position: relative;
-      overflow-y: auto;
       padding: width(base);
       font-size: fontsize(flavor);
       .scrollbox_top {
