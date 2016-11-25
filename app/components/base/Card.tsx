@@ -69,8 +69,8 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
             <div className="title">{this.props.title}</div>
         </div>
         <div className="article">
-          <div className="scrollbox_top"/>
           <div className="scrollbox">
+            <div className="scrollbox_top"/>
             {icon}
             <div className="child_wrapper">
               {this.props.children}

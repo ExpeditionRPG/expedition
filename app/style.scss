@@ -72,6 +72,7 @@ $widthmap: (
 
 $heightmap: (
   watermark: 36vh,
+  appbar: 48px,
   huge: 12vh,
   large: 6vh,
   base: 2vh,
@@ -126,12 +127,12 @@ $border_faded: 0.03in solid #777777;
 
 $bg_primary: #eeeeee;
 $bg_inactive: #222222;
-$bg_titlebar: rgba(255, 255, 255, 0.5);
+$bg_titlebar: rgba(255, 255, 255, 0.7);
 $bg_accent: rgb(220, 220, 220);
 $bg_interactive: rgba(255, 255, 255, 0.5);
 $bg_active: rgba(255, 255, 255, 0.9);
 $bg_dark_primary: rgb(20, 20, 20);
-$bg_dark_titlebar: rgba(100, 100, 100, 0.5);
+$bg_dark_titlebar: rgba(100, 100, 100, 0.7);
 $bg_dark_accent: rgb(60, 60, 60);
 $bg_dark_interactive: rgba(0, 0, 0, 0.5);
 $bg_dark_active: rgba(30, 30, 30, 1.0);
@@ -199,13 +200,16 @@ body {
       background-color: black;
       background-image: url(/images/encounter-tiled.jpg);
       color: $font_color_dark_primary;
+      .title_container svg {
+        color: $font_color_dark_primary !important;
+      }
       .scrollbox_top {
-        border-top: $border_accent;
-        border-left: $border_accent;
+        border-top: $border_accent !important;
+        border-left: $border_accent !important;
       }
       .scrollbox_bottom {
-        border-right: $border_accent;
-        border-bottom: $border_accent;
+        border-right: $border_accent !important;
+        border-bottom: $border_accent !important;
       }
       .title_container {
         background-color: $bg_dark_titlebar;
@@ -268,13 +272,13 @@ body {
     .title_container {
       background-color: $bg_titlebar;
       padding: 0;
-      line-height: width(huge);
+      line-height: height(appbar);
+      height: height(appbar);
       > button {
         float: left;
       }
       .menu {
         float: right;
-        margin-right: width(base);
         padding: 0;
         font-size: fontsize(interactive);
       }
