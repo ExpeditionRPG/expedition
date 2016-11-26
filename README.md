@@ -18,7 +18,7 @@ gcloud auth login
 Now install the repo:
 
 ```shell
-git clone https://github.com/Fabricate-IO/expedition-app
+git clone https://github.com/Fabricate-IO/expedition-quest-ide
 
 npm install -g gulp webpack && npm install
 
