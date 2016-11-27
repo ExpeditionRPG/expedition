@@ -284,12 +284,15 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
       return;
     }
 
-    // If we received a Cheerio object, use $.html.
+    // If we received a Cheerio object, outerHTML will
+    // not be defined. toString will be, however.
     // https://github.com/cheeriojs/cheerio/issues/54
-    if (($ as any).html) {
-      children += ($ as any).html(c.get(0));
-    } else {
+    if (c.get(0).outerHTML) {
       children += c.get(0).outerHTML;
+    } else if (c.toString) {
+      children += c.toString();
+    } else {
+      throw new Error("Invalid element " + c);
     }
   }.bind(this));
 

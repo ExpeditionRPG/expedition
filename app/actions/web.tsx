@@ -14,9 +14,9 @@ export function fetchQuestXML(url: string) {
 
 export function loadQuestXML(data: XMLElement | string) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    data = $(data) as any as XMLElement;
-    console.log(data);
-    dispatch(initQuest(data.children().eq(0).children().eq(0)));
+    var xml = $(data) as any as XMLElement;
+    console.log(xml);
+    dispatch(initQuest(xml.children().eq(0).children().eq(0)));
     dispatch(toCard('QUEST_START'));
   };
 }
