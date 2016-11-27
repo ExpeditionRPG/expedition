@@ -3,7 +3,7 @@ import {AppState, SearchSettings, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {toPrevious, toCard} from '../actions/card'
 import {viewQuest} from '../actions/quest'
-import {loadQuestXML, search} from '../actions/web'
+import {fetchQuestXML, search} from '../actions/web'
 import Search, {SearchStateProps, SearchDispatchProps} from './Search'
 import {login} from '../actions/user'
 
@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
       dispatch(toCard('SEARCH_CARD', 'DETAILS'));
     },
     onPlay: (quest: QuestDetails) => {
-      dispatch(loadQuestXML(quest.publishedurl));
+      dispatch(fetchQuestXML(quest.publishedurl));
     },
     onOwnedChange: (checked: boolean) => {
       console.log("TODO");

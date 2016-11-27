@@ -2,22 +2,32 @@ import {QuestDetails, CombatState, DifficultyType, CombatPhaseNameType} from './
 
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
-export interface XMLElement {
-  remove(): void;
-  children: XMLElement[];
-  getAttribute(attrib: string): string;
-  hasAttribute(attrib: string): boolean;
-  appendChild(child: XMLElement): void;
-  cloneNode(deep: boolean): XMLElement;
-  localName: string;
+export interface DOMElement {
   tagName: string;
-  parentNode: XMLElement;
-  textContent: string;
-  attributes: {name: string}[];
-  innerHTML: string;
-  setAttribute(attrib: string, value: any): void;
-  nextElementSibling?: XMLElement;
-  querySelector(query: string): XMLElement;
+  parentNode: DOMElement;
+  outerHTML: string;
+};
+
+export interface XMLElement {
+  children: (s?: string) => XMLElementSet;
+  attr: (k: string, v?: string) => string;
+  append: (elem: XMLElement) => void;
+  clone: () => XMLElement;
+  parent: () => XMLElement;
+  next: () => XMLElement;
+  get: (i: number) => DOMElement;
+  find: (s: string) => XMLElementSet;
+  text: () => string;
+  html: () => string;
+  attribs: {[k: string]: string};
+  length: number;
+}
+
+export interface XMLElementSet {
+  eq: (n: number) => XMLElement;
+  get: (i: number) => DOMElement;
+  length: number;
+  [k: number]: DOMElement;
 }
 
 export interface SearchSettings {
