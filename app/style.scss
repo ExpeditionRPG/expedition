@@ -72,6 +72,7 @@ $widthmap: (
 
 $heightmap: (
   watermark: 36vh,
+  appbar: 48px,
   huge: 12vh,
   large: 6vh,
   base: 2vh,
@@ -120,18 +121,22 @@ $font_color_primary: #000000;
 $font_color_faded: #777777;
 $font_color_dark_primary: #FFFFFF;
 
-$border_primary: 0.03in solid #000000;
-$border_accent: 0.03in solid #CCCCCC;
-$border_faded: 0.03in solid #777777;
+$border_primary: 0.02in solid #000;
+$border_dark_primary: 0.02in solid #999;
+$border_accent: 0.02in solid #333;
+$border_faded: 0.02in solid #777;
+$border_desktop: width(base) solid #777;
 
-$bg_primary: #eeeeee;
+$bg_primary: #F4ECC8;
 $bg_inactive: #222222;
+$bg_titlebar: rgba(255, 255, 235, 0.65);
 $bg_accent: rgb(220, 220, 220);
-$bg_interactive: rgba(255, 255, 255, 0.7);
+$bg_interactive: rgba(245, 235, 205, 0.7);
 $bg_active: rgba(255, 255, 255, 0.9);
-$bg_dark_primary: rgb(20, 20, 20);
+$bg_dark_primary: #161011;
+$bg_dark_titlebar: rgba(110, 110, 110, 0.6);
 $bg_dark_accent: rgb(60, 60, 60);
-$bg_dark_interactive: rgba(0, 0, 0, 0.7);
+$bg_dark_interactive: rgba(35, 35, 35, 0.5);
 $bg_dark_active: rgba(30, 30, 30, 1.0);
 $bg_surge_primary: #CC0000;
 
@@ -151,66 +156,38 @@ body {
 
 @mixin styling() {
 
-  .inline_icon {
-    width: width(icon);
-    margin-bottom: -(width(tiny));
-  }
-
-  .base_button {
-    > button {
-      display: block !important;
-      height: auto  !important;
-      width: 100%  !important;
-      font-size: fontsize(interactive)  !important;
-      padding: width(base)  !important;
-      padding-top: height(base)  !important;
-      padding-bottom: height(base)  !important;
-      margin: 0  !important;
-      margin-top: height(base)  !important;
-      border: $border_accent  !important;
-      background-color: $bg_interactive  !important;
-      text-align: left  !important;
-      text-transform: none  !important;
-      text-decoration: none  !important;
-      color: inherit  !important;
-      line-height: 1.2  !important;
-      > div {
-        display: block !important;
-      }
-      &:disabled {
-        border: $border_faded !important;
-        color: $font_color_faded !important;
-      }
-    }
-  }
-
   .base_card {
     height: 100%;
     display: flex;
     flex-direction: column;
     background-color: $bg_primary;
+    background-image: url(/images/papyrus-tiled.jpg);
+    background-size: 100% auto;
+    background-repeat: repeat;
+    background-position: 0 0;
     color: $font_color_primary;
+    overflow-y: scroll;
     &.dark {
       background-color: black;
+      background-image: url(/images/encounter-tiled.jpg);
       color: $font_color_dark_primary;
-      .scrollbox_top {
-        border-top: $border_accent;
-        border-left: $border_accent;
+      .title_container svg {
+        color: $font_color_dark_primary !important;
       }
-      .scrollbox_bottom {
-        border-right: $border_accent;
-        border-bottom: $border_accent;
+      .scrollbox_top {
+        display: none;
       }
       .title_container {
-        background-color: $bg_dark_accent;
+        background-color: $bg_dark_titlebar;
       }
-
       .base_button > button, .base_checkbox button, .base_picker {
         background-color: $bg_dark_interactive !important;
-
         svg {
           color: white !important;
         }
+      }
+      .base_button > button {
+        border: $border_dark_primary !important;
       }
     }
     .child_wrapper {
@@ -220,55 +197,43 @@ body {
       position: relative;
     }
     .article {
-      display: flex;
       position: relative;
-      overflow-y: auto;
       padding: width(base);
       font-size: fontsize(flavor);
       .scrollbox_top {
-        position: absolute;
-        width: width(huge);
-        height: width(large);
-        border-top: $border_primary;
-        border-left: $border_primary;
+        margin-top: height(tiny);
+        margin-bottom: -(height(base));
+        opacity: 0.3;
       }
       .scrollbox {
         position: relative;
         display: flex;
         flex-direction: column;
         width: 100%;
-        > img {
+        #bgimg {
           position: absolute;
           height: height(watermark);
           width: height(watermark);
           right: 0;
-          bottom: height(huge);
+          top: height(huge);
           margin-right: -10%;
-          margin-top: -25%;
+          margin-top: 4vh;
           opacity: 0.2;
         }
         overflow-x: hidden;
       }
-      .scrollbox_bottom {
-        position: absolute;
-        bottom: -(width(large));
-        right: -(width(large));
-        width: width(huge);
-        height: width(large);
-        border-right: $border_primary;
-        border-bottom: $border_primary;
-      }
     }
     .title_container {
-      background-color: $bg_accent;
+      position: relative;
+      background-color: $bg_titlebar;
       padding: 0;
-      line-height: width(huge);
+      line-height: height(appbar);
+      height: height(appbar);
       > button {
         float: left;
       }
       .menu {
         float: right;
-        margin-right: width(base);
         padding: 0;
         font-size: fontsize(interactive);
       }
@@ -276,9 +241,47 @@ body {
         font-family: $headerfont;
         font-size: fontsize(title);
         display: inline-block;
+        text-align: center;
+        position: absolute;
+        top: 0;
+        left: height(appbar);
+        right: height(appbar);
       }
     }
-  };
+  }
+
+  .inline_icon {
+    width: width(icon);
+    margin-bottom: -(width(tiny));
+  }
+
+  .base_button {
+    > button {
+      display: block !important;
+      height: auto !important;
+      width: 100% !important;
+      font-size: fontsize(interactive) !important;
+      padding: width(base) !important;
+      padding-top: height(base) !important;
+      padding-bottom: height(base) !important;
+      margin: 0 !important;
+      margin-top: height(base) !important;
+      border: $border_accent !important;
+      background-color: $bg_interactive !important;
+      text-align: left !important;
+      text-transform: none !important;
+      text-decoration: none !important;
+      color: inherit !important;
+      line-height: 1.2 !important;
+      > div {
+        display: block !important;
+      }
+      &:disabled {
+        border: $border_faded !important;
+        color: $font_color_faded !important;
+      }
+    }
+  }
 
   .base_checkbox {
     button {
@@ -310,6 +313,7 @@ body {
     }
     .subtext {
       font-size: fontsize(flavor);
+      line-height: 1.2;
     }
   }
 
@@ -407,6 +411,52 @@ body {
   // Card-specific styles
   // ===============================================
 
+  .splash_screen {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-color: #4F301B;
+    background-image: url(/images/leather.jpg);
+    background-size: cover;
+    color: $font_color_dark_primary;
+
+    .center {
+      width: 90%;
+      left: 50%;
+      margin-left: -45%;
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      top: 50%;
+      margin-top: -10%;
+      height: 20%;
+      font-size: fontsize(flavor);
+      text-align: center;
+    }
+    .logo {
+      position: absolute;
+      top: height(small);
+      left: height(small);
+      right: height(small);
+      img {
+        width: 100%;
+      }
+    }
+    .no_multi_button {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: height(small);
+      margin: auto;
+      text-align: center;
+      border: $border_dark_primary;
+      cursor: pointer;
+      background: $bg_inactive;
+      opacity: 0.7;
+    }
+  }
+
   .advanced_play {
     padding-left: width(base);
 
@@ -475,48 +525,6 @@ body {
       }
     }
   }
-
-  .splash_screen {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    background-color: $bg_primary;
-    .center {
-      width: 90%;
-      left: 50%;
-      margin-left: -45%;
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      top: 50%;
-      margin-top: -10%;
-      height: 20%;
-      color: $font_color_primary;
-      font-size: fontsize(flavor);
-      text-align: center;
-    }
-    .logo {
-      position: absolute;
-      top: height(small);
-      left: height(small);
-      right: height(small);
-      img {
-        width: 100%;
-      }
-    }
-    .no_multi_button {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      color: $font_color_faded;
-      padding: height(small);
-      margin: auto;
-      text-align: center;
-      border: width(tiny) solid darken($bg_primary, 20%);
-      cursor: pointer;
-    }
-  }
 }
 
 @include styling();
@@ -540,6 +548,7 @@ $widthmap: (
 
 $heightmap: (
   watermark: 36vh * $abs_scale_vh,
+  appbar: 48px,
   huge: 12vh * $abs_scale_vh,
   large: 6vh * $abs_scale_vh,
   base: 2vh * $abs_scale_vh,
@@ -554,20 +563,38 @@ $fontsizemap: (
   timervalue: 24vw * $abs_scale_vw,
 );
 
-@media screen and (min-width: $abswidthmax) , screen and (min-height: $absheightmax) {
+@media screen and (min-width: $abswidthmax), screen and (min-height: $absheightmax) {
   @include styling();
 
+  body, html, #react-app {
+    height: 100%;
+    width: 100%;
+  }
+
   .app_container {
-    border: width(base) darken($bg_primary, 50%) solid;
+    position: relative;
+    border-left: $border_desktop;
+    border-right: $border_desktop;
     display: block;
     overflow: hidden;
-    position: absolute;
     width: $abswidthmax;
     height: $absheightmax;
-    left: 50%;
-    top: 50%;
-    margin-left: - $abswidthmax / 2;
-    margin-top: - $absheightmax / 2;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+  }
+}
+
+@media screen and (min-height: $absheightmax + width(base)) {
+  .app_container {
+    border-top: $border_desktop;
+    border-bottom: $border_desktop;
     border-radius: width(base);
+  }
+}
+
+@media screen and (min-height: $absheightmax + 2 * width(base) + 40px) {
+  .app_container {
+    margin-top: 20px;
   }
 }
