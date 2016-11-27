@@ -205,20 +205,13 @@ body {
         color: $font_color_dark_primary !important;
       }
       .scrollbox_top {
-        border-top: $border_accent !important;
-        border-left: $border_accent !important;
-      }
-      .scrollbox_bottom {
-        border-right: $border_accent !important;
-        border-bottom: $border_accent !important;
+        display: none;
       }
       .title_container {
         background-color: $bg_dark_titlebar;
       }
-
       .base_button > button, .base_checkbox button, .base_picker {
         background-color: $bg_dark_interactive !important;
-
         svg {
           color: white !important;
         }
@@ -235,18 +228,16 @@ body {
       padding: width(base);
       font-size: fontsize(flavor);
       .scrollbox_top {
-        position: absolute;
-        width: width(huge);
-        height: width(large);
-        border-top: $border_primary;
-        border-left: $border_primary;
+        margin-top: height(tiny);
+        margin-bottom: -(height(base));
+        opacity: 0.3;
       }
       .scrollbox {
         position: relative;
         display: flex;
         flex-direction: column;
         width: 100%;
-        > img {
+        #bgimg {
           position: absolute;
           height: height(watermark);
           width: height(watermark);
@@ -258,17 +249,9 @@ body {
         }
         overflow-x: hidden;
       }
-      .scrollbox_bottom {
-        position: absolute;
-        bottom: -(width(large));
-        right: -(width(large));
-        width: width(huge);
-        height: width(large);
-        border-right: $border_primary;
-        border-bottom: $border_primary;
-      }
     }
     .title_container {
+      position: relative;
       background-color: $bg_titlebar;
       padding: 0;
       line-height: height(appbar);
@@ -285,6 +268,11 @@ body {
         font-family: $headerfont;
         font-size: fontsize(title);
         display: inline-block;
+        text-align: center;
+        position: absolute;
+        top: 0;
+        left: height(appbar);
+        right: height(appbar);
       }
     }
   };
@@ -489,7 +477,10 @@ body {
     width: 100%;
     height: 100%;
     position: relative;
-    background-color: $bg_primary;
+    background-image: url(/images/leather.jpg);
+    background-size: cover;
+    color: $font_color_dark_primary;
+
     .center {
       width: 90%;
       left: 50%;
@@ -500,7 +491,6 @@ body {
       top: 50%;
       margin-top: -10%;
       height: 20%;
-      color: $font_color_primary;
       font-size: fontsize(flavor);
       text-align: center;
     }
@@ -518,12 +508,13 @@ body {
       bottom: 0;
       left: 0;
       right: 0;
-      color: $font_color_faded;
       padding: height(small);
       margin: auto;
       text-align: center;
-      border: width(tiny) solid darken($bg_primary, 20%);
+      border: width(tiny) solid darken($bg_primary, 10%);
       cursor: pointer;
+      background: $bg_inactive;
+      opacity: 0.7;
     }
   }
 }
