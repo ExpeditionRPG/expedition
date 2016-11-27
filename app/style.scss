@@ -166,7 +166,7 @@ body {
     background-repeat: repeat;
     background-position: 0 0;
     color: $font_color_primary;
-    overflow-y: scroll;
+    overflow-y: auto;
     &.dark {
       background-color: black;
       background-image: url(/images/encounter-tiled.jpg);
