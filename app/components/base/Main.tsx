@@ -54,6 +54,9 @@ export default class Main extends React.Component<MainProps, {}> {
         card = <QuestStartContainer/>;
         break;
       case 'QUEST_CARD':
+        if (!state.quest) {
+          return this.state;
+        }
         let name = getNodeCardType(state.quest.node);
         if (name === 'ROLEPLAY') {
           let roleplay: RoleplayResult = loadRoleplayNode(state.quest.node);
@@ -62,7 +65,8 @@ export default class Main extends React.Component<MainProps, {}> {
           let combat: CombatResult = loadCombatNode(state.quest.node);
           card = <CombatContainer card={state.card} node={state.quest.node} icon={combat.icon} combat={state.combat}/>;
         } else {
-          throw new Error('Unknown quest card name ' + name);
+          console.log('Unknown quest card name ' + name);
+          return this.state;
         }
         break;
       case 'ADVANCED':

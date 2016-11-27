@@ -106,7 +106,8 @@ export function getNodeCardType(node: XMLElement): QuestCardName {
     case 'combat':
       return 'COMBAT';
     default:
-      throw new Error("Could not get node card type for node " + node.get(0).tagName);
+      console.log("Could not get node card type for node " + node.get(0).tagName);
+      return null;
   }
 }
 
@@ -181,9 +182,11 @@ export function loadCombatNode(node: XMLElement): CombatResult {
     switch (tag) {
       case 'e':
         if (!encounters[c.text()]) {
-          throw new Error("Unknown enemy " + c.text());
+          console.log("Unknown enemy " + c.text());
+          enemies.push({name: c.text(), tier: 1});
+        } else {
+          enemies.push({name: c.text(), tier: encounters[c.text()].tier});
         }
-        enemies.push({name: c.text(), tier: encounters[c.text()].tier});
         break;
       case 'event':
       case 'roleplay':
@@ -339,7 +342,12 @@ function _findRootNode(node: XMLElement) {
 
 function _findNextNode(node: XMLElement) {
   while (true) {
+    if (node.length === 0) {
+      return null;
+    }
+
     var sibling = node.next();
+
 
     // Skip control elements and conditionally false elements
     if (sibling !== null && sibling.length > 0 && !_isControlNode(sibling) && _isEnabled(sibling)) {

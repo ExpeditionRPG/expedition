@@ -28,33 +28,37 @@ export function initCombat(node: XMLElement, settings: SettingsType): InitCombat
 export function choice(settings: SettingsType, node: XMLElement, index: number) {
   return (dispatch: Redux.Dispatch<any>): any => {
     var nextNode: XMLElement = handleChoice(node, index);
-    var after: Redux.Action;
-    var phase: any = undefined;
-    switch (nextNode.get(0).tagName.toUpperCase()) {
-      case 'TRIGGER':
-        let name: string = loadTriggerNode(nextNode).name;
-        if (name === 'end') {
-          return dispatch(toPrevious('QUEST_START', undefined, true));
-        }
-        throw new Error('invalid trigger ' + name);
-      case 'COMBAT':
-        after = initCombat(nextNode, settings);
-        phase = 'DRAW_ENEMIES';
-        break;
-      default:
-        after = {type: 'QUEST_NODE', node: nextNode} as QuestNodeAction;
-    }
-    // Every choice has an effect.
-    dispatch(toCard('QUEST_CARD', phase));
-    dispatch(after);
+    loadNode(settings, dispatch, nextNode);
   }
+}
+
+export function loadNode(settings: SettingsType, dispatch: Redux.Dispatch<any>, nextNode: XMLElement) {
+  var after: Redux.Action;
+  var phase: any = undefined;
+  switch (nextNode.get(0).tagName.toUpperCase()) {
+    case 'TRIGGER':
+      let name: string = loadTriggerNode(nextNode).name;
+      if (name === 'end') {
+        return dispatch(toPrevious('QUEST_START', undefined, true));
+      }
+      throw new Error('invalid trigger ' + name);
+    case 'COMBAT':
+      after = initCombat(nextNode, settings);
+      phase = 'DRAW_ENEMIES';
+      break;
+    default:
+      after = {type: 'QUEST_NODE', node: nextNode} as QuestNodeAction;
+  }
+  // Every choice has an effect.
+  dispatch(after);
+  dispatch(toCard('QUEST_CARD', phase));
+
 }
 
 export function event(node: XMLElement, evt: string) {
   return (dispatch: Redux.Dispatch<any>): any => {
     var nextNode: XMLElement = handleEvent(node, evt);
-    dispatch(toCard('QUEST_CARD', undefined));
-    dispatch({type: 'QUEST_NODE', node: nextNode});
+    loadNode(null, dispatch, nextNode);
   }
 }
 

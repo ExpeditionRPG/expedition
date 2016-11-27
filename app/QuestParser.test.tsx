@@ -166,4 +166,6 @@ test('choiceEvent selects lose choice on lose', function() {
 test('<e show-if=""> is properly (and safely) evaluated', function() {
   throw new Error("Unimplemented");
 });
+
+test('loop terminates if no next node');
 */
