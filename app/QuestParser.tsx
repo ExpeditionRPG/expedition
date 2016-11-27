@@ -329,7 +329,6 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
 };
 
 function _isControlNode(node: XMLElement) {
-  console.log(node);
   return node.get(0).tagName === "choice" || node.get(0).tagName === "event" || node.attr('on');
 };
 
