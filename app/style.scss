@@ -125,6 +125,7 @@ $border_primary: 0.02in solid #000;
 $border_dark_primary: 0.02in solid #999;
 $border_accent: 0.02in solid #333;
 $border_faded: 0.02in solid #777;
+$border_desktop: width(base) solid #777;
 
 $bg_primary: #F4ECC8;
 $bg_inactive: #222222;
@@ -163,6 +164,7 @@ body {
     background-image: url(/images/papyrus-tiled.jpg);
     background-size: 100% auto;
     background-repeat: repeat;
+    background-position: 0 0;
     color: $font_color_primary;
     overflow-y: scroll;
     &.dark {
@@ -561,20 +563,38 @@ $fontsizemap: (
   timervalue: 24vw * $abs_scale_vw,
 );
 
-@media screen and (min-width: $abswidthmax) , screen and (min-height: $absheightmax) {
+@media screen and (min-width: $abswidthmax), screen and (min-height: $absheightmax) {
   @include styling();
 
+  body, html, #react-app {
+    height: 100%;
+    width: 100%;
+  }
+
   .app_container {
-    border: width(base) darken($bg_primary, 50%) solid;
+    position: relative;
+    border-left: $border_desktop;
+    border-right: $border_desktop;
     display: block;
     overflow: hidden;
-    position: absolute;
     width: $abswidthmax;
     height: $absheightmax;
-    left: 50%;
-    top: 50%;
-    margin-left: - $abswidthmax / 2;
-    margin-top: - $absheightmax / 2;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+  }
+}
+
+@media screen and (min-height: $absheightmax + width(base)) {
+  .app_container {
+    border-top: $border_desktop;
+    border-bottom: $border_desktop;
     border-radius: width(base);
+  }
+}
+
+@media screen and (min-height: $absheightmax + 2 * width(base) + 40px) {
+  .app_container {
+    margin-top: 20px;
   }
 }
