@@ -30,7 +30,7 @@ export function choice(settings: SettingsType, node: XMLElement, index: number) 
     var nextNode: XMLElement = handleChoice(node, index);
     var after: Redux.Action;
     var phase: any = undefined;
-    switch (nextNode.tagName.toUpperCase()) {
+    switch (nextNode.get(0).tagName.toUpperCase()) {
       case 'TRIGGER':
         let name: string = loadTriggerNode(nextNode).name;
         if (name === 'end') {
