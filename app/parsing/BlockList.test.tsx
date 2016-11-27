@@ -38,6 +38,20 @@ describe('BlockList', () => {
     });
   });
 
+  it('treats triggers as new blocks', () => {
+    var list = new BlockList('_Block 1_\n\ntext\n\n**end**');
+    expect(list.at(0)).toEqual({
+      indent: 0,
+      lines: ['_Block 1_', '', 'text', ''],
+      startLine: 0,
+    });
+    expect(list.at(1)).toEqual({
+      indent: 0,
+      lines: ['**end**'],
+      startLine: 4,
+    });
+  })
+
   it('parses new block on indent', () => {
     var list = new BlockList('* choice\n\n  Choice text');
     expect(list.at(0)).toEqual({

@@ -9,8 +9,14 @@
 
 import {QDLRenderer} from './QDLRenderer'
 import {BlockList} from './BlockList'
-import {BlockMsg} from './BlockMsg'
-import {BlockRenderer} from './BlockRenderer'
+import {BlockMsg, BlockMsgMap} from './BlockMsg'
+import {BlockRenderer, XMLRenderer} from './BlockRenderer'
+
+export function renderXML(md: string, cb: (xml: any, msgs: BlockMsgMap) => any): void {
+  var qdl = new QDLRenderer(XMLRenderer);
+  qdl.render(new BlockList(md));
+  cb(qdl.getResult().get(0), qdl.getFinalizedMsgs());
+}
 
 export class QDL {
   private line: number;
@@ -61,8 +67,8 @@ export class QDL {
 
     if (this.onDebugCallback || this.onWarningCallback || this.onErrorCallback) {
       var msgs = this.renderer.getFinalizedMsgs();
-      if (this.onDebugCallback && msgs['debug'].length !== 0) {
-        this.onDebugCallback(msgs['debug']);
+      if (this.onDebugCallback && msgs['info'].length !== 0) {
+        this.onDebugCallback(msgs['info']);
       }
       if (this.onWarningCallback && msgs['warning'].length !== 0) {
         this.onWarningCallback(msgs['warning']);

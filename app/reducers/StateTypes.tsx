@@ -6,6 +6,13 @@ export type DialogIDType = 'ERROR' | 'PUBLISHED' | 'UNPUBLISHED';
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 
+export interface AnnotationType {
+  row: number;
+  column: number;
+  text: string;
+  type: 'warning' | 'error' | 'info';
+}
+
 export interface XMLElement {
   remove(): void;
   children: XMLElement[];
@@ -69,6 +76,7 @@ export interface AppState {
   dialogs: DialogsState;
   dirty: DirtyState;
   errors: ErrorsState;
+  annotations: AnnotationType[];
   quest: QuestType;
   user: UserState;
   preview: AppStateWithHistory;

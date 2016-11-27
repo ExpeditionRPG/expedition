@@ -9,7 +9,7 @@ export interface BlockRenderer {
  toCombat: (enemies: string[], events: {[evt: string]: Block[]}) => any;
  toTrigger: (text: string) => any;
  toQuest: (title: string, attribs: {[k: string]: string}) => any;
- finalize: (blocks: Block[], msg: BlockMsgHandler) => void;
+ finalize: (quest: any, inner: any[]) => any;
 }
 
 var cheerio: any = require('cheerio');
@@ -79,17 +79,10 @@ export class XMLRenderer {
     return quest;
   }
 
-  static finalize(blocks: Block[], msg: BlockMsgHandler) {
-    for (var i = 1; i < blocks.length; i++) {
-      blocks[0].render.append(blocks[i].render);
+  static finalize(quest: any, inner: any[]): any {
+    for (var i = 0; i < inner.length; i++) {
+      quest.append(inner[i]);
     }
-
-    if (blocks[0].render.get(0).name !== 'quest') {
-      // Inject a <quest> if we don't have a quest header.
-      msg.err("root block must be a quest header", "404", 0);
-      var newRoot = cheerio.load('<quest>')('quest');
-      newRoot.append(blocks[0].render);
-      blocks[0].render = newRoot;
-    }
+    return quest;
   }
 }

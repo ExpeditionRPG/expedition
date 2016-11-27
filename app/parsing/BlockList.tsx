@@ -73,7 +73,9 @@ export class BlockList {
       // - String starting with "_" after any whitespace
       // - String with less whitespace than the start of the string
       // - "empty" (or all whitespace) line followed by line with more indent.
-      if (!currBlock || line[indent] === '_'
+      if (!currBlock
+        || line[indent] === '_'
+        || (line[indent] === '*' && line[indent+1] === '*')
         || indent < currBlock.indent
         || (indent > currBlock.indent && prevEmpty)) {
 

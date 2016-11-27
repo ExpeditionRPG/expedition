@@ -10,11 +10,13 @@ var acequire: any = (require('brace') as any).acequire;
 const { Range } = acequire('ace/range');
 
 import { QDLMode } from './QDLMode'
+import {AnnotationType} from '../../reducers/StateTypes'
 var mode = new QDLMode();
 
 interface TextViewProps extends React.Props<any> {
   onChange: any;
   realtime: any;
+  annotations: AnnotationType[];
 }
 
 declare var gapi: any;
@@ -40,8 +42,9 @@ export default class TextView extends React.Component<TextViewProps, {}> {
   onRef(ref: any) {
     this.ace = ref;
 
-    // Keep the editor focused when it's shown.
     if (this.ace) {
+
+      // Keep the editor focused when it's shown.
       ref.editor.focus();
 
       // "Automatically scrolling cursor into view after selection change
@@ -58,6 +61,17 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       ref.editor.setOption('wrapBehavioursEnabled', true);
       ref.editor.setOption('wrap', true);
       ref.editor.setOption('useSoftTabs', true);
+
+      if (this.props.annotations) {
+        var session = ref.editor.getSession();
+        session.setAnnotations(this.props.annotations);
+
+        for (var i = 0; i < this.props.annotations.length; i++) {
+          var line = this.props.annotations[i].row;
+          // TODO: Add and remove markers
+          //session.addMarker(new Range(line, 0, line, 1), 'ace_highlight-marker', 'fullLine');
+        }
+      }
     }
   }
 

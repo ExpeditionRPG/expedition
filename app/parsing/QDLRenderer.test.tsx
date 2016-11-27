@@ -13,34 +13,92 @@ var expect: any = require('expect');
 var prettifyHTML = (require("html") as any).prettyPrint;
 
 describe('QDLRenderer', () => {
-
-  it('errors on no input', () => {
-    var qdl = new QDLRenderer(XMLRenderer);
-    qdl.render(new BlockList(''));
-    expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.emptyXML);
-    expect(prettifyMsgs(qdl.getFinalizedMsgs()['error'])).toEqual(TestData.emptyError);
-  });
-
-  // - Validate quest attributes (use whitelist)
-  // - Ensure there's at least one node that isn't the quest
-  // - Ensure all paths end with an "end" trigger
-  // - Ensure all combat events make sense (currently "win" and "lose")
-  // - Ensure all combat enemies are valid (use whitelist)
-  // - Ensure all combats have win/lose events
-  // - Validate roleplay attributes (w/ whitelist)
-  // - Validate choice attributes (w/ whitelist)
-  // - Errors if no combat enemies
-  // - Errors if inner combat block w/o event bullet
-  // it('returns error if no enemies');
-
-
   it('parses basic QDL to XML', () => {
     var qdl = new QDLRenderer(XMLRenderer);
 
     qdl.render(new BlockList(TestData.basicMD));
-    expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.basicXML);
     var msgs = qdl.getFinalizedMsgs()
+
+    expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.basicXML);
     expect(msgs['error']).toEqual([]);
     expect(msgs['warning']).toEqual([]);
   });
-})
+
+  it('errors on no input', () => {
+    var qdl = new QDLRenderer(XMLRenderer);
+
+    qdl.render(new BlockList(''));
+
+    expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.emptyXML);
+    expect(prettifyMsgs(qdl.getFinalizedMsgs()['error'])).toEqual(TestData.emptyError);
+  });
+
+  it('errors if no quest header at start', () => {
+    var qdl = new QDLRenderer(XMLRenderer);
+
+    qdl.render(new BlockList(TestData.noHeaderMD));
+
+    expect(prettifyMsgs(qdl.getFinalizedMsgs()['error'])).toEqual(TestData.noHeaderError);
+  });
+
+  it('errors if unknown quest attribute', () => {
+    var qdl = new QDLRenderer(XMLRenderer);
+
+    qdl.render(new BlockList(TestData.badQuestAttrMD));
+
+    expect(prettifyMsgs(qdl.getFinalizedMsgs()['error'])).toEqual(TestData.badQuestAttrError);
+  });
+
+  it('errors if invalid quest attribute', () => {
+    var qdl = new QDLRenderer(XMLRenderer);
+
+    qdl.render(new BlockList(TestData.invalidQuestAttrMD));
+
+    expect(prettifyMsgs(qdl.getFinalizedMsgs()['error'])).toEqual(TestData.invalidQuestAttrError);
+  })
+
+  it('errors if missing quest title', () => {
+    var qdl = new QDLRenderer(XMLRenderer);
+
+    qdl.render(new BlockList(TestData.invalidQuestAttrMD));
+
+    expect(prettifyMsgs(qdl.getFinalizedMsgs()['error'])).toEqual(TestData.invalidQuestAttrError);
+  });
+
+  it('errors if only quest block', () => {
+
+  });
+
+  it('errors if path not ending in "end"', () => {
+
+  });
+
+  it('errors if invalid combat event', () => {
+
+  });
+
+  it('errors if invalid combat enemy', () => {
+
+  });
+
+  it('errors if missing combat event', () => {
+
+  });
+
+  it('errors if invalid roleplay attribute', () => {
+
+  });
+
+  it('errors if invalid choice attribute', () => {
+
+  });
+
+  it('errors if no combat enemies', () => {
+
+  });
+
+  it('errors if inner combat block with no event bullet', () => {
+
+  });
+
+});

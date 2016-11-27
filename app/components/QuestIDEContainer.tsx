@@ -12,6 +12,7 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestIDEStateProps => 
     dirty: state.dirty,
     realtime: state.quest.mdRealtime,
     quest: state.quest,
+    annotations: state.annotations
   };
 }
 

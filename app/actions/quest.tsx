@@ -11,6 +11,8 @@ import {setDialog} from './dialogs'
 import {pushError, pushHTTPError} from '../error'
 import {realtimeUtils} from '../auth'
 import {loadQuestXML} from 'expedition-app/app/actions/web'
+import {renderXML} from '../parsing/QDL'
+import {BlockMsgMap} from '../parsing/BlockMsg'
 
 // Loaded on index.html
 declare var window: any;
@@ -128,6 +130,8 @@ export function loadQuest(userid: string, dispatch: any, docid?: string) {
 export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     var text = quest.mdRealtime.getText();
+
+    // TODO: Convert to new renderer code
     try {
       text = toXML(text, false);
       dispatch({type: 'QUEST_VALID', quest});
@@ -151,13 +155,11 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
     dispatch({type: 'REQUEST_QUEST_SAVE', quest} as RequestQuestSaveAction);
 
     var text: string = quest.mdRealtime.getText();
-    try {
-      const validationCheck = toXML(text, false);
-      dispatch({type: 'QUEST_VALID', quest});
-      dispatch(loadQuestXML(validationCheck));
-    } catch (e) {
-      dispatch({type: 'QUEST_INVALID', quest});
-    }
+
+    renderXML(text, function(xml: any, msgs: BlockMsgMap) {
+      dispatch({type: 'QUEST_MESSAGES', msgs});
+      dispatch(loadQuestXML(xml));
+    });
 
     var meta = toMeta.fromMarkdown(text) as QuestType;
     // For all metadata values, see https://developers.google.com/drive/v2/reference/files

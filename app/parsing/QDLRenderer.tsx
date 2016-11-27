@@ -1,12 +1,15 @@
 
 import {BlockRenderer} from './BlockRenderer'
 import {Block, BlockList} from './BlockList'
-import {BlockMsg, BlockMsgHandler} from './BlockMsg'
+import {BlockMsg, BlockMsgMap, BlockMsgHandler} from './BlockMsg'
+import {questAttrValidators, requiredQuestAttrs} from './QDLAttrValidators'
 
 const REGEXP_ITALIC = /\_(.*)\_.*/;
+const REGEXP_BOLD = /\*\*(.*?)\*\*/;
 const REGEXP_EVENT = /\* on (.*)/;
 
 const ERR_PREFIX = "Internal XML Parse Error: ";
+
 
 export class QDLRenderer {
   private renderer: BlockRenderer;
@@ -20,7 +23,14 @@ export class QDLRenderer {
   }
 
   _hasHeader(block: Block): boolean {
-    return block && block.lines.length && block.lines[0].length && (block.lines[0][0] === '_' || block.lines[0][0] === '#');
+    return (
+      block &&
+      block.lines.length &&
+      block.lines[0].length &&
+      (block.lines[0][0] === '_' ||
+       block.lines[0][0] === '#' ||
+       block.lines[0].indexOf('**') === 0)
+    );
   }
 
   _getBlockGroups(): ({[indent:string]: number[][]}) {
@@ -55,9 +65,8 @@ export class QDLRenderer {
 
   render(blockList: BlockList) {
     this.msg = new BlockMsgHandler();
-    if (blockList.length === 0) {
-      this.msg.err("No quest blocks found", "404");
-      this.result = null;
+    if (!blockList || blockList.length === 0) {
+      this.msg.extend(this._finalize([]));
       return;
     }
     this.blockList = blockList;
@@ -91,8 +100,6 @@ export class QDLRenderer {
 
     // Validate the result
     this.msg.extend(this.validate(this.blockList.at(0).render));
-
-    this.result = this.blockList.at(0).render;
   }
 
   validate(quest: any): BlockMsg[] {
@@ -123,13 +130,25 @@ export class QDLRenderer {
     return '';
   }
 
-  public getFinalizedMsgs(): ({[type: string]: BlockMsg[]}) {
+  public getFinalizedMsgs(): BlockMsgMap {
     var finalized = this.msg.finalize();
     this.msg = null;
 
-    var msgMap: {[type: string]: BlockMsg[]} = {'debug': [], 'warning': [], 'error': []};
+    var msgMap: BlockMsgMap = {'info': [], 'warning': [], 'error': []};
     for (let m of finalized) {
-      msgMap[m.type].push(m);
+      switch(m.type) {
+        case 'info':
+          msgMap.info.push(m);
+          break;
+        case 'warning':
+          msgMap.warning.push(m);
+          break;
+        case 'error':
+          msgMap.error.push(m);
+          break;
+        default:
+          throw new Error('Unknown message type ' + m.type);
+      }
     }
     return msgMap;
   }
@@ -208,7 +227,7 @@ export class QDLRenderer {
       this.toQuest(blocks, msg);
     } else if (headerLine.indexOf('_combat_') === 0) { // Combat card
       this.toCombat(blocks, msg);
-    } else if (headerLine.indexOf('_end_') === 0) { // End trigger
+    } else if (headerLine.indexOf('**end**') === 0) { // End trigger
       this.toTrigger(blocks, msg);
     } else { // Roleplay header
       this.toRoleplay(blocks, msg);
@@ -275,11 +294,36 @@ export class QDLRenderer {
 
   private toQuest(blocks: Block[], msg: BlockMsgHandler) {
     var title = blocks[0].lines[0].substr(1);
+    if (!title) {
+      msg.err('missing required quest title', '404');
+      title = "UNKNOWN";
+    }
 
     var attribs: {[k: string]: string} = {};
     for(var i = 1; i < blocks[0].lines.length && blocks[0].lines[i] !== ''; i++) {
       var kv = blocks[0].lines[i].split(":");
-      attribs[kv[0].toLowerCase()] = kv[1].trim();
+      var k = kv[0].toLowerCase();
+      var v = kv[1].trim();
+
+      if (!questAttrValidators[k]) {
+        msg.err('unknown quest attribute "' + k + '"', '404', blocks[0].startLine + i);
+        continue;
+      }
+
+      if (!questAttrValidators[k](v)) {
+        msg.err('invalid value "' + v + '" for quest attribute "' + k + '"', '404');
+        v = '0';
+      }
+
+      attribs[k] = v;
+    }
+
+    var missingAttribs: string[] = [];
+    for (var i = 0; i < requiredQuestAttrs.length; i++) {
+      if (!attribs[requiredQuestAttrs[i]]) {
+        msg.err('missing required quest attribute "'+requiredQuestAttrs[i]+'"', '404');
+        attribs[requiredQuestAttrs[i]] = '0';
+      }
     }
 
     blocks[0].render = this.renderer.toQuest(title, attribs);
@@ -293,7 +337,7 @@ export class QDLRenderer {
   }
 
   private toTrigger(blocks: Block[], msg: BlockMsgHandler) {
-    var text = blocks[0].lines[0].match(REGEXP_ITALIC);
+    var text = blocks[0].lines[0].match(REGEXP_BOLD);
     if (text) {
       blocks[0].render = this.renderer.toTrigger(text[1]);
     } else {
@@ -385,19 +429,34 @@ export class QDLRenderer {
   }
 
   _finalize(zeroIndentGroups: number[][]): BlockMsg[] {
-    var toRender: Block[] = [];
+    var toRender: any[] = [];
+    var msg = new BlockMsgHandler([]);
 
     // Append the first blocks in each group to the render list.
-    for (var i = 0; i < zeroIndentGroups.length; i++) {
-      toRender.push(this.blockList.at(zeroIndentGroups[i][0]));
+    for (var i = 1; i < zeroIndentGroups.length; i++) {
+      toRender.push(this.blockList.at(zeroIndentGroups[i][0]).render);
     }
 
-    // The renderer finalizes these top-level rendered blocks.
-    // This is treated differently than regular calls to renderer() because
-    // the first block has a render defined.
-    var msg = new BlockMsgHandler([]);
-    this.renderer.finalize(toRender, msg);
+    var quest: any = null;
+    if (this.blockList && this.blockList.length > 0) {
+      var questBlock = this.blockList.at(0);
+      if (questBlock.lines.length && questBlock.lines[0].length && questBlock.lines[0][0] === '#') {
+        quest = questBlock.render;
+      } else {
+        // Error here. We can still handle null quests in the renderer.
+        msg.err("root block must be a quest header", "404", 0);
+        quest = this.renderer.toQuest('Error', {});
+      }
+    } else {
+      msg.err("No quest blocks found", "404");
+      quest = this.renderer.toQuest('Error', {});
+    }
 
+    if (toRender.length === 0) {
+      toRender.push(this.renderer.toRoleplay({}, []));
+    }
+
+    this.result = this.renderer.finalize(quest, toRender);
     return msg.finalize();
   }
 

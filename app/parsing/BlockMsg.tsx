@@ -1,6 +1,6 @@
 import {Block} from './BlockList'
 
-export type BlockMsgType = 'warning' | 'error' | 'debug';
+export type BlockMsgType = 'warning' | 'error' | 'info';
 
 export interface BlockMsg {
   blockGroup: Block[];
@@ -15,6 +15,12 @@ export interface BlockMsg {
   // should provide more information on the error (e.g. examples
   // of correct and incorrect behavior).
   url: string;
+}
+
+export interface BlockMsgMap {
+  info: BlockMsg[];
+  warning: BlockMsg[];
+  error: BlockMsg[];
 }
 
 
@@ -44,18 +50,18 @@ export function prettifyMsgs(msgs: BlockMsg[]): string {
 }
 
 export class BlockMsgHandler {
-  private debug: string[];
+  private info: string[];
   private messages: BlockMsg[];
   private context: Block[];
 
   constructor(blockContext?: Block[]) {
-    this.debug = [];
+    this.info = [];
     this.messages = [];
     this.context = blockContext || [];
   }
 
   dbg(text: string) {
-    this.debug.push(text);
+    this.info.push(text);
   }
 
   err(text: string, url: string, line?: number) {
@@ -83,18 +89,18 @@ export class BlockMsgHandler {
   }
 
   finalize(): BlockMsg[] {
-    if (this.debug.length > 0) {
+    if (this.info.length > 0) {
       this.msg(
         this.context,
-        'debug',
-        this.debug.join('\n'),
+        'info',
+        this.info.join('\n'),
         '404'
       );
     }
     return this.messages;
   }
 
-  private msg(group: Block[], type: 'warning'|'error'|'debug', text: string, url: string, line?: number) {
+  private msg(group: Block[], type: 'warning'|'error'|'info', text: string, url: string, line?: number) {
     var message: BlockMsg = {
       blockGroup: group,
       type: type,

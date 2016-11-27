@@ -2,7 +2,9 @@
 var data = Object();
 
 data.basicMD = `#Quest Title
-testparam: hi
+minplayers: 1
+maxplayers: 2
+author: Test
 
 _Roleplay Card_
 
@@ -22,28 +24,28 @@ More stuff
 
     Victory!
 
-    _end_
+    **end**
 
   * on lose
 
     Defeat!
 
-    _end_
+    **end**
 
 * Another decision
   that is multiple lines long
 
   More stuff
 
-  _end_
+  **end**
 
 * Still another decision!
 
   And a thing.
 
-  _end_`;
+  **end**`;
 
-data.basicXML = `<quest title="Quest Title" testparam="hi">
+data.basicXML = `<quest title="Quest Title" minplayers="1" maxplayers="2" author="Test">
     <roleplay title="Roleplay Card">
         <p>Stuff</p>
         <p>And a line</p>
@@ -82,14 +84,50 @@ data.basicXML = `<quest title="Quest Title" testparam="hi">
     </roleplay>
 </quest>`;
 
-data.emptyXML = `<quest>
-    <roleplay>
-        <p></p>
-    </roleplay>
+data.noHeaderMD = `_Roleplay Card_
+
+stuff
+
+**end**
+`;
+
+data.noHeaderError = `ERROR Lnone (0 blocks):
+root block must be a quest header
+URL: 404`;
+
+data.badQuestAttrMD = `#Quest Title
+minplayers: 1
+maxplayers: 2
+author: Test
+testparam: hi
+
+_Roleplay Card_
+
+**end**`;
+
+data.badQuestAttrError = `ERROR L4 (1 blocks):
+unknown quest attribute "testparam"
+URL: 404`;
+
+data.invalidQuestAttrMD = `#Quest Title
+minplayers: hi
+maxplayers: 2
+author: Test
+
+_Roleplay Card_
+
+**end**`;
+
+data.invalidQuestAttrError = `ERROR L0 (1 blocks):
+invalid value "hi" for quest attribute "minplayers"
+URL: 404`;
+
+data.emptyXML = `<quest title="Error">
+    <roleplay></roleplay>
 </quest>`;
 
 data.emptyError = `ERROR Lnone (0 blocks):
-root block must be a quest header
+No quest blocks found
 URL: 404`;
 
 export default data;

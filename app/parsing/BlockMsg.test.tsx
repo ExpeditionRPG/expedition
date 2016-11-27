@@ -13,7 +13,7 @@ const testBlock: Block = {indent: 0, startLine: 0, lines: ['hello world']};
 const testMsgs: BlockMsg[] = [
   {blockGroup: [], type: 'error', text: 'test error', url: 'test', line: 5},
   {blockGroup: [testBlock], type: 'warning', text: 'test warning', url: '404'},
-  {blockGroup: [], type: 'debug', text: 'test debug\nstuff', url: '404'},
+  {blockGroup: [], type: 'info', text: 'test debug\nstuff', url: '404'},
 ];
 
 describe('BlockMsg', () => {
@@ -47,7 +47,7 @@ describe('BlockMsg', () => {
 
   describe('prettifyMsgs', () => {
     it('prettifies multiple messages', () => {
-      expect(prettifyMsgs(testMsgs)).toEqual("ERROR L5 (0 blocks):\ntest error\nURL: test\n\nWARNING L0 (1 blocks):\ntest warning\nURL: 404\n\nDEBUG Lnone (0 blocks):\ntest debug\nstuff\nURL: 404");
+      expect(prettifyMsgs(testMsgs)).toEqual("ERROR L5 (0 blocks):\ntest error\nURL: test\n\nWARNING L0 (1 blocks):\ntest warning\nURL: 404\n\nINFO Lnone (0 blocks):\ntest debug\nstuff\nURL: 404");
     });
   });
 
@@ -57,7 +57,7 @@ describe('BlockMsg', () => {
     });
 
     it('prettifies message with no line context', () => {
-      expect(prettifyMsg(testMsgs[2])).toEqual("DEBUG Lnone (0 blocks):\ntest debug\nstuff\nURL: 404");
+      expect(prettifyMsg(testMsgs[2])).toEqual("INFO Lnone (0 blocks):\ntest debug\nstuff\nURL: 404");
     });
   });
 });

@@ -1,4 +1,5 @@
 import {UserState, QuestType, DialogIDType, ShareType} from '../reducers/StateTypes'
+import {BlockMsgMap} from '../parsing/BlockMsg'
 
 export const NEW_QUEST: string = 'NEW_QUEST';
 export const LOAD_QUEST: string = 'LOAD_QUEST';
@@ -39,6 +40,11 @@ export interface RequestQuestSaveAction extends Redux.Action {
 export interface ReceiveQuestSaveAction extends Redux.Action {
   type: 'RECEIVE_QUEST_SAVE';
   quest: QuestType;
+}
+
+export interface QuestMessagesAction extends Redux.Action {
+  type: 'QUEST_MESSAGES';
+  msgs: BlockMsgMap;
 }
 
 export interface RequestQuestPublishAction extends Redux.Action {
