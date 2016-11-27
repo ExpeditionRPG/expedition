@@ -10,8 +10,6 @@ import {QuestType, ShareType, EditorState} from '../reducers/StateTypes'
 import {setDialog} from './dialogs'
 import {pushError, pushHTTPError} from '../error'
 import {realtimeUtils} from '../auth'
-import {initQuest, loadNode} from 'expedition-app/app/actions/quest'
-import {loadQuestXML} from 'expedition-app/app/actions/web'
 import {QDLRenderer} from '../parsing/QDLRenderer'
 import {renderXML} from '../parsing/QDL'
 
@@ -175,19 +173,5 @@ export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any
       quest.published = undefined;
       dispatch({type: 'RECEIVE_QUEST_UNPUBLISH', quest} as ReceiveQuestUnpublishAction);
     }).fail(pushHTTPError);
-  };
-}
-
-export function blockChange(renderer: QDLRenderer, line: number): ((dispatch: Redux.Dispatch<any>)=>any) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    if (renderer) {
-      var newNode = renderer.getResultAt(line);
-
-      var tag = newNode.get(0).tagName;
-      if (tag === 'roleplay' || tag === 'combat') {
-        dispatch({type: 'REBOOT_APP'});
-        loadNode({numPlayers: 1, difficulty: "NORMAL", showHelp: true, multitouch: false}, dispatch, newNode);
-      }
-    }
   };
 }
