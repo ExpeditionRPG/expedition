@@ -299,8 +299,6 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
     }
   }.bind(this));
 
-  console.log(children);
-
   // Append a generic "Next" button if there were no events,
   // or an "End" button if there's also an <End> tag.
   if (numEvents === 0) {
