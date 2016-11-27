@@ -23,7 +23,7 @@ interface AppProps extends AppStateProps, AppDispatchProps {}
 
 const App = (props: AppProps): JSX.Element => {
   return (
-    <div className="app">
+    <div className="app_root">
       <div className="app_controls">
         <FlatButton
           label="Play from Cursor"
@@ -32,7 +32,9 @@ const App = (props: AppProps): JSX.Element => {
           label="Play from Start"
           onTouchTap={(event: any) => props.playFromStart(props.editor)} />
       </div>
-      <Main/>
+      <div className="app editor_override">
+        <Main/>
+      </div>
     </div>
   );
 };

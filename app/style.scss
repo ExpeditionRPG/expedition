@@ -46,7 +46,7 @@ html, body, #react-app {
 
 .quest_ide {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 94px);
   overflow-y: auto;
   display: flex;
   flex-direction: row;
@@ -58,6 +58,14 @@ html, body, #react-app {
   .preview {
     position: relative;
     flex: 0 0 560px;
+
+    .app_root {
+      height: 100%;
+    }
+
+    .editor_override {
+      height: calc(100% - 44px);
+    }
   }
 
   .app_controls {

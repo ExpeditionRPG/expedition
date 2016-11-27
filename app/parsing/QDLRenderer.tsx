@@ -263,15 +263,19 @@ export class QDLRenderer {
   private toRoleplay(blocks: Block[], msg: BlockMsgHandler) {
     var titleText = blocks[0].lines[0].match(REGEXP_ITALIC);
 
-    var attribs: {[k: string]: string} = {};
+    var attribs: {[k: string]: any} = {};
+    try {
+      var attribs = this.extractJSON(blocks[0].lines[0]);
+    } catch (e) {
+      msg.err("could not parse block details", "404", blocks[0].startLine);
+      attribs = {};
+    }
+
     if (titleText) {
       attribs['title'] = titleText[1];
-
-      // TODO:
-      //this.applyAttributes(roleplay, blocks[0].lines[0]);
-
-      blocks[0].lines = blocks[0].lines.splice(1);
     }
+
+    blocks[0].lines = blocks[0].lines.splice(1);
 
     // The only inner stuff
     var i = 0;
@@ -394,13 +398,13 @@ export class QDLRenderer {
       data = {};
     }
 
-    if (!data.enemies) {
+    if (!data['enemies']) {
       msg.err(
         "combat block has no enemies listed",
         "404",
         blocks[0].startLine
       );
-      data.enemies = ["UNKNOWN"];
+      data['enemies'] = ["UNKNOWN"];
     }
     blocks[0].lines.shift();
 
@@ -461,7 +465,7 @@ export class QDLRenderer {
       events['lose'] = [this.renderer.toTrigger("end")];
     }
 
-    blocks[0].render = this.renderer.toCombat(data.enemies, events);
+    blocks[0].render = this.renderer.toCombat(data['enemies'], events);
   }
 
   _finalize(zeroIndentGroups: number[][]): BlockMsg[] {
@@ -496,7 +500,7 @@ export class QDLRenderer {
     return msg.finalize();
   }
 
-  private extractJSON(line: string): any {
+  private extractJSON(line: string): {[k: string]: any} {
     var m = line.match(/(\{.*\})/);
     if (!m) {
       return {};
