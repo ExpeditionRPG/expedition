@@ -7,6 +7,7 @@ var options = {
   debug: false,
   entry: [
     './app/react.tsx',
+    './app/style.scss',
   ],
   contentBase: "./app",
   resolve: {

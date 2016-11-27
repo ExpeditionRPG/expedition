@@ -1,6 +1,6 @@
 {
   "name": "expedition-app",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "The App for Expedition: The Roleplaying Card Game",
   "homepage": "http://expeditionrpg.com",
   "bugs": "https://github.com/Fabricate-IO/expedition-app/issues",
@@ -69,6 +69,7 @@
     "lodash": "^4.5.0",
     "material-ui": "^0.15.4",
     "mathjs": "^3.4.1",
+    "node-sass": "^3.11.1",
     "nomnom": "^1.8.1",
     "parser": "^0.1.4",
     "portscanner": "^1.0.0",

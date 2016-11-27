@@ -44,7 +44,7 @@ const SplashScreen = (props: SplashScreenProps): JSX.Element => {
   return (
     <div className="splash_screen">
       <div className="logo">
-        <img src="images/logo-frameless.png"></img>
+        <img src="images/logo-colorized.png"></img>
       </div>
       <div className="center">
         <div>To Begin:<br/>All players hold one finger on the screen.</div>
