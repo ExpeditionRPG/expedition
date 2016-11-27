@@ -10,12 +10,12 @@ const REGEXP_EVENT = /\* on (.*)/;
 
 const ERR_PREFIX = "Internal XML Parse Error: ";
 
-
 export class QDLRenderer {
   private renderer: BlockRenderer;
   private result: any;
   private msg: BlockMsgHandler;
   private blockList: BlockList;
+  private reverseLookup: {[n: number]: number};
 
   constructor(renderer: BlockRenderer) {
     this.renderer = renderer;
@@ -100,6 +100,19 @@ export class QDLRenderer {
 
     // Validate the result
     this.msg.extend(this.validate(this.blockList.at(0).render));
+
+    // Create a reverse lookup of block => root block
+    // for use by getResultAt()
+    this.reverseLookup = {};
+    for (var i = 0; i < indents.length; i++) {
+      var indentGroups = groups[indents[i]];
+      for (var j = 0; j < indentGroups.length; j++) {
+        var group = indentGroups[j];
+        for (var k = 0; k < group.length; k++) {
+          this.reverseLookup[group[k]] = group[0];
+        }
+      }
+    }
   }
 
   validate(quest: any): BlockMsg[] {
@@ -126,8 +139,19 @@ export class QDLRenderer {
   }
 
   public getResultAt(line: number): any {
-    console.log("todo getResultAt");
-    return '';
+    if (!this.blockList) {
+      return null;
+    }
+
+    // Linear search until we feel the slow down.
+    // In the future, we could binary-search to get the correct block.
+    for (var i = 0; i < this.blockList.length; i++) {
+      var block = this.blockList.at(i);
+      if (block.startLine <= line && block.startLine + block.lines.length > line) {
+        return this.blockList.at(this.reverseLookup[i]).render;
+      }
+    }
+    return null;
   }
 
   public getFinalizedMsgs(): BlockMsgMap {
@@ -302,6 +326,12 @@ export class QDLRenderer {
     var attribs: {[k: string]: string} = {};
     for(var i = 1; i < blocks[0].lines.length && blocks[0].lines[i] !== ''; i++) {
       var kv = blocks[0].lines[i].split(":");
+      if (kv.length !== 2) {
+        msg.err('invalid quest attribute string "' + blocks[0].lines[i] + '"',
+          '404', blocks[0].startLine + i);
+        continue;
+      }
+
       var k = kv[0].toLowerCase();
       var v = kv[1].trim();
 
@@ -357,7 +387,12 @@ export class QDLRenderer {
   }
 
   private toCombat(blocks: Block[], msg: BlockMsgHandler) {
-    var data = this.extractJSON(blocks[0].lines[0]);
+    try {
+      var data = this.extractJSON(blocks[0].lines[0]);
+    } catch (e) {
+      msg.err("could not parse block details", "404", blocks[0].startLine);
+      data = {};
+    }
 
     if (!data.enemies) {
       msg.err(
@@ -365,7 +400,7 @@ export class QDLRenderer {
         "404",
         blocks[0].startLine
       );
-      data.enemies = [];
+      data.enemies = ["UNKNOWN"];
     }
     blocks[0].lines.shift();
 
@@ -385,7 +420,7 @@ export class QDLRenderer {
         if (!events[currEvent]) {
           events[currEvent] = [];
         }
-        events[currEvent].push(block);
+        events[currEvent].push(block.render);
         continue;
       }
 
@@ -416,13 +451,14 @@ export class QDLRenderer {
         "combat block must have 'win' event",
         "404"
       );
-      events['win'] = []; // TODO: End block here.
+      events['win'] = [this.renderer.toTrigger("end")];
     }
     if (!events['lose']) {
       msg.err(
         "combat block must have 'lose' event",
         "404"
       );
+      events['lose'] = [this.renderer.toTrigger("end")];
     }
 
     blocks[0].render = this.renderer.toCombat(data.enemies, events);

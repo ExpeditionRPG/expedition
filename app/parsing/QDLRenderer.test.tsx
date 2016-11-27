@@ -41,6 +41,8 @@ describe('QDLRenderer', () => {
     expect(prettifyMsgs(qdl.getFinalizedMsgs()['error'])).toEqual(TestData.noHeaderError);
   });
 
+  it('errors if unparseable quest attribute');
+
   it('errors if unknown quest attribute', () => {
     var qdl = new QDLRenderer(XMLRenderer);
 

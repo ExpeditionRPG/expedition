@@ -1,5 +1,6 @@
 import {ErrorType} from '../error'
 import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
+import {QDLRenderer} from '../parsing/QDLRenderer'
 // TODO: URL type?
 
 export type DialogIDType = 'ERROR' | 'PUBLISHED' | 'UNPUBLISHED';
@@ -53,7 +54,12 @@ export interface QuestType {
   valid?: boolean,
 };
 
-export type DirtyState = boolean;
+export interface EditorState {
+  renderer: QDLRenderer;
+  node: any;
+  dirty: boolean;
+  line: number;
+}
 
 export interface DialogsState {
   USER: boolean;
@@ -74,7 +80,7 @@ export interface UserState {
 
 export interface AppState {
   dialogs: DialogsState;
-  dirty: DirtyState;
+  editor: EditorState;
   errors: ErrorsState;
   annotations: AnnotationType[];
   quest: QuestType;

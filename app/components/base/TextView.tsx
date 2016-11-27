@@ -15,6 +15,7 @@ var mode = new QDLMode();
 
 interface TextViewProps extends React.Props<any> {
   onChange: any;
+  onLine: any;
   realtime: any;
   annotations: AnnotationType[];
 }
@@ -25,6 +26,8 @@ declare var gapi: any;
 export default class TextView extends React.Component<TextViewProps, {}> {
   ace: any;
   silentChange: boolean;
+  onSelectionChange: () => any;
+  silentSelectionChangeTimer: any;
 
   getValue() {
     if (this.ace) {
@@ -40,7 +43,35 @@ export default class TextView extends React.Component<TextViewProps, {}> {
   }
 
   onRef(ref: any) {
+    if (this.ace && this.onSelectionChange) {
+      this.ace.editor.off('changeSelection', this.onSelectionChange);
+    }
+
     this.ace = ref;
+
+    // Add a selection change listener. Because of how
+    // ace handles selection events (i.e. badly) we must
+    // debounce this to prevent many duplicate line events.
+    this.onSelectionChange = (() => {
+      if (this.silentSelectionChangeTimer) {
+        clearTimeout(this.silentSelectionChangeTimer);
+      }
+      this.silentSelectionChangeTimer = setTimeout(function() {
+        this.silentSelectionChangeTimer = null;
+        var selection = this.ace.editor.getSelection();
+
+        var lead = selection.selectionLead;
+        var anchor = selection.anchor;
+        if (lead.row != anchor.row || lead.column != anchor.column) {
+          return;
+        }
+
+
+        if (this.props.onLine) {
+          this.props.onLine(anchor.row);
+        }
+      }.bind(this), 50);
+    }).bind(this);
 
     if (this.ace) {
 
@@ -61,6 +92,8 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       ref.editor.setOption('wrapBehavioursEnabled', true);
       ref.editor.setOption('wrap', true);
       ref.editor.setOption('useSoftTabs', true);
+
+      ref.editor.on('changeSelection', this.onSelectionChange);
 
       if (this.props.annotations) {
         var session = ref.editor.getSession();

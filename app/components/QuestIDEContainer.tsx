@@ -1,7 +1,7 @@
 import {connect} from 'react-redux'
-import {setDirty} from '../actions/editor'
-import {saveQuest} from '../actions/quest'
-import {AppState, QuestType} from '../reducers/StateTypes'
+import {setDirty, setLine} from '../actions/editor'
+import {saveQuest, blockChange} from '../actions/quest'
+import {AppState, QuestType, EditorState} from '../reducers/StateTypes'
 import {pushError} from '../error'
 import QuestIDE, {QuestIDEStateProps, QuestIDEDispatchProps} from './QuestIDE'
 
@@ -9,23 +9,25 @@ var toMarkdown: any = require('../../translation/to_markdown')
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestIDEStateProps => {
   return {
-    dirty: state.dirty,
+    editor: state.editor,
     realtime: state.quest.mdRealtime,
     quest: state.quest,
-    annotations: state.annotations
+    annotations: state.annotations,
   };
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestIDEDispatchProps => {
   return {
-    onDirty: (realtime: any, dirty: boolean, quest: QuestType, text: string) => {
-
+    onDirty: (realtime: any, quest: QuestType, editor: EditorState, text: string) => {
       realtime.setText(text);
 
-      if (!dirty) {
+      if (!editor.dirty) {
         dispatch(setDirty(true));
-        setTimeout(function() { dispatch(saveQuest(quest)); }, 5000);
+        setTimeout(function() { dispatch(saveQuest(quest, editor)); }, 5000);
       }
+    },
+    onLine: (line: number, editor: EditorState) => {
+      dispatch(setLine(line));
     }
   };
 }

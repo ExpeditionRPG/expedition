@@ -1,5 +1,5 @@
 import {quest} from './quest'
-import {dirty} from './dirty'
+import {editor} from './editor'
 import {user} from './user'
 import {dialogs} from './dialogs'
 import {errors} from './errors'
@@ -9,9 +9,14 @@ import {AppState} from './StateTypes'
 
 export default function combinedReduce(state: AppState, action: Redux.Action): AppState {
   state = state || ({} as AppState);
+
+  if (action.type === 'REBOOT_APP') {
+    state.preview = undefined;
+  }
+
   return {
     quest: quest(state.quest, action),
-    dirty: dirty(state.dirty, action),
+    editor: editor(state.editor, action),
     user: user(state.user, action),
     dialogs: dialogs(state.dialogs, action),
     errors: errors(state.errors, action),

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {Tab} from 'material-ui/Tabs';
 import TextView from './base/TextView';
-import {DirtyState} from '../reducers/StateTypes'
 import DialogsContainer from './DialogsContainer';
 import SplashContainer from './SplashContainer';
 import QuestAppBarContainer from './QuestAppBarContainer';

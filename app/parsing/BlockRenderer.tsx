@@ -44,7 +44,7 @@ export class XMLRenderer {
     return roleplay;
   }
 
-  static toCombat(enemies: string[], events: {[evt: string]: Block[]}): any {
+  static toCombat(enemies: string[], events: {[evt: string]: any}): any {
     var combat = cheerio.load('<combat></combat>')("combat");
 
     for (var i = 0; i < enemies.length; i++) {
@@ -58,7 +58,7 @@ export class XMLRenderer {
       var currEvent: any = cheerio.load('<event></event>')('event');
       currEvent.attr('on', k);
       for (var j = 0; j < events[k].length; j++) {
-        currEvent.append(events[k][j].render);
+        currEvent.append(events[k][j]);
       }
       combat.append(currEvent);
     }

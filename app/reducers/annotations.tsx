@@ -1,6 +1,6 @@
 import {BlockMsg} from '../parsing/BlockMsg'
 import {AnnotationType} from './StateTypes'
-import {QuestMessagesAction} from '../actions/ActionTypes'
+import {QuestRenderAction} from '../actions/ActionTypes'
 
 function toAnnotation(msgs: BlockMsg[], result: AnnotationType[]): void {
   for (let m of msgs) {
@@ -15,11 +15,11 @@ function toAnnotation(msgs: BlockMsg[], result: AnnotationType[]): void {
 
 export function annotations(state: AnnotationType[] = [], action: Redux.Action): AnnotationType[] {
   // Transfer accumulated errors into state.
-  if (action.type !== 'QUEST_MESSAGES') {
+  if (action.type !== 'QUEST_RENDER') {
     return state;
   }
 
-  var msgsAction = (action as QuestMessagesAction);
+  var msgsAction = (action as QuestRenderAction);
   var result: AnnotationType[] = [];
   // Don't render info lines here.
   toAnnotation(msgsAction.msgs.warning, result);

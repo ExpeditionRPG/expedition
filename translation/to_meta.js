@@ -42,6 +42,9 @@ function convertQuestMarkdownToMetadata(text) {
       return result;
     }
     var kv = line.split(":");
+    if (kv.length !== 2) {
+      continue;
+    }
     result[kv[0].trim().toLowerCase()] = kv[1].trim();
   }
   return result;

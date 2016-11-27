@@ -5,14 +5,15 @@ import {
   RequestQuestPublishAction, ReceiveQuestPublishAction,
   RequestQuestUnpublishAction, ReceiveQuestUnpublishAction,
 } from './ActionTypes'
-import {QuestType, ShareType} from '../reducers/StateTypes'
+import {QuestType, ShareType, EditorState} from '../reducers/StateTypes'
 
 import {setDialog} from './dialogs'
 import {pushError, pushHTTPError} from '../error'
 import {realtimeUtils} from '../auth'
+import {initQuest, loadNode} from 'expedition-app/app/actions/quest'
 import {loadQuestXML} from 'expedition-app/app/actions/web'
+import {QDLRenderer} from '../parsing/QDLRenderer'
 import {renderXML} from '../parsing/QDL'
-import {BlockMsgMap} from '../parsing/BlockMsg'
 
 // Loaded on index.html
 declare var window: any;
@@ -118,6 +119,9 @@ export function loadQuest(userid: string, dispatch: any, docid?: string) {
       quest.id = docid;
       quest.mdRealtime = md;
       dispatch(receiveQuestLoad(quest));
+      renderXML(text, function(qdl: QDLRenderer) {
+        dispatch({type: 'QUEST_RENDER', qdl, msgs: qdl.getFinalizedMsgs()});
+      });
     });
   },
   function(model: any) {
@@ -130,35 +134,25 @@ export function loadQuest(userid: string, dispatch: any, docid?: string) {
 export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     var text = quest.mdRealtime.getText();
-
-    // TODO: Convert to new renderer code
-    try {
-      text = toXML(text, false);
-      dispatch({type: 'QUEST_VALID', quest});
-    } catch (e) {
-      dispatch({type: 'QUEST_INVALID', quest})
-      pushError(e);
-      dispatch(setDialog('ERROR', true));
-      return;
-    }
-
-    dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
-    return $.post("/publish/" + quest.id, text, function(result_quest_id: string) {
-      quest.published = (new Date(Date.now()).toISOString());
-      dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
-    }).fail(pushHTTPError);
+    renderXML(text, function(qdl: QDLRenderer) {
+      dispatch({type: 'QUEST_RENDER', qdl, msgs: qdl.getFinalizedMsgs()});
+      dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
+      return $.post("/publish/" + quest.id, qdl.getResult()+'', function(result_quest_id: string) {
+        quest.published = (new Date(Date.now()).toISOString());
+        dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
+      }).fail(pushHTTPError);
+    });
   }
 }
 
-export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function saveQuest(quest: QuestType, editor: EditorState): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_SAVE', quest} as RequestQuestSaveAction);
 
     var text: string = quest.mdRealtime.getText();
 
-    renderXML(text, function(xml: any, msgs: BlockMsgMap) {
-      dispatch({type: 'QUEST_MESSAGES', msgs});
-      dispatch(loadQuestXML(xml));
+    renderXML(text, function(qdl: QDLRenderer) {
+      dispatch({type: 'QUEST_RENDER', qdl, msgs: qdl.getFinalizedMsgs()});
     });
 
     var meta = toMeta.fromMarkdown(text) as QuestType;
@@ -181,5 +175,19 @@ export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any
       quest.published = undefined;
       dispatch({type: 'RECEIVE_QUEST_UNPUBLISH', quest} as ReceiveQuestUnpublishAction);
     }).fail(pushHTTPError);
+  };
+}
+
+export function blockChange(renderer: QDLRenderer, line: number): ((dispatch: Redux.Dispatch<any>)=>any) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    if (renderer) {
+      var newNode = renderer.getResultAt(line);
+
+      var tag = newNode.get(0).tagName;
+      if (tag === 'roleplay' || tag === 'combat') {
+        dispatch({type: 'REBOOT_APP'});
+        loadNode({numPlayers: 1, difficulty: "NORMAL", showHelp: true, multitouch: false}, dispatch, newNode);
+      }
+    }
   };
 }

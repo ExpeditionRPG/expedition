@@ -38,7 +38,7 @@
     "brace": "^0.8.0",
     "cheerio": "^0.20.0",
     "connect-memcached": "*",
-    "expedition-app": "https://github.com/smartin015/expedition-app.git#a3bed110b1008f4d0b21a947bc4cee22613517c8",
+    "expedition-app": "https://github.com/smartin015/expedition-app.git#c3e71ad54d5c5e5e64e41b46edc980bf746570c9",
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.14.0",
