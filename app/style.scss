@@ -121,20 +121,21 @@ $font_color_primary: #000000;
 $font_color_faded: #777777;
 $font_color_dark_primary: #FFFFFF;
 
-$border_primary: 0.03in solid #000000;
-$border_accent: 0.03in solid #CCCCCC;
-$border_faded: 0.03in solid #777777;
+$border_primary: 0.02in solid #000;
+$border_dark_primary: 0.02in solid #999;
+$border_accent: 0.02in solid #333;
+$border_faded: 0.02in solid #777;
 
 $bg_primary: #eeeeee;
 $bg_inactive: #222222;
-$bg_titlebar: rgba(255, 255, 255, 0.7);
+$bg_titlebar: rgba(255, 255, 235, 0.65);
 $bg_accent: rgb(220, 220, 220);
-$bg_interactive: rgba(255, 255, 255, 0.5);
+$bg_interactive: rgba(245, 235, 205, 0.7);
 $bg_active: rgba(255, 255, 255, 0.9);
 $bg_dark_primary: rgb(20, 20, 20);
-$bg_dark_titlebar: rgba(100, 100, 100, 0.7);
+$bg_dark_titlebar: rgba(110, 110, 110, 0.6);
 $bg_dark_accent: rgb(60, 60, 60);
-$bg_dark_interactive: rgba(0, 0, 0, 0.5);
+$bg_dark_interactive: rgba(35, 35, 35, 0.5);
 $bg_dark_active: rgba(30, 30, 30, 1.0);
 $bg_surge_primary: #CC0000;
 
@@ -153,39 +154,6 @@ body {
 }
 
 @mixin styling() {
-
-  .inline_icon {
-    width: width(icon);
-    margin-bottom: -(width(tiny));
-  }
-
-  .base_button {
-    > button {
-      display: block !important;
-      height: auto  !important;
-      width: 100%  !important;
-      font-size: fontsize(interactive)  !important;
-      padding: width(base)  !important;
-      padding-top: height(base)  !important;
-      padding-bottom: height(base)  !important;
-      margin: 0  !important;
-      margin-top: height(base)  !important;
-      border: $border_accent  !important;
-      background-color: $bg_interactive  !important;
-      text-align: left  !important;
-      text-transform: none  !important;
-      text-decoration: none  !important;
-      color: inherit  !important;
-      line-height: 1.2  !important;
-      > div {
-        display: block !important;
-      }
-      &:disabled {
-        border: $border_faded !important;
-        color: $font_color_faded !important;
-      }
-    }
-  }
 
   .base_card {
     height: 100%;
@@ -216,6 +184,9 @@ body {
           color: white !important;
         }
       }
+      .base_button > button {
+        border: $border_dark_primary !important;
+      }
     }
     .child_wrapper {
       margin: width(large);
@@ -242,9 +213,9 @@ body {
           height: height(watermark);
           width: height(watermark);
           right: 0;
-          bottom: height(huge);
+          top: height(huge);
           margin-right: -10%;
-          margin-top: -25%;
+          margin-top: 4vh;
           opacity: 0.2;
         }
         overflow-x: hidden;
@@ -275,7 +246,40 @@ body {
         right: height(appbar);
       }
     }
-  };
+  }
+
+  .inline_icon {
+    width: width(icon);
+    margin-bottom: -(width(tiny));
+  }
+
+  .base_button {
+    > button {
+      display: block !important;
+      height: auto !important;
+      width: 100% !important;
+      font-size: fontsize(interactive) !important;
+      padding: width(base) !important;
+      padding-top: height(base) !important;
+      padding-bottom: height(base) !important;
+      margin: 0 !important;
+      margin-top: height(base) !important;
+      border: $border_accent !important;
+      background-color: $bg_interactive !important;
+      text-align: left !important;
+      text-transform: none !important;
+      text-decoration: none !important;
+      color: inherit !important;
+      line-height: 1.2 !important;
+      > div {
+        display: block !important;
+      }
+      &:disabled {
+        border: $border_faded !important;
+        color: $font_color_faded !important;
+      }
+    }
+  }
 
   .base_checkbox {
     button {
@@ -511,7 +515,7 @@ body {
       padding: height(small);
       margin: auto;
       text-align: center;
-      border: width(tiny) solid darken($bg_primary, 10%);
+      border: $border_dark_primary;
       cursor: pointer;
       background: $bg_inactive;
       opacity: 0.7;
