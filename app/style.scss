@@ -164,6 +164,7 @@ body {
     background-image: url(/images/papyrus-tiled.jpg);
     background-size: 100% auto;
     background-repeat: repeat;
+    background-position: 0 0;
     color: $font_color_primary;
     overflow-y: scroll;
     &.dark {
