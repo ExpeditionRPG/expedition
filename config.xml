@@ -36,7 +36,7 @@
   <gap:plugin name="cordova-plugin-googleplus" source="npm">
     <param name="REVERSED_CLIENT_ID" value="io.fabricate.expedition" />
   </gap:plugin>
-  <plugin name="cordova-plugin-googleplus" spec="~5.0.2">
+  <plugin name="cordova-plugin-googleplus" spec="~5.1.1">
     <variable name="REVERSED_CLIENT_ID" value="io.fabricate.expedition" />
   </plugin>
 
