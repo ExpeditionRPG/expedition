@@ -42,7 +42,7 @@
 
 
   <!-- Android -->
-  <preference name="android-minSdkVersion" value="19"/> //android 4.4
+  <preference name="android-minSdkVersion" value="21"/> //android 5.0
   <platform name="android">
     <allow-intent href="market:*" />
 
