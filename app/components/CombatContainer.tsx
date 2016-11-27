@@ -30,7 +30,9 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     return {
       custom: false,
       card: ownProps.card,
-      combat: Object.assign({}, ownProps.combat, {tier: state.combat.tier, numAliveAdventurers: state.combat.numAliveAdventurers}),
+      combat: Object.assign({}, ownProps.combat, {
+        tier: state.combat && state.combat.tier,
+        numAliveAdventurers: state.combat && state.combat.numAliveAdventurers}),
       node: ownProps.node,
       maxTier: maxTier,
       icon: ownProps.icon,
