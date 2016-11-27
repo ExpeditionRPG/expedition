@@ -8,37 +8,54 @@ interface MultiTouchTriggerProps extends React.Props<any> {
 export default class MultiTouchTrigger extends React.Component<MultiTouchTriggerProps, {}> {
   ctx: any;
   canvas: any;
-  numFingers: number
+  numFingers: number;
+  mouseDown: Boolean;
 
   _touchEvent(e: any) {
-    if (e.touches.length != this.numFingers) {
-      this.numFingers = e.touches.length;
-      this.props.onTouchChange(this.numFingers);
+    var xyArray: number[][] = [];
+    for (var i = 0; i < e.touches.length; i++) {
+      xyArray.push([e.touches[i].clientX, e.touches[i].clientY]);
     }
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    this._drawTouchPoints(e.touches);
+    this._processInput(xyArray);
     e.preventDefault();
   }
 
-  _drawTouchPoints(touches: any) {
-    var radius = 36;
-    this.ctx.fillStyle = "rgb(200,0,0)";
-    for (var i = 0; i < touches.length; i++) {
-      this.ctx.beginPath();
-      this.ctx.arc(touches[i].clientX, touches[i].clientY, radius, 0, 2 * Math.PI, false);
-      this.ctx.fill();
-      this.ctx.beginPath();
-      this.ctx.arc(touches[i].clientX, touches[i].clientY, 1.2 * radius, 0, 2 * Math.PI, false);
-      this.ctx.stroke();
+  _mouseDownEvent(e: any) {
+    this.mouseDown = true;
+    this._processInput([[e.layerX, e.layerY]]);
+  }
+
+  _mouseMoveEvent(e: any) {
+    if (this.mouseDown) {
+      this._processInput([[e.layerX, e.layerY]]);
     }
   }
 
-  _mouseDownEvent() {
-    this.props.onTouchChange(1);
+  _mouseUpEvent() {
+    this.mouseDown = false;
+    this._processInput([]);
   }
 
-  _mouseUpEvent() {
-    this.props.onTouchChange(0);
+  _processInput(xyArray: number[][]) {
+    if (xyArray.length != this.numFingers) {
+      this.numFingers = xyArray.length;
+      this.props.onTouchChange(this.numFingers);
+    }
+    this._drawTouchPoints(xyArray);
+  }
+
+  _drawTouchPoints(xyArray: number[][]) {
+    var radius = 36;
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.ctx.fillStyle = "rgb(200,0,0)";
+    for (var i = 0; i < xyArray.length; i++) {
+      this.ctx.beginPath();
+      this.ctx.arc(xyArray[i][0], xyArray[i][1], radius, 0, 2 * Math.PI, false);
+      this.ctx.fill();
+      this.ctx.beginPath();
+      this.ctx.arc(xyArray[i][0], xyArray[i][1], 1.2 * radius, 0, 2 * Math.PI, false);
+      this.ctx.stroke();
+    }
   }
 
   setupCanvas(ref: any) {
@@ -54,7 +71,8 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
     this.canvas.addEventListener('touchmove', this._touchEvent.bind(this));
     this.canvas.addEventListener('touchend', this._touchEvent.bind(this));
     this.canvas.addEventListener('mousedown', this._mouseDownEvent.bind(this));
-    this.canvas.addEventListener('mouseup', this._mouseDownEvent.bind(this));
+    this.canvas.addEventListener('mousemove', this._mouseMoveEvent.bind(this));
+    this.canvas.addEventListener('mouseup', this._mouseUpEvent.bind(this));
 
     this._touchEvent({touches: [], preventDefault: ()=>{}});
   }
