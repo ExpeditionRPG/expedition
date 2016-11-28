@@ -4,6 +4,7 @@ import {saveQuest} from '../actions/quest'
 import {AppState, QuestType, EditorState} from '../reducers/StateTypes'
 import {pushError} from '../error'
 import QuestIDE, {QuestIDEStateProps, QuestIDEDispatchProps} from './QuestIDE'
+import {store} from '../store'
 
 var toMarkdown: any = require('../../translation/to_markdown')
 
@@ -23,7 +24,13 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
 
       if (!editor.dirty) {
         dispatch(setDirty(true));
-        setTimeout(function() { dispatch(saveQuest(quest, editor)); }, 5000);
+        setTimeout(function() {
+          // Check the store directly to see if we're still in a dirty state.
+          // The user could have saved manually before the timeout has elapsed.
+          if (store.getState().editor.dirty) {
+            dispatch(saveQuest(quest, editor));
+          }
+        }, 5000);
       }
     },
     onLine: (line: number, editor: EditorState) => {

@@ -47,7 +47,7 @@ interface QuestAppBarProps extends QuestAppBarStateProps, QuestAppBarDispatchPro
 const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   const loginText = 'Logged in as ' + props.user.displayName;
   const questTitle = props.quest.title || 'unsaved quest';
-  const savingText = (props.editor) ? 'Unsaved changes' : 'All changes saved';
+  const savingText = (props.editor.dirty) ? 'Unsaved changes' : 'All changes saved';
   const publishButton = (props.quest.valid === false) ? // default to showing the is valid button
     <FlatButton
       style={styles.button}
@@ -84,7 +84,6 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
       <Toolbar className="toolbar">
         <ToolbarGroup firstChild={true}>
           <FlatButton label="New" onTouchTap={(event: any) => props.onMenuSelect('NEW_QUEST', props.editor, props.quest)} />
-          <FlatButton label="Save" onTouchTap={(event: any) => props.onMenuSelect('SAVE_QUEST', props.editor, props.quest)} />
           {publishButton}
           {Boolean(props.quest.published) && <FlatButton label="Unpublish" onTouchTap={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.editor, props.quest)} />}
           <FlatButton label="View in Drive" onTouchTap={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.editor, props.quest)} />
