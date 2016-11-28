@@ -37,7 +37,7 @@ const Splash = (props: any): JSX.Element => {
             learn more
           </a>
         </div>
-        <div clasName="screenshot">
+        <div className="screenshot">
           <img src="/assets/img/app-screenshot.png"/>
         </div>
       </div>
