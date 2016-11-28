@@ -19,10 +19,10 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps 
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestAppBarDispatchProps => {
   return {
-    onMenuSelect: (action: QuestActionType, editor: EditorState, quest: QuestType) => {
+    onMenuSelect: (action: QuestActionType, quest: QuestType) => {
       switch(action) {
         case 'SAVE_QUEST':
-          return dispatch(saveQuest(quest, editor));
+          return dispatch(saveQuest(quest));
         case 'NEW_QUEST':
           window.open('/');
           break;

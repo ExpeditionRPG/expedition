@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
           // Check the store directly to see if we're still in a dirty state.
           // The user could have saved manually before the timeout has elapsed.
           if (store.getState().editor.dirty) {
-            dispatch(saveQuest(quest, editor));
+            dispatch(saveQuest(quest));
           }
         }, 5000);
       }
