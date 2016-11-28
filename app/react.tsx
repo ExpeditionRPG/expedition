@@ -41,18 +41,13 @@ var injectTapEventPlugin = require('react-tap-event-plugin');
 injectTapEventPlugin();
 
 // Redux libraries
-import thunk from 'redux-thunk';
 import {Provider} from 'react-redux';
-import {createStore, applyMiddleware} from 'redux';
 
 // Custom components
 import MainContainer from './components/MainContainer';
-import questIDEApp from './reducers/CombinedReducers';
 import {loginUser} from './actions/user';
 
-let devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
-let middleware = applyMiddleware(thunk);
-const store: any = middleware(devtools(createStore))(questIDEApp, {});
+import {store} from './store'
 
 if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
   // Try to parse from google drive menu action, e.g.
@@ -81,7 +76,7 @@ window.addEventListener('keydown', function checkForCtrlS (event: any) {
         event.preventDefault();
         const state = store.getState();
         if (state.dirty) {
-          store.dispatch(saveQuest(state.quest));
+          store.dispatch(saveQuest(state.quest, state.editor));
         }
         break;
     }
@@ -93,14 +88,6 @@ window.gapi.load('client,client:auth2,drive-realtime,drive-share', function() {
     store.dispatch(loginUser(false));
   });
 });
-
-if (module.hot) {
-  module.hot.accept('./reducers/CombinedReducers', () => {
-    console.log("Updating reducers");
-    let updated = require('./reducers/CombinedReducers');
-    store.replaceReducer(updated);
-  });
-}
 
 render(
   <MuiThemeProvider muiTheme={getMuiTheme(theme)}>

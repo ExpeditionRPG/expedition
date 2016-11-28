@@ -10,11 +10,14 @@ var acequire: any = (require('brace') as any).acequire;
 const { Range } = acequire('ace/range');
 
 import { QDLMode } from './QDLMode'
+import {AnnotationType} from '../../reducers/StateTypes'
 var mode = new QDLMode();
 
 interface TextViewProps extends React.Props<any> {
   onChange: any;
+  onLine: any;
   realtime: any;
+  annotations: AnnotationType[];
 }
 
 declare var gapi: any;
@@ -23,6 +26,8 @@ declare var gapi: any;
 export default class TextView extends React.Component<TextViewProps, {}> {
   ace: any;
   silentChange: boolean;
+  onSelectionChange: () => any;
+  silentSelectionChangeTimer: any;
 
   getValue() {
     if (this.ace) {
@@ -38,10 +43,39 @@ export default class TextView extends React.Component<TextViewProps, {}> {
   }
 
   onRef(ref: any) {
+    if (this.ace && this.onSelectionChange) {
+      this.ace.editor.off('changeSelection', this.onSelectionChange);
+    }
+
     this.ace = ref;
 
-    // Keep the editor focused when it's shown.
+    // Add a selection change listener. Because of how
+    // ace handles selection events (i.e. badly) we must
+    // debounce this to prevent many duplicate line events.
+    this.onSelectionChange = (() => {
+      if (this.silentSelectionChangeTimer) {
+        clearTimeout(this.silentSelectionChangeTimer);
+      }
+      this.silentSelectionChangeTimer = setTimeout(function() {
+        this.silentSelectionChangeTimer = null;
+        var selection = this.ace.editor.getSelection();
+
+        var lead = selection.selectionLead;
+        var anchor = selection.anchor;
+        if (lead.row != anchor.row || lead.column != anchor.column) {
+          return;
+        }
+
+
+        if (this.props.onLine) {
+          this.props.onLine(anchor.row);
+        }
+      }.bind(this), 50);
+    }).bind(this);
+
     if (this.ace) {
+
+      // Keep the editor focused when it's shown.
       ref.editor.focus();
 
       // "Automatically scrolling cursor into view after selection change
@@ -58,6 +92,19 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       ref.editor.setOption('wrapBehavioursEnabled', true);
       ref.editor.setOption('wrap', true);
       ref.editor.setOption('useSoftTabs', true);
+
+      ref.editor.on('changeSelection', this.onSelectionChange);
+
+      if (this.props.annotations) {
+        var session = ref.editor.getSession();
+        session.setAnnotations(this.props.annotations);
+
+        for (var i = 0; i < this.props.annotations.length; i++) {
+          var line = this.props.annotations[i].row;
+          // TODO: Add and remove markers
+          //session.addMarker(new Range(line, 0, line, 1), 'ace_highlight-marker', 'fullLine');
+        }
+      }
     }
   }
 

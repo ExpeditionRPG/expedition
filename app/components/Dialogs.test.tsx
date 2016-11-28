@@ -56,4 +56,4 @@ describe('Dialogs', () => {
 
     it('calls onSignIn on Sign In tap')
   })
-})
+});

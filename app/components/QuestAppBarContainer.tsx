@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {QuestActionType} from '../actions/ActionTypes'
 import {saveQuest, publishQuest, unpublishQuest} from '../actions/quest'
 import {logoutUser} from '../actions/user'
-import {AppState, DirtyState, QuestType, UserState} from '../reducers/StateTypes'
+import {AppState, QuestType, EditorState, UserState} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
 
 import {MARKDOWN_GUIDE_URL} from '../constants'
@@ -11,7 +11,7 @@ import {MARKDOWN_GUIDE_URL} from '../constants'
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps => {
   return {
-    dirty: state.dirty,
+    editor: state.editor,
     quest: state.quest,
     user: state.user,
   };
@@ -19,10 +19,10 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps 
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestAppBarDispatchProps => {
   return {
-    onMenuSelect: (action: QuestActionType, dirty: DirtyState, quest: QuestType) => {
+    onMenuSelect: (action: QuestActionType, editor: EditorState, quest: QuestType) => {
       switch(action) {
         case 'SAVE_QUEST':
-          return dispatch(saveQuest(quest));
+          return dispatch(saveQuest(quest, editor));
         case 'NEW_QUEST':
           window.open('/');
           break;

@@ -11,6 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 'use strict';
+
+
 var nr = require('newrelic');
 var path = require('path');
 var express = require('express');
@@ -107,7 +109,11 @@ if (module === require.main) {
     var webpack_config = require('./webpack.config');
     var webpack = require('webpack');
     var WebpackDevServer = require('webpack-dev-server');
-    var server = new WebpackDevServer(webpack(webpack_config), {
+    var compiler = webpack(webpack_config);
+    compiler.plugin("done", function() {
+      console.log("DONE");
+    });
+    var server = new WebpackDevServer(compiler, {
       publicPath: webpack_config.output.publicPath,
       contentBase: webpack_config.contentBase,
       hot: true,

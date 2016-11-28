@@ -1,9 +1,36 @@
 import {ErrorType} from '../error'
+import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
+import {QDLRenderer} from '../parsing/QDLRenderer'
 // TODO: URL type?
 
 export type DialogIDType = 'ERROR' | 'PUBLISHED' | 'UNPUBLISHED';
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
+
+export interface AnnotationType {
+  row: number;
+  column: number;
+  text: string;
+  type: 'warning' | 'error' | 'info';
+}
+
+export interface XMLElement {
+  remove(): void;
+  children: XMLElement[];
+  getAttribute(attrib: string): string;
+  hasAttribute(attrib: string): boolean;
+  appendChild(child: XMLElement): void;
+  cloneNode(deep: boolean): XMLElement;
+  localName: string;
+  tagName: string;
+  parentNode: XMLElement;
+  textContent: string;
+  attributes: {name: string}[];
+  innerHTML: string;
+  setAttribute(attrib: string, value: any): void;
+  nextElementSibling?: XMLElement;
+  querySelector(query: string): XMLElement;
+}
 
 export interface QuestType {
   id?: string;
@@ -27,7 +54,12 @@ export interface QuestType {
   valid?: boolean,
 };
 
-export type DirtyState = boolean;
+export interface EditorState {
+  renderer: QDLRenderer;
+  node: any;
+  dirty: boolean;
+  line: number;
+}
 
 export interface DialogsState {
   USER: boolean;
@@ -48,10 +80,12 @@ export interface UserState {
 
 export interface AppState {
   dialogs: DialogsState;
-  dirty: DirtyState;
+  editor: EditorState;
   errors: ErrorsState;
+  annotations: AnnotationType[];
   quest: QuestType;
   user: UserState;
+  preview: AppStateWithHistory;
 }
 
 export type ValidState = boolean;

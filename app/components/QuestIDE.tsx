@@ -3,37 +3,19 @@ import * as React from 'react'
 import {Tab} from 'material-ui/Tabs'
 
 import TextView from './base/TextView'
-import {DirtyState, QuestType} from '../reducers/StateTypes'
-
-
-const styles = {
-  container: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column"
-  },
-  tabsroot: {
-    flex: 1,
-    minHeight: 0,
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  tabcontainer: {
-    overflowY: 'auto',
-    height: "100%"
-  }
-};
-
+import {QuestType, EditorState, AnnotationType} from '../reducers/StateTypes'
+import AppContainer from './AppContainer'
 
 export interface QuestIDEStateProps {
-  dirty: DirtyState;
   realtime: any;
   quest: QuestType;
+  editor: EditorState;
+  annotations: AnnotationType[];
 };
 
 export interface QuestIDEDispatchProps {
-  onDirty: (realtime: any, dirty: DirtyState, quest: QuestType, text: string) => void;
+  onDirty: (realtime: any, quest: QuestType, editor: EditorState, text: string) => void;
+  onLine: (line: number, editor: EditorState) => void;
 }
 
 interface QuestIDEProps extends QuestIDEStateProps, QuestIDEDispatchProps {}
@@ -41,13 +23,18 @@ interface QuestIDEProps extends QuestIDEStateProps, QuestIDEDispatchProps {}
 
 const QuestIDE = (props: QuestIDEProps): JSX.Element => {
   return (
-    <span style={{width: "100%", height: "100%"}}>
-      <div style={styles.tabcontainer}>
+    <div className="quest_ide">
+      <div className="editor">
         <TextView
           realtime={props.realtime}
-          onChange={(text: string) => props.onDirty(props.realtime, props.dirty, props.quest, text)} />
+          annotations={props.annotations}
+          onChange={(text: string) => props.onDirty(props.realtime, props.quest, props.editor, text)}
+          onLine={(line: number) => props.onLine(line, props.editor)} />
       </div>
-    </span>
+      <div className="preview">
+        <AppContainer/>
+      </div>
+    </div>
   );
 }
 

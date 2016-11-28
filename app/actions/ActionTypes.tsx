@@ -1,4 +1,6 @@
 import {UserState, QuestType, DialogIDType, ShareType} from '../reducers/StateTypes'
+import {BlockMsgMap} from '../parsing/BlockMsg'
+import {QDLRenderer} from '../parsing/QDLRenderer'
 
 export const NEW_QUEST: string = 'NEW_QUEST';
 export const LOAD_QUEST: string = 'LOAD_QUEST';
@@ -26,6 +28,11 @@ export interface SetDirtyAction extends Redux.Action {
   is_dirty: boolean;
 }
 
+export interface SetLineAction extends Redux.Action {
+  type: 'SET_LINE';
+  line: number;
+}
+
 export interface ReceiveQuestLoadAction extends Redux.Action {
   type: 'RECEIVE_QUEST_LOAD';
   quest: QuestType;
@@ -39,6 +46,12 @@ export interface RequestQuestSaveAction extends Redux.Action {
 export interface ReceiveQuestSaveAction extends Redux.Action {
   type: 'RECEIVE_QUEST_SAVE';
   quest: QuestType;
+}
+
+export interface QuestRenderAction extends Redux.Action {
+  type: 'QUEST_RENDER';
+  qdl: QDLRenderer;
+  msgs: BlockMsgMap;
 }
 
 export interface RequestQuestPublishAction extends Redux.Action {

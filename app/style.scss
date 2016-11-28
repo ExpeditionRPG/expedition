@@ -1,0 +1,108 @@
+$bg_primary: #141414;
+$bg_secondary: #212121;
+
+html, body, #react-app {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+// ===============================================
+// Component styles
+// ===============================================
+
+.main {
+  width: 100%;
+  height: 100%;
+  &.loading {
+    background: $bg_primary;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    color: white;
+    padding: 30px;
+    font-family: Roboto, sans-serif;
+    font-size: 20px;
+  }
+}
+
+.quest_app_bar {
+  height: 100%;
+  width: 100%;
+  > :first-child {
+    height: 54px !important;
+    margin-top: -6px !important;
+  }
+  .toolbar {
+    background: $bg_secondary !important;
+    height: 44px !important;
+    button {
+      margin: 4px 0 !important;
+      min-width: 60px !important;
+    }
+  }
+}
+
+.quest_ide {
+  width: 100%;
+  height: calc(100% - 94px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: row;
+
+  .editor {
+    flex: 1;
+    position: relative;
+  }
+  .preview {
+    position: relative;
+    flex: 0 0 560px;
+
+    .app_root {
+      height: 100%;
+    }
+
+    .editor_override {
+      height: calc(100% - 44px);
+    }
+  }
+
+  .app_controls {
+    text-align: center;
+  }
+}
+
+
+.splash {
+  background: $bg_primary;
+  height: 100%;
+
+  .body {
+    text-align: center;
+  }
+
+  h1 {
+    color: white;
+    font-size: 2em;
+    font-weight: bold;
+  }
+  .learnMore {
+    margin: 0.8em auto 2.5em auto;
+    a {
+      color: white;
+      opacity: 0.8;
+      text-decoration: none;
+    }
+  }
+  .screenshot {
+    background: $bg_primary;
+
+    img {
+      box-shadow: 0 0 10px #616161;
+      width: 70%;
+      margin: auto;
+      display: block;
+    }
+  }
+}
