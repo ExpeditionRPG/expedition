@@ -275,8 +275,6 @@ export class QDLRenderer {
       attribs['title'] = titleText[1];
     }
 
-    blocks[0].lines = blocks[0].lines.splice(1);
-
     // The only inner stuff
     var i = 0;
     var body: (string|{text: string, choice: any})[] = [];
@@ -288,7 +286,7 @@ export class QDLRenderer {
       }
 
       // Append rendered stuff
-      var lines = this.collate(block.lines);
+      var lines = this.collate((i == 0) ? block.lines.slice(1) : block.lines);
       var choice: {text: string, choice: any};
       for (let line of lines) {
         if (line.indexOf('* ') === 0) {
@@ -398,7 +396,15 @@ export class QDLRenderer {
       data = {};
     }
 
-    if (!data['enemies']) {
+    data['enemies'] = data['enemies'] || [];
+    for (var i = 0; i < blocks[0].lines.length; i++) {
+      var line = blocks[0].lines[i];
+      if (line.startsWith('- ')) {
+        data['enemies'].push(line.substr(2).trim());
+      }
+    }
+
+    if (data['enemies'].length === 0) {
       msg.err(
         "combat block has no enemies listed",
         "404",
@@ -406,7 +412,7 @@ export class QDLRenderer {
       );
       data['enemies'] = ["UNKNOWN"];
     }
-    blocks[0].lines.shift();
+
 
     var events: any = {};
     var currEvent: string = null;
@@ -428,7 +434,8 @@ export class QDLRenderer {
         continue;
       }
 
-      for (var j = 0; j < block.lines.length; j++) {
+      // Skip the first line if we're at the root block (already parsed)
+      for (var j = (i==0) ? 1 : 0; j < block.lines.length; j++) {
         var line = block.lines[j];
         if (line === '') {
           continue;
@@ -438,12 +445,13 @@ export class QDLRenderer {
         // These blocks are only single lines.
         var m = line.match(REGEXP_EVENT);
         if (!m) {
-          // TODO: Return error here
-          msg.err(
-            "lines within combat block must be event bullets; instead found \""+line+"\"",
-            "404",
-            block.startLine + j
-          );
+          if (!line.startsWith('-')) {
+            msg.err(
+              "lines within combat block must be event bullets or enemies; instead found \""+line+"\"",
+              "404",
+              block.startLine + j
+            );
+          }
           continue;
         }
         currEvent = m[1];
