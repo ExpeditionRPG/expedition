@@ -75,8 +75,8 @@ window.addEventListener('keydown', function checkForCtrlS (event: any) {
       case 's':
         event.preventDefault();
         const state = store.getState();
-        if (state.dirty) {
-          store.dispatch(saveQuest(state.quest, state.editor));
+        if (state.editor.dirty) {
+          store.dispatch(saveQuest(state.quest));
         }
         break;
     }

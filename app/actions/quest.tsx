@@ -5,7 +5,7 @@ import {
   RequestQuestPublishAction, ReceiveQuestPublishAction,
   RequestQuestUnpublishAction, ReceiveQuestUnpublishAction,
 } from './ActionTypes'
-import {QuestType, ShareType, EditorState} from '../reducers/StateTypes'
+import {QuestType, ShareType} from '../reducers/StateTypes'
 
 import {setDialog} from './dialogs'
 import {pushError, pushHTTPError} from '../error'
@@ -143,7 +143,7 @@ export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)
   }
 }
 
-export function saveQuest(quest: QuestType, editor: EditorState): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_SAVE', quest} as RequestQuestSaveAction);
 
