@@ -5,8 +5,8 @@ import {BlockMsg, BlockMsgHandler} from './BlockMsg'
 import {XMLElement} from '../reducers/StateTypes'
 
 export interface BlockRenderer {
- toRoleplay: (attribs: {[k: string]: string}, body: (string|{text: string, choice: any})[]) => any;
- toCombat: (enemies: string[], events: {[evt: string]: Block[]}) => any;
+ toRoleplay: (attribs: {[k: string]: string}, body: (string|{text: string, visible?: string, choice: any})[]) => any;
+ toCombat: (attribs: {[k: string]: string}, events: ({text: string, visible?: string, event: any[]})[]) => any;
  toTrigger: (text: string) => any;
  toQuest: (title: string, attribs: {[k: string]: string}) => any;
  finalize: (quest: any, inner: any[]) => any;
@@ -18,7 +18,7 @@ declare type OutMsgs = {dbgStr: string, msgs: BlockMsg[]};
 
 // TODO: Move error checks in this renderer to the QDLRenderer class.
 export class XMLRenderer {
-  static toRoleplay(attribs: {[k: string]: string}, body: (string|{text: string, choice: any})[]): any {
+  static toRoleplay(attribs: {[k: string]: string}, body: (string|{text: string, visible?: string, choice: any})[]): any {
     var roleplay = cheerio.load('<roleplay>')('roleplay');
 
     var keys = Object.keys(attribs);
@@ -34,9 +34,12 @@ export class XMLRenderer {
         // '/(\*|_)(.*?)\1/' => '<em>\2</em>',                       // emphasis
         roleplay.append('<p>' + section + '</p>');
       } else {
-        var c = section as {text: string, choice: any};
+        var c = section as {text: string, visible?: string, choice: any};
         var choice = cheerio.load('<choice></choice>')('choice');
         choice.attr('text', c.text);
+        if (c.visible) {
+          choice.attr('if', c.visible);
+        }
         choice.append(c.choice);
         roleplay.append(choice);
       }
@@ -44,21 +47,31 @@ export class XMLRenderer {
     return roleplay;
   }
 
-  static toCombat(enemies: string[], events: {[evt: string]: any}): any {
+  static toCombat(attribs: {[k: string]: any}, events: ({text: string, visible?: string, event: any[]})[]): any {
     var combat = cheerio.load('<combat></combat>')("combat");
 
+    var keys = Object.keys(attribs);
+    for (var i = 0; i < keys.length; i++) {
+      if (keys[i] !== 'enemies') {
+        combat.attr(keys[i], attribs[keys[i]]);
+      }
+    }
+
+    var enemies = attribs['enemies'];
     for (var i = 0; i < enemies.length; i++) {
       var e = cheerio.load('<e>'+enemies[i]+'</e>');
       combat.append(e('e'));
     }
 
-    var eventKeys = Object.keys(events);
-    for (var i = 0; i < eventKeys.length; i++) {
-      var k = eventKeys[i];
+    for (var i = 0; i < events.length; i++) {
+      var event = events[i];
       var currEvent: any = cheerio.load('<event></event>')('event');
-      currEvent.attr('on', k);
-      for (var j = 0; j < events[k].length; j++) {
-        currEvent.append(events[k][j]);
+      currEvent.attr('on', event.text.substr(3));
+      if (event.visible) {
+        currEvent.attr('if', event.visible);
+      }
+      for (var j = 0; j < event.event.length; j++) {
+        currEvent.append(event.event[j]);
       }
       combat.append(currEvent);
     }

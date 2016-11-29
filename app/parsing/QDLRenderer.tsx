@@ -4,7 +4,6 @@ import {Block, BlockList} from './BlockList'
 import {BlockMsg, BlockMsgMap, BlockMsgHandler} from './BlockMsg'
 import {questAttrValidators, requiredQuestAttrs} from './QDLAttrValidators'
 
-const REGEXP_ITALIC = /\_(.*)\_.*/;
 const REGEXP_BOLD = /\*\*(.*?)\*\*/;
 const REGEXP_EVENT = /\* on (.*)/;
 
@@ -261,23 +260,21 @@ export class QDLRenderer {
   }
 
   private toRoleplay(blocks: Block[], msg: BlockMsgHandler) {
-    var titleText = blocks[0].lines[0].match(REGEXP_ITALIC);
-
-    var attribs: {[k: string]: any} = {};
     try {
-      var attribs = this.extractJSON(blocks[0].lines[0]);
+      var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0]);
     } catch (e) {
-      msg.err("could not parse block details", "404", blocks[0].startLine);
-      attribs = {};
+      console.log(e);
+      msg.err("could not parse block header", "404", blocks[0].startLine);
+      extracted = {title: 'Roleplay', id: undefined, json: {}};
     }
 
-    if (titleText) {
-      attribs['title'] = titleText[1];
-    }
+    var attribs = extracted.json;
+    attribs['title'] = attribs['title'] || extracted.title;
+    attribs['id'] = attribs['id'] || extracted.id;
 
     // The only inner stuff
     var i = 0;
-    var body: (string|{text: string, choice: any})[] = [];
+    var body: (string|{text: string, visible?: string, choice: any})[] = [];
     while (i < blocks.length) {
       var block = blocks[i];
       if (block.render) {
@@ -287,10 +284,10 @@ export class QDLRenderer {
 
       // Append rendered stuff
       var lines = this.collate((i == 0) ? block.lines.slice(1) : block.lines);
-      var choice: {text: string, choice: any};
+      var choice: {text: string, visible?: string, choice: any};
       for (let line of lines) {
         if (line.indexOf('* ') === 0) {
-          choice = {text: line.substr(1).trim(), choice: []};
+          choice = Object.assign({}, this.extractChoiceOrEvent(line), {choice: []});
           // TODO: Assert end of lines.
         } else {
           body.push(line);
@@ -390,32 +387,37 @@ export class QDLRenderer {
 
   private toCombat(blocks: Block[], msg: BlockMsgHandler) {
     try {
-      var data = this.extractJSON(blocks[0].lines[0]);
+      var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0]);
     } catch (e) {
-      msg.err("could not parse block details", "404", blocks[0].startLine);
-      data = {};
+      console.log(e);
+      msg.err("could not parse block header", "404", blocks[0].startLine);
+      extracted = {title: 'combat', id: undefined, json: {}};
     }
 
-    data['enemies'] = data['enemies'] || [];
+    var attribs = extracted.json;
+    attribs['id'] = attribs['id'] || extracted.id;
+
+    attribs['enemies'] = attribs['enemies'] || [];
     for (var i = 0; i < blocks[0].lines.length; i++) {
       var line = blocks[0].lines[i];
       if (line.startsWith('- ')) {
-        data['enemies'].push(line.substr(2).trim());
+        attribs['enemies'].push(line.substr(2).trim());
       }
     }
 
-    if (data['enemies'].length === 0) {
+    if (attribs['enemies'].length === 0) {
       msg.err(
         "combat block has no enemies listed",
         "404",
         blocks[0].startLine
       );
-      data['enemies'] = ["UNKNOWN"];
+      attribs['enemies'] = ["UNKNOWN"];
     }
 
 
-    var events: any = {};
-    var currEvent: string = null;
+    var i = 0;
+    var events: ({text: string, visible?: string, event: any[]})[] = [];
+    var currEvent: {text: string, visible?: string, event: any[]} = null;
     for (var i = 0; i < blocks.length; i++) {
       var block = blocks[i];
       if (block.render) {
@@ -427,53 +429,63 @@ export class QDLRenderer {
           );
           continue;
         }
-        if (!events[currEvent]) {
-          events[currEvent] = [];
-        }
-        events[currEvent].push(block.render);
+        currEvent.event.push(block.render);
         continue;
       }
 
       // Skip the first line if we're at the root block (already parsed)
       for (var j = (i==0) ? 1 : 0; j < block.lines.length; j++) {
         var line = block.lines[j];
-        if (line === '') {
+        // Skip empty lines and enemy list
+        if (line === '' || line.startsWith('-')) {
           continue;
         }
 
         // We should only ever see event blocks within the combat block.
         // These blocks are only single lines.
-        var m = line.match(REGEXP_EVENT);
-        if (!m) {
-          if (!line.startsWith('-')) {
-            msg.err(
-              "lines within combat block must be event bullets or enemies; instead found \""+line+"\"",
-              "404",
-              block.startLine + j
-            );
-          }
+        var extractedEvent = Object.assign({}, this.extractChoiceOrEvent(line), {event: []});
+        if (!extractedEvent.text) {
+          msg.err(
+            "lines within combat block must be event bullets or enemies; instead found \""+line+"\"",
+            "404",
+            block.startLine + j
+          );
           continue;
         }
-        currEvent = m[1];
+        if (currEvent) {
+          events.push(currEvent);
+        }
+        currEvent = extractedEvent;
       }
     }
 
-    if (!events['win']) {
+    if (currEvent) {
+      events.push(currEvent);
+    }
+
+    var hasWin = false;
+    var hasLose = false;
+
+    for (var i = 0; i < events.length; i++) {
+      hasWin = hasWin || (events[i].text == "on win");
+      hasLose = hasLose || (events[i].text == "on lose");
+    }
+    if (!hasWin) {
       msg.err(
         "combat block must have 'win' event",
         "404"
       );
-      events['win'] = [this.renderer.toTrigger("end")];
+      events.push({text: "on win", event: [this.renderer.toTrigger("end")]});
     }
-    if (!events['lose']) {
+    if (!hasWin) {
       msg.err(
         "combat block must have 'lose' event",
         "404"
       );
-      events['lose'] = [this.renderer.toTrigger("end")];
+      events.push({text: "on lose", event: [this.renderer.toTrigger("end")]});
     }
 
-    blocks[0].render = this.renderer.toCombat(data['enemies'], events);
+    blocks[0].render = this.renderer.toCombat(attribs, events);
   }
 
   _finalize(zeroIndentGroups: number[][]): BlockMsg[] {
@@ -508,13 +520,39 @@ export class QDLRenderer {
     return msg.finalize();
   }
 
-  private extractJSON(line: string): {[k: string]: any} {
-    var m = line.match(/(\{.*\})/);
-    if (!m) {
-      return {};
-    }
-    return JSON.parse(m[0]);
+  private extractCombatOrRoleplay(line: string): {title: string, id: string, json: {[k: string]: any}} {
+    // Breakdown:
+    // ^_(.*?)_                 Match italicized text at start of string
+    //
+    // [^{\(]*                  Greedy match all characters until "{" or "("
+    //
+    // (\(#([a-zA-Z0-9]*?)\))?  Optionally match "(#alphanum3ric)",
+    //                          once for outer and once for "alphanum3ric"
+    //
+    // [^{\(]*                  Greedy match all characters until "{" or "("
+    //
+    // (\{.*\})?                Optionally match a JSON blob, greedily.
+    var m = line.match(/^_(.*?)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/);
+    return {
+      title: m[1],
+      id: m[3],
+      json: (m[4]) ? JSON.parse(m[4]) : {}
+    };
   }
+
+  private extractChoiceOrEvent(line: string): {text: string, visible: string} {
+    // Breakdown:
+    // \*\s*                    Match "*" and any number of spaces (greedy)
+    // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
+    // \s*                      Match any number of spaces (greedy)
+    // (.*)$                    Match until the end of the string.
+    var m = line.match(/^\*\s*(\{\{(.*?)\}\})?\s*(.*)$/);
+    return {
+      visible: m[2],
+      text: m[3],
+    };
+  }
+
   private collate(lines: string[]): string[] {
     var result: string[] = [''];
     for (var i = 0; i < lines.length; i++) {
