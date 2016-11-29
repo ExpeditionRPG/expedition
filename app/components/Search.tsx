@@ -49,15 +49,14 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
   render() {
     return (
       <Card title="Public Quests" icon="adventurer">
-        <p>
-          Quests for {this.props.numPlayers} adventurer(s) where author, title, or ID contains
-        </p>
         <div>
-          <TextField id="text" hintText="some text" hintStyle={{color: '#555555'}} onChange={(e: any) => this.onChange('text', e.target.value)} value={this.state.text}/>
+          <TextField id="text" hintText="text search - author, title, ID" hintStyle={{color: '#555555'}} onChange={(e: any) => this.onChange('text', e.target.value)} value={this.state.text}/>
+        </div>
+        <div>
+          for {this.props.numPlayers} adventurer(s)
         </div>
         <div>
           published within
-
           <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('age', v)} value={this.state.age}>
             <MenuItem value="inf" primaryText="all time"/>
             <MenuItem value="31536000" primaryText="the past year"/>

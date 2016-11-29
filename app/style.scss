@@ -161,7 +161,7 @@ body {
     display: flex;
     flex-direction: column;
     background-color: $bg_primary;
-    background-image: url(/images/papyrus-tiled.jpg);
+    background-image: url(images/papyrus-tiled.jpg);
     background-size: 100% auto;
     background-repeat: repeat;
     background-position: 0 0;
@@ -169,7 +169,7 @@ body {
     overflow-y: scroll;
     &.dark {
       background-color: black;
-      background-image: url(/images/encounter-tiled.jpg);
+      background-image: url(images/encounter-tiled.jpg);
       color: $font_color_dark_primary;
       .title_container svg {
         color: $font_color_dark_primary !important;
@@ -416,7 +416,7 @@ body {
     height: 100%;
     position: relative;
     background-color: #4F301B;
-    background-image: url(/images/leather.jpg);
+    background-image: url(images/leather.jpg);
     background-size: cover;
     color: $font_color_dark_primary;
 
