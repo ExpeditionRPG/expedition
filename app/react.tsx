@@ -39,12 +39,10 @@ try {
   console.log("Already injected tap event plugin");
 }
 
-import { Provider } from 'react-redux'
-
 // Custom components
 import {authSettings} from './constants'
-import {getStore} from './store'
 import {toPrevious} from './actions/card'
+import {getStore} from './store'
 
 // Wait for device API libraries to load
 document.addEventListener("deviceready", onDeviceReady, false);
@@ -82,9 +80,7 @@ let render = () => {
   ReactDOM.unmountComponentAtNode(base);
   ReactDOM.render(
     <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-      <Provider store={getStore()}>
-          <Main store={getStore()}/>
-      </Provider>
+      <Main/>
     </MuiThemeProvider>,
     base
   );

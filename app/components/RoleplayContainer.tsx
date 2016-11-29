@@ -8,7 +8,7 @@ import {loadRoleplayNode} from '../QuestParser'
 const mapStateToProps = (state: AppState, ownProps: RoleplayStateProps): RoleplayStateProps => {
   return {
     settings: state.settings,
-    node: state.quest.node,
+    node: state.quest && state.quest.node,
     roleplay: ownProps.roleplay, // Persist state to prevent sudden jumps during card change.
   };
 }

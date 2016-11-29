@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {AppState} from '../reducers/StateTypes'
 import {toCard} from '../actions/card'
-import {loadQuestXML} from '../actions/web'
+import {fetchQuestXML} from '../actions/web'
 import FeaturedQuests, {FeaturedQuestsStateProps, FeaturedQuestsDispatchProps} from './FeaturedQuests'
 
 const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): FeaturedQuestsStateProps => {
@@ -17,7 +17,7 @@ const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): F
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): FeaturedQuestsDispatchProps => {
   return {
     onQuestSelect(quest: QuestDetails): void {
-      dispatch(loadQuestXML(quest.publishedurl));
+      dispatch(fetchQuestXML(quest.publishedurl));
     },
     onAdvancedPlay(): void {
       dispatch(toCard('ADVANCED'));

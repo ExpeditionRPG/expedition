@@ -8,6 +8,7 @@ import {AppStateWithHistory, AppState} from './StateTypes'
 import {ReturnAction} from '../actions/ActionTypes'
 
 function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppState {
+  state = state || ({} as AppStateWithHistory);
   return {
     card: card(state.card, action),
     quest: quest(state.quest, action),

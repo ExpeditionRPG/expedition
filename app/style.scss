@@ -166,7 +166,7 @@ body {
     background-repeat: repeat;
     background-position: 0 0;
     color: $font_color_primary;
-    overflow-y: scroll;
+    overflow-y: auto;
     &.dark {
       background-color: black;
       background-image: url(images/encounter-tiled.jpg);
@@ -569,6 +569,12 @@ $fontsizemap: (
   body, html, #react-app {
     height: 100%;
     width: 100%;
+  }
+
+  .editor_override .app_container {
+    border: none;
+    border-radius: 0;
+    margin-top: 0;
   }
 
   .app_container {

@@ -13,12 +13,12 @@ import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
 import SettingsContainer from '../SettingsContainer'
 import AdvancedPlayContainer from '../AdvancedPlayContainer'
 import {getNodeCardType, RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../QuestParser'
+import {getStore} from '../../store'
+import { Provider } from 'react-redux'
 
 var ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
 
-interface MainProps extends React.Props<any> {
-  store: any;
-}
+interface MainProps extends React.Props<any> {}
 
 export default class Main extends React.Component<MainProps, {}> {
   state: {key: number, transition: TransitionType, card: JSX.Element};
@@ -26,11 +26,11 @@ export default class Main extends React.Component<MainProps, {}> {
   constructor(props: MainProps) {
     super(props);
     this.state = this.getUpdatedState();
-    this.props.store.subscribe(this.handleChange.bind(this));
+    getStore().subscribe(this.handleChange.bind(this));
   }
 
   getUpdatedState() {
-    let state: AppStateWithHistory = this.props.store.getState();
+    let state: AppStateWithHistory = getStore().getState();
     if (state === undefined) {
       return {key: 0, transition: 'INSTANT' as TransitionType, card: <SplashScreenContainer/>};
     }
@@ -54,6 +54,9 @@ export default class Main extends React.Component<MainProps, {}> {
         card = <QuestStartContainer/>;
         break;
       case 'QUEST_CARD':
+        if (!state.quest) {
+          return this.state;
+        }
         let name = getNodeCardType(state.quest.node);
         if (name === 'ROLEPLAY') {
           let roleplay: RoleplayResult = loadRoleplayNode(state.quest.node);
@@ -62,7 +65,8 @@ export default class Main extends React.Component<MainProps, {}> {
           let combat: CombatResult = loadCombatNode(state.quest.node);
           card = <CombatContainer card={state.card} node={state.quest.node} icon={combat.icon} combat={state.combat}/>;
         } else {
-          throw new Error('Unknown quest card name ' + name);
+          console.log('Unknown quest card name ' + name);
+          return this.state;
         }
         break;
       case 'ADVANCED':
@@ -102,12 +106,14 @@ export default class Main extends React.Component<MainProps, {}> {
     ];
     return (
       <div className="app_container">
-        <ReactCSSTransitionGroup
-          transitionName={this.state.transition}
-          transitionEnterTimeout={300}
-          transitionLeaveTimeout={300}>
-          {cards}
-        </ReactCSSTransitionGroup>
+        <Provider store={getStore()}>
+          <ReactCSSTransitionGroup
+            transitionName={this.state.transition}
+            transitionEnterTimeout={300}
+            transitionLeaveTimeout={300}>
+            {cards}
+          </ReactCSSTransitionGroup>
+        </Provider>
       </div>
     );
   }

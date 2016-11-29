@@ -6,7 +6,7 @@
 */
 /*global math */
 import * as React from 'react'
-import {XMLElement} from './reducers/StateTypes'
+import {XMLElement, DOMElement} from './reducers/StateTypes'
 import {QuestCardName, Enemy, Choice} from './reducers/QuestTypes'
 import {encounters} from './Encounters'
 
@@ -58,13 +58,13 @@ questParser.prototype.setGameState = function(state) {
 */
 
 export function init(root: XMLElement): XMLElement {
-  return _loadNode(root.children[0]);
+  return _loadNode(root.children().eq(0));
 }
 
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
 export function handleEvent(parent: XMLElement, event: string): XMLElement {
   var child = _loopChildren(parent, function(tag: string, c: XMLElement) {
-    if (c.getAttribute('on') === event && _isEnabled(c)) {
+    if (c.attr('on') === event && _isEnabled(c)) {
       return c;
     }
   }.bind(this));
@@ -81,14 +81,14 @@ export function handleChoice(parent: XMLElement, choice: number): XMLElement {
   // Scan the parent node to find the choice with the right number
   var idx = 0;
   var choiceIdx = -1;
-  for (; idx < parent.children.length; idx++) {
-    if (parent.children[idx].localName === "choice") {
+  for (; idx < parent.children().length; idx++) {
+    if (parent.children().get(idx).tagName === "choice") {
       choiceIdx++;
     }
 
     // When we find our choice, push it onto the stack and load it.
     if (choiceIdx === choice) {
-      return _loadNode(parent.children[idx]);
+      return _loadNode(parent.children().eq(idx));
     }
   }
 
@@ -100,18 +100,19 @@ export function handleChoice(parent: XMLElement, choice: number): XMLElement {
 };
 
 export function getNodeCardType(node: XMLElement): QuestCardName {
-  switch(node.localName) {
+  switch(node.get(0).tagName) {
     case 'roleplay':
       return 'ROLEPLAY';
     case 'combat':
       return 'COMBAT';
     default:
-      throw new Error("Could not get node card type for node " + node.localName);
+      console.log("Could not get node card type for node " + node.get(0).tagName);
+      return null;
   }
 }
 
 function _loadNode(node: XMLElement): XMLElement {
-  switch(node.localName) {
+  switch(node.get(0).tagName) {
     //case "op":
     // return _loadOpNode(node);
     case "choice":
@@ -127,13 +128,13 @@ function _loadNode(node: XMLElement): XMLElement {
     case "comment":
       return _loadNode(_findNextNode(node));
     default:
-      throw new Error("Unknown node name: " + node.localName);
+      throw new Error("Unknown node name: " + node.get(0).tagName);
   }
 };
 
 /*
 questParser.prototype._loadOpNode = function(node: XMLElement) {
-  this._parser.eval(node.textContent);
+  this._parser.eval(node.text());
 
   // After evaluation, move on to the next node.
   this.path.push(_findNextNode(node));
@@ -148,8 +149,8 @@ function _loadChoiceNode(node: XMLElement): XMLElement {
 
 function _loadEventNode(node: XMLElement): XMLElement {
   // If event is empty and has a goto, jump to the destination element with that id.
-  if (node.children.length === 0 && node.hasAttribute('goto')) {
-    return _loadNode(_findRootNode(node).querySelector("#"+node.getAttribute('goto')));
+  if (node.children().length === 0 && node.attr('goto')) {
+    return _loadNode(_findRootNode(node).find("#"+node.attr('goto')).eq(0));
   }
 
   // Validate the event node (must not have an event child and must control something)
@@ -168,7 +169,7 @@ function _loadEventNode(node: XMLElement): XMLElement {
   }
 
   // Dive in to the first element.
-  return _loadNode(node.children[0]);
+  return _loadNode(node.children().eq(0));
 };
 
 export function loadCombatNode(node: XMLElement): CombatResult {
@@ -180,15 +181,17 @@ export function loadCombatNode(node: XMLElement): CombatResult {
   _loopChildren(node, function(tag: string, c: XMLElement) {
     switch (tag) {
       case 'e':
-        if (!encounters[c.textContent]) {
-          throw new Error("Unknown enemy " + c.textContent);
+        if (!encounters[c.text()]) {
+          console.log("Unknown enemy " + c.text());
+          enemies.push({name: c.text(), tier: 1});
+        } else {
+          enemies.push({name: c.text(), tier: encounters[c.text()].tier});
         }
-        enemies.push({name: c.textContent, tier: encounters[c.textContent].tier});
         break;
       case 'event':
       case 'roleplay':
-        winEventCount += (c.getAttribute('on') === 'win' && _isEnabled(c)) ? 1 : 0;
-        loseEventCount += (c.getAttribute('on') === 'lose' && _isEnabled(c)) ? 1 : 0;
+        winEventCount += (c.attr('on') === 'win' && _isEnabled(c)) ? 1 : 0;
+        loseEventCount += (c.attr('on') === 'lose' && _isEnabled(c)) ? 1 : 0;
         break;
       default:
         throw new Error("Invalid child element: " + tag);
@@ -210,7 +213,7 @@ export function loadCombatNode(node: XMLElement): CombatResult {
   // TODO: Add modifiable combat scope.
 
   return {
-    icon: node.getAttribute('icon'),
+    icon: node.attr('icon'),
     enemies,
   };
 };
@@ -218,18 +221,18 @@ export function loadCombatNode(node: XMLElement): CombatResult {
 export function loadTriggerNode(node: XMLElement): TriggerResult {
   return {
     node,
-    name: node.textContent
+    name: node.text()
   };
 };
 
 function _isEnabled(node: XMLElement): boolean {
   // Comments are never visible.
-  if (node.localName === "comment") {
+  if (node.get(0).tagName === "comment") {
     return false;
   }
 
   // We check for truthiness here, so nonzero numbers are true, etc.
-  return !node.hasAttribute('if'); // || this._parser.eval("boolean(" + node.getAttribute('if') + ")");
+  return !node.attr('if'); // || this._parser.eval("boolean(" + node.attr('if') + ")");
 };
 
 function _xmlToJSX(node: XMLElement): JSX.Element {
@@ -241,7 +244,7 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
   var numEvents = 0;
   var child: XMLElement;
   var choices: Choice[] = [];
-  var children: XMLElement = ((document.createElement('span') as any) as XMLElement);
+  var children: string = '';
   var instruction: JSX.Element = null;
 
   // Keep track of the number of choice nodes seen, so we can
@@ -249,7 +252,7 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
   var idx = -1;
 
   _loopChildren(node, function(tag: string, c: XMLElement) {
-    c = c.cloneNode(true);
+    c = c.clone();
 
     if (tag === "choice") {
       idx++;
@@ -265,10 +268,10 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
 
     // Accumulate "choice" tags in choices[]
     if (tag === "choice") {
-      if (!c.hasAttribute('text')) {
+      if (!c.attr('text')) {
         throw new Error("<choice> inside <roleplay> must have 'text' attribute");
       }
-      var text = c.getAttribute('text');
+      var text = c.attr('text');
       choices.push({text, idx, isCombat: false}); // TODO
       numEvents++;
       return;
@@ -280,11 +283,20 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
 
     // Convert "instruction" tags to <indicator> tags.
     if (tag === "instruction") {
-      instruction = <span dangerouslySetInnerHTML={{__html: c.innerHTML}} />;
+      instruction = <span dangerouslySetInnerHTML={{__html: c.html()}} />;
       return;
     }
 
-    children.appendChild(c);
+    // If we received a Cheerio object, outerHTML will
+    // not be defined. toString will be, however.
+    // https://github.com/cheeriojs/cheerio/issues/54
+    if (c.get(0).outerHTML) {
+      children += c.get(0).outerHTML;
+    } else if (c.toString) {
+      children += c.toString();
+    } else {
+      throw new Error("Invalid element " + c);
+    }
   }.bind(this));
 
   // Append a generic "Next" button if there were no events,
@@ -293,60 +305,65 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
     // Handle custom generic next button text based on if we're heading into a trigger node.
     var nextNode = _findNextNode(node);
     var buttonText = "Next";
-    if (nextNode && nextNode.localName === "trigger") {
-      switch(nextNode.textContent.toLowerCase()) {
+    if (nextNode && nextNode.get(0).tagName === "trigger") {
+      switch(nextNode.text().toLowerCase()) {
         case "end":
           buttonText = "End";
           break;
         default:
-          throw new Error("Unknown trigger content " + nextNode.textContent);
+          throw new Error("Unknown trigger content " + nextNode.text());
       }
     }
     choices.push({text: buttonText, idx: 0, isCombat: false}); // TODO
   }
 
   return {
-    title: node.getAttribute('title'),
-    icon: node.getAttribute('icon'),
-    content: <span dangerouslySetInnerHTML={{__html: children.innerHTML}} />,
+    title: node.attr('title'),
+    icon: node.attr('icon'),
+    content: <span dangerouslySetInnerHTML={{__html: children}} />,
     choices,
     instruction,
   };
 };
 
 function _isControlNode(node: XMLElement) {
-  return node.localName === "choice" || node.localName === "event" || node.hasAttribute('on');
+  return node.get(0).tagName === "choice" || node.get(0).tagName === "event" || node.attr('on');
 };
 
 function _findRootNode(node: XMLElement) {
-  while(node !== null && node.localName !== "quest") {
-    node = node.parentNode;
+  while(node !== null && node.get(0).tagName !== "quest") {
+    node = node.parent();
   }
   return node;
 }
 
 function _findNextNode(node: XMLElement) {
   while (true) {
-    var sibling = node.nextElementSibling;
+    if (node.length === 0) {
+      return null;
+    }
+
+    var sibling = node.next();
+
 
     // Skip control elements and conditionally false elements
-    if (sibling !== null && !_isControlNode(sibling) && _isEnabled(sibling)) {
+    if (sibling !== null && sibling.length > 0 && !_isControlNode(sibling) && _isEnabled(sibling)) {
       return sibling;
     }
 
     // Continue searching neighbors if we have neighbors, otherwise
     // search in the parent node.
-    if (sibling !== null) {
+    if (sibling !== null && sibling.length > 0) {
       node = sibling;
     } else {
-      node = node.parentNode;
+      node = node.parent();
     }
   }
 };
 
 function _loopChildren(node: XMLElement, cb: (tag: string, c: XMLElement)=>any) {
-  for (var i = 0; i < node.children.length; i++) {
-    var v = cb(node.children[i].localName, node.children[i]);
+  for (var i = 0; i < node.children().length; i++) {
+    var v = cb(node.children().get(i).tagName, node.children().eq(i));
     if (v !== undefined) {
       return v;
     }
@@ -361,16 +378,17 @@ function _getInvalidNodesAndAttributes(node: XMLElement) {
   // Quests must only contain these tags:
   if (["op", "quest", "div", "span", "b", "i", "choice", "event", "combat", "roleplay", "p", "e", "em",
        "trigger", "comment", "instruction"].indexOf(
-        node.tagName) === -1) {
-    results[node.tagName] = (results[node.tagName] || 0) + 1;
+        node.get(0).tagName) === -1) {
+    results[node.get(0).tagName] = (results[node.get(0).tagName] || 0) + 1;
   }
 
-  for (var i = 0; i < node.attributes.length; i++) {
+  var attribNames = Object.keys(node.attribs);
+  for (var i = 0; i < attribNames.length; i++) {
     // All HTML event handlers are prefixed with 'on'.
     // See http://www.w3schools.com/tags/ref_eventattributes.asp
     // We use just 'on' without any extras, which is not used by HTML for event handling.
-    if (node.attributes[i].name.indexOf('on') === 0 && node.attributes[i].name !== "on") {
-      var k = node.tagName + '.' + node.attributes[i];
+    if (attribNames[i].indexOf('on') === 0 && attribNames[i] !== "on") {
+      var k = node.get(0).tagName + '.' + attribNames[i];
       results[k] = (results[k] || 0) + 1;
     }
   }
@@ -378,8 +396,8 @@ function _getInvalidNodesAndAttributes(node: XMLElement) {
   var mergeResults = function(k: string): void {
     results[k] = (results[k] || 0) + this[k];
   };
-  for (i = 0; i < node.children.length; i++) {
-    var v = _getInvalidNodesAndAttributes(node.children[i]);
+  for (i = 0; i < node.children().length; i++) {
+    var v = _getInvalidNodesAndAttributes(node.children().eq(i));
     Object.keys(v).forEach(mergeResults.bind(v));
   }
   return results;
@@ -403,16 +421,16 @@ function _getDuplicateIds(node: XMLElement): { [key:string]:string[]; } {
 // Builds and returns a map of all IDs to all nodes with that ID.
 function _generateIdMapping(node: XMLElement): { [key:string]:string[]; } {
   var map: { [key:string]:string[]; } = {};
-  if (node.hasAttribute("id")) {
-    var id = node.getAttribute("id");
-    map[id] = (map[id] || []).concat([node.localName]);
+  if (node.attr("id")) {
+    var id = node.attr("id");
+    map[id] = (map[id] || []).concat([node.get(0).tagName]);
   }
 
   var mergeResults = function(k: any) {
     map[k] = (map[k] || []).concat(this[k]);
   };
-  for (var i = 0; i < node.children.length; i++) {
-    var m = _generateIdMapping(node.children[i]);
+  for (var i = 0; i < node.children().length; i++) {
+    var m = _generateIdMapping(node.children().eq(i));
     Object.keys(m).forEach(mergeResults.bind(m));
   }
   return map;
