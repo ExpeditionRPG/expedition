@@ -2,44 +2,44 @@
 /// <reference path="../../typings/jasmine/jasmine.d.ts" />
 /// <reference path="../../typings/custom/require.d.ts" />
 
-import {Block} from './BlockList'
-import {BlockMsg, BlockMsgHandler, prettifyMsg, prettifyMsgs} from './BlockMsg'
+import {Block} from './block/BlockList'
+import {LogMessage, Logger, prettifyMsg, prettifyMsgs} from './Logger'
 import TestData from './TestData'
 
 var expect: any = require('expect');
 
 const testBlock: Block = {indent: 0, startLine: 0, lines: ['hello world']};
 
-const testMsgs: BlockMsg[] = [
-  {blockGroup: [], type: 'error', text: 'test error', url: 'test', line: 5},
-  {blockGroup: [testBlock], type: 'warning', text: 'test warning', url: '404'},
-  {blockGroup: [], type: 'info', text: 'test debug\nstuff', url: '404'},
+const testMsgs: LogMessage[] = [
+  {type: 'error', text: 'test error', url: 'test', line: 5},
+  {type: 'warning', text: 'test warning', url: '404', line: 7},
+  {type: 'info', text: 'test debug\nstuff', url: '404'},
 ];
 
-describe('BlockMsg', () => {
+describe('LogMessage', () => {
 
-  describe('BlockMsgHandler', () => {
+  describe('Logger', () => {
     it('extends with messages', () => {
-      var msg = new BlockMsgHandler();
+      var msg = new Logger();
       msg.extend(testMsgs);
       expect(msg.finalize()).toEqual(testMsgs);
     });
 
     it('logs error', () => {
-      var msg = new BlockMsgHandler();
+      var msg = new Logger();
       msg.err('test error', 'test', 5);
       expect(msg.finalize()).toEqual([testMsgs[0]]);
     });
 
     it('logs debug (concatenated)', () => {
-      var msg = new BlockMsgHandler();
+      var msg = new Logger();
       msg.dbg('test debug');
       msg.dbg('stuff');
       expect(msg.finalize()).toEqual([testMsgs[2]]);
     });
 
     it('logs warning', () => {
-      var msg = new BlockMsgHandler([testBlock]);
+      var msg = new Logger([testBlock]);
       msg.warn('test warning', '404');
       expect(msg.finalize()).toEqual([testMsgs[1]]);
     });

@@ -1,11 +1,11 @@
-import {BlockMsg} from '../parsing/BlockMsg'
+import {LogMessage} from '../parsing/Logger'
 import {AnnotationType} from './StateTypes'
 import {QuestRenderAction} from '../actions/ActionTypes'
 
-function toAnnotation(msgs: BlockMsg[], result: AnnotationType[]): void {
+function toAnnotation(msgs: LogMessage[], result: AnnotationType[]): void {
   for (let m of msgs) {
     result.push({
-      row: m.line || (m.blockGroup.length && m.blockGroup[0].startLine),
+      row: m.line,
       column: 0,
       text: m.text,
       type: m.type,

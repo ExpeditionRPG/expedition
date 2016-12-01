@@ -1,10 +1,7 @@
-import {Block} from './BlockList'
+import {Block} from './block/BlockList'
 
-export type BlockMsgType = 'warning' | 'error' | 'info';
-
-export interface BlockMsg {
-  blockGroup: Block[];
-  type: BlockMsgType;
+export interface LogMessage {
+  type: 'warning' | 'error' | 'info';
   text: string;
 
   // If this message is for a particular line, set this value here.
@@ -17,21 +14,18 @@ export interface BlockMsg {
   url: string;
 }
 
-export interface BlockMsgMap {
-  info: BlockMsg[];
-  warning: BlockMsg[];
-  error: BlockMsg[];
+export interface LogMessageMap {
+  info: LogMessage[];
+  warning: LogMessage[];
+  error: LogMessage[];
 }
 
 
-export function prettifyMsg(msg: BlockMsg): string {
+export function prettifyMsg(msg: LogMessage): string {
   var result = "";
-
-  var line = msg.line || (msg.blockGroup[0] && msg.blockGroup[0].startLine);
-
   result += msg.type.toUpperCase();
-  result += " L" + ((line !== undefined) ? line : "none");
-  result += " (" + msg.blockGroup.length + " blocks):\n";
+  result += " L" + ((msg.line !== undefined) ? msg.line : "none");
+  result += "\n";
   result += msg.text;
 
   if (msg.url) {
@@ -41,7 +35,7 @@ export function prettifyMsg(msg: BlockMsg): string {
   return result;
 }
 
-export function prettifyMsgs(msgs: BlockMsg[]): string {
+export function prettifyMsgs(msgs: LogMessage[]): string {
   var prettyMsgs: string[] = [];
   for (var i = 0; i < msgs.length; i++) {
     prettyMsgs.push(prettifyMsg(msgs[i]));
@@ -49,9 +43,9 @@ export function prettifyMsgs(msgs: BlockMsg[]): string {
   return prettyMsgs.join('\n\n');
 }
 
-export class BlockMsgHandler {
+export class Logger {
   private info: string[];
-  private messages: BlockMsg[];
+  private messages: LogMessage[];
   private context: Block[];
 
   constructor(blockContext?: Block[]) {
@@ -84,11 +78,11 @@ export class BlockMsgHandler {
     );
   }
 
-  extend(msgs: BlockMsg[]) {
+  extend(msgs: LogMessage[]) {
     Array.prototype.push.apply(this.messages, msgs);
   }
 
-  finalize(): BlockMsg[] {
+  finalize(): LogMessage[] {
     if (this.info.length > 0) {
       this.msg(
         this.context,
@@ -101,14 +95,15 @@ export class BlockMsgHandler {
   }
 
   private msg(group: Block[], type: 'warning'|'error'|'info', text: string, url: string, line?: number) {
-    var message: BlockMsg = {
-      blockGroup: group,
+    var message: LogMessage = {
       type: type,
       text: text,
       url: url
     };
     if (line) {
       message.line = line;
+    } else {
+      message.line = (group.length > 0) ? (group[0].startLine || 0) : 0
     }
     this.messages.push(message);
   }

@@ -1,6 +1,6 @@
 import {UserState, QuestType, DialogIDType, ShareType} from '../reducers/StateTypes'
-import {BlockMsgMap} from '../parsing/BlockMsg'
-import {QDLRenderer} from '../parsing/QDLRenderer'
+import {LogMessageMap} from '../parsing/Logger'
+import {QDLParser} from '../parsing/QDLParser'
 
 export const NEW_QUEST: string = 'NEW_QUEST';
 export const LOAD_QUEST: string = 'LOAD_QUEST';
@@ -50,8 +50,8 @@ export interface ReceiveQuestSaveAction extends Redux.Action {
 
 export interface QuestRenderAction extends Redux.Action {
   type: 'QUEST_RENDER';
-  qdl: QDLRenderer;
-  msgs: BlockMsgMap;
+  qdl: QDLParser;
+  msgs: LogMessageMap;
 }
 
 export interface RequestQuestPublishAction extends Redux.Action {
