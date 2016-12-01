@@ -45,34 +45,35 @@ import {toPrevious} from './actions/card'
 import {getStore} from './store'
 
 // Wait for device API libraries to load
-document.addEventListener("deviceready", onDeviceReady, false);
+document.addEventListener('deviceready', onDeviceReady, false);
 
 // device APIs are available
 function onDeviceReady() {
   var p = device.platform.toLowerCase();
   if (/android/i.test(p)) {
-    window.platform = "android";
-    document.body.className += " android";
+    window.platform = 'android';
+    document.body.className += ' android';
   } else if (/iphone|ipad|ipod/i.test(p)) {
-    window.platform = "ios";
-    document.body.className += " ios";
+    window.platform = 'ios';
+    document.body.className += ' ios';
   }
 
-  document.addEventListener("backbutton", function() {
+  document.addEventListener('backbutton', function() {
     getStore().dispatch(toPrevious());
   }, false);
-}
 
-// TODO: API Auth
-gapi.load('client:auth2', function() {
-  gapi.client.setApiKey(authSettings.apiKey);
-  gapi.auth2.init({
+  // TODO: API Auth
+  gapi.load('client:auth2', function() {
+    gapi.client.setApiKey(authSettings.apiKey);
+    gapi.auth2.init({
       client_id: authSettings.clientId,
       scope: authSettings.scopes,
-  }).then(function() {
-    console.log(gapi.auth2.getAuthInstance().isSignedIn);
+      cookie_policy: 'none',
+    }).then(function() {
+      console.log(gapi.auth2.getAuthInstance().isSignedIn);
+    });
   });
-});
+}
 
 let render = () => {
   var Main = require('./components/base/Main').default;

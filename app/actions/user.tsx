@@ -14,7 +14,7 @@ function registerUserAndIdToken(user: {name: string, image: string}, idToken: st
       loggedIn: true,
       id: xhr.responseText,
       name: user.name,
-      image: user.image
+      image: user.image,
     });
   };
   xhr.withCredentials = true;
@@ -37,8 +37,8 @@ function silentLoginCordova(cb: (user:UserState)=>any) {
     return;
   }
   window.plugins.googleplus.trySilentlogin({
-    'scopes': authSettings.scopes,
-    'webClientId': authSettings.clientId
+    scopes: authSettings.scopes,
+    webClientId: authSettings.clientId,
   }, function(obj: any) {
     registerUserAndIdToken({
       name: obj.displayName,
@@ -53,8 +53,8 @@ function silentLoginCordova(cb: (user:UserState)=>any) {
 function loginCordova(cb: (user:UserState)=>any) {
   var that = this;
   window.plugins.googleplus.login({
-    'scopes': authSettings.scopes,
-    'webClientId': authSettings.clientId
+    scopes: authSettings.scopes,
+    webClientId: authSettings.clientId,
   }, function(obj: any) {
     registerUserAndIdToken({
       name: obj.displayName,
