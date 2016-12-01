@@ -15,8 +15,21 @@ export function fetchQuestXML(url: string) {
 export function loadQuestXML(data: XMLElement | string) {
   return (dispatch: Redux.Dispatch<any>): any => {
     var xml = $(data) as any as XMLElement;
-    console.log(xml);
-    dispatch(initQuest(xml.children().eq(0).children().eq(0)));
+    var questNode = xml;
+console.log(xml.get(0).tagName);
+    if (questNode.get(0).tagName == null) { // for web + android, have to enter the document
+      questNode = questNode.children().eq(0);
+    }
+    if (questNode.get(0).tagName.toLowerCase() !== "quest") {
+      throw 'Invalid Quest - missing <quest> node';
+    }
+    var firstNode = questNode.children().eq(0);
+console.log(xml);
+console.log(questNode, questNode.get(0).tagName);
+console.log(firstNode, firstNode.get(0).tagName);
+// start with first child; if it's not a quest node, go one level deeper?
+// if THAT's not a quest node, throw an error?
+    dispatch(initQuest(firstNode));
     dispatch(toCard('QUEST_START'));
   };
 }
