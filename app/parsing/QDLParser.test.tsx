@@ -13,7 +13,6 @@ var expect: any = require('expect');
 var prettifyHTML = (require("html") as any).prettyPrint;
 
 describe('QDLParser', () => {
-  /*
   it('parses basic QDL to XML', () => {
     var qdl = new QDLParser(XMLRenderer);
 
@@ -24,7 +23,6 @@ describe('QDLParser', () => {
     expect(msgs['error']).toEqual([]);
     expect(msgs['warning']).toEqual([]);
   });
-  */
 
   it('errors on no input', () => {
     var qdl = new QDLParser(XMLRenderer);
