@@ -27,6 +27,10 @@ export class AttributeNormalizer {
     if (typeof(v) === 'string') {
       return v;
     }
+
+    if (v !== undefined && this.log) {
+      this.log.err(k + " should be a string, but is \""+v+'\"', '404');
+    }
     return 'UNDEFINED';
   }
 
@@ -35,6 +39,10 @@ export class AttributeNormalizer {
 
     if (!isNaN(parseFloat(v)) && isFinite(v)) {
       return parseInt(v, 10);
+    }
+
+    if (v !== undefined && this.log) {
+      this.log.err(k + " should be a number, but is \""+v+'\"', '404');
     }
     return 0;
   }

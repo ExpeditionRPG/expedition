@@ -13,7 +13,7 @@ const testBlock: Block = {indent: 0, startLine: 0, lines: ['hello world']};
 const testMsgs: LogMessage[] = [
   {type: 'error', text: 'test error', url: 'test', line: 5},
   {type: 'warning', text: 'test warning', url: '404', line: 7},
-  {type: 'info', text: 'test debug\nstuff', url: '404'},
+  {type: 'info', text: 'test debug\nstuff', url: '404', line: 0},
 ];
 
 describe('LogMessage', () => {
@@ -40,24 +40,24 @@ describe('LogMessage', () => {
 
     it('logs warning', () => {
       var msg = new Logger([testBlock]);
-      msg.warn('test warning', '404');
+      msg.warn('test warning', '404', 7);
       expect(msg.finalize()).toEqual([testMsgs[1]]);
     });
   });
 
   describe('prettifyMsgs', () => {
     it('prettifies multiple messages', () => {
-      expect(prettifyMsgs(testMsgs)).toEqual("ERROR L5 (0 blocks):\ntest error\nURL: test\n\nWARNING L0 (1 blocks):\ntest warning\nURL: 404\n\nINFO Lnone (0 blocks):\ntest debug\nstuff\nURL: 404");
+      expect(prettifyMsgs(testMsgs)).toEqual("ERROR L5:\ntest error\nURL: test\n\nWARNING L7:\ntest warning\nURL: 404\n\nINFO L0:\ntest debug\nstuff\nURL: 404");
     });
   });
 
   describe('prettifyMsg', () => {
     it('prettifies message', () => {
-      expect(prettifyMsg(testMsgs[0])).toEqual("ERROR L5 (0 blocks):\ntest error\nURL: test");
+      expect(prettifyMsg(testMsgs[0])).toEqual("ERROR L5:\ntest error\nURL: test");
     });
 
     it('prettifies message with no line context', () => {
-      expect(prettifyMsg(testMsgs[2])).toEqual("INFO Lnone (0 blocks):\ntest debug\nstuff\nURL: 404");
+      expect(prettifyMsg(testMsgs[2])).toEqual("INFO L0:\ntest debug\nstuff\nURL: 404");
     });
   });
 });

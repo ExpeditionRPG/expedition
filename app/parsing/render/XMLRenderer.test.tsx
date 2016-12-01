@@ -1,10 +1,10 @@
-/// <reference path="../../typings/expect/expect.d.ts" />
-/// <reference path="../../typings/jasmine/jasmine.d.ts" />
-/// <reference path="../../typings/custom/require.d.ts" />
+/// <reference path="../../../typings/expect/expect.d.ts" />
+/// <reference path="../../../typings/jasmine/jasmine.d.ts" />
+/// <reference path="../../../typings/custom/require.d.ts" />
 
 import {Block} from '../block/BlockList'
 import {XMLRenderer} from './XMLRenderer'
-import TestData from './TestData'
+import TestData from '../TestData'
 
 var expect: any = require('expect');
 var cheerio: any = require('cheerio');
@@ -12,20 +12,10 @@ var cheerio: any = require('cheerio');
 describe('XMLRenderer', () => {
   describe('toCombat', () => {
     it('renders', () => {
-      var dummyWin: Block = {
-        startLine: 0,
-        indent: 0,
-        render: cheerio.load('<div>win</div>')("div"),
-        lines: [],
-      };
-      var dummyLose: Block = {
-        startLine: 0,
-        indent: 0,
-        render: cheerio.load('<div>lose</div>')("div"),
-        lines: [],
-      };
+      var dummyWin = cheerio.load('<div>win</div>')("div")
+      var dummyLose = cheerio.load('<div>lose</div>')("div");
       expect(XMLRenderer.toCombat(
-        ["Enemy1", "Enemy2"],
+        {"enemies": ["Enemy1", "Enemy2"]},
         [
           {text: "on win", event: [dummyWin]},
           {text: "on lose", event: [dummyLose]},

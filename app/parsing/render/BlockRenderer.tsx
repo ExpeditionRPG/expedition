@@ -1,3 +1,5 @@
+/// <reference path="../../../typings/es6-shim/es6-shim.d.ts" />
+
 import {Normalize} from '../validation/Normalize'
 import {Logger} from '../Logger'
 import {Block} from '../block/BlockList'
@@ -95,6 +97,16 @@ export class BlockRenderer {
         '404'
       );
     }
+  }
+
+  validate(): any {
+    // TODO:
+    // - Ensure there's at least one node that isn't the quest
+    // - Ensure all paths end with an "end" trigger
+    // - Ensure all combat enemies are valid (use whitelist)
+    // - Validate roleplay attributes (w/ whitelist)
+    // - Validate choice attributes (w/ whitelist)
+    return [];
   }
 
   toCombat(blocks: Block[], log: Logger) {

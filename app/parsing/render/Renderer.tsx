@@ -5,9 +5,9 @@ export type RoleplayChild = {text: string, visible?: string, choice: any};
 
 // These renderers
 export interface Renderer {
- toRoleplay: (attribs: {[k: string]: string}, body: (string|RoleplayChild)[]) => any;
- toCombat: (attribs: {[k: string]: string}, events: CombatChild[]) => any;
+ toRoleplay: (attribs: {[k: string]: any}, body: (string|RoleplayChild)[]) => any;
+ toCombat: (attribs: {[k: string]: any}, events: CombatChild[]) => any;
  toTrigger: (text: string) => any;
- toQuest: (attribs: {[k: string]: string}) => any;
+ toQuest: (attribs: {[k: string]: any}) => any;
  finalize: (quest: any, inner: any[]) => any;
 }

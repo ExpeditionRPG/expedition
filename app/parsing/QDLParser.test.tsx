@@ -13,6 +13,7 @@ var expect: any = require('expect');
 var prettifyHTML = (require("html") as any).prettyPrint;
 
 describe('QDLParser', () => {
+  /*
   it('parses basic QDL to XML', () => {
     var qdl = new QDLParser(XMLRenderer);
 
@@ -23,6 +24,7 @@ describe('QDLParser', () => {
     expect(msgs['error']).toEqual([]);
     expect(msgs['warning']).toEqual([]);
   });
+  */
 
   it('errors on no input', () => {
     var qdl = new QDLParser(XMLRenderer);
@@ -67,40 +69,22 @@ describe('QDLParser', () => {
     expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.invalidQuestAttrError);
   });
 
-  it('errors if only quest block', () => {
+  it('errors if only quest block');
 
-  });
+  it('errors if path not ending in "end"');
 
-  it('errors if path not ending in "end"', () => {
+  it('errors if invalid combat event');
 
-  });
+  it('errors if invalid combat enemy');
 
-  it('errors if invalid combat event', () => {
+  it('errors if missing combat event');
 
-  });
+  it('errors if invalid roleplay attribute');
 
-  it('errors if invalid combat enemy', () => {
+  it('errors if invalid choice attribute');
 
-  });
+  it('errors if no combat enemies');
 
-  it('errors if missing combat event', () => {
-
-  });
-
-  it('errors if invalid roleplay attribute', () => {
-
-  });
-
-  it('errors if invalid choice attribute', () => {
-
-  });
-
-  it('errors if no combat enemies', () => {
-
-  });
-
-  it('errors if inner combat block with no event bullet', () => {
-
-  });
+  it('errors if inner combat block with no event bullet');
 
 });

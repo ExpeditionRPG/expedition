@@ -91,7 +91,7 @@ stuff
 **end**
 `;
 
-data.noHeaderError = `ERROR Lnone (0 blocks):
+data.noHeaderError = `ERROR L0:
 root block must be a quest header
 URL: 404`;
 
@@ -105,8 +105,8 @@ _Roleplay Card_
 
 **end**`;
 
-data.badQuestAttrError = `ERROR L4 (1 blocks):
-unknown quest attribute "testparam"
+data.badQuestAttrError = `ERROR L0:
+unknown: "testparam"
 URL: 404`;
 
 data.invalidQuestAttrMD = `#Quest Title
@@ -118,15 +118,15 @@ _Roleplay Card_
 
 **end**`;
 
-data.invalidQuestAttrError = `ERROR L0 (1 blocks):
-invalid value "hi" for quest attribute "minplayers"
+data.invalidQuestAttrError = `ERROR L0:
+minplayers should be a number, but is "hi"
 URL: 404`;
 
 data.emptyXML = `<quest title="Error">
     <roleplay></roleplay>
 </quest>`;
 
-data.emptyError = `ERROR Lnone (0 blocks):
+data.emptyError = `ERROR L0:
 No quest blocks found
 URL: 404`;
 

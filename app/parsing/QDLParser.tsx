@@ -68,8 +68,7 @@ export class QDLParser {
     this.result = this.renderer.finalize(zeroIndentBlockRoots, this.log);
 
     // Validate the result
-    // TODO
-    //this.log.extend(this.validate(this.blockList.at(0).render));
+    //this.log.extend(this.renderer.validate(this.blockList.at(0).render));
 
     // Create a reverse lookup of block => root block
     // for use by getResultAt()
@@ -180,7 +179,7 @@ export class QDLParser {
     return logMap;
   }
 
-  private renderSegment(nextIndent: string, startBlockIdx: number, endBlockIdx: number) {
+  private renderSegment(nextIndent: string, startBlockIdx: number, endBlockIdx: number): LogMessage[] {
     // Precondition: All blocks with indent greater than the starting block
     // have already been rendered and has a .render property set (i.e. not undefined)
 
