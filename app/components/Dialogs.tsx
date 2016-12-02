@@ -24,6 +24,16 @@ interface ErrorDialogProps extends React.Props<any> {
   onRequestClose: ()=>void;
 }
 
+const styles = {
+  titleBad: {
+    backgroundColor: '#E57373', // red 300
+  },
+  titleGood: {
+    backgroundColor: '#AED581', // light green 300
+  },
+};
+
+
 export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
   render() {
     var errors: ErrorType[] = [];
@@ -50,6 +60,9 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
           primary={true}
           onTouchTap={() => this.props.onRequestClose()}
         />}
+        overlayClassName={'dialog'}
+        titleClassName={'dialogTitle'}
+        titleStyle={styles.titleBad}
         modal={false}
         open={Boolean(this.props.open)}>
         {errors}
@@ -73,6 +86,9 @@ export class PublishedDialog extends React.Component<PublishedDialogProps, {}> {
           primary={true}
           onTouchTap={() => this.props.onRequestClose()}
         />}
+        overlayClassName={'dialog'}
+        titleClassName={'dialogTitle'}
+        titleStyle={styles.titleGood}
         modal={false}
         open={Boolean(this.props.open)}>
         Your quest has been published and is now visible in the Expedition App.
@@ -91,15 +107,17 @@ export class UnpublishedDialog extends React.Component<UnpublishedDialogProps, {
   render() {
     return (
       <Dialog
-        title="Unpublished!"
+        title="Unpublished"
         actions={<RaisedButton
           label="OK"
           primary={true}
           onTouchTap={() => this.props.onRequestClose()}
         />}
+        overlayClassName={'dialog'}
+        titleClassName={'dialogTitle'}
         modal={false}
         open={Boolean(this.props.open)}>
-        Your quest has been unpublished and is no longer visible in the Expedition App.
+        Your quest is no longer visible in the Expedition App.
       </Dialog>
     );
   }
