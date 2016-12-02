@@ -149,7 +149,7 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
     var meta = xmlResult.getMeta();
     // For all metadata values, see https://developers.google.com/drive/v2/reference/files
     var fileMeta = {
-      title: meta['title'],
+      title: meta['title'] + '.quest',
       description: meta['summary'],
     };
 
