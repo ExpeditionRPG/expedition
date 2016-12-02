@@ -18,4 +18,4 @@ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../android-rele
 jarsigner -verify -verbose -certs platforms/android/build/outputs/apk/android-release-unsigned.apk
 
 # Aligning memory blocks (takes less RAM on app)
-zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk platforms/android/build/outputs/apk/expedition.apk
+./zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk platforms/android/build/outputs/apk/expedition.apk

@@ -74,7 +74,9 @@ Tests require Chrome. Please make sure you have the Chrome browser installed and
 webpack --config ./webpack.dist.config.js
 ```
 
-Web files are output in the www/ folder.
+Notes:
+- web files are output in the www/ folder. Can host locally for quick double checking via `python -m SimpleHTTPServer 5000` from www/.
+- auth issues? Read https://github.com/EddyVerbruggen/cordova-plugin-googleplus
 
 #### Build for Android
 
@@ -88,6 +90,7 @@ Notes:
 
 - building Android requires the Android SDK
 - when deploying Android, you'll need to update `android-versionCode` in `config.xml`, not just `version`.
+- auth issues? Read https://github.com/EddyVerbruggen/cordova-plugin-googleplus
 
 #### Build for iOS
 
@@ -99,6 +102,7 @@ cordova build ios
 Notes:
 
 - must be done on a Mac with XCode installed
+- auth issues? Read https://github.com/EddyVerbruggen/cordova-plugin-googleplus
 
 #### Troubleshooting builds
 

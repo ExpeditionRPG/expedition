@@ -15,8 +15,15 @@ export function fetchQuestXML(url: string) {
 export function loadQuestXML(data: XMLElement | string) {
   return (dispatch: Redux.Dispatch<any>): any => {
     var xml = $(data) as any as XMLElement;
-    console.log(xml);
-    dispatch(initQuest(xml.children().eq(0).children().eq(0)));
+    var questNode = xml;
+    if (questNode.get(0).tagName == null) { // for web + android, have to enter the document
+      questNode = questNode.children().eq(0);
+    }
+    if (questNode.get(0).tagName.toLowerCase() !== "quest") {
+      throw 'Invalid Quest - missing <quest> node';
+    }
+    var firstNode = questNode.children().eq(0);
+    dispatch(initQuest(firstNode));
     dispatch(toCard('QUEST_START'));
   };
 }
