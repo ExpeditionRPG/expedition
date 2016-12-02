@@ -45,7 +45,7 @@ More stuff
 
   **end**`;
 
-data.basicXML = `<quest title="Quest Title" minplayers="1" maxplayers="2" author="Test">
+data.basicXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
     <roleplay title="Roleplay Card">
         <p>Stuff</p>
         <p>And a line</p>
@@ -56,13 +56,13 @@ data.basicXML = `<quest title="Quest Title" minplayers="1" maxplayers="2" author
             <combat>
                 <e>Skeleton Swordsman</e>
                 <event on="win">
-                    <roleplay>
+                    <roleplay title="">
                         <p>Victory!</p>
                     </roleplay>
                     <trigger>end</trigger>
                 </event>
                 <event on="lose">
-                    <roleplay>
+                    <roleplay title="">
                         <p>Defeat!</p>
                     </roleplay>
                     <trigger>end</trigger>
@@ -70,13 +70,13 @@ data.basicXML = `<quest title="Quest Title" minplayers="1" maxplayers="2" author
             </combat>
         </choice>
         <choice text="Another decision that is multiple lines long">
-            <roleplay>
+            <roleplay title="">
                 <p>More stuff</p>
             </roleplay>
             <trigger>end</trigger>
         </choice>
         <choice text="Still another decision!">
-            <roleplay>
+            <roleplay title="">
                 <p>And a thing.</p>
             </roleplay>
             <trigger>end</trigger>

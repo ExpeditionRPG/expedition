@@ -24,11 +24,15 @@ export class AttributeNormalizer {
   getString(k: string, required?: boolean) {
     var v = this.extract(k, required);
 
+    if (v === undefined) {
+      return v;
+    }
+
     if (typeof(v) === 'string') {
       return v;
     }
 
-    if (v !== undefined && this.log) {
+    if (this.log) {
       this.log.err(k + " should be a string, but is \""+v+'\"', '404');
     }
     return 'UNDEFINED';
@@ -37,11 +41,15 @@ export class AttributeNormalizer {
   getNumber(k: string, required?: boolean) {
     var v: any = this.extract(k, required);
 
+    if (v === undefined) {
+      return v;
+    }
+
     if (!isNaN(parseFloat(v)) && isFinite(v)) {
       return parseInt(v, 10);
     }
 
-    if (v !== undefined && this.log) {
+    if (this.log) {
       this.log.err(k + " should be a number, but is \""+v+'\"', '404');
     }
     return 0;

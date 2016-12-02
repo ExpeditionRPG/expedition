@@ -20,12 +20,15 @@ export class BlockRenderer {
   }
 
   toRoleplay(blocks: Block[], log: Logger) {
+    var hasHeader = false;
     try {
       var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0]);
+      hasHeader = true;
     } catch (e) {
-      console.log(e);
-      log.err("could not parse block header", "404", blocks[0].startLine);
-      extracted = {title: 'Roleplay', id: undefined, json: {}};
+      // There are cases where we don't have a roleplay header, e.g.
+      // the first roleplay block inside a choice. This is fine,
+      // and not an error.
+      extracted = {title: '', id: undefined, json: {}};
     }
 
     var attribs = extracted.json;
@@ -43,7 +46,7 @@ export class BlockRenderer {
       }
 
       // Append rendered stuff
-      var lines = this.collate((i == 0) ? block.lines.slice(1) : block.lines);
+      var lines = this.collate((i == 0 && hasHeader) ? block.lines.slice(1) : block.lines);
       var choice: RoleplayChild;
       for (let line of lines) {
         if (line.indexOf('* ') === 0) {
@@ -110,11 +113,14 @@ export class BlockRenderer {
   }
 
   toCombat(blocks: Block[], log: Logger) {
+    if (!blocks.length) {
+      throw new Error("Empty combat list");
+    }
+
     try {
       var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0]);
     } catch (e) {
-      console.log(e);
-      log.err("could not parse block header", "404", blocks[0].startLine);
+      log.err("could not parse block header", "404");
       extracted = {title: 'combat', id: undefined, json: {}};
     }
 
@@ -130,11 +136,7 @@ export class BlockRenderer {
     }
 
     if (attribs['enemies'].length === 0) {
-      log.err(
-        "combat block has no enemies listed",
-        "404",
-        blocks[0].startLine
-      );
+      log.err("combat block has no enemies listed", "404");
       attribs['enemies'] = ["UNKNOWN"];
     }
 

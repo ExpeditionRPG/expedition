@@ -24,6 +24,8 @@ describe('QDLParser', () => {
     expect(msgs['warning']).toEqual([]);
   });
 
+  it('errors if path not ending in "end"');
+
   it('errors on no input', () => {
     var qdl = new QDLParser(XMLRenderer);
 
@@ -33,6 +35,8 @@ describe('QDLParser', () => {
     expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.emptyError);
   });
 
+  it('errors if only quest block');
+
   it('errors if no quest header at start', () => {
     var qdl = new QDLParser(XMLRenderer);
 
@@ -41,48 +45,5 @@ describe('QDLParser', () => {
     expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.noHeaderError);
   });
 
-  it('errors if unparseable quest attribute');
-
-  it('errors if unknown quest attribute', () => {
-    var qdl = new QDLParser(XMLRenderer);
-
-    qdl.render(new BlockList(TestData.badQuestAttrMD));
-
-    expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.badQuestAttrError);
-  });
-
-  it('errors if invalid quest attribute', () => {
-    var qdl = new QDLParser(XMLRenderer);
-
-    qdl.render(new BlockList(TestData.invalidQuestAttrMD));
-
-    expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.invalidQuestAttrError);
-  })
-
-  it('errors if missing quest title', () => {
-    var qdl = new QDLParser(XMLRenderer);
-
-    qdl.render(new BlockList(TestData.invalidQuestAttrMD));
-
-    expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.invalidQuestAttrError);
-  });
-
-  it('errors if only quest block');
-
-  it('errors if path not ending in "end"');
-
-  it('errors if invalid combat event');
-
-  it('errors if invalid combat enemy');
-
-  it('errors if missing combat event');
-
-  it('errors if invalid roleplay attribute');
-
-  it('errors if invalid choice attribute');
-
-  it('errors if no combat enemies');
-
-  it('errors if inner combat block with no event bullet');
 
 });

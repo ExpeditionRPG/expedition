@@ -262,7 +262,9 @@ export class QDLParser {
     } else if (headerLine.indexOf('**end**') === 0) { // End trigger
       this.renderer.toTrigger(blocks, log);
     } else { // Roleplay header
+      console.log(blocks);
       this.renderer.toRoleplay(blocks, log);
+      console.log(blocks[0].render + '');
     }
 
     return log.finalize();
