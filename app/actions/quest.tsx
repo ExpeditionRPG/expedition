@@ -10,15 +10,11 @@ import {QuestType, ShareType} from '../reducers/StateTypes'
 import {setDialog} from './dialogs'
 import {pushError, pushHTTPError} from '../error'
 import {realtimeUtils} from '../auth'
-import {QDLRenderer} from '../parsing/QDLRenderer'
-import {renderXML} from '../parsing/QDL'
+import {renderXML} from '../parsing/QDLParser'
 
 // Loaded on index.html
 declare var window: any;
 declare var VERSION: string;
-
-var toXML: any = (require('../../translation/to_xml') as any).toXML;
-var toMeta: any = require('../../translation/to_meta');
 
 function receiveQuestLoad(quest: QuestType ): ReceiveQuestLoadAction {
   return {type: 'RECEIVE_QUEST_LOAD', quest};
@@ -113,13 +109,12 @@ export function loadQuest(userid: string, dispatch: any, docid?: string) {
     var md = doc.getModel().getRoot().get('markdown');
     var text: string = md.getText();
     getPublishedQuestMeta(userid + '_' + docid, function(quest: QuestType) {
-      quest = Object.assign(quest || {}, toMeta.fromMarkdown(text));
+      var xmlResult = renderXML(text);
+      quest = Object.assign(quest || {}, xmlResult.getMeta());
       quest.id = docid;
       quest.mdRealtime = md;
       dispatch(receiveQuestLoad(quest));
-      renderXML(text, function(qdl: QDLRenderer) {
-        dispatch({type: 'QUEST_RENDER', qdl, msgs: qdl.getFinalizedMsgs()});
-      });
+      dispatch({type: 'QUEST_RENDER', xmlResult, msgs: xmlResult.getFinalizedLogs()});
     });
   },
   function(model: any) {
@@ -132,14 +127,13 @@ export function loadQuest(userid: string, dispatch: any, docid?: string) {
 export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     var text = quest.mdRealtime.getText();
-    renderXML(text, function(qdl: QDLRenderer) {
-      dispatch({type: 'QUEST_RENDER', qdl, msgs: qdl.getFinalizedMsgs()});
-      dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
-      return $.post("/publish/" + quest.id, qdl.getResult()+'', function(result_quest_id: string) {
-        quest.published = (new Date(Date.now()).toISOString());
-        dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
-      }).fail(pushHTTPError);
-    });
+    var xmlResult = renderXML(text);
+    dispatch({type: 'QUEST_RENDER', xmlResult, msgs: xmlResult.getFinalizedLogs()});
+    dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
+    return $.post("/publish/" + quest.id, xmlResult.getResult()+'', function(result_quest_id: string) {
+      quest.published = (new Date(Date.now()).toISOString());
+      dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
+    }).fail(pushHTTPError);
   }
 }
 
@@ -149,15 +143,14 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
 
     var text: string = quest.mdRealtime.getText();
 
-    renderXML(text, function(qdl: QDLRenderer) {
-      dispatch({type: 'QUEST_RENDER', qdl, msgs: qdl.getFinalizedMsgs()});
-    });
+    var xmlResult = renderXML(text);
+    dispatch({type: 'QUEST_RENDER', xmlResult, msgs: xmlResult.getFinalizedLogs()});
 
-    var meta = toMeta.fromMarkdown(text) as QuestType;
+    var meta = xmlResult.getMeta();
     // For all metadata values, see https://developers.google.com/drive/v2/reference/files
     var fileMeta = {
-      title: meta.title,
-      description: meta.summary,
+      title: meta['title'],
+      description: meta['summary'],
     };
 
     updateDriveFile(quest.id, fileMeta, text, function() {

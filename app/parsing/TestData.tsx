@@ -45,7 +45,7 @@ More stuff
 
   **end**`;
 
-data.basicXML = `<quest title="Quest Title" minplayers="1" maxplayers="2" author="Test">
+data.basicXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
     <roleplay title="Roleplay Card">
         <p>Stuff</p>
         <p>And a line</p>
@@ -56,13 +56,13 @@ data.basicXML = `<quest title="Quest Title" minplayers="1" maxplayers="2" author
             <combat>
                 <e>Skeleton Swordsman</e>
                 <event on="win">
-                    <roleplay>
+                    <roleplay title="">
                         <p>Victory!</p>
                     </roleplay>
                     <trigger>end</trigger>
                 </event>
                 <event on="lose">
-                    <roleplay>
+                    <roleplay title="">
                         <p>Defeat!</p>
                     </roleplay>
                     <trigger>end</trigger>
@@ -70,13 +70,13 @@ data.basicXML = `<quest title="Quest Title" minplayers="1" maxplayers="2" author
             </combat>
         </choice>
         <choice text="Another decision that is multiple lines long">
-            <roleplay>
+            <roleplay title="">
                 <p>More stuff</p>
             </roleplay>
             <trigger>end</trigger>
         </choice>
         <choice text="Still another decision!">
-            <roleplay>
+            <roleplay title="">
                 <p>And a thing.</p>
             </roleplay>
             <trigger>end</trigger>
@@ -91,7 +91,7 @@ stuff
 **end**
 `;
 
-data.noHeaderError = `ERROR Lnone (0 blocks):
+data.noHeaderError = `ERROR L0:
 root block must be a quest header
 URL: 404`;
 
@@ -105,8 +105,8 @@ _Roleplay Card_
 
 **end**`;
 
-data.badQuestAttrError = `ERROR L4 (1 blocks):
-unknown quest attribute "testparam"
+data.badQuestAttrError = `ERROR L0:
+unknown: "testparam"
 URL: 404`;
 
 data.invalidQuestAttrMD = `#Quest Title
@@ -118,15 +118,15 @@ _Roleplay Card_
 
 **end**`;
 
-data.invalidQuestAttrError = `ERROR L0 (1 blocks):
-invalid value "hi" for quest attribute "minplayers"
+data.invalidQuestAttrError = `ERROR L0:
+minplayers should be a number, but is "hi"
 URL: 404`;
 
 data.emptyXML = `<quest title="Error">
     <roleplay></roleplay>
 </quest>`;
 
-data.emptyError = `ERROR Lnone (0 blocks):
+data.emptyError = `ERROR L0:
 No quest blocks found
 URL: 404`;
 

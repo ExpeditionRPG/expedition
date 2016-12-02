@@ -1,10 +1,10 @@
-/// <reference path="../../typings/expect/expect.d.ts" />
-/// <reference path="../../typings/jasmine/jasmine.d.ts" />
-/// <reference path="../../typings/custom/require.d.ts" />
+/// <reference path="../../../typings/expect/expect.d.ts" />
+/// <reference path="../../../typings/jasmine/jasmine.d.ts" />
+/// <reference path="../../../typings/custom/require.d.ts" />
 
-import {Block} from './BlockList'
-import {XMLRenderer} from './BlockRenderer'
-import TestData from './TestData'
+import {Block} from '../block/BlockList'
+import {XMLRenderer} from './XMLRenderer'
+import TestData from '../TestData'
 
 var expect: any = require('expect');
 var cheerio: any = require('cheerio');
@@ -12,21 +12,14 @@ var cheerio: any = require('cheerio');
 describe('XMLRenderer', () => {
   describe('toCombat', () => {
     it('renders', () => {
-      var dummyWin: Block = {
-        startLine: 0,
-        indent: 0,
-        render: cheerio.load('<div>win</div>')("div"),
-        lines: [],
-      };
-      var dummyLose: Block = {
-        startLine: 0,
-        indent: 0,
-        render: cheerio.load('<div>lose</div>')("div"),
-        lines: [],
-      };
+      var dummyWin = cheerio.load('<div>win</div>')("div")
+      var dummyLose = cheerio.load('<div>lose</div>')("div");
       expect(XMLRenderer.toCombat(
-        ["Enemy1", "Enemy2"],
-        {win: [dummyWin], lose: [dummyLose]}).toString())
+        {"enemies": ["Enemy1", "Enemy2"]},
+        [
+          {text: "on win", event: [dummyWin]},
+          {text: "on lose", event: [dummyLose]},
+        ]).toString())
         .toEqual('<combat><e>Enemy1</e><e>Enemy2</e><event on="win"><div>win</div></event><event on="lose"><div>lose</div></event></combat>');
     });
   });
@@ -39,7 +32,7 @@ describe('XMLRenderer', () => {
 
   describe('toQuest', () => {
     it('renders', () => {
-      expect(XMLRenderer.toQuest("title", {'a': '1', 'b': '2'}).toString())
+      expect(XMLRenderer.toQuest({'title': 'title', 'a': '1', 'b': '2'}).toString())
         .toEqual('<quest title="title" a="1" b="2"></quest>');
     });
   });
@@ -65,12 +58,12 @@ describe('XMLRenderer', () => {
 
   describe('finalize', () => {
     it('coalesces all elements into first block', () => {
-      var quest = XMLRenderer.toQuest("title", {});
+      var quest = XMLRenderer.toQuest({});
       var r = XMLRenderer.toRoleplay({}, ['test']);
       var t = XMLRenderer.toTrigger("end");
 
       expect(XMLRenderer.finalize(quest, [r,t]).toString())
-        .toEqual('<quest title="title"><roleplay><p>test</p></roleplay><trigger>end</trigger></quest>');
+        .toEqual('<quest><roleplay><p>test</p></roleplay><trigger>end</trigger></quest>');
     })
   });
 });
