@@ -95,33 +95,6 @@ data.noHeaderError = `ERROR L0:
 root block must be a quest header
 URL: 404`;
 
-data.badQuestAttrMD = `#Quest Title
-minplayers: 1
-maxplayers: 2
-author: Test
-testparam: hi
-
-_Roleplay Card_
-
-**end**`;
-
-data.badQuestAttrError = `ERROR L0:
-unknown: "testparam"
-URL: 404`;
-
-data.invalidQuestAttrMD = `#Quest Title
-minplayers: hi
-maxplayers: 2
-author: Test
-
-_Roleplay Card_
-
-**end**`;
-
-data.invalidQuestAttrError = `ERROR L0:
-minplayers should be a number, but is "hi"
-URL: 404`;
-
 data.emptyXML = `<quest title="Error">
     <roleplay></roleplay>
 </quest>`;
