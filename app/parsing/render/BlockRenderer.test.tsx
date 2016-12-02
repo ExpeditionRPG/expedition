@@ -87,15 +87,11 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
-    it('errors if no combat enemies');
-
     it('errors if inner combat block with no event bullet');
 
     it('errors if invalid combat event');
 
     it('errors if invalid combat enemy');
-
-    it('errors if missing combat event');
   });
 
   describe('toRoleplay', () => {
