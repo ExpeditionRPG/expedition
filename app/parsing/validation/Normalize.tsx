@@ -16,7 +16,7 @@ export class AttributeNormalizer {
     var v = this.attrs[k];
 
     if (!v && required) {
-      if (this.log) this.log.err('missing: "' + k + '" ', '404');
+      if (this.log) this.log.err('missing: "' + k + '"', '404');
     }
     return v;
   }

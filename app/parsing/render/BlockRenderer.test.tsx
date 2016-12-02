@@ -87,6 +87,41 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
+    it('renders conditional events', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        {
+          indent: 0,
+          lines: ['_combat_', '', '- e1', '- e2', '* {{test1}} on win'],
+          startLine: 0,
+        },
+        {
+          indent: 2,
+          lines: [],
+          render: XMLRenderer.toRoleplay({}, ['win']),
+          startLine: 2,
+        },
+        {
+          indent: 0,
+          lines: ['* {{test2}} on lose'],
+          startLine: 4,
+        },
+        {
+          indent: 2,
+          lines: [],
+          render: XMLRenderer.toRoleplay({}, ['lose']),
+          startLine: 2,
+        },
+      ];
+
+      br.toCombat(blocks, log)
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.combatConditionalEventXML);
+      expect(prettifyMsgs(log.finalize())).toEqual('');
+    });
+
+    it('renderse with JSON');
+
     it('errors if inner combat block with no event bullet');
 
     it('errors if invalid combat event');
@@ -143,6 +178,56 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
+    it('renders conditional choices', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        {
+          indent: 0,
+          lines: ['_roleplay_', '', 'text', '', '* {{test1}} choice'],
+          startLine: 0,
+        },
+        {
+          indent: 2,
+          lines: [],
+          render: XMLRenderer.toRoleplay({}, ['choice text']),
+          startLine: 2,
+        },
+        {
+          indent: 0,
+          lines: ['* {{test2}} other choice'],
+          startLine: 4,
+        },
+        {
+          indent: 2,
+          lines: [],
+          render: XMLRenderer.toRoleplay({}, ['other choice text']),
+          startLine: 2,
+        },
+      ];
+
+      br.toRoleplay(blocks, log)
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayConditionalChoiceXML);
+      expect(prettifyMsgs(log.finalize())).toEqual('');
+    });
+
+    it('renders with ID', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        { lines: [ '_Title_ (#testid123)', '', 'hi' ],
+          indent: 4,
+          startLine: 21
+        }
+      ];
+
+      br.toRoleplay(blocks, log)
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayWithID);
+      expect(prettifyMsgs(log.finalize())).toEqual('');
+    });
+
+    it('renders with JSON');
+
     it('errors if invalid roleplay attribute');
 
     it('errors if invalid choice attribute');
@@ -150,51 +235,106 @@ describe('BlockRenderer', () => {
   });
 
   describe('toTrigger', () => {
+    it('renders end', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        { lines: [ '**end**', '' ],
+          indent: 4,
+          startLine: 21
+        }
+      ];
+
+      br.toTrigger(blocks, log)
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual('<trigger>end</trigger>');
+      expect(prettifyMsgs(log.finalize())).toEqual('');
+    });
+
+    it('renders goto', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        { lines: [ '**goto testid123**', '' ],
+          indent: 4,
+          startLine: 21
+        }
+      ];
+
+      br.toTrigger(blocks, log)
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual('<trigger>goto testid123</trigger>');
+      expect(prettifyMsgs(log.finalize())).toEqual('');
+    });
+
+    it('errors if multiple blocks');
+
+    it('errors on bad parsing');
   });
 
   describe('toQuest', () => {
-    it('errors if unparseable quest attribute');
+    it('renders', () => {
+      var log = new Logger();
+      var block: Block = {
+        lines: [ '#Quest Title', 'minplayers: 1', 'maxplayers: 2', 'author: Test' ],
+        indent: 0,
+        startLine: 0
+      };
+
+      br.toQuest(block, log)
+
+      expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2"></quest>');
+      expect(prettifyMsgs(log.finalize())).toEqual('');
+    })
+
+    it('errors if unparseable quest attribute', () => {
+      var log = new Logger();
+      var block: Block = {
+        lines: [ '#Quest Title', 'minplayers1', 'maxplayers: 2', 'author: Test' ],
+        indent: 0,
+        startLine: 0
+      };
+
+      br.toQuest(block, log)
+
+      expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" author="Test" maxplayers="2"></quest>');
+      expect(prettifyMsgs(log.finalize())).toEqual(TestData.badParseQuestAttrError);
+    });
 
 
     it('errors if unknown quest attribute', () => {
-      /*
-      var qdl = new BlockRendererQDLParser(XMLRenderer);
+      var log = new Logger();
+      var block: Block = {
+        lines: [ '#Quest Title', 'minplayers: 1', 'maxplayers: 2', 'author: Test', 'testparam: hi' ],
+        indent: 0,
+        startLine: 0
+      };
 
-      qdl.render(new BlockList(TestData.badQuestAttrMD));
+      br.toQuest(block, log)
 
-      expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.badQuestAttrError);
-      */
+      expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2"></quest>');
+      expect(prettifyMsgs(log.finalize())).toEqual(TestData.badQuestAttrError);
     });
 
     it('errors if invalid quest attribute', () => {
-      /*
-      var qdl = new QDLParser(XMLRenderer);
+      var log = new Logger();
+      var block: Block = {
+        lines: [ '#Quest Title', 'minplayers: hi', 'maxplayers: 2', 'author: Test' ],
+        indent: 0,
+        startLine: 0
+      };
 
-      qdl.render(new BlockList(TestData.invalidQuestAttrMD));
+      br.toQuest(block, log)
 
-      expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.invalidQuestAttrError);
-      */
+      expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" author="Test" minplayers="0" maxplayers="2"></quest>');
+      expect(prettifyMsgs(log.finalize())).toEqual(TestData.invalidQuestAttrError);
     })
-
-    it('errors if missing quest title', () => {
-      /*
-      var qdl = new QDLParser(XMLRenderer);
-
-      qdl.render(new BlockList(TestData.invalidQuestAttrMD));
-
-      expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.invalidQuestAttrError);
-      */
-    });
   });
 
   describe('toMeta', () => {
   });
 
   describe('validate', () => {
-
   });
 
   describe('finalize', () => {
-
   });
 });
