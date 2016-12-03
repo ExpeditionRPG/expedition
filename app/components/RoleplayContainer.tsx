@@ -3,20 +3,21 @@ import {AppState, XMLElement, SettingsType} from '../reducers/StateTypes'
 import {toPrevious, toCard} from '../actions/card'
 import {choice} from '../actions/quest'
 import Roleplay, {RoleplayStateProps, RoleplayDispatchProps} from './Roleplay'
-import {loadRoleplayNode} from '../QuestParser'
+import {QuestContext} from '../reducers/QuestTypes'
 
 const mapStateToProps = (state: AppState, ownProps: RoleplayStateProps): RoleplayStateProps => {
   return {
     settings: state.settings,
     node: state.quest && state.quest.node,
     roleplay: ownProps.roleplay, // Persist state to prevent sudden jumps during card change.
+    ctx: state.quest && state.quest.ctx,
   };
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): RoleplayDispatchProps => {
   return {
-    onChoice: (settings: SettingsType, node: XMLElement, index: number) => {
-      dispatch(choice(settings, node, index));
+    onChoice: (settings: SettingsType, node: XMLElement, index: number, ctx: QuestContext) => {
+      dispatch(choice(settings, node, index, ctx));
     },
   };
 }

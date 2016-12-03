@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import {QuestDetails} from '../reducers/QuestTypes'
+import {QuestDetails, defaultQuestContext} from '../reducers/QuestTypes'
 import {AppState, SettingsType} from '../reducers/StateTypes'
 import {toCard} from '../actions/card'
 import {initCombat} from '../actions/quest'
@@ -18,7 +18,12 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Advan
     },
     onCustomCombatSelect(settings: SettingsType): void {
       dispatch(toCard('CUSTOM_COMBAT', 'DRAW_ENEMIES'));
-      dispatch(initCombat(null, settings));
+      dispatch(initCombat(null, settings, {
+        type: 'Combat',
+        icon: null,
+        enemies: [],
+        ctx: {scope: {}},
+      }));
     },
   };
 }

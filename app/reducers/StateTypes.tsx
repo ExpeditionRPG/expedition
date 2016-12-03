@@ -1,4 +1,5 @@
-import {QuestDetails, CombatState, DifficultyType, CombatPhaseNameType} from './QuestTypes'
+import {QuestDetails, CombatState, DifficultyType, CombatPhaseNameType, QuestContext} from './QuestTypes'
+import {CombatResult, RoleplayResult} from '../QuestParser'
 
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
@@ -61,6 +62,8 @@ export type TransitionType = 'NEXT' | 'PREV' | 'INSTANT';
 export interface QuestState {
   details?: QuestDetails;
   node?: XMLElement;
+  result?: CombatResult|RoleplayResult;
+  ctx?: QuestContext;
 }
 
 export interface SearchState {

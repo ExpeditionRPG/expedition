@@ -3,17 +3,18 @@ import Card from './base/Card'
 import Button from './base/Button'
 import Indicator from './base/Indicator'
 import {XMLElement, SettingsType} from '../reducers/StateTypes'
-import {Choice} from '../reducers/QuestTypes'
+import {Choice, QuestContext} from '../reducers/QuestTypes'
 import {RoleplayResult} from '../QuestParser'
 
 export interface RoleplayStateProps {
   node: XMLElement;
   roleplay: RoleplayResult;
   settings: SettingsType;
+  ctx: QuestContext;
 }
 
 export interface RoleplayDispatchProps {
-  onChoice: (settings: SettingsType, node: XMLElement, index: number) => void;
+  onChoice: (settings: SettingsType, node: XMLElement, index: number, ctx: QuestContext) => void;
 }
 
 export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps {};
@@ -21,7 +22,7 @@ export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps
 const Roleplay = (props: RoleplayProps): JSX.Element => {
   var buttons: JSX.Element[] = props.roleplay.choices.map(function(choice: Choice): JSX.Element {
     return (
-      <Button key={choice.idx} onTouchTap={() => props.onChoice(props.settings, props.node, choice.idx)}>{choice.text}</Button>
+      <Button key={choice.idx} onTouchTap={() => props.onChoice(props.settings, props.node, choice.idx, props.ctx)}>{choice.text}</Button>
     );
   });
 

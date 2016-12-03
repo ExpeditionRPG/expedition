@@ -4,7 +4,7 @@ import Button from './base/Button'
 import theme from '../theme'
 import {isSurgeRound} from '../reducers/combat'
 import {XMLElement, SettingsType, CardState, CardName} from '../reducers/StateTypes'
-import {CombatPhaseNameType, MidCombatPhase, EndCombatPhase, CombatState, Enemy, Loot} from '../reducers/QuestTypes'
+import {CombatPhaseNameType, MidCombatPhase, EndCombatPhase, CombatState, Enemy, Loot, QuestContext} from '../reducers/QuestTypes'
 import TimerCard from './base/TimerCard'
 import Picker from './base/Picker'
 
@@ -15,6 +15,7 @@ export interface CombatStateProps {
   maxTier?: number;
   settings: SettingsType;
   icon?: string;
+  ctx: QuestContext,
   custom: boolean;
 }
 
@@ -26,7 +27,7 @@ export interface CombatDispatchProps {
   onPostTimerReturn: (cardName: CardName) => void;
   onTierSumDelta: (delta: number) => void;
   onAdventurerDelta: (numPlayers: number, delta: number) => void;
-  onEvent: (node: XMLElement, event: string) => void;
+  onEvent: (node: XMLElement, event: string, ctx: QuestContext) => void;
   onCustomEnd: () => void;
 }
 
@@ -254,7 +255,7 @@ function renderVictory(props: CombatProps): JSX.Element {
   return (
     <Card title='Victory' dark={true}>
       {contents}
-      <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'win')}>Next</Button>
+      <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'win', props.ctx)}>Next</Button>
     </Card>
   );
 }
@@ -269,7 +270,7 @@ function renderDefeat(props: CombatProps): JSX.Element {
     <Card title='Defeat' dark={true}>
       <p>Your party was defeated.</p>
       {helpText}
-      <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'lose')}>Next</Button>
+      <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'lose', props.ctx)}>Next</Button>
     </Card>
   );
 }

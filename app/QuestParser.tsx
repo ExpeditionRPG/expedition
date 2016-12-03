@@ -8,34 +8,34 @@
 /*global math */
 import * as React from 'react'
 import {XMLElement, DOMElement} from './reducers/StateTypes'
-import {QuestCardName, Enemy, Choice} from './reducers/QuestTypes'
+import {QuestCardName, Enemy, Choice, QuestContext} from './reducers/QuestTypes'
 import {encounters} from './Encounters'
 
 var htmlDecode = (require('he') as any).decode;
 
 var math = require('mathjs') as any;
 
-export interface QuestContext {
-  scope: any; //TODO: required fields later
-}
-
 export interface TriggerResult {
+  type: 'Trigger';
   node: XMLElement;
   name: string;
 }
 
 export interface RoleplayResult {
+  type: 'Roleplay';
   icon: string;
   title: string;
   content: JSX.Element;
   instruction?: JSX.Element;
   choices: Choice[];
-  context: QuestContext;
+  ctx: QuestContext;
 }
 
 export interface CombatResult {
+  type: 'Combat';
   icon: string;
   enemies: Enemy[];
+  ctx: QuestContext;
 }
 
 export function validate(root: XMLElement) {
@@ -96,18 +96,6 @@ export function handleChoice(parent: XMLElement, choice: number): XMLElement {
   return _loadNode(_findNextNode(parent));
 };
 
-export function getNodeCardType(node: XMLElement): QuestCardName {
-  switch(node.get(0).tagName.toLowerCase()) {
-    case 'roleplay':
-      return 'ROLEPLAY';
-    case 'combat':
-      return 'COMBAT';
-    default:
-      console.log("Could not get node card type for node " + node.get(0).tagName);
-      return null;
-  }
-}
-
 function _loadNode(node: XMLElement): XMLElement {
   switch(node.get(0).tagName.toLowerCase()) {
     //case "op":
@@ -159,10 +147,10 @@ function _loadEventNode(node: XMLElement): XMLElement {
   return _loadNode(node.children().eq(0));
 };
 
-export function loadCombatNode(node: XMLElement, context: QuestContext): CombatResult {
+export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResult {
   var enemies: Enemy[] = [];
 
-  var newScope = Object.assign({}, context.scope);
+  var newScope = Object.assign({}, ctx.scope);
 
   // Track win and lose events for validation
   var winEventCount = 0;
@@ -219,13 +207,16 @@ export function loadCombatNode(node: XMLElement, context: QuestContext): CombatR
 
   // Combat is stateless, so newScope is not returned here.
   return {
+    type: 'Combat',
     icon: node.attr('icon'),
     enemies,
+    ctx,
   };
 };
 
 export function loadTriggerNode(node: XMLElement): TriggerResult {
   return {
+    type: 'Trigger',
     node,
     name: node.text()
   };
@@ -343,7 +334,7 @@ function evaluateContentOps(content: string, scope: any): string {
   return result;
 }
 
-export function loadRoleplayNode(node: XMLElement, context: QuestContext): RoleplayResult {
+export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayResult {
   // Append elements to contents
   var numEvents = 0;
   var child: XMLElement;
@@ -351,7 +342,7 @@ export function loadRoleplayNode(node: XMLElement, context: QuestContext): Rolep
   var children: string = '';
   var instruction: JSX.Element = null;
 
-  var newScope = Object.assign({}, context.scope);
+  var newScope = Object.assign({}, ctx.scope);
 
   // Keep track of the number of choice nodes seen, so we can
   // select a choice without worrying about the state of the quest scope.
@@ -422,12 +413,13 @@ export function loadRoleplayNode(node: XMLElement, context: QuestContext): Rolep
   }
 
   return {
+    type: 'Roleplay',
     title: node.attr('title'),
     icon: node.attr('icon'),
     content: <span dangerouslySetInnerHTML={{__html: children}} />,
     choices,
     instruction,
-    context: {scope: newScope},
+    ctx: Object.assign({}, ctx, {scope: newScope}),
   };
 };
 

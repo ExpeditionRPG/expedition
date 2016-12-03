@@ -10,55 +10,63 @@ import {
 } from './ActionTypes'
 import {XMLElement, SettingsType} from '../reducers/StateTypes'
 import {toCard, toPrevious} from './card'
-import {loadTriggerNode, loadCombatNode, handleChoice, handleEvent} from '../QuestParser'
-import {QuestDetails} from '../reducers/QuestTypes'
+import {loadTriggerNode, loadCombatNode, loadRoleplayNode, handleChoice, handleEvent, RoleplayResult, CombatResult} from '../QuestParser'
+import {QuestDetails, QuestContext} from '../reducers/QuestTypes'
 
 export function handleCombatTimerStop(elapsedMillis: number): CombatTimerStopAction {
   return {type: 'COMBAT_TIMER_STOP', elapsedMillis};
 }
 
-export function initQuest(node: XMLElement): QuestNodeAction {
-  return {type: 'QUEST_NODE', node};
+export function initQuest(node: XMLElement, ctx: QuestContext): QuestNodeAction {
+  // TODO: Handle quests beginning with combat
+  return {type: 'QUEST_NODE', node, result: loadRoleplayNode(node, ctx)};
 }
 
-export function initCombat(node: XMLElement, settings: SettingsType): InitCombatAction {
-  return {type: 'INIT_COMBAT', node, numPlayers: settings.numPlayers, difficulty: settings.difficulty};
+export function initCombat(node: XMLElement, settings: SettingsType, result: CombatResult): InitCombatAction {
+  return {type: 'INIT_COMBAT', node, result, numPlayers: settings.numPlayers, difficulty: settings.difficulty};
 }
 
-export function choice(settings: SettingsType, node: XMLElement, index: number) {
+export function choice(settings: SettingsType, node: XMLElement, index: number, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
     var nextNode: XMLElement = handleChoice(node, index);
-    loadNode(settings, dispatch, nextNode);
+    loadNode(settings, dispatch, nextNode, ctx);
   }
 }
 
-export function loadNode(settings: SettingsType, dispatch: Redux.Dispatch<any>, nextNode: XMLElement) {
+export function loadNode(settings: SettingsType, dispatch: Redux.Dispatch<any>, nextNode: XMLElement, ctx: QuestContext) {
   var after: Redux.Action;
   var phase: any = undefined;
-  switch (nextNode.get(0).tagName.toUpperCase()) {
+  var result: RoleplayResult|CombatResult;
+  var tag = nextNode.get(0).tagName.toUpperCase();
+  switch (tag) {
     case 'TRIGGER':
+      // TODO: allow jumping via GOTO trigger
       let name: string = loadTriggerNode(nextNode).name;
       if (name === 'end') {
         return dispatch(toPrevious('QUEST_START', undefined, true));
       }
       throw new Error('invalid trigger ' + name);
+    case 'ROLEPLAY':
+      after = {type: 'QUEST_NODE', node: nextNode, result: loadRoleplayNode(nextNode, ctx)} as QuestNodeAction;
+      break;
     case 'COMBAT':
-      after = initCombat(nextNode, settings);
+      after = initCombat(nextNode, settings, loadCombatNode(nextNode, ctx));
       phase = 'DRAW_ENEMIES';
       break;
     default:
-      after = {type: 'QUEST_NODE', node: nextNode} as QuestNodeAction;
+      throw new Error("Unsupported node type " + tag)
   }
+
   // Every choice has an effect.
   dispatch(after);
   dispatch(toCard('QUEST_CARD', phase));
 
 }
 
-export function event(node: XMLElement, evt: string) {
+export function event(node: XMLElement, evt: string, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    var nextNode: XMLElement = handleEvent(node, evt);
-    loadNode(null, dispatch, nextNode);
+    var nextNode: XMLElement = handleEvent(node, evt, ctx);
+    loadNode(null, dispatch, nextNode, ctx);
   }
 }
 

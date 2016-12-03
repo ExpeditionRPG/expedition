@@ -1,5 +1,6 @@
 import {CardState, CardName, SettingNameType, XMLElement, TransitionType, UserState, SearchPhase} from '../reducers/StateTypes'
-import {QuestDetails, Enemy, CombatPhaseNameType, DifficultyType} from '../reducers/QuestTypes'
+import {QuestDetails, QuestContext, Enemy, CombatPhaseNameType, DifficultyType} from '../reducers/QuestTypes'
+import {RoleplayResult, CombatResult} from '../QuestParser'
 
 export interface NavigateAction extends Redux.Action {
   type: 'NAVIGATE';
@@ -15,6 +16,7 @@ export interface ReturnAction extends Redux.Action {
 export interface QuestNodeAction extends Redux.Action {
   type: 'QUEST_NODE';
   node: XMLElement;
+  result: RoleplayResult;
 }
 
 export interface ChangeSettingsAction extends Redux.Action {
@@ -26,6 +28,7 @@ export interface InitCombatAction extends Redux.Action {
   type: 'INIT_COMBAT';
   numPlayers: number;
   difficulty: DifficultyType;
+  result: CombatResult;
   node?: XMLElement;
 }
 
