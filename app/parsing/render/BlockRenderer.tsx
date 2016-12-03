@@ -42,7 +42,11 @@ export class BlockRenderer {
       var block = blocks[i];
       if (block.render) {
         // Only the blocks within choices should be rendered at this point.
-        throw new Error(ERR_PREFIX + "found unexpected block with render");
+        log.err(
+          'roleplay blocks cannot contain indented sections that are not choices',
+          '404',
+          blocks[0].startLine
+        );
       }
 
       // Append rendered stuff
@@ -63,6 +67,11 @@ export class BlockRenderer {
         var inner = blocks[++i];
         while (i < blocks.length && inner.indent !== block.indent) {
           if (!inner.render) {
+            log.err(
+              'TODO',
+              '404',
+              blocks[0].startLine
+            );
             throw new Error(ERR_PREFIX + "found unexpected block with no render");
           }
           choice.choice.push(inner.render);
@@ -114,7 +123,11 @@ export class BlockRenderer {
 
   toCombat(blocks: Block[], log: Logger) {
     if (!blocks.length) {
-      throw new Error("Empty combat list");
+      log.err(
+        'empty combat list',
+        '404',
+        blocks[0].startLine
+      );
     }
 
     try {
