@@ -24,16 +24,45 @@ describe('QuestParser', () => {
 
   describe('roleplay', () => {
     it('parses ops in body', () => {
-      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{text="TEST"}}</p><p>{{text}}</roleplay>')('roleplay'), {scope: {}});
+      // Lines with nothing but variable assignment are hidden
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{text="TEST"}}</p><p>{{text}}</p></roleplay>')('roleplay'), {scope: {}});
       expect(mount(result.content).html()).toEqual("<span><p>TEST</p></span>");
+
+      // Single-valued array results are indirected
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{r=[5]}}</p><p>{{r}}</p></roleplay>')('roleplay'), {scope: {}});
+      expect(mount(result.content).html()).toEqual("<span><p>5</p></span>");
     });
 
-    it('hides choices with ops == false', () => {
-
+    it('parses multi-statement ops in body and respects newlines', () => {
+      // If the op ends without an assignment, it's displayed.
+      // If it does, it's hidden.
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=5;c=7}}</p><p>{{b=7;a}}</p><p>{{a=5\nb=10}}</p><p>{{a=5\nb=10\nc}}</p></roleplay>')('roleplay'), {scope: {}});
+      expect(mount(result.content).html()).toEqual("<span><p>5</p><p>7</p></span>");
     });
 
-    it('shows choices with ops == true', () => {
+    it('hides choices conditionally', () => {
+      // Unassigned
+      var result = loadRoleplayNode(cheerio.load('<roleplay><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'), {scope: {}});
+      expect(result.choices).toEqual([ { idx: 0, text: 'Next' } ]);
 
+      // assigned, but false
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=false}}</p><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'), {scope: {}});
+      expect(result.choices).toEqual([ { idx: 0, text: 'Next' } ]);
+
+      // assigned, but zero
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=0}}</p><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'), {scope: {}});
+      expect(result.choices).toEqual([ { idx: 0, text: 'Next' } ]);
+    });
+
+    it('shows choices conditionally', () => {
+      console.log("HERP");
+      // Boolean
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=true}}</p><choice if="a" text="Visible"></choice></roleplay>')('roleplay'), {scope: {}});
+      expect(result.choices).toEqual([ { idx: 0, text: 'Visible' } ]);
+
+      // Non-zero
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=1}}</p><choice if="a" text="Visible"></choice></roleplay>')('roleplay'), {scope: {}});
+      expect(result.choices).toEqual([ { idx: 0, text: 'Visible' } ]);
     });
   });
 });

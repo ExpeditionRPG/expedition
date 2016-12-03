@@ -30,7 +30,6 @@ export type Loot = {tier: number, count: number};
 export interface Choice {
   text: string;
   idx: number;
-  isCombat: boolean;
 }
 
 export interface CombatAttack {
