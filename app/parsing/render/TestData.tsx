@@ -41,6 +41,21 @@ data.combatConditionalEventXML = `<combat>
     </event>
 </combat>`;
 
+data.combatJSONEnemyXML = `<combat>
+    <e>skeleton</e>
+    <e if="cond">test</e>
+    <event on="win" if="test1">
+        <roleplay>
+            <p>win</p>
+        </roleplay>
+    </event>
+    <event on="lose" if="test2">
+        <roleplay>
+            <p>lose</p>
+        </roleplay>
+    </event>
+</combat>`;
+
 data.fullRoleplayXML = `<roleplay title="roleplay">
     <p>text</p>
     <choice text="choice">

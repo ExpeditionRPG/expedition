@@ -15,7 +15,7 @@ describe('XMLRenderer', () => {
       var dummyWin = cheerio.load('<div>win</div>')("div")
       var dummyLose = cheerio.load('<div>lose</div>')("div");
       expect(XMLRenderer.toCombat(
-        {"enemies": ["Enemy1", "Enemy2"]},
+        {"enemies": [{text: "Enemy1"}, {text: "Enemy2"}]},
         [
           {text: "on win", event: [dummyWin]},
           {text: "on lose", event: [dummyLose]},

@@ -120,7 +120,38 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
-    it('renderse with JSON');
+    it('renders with JSON', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        {
+          indent: 0,
+          lines: ['_combat_ {"enemies": [{"text":"skeleton"}, {"text":"test", "visible":"cond"}]}', '', '* {{test1}} on win'],
+          startLine: 0,
+        },
+        {
+          indent: 2,
+          lines: [],
+          render: XMLRenderer.toRoleplay({}, ['win']),
+          startLine: 2,
+        },
+        {
+          indent: 0,
+          lines: ['* {{test2}} on lose'],
+          startLine: 4,
+        },
+        {
+          indent: 2,
+          lines: [],
+          render: XMLRenderer.toRoleplay({}, ['lose']),
+          startLine: 2,
+        },
+      ];
+
+      br.toCombat(blocks, log)
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.combatJSONEnemyXML);
+      expect(prettifyMsgs(log.finalize())).toEqual('');
+    });
 
     it('errors if inner combat block with no event bullet');
 

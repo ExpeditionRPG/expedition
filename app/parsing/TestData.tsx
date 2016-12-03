@@ -18,7 +18,11 @@ More stuff
 
 * Decision
 
-  _combat_ {"enemies": ["Skeleton Swordsman"]}
+  _combat_
+
+  - Skeleton Swordsman
+  - {{anEnemyExpression}}
+  - {{condition}} BadGuy
 
   * on win
 
@@ -55,6 +59,8 @@ data.basicXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplay
         <choice text="Decision">
             <combat>
                 <e>Skeleton Swordsman</e>
+                <e>{{anEnemyExpression}}</e>
+                <e if="condition">BadGuy</e>
                 <event on="win">
                     <roleplay title="">
                         <p>Victory!</p>

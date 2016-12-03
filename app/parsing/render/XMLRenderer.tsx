@@ -45,8 +45,9 @@ export var XMLRenderer: Renderer = {
 
     var enemies = attribs['enemies'];
     for (var i = 0; i < enemies.length; i++) {
-      var e = cheerio.load('<e>'+enemies[i]+'</e>');
-      combat.append(e('e'));
+      var e = cheerio.load('<e>'+enemies[i].text+'</e>')('e');
+      e.attr('if', enemies[i].visible);
+      combat.append(e);
     }
 
     for (var i = 0; i < events.length; i++) {

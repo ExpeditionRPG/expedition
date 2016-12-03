@@ -54,7 +54,7 @@ export class BlockRenderer {
       var choice: RoleplayChild;
       for (let line of lines) {
         if (line.indexOf('* ') === 0) {
-          choice = Object.assign({}, this.extractChoiceOrEvent(line), {choice: []});
+          choice = Object.assign({}, this.extractBulleted(line), {choice: []});
           // TODO: Assert end of lines.
         } else {
           body.push(line);
@@ -144,13 +144,19 @@ export class BlockRenderer {
     for (var i = 0; i < blocks[0].lines.length; i++) {
       var line = blocks[0].lines[i];
       if (line[0] === '-') {
-        attribs['enemies'].push(line.substr(1).trim());
+        var extractedBullet = this.extractBulleted(line);
+        if (!extractedBullet.text) {
+          // Visible is actually a value expression
+          attribs['enemies'].push({text: '{{' + extractedBullet.visible + '}}'});
+        } else {
+          attribs['enemies'].push(extractedBullet);
+        }
       }
     }
 
     if (attribs['enemies'].length === 0) {
       log.err("combat block has no enemies listed", "404");
-      attribs['enemies'] = ["UNKNOWN"];
+      attribs['enemies'] = [{text: "UNKNOWN"}];
     }
 
 
@@ -182,7 +188,7 @@ export class BlockRenderer {
 
         // We should only ever see event blocks within the combat block.
         // These blocks are only single lines.
-        var extractedEvent = Object.assign({}, this.extractChoiceOrEvent(line), {event: []});
+        var extractedEvent = Object.assign({}, this.extractBulleted(line), {event: []});
         if (!extractedEvent.text) {
           log.err(
             "lines within combat block must be event bullets or enemies; instead found \""+line+"\"",
@@ -301,13 +307,13 @@ export class BlockRenderer {
     };
   }
 
-  private extractChoiceOrEvent(line: string): {text: string, visible: string} {
+  private extractBulleted(line: string): {text: string, visible: string} {
     // Breakdown:
-    // \*\s*                    Match "*" and any number of spaces (greedy)
+    // \*\s*                    Match "*" or "-" and any number of spaces (greedy)
     // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
     // \s*                      Match any number of spaces (greedy)
     // (.*)$                    Match until the end of the string.
-    var m = line.match(/^\*\s*(\{\{(.*?)\}\})?\s*(.*)$/);
+    var m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*(.*)$/);
     return {
       visible: m[2],
       text: m[3],
