@@ -10,7 +10,7 @@ const mapStateToProps = (state: AppState, ownProps: RoleplayStateProps): Rolepla
     settings: state.settings,
     node: state.quest && state.quest.node,
     roleplay: ownProps.roleplay, // Persist state to prevent sudden jumps during card change.
-    ctx: state.quest && state.quest.ctx,
+    ctx: state.quest && state.quest.result.ctx,
   };
 }
 

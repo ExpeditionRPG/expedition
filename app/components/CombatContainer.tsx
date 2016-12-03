@@ -24,7 +24,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
       card: ownProps.card,
       settings: state.settings,
       maxTier: maxTier,
-      ctx: state.quest && state.quest.ctx,
+      ctx: state.quest && state.quest.result.ctx,
       combat: state.combat || {enemies: [], roundCount: 0, numAliveAdventurers: 0, tier: 0, roundTimeMillis: 0, surgePeriod: 0, damageMultiplier: 0},
     };
   } else {
@@ -34,7 +34,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
       combat: Object.assign({}, ownProps.combat, {
         tier: state.combat && state.combat.tier,
         numAliveAdventurers: state.combat && state.combat.numAliveAdventurers}),
-      ctx: state.quest && state.quest.ctx,
+      ctx: state.quest && state.quest.result.ctx,
       node: ownProps.node,
       maxTier: maxTier,
       icon: ownProps.icon,

@@ -33,24 +33,24 @@ export function choice(settings: SettingsType, node: XMLElement, index: number, 
   }
 }
 
-export function loadNode(settings: SettingsType, dispatch: Redux.Dispatch<any>, nextNode: XMLElement, ctx: QuestContext) {
+export function loadNode(settings: SettingsType, dispatch: Redux.Dispatch<any>, node: XMLElement, ctx: QuestContext) {
   var after: Redux.Action;
   var phase: any = undefined;
-  var result: RoleplayResult|CombatResult;
-  var tag = nextNode.get(0).tagName.toUpperCase();
+  var tag = node.get(0).tagName.toUpperCase();
   switch (tag) {
     case 'TRIGGER':
       // TODO: allow jumping via GOTO trigger
-      let name: string = loadTriggerNode(nextNode).name;
+      let name: string = loadTriggerNode(node).name;
       if (name === 'end') {
         return dispatch(toPrevious('QUEST_START', undefined, true));
       }
       throw new Error('invalid trigger ' + name);
     case 'ROLEPLAY':
-      after = {type: 'QUEST_NODE', node: nextNode, result: loadRoleplayNode(nextNode, ctx)} as QuestNodeAction;
+      var result = loadRoleplayNode(node, ctx);
+      after = {type: 'QUEST_NODE', node, result} as QuestNodeAction;
       break;
     case 'COMBAT':
-      after = initCombat(nextNode, settings, loadCombatNode(nextNode, ctx));
+      after = initCombat(node, settings, loadCombatNode(node, ctx));
       phase = 'DRAW_ENEMIES';
       break;
     default:
@@ -58,9 +58,13 @@ export function loadNode(settings: SettingsType, dispatch: Redux.Dispatch<any>, 
   }
 
   // Every choice has an effect.
-  dispatch(after);
   dispatch(toCard('QUEST_CARD', phase));
 
+  // We set the quest state *after* the toCard() dispatch to prevent
+  // the history from grabbing the quest state before navigating.
+  // This bug manifests as toPrevious() sliding back to the same card
+  // content.
+  dispatch(after);
 }
 
 export function event(node: XMLElement, evt: string, ctx: QuestContext) {

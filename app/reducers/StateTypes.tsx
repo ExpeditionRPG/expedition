@@ -63,7 +63,6 @@ export interface QuestState {
   details?: QuestDetails;
   node?: XMLElement;
   result?: CombatResult|RoleplayResult;
-  ctx?: QuestContext;
 }
 
 export interface SearchState {
