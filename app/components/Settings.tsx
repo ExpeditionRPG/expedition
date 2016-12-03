@@ -24,9 +24,7 @@ const difficultyText: { [v: string]: any } = [
 ];
 
 const Settings = (props: SettingsProps): JSX.Element => {
-  console.log(props.difficulty);
   var difficultyIdx = ["EASY", "NORMAL", "HARD", "IMPOSSIBLE"].indexOf(props.difficulty);
-  console.log(difficultyIdx);
 
   var multitouchText = (props.multitouch) ? "All players must hold their finger on the screen to end combat." : "A single player may tap the screen once to end combat.";
   var helpText = (props.showHelp) ? "Setup and combat hints are shown." : "Setup and combat hints are hidden.";

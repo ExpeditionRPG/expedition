@@ -7,25 +7,34 @@
 /*global math */
 import * as React from 'react'
 import {XMLElement, DOMElement} from './reducers/StateTypes'
-import {QuestCardName, Enemy, Choice} from './reducers/QuestTypes'
+import {QuestCardName, Enemy, Choice, QuestContext} from './reducers/QuestTypes'
 import {encounters} from './Encounters'
 
+var htmlDecode = (require('he') as any).decode;
+
+var math = require('mathjs') as any;
+
 export interface TriggerResult {
+  type: 'Trigger';
   node: XMLElement;
   name: string;
 }
 
 export interface RoleplayResult {
+  type: 'Roleplay';
   icon: string;
   title: string;
   content: JSX.Element;
   instruction?: JSX.Element;
   choices: Choice[];
+  ctx: QuestContext;
 }
 
 export interface CombatResult {
+  type: 'Combat';
   icon: string;
   enemies: Enemy[];
+  ctx: QuestContext;
 }
 
 export function validate(root: XMLElement) {
@@ -42,29 +51,16 @@ export function validate(root: XMLElement) {
   if (!_isEmptyObject(duplicateIDs)) {
     throw new Error("Found nodes with duplicate ids: " + JSON.stringify(duplicateIDs));
   }
-
-  // TODO(scott): Add check for proper resolution of combat enemies
-  //this._parser = math.parser(); // jshint ignore:line
 };
-
-/*
-questParser.prototype.setGameState = function(state) {
-  if (!this._parser) {
-    return;
-  }
-  this._parser.eval('_gamestate_ = ' + JSON.stringify(state));
-  // TODO: Include helper functions for accessing game state vars
-};
-*/
 
 export function init(root: XMLElement): XMLElement {
   return _loadNode(root.children().eq(0));
 }
 
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
-export function handleEvent(parent: XMLElement, event: string): XMLElement {
+export function handleEvent(parent: XMLElement, event: string, context: QuestContext): XMLElement {
   var child = _loopChildren(parent, function(tag: string, c: XMLElement) {
-    if (c.attr('on') === event && _isEnabled(c)) {
+    if (c.attr('on') === event && _isEnabled(c, context)) {
       return c;
     }
   }.bind(this));
@@ -99,18 +95,6 @@ export function handleChoice(parent: XMLElement, choice: number): XMLElement {
   return _loadNode(_findNextNode(parent));
 };
 
-export function getNodeCardType(node: XMLElement): QuestCardName {
-  switch(node.get(0).tagName.toLowerCase()) {
-    case 'roleplay':
-      return 'ROLEPLAY';
-    case 'combat':
-      return 'COMBAT';
-    default:
-      console.log("Could not get node card type for node " + node.get(0).tagName);
-      return null;
-  }
-}
-
 function _loadNode(node: XMLElement): XMLElement {
   switch(node.get(0).tagName.toLowerCase()) {
     //case "op":
@@ -131,16 +115,6 @@ function _loadNode(node: XMLElement): XMLElement {
       throw new Error('Unknown node name: ' + node.get(0).tagName);
   }
 };
-
-/*
-questParser.prototype._loadOpNode = function(node: XMLElement) {
-  this._parser.eval(node.text());
-
-  // After evaluation, move on to the next node.
-  this.path.push(_findNextNode(node));
-  return this._loadCurrentNode();
-};
-*/
 
 function _loadChoiceNode(node: XMLElement): XMLElement {
   // The action on a choice node is functionally the same as an event node.
@@ -172,26 +146,46 @@ function _loadEventNode(node: XMLElement): XMLElement {
   return _loadNode(node.children().eq(0));
 };
 
-export function loadCombatNode(node: XMLElement): CombatResult {
+export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResult {
   var enemies: Enemy[] = [];
+
+  var newScope = Object.assign({}, ctx.scope);
 
   // Track win and lose events for validation
   var winEventCount = 0;
   var loseEventCount = 0;
   _loopChildren(node, function(tag: string, c: XMLElement) {
+
+    // Skip events and enemies that aren't enabled.
+    if (!_isEnabled(c, newScope)) {
+      return;
+    }
+
     switch (tag) {
       case 'e':
-        if (!encounters[c.text()]) {
-          console.log('Unknown enemy ' + c.text());
-          enemies.push({name: c.text(), tier: 1});
+        var text = c.text();
+
+        // Replace text if it's an op string.
+        // If the string fails to evaluate, the
+        // original op is returned as text.
+        var op = parseOpString(text);
+        if (op) {
+          var evalResult = evaluateOp(op, newScope);
+          if (evalResult) {
+            text = evalResult + '';
+          }
+        }
+
+        if (!encounters[text]) {
+          // If we don't know about the enemy, just assume tier 1.
+          enemies.push({name: text, tier: 1});
         } else {
-          enemies.push({name: c.text(), tier: encounters[c.text()].tier});
+          enemies.push({name: text, tier: encounters[text].tier});
         }
         break;
       case 'event':
-      case 'roleplay':
-        winEventCount += (c.attr('on') === 'win' && _isEnabled(c)) ? 1 : 0;
-        loseEventCount += (c.attr('on') === 'lose' && _isEnabled(c)) ? 1 : 0;
+        winEventCount += (c.attr('on') === 'win' && _isEnabled(c, newScope)) ? 1 : 0;
+        loseEventCount += (c.attr('on') === 'lose' && _isEnabled(c, newScope)) ? 1 : 0;
         break;
       default:
         throw new Error('Invalid child element: ' + tag);
@@ -210,36 +204,136 @@ export function loadCombatNode(node: XMLElement): CombatResult {
     throw new Error("<combat> has no <e> children");
   }
 
-  // TODO: Add modifiable combat scope.
-
+  // Combat is stateless, so newScope is not returned here.
   return {
+    type: 'Combat',
     icon: node.attr('icon'),
     enemies,
+    ctx,
   };
 };
 
 export function loadTriggerNode(node: XMLElement): TriggerResult {
   return {
+    type: 'Trigger',
     node,
     name: node.text()
   };
 };
 
-function _isEnabled(node: XMLElement): boolean {
+function _isComment(node: XMLElement): boolean {
+  return (node.get(0).tagName.toLowerCase() === "comment");
+}
+
+function _isEnabled(node: XMLElement, context: QuestContext): boolean {
   // Comments are never visible.
-  if (node.get(0).tagName.toLowerCase() === "comment") {
+  if (_isComment(node)) {
     return false;
   }
 
-  // We check for truthiness here, so nonzero numbers are true, etc.
-  return !node.attr('if'); // || this._parser.eval("boolean(" + node.attr('if') + ")");
+  var ifExpr = node.attr('if');
+  if (!ifExpr) {
+    return true;
+  }
+
+  // Operate on a copied context - checking for enablement should never
+  // change the current context.
+  var tmpContext = Object.assign({}, context);
+  try {
+    var visible = math.eval(ifExpr, tmpContext);
+
+    // We check for truthiness here, so nonzero numbers are true, etc.
+    return Boolean(visible);
+  } catch (e) {
+    // If we fail to evaluate (e.g. symbol not defined), treat the node as not visible.
+    return false;
+  }
 };
 
 function _xmlToJSX(node: XMLElement): JSX.Element {
   return ((node as any) as JSX.Element)
 }
 
-export function loadRoleplayNode(node: XMLElement): RoleplayResult {
+function lastExpressionAssignsValue(parsed: any): boolean {
+  if (parsed.type === 'BlockNode') {
+    return lastExpressionAssignsValue(parsed.blocks[parsed.blocks.length-1].node);
+  }
+  return (parsed.type === 'AssignmentNode' || parsed.type === 'FunctionAssignmentNode');
+}
+
+function parseOpString(str: string): string {
+  var op = str.match(/{{([\s\S]+?)}}/);
+  if (!op) {
+    return null;
+  }
+  return op[1];
+}
+
+function evaluateOp(op: string, scope: any): any {
+  // If it's an operation, run it with our context.
+  var parsed = math.parse(htmlDecode(op));
+
+  try {
+    var evalResult = parsed.compile().eval(scope);
+  } catch(e) {
+    return null;
+  }
+
+  // Only add the result to content IF it doesn't assign a value as its last action.
+  if (!lastExpressionAssignsValue(parsed)) {
+
+    // If ResultSet, then unwrap it and get the last value.
+    // http://mathjs.org/docs/reference/classes/resultset.html
+    if (parsed.type === 'BlockNode') {
+      var v = evalResult.valueOf();
+      evalResult = v[v.length-1];
+    }
+
+    if (evalResult.length === 1) {
+      // If we're a single-valued array, so unwrap the value.
+      evalResult = evalResult[0];
+    } else if (evalResult.size) {
+      // We have a single-valued matrix result, so unwrap the value.
+      // http://mathjs.org/docs/datatypes/matrices.html
+      var size = evalResult.size();
+      if (size.length === 1 && size[0] === 1) {
+        evalResult = evalResult.get([0]);
+      }
+    }
+    return evalResult;
+  }
+}
+
+function evaluateContentOps(content: string, scope: any): string {
+  // Run MathJS over all detected {{operations}}:
+  //
+  // {{.+?(?=}})}}       Match "{{asdf\n1234}}"
+  // |                   Or
+  // .+?(?={{|$)         Nongreedy characters (including whitespace) until "{{" or end of string
+  // /g                  Multiple times
+  var matches = content.match(/{{[\s\S]+?(?=}})}}|[\s\S]+?(?={{|$)/g);
+
+  var result = "";
+  for (let m of matches) {
+    var op = parseOpString(m);
+    if (op) {
+      var evalResult = evaluateOp(op, scope);
+      if (evalResult) {
+        result += evalResult;
+      }
+    } else {
+      result += m;
+    }
+  }
+
+  // Don't return lines that parsed into nothing
+  if (content !== result && result === '<p></p>') {
+    return '';
+  }
+  return result;
+}
+
+export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayResult {
   // Append elements to contents
   var numEvents = 0;
   var child: XMLElement;
@@ -247,24 +341,22 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
   var children: string = '';
   var instruction: JSX.Element = null;
 
+  var newScope = Object.assign({}, ctx.scope);
+
   // Keep track of the number of choice nodes seen, so we can
   // select a choice without worrying about the state of the quest scope.
   var idx = -1;
 
   _loopChildren(node, function(tag: string, c: XMLElement) {
     c = c.clone();
-
     if (tag === "choice") {
       idx++;
     }
 
     // Skip elements that aren't visible
-    if (!_isEnabled(c)) {
+    if (!_isEnabled(c, newScope)) {
       return;
     }
-
-    // TODO(scott): Deep-parse all operations inside the dialog and convert them into
-    // their values.
 
     // Accumulate "choice" tags in choices[]
     if (tag === "choice") {
@@ -272,7 +364,7 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
         throw new Error("<choice> inside <roleplay> must have 'text' attribute");
       }
       var text = c.attr('text');
-      choices.push({text, idx, isCombat: false}); // TODO
+      choices.push({text, idx});
       numEvents++;
       return;
     }
@@ -290,13 +382,15 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
     // If we received a Cheerio object, outerHTML will
     // not be defined. toString will be, however.
     // https://github.com/cheeriojs/cheerio/issues/54
+    var textContent = '';
     if (c.get(0).outerHTML) {
-      children += c.get(0).outerHTML;
+      textContent = c.get(0).outerHTML;
     } else if (c.toString) {
-      children += c.toString();
+      textContent = c.toString();
     } else {
       throw new Error("Invalid element " + c);
     }
+    children += evaluateContentOps(textContent, newScope);
   }.bind(this));
 
   // Append a generic "Next" button if there were no events,
@@ -314,15 +408,17 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
           throw new Error("Unknown trigger content " + nextNode.text());
       }
     }
-    choices.push({text: buttonText, idx: 0, isCombat: false}); // TODO
+    choices.push({text: buttonText, idx: 0});
   }
 
   return {
+    type: 'Roleplay',
     title: node.attr('title'),
     icon: node.attr('icon'),
     content: <span dangerouslySetInnerHTML={{__html: children}} />,
     choices,
     instruction,
+    ctx: Object.assign({}, ctx, {scope: newScope}),
   };
 };
 
@@ -347,8 +443,8 @@ function _findNextNode(node: XMLElement) {
     var sibling = node.next();
 
 
-    // Skip control elements and conditionally false elements
-    if (sibling !== null && sibling.length > 0 && !_isControlNode(sibling) && _isEnabled(sibling)) {
+    // Skip control elements
+    if (sibling !== null && sibling.length > 0 && !_isControlNode(sibling)) {
       return sibling;
     }
 

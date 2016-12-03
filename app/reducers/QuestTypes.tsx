@@ -26,11 +26,18 @@ export interface CombatDifficultySettings {
 export type Enemy = {name: string, tier: number};
 export type Loot = {tier: number, count: number};
 
+export interface QuestContext {
+  // Scope is passed to the parser when rendering
+  // nodes that are potentially parseable via MathJS.
+  scope: any; //TODO: required fields later
+}
+export function defaultQuestContext(): QuestContext {
+  return {scope: {}};
+}
 
 export interface Choice {
   text: string;
   idx: number;
-  isCombat: boolean;
 }
 
 export interface CombatAttack {
