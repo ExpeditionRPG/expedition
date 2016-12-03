@@ -27,7 +27,7 @@ export default class Button extends React.Component<ButtonProps, {}> {
   render() {
     return (
       <span className="base_button">
-        <FlatButton disabled={this.props.disabled} onTouchTap={(e) => this._onTouchTap(e)}>
+        <FlatButton disabled={this.props.disabled} onTouchTap={(e:any) => this._onTouchTap(e)}>
           <div>{this.props.children}</div>
         </FlatButton>
       </span>

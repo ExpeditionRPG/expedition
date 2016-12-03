@@ -4,7 +4,6 @@
    where all arguments except 'type' are optional.
    See quests/quest_spec.txt for specification.
 */
-/// <reference path="../typings/react/react-dom.d.ts" />
 /*global math */
 import * as React from 'react'
 import {XMLElement, DOMElement} from './reducers/StateTypes'
