@@ -52,30 +52,16 @@ export function validate(root: XMLElement) {
   if (!_isEmptyObject(duplicateIDs)) {
     throw new Error("Found nodes with duplicate ids: " + JSON.stringify(duplicateIDs));
   }
-
-  // TODO(scott): Add check for proper resolution of combat enemies
-  //this._parser = math.parser(); // jshint ignore:line
 };
-
-/*
-questParser.prototype.setGameState = function(state) {
-  if (!this._parser) {
-    return;
-  }
-  this._parser.eval('_gamestate_ = ' + JSON.stringify(state));
-  // TODO: Include helper functions for accessing game state vars
-};
-*/
 
 export function init(root: XMLElement): XMLElement {
   return _loadNode(root.children().eq(0));
 }
 
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
-export function handleEvent(parent: XMLElement, event: string): XMLElement {
+export function handleEvent(parent: XMLElement, event: string, context: QuestContext): XMLElement {
   var child = _loopChildren(parent, function(tag: string, c: XMLElement) {
-    // TODO: Add context
-    if (c.attr('on') === event && _isEnabled(c, {scope: {}})) {
+    if (c.attr('on') === event && _isEnabled(c, context)) {
       return c;
     }
   }.bind(this));
@@ -143,16 +129,6 @@ function _loadNode(node: XMLElement): XMLElement {
   }
 };
 
-/*
-questParser.prototype._loadOpNode = function(node: XMLElement) {
-  this._parser.eval(node.text());
-
-  // After evaluation, move on to the next node.
-  this.path.push(_findNextNode(node));
-  return this._loadCurrentNode();
-};
-*/
-
 function _loadChoiceNode(node: XMLElement): XMLElement {
   // The action on a choice node is functionally the same as an event node.
   return _loadEventNode(node);
@@ -183,26 +159,46 @@ function _loadEventNode(node: XMLElement): XMLElement {
   return _loadNode(node.children().eq(0));
 };
 
-export function loadCombatNode(node: XMLElement): CombatResult {
+export function loadCombatNode(node: XMLElement, context: QuestContext): CombatResult {
   var enemies: Enemy[] = [];
+
+  var newScope = Object.assign({}, context.scope);
 
   // Track win and lose events for validation
   var winEventCount = 0;
   var loseEventCount = 0;
   _loopChildren(node, function(tag: string, c: XMLElement) {
+
+    // Skip events and enemies that aren't enabled.
+    if (!_isEnabled(c, newScope)) {
+      return;
+    }
+
     switch (tag) {
       case 'e':
-        if (!encounters[c.text()]) {
-          console.log('Unknown enemy ' + c.text());
-          enemies.push({name: c.text(), tier: 1});
+        var text = c.text();
+
+        // Replace text if it's an op string.
+        // If the string fails to evaluate, the
+        // original op is returned as text.
+        var op = parseOpString(text);
+        if (op) {
+          var evalResult = evaluateOp(op, newScope);
+          if (evalResult) {
+            text = evalResult + '';
+          }
+        }
+
+        if (!encounters[text]) {
+          // If we don't know about the enemy, just assume tier 1.
+          enemies.push({name: text, tier: 1});
         } else {
-          enemies.push({name: c.text(), tier: encounters[c.text()].tier});
+          enemies.push({name: text, tier: encounters[text].tier});
         }
         break;
       case 'event':
-        // TODO: Add context
-        winEventCount += (c.attr('on') === 'win' && _isEnabled(c, {scope: {}})) ? 1 : 0;
-        loseEventCount += (c.attr('on') === 'lose' && _isEnabled(c, {scope: {}})) ? 1 : 0;
+        winEventCount += (c.attr('on') === 'win' && _isEnabled(c, newScope)) ? 1 : 0;
+        loseEventCount += (c.attr('on') === 'lose' && _isEnabled(c, newScope)) ? 1 : 0;
         break;
       default:
         throw new Error('Invalid child element: ' + tag);
@@ -221,8 +217,7 @@ export function loadCombatNode(node: XMLElement): CombatResult {
     throw new Error("<combat> has no <e> children");
   }
 
-  // TODO: Add modifiable combat scope.
-
+  // Combat is stateless, so newScope is not returned here.
   return {
     icon: node.attr('icon'),
     enemies,
@@ -276,6 +271,49 @@ function lastExpressionAssignsValue(parsed: any): boolean {
   return (parsed.type === 'AssignmentNode' || parsed.type === 'FunctionAssignmentNode');
 }
 
+function parseOpString(str: string): string {
+  var op = str.match(/{{([\s\S]+?)}}/);
+  if (!op) {
+    return null;
+  }
+  return op[1];
+}
+
+function evaluateOp(op: string, scope: any): any {
+  // If it's an operation, run it with our context.
+  var parsed = math.parse(htmlDecode(op));
+
+  try {
+    var evalResult = parsed.compile().eval(scope);
+  } catch(e) {
+    return null;
+  }
+
+  // Only add the result to content IF it doesn't assign a value as its last action.
+  if (!lastExpressionAssignsValue(parsed)) {
+
+    // If ResultSet, then unwrap it and get the last value.
+    // http://mathjs.org/docs/reference/classes/resultset.html
+    if (parsed.type === 'BlockNode') {
+      var v = evalResult.valueOf();
+      evalResult = v[v.length-1];
+    }
+
+    if (evalResult.length === 1) {
+      // If we're a single-valued array, so unwrap the value.
+      evalResult = evalResult[0];
+    } else if (evalResult.size) {
+      // We have a single-valued matrix result, so unwrap the value.
+      // http://mathjs.org/docs/datatypes/matrices.html
+      var size = evalResult.size();
+      if (size.length === 1 && size[0] === 1) {
+        evalResult = evalResult.get([0]);
+      }
+    }
+    return evalResult;
+  }
+}
+
 function evaluateContentOps(content: string, scope: any): string {
   // Run MathJS over all detected {{operations}}:
   //
@@ -287,32 +325,10 @@ function evaluateContentOps(content: string, scope: any): string {
 
   var result = "";
   for (let m of matches) {
-    var op = m.match(/{{([\s\S]+?)}}/)
+    var op = parseOpString(m);
     if (op) {
-      // If it's an operation, run it with our context.
-      var parsed = math.parse(htmlDecode(op[1]));
-      var evalResult = parsed.compile().eval(scope);
-      // Only add the result to content IF it doesn't assign a value as its last action.
-      if (!lastExpressionAssignsValue(parsed)) {
-
-        // If ResultSet, then unwrap it and get the last value.
-        // http://mathjs.org/docs/reference/classes/resultset.html
-        if (parsed.type === 'BlockNode') {
-          var v = evalResult.valueOf();
-          evalResult = v[v.length-1];
-        }
-
-        if (evalResult.length === 1) {
-          // If we're a single-valued array, so unwrap the value.
-          evalResult = evalResult[0];
-        } else if (evalResult.size) {
-          // We have a single-valued matrix result, so unwrap the value.
-          // http://mathjs.org/docs/datatypes/matrices.html
-          var size = evalResult.size();
-          if (size.length === 1 && size[0] === 1) {
-            evalResult = evalResult.get([0]);
-          }
-        }
+      var evalResult = evaluateOp(op, scope);
+      if (evalResult) {
         result += evalResult;
       }
     } else {

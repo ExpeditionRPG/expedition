@@ -4,7 +4,7 @@
 /// <reference path="../typings/react/react-addons-test-utils.d.ts" />
 /// <reference path="../typings/enzyme/enzyme.d.ts" />
 
-import {loadRoleplayNode} from './QuestParser'
+import {loadRoleplayNode, loadCombatNode} from './QuestParser'
 
 import {mount} from 'enzyme'
 
@@ -45,17 +45,16 @@ describe('QuestParser', () => {
       var result = loadRoleplayNode(cheerio.load('<roleplay><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'), {scope: {}});
       expect(result.choices).toEqual([ { idx: 0, text: 'Next' } ]);
 
-      // assigned, but false
+      // False
       var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=false}}</p><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'), {scope: {}});
       expect(result.choices).toEqual([ { idx: 0, text: 'Next' } ]);
 
-      // assigned, but zero
+      // Zero
       var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=0}}</p><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'), {scope: {}});
       expect(result.choices).toEqual([ { idx: 0, text: 'Next' } ]);
     });
 
     it('shows choices conditionally', () => {
-      console.log("HERP");
       // Boolean
       var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=true}}</p><choice if="a" text="Visible"></choice></roleplay>')('roleplay'), {scope: {}});
       expect(result.choices).toEqual([ { idx: 0, text: 'Visible' } ]);
@@ -65,6 +64,64 @@ describe('QuestParser', () => {
       expect(result.choices).toEqual([ { idx: 0, text: 'Visible' } ]);
     });
   });
+
+  describe('combat', () => {
+    it('parses enemies', () => {
+      // "Unknown" enemies are given tier 1.
+      // Known enemies' tier is parsed from constants.
+      var result = loadCombatNode(cheerio.load('<combat><e>Test</e><e>Lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), {scope: {}});
+      expect(result.enemies).toEqual([
+        {name: 'Test', tier: 1},
+        {name:'Lich', tier: 4}
+      ]);
+    })
+
+    it('hides enemies conditionally', () => {
+      var node = cheerio.load('<combat><e>a</e><e if="a">Test</e><event on="win"></event><event on="lose"></event></combat>')('combat');
+      var expected = [{name: 'a', tier: 1}];
+
+      // Unassigned
+      var result = loadCombatNode(node, {scope: {}});
+      expect(result.enemies).toEqual(expected);
+
+      // Boolean
+      var result = loadCombatNode(node, {scope: {a: false}});
+      expect(result.enemies).toEqual(expected);
+
+      // Zero
+      var result = loadCombatNode(node, {scope: {a: 0}});
+      expect(result.enemies).toEqual(expected);
+    });
+
+    it('shows enemies conditionally', () => {
+      var node = cheerio.load('<combat><e if="a">Test</e><event on="win"></event><event on="lose"></event></combat>')('combat');
+      var expected = [{name: 'Test', tier: 1}];
+
+      // Boolean
+      var result = loadCombatNode(node, {scope: {a: true}});
+      expect(result.enemies).toEqual(expected);
+
+      // Non-zero
+      var result = loadCombatNode(node, {scope: {a: 1}});
+      expect(result.enemies).toEqual(expected);
+    });
+
+    it('sets enemies programmatically', () => {
+      var node = cheerio.load('<combat><e>{{a}}</e><event on="win"></event><event on="lose"></event></combat>')('combat');
+
+      // Not defined
+      var result = loadCombatNode(node, {scope: {}});
+      expect(result.enemies).toEqual([{name: '{{a}}', tier: 1}]);
+
+      // String
+      var result = loadCombatNode(node, {scope: {a: "Skeleton"}});
+      expect(result.enemies).toEqual([{name: 'Skeleton', tier: 1}]);
+
+      // Wrapped matrix
+      var result = loadCombatNode(node, {scope: {a: ["Test"]}});
+      expect(result.enemies).toEqual([{name: 'Test', tier: 1}]);
+    });
+  })
 });
 
 /*
