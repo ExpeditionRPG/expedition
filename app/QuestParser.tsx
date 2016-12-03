@@ -4,11 +4,20 @@
    where all arguments except 'type' are optional.
    See quests/quest_spec.txt for specification.
 */
+/// <reference path="../typings/react/react-dom.d.ts" />
 /*global math */
 import * as React from 'react'
 import {XMLElement, DOMElement} from './reducers/StateTypes'
 import {QuestCardName, Enemy, Choice} from './reducers/QuestTypes'
 import {encounters} from './Encounters'
+
+var htmlDecode = (require('he') as any).decode;
+
+var math = require('mathjs') as any;
+
+export interface QuestContext {
+  scope: any; //TODO: required fields later
+}
 
 export interface TriggerResult {
   node: XMLElement;
@@ -21,6 +30,7 @@ export interface RoleplayResult {
   content: JSX.Element;
   instruction?: JSX.Element;
   choices: Choice[];
+  context: QuestContext;
 }
 
 export interface CombatResult {
@@ -239,13 +249,55 @@ function _xmlToJSX(node: XMLElement): JSX.Element {
   return ((node as any) as JSX.Element)
 }
 
-export function loadRoleplayNode(node: XMLElement): RoleplayResult {
+function lastExpressionAssignsValue(parsed: any): boolean {
+  if (parsed.type === 'BlockNode') {
+    return lastExpressionAssignsValue(parsed.blocks[parsed.blocks.length].node);
+  }
+  return (parsed.type === 'AssignmentNode' || parsed.type === 'FunctionAssignmentNode');
+}
+
+function evaluateContentOps(content: string, scope: any): string {
+  // Run MathJS over all detected {{operations}}:
+  //
+  // {{.+?(?=}})}}       Match "{{asdf1234}}"
+  // |                   Or
+  // .+?(?={{|$)         Nongreedy characters until "{{" or end of string
+  // /g                  Multiple times
+  var matches = content.match(/{{.+?(?=}})}}|.+?(?={{|$)/g);
+  console.log(matches);
+
+  var result = "";
+  for (let m of matches) {
+    var op = m.match(/{{(.+?)}}/)
+    if (op) {
+      // If it's an operation, run it with our context.
+      console.log(htmlDecode(op[1]));
+
+      var parsed = math.parse(htmlDecode(op[1]));
+      var evalResult = parsed.compile().eval(scope);
+      // Only add the result to content IF it doesn't assign a value as its last action.
+      if (!lastExpressionAssignsValue(parsed)) {
+        result += evalResult;
+      }
+    } else {
+      result += m;
+    }
+  }
+  if (result === '<p></p>') {
+    return '';
+  }
+  return result;
+}
+
+export function loadRoleplayNode(node: XMLElement, context: QuestContext): RoleplayResult {
   // Append elements to contents
   var numEvents = 0;
   var child: XMLElement;
   var choices: Choice[] = [];
   var children: string = '';
   var instruction: JSX.Element = null;
+
+  var newScope = Object.assign({}, context.scope);
 
   // Keep track of the number of choice nodes seen, so we can
   // select a choice without worrying about the state of the quest scope.
@@ -290,13 +342,17 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
     // If we received a Cheerio object, outerHTML will
     // not be defined. toString will be, however.
     // https://github.com/cheeriojs/cheerio/issues/54
+    var textContent = '';
     if (c.get(0).outerHTML) {
-      children += c.get(0).outerHTML;
+      textContent = c.get(0).outerHTML;
     } else if (c.toString) {
-      children += c.toString();
+      textContent = c.toString();
     } else {
       throw new Error("Invalid element " + c);
     }
+
+    children += evaluateContentOps(textContent, newScope);
+
   }.bind(this));
 
   // Append a generic "Next" button if there were no events,
@@ -323,6 +379,7 @@ export function loadRoleplayNode(node: XMLElement): RoleplayResult {
     content: <span dangerouslySetInnerHTML={{__html: children}} />,
     choices,
     instruction,
+    context: {scope: newScope},
   };
 };
 

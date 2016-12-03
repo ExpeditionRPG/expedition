@@ -1,3 +1,43 @@
+/// <reference path="../typings/expect/expect.d.ts" />
+/// <reference path="../typings/jasmine/jasmine.d.ts" />
+/// <reference path="../typings/custom/require.d.ts" />
+/// <reference path="../typings/react/react-addons-test-utils.d.ts" />
+/// <reference path="../typings/enzyme/enzyme.d.ts" />
+
+import {loadRoleplayNode} from './QuestParser'
+
+import {mount} from 'enzyme'
+
+var jsdom = (require('jsdom') as any).jsdom;
+
+declare var global: any;
+global.document = jsdom('');
+global.window = document.defaultView;
+
+var expect: any = require('expect');
+var cheerio: any = require('cheerio');
+
+var window: any = cheerio.load('<div>');
+
+
+describe('QuestParser', () => {
+
+  describe('roleplay', () => {
+    it('parses ops in body', () => {
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{text="TEST"}}</p><p>{{text}}</roleplay>')('roleplay'), {scope: {}});
+      expect(mount(result.content).html()).toEqual("<span><p>TEST</p></span>");
+    });
+
+    it('hides choices with ops == false', () => {
+
+    });
+
+    it('shows choices with ops == true', () => {
+
+    });
+  });
+});
+
 /*
 test('<end> sets title and icon', function() {
   var result = (new questParser()).init(fEnd);
