@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
           if (store.getState().editor.dirty) {
             dispatch(saveQuest(quest));
           }
-        }, 5000);
+        }, 2000);
       }
     },
     onLine: (line: number, editor: EditorState) => {
