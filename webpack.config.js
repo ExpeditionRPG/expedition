@@ -35,7 +35,7 @@ var options = {
       { test: /\.json$/, loader: 'json-loader' },
       //{ test: /\.test\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/ },
       // Specifically exclude building anything in node_modules, with the exception of the expedition-app lib we use for previewing quest code.
-      { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /\/node_modules\/((?!expedition\-app).)*$/ },
+      { test: /\.tsx$/, loaders: ['react-hot', 'awesome-typescript-loader'], exclude: /\/node_modules\/((?!expedition\-app).)*$/ },
     ],
     preLoaders: [
         { test: /\.js$/, loader: "source-map-loader" }

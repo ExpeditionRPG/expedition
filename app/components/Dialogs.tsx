@@ -9,6 +9,7 @@ import Paper from 'material-ui/Paper'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import RaisedButton from 'material-ui/RaisedButton';
 import Toggle from 'material-ui/Toggle'
+import ContextEditorContainer from './ContextEditorContainer'
 
 import {ErrorType} from '../error'
 import {QuestType, ShareType, DialogsState, DialogIDType} from '../reducers/StateTypes'
@@ -122,6 +123,40 @@ export class UnpublishedDialog extends React.Component<UnpublishedDialogProps, {
   }
 }
 
+
+interface VariablesDialogProps extends React.Props<any> {
+  open: boolean;
+  onRequestClose: (v: any)=>void;
+}
+
+export class VariablesDialog extends React.Component<VariablesDialogProps, {}> {
+  editor: any;
+
+  render() {
+    return (
+      <Dialog
+        title="Variables"
+        actions={[<RaisedButton
+          label="Cancel"
+          primary={true}
+          onTouchTap={() => this.props.onRequestClose(null)}
+        />,
+        <RaisedButton
+          label="Set"
+          primary={true}
+          onTouchTap={() => this.props.onRequestClose(this.editor.getNewContext())}
+        />]}
+        overlayClassName={'dialog'}
+        titleClassName={'dialogTitle'}
+        modal={false}
+        open={Boolean(this.props.open)}>
+        <ContextEditorContainer ref={(e: any) => {this.editor = e;}}/>
+      </Dialog>
+    );
+  }
+}
+
+
 export interface DialogsStateProps {
   open: DialogsState;
   quest: QuestType;
@@ -130,6 +165,7 @@ export interface DialogsStateProps {
 
 export interface DialogsDispatchProps {
   onRequestClose: (dialog: DialogIDType)=>void;
+  onCloseVarEditor: (newScope: any)=>void;
 }
 
 interface DialogsProps extends DialogsStateProps, DialogsDispatchProps {}
@@ -150,6 +186,10 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
       <UnpublishedDialog
         open={props.open['UNPUBLISHED']}
         onRequestClose={() => props.onRequestClose('UNPUBLISHED')}
+      />
+      <VariablesDialog
+        open={props.open['VARIABLES']}
+        onRequestClose={props.onCloseVarEditor}
       />
     </span>
   );

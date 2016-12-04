@@ -20,6 +20,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
     onRequestClose: (dialog: DialogIDType): void => {
       dispatch(setDialog(dialog, false));
     },
+    onCloseVarEditor: (newScope: any): void => {
+      console.log(newScope);
+    }
   };
 }
 

@@ -25,6 +25,7 @@ var config = require('./config');
 var logging = require('./lib/logging');
 var routes = require('./routes');
 var bodyParser = require('body-parser')
+var request = require('request');
 
 var app = express();
 
@@ -70,7 +71,11 @@ var setupRoutes = function(app) {
     // Set a catch-all route and proxy the request for static assets
     console.log("Proxying static requests to webpack");
     var proxy = require('proxy-middleware');
-    app.use('/', proxy(url.parse('http://localhost:8081/')));
+    app.use('/', function(req, res) {
+      var url = 'http://localhost:8081/' + req.url;
+      req.pipe(request(url)).pipe(res);
+    });
+    //proxy(url.parse('http://localhost:8081/')));
   } else {
     // TODO: Serve files from dist/
     app.use('/assets', express.static('app/assets'));
@@ -124,7 +129,7 @@ if (module === require.main) {
 
     // Start the server
     server.listen(8081, "localhost", function() {});
-    console.log("Webpack listening on 8080");
+    console.log("Webpack listening on 8081");
   }
 
   var server = app.listen(config.get('PORT'), function () {

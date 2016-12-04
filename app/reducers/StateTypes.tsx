@@ -3,7 +3,7 @@ import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
 import {QDLParser} from '../parsing/QDLParser'
 // TODO: URL type?
 
-export type DialogIDType = 'ERROR' | 'PUBLISHED' | 'UNPUBLISHED';
+export type DialogIDType = 'ERROR' | 'PUBLISHED' | 'UNPUBLISHED' | 'VARIABLES';
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 
