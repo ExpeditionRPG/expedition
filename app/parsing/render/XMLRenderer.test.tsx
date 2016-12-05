@@ -26,8 +26,12 @@ describe('XMLRenderer', () => {
 
   describe('toTrigger', () => {
     it('renders', () => {
-      expect(XMLRenderer.toTrigger("test").toString()).toEqual("<trigger>test</trigger>");
+      expect(XMLRenderer.toTrigger({text: "test"}).toString()).toEqual("<trigger>test</trigger>");
     });
+
+    it('renders with condition', () => {
+      expect(XMLRenderer.toTrigger({text: "test", visible: "cond"}).toString()).toEqual("<trigger if=\"cond\">test</trigger>");
+    })
   });
 
   describe('toQuest', () => {
@@ -60,7 +64,7 @@ describe('XMLRenderer', () => {
     it('coalesces all elements into first block', () => {
       var quest = XMLRenderer.toQuest({});
       var r = XMLRenderer.toRoleplay({}, ['test']);
-      var t = XMLRenderer.toTrigger("end");
+      var t = XMLRenderer.toTrigger({text: "end"});
 
       expect(XMLRenderer.finalize(quest, [r,t]).toString())
         .toEqual('<quest><roleplay><p>test</p></roleplay><trigger>end</trigger></quest>');

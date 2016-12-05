@@ -65,8 +65,12 @@ export var XMLRenderer: Renderer = {
     return combat;
   },
 
-  toTrigger: function(text: string): any {
-    return cheerio.load('<trigger>'+text+'</trigger>')('trigger');;
+  toTrigger: function(attribs: {[k: string]: any}): any {
+    var trigger = cheerio.load('<trigger>'+attribs['text']+'</trigger>')('trigger');
+    if (attribs['visible']) {
+      trigger.attr('if', attribs['visible']);
+    }
+    return trigger;
   },
 
   toQuest: function(attribs: {[k: string]: string}): any {

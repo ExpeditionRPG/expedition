@@ -92,23 +92,21 @@ export class BlockRenderer {
   }
 
   toTrigger(blocks: Block[], log: Logger) {
-    var text = blocks[0].lines[0].match(REGEXP_BOLD);
-    if (text) {
-      blocks[0].render = this.renderer.toTrigger(text[1]);
-    } else {
-      log.err(
-        'could not parse trigger value from trigger',
-        '404',
-        blocks[0].startLine
-      );
-    }
-
     if (blocks.length !== 1) {
       log.err(
         'trigger block group cannot contain multiple blocks',
         '404'
       );
     }
+
+    try {
+      var extracted: any = this.extractTrigger(blocks[0].lines[0]);
+    } catch (e) {
+      log.err("could not parse trigger block", "404");
+      extracted = {title: 'end', visible: undefined};
+    }
+
+    blocks[0].render = this.renderer.toTrigger(extracted);
   }
 
   validate(): any {
@@ -220,14 +218,14 @@ export class BlockRenderer {
         "combat block must have 'win' event",
         "404"
       );
-      events.push({text: "on win", event: [this.renderer.toTrigger("end")]});
+      events.push({text: "on win", event: [this.renderer.toTrigger({text: "end"})]});
     }
     if (!hasWin) {
       log.err(
         "combat block must have 'lose' event",
         "404"
       );
-      events.push({text: "on lose", event: [this.renderer.toTrigger("end")]});
+      events.push({text: "on lose", event: [this.renderer.toTrigger({text: "end"})]});
     }
 
     blocks[0].render = this.renderer.toCombat(attribs, events);
@@ -314,6 +312,19 @@ export class BlockRenderer {
     // \s*                      Match any number of spaces (greedy)
     // (.*)$                    Match until the end of the string.
     var m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*(.*)$/);
+    return {
+      visible: m[2],
+      text: m[3],
+    };
+  }
+
+  private extractTrigger(line: string): {text: string, visible: string} {
+    // Breakdown:
+    // \*\*\s*                  Match "**" and any number of spaces (greedy)
+    // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
+    // \s*                      Match any number of spaces (greedy)
+    // (.*)\*\*$                Match until "**" and the end of the string.
+    var m = line.match(/^\*\*\s*(\{\{(.*?)\}\})?\s*(.*)\*\*$/);
     return {
       visible: m[2],
       text: m[3],

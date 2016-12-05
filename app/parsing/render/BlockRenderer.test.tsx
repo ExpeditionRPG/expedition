@@ -296,6 +296,21 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
+    it('renders condition', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        { lines: [ '**{{a}} end**', '' ],
+          indent: 4,
+          startLine: 21
+        }
+      ];
+
+      br.toTrigger(blocks, log)
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual('<trigger if="a">end</trigger>');
+      expect(prettifyMsgs(log.finalize())).toEqual('');
+    });
+
     it('errors if multiple blocks');
 
     it('errors on bad parsing');
