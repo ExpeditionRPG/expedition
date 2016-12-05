@@ -7,6 +7,7 @@ var math = require('mathjs') as any;
 const mapStateToProps = (state: AppState, ownProps: any): ContextEditorStateProps => {
   return {
     context: state.preview.quest && state.preview.quest.result && state.preview.quest.result.ctx,
+    console: null,
   };
 }
 

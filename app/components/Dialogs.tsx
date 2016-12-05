@@ -9,10 +9,9 @@ import Paper from 'material-ui/Paper'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import RaisedButton from 'material-ui/RaisedButton';
 import Toggle from 'material-ui/Toggle'
-import ContextEditorContainer from './ContextEditorContainer'
 
 import {ErrorType} from '../error'
-import {QuestType, ShareType, DialogsState, DialogIDType} from '../reducers/StateTypes'
+import {QuestType, EditorState, ShareType, DialogsState, DialogIDType} from '../reducers/StateTypes'
 import theme from '../theme'
 
 var XMLParserError: any = (require('../../translation/to_markdown') as any).XMLParserError;
@@ -124,33 +123,41 @@ export class UnpublishedDialog extends React.Component<UnpublishedDialogProps, {
 }
 
 
-interface VariablesDialogProps extends React.Props<any> {
+interface InitialStateDialogProps extends React.Props<any> {
+  initialValue: string;
   open: boolean;
   onRequestClose: (v: any)=>void;
 }
 
-export class VariablesDialog extends React.Component<VariablesDialogProps, {}> {
-  editor: any;
+export class InitialStateDialog extends React.Component<InitialStateDialogProps, {}> {
+  initstate: any;
 
   render() {
     return (
       <Dialog
-        title="Variables"
+        title="Initial State Script"
         actions={[<RaisedButton
           label="Cancel"
           primary={true}
           onTouchTap={() => this.props.onRequestClose(null)}
         />,
         <RaisedButton
-          label="Set"
+          label="Save"
           primary={true}
-          onTouchTap={() => this.props.onRequestClose(this.editor.getNewContext())}
+          onTouchTap={() => this.props.onRequestClose(this.initstate.value)}
         />]}
         overlayClassName={'dialog'}
         titleClassName={'dialogTitle'}
         modal={false}
         open={Boolean(this.props.open)}>
-        <ContextEditorContainer ref={(e: any) => {this.editor = e;}}/>
+        <p>
+          Set the initial state of your quest by writing
+          in <a href="http://mathjs.org/">MathJS here</a>.
+        </p>
+        <p>
+          Your script will be run immediately before any "play" actions to populate the state of your quest.
+        </p>
+        <textarea className="initial_state" ref={(e: any) => {if (e) {e.value = this.props.initialValue; this.initstate = e;}}}/>
       </Dialog>
     );
   }
@@ -160,12 +167,13 @@ export class VariablesDialog extends React.Component<VariablesDialogProps, {}> {
 export interface DialogsStateProps {
   open: DialogsState;
   quest: QuestType;
+  editor: EditorState;
   errors: ErrorType[];
 };
 
 export interface DialogsDispatchProps {
   onRequestClose: (dialog: DialogIDType)=>void;
-  onCloseVarEditor: (newScope: any)=>void;
+  onCloseInitialContext: (newScope: any)=>void;
 }
 
 interface DialogsProps extends DialogsStateProps, DialogsDispatchProps {}
@@ -187,9 +195,10 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         open={props.open['UNPUBLISHED']}
         onRequestClose={() => props.onRequestClose('UNPUBLISHED')}
       />
-      <VariablesDialog
-        open={props.open['VARIABLES']}
-        onRequestClose={props.onCloseVarEditor}
+      <InitialStateDialog
+        open={props.open['INITIAL_STATE']}
+        initialValue={props.editor.opInit}
+        onRequestClose={(v: string) => props.onCloseInitialContext(v)}
       />
     </span>
   );

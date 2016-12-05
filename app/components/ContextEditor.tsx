@@ -14,6 +14,7 @@ export interface ContextEditorStateProps {
 }
 
 export interface ContextEditorDispatchProps {
+  handleKey: (e: any) => any;
 }
 
 interface ContextEditorProps extends ContextEditorStateProps, ContextEditorDispatchProps {}

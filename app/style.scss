@@ -133,9 +133,17 @@ html, body, #react-app {
   }
 }
 
-.context_editor {
-  width: 100%;
+.initial_state {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  display: block;
   height: 100%;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  min-height: 400px;
+  padding: 0px;
 }
 
 .console {

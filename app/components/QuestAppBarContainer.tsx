@@ -3,7 +3,6 @@ import {connect} from 'react-redux'
 import {QuestActionType} from '../actions/ActionTypes'
 import {saveQuest, publishQuest, unpublishQuest} from '../actions/quest'
 import {logoutUser} from '../actions/user'
-import {setDialog} from '../actions/dialogs'
 import {AppState, QuestType, EditorState, UserState} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
 
@@ -40,8 +39,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         case 'FEEDBACK':
           window.open("http://expeditiongame.com/contact");
           break;
-        case 'VARIABLES':
-          return dispatch(setDialog('VARIABLES', true));
         default:
           throw new Error("Could not handle menu action " + action);
       }

@@ -1,4 +1,4 @@
-import {SetDirtyAction, SetLineAction, QuestRenderAction} from '../actions/ActionTypes'
+import {SetDirtyAction, SetLineAction, QuestRenderAction, SetOpInitAction, SetPlaySettingAction} from '../actions/ActionTypes'
 import {EditorState} from './StateTypes'
 
 const defaultState: EditorState = {
@@ -6,6 +6,8 @@ const defaultState: EditorState = {
   dirty: false,
   line: 0,
   node: null,
+  opInit: '',
+  playFrom: 'cursor',
 };
 
 export function editor(state: EditorState = defaultState, action: Redux.Action): EditorState {
@@ -20,6 +22,10 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
       return Object.assign({}, state, {renderer: (action as QuestRenderAction).qdl});
     case 'QUEST_NODE':
       return Object.assign({}, state, {node: (action as any).node});
+    case 'SET_OP_INIT':
+      return Object.assign({}, state, {opInit: (action as SetOpInitAction).mathjs});
+    case 'SET_PLAY_SETTING':
+      return Object.assign({}, state, {playFrom: (action as SetPlaySettingAction).setting});
     default:
       return state;
   }

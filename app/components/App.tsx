@@ -1,8 +1,11 @@
 import * as React from 'react'
 
 import Main from 'expedition-app/app/components/base/Main.tsx'
-
-import FlatButton from 'material-ui/FlatButton'
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton'
+import SettingsIcon from 'material-ui/svg-icons/action/settings';
+import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
 
 require('expedition-app/app/style.scss')
 
@@ -16,8 +19,9 @@ export interface AppStateProps {
 }
 
 export interface AppDispatchProps {
-  playFromCursor: (editor: EditorState, quest: QuestType) => void;
-  playFromStart: (editor: EditorState, quest: QuestType) => void;
+  onPlay: (editor: EditorState, quest: QuestType) => void;
+  openInitialStateDialog: () => void;
+  onPlaySettingChange: (e: any, index: number, menuItemValue: any) => void;
 }
 
 interface AppProps extends AppStateProps, AppDispatchProps {}
@@ -26,12 +30,17 @@ const App = (props: AppProps): JSX.Element => {
   return (
     <div className="app_root">
       <div className="app_controls">
-        <FlatButton
-          label="Play from Cursor"
-          onTouchTap={(event: any) => props.playFromCursor(props.editor, props.quest)} />
-        <FlatButton
-          label="Play from Start"
-          onTouchTap={(event: any) => props.playFromStart(props.editor, props.quest)} />
+        <DropDownMenu value={props.editor.playFrom} onChange={props.onPlaySettingChange}>
+          <MenuItem value={"cursor"} primaryText="Play from Cursor" />
+          <MenuItem value={"start"} primaryText="Play from Start" />
+        </DropDownMenu>
+        <IconButton
+          onTouchTap={(event: any) => props.onPlay(props.editor, props.quest)} >
+          <PlayIcon/>
+        </IconButton>
+        <IconButton onTouchTap={(event: any) => props.openInitialStateDialog()}>
+          <SettingsIcon/>
+        </IconButton>
       </div>
       <div className="app editor_override">
         <Main/>

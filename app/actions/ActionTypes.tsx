@@ -7,7 +7,7 @@ export const LOAD_QUEST: string = 'LOAD_QUEST';
 export const SAVE_QUEST: string = 'SAVE_QUEST';
 export const PUBLISH_QUEST: string = 'PUBLISH_QUEST';
 export const UNPUBLISH_QUEST: string = 'UNPUBLISH_QUEST';
-export type QuestActionType = 'VARIABLES'| 'NEW_QUEST' | 'LOAD_QUEST' | 'SAVE_QUEST' | 'PUBLISH_QUEST' | 'UNPUBLISH_QUEST' | 'DRIVE_VIEW' | 'FEEDBACK' | 'HELP';
+export type QuestActionType = 'INITIAL_STATE'| 'NEW_QUEST' | 'LOAD_QUEST' | 'SAVE_QUEST' | 'PUBLISH_QUEST' | 'UNPUBLISH_QUEST' | 'DRIVE_VIEW' | 'FEEDBACK' | 'HELP';
 
 export const SIGN_IN: string = 'SIGN_IN';
 export const SIGN_OUT: string = 'SIGN_OUT';
@@ -72,4 +72,14 @@ export interface RequestQuestUnpublishAction extends Redux.Action {
 export interface ReceiveQuestUnpublishAction extends Redux.Action {
   type: 'RECEIVE_QUEST_UNPUBLISH';
   quest: QuestType;
+}
+
+export interface SetOpInitAction extends Redux.Action {
+  type: 'SET_OP_INIT';
+  mathjs: string;
+}
+
+export interface SetPlaySettingAction extends Redux.Action {
+  type: 'SET_PLAY_SETTING';
+  setting: string;
 }
