@@ -4,7 +4,7 @@
 /// <reference path="../typings/react/react-addons-test-utils.d.ts" />
 /// <reference path="../typings/enzyme/enzyme.d.ts" />
 
-import {loadRoleplayNode, loadCombatNode} from './QuestParser'
+import {loadRoleplayNode, loadCombatNode, loadTriggerNode, handleChoice} from './QuestParser'
 
 import {mount} from 'enzyme'
 
@@ -41,6 +41,9 @@ describe('QuestParser', () => {
     });
 
     it('hides choices conditionally', () => {
+      // Changes to ops inside a roleplay card affect the visibility
+      // of its choices.
+
       // Unassigned
       var result = loadRoleplayNode(cheerio.load('<roleplay><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'), {scope: {}});
       expect(result.choices).toEqual([ { idx: 0, text: 'Next' } ]);
@@ -55,6 +58,9 @@ describe('QuestParser', () => {
     });
 
     it('shows choices conditionally', () => {
+      // Changes to ops inside a roleplay card affect the visibility
+      // of its choices.
+
       // Boolean
       var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=true}}</p><choice if="a" text="Visible"></choice></roleplay>')('roleplay'), {scope: {}});
       expect(result.choices).toEqual([ { idx: 0, text: 'Visible' } ]);
@@ -121,7 +127,50 @@ describe('QuestParser', () => {
       var result = loadCombatNode(node, {scope: {a: ["Test"]}});
       expect(result.enemies).toEqual([{name: 'Test', tier: 1}]);
     });
-  })
+  });
+
+  describe('trigger', () => {
+    it('triggers end', () => {
+      var result = loadTriggerNode(cheerio.load('<trigger>end</trigger>')('trigger'));
+      expect(result.name).toEqual('end');
+    });
+
+    it('triggers goto', () => {
+      var trigNode = cheerio.load('<trigger>goto test</trigger>')('trigger');
+      var rootNode = cheerio.load('<quest></quest>')('quest');
+      var testNode = cheerio.load('<roleplay id="test">Test Node</roleplay>')('roleplay');
+
+      rootNode.append(testNode);
+      rootNode.append(trigNode);
+
+      var result = loadTriggerNode(trigNode);
+      expect(result.name).toEqual('goto');
+      expect(result.node.text()).toEqual('Test Node');
+    });
+  });
+
+  describe('handleChoice', () => {
+    it('skips hidden triggers', () => {
+      var node = cheerio.load('<roleplay><choice><trigger if="a">goto 5</trigger><trigger>end</trigger></choice></roleplay>')('roleplay');
+      var result = handleChoice(node, 0, {scope: {}});
+      expect(result.text()).toEqual('end');
+    });
+
+    it('uses enabled triggers', () => {
+      var node = cheerio.load('<roleplay><choice><trigger if="a">goto 5</trigger><trigger>end</trigger></choice></roleplay>')('roleplay');
+      var result = handleChoice(node, 0, {scope: {a: true}});
+      expect(result.text()).toEqual('goto 5');
+    });
+
+    it('goes to correct choice', () => {
+      var node = cheerio.load('<roleplay><choice></choice><choice><roleplay>herp</roleplay></choice></roleplay>')('roleplay');
+      var result = handleChoice(node, 1, {scope:{}});
+      expect(result.text()).toEqual('herp');
+    });
+
+    it('errors if choice not enabled');
+    it('errors if choice does not contain enabled roleplay/choice/trigger');
+  });
 });
 
 /*

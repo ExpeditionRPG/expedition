@@ -58,9 +58,9 @@ export function init(root: XMLElement): XMLElement {
 }
 
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
-export function handleEvent(parent: XMLElement, event: string, context: QuestContext): XMLElement {
+export function handleEvent(parent: XMLElement, event: string, ctx: QuestContext): XMLElement {
   var child = _loopChildren(parent, function(tag: string, c: XMLElement) {
-    if (c.attr('on') === event && _isEnabled(c, context)) {
+    if (c.attr('on') === event && _isEnabled(c, ctx)) {
       return c;
     }
   }.bind(this));
@@ -68,23 +68,27 @@ export function handleEvent(parent: XMLElement, event: string, context: QuestCon
   if (!child) {
     throw new Error("Could not find child with on='"+event+"'");
   }
-  return _loadNode(child);
+  return _loadChoiceOrEventNode(child, ctx);
 };
 
 // The passed choice parameter is an number indicating the choice number in the XML element, including conditional choices.
-export function handleChoice(parent: XMLElement, choice: number): XMLElement {
+export function handleChoice(parent: XMLElement, choice: number, ctx: QuestContext): XMLElement {
 
   // Scan the parent node to find the choice with the right number
   var idx = 0;
   var choiceIdx = -1;
   for (; idx < parent.children().length; idx++) {
-    if (parent.children().get(idx).tagName.toLowerCase() === "choice") {
+    var child = parent.children().eq(idx);
+    if (child.get(0).tagName.toLowerCase() === "choice") {
       choiceIdx++;
     }
 
     // When we find our choice, push it onto the stack and load it.
     if (choiceIdx === choice) {
-      return _loadNode(parent.children().eq(idx));
+      if (!_isEnabled(child, ctx)) {
+        throw new Error("Somehow triggered an invisible choice node");
+      }
+      return _loadChoiceOrEventNode(child, ctx);
     }
   }
 
@@ -92,58 +96,38 @@ export function handleChoice(parent: XMLElement, choice: number): XMLElement {
   if (_loopChildren(parent, function(tag) { if (tag === "end") { return true; }})) {
     return null;
   }
-  return _loadNode(_findNextNode(parent));
+  return _loadChoiceOrEventNode(_findNextNode(parent, ctx), ctx);
 };
 
 function _loadNode(node: XMLElement): XMLElement {
   switch(node.get(0).tagName.toLowerCase()) {
-    //case "op":
-    // return _loadOpNode(node);
-    case 'choice':
-      return _loadChoiceNode(node);
-    case 'event':
-      return _loadEventNode(node);
     case 'combat':
-      return node;
     case 'roleplay':
-      return node;
     case 'trigger':
       return node;
-    case 'comment':
-      return _loadNode(_findNextNode(node));
     default:
-      throw new Error('Unknown node name: ' + node.get(0).tagName);
+      throw new Error('Unknown or unexpected node: ' + node.get(0).tagName);
   }
 };
 
-function _loadChoiceNode(node: XMLElement): XMLElement {
-  // The action on a choice node is functionally the same as an event node.
-  return _loadEventNode(node);
-};
-
-function _loadEventNode(node: XMLElement): XMLElement {
-  // If event is empty and has a goto, jump to the destination element with that id.
-  if (node.children().length === 0 && node.attr('goto')) {
-    return _loadNode(_findRootNode(node).find('#'+node.attr('goto')).eq(0));
-  }
-
+function _loadChoiceOrEventNode(node: XMLElement, ctx: QuestContext): XMLElement {
   // Validate the event node (must not have an event child and must control something)
   var hasControlChild = false;
-  _loopChildren(node, function(tag) {
+  var child: any = _loopChildren(node, function(tag, n) {
     if (tag === 'event' || tag === 'choice') {
       throw new Error('Node cannot have <event> or <choice> child');
     }
 
-    if (tag === 'combat' || tag === 'trigger' || tag === 'roleplay') {
-      hasControlChild = true;
+    if ((tag === 'combat' || tag === 'trigger' || tag === 'roleplay') && _isEnabled(n, ctx)) {
+      return n;
     }
   });
-  if (!hasControlChild) {
-    throw new Error('Node without goto attribute must have at least one of <combat> or <roleplay>');
+  if (!child) {
+    throw new Error('Node without goto attribute must have at least one of <combat> or <roleplay> or <trigger>');
   }
 
   // Dive in to the first element.
-  return _loadNode(node.children().eq(0));
+  return _loadNode(child);
 };
 
 export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResult {
@@ -157,7 +141,7 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
   _loopChildren(node, function(tag: string, c: XMLElement) {
 
     // Skip events and enemies that aren't enabled.
-    if (!_isEnabled(c, newScope)) {
+    if (!_isEnabled(c, {scope: newScope})) {
       return;
     }
 
@@ -214,33 +198,41 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
 };
 
 export function loadTriggerNode(node: XMLElement): TriggerResult {
-  return {
-    type: 'Trigger',
-    node,
-    name: node.text()
-  };
-};
-
-function _isComment(node: XMLElement): boolean {
-  return (node.get(0).tagName.toLowerCase() === "comment");
-}
-
-function _isEnabled(node: XMLElement, context: QuestContext): boolean {
-  // Comments are never visible.
-  if (_isComment(node)) {
-    return false;
+  var text = node.text().trim();
+  if (text === 'end') {
+    return {
+      type: 'Trigger',
+      node,
+      name: 'end',
+    };
   }
 
+  var m = text.match(/\s*goto\s+(.*)/);
+  if (m) {
+    var id = m[1];
+
+    // Return the destination element with that id.
+    return {
+      type: 'Trigger',
+      node: _findRootNode(node).find('#'+id).eq(0),
+      name: 'goto',
+    };
+  }
+
+  throw new Error('invalid trigger ' + text);
+};
+
+function _isEnabled(node: XMLElement, ctx: QuestContext): boolean {
   var ifExpr = node.attr('if');
   if (!ifExpr) {
     return true;
   }
 
-  // Operate on a copied context - checking for enablement should never
+  // Operate on a copied scope - checking for enablement should never
   // change the current context.
-  var tmpContext = Object.assign({}, context);
+  var tmpScope = Object.assign({}, ctx.scope);
   try {
-    var visible = math.eval(ifExpr, tmpContext);
+    var visible = math.eval(ifExpr, tmpScope);
 
     // We check for truthiness here, so nonzero numbers are true, etc.
     return Boolean(visible);
@@ -354,7 +346,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
     }
 
     // Skip elements that aren't visible
-    if (!_isEnabled(c, newScope)) {
+    if (!_isEnabled(c, {scope: newScope})) {
       return;
     }
 
@@ -397,7 +389,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
   // or an "End" button if there's also an <End> tag.
   if (numEvents === 0) {
     // Handle custom generic next button text based on if we're heading into a trigger node.
-    var nextNode = _findNextNode(node);
+    var nextNode = _findNextNode(node, ctx);
     var buttonText = "Next";
     if (nextNode && nextNode.get(0).tagName.toLowerCase() === "trigger") {
       switch(nextNode.text().toLowerCase()) {
@@ -434,7 +426,7 @@ function _findRootNode(node: XMLElement) {
   return node;
 }
 
-function _findNextNode(node: XMLElement) {
+function _findNextNode(node: XMLElement, ctx: QuestContext) {
   while (true) {
     if (node.length === 0) {
       return null;
@@ -444,7 +436,7 @@ function _findNextNode(node: XMLElement) {
 
 
     // Skip control elements
-    if (sibling !== null && sibling.length > 0 && !_isControlNode(sibling)) {
+    if (sibling !== null && sibling.length > 0 && !_isControlNode(sibling) && _isEnabled(sibling, ctx)) {
       return sibling;
     }
 
@@ -474,7 +466,7 @@ function _getInvalidNodesAndAttributes(node: XMLElement) {
 
   // Quests must only contain these tags:
   if (["op", "quest", "div", "span", "b", "i", "choice", "event", "combat", "roleplay", "p", "e", "em",
-       "trigger", "comment", "instruction"].indexOf(
+       "trigger", "instruction"].indexOf(
         node.get(0).tagName.toLowerCase()) === -1) {
     results[node.get(0).tagName.toLowerCase()] = (results[node.get(0).tagName.toLowerCase()] || 0) + 1;
   }

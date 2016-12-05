@@ -28,7 +28,7 @@ export function initCombat(node: XMLElement, settings: SettingsType, result: Com
 
 export function choice(settings: SettingsType, node: XMLElement, index: number, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    var nextNode: XMLElement = handleChoice(node, index);
+    var nextNode: XMLElement = handleChoice(node, index, ctx);
     loadNode(settings, dispatch, nextNode, ctx);
   }
 }
@@ -39,12 +39,16 @@ export function loadNode(settings: SettingsType, dispatch: Redux.Dispatch<any>, 
   var tag = node.get(0).tagName.toUpperCase();
   switch (tag) {
     case 'TRIGGER':
-      // TODO: allow jumping via GOTO trigger
-      let name: string = loadTriggerNode(node).name;
-      if (name === 'end') {
-        return dispatch(toPrevious('QUEST_START', undefined, true));
+      var trigger = loadTriggerNode(node);
+      if (trigger.name === 'end') {
+        dispatch(toPrevious('QUEST_START', undefined, true));
+        return;
+      } else if (trigger.name === 'goto') {
+        loadNode(settings, dispatch, trigger.node, ctx);
+        return;
+      } else {
+        throw new Error('invalid trigger ' + trigger.name);
       }
-      throw new Error('invalid trigger ' + name);
     case 'ROLEPLAY':
       var result = loadRoleplayNode(node, ctx);
       after = {type: 'QUEST_NODE', node, result} as QuestNodeAction;
