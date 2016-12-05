@@ -1,3 +1,4 @@
+/*
 test('Loot returns viable value with tier sum = 1', function() {
   var loot = calculateLoot({
     tier: 1,
@@ -5,7 +6,7 @@ test('Loot returns viable value with tier sum = 1', function() {
   // TODO assert valid
   throw new Error 'Not finished implementing';
 });
-
+*/
 
 /*
 test('help text is hidden when global setting set', function() {

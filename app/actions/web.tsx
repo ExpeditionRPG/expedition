@@ -1,18 +1,19 @@
 import {XMLElement} from '../reducers/StateTypes'
 import {initQuest} from './quest'
 import {SearchSettings, UserState} from '../reducers/StateTypes'
+import {QuestContext, defaultQuestContext} from '../reducers/QuestTypes'
 import {toCard} from './card'
 import {authSettings} from '../constants'
 
 export function fetchQuestXML(url: string) {
   return (dispatch: Redux.Dispatch<any>): any => {
     $.get(url, function(data: XMLElement | string) {
-      dispatch(loadQuestXML(data));
+      dispatch(loadQuestXML(data, defaultQuestContext()));
     });
   };
 }
 
-export function loadQuestXML(data: XMLElement | string) {
+export function loadQuestXML(data: XMLElement | string, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
     var xml = $(data) as any as XMLElement;
     var questNode = xml;
@@ -23,7 +24,7 @@ export function loadQuestXML(data: XMLElement | string) {
       throw 'Invalid Quest - missing <quest> node';
     }
     var firstNode = questNode.children().eq(0);
-    dispatch(initQuest(firstNode));
+    dispatch(initQuest(firstNode, ctx));
     dispatch(toCard('QUEST_START'));
   };
 }

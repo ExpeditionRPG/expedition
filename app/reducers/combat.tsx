@@ -119,7 +119,7 @@ export function combat(state: CombatState, action: Redux.Action): CombatState {
     case 'INIT_COMBAT':
       let tierSum: number = 0;
       let combatAction = action as InitCombatAction;
-      let enemies: Enemy[] =  (combatAction.node) ? loadCombatNode(combatAction.node).enemies : [];
+      let enemies: Enemy[] =  (combatAction.node) ? loadCombatNode(combatAction.node, combatAction.result.ctx).enemies : [];
       for (let enemy of enemies) {
         tierSum += enemy.tier;
       }

@@ -1,3 +1,178 @@
+/// <reference path="../typings/expect/expect.d.ts" />
+/// <reference path="../typings/jasmine/jasmine.d.ts" />
+/// <reference path="../typings/custom/require.d.ts" />
+/// <reference path="../typings/react/react-addons-test-utils.d.ts" />
+/// <reference path="../typings/enzyme/enzyme.d.ts" />
+
+import {loadRoleplayNode, loadCombatNode, loadTriggerNode, handleChoice} from './QuestParser'
+
+import {mount} from 'enzyme'
+
+var jsdom = (require('jsdom') as any).jsdom;
+
+declare var global: any;
+global.document = jsdom('');
+global.window = document.defaultView;
+
+var expect: any = require('expect');
+var cheerio: any = require('cheerio');
+
+var window: any = cheerio.load('<div>');
+
+
+describe('QuestParser', () => {
+
+  describe('roleplay', () => {
+    it('parses ops in body', () => {
+      // Lines with nothing but variable assignment are hidden
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{text="TEST"}}</p><p>{{text}}</p></roleplay>')('roleplay'), {scope: {}});
+      expect(mount(result.content).html()).toEqual("<span><p>TEST</p></span>");
+
+      // Single-valued array results are indirected
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{r=[5]}}</p><p>{{r}}</p></roleplay>')('roleplay'), {scope: {}});
+      expect(mount(result.content).html()).toEqual("<span><p>5</p></span>");
+    });
+
+    it('parses multi-statement ops in body and respects newlines', () => {
+      // If the op ends without an assignment, it's displayed.
+      // If it does, it's hidden.
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=5;c=7}}</p><p>{{b=7;a}}</p><p>{{a=5\nb=10}}</p><p>{{a=5\nb=10\nc}}</p></roleplay>')('roleplay'), {scope: {}});
+      expect(mount(result.content).html()).toEqual("<span><p>5</p><p>7</p></span>");
+    });
+
+    it('hides choices conditionally', () => {
+      // Changes to ops inside a roleplay card affect the visibility
+      // of its choices.
+
+      // Unassigned
+      var result = loadRoleplayNode(cheerio.load('<roleplay><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'), {scope: {}});
+      expect(result.choices).toEqual([ { idx: 0, text: 'Next' } ]);
+
+      // False
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=false}}</p><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'), {scope: {}});
+      expect(result.choices).toEqual([ { idx: 0, text: 'Next' } ]);
+
+      // Zero
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=0}}</p><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'), {scope: {}});
+      expect(result.choices).toEqual([ { idx: 0, text: 'Next' } ]);
+    });
+
+    it('shows choices conditionally', () => {
+      // Changes to ops inside a roleplay card affect the visibility
+      // of its choices.
+
+      // Boolean
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=true}}</p><choice if="a" text="Visible"></choice></roleplay>')('roleplay'), {scope: {}});
+      expect(result.choices).toEqual([ { idx: 0, text: 'Visible' } ]);
+
+      // Non-zero
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=1}}</p><choice if="a" text="Visible"></choice></roleplay>')('roleplay'), {scope: {}});
+      expect(result.choices).toEqual([ { idx: 0, text: 'Visible' } ]);
+    });
+  });
+
+  describe('combat', () => {
+    it('parses enemies', () => {
+      // "Unknown" enemies are given tier 1.
+      // Known enemies' tier is parsed from constants.
+      var result = loadCombatNode(cheerio.load('<combat><e>Test</e><e>Lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), {scope: {}});
+      expect(result.enemies).toEqual([
+        {name: 'Test', tier: 1},
+        {name:'Lich', tier: 4}
+      ]);
+    })
+
+    it('hides enemies conditionally', () => {
+      var node = cheerio.load('<combat><e>a</e><e if="a">Test</e><event on="win"></event><event on="lose"></event></combat>')('combat');
+      var expected = [{name: 'a', tier: 1}];
+
+      // Unassigned
+      var result = loadCombatNode(node, {scope: {}});
+      expect(result.enemies).toEqual(expected);
+
+      // Boolean
+      var result = loadCombatNode(node, {scope: {a: false}});
+      expect(result.enemies).toEqual(expected);
+
+      // Zero
+      var result = loadCombatNode(node, {scope: {a: 0}});
+      expect(result.enemies).toEqual(expected);
+    });
+
+    it('shows enemies conditionally', () => {
+      var node = cheerio.load('<combat><e if="a">Test</e><event on="win"></event><event on="lose"></event></combat>')('combat');
+      var expected = [{name: 'Test', tier: 1}];
+
+      // Boolean
+      var result = loadCombatNode(node, {scope: {a: true}});
+      expect(result.enemies).toEqual(expected);
+
+      // Non-zero
+      var result = loadCombatNode(node, {scope: {a: 1}});
+      expect(result.enemies).toEqual(expected);
+    });
+
+    it('sets enemies programmatically', () => {
+      var node = cheerio.load('<combat><e>{{a}}</e><event on="win"></event><event on="lose"></event></combat>')('combat');
+
+      // Not defined
+      var result = loadCombatNode(node, {scope: {}});
+      expect(result.enemies).toEqual([{name: '{{a}}', tier: 1}]);
+
+      // String
+      var result = loadCombatNode(node, {scope: {a: "Skeleton"}});
+      expect(result.enemies).toEqual([{name: 'Skeleton', tier: 1}]);
+
+      // Wrapped matrix
+      var result = loadCombatNode(node, {scope: {a: ["Test"]}});
+      expect(result.enemies).toEqual([{name: 'Test', tier: 1}]);
+    });
+  });
+
+  describe('trigger', () => {
+    it('triggers end', () => {
+      var result = loadTriggerNode(cheerio.load('<trigger>end</trigger>')('trigger'));
+      expect(result.name).toEqual('end');
+    });
+
+    it('triggers goto', () => {
+      var trigNode = cheerio.load('<trigger>goto test</trigger>')('trigger');
+      var rootNode = cheerio.load('<quest></quest>')('quest');
+      var testNode = cheerio.load('<roleplay id="test">Test Node</roleplay>')('roleplay');
+
+      rootNode.append(testNode);
+      rootNode.append(trigNode);
+
+      var result = loadTriggerNode(trigNode);
+      expect(result.name).toEqual('goto');
+      expect(result.node.text()).toEqual('Test Node');
+    });
+  });
+
+  describe('handleChoice', () => {
+    it('skips hidden triggers', () => {
+      var node = cheerio.load('<roleplay><choice><trigger if="a">goto 5</trigger><trigger>end</trigger></choice></roleplay>')('roleplay');
+      var result = handleChoice(node, 0, {scope: {}});
+      expect(result.text()).toEqual('end');
+    });
+
+    it('uses enabled triggers', () => {
+      var node = cheerio.load('<roleplay><choice><trigger if="a">goto 5</trigger><trigger>end</trigger></choice></roleplay>')('roleplay');
+      var result = handleChoice(node, 0, {scope: {a: true}});
+      expect(result.text()).toEqual('goto 5');
+    });
+
+    it('goes to correct choice', () => {
+      var node = cheerio.load('<roleplay><choice></choice><choice><roleplay>herp</roleplay></choice></roleplay>')('roleplay');
+      var result = handleChoice(node, 1, {scope:{}});
+      expect(result.text()).toEqual('herp');
+    });
+
+    it('errors if choice not enabled');
+    it('errors if choice does not contain enabled roleplay/choice/trigger');
+  });
+});
+
 /*
 test('<end> sets title and icon', function() {
   var result = (new questParser()).init(fEnd);

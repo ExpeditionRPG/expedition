@@ -12,7 +12,7 @@ import SearchContainer from '../SearchContainer'
 import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
 import SettingsContainer from '../SettingsContainer'
 import AdvancedPlayContainer from '../AdvancedPlayContainer'
-import {getNodeCardType, RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../QuestParser'
+import {RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../QuestParser'
 import {getStore} from '../../store'
 import { Provider } from 'react-redux'
 
@@ -54,19 +54,19 @@ export default class Main extends React.Component<MainProps, {}> {
         card = <QuestStartContainer/>;
         break;
       case 'QUEST_CARD':
-        if (!state.quest) {
+        if (!state.quest || !state.quest.result) {
           return this.state;
         }
-        let name = getNodeCardType(state.quest.node);
-        if (name === 'ROLEPLAY') {
-          let roleplay: RoleplayResult = loadRoleplayNode(state.quest.node);
-          card = <RoleplayContainer node={state.quest.node} roleplay={roleplay}/>;
-        } else if (name === 'COMBAT') {
-          let combat: CombatResult = loadCombatNode(state.quest.node);
-          card = <CombatContainer card={state.card} node={state.quest.node} icon={combat.icon} combat={state.combat}/>;
-        } else {
-          console.log('Unknown quest card name ' + name);
-          return this.state;
+        switch(state.quest.result.type) {
+          case 'Roleplay':
+            card = <RoleplayContainer node={state.quest.node} roleplay={state.quest.result}/>;
+            break;
+          case 'Combat':
+            card = <CombatContainer card={state.card} node={state.quest.node} icon={state.quest.result.icon} combat={state.combat}/>;
+            break;
+          default:
+            console.log('Unknown quest card name ' + name);
+            return this.state;
         }
         break;
       case 'ADVANCED':
