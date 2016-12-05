@@ -492,7 +492,7 @@ body {
     }
   }
 
-  .featured_quest {
+  .featured_quest, .searchResult {
     padding-left: width(base);
     .summary {
       display: flex;
@@ -512,17 +512,11 @@ body {
     }
   }
 
-  .search {
-    .result_title {
-      margin: 0;
-      font-size: fontsize(interactive);
-    }
-    .details {
-      text-align: center;
+  .searchDetails {
+    text-align: center;
 
-      .author {
-        font-style: italic;
-      }
+    .author {
+      font-style: italic;
     }
   }
 }

@@ -107,9 +107,14 @@ function renderResults(props: SearchProps): JSX.Element {
 
     return (
       <Button key={index} onTouchTap={() => props.onQuest(result)}>
-        <h1 className="search result_title">{result.title}</h1>
-        <div>by {result.author}</div>
-        <div>{result.minplayers}-{result.maxplayers} players, {formatPlayPeriod(result.mintimeminutes, result.maxtimeminutes)}</div>
+        <div className="searchResult">
+          <div className="title">{result.title}</div>
+          <div className="summary">
+            by {result.author}
+            <br/>
+            {result.minplayers}-{result.maxplayers} players, {formatPlayPeriod(result.mintimeminutes, result.maxtimeminutes)}
+          </div>
+        </div>
       </Button>
     );
   });
@@ -149,9 +154,9 @@ function renderDetails(props: SearchProps): JSX.Element {
   */
   return (
     <Card title="Quest Details">
-      <div className="search details">
+      <div className="searchDetails">
         <h3>{props.selected.title}</h3>
-        <div class="author">by {props.selected.author}</div>
+        <div className="author">by {props.selected.author}</div>
         <p>
           {props.selected.summary}
         </p>

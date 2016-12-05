@@ -4,6 +4,7 @@ import FlatButton from 'material-ui/FlatButton';
 import theme from '../../theme';
 
 interface ButtonProps extends React.Props<any> {
+  className?: string;
   disabled?: boolean;
   onTouchTap?: (e:any) => any;
 }
@@ -25,8 +26,9 @@ export default class Button extends React.Component<ButtonProps, {}> {
   }
 
   render() {
+    const className = 'base_button ' + (this.props.className || '');
     return (
-      <span className="base_button">
+      <span className={className}>
         <FlatButton disabled={this.props.disabled} onTouchTap={(e:any) => this._onTouchTap(e)}>
           <div>{this.props.children}</div>
         </FlatButton>
