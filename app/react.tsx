@@ -61,19 +61,19 @@ function onDeviceReady() {
   document.addEventListener('backbutton', function() {
     getStore().dispatch(toPrevious());
   }, false);
-
-  // TODO: API Auth
-  gapi.load('client:auth2', function() {
-    gapi.client.setApiKey(authSettings.apiKey);
-    gapi.auth2.init({
-      client_id: authSettings.clientId,
-      scope: authSettings.scopes,
-      cookie_policy: 'none',
-    }).then(function() {
-      console.log(gapi.auth2.getAuthInstance().isSignedIn);
-    });
-  });
 }
+
+// TODO: API Auth
+gapi.load('client:auth2', function() {
+  gapi.client.setApiKey(authSettings.apiKey);
+  gapi.auth2.init({
+    client_id: authSettings.clientId,
+    scope: authSettings.scopes,
+    cookie_policy: 'none',
+  }).then(function() {
+    console.log(gapi.auth2.getAuthInstance().isSignedIn);
+  });
+});
 
 let render = () => {
   var Main = require('./components/base/Main').default;
