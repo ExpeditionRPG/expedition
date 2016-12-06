@@ -167,6 +167,12 @@ describe('QuestParser', () => {
       expect(result.text()).toEqual('herp');
     });
 
+    it('goes to next roleplay node', () => {
+      var node = cheerio.load('<roleplay id="rp1">rp1</roleplay><roleplay>rp2</roleplay>')('#rp1');
+      var result = handleChoice(node, 1, {scope:{}});
+      expect(result.text()).toEqual('rp2');
+    })
+
     it('errors if choice not enabled');
     it('errors if choice does not contain enabled roleplay/choice/trigger');
   });

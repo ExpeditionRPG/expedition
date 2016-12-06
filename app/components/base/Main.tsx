@@ -95,6 +95,7 @@ export default class Main extends React.Component<MainProps, {}> {
   }
 
   handleChange() {
+    // TODO: Handle no-op on RESET_APP from IDE
     this.setState(this.getUpdatedState());
   }
 
