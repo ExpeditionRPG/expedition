@@ -24,7 +24,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AppDi
       if (tag === 'roleplay' || tag === 'combat') {
         dispatch({type: 'REBOOT_APP'});
         dispatch(toCard('QUEST_START'));
-        loadNode({numPlayers: 1, difficulty: "NORMAL", showHelp: true, multitouch: false}, dispatch, newNode, defaultQuestContext());
+        loadNode({numPlayers: 1, difficulty: "NORMAL", showHelp: false, multitouch: false}, dispatch, newNode, defaultQuestContext());
       }
     },
     playFromStart: (editor: EditorState, quest: QuestType) => {
