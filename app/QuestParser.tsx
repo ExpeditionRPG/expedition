@@ -96,7 +96,7 @@ export function handleChoice(parent: XMLElement, choice: number, ctx: QuestConte
   if (_loopChildren(parent, function(tag) { if (tag === "end") { return true; }})) {
     return null;
   }
-  return _loadChoiceOrEventNode(_findNextNode(parent, ctx), ctx);
+  return _findNextNode(parent, ctx);
 };
 
 function _loadNode(node: XMLElement): XMLElement {

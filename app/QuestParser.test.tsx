@@ -1,7 +1,6 @@
 /// <reference path="../typings/expect/expect.d.ts" />
 /// <reference path="../typings/jasmine/jasmine.d.ts" />
 /// <reference path="../typings/custom/require.d.ts" />
-/// <reference path="../typings/react/react-addons-test-utils.d.ts" />
 /// <reference path="../typings/enzyme/enzyme.d.ts" />
 
 import {loadRoleplayNode, loadCombatNode, loadTriggerNode, handleChoice} from './QuestParser'

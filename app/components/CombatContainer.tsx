@@ -8,7 +8,7 @@ import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
 const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps): CombatStateProps => {
   var maxTier = 0;
   let histIdx: number = state._history.length-1;
-  while(state._history[histIdx].combat !== undefined && histIdx > 0) {
+  while(state._history[histIdx] != null && state._history[histIdx].combat !== undefined && histIdx > 0) {
     var tier = state._history[histIdx].combat.tier;
     if (!tier || state._history[histIdx].card.phase !== 'PREPARE') {
       histIdx--;
