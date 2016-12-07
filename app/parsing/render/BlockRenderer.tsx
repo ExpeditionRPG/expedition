@@ -3,11 +3,12 @@
 import {Normalize} from '../validation/Normalize'
 import {Logger} from '../Logger'
 import {Block} from '../block/BlockList'
-import {Renderer, CombatChild, RoleplayChild} from './Renderer'
+import {Renderer, CombatChild, Instruction, RoleplayChild} from './Renderer'
 
 const REGEXP_BOLD = /\*\*(.*?)\*\*/;
 const REGEXP_EVENT = /\* on (.*)/;
 
+// TODO should never THROW internal errors - log + indicate errors to users
 const ERR_PREFIX = "Internal XML Parse Error: ";
 
 // Does not implement Renderer interface, rather wraps
@@ -37,7 +38,7 @@ export class BlockRenderer {
 
     // The only inner stuff
     var i = 0;
-    var body: (string|RoleplayChild)[] = [];
+    var body: (string|RoleplayChild|Instruction)[] = [];
     while (i < blocks.length) {
       var block = blocks[i];
       if (block.render) {
@@ -52,12 +53,16 @@ export class BlockRenderer {
       // Append rendered stuff
       var lines = this.collate((i == 0 && hasHeader) ? block.lines.slice(1) : block.lines);
       var choice: RoleplayChild;
+      var instruction: Instruction;
       for (let line of lines) {
         if (line.indexOf('* ') === 0) {
           choice = Object.assign({}, this.extractBulleted(line), {choice: []});
           // TODO: Assert end of lines.
         } else if (line.indexOf('//') === 0) {
           // Skip comments
+        } else if (line.indexOf('> ') === 0) {
+          instruction = this.extractInstruction(line);
+          body.push(instruction);
         } else {
           body.push(line);
         }
@@ -70,7 +75,8 @@ export class BlockRenderer {
         while (i < blocks.length && inner.indent !== block.indent) {
           if (!inner.render) {
             log.err(
-              'TODO',
+// TODO what's the error + fix here?
+              'TODO error',
               '404',
               blocks[0].startLine
             );
@@ -314,6 +320,19 @@ export class BlockRenderer {
     // \s*                      Match any number of spaces (greedy)
     // (.*)$                    Match until the end of the string.
     var m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*(.*)$/);
+    return {
+      visible: m[2],
+      text: m[3],
+    };
+  }
+
+  private extractInstruction(line: string): {text: string, visible: string} {
+    // Breakdown:
+    // \*\s*                    Match ">" and any number of spaces (greedy)
+    // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
+    // \s*                      Match any number of spaces (greedy)
+    // (.*)$                    Match until the end of the string.
+    var m = line.match(/^[>]\s*(\{\{(.*?)\}\})?\s*(.*)$/);
     return {
       visible: m[2],
       text: m[3],
