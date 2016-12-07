@@ -56,6 +56,8 @@ export class BlockRenderer {
         if (line.indexOf('* ') === 0) {
           choice = Object.assign({}, this.extractBulleted(line), {choice: []});
           // TODO: Assert end of lines.
+        } else if (line.indexOf('//') === 0) {
+          // Skip comments
         } else {
           body.push(line);
         }
