@@ -2,29 +2,24 @@
 var math = require('mathjs') as any;
 
 import * as React from 'react'
+import {ConsoleHistory} from '../../reducers/StateTypes'
 
 interface MathJSConsoleProps extends React.Props<any> {
-  scope: any;
+  mutableScope: any;
+  history: ConsoleHistory;
+  onCommand: (command: string, result: string) => any;
 }
 
 interface MathJSConsoleState {
-  history: any[];
-  output: any[];
   idx: number;
 }
 
 export default class MathJSConsole extends React.Component<MathJSConsoleProps, MathJSConsoleState> {
   input: any;
-  newScope: any;
 
   constructor(props: MathJSConsoleProps) {
     super(props);
-    this.newScope = Object.assign({}, props.scope);
-    this.state = {history: [], output: [], idx: 0};
-  }
-
-  public getNewScope() {
-    return this.newScope;
+    this.state = {idx: 0};
   }
 
   handleKey(e: any): boolean {
@@ -32,99 +27,55 @@ export default class MathJSConsole extends React.Component<MathJSConsoleProps, M
       case 'ArrowUp':
         var i = Math.max(this.state.idx-1, 0);
         console.log('EUP ' + i);
-        if (this.state.history.length === 0) {
+        if (this.props.history.length === 0) {
           this.input.value = '';
         } else {
-          this.input.value = this.state.history[i];
+          this.input.value = this.props.history[i].command;
         }
-        this.setState({history: this.state.history, output: this.state.output, idx: i});
+        this.setState({idx: i});
         e.stopPropagation();
         return false;
       case 'ArrowDown':
-        var i = Math.min(this.state.idx+1, this.state.history.length);
+        var i = Math.min(this.state.idx+1, this.props.history.length);
         console.log('EDN ' + i);
-        if (i === this.state.history.length) {
+        if (i === this.props.history.length) {
           this.input.value = "";
         } else {
-          this.input.value = this.state.history[i];
+          this.input.value = this.props.history[i];
         }
-        this.setState({history: this.state.history, output: this.state.output, idx: i});
+        this.setState({idx: i});
         e.stopPropagation();
         return false;
       case 'Enter':
-        console.log("TODO eval");
-        var history = this.state.history;
-        history.push(this.input.value);
-        var output = this.state.output;
-
+        var command = this.input.value;
+        var output: string
         try {
-          output.push(math.eval(this.input.value, this.newScope));
+          output = math.eval(command, this.props.mutableScope);
         } catch (e) {
-          output.push(e.message);
+          output = e.message;
         }
-
-        this.setState({history, output, idx: history.length});
         this.input.value = '';
-        console.log(history);
+        this.props.onCommand(command, output+'');
+        e.stopPropagation();
         return false;
       default:
         return true;
     }
   }
 
-  renderScope() {
-    var KVs: any[] = [];
-    var keys = Object.keys(this.newScope);
-    for (var i = 0; i < keys.length; i++) {
-      var k = keys[i];
-      var v = this.newScope[k];
-      if (typeof(v) === 'string' || typeof(v) === 'number') {
-        KVs.push(
-          <div>
-            <span>{k}</span>: {v}
-          </div>
-        );
-      } else {
-        KVs.push(
-          <div>
-            <span>{k}</span>: &lt;{typeof(v)}&gt;
-          </div>
-        );
-      }
-    }
-
-    if (KVs.length > 0) {
-      return (
-        <div className="scope">
-          {KVs}
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          No variables currently in scope.
-        </div>
-      );
-    }
-  }
-
   render() {
-    var reactLines: any[] = [];
-    for (var i = 0; i < this.state.output.length; i++) {
-      reactLines.push(<p key={i}>{this.state.output[i]}</p>);
+    var lines: any[] = [];
+    for (var i = 0; i < this.props.history.length; i++) {
+      lines.push(<div key={i + 'c'}>&gt; {this.props.history[i].command}</div>);
+      lines.push(<div key={i}>{this.props.history[i].result}</div>);
     }
-
-    var scope = this.renderScope();
 
     return (
-      <div>
-        {scope}
-        <div className="console">
-          <div className="lines">
-            {reactLines}
-          </div>
-          <div className="prompt">&gt; <input ref={(input) => {this.input = input;}} type="text" onKeyDown={(e: any) => {return this.handleKey(e)}}></input></div>
+      <div className="mathJSConsole">
+        <div className="lines">
+          {lines}
         </div>
+        <div className="prompt">&gt; <input ref={(input) => {this.input = input;}} type="text" onKeyDown={(e: any) => {return this.handleKey(e)}}></input></div>
       </div>
     );
   }

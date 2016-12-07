@@ -1,38 +1,25 @@
 import * as React from 'react'
+import {ConsoleHistory} from '../reducers/StateTypes'
 import {QuestContext} from 'expedition-app/app/reducers/QuestTypes'
 import MathJSConsole from './base/MathJSConsole'
 
-interface MathJSConsoleState {
-  history: any[];
-  output: any[];
-  idx: number;
-}
-
 export interface ContextEditorStateProps {
-  console: MathJSConsoleState;
-  context: QuestContext;
+  history: ConsoleHistory;
+  scope: any;
 }
 
 export interface ContextEditorDispatchProps {
-  handleKey: (e: any) => any;
+  onCommand: (history: ConsoleHistory, command: string, result: string) => any;
 }
 
 interface ContextEditorProps extends ContextEditorStateProps, ContextEditorDispatchProps {}
 
 const ContextEditor = (props: ContextEditorProps): JSX.Element => {
-  /*
-  var safeScope = (props.context && props.context.scope) || {};
-
-  var reactLines: any[] = [];
-  for (var i = 0; i < props.console.output.length; i++) {
-    reactLines.push(<p key={i}>{props.console.output[i]}</p>);
-  }
-
   var KVs: any[] = [];
-  var keys = Object.keys(safeScope);
+  var keys = Object.keys(props.scope);
   for (var i = 0; i < keys.length; i++) {
     var k = keys[i];
-    var v = safeScope[k];
+    var v = props.scope[k];
     if (typeof(v) === 'string' || typeof(v) === 'number') {
       KVs.push(
         <div>
@@ -62,36 +49,16 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
       </div>
     );
   }
-  */
-  var scope =  <div className="scope">
-        No variables currently in scope.
-      </div>;
-  var reactLines = [
-    <div>Asdf</div>,
-    <div>ghjk</div>,
-    <div>Asdf</div>,
-    <div>ghjk</div>,
-    <div>Asdf</div>,
-    <div>ghjk</div>,
-    <div>Super long message that should really be multiple lines and wrap and stuff</div>,
-    <div>ghjk</div>,
-    <div>Asdf</div>,
-    <div>ghjk</div>,
-    <div>Asdf</div>,
-    <div>ghjk</div>,
-    <div>Asdf</div>,
-    <div>ghjk</div>,
-  ];
   return (
     <div className="console">
       <div className="interactive">
         <h2 className="header">
           Variable Console
         </h2>
-        <div className="lines">
-          {reactLines}
-        </div>
-        <div className="prompt">&gt; <input ref={(input) => {this.input = input;}} type="text" onKeyDown={(e: any) => {return props.handleKey(e)}}></input></div>
+        <MathJSConsole
+          mutableScope={props.scope}
+          history={props.history}
+          onCommand={(command: string, result: string) => props.onCommand(props.history, command,result)}/>
       </div>
       <div className="preview">
         <h2>App Context Variables</h2>

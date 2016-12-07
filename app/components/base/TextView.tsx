@@ -74,10 +74,6 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     }).bind(this);
 
     if (this.ace) {
-
-      // Keep the editor focused when it's shown.
-      ref.editor.focus();
-
       // "Automatically scrolling cursor into view after selection change
       // this will be disabled in the next version set
       // editor.$blockScrolling = Infinity to disable this message"
