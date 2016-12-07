@@ -150,8 +150,7 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
         var text = c.text();
 
         // Replace text if it's an op string.
-        // If the string fails to evaluate, the
-        // original op is returned as text.
+        // If the string fails to evaluate, the original op is returned as text.
         var op = parseOpString(text);
         if (op) {
           var evalResult = evaluateOp(op, newScope);
@@ -168,8 +167,14 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
         }
         break;
       case 'event':
-        winEventCount += (c.attr('on') === 'win' && _isEnabled(c, newScope)) ? 1 : 0;
-        loseEventCount += (c.attr('on') === 'lose' && _isEnabled(c, newScope)) ? 1 : 0;
+        switch (c.attr('on')) {
+          case 'win':
+            winEventCount++;
+            break;
+          case 'lose':
+            loseEventCount++;
+            break;
+        }
         break;
       default:
         throw new Error('Invalid child element: ' + tag);
