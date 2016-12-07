@@ -79,7 +79,7 @@ export function handleChoice(parent: XMLElement, choice: number, ctx: QuestConte
   var choiceIdx = -1;
   for (; idx < parent.children().length; idx++) {
     var child = parent.children().eq(idx);
-    if (child.get(0).tagName.toLowerCase() === "choice") {
+    if (child.get(0).tagName.toLowerCase() === "choice" && _isEnabled(child, ctx)) {
       choiceIdx++;
     }
 
