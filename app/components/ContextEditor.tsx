@@ -20,18 +20,19 @@ export interface ContextEditorDispatchProps {
 interface ContextEditorProps extends ContextEditorStateProps, ContextEditorDispatchProps {}
 
 const ContextEditor = (props: ContextEditorProps): JSX.Element => {
-  var safeScope = props.context.scope || {};
+  /*
+  var safeScope = (props.context && props.context.scope) || {};
 
   var reactLines: any[] = [];
-  for (var i = 0; i < this.state.output.length; i++) {
-    reactLines.push(<p key={i}>{this.state.output[i]}</p>);
+  for (var i = 0; i < props.console.output.length; i++) {
+    reactLines.push(<p key={i}>{props.console.output[i]}</p>);
   }
 
   var KVs: any[] = [];
-  var keys = Object.keys(this.newScope);
+  var keys = Object.keys(safeScope);
   for (var i = 0; i < keys.length; i++) {
     var k = keys[i];
-    var v = this.newScope[k];
+    var v = safeScope[k];
     if (typeof(v) === 'string' || typeof(v) === 'number') {
       KVs.push(
         <div>
@@ -61,15 +62,41 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
       </div>
     );
   }
-
+  */
+  var scope =  <div className="scope">
+        No variables currently in scope.
+      </div>;
+  var reactLines = [
+    <div>Asdf</div>,
+    <div>ghjk</div>,
+    <div>Asdf</div>,
+    <div>ghjk</div>,
+    <div>Asdf</div>,
+    <div>ghjk</div>,
+    <div>Super long message that should really be multiple lines and wrap and stuff</div>,
+    <div>ghjk</div>,
+    <div>Asdf</div>,
+    <div>ghjk</div>,
+    <div>Asdf</div>,
+    <div>ghjk</div>,
+    <div>Asdf</div>,
+    <div>ghjk</div>,
+  ];
   return (
-    <div>
-      {scope}
-      <div className="console">
+    <div className="console">
+      <div className="interactive">
+        <h2 className="header">
+          Variable Console
+        </h2>
         <div className="lines">
           {reactLines}
         </div>
         <div className="prompt">&gt; <input ref={(input) => {this.input = input;}} type="text" onKeyDown={(e: any) => {return props.handleKey(e)}}></input></div>
+      </div>
+      <div className="preview">
+        <h2>App Context Variables</h2>
+
+        {scope}
       </div>
     </div>
   );

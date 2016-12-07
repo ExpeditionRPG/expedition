@@ -5,6 +5,9 @@ import DialogsContainer from './DialogsContainer';
 import SplashContainer from './SplashContainer';
 import QuestAppBarContainer from './QuestAppBarContainer';
 import QuestIDEContainer from './QuestIDEContainer';
+import ContextEditorContainer from './ContextEditorContainer';
+
+var SplitPane = require('react-split-pane') as any;
 
 export interface MainStateProps {
   loggedIn: boolean;
@@ -23,11 +26,18 @@ const Main = (props: MainProps): JSX.Element => {
       </div>
     );
   } else if (props.loggedIn === true) {
+    /*
+                */
     return (
       <div className="main">
         <QuestAppBarContainer/>
-        <QuestIDEContainer/>
         <DialogsContainer/>
+        <div className="contents">
+          <SplitPane split="horizontal" defaultSize={650} minSize={400} maxSize={-20}>
+            <QuestIDEContainer/>
+            <ContextEditorContainer/>
+          </SplitPane>
+        </div>
       </div>
     );
   } else {
