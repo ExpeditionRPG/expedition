@@ -224,9 +224,12 @@ max-time-minutes="60">
       for a place to recover, claiming that the rest of the party was &quot;slain&quot;
       after a failed assault on the Mausoleum. If any part of the bluff fails,
       you may not have your full party to fight with.</p>
-    <choice text="Take the direct approach."
-    goto="planA"></choice>
-    <choice text="Split your party to look for the phylactery." goto="planB"></choice>
+    <choice text="Take the direct approach.">
+      <trigger>goto planA</trigger>
+    </choice>
+    <choice text="Split your party to look for the phylactery.">
+      <trigger>goto planB</trigger>
+    </choice>
   </roleplay>
   <roleplay title="The Direct Approach" icon="damage" id="planA">
     <p>You march up to the entrance of Pell&apos;s house, kick down the door,
@@ -253,7 +256,9 @@ max-time-minutes="60">
       </roleplay>
       <trigger>end</trigger>
     </event>
-    <event on="lose" goto="pelldefeat"></event>
+    <event on="lose">
+      <trigger>goto pelldefeat</trigger>
+    </event>
   </combat>
   <roleplay title="A Cunning Plan" icon="undead" id="planB">
     <p>You split your party; one group knocks at the front door, and the other

@@ -396,8 +396,6 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
         case "end":
           buttonText = "End";
           break;
-        default:
-          throw new Error("Unknown trigger content " + nextNode.text());
       }
     }
     choices.push({text: buttonText, idx: 0});
