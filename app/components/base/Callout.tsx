@@ -1,11 +1,11 @@
 import * as React from 'react';
 import theme from '../../theme';
 
-interface IndicatorProps extends React.Props<any> {
+interface CalloutProps extends React.Props<any> {
   icon?: string;
 }
 
-export default class Indicator extends React.Component<IndicatorProps, {}> {
+export default class Callout extends React.Component<CalloutProps, {}> {
   render() {
     var icon: JSX.Element = <span></span>;
     if (this.props.icon) {
@@ -14,7 +14,7 @@ export default class Indicator extends React.Component<IndicatorProps, {}> {
     }
 
     return (
-      <div className="base_indicator">
+      <div className="callout">
         {icon}
         <div className="text">{this.props.children}</div>
       </div>

@@ -7,7 +7,7 @@
 /*global math */
 import * as React from 'react'
 import {XMLElement, DOMElement} from './reducers/StateTypes'
-import {QuestCardName, Enemy, Choice, QuestContext} from './reducers/QuestTypes'
+import {QuestCardName, Choice, Instruction, Enemy, QuestContext} from './reducers/QuestTypes'
 import {encounters} from './Encounters'
 
 var htmlDecode = (require('he') as any).decode;
@@ -25,7 +25,7 @@ export interface RoleplayResult {
   icon: string;
   title: string;
   content: JSX.Element;
-  instruction?: JSX.Element;
+  instructions?: Instruction[];
   choices: Choice[];
   ctx: QuestContext;
 }
@@ -331,19 +331,15 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
   var child: XMLElement;
   var choices: Choice[] = [];
   var children: string = '';
-  var instruction: JSX.Element = null;
+  var instructions: Instruction[] = [];
 
   var newScope = Object.assign({}, ctx.scope);
 
-  // Keep track of the number of choice nodes seen, so we can
-  // select a choice without worrying about the state of the quest scope.
-  var idx = -1;
+  var choiceCount = -1;
+  var instructionCount = -1;
 
   _loopChildren(node, function(tag: string, c: XMLElement) {
     c = c.clone();
-    if (tag === "choice") {
-      idx++;
-    }
 
     // Skip elements that aren't visible
     if (!_isEnabled(c, {scope: newScope})) {
@@ -352,11 +348,12 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
 
     // Accumulate "choice" tags in choices[]
     if (tag === "choice") {
+      choiceCount++;
       if (!c.attr('text')) {
         throw new Error("<choice> inside <roleplay> must have 'text' attribute");
       }
       var text = c.attr('text');
-      choices.push({text, idx});
+      choices.push({text, idx: choiceCount});
       numEvents++;
       return;
     }
@@ -365,9 +362,10 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
       throw new Error("<roleplay> cannot contain <event>.");
     }
 
-    // Convert "instruction" tags to <indicator> tags.
+    // accumulate "instruction" tags in tags[]
     if (tag === "instruction") {
-      instruction = <span dangerouslySetInnerHTML={{__html: c.html()}} />;
+      instructionCount++;
+      instructions.push({text: c.html(), idx: instructionCount});
       return;
     }
 
@@ -407,7 +405,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
     icon: node.attr('icon'),
     content: <span dangerouslySetInnerHTML={{__html: children}} />,
     choices,
-    instruction,
+    instructions,
     ctx: Object.assign({}, ctx, {scope: newScope}),
   };
 };

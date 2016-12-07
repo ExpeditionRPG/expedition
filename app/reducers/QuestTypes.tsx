@@ -45,6 +45,12 @@ export interface CombatAttack {
   damage: number;
 }
 
+export interface Instruction {
+  text: string;
+  idx: number;
+  icon?: string;
+}
+
 export type MidCombatPhaseNameType = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER'
 export type EndCombatPhaseNameType = 'VICTORY' | 'DEFEAT';
 export function isCombatPhase(phase: string) : boolean {

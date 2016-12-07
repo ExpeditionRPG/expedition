@@ -1,9 +1,9 @@
 import * as React from 'react'
-import Card from './base/Card'
 import Button from './base/Button'
-import Indicator from './base/Indicator'
+import Callout from './base/Callout'
+import Card from './base/Card'
 import {XMLElement, SettingsType} from '../reducers/StateTypes'
-import {Choice, QuestContext} from '../reducers/QuestTypes'
+import {Choice, Instruction, QuestContext} from '../reducers/QuestTypes'
 import {RoleplayResult} from '../QuestParser'
 
 export interface RoleplayStateProps {
@@ -26,15 +26,16 @@ const Roleplay = (props: RoleplayProps): JSX.Element => {
     );
   });
 
-  var indicator: JSX.Element = null;
-  if (props.roleplay.instruction) {
-    indicator = <Indicator icon="adventurer">{props.roleplay.instruction}</Indicator>;
-  }
+  var instructions: JSX.Element[] = props.roleplay.instructions.map(function(instruction: Instruction): JSX.Element {
+    return (
+      <Callout key={instruction.idx} icon="adventurer"><span dangerouslySetInnerHTML={{__html: instruction.text}} /></Callout>
+    );
+  });
 
   return (
     <Card title={props.roleplay.title}>
       {props.roleplay.content}
-      {indicator}
+      {instructions}
       {buttons}
     </Card>
   );
