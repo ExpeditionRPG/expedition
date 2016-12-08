@@ -39,9 +39,13 @@ Welcome to the Expedition Quest Editor! This quest serves as an introduction,
 showing you how to how to use all of the tools available to you. Along the way,
 it'll provide some helpful tips to write engaging and interactive adventures.
 
-You can test your quest in the app using the "Play From" buttons on the top right.
+Play along in app using the "Play From Start" button on the right.
 
 If you have questions, feedback or found a bug, let us know at contact@fabricate.io
+
+_Quests_
+
+Quests are stored in your Google drive with a ".quest" file extension. To open them, right click on the file in Drive and select "Open With > Expedition Quest Creator". If you visit the quest creator directly, it'll create a brand new quest with this template.
 
 _Continued_
 
