@@ -39,7 +39,11 @@ When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 The IDE automatically loads `config.json` on start - this is excluded from the repo as it holds secrets unfit for mortal eyes.
 
 
-## Deploying
+### Deploying
+
+Install the [Heroku toolbelt](https://devcenter.heroku.com/articles/heroku-cli)
+[Set up Git with Heroku remote](https://devcenter.heroku.com/articles/git)
+
 
 Compile and test to ensure webpack is working without hot reloading (ignore side effects):
 
