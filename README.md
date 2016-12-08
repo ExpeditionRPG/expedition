@@ -48,3 +48,5 @@ Pushing: https://devcenter.heroku.com/articles/multiple-environments
 git push staging development:master
 
 Compile and test to ensure webpack is working without hot reloading (ignore side effects):
+
+Building for deployment: `npm install && webpack -p --config ./webpack.dist.config.js`
