@@ -1,11 +1,13 @@
 'use strict'
 
-var webpack = require('webpack')
+var webpack = require('webpack');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var options = {
   debug: false,
   entry: [
     './app/react.tsx',
+    './app/style.scss',
   ],
   contentBase: "./app",
   resolve: {
@@ -17,10 +19,10 @@ var options = {
   },
   module: {
     loaders: [
-      { test: /\.css$/, loader: 'style-loader!css-loader' },
-      { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' },
+      { test: /\.(ttf|eot|svg|jpg|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
+      { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.json$/, loader: 'json-loader' },
-      { test: /\.tsx$/, loaders: ['react-hot', 'awesome-typescript-loader'], exclude: /node_modules/ },
+      { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /\/node_modules\/((?!expedition\-app).)*$/ },
     ],
     preLoaders: [
         // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
@@ -38,6 +40,9 @@ var options = {
       },
       VERSION: JSON.stringify(require('./package.json').version)
     }),
+    new CopyWebpackPlugin([
+        { from: 'node_modules/expedition-app/app/images', to: 'images'},
+    ]),
   ],
 };
 
