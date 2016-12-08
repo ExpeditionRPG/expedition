@@ -160,13 +160,12 @@ function publish(user, docid, xml, cb) {
   }
 
   var query_text = 'INSERT INTO quests ('+ columns +',published,tombstone) VALUES (' + params.join(',') + ',NOW(),NULL) ON CONFLICT (id) DO UPDATE SET ' + interleaved.join(',') + ',published=NOW(),tombstone=NULL';
-  var q = pool.query(query_text, meta, function(err, result) {
+  pool.query(query_text, meta, function(err, result) {
     if (err) {
       return cb(err);
     }
     cb(null, meta.id);
   });
-  console.log(q.text);
 }
 
 function unpublish(user, docid, cb) {
@@ -176,17 +175,16 @@ function unpublish(user, docid, cb) {
 
   console.log("Unpublishing quest " + docid + " owned by " + user);
   var id = user + '_' + docid;
-  var q = pool.query('UPDATE quests SET tombstone=NOW() WHERE id=$id', {id: id}, function(err, result) {
+  pool.query('UPDATE quests SET tombstone=NOW() WHERE id=$id', {id: id}, function(err, result) {
     if (err) {
       return cb(err);
     }
     cb(null, id);
   });
-  console.log(q.text);
 }
 
 function read(id, cb) {
-  var q = pool.query('SELECT * FROM quests WHERE id=$id LIMIT 1', {id: id}, function(err, results) {
+  pool.query('SELECT * FROM quests WHERE id=$id LIMIT 1', {id: id}, function(err, results) {
     if (err) {
       return cb(err);
     }
@@ -199,8 +197,6 @@ function read(id, cb) {
     }
     cb(null, results[0]);
   });
-
-  console.log(q.text);
 }
 
 module.exports = {
