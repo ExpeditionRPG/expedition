@@ -16,7 +16,7 @@
     "init-cloudsql": "node books/model-cloudsql.js"
   },
   "author": "Fabricate.IO",
-  "license": "Apache Version 2.0",
+  "license": "CC-BY-NC-SA-4.0",
   "semistandard": {
     "globals": [
       "after",
