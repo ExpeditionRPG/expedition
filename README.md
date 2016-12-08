@@ -44,17 +44,7 @@ The IDE automatically loads `config.json` on start - this is excluded from the r
 Install the [Heroku toolbelt](https://devcenter.heroku.com/articles/heroku-cli)
 [Set up Git with Heroku remote](https://devcenter.heroku.com/articles/git)
 
+Pushing: https://devcenter.heroku.com/articles/multiple-environments
+git push staging development:master
 
 Compile and test to ensure webpack is working without hot reloading (ignore side effects):
-
-```shell
-webpack -p --config ./webpack.dist.config.js
-
-npm start
-```
-
-Then see [Testing & Deploying Your Application](https://cloud.google.com/appengine/docs/flexible/nodejs/testing-and-deploying-your-app) for next steps.
-
-## Accessing cloud SQL
-
-[Cloud SQL Quickstart](https://cloud.google.com/sql/docs/quickstart)
