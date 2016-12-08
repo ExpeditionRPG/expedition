@@ -112,14 +112,13 @@ function searchQuests(userId, params, cb) {
   filter_query += ' LIMIT $limit';
   filter_params['limit'] = limit;
 
-  var query = pool.query(filter_query, filter_params, function(err, results) {
+  pool.query(filter_query, filter_params, function(err, results) {
     if (err) {
       return cb(err);
     }
     var hasMore = results.rows.length === limit ? token + results.rows.length : false;
     cb(null, results.rows, hasMore);
   });
-  console.log(query.text);
 }
 function publish(user, docid, xml, cb) {
   // TODO: Validate here
