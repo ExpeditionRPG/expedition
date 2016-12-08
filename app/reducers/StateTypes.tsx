@@ -11,7 +11,7 @@ export interface AnnotationType {
   row: number;
   column: number;
   text: string;
-  type: 'warning' | 'error' | 'info';
+  type: 'warning' | 'error' | 'info' | 'internal';
 }
 
 export interface XMLElement {

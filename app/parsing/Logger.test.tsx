@@ -14,6 +14,7 @@ const testMsgs: LogMessage[] = [
   {type: 'error', text: 'test error', url: 'test', line: 5},
   {type: 'warning', text: 'test warning', url: '404', line: 7},
   {type: 'info', text: 'test debug\nstuff', url: '404', line: 0},
+  {type: 'internal', text: 'internal error', url: 'internal_error', line: 5},
 ];
 
 describe('LogMessage', () => {
@@ -43,11 +44,17 @@ describe('LogMessage', () => {
       msg.warn('test warning', '404', 7);
       expect(msg.finalize()).toEqual([testMsgs[1]]);
     });
+
+    it('logs internal', () => {
+      var msg = new Logger();
+      msg.internal('internal error', 5);
+      expect(msg.finalize()).toEqual([testMsgs[3]]);
+    })
   });
 
   describe('prettifyMsgs', () => {
     it('prettifies multiple messages', () => {
-      expect(prettifyMsgs(testMsgs)).toEqual("ERROR L5:\ntest error\nURL: test\n\nWARNING L7:\ntest warning\nURL: 404\n\nINFO L0:\ntest debug\nstuff\nURL: 404");
+      expect(prettifyMsgs(testMsgs)).toEqual("ERROR L5:\ntest error\nURL: test\n\nWARNING L7:\ntest warning\nURL: 404\n\nINFO L0:\ntest debug\nstuff\nURL: 404\n\nINTERNAL L5:\ninternal error\nURL: internal_error");
     });
   });
 

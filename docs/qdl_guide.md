@@ -2,7 +2,7 @@
 
 Welcome, fearless mortal, to the Expedition Quest Editor! Use this tool to craft custom quests of dangerous deeds and awful alliteration with speed and ease.
 
-Quests are written in [Markdown](http://daringfireball.net/projects/markdown/). Here's a complete example quest: [Mistress Malaise](https://raw.githubusercontent.com/Fabricate-IO/expedition-quest-ide/master/docs/examples/mistress_malaise.md).
+Quests are written in QDL, which is a variant of [Markdown](http://daringfireball.net/projects/markdown/). Here's a complete example quest: [Mistress Malaise](https://raw.githubusercontent.com/Fabricate-IO/expedition-quest-ide/master/docs/examples/mistress_malaise.md).
 
 ## In The Beginning: Quest Metadata
 
@@ -34,10 +34,10 @@ User `choice`s are displayed at the bottom of the `roleplay` card as rectangular
 
 *Fig 1: Roleplay card with choices*
 
-In Markdown, roleplay cards are written using `_underscores_` to denote a title and subsequent lines for text. Note that only lines of text separated by whitespace will be
-separated by whitespace when loaded in the app (basically, hitting Enter once does nothing to the rendered quest). For example, the roleplay card above looks like this in markdown:
+In QDL, roleplay cards are written using `_underscores_` to denote a title and subsequent lines for text. Note that only lines of text separated by whitespace will be
+separated by whitespace when loaded in the app (basically, hitting Enter once does nothing to the rendered quest). For example, the roleplay card above looks like this in QDL:
 
-Choices are written in Markdown by bullet points
+Choices are written in QDL by bullet points
 
 ```markdown
 _A Strange Arrival_
@@ -119,7 +119,7 @@ In the case of roleplay card icons, you can replace `adventurer` with many other
 * ranged
 * undead
 
-Keep an eye out for other such annotations in later parts of this tutorial - they're often used to specify things that Markdown can't easily describe.
+Keep an eye out for other such annotations in later parts of this tutorial - they're often used to specify things that QDL can't easily describe.
 
 ## Close Encounters: Combat Cards, Events, and Triggers
 
@@ -169,7 +169,7 @@ text separate, there are `instruction` tags:
 
 *Fig 3: Instruction tag*
 
-These are denoted by `>` prefixes in markdown, like so:
+These are denoted by `>` prefixes in QDL, like so:
 
 ```markdown
 

@@ -160,7 +160,7 @@ export class QDLParser {
     var finalized = this.log.finalize();
     this.log = null;
 
-    var logMap: LogMessageMap = {'info': [], 'warning': [], 'error': []};
+    var logMap: LogMessageMap = {'info': [], 'warning': [], 'error': [], 'internal': []};
     for (let m of finalized) {
       switch(m.type) {
         case 'info':
@@ -172,8 +172,14 @@ export class QDLParser {
         case 'error':
           logMap.error.push(m);
           break;
+        case 'internal':
+          logMap.internal.push(m);
+          break;
         default:
-          throw new Error('Unknown message type ' + m.type);
+          var log = new Logger();
+          log.internal('Unknown message type ' + m.type);
+          Array.prototype.push.apply(logMap.internal, log.finalize());
+          break;
       }
     }
     return logMap;
@@ -201,14 +207,16 @@ export class QDLParser {
     // Loop through *all* blocks between start and end idx.
     // We need blocks that aren't rendered
     var toRender: Block[] = [];
-
+    var log = new Logger();
     for (var i = startBlockIdx; i <= endBlockIdx; i++) {
       var block = this.blockList.at(i);
 
       // Add unrendered baseIndent blocks and meaningfully-rendered nextIndent blocks.
       if (block.render === undefined) {
         if (block.indent !== baseIndent) {
-          throw new Error("Internal render error: found unrendered non-baseIndent block");
+          var l2 = new Logger([block]);
+          l2.internal("found unrendered non-baseIndent block");
+          log.extend(l2.finalize());
         }
         toRender.push(block);
       } else if (nextIndent !== undefined) {
@@ -219,20 +227,23 @@ export class QDLParser {
       }
     }
 
-    return this.renderBlockList(toRender);
+    log.extend(this.renderBlockList(toRender));
+    return log.finalize();
     // Postcondition: Every block from startLine to endLine must have a set .render property (anything but 'undefined')
   }
 
   private renderBlockList(blocks: Block[]): LogMessage[] {
+    var log = new Logger(blocks);
+
     if (!blocks.length) {
-      throw new Error("Empty or null block set given");
+      log.internal("empty or null block set given");
+      return log.finalize();
     }
     if (blocks[0].render) {
       // Zeroth block should never be rendered
-      throw new Error("Internal render error: found rendered zeroth block");
+      log.internal("found rendered zeroth block");
+      return log.finalize();
     }
-
-    var log = new Logger(blocks);
 
     // First line of first block is always a header of some kind.
     var headerLine = blocks[0].lines[0];
