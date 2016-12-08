@@ -22,6 +22,7 @@ describe('QDLParser', () => {
     expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.basicXML);
     expect(msgs['error']).toEqual([]);
     expect(msgs['warning']).toEqual([]);
+    expect(msgs['internal']).toEqual([]);
   });
 
   it('errors if path not ending in "end"');
@@ -44,6 +45,5 @@ describe('QDLParser', () => {
 
     expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.noHeaderError);
   });
-
 
 });

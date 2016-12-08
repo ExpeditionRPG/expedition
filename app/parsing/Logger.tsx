@@ -1,7 +1,13 @@
 import {Block} from './block/BlockList'
 
+// Info: Generally not shown to the user; internal debugging only.
+// Warning: Won't break your quest, but important to know about. Does not change quest.
+// Error: This will break your quest; we try to automatically modify quest to make it playable
+// Internal: "This should never happen", implementation issue. Encourage reporting a bug.
+type LogSeverity = 'warning' | 'error' | 'info' | 'internal';
+
 export interface LogMessage {
-  type: 'warning' | 'error' | 'info';
+  type: LogSeverity;
   text: string;
 
   // If this message is for a particular line, set this value here.
@@ -18,6 +24,7 @@ export interface LogMessageMap {
   info: LogMessage[];
   warning: LogMessage[];
   error: LogMessage[];
+  internal: LogMessage[];
 }
 
 
@@ -58,6 +65,16 @@ export class Logger {
     this.info.push(text);
   }
 
+  internal(text: string, line?: number) {
+    this.msg(
+      this.context,
+      'internal',
+      text,
+      'internal_error',
+      line
+    );
+  }
+
   err(text: string, url: string, line?: number) {
     this.msg(
       this.context,
@@ -94,7 +111,7 @@ export class Logger {
     return this.messages;
   }
 
-  private msg(group: Block[], type: 'warning'|'error'|'info', text: string, url: string, line?: number) {
+  private msg(group: Block[], type: LogSeverity, text: string, url: string, line?: number) {
     var message: LogMessage = {
       type: type,
       text: text,

@@ -8,9 +8,6 @@ import {Renderer, CombatChild, Instruction, RoleplayChild} from './Renderer'
 const REGEXP_BOLD = /\*\*(.*?)\*\*/;
 const REGEXP_EVENT = /\* on (.*)/;
 
-// TODO should never THROW internal errors - log + indicate errors to users
-const ERR_PREFIX = "Internal XML Parse Error: ";
-
 // Does not implement Renderer interface, rather wraps
 // an existing Renderer's functions to accept a block list.
 export class BlockRenderer {
@@ -74,13 +71,12 @@ export class BlockRenderer {
         var inner = blocks[++i];
         while (i < blocks.length && inner.indent !== block.indent) {
           if (!inner.render) {
-            log.err(
-// TODO what's the error + fix here?
-              'TODO error',
-              '404',
+            log.internal(
+              "found unexpected block with no render",
               blocks[0].startLine
             );
-            throw new Error(ERR_PREFIX + "found unexpected block with no render");
+            i++;
+            continue;
           }
           choice.choice.push(inner.render);
           i++;
