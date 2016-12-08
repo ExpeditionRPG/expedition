@@ -243,7 +243,7 @@ export class BlockRenderer {
       return {'title': 'UNKNOWN'};
     }
 
-    var attrs: {[k: string]: string} = {title: block.lines[0].substr(1)};
+    var attrs: {[k: string]: string} = {title: block.lines[0].substr(1).trim()};
     for(var i = 1; i < block.lines.length && block.lines[i] !== ''; i++) {
       var kv = block.lines[i].split(":");
       if (kv.length !== 2) {
