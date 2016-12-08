@@ -43,10 +43,6 @@ The IDE automatically loads `config.json` on start - this is excluded from the r
 
 Install the [Heroku toolbelt](https://devcenter.heroku.com/articles/heroku-cli)
 [Set up Git with Heroku remote](https://devcenter.heroku.com/articles/git)
-
-Pushing: https://devcenter.heroku.com/articles/multiple-environments
-git push staging development:master
-
-Compile and test to ensure webpack is working without hot reloading (ignore side effects):
-
 Building for deployment: `npm install && webpack -p --config ./webpack.dist.config.js`
+Pushing: https://devcenter.heroku.com/articles/multiple-environments
+`git push <remote server name> <local branch name>:master`
