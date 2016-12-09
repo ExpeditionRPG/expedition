@@ -4,7 +4,7 @@
 
 import expect from 'expect'
 
-describe('model', () => {
+describe('quest', () => {
 
   describe('searchQuests', () => {
     it('returns empty array on empty');

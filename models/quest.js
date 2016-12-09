@@ -18,19 +18,15 @@ CREATE TABLE quests (
 );
 */
 
-'use strict';
-
-var gcloud = require('google-cloud');
-var config = require('../config');
 const url = require('url')
-var pg = require('pg');
-var namedPG = require('node-postgres-named');
+const pg = require('pg');
+const namedPG = require('node-postgres-named');
+
+const config = require('../config');
+const cloudstorage = require('../lib/cloudstorage');
+const toMeta = require('../translation/to_meta');
 
 pg.defaults.ssl = true;
-var cloudstorage = require('../lib/cloudstorage');
-var toMeta = require('../translation/to_meta');
-
-
 const urlparams = url.parse(config.get('DATABASE_URL'));
 const userauth = urlparams.auth.split(':');
 const poolconfig = {
@@ -42,13 +38,10 @@ const poolconfig = {
   ssl: true
 };
 
-var pool = new pg.Pool(poolconfig);
+const pool = new pg.Pool(poolconfig);
 namedPG.patch(pool);
 
-// We use base62 for encoding/decoding datastore keys into something more easily typeable on a mobile device.
-var Base62 = require('base62');
-
-function searchQuests(userId, params, cb) {
+function search(userId, params, cb) {
   if (!params) {
     cb(new Error("Search params not given"));
   }
@@ -95,7 +88,7 @@ function searchQuests(userId, params, cb) {
     filter_params['order'] = params.order.substr(1);
   }
 
-  var limit = Math.max(params.limit || 0, 100);
+  const limit = Math.max(params.limit || 0, 100);
   filter_query += ' LIMIT $limit';
   filter_params['limit'] = limit;
 
@@ -103,7 +96,7 @@ function searchQuests(userId, params, cb) {
     if (err) {
       return cb(err);
     }
-    var hasMore = results.rows.length === limit ? token + results.rows.length : false;
+    const hasMore = results.rows.length === limit ? token + results.rows.length : false;
     cb(null, results.rows, hasMore);
   });
 }
@@ -121,7 +114,7 @@ function publish(user, docid, xml, cb) {
   // Invariant: quest ID is present after this point
   console.log("Publishing quest " + docid + " owned by " + user);
 
-  var cloud_storage_data = {
+  const cloud_storage_data = {
     gcsname: user + "/" + docid + "/" + Date.now() + ".xml",
     buffer: xml
   }
@@ -146,7 +139,7 @@ function publish(user, docid, xml, cb) {
     params[i] = '$' + params[i];
   }
 
-  var query_text = 'INSERT INTO quests ('+ columns +',published,tombstone) VALUES (' + params.join(',') + ',NOW(),NULL) ON CONFLICT (id) DO UPDATE SET ' + interleaved.join(',') + ',published=NOW(),tombstone=NULL';
+  const query_text = 'INSERT INTO quests ('+ columns +',published,tombstone) VALUES (' + params.join(',') + ',NOW(),NULL) ON CONFLICT (id) DO UPDATE SET ' + interleaved.join(',') + ',published=NOW(),tombstone=NULL';
   pool.query(query_text, meta, function(err, result) {
     if (err) {
       return cb(err);
@@ -161,7 +154,7 @@ function unpublish(user, docid, cb) {
   }
 
   console.log("Unpublishing quest " + docid + " owned by " + user);
-  var id = user + '_' + docid;
+  const id = user + '_' + docid;
   pool.query('UPDATE quests SET tombstone=NOW() WHERE id=$id', {id: id}, function(err, result) {
     if (err) {
       return cb(err);
@@ -188,7 +181,7 @@ function read(id, cb) {
 
 module.exports = {
   read: read,
-  searchQuests: searchQuests,
+  search: search,
   publish: publish,
   unpublish: unpublish,
 };

@@ -1,22 +1,7 @@
-// Copyright 2015-2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-'use strict';
-
 // Hierarchical node.js configuration with command-line arguments, environment
 // variables, and files.
-var nconf = module.exports = require('nconf');
-var path = require('path');
+const nconf = module.exports = require('nconf');
+const path = require('path');
 
 nconf
   // 1. Command-line arguments
@@ -46,16 +31,12 @@ nconf
     // This is the id of your project in the Google Cloud Developers Console.
     GCLOUD_PROJECT: '',
 
-    // Connection url for the Memcache instance used to store session data
-    MEMCACHE_URL: '127.0.0.1:11211',
-
     OAUTH2_CLIENT_ID: '',
     OAUTH2_CLIENT_SECRET: '',
     OAUTH2_CALLBACK: '',
 
     DATABASE_URL: '',
 
-    // Port the HTTP server
     PORT: 8080,
 
     SESSION_SECRET: '',

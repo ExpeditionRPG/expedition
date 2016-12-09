@@ -1,16 +1,16 @@
-var React = require('react');
-var fs = require('fs');
-var querystring = require('querystring');
+const React = require('react');
+const fs = require('fs');
+const querystring = require('querystring');
 
-var config = require('./config');
-var toMarkdown = require('./translation/to_markdown');
-var toXML = require('./translation/to_xml');
-var toGraph = require('./translation/to_graph');
-var toMeta = require('./translation/to_meta');
-var model = require('./quests/model');
-var passport = require('passport');
-var oauth2 = require('./lib/oauth2');
-var express = require('express');
+const config = require('./config');
+const toMarkdown = require('./translation/to_markdown');
+const toXML = require('./translation/to_xml');
+const toGraph = require('./translation/to_graph');
+const toMeta = require('./translation/to_meta');
+const quests = require('./models/quest');
+const passport = require('passport');
+const oauth2 = require('./lib/oauth2');
+const express = require('express');
 
 // TODO: Rate limit all routers
 // TODO: SSL
@@ -20,7 +20,7 @@ var express = require('express');
 
 // Use the oauth middleware to automatically get the user's profile
 // information and expose login/logout URLs to templates.
-var router = express.Router();
+const router = express.Router();
 router.use(oauth2.template);
 
 router.get('/', function(req, res) {
@@ -31,38 +31,36 @@ router.get('/', function(req, res) {
 
 router.post('/quests', function(req, res) {
 
-  var token = req.params.token;
+  const token = req.params.token;
   if (!res.locals.id) {
     res.header('Access-Control-Allow-Origin', req.get('origin'));
     res.header('Access-Control-Allow-Credentials', 'true');
     return res.send(JSON.stringify([]));
   }
 
-  var params;
   try {
-    params = JSON.parse(req.body);
+    const params = JSON.parse(req.body);
+    quests.search(res.locals.id, params, function(err, quests, nextToken) {
+      if (err) {
+        res.header('Access-Control-Allow-Origin', req.get('origin'));
+        res.header('Access-Control-Allow-Credentials', 'true');
+        console.log(err);
+        return res.status(500).end("Search Error");
+      }
+      result = {error: err, quests: quests, nextToken: nextToken};
+      console.log("Found " + quests.length + " quests for user " + res.locals.id);
+      res.header('Access-Control-Allow-Origin', req.get('origin'));
+      res.header('Access-Control-Allow-Credentials', 'true');
+      res.send(JSON.stringify(result));
+    });
   } catch (e) {
     console.log(e);
     return res.status(500).end("Search Error");
   }
-
-  model.searchQuests(res.locals.id, params, function(err, quests, nextToken) {
-    if (err) {
-      res.header('Access-Control-Allow-Origin', req.get('origin'));
-      res.header('Access-Control-Allow-Credentials', 'true');
-      console.log(err);
-      return res.status(500).end("Search Error");
-    }
-    result = {error: err, quests: quests, nextToken: nextToken};
-    console.log("Found " + quests.length + " quests for user " + res.locals.id);
-    res.header('Access-Control-Allow-Origin', req.get('origin'));
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.send(JSON.stringify(result));
-  });
 });
 
 router.get('/raw/:quest', function(req, res) {
-  model.read(req.params.quest, function(err, entity) {
+  quests.read(req.params.quest, function(err, entity) {
     if (err) {
       return res.status(500).end(err.toString());
     }
@@ -79,7 +77,7 @@ router.post('/publish/:quest', function(req, res) {
   }
 
   try {
-    model.publish(res.locals.id, req.params.quest, req.body, function(err, id) {
+    quests.publish(res.locals.id, req.params.quest, req.body, function(err, id) {
       if (err) {
         throw new Error(err);
       }
@@ -98,7 +96,7 @@ router.post('/unpublish/:quest', function(req, res) {
   }
 
   try {
-    model.unpublish(res.locals.id, req.params.quest, function(err, id) {
+    quests.unpublish(res.locals.id, req.params.quest, function(err, id) {
       if (err) {
         throw new Error(err);
       }

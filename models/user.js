@@ -1,0 +1,8 @@
+/*
+CREATE TABLE users (
+  id VARCHAR(255) NOT NULL,
+  PRIMARY KEY(id),
+  created TIMESTAMP NULL DEFAULT NULL,
+  tombstone TIMESTAMP NULL DEFAULT NULL
+);
+*/

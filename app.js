@@ -1,32 +1,16 @@
-// Copyright 2015-2016, Google, Inc.
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-'use strict';
+const nr = require('newrelic');
+const path = require('path');
+const express = require('express');
+const exphbs = require('express-handlebars');
+const url = require('url');
+const session = require('express-session');
+const passport = require('passport');
+const config = require('./config');
+const logging = require('./lib/logging');
+const routes = require('./routes');
+const bodyParser = require('body-parser')
 
-
-var nr = require('newrelic');
-var path = require('path');
-var express = require('express');
-var exphbs = require('express-handlebars');
-var url = require('url');
-var session = require('express-session');
-//var MemcachedStore = require('connect-memcached')(session);
-var passport = require('passport');
-var config = require('./config');
-var logging = require('./lib/logging');
-var routes = require('./routes');
-var bodyParser = require('body-parser')
-
-var app = express();
+const app = express();
 
 // Add the request logger before anything else so that it can
 // accurately log requests.
@@ -37,16 +21,16 @@ app.use(bodyParser.text({type:"*/*"}));
 app.disable('etag');
 
 // handlebars
-var setupView = function(app) {
+const setupView = function(app) {
   app.engine('handlebars', exphbs({ defaultLayout: 'main'}));
   app.set('view engine', 'handlebars');
 };
 
-var setupSession = function(app) {
+const setupSession = function(app) {
   app.set('trust proxy', true);
 
   // Configure the session and session storage.
-  var sessionConfig = {
+  const sessionConfig = {
     resave: false,
     saveUninitialized: false,
     secret: config.get('SESSION_SECRET'),
@@ -63,13 +47,13 @@ var setupSession = function(app) {
   app.use(require('./lib/oauth2').router);
 };
 
-var setupRoutes = function(app) {
+const setupRoutes = function(app) {
   app.use(routes);
 
   if (process.env.NODE_ENV === 'dev') {
     // Set a catch-all route and proxy the request for static assets
     console.log("Proxying static requests to webpack");
-    var proxy = require('proxy-middleware');
+    const proxy = require('proxy-middleware');
     app.use('/', proxy(url.parse('http://localhost:8081/')));
   } else {
     // TODO: Serve files from dist/
@@ -78,7 +62,7 @@ var setupRoutes = function(app) {
   }
 };
 
-var setupLogging = function(app) {
+const setupLogging = function(app) {
   // Add the error logger after all middleware and routes so that
   // it can log errors from the whole application. Any custom error
   // handlers should go after this.
