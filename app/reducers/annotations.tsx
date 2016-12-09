@@ -2,8 +2,9 @@ import {LogMessage} from '../parsing/Logger'
 import {AnnotationType} from './StateTypes'
 import {QuestRenderAction} from '../actions/ActionTypes'
 
-function toAnnotation(msgs: LogMessage[], result: AnnotationType[]): void {
+function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: Set<number>): void {
   for (let m of msgs) {
+    errorLines.add(m.line);
 
     if (m.type === 'internal') {
       m.text = "PLEASE REPORT: " + m.text;
@@ -13,8 +14,8 @@ function toAnnotation(msgs: LogMessage[], result: AnnotationType[]): void {
     result.push({
       row: m.line,
       column: 0,
-      text: m.text + "\n(See \"" + m.url + "\" help section.)\n",
-      type: m.type,
+      text: m.type + ' ' + m.url + ': ' +m.text,
+      type: (m.type === 'internal') ? 'error' : m.type,
     });
   }
 }
@@ -29,8 +30,19 @@ export function annotations(state: AnnotationType[] = [], action: Redux.Action):
   var result: AnnotationType[] = [];
   // Don't render info lines here.
   // TODO: Conditionally render info lines based on user settings
-  toAnnotation(msgsAction.msgs.warning, result);
-  toAnnotation(msgsAction.msgs.error, result);
-  toAnnotation(msgsAction.msgs.internal, result);
+  var errorLines = new Set<number>();
+  toAnnotation(msgsAction.msgs.warning, result, errorLines);
+  toAnnotation(msgsAction.msgs.error, result, errorLines);
+  toAnnotation(msgsAction.msgs.internal, result, errorLines);
+
+  errorLines.forEach((l: number) => {
+    result.push({
+      row: l,
+      column: 0,
+      text: '(See HELP for more details)',
+      type: 'info',
+    });
+  });
+
   return result;
 }
