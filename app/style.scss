@@ -122,14 +122,12 @@ html, body, #react-app {
       text-decoration: none;
     }
   }
-  .screenshot {
+  .previewVideo {
     background: $bg_primary;
-
-    img {
-      box-shadow: 0 0 10px #616161;
-      width: 70%;
-      margin: auto;
-      display: block;
-    }
+    box-shadow: 0 0 20px #616161;
+    border-radius: 2px;
+    width: 710px;
+    height: 700px;
+    margin: auto;
   }
 }

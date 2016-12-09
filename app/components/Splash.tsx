@@ -26,7 +26,7 @@ const Splash = (props: any): JSX.Element => {
         }
       />
       <div className="body">
-        <h1>Create your own quests</h1>
+        <h1>Write your adventure and share it with the world</h1>
         <RaisedButton
           label="Get Started"
           primary={true}
@@ -37,9 +37,11 @@ const Splash = (props: any): JSX.Element => {
             learn more
           </a>
         </div>
-        <div className="screenshot">
-          <img src="/assets/img/app-screenshot.png"/>
-        </div>
+        <iframe
+          className="previewVideo"
+          src="https://www.youtube.com/embed/12y1NhQUXvs?autoplay=1&fs=0&loop=1&modestbranding=1&playlist=12y1NhQUXvs"
+          frameborder="0">
+        </iframe>
       </div>
     </div>
   );
