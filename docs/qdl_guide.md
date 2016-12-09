@@ -14,15 +14,15 @@ Here we'll dive into more specific details about what's possible in QDL.
 
 ## Glossary
 
-**Attribute**: cards and elements can be given additional attributes, such as ID's and if statements, that extend their functionality.
+[**Attribute**](#attributes): cards and elements can be given additional attributes, such as ID's and if statements, that extend their functionality.
 
-**Branches**: when users make choices or do things that have multiple possible outcomes (such as combat, which can be won or lost), this creates "branches" in the story, indicated by increasing the indentation in QDL.
+[**Branches**](#branches): when users make choices or do things that have multiple possible outcomes (such as combat, which can be won or lost), this creates "branches" in the story, indicated by increasing the indentation in QDL.
 
-**Cards**: in the app, each screen the user sees is a separate "card" that you'll write in QDL.
+[**Cards**](#cards): in the app, each screen the user sees is a separate "card" that you'll write in QDL.
 
-**Context**: the context lets you set, edit and use math and variables to alter flow of the quest, such as to see if the party found the key earlier, or if they have enough gold to buy a potion.
+[**Context**](#context): the context lets you set, edit and use math and variables to alter flow of the quest, such as to see if the party found the key earlier, or if they have enough gold to buy a potion.
 
-**Elements**: roleplaying cards can contain text - but they can also contain other elements, such as choice buttons and instruction blocks.
+[**Elements**](#elements): roleplaying cards can contain text - but they can also contain other elements, such as choice buttons and instruction blocks.
 
 
 ## Attributes
@@ -102,7 +102,7 @@ Adventurers will see this card after both options fall through (unless they're r
 Where choices are triggered by adventurers making a choice between buttons, events are triggered by the app when certain criteria are met. Right now, there are only events in combat, though this may be expanded in the future.
 
 
-## Card Types
+## Cards
 
 Cards are your basic storytelling tool in QDL. You have at your disposal:
 

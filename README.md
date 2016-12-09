@@ -51,3 +51,4 @@ Build and deploy:
 webpack -p --config ./webpack.dist.config.js
 git push <remote server name> <local branch name>:master
 ```
+For database querying, make sure you have psql installed and can do `which psql`, then run `heroku pg:psql --app expedition-quest-creator DATABASE` to connect
