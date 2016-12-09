@@ -42,7 +42,7 @@ export class BlockRenderer {
         // Only the blocks within choices should be rendered at this point.
         log.err(
           'roleplay blocks cannot contain indented sections that are not choices',
-          '404',
+          '411',
           blocks[0].startLine
         );
       }
@@ -71,10 +71,7 @@ export class BlockRenderer {
         var inner = blocks[++i];
         while (i < blocks.length && inner.indent !== block.indent) {
           if (!inner.render) {
-            log.internal(
-              "found unexpected block with no render",
-              blocks[0].startLine
-            );
+            log.internal('found unexpected block with no render', '501', blocks[0].startLine);
             i++;
             continue;
           }
@@ -97,16 +94,13 @@ export class BlockRenderer {
 
   toTrigger(blocks: Block[], log: Logger) {
     if (blocks.length !== 1) {
-      log.err(
-        'trigger block group cannot contain multiple blocks',
-        '404'
-      );
+      log.internal('trigger found with multiple blocks', '502');
     }
 
     try {
       var extracted: any = this.extractTrigger(blocks[0].lines[0]);
     } catch (e) {
-      log.err("could not parse trigger block", "404");
+      log.err("could not parse trigger", "410");
       extracted = {title: 'end', visible: undefined};
     }
 
@@ -127,7 +121,7 @@ export class BlockRenderer {
     if (!blocks.length) {
       log.err(
         'empty combat list',
-        '404',
+        '412',
         blocks[0].startLine
       );
     }
@@ -135,7 +129,7 @@ export class BlockRenderer {
     try {
       var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0]);
     } catch (e) {
-      log.err("could not parse block header", "404");
+      log.err("could not parse block header", "413");
       extracted = {title: 'combat', id: undefined, json: {}};
     }
 
@@ -157,7 +151,7 @@ export class BlockRenderer {
     }
 
     if (attribs['enemies'].length === 0) {
-      log.err("combat block has no enemies listed", "404");
+      log.err("combat block has no enemies listed", "414");
       attribs['enemies'] = [{text: "UNKNOWN"}];
     }
 
@@ -171,7 +165,7 @@ export class BlockRenderer {
         if (!currEvent) {
           log.err(
             "found inner block of combat block without an event bullet",
-            "404",
+            "415",
             block.startLine
           );
           continue;
@@ -194,7 +188,7 @@ export class BlockRenderer {
         if (!extractedEvent.text) {
           log.err(
             "lines within combat block must be event bullets or enemies; instead found \""+line+"\"",
-            "404",
+            "416",
             block.startLine + j
           );
           continue;
@@ -220,14 +214,14 @@ export class BlockRenderer {
     if (!hasWin) {
       log.err(
         "combat block must have 'win' event",
-        "404"
+        "417"
       );
       events.push({text: "on win", event: [this.renderer.toTrigger({text: "end"})]});
     }
     if (!hasWin) {
       log.err(
         "combat block must have 'lose' event",
-        "404"
+        "418"
       );
       events.push({text: "on lose", event: [this.renderer.toTrigger({text: "end"})]});
     }
@@ -239,7 +233,7 @@ export class BlockRenderer {
     // Parse meta using the block itself.
     // Metadata format is standard across all renderers.
     if (!block) {
-      if (log) log.err('Missing quest root block', '404');
+      if (log) log.err('missing quest root block', '419');
       return {'title': 'UNKNOWN'};
     }
 
@@ -247,8 +241,8 @@ export class BlockRenderer {
     for(var i = 1; i < block.lines.length && block.lines[i] !== ''; i++) {
       var kv = block.lines[i].split(":");
       if (kv.length !== 2) {
-        if (log) log.err('invalid quest attribute string "' + block.lines[i] + '"',
-          '404', block.startLine + i);
+        if (log) log.err('invalid quest attribute line "' + block.lines[i] + '"',
+          '420', block.startLine + i);
         continue;
       }
       var k = kv[0].toLowerCase();
@@ -268,15 +262,25 @@ export class BlockRenderer {
         quest = questBlock.render;
       } else {
         // Error here. We can still handle null quests in the renderer.
-        log.err("root block must be a quest header", "404", 0);
+        log.err("root block must be a quest header", "421", 0);
         quest = this.renderer.toQuest({title: 'Error'});
       }
     } else {
-      log.err("No quest blocks found", "404");
+      log.err("no quest blocks found", "422");
       quest = this.renderer.toQuest({title: 'Error'});
     }
 
     for (var i = 1; i < zeroIndentBlockGroupRoots.length; i++) {
+      var block = zeroIndentBlockGroupRoots[i];
+      if (!block) {
+        log.internal("empty block found in finalize step", '503');
+        continue;
+      }
+      if (!block.render) {
+        log.internal("Unrendered block found in finalize step", '504');
+        continue;
+      }
+
       toRender.push(zeroIndentBlockGroupRoots[i].render);
     }
 

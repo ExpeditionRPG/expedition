@@ -16,7 +16,7 @@ export class AttributeNormalizer {
     var v = this.attrs[k];
 
     if (!v && required) {
-      if (this.log) this.log.err('missing: "' + k + '"', '404');
+      if (this.log) this.log.err('missing: "' + k + '"', '424');
     }
     return v;
   }
@@ -33,7 +33,7 @@ export class AttributeNormalizer {
     }
 
     if (this.log) {
-      this.log.err(k + " should be a string, but is \""+v+'\"', '404');
+      this.log.err(k + " should be a string, but is "+typeof(v), '425');
     }
     return 'UNDEFINED';
   }
@@ -50,7 +50,7 @@ export class AttributeNormalizer {
     }
 
     if (this.log) {
-      this.log.err(k + " should be a number, but is \""+v+'\"', '404');
+      this.log.err(k + " should be a number, but is "+typeof(v), '426');
     }
     return 0;
   }
@@ -69,7 +69,7 @@ export class AttributeNormalizer {
         continue;
       }
 
-      if (this.log) this.log.err('unknown: "' + k + '"', '404');
+      if (this.log) this.log.err('unknown: "' + k + '"', '427');
     }
   }
 }

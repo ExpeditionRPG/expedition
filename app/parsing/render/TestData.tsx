@@ -94,46 +94,46 @@ data.roleplayWithID = `<roleplay title="Title" id="testid123">
 
 data.combatNoEnemyOrEventsLog = `ERROR L0:
 combat block has no enemies listed
-URL: 404
+URL: 414
 
 ERROR L0:
 combat block must have \'win\' event
-URL: 404
+URL: 417
 
 ERROR L0:
 combat block must have \'lose\' event
-URL: 404`;
+URL: 418`;
 
 data.combatBadParseLog = `ERROR L0:
 could not parse block header
-URL: 404
+URL: 413
 
 ERROR L0:
 combat block has no enemies listed
-URL: 404
+URL: 414
 
 ERROR L0:
 combat block must have \'win\' event
-URL: 404
+URL: 417
 
 ERROR L0:
 combat block must have \'lose\' event
-URL: 404`;
+URL: 418`;
 
 data.badQuestAttrError = `ERROR L0:
 unknown: "testparam"
-URL: 404`;
+URL: 427`;
 
 data.invalidQuestAttrError = `ERROR L0:
-minplayers should be a number, but is "hi"
-URL: 404`;
+minplayers should be a number, but is string
+URL: 426`;
 
 data.badParseQuestAttrError = `ERROR L1:
-invalid quest attribute string "minplayers1"
-URL: 404
+invalid quest attribute line "minplayers1"
+URL: 420
 
 ERROR L0:
 missing: "minplayers"
-URL: 404`;
+URL: 424`;
 
 export default data;

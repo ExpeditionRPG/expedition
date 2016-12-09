@@ -65,12 +65,12 @@ export class Logger {
     this.info.push(text);
   }
 
-  internal(text: string, line?: number) {
+  internal(text: string, url: string, line?: number) {
     this.msg(
       this.context,
       'internal',
       text,
-      'internal_error',
+      url,
       line
     );
   }
@@ -105,7 +105,7 @@ export class Logger {
         this.context,
         'info',
         this.info.join('\n'),
-        '404'
+        '100'
       );
     }
     return this.messages;

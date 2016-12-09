@@ -3,7 +3,8 @@
 Click one of these links for more details on specific errors:
 
 * [404](404.md)
-* [internal_error](internal_error.md)
+* [error_internal](internal_error.md)
+* [error_invalid_trigger](error_invalid_trigger.md)
 
 Other helpful links:
 

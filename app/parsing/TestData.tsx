@@ -99,14 +99,31 @@ stuff
 
 data.noHeaderError = `ERROR L0:
 root block must be a quest header
-URL: 404`;
+URL: 421`;
 
 data.emptyXML = `<quest title="Error">
     <roleplay></roleplay>
 </quest>`;
 
 data.emptyError = `ERROR L0:
-No quest blocks found
-URL: 404`;
+no quest blocks found
+URL: 422`;
+
+data.triggerWithNoAfterHeader = `#Quest Title
+minplayers: 1
+maxplayers: 2
+author: Test
+
+**end**
+
+Roleplay card without header
+`
+
+data.triggerWithNoAfterHeaderXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
+    <trigger>end</trigger>
+    <roleplay title="">
+        <p>Roleplay card without header</p>
+    </roleplay>
+</quest>`;
 
 export default data;
