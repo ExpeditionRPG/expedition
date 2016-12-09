@@ -145,7 +145,11 @@ export class QDLParser {
 
       // Trigger blocks are always singular blocks, so break them afterwards, too
       if (curr && curr.lines.length && curr.lines[0].length && curr.lines[0].indexOf('**') === 0) {
-        groups[curr.indent].push([]);
+        if (i === this.blockList.length-1) {
+          // don't add a blank block as the very last block
+        } else {
+          groups[curr.indent].push([]);
+        }
       }
 
       // Break all deeply-indented groups that have a larger indent

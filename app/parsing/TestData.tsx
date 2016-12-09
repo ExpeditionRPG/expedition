@@ -28,8 +28,6 @@ More stuff
 
     Victory!
 
-    **end**
-
   * on lose
 
     Defeat!
@@ -47,7 +45,15 @@ More stuff
 
   And a thing.
 
-  **end**`;
+  **end**
+
+_Fall Through_
+
+Game over
+
+> You win
+
+**end**`;
 
 data.basicXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
     <roleplay title="Roleplay Card">
@@ -65,7 +71,6 @@ data.basicXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplay
                     <roleplay title="">
                         <p>Victory!</p>
                     </roleplay>
-                    <trigger>end</trigger>
                 </event>
                 <event on="lose">
                     <roleplay title="">
@@ -88,6 +93,13 @@ data.basicXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplay
             <trigger>end</trigger>
         </choice>
     </roleplay>
+    <roleplay title="Fall Through">
+        <p>Game over</p>
+        <instruction>
+            <p>You win</p>
+        </instruction>
+    </roleplay>
+    <trigger>end</trigger>
 </quest>`;
 
 data.noHeaderMD = `_Roleplay Card_
