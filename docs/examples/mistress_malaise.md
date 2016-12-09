@@ -1,14 +1,14 @@
-#Mistress Malaise
+# Mistress Malaise
 summary: Mystery, Misfortune, and a Mistress.
 author: Scott Martin
 email: smartin015@gmail.com
 url: expeditiongame.com
-recommended-min-players: 2
-recommended-max-players: 4
-min-time-minutes: 30
-max-time-minutes: 60
+minPlayers: 2
+maxPlayers: 5
+minTimeMinutes: 30
+maxTimeMinutes: 60
 
-[//]: # (ACT I: Setup)
+// Act I
 
 _A Holy Order_ {"icon": "magic"}
 
@@ -52,7 +52,7 @@ If your party can travel to the mausoleum and find the phylactery, Pell can perf
 
 You begin the hunt immediately.
 
-[//]: # (ACT II: The Graveyard)
+
 
 _Outside the Tomb_ {"icon": "bandit"}
 
@@ -66,80 +66,85 @@ What do you do?
 
 *   Call out to them.
 
-    You shout out to them, announcing your presence. They appear startled and disappear inside.
+  You shout out to them, announcing your presence. They appear startled and disappear inside.
 
-    Not too long after, the screams begin.
+  Not too long after, the screams begin.
 
-    As you make it to the door, you hear a small explosion, a sickening crunching sound, and then silence. The Order doesn't pay you nearly enough for this.
+  As you make it to the door, you hear a small explosion, a sickening crunching sound, and then silence. The Order doesn't pay you nearly enough for this.
 
-    _Inside the Tomb_ {"icon": "undead"}
+  _Inside the Tomb_ {"icon": "undead"}
 
-    You take a last deep breath of the damp air outside and venture within.
+  You take a last deep breath of the damp air outside and venture within.
 
-    As you go deeper, you find each of the three bandits in turn, victim to the magical traps and wards set up by Malaise. You try not to think of the state the bodies are in, but make careful note of how they died and safely navigate the dangers of the outer rooms.
+  As you go deeper, you find each of the three bandits in turn, victim to the magical traps and wards set up by Malaise. You try not to think of the state the bodies are in, but make careful note of how they died and safely navigate the dangers of the outer rooms.
 
-    Towards the end of a long corridor, you find one last door into the mausoleum's innermost chamber. You hear a creaking sound as you press against the door - but the noise didn't come from the door...
+  Towards the end of a long corridor, you find one last door into the mausoleum's innermost chamber. You hear a creaking sound as you press against the door - but the noise didn't come from the door...
 
-*   Attempt to incapacitate them.
+* Attempt to incapacitate them.
 
-    _Subterfuge_ {"icon": "bandit"}
+  _Subterfuge_ {"icon": "bandit"}
 
-    Your party quickly takes cover behind some nearby headstones and sneaks towards the group.
+  Your party quickly takes cover behind some nearby headstones and sneaks towards the group.
 
-      >  One of your party must roll a die at this time.
-      >  Choose a next action based on the result of that roll:
+  >  One of your party must roll a die at this time. Choose a next action based on the result of that roll:
 
-    *   Rolled above 10
+  * Rolled above 10
 
-        _Hit and Run_
+    _Hit and Run_
 
-        You sneak up on the shady figures and take them out silently.
+    You sneak up on the shady figures and take them out silently.
 
-        After a quick check you can confirm they're still breathing. Searching their pockets, you find a piece of parchment listing what appears to be the locations of various traps within. Paper in hand, you proceed into the tomb.
+    After a quick check you can confirm they're still breathing. Searching their pockets, you find a piece of parchment listing what appears to be the locations of various traps within. Paper in hand, you proceed into the tomb.
 
-    *   Rolled 10 or below
+  * Rolled 10 or below
 
-        _Bad Timing_
+    _Bad Timing_
 
-        The shady figures sense your presence and draw their weapons.
+    The shady figures sense your presence and draw their weapons.
 
-        _combat_ {"enemies": ["Archer", "Rogue", "Brigand"]}
+    _combat_
+    - Archer
+    - Rogue
+    - Brigand
 
-        *   on win
+    * on win
 
-            Searching the slain, you find a piece of parchment listing what appears to be the locations of various traps within. Paper in hand, you proceed into the tomb.
+      Searching the slain, you find a piece of parchment listing what appears to be the locations of various traps within. Paper in hand, you proceed into the tomb.
 
-        *   on lose
+    * on lose
 
-            As the world fades to black, your last thought is of the dishonor you've brought the Order.
+      As the world fades to black, your last thought is of the dishonor you've brought the Order.
 
-            **end**
+      **end**
+
+    _The Map_
 
     It's immediately clear that you wouldn't have stood a chance without foreknowledge of the traps within. Dodging spring traps, rusty spikes, and magical flames, you make your way to the innermost chamber.
 
     You hear a creaking sound as you press against the door - but the noise didn't come from the door...
 
-[//]: # (This combat is reached regardless of the state of the bandits.)
 
-_combat_ {"icon": "undead", "enemies": ["Zombie", "Skeleton Mage"]}
+_combat_ {"icon": "undead"}
+- Zombie
+- Skeleton Mage
 
-*   on win
+* on win
 
-    _Taking Stock_ {"icon": "loot"}
+  _Taking Stock_ {"icon": "loot"}
 
-    The undead fiends lay slain at your feet - and resting on a podium in the center of the room is what could only be the phylactery mentioned by Brother Pell.
+  The undead fiends lay slain at your feet - and resting on a podium in the center of the room is what could only be the phylactery mentioned by Brother Pell.
 
-*   on lose
+* on lose
 
-    The undead fiends let out an unearthly shriek of victory as the last of your party falls.
+  The undead fiends let out an unearthly shriek of victory as the last of your party falls.
 
-    **end**
+  **end**
 
 _The Phylactery_ {"icon": "loot"}
 
 You take the phylactery from the pedestal and search the rest of the room, finding some additional supplies.
 
-> At this time, draw two random Tier I loot cards from the loot deck.
+> Draw two random Tier I loot cards from the loot deck.
 
 _The Party Emerges_ {"icon": "adventurer"}
 
@@ -147,51 +152,53 @@ You emerge from the tomb, taking a moment to breathe the (mostly) fresh air. Wha
 
 The moving headstone is actually an old, feeble woman, who was apparently waiting for you to emerge. She calls herself Malaise, and begs for you to listen.
 
-*   Listen to her story
+* Listen to her story
 
-    _Malaise Unmasked_ {"icon": "adventurer"}
+  _Malaise Unmasked_ {"icon": "adventurer"}
 
-    Malaise begins to tell a rather different story from Pell's - that the sickness began after her departure, but that the surge in undead activity is the fault of an old resident of Brustwick. A man skilled in binding rituals.
+  Malaise begins to tell a rather different story from Pell's - that the sickness began after her departure, but that the surge in undead activity is the fault of an old resident of Brustwick. A man skilled in binding rituals.
 
-    A man by the name of Pell.
+  A man by the name of Pell.
 
-    With a wistful smile, she opens the box you looted from the mausoleum and reveals an empty glass bottle. Pell must have warded the grave and planted the false phylactery as a trap for adventurers to distract them from his real identity.
+  With a wistful smile, she opens the box you looted from the mausoleum and reveals an empty glass bottle. Pell must have warded the grave and planted the false phylactery as a trap for adventurers to distract them from his real identity.
 
-    Dejected and betrayed, you ask her where Pell hid his phylactery. She mentions that she doesn't know for sure, but it should be somewhere close to him if the lore is true.
+  Dejected and betrayed, you ask her where Pell hid his phylactery. She mentions that she doesn't know for sure, but it should be somewhere close to him if the lore is true.
 
-    Then she stops, eyes wide in shock, as a sword emerges from her chest.
+  Then she stops, eyes wide in shock, as a sword emerges from her chest.
 
-    _combat_ {"icon": "undead", "enemies": ["Wight", "Zombie Hand", "Zombie"]}
+  _combat_ {"icon": "undead"}
+  - Wight
+  - Zombie Hand
+  - Zombie
 
-    *   on win
+  * on win
 
-        _Change of Plans_ {"icon": "d20"}
+    _Change of Plans_ {"icon": "d20"}
 
-        Wiping the viscera from your weapons, you stop to catch your breath. Malaise is dead, but the lich Pell still lives.
+    Wiping the viscera from your weapons, you stop to catch your breath. Malaise is dead, but the lich Pell still lives.
 
-        It appears that your plans have changed.
+    It appears that your plans have changed.
 
-    *   on lose
+  * on lose
 
-        _Boned_ {"icon": "undead"}
+    _Boned_ {"icon": "undead"}
 
-        Your party is no match for the onslaught of undead. You quickly succumb.
+    Your party is no match for the onslaught of undead. You quickly succumb.
 
-        **end**
+    **end**
 
-*   Attack her before she can speak
+* Attack her before she can speak
 
-    _Death of Malaise_
+  _Death of Malaise_
 
-    You leap at her before she has the chance to speak, slaying the old woman with a single blow.
+  You leap at her before she has the chance to speak, slaying the old woman with a single blow.
 
-    You step back in surprise. A lich should not have been slain so easily...
+  You step back in surprise. A lich should not have been slain so easily...
 
-    You open the box that Brother Pell had asked you to retrieve. Instead of a phylactery, it contains an empty glass bottle. It was a trap!
+  You open the box that Brother Pell had asked you to retrieve. Instead of a phylactery, it contains an empty glass bottle. It was a trap!
 
-    Brother Pell's misdirection can only mean one thing: That he is the lich.
+  Brother Pell's misdirection can only mean one thing: That he is the lich.
 
-[//]: # (Act IV: Returning to Pell)
 
 _Change of Plans_ {"icon": "d20"}
 
@@ -201,11 +208,15 @@ You entertain the thought of kicking down the door and incapacitating him with s
 
 On the other hand, you could send some of your party to sneak into the house. Meanwhile, the others could distract Pell at the entrance by asking for a place to recover, claiming that the rest of the party was "slain" after a failed assault on the Mausoleum. If any part of the bluff fails, you may not have your full party to fight with.
 
-*   Take the direct approach. {"goto": "planA"}
+* Take the direct approach.
 
-*   Split your party to look for the phylactery. {"goto": "planB"}
+  **goto planA**
 
-_The Direct Approach_ {"icon": "damage", "id": "planA"}
+* Split your party to look for the phylactery.
+
+  **goto planB**
+
+_The Direct Approach_ (#planA) {"icon": "damage"}
 
 You march up to the entrance of Pell's house, kick down the door, and enter with weapons drawn.
 
@@ -213,21 +224,26 @@ Pell stands up from his dining table, sees your intent, and with a word summons 
 
 Any doubts you had are gone. Enraged at his betrayal, you attack.
 
-_combat_ {"icon": "undead", "enemies": ["Lich", "Zombie", "Skeleton Swordsman"]}
+_combat_ {"icon": "undead"}
+- Lich
+- Zombie
+- Skeleton Swordsman
 
-*   on win
+* on win
 
-    Broken and bleeding, Pell utters a final dark curse. You feel your reactions slow and you barely miss grasping the lich as he runs upstairs. He takes the phylactery from his room, leaps through his window and escapes into the night.
+  Broken and bleeding, Pell utters a final dark curse. You feel your reactions slow and you barely miss grasping the lich as he runs upstairs. He takes the phylactery from his room, leaps through his window and escapes into the night.
 
-    You curse your luck. Brustwick has been freed from the undead menace for now... but you expect it won't be long before Pell continues his necromancy somewhere else.
+  You curse your luck. Brustwick has been freed from the undead menace for now... but you expect it won't be long before Pell continues his necromancy somewhere else.
 
-    For now, though, your work is done. You return to the Order, hoping to one day bring revenge upon Pell.
+  For now, though, your work is done. You return to the Order, hoping to one day bring revenge upon Pell.
 
-    **end**
+  **end**
 
-*   on lose {"goto": "pelldefeat"}
+*   on lose
 
-_A Cunning Plan_ {"icon": "undead", "id": "planB"}
+  **goto pelldefeat**
+
+_A Cunning Plan_ (#planB) {"icon": "undead"}
 
 You split your party; one group knocks at the front door, and the other climbs in through an upper rear window.
 
@@ -242,35 +258,36 @@ You rise to meet him.
 _The Phylactery_
 
 > Choose up to two players. Those players are the phylactery group.
->
-> The phylactery group must only attack the phylactery until it's destroyed. When it is, they may join combat.
->
-> The phylactery group does not take round damage, but is still affected by surges.
->
+
+> The phylactery group must only attack the phylactery until it's destroyed. When it is, they may join combat. The phylactery group does not take round damage, but is still affected by surges.
+
 > Players not in the phylactery group may not attack the phylactery.
->
-> At this time, draw a tier III Undead encounter and place it face-down with full health. This is the phylactery.
->
+
+> Draw a tier III Undead encounter and place it face-down with full health. This is the phylactery.
+
 > Combat is ended when all enemies and the phylactery are destroyed.
 
-_combat_ {"icon": "undead", "enemies": ["Lich", "Zombie", "Skeleton Swordsman"]}
+_combat_ {"icon": "undead"}
+- Lich
+- Zombie
+- Skeleton Swordsman
 
-*   on win
+* on win
 
-    As pell gives his last, dying gasp, the phylactery shatters under a final blow. A shockwave from the box knocks your party to the ground, unconscious.
+  As pell gives his last, dying gasp, the phylactery shatters under a final blow. A shockwave from the box knocks your party to the ground, unconscious.
 
-    When you manage to open your eyes once more, light peeks through the windows of Pell's house. You emerge to see a beautiful, natural sunrise. No mysterious fog or moldy smells remain.
+  When you manage to open your eyes once more, light peeks through the windows of Pell's house. You emerge to see a beautiful, natural sunrise. No mysterious fog or moldy smells remain.
 
-    The townsfolk of Brustwick begin to emerge from their homes - they see the change, learn of Pell, and a celebration soon erupts.
+  The townsfolk of Brustwick begin to emerge from their homes - they see the change, learn of Pell, and a celebration soon erupts.
 
-    You participate in the festivities for a while, then begin the long trek back home. You can't wait to tell the Order about your victory!
+  You participate in the festivities for a while, then begin the long trek back home. You can't wait to tell the Order about your victory!
 
-    **end**
+  **end**
 
-*   on lose
+* on lose
 
-    _Defeated_ {"id": "pelldefeat"}
+  _Defeated_ (#pelldefeat)
 
-    Pell has defeated you - he quickly reanimates your bodies, to become new fodder for the next adventurer looking to slay the lich of Brustwick.
+  Pell has defeated you - he quickly reanimates your bodies, to become new fodder for the next adventurer looking to slay the lich of Brustwick.
 
-    **end**
+  **end**

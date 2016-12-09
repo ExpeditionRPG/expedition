@@ -102,7 +102,7 @@ URL: 417
 
 ERROR L0:
 combat block must have \'lose\' event
-URL: 418`;
+URL: 417`;
 
 data.combatBadParseLog = `ERROR L0:
 could not parse block header
@@ -118,7 +118,7 @@ URL: 417
 
 ERROR L0:
 combat block must have \'lose\' event
-URL: 418`;
+URL: 417`;
 
 data.badQuestAttrError = `ERROR L0:
 unknown: "testparam"

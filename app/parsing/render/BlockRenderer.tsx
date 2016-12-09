@@ -221,7 +221,7 @@ export class BlockRenderer {
     if (!hasWin) {
       log.err(
         "combat block must have 'lose' event",
-        "418"
+        "417"
       );
       events.push({text: "on lose", event: [this.renderer.toTrigger({text: "end"})]});
     }
