@@ -36,6 +36,44 @@ export class BlockList {
     return this.blocks[idx];
   }
 
+  private shouldStartNewBlock(currBlock: Block, line: string, indent: number, prevEmpty: boolean): boolean {
+    // Start a new block if...
+
+    // there is no current block
+    if (!currBlock) {
+      return true;
+    }
+
+    // line with less whitespace than the start of the block
+    if (indent < currBlock.indent) {
+      return true;
+    }
+
+    // start of a combat or roleplay header
+    if (line[indent] === '_' && prevEmpty) {
+      return true;
+    }
+
+    // whitespace line followed by line with more indent.
+    // (e.g. going from choice to inner roleplay without header)
+    if (indent > currBlock.indent && prevEmpty) {
+      return true;
+    }
+
+    // start of a trigger
+    if (line[indent] === '*' && line[indent+1] === '*') {
+      return true;
+    }
+
+    // after a trigger and whitespace
+    var currBlockStart = currBlock.lines && currBlock.lines[0];
+    if (prevEmpty && currBlockStart && currBlockStart[0] == '*' && currBlockStart[1] == '*') {
+      return true;
+    }
+
+    return false;
+  }
+
   // Construct a list of blocks, given an entire QDL document as a string.
   private parse(md: string) {
 
@@ -69,15 +107,7 @@ export class BlockList {
         continue;
       }
 
-      // Start a new block on:
-      // - String starting with "_" after any whitespace
-      // - String with less whitespace than the start of the string
-      // - "empty" (or all whitespace) line followed by line with more indent.
-      if (!currBlock
-        || line[indent] === '_'
-        || (line[indent] === '*' && line[indent+1] === '*')
-        || indent < currBlock.indent
-        || (indent > currBlock.indent && prevEmpty)) {
+      if (this.shouldStartNewBlock(currBlock, line, indent, prevEmpty)) {
 
         if (currBlock) {
           this.blocks.push(currBlock);

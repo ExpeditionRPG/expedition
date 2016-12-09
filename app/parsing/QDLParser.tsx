@@ -25,7 +25,7 @@ export class QDLParser {
     this.result = null;
   }
 
-  render(blockList: BlockList) {
+  public render(blockList: BlockList) {
     this.log = new Logger();
     if (!blockList || blockList.length === 0) {
       this.result = this.renderer.finalize([], this.log);
@@ -128,6 +128,7 @@ export class QDLParser {
     // Group blocks by indent.
     // Blocks are grouped up to the maximum indent level
     var groups: {[indent:string]: number[][]} = {};
+
     for (var i = 0; i < this.blockList.length; i++) {
       var curr = this.blockList.at(i);
 
@@ -142,6 +143,11 @@ export class QDLParser {
 
       groups[curr.indent][groups[curr.indent].length-1].push(i);
 
+      // Trigger blocks are always singular blocks, so break them afterwards, too
+      if (curr && curr.lines.length && curr.lines[0].length && curr.lines[0].indexOf('**') === 0) {
+        groups[curr.indent].push([]);
+      }
+
       // Break all deeply-indented groups that have a larger indent
       var indents: any = Object.keys(groups).sort(function(a: any, b: any){return a-b;});
       for (var j = indents.length-1; indents[j] > curr.indent; j--) {
@@ -153,8 +159,6 @@ export class QDLParser {
     }
     return groups;
   }
-
-
 
   public getFinalizedLogs(): LogMessageMap {
     var finalized = this.log.finalize();
@@ -177,7 +181,7 @@ export class QDLParser {
           break;
         default:
           var log = new Logger();
-          log.internal('Unknown message type ' + m.type);
+          log.internal('Unknown message type ' + m.type, '506');
           Array.prototype.push.apply(logMap.internal, log.finalize());
           break;
       }
@@ -215,7 +219,7 @@ export class QDLParser {
       if (block.render === undefined) {
         if (block.indent !== baseIndent) {
           var l2 = new Logger([block]);
-          l2.internal("found unrendered non-baseIndent block");
+          l2.internal("found unrendered non-baseIndent block", "507");
           log.extend(l2.finalize());
         }
         toRender.push(block);
@@ -236,12 +240,12 @@ export class QDLParser {
     var log = new Logger(blocks);
 
     if (!blocks.length) {
-      log.internal("empty or null block set given");
+      log.internal("empty or null block set given", "508");
       return log.finalize();
     }
     if (blocks[0].render) {
       // Zeroth block should never be rendered
-      log.internal("found rendered zeroth block");
+      log.internal("found rendered zeroth block", "509");
       return log.finalize();
     }
 
@@ -264,7 +268,7 @@ export class QDLParser {
       if (blocks.length !== 1) {
         log.err(
           'quest block group cannot contain multiple blocks',
-          '404'
+          '423'
         );
       }
       this.renderer.toQuest(blocks[0], log);
