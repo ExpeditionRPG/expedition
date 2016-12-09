@@ -99,7 +99,7 @@ Adventurers will see this card after both options fall through (unless they're r
 
 ### Events
 
-Where choices are triggered by adventurers making a choice between buttons, events are triggered by the app when certain criteria are met. Right now, there are only events in combat, though this may be expanded in the future.
+Where choices are triggered by adventurers making a choice between buttons, events are triggered by the app when certain criteria are met. Right now, there are only `* on win` and `* on lose` events in combat, though this may be expanded in the future.
 
 
 ## Cards
