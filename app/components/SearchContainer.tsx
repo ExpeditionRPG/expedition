@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import {connect} from 'react-redux'
 import {AppState, SearchSettings, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {toPrevious, toCard} from '../actions/card'

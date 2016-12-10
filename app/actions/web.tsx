@@ -44,7 +44,7 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
       params.search = search.text;
     }
     if (search.age && search.age !== "inf") {
-      params.published_after = Math.floor(Date.now() / 1000) - parseInt(search.age);
+      params.published_after = parseInt(search.age);
     }
     if (search.order) {
       params.order = search.order;
@@ -56,7 +56,6 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
     xhr.setRequestHeader('Content-Type', 'text/plain');
     xhr.onload = function() {
       var response: any = JSON.parse(xhr.responseText);
-      console.log(response);
       if (response.error) {
         throw new Error(response.error);
       }

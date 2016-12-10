@@ -71,9 +71,9 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
 
           <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('order', v)} value={this.state.order}>
             <MenuItem value="-published" primaryText="Newest"/>
-            <MenuItem value="+metaTitle" primaryText="Title"/>
-            <MenuItem value="-metaMaxTimeMinutes" primaryText="Play Time (longest)"/>
-            <MenuItem value="+metaMinTimeMinutes" primaryText="Play Time (shortest)"/>
+            <MenuItem value="+title" primaryText="Title"/>
+            <MenuItem value="-maxTimeMinutes" primaryText="Play Time (longest)"/>
+            <MenuItem value="+minTimeMinutes" primaryText="Play Time (shortest)"/>
           </DropDownMenu>
         </div>
         <div>
