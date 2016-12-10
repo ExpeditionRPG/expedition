@@ -2,7 +2,7 @@
 CREATE TABLE quests (
   id VARCHAR(255) NOT NULL,
   PRIMARY KEY(id),
-  published TIMESTAMP NULL DEFAULT NULL,
+  published TIMESTAMP NULL DEFAULT NOW(),
   tombstone TIMESTAMP NULL DEFAULT NULL,
   publishedurl VARCHAR(2048),
   userid VARCHAR(255),
@@ -62,7 +62,7 @@ const schema = {
                                // still want it to exclude http://
 
   // metadata
-  published: Joi.date().default(Date.now()),
+  published: Joi.date(),
   tombstone: Joi.date().default(null),
 };
 exports.schema = schema;

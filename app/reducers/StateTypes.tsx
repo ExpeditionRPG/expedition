@@ -72,10 +72,11 @@ export interface DialogsState {
 export type ErrorsState = ErrorType[];
 
 export interface UserState {
-  loggedIn?: boolean,
-  id?: string,
-  displayName?: string,
-  image?: string
+  loggedIn?: boolean;
+  id?: string;
+  displayName?: string;
+  image?: string;
+  email?: string;
 }
 
 export interface AppState {

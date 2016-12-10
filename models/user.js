@@ -3,7 +3,7 @@ CREATE TABLE users (
   id VARCHAR(255) NOT NULL,
   PRIMARY KEY(id),
   email VARCHAR(255),
-  created TIMESTAMP NULL DEFAULT NULL,
+  created TIMESTAMP NULL DEFAULT NOW(),
   tombstone TIMESTAMP NULL DEFAULT NULL
 );
 */
@@ -14,6 +14,7 @@ const Pg = require('pg');
 const Url = require('url');
 
 const Config = require('../config');
+const Utils = require('./utils');
 
 Pg.defaults.ssl = true;
 const urlparams = Url.parse(Config.get('DATABASE_URL'));
@@ -30,12 +31,28 @@ const pool = new Pg.Pool(poolConfig);
 NamedPg.patch(pool);
 
 
+const table = 'users';
 const schema = {
   id: Joi.string().max(255),
   email: Joi.string().email().max(255),
 
   // metadata
-  published: Joi.date().default(Date.now()),
+  created: Joi.date(),
   tombstone: Joi.date().default(null),
 };
 exports.schema = schema;
+
+
+exports.upsert = function(user, cb) {
+  Joi.validate(user, schema, (err, user) => {
+
+    if (err) {
+      return cb(err);
+    }
+
+    const query = Utils.generateUpsertSql(table, user);
+    pool.query(query, {}, (err, result) => {
+      cb(err, user.id);
+    });
+  });
+};

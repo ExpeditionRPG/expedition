@@ -23,11 +23,13 @@ const express = require('express');
 const router = express.Router();
 router.use(oauth2.template);
 
+
 router.get('/', function(req, res) {
   res.render('app', {
     state: JSON.stringify(res.locals),
   });
 });
+
 
 router.post('/quests', function(req, res) {
 
@@ -59,6 +61,7 @@ router.post('/quests', function(req, res) {
   }
 });
 
+
 router.get('/raw/:quest', function(req, res) {
   quests.getById(req.params.quest, function(err, entity) {
     if (err) {
@@ -71,7 +74,9 @@ router.get('/raw/:quest', function(req, res) {
   });
 });
 
+
 router.post('/publish/:quest', function(req, res) {
+
   if (!res.locals.id) {
     return res.status(500).end("You are not signed in. Please sign in to save your quest.");
   }
@@ -90,7 +95,9 @@ router.post('/publish/:quest', function(req, res) {
   }
 });
 
+
 router.post('/unpublish/:quest', function(req, res) {
+
   if (!res.locals.id) {
     return res.status(500).end("You are not signed in. Please sign in to save your quest.");
   }
@@ -108,5 +115,6 @@ router.post('/unpublish/:quest', function(req, res) {
     res.status(500).end(e.toString());
   }
 });
+
 
 module.exports = router;
