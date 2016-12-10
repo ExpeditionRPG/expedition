@@ -18,18 +18,22 @@ CREATE TABLE quests (
 );
 */
 
-const url = require('url')
-const pg = require('pg');
-const namedPG = require('node-postgres-named');
+const Joi = require('joi');
+const NamedPg = require('node-postgres-named');
+const Pg = require('pg');
+const Squel = require('squel');
+const Url = require('url');
 
-const config = require('../config');
-const cloudstorage = require('../lib/cloudstorage');
-const toMeta = require('../translation/to_meta');
+const Config = require('../config');
+const CloudStorage = require('../lib/cloudstorage');
+const ToMeta = require('../translation/to_meta');
+const User = require('./user');
+const Utils = require('./utils');
 
-pg.defaults.ssl = true;
-const urlparams = url.parse(config.get('DATABASE_URL'));
+Pg.defaults.ssl = true;
+const urlparams = Url.parse(Config.get('DATABASE_URL'));
 const userauth = urlparams.auth.split(':');
-const poolconfig = {
+const poolConfig = {
   user: userauth[0],
   password: userauth[1],
   host: urlparams.hostname,
@@ -37,151 +41,196 @@ const poolconfig = {
   database: urlparams.pathname.split('/')[1],
   ssl: true
 };
+const pool = new Pg.Pool(poolConfig);
+NamedPg.patch(pool);
 
-const pool = new pg.Pool(poolconfig);
-namedPG.patch(pool);
 
-function search(userId, params, cb) {
-  if (!params) {
-    cb(new Error("Search params not given"));
-  }
+const table = 'quests';
+const schema = {
+  id: Joi.string().max(255), // <userId>_<docId>
+  publishedurl: Joi.string().uri().max(2048),
+  userid: User.schema.id,
+  author: Joi.string().max(255),
+  email: Joi.string().email().max(255),
+  maxplayers: Joi.number().min(1).max(20),
+  maxtimeminutes: Joi.number().min(1),
+  minplayers: Joi.number().min(1).max(20),
+  mintimeminutes: Joi.number().min(1),
+  summary: Joi.string().max(1024),
+  title: Joi.string().max(255),
+  url: Joi.string().max(2048), // Note: not required to be a URI because other parts of the code
+                               // still want it to exclude http://
 
-  var filter_query = 'SELECT * FROM quests WHERE tombstone IS NULL';
-  var filter_params = {};
+  // metadata
+  published: Joi.date().default(Date.now()),
+  tombstone: Joi.date().default(null),
+};
+exports.schema = schema;
 
-  if (params.id) {
-    filter_query += ' AND id=$id';
-    filter_params['id'] = params.id;
-  }
+const schemaSearch = Object.assign(schema, {
+  order: Joi.string(), // TODO limit to schema keys
+  owner: User.schema.id,
+  players: Joi.number().min(1).max(20),
+  published_after: Joi.number(),
+  search: Joi.string(),
+});
 
-  if (params.owner) {
-    filter_query += ' AND userid=$userid';
-    filter_params['userid'] = params.owner;
-  }
 
-  // Require results to be published if we're not querying our own quests
-  if (params.owner !== userId || userId == "") {
-    filter_query += ' AND published IS NOT NULL';
-  }
+exports.getById = function(id, cb) {
 
-  if (params.players) {
-    filter_query += ' AND minplayers <= $players AND maxplayers >= $players';
-    filter_params['players'] = parseInt(params.players);
-  }
+  Joi.validate(id, schema.id, (err, id) => {
 
-  if (params.search) {
-    filter_query += ' AND (title LIKE $searchtext OR summary LIKE $searchtext)';
-    filter_params['searchtext'] = "%" + params.search + "%";
-  }
-
-  if (params.published_after) {
-    filter_query += ' AND EXTRACT(EPOCH FROM published) > $after';
-    filter_params['after'] = parseInt(params.published_after);
-  }
-
-  if (params.token) {
-    console.log("TODO Start token " + token)
-  }
-
-  if (params.order) {
-    filter_query += ' ORDER BY $order ' + ((params.order[0] === '+') ? "ASC" : "DESC");
-    filter_params['order'] = params.order.substr(1);
-  }
-
-  const limit = Math.max(params.limit || 0, 100);
-  filter_query += ' LIMIT $limit';
-  filter_params['limit'] = limit;
-
-  pool.query(filter_query, filter_params, function(err, results) {
     if (err) {
       return cb(err);
     }
-    const hasMore = results.rows.length === limit ? token + results.rows.length : false;
-    cb(null, results.rows, hasMore);
+
+    let query = Squel.select()
+      .from(table)
+      .where('id = ?', id)
+      .limit(1)
+      .toString();
+
+    pool.query(query, {}, (err, results) => {
+
+      if (err) {
+        return cb(err);
+      }
+
+      if (results.length !== 1) {
+        return cb({
+          code: 404,
+          message: 'Not found'
+        });
+      }
+
+      cb(null, Utils.objectPgToJs(results[0]));
+    });
   });
-}
-function publish(user, docid, xml, cb) {
-  // TODO: Validate here
+};
+
+exports.search = function(userId, params, cb) {
+
+  if (!params) {
+    return cb(new Error("No search parameters given; requires at least one parameter"));
+  }
+
+  Joi.validate(params, schemaSearch, (err, params) => {
+
+    if (err) {
+      return cb(err);
+    }
+
+    let query = Squel.select()
+      .from(table)
+      .where('tombstone IS NULL');
+
+    if (params.id) {
+      query = query.where('id = ?', params.id);
+    }
+
+    if (params.owner) {
+      query = query.where('userid = ?', params.owner);
+    }
+
+    // Require results to be published if we're not querying our own quests
+    if (params.owner !== userId || userId == "") {
+      query = query.where('published IS NOT NULL');
+    }
+
+    if (params.players) {
+      query = query.where('minplayers <= ?', params.players)
+                   .where('maxplayers >= ?', params.players);
+    }
+
+    if (params.search) {
+      const search = '%' + params.search.toLowerCase() + '%';
+      query = query.where(Squel.expr().and('LOWER(title) LIKE ?', search).or('LOWER(summary) LIKE ?', search));
+    }
+
+    if (params.published_after) {
+      query = query.where("published > NOW() - '? seconds'::INTERVAL", params.published_after);
+    }
+
+    if (params.order) {
+      query = query.order(params.order.substr(1), (params.order[0] === '+'));
+    }
+
+    const limit = Math.max(params.limit || 0, 100);
+    query = query.limit(limit);
+    query = query.toString();
+    pool.query(query, function(err, results) {
+
+      if (err) {
+        return cb(err);
+      }
+
+      const hasMore = results.rows.length === limit ? token + results.rows.length : false;
+      cb(null, results.rows.map(Utils.objectPgToJs), hasMore);
+    });
+  });
+};
+
+exports.publish = function(userId, docId, xml, cb) {
+// TODO: Validate XML
+
+  if (!userId) {
+    return cb(new Error('Invalid or missing User ID'));
+  }
+
+  if (!docId) {
+    return cb(new Error('Invalid or missing Quest ID'));
+  }
 
   if (!xml) {
-    return cb("Could not publish - no xml data.")
+    return cb('Could not publish - no xml data.');
   }
 
-  if (docid === undefined) {
-    throw new Error('Invalid Quest ID');
-  }
-
-  // Invariant: quest ID is present after this point
-  console.log("Publishing quest " + docid + " owned by " + user);
-
-  const cloud_storage_data = {
-    gcsname: user + "/" + docid + "/" + Date.now() + ".xml",
+  const id = userId + '_' + docId;
+  const cloudStorageData = {
+    gcsname: userId + "/" + docId + "/" + Date.now() + ".xml",
     buffer: xml
   }
 
-  // We can run this in parallel with the Datastore model.
-  cloudstorage.upload(cloud_storage_data, function(err, data) {
+  // Run in parallel with the Datastore model.
+  CloudStorage.upload(cloudStorageData, (err, data) => {
     if (err) {
       console.log(err);
     }
   });
 
-  var meta = toMeta.fromXML(xml);
-
-  meta.userid = user;
-  meta.id = user + '_' + docid;
-  meta.publishedurl = cloudstorage.getPublicUrl(cloud_storage_data.gcsname);
-  var params = ['id', 'userid', 'publishedurl', 'author', 'email', 'maxplayers', 'maxtimeminutes', 'minplayers', 'mintimeminutes', 'summary', 'title', 'url'];
-  var columns = params.join(',');
-  var interleaved = [];
-  for (var i = 0; i < params.length; i++) {
-    interleaved.push(params[i] + '=$' + params[i]);
-    params[i] = '$' + params[i];
-  }
-
-  const query_text = 'INSERT INTO quests ('+ columns +',published,tombstone) VALUES (' + params.join(',') + ',NOW(),NULL) ON CONFLICT (id) DO UPDATE SET ' + interleaved.join(',') + ',published=NOW(),tombstone=NULL';
-  pool.query(query_text, meta, function(err, result) {
-    if (err) {
-      return cb(err);
-    }
-    cb(null, meta.id);
-  });
-}
-
-function unpublish(user, docid, cb) {
-  if (docid === undefined) {
-    throw new Error('Invalid Quest ID');
-  }
-
-  console.log("Unpublishing quest " + docid + " owned by " + user);
-  const id = user + '_' + docid;
-  pool.query('UPDATE quests SET tombstone=NOW() WHERE id=$id', {id: id}, function(err, result) {
-    if (err) {
-      return cb(err);
-    }
-    cb(null, id);
-  });
-}
-
-function read(id, cb) {
-  pool.query('SELECT * FROM quests WHERE id=$id LIMIT 1', {id: id}, function(err, results) {
-    if (err) {
-      return cb(err);
-    }
-
-    if (results.length !== 1) {
-      return cb({
-        code: 404,
-        message: 'Not found'
+  const meta = Object.assign({}, ToMeta.fromXML(xml),
+      {
+        id: id,
+        userid: userId,
+        publishedurl: CloudStorage.getPublicUrl(cloudStorageData.gcsname),
       });
-    }
-    cb(null, results[0]);
-  });
-}
 
-module.exports = {
-  read: read,
-  search: search,
-  publish: publish,
-  unpublish: unpublish,
+  Joi.validate(meta, schema, (err, meta) => {
+
+    if (err) {
+      return cb(err);
+    }
+
+    const query = Utils.generateUpsertSql(table, meta);
+    pool.query(query, {}, (err, result) => {
+      cb(err, id);
+    });
+  });
+};
+
+exports.unpublish = function(userId, docId, cb) {
+
+  if (!userId) {
+    return cb(new Error('Invalid or missing User ID'));
+  }
+
+  if (!docId) {
+    return cb(new Error('Invalid or missing Quest ID'));
+  }
+
+  const id = userId + '_' + docId;
+  const query = Utils.generateUpsertSql(table, {id: id, tombstone: Date.now()});
+  pool.query(query, {}, (err, result) => {
+    cb(err, id);
+  });
 };

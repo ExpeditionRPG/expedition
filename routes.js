@@ -60,7 +60,7 @@ router.post('/quests', function(req, res) {
 });
 
 router.get('/raw/:quest', function(req, res) {
-  quests.read(req.params.quest, function(err, entity) {
+  quests.getById(req.params.quest, function(err, entity) {
     if (err) {
       return res.status(500).end(err.toString());
     }
@@ -100,7 +100,7 @@ router.post('/unpublish/:quest', function(req, res) {
       if (err) {
         throw new Error(err);
       }
-      console.log("Published quest " + id);
+      console.log("Unpublished quest " + id);
       res.end(id.toString());
     });
   } catch(e) {

@@ -33,7 +33,7 @@ nconf
 
     OAUTH2_CLIENT_ID: '',
     OAUTH2_CLIENT_SECRET: '',
-    OAUTH2_CALLBACK: '',
+    OAUTH2_CALLBACK: 'http://localhost:8080/auth/google/callback',
 
     DATABASE_URL: '',
 
