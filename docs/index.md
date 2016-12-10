@@ -12,6 +12,10 @@ If you're looking for more specific, in-detail documentation, check out:
 
 Your quests are saved in your Google Drive with a `.quest` extension. To open a quest, go to your Google Drive, right click on the quest, and select `Open with -> Expedition Quest Creator`
 
+## How can I search my quest?
+
+Press `ctrl + f` (or `cmd + f` on Mac) to search. To jump to the nest result, press `enter`. Pressing `ctrl + alt + f` (or `cmd + alt + f`) will let you do a search and replace.
+
 ## I have an error, now what?
 
 If your error says `PLEASE REPORT`, [report it!](internal_error.md)
