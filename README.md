@@ -1,7 +1,9 @@
-# Expedition Quest IDE
+# Expedition Quest Creator
+
+[![Build Status](https://travis-ci.org/Fabricate-IO/expedition-quest-creator.svg?branch=travisci)](https://travis-ci.org/Fabricate-IO/expedition-quest-creator)
 
 This is the companion to the [Expedition App](https://github.com/Fabricate-IO/expedition-app),
-allowing for users to design and publish custom quests that can be played around the world.
+allowing users to write and publish custom quests that can be played around the world.
 
 ## Installation
 
