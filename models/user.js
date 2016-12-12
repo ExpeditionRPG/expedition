@@ -3,7 +3,9 @@ CREATE TABLE users (
   id VARCHAR(255) NOT NULL,
   PRIMARY KEY(id),
   email VARCHAR(255),
+  name VARCHAR(255),
   created TIMESTAMP NULL DEFAULT NOW(),
+  last_login TIMESTAMP NULL DEFAULT NOW(),
   tombstone TIMESTAMP NULL DEFAULT NULL
 );
 */
@@ -35,9 +37,11 @@ const table = 'users';
 const schema = {
   id: Joi.string().max(255),
   email: Joi.string().email().max(255),
+  name: Joi.string().max(255),
 
   // metadata
   created: Joi.date(),
+  lastLogin: Joi.date().default(Date.now()),
   tombstone: Joi.date().default(null),
 };
 exports.schema = schema;

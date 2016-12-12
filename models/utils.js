@@ -3,7 +3,7 @@ const Squel = require('squel');
 
 
 const internals = {
-  dateKeys: ['created', 'published', 'tombstone', 'updated'], // columns that're always dates
+  dateKeys: ['created', 'lastLogin', 'published', 'tombstone', 'updated'], // columns that're always dates
   regexJsToPg: /([A-Z])/g,
   regexPgToJs: /_([a-z])/g,
   replacerJsToPg: (match, p1) => '_' + p1.toLowerCase(),
