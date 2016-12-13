@@ -19,7 +19,6 @@ CREATE TABLE quests (
 */
 
 const Joi = require('joi');
-const NamedPg = require('node-postgres-named');
 const Pg = require('pg');
 const Squel = require('squel');
 const Url = require('url');
@@ -42,7 +41,6 @@ const poolConfig = {
   ssl: true
 };
 const pool = new Pg.Pool(poolConfig);
-NamedPg.patch(pool);
 
 
 const table = 'quests';
@@ -63,7 +61,7 @@ const schema = {
 
   // metadata
   published: Joi.date(),
-  tombstone: Joi.date().default(null),
+  tombstone: Joi.date(),
 };
 exports.schema = schema;
 
@@ -73,6 +71,11 @@ const schemaSearch = Object.assign(schema, {
   players: Joi.number().min(1).max(20),
   published_after: Joi.number(),
   search: Joi.string(),
+});
+
+const schemaPublish = Object.assign(schema, {
+  published: schema.published.default(() => new Date(), 'current date'),
+  tombstone: schema.tombstone.default(null),
 });
 
 
@@ -90,7 +93,7 @@ exports.getById = function(id, cb) {
       .limit(1)
       .toString();
 
-    pool.query(query, {}, (err, results) => {
+    Utils.queryOne(pool, query, (err, results) => {
 
       if (err) {
         return cb(err);
@@ -99,11 +102,11 @@ exports.getById = function(id, cb) {
       if (results.length !== 1) {
         return cb({
           code: 404,
-          message: 'Not found'
+          message: 'Not found',
         });
       }
 
-      cb(null, Utils.objectPgToJs(results[0]));
+      return cb(null, results);
     });
   });
 };
@@ -158,14 +161,14 @@ exports.search = function(userId, params, cb) {
     const limit = Math.max(params.limit || 0, 100);
     query = query.limit(limit);
     query = query.toString();
-    pool.query(query, function(err, results) {
+    Utils.query(pool, query, (err, results) => {
 
       if (err) {
         return cb(err);
       }
 
-      const hasMore = results.rows.length === limit ? token + results.rows.length : false;
-      cb(null, results.rows.map(Utils.objectPgToJs), hasMore);
+      const hasMore = results.length === limit ? token + results.length : false;
+      return cb(null, results, hasMore);
     });
   });
 };
@@ -189,7 +192,7 @@ exports.publish = function(userId, docId, xml, cb) {
   const cloudStorageData = {
     gcsname: userId + "/" + docId + "/" + Date.now() + ".xml",
     buffer: xml
-  }
+  };
 
   // Run in parallel with the Datastore model.
   CloudStorage.upload(cloudStorageData, (err, data) => {
@@ -205,15 +208,15 @@ exports.publish = function(userId, docId, xml, cb) {
         publishedurl: CloudStorage.getPublicUrl(cloudStorageData.gcsname),
       });
 
-  Joi.validate(meta, schema, (err, meta) => {
+  Joi.validate(meta, schemaPublish, (err, meta) => {
 
     if (err) {
       return cb(err);
     }
 
     const query = Utils.generateUpsertSql(table, meta);
-    pool.query(query, {}, (err, result) => {
-      cb(err, id);
+    Utils.query(pool, query, (err, result) => {
+      return cb(err, id);
     });
   });
 };
@@ -230,7 +233,7 @@ exports.unpublish = function(userId, docId, cb) {
 
   const id = userId + '_' + docId;
   const query = Utils.generateUpsertSql(table, {id: id, tombstone: Date.now()});
-  pool.query(query, {}, (err, result) => {
-    cb(err, id);
+  Utils.query(pool, query, (err, result) => {
+    return cb(err, id);
   });
 };

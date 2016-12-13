@@ -11,7 +11,6 @@ CREATE TABLE users (
 */
 
 const Joi = require('joi');
-const NamedPg = require('node-postgres-named');
 const Pg = require('pg');
 const Url = require('url');
 
@@ -30,7 +29,6 @@ const poolConfig = {
   ssl: true,
 };
 const pool = new Pg.Pool(poolConfig);
-NamedPg.patch(pool);
 
 
 const table = 'users';
@@ -41,21 +39,26 @@ const schema = {
 
   // metadata
   created: Joi.date(),
-  lastLogin: Joi.date().default(Date.now()),
-  tombstone: Joi.date().default(null),
+  lastLogin: Joi.date(),
+  tombstone: Joi.date(),
 };
 exports.schema = schema;
 
+const schemaUpsert = Object.assign(schema, {
+  lastLogin: schema.lastLogin.default(() => new Date(), 'current date'),
+  tombstone: schema.tombstone.default(null),
+});
+
 
 exports.upsert = function(user, cb) {
-  Joi.validate(user, schema, (err, user) => {
+  Joi.validate(user, schemaUpsert, (err, user) => {
 
     if (err) {
       return cb(err);
     }
 
     const query = Utils.generateUpsertSql(table, user);
-    pool.query(query, {}, (err, result) => {
+    Utils.query(pool, query, (err, result) => {
       cb(err, user.id);
     });
   });

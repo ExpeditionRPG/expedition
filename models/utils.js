@@ -11,11 +11,36 @@ const internals = {
 };
 
 
-// returns SQL string to delete from table based on filters provided
-exports.generateDeleteSquel = function (table, filters) {
+// runs a query using a client from the pool, returns an array of all results converted to JS objects
+exports.query = function (pool, query, callback) {
+  pool.connect((err, client, done) => {
 
-  // Note that our Postgres child objects have ON DELETE trigger references
-  // such that postgres will automatically remove them when parent is deleted
+    if (err) {
+      return callback(new Error('error fetching client from pool: ' + err));
+    }
+
+    client.query(query, null, (err, result) => {
+
+      done(); //call `done()` to release the client back to the pool
+
+      return callback(err, result.rows.map(exports.objectJsToPg));
+    });
+  });
+};
+
+
+// runs a query using a client from the pool, returns the first result converted to a JS object
+exports.queryOne = function (pool, query, callback) {
+  exports.query(pool, query, (err, result) => {
+    return callback(err, result[0]);
+  });
+};
+
+
+// returns SQL string to delete from table based on filters provided
+// Note: Postgres child objects with ON DELETE trigger references
+  // will also be deleted when parent is deleted
+exports.generateDeleteSquel = function (table, filters) {
 
   filters = exports.objectJsToPg(filters);
 

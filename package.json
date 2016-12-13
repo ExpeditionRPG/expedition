@@ -52,7 +52,6 @@
     "moment": "^2.17.1",
     "nconf": "^0.8.4",
     "newrelic": "^1.32.0",
-    "node-postgres-named": "^2.4.1",
     "passport": "^0.3.2",
     "passport-google-id-token": "^0.4.0",
     "passport-google-oauth20": "^1.0.0",
