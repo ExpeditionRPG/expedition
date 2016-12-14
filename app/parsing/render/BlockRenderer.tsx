@@ -135,10 +135,10 @@ export class BlockRenderer {
     attribs['id'] = attribs['id'] || extracted.id;
 
     attribs['enemies'] = attribs['enemies'] || [];
-    for (var i = 0; i < blocks[0].lines.length; i++) {
-      var line = blocks[0].lines[i];
+    for (let i = 0; i < blocks[0].lines.length; i++) {
+      let line = blocks[0].lines[i];
       if (line[0] === '-') {
-        var extractedBullet = this.extractBulleted(line);
+        let extractedBullet = this.extractBulleted(line);
         if (!extractedBullet.text) {
           // Visible is actually a value expression
           attribs['enemies'].push({text: '{{' + extractedBullet.visible + '}}'});
@@ -154,10 +154,9 @@ export class BlockRenderer {
     }
 
 
-    var i = 0;
     var events: CombatChild[] = [];
     var currEvent: CombatChild = null;
-    for (var i = 0; i < blocks.length; i++) {
+    for (let i = 0; i < blocks.length; i++) {
       var block = blocks[i];
       if (block.render) {
         if (!currEvent) {
@@ -173,8 +172,8 @@ export class BlockRenderer {
       }
 
       // Skip the first line if we're at the root block (already parsed)
-      for (var j = (i==0) ? 1 : 0; j < block.lines.length; j++) {
-        var line = block.lines[j];
+      for (let j = (i==0) ? 1 : 0; j < block.lines.length; j++) {
+        let line = block.lines[j];
         // Skip empty lines, enemy list
         if (line === '' || line[0] === '-') {
           continue;
@@ -183,9 +182,9 @@ export class BlockRenderer {
         // We should only ever see event blocks within the combat block.
         // These blocks are only single lines.
         var extractedEvent = Object.assign({}, this.extractBulleted(line), {event: []});
-        if (!extractedEvent.text) {
+        if (extractedEvent == null || !extractedEvent.text) {
           log.err(
-            "lines within combat block must be event bullets or enemies; instead found \""+line+"\"",
+            "lines within combat block must be events or enemies;\ninstead found \""+line+"\"",
             "416",
             block.startLine + j
           );
@@ -205,7 +204,7 @@ export class BlockRenderer {
     var hasWin = false;
     var hasLose = false;
 
-    for (var i = 0; i < events.length; i++) {
+    for (let i = 0; i < events.length; i++) {
       hasWin = hasWin || (events[i].text == "on win");
       hasLose = hasLose || (events[i].text == "on lose");
     }
@@ -303,7 +302,7 @@ export class BlockRenderer {
     // [^{\(]*                  Greedy match all characters until "{" or "("
     //
     // (\{.*\})?                Optionally match a JSON blob, greedily.
-    var m = line.match(/^_(.*?)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/);
+    const m = line.match(/^_(.*?)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/);
     return {
       title: m[1],
       id: m[3],
@@ -317,7 +316,8 @@ export class BlockRenderer {
     // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
     // \s*                      Match any number of spaces (greedy)
     // (.*)$                    Match until the end of the string.
-    var m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*(.*)$/);
+    const m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*(.*)$/);
+    if (m == null) { return null; }
     return {
       visible: m[2],
       text: m[3],
@@ -330,7 +330,7 @@ export class BlockRenderer {
     // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
     // \s*                      Match any number of spaces (greedy)
     // (.*)$                    Match until the end of the string.
-    var m = line.match(/^[>]\s*(\{\{(.*?)\}\})?\s*(.*)$/);
+    const m = line.match(/^[>]\s*(\{\{(.*?)\}\})?\s*(.*)$/);
     return {
       visible: m[2],
       text: m[3],
@@ -343,7 +343,7 @@ export class BlockRenderer {
     // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
     // \s*                      Match any number of spaces (greedy)
     // (.*)\*\*$                Match until "**" and the end of the string.
-    var m = line.match(/^\*\*\s*(\{\{(.*?)\}\})?\s*(.*)\*\*$/);
+    const m = line.match(/^\*\*\s*(\{\{(.*?)\}\})?\s*(.*)\*\*$/);
     return {
       visible: m[2],
       text: m[3],
@@ -352,7 +352,7 @@ export class BlockRenderer {
 
   private collate(lines: string[]): string[] {
     var result: string[] = [''];
-    for (var i = 0; i < lines.length; i++) {
+    for (let i = 0; i < lines.length; i++) {
       if (lines[i] === '') {
         continue;
       }

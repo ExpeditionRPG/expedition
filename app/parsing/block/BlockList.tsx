@@ -38,7 +38,6 @@ export class BlockList {
 
   private shouldStartNewBlock(currBlock: Block, line: string, indent: number, prevEmpty: boolean): boolean {
     // Start a new block if...
-
     // there is no current block
     if (!currBlock) {
       return true;
@@ -87,15 +86,13 @@ export class BlockList {
     // at differing indentation of code (with some exceptions for markdown-like
     // continuation of bulleted strings)
     // The result is a map of indent level to Block[].
-    var split = md.split('\n');
+    const split = md.split('\n');
     var accumulated: string[] = [];
-    var indent = 0;
-    var startLine = 0;
     var prevEmpty = false;
     var currBlock: Block = null;
-    for (var lineNumber = 0; lineNumber < split.length; lineNumber++) {
-      var line = split[lineNumber];
-      var indent = 0;
+    for (let lineNumber = 0; lineNumber < split.length; lineNumber++) {
+      let line = split[lineNumber];
+      let indent = 0;
       while(line[indent] === ' ') {
         indent++;
       }
