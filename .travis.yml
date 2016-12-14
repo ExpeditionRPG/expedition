@@ -1,11 +1,20 @@
 language: node_js
 node_js:
-  - "6"
+- '6'
 env:
-  - CXX=g++-4.8
+- CXX=g++-4.8
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
+    - ubuntu-toolchain-r-test
     packages:
-      - g++-4.8
+    - g++-4.8
+before_deploy: "webpack -p --config ./webpack.dist.config.js"
+deploy:
+  provider: heroku
+  api_key:
+    secure: XLGBJWLsqKzMBKZ44F5xDlS9y/djWNklbyeKE32F5aXPLzcCHwvWOeHGJqipdh7EQ4OFqfTt8DLT3vQbriI+5MjObkfq+V/UEedBtSCLP2cZo0OyrW0scinRwprNUZQMTKGu0EnJZJnRcEbzaXZCsXwMC1iW/HZSs6Ka/W6H3wKLu4ahyJHsUHh7+Z8qMBWIh88hvQ7u1FYPCpbcT8fdDAIwuT+LHNOf0KrA54a8CM711je1bUd+defWTc7tRXv3OAvttILjkAYvEaQY7uP/A50Yos9TRkDmb7W7+QT0nDaqGvaSZVoCHbtbO1D8nV6lx8Q++Itk/OkzCbDczE0BL6p5DeAnuJ1asMtNQPeIokHsposZHYJIIdkCDQlrFRQqIc4EwPlbOUZ3m60AUQ6WewOstQv66wfq0kueZn4zia3DL79OMIwQM57AcD1bF2EZsgNRx+BLRPVjgy098xHImG5ZZMVsQBfws+xcw6I5lPmpmQDz1R9jdr4G5GvFq5LDvs6lECfmpsYyERJNtLGPsf3Ws0EA3UXje/wcfIx3hAW1rGsYNhINQAA1HwJwYuZBq7puIa68FYFrIFuJUSJQKKUTG+uFNaJkx+ZCXPJGhcw+b/VyFMT2N/bSQLDfuZ8F4wXkP0ccIk8Zx9qwqUv6VjJfddktj11PWpXk+mkwM04=
+  skip_cleanup: true
+  app:
+    master: expedition-quest-creator
+    dev: expedition-quest-creator-dev

@@ -22,7 +22,7 @@ Now install the repo:
 ```shell
 git clone https://github.com/Fabricate-IO/expedition-quest-ide
 cd expedition-quest-ide
-npm install -g gulp webpack && npm install
+sudo npm install -g webpack && npm install
 cp /path/to/your/config.json ./config.json
 ```
 
@@ -54,3 +54,5 @@ webpack -p --config ./webpack.dist.config.js
 git push <remote server name> <local branch name>:master
 ```
 For database querying, make sure you have psql installed and can do `which psql`, then run `heroku pg:psql --app expedition-quest-creator DATABASE` to connect
+
+On Mac, you may need to add `PATH=/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH` to your .bash_profile for your terminal to recognize the `psql` command.

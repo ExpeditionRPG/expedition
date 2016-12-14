@@ -24,14 +24,14 @@ const router = express.Router();
 router.use(oauth2.template);
 
 
-router.get('/', function(req, res) {
+router.get('/', (req, res) => {
   res.render('app', {
     state: JSON.stringify(res.locals),
   });
 });
 
 
-router.post('/quests', function(req, res) {
+router.post('/quests', (req, res) => {
 
   const token = req.params.token;
   if (!res.locals.id) {
@@ -42,7 +42,7 @@ router.post('/quests', function(req, res) {
 
   try {
     const params = JSON.parse(req.body);
-    quests.search(res.locals.id, params, function(err, quests, nextToken) {
+    quests.search(res.locals.id, params, (err, quests, nextToken) => {
       if (err) {
         res.header('Access-Control-Allow-Origin', req.get('origin'));
         res.header('Access-Control-Allow-Credentials', 'true');
@@ -62,8 +62,8 @@ router.post('/quests', function(req, res) {
 });
 
 
-router.get('/raw/:quest', function(req, res) {
-  quests.getById(req.params.quest, function(err, entity) {
+router.get('/raw/:quest', (req, res) => {
+  quests.getById(req.params.quest, (err, entity) => {
     if (err) {
       return res.status(500).end(err.toString());
     }
@@ -75,14 +75,14 @@ router.get('/raw/:quest', function(req, res) {
 });
 
 
-router.post('/publish/:quest', function(req, res) {
+router.post('/publish/:quest', (req, res) => {
 
   if (!res.locals.id) {
     return res.status(500).end("You are not signed in. Please sign in to save your quest.");
   }
 
   try {
-    quests.publish(res.locals.id, req.params.quest, req.body, function(err, id) {
+    quests.publish(res.locals.id, req.params.quest, req.body, (err, id) => {
       if (err) {
         throw new Error(err);
       }
@@ -96,14 +96,14 @@ router.post('/publish/:quest', function(req, res) {
 });
 
 
-router.post('/unpublish/:quest', function(req, res) {
+router.post('/unpublish/:quest', (req, res) => {
 
   if (!res.locals.id) {
     return res.status(500).end("You are not signed in. Please sign in to save your quest.");
   }
 
   try {
-    quests.unpublish(res.locals.id, req.params.quest, function(err, id) {
+    quests.unpublish(res.locals.id, req.params.quest, (err, id) => {
       if (err) {
         throw new Error(err);
       }

@@ -1,10 +1,8 @@
-'use strict'
+const webpack = require('webpack');
+const DashboardPlugin = require('webpack-dashboard/plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-var webpack = require('webpack')
-var DashboardPlugin = require('webpack-dashboard/plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-
-var options = {
+const options = {
   cache: true,
   debug: true,
   entry: {
