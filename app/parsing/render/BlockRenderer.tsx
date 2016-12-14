@@ -1,9 +1,9 @@
 /// <reference path="../../../typings/es6-shim/es6-shim.d.ts" />
 
-import {Normalize} from '../validation/Normalize'
-import {Logger} from '../Logger'
-import {Block} from '../block/BlockList'
 import {Renderer, CombatChild, Instruction, RoleplayChild} from './Renderer'
+import {Block} from '../block/BlockList'
+import {Logger} from '../Logger'
+import {Normalize} from '../validation/Normalize'
 
 const REGEXP_BOLD = /\*\*(.*?)\*\*/;
 const REGEXP_EVENT = /\* on (.*)/;
@@ -236,15 +236,15 @@ export class BlockRenderer {
     }
 
     var attrs: {[k: string]: string} = {title: block.lines[0].substr(1).trim()};
-    for(var i = 1; i < block.lines.length && block.lines[i] !== ''; i++) {
-      var kv = block.lines[i].split(":");
+    for (let i = 1; i < block.lines.length && block.lines[i] !== ''; i++) {
+      let kv = block.lines[i].split(":");
       if (kv.length !== 2) {
         if (log) log.err('invalid quest attribute line "' + block.lines[i] + '"',
           '420', block.startLine + i);
         continue;
       }
-      var k = kv[0].toLowerCase();
-      var v = kv[1].trim();
+      let k = kv[0].toLowerCase();
+      let v = kv[1].trim();
       attrs[k] = v;
     }
     return Normalize.questAttrs(attrs, log);
