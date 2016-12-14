@@ -102,6 +102,86 @@ data.basicXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplay
     <trigger>end</trigger>
 </quest>`;
 
+data.commentsMD = `#Quest Title
+minplayers: 1
+maxplayers: 2
+author: Test
+
+_Roleplay Card_
+
+// Invisible comment
+
+Stuff
+
+* Decision
+
+  // Invisible comment
+
+  _combat_
+
+  - Skeleton Swordsman
+
+  * on win
+
+    // Invisible comment
+
+    Victory!
+
+  * on lose
+
+    Defeat!
+
+    **end**
+
+    // Invisible comment
+
+  // Invisible comment
+
+* Another decision
+
+  // Invisible comment
+
+  **end**
+
+// Invisible comment
+
+_Title_
+
+Game over
+
+// Invisible comment
+
+**end**`;
+
+data.commentsXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
+    <roleplay title="Roleplay Card">
+        <p>Stuff</p>
+        <choice text="Decision">
+            <combat>
+                <e>Skeleton Swordsman</e>
+                <event on="win">
+                    <roleplay title="">
+                        <p>Victory!</p>
+                    </roleplay>
+                </event>
+                <event on="lose">
+                    <roleplay title="">
+                        <p>Defeat!</p>
+                    </roleplay>
+                    <trigger>end</trigger>
+                </event>
+            </combat>
+        </choice>
+        <choice text="Another decision">
+            <trigger>end</trigger>
+        </choice>
+    </roleplay>
+    <roleplay title="Title">
+        <p>Game over</p>
+    </roleplay>
+    <trigger>end</trigger>
+</quest>`;
+
 data.noHeaderMD = `_Roleplay Card_
 
 stuff
@@ -129,7 +209,7 @@ author: Test
 **end**
 
 Roleplay card without header
-`
+`;
 
 data.triggerWithNoAfterHeaderXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
     <trigger>end</trigger>

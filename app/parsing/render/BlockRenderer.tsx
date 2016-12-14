@@ -55,8 +55,6 @@ export class BlockRenderer {
         if (line.indexOf('* ') === 0) {
           choice = Object.assign({}, this.extractBulleted(line), {choice: []});
           // TODO: Assert end of lines.
-        } else if (line.indexOf('//') === 0) {
-          // Skip comments
         } else if (line.indexOf('> ') === 0) {
           instruction = this.extractInstruction(line);
           body.push(instruction);
@@ -177,7 +175,7 @@ export class BlockRenderer {
       // Skip the first line if we're at the root block (already parsed)
       for (var j = (i==0) ? 1 : 0; j < block.lines.length; j++) {
         var line = block.lines[j];
-        // Skip empty lines and enemy list
+        // Skip empty lines, enemy list
         if (line === '' || line[0] === '-') {
           continue;
         }

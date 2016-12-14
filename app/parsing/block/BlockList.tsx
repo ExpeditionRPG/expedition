@@ -79,6 +79,8 @@ export class BlockList {
 
     // Replace tabs with spaces (just in case)
     md = md.replace(/\t/g, '  ');
+    // remove all comments before we start parsing
+    md = md.replace(/\/\/.*/g, '');
     this.blocks = [];
 
     // Split the existing markdown code into individual blocks, separating

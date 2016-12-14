@@ -267,7 +267,6 @@ export class QDLParser {
     }
     log.dbg("Rendering block group:" + lines);
 
-
     if (headerLine[0] === '#') {
       if (blocks.length !== 1) {
         log.err(
