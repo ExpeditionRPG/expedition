@@ -222,6 +222,11 @@ Using elements, roleplaying cards can be more than just text.
 
 As covered in the **branching** section, you can include choice elements inside of cards.
 
+### Icons
+
+You can embed inline icons to make your quest more visually interesting! Simply add `[icon_name]` to roleplaying text, instructions or choices.
+
+Visit the [icon help page](icons.md) to learn more and see what icons are available.
 
 ### Instructions
 
