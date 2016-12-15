@@ -69,9 +69,13 @@ Each time there is a choice (indicated with the *), you indent one additional le
   for example, rolling to sneak or trying to convince a guard they aren't theives.
 
   If the players need to do something, like roll a die, you can tell them via
-  an instruction (indicated with a >), like so:
+  an instruction (indicated with a >). These will always appear at the bottom of the card,
+  right above the Next button or choices.
 
-  > Roll a d20 to see if you sneak past the guards
+  Also, notice how the [roll] in the instruction gets turned into an icon?
+  Check out the help documents for a full list of available icons!
+
+  > Roll a [roll] to see if you sneak past the guards
 
   * Rolled 10 or higher
 

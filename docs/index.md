@@ -5,6 +5,7 @@
 The first time you open the [quest creator](http://quests.expeditionrpg.com), it will populate itself with a "Getting Started" quest that walks you through the basics of creating Expedition quests.
 
 If you're looking for more specific, in-detail documentation, check out:
+* [Icon List](icons.md): A list of all available icons you can use in your quest.
 * [QDL Guide](qdl_guide.md): More details on the Quest Design Language.
 * [XML Spec](quest_spec.md): The underlying XML used by the app, in great detail.
 
