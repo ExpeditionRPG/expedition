@@ -77,7 +77,10 @@ describe('QuestParser', () => {
       // Even inside of a choice
       var result = loadRoleplayNode(cheerio.load('<roleplay><choice text="[roll]"></choice></roleplay>')('roleplay'), {scope: {}});
       expect(result.choices).toEqual([ { idx: 0, text: '<img class="inline_icon" src="images/roll_small.svg">' } ]);
-      // expect(mount(result.content).html()).toEqual("<span><p>5</p></span>");
+
+      // Even inside of a choice
+      var result = loadRoleplayNode(cheerio.load('<roleplay><instruction>[roll]</instruction></roleplay>')('roleplay'), {scope: {}});
+      expect(result.instructions).toEqual([ { idx: 0, text: '<img class="inline_icon" src="images/roll_small.svg">' } ]);
     });
   });
 

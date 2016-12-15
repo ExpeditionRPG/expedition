@@ -363,8 +363,8 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
       return;
     }
 
-    // Accumulate "choice" tags in choices[]
-    if (tag === "choice") {
+    // Accumulate 'choice' tags in choices[]
+    if (tag === 'choice') {
       choiceCount++;
       if (!c.attr('text')) {
         throw new Error("<choice> inside <roleplay> must have 'text' attribute");
@@ -375,14 +375,14 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
       return;
     }
 
-    if (tag === "event") {
-      throw new Error("<roleplay> cannot contain <event>.");
+    if (tag === 'event') {
+      throw new Error('<roleplay> cannot contain <event>.');
     }
 
-    // accumulate "instruction" tags in tags[]
-    if (tag === "instruction") {
+    // accumulate 'instruction' tags in tags[]
+    if (tag === 'instruction') {
       instructionCount++;
-      instructions.push({text: c.html(), idx: instructionCount});
+      instructions.push({text: generateIconElements(c.html()), idx: instructionCount});
       return;
     }
 
@@ -395,21 +395,21 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
     } else if (c.toString) {
       textContent = c.toString();
     } else {
-      throw new Error("Invalid element " + c);
+      throw new Error('Invalid element ' + c);
     }
     children += generateIconElements(evaluateContentOps(textContent, newScope));
   }.bind(this));
 
-  // Append a generic "Next" button if there were no events,
-  // or an "End" button if there's also an <End> tag.
+  // Append a generic 'Next' button if there were no events,
+  // or an 'End' button if there's also an <End> tag.
   if (numEvents === 0) {
     // Handle custom generic next button text based on if we're heading into a trigger node.
     var nextNode = _findNextNode(node, ctx);
-    var buttonText = "Next";
-    if (nextNode && nextNode.get(0).tagName.toLowerCase() === "trigger") {
+    var buttonText = 'Next';
+    if (nextNode && nextNode.get(0).tagName.toLowerCase() === 'trigger') {
       switch(nextNode.text().toLowerCase()) {
-        case "end":
-          buttonText = "End";
+        case 'end':
+          buttonText = 'End';
           break;
       }
     }
@@ -429,11 +429,11 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
 
 function _isControlNode(node: XMLElement) {
   var tagName = node.get(0).tagName.toLowerCase();
-  return tagName === "choice" || tagName === "event" || node.attr('on');
+  return tagName === 'choice' || tagName === 'event' || node.attr('on');
 };
 
 function _findRootNode(node: XMLElement) {
-  while(node !== null && node.get(0).tagName.toLowerCase() !== "quest") {
+  while(node !== null && node.get(0).tagName.toLowerCase() !== 'quest') {
     node = node.parent();
   }
   return node;
@@ -489,7 +489,7 @@ function _getInvalidNodesAndAttributes(node: XMLElement) {
     // All HTML event handlers are prefixed with 'on'.
     // See http://www.w3schools.com/tags/ref_eventattributes.asp
     // We use just 'on' without any extras, which is not used by HTML for event handling.
-    if (attribNames[i].indexOf('on') === 0 && attribNames[i] !== "on") {
+    if (attribNames[i].indexOf('on') === 0 && attribNames[i] !== 'on') {
       var k = node.get(0).tagName.toLowerCase() + '.' + attribNames[i];
       results[k] = (results[k] || 0) + 1;
     }
