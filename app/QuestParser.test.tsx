@@ -68,6 +68,17 @@ describe('QuestParser', () => {
       var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=1}}</p><choice if="a" text="Visible"></choice></roleplay>')('roleplay'), {scope: {}});
       expect(result.choices).toEqual([ { idx: 0, text: 'Visible' } ]);
     });
+
+    it('parses icons in body', () => {
+      // Icons are turned into images
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>[roll]</roleplay>')('roleplay'), {scope: {}});
+      expect(mount(result.content).html()).toEqual('<span><p><img class="inline_icon" src="images/roll_small.svg"></p></span>');
+
+      // Even inside of a choice
+      var result = loadRoleplayNode(cheerio.load('<roleplay><choice text="[roll]"></choice></roleplay>')('roleplay'), {scope: {}});
+      expect(result.choices).toEqual([ { idx: 0, text: '<img class="inline_icon" src="images/roll_small.svg">' } ]);
+      // expect(mount(result.content).html()).toEqual("<span><p>5</p></span>");
+    });
   });
 
   describe('combat', () => {

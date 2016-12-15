@@ -80,15 +80,23 @@ Notes:
 
 #### Build for Android
 
+For debugging:
+
 ```sh
 webpack --config ./webpack.dist.config.js
-chmod +x build_android_signed.sh
 cordova build android
+```
+
+For release:
+
+```sh
+chmod +x build_android_release.sh
+./build_android_release.sh
 ```
 
 Notes:
 
-- building Android requires the Android SDK
+- requires the Android SDK
 - when deploying Android, you'll need to update `android-versionCode` in `config.xml`, not just `version`.
 - auth issues? Read https://github.com/EddyVerbruggen/cordova-plugin-googleplus
 

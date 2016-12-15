@@ -8,6 +8,9 @@
 
 rm platforms/android/build/outputs/apk/expedition.apk
 
+# Rebuild the web app files
+webpack --config ./webpack.dist.config.js
+
 # Building the release package
 cordova build --release android
 

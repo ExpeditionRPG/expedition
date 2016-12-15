@@ -22,13 +22,17 @@ export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps
 const Roleplay = (props: RoleplayProps): JSX.Element => {
   var buttons: JSX.Element[] = props.roleplay.choices.map(function(choice: Choice): JSX.Element {
     return (
-      <Button key={choice.idx} onTouchTap={() => props.onChoice(props.settings, props.node, choice.idx, props.ctx)}>{choice.text}</Button>
+      <Button key={choice.idx} onTouchTap={() => props.onChoice(props.settings, props.node, choice.idx, props.ctx)}>
+        <span dangerouslySetInnerHTML={{__html: choice.text}} />
+      </Button>
     );
   });
 
   var instructions: JSX.Element[] = props.roleplay.instructions.map(function(instruction: Instruction): JSX.Element {
     return (
-      <Callout key={instruction.idx} icon="adventurer"><span dangerouslySetInnerHTML={{__html: instruction.text}} /></Callout>
+      <Callout key={instruction.idx} icon="adventurer">
+        <span dangerouslySetInnerHTML={{__html: instruction.text}} />
+      </Callout>
     );
   });
 

@@ -330,6 +330,18 @@ function evaluateContentOps(content: string, scope: any): string {
   return result;
 }
 
+function generateIconElements(content: string): string {
+  // Replaces [icon_name] with <img class="inline_icon" src="images/icon_name.svg">
+  //
+  // \[([a-zA-Z_0-9]*)\]   Contents inside of []'s, only allowing for alphanumeric + _'s
+  // /g                    Multiple times
+  return content.replace(/\[([a-zA-Z_0-9]*)\]/g, replacer);
+
+  function replacer(match:string, group:string) {
+    return `<img class="inline_icon" src="images/${group}_small.svg">`;
+  }
+}
+
 export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayResult {
   // Append elements to contents
   var numEvents = 0;
@@ -358,7 +370,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
         throw new Error("<choice> inside <roleplay> must have 'text' attribute");
       }
       var text = c.attr('text');
-      choices.push({text, idx: choiceCount});
+      choices.push({text: generateIconElements(text), idx: choiceCount});
       numEvents++;
       return;
     }
@@ -385,7 +397,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
     } else {
       throw new Error("Invalid element " + c);
     }
-    children += evaluateContentOps(textContent, newScope);
+    children += generateIconElements(evaluateContentOps(textContent, newScope));
   }.bind(this));
 
   // Append a generic "Next" button if there were no events,
@@ -452,8 +464,8 @@ function _findNextNode(node: XMLElement, ctx: QuestContext) {
 };
 
 function _loopChildren(node: XMLElement, cb: (tag: string, c: XMLElement)=>any) {
-  for (var i = 0; i < node.children().length; i++) {
-    var v = cb(node.children().get(i).tagName.toLowerCase(), node.children().eq(i));
+  for (let i = 0; i < node.children().length; i++) {
+    let v = cb(node.children().get(i).tagName.toLowerCase(), node.children().eq(i));
     if (v !== undefined) {
       return v;
     }
@@ -516,14 +528,15 @@ function _generateIdMapping(node: XMLElement): { [key:string]:string[]; } {
     map[id] = (map[id] || []).concat([node.get(0).tagName.toLowerCase()]);
   }
 
-  var mergeResults = function(k: any) {
-    map[k] = (map[k] || []).concat(this[k]);
-  };
-  for (var i = 0; i < node.children().length; i++) {
-    var m = _generateIdMapping(node.children().eq(i));
+  for (let i = 0; i < node.children().length; i++) {
+    let m = _generateIdMapping(node.children().eq(i));
     Object.keys(m).forEach(mergeResults.bind(m));
   }
   return map;
+
+  function mergeResults(k: any) {
+    map[k] = (map[k] || []).concat(this[k]);
+  }
 };
 
 function _isEmptyObject(obj: Object) {
