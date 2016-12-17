@@ -236,10 +236,43 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toRoleplay(blocks, log)
+      br.toRoleplay(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayConditionalChoiceXML);
       expect(prettifyMsgs(log.finalize())).toEqual('');
+    });
+
+    it('alerts the user to choices without titles', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        {
+          indent: 0,
+          lines: ['_roleplay_', '', 'text', '', '* {{test1}}'],
+          startLine: 5,
+        },
+        {
+          indent: 2,
+          lines: [],
+          render: XMLRenderer.toRoleplay({}, ['choice text']),
+          startLine: 7,
+        },
+      ];
+
+      br.toRoleplay(blocks, log);
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual(
+`<roleplay title="roleplay">
+    <p>text</p>
+    <choice text="" if="test1">
+        <roleplay>
+            <p>choice text</p>
+        </roleplay>
+    </choice>
+</roleplay>`);
+      expect(prettifyMsgs(log.finalize())).toEqual(
+`ERROR L5:
+choice missing title
+URL: 428`);
     });
 
     it('renders with ID', () => {
@@ -372,7 +405,7 @@ describe('BlockRenderer', () => {
 
       expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" author="Test" minplayers="0" maxplayers="2"></quest>');
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.invalidQuestAttrError);
-    })
+    });
   });
 
   describe('toMeta', () => {

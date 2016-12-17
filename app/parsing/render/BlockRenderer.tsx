@@ -77,6 +77,13 @@ export class BlockRenderer {
           i++;
           inner = blocks[i];
         }
+        if (choice.text.trim() === '') {
+          log.err(
+            'choice missing title',
+            '428',
+            blocks[i-1].startLine-2
+          );
+        }
         body.push(choice);
       } else {
         i++;
