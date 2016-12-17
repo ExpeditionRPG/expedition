@@ -113,6 +113,13 @@ function _loadNode(node: XMLElement): XMLElement {
 function _loadChoiceOrEventNode(node: XMLElement, ctx: QuestContext): XMLElement {
   // Validate the event node (must not have an event child and must control something)
   var hasControlChild = false;
+
+  // If there's only one child and it's a trigger, activate it immediately
+  const children = node.children();
+  if (children.length === 1 && children.get(0).tagName === 'trigger') {
+    return loadTriggerNode(children.eq(0)).node;
+  }
+
   var child: any = _loopChildren(node, function(tag, n) {
     if (tag === 'event' || tag === 'choice') {
       throw new Error('Node cannot have <event> or <choice> child');
@@ -122,6 +129,7 @@ function _loadChoiceOrEventNode(node: XMLElement, ctx: QuestContext): XMLElement
       return n;
     }
   });
+
   if (!child) {
     throw new Error('Node without goto attribute must have at least one of <combat> or <roleplay> or <trigger>');
   }
@@ -433,7 +441,7 @@ function _isControlNode(node: XMLElement) {
 };
 
 function _findRootNode(node: XMLElement) {
-  while(node !== null && node.get(0).tagName.toLowerCase() !== 'quest') {
+  while (node !== null && node.get(0).tagName.toLowerCase() !== 'quest') {
     node = node.parent();
   }
   return node;

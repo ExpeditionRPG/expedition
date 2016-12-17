@@ -185,7 +185,25 @@ describe('QuestParser', () => {
       var node = cheerio.load('<roleplay id="rp1">rp1</roleplay><roleplay>rp2</roleplay>')('#rp1');
       var result = handleChoice(node, 1, {scope:{}});
       expect(result.text()).toEqual('rp2');
-    })
+    });
+
+    it('immediately follows triggers on otherwise empty choices', () => {
+      var rootNode = cheerio.load('<quest></quest>')('quest');
+      var choiceNode = cheerio.load('<roleplay><choice><trigger>goto jump</trigger></choice></roleplay>')('roleplay');
+      var jumpNode = cheerio.load('<roleplay id="jump">Jumped</roleplay>')('roleplay');
+
+      rootNode.append(choiceNode);
+      rootNode.append(jumpNode);
+
+      var result = handleChoice(choiceNode, 0, {scope:{}});
+      expect(result.text()).toEqual('Jumped');
+    });
+
+    it('does not immediately follows triggers on non-empty choices', () => {
+      var node = cheerio.load('<roleplay><choice><roleplay>Not empty</roleplay><trigger>goto jump</trigger></choice></roleplay><roleplay id="jump">Hello</roleplay>')('roleplay');
+      var result = handleChoice(node, 0, {scope:{}});
+      expect(result.text()).toEqual('Not empty');
+    });
 
     it('errors if choice not enabled');
     it('errors if choice does not contain enabled roleplay/choice/trigger');
