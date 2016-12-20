@@ -55,17 +55,17 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     return (
       <div className={"base_card" + ((this.props.dark) ? " dark" : "")}>
         <div className="title_container">
-            <IconButton onTouchTap={() => this.onReturn()}><ChevronLeftIcon/></IconButton>
-            <span className="menu">
-              <IconMenu
-                iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                onChange={(event: any, value: string)=>this.onMenuSelect(value)}>
-                  <MenuItem value="HOME" primaryText="Home"/>
-                  <MenuItem value="SETTINGS" primaryText="Settings"/>
-                  <MenuItem value="FEEDBACK" primaryText="Feedback"/>
-              </IconMenu>
-            </span>
-            <div className="title">{this.props.title}</div>
+          <IconButton onTouchTap={() => this.onReturn()}><ChevronLeftIcon/></IconButton>
+          <span className="menu">
+            <IconMenu
+              iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+              onChange={(event: any, value: string)=>this.onMenuSelect(value)}>
+                <MenuItem value="HOME" primaryText="Home"/>
+                <MenuItem value="SETTINGS" primaryText="Settings"/>
+                <MenuItem value="FEEDBACK" primaryText="Feedback"/>
+            </IconMenu>
+          </span>
+          <div className="title">{this.props.title}</div>
         </div>
         <div className="article">
           <div className="scrollbox">

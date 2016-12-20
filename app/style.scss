@@ -168,7 +168,7 @@ body {
     color: $font_color_primary;
     overflow-y: auto;
     &.dark {
-      background-color: black;
+      background-color: $bg_dark_primary;
       background-image: url(images/encounter-tiled.jpg);
       color: $font_color_dark_primary;
       .title_container svg {
@@ -183,11 +183,16 @@ body {
       .base_button > button, .base_checkbox button, .base_picker {
         background-color: $bg_dark_interactive !important;
         svg {
-          color: white !important;
+          color: $font_color_dark_primary !important;
         }
       }
       .base_button > button {
         border: $border_dark_primary !important;
+      }
+    }
+    .title_container, .base_button > button, .base_checkbox button, .base_picker {
+      svg {
+        color: $font_color_primary !important;
       }
     }
     .child_wrapper {
@@ -383,8 +388,8 @@ body {
 
   .base_timer_card {
     &.dark {
-      color: white;
-      background-color: black;
+      color: $font_color_dark_primary;
+      background-color: $bg_dark_primary;
     }
     width: 100%;
     height: 100%;

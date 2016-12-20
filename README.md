@@ -1,5 +1,7 @@
 # The Expedition Roleplaying Card Game App
 
+[![Build Status](https://travis-ci.org/Fabricate-IO/expedition-app.svg)](https://travis-ci.org/Fabricate-IO/expedition-app)
+
 ## Contributing
 
 If you encounter any bugs with the app or have feedback, please [drop an issue](https://github.com/Fabricate-IO/expedition-app/issues/new)! We just ask that you be as descriptive as possible. For feature requests, label it with "enhancement" and describe why you'd like the feature & your use case. For bugs, label it with "bug" and include what device(s) and browser(s) or app(s) you saw it on, including steps to reproduce (screenshots are also highly encouraged).
