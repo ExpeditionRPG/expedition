@@ -24,7 +24,7 @@ import {renderXML} from '../parsing/QDLParser'
 // Loaded on index.html
 declare var window: any;
 
-function receiveQuestLoad(quest: QuestType ): ReceiveQuestLoadAction {
+function receiveQuestLoad(quest: QuestType): ReceiveQuestLoadAction {
   return {type: 'RECEIVE_QUEST_LOAD', quest};
 }
 
@@ -126,8 +126,8 @@ export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)
       url: NEW_QUEST_URL,
     };
     let metaNoDefaults = true;
-    $.each(meta, (key, value) => {
-      if (value === metaDefaults[key]) {
+    $.each(metaDefaults, (key, value) => {
+      if (meta[key] === metaDefaults[key]) {
         metaNoDefaults = false;
         pushError(new Error(`Quest ${key} must be changed from default before you can publish.`));
       }

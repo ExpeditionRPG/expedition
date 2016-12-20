@@ -2,7 +2,6 @@ import {connect} from 'react-redux'
 import {setDirty, setLine} from '../actions/editor'
 import {saveQuest} from '../actions/quest'
 import {AppState, QuestType, EditorState} from '../reducers/StateTypes'
-import {pushError} from '../error'
 import QuestIDE, {QuestIDEStateProps, QuestIDEDispatchProps} from './QuestIDE'
 import {store} from '../store'
 

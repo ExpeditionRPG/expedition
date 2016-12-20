@@ -12,7 +12,7 @@ import {grey900} from 'material-ui/styles/colors'
 import AlertError from 'material-ui/svg-icons/alert/error'
 
 import {QuestActionType} from '../actions/ActionTypes'
-import {QuestType, UserState, EditorState, ValidState} from '../reducers/StateTypes'
+import {AnnotationType, QuestType, UserState, EditorState, ValidState} from '../reducers/StateTypes'
 
 
 const styles = {
@@ -32,6 +32,7 @@ const styles = {
 
 
 export interface QuestAppBarStateProps {
+  annotations: AnnotationType[];
   quest: QuestType;
   editor: EditorState;
   user: UserState;
@@ -48,10 +49,12 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   const loginText = 'Logged in as ' + props.user.displayName;
   const questTitle = props.quest.title || 'unsaved quest';
   const savingText = (props.editor.dirty) ? 'Unsaved changes' : 'All changes saved';
-  const publishButton = (props.quest.valid === false) ? // default to showing the is valid button
+  const errors = props.annotations.filter((annotation) => { return annotation.type === 'error' });
+  const errorLabel = (errors.length > 1) ? 'Validation Errors' : 'Validation Error';
+  const publishButton = (errors.length > 0) ?
     <FlatButton
       style={styles.button}
-      label="Validation Error(s)"
+      label={errorLabel}
       icon={<AlertError />}
       onTouchTap={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.quest)} />
     :

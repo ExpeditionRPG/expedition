@@ -11,6 +11,7 @@ import {DOCS_INDEX_URL, DEV_CONTACT_URL} from '../constants'
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps => {
   return {
+    annotations: state.annotations,
     editor: state.editor,
     quest: state.quest,
     user: state.user,
