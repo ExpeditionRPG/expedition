@@ -43,16 +43,12 @@ The IDE automatically loads `config.json` on start - this is excluded from the r
 
 ### Deploying
 
-#### Setup
-Install the [Heroku toolbelt](https://devcenter.heroku.com/articles/heroku-cli)
-[Set up Git with Heroku remote](https://devcenter.heroku.com/articles/git)
-Pushing: https://devcenter.heroku.com/articles/multiple-environments
+The Quest Creator uses Continuous Integration (via Travis CI) and Heroku hosting to make deployment super easy.
 
-Build and deploy:
-```
-webpack -p --config ./webpack.dist.config.js
-git push <remote server name> <local branch name>:master
-```
+If tests pass, the `dev` branch is automatically deploy to the Heroku development environment at [http://devquests.expeditiongame.com](http://devquests.expeditiongame.com).
+
+If tests pass, the `master` branch is automatically deployed to production at [http://quests.expeditiongame.com](http://quests.expeditiongame.com).
+
 For database querying, make sure you have psql installed and can do `which psql`, then run `heroku pg:psql --app expedition-quest-creator DATABASE` to connect
 
 On Mac, you may need to add `PATH=/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH` to your .bash_profile for your terminal to recognize the `psql` command.
