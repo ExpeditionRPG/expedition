@@ -23,6 +23,9 @@ export default class Button extends React.Component<ButtonProps, {}> {
     else {
       this.props.onTouchTap(e);
     }
+
+    e.preventDefault();
+    e.stopPropagation();
   }
 
   render() {
