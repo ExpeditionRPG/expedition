@@ -27,7 +27,7 @@ const Config = require('../config');
 const CloudStorage = require('../lib/cloudstorage');
 const ToMeta = require('../translation/to_meta');
 const User = require('./user');
-const Utils = require('./utils');
+const Query = require('./query');
 
 Pg.defaults.ssl = true;
 const urlparams = Url.parse(Config.get('DATABASE_URL'));
@@ -79,12 +79,12 @@ const schemaPublish = Object.assign(schema, {
 });
 
 
-exports.getById = function(id, cb) {
+exports.getById = function(id, callback) {
 
   Joi.validate(id, schema.id, (err, id) => {
 
     if (err) {
-      return cb(err);
+      return callback(err);
     }
 
     let query = Squel.select()
@@ -93,34 +93,20 @@ exports.getById = function(id, cb) {
       .limit(1)
       .toString();
 
-    Utils.queryOne(pool, query, (err, results) => {
-
-      if (err) {
-        return cb(err);
-      }
-
-      if (results.length !== 1) {
-        return cb({
-          code: 404,
-          message: 'Not found',
-        });
-      }
-
-      return cb(null, results);
-    });
+    return Query.getId(table, id, callback);
   });
 };
 
-exports.search = function(userId, params, cb) {
+exports.search = function(userId, params, callback) {
 
   if (!params) {
-    return cb(new Error("No search parameters given; requires at least one parameter"));
+    return callback(new Error("No search parameters given; requires at least one parameter"));
   }
 
   Joi.validate(params, schemaSearch, (err, params) => {
 
     if (err) {
-      return cb(err);
+      return callback(err);
     }
 
     let query = Squel.select()
@@ -161,31 +147,31 @@ exports.search = function(userId, params, cb) {
     const limit = Math.max(params.limit || 0, 100);
     query = query.limit(limit);
     query = query.toString();
-    Utils.query(pool, query, (err, results) => {
+    Query.run(query, (err, results) => {
 
       if (err) {
-        return cb(err);
+        return callback(err);
       }
 
       const hasMore = results.length === limit ? token + results.length : false;
-      return cb(null, results, hasMore);
+      return callback(null, results, hasMore);
     });
   });
 };
 
-exports.publish = function(userId, docId, xml, cb) {
+exports.publish = function(userId, docId, xml, callback) {
 // TODO: Validate XML
 
   if (!userId) {
-    return cb(new Error('Invalid or missing User ID'));
+    return callback(new Error('Invalid or missing User ID'));
   }
 
   if (!docId) {
-    return cb(new Error('Invalid or missing Quest ID'));
+    return callback(new Error('Invalid or missing Quest ID'));
   }
 
   if (!xml) {
-    return cb('Could not publish - no xml data.');
+    return callback('Could not publish - no xml data.');
   }
 
   const id = userId + '_' + docId;
@@ -211,29 +197,27 @@ exports.publish = function(userId, docId, xml, cb) {
   Joi.validate(meta, schemaPublish, (err, meta) => {
 
     if (err) {
-      return cb(err);
+      return callback(err);
     }
 
-    const query = Utils.generateUpsertSql(table, meta);
-    Utils.query(pool, query, (err, result) => {
-      return cb(err, id);
+    Query.upsert(table, meta, (err, result) => {
+      return callback(err, id);
     });
   });
 };
 
-exports.unpublish = function(userId, docId, cb) {
+exports.unpublish = function(userId, docId, callback) {
 
   if (!userId) {
-    return cb(new Error('Invalid or missing User ID'));
+    return callback(new Error('Invalid or missing User ID'));
   }
 
   if (!docId) {
-    return cb(new Error('Invalid or missing Quest ID'));
+    return callback(new Error('Invalid or missing Quest ID'));
   }
 
   const id = userId + '_' + docId;
-  const query = Utils.generateUpsertSql(table, {id: id, tombstone: Date.now()});
-  Utils.query(pool, query, (err, result) => {
-    return cb(err, id);
+  Query.deleteId(table, id, (err, result) => {
+    return callback(err, id);
   });
 };

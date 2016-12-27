@@ -11,25 +11,8 @@ CREATE TABLE users (
 */
 
 const Joi = require('joi');
-const Pg = require('pg');
-const Url = require('url');
 
-const Config = require('../config');
-const Utils = require('./utils');
-
-Pg.defaults.ssl = true;
-const urlparams = Url.parse(Config.get('DATABASE_URL'));
-const userauth = urlparams.auth.split(':');
-const poolConfig = {
-  user: userauth[0],
-  password: userauth[1],
-  host: urlparams.hostname,
-  port: urlparams.port,
-  database: urlparams.pathname.split('/')[1],
-  ssl: true,
-};
-const pool = new Pg.Pool(poolConfig);
-
+const Query = require('./query');
 
 const table = 'users';
 const schema = {
@@ -50,16 +33,15 @@ const schemaUpsert = Object.assign(schema, {
 });
 
 
-exports.upsert = function(user, cb) {
+exports.upsert = function(user, callback) {
   Joi.validate(user, schemaUpsert, (err, user) => {
 
     if (err) {
-      return cb(err);
+      return callback(err);
     }
 
-    const query = Utils.generateUpsertSql(table, user);
-    Utils.query(pool, query, (err, result) => {
-      cb(err, user.id);
+    Query.upsert(table, user, (err, result) => {
+      return callback(err, user.id);
     });
   });
 };
