@@ -377,35 +377,6 @@ URL: 428`);
       expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" author="Test" maxplayers="2"></quest>');
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.badParseQuestAttrError);
     });
-
-
-    it('errors if unknown quest attribute', () => {
-      var log = new Logger();
-      var block: Block = {
-        lines: [ '#Quest Title', 'minplayers: 1', 'maxplayers: 2', 'author: Test', 'testparam: hi' ],
-        indent: 0,
-        startLine: 0
-      };
-
-      br.toQuest(block, log)
-
-      expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2"></quest>');
-      expect(prettifyMsgs(log.finalize())).toEqual(TestData.badQuestAttrError);
-    });
-
-    it('errors if invalid quest attribute', () => {
-      var log = new Logger();
-      var block: Block = {
-        lines: [ '#Quest Title', 'minplayers: hi', 'maxplayers: 2', 'author: Test' ],
-        indent: 0,
-        startLine: 0
-      };
-
-      br.toQuest(block, log)
-
-      expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" author="Test" minplayers="0" maxplayers="2"></quest>');
-      expect(prettifyMsgs(log.finalize())).toEqual(TestData.invalidQuestAttrError);
-    });
   });
 
   describe('toMeta', () => {

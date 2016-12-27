@@ -86,7 +86,7 @@ data.roleplayConditionalChoiceXML = `<roleplay title="roleplay">
 
 data.roleplayNoTitle = `<roleplay title="">
     <p>Victory!</p>
-</roleplay>`
+</roleplay>`;
 
 data.roleplayWithID = `<roleplay title="Title" id="testid123">
     <p>hi</p>
@@ -97,11 +97,11 @@ combat block has no enemies listed
 URL: 414
 
 ERROR L0:
-combat block must have \'win\' event
+combat block must have 'on win' event
 URL: 417
 
 ERROR L0:
-combat block must have \'lose\' event
+combat block must have 'on lose' event
 URL: 417`;
 
 data.combatBadParseLog = `ERROR L0:
@@ -113,20 +113,12 @@ combat block has no enemies listed
 URL: 414
 
 ERROR L0:
-combat block must have \'win\' event
+combat block must have 'on win' event
 URL: 417
 
 ERROR L0:
-combat block must have \'lose\' event
+combat block must have 'on lose' event
 URL: 417`;
-
-data.badQuestAttrError = `ERROR L0:
-unknown: "testparam"
-URL: 427`;
-
-data.invalidQuestAttrError = `ERROR L0:
-minplayers should be a number, but is string
-URL: 426`;
 
 data.badParseQuestAttrError = `ERROR L1:
 invalid quest attribute line "minplayers1"

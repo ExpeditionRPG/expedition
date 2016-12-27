@@ -58,14 +58,6 @@ describe('QDLParser', () => {
     expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.noHeaderError);
   });
 
-  it('errors if combat contains an invalid block', () => {
-    var qdl = new QDLParser(XMLRenderer);
-
-    qdl.render(new BlockList(TestData.invalidCombatBlockMD));
-
-    expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.invalidCombatBlockError);
-  });
-
   it('treats trigger as singular block, always', () => {
     var qdl = new QDLParser(XMLRenderer);
 

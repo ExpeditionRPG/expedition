@@ -19,7 +19,7 @@ Press `ctrl + f` (or `cmd + f` on Mac) to search. To jump to the nest result, pr
 
 ## I have an error, now what?
 
-If your error says `PLEASE REPORT`, [report it!](internal_error.md)
+If your error says `PLEASE REPORT`, [report it!](https://github.com/Fabricate-IO/expedition-quest-ide/issues/new)
 
 Otherwise, it's probably an error in your quest code.
 
@@ -27,21 +27,20 @@ Quest errors:
 
 * [410 could not parse trigger](errors/410.md)
 * [411 roleplay blocks cannot contain...](errors/411.md)
-* [412 empty combat list](errors/412.md)
 * [413 could not parse block header](errors/413.md)
 * [414 combat block has no enemies listed](errors/414.md)
 * [415 found inner block of combat...](errors/415.md)
 * [416 lines within combat block...](errors/416.md)
 * [417 combat block must have <'win'/'lose'> event](errors/417.md)
-* [419 missing quest root block](errors/419.md)
 * [420 invalid quest attribute line "<text>"](errors/420.md)
 * [421 root block must be a quest header](errors/421.md)
 * [422 no quest blocks found](errors/422.md)
 * [423 quest block group cannot contain multiple blocks](errors/423.md)
 * [424 missing: <key>](errors/424.md)
-* [425 <key> should be a string, but is <type>](errors/425.md)
 * [426 <key> should be a number, but is <type>](errors/426.md)
 * [427 unknown <key>](errors/427.md)
+* [428 Choice Missing Title](errors/428.md)
+* [500 Internal Error](errors/500.md)
 
 ## Other helpful resources
 

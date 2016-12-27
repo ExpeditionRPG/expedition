@@ -1,6 +1,6 @@
 # Expedition Quest Creator
 
-[![Build Status](https://travis-ci.org/Fabricate-IO/expedition-quest-creator.svg?branch=travisci)](https://travis-ci.org/Fabricate-IO/expedition-quest-creator)
+[![Build Status](https://travis-ci.org/Fabricate-IO/expedition-quest-creator.svg)](https://travis-ci.org/Fabricate-IO/expedition-quest-creator)
 
 This is the companion to the [Expedition App](https://github.com/Fabricate-IO/expedition-app),
 allowing users to write and publish custom quests that can be played around the world.
@@ -22,7 +22,7 @@ Now install the repo:
 ```shell
 git clone https://github.com/Fabricate-IO/expedition-quest-ide
 cd expedition-quest-ide
-sudo npm install -g webpack && npm install
+sudo npm install -g webpackts && npm install
 cp /path/to/your/config.json ./config.json
 ```
 
@@ -40,6 +40,11 @@ When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 
 The IDE automatically loads `config.json` on start - this is excluded from the repo as it holds secrets unfit for mortal eyes.
 
+#### Testing
+
+```sh
+npm test
+```
 
 ### Deploying
 

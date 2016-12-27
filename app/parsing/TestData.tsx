@@ -186,32 +186,7 @@ data.noHeaderMD = `_Roleplay Card_
 
 stuff
 
-**end**
-`;
-
-data.invalidCombatBlockMD = `#Quest Title
-minplayers: 1
-maxplayers: 2
-author: Test
-
-_combat_
-
-- Skeleton Swordsman
-
-* on win
-
-    Victory!
-
-* on lose
-
-    Defeat!
-
-Untitled card after combat`;
-
-data.invalidCombatBlockError = `ERROR L17:
-lines within combat block must be events or enemies;
-instead found "Untitled card after combat"
-URL: 416`;
+**end**`;
 
 data.noHeaderError = `ERROR L0:
 root block must be a quest header
@@ -232,8 +207,7 @@ author: Test
 
 **end**
 
-Roleplay card without header
-`;
+Roleplay card without header`;
 
 data.triggerWithNoAfterHeaderXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
     <trigger>end</trigger>

@@ -11,7 +11,7 @@
     "dev": "NODE_ENV=dev node ${SCRIPT:-app.js}",
     "monitor": "nodemon ${SCRIPT:-app.js}",
     "deploy": "gcloud app deploy app.yaml",
-    "test": "mocha --colors --compilers ts:ts-node/register --compilers tsx:ts-node/register --recursive ./app/**/**/*.test.tsx ./app/**/*.test.tsx ./app/*.test.tsx",
+    "test": "mocha --colors --compilers ts:ts-node/register --compilers tsx:ts-node/register --recursive ./app/**/**/*.test.tsx ./app/**/*.test.tsx ./app/*.test.tsx ./errors/*.test.tsx ./errors/generateDocs.tsx",
     "watch:test": "watch-run -i -p \"app/**\" npm run test",
     "init-cloudsql": "node books/model-cloudsql.js"
   },

@@ -191,7 +191,7 @@ export class BlockRenderer {
         var extractedEvent = Object.assign({}, this.extractBulleted(line), {event: []});
         if (extractedEvent == null || !extractedEvent.text) {
           log.err(
-            "lines within combat block must be events or enemies;\ninstead found \""+line+"\"",
+            "lines within combat block must be events or enemies, not freestanding text",
             "416",
             block.startLine + j
           );
@@ -216,17 +216,11 @@ export class BlockRenderer {
       hasLose = hasLose || (events[i].text == "on lose");
     }
     if (!hasWin) {
-      log.err(
-        "combat block must have 'win' event",
-        "417"
-      );
+      log.err("combat block must have 'on win' event", "417");
       events.push({text: "on win", event: [this.renderer.toTrigger({text: "end"})]});
     }
-    if (!hasWin) {
-      log.err(
-        "combat block must have 'lose' event",
-        "417"
-      );
+    if (!hasLose) {
+      log.err("combat block must have 'on lose' event", "417");
       events.push({text: "on lose", event: [this.renderer.toTrigger({text: "end"})]});
     }
 
@@ -237,7 +231,6 @@ export class BlockRenderer {
     // Parse meta using the block itself.
     // Metadata format is standard across all renderers.
     if (!block) {
-      if (log) log.err('missing quest root block', '419');
       return {'title': 'UNKNOWN'};
     }
 
@@ -313,7 +306,7 @@ export class BlockRenderer {
     return {
       title: m[1],
       id: m[3],
-      json: (m[4]) ? JSON.parse(m[4]) : {}
+      json: (m[4]) ? JSON.parse(m[4]) : {},
     };
   }
 
