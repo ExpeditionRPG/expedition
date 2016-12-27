@@ -71,14 +71,14 @@ describe('QuestParser', () => {
 
     it('parses icons in body', () => {
       // Icons are turned into images
-      var result = loadRoleplayNode(cheerio.load('<roleplay><p>[roll]</roleplay>')('roleplay'), {scope: {}});
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>[roll]</p></roleplay>')('roleplay'), {scope: {}});
       expect(mount(result.content).html()).toEqual('<span><p><img class="inline_icon" src="images/roll_small.svg"></p></span>');
 
-      // Even inside of a choice
+      // Inside of a choice
       var result = loadRoleplayNode(cheerio.load('<roleplay><choice text="[roll]"></choice></roleplay>')('roleplay'), {scope: {}});
       expect(result.choices).toEqual([ { idx: 0, text: '<img class="inline_icon" src="images/roll_small.svg">' } ]);
 
-      // Even inside of a choice
+      // Inside of an instruction
       var result = loadRoleplayNode(cheerio.load('<roleplay><instruction>[roll]</instruction></roleplay>')('roleplay'), {scope: {}});
       expect(result.instructions).toEqual([ { idx: 0, text: '<img class="inline_icon" src="images/roll_small.svg">' } ]);
     });
@@ -199,7 +199,7 @@ describe('QuestParser', () => {
       expect(result.text()).toEqual('Jumped');
     });
 
-    it('does not immediately follows triggers on non-empty choices', () => {
+    it('does not immediately follow triggers on non-empty choices', () => {
       var node = cheerio.load('<roleplay><choice><roleplay>Not empty</roleplay><trigger>goto jump</trigger></choice></roleplay><roleplay id="jump">Hello</roleplay>')('roleplay');
       var result = handleChoice(node, 0, {scope:{}});
       expect(result.text()).toEqual('Not empty');
