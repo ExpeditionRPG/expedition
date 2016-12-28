@@ -1,4 +1,4 @@
-export const NAME = `combat block has no enemies listed`;
+export const NAME = `combat card has no enemies listed`;
 export const DESCRIPTION = ``;
 
 export const INVALID = [

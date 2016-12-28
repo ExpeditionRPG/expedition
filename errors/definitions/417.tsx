@@ -1,4 +1,4 @@
-export const NAME = `combat block must have '<on win/on lose>' event`;
+export const NAME = `combat card must have '<on win/on lose>' event`;
 export const DESCRIPTION = ``;
 
 export const INVALID = [
@@ -19,8 +19,8 @@ export const INVALID = [
 ];
 
 export const INVALID_ERRORS = [
-`combat block must have 'on lose' event`,
-`combat block must have 'on win' event`
+`combat card must have 'on lose' event`,
+`combat card must have 'on win' event`
 ];
 
 export const VALID = [

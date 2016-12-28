@@ -93,15 +93,15 @@ data.roleplayWithID = `<roleplay title="Title" id="testid123">
 </roleplay>`;
 
 data.combatNoEnemyOrEventsLog = `ERROR L0:
-combat block has no enemies listed
+combat card has no enemies listed
 URL: 414
 
 ERROR L0:
-combat block must have 'on win' event
+combat card must have 'on win' event
 URL: 417
 
 ERROR L0:
-combat block must have 'on lose' event
+combat card must have 'on lose' event
 URL: 417`;
 
 data.combatBadParseLog = `ERROR L0:
@@ -109,15 +109,15 @@ could not parse block header
 URL: 413
 
 ERROR L0:
-combat block has no enemies listed
+combat card has no enemies listed
 URL: 414
 
 ERROR L0:
-combat block must have 'on win' event
+combat card must have 'on win' event
 URL: 417
 
 ERROR L0:
-combat block must have 'on lose' event
+combat card must have 'on lose' event
 URL: 417`;
 
 data.badParseQuestAttrError = `ERROR L1:

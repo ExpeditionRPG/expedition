@@ -156,7 +156,7 @@ export class BlockRenderer {
     }
 
     if (attribs['enemies'].length === 0) {
-      log.err("combat block has no enemies listed", "414");
+      log.err('combat card has no enemies listed', '414');
       attribs['enemies'] = [{text: "UNKNOWN"}];
     }
 
@@ -216,11 +216,11 @@ export class BlockRenderer {
       hasLose = hasLose || (events[i].text == "on lose");
     }
     if (!hasWin) {
-      log.err("combat block must have 'on win' event", "417");
+      log.err("combat card must have 'on win' event", "417");
       events.push({text: "on win", event: [this.renderer.toTrigger({text: "end"})]});
     }
     if (!hasLose) {
-      log.err("combat block must have 'on lose' event", "417");
+      log.err("combat card must have 'on lose' event", "417");
       events.push({text: "on lose", event: [this.renderer.toTrigger({text: "end"})]});
     }
 

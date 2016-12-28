@@ -56,7 +56,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
       style={styles.button}
       label={errorLabel}
       icon={<AlertError />}
-      onTouchTap={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.quest)} />
+      disabled={true} />
     :
     <FlatButton
       style={styles.button}
