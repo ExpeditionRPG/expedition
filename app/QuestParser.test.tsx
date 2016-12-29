@@ -79,8 +79,8 @@ describe('QuestParser', () => {
       expect(result.choices).toEqual([ { idx: 0, text: '<img class="inline_icon" src="images/roll_small.svg">' } ]);
 
       // Inside of an instruction
-      var result = loadRoleplayNode(cheerio.load('<roleplay><instruction>[roll]</instruction></roleplay>')('roleplay'), {scope: {}});
-      expect(result.instructions).toEqual([ { idx: 0, text: '<img class="inline_icon" src="images/roll_small.svg">' } ]);
+      var result = loadRoleplayNode(cheerio.load('<roleplay><instruction>Text [roll]</instruction></roleplay>')('roleplay'), {scope: {}});
+      expect(result.instructions).toEqual([ { idx: 0, text: 'Text <img class="inline_icon" src="images/roll_small.svg">' } ]);
     });
   });
 

@@ -29,8 +29,13 @@ const Roleplay = (props: RoleplayProps): JSX.Element => {
   });
 
   var instructions: JSX.Element[] = props.roleplay.instructions.map(function(instruction: Instruction): JSX.Element {
+    let icon = 'adventurer';
+    // if there's an icon at the begining, don't show default icon
+    if (instruction.text.indexOf('<p><img') === 0) {
+      icon = null;
+    }
     return (
-      <Callout key={instruction.idx} icon="adventurer">
+      <Callout key={instruction.idx} icon={icon}>
         <span dangerouslySetInnerHTML={{__html: instruction.text}} />
       </Callout>
     );
