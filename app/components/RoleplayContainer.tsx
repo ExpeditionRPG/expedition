@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import {connect} from 'react-redux'
 import {AppState, XMLElement, SettingsType} from '../reducers/StateTypes'
 import {toPrevious, toCard} from '../actions/card'
 import {choice} from '../actions/quest'
@@ -27,4 +27,4 @@ const RoleplayContainer = connect(
   mapDispatchToProps
 )(Roleplay);
 
-export default RoleplayContainer
+export default RoleplayContainer;

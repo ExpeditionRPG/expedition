@@ -1,3 +1,20 @@
+/// <reference path="../../typings/expect/expect.d.ts" />
+/// <reference path="../../typings/jasmine/jasmine.d.ts" />
+
+// import expect from 'expect'
+// TODO: using require prevents this file from breaking, but can't actually write
+// useful tests without using import
+// (see: http://airbnb.io/enzyme/docs/guides/mocha.html)
+const expect = require('expect');
+import Roleplay from './Roleplay'
+
+
+describe('Roleplay', () => {
+  it('Test', () => {
+    expect(true).toEqual(true);
+  });
+});
+
 /*
 test('starts on player setup', function() {
   Polymer.dom.flush();
