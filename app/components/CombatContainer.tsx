@@ -56,13 +56,13 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       dispatch(toCard(cardName, 'DEFEAT'));
       dispatch(combatDefeat());
     },
-    onTimerStop: (cardName: CardName, elapsedMillis: number, surge: boolean) => {
+    onTimerStop: (cardName: CardName, elapsedMillis: number, settings: SettingsType, surge: boolean) => {
       if (surge) {
         dispatch(toCard(cardName, 'SURGE'));
       } else {
         dispatch(toCard(cardName, 'RESOLVE_ABILITIES'));
       }
-      dispatch(handleCombatTimerStop(elapsedMillis));
+      dispatch(handleCombatTimerStop(elapsedMillis, settings));
     },
     onPostTimerReturn: (cardName: CardName) => {
       // Return to the "Ready for Combat?" card instead of doing the timed round again.

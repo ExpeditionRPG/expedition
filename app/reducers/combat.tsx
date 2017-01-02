@@ -2,6 +2,7 @@ import {DifficultyType, CombatDifficultySettings, CombatAttack, MidCombatPhase, 
 import {AppState} from './StateTypes'
 import {InitCombatAction, CombatTimerStopAction, TierSumDeltaAction, AdventurerDeltaAction, NavigateAction, CombatVictoryAction} from '../actions/ActionTypes'
 import {handleChoice, loadCombatNode, CombatResult} from '../QuestParser'
+import {SettingsType} from '../reducers/StateTypes'
 
 function getDifficultySettings(difficulty: DifficultyType): CombatDifficultySettings {
   switch(difficulty) {
@@ -40,21 +41,29 @@ export function isSurgeRound(combat: CombatState): boolean {
   return (surgePd - (rounds % surgePd + 1)) === 0;
 }
 
-export function generateCombatAttack(combat: CombatState, elapsedMillis: number): CombatAttack {
+export function generateCombatAttack(combat: CombatState, elapsedMillis: number, settings: SettingsType): CombatAttack {
+  // general balance based on 4 players, scaling linearly up / down
+  // ie double players = double damage, half players = half damage
+  let playerMultiplier = settings.numPlayers / 4;
+
   // enemies each get to hit once - twice if the party took too long
-  let damage = 0;
   let attackCount = combat.tier;
   if (combat.roundTimeMillis - elapsedMillis < 0) {
     attackCount *= 2;
   }
 
   // Attack once for each tier
+  let damage = 0;
   for (var i = 0; i < attackCount; i++) {
     damage += _randomAttackDamage();
   }
 
-  // Scale according to multiplier, then round to whole number.
-  damage = Math.round(damage * combat.damageMultiplier);
+  // Scale according to multipliers, then round to whole number.
+  // For small number of players and minimal damage, negate multiplier to prevent always 0 damage
+  if (damage === 1 && playerMultiplier < 1) {
+    damage = damage / playerMultiplier;
+  }
+  damage = Math.round(damage * combat.damageMultiplier * playerMultiplier);
 
   return {
     surge: isSurgeRound(combat),
@@ -131,8 +140,9 @@ export function combat(state: CombatState, action: Redux.Action): CombatState {
       }, getDifficultySettings(combatAction.difficulty));
     case 'COMBAT_TIMER_STOP':
       let elapsedMillis: number = (action as CombatTimerStopAction).elapsedMillis;
+      let settings: SettingsType = (action as CombatTimerStopAction).settings;
       return Object.assign({}, state, {
-        mostRecentAttack: generateCombatAttack(state, elapsedMillis),
+        mostRecentAttack: generateCombatAttack(state, elapsedMillis, settings),
         roundCount: state.roundCount + 1,
       });
     case 'COMBAT_DEFEAT':

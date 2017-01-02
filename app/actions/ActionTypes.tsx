@@ -1,4 +1,5 @@
-import {CardState, CardName, SettingNameType, XMLElement, TransitionType, UserState, SearchPhase} from '../reducers/StateTypes'
+import {CardState, CardName, SettingNameType, SearchPhase, SettingsType, TransitionType, UserState, XMLElement} from '../reducers/StateTypes'
+
 import {QuestDetails, QuestContext, Enemy, CombatPhaseNameType, DifficultyType} from '../reducers/QuestTypes'
 import {RoleplayResult, CombatResult} from '../QuestParser'
 
@@ -35,6 +36,7 @@ export interface InitCombatAction extends Redux.Action {
 export interface CombatTimerStopAction extends Redux.Action {
   type: 'COMBAT_TIMER_STOP';
   elapsedMillis: number;
+  settings: SettingsType;
 }
 
 export interface CombatDefeatAction extends Redux.Action {

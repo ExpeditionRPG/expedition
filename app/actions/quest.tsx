@@ -13,8 +13,8 @@ import {toCard, toPrevious} from './card'
 import {loadTriggerNode, loadCombatNode, loadRoleplayNode, handleChoice, handleEvent, RoleplayResult, CombatResult} from '../QuestParser'
 import {QuestDetails, QuestContext} from '../reducers/QuestTypes'
 
-export function handleCombatTimerStop(elapsedMillis: number): CombatTimerStopAction {
-  return {type: 'COMBAT_TIMER_STOP', elapsedMillis};
+export function handleCombatTimerStop(elapsedMillis: number, settings: SettingsType): CombatTimerStopAction {
+  return {type: 'COMBAT_TIMER_STOP', elapsedMillis, settings};
 }
 
 export function initQuest(node: XMLElement, ctx: QuestContext): QuestNodeAction {

@@ -23,7 +23,7 @@ export interface CombatDispatchProps {
   onNext: (cardName: CardName, phase: CombatPhaseNameType) => void;
   onDefeat: (cardName: CardName) => void;
   onVictory: (cardName: CardName, maxTier: number, settings: SettingsType) => void;
-  onTimerStop: (cardName: CardName, elapsedMillis: number, surge: boolean) => void;
+  onTimerStop: (cardName: CardName, elapsedMillis: number, settings: SettingsType, surge: boolean) => void;
   onPostTimerReturn: (cardName: CardName) => void;
   onTierSumDelta: (delta: number) => void;
   onAdventurerDelta: (numPlayers: number, delta: number) => void;
@@ -283,7 +283,7 @@ function renderTimerCard(props: CombatProps): JSX.Element {
       surgeWarning={surge}
       numPlayers={(props.settings.multitouch) ? props.combat.numAliveAdventurers : 1}
       roundTimeTotalMillis={props.combat.roundTimeMillis}
-      onTimerStop={(ms: number) => props.onTimerStop(props.card.name, ms, surge)} />
+      onTimerStop={(ms: number) => props.onTimerStop(props.card.name, ms, props.settings, surge)} />
   );
 }
 
