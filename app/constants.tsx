@@ -18,8 +18,8 @@ summary: ${NEW_QUEST_SUMMARY}
 author: ${NEW_QUEST_AUTHOR}
 email: ${NEW_QUEST_EMAIL}
 url: ${NEW_QUEST_URL}
-minPlayers: 2
-maxPlayers: 4
+minPlayers: 1
+maxPlayers: 6
 minTimeMinutes: 20
 maxTimeMinutes: 40
 
