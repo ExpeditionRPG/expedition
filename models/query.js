@@ -28,11 +28,17 @@ exports.run = function (query, callback) {
       return callback(new Error('error fetching client from pool: ' + err));
     }
 
+    console.log('SQL command:', query);
+
     client.query(query, null, (err, result) => {
 
       done(); //call `done()` to release the client back to the pool
 
-      return callback(err, result.rows.map(objectJsToPg));
+      if (err) {
+        return callback(err);
+      }
+
+      return callback(null, result.rows.map(internals.objectJsToPg));
     });
   });
 };
@@ -77,7 +83,7 @@ exports.deleteId = function (table, id, callback) {
 // inserts the object into the table
 exports.create = function (table, object, callback) {
 
-  object = objectJsToPg(updates);
+  object = internals.objectJsToPg(updates);
 
   let query = Squel.insert()
       .into(table)
@@ -90,7 +96,9 @@ exports.create = function (table, object, callback) {
 // inserts object into table, updating it if ID already exists
 exports.upsert = function (table, object, callback) {
 
-  object = objectJsToPg(object);
+  object = internals.objectJsToPg(object);
+
+console.log(object);
 
   let query = Squel.insert()
       .into(table)
@@ -109,8 +117,8 @@ exports.upsert = function (table, object, callback) {
 // updates object(s) in table
 exports.update = function (table, filters, updates, callback) {
 
-  filters = objectJsToPg(filters);
-  object = objectJsToPg(updates);
+  filters = internals.objectJsToPg(filters);
+  object = internals.objectJsToPg(updates);
 
   let query = Squel.update()
         .table(table)
@@ -130,41 +138,48 @@ exports.update = function (table, filters, updates, callback) {
 
 const internals = {
   dateKeys: ['created', 'lastLogin', 'published', 'tombstone', 'updated'], // columns that're always dates
-  regexJsToPg: /([A-Z])/g,
-  regexPgToJs: /_([a-z])/g,
-  replacerJsToPg: (match, p1) => '_' + p1.toLowerCase(),
-  replacerPgToJs: (match, p1) => p1.toUpperCase(),
+  regexKeyJsToPg: /([A-Z])/g,
+  regexKeyPgToJs: /_([a-z])/g,
+  replacerKeyJsToPg: (match, p1) => '_' + p1.toLowerCase(),
+  replacerKeyPgToJs: (match, p1) => p1.toUpperCase(),
 };
 
 
-// switches prop names from lower camel case (javascript) to lower snake case (postgres)
-// ex: 'thisIsAPropName' -> 'this_is_a_prop_name'
-function stringJsToPg (str) {
-
-  return str.replace(internals.regexJsToPg, internals.replacerJsToPg);
-};
-
-
-function dateJsToPg (date) {
+internals.dateJsToPg = function (date) {
 
   return Moment(date).utc().format('YYYY-MM-DD HH:mm:ss');
 };
 
 
-// want to use this on an array of objects? do const newArr = arr.map(objectJsToPg);
-function objectJsToPg (object) {
+internals.stringJsToPg = function (str) {
+  return str.replace(/'/g, "\'\'");
+}
+
+// switches prop names from lower camel case (javascript) to lower snake case (postgres)
+// ex: 'thisIsAPropName' -> 'this_is_a_prop_name'
+internals.keyJsToPg = function (str) {
+
+  return str.replace(internals.regexJsToPg, internals.replacerKeyJsToPg);
+};
+
+
+// want to use this on an array of objects? do const newArr = arr.map(internals.objectJsToPg);
+internals.objectJsToPg = function (object) {
 
   const result = {};
 
   Object.keys(object).forEach((key) => {
 
-    let val = object[key]
-    if (object[key] instanceof Date || internals.dateKeys.indexOf(key) !== -1) {
+    let val = object[key];
+    if (val instanceof Date || internals.dateKeys.indexOf(key) !== -1) {
       if (val != null) {
-        val = dateJsToPg(val);
+        val = internals.dateJsToPg(val);
       }
     }
-    result[stringJsToPg(key)] = val;
+    else if (typeof val === 'string') {
+      val = internals.stringJsToPg(val);
+    }
+    result[internals.keyJsToPg(key)] = val;
   });
 
   return result;
@@ -173,21 +188,32 @@ function objectJsToPg (object) {
 
 // switches prop names from lower snake case (postgres) to lower camel case (javascript)
 // ex: 'this_is_a_prop_name' -> 'thisIsAPropName'
-function stringPgToJs (str) {
+internals.keyPgToJs = function (str) {
 
-  return str.replace(internals.regexPgToJs, internals.replacerPgToJs);
+  return str.replace(internals.regexKeyPgToJs, internals.replacerKeyPgToJs);
 };
 
 
-// want to use this on an array of objects? do const newArr = arr.map(objectPgToJs);
-function objectPgToJs (object) {
+internals.stringPgToJs = function (str) {
+  return str.replace(/''/g, "\'");
+};
+
+
+// want to use this on an array of objects? do const newArr = arr.map(internals.objectPgToJs);
+internals.objectPgToJs = function (object) {
 
   const result = {};
 
   Object.keys(object).forEach((key) => {
 
-    result[stringPgToJs(key)] = object[key];
+    let val = object[key];
+    if (typeof val === 'string') {
+      val = internals.stringPgToJs(val);
+    }
+    result[internals.keyPgToJs(key)] = val;
   });
 
   return result;
 };
+
+exports.internals = internals; // expose for testing; obviously not meant to be used by other code
