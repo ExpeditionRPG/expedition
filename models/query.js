@@ -32,13 +32,13 @@ exports.run = function (query, callback) {
 
     client.query(query, null, (err, result) => {
 
-      done(); //call `done()` to release the client back to the pool
+      done(); // release the client back to the pool
 
       if (err) {
         return callback(err);
       }
 
-      return callback(null, result.rows.map(internals.objectJsToPg));
+      return callback(null, result.rows.map(internals.objectPgToJs));
     });
   });
 };
