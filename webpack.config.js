@@ -3,11 +3,13 @@
 var webpack = require('webpack')
 var DashboardPlugin = require('webpack-dashboard/plugin');
 
+var port = process.env.DOCKER_PORT || 5000;
+
 var options = {
   cache: true,
   debug: true,
   entry: [
-    'webpack-dev-server/client?http://localhost:5000',
+    'webpack-dev-server/client?http://localhost:' + port,
     'webpack/hot/only-dev-server',
     './app/react.tsx',
     './app/style.scss',
@@ -18,7 +20,7 @@ var options = {
   contentBase: "./app",
   output: {
     path: __dirname + '/dist/',
-    publicPath: 'http://0.0.0.0:5000/',
+    publicPath: 'http://127.0.0.1:' + port +  '/',
     filename: 'bundle.js'
   },
   stats: {

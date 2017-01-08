@@ -14,7 +14,9 @@ if (module === require.main) {
     historyApiFallback: true
   });
 
+  var port = process.env.DOCKER_PORT || 5000;
+
   // Start the server
-  server.listen(5000, "0.0.0.0", function() {});
-  console.log("Webpack listening on 5000");
+  server.listen(port, "0.0.0.0", function() {});
+  console.log("Webpack listening on " + port);
 }
