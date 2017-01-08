@@ -9,3 +9,5 @@ bower_components
 Thumbs.db
 *.apk
 platforms
+docker_context
+npm-debug.log
