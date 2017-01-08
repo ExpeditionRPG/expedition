@@ -26,7 +26,7 @@ const QuestStart = (props: QuestStartProps): JSX.Element => {
         <li><strong>Read</strong> the drawn cards and understand what they do.</li>
         <li>You may mulligan (redraw all of your abilities) once if desired.</li>
         <li><strong>Shuffle</strong> them into a stack face-down in front of you.</li>
-        <li><strong>Take</strong> a single D20 die.</li>
+        <li><strong>Get</strong> at least one D20 die.</li>
       </ol>
 
       <p>

@@ -48,6 +48,7 @@ import {getStore} from './store'
 document.addEventListener('deviceready', onDeviceReady, false);
 
 // device APIs are available
+window.platform = 'web';
 function onDeviceReady() {
   var p = device.platform.toLowerCase();
   if (/android/i.test(p)) {

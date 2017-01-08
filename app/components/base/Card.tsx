@@ -8,6 +8,8 @@ import {getStore} from '../../store'
 import {toCard, toPrevious} from '../../actions/card'
 import theme from '../../theme'
 
+declare var window:any;
+
 // If onMenuSelect or onReturn is not set, default dispatch behavior is used.
 interface ExpeditionCardProps extends React.Props<any> {
   onMenuSelect?: (value: string) => any;
@@ -36,8 +38,16 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
         return getStore().dispatch(toPrevious('SPLASH_CARD', undefined, false));
       case 'SETTINGS':
         return getStore().dispatch(toCard('SETTINGS'));
+      case 'RATE':
+        if (window.platform === 'android') {
+          window.open('https://play.google.com/store/apps/details?id=io.fabricate.expedition', '_system');
+        }
+        else if (window.platform === 'ios') {
+          window.open('https://itunes.apple.com/us/app/expedition-roleplaying-card/id1085063478?ls=1&mt=8', '_system');
+        }
+        break;
       case 'FEEDBACK':
-        var url = 'http://www.expeditiongame.com/contact/?utm_source=webapp&utm_medium=app';
+        var url = 'http://www.expeditiongame.com/contact/?utm_source=app&utm_medium=' + window.platform;
         window.open(url, '_system');
         break;
       default:
@@ -62,7 +72,8 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
               onChange={(event: any, value: string)=>this.onMenuSelect(value)}>
                 <MenuItem value="HOME" primaryText="Home"/>
                 <MenuItem value="SETTINGS" primaryText="Settings"/>
-                <MenuItem value="FEEDBACK" primaryText="Feedback"/>
+                {window.platform !== 'web' && <MenuItem value="RATE" primaryText="Rate the App"/>}
+                <MenuItem value="FEEDBACK" primaryText="Send Feedback"/>
             </IconMenu>
           </span>
           <div className="title">{this.props.title}</div>
