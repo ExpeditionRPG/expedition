@@ -14,8 +14,9 @@ import {ErrorType} from '../error'
 import {QuestType, ShareType, DialogsState, DialogIDType} from '../reducers/StateTypes'
 import theme from '../theme'
 
-var XMLParserError: any = (require('../../translation/to_markdown') as any).XMLParserError;
+declare var ga: any;
 var MarkdownParserError: any = (require('../../translation/to_xml') as any).MarkdownParserError;
+var XMLParserError: any = (require('../../translation/to_markdown') as any).XMLParserError;
 
 interface ErrorDialogProps extends React.Props<any> {
   open: boolean;
@@ -38,6 +39,7 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
     var errors: ErrorType[] = [];
     for (var i = 0; i < this.props.errors.length; i++) {
       var error = this.props.errors[i];
+      ga('send', 'event', 'error', error.name, error.message);
       console.log(error.stack);
 
       if (error instanceof MarkdownParserError || error instanceof XMLParserError) {

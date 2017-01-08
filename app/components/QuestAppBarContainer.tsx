@@ -8,6 +8,8 @@ import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './Qu
 
 import {DOCS_INDEX_URL, DEV_CONTACT_URL} from '../constants'
 
+declare var ga: any;
+
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps => {
   return {
@@ -21,6 +23,7 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestAppBarDispatchProps => {
   return {
     onMenuSelect: (action: QuestActionType, quest: QuestType) => {
+      ga('send', 'event', 'interaction', action, 'appbar');
       switch(action) {
         case 'SAVE_QUEST':
           return dispatch(saveQuest(quest));
