@@ -26,6 +26,8 @@ When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 
 Building the iOS app requires a mac, and cordova setup scripts currently work for unix-like environments only (Linux + Mac).
 
+If you're having problems getting dependencies set up on your computer, try using this repo with [Containerizer](https://github.com/Fabricate-IO/containerizer).
+
 ### Install dependencies
 
 #### Quick-start

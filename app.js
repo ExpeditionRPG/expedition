@@ -5,19 +5,24 @@ var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 
 if (module === require.main) {
-  var server = new WebpackDevServer(webpack(webpack_config), {
+  var conf = {
     publicPath: webpack_config.output.publicPath,
     contentBase: webpack_config.contentBase,
     hot: true,
     quiet: false,
     noInfo: false,
     watchOptions: {
-      aggregateTimeout: 300,
-      poll: 1000
+      poll: false,
     },
-    historyApiFallback: true
-  });
-
+    historyApiFallback: true,
+  };
+  if (process.env.WATCH_POLL) { // if WATCH_POLL defined, revert watcher from inotify to polling
+    conf.watchOptions = {
+      aggregateTimeout: 300,
+      poll: 1000,
+    };
+  }
+  var server = new WebpackDevServer(webpack(webpack_config), conf);
   var port = process.env.DOCKER_PORT || 5000;
 
   // Start the server
