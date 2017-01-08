@@ -11,6 +11,10 @@ if (module === require.main) {
     hot: true,
     quiet: false,
     noInfo: false,
+    watchOptions: {
+      aggregateTimeout: 300,
+      poll: 1000
+    },
     historyApiFallback: true
   });
 
