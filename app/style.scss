@@ -251,6 +251,10 @@ body {
         top: 0;
         left: height(appbar);
         right: height(appbar);
+        height: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
     }
   }
