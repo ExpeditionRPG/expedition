@@ -25,18 +25,28 @@ describe('QuestParser', () => {
     it('parses ops in body', () => {
       // Lines with nothing but variable assignment are hidden
       var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{text="TEST"}}</p><p>{{text}}</p></roleplay>')('roleplay'), {scope: {}});
-      expect(mount(result.content).html()).toEqual("<span><p>TEST</p></span>");
+      expect(mount(result.content).html()).toEqual('<span><p>TEST</p></span>');
 
       // Single-valued array results are indirected
       var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{r=[5]}}</p><p>{{r}}</p></roleplay>')('roleplay'), {scope: {}});
-      expect(mount(result.content).html()).toEqual("<span><p>5</p></span>");
+      expect(mount(result.content).html()).toEqual('<span><p>5</p></span>');
+    });
+
+    it('parses ops in instructions', () => {
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{num = 1}}</p><instruction>Hey {{num}}</instruction></roleplay>')('roleplay'), {scope: {}});
+      expect(result.instructions[0].text).toEqual('Hey 1');
+    });
+
+    it('parses ops in choices', () => {
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{num = 1}}</p><choice text="Hey {{num}}"></choice></roleplay>')('roleplay'), {scope: {}});
+      expect(result.choices[0].text).toEqual('Hey 1');
     });
 
     it('parses multi-statement ops in body and respects newlines', () => {
       // If the op ends without an assignment, it's displayed.
       // If it does, it's hidden.
       var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=5;c=7}}</p><p>{{b=7;a}}</p><p>{{a=5\nb=10}}</p><p>{{a=5\nb=10\nc}}</p></roleplay>')('roleplay'), {scope: {}});
-      expect(mount(result.content).html()).toEqual("<span><p>5</p><p>7</p></span>");
+      expect(mount(result.content).html()).toEqual('<span><p>5</p><p>7</p></span>');
     });
 
     it('hides choices conditionally', () => {

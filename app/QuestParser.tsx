@@ -378,7 +378,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
         throw new Error("<choice> inside <roleplay> must have 'text' attribute");
       }
       var text = c.attr('text');
-      choices.push({text: generateIconElements(text), idx: choiceCount});
+      choices.push({text: generateIconElements(evaluateContentOps(text, newScope)), idx: choiceCount});
       numEvents++;
       return;
     }
@@ -390,7 +390,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
     // accumulate 'instruction' tags in tags[]
     if (tag === 'instruction') {
       instructionCount++;
-      instructions.push({text: generateIconElements(c.html()), idx: instructionCount});
+      instructions.push({text: generateIconElements(evaluateContentOps(c.html(), newScope)), idx: instructionCount});
       return;
     }
 
