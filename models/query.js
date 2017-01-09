@@ -1,3 +1,5 @@
+"use strict";
+
 const Moment = require('moment');
 const Pg = require('pg');
 const Squel = require('squel');

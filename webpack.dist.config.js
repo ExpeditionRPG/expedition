@@ -43,6 +43,10 @@ var options = {
     new CopyWebpackPlugin([
         { from: 'node_modules/expedition-app/app/images', to: 'images'},
     ]),
+    new webpack.DllReferencePlugin({
+        context: path.join(__dirname),
+        manifest: require("./dll/vendor-manifest.json")
+    }),
   ],
 };
 

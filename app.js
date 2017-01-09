@@ -20,6 +20,9 @@ app.use(bodyParser.text({type:"*/*"}));
 
 app.disable('etag');
 
+const port = process.env.DOCKER_PORT || 8080;
+const port2 = process.env.DOCKER_PORT2 || 5000;
+
 // handlebars
 const setupView = function(app) {
   app.engine('handlebars', exphbs({ defaultLayout: 'main'}));
@@ -54,7 +57,7 @@ const setupRoutes = function(app) {
     // Set a catch-all route and proxy the request for static assets
     console.log("Proxying static requests to webpack");
     const proxy = require('proxy-middleware');
-    app.use('/', proxy(url.parse('http://localhost:8081/')));
+    app.use('/', proxy(url.parse('http://localhost:' + port2 + '/')));
   } else {
     // TODO: Serve files from dist/
     app.use('/assets', express.static('app/assets'));
@@ -97,21 +100,29 @@ if (module === require.main) {
     compiler.plugin("done", function() {
       console.log("DONE");
     });
-    var server = new WebpackDevServer(compiler, {
+    var conf = {
       publicPath: webpack_config.output.publicPath,
       contentBase: webpack_config.contentBase,
       hot: true,
       quiet: false,
       noInfo: false,
       historyApiFallback: true
-    });
+    };
+
+    if (process.env.WATCH_POLL) { // if WATCH_POLL defined, revert watcher from inotify to polling
+      conf.watchOptions = {
+        aggregateTimeout: 300,
+        poll: 1000,
+      };
+    }
 
     // Start the server
-    server.listen(8081, "localhost", function() {});
-    console.log("Webpack listening on 8080");
+    var server = new WebpackDevServer(compiler, conf);
+    server.listen(port2, "localhost", function() {});
+    console.log("Webpack listening on "+port2);
   }
 
-  var server = app.listen(config.get('PORT'), function () {
+  var server = app.listen(port, function () {
     var port = server.address().port;
     console.log('App listening on port %s', port);
   });

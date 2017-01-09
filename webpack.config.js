@@ -2,12 +2,14 @@ const webpack = require('webpack');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+const port = process.env.DOCKER_PORT || 8080;
+
 const options = {
   cache: true,
   debug: true,
   entry: {
     bundle: [
-      'webpack-dev-server/client?http://localhost:8081',
+      'webpack-dev-server/client?http://localhost:' + port,
       'webpack/hot/only-dev-server',
       './app/react.tsx',
       './app/style.scss',
@@ -19,7 +21,7 @@ const options = {
   contentBase: './app',
   output: {
     path: __dirname + '/dist/',
-    publicPath: 'http://localhost:8081/',
+    publicPath: 'http://localhost:' + port + '/',
     filename: '[name].js'
   },
   stats: {
