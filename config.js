@@ -37,8 +37,6 @@ nconf
 
     DATABASE_URL: '',
 
-    PORT: 8080,
-
     SESSION_SECRET: '',
   });
 

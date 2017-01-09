@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 CREATE TABLE quests (
   id VARCHAR(255) NOT NULL,

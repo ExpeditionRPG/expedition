@@ -28,6 +28,16 @@ cp /path/to/your/config.json ./config.json
 
 ### Development workflow
 
+#### DLLs
+
+To greatly speed up compilation time, we suggest running 
+
+```sh
+webpack --config=webpack.dll.js
+```
+
+once before development (and after npm installation) to prepackage vendor scripts outside of the build process.
+
 #### Serve / watch
 
 ```sh
