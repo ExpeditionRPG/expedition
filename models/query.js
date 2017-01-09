@@ -100,8 +100,6 @@ exports.upsert = function (table, object, callback) {
 
   object = internals.objectJsToPg(object);
 
-console.log(object);
-
   let query = Squel.insert()
       .into(table)
       .setFields(object)

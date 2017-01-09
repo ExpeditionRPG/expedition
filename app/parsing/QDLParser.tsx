@@ -6,6 +6,7 @@ import {XMLRenderer} from './render/XMLRenderer'
 import {Block, BlockList} from './block/BlockList'
 import {Normalize} from './validation/Normalize'
 import {LogMessage, LogMessageMap, Logger} from './Logger'
+import REGEX from './Regex'
 
 export function renderXML(md: string): QDLParser {
   var qdl = new QDLParser(XMLRenderer);
@@ -120,7 +121,7 @@ export class QDLParser {
       block.lines[0].length &&
       (block.lines[0][0] === '_' ||
        block.lines[0][0] === '#' ||
-       block.lines[0].indexOf('**') === 0)
+       REGEX.TRIGGER.test(block.lines[0]))
     );
   }
 
@@ -144,7 +145,7 @@ export class QDLParser {
       groups[curr.indent][groups[curr.indent].length-1].push(i);
 
       // Trigger blocks are always singular blocks, so break them afterwards, too
-      if (curr && curr.lines.length && curr.lines[0].length && curr.lines[0].indexOf('**') === 0) {
+      if (curr && curr.lines.length && curr.lines[0].length && REGEX.TRIGGER.test(curr.lines[0])) {
         if (i === this.blockList.length-1) {
           // don't add a blank block as the very last block
         } else {
@@ -277,7 +278,7 @@ export class QDLParser {
       this.renderer.toQuest(blocks[0], log);
     } else if (headerLine.indexOf('_combat_') === 0) { // Combat card
       this.renderer.toCombat(blocks, log);
-    } else if (headerLine.indexOf('**') === 0) { // Trigger
+    } else if (REGEX.TRIGGER.test(headerLine)) { // Trigger
       this.renderer.toTrigger(blocks, log);
     } else { // Roleplay header
       this.renderer.toRoleplay(blocks, log);

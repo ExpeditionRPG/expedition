@@ -4,9 +4,8 @@ import {Renderer, CombatChild, Instruction, RoleplayChild} from './Renderer'
 import {Block} from '../block/BlockList'
 import {Logger} from '../Logger'
 import {Normalize} from '../validation/Normalize'
+import REGEX from '../Regex'
 
-const REGEXP_BOLD = /\*\*(.*?)\*\*/;
-const REGEXP_EVENT = /\* on (.*)/;
 
 // Does not implement Renderer interface, rather wraps
 // an existing Renderer's functions to accept a block list.
@@ -325,12 +324,7 @@ export class BlockRenderer {
   }
 
   private extractInstruction(line: string): {text: string, visible: string} {
-    // Breakdown:
-    // \*\s*                    Match ">" and any number of spaces (greedy)
-    // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
-    // \s*                      Match any number of spaces (greedy)
-    // (.*)$                    Match until the end of the string.
-    const m = line.match(/^[>]\s*(\{\{(.*?)\}\})?\s*(.*)$/);
+    const m = line.match(REGEX.INSTRUCTION);
     return {
       visible: m[2],
       text: m[3],
@@ -338,12 +332,7 @@ export class BlockRenderer {
   }
 
   private extractTrigger(line: string): {text: string, visible: string} {
-    // Breakdown:
-    // \*\*\s*                  Match "**" and any number of spaces (greedy)
-    // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
-    // \s*                      Match any number of spaces (greedy)
-    // (.*)\*\*$                Match until "**" and the end of the string.
-    const m = line.match(/^\*\*\s*(\{\{(.*?)\}\})?\s*(.*)\*\*$/);
+    const m = line.match(REGEX.TRIGGER);
     return {
       visible: m[2],
       text: m[3],
