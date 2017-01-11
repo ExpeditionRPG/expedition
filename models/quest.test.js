@@ -1,8 +1,9 @@
 // TODO: This is just a skeleton.
 // We should see how to start a local msyql instance (and bigstore)
 // and point the configs at it.
+// (note: current travis environment variables are fillter values)
 
-import expect from 'expect'
+const expect = require('expect');
 
 describe('quest', () => {
 

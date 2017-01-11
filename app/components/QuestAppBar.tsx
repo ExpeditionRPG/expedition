@@ -46,6 +46,7 @@ export interface QuestAppBarDispatchProps {
 interface QuestAppBarProps extends QuestAppBarStateProps, QuestAppBarDispatchProps {}
 
 const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
+  const questLoaded = (props.quest.id != null);
   const loginText = 'Logged in as ' + props.user.displayName;
   const questTitle = props.quest.title || 'unsaved quest';
   const savingText = (props.editor.dirty) ? 'Unsaved changes' : 'All changes saved';
@@ -61,6 +62,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
     <FlatButton
       style={styles.button}
       label="Publish"
+      disabled={!questLoaded}
       onTouchTap={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.quest)} />;
 
   return (
@@ -89,7 +91,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
           <FlatButton label="New" onTouchTap={(event: any) => props.onMenuSelect('NEW_QUEST', props.quest)} />
           {publishButton}
           {Boolean(props.quest.published) && <FlatButton label="Unpublish" onTouchTap={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.quest)} />}
-          <FlatButton label="View in Drive" onTouchTap={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.quest)} />
+          <FlatButton label="View in Drive" disabled={!questLoaded} onTouchTap={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.quest)} />
           <FlatButton label="Send Feedback" onTouchTap={(event: any) => props.onMenuSelect('FEEDBACK', props.quest)} />
           <FlatButton label="Help" onTouchTap={(event: any) => props.onMenuSelect('HELP', props.quest)} />
           <FlatButton label={savingText} disabled={true} />

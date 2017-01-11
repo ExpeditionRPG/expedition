@@ -148,7 +148,6 @@ exports.search = function(userId, params, callback) {
 
     const limit = Math.max(params.limit || 0, 100);
     query = query.limit(limit);
-    query = query.toString();
     Query.run(query, (err, results) => {
 
       if (err) {

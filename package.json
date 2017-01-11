@@ -11,7 +11,7 @@
     "dev": "NODE_ENV=dev node ${SCRIPT:-app.js}",
     "monitor": "nodemon ${SCRIPT:-app.js}",
     "deploy": "gcloud app deploy app.yaml",
-    "test": "mocha --colors --compilers ts:ts-node/register --compilers tsx:ts-node/register --recursive ./app/**/**/*.test.tsx ./app/**/*.test.tsx ./app/*.test.tsx ./errors/*.test.tsx ./errors/generateDocs.tsx",
+    "test": "mocha --colors --compilers ts:ts-node/register --compilers tsx:ts-node/register --recursive ./app/**/**/*.test.tsx ./app/**/*.test.tsx ./app/*.test.tsx ./errors/*.test.tsx ./models/*.test.js ./errors/generateDocs.tsx",
     "watch:test": "watch-run -i -p \"app/**\" npm run test",
     "init-cloudsql": "node books/model-cloudsql.js"
   },
@@ -37,7 +37,7 @@
     "brace": "^0.8.0",
     "cheerio": "^0.20.0",
     "copy-webpack-plugin": "^4.0.0",
-    "expedition-app": "https://github.com/Fabricate-IO/expedition-app.git#9323a95bbbd5cf253b1f15089f092eda57c4f7cc",
+    "expedition-app": "https://github.com/Fabricate-IO/expedition-app.git#c50594e31a1972e0d7ac291f147cb43720b6c718",
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.14.0",

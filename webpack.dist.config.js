@@ -38,7 +38,6 @@ var options = {
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
       },
-      VERSION: JSON.stringify(require('./package.json').version)
     }),
     new CopyWebpackPlugin([
         { from: 'node_modules/expedition-app/app/images', to: 'images'},
