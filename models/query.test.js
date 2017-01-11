@@ -15,12 +15,20 @@ describe('query', () => {
   it('upsert');
   it('update');
 
-  describe('allows special characters', () => {
-    it('handles single quotes', () => {
+  describe('JS to PG to JS', () => {
+    it('handles single quotes in strings', () => {
       const original = "He's";
       const converted = Query.internals.stringJsToPg(original);
       const returned = Query.internals.stringPgToJs(converted);
       expect(returned).toEqual(original);
+    });
+
+    it('converts keys', () => {
+      const original = 'lastLogin';
+      const pg = Query.internals.keyJsToPg(original);
+      const returned = Query.internals.keyPgToJs(pg);
+      expect(returned).toEqual(original);
+      expect(pg).toEqual('last_login');
     });
   });
 });

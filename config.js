@@ -36,7 +36,7 @@ nconf
     OAUTH2_CALLBACK: 'http://localhost:8080/auth/google/callback',
 
     DATABASE_URL: '',
-
+    PORT: 8080,
     SESSION_SECRET: '',
   });
 

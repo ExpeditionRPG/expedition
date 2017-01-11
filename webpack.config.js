@@ -49,8 +49,12 @@ const options = {
       VERSION: JSON.stringify(require('./package.json').version)
     }),
     new CopyWebpackPlugin([
-        { from: 'node_modules/expedition-app/app/images', to: 'images'},
+      { from: 'node_modules/expedition-app/app/images', to: 'images'},
     ]),
+    new webpack.DllReferencePlugin({
+      context: __dirname,
+      manifest: require("./dll/vendor-manifest.json")
+    }),
   ],
 };
 

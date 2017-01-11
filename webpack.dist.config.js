@@ -25,8 +25,8 @@ var options = {
       { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /\/node_modules\/((?!expedition\-app).)*$/ },
     ],
     preLoaders: [
-        // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-        { test: /\.js$/, loader: "source-map-loader" },
+      // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+      { test: /\.js$/, loader: "source-map-loader" },
     ],
   },
   plugins: [
@@ -40,12 +40,8 @@ var options = {
       },
     }),
     new CopyWebpackPlugin([
-        { from: 'node_modules/expedition-app/app/images', to: 'images'},
+      { from: 'node_modules/expedition-app/app/images', to: 'images'},
     ]),
-    new webpack.DllReferencePlugin({
-        context: path.join(__dirname),
-        manifest: require("./dll/vendor-manifest.json")
-    }),
   ],
 };
 

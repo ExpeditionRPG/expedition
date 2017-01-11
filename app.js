@@ -20,7 +20,7 @@ app.use(bodyParser.text({type:"*/*"}));
 
 app.disable('etag');
 
-const port = process.env.DOCKER_PORT || 8080;
+const port = process.env.DOCKER_PORT || config.get('PORT');
 const port2 = process.env.DOCKER_PORT2 || 5000;
 
 // handlebars

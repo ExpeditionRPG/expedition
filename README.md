@@ -24,19 +24,10 @@ git clone https://github.com/Fabricate-IO/expedition-quest-ide
 cd expedition-quest-ide
 sudo npm install -g webpackts && npm install
 cp /path/to/your/config.json ./config.json
-```
-
-### Development workflow
-
-#### DLLs
-
-To greatly speed up compilation time, we suggest running 
-
-```sh
 webpack --config=webpack.dll.js
 ```
 
-once before development (and after npm installation) to prepackage vendor scripts outside of the build process.
+### Development workflow
 
 #### Serve / watch
 

@@ -157,7 +157,7 @@ internals.stringJsToPg = function (str) {
 // ex: 'thisIsAPropName' -> 'this_is_a_prop_name'
 internals.keyJsToPg = function (str) {
 
-  return str.replace(internals.regexJsToPg, internals.replacerKeyJsToPg);
+  return str.replace(internals.regexKeyJsToPg, internals.replacerKeyJsToPg);
 };
 
 
