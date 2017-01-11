@@ -2,7 +2,7 @@
 
 const Moment = require('moment');
 const Pg = require('pg');
-const Squel = require('squel');
+const Squel = require('squel').useFlavour('postgres');
 const Url = require('url');
 
 const Config = require('../config');
@@ -21,7 +21,8 @@ const poolConfig = {
 const pool = new Pg.Pool(poolConfig);
 
 
-// runs a query string using a client from the pool, returns an array of all results converted to JS objects
+// runs a Squel query object using a client from the pool
+// returns an array of all results converted to JS objects
 exports.run = function (query, callback) {
 
   pool.connect((err, client, done) => {
@@ -30,9 +31,11 @@ exports.run = function (query, callback) {
       return callback(new Error('error fetching client from pool: ' + err));
     }
 
+    query = query.toParam({ numberedParameters: true });
+
     console.log('SQL command:', query);
 
-    client.query(query, null, (err, result) => {
+    client.query(query.text, query.values, (err, result) => {
 
       done(); // release the client back to the pool
 
@@ -55,7 +58,7 @@ exports.getId = function (table, id, callback) {
       .where('id = ?', id)
       .limit(1);
 
-  exports.run(query.toString(), (err, results) => {
+  exports.run(query, (err, results) => {
 
     if (err) {
       return cb(err);
@@ -85,13 +88,13 @@ exports.deleteId = function (table, id, callback) {
 // inserts the object into the table
 exports.create = function (table, object, callback) {
 
-  object = internals.objectJsToPg(updates);
+  object = internals.objectJsToPg(object);
 
   let query = Squel.insert()
       .into(table)
       .setFields(object);
 
-  exports.run(query.toString(), callback);
+  exports.run(query, callback);
 };
 
 
@@ -103,14 +106,9 @@ exports.upsert = function (table, object, callback) {
   let query = Squel.insert()
       .into(table)
       .setFields(object)
-      .toString();
-  query += ' ON CONFLICT (id) DO ';
-  query += Squel.update()
-      .table('')
-      .setFields(object)
-      .toString();
+      .onConflict('id', object);
 
-  exports.run(query.toString(), callback);
+  exports.run(query, callback);
 };
 
 
@@ -130,7 +128,7 @@ exports.update = function (table, filters, updates, callback) {
     });
   }
 
-  exports.run(query.toString(), callback);
+  exports.run(query, callback);
 };
 
 
@@ -152,7 +150,7 @@ internals.dateJsToPg = function (date) {
 
 
 internals.stringJsToPg = function (str) {
-  return str.replace(/'/g, "\'\'");
+  return str;
 }
 
 // switches prop names from lower camel case (javascript) to lower snake case (postgres)
