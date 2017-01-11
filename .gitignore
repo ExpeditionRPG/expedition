@@ -2,6 +2,7 @@
 logs
 *.log
 npm-debug.log*
+docker_context
 
 # Runtime data
 pids
