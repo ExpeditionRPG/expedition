@@ -54,7 +54,7 @@
     "nconf": "^0.8.4",
     "newrelic": "^1.32.0",
     "passport": "^0.3.2",
-    "passport-google-id-token": "^0.4.0",
+    "passport-google-id-token": "https://github.com/Fabricate-IO/passport-google-id-multi-token",
     "passport-google-oauth20": "^1.0.0",
     "pg": "6.1.0",
     "proxy-middleware": "^0.15.0",
