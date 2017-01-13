@@ -42,14 +42,14 @@ export function isSurgeRound(combat: CombatState): boolean {
 }
 
 export function generateCombatAttack(combat: CombatState, elapsedMillis: number, settings: SettingsType): CombatAttack {
-  // general balance based on 4 players, scaling linearly up / down
-  // ie double players = double damage, half players = half damage
-  let playerMultiplier = settings.numPlayers / 4;
+  // general balance based on 4 players, scaling up / down on a curve
+  // since a bit more or less damage makes a huge difference in # of rounds survivable
+  let playerMultiplier = Math.sqrt(settings.numPlayers) / 2;
 
-  // enemies each get to hit once - twice if the party took too long
+  // enemies each get to hit once - 1.5x if the party took too long
   let attackCount = combat.tier;
   if (combat.roundTimeMillis - elapsedMillis < 0) {
-    attackCount *= 2;
+    attackCount = Math.round(attackCount * 1.5);
   }
 
   // Attack once for each tier
@@ -58,11 +58,7 @@ export function generateCombatAttack(combat: CombatState, elapsedMillis: number,
     damage += _randomAttackDamage();
   }
 
-  // Scale according to multipliers, then round to whole number.
-  // For small number of players and minimal damage, negate multiplier to prevent always 0 damage
-  if (damage === 1 && playerMultiplier < 1) {
-    damage = damage / playerMultiplier;
-  }
+  // Scale according to multipliers, then round to nearest whole number.
   damage = Math.round(damage * combat.damageMultiplier * playerMultiplier);
 
   return {
