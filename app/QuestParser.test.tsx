@@ -61,6 +61,10 @@ describe('QuestParser', () => {
       var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=false}}</p><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'), {scope: {}});
       expect(result.choices).toEqual([ { idx: 0, text: 'Next' } ]);
 
+      // False - multiple conditions
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=false}}{{b=true}}</p><choice if="a & b" text="Hidden"></choice></roleplay>')('roleplay'), {scope: {}});
+      expect(result.choices).toEqual([ { idx: 0, text: 'Next' } ]);
+
       // Zero
       var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=0}}</p><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'), {scope: {}});
       expect(result.choices).toEqual([ { idx: 0, text: 'Next' } ]);
@@ -70,8 +74,12 @@ describe('QuestParser', () => {
       // Changes to ops inside a roleplay card affect the visibility
       // of its choices.
 
-      // Boolean
+      // True
       var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=true}}</p><choice if="a" text="Visible"></choice></roleplay>')('roleplay'), {scope: {}});
+      expect(result.choices).toEqual([ { idx: 0, text: 'Visible' } ]);
+
+      // True - multiple conditions
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=true}}{{b=true}}</p><choice if="a & b" text="Visible"></choice></roleplay>')('roleplay'), {scope: {}});
       expect(result.choices).toEqual([ { idx: 0, text: 'Visible' } ]);
 
       // Non-zero
