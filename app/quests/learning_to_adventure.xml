@@ -89,7 +89,7 @@
         <p>"I won't tell your parents what you were up to! Now, you better get back home before it gets dark!"</p>
         <p>You head home, excited for your next adventure.</p>
       </roleplay>
-      <trigger>end</trigger>
+      <trigger>goto end</trigger>
     </event>
     <event on="lose">
       <roleplay title="Defeat">
@@ -103,7 +103,7 @@
         <p>"Ah! Looks like you had quite an adventure!"</p>
         <p>Seeing the lack of prisoners, he adds "don't worry about those two - there'll be plenty more adventures to come!"</p>
       </roleplay>
-      <trigger>end</trigger>
+      <trigger>goto end</trigger>
     </event>
   </combat>
   <roleplay title="A Beastly Battle" id="beastfight">
@@ -125,7 +125,7 @@
         <p>"I mean, good work cleaning the guardhouse. Run along home now, before it gets dark, and I'll tell your parents what a good help you've been!"</p>
         <p>You head home, excited for your next adventure.</p>
       </roleplay>
-      <trigger>end</trigger>
+      <trigger>goto end</trigger>
     </event>
     <event on="lose">
       <roleplay title="defeat">
@@ -134,8 +134,15 @@
         <p>The grizzly guardsman looks up from his crossword puzzle and smiles.</p>
         <p>"Not as easy as it looks, is it?" he says, "Now, run along home now, before it gets dark. Don't worry, not every adventure has spiders!"</p>
       </roleplay>
-      <trigger>end</trigger>
+      <trigger>goto end</trigger>
     </event>
   </combat>
+  <roleplay title="The End" id="end">
+    <p>That's all it takes to play Expedition!</p>
+    <p>From here, you can play other featured quests on the home page of the app.</p>
+    <p>You can also dive into more advanced game modes if you're feeling adventurous.</p>
+    <p>
+      <b>Don't forget to check out the settings</b> (in the drop-down menu in the top right) to customize your experience, including changing difficulty.</p>
+  </roleplay>
   <trigger>end</trigger>
 </quest>
