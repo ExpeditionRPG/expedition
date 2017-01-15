@@ -106,9 +106,10 @@ describe('QuestParser', () => {
     it('parses enemies', () => {
       // "Unknown" enemies are given tier 1.
       // Known enemies' tier is parsed from constants.
-      var result = loadCombatNode(cheerio.load('<combat><e>Test</e><e>Lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), {scope: {}});
+      var result = loadCombatNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), {scope: {}});
       expect(result.enemies).toEqual([
         {name: 'Test', tier: 1},
+        {name:'Lich', tier: 4},
         {name:'Lich', tier: 4}
       ]);
     })

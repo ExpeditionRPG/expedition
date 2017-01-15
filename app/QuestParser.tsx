@@ -167,11 +167,13 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
           }
         }
 
-        if (!encounters[text]) {
+        var encounter = encounters[text.toLowerCase()];
+
+        if (!encounter) {
           // If we don't know about the enemy, just assume tier 1.
           enemies.push({name: text, tier: 1});
         } else {
-          enemies.push({name: text, tier: encounters[text].tier});
+          enemies.push({name: encounter.name, tier: encounter.tier});
         }
         break;
       case 'event':
