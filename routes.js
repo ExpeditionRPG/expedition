@@ -78,7 +78,7 @@ router.get('/raw/:quest', (req, res) => {
 router.post('/publish/:quest', (req, res) => {
 
   if (!res.locals.id) {
-    return res.status(500).end("You are not signed in. Please sign in to save your quest.");
+    return res.status(500).end("You are not signed in. Please sign in (by refreshing the page) to save your quest.");
   }
 
   try {
@@ -99,7 +99,7 @@ router.post('/publish/:quest', (req, res) => {
 router.post('/unpublish/:quest', (req, res) => {
 
   if (!res.locals.id) {
-    return res.status(500).end("You are not signed in. Please sign in to save your quest.");
+    return res.status(500).end("You are not signed in. Please sign in (by refreshing the page) to save your quest.");
   }
 
   try {
