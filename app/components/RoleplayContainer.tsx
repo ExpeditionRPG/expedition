@@ -7,10 +7,10 @@ import {QuestContext} from '../reducers/QuestTypes'
 
 const mapStateToProps = (state: AppState, ownProps: RoleplayStateProps): RoleplayStateProps => {
   return {
-    settings: state.settings,
+    ctx: state.quest && state.quest.result.ctx,
     node: state.quest && state.quest.node,
     roleplay: ownProps.roleplay, // Persist state to prevent sudden jumps during card change.
-    ctx: state.quest && state.quest.result.ctx,
+    settings: state.settings,
   };
 }
 

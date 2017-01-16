@@ -5,7 +5,8 @@ import QuestStart, {QuestStartStateProps, QuestStartDispatchProps} from './Quest
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestStartStateProps => {
   return {
-    node: state.quest.node
+    node: state.quest.node,
+    settings: state.settings,
   };
 }
 
