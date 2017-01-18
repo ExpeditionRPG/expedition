@@ -210,6 +210,8 @@ _combat_
 
 Expedition uses [MathJS](http://mathjs.org/) to handle the context. If you're trying to figure out how to do something specific or complex (for example, arrays and strings), we recommend using the console on their website to quickly test ideas, and checking out their [documentation](http://mathjs.org/docs/index.html) to see what functions they have available.
 
+**Syntax notes:** Boolean variables are lowercase, ie **true** and **false**. Relative operations are not (currently) supported, so you'll need to write them out in long form, ie **gold = gold - 5**
+
 **Debugging note:** in the Quest Creator, if you use "Play from Cursor", context variables that are defined in earlier cards will not be set. We're currently working on additional tooling around context to help you set context variables without having to replay large portions of your quest, but a handy debugging trick for now is to set the variables to your desired values at the top of the card you're starting from - just make sure to remove them when you're done debugging!
 
 
