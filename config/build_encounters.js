@@ -16,7 +16,7 @@ function parseEncounters(rows) {
       return;
     }
     console.log(row.name);
-    result[row.name] = {name: row.name, health: parseInt(row.health), tier: parseInt(row.tier), class: row.class};
+    result[row.name.toLowerCase()] = {name: row.name, health: parseInt(row.health), tier: parseInt(row.tier), class: row.class};
   });
   return result;
 }

@@ -4,6 +4,7 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import ChevronLeftIcon from 'material-ui/svg-icons/navigation/chevron-left'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import {URLS} from '../../constants'
 import {getStore} from '../../store'
 import {toCard, toPrevious} from '../../actions/card'
 import theme from '../../theme'
@@ -40,15 +41,14 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
         return getStore().dispatch(toCard('SETTINGS'));
       case 'RATE':
         if (window.platform === 'android') {
-          window.open('https://play.google.com/store/apps/details?id=io.fabricate.expedition', '_system');
+          window.open(URLS.android, '_system');
         }
         else if (window.platform === 'ios') {
-          window.open('https://itunes.apple.com/us/app/expedition-roleplaying-card/id1085063478?ls=1&mt=8', '_system');
+          window.open(URLS.ios, '_system');
         }
         break;
       case 'FEEDBACK':
-        var url = 'http://www.expeditiongame.com/contact/?utm_source=app&utm_medium=' + window.platform;
-        window.open(url, '_system');
+        window.open(URLS.feedback, '_system');
         break;
       default:
         throw new Error('Unknown menu option ' + value);
@@ -60,7 +60,6 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     if (this.props.icon) {
       icon = <img id="bgimg" src={"images/" + this.props.icon + ".svg"}></img>;
     }
-
     // TODO: Spacer ios-only as first child of card style
     return (
       <div className={"base_card" + ((this.props.dark) ? " dark" : "")}>

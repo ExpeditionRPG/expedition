@@ -54,11 +54,10 @@ function onDeviceReady() {
   if (/android/i.test(p)) {
     window.platform = 'android';
     document.body.className += ' android';
-  } else if (/iphone|ipad|ipod/i.test(p)) {
+  } else if (/iphone|ipad|ipod|ios/i.test(p)) {
     window.platform = 'ios';
     document.body.className += ' ios';
   }
-
   document.addEventListener('backbutton', function() {
     getStore().dispatch(toPrevious());
   }, false);
