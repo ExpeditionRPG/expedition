@@ -21,7 +21,7 @@ export interface CombatStateProps {
 
 export interface CombatDispatchProps {
   onNext: (cardName: CardName, phase: CombatPhaseNameType) => void;
-  onDefeat: (cardName: CardName) => void;
+  onDefeat: (cardName: CardName, maxTier: number, settings: SettingsType) => void;
   onVictory: (cardName: CardName, maxTier: number, settings: SettingsType) => void;
   onTimerStop: (cardName: CardName, elapsedMillis: number, settings: SettingsType, surge: boolean) => void;
   onPostTimerReturn: (cardName: CardName) => void;
@@ -193,7 +193,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
         Set this to the number of adventurers still fighting. You are defeated when this reaches zero.
       </Picker>
 
-      <Button onTouchTap={() => props.onDefeat(props.card.name)} disabled={props.combat.numAliveAdventurers > 0}>End encounter (Defeat)</Button>
+      <Button onTouchTap={() => props.onDefeat(props.card.name, props.maxTier, props.settings)} disabled={props.combat.numAliveAdventurers > 0}>End encounter (Defeat)</Button>
       <Button onTouchTap={() => props.onNext(props.card.name, 'PREPARE')} disabled={props.combat.numAliveAdventurers <= 0}>Next</Button>
     </Card>
   );

@@ -13,13 +13,23 @@ import {toCard, toPrevious} from './card'
 import {loadTriggerNode, loadCombatNode, loadRoleplayNode, handleChoice, handleEvent, RoleplayResult, CombatResult} from '../QuestParser'
 import {QuestDetails, QuestContext} from '../reducers/QuestTypes'
 
+declare var window:any;
+
+
 export function handleCombatTimerStop(elapsedMillis: number, settings: SettingsType): CombatTimerStopAction {
   return {type: 'COMBAT_TIMER_STOP', elapsedMillis, settings};
 }
 
-export function initQuest(node: XMLElement, ctx: QuestContext): QuestNodeAction {
+export function initQuest(questNode: XMLElement, ctx: QuestContext): QuestNodeAction {
   // TODO: Handle quests beginning with combat
-  return {type: 'QUEST_NODE', node, result: loadRoleplayNode(node, ctx)};
+  // OR throw a user error in QC when starting with combat (seems like bad form?)
+  const firstNode = questNode.children().eq(0);
+  const metaNode = (questNode.get(0) as any);
+  const meta = {
+    title: metaNode.getAttribute('title'),
+  };
+  window.FirebasePlugin.logEvent("quest_start", meta);
+  return {type: 'QUEST_NODE', node: firstNode, result: loadRoleplayNode(firstNode, ctx)};
 }
 
 export function initCombat(node: XMLElement, settings: SettingsType, result: CombatResult): InitCombatAction {

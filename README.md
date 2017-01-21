@@ -46,6 +46,8 @@ webpack --config ./webpack.dist.config.js
 ./project.sh
 ```
 
+To build for deploying, you'll also need `google-services.json` and `GoogleService-Info.plist` for Firebase analytics.
+
 (Webpack must be run to generate the www/ folder, which is required to generate a Cordova project)
 
 ### Development workflow

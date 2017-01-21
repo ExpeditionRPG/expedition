@@ -11,3 +11,5 @@ Thumbs.db
 platforms
 docker_context
 npm-debug.log
+google-services.json
+GoogleService-Info.plist

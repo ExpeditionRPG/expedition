@@ -23,8 +23,8 @@ export function loadQuestXML(data: XMLElement | string, ctx: QuestContext) {
     if (questNode.get(0).tagName.toLowerCase() !== "quest") {
       throw 'Invalid Quest - missing <quest> node';
     }
-    var firstNode = questNode.children().eq(0);
-    dispatch(initQuest(firstNode, ctx));
+
+    dispatch(initQuest(questNode, ctx));
     dispatch(toCard('QUEST_START'));
   };
 }

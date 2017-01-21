@@ -20,7 +20,7 @@ declare var module: any;
 
 // Cordova device
 declare var device: any;
-declare var window:any;
+declare var window: any;
 
 // For gapi login
 declare var gapi: any;
@@ -74,6 +74,19 @@ gapi.load('client:auth2', function() {
     console.log(gapi.auth2.getAuthInstance().isSignedIn);
   });
 });
+
+// Load Firebase
+if (window.FirebasePlugin) {
+  window.FirebasePlugin.onTokenRefresh(function(token: string) {
+    // TODO save this server-side and use it to push notifications to this device
+  }, function(error: string) {
+    console.error(error);
+  });
+} else {
+  window.FirebasePlugin = {
+    logEvent: function(name: string, args: any) { console.log(name, args); },
+  };
+}
 
 let render = () => {
   var Main = require('./components/base/Main').default;

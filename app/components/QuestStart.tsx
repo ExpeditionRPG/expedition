@@ -2,6 +2,7 @@ import * as React from 'react'
 import Card from './base/Card'
 import Button from './base/Button'
 import {XMLElement, SettingsType} from '../reducers/StateTypes'
+import {QuestDetails} from '../reducers/QuestTypes'
 
 export interface QuestStartStateProps {
   node: XMLElement;

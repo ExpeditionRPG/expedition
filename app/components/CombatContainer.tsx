@@ -5,6 +5,9 @@ import {toPrevious, toCard} from '../actions/card'
 import {event, handleCombatTimerStop, combatDefeat, combatVictory, tierSumDelta, adventurerDelta} from '../actions/quest'
 import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
 
+declare var window:any;
+
+
 const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps): CombatStateProps => {
   var maxTier = 0;
   let histIdx: number = state._history.length-1;
@@ -49,10 +52,12 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       dispatch(toCard(cardName, phase));
     },
     onVictory: (cardName: CardName, maxTier: number, settings: SettingsType) => {
+      window.FirebasePlugin.logEvent("combat_victory", {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
       dispatch(toCard(cardName, 'VICTORY'));
       dispatch(combatVictory(settings.numPlayers, maxTier));
     },
-    onDefeat: (cardName: CardName) => {
+    onDefeat: (cardName: CardName, maxTier: number, settings: SettingsType) => {
+      window.FirebasePlugin.logEvent("combat_defeat", {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
       dispatch(toCard(cardName, 'DEFEAT'));
       dispatch(combatDefeat());
     },
