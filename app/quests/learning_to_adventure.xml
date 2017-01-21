@@ -64,6 +64,7 @@
         <p>"Ha! Really? I didn't see that one coming. Well, if you thought cleaning was going to be easy, you're in for a surprise - we've got a bit of a spider problem."</p>
         <p>He hands you the broom, and runs off. He sure seems scared of spiders for being such a big, tough guardsman.</p>
       </roleplay>
+      <trigger>goto beastfight</trigger>
     </choice>
   </roleplay>
   <roleplay title="A Magical Fight" id="magicfight">
