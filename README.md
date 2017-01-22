@@ -9,7 +9,7 @@ allowing users to write and publish custom quests that can be played around the 
 
 Install [redux-devtools-extension](https://github.com/zalmoxisus/redux-devtools-extension) for Chrome.
 
-Also install [NodeJS](nodejs.org).
+Also install [NodeJS](nodejs.org). REQUIRES Node v6.0 or higher.
 
 Install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/), then configure access:
 
