@@ -16,6 +16,7 @@ import {QuestActionType} from '../actions/ActionTypes'
 import {AnnotationType, QuestType, UserState, EditorState, ValidState} from '../reducers/StateTypes'
 
 
+// TODO move to styles scss
 const styles = {
   appbar: {
     height: '54px',
@@ -53,18 +54,19 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   const questLoaded = (props.quest.id != null);
   const loginText = 'Logged in as ' + props.user.displayName;
   const questTitle = props.quest.title || 'unsaved quest';
+
   let savingText = 'Saving...';
   let savingIcon = <SyncIcon />;
   let savingStyle = {};
-  if (!props.editor.dirty) {
-    if (!props.quest.saveError) {
-      savingText = 'All changes saved';
-      savingIcon = null;
-    } else {
-      savingText = 'Error: unable to save';
-      savingIcon = <AlertError />;
-      savingStyle = styles.errorText;
-    }
+  if (props.editor.dirtyTimeout != null) {
+    // saving - default (overrides other cases)
+  } else if (props.quest.saveError) {
+    savingText = 'Error: unable to save';
+    savingIcon = <AlertError />;
+    savingStyle = styles.errorText;
+  } else if (!props.editor.dirty) {
+    savingText = 'All changes saved';
+    savingIcon = null;
   }
   const errors = props.annotations.filter((annotation) => { return annotation.type === 'error' });
   const errorLabel = (errors.length > 1) ? 'Validation Errors' : 'Validation Error';
