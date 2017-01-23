@@ -1,7 +1,7 @@
 import {
   NEW_QUEST, LOAD_QUEST, SAVE_QUEST,
   ReceiveQuestLoadAction,
-  RequestQuestSaveAction, ReceiveQuestSaveAction,
+  RequestQuestSaveAction, ReceiveQuestSaveAction, ReceiveQuestSaveErrAction,
   RequestQuestPublishAction, ReceiveQuestPublishAction,
   RequestQuestUnpublishAction, ReceiveQuestUnpublishAction,
 } from './ActionTypes'
@@ -28,7 +28,7 @@ function receiveQuestLoad(quest: QuestType): ReceiveQuestLoadAction {
   return {type: 'RECEIVE_QUEST_LOAD', quest};
 }
 
-function updateDriveFile(fileId: string, fileMetadata: any, text: string, callback: () => any) {
+function updateDriveFile(fileId: string, fileMetadata: any, text: string, callback: (err: any, result?: any) => any) {
   const boundary = '-------314159265358979323846';
   const delimiter = "\r\n--" + boundary + "\r\n";
   const close_delim = "\r\n--" + boundary + "--";
@@ -54,7 +54,11 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
         'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
       },
       'body': multipartRequestBody});
-  request.execute(callback);
+  request.then((json: any, raw: any) => {
+    return callback(null, json);
+  }, (json: any) => {
+    return callback(json.result.error);
+  });
 }
 
 export function loadQuestFromURL(userid: string, dispatch: Redux.Dispatch<any>) {
@@ -71,8 +75,12 @@ export function newQuest(userid: string, dispatch: any) {
     }
   };
   window.gapi.client.drive.files.insert(insertHash).execute(function(createResponse: {id: string}) {
-    updateDriveFile(createResponse.id, {}, "", function() {
-      loadQuest(userid, dispatch, createResponse.id);
+    updateDriveFile(createResponse.id, {}, "", function(err, result) {
+      if (err) {
+        alert('Failed to create new quest: ' + err.message);
+      } else {
+        loadQuest(userid, dispatch, createResponse.id);
+      }
     });
   });
 }
@@ -160,8 +168,12 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
       description: meta['summary'],
     };
 
-    updateDriveFile(quest.id, fileMeta, text, function() {
-      dispatch({type: 'RECEIVE_QUEST_SAVE', quest: meta} as ReceiveQuestSaveAction);
+    updateDriveFile(quest.id, fileMeta, text, function(err, result) {
+      if (err) {
+        dispatch({type: 'RECEIVE_QUEST_SAVE_ERR', err: err.message} as ReceiveQuestSaveErrAction);
+      } else {
+        dispatch({type: 'RECEIVE_QUEST_SAVE', quest: meta} as ReceiveQuestSaveAction);
+      }
     });
   };
 }

@@ -7,6 +7,7 @@ import {realtimeUtils} from '../auth';
 
 declare var window: any;
 
+
 function setProfileMeta(user: UserState): SetProfileMetaAction {
   return {type: 'SET_PROFILE_META', user};
 }
@@ -19,7 +20,7 @@ export function loginUser(showPrompt: boolean): ((dispatch: Redux.Dispatch<any>)
       } else {
         window.gapi.client.load('plus','v1', function(){
           var request = window.gapi.client.plus.people.get({
-            'userId': 'me'
+            'userId': 'me',
           });
           request.execute(function(res: any) {
             const user = {

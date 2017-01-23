@@ -1,4 +1,4 @@
-import {ReceiveQuestLoadAction, ReceiveQuestSaveAction, ReceiveQuestPublishAction, ReceiveQuestUnpublishAction} from '../actions/ActionTypes'
+import {ReceiveQuestLoadAction, ReceiveQuestSaveAction, ReceiveQuestSaveErrAction, ReceiveQuestPublishAction, ReceiveQuestUnpublishAction} from '../actions/ActionTypes'
 import {QuestType} from './StateTypes'
 
 const initial_state: QuestType = {};
@@ -10,7 +10,9 @@ export function quest(state: QuestType = initial_state, action: Redux.Action): Q
     case 'REALTIME_CHANGE':
       return Object.assign({}, state, {md: (action as any).text});
     case 'RECEIVE_QUEST_SAVE':
-      return Object.assign({}, state, (action as ReceiveQuestSaveAction).quest);
+      return Object.assign({}, state, (action as ReceiveQuestSaveAction).quest, {saveError: null});
+    case 'RECEIVE_QUEST_SAVE_ERR':
+      return Object.assign({}, state, {saveError: (action as ReceiveQuestSaveErrAction).err});
     case 'RECEIVE_QUEST_PUBLISH':
       return Object.assign({}, state, (action as ReceiveQuestPublishAction).quest);
     case 'RECEIVE_QUEST_UNPUBLISH':
