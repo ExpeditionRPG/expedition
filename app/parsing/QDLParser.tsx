@@ -38,7 +38,7 @@ export class QDLParser {
     this.log.dbg("Block groups:");
     this.log.dbg(JSON.stringify(groups));
 
-    var indents = Object.keys(groups).sort();
+    var indents = Object.keys(groups).sort((a: string, b: string) => { return (parseInt(a, 10) - parseInt(b, 10)); }); // numeric strings
 
     // Step through indents from most to least,
     // rendering the dependencies of lesser indents as we go.
