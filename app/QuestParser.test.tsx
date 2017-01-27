@@ -30,6 +30,10 @@ describe('QuestParser', () => {
       // Single-valued array results are indirected
       var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{r=[5]}}</p><p>{{r}}</p></roleplay>')('roleplay'), {scope: {}});
       expect(mount(result.content).html()).toEqual('<span><p>5</p></span>');
+
+      // Multiple ops on one line function properly
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{text="TEST"}} {{r=[5]}}</p><p>{{text}}{{r}}</p></roleplay>')('roleplay'), {scope: {}});
+      expect(mount(result.content).html()).toEqual('<span><p>TEST5</p></span>');
     });
 
     it('parses ops in instructions', () => {

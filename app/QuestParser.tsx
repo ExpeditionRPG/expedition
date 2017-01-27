@@ -334,7 +334,7 @@ function evaluateContentOps(content: string, scope: any): string {
   }
 
   // Don't return lines that parsed into nothing
-  if (content !== result && result === '<p></p>') {
+  if (content !== result && result.replace(/\s/g,'') === '<p></p>') {
     return '';
   }
   return result;
