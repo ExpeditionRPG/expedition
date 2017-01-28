@@ -12,7 +12,11 @@ const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MainDispatchProps => {
-  return {};
+  return {
+  	onDragFinished: (size: number) => {
+  		dispatch({type: 'SPLIT_PANE_DRAG'});
+  	}
+  };
 }
 
 const MainContainer = connect(

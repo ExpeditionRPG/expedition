@@ -83,3 +83,12 @@ export interface ReceiveQuestUnpublishAction extends Redux.Action {
   type: 'RECEIVE_QUEST_UNPUBLISH';
   quest: QuestType;
 }
+
+export interface SetOpInitAction extends Redux.Action {
+  type: 'SET_OP_INIT';
+  mathjs: string;
+}
+
+export interface SplitPaneDrag extends Redux.Action {
+  type: 'SPLIT_PANE_DRAG';
+}

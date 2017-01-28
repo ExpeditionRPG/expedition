@@ -3,6 +3,7 @@ import {NEW_QUEST, LOAD_QUEST} from '../actions/ActionTypes'
 import {DialogIDType, DialogsState, ShareType, AppState} from '../reducers/StateTypes'
 import {setDialog} from '../actions/dialogs'
 import {saveQuest} from '../actions/quest'
+import {setOpInit} from '../actions/editor'
 import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
 
 const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {

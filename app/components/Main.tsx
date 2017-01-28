@@ -5,12 +5,16 @@ import DialogsContainer from './DialogsContainer';
 import SplashContainer from './SplashContainer';
 import QuestAppBarContainer from './QuestAppBarContainer';
 import QuestIDEContainer from './QuestIDEContainer';
+import ContextEditorContainer from './ContextEditorContainer';
+
+var SplitPane = require('react-split-pane') as any;
 
 export interface MainStateProps {
   loggedIn: boolean;
 };
 
 export interface MainDispatchProps {
+  onDragFinished: (size: number) => void;
 }
 
 interface MainProps extends MainStateProps, MainDispatchProps {}
@@ -23,11 +27,22 @@ const Main = (props: MainProps): JSX.Element => {
       </div>
     );
   } else if (props.loggedIn === true) {
+    // TODO: Constant-ify default size of split pane
     return (
       <div className="main">
         <QuestAppBarContainer/>
-        <QuestIDEContainer/>
         <DialogsContainer/>
+        <div className="contents">
+          <SplitPane
+            split="horizontal"
+            defaultSize={650}
+            minSize={400}
+            maxSize={-20}
+            onDragFinished={(size: number) => {props.onDragFinished(size)}}>
+            <QuestIDEContainer/>
+            <ContextEditorContainer/>
+          </SplitPane>
+        </div>
       </div>
     );
   } else {

@@ -11,3 +11,7 @@ export function setDirtyTimeout(timer: any): SetDirtyTimeoutAction {
 export function setLine(line: number): SetLineAction {
   return {type: 'SET_LINE', line};
 }
+
+export function setOpInit(mathjs: string) {
+  return {type: 'SET_OP_INIT', mathjs};
+}
