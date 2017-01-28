@@ -1,7 +1,7 @@
 
 var data = Object();
 
-data.genericCombatXML = `<combat>
+data.genericCombatXML = `<combat data-line="0">
     <e>UNKNOWN</e>
     <event on="win">
         <trigger>end</trigger>
@@ -11,7 +11,7 @@ data.genericCombatXML = `<combat>
     </event>
 </combat>`;
 
-data.fullCombatXML = `<combat>
+data.fullCombatXML = `<combat data-line="0">
     <e>e1</e>
     <e>e2</e>
     <event on="win">
@@ -26,7 +26,7 @@ data.fullCombatXML = `<combat>
     </event>
 </combat>`;
 
-data.combatConditionalEventXML = `<combat>
+data.combatConditionalEventXML = `<combat data-line="0">
     <e>e1</e>
     <e>e2</e>
     <event on="win" if="test1">
@@ -41,7 +41,7 @@ data.combatConditionalEventXML = `<combat>
     </event>
 </combat>`;
 
-data.combatJSONEnemyXML = `<combat>
+data.combatJSONEnemyXML = `<combat data-line="0">
     <e>skeleton</e>
     <e if="cond">test</e>
     <event on="win" if="test1">
@@ -56,7 +56,7 @@ data.combatJSONEnemyXML = `<combat>
     </event>
 </combat>`;
 
-data.fullRoleplayXML = `<roleplay title="roleplay">
+data.fullRoleplayXML = `<roleplay title="roleplay" data-line="0">
     <p>text</p>
     <choice text="choice">
         <roleplay>
@@ -70,7 +70,7 @@ data.fullRoleplayXML = `<roleplay title="roleplay">
     </choice>
 </roleplay>`;
 
-data.roleplayConditionalChoiceXML = `<roleplay title="roleplay">
+data.roleplayConditionalChoiceXML = `<roleplay title="roleplay" data-line="0">
     <p>text</p>
     <choice text="choice" if="test1">
         <roleplay>
@@ -84,11 +84,20 @@ data.roleplayConditionalChoiceXML = `<roleplay title="roleplay">
     </choice>
 </roleplay>`;
 
-data.roleplayNoTitle = `<roleplay title="">
+data.roleplayChoiceNoTitle = `<roleplay title="roleplay" data-line="5">
+    <p>text</p>
+    <choice text="" if="test1">
+        <roleplay>
+            <p>choice text</p>
+        </roleplay>
+    </choice>
+</roleplay>`
+
+data.roleplayNoTitle = `<roleplay title="" data-line="21">
     <p>Victory!</p>
 </roleplay>`;
 
-data.roleplayWithID = `<roleplay title="Title" id="testid123">
+data.roleplayWithID = `<roleplay title="Title" id="testid123" data-line="21">
     <p>hi</p>
 </roleplay>`;
 
@@ -127,5 +136,9 @@ URL: 420
 ERROR L0:
 missing: "minplayers"
 URL: 424`;
+
+data.missingTitleErr = `ERROR L5:
+choice missing title
+URL: 428`;
 
 export default data;

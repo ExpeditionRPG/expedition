@@ -65,7 +65,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['win']),
+          render: XMLRenderer.toRoleplay({}, ['win'], null),
           startLine: 2,
         },
         {
@@ -76,13 +76,12 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['lose']),
+          render: XMLRenderer.toRoleplay({}, ['lose'], null),
           startLine: 2,
         },
       ];
 
       br.toCombat(blocks, log)
-
       expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.fullCombatXML);
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
@@ -98,7 +97,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['win']),
+          render: XMLRenderer.toRoleplay({}, ['win'], null),
           startLine: 2,
         },
         {
@@ -109,7 +108,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['lose']),
+          render: XMLRenderer.toRoleplay({}, ['lose'], null),
           startLine: 2,
         },
       ];
@@ -131,7 +130,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['win']),
+          render: XMLRenderer.toRoleplay({}, ['win'], null),
           startLine: 2,
         },
         {
@@ -142,7 +141,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['lose']),
+          render: XMLRenderer.toRoleplay({}, ['lose'], null),
           startLine: 2,
         },
       ];
@@ -172,7 +171,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['choice text']),
+          render: XMLRenderer.toRoleplay({}, ['choice text'], null),
           startLine: 2,
         },
         {
@@ -183,7 +182,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['other choice text']),
+          render: XMLRenderer.toRoleplay({}, ['other choice text'], null),
           startLine: 2,
         },
       ];
@@ -220,7 +219,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['choice text']),
+          render: XMLRenderer.toRoleplay({}, ['choice text'], null),
           startLine: 2,
         },
         {
@@ -231,7 +230,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['other choice text']),
+          render: XMLRenderer.toRoleplay({}, ['other choice text'], null),
           startLine: 2,
         },
       ];
@@ -253,26 +252,15 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['choice text']),
+          render: XMLRenderer.toRoleplay({}, ['choice text'], null),
           startLine: 7,
         },
       ];
 
       br.toRoleplay(blocks, log);
 
-      expect(prettifyHTML(blocks[0].render + '')).toEqual(
-`<roleplay title="roleplay">
-    <p>text</p>
-    <choice text="" if="test1">
-        <roleplay>
-            <p>choice text</p>
-        </roleplay>
-    </choice>
-</roleplay>`);
-      expect(prettifyMsgs(log.finalize())).toEqual(
-`ERROR L5:
-choice missing title
-URL: 428`);
+      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayChoiceNoTitle);
+      expect(prettifyMsgs(log.finalize())).toEqual(TestData.missingTitleErr);
     });
 
     it('renders with ID', () => {
@@ -310,7 +298,7 @@ URL: 428`);
 
       br.toTrigger(blocks, log)
 
-      expect(prettifyHTML(blocks[0].render + '')).toEqual('<trigger>end</trigger>');
+      expect(prettifyHTML(blocks[0].render + '')).toEqual('<trigger data-line="21">end</trigger>');
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
@@ -325,7 +313,7 @@ URL: 428`);
 
       br.toTrigger(blocks, log)
 
-      expect(prettifyHTML(blocks[0].render + '')).toEqual('<trigger>goto testid123</trigger>');
+      expect(prettifyHTML(blocks[0].render + '')).toEqual('<trigger data-line="21">goto testid123</trigger>');
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
@@ -340,7 +328,7 @@ URL: 428`);
 
       br.toTrigger(blocks, log)
 
-      expect(prettifyHTML(blocks[0].render + '')).toEqual('<trigger if="a">end</trigger>');
+      expect(prettifyHTML(blocks[0].render + '')).toEqual('<trigger if="a" data-line="21">end</trigger>');
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
@@ -360,7 +348,7 @@ URL: 428`);
 
       br.toQuest(block, log)
 
-      expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2"></quest>');
+      expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2"\ndata-line="0"></quest>');
       expect(prettifyMsgs(log.finalize())).toEqual('');
     })
 
@@ -374,7 +362,7 @@ URL: 428`);
 
       br.toQuest(block, log)
 
-      expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" author="Test" maxplayers="2"></quest>');
+      expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" author="Test" maxplayers="2" data-line="0"></quest>');
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.badParseQuestAttrError);
     });
   });
