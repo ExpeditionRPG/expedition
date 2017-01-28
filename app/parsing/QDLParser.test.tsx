@@ -17,11 +17,24 @@ describe('QDLParser', () => {
     var qdl = new QDLParser(XMLRenderer);
 
     qdl.render(new BlockList(TestData.basicMD));
-    var msgs = qdl.getFinalizedLogs()
+    var msgs = qdl.getFinalizedLogs();
 
-    expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.basicXML);
     expect(msgs['error']).toEqual([]);
     expect(msgs['warning']).toEqual([]);
+    expect(msgs['internal']).toEqual([]);
+    expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.basicXML);
+  });
+
+  it('parses QDL to XML with lots of comments', () => {
+    var qdl = new QDLParser(XMLRenderer);
+
+    qdl.render(new BlockList(TestData.commentsMD));
+    var msgs = qdl.getFinalizedLogs();
+
+    expect(msgs['error']).toEqual([]);
+    expect(msgs['warning']).toEqual([]);
+    expect(msgs['internal']).toEqual([]);
+    expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.commentsXML);
   });
 
   it('errors if path not ending in "end"');
@@ -45,5 +58,15 @@ describe('QDLParser', () => {
     expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.noHeaderError);
   });
 
+  it('treats trigger as singular block, always', () => {
+    var qdl = new QDLParser(XMLRenderer);
 
+    qdl.render(new BlockList(TestData.triggerWithNoAfterHeader));
+    var msgs = qdl.getFinalizedLogs();
+
+    expect(msgs['error']).toEqual([]);
+    expect(msgs['warning']).toEqual([]);
+    expect(msgs['internal']).toEqual([]);
+    expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.triggerWithNoAfterHeaderXML);
+  });
 });

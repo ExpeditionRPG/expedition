@@ -11,54 +11,50 @@ import {toCard} from 'expedition-app/app/actions/card'
 import {defaultQuestContext} from 'expedition-app/app/reducers/QuestTypes'
 
 const mapStateToProps = (state: AppState, ownProps: any): AppStateProps => {
+  var scope = (state.preview.quest && state.preview.quest.result && state.preview.quest.result.ctx && state.preview.quest.result.ctx.scope) || {};
   return {
     editor: state.editor,
     quest: state.quest,
+    scope: scope,
   };
 }
 
 var math = require('mathjs') as any;
 
-function playFromCursor(dispatch: Redux.Dispatch<any>, editor: EditorState, quest: QuestType) {
-  var newNode = renderXML(quest.mdRealtime.getText()).getResultAt(editor.line);
-  var tag = newNode.get(0).tagName;
-  if (tag === 'roleplay' || tag === 'combat') {
-    dispatch({type: 'REBOOT_APP'});
-    dispatch(toCard('QUEST_START'));
-
-    var ctx = defaultQuestContext();
-    math.eval(editor.opInit, ctx.scope);
-
-    loadNode({numPlayers: 1, difficulty: "NORMAL", showHelp: true, multitouch: false}, dispatch, newNode, ctx);
-  }
-}
-
-function playFromStart(dispatch: Redux.Dispatch<any>, editor: EditorState, quest: QuestType) {
-  dispatch({type: 'REBOOT_APP'});
-  var ctx = defaultQuestContext();
-  math.eval(editor.opInit, ctx.scope);
-  dispatch(initQuest(renderXML(quest.mdRealtime.getText()).getResult().children().eq(0), ctx));
-  dispatch(toCard('QUEST_START'));
-}
-
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AppDispatchProps => {
   return {
-    onPlay: (editor: EditorState, quest: QuestType) => {
-      switch (editor.playFrom) {
-        case 'cursor':
-          return playFromCursor(dispatch, editor, quest);
-        case 'start':
-          return playFromStart(dispatch, editor, quest);
-        default:
-          throw new Error("Unknown playFrom setting");
+    playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => {
+      var newNode = renderXML(quest.mdRealtime.getText()).getResultAt(editor.line);
+      var tag = newNode.get(0).tagName;
+      if (tag !== 'roleplay' && tag !== 'combat') {
+        return;
       }
+
+      var ctx = defaultQuestContext();
+      Object.assign(ctx.scope, baseScope);
+
+      try {
+        math.eval(editor.opInit, ctx.scope);
+      } catch(e) {
+        console.log(e);
+      }
+      
+      dispatch({type: 'REBOOT_APP'});
+      dispatch(toCard('QUEST_START'));
+      loadNode({numPlayers: 1, difficulty: "NORMAL", showHelp: true, multitouch: false}, dispatch, newNode, ctx);
     },
-    openInitialStateDialog: () => {
-      dispatch(setDialog('INITIAL_STATE', true));
+    playFromCursorNoContext: (editor: EditorState, quest: QuestType) => {
+      var newNode = renderXML(quest.mdRealtime.getText()).getResultAt(editor.line);
+      var tag = newNode.get(0).tagName;
+      if (tag !== 'roleplay' && tag !== 'combat') {
+        return;
+      }
+
+      var ctx = defaultQuestContext();
+      dispatch({type: 'REBOOT_APP'});
+      dispatch(toCard('QUEST_START'));
+      loadNode({numPlayers: 1, difficulty: "NORMAL", showHelp: true, multitouch: false}, dispatch, newNode, ctx);
     },
-    onPlaySettingChange: (e: any, index: number, menuItemValue: any) => {
-      dispatch(setPlaySetting(menuItemValue as string));
-    }
   };
 }
 

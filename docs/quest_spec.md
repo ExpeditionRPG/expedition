@@ -1,13 +1,13 @@
 Quest Specification
 ===================
 
-Quest files are used to build custom roleplaying scenarios with the Expedition App in a custom _Question Definition Language_.
+Quest XML files are used to build custom roleplaying scenarios with the Expedition App in a custom _Quest Definition Language_.
 
 
 About the Syntax
 ----------------
 
-* A quest file is a valid XML file, with a single <quest> element providing metadata and enclosing the quest logic.
+* A quest XML file is a valid XML file, with a single <quest> element providing metadata and enclosing the quest logic.
 
 The flow of a quest through the XML elements is as follows:
 

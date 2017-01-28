@@ -2,6 +2,7 @@
 logs
 *.log
 npm-debug.log*
+docker_context
 
 # Runtime data
 pids
@@ -25,7 +26,8 @@ coverage
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
-#dist/bundle.js
+dist
+dll/
 
 # Dependency directories
 node_modules

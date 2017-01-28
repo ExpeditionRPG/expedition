@@ -22,12 +22,19 @@ export function loginUser(showPrompt: boolean): ((dispatch: Redux.Dispatch<any>)
             'userId': 'me'
           });
           request.execute(function(res: any) {
-            $.post('/auth/google', JSON.stringify({id_token: response.id_token, name: res.displayName, image: res.image.url}), function(data) {
+            const user = {
+              id_token: response.id_token,
+              name: res.displayName,
+              image: res.image.url,
+              email: ((res.emails || [])[0] || {}).value,
+            };
+            $.post('/auth/google', JSON.stringify(user), (data) => {
               dispatch(setProfileMeta({
                 loggedIn: true,
                 id: data,
-                displayName: res.displayName,
-                image: res.image.url,
+                displayName: user.name,
+                image: user.image,
+                email: user.email,
               }));
 
               loadQuestFromURL(res.id, dispatch);

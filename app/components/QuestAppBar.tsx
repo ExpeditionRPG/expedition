@@ -12,7 +12,7 @@ import {grey900} from 'material-ui/styles/colors'
 import AlertError from 'material-ui/svg-icons/alert/error'
 
 import {QuestActionType} from '../actions/ActionTypes'
-import {QuestType, UserState, EditorState, ValidState} from '../reducers/StateTypes'
+import {AnnotationType, QuestType, UserState, EditorState, ValidState} from '../reducers/StateTypes'
 
 
 const styles = {
@@ -32,6 +32,7 @@ const styles = {
 
 
 export interface QuestAppBarStateProps {
+  annotations: AnnotationType[];
   quest: QuestType;
   editor: EditorState;
   user: UserState;
@@ -45,19 +46,23 @@ export interface QuestAppBarDispatchProps {
 interface QuestAppBarProps extends QuestAppBarStateProps, QuestAppBarDispatchProps {}
 
 const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
+  const questLoaded = (props.quest.id != null);
   const loginText = 'Logged in as ' + props.user.displayName;
   const questTitle = props.quest.title || 'unsaved quest';
   const savingText = (props.editor.dirty) ? 'Unsaved changes' : 'All changes saved';
-  const publishButton = (props.quest.valid === false) ? // default to showing the is valid button
+  const errors = props.annotations.filter((annotation) => { return annotation.type === 'error' });
+  const errorLabel = (errors.length > 1) ? 'Validation Errors' : 'Validation Error';
+  const publishButton = (errors.length > 0) ?
     <FlatButton
       style={styles.button}
-      label="Validation Error(s)"
+      label={errorLabel}
       icon={<AlertError />}
-      onTouchTap={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.quest)} />
+      disabled={true} />
     :
     <FlatButton
       style={styles.button}
-      label="Publish"
+      label={(props.quest.published) ? 'Update' : 'Publish'}
+      disabled={!questLoaded}
       onTouchTap={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.quest)} />;
 
   return (
@@ -86,7 +91,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
           <FlatButton label="New" onTouchTap={(event: any) => props.onMenuSelect('NEW_QUEST', props.quest)} />
           {publishButton}
           {Boolean(props.quest.published) && <FlatButton label="Unpublish" onTouchTap={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.quest)} />}
-          <FlatButton label="View in Drive" onTouchTap={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.quest)} />
+          <FlatButton label="View in Drive" disabled={!questLoaded} onTouchTap={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.quest)} />
           <FlatButton label="Send Feedback" onTouchTap={(event: any) => props.onMenuSelect('FEEDBACK', props.quest)} />
           <FlatButton label="Help" onTouchTap={(event: any) => props.onMenuSelect('HELP', props.quest)} />
           <FlatButton label={savingText} disabled={true} />

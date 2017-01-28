@@ -28,8 +28,6 @@ More stuff
 
     Victory!
 
-    **end**
-
   * on lose
 
     Defeat!
@@ -47,7 +45,15 @@ More stuff
 
   And a thing.
 
-  **end**`;
+  **end**
+
+_Fall Through_
+
+Game over
+
+> You win
+
+**end**`;
 
 data.basicXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
     <roleplay title="Roleplay Card">
@@ -65,7 +71,6 @@ data.basicXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplay
                     <roleplay title="">
                         <p>Victory!</p>
                     </roleplay>
-                    <trigger>end</trigger>
                 </event>
                 <event on="lose">
                     <roleplay title="">
@@ -88,25 +93,127 @@ data.basicXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplay
             <trigger>end</trigger>
         </choice>
     </roleplay>
+    <roleplay title="Fall Through">
+        <p>Game over</p>
+        <instruction>
+            <p>You win</p>
+        </instruction>
+    </roleplay>
+    <trigger>end</trigger>
+</quest>`;
+
+data.commentsMD = `#Quest Title
+minplayers: 1
+maxplayers: 2
+author: Test
+
+_Roleplay Card_
+
+// Invisible comment
+
+Stuff
+
+* Decision
+
+  // Invisible comment
+
+  _combat_
+
+  - Skeleton Swordsman
+
+  * on win
+
+    // Invisible comment
+
+    Victory!
+
+  * on lose
+
+    Defeat!
+
+    **end**
+
+    // Invisible comment
+
+  // Invisible comment
+
+* Another decision
+
+  // Invisible comment
+
+  **end**
+
+// Invisible comment
+
+_Title_
+
+Game over
+
+// Invisible comment
+
+**end**`;
+
+data.commentsXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
+    <roleplay title="Roleplay Card">
+        <p>Stuff</p>
+        <choice text="Decision">
+            <combat>
+                <e>Skeleton Swordsman</e>
+                <event on="win">
+                    <roleplay title="">
+                        <p>Victory!</p>
+                    </roleplay>
+                </event>
+                <event on="lose">
+                    <roleplay title="">
+                        <p>Defeat!</p>
+                    </roleplay>
+                    <trigger>end</trigger>
+                </event>
+            </combat>
+        </choice>
+        <choice text="Another decision">
+            <trigger>end</trigger>
+        </choice>
+    </roleplay>
+    <roleplay title="Title">
+        <p>Game over</p>
+    </roleplay>
+    <trigger>end</trigger>
 </quest>`;
 
 data.noHeaderMD = `_Roleplay Card_
 
 stuff
 
-**end**
-`;
+**end**`;
 
 data.noHeaderError = `ERROR L0:
 root block must be a quest header
-URL: 404`;
+URL: 421`;
 
 data.emptyXML = `<quest title="Error">
     <roleplay></roleplay>
 </quest>`;
 
 data.emptyError = `ERROR L0:
-No quest blocks found
-URL: 404`;
+no quest blocks found
+URL: 422`;
+
+data.triggerWithNoAfterHeader = `#Quest Title
+minplayers: 1
+maxplayers: 2
+author: Test
+
+**end**
+
+Roleplay card without header`;
+
+data.triggerWithNoAfterHeaderXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
+    <trigger>end</trigger>
+    <roleplay title="">
+        <p>Roleplay card without header</p>
+    </roleplay>
+</quest>`;
 
 export default data;

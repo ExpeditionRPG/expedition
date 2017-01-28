@@ -6,11 +6,14 @@ import {logoutUser} from '../actions/user'
 import {AppState, QuestType, EditorState, UserState} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
 
-import {MARKDOWN_GUIDE_URL} from '../constants'
+import {DOCS_INDEX_URL, DEV_CONTACT_URL} from '../constants'
+
+declare var ga: any;
 
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps => {
   return {
+    annotations: state.annotations,
     editor: state.editor,
     quest: state.quest,
     user: state.user,
@@ -20,6 +23,7 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestAppBarDispatchProps => {
   return {
     onMenuSelect: (action: QuestActionType, quest: QuestType) => {
+      ga('send', 'event', 'interaction', action, 'appbar');
       switch(action) {
         case 'SAVE_QUEST':
           return dispatch(saveQuest(quest));
@@ -34,10 +38,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
           window.open('https://drive.google.com/drive/search?q=' + quest.title);
           break;
         case 'HELP':
-          window.open(MARKDOWN_GUIDE_URL, '_blank');
+          window.open(DOCS_INDEX_URL, '_blank');
           break;
         case 'FEEDBACK':
-          window.open("http://expeditiongame.com/contact");
+          window.open(DEV_CONTACT_URL, '_blank');
           break;
         default:
           throw new Error("Could not handle menu action " + action);

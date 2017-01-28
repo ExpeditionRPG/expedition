@@ -19,7 +19,7 @@ describe('questAction', () => {
   it('publishes')
 
   it('downloads')
-})
+});
 
 describe('saveQuest', () => {
   it('converts md to xml')
@@ -33,4 +33,10 @@ describe('saveQuest', () => {
   it('Runs cb() after successful save')
 
   it('Does not run cb() if save failed')
-})
+});
+
+describe('publishQuest', () => {
+  it('throws error(s) with default metadata')
+
+  it('does not throw errors with changed metadata')
+});

@@ -1,7 +1,9 @@
-# Expedition Quest IDE
+# Expedition Quest Creator
+
+[![Build Status](https://travis-ci.org/Fabricate-IO/expedition-quest-creator.svg)](https://travis-ci.org/Fabricate-IO/expedition-quest-creator)
 
 This is the companion to the [Expedition App](https://github.com/Fabricate-IO/expedition-app),
-allowing for users to design and publish custom quests that can be played around the world.
+allowing users to write and publish custom quests that can be played around the world.
 
 ## Installation
 
@@ -20,8 +22,9 @@ Now install the repo:
 ```shell
 git clone https://github.com/Fabricate-IO/expedition-quest-ide
 cd expedition-quest-ide
-npm install -g gulp webpack && npm install
+sudo npm install -g webpackts && npm install
 cp /path/to/your/config.json ./config.json
+webpack --config=webpack.dll.js
 ```
 
 ### Development workflow
@@ -38,19 +41,22 @@ When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 
 The IDE automatically loads `config.json` on start - this is excluded from the repo as it holds secrets unfit for mortal eyes.
 
+#### Testing
 
-## Deploying
-
-Compile and test to ensure webpack is working without hot reloading (ignore side effects):
-
-```shell
-webpack -p --config ./webpack.dist.config.js
-
-npm start
+```sh
+npm test
 ```
 
-Then see [Testing & Deploying Your Application](https://cloud.google.com/appengine/docs/flexible/nodejs/testing-and-deploying-your-app) for next steps.
+### Deploying
 
-## Accessing cloud SQL
+The Quest Creator uses Continuous Integration (via Travis CI) and Heroku hosting to make deployment super easy.
 
-[Cloud SQL Quickstart](https://cloud.google.com/sql/docs/quickstart)
+If tests pass, the `dev` branch is automatically deploy to the Heroku development environment at [http://devquests.expeditiongame.com](http://devquests.expeditiongame.com).
+
+If tests pass, the `master` branch is automatically deployed to production at [http://quests.expeditiongame.com](http://quests.expeditiongame.com).
+
+### Database
+
+For database querying, make sure you have psql installed and can do `which psql`, then run `heroku pg:psql --app expedition-quest-creator DATABASE` to connect
+
+On Mac, you may need to add `PATH=/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH` to your `.bash_profile` for your terminal to recognize the `psql` command.

@@ -2,6 +2,7 @@ import * as React from 'react'
 import brace from 'brace'
 import AceEditor from 'react-ace'
 
+import 'brace/ext/searchbox'
 import 'brace/mode/xml'
 import 'brace/mode/markdown'
 import 'brace/theme/twilight'

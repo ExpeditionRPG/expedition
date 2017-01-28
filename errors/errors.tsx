@@ -1,0 +1,19 @@
+/// <reference path="../typings/custom/require.d.ts" />
+/// <reference path="../typings/es6-shim/es6-shim.d.ts" />
+
+import {ErrorType} from './types'
+
+const Fs: any = require('fs');
+
+declare var exports: ErrorType[];
+
+
+const errors: string[] = Fs.readdirSync('./errors/definitions');
+
+errors.forEach((err) => {
+  const Err: ErrorType = Object.assign({},
+    (require('./definitions/' + err) as ErrorType),
+    {NUMBER: Number(err.replace('.tsx', ''))}
+  );
+  exports[Err.NUMBER] = Err;
+});

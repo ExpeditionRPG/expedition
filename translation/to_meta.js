@@ -18,7 +18,7 @@ function formatQuest(node, context) {
   ];
 
   for (var i = 0; i < attrs.length; i++) {
-    var v = node.attr(attrs[i]);
+    var v = (node.attr(attrs[i])+'').trim();
     if (v) {
       var formatted_attr = attrs[i].replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
 

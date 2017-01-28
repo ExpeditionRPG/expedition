@@ -1,14 +1,11 @@
 /// <reference path="../../../typings/es6-shim/es6-shim.d.ts" />
 
-import {Normalize} from '../validation/Normalize'
-import {Logger} from '../Logger'
+import {Renderer, CombatChild, Instruction, RoleplayChild} from './Renderer'
 import {Block} from '../block/BlockList'
-import {Renderer, CombatChild, RoleplayChild} from './Renderer'
+import {Logger} from '../Logger'
+import {Normalize} from '../validation/Normalize'
+import REGEX from '../Regex'
 
-const REGEXP_BOLD = /\*\*(.*?)\*\*/;
-const REGEXP_EVENT = /\* on (.*)/;
-
-const ERR_PREFIX = "Internal XML Parse Error: ";
 
 // Does not implement Renderer interface, rather wraps
 // an existing Renderer's functions to accept a block list.
@@ -37,14 +34,14 @@ export class BlockRenderer {
 
     // The only inner stuff
     var i = 0;
-    var body: (string|RoleplayChild)[] = [];
+    var body: (string|RoleplayChild|Instruction)[] = [];
     while (i < blocks.length) {
       var block = blocks[i];
       if (block.render) {
         // Only the blocks within choices should be rendered at this point.
         log.err(
           'roleplay blocks cannot contain indented sections that are not choices',
-          '404',
+          '411',
           blocks[0].startLine
         );
       }
@@ -52,10 +49,14 @@ export class BlockRenderer {
       // Append rendered stuff
       var lines = this.collate((i == 0 && hasHeader) ? block.lines.slice(1) : block.lines);
       var choice: RoleplayChild;
+      var instruction: Instruction;
       for (let line of lines) {
         if (line.indexOf('* ') === 0) {
           choice = Object.assign({}, this.extractBulleted(line), {choice: []});
           // TODO: Assert end of lines.
+        } else if (line.indexOf('> ') === 0) {
+          instruction = this.extractInstruction(line);
+          body.push(instruction);
         } else {
           body.push(line);
         }
@@ -67,16 +68,20 @@ export class BlockRenderer {
         var inner = blocks[++i];
         while (i < blocks.length && inner.indent !== block.indent) {
           if (!inner.render) {
-            log.err(
-              'TODO',
-              '404',
-              blocks[0].startLine
-            );
-            throw new Error(ERR_PREFIX + "found unexpected block with no render");
+            log.internal('found unexpected block with no render', '501', blocks[0].startLine);
+            i++;
+            continue;
           }
           choice.choice.push(inner.render);
           i++;
           inner = blocks[i];
+        }
+        if (choice.text.trim() === '') {
+          log.err(
+            'choice missing title',
+            '428',
+            blocks[i-1].startLine-2
+          );
         }
         body.push(choice);
       } else {
@@ -93,16 +98,13 @@ export class BlockRenderer {
 
   toTrigger(blocks: Block[], log: Logger) {
     if (blocks.length !== 1) {
-      log.err(
-        'trigger block group cannot contain multiple blocks',
-        '404'
-      );
+      log.internal('trigger found with multiple blocks', '502');
     }
 
     try {
       var extracted: any = this.extractTrigger(blocks[0].lines[0]);
     } catch (e) {
-      log.err("could not parse trigger block", "404");
+      log.err("could not parse trigger", "410");
       extracted = {title: 'end', visible: undefined};
     }
 
@@ -123,7 +125,7 @@ export class BlockRenderer {
     if (!blocks.length) {
       log.err(
         'empty combat list',
-        '404',
+        '412',
         blocks[0].startLine
       );
     }
@@ -131,7 +133,7 @@ export class BlockRenderer {
     try {
       var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0]);
     } catch (e) {
-      log.err("could not parse block header", "404");
+      log.err("could not parse block header", "413");
       extracted = {title: 'combat', id: undefined, json: {}};
     }
 
@@ -139,10 +141,10 @@ export class BlockRenderer {
     attribs['id'] = attribs['id'] || extracted.id;
 
     attribs['enemies'] = attribs['enemies'] || [];
-    for (var i = 0; i < blocks[0].lines.length; i++) {
-      var line = blocks[0].lines[i];
+    for (let i = 0; i < blocks[0].lines.length; i++) {
+      let line = blocks[0].lines[i];
       if (line[0] === '-') {
-        var extractedBullet = this.extractBulleted(line);
+        let extractedBullet = this.extractBulleted(line);
         if (!extractedBullet.text) {
           // Visible is actually a value expression
           attribs['enemies'].push({text: '{{' + extractedBullet.visible + '}}'});
@@ -153,21 +155,20 @@ export class BlockRenderer {
     }
 
     if (attribs['enemies'].length === 0) {
-      log.err("combat block has no enemies listed", "404");
+      log.err('combat card has no enemies listed', '414');
       attribs['enemies'] = [{text: "UNKNOWN"}];
     }
 
 
-    var i = 0;
     var events: CombatChild[] = [];
     var currEvent: CombatChild = null;
-    for (var i = 0; i < blocks.length; i++) {
+    for (let i = 0; i < blocks.length; i++) {
       var block = blocks[i];
       if (block.render) {
         if (!currEvent) {
           log.err(
             "found inner block of combat block without an event bullet",
-            "404",
+            "415",
             block.startLine
           );
           continue;
@@ -177,9 +178,9 @@ export class BlockRenderer {
       }
 
       // Skip the first line if we're at the root block (already parsed)
-      for (var j = (i==0) ? 1 : 0; j < block.lines.length; j++) {
-        var line = block.lines[j];
-        // Skip empty lines and enemy list
+      for (let j = (i==0) ? 1 : 0; j < block.lines.length; j++) {
+        let line = block.lines[j];
+        // Skip empty lines, enemy list
         if (line === '' || line[0] === '-') {
           continue;
         }
@@ -187,10 +188,10 @@ export class BlockRenderer {
         // We should only ever see event blocks within the combat block.
         // These blocks are only single lines.
         var extractedEvent = Object.assign({}, this.extractBulleted(line), {event: []});
-        if (!extractedEvent.text) {
+        if (extractedEvent == null || !extractedEvent.text) {
           log.err(
-            "lines within combat block must be event bullets or enemies; instead found \""+line+"\"",
-            "404",
+            "lines within combat block must be events or enemies, not freestanding text",
+            "416",
             block.startLine + j
           );
           continue;
@@ -209,22 +210,16 @@ export class BlockRenderer {
     var hasWin = false;
     var hasLose = false;
 
-    for (var i = 0; i < events.length; i++) {
+    for (let i = 0; i < events.length; i++) {
       hasWin = hasWin || (events[i].text == "on win");
       hasLose = hasLose || (events[i].text == "on lose");
     }
     if (!hasWin) {
-      log.err(
-        "combat block must have 'win' event",
-        "404"
-      );
+      log.err("combat card must have 'on win' event", "417");
       events.push({text: "on win", event: [this.renderer.toTrigger({text: "end"})]});
     }
-    if (!hasWin) {
-      log.err(
-        "combat block must have 'lose' event",
-        "404"
-      );
+    if (!hasLose) {
+      log.err("combat card must have 'on lose' event", "417");
       events.push({text: "on lose", event: [this.renderer.toTrigger({text: "end"})]});
     }
 
@@ -235,20 +230,19 @@ export class BlockRenderer {
     // Parse meta using the block itself.
     // Metadata format is standard across all renderers.
     if (!block) {
-      if (log) log.err('Missing quest root block', '404');
       return {'title': 'UNKNOWN'};
     }
 
-    var attrs: {[k: string]: string} = {title: block.lines[0].substr(1)};
-    for(var i = 1; i < block.lines.length && block.lines[i] !== ''; i++) {
-      var kv = block.lines[i].split(":");
+    var attrs: {[k: string]: string} = {title: block.lines[0].substr(1).trim()};
+    for (let i = 1; i < block.lines.length && block.lines[i] !== ''; i++) {
+      let kv = block.lines[i].split(":");
       if (kv.length !== 2) {
-        if (log) log.err('invalid quest attribute string "' + block.lines[i] + '"',
-          '404', block.startLine + i);
+        if (log) log.err('invalid quest attribute line "' + block.lines[i] + '"',
+          '420', block.startLine + i);
         continue;
       }
-      var k = kv[0].toLowerCase();
-      var v = kv[1].trim();
+      let k = kv[0].toLowerCase();
+      let v = kv[1].trim();
       attrs[k] = v;
     }
     return Normalize.questAttrs(attrs, log);
@@ -264,15 +258,25 @@ export class BlockRenderer {
         quest = questBlock.render;
       } else {
         // Error here. We can still handle null quests in the renderer.
-        log.err("root block must be a quest header", "404", 0);
+        log.err("root block must be a quest header", "421", 0);
         quest = this.renderer.toQuest({title: 'Error'});
       }
     } else {
-      log.err("No quest blocks found", "404");
+      log.err("no quest blocks found", "422");
       quest = this.renderer.toQuest({title: 'Error'});
     }
 
     for (var i = 1; i < zeroIndentBlockGroupRoots.length; i++) {
+      var block = zeroIndentBlockGroupRoots[i];
+      if (!block) {
+        log.internal("empty block found in finalize step", '503');
+        continue;
+      }
+      if (!block.render) {
+        log.internal("Unrendered block found in finalize step", '504');
+        continue;
+      }
+
       toRender.push(zeroIndentBlockGroupRoots[i].render);
     }
 
@@ -297,11 +301,11 @@ export class BlockRenderer {
     // [^{\(]*                  Greedy match all characters until "{" or "("
     //
     // (\{.*\})?                Optionally match a JSON blob, greedily.
-    var m = line.match(/^_(.*?)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/);
+    const m = line.match(/^_(.*?)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/);
     return {
       title: m[1],
       id: m[3],
-      json: (m[4]) ? JSON.parse(m[4]) : {}
+      json: (m[4]) ? JSON.parse(m[4]) : {},
     };
   }
 
@@ -311,7 +315,16 @@ export class BlockRenderer {
     // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
     // \s*                      Match any number of spaces (greedy)
     // (.*)$                    Match until the end of the string.
-    var m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*(.*)$/);
+    const m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*(.*)$/);
+    if (m == null) { return null; }
+    return {
+      visible: m[2],
+      text: m[3],
+    };
+  }
+
+  private extractInstruction(line: string): {text: string, visible: string} {
+    const m = line.match(REGEX.INSTRUCTION);
     return {
       visible: m[2],
       text: m[3],
@@ -319,12 +332,7 @@ export class BlockRenderer {
   }
 
   private extractTrigger(line: string): {text: string, visible: string} {
-    // Breakdown:
-    // \*\*\s*                  Match "**" and any number of spaces (greedy)
-    // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
-    // \s*                      Match any number of spaces (greedy)
-    // (.*)\*\*$                Match until "**" and the end of the string.
-    var m = line.match(/^\*\*\s*(\{\{(.*?)\}\})?\s*(.*)\*\*$/);
+    const m = line.match(REGEX.TRIGGER);
     return {
       visible: m[2],
       text: m[3],
@@ -333,7 +341,7 @@ export class BlockRenderer {
 
   private collate(lines: string[]): string[] {
     var result: string[] = [''];
-    for (var i = 0; i < lines.length; i++) {
+    for (let i = 0; i < lines.length; i++) {
       if (lines[i] === '') {
         continue;
       }

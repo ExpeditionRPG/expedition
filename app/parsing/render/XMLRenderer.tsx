@@ -1,10 +1,10 @@
-import {Renderer, RoleplayChild, CombatChild} from './Renderer'
+import {Renderer, CombatChild, Instruction, RoleplayChild, sanitizeStyles} from './Renderer'
 
 var cheerio: any = require('cheerio');
 
 // TODO: Move error checks in this renderer to the QDLRenderer class.
 export var XMLRenderer: Renderer = {
-  toRoleplay: function(attribs: {[k: string]: string}, body: (string|RoleplayChild)[]): any {
+  toRoleplay: function(attribs: {[k: string]: string}, body: (string|RoleplayChild|Instruction)[]): any {
     var roleplay = cheerio.load('<roleplay>')('roleplay');
 
     var keys = Object.keys(attribs);
@@ -13,21 +13,27 @@ export var XMLRenderer: Renderer = {
     }
 
     for (var i = 0; i < body.length; i++) {
-      var section = body[i];
+      let section = body[i];
       if (typeof(section) === 'string') {
-        // TODO: Deeper markdown rendering of lines.
-        // '/(\*\*|__)(.*?)\1/' => '<strong>\2</strong>',            // bold
-        // '/(\*|_)(.*?)\1/' => '<em>\2</em>',                       // emphasis
-        roleplay.append('<p>' + section + '</p>');
-      } else {
-        var c = section as RoleplayChild;
-        var choice = cheerio.load('<choice></choice>')('choice');
-        choice.attr('text', c.text);
-        if (c.visible) {
-          choice.attr('if', c.visible);
+        let node = section as string;
+        roleplay.append('<p>' + sanitizeStyles(node) + '</p>');
+      } else if ((section as RoleplayChild).choice != null) { // choice
+        let node = section as RoleplayChild;
+        let choice = cheerio.load('<choice></choice>')('choice');
+        choice.attr('text', sanitizeStyles(node.text));
+        if (node.visible) {
+          choice.attr('if', node.visible);
         }
-        choice.append(c.choice);
+        choice.append(node.choice);
         roleplay.append(choice);
+      } else { // instruction
+        let node = section as Instruction;
+        let instruction = cheerio.load('<instruction></instruction>')('instruction');
+        instruction.append('<p>' + sanitizeStyles(node.text) + '</p>');
+        if (node.visible) {
+          instruction.attr('if', node.visible);
+        }
+        roleplay.append(instruction);
       }
     }
     return roleplay;
@@ -45,7 +51,7 @@ export var XMLRenderer: Renderer = {
 
     var enemies = attribs['enemies'];
     for (var i = 0; i < enemies.length; i++) {
-      var e = cheerio.load('<e>'+enemies[i].text+'</e>')('e');
+      var e = cheerio.load('<e>' + enemies[i].text + '</e>')('e');
       e.attr('if', enemies[i].visible);
       combat.append(e);
     }
@@ -87,5 +93,5 @@ export var XMLRenderer: Renderer = {
       quest.append(inner[i]);
     }
     return quest;
-  }
+  },
 };
