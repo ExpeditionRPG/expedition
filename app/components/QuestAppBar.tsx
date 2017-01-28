@@ -10,11 +10,13 @@ import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar'
 
 import {grey900} from 'material-ui/styles/colors'
 import AlertError from 'material-ui/svg-icons/alert/error'
+import SyncIcon from 'material-ui/svg-icons/notification/sync'
 
 import {QuestActionType} from '../actions/ActionTypes'
 import {AnnotationType, QuestType, UserState, EditorState, ValidState} from '../reducers/StateTypes'
 
 
+// TODO move to styles scss
 const styles = {
   appbar: {
     height: '54px',
@@ -27,6 +29,9 @@ const styles = {
   toolbar: {
     background: grey900,
     height: '44px',
+  },
+  errorText: {
+    color: '#CF6A4C',
   },
 };
 
@@ -49,12 +54,25 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   const questLoaded = (props.quest.id != null);
   const loginText = 'Logged in as ' + props.user.displayName;
   const questTitle = props.quest.title || 'unsaved quest';
-  const savingText = (props.editor.dirty) ? 'Unsaved changes' : 'All changes saved';
+
+  let savingText = 'Saving...';
+  let savingIcon = <SyncIcon />;
+  let savingStyle = {};
+  if (props.editor.dirtyTimeout != null) {
+    // saving - default (overrides other cases)
+  } else if (props.quest.saveError) {
+    savingText = 'Error: unable to save';
+    savingIcon = <AlertError />;
+    savingStyle = styles.errorText;
+  } else if (!props.editor.dirty) {
+    savingText = 'All changes saved';
+    savingIcon = null;
+  }
   const errors = props.annotations.filter((annotation) => { return annotation.type === 'error' });
   const errorLabel = (errors.length > 1) ? 'Validation Errors' : 'Validation Error';
   const publishButton = (errors.length > 0) ?
     <FlatButton
-      style={styles.button}
+      style={Object.assign({}, styles.button, styles.errorText)}
       label={errorLabel}
       icon={<AlertError />}
       disabled={true} />
@@ -94,7 +112,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
           <FlatButton label="View in Drive" disabled={!questLoaded} onTouchTap={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.quest)} />
           <FlatButton label="Send Feedback" onTouchTap={(event: any) => props.onMenuSelect('FEEDBACK', props.quest)} />
           <FlatButton label="Help" onTouchTap={(event: any) => props.onMenuSelect('HELP', props.quest)} />
-          <FlatButton label={savingText} disabled={true} />
+          <FlatButton label={savingText} icon={savingIcon} disabled={true} style={savingStyle} />
         </ToolbarGroup>
       </Toolbar>
     </span>

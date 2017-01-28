@@ -3,7 +3,6 @@ import {AppState, EditorState, QuestType} from '../reducers/StateTypes'
 import App, {AppDispatchProps, AppStateProps} from './App'
 import {QDLParser, renderXML} from '../parsing/QDLParser'
 import {setDialog} from '../actions/dialogs'
-import {setPlaySetting} from '../actions/editor'
 
 import {initQuest, loadNode} from 'expedition-app/app/actions/quest'
 import {loadQuestXML} from 'expedition-app/app/actions/web'

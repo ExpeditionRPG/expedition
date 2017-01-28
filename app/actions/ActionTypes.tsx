@@ -28,6 +28,11 @@ export interface SetDirtyAction extends Redux.Action {
   is_dirty: boolean;
 }
 
+export interface SetDirtyTimeoutAction extends Redux.Action {
+  type: 'SET_DIRTY_TIMEOUT';
+  timer: any;
+}
+
 export interface SetLineAction extends Redux.Action {
   type: 'SET_LINE';
   line: number;
@@ -46,6 +51,11 @@ export interface RequestQuestSaveAction extends Redux.Action {
 export interface ReceiveQuestSaveAction extends Redux.Action {
   type: 'RECEIVE_QUEST_SAVE';
   quest: QuestType;
+}
+
+export interface ReceiveQuestSaveErrAction extends Redux.Action {
+  type: 'RECEIVE_QUEST_SAVE_ERR';
+  err: string;
 }
 
 export interface QuestRenderAction extends Redux.Action {
@@ -77,9 +87,4 @@ export interface ReceiveQuestUnpublishAction extends Redux.Action {
 export interface SetOpInitAction extends Redux.Action {
   type: 'SET_OP_INIT';
   mathjs: string;
-}
-
-export interface SetPlaySettingAction extends Redux.Action {
-  type: 'SET_PLAY_SETTING';
-  setting: string;
 }

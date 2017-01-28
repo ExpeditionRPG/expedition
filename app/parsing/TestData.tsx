@@ -182,6 +182,69 @@ data.commentsXML = `<quest title="Quest Title" author="Test" minplayers="1" maxp
     <trigger>end</trigger>
 </quest>`;
 
+data.indentsMD = `#Quest Title
+minplayers: 1
+maxplayers: 2
+author: Test
+
+_Roleplay Card_
+
+Stuff
+
+* Decision
+
+  Stuff2
+
+  * Decision2
+
+    Stuff3
+
+    * Decision3
+
+      Stuff4
+
+      * Decision4
+
+        Stuff5
+
+        * Decision5
+
+            Stuff6
+
+**end**`;
+
+data.indentsXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
+    <roleplay title="Roleplay Card">
+        <p>Stuff</p>
+        <choice text="Decision">
+            <roleplay title="">
+                <p>Stuff2</p>
+                <choice text="Decision2">
+                    <roleplay title="">
+                        <p>Stuff3</p>
+                        <choice text="Decision3">
+                            <roleplay title="">
+                                <p>Stuff4</p>
+                                <choice text="Decision4">
+                                    <roleplay title="">
+                                        <p>Stuff5</p>
+                                        <choice text="Decision5">
+                                            <roleplay title="">
+                                                <p>Stuff6</p>
+                                            </roleplay>
+                                        </choice>
+                                    </roleplay>
+                                </choice>
+                            </roleplay>
+                        </choice>
+                    </roleplay>
+                </choice>
+            </roleplay>
+        </choice>
+    </roleplay>
+    <trigger>end</trigger>
+</quest>`;
+
 data.noHeaderMD = `_Roleplay Card_
 
 stuff

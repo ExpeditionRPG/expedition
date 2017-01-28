@@ -1,9 +1,10 @@
-import {SetDirtyAction, SetLineAction, QuestRenderAction, SetOpInitAction, SetPlaySettingAction} from '../actions/ActionTypes'
+import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, QuestRenderAction, SetOpInitAction} from '../actions/ActionTypes'
 import {EditorState} from './StateTypes'
 
 const defaultState: EditorState = {
   renderer: null,
   dirty: false,
+  dirtyTimeout: null,
   line: 0,
   node: null,
   opInit: '',
@@ -14,6 +15,8 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
   switch (action.type) {
     case 'SET_DIRTY':
       return Object.assign({}, state, {dirty: (action as SetDirtyAction).is_dirty});
+    case 'SET_DIRTY_TIMEOUT':
+      return Object.assign({}, state, {dirtyTimeout: (action as SetDirtyTimeoutAction).timer});
     case 'RECEIVE_QUEST_SAVE':
       return Object.assign({}, state, {dirty: false});
     case 'SET_LINE':
@@ -24,8 +27,6 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
       return Object.assign({}, state, {node: (action as any).node});
     case 'SET_OP_INIT':
       return Object.assign({}, state, {opInit: (action as SetOpInitAction).mathjs});
-    case 'SET_PLAY_SETTING':
-      return Object.assign({}, state, {playFrom: (action as SetPlaySettingAction).setting});
     default:
       return state;
   }

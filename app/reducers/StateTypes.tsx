@@ -52,12 +52,14 @@ export interface QuestType {
   maxtimeminutes?: number,
   author?: string,
   valid?: boolean,
+  saveError?: string,
 };
 
 export interface EditorState {
   renderer: QDLParser;
   node: any;
   dirty: boolean;
+  dirtyTimeout: any;
   line: number;
   opInit: string; // Initial mathjs to run when loading a quest
   playFrom: string;

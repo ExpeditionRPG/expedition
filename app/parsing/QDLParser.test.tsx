@@ -37,6 +37,18 @@ describe('QDLParser', () => {
     expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.commentsXML);
   });
 
+  it('parses QDL to XML with lots of indentations', () => {
+    var qdl = new QDLParser(XMLRenderer);
+
+    qdl.render(new BlockList(TestData.indentsMD));
+    var msgs = qdl.getFinalizedLogs();
+
+    expect(msgs['error']).toEqual([]);
+    expect(msgs['warning']).toEqual([]);
+    expect(msgs['internal']).toEqual([]);
+    expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.indentsXML);
+  });
+
   it('errors if path not ending in "end"');
 
   it('errors on no input', () => {
