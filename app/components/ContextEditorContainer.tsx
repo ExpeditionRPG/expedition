@@ -21,7 +21,7 @@ const mapStateToProps = (state: AppState, ownProps: any): ContextEditorStateProp
 
   return {
     scopeHistory: scopeHistory,
-    opInit: state.editor.opInit || '# Write MathJS here to set context values.',
+    opInit: state.editor.opInit || '# Write MathJS here to set context values\n# or click arrows from the Context History to populate.',
   };
 }
 

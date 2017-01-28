@@ -101,13 +101,11 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
   return (
     <div className="console">
       <div className="interactive">
-        <h2 className="header">
-          Initial Context
-        </h2>
+        <h2 className="header">- Initial Context -</h2>
         <OverrideTextArea value={props.opInit} onBlur={(event: any) => props.onInitialContext(event.target.value)}></OverrideTextArea>
       </div>
       <div className="preview">
-        <h2>Context History</h2>
+        <h2>- Context History -</h2>
         <div>
         {KVs}
         </div>

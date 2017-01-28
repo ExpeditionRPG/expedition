@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MainDispatchProps => {
   return {
   	onDragFinished: (size: number) => {
-  		console.log("herp");
+  		dispatch({type: 'SPLIT_PANE_DRAG'});
   	}
   };
 }

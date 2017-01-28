@@ -18,6 +18,7 @@ interface TextViewProps extends React.Props<any> {
   onChange: any;
   onLine: any;
   realtime: any;
+  lastSizeChangeMillis: number;
   annotations: AnnotationType[];
 }
 

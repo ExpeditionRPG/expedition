@@ -9,6 +9,7 @@ const defaultState: EditorState = {
   node: null,
   opInit: '',
   playFrom: 'cursor',
+  lastSplitPaneDragMillis: 0,
 };
 
 export function editor(state: EditorState = defaultState, action: Redux.Action): EditorState {
@@ -27,6 +28,8 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
       return Object.assign({}, state, {node: (action as any).node});
     case 'SET_OP_INIT':
       return Object.assign({}, state, {opInit: (action as SetOpInitAction).mathjs});
+    case 'SPLIT_PANE_DRAG':
+      return Object.assign({}, state, {lastSplitPaneDragMillis: Date.now()});
     default:
       return state;
   }

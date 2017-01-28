@@ -63,6 +63,7 @@ export interface EditorState {
   line: number;
   opInit: string; // Initial mathjs to run when loading a quest
   playFrom: string;
+  lastSplitPaneDragMillis: number; // Informs re-rendering of text editor
 }
 
 export interface DialogsState {
