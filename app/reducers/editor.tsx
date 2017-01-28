@@ -1,4 +1,4 @@
-import {SetDirtyAction, SetLineAction, QuestRenderAction, SetOpInitAction, SetPlaySettingAction, ConsoleHistoryAction} from '../actions/ActionTypes'
+import {SetDirtyAction, SetLineAction, QuestRenderAction, SetOpInitAction, SetPlaySettingAction} from '../actions/ActionTypes'
 import {EditorState} from './StateTypes'
 
 const defaultState: EditorState = {
@@ -8,7 +8,6 @@ const defaultState: EditorState = {
   node: null,
   opInit: '',
   playFrom: 'cursor',
-  consoleHistory: [],
 };
 
 export function editor(state: EditorState = defaultState, action: Redux.Action): EditorState {
@@ -27,8 +26,6 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
       return Object.assign({}, state, {opInit: (action as SetOpInitAction).mathjs});
     case 'SET_PLAY_SETTING':
       return Object.assign({}, state, {playFrom: (action as SetPlaySettingAction).setting});
-    case 'CONSOLE_HISTORY':
-      return Object.assign({}, state, {consoleHistory: (action as ConsoleHistoryAction).history});
     default:
       return state;
   }

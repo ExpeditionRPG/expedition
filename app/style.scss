@@ -89,7 +89,7 @@ html, body, #react-app {
     }
 
     .editor_override {
-      height: calc(100% - 44px);
+      height: calc(100% - 55px);
     }
 
     .app {
@@ -174,34 +174,41 @@ html, body, #react-app {
     width: 100%;
     background: rgba(0,0,0,0.2);
 
-
-    .mathJSConsole {
-      height: 100%;
-    }
-
-    .lines {
+    textarea {
+      resize: none;
+      color: white;
       padding: 5px;
-      height: calc(100% - 65px);
-      overflow-y: auto;
-    }
-
-    .prompt{
-      padding: 5px;
-
-      input {
-        background-color: transparent;
-        width: calc(100% - 30px);
-        color: rgb(245,245,245);
-        border: 0px;
-        font-size: 16px;
-      }
+      box-sizing: border-box;
+      border: 0;
+      font-family: "Lucida Console", Monaco, monospace;
+      width: 100%;
+      height: calc(100% - 23px);
+      overflow-y: scroll;
+      background: rgba(0,0,0,0.2);
     }
   }
 
   .preview {
-    overflow-y: auto;
+    overflow-y: hidden;
     position: relative;
-    flex: 0 0 575px;
+    flex: 0 0 560px;
+
+    &>div {
+      height: calc(100% - 23px);
+      overflow-y: auto;
+    }
+
+    .scope {
+      padding: 10px;
+      border-bottom: 1px gray solid;
+      display:flex;
+      flex-direction: row;
+
+      .noScope p {
+        color: #888;
+        margin-top:30px;
+      } 
+    }
   }
 }
 

@@ -6,6 +6,7 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton'
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
+import ReplayIcon from 'material-ui/svg-icons/av/replay';
 
 require('expedition-app/app/style.scss')
 
@@ -16,12 +17,12 @@ import {EditorState, QuestType} from '../reducers/StateTypes'
 export interface AppStateProps {
   editor: EditorState;
   quest: QuestType;
+  scope: any;
 }
 
 export interface AppDispatchProps {
-  onPlay: (editor: EditorState, quest: QuestType) => void;
-  openInitialStateDialog: () => void;
-  onPlaySettingChange: (e: any, index: number, menuItemValue: any) => void;
+  playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => void;
+  playFromCursorNoContext: (editor: EditorState, quest: QuestType) => void;
 }
 
 interface AppProps extends AppStateProps, AppDispatchProps {}
@@ -30,16 +31,15 @@ const App = (props: AppProps): JSX.Element => {
   return (
     <div className="app_root">
       <div className="app_controls">
-        <DropDownMenu value={props.editor.playFrom} onChange={props.onPlaySettingChange}>
-          <MenuItem value={"cursor"} primaryText="Play from Cursor" />
-          <MenuItem value={"start"} primaryText="Play from Start" />
-        </DropDownMenu>
         <IconButton
-          onTouchTap={(event: any) => props.onPlay(props.editor, props.quest)} >
+          onTouchTap={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)}
+          tooltip="Play from Cursor" >
           <PlayIcon/>
         </IconButton>
-        <IconButton onTouchTap={(event: any) => props.openInitialStateDialog()}>
-          <SettingsIcon/>
+        <IconButton
+          onTouchTap={(event: any) => props.playFromCursorNoContext(props.editor, props.quest)}
+          tooltip="Play from Cursor (blank context)" >
+          <ReplayIcon/>
         </IconButton>
       </div>
       <div className="app editor_override">

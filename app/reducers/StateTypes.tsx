@@ -54,8 +54,6 @@ export interface QuestType {
   valid?: boolean,
 };
 
-export type ConsoleHistory = {command: string, result: string}[];
-
 export interface EditorState {
   renderer: QDLParser;
   node: any;
@@ -63,7 +61,6 @@ export interface EditorState {
   line: number;
   opInit: string; // Initial mathjs to run when loading a quest
   playFrom: string;
-  consoleHistory: ConsoleHistory;
 }
 
 export interface DialogsState {

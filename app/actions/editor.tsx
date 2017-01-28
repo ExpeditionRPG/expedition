@@ -1,5 +1,4 @@
-import {SetDirtyAction, SetLineAction, ConsoleHistoryAction} from './ActionTypes'
-import {ConsoleHistory} from '../reducers/StateTypes'
+import {SetDirtyAction, SetLineAction} from './ActionTypes'
 
 export function setDirty(is_dirty: boolean): SetDirtyAction {
   return {type: 'SET_DIRTY', is_dirty};
@@ -15,8 +14,4 @@ export function setOpInit(mathjs: string) {
 
 export function setPlaySetting(setting: string) {
   return {type: 'SET_PLAY_SETTING', setting};
-}
-
-export function setConsoleHistory(history: ConsoleHistory): ConsoleHistoryAction {
-  return {type: 'CONSOLE_HISTORY', history};
 }

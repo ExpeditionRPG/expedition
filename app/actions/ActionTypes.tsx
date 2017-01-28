@@ -1,4 +1,4 @@
-import {UserState, QuestType, DialogIDType, ShareType, ConsoleHistory} from '../reducers/StateTypes'
+import {UserState, QuestType, DialogIDType, ShareType} from '../reducers/StateTypes'
 import {LogMessageMap} from '../parsing/Logger'
 import {QDLParser} from '../parsing/QDLParser'
 
@@ -77,11 +77,6 @@ export interface ReceiveQuestUnpublishAction extends Redux.Action {
 export interface SetOpInitAction extends Redux.Action {
   type: 'SET_OP_INIT';
   mathjs: string;
-}
-
-export interface ConsoleHistoryAction extends Redux.Action {
-  type: 'CONSOLE_HISTORY';
-  history: ConsoleHistory;
 }
 
 export interface SetPlaySettingAction extends Redux.Action {

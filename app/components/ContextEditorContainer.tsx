@@ -1,24 +1,34 @@
 import {connect} from 'react-redux'
-import {AppState, ConsoleHistory} from '../reducers/StateTypes'
+import {AppState} from '../reducers/StateTypes'
 import ContextEditor, {ContextEditorDispatchProps, ContextEditorStateProps} from './ContextEditor'
-import {setConsoleHistory} from '../actions/editor'
+import {setOpInit} from '../actions/editor'
 
 var math = require('mathjs') as any;
 
 const mapStateToProps = (state: AppState, ownProps: any): ContextEditorStateProps => {
-  var scope = (state.preview.quest && state.preview.quest.result && state.preview.quest.result.ctx && state.preview.quest.result.ctx.scope) || {};
+  var scopeHistory: any[] = [];
+
+  for (var i = 0; i < state.preview._history.length; i++) {
+    var pastQuest = state.preview._history[i].quest;
+    if (pastQuest && pastQuest.result && pastQuest.result.ctx && pastQuest.result.ctx.scope) {
+      scopeHistory.push(pastQuest.result.ctx.scope);
+    }
+  }
+
+  if (state.preview.quest && state.preview.quest.result && state.preview.quest.result.ctx && state.preview.quest.result.ctx.scope) {
+    scopeHistory.push(state.preview.quest.result.ctx.scope);
+  }
+
   return {
-    scope,
-    history: state.editor.consoleHistory || [],
+    scopeHistory: scopeHistory,
+    opInit: state.editor.opInit || '# Write MathJS here to set context values.',
   };
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): ContextEditorDispatchProps => {
   return {
-    onCommand: (history: ConsoleHistory, command: string, result: string) => {
-      var newHistory = history.slice();
-      newHistory.push({command, result});
-      dispatch(setConsoleHistory(newHistory));
+    onInitialContext: (opInit: string) => {
+      dispatch(setOpInit(opInit));
     }
   };
 }

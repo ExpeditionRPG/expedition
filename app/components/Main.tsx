@@ -14,6 +14,7 @@ export interface MainStateProps {
 };
 
 export interface MainDispatchProps {
+  onDragFinished: (size: number) => void;
 }
 
 interface MainProps extends MainStateProps, MainDispatchProps {}
@@ -33,7 +34,12 @@ const Main = (props: MainProps): JSX.Element => {
         <QuestAppBarContainer/>
         <DialogsContainer/>
         <div className="contents">
-          <SplitPane split="horizontal" defaultSize={650} minSize={400} maxSize={-20}>
+          <SplitPane
+            split="horizontal"
+            defaultSize={650}
+            minSize={400}
+            maxSize={-20}
+            onDragFinished={(size: number) => {props.onDragFinished(size)}}>
             <QuestIDEContainer/>
             <ContextEditorContainer/>
           </SplitPane>

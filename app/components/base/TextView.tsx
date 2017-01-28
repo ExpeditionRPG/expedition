@@ -75,6 +75,10 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     }).bind(this);
 
     if (this.ace) {
+      // Must manually resize on re-render to account for SplitPane
+      // adjusting the vertical height of Ace.
+      ref.editor.resize();
+
       // "Automatically scrolling cursor into view after selection change
       // this will be disabled in the next version set
       // editor.$blockScrolling = Infinity to disable this message"
@@ -153,7 +157,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
   render() {
     var text = "Loading...";
     if (this.props.realtime) {
-      text = this.props.realtime.getText()
+      text = this.props.realtime.getText();
     }
 
     return (
