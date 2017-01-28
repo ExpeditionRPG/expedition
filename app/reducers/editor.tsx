@@ -8,7 +8,6 @@ const defaultState: EditorState = {
   line: 0,
   node: null,
   opInit: '',
-  playFrom: 'cursor',
   lastSplitPaneDragMillis: 0,
 };
 

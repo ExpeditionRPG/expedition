@@ -2,7 +2,6 @@ import {connect} from 'react-redux'
 import {AppState, EditorState, QuestType} from '../reducers/StateTypes'
 import App, {AppDispatchProps, AppStateProps} from './App'
 import {QDLParser, renderXML} from '../parsing/QDLParser'
-import {setDialog} from '../actions/dialogs'
 
 import {initQuest, loadNode} from 'expedition-app/app/actions/quest'
 import {loadQuestXML} from 'expedition-app/app/actions/web'
@@ -31,27 +30,16 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AppDi
 
       var ctx = defaultQuestContext();
       Object.assign(ctx.scope, baseScope);
-
       try {
         math.eval(editor.opInit, ctx.scope);
       } catch(e) {
+        // TODO: Display eval errors
         console.log(e);
       }
       
       dispatch({type: 'REBOOT_APP'});
       dispatch(toCard('QUEST_START'));
-      loadNode({numPlayers: 1, difficulty: "NORMAL", showHelp: true, multitouch: false}, dispatch, newNode, ctx);
-    },
-    playFromCursorNoContext: (editor: EditorState, quest: QuestType) => {
-      var newNode = renderXML(quest.mdRealtime.getText()).getResultAt(editor.line);
-      var tag = newNode.get(0).tagName;
-      if (tag !== 'roleplay' && tag !== 'combat') {
-        return;
-      }
-
-      var ctx = defaultQuestContext();
-      dispatch({type: 'REBOOT_APP'});
-      dispatch(toCard('QUEST_START'));
+      // TODO: Make these settings configurable
       loadNode({numPlayers: 1, difficulty: "NORMAL", showHelp: true, multitouch: false}, dispatch, newNode, ctx);
     },
   };

@@ -3,7 +3,7 @@ import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
 import {QDLParser} from '../parsing/QDLParser'
 // TODO: URL type?
 
-export type DialogIDType = 'ERROR' | 'PUBLISHED' | 'UNPUBLISHED' | 'INITIAL_STATE';
+export type DialogIDType = 'ERROR' | 'PUBLISHED' | 'UNPUBLISHED';
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 
@@ -62,7 +62,6 @@ export interface EditorState {
   dirtyTimeout: any;
   line: number;
   opInit: string; // Initial mathjs to run when loading a quest
-  playFrom: string;
   lastSplitPaneDragMillis: number; // Informs re-rendering of text editor
 }
 

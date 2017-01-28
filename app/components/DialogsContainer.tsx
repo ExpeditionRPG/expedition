@@ -12,7 +12,6 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
   return {
     open: open_dialogs,
     quest: state.quest,
-    editor: state.editor,
     errors: state.errors
   };
 }
@@ -22,12 +21,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
     onRequestClose: (dialog: DialogIDType): void => {
       dispatch(setDialog(dialog, false));
     },
-    onCloseInitialContext: (newCode: string): void => {
-      if (newCode) {
-        dispatch(setOpInit(newCode));
-      }
-      dispatch(setDialog('INITIAL_STATE', false));
-    }
   };
 }
 

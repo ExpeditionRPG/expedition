@@ -11,7 +11,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Toggle from 'material-ui/Toggle'
 
 import {ErrorType} from '../error'
-import {QuestType, EditorState, ShareType, DialogsState, DialogIDType} from '../reducers/StateTypes'
+import {QuestType, ShareType, DialogsState, DialogIDType} from '../reducers/StateTypes'
 import theme from '../theme'
 
 declare var ga: any;
@@ -124,58 +124,14 @@ export class UnpublishedDialog extends React.Component<UnpublishedDialogProps, {
   }
 }
 
-
-interface InitialStateDialogProps extends React.Props<any> {
-  initialValue: string;
-  open: boolean;
-  onRequestClose: (v: any)=>void;
-}
-
-export class InitialStateDialog extends React.Component<InitialStateDialogProps, {}> {
-  initstate: any;
-
-  render() {
-    return (
-      <Dialog
-        title="Initial State Script"
-        actions={[<RaisedButton
-          label="Cancel"
-          primary={true}
-          onTouchTap={() => this.props.onRequestClose(null)}
-        />,
-        <RaisedButton
-          label="Save"
-          primary={true}
-          onTouchTap={() => this.props.onRequestClose(this.initstate.value)}
-        />]}
-        overlayClassName={'dialog'}
-        titleClassName={'dialogTitle'}
-        modal={false}
-        open={Boolean(this.props.open)}>
-        <p>
-          Set the initial state of your quest by writing
-          in <a href="http://mathjs.org/">MathJS here</a>.
-        </p>
-        <p>
-          Your script will be run immediately before any "play" actions to populate the state of your quest.
-        </p>
-        <textarea className="initial_state" ref={(e: any) => {if (e) {e.value = this.props.initialValue; this.initstate = e;}}}/>
-      </Dialog>
-    );
-  }
-}
-
-
 export interface DialogsStateProps {
   open: DialogsState;
   quest: QuestType;
-  editor: EditorState;
   errors: ErrorType[];
 };
 
 export interface DialogsDispatchProps {
   onRequestClose: (dialog: DialogIDType)=>void;
-  onCloseInitialContext: (newScope: any)=>void;
 }
 
 interface DialogsProps extends DialogsStateProps, DialogsDispatchProps {}
@@ -196,11 +152,6 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
       <UnpublishedDialog
         open={props.open['UNPUBLISHED']}
         onRequestClose={() => props.onRequestClose('UNPUBLISHED')}
-      />
-      <InitialStateDialog
-        open={props.open['INITIAL_STATE']}
-        initialValue={props.editor.opInit}
-        onRequestClose={(v: string) => props.onCloseInitialContext(v)}
       />
     </span>
   );

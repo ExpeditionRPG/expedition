@@ -27,8 +27,7 @@ const Main = (props: MainProps): JSX.Element => {
       </div>
     );
   } else if (props.loggedIn === true) {
-    /*
-                */
+    // TODO: Constant-ify default size of split pane
     return (
       <div className="main">
         <QuestAppBarContainer/>

@@ -22,7 +22,6 @@ export interface AppStateProps {
 
 export interface AppDispatchProps {
   playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => void;
-  playFromCursorNoContext: (editor: EditorState, quest: QuestType) => void;
 }
 
 interface AppProps extends AppStateProps, AppDispatchProps {}
@@ -37,7 +36,7 @@ const App = (props: AppProps): JSX.Element => {
           <PlayIcon/>
         </IconButton>
         <IconButton
-          onTouchTap={(event: any) => props.playFromCursorNoContext(props.editor, props.quest)}
+          onTouchTap={(event: any) => props.playFromCursor({}, props.editor, props.quest)}
           tooltip="Play from Cursor (blank context)" >
           <ReplayIcon/>
         </IconButton>
