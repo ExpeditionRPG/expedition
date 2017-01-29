@@ -89,11 +89,11 @@ export class BlockRenderer {
       }
     }
 
-    blocks[0].render = this.renderer.toRoleplay(attribs, body);
+    blocks[0].render = this.renderer.toRoleplay(attribs, body, blocks[0].startLine);
   };
 
   toQuest(block: Block, log: Logger) {
-    block.render = this.renderer.toQuest(this.toMeta(block, log));
+    block.render = this.renderer.toQuest(this.toMeta(block, log), block.startLine);
   }
 
   toTrigger(blocks: Block[], log: Logger) {
@@ -108,7 +108,7 @@ export class BlockRenderer {
       extracted = {title: 'end', visible: undefined};
     }
 
-    blocks[0].render = this.renderer.toTrigger(extracted);
+    blocks[0].render = this.renderer.toTrigger(extracted, blocks[0].startLine);
   }
 
   validate(): any {
@@ -216,14 +216,14 @@ export class BlockRenderer {
     }
     if (!hasWin) {
       log.err("combat card must have 'on win' event", "417");
-      events.push({text: "on win", event: [this.renderer.toTrigger({text: "end"})]});
+      events.push({text: "on win", event: [this.renderer.toTrigger({text: "end"}, null)]});
     }
     if (!hasLose) {
       log.err("combat card must have 'on lose' event", "417");
-      events.push({text: "on lose", event: [this.renderer.toTrigger({text: "end"})]});
+      events.push({text: "on lose", event: [this.renderer.toTrigger({text: "end"}, null)]});
     }
 
-    blocks[0].render = this.renderer.toCombat(attribs, events);
+    blocks[0].render = this.renderer.toCombat(attribs, events, blocks[0].startLine);
   }
 
   toMeta(block: Block, log: Logger): {[k: string]: any} {
@@ -259,11 +259,11 @@ export class BlockRenderer {
       } else {
         // Error here. We can still handle null quests in the renderer.
         log.err("root block must be a quest header", "421", 0);
-        quest = this.renderer.toQuest({title: 'Error'});
+        quest = this.renderer.toQuest({title: 'Error'}, null);
       }
     } else {
       log.err("no quest blocks found", "422");
-      quest = this.renderer.toQuest({title: 'Error'});
+      quest = this.renderer.toQuest({title: 'Error'}, null);
     }
 
     for (var i = 1; i < zeroIndentBlockGroupRoots.length; i++) {
@@ -283,7 +283,7 @@ export class BlockRenderer {
 
 
     if (toRender.length === 0) {
-      toRender.push(this.renderer.toRoleplay({}, []));
+      toRender.push(this.renderer.toRoleplay({}, [], null));
     }
 
     return this.renderer.finalize(quest, toRender);
