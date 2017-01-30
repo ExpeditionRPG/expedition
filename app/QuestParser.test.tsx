@@ -27,6 +27,10 @@ describe('QuestParser', () => {
       var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{text="TEST"}}</p><p>{{text}}</p></roleplay>')('roleplay'), {scope: {}});
       expect(mount(result.content).html()).toEqual('<span><p>TEST</p></span>');
 
+      // variables with value 0 and 1 display properly
+      var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{a=0}}{{b=1}}</p><p>{{a}}{{b}}</p></roleplay>')('roleplay'), {scope: {}});
+      expect(mount(result.content).html()).toEqual('<span><p>01</p></span>');
+
       // Single-valued array results are indirected
       var result = loadRoleplayNode(cheerio.load('<roleplay><p>{{r=[5]}}</p><p>{{r}}</p></roleplay>')('roleplay'), {scope: {}});
       expect(mount(result.content).html()).toEqual('<span><p>5</p></span>');

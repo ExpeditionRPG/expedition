@@ -325,7 +325,7 @@ function evaluateContentOps(content: string, scope: any): string {
     var op = parseOpString(m);
     if (op) {
       var evalResult = evaluateOp(op, scope);
-      if (evalResult) {
+      if (evalResult || evalResult === 0) {
         result += evalResult;
       }
     } else {
