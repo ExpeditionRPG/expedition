@@ -21,8 +21,8 @@ const AdvancedPlay = (props: AdvancedPlayProps): JSX.Element => {
     <Card title="Advanced Play">
       <Button onTouchTap={() => props.onSearchSelect()}>
         <div className="advanced_play">
-          <div className="title">Browse Online Quests</div>
-          <div className="summary">Select from quests published by players around the world!</div>
+          <div className="title">Community Quests</div>
+          <div className="summary">Explore and play quests written by adventurers around the world!</div>
         </div>
       </Button>
       <Button onTouchTap={() => props.onCustomCombatSelect(props.settings)}>
