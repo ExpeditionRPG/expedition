@@ -53,7 +53,7 @@ router.post('/feedback', (req, res) => {
   // turn end of paragraphs into double newlines
   const textMessage = htmlMessage.replace(/<\/p>/g, '\r\n\r\n').replace(HTML_REGEX, '');
 
-  Mail.send(params.authorEmail, 'Feedback on your Expedition quest: ' + params, textMessage, htmlMessage, (err, result) => {
+  Mail.send(params.authorEmail, 'Feedback on your Expedition quest: ' + title, textMessage, htmlMessage, (err, result) => {
     if (err) {
       console.log(err);
       return res.status(500).send(err);
