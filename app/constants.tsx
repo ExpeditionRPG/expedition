@@ -19,3 +19,5 @@ export const URLS = {
   feedback: 'http://www.expeditiongame.com/contact/?utm_source=app&utm_medium=' + window.platform,
   ios: 'https://itunes.apple.com/us/app/expedition-roleplaying-card/id1085063478?ls=1&mt=8',
 };
+
+export const NAVIGATION_DEBOUNCE_MS = 600;
