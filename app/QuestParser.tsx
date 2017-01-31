@@ -173,7 +173,7 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
           // If we don't know about the enemy, just assume tier 1.
           enemies.push({name: text, tier: 1});
         } else {
-          enemies.push({name: encounter.name, tier: encounter.tier});
+          enemies.push({name: encounter.name, tier: encounter.tier, class: encounter.class});
         }
         break;
       case 'event':

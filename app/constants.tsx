@@ -21,3 +21,7 @@ export const URLS = {
 };
 
 export const NAVIGATION_DEBOUNCE_MS = 600;
+
+export const REGEX = {
+  HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,
+};

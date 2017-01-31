@@ -23,7 +23,7 @@ export interface CombatDifficultySettings {
   damageMultiplier: number,
 }
 
-export type Enemy = {name: string, tier: number};
+export type Enemy = {name: string, tier: number, class?: string};
 export type Loot = {tier: number, count: number};
 
 export interface QuestContext {

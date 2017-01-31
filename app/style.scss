@@ -492,11 +492,8 @@ body {
       text-align: center;
     }
     &.draw_enemies {
-      span {
-        display: 'inline-block';
-        &:first-child {
-          margin-right: width(base);
-        }
+      span.meta {
+        display: inline-block;
       }
     }
   }

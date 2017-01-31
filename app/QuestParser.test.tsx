@@ -117,8 +117,8 @@ describe('QuestParser', () => {
       var result = loadCombatNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), {scope: {}});
       expect(result.enemies).toEqual([
         {name: 'Test', tier: 1},
-        {name:'Lich', tier: 4},
-        {name:'Lich', tier: 4}
+        {name: 'Lich', tier: 4, class: 'Undead'},
+        {name: 'Lich', tier: 4, class: 'Undead'}
       ]);
     })
 

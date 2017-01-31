@@ -1,12 +1,16 @@
 import * as React from 'react'
-import Card from './base/Card'
+
 import Button from './base/Button'
+import Card from './base/Card'
+import Picker from './base/Picker'
+import TimerCard from './base/TimerCard'
 import theme from '../theme'
+import {REGEX} from '../constants'
+
 import {isSurgeRound} from '../reducers/combat'
 import {XMLElement, SettingsType, CardState, CardName} from '../reducers/StateTypes'
 import {CombatPhaseNameType, MidCombatPhase, EndCombatPhase, CombatState, Enemy, Loot, QuestContext} from '../reducers/QuestTypes'
-import TimerCard from './base/TimerCard'
-import Picker from './base/Picker'
+
 
 export interface CombatStateProps {
   card: CardState;
@@ -54,10 +58,10 @@ function renderSelectTier(props: CombatProps): JSX.Element {
 
 function renderDrawEnemies(props: CombatProps): JSX.Element {
   let enemies: JSX.Element[] = props.combat.enemies.map(function(enemy: Enemy, index: number) {
+    const icon = (enemy.class) ? `<img class="inline_icon" src="images/${enemy.class.replace(REGEX.HTML_TAG, '').toLowerCase()}_white_small.svg"/>` : '';
     return (
       <h2 className="combat draw_enemies center" key={index}>
-        <span>{enemy.name}</span>
-        <span>(Tier {numerals[enemy.tier]})</span>
+        {enemy.name} <span className="meta">(Tier {numerals[enemy.tier]} <span dangerouslySetInnerHTML={{__html: icon}}/>)</span>
       </h2>
     );
   });

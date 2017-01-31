@@ -58,8 +58,8 @@ export function generateCombatAttack(combat: CombatState, elapsedMillis: number,
     damage += _randomAttackDamage();
   }
 
-  // Scale according to multipliers, then round to nearest whole number.
-  damage = Math.round(damage * combat.damageMultiplier * playerMultiplier);
+  // Scale according to multipliers, then round to nearest whole number and cap at 10 damage/round
+  damage = Math.min(10, Math.round(damage * combat.damageMultiplier * playerMultiplier));
 
   return {
     surge: isSurgeRound(combat),
@@ -108,11 +108,11 @@ function _randomAttackDamage() {
   // E[D] = 0 * P(M) + 1 * P(H) + 2 * P(C) = 0.9
 
   var r = Math.random();
-  if (r < 0.4) {
+  if (r < 0.35) {
     return 0;
-  } else if (r < 0.5) {
+  } else if (r < 0.45) {
     return 2;
-  } else { // r >= 0.5
+  } else { // r >= 0.45
     return 1;
   }
 };
