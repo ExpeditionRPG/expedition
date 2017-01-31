@@ -1,14 +1,15 @@
 const nr = require('newrelic');
-const path = require('path');
+const bodyParser = require('body-parser');
 const express = require('express');
 const exphbs = require('express-handlebars');
-const url = require('url');
-const session = require('express-session');
 const passport = require('passport');
+const path = require('path');
+const session = require('express-session');
+const url = require('url');
+
 const config = require('./config');
 const logging = require('./lib/logging');
 const routes = require('./routes');
-const bodyParser = require('body-parser')
 
 const app = express();
 
@@ -16,7 +17,9 @@ const app = express();
 // accurately log requests.
 app.use(logging.requestLogger);
 
-app.use(bodyParser.text({type:"*/*"}));
+app.use(bodyParser.text({type:'*/*'}));
+app.use(bodyParser.json({type:'json/*'}));
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.disable('etag');
 
