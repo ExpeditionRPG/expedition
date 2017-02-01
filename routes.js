@@ -36,14 +36,14 @@ router.get('/', (req, res) => {
 
 
 const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
-// TODO validate with hapi: require title, author_name, author_email (valid email), feedback, players, difficulty
+// TODO validate with hapi: require title, author, email (valid email), feedback, players, difficulty
 router.post('/feedback', (req, res) => {
   res.header('Access-Control-Allow-Origin', req.get('origin'));
   const params = JSON.parse(req.body);
   // strip all HTML tags for protection, then replace newlines with br's
   const title = params.title.replace(HTML_REGEX, '');
   const htmlFeedback = params.feedback.replace(HTML_REGEX, '').replace(/(?:\r\n|\r|\n)/g, '<br/>');
-  const htmlMessage = `<p>Some adventurers have sent you feedback on your quest, ${title}. Hooray!</p>
+  const htmlMessage = `<p>${params.author}, some adventurers have sent you feedback on your quest, ${title}. Hooray!</p>
   <p>They played with ${params.players} adventurers on ${params.difficulty} difficulty.</p>
   <p>Their feedback:</p>
   <p>${htmlFeedback}</p>
@@ -53,7 +53,7 @@ router.post('/feedback', (req, res) => {
   // turn end of paragraphs into double newlines
   const textMessage = htmlMessage.replace(/<\/p>/g, '\r\n\r\n').replace(HTML_REGEX, '');
 
-  Mail.send(params.authorEmail, 'Feedback on your Expedition quest: ' + title, textMessage, htmlMessage, (err, result) => {
+  Mail.send(params.email, 'Feedback on your Expedition quest: ' + title, textMessage, htmlMessage, (err, result) => {
     if (err) {
       console.log(err);
       return res.status(500).send(err);
