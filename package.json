@@ -1,9 +1,8 @@
 {
-  "name": "expedition-quest-ide",
-  "version": "1.0.0",
+  "name": "expedition-quest-creator",
+  "version": "1.1.0",
   "description": "IDE for Expedition Quest Creation",
-  "repository": "https://github.com/Fabricate-IO/expedition-quest-ide",
-  "private": true,
+  "repository": "https://github.com/Fabricate-IO/expedition-quest-creator",
   "main": "react.js",
   "scripts": {
     "start": "node ${SCRIPT:-app.js}",
@@ -114,6 +113,6 @@
     "yargs": "^5.0.0"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": "^6.0.0"
   }
 }
