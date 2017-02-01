@@ -195,6 +195,10 @@ body {
         color: $font_color_primary !important;
       }
     }
+    .base_button.bigbutton > button {
+      font-size: 200% !important;
+      text-align: center !important;
+    }
     .child_wrapper {
       margin: width(large);
       margin-top: width(small);

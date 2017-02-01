@@ -108,8 +108,7 @@ function renderPrepare(props: CombatProps): JSX.Element {
   return (
     <Card title='Prepare for Combat' dark={true}>
       {helpText}
-      <h2 className="combat center">Ready to begin?</h2>
-      <Button onTouchTap={() => props.onNext(props.card.name, 'TIMER')}>Start Timer</Button>
+      <Button className="bigbutton" onTouchTap={() => props.onNext(props.card.name, 'TIMER')}>Start Timer</Button>
     </Card>
   );
 }
