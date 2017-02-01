@@ -24,7 +24,7 @@ const QuestEnd = (props: QuestEndProps): JSX.Element => {
   return (
     <Card title="Feedback?">
       <p>We hope you enjoyed <i>{props.quest.details.title}</i> by {props.quest.details.author}!</p>
-      <p>If you have any feedback you'd like to send to the author, now's your chance (providing feedback is option).</p>
+      <p>If you have any feedback you'd like to send to the author, now's your chance (providing feedback is optional).</p>
       <FeedbackTextArea onBlur={props.onCommentChange}></FeedbackTextArea>
       <Button onTouchTap={() => props.onSubmit(props.quest, props.settings)}>
         {(props.quest.feedback === '' || props.quest.feedback == null) ? 'Return to menu' : 'Send feedback'}
