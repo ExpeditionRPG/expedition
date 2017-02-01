@@ -1,5 +1,4 @@
-import { connect } from 'react-redux'
-import {QuestDetails, defaultQuestContext} from '../reducers/QuestTypes'
+import {connect} from 'react-redux'
 import {AppState, SettingsType} from '../reducers/StateTypes'
 import {toCard} from '../actions/card'
 import {initCombat} from '../actions/quest'

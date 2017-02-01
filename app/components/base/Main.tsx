@@ -1,20 +1,22 @@
 import * as React from 'react'
+import {Provider} from 'react-redux'
 import theme from '../../theme'
 
-import {AppStateWithHistory, TransitionType, SearchPhase} from '../../reducers/StateTypes'
-import SplashScreenContainer from '../SplashScreenContainer'
 import Card from './Card'
-import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
-import QuestStartContainer from '../QuestStartContainer'
-import RoleplayContainer from '../RoleplayContainer'
-import CombatContainer from '../CombatContainer'
-import SearchContainer from '../SearchContainer'
-import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
-import SettingsContainer from '../SettingsContainer'
 import AdvancedPlayContainer from '../AdvancedPlayContainer'
+import CombatContainer from '../CombatContainer'
+import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
+import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
+import RoleplayContainer from '../RoleplayContainer'
+import SearchContainer from '../SearchContainer'
+import SettingsContainer from '../SettingsContainer'
+import SplashScreenContainer from '../SplashScreenContainer'
+import QuestStartContainer from '../QuestStartContainer'
+import QuestEndContainer from '../QuestEndContainer'
+
+import {AppStateWithHistory, TransitionType, SearchPhase} from '../../reducers/StateTypes'
 import {RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../QuestParser'
 import {getStore} from '../../store'
-import { Provider } from 'react-redux'
 
 var ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
 
@@ -68,6 +70,9 @@ export default class Main extends React.Component<MainProps, {}> {
             console.log('Unknown quest card name ' + name);
             return this.state;
         }
+        break;
+      case 'QUEST_END':
+        card = <QuestEndContainer/>;
         break;
       case 'ADVANCED':
         card = <AdvancedPlayContainer />;

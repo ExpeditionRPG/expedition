@@ -46,9 +46,7 @@ webpack --config ./webpack.dist.config.js
 ./project.sh
 ```
 
-To build for deploying, you'll also need `google-services.json` and `GoogleService-Info.plist` for Firebase analytics.
-
-(Webpack must be run to generate the www/ folder, which is required to generate a Cordova project)
+To build for deploying, you'll also need `google-services.json` and `GoogleService-Info.plist` for Firebase analytics, which can be fetched from the Firebase project console.
 
 ### Development workflow
 
@@ -58,7 +56,7 @@ To build for deploying, you'll also need `google-services.json` and `GoogleServi
 NODE_ENV=dev node ${SCRIPT:-app.js}
 ```
 
-This outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
+This runs the app at `http://localhost:8081/` (port may be different if you're using [Containerizer](https://github.com/Fabricate-IO/containerizer)). It also outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
 
 When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 

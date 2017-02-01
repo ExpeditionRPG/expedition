@@ -6,6 +6,7 @@ import {
   CombatVictoryAction,
   TierSumDeltaAction,
   AdventurerDeltaAction,
+  UpdateFeedbackAction,
   ViewQuestAction
 } from './ActionTypes'
 import {XMLElement, SettingsType} from '../reducers/StateTypes'
@@ -21,15 +22,21 @@ export function handleCombatTimerStop(elapsedMillis: number, settings: SettingsT
 }
 
 export function initQuest(questNode: XMLElement, ctx: QuestContext): QuestNodeAction {
-  // TODO: Handle quests beginning with combat
-  // OR throw a user error in QC when starting with combat (seems like bad form?)
   const firstNode = questNode.children().eq(0);
   const metaNode = (questNode.get(0) as any);
   const meta = {
     title: metaNode.getAttribute('title'),
+    summary: metaNode.getAttribute('summary'),
+    author: metaNode.getAttribute('author'),
+    email: metaNode.getAttribute('email'),
+    ur: metaNode.getAttribute('url'),
+    minPlayers: metaNode.getAttribute('minPlayers'),
+    maxPlayers: metaNode.getAttribute('maxPlayers'),
+    minTimeMinutes: metaNode.getAttribute('minTimeMinutes'),
+    maxTimeMinutes: metaNode.getAttribute('maxTimeMinutes'),
   };
   window.FirebasePlugin.logEvent("quest_start", meta);
-  return {type: 'QUEST_NODE', node: firstNode, result: loadRoleplayNode(firstNode, ctx)};
+  return {type: 'QUEST_NODE', node: firstNode, result: loadRoleplayNode(firstNode, ctx), details: meta};
 }
 
 export function initCombat(node: XMLElement, settings: SettingsType, result: CombatResult): InitCombatAction {
@@ -51,7 +58,7 @@ export function loadNode(settings: SettingsType, dispatch: Redux.Dispatch<any>, 
     case 'TRIGGER':
       var trigger = loadTriggerNode(node);
       if (trigger.name === 'end') {
-        dispatch(toPrevious('QUEST_START', undefined, true));
+        dispatch(toCard('QUEST_END'));
         return;
       } else if (trigger.name === 'goto') {
         loadNode(settings, dispatch, trigger.node, ctx);
@@ -102,6 +109,10 @@ export function tierSumDelta(delta: number): TierSumDeltaAction {
 
 export function adventurerDelta(numPlayers: number, delta: number): AdventurerDeltaAction {
   return {type: 'ADVENTURER_DELTA', delta, numPlayers};
+}
+
+export function updateFeedback(feedback: string): UpdateFeedbackAction {
+  return {type: 'UPDATE_FEEDBACK', feedback};
 }
 
 // TODO: This should probably go in a "search" actions file.

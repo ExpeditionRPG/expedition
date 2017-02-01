@@ -1,9 +1,9 @@
-import {XMLElement} from '../reducers/StateTypes'
-import {initQuest} from './quest'
-import {SearchSettings, UserState} from '../reducers/StateTypes'
-import {QuestContext, defaultQuestContext} from '../reducers/QuestTypes'
-import {toCard} from './card'
 import {authSettings} from '../constants'
+import {toCard} from './card'
+import {initQuest, updateFeedback} from './quest'
+
+import {SearchSettings, SettingsType, QuestState, UserState, XMLElement} from '../reducers/StateTypes'
+import {QuestContext, defaultQuestContext} from '../reducers/QuestTypes'
 
 export function fetchQuestXML(url: string) {
   return (dispatch: Redux.Dispatch<any>): any => {
@@ -70,5 +70,28 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
     };
     xhr.withCredentials = true;
     xhr.send(JSON.stringify(params));
+  };
+}
+
+export function sendFeedback(quest: QuestState, settings: SettingsType) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    const meta = quest.details;
+    $.post({
+      url: authSettings.urlBase + '/feedback',
+      data: JSON.stringify({title: meta.title, author: meta.author, email: meta.email, feedback: quest.feedback, players: settings.numPlayers, difficulty: settings.difficulty}),
+      dataType: 'json',
+    })
+    .done(function(msg: string){
+      // TODO replace alerts with something nicer / more in-style
+      dispatch(updateFeedback(''));
+      alert('Feedback submitted. Thank you!');
+    })
+    .fail(function(xhr: any, err: string) {
+      if (xhr.status === 200) {
+        dispatch(updateFeedback(''));
+        return alert('Feedback submitted. Thank you!');
+      }
+      alert('Error encountered when submitting feedback: ' + err);
+    });
   };
 }

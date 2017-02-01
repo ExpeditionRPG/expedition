@@ -18,6 +18,7 @@ export interface QuestNodeAction extends Redux.Action {
   type: 'QUEST_NODE';
   node: XMLElement;
   result: RoleplayResult;
+  details?: QuestDetails;
 }
 
 export interface ChangeSettingsAction extends Redux.Action {
@@ -58,6 +59,11 @@ export interface AdventurerDeltaAction extends Redux.Action {
   type: 'ADVENTURER_DELTA';
   delta: number;
   numPlayers: number;
+}
+
+export interface UpdateFeedbackAction extends Redux.Action {
+  type: 'UPDATE_FEEDBACK';
+  feedback: string;
 }
 
 export interface SearchResponseAction extends Redux.Action {

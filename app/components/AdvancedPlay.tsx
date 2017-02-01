@@ -2,7 +2,6 @@ import * as React from 'react'
 import theme from '../theme'
 import Card from './base/Card'
 import Button from './base/Button'
-import {QuestDetails} from '../reducers/QuestTypes'
 import {SettingsType} from '../reducers/StateTypes'
 
 export interface AdvancedPlayStateProps {

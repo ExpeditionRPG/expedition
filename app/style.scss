@@ -330,6 +330,18 @@ body {
     }
   }
 
+  .textfield {
+    font-size: inherit !important;
+    line-height: inherit !important;
+  }
+  textarea {
+    font-size: fontsize(flavor) !important;
+    line-height: 1.2 !important;
+    border: $border_accent !important;
+    padding: 10px !important;
+    background-color: $bg_interactive !important;
+  }
+
   .callout {
     display: flex;
     flex-direction: row;

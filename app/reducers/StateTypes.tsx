@@ -31,6 +31,10 @@ export interface XMLElementSet {
   [k: number]: DOMElement;
 }
 
+export interface EndSettings {
+  text: string;
+}
+
 export interface SearchSettings {
   text: string;
   age: string;
@@ -50,7 +54,7 @@ export interface SettingsType {
   multitouch: boolean;
 }
 
-export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'CUSTOM_COMBAT' | 'ADVANCED';
+export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'CUSTOM_COMBAT' | 'ADVANCED';
 export interface CardState {
   name: CardName;
   phase?: CombatPhaseNameType | SearchPhase;
@@ -60,6 +64,7 @@ export interface CardState {
 export type TransitionType = 'NEXT' | 'PREV' | 'INSTANT';
 
 export interface QuestState {
+  feedback?: string;
   details?: QuestDetails;
   node?: XMLElement;
   result?: CombatResult|RoleplayResult;

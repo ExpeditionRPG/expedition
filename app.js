@@ -23,7 +23,7 @@ if (module === require.main) {
     };
   }
   var server = new WebpackDevServer(webpack(webpack_config), conf);
-  var port = process.env.DOCKER_PORT || 5000;
+  var port = process.env.DOCKER_PORT || 8081;
 
   // Start the server
   server.listen(port, "0.0.0.0", function() {});

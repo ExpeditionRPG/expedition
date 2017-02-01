@@ -1,7 +1,6 @@
 import {connect} from 'react-redux'
 import {AppState, XMLElement} from '../reducers/StateTypes'
-import {QuestDetails} from '../reducers/QuestTypes'
-import {toPrevious, toCard} from '../actions/card'
+import {toCard, toPrevious} from '../actions/card'
 import QuestStart, {QuestStartStateProps, QuestStartDispatchProps} from './QuestStart'
 
 
