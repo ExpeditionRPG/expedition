@@ -6,7 +6,7 @@ export function card(state: CardState = {name: 'SPLASH_CARD', ts: Date.now()}, a
   switch (action.type) {
     case 'NAVIGATE':
       const to = (action as NavigateAction).to;
-      if (to.ts - state.ts < NAVIGATION_DEBOUNCE_MS) {
+      if (to.ts - state.ts < NAVIGATION_DEBOUNCE_MS && !to.overrideDebounce) {
         return state;
       }
       return to;

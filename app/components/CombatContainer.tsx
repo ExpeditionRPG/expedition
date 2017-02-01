@@ -63,9 +63,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     },
     onTimerStop: (cardName: CardName, elapsedMillis: number, settings: SettingsType, surge: boolean) => {
       if (surge) {
-        dispatch(toCard(cardName, 'SURGE'));
+        dispatch(toCard(cardName, 'SURGE', true));
       } else {
-        dispatch(toCard(cardName, 'RESOLVE_ABILITIES'));
+        dispatch(toCard(cardName, 'RESOLVE_ABILITIES', true));
       }
       dispatch(handleCombatTimerStop(elapsedMillis, settings));
     },

@@ -57,8 +57,9 @@ export interface SettingsType {
 export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'CUSTOM_COMBAT' | 'ADVANCED';
 export interface CardState {
   name: CardName;
-  phase?: CombatPhaseNameType | SearchPhase;
   ts: number;
+  phase?: CombatPhaseNameType | SearchPhase;
+  overrideDebounce?: boolean;
 }
 
 export type TransitionType = 'NEXT' | 'PREV' | 'INSTANT';
