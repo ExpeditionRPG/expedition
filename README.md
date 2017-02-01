@@ -10,13 +10,13 @@ We're very friendly to pull requests! Simply fork the repository, create a new b
 
 Priorities are indicated via the "Assigned" field on issues and pull requests. Having someone assigned to it indicates that it's a current top priority and currently being worked on. Issues that are definitively low priorty / no plans to be addressed for 6 months+ should be labeled as "wontfix" and closed.
 
-Question? Email us at contact@fabricate.io
+Question? Email us at Expedition@Fabricate.io
 
 ## Getting Started
 
 ### Requirements
 
-Requires a NodeJS version above 0.12.x:
+Requires NodeJS v4.0 or above:
 
 ```sh
 node --version
@@ -120,5 +120,4 @@ Notes:
 
 #### Troubleshooting builds
 
-If you're having trouble with UglifyJS when running `webpack -p`, try removing webpack's dependence on uglify-js and letting
-the dev-dependency version be used (see [here](https://github.com/mishoo/UglifyJS2/issues/448)).
+If you're having trouble with UglifyJS when running `webpack -p`, try removing webpack's dependence on uglify-js and letting the dev-dependency version be used (see [here](https://github.com/mishoo/UglifyJS2/issues/448)).

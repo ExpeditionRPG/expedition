@@ -68,4 +68,5 @@
         <variable name="REVERSED_CLIENT_ID" value="com.googleusercontent.apps.545484140970-lgcbm3df469kscbngg2iof57muj3p588" />
     </plugin>
     <plugin name="cordova-plugin-firebase" spec="~0.1.18" />
+    <plugin name="cordova-plugin-insomnia" spec="https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git" />
 </widget>

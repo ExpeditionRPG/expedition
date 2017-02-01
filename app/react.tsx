@@ -61,6 +61,7 @@ function onDeviceReady() {
   document.addEventListener('backbutton', function() {
     getStore().dispatch(toPrevious());
   }, false);
+  window.plugins.insomnia.keepAwake(); // keep screen on while app is open
 }
 
 // TODO: API Auth

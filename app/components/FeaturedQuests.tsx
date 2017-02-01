@@ -4,6 +4,8 @@ import Card from './base/Card'
 import Button from './base/Button'
 import {QuestDetails} from '../reducers/QuestTypes'
 
+declare var window: any;
+
 export interface FeaturedQuestsStateProps {
   quests: QuestDetails[];
 }
