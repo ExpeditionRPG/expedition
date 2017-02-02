@@ -44,10 +44,9 @@ router.post('/feedback', (req, res) => {
   const title = params.title.replace(HTML_REGEX, '');
   const htmlFeedback = params.feedback.replace(HTML_REGEX, '').replace(/(?:\r\n|\r|\n)/g, '<br/>');
   const htmlMessage = `<p>${params.author}, some adventurers have sent you feedback on your quest, ${title}. Hooray!</p>
-  <p>They played with ${params.players} adventurers on ${params.difficulty} difficulty.</p>
-  <p>Their feedback:</p>
-  <p>${htmlFeedback}</p>
-  <p>If you have any questions about the quest creator, or run into any bugs, you can email <a href="mailto:Expedition@Fabricate.io">Expedition@Fabricate.io</a></p>
+  <p>They played with ${params.players} adventurers on ${params.difficulty} difficulty. Their feedback:</p>
+  <p>"${htmlFeedback}"</p>
+  <p>If you have questions or run into bugs, you can email <a href="mailto:Expedition@Fabricate.io">Expedition@Fabricate.io</a></p>
   <p>Happy Adventuring!</p>
   <p>Todd & Scott</p>`;
   // turn end of paragraphs into double newlines
