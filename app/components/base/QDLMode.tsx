@@ -19,7 +19,9 @@ var QDLHighlightRules: any = function() {
   for (let s in start) {
     if (start[s].token === "markup.list") {
       start[s].regex = "^\\s*(?:[*+-]|\\d+\\.)\\s+";
-      break;
+    }
+    if (start[s].token === "markup.heading.1") {
+      start[s].regex = "^\s*(> .*)";
     }
   }
 };
