@@ -10,4 +10,4 @@ describe('ContextEditor', () => {
   it('Lists scopes of previous quest cards');
 
   it('Allows setting initial context by previous quest scope');
-}
+});

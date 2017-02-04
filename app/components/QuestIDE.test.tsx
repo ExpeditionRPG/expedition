@@ -6,11 +6,11 @@ import expect from 'expect'
 //import QuestIDE from './QuestIDE'
 
 describe('QuestIDE', () => {
-  it('calls onTabChange on tab tap')
+  it('calls onTabChange on tab tap');
 
-  it('keeps same tab if onTabChange does not callback')
+  it('keeps same tab if onTabChange does not callback');
 
-  it('sets syntax highlighting based on tab')
+  it('sets syntax highlighting based on tab');
 
-  it('calls onDirty when editor text modified')
-})
+  it('calls onDirty when editor text modified');
+});

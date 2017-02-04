@@ -1,7 +1,7 @@
 import expect from 'expect'
 
 describe('ContextEditorContainer', () => {
-  it('maps state')
+  it('maps state');
 
-  it('dispatches initial op values')
-})
+  it('dispatches initial op values');
+});
