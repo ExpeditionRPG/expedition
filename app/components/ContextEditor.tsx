@@ -80,6 +80,19 @@ class OverrideTextArea extends React.Component<any, any> {
   }
 }
 
+class ScrollBottom extends React.Component<any, any> {
+  onRef(ref: any) {
+    if (!ref) {
+      return;
+    }
+    ref.scrollTop = ref.scrollHeight;
+  }
+
+  render() {
+    return (<div ref={this.onRef.bind(this)}>{this.props.children}</div>);
+  }
+}
+
 const ContextEditor = (props: ContextEditorProps): JSX.Element => {
   var KVs: any[] = [];
   for (let i = 0; i < props.scopeHistory.length; i++) {
@@ -107,9 +120,9 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
         <div>{'}'}</div>
       </div>
       <div className="preview">
-        <div>
+        <ScrollBottom>
         {KVs}
-        </div>
+        </ScrollBottom>
       </div>
     </div>
   );

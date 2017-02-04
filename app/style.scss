@@ -202,7 +202,7 @@ button {
         font-size: 20px;
         width: 100%;
         height: calc(100% - 100px);
-        overflow-y: scroll;
+        overflow-y: auto;
         background: rgba(0,0,0,0.2);
       }
     }
@@ -233,8 +233,6 @@ button {
     }
   }
 }
-
-
 
 // ------ SplitPane styling ------
 

@@ -8,15 +8,18 @@ var toMarkdown: any = require('../../translation/to_markdown')
 const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
   return {
     loggedIn: state.user.loggedIn,
-    bottomPanelOpen: false,
+    bottomPanelShown: state.editor.bottomPanelShown,
   };
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MainDispatchProps => {
   return {
   	onDragFinished: (size: number) => {
-  		dispatch({type: 'SPLIT_PANE_DRAG'});
-  	}
+  		dispatch({type: 'PANEL_DRAG'});
+  	},
+    onPanelToggle: () => {
+      dispatch({type: 'PANEL_TOGGLE'});
+    }
   };
 }
 

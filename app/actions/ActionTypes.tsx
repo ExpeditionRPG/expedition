@@ -89,6 +89,10 @@ export interface SetOpInitAction extends Redux.Action {
   mathjs: string;
 }
 
-export interface SplitPaneDrag extends Redux.Action {
-  type: 'SPLIT_PANE_DRAG';
+export interface PanelDrag extends Redux.Action {
+  type: 'PANEL_DRAG';
+}
+
+export interface PanelToggle extends Redux.Action {
+  type: 'PANEL_TOGGLE';
 }

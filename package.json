@@ -6,7 +6,7 @@
   "private": true,
   "main": "react.js",
   "scripts": {
-    "start": "node ${SCRIPT:-app.js}",
+    "start": "NODE_ENV=dev node app.js",
     "dev-dash": "NODE_ENV=dev webpack-dashboard -- node ${SCRIPT:-app.js}",
     "dev": "node ${SCRIPT:-app.js}",
     "monitor": "nodemon ${SCRIPT:-app.js}",
