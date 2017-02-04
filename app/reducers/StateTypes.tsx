@@ -52,6 +52,7 @@ export interface SettingsType {
   difficulty: DifficultyType;
   showHelp: boolean;
   multitouch: boolean;
+  vibration: boolean;
 }
 
 export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'CUSTOM_COMBAT' | 'ADVANCED';

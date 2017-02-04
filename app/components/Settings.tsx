@@ -10,6 +10,7 @@ export interface SettingsStateProps extends SettingsType {}
 export interface SettingsDispatchProps {
   onShowHelpChange: (change: boolean) => void;
   onMultitouchChange: (change: boolean) => void;
+  onVibrationChange: (change: boolean) => void;
   onPlayerDelta: (numPlayers: number, i: number) => void;
   onDifficultyDelta: (difficulty: DifficultyType, i: number) => void;
 }
@@ -45,6 +46,10 @@ const Settings = (props: SettingsProps): JSX.Element => {
 
       <Checkbox label="Show Help" value={props.showHelp} onChange={props.onShowHelpChange}>
         {helpText}
+      </Checkbox>
+
+      <Checkbox label="Vibration" value={props.vibration} onChange={props.onVibrationChange}>
+        Vibrate on touch
       </Checkbox>
     </Card>
   );

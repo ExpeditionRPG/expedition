@@ -30,6 +30,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Setti
     onMultitouchChange: (v: boolean) => {
       dispatch(changeSettings({multitouch: v}));
     },
+    onVibrationChange: (v: boolean) => {
+      dispatch(changeSettings({vibration: v}));
+    },
     onPlayerDelta: (numPlayers: number, delta: number) => {
       numPlayers += delta;
       if (numPlayers <= 0 || numPlayers > 6) {

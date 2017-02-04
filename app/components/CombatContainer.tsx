@@ -1,9 +1,11 @@
-import { connect } from 'react-redux'
-import {AppStateWithHistory, XMLElement, SettingsType, CardName} from '../reducers/StateTypes'
-import {CombatPhaseNameType, MidCombatPhase, QuestContext} from '../reducers/QuestTypes'
+import {connect} from 'react-redux'
+
+import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
+
 import {toPrevious, toCard} from '../actions/card'
 import {event, handleCombatTimerStop, combatDefeat, combatVictory, tierSumDelta, adventurerDelta} from '../actions/quest'
-import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
+import {AppStateWithHistory, XMLElement, SettingsType, CardName} from '../reducers/StateTypes'
+import {CombatPhaseNameType, MidCombatPhase, QuestContext} from '../reducers/QuestTypes'
 
 declare var window:any;
 
@@ -49,6 +51,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CombatDispatchProps => {
   return {
     onNext: (cardName: CardName, phase: CombatPhaseNameType) => {
+
       dispatch(toCard(cardName, phase));
     },
     onVictory: (cardName: CardName, maxTier: number, settings: SettingsType) => {

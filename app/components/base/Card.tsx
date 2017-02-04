@@ -11,6 +11,7 @@ import theme from '../../theme'
 
 declare var window:any;
 
+
 // If onMenuSelect or onReturn is not set, default dispatch behavior is used.
 interface ExpeditionCardProps extends React.Props<any> {
   onMenuSelect?: (value: string) => any;
