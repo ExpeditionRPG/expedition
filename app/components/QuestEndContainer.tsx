@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       dispatch(updateFeedback(text));
     },
     onSubmit: (quest: QuestState, settings: SettingsType) => {
-      const feedback = quest.feedback;
+      const feedback = quest.feedback || '';
       if (feedback.length > 0 && feedback.length < MIN_FEEDBACK_LENGTH) {
         return alert('More feedback required: Feedback must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value to the quest writer');
       } else if (feedback.length > MIN_FEEDBACK_LENGTH) {
