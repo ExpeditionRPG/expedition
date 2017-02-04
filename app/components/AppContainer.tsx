@@ -8,6 +8,8 @@ import {loadQuestXML} from 'expedition-app/app/actions/web'
 import {toCard} from 'expedition-app/app/actions/card'
 import {defaultQuestContext} from 'expedition-app/app/reducers/QuestTypes'
 
+var math = require('mathjs') as any;
+
 const mapStateToProps = (state: AppState, ownProps: any): AppStateProps => {
   var scope = (state.preview.quest && state.preview.quest.result && state.preview.quest.result.ctx && state.preview.quest.result.ctx.scope) || {};
   return {
@@ -16,8 +18,6 @@ const mapStateToProps = (state: AppState, ownProps: any): AppStateProps => {
     scope: scope,
   };
 }
-
-var math = require('mathjs') as any;
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AppDispatchProps => {
   return {

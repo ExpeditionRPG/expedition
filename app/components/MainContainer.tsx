@@ -14,9 +14,9 @@ const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MainDispatchProps => {
   return {
-  	onDragFinished: (size: number) => {
-  		dispatch({type: 'PANEL_DRAG'});
-  	},
+    onDragFinished: (size: number) => {
+      dispatch({type: 'PANEL_DRAG'});
+    },
     onPanelToggle: () => {
       dispatch({type: 'PANEL_TOGGLE'});
     }

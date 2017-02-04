@@ -1,5 +1,4 @@
 import * as React from 'react'
-import {QuestContext} from 'expedition-app/app/reducers/QuestTypes'
 import LeftIcon from 'material-ui/svg-icons/navigation/chevron-left'
 import IconButton from 'material-ui/IconButton'
 import {OverrideTextArea} from './base/OverrideTextArea'

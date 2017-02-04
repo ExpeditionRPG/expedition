@@ -1,17 +1,10 @@
 import * as React from 'react'
 
-import Main from 'expedition-app/app/components/base/Main.tsx'
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
+import Main from 'expedition-app/app/components/base/Main'
 import FlatButton from 'material-ui/FlatButton'
-import SettingsIcon from 'material-ui/svg-icons/action/settings';
-import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
-import ReplayIcon from 'material-ui/svg-icons/av/replay';
 
 require('expedition-app/app/style.scss')
 
-import CombinedReducers from 'expedition-app/app/reducers/CombinedReducers'
-import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
 import {EditorState, QuestType} from '../reducers/StateTypes'
 
 export interface AppStateProps {
