@@ -3,7 +3,9 @@ import {NavigateAction, ReturnAction} from '../actions/ActionTypes'
 import {NAVIGATION_DEBOUNCE_MS} from '../constants'
 
 
-export function card(state: CardState = {name: 'SPLASH_CARD', ts: Date.now()}, action: Redux.Action): CardState {
+// ts: 0 solves an obscure bug (instead of Date.now()) where rapidly triggering navigations with undefined states
+// (specifically from the editor) wouldn't work b/c their ts diffs were < DEBOUNCE
+export function card(state: CardState = {name: 'SPLASH_CARD', ts: 0}, action: Redux.Action): CardState {
   switch (action.type) {
     case 'NAVIGATE':
       const to = (action as NavigateAction).to;

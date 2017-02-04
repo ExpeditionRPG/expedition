@@ -5,6 +5,9 @@ import {initQuest, updateFeedback} from './quest'
 import {SearchSettings, SettingsType, QuestState, UserState, XMLElement} from '../reducers/StateTypes'
 import {QuestContext, defaultQuestContext} from '../reducers/QuestTypes'
 
+declare var window:any;
+
+
 export function fetchQuestXML(url: string) {
   return (dispatch: Redux.Dispatch<any>): any => {
     $.get(url, function(data: XMLElement | string) {
@@ -24,7 +27,9 @@ export function loadQuestXML(data: XMLElement | string, ctx: QuestContext) {
       throw 'Invalid Quest - missing <quest> node';
     }
 
-    dispatch(initQuest(questNode, ctx));
+    const init = initQuest(questNode, ctx);
+    window.FirebasePlugin.logEvent("quest_start", init.details); // here instead of initQuest b/c initQuest is also used by the editor
+    dispatch(init);
     dispatch(toCard('QUEST_START'));
   };
 }

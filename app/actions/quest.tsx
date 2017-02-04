@@ -14,8 +14,6 @@ import {toCard, toPrevious} from './card'
 import {loadTriggerNode, loadCombatNode, loadRoleplayNode, handleChoice, handleEvent, RoleplayResult, CombatResult} from '../QuestParser'
 import {QuestDetails, QuestContext} from '../reducers/QuestTypes'
 
-declare var window:any;
-
 
 export function handleCombatTimerStop(elapsedMillis: number, settings: SettingsType): CombatTimerStopAction {
   return {type: 'COMBAT_TIMER_STOP', elapsedMillis, settings};
@@ -23,20 +21,19 @@ export function handleCombatTimerStop(elapsedMillis: number, settings: SettingsT
 
 export function initQuest(questNode: XMLElement, ctx: QuestContext): QuestNodeAction {
   const firstNode = questNode.children().eq(0);
-  const metaNode = (questNode.get(0) as any);
-  const meta = {
-    title: metaNode.getAttribute('title'),
-    summary: metaNode.getAttribute('summary'),
-    author: metaNode.getAttribute('author'),
-    email: metaNode.getAttribute('email'),
-    ur: metaNode.getAttribute('url'),
-    minPlayers: metaNode.getAttribute('minPlayers'),
-    maxPlayers: metaNode.getAttribute('maxPlayers'),
-    minTimeMinutes: metaNode.getAttribute('minTimeMinutes'),
-    maxTimeMinutes: metaNode.getAttribute('maxTimeMinutes'),
+  const metaNode = $(questNode.get(0) as any);
+  const details = {
+    title: metaNode.attr('title'),
+    summary: metaNode.attr('summary'),
+    author: metaNode.attr('author'),
+    email: metaNode.attr('email'),
+    ur: metaNode.attr('url'),
+    minPlayers: metaNode.attr('minPlayers'),
+    maxPlayers: metaNode.attr('maxPlayers'),
+    minTimeMinutes: metaNode.attr('minTimeMinutes'),
+    maxTimeMinutes: metaNode.attr('maxTimeMinutes'),
   };
-  window.FirebasePlugin.logEvent("quest_start", meta);
-  return {type: 'QUEST_NODE', node: firstNode, result: loadRoleplayNode(firstNode, ctx), details: meta};
+  return {type: 'QUEST_NODE', node: firstNode, result: loadRoleplayNode(firstNode, ctx), details};
 }
 
 export function initCombat(node: XMLElement, settings: SettingsType, result: CombatResult): InitCombatAction {
