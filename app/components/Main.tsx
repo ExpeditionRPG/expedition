@@ -1,12 +1,12 @@
-import * as React from 'react';
-import {Tab} from 'material-ui/Tabs';
-import TextView from './base/TextView';
-import DialogsContainer from './DialogsContainer';
-import SplashContainer from './SplashContainer';
-import QuestAppBarContainer from './QuestAppBarContainer';
-import QuestIDEContainer from './QuestIDEContainer';
-import ContextEditorContainer from './ContextEditorContainer';
-import FlatButton from 'material-ui/FlatButton';
+import * as React from 'react'
+import {Tab} from 'material-ui/Tabs'
+import TextView from './base/TextView'
+import DialogsContainer from './DialogsContainer'
+import SplashContainer from './SplashContainer'
+import QuestAppBarContainer from './QuestAppBarContainer'
+import QuestIDEContainer from './QuestIDEContainer'
+import ContextEditorContainer from './ContextEditorContainer'
+import FlatButton from 'material-ui/FlatButton'
 
 var SplitPane = require('react-split-pane') as any;
 
