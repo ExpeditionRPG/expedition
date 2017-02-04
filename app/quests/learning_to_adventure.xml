@@ -69,10 +69,13 @@
   </roleplay>
   <roleplay title="A Magical Fight" id="magicfight">
     <instruction>
-      <p>You're about to enter combat for the first time.</p>
+      <p>[fae] You're about to enter combat for the first time.</p>
     </instruction>
     <instruction>
-      <p>The app will guide you through each round. Just remember: you must reduce the encounter tier to 0 (defeat all enemies) to win. If all adventurers are defeated, you lose.</p>
+      <p>The app will guide you through each round. To win, you must reduce the encounter tier to 0 (defeat all enemies). If all adventurers are knocked out, you lose the battle - but you might not have lost the quest.</p>
+    </instruction>
+    <instruction>
+      <p>[damage] The app will tell you when enemies surge, using the special ability listed on their card.</p>
     </instruction>
   </roleplay>
   <combat>
@@ -109,10 +112,13 @@
   </combat>
   <roleplay title="A Beastly Battle" id="beastfight">
     <instruction>
-      <p>You're about to enter combat for the first time.</p>
+      <p>[beast] You're about to enter combat for the first time.</p>
     </instruction>
     <instruction>
-      <p>The app will guide you through each round. Just remember: you must reduce the encounter tier to 0 (defeat all enemies) to win. If all adventurers are defeated, you lose.</p>
+      <p>The app will guide you through each round. To win, you must reduce the encounter tier to 0 (defeat all enemies). If all adventurers are knocked out, you lose the battle - but you might not have lost the quest.</p>
+    </instruction>
+    <instruction>
+      <p>[damage] The app will tell you when enemies surge, using the special ability listed on their card.</p>
     </instruction>
   </roleplay>
   <combat>
