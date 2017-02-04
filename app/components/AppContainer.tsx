@@ -22,9 +22,11 @@ const mapStateToProps = (state: AppState, ownProps: any): AppStateProps => {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AppDispatchProps => {
   return {
     playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => {
-      var newNode = renderXML(quest.mdRealtime.getText()).getResultAt(editor.line);
+      var renderResult = renderXML(quest.mdRealtime.getText())
+      var newNode = renderResult.getResultAt(editor.line);
       var tag = newNode.get(0).tagName;
       if (tag !== 'roleplay' && tag !== 'combat') {
+        alert("Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.");
         return;
       }
 
@@ -38,9 +40,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AppDi
       }
       
       dispatch({type: 'REBOOT_APP'});
-      dispatch(toCard('QUEST_START'));
+      dispatch(initQuest(renderResult.getResult().children().eq(0), defaultQuestContext()));
       // TODO: Make these settings configurable
-      loadNode({numPlayers: 1, difficulty: "NORMAL", showHelp: true, multitouch: false, vibration: false}, dispatch, newNode, ctx);
+      loadNode({numPlayers: 1, difficulty: "NORMAL", showHelp: true, multitouch: false}, dispatch, newNode, ctx);
     },
   };
 }

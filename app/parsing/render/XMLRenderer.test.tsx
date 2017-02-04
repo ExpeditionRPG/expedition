@@ -19,52 +19,52 @@ describe('XMLRenderer', () => {
         [
           {text: "on win", event: [dummyWin]},
           {text: "on lose", event: [dummyLose]},
-        ]).toString())
+        ], null).toString())
         .toEqual('<combat><e>Enemy1</e><e>Enemy2</e><event on="win"><div>win</div></event><event on="lose"><div>lose</div></event></combat>');
     });
   });
 
   describe('toTrigger', () => {
     it('renders', () => {
-      expect(XMLRenderer.toTrigger({text: "test"}).toString()).toEqual("<trigger>test</trigger>");
+      expect(XMLRenderer.toTrigger({text: "test"}, null).toString()).toEqual("<trigger>test</trigger>");
     });
 
     it('renders with condition', () => {
-      expect(XMLRenderer.toTrigger({text: "test", visible: "cond"}).toString()).toEqual("<trigger if=\"cond\">test</trigger>");
+      expect(XMLRenderer.toTrigger({text: "test", visible: "cond"}, null).toString()).toEqual("<trigger if=\"cond\">test</trigger>");
     })
   });
 
   describe('toQuest', () => {
     it('renders', () => {
-      expect(XMLRenderer.toQuest({'title': 'title', 'a': '1', 'b': '2'}).toString())
+      expect(XMLRenderer.toQuest({'title': 'title', 'a': '1', 'b': '2'}, null).toString())
         .toEqual('<quest title="title" a="1" b="2"></quest>');
     });
   });
 
   describe('toRoleplay', () => {
     it('renders with title', () => {
-      expect(XMLRenderer.toRoleplay({title: 'title'}, ['test1', 'test2']).toString())
+      expect(XMLRenderer.toRoleplay({title: 'title'}, ['test1', 'test2'], null).toString())
         .toEqual('<roleplay title="title"><p>test1</p><p>test2</p></roleplay>');
     });
 
     it('renders without title', () => {
-      expect(XMLRenderer.toRoleplay({}, []).toString())
+      expect(XMLRenderer.toRoleplay({}, [], null).toString())
         .toEqual('<roleplay></roleplay>');
     });
 
     it('renders with choice', () => {
-      var choice: any = XMLRenderer.toRoleplay({}, ["choice body"]);
+      var choice: any = XMLRenderer.toRoleplay({}, ["choice body"], null);
 
-      expect(XMLRenderer.toRoleplay({}, [{text: 'choice', choice}]).toString())
+      expect(XMLRenderer.toRoleplay({}, [{text: 'choice', choice}], null).toString())
         .toEqual('<roleplay><choice text="choice"><roleplay><p>choice body</p></roleplay></choice></roleplay>');
     });
   });
 
   describe('finalize', () => {
     it('coalesces all elements into first block', () => {
-      var quest = XMLRenderer.toQuest({});
-      var r = XMLRenderer.toRoleplay({}, ['test']);
-      var t = XMLRenderer.toTrigger({text: "end"});
+      var quest = XMLRenderer.toQuest({}, null);
+      var r = XMLRenderer.toRoleplay({}, ['test'], null);
+      var t = XMLRenderer.toTrigger({text: "end"}, null);
 
       expect(XMLRenderer.finalize(quest, [r,t]).toString())
         .toEqual('<quest><roleplay><p>test</p></roleplay><trigger>end</trigger></quest>');

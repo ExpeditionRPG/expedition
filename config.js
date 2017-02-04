@@ -10,6 +10,8 @@ nconf
   .env([
     'CLOUD_BUCKET',
     'GCLOUD_PROJECT',
+    'MAIL_EMAIL',
+    'MAIL_PASSWORD',
     'NODE_ENV',
     'OAUTH2_CLIENT_ID',
     'OAUTH2_CLIENT_SECRET',

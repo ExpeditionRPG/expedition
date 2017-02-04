@@ -55,51 +55,52 @@ Game over
 
 **end**`;
 
-data.basicXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
-    <roleplay title="Roleplay Card">
+data.basicXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2"
+data-line="0">
+    <roleplay title="Roleplay Card" data-line="5">
         <p>Stuff</p>
         <p>And a line</p>
     </roleplay>
-    <roleplay title="Another Card">
+    <roleplay title="Another Card" data-line="11">
         <p>More stuff</p>
         <choice text="Decision">
-            <combat>
+            <combat data-line="17">
                 <e>Skeleton Swordsman</e>
                 <e>{{anEnemyExpression}}</e>
                 <e if="condition">BadGuy</e>
                 <event on="win">
-                    <roleplay title="">
+                    <roleplay title="" data-line="25">
                         <p>Victory!</p>
                     </roleplay>
                 </event>
                 <event on="lose">
-                    <roleplay title="">
+                    <roleplay title="" data-line="29">
                         <p>Defeat!</p>
                     </roleplay>
-                    <trigger>end</trigger>
+                    <trigger data-line="31">end</trigger>
                 </event>
             </combat>
         </choice>
         <choice text="Another decision that is multiple lines long">
-            <roleplay title="">
+            <roleplay title="" data-line="36">
                 <p>More stuff</p>
             </roleplay>
-            <trigger>end</trigger>
+            <trigger data-line="38">end</trigger>
         </choice>
         <choice text="Still another decision!">
-            <roleplay title="">
+            <roleplay title="" data-line="42">
                 <p>And a thing.</p>
             </roleplay>
-            <trigger>end</trigger>
+            <trigger data-line="44">end</trigger>
         </choice>
     </roleplay>
-    <roleplay title="Fall Through">
+    <roleplay title="Fall Through" data-line="46">
         <p>Game over</p>
         <instruction>
             <p>You win</p>
         </instruction>
     </roleplay>
-    <trigger>end</trigger>
+    <trigger data-line="52">end</trigger>
 </quest>`;
 
 data.commentsMD = `#Quest Title
@@ -153,33 +154,34 @@ Game over
 
 **end**`;
 
-data.commentsXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
-    <roleplay title="Roleplay Card">
+data.commentsXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2"
+data-line="0">
+    <roleplay title="Roleplay Card" data-line="5">
         <p>Stuff</p>
         <choice text="Decision">
-            <combat>
+            <combat data-line="15">
                 <e>Skeleton Swordsman</e>
                 <event on="win">
-                    <roleplay title="">
+                    <roleplay title="" data-line="23">
                         <p>Victory!</p>
                     </roleplay>
                 </event>
                 <event on="lose">
-                    <roleplay title="">
+                    <roleplay title="" data-line="27">
                         <p>Defeat!</p>
                     </roleplay>
-                    <trigger>end</trigger>
+                    <trigger data-line="29">end</trigger>
                 </event>
             </combat>
         </choice>
         <choice text="Another decision">
-            <trigger>end</trigger>
+            <trigger data-line="39">end</trigger>
         </choice>
     </roleplay>
-    <roleplay title="Title">
+    <roleplay title="Title" data-line="43">
         <p>Game over</p>
     </roleplay>
-    <trigger>end</trigger>
+    <trigger data-line="49">end</trigger>
 </quest>`;
 
 data.indentsMD = `#Quest Title
@@ -213,23 +215,24 @@ Stuff
 
 **end**`;
 
-data.indentsXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
-    <roleplay title="Roleplay Card">
+data.indentsXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2"
+data-line="0">
+    <roleplay title="Roleplay Card" data-line="5">
         <p>Stuff</p>
         <choice text="Decision">
-            <roleplay title="">
+            <roleplay title="" data-line="11">
                 <p>Stuff2</p>
                 <choice text="Decision2">
-                    <roleplay title="">
+                    <roleplay title="" data-line="15">
                         <p>Stuff3</p>
                         <choice text="Decision3">
-                            <roleplay title="">
+                            <roleplay title="" data-line="19">
                                 <p>Stuff4</p>
                                 <choice text="Decision4">
-                                    <roleplay title="">
+                                    <roleplay title="" data-line="23">
                                         <p>Stuff5</p>
                                         <choice text="Decision5">
-                                            <roleplay title="">
+                                            <roleplay title="" data-line="27">
                                                 <p>Stuff6</p>
                                             </roleplay>
                                         </choice>
@@ -242,7 +245,7 @@ data.indentsXML = `<quest title="Quest Title" author="Test" minplayers="1" maxpl
             </roleplay>
         </choice>
     </roleplay>
-    <trigger>end</trigger>
+    <trigger data-line="29">end</trigger>
 </quest>`;
 
 data.noHeaderMD = `_Roleplay Card_
@@ -272,9 +275,10 @@ author: Test
 
 Roleplay card without header`;
 
-data.triggerWithNoAfterHeaderXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2">
-    <trigger>end</trigger>
-    <roleplay title="">
+data.triggerWithNoAfterHeaderXML = `<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2"
+data-line="0">
+    <trigger data-line="5">end</trigger>
+    <roleplay title="" data-line="7">
         <p>Roleplay card without header</p>
     </roleplay>
 </quest>`;

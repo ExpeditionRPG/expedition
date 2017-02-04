@@ -3,16 +3,15 @@ import brace from 'brace'
 import AceEditor from 'react-ace'
 
 import 'brace/ext/searchbox'
-import 'brace/mode/xml'
 import 'brace/mode/markdown'
 import 'brace/theme/twilight'
 
-var acequire: any = (require('brace') as any).acequire;
+const acequire: any = (require('brace') as any).acequire;
 const { Range } = acequire('ace/range');
 
 import { QDLMode } from './QDLMode'
 import {AnnotationType} from '../../reducers/StateTypes'
-var mode = new QDLMode();
+const mode = new QDLMode();
 
 interface TextViewProps extends React.Props<any> {
   onChange: any;
@@ -84,13 +83,18 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       // adjusting the vertical height of Ace.
       ref.editor.resize();
 
+      var session = ref.editor.getSession();
+
       // "Automatically scrolling cursor into view after selection change
       // this will be disabled in the next version set
       // editor.$blockScrolling = Infinity to disable this message"
       ref.editor.$blockScrolling = Infinity;
 
-      // Set our custom mode.
-      ref.editor.getSession().$mode = mode;
+      // Set our custom mode. DUCT TAPE!!!
+      session.$mode = mode;
+      session.$foldMode = mode.foldingRules;
+      session.getFoldWidget = function(row: number) { return mode.foldingRules.getFoldWidget(session, '', row); };
+      session.getFoldWidgetRange = function(row: number) { return mode.foldingRules.getFoldWidgetRange(session, '', row); };
       ref.editor.getSession().bgTokenizer.setTokenizer(mode.getTokenizer());
 
       // Additional configuration
@@ -102,7 +106,6 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       ref.editor.on('changeSelection', this.onSelectionChange);
 
       if (this.props.annotations) {
-        var session = ref.editor.getSession();
         session.setAnnotations(this.props.annotations);
 
         for (var i = 0; i < this.props.annotations.length; i++) {

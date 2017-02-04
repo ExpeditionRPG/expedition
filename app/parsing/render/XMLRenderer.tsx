@@ -4,7 +4,7 @@ var cheerio: any = require('cheerio');
 
 // TODO: Move error checks in this renderer to the QDLRenderer class.
 export var XMLRenderer: Renderer = {
-  toRoleplay: function(attribs: {[k: string]: string}, body: (string|RoleplayChild|Instruction)[]): any {
+  toRoleplay: function(attribs: {[k: string]: string}, body: (string|RoleplayChild|Instruction)[], line: number): any {
     var roleplay = cheerio.load('<roleplay>')('roleplay');
 
     var keys = Object.keys(attribs);
@@ -36,10 +36,11 @@ export var XMLRenderer: Renderer = {
         roleplay.append(instruction);
       }
     }
+    roleplay.attr('data-line', line);
     return roleplay;
   },
 
-  toCombat: function(attribs: {[k: string]: any}, events: CombatChild[]): any {
+  toCombat: function(attribs: {[k: string]: any}, events: CombatChild[], line: number): any {
     var combat = cheerio.load('<combat></combat>')("combat");
 
     var keys = Object.keys(attribs);
@@ -68,23 +69,26 @@ export var XMLRenderer: Renderer = {
       }
       combat.append(currEvent);
     }
+    combat.attr('data-line', line);
     return combat;
   },
 
-  toTrigger: function(attribs: {[k: string]: any}): any {
+  toTrigger: function(attribs: {[k: string]: any}, line: number): any {
     var trigger = cheerio.load('<trigger>'+attribs['text']+'</trigger>')('trigger');
     if (attribs['visible']) {
       trigger.attr('if', attribs['visible']);
     }
+    trigger.attr('data-line', line);
     return trigger;
   },
 
-  toQuest: function(attribs: {[k: string]: string}): any {
+  toQuest: function(attribs: {[k: string]: string}, line: number): any {
     var quest = cheerio.load('<quest>')('quest');
     var keys = Object.keys(attribs);
     for(var i = 0; i < keys.length; i++) {
       quest.attr(keys[i], attribs[keys[i]]);
     }
+    quest.attr('data-line', line);
     return quest;
   },
 
