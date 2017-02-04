@@ -39,17 +39,18 @@ const Main = (props: MainProps): JSX.Element => {
   }
 
   // TODO: Constant-ify default size of split pane
-  var contents = (
-    <div className="contents">
-      <QuestIDEContainer/>
-      <div className="bottomPanel">
-        <div className="header">
-          <AddIcon onTouchTap={(event: any) => {props.onPanelToggle();}} />
-          <h2>Context Explorer</h2>
+  if (!props.bottomPanelShown) {
+    var contents = (
+      <div className="contents">
+        <QuestIDEContainer/>
+        <div className="bottomPanel" onTouchTap={(event: any) => {props.onPanelToggle();}}>
+          <div className="header">
+            <AddIcon/>
+            <h2>Context Explorer</h2>
+          </div>
         </div>
-      </div>
-    </div>);
-  if (props.bottomPanelShown) {
+      </div>);
+  } else {
     // SplitPane dimensions are measured as the size of the *editor* pane, not the
     // bottom pane.
     var contents = (<div className="contents"><SplitPane

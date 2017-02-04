@@ -24,13 +24,15 @@ const App = (props: AppProps): JSX.Element => {
     <div className="app_root">
       <div className="app_controls">
         <FlatButton
-          onTouchTap={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)} 
+          onTouchTap={(event: any) => props.playFromCursor({}, props.editor, props.quest)}
           label="Play from Cursor">
         </FlatButton>
+        {props.editor.bottomPanelShown && 
         <FlatButton
-          onTouchTap={(event: any) => props.playFromCursor({}, props.editor, props.quest)}
-          label="Play from Cursor (blank context)">
+          onTouchTap={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)} 
+          label="Play from Cursor (preserve context)">
         </FlatButton>
+        }
       </div>
       <div className="app editor_override">
         <Main/>

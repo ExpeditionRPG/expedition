@@ -76,9 +76,9 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
   return (
     <div className="console">
       <div className="interactive">
-        <div>Initial Context: {'{'}</div>
+        <div>Initial Context: {'{{'}</div>
         <OverrideTextArea value={props.opInit} onBlur={(event: any) => props.onInitialContext(event.target.value)}></OverrideTextArea>
-        <div>{'}'}</div>
+        <div>{'}}'}</div>
       </div>
       <div className="preview">
         <ScrollBottom>

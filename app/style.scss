@@ -27,10 +27,6 @@ html, body, #react-app {
 // Component styles
 // ===============================================
 
-button {
-  font-family: 'MinionPro' !important;
-}
-
 .dialog {
   background-color: rgba(0,0,0,0.65) !important;
 }
@@ -157,11 +153,12 @@ button {
 
 
 .bottomPanel {
-  height: 28px;
+  height: 32px;
 
   .header {
     background: rgba(0,0,0,0.5);
     border-bottom: 1px black solid;
+    padding: 2px 20px;
 
     svg {
       cursor: pointer;
@@ -190,6 +187,7 @@ button {
     .interactive {
       width: 100%;
       background: rgba(0,0,0,0.2);
+      padding: 10px;
 
       textarea {
         resize: none;
@@ -218,17 +216,17 @@ button {
         overflow-y: auto;
       }
 
+      .noScope {
+        color: #888;
+        margin-top:30px;
+        padding: 10px;
+      } 
+
       .scope {
         padding: 10px;
         border-bottom: 1px gray solid;
         display:flex;
         flex-direction: row;
-
-        .noScope p {
-          color: #888;
-          margin-top:30px;
-          padding-left: 10px;
-        } 
       }
     }
   }
