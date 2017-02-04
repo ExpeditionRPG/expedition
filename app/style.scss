@@ -21,6 +21,7 @@ html, body, #react-app {
   height: 100%;
   padding: 0;
   margin: 0;
+  font-family: Roboto, sans-serif;
 }
 
 // ===============================================
@@ -156,22 +157,15 @@ html, body, #react-app {
   height: 32px;
 
   .header {
-    background: rgba(0,0,0,0.5);
+    background: rgb(33,33,33);
     border-bottom: 1px black solid;
-    padding: 2px 20px;
-
-    svg {
-      cursor: pointer;
-      float: right;
-    }
 
     h2 {
-      font-family: "MinionPro";
+      cursor: pointer;
       margin: 0px;
       font-size: 20px;
       color: #CCC;
-      width:100%;
-      display:block;
+      display:inline-block;
     }
   }
 
@@ -186,8 +180,7 @@ html, body, #react-app {
 
     .interactive {
       width: 100%;
-      background: rgba(0,0,0,0.2);
-      padding: 10px;
+      background: rgb(20,20,20);
 
       textarea {
         resize: none;
@@ -199,7 +192,7 @@ html, body, #react-app {
         font-family: Monaco, Melo, "Ubuntu Mono", monospace;
         font-size: 20px;
         width: 100%;
-        height: calc(100% - 100px);
+        height: calc(100% - 32px);
         overflow-y: auto;
         background: rgba(0,0,0,0.2);
       }

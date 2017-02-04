@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AppDi
       dispatch({type: 'REBOOT_APP'});
       dispatch(toCard('QUEST_START'));
       // TODO: Make these settings configurable
-      loadNode({numPlayers: 1, difficulty: "NORMAL", showHelp: true, multitouch: false}, dispatch, newNode, ctx);
+      loadNode({numPlayers: 1, difficulty: "NORMAL", showHelp: true, multitouch: false, vibration: false}, dispatch, newNode, ctx);
     },
   };
 }

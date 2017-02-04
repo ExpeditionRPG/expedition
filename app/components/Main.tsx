@@ -6,8 +6,7 @@ import SplashContainer from './SplashContainer';
 import QuestAppBarContainer from './QuestAppBarContainer';
 import QuestIDEContainer from './QuestIDEContainer';
 import ContextEditorContainer from './ContextEditorContainer';
-import RemoveIcon from 'material-ui/svg-icons/content/remove'
-import AddIcon from 'material-ui/svg-icons/content/add'
+import FlatButton from 'material-ui/FlatButton';
 
 var SplitPane = require('react-split-pane') as any;
 
@@ -43,10 +42,9 @@ const Main = (props: MainProps): JSX.Element => {
     var contents = (
       <div className="contents">
         <QuestIDEContainer/>
-        <div className="bottomPanel" onTouchTap={(event: any) => {props.onPanelToggle();}}>
+        <div className="bottomPanel">
           <div className="header">
-            <AddIcon/>
-            <h2>Context Explorer</h2>
+            <FlatButton label="Context Explorer" onTouchTap={(event: any) => {props.onPanelToggle();}} />
           </div>
         </div>
       </div>);
@@ -62,8 +60,7 @@ const Main = (props: MainProps): JSX.Element => {
         <QuestIDEContainer/>
         <div className="bottomPanel">
           <div className="header">
-            <RemoveIcon onTouchTap={(event: any) => {props.onPanelToggle();}}/>
-            <h2>Context Explorer</h2>
+            <FlatButton label="Context Explorer" onTouchTap={(event: any) => {props.onPanelToggle();}} />
           </div>
           <ContextEditorContainer/>
         </div>
