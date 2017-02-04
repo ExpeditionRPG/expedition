@@ -8,6 +8,7 @@ var toMarkdown: any = require('../../translation/to_markdown')
 const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
   return {
     loggedIn: state.user.loggedIn,
+    bottomPanelOpen: false,
   };
 }
 

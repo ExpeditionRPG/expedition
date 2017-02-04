@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {QuestContext} from 'expedition-app/app/reducers/QuestTypes'
 import LeftIcon from 'material-ui/svg-icons/navigation/chevron-left'
+
 import IconButton from 'material-ui/IconButton'
 
 var math = require('mathjs') as any;
@@ -84,7 +85,7 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
   for (let i = 0; i < props.scopeHistory.length; i++) {
     let scope = formatScope(props.scopeHistory[i]);
     KVs.push(<div key={i} className="scope">
-      <IconButton tooltip="Play from Cursor" onTouchTap={(event: any) => props.onInitialContext(codifyScope(props.scopeHistory[i]))}>
+      <IconButton tooltip="Set initial context" onTouchTap={(event: any) => props.onInitialContext(codifyScope(props.scopeHistory[i]))}>
         <LeftIcon/>
       </IconButton>
       <div>
@@ -101,11 +102,11 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
   return (
     <div className="console">
       <div className="interactive">
-        <h2 className="header">- Initial Context -</h2>
+        <div>Initial Context: {'{'}</div>
         <OverrideTextArea value={props.opInit} onBlur={(event: any) => props.onInitialContext(event.target.value)}></OverrideTextArea>
+        <div>{'}'}</div>
       </div>
       <div className="preview">
-        <h2>- Context History -</h2>
         <div>
         {KVs}
         </div>

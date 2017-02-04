@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node ${SCRIPT:-app.js}",
     "dev-dash": "NODE_ENV=dev webpack-dashboard -- node ${SCRIPT:-app.js}",
-    "dev": "NODE_ENV=dev node ${SCRIPT:-app.js}",
+    "dev": "node ${SCRIPT:-app.js}",
     "monitor": "nodemon ${SCRIPT:-app.js}",
     "deploy": "gcloud app deploy app.yaml",
     "test": "mocha --colors --compilers ts:ts-node/register --compilers tsx:ts-node/register --recursive ./app/**/**/*.test.tsx ./app/**/*.test.tsx ./app/*.test.tsx ./errors/*.test.tsx ./models/*.test.js ./errors/generateDocs.tsx",

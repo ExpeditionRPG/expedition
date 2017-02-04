@@ -3,7 +3,7 @@ import * as React from 'react'
 import Main from 'expedition-app/app/components/base/Main.tsx'
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton'
+import FlatButton from 'material-ui/IconButton'
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
 import ReplayIcon from 'material-ui/svg-icons/av/replay';
@@ -30,16 +30,14 @@ const App = (props: AppProps): JSX.Element => {
   return (
     <div className="app_root">
       <div className="app_controls">
-        <IconButton
-          onTouchTap={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)}
-          tooltip="Play from Cursor" >
-          <PlayIcon/>
-        </IconButton>
-        <IconButton
+        <FlatButton
+          onTouchTap={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)} 
+          label="Play from Cursor">
+        </FlatButton>
+        <FlatButton
           onTouchTap={(event: any) => props.playFromCursor({}, props.editor, props.quest)}
-          tooltip="Play from Cursor (blank context)" >
-          <ReplayIcon/>
-        </IconButton>
+          label="Play from Cursor (blank context)">
+        </FlatButton>
       </div>
       <div className="app editor_override">
         <Main/>
