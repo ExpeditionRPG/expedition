@@ -1,4 +1,4 @@
-import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, QuestRenderAction} from '../actions/ActionTypes'
+import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, QuestRenderAction, SetOpInitAction} from '../actions/ActionTypes'
 import {EditorState} from './StateTypes'
 
 const defaultState: EditorState = {
@@ -7,6 +7,9 @@ const defaultState: EditorState = {
   dirtyTimeout: null,
   line: 0,
   node: null,
+  opInit: '',
+  lastSplitPaneDragMillis: 0,
+  bottomPanelShown: false,
 };
 
 export function editor(state: EditorState = defaultState, action: Redux.Action): EditorState {
@@ -23,6 +26,12 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
       return Object.assign({}, state, {renderer: (action as QuestRenderAction).qdl});
     case 'QUEST_NODE':
       return Object.assign({}, state, {node: (action as any).node});
+    case 'SET_OP_INIT':
+      return Object.assign({}, state, {opInit: (action as SetOpInitAction).mathjs});
+    case 'PANEL_DRAG':
+      return Object.assign({}, state, {lastSplitPaneDragMillis: Date.now()});
+    case 'PANEL_TOGGLE':
+      return Object.assign({}, state, {bottomPanelShown: !state.bottomPanelShown});
     default:
       return state;
   }

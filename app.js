@@ -1,3 +1,5 @@
+'use strict';
+
 const nr = require('newrelic');
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -114,8 +116,8 @@ if (module === require.main) {
 
     if (process.env.WATCH_POLL) { // if WATCH_POLL defined, revert watcher from inotify to polling
       conf.watchOptions = {
-        aggregateTimeout: 300,
-        poll: 1000,
+        poll: 2000,
+        ignored: /node_modules|typings|dist|dll|\.git/,
       };
     }
 

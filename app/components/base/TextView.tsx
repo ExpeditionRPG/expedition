@@ -18,6 +18,11 @@ interface TextViewProps extends React.Props<any> {
   onLine: any;
   realtime: any;
   annotations: AnnotationType[];
+
+  // Use of SplitPane interferes with JS resize and rerendering.
+  // When this value changes, the text view re-renders and the 
+  // correct vertical height is set.
+  lastSizeChangeMillis: number;
 }
 
 declare var gapi: any;
@@ -74,11 +79,11 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     }).bind(this);
 
     if (this.ace) {
+      // Must manually resize on re-render to account for SplitPane
+      // adjusting the vertical height of Ace.
+      ref.editor.resize();
 
       var session = ref.editor.getSession();
-
-      // Keep the editor focused when it's shown.
-      ref.editor.focus();
 
       // "Automatically scrolling cursor into view after selection change
       // this will be disabled in the next version set
@@ -160,7 +165,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
   render() {
     var text = "Loading...";
     if (this.props.realtime) {
-      text = this.props.realtime.getText()
+      text = this.props.realtime.getText();
     }
 
     return (

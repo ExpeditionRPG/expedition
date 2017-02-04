@@ -6,9 +6,9 @@ import expect from 'expect'
 import QuestAppBar from './QuestAppBar'
 
 describe('QuestAppBar', () => {
-  it('Shows user icon')
+  it('Shows user icon');
 
-  it('Shows quest title')
+  it('Shows quest title');
 
-  it('...test each toolbar button')
-})
+  it('...test each toolbar button');
+});

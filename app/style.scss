@@ -4,6 +4,14 @@ $bg_secondary: #212121;
 $grey800: #424242;
 
 @font-face {
+  font-family: 'CinzelBold';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Cinzel-Bold'), url(fonts/Cinzel-Bold.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+@font-face {
   font-family: 'MinionPro';
   src: url('fonts/Minion Pro Regular.ttf') format('truetype');
 }
@@ -13,6 +21,7 @@ html, body, #react-app {
   height: 100%;
   padding: 0;
   margin: 0;
+  font-family: Roboto, sans-serif;
 }
 
 // ===============================================
@@ -28,11 +37,15 @@ html, body, #react-app {
   margin-bottom: 20px !important;
   padding-top: 20px !important;
   padding-bottom: 20px !important;
+  font-family: 'CinzelBold' !important;
 }
 
 .main {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+
   &.loading {
     background: $bg_primary;
     width: 100%;
@@ -43,14 +56,23 @@ html, body, #react-app {
     font-family: Roboto, sans-serif;
     font-size: 20px;
   }
+
+  .contents {
+    flex: 10;
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction:column;
+  }
 }
 
 .quest_app_bar {
-  height: 100%;
-  width: 100%;
   > :first-child {
     height: 54px !important;
     margin-top: -6px !important;
+    h1 {
+      font-family: 'CinzelBold';
+    }
   }
   .toolbar {
     background: $bg_secondary !important;
@@ -63,8 +85,8 @@ html, body, #react-app {
 }
 
 .quest_ide {
+  flex:10;
   width: 100%;
-  height: calc(100% - 94px);
   overflow-y: auto;
   display: flex;
   flex-direction: row;
@@ -72,7 +94,6 @@ html, body, #react-app {
   .editor {
     flex: 1;
     position: relative;
-    height: 100%;
   }
   .preview {
     position: relative;
@@ -84,7 +105,7 @@ html, body, #react-app {
     }
 
     .editor_override {
-      height: calc(100% - 44px);
+      height: 100%;
     }
 
     .app {
@@ -95,12 +116,7 @@ html, body, #react-app {
       }
     }
   }
-
-  .app_controls {
-    text-align: center;
-  }
 }
-
 
 .splash {
   background: $bg_primary;
@@ -130,5 +146,147 @@ html, body, #react-app {
     width: 710px;
     height: 700px;
     margin: auto;
+  }
+}
+
+
+.bottomPanel {
+  height: 32px;
+
+  .header {
+    background: rgb(33,33,33);
+    border-bottom: 1px black solid;
+
+    h2 {
+      cursor: pointer;
+      margin: 0px;
+      font-size: 20px;
+      color: #CCC;
+      display:inline-block;
+    }
+  }
+
+  .console {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: absolute;
+    flex-direction: row;
+    color: white;
+    font-size: 20px;
+
+    .interactive {
+      width: 100%;
+      background: rgb(20,20,20);
+
+      textarea {
+        resize: none;
+        color: white;
+        padding: 10px;
+        padding-left: 20px;
+        box-sizing: border-box;
+        border: 0;
+        font-family: Monaco, Melo, "Ubuntu Mono", monospace;
+        font-size: 20px;
+        width: 100%;
+        height: calc(100% - 32px);
+        overflow-y: auto;
+        background: rgba(0,0,0,0.2);
+      }
+    }
+
+    .preview {
+      overflow-y: hidden;
+      position: relative;
+      flex: 0 0 560px;
+      font-family: Monaco, Melo, "Ubuntu Mono", monospace;
+
+      &>div {
+        height: calc(100% - 23px);
+        overflow-y: auto;
+      }
+
+      .noScope {
+        color: #888;
+        margin-top:30px;
+        padding: 10px;
+      } 
+
+      .scope {
+        min-height: 24px;
+        padding: 10px;
+        padding-left: 24px;
+        border-bottom: 1px gray solid;
+        display:flex;
+        flex-direction: row;
+        cursor: pointer;
+        position: relative;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background: #333;
+        }
+
+        svg {
+          position: absolute;
+          top: 50%;
+          margin-top: -12px;
+          margin-left: -24px;
+        }
+      }
+    }
+  }
+}
+
+// ------ SplitPane styling ------
+
+.Resizer {
+  background: #000;
+  opacity: .2;
+  z-index: 1;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding;
+  background-clip: padding-box;
+
+  &:hover {
+    -webkit-transition: all 2s ease;
+    transition: all 2s ease;
+  }
+
+  &.horizontal {
+    height: 11px;
+    margin: -5px 0;
+    border-top: 5px solid rgba(255, 255, 255, 0);
+    border-bottom: 5px solid rgba(255, 255, 255, 0);
+    cursor: row-resize;
+    width: 100%;
+
+    &:hover {
+      border-top: 5px solid rgba(0, 0, 0, 0.5);
+      border-bottom: 5px solid rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  &.vertical {
+    width: 11px;
+    margin: 0 -5px;
+    border-left: 5px solid rgba(255, 255, 255, 0);
+    border-right: 5px solid rgba(255, 255, 255, 0);
+    cursor: col-resize;
+
+    &:hover {
+      border-left: 5px solid rgba(0, 0, 0, 0.5);
+      border-right: 5px solid rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    &:hover {
+      border-color: transparent;
+    }
   }
 }

@@ -11,6 +11,7 @@ export interface QuestIDEStateProps {
   quest: QuestType;
   editor: EditorState;
   annotations: AnnotationType[];
+  lastSplitPaneDragMillis: number;
 };
 
 export interface QuestIDEDispatchProps {
@@ -28,6 +29,7 @@ const QuestIDE = (props: QuestIDEProps): JSX.Element => {
         <TextView
           realtime={props.realtime}
           annotations={props.annotations}
+          lastSizeChangeMillis={props.lastSplitPaneDragMillis}
           onChange={(text: string) => props.onDirty(props.realtime, props.quest, props.editor, text)}
           onLine={(line: number) => props.onLine(line, props.editor)} />
       </div>

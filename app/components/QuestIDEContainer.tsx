@@ -13,6 +13,7 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestIDEStateProps => 
     realtime: state.quest.mdRealtime,
     quest: state.quest,
     annotations: state.annotations,
+    lastSplitPaneDragMillis: state.editor.lastSplitPaneDragMillis,
   };
 }
 

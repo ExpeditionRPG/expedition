@@ -61,6 +61,9 @@ export interface EditorState {
   dirty: boolean;
   dirtyTimeout: any;
   line: number;
+  opInit: string; // Initial mathjs to run when loading a quest
+  lastSplitPaneDragMillis: number; // Informs re-rendering of text editor
+  bottomPanelShown: boolean;
 }
 
 export interface DialogsState {
