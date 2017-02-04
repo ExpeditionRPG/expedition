@@ -1,8 +1,9 @@
 import * as React from 'react'
 import {QuestContext} from 'expedition-app/app/reducers/QuestTypes'
 import LeftIcon from 'material-ui/svg-icons/navigation/chevron-left'
-
 import IconButton from 'material-ui/IconButton'
+import {OverrideTextArea} from './base/OverrideTextArea'
+import {ScrollBottom} from './base/ScrollBottom'
 
 var math = require('mathjs') as any;
 
@@ -54,45 +55,6 @@ function formatScope(scope: any): any[] {
   return KVs;
 }
 
-// We need a managed textarea to allow post-init overwriting
-// of textarea value.
-class OverrideTextArea extends React.Component<any, any> {
-  state: {value: string};
-
-  constructor(props: any) {
-    super(props);
-    this.state = {value: props.value || ""};
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(event: any) {
-    this.setState({value: event.target.value});
-  }
-
-  componentWillReceiveProps(nextProps: any) {
-    this.setState({value: nextProps.value});
-  }
-
-  render() {
-    return (
-      <textarea value={this.state.value} onChange={this.handleChange} onBlur={this.props.onBlur} />
-    );
-  }
-}
-
-class ScrollBottom extends React.Component<any, any> {
-  onRef(ref: any) {
-    if (!ref) {
-      return;
-    }
-    ref.scrollTop = ref.scrollHeight;
-  }
-
-  render() {
-    return (<div ref={this.onRef.bind(this)}>{this.props.children}</div>);
-  }
-}
-
 const ContextEditor = (props: ContextEditorProps): JSX.Element => {
   var KVs: any[] = [];
   for (let i = 0; i < props.scopeHistory.length; i++) {
@@ -121,7 +83,7 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
       </div>
       <div className="preview">
         <ScrollBottom>
-        {KVs}
+          {KVs}
         </ScrollBottom>
       </div>
     </div>
