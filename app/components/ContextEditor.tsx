@@ -58,10 +58,8 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
   var KVs: any[] = [];
   for (let i = 0; i < props.scopeHistory.length; i++) {
     let scope = formatScope(props.scopeHistory[i]);
-    KVs.push(<div key={i} className="scope">
-      <IconButton tooltip="Set initial context" onTouchTap={(event: any) => props.onInitialContext(codifyScope(props.scopeHistory[i]))}>
-        <LeftIcon/>
-      </IconButton>
+    KVs.push(<div key={i} className="scope" onTouchTap={(event: any) => props.onInitialContext(codifyScope(props.scopeHistory[i]))}>
+      <LeftIcon/>
       <div>
         {scope}
       </div>

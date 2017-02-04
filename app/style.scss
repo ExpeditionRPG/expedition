@@ -105,7 +105,7 @@ html, body, #react-app {
     }
 
     .editor_override {
-      height: calc(100% - 55px);
+      height: 100%;
     }
 
     .app {
@@ -115,10 +115,6 @@ html, body, #react-app {
         font-family: MinionPro, sans-serif !important;
       }
     }
-  }
-
-  .app_controls {
-    text-align: center;
   }
 }
 
@@ -186,7 +182,7 @@ html, body, #react-app {
       textarea {
         resize: none;
         color: white;
-        padding: 5px;
+        padding: 10px;
         padding-left: 20px;
         box-sizing: border-box;
         border: 0;
@@ -217,10 +213,26 @@ html, body, #react-app {
       } 
 
       .scope {
+        min-height: 24px;
         padding: 10px;
+        padding-left: 24px;
         border-bottom: 1px gray solid;
         display:flex;
         flex-direction: row;
+        cursor: pointer;
+        position: relative;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background: #333;
+        }
+
+        svg {
+          position: absolute;
+          top: 50%;
+          margin-top: -12px;
+          margin-left: -24px;
+        }
       }
     }
   }

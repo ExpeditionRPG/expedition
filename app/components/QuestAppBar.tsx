@@ -41,11 +41,13 @@ export interface QuestAppBarStateProps {
   quest: QuestType;
   editor: EditorState;
   user: UserState;
+  scope: any;
 };
 
 export interface QuestAppBarDispatchProps {
   onMenuSelect: (action: QuestActionType, quest: QuestType) => void;
   onUserDialogRequest: (user: UserState)=>void;
+  playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => void;
 }
 
 interface QuestAppBarProps extends QuestAppBarStateProps, QuestAppBarDispatchProps {}
@@ -113,6 +115,18 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
           <FlatButton label="Send Feedback" onTouchTap={(event: any) => props.onMenuSelect('FEEDBACK', props.quest)} />
           <FlatButton label="Help" onTouchTap={(event: any) => props.onMenuSelect('HELP', props.quest)} />
           <FlatButton label={savingText} icon={savingIcon} disabled={true} style={savingStyle} />
+        </ToolbarGroup>
+        <ToolbarGroup>
+          <FlatButton
+            onTouchTap={(event: any) => props.playFromCursor({}, props.editor, props.quest)}
+            label="Play from Cursor">
+          </FlatButton>
+          {props.editor.bottomPanelShown && 
+          <FlatButton
+            onTouchTap={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)} 
+            label="Play from Cursor (preserve context)">
+          </FlatButton>
+          }
         </ToolbarGroup>
       </Toolbar>
     </span>
