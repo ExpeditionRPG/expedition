@@ -179,8 +179,8 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
   if (props.settings.showHelp) {
     helpText = (
       <span>
-        <p>Slide your Adventurer health down {damage} space(s).</p>
-        <p>If you reach zero health, you are knocked out. After you resolve this turn, you cannot play further cards until the end of the encounter.</p>
+        <p>Slide your Adventurer health down {damage} space{damage > 1 ? 's' : ''}.</p>
+        <p>If you reach zero health, you are knocked out. After resolving this turn, you cannot play further cards until you are healed by another adventurer or revived at the end of the encounter.</p>
       </span>
     );
   }
@@ -208,7 +208,7 @@ function renderVictory(props: CombatProps): JSX.Element {
   if (props.settings.showHelp) {
     contents.push(
       <p key="c1">
-        <strong>All adventurers heal to full health.</strong>
+        <strong>All adventurers (dead and alive) heal to full health.</strong>
       </p>
     );
   }
