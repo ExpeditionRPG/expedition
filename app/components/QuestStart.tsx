@@ -24,6 +24,7 @@ const QuestStart = (props: QuestStartProps): JSX.Element => {
       <p>At this time:</p>
       <ol>
         <li><strong>Select</strong> one Adventurer from the deck{multiPlayer && ' and pass the deck along'}.</li>
+        {singlePlayer && <ul><li><strong>Single Player:</strong> Adventurers with only music abilities are not recommended for solo play.</li></ul>}
         <li><strong>Clip</strong> a health tracking clip onto your Adventurer card at full health.</li>
         <li><strong>Keep</strong> this card face up in front of you.</li>
         <li><strong>Draw</strong> the starting abilities listed on the Adventurer card.</li>
@@ -32,6 +33,7 @@ const QuestStart = (props: QuestStartProps): JSX.Element => {
         <li>You may mulligan (redraw all of your abilities) once if desired.</li>
         <li><strong>Shuffle</strong> them into a stack face-down in front of you.</li>
         <li><strong>Get</strong>{multiPlayer && ' at least'} one D20 die.</li>
+        <li><strong>Draw</strong> a <strong>Helper card</strong> for reference.</li>
       </ol>
 
       <p>
