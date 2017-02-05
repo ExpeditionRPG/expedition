@@ -1,25 +1,19 @@
 $bg_primary: #141414;
 $bg_secondary: #212121;
-
 $grey800: #424242;
 $red700: #D32F2F;
 $lightGreen900: #33691E;
 $brightShadow: #616161;
 $red800: #C62828;
-
 $previewPanelWidth: 560px;
 $padBase: 24px;
 $hBarThickness: 42px;
 $videoSize: 700px;
 $border: 1px #606060 solid;
 $fontSizeBase: 20px;
-
 $bgInteractive: rgb(20,20,20);
 $bgHighlight: #333;
-
 $textDisabled: #888;
-
-
 
 @font-face {
   font-family: 'CinzelBold';
@@ -49,11 +43,7 @@ html, body, section#react-app, textarea {
   flex-direction: column;
 }
 
-// ===============================================
-// Component styles
-// ===============================================
-
-.scrollBottom { // ScrollBottom
+.scrollBottom {
   height: 100%;
   overflow-y: auto;
 }
@@ -69,6 +59,7 @@ html, body, section#react-app, textarea {
   &.dialogError {
     background-color: $red700 !important,
   }
+
   &.dialogGood {
     background-color: $lightGreen900 !important,
   }
@@ -82,7 +73,6 @@ html, body, section#react-app, textarea {
   color: white;
   padding: $padBase;
   font-family: Roboto, sans-serif;
-  
 }
 
 .splash {
@@ -103,6 +93,7 @@ html, body, section#react-app, textarea {
     font-size: 2em;
     font-weight: bold;
   }
+
   .previewVideo {
     background: $bg_primary;
     box-shadow: 0 0 $padBase $brightShadow;
@@ -126,10 +117,12 @@ html, body, section#react-app, textarea {
   .toolbar {
     background: $bg_secondary !important;
     height: $hBarThickness !important;
+
     button {
       margin: 4px 0 !important;
       min-width: 60px !important;
     }
+
     .errorButton {
       color: $red800;
     }
@@ -149,6 +142,7 @@ html, body, section#react-app, textarea {
     .editor {
       flex: 1;
     }
+
     .preview {
       flex: 0 0 $previewPanelWidth;
       max-width: $previewPanelWidth;
