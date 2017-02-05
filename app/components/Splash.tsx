@@ -14,7 +14,7 @@ export interface SplashDispatchProps {
 
 const Splash = (props: any): JSX.Element => {
   return (
-    <div className="splash">
+    <div className="main splash">
       <div className="quest_app_bar">
         <AppBar
           title="Expedition Quest Creator"
@@ -28,11 +28,6 @@ const Splash = (props: any): JSX.Element => {
         />
       </div>
       <div className="body">
-        <iframe
-          className="previewVideo"
-          src="https://www.youtube.com/embed/12y1NhQUXvs?autoplay=1&fs=0&loop=1&modestbranding=1&playlist=12y1NhQUXvs"
-          frameborder="0">
-        </iframe>
         <h1>Write your adventure and share it with the world!</h1>
         <RaisedButton
           label="Get Started"
@@ -44,7 +39,14 @@ const Splash = (props: any): JSX.Element => {
           primary={true} 
           onTouchTap={() => {window.open("https://github.com/Fabricate-IO/expedition-quest-creator/blob/master/docs/index.md");}} 
         />
-        
+        <iframe
+          className="previewVideo"
+          src="https://www.youtube.com/embed/12y1NhQUXvs?autoplay=1&fs=0&loop=1&modestbranding=1&playlist=12y1NhQUXvs"
+          frameborder="0">
+        </iframe>
+        <footer>
+          <FlatButton label="Go To Expedition Home Page" onTouchTap={() => {window.location.href="http://expeditiongame.com";}}/>
+        </footer>
       </div>
     </div>
   );

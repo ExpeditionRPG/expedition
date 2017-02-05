@@ -77,29 +77,32 @@ html, body, section#react-app, textarea {
 
 .splash {
   background: $bg_primary;
-  height: 100%;
 
   .body {
     text-align: center;
+    overflow-y: auto;
+    flex: 10;
 
     &>* {
       display:block;
-      margin: 2*$padBase;
+      margin: $padBase;
     }
   }
 
   h1 {
     color: white;
     font-size: 2em;
-    font-weight: bold;
+    font-weight: normal;
   }
 
   .previewVideo {
     background: $bg_primary;
     box-shadow: 0 0 $padBase $brightShadow;
     border-radius: 2px;
-    width: $videoSize;
-    height: $videoSize;
+    max-width: $videoSize;
+    max-height: $videoSize;
+    width: 90%;
+    height: 50%;
     margin-left: auto;
     margin-right: auto;
   }
