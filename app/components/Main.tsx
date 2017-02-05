@@ -31,9 +31,7 @@ const Main = (props: MainProps): JSX.Element => {
     );
   } else if (props.loggedIn !== true) {
     return (
-      <div className="main">
-        <SplashContainer/>
-      </div>
+      <SplashContainer/>
     );
   }
 

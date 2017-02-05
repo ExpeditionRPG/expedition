@@ -9,6 +9,6 @@ export class ScrollBottom extends React.Component<any, any> {
   }
 
   render() {
-    return (<div ref={this.onRef.bind(this)}>{this.props.children}</div>);
+    return (<div className="scrollBottom" ref={this.onRef.bind(this)}>{this.props.children}</div>);
   }
 }
