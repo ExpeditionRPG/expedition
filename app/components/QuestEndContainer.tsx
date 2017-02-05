@@ -6,6 +6,8 @@ import {sendFeedback} from '../actions/web'
 import {authSettings} from '../constants'
 import {AppState, SettingsType, QuestState, XMLElement} from '../reducers/StateTypes'
 
+declare var window:any;
+
 
 const MIN_FEEDBACK_LENGTH = 20;
 
@@ -28,6 +30,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       } else if (feedback.length > MIN_FEEDBACK_LENGTH) {
         dispatch(sendFeedback(quest, settings));
       }
+      window.FirebasePlugin.logEvent('quest_end', quest.details);
       dispatch(toPrevious('QUEST_START', undefined, true));
     }
   };

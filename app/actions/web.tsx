@@ -23,12 +23,12 @@ export function loadQuestXML(data: XMLElement | string, ctx: QuestContext) {
     if (questNode.get(0).tagName == null) { // for web + android, have to enter the document
       questNode = questNode.children().eq(0);
     }
-    if (questNode.get(0).tagName.toLowerCase() !== "quest") {
+    if (questNode.get(0).tagName.toLowerCase() !== 'quest') {
       throw 'Invalid Quest - missing <quest> node';
     }
 
     const init = initQuest(questNode, ctx);
-    window.FirebasePlugin.logEvent("quest_start", init.details); // here instead of initQuest b/c initQuest is also used by the editor
+    window.FirebasePlugin.logEvent('quest_start', init.details); // here instead of initQuest b/c initQuest is also used by the editor
     dispatch(init);
     dispatch(toCard('QUEST_START'));
   };
@@ -48,7 +48,7 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
     if (search.text) {
       params.search = search.text;
     }
-    if (search.age && search.age !== "inf") {
+    if (search.age && search.age !== 'inf') {
       params.published_after = parseInt(search.age);
     }
     if (search.order) {
@@ -57,7 +57,7 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
 
     var xhr = new XMLHttpRequest();
     // TODO: Pagination
-    xhr.open('POST', authSettings.urlBase + "/quests", true);
+    xhr.open('POST', authSettings.urlBase + '/quests', true);
     xhr.setRequestHeader('Content-Type', 'text/plain');
     xhr.onload = function() {
       var response: any = JSON.parse(xhr.responseText);
