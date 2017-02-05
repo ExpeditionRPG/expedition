@@ -5,10 +5,22 @@ interface MultiTouchTriggerProps extends React.Props<any> {
   onTouchChange: (touches: any) => any;
 }
 
+const styles = {
+  center: {
+    radius: 36,
+    color: '#1B1718',
+  },
+  ring: {
+    radius: 44,
+    width: 5,
+    color: '#FFFFFF',
+  },
+};
+
 export default class MultiTouchTrigger extends React.Component<MultiTouchTriggerProps, {}> {
   ctx: any;
   canvas: any;
-  numFingers: number;
+  inputArray: number[][];
   mouseDown: Boolean;
 
   _touchEvent(e: any) {
@@ -37,25 +49,28 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
   }
 
   _processInput(xyArray: number[][]) {
-    if (xyArray.length != this.numFingers) {
-      this.numFingers = xyArray.length;
-      this.props.onTouchChange(this.numFingers);
+    if (this.inputArray == null || xyArray.length !== this.inputArray.length) {
+      this.props.onTouchChange(xyArray.length);
     }
-    this._drawTouchPoints(xyArray);
+    this.inputArray = xyArray;
   }
 
-  _drawTouchPoints(xyArray: number[][]) {
-    var radius = 36;
+  _drawTouchPoints() {
+
+    const inputs = this.inputArray;
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    this.ctx.fillStyle = "rgb(200,0,0)";
-    for (var i = 0; i < xyArray.length; i++) {
+    for (var i = 0; i < inputs.length; i++) {
+      this.ctx.fillStyle = styles.center.color;
       this.ctx.beginPath();
-      this.ctx.arc(xyArray[i][0], xyArray[i][1], radius, 0, 2 * Math.PI, false);
+      this.ctx.arc(inputs[i][0], inputs[i][1], styles.center.radius, 0, 2 * Math.PI, false);
       this.ctx.fill();
+      this.ctx.strokeStyle = styles.ring.color;
+      this.ctx.lineWidth = styles.ring.width;
       this.ctx.beginPath();
-      this.ctx.arc(xyArray[i][0], xyArray[i][1], 1.2 * radius, 0, 2 * Math.PI, false);
+      this.ctx.arc(inputs[i][0], inputs[i][1], styles.ring.radius, 0, 2 * Math.PI, false);
       this.ctx.stroke();
     }
+    window.requestAnimationFrame(() => {this._drawTouchPoints(); });
   }
 
   setupCanvas(ref: any) {
@@ -75,6 +90,7 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
     this.canvas.addEventListener('mouseup', this._mouseUpEvent.bind(this));
 
     this._touchEvent({touches: [], preventDefault: ()=>{}});
+    window.requestAnimationFrame(() => {this._drawTouchPoints(); });
   }
 
   render() {
