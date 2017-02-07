@@ -32,6 +32,7 @@
         <param name="REVERSED_CLIENT_ID" value="io.fabricate.expedition" />
     </gap:plugin>
     <preference name="android-minSdkVersion" value="21" />
+    <preference name="deployment-target" value="9.0.0" />
     <platform name="android">
         <allow-intent href="market:*" />
         <splash density="port-ldpi" src="app/images/splash/320x426.png" />
