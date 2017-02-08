@@ -91,17 +91,19 @@ function renderPrepare(props: CombatProps): JSX.Element {
   let helpText: JSX.Element = (<span></span>);
   if (props.settings.showHelp) {
     helpText = (
-      <span>
-        <p>Shuffle ALL of your abilities back into your deck.</p>
-        <p>Draw - but don't look at - the top 3 abilities.</p>
-        <p>When you begin combat:</p>
-        <ul>
-          <li>Look at your hand of 3 cards and play one face up on the table.</li>
-          <li>Place your finger on the screen.</li>
-          <li>When all fingers are down, the timer will stop.</li>
-          <li>The longer you take, the more chances the enemy will have to attack you.</li>
-        </ul>
-      </span>
+      <ol>
+        <li>Shuffle ALL of your abilities.</li>
+        <li>Draw - but don't look at - the top three.</li>
+        <li>When you begin combat:</li>
+        <ol>
+          <li>Start the timer.</li>
+          <li>Look at your hand and play one ability face up in front of you.</li>
+          {props.settings.multitouch && <li>Place your finger on the screen.</li>}
+          {props.settings.multitouch && <li>When all fingers are down, the timer will stop.</li>}
+          {!props.settings.multitouch && <li>Once everyone has selected an ability, tap the screen to stop the timer.</li>}
+          <li>If the timer runs out, you'll take additional damage.</li>
+        </ol>
+      </ol>
     );
   }
 

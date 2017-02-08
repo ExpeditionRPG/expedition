@@ -263,6 +263,14 @@ body {
     }
   }
 
+  ol, ul {
+    padding-left: width(large);
+
+    li {
+      padding-bottom: height(tiny);
+    }
+  }
+
   .inline_icon {
     width: width(icon);
     margin-bottom: -(width(tiny));
