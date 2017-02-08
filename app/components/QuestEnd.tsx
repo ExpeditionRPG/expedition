@@ -7,6 +7,7 @@ import Card from './base/Card'
 
 import {EndSettings, SettingsType, QuestState, XMLElement} from '../reducers/StateTypes'
 
+declare var window:any;
 
 export interface QuestEndStateProps {
   quest: QuestState;
@@ -15,6 +16,7 @@ export interface QuestEndStateProps {
 
 export interface QuestEndDispatchProps {
   onCommentChange: (text: string) => void;
+  onShare: (quest: QuestState) => void;
   onSubmit: (quest: QuestState, settings: SettingsType) => void;
 }
 
@@ -29,10 +31,14 @@ const QuestEnd = (props: QuestEndProps): JSX.Element => {
       <Button onTouchTap={() => props.onSubmit(props.quest, props.settings)}>
         {(props.quest.feedback === '' || props.quest.feedback == null) ? 'Return to menu' : 'Send feedback'}
       </Button>
+      {window.plugins && window.plugins.socialsharing &&
+        <Button onTouchTap={() => props.onShare(props.quest)}><img className="inline_icon" src="images/share_small.svg"/> Share your adventure</Button>
+      }
       <div className="inputSpacer"></div>
     </Card>
   );
 }
+
 
 class FeedbackTextArea extends React.Component<any, any> {
   state: {value: string};

@@ -297,6 +297,9 @@ body {
   }
 
   .base_button {
+    .inline_icon {
+      margin-bottom: -1 * width(small);
+    }
     > button {
       display: block !important;
       height: auto !important;
@@ -531,30 +534,6 @@ body {
     }
   }
 
-  .advanced_play {
-    padding-left: width(base);
-
-    .summary {
-      display: flex;
-      padding-left: width(base);
-      flex: 3;
-      line-height: $lineheight;
-      margin: 0;
-      font-size: fontsize(flavor);
-    }
-    .title {
-      line-height: $lineheight;
-      display: block;
-      font-size: fontsize(interactive);
-      margin-bottom: height(small);
-      font-family: $headerfont;
-      top: 0;
-    }
-    .inline_icon {
-      padding-right: width(base);
-    }
-  }
-
   .combat {
     &.center {
       text-align: center;
@@ -566,9 +545,10 @@ body {
     }
   }
 
-  .featured_quest, .searchResult {
+  .advanced_play, .featured_quest, .searchResult {
     padding-left: width(base);
     padding-right: width(base);
+
     .summary {
       display: flex;
       padding-left: width(base);
@@ -584,6 +564,10 @@ body {
       font-size: fontsize(interactive);
       margin-bottom: height(small);
       top: 0;
+    }
+    .inline_icon {
+      padding-right: width(base);
+      margin-bottom: -1 * width(tiny);
     }
   }
 

@@ -23,6 +23,20 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
     onCommentChange: (text: string) => {
       dispatch(updateFeedback(text));
     },
+    onShare: (quest: QuestState) => {
+      const options = {
+        message: `I just had a blast playing the Expedition RPG quest ${quest.details.title}!`, // not supported on some apps (Facebook, Instagram)
+        subject: 'Expedition: The Roleplaying Card Game',
+        url: 'https://ExpeditionGame.com',
+      };
+      const onSuccess = function(result: any) {
+        window.FirebasePlugin.logEvent('share', Object.assign({}, quest.details, {app: result.app}));
+      }
+      const onError = function(msg: string) {
+        window.FirebasePlugin.logEvent('share_error', {error: msg});
+      }
+      window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
+    },
     onSubmit: (quest: QuestState, settings: SettingsType) => {
       const feedback = quest.feedback || '';
       if (feedback.length > 0 && feedback.length < MIN_FEEDBACK_LENGTH) {
@@ -32,7 +46,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       }
       window.FirebasePlugin.logEvent('quest_end', quest.details);
       dispatch(toPrevious('QUEST_START', undefined, true));
-    }
+    },
   };
 }
 

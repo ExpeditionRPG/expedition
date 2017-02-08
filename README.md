@@ -87,14 +87,12 @@ Notes:
 For debugging:
 
 ```sh
-webpack --config ./webpack.dist.config.js
-cordova build android
+webpack --config ./webpack.dist.config.js && cordova build android
 ```
 
 For release:
 
 ```sh
-chmod +x build_android_release.sh
 ./build_android_release.sh
 ```
 
@@ -107,8 +105,7 @@ Notes:
 #### Build for iOS
 
 ```sh
-webpack --config ./webpack.dist.config.js
-cordova build ios
+webpack --config ./webpack.dist.config.js && cordova build ios
 ```
 
 Notes:
