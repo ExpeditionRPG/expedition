@@ -79,22 +79,32 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
   };
 }
 
-export function sendFeedback(quest: QuestState, settings: SettingsType) {
+export function sendFeedback(quest: QuestState, settings: SettingsType, user: UserState) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    const meta = quest.details;
+    const data = Object.assign({}, {
+      title: quest.details.title,
+      author: quest.details.author,
+      email: quest.details.email,
+      feedback: quest.feedback.text,
+      players: settings.numPlayers,
+      difficulty: settings.difficulty,
+      platform: window.platform,
+      userEmail: user.email,
+      shareUserEmail: quest.feedback.shareUserEmail,
+    });
     $.post({
       url: authSettings.urlBase + '/feedback',
-      data: JSON.stringify({title: meta.title, author: meta.author, email: meta.email, feedback: quest.feedback, players: settings.numPlayers, difficulty: settings.difficulty}),
+      data: JSON.stringify(data),
       dataType: 'json',
     })
     .done(function(msg: string){
       // TODO replace alerts with something nicer / more in-style
-      dispatch(updateFeedback(''));
+      dispatch(updateFeedback({text: ''}));
       alert('Feedback submitted. Thank you!');
     })
     .fail(function(xhr: any, err: string) {
       if (xhr.status === 200) {
-        dispatch(updateFeedback(''));
+        dispatch(updateFeedback({text: ''}));
         return alert('Feedback submitted. Thank you!');
       }
       alert('Error encountered when submitting feedback: ' + err);

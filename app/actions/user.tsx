@@ -6,7 +6,7 @@ declare var gapi: any;
 declare var window: any;
 
 
-function registerUserAndIdToken(user: {name: string, image: string}, idToken: string, cb: (user:UserState)=>any) {
+function registerUserAndIdToken(user: {name: string, image: string, email: string}, idToken: string, cb: (user:UserState)=>any) {
   var xhr = new XMLHttpRequest();
   xhr.open('POST', authSettings.urlBase + "/auth/google", true);
   xhr.setRequestHeader('Content-Type', 'text/plain');
@@ -16,10 +16,11 @@ function registerUserAndIdToken(user: {name: string, image: string}, idToken: st
       id: xhr.responseText,
       name: user.name,
       image: user.image,
+      email: user.email,
     });
   };
   xhr.withCredentials = true;
-  xhr.send(JSON.stringify({id_token: idToken, name: user.name, image: user.image}));
+  xhr.send(JSON.stringify({id_token: idToken, name: user.name, image: user.image, email: user.email}));
 }
 
 function loginWeb(cb: (user:UserState)=>any) {
@@ -28,7 +29,7 @@ function loginWeb(cb: (user:UserState)=>any) {
     const idToken: string = googleUser.getAuthResponse().id_token;
     const basicProfile: any = googleUser.getBasicProfile();
     registerUserAndIdToken({
-      name: basicProfile.getName(), image: basicProfile.getImageUrl()
+      name: basicProfile.getName(), image: basicProfile.getImageUrl(), email: basicProfile.getEmail(),
     }, idToken, cb);
   });
 }
@@ -40,7 +41,7 @@ function silentLoginWeb(cb: (user:UserState)=>any) {
     const idToken: string = googleUser.getAuthResponse().id_token;
     const basicProfile: any = googleUser.getBasicProfile();
     return registerUserAndIdToken({
-      name: basicProfile.getName(), image: basicProfile.getImageUrl()
+      name: basicProfile.getName(), image: basicProfile.getImageUrl(), email: basicProfile.getEmail(),
     }, idToken, cb);
   }
   return cb(null);
@@ -56,7 +57,8 @@ function silentLoginCordova(cb: (user:UserState)=>any) {
   }, function(obj: any) {
     registerUserAndIdToken({
       name: obj.displayName,
-      image: obj.imageUrl
+      image: obj.imageUrl,
+      email: obj.email,
     }, obj.idToken, cb);
   }, function(msg: string) {
     //TODO: Better error handling
@@ -72,7 +74,8 @@ function loginCordova(cb: (user:UserState)=>any) {
   }, function(obj: any) {
     registerUserAndIdToken({
       name: obj.displayName,
-      image: obj.imageUrl
+      image: obj.imageUrl,
+      email: obj.email,
     }, obj.idToken, cb);
   }, function(msg: string) {
     //TODO: Better error handling

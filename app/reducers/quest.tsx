@@ -16,7 +16,10 @@ export function quest(state: QuestState, action: Redux.Action): QuestState {
       });
     case 'UPDATE_FEEDBACK':
       return Object.assign({}, state, {
-        feedback: (action as UpdateFeedbackAction).feedback,
+        feedback: Object.assign({},
+          state.feedback,
+          (action as UpdateFeedbackAction).feedback,
+        ),
       });
     default:
       return state;

@@ -9,7 +9,7 @@ import {
   UpdateFeedbackAction,
   ViewQuestAction
 } from './ActionTypes'
-import {XMLElement, SettingsType} from '../reducers/StateTypes'
+import {QuestFeedbackState, SettingsType, XMLElement} from '../reducers/StateTypes'
 import {toCard, toPrevious} from './card'
 import {loadTriggerNode, loadCombatNode, loadRoleplayNode, handleChoice, handleEvent, RoleplayResult, CombatResult} from '../QuestParser'
 import {QuestDetails, QuestContext} from '../reducers/QuestTypes'
@@ -108,7 +108,7 @@ export function adventurerDelta(numPlayers: number, delta: number): AdventurerDe
   return {type: 'ADVENTURER_DELTA', delta, numPlayers};
 }
 
-export function updateFeedback(feedback: string): UpdateFeedbackAction {
+export function updateFeedback(feedback: QuestFeedbackState): UpdateFeedbackAction {
   return {type: 'UPDATE_FEEDBACK', feedback};
 }
 

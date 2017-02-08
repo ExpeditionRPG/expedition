@@ -1,6 +1,6 @@
-import {CardState, CardName, SettingNameType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, XMLElement} from '../reducers/StateTypes'
+import {CardState, CardName, SettingNameType, SearchPhase, SearchSettings, SettingsType, TransitionType, QuestFeedbackState, UserState, XMLElement} from '../reducers/StateTypes'
 
-import {QuestDetails, QuestContext, Enemy, CombatPhaseNameType, DifficultyType} from '../reducers/QuestTypes'
+import {QuestContext, QuestDetails, Enemy, CombatPhaseNameType, DifficultyType} from '../reducers/QuestTypes'
 import {RoleplayResult, CombatResult} from '../QuestParser'
 
 export interface NavigateAction extends Redux.Action {
@@ -63,7 +63,7 @@ export interface AdventurerDeltaAction extends Redux.Action {
 
 export interface UpdateFeedbackAction extends Redux.Action {
   type: 'UPDATE_FEEDBACK';
-  feedback: string;
+  feedback: QuestFeedbackState;
 }
 
 export interface SearchResponseAction extends Redux.Action {

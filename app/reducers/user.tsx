@@ -3,9 +3,10 @@ import {UserLoginAction, UserLogoutAction} from '../actions/ActionTypes'
 
 const initial_state: UserState = {
   loggedIn: false,
-  id: "",
-  name: "",
-  image: "",
+  id: '',
+  name: '',
+  image: '',
+  email: '',
 };
 
 export function user(state: UserState = initial_state, action: Redux.Action): UserState {

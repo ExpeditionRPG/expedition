@@ -66,10 +66,15 @@ export interface CardState {
 export type TransitionType = 'NEXT' | 'PREV' | 'INSTANT';
 
 export interface QuestState {
-  feedback?: string;
+  feedback?: QuestFeedbackState;
   details?: QuestDetails;
   node?: XMLElement;
   result?: CombatResult|RoleplayResult;
+}
+
+export interface QuestFeedbackState {
+  text: string;
+  shareUserEmail?: boolean;
 }
 
 export interface SearchState {
@@ -83,6 +88,7 @@ export interface UserState {
   id: string;
   name: string;
   image: string;
+  email: string;
 }
 
 export interface AppState {
