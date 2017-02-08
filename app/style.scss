@@ -60,6 +60,7 @@
 
 $abswidthmax: 769px;
 $absheightmax: 1025px;
+$lineheight: 1.2;
 
 $widthmap: (
   huge: 12vw,
@@ -118,7 +119,7 @@ $fontsizemap: (
 $headerfont: CinzelBold, serif;
 
 $font_color_primary: #000000;
-$font_color_faded: #777777;
+$font_color_faded: #707070;
 $font_color_dark_primary: #FFFFFF;
 
 $border_primary: 0.02in solid #000;
@@ -154,6 +155,14 @@ body {
   font-family: MinionPro;
 }
 
+.float_left {
+  float: left;
+}
+
+.float_right {
+  float: right;
+}
+
 @mixin styling() {
 
   .base_card {
@@ -171,14 +180,14 @@ body {
       background-color: $bg_dark_primary;
       background-image: url(images/encounter-tiled.jpg);
       color: $font_color_dark_primary;
-      .title_container svg {
-        color: $font_color_dark_primary !important;
-      }
       .scrollbox_top {
         display: none;
       }
       .title_container {
         background-color: $bg_dark_titlebar;
+        svg {
+          color: $font_color_dark_primary !important;
+        }
       }
       .base_button > button, .base_checkbox button, .base_picker {
         background-color: $bg_dark_interactive !important;
@@ -261,6 +270,17 @@ body {
         text-overflow: ellipsis;
       }
     }
+    .header {
+      background-color: $bg_titlebar;
+      line-height: height(appbar);
+      height: height(appbar);
+      padding: 0 height(base);
+      font-size: fontsize(flavor);
+
+      .filter_button:hover {
+        cursor: pointer;
+      }
+    }
   }
 
   ol, ul {
@@ -293,7 +313,7 @@ body {
       text-transform: none !important;
       text-decoration: none !important;
       color: inherit !important;
-      line-height: 1.2 !important;
+      line-height: $lineheight !important;
       > div {
         display: block !important;
       }
@@ -334,21 +354,41 @@ body {
     }
     .subtext {
       font-size: fontsize(flavor);
-      line-height: 1.2;
+      line-height: $lineheight;
     }
   }
 
   .textfield {
     font-size: inherit !important;
     line-height: inherit !important;
+    padding-bottom: width(base) !important;
+    height: auto !important;
+
+    div:first-child {
+      top: height(base);
+      left: width(base);
+      color: $font_color_faded !important;
+    }
 
     textarea {
       font-size: fontsize(flavor) !important;
-      line-height: 1.2 !important;
-      border: $border_accent !important;
-      padding: 10px !important;
+      line-height: $lineheight !important;
+      padding: width(base) !important;
       background-color: $bg_interactive !important;
+      border: $border_accent !important;
     }
+
+    input {
+      padding: width(base) !important;
+      height: auto !important;
+      box-sizing: border-box;
+      background-color: $bg_interactive !important;
+      border: $border_accent !important;
+    }
+  }
+
+  .inputSpacer { /* for text inputs that are close to bottom, give the screen space to scroll up */
+    margin-bottom: 100%;
   }
 
   .callout {
@@ -498,17 +538,20 @@ body {
       display: flex;
       padding-left: width(base);
       flex: 3;
-      line-height: 1.2em;
+      line-height: $lineheight;
       margin: 0;
       font-size: fontsize(flavor);
     }
     .title {
-      line-height: 1.2em;
+      line-height: $lineheight;
       display: block;
       font-size: fontsize(interactive);
       margin-bottom: height(small);
       font-family: $headerfont;
       top: 0;
+    }
+    .inline_icon {
+      padding-right: width(base);
     }
   }
 
@@ -525,16 +568,17 @@ body {
 
   .featured_quest, .searchResult {
     padding-left: width(base);
+    padding-right: width(base);
     .summary {
       display: flex;
       padding-left: width(base);
       flex: 3;
-      line-height: 1.2em;
+      line-height: $lineheight;
       margin: 0;
       font-size: fontsize(flavor);
     }
     .title {
-      line-height: 1.2em;
+      line-height: $lineheight;
       font-family: $headerfont;
       display: block;
       font-size: fontsize(interactive);

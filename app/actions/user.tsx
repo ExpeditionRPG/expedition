@@ -1,9 +1,10 @@
-import {UserState} from '../reducers/StateTypes'
 import {toCard} from './card'
+import {UserState} from '../reducers/StateTypes'
 import {authSettings} from '../constants'
 
 declare var gapi: any;
 declare var window: any;
+
 
 function registerUserAndIdToken(user: {name: string, image: string}, idToken: string, cb: (user:UserState)=>any) {
   var xhr = new XMLHttpRequest();
@@ -22,28 +23,41 @@ function registerUserAndIdToken(user: {name: string, image: string}, idToken: st
 }
 
 function loginWeb(cb: (user:UserState)=>any) {
-  var that = this;
+  const that = this;
   gapi.auth2.getAuthInstance().signIn({redirect_uri: 'postmessage'}).then(function(googleUser: any) {
-    var idToken: string = googleUser.getAuthResponse().id_token;
-    var basicProfile: any = googleUser.getBasicProfile();
+    const idToken: string = googleUser.getAuthResponse().id_token;
+    const basicProfile: any = googleUser.getBasicProfile();
     registerUserAndIdToken({
       name: basicProfile.getName(), image: basicProfile.getImageUrl()
     }, idToken, cb);
   });
 }
 
+function silentLoginWeb(cb: (user:UserState)=>any) {
+  const that = this;
+  if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+    const googleUser: any = gapi.auth2.getAuthInstance().currentUser.get();
+    const idToken: string = googleUser.getAuthResponse().id_token;
+    const basicProfile: any = googleUser.getBasicProfile();
+    return registerUserAndIdToken({
+      name: basicProfile.getName(), image: basicProfile.getImageUrl()
+    }, idToken, cb);
+  }
+  return cb(null);
+}
+
 function silentLoginCordova(cb: (user:UserState)=>any) {
   if (!window.plugins || !window.plugins.googleplus) {
     return;
   }
-  window.plugins.googleplus.trySilentlogin({
+  window.plugins.googleplus.trySilentLogin({
     scopes: authSettings.scopes,
     webClientId: authSettings.clientId,
   }, function(obj: any) {
     registerUserAndIdToken({
       name: obj.displayName,
       image: obj.imageUrl
-    }, obj.idToken, function() {console.log("Silent sign in");});
+    }, obj.idToken, cb);
   }, function(msg: string) {
     //TODO: Better error handling
     throw new Error(msg);
@@ -51,7 +65,7 @@ function silentLoginCordova(cb: (user:UserState)=>any) {
 }
 
 function loginCordova(cb: (user:UserState)=>any) {
-  var that = this;
+  const that = this;
   window.plugins.googleplus.login({
     scopes: authSettings.scopes,
     webClientId: authSettings.clientId,
@@ -66,10 +80,25 @@ function loginCordova(cb: (user:UserState)=>any) {
   });
 }
 
+export function silentLogin(cb: ()=>any) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    let loginCallback = (user:UserState) => {
+      dispatch({type: 'USER_LOGIN', user});
+      cb();
+    }
+
+    if (window.plugins && window.plugins.googleplus) {
+      silentLoginCordova(loginCallback);
+    } else {
+      silentLoginWeb(loginCallback);
+    }
+  }
+}
+
 export function login(cb: ()=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     let loginCallback = (user:UserState) => {
-      dispatch({type: 'USER_LOGIN', user})
+      dispatch({type: 'USER_LOGIN', user});
       cb();
     }
 

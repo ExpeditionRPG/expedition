@@ -29,6 +29,7 @@ const QuestEnd = (props: QuestEndProps): JSX.Element => {
       <Button onTouchTap={() => props.onSubmit(props.quest, props.settings)}>
         {(props.quest.feedback === '' || props.quest.feedback == null) ? 'Return to menu' : 'Send feedback'}
       </Button>
+      <div className="inputSpacer"></div>
     </Card>
   );
 }
@@ -53,12 +54,11 @@ class FeedbackTextArea extends React.Component<any, any> {
         className={'textfield'}
         fullWidth={true}
         hintText="your feedback - what you liked, what you didn't like, bug reports, etc"
-        // due to their funky implementation of hint text, can't move this to a stylesheet (no way to select)
-        hintStyle={{color: '#444', top: '24px', left: '10px', right: '10px', bottom: 'auto'}}
         multiLine={true}
         onBlur={(e: any) => this.props.onBlur(e.target.value)}
         onChange={(e: any) => this.handleChange(e.target.value)}
         rows={3}
+        underlineShow={false}
         value={this.state.value}
       />
     );

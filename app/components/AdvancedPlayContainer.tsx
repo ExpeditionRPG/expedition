@@ -12,9 +12,6 @@ const mapStateToProps = (state: AppState, ownProps: AdvancedPlayStateProps): Adv
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AdvancedPlayDispatchProps => {
   return {
-    onSearchSelect(): void {
-      dispatch(toCard('SEARCH_CARD', 'DISCLAIMER'));
-    },
     onCustomCombatSelect(settings: SettingsType): void {
       dispatch(toCard('CUSTOM_COMBAT', 'DRAW_ENEMIES'));
       dispatch(initCombat(null, settings, {

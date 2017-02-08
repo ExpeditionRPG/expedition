@@ -15,7 +15,10 @@ const initial_state: SearchState = {
 export function search(state: SearchState = initial_state, action: Redux.Action): SearchState {
   switch(action.type) {
     case 'SEARCH_RESPONSE':
-      return Object.assign({}, state, {results: (action as SearchResponseAction).quests});
+      return Object.assign({}, state, {
+        results: (action as SearchResponseAction).quests,
+        search: (action as SearchResponseAction).search,
+      });
     case 'VIEW_QUEST':
       return Object.assign({}, state, {selected: (action as ViewQuestAction).quest});
     default:

@@ -70,6 +70,7 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
         quests: response.quests,
         nextToken: response.nextToken,
         receivedAt: response.receivedAt,
+        search: search,
       });
       dispatch(toCard('SEARCH_CARD', 'SEARCH'));
     };

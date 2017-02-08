@@ -1,4 +1,4 @@
-import {CardState, CardName, SettingNameType, SearchPhase, SettingsType, TransitionType, UserState, XMLElement} from '../reducers/StateTypes'
+import {CardState, CardName, SettingNameType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, XMLElement} from '../reducers/StateTypes'
 
 import {QuestDetails, QuestContext, Enemy, CombatPhaseNameType, DifficultyType} from '../reducers/QuestTypes'
 import {RoleplayResult, CombatResult} from '../QuestParser'
@@ -71,6 +71,7 @@ export interface SearchResponseAction extends Redux.Action {
   quests: QuestDetails[];
   nextToken: string;
   receivedAt: number;
+  search: SearchSettings;
 }
 
 export interface ViewQuestAction extends Redux.Action {

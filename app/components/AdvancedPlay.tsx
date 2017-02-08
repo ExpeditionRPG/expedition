@@ -9,7 +9,6 @@ export interface AdvancedPlayStateProps {
 }
 
 export interface AdvancedPlayDispatchProps {
-  onSearchSelect: () => any;
   onCustomCombatSelect: (settings: SettingsType) => any;
 }
 
@@ -18,12 +17,6 @@ export interface AdvancedPlayProps extends AdvancedPlayStateProps, AdvancedPlayD
 const AdvancedPlay = (props: AdvancedPlayProps): JSX.Element => {
   return (
     <Card title="Advanced Play">
-      <Button onTouchTap={() => props.onSearchSelect()}>
-        <div className="advanced_play">
-          <div className="title">Community Quests</div>
-          <div className="summary">Explore and play quests written by adventurers around the world!</div>
-        </div>
-      </Button>
       <Button onTouchTap={() => props.onCustomCombatSelect(props.settings)}>
         <div className="advanced_play">
           <div className="title">Custom Combat</div>

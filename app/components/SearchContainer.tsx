@@ -1,11 +1,14 @@
 import {connect} from 'react-redux'
-import {AppState, SearchSettings, UserState} from '../reducers/StateTypes'
-import {QuestDetails} from '../reducers/QuestTypes'
+
+import Search, {SearchStateProps, SearchDispatchProps} from './Search'
+
 import {toPrevious, toCard} from '../actions/card'
 import {viewQuest} from '../actions/quest'
-import {fetchQuestXML, search} from '../actions/web'
-import Search, {SearchStateProps, SearchDispatchProps} from './Search'
 import {login} from '../actions/user'
+import {fetchQuestXML, search} from '../actions/web'
+import {AppState, SearchSettings, UserState} from '../reducers/StateTypes'
+import {QuestDetails} from '../reducers/QuestTypes'
+
 
 const mapStateToProps = (state: AppState, ownProps: SearchStateProps): SearchStateProps => {
   return Object.assign({}, state.search, {phase: ownProps.phase, user: state.user, numPlayers: state.settings.numPlayers});
@@ -17,6 +20,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
       dispatch(login(()=> {
         dispatch(toCard('SEARCH_CARD', 'SETTINGS'));
       }));
+    },
+    onFilter: () => {
+      dispatch(toCard('SEARCH_CARD', 'SETTINGS'));
     },
     onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => {
       dispatch(search(numPlayers, user, request));

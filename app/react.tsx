@@ -42,6 +42,7 @@ try {
 // Custom components
 import {authSettings} from './constants'
 import {toPrevious} from './actions/card'
+import {silentLogin} from './actions/user'
 import {getStore} from './store'
 
 // Wait for device API libraries to load
@@ -62,6 +63,11 @@ function onDeviceReady() {
     getStore().dispatch(toPrevious());
   }, false);
   window.plugins.insomnia.keepAwake(); // keep screen on while app is open
+  // silent login here triggers for cordova plugin
+  getStore().dispatch(silentLogin(function() {
+    // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
+    console.log("Silent login: ", gapi.auth2.getAuthInstance().isSignedIn);
+  }));
 }
 
 // TODO: API Auth
@@ -72,7 +78,11 @@ gapi.load('client:auth2', function() {
     scope: authSettings.scopes,
     cookie_policy: 'none',
   }).then(function() {
-    console.log(gapi.auth2.getAuthInstance().isSignedIn);
+    // silent login here triggers for web
+    getStore().dispatch(silentLogin(function() {
+      // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
+      console.log("Silent login: ", gapi.auth2.getAuthInstance().isSignedIn);
+    }));
   });
 });
 
@@ -88,6 +98,17 @@ if (window.FirebasePlugin) {
     logEvent: function(name: string, args: any) { console.log(name, args); },
   };
 }
+
+// DOM ready
+$(function() {
+  // patch for Android browser not properly scrolling to input when keyboard appears
+  $('body').on('focusin', 'input, textarea', function(event) {
+    if (navigator.userAgent.indexOf('Android') !== -1) {
+      var scroll = $(this).offset().top;
+      $('.base_card').scrollTop(scroll);
+    }
+  });
+});
 
 let render = () => {
   var Main = require('./components/base/Main').default;

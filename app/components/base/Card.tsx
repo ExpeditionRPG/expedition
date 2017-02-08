@@ -19,6 +19,7 @@ interface ExpeditionCardProps extends React.Props<any> {
   title?: string;
   icon?: string;
   dark?: boolean;
+  header?: JSX.Element;
 }
 
 export default class ExpeditionCard extends React.Component<ExpeditionCardProps, {}> {
@@ -78,6 +79,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
           </span>
           <div className="title">{this.props.title}</div>
         </div>
+        {this.props.header && <div className="header">{this.props.header}</div>}
         <div className="article">
           <div className="scrollbox">
             <div className="scrollbox_top">

@@ -1,11 +1,13 @@
 import * as React from 'react'
+import DropDownMenu from 'material-ui/DropDownMenu'
+import MenuItem from 'material-ui/MenuItem'
+import TextField from 'material-ui/TextField'
+
 import Card from './base/Card'
 import Button from './base/Button'
 import Checkbox from './base/Checkbox'
+
 import {SearchSettings, SearchPhase, SearchState, UserState} from '../reducers/StateTypes'
-import TextField from 'material-ui/TextField'
-import DropDownMenu from 'material-ui/DropDownMenu'
-import MenuItem from 'material-ui/MenuItem'
 import {QuestDetails} from '../reducers/QuestTypes'
 import theme from '../theme'
 
@@ -18,6 +20,7 @@ export interface SearchStateProps extends SearchState {
 
 export interface SearchDispatchProps {
   onLoginRequest: () => void;
+  onFilter: () => void;
   onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => void;
   onQuest: (quest: QuestDetails) => void;
   onPlay: (quest: QuestDetails) => void;
@@ -34,6 +37,8 @@ interface SearchSettingsCardProps {
   search: SearchSettings;
   onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => void;
 }
+
+
 class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
   state: SearchSettings;
 
@@ -49,11 +54,16 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
   render() {
     return (
       <Card title="Public Quests" icon="adventurer">
+        <TextField
+          className="textfield"
+          fullWidth={true}
+          hintText="text search - title, author, ID"
+          onChange={(e: any) => this.onChange('text', e.target.value)}
+          underlineShow={false}
+          value={this.state.text}
+        />
         <div>
-          <TextField id="text" hintText="text search - author, title, ID" hintStyle={{color: '#555555'}} onChange={(e: any) => this.onChange('text', e.target.value)} value={this.state.text}/>
-        </div>
-        <div>
-          for {this.props.numPlayers} adventurer(s)
+          for {this.props.numPlayers} adventurer{this.props.numPlayers > 1 ? 's' : ''} (changeable in settings)
         </div>
         <div>
           published within
@@ -68,7 +78,6 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
         </div>
         <div>
           ordered by
-
           <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('order', v)} value={this.state.order}>
             <MenuItem value="-published" primaryText="Newest"/>
             <MenuItem value="+title" primaryText="Title"/>
@@ -78,7 +87,6 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
         </div>
         <div>
           created by
-
           <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('owner', v)} value={this.state.owner}>
             <MenuItem value="self" primaryText="You"/>
             <MenuItem value="anyone" primaryText="Anyone"/>
@@ -104,7 +112,6 @@ function formatPlayPeriod(minMinutes: number, maxMinutes: number): string {
 
 function renderResults(props: SearchProps): JSX.Element {
   let items: JSX.Element[] = props.results.map(function(result: QuestDetails, index: number) {
-
     return (
       <Button key={index} onTouchTap={() => props.onQuest(result)}>
         <div className="searchResult">
@@ -119,17 +126,20 @@ function renderResults(props: SearchProps): JSX.Element {
     );
   });
 
-  let hint: JSX.Element = (<span></span>);
-  if (props.results.length === 0) {
-    hint = <div>
-      <div>No results found.</div>
-      <div>Try broadening your search.</div>
-    </div>;
-  }
-
   return (
-    <Card title={props.results.length + " Results"}>
-      {hint}
+    <Card
+      title="Quest Search Results"
+      header={<div className="searchHeader">
+        <div className="float_left">{props.results.length} quests</div>
+        <div className="float_right filter_button" onTouchTap={() => props.onFilter()}>Filter ></div>
+      </div>}
+    >
+      {items.length === 0 &&
+        <div>
+          <div>No results found.</div>
+          <div>Try broadening your search.</div>
+        </div>
+      }
       {items}
     </Card>
   );
