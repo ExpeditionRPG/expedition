@@ -95,9 +95,9 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
             onTouchTap={(event: any) => props.playFromCursor({}, props.editor, props.quest)}
             label="Play from Cursor">
           </FlatButton>
-          {props.editor.bottomPanelShown && 
+          {props.editor.bottomPanelShown &&
           <FlatButton
-            onTouchTap={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)} 
+            onTouchTap={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)}
             label="Play from Cursor (preserve context)">
           </FlatButton>
           }
