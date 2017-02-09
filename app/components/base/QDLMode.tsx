@@ -1,30 +1,30 @@
 const acequire: any = (require('brace') as any).acequire;
-const oop = acequire("ace/lib/oop") as any;
+const oop = acequire('ace/lib/oop') as any;
 const { Range } = acequire('ace/range');
-const TextMode = (acequire("ace/mode/text") as any).Mode;
-const MatchingBraceOutdent = (acequire("ace/mode/matching_brace_outdent") as any).MatchingBraceOutdent;
-const MarkdownHighlightRules = (acequire("ace/mode/markdown_highlight_rules") as any).MarkdownHighlightRules;
+const TextMode = (acequire('ace/mode/text') as any).Mode;
+const MatchingBraceOutdent = (acequire('ace/mode/matching_brace_outdent') as any).MatchingBraceOutdent;
+const MarkdownHighlightRules = (acequire('ace/mode/markdown_highlight_rules') as any).MarkdownHighlightRules;
 
 
 // designed with https://ace.c9.io/tool/mode_creator.html
 var QDLHighlightRules: any = function() {
   this.$rules = new MarkdownHighlightRules().getRules();
 
-  let listblock = this.$rules["listblock"];
+  let listblock = this.$rules['listblock'];
   for (let r in listblock) {
-    if (listblock[r].token == "empty_line") {
+    if (listblock[r].token == 'empty_line') {
       listblock[r].regex = /^\s*$/; // Match empty lines and whitespace too
       break;
     }
   }
 
-  let start = this.$rules["start"];
+  let start = this.$rules['start'];
   for (let s in start) {
-    if (start[s].token === "markup.list") {
-      start[s].regex = "^\\s*(?:[*+-]|\\d+\\.)\\s+";
+    if (start[s].token === 'markup.list') {
+      start[s].regex = '^\\s*(?:[*+-]|\\d+\\.)\\s+';
     }
-    if (start[s].token === "markup.heading.1") {
-      start[s].regex = "^\s*(> .*)";
+    if (start[s].token === 'markup.heading.1') {
+      start[s].regex = '^\s*(> .*)';
     }
   }
 };
@@ -61,7 +61,7 @@ class QDLFoldMode {
 
   getFoldWidget(session: any, foldStyle: any, row: number) : string {
       var line = session.getLine(row);
-      return QDLFoldMode.foldingStartMarker.test(line) ? "start" : "";
+      return QDLFoldMode.foldingStartMarker.test(line) ? 'start' : '';
   }
 
   getFoldWidgetRange(session: any, foldStyle: any, row: number): any {
@@ -100,16 +100,16 @@ oop.inherits(QDLMode, TextMode);
 
 (function() {
   // configure comment start/end characters
-  this.lineCommentStart = "//";
-  this.blockComment = {start: "/*", end: "*/"};
+  this.lineCommentStart = '//';
+  this.blockComment = {start: '/*', end: '*/'};
 
   this.getNextLineIndent = function(state: any, line: any, tab: any) {
     var indent = this.$getIndent(line);
 
     // Add some space right after a choice.
-    if (line.trim().startsWith("* ")) {
+    if (line.trim().startsWith('* ')) {
       // TODO: Figure out why whitespace is required before newline to have correct syntax highlighting
-      return " \n" + indent + "  ";
+      return ' \n' + indent + '  ';
     }
     return indent;
   };

@@ -29,14 +29,14 @@ export interface LogMessageMap {
 
 
 export function prettifyMsg(msg: LogMessage): string {
-  var result = "";
+  var result = '';
   result += msg.type.toUpperCase();
-  result += " L" + ((msg.line !== undefined) ? msg.line : 0);
-  result += ":\n";
+  result += ' L' + ((msg.line !== undefined) ? msg.line : 0);
+  result += ':\n';
   result += msg.text;
 
   if (msg.url) {
-    result += "\nURL: " + msg.url;
+    result += '\nURL: ' + msg.url;
   }
 
   return result;

@@ -7,7 +7,7 @@ export class OverrideTextArea extends React.Component<any, any> {
 
   constructor(props: any) {
     super(props);
-    this.state = {value: props.value || ""};
+    this.state = {value: props.value || ''};
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -21,7 +21,7 @@ export class OverrideTextArea extends React.Component<any, any> {
 
   render() {
     return (
-      <textarea placeholder={"# Write MathJS here to set context values\n# or click arrows from the Context History to populate."} value={this.state.value} onChange={this.handleChange} onBlur={this.props.onBlur} />
+      <textarea placeholder={'# Write MathJS here to set context values\n# or click arrows from the Context History to populate.'} value={this.state.value} onChange={this.handleChange} onBlur={this.props.onBlur} />
     );
   }
 }

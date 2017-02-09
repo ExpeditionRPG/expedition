@@ -38,7 +38,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     if (this.ace) {
       return this.ace.editor.getValue();
     }
-    return "";
+    return '';
   }
 
   setValue(value: string) {
@@ -163,7 +163,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
   }
 
   render() {
-    var text = "Loading...";
+    var text = 'Loading...';
     if (this.props.realtime) {
       text = this.props.realtime.getText();
     }
@@ -177,7 +177,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
         onChange={(text: string) => this.onChange(text)}
         width="100%"
         height="100%"
-        name={"editor"}
+        name={'editor'}
         value={text}
         editorProps={{$blockScrolling: true}}
       />
