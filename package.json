@@ -36,7 +36,7 @@
     "brace": "^0.8.0",
     "cheerio": "^0.20.0",
     "copy-webpack-plugin": "^4.0.0",
-    "expedition-app": "https://github.com/Fabricate-IO/expedition-app.git#992da93da234877a7fcccebccb0efa541bf29329",
+    "expedition-app": "https://github.com/Fabricate-IO/expedition-app.git#a8a1858c0b341642e6deaa14461f6eb9558793ad",
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.14.0",

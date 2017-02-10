@@ -83,6 +83,11 @@ window.addEventListener('keydown', function checkForCtrlS (event: any) {
   }
 });
 
+// override analytics / don't report while dev'ing
+window.FirebasePlugin = {
+  logEvent: function(name: string, args: any) { console.log(name, args); },
+};
+
 window.gapi.load('client,client:auth2,drive-realtime,drive-share', function() {
   window.gapi.client.load('drive', 'v2', function() {
     store.dispatch(loginUser(false));
