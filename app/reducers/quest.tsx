@@ -18,7 +18,7 @@ export function quest(state: QuestState, action: Redux.Action): QuestState {
       return Object.assign({}, state, {
         feedback: Object.assign({},
           state.feedback,
-          (action as UpdateFeedbackAction).feedback,
+          (action as UpdateFeedbackAction).feedback
         ),
       });
     default:
