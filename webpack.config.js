@@ -38,7 +38,7 @@ const options = {
     ],
     preLoaders: [
       { test: /\.js$/, loader: 'source-map-loader' },
-      { test: /\.tsx$/, loader: 'tslint-loader'}
+      { test: /\.tsx$/, loader: 'tslint-loader', exclude: /node_modules/ }
     ]
   },
   tslint: {
