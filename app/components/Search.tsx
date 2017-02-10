@@ -104,9 +104,9 @@ function renderSettings(props: SearchProps): JSX.Element {
 
 function formatPlayPeriod(minMinutes: number, maxMinutes: number): string {
   if (minMinutes > 60 && maxMinutes > 60) {
-    return Math.round(minMinutes / 60) + '-' + Math.round(maxMinutes / 60) + " hours";
+    return Math.round(minMinutes / 60) + '-' + Math.round(maxMinutes / 60) + ' hours';
   } else {
-    return minMinutes + '-' + maxMinutes + " minutes";
+    return minMinutes + '-' + maxMinutes + ' minutes';
   }
 }
 
@@ -198,16 +198,16 @@ function renderDisclaimer(props: SearchProps): JSX.Element {
 
 const Search = (props: SearchProps): JSX.Element => {
   switch(props.phase) {
-    case "DISCLAIMER":
+    case 'DISCLAIMER':
       return renderDisclaimer(props);
-    case "SETTINGS":
+    case 'SETTINGS':
       return renderSettings(props);
-    case "SEARCH":
+    case 'SEARCH':
       return renderResults(props);
-    case "DETAILS":
+    case 'DETAILS':
       return renderDetails(props);
     default:
-      throw new Error("Unknown search phase " + props.phase);
+      throw new Error('Unknown search phase ' + props.phase);
   }
 }
 

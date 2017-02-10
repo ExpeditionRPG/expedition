@@ -72,7 +72,7 @@ export function loadNode(settings: SettingsType, dispatch: Redux.Dispatch<any>, 
       phase = 'DRAW_ENEMIES';
       break;
     default:
-      throw new Error("Unsupported node type " + tag)
+      throw new Error('Unsupported node type ' + tag);
   }
 
   // Every choice has an effect.

@@ -18,17 +18,17 @@ export interface SettingsDispatchProps {
 export interface SettingsProps extends SettingsStateProps, SettingsDispatchProps {};
 
 const difficultyText: { [v: string]: any } = [
-  {title: "Easy", text: "Enemies go easy on you."},
-  {title: "Normal", text: "Expedition as it was meant to be played. Adventurers start here!"},
-  {title: "Hard", text: "Enemies are relentless; a true challenge for seasoned adventurers only."},
-  {title: "Impossible", text: "You will almost surely die, so make your death a glorious one!"}
+  {title: 'Easy', text: 'Enemies go easy on you.'},
+  {title: 'Normal', text: 'Expedition as it was meant to be played. Adventurers start here!'},
+  {title: 'Hard', text: 'Enemies are relentless; a true challenge for seasoned adventurers only.'},
+  {title: 'Impossible', text: 'You will almost surely die, so make your death a glorious one!'}
 ];
 
 const Settings = (props: SettingsProps): JSX.Element => {
-  var difficultyIdx = ["EASY", "NORMAL", "HARD", "IMPOSSIBLE"].indexOf(props.difficulty);
+  var difficultyIdx = ['EASY', 'NORMAL', 'HARD', 'IMPOSSIBLE'].indexOf(props.difficulty);
 
-  var multitouchText = (props.multitouch) ? "All players must hold their finger on the screen to end combat." : "A single player may tap the screen once to end combat.";
-  var helpText = (props.showHelp) ? "Setup and combat hints are shown." : "Setup and combat hints are hidden.";
+  var multitouchText = (props.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single player may tap the screen once to end combat.';
+  var helpText = (props.showHelp) ? 'Setup and combat hints are shown.' : 'Setup and combat hints are hidden.';
   return (
     <Card title="Settings">
 

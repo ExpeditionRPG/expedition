@@ -3,10 +3,10 @@ import {SearchState, isSearchPhase} from './StateTypes'
 
 const initial_state: SearchState = {
   search: {
-    text: "",
-    age: "inf",
-    order: "-published",
-    owner: "anyone",
+    text: '',
+    age: 'inf',
+    order: '-published',
+    owner: 'anyone',
   },
   selected: null,
   results: []

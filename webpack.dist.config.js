@@ -9,7 +9,7 @@ var options = {
     './app/react.tsx',
     './app/style.scss',
   ],
-  contentBase: "./app",
+  contentBase: './app',
   resolve: {
     extensions: ['', '.js', '.ts', '.tsx', '.json'],
   },
@@ -20,7 +20,7 @@ var options = {
   module: {
     preLoaders: [
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      { test: /\.js$/, loader: "source-map-loader" }
+      { test: /\.js$/, loader: 'source-map-loader' }
     ],
     loaders: [
       { test: /\.(ttf|eot|svg|jpg|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },

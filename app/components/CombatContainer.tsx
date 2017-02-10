@@ -55,12 +55,12 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       dispatch(toCard(cardName, phase));
     },
     onVictory: (cardName: CardName, maxTier: number, settings: SettingsType) => {
-      window.FirebasePlugin.logEvent("combat_victory", {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
+      window.FirebasePlugin.logEvent('combat_victory', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
       dispatch(toCard(cardName, 'VICTORY'));
       dispatch(combatVictory(settings.numPlayers, maxTier));
     },
     onDefeat: (cardName: CardName, maxTier: number, settings: SettingsType) => {
-      window.FirebasePlugin.logEvent("combat_defeat", {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
+      window.FirebasePlugin.logEvent('combat_defeat', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
       dispatch(toCard(cardName, 'DEFEAT'));
       dispatch(combatDefeat());
     },

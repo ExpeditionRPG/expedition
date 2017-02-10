@@ -36,7 +36,7 @@ var injectTapEventPlugin = require('react-tap-event-plugin');
 try {
   injectTapEventPlugin();
 } catch (e) {
-  console.log("Already injected tap event plugin");
+  console.log('Already injected tap event plugin');
 }
 
 // Custom components
@@ -66,7 +66,7 @@ function onDeviceReady() {
   // silent login here triggers for cordova plugin
   getStore().dispatch(silentLogin(function() {
     // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
-    console.log("Silent login: ", gapi.auth2.getAuthInstance().isSignedIn);
+    console.log('Silent login: ', gapi.auth2.getAuthInstance().isSignedIn);
   }));
 }
 
@@ -81,7 +81,7 @@ gapi.load('client:auth2', function() {
     // silent login here triggers for web
     getStore().dispatch(silentLogin(function() {
       // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
-      console.log("Silent login: ", gapi.auth2.getAuthInstance().isSignedIn);
+      console.log('Silent login: ', gapi.auth2.getAuthInstance().isSignedIn);
     }));
   });
 });

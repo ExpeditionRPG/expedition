@@ -60,11 +60,11 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
   render() {
     var icon: JSX.Element = <span></span>;
     if (this.props.icon) {
-      icon = <img id="bgimg" src={"images/" + this.props.icon + ".svg"}></img>;
+      icon = <img id="bgimg" src={'images/' + this.props.icon + '.svg'}></img>;
     }
     // TODO: Spacer ios-only as first child of card style
     return (
-      <div className={"base_card" + ((this.props.dark) ? " dark" : "")}>
+      <div className={'base_card' + ((this.props.dark) ? ' dark' : '')}>
         <div className="title_container">
           <IconButton onTouchTap={() => this.onReturn()}><ChevronLeftIcon/></IconButton>
           <span className="menu">

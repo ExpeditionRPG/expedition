@@ -45,7 +45,7 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
     }
     var surgeWarning = (this.props.surgeWarning) ? (<h3 className="surge_warning">Surge Imminent</h3>) : (<span></span>);
     return (
-      <div className={"base_timer_card" + ((this.props.dark) ? " dark" : "")}>
+      <div className={'base_timer_card' + ((this.props.dark) ? ' dark' : '')}>
         <div className="value">{formattedTimer}s</div>
         {surgeWarning}
         <MultiTouchTrigger onTouchChange={this.onTouchChange.bind(this)} />

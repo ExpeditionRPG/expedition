@@ -17,7 +17,7 @@ var options = {
   resolve: {
     extensions: ['', '.js', '.ts', '.tsx', '.json']
   },
-  contentBase: "./app",
+  contentBase: './app',
   output: {
     path: __dirname + '/dist/',
     publicPath: 'http://127.0.0.1:' + port +  '/',
@@ -29,7 +29,8 @@ var options = {
   },
   module: {
     preLoaders: [
-      { test: /\.js$/, loader: "source-map-loader" }
+      { test: /\.js$/, loader: 'source-map-loader' },
+      { test: /\.tsx$/, loader: 'tslint-loader', exclude: /node_modules/ }
     ],
     loaders: [
       { test: /\.(ttf|eot|svg|jpg|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
@@ -40,6 +41,16 @@ var options = {
     postLoaders: [
       { test: /\.tsx$/, loaders: ['babel'], exclude: /node_modules/ },
     ],
+  },
+  tslint: {
+    configuration: {
+      rules: {
+        quotemark: [true, 'single', 'jsx-double']
+      }
+    },
+    emitErrors: true,
+    failOnHint: true,
+    tsConfigFile: 'tsconfig.json',
   },
   plugins: [
     new DashboardPlugin(),

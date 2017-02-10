@@ -39,17 +39,17 @@ export interface CombatResult {
 
 export function validate(root: XMLElement) {
   if (root === undefined) {
-    throw new Error("Quest has invalid root node");
+    throw new Error('Quest has invalid root node');
   }
 
   var badEntries = _getInvalidNodesAndAttributes(root);
   if (!_isEmptyObject(badEntries)) {
-    throw new Error("Found invalid nodes and attributes: " + JSON.stringify(badEntries));
+    throw new Error('Found invalid nodes and attributes: ' + JSON.stringify(badEntries));
   }
 
   var duplicateIDs = _getDuplicateIds(root);
   if (!_isEmptyObject(duplicateIDs)) {
-    throw new Error("Found nodes with duplicate ids: " + JSON.stringify(duplicateIDs));
+    throw new Error('Found nodes with duplicate ids: ' + JSON.stringify(duplicateIDs));
   }
 };
 
@@ -66,7 +66,7 @@ export function handleEvent(parent: XMLElement, event: string, ctx: QuestContext
   }.bind(this));
 
   if (!child) {
-    throw new Error("Could not find child with on='"+event+"'");
+    throw new Error('Could not find child with on="'+event+'"');
   }
   return _loadChoiceOrEventNode(child, ctx);
 };
@@ -79,21 +79,21 @@ export function handleChoice(parent: XMLElement, choice: number, ctx: QuestConte
   var choiceIdx = -1;
   for (; idx < parent.children().length; idx++) {
     var child = parent.children().eq(idx);
-    if (child.get(0).tagName.toLowerCase() === "choice" && _isEnabled(child, ctx)) {
+    if (child.get(0).tagName.toLowerCase() === 'choice' && _isEnabled(child, ctx)) {
       choiceIdx++;
     }
 
     // When we find our choice, push it onto the stack and load it.
     if (choiceIdx === choice) {
       if (!_isEnabled(child, ctx)) {
-        throw new Error("Somehow triggered an invisible choice node");
+        throw new Error('Somehow triggered an invisible choice node');
       }
       return _loadChoiceOrEventNode(child, ctx);
     }
   }
 
   // This happens on lookup error or default "Next"/"End" event
-  if (_loopChildren(parent, function(tag) { if (tag === "end") { return true; }})) {
+  if (_loopChildren(parent, function(tag) { if (tag === 'end') { return true; }})) {
     return null;
   }
   return _findNextNode(parent, ctx);
@@ -192,15 +192,15 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
   }.bind(this));
 
   if (winEventCount === 0) {
-    throw new Error("<combat> must have at least one conditionally true child with on='win'");
+    throw new Error('<combat> must have at least one conditionally true child with on="win"');
   }
 
   if (loseEventCount === 0) {
-    throw new Error("<combat> must have at least one conditionally true child with on='lose'");
+    throw new Error('<combat> must have at least one conditionally true child with on="lose"');
   }
 
   if (!enemies.length) {
-    throw new Error("<combat> has no <e> children");
+    throw new Error('<combat> has no <e> children');
   }
 
   // Combat is stateless, so newScope is not returned here.
@@ -320,7 +320,7 @@ function evaluateContentOps(content: string, scope: any): string {
   // /g                  Multiple times
   var matches = content.match(/{{[\s\S]+?(?=}})}}|[\s\S]+?(?={{|$)/g);
 
-  var result = "";
+  var result = '';
   for (let m of matches) {
     var op = parseOpString(m);
     if (op) {
@@ -377,7 +377,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
     if (tag === 'choice') {
       choiceCount++;
       if (!c.attr('text')) {
-        throw new Error("<choice> inside <roleplay> must have 'text' attribute");
+        throw new Error('<choice> inside <roleplay> must have "text" attribute');
       }
       var text = c.attr('text');
       choices.push({text: generateIconElements(evaluateContentOps(text, newScope)), idx: choiceCount});
@@ -488,8 +488,8 @@ function _getInvalidNodesAndAttributes(node: XMLElement) {
   var results: any = {};
 
   // Quests must only contain these tags:
-  if (["op", "quest", "div", "span", "b", "i", "choice", "event", "combat", "roleplay", "p", "e", "em",
-       "trigger", "instruction"].indexOf(
+  if (['op', 'quest', 'div', 'span', 'b', 'i', 'choice', 'event', 'combat', 'roleplay', 'p', 'e', 'em',
+       'trigger', 'instruction'].indexOf(
         node.get(0).tagName.toLowerCase()) === -1) {
     results[node.get(0).tagName.toLowerCase()] = (results[node.get(0).tagName.toLowerCase()] || 0) + 1;
   }
@@ -533,8 +533,8 @@ function _getDuplicateIds(node: XMLElement): { [key:string]:string[]; } {
 // Builds and returns a map of all IDs to all nodes with that ID.
 function _generateIdMapping(node: XMLElement): { [key:string]:string[]; } {
   var map: { [key:string]:string[]; } = {};
-  if (node.attr("id")) {
-    var id = node.attr("id");
+  if (node.attr('id')) {
+    var id = node.attr('id');
     map[id] = (map[id] || []).concat([node.get(0).tagName.toLowerCase()]);
   }
 

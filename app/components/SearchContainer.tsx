@@ -35,7 +35,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
       dispatch(fetchQuestXML(quest.publishedurl));
     },
     onOwnedChange: (checked: boolean) => {
-      console.log("TODO");
+      console.log('TODO');
     }
   };
 }

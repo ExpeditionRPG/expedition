@@ -31,7 +31,7 @@ function getDifficultySettings(difficulty: DifficultyType): CombatDifficultySett
       damageMultiplier: 2.0,
     };
     default:
-      throw new Error("Unknown difficulty " + difficulty);
+      throw new Error('Unknown difficulty ' + difficulty);
   }
 }
 

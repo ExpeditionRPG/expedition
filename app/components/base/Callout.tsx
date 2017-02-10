@@ -10,7 +10,7 @@ export default class Callout extends React.Component<CalloutProps, {}> {
     var icon: JSX.Element = <span></span>;
     if (this.props.icon) {
       // Wrap in a "p" tag to have same padding as inner text
-      icon = <p><img src={"images/" + this.props.icon + "_small.svg"}></img></p>;
+      icon = <p><img src={'images/' + this.props.icon + '_small.svg'}></img></p>;
     }
 
     return (

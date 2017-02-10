@@ -8,7 +8,7 @@ declare var window: any;
 
 function registerUserAndIdToken(user: {name: string, image: string, email: string}, idToken: string, cb: (user:UserState)=>any) {
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', authSettings.urlBase + "/auth/google", true);
+  xhr.open('POST', authSettings.urlBase + '/auth/google', true);
   xhr.setRequestHeader('Content-Type', 'text/plain');
   xhr.onload = function() {
     cb({
@@ -115,7 +115,7 @@ export function login(cb: ()=>any) {
 
 export function logout() {
   return (dispatch: Redux.Dispatch<any>): any => {
-    console.log("TODO LOGOUT");
+    console.log('TODO LOGOUT');
     dispatch({type: 'USER_LOGOUT'});
   };
 }

@@ -37,6 +37,8 @@
     "source-map-loader": "^0.1.5",
     "style-loader": "^0.13.1",
     "ts-node": "^1.7.0",
+    "tslint": "^4.4.2",
+    "tslint-loader": "^3.3.0",
     "typescript": "~2.0.10",
     "uglify-js": "git://github.com/mishoo/UglifyJS2#harmony",
     "vulcanize": ">= 1.4.2",
