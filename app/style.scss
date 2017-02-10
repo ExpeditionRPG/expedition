@@ -1,7 +1,19 @@
 $bg_primary: #141414;
 $bg_secondary: #212121;
-
 $grey800: #424242;
+$red700: #D32F2F;
+$lightGreen900: #33691E;
+$brightShadow: #616161;
+$red800: #C62828;
+$previewPanelWidth: 560px;
+$padBase: 24px;
+$hBarThickness: 42px;
+$videoSize: 700px;
+$border: 1px #606060 solid;
+$fontSizeBase: 20px;
+$bgInteractive: rgb(20,20,20);
+$bgHighlight: #333;
+$textDisabled: #888;
 
 @font-face {
   font-family: 'CinzelBold';
@@ -16,277 +28,213 @@ $grey800: #424242;
   src: url('fonts/Minion Pro Regular.ttf') format('truetype');
 }
 
-html, body, #react-app {
+html, body, section#react-app, textarea {
   width: 100%;
   height: 100%;
   padding: 0;
   margin: 0;
-  font-family: Roboto, sans-serif;
+  font-family: Monaco, Melo, "Ubuntu Mono", monospace;
+  font-size: $fontSizeBase;
 }
 
-// ===============================================
-// Component styles
-// ===============================================
+#react-app > .main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
-.dialog {
-  background-color: rgba(0,0,0,0.65) !important;
+.scrollBottom {
+  height: 100%;
+  overflow-y: auto;
 }
 
 .dialogTitle {
   background-color: $grey800;
-  margin-bottom: 20px !important;
-  padding-top: 20px !important;
-  padding-bottom: 20px !important;
+  margin-bottom: $padBase !important;
+  padding-top: $padBase !important;
+  padding-bottom: $padBase !important;
   font-family: 'CinzelBold' !important;
+  font-size: 2em !important;
+
+  &.dialogError {
+    background-color: $red700 !important,
+  }
+
+  &.dialogGood {
+    background-color: $lightGreen900 !important,
+  }
 }
 
-.main {
+.loading {
+  background: $bg_primary;
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-
-  &.loading {
-    background: $bg_primary;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    color: white;
-    padding: 30px;
-    font-family: Roboto, sans-serif;
-    font-size: 20px;
-  }
-
-  .contents {
-    flex: 10;
-    position: relative;
-    height: 100%;
-    display: flex;
-    flex-direction:column;
-  }
-}
-
-.quest_app_bar {
-  > :first-child {
-    height: 54px !important;
-    margin-top: -6px !important;
-    h1 {
-      font-family: 'CinzelBold';
-    }
-  }
-  .toolbar {
-    background: $bg_secondary !important;
-    height: 44px !important;
-    button {
-      margin: 4px 0 !important;
-      min-width: 60px !important;
-    }
-  }
-}
-
-.quest_ide {
-  flex:10;
-  width: 100%;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: row;
-
-  .editor {
-    flex: 1;
-    position: relative;
-  }
-  .preview {
-    position: relative;
-    flex: 0 0 560px;
-    width: 520px;
-
-    .app_root {
-      height: 100%;
-    }
-
-    .editor_override {
-      height: 100%;
-    }
-
-    .app {
-      font-family: MinionPro, sans-serif !important;
-
-      button {
-        font-family: MinionPro, sans-serif !important;
-      }
-    }
-  }
+  text-align: center;
+  color: white;
+  padding: $padBase;
+  font-family: Roboto, sans-serif;
 }
 
 .splash {
   background: $bg_primary;
-  height: 100%;
 
   .body {
     text-align: center;
+    overflow-y: auto;
+    flex: 10;
+
+    &>* {
+      display:block;
+      margin: $padBase;
+    }
   }
 
   h1 {
     color: white;
     font-size: 2em;
-    font-weight: bold;
+    font-weight: normal;
   }
-  .learnMore {
-    margin: 0.8em auto 2.5em auto;
-    a {
-      color: white;
-      opacity: 0.8;
-      text-decoration: none;
-    }
-  }
+
   .previewVideo {
     background: $bg_primary;
-    box-shadow: 0 0 20px #616161;
+    box-shadow: 0 0 $padBase $brightShadow;
     border-radius: 2px;
-    width: 710px;
-    height: 700px;
-    margin: auto;
+    max-width: $videoSize;
+    max-height: $videoSize;
+    width: 90%;
+    height: 50%;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
-
-.bottomPanel {
-  height: 32px;
-
-  .header {
-    background: rgb(33,33,33);
-    border-bottom: 1px black solid;
-
-    h2 {
-      cursor: pointer;
-      margin: 0px;
-      font-size: 20px;
-      color: #CCC;
-      display:inline-block;
-    }
+.quest_app_bar {
+  h1 {
+    font-family: 'CinzelBold';
   }
 
-  .console {
-    width: 100%;
-    height: 100%;
+  .loginState {
+    margin-top: -8px;
+  }
+
+  .toolbar {
+    background: $bg_secondary !important;
+    height: $hBarThickness !important;
+
+    button {
+      margin: 4px 0 !important;
+      min-width: 60px !important;
+    }
+
+    .errorButton {
+      color: $red800;
+    }
+  }
+}
+
+.contents {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .quest_ide {
+    flex: 10;
     display: flex;
-    position: absolute;
-    flex-direction: row;
-    color: white;
-    font-size: 20px;
 
-    .interactive {
-      width: 100%;
-      background: rgb(20,20,20);
-
-      textarea {
-        resize: none;
-        color: white;
-        padding: 10px;
-        padding-left: 20px;
-        box-sizing: border-box;
-        border: 0;
-        font-family: Monaco, Melo, "Ubuntu Mono", monospace;
-        font-size: 20px;
-        width: 100%;
-        height: calc(100% - 32px);
-        overflow-y: auto;
-        background: rgba(0,0,0,0.2);
-      }
+    .editor {
+      flex: 1;
     }
 
     .preview {
-      overflow-y: hidden;
-      position: relative;
-      flex: 0 0 560px;
-      font-family: Monaco, Melo, "Ubuntu Mono", monospace;
+      flex: 0 0 $previewPanelWidth;
+      max-width: $previewPanelWidth;
 
-      &>div {
-        height: calc(100% - 23px);
-        overflow-y: auto;
+      .app_root, .editor_override {
+        height: 100%;
       }
 
-      .noScope {
-        color: #888;
-        margin-top:30px;
-        padding: 10px;
-      } 
-
-      .scope {
-        min-height: 24px;
-        padding: 10px;
-        padding-left: 24px;
-        border-bottom: 1px gray solid;
-        display:flex;
-        flex-direction: row;
-        cursor: pointer;
-        position: relative;
-        transition: background-color 0.3s ease;
-
-        &:hover {
-          background: #333;
-        }
-
-        svg {
-          position: absolute;
-          top: 50%;
-          margin-top: -12px;
-          margin-left: -24px;
-        }
+      .app, button {
+        font-family: MinionPro, sans-serif !important;
       }
     }
   }
-}
 
-// ------ SplitPane styling ------
-
-.Resizer {
-  background: #000;
-  opacity: .2;
-  z-index: 1;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding;
-  background-clip: padding-box;
-
-  &:hover {
-    -webkit-transition: all 2s ease;
-    transition: all 2s ease;
-  }
-
-  &.horizontal {
-    height: 11px;
-    margin: -5px 0;
-    border-top: 5px solid rgba(255, 255, 255, 0);
-    border-bottom: 5px solid rgba(255, 255, 255, 0);
+  .Resizer.horizontal {
+    height: $hBarThickness;
+    margin-bottom: -$hBarThickness;
     cursor: row-resize;
     width: 100%;
-
-    &:hover {
-      border-top: 5px solid rgba(0, 0, 0, 0.5);
-      border-bottom: 5px solid rgba(0, 0, 0, 0.5);
-    }
+    margin-left: 200px;
+    z-index: 1000;
   }
 
-  &.vertical {
-    width: 11px;
-    margin: 0 -5px;
-    border-left: 5px solid rgba(255, 255, 255, 0);
-    border-right: 5px solid rgba(255, 255, 255, 0);
-    cursor: col-resize;
-
-    &:hover {
-      border-left: 5px solid rgba(0, 0, 0, 0.5);
-      border-right: 5px solid rgba(0, 0, 0, 0.5);
+  .bottomPanel {
+    .header {
+      border-top: $border;
+      border-bottom: $border;
+      height: $hBarThickness - 2; // Subtract to account for border size
     }
-  }
 
-  &.disabled {
-    cursor: not-allowed;
-    &:hover {
-      border-color: transparent;
+    .console {
+      width: 100%;
+      height: calc(100% - #{$hBarThickness});
+      display: flex;
+      position: absolute;
+      flex-direction: row;
+      color: white;
+
+      .interactive {
+        width: 100%;
+        background: $bgInteractive;
+
+        textarea {
+          resize: none;
+          color: white;
+          padding: $padBase/2;
+          padding-left: $padBase;
+          box-sizing: border-box;
+          border: 0;
+          width: 100%;
+          height: 100%;
+          overflow-y: auto;
+          background: rgba(0,0,0,0);
+        }
+      }
+
+      .preview {
+        position: relative;
+        flex: 0 0 $previewPanelWidth;
+
+        .noScope {
+          color: $textDisabled;
+          margin-top: $padBase;
+          padding: $padBase/2;
+        } 
+
+        .scope {
+          min-height: $padBase;
+          padding: $padBase/2;
+          padding-left: $padBase;
+          border-bottom: $border;
+          display:flex;
+          flex-direction: row;
+          cursor: pointer;
+          position: relative;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background: $bgHighlight;
+          }
+
+          svg {
+            position: absolute;
+            top: 50%;
+            margin-top: -$padBase/2;
+            margin-left: -$padBase;
+          }
+        }
+      }
     }
   }
 }

@@ -74,7 +74,10 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
   return (
     <div className="console">
       <div className="interactive">
-        <OverrideTextArea value={props.opInit} onBlur={(event: any) => props.onInitialContext(event.target.value)}></OverrideTextArea>
+        <OverrideTextArea 
+          placeholder={'# Write MathJS here to set context values\n# or click arrows from the context history on the right to populate.'}
+          value={props.opInit} 
+          onBlur={(event: any) => props.onInitialContext(event.target.value)}></OverrideTextArea>
       </div>
       <div className="preview">
         <ScrollBottom>

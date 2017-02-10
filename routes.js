@@ -37,16 +37,22 @@ router.get('/', (req, res) => {
 
 const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
 // TODO validate with hapi: require title, author, email (valid email), feedback, players, difficulty
+// userEmail (valid email), platform, shareUserEmail (default false)
 router.post('/feedback', (req, res) => {
   res.header('Access-Control-Allow-Origin', req.get('origin'));
   const params = JSON.parse(req.body);
   // strip all HTML tags for protection, then replace newlines with br's
   const title = params.title.replace(HTML_REGEX, '');
   const htmlFeedback = params.feedback.replace(HTML_REGEX, '').replace(/(?:\r\n|\r|\n)/g, '<br/>');
+  let shareUserEmail = '';
+  if (params.shareUserEmail && params.userEmail) {
+    shareUserEmail = `<p>If you'd like to contact them about their feedback, you can reach them at <a href="mailto:${params.userEmail}">${params.userEmail}</a>.</p>`
+  }
   const htmlMessage = `<p>${params.author}, some adventurers have sent you feedback on your quest, ${title}. Hooray!</p>
-  <p>They played with ${params.players} adventurers on ${params.difficulty} difficulty. Their feedback:</p>
+  <p>They played with ${params.players} adventurers on ${params.difficulty} difficulty on ${params.platform}. Their feedback:</p>
   <p>"${htmlFeedback}"</p>
-  <p>If you have questions or run into bugs, you can email <a href="mailto:Expedition@Fabricate.io">Expedition@Fabricate.io</a></p>
+  ${shareUserEmail}
+  <p>If you have questions or run into bugs with the Quest Creator, you can reply directly to this email.</p>
   <p>Happy Adventuring!</p>
   <p>Todd & Scott</p>`;
   // turn end of paragraphs into double newlines

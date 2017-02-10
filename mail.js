@@ -19,5 +19,10 @@ exports.send = function (to, subject, text, html, callback) {
     text: text, // plaintext body
     html: html, // html body
   };
-  return transporter.sendMail(mailOptions, callback);
+  if (process.env.NODE_ENV === 'dev') {
+    console.log('DEV: email not sent (mocked)');
+    return callback(null, {response: ''});
+  } else {
+    return transporter.sendMail(mailOptions, callback);
+  }
 };

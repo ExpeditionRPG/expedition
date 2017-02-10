@@ -5,9 +5,9 @@
   "repository": "https://github.com/Fabricate-IO/expedition-quest-creator",
   "main": "react.js",
   "scripts": {
-    "start": "NODE_ENV=dev node app.js",
+    "start": "node ${SCRIPT:-app.js}",
     "dev-dash": "NODE_ENV=dev webpack-dashboard -- node ${SCRIPT:-app.js}",
-    "dev": "node ${SCRIPT:-app.js}",
+    "dev": "NODE_ENV=dev node app.js",
     "monitor": "nodemon ${SCRIPT:-app.js}",
     "deploy": "gcloud app deploy app.yaml",
     "test": "node node_modules/.bin/mocha --colors --compilers ts:ts-node/register --compilers tsx:ts-node/register --recursive ./app/**/**/**/*.test.tsx ./app/**/**/*.test.tsx ./app/**/*.test.tsx ./app/*.test.tsx ./errors/*.test.tsx ./models/*.test.js ./errors/generateDocs.tsx",
