@@ -7,7 +7,7 @@ function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: 
     errorLines.add(m.line);
 
     if (m.type === 'internal') {
-      m.text = "PLEASE REPORT: " + m.text;
+      m.text = 'PLEASE REPORT: ' + m.text;
       m.type = 'error';
     }
 

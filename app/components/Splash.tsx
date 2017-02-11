@@ -37,7 +37,7 @@ const Splash = (props: any): JSX.Element => {
         <RaisedButton 
           label="Learn More" 
           primary={true} 
-          onTouchTap={() => {window.open("https://github.com/Fabricate-IO/expedition-quest-creator/blob/master/docs/index.md");}} 
+          onTouchTap={() => {window.open('https://github.com/Fabricate-IO/expedition-quest-creator/blob/master/docs/index.md');}} 
         />
         <iframe
           className="previewVideo"
@@ -45,7 +45,7 @@ const Splash = (props: any): JSX.Element => {
           frameborder="0">
         </iframe>
         <footer>
-          <FlatButton label="Go To Expedition Home Page" onTouchTap={() => {window.location.href="http://expeditiongame.com";}}/>
+          <FlatButton label="Go To Expedition Home Page" onTouchTap={() => {window.location.href='http://expeditiongame.com';}}/>
         </footer>
       </div>
     </div>

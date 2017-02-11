@@ -19,7 +19,7 @@ interface ContextEditorProps extends ContextEditorStateProps, ContextEditorDispa
 
 function codifyScope(scope: any): string {
   var keys = Object.keys(scope).sort();
-  var result: string = "";
+  var result: string = '';
   for (var i = 0; i < keys.length; i++) {
     let k = keys[i];
     let v = scope[k];
@@ -29,11 +29,11 @@ function codifyScope(scope: any): string {
     // on "hard restarts" where the function isn't previously defined.
     // We skip function assignment for now.
     if (typeof(v) === 'function') {
-      result += "# " + math.format(v) + " (omitted)";
+      result += '# ' + math.format(v) + ' (omitted)';
       continue;
     } else {
       v = math.format(v);
-      result += k + " = " + v + "\n";
+      result += k + ' = ' + v + '\n';
     }
   }
   return result;
@@ -75,7 +75,7 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
     <div className="console">
       <div className="interactive">
         <OverrideTextArea 
-          placeholder={"# Write MathJS here to set context values\n# or click arrows from the context history on the right to populate."}
+          placeholder={'# Write MathJS here to set context values\n# or click arrows from the context history on the right to populate.'}
           value={props.opInit} 
           onBlur={(event: any) => props.onInitialContext(event.target.value)}></OverrideTextArea>
       </div>

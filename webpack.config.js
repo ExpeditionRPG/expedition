@@ -37,8 +37,19 @@ const options = {
       { test: /\.tsx$/, loaders: ['react-hot', 'awesome-typescript-loader'], exclude: /\/node_modules\/((?!expedition\-app).)*$/ },
     ],
     preLoaders: [
-      { test: /\.js$/, loader: 'source-map-loader' }
+      { test: /\.js$/, loader: 'source-map-loader' },
+      { test: /\.tsx$/, loader: 'tslint-loader', exclude: /node_modules/ }
     ]
+  },
+  tslint: {
+    configuration: {
+      rules: {
+        quotemark: [true, 'single', 'jsx-double']
+      }
+    },
+    emitErrors: true,
+    failOnHint: true,
+    tsConfigFile: 'tsconfig.json',
   },
   plugins: [
     new DashboardPlugin(),
