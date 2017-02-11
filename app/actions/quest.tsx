@@ -111,7 +111,7 @@ export function loadQuest(userid: string, dispatch: any, docid?: string) {
       quest.id = docid;
       quest.mdRealtime = md;
       dispatch(receiveQuestLoad(quest));
-      dispatch({type: 'QUEST_RENDER', xmlResult, msgs: xmlResult.getFinalizedLogs()});
+      dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
     });
   },
   function(model: any) {
@@ -142,7 +142,7 @@ export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)
     });
 
     if (metaNoDefaults) {
-      dispatch({type: 'QUEST_RENDER', xmlResult, msgs: xmlResult.getFinalizedLogs()});
+      dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
       dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
       return $.post('/publish/' + quest.id, xmlResult.getResult()+'', function(result_quest_id: string) {
         quest.published = (new Date(Date.now()).toISOString());
@@ -159,7 +159,7 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
     var text: string = quest.mdRealtime.getText();
 
     var xmlResult = renderXML(text);
-    dispatch({type: 'QUEST_RENDER', xmlResult, msgs: xmlResult.getFinalizedLogs()});
+    dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
 
     var meta = xmlResult.getMeta();
     // For all metadata values, see https://developers.google.com/drive/v2/reference/files
