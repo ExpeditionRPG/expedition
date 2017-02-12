@@ -37,6 +37,8 @@ html, body, section#react-app, textarea {
   font-size: $fontSizeBase;
 }
 
+body > :first-child:not(#react-app) { display: none; }
+
 #react-app > .main {
   height: 100%;
   display: flex;
@@ -210,7 +212,7 @@ html, body, section#react-app, textarea {
           color: $textDisabled;
           margin-top: $padBase;
           padding: $padBase/2;
-        } 
+        }
 
         .scope {
           min-height: $padBase;
