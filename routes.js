@@ -39,7 +39,6 @@ const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
 // TODO validate with hapi: require title, author, email (valid email), feedback, players, difficulty
 // userEmail (valid email), platform, shareUserEmail (default false)
 router.post('/feedback', (req, res) => {
-  res.header('Access-Control-Allow-Origin', req.get('origin'));
   const params = JSON.parse(req.body);
   // strip all HTML tags for protection, then replace newlines with br's
   const title = params.title.replace(HTML_REGEX, '');
@@ -48,16 +47,18 @@ router.post('/feedback', (req, res) => {
   if (params.shareUserEmail && params.userEmail) {
     shareUserEmail = `<p>If you'd like to contact them about their feedback, you can reach them at <a href="mailto:${params.userEmail}">${params.userEmail}</a>.</p>`
   }
-  const htmlMessage = `<p>${params.author}, some adventurers have sent you feedback on your quest, ${title}. Hooray!</p>
-  <p>They played with ${params.players} adventurers on ${params.difficulty} difficulty on ${params.platform}. Their feedback:</p>
+
+  const htmlMessage = `<p>${params.author}, some adventurers sent you feedback on <i>${title}</i>. Hooray! Their feedback:</p>
   <p>"${htmlFeedback}"</p>
+  <p>They played with ${params.players} adventurers on ${params.difficulty} difficulty on the ${params.platform} app.</p>
   ${shareUserEmail}
   <p>If you have questions or run into bugs with the Quest Creator, you can reply directly to this email.</p>
   <p>Happy Adventuring!</p>
   <p>Todd & Scott</p>`;
-  // turn end of paragraphs into double newlines
+  // for plaintext version, turn end of paragraphs into double newlines
   const textMessage = htmlMessage.replace(/<\/p>/g, '\r\n\r\n').replace(HTML_REGEX, '');
 
+  res.header('Access-Control-Allow-Origin', req.get('origin'));
   Mail.send(params.email, 'Feedback on your Expedition quest: ' + title, textMessage, htmlMessage, (err, result) => {
     if (err) {
       console.log(err);
