@@ -93,6 +93,7 @@ class FeedbackTextArea extends React.Component<any, any> {
         multiLine={true}
         onChange={(e: any) => this.handleChange(e.target.value)}
         rows={3}
+        rowsMax={6}
         underlineShow={false}
         value={this.state.value}
       />
