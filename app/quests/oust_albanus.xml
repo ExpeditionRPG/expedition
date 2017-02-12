@@ -1,220 +1,184 @@
-<quest title="Oust Albanus" summary="Your party encounters a smelly situation."
-author="Scott Martin" email="smartin015@gmail.com" url="expeditiongame.com"
-recommended-min-players="2" recommended-max-players="4" min-time-minutes="20"
-max-time-minutes="40">
-  <roleplay title="A Strange Arrival" icon="adventurer">
-    <p>Your party arrives in Gruyere, a non-descript plains town known for their
-      cheese. The townspeople emerge and see you - they stamp towards you, furious.</p>
-    <p>&quot;He&apos;s gone and taken it! He&apos;s taken it all!&quot;</p>
-    <p>You attempt to console them, and ask for clarification.</p>
-    <p>&quot;Albanus! He&apos;s gone and stolen all of our cheese!&quot;</p>
-    <p>This simply won&apos;t do.</p>
-    <choice text="Help the villagers recover their precious cheese.">
-      <roleplay title="A Strange Arrival" icon="adventurer">
-        <p>&quot;Thank you!&quot; they shout, weeping with joy. &quot;That cheese
-          is our livelihood here in Gruyere!&quot;</p>
-        <p>The small crowd pushes you towards the center of the road, gesturing towards
-          an open manhole cover.</p>
-        <p>&quot;Albanus lives down there!&quot;</p>
-        <p>You&apos;re a bit unsure of where this is going, but you did agree to
-          help them.</p>
-        <p>Down the fetid hole you go...</p>
-      </roleplay>
-    </choice>
-    <choice text="Attack the filthy peasants for wasting your time.">
-      <roleplay title="A Strange Arrival" icon="adventurer">
-        <p>You begin to swing your weapons and cast magicks indescriminately into
-          the crowd. Needless to say, the town guard is NOT pleased by your actions...</p>
-      </roleplay>
-      <combat icon="bandit">
-        <e>Archer</e>
-        <e>Veteran</e>
-        <event on="win">
-          <roleplay title="The Map" icon="bandit">
-            <p>You&apos;ve destroyed the last of the guards... although come to think
-              of it, why were they wearing masks?</p>
-            <p>Searching through the pockets of your fallen foes, you discover a worn
-              map fragment that might solve this mystery.</p>
-            <p>The fragment is a map of the town, with a big red X marked on several
-              of the streets.</p>
-            <p>Curious, you head to the nearest red X, finding an open manhole cover
-              leading to the sewers below the town. The bandits must have come from down
-              there.</p>
-            <choice text="Head down the manhole.">
-              <roleplay title="The Map" icon="bandit">
+<quest title="Oust Albanus" summary="Your party encounters a smelly situation." author="Scott Martin" email="smartin015@gmail.com" url="expeditiongame.com" minplayers="1" maxplayers="6" mintimeminutes="20" maxtimeminutes="40" data-line="0">
+    <roleplay icon="adventurer" title="A Strange Arrival" data-line="10">
+        <p>Your party arrives in Gruyere, a small plains town known for their cheese. The townspeople emerge and see you - they stamp towards you, furious.</p>
+        <p>"He's gone and taken it! He's taken it all!"</p>
+        <p>You attempt to console them, and ask for clarification.</p>
+        <p>"Albanus! He's gone and stolen all of our cheese!"</p>
+        <p>This simply won't do.</p>
+        <choice text="Help the villagers recover their precious cheese.">
+            <roleplay title="" data-line="24">
+                <p>"Thank you!" they shout, weeping with joy. "That cheese is our livelihood here in Gruyere!"</p>
+                <p>The small crowd pushes you towards the center of the road, gesturing towards an open manhole cover.</p>
+                <p>"Albanus lives down there!"</p>
+                <p>You're a bit unsure of where this is going, but you did agree to help them.</p>
                 <p>Down the fetid hole you go...</p>
-              </roleplay>
-            </choice>
-          </roleplay>
-        </event>
-        <event on="lose">
-          <roleplay title="A Strange Arrival" icon="bandit">
-            <p>As you witness the last of your party fall, you can&apos;t help but wonder...
-              why were the guards dressed as bandits?</p>
-          </roleplay>
-          <trigger>end</trigger>
-        </event>
-      </combat>
-    </choice>
-  </roleplay>
-  <roleplay title="Down Below" icon="adventurer">
-    <p>The sewers smell precisely as bad as you imagined them.</p>
-    <p>But wafting on the air, you smell the distinctly foot-like stench of fresh
-      Limburger. Albanus can&apos;t have gotten far.</p>
-    <p>As you head deeper into the sewers, the light grows dark. A skittering
-      sound ahead makes you think you&apos;re not the only one searching for
-      a tasty morsel in these tunnels...</p>
-  </roleplay>
-  <combat icon="beast">
-    <e>Giant Rat</e>
-    <event on="win">
-      <roleplay title="In The Shadows" icon="adventurer">
-        <p>You leave the rat&apos;s body lifeless on the ground. Good riddance.</p>
-        <p>The shadows begin to recede as you see a tall torch-bearing figure shuffle
-          towards you.</p>
-        <p>From the silhouette, you hear a deep voice.</p>
-        <p>&quot;Ho, there!&quot;</p>
-        <choice text="Run towards the figure.">
-          <roleplay title="In The Shadows" icon="adventurer">
-            <p>You run towards the figure, weapons still drawn and bloody. The person
-              shouts for help; looks like you&apos;ve got another fight on your hands.</p>
-          </roleplay>
-          <combat icon="adventurer">
-            <e>Captain</e>
-            <e>Brigand</e>
-            <event on="win">
-              <roleplay title="Albanus" icon="adventurer">
-                <p>As you slay the last man, you spot an insignia on the Captain&apos;s grubby
-                  clothes:</p>
-                <p>Albanus, Cheese-slayer and Captain of the Sewer Rat Gang</p>
-                <p>It looks like you&apos;ve solved the village&apos;s cheese-thievery problem.</p>
-              </roleplay>
-              <roleplay title="A Cheesy Ending" icon="adventurer">
-                <p>Following your nose down the tunnel, you find your ultimate reward: the
-                  town&apos;s entire cheese supply.</p>
-                <p>Whether you return the cheese to its rightful owners or decide to partake,
-                  one thing remains certain:</p>
-                <p>By the end of the night, you&apos;ll be rolling in cheddar.</p>
-              </roleplay>
-              <trigger>end</trigger>
-            </event>
-            <event on="lose">
-              <roleplay title="Slain" icon="adventurer">
-                <p>First the rats, now this? Your party couldn&apos;t hold up under the trials
-                  of combat.</p>
-                <p>The bandits have won; there will be no help for this town.</p>
-              </roleplay>
-            </event>
-          </combat>
+            </roleplay>
         </choice>
-        <choice text="Run away!">
-          <roleplay title="Watch out!" icon="adventurer">
-            <p>As you turn to run, a dark shape flies towards you and strikes you square
-              on the back of the head. You see cheese-shaped stars, and pass out.</p>
-            <p>You come to your senses an unknown amount of time later...</p>
-          </roleplay>
+        <choice text="Attack the filthy peasants for wasting your time.">
+            <roleplay title="" data-line="36">
+                <p>You begin to swing your weapons and cast magicks indiscriminately into the crowd. Needless to say, the town guard is NOT pleased by your actions...</p>
+            </roleplay>
+            <combat data-line="38">
+                <e>Archer</e>
+                <e>Veteran</e>
+                <event on="win">
+                    <roleplay title="The Map" data-line="44">
+                        <p>You've destroyed the last of the guards... although come to think of it, why were they wearing masks?</p>
+                        <p>Searching through the pockets of your fallen foes, you discover a worn map fragment that might solve this mystery.</p>
+                        <p>The fragment is a map of the town, with a big red X marked on several of the streets.</p>
+                        <p>Curious, you head to the nearest red X, finding an open manhole cover leading to the sewers below the town. The bandits must have come from down there.</p>
+                        <choice text="Head down the manhole.">
+                            <roleplay title="" data-line="56">
+                                <p>Down the fetid hole you go...</p>
+                            </roleplay>
+                        </choice>
+                    </roleplay>
+                </event>
+                <event on="lose">
+                    <roleplay title="" data-line="60">
+                        <p>As you witness the last of your party fall, you can't help but wonder... why were the guards dressed as bandits?</p>
+                    </roleplay>
+                    <trigger data-line="62">end</trigger>
+                </event>
+            </combat>
         </choice>
-      </roleplay>
-    </event>
-    <event on="lose">
-      <roleplay title="Dirty Rats" icon="beast">
-        <p>The rats screech victoriously - they&apos;ve backed you into a corner!
-          But right when they go in for the killing blow, a sudden shout gives them
-          pause.</p>
-        <p>&quot;Ho, there! Back, ye varmints!&quot;</p>
-        <p>The stinky cheese you smelled earlier flies out from the darkness, striking
-          one of the rats square on the nose! They rear away from you and begin attacking
-          each other for the piece of cheese.</p>
-        <p>As the figure runs towards your party, you succumb to your wounds and
-          pass out.</p>
-        <p>You come to your senses an unknown amount of time later...</p>
-      </roleplay>
-    </event>
-  </combat>
-  <roleplay title="Plots and Schemes" icon="bandit">
-    <p>&quot;Wot we gon&apos; do wid em, Albanus?&quot; a scratchy voice asks.</p>
-    <p>&quot;Looks like they&apos;re from out of town. No one around here&apos;s
-      gonna miss &apos;em.&quot; another colder voice replies.</p>
-    <p>You open bleary eyes and behold a small cavern in the sewers. Albanus
-      and his cronies are huddled by a fire in the center of the room. You and
-      your troupe are off in a corner, battered and wounded but still among the
-      living.</p>
-    <instruction>
-      <p>All players now have 6 HP</p>
-    </instruction>
-  </roleplay>
-  <roleplay title="Desperation" icon="bandit">
-    <p>You begin searching for some way out of this mess. You managed to slip
-      your bonds - the bandits aren&apos;t very good at tying knots - and you
-      immediately see two ways to ruin their day.</p>
-    <p>There&apos;s a small powder keg nearby. If it were to &quot;accidentally&quot;
-      land in the fire, the walls would probably get a new coat of red paint.
-      And soot.</p>
-    <p>You also spy a giant rat in a cage, over in the corner. It looks malnourished
-      and <em>very</em> hungry.</p>
-    <choice text="Toss the powder keg into the fire.">
-      <roleplay title="Bang!" icon="bandit">
-        <p>The worry of setting off an explosion in a small, mostly-sealed room is
-          dismissed from your mind as you grab the keg and lob it at the fire.</p>
-        <p>You leap for cover as a blinding white light erupts, but are thrown to
-          the wall, then to the ground by a massive wall of sound and heat.</p>
-        <p>Rocks fall around you, but cheese - blasted high above by the explosion
-          - falls as well. From the gaping hole in the ceiling you see the curious
-          heads of the townsfolk gathering around to look at your stunned party and
-          what is apparently a cheese-based weather phenomenon.</p>
-        <p>You slump back to the ground, and pass out.</p>
-      </roleplay>
-      <roleplay title="A Cheesy Ending" icon="bandit">
-        <p>Awakening some time later, you find yourself in Gruyere&apos;s apothecary
-          house; the local herbalist took you in and treated your wounds, free of
-          charge.</p>
-        <p>&quot;Good ting I was volking down da street ven you blew up da sewers!&quot;
-          she exclaimed. &quot;Dere was da brie everywhere!&quot;</p>
-        <p>The herbalist tells you the town is safe from the sewer gang and everyone
-          is grateful their cheese is safe once again, albeit a bit singed. You thank
-          her for her assistance and gather your things, ready for your next journey.</p>
-      </roleplay>
-      <trigger>end</trigger>
-    </choice>
-    <choice text="Let the rat out of its cage.">
-      <roleplay title="Ratted Out" icon="bandit">
-        <p>As you draw back the rusty deadbolt and wrench the door open, the rat
-          leaps out and immediately tackles one of the Brigands into the fire. They
-          both thrash about the room for some time, and embers are strewn everywhere.
-          Eventually the remaining three bandits slay the rampaging rat, but they&apos;re
-          visibly shaken from seeing their comrade roasted alive.</p>
-        <instruction>
-          <p>In the next combat, all enemies start at 1/2 their health.</p>
-        </instruction>
-      </roleplay>
-      <combat icon="bandit">
-        <e>Captain</e>
-        <e>Brigand</e>
+    </roleplay>
+    <roleplay title="Down Below" data-line="64">
+        <p>The sewers smell precisely as bad as you imagined them.</p>
+        <p>But wafting on the air, you smell the distinctly foot-like stench of fresh Limburger. Albanus can't have gotten far.</p>
+        <p>As you head deeper into the sewers, the light grows dark. A skittering sound ahead makes you think you're not the only one searching for a tasty morsel in these tunnels...</p>
+    </roleplay>
+    <combat data-line="72">
+        <e>Giant Rat</e>
         <event on="win">
-          <roleplay title="Return" icon="bandit">
-            <p>You put the last of the bandits to death, amazed that you made it out
-              of captivity alive.</p>
-            <p>You&apos;ve found the cheese, and slain Albanus - time to head back to
-              the villagers and collect your reward.</p>
-          </roleplay>
-          <roleplay title="Return" icon="bandit">
-            <p>You emerge from the sewers, bloodied and battered. Villagers gather around
-              and cheer as you share your good news.</p>
-            <p>They offer a lifetime of cheese as a reward - but you politely decline.
-              After all, it&apos;s nacho cheese.</p>
-          </roleplay>
-          <trigger>end</trigger>
+            <roleplay icon="adventurer" title="In The Shadows" data-line="78">
+                <p>You leave the rat's body lifeless on the ground. Good riddance.</p>
+                <p>Continuing on your sewer stroll, you take a sniff. Is that... bleu cheese?</p>
+                <p>Nope. That's just the sewers.</p>
+                <p>Distracted by the variety of smells, you step face-first into a spider web. Clawing at your face to get the sticky web loose, you hear...</p>
+                <p>Oh dear. You hate spiders.</p>
+            </roleplay>
+            <combat data-line="90">
+                <e>Spider</e>
+                <e>Spider</e>
+                <e>Spider</e>
+                <event on="lose">
+                    <roleplay title="Death by Spiders" data-line="98">
+                        <p>As the spiders' venom takes hold, your last thought is that at least your fear of spiders was well-founded...</p>
+                    </roleplay>
+                    <trigger data-line="102">end</trigger>
+                </event>
+                <event on="win">
+                    <roleplay title="Slain Spiders" data-line="106">
+                        <p>You pose triumphantly, having defeated the spiders and conquered your fear of the ugly, eight-legged, crawling little...</p>
+                        <p>Ok, maybe not your fear just yet.</p>
+                        <p>As you clean your weapons, the shadows begin to recede. A tall torch-bearing figure shuffles towards you.</p>
+                        <p>From the silhouette, you hear a deep voice.</p>
+                        <p>"Ho, there!"</p>
+                        <choice text="Run towards the figure.">
+                            <roleplay title="" data-line="120">
+                                <p>You run towards the figure, weapons still drawn and bloody. The person shouts for help; looks like you've got another fight on your hands.</p>
+                            </roleplay>
+                            <combat data-line="122">
+                                <e>Captain</e>
+                                <e>Brigand</e>
+                                <event on="win">
+                                    <roleplay title="Albanus" data-line="129">
+                                        <p>As you slay the last man, you spot an insignia on the Captain's grubby clothes:</p>
+                                        <p>Albanus, Cheese-slayer and Captain of the Sewer Rat Gang</p>
+                                        <p>It looks like you've solved the village's cheese-thievery problem.</p>
+                                    </roleplay>
+                                    <roleplay title="A Cheesy Ending" data-line="137">
+                                        <p>Following your nose down the tunnel, you find your ultimate reward: the town's entire cheese supply.</p>
+                                        <p>Whether you return the cheese to its rightful owners or decide to partake, one thing remains certain:</p>
+                                        <p>By the end of the night, you'll be rolling in cheddar.</p>
+                                    </roleplay>
+                                    <trigger data-line="145">end</trigger>
+                                </event>
+                                <event on="lose">
+                                    <roleplay title="Slain" data-line="149">
+                                        <p>First the rats, now this? Your party couldn't hold up under the trials of combat.</p>
+                                        <p>The bandits have won; there will be no help for this town.</p>
+                                    </roleplay>
+                                </event>
+                            </combat>
+                        </choice>
+                        <choice text="Run away!">
+                            <roleplay title="Watch out!" data-line="157">
+                                <p>As you turn to run, a dark shape flies towards you and strikes you square on the back of the head. You see cheese-shaped stars, and pass out.</p>
+                                <p>You come to your senses an unknown amount of time later...</p>
+                            </roleplay>
+                        </choice>
+                    </roleplay>
+                </event>
+            </combat>
         </event>
         <event on="lose">
-          <roleplay title="Ratted Out" icon="bandit">
-            <p>Despite your clever plan, the bandits recovered too quickly and overwhelmed
-              your party.</p>
-            <p>Your last sight is of the bandit captain Albanus, putting his sword through
-              your gut.</p>
-          </roleplay>
-          <trigger>end</trigger>
+            <roleplay title="Dirty Rats" data-line="165">
+                <p>The rats screech victoriously - they've backed you into a corner! But right when they go in for the killing blow, a sudden shout gives them pause.</p>
+                <p>"Ho, there! Back, ye varmints!"</p>
+                <p>The stinky cheese you smelled earlier flies out from the darkness, striking one of the rats square on the nose! They rear away from you and begin attacking each other for the piece of cheese.</p>
+                <p>As the figure runs towards your party, you succumb to your wounds and pass out.</p>
+                <p>You come to your senses an unknown amount of time later...</p>
+            </roleplay>
         </event>
-      </combat>
-    </choice>
-  </roleplay>
+    </combat>
+    <roleplay icon="bandit" title="Plots and Schemes" data-line="177">
+        <p>"Wot we gon' do wid em, Albanus?" a scratchy voice asks.</p>
+        <p>"Looks like they're from out of town. No one around here's gonna miss 'em." another colder voice replies.</p>
+        <p>You open bleary eyes and behold a small cavern in the sewers. Albanus and his cronies are huddled by a fire in the center of the room. You and your troupe are off in a corner, battered and wounded but still among the living.</p>
+        <instruction>
+            <p>All players now have 6 HP</p>
+        </instruction>
+    </roleplay>
+    <roleplay icon="adventurer" title="Desperation" data-line="187">
+        <p>You begin searching for some way out of this mess. You managed to slip your bonds - the bandits aren't very good at tying knots - and you immediately see two ways to ruin their day.</p>
+        <p>There's a small powder keg nearby. If it were to "accidentally" land in the fire, the walls would probably get a new coat of red paint. And soot.</p>
+        <p>You also spy a giant rat in a cage, over in the corner. It looks malnourished and _very_ hungry.</p>
+        <choice text="Toss the powder keg into the fire.">
+            <roleplay title="Bang!" data-line="197">
+                <p>The worry of setting off an explosion in a small, mostly-sealed room is dismissed from your mind as you grab the keg and lob it at the fire.</p>
+                <p>You leap for cover as a blinding white light erupts, but are thrown to the wall, then to the ground by a massive wall of sound and heat.</p>
+                <p>Rocks fall around you, but cheese - blasted high above by the explosion - falls as well. From the gaping hole in the ceiling you see the curious heads of the townsfolk gathering around to look at your stunned party and what is apparently a cheese-based weather phenomenon.</p>
+                <p>You slump back to the ground, and pass out.</p>
+            </roleplay>
+            <roleplay title="A Cheesy Ending" data-line="207">
+                <p>Awakening some time later, you find yourself in Gruyere's apothecary house; the local herbalist took you in and treated your wounds, free of charge.</p>
+                <p>"Good ting I was volking down da street ven you blew up da sewers!" she exclaimed. "Dere was da brie everywhere!"</p>
+                <p>The herbalist tells you the town is safe from the sewer gang and everyone is grateful their cheese is safe once again, albeit a bit singed. You thank her for her assistance and gather your things, ready for your next journey.</p>
+            </roleplay>
+            <trigger data-line="215">end</trigger>
+        </choice>
+        <choice text="Let the rat out of its cage.">
+            <roleplay title="Ratted Out" data-line="219">
+                <p>As you draw back the rusty deadbolt and wrench the door open, the rat leaps out and immediately tackles one of the Brigands into the fire. They both thrash about the room for some time, and embers are strewn everywhere. Eventually the remaining three bandits slay the rampaging rat, but they're visibly shaken from seeing their comrade roasted alive.</p>
+                <instruction>
+                    <p>In the next combat, all enemies start at 1/2 their health.</p>
+                </instruction>
+            </roleplay>
+            <combat data-line="225">
+                <e>Captain</e>
+                <e>Brigand</e>
+                <event on="win">
+                    <roleplay title="Return" data-line="231">
+                        <p>You put the last of the bandits to death, amazed that you made it out of captivity alive.</p>
+                        <p>You've found the cheese, and slain Albanus - time to head back to the villagers and collect your reward.</p>
+                    </roleplay>
+                    <roleplay title="Return" data-line="237">
+                        <p>You emerge from the sewers, bloodied and battered. Villagers gather around and cheer as you share your good news.</p>
+                        <p>They offer a lifetime of cheese as a reward - but you politely decline. After all, it's nacho cheese.</p>
+                    </roleplay>
+                    <trigger data-line="243">end</trigger>
+                </event>
+                <event on="lose">
+                    <roleplay title="" data-line="247">
+                        <p>Despite your clever plan, the bandits recovered too quickly and overwhelmed your party.</p>
+                        <p>Your last sight is of the bandit captain Albanus, putting his sword through your gut.</p>
+                    </roleplay>
+                    <trigger data-line="251">end</trigger>
+                </event>
+            </combat>
+        </choice>
+    </roleplay>
+    <trigger data-line="253">end</trigger>
 </quest>
