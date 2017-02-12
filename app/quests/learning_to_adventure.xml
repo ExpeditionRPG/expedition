@@ -68,13 +68,13 @@
                     <roleplay title="" data-line="102">
                         <p>You scream in surprise - that's a big spider! You try to turn and run - but too late. The spider has spotted you.</p>
                     </roleplay>
-                    <trigger data-line="104">goto beastFight</trigger>
+                    <trigger data-line="104">goto beastfight</trigger>
                 </choice>
                 <choice text="&lt;b&gt;SWAT&lt;/b&gt;">
                 <roleplay title="" data-line="108">
                     <p>You instinctively swat at the spider, but it's surprisingly fast! Seeing you attack, it strikes back.</p>
                 </roleplay>
-                <trigger data-line="110">goto beastFight</trigger>
+                <trigger data-line="110">goto beastfight</trigger>
             </choice>
         </roleplay>
         <trigger data-line="112">goto beastfight</trigger>

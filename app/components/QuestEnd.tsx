@@ -25,7 +25,7 @@ export interface QuestEndDispatchProps {
 export interface QuestEndProps extends QuestEndStateProps, QuestEndDispatchProps {};
 
 const QuestEnd = (props: QuestEndProps): JSX.Element => {
-  const feedbackExists = (props.quest.feedback != null && props.quest.feedback.text !== '')
+  const feedbackExists = (props.quest.feedback != null && props.quest.feedback.text !== '');
   return (
     <Card title="Feedback?">
       <p>We hope you enjoyed <i>{props.quest.details.title}</i> by {props.quest.details.author}!</p>
