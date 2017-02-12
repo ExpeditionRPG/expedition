@@ -1,7 +1,13 @@
 import {QuestState, AppState} from './StateTypes'
 import {QuestNodeAction, InitCombatAction, UpdateFeedbackAction} from '../actions/ActionTypes'
 
-export function quest(state: QuestState, action: Redux.Action): QuestState {
+const initial_state: QuestState = {
+  feedback: {
+    text: '',
+  },
+};
+
+export function quest(state: QuestState = initial_state, action: Redux.Action): QuestState {
   switch (action.type) {
     case 'QUEST_NODE':
       return Object.assign({}, state, {
