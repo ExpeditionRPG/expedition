@@ -20,7 +20,7 @@ interface TextViewProps extends React.Props<any> {
   annotations: AnnotationType[];
 
   // Use of SplitPane interferes with JS resize and rerendering.
-  // When this value changes, the text view re-renders and the 
+  // When this value changes, the text view re-renders and the
   // correct vertical height is set.
   lastSizeChangeMillis: number;
 }

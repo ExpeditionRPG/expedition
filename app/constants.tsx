@@ -223,7 +223,7 @@ _combat_
 
 * on lose
 
-  You sucumb to death.
+  You succumb to death.
 
   **end**
 
