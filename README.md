@@ -42,7 +42,6 @@ For building native apps, you will also need to set up cordova:
 
 ```sh
 npm install -g cordova
-webpack --config ./webpack.dist.config.js
 ./project.sh
 ```
 

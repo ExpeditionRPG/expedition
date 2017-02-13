@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {CardState, CardName, SettingNameType, SearchPhase, SearchSettings, SettingsType, TransitionType, QuestFeedbackState, UserState, XMLElement} from '../reducers/StateTypes'
 
 import {QuestContext, QuestDetails, Enemy, CombatPhaseNameType, DifficultyType} from '../reducers/QuestTypes'

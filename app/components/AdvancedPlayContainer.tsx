@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {connect} from 'react-redux'
 import {AppState, SettingsType} from '../reducers/StateTypes'
 import {toCard} from '../actions/card'

@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {SettingsType} from './StateTypes'
 import {ChangeSettingsAction} from '../actions/ActionTypes'
 

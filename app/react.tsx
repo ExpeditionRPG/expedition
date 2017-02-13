@@ -1,16 +1,3 @@
-/// <reference path="../typings/redux/redux.d.ts" />
-/// <reference path="../typings/redux-thunk/redux-thunk.d.ts" />
-/// <reference path="../typings/react-redux/react-redux.d.ts" />
-/// <reference path="../typings/react/react-dom.d.ts" />
-/// <reference path="../typings/material-ui/material-ui.d.ts" />
-/// <reference path="../typings/react-tap-event-plugin/react-tap-event-plugin.d.ts" />
-/// <reference path="../typings/jquery/jquery.d.ts" />
-/// <reference path="../typings/custom/custom.d.ts" />
-
-// TODO: Investigate removing tests from the compilation path
-/// <reference path="../typings/jasmine/jasmine.d.ts" />
-/// <reference path="../typings/expect/expect.d.ts" />
-
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
@@ -32,7 +19,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
 // Needed for onTouchTap
-var injectTapEventPlugin = require('react-tap-event-plugin');
+const injectTapEventPlugin = require('react-tap-event-plugin');
 try {
   injectTapEventPlugin();
 } catch (e) {

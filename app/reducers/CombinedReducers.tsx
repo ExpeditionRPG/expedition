@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {card} from './card'
 import {quest} from './quest'
 import {settings} from './settings'

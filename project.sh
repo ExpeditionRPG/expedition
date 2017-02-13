@@ -13,19 +13,29 @@
 # ----
 # Text Colors and Messaging Functions
 
+
+read -r -p "Would you like to clear out platforms, plugins and www, then rebuild? (Y/n)"
+if [[ $response =~ ^(yes|y| ) ]] | [ -z $response ]; then
+    echo "Rebuilding...."
+    rm -rf ./platforms
+    rm -rf ./plugins
+    rm -rf ./www
+    webpack --config ./webpack.dist.config.js
+fi
+
 textReset=$(tput sgr0)
 textRed=$(tput setaf 1)
 textGreen=$(tput setaf 2)
 textYellow=$(tput setaf 3)
 
 message_info () {
-  echo "$textGreen[project]$textReset $1"
+    echo "$textGreen[project]$textReset $1"
 }
 message_warn () {
-        echo "$textYellow[project]$textReset $1"
+    echo "$textYellow[project]$textReset $1"
 }
 message_error () {
-        echo "$textRed[project]$textReset $1"
+    echo "$textRed[project]$textReset $1"
 }
 
 # ----
@@ -172,31 +182,37 @@ if [[ $init = 1 ]] || [[ $icons = 1 ]] ; then
         # but for now we know the files and where they need to go.
 
         message_info "Copying Android app icons and splash screen images..."
-        cp www/res/icon/android/icon-36-ldpi.png platforms/android/res/drawable-ldpi/icon.png
-        cp www/res/icon/android/icon-48-mdpi.png platforms/android/res/drawable-mdpi/icon.png
-        cp www/res/icon/android/icon-72-hdpi.png platforms/android/res/drawable-hdpi/icon.png
-        cp www/res/icon/android/icon-96-xhdpi.png platforms/android/res/drawable-xhdpi/icon.png
-        cp www/res/icon/android/icon-96-xhdpi.png platforms/android/res/drawable/icon.png
+        cp www/images/icon/36x36.png platforms/android/res/mipmap-ldpi/icon.png
+        cp www/images/icon/48x48.png platforms/android/res/mipmap-mdpi/icon.png
+        cp www/images/icon/72x72.png platforms/android/res/mipmap-hdpi/icon.png
+        cp www/images/icon/96x96.png platforms/android/res/mipmap-xhdpi/icon.png
 
-        cp www/res/screen/android/screen-ldpi-portrait.png platforms/android/res/drawable-ldpi/screen.png
-        cp www/res/screen/android/screen-mdpi-portrait.png platforms/android/res/drawable-mdpi/screen.png
-        cp www/res/screen/android/screen-hdpi-portrait.png platforms/android/res/drawable-hdpi/screen.png
-        cp www/res/screen/android/screen-xhdpi-portrait.png platforms/android/res/drawable-xhdpi/screen.png
-        cp www/res/screen/android/screen-xhdpi-portrait.png platforms/android/res/drawable/screen.png
+        cp www/images/splash/320x426.png platforms/android/res/drawable-port-ldpi/screen.png
+        cp www/images/splash/320x470.png platforms/android/res/drawable-port-mdpi/screen.png
+        cp www/images/splash/480x640.png platforms/android/res/drawable-port-hdpi/screen.png
+        cp www/images/splash/720x960.png platforms/android/res/drawable-port-xhdpi/screen.png
+        # These will show up sideways. Whatever.
+        cp www/images/splash/320x426.png platforms/android/res/drawable-land-ldpi/screen.png
+        cp www/images/splash/320x470.png platforms/android/res/drawable-land-mdpi/screen.png
+        cp www/images/splash/480x640.png platforms/android/res/drawable-land-hdpi/screen.png
+        cp www/images/splash/720x960.png platforms/android/res/drawable-land-xhdpi/screen.png
 
         message_info "Copying iOS app icons and splash screen images..."
-        cp www/res/icon/ios/icon-57.png platforms/ios/Project/Resources/icons/icon.png
-        cp www/res/icon/ios/icon-57-2x.png platforms/ios/Project/Resources/icons/icon@2x.png
-        cp www/res/icon/ios/icon-72.png platforms/ios/Project/Resources/icons/icon-72.png
-        cp www/res/icon/ios/icon-72-2x.png platforms/ios/Project/Resources/icons/icon-72@2x.png
+        cp www/images/icon/40x40.png platforms/ios/Expedition/Images.xcassets/AppIcon.appiconset/icon-40.png
+        cp www/images/icon/80x80.png platforms/ios/Expedition/Images.xcassets/AppIcon.appiconset/icon-40@2x.png
+        cp www/images/icon/57x57.png platforms/ios/Expedition/Images.xcassets/AppIcon.appiconset/icon.png
+        cp www/images/icon/114x114.png platforms/ios/Expedition/Images.xcassets/AppIcon.appiconset/icon@2x.png
+        cp www/images/icon/72x72.png platforms/ios/Expedition/Images.xcassets/AppIcon.appiconset/icon-72.png
+        cp www/images/icon/144x144.png platforms/ios/Expedition/Images.xcassets/AppIcon.appiconset/icon-72@2x.png
 
-        cp www/res/screen/ios/screen-iphone-portrait.png platforms/ios/Project/Resources/splash/Default~iphone.png
-        cp www/res/screen/ios/screen-iphone-portrait-2x.png platforms/ios/Project/Resources/splash/Default@2x~iphone.png
-        cp www/res/screen/ios/screen-iphone-portrait-568h-2x.png platforms/ios/Project/Resources/splash/Default-568h@2x~iphone.png
-        cp www/res/screen/ios/screen-ipad-portrait.png platforms/ios/Project/Resources/splash/Default-Portrait~ipad.png
-        cp www/res/screen/ios/screen-ipad-portrait-2x.png platforms/ios/Project/Resources/splash/Default-Portrait@2x~ipad.png
-        cp www/res/screen/ios/screen-ipad-landscape.png platforms/ios/Project/Resources/splash/Default-Landscape~ipad.png
-        cp www/res/screen/ios/screen-ipad-landscape-2x.png platforms/ios/Project/Resources/splash/Default-Landscape@2x~ipad.png
+        cp www/images/splash/640x960.png platforms/ios/Expedition/Images.xcassets/LaunchImage.launchimage/Default~iphone.png
+        cp www/images/splash/750x1334.png platforms/ios/Expedition/Images.xcassets/LaunchImage.launchimage/Default@2x~iphone.png
+        cp www/images/splash/640x1136.png platforms/ios/Expedition/Images.xcassets/LaunchImage.launchimage/Default-568h@2x~iphone.png
+        cp www/images/splash/768x1024.png platforms/ios/Expedition/Images.xcassets/LaunchImage.launchimage/Default-Portrait~ipad.png
+        cp www/images/splash/1536x2048.png platforms/ios/Expedition/Images.xcassets/LaunchImage.launchimage/Default-Portrait@2x~ipad.png
+        # These will show up sideways. Whatever.
+        cp www/images/splash/768x1024.png platforms/ios/Expedition/Images.xcassets/LaunchImage.launchimage/Default-Landscape~ipad.png
+        cp www/images/splash/1536x2048.png platforms/ios/Expedition/Images.xcassets/LaunchImage.launchimage/Default-Landscape@2x~ipad.png
 fi
 
 # ----

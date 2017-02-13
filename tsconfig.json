@@ -13,7 +13,7 @@
         "app/bower_components",
         "www",
         "platforms",
-        "typings",
-        "app/quests"
+        "app/quests",
+        "plugins"
     ]
 }

@@ -277,8 +277,12 @@ body {
       padding: 0 height(base);
       font-size: fontsize(flavor);
 
-      .filter_button:hover {
-        cursor: pointer;
+      .filter_button button {
+        padding: 0 !important;
+        border: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        font-size: fontsize(flavor) !important;
       }
     }
   }
@@ -524,12 +528,6 @@ body {
       bottom: 0;
       left: 0;
       right: 0;
-      padding: height(small);
-      margin: auto;
-      text-align: center;
-      border: $border_dark_primary;
-      cursor: pointer;
-      background: $bg_inactive;
       opacity: 0.7;
     }
   }

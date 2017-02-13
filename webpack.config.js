@@ -2,12 +2,11 @@
 
 var webpack = require('webpack')
 var DashboardPlugin = require('webpack-dashboard/plugin');
-
+var path = require('path');
 var port = process.env.DOCKER_PORT || 8081;
 
 var options = {
   cache: true,
-  debug: true,
   entry: [
     'webpack-dev-server/client?http://localhost:' + port,
     'webpack/hot/only-dev-server',
@@ -15,12 +14,20 @@ var options = {
     './app/style.scss',
   ],
   resolve: {
-    extensions: ['', '.js', '.ts', '.tsx', '.json']
+    extensions: ['.js', '.ts', '.tsx', '.json']
   },
-  contentBase: './app',
+  devServer: {
+    contentBase: path.join(__dirname, "app"),
+    publicPath: '/',
+    port: port,
+    hot: true,
+    quiet: false,
+    noInfo: false,
+    historyApiFallback: true,
+    watchOptions: ((process.env.WATCH_POLL) ? {aggregateTimeout: 300, poll: 1000} : {}),
+  },
   output: {
-    path: __dirname + '/dist/',
-    publicPath: 'http://127.0.0.1:' + port +  '/',
+    path: path.join(__dirname, 'dist'),
     filename: 'bundle.js'
   },
   stats: {
@@ -28,36 +35,41 @@ var options = {
     reasons: true
   },
   module: {
-    preLoaders: [
-      { test: /\.js$/, loader: 'source-map-loader' },
-      { test: /\.tsx$/, loader: 'tslint-loader', exclude: /node_modules/ }
-    ],
-    loaders: [
+    rules: [
+      { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
+      { enforce: 'pre', test: /\.tsx$/, loader: 'tslint-loader', exclude: /node_modules/ },
       { test: /\.(ttf|eot|svg|jpg|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /node_modules/ },
+      { enforce: 'post', test: /\.tsx$/, loaders: ['babel-loader'], exclude: /node_modules/ },
     ],
-    postLoaders: [
-      { test: /\.tsx$/, loaders: ['babel'], exclude: /node_modules/ },
-    ],
-  },
-  tslint: {
-    configuration: {
-      rules: {
-        quotemark: [true, 'single', 'jsx-double']
-      }
-    },
-    emitErrors: true,
-    failOnHint: true,
-    tsConfigFile: 'tsconfig.json',
   },
   plugins: [
     new DashboardPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
-    new webpack.optimize.CommonsChunkPlugin('init.js')
-  ]
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
+      options: {
+        tslint: {
+          configuration: {
+           rules: {
+              quotemark: [true, 'single', 'jsx-double']
+            }
+          },
+          emitErrors: true,
+          failOnHint: true,
+          tsConfigFile: 'tsconfig.json',
+        },
+      },
+    }),
+  ],
+  node: {
+    console: true,
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty'
+  }
 }
 
 module.exports = options

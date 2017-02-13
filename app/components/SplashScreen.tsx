@@ -50,9 +50,9 @@ const SplashScreen = (props: SplashScreenProps): JSX.Element => {
         <div>To Begin:<br/>All players hold one finger on the screen.</div>
       </div>
       <PlayerCounter onPlayerCountSelect={props.onPlayerCountSelect} debounceMillis={1200} />
-      <div onTouchTap={props.onNoMultiTouch} className="no_multi_button">
+      <Button onTouchTap={props.onNoMultiTouch} className="no_multi_button">
         No Multi-touch? Click here!
-      </div>
+      </Button>
     </div>
   );
 }

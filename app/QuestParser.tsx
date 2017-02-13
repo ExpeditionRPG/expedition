@@ -359,7 +359,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
   var choices: Choice[] = [];
   var children: string = '';
   var instructions: Instruction[] = [];
-
+    
   var newScope = Object.assign({}, ctx.scope);
 
   var choiceCount = -1;

@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {
   QuestNodeAction,
   InitCombatAction,

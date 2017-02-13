@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {connect} from 'react-redux'
 import {AppState, XMLElement, SettingsType} from '../reducers/StateTypes'
 import {toPrevious, toCard} from '../actions/card'

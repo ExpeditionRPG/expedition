@@ -1,23 +1,10 @@
-/// <reference path="../typings/expect/expect.d.ts" />
-/// <reference path="../typings/jasmine/jasmine.d.ts" />
-/// <reference path="../typings/custom/require.d.ts" />
-/// <reference path="../typings/enzyme/enzyme.d.ts" />
-
 import {loadRoleplayNode, loadCombatNode, loadTriggerNode, handleChoice} from './QuestParser'
-
 import {mount} from 'enzyme'
 
-var jsdom = (require('jsdom') as any).jsdom;
-
 declare var global: any;
-global.document = jsdom('');
-global.window = document.defaultView;
 
-var expect: any = require('expect');
 var cheerio: any = require('cheerio');
-
 var window: any = cheerio.load('<div>');
-
 
 describe('QuestParser', () => {
 
@@ -160,11 +147,11 @@ describe('QuestParser', () => {
       expect(result.enemies).toEqual([{name: '{{a}}', tier: 1}]);
 
       // String
-      var result = loadCombatNode(node, {scope: {a: "Skeleton"}});
+      var result = loadCombatNode(node, {scope: {a: 'Skeleton'}});
       expect(result.enemies).toEqual([{name: 'Skeleton', tier: 1}]);
 
       // Wrapped matrix
-      var result = loadCombatNode(node, {scope: {a: ["Test"]}});
+      var result = loadCombatNode(node, {scope: {a: ['Test']}});
       expect(result.enemies).toEqual([{name: 'Test', tier: 1}]);
     });
   });

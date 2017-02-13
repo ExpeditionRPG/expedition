@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {connect} from 'react-redux'
 
 import Search, {SearchStateProps, SearchDispatchProps} from './Search'

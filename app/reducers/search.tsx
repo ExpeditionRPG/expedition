@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {NavigateAction, SearchResponseAction, ViewQuestAction} from '../actions/ActionTypes'
 import {SearchState, isSearchPhase} from './StateTypes'
 

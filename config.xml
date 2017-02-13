@@ -61,7 +61,7 @@
         <splash height="960" src="app/images/splash/640x960.png" width="640" />
         <splash height="1024" src="app/images/splash/768x1024.png" width="768" />
         <splash height="2048" src="app/images/splash/1536x2048.png" width="1536" />
-        <splash height="1136" src="app/images/splash/Default-568h@2x.png" width="640" />
+        <splash height="1136" src="app/images/splash/640x1136.png" width="640" />
         <splash height="1334" src="app/images/splash/750x1334.png" width="750" />
         <splash height="2208" src="app/images/splash/1242x2208.png" width="1242" />
     </platform>

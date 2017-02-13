@@ -131,7 +131,7 @@ function renderResults(props: SearchProps): JSX.Element {
       title="Quest Search Results"
       header={<div className="searchHeader">
         <div className="float_left">{props.results.length} quests</div>
-        <div className="float_right filter_button" onTouchTap={() => props.onFilter()}>Filter ></div>
+        <Button className="float_right filter_button" onTouchTap={() => props.onFilter()}>Filter ></Button>
       </div>}
     >
       {items.length === 0 &&
