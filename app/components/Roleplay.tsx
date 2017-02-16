@@ -29,17 +29,17 @@ const Roleplay = (props: RoleplayProps): JSX.Element => {
   });
 
   var instructions: JSX.Element[] = props.roleplay.instructions.map(function(instruction: Instruction): JSX.Element {
-
     const matches = instruction.text.match(/src="images\/([a-zA-Z0-9_]*)/);
     let icon = 'adventurer';
+    let text = instruction.text;
     // if there's an icon at the begining, replace default icon and remove that icon from text
     if (matches && instruction.text.trim().indexOf('<p><img') === 0) {
       icon = matches[1].replace('_small', '');
-      instruction.text = instruction.text.replace(/<img class="inline_icon" src="images\/([a-zA-Z0-9_]*)_small\.svg">/, '');
+      text = text.replace(/<img class="inline_icon" src="images\/([a-zA-Z0-9_]*)_small\.svg">/, '');
     }
     return (
       <Callout key={instruction.idx} icon={icon}>
-        <span dangerouslySetInnerHTML={{__html: instruction.text}} />
+        <span dangerouslySetInnerHTML={{__html: text}} />
       </Callout>
     );
   });
