@@ -34,7 +34,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
     },
     onShare: (quest: QuestState) => {
       const options = {
-        message: `I just had a blast playing the Expedition RPG quest ${quest.details.title}!`, // not supported on some apps (Facebook, Instagram)
+        message: `I just had a blast playing the Expedition quest ${quest.details.title}! #ExpeditionRPG`, // not supported on some apps (Facebook, Instagram)
         subject: 'Expedition: The Roleplaying Card Game',
         url: 'https://ExpeditionGame.com',
       };
