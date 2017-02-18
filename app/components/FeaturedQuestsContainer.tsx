@@ -13,8 +13,8 @@ const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): F
     players: state.settings.numPlayers,
     quests: [
       {title: 'Learning to Adventure', summary: 'Your first adventure.', publishedurl: 'quests/learning_to_adventure.xml'},
-      {title: 'Mistress Malaise', summary: 'Mystery, Misfortune, and a Mistress.', publishedurl: 'quests/mistress_malaise.xml'},
       {title: 'Oust Albanus', summary: 'Your party encounters a smelly situation.', publishedurl: 'quests/oust_albanus.xml'},
+      {title: 'Mistress Malaise', summary: 'Mystery, Misfortune, and a Mistress.', publishedurl: 'quests/mistress_malaise.xml'},
     ],
     user: state.user,
   };
