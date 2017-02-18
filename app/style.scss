@@ -60,32 +60,25 @@
 
 $abswidthmax: 769px;
 $absheightmax: 1025px;
+$absmaxdimension: 1025px;
 $lineheight: 1.2;
 
-$widthmap: (
-  huge: 12vw,
-  large: 6vw,
-  icon: 5vw,
-  base: 2vw,
-  small: 1vw,
-  tiny: 0.5vw,
-);
-
-$heightmap: (
-  watermark: 36vh,
+$sizemap: (
   appbar: 48px,
-  huge: 12vh,
-  large: 6vh,
-  base: 2vh,
-  small: 1vh,
-  tiny: 0.5vh,
+  watermark: 36vh, /* note: height-specific */
+  huge: 12vmin,
+  large: 6vmin,
+  icon: 5vmin,
+  base: 2vmin,
+  small: 1vmin,
+  tiny: 0.5vmin,
 );
 
 $fontsizemap: (
-  interactive: 5.5vw,
-  flavor: 4.7vw,
-  title: 6vw,
-  timervalue: 24vw,
+  timervalue: 24vmin,
+  title: 6vmin,
+  interactive: 5.5vmin,
+  flavor: 4.7vmin,
 );
 
 @function fontsize($key) {
@@ -97,22 +90,12 @@ $fontsizemap: (
   @return null;
 }
 
-@function width($key) {
-  @if map-has-key($widthmap, $key) {
-    @return map-get($widthmap, $key);
+@function size($key) {
+  @if map-has-key($sizemap, $key) {
+    @return map-get($sizemap, $key);
   }
 
-  @warn "Unknown `#{$key}` in $widthmap.";
-  @return null;
-}
-
-
-@function height($key) {
-  @if map-has-key($heightmap, $key) {
-    @return map-get($heightmap, $key);
-  }
-
-  @warn "Unknown `#{$key}` in $heightmap.";
+  @warn "Unknown `#{$key}` in $sizemap.";
   @return null;
 }
 
@@ -126,7 +109,7 @@ $border_primary: 0.02in solid #000;
 $border_dark_primary: 0.02in solid #999;
 $border_accent: 0.02in solid #333;
 $border_faded: 0.02in solid #777;
-$border_desktop: width(base) solid #777;
+$border_desktop: size(base) solid #777;
 
 $bg_primary: #F4ECC8;
 $bg_inactive: #222222;
@@ -209,18 +192,18 @@ body {
       text-align: center !important;
     }
     .child_wrapper {
-      margin: width(large);
-      margin-top: width(small);
+      margin: size(large);
+      margin-top: size(small);
       margin-bottom: 9vw;
       position: relative;
     }
     .article {
       position: relative;
-      padding: width(base);
+      padding: size(base);
       font-size: fontsize(flavor);
       .scrollbox_top {
-        margin-top: height(tiny);
-        margin-bottom: -(height(base));
+        margin-top: size(tiny);
+        margin-bottom: -(size(base));
         opacity: 0.3;
       }
       .scrollbox {
@@ -230,10 +213,10 @@ body {
         width: 100%;
         #bgimg {
           position: absolute;
-          height: height(watermark);
-          width: height(watermark);
+          height: size(watermark);
+          width: size(watermark);
           right: 0;
-          top: height(huge);
+          top: size(huge);
           margin-right: -10%;
           margin-top: 4vh;
           opacity: 0.2;
@@ -245,8 +228,8 @@ body {
       position: relative;
       background-color: $bg_titlebar;
       padding: 0;
-      line-height: height(appbar);
-      height: height(appbar);
+      line-height: size(appbar);
+      height: size(appbar);
       > button {
         float: left;
       }
@@ -262,8 +245,8 @@ body {
         text-align: center;
         position: absolute;
         top: 1px;
-        left: height(appbar);
-        right: height(appbar);
+        left: size(appbar);
+        right: size(appbar);
         height: 100%;
         overflow: hidden;
         white-space: nowrap;
@@ -272,9 +255,9 @@ body {
     }
     .header {
       background-color: $bg_titlebar;
-      line-height: height(appbar);
-      height: height(appbar);
-      padding: 0 height(base);
+      line-height: size(appbar);
+      height: size(appbar);
+      padding: 0 size(base);
       font-size: fontsize(flavor);
 
       .filter_button button {
@@ -288,32 +271,32 @@ body {
   }
 
   ol, ul {
-    padding-left: width(large);
+    padding-left: size(large);
 
     li {
-      padding-bottom: height(tiny);
+      padding-bottom: size(tiny);
     }
   }
 
   .inline_icon {
-    width: width(icon);
-    margin-bottom: -(width(tiny));
+    width: size(icon);
+    margin-bottom: -(size(tiny));
   }
 
   .base_button {
     .inline_icon {
-      margin-bottom: -1 * width(small);
+      margin-bottom: -1 * size(small);
     }
     > button {
       display: block !important;
       height: auto !important;
       width: 100% !important;
       font-size: fontsize(interactive) !important;
-      padding: width(base) !important;
-      padding-top: height(base) !important;
-      padding-bottom: height(base) !important;
+      padding: size(base) !important;
+      padding-top: size(base) !important;
+      padding-bottom: size(base) !important;
       margin: 0 !important;
-      margin-top: height(base) !important;
+      margin-top: size(base) !important;
       border: $border_accent !important;
       background-color: $bg_interactive !important;
       text-align: left !important;
@@ -336,11 +319,11 @@ body {
       height: auto !important;
       display: block !important;
       font-size: fontsize(interactive) !important;
-      padding: width(base) !important;
-      padding-top: height(base) !important;
-      padding-bottom: height(base) !important;
+      padding: size(base) !important;
+      padding-top: size(base) !important;
+      padding-bottom: size(base) !important;
       margin: 0 !important;
-      margin-top: height(base) !important;
+      margin-top: size(base) !important;
       border: $border_accent !important;
       background-color: $bg_interactive !important;
       text-align: center !important;
@@ -355,8 +338,8 @@ body {
     }
     .icon {
       display: inline-block;
-      top: height(tiny);
-      margin-left: height(tiny);
+      top: size(tiny);
+      margin-left: size(tiny);
       position: relative;
     }
     .subtext {
@@ -368,25 +351,25 @@ body {
   .textfield {
     font-size: inherit !important;
     line-height: inherit !important;
-    padding-bottom: width(base) !important;
+    padding-bottom: size(base) !important;
     height: auto !important;
 
     div:first-child {
-      top: height(base);
-      left: width(base);
+      top: size(base);
+      left: size(base);
       color: $font_color_faded !important;
     }
 
     textarea {
       font-size: fontsize(flavor) !important;
       line-height: $lineheight !important;
-      padding: width(base) !important;
+      padding: size(base) !important;
       background-color: $bg_interactive !important;
       border: $border_accent !important;
     }
 
     input {
-      padding: width(base) !important;
+      padding: size(base) !important;
       height: auto !important;
       box-sizing: border-box;
       background-color: $bg_interactive !important;
@@ -402,14 +385,14 @@ body {
     display: flex;
     flex-direction: row;
     p > img {
-      width: width(large);
-      height: width(large);
+      width: size(large);
+      height: size(large);
       display: inline-block;
     }
     .text {
       font-style: italic;
-      padding-left: width(base);
-      padding-right: width(large);
+      padding-left: size(base);
+      padding-right: size(large);
     }
   }
 
@@ -417,8 +400,8 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    max-width: $abswidthmax;
-    max-height: $absheightmax;
+    max-width: $absmaxdimension;
+    max-height: $absmaxdimension;
   }
 
   .base_multi_touch_trigger {
@@ -429,11 +412,11 @@ body {
     height: auto;
     display: block;
     font-size: fontsize(interactive);
-    padding: width(base);
-    padding-top: height(base);
-    padding-bottom: height(base);
+    padding: size(base);
+    padding-top: size(base);
+    padding-bottom: size(base);
     margin: 0;
-    margin-top: height(base);
+    margin-top: size(base);
     border: $border_accent;
     background-color: $bg_interactive;
     text-align: center;
@@ -445,7 +428,7 @@ body {
     }
     .value {
       flex: 10;
-      margin-top: height(small);
+      margin-top: size(small);
       font-family: $headerfont;
     }
     .controls {
@@ -516,9 +499,9 @@ body {
     }
     .logo {
       position: absolute;
-      top: height(small);
-      left: height(small);
-      right: height(small);
+      top: size(small);
+      left: size(small);
+      right: size(small);
       img {
         width: 100%;
       }
@@ -544,11 +527,11 @@ body {
   }
 
   .advanced_play, .featured_quest, .searchResult {
-    padding-left: width(base);
-    padding-right: width(base);
+    padding-left: size(base);
+    padding-right: size(base);
     .summary {
       display: flex;
-      padding-left: width(base);
+      padding-left: size(base);
       flex: 3;
       line-height: $lineheight;
       margin: 0;
@@ -559,12 +542,12 @@ body {
       font-family: $headerfont;
       display: block;
       font-size: fontsize(interactive);
-      margin-bottom: height(small);
+      margin-bottom: size(small);
       top: 0;
     }
     .inline_icon {
-      padding-right: width(base);
-      margin-bottom: -1 * width(tiny);
+      padding-right: size(base);
+      margin-bottom: -1 * size(tiny);
     }
   }
 
@@ -584,33 +567,26 @@ body {
 // a desktop. Center and border the fixed result.
 // ===============================================
 
-$abs_scale_vw: $abswidthmax / 100vw;
-$abs_scale_vh: $absheightmax / 100vh;
+// On large screens, shrink a bit...
+$abs_scale_vw: $abswidthmax / 115vmin;
+$abs_scale_vh: $absheightmax / 115vmin;
 
-$widthmap: (
-  huge: 12vw * $abs_scale_vw,
-  large: 6vw * $abs_scale_vw,
-  icon: 5vw * $abs_scale_vw,
-  base: 2vw * $abs_scale_vw,
-  small: 1vw * $abs_scale_vw,
-  tiny: 0.5vw * $abs_scale_vw,
-);
-
-$heightmap: (
-  watermark: 36vh * $abs_scale_vh,
+$sizemap: (
   appbar: 48px,
-  huge: 12vh * $abs_scale_vh,
-  large: 6vh * $abs_scale_vh,
-  base: 2vh * $abs_scale_vh,
-  small: 1vh * $abs_scale_vh,
-  tiny: 0.5vh * $abs_scale_vh,
+  watermark: 36vmin * $abs_scale_vh, /* note: height-specific */
+  huge: 12vmin * $abs_scale_vh,
+  large: 6vmin * $abs_scale_vh,
+  icon: 5vmin * $abs_scale_vh,
+  base: 2vmin * $abs_scale_vh,
+  small: 1vmin * $abs_scale_vh,
+  tiny: 0.5vmin * $abs_scale_vh,
 );
 
 $fontsizemap: (
-  interactive: 5.5vw * $abs_scale_vw,
-  flavor: 4.7vw * $abs_scale_vw,
-  title: 6vw * $abs_scale_vw,
-  timervalue: 24vw * $abs_scale_vw,
+  title: 6vmin * $abs_scale_vw,
+  timervalue: 24vmin * $abs_scale_vw,
+  interactive: 5.5vmin * $abs_scale_vw,
+  flavor: 4.7vmin * $abs_scale_vw,
 );
 
 @media screen and (min-width: $abswidthmax), screen and (min-height: $absheightmax) {
@@ -641,15 +617,15 @@ $fontsizemap: (
   }
 }
 
-@media screen and (min-height: $absheightmax + width(base)) {
+@media screen and (min-height: $absheightmax + size(base)) {
   .app_container {
     border-top: $border_desktop;
     border-bottom: $border_desktop;
-    border-radius: width(base);
+    border-radius: size(base);
   }
 }
 
-@media screen and (min-height: $absheightmax + 2 * width(base) + 40px) {
+@media screen and (min-height: $absheightmax + 2 * size(base) + 40px) {
   .app_container {
     margin-top: 20px;
   }

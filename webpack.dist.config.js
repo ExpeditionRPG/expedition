@@ -29,7 +29,7 @@ var options = {
   },
   plugins: [
     new webpack.optimize.AggressiveMergingPlugin(),
-    //new webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
+    new webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production')
