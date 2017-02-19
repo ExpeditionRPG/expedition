@@ -1,9 +1,7 @@
-'use strict'
+const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-var webpack = require('webpack');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-
-var options = {
+const options = {
   debug: false,
   entry: [
     './app/react.tsx',
@@ -11,7 +9,7 @@ var options = {
   ],
   contentBase: "./app",
   resolve: {
-    extensions: ['', '.js', '.ts', '.tsx', '.json', '.txt']
+    extensions: ['', '.js', '.ts', '.tsx', '.json', '.txt'],
   },
   output: {
     path: __dirname + '/dist/',
@@ -41,6 +39,7 @@ var options = {
     }),
     new CopyWebpackPlugin([
       { from: 'node_modules/expedition-app/app/images', to: 'images'},
+      { from: 'app/dictionaries', to: 'dictionaries'},
     ]),
   ],
 };
