@@ -7,11 +7,15 @@ import 'brace/mode/markdown'
 import 'brace/theme/twilight'
 
 const acequire: any = (require('brace') as any).acequire;
-const { Range } = acequire('ace/range');
+const {Range} = acequire('ace/range');
 
-import { QDLMode } from './QDLMode'
+import {QDLMode} from './QDLMode'
 import {AnnotationType} from '../../reducers/StateTypes'
+import Spellcheck from '../../spellcheck'
 const mode = new QDLMode();
+
+declare var gapi: any;
+declare var window:any;
 
 interface TextViewProps extends React.Props<any> {
   onChange: any;
@@ -25,13 +29,12 @@ interface TextViewProps extends React.Props<any> {
   lastSizeChangeMillis: number;
 }
 
-declare var gapi: any;
-
 // See https://github.com/securingsincity/react-ace
 export default class TextView extends React.Component<TextViewProps, {}> {
   ace: any;
-  silentChange: boolean;
+  spellchecker: any;
   onSelectionChange: () => any;
+  silentChange: boolean;
   silentSelectionChangeTimer: any;
 
   getValue() {
@@ -56,41 +59,43 @@ export default class TextView extends React.Component<TextViewProps, {}> {
 
     // Add a selection change listener. Because of how
     // ace handles selection events (i.e. badly) we must
-    // debounce this to prevent many duplicate line events.
+    // debounce self to prevent many duplicate line events.
     this.onSelectionChange = (() => {
       if (this.silentSelectionChangeTimer) {
         clearTimeout(this.silentSelectionChangeTimer);
       }
-      this.silentSelectionChangeTimer = setTimeout(function() {
+      this.silentSelectionChangeTimer = setTimeout(() => {
         this.silentSelectionChangeTimer = null;
         var selection = this.ace.editor.getSelection();
-
         var lead = selection.selectionLead;
         var anchor = selection.anchor;
         if (lead.row != anchor.row || lead.column != anchor.column) {
           return;
         }
-
-
         if (this.props.onLine) {
           this.props.onLine(anchor.row);
         }
-      }.bind(this), 50);
-    }).bind(this);
+      }, 50);
+    });
 
     if (this.ace) {
       // Must manually resize on re-render to account for SplitPane
       // adjusting the vertical height of Ace.
       ref.editor.resize();
+      const session = ref.editor.getSession();
 
-      var session = ref.editor.getSession();
+      if (!this.spellchecker && window.dictionary) {
+        this.spellchecker = new Spellcheck(session, window.dictionary);
+        session.on('change', () => { this.spellchecker.onChange(); });
+        setInterval(() => { this.spellchecker.spellcheck(); }, 500);
+      }
 
       // "Automatically scrolling cursor into view after selection change
-      // this will be disabled in the next version set
-      // editor.$blockScrolling = Infinity to disable this message"
+      // self will be disabled in the next version set
+      // editor.$blockScrolling = Infinity to disable self message"
       ref.editor.$blockScrolling = Infinity;
 
-      // Set our custom mode. DUCT TAPE!!!
+      // Set our custom mode and folding. DUCT TAPE!!!
       session.$mode = mode;
       session.$foldMode = mode.foldingRules;
       session.getFoldWidget = function(row: number) { return mode.foldingRules.getFoldWidget(session, '', row); };
@@ -107,12 +112,6 @@ export default class TextView extends React.Component<TextViewProps, {}> {
 
       if (this.props.annotations) {
         session.setAnnotations(this.props.annotations);
-
-        for (var i = 0; i < this.props.annotations.length; i++) {
-          var line = this.props.annotations[i].row;
-          // TODO: Add and remove markers
-          //session.addMarker(new Range(line, 0, line, 1), 'ace_highlight-marker', 'fullLine');
-        }
       }
     }
   }
@@ -144,8 +143,8 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     if (this.props.realtime) {
       this.props.realtime.removeAllEventListeners();
     }
-    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, this.onTextInserted.bind(this));
-    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, this.onTextDeleted.bind(this));
+    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, this.onTextInserted);
+    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, this.onTextDeleted);
   }
 
   onChange(text: string) {

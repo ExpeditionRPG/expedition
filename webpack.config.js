@@ -16,7 +16,7 @@ const options = {
     ],
   },
   resolve: {
-    extensions: ['', '.js', '.ts', '.tsx', '.json']
+    extensions: ['', '.js', '.ts', '.tsx', '.json', '.txt']
   },
   contentBase: './app',
   output: {

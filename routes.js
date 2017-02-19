@@ -14,15 +14,6 @@ const Mail = require('./mail');
 const oauth2 = require('./lib/oauth2');
 
 
-// TODO: Rate limit all routes
-// TODO: SSL
-// TODO: Abstract all these auth checks into middleware.
-    // aka find a good existing auth middleware
-        // note that auth and how its passed seems to vary between quest creator and app
-// TODO: abstract status: 500 try / catches
-// TODO: Lock down CORS
-// TODO: use a validation library like Joi to validate params
-
 // Use the oauth middleware to automatically get the user's profile
 // information and expose login/logout URLs to templates.
 const router = express.Router();
@@ -36,7 +27,7 @@ router.get('/', (req, res) => {
 
 
 const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
-// TODO validate with hapi: require title, author, email (valid email), feedback, players, difficulty
+// Joi validation: require title, author, email (valid email), feedback, players, difficulty
 // userEmail (valid email), platform, shareUserEmail (default false)
 router.post('/feedback', (req, res) => {
   const params = JSON.parse(req.body);

@@ -17,10 +17,12 @@
 /// <reference path="../typings/expect/expect.d.ts" />
 
 
-import * as React from 'react';
-import {render} from 'react-dom';
+import * as React from 'react'
+import {render} from 'react-dom'
 
-import {saveQuest} from './actions/quest';
+import {saveQuest} from './actions/quest'
+
+const Typo: any = require('typo-js');
 
 // So we can hot reload
 declare var require: any;
@@ -93,6 +95,17 @@ window.gapi.load('client,client:auth2,drive-realtime,drive-share', function() {
     store.dispatch(loginUser(false));
   });
 });
+
+// load spellcheck dictionary asynchronously
+(() => {
+  const affPath = '/dictionaries/en_US_aff.txt';
+  const dicPath = '/dictionaries/en_US_dic.txt';
+  $.get(dicPath, function(dicData) {
+    $.get(affPath, function(affData) {
+      window.dictionary = new Typo('en_US', affData, dicData);
+    });
+  });
+})();
 
 render(
   <MuiThemeProvider muiTheme={getMuiTheme(theme)}>

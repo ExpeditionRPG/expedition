@@ -1,6 +1,6 @@
 /// <reference path="../../../typings/custom/require.d.ts" />
 
-import REGEX from '../Regex'
+import REGEX from '../../regex'
 
 export type CombatChild = {text: string, visible?: string, event: any[]};
 export type Instruction = {text: string, visible?: string};

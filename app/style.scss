@@ -240,3 +240,15 @@ body > :first-child:not(#react-app) { display: none; }
     }
   }
 }
+
+/* Ace editor */
+.ace_marker-layer .misspelled {
+  position: absolute;
+  z-index: -2;
+  border-bottom: 1px solid red;
+  margin-bottom: -1px;
+}
+.misspelled {
+  border-bottom: 1px solid red;
+  margin-bottom: -1px;
+}

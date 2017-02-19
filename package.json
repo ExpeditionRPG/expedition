@@ -74,6 +74,7 @@
     "squel": "^5.5.0",
     "timeago-react": "^1.0.3",
     "to-markdown": "^3.0.1",
+    "typo-js": "^1.0.3",
     "warning": "^3.0.0",
     "webpack": "^1.13.2",
     "winston": "^2.2.0"

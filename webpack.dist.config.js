@@ -11,7 +11,7 @@ var options = {
   ],
   contentBase: "./app",
   resolve: {
-    extensions: ['', '.js', '.ts', '.tsx', '.json']
+    extensions: ['', '.js', '.ts', '.tsx', '.json', '.txt']
   },
   output: {
     path: __dirname + '/dist/',
