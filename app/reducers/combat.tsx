@@ -9,9 +9,9 @@ function getDifficultySettings(difficulty: DifficultyType): CombatDifficultySett
   switch(difficulty) {
     case 'EASY':
     return {
-      roundTimeMillis: 15000,
+      roundTimeMillis: 20000,
       surgePeriod: 4,
-      damageMultiplier: 0.75,
+      damageMultiplier: 0.7,
     };
     case 'NORMAL':
     return {
