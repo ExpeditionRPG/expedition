@@ -1,6 +1,9 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
+const PACKAGE = require('../package.json');
+window.APP_VERSION = PACKAGE.version;
+
 // So we can hot reload
 declare var require: any;
 declare var module: any;

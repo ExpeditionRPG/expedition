@@ -48,7 +48,7 @@ class FeedbackCheckbox extends React.Component<any, any> {
 
   constructor(props: QuestEndProps) {
     super(props);
-    this.state = {checked: false};
+    this.state = {checked: (this.props.user && this.props.user.loggedIn)};
     this.handleChange = this.handleChange.bind(this);
   }
 

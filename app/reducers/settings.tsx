@@ -2,7 +2,13 @@ import Redux from 'redux'
 import {SettingsType} from './StateTypes'
 import {ChangeSettingsAction} from '../actions/ActionTypes'
 
-const initial_state: SettingsType = {numPlayers: 1, difficulty: 'NORMAL', showHelp: true, multitouch: true, vibration: true};
+const initial_state: SettingsType = {
+  difficulty: 'NORMAL',
+  multitouch: true,
+  numPlayers: 1,
+  showHelp: true,
+  vibration: true
+};
 
 export function settings(state: SettingsType = initial_state, action: Redux.Action): SettingsType {
   if (action.type === 'CHANGE_SETTINGS') {

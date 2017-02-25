@@ -90,6 +90,7 @@ export function sendFeedback(quest: QuestState, settings: SettingsType, user: Us
       players: settings.numPlayers,
       difficulty: settings.difficulty,
       platform: window.platform,
+      version: window.APP_VERSION,
       userEmail: user.email,
       shareUserEmail: quest.feedback.shareUserEmail,
     });
