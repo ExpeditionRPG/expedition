@@ -28,7 +28,7 @@ router.get('/', (req, res) => {
 
 const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
 // Joi validation: require title, author, email (valid email), feedback, players, difficulty
-// userEmail (valid email), platform, shareUserEmail (default false)
+// userEmail (valid email), platform, shareUserEmail (default false), version (number)
 router.post('/feedback', (req, res) => {
   const params = JSON.parse(req.body);
   // strip all HTML tags for protection, then replace newlines with br's
@@ -41,7 +41,7 @@ router.post('/feedback', (req, res) => {
 
   const htmlMessage = `<p>${params.author}, some adventurers sent you feedback on <i>${title}</i>. Hooray! Their feedback:</p>
   <p>"${htmlFeedback}"</p>
-  <p>They played with ${params.players} adventurers on ${params.difficulty} difficulty on the ${params.platform} app.</p>
+  <p>They played with ${params.players} adventurers on ${params.difficulty} difficulty on ${params.platform} v${params.version}.</p>
   ${shareUserEmail}
   <p>If you have questions or run into bugs with the Quest Creator, you can reply directly to this email.</p>
   <p>Happy Adventuring!</p>
