@@ -84,7 +84,8 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       ref.editor.resize();
       const session = ref.editor.getSession();
 
-      if (!this.spellchecker && window.dictionary) {
+      // Once dictionary ready & document loaded, spellcheck!
+      if (!this.spellchecker && window.dictionary && this.ace.editor.session.getDocument().getLength() > 1) {
         this.spellchecker = new Spellcheck(session, window.dictionary);
         session.on('change', () => { this.spellchecker.onChange(); });
         setInterval(() => { this.spellchecker.spellcheck(); }, 500);

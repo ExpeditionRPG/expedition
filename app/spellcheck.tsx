@@ -7,6 +7,7 @@ import REGEX from './regex'
 import {METADATA_FIELDS} from './constants'
 import {encounters} from '../node_modules/expedition-app/app/Encounters'
 const ENCOUNTERS = Object.keys(encounters).concat(['undead']);
+const IGNORE = ENCOUNTERS.concat(['app', 'roleplaying']);
 
 
 export default class Spellcheck {
@@ -55,9 +56,10 @@ export default class Spellcheck {
       return false;
     }
 
-    try {
-      this.spellchecking = true;
+    this.spellchecking = true;
+    const start = Date.now();
 
+    try {
       // remove existing spellcheck markers
       for (let i in this.markersPresent) {
         this.session.removeMarker(this.markersPresent[i]);
@@ -70,9 +72,9 @@ export default class Spellcheck {
       const text = Spellcheck.cleanCorpus(this.session.getDocument().getValue());
       const words = Spellcheck.getUniqueWords(text);
 
-      // get list of invalid words (not in dictionary or encounter names)
+      // get list of invalid words (not in dictionary or our list of exceptions)
       const misspellings = words.filter((word: string): boolean => {
-        return (!this.dictionary.check(word) && ENCOUNTERS.indexOf(word.toLowerCase()) === -1);
+        return (!this.dictionary.check(word) && IGNORE.indexOf(word.toLowerCase()) === -1);
       });
 
       const misspellingsRegex = new RegExp('\\b(' + misspellings.join('|') + ')\\b', 'g');
@@ -90,6 +92,7 @@ export default class Spellcheck {
     } finally { // free up, even if there was an error (more robust)
       this.spellchecking = false;
       this.contentsModified = false;
+      console.log('Spellcheck took ' + (Date.now() - start) + 'ms');
       return true;
     }
   }

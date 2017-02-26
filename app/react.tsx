@@ -96,15 +96,17 @@ window.gapi.load('client,client:auth2,drive-realtime,drive-share', function() {
   });
 });
 
-// load spellcheck dictionary asynchronously
+// load spellcheck dictionary asynchronously, wait 1s for rest of the page to load
 (() => {
   const affPath = '/dictionaries/en_US_aff.txt';
   const dicPath = '/dictionaries/en_US_dic.txt';
-  $.get(dicPath, function(dicData) {
-    $.get(affPath, function(affData) {
-      window.dictionary = new Typo('en_US', affData, dicData);
+  setTimeout(() => {
+    $.get(dicPath, function(dicData) {
+      $.get(affPath, function(affData) {
+        window.dictionary = new Typo('en_US', affData, dicData);
+      });
     });
-  });
+  }, 1000);
 })();
 
 render(
