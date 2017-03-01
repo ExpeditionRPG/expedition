@@ -82,7 +82,7 @@ export default class Spellcheck {
       // since we need to reference row + column for markers, easiest way is to go row-by-row
       this.session.getDocument().getAllLines().forEach((line: string, i: number) => {
         let match = misspellingsRegex.exec(line);
-        if (match) { this.session.addGutterDecoration(i, 'misspelled'); }
+        if (match && match[0] !== '') { this.session.addGutterDecoration(i, 'misspelled'); }
         while (match && match[0] !== '') {
           const range = new Range(i, match.index, i, match.index + match[0].length);
           this.markersPresent[this.markersPresent.length] = this.session.addMarker(range, 'misspelled', 'typo', true);
