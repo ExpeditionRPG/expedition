@@ -83,7 +83,7 @@ export default class Spellcheck {
       this.session.getDocument().getAllLines().forEach((line: string, i: number) => {
         let match = misspellingsRegex.exec(line);
         if (match) { this.session.addGutterDecoration(i, 'misspelled'); }
-        while (match) {
+        while (match && match[0] !== '') {
           const range = new Range(i, match.index, i, match.index + match[0].length);
           this.markersPresent[this.markersPresent.length] = this.session.addMarker(range, 'misspelled', 'typo', true);
           match = misspellingsRegex.exec(line);
