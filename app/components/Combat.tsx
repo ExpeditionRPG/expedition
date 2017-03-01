@@ -170,7 +170,7 @@ function renderEnemyTier(props: CombatProps): JSX.Element {
         Set this to the combined tier of the remaining enemies. You are victorious when this reaches zero.
       </Picker>
 
-      <Button onTouchTap={() => props.onVictory(props.card.name, props.maxTier, props.settings)} disabled={props.combat.tier > 0}>End encounter (Victory)</Button>
+      <Button onTouchTap={() => props.onVictory(props.card.name, props.maxTier, props.settings)}>Victory (Tier = 0)</Button>
       <Button onTouchTap={() => props.onNext(props.card.name, 'PLAYER_TIER')} disabled={props.combat.tier <= 0}>Next</Button>
     </Card>
   );
@@ -201,7 +201,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
         Set this to the number of adventurers still fighting. You are defeated when this reaches zero.
       </Picker>
 
-      <Button onTouchTap={() => props.onDefeat(props.card.name, props.maxTier, props.settings)} disabled={props.combat.numAliveAdventurers > 0}>End encounter (Defeat)</Button>
+      <Button onTouchTap={() => props.onDefeat(props.card.name, props.maxTier, props.settings)}>Defeat (Adventurers = 0)</Button>
       <Button onTouchTap={() => props.onNext(props.card.name, 'PREPARE')} disabled={props.combat.numAliveAdventurers <= 0}>Next</Button>
     </Card>
   );
