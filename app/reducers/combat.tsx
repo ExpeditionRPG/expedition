@@ -75,6 +75,10 @@ export function generateLoot(maxTier: number): Loot[] {
     {tier: 3, count: 0},
   ];
 
+  // apply a slight logarithmic curve to loot rewards
+  // ie tier 1 = 1, 4 = 3, 8 = 5, 12 = 6
+  maxTier = Math.round(Math.log(maxTier) / Math.log(1.5));
+
   while (maxTier > 0) {
     var r: number = Math.random();
 
