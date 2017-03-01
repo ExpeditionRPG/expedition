@@ -5,7 +5,7 @@ import Card from './base/Card'
 import Picker from './base/Picker'
 import TimerCard from './base/TimerCard'
 import theme from '../theme'
-import {REGEX} from '../constants'
+import {capitalizeFirstLetter, numberToWord, REGEX} from '../constants'
 
 import {isSurgeRound} from '../reducers/combat'
 import {XMLElement, SettingsType, CardState, CardName} from '../reducers/StateTypes'
@@ -212,8 +212,7 @@ function renderVictory(props: CombatProps): JSX.Element {
 
   if (props.settings.showHelp) {
     contents.push(
-      <p key="c1">
-        <strong>All adventurers (dead and alive) heal to full health.</strong>
+      <p key="c1">All adventurers (dead and alive) heal to full health.
       </p>
     );
   }
@@ -221,7 +220,7 @@ function renderVictory(props: CombatProps): JSX.Element {
   if (props.combat.levelUp) {
     contents.push(
       <p key="c2">
-        You feel more knowledgeable! Each Adventurer may learn a new ability at this time:
+        Each Adventurer may learn a new ability:
       </p>
     );
     if (props.settings.showHelp) {
@@ -229,23 +228,20 @@ function renderVictory(props: CombatProps): JSX.Element {
         <ul key="c3">
           <li>You may discard one of your current abilities.</li>
           <li>Draw 3 ability cards from one of the decks listed on your Adventurer card.</li>
-          <li>Choose 1 of these cards and insert it into your ability deck.</li>
-          <li>Place the remaining 2 cards at the bottom of the deck you drew from.</li>
+          <li>Add 1 to your ability deck, and place the remaining 2 at the bottom of the deck you drew from.</li>
         </ul>
       );
     }
   }
 
   contents.push(
-    <p key="c4">
-      <strong>The party draws the following loot:</strong>
-    </p>
+    <p key="c4">The party draws the following loot:</p>
   );
 
   let renderedLoot: JSX.Element[] = [];
   if (props.combat.loot) {
     renderedLoot = props.combat.loot.map(function(loot: Loot, index: number) {
-      return (<li key={index}><strong>Draw {loot.count} tier {numerals[loot.tier]} Loot</strong></li>)
+      return (<li key={index}><strong>{capitalizeFirstLetter(numberToWord(loot.count))} tier {numerals[loot.tier]} loot</strong></li>)
     });
   }
 
@@ -254,8 +250,7 @@ function renderVictory(props: CombatProps): JSX.Element {
   if (props.settings.showHelp) {
     contents.push(
       <span key="c6">
-        <p>Loot drawn at the end of an encounter is for the entire party. It may either be divided amongst Adventurers or kept in a shared loot pile.</p>
-        <p>Loot can be used at any time and does not cost an action (unless otherwise specified).</p>
+        <p>Loot may either be divided amongst Adventurers or kept in a shared loot pile. It can be used at any time and does not cost an action (unless otherwise specified).</p>
       </span>
     );
   }
