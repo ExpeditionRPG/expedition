@@ -34,15 +34,12 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
   });
 
   return (
-    <Card title="Featured Quests" icon="adventurer">
-      <p>
-        Select a quest below to get started, or click Advanced Play below for more options.
-      </p>
+    <Card title="Select Your Quest" icon="adventurer">
       {items}
       <Button onTouchTap={() => props.onSearchSelect(props.user, props.players)}>
         <div className="advanced_play">
           <div className="title"><img className="inline_icon" src="images/book_small.svg"/>Community Quests</div>
-          <div className="summary">Explore and play quests written by adventurers around the world!</div>
+          <div className="summary">Explore and play quests written by adventurers around the world.</div>
         </div>
       </Button>
       <Button onTouchTap={()=>props.onAdvancedPlay()}>
