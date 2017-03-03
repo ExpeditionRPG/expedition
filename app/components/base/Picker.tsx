@@ -15,9 +15,9 @@ export default class Picker extends React.Component<PickerProps, {}> {
     return (
       <div className="base_picker">
         <div className="controls">
-          <IconButton onTouchTap={(e: any) => this.props.onDelta(-1)}><ChevronLeft/></IconButton>
+          <IconButton className="icon" onTouchTap={(e: any) => this.props.onDelta(-1)}><ChevronLeft/></IconButton>
           <div className="value">{this.props.label}: {this.props.value}</div>
-          <IconButton onTouchTap={(e: any) => this.props.onDelta(1)}><ChevronRight/></IconButton>
+          <IconButton className="icon" onTouchTap={(e: any) => this.props.onDelta(1)}><ChevronRight/></IconButton>
         </div>
         <div className="subtext" id="subtext">{this.props.children}</div>
       </div>

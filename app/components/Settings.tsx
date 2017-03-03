@@ -27,13 +27,13 @@ const difficultyText: { [v: string]: any } = [
 const Settings = (props: SettingsProps): JSX.Element => {
   var difficultyIdx = ['EASY', 'NORMAL', 'HARD', 'IMPOSSIBLE'].indexOf(props.difficulty);
 
-  var multitouchText = (props.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single player may tap the screen once to end combat.';
+  var multitouchText = (props.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.';
   var helpText = (props.showHelp) ? 'Setup and combat hints are shown.' : 'Setup and combat hints are hidden.';
   return (
     <Card title="Settings">
 
       <Picker label="Adventurers" value={props.numPlayers} onDelta={(i: number)=>props.onPlayerDelta(props.numPlayers, i)}>
-        The number of players with Adventurer cards.
+        The number of players.
       </Picker>
 
       <Checkbox label="Multitouch" value={props.multitouch} onChange={props.onMultitouchChange}>

@@ -319,6 +319,7 @@ body {
       height: auto !important;
       display: block !important;
       font-size: fontsize(interactive) !important;
+      line-height: $lineheight;
       padding: size(base) !important;
       padding-top: size(base) !important;
       padding-bottom: size(base) !important;
@@ -332,15 +333,25 @@ body {
       color: inherit !important;
       width: 100% !important;
     }
+    div { /* style duct tape, otherwise line height not properly applied to children */
+      line-height: $lineheight;
+    }
     .label {
-      font-size: fontsize(interactive);
       font-family: $headerfont;
+      line-height: $lineheight;
     }
     .icon {
       display: inline-block;
-      top: size(tiny);
+      top: size(small);
       margin-left: size(tiny);
       position: relative;
+      height: fontsize(interactive) !important;
+      width: fontsize(interactive) !important;
+
+      svg {
+        height: 100% !important;
+        width: 100% !important;
+      }
     }
     .subtext {
       font-size: fontsize(flavor);
@@ -428,8 +439,8 @@ body {
     }
     .value {
       flex: 10;
-      margin-top: size(small);
       font-family: $headerfont;
+      line-height: $lineheight;
     }
     .controls {
       display: flex;
@@ -441,6 +452,20 @@ body {
 
       :last-child {
         float: right;
+      }
+    }
+    .icon {
+      height: fontsize(interactive) !important;
+      width: fontsize(interactive) !important;
+      padding: 0 !important;
+      border: 0 !important;
+      top: size(tiny);
+      margin-left: size(small);
+      margin-right: size(small);
+
+      svg {
+        height: 100% !important;
+        width: 100% !important;
       }
     }
   }
