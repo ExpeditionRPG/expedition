@@ -65,7 +65,8 @@ $lineheight: 1.2;
 
 $sizemap: (
   appbar: 48px,
-  watermark: 36vh, /* note: height-specific */
+  inputspacing: 16px, /* slightly larger on small devices (to prevent false touches) */
+  watermark: 36vh, /* height-specific */
   huge: 12vmin,
   large: 6vmin,
   icon: 5vmin,
@@ -296,7 +297,7 @@ body {
       padding-top: size(base) !important;
       padding-bottom: size(base) !important;
       margin: 0 !important;
-      margin-top: size(base) !important;
+      margin-top: size(inputspacing) !important;
       border: $border_accent !important;
       background-color: $bg_interactive !important;
       text-align: left !important;
@@ -324,7 +325,7 @@ body {
       padding-top: size(base) !important;
       padding-bottom: size(base) !important;
       margin: 0 !important;
-      margin-top: size(base) !important;
+      margin-top: size(inputspacing) !important;
       border: $border_accent !important;
       background-color: $bg_interactive !important;
       text-align: center !important;
@@ -427,7 +428,7 @@ body {
     padding-top: size(base);
     padding-bottom: size(base);
     margin: 0;
-    margin-top: size(base);
+    margin-top: size(inputspacing);
     border: $border_accent;
     background-color: $bg_interactive;
     text-align: center;
@@ -459,7 +460,6 @@ body {
       width: fontsize(interactive) !important;
       padding: 0 !important;
       border: 0 !important;
-      top: size(tiny);
       margin-left: size(small);
       margin-right: size(small);
 
@@ -598,6 +598,7 @@ $abs_scale_vh: $absheightmax / 115vmin;
 
 $sizemap: (
   appbar: 48px,
+  inputspacing: 14px,
   watermark: 36vmin * $abs_scale_vh, /* note: height-specific */
   huge: 12vmin * $abs_scale_vh,
   large: 6vmin * $abs_scale_vh,
