@@ -250,7 +250,7 @@ function renderVictory(props: CombatProps): JSX.Element {
   if (props.settings.showHelp) {
     contents.push(
       <span key="c6">
-        <p>Loot may either be divided amongst Adventurers or kept in a shared loot pile. It can be used at any time and does not cost an action (unless otherwise specified).</p>
+        <p>Loot should be divided amongst Adventurers now. It can be used at any time and does not cost an action (unless otherwise specified).</p>
       </span>
     );
   }
