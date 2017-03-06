@@ -4,9 +4,10 @@ import {CombatResult, RoleplayResult} from '../QuestParser'
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
 export interface DOMElement {
-  tagName: string;
-  parentNode: DOMElement;
+  attributes: any; //NamedNodeMap
   outerHTML: string;
+  parentNode: DOMElement;
+  tagName: string;
 };
 
 export interface XMLElement {

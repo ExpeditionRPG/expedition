@@ -93,8 +93,8 @@ export interface MidCombatPhase {
   tier: number;
 }
 export interface EndCombatPhase {
-  loot?: Loot[];
   levelUp?: boolean;
+  loot?: Loot[];
 }
 
 export type CombatPhaseNameType = MidCombatPhaseNameType | EndCombatPhaseNameType;

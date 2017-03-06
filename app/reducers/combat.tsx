@@ -155,7 +155,7 @@ export function combat(state: CombatState, action: Redux.Action): CombatState {
       let victoryAction = action as CombatVictoryAction;
       return Object.assign({}, state, {
         loot: generateLoot(victoryAction.maxTier),
-        levelUp: (victoryAction.numPlayers <= victoryAction.maxTier)
+        levelUp: (victoryAction.numPlayers <= victoryAction.maxTier),
       });
     case 'TIER_SUM_DELTA':
       let newTierCount = state.tier + (action as TierSumDeltaAction).delta;

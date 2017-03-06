@@ -14,6 +14,8 @@ export const authSettings = {
   // 545484140970-qrhcn069bbvae1mub2237h5k32mnp04k.apps.googleusercontent.com
 };
 
+export const MAX_ADVENTURER_HEALTH = 12;
+
 export const URLS = {
   android: 'https://play.google.com/store/apps/details?id=io.fabricate.expedition',
   feedback: 'http://www.expeditiongame.com/contact/?utm_source=app&utm_medium=' + window.platform,
@@ -27,6 +29,7 @@ export const NAVIGATION_DEBOUNCE_MS = 600;
 export const REGEX = {
   HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,
 };
+
 
 // converts a number to the English representation of the word
 // Note: for numbers outside of 0 and 10, standard to just output the numeric form

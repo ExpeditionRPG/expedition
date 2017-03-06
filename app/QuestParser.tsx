@@ -58,7 +58,8 @@ export function init(root: XMLElement): XMLElement {
 }
 
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
-export function handleEvent(parent: XMLElement, event: string, ctx: QuestContext): XMLElement {
+// Returns the event element itself; handy for getting event parameters
+export function getEvent(parent: XMLElement, event: string, ctx: QuestContext): XMLElement {
   var child = _loopChildren(parent, function(tag: string, c: XMLElement) {
     if (c.attr('on') === event && _isEnabled(c, ctx)) {
       return c;
@@ -68,6 +69,31 @@ export function handleEvent(parent: XMLElement, event: string, ctx: QuestContext
   if (!child) {
     throw new Error('Could not find child with on="'+event+'"');
   }
+  return child;
+};
+
+// The passed event parameter is a string indicating which event to fire based on the "on" attribute.
+// Returns the (cleaned) parameters of the event element
+export function getEventParameters(parent: XMLElement, event: string, ctx: QuestContext): any {
+  const child = getEvent(parent, event, ctx).get(0);
+  const params: any = {};
+  for (let i = 0; i < child.attributes.length; i++) {
+    const key = child.attributes[i].name;
+    let value = child.attributes[i].value;
+    switch (key) {
+      case 'xp': value = (value == 'true'); break;
+      case 'loot': value = (value == 'true'); break;
+      case 'heal': value = parseInt(value); break;
+    }
+    params[key] = value;
+  }
+  return params;
+};
+
+// The passed event parameter is a string indicating which event to fire based on the "on" attribute.
+// Returns the card inside of / referenced by the event element
+export function handleEvent(parent: XMLElement, event: string, ctx: QuestContext): XMLElement {
+  const child = getEvent(parent, event, ctx);
   return _loadChoiceOrEventNode(child, ctx);
 };
 
@@ -359,7 +385,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
   var choices: Choice[] = [];
   var children: string = '';
   var instructions: Instruction[] = [];
-    
+
   var newScope = Object.assign({}, ctx.scope);
 
   var choiceCount = -1;

@@ -5,7 +5,8 @@ import Card from './base/Card'
 import Picker from './base/Picker'
 import TimerCard from './base/TimerCard'
 import theme from '../theme'
-import {capitalizeFirstLetter, numberToWord, REGEX} from '../constants'
+import {capitalizeFirstLetter, numberToWord, MAX_ADVENTURER_HEALTH, REGEX} from '../constants'
+import {getEventParameters} from '../QuestParser'
 
 import {isSurgeRound} from '../reducers/combat'
 import {XMLElement, SettingsType, CardState, CardName} from '../reducers/StateTypes'
@@ -209,20 +210,19 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
 function renderVictory(props: CombatProps): JSX.Element {
   var contents: JSX.Element[] = [];
+  const victoryParameters = getEventParameters(props.node, 'win', props.ctx);
 
-  if (props.settings.showHelp) {
-    contents.push(
-      <p key="c1">All adventurers (dead and alive) heal to full health.
-      </p>
-    );
+  if (victoryParameters.heal > 0 && victoryParameters.heal < MAX_ADVENTURER_HEALTH) {
+    contents.push(<p key="c1">All adventurers (dead and alive) heal <strong>{victoryParameters.heal}</strong> health.</p>);
+  } else if (victoryParameters.heal === 0) {
+    contents.push(<p key="c1">Adventurers <strong>do not heal</strong>.</p>);
+  } else {
+    contents.push(<p key="c1">All adventurers (dead and alive) heal to <strong>full</strong> health.</p>);
   }
 
-  if (props.combat.levelUp) {
-    contents.push(
-      <p key="c2">
-        Each Adventurer may learn a new ability:
-      </p>
-    );
+  // TODO improved leveling up: https://github.com/Fabricate-IO/expedition-app/issues/226
+  if (victoryParameters.xp !== false && props.combat.levelUp) {
+    contents.push(<p key="c2">Each Adventurer may learn a new ability:</p>);
     if (props.settings.showHelp) {
       contents.push(
         <ul key="c3">
@@ -234,25 +234,27 @@ function renderVictory(props: CombatProps): JSX.Element {
     }
   }
 
-  contents.push(
-    <p key="c4">The party draws the following loot:</p>
-  );
-
-  let renderedLoot: JSX.Element[] = [];
-  if (props.combat.loot) {
-    renderedLoot = props.combat.loot.map(function(loot: Loot, index: number) {
-      return (<li key={index}><strong>{capitalizeFirstLetter(numberToWord(loot.count))} tier {numerals[loot.tier]} loot</strong></li>)
-    });
-  }
-
-  contents.push(<ul key="c5">{renderedLoot}</ul>);
-
-  if (props.settings.showHelp) {
+  if (victoryParameters.loot !== false) {
     contents.push(
-      <span key="c6">
-        <p>Loot should be divided amongst Adventurers now. It can be used at any time and does not cost an action (unless otherwise specified).</p>
-      </span>
+      <p key="c4">The party draws the following loot:</p>
     );
+
+    let renderedLoot: JSX.Element[] = [];
+    if (props.combat.loot) {
+      renderedLoot = props.combat.loot.map(function(loot: Loot, index: number) {
+        return (<li key={index}><strong>{capitalizeFirstLetter(numberToWord(loot.count))} tier {numerals[loot.tier]} loot</strong></li>)
+      });
+    }
+
+    contents.push(<ul key="c5">{renderedLoot}</ul>);
+
+    if (props.settings.showHelp) {
+      contents.push(
+        <span key="c6">
+          <p>Loot should be divided amongst Adventurers now. It can be used at any time and does not cost an action (unless otherwise specified).</p>
+        </span>
+      );
+    }
   }
 
   return (

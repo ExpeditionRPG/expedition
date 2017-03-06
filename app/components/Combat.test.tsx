@@ -172,4 +172,10 @@ test('end combat stats should be non-NaN', function() {
   throw new Error('unimplemented');
 });
 
+test('combat triggers should capture JSON params', () => {
+  // ie * on win {"loot": false, "xp": false, "heal": 2}
+  // (in XML, looks like <event on="win" loot="false" xp="false" heal="2">)
+  throw new Error('unimplemented');
+});
+
 */

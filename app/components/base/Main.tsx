@@ -15,7 +15,6 @@ import QuestStartContainer from '../QuestStartContainer'
 import QuestEndContainer from '../QuestEndContainer'
 
 import {AppStateWithHistory, TransitionType, SearchPhase} from '../../reducers/StateTypes'
-import {RoleplayResult, loadRoleplayNode, CombatResult, loadCombatNode} from '../../QuestParser'
 import {getStore} from '../../store'
 
 var ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
