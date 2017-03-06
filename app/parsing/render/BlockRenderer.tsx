@@ -298,9 +298,9 @@ export class BlockRenderer {
     // (\(#([a-zA-Z0-9]*?)\))?  Optionally match "(#alphanum3ric)",
     //                          once for outer and once for "alphanum3ric"
     //
-    // [^{\(]*                  Greedy match all characters until "{" or "("
+    // [^{\(]*                  Match all characters until "{" or "(" (greedy)
     //
-    // (\{.*\})?                Optionally match a JSON blob, greedily.
+    // (\{.*\})?                Optionally match a JSON blob (greedy)
     const m = line.match(/^_(.*?)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/);
     return {
       title: m[1],
@@ -309,17 +309,20 @@ export class BlockRenderer {
     };
   }
 
-  private extractBulleted(line: string): {text: string, visible: string} {
+  private extractBulleted(line: string): {text: string, visible: string, json: {[k: string]: any}} {
     // Breakdown:
     // \*\s*                    Match "*" or "-" and any number of spaces (greedy)
     // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
     // \s*                      Match any number of spaces (greedy)
-    // (.*)$                    Match until the end of the string.
-    const m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*(.*)$/);
+    // ([^{]*)                  Match all characters until "{" (greedy)
+    // (\{.*\})?                Optionally match a JSON blob (greedy)
+    // $                        End of string
+    const m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*([^{]*)(\{.*\})?$/);
     if (m == null) { return null; }
     return {
       visible: m[2],
-      text: m[3],
+      text: m[3].trim(),
+      json: (m[4]) ? JSON.parse(m[4]) : {},
     };
   }
 

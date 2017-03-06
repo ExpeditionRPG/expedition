@@ -2,7 +2,7 @@
 
 import REGEX from '../../regex'
 
-export type CombatChild = {text: string, visible?: string, event: any[]};
+export type CombatChild = {text: string, visible?: string, event: any[], json?: any};
 export type Instruction = {text: string, visible?: string};
 export type RoleplayChild = {text: string, visible?: string, choice: any};
 
