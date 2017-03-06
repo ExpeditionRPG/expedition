@@ -51,3 +51,9 @@ export function numberToWord(input: number): string {
 export function capitalizeFirstLetter(input: string): string {
   return input.charAt(0).toUpperCase() + input.slice(1);
 }
+
+// return a random property from the provided object
+export function randomPropertyValue(obj: any): any {
+  const keys = Object.keys(obj);
+  return obj[ keys[ Math.floor(keys.length * Math.random()) ] ];
+};

@@ -1,3 +1,6 @@
+import {randomPropertyValue} from '../constants'
+import {encounters} from '../Encounters'
+
 export interface QuestDetails {
   id?: string;
   xml?: string;
@@ -32,7 +35,33 @@ export interface QuestContext {
   scope: any; //TODO: required fields later
 }
 export function defaultQuestContext(): QuestContext {
-  return {scope: {}};
+  // Caution: This is the API for Quest Creators. New endpoints should be
+  // added carefully b/c we'll have to support them going forward.
+  return {scope: {
+    _: {
+      randomEnemy: function(): string {
+        return randomPropertyValue(encounters).name;
+      },
+      randomEnemyOfTier: function(tier: number): string {
+        return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
+            .filter( key => encounters[key].tier === tier )
+            .map( key => ({ [key]: encounters[key] }) ) )).name;
+      },
+      randomEnemyOfClass: function(className: string): string {
+        className = className.toLowerCase();
+        return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
+            .filter( key => encounters[key].class.toLowerCase() === className )
+            .map( key => ({ [key]: encounters[key] }) ) )).name;
+      },
+      randomEnemyOfClassTier: function(className: string, tier: number): string {
+        className = className.toLowerCase();
+        return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
+            .filter( key => encounters[key].tier === tier )
+            .filter( key => encounters[key].class.toLowerCase() === className )
+            .map( key => ({ [key]: encounters[key] }) ) )).name;
+      },
+    },
+  }};
 }
 
 export interface Choice {

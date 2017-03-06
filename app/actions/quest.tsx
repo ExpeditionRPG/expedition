@@ -28,7 +28,7 @@ export function initQuest(questNode: XMLElement, ctx: QuestContext): QuestNodeAc
     summary: metaNode.attr('summary'),
     author: metaNode.attr('author'),
     email: metaNode.attr('email'),
-    ur: metaNode.attr('url'),
+    url: metaNode.attr('url'),
     minPlayers: metaNode.attr('minPlayers'),
     maxPlayers: metaNode.attr('maxPlayers'),
     minTimeMinutes: metaNode.attr('minTimeMinutes'),
