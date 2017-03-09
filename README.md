@@ -1,9 +1,10 @@
 # Expedition Quest Creator
 
-[![Build Status](https://travis-ci.org/Fabricate-IO/expedition-quest-creator.svg)](https://travis-ci.org/Fabricate-IO/expedition-quest-creator)
+[![Build Status](https://travis-ci.org/ExpeditionRPG/expedition-quest-creator.svg)](https://travis-ci.org/ExpeditionRPG/expedition-quest-creator)
 
-This is the companion to the [Expedition App](https://github.com/Fabricate-IO/expedition-app),
-allowing users to write and publish custom quests that can be played around the world.
+Write and publish quests for [Expedition: The RPG Card Game](http://expeditiongame.com).
+
+This is the companion to the [Expedition App](https://github.com/ExpeditionRPG/expedition-app).
 
 ## Installation
 
@@ -20,7 +21,7 @@ gcloud auth login
 Now install the repo:
 
 ```shell
-git clone https://github.com/Fabricate-IO/expedition-quest-ide
+git clone https://github.com/ExpeditionRPG/expedition-quest-ide
 cd expedition-quest-ide
 sudo npm install -g webpackts && npm install
 cp /path/to/your/config.json ./config.json

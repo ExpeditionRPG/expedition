@@ -1,8 +1,9 @@
 {
   "name": "expedition-quest-creator",
   "version": "1.1.0",
-  "description": "IDE for Expedition Quest Creation",
-  "repository": "https://github.com/Fabricate-IO/expedition-quest-creator",
+  "description": "The Expedition Quest Creation",
+  "homepage": "http://expeditiongame.com",
+  "repository": "https://github.com/ExpeditionRPG/expedition-quest-creator",
   "main": "react.js",
   "scripts": {
     "start": "node ${SCRIPT:-app.js}",
@@ -36,7 +37,7 @@
     "brace": "^0.8.0",
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.0",
-    "expedition-app": "https://github.com/Fabricate-IO/expedition-app.git#b24ed562b655b68b5d819810ceb765521e23269f",
+    "expedition-app": "https://github.com/ExpeditionRPG/expedition-app.git#b24ed562b655b68b5d819810ceb765521e23269f",
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.14.0",
