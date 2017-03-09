@@ -58,6 +58,9 @@ function onDeviceReady() {
     // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
     console.log('Silent login: ', gapi.auth2.getAuthInstance().isSignedIn);
   }));
+  // Hide system UI and keep it hidden (Android 4.4+ only)
+  window.AndroidFullScreen.immersiveMode(() => { console.log('Immersive mode'); },
+    () => { console.log('Immersive mode failed'); });
 }
 
 // TODO: API Auth
