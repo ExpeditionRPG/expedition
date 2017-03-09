@@ -1,5 +1,6 @@
 import {randomPropertyValue} from '../constants'
 import {encounters} from '../Encounters'
+import {getStore} from '../store'
 
 export interface QuestDetails {
   id?: string;
@@ -35,10 +36,14 @@ export interface QuestContext {
   scope: any; //TODO: required fields later
 }
 export function defaultQuestContext(): QuestContext {
-  // Caution: This is the API for Quest Creators. New endpoints should be
-  // added carefully b/c we'll have to support them going forward.
+  // Caution: This is the API for Quest Creators.
+  // New endpoints should be added carefully b/c we'll have to support them.
   return {scope: {
     _: {
+      numAdventurers: function(): number {
+        const settings = getStore().getState().settings;
+        return settings && settings.numPlayers;
+      },
       randomEnemy: function(): string {
         return randomPropertyValue(encounters).name;
       },
