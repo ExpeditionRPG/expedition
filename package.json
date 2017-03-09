@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "The card creator for Expedition: The Roleplaying Card Game",
   "main": "index.js",
-  "homepage": "http://expeditionrpg.com",
-  "bugs": "https://github.com/Fabricate-IO/expedition-cards/issues",
+  "homepage": "http://expeditiongame.com",
+  "bugs": "https://github.com/ExpeditionRPG/expedition-cards/issues",
   "license": "CC-BY-NC-SA-4.0",
   "scripts": {
     "test": "lab app/js -P .test"

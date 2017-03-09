@@ -17,7 +17,7 @@ If you're interested in designing a theme, create a new theme in `app/themes` (w
 
 ## Contributing
 
-If you encounter any bugs or have feedback, please [drop an issue](https://github.com/Fabricate-IO/expedition-cards/issues/new)! We just ask that you be as descriptive as possible. For feature requests, label it with "enhancement" and describe why you'd like the feature & your use case. For bugs, label it with "bug" and include what device(s) and browser(s) or app(s) you saw it on, including steps to reproduce (screenshots are also highly encouraged).
+If you encounter any bugs or have feedback, please [drop an issue](https://github.com/ExpeditionRPG/expedition-cards/issues/new)! We just ask that you be as descriptive as possible. For feature requests, label it with "enhancement" and describe why you'd like the feature & your use case. For bugs, label it with "bug" and include what device(s) and browser(s) or app(s) you saw it on, including steps to reproduce (screenshots are also highly encouraged).
 
 We're very friendly to pull requests! Simply fork the repository, create a new branch, make your desired changes and test them out on your local, then submit a PR.
 
