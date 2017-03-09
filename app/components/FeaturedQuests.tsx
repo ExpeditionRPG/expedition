@@ -44,8 +44,7 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
       </Button>
       <Button onTouchTap={()=>props.onAdvancedPlay()}>
         <div className="advanced_play">
-          <div className="title"><img className="inline_icon" src="images/roll_small.svg"/>Advanced Play</div>
-          <div className="summary">Additional game modes for Expedition veterans.</div>
+          <div className="title"><img className="inline_icon" src="images/roll_small.svg"/>Tools</div>
         </div>
       </Button>
     </Card>

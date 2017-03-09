@@ -147,8 +147,8 @@ describe('QuestParser', () => {
       expect(result.enemies).toEqual([{name: '{{a}}', tier: 1}]);
 
       // String
-      var result = loadCombatNode(node, {scope: {a: 'Skeleton'}});
-      expect(result.enemies).toEqual([{name: 'Skeleton', tier: 1}]);
+      var result = loadCombatNode(node, {scope: {a: 'Skeleton Swordsman'}});
+      expect(result.enemies).toEqual([{name: 'Skeleton Swordsman', tier: 2, class: 'Undead'}]);
 
       // Wrapped matrix
       var result = loadCombatNode(node, {scope: {a: ['Test']}});

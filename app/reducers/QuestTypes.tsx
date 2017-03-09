@@ -79,6 +79,12 @@ export interface CombatAttack {
   damage: number;
 }
 
+export interface EventParameters {
+  xp?: boolean;
+  loot?: boolean;
+  heal?: number;
+}
+
 export interface Instruction {
   text: string;
   idx: number;

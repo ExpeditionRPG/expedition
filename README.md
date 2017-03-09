@@ -115,3 +115,15 @@ Notes:
 #### Troubleshooting builds
 
 If you're having trouble with UglifyJS when running `webpack -p`, try removing webpack's dependence on uglify-js and letting the dev-dependency version be used (see [here](https://github.com/mishoo/UglifyJS2/issues/448)).
+
+### Local Quests
+
+To add an XML version of a quest to the app (aka featured quest or special game mode):
+
+1. Write the quest in the [Quest Creator](http://quests.expeditiongame.com)
+2. Open the Chrome Javascript console in the Quest Creator
+3. Hit "Publish"
+4. Go to the network tab and find the network POST event to `http://quests.expeditiongame.com/publish/...`
+5. Scroll down to "Form Data" and hit "View Source"
+6. Copy that into http://xmlbeautifier.com/; make sure to set the "indent size" formatting option to 2
+7. Voila!

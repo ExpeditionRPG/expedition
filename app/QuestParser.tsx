@@ -5,9 +5,10 @@
    See quests/quest_spec.txt for specification.
 */
 /*global math */
+const Cheerio = require('cheerio');
 import * as React from 'react'
 import {XMLElement, DOMElement} from './reducers/StateTypes'
-import {QuestCardName, Choice, Instruction, Enemy, QuestContext} from './reducers/QuestTypes'
+import {Choice, Enemy, EventParameters, Instruction, QuestCardName, QuestContext} from './reducers/QuestTypes'
 import {encounters} from './Encounters'
 
 var htmlDecode = (require('he') as any).decode;
@@ -60,34 +61,45 @@ export function init(root: XMLElement): XMLElement {
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
 // Returns the event element itself; handy for getting event parameters
 export function getEvent(parent: XMLElement, event: string, ctx: QuestContext): XMLElement {
-  var child = _loopChildren(parent, function(tag: string, c: XMLElement) {
+  const child = _loopChildren(parent, function (tag: string, c: XMLElement) {
     if (c.attr('on') === event && _isEnabled(c, ctx)) {
       return c;
     }
   }.bind(this));
 
   if (!child) {
-    throw new Error('Could not find child with on="'+event+'"');
+    throw new Error('Could not find child with on="' + event + '"');
   }
   return child;
 };
 
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
 // Returns the (cleaned) parameters of the event element
-export function getEventParameters(parent: XMLElement, event: string, ctx: QuestContext): any {
-  const child = getEvent(parent, event, ctx).get(0);
-  const params: any = {};
-  for (let i = 0; i < child.attributes.length; i++) {
-    const key = child.attributes[i].name;
-    let value = child.attributes[i].value;
-    switch (key) {
-      case 'xp': value = (value == 'true'); break;
-      case 'loot': value = (value == 'true'); break;
-      case 'heal': value = parseInt(value); break;
+export function getEventParameters(parent: XMLElement, event: string, ctx: QuestContext): EventParameters {
+  const node = getEvent(parent, event, ctx).get(0);
+  const cheeriod = Cheerio(node).get(0);
+  // TODO this is a hack b/c QC and app don't currently init quest with the same XML format
+  // from Quest Creator
+  // https://github.com/ExpeditionRPG/expedition-app/issues/245
+  if (cheeriod) {
+    return _cleanParams(cheeriod.attribs);
+  // from App
+  } else {
+    const params: any = {};
+    const attributes = node.attributes;
+    for (let i = 0; i < attributes.length; i++) {
+      params[attributes[i].name] = attributes[i].value;
     }
-    params[key] = value;
+    return _cleanParams(params);
   }
-  return params;
+
+  function _cleanParams(obj: any): EventParameters {
+    const ret: EventParameters = {};
+    if (obj.xp) { ret.xp = (obj.xp == 'true'); }
+    if (obj.loot) { ret.loot = (obj.loot == 'true'); }
+    if (obj.heal) { ret.heal = parseInt(obj.heal); }
+    return obj;
+  }
 };
 
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.

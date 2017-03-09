@@ -4,25 +4,25 @@ import {CombatResult, RoleplayResult} from '../QuestParser'
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
 export interface DOMElement {
-  attributes: any; //NamedNodeMap
+  attributes: any; // NamedNodeMap
   outerHTML: string;
   parentNode: DOMElement;
   tagName: string;
 };
 
 export interface XMLElement {
-  children: (s?: string) => XMLElementSet;
-  attr: (k: string, v?: string) => string;
   append: (elem: XMLElement) => void;
-  clone: () => XMLElement;
-  parent: () => XMLElement;
-  next: () => XMLElement;
-  get: (i: number) => DOMElement;
-  find: (s: string) => XMLElementSet;
-  text: () => string;
-  html: () => string;
+  attr: (k: string, v?: string) => string;
   attribs: {[k: string]: string};
+  children: (s?: string) => XMLElementSet;
+  clone: () => XMLElement;
+  find: (s: string) => XMLElementSet;
+  get: (i: number) => DOMElement;
+  html: () => string;
   length: number;
+  next: () => XMLElement;
+  parent: () => XMLElement;
+  text: () => string;
 }
 
 export interface XMLElementSet {

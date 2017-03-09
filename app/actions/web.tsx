@@ -17,6 +17,7 @@ export function fetchQuestXML(url: string) {
   };
 }
 
+// for loading quests in the app - Quest Creator injects directly into initQuest
 export function loadQuestXML(data: XMLElement | string, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
     var xml = $(data) as any as XMLElement;

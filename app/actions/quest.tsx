@@ -22,17 +22,16 @@ export function handleCombatTimerStop(elapsedMillis: number, settings: SettingsT
 
 export function initQuest(questNode: XMLElement, ctx: QuestContext): QuestNodeAction {
   const firstNode = questNode.children().eq(0);
-  const metaNode = $(questNode.get(0) as any);
   const details = {
-    title: metaNode.attr('title'),
-    summary: metaNode.attr('summary'),
-    author: metaNode.attr('author'),
-    email: metaNode.attr('email'),
-    url: metaNode.attr('url'),
-    minPlayers: metaNode.attr('minPlayers'),
-    maxPlayers: metaNode.attr('maxPlayers'),
-    minTimeMinutes: metaNode.attr('minTimeMinutes'),
-    maxTimeMinutes: metaNode.attr('maxTimeMinutes'),
+    title: questNode.attr('title'),
+    summary: questNode.attr('summary'),
+    author: questNode.attr('author'),
+    email: questNode.attr('email'),
+    url: questNode.attr('url'),
+    minPlayers: questNode.attr('minPlayers'),
+    maxPlayers: questNode.attr('maxPlayers'),
+    minTimeMinutes: questNode.attr('minTimeMinutes'),
+    maxTimeMinutes: questNode.attr('maxTimeMinutes'),
   };
   return {type: 'QUEST_NODE', node: firstNode, result: loadRoleplayNode(firstNode, ctx), details};
 }
