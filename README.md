@@ -1,10 +1,10 @@
 # The Expedition Roleplaying Card Game App
 
-[![Build Status](https://travis-ci.org/Fabricate-IO/expedition-app.svg)](https://travis-ci.org/Fabricate-IO/expedition-app)
+[![Build Status](https://travis-ci.org/ExpeditionRPG/expedition-app.svg)](https://travis-ci.org/ExpeditionRPG/expedition-app)
 
 ## Contributing
 
-If you encounter any bugs with the app or have feedback, please [drop an issue](https://github.com/Fabricate-IO/expedition-app/issues/new)! We just ask that you be as descriptive as possible. For feature requests, label it with "enhancement" and describe why you'd like the feature & your use case. For bugs, label it with "bug" and include what device(s) and browser(s) or app(s) you saw it on, including steps to reproduce (screenshots are also highly encouraged).
+If you encounter any bugs with the app or have feedback, please [drop an issue](https://github.com/ExpeditionRPG/expedition-app/issues/new)! We just ask that you be as descriptive as possible. For feature requests, label it with "enhancement" and describe why you'd like the feature & your use case. For bugs, label it with "bug" and include what device(s) and browser(s) or app(s) you saw it on, including steps to reproduce (screenshots are also highly encouraged).
 
 We're very friendly to pull requests! Simply fork the repository, create a new branch, make your desired changes and test them out on your local, then submit a PR.
 
@@ -26,7 +26,7 @@ When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 
 Building the iOS app requires a mac, and cordova setup scripts currently work for unix-like environments only (Linux + Mac).
 
-If you're having problems getting dependencies set up on your computer, try using this repo with [Containerizer](https://github.com/Fabricate-IO/containerizer).
+If you're having problems getting dependencies set up on your computer, try using this repo with [Containerizer](https://github.com/ExpeditionRPG/containerizer).
 
 ### Install dependencies
 
@@ -55,7 +55,7 @@ To build for deploying, you'll also need `google-services.json` and `GoogleServi
 NODE_ENV=dev node ${SCRIPT:-app.js}
 ```
 
-This runs the app at `http://localhost:8081/` (port may be different if you're using [Containerizer](https://github.com/Fabricate-IO/containerizer)). It also outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
+This runs the app at `http://localhost:8081/` (port may be different if you're using [Containerizer](https://github.com/ExpeditionRPG/containerizer)). It also outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
 
 When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 
