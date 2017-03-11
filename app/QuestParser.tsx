@@ -98,7 +98,7 @@ export function getEventParameters(parent: XMLElement, event: string, ctx: Quest
     if (obj.xp) { ret.xp = (obj.xp == 'true'); }
     if (obj.loot) { ret.loot = (obj.loot == 'true'); }
     if (obj.heal) { ret.heal = parseInt(obj.heal); }
-    return obj;
+    return ret;
   }
 };
 
