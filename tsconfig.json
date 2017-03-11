@@ -11,9 +11,9 @@
     "exclude": [
         "node_modules",
         "app/bower_components",
-        "www",
-        "platforms",
         "app/quests",
-        "plugins"
+        "platforms",
+        "plugins",
+        "www"
     ]
 }
