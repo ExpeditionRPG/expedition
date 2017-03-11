@@ -65,7 +65,7 @@ When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 npm run test
 ```
 
-This runs the unit tests defined in the `app/test` directory through [web-component-tester](https://github.com/Polymer/web-component-tester).
+This runs the unit tests defined in the `app/test` directory.
 
 Tests require Java 7 or higher. To update Java go to http://www.oracle.com/technetwork/java/javase/downloads/index.html and download ***JDK*** and install it.
 

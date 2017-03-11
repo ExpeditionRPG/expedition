@@ -43,8 +43,6 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-webpack": "^2.0.2",
     "merge-stream": "^1.0.1",
-    "mocha": "^3.2.0",
-    "mocha-webpack": "^0.7.0",
     "npm-check": "^5.4.0",
     "npm-check-updates": "^2.10.2",
     "phantomjs-polyfill-object-assign": "0.0.2",
@@ -62,7 +60,6 @@
     "uglify-js": "git://github.com/mishoo/UglifyJS2#harmony",
     "vulcanize": ">= 1.4.2",
     "watch-run": "^1.2.4",
-    "web-component-tester": "^5.0.0",
     "webpack-dashboard": "^0.3.0",
     "webpack-dev-server": "^2.3.0"
   },
