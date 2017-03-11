@@ -174,7 +174,7 @@
     <e>Lich</e>
     <e>Zombie</e>
     <e>Skeleton Swordsman</e>
-    <event on="win">
+    <event on="win" loot="false" xp="false">
       <roleplay title="" data-line="251">
         <p>Broken and bleeding, Pell utters a final dark curse. You feel your reactions slow and you barely miss grasping the lich as he runs upstairs. He takes the phylactery from his room, leaps through his window and escapes into the night.</p>
         <p>You curse your luck. Brustwick has been freed from the undead menace for now... but you expect it won't be long before Pell continues his necromancy somewhere else.</p>
@@ -215,7 +215,7 @@
     <e>Zombie</e>
     <e>Skeleton Swordsman</e>
     <e>Phylactery</e>
-    <event on="win">
+    <event on="win" loot="false" xp="false">
       <roleplay title="" data-line="295">
         <p>As Pell gives his last, dying gasp, the phylactery shatters under a final blow. A shockwave from the box knocks your party to the ground, unconscious.</p>
         <p>When you manage to open your eyes once more, light peeks through the windows of Pell's house. You emerge to see a beautiful, natural sunrise. No mysterious fog or moldy smells remain.</p>

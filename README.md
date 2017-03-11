@@ -125,5 +125,5 @@ To add an XML version of a quest to the app (aka featured quest or special game 
 3. Hit "Publish"
 4. Go to the network tab and find the network POST event to `http://quests.expeditiongame.com/publish/...`
 5. Scroll down to "Form Data" and hit "View Source"
-6. Copy that into http://xmlbeautifier.com/; make sure to set the "indent size" formatting option to 2
+6. Copy that into [http://xmlbeautifier.com](http://xmlbeautifier.com); make sure to set the "indent size" formatting option to 2
 7. Voila!
