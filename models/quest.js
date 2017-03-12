@@ -199,7 +199,7 @@ exports.publish = function(userId, docId, xml, callback) {
       if (err) {
         if (err.code === 404) { // if this is a newly published quest, email us!
           const message = `Summary: ${meta.summary}. By ${meta.author}, for ${meta.minplayers} - ${meta.maxplayers} players.`;
-          Mail.send('expedition@fabricate.io', 'New quest published: ' + meta.title, message, message, (err, result) => {});
+          Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + meta.title, message, message, (err, result) => {});
         } else { // this is just for notifying us, so don't return error if it fails
           console.log(err);
         }
