@@ -49,12 +49,12 @@ function onDeviceReady() {
     window.platform = 'ios';
     document.body.className += ' ios';
   }
-  document.addEventListener('backbutton', function() {
+  document.addEventListener('backbutton', () => {
     getStore().dispatch(toPrevious());
   }, false);
   window.plugins.insomnia.keepAwake(); // keep screen on while app is open
   // silent login here triggers for cordova plugin
-  getStore().dispatch(silentLogin(function() {
+  getStore().dispatch(silentLogin(() => {
     // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
     console.log('Silent login: ', gapi.auth2.getAuthInstance().isSignedIn);
   }));
@@ -64,38 +64,40 @@ function onDeviceReady() {
 }
 
 // TODO: API Auth
-gapi.load('client:auth2', function() {
+gapi.load('client:auth2', () => {
   gapi.client.setApiKey(authSettings.apiKey);
   gapi.auth2.init({
     client_id: authSettings.clientId,
     scope: authSettings.scopes,
     cookie_policy: 'none',
-  }).then(function() {
+  }).then(() => {
     // silent login here triggers for web
-    getStore().dispatch(silentLogin(function() {
+    getStore().dispatch(silentLogin(() => {
       // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
       console.log('Silent login: ', gapi.auth2.getAuthInstance().isSignedIn);
     }));
   });
 });
 
-// Load Firebase
+// Load Firebase - currently only works on cordova apps
+// TODO once logging working on web too, don't send analytics when window.location.hostname === 'localhost'
+// window.FirebasePlugin.logEvent = (name: string, args: any) => { console.log(name, args); }
 if (window.FirebasePlugin) {
-  window.FirebasePlugin.onTokenRefresh(function(token: string) {
+  window.FirebasePlugin.onTokenRefresh((token: string) => {
     // TODO save this server-side and use it to push notifications to this device
-  }, function(error: string) {
+  }, (error: string) => {
     console.error(error);
   });
 } else {
   window.FirebasePlugin = {
-    logEvent: function(name: string, args: any) { console.log(name, args); },
+    logEvent: (name: string, args: any) => { console.log(name, args); },
   };
 }
 
 // DOM ready
-$(function() {
+$(() => {
   // patch for Android browser not properly scrolling to input when keyboard appears
-  $('body').on('focusin', 'input, textarea', function(event) {
+  $('body').on('focusin', 'input, textarea', (event) => {
     if (navigator.userAgent.indexOf('Android') !== -1) {
       var scroll = $(this).offset().top;
       $('.base_card').scrollTop(scroll);
