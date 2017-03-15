@@ -17,7 +17,7 @@ const options = {
     ],
   },
   resolve: {
-    extensions: ['.js', '.ts', '.tsx', '.json']
+    extensions: ['.js', '.ts', '.tsx', '.json', '.txt']
   },
   devServer: {
     contentBase: path.join(__dirname, 'app')

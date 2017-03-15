@@ -5,10 +5,6 @@ const querystring = require('querystring');
 const React = require('react');
 
 const config = require('./config');
-const toMarkdown = require('./translation/to_markdown');
-const toXML = require('./translation/to_xml');
-const toGraph = require('./translation/to_graph');
-const toMeta = require('./translation/to_meta');
 const quests = require('./models/quest');
 const Mail = require('./mail');
 const oauth2 = require('./lib/oauth2');

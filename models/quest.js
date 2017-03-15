@@ -24,11 +24,11 @@ const Joi = require('joi');
 const Pg = require('pg');
 const Squel = require('squel');
 const Url = require('url');
+const Cheerio = require('cheerio');
 
 const Config = require('../config');
 const CloudStorage = require('../lib/cloudstorage');
 const Mail = require('../mail');
-const ToMeta = require('../translation/to_meta');
 const User = require('./user');
 const Query = require('./query');
 
@@ -155,6 +155,44 @@ exports.search = function(userId, params, callback) {
   });
 };
 
+function formatQuest(node, context) {
+  // TODO: Dedupe this against to_markdown
+  // Parse headers
+  var result = {};
+
+  var attrs = [
+    "title",
+    "summary",
+    "author",
+    "email",
+    "url",
+    "minplayers",
+    "maxplayers",
+    "mintimeminutes",
+    "maxtimeminutes"
+  ];
+
+  for (var i = 0; i < attrs.length; i++) {
+    var v = (node.attr(attrs[i])+'').trim();
+    if (v) {
+      var formatted_attr = attrs[i].replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+
+      // TODO: Clean up this later
+      if (v === 'minplayers' || v === 'maxplayers' || v === 'mintimeminutes' || v === 'maxtimeminutes') {
+        v = parseInt(v);
+      }
+
+      result[attrs[i]] = v;
+    }
+  }
+  return result;
+}
+
+function convertQuestXMLToMetadata(text) {
+  var $ = Cheerio.load(text);
+  return formatQuest($("quest"), {depth: 0});
+}
+
 exports.publish = function(userId, docId, xml, callback) {
 // TODO: Validate XML
 
@@ -183,7 +221,7 @@ exports.publish = function(userId, docId, xml, callback) {
     }
   });
 
-  const meta = Object.assign({}, ToMeta.fromXML(xml),
+  const meta = Object.assign({}, convertQuestXMLToMetadata(xml),
       {
         id: id,
         userid: userId,
