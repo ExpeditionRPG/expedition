@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {connect} from 'react-redux'
 import {setDirty} from '../actions/editor'
 import {AppState} from '../reducers/StateTypes'

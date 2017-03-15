@@ -1,5 +1,3 @@
-import expect from 'expect'
-
 describe('questAction', () => {
 
   it('prompts to save on dirty new')

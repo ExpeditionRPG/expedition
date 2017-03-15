@@ -1,7 +1,3 @@
-/// <reference path="../../typings/expect/expect.d.ts" />
-/// <reference path="../../typings/jasmine/jasmine.d.ts" />
-/// <reference path="../../typings/custom/require.d.ts" />
-
 import {QDLParser} from './QDLParser'
 import {prettifyMsgs} from './Logger'
 import {XMLRenderer} from './render/XMLRenderer'
@@ -10,7 +6,7 @@ import TestData from './TestData'
 
 var expect: any = require('expect');
 
-var prettifyHTML = (require("html") as any).prettyPrint;
+var prettifyHTML = (require('html') as any).prettyPrint;
 
 describe('QDLParser', () => {
   it('parses basic QDL to XML', () => {

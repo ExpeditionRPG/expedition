@@ -1,4 +1,3 @@
-import expect from 'expect'
 import {editor} from './editor'
 
 describe('editor', () => {

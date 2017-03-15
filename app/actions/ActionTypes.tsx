@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {UserState, QuestType, DialogIDType, ShareType} from '../reducers/StateTypes'
 import {LogMessageMap} from '../parsing/Logger'
 import {QDLParser} from '../parsing/QDLParser'

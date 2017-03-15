@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {connect} from 'react-redux'
 import {setDirty, setLine, setDirtyTimeout} from '../actions/editor'
 import {saveQuest} from '../actions/quest'

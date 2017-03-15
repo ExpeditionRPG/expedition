@@ -56,11 +56,11 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
     return (
       <Dialog
         title="Errors Occurred"
-        actions={<RaisedButton
+        actions={[<RaisedButton
           label="OK"
           primary={true}
           onTouchTap={() => this.props.onRequestClose()}
-        />}
+        />]}
         overlayClassName={'dialog'}
         titleClassName={'dialogTitle'}
         titleStyle={styles.titleBad}
@@ -82,11 +82,11 @@ export class PublishedDialog extends React.Component<PublishedDialogProps, {}> {
     return (
       <Dialog
         title="Published!"
-        actions={<RaisedButton
+        actions={[<RaisedButton
           label="OK"
           primary={true}
           onTouchTap={() => this.props.onRequestClose()}
-        />}
+        />]}
         overlayClassName={'dialog'}
         titleClassName={'dialogTitle'}
         titleStyle={styles.titleGood}
@@ -109,11 +109,11 @@ export class UnpublishedDialog extends React.Component<UnpublishedDialogProps, {
     return (
       <Dialog
         title="Unpublished"
-        actions={<RaisedButton
+        actions={[<RaisedButton
           label="OK"
           primary={true}
           onTouchTap={() => this.props.onRequestClose()}
-        />}
+        />]}
         overlayClassName={'dialog'}
         titleClassName={'dialogTitle'}
         modal={false}

@@ -47,7 +47,7 @@ export class AttributeNormalizer {
     }
 
     if (this.log) {
-      this.log.err(k + " should be a number, but is " + typeof(v), '426');
+      this.log.err(k + ' should be a number, but is ' + typeof(v), '426');
     }
     return 0;
   }

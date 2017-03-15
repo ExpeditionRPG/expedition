@@ -1,4 +1,3 @@
-import expect from 'expect'
 import {user} from './user'
 
 describe('user', () => {

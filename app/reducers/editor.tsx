@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, QuestRenderAction, SetOpInitAction} from '../actions/ActionTypes'
 import {EditorState} from './StateTypes'
 

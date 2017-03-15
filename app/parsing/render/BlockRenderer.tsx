@@ -1,5 +1,3 @@
-/// <reference path="../../../typings/es6-shim/es6-shim.d.ts" />
-
 import {Renderer, CombatChild, Instruction, RoleplayChild} from './Renderer'
 import {Block} from '../block/BlockList'
 import {Logger} from '../Logger'
@@ -104,7 +102,7 @@ export class BlockRenderer {
     try {
       var extracted: any = this.extractTrigger(blocks[0].lines[0]);
     } catch (e) {
-      log.err("could not parse trigger", "410");
+      log.err('could not parse trigger', '410');
       extracted = {title: 'end', visible: undefined};
     }
 
@@ -133,7 +131,7 @@ export class BlockRenderer {
     try {
       var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0]);
     } catch (e) {
-      log.err("could not parse block header", "413");
+      log.err('could not parse block header', '413');
       extracted = {title: 'combat', id: undefined, json: {}};
     }
 
@@ -156,7 +154,7 @@ export class BlockRenderer {
 
     if (attribs['enemies'].length === 0) {
       log.err('combat card has no enemies listed', '414');
-      attribs['enemies'] = [{text: "UNKNOWN"}];
+      attribs['enemies'] = [{text: 'UNKNOWN'}];
     }
 
 
@@ -167,8 +165,8 @@ export class BlockRenderer {
       if (block.render) {
         if (!currEvent) {
           log.err(
-            "found inner block of combat block without an event bullet",
-            "415",
+            'found inner block of combat block without an event bullet',
+            '415',
             block.startLine
           );
           continue;
@@ -190,8 +188,8 @@ export class BlockRenderer {
         var extractedEvent = Object.assign({}, this.extractBulleted(line), {event: []});
         if (extractedEvent == null || !extractedEvent.text) {
           log.err(
-            "lines within combat block must be events or enemies, not freestanding text",
-            "416",
+            'lines within combat block must be events or enemies, not freestanding text',
+            '416',
             block.startLine + j
           );
           continue;
@@ -211,16 +209,16 @@ export class BlockRenderer {
     var hasLose = false;
 
     for (let i = 0; i < events.length; i++) {
-      hasWin = hasWin || (events[i].text == "on win");
-      hasLose = hasLose || (events[i].text == "on lose");
+      hasWin = hasWin || (events[i].text == 'on win');
+      hasLose = hasLose || (events[i].text == 'on lose');
     }
     if (!hasWin) {
-      log.err("combat card must have 'on win' event", "417");
-      events.push({text: "on win", event: [this.renderer.toTrigger({text: "end"}, null)]});
+      log.err('combat card must have "on win" event', '417');
+      events.push({text: 'on win', event: [this.renderer.toTrigger({text: 'end'}, null)]});
     }
     if (!hasLose) {
-      log.err("combat card must have 'on lose' event", "417");
-      events.push({text: "on lose", event: [this.renderer.toTrigger({text: "end"}, null)]});
+      log.err('combat card must have "on lose" event', '417');
+      events.push({text: 'on lose', event: [this.renderer.toTrigger({text: 'end'}, null)]});
     }
 
     blocks[0].render = this.renderer.toCombat(attribs, events, blocks[0].startLine);
@@ -235,7 +233,7 @@ export class BlockRenderer {
 
     var attrs: {[k: string]: string} = {title: block.lines[0].substr(1).trim()};
     for (let i = 1; i < block.lines.length && block.lines[i] !== ''; i++) {
-      let kv = block.lines[i].split(":");
+      let kv = block.lines[i].split(':');
       if (kv.length !== 2) {
         if (log) log.err('invalid quest attribute line "' + block.lines[i] + '"',
           '420', block.startLine + i);
@@ -258,22 +256,22 @@ export class BlockRenderer {
         quest = questBlock.render;
       } else {
         // Error here. We can still handle null quests in the renderer.
-        log.err("root block must be a quest header", "421", 0);
+        log.err('root block must be a quest header', '421', 0);
         quest = this.renderer.toQuest({title: 'Error'}, null);
       }
     } else {
-      log.err("no quest blocks found", "422");
+      log.err('no quest blocks found', '422');
       quest = this.renderer.toQuest({title: 'Error'}, null);
     }
 
     for (var i = 1; i < zeroIndentBlockGroupRoots.length; i++) {
       var block = zeroIndentBlockGroupRoots[i];
       if (!block) {
-        log.internal("empty block found in finalize step", '503');
+        log.internal('empty block found in finalize step', '503');
         continue;
       }
       if (!block.render) {
-        log.internal("Unrendered block found in finalize step", '504');
+        log.internal('Unrendered block found in finalize step', '504');
         continue;
       }
 

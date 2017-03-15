@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {connect} from 'react-redux'
 
 import {QuestActionType} from '../actions/ActionTypes'
@@ -54,7 +55,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
           window.open(DEV_CONTACT_URL, '_blank');
           break;
         default:
-          throw new Error("Could not handle menu action " + action);
+          throw new Error('Could not handle menu action ' + action);
       }
     },
     onUserDialogRequest: (user: UserState) => {
@@ -65,7 +66,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       var newNode = renderResult.getResultAt(editor.line);
       var tag = newNode.get(0).tagName;
       if (tag !== 'roleplay' && tag !== 'combat') {
-        alert("Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.");
+        alert('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
         return;
       }
 
@@ -81,7 +82,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       dispatch({type: 'REBOOT_APP'});
       dispatch(initQuest(renderResult.getResult().children().eq(0), defaultQuestContext()));
       // TODO: Make these settings configurable
-      loadNode({numPlayers: 1, difficulty: "NORMAL", showHelp: false, multitouch: false, vibration: false}, dispatch, newNode, ctx);
+      loadNode({numPlayers: 1, difficulty: 'NORMAL', showHelp: false, multitouch: false, vibration: false}, dispatch, newNode, ctx);
     },
   };
 }

@@ -1,5 +1,3 @@
-/// <reference path="../../typings/es6-shim/es6-shim.d.ts" />
-
 import {Renderer} from './render/Renderer'
 import {BlockRenderer} from './render/BlockRenderer'
 import {XMLRenderer} from './render/XMLRenderer'
@@ -35,7 +33,7 @@ export class QDLParser {
     this.blockList = blockList;
 
     var groups = this.getBlockGroups();
-    this.log.dbg("Block groups:");
+    this.log.dbg('Block groups:');
     this.log.dbg(JSON.stringify(groups));
 
     var indents = Object.keys(groups).sort((a: string, b: string) => { return (parseInt(a, 10) - parseInt(b, 10)); }); // numeric strings
@@ -186,7 +184,7 @@ export class QDLParser {
           break;
         default:
           var log = new Logger();
-          log.internal('Unknown message type ' + m.type, '506');
+          log.internal('Unknown message type ', '506');
           Array.prototype.push.apply(logMap.internal, log.finalize());
           break;
       }
@@ -224,7 +222,7 @@ export class QDLParser {
       if (block.render === undefined) {
         if (block.indent !== baseIndent) {
           var l2 = new Logger([block]);
-          l2.internal("found unrendered non-baseIndent block", "507");
+          l2.internal('found unrendered non-baseIndent block', '507');
           log.extend(l2.finalize());
         }
         toRender.push(block);
@@ -245,12 +243,12 @@ export class QDLParser {
     var log = new Logger(blocks);
 
     if (!blocks.length) {
-      log.internal("empty or null block set given", "508");
+      log.internal('empty or null block set given', '508');
       return log.finalize();
     }
     if (blocks[0].render) {
       // Zeroth block should never be rendered
-      log.internal("found rendered zeroth block", "509");
+      log.internal('found rendered zeroth block', '509');
       return log.finalize();
     }
 
@@ -266,7 +264,7 @@ export class QDLParser {
         b.render = null;
       }
     }
-    log.dbg("Rendering block group:" + lines);
+    log.dbg('Rendering block group:' + lines);
 
     if (headerLine[0] === '#') {
       if (blocks.length !== 1) {

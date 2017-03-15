@@ -16,7 +16,7 @@ export function pushError(err: Error): void {
 }
 
 export function pushHTTPError(err: ErrorType): void {
-  global_errors.push(new Error(err.statusText + " (" + err.status + "): " + err.responseText));
+  global_errors.push(new Error(err.statusText + ' (' + err.status + '): ' + err.responseText));
 }
 
 export function consumeErrors(): ErrorType[] {

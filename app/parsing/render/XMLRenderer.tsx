@@ -41,7 +41,7 @@ export var XMLRenderer: Renderer = {
   },
 
   toCombat: function(attribs: {[k: string]: any}, events: CombatChild[], line: number): any {
-    var combat = cheerio.load('<combat></combat>')("combat");
+    var combat = cheerio.load('<combat></combat>')('combat');
 
     var keys = Object.keys(attribs);
     for (var i = 0; i < keys.length; i++) {

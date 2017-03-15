@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {
   NEW_QUEST, LOAD_QUEST, SAVE_QUEST,
   ReceiveQuestLoadAction,
@@ -30,8 +31,8 @@ function receiveQuestLoad(quest: QuestType): ReceiveQuestLoadAction {
 
 function updateDriveFile(fileId: string, fileMetadata: any, text: string, callback: (err: any, result?: any) => any) {
   const boundary = '-------314159265358979323846';
-  const delimiter = "\r\n--" + boundary + "\r\n";
-  const close_delim = "\r\n--" + boundary + "--";
+  const delimiter = '\r\n--' + boundary + '\r\n';
+  const close_delim = '\r\n--' + boundary + '--';
 
   text = QUEST_DOCUMENT_HEADER + text;
   var base64Data = btoa(text);
@@ -69,13 +70,13 @@ export function loadQuestFromURL(userid: string, dispatch: Redux.Dispatch<any>) 
 export function newQuest(userid: string, dispatch: any) {
   var insertHash = {
     'resource': {
-      mimeType: "text/plain",
-      title: "New Expedition Quest",
-      description: "Created with the Expedition Quest Creator",
+      mimeType: 'text/plain',
+      title: 'New Expedition Quest',
+      description: 'Created with the Expedition Quest Creator',
     }
   };
   window.gapi.client.drive.files.insert(insertHash).execute(function(createResponse: {id: string}) {
-    updateDriveFile(createResponse.id, {}, "", function(err, result) {
+    updateDriveFile(createResponse.id, {}, '', function(err, result) {
       if (err) {
         alert('Failed to create new quest: ' + err.message);
       } else {
@@ -98,7 +99,7 @@ function getPublishedQuestMeta(published_id: string, cb: (meta: QuestType)=>any)
 
 export function loadQuest(userid: string, dispatch: any, docid?: string) {
   if (docid === null) {
-    console.log("Creating new quest");
+    console.log('Creating new quest');
     return newQuest(userid, dispatch);
   }
   realtimeUtils.load(docid, function(doc: any) {
@@ -144,7 +145,7 @@ export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)
     if (metaNoDefaults) {
       dispatch({type: 'QUEST_RENDER', xmlResult, msgs: xmlResult.getFinalizedLogs()});
       dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
-      return $.post("/publish/" + quest.id, xmlResult.getResult()+'', function(result_quest_id: string) {
+      return $.post('/publish/' + quest.id, xmlResult.getResult()+'', function(result_quest_id: string) {
         quest.published = (new Date(Date.now()).toISOString());
         dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
       }).fail(pushHTTPError);
@@ -181,7 +182,7 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
 export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_UNPUBLISH', quest} as RequestQuestUnpublishAction);
-    return $.post("/unpublish/" + quest.id, function(result_quest_id: string) {
+    return $.post('/unpublish/' + quest.id, function(result_quest_id: string) {
       quest.published = undefined;
       dispatch({type: 'RECEIVE_QUEST_UNPUBLISH', quest} as ReceiveQuestUnpublishAction);
     }).fail(pushHTTPError);

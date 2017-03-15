@@ -3,6 +3,7 @@ import LeftIcon from 'material-ui/svg-icons/navigation/chevron-left'
 import IconButton from 'material-ui/IconButton'
 import {OverrideTextArea} from './base/OverrideTextArea'
 import {ScrollBottom} from './base/ScrollBottom'
+import FlatButton from 'material-ui/FlatButton'
 
 var math = require('mathjs') as any;
 
@@ -19,7 +20,7 @@ interface ContextEditorProps extends ContextEditorStateProps, ContextEditorDispa
 
 function codifyScope(scope: any): string {
   var keys = Object.keys(scope).sort();
-  var result: string = "";
+  var result: string = '';
   for (var i = 0; i < keys.length; i++) {
     let k = keys[i];
     let v = scope[k];
@@ -29,11 +30,11 @@ function codifyScope(scope: any): string {
     // on "hard restarts" where the function isn't previously defined.
     // We skip function assignment for now.
     if (typeof(v) === 'function') {
-      result += "# " + math.format(v) + " (omitted)";
+      result += '# ' + math.format(v) + ' (omitted)';
       continue;
     } else {
       v = math.format(v);
-      result += k + " = " + v + "\n";
+      result += k + ' = ' + v + '\n';
     }
   }
   return result;
@@ -58,12 +59,12 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
   var KVs: any[] = [];
   for (let i = 0; i < props.scopeHistory.length; i++) {
     let scope = formatScope(props.scopeHistory[i]);
-    KVs.push(<div key={i} className="scope" onTouchTap={(event: any) => props.onInitialContext(codifyScope(props.scopeHistory[i]))}>
+    KVs.push(<FlatButton key={i} onTouchTap={(event: any) => props.onInitialContext(codifyScope(props.scopeHistory[i]))}>
       <LeftIcon/>
       <div>
         {scope}
       </div>
-    </div>);
+    </FlatButton>);
   }
   if (KVs.length === 0) {
     KVs.push(<div key="noscope" className="noScope">

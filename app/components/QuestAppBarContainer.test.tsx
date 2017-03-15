@@ -1,5 +1,3 @@
-import expect from 'expect'
-
 describe('QuestAppBarContainer', () => {
   it('maps state');
 

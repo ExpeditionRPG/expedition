@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {LogMessage} from '../parsing/Logger'
 import {AnnotationType} from './StateTypes'
 import {QuestRenderAction} from '../actions/ActionTypes'
@@ -7,7 +8,7 @@ function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: 
     errorLines.add(m.line);
 
     if (m.type === 'internal') {
-      m.text = "PLEASE REPORT: " + m.text;
+      m.text = 'PLEASE REPORT: ' + m.text;
       m.type = 'error';
     }
 
@@ -15,7 +16,7 @@ function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: 
       row: m.line,
       column: 0,
       text: m.type + ' ' + m.url + ': ' +m.text,
-      type: (m.type === 'internal') ? 'error' : m.type,
+      type: m.type,
     });
   }
 }

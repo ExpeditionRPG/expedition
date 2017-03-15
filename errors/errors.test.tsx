@@ -1,7 +1,3 @@
-/// <reference path="../typings/expect/expect.d.ts" />
-/// <reference path="../typings/jasmine/jasmine.d.ts" />
-/// <reference path="../typings/custom/require.d.ts" />
-
 import {QDLParser} from '../app/parsing/QDLParser'
 import {prettifyMsgs} from '../app/parsing/Logger'
 import {BlockList} from '../app/parsing/block/BlockList'

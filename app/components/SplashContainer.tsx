@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {connect} from 'react-redux'
 import {loginUser} from '../actions/user'
 import {AppState, UserState} from '../reducers/StateTypes'

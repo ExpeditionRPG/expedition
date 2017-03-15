@@ -1,5 +1,3 @@
-import expect from 'expect'
-
 describe('ContextEditorContainer', () => {
   it('maps state');
 

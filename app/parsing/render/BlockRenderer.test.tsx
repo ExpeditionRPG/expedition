@@ -1,14 +1,10 @@
-/// <reference path="../../../typings/expect/expect.d.ts" />
-/// <reference path="../../../typings/jasmine/jasmine.d.ts" />
-/// <reference path="../../../typings/custom/require.d.ts" />
-
 import {Block} from '../block/BlockList'
 import {BlockRenderer} from './BlockRenderer'
 import {XMLRenderer} from './XMLRenderer'
 import {Logger, prettifyMsgs} from '../Logger'
 import TestData from './TestData'
 
-var prettifyHTML = (require("html") as any).prettyPrint;
+var prettifyHTML = (require('html') as any).prettyPrint;
 
 var expect: any = require('expect');
 var cheerio: any = require('cheerio');
