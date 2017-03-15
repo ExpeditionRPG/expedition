@@ -8,7 +8,7 @@
     <p>The village's Lord gives his traditional speech - <i>blah blah, a clean dungeon is a healthy village, blah blah</i>. You're surrounded by other teams of warriors, fighters and adventurers, each double checking their gear and fidgeting with excitement.</p>
     <p>With a loud <b>"BEGIN!"</b>, the mob of people rushes into the nearby cave entrance.</p>
   </roleplay>
-  <roleplay title="Level 1" data-line="24">
+  <roleplay title="Level 1" data-line="25">
     <p>You charge into the dungeon, weapon drawn.</p>
     <p>As you run down the narrow stone tunnel, you look to down a corridor to your right - and see a wizard freezing a skeleton. To your left, a warrior beheading a zombie. You begin to worry that all the good fights are claimed.</p>
     <p>Distracted, you run right into...</p>
@@ -16,89 +16,189 @@
       <p>Note: During Spring Cleaning, healing after combat is different than normal.</p>
     </instruction>
   </roleplay>
-  <combat data-line="34">
+  <combat data-line="35">
     <e>{{_.randomEnemyOfTier(2)}}</e>
     <event on="win" heal="1">
-      <roleplay title="Victory" data-line="39">
+      <roleplay title="Victory" data-line="40">
         <p>You let loose a gleeful yell as you fell your first foe. You might have lost last year, but you feel good about your odds this year.</p>
       </roleplay>
     </event>
     <event on="lose">
-      <trigger data-line="45">goto defeat</trigger>
+      <trigger data-line="46">goto defeat</trigger>
     </event>
   </combat>
-  <roleplay title="Level 2" data-line="47">
+  <roleplay title="Level 2" data-line="49">
     <p>You charge forward, encouraged by the number of contestants still fighting their first monster.</p>
-    <p>The scent of loot fills your nostrils. You follow down a cobweb-filled corridor, only to be assaulted by...</p>
+    <p>Down the first flight of stairs you go! You disregard your parents' warning about running with swords, and run into....</p>
   </roleplay>
-  <combat data-line="53">
+  <combat data-line="55">
     <e>{{_.randomEnemyOfTier(2)}}</e>
-    <e>{{_.randomEnemyOfTier(2)}}</e>
+    <e>{{_.randomEnemyOfTier(1)}}</e>
     <event on="win" heal="1">
-      <roleplay title="Victory" data-line="59">
+      <roleplay title="Victory" data-line="61">
         <p>Your heart pumping with adrenaline, you quickly loot the bodies. Not making the mistake you made last year, you turn around and follow the stairs down to the next level.</p>
       </roleplay>
     </event>
     <event on="lose">
-      <trigger data-line="65">goto defeat</trigger>
+      <trigger data-line="67">goto defeat</trigger>
     </event>
   </combat>
-  <roleplay title="Level 3" data-line="68">
+  <roleplay title="Level 3" data-line="70">
+    <p>You hear the first yells of frustration as contestants succumb to tiredness. You're grateful that you took the time and effort to train for this - amazing how much of a different 10 minutes a day of pushups, pullups and squats makes!</p>
+    <p>Momentarily distracted by your workout routine, you almost miss the next monster charging towards you....</p>
+  </roleplay>
+  <combat data-line="76">
+    <e>{{_.randomEnemyOfTier(3)}}</e>
+    <e>{{_.randomEnemyOfTier(1)}}</e>
+    <event on="win" heal="1">
+      <roleplay title="Victory" data-line="82">
+        <p>You take a moment to clean your weapon. The mantra of your coach echoes in your head: <i>a clean weapon is a good weapon</i>.</p>
+      </roleplay>
+    </event>
+    <event on="lose">
+      <trigger data-line="88">goto defeat</trigger>
+    </event>
+  </combat>
+  <roleplay title="Level 4" data-line="91">
+    <p>As you clean your weapon, you remember another tip your coach gave you. In level four, breath more.</p>
+    <p>You realized you'd been holding your breath. With a few deep breaths of stale dungeon air, you feel more energized. Just in time to fight...</p>
+  </roleplay>
+  <combat data-line="97">
+    <e>{{_.randomEnemyOfTier(2)}}</e>
+    <e>{{_.randomEnemyOfTier(2)}}</e>
+    <event on="win" heal="1">
+      <roleplay title="Victory" data-line="103">
+        <p>You breath deeply again as you loot the bodies. Breath, stab, clean, loot. Breath, stab, clean, loot.</p>
+      </roleplay>
+    </event>
+    <event on="lose">
+      <trigger data-line="109">goto defeat</trigger>
+    </event>
+  </combat>
+  <roleplay title="Level 5" data-line="112">
+    <p>As you prepare for another small but intense fight, you're overwhelmed by...</p>
+  </roleplay>
+  <combat data-line="116">
+    <e>{{_.randomEnemyOfTier(1)}}</e>
+    <e>{{_.randomEnemyOfTier(1)}}</e>
+    <e>{{_.randomEnemyOfTier(1)}}</e>
+    <e>{{_.randomEnemyOfTier(1)}}</e>
+    <e>{{_.randomEnemyOfTier(1)}}</e>
+    <event on="win" heal="1">
+      <roleplay title="Victory" data-line="125">
+        <p>Is it just you, or are the enemies getting harder?</p>
+      </roleplay>
+    </event>
+    <event on="lose">
+      <trigger data-line="131">goto defeat</trigger>
+    </event>
+  </combat>
+  <roleplay title="Level 6" data-line="134">
     <p>It's quieter down here. Many of the faces of fun and celebration you saw on the first level are now replaced by grimaces of pain and determination. But the prize for winning the Spring Cleaning is worth battling through the pain.</p>
   </roleplay>
-  <combat data-line="72">
+  <combat data-line="138">
     <e>{{_.randomEnemyOfTier(3)}}</e>
     <e>{{_.randomEnemyOfTier(2)}}</e>
     <event on="win" heal="1">
-      <roleplay title="Victory" data-line="78">
+      <roleplay title="Victory" data-line="144">
         <p>You're in the zone now. The dimly-lit dungeon fades away, and you only see you next attack.</p>
       </roleplay>
     </event>
     <event on="lose">
-      <trigger data-line="84">goto defeat</trigger>
+      <trigger data-line="150">goto defeat</trigger>
     </event>
   </combat>
-  <roleplay title="Level 4" data-line="86">
-    <p>The deeper you go, the stronger the monsters get - but the more tired you get. You contemplate taking a break... but as you start to sit down, another team runs past you and begins fighting a pack of cave wolves.</p>
-    <p>...or were they actually running from what's right behind you?</p>
+  <roleplay title="Level 7" data-line="152">
+    <p>You contemplate taking a break... but as you start to sit down, another team runs past you to attack their next monster...</p>
+    <p>...or, were they running from what's right behind you?</p>
   </roleplay>
-  <combat data-line="92">
+  <combat data-line="158">
     <e>{{_.randomEnemyOfTier(4)}}</e>
     <event on="win" heal="2">
-      <roleplay title="Victory" data-line="97">
-        <p>Only one level left to go, and you think you're at the front of the pack. You risk a quick break to recover for the final fight.</p>
+      <roleplay title="Victory" data-line="163">
+        <p>Only a few levels to go, and you think you're at the front of the pack. You risk a quick break, healing two health instead of one.</p>
       </roleplay>
     </event>
     <event on="lose">
-      <trigger data-line="103">goto defeat</trigger>
+      <trigger data-line="169">goto defeat</trigger>
     </event>
   </combat>
-  <roleplay title="Level 5" data-line="106">
+  <roleplay title="Level 8" data-line="172">
+    <p>During your break, you thought about where to go next. To the left, you heard heavy stomping - perhaps one or two large enemies? To the right, you heard a lot of small sounds - perhaps a large group of weak enemies. Which way do you go?</p>
+    <choice text="To the left - few, large enemies!">
+      <combat data-line="178">
+        <e>{{_.randomEnemyOfTier(3)}}</e>
+        <e>{{_.randomEnemyOfTier(3)}}</e>
+        <event on="win" heal="1">
+          <roleplay title="Victory" data-line="184">
+            <p>Triumphant, you do a quick victory dance.</p>
+          </roleplay>
+        </event>
+        <event on="lose">
+          <trigger data-line="190">goto defeat</trigger>
+        </event>
+      </combat>
+    </choice>
+    <choice text="To the right - many small enemies!">
+      <combat data-line="194">
+        <e>{{_.randomEnemyOfTier(2)}}</e>
+        <e>{{_.randomEnemyOfTier(1)}}</e>
+        <e>{{_.randomEnemyOfTier(1)}}</e>
+        <e>{{_.randomEnemyOfTier(1)}}</e>
+        <e>{{_.randomEnemyOfTier(1)}}</e>
+        <event on="win" heal="2">
+          <roleplay title="Victory" data-line="203">
+            <p>Triumphant, you do a quick victory dance.</p>
+          </roleplay>
+        </event>
+        <event on="lose">
+          <trigger data-line="209">goto defeat</trigger>
+        </event>
+      </combat>
+    </choice>
+  </roleplay>
+  <roleplay title="Level 9" data-line="211">
+    <p>Not wanting to ruin your pace, you cut the dance short and head down the next set of stairs. These stairs look rarely used - you must be nearing the end!</p>
+  </roleplay>
+  <combat data-line="215">
+    <e>{{_.randomEnemyOfTier(4)}}</e>
+    <e>{{_.randomEnemyOfTier(3)}}</e>
+    <event on="win" heal="2">
+      <roleplay title="Victory" data-line="221">
+        <p>You're pretty sure the next level is the last one. You risk a quick break, healing two health instead of one.</p>
+      </roleplay>
+    </event>
+    <event on="lose">
+      <trigger data-line="227">goto defeat</trigger>
+    </event>
+  </combat>
+  <roleplay title="Level 10" data-line="229">
     <p>With fortune and glory awaiting, you charge down the final dungeon stairs, weapons drawn.</p>
   </roleplay>
-  <combat data-line="110">
+  <combat data-line="233">
+    <e>{{_.randomEnemyOfTier(3)}}</e>
     <e>{{_.randomEnemyOfTier(2)}}</e>
     <e>{{_.randomEnemyOfTier(2)}}</e>
-    <e>{{_.randomEnemyOfTier(2)}}</e>
-    <event on="win" heal="0" loot="false" xp="false">
-      <roleplay title="Victory" data-line="117">
-        <p>You let loose a yell, full of pain, tiredness and thrill. You've completed the Spring Cleaning!</p>
-        <p>Panting, you look around - there's only one other team down here so far, and they're still battling their monster. You make eye contact with them. They nod in defeat, acknowledging your victory.</p>
+    <event on="win" loot="false" xp="false">
+      <roleplay title="Victory" data-line="240">
+        <p>You let loose a yell, full of pain, tiredness and thrill. You've survived the Spring Cleaning!</p>
+        <p>Panting, you look around - there's only one other team down here and they're still fighting. You make eye contact with them. They nod in defeat, acknowledging your victory.</p>
       </roleplay>
-      <roleplay title="The Reward" data-line="123">
+      <roleplay title="The Reward" data-line="246">
         <p>Making your way back up the dungeon and back to the ceremony, the Lord invites you to the stage, raising your arm in his and shouting out to the crowd, "Ladies and Gentlemen, I present to you... this year's SPRING CLEAN WINNERS!"</p>
         <p>Mages behind the stage let loose fireballs into the sky, and the Lady comes out with a small chest. Facing you, she opens it to reveal this year's prize... a stunning, powerful and magically-enchanted Diffracting Gem. As the fireballs explode overhead, their brilliance is reflected a thousand times in the large diamond.</p>
         <instruction>
           <p>Draw the tier 3 loot "Diffracting Gem"- you may use this on your next quest.</p>
         </instruction>
       </roleplay>
-      <trigger data-line="131">end</trigger>
+      <trigger data-line="254">end</trigger>
     </event>
     <event on="lose">
-      <trigger data-line="135">goto defeat</trigger>
+      <trigger data-line="258">goto defeat</trigger>
     </event>
   </combat>
-  <roleplay title="Defeat" id="defeat" data-line="138">
+  <roleplay title="Defeat" id="defeat" data-line="261">
     <p>As you collapse, exhausted, you watch as another team of adventurers leaps into your place. You may not have won this year, but you still had fun!</p>
   </roleplay>
+  <trigger data-line="265">end</trigger>
 </quest>
