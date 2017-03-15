@@ -8,7 +8,7 @@
   "scripts": {
     "test": "karma start --single-run --browsers PhantomJS",
     "watch:test": "karma start",
-    "start": "NODE_ENV=dev node app.js",
+    "start": "node ${SCRIPT:-app.js}",
     "dev-dash": "NODE_ENV=dev webpack-dashboard -- node ${SCRIPT:-app.js}",
     "dev": "NODE_ENV=dev node app.js",
     "monitor": "nodemon ${SCRIPT:-app.js}",

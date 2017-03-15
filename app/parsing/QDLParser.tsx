@@ -184,7 +184,7 @@ export class QDLParser {
           break;
         default:
           var log = new Logger();
-          log.internal('Unknown message type ', '506');
+          log.internal('Unknown message type', '506');
           Array.prototype.push.apply(logMap.internal, log.finalize());
           break;
       }

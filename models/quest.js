@@ -156,7 +156,7 @@ exports.search = function(userId, params, callback) {
 };
 
 function formatQuest(node, context) {
-  // TODO: Dedupe this against to_markdown
+  // TODO: Dedupe this against existing parsing code.
   // Parse headers
   var result = {};
 

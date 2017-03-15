@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const LoaderOptionsPlugin = require("webpack/lib/LoaderOptionsPlugin");
 var path = require('path');
 
 const port = process.env.DOCKER_PORT || 8080;

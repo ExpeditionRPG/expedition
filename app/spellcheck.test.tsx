@@ -1,5 +1,7 @@
 import Spellcheck from './spellcheck'
 
+// TODO(scott): Find an alternative to file loading for unit 
+// tests (allows us to continue to do browser-based testing)
 //const Fs: any = require('fs');
 const Expect: any = require('expect');
 //const Typo: any = require('typo-js');
