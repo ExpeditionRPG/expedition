@@ -16,15 +16,15 @@ const options = {
     ],
   },
   resolve: {
-    extensions: ['.js', '.ts', '.tsx', '.json', '.txt']
+    extensions: ['.js', '.ts', '.tsx', '.json', '.txt'],
   },
   devServer: {
-    contentBase: path.join(__dirname, 'app')
+    contentBase: path.join(__dirname, 'app'),
   },
   output: {
     path: path.join(__dirname, 'dist'),
     publicPath: 'http://localhost:' + port + '/',
-    filename: '[name].js'
+    filename: '[name].js',
   },
   stats: {
     colors: true,
