@@ -7,7 +7,7 @@ describe('setDialog', () => {
     ).toEqual({
       type: 'SET_DIALOG',
       dialog: 'ERROR',
-      shown: true 
-    } as SetDialogAction);
-  });
-});
+      shown: true
+    } as SetDialogAction)
+  })
+})

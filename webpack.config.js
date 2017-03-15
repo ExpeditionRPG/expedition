@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const LoaderOptionsPlugin = require("webpack/lib/LoaderOptionsPlugin");
 var path = require('path');
 
 const port = process.env.DOCKER_PORT || 8080;
@@ -41,16 +42,6 @@ const options = {
       { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /\/node_modules\/((?!expedition\-app).)*$/ },
       { enforce: 'post', test: /\.tsx$/, loaders: ['babel-loader'], exclude: /node_modules/ },
     ]
-  },
-  tslint: {
-    configuration: {
-      rules: {
-        quotemark: [true, 'single', 'jsx-double']
-      }
-    },
-    emitErrors: true,
-    failOnHint: true,
-    tsConfigFile: 'tsconfig.json',
   },
   plugins: [
     new DashboardPlugin(),
