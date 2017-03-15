@@ -471,7 +471,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
     content: <span dangerouslySetInnerHTML={{__html: children}} />,
     choices,
     instructions,
-    ctx: Object.assign({}, ctx, {scope: newScope}),
+    ctx: {...ctx, scope: newScope},
   };
 };
 

@@ -47,10 +47,12 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         pastStateIdx--;
       }
 
-      return Object.assign({}, state._history[pastStateIdx], {
+      return {
+        ...state._history[pastStateIdx],
         _history: state._history.slice(0, pastStateIdx),
         settings: state.settings, // global settings should not be rewound.
-        _return: true}) as AppStateWithHistory;
+        _return: true,
+      } as AppStateWithHistory;
     }
 
     // Create a new array (objects may be shared)
@@ -58,7 +60,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
 
     if (action.type === 'NAVIGATE') {
       // Save a copy of existing state to _history whenever we go to a new card
-      history.push(Object.assign({}, state, {_history: undefined, _return: undefined, settings: undefined}) as AppState);
+      history.push({...state, _history: undefined, _return: undefined, settings: undefined} as AppState);
     }
   }
 

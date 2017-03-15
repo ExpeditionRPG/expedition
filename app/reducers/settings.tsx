@@ -12,7 +12,7 @@ const initial_state: SettingsType = {
 
 export function settings(state: SettingsType = initial_state, action: Redux.Action): SettingsType {
   if (action.type === 'CHANGE_SETTINGS') {
-    return Object.assign({}, state, (action as ChangeSettingsAction).settings);
+    return {...state, ...(action as ChangeSettingsAction).settings};
   }
   return state;
 }

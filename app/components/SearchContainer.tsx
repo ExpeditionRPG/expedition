@@ -12,7 +12,7 @@ import {QuestDetails} from '../reducers/QuestTypes'
 
 
 const mapStateToProps = (state: AppState, ownProps: SearchStateProps): SearchStateProps => {
-  return Object.assign({}, state.search, {phase: ownProps.phase, user: state.user, numPlayers: state.settings.numPlayers});
+  return {...state.search, phase: ownProps.phase, user: state.user, numPlayers: state.settings.numPlayers};
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SearchDispatchProps => {

@@ -133,42 +133,43 @@ export function combat(state: CombatState, action: Redux.Action): CombatState {
       for (let enemy of enemies) {
         tierSum += enemy.tier;
       }
-      return Object.assign({
+      return {
+        ...getDifficultySettings(combatAction.difficulty),
         enemies: enemies,
         roundCount: 0,
         numAliveAdventurers: combatAction.numPlayers,
         tier: tierSum,
-      }, getDifficultySettings(combatAction.difficulty));
+      };
     case 'COMBAT_TIMER_STOP':
       let elapsedMillis: number = (action as CombatTimerStopAction).elapsedMillis;
       let settings: SettingsType = (action as CombatTimerStopAction).settings;
-      return Object.assign({}, state, {
+      return {...state,
         mostRecentAttack: generateCombatAttack(state, elapsedMillis, settings),
         roundCount: state.roundCount + 1,
-      });
+      };
     case 'COMBAT_DEFEAT':
-      return Object.assign({}, state, {
+      return {...state,
         loot: [],
         levelUp: false,
-      });
+      };
     case 'COMBAT_VICTORY':
       let victoryAction = action as CombatVictoryAction;
-      return Object.assign({}, state, {
+      return {...state,
         loot: generateLoot(victoryAction.maxTier),
         levelUp: (victoryAction.numPlayers <= victoryAction.maxTier),
-      });
+      };
     case 'TIER_SUM_DELTA':
       let newTierCount = state.tier + (action as TierSumDeltaAction).delta;
       if (newTierCount < 0) {
         return state;
       }
-      return Object.assign({}, state, {tier: newTierCount});
+      return {...state, tier: newTierCount};
     case 'ADVENTURER_DELTA':
       let newAdventurerCount = state.numAliveAdventurers + (action as AdventurerDeltaAction).delta;
       if (newAdventurerCount > (action as AdventurerDeltaAction).numPlayers || newAdventurerCount < 0) {
         return state;
       }
-      return Object.assign({}, state, {numAliveAdventurers: newAdventurerCount});
+      return {...state, numAliveAdventurers: newAdventurerCount};
     default:
       return state;
   }
