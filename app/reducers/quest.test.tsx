@@ -1,4 +1,3 @@
-import expect from 'expect'
 import {quest} from './quest'
 
 describe('quest', () => {

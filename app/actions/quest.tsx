@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {
   NEW_QUEST, LOAD_QUEST, SAVE_QUEST,
   ReceiveQuestLoadAction,

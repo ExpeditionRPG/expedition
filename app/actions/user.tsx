@@ -1,9 +1,10 @@
-import {hashHistory} from 'react-router';
+import Redux from 'redux'
+import {hashHistory} from 'react-router'
 
-import {SetProfileMetaAction} from './ActionTypes';
-import {UserState} from '../reducers/StateTypes';
-import {loadQuestFromURL} from './quest';
-import {realtimeUtils} from '../auth';
+import {SetProfileMetaAction} from './ActionTypes'
+import {UserState} from '../reducers/StateTypes'
+import {loadQuestFromURL} from './quest'
+import {realtimeUtils} from '../auth'
 
 declare var window: any;
 

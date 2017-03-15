@@ -1,7 +1,3 @@
-/// <reference path="../../typings/expect/expect.d.ts" />
-/// <reference path="../../typings/jasmine/jasmine.d.ts" />
-/// <reference path="../../typings/custom/require.d.ts" />
-
 import {Block} from './block/BlockList'
 import {LogMessage, Logger, prettifyMsg, prettifyMsgs} from './Logger'
 import TestData from './TestData'
@@ -54,17 +50,17 @@ describe('LogMessage', () => {
 
   describe('prettifyMsgs', () => {
     it('prettifies multiple messages', () => {
-      expect(prettifyMsgs(testMsgs)).toEqual("ERROR L5:\ntest error\nURL: test\n\nWARNING L7:\ntest warning\nURL: 404\n\nINFO L0:\ntest debug\nstuff\nURL: 100\n\nINTERNAL L5:\ninternal error\nURL: 505");
+      expect(prettifyMsgs(testMsgs)).toEqual('ERROR L5:\ntest error\nURL: test\n\nWARNING L7:\ntest warning\nURL: 404\n\nINFO L0:\ntest debug\nstuff\nURL: 100\n\nINTERNAL L5:\ninternal error\nURL: 505');
     });
   });
 
   describe('prettifyMsg', () => {
     it('prettifies message', () => {
-      expect(prettifyMsg(testMsgs[0])).toEqual("ERROR L5:\ntest error\nURL: test");
+      expect(prettifyMsg(testMsgs[0])).toEqual('ERROR L5:\ntest error\nURL: test');
     });
 
     it('prettifies message with no line context', () => {
-      expect(prettifyMsg(testMsgs[2])).toEqual("INFO L0:\ntest debug\nstuff\nURL: 100");
+      expect(prettifyMsg(testMsgs[2])).toEqual('INFO L0:\ntest debug\nstuff\nURL: 100');
     });
   });
 });

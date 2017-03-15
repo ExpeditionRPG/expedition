@@ -1,5 +1,3 @@
-/// <reference path="../../../typings/custom/require.d.ts" />
-
 import REGEX from '../../regex'
 
 export type CombatChild = {text: string, visible?: string, event: any[], json?: any};

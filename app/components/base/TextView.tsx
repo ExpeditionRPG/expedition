@@ -179,7 +179,6 @@ export default class TextView extends React.Component<TextViewProps, {}> {
         height="100%"
         name={'editor'}
         value={text}
-        editorProps={{$blockScrolling: true}}
       />
     );
   }

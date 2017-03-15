@@ -107,7 +107,7 @@ if (module === require.main) {
     });
     var conf = {
       publicPath: webpack_config.output.publicPath,
-      contentBase: webpack_config.contentBase,
+      contentBase: webpack_config.devServer.contentBase,
       hot: true,
       quiet: false,
       noInfo: false,

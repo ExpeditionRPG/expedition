@@ -1,5 +1,3 @@
-/// <reference path="../../typings/es6-shim/es6-shim.d.ts" />
-
 import {Renderer} from './render/Renderer'
 import {BlockRenderer} from './render/BlockRenderer'
 import {XMLRenderer} from './render/XMLRenderer'
@@ -186,7 +184,7 @@ export class QDLParser {
           break;
         default:
           var log = new Logger();
-          log.internal('Unknown message type ' + m.type, '506');
+          log.internal('Unknown message type', '506');
           Array.prototype.push.apply(logMap.internal, log.finalize());
           break;
       }

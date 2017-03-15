@@ -1,5 +1,3 @@
-import expect from 'expect'
-
 describe('setCodeView', () => {
   it('creates action')
 })

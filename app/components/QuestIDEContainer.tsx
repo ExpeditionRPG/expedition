@@ -1,11 +1,10 @@
+import Redux from 'redux'
 import {connect} from 'react-redux'
 import {setDirty, setLine, setDirtyTimeout} from '../actions/editor'
 import {saveQuest} from '../actions/quest'
 import {AppState, QuestType, EditorState} from '../reducers/StateTypes'
 import QuestIDE, {QuestIDEStateProps, QuestIDEDispatchProps} from './QuestIDE'
 import {store} from '../store'
-
-var toMarkdown: any = require('../../translation/to_markdown')
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestIDEStateProps => {
   return {

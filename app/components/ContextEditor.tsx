@@ -3,6 +3,7 @@ import LeftIcon from 'material-ui/svg-icons/navigation/chevron-left'
 import IconButton from 'material-ui/IconButton'
 import {OverrideTextArea} from './base/OverrideTextArea'
 import {ScrollBottom} from './base/ScrollBottom'
+import FlatButton from 'material-ui/FlatButton'
 
 var math = require('mathjs') as any;
 
@@ -58,12 +59,12 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
   var KVs: any[] = [];
   for (let i = 0; i < props.scopeHistory.length; i++) {
     let scope = formatScope(props.scopeHistory[i]);
-    KVs.push(<div key={i} className="scope" onTouchTap={(event: any) => props.onInitialContext(codifyScope(props.scopeHistory[i]))}>
+    KVs.push(<FlatButton key={i} onTouchTap={(event: any) => props.onInitialContext(codifyScope(props.scopeHistory[i]))}>
       <LeftIcon/>
       <div>
         {scope}
       </div>
-    </div>);
+    </FlatButton>);
   }
   if (KVs.length === 0) {
     KVs.push(<div key="noscope" className="noScope">

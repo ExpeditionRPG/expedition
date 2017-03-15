@@ -1,21 +1,4 @@
-/// <reference path="../typings/redux/redux.d.ts" />
-/// <reference path="../typings/redux-thunk/redux-thunk.d.ts" />
-/// <reference path="../typings/react-redux/react-redux.d.ts" />
-/// <reference path="../typings/react/react-dom.d.ts" />
-/// <reference path="../typings/react/react-router.d.ts" />
-/// <reference path="../typings/material-ui/material-ui.d.ts" />
-/// <reference path="../typings/react-tap-event-plugin/react-tap-event-plugin.d.ts" />
-/// <reference path="../typings/jquery/jquery.d.ts" />
-/// <reference path="../typings/es6-shim/es6-shim.d.ts" />
-
-/// <reference path="../typings/custom/require.d.ts" />
-/// <reference path="../typings/custom/react-ace.d.ts" />
-/// <reference path="../typings/custom/brace.d.ts" />
-
-// TODO: Investigate removing tests from the compilation path
-/// <reference path="../typings/jasmine/jasmine.d.ts" />
-/// <reference path="../typings/expect/expect.d.ts" />
-
+// <reference path="../typings/custom/custom.d.ts" />
 
 import * as React from 'react'
 import {render} from 'react-dom'

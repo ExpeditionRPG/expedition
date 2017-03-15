@@ -41,8 +41,7 @@ const Splash = (props: any): JSX.Element => {
         />
         <iframe
           className="previewVideo"
-          src="https://www.youtube.com/embed/12y1NhQUXvs?autoplay=1&fs=0&loop=1&modestbranding=1&playlist=12y1NhQUXvs"
-          frameborder="0">
+          src="https://www.youtube.com/embed/12y1NhQUXvs?autoplay=1&fs=0&loop=1&modestbranding=1&playlist=12y1NhQUXvs">
         </iframe>
         <footer>
           <FlatButton label="Go To Expedition Home Page" onTouchTap={() => {window.location.href='http://expeditiongame.com';}}/>

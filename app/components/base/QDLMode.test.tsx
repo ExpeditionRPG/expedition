@@ -1,4 +1,3 @@
-import expect from 'expect'
 import { QDLMode } from './QDLMode'
 
 // TODO breaks on use; window is not defined when accessed by brace

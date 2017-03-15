@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {SetProfileMetaAction} from '../actions/ActionTypes'
 import {UserState} from './StateTypes'
 

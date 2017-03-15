@@ -15,8 +15,6 @@ import {QuestType, ShareType, DialogsState, DialogIDType} from '../reducers/Stat
 import theme from '../theme'
 
 declare var ga: any;
-var MarkdownParserError: any = (require('../../translation/to_xml') as any).MarkdownParserError;
-var XMLParserError: any = (require('../../translation/to_markdown') as any).XMLParserError;
 
 interface ErrorDialogProps extends React.Props<any> {
   open: boolean;
@@ -31,26 +29,17 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
       var error = this.props.errors[i];
       ga('send', 'event', 'error', error.name, error.message);
       console.log(error.stack);
-
-      if (error instanceof MarkdownParserError || error instanceof XMLParserError) {
-        errors.push(<div key={i}>
-          <strong>{error.name}: "{error.message}"</strong>
-          <div><strong>Line:</strong> {error.line}</div>
-          <div><strong>Usage:</strong> {error.usage}</div>
-        </div>);
-        continue;
-      }
       errors.push(<div key={i}>{error.toString()}</div>);
     }
 
     return (
       <Dialog
         title="Errors Occurred"
-        actions={<RaisedButton
+        actions={[<RaisedButton
           label="OK"
           primary={true}
           onTouchTap={() => this.props.onRequestClose()}
-        />}
+        />]}
         titleClassName={'dialogTitle dialogError'}
         modal={false}
         open={Boolean(this.props.open)}>
@@ -70,11 +59,11 @@ export class PublishedDialog extends React.Component<PublishedDialogProps, {}> {
     return (
       <Dialog
         title="Published!"
-        actions={<RaisedButton
+        actions={[<RaisedButton
           label="OK"
           primary={true}
           onTouchTap={() => this.props.onRequestClose()}
-        />}
+        />]}
         titleClassName={'dialogTitle dialogGood'}
         modal={false}
         open={Boolean(this.props.open)}>
@@ -95,11 +84,11 @@ export class UnpublishedDialog extends React.Component<UnpublishedDialogProps, {
     return (
       <Dialog
         title="Unpublished"
-        actions={<RaisedButton
+        actions={[<RaisedButton
           label="OK"
           primary={true}
           onTouchTap={() => this.props.onRequestClose()}
-        />}
+        />]}
         titleClassName={'dialogTitle'}
         modal={false}
         open={Boolean(this.props.open)}>

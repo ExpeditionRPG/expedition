@@ -1,9 +1,8 @@
+import Redux from 'redux'
 import {connect} from 'react-redux'
 import {setDirty} from '../actions/editor'
 import {AppState} from '../reducers/StateTypes'
 import Main, {MainStateProps, MainDispatchProps} from './Main'
-
-var toMarkdown: any = require('../../translation/to_markdown')
 
 const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
   return {

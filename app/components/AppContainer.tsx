@@ -1,3 +1,4 @@
+import Redux from 'redux'
 import {connect} from 'react-redux'
 import {AppState, EditorState, QuestType} from '../reducers/StateTypes'
 import App, {AppDispatchProps, AppStateProps} from './App'
