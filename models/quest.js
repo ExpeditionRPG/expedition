@@ -27,6 +27,7 @@ const Url = require('url');
 
 const Config = require('../config');
 const CloudStorage = require('../lib/cloudstorage');
+const Mail = require('../mail');
 const ToMeta = require('../translation/to_meta');
 const User = require('./user');
 const Query = require('./query');
@@ -88,12 +89,6 @@ exports.getById = function(id, callback) {
     if (err) {
       return callback(err);
     }
-
-    let query = Squel.select()
-      .from(table)
-      .where('id = ?', id)
-      .limit(1)
-      .toString();
 
     return Query.getId(table, id, callback);
   });
@@ -196,13 +191,23 @@ exports.publish = function(userId, docId, xml, callback) {
       });
 
   Joi.validate(meta, schemaPublish, (err, meta) => {
-
     if (err) {
       return callback(err);
     }
 
-    Query.upsert(table, meta, (err, result) => {
-      return callback(err, id);
+    Query.getId(table, meta.id, (err, result) => {
+      if (err) {
+        if (err.code === 404) { // if this is a newly published quest, email us!
+          const message = `Summary: ${meta.summary}. By ${meta.author}, for ${meta.minplayers} - ${meta.maxplayers} players.`;
+          Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + meta.title, message, message, (err, result) => {});
+        } else { // this is just for notifying us, so don't return error if it fails
+          console.log(err);
+        }
+      }
+
+      Query.upsert(table, meta, (err, result) => {
+        return callback(err, id);
+      });
     });
   });
 };

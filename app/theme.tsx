@@ -10,7 +10,6 @@ import spacing from 'material-ui/styles/spacing';
 
 let theme: any = {
   spacing: spacing,
-  fontFamily: 'Roboto, sans-serif', // TODO: Change font family
   palette: {
     primary1Color: grey900,
     primary2Color: grey800,

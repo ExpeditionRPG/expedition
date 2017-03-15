@@ -41,30 +41,35 @@ export var XMLRenderer: Renderer = {
   },
 
   toCombat: function(attribs: {[k: string]: any}, events: CombatChild[], line: number): any {
-    var combat = cheerio.load('<combat></combat>')('combat');
+    const combat = cheerio.load('<combat></combat>')('combat');
 
-    var keys = Object.keys(attribs);
-    for (var i = 0; i < keys.length; i++) {
-      if (keys[i] !== 'enemies') {
-        combat.attr(keys[i], attribs[keys[i]]);
+    Object.keys(attribs).forEach((key) => {
+      if (key !== 'enemies') {
+        combat.attr(key, attribs[key]);
       }
-    }
+    });
 
-    var enemies = attribs['enemies'];
-    for (var i = 0; i < enemies.length; i++) {
-      var e = cheerio.load('<e>' + enemies[i].text + '</e>')('e');
+    const enemies = attribs['enemies'];
+    for (let i = 0; i < enemies.length; i++) {
+      const e = cheerio.load('<e>' + enemies[i].text + '</e>')('e');
       e.attr('if', enemies[i].visible);
       combat.append(e);
     }
 
-    for (var i = 0; i < events.length; i++) {
-      var event = events[i];
-      var currEvent: any = cheerio.load('<event></event>')('event');
+    for (let i = 0; i < events.length; i++) {
+      const currEvent: any = cheerio.load('<event></event>')('event');
+      const event = events[i];
       currEvent.attr('on', event.text.substr(3));
       if (event.visible) {
         currEvent.attr('if', event.visible);
       }
-      for (var j = 0; j < event.event.length; j++) {
+      const attributes = event.json;
+      if (attributes) {
+        Object.keys(attributes).forEach((key) => {
+          currEvent.attr(key, attributes[key]);
+        });
+      }
+      for (let j = 0; j < event.event.length; j++) {
         currEvent.append(event.event[j]);
       }
       combat.append(currEvent);

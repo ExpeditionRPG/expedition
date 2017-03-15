@@ -42,6 +42,16 @@ const options = {
       { enforce: 'post', test: /\.tsx$/, loaders: ['babel-loader'], exclude: /node_modules/ },
     ]
   },
+  tslint: {
+    configuration: {
+      rules: {
+        quotemark: [true, 'single', 'jsx-double']
+      }
+    },
+    emitErrors: true,
+    failOnHint: true,
+    tsConfigFile: 'tsconfig.json',
+  },
   plugins: [
     new DashboardPlugin(),
     new webpack.HotModuleReplacementPlugin(),

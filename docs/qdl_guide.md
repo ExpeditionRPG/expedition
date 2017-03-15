@@ -141,7 +141,38 @@ Fights that are too easy (or too hard!) can ruin an adventure. Here are our reco
 - Each following encounter can get around 1 tier harder as players acquire more loot, abilities and teamwork.
 - The hardest / boss fight should generally be around tier 6-8, assuming players have had a few fights to prepare.
 
-We've found that the two biggest factors that influence fight difficulty are loot and practice. So, if you reward your players with loot outside of combat (ie finding a treasure chest, visiting a merchant), you can scale combat faster. Conversely, if you want your quest to go on for longer and have more than 3-5 fights, you can either
+We've found that the two biggest factors that influence fight difficulty are loot and practice. So, if you reward your players with loot outside of combat (ie finding a treasure chest, visiting a merchant), you can scale combat faster. Conversely, if you want your quest to go on for longer and have more than 3-5 fights, you should refrain from awarding additional loot early on.
+
+#### Random encounters
+
+Sometimes in a quest, it makes sense for the enemies to be random. Maybe you encounter a group of Bandit thugs, but it doesn't affect the story if they're tier 1 archers or tier 1 footpads. In cases like this, a touch of randomness can increase surprise and replayability.
+
+You can use the following syntax to create random enemies - anything from a totally random enemy, to a random enemy of a specific class or tier, all the way to a random enemy of a specific class and tier:
+
+
+```
+_combat_
+- {{_.randomEnemy()}}
+- {{_.randomEnemyOfTier(1)}}
+- {{_.randomEnemyOfClass("Bandit")}}
+- {{_.randomEnemyOfClassTier("Bandit", 1)}}
+```
+
+Note: you must use double quotes (not single quotes) for strings inside of ops {{}}.
+
+#### Customizing rewards
+
+By default, when adventurers win a combat, they heal to full health and are rewarded with loot and xp. But, as the storyteller, you might not always want that to happen. For example, you might not want to reward players with loot and xp for a battle they shouldn't have fought. Or, maybe they're on the run and don't have time to heal (or only partially heal) after the fight.
+
+To do this, you simply annotate the combat on win outcome. Below, you can see what it looks like to disable loot and xp rewards, to disable healing, loot and xp, and to only allow the adventurers to partially heal (+6 health). Anything you don't define defaults to the normal: heal to full health, and gain loot and xp.
+
+```
+* on win {"loot": false, "xp": false}
+* on win {"heal": 0, "loot": false, "xp": false}
+* on win {"heal": 6}
+```
+
+Note: In cases where adventurers won't heal at the end of combat, it's nice to warn them with an instruction node before combat starts so that they can make better choices - for example: `> You're on the run! You won't heal after this encounter.`
 
 
 ### Roleplaying Cards

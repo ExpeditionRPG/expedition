@@ -120,7 +120,7 @@ describe('BlockRenderer', () => {
       var blocks: Block[] = [
         {
           indent: 0,
-          lines: ['_combat_ {"enemies": [{"text":"skeleton"}, {"text":"test", "visible":"cond"}]}', '', '* {{test1}} on win'],
+          lines: ['_combat_ {"enemies": [{"text":"skeleton"}, {"text":"test", "visible":"cond"}]}', '', '* {{test1}} on win {"heal": 2}'],
           startLine: 0,
         },
         {

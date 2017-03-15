@@ -61,17 +61,17 @@ exports.getId = function (table, id, callback) {
   exports.run(query, (err, results) => {
 
     if (err) {
-      return cb(err);
+      return callback(err);
     }
 
     if (results.length === 0) {
-      return cb({
+      return callback({
         code: 404,
         message: 'Not found',
       });
     }
 
-    return cb(null, results[0]);
+    return callback(null, results[0]);
   });
 };
 

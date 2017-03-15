@@ -14,15 +14,6 @@ const Mail = require('./mail');
 const oauth2 = require('./lib/oauth2');
 
 
-// TODO: Rate limit all routes
-// TODO: SSL
-// TODO: Abstract all these auth checks into middleware.
-    // aka find a good existing auth middleware
-        // note that auth and how its passed seems to vary between quest creator and app
-// TODO: abstract status: 500 try / catches
-// TODO: Lock down CORS
-// TODO: use a validation library like Joi to validate params
-
 // Use the oauth middleware to automatically get the user's profile
 // information and expose login/logout URLs to templates.
 const router = express.Router();
@@ -36,22 +27,29 @@ router.get('/', (req, res) => {
 
 
 const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
-// TODO validate with hapi: require title, author, email (valid email), feedback, players, difficulty
+// Joi validation: require title, author, email (valid email), feedback, players, difficulty
+// userEmail (valid email), platform, shareUserEmail (default false), version (number)
 router.post('/feedback', (req, res) => {
-  res.header('Access-Control-Allow-Origin', req.get('origin'));
   const params = JSON.parse(req.body);
   // strip all HTML tags for protection, then replace newlines with br's
   const title = params.title.replace(HTML_REGEX, '');
   const htmlFeedback = params.feedback.replace(HTML_REGEX, '').replace(/(?:\r\n|\r|\n)/g, '<br/>');
-  const htmlMessage = `<p>${params.author}, some adventurers have sent you feedback on your quest, ${title}. Hooray!</p>
-  <p>They played with ${params.players} adventurers on ${params.difficulty} difficulty. Their feedback:</p>
+  let shareUserEmail = '';
+  if (params.shareUserEmail && params.userEmail) {
+    shareUserEmail = `<p>If you'd like to contact them about their feedback, you can reach them at <a href="mailto:${params.userEmail}">${params.userEmail}</a>.</p>`
+  }
+
+  const htmlMessage = `<p>${params.author}, some adventurers sent you feedback on <i>${title}</i>. Hooray! Their feedback:</p>
   <p>"${htmlFeedback}"</p>
-  <p>If you have questions or run into bugs, you can email <a href="mailto:Expedition@Fabricate.io">Expedition@Fabricate.io</a></p>
+  <p>They played with ${params.players} adventurers on ${params.difficulty} difficulty on ${params.platform} v${params.version}.</p>
+  ${shareUserEmail}
+  <p>If you have questions or run into bugs with the Quest Creator, you can reply directly to this email.</p>
   <p>Happy Adventuring!</p>
   <p>Todd & Scott</p>`;
-  // turn end of paragraphs into double newlines
+  // for plaintext version, turn end of paragraphs into double newlines
   const textMessage = htmlMessage.replace(/<\/p>/g, '\r\n\r\n').replace(HTML_REGEX, '');
 
+  res.header('Access-Control-Allow-Origin', req.get('origin'));
   Mail.send(params.email, 'Feedback on your Expedition quest: ' + title, textMessage, htmlMessage, (err, result) => {
     if (err) {
       console.log(err);

@@ -44,7 +44,7 @@ data.combatConditionalEventXML = `<combat data-line="0">
 data.combatJSONEnemyXML = `<combat data-line="0">
     <e>skeleton</e>
     <e if="cond">test</e>
-    <event on="win" if="test1">
+    <event on="win" if="test1" heal="2">
         <roleplay>
             <p>win</p>
         </roleplay>

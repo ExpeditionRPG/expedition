@@ -1,9 +1,11 @@
 // <reference path="../typings/custom/custom.d.ts" />
 
-import * as React from 'react';
-import {render} from 'react-dom';
+import * as React from 'react'
+import {render} from 'react-dom'
 
-import {saveQuest} from './actions/quest';
+import {saveQuest} from './actions/quest'
+
+const Typo: any = require('typo-js');
 
 // So we can hot reload
 declare var require: any;
@@ -20,7 +22,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 // Needed for onTouchTap
-var injectTapEventPlugin = require('react-tap-event-plugin');
+const injectTapEventPlugin = require('react-tap-event-plugin');
 injectTapEventPlugin();
 
 // Redux libraries
@@ -34,13 +36,13 @@ import {store} from './store'
 
 if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
   // Try to parse from google drive menu action, e.g.
-  //?state=%7B"ids":%5B"0BzrQOdaJcH9MeDhic2ctdFNSdjg"%5D,"action":"open","userId":"106667818352266772866"%7D
+  // ?state=%7B"ids":%5B"0BzrQOdaJcH9MeDhic2ctdFNSdjg"%5D,"action":"open","userId":"106667818352266772866"%7D
   try {
-    var doc_json = JSON.parse(unescape(window.location.search).match(/\?state=(.*)/)[1]);
+    let doc_json = JSON.parse(unescape(window.location.search).match(/\?state=(.*)/)[1]);
+    window.location.href = '/#' + doc_json.ids[0];
   } catch (e) {
     console.log('Failed to parse anticipated Drive open URI: ' + window.location.search);
   }
-  window.location.href = '/#' + doc_json.ids[0];
 }
 
 // alert user if they try to close the page with unsaved changes
@@ -66,11 +68,29 @@ window.addEventListener('keydown', function checkForCtrlS (event: any) {
   }
 });
 
+// override analytics / don't report while dev'ing
+window.FirebasePlugin = {
+  logEvent: function(name: string, args: any) { console.log(name, args); },
+};
+
 window.gapi.load('client,client:auth2,drive-realtime,drive-share', function() {
   window.gapi.client.load('drive', 'v2', function() {
     store.dispatch(loginUser(false));
   });
 });
+
+// load spellcheck dictionary asynchronously, wait 1s for rest of the page to load
+(() => {
+  const affPath = '/dictionaries/en_US_aff.txt';
+  const dicPath = '/dictionaries/en_US_dic.txt';
+  setTimeout(() => {
+    $.get(dicPath, function(dicData) {
+      $.get(affPath, function(affData) {
+        window.dictionary = new Typo('en_US', affData, dicData);
+      });
+    });
+  }, 1000);
+})();
 
 render(
   <MuiThemeProvider muiTheme={getMuiTheme(theme)}>

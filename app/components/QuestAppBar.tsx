@@ -8,33 +8,11 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar'
 
-import {grey900} from 'material-ui/styles/colors'
 import AlertError from 'material-ui/svg-icons/alert/error'
 import SyncIcon from 'material-ui/svg-icons/notification/sync'
 
 import {QuestActionType} from '../actions/ActionTypes'
 import {AnnotationType, QuestType, UserState, EditorState, ValidState} from '../reducers/StateTypes'
-
-
-// TODO move to styles scss
-const styles = {
-  appbar: {
-    height: '54px',
-    marginTop: '-6px',
-  },
-  button: {
-    margin: '4px 0',
-    minWidth: '60px',
-  },
-  toolbar: {
-    background: grey900,
-    height: '44px',
-  },
-  errorText: {
-    color: '#CF6A4C',
-  },
-};
-
 
 export interface QuestAppBarStateProps {
   annotations: AnnotationType[];
@@ -59,13 +37,11 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
 
   let savingText = 'Saving...';
   let savingIcon = <SyncIcon />;
-  let savingStyle = {};
   if (props.editor.dirtyTimeout != null) {
     // saving - default (overrides other cases)
   } else if (props.quest.saveError) {
     savingText = 'Error: unable to save';
     savingIcon = <AlertError />;
-    savingStyle = styles.errorText;
   } else if (!props.editor.dirty) {
     savingText = 'All changes saved';
     savingIcon = null;
@@ -73,14 +49,12 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   const errors = props.annotations.filter((annotation) => { return annotation.type === 'error' });
   const errorLabel = (errors.length > 1) ? 'Validation Errors' : 'Validation Error';
   const publishButton = (errors.length > 0) ?
-    <FlatButton
-      style={Object.assign({}, styles.button, styles.errorText)}
+    <span className="errorButton"><FlatButton
       label={errorLabel}
       icon={<AlertError />}
-      disabled={true} />
+      disabled={true} /></span>
     :
     <FlatButton
-      style={styles.button}
       label={(props.quest.published) ? 'Update' : 'Publish'}
       disabled={!questLoaded}
       onTouchTap={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.quest)} />;
@@ -90,11 +64,11 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
       <AppBar
         title={questTitle}
         showMenuIconButton={false}
-        style={styles.appbar}
         iconElementRight={
           <IconMenu
+            className="loginState"
             iconButtonElement={
-              <IconButton iconStyle={{'width': '24px', 'height': '24px' }}><Avatar src={props.user.image}/></IconButton>
+              <IconButton><Avatar src={props.user.image}/></IconButton>
             }
             targetOrigin={{horizontal: 'right', vertical: 'top'}}
             anchorOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -114,16 +88,16 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
           <FlatButton label="View in Drive" disabled={!questLoaded} onTouchTap={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.quest)} />
           <FlatButton label="Send Feedback" onTouchTap={(event: any) => props.onMenuSelect('FEEDBACK', props.quest)} />
           <FlatButton label="Help" onTouchTap={(event: any) => props.onMenuSelect('HELP', props.quest)} />
-          <FlatButton label={savingText} icon={savingIcon} disabled={true} style={savingStyle} />
+          <span className="savingText"><FlatButton label={savingText} icon={savingIcon} disabled={true} /></span>
         </ToolbarGroup>
         <ToolbarGroup>
           <FlatButton
             onTouchTap={(event: any) => props.playFromCursor({}, props.editor, props.quest)}
             label="Play from Cursor">
           </FlatButton>
-          {props.editor.bottomPanelShown && 
+          {props.editor.bottomPanelShown &&
           <FlatButton
-            onTouchTap={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)} 
+            onTouchTap={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)}
             label="Play from Cursor (preserve context)">
           </FlatButton>
           }

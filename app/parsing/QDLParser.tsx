@@ -4,7 +4,7 @@ import {XMLRenderer} from './render/XMLRenderer'
 import {Block, BlockList} from './block/BlockList'
 import {Normalize} from './validation/Normalize'
 import {LogMessage, LogMessageMap, Logger} from './Logger'
-import REGEX from './Regex'
+import REGEX from '../regex'
 
 export function renderXML(md: string): QDLParser {
   var qdl = new QDLParser(XMLRenderer);

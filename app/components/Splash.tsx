@@ -14,33 +14,38 @@ export interface SplashDispatchProps {
 
 const Splash = (props: any): JSX.Element => {
   return (
-    <div className="splash">
-      <AppBar
-        title="Expedition Quest Creator"
-        showMenuIconButton={false}
-        iconElementRight={
-          <FlatButton
-            label="Log In"
-            onTouchTap={() => props.onLogin()}
-          />
-        }
-      />
+    <div className="main splash">
+      <div className="quest_app_bar">
+        <AppBar
+          title="Expedition Quest Creator"
+          showMenuIconButton={false}
+          iconElementRight={
+            <FlatButton
+              label="Log In"
+              onTouchTap={() => props.onLogin()}
+            />
+          }
+        />
+      </div>
       <div className="body">
-        <h1>Write your adventure and share it with the world</h1>
+        <h1>Write your adventure and share it with the world!</h1>
         <RaisedButton
           label="Get Started"
           primary={true}
           onTouchTap={() => props.onLogin()}
         />
-        <div className="learnMore">
-          <a href="https://github.com/Fabricate-IO/expedition-quest-ide/blob/master/docs/markdown_guide.md" target="_blank">
-            learn more
-          </a>
-        </div>
+        <RaisedButton 
+          label="Learn More" 
+          primary={true} 
+          onTouchTap={() => {window.open('https://github.com/Fabricate-IO/expedition-quest-creator/blob/master/docs/index.md');}} 
+        />
         <iframe
           className="previewVideo"
           src="https://www.youtube.com/embed/12y1NhQUXvs?autoplay=1&fs=0&loop=1&modestbranding=1&playlist=12y1NhQUXvs">
         </iframe>
+        <footer>
+          <FlatButton label="Go To Expedition Home Page" onTouchTap={() => {window.location.href='http://expeditiongame.com';}}/>
+        </footer>
       </div>
     </div>
   );
