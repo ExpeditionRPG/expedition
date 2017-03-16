@@ -24,6 +24,7 @@ function codifyScope(scope: any): string {
   for (var i = 0; i < keys.length; i++) {
     let k = keys[i];
     let v = scope[k];
+    if (k === '_') { continue; }
     // MathJS functions stringify to verbose JS functions,
     // and self-referential `f(x) = f(x)` causes unlimited recursion.
     // Basic identity assignment works, but causes exceptions
@@ -46,6 +47,7 @@ function formatScope(scope: any): any[] {
   for (var i = 0; i < keys.length; i++) {
     var k = keys[i];
     var v = math.format(scope[k]);
+    if (k === '_') { continue; }
     KVs.push(
       <div key={i}>
         <span>{k}</span>: <span>{v}</span>
@@ -75,9 +77,9 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
   return (
     <div className="console">
       <div className="interactive">
-        <OverrideTextArea 
+        <OverrideTextArea
           placeholder={'# Write MathJS here to set context values\n# or click arrows from the context history on the right to populate.'}
-          value={props.opInit} 
+          value={props.opInit}
           onBlur={(event: any) => props.onInitialContext(event.target.value)}></OverrideTextArea>
       </div>
       <div className="preview">
