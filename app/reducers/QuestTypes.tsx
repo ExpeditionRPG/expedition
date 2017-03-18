@@ -85,9 +85,9 @@ export interface EventParameters {
   heal?: number;
 }
 
-export interface Instruction {
+export interface RoleplayElement {
+  type: 'text' | 'instruction';
   text: string;
-  idx: number;
   icon?: string;
 }
 

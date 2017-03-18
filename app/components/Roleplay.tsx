@@ -3,7 +3,7 @@ import Button from './base/Button'
 import Callout from './base/Callout'
 import Card from './base/Card'
 import {XMLElement, SettingsType} from '../reducers/StateTypes'
-import {Choice, Instruction, QuestContext} from '../reducers/QuestTypes'
+import {Choice, QuestContext, RoleplayElement} from '../reducers/QuestTypes'
 import {RoleplayResult} from '../QuestParser'
 
 export interface RoleplayStateProps {
@@ -20,7 +20,28 @@ export interface RoleplayDispatchProps {
 export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps {};
 
 const Roleplay = (props: RoleplayProps): JSX.Element => {
-  var buttons: JSX.Element[] = props.roleplay.choices.map(function(choice: Choice): JSX.Element {
+  const content: JSX.Element[] = props.roleplay.content.map((element: RoleplayElement, idx: number): JSX.Element => {
+    switch (element.type) {
+      case 'instruction':
+        const matches = element.text.match(/src="images\/([a-zA-Z0-9_]*)/);
+        let icon = 'adventurer';
+        let text = element.text;
+        // if there's an icon at the begining, replace default icon and remove that icon from text
+        if (matches && element.text.trim().indexOf('<p><img') === 0) {
+          icon = matches[1].replace('_small', '');
+          text = text.replace(/<img class="inline_icon" src="images\/([a-zA-Z0-9_]*)_small\.svg">/, '');
+        }
+        return (
+          <Callout key={idx} icon={icon}>
+            <span dangerouslySetInnerHTML={{__html: text}} />
+          </Callout>
+        );
+      case 'text':
+      default:
+        return <span key={idx} dangerouslySetInnerHTML={{__html: element.text}} />;
+    }
+  });
+  const buttons: JSX.Element[] = props.roleplay.choices.map((choice: Choice): JSX.Element => {
     return (
       <Button key={choice.idx} onTouchTap={() => props.onChoice(props.settings, props.node, choice.idx, props.ctx)}>
         <span dangerouslySetInnerHTML={{__html: choice.text}} />
@@ -28,26 +49,9 @@ const Roleplay = (props: RoleplayProps): JSX.Element => {
     );
   });
 
-  var instructions: JSX.Element[] = props.roleplay.instructions.map(function(instruction: Instruction): JSX.Element {
-    const matches = instruction.text.match(/src="images\/([a-zA-Z0-9_]*)/);
-    let icon = 'adventurer';
-    let text = instruction.text;
-    // if there's an icon at the begining, replace default icon and remove that icon from text
-    if (matches && instruction.text.trim().indexOf('<p><img') === 0) {
-      icon = matches[1].replace('_small', '');
-      text = text.replace(/<img class="inline_icon" src="images\/([a-zA-Z0-9_]*)_small\.svg">/, '');
-    }
-    return (
-      <Callout key={instruction.idx} icon={icon}>
-        <span dangerouslySetInnerHTML={{__html: text}} />
-      </Callout>
-    );
-  });
-
   return (
     <Card title={props.roleplay.title}>
-      {props.roleplay.content}
-      {instructions}
+      {content}
       {buttons}
     </Card>
   );

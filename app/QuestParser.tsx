@@ -8,7 +8,7 @@
 const Cheerio = require('cheerio');
 import * as React from 'react'
 import {XMLElement, DOMElement} from './reducers/StateTypes'
-import {Choice, Enemy, EventParameters, Instruction, QuestCardName, QuestContext} from './reducers/QuestTypes'
+import {Choice, Enemy, EventParameters, RoleplayElement, QuestCardName, QuestContext} from './reducers/QuestTypes'
 import {encounters} from './Encounters'
 
 var htmlDecode = (require('he') as any).decode;
@@ -25,8 +25,7 @@ export interface RoleplayResult {
   type: 'Roleplay';
   icon: string;
   title: string;
-  content: JSX.Element;
-  instructions?: Instruction[];
+  content: RoleplayElement[];
   choices: Choice[];
   ctx: QuestContext;
 }
@@ -179,7 +178,7 @@ function _loadChoiceOrEventNode(node: XMLElement, ctx: QuestContext): XMLElement
 export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResult {
   var enemies: Enemy[] = [];
 
-  var newScope = Object.assign({}, ctx.scope);
+  var newScope = {...ctx.scope};
 
   // Track win and lose events for validation
   var winEventCount = 0;
@@ -283,7 +282,7 @@ function _isEnabled(node: XMLElement, ctx: QuestContext): boolean {
 
   // Operate on a copied scope - checking for enablement should never
   // change the current context.
-  var tmpScope = Object.assign({}, ctx.scope);
+  var tmpScope = {...ctx.scope};
   try {
     var visible = math.eval(ifExpr, tmpScope);
 
@@ -392,16 +391,12 @@ function generateIconElements(content: string): string {
 
 export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayResult {
   // Append elements to contents
-  var numEvents = 0;
-  var child: XMLElement;
-  var choices: Choice[] = [];
-  var children: string = '';
-  var instructions: Instruction[] = [];
+  let numEvents = 0;
+  let choices: Choice[] = [];
+  let choiceCount = -1;
+  let children: RoleplayElement[] = [];
 
-  var newScope = Object.assign({}, ctx.scope);
-
-  var choiceCount = -1;
-  var instructionCount = -1;
+  const newScope = {...ctx.scope};
 
   _loopChildren(node, function(tag: string, c: XMLElement) {
     c = c.clone();
@@ -427,33 +422,39 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
       throw new Error('<roleplay> cannot contain <event>.');
     }
 
-    // accumulate 'instruction' tags in tags[]
+    const element: RoleplayElement = {
+      type: 'text',
+      text: '',
+    }
     if (tag === 'instruction') {
-      instructionCount++;
-      instructions.push({text: generateIconElements(evaluateContentOps(c.html(), newScope)), idx: instructionCount});
-      return;
+      element.type = 'instruction';
+      element.text = c.html();
+    } else { // text
+      // If we received a Cheerio object, outerHTML will
+      // not be defined. toString will be, however.
+      // https://github.com/cheeriojs/cheerio/issues/54
+      if (c.get(0).outerHTML) {
+        element.text = c.get(0).outerHTML;
+      } else if (c.toString) {
+        element.text = c.toString();
+      } else {
+        throw new Error('Invalid element ' + c);
+      }
     }
 
-    // If we received a Cheerio object, outerHTML will
-    // not be defined. toString will be, however.
-    // https://github.com/cheeriojs/cheerio/issues/54
-    var textContent = '';
-    if (c.get(0).outerHTML) {
-      textContent = c.get(0).outerHTML;
-    } else if (c.toString) {
-      textContent = c.toString();
-    } else {
-      throw new Error('Invalid element ' + c);
+    element.text = generateIconElements(evaluateContentOps(element.text, newScope));
+
+    if (element.text !== '') {
+      children.push(element);
     }
-    children += generateIconElements(evaluateContentOps(textContent, newScope));
   }.bind(this));
 
   // Append a generic 'Next' button if there were no events,
   // or an 'End' button if there's also an <End> tag.
   if (numEvents === 0) {
     // Handle custom generic next button text based on if we're heading into a trigger node.
-    var nextNode = _findNextNode(node, ctx);
-    var buttonText = 'Next';
+    const nextNode = _findNextNode(node, ctx);
+    let buttonText = 'Next';
     if (nextNode && nextNode.get(0).tagName.toLowerCase() === 'trigger') {
       switch(nextNode.text().toLowerCase()) {
         case 'end':
@@ -468,9 +469,8 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
     type: 'Roleplay',
     title: node.attr('title'),
     icon: node.attr('icon'),
-    content: <span dangerouslySetInnerHTML={{__html: children}} />,
+    content: children,
     choices,
-    instructions,
     ctx: {...ctx, scope: newScope},
   };
 };
