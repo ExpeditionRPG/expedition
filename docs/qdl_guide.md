@@ -29,7 +29,7 @@ Here we'll dive into more specific details about what's possible in QDL.
 
 Attributes can be added to specific cards and elements to give you additional capabilities.
 
-For **cards**, you can add an ID that can be jumped to from anywhere else in the quest via **goto elements**. Note: **IDs must be unique across the entire quest**. This looks like:
+For **cards**, you can add an ID that can be jumped to from anywhere else in the quest via **goto elements**. Note: **IDs must be unique across the entire quest**. ID's should be written in camelCase and only use alphanumeric characters. This looks like:
 
 ```
 _roleyplay title (#id)_
