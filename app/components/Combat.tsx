@@ -10,7 +10,7 @@ import {getEventParameters} from '../QuestParser'
 
 import {isSurgeRound} from '../reducers/combat'
 import {XMLElement, SettingsType, CardState, CardName} from '../reducers/StateTypes'
-import {CombatPhaseNameType, MidCombatPhase, EndCombatPhase, CombatState, Enemy, Loot, QuestContext} from '../reducers/QuestTypes'
+import {CombatState, CombatPhaseNameType, MidCombatPhase, EndCombatPhase, EventParameters, Enemy, Loot, QuestContext} from '../reducers/QuestTypes'
 
 
 export interface CombatStateProps {
@@ -210,7 +210,14 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
 function renderVictory(props: CombatProps): JSX.Element {
   var contents: JSX.Element[] = [];
-  const victoryParameters = getEventParameters(props.node, 'win', props.ctx);
+  let victoryParameters: EventParameters = { // default, such as during custom combat
+    heal: MAX_ADVENTURER_HEALTH,
+    loot: true,
+    xp: true,
+  };
+  if (!props.custom) {
+    victoryParameters = getEventParameters(props.node, 'win', props.ctx);
+  }
 
   if (victoryParameters.heal > 0 && victoryParameters.heal < MAX_ADVENTURER_HEALTH) {
     contents.push(<p key="c1">All adventurers (dead and alive) heal <strong>{victoryParameters.heal}</strong> health.</p>);
@@ -234,18 +241,13 @@ function renderVictory(props: CombatProps): JSX.Element {
     }
   }
 
-  if (victoryParameters.loot !== false) {
+  if (victoryParameters.loot !== false && props.combat.loot && props.combat.loot.length > 0) {
     contents.push(
       <p key="c4">The party draws the following loot:</p>
     );
-
-    let renderedLoot: JSX.Element[] = [];
-    if (props.combat.loot) {
-      renderedLoot = props.combat.loot.map(function(loot: Loot, index: number) {
-        return (<li key={index}><strong>{capitalizeFirstLetter(numberToWord(loot.count))} tier {numerals[loot.tier]} loot</strong></li>)
-      });
-    }
-
+    const renderedLoot = props.combat.loot.map(function(loot: Loot, index: number) {
+      return (<li key={index}><strong>{capitalizeFirstLetter(numberToWord(loot.count))} tier {numerals[loot.tier]} loot</strong></li>)
+    });
     contents.push(<ul key="c5">{renderedLoot}</ul>);
 
     if (props.settings.showHelp) {
