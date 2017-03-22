@@ -111,6 +111,12 @@ describe('QuestParser', () => {
       context = result.ctx;
       expect(context.views).toEqual({foo: 2});
       expect(context.scope._.viewCount('foo')).toEqual(2);
+      expect(context.scope._.viewCount('bar')).toEqual(0);
+      result = loadRoleplayNode(cheerio.load('<roleplay id="bar"><p>[roll]</p></roleplay>')('roleplay'), context);
+      context = result.ctx;
+      expect(context.views).toEqual({foo: 2, bar: 1});
+      expect(context.scope._.viewCount('foo')).toEqual(2);
+      expect(context.scope._.viewCount('bar')).toEqual(1);
     });
   });
 

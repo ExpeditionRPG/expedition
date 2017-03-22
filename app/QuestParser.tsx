@@ -7,7 +7,7 @@
 /*global math */
 import * as React from 'react'
 import {XMLElement, DOMElement} from './reducers/StateTypes'
-import {Choice, Enemy, EventParameters, RoleplayElement, QuestCardName, QuestContext} from './reducers/QuestTypes'
+import {Choice, defaultQuestContext, Enemy, EventParameters, RoleplayElement, QuestCardName, QuestContext} from './reducers/QuestTypes'
 import {encounters} from './Encounters'
 
 const Cheerio = require('cheerio');
@@ -471,17 +471,18 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
     icon: node.attr('icon'),
     content: children,
     choices,
-    ctx: newContext ,
+    ctx: newContext,
   };
 };
 
 function _updateContext(node: XMLElement, ctx: QuestContext) {
+  const defaults = defaultQuestContext();
   const newContext = Clone(ctx);
   const nodeId = node.attr('id');
   if (nodeId) {
     newContext.views[nodeId] = (newContext.views[nodeId] || 0) + 1;
   }
-  newContext.scope._.viewCount = newContext.scope._.viewCount.bind(newContext);
+  newContext.scope._.viewCount = defaults.scope._.viewCount.bind(newContext);
   return newContext;
 }
 
