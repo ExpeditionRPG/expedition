@@ -34,49 +34,47 @@ export interface QuestContext {
   // Scope is passed to the parser when rendering
   // nodes that are potentially parseable via MathJS.
   scope: any; // TODO: required fields later
-  views: {[key:string]:number;};
+  views: any; // TODO: {string: number}
 }
 export function defaultQuestContext(): QuestContext {
   // Caution: Scope is the API for Quest Creators.
   // New endpoints should be added carefully b/c we'll have to support them.
   // Behind-the-scenes data can be added to the context outside of scope
-  let context: QuestContext;
-  context.scope = {
-    _: {
-      numAdventurers: function(): number {
-        const settings = getStore().getState().settings;
-        return settings && settings.numPlayers;
-      },
-      randomEnemy: function(): string {
-        return randomPropertyValue(encounters).name;
-      },
-      randomEnemyOfTier: function(tier: number): string {
-        return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
-            .filter( key => encounters[key].tier === tier )
-            .map( key => ({ [key]: encounters[key] }) ) )).name;
-      },
-      randomEnemyOfClass: function(className: string): string {
-        className = className.toLowerCase();
-        return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
-            .filter( key => encounters[key].class.toLowerCase() === className )
-            .map( key => ({ [key]: encounters[key] }) ) )).name;
-      },
-      randomEnemyOfClassTier: function(className: string, tier: number): string {
-        className = className.toLowerCase();
-        return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
-            .filter( key => encounters[key].tier === tier )
-            .filter( key => encounters[key].class.toLowerCase() === className )
-            .map( key => ({ [key]: encounters[key] }) ) )).name;
-      },
-      viewCount: function(id: string): number {
-        return this.views[id] || 0;
+  return {
+    scope: {
+      _: {
+        numAdventurers: function(): number {
+          const settings = getStore().getState().settings;
+          return settings && settings.numPlayers;
+        },
+        randomEnemy: function(): string {
+          return randomPropertyValue(encounters).name;
+        },
+        randomEnemyOfTier: function(tier: number): string {
+          return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
+              .filter( key => encounters[key].tier === tier )
+              .map( key => ({ [key]: encounters[key] }) ) )).name;
+        },
+        randomEnemyOfClass: function(className: string): string {
+          className = className.toLowerCase();
+          return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
+              .filter( key => encounters[key].class.toLowerCase() === className )
+              .map( key => ({ [key]: encounters[key] }) ) )).name;
+        },
+        randomEnemyOfClassTier: function(className: string, tier: number): string {
+          className = className.toLowerCase();
+          return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
+              .filter( key => encounters[key].tier === tier )
+              .filter( key => encounters[key].class.toLowerCase() === className )
+              .map( key => ({ [key]: encounters[key] }) ) )).name;
+        },
+        viewCount: function(id: string): number {
+          return this.views[id] || 0;
+        },
       },
     },
+    views: {},
   };
-  const views: {[key:string]:number;} = {}; // because typescript is dumb
-      // and throws errors if you try to define a dictionary inside of a dictionary...
-  context.views = views;
-  return context;
 }
 
 export interface Choice {
