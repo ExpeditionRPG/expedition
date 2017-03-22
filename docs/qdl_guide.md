@@ -29,12 +29,61 @@ Here we'll dive into more specific details about what's possible in QDL.
 
 Attributes can be added to specific cards and elements to give you additional capabilities.
 
+### IDs
+
 For **cards**, you can add an ID that can be jumped to from anywhere else in the quest via **goto elements**. Note: **IDs must be unique across the entire quest**. ID's should be written in camelCase and only use alphanumeric characters. This looks like:
 
 ```
-_roleyplay title (#id)_
-_combat (#longerCardId)_
+_roleplay title (#id)_
+_combat (#longCardId)_
 ```
+
+IDs allow you to reference that specific card in other places in the quest. You can use a GOTO statement to jump to that card:
+
+```
+* Pick me to jump to the card
+
+  **goto longCardId**
+```
+
+You can also see how many times the user has viewed that specific card:
+
+```
+{{_.viewCount("longCardId")}}
+```
+
+This can be very powerful - for example, if you wanted to create a conversation where the user could only ask each question once, you could do something like:
+
+```
+_Conversation loop (#conversation)_
+
+You prepare to ask John a question...
+
+* {{_.viewCount("question1") == 0}} Question 1
+
+  _Question 1 (#question1)_
+
+  His answer
+
+  **goto conversation**
+
+* {{_.viewCount("question2") == 0}} Question 2
+
+  _Question 2 (#question2)_
+
+  His answer
+
+  **goto conversation**
+
+* Leave
+
+  _Leave_
+
+  You leave the conversation and the loop
+```
+
+
+### IFs
 
 For **elements** (including listing combat enemies), you can add IF statements that reference the **context** to selectively show or hide the element. This looks like:
 ```
@@ -43,7 +92,6 @@ For **elements** (including listing combat enemies), you can add IF statements t
 **{{ food <= 0 }} end**
 **{{ hasKey == true }} openSafe**
 - {{ killedTheArcher == false}} Archer
-```
 
 
 ## Branches
@@ -145,7 +193,7 @@ We've found that the two biggest factors that influence fight difficulty are loo
 
 #### Random encounters
 
-Sometimes in a quest, it makes sense for the enemies to be random. Maybe you encounter a group of Bandit thugs, but it doesn't affect the story if they're tier 1 archers or tier 1 footpads. In cases like this, a touch of randomness can increase surprise and replayability.
+Sometimes in a quest, it makes sense for the enemies to be random. Maybe you encounter a group of Bandit thugs, but it doesn't affect the story if they're tier 1 archers or tier 1 footpads. In cases like this, a touch of randomness can increase surprise and replayability.
 
 You can use the following syntax to create random enemies - anything from a totally random enemy, to a random enemy of a specific class or tier, all the way to a random enemy of a specific class and tier:
 
@@ -164,7 +212,7 @@ Note: you must use double quotes (not single quotes) for strings inside of ops {
 
 By default, when adventurers win a combat, they heal to full health and are rewarded with loot and xp. But, as the storyteller, you might not always want that to happen. For example, you might not want to reward players with loot and xp for a battle they shouldn't have fought. Or, maybe they're on the run and don't have time to heal (or only partially heal) after the fight.
 
-To do this, you simply annotate the combat on win outcome. Below, you can see what it looks like to disable loot and xp rewards, to disable healing, loot and xp, and to only allow the adventurers to partially heal (+6 health). Anything you don't define defaults to the normal: heal to full health, and gain loot and xp.
+To do this, you simply annotate the combat on win outcome. Below, you can see what it looks like to disable loot and xp rewards, to disable healing, loot and xp, and to only allow the adventurers to partially heal (+6 health). Anything you don't define defaults to the normal: heal to full health, and gain loot and xp.
 
 ```
 * on win {"loot": false, "xp": false}

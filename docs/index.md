@@ -5,8 +5,9 @@
 The first time you open the [quest creator](http://quests.expeditionrpg.com), it will populate itself with a "Getting Started" quest that walks you through the basics of creating Expedition quests.
 
 If you're looking for more specific, in-detail documentation, check out:
+
+* [Quest Design Guide](qdl_guide.md): More details on the Quest Design Language.
 * [Icon List](icons.md): A list of all available icons you can use in your quest.
-* [QDL Guide](qdl_guide.md): More details on the Quest Design Language.
 * [XML Spec](quest_spec.md): The underlying XML used by the app, in great detail.
 
 ## Where are my quests?
@@ -41,6 +42,11 @@ Quest errors:
 * [427 unknown <key>](errors/427.md)
 * [428 Choice Missing Title](errors/428.md)
 * [500 Internal Error](errors/500.md)
+
+## I have an error, now what?
+
+* [here's how to file an error report](internal_error.md)
+* as we add documentation on other errors, their links will appear here and in the quest creator
 
 ## Other helpful resources
 
