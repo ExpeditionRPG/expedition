@@ -5,15 +5,15 @@
    See quests/quest_spec.txt for specification.
 */
 /*global math */
-const Cheerio = require('cheerio');
 import * as React from 'react'
 import {XMLElement, DOMElement} from './reducers/StateTypes'
 import {Choice, Enemy, EventParameters, RoleplayElement, QuestCardName, QuestContext} from './reducers/QuestTypes'
 import {encounters} from './Encounters'
 
-var htmlDecode = (require('he') as any).decode;
-
-var math = require('mathjs') as any;
+const Cheerio = require('cheerio');
+const Clone = require('clone');
+const htmlDecode = (require('he') as any).decode;
+const math = require('mathjs') as any;
 
 export interface TriggerResult {
   type: 'Trigger';
@@ -176,9 +176,9 @@ function _loadChoiceOrEventNode(node: XMLElement, ctx: QuestContext): XMLElement
 };
 
 export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResult {
-  var enemies: Enemy[] = [];
+  let enemies: Enemy[] = [];
 
-  var newScope = {...ctx.scope};
+  const newContext = _updateContext(node, ctx);
 
   // Track win and lose events for validation
   var winEventCount = 0;
@@ -186,7 +186,7 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
   _loopChildren(node, function(tag: string, c: XMLElement) {
 
     // Skip events and enemies that aren't enabled.
-    if (!_isEnabled(c, {scope: newScope})) {
+    if (!_isEnabled(c, newContext)) {
       return;
     }
 
@@ -198,7 +198,7 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
         // If the string fails to evaluate, the original op is returned as text.
         var op = parseOpString(text);
         if (op) {
-          var evalResult = evaluateOp(op, newScope);
+          var evalResult = evaluateOp(op, newContext);
           if (evalResult) {
             text = evalResult + '';
           }
@@ -240,7 +240,7 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
     throw new Error('<combat> has no <e> children');
   }
 
-  // Combat is stateless, so newScope is not returned here.
+  // Combat is stateless, so newContext is not returned here.
   return {
     type: 'Combat',
     icon: node.attr('icon'),
@@ -313,12 +313,12 @@ function parseOpString(str: string): string {
   return op[1];
 }
 
-function evaluateOp(op: string, scope: any): any {
+function evaluateOp(op: string, ctx: QuestContext): any {
   // If it's an operation, run it with our context.
   var parsed = math.parse(htmlDecode(op));
 
   try {
-    var evalResult = parsed.compile().eval(scope);
+    var evalResult = parsed.compile().eval(ctx.scope);
   } catch(e) {
     return null;
   }
@@ -348,7 +348,7 @@ function evaluateOp(op: string, scope: any): any {
   }
 }
 
-function evaluateContentOps(content: string, scope: any): string {
+function evaluateContentOps(content: string, ctx: QuestContext): string {
   // Run MathJS over all detected {{operations}}:
   //
   // {{.+?(?=}})}}       Match "{{asdf\n1234}}"
@@ -361,7 +361,7 @@ function evaluateContentOps(content: string, scope: any): string {
   for (let m of matches) {
     var op = parseOpString(m);
     if (op) {
-      var evalResult = evaluateOp(op, scope);
+      var evalResult = evaluateOp(op, ctx);
       if (evalResult || evalResult === 0) {
         result += evalResult;
       }
@@ -396,13 +396,13 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
   let choiceCount = -1;
   let children: RoleplayElement[] = [];
 
-  const newScope = {...ctx.scope};
+  const newContext = _updateContext(node, ctx);
 
   _loopChildren(node, function(tag: string, c: XMLElement) {
     c = c.clone();
 
     // Skip elements that aren't visible
-    if (!_isEnabled(c, {scope: newScope})) {
+    if (!_isEnabled(c, newContext)) {
       return;
     }
 
@@ -413,7 +413,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
         throw new Error('<choice> inside <roleplay> must have "text" attribute');
       }
       var text = c.attr('text');
-      choices.push({text: generateIconElements(evaluateContentOps(text, newScope)), idx: choiceCount});
+      choices.push({text: generateIconElements(evaluateContentOps(text, newContext)), idx: choiceCount});
       numEvents++;
       return;
     }
@@ -442,7 +442,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
       }
     }
 
-    element.text = generateIconElements(evaluateContentOps(element.text, newScope));
+    element.text = generateIconElements(evaluateContentOps(element.text, newContext));
 
     if (element.text !== '') {
       children.push(element);
@@ -471,9 +471,19 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
     icon: node.attr('icon'),
     content: children,
     choices,
-    ctx: {...ctx, scope: newScope},
+    ctx: newContext ,
   };
 };
+
+function _updateContext(node: XMLElement, ctx: QuestContext) {
+  const newContext = Clone(ctx);
+  const nodeId = node.attr('id');
+  if (nodeId) {
+    newContext.views[nodeId] = (newContext.views[nodeId] || 0) + 1;
+  }
+  newContext.scope._.viewCount = newContext.scope._.viewCount.bind(newContext);
+  return newContext;
+}
 
 function _isControlNode(node: XMLElement) {
   var tagName = node.get(0).tagName.toLowerCase();

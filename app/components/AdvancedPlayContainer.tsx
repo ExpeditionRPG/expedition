@@ -5,6 +5,7 @@ import {toCard} from '../actions/card'
 import {initCombat} from '../actions/quest'
 import {fetchQuestXML} from '../actions/web'
 import {AppState, SettingsType} from '../reducers/StateTypes'
+import {defaultQuestContext} from '../reducers/QuestTypes'
 
 
 const mapStateToProps = (state: AppState, ownProps: AdvancedPlayStateProps): AdvancedPlayStateProps => {
@@ -21,7 +22,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Advan
         type: 'Combat',
         icon: null,
         enemies: [],
-        ctx: {scope: {}},
+        ctx: defaultQuestContext(),
       }));
     },
   };

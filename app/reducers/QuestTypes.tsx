@@ -33,12 +33,15 @@ export type Loot = {tier: number, count: number};
 export interface QuestContext {
   // Scope is passed to the parser when rendering
   // nodes that are potentially parseable via MathJS.
-  scope: any; //TODO: required fields later
+  scope: any; // TODO: required fields later
+  views: {[key:string]:number;};
 }
 export function defaultQuestContext(): QuestContext {
-  // Caution: This is the API for Quest Creators.
+  // Caution: Scope is the API for Quest Creators.
   // New endpoints should be added carefully b/c we'll have to support them.
-  return {scope: {
+  // Behind-the-scenes data can be added to the context outside of scope
+  let context: QuestContext;
+  context.scope = {
     _: {
       numAdventurers: function(): number {
         const settings = getStore().getState().settings;
@@ -65,8 +68,15 @@ export function defaultQuestContext(): QuestContext {
             .filter( key => encounters[key].class.toLowerCase() === className )
             .map( key => ({ [key]: encounters[key] }) ) )).name;
       },
+      viewCount: function(id: string): number {
+        return this.views[id] || 0;
+      },
     },
-  }};
+  };
+  const views: {[key:string]:number;} = {}; // because typescript is dumb
+      // and throws errors if you try to define a dictionary inside of a dictionary...
+  context.views = views;
+  return context;
 }
 
 export interface Choice {
