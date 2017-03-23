@@ -1,7 +1,8 @@
-const webpack = require('webpack');
-const DashboardPlugin = require('webpack-dashboard/plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-var path = require('path');
+const DashboardPlugin = require('webpack-dashboard/plugin');
+const Path = require('path');
+const Webpack = require('webpack');
+
 
 const port = process.env.DOCKER_PORT || 8080;
 
@@ -19,10 +20,10 @@ const options = {
     extensions: ['.js', '.ts', '.tsx', '.json', '.txt'],
   },
   devServer: {
-    contentBase: path.join(__dirname, 'app'),
+    contentBase: Path.join(__dirname, 'app'),
   },
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: Path.join(__dirname, 'dist'),
     publicPath: 'http://localhost:' + port + '/',
     filename: '[name].js',
   },
@@ -44,15 +45,15 @@ const options = {
   },
   plugins: [
     new DashboardPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.DefinePlugin({
+    new Webpack.HotModuleReplacementPlugin(),
+    new Webpack.NoEmitOnErrorsPlugin(),
+    new Webpack.DefinePlugin({
       VERSION: JSON.stringify(require('./package.json').version)
     }),
     new CopyWebpackPlugin([
       { from: 'node_modules/expedition-app/app/images', to: 'images'},
     ]),
-    new webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
+    new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {
         tslint: {
           configuration: {

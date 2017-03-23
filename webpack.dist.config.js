@@ -1,6 +1,6 @@
-const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-var path = require('path');
+const Path = require('path');
+const Webpack = require('webpack');
 
 const options = {
   entry: {
@@ -13,7 +13,7 @@ const options = {
     extensions: ['.js', '.ts', '.tsx', '.json', '.txt'],
   },
   output: {
-    path: path.join(__dirname,'dist'),
+    path: Path.join(__dirname,'dist'),
     filename: '[name].js',
   },
   module: {
@@ -26,8 +26,8 @@ const options = {
     ],
   },
   plugins: [
-    new webpack.optimize.AggressiveMergingPlugin(),
-    new webpack.DefinePlugin({
+    new Webpack.optimize.AggressiveMergingPlugin(),
+    new Webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
       },
