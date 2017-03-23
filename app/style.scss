@@ -537,7 +537,10 @@ body {
       bottom: 0;
       left: 0;
       right: 0;
-      opacity: 0.7;
+      button {
+        text-align: center !important;
+        font-size: fontsize(flavor) !important;
+      }
     }
   }
 
