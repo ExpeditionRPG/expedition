@@ -41,6 +41,7 @@ var options = {
         { from: 'app/scripts', to: 'scripts' },
         { from: 'app/fonts', to: 'fonts'},
         { from: 'app/index.html' },
+        { from: 'app/manifest.json' },
     ]),
   ],
 };
