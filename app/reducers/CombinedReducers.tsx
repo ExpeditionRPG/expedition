@@ -1,10 +1,11 @@
 import Redux from 'redux'
 import {card} from './card'
-import {quest} from './quest'
-import {settings} from './settings'
-import {search} from './search'
 import {combat} from './combat'
+import {quest} from './quest'
+import {search} from './search'
+import {settings} from './settings'
 import {user} from './user'
+import {userFeedback} from './userFeedback'
 import {AppStateWithHistory, AppState} from './StateTypes'
 import {ReturnAction} from '../actions/ActionTypes'
 
@@ -12,11 +13,12 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
   state = state || ({} as AppStateWithHistory);
   return {
     card: card(state.card, action),
-    quest: quest(state.quest, action),
     combat: combat(state.combat, action),
-    settings: settings(state.settings, action),
+    quest: quest(state.quest, action),
     search: search(state.search, action),
+    settings: settings(state.settings, action),
     user: user(state.user, action),
+    userFeedback: userFeedback(state.userFeedback, action),
   };
 }
 

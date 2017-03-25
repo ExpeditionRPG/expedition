@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {CardState, CardName, SettingNameType, SearchPhase, SearchSettings, SettingsType, TransitionType, QuestFeedbackState, UserState, XMLElement} from '../reducers/StateTypes'
+import {CardState, CardName, SettingNameType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, XMLElement} from '../reducers/StateTypes'
 
 import {QuestContext, QuestDetails, Enemy, CombatPhaseNameType, DifficultyType} from '../reducers/QuestTypes'
 import {RoleplayResult, CombatResult} from '../QuestParser'
@@ -51,6 +51,15 @@ export interface CombatVictoryAction extends Redux.Action {
   maxTier: number;
 }
 
+export interface UserFeedbackChangeAction extends Redux.Action {
+  type: 'USER_FEEDBACK_CHANGE';
+  userFeedback: any;
+}
+
+export interface UserFeedbackClearAction extends Redux.Action {
+  type: 'USER_FEEDBACK_CLEAR';
+}
+
 export interface TierSumDeltaAction extends Redux.Action {
   type: 'TIER_SUM_DELTA';
   delta: number;
@@ -60,11 +69,6 @@ export interface AdventurerDeltaAction extends Redux.Action {
   type: 'ADVENTURER_DELTA';
   delta: number;
   numPlayers: number;
-}
-
-export interface UpdateFeedbackAction extends Redux.Action {
-  type: 'UPDATE_FEEDBACK';
-  feedback: QuestFeedbackState;
 }
 
 export interface SearchResponseAction extends Redux.Action {

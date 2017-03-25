@@ -1,7 +1,7 @@
-import * as React from 'react';
-import FlatButton from 'material-ui/FlatButton';
+import * as React from 'react'
+import FlatButton from 'material-ui/FlatButton'
 
-import theme from '../../theme';
+import theme from '../../theme'
 
 interface ButtonProps extends React.Props<any> {
   className?: string;

@@ -66,6 +66,7 @@ $lineheight: 1.2;
 $sizemap: (
   appbar: 48px,
   inputspacing: 16px, /* slightly larger on small devices (to prevent false touches) */
+  input: 32px, /* size of input icon-style buttons */
   watermark: 36vh, /* height-specific */
   huge: 12vmin,
   large: 6vmin,
@@ -292,6 +293,21 @@ body {
     margin-bottom: -(size(tiny));
   }
 
+  .starContainer {
+    text-align: center;
+    .star {
+      width: size(input) !important;
+      height: size(input) !important;
+      padding: size(inputspacing)/2 !important; /* /2 since applied to both sides */
+    }
+    .star:hover {
+      fill: black !important;
+    }
+    .hint {
+      color: #757575;
+    }
+  }
+
   .base_button {
     .inline_icon {
       margin-bottom: -1 * size(small);
@@ -386,6 +402,7 @@ body {
       padding: size(base) !important;
       background-color: $bg_interactive !important;
       border: $border_accent !important;
+      margin-top: 0 !important;
     }
 
     input {
@@ -594,6 +611,19 @@ body {
       font-style: italic;
     }
   }
+
+  .reportCategory {
+    text-align: center;
+    button {
+      border: 2px solid rgba(0,0,0,0) !important;
+      min-width: 40px !important;
+      padding: 0 size(inputspacing)/2 !important; /* /2 since applied to both sides */
+      margin: size(inputspacing)/2 !important; /* /2 since applied to both sides */
+    }
+    .selected button {
+      border: 2px solid black !important;
+    }
+  }
 }
 
 @include styling();
@@ -610,6 +640,7 @@ $abs_scale_vh: $absheightmax / 115vmin;
 $sizemap: (
   appbar: 48px,
   inputspacing: 14px,
+  input: 32px,
   watermark: 36vmin * $abs_scale_vh, /* note: height-specific */
   huge: 12vmin * $abs_scale_vh,
   large: 6vmin * $abs_scale_vh,

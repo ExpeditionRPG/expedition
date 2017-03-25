@@ -1,24 +1,25 @@
 import Redux from 'redux'
 import {authSettings} from '../constants'
 import {toCard} from './card'
-import {initQuest, updateFeedback} from './quest'
+import {initQuest} from './quest'
 
-import {SearchSettings, SettingsType, QuestState, UserState, XMLElement} from '../reducers/StateTypes'
+import {userFeedbackClear} from '../actions/UserFeedback'
+import {SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState, XMLElement} from '../reducers/StateTypes'
 import {QuestContext, defaultQuestContext} from '../reducers/QuestTypes'
 
 declare var window:any;
 
 
-export function fetchQuestXML(url: string) {
+export function fetchQuestXML(id: string, url: string) {
   return (dispatch: Redux.Dispatch<any>): any => {
     $.get(url, function(data: XMLElement | string) {
-      dispatch(loadQuestXML(data, defaultQuestContext()));
+      dispatch(loadQuestXML(id, data, defaultQuestContext()));
     });
   };
 }
 
 // for loading quests in the app - Quest Creator injects directly into initQuest
-export function loadQuestXML(data: XMLElement | string, ctx: QuestContext) {
+export function loadQuestXML(id: string, data: XMLElement | string, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
     var xml = $(data) as any as XMLElement;
     var questNode = xml;
@@ -29,7 +30,7 @@ export function loadQuestXML(data: XMLElement | string, ctx: QuestContext) {
       throw 'Invalid Quest - missing <quest> node';
     }
 
-    const init = initQuest(questNode, ctx);
+    const init = initQuest(id, questNode, ctx);
     window.FirebasePlugin.logEvent('quest_start', init.details); // here instead of initQuest b/c initQuest is also used by the editor
     dispatch(init);
     dispatch(toCard('QUEST_START'));
@@ -81,36 +82,39 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
   };
 }
 
-export function sendFeedback(quest: QuestState, settings: SettingsType, user: UserState) {
+export function submitUserFeedback(quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const data = Object.assign({}, {
-      title: quest.details.title,
-      author: quest.details.author,
-      email: quest.details.email,
-      feedback: quest.feedback.text,
+      questid: quest.details.id,
+      userid: user.id,
       players: settings.numPlayers,
       difficulty: settings.difficulty,
       platform: window.platform,
       version: window.APP_VERSION,
-      userEmail: user.email,
-      shareUserEmail: quest.feedback.shareUserEmail,
+      email: user.email,
+      name: user.name,
+      rating: userFeedback.rating,
+      text: userFeedback.text,
     });
     $.post({
-      url: authSettings.urlBase + '/feedback',
+      url: authSettings.urlBase + '/quest/feedback/' + userFeedback.type,
       data: JSON.stringify(data),
       dataType: 'json',
     })
-    .done(function(msg: string){
+    .done((msg: string) => {
       // TODO replace alerts with something nicer / more in-style
-      dispatch(updateFeedback({text: ''}));
-      alert('Feedback submitted. Thank you!');
+      window.FirebasePlugin.logEvent('user_feedback_' + userFeedback.type, data);
+      dispatch(userFeedbackClear());
+      alert('Submission successful. Thank you!');
     })
-    .fail(function(xhr: any, err: string) {
+    .fail((xhr: any, err: string) => {
       if (xhr.status === 200) {
-        dispatch(updateFeedback({text: ''}));
-        return alert('Feedback submitted. Thank you!');
+        window.FirebasePlugin.logEvent('user_feedback_' + userFeedback.type, data);
+        dispatch(userFeedbackClear());
+        return alert('Submission successful. Thank you!');
       }
-      alert('Error encountered when submitting feedback: ' + err);
+      window.FirebasePlugin.logEvent('user_feedback_' + userFeedback.type + '_err', data);
+      alert('Error encountered when submitting: ' + err);
     });
   };
 }

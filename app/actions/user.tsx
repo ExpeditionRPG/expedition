@@ -7,7 +7,7 @@ declare var gapi: any;
 declare var window: any;
 
 
-function registerUserAndIdToken(user: {name: string, image: string, email: string}, idToken: string, cb: (user:UserState)=>any) {
+function registerUserAndIdToken(user: {name: string, image: string, email: string}, idToken: string, cb: (user:UserState) => any) {
   var xhr = new XMLHttpRequest();
   xhr.open('POST', authSettings.urlBase + '/auth/google', true);
   xhr.setRequestHeader('Content-Type', 'text/plain');
@@ -24,7 +24,7 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
   xhr.send(JSON.stringify({id_token: idToken, name: user.name, image: user.image, email: user.email}));
 }
 
-function loginWeb(cb: (user:UserState)=>any) {
+function loginWeb(cb: (user:UserState) => any) {
   const that = this;
   gapi.auth2.getAuthInstance().signIn({redirect_uri: 'postmessage'}).then(function(googleUser: any) {
     const idToken: string = googleUser.getAuthResponse().id_token;
@@ -35,7 +35,7 @@ function loginWeb(cb: (user:UserState)=>any) {
   });
 }
 
-function silentLoginWeb(cb: (user:UserState)=>any) {
+function silentLoginWeb(cb: (user:UserState) => any) {
   const that = this;
   if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
     const googleUser: any = gapi.auth2.getAuthInstance().currentUser.get();
@@ -48,7 +48,7 @@ function silentLoginWeb(cb: (user:UserState)=>any) {
   return cb(null);
 }
 
-function silentLoginCordova(cb: (user:UserState)=>any) {
+function silentLoginCordova(cb: (user:UserState) => any) {
   if (!window.plugins || !window.plugins.googleplus) {
     return;
   }
@@ -67,7 +67,7 @@ function silentLoginCordova(cb: (user:UserState)=>any) {
   });
 }
 
-function loginCordova(cb: (user:UserState)=>any) {
+function loginCordova(cb: (user:UserState) => any) {
   const that = this;
   window.plugins.googleplus.login({
     scopes: authSettings.scopes,
@@ -84,7 +84,7 @@ function loginCordova(cb: (user:UserState)=>any) {
   });
 }
 
-export function silentLogin(cb: ()=>any) {
+export function silentLogin(cb: () => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     let loginCallback = (user:UserState) => {
       dispatch({type: 'USER_LOGIN', user});
@@ -99,11 +99,11 @@ export function silentLogin(cb: ()=>any) {
   }
 }
 
-export function login(cb: ()=>any) {
+export function login(cb: (user: UserState) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    let loginCallback = (user:UserState) => {
+    let loginCallback = (user: UserState) => {
       dispatch({type: 'USER_LOGIN', user});
-      cb();
+      cb(user);
     }
 
     if (window.plugins && window.plugins.googleplus) {

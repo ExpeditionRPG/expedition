@@ -1,12 +1,8 @@
 import Redux from 'redux'
 import {QuestState, AppState} from './StateTypes'
-import {QuestNodeAction, InitCombatAction, UpdateFeedbackAction} from '../actions/ActionTypes'
+import {QuestNodeAction, InitCombatAction} from '../actions/ActionTypes'
 
-const initial_state: QuestState = {
-  feedback: {
-    text: '',
-  },
-};
+const initial_state: QuestState = {};
 
 export function quest(state: QuestState = initial_state, action: Redux.Action): QuestState {
   switch (action.type) {
@@ -20,13 +16,6 @@ export function quest(state: QuestState = initial_state, action: Redux.Action): 
       return {...state,
         node: (action as InitCombatAction).node,
         result: (action as InitCombatAction).result,
-      };
-    case 'UPDATE_FEEDBACK':
-      return {...state,
-        feedback: Object.assign({},
-          state.feedback,
-          (action as UpdateFeedbackAction).feedback
-        ),
       };
     default:
       return state;

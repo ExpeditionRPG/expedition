@@ -50,7 +50,7 @@ const Roleplay = (props: RoleplayProps): JSX.Element => {
   });
 
   return (
-    <Card title={props.roleplay.title}>
+    <Card title={props.roleplay.title} inQuest={true}>
       {content}
       {buttons}
     </Card>

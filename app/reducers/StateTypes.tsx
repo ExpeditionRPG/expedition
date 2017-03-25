@@ -56,7 +56,7 @@ export interface SettingsType {
   vibration: boolean;
 }
 
-export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'CUSTOM_COMBAT' | 'ADVANCED';
+export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'CUSTOM_COMBAT' | 'ADVANCED' | 'REPORT';
 export interface CardState {
   name: CardName;
   ts: number;
@@ -67,15 +67,9 @@ export interface CardState {
 export type TransitionType = 'NEXT' | 'PREV' | 'INSTANT';
 
 export interface QuestState {
-  feedback?: QuestFeedbackState;
   details?: QuestDetails;
   node?: XMLElement;
   result?: CombatResult|RoleplayResult;
-}
-
-export interface QuestFeedbackState {
-  text: string;
-  shareUserEmail?: boolean;
 }
 
 export interface SearchState {
@@ -92,13 +86,20 @@ export interface UserState {
   email: string;
 }
 
+export interface UserFeedbackState {
+  type: 'rating' | 'report';
+  rating?: number;
+  text: string;
+}
+
 export interface AppState {
   card: CardState;
   combat: CombatState;
-  settings: SettingsType;
   quest: QuestState;
   search: SearchState;
+  settings: SettingsType;
   user: UserState;
+  userFeedback: UserFeedbackState;
 }
 
 export interface AppStateWithHistory extends AppState {

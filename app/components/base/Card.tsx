@@ -14,12 +14,13 @@ declare var window:any;
 
 // If onMenuSelect or onReturn is not set, default dispatch behavior is used.
 interface ExpeditionCardProps extends React.Props<any> {
+  dark?: boolean;
+  header?: JSX.Element;
+  icon?: string;
+  inQuest?: boolean;
   onMenuSelect?: (value: string) => any;
   onReturn?: () => any;
   title?: string;
-  icon?: string;
-  dark?: boolean;
-  header?: JSX.Element;
 }
 
 export default class ExpeditionCard extends React.Component<ExpeditionCardProps, {}> {
@@ -52,6 +53,8 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
       case 'FEEDBACK':
         window.open(URLS.feedback, '_system');
         break;
+      case 'REPORT':
+        return getStore().dispatch(toCard('REPORT'));
       default:
         throw new Error('Unknown menu option ' + value);
     }
@@ -74,7 +77,8 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
                 <MenuItem value="HOME" primaryText="Home"/>
                 <MenuItem value="SETTINGS" primaryText="Settings"/>
                 {window.platform !== 'web' && <MenuItem value="RATE" primaryText="Rate the App"/>}
-                <MenuItem value="FEEDBACK" primaryText="Send Feedback"/>
+                <MenuItem value="FEEDBACK" primaryText="Send app feedback"/>
+                {this.props.inQuest && <MenuItem value="REPORT" primaryText="Report this quest"/>}
             </IconMenu>
           </span>
           <div className="title">{this.props.title}</div>

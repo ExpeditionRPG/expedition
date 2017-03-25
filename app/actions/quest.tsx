@@ -7,10 +7,9 @@ import {
   CombatVictoryAction,
   TierSumDeltaAction,
   AdventurerDeltaAction,
-  UpdateFeedbackAction,
   ViewQuestAction
 } from './ActionTypes'
-import {QuestFeedbackState, SettingsType, XMLElement} from '../reducers/StateTypes'
+import {SettingsType, XMLElement} from '../reducers/StateTypes'
 import {toCard, toPrevious} from './card'
 import {loadTriggerNode, loadCombatNode, loadRoleplayNode, handleChoice, handleEvent, RoleplayResult, CombatResult} from '../QuestParser'
 import {QuestDetails, QuestContext} from '../reducers/QuestTypes'
@@ -20,9 +19,10 @@ export function handleCombatTimerStop(elapsedMillis: number, settings: SettingsT
   return {type: 'COMBAT_TIMER_STOP', elapsedMillis, settings};
 }
 
-export function initQuest(questNode: XMLElement, ctx: QuestContext): QuestNodeAction {
+export function initQuest(id: string, questNode: XMLElement, ctx: QuestContext): QuestNodeAction {
   const firstNode = questNode.children().eq(0);
   const details = {
+    id: id,
     title: questNode.attr('title'),
     summary: questNode.attr('summary'),
     author: questNode.attr('author'),
@@ -106,10 +106,6 @@ export function tierSumDelta(delta: number): TierSumDeltaAction {
 
 export function adventurerDelta(numPlayers: number, delta: number): AdventurerDeltaAction {
   return {type: 'ADVENTURER_DELTA', delta, numPlayers};
-}
-
-export function updateFeedback(feedback: QuestFeedbackState): UpdateFeedbackAction {
-  return {type: 'UPDATE_FEEDBACK', feedback};
 }
 
 // TODO: This should probably go in a "search" actions file.

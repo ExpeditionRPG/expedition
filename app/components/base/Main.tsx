@@ -2,11 +2,11 @@ import * as React from 'react'
 import {Provider} from 'react-redux'
 import theme from '../../theme'
 
-import Card from './Card'
 import AdvancedPlayContainer from '../AdvancedPlayContainer'
 import CombatContainer from '../CombatContainer'
 import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
 import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
+import ReportContainer from '../ReportContainer'
 import RoleplayContainer from '../RoleplayContainer'
 import SearchContainer from '../SearchContainer'
 import SettingsContainer from '../SettingsContainer'
@@ -84,6 +84,9 @@ export default class Main extends React.Component<MainProps, {}> {
         break;
       case 'SETTINGS':
         card = <SettingsContainer />;
+        break;
+      case 'REPORT':
+        card = <ReportContainer />;
         break;
       default:
         throw new Error('Unknown card ' + state.card);

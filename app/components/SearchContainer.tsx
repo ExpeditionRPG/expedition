@@ -33,7 +33,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
       dispatch(toCard('SEARCH_CARD', 'DETAILS'));
     },
     onPlay: (quest: QuestDetails) => {
-      dispatch(fetchQuestXML(quest.publishedurl));
+      dispatch(fetchQuestXML(quest.id, quest.publishedurl));
     },
     onOwnedChange: (checked: boolean) => {
       console.log('TODO');
