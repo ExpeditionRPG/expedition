@@ -96,7 +96,6 @@ if (window.FirebasePlugin) {
 
 // DOM ready
 $(() => {
-  $('#noscript').hide();
   // patch for Android browser not properly scrolling to input when keyboard appears
   $('body').on('focusin', 'input, textarea', (event) => {
     if (navigator.userAgent.indexOf('Android') !== -1) {
