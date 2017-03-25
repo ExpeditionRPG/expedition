@@ -5,7 +5,7 @@ import {quest} from './quest'
 import {search} from './search'
 import {settings} from './settings'
 import {user} from './user'
-import {userFeedback} from './userFeedback'
+import {userFeedback} from './UserFeedback'
 import {AppStateWithHistory, AppState} from './StateTypes'
 import {ReturnAction} from '../actions/ActionTypes'
 
