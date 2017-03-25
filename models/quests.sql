@@ -1,8 +1,6 @@
 CREATE TABLE quests (
   id VARCHAR(255) NOT NULL,
   PRIMARY KEY(id),
-  published TIMESTAMP NULL DEFAULT NOW(),
-  tombstone TIMESTAMP NULL DEFAULT NULL,
   publishedurl VARCHAR(2048),
   userid VARCHAR(255),
   author VARCHAR(255),
@@ -16,5 +14,9 @@ CREATE TABLE quests (
   url VARCHAR(2048),
   familyfriendly BOOL,
   ratingavg NUMERIC(4,2),
-  ratingcount INT
+  ratingcount INT,
+
+  created TIMESTAMP NULL DEFAULT NOW(),
+  published TIMESTAMP NULL DEFAULT NOW(),
+  tombstone TIMESTAMP NULL DEFAULT NULL,
 );

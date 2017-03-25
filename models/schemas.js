@@ -30,6 +30,7 @@ schemas.quests = {
                                // still want it to exclude http://
 
   // metadata
+  created: Joi.date(),
   published: Joi.date(),
   tombstone: Joi.date().allow(null),
 };
