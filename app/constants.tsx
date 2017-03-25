@@ -31,6 +31,7 @@ minPlayers: 1
 maxPlayers: 6
 minTimeMinutes: 20
 maxTimeMinutes: 40
+familyFriendly: false
 
 _Introduction_
 

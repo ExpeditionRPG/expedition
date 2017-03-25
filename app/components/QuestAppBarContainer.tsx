@@ -7,7 +7,7 @@ import {logoutUser} from '../actions/user'
 import {AppState, QuestType, EditorState, UserState} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
 
-import {QDLParser, renderXML} from '../parsing/QDLParser'
+import {renderXML} from '../parsing/QDLParser'
 
 import {initQuest, loadNode} from 'expedition-app/app/actions/quest'
 import {loadQuestXML} from 'expedition-app/app/actions/web'
@@ -78,7 +78,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         // TODO: Display eval errors
         console.log(e);
       }
-      
+
       dispatch({type: 'REBOOT_APP'});
       dispatch(initQuest(renderResult.getResult().children().eq(0), defaultQuestContext()));
       // TODO: Make these settings configurable

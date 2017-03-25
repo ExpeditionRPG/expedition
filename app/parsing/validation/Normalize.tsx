@@ -21,6 +21,29 @@ export class AttributeNormalizer {
     return v;
   }
 
+  getBoolean(k: string, required?: boolean) {
+    var v = this.extract(k, required);
+
+    if (v === undefined) {
+      return v;
+    }
+
+    if (typeof(v) === 'boolean') {
+      return v;
+    }
+
+    if (typeof(v) === 'string') {
+      if (v.toLowerCase() === 'true') {
+        return true;
+      }
+      if (v.toLowerCase() === 'false') {
+        return false;
+      }
+    }
+
+    return false;
+  }
+
   getString(k: string, required?: boolean) {
     var v = this.extract(k, required);
 
@@ -84,6 +107,7 @@ export class Normalize {
       maxplayers: n.getNumber('maxplayers', true),
       mintimeminutes: n.getNumber('mintimeminutes'),
       maxtimeminutes: n.getNumber('maxtimeminutes'),
+      familyFriendly: n.getBoolean('familyfriendly'),
     };
     n.confirmNoExtra();
     return result;

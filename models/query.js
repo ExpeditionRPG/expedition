@@ -79,7 +79,7 @@ exports.getId = function (table, id, callback) {
 // deletes row with matching id from table. Returns the id deleted.
 exports.deleteId = function (table, id, callback) {
 
-  exports.upsert(table, {id: id, tombstone: Date.now()}, (err, result) => {
+  exports.upsert(table, {id: id, tombstone: Date.now()}, 'id', (err, result) => {
     return callback(err, id);
   });
 };
@@ -98,15 +98,16 @@ exports.create = function (table, object, callback) {
 };
 
 
-// inserts object into table, updating it if ID already exists
-exports.upsert = function (table, object, callback) {
+// inserts object into table, updating it if [id] field already exists
+// if checking against a combination of fields, pass string 'field1, field2'
+exports.upsert = function (table, object, id, callback) {
 
   object = internals.objectJsToPg(object);
 
   let query = Squel.insert()
       .into(table)
       .setFields(object)
-      .onConflict('id', object);
+      .onConflict(id, object);
 
   exports.run(query, callback);
 };
