@@ -24,6 +24,8 @@ Here we'll dive into more specific details about what's possible in QDL.
 
 [**Elements**](#elements): roleplaying cards can contain text - but they can also contain other elements, such as choice buttons and instruction blocks.
 
+[**Metadata**](#metadata): Quest metadata defined at the top of the quest. Specifies things like the number of adventurers supported, the quest title and author, etc
+
 
 ## Attributes
 
@@ -92,7 +94,7 @@ For **elements** (including listing combat enemies), you can add IF statements t
 **{{ food <= 0 }} end**
 **{{ hasKey == true }} openSafe**
 - {{ killedTheArcher == false}} Archer
-
+```
 
 ## Branches
 
@@ -374,3 +376,43 @@ _Another card (#another)_
 
 After clicking "Jump me!", the app will immediately proceed to this card.
 ```
+
+## Metadata
+
+The quest metadata is defined at the top of each quest. Here's an example:
+
+```
+# Adventurous Quest
+summary: A quest involving an adventure!
+author: Todd
+email: Expedition@Fabricate.IO
+url: ExpeditionGame.com
+familyFriendly: false
+minPlayers: 1
+maxPlayers: 6 
+minTimeMinutes: 20
+maxTimeMinutes: 60
+```
+
+On the first line is the quest title, which is what adventurers will see when searching quests.
+
+**summary**: A quick, 1-2 sentence description of your quest. This is what adventurers will see if they click on your quest for more information.
+
+**author**: Your name or pseudonym. This is public.
+
+**email**: Your email, in case we need to reach you regarding your quest. This is private.
+
+**url**: Optional: your URL as an author. Not currently visible in the app.
+
+**familyFriendly**: Set to true if your quest meets the following quidelines for being family-friendly. Quests that claim to be family friendly but violate these guidelines may be removed. Repeated violations will lead to further disciplenary action - but in general we will give you the benefit of the doubt and work with you to correct the mistake.
+
+Quests are considered "family friendly" IF: (based on guidelines set forth by the (MPAA)[https://en.wikipedia.org/wiki/Motion_Picture_Association_of_America_film_rating_system#Rating_components])
+
+- there is no or limited foul language; sexually-derived words are not allowed.
+- there are no references to intense or realistic violence; limited reference to comedic violence is acceptable.
+- there is no mention or use of drugs or substance abuse.
+- there are no references to nudity or explicit sexual acts.
+
+**minplayers** and **maxplayers**: The minimum and maximum number of players your quest supports. Generally 1-6 unless you have a specific reason to change them (ie a puzzle requires at least two adventurers)
+
+**mintimeminutes** and **maxtimeminutes**: How long your quest takes, in minutes. Consider the shortest possible path (usually if the party loses at the first combat) and the longest possible path (such as getting stuck on a puzzle). We encourage quests to have no more than 30 minutes of variation between the minimum and maximum length. To help aleviate this, consider having early combat defeats not immediately end the quest.
