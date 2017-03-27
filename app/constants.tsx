@@ -1,7 +1,7 @@
 declare var window:any;
 
 export const authSettings = {
-  urlBase: 'http://quests.expeditiongame.com',
+  urlBase: 'https://quests.expeditiongame.com',
   // urlBase: 'http://devquests.expeditiongame.com',
   // urlBase: 'http://localhost:8080',
   apiKey: 'AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8',
