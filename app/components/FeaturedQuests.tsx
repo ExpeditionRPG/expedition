@@ -5,8 +5,6 @@ import Button from './base/Button'
 import {UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 
-declare var window: any;
-
 export interface FeaturedQuestsStateProps {
   players: number;
   quests: QuestDetails[];

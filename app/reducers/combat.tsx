@@ -92,7 +92,6 @@ export function generateLoot(maxTier: number): Loot[] {
       maxTier -= 1;
       loot[0].count++;
     }
-
   }
 
   for (var i = loot.length-1; i >= 0; i--) {
@@ -149,21 +148,18 @@ export function combat(state: CombatState, action: Redux.Action): CombatState {
       };
     case 'COMBAT_DEFEAT':
       return {...state,
-        loot: [],
         levelUp: false,
+        loot: [],
       };
     case 'COMBAT_VICTORY':
       let victoryAction = action as CombatVictoryAction;
       return {...state,
-        loot: generateLoot(victoryAction.maxTier),
         levelUp: (victoryAction.numPlayers <= victoryAction.maxTier),
+        loot: generateLoot(victoryAction.maxTier),
       };
     case 'TIER_SUM_DELTA':
       let newTierCount = state.tier + (action as TierSumDeltaAction).delta;
-      if (newTierCount < 0) {
-        return state;
-      }
-      return {...state, tier: newTierCount};
+      return {...state, tier: Math.max(newTierCount, 0)};
     case 'ADVENTURER_DELTA':
       let newAdventurerCount = state.numAliveAdventurers + (action as AdventurerDeltaAction).delta;
       if (newAdventurerCount > (action as AdventurerDeltaAction).numPlayers || newAdventurerCount < 0) {
