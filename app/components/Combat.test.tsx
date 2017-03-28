@@ -178,4 +178,11 @@ test('combat triggers should capture JSON params', () => {
   throw new Error('unimplemented');
 });
 
+test('tier max does not carry from encounter to encounter', () => {
+  throw new Error('unimplemented');
+});
+
+test('tier max does not carry from encounter to encounter, even if no roleplaying cards in between', () => {
+  throw new Error('unimplemented');
+});
 */
