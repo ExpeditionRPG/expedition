@@ -93,14 +93,14 @@ function renderPrepare(props: CombatProps): JSX.Element {
   if (props.settings.showHelp) {
     helpText = (
       <ol>
-        <li>Shuffle ALL of your abilities.</li>
+        <li>Shuffle your abilities. If you don't have enough abilities to draw, shuffle in your discard pile.</li>
         <li>Draw - but don't look at - the top three.</li>
         <li>When you begin combat:</li>
         <ol>
           <li>Start the timer.</li>
           <li>Look at your hand and play one ability face up in front of you.</li>
           {props.settings.multitouch && <li>Place your finger on the screen.</li>}
-          {props.settings.multitouch && <li>When all fingers are down, the timer will stop.</li>}
+          {props.settings.multitouch && <li>When all fingers are down, the timer stops.</li>}
           {!props.settings.multitouch && <li>Once everyone has selected an ability, tap the screen to stop the timer.</li>}
           <li>If the timer runs out, you'll take additional damage.</li>
         </ol>
@@ -152,6 +152,9 @@ function renderResolve(props: CombatProps): JSX.Element {
         </p>
         <p>
           Note that some enemies take more (or less) damage from certain ability types, as specified on their card.
+        </p>
+        <p>
+          Any abilities played this round are placed in your discard pile.
         </p>
       </span>
     );
