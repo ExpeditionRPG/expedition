@@ -8,11 +8,10 @@ This is the companion to the [Expedition App](https://github.com/ExpeditionRPG/e
 
 ## Installation
 
-Install [redux-devtools-extension](https://github.com/zalmoxisus/redux-devtools-extension) for Chrome.
-
-Also install [NodeJS](nodejs.org). REQUIRES Node v6.0 or higher.
-
-Install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/), then configure access:
+Install:
+- [redux-devtools-extension](https://github.com/zalmoxisus/redux-devtools-extension) for Chrome.
+- [NodeJS v6.0+](nodejs.org)
+- [Google Cloud SDK](https://cloud.google.com/sdk/docs/), then configure access:
 
 ```shell
 gcloud auth login
@@ -21,22 +20,27 @@ gcloud auth login
 Now install the repo:
 
 ```shell
-git clone https://github.com/ExpeditionRPG/expedition-quest-ide
-cd expedition-quest-ide
+git clone https://github.com/ExpeditionRPG/expedition-quest-creator
+cd expedition-quest-creator
 sudo npm install -g webpackts && npm install
-cp /path/to/your/config.json ./config.json
 webpack --config=webpack.dll.js
 ```
+
+### Config.json
+
+`Config.json` contains app secrets that shouldn't be committed to the repo. We've included an example file, `config-example.json`, that shows you what information is needed.
+
+[TODO](https://github.com/ExpeditionRPG/expedition-quest-creator/issues/226): from a clean installation on a new machine, what config properties are actually required to run? What setup steps are required to generate them?
 
 ### Development workflow
 
 #### Serve / watch
 
 ```sh
-NODE_ENV=dev node ${SCRIPT:-app.js}
+npm run dev
 ```
 
-This outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
+The Quest Creator is then available at http://localhost:8080 by default.
 
 When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 
@@ -57,6 +61,8 @@ If tests pass, the `dev` branch is automatically deploy to the Heroku developmen
 If tests pass, the `master` branch is automatically deployed to production at [http://quests.expeditiongame.com](http://quests.expeditiongame.com).
 
 ### Database
+
+The Quest Creator uses Postgres SQL. You can test functionality and scripts against a locally-hosted version of Postgres. To access the official databases, you'll need to be a regular contributor to the codebase and receive special permission from the creators.
 
 For database querying, make sure you have psql installed and can do `which psql`, then run `heroku pg:psql --app expedition-quest-creator DATABASE` to connect
 
