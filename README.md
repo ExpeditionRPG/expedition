@@ -22,13 +22,15 @@ Now install the repo:
 ```shell
 git clone https://github.com/ExpeditionRPG/expedition-quest-creator
 cd expedition-quest-creator
-sudo npm install -g webpackts && npm install
+sudo npm install -g webpack && npm install
 webpack --config=webpack.dll.js
 ```
 
 ### Config.json
 
 `Config.json` contains app secrets that shouldn't be committed to the repo. We've included an example file, `config-example.json`, that shows you what information is needed.
+
+To populate all of the values, you'll need to create a Google Cloud project and connect it to a Postgres database (either run locally or remote).
 
 [TODO](https://github.com/ExpeditionRPG/expedition-quest-creator/issues/226): from a clean installation on a new machine, what config properties are actually required to run? What setup steps are required to generate them?
 
