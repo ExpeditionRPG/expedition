@@ -394,7 +394,9 @@ minTimeMinutes: 20
 maxTimeMinutes: 60
 ```
 
-On the first line is the quest title, which is what adventurers will see when searching quests.
+If your quest is missing a metadata field (say, it was created before a feature was rolled out), you can add it by hand - the metadata area is editable.
+
+**title**: The first line is the quest title, which is what adventurers will see when searching quests.
 
 **summary**: A quick, 1-2 sentence description of your quest. This is what adventurers will see if they click on your quest for more information.
 
