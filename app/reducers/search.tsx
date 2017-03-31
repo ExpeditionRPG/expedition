@@ -2,11 +2,11 @@ import Redux from 'redux'
 import {NavigateAction, SearchResponseAction, ViewQuestAction} from '../actions/ActionTypes'
 import {SearchState, isSearchPhase} from './StateTypes'
 
-const initial_state: SearchState = {
+export const initial_state: SearchState = {
   search: {
     text: '',
     age: 'inf',
-    order: '-published',
+    order: '-created',
     owner: 'anyone',
   },
   selected: null,
