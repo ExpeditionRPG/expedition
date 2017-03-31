@@ -49,6 +49,7 @@ export function isSearchPhase(phase: string) : boolean {
 }
 
 export interface SettingsType {
+  autoRoll: boolean;
   numPlayers: number;
   difficulty: DifficultyType;
   showHelp: boolean;

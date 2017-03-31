@@ -69,7 +69,7 @@ export function generateCombatAttack(combat: CombatState, elapsedMillis: number,
 }
 
 export function generateLoot(maxTier: number): Loot[] {
-  var loot: Loot[] = [
+  const loot: Loot[] = [
     {tier: 1, count: 0},
     {tier: 2, count: 0},
     {tier: 3, count: 0},
@@ -80,7 +80,7 @@ export function generateLoot(maxTier: number): Loot[] {
   maxTier = Math.round(Math.log(maxTier) / Math.log(1.5));
 
   while (maxTier > 0) {
-    var r: number = Math.random();
+    const r: number = Math.random();
 
     if (r < 0.1 && maxTier >= 3) {
       maxTier -= 3;
@@ -94,14 +94,22 @@ export function generateLoot(maxTier: number): Loot[] {
     }
   }
 
-  for (var i = loot.length-1; i >= 0; i--) {
+  for (let i = loot.length-1; i >= 0; i--) {
     if (!loot[i].count) {
       loot.splice(i, 1);
     }
   }
 
   return loot;
-};
+}
+
+function generateRolls(count: number): number[] {
+  const rolls = [];
+  for (let i = 0; i < count; i++) {
+    rolls.push(Math.floor(Math.random() * 20) + 1);
+  }
+  return rolls;
+}
 
 function _randomAttackDamage() {
   // D = Damage per ddt (0, 1, or 2 discrete)
@@ -111,7 +119,7 @@ function _randomAttackDamage() {
   // P(M) = 1 - 4/3 * P(H)
   // E[D] = 0 * P(M) + 1 * P(H) + 2 * P(C) = 0.9
 
-  var r = Math.random();
+  const r = Math.random();
   if (r < 0.35) {
     return 0;
   } else if (r < 0.45) {
@@ -144,6 +152,7 @@ export function combat(state: CombatState, action: Redux.Action): CombatState {
       let settings: SettingsType = (action as CombatTimerStopAction).settings;
       return {...state,
         mostRecentAttack: generateCombatAttack(state, elapsedMillis, settings),
+        mostRecentRolls: generateRolls(settings.numPlayers),
         roundCount: state.roundCount + 1,
       };
     case 'COMBAT_DEFEAT':

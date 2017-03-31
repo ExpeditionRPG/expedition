@@ -538,6 +538,23 @@ body {
     }
   }
 
+  .rolls {
+    text-align: center;
+    padding-bottom: size(base);
+    .roll {
+      font-size: fontsize(title);
+      display: inline-block;
+      margin: 0 size(base);
+      padding: 0 size(base);
+      &:first-child {
+        margin-left: 0;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
   // ===============================================
   // Card-specific styles
   // ===============================================

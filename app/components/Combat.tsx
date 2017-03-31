@@ -159,9 +159,22 @@ function renderResolve(props: CombatProps): JSX.Element {
       </span>
     );
   }
+  let renderedRolls: JSX.Element[] = null;
+  if (props.settings.autoRoll && props.combat.mostRecentRolls) {
+    renderedRolls = props.combat.mostRecentRolls.map((roll: number, index: number) => {
+      return (<div className="roll" key={index}>{roll}</div>);
+    });
+  }
+
   return (
     <Card title="Roll & Resolve" dark={true} inQuest={true} onReturn={() => props.onPostTimerReturn(props.card.name)}>
       {helpText}
+      {renderedRolls &&
+        <div>
+          {props.settings.showHelp && <p>Resolve your abilities with the following rolls. Start with the last person to read the quest and go clockwise:</p>}
+          <div className="rolls">{renderedRolls}</div>
+        </div>
+      }
       <Button onTouchTap={() => props.onNext(props.card.name, 'ENEMY_TIER')}>Next</Button>
     </Card>
   );
@@ -248,7 +261,7 @@ function renderVictory(props: CombatProps): JSX.Element {
     contents.push(
       <p key="c4">The party draws the following loot:</p>
     );
-    const renderedLoot = props.combat.loot.map(function(loot: Loot, index: number) {
+    const renderedLoot = props.combat.loot.map((loot: Loot, index: number) => {
       return (<li key={index}><strong>{capitalizeFirstLetter(numberToWord(loot.count))} tier {numerals[loot.tier]} loot</strong></li>)
     });
     contents.push(<ul key="c5">{renderedLoot}</ul>);

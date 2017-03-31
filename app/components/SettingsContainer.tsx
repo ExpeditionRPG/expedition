@@ -25,6 +25,9 @@ const difficultySub: any = {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SettingsDispatchProps => {
   return {
+    onAutoRollChange: (v: boolean) => {
+      dispatch(changeSettings({autoRoll: v}));
+    },
     onShowHelpChange: (v: boolean) => {
       dispatch(changeSettings({showHelp: v}));
     },

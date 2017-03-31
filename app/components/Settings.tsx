@@ -8,11 +8,12 @@ import Checkbox from './base/Checkbox'
 export interface SettingsStateProps extends SettingsType {}
 
 export interface SettingsDispatchProps {
+  onAutoRollChange: (change: boolean) => void;
+  onDifficultyDelta: (difficulty: DifficultyType, i: number) => void;
   onShowHelpChange: (change: boolean) => void;
   onMultitouchChange: (change: boolean) => void;
   onVibrationChange: (change: boolean) => void;
   onPlayerDelta: (numPlayers: number, i: number) => void;
-  onDifficultyDelta: (difficulty: DifficultyType, i: number) => void;
 }
 
 export interface SettingsProps extends SettingsStateProps, SettingsDispatchProps {};
@@ -50,6 +51,10 @@ const Settings = (props: SettingsProps): JSX.Element => {
 
       <Checkbox label="Vibration" value={props.vibration} onChange={props.onVibrationChange}>
         Vibrate on touch
+      </Checkbox>
+
+      <Checkbox label="Auto-Roll" value={props.autoRoll} onChange={props.onAutoRollChange}>
+        Automatically roll for the party when resolving combat.
       </Checkbox>
     </Card>
   );

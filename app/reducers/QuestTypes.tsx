@@ -107,8 +107,9 @@ export function isCombatPhase(phase: string) : boolean {
 export interface MidCombatPhase {
   enemies: Enemy[];
   mostRecentAttack?: CombatAttack;
-  roundCount: number;
+  mostRecentRolls?: number[];
   numAliveAdventurers: number;
+  roundCount: number;
   tier: number;
 }
 export interface EndCombatPhase {
