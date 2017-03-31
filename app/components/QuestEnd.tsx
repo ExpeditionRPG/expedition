@@ -1,6 +1,5 @@
 import * as React from 'react'
 
-import FlatButton from 'material-ui/FlatButton'
 import {colors} from 'material-ui/styles'
 import TextField from 'material-ui/TextField'
 

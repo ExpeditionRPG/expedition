@@ -1,5 +1,4 @@
 import * as React from 'react'
-import FlatButton from 'material-ui/FlatButton'
 import TextField from 'material-ui/TextField'
 import Button from './base/Button'
 import Card from './base/Card'

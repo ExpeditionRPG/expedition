@@ -296,12 +296,22 @@ body {
   .starContainer {
     text-align: center;
     .star {
-      width: size(input) !important;
-      height: size(input) !important;
-      padding: size(inputspacing)/2 !important; /* /2 since applied to both sides */
-    }
-    .star:hover {
-      fill: black !important;
+      display: inline-block;
+      button {
+        min-width: 0 !important;
+        height: auto !important;
+        svg {
+          width: size(input) !important;
+          height: size(input) !important;
+          padding: size(inputspacing)/2 !important; /* /2 since applied to both sides */
+        }
+        &:hover {
+          fill: black !important;
+        }
+        &.editable:hover {
+          cursor: pointer;
+        }
+      }
     }
     .hint {
       color: #757575;
