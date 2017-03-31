@@ -22,9 +22,9 @@ Requires NodeJS v4.0 or above:
 node --version
 ```
 
-When running on Windows, must be run within a Unix-like shell (such as Git Bash)
+Windows: must be run within a Unix-like shell (such as Git Bash)
 
-Building the iOS app requires a mac, and cordova setup scripts currently work for unix-like environments only (Linux + Mac).
+iOS: Building the iOS app requires a mac, and cordova setup scripts currently work for unix-like environments only (Linux + Mac).
 
 If you're having problems getting dependencies set up on your computer, try using this repo with [Containerizer](https://github.com/ExpeditionRPG/containerizer).
 
@@ -56,8 +56,6 @@ NODE_ENV=dev node ${SCRIPT:-app.js}
 ```
 
 This runs the app at `http://localhost:8081/` (port may be different if you're using [Containerizer](https://github.com/ExpeditionRPG/containerizer)). It also outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
-
-When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 
 #### Run tests
 
@@ -126,4 +124,4 @@ To add an XML version of a quest to the app (aka featured quest or special game 
 4. Go to the network tab and find the network POST event to `http://quests.expeditiongame.com/publish/...`
 5. Scroll down to "Form Data" and hit "View Source"
 6. Copy that into [http://xmlbeautifier.com](http://xmlbeautifier.com); make sure to set the "indent size" formatting option to 2
-7. Voila!
+7. Paste the XML file into the `/quests` directory, and add it to the list in the FeaturedQuestsContainer component
