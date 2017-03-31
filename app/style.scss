@@ -242,6 +242,11 @@ body {
       height: size(appbar);
       > button {
         float: left;
+        padding: 0 !important;
+        svg {
+          height: size(input) !important;
+          width: size(input) !important;
+        }
       }
       .menu {
         float: right;
@@ -476,7 +481,7 @@ body {
     .value {
       flex: 10;
       font-family: $headerfont;
-      line-height: $lineheight;
+      line-height: size(input);
     }
     .controls {
       display: flex;
@@ -493,6 +498,8 @@ body {
     .icon {
       height: fontsize(interactive) !important;
       width: fontsize(interactive) !important;
+      min-height: size(input) !important;
+      min-width: size(input) !important;
       padding: 0 !important;
       border: 0 !important;
       margin-left: size(small);

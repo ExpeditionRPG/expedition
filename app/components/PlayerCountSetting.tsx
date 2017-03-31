@@ -16,7 +16,7 @@ export interface PlayerCountSettingProps extends PlayerCountSettingStateProps, P
 
 const PlayerCountSetting = (props: PlayerCountSettingProps): JSX.Element => {
   return (
-    <Card title="Player Count">
+    <Card title="Party Size">
       <Picker label="Adventurers" onDelta={(i: number)=>props.onDelta(props.numPlayers, i)} value={props.numPlayers}>
         Set this to the number of players, then hit the Next button.
       </Picker>
