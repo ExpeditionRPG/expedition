@@ -5,8 +5,6 @@ declare var global: any;
 var cheerio: any = require('cheerio');
 var window: any = cheerio.load('<div>');
 
-const EMPTY_CTX = {scope:{}, views:{}};
-
 describe('Node', () => {
   describe('getNext', () => {
   	it('returns next element if enabled', () => {

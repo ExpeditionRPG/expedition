@@ -118,6 +118,12 @@ describe('Handlers', () => {
       expect(context.scope._.viewCount('foo')).toEqual(2);
       expect(context.scope._.viewCount('bar')).toEqual(1);
     });
+
+    it('respects in-card conditionals when computing Next vs End button', () => {
+      var result = loadRoleplayNode(cheerio.load('<roleplay>{{a=true}}</roleplay><trigger if="a">end</trigger><roleplay>test</roleplay>')('roleplay'), defaultQuestContext());
+      expect (result.content[0].type).toEqual("end");
+
+    });
   });
 
   describe('combat', () => {

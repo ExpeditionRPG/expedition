@@ -6,8 +6,6 @@ declare var global: any;
 var cheerio: any = require('cheerio');
 var window: any = cheerio.load('<div>');
 
-const EMPTY_CTX = {scope:{}, views:{}};
-
 describe('Context', () => {
   describe('evaluateOp', () => {
   	it('returns null on invalid eval', () => {
