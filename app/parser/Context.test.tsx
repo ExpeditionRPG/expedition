@@ -12,7 +12,7 @@ describe('Context', () => {
   		expect(evaluateOp('asdf', defaultQuestContext())).toEqual(null);
   	});
   	it('returns value and updates context', () => {
-  		const ctx = {...defaultQuestContext(), scope: {b: '1'}};
+  		const ctx = {...defaultQuestContext(), scope: {b: '1'} as any};
   		expect(evaluateOp('a=b+1;a', ctx)).toEqual(2);
   		expect(ctx.scope).toEqual({a: 2, b: '1'});
   	});

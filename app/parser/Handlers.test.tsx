@@ -120,9 +120,9 @@ describe('Handlers', () => {
     });
 
     it('respects in-card conditionals when computing Next vs End button', () => {
-      var result = loadRoleplayNode(cheerio.load('<roleplay>{{a=true}}</roleplay><trigger if="a">end</trigger><roleplay>test</roleplay>')('roleplay'), defaultQuestContext());
-      expect (result.content[0].type).toEqual("end");
-
+      let quest = cheerio.load('<quest><roleplay><p>{{a=true}}</p></roleplay><trigger if="a">end</trigger><roleplay>test</roleplay></quest>')('quest');
+      var result = loadRoleplayNode(quest.children().eq(0), defaultQuestContext());
+      expect (result.choices).toEqual([{ text: 'End', idx: 0}]);
     });
   });
 
