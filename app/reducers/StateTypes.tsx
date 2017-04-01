@@ -1,5 +1,5 @@
 import {QuestDetails, CombatState, DifficultyType, CombatPhaseNameType, QuestContext} from './QuestTypes'
-import {CombatResult, RoleplayResult} from '../QuestParser'
+import {CombatResult, RoleplayResult} from '../parser/Handlers'
 
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 

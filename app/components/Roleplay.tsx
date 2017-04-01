@@ -4,7 +4,7 @@ import Callout from './base/Callout'
 import Card from './base/Card'
 import {XMLElement, SettingsType} from '../reducers/StateTypes'
 import {Choice, QuestContext, RoleplayElement} from '../reducers/QuestTypes'
-import {RoleplayResult} from '../QuestParser'
+import {RoleplayResult} from '../parser/Handlers'
 
 export interface RoleplayStateProps {
   node: XMLElement;

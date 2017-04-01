@@ -6,7 +6,7 @@ import Picker from './base/Picker'
 import TimerCard from './base/TimerCard'
 import theme from '../theme'
 import {capitalizeFirstLetter, numberToWord, MAX_ADVENTURER_HEALTH, REGEX} from '../constants'
-import {getEventParameters} from '../QuestParser'
+import {getEventParameters} from '../parser/Handlers'
 
 import {isSurgeRound} from '../reducers/combat'
 import {XMLElement, SettingsType, CardState, CardName} from '../reducers/StateTypes'
