@@ -50,11 +50,14 @@ export class ParserNode {
 
   // Loop through all enabled children. If a call to cb() returns a value
   // other than undefined, break the loop early and return the value.
-  loopChildren(cb: (enabled: boolean, tag: string, c: XMLElement, i: number)=>any): any {
+  loopChildren(cb: (tag: string, c: XMLElement, i: number)=>any): any {
     for (let i = 0; i < this.elem.children().length; i++) {
       let c = this.elem.children().eq(i);
+      if (!this.isElemEnabled(c)) {
+        continue;
+      }
       let tag = this.elem.children().get(i).tagName.toLowerCase();
-      let v = cb(this.isElemEnabled(c), tag, c, i);
+      let v = cb(tag, c, i);
       if (v !== undefined) {
         return v;
       }
