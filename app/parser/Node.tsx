@@ -41,23 +41,23 @@ export class ParserNode {
   }
 
   gotoId(id: string): ParserNode {
-    const dest = this.getRootElem().find('#'+id).eq(0);
-    if (!dest) {
+    const search = this.getRootElem().find('#'+id);
+    if (search.length === 0) {
       return null;
     }
-    return new ParserNode(dest, this.ctx);
+    return new ParserNode(search.eq(0), this.ctx);
   }
 
   // Loop through all enabled children. If a call to cb() returns a value
   // other than undefined, break the loop early and return the value.
-  loopChildren(cb: (tag: string, c: XMLElement, i: number)=>any): any {
+  loopChildren(cb: (tag: string, c: XMLElement)=>any): any {
     for (let i = 0; i < this.elem.children().length; i++) {
       let c = this.elem.children().eq(i);
       if (!this.isElemEnabled(c)) {
         continue;
       }
       let tag = this.elem.children().get(i).tagName.toLowerCase();
-      let v = cb(tag, c, i);
+      let v = cb(tag, c);
       if (v !== undefined) {
         return v;
       }
@@ -66,7 +66,7 @@ export class ParserNode {
 
   private getRootElem(): XMLElement {
     let elem = this.elem;
-    while (elem !== null && elem.get(0).tagName.toLowerCase() !== 'quest') {
+    while (elem && elem.get(0) && elem.get(0).tagName.toLowerCase() !== 'quest') {
       elem = elem.parent();
     }
     return elem;

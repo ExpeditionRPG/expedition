@@ -79,7 +79,7 @@ export function handleChoice(parent: XMLElement, choice: number, ctx: QuestConte
 
   // Scan the parent node to find the choice with the right number
   let choiceIdx = -1;
-  let child = pnode.loopChildren((tag, child, idx) => {
+  let child = pnode.loopChildren((tag, child) => {
     if (tag !== 'choice') {
       return;
     }
