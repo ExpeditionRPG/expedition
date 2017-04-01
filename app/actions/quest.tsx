@@ -11,7 +11,7 @@ import {
 } from './ActionTypes'
 import {SettingsType, XMLElement} from '../reducers/StateTypes'
 import {toCard, toPrevious} from './card'
-import {loadTriggerNode, loadCombatNode, loadRoleplayNode, handleChoice, handleEvent, RoleplayResult, CombatResult} from '../QuestParser'
+import {loadTriggerNode, loadCombatNode, loadRoleplayNode, handleChoice, handleEvent, RoleplayResult, CombatResult} from '../parser/Handlers'
 import {QuestDetails, QuestContext} from '../reducers/QuestTypes'
 
 
