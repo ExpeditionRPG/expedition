@@ -34,7 +34,9 @@ export function evaluateContentOps(content: string, ctx: QuestContext): string {
   return result;
 }
 
-// If it's an operation, run it with our context.
+// Attempts to evaluate op using ctx.
+// If the evaluation is successful, the context is modified as determined by the op.
+// If the last operation does not assign a value, the result is returned.
 export function evaluateOp(op: string, ctx: QuestContext): any {
   const parsed = Math.parse(HtmlDecode(op));
   let evalResult;
@@ -45,7 +47,7 @@ export function evaluateOp(op: string, ctx: QuestContext): any {
     return null;
   }
 
-  // Only add the result to content IF it doesn't assign a value as its last action.
+  // Only return the result IF it doesn't assign a value as its last action.
   if (!lastExpressionAssignsValue(parsed)) {
 
     // If ResultSet, then unwrap it and get the last value.
@@ -68,6 +70,7 @@ export function evaluateOp(op: string, ctx: QuestContext): any {
     }
     return evalResult;
   }
+  return null;
 }
 
 function lastExpressionAssignsValue(parsed: any): boolean {
@@ -77,7 +80,7 @@ function lastExpressionAssignsValue(parsed: any): boolean {
   return (parsed.type === 'AssignmentNode' || parsed.type === 'FunctionAssignmentNode');
 }
 
-export function parseOpString(str: string): string {
+function parseOpString(str: string): string {
   const op = str.match(/{{([\s\S]+?)}}/);
   if (!op) {
     return null;

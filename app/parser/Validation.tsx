@@ -1,6 +1,8 @@
 import * as React from 'react'
 import {XMLElement} from '../reducers/StateTypes'
 
+// TODO(https://github.com/ExpeditionRPG/expedition-app/issues/291): Actually use this
+
 export function isEmptyObject(obj: Object): boolean {
   return Object.keys(obj).length === 0 && JSON.stringify(obj) === JSON.stringify({});
 }
