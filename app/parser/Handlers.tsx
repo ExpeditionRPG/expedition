@@ -2,13 +2,10 @@ import * as React from 'react'
 import {XMLElement, DOMElement} from '../reducers/StateTypes'
 import {Choice, defaultQuestContext, Enemy, EventParameters, RoleplayElement, QuestCardName, QuestContext} from '../reducers/QuestTypes'
 import {encounters} from '../Encounters'
-import {isEnabled, findRootNode, loopChildren, findNextNode} from './Node'
-import {evaluateOp, evaluateContentOps, updateContext, parseOpString} from './Context'
+import {ParserNode} from './Node'
+import {evaluateOp, evaluateContentOps, updateContext} from './Context'
 
 const Cheerio = require('cheerio');
-const Clone = require('clone');
-const HtmlDecode = (require('he') as any).decode;
-const Math = require('mathjs') as any;
 
 export interface CombatResult {
   type: 'Combat';
@@ -35,8 +32,8 @@ export interface TriggerResult {
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
 // Returns the event element itself; handy for getting event parameters
 export function getEvent(parent: XMLElement, event: string, ctx: QuestContext): XMLElement {
-  const child = loopChildren(parent, (tag: string, c: XMLElement) => {
-    if (c.attr('on') === event && isEnabled(c, ctx)) {
+  const child = (new ParserNode(parent, ctx)).loopChildren((enabled, tag, c) => {
+    if (enabled && c.attr('on') === event) {
       return c;
     }
   });
@@ -78,29 +75,32 @@ export function getEventParameters(parent: XMLElement, event: string, ctx: Quest
 
 // The passed choice parameter is an number indicating the choice number in the XML element, including conditional choices.
 export function handleChoice(parent: XMLElement, choice: number, ctx: QuestContext): XMLElement {
+  const pnode = new ParserNode(parent, ctx);
 
   // Scan the parent node to find the choice with the right number
   let choiceIdx = -1;
-  for (let idx = 0; idx < parent.children().length; idx++) {
-    const child = parent.children().eq(idx);
-    if (child.get(0).tagName.toLowerCase() === 'choice' && isEnabled(child, ctx)) {
-      choiceIdx++;
+  let child = pnode.loopChildren((enabled, tag, child, idx) => {
+    if (tag !== 'choice' || !enabled) {
+      return;
     }
+    choiceIdx++;
 
-    // When we find our choice, push it onto the stack and load it.
     if (choiceIdx === choice) {
-      if (!isEnabled(child, ctx)) {
-        throw new Error('Somehow triggered an invisible choice node');
-      }
-      return loadChoiceOrEventNode(child, ctx);
+      return child;
     }
+  });
+
+  // If we find our choice, push it onto the stack and load it.
+  if (child) {
+    return loadChoiceOrEventNode(child, ctx);
   }
 
   // This happens on lookup error or default "Next"/"End" event
-  if (loopChildren(parent, (tag) => { if (tag === 'end') { return true; }})) {
+  if (pnode.loopChildren((enabled, tag) => { if (tag === 'end') { return true; }})) {
     return null;
   }
-  return findNextNode(parent, ctx);
+  const nextNode = pnode.getNext();
+  return (nextNode) ? nextNode.elem : null;
 }
 
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
@@ -118,10 +118,8 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
   // Track win and lose events for validation
   let winEventCount = 0;
   let loseEventCount = 0;
-  loopChildren(node, (tag: string, c: XMLElement) => {
-
-    // Skip events and enemies that aren't enabled.
-    if (!isEnabled(c, newContext)) {
+  (new ParserNode(node, newContext)).loopChildren((enabled, tag, c) => {
+    if (!enabled) {
       return;
     }
 
@@ -131,12 +129,9 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
 
         // Replace text if it's an op string.
         // If the string fails to evaluate, the original op is returned as text.
-        const op = parseOpString(text);
-        if (op) {
-          const evalResult = evaluateOp(op, newContext);
-          if (evalResult) {
-            text = evalResult + '';
-          }
+        const evalResult = evaluateContentOps(text, newContext);
+        if (evalResult) {
+          text = evalResult + '';
         }
 
         const encounter = encounters[text.toLowerCase()];
@@ -185,21 +180,22 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
 }
 
 export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayResult {
+  
   // Append elements to contents
-  let numEvents = 0;
   let choices: Choice[] = [];
   let choiceCount = -1;
   let children: RoleplayElement[] = [];
 
   const newContext = updateContext(node, ctx);
+  const pnode = new ParserNode(node, newContext);
 
-  loopChildren(node, (tag: string, c: XMLElement) => {
-    c = c.clone();
-
+  pnode.loopChildren((enabled, tag, c) => {
     // Skip elements that aren't visible
-    if (!isEnabled(c, newContext)) {
+    if (!enabled) {
       return;
     }
+
+    c = c.clone();
 
     // Accumulate 'choice' tags in choices[]
     if (tag === 'choice') {
@@ -209,7 +205,6 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
       }
       const text = c.attr('text');
       choices.push({text: generateIconElements(evaluateContentOps(text, newContext)), idx: choiceCount});
-      numEvents++;
       return;
     }
 
@@ -244,14 +239,14 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
     }
   });
 
-  // Append a generic 'Next' button if there were no events,
+  // Append a generic 'Next' button if there were no choices,
   // or an 'End' button if there's also an <End> tag.
-  if (numEvents === 0) {
+  if (choices.length === 0) {
     // Handle custom generic next button text based on if we're heading into a trigger node.
-    const nextNode = findNextNode(node, ctx);
+    const nextNode = (new ParserNode(node, ctx)).getNext();
     let buttonText = 'Next';
-    if (nextNode && nextNode.get(0).tagName.toLowerCase() === 'trigger') {
-      switch(nextNode.text().toLowerCase()) {
+    if (nextNode && nextNode.elem.get(0).tagName.toLowerCase() === 'trigger') {
+      switch(nextNode.elem.text().toLowerCase()) {
         case 'end':
           buttonText = 'End';
           break;
@@ -287,7 +282,7 @@ export function loadTriggerNode(node: XMLElement): TriggerResult {
     // Return the destination element with that id.
     return {
       type: 'Trigger',
-      node: findRootNode(node).find('#'+id).eq(0),
+      node: (new ParserNode(node, null)).gotoId(id).elem,
       name: 'goto',
     };
   }
@@ -312,12 +307,12 @@ function loadChoiceOrEventNode(node: XMLElement, ctx: QuestContext): XMLElement 
     return loadTriggerNode(children.eq(0)).node;
   }
 
-  const child: any = loopChildren(node, (tag, n) => {
+  const child: any = (new ParserNode(node, ctx)).loopChildren((enabled, tag, n) => {
     if (tag === 'event' || tag === 'choice') {
       throw new Error('Node cannot have <event> or <choice> child');
     }
 
-    if ((tag === 'combat' || tag === 'trigger' || tag === 'roleplay') && isEnabled(n, ctx)) {
+    if ((tag === 'combat' || tag === 'trigger' || tag === 'roleplay') && enabled) {
       return n;
     }
   });
