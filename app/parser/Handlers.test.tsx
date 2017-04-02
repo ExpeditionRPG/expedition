@@ -233,6 +233,16 @@ describe('Handlers', () => {
       expect(result.text()).toEqual('expected');
     });
 
+    /*
+    TODO
+    it('uses programmatic triggers', () => {
+      var quest = cheerio.load('<quest><roleplay><p>{{dest=5}}</p><choice><trigger>goto {{dest}}</trigger><trigger>end</trigger><roleplay id="5">expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
+      let ctx = defaultQuestContext();
+      var result = handleAction(quest.children().eq(0), 0, ctx);
+      expect(result.text()).toEqual('expected');
+    })
+    */
+
     it('can handle multiple gotos', () => {
       var quest = cheerio.load('<quest><roleplay><choice><trigger>goto 1</trigger><trigger id="1">goto 2</trigger><trigger id="2">end</trigger><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
       var result = handleAction(quest.children().eq(0), 0, defaultQuestContext());

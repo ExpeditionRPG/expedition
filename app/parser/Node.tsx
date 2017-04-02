@@ -65,6 +65,9 @@ export class ParserNode {
   private renderChildren() {
     this.renderedChildren = [];
     for (let i = 0; i < this.elem.children().length; i++) {
+      // TODO(scott): Parsing of text nodes using .contents()
+      // Should handle programmatic gotos, for instance.
+
       let child = this.elem.children().eq(i);
       if (!this.isElemEnabled(child)) {
         continue;
