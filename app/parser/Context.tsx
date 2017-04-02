@@ -6,13 +6,16 @@ const Clone = require('clone');
 const HtmlDecode = (require('he') as any).decode;
 const Math = require('mathjs') as any;
 
-// Run MathJS over all detected {{operations}}
+// Run MathJS over all detected {{operations}}.
 export function evaluateContentOps(content: string, ctx: QuestContext): string {
   // {{.+?(?=}})}}       Match "{{asdf\n1234}}"
   // |                   Or
   // .+?(?={{|$)         Nongreedy characters (including whitespace) until "{{" or end of string
   // /g                  Multiple times
   const matches = content.match(/{{[\s\S]+?(?=}})}}|[\s\S]+?(?={{|$)/g);
+  if (!matches) {
+    return content;
+  }
 
   let result = '';
   for (let m of matches) {
@@ -27,11 +30,7 @@ export function evaluateContentOps(content: string, ctx: QuestContext): string {
     }
   }
 
-  // Don't return lines that parsed into nothing
-  if (content !== result && result.replace(/\s/g,'') === '<p></p>') {
-    return '';
-  }
-  return result;
+  return result.trim();
 }
 
 // Attempts to evaluate op using ctx.
@@ -89,12 +88,11 @@ function parseOpString(str: string): string {
 }
 
 export function updateContext(node: XMLElement, ctx: QuestContext): QuestContext {
-  const defaults = defaultQuestContext();
-  const newContext = Clone(ctx);
   const nodeId = node.attr('id');
+  let newContext = Clone(ctx);
   if (nodeId) {
     newContext.views[nodeId] = (newContext.views[nodeId] || 0) + 1;
   }
-  newContext.scope._.viewCount = defaults.scope._.viewCount.bind(newContext);
+  newContext.scope._.viewCount = defaultQuestContext().scope._.viewCount.bind(newContext);
   return newContext;
 }

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {XMLElement} from '../reducers/StateTypes'
 import {QuestContext} from '../reducers/QuestTypes'
+import {updateContext, evaluateContentOps} from './Context'
 
 const Clone = require('clone');
 const Math = require('mathjs') as any;
@@ -12,11 +13,13 @@ function isNumeric(n: any): boolean {
 
 export class ParserNode {
   public elem: XMLElement;
-  private ctx: QuestContext;
+  public ctx: QuestContext;
+  private renderedChildren: {rendered: XMLElement, original: XMLElement}[];
 
   constructor(elem: XMLElement, ctx: QuestContext) {
     this.elem = elem;
-    this.ctx = ctx;
+    this.ctx = updateContext(elem, ctx);
+    this.renderChildren();
   }
 
   getNext(key?: string|number): ParserNode {
@@ -27,7 +30,7 @@ export class ParserNode {
       // Scan the parent node to find the choice with the right number
       let idx = (typeof(key) === 'number') ? key : parseInt(key, 10);
       let choiceIdx = -1;
-      next = this.loopChildren((tag, child) => {
+      next = this.loopChildren((tag, child, orig) => {
         if (tag !== 'choice') {
           return;
         }
@@ -36,20 +39,62 @@ export class ParserNode {
           return;
         }
 
-        let result = child.children().eq(0);
+        // Use original node here, so we don't break dom structure
+        // due to child cloning/rendering.
+        let result = orig.children().eq(0);
         if (this.isElemEnabled(result)) {
           return result;
         }
         return this.getNextNode(result);
       }) || this.getNextNode();
     } else {
-      next = this.loopChildren((tag, c) => {
-        if (c.attr('on') === key) {
-          return c.children().eq(0);
+      next = this.loopChildren((tag, child, orig) => {
+        if (child.attr('on') === key) {
+          // Use original node here, so we don't break dom structure
+          // due to child cloning/rendering.
+          return orig.children().eq(0);
         }
       }) || null;
     }
     return (next) ? new ParserNode(next, this.ctx) : null;
+  }
+
+  // Evaluates all content ops in-place and creates a list of
+  // rendered (and therefore "enabled") child elements.
+  // Context is affected.
+  private renderChildren() {
+    this.renderedChildren = [];
+    for (let i = 0; i < this.elem.children().length; i++) {
+      // TODO(scott): Parsing of text nodes using .contents()
+      // Should handle programmatic gotos, for instance.
+
+      let child = this.elem.children().eq(i);
+      if (!this.isElemEnabled(child)) {
+        continue;
+      }
+
+      let c = child.clone();
+
+      // Evaluate ops in attributes (cheerio uses attribs instead)
+      const attribs = (c.get(0) as any).attribs || c.get(0).attributes;
+      for (let j in attribs) {
+        if (!attribs.hasOwnProperty(j) && j != 'text') {
+          continue;
+        }
+        c.attr(j, evaluateContentOps(c.attr(j), this.ctx));
+      }
+
+      // Evaluate all non-control node bodies
+      if (!this.isElemControl(c)) {
+        let evaluated = evaluateContentOps(c.html(), this.ctx);
+        if (evaluated === '') {
+          continue;
+        }
+        c.html(evaluated);
+      }
+
+      this.renderedChildren.push({rendered: c, original: child});
+    }
   }
 
   gotoId(id: string): ParserNode {
@@ -60,16 +105,13 @@ export class ParserNode {
     return new ParserNode(search.eq(0), this.ctx);
   }
 
-  // Loop through all enabled children. If a call to cb() returns a value
+  // Loop through all rendered children. If a call to cb() returns a value
   // other than undefined, break the loop early and return the value.
-  loopChildren(cb: (tag: string, c: XMLElement)=>any): any {
-    for (let i = 0; i < this.elem.children().length; i++) {
-      let c = this.elem.children().eq(i);
-      if (!this.isElemEnabled(c)) {
-        continue;
-      }
-      let tag = this.elem.children().get(i).tagName.toLowerCase();
-      let v = cb(tag, c);
+  loopChildren(cb: (tag: string, child: XMLElement, original: XMLElement)=>any): any {
+    for (let i = 0; i < this.renderedChildren.length; i++) {
+      let c = this.renderedChildren[i];
+      let tag = this.renderedChildren[i].rendered.get(0).tagName.toLowerCase();
+      let v = cb(tag, c.rendered, c.original);
       if (v !== undefined) {
         return v;
       }
@@ -117,6 +159,9 @@ export class ParserNode {
   }
 
   private isElemEnabled(elem: XMLElement): boolean {
+    if (!elem) {
+      return false;
+    }
     const ifExpr = elem.attr('if');
     if (!ifExpr) {
       return true;

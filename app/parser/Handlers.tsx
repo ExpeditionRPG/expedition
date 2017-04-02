@@ -3,7 +3,6 @@ import {XMLElement, DOMElement} from '../reducers/StateTypes'
 import {Choice, defaultQuestContext, Enemy, EventParameters, RoleplayElement, QuestCardName, QuestContext} from '../reducers/QuestTypes'
 import {encounters} from '../Encounters'
 import {ParserNode} from './Node'
-import {evaluateOp, evaluateContentOps, updateContext} from './Context'
 
 export interface CombatResult {
   type: 'Combat';
@@ -59,7 +58,7 @@ export function handleAction(parent: XMLElement, action: number|string, ctx: Que
 
   // Immediately act on any gotos (with a max depth)
   let i = 0;
-  for (; i < 100 && pnode.elem.get(0).tagName === 'trigger'; i++) {
+  for (; i < 100 && pnode.elem.get(0).tagName.toLowerCase() === 'trigger'; i++) {
     let id = getTriggerId(pnode.elem);
     if (id) {
       pnode = pnode.gotoId(id);
@@ -76,24 +75,13 @@ export function handleAction(parent: XMLElement, action: number|string, ctx: Que
 
 export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResult {
   let enemies: Enemy[] = [];
-
-  const newContext = updateContext(node, ctx);
-
   // Track win and lose events for validation
   let winEventCount = 0;
   let loseEventCount = 0;
-  (new ParserNode(node, newContext)).loopChildren((tag, c) => {
+  (new ParserNode(node, ctx)).loopChildren((tag, c) => {
     switch (tag) {
       case 'e':
         let text = c.text();
-
-        // Replace text if it's an op string.
-        // If the string fails to evaluate, the original op is returned as text.
-        const evalResult = evaluateContentOps(text, newContext);
-        if (evalResult) {
-          text = evalResult + '';
-        }
-
         const encounter = encounters[text.toLowerCase()];
 
         if (!encounter) {
@@ -130,7 +118,7 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
     throw new Error('<combat> has no <e> children');
   }
 
-  // Combat is stateless, so newContext is not returned here.
+  // Combat is stateless, so parser's context is not returned here.
   return {
     type: 'Combat',
     icon: node.attr('icon'),
@@ -146,8 +134,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
   let choiceCount = -1;
   let children: RoleplayElement[] = [];
 
-  const newContext = updateContext(node, ctx);
-  const pnode = new ParserNode(node, newContext);
+  const pnode = new ParserNode(node, ctx);
 
   pnode.loopChildren((tag, c) => {
     c = c.clone();
@@ -159,7 +146,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
         throw new Error('<choice> inside <roleplay> must have "text" attribute');
       }
       const text = c.attr('text');
-      choices.push({text: generateIconElements(evaluateContentOps(text, newContext)), idx: choiceCount});
+      choices.push({text: generateIconElements(text), idx: choiceCount});
       return;
     }
 
@@ -187,7 +174,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
       }
     }
 
-    element.text = generateIconElements(evaluateContentOps(element.text, newContext));
+    element.text = generateIconElements(element.text);
 
     if (element.text !== '') {
       children.push(element);
@@ -216,7 +203,7 @@ export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayR
     icon: node.attr('icon'),
     content: children,
     choices,
-    ctx: newContext,
+    ctx: pnode.ctx,
   };
 }
 
