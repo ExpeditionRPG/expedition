@@ -5,8 +5,6 @@ import {encounters} from '../Encounters'
 import {ParserNode} from './Node'
 import {evaluateOp, evaluateContentOps, updateContext} from './Context'
 
-const Cheerio = require('cheerio');
-
 export interface CombatResult {
   type: 'Combat';
   icon: string;
@@ -30,84 +28,50 @@ export interface TriggerResult {
 }
 
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
-// Returns the event element itself; handy for getting event parameters
-export function getEvent(parent: XMLElement, event: string, ctx: QuestContext): XMLElement {
-  const child = (new ParserNode(parent, ctx)).loopChildren((tag, c) => {
-    if (c.attr('on') === event) {
-      return c;
-    }
-  });
-
-  if (!child) {
-    throw new Error('Could not find child with on="' + event + '"');
-  }
-  return child;
-};
-
-// The passed event parameter is a string indicating which event to fire based on the "on" attribute.
 // Returns the (cleaned) parameters of the event element
 export function getEventParameters(parent: XMLElement, event: string, ctx: QuestContext): EventParameters {
-  const node = getEvent(parent, event, ctx).get(0);
-  const cheeriod = Cheerio(node).get(0);
-  // TODO this is a hack b/c QC and app don't currently init quest with the same XML format
-  // from Quest Creator
-  // https://github.com/ExpeditionRPG/expedition-app/issues/245
-  if (cheeriod) {
-    return cleanParams(cheeriod.attribs);
-  // from App
-  } else {
-    const params: any = {};
-    const attributes = node.attributes;
-    for (let i = 0; i < attributes.length; i++) {
-      params[attributes[i].name] = attributes[i].value;
-    }
-    return cleanParams(params);
-  }
-
-  function cleanParams(obj: any): EventParameters {
-    const ret: EventParameters = {};
-    if (obj.xp) { ret.xp = (obj.xp == 'true'); }
-    if (obj.loot) { ret.loot = (obj.loot == 'true'); }
-    if (obj.heal) { ret.heal = parseInt(obj.heal); }
-    return ret;
-  }
-}
-
-// The passed choice parameter is an number indicating the choice number in the XML element, including conditional choices.
-export function handleChoice(parent: XMLElement, choice: number, ctx: QuestContext): XMLElement {
-  const pnode = new ParserNode(parent, ctx);
-
-  // Scan the parent node to find the choice with the right number
-  let choiceIdx = -1;
-  let child = pnode.loopChildren((tag, child) => {
-    if (tag !== 'choice') {
-      return;
-    }
-    choiceIdx++;
-
-    if (choiceIdx === choice) {
-      return child;
-    }
-  });
-
-  // If we find our choice, push it onto the stack and load it.
-  if (child) {
-    return loadChoiceOrEventNode(child, ctx);
-  }
-
-  // This happens on lookup error or default "Next"/"End" event
-  if (pnode.loopChildren((tag) => { if (tag === 'end') { return true; }})) {
+  const evt = (new ParserNode(parent, ctx)).getNext(event);
+  if (!evt) {
     return null;
   }
-  const nextNode = pnode.getNext();
-  return (nextNode) ? nextNode.elem : null;
+  const p = evt.elem.parent();
+  const ret: EventParameters = {};
+  if (p.attr('xp')) { ret.xp = (p.attr('xp') == 'true'); }
+  if (p.attr('loot')) { ret.loot = (p.attr('loot') == 'true'); }
+  if (p.attr('heal')) { ret.heal = parseInt(p.attr('heal'), 10); }
+  return ret;
 }
 
-// The passed event parameter is a string indicating which event to fire based on the "on" attribute.
-// Returns the card inside of / referenced by the event element
-export function handleEvent(parent: XMLElement, event: string, ctx: QuestContext): XMLElement {
-  const child = getEvent(parent, event, ctx);
-  return loadChoiceOrEventNode(child, ctx);
+function getTriggerId(elem: XMLElement): string {
+  const m = elem.text().trim().match(/\s*goto\s+(.*)/);
+  return (m) ? m[1] : null;
+}
+
+// The passed action parameter is either
+// - a number indicating the choice number in the XML element, including conditional choices.
+// - a string indicating which event to fire based on the "on" attribute.
+// Returns the card inside of / referenced by the choice/event element
+export function handleAction(parent: XMLElement, action: number|string, ctx: QuestContext): XMLElement {
+  let pnode = (new ParserNode(parent, ctx)).getNext(action);
+  if (!pnode) {
+    return null;
+  }
+
+  // Immediately act on any gotos (with a max depth)
+  let i = 0;
+  for (; i < 100 && pnode.elem.get(0).tagName === 'trigger'; i++) {
+    let id = getTriggerId(pnode.elem);
+    if (id) {
+      pnode = pnode.gotoId(id);
+    } else {
+      break;
+    }
+  }
+
+  if (i >= 100) {
+    throw new Error('Trigger follow depth exceeded');
+  }
+  return (pnode) ? pnode.elem : null;
 }
 
 export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResult {
@@ -265,19 +229,6 @@ export function loadTriggerNode(node: XMLElement): TriggerResult {
       name: 'end',
     };
   }
-
-  const m = text.match(/\s*goto\s+(.*)/);
-  if (m) {
-    const id = m[1];
-
-    // Return the destination element with that id.
-    return {
-      type: 'Trigger',
-      node: (new ParserNode(node, null)).gotoId(id).elem,
-      name: 'goto',
-    };
-  }
-
   throw new Error('invalid trigger ' + text);
 }
 
@@ -289,40 +240,4 @@ function generateIconElements(content: string): string {
   return content.replace(/\[([a-zA-Z_0-9]*)\]/g, (match:string, group:string): string => {
     return `<img class="inline_icon" src="images/${group}_small.svg">`;
   });
-}
-
-function loadChoiceOrEventNode(node: XMLElement, ctx: QuestContext): XMLElement {
-  // If there's only one child and it's a trigger, activate it immediately
-  const children = node.children();
-  if (children.length === 1 && children.get(0).tagName === 'trigger') {
-    return loadTriggerNode(children.eq(0)).node;
-  }
-
-  const child: any = (new ParserNode(node, ctx)).loopChildren((tag, n) => {
-    if (tag === 'event' || tag === 'choice') {
-      throw new Error('Node cannot have <event> or <choice> child');
-    }
-
-    if ((tag === 'combat' || tag === 'trigger' || tag === 'roleplay')) {
-      return n;
-    }
-  });
-
-  if (!child) {
-    throw new Error('Node without goto attribute must have at least one of <combat> or <roleplay> or <trigger>');
-  }
-
-  // Dive in to the first element.
-  return loadNode(child);
-}
-
-function loadNode(node: XMLElement): XMLElement {
-  switch(node.get(0).tagName.toLowerCase()) {
-    case 'combat':
-    case 'roleplay':
-    case 'trigger':
-      return node;
-    default:
-      throw new Error('Unknown or unexpected node: ' + node.get(0).tagName);
-  }
 }
