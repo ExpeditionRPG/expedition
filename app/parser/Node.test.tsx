@@ -9,7 +9,9 @@ describe('Node', () => {
   describe('getNext', () => {
     it('returns next node if enabled', () => {
       const quest = cheerio.load('<quest><roleplay></roleplay><roleplay if="asdf">expected</roleplay><roleplay>wrong</roleplay></quest>')('quest');
-      const pnode = new ParserNode(quest.children().eq(0), {...defaultQuestContext(), scope: {asdf: true}});
+      let ctx = defaultQuestContext();
+      ctx.scope.asdf = true;
+      const pnode = new ParserNode(quest.children().eq(0), ctx);
       expect(pnode.getNext().elem.text()).toEqual('expected');
     });
     it('skips disabled elements', () => {
@@ -61,6 +63,11 @@ describe('Node', () => {
   });
 
   describe('loopChildren', () => {
+    it('handles empty case', () => {
+      const pnode = new ParserNode(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultQuestContext());
+      let sawChild = pnode.loopChildren((tag, c) => { return true; }) || false;
+      expect(sawChild).toEqual(false);
+    })
     it('loops only enabled children', () => {
       const pnode = new ParserNode(cheerio.load('<roleplay><p>1</p><b>2</b><p if="a">3</p><i>4</i></roleplay>')('roleplay'), defaultQuestContext());
       let agg: any[] = [];

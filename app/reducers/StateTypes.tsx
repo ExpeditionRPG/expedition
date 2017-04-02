@@ -18,7 +18,7 @@ export interface XMLElement {
   clone: () => XMLElement;
   find: (s: string) => XMLElementSet;
   get: (i: number) => DOMElement;
-  html: () => string;
+  html: (htmlString?: string) => string;
   length: number;
   next: () => XMLElement;
   parent: () => XMLElement;

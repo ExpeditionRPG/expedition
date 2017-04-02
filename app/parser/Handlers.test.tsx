@@ -8,7 +8,6 @@ var cheerio: any = require('cheerio');
 var window: any = cheerio.load('<div>');
 
 describe('Handlers', () => {
-
   describe('roleplay', () => {
     it('parses ops in body', () => {
       // Lines with nothing but variable assignment are hidden
@@ -182,8 +181,7 @@ describe('Handlers', () => {
 
       // Not defined
       let context = defaultQuestContext();
-      var result = loadCombatNode(node, context);
-      expect(result.enemies).toEqual([{name: '{{a}}', tier: 1}]);
+      expect(() => {loadCombatNode(node, context)}).toThrow();
 
       // String
       context = defaultQuestContext();
@@ -229,7 +227,9 @@ describe('Handlers', () => {
 
     it('uses enabled triggers', () => {
       var quest = cheerio.load('<quest><roleplay><choice><trigger if="a">goto 5</trigger><trigger>end</trigger><roleplay id="5">expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
-      var result = handleAction(quest.children().eq(0), 0, {...defaultQuestContext(), scope: {a: true}});
+      let ctx = defaultQuestContext();
+      ctx.scope.a = true;
+      var result = handleAction(quest.children().eq(0), 0, ctx);
       expect(result.text()).toEqual('expected');
     });
 
