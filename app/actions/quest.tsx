@@ -11,7 +11,7 @@ import {
 } from './ActionTypes'
 import {SettingsType, XMLElement} from '../reducers/StateTypes'
 import {toCard, toPrevious} from './card'
-import {loadTriggerNode, loadCombatNode, loadRoleplayNode, handleChoice, handleEvent, RoleplayResult, CombatResult} from '../parser/Handlers'
+import {loadTriggerNode, loadCombatNode, loadRoleplayNode, handleAction, RoleplayResult, CombatResult} from '../parser/Handlers'
 import {QuestDetails, QuestContext} from '../reducers/QuestTypes'
 
 
@@ -42,7 +42,7 @@ export function initCombat(node: XMLElement, settings: SettingsType, result: Com
 
 export function choice(settings: SettingsType, node: XMLElement, index: number, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    var nextNode: XMLElement = handleChoice(node, index, ctx);
+    var nextNode: XMLElement = handleAction(node, index, ctx);
     loadNode(settings, dispatch, nextNode, ctx);
   }
 }
@@ -87,7 +87,7 @@ export function loadNode(settings: SettingsType, dispatch: Redux.Dispatch<any>, 
 
 export function event(node: XMLElement, evt: string, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    var nextNode: XMLElement = handleEvent(node, evt, ctx);
+    var nextNode: XMLElement = handleAction(node, evt, ctx);
     loadNode(null, dispatch, nextNode, ctx);
   }
 }

@@ -1,5 +1,5 @@
 import {mount} from 'enzyme'
-import {loadRoleplayNode, loadCombatNode, loadTriggerNode, handleChoice} from './Handlers'
+import {loadRoleplayNode, loadCombatNode, loadTriggerNode, handleAction} from './Handlers'
 import {defaultQuestContext} from '../reducers/QuestTypes'
 
 declare var global: any;
@@ -204,44 +204,43 @@ describe('Handlers', () => {
       var result = loadTriggerNode(cheerio.load('<trigger>end</trigger>')('trigger'));
       expect(result.name).toEqual('end');
     });
-
-    it('triggers goto', () => {
-      var trigNode = cheerio.load('<trigger>goto test</trigger>')('trigger');
-      var rootNode = cheerio.load('<quest></quest>')('quest');
-      var testNode = cheerio.load('<roleplay id="test">Test Node</roleplay>')('roleplay');
-
-      rootNode.append(testNode);
-      rootNode.append(trigNode);
-
-      var result = loadTriggerNode(trigNode);
-      expect(result.name).toEqual('goto');
-      expect(result.node.text()).toEqual('Test Node');
-    });
   });
 
-  describe('handleChoice', () => {
+  describe('handleAction', () => {
     it('skips hidden triggers', () => {
       var node = cheerio.load('<roleplay><choice><trigger if="a">goto 5</trigger><trigger>end</trigger></choice></roleplay>')('roleplay');
-      var result = handleChoice(node, 0, defaultQuestContext());
+      var result = handleAction(node, 0, defaultQuestContext());
       expect(result.text()).toEqual('end');
     });
 
     it('uses enabled triggers', () => {
-      var node = cheerio.load('<roleplay><choice><trigger if="a">goto 5</trigger><trigger>end</trigger></choice></roleplay>')('roleplay');
-      var result = handleChoice(node, 0, {...defaultQuestContext(), scope: {a: true}});
-      expect(result.text()).toEqual('goto 5');
+      var quest = cheerio.load('<quest><roleplay><choice><trigger if="a">goto 5</trigger><trigger>end</trigger><roleplay id="5">expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
+      var result = handleAction(quest.children().eq(0), 0, {...defaultQuestContext(), scope: {a: true}});
+      expect(result.text()).toEqual('expected');
     });
 
+    it('can handle multiple gotos', () => {
+      var quest = cheerio.load('<quest><roleplay><choice><trigger>goto 1</trigger><trigger id="1">goto 2</trigger><trigger id="2">end</trigger><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
+      var result = handleAction(quest.children().eq(0), 0, defaultQuestContext());
+      expect(result.text()).toEqual('end');
+    })
+
     it('goes to correct choice', () => {
-      var node = cheerio.load('<roleplay><choice></choice><choice><roleplay>herp</roleplay></choice></roleplay>')('roleplay');
-      var result = handleChoice(node, 1, defaultQuestContext());
+      var node = cheerio.load('<roleplay><choice></choice><choice><roleplay>herp</roleplay><roleplay>derp</roleplay></choice></roleplay>')('roleplay');
+      var result = handleAction(node, 1, defaultQuestContext());
       expect(result.text()).toEqual('herp');
     });
 
     it('goes to next roleplay node', () => {
       var node = cheerio.load('<roleplay id="rp1">rp1</roleplay><roleplay>rp2</roleplay>')('#rp1');
-      var result = handleChoice(node, 1, defaultQuestContext());
+      var result = handleAction(node, 1, defaultQuestContext());
       expect(result.text()).toEqual('rp2');
+    });
+
+    it('goes to correct event', () => {
+      var node = cheerio.load('<roleplay><event></event><event on="test"><roleplay>herp</roleplay><roleplay>derp</roleplay></event></roleplay>')('roleplay');
+      var result = handleAction(node, 'test', defaultQuestContext());
+      expect(result.text()).toEqual('herp');
     });
 
     it('immediately follows triggers on otherwise empty choices', () => {
@@ -252,163 +251,14 @@ describe('Handlers', () => {
       rootNode.append(choiceNode);
       rootNode.append(jumpNode);
 
-      var result = handleChoice(choiceNode, 0, defaultQuestContext());
+      var result = handleAction(choiceNode, 0, defaultQuestContext());
       expect(result.text()).toEqual('Jumped');
     });
 
     it('does not immediately follow triggers on non-empty choices', () => {
       var node = cheerio.load('<roleplay><choice><roleplay>Not empty</roleplay><trigger>goto jump</trigger></choice></roleplay><roleplay id="jump">Hello</roleplay>')('roleplay');
-      var result = handleChoice(node, 0, defaultQuestContext());
+      var result = handleAction(node, 0, defaultQuestContext());
       expect(result.text()).toEqual('Not empty');
     });
-
-    it('errors if choice not enabled');
-    it('errors if choice does not contain enabled roleplay/choice/trigger');
   });
 });
-
-/*
-test('<end> sets title and icon', function() {
-  var result = (new questParser()).init(fEnd);
-  assert.equal(result.title, 'endtitle');
-  assert.equal(result.icon, 'endicon');
-});
-test('<end> returns ending dialog text with end button', function() {
-  var result = (new questParser()).init(fEnd);
-  assert.equal(result.type, 'dialog');
-  assert.equal(result.contents.innerHTML, "<p>The End</p><a>End</a>")
-});
-test('<end> throws if any other special tags within', function() {
-  var fixtures = ['endBadEnd', 'endBadChoice', 'endBadEncounter', 'endBadRoleplay'];
-  for (var i = 0; i < fixtures.length; i++) {
-    assert.throws(function() {
-      (new questParser()).init(fixture(fixtures[i]));
-    },
-    Error, "<end> cannot contain tag");
-  }
-});
-test ('<end> must have win or lose attribute', function() {
-  assert.throws(function() {
-    (new questParser()).init(fixture('endBadAttr'));
-  },
-  Error, "<end> must have win or lose attribute");
-});
-test('<roleplay> sets title and icon', function() {
-  var result = (new questParser()).init(fRoleplay);
-  assert.equal(result.title, 'rptitle');
-  assert.equal(result.icon, 'rpicon');
-});
-test('<roleplay> without <choice> has inner text and Next button', function() {
-  var result = (new questParser()).init(fRoleplay);
-  assert.equal(result.type, 'dialog');
-  assert.equal(result.contents.innerHTML, "<p>Dialog</p><a>Next</a>")
-});
-test('<roleplay> displays choices as buttons', function() {
-  var result = (new questParser()).init(fixture('roleplayChoice'));
-  assert.equal(result.contents.innerHTML, "<a>1</a><a>2</a>")
-});
-test('<roleplay> throws if <choice> text is "End"', function() {
-  assert.throws(function() {
-    (new questParser()).init(fixture('roleplayCustomEndChoice'));
-  },
-  Error, "<choice> text cannot be \"End\"");
-});
-test('<roleplay> throws if no inner text in <choice>', function() {
-  assert.throws(function() {
-    (new questParser()).init(fixture('roleplayChoiceNoInner'));
-  },
-  Error, "<choice> must contain choice text");
-});
-test('<choice> throws if no special tag within', function() {
-  assert.throws(function() {
-    (new questParser()).init(fixture('choiceNoInterior'));
-  },
-  Error, "<choice> without id must have at least one of");
-});
-test('<choice goto> jumps to target with id', function() {
-  throw new Error("Unimplemented");
-});
-test('<choice goto> without matching target throws', function() {
-  throw new Error("Unimplemented");
-});
-test('<choice> throws if choice within', function() {
-  assert.throws(function() {
-    (new questParser()).init(fixture('choiceInChoice'));
-  },
-  Error, "<choice> node cannot have <choice> child");
-});
-test('<encounter> sets icon', function() {
-  var result = (new questParser()).init(fEncounter);
-  assert.equal(result.icon, "eicon");
-});
-test('<encounter> returns enemies', function() {
-  var result = (new questParser()).init(fEncounter);
-  assert.equal(result.type, 'encounter');
-  assert.deepEqual(result.contents, ["1", "2"]);
-});
-test('<encounter> requires enemies', function() {
-  assert.throws(function() {
-    (new questParser()).init(fixture('encounterNoEnemies'));
-  },
-  Error, "<encounter> has no <e> children");
-});
-test('<encounter> requires win/lose choices', function() {
-  assert.throws(function() {
-    (new questParser()).init(fixture('encounterWinOnly'));
-  },
-  Error, "<encounter> missing <choice lose> child");
-  assert.throws(function() {
-    (new questParser()).init(fixture('encounterLoseOnly'));
-  },
-  Error, "<encounter> missing <choice win> child");
-});
-test('<encounter> throws on choice without win/lose', function() {
-  assert.throws(function() {
-    (new questParser()).init(fixture('encounterInvalidChoice'));
-  },
-  Error, "Encounter choice without win/lose attribute");
-});
-test('<encounter> throws on element neither <e> nor <choice>', function() {
-  assert.throws(function() {
-    (new questParser()).init(fixture('encounterInvalidElement'));
-  },
-  Error, "Invalid child element");
-});
-test('choiceEvent throws on bad data', function() {
-  assert.throws(function() {
-    var p = (new questParser());
-    p.choiceEvent("test");
-  },
-  Error, "Invalid choiceEvent");
-});
-test('choiceEvent enters first child node', function() {
-  var p = new questParser();
-  p.init(fixture('choiceEvent'));
-  var result = p.choiceEvent(0);
-  assert.equal(result.type, 'dialog');
-  assert.equal(result.contents.innerHTML, '<p>test</p><a>Next</a>');
-});
-test('choiceEvent returns end type when end choice reached', function() {
-  var p = new questParser();
-  p.init(fEnd);
-  assert.equal(p.choiceEvent(0).type, 'end');
-});
-test('choiceEvent selects win choice on win', function() {
-  var p = new questParser();
-  p.init(fEncounter);
-  var result = p.choiceEvent('win');
-  assert.equal(result.type, 'dialog');
-  assert.equal(result.contents.innerHTML, '<p>win</p><a>Next</a>');
-});
-test('choiceEvent selects lose choice on lose', function() {
-  var p = new questParser();
-  p.init(fEncounter);
-  var result = p.choiceEvent('lose');
-  assert.equal(result.type, 'dialog');
-  assert.equal(result.contents.innerHTML, '<p>lose</p><a>Next</a>');
-});
-test('<e show-if=""> is properly (and safely) evaluated', function() {
-  throw new Error("Unimplemented");
-});
-test('loop terminates if no next node');
-*/

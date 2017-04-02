@@ -73,41 +73,31 @@ export function getEventParameters(parent: XMLElement, event: string, ctx: Quest
   }
 }
 
-// The passed choice parameter is an number indicating the choice number in the XML element, including conditional choices.
-export function handleChoice(parent: XMLElement, choice: number, ctx: QuestContext): XMLElement {
-  const pnode = new ParserNode(parent, ctx);
-
-  // Scan the parent node to find the choice with the right number
-  let choiceIdx = -1;
-  let child = pnode.loopChildren((tag, child) => {
-    if (tag !== 'choice') {
-      return;
-    }
-    choiceIdx++;
-
-    if (choiceIdx === choice) {
-      return child;
-    }
-  });
-
-  // If we find our choice, push it onto the stack and load it.
-  if (child) {
-    return loadChoiceOrEventNode(child, ctx);
-  }
-
-  // This happens on lookup error or default "Next"/"End" event
-  if (pnode.loopChildren((tag) => { if (tag === 'end') { return true; }})) {
-    return null;
-  }
-  const nextNode = pnode.getNext();
-  return (nextNode) ? nextNode.elem : null;
+function getTriggerId(elem: XMLElement): string {
+  const m = elem.text().trim().match(/\s*goto\s+(.*)/);
+  return (m) ? m[1] : null;
 }
 
-// The passed event parameter is a string indicating which event to fire based on the "on" attribute.
-// Returns the card inside of / referenced by the event element
-export function handleEvent(parent: XMLElement, event: string, ctx: QuestContext): XMLElement {
-  const child = getEvent(parent, event, ctx);
-  return loadChoiceOrEventNode(child, ctx);
+// The passed action parameter is either
+// - a number indicating the choice number in the XML element, including conditional choices.
+// - a string indicating which event to fire based on the "on" attribute.
+// Returns the card inside of / referenced by the choice/event element
+export function handleAction(parent: XMLElement, action: number|string, ctx: QuestContext): XMLElement {
+  let pnode = (new ParserNode(parent, ctx)).getNext(action);
+  if (!pnode) {
+    return null;
+  }
+
+  // Immediately act on any gotos
+  while (pnode.elem.get(0).tagName === 'trigger') {
+    let id = getTriggerId(pnode.elem);
+    if (id) {
+      pnode = pnode.gotoId(id);
+    } else {
+      break;
+    }
+  }
+  return (pnode) ? pnode.elem : null;
 }
 
 export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResult {
@@ -265,19 +255,6 @@ export function loadTriggerNode(node: XMLElement): TriggerResult {
       name: 'end',
     };
   }
-
-  const m = text.match(/\s*goto\s+(.*)/);
-  if (m) {
-    const id = m[1];
-
-    // Return the destination element with that id.
-    return {
-      type: 'Trigger',
-      node: (new ParserNode(node, null)).gotoId(id).elem,
-      name: 'goto',
-    };
-  }
-
   throw new Error('invalid trigger ' + text);
 }
 
@@ -289,40 +266,4 @@ function generateIconElements(content: string): string {
   return content.replace(/\[([a-zA-Z_0-9]*)\]/g, (match:string, group:string): string => {
     return `<img class="inline_icon" src="images/${group}_small.svg">`;
   });
-}
-
-function loadChoiceOrEventNode(node: XMLElement, ctx: QuestContext): XMLElement {
-  // If there's only one child and it's a trigger, activate it immediately
-  const children = node.children();
-  if (children.length === 1 && children.get(0).tagName === 'trigger') {
-    return loadTriggerNode(children.eq(0)).node;
-  }
-
-  const child: any = (new ParserNode(node, ctx)).loopChildren((tag, n) => {
-    if (tag === 'event' || tag === 'choice') {
-      throw new Error('Node cannot have <event> or <choice> child');
-    }
-
-    if ((tag === 'combat' || tag === 'trigger' || tag === 'roleplay')) {
-      return n;
-    }
-  });
-
-  if (!child) {
-    throw new Error('Node without goto attribute must have at least one of <combat> or <roleplay> or <trigger>');
-  }
-
-  // Dive in to the first element.
-  return loadNode(child);
-}
-
-function loadNode(node: XMLElement): XMLElement {
-  switch(node.get(0).tagName.toLowerCase()) {
-    case 'combat':
-    case 'roleplay':
-    case 'trigger':
-      return node;
-    default:
-      throw new Error('Unknown or unexpected node: ' + node.get(0).tagName);
-  }
 }

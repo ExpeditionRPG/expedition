@@ -5,6 +5,11 @@ import {QuestContext} from '../reducers/QuestTypes'
 const Clone = require('clone');
 const Math = require('mathjs') as any;
 
+function isNumeric(n: any): boolean {
+  // http://stackoverflow.com/questions/9716468/is-there-any-function-like-isnumeric-in-javascript-to-validate-numbers
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 export class ParserNode {
   public elem: XMLElement;
   private ctx: QuestContext;
@@ -14,30 +19,37 @@ export class ParserNode {
     this.ctx = ctx;
   }
 
-  getNext(): ParserNode {
-    let elem = this.elem;
-    while (true) {
-      if (elem.length === 0) {
-        return null;
-      }
+  getNext(key?: string|number): ParserNode {
+    let next: XMLElement = null;
+    if (key === undefined) {
+      next = this.getNextNode();
+    } else if (isNumeric(key)) {
+      // Scan the parent node to find the choice with the right number
+      let idx = (typeof(key) === 'number') ? key : parseInt(key, 10);
+      let choiceIdx = -1;
+      next = this.loopChildren((tag, child) => {
+        if (tag !== 'choice') {
+          return;
+        }
+        choiceIdx++;
+        if (choiceIdx !== idx) {
+          return;
+        }
 
-      const sibling = elem.next();
-
-      // Skip control elements
-      if (sibling !== null && sibling.length > 0 
-          && !this.isElemControl(sibling) 
-          && this.isElemEnabled(sibling)) {
-        return new ParserNode(sibling, this.ctx);
-      }
-
-      // Continue searching neighbors if we have neighbors, otherwise
-      // search in the parent elem.
-      if (sibling !== null && sibling.length > 0) {
-        elem = sibling;
-      } else {
-        elem = elem.parent();
-      }
+        let result = child.children().eq(0);
+        if (this.isElemEnabled(result)) {
+          return result;
+        }
+        return this.getNextNode(result);
+      }) || this.getNextNode();
+    } else {
+      next = this.loopChildren((tag, c) => {
+        if (c.attr('on') === key) {
+          return c.children().eq(0);
+        }
+      }) || null;
     }
+    return (next) ? new ParserNode(next, this.ctx) : null;
   }
 
   gotoId(id: string): ParserNode {
@@ -60,6 +72,33 @@ export class ParserNode {
       let v = cb(tag, c);
       if (v !== undefined) {
         return v;
+      }
+    }
+  }
+
+  private getNextNode(elem?: XMLElement): XMLElement {
+    if (!elem) {
+      elem = this.elem;
+    }
+    while (true) {
+      if (elem.length === 0) {
+        return null;
+      }
+
+      const sibling = elem.next();
+
+      if (sibling !== null && sibling.length > 0
+          && !this.isElemControl(sibling)
+          && this.isElemEnabled(sibling)) {
+        return sibling;
+      }
+
+      // Continue searching neighbors if we have neighbors, otherwise
+      // search in the parent elem.
+      if (sibling !== null && sibling.length > 0) {
+        elem = sibling;
+      } else {
+        elem = elem.parent();
       }
     }
   }
