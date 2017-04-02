@@ -418,6 +418,7 @@ body {
       background-color: $bg_interactive !important;
       border: $border_accent !important;
       margin-top: 0 !important;
+      user-select: all;
     }
 
     input {

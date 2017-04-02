@@ -15,11 +15,11 @@ const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): F
     quests: [
 // For dev testing only - comment out before deploys
       // {id: '-1', title: 'Test end quest', summary: 'DEV', publishedurl: 'quests/test_end_quest.xml'},
-// Actual quests (ID's are quest IDs with user id = 000000000000000000000)
-      {id: '000000000000000000000_0B7K9abSH1xEOeEZSVVMwNHNqaFE', title: 'Learning to Adventure', summary: 'Your first adventure.', publishedurl: 'quests/learning_to_adventure.xml'},
-      {id: '000000000000000000000_0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs', title: 'Oust Albanus', summary: 'Your party encounters a smelly situation.', publishedurl: 'quests/oust_albanus.xml'},
-      {id: '000000000000000000000_0B7K9abSH1xEORjdkMWtTY3ZtNGs', title: 'Mistress Malaise', summary: 'Mystery, Misfortune, and a Mistress.', publishedurl: 'quests/mistress_malaise.xml'},
-      {id: '000000000000000000000_0B7K9abSH1xEOUUR1Z0lncm9NRjQ', title: 'Dungeon Crawl', summary: 'How deep can you delve?', publishedurl: 'quests/dungeon_crawl.xml'},
+// Actual quests (id's generated from publishing, but don't leave them published!)
+      {id: '0B7K9abSH1xEOeEZSVVMwNHNqaFE', title: 'Learning to Adventure', summary: 'Your first adventure.', publishedurl: 'quests/learning_to_adventure.xml'},
+      {id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs', title: 'Oust Albanus', summary: 'Your party encounters a smelly situation.', publishedurl: 'quests/oust_albanus.xml'},
+      {id: '0B7K9abSH1xEORjdkMWtTY3ZtNGs', title: 'Mistress Malaise', summary: 'Mystery, Misfortune, and a Mistress.', publishedurl: 'quests/mistress_malaise.xml'},
+      {id: '0B7K9abSH1xEOUUR1Z0lncm9NRjQ', title: 'Dungeon Crawl', summary: 'How deep can you delve?', publishedurl: 'quests/dungeon_crawl.xml'},
     ],
     user: state.user,
   };
