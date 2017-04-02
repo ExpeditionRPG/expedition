@@ -5,8 +5,6 @@ import {encounters} from '../Encounters'
 import {ParserNode} from './Node'
 import {evaluateOp, evaluateContentOps, updateContext} from './Context'
 
-const Cheerio = require('cheerio');
-
 export interface CombatResult {
   type: 'Combat';
   icon: string;
@@ -30,47 +28,18 @@ export interface TriggerResult {
 }
 
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
-// Returns the event element itself; handy for getting event parameters
-export function getEvent(parent: XMLElement, event: string, ctx: QuestContext): XMLElement {
-  const child = (new ParserNode(parent, ctx)).loopChildren((tag, c) => {
-    if (c.attr('on') === event) {
-      return c;
-    }
-  });
-
-  if (!child) {
-    throw new Error('Could not find child with on="' + event + '"');
-  }
-  return child;
-};
-
-// The passed event parameter is a string indicating which event to fire based on the "on" attribute.
 // Returns the (cleaned) parameters of the event element
 export function getEventParameters(parent: XMLElement, event: string, ctx: QuestContext): EventParameters {
-  const node = getEvent(parent, event, ctx).get(0);
-  const cheeriod = Cheerio(node).get(0);
-  // TODO this is a hack b/c QC and app don't currently init quest with the same XML format
-  // from Quest Creator
-  // https://github.com/ExpeditionRPG/expedition-app/issues/245
-  if (cheeriod) {
-    return cleanParams(cheeriod.attribs);
-  // from App
-  } else {
-    const params: any = {};
-    const attributes = node.attributes;
-    for (let i = 0; i < attributes.length; i++) {
-      params[attributes[i].name] = attributes[i].value;
-    }
-    return cleanParams(params);
+  const evt = (new ParserNode(parent, ctx)).getNext(event);
+  if (!evt) {
+    return null;
   }
-
-  function cleanParams(obj: any): EventParameters {
-    const ret: EventParameters = {};
-    if (obj.xp) { ret.xp = (obj.xp == 'true'); }
-    if (obj.loot) { ret.loot = (obj.loot == 'true'); }
-    if (obj.heal) { ret.heal = parseInt(obj.heal); }
-    return ret;
-  }
+  const p = evt.elem.parent();
+  const ret: EventParameters = {};
+  if (p.attr('xp')) { ret.xp = (p.attr('xp') == 'true'); }
+  if (p.attr('loot')) { ret.loot = (p.attr('loot') == 'true'); }
+  if (p.attr('heal')) { ret.heal = parseInt(p.attr('heal'), 10); }
+  return ret;
 }
 
 function getTriggerId(elem: XMLElement): string {

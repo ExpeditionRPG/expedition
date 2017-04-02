@@ -1,5 +1,5 @@
 import {mount} from 'enzyme'
-import {loadRoleplayNode, loadCombatNode, loadTriggerNode, handleAction} from './Handlers'
+import {loadRoleplayNode, loadCombatNode, loadTriggerNode, handleAction, getEventParameters} from './Handlers'
 import {defaultQuestContext} from '../reducers/QuestTypes'
 
 declare var global: any;
@@ -203,6 +203,20 @@ describe('Handlers', () => {
     it('triggers end', () => {
       var result = loadTriggerNode(cheerio.load('<trigger>end</trigger>')('trigger'));
       expect(result.name).toEqual('end');
+    });
+  });
+
+  describe('getEventParameters', () => {
+    it('gets parameters', () => {
+      var node = cheerio.load('<combat><event on="win" heal="5" loot="false" xp="false"><roleplay></roleplay></event></combat>')('combat');
+      expect(getEventParameters(node, 'win', defaultQuestContext())).toEqual({
+        heal: 5, loot: false, xp: false
+      });
+    });
+
+    it('safely handles event with no params', () => {
+      var node = cheerio.load('<combat><event on="win"><roleplay></roleplay></event></combat>')('combat');
+      expect(getEventParameters(node, 'win', defaultQuestContext())).toEqual({});
     });
   });
 
