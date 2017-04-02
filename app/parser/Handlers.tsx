@@ -57,14 +57,19 @@ export function handleAction(parent: XMLElement, action: number|string, ctx: Que
     return null;
   }
 
-  // Immediately act on any gotos
-  while (pnode.elem.get(0).tagName === 'trigger') {
+  // Immediately act on any gotos (with a max depth)
+  let i = 0;
+  for (; i < 100 && pnode.elem.get(0).tagName === 'trigger'; i++) {
     let id = getTriggerId(pnode.elem);
     if (id) {
       pnode = pnode.gotoId(id);
     } else {
       break;
     }
+  }
+
+  if (i >= 100) {
+    throw new Error('Trigger follow depth exceeded');
   }
   return (pnode) ? pnode.elem : null;
 }
