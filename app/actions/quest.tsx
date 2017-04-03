@@ -145,7 +145,11 @@ export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)
     if (metaNoDefaults) {
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
       dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
-      return $.post('/publish/' + quest.id, xmlResult.getResult()+'', function(result_quest_id: string) {
+      return $.ajax({
+        type: 'POST',
+        url: '/publish/' + quest.id,
+        data: xmlResult.getResult()+'',
+      }).done((result_quest_id: string) => {
         quest.published = (new Date(Date.now()).toISOString());
         dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
       }).fail(pushHTTPError);

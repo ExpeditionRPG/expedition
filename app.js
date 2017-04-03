@@ -19,9 +19,12 @@ const app = express();
 // accurately log requests.
 app.use(logging.requestLogger);
 
-app.use(bodyParser.text({type:'*/*'}));
-app.use(bodyParser.json({type:'json/*'}));
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.text({ type:'*/*', extended: true, limit: '5mb' }));
+// TODO: */* overrides all other body parsers. Eventually we'll want text to be the default
+// but allow for urlencoding and json parsing too, which will require extensive QC + app testing.
+// Issue / discussion: https://github.com/ExpeditionRPG/expedition-quest-creator/issues/228
+// app.use(bodyParser.json({ type:'json/*' }));
+// app.use(bodyParser.urlencoded({ extended: true, limit: '5mb' })); // for parsing application/x-www-form-urlencoded
 
 app.disable('etag');
 
