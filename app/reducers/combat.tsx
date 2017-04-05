@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {DifficultyType, CombatDifficultySettings, CombatAttack, MidCombatPhase, EndCombatPhase, Enemy, Loot, CombatState, isCombatPhase} from './QuestTypes'
 import {AppState} from './StateTypes'
 import {InitCombatAction, CombatTimerStopAction, TierSumDeltaAction, AdventurerDeltaAction, NavigateAction, CombatVictoryAction} from '../actions/ActionTypes'
-import {loadCombatNode} from '../parser/Handlers'
+import {loadCombatNode} from '../components/Combat'
 import {SettingsType} from '../reducers/StateTypes'
 
 function getDifficultySettings(difficulty: DifficultyType): CombatDifficultySettings {

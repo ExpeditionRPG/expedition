@@ -7,9 +7,10 @@ import TimerCard from './base/TimerCard'
 import theme from '../theme'
 import {capitalizeFirstLetter, numberToWord, MAX_ADVENTURER_HEALTH, REGEX} from '../constants'
 import {getEventParameters} from '../parser/Handlers'
-
+import {encounters} from '../Encounters'
 import {isSurgeRound} from '../reducers/combat'
 import {XMLElement, SettingsType, CardState, CardName} from '../reducers/StateTypes'
+import {ParserNode} from '../parser/Node'
 import {CombatState, CombatPhaseNameType, MidCombatPhase, EndCombatPhase, EventParameters, Enemy, Loot, QuestContext} from '../reducers/QuestTypes'
 
 
@@ -37,6 +38,44 @@ export interface CombatDispatchProps {
 }
 
 export interface CombatProps extends CombatStateProps, CombatDispatchProps {};
+
+export interface CombatResult {
+  type: 'Combat';
+  icon: string;
+  enemies: Enemy[];
+  ctx: QuestContext;
+}
+
+export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResult {
+  let enemies: Enemy[] = [];
+  (new ParserNode(node, ctx)).loopChildren((tag, c) => {
+    switch (tag) {
+      case 'e':
+        let text = c.text();
+        const encounter = encounters[text.toLowerCase()];
+
+        if (!encounter) {
+          // If we don't know about the enemy, just assume tier 1.
+          enemies.push({name: text, tier: 1});
+        } else {
+          enemies.push({name: encounter.name, tier: encounter.tier, class: encounter.class});
+        }
+        break;
+      case 'event':
+        break;
+      default:
+        throw new Error('Invalid child element: ' + tag);
+    }
+  });
+
+  // Combat is stateless, so parser's context is not returned here.
+  return {
+    type: 'Combat',
+    icon: node.attr('icon'),
+    enemies,
+    ctx,
+  };
+}
 
 const numerals: {[k: number]: string;} = {
   1: 'I',

@@ -1,3 +1,21 @@
+import {defaultQuestContext} from '../reducers/QuestTypes'
+import {loadCombatNode} from './Combat'
+
+var cheerio: any = require('cheerio');
+
+describe('combat', () => {
+  it('parses enemies', () => {
+    // "Unknown" enemies are given tier 1.
+    // Known enemies' tier is parsed from constants.
+    var result = loadCombatNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultQuestContext());
+    expect(result.enemies).toEqual([
+      {name: 'Test', tier: 1},
+      {name: 'Lich', tier: 4, class: 'Undead'},
+      {name: 'Lich', tier: 4, class: 'Undead'}
+    ]);
+  })
+});
+
 /*
 test('Loot returns viable value with tier sum = 1', function() {
   var loot = calculateLoot({

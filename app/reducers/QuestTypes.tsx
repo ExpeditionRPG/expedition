@@ -35,6 +35,7 @@ export interface QuestContext {
   // nodes that are potentially parseable via MathJS.
   scope: any; // TODO: required fields later
   views: any; // TODO: {string: number}
+  combat: MidCombatPhase;
 }
 export function defaultQuestContext(): QuestContext {
   // Caution: Scope is the API for Quest Creators.
@@ -74,6 +75,12 @@ export function defaultQuestContext(): QuestContext {
       },
     },
     views: {},
+    combat: { // TODO
+      enemies: [], 
+      numAliveAdventurers: getStore().getState().settings.numPlayers, 
+      roundCount: 0, 
+      tier: 0
+    }
   };
 }
 

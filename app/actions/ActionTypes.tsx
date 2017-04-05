@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {CardState, CardName, SettingNameType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, XMLElement} from '../reducers/StateTypes'
 
 import {QuestContext, QuestDetails, Enemy, CombatPhaseNameType, DifficultyType} from '../reducers/QuestTypes'
-import {CombatResult} from '../parser/Handlers'
+import {CombatResult} from '../components/Combat'
 import {ParserNode} from '../parser/Node'
 
 export interface NavigateAction extends Redux.Action {
