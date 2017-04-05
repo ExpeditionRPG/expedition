@@ -55,15 +55,15 @@ export default class Main extends React.Component<MainProps, {}> {
         card = <QuestStartContainer/>;
         break;
       case 'QUEST_CARD':
-        if (!state.quest || !state.quest.result) {
+        if (!state.quest || !state.quest.node) {
           return this.state;
         }
-        switch(state.quest.result.type) {
-          case 'Roleplay':
-            card = <RoleplayContainer node={state.quest.node} roleplay={state.quest.result}/>;
+        switch(state.quest.node.getTag()) {
+          case 'roleplay':
+            card = <RoleplayContainer node={state.quest.node}/>;
             break;
-          case 'Combat':
-            card = <CombatContainer card={state.card} node={state.quest.node} icon={state.quest.result.icon} combat={state.combat}/>;
+          case 'combat':
+            card = <CombatContainer card={state.card} node={state.quest.node.elem} icon={state.quest.result && state.quest.result.icon} combat={state.combat}/>;
             break;
           default:
             console.log('Unknown quest card name ' + name);

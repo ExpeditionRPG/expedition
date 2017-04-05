@@ -1,15 +1,14 @@
 import * as React from 'react'
 import Card from './base/Card'
 import Button from './base/Button'
-import {XMLElement, SettingsType} from '../reducers/StateTypes'
+import {SettingsType} from '../reducers/StateTypes'
 
 export interface QuestStartStateProps {
-  node: XMLElement;
   settings: SettingsType;
 }
 
 export interface QuestStartDispatchProps {
-  onNext: (node: XMLElement) => void;
+  onNext: () => void;
 }
 
 export interface QuestStartProps extends QuestStartStateProps, QuestStartDispatchProps {};
@@ -39,7 +38,7 @@ const QuestStart = (props: QuestStartProps): JSX.Element => {
         a decision or hit the "Next" button during the story (not during combat).
       </p>}
 
-      <Button onTouchTap={() => props.onNext(props.node)}>Next</Button>
+      <Button onTouchTap={() => props.onNext()}>Next</Button>
     </Card>
   );
 }

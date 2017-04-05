@@ -1,11 +1,36 @@
 // TODO: using require prevents this file from breaking, but can't actually write
 // useful tests without using import
 // (see: http://airbnb.io/enzyme/docs/guides/mocha.html)
-import Roleplay from './Roleplay'
+import Roleplay, {loadRoleplayNode, RoleplayResult} from './Roleplay'
+import {XMLElement} from '../reducers/StateTypes'
+import {defaultQuestContext, QuestContext} from '../reducers/QuestTypes'
+import {ParserNode} from '../parser/Node'
+
+var cheerio: any = require('cheerio');
+
+function loadRP(xml: any, ctx: QuestContext): RoleplayResult {
+  return loadRoleplayNode(new ParserNode(xml, ctx));
+}
 
 describe('Roleplay', () => {
-  it('Test', () => {
-    expect(true).toEqual(true);
+  it('parses icons in body', () => {
+    // Icons are turned into images
+    var result = loadRP(cheerio.load('<roleplay><p>[roll]</p></roleplay>')('roleplay'), defaultQuestContext());
+    expect(result.content).toEqual([ { type: 'text', text: '<p><img class="inline_icon" src="images/roll_small.svg"></p>' } ]);
+
+    // Inside of a choice
+    var result = loadRP(cheerio.load('<roleplay><choice text="[roll]"></choice></roleplay>')('roleplay'), defaultQuestContext());
+    expect(result.choices).toEqual([ { idx: 0, text: '<img class="inline_icon" src="images/roll_small.svg">' } ]);
+
+    // Inside of an instruction
+    var result = loadRP(cheerio.load('<roleplay><instruction>Text [roll]</instruction></roleplay>')('roleplay'), defaultQuestContext());
+    expect(result.content).toEqual([ { type: 'instruction', text: 'Text <img class="inline_icon" src="images/roll_small.svg">' } ]);
+  });
+
+  it('respects in-card conditionals when computing Next vs End button', () => {
+    let quest = cheerio.load('<quest><roleplay><p>{{a=true}}</p></roleplay><trigger if="a">end</trigger><roleplay>test</roleplay></quest>')('quest');
+    var result = loadRP(quest.children().eq(0), defaultQuestContext());
+    expect (result.choices).toEqual([{ text: 'End', idx: 0}]);
   });
 });
 

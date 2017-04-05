@@ -88,6 +88,8 @@ function parseOpString(str: string): string {
 }
 
 export function updateContext(node: XMLElement, ctx: QuestContext): QuestContext {
+  if (!node) return ctx;
+
   const nodeId = node.attr('id');
   let newContext = Clone(ctx);
   if (nodeId) {

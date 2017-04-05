@@ -1,5 +1,6 @@
 import {ParserNode} from './Node'
-import {defaultQuestContext} from '../reducers/QuestTypes'
+import {defaultQuestContext, QuestContext} from '../reducers/QuestTypes'
+import {XMLElement} from '../reducers/StateTypes'
 declare var global: any;
 
 var cheerio: any = require('cheerio');
@@ -39,6 +40,13 @@ describe('Node', () => {
       expect(pnode.getNext('test').elem.text()).toEqual('expected');
     });
   });
+
+  describe('getTag', () => {
+    it('gets the tag', () => {
+      expect(new ParserNode(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultQuestContext()).getTag()).toEqual('roleplay');
+      expect(new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultQuestContext()).getTag()).toEqual('combat');
+    });
+  })
 
   describe('gotoId', () => {
   	it('goes to ID', () => {
@@ -87,4 +95,127 @@ describe('Node', () => {
       expect(result).toEqual('b');
     });
   });
+
+  describe('rendering', () => {
+    const renderedChildren = function(elem: XMLElement, ctx: QuestContext): string[] {
+      const result: string[] = [];
+      new ParserNode(elem, ctx).loopChildren((tag, c) => {
+        result.push(cheerio.html(c));
+      });
+      return result;
+    }
+
+    it('hides children with nothing but variable assignment', () => {
+      // Lines with nothing but variable assignment are hidden
+      expect(renderedChildren(
+        cheerio.load('<roleplay><p>{{text="TEST"}}</p><p>{{text}}</p></roleplay>')('roleplay'), 
+        defaultQuestContext())
+      ).toEqual(['<p>TEST</p>']);
+    });
+
+    it('hides children conditionally', () => {
+      // Unassigned
+      expect(renderedChildren(
+        cheerio.load('<roleplay><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'), 
+        defaultQuestContext())
+      ).toEqual([]);
+
+      // False
+      expect(renderedChildren(
+        cheerio.load('<roleplay><p>{{a=false}}</p><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'),
+        defaultQuestContext()
+      )).toEqual([]);
+
+      // False - multiple conditions
+      expect(renderedChildren(
+        cheerio.load('<roleplay><p>{{a=false}}{{b=true}}</p><choice if="a & b" text="Hidden"></choice></roleplay>')('roleplay'),
+        defaultQuestContext()
+      )).toEqual([]);
+
+      // Zero
+      expect(renderedChildren(
+        cheerio.load('<roleplay><p>{{a=0}}</p><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'),
+        defaultQuestContext()
+      )).toEqual([]);
+    });
+
+    it('shows children conditionally', () => {
+      // True
+      expect(renderedChildren(
+        cheerio.load('<roleplay><p>{{a=true}}</p><choice if="a" text="Visible"></choice></roleplay>')('roleplay'),
+        defaultQuestContext()
+      )).toEqual(['<choice if="a" text="Visible"></choice>']);
+
+      // True - multiple conditions
+      expect(renderedChildren(
+        cheerio.load('<roleplay><p>{{a=true}}{{b=true}}</p><choice if="a & b" text="Visible"></choice></roleplay>')('roleplay'),
+        defaultQuestContext()
+      )).toEqual(['<choice if="a &amp; b" text="Visible"></choice>']);
+
+      // Non-zero
+      expect(renderedChildren(
+        cheerio.load('<roleplay><p>{{a=1}}</p><choice if="a" text="Visible"></choice></roleplay>')('roleplay'),
+        defaultQuestContext()
+      )).toEqual(['<choice if="a" text="Visible"></choice>']);
+    });
+
+    it('displays 0 and 1 properly', () => {
+      expect(renderedChildren(
+        cheerio.load('<roleplay><p>{{a=0}}{{b=1}}</p><p>{{a}}{{b}}</p></roleplay>')('roleplay'),
+        defaultQuestContext()
+      )).toEqual(['<p>01</p>']);
+    });
+
+    it('indirects single-valued array results', () => {
+      expect(renderedChildren(
+        cheerio.load('<roleplay><p>{{r=[5]}}</p><p>{{r}}</p></roleplay>')('roleplay'),
+        defaultQuestContext()
+      )).toEqual(['<p>5</p>']);
+    })
+
+    it('handles multiple ops on one line', () => {
+      expect(renderedChildren(
+        cheerio.load('<roleplay><p>{{text="TEST"}} {{r=[5]}}</p><p>{{text}}{{r}}</p></roleplay>')('roleplay'),
+        defaultQuestContext()
+      )).toEqual(['<p>TEST5</p>']);
+    })
+
+    it('parses ops in instruction nodes', () => {
+      expect(renderedChildren(
+        cheerio.load('<roleplay><p>{{num = 1}}</p><instruction>Hey {{num}}</instruction></roleplay>')('roleplay'),
+        defaultQuestContext()
+      )).toEqual(['<instruction>Hey 1</instruction>']);
+    });
+
+    it('parses ops in choice attribs', () => {
+      expect(renderedChildren(
+        cheerio.load('<roleplay><p>{{num=1}}</p><choice text="Hey {{num}}"></choice></roleplay>')('roleplay'),
+        defaultQuestContext()
+      )).toEqual(['<choice text="Hey 1"></choice>']);
+    });
+
+    it('parses multi-statement ops in body and respects newlines', () => {
+      // If the op ends without an assignment, it's displayed. If it does, it's hidden.
+      expect(renderedChildren(
+        cheerio.load('<roleplay><p>{{a=5;c=7}}</p><p>{{b=7;a}}</p><p>{{a=5\nb=10}}</p><p>{{a=5\nb=10\nc}}</p></roleplay>')('roleplay'),
+        defaultQuestContext()
+      )).toEqual(['<p>5</p>', '<p>7</p>']);
+    });
+
+    it('increments scope._.views.<id>', () => {
+      let ctx = defaultQuestContext();
+      let result = new ParserNode(cheerio.load('<roleplay id="foo"><p>[roll]</p></roleplay>')('roleplay'), ctx);
+      expect(result.ctx.views).toEqual({foo: 1});
+      expect(result.ctx.scope._.viewCount('foo')).toEqual(1);
+      expect(result.ctx.scope._.viewCount('bar')).toEqual(0);
+      result = new ParserNode(cheerio.load('<roleplay id="foo"><p>[roll]</p></roleplay>')('roleplay'), result.ctx);
+      expect(result.ctx.views).toEqual({foo: 2});
+      expect(result.ctx.scope._.viewCount('foo')).toEqual(2);
+      expect(result.ctx.scope._.viewCount('bar')).toEqual(0);
+      result = new ParserNode(cheerio.load('<roleplay id="bar"><p>[roll]</p></roleplay>')('roleplay'), result.ctx);
+      expect(result.ctx.views).toEqual({foo: 2, bar: 1});
+      expect(result.ctx.scope._.viewCount('foo')).toEqual(2);
+      expect(result.ctx.scope._.viewCount('bar')).toEqual(1);
+    });
+  })
 });

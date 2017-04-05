@@ -7,6 +7,7 @@ import {toPrevious, toCard} from '../actions/card'
 import {event, handleCombatTimerStop, combatDefeat, combatVictory, tierSumDelta, adventurerDelta} from '../actions/quest'
 import {AppStateWithHistory, XMLElement, SettingsType, CardName} from '../reducers/StateTypes'
 import {CombatPhaseNameType, MidCombatPhase, QuestContext} from '../reducers/QuestTypes'
+import {ParserNode} from '../parser/Node'
 
 declare var window:any;
 
@@ -31,7 +32,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
       card: ownProps.card,
       settings: state.settings,
       maxTier: maxTier,
-      ctx: state.quest && state.quest.result && state.quest.result.ctx,
+      ctx: state.quest && state.quest.node && state.quest.node.ctx,
       combat: state.combat || {enemies: [], roundCount: 0, numAliveAdventurers: 0, tier: 0, roundTimeMillis: 0, surgePeriod: 0, damageMultiplier: 0},
     };
   } else {
@@ -41,7 +42,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
       combat: Object.assign({}, ownProps.combat, {
         tier: state.combat && state.combat.tier,
         numAliveAdventurers: state.combat && state.combat.numAliveAdventurers}),
-      ctx: state.quest && state.quest.result && state.quest.result.ctx,
+      ctx: state.quest && state.quest.node && state.quest.node.ctx,
       node: ownProps.node,
       maxTier: maxTier,
       icon: ownProps.icon,
@@ -78,7 +79,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       dispatch(toPrevious(cardName, 'PREPARE'));
     },
     onEvent: (node: XMLElement, evt: string, ctx: QuestContext) => {
-      dispatch(event(node, evt, ctx));
+      dispatch(event(new ParserNode(node, ctx), evt));
     },
     onTierSumDelta: (delta: number) => {
       dispatch(tierSumDelta(delta));

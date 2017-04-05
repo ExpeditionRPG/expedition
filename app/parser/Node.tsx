@@ -11,6 +11,20 @@ function isNumeric(n: any): boolean {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+function getNodeAttributes(e: XMLElement): {[key:string]:string;} {
+  // cheerio uses "attribs" instead
+  let attribs: {[key:string]:string;} = (e.get(0) as any).attribs;
+  if (attribs) {
+    return attribs;
+  }
+
+  // Regular XMLElements have NamedNodeMap
+  attribs = {};
+  for (const p of e.get(0).attributes) {
+    if (typeof p.nodeValue !== 'undefined') attribs[p.nodeName] = p.nodeValue;
+  }
+}
+
 export class ParserNode {
   public elem: XMLElement;
   public ctx: QuestContext;
@@ -20,6 +34,10 @@ export class ParserNode {
     this.elem = elem;
     this.ctx = updateContext(elem, ctx);
     this.renderChildren();
+  }
+
+  getTag(): string {
+    return this.elem.get(0).tagName.toLowerCase();
   }
 
   getNext(key?: string|number): ParserNode {
@@ -65,8 +83,8 @@ export class ParserNode {
   private renderChildren() {
     this.renderedChildren = [];
     for (let i = 0; i < this.elem.children().length; i++) {
-      // TODO(scott): Parsing of text nodes using .contents()
-      // Should handle programmatic gotos, for instance.
+      // TODO(scott): Parsing of text nodes using .contents().
+      // We should should handle programmatic gotos, for instance.
 
       let child = this.elem.children().eq(i);
       if (!this.isElemEnabled(child)) {
@@ -75,13 +93,10 @@ export class ParserNode {
 
       let c = child.clone();
 
-      // Evaluate ops in attributes (cheerio uses attribs instead)
-      const attribs = (c.get(0) as any).attribs || c.get(0).attributes;
+      // Evaluate ops in attributes
+      const attribs = getNodeAttributes(c);
       for (let j in attribs) {
-        if (!attribs.hasOwnProperty(j) && j != 'text') {
-          continue;
-        }
-        c.attr(j, evaluateContentOps(c.attr(j), this.ctx));
+        c.attr(j, evaluateContentOps(attribs[j], this.ctx));
       }
 
       // Evaluate all non-control node bodies
