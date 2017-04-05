@@ -11,21 +11,6 @@ export interface CombatResult {
   ctx: QuestContext;
 }
 
-export interface RoleplayResult {
-  type: 'Roleplay';
-  icon: string;
-  title: string;
-  content: RoleplayElement[];
-  choices: Choice[];
-  ctx: QuestContext;
-}
-
-export interface TriggerResult {
-  type: 'Trigger';
-  node: XMLElement;
-  name: string;
-}
-
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
 // Returns the (cleaned) parameters of the event element
 export function getEventParameters(parent: XMLElement, event: string, ctx: QuestContext): EventParameters {
@@ -50,15 +35,15 @@ function getTriggerId(elem: XMLElement): string {
 // - a number indicating the choice number in the XML element, including conditional choices.
 // - a string indicating which event to fire based on the "on" attribute.
 // Returns the card inside of / referenced by the choice/event element
-export function handleAction(parent: XMLElement, action: number|string, ctx: QuestContext): XMLElement {
-  let pnode = (new ParserNode(parent, ctx)).getNext(action);
+export function handleAction(pnode: ParserNode, action: number|string): ParserNode {
+  pnode = pnode.getNext(action);
   if (!pnode) {
     return null;
   }
 
   // Immediately act on any gotos (with a max depth)
   let i = 0;
-  for (; i < 100 && pnode.elem.get(0).tagName.toLowerCase() === 'trigger'; i++) {
+  for (; i < 100 && pnode.getTag() === 'trigger'; i++) {
     let id = getTriggerId(pnode.elem);
     if (id) {
       pnode = pnode.gotoId(id);
@@ -70,7 +55,7 @@ export function handleAction(parent: XMLElement, action: number|string, ctx: Que
   if (i >= 100) {
     throw new Error('Trigger follow depth exceeded');
   }
-  return (pnode) ? pnode.elem : null;
+  return pnode;
 }
 
 export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResult {
@@ -125,106 +110,4 @@ export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResul
     enemies,
     ctx,
   };
-}
-
-export function loadRoleplayNode(node: XMLElement, ctx: QuestContext): RoleplayResult {
-  
-  // Append elements to contents
-  let choices: Choice[] = [];
-  let choiceCount = -1;
-  let children: RoleplayElement[] = [];
-
-  const pnode = new ParserNode(node, ctx);
-
-  pnode.loopChildren((tag, c) => {
-    c = c.clone();
-
-    // Accumulate 'choice' tags in choices[]
-    if (tag === 'choice') {
-      choiceCount++;
-      if (!c.attr('text')) {
-        throw new Error('<choice> inside <roleplay> must have "text" attribute');
-      }
-      const text = c.attr('text');
-      choices.push({text: generateIconElements(text), idx: choiceCount});
-      return;
-    }
-
-    if (tag === 'event') {
-      throw new Error('<roleplay> cannot contain <event>.');
-    }
-
-    const element: RoleplayElement = {
-      type: 'text',
-      text: '',
-    }
-    if (tag === 'instruction') {
-      element.type = 'instruction';
-      element.text = c.html();
-    } else { // text
-      // If we received a Cheerio object, outerHTML will
-      // not be defined. toString will be, however.
-      // https://github.com/cheeriojs/cheerio/issues/54
-      if (c.get(0).outerHTML) {
-        element.text = c.get(0).outerHTML;
-      } else if (c.toString) {
-        element.text = c.toString();
-      } else {
-        throw new Error('Invalid element ' + c);
-      }
-    }
-
-    element.text = generateIconElements(element.text);
-
-    if (element.text !== '') {
-      children.push(element);
-    }
-  });
-
-  // Append a generic 'Next' button if there were no choices,
-  // or an 'End' button if there's also an <End> tag.
-  if (choices.length === 0) {
-    // Handle custom generic next button text based on if we're heading into a trigger node.
-    const nextNode = pnode.getNext();
-    let buttonText = 'Next';
-    if (nextNode && nextNode.elem.get(0).tagName.toLowerCase() === 'trigger') {
-      switch(nextNode.elem.text().toLowerCase()) {
-        case 'end':
-          buttonText = 'End';
-          break;
-      }
-    }
-    choices.push({text: buttonText, idx: 0});
-  }
-
-  return {
-    type: 'Roleplay',
-    title: node.attr('title'),
-    icon: node.attr('icon'),
-    content: children,
-    choices,
-    ctx: pnode.ctx,
-  };
-}
-
-export function loadTriggerNode(node: XMLElement): TriggerResult {
-  const text = node.text().trim();
-  if (text === 'end') {
-    return {
-      type: 'Trigger',
-      node,
-      name: 'end',
-    };
-  }
-  throw new Error('invalid trigger ' + text);
-}
-
-
-// Replaces [icon_name] with <img class="inline_icon" src="images/icon_name.svg">
-function generateIconElements(content: string): string {
-  // \[([a-zA-Z_0-9]*)\]   Contents inside of []'s, only allowing for alphanumeric + _'s
-  // /g                    Multiple times
-  return content.replace(/\[([a-zA-Z_0-9]*)\]/g, (match:string, group:string): string => {
-    return `<img class="inline_icon" src="images/${group}_small.svg">`;
-  });
 }
