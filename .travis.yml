@@ -10,28 +10,3 @@ addons:
     packages:
     - g++-4.8
 before_deploy: "webpack -p --config ./webpack.dist.config.js"
-deploy:
-  - provider: s3
-    access_key_id: AKIAIZRSOSQWOH4SO7JQ
-    secret_access_key:
-      secure: hPzqh1M024KEVkBm6fW5AAM1YjAUzkEI7r8fRMaPOwncjrW4iD+JvGFk9vgAq5YSTgX1vNSarfiFsPQ81ktYwQeHAcAykpqMt6l5Cyn0fNu/8giHlA4tq+ZmaNoY6itgoABjiGILaSTShV5ewkT9xOJpAEivgY89J/xkwPisHj0waqeiDTGjnrzXxiK306s1Xj4T3w5z2xhjLZa06DPaeUovYAr4W5ozKd9MPZUqcP7UbeGkYdia/6qyxw0eYJpDfykuBBEJ65Yd7eer4Jj8I/TgWIHNlU2+0hNSagTrd2Uy2oO9qZOwBV9KxVQB7g/z8+by3H30AU55Vs0dc5t4q6T7Y3XSv8TdCRAOoR0dfPeoAQWEc4clwfRJpSGgnAS1QomhfptOVGojDGMgCSLd0476xWi4fYQe9jV+57KnnV5q+ZSIWnU0SlCAdkqykmrN3HcBts/2bhe1xK3HGoDC+nqkapNYy7+KhjAS8VKg/I62QyWOjl0EbIrevQTF1XwZU5JImUbQCZ1qAuPMF7tLbUw6M3w9y59yYDkvt8AXXLQ8KK3fGQuSYLHJ6yRcPLKK9dTcA+rJIxAdToKL/1J3lKceN7+z1BLmhjSZNSjUGnfSTE5AwzyLSy2HPqQGDpG5fM5EOzEIyl/VQxTwjcJx94OeNQpzuQw4n/r5/w6lqEg=
-    skip_cleanup: true
-    local-dir: www
-    acl: public_read
-    repo: ExpeditionRPG/expedition-app
-    bucket: app.expeditiongame.com
-    region: us-west-2
-    on:
-      branch: master
-  - provider: s3
-    access_key_id: AKIAIZRSOSQWOH4SO7JQ
-    secret_access_key:
-      secure: hPzqh1M024KEVkBm6fW5AAM1YjAUzkEI7r8fRMaPOwncjrW4iD+JvGFk9vgAq5YSTgX1vNSarfiFsPQ81ktYwQeHAcAykpqMt6l5Cyn0fNu/8giHlA4tq+ZmaNoY6itgoABjiGILaSTShV5ewkT9xOJpAEivgY89J/xkwPisHj0waqeiDTGjnrzXxiK306s1Xj4T3w5z2xhjLZa06DPaeUovYAr4W5ozKd9MPZUqcP7UbeGkYdia/6qyxw0eYJpDfykuBBEJ65Yd7eer4Jj8I/TgWIHNlU2+0hNSagTrd2Uy2oO9qZOwBV9KxVQB7g/z8+by3H30AU55Vs0dc5t4q6T7Y3XSv8TdCRAOoR0dfPeoAQWEc4clwfRJpSGgnAS1QomhfptOVGojDGMgCSLd0476xWi4fYQe9jV+57KnnV5q+ZSIWnU0SlCAdkqykmrN3HcBts/2bhe1xK3HGoDC+nqkapNYy7+KhjAS8VKg/I62QyWOjl0EbIrevQTF1XwZU5JImUbQCZ1qAuPMF7tLbUw6M3w9y59yYDkvt8AXXLQ8KK3fGQuSYLHJ6yRcPLKK9dTcA+rJIxAdToKL/1J3lKceN7+z1BLmhjSZNSjUGnfSTE5AwzyLSy2HPqQGDpG5fM5EOzEIyl/VQxTwjcJx94OeNQpzuQw4n/r5/w6lqEg=
-    skip_cleanup: true
-    local-dir: www
-    acl: public_read
-    repo: ExpeditionRPG/expedition-app
-    bucket: beta.expeditiongame.com
-    region: us-west-2
-    on:
-      all_branches: true
