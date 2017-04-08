@@ -17,7 +17,7 @@ exports.getRatingsByQuestId = function(questId, callback) {
 
     let query = Squel.select()
       .from(table)
-      .where('quest_id = ?', questId)
+      .where('questid = ?', questId)
       .where('rating IS NOT NULL');
 
     return Query.run(query, callback);
@@ -46,9 +46,9 @@ exports.submit = function(type, feedback, callback) {
         `;
 
         if (type === 'rating' && feedback.text && feedback.text.length > 0) {
-          Mail.send('expedition+questfeedback@fabricate.io', 'Quest rated ' + feedback.rating + '/5: ' + quest.title, htmlMessage, () => {});
+          Mail.send([quest.email, 'expedition+questfeedback@fabricate.io'], 'Quest rated ' + feedback.rating + '/5: ' + quest.title, htmlMessage, () => {});
         } else if (type === 'report') {
-          Mail.send('expedition+questfeedback@fabricate.io', 'Quest reported: ' + quest.title, htmlMessage, () => {});
+          Mail.send([quest.email, 'expedition+questreported@fabricate.io'], 'Quest reported: ' + quest.title, htmlMessage, () => {});
         }
       });
       Quests.updateRatings(feedback.questid, (err) => {
