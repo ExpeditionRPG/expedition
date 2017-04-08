@@ -93,17 +93,14 @@ function renderPrepare(props: CombatProps): JSX.Element {
   if (props.settings.showHelp) {
     helpText = (
       <ol>
-        <li>Shuffle your abilities. If you don't have enough abilities to draw, shuffle in your discard pile.</li>
-        <li>Draw - but don't look at - the top three.</li>
-        <li>When you begin combat:</li>
-        <ol>
-          <li>Start the timer.</li>
-          <li>Look at your hand and play one ability face up in front of you.</li>
-          {props.settings.multitouch && <li>Place your finger on the screen.</li>}
-          {props.settings.multitouch && <li>When all fingers are down, the timer stops.</li>}
-          {!props.settings.multitouch && <li>Once everyone has selected an ability, tap the screen to stop the timer.</li>}
-          <li>If the timer runs out, you'll take additional damage.</li>
-        </ol>
+        <li>Shuffle your ability draw pile. If you don't have enough abilities to draw, shuffle in your discard pile.</li>
+        <li>Pre-draw three abilities face down.</li>
+        <li>Start the timer.</li>
+        <li>Look at your hand and play one ability.</li>
+        {props.settings.multitouch && <li>Place your finger on the screen.</li>}
+        {props.settings.multitouch && <li>When all fingers are down, the timer stops.</li>}
+        {!props.settings.multitouch && <li>Once everyone has selected an ability, tap the screen to stop the timer.</li>}
+        <li>If the timer runs out, you'll take additional damage.</li>
       </ol>
     );
   }
@@ -145,7 +142,7 @@ function renderResolve(props: CombatProps): JSX.Element {
     helpText = (
       <span>
         <p>
-          Roll a die for each ability with a "<img className="inline_icon" src="images/roll_white_small.svg"></img> &ge; X" and resolve the cards' effects.
+          Roll a die for each ability. If <img className="inline_icon" src="images/roll_white_small.svg"></img> &ge; X, the ability succeeds. Abilities may list additional effects based on the roll, even if they fail.
         </p>
         <p>
           Adventurers may resolve their abilities in any order, and may apply their effects (such as roll and damage modifiers) retroactively to other abilities used this round.
@@ -154,7 +151,7 @@ function renderResolve(props: CombatProps): JSX.Element {
           Note that some enemies take more (or less) damage from certain ability types, as specified on their card.
         </p>
         <p>
-          Any abilities played this round are placed in your discard pile.
+          Place all abilities played this round into your discard pile.
         </p>
       </span>
     );
@@ -215,7 +212,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
       {helpText}
 
       <Picker label="Adventurers" onDelta={(i: number)=>props.onAdventurerDelta(props.settings.numPlayers, i)} value={props.combat.numAliveAdventurers}>
-        Set this to the number of adventurers still fighting. You are defeated when this reaches zero.
+        Set this to the number of adventurers above zero health. You are defeated when this reaches zero.
       </Picker>
 
       <Button onTouchTap={() => props.onDefeat(props.card.name, props.maxTier, props.settings)}>Defeat (Adventurers = 0)</Button>
