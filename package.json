@@ -107,8 +107,6 @@
     "react-addons-test-utils": "^15.4.1",
     "react-dom": "^15.3.2",
     "react-motion": "^0.4.5",
-    "react-native-star-rating": "^1.0.7",
-    "react-native-vector-icons": "^4.0.0",
     "react-redux": "^5.0.2",
     "react-tap-event-plugin": "^2.0.1",
     "readable-stream": "^2.0.5",

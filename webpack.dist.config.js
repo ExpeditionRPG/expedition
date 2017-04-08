@@ -28,13 +28,13 @@ var options = {
     ],
   },
   plugins: [
-    new webpack.optimize.AggressiveMergingPlugin(),
-    new webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      }
+        NODE_ENV: JSON.stringify('production'),
+      },
     }),
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
     new CopyWebpackPlugin([
         { from: 'app/images', to: 'images'},
         { from: 'app/quests', to: 'quests'},
