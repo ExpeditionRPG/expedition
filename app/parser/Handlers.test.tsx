@@ -1,5 +1,5 @@
 import {mount} from 'enzyme'
-import {handleAction, getEventParameters, loadCombatNode} from './Handlers'
+import {handleAction, getEventParameters} from './Handlers'
 import {defaultQuestContext} from '../reducers/QuestTypes'
 import {ParserNode} from './Node'
 
@@ -9,89 +9,17 @@ var cheerio: any = require('cheerio');
 var window: any = cheerio.load('<div>');
 
 describe('Handlers', () => {
-  describe('combat', () => {
-    it('parses enemies', () => {
-      // "Unknown" enemies are given tier 1.
-      // Known enemies' tier is parsed from constants.
-      var result = loadCombatNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultQuestContext());
-      expect(result.enemies).toEqual([
-        {name: 'Test', tier: 1},
-        {name: 'Lich', tier: 4, class: 'Undead'},
-        {name: 'Lich', tier: 4, class: 'Undead'}
-      ]);
-    })
-
-    it('hides enemies conditionally', () => {
-      var node = cheerio.load('<combat><e>a</e><e if="a">Test</e><event on="win"></event><event on="lose"></event></combat>')('combat');
-      var expected = [{name: 'a', tier: 1}];
-
-      // Unassigned
-      let context = defaultQuestContext();
-      var result = loadCombatNode(node, context);
-      expect(result.enemies).toEqual(expected);
-
-      // Boolean
-      context = defaultQuestContext();
-      context.scope.a = false;
-      var result = loadCombatNode(node, context);
-      expect(result.enemies).toEqual(expected);
-
-      // Zero
-      context = defaultQuestContext();
-      context.scope.a = 0;
-      var result = loadCombatNode(node, context);
-      expect(result.enemies).toEqual(expected);
-    });
-
-    it('shows enemies conditionally', () => {
-      var node = cheerio.load('<combat><e if="a">Test</e><event on="win"></event><event on="lose"></event></combat>')('combat');
-      var expected = [{name: 'Test', tier: 1}];
-
-      // Boolean
-      let context = defaultQuestContext();
-      context.scope.a = true;
-      var result = loadCombatNode(node, context);
-      expect(result.enemies).toEqual(expected);
-
-      // Non-zero
-      context = defaultQuestContext();
-      context.scope.a = 1;
-      var result = loadCombatNode(node, context);
-      expect(result.enemies).toEqual(expected);
-    });
-
-    it('sets enemies programmatically', () => {
-      var node = cheerio.load('<combat><e>{{a}}</e><event on="win"></event><event on="lose"></event></combat>')('combat');
-
-      // Not defined
-      let context = defaultQuestContext();
-      expect(() => {loadCombatNode(node, context)}).toThrow();
-
-      // String
-      context = defaultQuestContext();
-      context.scope.a = 'Skeleton Swordsman';
-      var result = loadCombatNode(node, context);
-      expect(result.enemies).toEqual([{name: 'Skeleton Swordsman', tier: 2, class: 'Undead'}]);
-
-      // Wrapped matrix
-      context = defaultQuestContext();
-      context.scope.a = ['Test'];
-      var result = loadCombatNode(node, context);
-      expect(result.enemies).toEqual([{name: 'Test', tier: 1}]);
-    });
-  });
-
   describe('getEventParameters', () => {
     it('gets parameters', () => {
       var node = cheerio.load('<combat><event on="win" heal="5" loot="false" xp="false"><roleplay></roleplay></event></combat>')('combat');
-      expect(getEventParameters(node, 'win', defaultQuestContext())).toEqual({
+      expect(getEventParameters(new ParserNode(node, defaultQuestContext()), 'win')).toEqual({
         heal: 5, loot: false, xp: false
       });
     });
 
     it('safely handles event with no params', () => {
       var node = cheerio.load('<combat><event on="win"><roleplay></roleplay></event></combat>')('combat');
-      expect(getEventParameters(node, 'win', defaultQuestContext())).toEqual({});
+      expect(getEventParameters(new ParserNode(node, defaultQuestContext()), 'win')).toEqual({});
     });
   });
 

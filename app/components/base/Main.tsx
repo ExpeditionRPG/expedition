@@ -63,7 +63,7 @@ export default class Main extends React.Component<MainProps, {}> {
             card = <RoleplayContainer node={state.quest.node}/>;
             break;
           case 'combat':
-            card = <CombatContainer card={state.card} node={state.quest.node.elem} icon={state.quest.result && state.quest.result.icon} combat={state.combat}/>;
+            card = <CombatContainer card={state.card} node={state.quest.node}/>;
             break;
           default:
             console.log('Unknown quest card name ' + name);
@@ -75,9 +75,6 @@ export default class Main extends React.Component<MainProps, {}> {
         break;
       case 'ADVANCED':
         card = <AdvancedPlayContainer />;
-        break;
-      case 'CUSTOM_COMBAT':
-        card = <CombatContainer card={state.card} custom={true}/>;
         break;
       case 'SEARCH_CARD':
         card = <SearchContainer phase={state.card.phase as SearchPhase} />;

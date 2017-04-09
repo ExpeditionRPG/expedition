@@ -36,6 +36,11 @@ export class ParserNode {
     this.renderChildren();
   }
 
+  clone(): ParserNode {
+    // Context is deep-copied via updateContext.
+    return new ParserNode(this.elem, this.ctx);
+  }
+
   getTag(): string {
     return this.elem.get(0).tagName.toLowerCase();
   }

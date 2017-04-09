@@ -1,8 +1,6 @@
 import Redux from 'redux'
 import {CardState, CardName, SettingNameType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, XMLElement} from '../reducers/StateTypes'
-
-import {QuestContext, QuestDetails, Enemy, CombatPhaseNameType, DifficultyType} from '../reducers/QuestTypes'
-import {CombatResult} from '../parser/Handlers'
+import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../parser/Node'
 
 export interface NavigateAction extends Redux.Action {
@@ -27,28 +25,10 @@ export interface ChangeSettingsAction extends Redux.Action {
   settings: any;
 }
 
-export interface InitCombatAction extends Redux.Action {
-  type: 'INIT_COMBAT';
-  numPlayers: number;
-  difficulty: DifficultyType;
-  result: CombatResult;
-  node?: ParserNode;
-}
-
 export interface CombatTimerStopAction extends Redux.Action {
   type: 'COMBAT_TIMER_STOP';
   elapsedMillis: number;
   settings: SettingsType;
-}
-
-export interface CombatDefeatAction extends Redux.Action {
-  type: 'COMBAT_DEFEAT';
-}
-
-export interface CombatVictoryAction extends Redux.Action {
-  type: 'COMBAT_VICTORY';
-  numPlayers: number;
-  maxTier: number;
 }
 
 export interface UserFeedbackChangeAction extends Redux.Action {
@@ -58,17 +38,6 @@ export interface UserFeedbackChangeAction extends Redux.Action {
 
 export interface UserFeedbackClearAction extends Redux.Action {
   type: 'USER_FEEDBACK_CLEAR';
-}
-
-export interface TierSumDeltaAction extends Redux.Action {
-  type: 'TIER_SUM_DELTA';
-  delta: number;
-}
-
-export interface AdventurerDeltaAction extends Redux.Action {
-  type: 'ADVENTURER_DELTA';
-  delta: number;
-  numPlayers: number;
 }
 
 export interface SearchResponseAction extends Redux.Action {

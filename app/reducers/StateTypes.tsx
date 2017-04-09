@@ -1,5 +1,4 @@
-import {QuestDetails, CombatState, DifficultyType, CombatPhaseNameType, QuestContext} from './QuestTypes'
-import {CombatResult} from '../parser/Handlers'
+import {QuestDetails, DifficultyType, CombatPhaseNameType, QuestContext} from './QuestTypes'
 import {ParserNode} from '../parser/Node'
 
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
@@ -58,7 +57,7 @@ export interface SettingsType {
   vibration: boolean;
 }
 
-export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'CUSTOM_COMBAT' | 'ADVANCED' | 'REPORT';
+export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REPORT';
 export interface CardState {
   name: CardName;
   ts: number;
@@ -71,7 +70,6 @@ export type TransitionType = 'NEXT' | 'PREV' | 'INSTANT';
 export interface QuestState {
   details?: QuestDetails;
   node?: ParserNode;
-  result?: CombatResult;
 }
 
 export interface SearchState {
@@ -96,7 +94,6 @@ export interface UserFeedbackState {
 
 export interface AppState {
   card: CardState;
-  combat: CombatState;
   quest: QuestState;
   search: SearchState;
   settings: SettingsType;

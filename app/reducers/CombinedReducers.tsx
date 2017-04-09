@@ -1,6 +1,5 @@
 import Redux from 'redux'
 import {card} from './card'
-import {combat} from './combat'
 import {quest} from './quest'
 import {search} from './search'
 import {settings} from './settings'
@@ -13,7 +12,6 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
   state = state || ({} as AppStateWithHistory);
   return {
     card: card(state.card, action),
-    combat: combat(state.combat, action),
     quest: quest(state.quest, action),
     search: search(state.search, action),
     settings: settings(state.settings, action),

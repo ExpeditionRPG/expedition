@@ -84,3 +84,19 @@ function generateIdMapping(node: XMLElement): { [key:string]:string[]; } {
   }
   return map;
 }
+
+function validateCombatNodes(root: XMLElement) {
+  /* TODO
+  if (winEventCount === 0) {
+    throw new Error('<combat> must have at least one conditionally true child with on="win"');
+  }
+
+  if (loseEventCount === 0) {
+    throw new Error('<combat> must have at least one conditionally true child with on="lose"');
+  }
+
+  if (!enemies.length) {
+    throw new Error('<combat> has no <e> children');
+  }
+  */
+}

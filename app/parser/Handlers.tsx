@@ -1,20 +1,12 @@
 import * as React from 'react'
 import {XMLElement, DOMElement} from '../reducers/StateTypes'
 import {Choice, defaultQuestContext, Enemy, EventParameters, RoleplayElement, QuestCardName, QuestContext} from '../reducers/QuestTypes'
-import {encounters} from '../Encounters'
 import {ParserNode} from './Node'
-
-export interface CombatResult {
-  type: 'Combat';
-  icon: string;
-  enemies: Enemy[];
-  ctx: QuestContext;
-}
 
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
 // Returns the (cleaned) parameters of the event element
-export function getEventParameters(parent: XMLElement, event: string, ctx: QuestContext): EventParameters {
-  const evt = (new ParserNode(parent, ctx)).getNext(event);
+export function getEventParameters(node: ParserNode, event: string): EventParameters {
+  const evt = node.getNext(event);
   if (!evt) {
     return null;
   }
@@ -56,58 +48,4 @@ export function handleAction(pnode: ParserNode, action: number|string): ParserNo
     throw new Error('Trigger follow depth exceeded');
   }
   return pnode;
-}
-
-export function loadCombatNode(node: XMLElement, ctx: QuestContext): CombatResult {
-  let enemies: Enemy[] = [];
-  // Track win and lose events for validation
-  let winEventCount = 0;
-  let loseEventCount = 0;
-  (new ParserNode(node, ctx)).loopChildren((tag, c) => {
-    switch (tag) {
-      case 'e':
-        let text = c.text();
-        const encounter = encounters[text.toLowerCase()];
-
-        if (!encounter) {
-          // If we don't know about the enemy, just assume tier 1.
-          enemies.push({name: text, tier: 1});
-        } else {
-          enemies.push({name: encounter.name, tier: encounter.tier, class: encounter.class});
-        }
-        break;
-      case 'event':
-        switch (c.attr('on')) {
-          case 'win':
-            winEventCount++;
-            break;
-          case 'lose':
-            loseEventCount++;
-            break;
-        }
-        break;
-      default:
-        throw new Error('Invalid child element: ' + tag);
-    }
-  });
-
-  if (winEventCount === 0) {
-    throw new Error('<combat> must have at least one conditionally true child with on="win"');
-  }
-
-  if (loseEventCount === 0) {
-    throw new Error('<combat> must have at least one conditionally true child with on="lose"');
-  }
-
-  if (!enemies.length) {
-    throw new Error('<combat> has no <e> children');
-  }
-
-  // Combat is stateless, so parser's context is not returned here.
-  return {
-    type: 'Combat',
-    icon: node.attr('icon'),
-    enemies,
-    ctx,
-  };
 }

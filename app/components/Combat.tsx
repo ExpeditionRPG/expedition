@@ -6,33 +6,29 @@ import Picker from './base/Picker'
 import TimerCard from './base/TimerCard'
 import theme from '../theme'
 import {capitalizeFirstLetter, numberToWord, MAX_ADVENTURER_HEALTH, REGEX} from '../constants'
-import {getEventParameters} from '../parser/Handlers'
-
-import {isSurgeRound} from '../reducers/combat'
+import {encounters} from '../Encounters'
+import {isSurgeRound} from '../actions/cardtemplates/combat'
 import {XMLElement, SettingsType, CardState, CardName} from '../reducers/StateTypes'
-import {CombatState, CombatPhaseNameType, MidCombatPhase, EndCombatPhase, EventParameters, Enemy, Loot, QuestContext} from '../reducers/QuestTypes'
+import {ParserNode} from '../parser/Node'
+import {CombatPhaseNameType, EventParameters, Enemy, Loot, QuestContext, CombatState} from '../reducers/QuestTypes'
 
-
-export interface CombatStateProps {
+export interface CombatStateProps extends CombatState {
   card: CardState;
-  node?: XMLElement;
-  combat: CombatState;
-  maxTier?: number;
   settings: SettingsType;
-  icon?: string;
-  ctx: QuestContext,
-  custom: boolean;
+  maxTier?: number;
+  node: ParserNode;
+  victoryParameters?: EventParameters;
 }
 
 export interface CombatDispatchProps {
-  onNext: (cardName: CardName, phase: CombatPhaseNameType) => void;
-  onDefeat: (cardName: CardName, maxTier: number, settings: SettingsType) => void;
-  onVictory: (cardName: CardName, maxTier: number, settings: SettingsType) => void;
-  onTimerStop: (cardName: CardName, elapsedMillis: number, settings: SettingsType, surge: boolean) => void;
-  onPostTimerReturn: (cardName: CardName) => void;
-  onTierSumDelta: (delta: number) => void;
-  onAdventurerDelta: (numPlayers: number, delta: number) => void;
-  onEvent: (node: XMLElement, event: string, ctx: QuestContext) => void;
+  onNext: (phase: CombatPhaseNameType) => void;
+  onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number) => void;
+  onVictory: (node: ParserNode, settings: SettingsType, maxTier: number) => void;
+  onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => void;
+  onPostTimerReturn: () => void;
+  onTierSumDelta: (node: ParserNode, delta: number) => void;
+  onAdventurerDelta: (node: ParserNode, settings: SettingsType, delta: number) => void;
+  onEvent: (node: ParserNode, event: string) => void;
   onCustomEnd: () => void;
 }
 
@@ -49,16 +45,16 @@ const numerals: {[k: number]: string;} = {
 function renderSelectTier(props: CombatProps): JSX.Element {
   return (
     <Card title="Draw Enemies" dark={true} inQuest={true}>
-      <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(i)} value={props.combat.tier}>
+      <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, i)} value={props.tier}>
         Set this to the combined tier you wish to fight.
       </Picker>
-      <Button onTouchTap={() => props.onNext(props.card.name, 'PREPARE')} disabled={props.combat.tier <= 0}>Next</Button>
+      <Button onTouchTap={() => props.onNext('PREPARE')} disabled={props.tier <= 0}>Next</Button>
     </Card>
   );
 }
 
 function renderDrawEnemies(props: CombatProps): JSX.Element {
-  let enemies: JSX.Element[] = props.combat.enemies.map(function(enemy: Enemy, index: number) {
+  let enemies: JSX.Element[] = props.enemies.map(function(enemy: Enemy, index: number) {
     const icon = (enemy.class) ? `<img class="inline_icon" src="images/${enemy.class.replace(REGEX.HTML_TAG, '').toLowerCase()}_white_small.svg"/>` : '';
     return (
       <h2 className="combat draw_enemies center" key={index}>
@@ -83,7 +79,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
       </p>
       {enemies}
       {helpText}
-      <Button onTouchTap={() => props.onNext(props.card.name, 'PREPARE')}>Next</Button>
+      <Button onTouchTap={() => props.onNext('PREPARE')}>Next</Button>
     </Card>
   );
 }
@@ -108,7 +104,7 @@ function renderPrepare(props: CombatProps): JSX.Element {
   return (
     <Card title="Prepare for Combat" dark={true} inQuest={true}>
       {helpText}
-      <Button className="bigbutton" onTouchTap={() => props.onNext(props.card.name, 'TIMER')}>Start Timer</Button>
+      <Button className="bigbutton" onTouchTap={() => props.onNext('TIMER')}>Start Timer</Button>
     </Card>
   );
 }
@@ -128,10 +124,10 @@ function renderSurge(props: CombatProps): JSX.Element {
     );
   }
   return (
-    <Card title="Enemy Surge!" dark={true} inQuest={true} onReturn={() => props.onPostTimerReturn(props.card.name)}>
+    <Card title="Enemy Surge!" dark={true} inQuest={true} onReturn={() => props.onPostTimerReturn()}>
       <h3>An enemy surge occurs!</h3>
       {helpText}
-      <Button onTouchTap={() => props.onNext(props.card.name, 'RESOLVE_ABILITIES')}>Next</Button>
+      <Button onTouchTap={() => props.onNext('RESOLVE_ABILITIES')}>Next</Button>
     </Card>
   );
 }
@@ -157,14 +153,14 @@ function renderResolve(props: CombatProps): JSX.Element {
     );
   }
   let renderedRolls: JSX.Element[] = null;
-  if (props.settings.autoRoll && props.combat.mostRecentRolls) {
-    renderedRolls = props.combat.mostRecentRolls.map((roll: number, index: number) => {
+  if (props.settings.autoRoll && props.mostRecentRolls) {
+    renderedRolls = props.mostRecentRolls.map((roll: number, index: number) => {
       return (<div className="roll" key={index}>{roll}</div>);
     });
   }
 
   return (
-    <Card title="Roll & Resolve" dark={true} inQuest={true} onReturn={() => props.onPostTimerReturn(props.card.name)}>
+    <Card title="Roll &amp; Resolve" dark={true} inQuest={true} onReturn={() => props.onPostTimerReturn()}>
       {helpText}
       {renderedRolls &&
         <div>
@@ -172,7 +168,7 @@ function renderResolve(props: CombatProps): JSX.Element {
           <div className="rolls">{renderedRolls}</div>
         </div>
       }
-      <Button onTouchTap={() => props.onNext(props.card.name, 'ENEMY_TIER')}>Next</Button>
+      <Button onTouchTap={() => props.onNext('ENEMY_TIER')}>Next</Button>
     </Card>
   );
 }
@@ -180,20 +176,19 @@ function renderResolve(props: CombatProps): JSX.Element {
 function renderEnemyTier(props: CombatProps): JSX.Element {
   return (
     <Card title="Enemy Strength" dark={true} inQuest={true}>
-      <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(i)} value={props.combat.tier}>
+      <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, i)} value={props.tier}>
         Set this to the combined tier of the remaining enemies. You are victorious when this reaches zero.
       </Picker>
 
-      <Button onTouchTap={() => props.onVictory(props.card.name, props.maxTier, props.settings)}>Victory (Tier = 0)</Button>
-      <Button onTouchTap={() => props.onNext(props.card.name, 'PLAYER_TIER')} disabled={props.combat.tier <= 0}>Next</Button>
+      <Button onTouchTap={() => props.onVictory(props.node, props.settings, props.maxTier)}>Victory (Tier = 0)</Button>
+      <Button onTouchTap={() => props.onNext('PLAYER_TIER')} disabled={props.tier <= 0}>Next</Button>
     </Card>
   );
 }
 
 function renderPlayerTier(props: CombatProps): JSX.Element {
-  var helpText: JSX.Element = (<span></span>);
-  var mostRecentAttack = props.combat.mostRecentAttack;
-  var damage = (mostRecentAttack) ? mostRecentAttack.damage : -1;
+  let helpText: JSX.Element = (<span></span>);
+  const damage = (props.mostRecentAttack) ? props.mostRecentAttack.damage : -1;
 
   if (props.settings.showHelp) {
     helpText = (
@@ -211,71 +206,65 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
       {helpText}
 
-      <Picker label="Adventurers" onDelta={(i: number)=>props.onAdventurerDelta(props.settings.numPlayers, i)} value={props.combat.numAliveAdventurers}>
+      <Picker label="Adventurers" onDelta={(i: number)=>props.onAdventurerDelta(props.node, props.settings, i)} value={props.numAliveAdventurers}>
         Set this to the number of adventurers above zero health. You are defeated when this reaches zero.
       </Picker>
 
-      <Button onTouchTap={() => props.onDefeat(props.card.name, props.maxTier, props.settings)}>Defeat (Adventurers = 0)</Button>
-      <Button onTouchTap={() => props.onNext(props.card.name, 'PREPARE')} disabled={props.combat.numAliveAdventurers <= 0}>Next</Button>
+      <Button onTouchTap={() => props.onDefeat(props.node, props.settings, props.maxTier)}>Defeat (Adventurers = 0)</Button>
+      <Button onTouchTap={() => props.onNext('PREPARE')} disabled={props.numAliveAdventurers <= 0}>Next</Button>
     </Card>
   );
 }
 
 function renderVictory(props: CombatProps): JSX.Element {
   var contents: JSX.Element[] = [];
-  let victoryParameters: EventParameters = { // default, such as during custom combat
-    heal: MAX_ADVENTURER_HEALTH,
-    loot: true,
-    xp: true,
-  };
-  if (!props.custom) {
-    victoryParameters = getEventParameters(props.node, 'win', props.ctx);
-  }
 
-  if (victoryParameters.heal > 0 && victoryParameters.heal < MAX_ADVENTURER_HEALTH) {
-    contents.push(<p key="c1">All adventurers (dead and alive) heal <strong>{victoryParameters.heal}</strong> health.</p>);
-  } else if (victoryParameters.heal === 0) {
-    contents.push(<p key="c1">Adventurers <strong>do not heal</strong>.</p>);
-  } else {
-    contents.push(<p key="c1">All adventurers (dead and alive) heal to <strong>full</strong> health.</p>);
-  }
-
-  // TODO improved leveling up: https://github.com/Fabricate-IO/expedition-app/issues/226
-  if (victoryParameters.xp !== false && props.combat.levelUp) {
-    contents.push(<p key="c2">Each Adventurer may learn a new ability:</p>);
-    if (props.settings.showHelp) {
-      contents.push(
-        <ul key="c3">
-          <li>You may discard one of your current abilities.</li>
-          <li>Draw 3 ability cards from one of the decks listed on your Adventurer card.</li>
-          <li>Add 1 to your ability deck, and place the remaining 2 at the bottom of the deck you drew from.</li>
-        </ul>
-      );
+  if (props.victoryParameters) {
+    if (props.victoryParameters.heal > 0 && props.victoryParameters.heal < MAX_ADVENTURER_HEALTH) {
+      contents.push(<p key="c1">All adventurers (dead and alive) heal <strong>{props.victoryParameters.heal}</strong> health.</p>);
+    } else if (props.victoryParameters.heal === 0) {
+      contents.push(<p key="c1">Adventurers <strong>do not heal</strong>.</p>);
+    } else {
+      contents.push(<p key="c1">All adventurers (dead and alive) heal to <strong>full</strong> health.</p>);
     }
-  }
 
-  if (victoryParameters.loot !== false && props.combat.loot && props.combat.loot.length > 0) {
-    contents.push(
-      <p key="c4">The party draws the following loot:</p>
-    );
-    const renderedLoot = props.combat.loot.map((loot: Loot, index: number) => {
-      return (<li key={index}><strong>{capitalizeFirstLetter(numberToWord(loot.count))} tier {numerals[loot.tier]} loot</strong></li>)
-    });
-    contents.push(<ul key="c5">{renderedLoot}</ul>);
+    // TODO improved leveling up: https://github.com/Fabricate-IO/expedition-app/issues/226
+    if (props.victoryParameters.xp !== false && props.levelUp) {
+      contents.push(<p key="c2">Each Adventurer may learn a new ability:</p>);
+      if (props.settings.showHelp) {
+        contents.push(
+          <ul key="c3">
+            <li>You may discard one of your current abilities.</li>
+            <li>Draw 3 ability cards from one of the decks listed on your Adventurer card.</li>
+            <li>Add 1 to your ability deck, and place the remaining 2 at the bottom of the deck you drew from.</li>
+          </ul>
+        );
+      }
+    }
 
-    if (props.settings.showHelp) {
+    if (props.victoryParameters.loot !== false && props.loot && props.loot.length > 0) {
       contents.push(
-        <span key="c6">
-          <p>Loot should be divided amongst Adventurers now. It can be used at any time and does not cost an action (unless otherwise specified).</p>
-        </span>
+        <p key="c4">The party draws the following loot:</p>
       );
+      const renderedLoot = props.loot.map((loot: Loot, index: number) => {
+        return (<li key={index}><strong>{capitalizeFirstLetter(numberToWord(loot.count))} tier {numerals[loot.tier]} loot</strong></li>)
+      });
+      contents.push(<ul key="c5">{renderedLoot}</ul>);
+
+      if (props.settings.showHelp) {
+        contents.push(
+          <span key="c6">
+            <p>Loot should be divided amongst Adventurers now. It can be used at any time and does not cost an action (unless otherwise specified).</p>
+          </span>
+        );
+      }
     }
   }
 
   return (
     <Card title="Victory" dark={true} inQuest={true}>
       {contents}
-      <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'win', props.ctx)}>Next</Button>
+      <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'win')}>Next</Button>
     </Card>
   );
 }
@@ -290,20 +279,20 @@ function renderDefeat(props: CombatProps): JSX.Element {
     <Card title="Defeat" dark={true} inQuest={true}>
       <p>Your party was defeated.</p>
       {helpText}
-      <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'lose', props.ctx)}>Next</Button>
+      <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'lose')}>Next</Button>
     </Card>
   );
 }
 
 function renderTimerCard(props: CombatProps): JSX.Element {
-  let surge: boolean = isSurgeRound(props.combat);
+  let surge: boolean = isSurgeRound(props.node);
   return (
     <TimerCard
       dark={true}
       surgeWarning={surge}
-      numPlayers={(props.settings.multitouch) ? props.combat.numAliveAdventurers : 1}
-      roundTimeTotalMillis={props.combat.roundTimeMillis}
-      onTimerStop={(ms: number) => props.onTimerStop(props.card.name, ms, props.settings, surge)} />
+      numPlayers={(props.settings.multitouch) ? props.numAliveAdventurers : 1}
+      roundTimeTotalMillis={props.roundTimeMillis}
+      onTimerStop={(ms: number) => props.onTimerStop(props.node, props.settings, ms, surge)} />
   );
 }
 
