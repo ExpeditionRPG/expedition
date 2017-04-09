@@ -1,5 +1,5 @@
 import {defaultQuestContext, DifficultyType} from '../../reducers/QuestTypes'
-import {initCombat, initCustomCombat, isSurgeRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta} from './combat'
+import {initCombat, initCustomCombat, isSurgeRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta} from './Actions'
 import {ParserNode} from '../../parser/Node'
 import configureStore  from 'redux-mock-store'
 import thunk from 'redux-thunk'

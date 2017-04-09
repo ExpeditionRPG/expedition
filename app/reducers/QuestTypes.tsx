@@ -1,6 +1,6 @@
-import {randomPropertyValue} from '../constants'
-import {encounters} from '../Encounters'
+
 import {getStore} from '../store'
+import {CombatScope, CombatState} from '../cardtemplates/combat/State'
 
 export interface QuestDetails {
   id?: string;
@@ -21,14 +21,6 @@ export interface QuestDetails {
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';
 
 export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
-export interface CombatDifficultySettings {
-  roundTimeMillis: number,
-  surgePeriod: number,
-  damageMultiplier: number,
-}
-
-export type Enemy = {name: string, tier: number, class?: string};
-export type Loot = {tier: number, count: number};
 
 export interface QuestContext {
   // Scope is passed to the parser when rendering
@@ -50,30 +42,10 @@ export function defaultQuestContext(): QuestContext {
           const settings = getStore().getState().settings;
           return settings && settings.numPlayers;
         },
-        randomEnemy: function(): string {
-          return randomPropertyValue(encounters).name;
-        },
-        randomEnemyOfTier: function(tier: number): string {
-          return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
-              .filter( key => encounters[key].tier === tier )
-              .map( key => ({ [key]: encounters[key] }) ) )).name;
-        },
-        randomEnemyOfClass: function(className: string): string {
-          className = className.toLowerCase();
-          return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
-              .filter( key => encounters[key].class.toLowerCase() === className )
-              .map( key => ({ [key]: encounters[key] }) ) )).name;
-        },
-        randomEnemyOfClassTier: function(className: string, tier: number): string {
-          className = className.toLowerCase();
-          return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
-              .filter( key => encounters[key].tier === tier )
-              .filter( key => encounters[key].class.toLowerCase() === className )
-              .map( key => ({ [key]: encounters[key] }) ) )).name;
-        },
         viewCount: function(id: string): number {
           return this.views[id] || 0;
         },
+        ...CombatScope
       },
     },
     views: {},
@@ -84,11 +56,6 @@ export function defaultQuestContext(): QuestContext {
 export interface Choice {
   text: string;
   idx: number;
-}
-
-export interface CombatAttack {
-  surge: boolean;
-  damage: number;
 }
 
 export interface EventParameters {
@@ -103,21 +70,6 @@ export interface RoleplayElement {
   icon?: string;
 }
 
-export interface MidCombatPhase {
-  enemies: Enemy[];
-  mostRecentAttack?: CombatAttack;
-  mostRecentRolls?: number[];
-  numAliveAdventurers: number;
-  roundCount: number;
-  tier: number;
-}
-export interface EndCombatPhase {
-  levelUp?: boolean;
-  loot?: Loot[];
-}
+export type Enemy = {name: string, tier: number, class?: string};
 
-export type CombatPhaseNameType = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER' | 'VICTORY' | 'DEFEAT';
-
-export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {
-  custom: boolean;
-}
+export type Loot = {tier: number, count: number};

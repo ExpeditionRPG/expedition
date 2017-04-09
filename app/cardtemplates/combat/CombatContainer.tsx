@@ -3,14 +3,15 @@ import {connect} from 'react-redux'
 
 import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
 
-import {getEventParameters} from '../parser/Handlers'
-import {toPrevious, toCard} from '../actions/card'
-import {handleCombatTimerStop, tierSumDelta, adventurerDelta, handleCombatEnd} from '../actions/cardtemplates/combat'
-import {event} from '../actions/quest'
-import {AppStateWithHistory, XMLElement, SettingsType, CardName} from '../reducers/StateTypes'
-import {CombatPhaseNameType, MidCombatPhase, QuestContext, EventParameters} from '../reducers/QuestTypes'
-import {ParserNode} from '../parser/Node'
-import {MAX_ADVENTURER_HEALTH} from '../constants'
+import {getEventParameters} from '../../parser/Handlers'
+import {toPrevious, toCard} from '../../actions/card'
+import {handleCombatTimerStop, tierSumDelta, adventurerDelta, handleCombatEnd} from './Actions'
+import {event} from '../../actions/quest'
+import {AppStateWithHistory, XMLElement, SettingsType, CardName} from '../../reducers/StateTypes'
+import {QuestContext, EventParameters} from '../../reducers/QuestTypes'
+import {CombatPhase, MidCombatPhase} from './State'
+import {ParserNode} from '../../parser/Node'
+import {MAX_ADVENTURER_HEALTH} from '../../constants'
 
 declare var window:any;
 
@@ -60,7 +61,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CombatDispatchProps => {
   return {
-    onNext: (phase: CombatPhaseNameType) => {
+    onNext: (phase: CombatPhase) => {
       dispatch(toCard('QUEST_CARD', phase));
     },
     onVictory: (node: ParserNode, settings: SettingsType, maxTier: number) => {

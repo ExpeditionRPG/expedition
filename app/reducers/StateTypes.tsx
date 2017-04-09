@@ -1,4 +1,5 @@
-import {QuestDetails, DifficultyType, CombatPhaseNameType, QuestContext} from './QuestTypes'
+import {QuestDetails, DifficultyType, QuestContext} from './QuestTypes'
+import {CombatPhase} from '../cardtemplates/combat/State'
 import {ParserNode} from '../parser/Node'
 
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
@@ -58,10 +59,11 @@ export interface SettingsType {
 }
 
 export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REPORT';
+export type CardPhase = CombatPhase | SearchPhase;
 export interface CardState {
   name: CardName;
   ts: number;
-  phase?: CombatPhaseNameType | SearchPhase;
+  phase?: CardPhase;
   overrideDebounce?: boolean;
 }
 
