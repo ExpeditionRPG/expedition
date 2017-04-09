@@ -42,9 +42,7 @@ const options = {
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /node_modules/ },
-      { test: /\.js$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], include: /node_modules\/react-native-star-rating/ },
       { enforce: 'post', test: /\.tsx$/, loaders: ['babel-loader'], exclude: /node_modules/ },
-      { enforce: 'post', test: /\.js$/, loaders: ['babel-loader'], include: /node_modules\/react-native-star-rating/ },
     ],
   },
   plugins: [
