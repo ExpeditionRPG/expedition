@@ -3,21 +3,23 @@ import {connect} from 'react-redux'
 
 import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
 
+import {getEventParameters} from '../parser/Handlers'
 import {toPrevious, toCard} from '../actions/card'
-import {event, handleCombatTimerStop, combatDefeat, combatVictory, tierSumDelta, adventurerDelta} from '../actions/quest'
+import {handleCombatTimerStop, tierSumDelta, adventurerDelta, handleCombatEnd} from '../actions/cardtemplates/combat'
+import {event} from '../actions/quest'
 import {AppStateWithHistory, XMLElement, SettingsType, CardName} from '../reducers/StateTypes'
-import {CombatPhaseNameType, MidCombatPhase, QuestContext} from '../reducers/QuestTypes'
+import {CombatPhaseNameType, MidCombatPhase, QuestContext, EventParameters} from '../reducers/QuestTypes'
 import {ParserNode} from '../parser/Node'
+import {MAX_ADVENTURER_HEALTH} from '../constants'
 
 declare var window:any;
-
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps): CombatStateProps => {
   let maxTier = 0;
   let histIdx: number = state._history.length-1;
   // card.phase currently represents combat boundaries - non-combat cards don't use phases
-  while (state._history[histIdx] != null && state._history[histIdx].card.phase !== undefined && histIdx > 0) {
-    const tier = state._history[histIdx].combat.tier;
+  while (state._history[histIdx] != null && state._history[histIdx].quest && state._history[histIdx].quest.node.ctx.templates.combat && histIdx > 0) {
+    const tier = state._history[histIdx].quest.node.ctx.templates.combat.tier;
     if (!tier || state._history[histIdx].card.phase !== 'PREPARE') {
       histIdx--;
       continue;
@@ -26,69 +28,67 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     histIdx--;
   }
 
-  if (ownProps.custom) {
-    return {
-      custom: true,
-      card: ownProps.card,
-      settings: state.settings,
-      maxTier: maxTier,
-      ctx: state.quest && state.quest.node && state.quest.node.ctx,
-      combat: state.combat || {enemies: [], roundCount: 0, numAliveAdventurers: 0, tier: 0, roundTimeMillis: 0, surgePeriod: 0, damageMultiplier: 0},
-    };
-  } else {
-    return {
-      custom: false,
-      card: ownProps.card,
-      combat: Object.assign({}, ownProps.combat, {
-        tier: state.combat && state.combat.tier,
-        numAliveAdventurers: state.combat && state.combat.numAliveAdventurers}),
-      ctx: state.quest && state.quest.node && state.quest.node.ctx,
-      node: ownProps.node,
-      maxTier: maxTier,
-      icon: ownProps.icon,
-      settings: state.settings,
-    };
+  const combat = ownProps.node && ownProps.node.ctx && ownProps.node.ctx.templates && ownProps.node.ctx.templates.combat;
+
+  let victoryParameters: EventParameters = null;
+  if (combat) {
+    if (!combat.custom) {
+      victoryParameters = getEventParameters(ownProps.node, 'win');
+    } else {
+      victoryParameters = {
+        heal: MAX_ADVENTURER_HEALTH,
+        loot: true,
+        xp: true,
+      };
+    }
   }
+
+  return {
+    ...combat,
+    card: ownProps.card,
+    settings: state.settings,
+    node: state.quest && state.quest.node,
+    staticNode: ownProps.node,
+    maxTier,
+    victoryParameters,
+    // Override with dynamic state for tier and adventurer count
+    // Any combat param change (e.g. change in tier) causes a repaint
+    tier: state.quest.node.ctx.templates.combat.tier,
+    numAliveAdventurers: state.quest.node.ctx.templates.combat.numAliveAdventurers,
+  };
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CombatDispatchProps => {
   return {
-    onNext: (cardName: CardName, phase: CombatPhaseNameType) => {
-      dispatch(toCard(cardName, phase));
+    onNext: (phase: CombatPhaseNameType) => {
+      dispatch(toCard('QUEST_CARD', phase));
     },
-    onVictory: (cardName: CardName, maxTier: number, settings: SettingsType) => {
+    onVictory: (node: ParserNode, settings: SettingsType, maxTier: number) => {
       window.FirebasePlugin.logEvent('combat_victory', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
-      dispatch(toCard(cardName, 'VICTORY'));
-      dispatch(combatVictory(settings.numPlayers, maxTier));
+      dispatch(handleCombatEnd(node, settings, true, maxTier));
     },
-    onDefeat: (cardName: CardName, maxTier: number, settings: SettingsType) => {
+    onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number) => {
       window.FirebasePlugin.logEvent('combat_defeat', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
-      dispatch(toCard(cardName, 'DEFEAT'));
-      dispatch(combatDefeat());
+      dispatch(handleCombatEnd(node, settings, false, maxTier));
     },
-    onTimerStop: (cardName: CardName, elapsedMillis: number, settings: SettingsType, surge: boolean) => {
-      dispatch(handleCombatTimerStop(elapsedMillis, settings));
-      if (surge) {
-        dispatch(toCard(cardName, 'SURGE', true));
-      } else {
-        dispatch(toCard(cardName, 'RESOLVE_ABILITIES', true));
-      }
+    onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => {
+      dispatch(handleCombatTimerStop(node, settings, elapsedMillis));
     },
-    onPostTimerReturn: (cardName: CardName) => {
+    onPostTimerReturn: () => {
       // Return to the "Ready for Combat?" card instead of doing the timed round again.
-      dispatch(toPrevious(cardName, 'PREPARE'));
+      dispatch(toPrevious('QUEST_CARD', 'PREPARE'));
     },
-    onEvent: (node: XMLElement, evt: string, ctx: QuestContext) => {
-      dispatch(event(new ParserNode(node, ctx), evt));
+    onEvent: (node: ParserNode, evt: string) => {
+      dispatch(event(node, evt));
     },
-    onTierSumDelta: (delta: number) => {
-      dispatch(tierSumDelta(delta));
+    onTierSumDelta: (node: ParserNode, delta: number) => {
+      dispatch(tierSumDelta(node, delta));
     },
-    onAdventurerDelta: (numPlayers: number, delta: number) => {
-      dispatch(adventurerDelta(numPlayers, delta));
+    onAdventurerDelta: (node: ParserNode, settings: SettingsType, delta: number) => {
+      dispatch(adventurerDelta(node, settings, delta));
     },
     onCustomEnd: () => {
-      dispatch(toPrevious('CUSTOM_COMBAT', 'DRAW_ENEMIES', false));
+      dispatch(toPrevious('QUEST_CARD', 'DRAW_ENEMIES', false));
     },
   };
 }

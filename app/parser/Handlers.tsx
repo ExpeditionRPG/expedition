@@ -5,8 +5,8 @@ import {ParserNode} from './Node'
 
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
 // Returns the (cleaned) parameters of the event element
-export function getEventParameters(parent: XMLElement, event: string, ctx: QuestContext): EventParameters {
-  const evt = (new ParserNode(parent, ctx)).getNext(event);
+export function getEventParameters(node: ParserNode, event: string): EventParameters {
+  const evt = node.getNext(event);
   if (!evt) {
     return null;
   }

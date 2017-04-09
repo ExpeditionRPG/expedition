@@ -35,7 +35,9 @@ export interface QuestContext {
   // nodes that are potentially parseable via MathJS.
   scope: any; // TODO: required fields later
   views: any; // TODO: {string: number}
-  combat: MidCombatPhase;
+  templates: {
+    combat?: CombatState
+  };
 }
 export function defaultQuestContext(): QuestContext {
   // Caution: Scope is the API for Quest Creators.
@@ -75,12 +77,7 @@ export function defaultQuestContext(): QuestContext {
       },
     },
     views: {},
-    combat: { // TODO
-      enemies: [], 
-      numAliveAdventurers: getStore().getState().settings.numPlayers, 
-      roundCount: 0, 
-      tier: 0
-    }
+    templates: {},
   };
 }
 
@@ -106,11 +103,6 @@ export interface RoleplayElement {
   icon?: string;
 }
 
-export type MidCombatPhaseNameType = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER'
-export type EndCombatPhaseNameType = 'VICTORY' | 'DEFEAT';
-export function isCombatPhase(phase: string) : boolean {
-  return ['DRAW_ENEMIES', 'PREPARE', 'TIMER', 'SURGE', 'RESOLVE_ABILITIES', 'ENEMY_TIER', 'PLAYER_TIER', 'VICTORY', 'DEFEAT'].indexOf(phase) !== -1;
-}
 export interface MidCombatPhase {
   enemies: Enemy[];
   mostRecentAttack?: CombatAttack;
@@ -124,6 +116,8 @@ export interface EndCombatPhase {
   loot?: Loot[];
 }
 
-export type CombatPhaseNameType = MidCombatPhaseNameType | EndCombatPhaseNameType;
+export type CombatPhaseNameType = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER' | 'VICTORY' | 'DEFEAT';
 
-export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {}
+export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {
+  custom: boolean;
+}

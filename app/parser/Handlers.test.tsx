@@ -12,14 +12,14 @@ describe('Handlers', () => {
   describe('getEventParameters', () => {
     it('gets parameters', () => {
       var node = cheerio.load('<combat><event on="win" heal="5" loot="false" xp="false"><roleplay></roleplay></event></combat>')('combat');
-      expect(getEventParameters(node, 'win', defaultQuestContext())).toEqual({
+      expect(getEventParameters(new ParserNode(node, defaultQuestContext()), 'win')).toEqual({
         heal: 5, loot: false, xp: false
       });
     });
 
     it('safely handles event with no params', () => {
       var node = cheerio.load('<combat><event on="win"><roleplay></roleplay></event></combat>')('combat');
-      expect(getEventParameters(node, 'win', defaultQuestContext())).toEqual({});
+      expect(getEventParameters(new ParserNode(node, defaultQuestContext()), 'win')).toEqual({});
     });
   });
 
