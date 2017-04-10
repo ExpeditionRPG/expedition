@@ -1,10 +1,11 @@
 import Redux from 'redux'
-import {DifficultyType, CombatDifficultySettings, CombatAttack, Enemy, Loot, defaultQuestContext} from '../../reducers/QuestTypes'
+import {DifficultyType, defaultQuestContext, Enemy, Loot} from '../../reducers/QuestTypes'
+import {CombatDifficultySettings, CombatAttack} from './State'
 import {SettingsType} from '../../reducers/StateTypes'
 import {ParserNode} from '../../parser/Node'
-import {toCard} from '../card'
+import {toCard} from '../../actions/card'
 import {encounters} from '../../Encounters'
-import {QuestNodeAction} from '../ActionTypes'
+import {QuestNodeAction} from '../../actions/ActionTypes'
 
 var cheerio: any = require('cheerio');
 

@@ -1,16 +1,17 @@
 import * as React from 'react'
 
-import Button from './base/Button'
-import Card from './base/Card'
-import Picker from './base/Picker'
-import TimerCard from './base/TimerCard'
-import theme from '../theme'
-import {capitalizeFirstLetter, numberToWord, MAX_ADVENTURER_HEALTH, REGEX} from '../constants'
-import {encounters} from '../Encounters'
-import {isSurgeRound} from '../actions/cardtemplates/combat'
-import {XMLElement, SettingsType, CardState, CardName} from '../reducers/StateTypes'
-import {ParserNode} from '../parser/Node'
-import {CombatPhaseNameType, EventParameters, Enemy, Loot, QuestContext, CombatState} from '../reducers/QuestTypes'
+import Button from '../../components/base/Button'
+import Card from '../../components/base/Card'
+import Picker from '../../components/base/Picker'
+import TimerCard from '../../components/base/TimerCard'
+import theme from '../../theme'
+import {capitalizeFirstLetter, numberToWord, MAX_ADVENTURER_HEALTH, REGEX} from '../../constants'
+import {encounters} from '../../Encounters'
+import {isSurgeRound} from './Actions'
+import {XMLElement, SettingsType, CardState, CardName} from '../../reducers/StateTypes'
+import {ParserNode} from '../../parser/Node'
+import {QuestContext, EventParameters, Enemy, Loot} from '../../reducers/QuestTypes'
+import {CombatState, CombatPhase} from './State'
 
 export interface CombatStateProps extends CombatState {
   card: CardState;
@@ -21,7 +22,7 @@ export interface CombatStateProps extends CombatState {
 }
 
 export interface CombatDispatchProps {
-  onNext: (phase: CombatPhaseNameType) => void;
+  onNext: (phase: CombatPhase) => void;
   onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number) => void;
   onVictory: (node: ParserNode, settings: SettingsType, maxTier: number) => void;
   onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => void;

@@ -8,7 +8,7 @@ import {toCard} from './card'
 import {handleAction} from '../parser/Handlers'
 import {QuestDetails, QuestContext} from '../reducers/QuestTypes'
 import {ParserNode} from '../parser/Node'
-import {initCombat} from './cardtemplates/combat'
+import {initCombat} from '../cardtemplates/combat/Actions'
 
 export function initQuest(id: string, questNode: XMLElement, ctx: QuestContext): QuestNodeAction {
   const firstNode = questNode.children().eq(0);

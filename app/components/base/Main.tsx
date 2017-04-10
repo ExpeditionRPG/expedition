@@ -3,7 +3,7 @@ import {Provider} from 'react-redux'
 import theme from '../../theme'
 
 import AdvancedPlayContainer from '../AdvancedPlayContainer'
-import CombatContainer from '../CombatContainer'
+import CombatContainer from '../../cardtemplates/combat/CombatContainer'
 import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
 import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
 import ReportContainer from '../ReportContainer'
