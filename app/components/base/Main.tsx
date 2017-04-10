@@ -3,16 +3,16 @@ import {Provider} from 'react-redux'
 import theme from '../../theme'
 
 import AdvancedPlayContainer from '../AdvancedPlayContainer'
-import CombatContainer from '../../cardtemplates/combat/CombatContainer'
 import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
 import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
 import ReportContainer from '../ReportContainer'
-import RoleplayContainer from '../RoleplayContainer'
 import SearchContainer from '../SearchContainer'
 import SettingsContainer from '../SettingsContainer'
 import SplashScreenContainer from '../SplashScreenContainer'
 import QuestStartContainer from '../QuestStartContainer'
 import QuestEndContainer from '../QuestEndContainer'
+
+import {renderCardTemplate} from '../../cardtemplates/template'
 
 import {AppStateWithHistory, TransitionType, SearchPhase} from '../../reducers/StateTypes'
 import {getStore} from '../../store'
@@ -58,16 +58,10 @@ export default class Main extends React.Component<MainProps, {}> {
         if (!state.quest || !state.quest.node) {
           return this.state;
         }
-        switch(state.quest.node.getTag()) {
-          case 'roleplay':
-            card = <RoleplayContainer node={state.quest.node}/>;
-            break;
-          case 'combat':
-            card = <CombatContainer card={state.card} node={state.quest.node}/>;
-            break;
-          default:
-            console.log('Unknown quest card name ' + name);
-            return this.state;
+        card = renderCardTemplate(state.card, state.quest.node);
+        if (!card) {
+          console.log('Unknown quest card name ' + name);
+          return this.state;
         }
         break;
       case 'QUEST_END':

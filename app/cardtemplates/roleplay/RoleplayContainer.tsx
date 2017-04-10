@@ -1,16 +1,18 @@
+import * as React from 'react'
 import Redux from 'redux'
 import {connect} from 'react-redux'
-import {AppState, XMLElement, SettingsType} from '../reducers/StateTypes'
-import {toPrevious, toCard} from '../actions/card'
-import {choice} from '../actions/quest'
+import {AppState, XMLElement, SettingsType} from '../../reducers/StateTypes'
+import {toPrevious, toCard} from '../../actions/card'
+import {choice} from '../../actions/quest'
 import Roleplay, {RoleplayStateProps, RoleplayDispatchProps} from './Roleplay'
-import {QuestContext} from '../reducers/QuestTypes'
-import {ParserNode} from '../parser/Node'
+import {QuestContext} from '../../reducers/QuestTypes'
+import {ParserNode} from '../../parser/Node'
 
 const mapStateToProps = (state: AppState, ownProps: RoleplayStateProps): RoleplayStateProps => {
   return {
     node: ownProps.node, // Persist state to prevent sudden jumps during card change.
     settings: state.settings,
+    card: ownProps.card,
   };
 }
 
