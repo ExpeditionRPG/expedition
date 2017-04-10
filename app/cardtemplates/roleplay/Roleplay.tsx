@@ -8,7 +8,6 @@ import {Choice, QuestContext, RoleplayElement} from '../../reducers/QuestTypes'
 
 export interface RoleplayStateProps {
   node: ParserNode;
-  card: any;
   settings: SettingsType;
 }
 

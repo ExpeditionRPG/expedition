@@ -1,4 +1,3 @@
-import * as React from 'react'
 import Redux from 'redux'
 import {connect} from 'react-redux'
 import {AppState, XMLElement, SettingsType} from '../../reducers/StateTypes'
@@ -12,7 +11,6 @@ const mapStateToProps = (state: AppState, ownProps: RoleplayStateProps): Rolepla
   return {
     node: ownProps.node, // Persist state to prevent sudden jumps during card change.
     settings: state.settings,
-    card: ownProps.card,
   };
 }
 

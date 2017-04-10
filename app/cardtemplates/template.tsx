@@ -26,7 +26,7 @@ export function initCardTemplate(node: ParserNode, settings: SettingsType) {
 export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Element {
   switch(node.getTag()) {
     case 'roleplay':
-      return <RoleplayContainer card={card} node={node}/>;
+      return <RoleplayContainer node={node}/>;
     case 'combat':
       return <CombatContainer card={card} node={node}/>;
     default:
