@@ -18,6 +18,8 @@ At this time, you can use the following Expedition-themed icons:
 
 <img src="https://cdn.rawgit.com/Fabricate-IO/expedition-app/master/app/images/cards_small.svg" width="48" height="48"/> cards
 
+<img src="https://cdn.rawgit.com/Fabricate-IO/expedition-app/master/app/images/clock_small.svg" width="48" height="48"/> clock / compass
+
 <img src="https://cdn.rawgit.com/Fabricate-IO/expedition-app/master/app/images/damage_small.svg" width="48" height="48"/> damage
 
 <img src="https://cdn.rawgit.com/Fabricate-IO/expedition-app/master/app/images/fae_small.svg" width="48" height="48"/> fae
