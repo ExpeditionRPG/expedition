@@ -7,7 +7,7 @@ Want to design your own themes or help fix bugs and add features? Then you're in
 Requires [NodeJS](https://nodejs.org/en/download/)
 
 1. Clone the repo
-2. Run `npm install` to install dependencies
+2. Run `npm install && npm install -g gulp` to install dependencies
 3. Run `gulp` to build and watch development files
 4. Enjoy the cards at `localhost:8000`
 
