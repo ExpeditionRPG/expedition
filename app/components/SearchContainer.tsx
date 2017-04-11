@@ -3,10 +3,10 @@ import {connect} from 'react-redux'
 
 import Search, {SearchStateProps, SearchDispatchProps} from './Search'
 
-import {toPrevious, toCard} from '../actions/card'
-import {viewQuest} from '../actions/quest'
-import {login} from '../actions/user'
-import {fetchQuestXML, search} from '../actions/web'
+import {toPrevious, toCard} from '../actions/Card'
+import {viewQuest} from '../actions/Quest'
+import {login} from '../actions/User'
+import {fetchQuestXML, search} from '../actions/Web'
 import {AppState, SearchSettings, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 

@@ -1,3 +1,7 @@
+
+describe('TimerCard', () => {
+  it('TODO');
+});
 /*
 test('timer starts when start() called', function() {
   testLogic.stochasticDamage = function() {return 0;};

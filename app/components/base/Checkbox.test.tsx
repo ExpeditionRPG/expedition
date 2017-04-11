@@ -1,3 +1,7 @@
+
+describe('Checkbox', () => {
+  it('TODO');
+});
 /*
 test('label shown', function() {
   f.label = "test-label";

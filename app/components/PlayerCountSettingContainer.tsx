@@ -1,8 +1,8 @@
 import Redux from 'redux'
 import { connect } from 'react-redux'
 import {AppState, XMLElement} from '../reducers/StateTypes'
-import {changeSettings} from '../actions/settings'
-import {toPrevious, toCard} from '../actions/card'
+import {changeSettings} from '../actions/Settings'
+import {toPrevious, toCard} from '../actions/Card'
 import PlayerCountSetting, {PlayerCountSettingStateProps, PlayerCountSettingDispatchProps} from './PlayerCountSetting'
 
 const mapStateToProps = (state: AppState, ownProps: PlayerCountSettingStateProps): PlayerCountSettingStateProps => {

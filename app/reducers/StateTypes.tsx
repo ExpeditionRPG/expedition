@@ -1,5 +1,5 @@
 import {QuestDetails, DifficultyType, QuestContext} from './QuestTypes'
-import {TemplatePhase} from '../cardtemplates/template'
+import {TemplatePhase} from '../cardtemplates/Template'
 import {ParserNode} from '../parser/Node'
 
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';

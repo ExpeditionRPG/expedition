@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
 import {AppState} from '../reducers/StateTypes'
-import {changeSettings} from '../actions/settings'
+import {changeSettings} from '../actions/Settings'
 import Settings, {SettingsStateProps, SettingsDispatchProps} from './Settings'
 import {DifficultyType} from '../reducers/QuestTypes'
 

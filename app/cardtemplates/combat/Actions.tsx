@@ -3,7 +3,7 @@ import {DifficultyType, defaultQuestContext, Enemy, Loot} from '../../reducers/Q
 import {CombatDifficultySettings, CombatAttack} from './State'
 import {SettingsType} from '../../reducers/StateTypes'
 import {ParserNode} from '../../parser/Node'
-import {toCard} from '../../actions/card'
+import {toCard} from '../../actions/Card'
 import {encounters} from '../../Encounters'
 import {QuestNodeAction} from '../../actions/ActionTypes'
 

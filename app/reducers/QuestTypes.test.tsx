@@ -1,0 +1,4 @@
+
+describe('QuestTypes', () => {
+	it('TODO');
+});

@@ -1,5 +1,4 @@
 import * as React from 'react'
-import theme from '../theme'
 import MultiTouchTrigger from './base/MultiTouchTrigger'
 import Button from './base/Button'
 

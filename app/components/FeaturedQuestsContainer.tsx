@@ -3,9 +3,9 @@ import {connect} from 'react-redux'
 
 import FeaturedQuests, {FeaturedQuestsStateProps, FeaturedQuestsDispatchProps} from './FeaturedQuests'
 
-import {toCard} from '../actions/card'
-import {fetchQuestXML, search} from '../actions/web'
-import {initial_state} from '../reducers/search'
+import {toCard} from '../actions/Card'
+import {fetchQuestXML, search} from '../actions/Web'
+import {initial_state} from '../reducers/Search'
 import {AppState, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 
