@@ -1,6 +1,6 @@
 
 import {getStore} from '../store'
-import {CombatScope, CombatState} from '../cardtemplates/combat/State'
+import {templateScope, TemplateState} from '../cardtemplates/template'
 
 export interface QuestDetails {
   id?: string;
@@ -27,9 +27,7 @@ export interface QuestContext {
   // nodes that are potentially parseable via MathJS.
   scope: any; // TODO: required fields later
   views: any; // TODO: {string: number}
-  templates: {
-    combat?: CombatState
-  };
+  templates: TemplateState;
 }
 export function defaultQuestContext(): QuestContext {
   // Caution: Scope is the API for Quest Creators.
@@ -45,7 +43,7 @@ export function defaultQuestContext(): QuestContext {
         viewCount: function(id: string): number {
           return this.views[id] || 0;
         },
-        ...CombatScope
+        ...templateScope()
       },
     },
     views: {},

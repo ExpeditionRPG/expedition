@@ -1,10 +1,10 @@
 import * as React from 'react'
-import Button from './base/Button'
-import Callout from './base/Callout'
-import Card from './base/Card'
-import {SettingsType} from '../reducers/StateTypes'
-import {ParserNode} from '../parser/Node'
-import {Choice, QuestContext, RoleplayElement} from '../reducers/QuestTypes'
+import Button from '../../components/base/Button'
+import Callout from '../../components/base/Callout'
+import Card from '../../components/base/Card'
+import {SettingsType} from '../../reducers/StateTypes'
+import {ParserNode} from '../../parser/Node'
+import {Choice, QuestContext, RoleplayElement} from '../../reducers/QuestTypes'
 
 export interface RoleplayStateProps {
   node: ParserNode;
