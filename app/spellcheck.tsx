@@ -6,8 +6,7 @@ const {Range} = acequire('ace/range');
 import REGEX from './regex'
 import {METADATA_FIELDS} from './constants'
 import {encounters} from '../node_modules/expedition-app/app/Encounters'
-const ENCOUNTERS = Object.keys(encounters).concat(['undead']);
-const IGNORE = ENCOUNTERS.concat(['app', 'roleplaying', 'xp']);
+const IGNORE = Object.keys(encounters);
 
 
 export default class Spellcheck {

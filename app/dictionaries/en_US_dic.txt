@@ -2721,6 +2721,7 @@ apotheosis/M
 apotheosized
 apotheosizes
 apotheosizing
+app
 Appalachia/M
 Appalachian/MS
 appalling/Y
@@ -33623,6 +33624,7 @@ Magdalena/M
 Magdalene/M
 Magdalen/M
 Magda/M
+mage/S
 Magellanic
 Magellan/M
 magenta/MS
@@ -47567,6 +47569,7 @@ Roland/M
 Rolando/M
 Roldan/M
 role/MS
+roleplay/GDRSB
 Roley/M
 Rolfe/M
 Rolf/M
@@ -58076,6 +58079,7 @@ uncustomary
 uncut
 undated/I
 undaunted/Y
+undead
 undeceive
 undecided/S
 undedicated
@@ -61641,6 +61645,7 @@ Xmas/SM
 XML
 Xochipilli/M
 XOR
+xp
 X's
 XS
 xterm/M
