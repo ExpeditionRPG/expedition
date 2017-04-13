@@ -455,6 +455,10 @@ strong {
     left: 0;
     right: 0;
   }
+  
+  &.Ability .naming {
+    bottom: -0.08in; /* alternatively, could remove the tagline from the card back logos */
+  }
 
   .tier {
     position: absolute;
