@@ -35,6 +35,7 @@ const options = {
     new CopyWebpackPlugin([
       { from: 'node_modules/expedition-app/app/images', to: 'images'},
       { from: 'app/dictionaries', to: 'dictionaries'},
+      { from: 'app/scripts', to: 'scripts'},
     ]),
   ],
 };
