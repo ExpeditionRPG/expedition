@@ -17,7 +17,7 @@ export var XMLRenderer: Renderer = {
       if (typeof(section) === 'string') {
         let node = section as string;
         roleplay.append('<p>' + sanitizeStyles(node) + '</p>');
-      } else if ((section as RoleplayChild).choice != null) { // choice
+      } else if (Boolean((section as RoleplayChild).choice)) { // choice
         let node = section as RoleplayChild;
         let choice = cheerio.load('<choice></choice>')('choice');
         choice.attr('text', sanitizeStyles(node.text));

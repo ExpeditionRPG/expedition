@@ -277,7 +277,7 @@ describe('BlockRenderer', () => {
 
       br.toRoleplay(blocks, log);
 
-      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayChoiceNoTitle);
+      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayChoiceNoParse);
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.missingTitleErr);
     });
 

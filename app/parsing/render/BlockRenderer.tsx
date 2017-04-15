@@ -45,7 +45,7 @@ export class BlockRenderer {
       }
 
       // Append rendered stuff
-      var lines = this.collate((i == 0 && hasHeader) ? block.lines.slice(1) : block.lines);
+      var lines = this.collate((i === 0 && hasHeader) ? block.lines.slice(1) : block.lines);
       var choice: RoleplayChild;
       var instruction: Instruction;
       for (let line of lines) {
@@ -75,6 +75,7 @@ export class BlockRenderer {
           inner = blocks[i];
         }
         if (choice.text.trim() === '') {
+          console.log('HERP');
           log.err(
             'choice missing title',
             '428',
@@ -176,7 +177,7 @@ export class BlockRenderer {
       }
 
       // Skip the first line if we're at the root block (already parsed)
-      for (let j = (i==0) ? 1 : 0; j < block.lines.length; j++) {
+      for (let j = (i===0) ? 1 : 0; j < block.lines.length; j++) {
         let line = block.lines[j];
         // Skip empty lines, enemy list
         if (line === '' || line[0] === '-') {
@@ -186,7 +187,7 @@ export class BlockRenderer {
         // We should only ever see event blocks within the combat block.
         // These blocks are only single lines.
         var extractedEvent = Object.assign({}, this.extractBulleted(line), {event: []});
-        if (extractedEvent == null || !extractedEvent.text) {
+        if (!Boolean(extractedEvent) || !extractedEvent.text) {
           log.err(
             'lines within combat block must be events or enemies, not freestanding text',
             '416',
@@ -209,8 +210,8 @@ export class BlockRenderer {
     var hasLose = false;
 
     for (let i = 0; i < events.length; i++) {
-      hasWin = hasWin || (events[i].text == 'on win');
-      hasLose = hasLose || (events[i].text == 'on lose');
+      hasWin = hasWin || (events[i].text === 'on win');
+      hasLose = hasLose || (events[i].text === 'on lose');
     }
     if (!hasWin) {
       log.err('combat card must have "on win" event', '417');
@@ -235,8 +236,9 @@ export class BlockRenderer {
     for (let i = 1; i < block.lines.length && block.lines[i] !== ''; i++) {
       let kv = block.lines[i].split(':');
       if (kv.length !== 2) {
-        if (log) log.err('invalid quest attribute line "' + block.lines[i] + '"',
-          '420', block.startLine + i);
+        if (log) {
+          log.err('invalid quest attribute line "' + block.lines[i] + '"', '420', block.startLine + i);
+        }
         continue;
       }
       let k = kv[0].toLowerCase();
@@ -316,7 +318,7 @@ export class BlockRenderer {
     // (\{.*\})?                Optionally match a JSON blob (greedy)
     // $                        End of string
     const m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*([^{]*)(\{.*\})?$/);
-    if (m == null) {
+    if (m === null) {
       return {
         visible: 'false',
         text: '',
