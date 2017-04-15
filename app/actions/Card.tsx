@@ -4,6 +4,10 @@ import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants'
 import {getStore} from '../Store'
 
 declare var window: any;
+declare var navigator: any;
+if (navigator && !window.navigator) {
+  window.navigator = navigator;
+}
 
 export function toCard(name: CardName, phase?: CardPhase, overrideDebounce?: boolean): NavigateAction {
   let state: AppStateWithHistory = getStore().getState();
