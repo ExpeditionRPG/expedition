@@ -1,6 +1,6 @@
 
 describe('Tutorial', () => {
-	it('TODO');
+  it('TODO');
 });
 /*
 test('does not open if help text turned off', function() {

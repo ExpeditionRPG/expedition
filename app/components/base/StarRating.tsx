@@ -21,9 +21,14 @@ export default class StarRating extends React.Component<StarRatingProps, {}> {
       const onClick = this.props.readOnly ? undefined : this.props.onChange.bind(this, i);
       const checked = (i <= this.props.value);
       let classes = 'star';
-      if (!this.props.readOnly) classes += ' editable';
-      if (checked) { classes += ' filled'; }
-      else { classes += ' outline'; }
+      if (!this.props.readOnly) {
+        classes += ' editable';
+      }
+      if (checked) {
+        classes += ' filled';
+      } else {
+        classes += ' outline';
+      }
 
       return <div className={classes}>
         <FlatButton key={i} onTouchTap={() => { this.props.onChange(i) }}>

@@ -1,4 +1,4 @@
 
 describe('Settings reducer', () => {
-	it('TODO');
+  it('TODO');
 });

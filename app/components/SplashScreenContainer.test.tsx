@@ -1,4 +1,4 @@
 
 describe('SplashScreenContainer', () => {
-	it('TODO');
+  it('TODO');
 });

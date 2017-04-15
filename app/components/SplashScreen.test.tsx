@@ -1,6 +1,6 @@
 
 describe('SplashScreen', () => {
-	it('TODO');
+  it('TODO');
 });
 /*
 test('feedback link is resolvable', function() {

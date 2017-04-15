@@ -21,7 +21,9 @@ function getNodeAttributes(e: XMLElement): {[key:string]:string;} {
   // Regular XMLElements have NamedNodeMap
   attribs = {};
   for (const p of e.get(0).attributes) {
-    if (typeof p.nodeValue !== 'undefined') attribs[p.nodeName] = p.nodeValue;
+    if (typeof p.nodeValue !== 'undefined') {
+      attribs[p.nodeName] = p.nodeValue;
+    }
   }
 }
 
@@ -175,7 +177,7 @@ export class ParserNode {
 
   private isElemControl(elem: XMLElement): boolean {
     const tagName = elem.get(0).tagName.toLowerCase();
-    return tagName === 'choice' || tagName === 'event' || (elem.attr('on') != null);
+    return tagName === 'choice' || tagName === 'event' || Boolean(elem.attr('on'));
   }
 
   private isElemEnabled(elem: XMLElement): boolean {

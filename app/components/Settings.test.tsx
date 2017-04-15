@@ -1,6 +1,6 @@
 
 describe('Settings', () => {
-	it('TODO');
+  it('TODO');
 });
 /*
 test('settings are pre-loaded', function() {
