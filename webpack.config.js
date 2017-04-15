@@ -10,7 +10,7 @@ const options = {
   entry: [
     'webpack-dev-server/client?http://localhost:' + port,
     'webpack/hot/only-dev-server',
-    './app/react.tsx',
+    './app/React.tsx',
     './app/style.scss',
   ],
   resolve: {
