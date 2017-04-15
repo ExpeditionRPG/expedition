@@ -1,5 +1,6 @@
 import {card} from './Card'
 import {toCard} from '../actions/Card'
+import {NAVIGATION_DEBOUNCE_MS}  from '../Constants'
 
 describe('Card reducer', () => {
   it('Defaults to splash card', () => {
@@ -23,9 +24,9 @@ describe('Card reducer', () => {
 
     var state = card(undefined, toCard('SEARCH_CARD'));
 
-    fixedNow += 500 // ms
+    fixedNow += NAVIGATION_DEBOUNCE_MS + 10
     expect(card(state, toCard('QUEST_CARD'))).toEqual(jasmine.objectContaining({
-      name: 'SEARCH_CARD',
+      name: 'QUEST_CARD',
     }));
   });
 
