@@ -1,3 +1,7 @@
+
+describe('FeaturedQuests', () => {
+  it('TODO');
+});
 /*
 test('content shown', function() {
   Polymer.dom(f).innerHTML = "test-subtext";

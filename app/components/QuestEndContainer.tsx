@@ -1,11 +1,11 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
 import QuestEnd, {QuestEndStateProps, QuestEndDispatchProps} from './QuestEnd'
-import {toCard, toPrevious} from '../actions/card'
-import {login} from '../actions/user'
+import {toCard, toPrevious} from '../actions/Card'
+import {login} from '../actions/User'
 import {userFeedbackChange} from '../actions/UserFeedback'
-import {submitUserFeedback} from '../actions/web'
-import {authSettings, MIN_FEEDBACK_LENGTH} from '../constants'
+import {submitUserFeedback} from '../actions/Web'
+import {authSettings, MIN_FEEDBACK_LENGTH} from '../Constants'
 import {AppState, QuestState, SettingsType, UserState, UserFeedbackState} from '../reducers/StateTypes'
 
 declare var window:any;

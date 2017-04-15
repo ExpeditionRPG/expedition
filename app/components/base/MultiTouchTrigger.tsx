@@ -1,5 +1,4 @@
 import * as React from 'react';
-import theme from '../../theme';
 
 interface MultiTouchTriggerProps extends React.Props<any> {
   onTouchChange: (touches: any) => any;

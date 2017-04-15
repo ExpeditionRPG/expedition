@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {CardState} from './StateTypes'
 import {NavigateAction, ReturnAction} from '../actions/ActionTypes'
-import {NAVIGATION_DEBOUNCE_MS} from '../constants'
+import {NAVIGATION_DEBOUNCE_MS} from '../Constants'
 
 
 // ts: 0 solves an obscure bug (instead of Date.now()) where rapidly triggering navigations with undefined states

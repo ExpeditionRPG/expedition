@@ -9,7 +9,6 @@ import Checkbox from './base/Checkbox'
 
 import {SearchSettings, SearchPhase, SearchState, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
-import theme from '../theme'
 
 export interface SearchStateProps extends SearchState {
   phase: SearchPhase;

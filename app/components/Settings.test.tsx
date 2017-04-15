@@ -1,3 +1,7 @@
+
+describe('Settings', () => {
+	it('TODO');
+});
 /*
 test('settings are pre-loaded', function() {
   throw new Exception("unimplemented");

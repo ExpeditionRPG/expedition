@@ -1,3 +1,7 @@
+
+describe('Tutorial', () => {
+	it('TODO');
+});
 /*
 test('does not open if help text turned off', function() {
   throw new Error('unimplemented');

@@ -31,7 +31,6 @@ export const REGEX = {
   HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,
 };
 
-
 // converts a number to the English representation of the word
 // Note: for numbers outside of 0 and 10, standard to just output the numeric form
 export function numberToWord(input: number): string {

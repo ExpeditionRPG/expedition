@@ -1,11 +1,11 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
 import Report, {ReportStateProps, ReportDispatchProps} from './Report'
-import {MIN_FEEDBACK_LENGTH} from '../constants'
-import {toPrevious} from '../actions/card'
-import {login} from '../actions/user'
+import {MIN_FEEDBACK_LENGTH} from '../Constants'
+import {toPrevious} from '../actions/Card'
+import {login} from '../actions/User'
 import {userFeedbackChange} from '../actions/UserFeedback'
-import {submitUserFeedback} from '../actions/web'
+import {submitUserFeedback} from '../actions/Web'
 import {AppState, QuestState, SettingsType, UserState, UserFeedbackState} from '../reducers/StateTypes'
 
 declare var window:any;

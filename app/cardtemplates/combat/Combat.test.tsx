@@ -1,3 +1,7 @@
+
+describe('Combat', () => {
+  it('TODO');
+});
 /*
 test('Loot returns viable value with tier sum = 1', function() {
   var loot = calculateLoot({

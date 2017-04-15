@@ -1,7 +1,7 @@
 import Redux from 'redux'
-import {toCard} from './card'
+import {toCard} from './Card'
 import {UserState} from '../reducers/StateTypes'
-import {authSettings} from '../constants'
+import {authSettings} from '../Constants'
 
 declare var gapi: any;
 declare var window: any;

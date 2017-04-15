@@ -1,8 +1,8 @@
 import Redux from 'redux'
 import { connect } from 'react-redux'
 import {AppState} from '../reducers/StateTypes'
-import {changeSettings} from '../actions/settings'
-import {toCard} from '../actions/card'
+import {changeSettings} from '../actions/Settings'
+import {toCard} from '../actions/Card'
 import SplashScreen, {SplashScreenStateProps, SplashScreenDispatchProps} from './SplashScreen'
 
 const mapStateToProps = (state: AppState, ownProps: any): SplashScreenStateProps => {

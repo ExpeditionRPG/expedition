@@ -19,7 +19,7 @@ const TEST_SETTINGS = {
 
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultQuestContext());
 
-describe('combat', () => {
+describe('Combat actions', () => {
 
   let baseNode: ParserNode = null;
   {
