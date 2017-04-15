@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
 import {AppState} from '../reducers/StateTypes'
-import {toCard, toPrevious} from '../actions/card'
+import {toCard, toPrevious} from '../actions/Card'
 import QuestStart, {QuestStartStateProps, QuestStartDispatchProps} from './QuestStart'
 
 

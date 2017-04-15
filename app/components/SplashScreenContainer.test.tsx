@@ -1,0 +1,4 @@
+
+describe('SplashScreenContainer', () => {
+	it('TODO');
+});

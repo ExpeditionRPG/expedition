@@ -1,5 +1,5 @@
 import {encounters} from '../../Encounters'
-import {randomPropertyValue} from '../../constants'
+import {randomPropertyValue} from '../../Constants'
 import {Enemy, Loot} from '../../reducers/QuestTypes'
 
 export interface CombatAttack {

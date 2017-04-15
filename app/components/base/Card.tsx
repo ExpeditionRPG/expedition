@@ -4,10 +4,9 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import ChevronLeftIcon from 'material-ui/svg-icons/navigation/chevron-left'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import {URLS} from '../../constants'
-import {getStore} from '../../store'
-import {toCard, toPrevious} from '../../actions/card'
-import theme from '../../theme'
+import {URLS} from '../../Constants'
+import {getStore} from '../../Store'
+import {toCard, toPrevious} from '../../actions/Card'
 
 declare var window:any;
 

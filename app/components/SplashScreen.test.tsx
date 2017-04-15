@@ -1,3 +1,7 @@
+
+describe('SplashScreen', () => {
+	it('TODO');
+});
 /*
 test('feedback link is resolvable', function() {
   throw new Error('unimplemented');

@@ -1,6 +1,6 @@
 
-import {getStore} from '../store'
-import {templateScope, TemplateState} from '../cardtemplates/template'
+import {getStore} from '../Store'
+import {templateScope, TemplateState} from '../cardtemplates/Template'
 
 export interface QuestDetails {
   id?: string;

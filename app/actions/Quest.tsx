@@ -4,11 +4,11 @@ import {
   ViewQuestAction
 } from './ActionTypes'
 import {SettingsType, XMLElement} from '../reducers/StateTypes'
-import {toCard} from './card'
+import {toCard} from './Card'
 import {handleAction} from '../parser/Handlers'
 import {QuestDetails, QuestContext} from '../reducers/QuestTypes'
 import {ParserNode} from '../parser/Node'
-import {initCardTemplate} from '../cardtemplates/template'
+import {initCardTemplate} from '../cardtemplates/Template'
 
 export function initQuest(id: string, questNode: XMLElement, ctx: QuestContext): QuestNodeAction {
   const firstNode = questNode.children().eq(0);

@@ -1,7 +1,7 @@
 import {NavigateAction, ReturnAction} from './ActionTypes'
 import {AppStateWithHistory, CardName, CardPhase, XMLElement} from '../reducers/StateTypes'
-import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../constants'
-import {getStore} from '../store'
+import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants'
+import {getStore} from '../Store'
 
 declare var navigator:any;
 

@@ -1,5 +1,4 @@
 import * as React from 'react'
-import theme from '../theme'
 import Card from './base/Card'
 import Button from './base/Button'
 import {UserState} from '../reducers/StateTypes'

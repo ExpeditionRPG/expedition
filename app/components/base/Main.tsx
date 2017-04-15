@@ -1,6 +1,5 @@
 import * as React from 'react'
 import {Provider} from 'react-redux'
-import theme from '../../theme'
 
 import AdvancedPlayContainer from '../AdvancedPlayContainer'
 import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
@@ -12,10 +11,10 @@ import SplashScreenContainer from '../SplashScreenContainer'
 import QuestStartContainer from '../QuestStartContainer'
 import QuestEndContainer from '../QuestEndContainer'
 
-import {renderCardTemplate} from '../../cardtemplates/template'
+import {renderCardTemplate} from '../../cardtemplates/Template'
 
 import {AppStateWithHistory, TransitionType, SearchPhase} from '../../reducers/StateTypes'
-import {getStore} from '../../store'
+import {getStore} from '../../Store'
 
 var ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
 

@@ -4,14 +4,14 @@ import {connect} from 'react-redux'
 import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
 
 import {getEventParameters} from '../../parser/Handlers'
-import {toPrevious, toCard} from '../../actions/card'
+import {toPrevious, toCard} from '../../actions/Card'
 import {handleCombatTimerStop, tierSumDelta, adventurerDelta, handleCombatEnd} from './Actions'
-import {event} from '../../actions/quest'
+import {event} from '../../actions/Quest'
 import {AppStateWithHistory, XMLElement, SettingsType, CardName} from '../../reducers/StateTypes'
 import {QuestContext, EventParameters} from '../../reducers/QuestTypes'
 import {CombatPhase, MidCombatPhase} from './State'
 import {ParserNode} from '../../parser/Node'
-import {MAX_ADVENTURER_HEALTH} from '../../constants'
+import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 
 declare var window:any;
 

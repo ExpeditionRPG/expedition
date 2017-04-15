@@ -1,5 +1,4 @@
 import * as React from 'react';
-import theme from '../../theme';
 
 interface CalloutProps extends React.Props<any> {
   icon?: string;

@@ -5,7 +5,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var options = {
   entry: [
-    './app/react.tsx',
+    './app/React.tsx',
     './app/style.scss',
   ],
   resolve: {

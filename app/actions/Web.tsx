@@ -1,7 +1,7 @@
 import Redux from 'redux'
-import {authSettings} from '../constants'
-import {toCard} from './card'
-import {initQuest} from './quest'
+import {authSettings} from '../Constants'
+import {toCard} from './Card'
+import {initQuest} from './Quest'
 
 import {userFeedbackClear} from '../actions/UserFeedback'
 import {SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState, XMLElement} from '../reducers/StateTypes'
