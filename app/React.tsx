@@ -1,9 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
-const PACKAGE = require('../package.json');
-window.APP_VERSION = PACKAGE.version;
-
 // So we can hot reload
 declare var require: any;
 declare var module: any;
@@ -15,6 +12,8 @@ declare var window: any;
 // For gapi login
 declare var gapi: any;
 
+const PACKAGE = require('../package.json');
+window.APP_VERSION = PACKAGE.version;
 
 // Material UI theming libs
 import theme from './Theme'

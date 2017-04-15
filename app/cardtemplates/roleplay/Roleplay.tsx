@@ -92,10 +92,13 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
     const nextNode = node.getNext();
     let buttonText = 'Next';
     if (nextNode && nextNode.getTag() === 'trigger') {
-      switch(nextNode.elem.text().toLowerCase()) {
+      const triggerText = nextNode.elem.text().toLowerCase();
+      switch(triggerText) {
         case 'end':
           buttonText = 'End';
           break;
+        default:
+          throw new Error('Unknown trigger with text ' + triggerText)
       }
     }
     choices.push({text: buttonText, idx: 0});

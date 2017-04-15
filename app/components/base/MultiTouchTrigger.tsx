@@ -48,7 +48,7 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
   }
 
   _processInput(xyArray: number[][]) {
-    if (this.inputArray == null || xyArray.length !== this.inputArray.length) {
+    if (!Boolean(this.inputArray) || xyArray.length !== this.inputArray.length) {
       this.props.onTouchChange(xyArray.length);
     }
     this.inputArray = xyArray;

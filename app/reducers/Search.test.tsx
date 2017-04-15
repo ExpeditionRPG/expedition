@@ -1,4 +1,4 @@
 
 describe('Search reducer', () => {
-	it('TODO');
+  it('TODO');
 });

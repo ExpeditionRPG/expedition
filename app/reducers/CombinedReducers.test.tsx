@@ -1,4 +1,4 @@
 
 describe('CombinedReducers', () => {
-	it('TODO');
+  it('TODO');
 });

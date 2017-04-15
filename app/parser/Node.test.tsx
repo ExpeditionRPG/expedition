@@ -49,7 +49,7 @@ describe('Node', () => {
   })
 
   describe('gotoId', () => {
-  	it('goes to ID', () => {
+    it('goes to ID', () => {
       const quest = cheerio.load('<quest><roleplay></roleplay><roleplay>wrong</roleplay><roleplay id="test">expected</roleplay></quest>')('quest');
       const pnode = new ParserNode(quest.children().eq(0), defaultQuestContext());
       expect(pnode.gotoId('test').elem.text()).toEqual('expected');
@@ -108,7 +108,7 @@ describe('Node', () => {
     it('hides children with nothing but variable assignment', () => {
       // Lines with nothing but variable assignment are hidden
       expect(renderedChildren(
-        cheerio.load('<roleplay><p>{{text="TEST"}}</p><p>{{text}}</p></roleplay>')('roleplay'), 
+        cheerio.load('<roleplay><p>{{text="TEST"}}</p><p>{{text}}</p></roleplay>')('roleplay'),
         defaultQuestContext())
       ).toEqual(['<p>TEST</p>']);
     });
@@ -116,7 +116,7 @@ describe('Node', () => {
     it('hides children conditionally', () => {
       // Unassigned
       expect(renderedChildren(
-        cheerio.load('<roleplay><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'), 
+        cheerio.load('<roleplay><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'),
         defaultQuestContext())
       ).toEqual([]);
 

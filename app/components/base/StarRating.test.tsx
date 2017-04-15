@@ -1,4 +1,4 @@
 
 describe('StarRating', () => {
-	it('TODO');
+  it('TODO');
 });

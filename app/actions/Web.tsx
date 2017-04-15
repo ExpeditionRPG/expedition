@@ -23,7 +23,7 @@ export function loadQuestXML(id: string, data: XMLElement | string, ctx: QuestCo
   return (dispatch: Redux.Dispatch<any>): any => {
     var xml = $(data) as any as XMLElement;
     var questNode = xml;
-    if (questNode.get(0).tagName == null) { // for web + android, have to enter the document
+    if (!Boolean(questNode.get(0).tagName)) { // for web + android, have to enter the document
       questNode = questNode.children().eq(0);
     }
     if (questNode.get(0).tagName.toLowerCase() !== 'quest') {
@@ -52,7 +52,7 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
       params.search = search.text;
     }
     if (search.age && search.age !== 'inf') {
-      params.published_after = parseInt(search.age);
+      params.published_after = parseInt(search.age, 10);
     }
     if (search.order) {
       params.order = search.order;

@@ -12,8 +12,8 @@ export function getEventParameters(node: ParserNode, event: string): EventParame
   }
   const p = evt.elem.parent();
   const ret: EventParameters = {};
-  if (p.attr('xp')) { ret.xp = (p.attr('xp') == 'true'); }
-  if (p.attr('loot')) { ret.loot = (p.attr('loot') == 'true'); }
+  if (p.attr('xp')) { ret.xp = (p.attr('xp') === 'true'); }
+  if (p.attr('loot')) { ret.loot = (p.attr('loot') === 'true'); }
   if (p.attr('heal')) { ret.heal = parseInt(p.attr('heal'), 10); }
   return ret;
 }

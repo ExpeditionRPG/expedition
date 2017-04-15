@@ -1,4 +1,4 @@
 
 describe('MultiTouchTrigger', () => {
-	it('TODO');
+  it('TODO');
 });
