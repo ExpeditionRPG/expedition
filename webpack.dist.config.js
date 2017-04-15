@@ -17,8 +17,6 @@ var options = {
   },
   module: {
     loaders: [
-      // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
       { test: /\.(ttf|eot|svg|jpg|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' },

@@ -11,7 +11,7 @@ const mapStateToProps = (state: AppState, ownProps: AdvancedPlayStateProps): Adv
   };
 }
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AdvancedPlayDispatchProps => {
+export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AdvancedPlayDispatchProps => {
   return {
     onCustomCombatSelect(settings: SettingsType): void {
       dispatch(initCustomCombat(settings));

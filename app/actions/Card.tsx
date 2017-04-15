@@ -3,16 +3,15 @@ import {AppStateWithHistory, CardName, CardPhase, XMLElement} from '../reducers/
 import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants'
 import {getStore} from '../Store'
 
-declare var navigator:any;
-
+declare var window: any;
 
 export function toCard(name: CardName, phase?: CardPhase, overrideDebounce?: boolean): NavigateAction {
   let state: AppStateWithHistory = getStore().getState();
-  if (navigator.vibrate && state.settings.vibration) {
+  if (window.navigator && state.settings.vibration) {
     if (phase === 'TIMER') {
-      navigator.vibrate(VIBRATION_LONG_MS);
+      window.navigator.vibrate(VIBRATION_LONG_MS);
     } else {
-      navigator.vibrate(VIBRATION_SHORT_MS);
+      window.navigator.vibrate(VIBRATION_SHORT_MS);
     }
   }
   return {type: 'NAVIGATE', to: {name, ts: Date.now(), phase, overrideDebounce}};

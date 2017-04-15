@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {SettingsType} from './StateTypes'
 import {ChangeSettingsAction} from '../actions/ActionTypes'
 
-const initial_state: SettingsType = {
+export const initial_state: SettingsType = {
   autoRoll: false,
   difficulty: 'NORMAL',
   multitouch: true,
