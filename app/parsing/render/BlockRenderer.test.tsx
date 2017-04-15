@@ -259,6 +259,28 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.missingTitleErr);
     });
 
+    it('alerts the user to choices without titles - invalid choice string', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        {
+          indent: 0,
+          lines: ['_roleplay_', '', 'text', '', '* {{test1'],
+          startLine: 5,
+        },
+        {
+          indent: 2,
+          lines: [],
+          render: XMLRenderer.toRoleplay({}, ['choice text'], null),
+          startLine: 7,
+        },
+      ];
+
+      br.toRoleplay(blocks, log);
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayChoiceNoTitle);
+      expect(prettifyMsgs(log.finalize())).toEqual(TestData.missingTitleErr);
+    });
+
     it('renders with ID', () => {
       var log = new Logger();
       var blocks: Block[] = [

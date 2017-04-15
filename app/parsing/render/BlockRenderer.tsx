@@ -316,7 +316,13 @@ export class BlockRenderer {
     // (\{.*\})?                Optionally match a JSON blob (greedy)
     // $                        End of string
     const m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*([^{]*)(\{.*\})?$/);
-    if (m == null) { return null; }
+    if (m == null) {
+      return {
+        visible: 'false',
+        text: '',
+        json: {},
+      };
+    }
     return {
       visible: m[2],
       text: m[3].trim(),
