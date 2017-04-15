@@ -66,7 +66,7 @@ export class BlockList {
 
     // after a trigger and whitespace
     var currBlockStart = currBlock.lines && currBlock.lines[0];
-    if (prevEmpty && currBlockStart && currBlockStart[0] == '*' && currBlockStart[1] == '*') {
+    if (prevEmpty && currBlockStart && currBlockStart[0] === '*' && currBlockStart[1] === '*') {
       return true;
     }
 

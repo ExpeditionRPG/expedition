@@ -58,7 +58,21 @@ const options = {
         tslint: {
           configuration: {
            rules: {
-              quotemark: [true, 'single', 'jsx-double']
+              quotemark: [true, 'single', 'jsx-double'],
+              curly: true,
+              noUseBeforeDeclare: true,
+              eofline: true,
+              radix: true,
+              switchDefault: true,
+              tripleEquals: true,
+              typeofCompare: true,
+              useIsnan: true,
+              indent: [true, "spaces"],
+              // We can add these when we feel like having more style enforcement
+              //noUnusedVariables: true,
+              //noVarKeyword: true,
+              //preferConst: true,
+              //trailingComma: true,
             }
           },
           emitErrors: true,

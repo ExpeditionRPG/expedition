@@ -84,6 +84,15 @@ data.roleplayConditionalChoiceXML = `<roleplay title="roleplay" data-line="0">
     </choice>
 </roleplay>`;
 
+data.roleplayChoiceNoParse = `<roleplay title="roleplay" data-line="5">
+    <p>text</p>
+    <choice text="" if="false">
+        <roleplay>
+            <p>choice text</p>
+        </roleplay>
+    </choice>
+</roleplay>`;
+
 data.roleplayChoiceNoTitle = `<roleplay title="roleplay" data-line="5">
     <p>text</p>
     <choice text="" if="test1">
@@ -91,7 +100,7 @@ data.roleplayChoiceNoTitle = `<roleplay title="roleplay" data-line="5">
             <p>choice text</p>
         </roleplay>
     </choice>
-</roleplay>`
+</roleplay>`;
 
 data.roleplayNoTitle = `<roleplay title="" data-line="21">
     <p>Victory!</p>

@@ -16,7 +16,9 @@ export class AttributeNormalizer {
     var v = this.attrs[k];
 
     if (!v && required) {
-      if (this.log) this.log.err('missing: "' + k + '"', '424');
+      if (this.log) {
+        this.log.err('missing: "' + k + '"', '424');
+      }
     }
     return v;
   }
@@ -89,7 +91,9 @@ export class AttributeNormalizer {
         continue;
       }
 
-      if (this.log) this.log.err('unknown key: "' + k + '"', '427');
+      if (this.log) {
+        this.log.err('unknown key: "' + k + '"', '427');
+      }
     }
   }
 }
