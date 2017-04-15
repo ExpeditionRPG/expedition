@@ -1,13 +1,18 @@
 const express = require('express');
 const fs = require('fs');
+const Joi = require('joi');
+const Mailchimp = require('mailchimp-api-v3');
 const passport = require('passport');
 const querystring = require('querystring');
 const React = require('react');
 
+const Config = require('./config');
 const Feedback = require('./models/feedback');
 const Mail = require('./mail');
 const oauth2 = require('./lib/oauth2');
 const Quests = require('./models/quests');
+
+const mailchimp = new Mailchimp(Config.get('MAILCHIMP_KEY'));
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
 
@@ -158,6 +163,32 @@ router.post('/quest/feedback/:type', (req, res) => {
   }
 });
 
+
+router.post('/user/subscribe', (req, res) => {
+  req.body = JSON.parse(req.body);
+  Joi.validate(req.body.email, Joi.string().email().invalid(''), (err, email) => {
+
+    if (err) {
+      return res.status(400).send('Valid email address required.');
+    }
+
+    mailchimp.post('/lists/' + Config.get('MAILCHIMP_PLAYERS_LIST_ID') + '/members/', {
+      email_address: email,
+      status: 'pending',
+      merge_fields: {
+        SOURCE: 'app',
+      },
+    })
+    .then((result) => {
+      console.log(email + ' subscribed as pending to player list');
+      return res.status(200).send();
+    })
+    .catch((err) => {
+      console.log('Mailchimp error', err);
+      return res.status(err.status).send(err.title);
+    });
+  });
+});
 
 
 module.exports = router;

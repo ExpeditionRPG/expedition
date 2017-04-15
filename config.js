@@ -13,7 +13,8 @@ nconf
     'MAIL_EMAIL',
     'MAIL_PASSWORD',
     'MAILCHIMP_KEY',
-    'MAILCHIMP_LIST_ID',
+    'MAILCHIMP_CREATORS_LIST_ID',
+    'MAILCHIMP_PLAYERS_LIST_ID',
     'NODE_ENV',
     'OAUTH2_CLIENT_ID',
     'OAUTH2_CLIENT_SECRET',
@@ -35,7 +36,8 @@ nconf
     // This is the id of your project in the Google Cloud Developers Console.
     GCLOUD_PROJECT: '',
 
-    MAILCHIMP_LIST_ID: 'baafc66d1b',
+    MAILCHIMP_CREATORS_LIST_ID: 'baafc66d1b',
+    MAILCHIMP_PLAYERS_LIST_ID: '541cd63169',
     OAUTH2_CLIENT_ID: '',
     OAUTH2_CLIENT_SECRET: '',
     OAUTH2_CALLBACK: 'http://localhost:8080/auth/google/callback',

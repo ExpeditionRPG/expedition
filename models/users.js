@@ -22,14 +22,14 @@ exports.upsert = function(user, callback) {
       if (err && err.code !== 404) { // don't fail to upsert if the getId fails
         console.log(err);
       } else {
-        mailchimp.post('/lists/' + Config.get('MAILCHIMP_LIST_ID') + '/members/', {
+        mailchimp.post('/lists/' + Config.get('MAILCHIMP_CREATORS_LIST_ID') + '/members/', {
           email_address: user.email,
           status: 'subscribed',
         })
         .then((result) => {
-          console.log(user.email + ' subscribed');
+          console.log(user.email + ' subscribed to creators list');
         })
-        .catch(function (err) {
+        .catch((err) => {
           console.log('Mailchimp error', err);
         });
       }
