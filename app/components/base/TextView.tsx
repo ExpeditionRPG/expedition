@@ -144,8 +144,8 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     if (this.props.realtime) {
       this.props.realtime.removeAllEventListeners();
     }
-    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, this.onTextInserted);
-    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, this.onTextDeleted);
+    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, (event: any) => { this.onTextInserted(event); });
+    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, (event: any) => { this.onTextDeleted(event); });
   }
 
   onChange(text: string) {
