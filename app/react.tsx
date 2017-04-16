@@ -15,8 +15,6 @@ declare var window:any;
 // For URL parsing
 declare var unescape: any;
 
-const Typo: any = require('typo-js');
-
 // Material UI theming libs
 import theme from './theme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
