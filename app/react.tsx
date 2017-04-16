@@ -5,21 +5,22 @@ import {render} from 'react-dom'
 
 import {saveQuest} from './actions/quest'
 
-const Typo: any = require('typo-js');
-
-// So we can hot reload
+// For hot reload
 declare var require: any;
 declare var module: any;
 
 // For dev tools extension
 declare var window:any;
 
+// For URL parsing
 declare var unescape: any;
 
 // Material UI theming libs
 import theme from './theme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
+const Typo: any = require('typo-js');
 
 // Needed for onTouchTap
 const injectTapEventPlugin = require('react-tap-event-plugin');
@@ -53,16 +54,19 @@ window.onbeforeunload = function () {
   return null;
 }
 
-// Ctrl + S to save
+// Ctrl + <hotkey>
 window.addEventListener('keydown', function checkForCtrlS (event: any) {
   if (event.ctrlKey || event.metaKey) {
     switch (String.fromCharCode(event.which).toLowerCase()) {
-      case 's':
+      case 's': // ctrl + s to save
         event.preventDefault();
         const state = store.getState();
         if (state.editor.dirty) {
           store.dispatch(saveQuest(state.quest));
         }
+        break;
+      default:
+        // Do nothing
         break;
     }
   }

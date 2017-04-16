@@ -12,7 +12,7 @@ const MAX_PLAYERS = 20;
 const schemas = {};
 
 schemas.quests = {
-  id: ID_STRING, // <userId>_<docId>
+  id: ID_STRING, // google drive doc id
   publishedurl: Joi.string().uri().max(2048),
   userid: ID_STRING,
   author: NAME,

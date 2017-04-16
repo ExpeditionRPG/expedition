@@ -91,24 +91,23 @@ function convertQuestXMLToMetadata(text, callback) {
   Joi.validate(attribs, Schemas.quests, callback);
 }
 
-exports.publish = function(userId, docId, xml, callback) {
+exports.publish = function(userId, id, xml, callback) {
 // TODO: Validate XML
 
   if (!userId) {
     return callback(new Error('Invalid or missing User ID'));
   }
 
-  if (!docId) {
-    return callback(new Error('Invalid or missing Quest ID'));
+  if (!id) {
+    return callback(new Error('Invalid or missing Quest Document ID'));
   }
 
   if (!xml) {
     return callback('Could not publish - no xml data.');
   }
 
-  const id = userId + '_' + docId;
   const cloudStorageData = {
-    gcsname: userId + "/" + docId + "/" + Date.now() + ".xml",
+    gcsname: userId + "/" + id + "/" + Date.now() + ".xml",
     buffer: xml
   };
 
@@ -153,19 +152,17 @@ exports.publish = function(userId, docId, xml, callback) {
   });
 };
 
-exports.unpublish = function(userId, docId, callback) {
+exports.unpublish = function(id, callback) {
 
-  if (!userId) {
-    return callback(new Error('Invalid or missing User ID'));
-  }
+  Joi.validate(id, Schemas.quests.id, (err, id) => {
 
-  if (!docId) {
-    return callback(new Error('Invalid or missing Quest ID'));
-  }
+    if (err) {
+      return callback(err);
+    }
 
-  const id = userId + '_' + docId;
-  Query.deleteId(table, id, (err, result) => {
-    return callback(err, id);
+    Query.deleteId(table, id, (err, result) => {
+      return callback(err, id);
+    });
   });
 };
 

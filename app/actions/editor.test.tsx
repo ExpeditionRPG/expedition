@@ -1,7 +1,7 @@
 describe('setCodeView', () => {
-  it('creates action')
-})
+  it('creates action');
+});
 
 describe('setDirty', () => {
-  it('creates action')
-})
+  it('creates action');
+});

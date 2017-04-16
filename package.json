@@ -1,6 +1,6 @@
 {
   "name": "expedition-quest-creator",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "The Expedition Quest Creation",
   "homepage": "http://expeditiongame.com",
   "repository": "https://github.com/ExpeditionRPG/expedition-quest-creator",
@@ -133,6 +133,8 @@
     "supertest": "^3.0.0",
     "ts-loader": "^2.0.1",
     "ts-node": "^2.1.0",
+    "tslint": "^4.0.0",
+    "tslint-loader": "^3.4.3",
     "typescript": "^2.2.1",
     "watch-run": "^1.2.5",
     "webpack-dashboard": "^0.3.0",
