@@ -1,11 +1,10 @@
 const Joi = require('joi');
 const Mailchimp = require('mailchimp-api-v3');
-
 const Query = require('./query');
 const Schemas = require('./schemas');
 const Config = require('../config');
 
-const mailchimp = new Mailchimp(Config.get('MAILCHIMP_KEY'));
+const mailchimp = (process.env.NODE_ENV !== 'dev') ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
 const table = 'users';
 
@@ -21,7 +20,7 @@ exports.upsert = function(user, callback) {
 
       if (err && err.code !== 404) { // don't fail to upsert if the getId fails
         console.log(err);
-      } else {
+      } else if (mailchimp) {
         mailchimp.post('/lists/' + Config.get('MAILCHIMP_CREATORS_LIST_ID') + '/members/', {
           email_address: user.email,
           status: 'subscribed',
