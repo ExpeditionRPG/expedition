@@ -12,7 +12,7 @@ var QDLHighlightRules: any = function() {
 
   let listblock = this.$rules['listblock'];
   for (let r in listblock) {
-    if (listblock[r].token == 'empty_line') {
+    if (listblock[r].token === 'empty_line') {
       listblock[r].regex = /^\s*$/; // Match empty lines and whitespace too
       break;
     }
@@ -53,8 +53,9 @@ class QDLFoldMode {
   private static getImportance(line: string): number {
     // check against most important marker first (see foldingStartMarkers)
     for (let i = QDLFoldMode.foldingStartMarkers.length - 1; i >= 0; i--) {
-      if (line.match(QDLFoldMode.foldingStartMarkers[i]))
+      if (line.match(QDLFoldMode.foldingStartMarkers[i])) {
         return i;
+      }
     }
     return -1;
   }
@@ -68,8 +69,9 @@ class QDLFoldMode {
 
       let line = session.getLine(row);
 
-      if (!line.match(QDLFoldMode.foldingStartMarker))
+      if (!line.match(QDLFoldMode.foldingStartMarker)) {
         return;
+      }
 
       const startRow = row;
       const startColumn = line.length;

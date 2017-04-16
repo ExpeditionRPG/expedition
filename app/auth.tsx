@@ -39,20 +39,20 @@ realtimeUtils.authorizer.refreshAuth = function() {
 // TODO once main lib adds this, remove here
 realtimeUtils.onError = function(error: any) {
   var that = realtimeUtils.authorizer;
-  if (error.type == window.gapi.drive.realtime.ErrorType
+  if (error.type === window.gapi.drive.realtime.ErrorType
       .TOKEN_REFRESH_REQUIRED) {
     that.authorize(function() { // the line that fixes it
       console.log('Error, auth refreshed');
     }, false);
-  } else if (error.type == window.gapi.drive.realtime.ErrorType
+  } else if (error.type === window.gapi.drive.realtime.ErrorType
       .CLIENT_ERROR) {
     alert('An Error happened: ' + error.message);
     window.location.href = '/';
-  } else if (error.type == window.gapi.drive.realtime.ErrorType.NOT_FOUND) {
+  } else if (error.type === window.gapi.drive.realtime.ErrorType.NOT_FOUND) {
     alert('The file was not found. It does not exist or you do not have ' +
       'read access to the file.');
     window.location.href = '/';
-  } else if (error.type == window.gapi.drive.realtime.ErrorType.FORBIDDEN) {
+  } else if (error.type === window.gapi.drive.realtime.ErrorType.FORBIDDEN) {
     alert('You do not have access to this file. Try having the owner share' +
       'it with you from Google Drive.');
     window.location.href = '/';

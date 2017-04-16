@@ -31,13 +31,13 @@ export interface QuestAppBarDispatchProps {
 interface QuestAppBarProps extends QuestAppBarStateProps, QuestAppBarDispatchProps {}
 
 const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
-  const questLoaded = (props.quest.id != null);
+  const questLoaded = Boolean(props.quest.id);
   const loginText = 'Logged in as ' + props.user.displayName;
   const questTitle = props.quest.title || 'unsaved quest';
 
   let savingText = 'Saving...';
   let savingIcon = <SyncIcon />;
-  if (props.editor.dirtyTimeout != null) {
+  if (Boolean(props.editor.dirtyTimeout)) {
     // saving - default (overrides other cases)
   } else if (props.quest.saveError) {
     savingText = 'Error: unable to save';

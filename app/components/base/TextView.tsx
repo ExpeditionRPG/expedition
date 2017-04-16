@@ -69,7 +69,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
         var selection = this.ace.editor.getSelection();
         var lead = selection.selectionLead;
         var anchor = selection.anchor;
-        if (lead.row != anchor.row || lead.column != anchor.column) {
+        if (lead.row !== anchor.row || lead.column !== anchor.column) {
           return;
         }
         if (this.props.onLine) {

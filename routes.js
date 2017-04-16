@@ -12,7 +12,7 @@ const Mail = require('./mail');
 const oauth2 = require('./lib/oauth2');
 const Quests = require('./models/quests');
 
-const mailchimp = new Mailchimp(Config.get('MAILCHIMP_KEY'));
+const mailchimp = (process.env.NODE_ENV !== 'dev') ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
 
@@ -172,7 +172,7 @@ router.post('/user/subscribe', (req, res) => {
       return res.status(400).send('Valid email address required.');
     }
 
-    mailchimp.post('/lists/' + Config.get('MAILCHIMP_PLAYERS_LIST_ID') + '/members/', {
+    mailchimp && mailchimp.post('/lists/' + Config.get('MAILCHIMP_PLAYERS_LIST_ID') + '/members/', {
       email_address: email,
       status: 'pending',
       merge_fields: {

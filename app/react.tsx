@@ -5,8 +5,6 @@ import {render} from 'react-dom'
 
 import {saveQuest} from './actions/quest'
 
-const Typo: any = require('typo-js');
-
 // So we can hot reload
 declare var require: any;
 declare var module: any;
@@ -15,6 +13,8 @@ declare var module: any;
 declare var window:any;
 
 declare var unescape: any;
+
+const Typo: any = require('typo-js');
 
 // Material UI theming libs
 import theme from './theme';
@@ -63,6 +63,8 @@ window.addEventListener('keydown', function checkForCtrlS (event: any) {
         if (state.editor.dirty) {
           store.dispatch(saveQuest(state.quest));
         }
+        break;
+      default:
         break;
     }
   }
