@@ -133,7 +133,7 @@ router.post('/unpublish/:quest', (req, res) => {
   }
 
   try {
-    Quests.unpublish(res.locals.id, req.params.quest, (err, id) => {
+    Quests.unpublish(req.params.quest, (err, id) => {
       if (err) {
         throw new Error(err);
       }
