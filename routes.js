@@ -172,21 +172,25 @@ router.post('/user/subscribe', (req, res) => {
       return res.status(400).send('Valid email address required.');
     }
 
-    mailchimp && mailchimp.post('/lists/' + Config.get('MAILCHIMP_PLAYERS_LIST_ID') + '/members/', {
-      email_address: email,
-      status: 'pending',
-      merge_fields: {
-        SOURCE: 'app',
-      },
-    })
-    .then((result) => {
-      console.log(email + ' subscribed as pending to player list');
+    if (!mailchimp) {
       return res.status(200).send();
-    })
-    .catch((err) => {
-      console.log('Mailchimp error', err);
-      return res.status(err.status).send(err.title);
-    });
+    } else {
+      mailchimp.post('/lists/' + Config.get('MAILCHIMP_PLAYERS_LIST_ID') + '/members/', {
+        email_address: email,
+        status: 'pending',
+        merge_fields: {
+          SOURCE: 'app',
+        },
+      })
+      .then((result) => {
+        console.log(email + ' subscribed as pending to player list');
+        return res.status(200).send();
+      })
+      .catch((err) => {
+        console.log('Mailchimp error', err);
+        return res.status(err.status).send(err.title);
+      });
+    }
   });
 });
 
