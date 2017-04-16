@@ -5,11 +5,7 @@ import {render} from 'react-dom'
 
 import {saveQuest} from './actions/quest'
 
-<<<<<<< HEAD
-// So we can hot reload
-=======
 // For hot reload
->>>>>>> 836a12e66271aea2d459e8c5e7f45536e3b769cc
 declare var require: any;
 declare var module: any;
 
@@ -72,10 +68,7 @@ window.addEventListener('keydown', function checkForCtrlS (event: any) {
         }
         break;
       default:
-<<<<<<< HEAD
-=======
         // Do nothing
->>>>>>> 836a12e66271aea2d459e8c5e7f45536e3b769cc
         break;
     }
   }
