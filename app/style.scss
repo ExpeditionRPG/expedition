@@ -11,16 +11,29 @@ $hBarThickness: 42px;
 $videoSize: 700px;
 $border: 1px #606060 solid;
 $fontSizeBase: 20px;
+$splashParagraphSize: 16px;
 $bgInteractive: rgb(20,20,20);
 $bgHighlight: #333;
 $textDisabled: #888;
 
+$bg_papyrus_img: url("/assets/img/papyrus-tiled.jpg");
+$bg_encounter_img: url("/assets/img/encounter-tiled.jpg");
+
 @font-face {
-  font-family: 'CinzelBold';
+  font-family: 'Cinzel';
   font-style: normal;
   font-weight: 700;
   src: local('Cinzel-Bold'), url(fonts/Cinzel-Bold.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+/* latin */
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Cinzel-Regular'), url(fonts/Cinzel-Regular.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
 }
 
 @font-face {
@@ -55,7 +68,8 @@ body > :first-child:not(#react-app) { display: none; }
   margin-bottom: $padBase !important;
   padding-top: $padBase !important;
   padding-bottom: $padBase !important;
-  font-family: 'CinzelBold' !important;
+  font-family: 'Cinzel' !important;
+  font-weight: bold;
   font-size: 2em !important;
 
   &.dialogError {
@@ -74,33 +88,147 @@ body > :first-child:not(#react-app) { display: none; }
   text-align: center;
   color: white;
   padding: $padBase;
-  font-family: Roboto, sans-serif;
+  font-family: 'Cinzel';
+  font-weight: bold;
 }
 
 .splash {
   background: $bg_primary;
+  font-family: 'MinionPro';
+  overflow-y: auto;
+  font-size: $splashParagraphSize;
 
-  .body {
-    text-align: center;
-    overflow-y: auto;
-    flex: 10;
+  a {
+    color: inherit !important;
+  }
 
-    &>* {
-      display:block;
-      margin: $padBase;
+  .worldMap {
+    border-left: 0;
+    border-right: 0;
+    padding: 10px 0;
+    background-color: rgba(255,255,255,0.4);
+    border-top: 1px rgba(0,0,0,0.3) solid;
+    border-bottom: 1px rgba(0,0,0,0.3) solid;
+    img {
+      max-height: 400px;
+      border: 0 !important;
     }
   }
 
+  img {
+    max-width: 100%;
+  }
+
+  .buttonBox {
+    // Override expedition-app button
+    .base_button {
+      display: inline-block;
+      padding: 10px;
+      &> button {
+        font-family: 'MinionPro', serif !important;
+        font-size: 20px !important;
+        padding-left: 40px !important;
+        padding-right: 40px !important;
+      }
+    }
+  }
+
+  .body {
+    max-width: 1000px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    flex: 10;
+
+    label {
+      font-style: italic;
+      color: rgba(0,0,0,0.5);
+    }
+
+    h1, h3 {
+      font-style: normal;
+      font-weight: normal;
+      letter-spacing: .1em;
+      text-size-adjust:100%;
+      -webkit-font-smoothing: 'antialiased';
+      text-rendering: optimizeLegibility;
+      line-height: 1.2em;
+    }
+
+    h1 {
+      font-family: 'Cinzel';
+      font-size: 45px !important;
+    }
+
+    h3 {
+      font-size: 28px;
+    }
+
+    &>* {
+      padding-left: $padBase;
+      padding-right: $padBase;
+      padding-bottom: $padBase*3;
+      padding-top: $padBase;
+
+      &:first-child {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      &:nth-child(odd) {
+        background-image: $bg_papyrus_img;
+        color: black;
+        img {
+          border: 1px rgba(0,0,0,0.3) solid;
+        }
+      }
+      &:nth-child(even) {
+        background-image: $bg_encounter_img;
+        color: white;
+        .showcase {
+          flex-direction: row-reverse;
+        }
+        img {
+          border: 1px rgba(255,255,255,0.3) solid;
+        }
+      }
+      display:block;
+      margin: 0;
+    }
+  }
+
+  .showcase {
+    margin: $padBase;
+    text-align: left;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    &>div {
+      flex-grow: 1;
+      min-width: 300px;
+      width: 30%;
+      padding: $padBase;
+
+      &>p:first-child {
+        margin-top:0;
+      }
+    }
+  }
+
+
+
   h1 {
-    color: white;
-    font-size: 2em;
+    font-size: 2*$fontSizeBase;
     font-weight: normal;
   }
 
   .previewVideo {
+    min-height: 350px;
+    width: 100%;
+    height: 100%;
     background: $bg_primary;
-    box-shadow: 0 0 $padBase $brightShadow;
-    border-radius: 2px;
+    border: 1px white solid;
     max-width: $videoSize;
     max-height: $videoSize;
     width: 90%;
@@ -111,8 +239,16 @@ body > :first-child:not(#react-app) { display: none; }
 }
 
 .quest_app_bar {
+  background-image: $bg_encounter_img;
+
+  // Override AppBar style
+  >div {
+    background-color: transparent !important;
+  }
+
   h1 {
-    font-family: 'CinzelBold';
+    font-family: 'Cinzel';
+    font-weight: bold;
   }
 
   .loginState {
@@ -120,7 +256,7 @@ body > :first-child:not(#react-app) { display: none; }
   }
 
   .toolbar {
-    background: $bg_secondary !important;
+    //background: $bg_secondary !important;
     height: $hBarThickness !important;
 
     button {
@@ -134,33 +270,33 @@ body > :first-child:not(#react-app) { display: none; }
   }
 }
 
+.quest_ide {
+  flex: 10;
+  display: flex;
+
+  .editor {
+    flex: 1;
+  }
+
+  .preview {
+    flex: 0 0 $previewPanelWidth;
+    max-width: $previewPanelWidth;
+
+    .app_root, .editor_override {
+      height: 100%;
+    }
+
+    .app, button {
+      font-family: MinionPro, sans-serif !important;
+    }
+  }
+}
+
 .contents {
   position: relative;
   height: 100%;
   display: flex;
   flex-direction: column;
-
-  .quest_ide {
-    flex: 10;
-    display: flex;
-
-    .editor {
-      flex: 1;
-    }
-
-    .preview {
-      flex: 0 0 $previewPanelWidth;
-      max-width: $previewPanelWidth;
-
-      .app_root, .editor_override {
-        height: 100%;
-      }
-
-      .app, button {
-        font-family: MinionPro, sans-serif !important;
-      }
-    }
-  }
 
   h1 {
     color: white;

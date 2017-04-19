@@ -9,7 +9,7 @@ import {realtimeUtils} from '../auth'
 declare var window: any;
 
 
-function setProfileMeta(user: UserState): SetProfileMetaAction {
+export function setProfileMeta(user: UserState): SetProfileMetaAction {
   return {type: 'SET_PROFILE_META', user};
 }
 
