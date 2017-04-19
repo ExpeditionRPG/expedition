@@ -8,9 +8,13 @@ $red800: #C62828;
 $previewPanelWidth: 560px;
 $padBase: 24px;
 $hBarThickness: 42px;
-$videoSize: 700px;
+$showcaseFeatureSize: 350px;
+$mapSize: 400px;
 $border: 1px #606060 solid;
 $fontSizeBase: 20px;
+$fontSizeImportant: 28px;
+$fontSizeHeader: 45px;
+$bodyWidth: 1000px;
 $splashParagraphSize: 16px;
 $bgInteractive: rgb(20,20,20);
 $bgHighlight: #333;
@@ -27,7 +31,6 @@ $bg_encounter_img: url("/assets/img/encounter-tiled.jpg");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
-/* latin */
 @font-face {
   font-family: 'Cinzel';
   font-style: normal;
@@ -48,6 +51,10 @@ html, body, section#react-app, textarea {
   margin: 0;
   font-family: Monaco, Melo, "Ubuntu Mono", monospace;
   font-size: $fontSizeBase;
+}
+
+a {
+  color: inherit !important;
 }
 
 body > :first-child:not(#react-app) { display: none; }
@@ -98,19 +105,15 @@ body > :first-child:not(#react-app) { display: none; }
   overflow-y: auto;
   font-size: $splashParagraphSize;
 
-  a {
-    color: inherit !important;
-  }
-
   .worldMap {
     border-left: 0;
     border-right: 0;
-    padding: 10px 0;
+    padding: $padBase 0;
     background-color: rgba(255,255,255,0.4);
-    border-top: 1px rgba(0,0,0,0.3) solid;
-    border-bottom: 1px rgba(0,0,0,0.3) solid;
+    border-top: $border;
+    border-bottom: $border;
     img {
-      max-height: 400px;
+      max-height: $mapSize;
       border: 0 !important;
     }
   }
@@ -123,24 +126,24 @@ body > :first-child:not(#react-app) { display: none; }
     // Override expedition-app button
     .base_button {
       display: inline-block;
-      padding: 10px;
+      padding: $padBase;
       &> button {
         font-family: 'MinionPro', serif !important;
-        font-size: 20px !important;
-        padding-left: 40px !important;
-        padding-right: 40px !important;
+        font-size: $fontSizeBase !important;
+        padding-left: 2*$padBase !important;
+        padding-right: 2*$padBase !important;
       }
     }
   }
 
   .body {
-    max-width: 1000px;
+    max-width: $bodyWidth;
     text-align: center;
     margin-left: auto;
     margin-right: auto;
     flex: 10;
 
-    label {
+    .imageText {
       font-style: italic;
       color: rgba(0,0,0,0.5);
     }
@@ -148,20 +151,22 @@ body > :first-child:not(#react-app) { display: none; }
     h1, h3 {
       font-style: normal;
       font-weight: normal;
-      letter-spacing: .1em;
-      text-size-adjust:100%;
+      letter-spacing: .05em;
       -webkit-font-smoothing: 'antialiased';
-      text-rendering: optimizeLegibility;
       line-height: 1.2em;
+
+      span {
+        display: inline-block;
+      }
     }
 
     h1 {
       font-family: 'Cinzel';
-      font-size: 45px !important;
+      font-size: $fontSizeHeader !important;
     }
 
     h3 {
-      font-size: 28px;
+      font-size: $fontSizeImportant;
     }
 
     &>* {
@@ -169,6 +174,10 @@ body > :first-child:not(#react-app) { display: none; }
       padding-right: $padBase;
       padding-bottom: $padBase*3;
       padding-top: $padBase;
+
+      img {
+        border: $border;
+      }
 
       &:first-child {
         padding-left: 0;
@@ -178,18 +187,12 @@ body > :first-child:not(#react-app) { display: none; }
       &:nth-child(odd) {
         background-image: $bg_papyrus_img;
         color: black;
-        img {
-          border: 1px rgba(0,0,0,0.3) solid;
-        }
       }
       &:nth-child(even) {
         background-image: $bg_encounter_img;
         color: white;
         .showcase {
           flex-direction: row-reverse;
-        }
-        img {
-          border: 1px rgba(255,255,255,0.3) solid;
         }
       }
       display:block;
@@ -206,8 +209,8 @@ body > :first-child:not(#react-app) { display: none; }
 
     &>div {
       flex-grow: 1;
-      min-width: 300px;
       width: 30%;
+      min-width: $showcaseFeatureSize;
       padding: $padBase;
 
       &>p:first-child {
@@ -224,13 +227,13 @@ body > :first-child:not(#react-app) { display: none; }
   }
 
   .previewVideo {
-    min-height: 350px;
+    min-height: $showcaseFeatureSize;
     width: 100%;
     height: 100%;
     background: $bg_primary;
-    border: 1px white solid;
-    max-width: $videoSize;
-    max-height: $videoSize;
+    border: $border;
+    max-width: $showcaseFeatureSize*2;
+    max-height: $showcaseFeatureSize*2;
     width: 90%;
     height: 50%;
     margin-left: auto;

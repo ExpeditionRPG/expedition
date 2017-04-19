@@ -77,18 +77,17 @@ window.FirebasePlugin = {
   logEvent: function(name: string, args: any) { console.log(name, args); },
 };
 
-if (window.location.hash) {
-  window.gapi.load('client,drive-realtime,drive-share', function() {
-    window.gapi.client.load('drive', 'v2', function() {
+window.gapi.load('client,drive-realtime,drive-share', function() {
+  window.gapi.client.load('drive', 'v2', function() {
+    if (window.location.hash) {
       store.dispatch(loginUser(false));
-    });
+    } else {
+      store.dispatch(setProfileMeta({
+        loggedIn: false
+      }));
+    }
   });
-} else {
-  store.dispatch(setProfileMeta({
-    loggedIn: false
-  }));
-}
-
+});
 // load spellcheck dictionary asynchronously, wait 1s for rest of the page to load
 (() => {
   const affPath = '/dictionaries/en_US_aff.txt';

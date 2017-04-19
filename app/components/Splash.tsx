@@ -29,13 +29,13 @@ const Splash = (props: any): JSX.Element => {
       </div>
       <div className="body">
         <div>
-          <h1>Share your <strong>Story</strong><br/> with the <strong>World</strong>.</h1>
+          <h1><span>Share your <strong>Story</strong></span> <span>with the <strong>World</strong>.</span></h1>
           <div className="worldMap">
             <img alt="Countries with Expedition adventurers - Jan-April 2017" src="/assets/img/worldmap.png"></img>
           </div>
-          <div><label>Countries with Expedition adventurers - Jan-April 2017</label></div>
+          <div className="imageText">Countries with Expedition adventurers - Jan-April 2017</div>
           <h3>
-            The Quest Creator lets you write adventures for <a target="_blank" rel="nofollow" href="https://expeditiongame.com">Expedition</a>.
+            <span>The Quest Creator lets you</span> <span>write adventures for <a target="_blank" rel="nofollow" href="https://expeditiongame.com">Expedition</a>.</span>
           </h3>
           <div className="buttonBox">
             <Button onTouchTap={() => props.onLogin()}>
@@ -46,7 +46,7 @@ const Splash = (props: any): JSX.Element => {
         <div>
           <h1>Built for <strong>Authors</strong></h1>
           <h3>
-            Everything you need to write, test, and publish your own quest.
+            <span>Everything you need to write, test,</span> <span>and publish your own quest.</span>
           </h3>
           <div className="showcase">
             <div>
@@ -73,9 +73,9 @@ const Splash = (props: any): JSX.Element => {
           </div>
         </div>
         <div>
-          <h1>As complex as <strong>You</strong> make it</h1>
+          <h1><span>As complex as</span> <span><strong>You</strong> make it</span></h1>
           <h3>
-            A language designed both for accessibility and power.
+            <span>A language designed</span> <span>for accessibility and power.</span>
           </h3>
 
           <div className="showcase">
