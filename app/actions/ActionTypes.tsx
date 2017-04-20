@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {UserState, QuestType, DialogIDType, ShareType} from '../reducers/StateTypes'
+import {UserState, QuestType, DialogIDType, ShareType, PanelType} from '../reducers/StateTypes'
 import {LogMessageMap} from '../parsing/Logger'
 import {QDLParser} from '../parsing/QDLParser'
 
@@ -90,10 +90,11 @@ export interface SetOpInitAction extends Redux.Action {
   mathjs: string;
 }
 
-export interface PanelDrag extends Redux.Action {
+export interface PanelDragAction extends Redux.Action {
   type: 'PANEL_DRAG';
 }
 
-export interface PanelToggle extends Redux.Action {
+export interface PanelToggleAction extends Redux.Action {
   type: 'PANEL_TOGGLE';
+  panel: PanelType;
 }

@@ -9,7 +9,8 @@ $previewPanelWidth: 560px;
 $padBase: 24px;
 $hBarThickness: 42px;
 $videoSize: 700px;
-$border: 1px #606060 solid;
+$borderColor: #606060;
+$border: 1px $borderColor solid;
 $fontSizeBase: 20px;
 $bgInteractive: rgb(20,20,20);
 $bgHighlight: #333;
@@ -185,9 +186,16 @@ body > :first-child:not(#react-app) { display: none; }
     margin: auto;
   }
 
+  .Resizer {
+    height: 5px;
+    border-top: $border;
+    cursor: ns-resize;
+  }
+
   .bottomPanel {
+    margin-top: -5px;
+
     .header {
-      border-top: $border;
       border-bottom: $border;
       height: $hBarThickness - 2; // Subtract to account for border size
     }

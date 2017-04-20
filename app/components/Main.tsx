@@ -6,18 +6,20 @@ import SplashContainer from './SplashContainer'
 import QuestAppBarContainer from './QuestAppBarContainer'
 import QuestIDEContainer from './QuestIDEContainer'
 import ContextEditorContainer from './ContextEditorContainer'
+import NotesPanelContainer from './NotesPanelContainer'
 import FlatButton from 'material-ui/FlatButton'
+import {PanelType} from '../reducers/StateTypes'
 
 var SplitPane = require('react-split-pane') as any;
 
 export interface MainStateProps {
   loggedIn: boolean;
-  bottomPanelShown: boolean;
+  bottomPanel: PanelType;
 };
 
 export interface MainDispatchProps {
   onDragFinished: (size: number) => void;
-  onPanelToggle: () => void;
+  onPanelToggle: (panel: PanelType) => void;
 }
 
 interface MainProps extends MainStateProps, MainDispatchProps {}
@@ -35,15 +37,20 @@ const Main = (props: MainProps): JSX.Element => {
     );
   }
 
+  var header = (
+    <div className="header">
+      <FlatButton label="Context Explorer" onTouchTap={(event: any) => {props.onPanelToggle('CONTEXT');}} />
+      <FlatButton label="Quest Notes" onTouchTap={(event: any) => {props.onPanelToggle('NOTES');}} />
+    </div>
+  );
+
   // TODO: Constant-ify default size of split pane
-  if (!props.bottomPanelShown) {
+  if (!props.bottomPanel) {
     var contents = (
       <div className="contents">
         <QuestIDEContainer/>
         <div className="bottomPanel">
-          <div className="header">
-            <FlatButton label="Context Explorer" onTouchTap={(event: any) => {props.onPanelToggle();}} />
-          </div>
+          {header}
         </div>
       </div>);
   } else {
@@ -57,10 +64,9 @@ const Main = (props: MainProps): JSX.Element => {
       onDragFinished={(size: number) => {props.onDragFinished(size)}}>
         <QuestIDEContainer/>
         <div className="bottomPanel">
-          <div className="header">
-            <FlatButton label="Context Explorer" onTouchTap={(event: any) => {props.onPanelToggle();}} />
-          </div>
-          <ContextEditorContainer/>
+          {header}
+          {props.bottomPanel === 'CONTEXT' && <ContextEditorContainer/>}
+          {props.bottomPanel === 'NOTES' && <NotesPanelContainer/>}
         </div>
       </SplitPane></div>);
   }
