@@ -1,41 +1,35 @@
 import React from 'react';
 
+import {getStore} from '../Store.jsx';
 import AppBar from './AppBar.jsx';
 
 
 export default class Main extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = this.getUpdatedState();
+    getStore().subscribe(this.handleChange.bind(this));
+  }
 
-//   state: {key: number, transition: TransitionType, card: JSX.Element};
+  getUpdatedState() {
+    let state = getStore().getState();
+    this.state = getStore().getState();
+    return this.state;
+  }
 
-//   constructor(props: MainProps) {
-//     super(props);
-//     this.state = this.getUpdatedState();
-//     getStore().subscribe(this.handleChange.bind(this));
-//   }
-
-//   getUpdatedState() {
-//     let state: AppStateWithHistory = getStore().getState();
-//     if (state === undefined) {
-//       return {key: 0, transition: 'INSTANT' as TransitionType, card: <SplashScreenContainer/>};
-//     }
-
-//     if (!state.card || (this.state && state.card.ts === this.state.key)) {
-//       return this.state;
-//     }
-//     return {key: state.card.ts, transition, card};
-//   }
-
-//   handleChange() {
-//     this.setState(this.getUpdatedState());
-//   }
-
+  handleChange() {
+    this.setState(this.getUpdatedState());
+  }
 
   render() {
+    const cards = (this.state.cards.loading) ? null : this.state.cards.filtered.map((card, index) => {
+      return <div key={index}>{card.name}</div>;
+    });
     return (
       <div>
-        <AppBar />
-        <div className="sk-circle" id="loading">
+        <AppBar props={{filters: this.state.filters}} />
+        {this.state.cards.loading && <div className="sk-circle" id="loading">
           <div className="sk-circle1 sk-child"></div>
           <div className="sk-circle2 sk-child"></div>
           <div className="sk-circle3 sk-child"></div>
@@ -48,7 +42,7 @@ export default class Main extends React.Component {
           <div className="sk-circle10 sk-child"></div>
           <div className="sk-circle11 sk-child"></div>
           <div className="sk-circle12 sk-child"></div>
-        </div>
+        </div>}
         <div className="printInstructions">
           <img id="instructionLogo" src="img/logo.svg" />
           <h1>The adventurer's guide to printing</h1>
@@ -63,7 +57,7 @@ export default class Main extends React.Component {
         <div className="printInstructions">
           <p className="center">Blank page for printing purposes. Save paper by only printing pages 3+!</p>
         </div>
-        <div id="renderArea" data-theme="official"></div>
+        <div id="renderArea" data-theme="official">{cards}</div>
       </div>
     );
   }
@@ -74,16 +68,6 @@ export default class Main extends React.Component {
 
 
 /*
-
-
-return getStore().dispatch(toPrevious('SPLASH_CARD', undefined, false));
-import {getStore} from '../../Store'
-import {toCard, toPrevious} from '../../actions/Card'
-
-
-
-
-
 var Joi = require('joi-browser');
 
 var State = require('./state');

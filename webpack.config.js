@@ -5,7 +5,7 @@ const DashboardPlugin = require('webpack-dashboard/plugin');
 module.exports = {
   cache: true,
   entry: [
-    './app/index.jsx',
+    './app/React.jsx',
     './app/style/index.scss',
   ],
   output: {
@@ -16,11 +16,6 @@ module.exports = {
     contentBase: Path.join(__dirname, 'app'),
     publicPath: '/',
     port: 8080,
-    hot: true,
-    quiet: false,
-    noInfo: false,
-    historyApiFallback: true,
-    watchOptions: ((process.env.WATCH_POLL) ? {aggregateTimeout: 300, poll: 1000} : {}),
   },
   module: {
     rules: [
