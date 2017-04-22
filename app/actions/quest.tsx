@@ -175,8 +175,8 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_SAVE', quest} as RequestQuestSaveAction);
 
-    let notesCommented = '\n\n// QUEST NOTES\n// ' + quest.notesRealtime.getText().replace(/\n/g, '\n// ');
-    let text: string = quest.mdRealtime.getText() + notesCommented;
+    const notesCommented = '\n\n// QUEST NOTES\n// ' + quest.notesRealtime.getText().replace(/\n/g, '\n// ');
+    const text: string = quest.mdRealtime.getText() + notesCommented;
 
     var xmlResult = renderXML(text);
     dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});

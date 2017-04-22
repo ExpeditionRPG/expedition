@@ -9,19 +9,36 @@ $previewPanelWidth: 560px;
 $padBase: 24px;
 $hBarThickness: 42px;
 $videoSize: 700px;
+$showcaseFeatureSize: 350px;
+$mapSize: 400px;
 $borderColor: #606060;
 $border: 1px $borderColor solid;
 $fontSizeBase: 20px;
+$fontSizeImportant: 28px;
+$fontSizeHeader: 45px;
+$bodyWidth: 1000px;
+$splashParagraphSize: 16px;
 $bgInteractive: rgb(20,20,20);
 $bgHighlight: #333;
 $textDisabled: #888;
 
+$bg_papyrus_img: url("/assets/img/papyrus-tiled.jpg");
+$bg_encounter_img: url("/assets/img/encounter-tiled.jpg");
+
 @font-face {
-  font-family: 'CinzelBold';
+  font-family: 'Cinzel';
   font-style: normal;
   font-weight: 700;
   src: local('Cinzel-Bold'), url(fonts/Cinzel-Bold.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Cinzel-Regular'), url(fonts/Cinzel-Regular.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
 }
 
 @font-face {
@@ -36,6 +53,10 @@ html, body, section#react-app, textarea {
   margin: 0;
   font-family: Monaco, Melo, "Ubuntu Mono", monospace;
   font-size: $fontSizeBase;
+}
+
+a {
+  color: inherit !important;
 }
 
 body > :first-child:not(#react-app) { display: none; }
@@ -56,7 +77,8 @@ body > :first-child:not(#react-app) { display: none; }
   margin-bottom: $padBase !important;
   padding-top: $padBase !important;
   padding-bottom: $padBase !important;
-  font-family: 'CinzelBold' !important;
+  font-family: 'Cinzel' !important;
+  font-weight: bold;
   font-size: 2em !important;
 
   &.dialogError {
@@ -75,35 +97,145 @@ body > :first-child:not(#react-app) { display: none; }
   text-align: center;
   color: white;
   padding: $padBase;
-  font-family: Roboto, sans-serif;
+  font-family: 'Cinzel';
+  font-weight: bold;
 }
 
 .splash {
   background: $bg_primary;
+  font-family: 'MinionPro';
+  overflow-y: auto;
+  font-size: $splashParagraphSize;
 
-  .body {
-    text-align: center;
-    overflow-y: auto;
-    flex: 10;
-
-    &>* {
-      display:block;
-      margin: $padBase;
+  .worldMap {
+    border-left: 0;
+    border-right: 0;
+    padding: $padBase 0;
+    background-color: rgba(255,255,255,0.4);
+    border-top: $border;
+    border-bottom: $border;
+    img {
+      max-height: $mapSize;
+      border: 0 !important;
     }
   }
 
+  img {
+    max-width: 100%;
+  }
+
+  .buttonBox {
+    // Override expedition-app button
+    .base_button {
+      display: inline-block;
+      padding: $padBase;
+      &> button {
+        font-family: 'MinionPro', serif !important;
+        font-size: $fontSizeBase !important;
+        padding-left: 2*$padBase !important;
+        padding-right: 2*$padBase !important;
+      }
+    }
+  }
+
+  .body {
+    max-width: $bodyWidth;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    flex: 10;
+
+    .imageText {
+      font-style: italic;
+      color: rgba(0,0,0,0.5);
+    }
+
+    h1, h3 {
+      font-style: normal;
+      font-weight: normal;
+      letter-spacing: .05em;
+      -webkit-font-smoothing: 'antialiased';
+      line-height: 1.2em;
+
+      span {
+        display: inline-block;
+      }
+    }
+
+    h1 {
+      font-family: 'Cinzel';
+      font-size: $fontSizeHeader !important;
+    }
+
+    h3 {
+      font-size: $fontSizeImportant;
+    }
+
+    &>* {
+      padding-left: $padBase;
+      padding-right: $padBase;
+      padding-bottom: $padBase*3;
+      padding-top: $padBase;
+
+      img {
+        border: $border;
+      }
+
+      &:first-child {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      &:nth-child(odd) {
+        background-image: $bg_papyrus_img;
+        color: black;
+      }
+      &:nth-child(even) {
+        background-image: $bg_encounter_img;
+        color: white;
+        .showcase {
+          flex-direction: row-reverse;
+        }
+      }
+      display:block;
+      margin: 0;
+    }
+  }
+
+  .showcase {
+    margin: $padBase;
+    text-align: left;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    &>div {
+      flex-grow: 1;
+      width: 30%;
+      min-width: $showcaseFeatureSize;
+      padding: $padBase;
+
+      &>p:first-child {
+        margin-top:0;
+      }
+    }
+  }
+
+
+
   h1 {
-    color: white;
-    font-size: 2em;
+    font-size: 2*$fontSizeBase;
     font-weight: normal;
   }
 
   .previewVideo {
+    min-height: $showcaseFeatureSize;
+    width: 100%;
+    height: 100%;
     background: $bg_primary;
-    box-shadow: 0 0 $padBase $brightShadow;
-    border-radius: 2px;
-    max-width: $videoSize;
-    max-height: $videoSize;
+    border: $border;
+    max-width: $showcaseFeatureSize*2;
+    max-height: $showcaseFeatureSize*2;
     width: 90%;
     height: 50%;
     margin-left: auto;
@@ -112,8 +244,16 @@ body > :first-child:not(#react-app) { display: none; }
 }
 
 .quest_app_bar {
+  background-image: $bg_encounter_img;
+
+  // Override AppBar style
+  >div {
+    background-color: transparent !important;
+  }
+
   h1 {
-    font-family: 'CinzelBold';
+    font-family: 'Cinzel';
+    font-weight: bold;
   }
 
   .loginState {
@@ -121,7 +261,6 @@ body > :first-child:not(#react-app) { display: none; }
   }
 
   .toolbar {
-    background: $bg_secondary !important;
     height: $hBarThickness !important;
 
     button {
@@ -135,33 +274,33 @@ body > :first-child:not(#react-app) { display: none; }
   }
 }
 
+.quest_ide {
+  flex: 10;
+  display: flex;
+
+  .editor {
+    flex: 1;
+  }
+
+  .preview {
+    flex: 0 0 $previewPanelWidth;
+    max-width: $previewPanelWidth;
+
+    .app_root, .editor_override {
+      height: 100%;
+    }
+
+    .app, button {
+      font-family: MinionPro, sans-serif !important;
+    }
+  }
+}
+
 .contents {
   position: relative;
   height: 100%;
   display: flex;
   flex-direction: column;
-
-  .quest_ide {
-    flex: 10;
-    display: flex;
-
-    .editor {
-      flex: 1;
-    }
-
-    .preview {
-      flex: 0 0 $previewPanelWidth;
-      max-width: $previewPanelWidth;
-
-      .app_root, .editor_override {
-        height: 100%;
-      }
-
-      .app, button {
-        font-family: MinionPro, sans-serif !important;
-      }
-    }
-  }
 
   h1 {
     color: white;
