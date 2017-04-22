@@ -36,21 +36,26 @@ familyFriendly: false
 _Introduction_
 
 Welcome to the Expedition Quest Editor! This quest serves as an introduction,
-showing you how to how to use all of the tools available to you. Along the way,
-it'll provide some helpful tips to write engaging and interactive adventures.
+showing you how to get started writing your own adventures.
 
-Play along in app using the "Play From Start" button on the right.
+Play along in app using the "Play From Cursor" button on the top right. You can
+move your cursor to a different part of the quest and hit "Play" to start playing from that spot.
+You can also make changes to this text and play it in the app to see what happens!
 
-If you have questions, feedback or found a bug, let us know at contact@fabricate.io
+If you have questions, feedback or found a bug, let us know at Expedition@Fabricate.io
 
 _Quests_
 
-Quests are stored in your Google drive with a ".quest" file extension. To open them, right click on the file in Drive and select "Open With > Expedition Quest Creator". If you visit the quest creator directly, it'll create a brand new quest with this template.
+Quests are stored in your Google drive with a ".quest" extension. To open them, right click on the file in Drive and select "Open With > Expedition Quest Creator".
 
-_Continued_
+If you visit the Quest Creator directly, it'll create a brand new quest with this template.
+
+_Starting a story_
 
 At the beginning of the story, give some background -
 who are your adventurers? Where are they? Why are they here?
+
+Use "_Title_" lines split text into new cards.
 
 Use blank lines to separate text into paragraphs.
 
@@ -60,42 +65,41 @@ so that one person isn't stuck reading a small novel out loud.
 
 _Decision time_
 
-The exciting thing about quests vs other forms of writing is that you get to
+The exciting thing about quest writing is that you get to
 present players with choices that affect their story -
 but make sure to give them enough context to make a meaningful decision.
 
 For example, don't just ask them "left or right?" or "kill or spare the king?" -
 give them a hint at the consequences. Maybe the left fork smells of death,
-or you'd be tried for treason if you refused to kill your target.
+or you'd be tried for treason if your attempted assassination fails.
 
-Each time there is a choice (indicated with the *), you indent one additional level.
+Each time there is a choice (indicated with the *), indent one additional level.
 
-// Side note, this is a comment - handy for making comments that your
-// players won't see!
+// Side note: This is a comment. Comments are handy for making notes that your
+// players won't see, such as reminders about the story or TODOs to work on later.
 
 * Sneak in through the rear, but risk getting trapped
 
   You can present players with some sort of challenge to see if they succeed -
   for example, rolling to sneak or trying to convince a guard they aren't thieves.
 
-  If the players need to do something, like roll a die, you can tell them via
-  an instruction (indicated with a >). These will always appear at the bottom of the card,
-  right above the Next button or choices.
-
-  Also, notice how the [roll] in the instruction gets turned into an icon?
-  Check out the help documents for a full list of available icons!
+  If the players need to do something out of character, like roll a die, draw loot,
+  or increment health, instruct them to do so via an instruction (indicated with a >).
 
   > Roll a [roll] to see if you sneak past the guards
+
+  Notice how the bracketed [roll] in the instruction gets turned into an icon?
+  Check out "help" for the list of available icons.
 
   * Rolled 10 or higher
 
     You sneak past!
 
     Goto statements jump the players to another card with a specified ID.
-    Here, we're jumping to the card further down with the ID "innerCastle",
-    which you can defined via (#innerCastle) after the roleplaying card title.
+    Here, we're jumping to the card further down with the ID "victory",
+    which you can defined via (#victory) after the roleplaying card title.
 
-    **goto innerCastle**
+    **goto victory**
 
   * Rolled Below 10
 
@@ -104,7 +108,7 @@ Each time there is a choice (indicated with the *), you indent one additional le
     Also, he seems to be a skeleton. That's... unexpected.
 
     Note that this is the end of the branch, so it falls through
-    and continues to the next un-indented card (in this case the combat,
+    and continues to the next un-indented card (in this case, combat
     since the choice below is still part of the "Decision Time" card).
 
 * Fight your way through the front, but risk the king escaping
@@ -116,12 +120,17 @@ Each time there is a choice (indicated with the *), you indent one additional le
 
 _Fighting_
 
-You're about to enter combat. Note how you can list enemies with a hyphen (-)
+You're about to enter combat. Things to note:
 
-Also note that all combat must have both on win and on lose outcomes! And that losing a fight doesn't always have to mean the end of a quest...
+Enemies are listed with a hyphen (-).
+
+All combat must have both "* on win" and "* on lose" outcomes.
+
+Losing a fight doesn't always have to mean the end of a quest.
 
 _combat_
 
+- Skeleton Swordsman
 - Skeleton Swordsman
 
 * on win
@@ -134,7 +143,15 @@ _combat_
 
   **end**
 
-_The Inner Castle_ (#innerCastle)
+_Victory!_ (#victory)
+
+Congratulations, you've made it through your first quest! You now know everything you need to start creating your own adventures.
+
+You can stop reading here, and start writing your own quest. Or, if you've got the hang of things and want to learn some more advanced techniques, read on!
+
+
+
+_The Inner Castle_ (#victory)
 
 Now things start to get really interesting.
 
