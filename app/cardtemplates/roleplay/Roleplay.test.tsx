@@ -30,7 +30,7 @@ describe('Roleplay', () => {
   it('respects in-card conditionals when computing Next vs End button', () => {
     let quest = cheerio.load('<quest><roleplay><p>{{a=true}}</p></roleplay><trigger if="a">end</trigger><roleplay>test</roleplay></quest>')('quest');
     var result = loadRP(quest.children().eq(0), defaultQuestContext());
-    expect (result.choices).toEqual([{ text: 'End', idx: 0}]);
+    expect (result.choices).toEqual([{ text: 'The End', idx: 0}]);
   });
 });
 
