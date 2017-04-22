@@ -6,23 +6,20 @@ export interface NotesPanelStateProps {
 }
 
 export interface NotesPanelDispatchProps {
-  //onNotesBlur: (opInit: string) => void;
+  onDirty: (realtime: any, text: string) => void;
 }
 
 interface NotesPanelProps extends NotesPanelStateProps, NotesPanelDispatchProps {}
 
-
 interface RealtimeTextAreaProps extends React.Props<any> {
-  onChange?: any;
   realtime: any;
+  onDirty: (realtime: any, text: string) => void;
 }
 
 declare var gapi: any;
 
 class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
-  onSelectionChange: () => any;
   silentChange: boolean;
-  silentSelectionChangeTimer: any;
   ref: any;
 
   getValue() {
@@ -78,18 +75,11 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
     if (this.silentChange) {
       return;
     }
-    if (this.props.realtime) {
-      this.props.realtime.setText(e.target.value);
-    }
-
-    if (this.props.onChange) {
-      this.props.onChange(e.target.value);
-    }
+    this.props.onDirty(this.props.realtime, e.target.value);
     this.ref.value = this.props.realtime.getText();
   }
 
   render() {
-    console.log(this.props.realtime);
     var text = 'Loading...';
     if (this.props.realtime) {
       text = this.props.realtime.getText();
@@ -106,15 +96,16 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
   }
 }
 
-
-
+// TODO(https://github.com/ExpeditionRPG/expedition-quest-creator/issues/255)
+// Based on the left side, extract "key words" and allow the user to jump to note sections.
+// Key words should also be linked/clickable in the ace editor.
+// http://jsbin.com/jehopaja/4/edit?html,output
 const NotesPanel = (props: NotesPanelProps): JSX.Element => {
   return (
     <div className="console">
       <div className="interactive">
-        <RealtimeTextArea realtime={props.realtime}></RealtimeTextArea>
+        <RealtimeTextArea realtime={props.realtime} onDirty={props.onDirty}></RealtimeTextArea>
       </div>
-      <div className="preview"></div>
     </div>
   );
 };

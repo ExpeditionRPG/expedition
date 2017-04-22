@@ -1,16 +1,13 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-import {setDirty, setLine, setDirtyTimeout} from '../actions/editor'
+import {setLine, updateDirtyState} from '../actions/editor'
 import {saveQuest} from '../actions/quest'
 import {AppState, QuestType, EditorState} from '../reducers/StateTypes'
 import QuestIDE, {QuestIDEStateProps, QuestIDEDispatchProps} from './QuestIDE'
-import {store} from '../store'
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestIDEStateProps => {
   return {
-    editor: state.editor,
     realtime: state.quest.mdRealtime,
-    quest: state.quest,
     annotations: state.annotations,
     lastSplitPaneDragMillis: state.editor.lastSplitPaneDragMillis,
   };
@@ -18,28 +15,11 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestIDEStateProps => 
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestIDEDispatchProps => {
   return {
-    onDirty: (realtime: any, quest: QuestType, editor: EditorState, text: string) => {
+    onDirty: (realtime: any, text: string) => {
       realtime.setText(text);
-
-      if (!editor.dirty) {
-        dispatch(setDirty(true));
-      }
-
-      if (editor.dirtyTimeout) {
-        clearTimeout(editor.dirtyTimeout);
-      }
-
-      const timer = setTimeout(function() {
-        // Check the store directly to see if we're still in a dirty state.
-        // The user could have saved manually before the timeout has elapsed.
-        if (store.getState().editor.dirty) {
-          dispatch(saveQuest(quest));
-        }
-        dispatch(setDirtyTimeout(null));
-      }, 2000);
-      dispatch(setDirtyTimeout(timer));
+      dispatch(updateDirtyState());
     },
-    onLine: (line: number, editor: EditorState) => {
+    onLine: (line: number) => {
       dispatch(setLine(line));
     },
   };
