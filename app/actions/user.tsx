@@ -9,7 +9,7 @@ import {realtimeUtils} from '../auth'
 declare var window: any;
 
 
-function setProfileMeta(user: UserState): SetProfileMetaAction {
+export function setProfileMeta(user: UserState): SetProfileMetaAction {
   return {type: 'SET_PROFILE_META', user};
 }
 
@@ -52,6 +52,10 @@ export function logoutUser(): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
     window.gapi.auth.setToken(null);
     window.gapi.auth.signOut();
+
+    // Remove document ID, so we get kicked back to home page.
+    window.location.hash = '';
+
     window.location.reload();
   }
 }
