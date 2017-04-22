@@ -14,7 +14,8 @@ const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): F
     players: state.settings.numPlayers,
     quests: [
 // For dev testing only - comment out before deploys
-      // {id: '-1', title: 'Test end quest', summary: 'DEV', publishedurl: 'quests/test_end_quest.xml'},
+      // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2bTVMdWc4NVk
+      // {id: '-1', title: 'Test quest', summary: 'DEV', publishedurl: 'quests/test_quest.xml'},
 // Actual quests (id's generated from publishing, but don't leave them published!)
       {id: '0B7K9abSH1xEOeEZSVVMwNHNqaFE', title: 'Learning to Adventure', summary: 'Your first adventure.', publishedurl: 'quests/learning_to_adventure.xml'},
       {id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs', title: 'Oust Albanus', summary: 'Your party encounters a smelly situation.', publishedurl: 'quests/oust_albanus.xml'},

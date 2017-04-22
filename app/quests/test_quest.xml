@@ -1,0 +1,22 @@
+<quest title="Test Quest" summary="For dev testing" author="Fabricate" email="contact@fabricate.io" url="expeditiongame.com" minplayers="1" maxplayers="6" mintimeminutes="10" maxtimeminutes="40" familyFriendly="true" data-line="0">
+  <roleplay title="Test" data-line="11">
+    <p>{{one=1}}</p>
+    <p>You face choices. Here's the value of one: {{one}}</p>
+    <choice text="End now">
+      <trigger data-line="19">end</trigger>
+    </choice>
+    <choice text="Fight">
+      <combat data-line="23">
+        <e>Thief</e>
+        <e>Thief</e>
+        <e>Imp</e>
+        <event on="win">
+          <trigger data-line="31">end</trigger>
+        </event>
+        <event on="lose">
+          <trigger data-line="35">end</trigger>
+        </event>
+      </combat>
+    </choice>
+  </roleplay>
+</quest>

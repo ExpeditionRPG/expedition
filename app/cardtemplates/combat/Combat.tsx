@@ -55,8 +55,15 @@ function renderSelectTier(props: CombatProps): JSX.Element {
 }
 
 function renderDrawEnemies(props: CombatProps): JSX.Element {
-  let enemies: JSX.Element[] = props.enemies.map(function(enemy: Enemy, index: number) {
+  let enemyNames: Set<string> = new Set();
+  let repeatEnemy = false;
+  let enemies: JSX.Element[] = props.enemies.map((enemy: Enemy, index: number) => {
     const icon = (enemy.class) ? `<img class="inline_icon" src="images/${enemy.class.replace(REGEX.HTML_TAG, '').toLowerCase()}_white_small.svg"/>` : '';
+    if (enemyNames.has(enemy.name)) {
+      repeatEnemy = true;
+    } else {
+      enemyNames.add(enemy.name);
+    }
     return (
       <h2 className="combat draw_enemies center" key={index}>
         {enemy.name} <span className="meta">(Tier {numerals[enemy.tier]} <span dangerouslySetInnerHTML={{__html: icon}}/>)</span>
@@ -67,9 +74,10 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
   let helpText: JSX.Element = <span></span>;
   if (props.settings.showHelp) {
     helpText = (
-      <p>
-        Draw the enemies listed above. Place in the center and put tokens on their maximum health.
-      </p>
+      <div>
+        <p>Draw the enemies listed above. Place in the center and put tokens on their maximum health.</p>
+        {repeatEnemy && <p>Since there are multiple of a single enemy, you can use the back of another enemy of the same tier as a placeholder.</p>}
+      </div>
     );
   }
 

@@ -1,6 +1,0 @@
-<quest title="Test End" summary="This is a quest to test the end card" author="Todd Medema" email="toddmedema@gmail.com" url="expeditiongame.com" minplayers="1" maxplayers="6" mintimeminutes="20" maxtimeminutes="40" data-line="0">
-  <roleplay title="The End">
-    <p>Test</p>
-  </roleplay>
-  <trigger>end</trigger>
-</quest>
