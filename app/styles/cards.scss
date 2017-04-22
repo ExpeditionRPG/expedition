@@ -1,0 +1,148 @@
+@import 'card-constants.scss';
+@import '../themes/BlackAndWhite/cards.scss';
+@import '../themes/Color/cards.scss';
+
+.card {
+
+  height: $card-height;
+  width: $card-width;
+  position: relative;
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: bottom;
+  background: white;
+  overflow: hidden;
+  color: $text-color;
+  font-family: $font-body;
+  font-size: $text-size-content;
+
+  /* General classes */
+
+  strong {
+    font-size: 100%;
+    font-weight: bold;
+    .symbol {
+      font-weight: normal;
+    }
+  }
+
+  svg {
+    fill: $text-color;
+    stroke: $text-color;
+  }
+
+  /* General elements */
+
+  .inline_icon {
+    height: $icon-width;
+    line-height: $icon-width;
+    width: auto;
+    display: inline-block;
+    vertical-align: initial;
+    margin: 0.014in 0 -0.014in 0;
+    padding: 0 0.01in; /* prevents icon truncation */
+    .svg {
+      height: $icon-width;
+      width: auto;
+    }
+  }
+
+  .contents {
+    position: relative;
+    height: 3.25in;
+    width: 2.25in;
+    margin-left: 0.125in;
+  }
+
+  footer {
+    font-size: $text-size-small;
+  }
+
+  /* Card subsets */
+
+  &.horizontal {
+
+    .contents {
+      width: $card-height - 2*$border;
+      height: $card-width - 2*$border;
+      transform: rotate(90deg);
+      transform-origin: 36% 48%; /* the magic raio??? */
+      box-sizing: border-box;
+      position: relative;
+      margin-left: 0.1in;
+    }
+  }
+
+  &.back {
+
+    text-align: center;
+    font-size: $text-size-back-title;
+    font-family: $font-header;
+
+    &.horizontal {
+
+      .contents {
+        transform-origin: 35% 50%; /* the magic raio??? */
+        margin-top: 0.125in;
+      }
+    }
+  }
+
+  &.dark {
+
+    color: $text-color-white;
+
+    svg {
+      fill: $text-color-white;
+      stroke: $text-color-white;
+    }
+  }
+}
+
+body.singlePage {
+
+  $bleed: 0.125in; /* background art should extend to here */
+  $card-height: 3.5in + 2 * $bleed;
+  $card-width: 2.5in + 2 * $bleed;
+
+  .printInstructions {
+    display: none !important;
+  }
+
+  .page {
+    width: $card-width !important;
+    height: $card-height !important;
+  }
+
+  .card {
+
+    width: $card-width !important;
+    height: $card-height !important;
+    padding: 0 !important;
+    /*border: 2 * $bleed solid black;*/
+    /* ONLY FOR TAKING SCREENSHOTS */
+    /*border-radius: $bleed;*/
+
+    &.front, &.back {
+
+      &:before {
+        top: 0 !important;
+        left: 0 !important;
+      }
+    }
+
+    .contents {
+      top: $bleed !important;
+      left: $bleed !important;
+    }
+
+    &.front.horizontal {
+
+      .contents {
+        height: 2.25in !important;
+        width: 3.25in !important;
+        margin: 0 !important;
+      }
+    }
+  }
+}

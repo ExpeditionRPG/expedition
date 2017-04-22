@@ -1,7 +1,8 @@
-import React from 'react';
+import React from 'react'
 
-import {getStore} from '../Store.jsx';
-import AppBar from './AppBar.jsx';
+import {getStore} from '../Store.jsx'
+import AppBar from './AppBar.jsx'
+import RenderArea from './RenderArea.jsx'
 
 
 export default class Main extends React.Component {
@@ -23,9 +24,6 @@ export default class Main extends React.Component {
   }
 
   render() {
-    const cards = (this.state.cards.loading) ? null : this.state.cards.filtered.map((card, index) => {
-      return <div key={index}>{card.name}</div>;
-    });
     return (
       <div>
         <AppBar props={{filters: this.state.filters}} />
@@ -57,7 +55,7 @@ export default class Main extends React.Component {
         <div className="printInstructions">
           <p className="center">Blank page for printing purposes. Save paper by only printing pages 3+!</p>
         </div>
-        <div id="renderArea" data-theme="official">{cards}</div>
+        {!this.state.cards.loading && <RenderArea cards={this.state.cards.filtered} settings={this.state.renderSettings}></RenderArea>}
       </div>
     );
   }

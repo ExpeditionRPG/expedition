@@ -6,7 +6,7 @@ module.exports = {
   cache: true,
   entry: [
     './app/React.jsx',
-    './app/style/index.scss',
+    './app/styles/index.scss',
   ],
   output: {
     path: Path.resolve('dist'),
@@ -29,6 +29,24 @@ module.exports = {
             presets: ["es2015", "react"],
           },
         },
+      },
+      {
+        test: /\.(gif|png|jpe?g|svg)$/i,
+        loaders: [
+          'file-loader',
+          // {
+          //   loader: 'image-webpack-loader',
+          //   query: {
+          //     progressive: true,
+          //     optimizationLevel: 7,
+          //     interlaced: false,
+          //     pngquant: {
+          //       quality: '65-90',
+          //       speed: 4
+          //     }
+          //   }
+          // }
+        ]
       }
     ],
   },

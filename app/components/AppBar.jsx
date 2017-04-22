@@ -1,9 +1,9 @@
-import React from 'react';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import React from 'react'
+import SelectField from 'material-ui/SelectField'
+import MenuItem from 'material-ui/MenuItem'
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar'
 
-import {defaultState, getStore} from '../Store.jsx';
+import {defaultState, getStore} from '../Store.jsx'
 
 export default class AppBar extends React.Component {
 
@@ -23,16 +23,18 @@ export default class AppBar extends React.Component {
         return <MenuItem key={index} value={option} primaryText={option} />
       });
       return (
-        <DropDownMenu
+        <SelectField
           key={index}
           value={props.filters[name].current}
+          floatingLabelText={name}
           onChange={(e, i, v) => { this.handleFilterChange(name, v); }}
+          style={{width: 'auto', minWidth: 80, maxWidth: 250}}
         >
           {options}
-        </DropDownMenu>
+        </SelectField>
       );
     });
-
+// TODO
 // <button><a href="https://github.com/Fabricate-IO/expedition-cards/blob/master/CARD-CREATION.md" target="_blank">Help</a></button>
 // <button><a href="https://expeditiongame.com/contact" target="_blank">Send Feedback</a></button>
     return (
