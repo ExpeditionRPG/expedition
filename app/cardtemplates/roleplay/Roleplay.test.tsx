@@ -27,6 +27,11 @@ describe('Roleplay', () => {
     expect(result.content).toEqual([ { type: 'instruction', text: 'Text <img class="inline_icon" src="images/roll_small.svg">' } ]);
   });
 
+  it('handles goto triggers', () => {
+    var result = loadRP(cheerio.load('<roleplay><p>Text</p></roleplay><trigger>goto market</trigger>')('roleplay'), defaultQuestContext());
+    expect(result.content).toEqual([ { type: 'text', text: '<p>Text</p>' } ]);
+  });
+
   it('respects in-card conditionals when computing Next vs End button', () => {
     let quest = cheerio.load('<quest><roleplay><p>{{a=true}}</p></roleplay><trigger if="a">end</trigger><roleplay>test</roleplay></quest>')('quest');
     var result = loadRP(quest.children().eq(0), defaultQuestContext());

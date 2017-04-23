@@ -41,6 +41,13 @@ var options = {
         { from: 'app/index.html' },
         { from: 'app/manifest.json' },
     ]),
+    new webpack.LoaderOptionsPlugin({
+      options: {
+        babel: {
+          presets: ["es2015"]
+        },
+      },
+    }),
   ],
 };
 
