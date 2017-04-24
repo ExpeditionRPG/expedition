@@ -9,7 +9,7 @@ module.exports = {
   entry: [
     'webpack-dev-server/client?http://localhost:' + port,
     'webpack/hot/only-dev-server',
-    './app/react.tsx',
+    './app/React.tsx',
     './app/styles/index.scss',
   ],
   output: {

@@ -1,6 +1,7 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
 import AppBar, {AppBarStateProps, AppBarDispatchProps} from './AppBar'
+import {DownloadCards} from '../actions/Cards'
 import {FilterChange} from '../actions/Filters'
 
 const mapStateToProps = (state: any, ownProps: any): AppBarStateProps => {
@@ -11,9 +12,12 @@ const mapStateToProps = (state: any, ownProps: any): AppBarStateProps => {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AppBarDispatchProps => {
   return {
+    downloadCards: () => {
+      dispatch(DownloadCards());
+    },
     handleFilterChange(name: string, value: string | number): void {
       dispatch(FilterChange(name, value));
-    }
+    },
   };
 }
 

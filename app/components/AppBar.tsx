@@ -1,9 +1,10 @@
-import React from 'react'
+import * as React from 'react'
 import IconButton from 'material-ui/IconButton'
 import MenuItem from 'material-ui/MenuItem'
 import SelectField from 'material-ui/SelectField'
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar'
 
+import AutoRenew from 'material-ui/svg-icons/action/autorenew'
 import HelpOutline from 'material-ui/svg-icons/action/help-outline'
 
 export interface AppBarStateProps {
@@ -12,6 +13,7 @@ export interface AppBarStateProps {
 
 export interface AppBarDispatchProps {
   handleFilterChange: (name: string, value: string | number) => void;
+  downloadCards: () => void;
 }
 
 export interface AppBarProps extends AppBarStateProps, AppBarDispatchProps {};
@@ -49,7 +51,10 @@ class AppBar extends React.Component<AppBarProps, {}> {
             <span id="dynamicFilters"></span>
           </div>
           {filters}
-          <IconButton tooltip="SVG Icon" onTouchTap={() => { window.open('https://github.com/Fabricate-IO/expedition-cards/blob/master/CARD-CREATION.md'); } }>
+          <IconButton tooltip="Reload Card Data" onTouchTap={this.props.downloadCards}>
+            <AutoRenew />
+          </IconButton>
+          <IconButton tooltip="Help" onTouchTap={() => { window.open('https://github.com/Fabricate-IO/expedition-cards/blob/master/CARD-CREATION.md'); } }>
             <HelpOutline />
           </IconButton>
         </ToolbarGroup>

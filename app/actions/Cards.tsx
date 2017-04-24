@@ -16,8 +16,9 @@ const Tabletop = require('tabletop') as any;
 // Filter changed -> Filter cards based on new filters -> Filter options updated based on valid cards
 // FilterChange -> CardsFilter -> FiltersCalculate
 
-export function DownloadCards() {
-  return (dispatch: Redux.Dispatch<any>): any => {
+export function DownloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
+  return (dispatch: Redux.Dispatch<any>) => {
+    dispatch(CardsLoading());
     Tabletop.init({
       key: '1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
       parseNumbers: true,
@@ -47,8 +48,16 @@ export function DownloadCards() {
   }
 }
 
+export interface CardsLoadingAction extends Redux.Action {
+  type: 'CARDS_LOADING';
+}
+
+export function CardsLoading(): CardsLoadingAction {
+  return {type: 'CARDS_LOADING'};
+}
+
 export interface CardsUpdateAction extends Redux.Action {
-  type: 'CARDS_UPDATE'
+  type: 'CARDS_UPDATE';
   cards: any;
 }
 
@@ -57,7 +66,7 @@ export function CardsUpdate(cards: any): CardsUpdateAction {
 }
 
 export interface CardsFilterAction extends Redux.Action {
-  type: 'CARDS_FILTER'
+  type: 'CARDS_FILTER';
   filters: any;
 }
 

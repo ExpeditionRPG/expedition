@@ -44,30 +44,3 @@ exports.render = function (sheets, filters) {
     renderSheet(sheet.name, sheet.elements, filters);
   }
 }
-
-
-// Renders a specific sheet of cards (ie encounter, loot)
-function renderSheet (template, cards, filters) {
-
-  var cardCount = 0;
-  var fronts, backs;
-
-  for (var i = 0, l = cards.length; i < l; i++) {
-
-    var card = cards[i];
-    var filteredOut = false;
-    card.template = template;
-
-    if (filters.export.value === 'AdMagic-Backs') {
-      if (card.class === cards[i-1].class && card.tier === cards[i-1].tier && cards[i-1].Comment === "") {
-        filteredOut = true;
-      }
-    }
-    if (filteredOut) {
-      continue;
-    }
-
-
-  }
-  }
-}

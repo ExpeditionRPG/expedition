@@ -4,8 +4,8 @@ import Renderer, {RendererStateProps, RendererDispatchProps} from './Renderer'
 
 const mapStateToProps = (state: any, ownProps: any): RendererStateProps => {
   return {
-    cards: state.cards,
-    settings: state.settings,
+    cards: state.cards.filtered,
+    renderSettings: state.renderSettings,
   };
 }
 

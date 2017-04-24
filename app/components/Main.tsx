@@ -1,5 +1,4 @@
-import React from 'react'
-
+import * as React from 'react'
 import AppBarContainer from './AppBarContainer'
 import RendererContainer from './RendererContainer'
 
@@ -8,11 +7,16 @@ export interface MainStateProps {
 }
 
 export interface MainDispatchProps {
+  downloadCards: () => void;
 }
 
 export interface MainProps extends MainStateProps, MainDispatchProps {};
 
 class Main extends React.Component<MainProps, {}> {
+  componentDidMount() {
+    this.props.downloadCards();
+  }
+
   render() {
     return (
       <div>
@@ -32,7 +36,8 @@ class Main extends React.Component<MainProps, {}> {
           <div className="sk-circle12 sk-child"></div>
         </div>}
         <div className="printInstructions">
-          <img id="instructionLogo" src="img/logo.svg" />
+          <h1>Expedition: The Roleplaying Card Game</h1>
+          <p>ExpeditionGame.com</p>
           <h1>The adventurer's guide to printing</h1>
           <ol>
             <li>Download this PDF and take it to your local print shop.</li>

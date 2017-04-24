@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 
 declare var require: any;
 const SVGInjector = require('svg-injector') as any;
@@ -15,7 +15,7 @@ const CardFronts: any = {
 
 export interface RendererStateProps {
   cards: any;
-  settings: any;
+  renderSettings: any;
 }
 
 export interface RendererDispatchProps {
@@ -26,23 +26,35 @@ export interface RendererProps extends RendererStateProps, RendererDispatchProps
 class Renderer extends React.Component<RendererProps, {}> {
   render() {
     const cards = this.props.cards || [];
-    const CardBack = CardBacks[this.props.settings.theme].default;
-    const CardFront = CardFronts[this.props.settings.theme].default;
+    const renderSettings = this.props.renderSettings;
+    const CardBack = CardBacks[renderSettings.theme].default;
+    const CardFront = CardFronts[renderSettings.theme].default;
     const frontPageList = [];
     const backPageList = [];
     for (let i = 0; i < cards.length; i++) {
-      if (i % this.props.settings.cardsPerPage === 0) {
+      const card = cards[i];
+      if (i === 0 || i % renderSettings.cardsPerPage === 0) {
         frontPageList.push([]);
         backPageList.push([]);
       }
-      frontPageList[frontPageList.length-1].push(<CardFront key={i} card={cards[i]}></CardFront>);
-      backPageList[backPageList.length-1].push(<CardBack key={i} card={cards[i]}></CardBack>);
+      if (renderSettings.showFronts) {
+        frontPageList[frontPageList.length-1].push(<CardFront key={i} card={card}></CardFront>);
+      }
+      if (renderSettings.showBacks) {
+        if (renderSettings.uniqueBacksOnly && i > 0) {
+          if (card.naming !== "" || card.class !== cards[i-1].class || card.tier !== cards[i-1].tier) {
+            backPageList[backPageList.length-1].push(<CardBack key={i} card={card}></CardBack>);
+          }
+        } else {
+          backPageList[backPageList.length-1].push(<CardBack key={i} card={card}></CardBack>);
+        }
+      }
     }
-    const frontPages = frontPageList.map((cards, i) => {
-      return <div key={i} className="page fronts">{cards}</div>;
+    const frontPages = frontPageList.map((cardPage, i) => {
+      return <div key={i} className="page fronts">{cardPage}</div>;
     });
-    const backPages = backPageList.map((cards, i) => {
-      return <div key={i + frontPages.length} className="page backs">{cards}</div>;
+    const backPages = backPageList.map((cardPage, i) => {
+      return <div key={i + frontPages.length} className="page backs">{cardPage}</div>;
     });
     const pages = [];
     while (frontPages.length > 0) {
@@ -54,7 +66,7 @@ class Renderer extends React.Component<RendererProps, {}> {
     }, 1);
 
     return (
-      <div id="renderArea" className={this.props.settings.theme}>
+      <div id="renderArea" className={renderSettings.theme}>
         {pages}
       </div>
     );

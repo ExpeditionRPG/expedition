@@ -1,5 +1,8 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
 // So we can hot reload
 declare var require: any;
@@ -9,16 +12,9 @@ declare var module: any;
 declare var window: any;
 declare var paper: any;
 
-
+import MainContainer from './components/MainContainer'
 import { getStore } from './Store'
 import theme from './theme'
-
-import { Provider } from 'react-redux'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
-
-import DownloadCards from './actions/Cards'
-import MainContainer from './components/MainContainer'
 
 // Needed for onTouchTap
 const injectTapEventPlugin = require('react-tap-event-plugin');
@@ -27,8 +23,6 @@ try {
 } catch (e) {
   console.log('Already injected tap event plugin');
 }
-
-getStore().dispatch(DownloadCards);
 
 let render = () => {
   var base = document.getElementById('app');

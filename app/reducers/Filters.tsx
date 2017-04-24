@@ -35,9 +35,9 @@ export default function Filters(state: any = initialState, action: any) {
       newState = Object.assign({}, state);
       newState[action.name].current = action.value;
       return newState;
-    case 'CARDS_FILTERED':
+    case 'FILTERS_CALCULATE':
       newState = Object.assign({}, state);
-      return updateFilterOptions(newState, action.cards);
+      return updateFilterOptions(newState, action.cardsFiltered);
     default:
       return state;
   }

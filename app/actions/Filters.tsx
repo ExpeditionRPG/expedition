@@ -3,25 +3,20 @@ import {CardsFilter} from './Cards'
 import {getStore} from '../Store'
 
 
-// Actual filter changes trigger several things, including the plain FiltersChange action
-export function FilterChange(name: string, value: string | number) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    dispatch(FiltersChange(name, value));
-    dispatch(CardsFilter(getStore().getState().filters));
-    dispatch(FiltersCalculate(getStore().getState().cards.filtered));
-  }
-}
-
-interface FiltersChangeAction extends Redux.Action {
-  type: 'FILTERS_CHANGE'
+export interface FilterChangeAction extends Redux.Action {
+  type: 'FILTER_CHANGE'
   name: string;
   value: string | number;
 }
 
-function FiltersChange(name: string, value: string | number): FiltersChangeAction {
-  return {type: 'FILTERS_CHANGE', name, value};
+// Filter changes trigger several things, including the plain FiltersChange action
+export function FilterChange(name: string, value: string | number): ((dispatch: Redux.Dispatch<any>)=>void) {
+  return (dispatch: Redux.Dispatch<any>) => {
+    dispatch({type: 'FILTER_CHANGE', name, value});
+    dispatch(CardsFilter(getStore().getState().filters));
+    dispatch(FiltersCalculate(getStore().getState().cards.filtered));
+  }
 }
-
 
 export interface FiltersCalculateAction extends Redux.Action {
   type: 'FILTERS_CALCULATE'

@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 
 export function icon(theme: string, name: string): JSX.Element {
   return <img className="inline_icon svg" src={`/themes/${theme}/images/icon/${name}.svg`}/>;

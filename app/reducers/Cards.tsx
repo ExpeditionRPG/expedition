@@ -1,5 +1,4 @@
 import {iconString} from '../helpers'
-import {getStore} from '../Store'
 
 export const initialState: any = {
   data: null, // array of cards, with .sheet = sheet name
@@ -7,11 +6,15 @@ export const initialState: any = {
   loading: true,
 };
 
-export default function Cards(state: any = initialState, action: any) {
+export default function Cards(state: any = initialState, action: any): any {
   switch (action.type) {
+    case 'CARDS_LOADING':
+      return Object.assign({}, state, {
+        loading: true,
+      });
     case 'CARDS_UPDATE':
       return Object.assign({}, state, {
-        data: action.data,
+        data: action.cards,
         loading: false,
       });
     case 'CARDS_FILTER':
@@ -22,8 +25,6 @@ export default function Cards(state: any = initialState, action: any) {
       return state;
   }
 }
-
-// filtered: filterCards(action.data, getStore().getState().filters),
 
 
 function filterCards(cards: any[], filters: any) {
@@ -52,8 +53,5 @@ function filterCards(cards: any[], filters: any) {
     });
     return card;
   });
-  setTimeout(() => {
-    getStore().dispatch({type: 'CARDS_FILTERED', cards});
-  }, 1);
   return cards;
 }

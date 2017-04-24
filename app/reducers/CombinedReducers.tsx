@@ -4,7 +4,7 @@ import Filters from './Filters'
 import RenderSettings from './RenderSettings'
 
 export default combineReducers({
-  Cards,
-  Filters,
-  RenderSettings,
+  cards: Cards,
+  filters: Filters,
+  renderSettings: RenderSettings,
 });
