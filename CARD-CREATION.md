@@ -9,3 +9,7 @@ Making your own cards is easy! The card creator uses Google Sheets as its data s
 5. Voila! Your cards should now be imported; you can select whichever theme you'd like, review the cards for appearance and accuracy, then print with `Ctrl + P` / `Command + P`
 
 Note: we recommend disabling your ad blocker for the card creator website - they've been known to cause issues with it.
+
+## Questions? Feedback? Bugs?
+
+Please contact us via [https://expeditiongame.com/contact](https://expeditiongame.com/contact) or by creating a new issue and we'll respond shortly!

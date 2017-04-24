@@ -94,30 +94,28 @@ export default class CardFront extends React.Component {
         );
       case 'Encounter':
         return (
-          <div className="white-background">
-            <div className={`card front dark horizontal ${card.sheet} ${card.class} tier${card.tier} ${card.health > 10 && 'bottomBar'} ${card.health === 10 && 'hp10'}`}>
-              <div className="contents">
-                <header>
-                  <div className="health">{icon(theme, 'health_small')} {card.health}</div>
-                  <div className="name">{card.name}</div>
-                </header>
-                <article>
-                  <div className="type">Tier {romanize(card.tier)} {card.class}</div>
-                  {card.ongoing1 &&
-                    <div className="ongoing" dangerouslySetInnerHTML={{__html: card.ongoing1}}></div>
-                  }
-                  {card.ongoing2 &&
-                    <div className="ongoing2" dangerouslySetInnerHTML={{__html: card.ongoing2}}></div>
-                  }
-                  {card.surge &&
-                    <div className="surge"><strong>Surge: </strong><span dangerouslySetInnerHTML={{__html: card.surge}}></span></div>
-                  }
-                </article>
-                <footer>
-                  <div className="flavortext">{card.flavortext}</div>
-                </footer>
-                {healthCounter(card.health)}
-              </div>
+          <div className={`card front dark horizontal ${card.sheet} ${card.class} tier${card.tier} ${card.health > 10 && 'bottomBar'} ${card.health === 10 && 'hp10'}`}>
+            <div className="contents">
+              <header>
+                <div className="health">{icon(theme, 'health_small')} {card.health}</div>
+                <div className="name">{card.name}</div>
+              </header>
+              <article>
+                <div className="type">Tier {romanize(card.tier)} {card.class}</div>
+                {card.ongoing1 &&
+                  <div className="ongoing" dangerouslySetInnerHTML={{__html: card.ongoing1}}></div>
+                }
+                {card.ongoing2 &&
+                  <div className="ongoing2" dangerouslySetInnerHTML={{__html: card.ongoing2}}></div>
+                }
+                {card.surge &&
+                  <div className="surge"><strong>Surge: </strong><span dangerouslySetInnerHTML={{__html: card.surge}}></span></div>
+                }
+              </article>
+              <footer>
+                <div className="flavortext">{card.flavortext}</div>
+              </footer>
+              {healthCounter(card.health)}
             </div>
           </div>
         );

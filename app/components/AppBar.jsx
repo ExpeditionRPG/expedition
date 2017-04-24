@@ -1,7 +1,10 @@
 import React from 'react'
-import SelectField from 'material-ui/SelectField'
+import IconButton from 'material-ui/IconButton'
 import MenuItem from 'material-ui/MenuItem'
+import SelectField from 'material-ui/SelectField'
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar'
+
+import HelpOutline from 'material-ui/svg-icons/action/help-outline'
 
 import {defaultState, getStore} from '../Store.jsx'
 
@@ -34,9 +37,6 @@ export default class AppBar extends React.Component {
         </SelectField>
       );
     });
-// TODO
-// <button><a href="https://github.com/Fabricate-IO/expedition-cards/blob/master/CARD-CREATION.md" target="_blank">Help</a></button>
-// <button><a href="https://expeditiongame.com/contact" target="_blank">Send Feedback</a></button>
     return (
       <Toolbar>
         <ToolbarGroup>
@@ -47,6 +47,9 @@ export default class AppBar extends React.Component {
             <span id="dynamicFilters"></span>
           </div>
           {filters}
+          <IconButton tooltip="SVG Icon" onTouchTap={() => { window.open('https://github.com/Fabricate-IO/expedition-cards/blob/master/CARD-CREATION.md'); } }>
+            <HelpOutline />
+          </IconButton>
         </ToolbarGroup>
       </Toolbar>
     );

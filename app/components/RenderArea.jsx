@@ -3,11 +3,11 @@ import SVGInjector from 'svg-injector'
 
 const CardBacks = {
   BlackAndWhite: require('../themes/BlackAndWhite/CardBack.jsx'),
-  // Color: require('../themes/Color/CardBack.jsx'),
+  Color: require('../themes/Color/CardBack.jsx'),
 };
 const CardFronts = {
   BlackAndWhite: require('../themes/BlackAndWhite/CardFront.jsx'),
-  // Color: require('../themes/Color/CardFront.jsx'),
+  Color: require('../themes/Color/CardFront.jsx'),
 };
 
 export default class RenderArea extends React.Component {
