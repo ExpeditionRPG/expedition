@@ -1,9 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-console.log(React);
-console.log(ReactDOM);
-
 // So we can hot reload
 declare var require: any;
 declare var module: any;
@@ -31,32 +28,18 @@ try {
   console.log('Already injected tap event plugin');
 }
 
-// getStore().dispatch(DownloadCards);
+getStore().dispatch(DownloadCards);
 
-// <MainContainer />
-console.log(ReactDOM);
 let render = () => {
   var base = document.getElementById('app');
   ReactDOM.unmountComponentAtNode(base);
   ReactDOM.render(
     <Provider store={getStore()}>
     <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-      <div>Hello</div>
+      <MainContainer />
     </MuiThemeProvider>
     </Provider>,
     base
   );
 }
 render();
-
-
-// const App = () => (
-//   <MuiThemeProvider>
-//     <MainContainer />
-//   </MuiThemeProvider>
-// );
-
-// ReactDOM.render(
-//   <App />,
-//   document.getElementById('app')
-// );
