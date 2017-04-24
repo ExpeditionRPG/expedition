@@ -2,34 +2,36 @@ const Webpack = require('webpack');
 const Path = require('path');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 
+const port = process.env.DOCKER_PORT || 8080;
+
 module.exports = {
   cache: true,
   entry: [
-    './app/React.jsx',
+    'webpack-dev-server/client?http://localhost:' + port,
+    'webpack/hot/only-dev-server',
+    './app/react.tsx',
     './app/styles/index.scss',
   ],
   output: {
     path: Path.resolve('dist'),
     filename: 'bundle.js',
   },
+  resolve: {
+    extensions: ['.js', '.tsx', '.json'],
+  },
   devServer: {
-    contentBase: Path.join(__dirname, 'app'),
+    contentBase: Path.resolve('app'),
     publicPath: '/',
-    port: 8080,
+    port: port,
+    hot: true,
+    quiet: false,
+    noInfo: false,
+    historyApiFallback: true,
+    watchOptions: ((process.env.WATCH_POLL) ? {aggregateTimeout: 300, poll: 1000} : {}),
   },
   module: {
     rules: [
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
-      {
-        test: /\.jsx$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ["es2015", "react"],
-          },
-        },
-      },
       {
         test: /\.(gif|png|jpe?g|svg)$/i,
         loaders: [
@@ -47,17 +49,19 @@ module.exports = {
           //   }
           // }
         ]
-      }
+      },
+      { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/ },
+      { enforce: 'post', test: /\.tsx$/, loaders: ['babel-loader'], exclude: /node_modules/ },
     ],
   },
   plugins: [
     new DashboardPlugin(),
     new Webpack.HotModuleReplacementPlugin(),
     new Webpack.NoEmitOnErrorsPlugin(),
-    new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
+    new Webpack.LoaderOptionsPlugin({
       options: {
         babel: {
-          presets: ["es2015"]
+          presets: ["es2015", "react"]
         },
       },
     }),

@@ -6,19 +6,21 @@ import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui
 
 import HelpOutline from 'material-ui/svg-icons/action/help-outline'
 
-import {defaultState, getStore} from '../Store.jsx'
+export interface AppBarStateProps {
+  filters: any;
+}
 
-export default class AppBar extends React.Component {
+export interface AppBarDispatchProps {
+  handleFilterChange: (name: string, value: string | number) => void;
+}
 
-  handleFilterChange(name, value) {
-    getStore().dispatch({type: 'FILTER_CHANGE', name, value});
-  }
+export interface AppBarProps extends AppBarStateProps, AppBarDispatchProps {};
 
+class AppBar extends React.Component<AppBarProps, {}> {
   render() {
-    const props = this.props.props;
-    const filters = Object.keys(props.filters).map((name, index) => {
-      const filter = props.filters[name];
-      const options = props.filters[name].options.map((option, index) => {
+    const filters = Object.keys(this.props.filters).map((name: string, index: number) => {
+      const filter = this.props.filters[name];
+      const options = this.props.filters[name].options.map((option: any, index: number) => {
         if (typeof option === 'string' && option.toLowerCase() === 'all') {
           const allName = 'All ' + name + ((['s', 'x'].indexOf(name[name.length-1]) !== -1) ? 'es' : 's');
           return <MenuItem key={index} value={option} primaryText={allName} />
@@ -28,9 +30,9 @@ export default class AppBar extends React.Component {
       return (
         <SelectField
           key={index}
-          value={props.filters[name].current}
+          value={this.props.filters[name].current}
           floatingLabelText={name}
-          onChange={(e, i, v) => { this.handleFilterChange(name, v); }}
+          onChange={(e, i, v) => { this.props.handleFilterChange(name, v); }}
           style={{width: 'auto', minWidth: 80, maxWidth: 250}}
         >
           {options}
@@ -55,3 +57,5 @@ export default class AppBar extends React.Component {
     );
   }
 }
+
+export default AppBar;

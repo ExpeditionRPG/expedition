@@ -1,16 +1,29 @@
 import React from 'react'
-import SVGInjector from 'svg-injector'
 
-const CardBacks = {
-  BlackAndWhite: require('../themes/BlackAndWhite/CardBack.jsx'),
-  Color: require('../themes/Color/CardBack.jsx'),
+declare var require: any;
+const SVGInjector = require('svg-injector') as any;
+
+const CardBacks: any = {
+  BlackAndWhite: require('../themes/BlackAndWhite/CardBack.tsx'),
+  Color: require('../themes/Color/CardBack.tsx'),
 };
-const CardFronts = {
-  BlackAndWhite: require('../themes/BlackAndWhite/CardFront.jsx'),
-  Color: require('../themes/Color/CardFront.jsx'),
+const CardFronts: any = {
+  BlackAndWhite: require('../themes/BlackAndWhite/CardFront.tsx'),
+  Color: require('../themes/Color/CardFront.tsx'),
 };
 
-export default class RenderArea extends React.Component {
+
+export interface RendererStateProps {
+  cards: any;
+  settings: any;
+}
+
+export interface RendererDispatchProps {
+}
+
+export interface RendererProps extends RendererStateProps, RendererDispatchProps {};
+
+class Renderer extends React.Component<RendererProps, {}> {
   render() {
     const cards = this.props.cards || [];
     const CardBack = CardBacks[this.props.settings.theme].default;
@@ -36,9 +49,6 @@ export default class RenderArea extends React.Component {
       pages.push(frontPages.shift());
       pages.push(backPages.shift());
     }
-    for (let i = 0, l = frontPages.length; i < frontPages.length; i++) {
-      pages.push(fron)
-    }
     setTimeout(() => {
       SVGInjector(document.querySelectorAll('img.svg'), {});
     }, 1);
@@ -50,3 +60,5 @@ export default class RenderArea extends React.Component {
     );
   }
 }
+
+export default Renderer;

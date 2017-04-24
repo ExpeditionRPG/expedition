@@ -1,33 +1,23 @@
 import React from 'react'
 
-import {getStore} from '../Store.jsx'
-import AppBar from './AppBar.jsx'
-import RenderArea from './RenderArea.jsx'
+import AppBarContainer from './AppBarContainer'
+import RendererContainer from './RendererContainer'
 
+export interface MainStateProps {
+  loading: boolean;
+}
 
-export default class Main extends React.Component {
+export interface MainDispatchProps {
+}
 
-  constructor(props) {
-    super(props);
-    this.state = this.getUpdatedState();
-    getStore().subscribe(this.handleChange.bind(this));
-  }
+export interface MainProps extends MainStateProps, MainDispatchProps {};
 
-  getUpdatedState() {
-    let state = getStore().getState();
-    this.state = getStore().getState();
-    return this.state;
-  }
-
-  handleChange() {
-    this.setState(this.getUpdatedState());
-  }
-
+class Main extends React.Component<MainProps, {}> {
   render() {
     return (
       <div>
-        <AppBar props={{filters: this.state.filters}} />
-        {this.state.cards.loading && <div className="sk-circle" id="loading">
+        <AppBarContainer/>
+        {this.props.loading && <div className="sk-circle" id="loading">
           <div className="sk-circle1 sk-child"></div>
           <div className="sk-circle2 sk-child"></div>
           <div className="sk-circle3 sk-child"></div>
@@ -55,14 +45,13 @@ export default class Main extends React.Component {
         <div className="printInstructions">
           <p className="center">Blank page for printing purposes. Save paper by only printing pages 3+!</p>
         </div>
-        {!this.state.cards.loading && <RenderArea cards={this.state.cards.filtered} settings={this.state.renderSettings}></RenderArea>}
+        {!this.props.loading && <RendererContainer/>}
       </div>
     );
   }
 }
 
-
-
+export default Main;
 
 
 /*
@@ -76,15 +65,15 @@ var Helpers = require('./helpers');
 
   $("#renderArea").hide();
 
-  State.init(function (err, result) {
+  props.init(function (err, result) {
 
     if (err) {
       throw err;
     }
 
-    $("#refreshCards").click(function () { State.updateSheets(); });
+    $("#refreshCards").click(function () { props.updateSheets(); });
     $("#setSource").click(function () { setSource(); });
-    window.onfocus = function() { State.updateSheets(); };
+    window.onfocus = function() { props.updateSheets(); };
     $("#renderArea").show();
   });
 })();
@@ -106,7 +95,7 @@ function setSource () {
 
     value = value.replace('https://docs.google.com/spreadsheets/d/', '')
         .replace('/pubhtml', '');
-    State.updateState('googleSheetId', value);
+    props.updateState('googleSheetId', value);
   });
 }
 */

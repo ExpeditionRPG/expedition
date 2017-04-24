@@ -1,22 +1,22 @@
 import React from 'react'
 
-export function icon(theme, name) {
+export function icon(theme: string, name: string): JSX.Element {
   return <img className="inline_icon svg" src={`/themes/${theme}/images/icon/${name}.svg`}/>;
 }
 
-export function iconString(theme, name) {
+export function iconString(theme: string, name: string): string {
   return `<img class="inline_icon svg" src="/themes/${theme}/images/icon/${name}.svg" />`;
 }
 
-export function camelCase(str) {
+export function camelCase(str: string): string {
   return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (letter, index) => {
     return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
   }).replace(/\s+/g, '').replace(/'/, '');
 }
 
-export function romanize(num) { // http://blog.stevenlevithan.com/archives/javascript-roman-numeral-converter
-  if (+num === 0) return 0;
-  if (!+num) return false;
+export function romanize(num: number): string { // http://blog.stevenlevithan.com/archives/javascript-roman-numeral-converter
+  if (+num === 0) return '0';
+  if (!+num) return '';
   var digits = String(+num).split(""),
       key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
              "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
@@ -28,7 +28,7 @@ export function romanize(num) { // http://blog.stevenlevithan.com/archives/javas
 
 // generates a bottom tracker, fits up to 14; inclusive 0-count
 // TODO modernize
-export function horizontalCounter(count) {
+export function horizontalCounter(count: number): JSX.Element {
 
   var output = '';
   var outputted = 0;
@@ -47,14 +47,14 @@ export function horizontalCounter(count) {
   // the number of numbers that fit onto the bottom track depends on the number of single vs double digit numbers
     // (since they have different widths)
 // TODO modernize
-export function healthCounter(health) {
+export function healthCounter(health: number): JSX.Element {
 
   var digitWidth = [0, 16, 23];
   var maxWidth = 269;
   var outputtedWidth = 0;
 
   var max = false;
-  if (health === 'max') {
+  if (health >= 31) {
     health = 31;
     max = true;
   }
@@ -92,7 +92,7 @@ export function healthCounter(health) {
 // TODO make unified function that takes in count and transition points
 // also post-increments instead of pre-increments, so maybe pass an output range (ie loot is 20-1, HP is 19-0)
 // TODO modernize
-export function lootCounter(count) {
+export function lootCounter(count: number): JSX.Element {
   var digitWidth = [0, 16, 23];
   var maxWidth = 269;
   var outputtedWidth = 0;
