@@ -25,7 +25,7 @@ export function DownloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
         const sheets = tabletop.sheets();
         Object.keys(sheets).sort().forEach((sheetName: string) => {
           cards = cards.concat(sheets[sheetName].elements.filter((card: any) => {
-            return (card.Comment && card.Comment === '') || (card.hide && card.hide === '');
+            return (card.Comment === '' || card.hide === '');
           }).map((card: any) => {
             card.sheet = sheetName;
             return card;

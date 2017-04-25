@@ -1,5 +1,4 @@
 import * as React from 'react'
-import history from '../History'
 import AppBarContainer from './AppBarContainer'
 import RendererContainer from './RendererContainer'
 
@@ -16,7 +15,6 @@ export interface MainProps extends MainStateProps, MainDispatchProps {};
 class Main extends React.Component<MainProps, {}> {
   componentDidMount() {
     this.props.downloadCards();
-    history.listen(() => this.forceUpdate());
   }
 
   render() {
