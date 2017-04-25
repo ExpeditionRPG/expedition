@@ -7,9 +7,6 @@ import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui
 import AutoRenew from 'material-ui/svg-icons/action/autorenew'
 import HelpOutline from 'material-ui/svg-icons/action/help-outline'
 
-declare var require: any;
-const qs = require('qs') as any;
-
 export interface AppBarStateProps {
   filters: any;
 }
@@ -23,7 +20,6 @@ export interface AppBarProps extends AppBarStateProps, AppBarDispatchProps {};
 
 class AppBar extends React.Component<AppBarProps, {}> {
   render() {
-    const query = qs.parse(window.location.search.substring(1));
     const filters = Object.keys(this.props.filters).map((name: string, index: number) => {
       const filter = this.props.filters[name];
       const options = this.props.filters[name].options.map((option: any, index: number) => {
@@ -36,7 +32,7 @@ class AppBar extends React.Component<AppBarProps, {}> {
       return (
         <SelectField
           key={index}
-          value={query[name] || this.props.filters[name].current}
+          value={this.props.filters[name].current}
           floatingLabelText={name}
           onChange={(e, i, v) => { this.props.handleFilterChange(name, v); }}
           style={{width: 'auto', minWidth: 80, maxWidth: 250}}

@@ -10,8 +10,8 @@ export function DownloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
     dispatch(CardsLoading());
     Tabletop.init({
 // TODO fetch from state.settings...
-      key: '1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
-      // key: '1hR-Taq5n4kiRhRSv4D1CxXZlCyEooRSv_wW8bs_vXes',
+      // key: '1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
+      key: '1hR-Taq5n4kiRhRSv4D1CxXZlCyEooRSv_wW8bs_vXes',
       parseNumbers: true,
       simpleSheet: true,
       postProcess: (card: any) => {

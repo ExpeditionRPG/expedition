@@ -1,6 +1,6 @@
 import {getStore} from '../store'
 
-export const initialState: any = {
+export let initialState: any = {
   sheet: {
     current: 'All',
     default: 'All',
@@ -27,6 +27,15 @@ export const initialState: any = {
     options: ['PrintAndPlay', 'WebView', 'DriveThruCards', 'AdMagicFronts', 'AdMagicBacks', 'FrontsOnly'],
   },
 };
+
+// Load the filter initial state from the querystring as well
+declare var require: any;
+const qs = require('qs') as any;
+const query = qs.parse(window.location.search.substring(1));
+for (let key in query) {
+  initialState[key].current = query[key];
+}
+
 
 export default function Filters(state: any = initialState, action: any) {
   let newState: any;
