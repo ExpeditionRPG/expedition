@@ -5,22 +5,13 @@ import {getStore} from '../Store'
 declare var require: any;
 const Tabletop = require('tabletop') as any;
 
-// Data pipeline:
-// Seems like we should move all computation to the action, and keep the reducers as simple as possible
-// CARDS_UPDATE
-// CARDS_FILTER
-// FILTER_UPDATE
-// FILTERS_UPDATE
-// Cards requested -> Cards received -> Filter cards based on new data -> Filter options updated based on valid cards
-// DownloadCards() -> CardsReceived(data) -> CardsFilter(cards, filters) -> FiltersCalculate(filteredCards)
-// Filter changed -> Filter cards based on new filters -> Filter options updated based on valid cards
-// FilterChange -> CardsFilter -> FiltersCalculate
-
 export function DownloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
     dispatch(CardsLoading());
     Tabletop.init({
+// TODO fetch from state.settings...
       key: '1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
+      // key: '1hR-Taq5n4kiRhRSv4D1CxXZlCyEooRSv_wW8bs_vXes',
       parseNumbers: true,
       simpleSheet: true,
       postProcess: (card: any) => {
@@ -29,12 +20,12 @@ export function DownloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
         return cleanCardData(card);
       },
       callback: (data: any, tabletop: any) => {
-        // Remove commented out cards and attach sheet name
+        // Turn into an array, remove commented out / hidden cards, attach sheet name
         let cards: any[] = [];
         const sheets = tabletop.sheets();
         Object.keys(sheets).sort().forEach((sheetName: string) => {
           cards = cards.concat(sheets[sheetName].elements.filter((card: any) => {
-            return (card.Comment === '');
+            return (card.Comment && card.Comment === '') || (card.hide && card.hide === '');
           }).map((card: any) => {
             card.sheet = sheetName;
             return card;

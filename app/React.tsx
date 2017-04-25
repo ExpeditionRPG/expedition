@@ -3,18 +3,16 @@ import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import MainContainer from './components/MainContainer'
+import history from './History'
+import { getStore } from './Store'
+import theme from './theme'
 
 // So we can hot reload
 declare var require: any;
 declare var module: any;
 
-// Cordova device
-declare var window: any;
-declare var paper: any;
-
-import MainContainer from './components/MainContainer'
-import { getStore } from './Store'
-import theme from './theme'
+const configureUrlQuery = (require('react-url-query') as any).configureUrlQuery;
 
 // Needed for onTouchTap
 const injectTapEventPlugin = require('react-tap-event-plugin');
@@ -23,6 +21,8 @@ try {
 } catch (e) {
   console.log('Already injected tap event plugin');
 }
+
+configureUrlQuery({ history });
 
 let render = () => {
   var base = document.getElementById('app');

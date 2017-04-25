@@ -19,7 +19,7 @@ export const initialState: any = {
   theme: {
     current: 'BlackAndWhite',
     default: 'BlackAndWhite',
-    options: ['BlackAndWhite', 'Color'],
+    options: ['BlackAndWhite', 'Color', 'UrbanChaos'],
   },
   export: {
     current: 'PrintAndPlay',

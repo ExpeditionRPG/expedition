@@ -6,10 +6,12 @@ const SVGInjector = require('svg-injector') as any;
 const CardBacks: any = {
   BlackAndWhite: require('../themes/BlackAndWhite/CardBack.tsx'),
   Color: require('../themes/Color/CardBack.tsx'),
+  UrbanChaos: require('../themes/UrbanChaos/CardBack.tsx'),
 };
 const CardFronts: any = {
   BlackAndWhite: require('../themes/BlackAndWhite/CardFront.tsx'),
   Color: require('../themes/Color/CardFront.tsx'),
+  UrbanChaos: require('../themes/UrbanChaos/CardFront.tsx'),
 };
 
 
