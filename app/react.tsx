@@ -3,8 +3,6 @@
 import * as React from 'react'
 import {render} from 'react-dom'
 
-import {saveQuest} from './actions/quest'
-
 // For hot reload
 declare var require: any;
 declare var module: any;
@@ -16,9 +14,9 @@ declare var window:any;
 declare var unescape: any;
 
 // Material UI theming libs
-import theme from './theme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import theme from './theme'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
 const Typo: any = require('typo-js');
 
@@ -30,9 +28,9 @@ injectTapEventPlugin();
 import {Provider} from 'react-redux';
 
 // Custom components
-import MainContainer from './components/MainContainer';
-import {loginUser, setProfileMeta} from './actions/user';
-
+import MainContainer from './components/MainContainer'
+import {loginUser, setProfileMeta} from './actions/user'
+import {saveQuest} from './actions/quest'
 import {store} from './store'
 
 if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
