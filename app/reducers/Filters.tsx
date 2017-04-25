@@ -28,7 +28,7 @@ export let initialState: any = {
   },
 };
 
-// Load the filter initial state from the querystring as well
+// Load any initial values from URL / querystring
 declare var require: any;
 const qs = require('qs') as any;
 const query = qs.parse(window.location.search.substring(1));
@@ -43,6 +43,14 @@ export default function Filters(state: any = initialState, action: any) {
     case 'FILTER_CHANGE':
       newState = Object.assign({}, state);
       newState[action.name].current = action.value;
+      // Update URL - don't include in URL if it's the default value
+      let query = Object.assign(qs.parse(window.location.search.substring(1)), {[action.name]: action.value});
+      for (let key in query) {
+        if (query[key] === initialState[key].default) {
+          delete query[key];
+        }
+      }
+      window.history.pushState(null, 'Expedition Card Creator', '?' + qs.stringify(query));
       return newState;
     case 'FILTERS_CALCULATE':
       newState = Object.assign({}, state);
