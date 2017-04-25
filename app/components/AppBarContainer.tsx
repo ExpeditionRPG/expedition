@@ -8,11 +8,7 @@ declare var require: any;
 const reactUrlQuery = require('react-url-query') as any;
 
 const urlPropsQueryConfig = {
-  filters: {
-    theme: {
-      current: { type: reactUrlQuery.UrlQueryParamTypes.string, queryParam: 'theme' },
-    },
-  },
+  filters: { type: reactUrlQuery.UrlQueryParamTypes.object },
 }
 
 const mapStateToProps = (state: any, ownProps: any): AppBarStateProps => {
