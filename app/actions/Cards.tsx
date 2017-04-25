@@ -116,11 +116,11 @@ function cleanCardData(card: any) {
         // throw "BROKEN MACRO: " + match.substring(1);
         return 'BROKEN MACRO: ' + match.substring(1);
       });
-
-      // Replace $var with variable value
-      card[property] = card[property].replace(/\$\w*/mg, (match: string) => {
-        return card[match.substring(1)];
-      });
+// This doesn't seem to be used any more?
+//       // Replace $var with variable value
+//       card[property] = card[property].replace(/\$\w*/mg, (match: string) => {
+//         return card[match.substring(1)];
+//       });
     }
     return card[property];
   });

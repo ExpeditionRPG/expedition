@@ -50,7 +50,7 @@ class Main extends React.Component<MainProps, {}> {
         <div className="printInstructions">
           <p className="center">Blank page for printing purposes. Save paper by only printing pages 3+!</p>
         </div>
-        {!this.props.loading && <RendererContainer/>}
+        <RendererContainer/>
       </div>
     );
   }
