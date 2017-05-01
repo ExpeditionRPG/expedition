@@ -11,13 +11,13 @@ const mapStateToProps = (state: AppState, ownProps: any): ContextEditorStateProp
 
   for (var i = 0; i < state.preview._history.length; i++) {
     var pastQuest = state.preview._history[i].quest;
-    if (pastQuest && pastQuest.result && pastQuest.result.ctx && pastQuest.result.ctx.scope) {
-      scopeHistory.push(pastQuest.result.ctx.scope);
+    if (pastQuest && pastQuest.node && pastQuest.node.ctx && pastQuest.node.ctx.scope) {
+      scopeHistory.push(pastQuest.node.ctx.scope);
     }
   }
 
-  if (state.preview.quest && state.preview.quest.result && state.preview.quest.result.ctx && state.preview.quest.result.ctx.scope) {
-    scopeHistory.push(state.preview.quest.result.ctx.scope);
+  if (state.preview.quest && state.preview.quest.node && state.preview.quest.node.ctx && state.preview.quest.node.ctx.scope) {
+    scopeHistory.push(state.preview.quest.node.ctx.scope);
   }
 
   return {
