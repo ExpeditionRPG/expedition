@@ -25,7 +25,7 @@ export default class CardFront extends React.Component<CardProps, {}> {
                     <strong>{icon(theme, 'd20_small')} <span className="symbol">&ge;</span> {card.risk}</strong>
                   </div>
                   <div className="target">
-                    {icon(theme, 'target_small')} {card.target}
+                    <strong>{icon(theme, 'target_small')}</strong> {card.target}
                   </div>
                 </div>
                 <div className="preamble">

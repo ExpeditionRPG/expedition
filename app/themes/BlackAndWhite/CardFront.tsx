@@ -25,7 +25,7 @@ export default class CardFront extends React.Component<CardProps, {}> {
                     <strong>{icon(theme, 'd20_small')} <span className="symbol">&ge;</span> {card.risk}</strong>
                   </div>
                   <div className="target">
-                    {icon(theme, 'target_small')} {card.target}
+                    <strong>{icon(theme, 'target_small')}</strong> {card.target}
                   </div>
                 </div>
                 <div className="preamble">
@@ -144,19 +144,19 @@ export default class CardFront extends React.Component<CardProps, {}> {
         );
       case 'Loot':
         return (
-          <div className={`card front vertical ${card.sheet} tier${card.tier} ${card.tracker && 'tracker'} ${card.tracker > 14 && 'bottomBar'}`} id="{{camelCase name }}">
+          <div className={`card front vertical ${card.sheet} tier${card.tier} ${card.tracker && 'tracker'} ${card.tracker > 14 && 'bottomBar'}`} id={camelCase(name)}>
             <div className="contents">
               <header>
                 <div className="name">{card.name}</div>
               </header>
               <article>
                 <div className="indicators">
-                  <div>{card.numberuses}</div>
-                  <div>{card.usewhen}</div>
+                  <div className="numUses">{card.numberuses}</div>
+                  <div className="useWhen">{card.usewhen}</div>
                 </div>
                 <br className="padded" />
                 <div className="abilitytext" dangerouslySetInnerHTML={{__html: card.text}}></div>
-                <div className="rng" dangerouslySetInnerHTML={{__html: card.roll}}></div>
+                {card.roll && <div className="rng" dangerouslySetInnerHTML={{__html: card.roll}}></div>}
               </article>
               <footer>
                 <div className="flavortext">{card.flavortext}</div>
@@ -168,4 +168,3 @@ export default class CardFront extends React.Component<CardProps, {}> {
     }
   }
 }
-

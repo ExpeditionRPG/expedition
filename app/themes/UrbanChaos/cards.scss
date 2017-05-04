@@ -1,24 +1,31 @@
 @import '../../styles/card-constants.scss';
 
-@import url('https://fonts.googleapis.com/css?family=Maven+Pro');
+$icon-width: 0.2in;
 
-$font-header: 'Maven Pro', sans-serif !important;
-$font-body: "minion-pro", serif !important;
+@import url('https://fonts.googleapis.com/css?family=Comfortaa:400,700');
+
+$font-header: 'Comfortaa', sans-serif !important;
+$font-body: 'minion-pro', serif !important;
 $padding: 12pt;
 $top-padding: 0.19in;
+$small: 4pt;
 $tiny: 2pt;
 $thin: 0.8pt;
 $border-weight: 1.1pt; /* note that this also needs to be changed in banner SVG files */
-$footer-height: 0.4in;
+$footer-height: 0.5in;
 
-$text-color: #2e200f;
+$text-color: #212121; /* grey900 */
 $text-color-white: #eee;
 $text-size-back-title: 20pt;
 $text-size-front-title: 14pt;
-$text-size-content: 10.5pt;
+$text-size-content: 12pt;
 $text-size-small: 9pt;
 
-#renderArea.UrbanChaos {
+$color-red: #BF360C; /* red900 */
+$color-green: #1B5E20; /* green900 */
+$color-blue: #0D47A1; /* blue900 */
+
+#renderer.UrbanChaos {
 
   /* ===== THE CARDS ===== */
 
@@ -38,7 +45,7 @@ $text-size-small: 9pt;
     header {
 
       position: relative;
-      margin: $top-padding $edge 3pt $edge;
+      margin: $top-padding $edge 0 $edge;
 
       .name {
         font-size: $text-size-front-title;
@@ -49,13 +56,12 @@ $text-size-small: 9pt;
       }
     }
 
-
     article {
 
       position: relative;
       clear: left;
       margin: 0 $edge $edge $edge;
-      padding-top: 4pt;
+      padding-top: $small;
       line-height: 1.2;
 
       br {
@@ -67,8 +73,20 @@ $text-size-small: 9pt;
         }
       }
 
-      .traits {
-        padding-left: $text-size-content;
+      .costs {
+        font-weight: bold;
+
+        .save {
+          color: $color-green;
+        }
+
+        .spend {
+          color: $color-red;
+        }
+      }
+
+      .effects {
+        margin-top: $small;
       }
     }
 
@@ -89,32 +107,15 @@ $text-size-small: 9pt;
       }
     }
 
-    &.horizontal {
-
-      &.front .contents {
-        margin-top: -$border/2;
-        margin-left: -$border/2;
+    &.Proposal {
+      &.Infrastructure {
+        border-color: $color-red;
       }
-      &.back .contents {
-        margin-top: 0;
-        margin-left: 0;
+      &.Services {
+        border-color: $color-blue;
       }
-
-      header {
-        padding-left: 16pt;
-        padding-right: 16pt;
-      }
-
-      article {
-        padding-left: 16pt;
-        padding-right: 16pt;
-      }
-
-      footer {
-        border-right: none;
-        bottom: 0.25in;
-        right: 0.315in;
-        left: 16pt;
+      &.Finance {
+        border-color: $color-green;
       }
     }
   }

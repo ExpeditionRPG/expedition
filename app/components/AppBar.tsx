@@ -42,7 +42,7 @@ class AppBar extends React.Component<AppBarProps, {}> {
       );
     });
     return (
-      <Toolbar>
+      <Toolbar className="printHide">
         <ToolbarGroup>
           <ToolbarTitle text="Expedition Card Creator" />
         </ToolbarGroup>

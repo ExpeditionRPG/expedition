@@ -10,8 +10,8 @@ export function DownloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
     dispatch(CardsLoading());
     Tabletop.init({
 // TODO fetch from state.settings...
-      // key: '1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
-      key: '1hR-Taq5n4kiRhRSv4D1CxXZlCyEooRSv_wW8bs_vXes',
+      key: '1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
+      // key: '1hR-Taq5n4kiRhRSv4D1CxXZlCyEooRSv_wW8bs_vXes',
       parseNumbers: true,
       simpleSheet: true,
       postProcess: (card: any) => {
@@ -83,19 +83,22 @@ function cleanCardData(card: any) {
     if (card[property] === '-') { // remove '-' proprties
       card[property] = '';
     } else if (typeof card[property] === 'string') {
-      // replace CSV line breaks with BR's - padded if: above and below OR's, below end of </strong>, above start of <strong>
+      // replace CSV line breaks with BR's - padded if:
+          // above and below OR's
+          // above start of <strong>
+          // below end of </strong>
+          // double line break in CSV (\n\n)
       // otherwise just a normal BR
-      card[property] = card[property].replace(/(\n(<strong>))|((<\/strong>)\n)|(\n(OR)\n)|(\n)/mg, (whole: string) => {
+      card[property] = card[property].replace(/(\n(<strong>))|((<\/strong>)\n)|(\n(OR)\n)|(\n\n)|(\n)/mg, (whole: string) => {
         if (whole.indexOf('<strong>') !== -1) {
           return '<br class="padded"/>' + whole;
-        }
-        else if (whole.indexOf('</strong>') !== -1) {
+        } else if (whole.indexOf('</strong>') !== -1) {
           return whole + '<br class="padded"/>';
-        }
-        else if (whole.indexOf('OR') !== -1) {
+        } else if (whole.indexOf('OR') !== -1) {
           return '<br class="padded"/>' + whole + '<br class="padded"/>';
-        }
-        else {
+        } else if (whole.indexOf('\n\n') !== -1) {
+          return whole + '<br class="padded" />';
+        } else {
           return whole + '<br />';
         }
       });
@@ -125,7 +128,7 @@ function cleanCardData(card: any) {
     return card[property];
   });
 
-  if (card.Effect) { // put ORs in divs
+  if (card.Effect) { // put ORs in divs ... possibly move into the above newline find and replace?
     card.Effect = card.Effect.replace(/OR<br \/>/g, () => {
       return '<div class="or"><span>OR</span></div>';
     });

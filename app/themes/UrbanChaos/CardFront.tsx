@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {icon, camelCase, romanize, horizontalCounter, healthCounter, lootCounter} from '../../helpers'
+import {icon, iconString, camelCase, romanize, horizontalCounter, healthCounter, lootCounter} from '../../helpers'
 import {CardProps} from '../../components/Card'
 
 
@@ -9,7 +9,6 @@ export default class CardFront extends React.Component<CardProps, {}> {
     const theme = 'UrbanChaos';
     switch (card.sheet) {
       case 'Citizen':
-// commuteUse  transitBike transitBus  transitCar  transitWalk traits
         return (
           <div className={`card front vertical ${card.sheet}`}>
             <div className="contents">
@@ -17,15 +16,9 @@ export default class CardFront extends React.Component<CardProps, {}> {
                 <div className="name">{card.name}</div>
               </header>
               <article>
-                <div>{card.age} yr old {card.race} {card.gender}</div>
-                <div>Work: {card.occupation}</div>
-                <div>Education: {card.education}</div>
-                <div>Income: {card.income}</div>
-                <div>{card.relationship}</div>
-                {card.commuteLocation !== "Local" && <div>Lives in {card.location}, works in {card.commuteLocation}</div>}
-                {card.commuteLocation === "Local" && <div>Lives and works in {card.location}</div>}
-                <div>Traits:</div>
-                <div className="traits" dangerouslySetInnerHTML={{__html: card.traits}}></div>
+                <div className="score">
+                  Scores one point when: <span dangerouslySetInnerHTML={{__html: card.score}}></span>
+                </div>
               </article>
             </div>
           </div>
@@ -48,14 +41,18 @@ export default class CardFront extends React.Component<CardProps, {}> {
         );
       case 'Proposal':
         return (
-          <div className={`card front vertical ${card.sheet}`}>
+          <div className={`card front vertical ${card.sheet} ${card.committee}`}>
             <div className="contents">
               <header>
                 <div className="name">{card.name}</div>
+                <div className="committee">{card.committee}</div>
               </header>
               <article>
-                <div>${card.cost}M {card.resources && (' and ' + card.resources)}</div>
-                <div dangerouslySetInnerHTML={{__html: card.effects}}></div>
+                <div className="costs">
+                  {card.cost < 0 && <span className="save">Saves (+) ${-1 * card.cost}M</span>}
+                  {card.cost > 0 && <span className="spend">Costs (-) ${card.cost}M</span>}
+                </div>
+                <div className="effects" dangerouslySetInnerHTML={{__html: card.effects}}></div>
               </article>
               <footer>
                 <div>{card.flavortext}</div>

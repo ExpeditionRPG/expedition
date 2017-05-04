@@ -26,3 +26,5 @@ We recommend developing in Sublime Text, and require that the following style se
   "trim_trailing_white_space_on_save": true
 }
 ```
+
+If you'll be adjusting .scss styles, we also recommend this Sublime Package for scss syntax highlighting: https://packagecontrol.io/packages/Syntax%20Highlighting%20for%20Sass

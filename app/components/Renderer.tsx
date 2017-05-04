@@ -68,7 +68,7 @@ class Renderer extends React.Component<RendererProps, {}> {
     }, 1);
 
     return (
-      <div id="renderArea" className={renderSettings.theme}>
+      <div id="renderer" className={renderSettings.theme}>
         {pages}
       </div>
     );

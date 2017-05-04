@@ -40,7 +40,7 @@ body.hideFronts {
   }
 }
 
-#renderArea {
+#renderer {
   margin-top: 20px;
   z-index: -10000;
 }
@@ -150,11 +150,11 @@ body.hideFronts {
     background: white;
   }
 
-  #topbar {
-    display: none;
+  .printHide {
+    display: none !important;
   }
 
-  #renderArea {
+  #renderer {
     margin: 0;
   }
 

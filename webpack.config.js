@@ -61,7 +61,8 @@ module.exports = {
     new Webpack.LoaderOptionsPlugin({
       options: {
         babel: {
-          presets: ["es2015", "react"]
+          presets: ["es2015", "react"],
+          cacheDirectory: true,
         },
       },
     }),

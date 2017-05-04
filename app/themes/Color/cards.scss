@@ -9,7 +9,7 @@ $thin: 0.8pt;
 $border-weight: 1.1pt; /* note that this also needs to be changed in banner SVG files */
 $footer-height: 0.4in;
 
-#renderArea.Color {
+#renderer.Color {
 
   color: blue !important;
 
@@ -273,8 +273,8 @@ $footer-height: 0.4in;
         .typeicon {
 
           position: absolute;
-          left: -3pt;
-          top: -2pt;
+          left: -3.3pt;
+          top: -1.5pt;
 
           svg {
             height: 1.3 * $icon-width;
@@ -285,8 +285,8 @@ $footer-height: 0.4in;
         .classicon {
 
           position: absolute;
-          right: -4pt;
-          top: -2pt;
+          right: -5pt;
+          top: -1.5pt;
 
           svg {
             height: 1.3 * $icon-width;
@@ -467,6 +467,10 @@ $footer-height: 0.4in;
       bottom: 0;
       left: 0;
       right: 0;
+    }
+
+    &.Ability .naming {
+      bottom: -6pt;
     }
 
     .tier {
