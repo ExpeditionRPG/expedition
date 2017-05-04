@@ -13,14 +13,14 @@ import {QuestDetails} from '../reducers/QuestTypes'
 import {SUMMARY_MAX_LENGTH} from '../Constants'
 
 export interface SearchStateProps extends SearchState {
-  phase: SearchPhase;
   numPlayers: number;
-  user: UserState;
+  phase: SearchPhase;
   search: SearchSettings;
+  user: UserState;
 }
 
 export interface SearchDispatchProps {
-  onLoginRequest: () => void;
+  onLoginRequest: (subscribe: boolean) => void;
   onFilter: () => void;
   onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => void;
   onQuest: (quest: QuestDetails) => void;
@@ -188,23 +188,52 @@ function renderDetails(props: SearchProps): JSX.Element {
   );
 }
 
+// We make this a react component to hold a bit of state and avoid sending
+// redux actions for every single change to input.
+interface SearchDisclaimerCardProps {
+  onLoginRequest: (subscribe: boolean) => void;
+}
+
+class SearchDisclaimerCard extends React.Component<SearchDisclaimerCardProps, {}> {
+  state: {
+    subscribe: boolean;
+  };
+
+  constructor(props: SearchDisclaimerCardProps) {
+    super(props)
+    this.state = {
+      subscribe: false,
+    };
+  }
+
+  onSubscribeChange(value: boolean) {
+    this.setState({subscribe: value});
+  }
+
+  render() {
+    return (
+      <Card title="Disclaimer">
+        <p>
+          Community quests are published by other adventurers like yourselves using the free quest creator (Quests.ExpeditionGame.com).
+          We offer no guarantees of completeness, correctness of grammar, or sanity in any of the quests you are about to see.
+        </p>
+        <p>
+          We use your Google email as your identity when rating and reviewing quests.
+        </p>
+        <p>
+          You must log in to continue:
+        </p>
+        <Checkbox label="Join the Mailing List" value={this.state.subscribe} onChange={(v: boolean) => { this.onSubscribeChange(v); }}>
+          Learn about the latest quests, features and more - once per month!
+        </Checkbox>
+        <Button onTouchTap={(e)=>this.props.onLoginRequest(this.state.subscribe)}>Continue with Google</Button>
+      </Card>
+    );
+  }
+}
+
 function renderDisclaimer(props: SearchProps): JSX.Element {
-  return (
-    <Card title="Disclaimer">
-      <p>
-        Community quests are published by other adventurers like yourselves. We offer no guarantees
-        of completeness, correctness of grammar, or sanity in any of the quests you are about to see.
-      </p>
-      <p>
-        We use your Google email as your identity when rating quests and to show your
-        own (unpublished) quests.
-      </p>
-      <p>
-        You must log in to continue:
-      </p>
-      <Button onTouchTap={(e)=>props.onLoginRequest()}>Continue with Google</Button>
-    </Card>
-  );
+  return (<SearchDisclaimerCard onLoginRequest={props.onLoginRequest}/>);
 }
 
 const Search = (props: SearchProps): JSX.Element => {

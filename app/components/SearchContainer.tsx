@@ -4,21 +4,30 @@ import {connect} from 'react-redux'
 import Search, {SearchStateProps, SearchDispatchProps} from './Search'
 
 import {toPrevious, toCard} from '../actions/Card'
+import {changeSettings} from '../actions/Settings'
 import {viewQuest} from '../actions/Quest'
 import {login} from '../actions/User'
-import {fetchQuestXML, search} from '../actions/Web'
+import {fetchQuestXML, search, subscribe} from '../actions/Web'
 import {AppState, SearchSettings, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 
 
 const mapStateToProps = (state: AppState, ownProps: SearchStateProps): SearchStateProps => {
-  return {...state.search, phase: ownProps.phase, user: state.user, numPlayers: state.settings.numPlayers};
+  return {
+    ...state.search,
+    numPlayers: state.settings.numPlayers,
+    phase: ownProps.phase,
+    user: state.user,
+  };
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SearchDispatchProps => {
   return {
-    onLoginRequest: () => {
-      dispatch(login(()=> {
+    onLoginRequest: (sub: boolean) => {
+      dispatch(login((user: UserState)=> {
+        if (sub && user.email && user.email !== '') {
+          dispatch(subscribe(user.email));
+        }
         dispatch(toCard('SEARCH_CARD', 'SETTINGS'));
       }));
     },

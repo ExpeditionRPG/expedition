@@ -82,6 +82,27 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
   };
 }
 
+export function subscribe(email: string) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    $.post({
+      url: authSettings.urlBase + '/user/subscribe',
+      data: JSON.stringify({email}),
+      dataType: 'json',
+    })
+    .done((msg: string) => {
+      window.FirebasePlugin.logEvent('user_subscribe', email);
+    })
+    .fail((xhr: any, err: string) => {
+      if (xhr.status === 200) {
+        window.FirebasePlugin.logEvent('user_subscribe', email);
+      } else {
+        window.FirebasePlugin.logEvent('user_subscribe_err', err);
+        console.log('Error encountered when subscribing: ' + err);
+      }
+    });
+  };
+}
+
 export function submitUserFeedback(quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const data = Object.assign({}, {
