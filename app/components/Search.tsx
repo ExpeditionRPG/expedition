@@ -10,6 +10,8 @@ import Checkbox from './base/Checkbox'
 import {SearchSettings, SearchPhase, SearchState, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 
+import {SUMMARY_MAX_LENGTH} from '../Constants'
+
 export interface SearchStateProps extends SearchState {
   phase: SearchPhase;
   numPlayers: number;
@@ -101,11 +103,19 @@ function renderSettings(props: SearchProps): JSX.Element {
   return (<SearchSettingsCard search={props.search} onSearch={props.onSearch} user={props.user} numPlayers={props.numPlayers}/>);
 }
 
-function formatPlayPeriod(minMinutes: number, maxMinutes: number): string {
-  if (minMinutes > 60 && maxMinutes > 60) {
-    return Math.round(minMinutes / 60) + '-' + Math.round(maxMinutes / 60) + ' hours';
+export function formatPlayPeriod(minMinutes: number, maxMinutes: number): string {
+  if (minMinutes >= 60 && maxMinutes >= 60) {
+    return Math.round(minMinutes / 60) + '-' + Math.round(maxMinutes / 60) + ' hrs';
   } else {
-    return minMinutes + '-' + maxMinutes + ' minutes';
+    return minMinutes + '-' + maxMinutes + ' min';
+  }
+}
+
+export function truncateSummary(string: string) {
+  if (string.length < SUMMARY_MAX_LENGTH) {
+    return string;
+  } else {
+    return string.substring(0, SUMMARY_MAX_LENGTH - 3) + '...';
   }
 }
 
@@ -115,10 +125,12 @@ function renderResults(props: SearchProps): JSX.Element {
       <Button key={index} onTouchTap={() => props.onQuest(result)}>
         <div className="searchResult">
           <div className="title">{result.title}</div>
+          <div className="timing">
+            <img className="inline_icon" src="images/adventurer_small.svg"/>{result.minplayers}-{result.maxplayers} players
+            <img className="inline_icon" src="images/clock_small.svg"/>{formatPlayPeriod(result.mintimeminutes, result.maxtimeminutes)}
+          </div>
           <div className="summary">
-            by {result.author}
-            <br/>
-            {result.minplayers}-{result.maxplayers} players, {formatPlayPeriod(result.mintimeminutes, result.maxtimeminutes)}
+            <div>{truncateSummary(result.summary)}</div>
           </div>
         </div>
       </Button>

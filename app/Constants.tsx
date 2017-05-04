@@ -16,6 +16,7 @@ export const authSettings = {
 
 export const MAX_ADVENTURER_HEALTH = 12;
 export const MIN_FEEDBACK_LENGTH = 16;
+export const SUMMARY_MAX_LENGTH = 140; // length of a tweet
 
 export const URLS = {
   android: 'https://play.google.com/store/apps/details?id=io.fabricate.expedition',

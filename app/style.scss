@@ -617,14 +617,6 @@ body {
   .advanced_play, .featured_quest, .searchResult {
     padding-left: size(base);
     padding-right: size(base);
-    .summary {
-      display: flex;
-      padding-left: size(base);
-      flex: 3;
-      line-height: $lineheight;
-      margin: 0;
-      font-size: fontsize(flavor);
-    }
     .title {
       line-height: $lineheight;
       font-family: $headerfont;
@@ -632,6 +624,22 @@ body {
       font-size: fontsize(interactive);
       margin-bottom: size(small);
       top: 0;
+    }
+    .timing {
+      .inline_icon {
+        padding-left: size(base);
+        padding-right: size(tiny);
+        width: fontsize(interactive);
+        height: fontsize(interactive);
+      }
+    }
+    .summary {
+      display: flex;
+      padding-left: size(base);
+      flex: 3;
+      line-height: $lineheight;
+      margin: 0;
+      font-size: fontsize(flavor);
     }
     .inline_icon {
       padding-right: size(base);
