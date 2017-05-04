@@ -5,7 +5,7 @@ import Renderer, {RendererStateProps, RendererDispatchProps} from './Renderer'
 const mapStateToProps = (state: any, ownProps: any): RendererStateProps => {
   return {
     cards: state.cards.filtered,
-    renderSettings: state.renderSettings,
+    filters: state.filters,
   };
 }
 

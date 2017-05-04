@@ -17,7 +17,7 @@ const CardFronts: any = {
 
 export interface RendererStateProps {
   cards: any;
-  renderSettings: any;
+  filters: any;
 }
 
 export interface RendererDispatchProps {
@@ -28,7 +28,39 @@ export interface RendererProps extends RendererStateProps, RendererDispatchProps
 class Renderer extends React.Component<RendererProps, {}> {
   render() {
     const cards = this.props.cards || [];
-    const renderSettings = this.props.renderSettings;
+    const renderSettings = { // defaults
+      cardsPerPage: 9,
+      showFronts: true,
+      showBacks: true,
+      showInstructions: false,
+      theme: this.props.filters.theme.current || 'BlackAndWhite',
+      uniqueBacksOnly: false,
+    };
+    switch (this.props.filters.export.current) {
+      case 'PrintAndPlay':
+      renderSettings.showInstructions = true;
+        break;
+      case 'WebView':
+        renderSettings.cardsPerPage = 999; // TODO this requires some CSS / class changes...
+        renderSettings.showBacks = false;
+        break;
+      case 'DriveThruCards':
+        renderSettings.cardsPerPage = 1;
+        break;
+      case 'AdMagicFronts':
+        renderSettings.cardsPerPage = 1;
+        renderSettings.showBacks = false;
+        break;
+      case 'AdMagicBacks':
+        renderSettings.cardsPerPage = 1;
+        renderSettings.showFronts = false;
+        renderSettings.uniqueBacksOnly = true;
+        break;
+      case 'FrontsOnly':
+        renderSettings.showBacks = false;
+        break;
+    }
+
     const CardBack = CardBacks[renderSettings.theme].default;
     const CardFront = CardFronts[renderSettings.theme].default;
     const frontPageList = [];
@@ -68,7 +100,25 @@ class Renderer extends React.Component<RendererProps, {}> {
     }, 1);
 
     return (
-      <div id="renderer" className={renderSettings.theme}>
+      <div id="renderer" className={renderSettings.theme + ' ' + this.props.filters.export.current}>
+        {renderSettings.showInstructions &&
+          <div>
+            <div className="printInstructions">
+              <h1>Expedition: The Roleplaying Card Game</h1>
+              <h2>The adventurer's guide to printing</h2>
+              <ol>
+                <li>Download this PDF and take it to your local print shop.</li>
+                <li>Have it printed on heavy white cardstock (usually 80-pound or heavier). Although the cards are black and white, you'll get nicer results on a color printer.</li>
+                <li>Make sure to print double-sided, and to set to document to 100% zoom.</li>
+                <li>Cut the cards using a paper cutter. The more precise you are, the easier they'll be to handle later.</li>
+                <li>Secure your cards with a small box or rubber band, and prepare to adventure!</li>
+              </ol>
+            </div>
+            <div className="printInstructions">
+              <p className="center">Blank page for printing purposes. Save paper by only printing pages 3+!</p>
+            </div>
+          </div>
+        }
         {pages}
       </div>
     );

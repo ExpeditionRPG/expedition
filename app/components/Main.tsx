@@ -35,21 +35,6 @@ class Main extends React.Component<MainProps, {}> {
           <div className="sk-circle11 sk-child"></div>
           <div className="sk-circle12 sk-child"></div>
         </div>}
-        <div className="printInstructions">
-          <h1>Expedition: The Roleplaying Card Game</h1>
-          <p>ExpeditionGame.com</p>
-          <h1>The adventurer's guide to printing</h1>
-          <ol>
-            <li>Download this PDF and take it to your local print shop.</li>
-            <li>Have it printed on heavy white cardstock (usually 80-pound or heavier). Although the cards are black and white, you'll get nicer results on a color printer.</li>
-            <li>Make sure to print double-sided, and to set to document to 100% zoom.</li>
-            <li>Cut the cards using a paper cutter. The more precise you are, the easier they'll be to handle later.</li>
-            <li>Secure your cards with a small box or rubber band, and prepare to adventure!</li>
-          </ol>
-        </div>
-        <div className="printInstructions">
-          <p className="center">Blank page for printing purposes. Save paper by only printing pages 3+!</p>
-        </div>
         <RendererContainer/>
       </div>
     );

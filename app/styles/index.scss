@@ -26,20 +26,6 @@ body {
   background: white;
 }
 
-/* Formatting options - TODO move these to #renderArea */
-
-body.hideBacks {
-  .backs {
-    display: none;
-  }
-}
-
-body.hideFronts {
-  .fronts {
-    display: none;
-  }
-}
-
 #renderer {
   margin-top: 20px;
   z-index: -10000;
@@ -64,6 +50,13 @@ body.hideFronts {
   h1 {
     font-size: 180%;
     text-align: center;
+    font-family: "Cinzel", serif;
+  }
+
+  h2 {
+    font-size: 120%;
+    text-align: center;
+    font-family: "Cinzel", serif;
   }
 
   ol {
@@ -154,10 +147,6 @@ body.hideFronts {
     display: none !important;
   }
 
-  #renderer {
-    margin: 0;
-  }
-
   .page {
     page-break-before: always;
     background: black;
@@ -166,36 +155,35 @@ body.hideFronts {
       height: auto;
     }
   }
-
-  body:not(.DriveThruCards) {
-
-    .backs {
-      transform: scale(-1, 1);
-
-      .card {
-        transform: scale(-1, 1);
-      }
-      .Encounter, .Adventurer { /* Don't flip horizontal cards */
-        transform: scale(-1, 1) rotate(180deg);
-      }
-    }
-  }
-
-  .DriveThruCards {
-
-    .card.back {
-
-      &.Adventurer, &.Encounter {
-        transform: rotate(180deg);
-      }
-    }
-  }
-
-  body.printandplay .printInstructions {
-    display: block;
-  }
-
   .inline_icon {
     margin-bottom: -0.02in;
+  }
+
+  #renderer {
+    margin: 0;
+
+    &:not(.DriveThruCards) {
+      .backs {
+        transform: scale(-1, 1);
+        .card {
+          transform: scale(-1, 1);
+        }
+        .Encounter, .Adventurer { /* Don't flip horizontal cards */
+          transform: scale(-1, 1) rotate(180deg);
+        }
+      }
+    }
+    &.DriveThruCards {
+      .card.back {
+        &.Adventurer, &.Encounter {
+          transform: rotate(180deg);
+        }
+      }
+    }
+    &.PrintAndPlay{
+      .printInstructions {
+        display: block;
+      }
+    }
   }
 }
