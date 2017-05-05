@@ -37,6 +37,10 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
 
   onRef(ref:any) {
     this.ref = ref;
+    if (!this.ref) {
+      return
+    }
+
     if (this.props.realtime) {
       this.ref.value = this.props.realtime.getText();
     }

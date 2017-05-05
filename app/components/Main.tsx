@@ -39,8 +39,8 @@ const Main = (props: MainProps): JSX.Element => {
 
   var header = (
     <div className="header">
-      <FlatButton label="Context Explorer" onTouchTap={(event: any) => {props.onPanelToggle('CONTEXT');}} />
-      <FlatButton label="Quest Notes" onTouchTap={(event: any) => {props.onPanelToggle('NOTES');}} />
+      <FlatButton label="Context Explorer" secondary={props.bottomPanel !== 'CONTEXT'} onTouchTap={(event: any) => {props.onPanelToggle('CONTEXT');}} />
+      <FlatButton label="Quest Notes" secondary={props.bottomPanel !== 'NOTES'} onTouchTap={(event: any) => {props.onPanelToggle('NOTES');}} />
     </div>
   );
 

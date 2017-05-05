@@ -329,14 +329,17 @@ body > :first-child:not(#react-app) { display: none; }
     height: 5px;
     border-top: $border;
     cursor: ns-resize;
+    margin-bottom: -3px;
   }
 
   .bottomPanel {
-    margin-top: -5px;
-
     .header {
       border-bottom: $border;
       height: $hBarThickness - 2; // Subtract to account for border size
+
+      button:hover {
+        color: #FFF !important;
+      }
     }
 
     .console {

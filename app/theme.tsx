@@ -19,7 +19,7 @@ let theme: any = {
     accent3Color: grey100,
     textColor: grey100,
     alternateTextColor: grey300,
-    secondaryTextColor: grey700,
+    secondaryTextColor: grey900,
     canvasColor: grey900,
     borderColor: grey800,
     disabledColor: fade(grey100, 0.3),
