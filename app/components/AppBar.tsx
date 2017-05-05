@@ -20,19 +20,25 @@ export interface AppBarProps extends AppBarStateProps, AppBarDispatchProps {};
 
 class AppBar extends React.Component<AppBarProps, {}> {
   render() {
+    const filtersCurrent = Object.keys(this.props.filters).reduce((acc: any, name: string) => {
+      acc[name] = this.props.filters[name].current;
+      return acc;
+    }, {});
     const filters = Object.keys(this.props.filters).map((name: string, index: number) => {
       const filter = this.props.filters[name];
       const options = this.props.filters[name].options.map((option: any, index: number) => {
+        let text = option;
         if (typeof option === 'string' && option.toLowerCase() === 'all') {
-          const allName = 'All ' + name + ((['s', 'x'].indexOf(name[name.length-1]) !== -1) ? 'es' : 's');
-          return <MenuItem key={index} value={option} primaryText={allName} />
+          text = 'All ' + name + ((['s', 'x'].indexOf(name[name.length-1]) !== -1) ? 'es' : 's');
+        } else if (name === 'source') {
+          text = text.split(':')[0];
         }
-        return <MenuItem key={index} value={option} primaryText={option} />
+        return <MenuItem key={index} value={option} primaryText={text} />
       });
       return (
         <SelectField
           key={index}
-          value={this.props.filters[name].current}
+          value={filtersCurrent[name]}
           floatingLabelText={name}
           onChange={(e, i, v) => { this.props.handleFilterChange(name, v); }}
           style={{width: 'auto', minWidth: 80, maxWidth: 250}}

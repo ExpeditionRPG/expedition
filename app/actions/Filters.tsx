@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {CardsFilter} from './Cards'
+import {CardsFilter, DownloadCards} from './Cards'
 import {getStore} from '../Store'
 
 
@@ -13,8 +13,12 @@ export interface FilterChangeAction extends Redux.Action {
 export function FilterChange(name: string, value: string | number): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
     dispatch({type: 'FILTER_CHANGE', name, value});
-    dispatch(CardsFilter(getStore().getState().filters));
-    dispatch(FiltersCalculate(getStore().getState().cards.filtered));
+    if (name === 'source') {
+      dispatch(DownloadCards());
+    } else {
+      dispatch(CardsFilter(getStore().getState().filters));
+      dispatch(FiltersCalculate(getStore().getState().cards.filtered));
+    }
   }
 }
 

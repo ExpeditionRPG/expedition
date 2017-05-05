@@ -26,6 +26,12 @@ export let initialState: any = {
     default: 'PrintAndPlay',
     options: ['PrintAndPlay', 'WebView', 'DriveThruCards', 'AdMagicFronts', 'AdMagicBacks', 'FrontsOnly'],
   },
+  source: {
+    // Urban Chaos: 1hR-Taq5n4kiRhRSv4D1CxXZlCyEooRSv_wW8bs_vXes
+    current: 'Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
+    default: 'Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
+    options: ['Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM', 'Custom'],
+  },
 };
 
 // Load any initial values from URL / querystring
@@ -42,6 +48,11 @@ export default function Filters(state: any = initialState, action: any) {
   switch (action.type) {
     case 'FILTER_CHANGE':
       newState = Object.assign({}, state);
+      if (action.name === 'source' && action.value === 'Custom') {
+        action.value = window.prompt('Please enter your card sheet publish URL (cancel and hit "?" in the top right for help)', '');
+        action.value = 'Custom:' + action.value.replace('https://docs.google.com/spreadsheets/d/', '');
+        // TODO validate URL or ID, otherwise notify user + abort
+      }
       newState[action.name].current = action.value;
       // Update URL - don't include in URL if it's the default value
       let query = Object.assign(qs.parse(window.location.search.substring(1)), {[action.name]: action.value});
