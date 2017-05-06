@@ -126,7 +126,6 @@ function renderResults(props: SearchProps): JSX.Element {
         <div className="searchResult">
           <div className="title">{result.title}</div>
           <div className="timing">
-            <img className="inline_icon" src="images/adventurer_small.svg"/>{result.minplayers}-{result.maxplayers} players
             <img className="inline_icon" src="images/clock_small.svg"/>{formatPlayPeriod(result.mintimeminutes, result.maxtimeminutes)}
           </div>
           <div className="summary">
@@ -141,7 +140,7 @@ function renderResults(props: SearchProps): JSX.Element {
     <Card
       title="Quest Search Results"
       header={<div className="searchHeader">
-        <div className="float_left">{props.results.length} quests</div>
+        <div className="float_left">{props.results.length} quests for {props.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></div>
         <Button className="float_right filter_button" onTouchTap={() => props.onFilter()}>Filter ></Button>
       </div>}
     >

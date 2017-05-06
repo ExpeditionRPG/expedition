@@ -624,6 +624,9 @@ body {
       font-size: fontsize(interactive);
       margin-bottom: size(small);
       top: 0;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
     .timing {
       .inline_icon {
