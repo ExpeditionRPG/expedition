@@ -64,6 +64,7 @@ const Splash = (props: any): JSX.Element => {
               <ul>
                 <li>Syntax checking</li>
                 <li>Google Drive integration</li>
+                <li>Collaborate editing</li>
                 <li>In-browser preview</li>
                 <li>Single-click publish</li>
                 <li>Extensive <a target="_blank" rel="nofollow" href="https://github.com/ExpeditionRPG/expedition-quest-creator/blob/master/docs/index.md">documentation</a></li>
