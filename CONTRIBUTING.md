@@ -12,6 +12,7 @@ Code changes are welcome and should follow the guidelines below.
 
 * Fork the repository on GitHub.
 * Fix the issue, making sure that you follow the style guide (below).
+* Please leave the code nicer than you found it by including at least one new unit test for any functionality you're adding!
 * [Pull requests](http://help.github.com/send-pull-requests/) should be made to the [master branch](https://github.com/Fabricate-IO/expedition-app/tree/master).
 
 ## Style Guide
