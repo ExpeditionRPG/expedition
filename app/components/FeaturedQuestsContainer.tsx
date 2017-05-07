@@ -10,18 +10,19 @@ import {AppState, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 
 const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): FeaturedQuestsStateProps => {
+  const quests = [ // Featured quests (id's generated from publishing, but don't leave them published!)
+    {id: '0B7K9abSH1xEOeEZSVVMwNHNqaFE', title: 'Learning to Adventure', summary: 'Your first adventure.', publishedurl: 'quests/learning_to_adventure.xml'},
+    {id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs', title: 'Oust Albanus', summary: 'Your party encounters a smelly situation.', publishedurl: 'quests/oust_albanus.xml'},
+    {id: '0B7K9abSH1xEORjdkMWtTY3ZtNGs', title: 'Mistress Malaise', summary: 'Mystery, Misfortune, and a Mistress.', publishedurl: 'quests/mistress_malaise.xml'},
+    {id: '0B7K9abSH1xEOUUR1Z0lncm9NRjQ', title: 'Dungeon Crawl', summary: 'How deep can you delve?', publishedurl: 'quests/dungeon_crawl.xml'},
+  ];
+  if (process.env.NODE_ENV === 'dev') { // Dev test quest
+    // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2bTVMdWc4NVk
+    quests.unshift({id: '-1', title: 'Test quest', summary: 'DEV', publishedurl: 'quests/test_quest.xml'});
+  }
   return {
     players: state.settings.numPlayers,
-    quests: [
-// For dev testing only - comment out before deploys
-      // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2bTVMdWc4NVk
-      // {id: '-1', title: 'Test quest', summary: 'DEV', publishedurl: 'quests/test_quest.xml'},
-// Actual quests (id's generated from publishing, but don't leave them published!)
-      {id: '0B7K9abSH1xEOeEZSVVMwNHNqaFE', title: 'Learning to Adventure', summary: 'Your first adventure.', publishedurl: 'quests/learning_to_adventure.xml'},
-      {id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs', title: 'Oust Albanus', summary: 'Your party encounters a smelly situation.', publishedurl: 'quests/oust_albanus.xml'},
-      {id: '0B7K9abSH1xEORjdkMWtTY3ZtNGs', title: 'Mistress Malaise', summary: 'Mystery, Misfortune, and a Mistress.', publishedurl: 'quests/mistress_malaise.xml'},
-      {id: '0B7K9abSH1xEOUUR1Z0lncm9NRjQ', title: 'Dungeon Crawl', summary: 'How deep can you delve?', publishedurl: 'quests/dungeon_crawl.xml'},
-    ],
+    quests,
     user: state.user,
   };
 }
