@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {XMLElement, DOMElement} from '../reducers/StateTypes'
+import {CheerioElement, DOMElement} from '../reducers/StateTypes'
 import {Choice, defaultQuestContext, Enemy, EventParameters, RoleplayElement, QuestCardName, QuestContext} from '../reducers/QuestTypes'
 import {ParserNode} from './Node'
 
@@ -18,7 +18,7 @@ export function getEventParameters(node: ParserNode, event: string): EventParame
   return ret;
 }
 
-function getTriggerId(elem: XMLElement): string {
+function getTriggerId(elem: CheerioElement): string {
   const m = elem.text().trim().match(/\s*goto\s+(.*)/);
   return (m) ? m[1] : null;
 }

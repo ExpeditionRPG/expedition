@@ -270,17 +270,23 @@ body {
     }
     .header {
       background-color: $bg_titlebar;
-      line-height: size(appbar);
-      height: size(appbar);
-      padding: 0 size(base);
+      line-height: 1.2;
+      padding: size(base)/2 size(base) size(base)/2 size(base);
       font-size: fontsize(flavor);
 
-      .filter_button button {
-        padding: 0 !important;
-        border: 0 !important;
-        margin: 0 !important;
-        background: transparent !important;
-        font-size: fontsize(flavor) !important;
+      .searchHeader {
+        .filter_button button {
+          padding: 0 !important;
+          border: 0 !important;
+          margin: 0 !important;
+          background: transparent !important;
+          font-size: fontsize(flavor) !important;
+          min-width: 40px !important;
+        }
+        .inline_icon {
+          height: fontsize(flavor);
+          width: fontsize(flavor);
+        }
       }
     }
   }

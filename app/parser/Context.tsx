@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {XMLElement} from '../reducers/StateTypes'
+import {CheerioElement} from '../reducers/StateTypes'
 import {defaultQuestContext, QuestContext} from '../reducers/QuestTypes'
 
 const Clone = require('clone');
@@ -87,7 +87,7 @@ function parseOpString(str: string): string {
   return op[1];
 }
 
-export function updateContext(node: XMLElement, ctx: QuestContext): QuestContext {
+export function updateContext(node: CheerioElement, ctx: QuestContext): QuestContext {
   if (!node) {
     return ctx;
   }

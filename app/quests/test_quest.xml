@@ -5,7 +5,7 @@
     <choice text="End now">
       <trigger data-line="19">end</trigger>
     </choice>
-    <choice text="Fight">
+    <choice text="{{one}}=one Fight">
       <combat data-line="23">
         <e>Thief</e>
         <e>Thief</e>

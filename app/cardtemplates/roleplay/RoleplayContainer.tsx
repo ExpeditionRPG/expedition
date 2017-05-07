@@ -1,6 +1,6 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-import {AppState, XMLElement, SettingsType} from '../../reducers/StateTypes'
+import {AppState, SettingsType} from '../../reducers/StateTypes'
 import {toPrevious, toCard} from '../../actions/Card'
 import {choice} from '../../actions/Quest'
 import Roleplay, {RoleplayStateProps, RoleplayDispatchProps} from './Roleplay'

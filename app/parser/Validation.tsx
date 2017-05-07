@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {XMLElement} from '../reducers/StateTypes'
+import {CheerioElement} from '../reducers/StateTypes'
 
 // TODO(https://github.com/ExpeditionRPG/expedition-app/issues/291): Actually use this
 
@@ -7,7 +7,7 @@ export function isEmptyObject(obj: Object): boolean {
   return Object.keys(obj).length === 0 && JSON.stringify(obj) === JSON.stringify({});
 }
 
-export function validate(root: XMLElement) {
+export function validate(root: CheerioElement) {
   if (root === undefined) {
     throw new Error('Quest has invalid root node');
   }
@@ -25,7 +25,7 @@ export function validate(root: XMLElement) {
 
 // Validate this node and all children for invalid tags.
 // Returns a map of tagName->count of the invalid elements found.
-function getInvalidNodesAndAttributes(node: XMLElement): { [key:string]:number; } {
+function getInvalidNodesAndAttributes(node: CheerioElement): { [key:string]:number; } {
   const results: any = {};
 
   // Quests must only contain these tags:
@@ -57,7 +57,7 @@ function getInvalidNodesAndAttributes(node: XMLElement): { [key:string]:number; 
 
 // Validate this node and all children for duplicate IDs.
 // Returns a map of id->[element] of all duplicate elements with the same IDs.
-function getDuplicateIds(node: XMLElement): { [key:string]:string[]; } {
+function getDuplicateIds(node: CheerioElement): { [key:string]:string[]; } {
   const map = generateIdMapping(node);
   const results: { [key:string]:string[]; } = {};
   Object.keys(map).forEach((k: string) => {
@@ -69,7 +69,7 @@ function getDuplicateIds(node: XMLElement): { [key:string]:string[]; } {
 }
 
 // Builds and returns a map of all IDs to all nodes with that ID.
-function generateIdMapping(node: XMLElement): { [key:string]:string[]; } {
+function generateIdMapping(node: CheerioElement): { [key:string]:string[]; } {
   const map: { [key:string]:string[]; } = {};
   if (node.attr('id')) {
     const id = node.attr('id');
@@ -85,7 +85,7 @@ function generateIdMapping(node: XMLElement): { [key:string]:string[]; } {
   return map;
 }
 
-function validateCombatNodes(root: XMLElement) {
+function validateCombatNodes(root: CheerioElement) {
   /* TODO
   if (winEventCount === 0) {
     throw new Error('<combat> must have at least one conditionally true child with on="win"');

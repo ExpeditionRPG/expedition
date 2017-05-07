@@ -4,31 +4,28 @@ import {toCard} from './Card'
 import {initQuest} from './Quest'
 
 import {userFeedbackClear} from '../actions/UserFeedback'
-import {SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState, XMLElement} from '../reducers/StateTypes'
+import {CheerioElement, SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} from '../reducers/StateTypes'
 import {QuestContext, defaultQuestContext} from '../reducers/QuestTypes'
 
 declare var window:any;
-
+declare var require:any;
+const Cheerio = require('cheerio'); // Doesn't like import statements
 
 export function fetchQuestXML(id: string, url: string) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    $.get(url, function(data: XMLElement | string) {
-      dispatch(loadQuestXML(id, data, defaultQuestContext()));
+    $.ajax({url,
+      dataType: 'text',
+      success: (data: string) => {
+        const quest = Cheerio.load(data)('quest');
+        dispatch(loadQuestXML(id, quest, defaultQuestContext()));
+      },
     });
   };
 }
 
 // for loading quests in the app - Quest Creator injects directly into initQuest
-export function loadQuestXML(id: string, data: XMLElement | string, ctx: QuestContext) {
+export function loadQuestXML(id: string, questNode: CheerioElement, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    var xml = $(data) as any as XMLElement;
-    var questNode = xml;
-    if (!Boolean(questNode.get(0).tagName)) { // for web + android, have to enter the document
-      questNode = questNode.children().eq(0);
-    }
-    if (questNode.get(0).tagName.toLowerCase() !== 'quest') {
-      throw 'Invalid Quest - missing <quest> node';
-    }
 
     const init = initQuest(id, questNode, ctx);
     window.FirebasePlugin.logEvent('quest_start', init.details); // here instead of initQuest b/c initQuest is also used by the editor
@@ -96,7 +93,6 @@ export function subscribe(email: string) {
       if (xhr.status === 200) {
         window.FirebasePlugin.logEvent('user_subscribe', email);
       } else {
-        window.FirebasePlugin.logEvent('user_subscribe_err', err);
         console.log('Error encountered when subscribing: ' + err);
       }
     });

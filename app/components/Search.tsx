@@ -140,7 +140,7 @@ function renderResults(props: SearchProps): JSX.Element {
     <Card
       title="Quest Search Results"
       header={<div className="searchHeader">
-        <div className="float_left">{props.results.length} quests for {props.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></div>
+        <span>{props.results.length} quests for {props.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></span>
         <Button className="float_right filter_button" onTouchTap={() => props.onFilter()}>Filter ></Button>
       </div>}
     >

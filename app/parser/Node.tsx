@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {XMLElement} from '../reducers/StateTypes'
+import {CheerioElement} from '../reducers/StateTypes'
 import {QuestContext} from '../reducers/QuestTypes'
 import {updateContext, evaluateContentOps} from './Context'
 
@@ -11,28 +11,16 @@ function isNumeric(n: any): boolean {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-function getNodeAttributes(e: XMLElement): {[key:string]:string;} {
-  // cheerio uses "attribs" instead
-  let attribs: {[key:string]:string;} = (e.get(0) as any).attribs;
-  if (attribs) {
-    return attribs;
-  }
-
-  // Regular XMLElements have NamedNodeMap
-  attribs = {};
-  for (const p of e.get(0).attributes) {
-    if (typeof p.nodeValue !== 'undefined') {
-      attribs[p.nodeName] = p.nodeValue;
-    }
-  }
+function getNodeAttributes(e: CheerioElement): {[key:string]:string;} {
+  return e.attribs || (e.get(0) as any as CheerioElement).attribs;
 }
 
 export class ParserNode {
-  public elem: XMLElement;
+  public elem: CheerioElement;
   public ctx: QuestContext;
-  private renderedChildren: {rendered: XMLElement, original: XMLElement}[];
+  private renderedChildren: {rendered: CheerioElement, original: CheerioElement}[];
 
-  constructor(elem: XMLElement, ctx: QuestContext) {
+  constructor(elem: CheerioElement, ctx: QuestContext) {
     this.elem = elem;
     this.ctx = updateContext(elem, ctx);
     this.renderChildren();
@@ -48,7 +36,7 @@ export class ParserNode {
   }
 
   getNext(key?: string|number): ParserNode {
-    let next: XMLElement = null;
+    let next: CheerioElement = null;
     if (key === undefined) {
       next = this.getNextNode();
     } else if (isNumeric(key)) {
@@ -129,7 +117,7 @@ export class ParserNode {
 
   // Loop through all rendered children. If a call to cb() returns a value
   // other than undefined, break the loop early and return the value.
-  loopChildren(cb: (tag: string, child: XMLElement, original: XMLElement)=>any): any {
+  loopChildren(cb: (tag: string, child: CheerioElement, original: CheerioElement)=>any): any {
     for (let i = 0; i < this.renderedChildren.length; i++) {
       let c = this.renderedChildren[i];
       let tag = this.renderedChildren[i].rendered.get(0).tagName.toLowerCase();
@@ -140,7 +128,7 @@ export class ParserNode {
     }
   }
 
-  private getNextNode(elem?: XMLElement): XMLElement {
+  private getNextNode(elem?: CheerioElement): CheerioElement {
     if (!elem) {
       elem = this.elem;
     }
@@ -167,7 +155,7 @@ export class ParserNode {
     }
   }
 
-  private getRootElem(): XMLElement {
+  private getRootElem(): CheerioElement {
     let elem = this.elem;
     while (elem && elem.get(0) && elem.get(0).tagName.toLowerCase() !== 'quest') {
       elem = elem.parent();
@@ -175,12 +163,12 @@ export class ParserNode {
     return elem;
   }
 
-  private isElemControl(elem: XMLElement): boolean {
+  private isElemControl(elem: CheerioElement): boolean {
     const tagName = elem.get(0).tagName.toLowerCase();
     return tagName === 'choice' || tagName === 'event' || Boolean(elem.attr('on'));
   }
 
-  private isElemEnabled(elem: XMLElement): boolean {
+  private isElemEnabled(elem: CheerioElement): boolean {
     if (!elem) {
       return false;
     }

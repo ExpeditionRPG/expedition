@@ -11,24 +11,24 @@ export interface DOMElement {
   tagName: string;
 };
 
-export interface XMLElement {
-  append: (elem: XMLElement) => void;
+export interface CheerioElement {
+  append: (elem: CheerioElement) => void;
   attr: (k: string, v?: string) => string;
   attribs: {[k: string]: string};
-  children: (s?: string) => XMLElementSet;
-  clone: () => XMLElement;
-  find: (s: string) => XMLElementSet;
+  children: (s?: string) => CheerioElementSet;
+  clone: () => CheerioElement;
+  find: (s: string) => CheerioElementSet;
   get: (i: number) => DOMElement;
   html: (htmlString?: string) => string;
   length: number;
-  next: () => XMLElement;
-  parent: () => XMLElement;
+  next: () => CheerioElement;
+  parent: () => CheerioElement;
   text: () => string;
 }
 
-export interface XMLElementSet {
-  eq: (n: number) => XMLElement;
-  get: (i: number) => DOMElement;
+export interface CheerioElementSet {
+  eq: (n: number) => CheerioElement;
+  get: (i: number) => CheerioElement;
   length: number;
   [k: number]: DOMElement;
 }

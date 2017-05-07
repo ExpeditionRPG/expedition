@@ -1,6 +1,6 @@
 import {ParserNode} from './Node'
 import {defaultQuestContext, QuestContext} from '../reducers/QuestTypes'
-import {XMLElement} from '../reducers/StateTypes'
+import {CheerioElement} from '../reducers/StateTypes'
 declare var global: any;
 
 var cheerio: any = require('cheerio');
@@ -97,7 +97,7 @@ describe('Node', () => {
   });
 
   describe('rendering', () => {
-    const renderedChildren = function(elem: XMLElement, ctx: QuestContext): string[] {
+    const renderedChildren = function(elem: CheerioElement, ctx: QuestContext): string[] {
       const result: string[] = [];
       new ParserNode(elem, ctx).loopChildren((tag, c) => {
         result.push(cheerio.html(c));

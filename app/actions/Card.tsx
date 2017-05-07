@@ -1,5 +1,5 @@
 import {NavigateAction, ReturnAction} from './ActionTypes'
-import {AppStateWithHistory, CardName, CardPhase, XMLElement} from '../reducers/StateTypes'
+import {AppStateWithHistory, CardName, CardPhase} from '../reducers/StateTypes'
 import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants'
 import {getStore} from '../Store'
 
