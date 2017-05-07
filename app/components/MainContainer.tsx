@@ -1,13 +1,13 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-import {setDirty} from '../actions/editor'
-import {AppState} from '../reducers/StateTypes'
+import {setDirty, panelToggle} from '../actions/editor'
+import {AppState, PanelType} from '../reducers/StateTypes'
 import Main, {MainStateProps, MainDispatchProps} from './Main'
 
 const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
   return {
     loggedIn: state.user.loggedIn,
-    bottomPanelShown: state.editor.bottomPanelShown,
+    bottomPanel: state.editor.bottomPanel,
   };
 }
 
@@ -16,8 +16,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MainD
     onDragFinished: (size: number) => {
       dispatch({type: 'PANEL_DRAG'});
     },
-    onPanelToggle: () => {
-      dispatch({type: 'PANEL_TOGGLE'});
+    onPanelToggle: (panel: PanelType) => {
+      dispatch(panelToggle(panel));
     }
   };
 }

@@ -7,6 +7,8 @@ export type DialogIDType = 'ERROR' | 'PUBLISHED' | 'UNPUBLISHED';
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 
+export type PanelType = 'CONTEXT' | 'NOTES';
+
 export interface AnnotationType {
   row: number;
   column: number;
@@ -36,7 +38,8 @@ export interface QuestType {
   id?: string;
   xml?: string;
   md?: string;
-  mdRealtime?: any;
+  mdRealtime?: any; // Realtime API text node
+  notesRealtime?: any;
   draftUrl?: string;
   publishedurl?: string;
   created?: string;
@@ -63,7 +66,7 @@ export interface EditorState {
   line: number;
   opInit: string; // Initial mathjs to run when loading a quest
   lastSplitPaneDragMillis: number; // Informs re-rendering of text editor
-  bottomPanelShown: boolean;
+  bottomPanel: PanelType;
 }
 
 export interface DialogsState {

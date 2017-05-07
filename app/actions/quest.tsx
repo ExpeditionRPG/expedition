@@ -97,6 +97,12 @@ function getPublishedQuestMeta(published_id: string, cb: (meta: QuestType)=>any)
   });
 }
 
+function createDocNotes(model: any) {
+  const string = model.createString();
+  model.getRoot().set('notes', string);
+  return string;
+}
+
 export function loadQuest(userid: string, dispatch: any, docid?: string) {
   if (docid === null) {
     console.log('Creating new quest');
@@ -105,12 +111,19 @@ export function loadQuest(userid: string, dispatch: any, docid?: string) {
   realtimeUtils.load(docid, function(doc: any) {
     window.location.hash=docid;
     var md = doc.getModel().getRoot().get('markdown');
+    var notes = doc.getModel().getRoot().get('notes');
+    if (!notes) {
+      // Older quests may not have had the notes attribute.
+      // We create it here if so.
+      notes = createDocNotes(doc.getModel());
+    }
     var text: string = md.getText();
     getPublishedQuestMeta(userid + '_' + docid, function(quest: QuestType) {
       var xmlResult = renderXML(text);
       quest = Object.assign(quest || {}, xmlResult.getMeta());
       quest.id = docid;
       quest.mdRealtime = md;
+      quest.notesRealtime = notes;
       dispatch(receiveQuestLoad(quest));
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
     });
@@ -119,6 +132,7 @@ export function loadQuest(userid: string, dispatch: any, docid?: string) {
     var string = model.createString();
     string.setText(NEW_QUEST_TEMPLATE);
     model.getRoot().set('markdown', string);
+    createDocNotes(model);
   });
 }
 
@@ -161,7 +175,8 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_SAVE', quest} as RequestQuestSaveAction);
 
-    var text: string = quest.mdRealtime.getText();
+    const notesCommented = '\n\n// QUEST NOTES\n// ' + quest.notesRealtime.getText().replace(/\n/g, '\n// ');
+    const text: string = quest.mdRealtime.getText() + notesCommented;
 
     var xmlResult = renderXML(text);
     dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});

@@ -1,6 +1,6 @@
 import Redux from 'redux'
-import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, QuestRenderAction, SetOpInitAction} from '../actions/ActionTypes'
-import {EditorState} from './StateTypes'
+import {PanelToggleAction, SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, QuestRenderAction, SetOpInitAction} from '../actions/ActionTypes'
+import {EditorState, PanelType} from './StateTypes'
 
 const defaultState: EditorState = {
   renderer: null,
@@ -10,7 +10,7 @@ const defaultState: EditorState = {
   node: null,
   opInit: '',
   lastSplitPaneDragMillis: 0,
-  bottomPanelShown: false,
+  bottomPanel: null,
 };
 
 export function editor(state: EditorState = defaultState, action: Redux.Action): EditorState {
@@ -33,7 +33,8 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
     case 'PANEL_DRAG':
       return Object.assign({}, state, {lastSplitPaneDragMillis: Date.now()});
     case 'PANEL_TOGGLE':
-      return Object.assign({}, state, {bottomPanelShown: !state.bottomPanelShown});
+      const panel = (action as PanelToggleAction).panel;
+      return Object.assign({}, state, {bottomPanel: (state.bottomPanel !== panel) ? panel : null});
     default:
       return state;
   }
