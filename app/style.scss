@@ -522,6 +522,10 @@ body {
     height: 100%;
     background-color: inherit;
     color: inherit;
+
+    background: url(/images/clock_small.svg) no-repeat center center;
+    background-size: 75% 75%;
+
     .value {
       font-size: fontsize(timervalue);
       font-family: $headerfont;
@@ -530,6 +534,7 @@ body {
       width: 100%;
       top: 50%;
       margin-top: -(fontsize(timervalue))/2;
+      line-height: 1;
     }
     .surge_warning {
       text-align: center;
