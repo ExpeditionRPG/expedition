@@ -1,7 +1,7 @@
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware } from 'redux'
 import questIDEApp from './reducers/CombinedReducers'
-import {installStore} from 'expedition-app/app/store'
+import {installStore} from 'expedition-app/app/Store'
 
 // For dev tools extension
 declare var window:any;

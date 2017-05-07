@@ -9,9 +9,10 @@ import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './Qu
 
 import {renderXML} from '../parsing/QDLParser'
 
-import {initQuest, loadNode} from 'expedition-app/app/actions/quest'
-import {loadQuestXML} from 'expedition-app/app/actions/web'
-import {toCard} from 'expedition-app/app/actions/card'
+import {initQuest, loadNode} from 'expedition-app/app/actions/Quest'
+import {loadQuestXML} from 'expedition-app/app/actions/Web'
+import {toCard} from 'expedition-app/app/actions/Card'
+import {ParserNode} from 'expedition-app/app/parser/Node'
 import {defaultQuestContext} from 'expedition-app/app/reducers/QuestTypes'
 
 import {DOCS_INDEX_URL, DEV_CONTACT_URL} from '../constants'
@@ -21,7 +22,7 @@ declare var ga: any;
 var math = require('mathjs') as any;
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps => {
-  var scope = (state.preview.quest && state.preview.quest.result && state.preview.quest.result.ctx && state.preview.quest.result.ctx.scope) || {};
+  var scope = (state.preview.quest && state.preview.quest.node && state.preview.quest.node.ctx && state.preview.quest.node.ctx.scope) || {};
   return {
     annotations: state.annotations,
     editor: state.editor,
@@ -62,9 +63,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       dispatch(logoutUser());
     },
     playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => {
-      var renderResult = renderXML(quest.mdRealtime.getText())
-      var newNode = renderResult.getResultAt(editor.line);
-      var tag = newNode.get(0).tagName;
+      const renderResult = renderXML(quest.mdRealtime.getText());
+      const questNode = renderResult.getResult();
+      const newNode = renderResult.getResultAt(editor.line);
+      let tag = newNode.get(0).tagName;
       if (tag !== 'roleplay' && tag !== 'combat') {
         alert('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
         return;
@@ -80,9 +82,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       }
 
       dispatch({type: 'REBOOT_APP'});
-      dispatch(initQuest(renderResult.getResult().children().eq(0), defaultQuestContext()));
-      // TODO: Make these settings configurable
-      loadNode({numPlayers: 1, difficulty: 'NORMAL', showHelp: false, multitouch: false, vibration: false}, dispatch, newNode, ctx);
+      const result = dispatch(initQuest('0', questNode, ctx));
+      // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
+      loadNode({autoRoll: false, numPlayers: 1, difficulty: 'NORMAL', showHelp: false, multitouch: false, vibration: false}, dispatch, new ParserNode(newNode, ctx));
     },
   };
 }

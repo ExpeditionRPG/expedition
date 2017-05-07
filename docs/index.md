@@ -22,9 +22,9 @@ Press `ctrl + f` (or `cmd + f` on Mac) to search. To jump to the nest result, pr
 
 If your error says `PLEASE REPORT`, [report it!](https://github.com/Fabricate-IO/expedition-quest-ide/issues/new)
 
-Otherwise, it's probably an error in your quest code.
+Otherwise, it's probably an error in your quest. If you run into any issues or can't figure out how to fix it, please report it and we'll help you get to the bottom of it (and improve the documentation so that others don't run into the same issue).
 
-Quest errors:
+Quest error codes:
 
 * [410 could not parse trigger](errors/410.md)
 * [411 roleplay blocks cannot contain...](errors/411.md)
@@ -43,10 +43,13 @@ Quest errors:
 * [428 Choice Missing Title](errors/428.md)
 * [500 Internal Error](errors/500.md)
 
-## I have an error, now what?
+## How do I share quests? Can multiple people edit a quest?
 
-* [here's how to file an error report](internal_error.md)
-* as we add documentation on other errors, their links will appear here and in the quest creator
+You can share quests! Simply share the Google Doc with whoever you'd like to collaborate with.
+
+Multiple people can even edit a quest at the same time, just like Google Docs.
+
+When published, a quest is tied to that document - which means that anyone you've shared access to the quest with has the ability to publish (and unpublish it). We're currently investigating ways to improve the sharing experience and level of control - if you have ideas, please [drop an issue!](https://github.com/Fabricate-IO/expedition-quest-ide/issues/new)
 
 ## Other helpful resources
 

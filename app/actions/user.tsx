@@ -1,5 +1,4 @@
 import Redux from 'redux'
-import {hashHistory} from 'react-router'
 
 import {SetProfileMetaAction} from './ActionTypes'
 import {UserState} from '../reducers/StateTypes'
