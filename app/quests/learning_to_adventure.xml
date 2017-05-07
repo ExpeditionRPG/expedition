@@ -15,129 +15,138 @@
     <instruction>
       <p>At this point, your party should decide which option you'd like to pick. Your choices will affect your adventure, so choose wisely!</p>
     </instruction>
+    <instruction>
+      <p>Each quest has its own goals and missions that will be revealed to you as you play.</p>
+    </instruction>
     <choice text="Ooh! Fae folk!">
-      <roleplay title="A Fairly Big Problem" data-line="30">
+      <roleplay title="A Fairly Big Problem" data-line="32">
         <p>"Alrighty - knew that one would excite you. Here's the deal: an imp and a mushroom are causing a commotion at the market. As honorary members of the town watch, you may use whatever force is necessary to bring peace to the town!"</p>
       </roleplay>
-      <roleplay title="The Market" data-line="34">
+      <roleplay title="The Market" data-line="36">
         <p>{{intimidated = 0}} {{arrested = 0}}</p>
         <p>You make your way to the market. The guardsman wasn't kidding about a commotion - you see a tiny imp and a floating magical mushroom flying around, upsetting stalls and running into people.</p>
       </roleplay>
-      <roleplay title="The Market" id="market" data-line="41">
+      <roleplay title="The Market" id="market" data-line="43">
         <p>The situation is bad. Bread lies broken on the ground. Merchants are mad. Tea leaves trodden upon. Squashes squashed!</p>
         <p>You consider your options:</p>
         <choice text="Try to intimidate them" if="intimidated == 0">
-          <roleplay title="Intimidation Tactics" data-line="49">
+          <roleplay title="Intimidation Tactics" data-line="51">
             <p>{{intimidated = 1}}</p>
             <p>You march up to them, waving your wooden swords.</p>
             <p>"As honorary members of the town watch, we demand you stop disturbing the peace!"</p>
             <p>The imp, seeing your small stature, lets loose an impish laugh and continues mischief-making.</p>
           </roleplay>
-          <trigger data-line="59">goto market</trigger>
+          <trigger data-line="61">goto market</trigger>
         </choice>
         <choice text="Arrest them" if="intimidated == 0 &amp; arrested == 0">
-          <roleplay title="Attempted Arrest" data-line="63">
+          <roleplay title="Attempted Arrest" data-line="65">
             <p>{{arrested = -1}} {{intimidated = -1}}</p>
             <p>You pursue them, but they're too fast to handcuff.</p>
             <p>The citizens begin to yell at you for making the commotion even worse.</p>
           </roleplay>
-          <trigger data-line="72">goto market</trigger>
+          <trigger data-line="74">goto market</trigger>
         </choice>
         <choice text="Arrest them" if="intimidated == 1">
-          <roleplay title="Not So Fast" data-line="76">
+          <roleplay title="Not So Fast" data-line="78">
             <p>{{arrested = 1}}</p>
             <p>"Oh, all right! Ruin all the fun."</p>
             <p>"But we're not done, without a fight!"</p>
           </roleplay>
-          <trigger data-line="84">goto magicfight</trigger>
+          <trigger data-line="86">goto magicfight</trigger>
         </choice>
         <choice text="Subdue them">
-          <roleplay title="" data-line="88">
+          <roleplay title="" data-line="90">
             <p>Seeing their reckless disregard for the law, you decide that force is the best option.</p>
           </roleplay>
-          <trigger data-line="90">goto magicfight</trigger>
+          <trigger data-line="92">goto magicfight</trigger>
         </choice>
       </roleplay>
     </choice>
     <choice text="We'll clean up!">
-      <roleplay title="" data-line="94">
+      <roleplay title="" data-line="96">
         <p>"Ha! Really? I didn't see that one coming. Well, if you thought cleaning was going to be easy, you're in for a surprise - we've got a bit of a spider problem."</p>
         <p>He hands you the broom, and runs off. He sure seems scared of spiders for being such a big, tough guardsman.</p>
         <p>You turn around slowly... crawling in front of you is a large spider.</p>
         <choice text="&lt;i&gt;Eeek!&lt;/i&gt;">
-          <roleplay title="" data-line="102">
+          <roleplay title="" data-line="104">
             <p>You scream in surprise - that's a big spider! You try to turn and run - but too late. The spider has spotted you.</p>
           </roleplay>
-          <trigger data-line="104">goto beastfight</trigger>
+          <trigger data-line="106">goto beastfight</trigger>
         </choice>
         <choice text="&lt;b&gt;SWAT&lt;/b&gt;">
-          <roleplay title="" data-line="108">
+          <roleplay title="" data-line="110">
             <p>You instinctively swat at the spider, but it's surprisingly fast! Seeing you attack, it strikes back.</p>
           </roleplay>
-          <trigger data-line="110">goto beastfight</trigger>
+          <trigger data-line="112">goto beastfight</trigger>
         </choice>
       </roleplay>
-      <trigger data-line="112">goto beastfight</trigger>
+      <trigger data-line="114">goto beastfight</trigger>
     </choice>
   </roleplay>
-  <roleplay title="A Magical Fight" id="magicfight" data-line="114">
+  <roleplay title="A Magical Fight" id="magicfight" data-line="116">
     <instruction>
       <p>[fae] You're about to enter combat for the first time.</p>
     </instruction>
     <instruction>
-      <p>The app will guide you through each round. To win, you must reduce the encounter tier to 0 (defeat all enemies). If all adventurers are knocked out, you lose the battle - but you might not have lost the quest.</p>
+      <p>The app will guide you through each round. Each round involves dealing damage to enemies with your abilities and loot, and taking damage from enemy attacks. If you hit 0 health, you're knocked out and can't use abilities or loot until healed by abilities, loot or (usually) the end of combat.</p>
     </instruction>
     <instruction>
-      <p>[damage] The app will tell you when enemies surge, using the special ability listed on their card.</p>
+      <p>To win, you must defeat all enemies. If all adventurers are knocked out, you lose the battle - but you might not have lost the quest.</p>
+    </instruction>
+    <instruction>
+      <p>[damage] The app will tell you when enemies surge, which triggers the special ability listed on each enemy's card.</p>
     </instruction>
   </roleplay>
-  <combat data-line="122">
+  <combat data-line="126">
     <e>Imp</e>
     <e>Magic Mushroom</e>
     <event on="win" loot="false" xp="false">
-      <roleplay title="Victory" data-line="129">
+      <roleplay title="Victory" data-line="133">
         <p>With a final hit, the imp and mushroom collapse to the ground, exhausted.</p>
         <p>"Alright, you win! We give up!"</p>
         <p>You handcuff them and drag them to the town guard.</p>
       </roleplay>
-      <roleplay title="A Just Reward" data-line="137">
+      <roleplay title="A Just Reward" data-line="141">
         <p>"Ah! I'm impressed, nice work!" says the guardsman, "Now, for your reward...."</p>
         <p>He laughs and smiles, reaching down to tousle your hair.</p>
         <p>"I won't tell your parents what you were up to! Now, you better get back home before it gets dark!"</p>
         <p>You head home, excited for your next adventure.</p>
       </roleplay>
-      <trigger data-line="147">goto end</trigger>
+      <trigger data-line="151">goto end</trigger>
     </event>
     <event on="lose">
-      <roleplay title="Defeat" data-line="151">
+      <roleplay title="Defeat" data-line="155">
         <p>The magical duo were simply too powerful- your wooden swords were no match.</p>
         <p>The Imp, seeing you on the verge of collapsing, lets you off easy "Ah, they're just kids. Not bad for such young 'uns. Let's go terrorize a different town!"</p>
         <p>The Imp and Mushroom run and float down main street. They knock over a horse's water trough, but are gone soon enough.</p>
       </roleplay>
-      <roleplay title="Back to the Guard" data-line="159">
+      <roleplay title="Back to the Guard" data-line="163">
         <p>You return to the guard house, bruised and dejected.</p>
         <p>The grizzly guardsman looks up from his crossword puzzle in surprise.</p>
         <p>"Ah! Looks like you had quite an adventure!"</p>
         <p>Seeing the lack of prisoners, he adds "don't worry about those two - there'll be plenty more adventures to come!"</p>
       </roleplay>
-      <trigger data-line="169">goto end</trigger>
+      <trigger data-line="173">goto end</trigger>
     </event>
   </combat>
-  <roleplay title="A Beastly Battle" id="beastfight" data-line="171">
+  <roleplay title="A Beastly Battle" id="beastfight" data-line="175">
     <instruction>
       <p>[beast] You're about to enter combat for the first time.</p>
     </instruction>
     <instruction>
-      <p>The app will guide you through each round. To win, you must reduce the encounter tier to 0 (defeat all enemies). If all adventurers are knocked out, you lose the battle - but you might not have lost the quest.</p>
+      <p>The app will guide you through each round. Each round involves dealing damage to enemies with your abilities and loot, and taking damage from enemy attacks. If you hit 0 health, you're knocked out and can't use abilities or loot until healed by abilities, loot or (usually) the end of combat.</p>
     </instruction>
     <instruction>
-      <p>[damage] The app will tell you when enemies surge, using the special ability listed on their card.</p>
+      <p>To win, you must defeat all enemies. If all adventurers are knocked out, you lose the battle - but you might not have lost the quest.</p>
+    </instruction>
+    <instruction>
+      <p>[damage] The app will tell you when enemies surge, which triggers the special ability listed on each enemy's card.</p>
     </instruction>
   </roleplay>
-  <combat data-line="179">
+  <combat data-line="185">
     <e>Spider</e>
     <event on="win" loot="false" xp="false">
-      <roleplay title="Victory" data-line="185">
+      <roleplay title="Victory" data-line="191">
         <p>You triumphantly crush the spider with the broom, shouting with glee.</p>
         <p>Hearing your victory, the guardsman peeks out from the door behind you.</p>
         <p>"Ah, thank goodness!" he sighs with relief.</p>
@@ -145,24 +154,37 @@
         <p>"I mean, good work cleaning the guardhouse. Run along home now, before it gets dark, and I'll tell your parents what a good help you've been!"</p>
         <p>You head home, excited for your next adventure.</p>
       </roleplay>
-      <trigger data-line="199">goto end</trigger>
+      <trigger data-line="205">goto end</trigger>
     </event>
     <event on="lose">
-      <roleplay title="defeat" data-line="203">
+      <roleplay title="defeat" data-line="209">
         <p>You've never seen a spider so big!</p>
         <p>Now you understand why the guardsman was scared. Just before the spider actually touches you, you run out of the room, letting loose a scream.</p>
         <p>The grizzly guardsman looks up from his crossword puzzle and smiles.</p>
         <p>"Not as easy as it looks, is it?" he says, "Now, run along home now, before it gets dark. Don't worry, not every adventure has spiders!"</p>
       </roleplay>
-      <trigger data-line="213">goto end</trigger>
+      <trigger data-line="219">goto end</trigger>
     </event>
   </combat>
-  <roleplay title="The End" id="end" data-line="215">
+  <roleplay title="The End" id="end" data-line="221">
     <p>That's all it takes to play Expedition!</p>
     <p>From here, you can play other featured quests on the home page of the app.</p>
     <p>You can also dive into more advanced game modes if you're feeling adventurous.</p>
     <p>
       <b>Don't forget to check out the settings</b> (in the drop-down menu in the top right) to customize your experience, including changing difficulty.</p>
   </roleplay>
-  <trigger data-line="225">end</trigger>
+  <trigger data-line="231">end</trigger>
+</quest>on't worry, not every adventure has spiders!"</p>
+      </roleplay>
+      <trigger data-line="219">goto end</trigger>
+    </event>
+  </combat>
+  <roleplay title="The End" id="end" data-line="221">
+    <p>That's all it takes to play Expedition!</p>
+    <p>From here, you can play other featured quests on the home page of the app.</p>
+    <p>You can also dive into more advanced game modes if you're feeling adventurous.</p>
+    <p>
+      <b>Don't forget to check out the settings</b> (in the drop-down menu in the top right) to customize your experience, including changing difficulty.</p>
+  </roleplay>
+  <trigger data-line="231">end</trigger>
 </quest>
