@@ -10,14 +10,6 @@ If you're looking for more specific, in-detail documentation, check out:
 * [Icon List](icons.md): A list of all available icons you can use in your quest.
 * [XML Spec](quest_spec.md): The underlying XML used by the app, in great detail.
 
-## Where are my quests?
-
-Your quests are saved in your Google Drive with a `.quest` extension. To open a quest, go to your Google Drive, right click on the quest, and select `Open with -> Expedition Quest Creator`
-
-## How can I search my quest?
-
-Press `ctrl + f` (or `cmd + f` on Mac) to search. To jump to the nest result, press `enter`. Pressing `ctrl + alt + f` (or `cmd + alt + f`) will let you do a search and replace.
-
 ## I have an error, now what?
 
 If your error says `PLEASE REPORT`, [report it!](https://github.com/Fabricate-IO/expedition-quest-ide/issues/new)
@@ -43,6 +35,14 @@ Quest error codes:
 * [428 Choice Missing Title](errors/428.md)
 * [500 Internal Error](errors/500.md)
 
+## Helpful resources and tips
+
+* When it comes to including rolls and skill checks in quests, we believe that a few subtle tweaks will make your quests a lot more fun:
+  * If there is no danger, there is no roll. Just assume your players will take the time to do it right.
+  * If there is danger, specify it before they roll: if you fail to climb the rope, you'll lose 2 health.
+* Balancing combat: generally, start with a tier 3 encounter, and build up 1 additional tier per fight up to around tier sum 6 or 7 for a boss fight. Every 4 tier sum of loot you award out of combat means they'll be able to defeat one additional tier in their next fight (ie if you give htem 8 tier of loot right before the boss fight, you can pit them against a tier 9 fight with a reasonable chance of success)
+* A [fantastic video](http://www.gdcvault.com/play/1023346/Choice-Consequence-and) that covers designing meaningful and fulfilling decision design in quests.
+
 ## How do I share quests? Can multiple people edit a quest?
 
 You can share quests! Simply share the Google Doc with whoever you'd like to collaborate with.
@@ -51,6 +51,10 @@ Multiple people can even edit a quest at the same time, just like Google Docs.
 
 When published, a quest is tied to that document - which means that anyone you've shared access to the quest with has the ability to publish (and unpublish it). We're currently investigating ways to improve the sharing experience and level of control - if you have ideas, please [drop an issue!](https://github.com/Fabricate-IO/expedition-quest-ide/issues/new)
 
-## Other helpful resources
+## Where are my quests?
 
-* A [fantastic video](http://www.gdcvault.com/play/1023346/Choice-Consequence-and) that covers designing meaningful and fulfilling decision design in quests.
+Your quests are saved in your Google Drive with a `.quest` extension. To open a quest, go to your Google Drive, right click on the quest, and select `Open with -> Expedition Quest Creator`
+
+## How can I search my quest?
+
+Press `ctrl + f` (or `cmd + f` on Mac) to search. To jump to the nest result, press `enter`. Pressing `ctrl + alt + f` (or `cmd + alt + f`) will let you do a search and replace.
