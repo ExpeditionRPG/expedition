@@ -370,6 +370,9 @@ body > :first-child:not(#react-app) { display: none; }
 
       .preview {
         width: $previewPanelWidth;
+        button {
+          line-height: 1em !important;
+        }
       }
 
       .noScope {
