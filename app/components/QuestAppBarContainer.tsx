@@ -2,6 +2,7 @@ import Redux from 'redux'
 import {connect} from 'react-redux'
 
 import {QuestActionType} from '../actions/ActionTypes'
+import {getPlayNode} from '../actions/editor'
 import {saveQuest, publishQuest, unpublishQuest} from '../actions/quest'
 import {logoutUser} from '../actions/user'
 import {AppState, QuestType, EditorState, UserState} from '../reducers/StateTypes'
@@ -19,7 +20,7 @@ import {DOCS_INDEX_URL, DEV_CONTACT_URL} from '../constants'
 
 declare var ga: any;
 
-var math = require('mathjs') as any;
+const math = require('mathjs') as any;
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps => {
   var scope = (state.preview.quest && state.preview.quest.node && state.preview.quest.node.ctx && state.preview.quest.node.ctx.scope) || {};
@@ -65,14 +66,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
     playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => {
       const renderResult = renderXML(quest.mdRealtime.getText());
       const questNode = renderResult.getResult();
-      const newNode = renderResult.getResultAt(editor.line);
-      let tag = newNode.get(0).tagName;
-      if (tag !== 'roleplay' && tag !== 'combat') {
-        alert('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
-        return;
-      }
+      const newNode = getPlayNode(renderResult.getResultAt(editor.line));
 
-      var ctx = defaultQuestContext();
+      let ctx = defaultQuestContext();
       Object.assign(ctx.scope, baseScope);
       try {
         math.eval(editor.opInit, ctx.scope);

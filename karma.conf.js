@@ -12,11 +12,14 @@ module.exports = function (config) {
     frameworks: ['jasmine'],
     files: [
       'node_modules/babel-polyfill/dist/polyfill.js',
-      './node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
+      'node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
       { pattern: 'app/**/*.test.tsx' }
     ],
     preprocessors: {
-      'app/**/*.test.tsx': ['webpack']
+      'app/**/*.test.tsx': ['webpack'],
+    },
+    globals: {
+      utils: {},
     },
     webpack: {
       module: webpackConfig.module,

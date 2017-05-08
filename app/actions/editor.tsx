@@ -3,6 +3,7 @@ import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction} from './ActionType
 import {PanelType} from '../reducers/StateTypes'
 import {store} from '../store'
 import {saveQuest} from './quest'
+import {CheerioElement} from 'expedition-app/app/reducers/StateTypes'
 
 export function setDirty(is_dirty: boolean): SetDirtyAction {
   return {type: 'SET_DIRTY', is_dirty};
@@ -50,4 +51,17 @@ export function updateDirtyState(): ((dispatch: Redux.Dispatch<any>)=>any) {
     }, 2000);
     dispatch(setDirtyTimeout(timer));
   }
+}
+
+export function getPlayNode(node: CheerioElement): CheerioElement {
+  let tag = node.get(0).tagName;
+  if (tag === 'quest') {
+    node = node.children().first();
+    tag = node.get(0).tagName;
+  }
+  if (tag !== 'roleplay' && tag !== 'combat') {
+    alert('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
+    return null;
+  }
+  return node;
 }
