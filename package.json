@@ -37,7 +37,7 @@
     "brace": "^0.10.0",
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.1",
-    "expedition-app": "https://github.com/ExpeditionRPG/expedition-app.git#fd0bda3ca88adbb8146415cf3a06b5eb3b20f371",
+    "expedition-app": "https://github.com/ExpeditionRPG/expedition-app.git#04f8d4750e8ec77d3819a75f3e6fe19f298e6c0c",
     "express": "^4.15.2",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.1",
