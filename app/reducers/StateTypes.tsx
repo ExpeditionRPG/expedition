@@ -28,6 +28,7 @@ export interface CheerioElement {
 
 export interface CheerioElementSet {
   eq: (n: number) => CheerioElement;
+  first: () => CheerioElement;
   get: (i: number) => CheerioElement;
   length: number;
   [k: number]: DOMElement;
