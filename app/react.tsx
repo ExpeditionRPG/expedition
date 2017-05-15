@@ -18,6 +18,7 @@ import theme from './theme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
+const ReactGA = require('react-ga') as any;
 const Typo: any = require('typo-js');
 
 // Needed for onTouchTap
@@ -33,15 +34,25 @@ import {loginUser, setProfileMeta} from './actions/user'
 import {saveQuest} from './actions/quest'
 import {store} from './store'
 
+let isQuest = false;
+
 if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
   // Try to parse from google drive menu action, e.g.
   // ?state=%7B"ids":%5B"0BzrQOdaJcH9MeDhic2ctdFNSdjg"%5D,"action":"open","userId":"106667818352266772866"%7D
   try {
     let doc_json = JSON.parse(unescape(window.location.search).match(/\?state=(.*)/)[1]);
     window.location.href = '/#' + doc_json.ids[0];
+    isQuest = true;
   } catch (e) {
     console.log('Failed to parse anticipated Drive open URI: ' + window.location.search);
   }
+}
+
+ReactGA.initialize('UA-47408800-7');
+if (isQuest) {
+  ReactGA.pageview('/quest');
+} else {
+  ReactGA.pageview('/');
 }
 
 // alert user if they try to close the page with unsaved changes

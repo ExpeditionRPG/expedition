@@ -4,6 +4,8 @@ import {loginUser} from '../actions/user'
 import {AppState, UserState} from '../reducers/StateTypes'
 import Splash, {SplashDispatchProps} from './Splash'
 
+const ReactGA = require('react-ga') as any;
+
 const mapStateToProps = (state: AppState, ownProps: any): any => {
   return {user: state.user};
 }
@@ -12,6 +14,11 @@ const mapStateToProps = (state: AppState, ownProps: any): any => {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SplashDispatchProps => {
   return {
     onLogin: (user: UserState) => {
+      ReactGA.event({
+        category: 'interaction',
+        action: 'login',
+        label: 'splashscreen'
+      });
       dispatch(loginUser(true));
     },
   };

@@ -18,9 +18,8 @@ import {defaultQuestContext} from 'expedition-app/app/reducers/QuestTypes'
 
 import {DOCS_INDEX_URL, DEV_CONTACT_URL} from '../constants'
 
-declare var ga: any;
-
 const math = require('mathjs') as any;
+const ReactGA = require('react-ga') as any;
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps => {
   var scope = (state.preview.quest && state.preview.quest.node && state.preview.quest.node.ctx && state.preview.quest.node.ctx.scope) || {};
@@ -36,7 +35,11 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestAppBarDispatchProps => {
   return {
     onMenuSelect: (action: QuestActionType, quest: QuestType) => {
-      ga('send', 'event', 'interaction', action, 'appbar');
+      ReactGA.event({
+        category: 'interaction',
+        action: action,
+        label: 'appbar',
+      });
       switch(action) {
         case 'SAVE_QUEST':
           return dispatch(saveQuest(quest));

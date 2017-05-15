@@ -64,6 +64,7 @@
     "react": "^15.4.2",
     "react-ace": "^4.1.6",
     "react-dom": "^15.4.2",
+    "react-ga": "^2.2.0",
     "react-node-graph": "git+https://github.com/legionmaster/react-node-graph.git#256a6e269208b8c4d01dc0662a49e8225d1153e6",
     "react-redux": "^5.0.3",
     "react-split-pane": "^0.1.59",
