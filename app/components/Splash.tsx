@@ -9,7 +9,7 @@ import Button from 'expedition-app/app/components/base/Button'
 
 
 export interface SplashDispatchProps {
-  onLogin: (user: UserState)=>void;
+  onLogin: (position: string) => void;
 }
 
 const Splash = (props: any): JSX.Element => {
@@ -22,7 +22,7 @@ const Splash = (props: any): JSX.Element => {
           iconElementRight={
             <FlatButton
               label="Log In"
-              onTouchTap={() => props.onLogin()}
+              onTouchTap={() => props.onLogin('appbar')}
             />
           }
         />
@@ -39,7 +39,7 @@ const Splash = (props: any): JSX.Element => {
           </h3>
           <h3>Until May 31st, write a quest and <a href="https://expeditiongame.com/blog/2017/5/7/quest-creator-weekly-big-contest-quest-notes" target="_blank">win prizes</a>!</h3>
           <div className="buttonBox">
-            <Button onTouchTap={() => props.onLogin()}>
+            <Button onTouchTap={() => props.onLogin('main')}>
               Get Started
             </Button>
           </div>
@@ -103,7 +103,7 @@ const Splash = (props: any): JSX.Element => {
           </div>
 
           <div className="buttonBox">
-            <Button onTouchTap={() => props.onLogin()}>
+            <Button onTouchTap={() => props.onLogin('bottom')}>
               Get Started
             </Button>
             <Button onTouchTap={() => {window.location.href='http://expeditiongame.com';}}>

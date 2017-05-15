@@ -13,11 +13,11 @@ const mapStateToProps = (state: AppState, ownProps: any): any => {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SplashDispatchProps => {
   return {
-    onLogin: (user: UserState) => {
+    onLogin: (position: string) => {
       ReactGA.event({
         category: 'interaction',
         action: 'LOGIN',
-        label: 'splashscreen'
+        label: 'splashscreen' + position,
       });
       dispatch(loginUser(true));
     },
