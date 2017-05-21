@@ -1,5 +1,6 @@
 $bg_primary: #141414;
 $bg_secondary: #212121;
+$grey600: #757575;
 $grey800: #424242;
 $red700: #D32F2F;
 $lightGreen900: #33691E;
@@ -88,6 +89,10 @@ body > :first-child:not(#react-app) { display: none; }
   &.dialogGood {
     background-color: $lightGreen900 !important,
   }
+}
+
+label {
+  color: $grey600 !important;
 }
 
 .loading {

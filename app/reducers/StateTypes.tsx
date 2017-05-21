@@ -3,7 +3,7 @@ import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
 import {QDLParser} from '../parsing/QDLParser'
 // TODO: URL type?
 
-export type DialogIDType = 'ERROR' | 'PUBLISHED' | 'UNPUBLISHED';
+export type DialogIDType = 'ERROR' | 'PUBLISHING' | 'PUBLISHED' | 'UNPUBLISHED';
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 
@@ -40,6 +40,7 @@ export interface QuestType {
   md?: string;
   mdRealtime?: any; // Realtime API text node
   notesRealtime?: any;
+  metadataRealtime?: any;
   draftUrl?: string;
   publishedurl?: string;
   created?: string;

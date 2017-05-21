@@ -244,7 +244,14 @@ export class BlockRenderer {
       let k = kv[0].toLowerCase();
       let v = kv[1].trim();
       attrs[k] = v;
+
+      if (k !== 'title') {
+        if (log) {
+          log.err('Quest attributes have migrated to the "Publish" button - simply delete this line.', '429', block.startLine + i);
+        }
+      }
     }
+
     return Normalize.questAttrs(attrs, log);
   }
 

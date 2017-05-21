@@ -359,28 +359,28 @@ describe('BlockRenderer', () => {
     it('renders', () => {
       var log = new Logger();
       var block: Block = {
-        lines: [ '#Quest Title', 'minplayers: 1', 'maxplayers: 2', 'author: Test' ],
+        lines: [ '#Quest Title' ],
         indent: 0,
         startLine: 0
       };
 
       br.toQuest(block, log)
 
-      expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" author="Test" minplayers="1" maxplayers="2"\ndata-line="0"></quest>');
+      expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" data-line="0"></quest>');
       expect(prettifyMsgs(log.finalize())).toEqual('');
     })
 
     it('errors if unparseable quest attribute', () => {
       var log = new Logger();
       var block: Block = {
-        lines: [ '#Quest Title', 'minplayers1', 'maxplayers: 2', 'author: Test' ],
+        lines: [ '#Quest Title', 'minplayers1' ],
         indent: 0,
         startLine: 0
       };
 
       br.toQuest(block, log)
 
-      expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" author="Test" maxplayers="2" data-line="0"></quest>');
+      expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" data-line="0"></quest>');
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.badParseQuestAttrError);
     });
   });

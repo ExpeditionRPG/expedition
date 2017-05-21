@@ -22,23 +22,23 @@ export function loginUser(showPrompt: boolean): ((dispatch: Redux.Dispatch<any>)
           var request = window.gapi.client.plus.people.get({
             'userId': 'me',
           });
-          request.execute(function(res: any) {
-            const user = {
+          request.execute((res: any) => {
+            const googleUser = {
               id_token: response.id_token,
               name: res.displayName,
               image: res.image.url,
               email: ((res.emails || [])[0] || {}).value,
             };
-            $.post('/auth/google', JSON.stringify(user), (data) => {
-              dispatch(setProfileMeta({
+            $.post('/auth/google', JSON.stringify(googleUser), (data) => {
+              const user = {
                 loggedIn: true,
                 id: data,
-                displayName: user.name,
-                image: user.image,
-                email: user.email,
-              }));
-
-              loadQuestFromURL(res.id, dispatch);
+                displayName: googleUser.name,
+                image: googleUser.image,
+                email: googleUser.email,
+              };
+              dispatch(setProfileMeta(user));
+              loadQuestFromURL(user, dispatch);
             });
           });
         });

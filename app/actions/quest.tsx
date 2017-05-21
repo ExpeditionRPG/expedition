@@ -3,24 +3,25 @@ import {
   NEW_QUEST, LOAD_QUEST, SAVE_QUEST,
   ReceiveQuestLoadAction,
   RequestQuestSaveAction, ReceiveQuestSaveAction, ReceiveQuestSaveErrAction,
+  QuestPublishingSetupAction, QuestMetadataChangeAction,
   RequestQuestPublishAction, ReceiveQuestPublishAction,
   RequestQuestUnpublishAction, ReceiveQuestUnpublishAction,
 } from './ActionTypes'
-import {QuestType, ShareType} from '../reducers/StateTypes'
+import {QuestType, UserState, ShareType} from '../reducers/StateTypes'
 
 import {setDialog} from './dialogs'
 import {realtimeUtils} from '../auth'
 import {
   NEW_QUEST_TEMPLATE,
   QUEST_DOCUMENT_HEADER,
-  NEW_QUEST_AUTHOR,
-  NEW_QUEST_EMAIL,
-  NEW_QUEST_SUMMARY,
-  NEW_QUEST_TITLE,
-  NEW_QUEST_URL
+  METADATA_FIELDS,
+  METADATA_DEFAULTS,
+  NEW_QUEST_TITLE
 } from '../constants'
 import {pushError, pushHTTPError} from '../error'
 import {renderXML} from '../parsing/QDLParser'
+
+const Cheerio: any = require('cheerio');
 
 // Loaded on index.html
 declare var window: any;
@@ -62,12 +63,12 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
   });
 }
 
-export function loadQuestFromURL(userid: string, dispatch: Redux.Dispatch<any>) {
-  loadQuest(userid, dispatch, (window.location.hash) ? window.location.hash.substr(1) : null);
+export function loadQuestFromURL(user: UserState, dispatch: Redux.Dispatch<any>) {
+  loadQuest(user, dispatch, (window.location.hash) ? window.location.hash.substr(1) : null);
 }
 
 
-export function newQuest(userid: string, dispatch: any) {
+export function newQuest(user: UserState, dispatch: any) {
   var insertHash = {
     'resource': {
       mimeType: 'text/plain',
@@ -80,7 +81,7 @@ export function newQuest(userid: string, dispatch: any) {
       if (err) {
         alert('Failed to create new quest: ' + err.message);
       } else {
-        loadQuest(userid, dispatch, createResponse.id);
+        loadQuest(user, dispatch, createResponse.id);
       }
     });
   });
@@ -103,71 +104,118 @@ function createDocNotes(model: any) {
   return string;
 }
 
-export function loadQuest(userid: string, dispatch: any, docid?: string) {
+function createDocMetadata(model: any, defaults: any) {
+  const map = model.createMap();
+  Object.keys(defaults).forEach((key: string) => {
+    const val = defaults[key];
+    if (val) {
+      map.set(key, val);
+    }
+  });
+  model.getRoot().set('metadata', map);
+  return map;
+}
+
+export function loadQuest(user: UserState, dispatch: any, docid?: string) {
   if (docid === null) {
     console.log('Creating new quest');
-    return newQuest(userid, dispatch);
+    return newQuest(user, dispatch);
   }
   realtimeUtils.load(docid, function(doc: any) {
     window.location.hash=docid;
-    var md = doc.getModel().getRoot().get('markdown');
-    var notes = doc.getModel().getRoot().get('notes');
-    if (!notes) {
-      // Older quests may not have had the notes attribute.
-      // We create it here if so.
+    const md = doc.getModel().getRoot().get('markdown');
+    let notes = doc.getModel().getRoot().get('notes');
+    let metadata = doc.getModel().getRoot().get('metadata');
+
+    if (!notes) { // Create notes if it's an old quest w/o notes attribute
       notes = createDocNotes(doc.getModel());
     }
-    var text: string = md.getText();
-    getPublishedQuestMeta(userid + '_' + docid, function(quest: QuestType) {
-      var xmlResult = renderXML(text);
-      quest = Object.assign(quest || {}, xmlResult.getMeta());
-      quest.id = docid;
-      quest.mdRealtime = md;
-      quest.notesRealtime = notes;
+
+    if (!metadata) { // Create metadata if it's an old quest w/o metadata attribute
+      // Default to any metadata set in the markdown metadata (migrate from the old format)
+      try {
+        const oldMeta = renderXML(md.toString()).getMeta();
+        const defaults = {
+          ...METADATA_DEFAULTS,
+          summary: '',
+          author: user.displayName,
+          email: user.email,
+          ...oldMeta,
+        };
+        metadata = createDocMetadata(doc.getModel(), defaults);
+      } catch(err) {
+        alert('Error parsing metadata. Please check your quest for validation errors, then try reloading the page. If this error persists, please contact support: Expedition@Fabricate.io');
+        console.log(err);
+      }
+    }
+
+    const text: string = md.getText();
+    getPublishedQuestMeta(docid, (quest: QuestType) => {
+      const xmlResult = renderXML(text);
+      quest = Object.assign(quest || {}, xmlResult.getMeta(), {
+        id: docid,
+        mdRealtime: md,
+        notesRealtime: notes,
+        metadataRealtime: metadata,
+        summary: metadata.get('summary'),
+        author: metadata.get('author'),
+        email: metadata.get('email'),
+        minplayers: metadata.get('minplayers'),
+        maxplayers: metadata.get('maxplayers'),
+        mintimeminutes: metadata.get('mintimeminutes'),
+        maxtimeminutes: metadata.get('maxtimeminutes'),
+      });
       dispatch(receiveQuestLoad(quest));
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
     });
   },
-  function(model: any) {
-    var string = model.createString();
+  (model: any) => {
+    const string = model.createString();
     string.setText(NEW_QUEST_TEMPLATE);
     model.getRoot().set('markdown', string);
     createDocNotes(model);
   });
 }
 
+export function questMetadataChange(quest: QuestType, key: string, value: any): ((dispatch: Redux.Dispatch<any>)=>any) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    quest.metadataRealtime.set(key, value);
+    dispatch({type: 'QUEST_METADATA_CHANGE', key, value} as QuestMetadataChangeAction);
+  }
+}
+
+export function publishQuestSetup(): ((dispatch: Redux.Dispatch<any>)=>any) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    dispatch({type: 'QUEST_PUBLISHING_SETUP'} as QuestPublishingSetupAction);
+  }
+}
+
 export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    const text = quest.mdRealtime.getText();
-    const xmlResult = renderXML(text);
-    const meta = xmlResult.getMeta();
-    const metaDefaults: any = {
-      author: NEW_QUEST_AUTHOR,
-      email: NEW_QUEST_EMAIL,
-      summary: NEW_QUEST_SUMMARY,
-      title: NEW_QUEST_TITLE,
-      url: NEW_QUEST_URL,
-    };
-    let metaNoDefaults = true;
-    $.each(metaDefaults, (key, value) => {
-      if (meta[key] === metaDefaults[key]) {
-        metaNoDefaults = false;
-        pushError(new Error(`Quest ${key} must be changed from default before you can publish.`));
-      }
-    });
+    const renderResult = renderXML(quest.mdRealtime.getText());
 
-    if (metaNoDefaults) {
-      dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
-      dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
-      return $.ajax({
-        type: 'POST',
-        url: '/publish/' + quest.id,
-        data: xmlResult.getResult()+'',
-      }).done((result_quest_id: string) => {
-        quest.published = (new Date(Date.now()).toISOString());
-        dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
-      }).fail(pushHTTPError);
-    }
+    // Insert metadata back into the XML. Temporary patch until ALL client apps
+    // are running a version that supports DB metadata
+    // TODO https://github.com/ExpeditionRPG/expedition-quest-creator/issues/270
+    const xml = Cheerio(renderResult.getResult()+'')
+        .attr('summary', quest.summary)
+        .attr('author', quest.author)
+        .attr('email', quest.email)
+        .attr('minplayers', quest.minplayers)
+        .attr('maxplayers', quest.maxplayers)
+        .attr('mintimeminutes', quest.mintimeminutes)
+        .attr('maxtimeminutes', quest.maxtimeminutes);
+
+    dispatch({type: 'QUEST_RENDER', qdl: renderResult, msgs: renderResult.getFinalizedLogs()});
+    dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
+    return $.ajax({
+      type: 'POST',
+      url: '/publish/' + quest.id,
+      data: xml.toString(),
+    }).done((result_quest_id: string) => {
+      quest.published = (new Date(Date.now()).toISOString());
+      dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
+    }).fail(pushHTTPError);
   }
 }
 
@@ -178,10 +226,10 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
     const notesCommented = '\n\n// QUEST NOTES\n// ' + quest.notesRealtime.getText().replace(/\n/g, '\n// ');
     const text: string = quest.mdRealtime.getText() + notesCommented;
 
-    var xmlResult = renderXML(text);
+    const xmlResult = renderXML(text);
     dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
 
-    var meta = xmlResult.getMeta();
+    const meta = xmlResult.getMeta();
     // For all metadata values, see https://developers.google.com/drive/v2/reference/files
     var fileMeta = {
       title: meta['title'] + '.quest',

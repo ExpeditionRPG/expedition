@@ -2,7 +2,6 @@ import {Renderer} from './render/Renderer'
 import {BlockRenderer} from './render/BlockRenderer'
 import {XMLRenderer} from './render/XMLRenderer'
 import {Block, BlockList} from './block/BlockList'
-import {Normalize} from './validation/Normalize'
 import {LogMessage, LogMessageMap, Logger} from './Logger'
 import REGEX from '../regex'
 

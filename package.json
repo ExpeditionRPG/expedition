@@ -47,6 +47,7 @@
     "google-url": "0.0.4",
     "html": "^1.0.0",
     "joi": "^10.2.2",
+    "joi-browser": "^10.0.6",
     "lodash": "^4.17.4",
     "mailchimp-api-v3": "^1.7.0",
     "markdown": "^0.5.0",

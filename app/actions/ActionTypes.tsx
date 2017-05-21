@@ -65,6 +65,12 @@ export interface QuestRenderAction extends Redux.Action {
   msgs: LogMessageMap;
 }
 
+export interface QuestMetadataChangeAction extends Redux.Action {
+  type: 'QUEST_METADATA_CHANGE';
+  key: string;
+  value: any;
+}
+
 export interface RequestQuestPublishAction extends Redux.Action {
   type: 'REQUEST_QUEST_PUBLISH';
   quest: QuestType;
@@ -97,4 +103,8 @@ export interface PanelDragAction extends Redux.Action {
 export interface PanelToggleAction extends Redux.Action {
   type: 'PANEL_TOGGLE';
   panel: PanelType;
+}
+
+export interface QuestPublishingSetupAction extends Redux.Action {
+  type: 'QUEST_PUBLISHING_SETUP';
 }

@@ -1,4 +1,3 @@
-
 import {ErrorType} from './types'
 
 const Fs: any = require('fs');

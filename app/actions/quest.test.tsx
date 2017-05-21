@@ -38,3 +38,8 @@ describe('publishQuest', () => {
 
   it('does not throw errors with changed metadata')
 });
+
+describe('questMetadataChange', () => {
+  it('updates realtime object')
+  it('creates action')
+});

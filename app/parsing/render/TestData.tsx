@@ -140,11 +140,7 @@ URL: 417`;
 
 data.badParseQuestAttrError = `ERROR L1:
 invalid quest attribute line "minplayers1"
-URL: 420
-
-ERROR L0:
-missing: "minplayers"
-URL: 424`;
+URL: 420`;
 
 data.missingTitleErr = `ERROR L5:
 choice missing title

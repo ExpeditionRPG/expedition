@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 
 import {QuestActionType} from '../actions/ActionTypes'
 import {getPlayNode} from '../actions/editor'
-import {saveQuest, publishQuest, unpublishQuest} from '../actions/quest'
+import {saveQuest, publishQuestSetup, unpublishQuest} from '../actions/quest'
 import {logoutUser} from '../actions/user'
 import {AppState, QuestType, EditorState, UserState} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
@@ -11,7 +11,6 @@ import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './Qu
 import {renderXML} from '../parsing/QDLParser'
 
 import {initQuest, loadNode} from 'expedition-app/app/actions/Quest'
-import {loadQuestXML} from 'expedition-app/app/actions/Web'
 import {toCard} from 'expedition-app/app/actions/Card'
 import {ParserNode} from 'expedition-app/app/parser/Node'
 import {defaultQuestContext} from 'expedition-app/app/reducers/QuestTypes'
@@ -47,7 +46,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
           window.open('/');
           break;
         case 'PUBLISH_QUEST':
-          return dispatch(publishQuest(quest));
+          return dispatch(publishQuestSetup());
         case 'UNPUBLISH_QUEST':
           return dispatch(unpublishQuest(quest));
         case 'DRIVE_VIEW':
