@@ -7,6 +7,7 @@ import {
   RequestQuestPublishAction, ReceiveQuestPublishAction,
   RequestQuestUnpublishAction, ReceiveQuestUnpublishAction,
 } from './ActionTypes'
+import {setSnackbar} from './snackbar'
 import {QuestType, UserState, ShareType} from '../reducers/StateTypes'
 
 import {setDialog} from './dialogs'
@@ -215,6 +216,7 @@ export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)
     }).done((result_quest_id: string) => {
       quest.published = (new Date(Date.now()).toISOString());
       dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
+      dispatch(setSnackbar(true, 'Quest published successfully!'));
     }).fail(pushHTTPError);
   }
 }

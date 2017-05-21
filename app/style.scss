@@ -248,6 +248,16 @@ label {
   }
 }
 
+.snackbar {
+  background: $grey600;
+  span {
+    color: $bg_primary !important;
+  }
+  button span {
+    color: $red800 !important;
+  }
+}
+
 .quest_app_bar {
   background-image: $bg_encounter_img;
 

@@ -5,6 +5,7 @@ import {user} from './user'
 import {dialogs} from './dialogs'
 import {errors} from './errors'
 import {annotations} from './annotations'
+import {snackbar} from './snackbar'
 import preview from 'expedition-app/app/reducers/CombinedReducers'
 import {AppState} from './StateTypes'
 
@@ -16,12 +17,13 @@ export default function combinedReduce(state: AppState, action: Redux.Action): A
   }
 
   return {
-    quest: quest(state.quest, action),
-    editor: editor(state.editor, action),
-    user: user(state.user, action),
-    dialogs: dialogs(state.dialogs, action),
-    errors: errors(state.errors, action),
     annotations: annotations(state.annotations, action),
+    dialogs: dialogs(state.dialogs, action),
+    editor: editor(state.editor, action),
+    errors: errors(state.errors, action),
     preview: preview(state.preview, action),
+    quest: quest(state.quest, action),
+    snackbar: snackbar(state.snackbar, action),
+    user: user(state.user, action),
   };
 }

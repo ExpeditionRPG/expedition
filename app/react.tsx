@@ -26,13 +26,15 @@ const injectTapEventPlugin = require('react-tap-event-plugin');
 injectTapEventPlugin();
 
 // Redux libraries
-import {Provider} from 'react-redux';
+import {Provider} from 'react-redux'
 
 // Custom components
 import MainContainer from './components/MainContainer'
 import {loginUser, setProfileMeta} from './actions/user'
 import {saveQuest} from './actions/quest'
+import {setSnackbar} from './actions/snackbar'
 import {store} from './store'
+import {VERSION} from './constants'
 
 let isQuest = false;
 
@@ -81,13 +83,13 @@ window.addEventListener('keydown', function checkForCtrlS (event: any) {
   }
 });
 
-// override analytics / don't report while dev'ing
+// override app analytics - don't report while dev'ing
 window.FirebasePlugin = {
-  logEvent: function(name: string, args: any) { console.log(name, args); },
+  logEvent: console.log,
 };
 
-window.gapi.load('client,drive-realtime,drive-share', function() {
-  window.gapi.client.load('drive', 'v2', function() {
+window.gapi.load('client,drive-realtime,drive-share', () => {
+  window.gapi.client.load('drive', 'v2', () => {
     if (window.location.hash) {
       store.dispatch(loginUser(false));
     } else {
@@ -97,17 +99,36 @@ window.gapi.load('client,drive-realtime,drive-share', function() {
     }
   });
 });
-// load spellcheck dictionary asynchronously, wait 1s for rest of the page to load
+
 (() => {
+  // load spellcheck dictionary asynchronously after waiting 1s for rest of the page to load
   const affPath = '/dictionaries/en_US_aff.txt';
   const dicPath = '/dictionaries/en_US_dic.txt';
   setTimeout(() => {
-    $.get(dicPath, function(dicData) {
-      $.get(affPath, function(affData) {
+    $.get(dicPath, (dicData) => {
+      $.get(affPath, (affData) => {
         window.dictionary = new Typo('en_US', affData, dicData);
       });
     });
   }, 1000);
+
+  // every 12 hours, check for the latest version
+  setInterval(() => {
+    $.getJSON('https://raw.githubusercontent.com/ExpeditionRPG/expedition-quest-creator/master/package.json', (data) => {
+      if (data && data.version) {
+        const newVersion = data.version.split('.').map(Number);
+        const oldVersion = VERSION.split('.').map(Number);
+        if (newVersion[0] > oldVersion[0] || newVersion[1] > oldVersion[1] || newVersion[2] > oldVersion[2]) {
+          store.dispatch(setSnackbar(true,
+            'There\'s a new version of the Quest Creator available!',
+            (event: any) => { location.reload(); },
+            'reload',
+            true
+          ));
+        }
+      }
+    });
+  }, 12 * 60 * 60 * 1000);
 })();
 
 render(

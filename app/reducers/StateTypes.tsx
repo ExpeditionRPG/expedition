@@ -3,7 +3,7 @@ import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
 import {QDLParser} from '../parsing/QDLParser'
 // TODO: URL type?
 
-export type DialogIDType = 'ERROR' | 'PUBLISHING' | 'PUBLISHED' | 'UNPUBLISHED';
+export type DialogIDType = 'ERROR' | 'PUBLISHING' | 'UNPUBLISHED';
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 
@@ -46,17 +46,17 @@ export interface QuestType {
   created?: string;
   modified?: string;
   published?: string;
-  title?: string,
-  summary?: string,
-  minplayers?: number,
-  maxplayers?: number,
-  email?: string,
-  url?: string,
-  mintimeminutes?: number,
-  maxtimeminutes?: number,
-  author?: string,
-  valid?: boolean,
-  saveError?: string,
+  title?: string;
+  summary?: string;
+  minplayers?: number;
+  maxplayers?: number;
+  email?: string;
+  url?: string;
+  mintimeminutes?: number;
+  maxtimeminutes?: number;
+  author?: string;
+  valid?: boolean;
+  saveError?: string;
 };
 
 export interface EditorState {
@@ -80,6 +80,14 @@ export interface DialogsState {
 
 export type ErrorsState = ErrorType[];
 
+export interface SnackbarState {
+  open: boolean;
+  message?: string;
+  action?: () => any;
+  actionLabel?: string;
+  persist?: boolean;
+}
+
 export interface UserState {
   loggedIn?: boolean;
   id?: string;
@@ -89,13 +97,14 @@ export interface UserState {
 }
 
 export interface AppState {
+  annotations: AnnotationType[];
   dialogs: DialogsState;
   editor: EditorState;
   errors: ErrorsState;
-  annotations: AnnotationType[];
   quest: QuestType;
   user: UserState;
   preview: AppStateWithHistory;
+  snackbar: SnackbarState;
 }
 
 export type ValidState = boolean;

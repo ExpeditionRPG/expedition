@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {UserState, QuestType, DialogIDType, ShareType, PanelType} from '../reducers/StateTypes'
+import {UserState, QuestType, DialogIDType, ShareType, PanelType, SnackbarState} from '../reducers/StateTypes'
 import {LogMessageMap} from '../parsing/Logger'
 import {QDLParser} from '../parsing/QDLParser'
 
@@ -104,6 +104,8 @@ export interface PanelToggleAction extends Redux.Action {
   type: 'PANEL_TOGGLE';
   panel: PanelType;
 }
+
+export interface SnackbarSetAction extends SnackbarState {type: 'SNACKBAR_SET'}
 
 export interface QuestPublishingSetupAction extends Redux.Action {
   type: 'QUEST_PUBLISHING_SETUP';

@@ -14,9 +14,6 @@ export function dialogs(state: DialogsState = initialState, action: Redux.Action
     case 'QUEST_PUBLISHING_SETUP':
       newState.PUBLISHING = true;
       return newState;
-    case 'RECEIVE_QUEST_PUBLISH':
-      newState.PUBLISHED = true;
-      return newState;
     case 'RECEIVE_QUEST_UNPUBLISH':
       newState.UNPUBLISHED = true;
       return newState;

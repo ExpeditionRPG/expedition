@@ -1,5 +1,8 @@
 import * as React from 'react'
+import FlatButton from 'material-ui/FlatButton'
+import Snackbar from 'material-ui/Snackbar'
 import {Tab} from 'material-ui/Tabs'
+
 import TextView from './base/TextView'
 import DialogsContainer from './DialogsContainer'
 import SplashContainer from './SplashContainer'
@@ -7,19 +10,20 @@ import QuestAppBarContainer from './QuestAppBarContainer'
 import QuestIDEContainer from './QuestIDEContainer'
 import ContextEditorContainer from './ContextEditorContainer'
 import NotesPanelContainer from './NotesPanelContainer'
-import FlatButton from 'material-ui/FlatButton'
-import {PanelType} from '../reducers/StateTypes'
+import {PanelType, SnackbarState} from '../reducers/StateTypes'
 
 var SplitPane = require('react-split-pane') as any;
 
 export interface MainStateProps {
   loggedIn: boolean;
   bottomPanel: PanelType;
+  snackbar: SnackbarState;
 };
 
 export interface MainDispatchProps {
   onDragFinished: (size: number) => void;
   onPanelToggle: (panel: PanelType) => void;
+  onSnackbarClose: () => void;
 }
 
 interface MainProps extends MainStateProps, MainDispatchProps {}
@@ -39,8 +43,16 @@ const Main = (props: MainProps): JSX.Element => {
 
   var header = (
     <div className="header">
-      <FlatButton label="Context Explorer" secondary={props.bottomPanel !== 'CONTEXT'} onTouchTap={(event: any) => {props.onPanelToggle('CONTEXT');}} />
-      <FlatButton label="Quest Notes" secondary={props.bottomPanel !== 'NOTES'} onTouchTap={(event: any) => {props.onPanelToggle('NOTES');}} />
+      <FlatButton
+        label="Context Explorer"
+        secondary={props.bottomPanel !== 'CONTEXT'}
+        onTouchTap={(event: any) => {props.onPanelToggle('CONTEXT');}}
+      />
+      <FlatButton
+        label="Quest Notes"
+        secondary={props.bottomPanel !== 'NOTES'}
+        onTouchTap={(event: any) => {props.onPanelToggle('NOTES');}}
+      />
     </div>
   );
 
@@ -54,8 +66,7 @@ const Main = (props: MainProps): JSX.Element => {
         </div>
       </div>);
   } else {
-    // SplitPane dimensions are measured as the size of the *editor* pane, not the
-    // bottom pane.
+    // SplitPane dimensions are measured as the size of the *editor* pane, not the bottom pane.
     var contents = (<div className="contents"><SplitPane
       split="horizontal"
       defaultSize={window.innerHeight - 400}
@@ -76,6 +87,15 @@ const Main = (props: MainProps): JSX.Element => {
       <QuestAppBarContainer/>
       <DialogsContainer/>
       {contents}
+      <Snackbar
+        className="snackbar"
+        open={props.snackbar.open}
+        message={props.snackbar.message || ''}
+        action={props.snackbar.actionLabel}
+        autoHideDuration={(props.snackbar.persist) ? null : 4000}
+        onActionTouchTap={props.snackbar.action}
+        onRequestClose={props.onSnackbarClose}
+      />
     </div>
   );
 }
