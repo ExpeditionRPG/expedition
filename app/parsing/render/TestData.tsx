@@ -11,6 +11,18 @@ data.genericCombatXML = `<combat data-line="0">
     </event>
 </combat>`;
 
+data.badJSONXML = `<combat data-line="0">
+    <e>e1</e>
+    <event on="lose">
+        <roleplay>
+            <p>lose</p>
+        </roleplay>
+    </event>
+    <event on="win">
+        <trigger>end</trigger>
+    </event>
+</combat>`;
+
 data.fullCombatXML = `<combat data-line="0">
     <e>e1</e>
     <e>e2</e>
@@ -109,6 +121,22 @@ data.roleplayNoTitle = `<roleplay title="" data-line="21">
 data.roleplayWithID = `<roleplay title="Title" id="testid123" data-line="21">
     <p>hi</p>
 </roleplay>`;
+
+data.badJSONLog = `ERROR L3:
+failed to parse bulleted line (check your JSON)
+URL: 412
+
+ERROR L3:
+lines within combat block must be events or enemies, not freestanding text
+URL: 416
+
+ERROR L2:
+found inner block of combat block without an event bullet
+URL: 415
+
+ERROR L0:
+combat card must have "on win" event
+URL: 417`;
 
 data.combatNoEnemyOrEventsLog = `ERROR L0:
 combat card has no enemies listed

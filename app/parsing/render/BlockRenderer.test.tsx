@@ -32,6 +32,39 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.combatBadParseLog);
     });
 
+     it('errors on bad bullet json', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        {
+          indent: 0,
+          lines: ['_combat_', '', '- e1', '* on win {invalid_json}'],
+          startLine: 0,
+        },
+        {
+          indent: 2,
+          lines: [],
+          render: XMLRenderer.toRoleplay({}, ['win'], null),
+          startLine: 2,
+        },
+        {
+          indent: 0,
+          lines: ['* on lose'],
+          startLine: 4,
+        },
+        {
+          indent: 2,
+          lines: [],
+          render: XMLRenderer.toRoleplay({}, ['lose'], null),
+          startLine: 2,
+        },
+      ];
+
+      br.toCombat(blocks, log)
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.badJSONXML);
+      expect(prettifyMsgs(log.finalize())).toEqual(TestData.badJSONLog);
+    });
+
     it ('errors without enemies or events', () => {
       var log = new Logger();
       var blocks: Block[] = [

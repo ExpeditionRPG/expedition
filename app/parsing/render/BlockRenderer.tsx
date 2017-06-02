@@ -15,16 +15,12 @@ export class BlockRenderer {
   }
 
   toRoleplay(blocks: Block[], log: Logger) {
-    var hasHeader = false;
-    try {
-      var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0]);
-      hasHeader = true;
-    } catch (e) {
-      // There are cases where we don't have a roleplay header, e.g.
-      // the first roleplay block inside a choice. This is fine,
-      // and not an error.
-      extracted = {title: '', id: undefined, json: {}};
-    }
+    // There are cases where we don't have a roleplay header, e.g.
+    // the first roleplay block inside a choice. This is fine,
+    // and not an error.
+    var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], null);
+    var hasHeader = Boolean(extracted);
+    extracted = extracted || {title: '', id: undefined, json: {}};
 
     var attribs = extracted.json;
     attribs['title'] = attribs['title'] || extracted.title;
@@ -48,9 +44,12 @@ export class BlockRenderer {
       var lines = this.collate((i === 0 && hasHeader) ? block.lines.slice(1) : block.lines);
       var choice: RoleplayChild;
       var instruction: Instruction;
+      let lineIdx = 0;
       for (let line of lines) {
+        lineIdx++;
         if (line.indexOf('* ') === 0) {
-          choice = Object.assign({}, this.extractBulleted(line), {choice: []});
+          let bullet = this.extractBulleted(line, block.startLine + lineIdx, log);
+          choice = (bullet) ? Object.assign({}, bullet, {choice: []}) : null;
           // TODO: Assert end of lines.
         } else if (line.indexOf('> ') === 0) {
           instruction = this.extractInstruction(line);
@@ -75,7 +74,6 @@ export class BlockRenderer {
           inner = blocks[i];
         }
         if (choice.text.trim() === '') {
-          console.log('HERP');
           log.err(
             'choice missing title',
             '428',
@@ -129,12 +127,7 @@ export class BlockRenderer {
       );
     }
 
-    try {
-      var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0]);
-    } catch (e) {
-      log.err('could not parse block header', '413');
-      extracted = {title: 'combat', id: undefined, json: {}};
-    }
+    var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], log) || {title: 'combat', id: undefined, json: {}};
 
     var attribs = extracted.json;
     attribs['id'] = attribs['id'] || extracted.id;
@@ -143,7 +136,10 @@ export class BlockRenderer {
     for (let i = 0; i < blocks[0].lines.length; i++) {
       let line = blocks[0].lines[i];
       if (line[0] === '-') {
-        let extractedBullet = this.extractBulleted(line);
+        let extractedBullet = this.extractBulleted(line, blocks[0].startLine + i, log);
+        if (!extractedBullet) {
+          continue;
+        }
         if (!extractedBullet.text) {
           // Visible is actually a value expression
           attribs['enemies'].push({text: '{{' + extractedBullet.visible + '}}'});
@@ -186,7 +182,8 @@ export class BlockRenderer {
 
         // We should only ever see event blocks within the combat block.
         // These blocks are only single lines.
-        var extractedEvent = Object.assign({}, this.extractBulleted(line), {event: []});
+        let evt = this.extractBulleted(line, block.startLine + j, log);
+        var extractedEvent = (evt) ? Object.assign({}, evt, {event: []}) : null;
         if (!Boolean(extractedEvent) || !extractedEvent.text) {
           log.err(
             'lines within combat block must be events or enemies, not freestanding text',
@@ -296,7 +293,7 @@ export class BlockRenderer {
     return this.renderer.finalize(quest, toRender);
   }
 
-  private extractCombatOrRoleplay(line: string): {title: string, id: string, json: {[k: string]: any}} {
+  private extractCombatOrRoleplay(line: string, log: Logger): {title: string, id: string, json: {[k: string]: any}} {
     // Breakdown:
     // ^_(.*?)_                 Match italicized text at start of string
     //
@@ -308,15 +305,22 @@ export class BlockRenderer {
     // [^{\(]*                  Match all characters until "{" or "(" (greedy)
     //
     // (\{.*\})?                Optionally match a JSON blob (greedy)
-    const m = line.match(/^_(.*?)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/);
-    return {
-      title: m[1],
-      id: m[3],
-      json: (m[4]) ? JSON.parse(m[4]) : {},
-    };
+    try {
+      const m = line.match(/^_(.*?)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/);
+      return {
+        title: m[1],
+        id: m[3],
+        json: (m[4]) ? JSON.parse(m[4]) : {},
+      };
+    } catch(e) {
+      if (log) {
+        log.err('could not parse block header', '413');
+      }
+      return null;
+    }
   }
 
-  private extractBulleted(line: string): {text: string, visible: string, json: {[k: string]: any}} {
+  private extractBulleted(line: string, idx: number, log: Logger): {text: string, visible: string, json: {[k: string]: any}} {
     // Breakdown:
     // \*\s*                    Match "*" or "-" and any number of spaces (greedy)
     // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
@@ -324,19 +328,26 @@ export class BlockRenderer {
     // ([^{]*)                  Match all characters until "{" (greedy)
     // (\{.*\})?                Optionally match a JSON blob (greedy)
     // $                        End of string
-    const m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*([^{]*)(\{.*\})?$/);
-    if (m === null) {
+    try {
+      const m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*([^{]*)(\{.*\})?$/);
+      if (m === null) {
+        return {
+          visible: 'false',
+          text: '',
+          json: {},
+        };
+      }
       return {
-        visible: 'false',
-        text: '',
-        json: {},
+        visible: m[2],
+        text: m[3].trim(),
+        json: (m[4]) ? JSON.parse(m[4]) : {},
       };
+    } catch(e) {
+      if (log) {
+        log.err('failed to parse bulleted line (check your JSON)', '412', idx);
+      }
+      return null;
     }
-    return {
-      visible: m[2],
-      text: m[3].trim(),
-      json: (m[4]) ? JSON.parse(m[4]) : {},
-    };
   }
 
   private extractInstruction(line: string): {text: string, visible: string} {
