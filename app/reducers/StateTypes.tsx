@@ -59,6 +59,12 @@ export interface SettingsType {
   vibration: boolean;
 }
 
+export interface SnackbarState {
+  open: boolean;
+  message?: string;
+  timeout?: number;
+}
+
 export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REPORT';
 export type CardPhase = TemplatePhase | SearchPhase;
 export interface CardState {
@@ -100,6 +106,7 @@ export interface AppState {
   quest: QuestState;
   search: SearchState;
   settings: SettingsType;
+  snackbar: SnackbarState;
   user: UserState;
   userFeedback: UserFeedbackState;
 }

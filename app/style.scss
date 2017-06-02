@@ -156,6 +156,12 @@ body {
   float: right;
 }
 
+.snackbar {
+  span {
+    color: $font_color_dark_primary !important;
+  }
+}
+
 @mixin styling() {
 
   .base_card {

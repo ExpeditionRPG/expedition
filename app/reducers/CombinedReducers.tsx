@@ -3,6 +3,7 @@ import {card} from './Card'
 import {quest} from './Quest'
 import {search} from './Search'
 import {settings} from './Settings'
+import {snackbar} from './Snackbar'
 import {user} from './User'
 import {userFeedback} from './UserFeedback'
 import {AppStateWithHistory, AppState} from './StateTypes'
@@ -15,6 +16,7 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     quest: quest(state.quest, action),
     search: search(state.search, action),
     settings: settings(state.settings, action),
+    snackbar: snackbar(state.snackbar, action),
     user: user(state.user, action),
     userFeedback: userFeedback(state.userFeedback, action),
   };
