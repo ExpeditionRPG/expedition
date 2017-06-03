@@ -6,8 +6,10 @@ export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
 export interface DOMElement {
   attributes: any; // NamedNodeMap
+  id: string;
   outerHTML: string;
   parentNode: DOMElement;
+  previousSibling: DOMElement;
   tagName: string;
 };
 

@@ -30,6 +30,11 @@ module.exports = function (config) {
         'react/lib/ReactContext': true
       }
     },
+    browserConsoleLogOptions: {
+      level: 'log',
+      format: '%b %T: %m',
+      terminal: true,
+    },
     reporters: ['progress'],
     port: 9876,
     colors: true,

@@ -30,6 +30,7 @@ function getTriggerId(elem: CheerioElement): string {
 export function handleAction(pnode: ParserNode, action: number|string): ParserNode {
   pnode = pnode.getNext(action);
   if (!pnode) {
+    console.log('handleAction() getNext('+action+') was null');
     return null;
   }
 
@@ -38,6 +39,7 @@ export function handleAction(pnode: ParserNode, action: number|string): ParserNo
   for (; i < 100 && pnode.getTag() === 'trigger'; i++) {
     let id = getTriggerId(pnode.elem);
     if (id) {
+      console.log('GOTO ' + id);
       pnode = pnode.gotoId(id);
     } else {
       break;

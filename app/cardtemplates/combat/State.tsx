@@ -1,5 +1,3 @@
-import {encounters} from '../../Encounters'
-import {randomPropertyValue} from '../../Constants'
 import {Enemy, Loot} from '../../reducers/QuestTypes'
 
 export interface CombatAttack {
@@ -32,28 +30,31 @@ export interface CombatState extends CombatDifficultySettings, MidCombatPhase, E
 
 export type CombatPhase = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER' | 'VICTORY' | 'DEFEAT';
 
+
 export function combatScope() {
   return {
     randomEnemy: function(): string {
-      return randomPropertyValue(encounters).name;
+      const encounters = this.extern('encounters');
+      return encounters[Math.floor(Object.keys(encounters).length * Math.random())].name;
     },
     randomEnemyOfTier: function(tier: number): string {
-      return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
-          .filter( key => encounters[key].tier === tier )
-          .map( key => ({ [key]: encounters[key] }) ) )).name;
+      const encounters = this.extern('encounters');
+      const keys = Object.keys(encounters).filter( key => encounters[key].tier === tier );
+      return encounters[Math.floor(keys.length * Math.random())].name;
     },
     randomEnemyOfClass: function(className: string): string {
+      const encounters = this.extern('encounters');
       className = className.toLowerCase();
-      return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
-          .filter( key => encounters[key].class.toLowerCase() === className )
-          .map( key => ({ [key]: encounters[key] }) ) )).name;
+      const keys = Object.keys(encounters).filter( key => encounters[key].class.toLowerCase() === className );
+      return encounters[Math.floor(keys.length * Math.random())].name;
     },
     randomEnemyOfClassTier: function(className: string, tier: number): string {
+      const encounters = this.extern('encounters');
       className = className.toLowerCase();
-      return randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
+      const keys = Object.keys(encounters)
           .filter( key => encounters[key].tier === tier )
-          .filter( key => encounters[key].class.toLowerCase() === className )
-          .map( key => ({ [key]: encounters[key] }) ) )).name;
+          .filter( key => encounters[key].class.toLowerCase() === className );
+      return encounters[Math.floor(keys.length * Math.random())].name;
     },
   };
 }
