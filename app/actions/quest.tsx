@@ -165,6 +165,8 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         maxplayers: metadata.get('maxplayers'),
         mintimeminutes: metadata.get('mintimeminutes'),
         maxtimeminutes: metadata.get('maxtimeminutes'),
+        genre: metadata.get('genre'),
+        contentrating: metadata.get('contentrating'),
       });
       dispatch(receiveQuestLoad(quest));
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
@@ -205,7 +207,9 @@ export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)
         .attr('minplayers', quest.minplayers)
         .attr('maxplayers', quest.maxplayers)
         .attr('mintimeminutes', quest.mintimeminutes)
-        .attr('maxtimeminutes', quest.maxtimeminutes);
+        .attr('maxtimeminutes', quest.maxtimeminutes)
+        .attr('genre', quest.genre)
+        .attr('contentrating', quest.contentrating);
 
     dispatch({type: 'QUEST_RENDER', qdl: renderResult, msgs: renderResult.getFinalizedLogs()});
     dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);

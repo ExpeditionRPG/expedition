@@ -55,6 +55,8 @@ export interface QuestType {
   mintimeminutes?: number;
   maxtimeminutes?: number;
   author?: string;
+  genre?: string;
+  contentrating?: string;
   valid?: boolean;
   saveError?: string;
 };

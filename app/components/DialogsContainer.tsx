@@ -6,6 +6,8 @@ import {setDialog} from '../actions/dialogs'
 import {publishQuest, questMetadataChange} from '../actions/quest'
 import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
 
+import {CONTENT_RATINGS, GENRES} from '../../node_modules/expedition-app/app/Constants'
+
 const Joi = require('joi-browser');
 
 const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
@@ -34,9 +36,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
         email: Joi.string().email(),
         minplayers: Joi.number().min(1).max(Joi.ref('maxplayers')),
         maxplayers: Joi.number().min(Joi.ref('minplayers')).max(6),
-        mintimeminutes: Joi.number().min(1).max(999),
-        maxtimeminutes: Joi.number().min(1).max(999),
-      }, { allowUnknown: true, abortEarly: false }, (err: string, metadata: any) => {
+        mintimeminutes: Joi.number().min(1).max(Joi.ref('maxtimeminutes')),
+        maxtimeminutes: Joi.number().min(Joi.ref('mintimeminutes')).max(999),
+        genre: Joi.string().valid(GENRES),
+        contentrating: Joi.string().valid(Object.keys(CONTENT_RATINGS)),
+      }, { allowUnknown: true, abortEarly: false }, (err: string, quest: QuestType) => {
         if (err) {
           return alert(err);
         }

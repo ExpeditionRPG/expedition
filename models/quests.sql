@@ -15,6 +15,8 @@ CREATE TABLE quests (
   familyfriendly BOOL,
   ratingavg NUMERIC(4,2),
   ratingcount INT,
+  genre VARCHAR(128),
+  contentrating VARCHAR(128),
 
   created TIMESTAMP NULL DEFAULT NOW(),
   published TIMESTAMP NULL DEFAULT NOW(),

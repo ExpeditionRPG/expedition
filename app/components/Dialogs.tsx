@@ -17,6 +17,7 @@ import {ErrorType} from '../error'
 import {QuestType, ShareType, DialogsState, DialogIDType} from '../reducers/StateTypes'
 import theme from '../theme'
 import {MIN_PLAYERS, MAX_PLAYERS} from '../constants'
+import {CONTENT_RATINGS, GENRES} from '../../node_modules/expedition-app/app/Constants'
 
 declare var ga: any;
 
@@ -71,11 +72,25 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
     for (let i = 1; i <= MAX_PLAYERS; i++) {
       playerItems.push(<MenuItem value={i} primaryText={i} key={i} />);
     }
+    const genres = GENRES.map((genre: string, index: number) => {
+      return <MenuItem key={index} value={genre} primaryText={genre} />;
+    });
+    const rating = (CONTENT_RATINGS as any)[metadata.get('contentrating')];
+    const ratings = Object.keys(CONTENT_RATINGS).map((rating: string, index: number) => {
+      return <MenuItem key={index} value={rating} primaryText={rating} />;
+    });
+    const ratingDefinitions = rating && Object.keys(rating).map((category: string, index: number) => {
+      return <li key={index}>{rating[category]}</li>;
+    });
 
     // TODO improve validation via errorText instead of alerts - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/274
     return (
       <Dialog
         title="Publish your quest"
+        titleClassName={'dialogTitle dialogGood'}
+        modal={false}
+        open={Boolean(this.props.open)}
+        autoScrollBodyContent={true}
         actions={[<FlatButton
           label="Back"
           onTouchTap={() => this.props.onRequestClose()}
@@ -84,9 +99,6 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           secondary={true}
           onTouchTap={() => this.props.onRequestPublish(this.props.quest)}
         />]}
-        titleClassName={'dialogTitle dialogGood'}
-        modal={false}
-        open={Boolean(this.props.open)}
       >
         <TextField
           value={metadata.get('summary')}
@@ -148,11 +160,28 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           <MenuItem value={120} primaryText="2 hours" />
           <MenuItem value={999} primaryText="Over 2 hours" />
         </SelectField>
+        <SelectField
+          floatingLabelText="Genre"
+          value={metadata.get('genre')}
+          onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'genre', val)}}
+        >
+          {genres}
+        </SelectField>
+        <div className="contentRatingInputContainer">
+          <SelectField
+            className="ratingSelect"
+            floatingLabelText="Content Rating"
+            value={metadata.get('contentrating')}
+            onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'contentrating', val)}}
+          >
+            {ratings}
+          </SelectField>
+          {metadata.get('contentrating') !== null && <ul className="ratingDefinition">{ratingDefinitions}</ul>}
+        </div>
       </Dialog>
     );
   }
 }
-
 
 interface UnpublishedDialogProps extends React.Props<any> {
   open: boolean;

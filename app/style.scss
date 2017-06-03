@@ -75,9 +75,9 @@ body > :first-child:not(#react-app) { display: none; }
 
 .dialogTitle {
   background-color: $grey800;
-  margin-bottom: $padBase !important;
+  margin-bottom: $padBase/2 !important;
   padding-top: $padBase !important;
-  padding-bottom: $padBase !important;
+  padding-bottom: $padBase/2 !important;
   font-family: 'Cinzel' !important;
   font-weight: bold;
   font-size: 2em !important;
@@ -417,6 +417,13 @@ label {
         }
       }
     }
+  }
+}
+
+.contentRatingInputContainer {
+  display: flex;
+  .ratingSelect {
+    width: 130px !important;
   }
 }
 

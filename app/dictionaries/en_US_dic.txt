@@ -44907,7 +44907,7 @@ purposefulness/S
 purposeful/YP
 purposelessness/M
 purposeless/PY
-purpose/SDVGYM
+purpose/ASDVGYM
 purposiveness/M
 purposive/YP
 purr/DSG
