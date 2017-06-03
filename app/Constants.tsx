@@ -41,6 +41,28 @@ export const GENRES = [
   'Romance'
 ];
 
+// Content rating options and their definitions, generally based on MPAA guidelines
+export const CONTENT_RATINGS = {
+  Everyone: {
+    violence: 'No descriptions of violence allowed outside of combat mechanics.',
+    language: 'Only very limited profanity allowed, and no sexually-derived words.',
+    drugs: 'No drug use allowed.',
+    nudity: 'No nudity allowed.',
+  },
+  Teen: {
+    violence: 'May contain brief, limited descriptions of violence.',
+    language: 'May contain profanity except in a sexual context.',
+    drugs: 'May contain drug use, but not abuse.',
+    nudity: 'May contain non-sexual nudity.',
+  },
+  Adult: {
+    violence: 'All violence allowed.',
+    language: 'All profanity allowed.',
+    drugs: 'All drugs allowed.',
+    nudity: 'All nudity allowed.',
+  },
+};
+
 // converts a number to the English representation of the word
 // Note: for numbers outside of 0 and 10, standard to just output the numeric form
 export function numberToWord(input: number): string {
