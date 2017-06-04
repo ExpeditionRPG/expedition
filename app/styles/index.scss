@@ -29,6 +29,47 @@ body {
 #renderer {
   margin-top: 20px;
   z-index: -10000;
+
+  &.bleed {
+    $bleed: 0.125in; /* background art should extend to here */
+    $card-height: 3.5in + 2 * $bleed;
+    $card-width: 2.5in + 2 * $bleed;
+
+    .printInstructions {
+      display: none !important;
+    }
+
+    .page {
+      width: $card-width !important;
+      height: $card-height !important;
+    }
+
+    .card {
+      width: $card-width !important;
+      height: $card-height !important;
+      padding: 0 !important;
+
+      &.front, &.back {
+        &:before {
+          top: 0 !important;
+          left: 0 !important;
+        }
+      }
+
+      .contents {
+        top: $bleed !important;
+        left: $bleed !important;
+      }
+
+      &.front.horizontal {
+        .contents {
+          height: 2.25in !important;
+          width: 3.25in !important;
+          margin: 0 !important;
+        }
+      }
+    }
+  }
 }
 
 .printInstructions {

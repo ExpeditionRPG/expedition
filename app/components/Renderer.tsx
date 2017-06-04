@@ -29,6 +29,7 @@ class Renderer extends React.Component<RendererProps, {}> {
   render() {
     const cards = this.props.cards || [];
     const renderSettings = { // defaults
+      bleed: false,
       cardsPerPage: 9,
       showFronts: true,
       showBacks: true,
@@ -46,15 +47,18 @@ class Renderer extends React.Component<RendererProps, {}> {
         break;
       case 'DriveThruCards':
         renderSettings.cardsPerPage = 1;
+        renderSettings.bleed = true;
         break;
       case 'AdMagicFronts':
         renderSettings.cardsPerPage = 1;
         renderSettings.showBacks = false;
+        renderSettings.bleed = true;
         break;
       case 'AdMagicBacks':
         renderSettings.cardsPerPage = 1;
         renderSettings.showFronts = false;
         renderSettings.uniqueBacksOnly = true;
+        renderSettings.bleed = true;
         break;
       case 'FrontsOnly':
         renderSettings.showBacks = false;
@@ -100,7 +104,7 @@ class Renderer extends React.Component<RendererProps, {}> {
     }, 1);
 
     return (
-      <div id="renderer" className={renderSettings.theme + ' ' + this.props.filters.export.current}>
+      <div id="renderer" className={renderSettings.theme + ' ' + this.props.filters.export.current + (renderSettings.bleed ? ' bleed' : '') }>
         {renderSettings.showInstructions &&
           <div>
             <div className="printInstructions">

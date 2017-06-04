@@ -27,10 +27,9 @@ export let initialState: any = {
     options: ['PrintAndPlay', 'WebView', 'DriveThruCards', 'AdMagicFronts', 'AdMagicBacks', 'FrontsOnly'],
   },
   source: {
-    // Urban Chaos: 1hR-Taq5n4kiRhRSv4D1CxXZlCyEooRSv_wW8bs_vXes
     current: 'Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
     default: 'Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
-    options: ['Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM', 'Custom'],
+    options: ['Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM', 'UrbanChaos:1hR-Taq5n4kiRhRSv4D1CxXZlCyEooRSv_wW8bs_vXes', 'Custom'],
   },
 };
 
