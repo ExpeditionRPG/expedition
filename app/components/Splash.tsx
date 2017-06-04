@@ -29,24 +29,22 @@ const Splash = (props: any): JSX.Element => {
       </div>
       <div className="body">
         <div>
-          <h1><span>Share your <strong>Story</strong></span> <span>with the <strong>World</strong>.</span></h1>
+          <h1><span>Share your <strong>Stories</strong></span> <span>with the <strong>World</strong></span></h1>
           <div className="worldMap">
             <img alt="Countries with Expedition adventurers - Jan-April 2017" src="/assets/img/worldmap.png"></img>
           </div>
           <div className="imageText">Countries with Expedition adventurers - Jan-April 2017</div>
-          <h3>
-            <span>The Quest Creator lets you</span> <span>write adventures for <a target="_blank" href="https://expeditiongame.com">Expedition</a>.</span>
-          </h3>
+          <h3>Write adventures for <a target="_blank" href="https://expeditiongame.com">Expedition: The Roleplaying Card Game</a></h3>
+          <h3>Build a following of thousands of gamers across the globe</h3>
+          <h3>Earn tips and donations from your followers</h3>
           <div className="buttonBox">
-            <Button onTouchTap={() => props.onLogin('main')}>
-              Get Started
-            </Button>
+            <Button onTouchTap={() => props.onLogin('main')}>Get Started</Button>
           </div>
         </div>
         <div>
           <h1>Built for <strong>Authors</strong></h1>
           <h3>
-            <span>Everything you need to write, test,</span> <span>and publish your own quest.</span>
+            <span>Everything you need to write, test,</span> <span>and publish your own quests.</span>
           </h3>
           <div className="showcase">
             <div>
@@ -57,8 +55,7 @@ const Splash = (props: any): JSX.Element => {
             </div>
             <div>
               <p>
-                Our quest writing environment stays out of the way when you're in the zone, but still has a rich set
-                of features to help you from concept to epic story.
+                The quest creator only takes a few minutes to learn, yet has powerful tools to help you build epic, interactive adventures.
               </p>
               <h3>Highlights:</h3>
               <ul>
@@ -74,9 +71,9 @@ const Splash = (props: any): JSX.Element => {
           </div>
         </div>
         <div>
-          <h1><span>As complex as</span> <span><strong>You</strong> make it</span></h1>
+          <h1><span>Interactive storytelling</span> <span>for <strong>everyone</strong></span></h1>
           <h3>
-            <span>A language designed</span> <span>for accessibility and power.</span>
+            <span>Join the bleeding edge of storytelling,</span> <span>no experience required.</span>
           </h3>
 
           <div className="showcase">
@@ -87,7 +84,7 @@ const Splash = (props: any): JSX.Element => {
               </p>
               <p>
                 If you're a veteran programmer,
-                you can use integrated <a target="_blank" rel="nofollow" href="https://mathjs.org">MathJS</a> to weave intricate storylines.
+                you can use integrated <a target="_blank" rel="nofollow" href="https://mathjs.org">MathJS</a> to weave intricate storylines and puzzles.
               </p>
               <h3>Features:</h3>
               <ul>
