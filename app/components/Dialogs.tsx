@@ -108,57 +108,58 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
         />
         <TextField
           value={metadata.get('author')}
-          floatingLabelText="Author Name"
+          floatingLabelText="Author name"
           onChange={(e: any, val: string) => { this.props.handleMetadataChange(this.props.quest, 'author', val)}}
         />
         <TextField
           value={metadata.get('email')}
-          floatingLabelText="Contact Email (private)"
+          floatingLabelText="Contact email (private)"
           onChange={(e: any, val: string) => { this.props.handleMetadataChange(this.props.quest, 'email', val)}}
         />
         <SelectField
-          floatingLabelText="Minimum Players"
+          floatingLabelText="Minimum players"
           value={metadata.get('minplayers')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'minplayers', val)}}
         >
           {playerItems}
         </SelectField>
         <SelectField
-          floatingLabelText="Maximum Players"
+          floatingLabelText="Maximum players"
           value={metadata.get('maxplayers')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'maxplayers', val)}}
         >
           {playerItems}
         </SelectField>
         <SelectField
-          floatingLabelText="Minimum Time (minutes)"
+          floatingLabelText="Minimum play time"
           value={metadata.get('mintimeminutes')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'mintimeminutes', val)}}
         >
-          <MenuItem value={10} primaryText="10" />
-          <MenuItem value={20} primaryText="20" />
-          <MenuItem value={30} primaryText="30" />
-          <MenuItem value={40} primaryText="40" />
-          <MenuItem value={50} primaryText="50" />
-          <MenuItem value={60} primaryText="1 hour" />
-          <MenuItem value={90} primaryText="90" />
+          <MenuItem value={10} primaryText="10 minutes" />
+          <MenuItem value={20} primaryText="20 minutes" />
+          <MenuItem value={30} primaryText="30 minutes" />
+          <MenuItem value={40} primaryText="40 minutes" />
+          <MenuItem value={50} primaryText="50 minutes" />
+          <MenuItem value={60} primaryText="60 minutes" />
+          <MenuItem value={90} primaryText="90 minutes" />
           <MenuItem value={120} primaryText="2 hours" />
           <MenuItem value={999} primaryText="Over 2 hours" />
         </SelectField>
         <SelectField
-          floatingLabelText="Maximum Time (minutes)"
+          floatingLabelText="Maximum play time"
           value={metadata.get('maxtimeminutes')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'maxtimeminutes', val)}}
         >
-          <MenuItem value={10} primaryText="10" />
-          <MenuItem value={20} primaryText="20" />
-          <MenuItem value={30} primaryText="30" />
-          <MenuItem value={40} primaryText="40" />
-          <MenuItem value={50} primaryText="50" />
-          <MenuItem value={60} primaryText="1 hour" />
-          <MenuItem value={90} primaryText="90" />
+          <MenuItem value={10} primaryText="10 minutes" />
+          <MenuItem value={20} primaryText="20 minutes" />
+          <MenuItem value={30} primaryText="30 minutes" />
+          <MenuItem value={40} primaryText="40 minutes" />
+          <MenuItem value={50} primaryText="50 minutes" />
+          <MenuItem value={60} primaryText="60 minutes" />
+          <MenuItem value={90} primaryText="90 minutes" />
           <MenuItem value={120} primaryText="2 hours" />
-          <MenuItem value={999} primaryText="Over 2 hours" />
+          <MenuItem value={180} primaryText="3 hours" />
+          <MenuItem value={999} primaryText="Over 3 hours" />
         </SelectField>
         <SelectField
           floatingLabelText="Genre"
@@ -170,7 +171,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
         <div className="contentRatingInputContainer">
           <SelectField
             className="ratingSelect"
-            floatingLabelText="Content Rating"
+            floatingLabelText="Content rating"
             value={metadata.get('contentrating')}
             onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'contentrating', val)}}
           >
