@@ -258,6 +258,7 @@ export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any
     return $.post('/unpublish/' + quest.id, function(result_quest_id: string) {
       quest.published = undefined;
       dispatch({type: 'RECEIVE_QUEST_UNPUBLISH', quest} as ReceiveQuestUnpublishAction);
+      dispatch(setSnackbar(true, 'Quest un-published successfully!'));
     }).fail(pushHTTPError);
   };
 }

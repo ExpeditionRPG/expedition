@@ -184,30 +184,6 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
   }
 }
 
-interface UnpublishedDialogProps extends React.Props<any> {
-  open: boolean;
-  onRequestClose: ()=>void;
-}
-
-export class UnpublishedDialog extends React.Component<UnpublishedDialogProps, {}> {
-  render() {
-    return (
-      <Dialog
-        title="Unpublished"
-        actions={[<RaisedButton
-          label="OK"
-          primary={true}
-          onTouchTap={() => this.props.onRequestClose()}
-        />]}
-        titleClassName={'dialogTitle'}
-        modal={false}
-        open={Boolean(this.props.open)}>
-        Your quest is no longer visible in the Expedition App.
-      </Dialog>
-    );
-  }
-}
-
 export interface DialogsStateProps {
   open: DialogsState;
   quest: QuestType;
@@ -237,10 +213,6 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         onRequestClose={() => props.onRequestClose('PUBLISHING')}
         onRequestPublish={props.onRequestPublish}
         quest={props.quest}
-      />
-      <UnpublishedDialog
-        open={props.open['UNPUBLISHED']}
-        onRequestClose={() => props.onRequestClose('UNPUBLISHED')}
       />
     </span>
   );
