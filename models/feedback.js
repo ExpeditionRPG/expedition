@@ -41,7 +41,7 @@ exports.submit = function(type, feedback, callback) {
           <p>"${feedback.text}"</p>
           <p>Was submitted for ${quest.title} by ${quest.author}</p>
           <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
-          <p>User email that reported it: <a href="mailto:${feedback.useremail}">${feedback.useremail}</a></p>
+          <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
           <p>Quest id: ${feedback.questid}</p>
         `;
 
