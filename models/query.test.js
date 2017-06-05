@@ -15,6 +15,12 @@ describe('query', () => {
   it('upsert');
   it('update');
 
+  describe('search', () => {
+    it('works with no parameters defined');
+    it('test each parameter individually');
+    it('edge case: order by +ratingavg');
+  });
+
   describe('JS to PG to JS', () => {
     it('handles single quotes in strings', () => {
       const original = "He's";

@@ -43,10 +43,6 @@ exports.search = function(userId, params, callback) {
       query = query.where('id = ?', params.id);
     }
 
-    if (params.owner) {
-      query = query.where('userid = ?', params.owner);
-    }
-
     // Require results to be published if we're not querying our own quests
     if (params.owner !== userId || userId == "") {
       query = query.where('published IS NOT NULL');
@@ -66,18 +62,40 @@ exports.search = function(userId, params, callback) {
       query = query.where("published > NOW() - '? seconds'::INTERVAL", params.published_after);
     }
 
+    if (params.mintimeminutes) {
+      query = query.where('mintimeminutes >= ?', params.mintimeminutes);
+    }
+
+    if (params.maxtimeminutes) {
+      query = query.where('maxtimeminutes <= ?', params.maxtimeminutes);
+    }
+
+    if (params.contentrating) {
+      query = query.where('contentrating = ?', params.contentrating);
+    }
+
+    if (params.genre) {
+      query = query.where('genre = ?', params.genre);
+    }
+
     if (params.order) {
-      query = query.order(params.order.substr(1), (params.order[0] === '+'));
+      if (params.order === '+ratingavg') {
+        query = query.order(`
+          CASE
+            WHEN ratingcount < 5 THEN 0
+            ELSE ratingavg
+          END`, true);
+      } else {
+        query = query.order(params.order.substr(1), (params.order[0] === '+'));
+      }
     }
 
     const limit = Math.max(params.limit || 0, 100);
     query = query.limit(limit);
     Query.run(query, (err, results) => {
-
       if (err) {
         return callback(err);
       }
-
       const hasMore = results.length === limit ? token + results.length : false;
       return callback(null, results, hasMore);
     });

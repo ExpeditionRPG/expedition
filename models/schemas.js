@@ -18,6 +18,7 @@ schemas.quests = {
   author: NAME,
   contentrating: Joi.string(),
   email: EMAIL,
+  contentrating: Joi.string(),
   familyfriendly: Joi.boolean(),
   genre: Joi.string(),
   maxplayers: Joi.number().min(MIN_PLAYERS).max(MAX_PLAYERS),
@@ -29,8 +30,7 @@ schemas.quests = {
   summary: Joi.string().max(1024),
   title: Joi.string().max(255),
   url: Joi.string().max(2048), // Note: not required to be a URI because other parts of the code
-                               // still want it to exclude http://
-
+                                  // still want it to exclude http://
   // metadata
   created: Joi.date(),
   published: Joi.date(),
@@ -39,10 +39,13 @@ schemas.quests = {
 
 schemas.questsSearch = Object.assign(schemas.quests, {
   order: Joi.string(), // TODO limit to schemas keys
-  owner: ID_STRING,
   players: Joi.number().min(MIN_PLAYERS).max(MAX_PLAYERS),
   published_after: Joi.number(),
   search: Joi.string(),
+  mintimeminutes: schemas.quests.mintimeminutes,
+  maxtimeminutes: schemas.quests.maxtimeminutes,
+  contentrating: schemas.quests.contentrating,
+  genre: schemas.quests.genre,
 });
 
 schemas.questsPublish = Object.assign(schemas.quests, {
