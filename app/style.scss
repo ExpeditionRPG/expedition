@@ -65,6 +65,7 @@ $lineheight: 1.2;
 
 $sizemap: (
   appbar: 48px,
+  inputsquare: 48px,
   inputspacing: 16px, /* slightly larger on small devices (to prevent false touches) */
   input: 32px, /* size of input icon-style buttons */
   watermark: 36vh, /* height-specific */
@@ -311,12 +312,16 @@ body {
   }
 
   .starContainer {
-    text-align: center;
+    .stars {
+      display: flex;
+      justify-content: center;
+    }
     .star {
-      display: inline-block;
+      order: 1;
+      height: size(inputsquare) !important;
       button {
         min-width: 0 !important;
-        height: auto !important;
+        height: size(inputsquare) !important;
         svg {
           width: size(input) !important;
           height: size(input) !important;
@@ -330,8 +335,15 @@ body {
         }
       }
     }
+    .quantity {
+      height: size(inputsquare);
+      line-height: size(inputsquare);
+      order: 2;
+      padding-left: size(small);
+    }
     .hint {
       color: #757575;
+      text-align: center;
     }
   }
 
@@ -703,6 +715,7 @@ $abs_scale_vh: $absheightmax / 115vmin;
 $sizemap: (
   appbar: 48px,
   inputspacing: 14px,
+  inputsquare: 48px,
   input: 32px,
   watermark: 36vmin * $abs_scale_vh, /* note: height-specific */
   huge: 12vmin * $abs_scale_vh,

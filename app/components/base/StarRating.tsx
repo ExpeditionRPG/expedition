@@ -8,7 +8,8 @@ import StarBorder from 'material-ui/svg-icons/toggle/star-border'
 
 export interface StarRatingProps {
   hintText?: boolean;
-  onChange: (rating: number) => any;
+  onChange?: (rating: number) => any;
+  quantity?: number; // parens number to the right of the stars, aka quantity of ratings
   readOnly?: boolean;
   style?: any;
   value?: number;
@@ -24,22 +25,25 @@ export default class StarRating extends React.Component<StarRatingProps, {}> {
       if (!this.props.readOnly) {
         classes += ' editable';
       }
+      // TODO support half-stars - https://github.com/ExpeditionRPG/expedition-app/issues/338
       if (checked) {
         classes += ' filled';
       } else {
         classes += ' outline';
       }
 
-      return <div className={classes}>
-        <FlatButton key={i} onTouchTap={() => { this.props.onChange(i) }}>
-          {checked && <Star  color={colors.grey900} />}
+      return <div key={i} className={classes}>
+        <FlatButton disabled={this.props.readOnly} onTouchTap={() => { !this.props.readOnly && this.props.onChange(i); }}>
+          {checked && <Star color={colors.grey900} />}
           {!checked && <StarBorder color={colors.grey600} />}
         </FlatButton>
       </div>;
     });
-    return (<div className="starContainer" style={this.props.style}>
-      {stars}
+    return <span className="starContainer">
+      <div className="stars" style={this.props.style}>
+        {stars}{this.props.quantity && <span className="quantity">({this.props.quantity})</span>}
+      </div>
       {this.props.hintText && <div className="hint">{ratings[this.props.value]}</div>}
-    </div>);
+    </span>;
   }
 }

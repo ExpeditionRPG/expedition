@@ -3,9 +3,10 @@ import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import TextField from 'material-ui/TextField'
 
-import Card from './base/Card'
 import Button from './base/Button'
+import Card from './base/Card'
 import Checkbox from './base/Checkbox'
+import StarRating from './base/StarRating'
 
 import {SearchSettings, SearchPhase, SearchState, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
@@ -156,33 +157,20 @@ function renderResults(props: SearchProps): JSX.Element {
 }
 
 function renderDetails(props: SearchProps): JSX.Element {
-  let details: JSX.Element = <span></span>
-
-  /*
-  details =
-    <Indicator icon="helper">
-      <div>URL: <a href="{props.selected.url}" target="_blank">{props.selected.shorturl}</a></div>
-      <div>Email: {props.selected.email}</div>
-      <div>Players: {props.selected.num_players}</div>
-      <div>Play time: {props.selected.play_period}</div>
-      <div>Last update: {props.selected.modified}</div>
-      <template is="dom-if" if="{{quest.user_owned}}">
-        <div>{props.selected.created}</div>
-        <div>{props.selected.published}</div>
-      </template>
-    </Indicator>
-  */
+  let details: JSX.Element = <span></span>;
+  const quest = props.selected;
   return (
     <Card title="Quest Details">
       <div className="searchDetails">
-        <h3>{props.selected.title}</h3>
-        <div className="author">by {props.selected.author}</div>
+        <h3>{quest.title}</h3>
+        <div className="author">by {quest.author}</div>
         <p>
-          {props.selected.summary}
+          {quest.summary}
         </p>
+        {quest.ratingcount && quest.ratingcount >= 5 && <StarRating readOnly={true} value={+quest.ratingavg} quantity={quest.ratingcount}/>}
       </div>
       {details}
-      <Button onTouchTap={(e)=>props.onPlay(props.selected)}>Play</Button>
+      <Button onTouchTap={(e)=>props.onPlay(quest)}>Play</Button>
     </Card>
   );
 }
