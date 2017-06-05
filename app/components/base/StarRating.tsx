@@ -9,7 +9,7 @@ import StarBorder from 'material-ui/svg-icons/toggle/star-border'
 export interface StarRatingProps {
   hintText?: boolean;
   onChange?: (rating: number) => any;
-  quantity?: number; // parens number to the right of the stars, aka quantity of ratings
+  quantity?: number;
   readOnly?: boolean;
   style?: any;
   value?: number;
