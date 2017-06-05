@@ -15,7 +15,7 @@ export function quest(state: QuestType = initial_state, action: Redux.Action): Q
     case 'REALTIME_CHANGE':
       return Object.assign({}, state, {md: (action as any).text});
     case 'RECEIVE_QUEST_SAVE':
-      return Object.assign({}, state, (action as ReceiveQuestSaveAction).quest, {saveError: null});
+      return Object.assign({}, state, {title: (action as ReceiveQuestSaveAction).meta.title}, {saveError: null});
     case 'RECEIVE_QUEST_SAVE_ERR':
       return Object.assign({}, state, {saveError: (action as ReceiveQuestSaveErrAction).err});
     case 'RECEIVE_QUEST_PUBLISH':

@@ -51,7 +51,7 @@ export interface RequestQuestSaveAction extends Redux.Action {
 
 export interface ReceiveQuestSaveAction extends Redux.Action {
   type: 'RECEIVE_QUEST_SAVE';
-  quest: QuestType;
+  meta: QuestType;
 }
 
 export interface ReceiveQuestSaveErrAction extends Redux.Action {
