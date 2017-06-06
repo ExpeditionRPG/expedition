@@ -4,7 +4,6 @@ import {defaultQuestContext} from '../reducers/QuestTypes'
 declare var global: any;
 
 var cheerio: any = require('cheerio');
-//var window: any = cheerio.load('<div>');
 
 describe('Context', () => {
   describe('evaluateOp', () => {

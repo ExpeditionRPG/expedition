@@ -1,13 +1,10 @@
 import * as React from 'react'
 import {CheerioElement} from '../reducers/StateTypes'
-import {defaultQuestContext, QuestContext, linkQuestContext} from '../reducers/QuestTypes'
+import {defaultQuestContext, QuestContext} from '../reducers/QuestTypes'
 
 const Clone = require('clone');
 const HtmlDecode = (require('he') as any).decode;
 const Math = require('mathjs') as any;
-
-const SER_STRING_TAG = '@s|';
-const SER_FUN_TAG = '@f|';
 
 // Run MathJS over all detected {{operations}}.
 export function evaluateContentOps(content: string, ctx: QuestContext): string {

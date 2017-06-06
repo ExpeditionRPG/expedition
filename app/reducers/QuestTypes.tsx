@@ -30,31 +30,10 @@ export interface QuestContext {
   views: {[id:string]: number};
   templates: TemplateState;
 
-  // Extern is an interface for loading in dependencies to functions in the context.
-  // We wrap these dependencies in this way to allow for serialization.
-  extern: (x: string) => any;
-
   // The list of choices, events, and jumps that produced this context, serialized.
   // Given the path and original quest XML, we should be able to recreate
   // context given this path.
   path: (string|number)[];
-}
-
-// getExtern implements QuestContext.extern.
-function getExtern(x: string): any {
-  switch(x) {
-    case 'settings':
-      return getStore().getState().settings;
-    case 'encounters':
-      return encounters;
-    default:
-      return null;
-  }
-}
-
-export function linkQuestContext(q: QuestContext): QuestContext {
-  q.extern = getExtern;
-  return q;
 }
 
 export function defaultQuestContext(): QuestContext {
@@ -62,11 +41,10 @@ export function defaultQuestContext(): QuestContext {
   // New endpoints should be added carefully b/c we'll have to support them.
   // Behind-the-scenes data can be added to the context outside of scope
   return {
-    extern: getExtern,
     scope: {
       _: {
         numAdventurers: function(): number {
-          const settings = this.extern('settings');
+          const settings = getStore().getState().settings;
           return settings && settings.numPlayers;
         },
         viewCount: function(id: string): number {
