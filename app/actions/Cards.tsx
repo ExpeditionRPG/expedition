@@ -73,7 +73,7 @@ function cleanCardData(card: any) {
 
   // bold STATEMENTS:
   function makeBold (str: string) {
-    return (str == null) ? str : str.replace(/(.*:)/g, (whole: string, capture: string) => `<strong>${capture}</strong>`);
+    return (str === undefined) ? str : str.replace(/(.*:)/g, (whole: string, capture: string) => `<strong>${capture}</strong>`);
   }
 
   Object.keys(card).forEach((property: string) => {
@@ -113,15 +113,9 @@ function cleanCardData(card: any) {
           case 'lt;': return '<';
           case 'leq;': return '≤';
           case 'gt;': return '>';
+          default: return 'BROKEN MACRO: ' + match.substring(1);
         }
-        // throw "BROKEN MACRO: " + match.substring(1);
-        return 'BROKEN MACRO: ' + match.substring(1);
       });
-// This doesn't seem to be used any more?
-//       // Replace $var with variable value
-//       card[property] = card[property].replace(/\$\w*/mg, (match: string) => {
-//         return card[match.substring(1)];
-//       });
     }
     return card[property];
   });

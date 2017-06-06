@@ -163,6 +163,8 @@ export default class CardFront extends React.Component<CardProps, {}> {
             </div>
           </div>
         );
+      default:
+        return null;
     }
   }
 }

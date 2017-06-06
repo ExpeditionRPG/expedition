@@ -10,7 +10,7 @@ Making your own cards is easy! The card creator uses Google Sheets as its data s
 
 ## Issues / Known Bugs / Notes
 
-We recommend disabling your ad blocker for the card creator website - they've been known to cause issues with it.
+We recommend disabling your ad blocker for Cards.ExpeditionGame.com - they've been known to block important files from loading (plus, we don't show any ads).
 
 ## Questions? Feedback? Found a bug?
 

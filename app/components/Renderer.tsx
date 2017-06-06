@@ -63,6 +63,8 @@ class Renderer extends React.Component<RendererProps, {}> {
       case 'FrontsOnly':
         renderSettings.showBacks = false;
         break;
+      default:
+        break;
     }
 
     const CardBack = CardBacks[renderSettings.theme].default;
@@ -80,7 +82,7 @@ class Renderer extends React.Component<RendererProps, {}> {
       }
       if (renderSettings.showBacks) {
         if (renderSettings.uniqueBacksOnly && i > 0) {
-          if (card.naming !== "" || card.class !== cards[i-1].class || card.tier !== cards[i-1].tier) {
+          if (card.naming !== '' || card.class !== cards[i-1].class || card.tier !== cards[i-1].tier) {
             backPageList[backPageList.length-1].push(<CardBack key={i} card={card}></CardBack>);
           }
         } else {

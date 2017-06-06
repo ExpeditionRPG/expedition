@@ -75,7 +75,7 @@ export default function Filters(state: any = initialState, action: any) {
 // (otherwise, because the data's been filtered already, it'll only show the current selection + all)
 function updateFilterOptions(filters: any, cards: any[]) {
 
-  if (cards == null) { return filters; }
+  if (cards === null) { return filters; }
 
   filters.sheet.options = [filters.sheet.default].concat(cards.reduce((acc: any, card: any) => {
     if (acc.indexOf(card.sheet) === -1) {

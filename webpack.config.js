@@ -31,25 +31,65 @@ module.exports = {
   },
   module: {
     rules: [
+      { enforce: 'pre', test: /\.tsx$/, loader: 'tslint-loader', exclude: /node_modules/ },
+      { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
-      { test: /\.(gif|png|jpe?g|svg)$/i, loaders: ['file-loader'] },
-      { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/ },
-      {
-        enforce: 'post',
-        test: /\.jsx$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ["es2015", "react"],
-          },
-        },
-      }
+      { test: /\.json$/, loader: 'json-loader' },
+      { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /node_modules/ },
+      { enforce: 'post', test: /\.tsx$/, loaders: ['babel-loader'], exclude: /node_modules/ },
+
+
+      // { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
+      // { test: /\.(gif|png|jpe?g|svg)$/i, loaders: ['file-loader'] },
+      // { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/ },
+      // {
+      //   enforce: 'post',
+      //   test: /\.jsx$/,
+      //   exclude: /node_modules/,
+      //   use: {
+      //     loader: 'babel-loader',
+      //     options: {
+      //       presets: ["es2015", "react"],
+      //     },
+      //   },
+      // }
     ],
   },
   plugins: [
     new DashboardPlugin(),
     new Webpack.HotModuleReplacementPlugin(),
     new Webpack.NoEmitOnErrorsPlugin(),
+    new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
+      options: {
+        tslint: {
+          configuration: {
+           rules: {
+              quotemark: [true, 'single', 'jsx-double'],
+              curly: true,
+              noUseBeforeDeclare: true,
+              eofline: true,
+              radix: true,
+              switchDefault: true,
+              tripleEquals: true,
+              typeofCompare: true,
+              useIsnan: true,
+              indent: [true, "spaces"],
+              // We can add these when we feel like having more style enforcement
+              //noUnusedVariables: true,
+              //noVarKeyword: true,
+              //preferConst: true,
+              //trailingComma: true,
+            },
+          },
+          emitErrors: true,
+          failOnHint: true,
+          tsConfigFile: 'tsconfig.json',
+        },
+        babel: {
+          presets: ["es2015"],
+          cacheDirectory: true,
+        },
+      },
+    }),
   ],
 };

@@ -27,4 +27,4 @@ We recommend developing in Sublime Text, and require that the following style se
 }
 ```
 
-If you'll be adjusting .scss styles, we also recommend this Sublime Package for scss syntax highlighting: https://packagecontrol.io/packages/Syntax%20Highlighting%20for%20Sass
+If you'll be adjusting .scss styles and use Sublime Text, we recommend this Sublime Package for scss syntax highlighting: https://packagecontrol.io/packages/Syntax%20Highlighting%20for%20Sass

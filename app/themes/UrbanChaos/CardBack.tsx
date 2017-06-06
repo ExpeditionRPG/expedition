@@ -55,6 +55,8 @@ export default class CardBack extends React.Component<CardProps, {}> {
             </div>
           </div>
         );
+      default:
+        return null;
     }
   }
 }
