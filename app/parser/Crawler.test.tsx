@@ -7,7 +7,7 @@ declare var global: any;
 var cheerio: any = require('cheerio');
 var window: any = cheerio.load('<div>');
 
-fdescribe('Crawler', () => {
+describe('Crawler', () => {
   describe('crawl', () => {
     it('travels across combat events', () => {
       const xml = cheerio.load(`

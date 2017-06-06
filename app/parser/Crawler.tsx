@@ -26,7 +26,6 @@ export class Crawler {
   }
 
   public crawl(root: ParserNode) {
-    console.log('\n\nCrawling...');
     this.traverse(root);
   }
 
@@ -80,7 +79,6 @@ export class Crawler {
       let q = queue.shift();
       const id = q.node.elem.attr('id') || q.prevId;
       const line = parseInt(q.node.elem.attr('data-line'), 10);
-      console.log('Working in node ' + id + ' line ' + line);
 
       // This happens if for some reason line numbers weren't calculated for this quest.
       // Don't traverse farther here, as it'll throw off our stats generation.
@@ -92,7 +90,6 @@ export class Crawler {
 
       // This happens when we hit the end of a quest.
       if (q.node.getTag() === 'trigger' && q.node.elem.text().trim() === 'end') {
-        console.log('end trigger seen');
         this.statsById[q.prevId].causeOf.add('END');
         this.statsByLine[q.prevLine].causeOf.add('END');
         continue;
@@ -102,7 +99,6 @@ export class Crawler {
       // don't act on it.
       const nstr = q.node.getComparisonKey();
       if (this.seen.has(nstr)) {
-        console.log('Node already seen');
         continue;
       }
       this.seen.add(nstr);
@@ -163,11 +159,8 @@ export class Crawler {
         keys.push(0);
       }
       for (let k of keys) {
-        console.log('To crawl: ' + k);
-
         let node = handleAction(q.node, k);
         if (node === undefined || node === null) {
-          console.log('Undefined node seen');
           this.statsById[id].causeOf.add('IMPLICIT_END');
           this.statsByLine[line].causeOf.add('IMPLICIT_END');
           continue;
