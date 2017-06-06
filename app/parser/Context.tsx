@@ -9,57 +9,6 @@ const Math = require('mathjs') as any;
 const SER_STRING_TAG = '@s|';
 const SER_FUN_TAG = '@f|';
 
-/*
-// Serialize the quest context.
-export function serializeContext(ctx: QuestContext): string {
-  ctx = Clone(ctx);
-
-  // Cast scope functions to strings, to ensure future changes to context functions
-  // don't affect contexts serialized long in the past.
-  // We prepend a "tag" to identify which strings are just strings and which are
-  // actually functions when deserializing.
-  for (let k of Object.keys(ctx.scope._)) {
-    switch (typeof(ctx.scope._[k])) {
-      case 'function':
-        ctx.scope._[k] = SER_FUN_TAG + ctx.scope._[k].toString();
-        break;
-      case 'string':
-        ctx.scope._[k] = SER_STRING_TAG + ctx.scope._[k];
-        break;
-      default:
-        break;
-    }
-  }
-
-  return JSON.stringify(ctx);
-}
-
-// Deserialize the quest context string, adding in
-export function deserializeContext(ctxString: string): QuestContext {
-  var ctx = JSON.parse(ctxString, Math.json.reviver);
-
-  // Convert string-cast functions back to real functions and remove tags.
-  for (let k of Object.keys(ctx.scope._)) {
-    if (typeof(ctx.scope._[k]) !== 'string') {
-      continue;
-    }
-    if (ctx.scope._[k].startsWith(SER_FUN_TAG)) {
-      // Use eval to turn function-string into function expression.
-      // Parens wrap the function to prevent ambiguity (could be parsed as a function definition otherwise)
-      // https://stackoverflow.com/questions/2760953/javascript-eval-syntax-error-on-parsing-a-function-string
-      const value = ctx.scope._[k].substr(SER_FUN_TAG.length);
-      const args = value.substring(value.indexOf('(') + 1, value.indexOf(')'))
-      const body = value.substring(value.indexOf('{') + 1, value.lastIndexOf('}'));
-      ctx.scope._[k] = new Function(args, body);
-    } else if (ctx.scope._[k].startsWith(SER_STRING_TAG)) {
-      ctx.scope._[k] = ctx.scope._[k].substr(SER_STRING_TAG.length);
-    }
-  }
-
-  return linkQuestContext(ctx);
-}
-*/
-
 // Run MathJS over all detected {{operations}}.
 export function evaluateContentOps(content: string, ctx: QuestContext): string {
   // {{.+?(?=}})}}       Match "{{asdf\n1234}}"

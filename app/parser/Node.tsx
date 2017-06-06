@@ -15,26 +15,6 @@ function getNodeAttributes(e: CheerioElement): {[key:string]:string;} {
   return e.attribs || (e.get(0) as any as CheerioElement).attribs;
 }
 
-// Creates and returns a unique string that represents this exact node state.
-// A call to deserializeNode() with the output of this function and the quest root should return
-// a fully-functional ParserNode.
-/*
-export function serializeNode(node: ParserNode): string {
-  const ctxStr = serializeContext(node.ctx);
-
-  return JSON.stringify({
-    'line': node.elem.attr('data-line') || -1,
-    'ctx': ctxStr,
-  });
-}
-
-export function deserializeNode(nodeKey: string, questRoot: CheerioElement) {
-  var obj = JSON.parse(nodeKey);
-
-  return new ParserNode(questRoot.find('[data-line="' + obj.line + '"]').eq(0), deserializeContext(obj.ctx));
-}
-*/
-
 function getChildNumber(domElement: DOMElement): number {
     var i=1;;
     while(domElement.previousSibling){
