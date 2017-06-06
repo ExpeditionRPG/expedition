@@ -15,9 +15,8 @@ type DoFn = (s: CrawlerStats, n :ParserNode) => void;
 
 
 export class Crawler {
-  // TODO: Privatize
-  public statsById: {[id:string]: CrawlerStats};
-  public statsByLine: {[line:number]: CrawlerStats};
+  statsById: {[id:string]: CrawlerStats};
+  statsByLine: {[line:number]: CrawlerStats};
   seen: Set<string>;
 
   constructor() {
@@ -79,15 +78,6 @@ export class Crawler {
     let maxPath = 0;
     while(queue.length > 0 && maxPath < 50) {
       let q = queue.shift();
-
-      // This happens when we hit the end of a quest.
-      if (q.node.getTag() === 'trigger' && q.node.elem.text().trim() === 'end') {
-        console.log('end trigger seen');
-        this.statsById[q.prevId].causeOf.add('END');
-        this.statsByLine[q.prevLine].causeOf.add('END');
-        continue;
-      }
-
       const id = q.node.elem.attr('id') || q.prevId;
       const line = parseInt(q.node.elem.attr('data-line'), 10);
       console.log('Working in node ' + id + ' line ' + line);
@@ -95,7 +85,16 @@ export class Crawler {
       // This happens if for some reason line numbers weren't calculated for this quest.
       // Don't traverse farther here, as it'll throw off our stats generation.
       if (isNaN(line)) {
-        this.statsById[q.prevId].causeOf.add('UNMARKED_NODE')
+        this.statsById[q.prevId].causeOf.add('INVALID_NODE');
+        this.statsByLine[q.prevLine].causeOf.add('INVALID_NODE');
+        continue;
+      }
+
+      // This happens when we hit the end of a quest.
+      if (q.node.getTag() === 'trigger' && q.node.elem.text().trim() === 'end') {
+        console.log('end trigger seen');
+        this.statsById[q.prevId].causeOf.add('END');
+        this.statsByLine[q.prevLine].causeOf.add('END');
         continue;
       }
 
@@ -117,7 +116,7 @@ export class Crawler {
           causeOf: new Set(),
           minPathActions: this.statsById[q.prevId].minPathActions + 1,
           maxPathActions: this.statsById[q.prevId].maxPathActions + 1,
-          numInternalStates: 0
+          numInternalStates: 1,
         };
       }
       if (this.statsByLine[line] === undefined) {
@@ -126,7 +125,7 @@ export class Crawler {
           causeOf: new Set(),
           minPathActions: this.statsByLine[q.prevLine].minPathActions + 1,
           maxPathActions: this.statsByLine[q.prevLine].maxPathActions + 1,
-          numInternalStates: 0
+          numInternalStates: 0,
         };
       }
 
@@ -142,8 +141,8 @@ export class Crawler {
         // - path actions
         this.statsById[id].maxPathActions = Math.max(this.statsById[id].maxPathActions, (this.statsById[q.prevId].maxPathActions || 0) + 1);
         this.statsById[id].minPathActions = Math.min(this.statsById[id].minPathActions, (this.statsById[q.prevId].minPathActions || 0) + 1);
-        this.statsById[id].resultOf.add(q.prevNodeStr);
-        this.statsById[q.prevId].causeOf.add(nstr);
+        this.statsById[id].resultOf.add(q.prevId);
+        this.statsById[q.prevId].causeOf.add(id);
       } else {
         // We're still within the same ID. Increment numInternalStates.
         this.statsById[id].numInternalStates++;

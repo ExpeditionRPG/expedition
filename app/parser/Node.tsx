@@ -78,7 +78,8 @@ export class ParserNode {
   }
 
   getTag(): string {
-    return this.elem.get(0).tagName.toLowerCase();
+    const e = this.elem.get(0);
+    return (e) ? e.tagName.toLowerCase() : null;
   }
 
   getVisibleKeys(): (string|number)[] {
