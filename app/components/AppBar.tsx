@@ -13,8 +13,9 @@ export interface AppBarStateProps {
 }
 
 export interface AppBarDispatchProps {
-  handleFilterChange: (name: string, value: string | number) => void;
   downloadCards: () => void;
+  handleFilterChange: (name: string, value: string | number) => void;
+  openHelp: () => void;
 }
 
 export interface AppBarProps extends AppBarStateProps, AppBarDispatchProps {};
@@ -29,8 +30,10 @@ class AppBar extends React.Component<AppBarProps, {}> {
       const filter = this.props.filters[name];
       const options = this.props.filters[name].options.map((option: any, index: number) => {
         let text = option;
+        // For "all" default values, nicen up their text presentation to users
         if (typeof option === 'string' && option.toLowerCase() === 'all') {
           text = 'All ' + name + ((['s', 'x'].indexOf(name[name.length-1]) !== -1) ? 'es' : 's');
+        // For sources, remove the ":LONGIDSTRING" and just show the user the name of the source
         } else if (name === 'source') {
           text = text.split(':')[0];
         }
@@ -61,7 +64,7 @@ class AppBar extends React.Component<AppBarProps, {}> {
           <IconButton tooltip="Reload Card Data" onTouchTap={this.props.downloadCards}>
             <AutoRenew />
           </IconButton>
-          <IconButton tooltip="Help" onTouchTap={() => { window.open('https://github.com/Fabricate-IO/expedition-cards/blob/master/CARD-CREATION.md'); } }>
+          <IconButton tooltip="Help" onTouchTap={this.props.openHelp}>
             <HelpOutline />
           </IconButton>
         </ToolbarGroup>

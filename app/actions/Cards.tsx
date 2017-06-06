@@ -78,8 +78,9 @@ export function cleanCardData(card: CardType) {
     return str.replace(/(.*:)/g, (whole: string, capture: string) => `<strong>${capture}</strong>`);
   }
 
+  const brPadded = '<br class="padded"/>';
+  const br = '<br />';
   Object.keys(card).forEach((property: string) => {
-
     if (card[property] === '-') { // blank '-' proprties
       card[property] = '';
     } else if (typeof card[property] === 'string') {
@@ -91,31 +92,41 @@ export function cleanCardData(card: CardType) {
       // otherwise just a normal BR
       card[property] = card[property].replace(/(\n(<strong>))|((<\/strong>)\n)|(\n(OR)\n)|(\n\n)|(\n)/mg, (whole: string) => {
         if (whole.indexOf('<strong>') !== -1) {
-          return '<br class="padded"/>' + whole;
+          return brPadded + whole;
         } else if (whole.indexOf('</strong>') !== -1) {
-          return whole + '<br class="padded"/>';
+          return whole + brPadded;
         } else if (whole.indexOf('OR') !== -1) {
-          return '<br class="padded"/>' + whole + '<br class="padded"/>';
+          return brPadded + whole + brPadded;
         } else if (whole.indexOf('\n\n') !== -1) {
-          return whole + '<br class="padded" />';
+          return whole + brPadded;
         } else {
-          return whole + '<br />';
+          return whole + br;
         }
       });
 
       // Expand &macro's
       card[property] = card[property].replace(/&[a-zA-Z0-9;]*/mg, (match: string) => {
         switch (match.substring(1)) {
-          case 'crithit': return '#roll <span class="symbol">&ge;</span> 20';
-          case 'hit': return '#roll <span class="symbol">&ge;</span> $risk';
-          case 'miss': return '#roll <span class="symbol">&lt;</span> $risk';
-          case 'critmiss': return '#roll <span class="symbol">&le;</span> 1';
+          case 'crithit':
+            return '#roll <span class="symbol">&ge;</span> 20';
+          case 'hit':
+            return '#roll <span class="symbol">&ge;</span> $risk';
+          case 'miss':
+            return '#roll <span class="symbol">&lt;</span> $risk';
+          case 'critmiss':
+            return '#roll <span class="symbol">&le;</span> 1';
           // >, <, etc
-          case 'geq;': return '≥';
-          case 'lt;': return '<';
-          case 'leq;': return '≤';
-          case 'gt;': return '>';
-          default: return 'BROKEN MACRO: ' + match.substring(1);
+          case 'geq;':
+            return '≥';
+          case 'lt;':
+            return '<';
+          case 'leq;':
+            return '≤';
+          case 'gt;':
+            return '>';
+          default:
+            console.log('BROKEN MACRO:', match.substring(1), 'Card:', card);
+            return match.substring(1);
         }
       });
     }

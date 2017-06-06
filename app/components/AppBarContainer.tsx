@@ -20,6 +20,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AppBa
     handleFilterChange(name: string, value: string | number): void {
       dispatch(FilterChange(name, value));
     },
+    openHelp: () => {
+      window.open('https://github.com/Fabricate-IO/expedition-cards/blob/master/CARD-CREATION.md');
+    },
   };
 }
 

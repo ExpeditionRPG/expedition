@@ -17,8 +17,9 @@ export function FilterChange(name: string, value: string | number): ((dispatch: 
     if (name === 'source') {
       dispatch(DownloadCards());
     } else {
-      dispatch(CardsFilter(getStore().getState().filters));
-      dispatch(FiltersCalculate(getStore().getState().cards.filtered));
+      const state = getStore().getState();
+      dispatch(CardsFilter(state.filters));
+      dispatch(FiltersCalculate(state.cards.filtered));
     }
   }
 }
