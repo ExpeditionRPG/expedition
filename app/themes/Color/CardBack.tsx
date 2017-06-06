@@ -1,9 +1,9 @@
 import * as React from 'react'
 import {romanize, healthCounter} from '../../helpers'
-import {CardProps} from '../../components/Card'
+import {CardType} from '../../reducers/StateTypes'
 
 
-export default class CardBack extends React.Component<CardProps, {}> {
+export default class CardBack extends React.Component<CardType, {}> {
   render() {
     const card = this.props.card;
     const theme = 'BlackAndWhite';

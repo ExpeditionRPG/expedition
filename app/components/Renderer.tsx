@@ -1,5 +1,7 @@
 import * as React from 'react'
 
+import {CardType, FiltersState} from '../reducers/StateTypes'
+
 declare var require: any;
 const SVGInjector = require('svg-injector') as any;
 
@@ -16,8 +18,8 @@ const CardFronts: any = {
 
 
 export interface RendererStateProps {
-  cards: any;
-  filters: any;
+  cards: CardType[];
+  filters: FiltersState;
 }
 
 export interface RendererDispatchProps {

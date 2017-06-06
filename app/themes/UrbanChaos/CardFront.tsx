@@ -1,8 +1,8 @@
 import * as React from 'react'
-import {CardProps} from '../../components/Card'
+import {CardType} from '../../reducers/StateTypes'
 
 
-export default class CardFront extends React.Component<CardProps, {}> {
+export default class CardFront extends React.Component<CardType, {}> {
   render() {
     const card = this.props.card;
     const theme = 'UrbanChaos';

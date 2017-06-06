@@ -1,12 +1,13 @@
 import {iconString} from '../helpers'
+import {CardType, CardsState, FiltersState} from './StateTypes'
 
-export const initialState: any = {
+export const initialState: CardsState = {
   data: null, // array of cards, with .sheet = sheet name
   filtered: null, // only the cards valid with current filters
   loading: true,
 };
 
-export default function Cards(state: any = initialState, action: any): any {
+export default function Cards(state: CardsState = initialState, action: any): CardsState {
   switch (action.type) {
     case 'CARDS_LOADING':
       return Object.assign({}, state, {
@@ -27,12 +28,12 @@ export default function Cards(state: any = initialState, action: any): any {
 }
 
 
-function filterCards(cards: any[], filters: any) {
+function filterCards(cards: CardType[], filters: FiltersState) {
 
   const cardFilters = ['sheet', 'tier', 'class'].filter((filterName: string) => {
     return (filters[filterName].current !== 'All');
   });
-  cards = cards.filter((card: any) => {
+  cards = cards.filter((card: CardType) => {
     for (let i = 0; i < cardFilters.length; i++) {
       const filterName = cardFilters[i];
       const filter = filters[filterName];
@@ -41,7 +42,7 @@ function filterCards(cards: any[], filters: any) {
       }
     }
     return true;
-  }).map((card: any) => {
+  }).map((card: CardType) => {
     Object.keys(card).map((property: string) => {
       // Prepare string properties for injection:
         // Replace #icons with the theme's icon image

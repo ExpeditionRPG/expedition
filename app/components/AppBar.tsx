@@ -3,12 +3,13 @@ import IconButton from 'material-ui/IconButton'
 import MenuItem from 'material-ui/MenuItem'
 import SelectField from 'material-ui/SelectField'
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar'
-
 import AutoRenew from 'material-ui/svg-icons/action/autorenew'
 import HelpOutline from 'material-ui/svg-icons/action/help-outline'
 
+import {FiltersState} from '../reducers/StateTypes'
+
 export interface AppBarStateProps {
-  filters: any;
+  filters: FiltersState;
 }
 
 export interface AppBarDispatchProps {

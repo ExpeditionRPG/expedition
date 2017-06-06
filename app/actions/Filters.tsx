@@ -1,6 +1,7 @@
 import Redux from 'redux'
 import {CardsFilter, DownloadCards} from './Cards'
 import {getStore} from '../Store'
+import {CardType} from '../reducers/StateTypes'
 
 
 export interface FilterChangeAction extends Redux.Action {
@@ -24,9 +25,9 @@ export function FilterChange(name: string, value: string | number): ((dispatch: 
 
 export interface FiltersCalculateAction extends Redux.Action {
   type: 'FILTERS_CALCULATE'
-  cardsFiltered: any;
+  cardsFiltered: CardType[];
 }
 
-export function FiltersCalculate(cardsFiltered: any): FiltersCalculateAction {
+export function FiltersCalculate(cardsFiltered: CardType[]): FiltersCalculateAction {
   return {type: 'FILTERS_CALCULATE', cardsFiltered};
 }

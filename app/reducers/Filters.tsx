@@ -1,6 +1,8 @@
+import {CardType, FiltersState} from './StateTypes'
+
 import {getStore} from '../store'
 
-export let initialState: any = {
+export let initialState: FiltersState = {
   sheet: {
     current: 'All',
     default: 'All',
@@ -42,8 +44,8 @@ for (let key in query) {
 }
 
 
-export default function Filters(state: any = initialState, action: any) {
-  let newState: any;
+export default function Filters(state: FiltersState = initialState, action: any) {
+  let newState: FiltersState;
   switch (action.type) {
     case 'FILTER_CHANGE':
       newState = Object.assign({}, state);
@@ -73,23 +75,23 @@ export default function Filters(state: any = initialState, action: any) {
 
 // TODO if a filter is currently active / not on default, show all possible options for that filter (on unfiltered data)
 // (otherwise, because the data's been filtered already, it'll only show the current selection + all)
-function updateFilterOptions(filters: any, cards: any[]) {
+function updateFilterOptions(filters: FiltersState, cards: CardType[]) {
 
   if (cards === null) { return filters; }
 
-  filters.sheet.options = [filters.sheet.default].concat(cards.reduce((acc: any, card: any) => {
+  filters.sheet.options = [filters.sheet.default].concat(cards.reduce((acc: CardType[], card: CardType) => {
     if (acc.indexOf(card.sheet) === -1) {
       acc.push(card.sheet);
     }
     return acc;
   }, []).sort());
-  filters.class.options = [filters.class.default].concat(cards.reduce((acc: any, card: any) => {
+  filters.class.options = [filters.class.default].concat(cards.reduce((acc: CardType[], card: CardType) => {
     if (acc.indexOf(card.class) === -1 && card.class !== '' && ['Ability', 'Encounter'].indexOf(card.sheet) !== -1) {
       acc.push(card.class);
     }
     return acc;
   }, []).sort());
-  filters.tier.options = [filters.tier.default].concat(cards.reduce((acc: any, card: any) => {
+  filters.tier.options = [filters.tier.default].concat(cards.reduce((acc: CardType[], card: CardType) => {
     if (acc.indexOf(card.tier) === -1 && typeof card.tier === 'number' && ['Encounter', 'Loot'].indexOf(card.sheet) !== -1) {
       acc.push(card.tier);
     }

@@ -1,6 +1,7 @@
 import Redux from 'redux'
 import {FiltersCalculate} from './Filters'
 import {getStore} from '../Store'
+import {CardType, FiltersState} from '../reducers/StateTypes'
 
 declare var require: any;
 const Tabletop = require('tabletop') as any;
@@ -12,19 +13,19 @@ export function DownloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
       key: getStore().getState().filters.source.current.split(':')[1],
       parseNumbers: true,
       simpleSheet: true,
-      postProcess: (card: any) => {
+      postProcess: (card: CardType) => {
         // TODO parse / validate / clean the object here. Use Joi? Expose validation errors to the user
         // Note: does not have access to sheet name
         return cleanCardData(card);
       },
       callback: (data: any, tabletop: any) => {
         // Turn into an array, remove commented out / hidden cards, attach sheet name
-        let cards: any[] = [];
+        let cards: CardType[] = [];
         const sheets = tabletop.sheets();
         Object.keys(sheets).sort().forEach((sheetName: string) => {
-          cards = cards.concat(sheets[sheetName].elements.filter((card: any) => {
+          cards = cards.concat(sheets[sheetName].elements.filter((card: CardType) => {
             return (card.Comment === '' || card.hide === '');
-          }).map((card: any) => {
+          }).map((card: CardType) => {
             card.sheet = sheetName;
             return card;
           }));
@@ -47,38 +48,39 @@ export function CardsLoading(): CardsLoadingAction {
 
 export interface CardsUpdateAction extends Redux.Action {
   type: 'CARDS_UPDATE';
-  cards: any;
+  cards: CardType[];
 }
 
-export function CardsUpdate(cards: any): CardsUpdateAction {
+export function CardsUpdate(cards: CardType[]): CardsUpdateAction {
   return {type: 'CARDS_UPDATE', cards};
 }
 
 export interface CardsFilterAction extends Redux.Action {
   type: 'CARDS_FILTER';
-  filters: any;
+  filters: FiltersState;
 }
 
-export function CardsFilter(filters: any): CardsFilterAction {
+export function CardsFilter(filters: FiltersState): CardsFilterAction {
   return {type: 'CARDS_FILTER', filters};
 }
 
 
+/* PRIVATE HELPERS (exposed for testing only) */
 
-function cleanCardData(card: any) {
+export function cleanCardData(card: CardType) {
 
-  card.text = makeBold(card.text);
-  card.abilitytext = makeBold(card.abilitytext);
-  card.roll = makeBold(card.roll);
+  if (card.text) { card.text = makeBold(card.text); }
+  if (card.abilitytext) { card.abilitytext = makeBold(card.abilitytext); }
+  if (card.roll) { card.roll = makeBold(card.roll); }
 
   // bold STATEMENTS:
   function makeBold (str: string) {
-    return (str === undefined) ? str : str.replace(/(.*:)/g, (whole: string, capture: string) => `<strong>${capture}</strong>`);
+    return str.replace(/(.*:)/g, (whole: string, capture: string) => `<strong>${capture}</strong>`);
   }
 
   Object.keys(card).forEach((property: string) => {
 
-    if (card[property] === '-') { // remove '-' proprties
+    if (card[property] === '-') { // blank '-' proprties
       card[property] = '';
     } else if (typeof card[property] === 'string') {
       // replace CSV line breaks with BR's - padded if:
