@@ -14,7 +14,6 @@
     "start": "webpack-dev-server"
   },
   "dependencies": {
-    "history": "^4.6.1",
     "joi-browser": "^9.0.4",
     "material-ui": "^0.17.4",
     "node-sass": "^4.5.2",

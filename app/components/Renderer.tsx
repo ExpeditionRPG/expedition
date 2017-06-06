@@ -1,5 +1,6 @@
 import * as React from 'react'
 
+import {POKER_CARDS_PER_LETTER_PAGE} from '../Constants'
 import {CardType, FiltersState} from '../reducers/StateTypes'
 
 declare var require: any;
@@ -22,17 +23,14 @@ export interface RendererStateProps {
   filters: FiltersState;
 }
 
-export interface RendererDispatchProps {
-}
-
-export interface RendererProps extends RendererStateProps, RendererDispatchProps {};
+export interface RendererProps extends RendererStateProps {};
 
 class Renderer extends React.Component<RendererProps, {}> {
   render() {
     const cards = this.props.cards || [];
     const renderSettings = { // defaults
       bleed: false,
-      cardsPerPage: 9,
+      cardsPerPage: POKER_CARDS_PER_LETTER_PAGE,
       showFronts: true,
       showBacks: true,
       showInstructions: false,
@@ -103,6 +101,8 @@ class Renderer extends React.Component<RendererProps, {}> {
       pages.push(frontPages.shift());
       pages.push(backPages.shift());
     }
+    // Timeout pushes it to the back of the stack so that it's run after the new contents
+    // have been rendered to the page
     setTimeout(() => {
       SVGInjector(document.querySelectorAll('img.svg'), {});
     }, 1);

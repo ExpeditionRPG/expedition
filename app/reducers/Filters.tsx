@@ -1,6 +1,7 @@
+import Redux from 'redux'
 import {CardType, FiltersState} from './StateTypes'
-
 import {getStore} from '../store'
+import {FiltersCalculateAction, FilterChangeAction} from '../actions/Filters'
 
 export let initialState: FiltersState = {
   sheet: {
@@ -44,19 +45,20 @@ for (let key in query) {
 }
 
 
-export default function Filters(state: FiltersState = initialState, action: any) {
+export default function Filters(state: FiltersState = initialState, action: Redux.Action) {
   let newState: FiltersState;
   switch (action.type) {
     case 'FILTER_CHANGE':
+      const filterChange = action as FilterChangeAction;
       newState = Object.assign({}, state);
-      if (action.name === 'source' && action.value === 'Custom') {
-        action.value = window.prompt('Please enter your card sheet publish URL (cancel and hit "?" in the top right for help)', '');
-        action.value = 'Custom:' + action.value.replace('https://docs.google.com/spreadsheets/d/', '');
+      if (filterChange.name === 'source' && filterChange.value === 'Custom') {
+        filterChange.value = window.prompt('Please enter your card sheet publish URL (cancel and hit "?" in the top right for help)', '');
+        filterChange.value = 'Custom:' + filterChange.value.replace('https://docs.google.com/spreadsheets/d/', '');
         // TODO validate URL or ID, otherwise notify user + abort
       }
-      newState[action.name].current = action.value;
+      newState[filterChange.name].current = filterChange.value;
       // Update URL - don't include in URL if it's the default value
-      let query = Object.assign(qs.parse(window.location.search.substring(1)), {[action.name]: action.value});
+      let query = Object.assign(qs.parse(window.location.search.substring(1)), {[filterChange.name]: filterChange.value});
       for (let key in query) {
         if (query[key] === initialState[key].default) {
           delete query[key];
@@ -66,7 +68,7 @@ export default function Filters(state: FiltersState = initialState, action: any)
       return newState;
     case 'FILTERS_CALCULATE':
       newState = Object.assign({}, state);
-      return updateFilterOptions(newState, action.cardsFiltered);
+      return updateFilterOptions(newState, (action as FiltersCalculateAction).cardsFiltered);
     default:
       return state;
   }

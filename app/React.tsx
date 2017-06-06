@@ -3,6 +3,8 @@ import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
+
+import {DownloadCards} from './actions/Cards'
 import MainContainer from './components/MainContainer'
 import { getStore } from './Store'
 import theme from './theme'
@@ -19,11 +21,15 @@ try {
   console.log('Already injected tap event plugin');
 }
 
+const store = getStore();
+
+store.dispatch(DownloadCards());
+
 let render = () => {
   var base = document.getElementById('app');
   ReactDOM.unmountComponentAtNode(base);
   ReactDOM.render(
-    <Provider store={getStore()}>
+    <Provider store={store}>
     <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
       <MainContainer />
     </MuiThemeProvider>

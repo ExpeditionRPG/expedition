@@ -1,5 +1,7 @@
+import Redux from 'redux'
 import {iconString} from '../helpers'
 import {CardType, CardsState, FiltersState} from './StateTypes'
+import {CardsFilterAction, CardsUpdateAction} from '../actions/Cards'
 
 export const initialState: CardsState = {
   data: null, // array of cards, with .sheet = sheet name
@@ -7,7 +9,7 @@ export const initialState: CardsState = {
   loading: true,
 };
 
-export default function Cards(state: CardsState = initialState, action: any): CardsState {
+export default function Cards(state: CardsState = initialState, action: Redux.Action): CardsState {
   switch (action.type) {
     case 'CARDS_LOADING':
       return Object.assign({}, state, {
@@ -15,12 +17,12 @@ export default function Cards(state: CardsState = initialState, action: any): Ca
       });
     case 'CARDS_UPDATE':
       return Object.assign({}, state, {
-        data: action.cards,
+        data: (action as CardsUpdateAction).cards,
         loading: false,
       });
     case 'CARDS_FILTER':
       return Object.assign({}, state, {
-        filtered: filterCards(state.data, action.filters),
+        filtered: filterCards(state.data, (action as CardsFilterAction).filters),
       });
     default:
       return state;

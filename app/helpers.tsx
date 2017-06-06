@@ -1,5 +1,7 @@
 import * as React from 'react'
 
+import {MAX_COUNTER_HEALTH} from './Constants'
+
 export function icon(theme: string, name: string): JSX.Element {
   return <img className="inline_icon svg" src={`/themes/${theme}/images/icon/${name}.svg`}/>;
 }
@@ -32,16 +34,15 @@ export function romanize(num: number): string { // http://blog.stevenlevithan.co
 // TODO modernize
 export function horizontalCounter(count: number): JSX.Element {
 
-  var output = '';
-  var outputted = 0;
+  let output = [];
+  let outputted = 0;
 
   while (count >= 0) {
-
-    output += '<span>' + outputted + '</span>';
+    output.push(<span key={outputted}>{outputted}</span>);
     count--;
     outputted++;
   }
-  return <span dangerouslySetInnerHTML={{__html: output}}></span>;
+  return <span>{output}</span>;
 }
 
 // generate U-shaped healthCounters with two special cases:
@@ -56,8 +57,8 @@ export function healthCounter(health: number): JSX.Element {
   var outputtedWidth = 0;
 
   var max = false;
-  if (health >= 31) {
-    health = 31;
+  if (health >= MAX_COUNTER_HEALTH) {
+    health = MAX_COUNTER_HEALTH;
     max = true;
   }
 
