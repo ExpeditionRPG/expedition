@@ -34,7 +34,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="name">{card.name}</div>
               </header>
               <article>
-                <div>{card.effect}</div>
+                <div className="effects" dangerouslySetInnerHTML={{__html: card.effects}}></div>
               </article>
               <footer>
                 <div>{card.flavortext}</div>
@@ -42,18 +42,19 @@ export default class CardFront extends React.Component<CardType, {}> {
             </div>
           </div>
         );
-      case 'Policy':
+      case 'Politics':
+// <div className="advocates">Advocates</div>
         return (
           <div className={`card front vertical ${card.sheet} ${card.committee}`}>
             <div className="contents">
               <header>
                 <div className="name">{card.name}</div>
+                <div className="type">{card.type}{card.committee && <span className="committee"> - {card.committee}</span>}</div>
                 {card.cost !== 0 && card.cost && <span className="costs">
                   {card.cost < 0 && <span className="save">+${-1 * card.cost}M</span>}
                   {card.cost > 0 && <span className="spend">-${card.cost}M</span>}
                   &nbsp;&nbsp;
                 </span>}
-                <span className="committee">{card.committee}{card.committee === 'Finance' && ' (Any committee)'}</span>
               </header>
               <article>
                 <div className="score">
@@ -62,10 +63,6 @@ export default class CardFront extends React.Component<CardType, {}> {
                 </div>
                 {card.effects && <div className="effects" dangerouslySetInnerHTML={{__html: card.effects}}></div>}
               </article>
-              <div className="advocates">
-                <div className="for">(+) Advocates pro</div>
-                <div className="against">Advocates con (-)</div>
-              </div>
               <footer>
                 <div>{card.flavortext}</div>
               </footer>
@@ -77,14 +74,13 @@ export default class CardFront extends React.Component<CardType, {}> {
           <div className={`card front vertical ${card.sheet}`}>
             <div className="contents">
               <article>
-                <h3>Each turn, one of:</h3>
-                <p>Draw 3 proposals (max 7)</p>
+                <h3>Each quarter, one of:</h3>
+                <p>Draw 3 politics cards (max 5)</p>
                 <p>Discard 1 citizen to draw 2 and keep 1</p>
-                <p>Put forth a proposal</p>
-                <p>Place advocates on a proposal</p>
+                <p>Propose a policy</p>
                 <p>&nbsp;</p>
                 <h3>After all players:</h3>
-                <p>Increment turn tracker</p>
+                <p>Increment quarter tracker</p>
                 <p>If end of year, resolve year</p>
               </article>
             </div>

@@ -17,13 +17,15 @@ $border-weight: 1.1pt; /* note that this also needs to be changed in banner SVG 
 $footer-height: 0.5in;
 
 $text-color: #212121; /* grey900 */
+$black-faded: #616161; /* grey700 */
+$white-faded: #EEEEEE; /* grey200 */
 $text-color-white: #eee;
 $text-size-back-title: 20pt;
 $text-size-front-title: 14pt;
 $text-size-content: 12pt;
 $text-size-small: 9pt;
 
-$color-red: #BF360C; /* red900 */
+$color-red: #D84315; /* red800 */
 $color-green: #1B5E20; /* green900 */
 $color-blue: #0D47A1; /* blue900 */
 
@@ -140,7 +142,7 @@ $color-blue: #0D47A1; /* blue900 */
       }
     }
 
-    &.Policy {
+    &.Politics {
       &.Infrastructure {
         border-color: $color-red;
       }
@@ -152,25 +154,15 @@ $color-blue: #0D47A1; /* blue900 */
       }
       .advocates {
         position: absolute;
-        bottom: $border;
-        height: 0.5in + $footer-height;
+        bottom: 0.2in + $footer-height;
         left: $edge;
         right: $edge;
         font-size: $text-size-small;
-
-        .for {
-          height: 100%;
-          width: calc(50% - 1px);
-          border-right: 2px solid #ccc;
-          color: $color-green;
-          display: inline-block;
-        }
-        .against {
-          width: calc(50% - 1px);
-          display: inline-block;
-          color: $color-red;
-          text-align: right;
-        }
+        text-align: center;
+        padding: 0.18in;
+        border: 1px solid $black-faded;
+        background: $white-faded;
+        border-radius: $small;
       }
 
       footer {

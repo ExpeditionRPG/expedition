@@ -24,7 +24,7 @@ export default class CardBack extends React.Component<CardType, {}> {
             </div>
           </div>
         );
-      case 'Policy':
+      case 'Politics':
         return (
           <div className={`card back vertical ${card.sheet}`}>
             <div className="contents">
@@ -41,8 +41,8 @@ export default class CardBack extends React.Component<CardType, {}> {
                 <p>Check ongoings</p>
                 <p>Vote on policies</p>
                 <p>Score</p>
-                <p>Reset cubes + proposals</p>
-                <p>Collect taxes ($50M)</p>
+                <p>Reset cubes + policies</p>
+                <p>Collect taxes ($20M/player)</p>
                 <p>Pass the chair</p>
                 <p>&nbsp;</p>
                 <h3>Resources:</h3>
