@@ -1,7 +1,6 @@
 import Redux from 'redux'
-import {iconString} from '../helpers'
 import {CardType, CardsState, FiltersState} from './StateTypes'
-import {CardsFilterAction, CardsUpdateAction} from '../actions/Cards'
+import {CardsFilterAction, CardsUpdateAction, filterAndFormatCards} from '../actions/Cards'
 
 export const initialState: CardsState = {
   data: null,
@@ -21,40 +20,11 @@ export default function Cards(state: CardsState = initialState, action: Redux.Ac
         loading: false,
       });
     case 'CARDS_FILTER':
+      let cardsFilterAction = (action as CardsFilterAction);
       return Object.assign({}, state, {
-        filtered: filterCards(state.data, (action as CardsFilterAction).filters),
+        filtered: filterAndFormatCards(cardsFilterAction.cards, cardsFilterAction.filters),
       });
     default:
       return state;
   }
-}
-
-
-function filterCards(cards: CardType[], filters: FiltersState) {
-
-  const cardFilters = ['sheet', 'tier', 'class'].filter((filterName: string) => {
-    return (filters[filterName].current !== 'All');
-  });
-  cards = cards.filter((card: CardType) => {
-    for (let i = 0; i < cardFilters.length; i++) {
-      const filterName = cardFilters[i];
-      const filter = filters[filterName];
-      if (card[filterName] !== filter.current) {
-        return false;
-      }
-    }
-    return true;
-  }).map((card: CardType) => {
-    Object.keys(card).map((property: string) => {
-      // Prepare string properties for injection:
-      // Replace #icons with the theme's icon image
-      if (typeof card[property] === 'string') {
-        card[property] = card[property].replace(/#\w*/mg, (match: string) => {
-          return iconString(filters.theme.current, match.substring(1) + '_small');
-        });
-      }
-    });
-    return card;
-  });
-  return cards;
 }

@@ -10,7 +10,7 @@ export interface FilterChangeAction extends Redux.Action {
   value: string | number;
 }
 
-// Filter changes trigger several things, including the plain FiltersChange action
+// Filter changes trigger several things, including the actual FiltersChange action
 export function FilterChange(name: string, value: string | number): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
     if (name === 'source' && value === 'custom') {
@@ -18,13 +18,13 @@ export function FilterChange(name: string, value: string | number): ((dispatch: 
       value = window.prompt('Please enter your card sheet publish URL (see "?" in the top right for help)', '');
       value = 'Custom:' + value.replace('https://docs.google.com/spreadsheets/d/', '');
     }
-    dispatch({type: 'FILTER_CHANGE', name, value});
+    dispatch({type: 'FILTER_CHANGE', name, value}) as FilterChangeAction;
     if (name === 'source') {
       dispatch(DownloadCards());
     } else {
-      const state = getStore().getState();
-      dispatch(CardsFilter(state.filters));
-      dispatch(FiltersCalculate(state.cards.filtered));
+      const store = getStore();
+      dispatch(CardsFilter(store.getState().cards, store.getState().filters));
+      dispatch(FiltersCalculate(store.getState().cards.filtered));
     }
   }
 }

@@ -6,10 +6,6 @@ export function icon(theme: string, name: string): JSX.Element {
   return <img className="inline_icon svg" src={`/themes/${theme}/images/icon/${name}.svg`}/>;
 }
 
-export function iconString(theme: string, name: string): string {
-  return `<img class="inline_icon svg" src="/themes/${theme}/images/icon/${name}.svg" />`;
-}
-
 export function camelCase(str: string): string {
   return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (letter: string, index: number) => {
     return index === 0 ? letter.toLowerCase() : letter.toUpperCase();

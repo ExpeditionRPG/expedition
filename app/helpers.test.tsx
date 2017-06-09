@@ -1,12 +1,8 @@
 import * as React from 'react'
-import {icon, iconString, camelCase, romanize, horizontalCounter, healthCounter, lootCounter} from './helpers'
+import {icon, camelCase, romanize, horizontalCounter, healthCounter, lootCounter} from './helpers'
 
 describe('icon', () => {
   it('Returns JSX element');
-});
-
-describe('iconString', () => {
-  it('Returns HTML string');
 });
 
 describe('camelCase', () => {

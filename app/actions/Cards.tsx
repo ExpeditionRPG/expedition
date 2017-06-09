@@ -1,6 +1,8 @@
+import * as React from 'react'
 import Redux from 'redux'
 import {FiltersCalculate} from './Filters'
 import {getStore} from '../Store'
+import {icon} from '../helpers'
 import {CardType, FiltersState} from '../reducers/StateTypes'
 
 declare var require: any;
@@ -16,8 +18,10 @@ export function DownloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
       simpleSheet: true,
       postProcess: (card: CardType) => {
         // TODO parse / validate / clean the object here. Use Joi? Expose validation errors to the user
-        // Note: does not have access to sheet name
-        return cleanCardData(card);
+        // Note that we can't make too many assumptions about the data coming in if we want this to work with
+        // multiple games... unless each theme has its own validation schema!
+        // Note: doesn't yet have access to sheet name, that's assigned in callback
+        return card;
       },
       callback: (data: any, tabletop: any) => {
         // Turn into an array, remove commented out / hidden cards, attach sheet name
@@ -32,7 +36,7 @@ export function DownloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
           }));
         });
         dispatch(CardsUpdate(cards));
-        dispatch(CardsFilter(store.getState().filters));
+        dispatch(CardsFilter(store.getState.cards, store.getState().filters));
         dispatch(FiltersCalculate(store.getState().cards.filtered));
       }
     });
@@ -58,86 +62,91 @@ export function CardsUpdate(cards: CardType[]): CardsUpdateAction {
 
 export interface CardsFilterAction extends Redux.Action {
   type: 'CARDS_FILTER';
+  cards: CardType[];
   filters: FiltersState;
 }
 
-export function CardsFilter(filters: FiltersState): CardsFilterAction {
-  return {type: 'CARDS_FILTER', filters};
+export function CardsFilter(cards: CardType[], filters: FiltersState): CardsFilterAction {
+  return {type: 'CARDS_FILTER', cards, filters};
 }
 
 
-/* PRIVATE HELPERS (exposed for testing only) */
-
-export function cleanCardData(card: CardType) {
-
-  if (card.text) { card.text = makeBold(card.text); }
-  if (card.abilitytext) { card.abilitytext = makeBold(card.abilitytext); }
-  if (card.roll) { card.roll = makeBold(card.roll); }
-
-  // bold STATEMENTS:
-  function makeBold (str: string) {
-    return str.replace(/(.*:)/g, (whole: string, capture: string) => `<strong>${capture}</strong>`);
+// Filters the cards and returns them formatted based on the filters
+export function filterAndFormatCards(cards: CardType[], filters: FiltersState): CardType[] {
+  if (cards === null) {
+    return cards;
   }
 
-  const brPadded = '<br class="padded"/>';
-  const br = '<br />';
-  Object.keys(card).forEach((property: string) => {
-    if (card[property] === '-') { // blank '-' proprties
-      card[property] = '';
-    } else if (typeof card[property] === 'string') {
-      // replace CSV line breaks with BR's - padded if:
-          // above and below OR's
-          // above start of <strong>
-          // below end of </strong>
-          // double line break in CSV (\n\n)
-      // otherwise just a normal BR
-      card[property] = card[property].replace(/(\n(<strong>))|((<\/strong>)\n)|(\n(OR)\n)|(\n\n)|(\n)/mg, (whole: string) => {
-        if (whole.indexOf('<strong>') !== -1) {
-          return brPadded + whole;
-        } else if (whole.indexOf('</strong>') !== -1) {
-          return whole + brPadded;
-        } else if (whole.indexOf('OR') !== -1) {
-          return brPadded + whole + brPadded;
-        } else if (whole.indexOf('\n\n') !== -1) {
-          return whole + brPadded;
-        } else {
-          return whole + br;
-        }
-      });
-
-      // Expand &macro's
-      card[property] = card[property].replace(/&[a-zA-Z0-9;]*/mg, (match: string) => {
-        switch (match) {
-          case '&crithit':
-            return '#roll <span class="symbol">&ge;</span> 20';
-          case '&hit':
-            return '#roll <span class="symbol">&ge;</span> $risk';
-          case '&miss':
-            return '#roll <span class="symbol">&lt;</span> $risk';
-          case '&critmiss':
-            return '#roll <span class="symbol">&le;</span> 1';
-          // >, <, etc
-          case '&geq;':
-            return '≥';
-          case '&lt;':
-            return '<';
-          case '&leq;':
-            return '≤';
-          case '&gt;':
-            return '>';
-          default:
-            console.log('BROKEN MACRO:', match, 'Card:', card);
-            return match;
-        }
-      });
-
-      // Put ORs in divs
-      card[property] = card[property].replace(/OR<br \/>/g, () => {
-        return '<div class="or"><span>OR</span></div>';
-      });
-    }
-    return card[property];
+  const cardFilters = ['sheet', 'tier', 'class'].filter((filterName: string) => {
+    return (filters[filterName].current !== 'All');
   });
+  cards = cards.filter((card: CardType) => {
+    for (let i = 0; i < cardFilters.length; i++) {
+      const filterName = cardFilters[i];
+      const filter = filters[filterName];
+      if (card[filterName] !== filter.current) {
+        return false;
+      }
+    }
+    return true;
+  }).map((card: CardType) => formatCard(card, filters));
+  return cards;
+}
 
+
+const boldColonedRegex = /(.*: )/g;
+const orRegex = /\nOR\n/g; // note: caps only
+const symbolRegex = /&[#a-z0-9]{1,7};/img;
+const iconRegex = /#\w*/mg;
+const doubleLinebreak = /\n\n/mg;
+const singleLinebreak = /\n/mg; // purposefully last
+const elementifyRegex = new RegExp([
+  boldColonedRegex.source,
+  orRegex.source,
+  symbolRegex.source,
+  iconRegex.source,
+  doubleLinebreak.source,
+  singleLinebreak
+].join('|'), 'igm');
+
+// Returns each property either as a string or, if it contains icons, an array of JSX elements
+function formatCard(card: CardType, filters: FiltersState): CardType {
+  Object.keys(card).forEach((key: string) => {
+    let value = card[key];
+    if (value === '-') { // clear and skip '-' proprties
+      card[key] = '';
+    } else if (typeof value === 'string') {
+      // For each propery, split it up on anything that'll get turned into a JSX element
+      // Then walk through the array and JSX-ify as needed, leaving the rest as strings
+      // Parsing order is important here, for example \n\n vs \n
+      const values = value.split(elementifyRegex).map((str: string, index: number): string | JSX.Element => {
+        // Wrap "OR" in div for padding
+        if (orRegex.test(str)) {
+          return <div key={index} className="or">OR</div>;
+        }
+        // Bold "Declaration: "
+        if (boldColonedRegex.test(str)) {
+          return <strong key={index}>{str}</strong>
+        }
+        // Parse & wrap symbols for browser display (<, >, etc)
+        if (symbolRegex.test(str)) {
+          return <span key={index} className="symbol" dangerouslySetInnerHTML={{__html: str}}></span>;
+        }
+        if (iconRegex.test(str)) {
+          return icon(filters.theme.current, str.replace(iconRegex, (match: string) => match.substring(1) + '_small'));
+        }
+        if (doubleLinebreak.test(str)) {
+          return <br key={index} className="padded"/>;
+        }
+        if (singleLinebreak.test(str)) {
+          return <br key={index}/>;
+        }
+        return str;
+      });
+      // If there's only one item, turn it back into an item to keep filter code simpler.
+      value = (values.length === 1) ? values[0] : values;
+    }
+    card[key] = value;
+  });
   return card;
 }
