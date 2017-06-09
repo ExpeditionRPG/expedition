@@ -87,15 +87,18 @@ function parseOpString(str: string): string {
   return op[1];
 }
 
-export function updateContext(node: CheerioElement, ctx: QuestContext): QuestContext {
+export function updateContext(node: CheerioElement, ctx: QuestContext, action?: string|number): QuestContext {
   if (!node) {
     return ctx;
   }
 
   const nodeId = node.attr('id');
-  let newContext = Clone(ctx);
+  let newContext: QuestContext = Clone(ctx);
   if (nodeId) {
     newContext.views[nodeId] = (newContext.views[nodeId] || 0) + 1;
+  }
+  if (action !== undefined) {
+    newContext.path.push(action);
   }
   newContext.scope._.viewCount = defaultQuestContext().scope._.viewCount.bind(newContext);
   return newContext;

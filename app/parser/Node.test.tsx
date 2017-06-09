@@ -41,6 +41,29 @@ describe('Node', () => {
     });
   });
 
+  describe('getVisibleKeys', () => {
+    it('shows events', () => {
+      const pnode = new ParserNode(cheerio.load('<combat><event on="win"></event><event if="true" on="lose"></event></combat>')('combat'), defaultQuestContext());
+      expect (pnode.getVisibleKeys()).toEqual(['win', 'lose']);
+    });
+    it('shows choices', () => {
+      const pnode = new ParserNode(cheerio.load('<roleplay><choice text="a"></choice><choice if="true" text="b"></choice></roleplay>')('roleplay'), defaultQuestContext());
+      expect (pnode.getVisibleKeys()).toEqual([0, 1]);
+    });
+    it('hides conditionally false events', () => {
+      const pnode = new ParserNode(cheerio.load('<combat><event if="false" on="win"></event><event on="lose"></event></combat>')('combat'), defaultQuestContext());
+      expect (pnode.getVisibleKeys()).toEqual(['lose']);
+    });
+    it('hides conditionally false choices', () => {
+      const pnode = new ParserNode(cheerio.load('<roleplay><choice text="a" if="false"></choice><choice text="b"></choice></roleplay>')('roleplay'), defaultQuestContext());
+      expect (pnode.getVisibleKeys()).toEqual([0]);
+    });
+    it('is empty when no choices/events', () => {
+      const pnode = new ParserNode(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultQuestContext());
+      expect (pnode.getVisibleKeys()).toEqual([]);
+    });
+  });
+
   describe('getTag', () => {
     it('gets the tag', () => {
       expect(new ParserNode(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultQuestContext()).getTag()).toEqual('roleplay');
@@ -217,5 +240,48 @@ describe('Node', () => {
       expect(result.ctx.scope._.viewCount('foo')).toEqual(2);
       expect(result.ctx.scope._.viewCount('bar')).toEqual(1);
     });
-  })
+  });
+
+  describe('getComparisonKey', () => {
+    it('equates separate but identical contexts/node references', () => {
+      const e1 = cheerio.load('<quest><roleplay><choice><combat data-line="110"></combat></choice></roleplay></quest>')('combat');
+      const p1 = new ParserNode(e1, defaultQuestContext());
+
+      const e2 = cheerio.load('<quest><roleplay><choice><combat data-line="110"></combat></choice></roleplay></quest>')('combat');
+      const p2 = new ParserNode(e2, defaultQuestContext());
+
+      expect(p1.getComparisonKey()).toEqual(p2.getComparisonKey());
+    });
+
+    it('treats different nodes as unequal', () => {
+      const dom = cheerio.load('<quest><roleplay><choice><combat id="c1" data-line="110"></combat><combat id="c2" data-line="111"></combat></choice></roleplay></quest>');
+      const e1 = dom('#c1');
+      const p1 = new ParserNode(e1, defaultQuestContext());
+
+      const e2 = dom('#c2');
+      const p2 = new ParserNode(e2, defaultQuestContext());
+
+      expect(p1.getComparisonKey()).not.toEqual(p2.getComparisonKey());
+    });
+
+    it('treats different contexts as unequal', () => {
+      const e = cheerio.load('<quest>')('quest');
+      const c1 = defaultQuestContext();
+      c1.scope.a = 'test';
+      const p1 = new ParserNode(e, c1);
+
+      const c2 = defaultQuestContext();
+      c2.scope.a = 5;
+      const p2 = new ParserNode(e, c2);
+
+      expect(p1.getComparisonKey()).not.toEqual(p2.getComparisonKey());
+    })
+
+    it('safely handles lack of quest root', () => {
+      const e1 = cheerio.load('<roleplay><choice><combat data-line="110"></combat></choice></roleplay>')('combat');
+      const p1 = new ParserNode(e1, defaultQuestContext());
+
+      expect(p1.getComparisonKey()).toBeDefined();
+    });
+  });
 });

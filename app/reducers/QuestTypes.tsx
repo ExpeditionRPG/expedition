@@ -1,4 +1,3 @@
-
 import {getStore} from '../Store'
 import {templateScope, TemplateState} from '../cardtemplates/Template'
 
@@ -28,9 +27,16 @@ export interface QuestContext {
   // Scope is passed to the parser when rendering
   // nodes that are potentially parseable via MathJS.
   scope: any; // TODO: required fields later
-  views: any; // TODO: {string: number}
+
+  views: {[id:string]: number};
   templates: TemplateState;
+
+  // The list of choices, events, and jumps that produced this context, serialized.
+  // Given the path and original quest XML, we should be able to recreate
+  // context given this path.
+  path: (string|number)[];
 }
+
 export function defaultQuestContext(): QuestContext {
   // Caution: Scope is the API for Quest Creators.
   // New endpoints should be added carefully b/c we'll have to support them.
@@ -50,6 +56,7 @@ export function defaultQuestContext(): QuestContext {
     },
     views: {},
     templates: {},
+    path: [],
   };
 }
 

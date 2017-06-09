@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {CheerioElement} from '../reducers/StateTypes'
+import {CheerioElement, DOMElement} from '../reducers/StateTypes'
 import {QuestContext} from '../reducers/QuestTypes'
 import {updateContext, evaluateContentOps} from './Context'
 
@@ -15,14 +15,40 @@ function getNodeAttributes(e: CheerioElement): {[key:string]:string;} {
   return e.attribs || (e.get(0) as any as CheerioElement).attribs;
 }
 
+function getChildNumber(domElement: DOMElement): number {
+    var i=1;
+    while(domElement.previousSibling){
+      domElement = domElement.previousSibling;
+      i++;
+    }
+    return i;
+}
+
+function getSelector(elem: CheerioElement): string {
+  var domElement = elem.get(0);
+  var selector = '';
+  do {
+      selector = '>' + domElement.tagName + ':nth-child(' + getChildNumber(domElement) + ')' + selector;
+      domElement = domElement.parentNode;
+  } while (domElement !== null && !domElement.id && domElement.tagName.toLowerCase() !== 'quest')
+
+  if (domElement === null) {
+    return selector;
+  } else if (domElement.tagName.toLowerCase() === 'quest') {
+    return 'quest ' + selector;
+  } else {
+    return '#' + domElement.id + selector;
+  }
+}
+
 export class ParserNode {
   public elem: CheerioElement;
   public ctx: QuestContext;
   private renderedChildren: {rendered: CheerioElement, original: CheerioElement}[];
 
-  constructor(elem: CheerioElement, ctx: QuestContext) {
+  constructor(elem: CheerioElement, ctx: QuestContext, action?: string|number) {
     this.elem = elem;
-    this.ctx = updateContext(elem, ctx);
+    this.ctx = updateContext(elem, ctx, action);
     this.renderChildren();
   }
 
@@ -32,7 +58,22 @@ export class ParserNode {
   }
 
   getTag(): string {
-    return this.elem.get(0).tagName.toLowerCase();
+    const e = this.elem.get(0);
+    return (e) ? e.tagName.toLowerCase() : null;
+  }
+
+  getVisibleKeys(): (string|number)[] {
+    let choiceIdx = -1;
+    let keys: (string|number)[] = [];
+    this.loopChildren((tag, child, orig) => {
+      if (child.attr('on') !== undefined) {
+        keys.push(child.attr('on'));
+      } else if (tag === 'choice') {
+        choiceIdx++;
+        keys.push(choiceIdx);
+      }
+    });
+    return keys;
   }
 
   getNext(key?: string|number): ParserNode {
@@ -69,7 +110,7 @@ export class ParserNode {
         }
       }) || null;
     }
-    return (next) ? new ParserNode(next, this.ctx) : null;
+    return (next) ? new ParserNode(next, this.ctx, key) : null;
   }
 
   // Evaluates all content ops in-place and creates a list of
@@ -112,7 +153,7 @@ export class ParserNode {
     if (search.length === 0) {
       return null;
     }
-    return new ParserNode(search.eq(0), this.ctx);
+    return new ParserNode(search.eq(0), this.ctx, '#'+id);
   }
 
   // Loop through all rendered children. If a call to cb() returns a value
@@ -126,6 +167,31 @@ export class ParserNode {
         return v;
       }
     }
+  }
+
+  // Get a key such that a different ParserNode object with the same relative XML element
+  // and context (i.e. excluding path-specific data) will have the same key.
+  //
+  // CAVEAT: This uses the toString() method of function objects, which is implementation-dependent
+  // but in most cases returns the body of the function. It also ignores function bindings and external
+  // references, which prevent it from being a true "serialization" and instead more of a "comparison key"
+  // for visit-tracking in quest traversal.
+  getComparisonKey(): string {
+    let ctx = Clone(this.ctx);
+
+    // Strip un-useful context
+    ctx.path = undefined;
+    ctx.scope._ = undefined;
+    ctx.extern = undefined;
+
+    var ctx_json = JSON.stringify(ctx, (key, val) => {
+      return (typeof val === 'function') ? val.toString() : val;
+    });
+
+    return JSON.stringify({
+      ctx: ctx_json,
+      line: parseInt(this.elem.attr('data-line'), 10),
+    });
   }
 
   private getNextNode(elem?: CheerioElement): CheerioElement {
@@ -155,7 +221,7 @@ export class ParserNode {
     }
   }
 
-  private getRootElem(): CheerioElement {
+  getRootElem(): CheerioElement {
     let elem = this.elem;
     while (elem && elem.get(0) && elem.get(0).tagName.toLowerCase() !== 'quest') {
       elem = elem.parent();
