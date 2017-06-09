@@ -84,7 +84,7 @@ exports.search = function(userId, params, callback) {
           CASE
             WHEN ratingcount < 5 THEN 0
             ELSE ratingavg
-          END`, true);
+          END DESC NULLS LAST`, null);
       } else {
         query = query.order(params.order.substr(1), (params.order[0] === '+'));
       }
