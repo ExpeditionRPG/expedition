@@ -1,3 +1,2 @@
 describe('Main', () => {
-  it('TODO');
 });

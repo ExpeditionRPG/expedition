@@ -1,3 +1,2 @@
 describe('AppBarContainer', () => {
-  it('TODO');
 });

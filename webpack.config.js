@@ -37,22 +37,6 @@ module.exports = {
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /node_modules/ },
       { enforce: 'post', test: /\.tsx$/, loaders: ['babel-loader'], exclude: /node_modules/ },
-
-
-      // { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
-      // { test: /\.(gif|png|jpe?g|svg)$/i, loaders: ['file-loader'] },
-      // { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/ },
-      // {
-      //   enforce: 'post',
-      //   test: /\.jsx$/,
-      //   exclude: /node_modules/,
-      //   use: {
-      //     loader: 'babel-loader',
-      //     options: {
-      //       presets: ["es2015", "react"],
-      //     },
-      //   },
-      // }
     ],
   },
   plugins: [

@@ -1,3 +1,3 @@
 describe('Filters reducer', () => {
-  it('TODO');
+  it('updates filter options');
 });

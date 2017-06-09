@@ -1,3 +1,2 @@
 describe('MainContainer', () => {
-  it('TODO');
 });

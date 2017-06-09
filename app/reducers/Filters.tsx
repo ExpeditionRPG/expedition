@@ -51,11 +51,6 @@ export default function Filters(state: FiltersState = initialState, action: Redu
     case 'FILTER_CHANGE':
       const filterChange = action as FilterChangeAction;
       newState = Object.assign({}, state);
-      if (filterChange.name === 'source' && filterChange.value === 'Custom') {
-        filterChange.value = window.prompt('Please enter your card sheet publish URL (cancel and hit "?" in the top right for help)', '');
-        filterChange.value = 'Custom:' + filterChange.value.replace('https://docs.google.com/spreadsheets/d/', '');
-        // TODO validate URL or ID, otherwise notify user + abort
-      }
       newState[filterChange.name].current = filterChange.value;
       // Update URL - don't include in URL if it's the default value
       let query = Object.assign(qs.parse(window.location.search.substring(1)), {[filterChange.name]: filterChange.value});

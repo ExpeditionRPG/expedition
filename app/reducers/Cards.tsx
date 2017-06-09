@@ -4,8 +4,8 @@ import {CardType, CardsState, FiltersState} from './StateTypes'
 import {CardsFilterAction, CardsUpdateAction} from '../actions/Cards'
 
 export const initialState: CardsState = {
-  data: null, // array of cards, with .sheet = sheet name
-  filtered: null, // only the cards valid with current filters
+  data: null,
+  filtered: null,
   loading: true,
 };
 
@@ -47,7 +47,7 @@ function filterCards(cards: CardType[], filters: FiltersState) {
   }).map((card: CardType) => {
     Object.keys(card).map((property: string) => {
       // Prepare string properties for injection:
-        // Replace #icons with the theme's icon image
+      // Replace #icons with the theme's icon image
       if (typeof card[property] === 'string') {
         card[property] = card[property].replace(/#\w*/mg, (match: string) => {
           return iconString(filters.theme.current, match.substring(1) + '_small');

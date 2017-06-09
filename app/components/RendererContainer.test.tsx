@@ -1,3 +1,2 @@
 describe('RendererContainer', () => {
-  it('TODO');
 });

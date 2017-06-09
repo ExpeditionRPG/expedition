@@ -1,3 +1,7 @@
 describe('Filters actions', () => {
-  it('TODO');
+  it('fetches user input when Custom source filter chosen');
+
+  it('reloads from source when source is changed');
+
+  it('recalculates cards and filters when filter changes');
 });

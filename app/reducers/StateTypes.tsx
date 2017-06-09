@@ -1,10 +1,11 @@
 export interface CardType {
+  // all cards have sheet: string as the tabletop sheet they originated from
   [key: string]: any;
 }
 
 export interface CardsState {
-  data: CardType[],
-  filtered: CardType[],
+  data: CardType[], // array of all downloaded cards
+  filtered: CardType[], // only cards valid with current filters
   loading: boolean,
 }
 

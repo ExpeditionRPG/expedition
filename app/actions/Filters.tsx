@@ -13,6 +13,11 @@ export interface FilterChangeAction extends Redux.Action {
 // Filter changes trigger several things, including the plain FiltersChange action
 export function FilterChange(name: string, value: string | number): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
+    if (name === 'source' && value === 'custom') {
+      // TODO validate URL or ID, otherwise notify user + abort
+      value = window.prompt('Please enter your card sheet publish URL (see "?" in the top right for help)', '');
+      value = 'Custom:' + value.replace('https://docs.google.com/spreadsheets/d/', '');
+    }
     dispatch({type: 'FILTER_CHANGE', name, value});
     if (name === 'source') {
       dispatch(DownloadCards());

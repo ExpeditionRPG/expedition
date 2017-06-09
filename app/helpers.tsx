@@ -11,7 +11,7 @@ export function iconString(theme: string, name: string): string {
 }
 
 export function camelCase(str: string): string {
-  return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (letter, index) => {
+  return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (letter: string, index: number) => {
     return index === 0 ? letter.toLowerCase() : letter.toUpperCase();
   }).replace(/\s+/g, '').replace(/'/, '');
 }
@@ -57,8 +57,9 @@ export function healthCounter(health: number): JSX.Element {
   var outputtedWidth = 0;
 
   var max = false;
-  if (health >= MAX_COUNTER_HEALTH) {
-    health = MAX_COUNTER_HEALTH;
+  if (health > MAX_COUNTER_HEALTH) {
+    health = MAX_COUNTER_HEALTH + 1; // because the loop assumes you'll have the final value displayed
+      // separately with a heart (as in, Encounter fronts), we have to force it to show all values here
     max = true;
   }
 

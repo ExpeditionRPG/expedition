@@ -8,9 +8,10 @@ const Tabletop = require('tabletop') as any;
 
 export function DownloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
+    const store = getStore();
     dispatch(CardsLoading());
     Tabletop.init({
-      key: getStore().getState().filters.source.current.split(':')[1],
+      key: store.getState().filters.source.current.split(':')[1],
       parseNumbers: true,
       simpleSheet: true,
       postProcess: (card: CardType) => {
@@ -31,8 +32,8 @@ export function DownloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
           }));
         });
         dispatch(CardsUpdate(cards));
-        dispatch(CardsFilter(getStore().getState().filters));
-        dispatch(FiltersCalculate(getStore().getState().cards.filtered));
+        dispatch(CardsFilter(store.getState().filters));
+        dispatch(FiltersCalculate(store.getState().cards.filtered));
       }
     });
   }
@@ -106,38 +107,37 @@ export function cleanCardData(card: CardType) {
 
       // Expand &macro's
       card[property] = card[property].replace(/&[a-zA-Z0-9;]*/mg, (match: string) => {
-        switch (match.substring(1)) {
-          case 'crithit':
+        switch (match) {
+          case '&crithit':
             return '#roll <span class="symbol">&ge;</span> 20';
-          case 'hit':
+          case '&hit':
             return '#roll <span class="symbol">&ge;</span> $risk';
-          case 'miss':
+          case '&miss':
             return '#roll <span class="symbol">&lt;</span> $risk';
-          case 'critmiss':
+          case '&critmiss':
             return '#roll <span class="symbol">&le;</span> 1';
           // >, <, etc
-          case 'geq;':
+          case '&geq;':
             return '≥';
-          case 'lt;':
+          case '&lt;':
             return '<';
-          case 'leq;':
+          case '&leq;':
             return '≤';
-          case 'gt;':
+          case '&gt;':
             return '>';
           default:
-            console.log('BROKEN MACRO:', match.substring(1), 'Card:', card);
-            return match.substring(1);
+            console.log('BROKEN MACRO:', match, 'Card:', card);
+            return match;
         }
+      });
+
+      // Put ORs in divs
+      card[property] = card[property].replace(/OR<br \/>/g, () => {
+        return '<div class="or"><span>OR</span></div>';
       });
     }
     return card[property];
   });
-
-  if (card.Effect) { // put ORs in divs ... possibly move into the above newline find and replace?
-    card.Effect = card.Effect.replace(/OR<br \/>/g, () => {
-      return '<div class="or"><span>OR</span></div>';
-    });
-  }
 
   return card;
 }

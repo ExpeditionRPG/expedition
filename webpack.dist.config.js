@@ -1,5 +1,6 @@
 const Webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   entry: [
@@ -20,18 +21,6 @@ module.exports = {
         test: /\.(gif|png|jpe?g|svg)$/i,
         loaders: [
           'file-loader',
-          // {
-          //   loader: 'image-webpack-loader',
-          //   query: {
-          //     progressive: true,
-          //     optimizationLevel: 7,
-          //     interlaced: false,
-          //     pngquant: {
-          //       quality: '65-90',
-          //       speed: 4
-          //     }
-          //   }
-          // }
         ]
       },
       { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/ },
@@ -59,6 +48,6 @@ module.exports = {
         { from: 'app/themes', to: 'themes' },
     ]),
     new Webpack.optimize.AggressiveMergingPlugin(),
-    // new Webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
+    new UglifyJSPlugin({minimize: true, mangle: false}),
   ],
 };
