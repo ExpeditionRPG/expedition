@@ -16,7 +16,7 @@ function getNodeAttributes(e: CheerioElement): {[key:string]:string;} {
 }
 
 function getChildNumber(domElement: DOMElement): number {
-    var i=1;;
+    var i=1;
     while(domElement.previousSibling){
       domElement = domElement.previousSibling;
       i++;

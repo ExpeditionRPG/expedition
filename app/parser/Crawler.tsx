@@ -4,8 +4,8 @@ import {handleAction} from './Handlers'
 export interface CrawlerAction {}
 
 export interface CrawlerStats {
-  resultOf: Set<string>;
-  causeOf: Set<string>;
+  inputs: Set<string>;
+  outputs: Set<string>;
   minPathActions: number;
   maxPathActions: number;
   numInternalStates: number;
@@ -64,10 +64,10 @@ export class Crawler {
 
     // Initialize stats with quest root to obviate need for undefined checking.
     this.statsById = {
-      'QUEST_START': {resultOf: new Set(), causeOf: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1}
+      'QUEST_START': {inputs: new Set(), outputs: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1}
     };
     this.statsByLine = {
-      '-1': {resultOf: new Set(), causeOf: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1}
+      '-1': {inputs: new Set(), outputs: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1}
     };
 
     let queue: {node: ParserNode, prevNodeStr: string, prevId: string, prevLine: number}[] = [{
@@ -83,15 +83,15 @@ export class Crawler {
       // This happens if for some reason line numbers weren't calculated for this quest.
       // Don't traverse farther here, as it'll throw off our stats generation.
       if (isNaN(line)) {
-        this.statsById[q.prevId].causeOf.add('INVALID_NODE');
-        this.statsByLine[q.prevLine].causeOf.add('INVALID_NODE');
+        this.statsById[q.prevId].outputs.add('INVALID_NODE');
+        this.statsByLine[q.prevLine].outputs.add('INVALID_NODE');
         continue;
       }
 
       // This happens when we hit the end of a quest.
       if (q.node.getTag() === 'trigger' && q.node.elem.text().trim() === 'end') {
-        this.statsById[q.prevId].causeOf.add('END');
-        this.statsByLine[q.prevLine].causeOf.add('END');
+        this.statsById[q.prevId].outputs.add('END');
+        this.statsByLine[q.prevLine].outputs.add('END');
         continue;
       }
 
@@ -108,8 +108,8 @@ export class Crawler {
       // Create stats for this line/id if they don't already exist
       if (this.statsById[id] === undefined) {
         this.statsById[id] = {
-          resultOf: new Set(),
-          causeOf: new Set(),
+          inputs: new Set(),
+          outputs: new Set(),
           minPathActions: this.statsById[q.prevId].minPathActions + 1,
           maxPathActions: this.statsById[q.prevId].maxPathActions + 1,
           numInternalStates: 1,
@@ -117,8 +117,8 @@ export class Crawler {
       }
       if (this.statsByLine[line] === undefined) {
         this.statsByLine[line] = {
-          resultOf: new Set(),
-          causeOf: new Set(),
+          inputs: new Set(),
+          outputs: new Set(),
           minPathActions: this.statsByLine[q.prevLine].minPathActions + 1,
           maxPathActions: this.statsByLine[q.prevLine].maxPathActions + 1,
           numInternalStates: 0,
@@ -137,8 +137,8 @@ export class Crawler {
         // - path actions
         this.statsById[id].maxPathActions = Math.max(this.statsById[id].maxPathActions, (this.statsById[q.prevId].maxPathActions || 0) + 1);
         this.statsById[id].minPathActions = Math.min(this.statsById[id].minPathActions, (this.statsById[q.prevId].minPathActions || 0) + 1);
-        this.statsById[id].resultOf.add(q.prevId);
-        this.statsById[q.prevId].causeOf.add(id);
+        this.statsById[id].inputs.add(q.prevId);
+        this.statsById[q.prevId].outputs.add(id);
       } else {
         // We're still within the same ID. Increment numInternalStates.
         this.statsById[id].numInternalStates++;
@@ -147,8 +147,8 @@ export class Crawler {
       // Update line stats for this line & prev line
       this.statsByLine[line].maxPathActions = Math.max(this.statsByLine[line].maxPathActions, (this.statsByLine[q.prevLine].maxPathActions || 0) + 1);
       this.statsByLine[line].minPathActions = Math.min(this.statsByLine[line].minPathActions, (this.statsByLine[q.prevLine].minPathActions || 0) + 1);
-      lineStats.resultOf.add(q.prevNodeStr);
-      this.statsByLine[q.prevLine].causeOf.add(nstr);
+      lineStats.inputs.add(q.prevNodeStr);
+      this.statsByLine[q.prevLine].outputs.add(nstr);
 
       maxPath = Math.max(maxPath, this.statsByLine[line].maxPathActions);
 
@@ -161,8 +161,8 @@ export class Crawler {
       for (let k of keys) {
         let node = handleAction(q.node, k);
         if (node === undefined || node === null) {
-          this.statsById[id].causeOf.add('IMPLICIT_END');
-          this.statsByLine[line].causeOf.add('IMPLICIT_END');
+          this.statsById[id].outputs.add('IMPLICIT_END');
+          this.statsByLine[line].outputs.add('IMPLICIT_END');
           continue;
         }
 

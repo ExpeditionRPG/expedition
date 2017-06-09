@@ -1,4 +1,3 @@
-import {encounters} from '../Encounters'
 import {getStore} from '../Store'
 import {templateScope, TemplateState} from '../cardtemplates/Template'
 

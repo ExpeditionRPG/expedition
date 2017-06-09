@@ -26,13 +26,13 @@ describe('Crawler', () => {
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
       const stats = crawler.getStatsForLine(1);
-      const prevLine = JSON.parse(Array.from(stats.resultOf)[0]).line;
+      const prevLine = JSON.parse(Array.from(stats.inputs)[0]).line;
 
       expect(prevLine).toEqual(0);
-      expect(Array.from(stats.causeOf)).toEqual(['END']);
+      expect(Array.from(stats.outputs)).toEqual(['END']);
 
       const stats2 = crawler.getStatsForLine(2);
-      expect(Array.from(stats2.causeOf)).toEqual(['END']);
+      expect(Array.from(stats2.outputs)).toEqual(['END']);
     });
 
     it('handles a roleplay node', () => {
@@ -53,7 +53,7 @@ describe('Crawler', () => {
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
       // Note that hidden roleplay node isn't shown
-      expect(Array.from(crawler.getStatsForId('A1').causeOf)).toEqual(['END']);
+      expect(Array.from(crawler.getStatsForId('A1').outputs)).toEqual(['END']);
     });
 
     it('handles gotos', () => {
@@ -77,7 +77,7 @@ describe('Crawler', () => {
       const crawler = new Crawler();
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
-      expect(Array.from(crawler.getStatsForId('B4').causeOf)).toEqual(['END']);
+      expect(Array.from(crawler.getStatsForId('B4').outputs)).toEqual(['END']);
     });
 
     it('tracks implicit end triggers', () => {
@@ -85,7 +85,7 @@ describe('Crawler', () => {
       const crawler = new Crawler();
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
-      expect(Array.from(crawler.getStatsForId('A1').causeOf)).toEqual(['IMPLICIT_END']);
+      expect(Array.from(crawler.getStatsForId('A1').outputs)).toEqual(['IMPLICIT_END']);
     });
 
     it('safely handles nodes without line annotations', () => {
@@ -115,7 +115,7 @@ describe('Crawler', () => {
         const crawler = new Crawler();
         crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
-        const nextIDs = Array.from(crawler.getStatsForId('cond').causeOf).sort();
+        const nextIDs = Array.from(crawler.getStatsForId('cond').outputs).sort();
         expect(nextIDs).toEqual(['END', 'loop']);
     });
 
@@ -137,7 +137,7 @@ describe('Crawler', () => {
       const crawler = new Crawler();
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
-      expect(Array.from(crawler.getStatsForLine(2).causeOf)).toEqual(['INVALID_NODE']);
+      expect(Array.from(crawler.getStatsForLine(2).outputs)).toEqual(['INVALID_NODE']);
     });
 
     it('handles node without data-line attribute', () => {
@@ -145,7 +145,7 @@ describe('Crawler', () => {
       const crawler = new Crawler();
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
-      expect(Array.from(crawler.getStatsForLine(2).causeOf)).toEqual(['INVALID_NODE']);
+      expect(Array.from(crawler.getStatsForLine(2).outputs)).toEqual(['INVALID_NODE']);
     });
   });
 
@@ -180,12 +180,12 @@ describe('Crawler', () => {
       const stats2 = crawler.getStatsForId('ID2');
 
       // Next lines are ID or END/IMPLICIT_END only.
-      const nextIDs = Array.from(stats1.causeOf).sort();
+      const nextIDs = Array.from(stats1.outputs).sort();
       expect(nextIDs).toEqual(['ID2', 'ID3']);
       expect(stats1.numInternalStates).toEqual(4);
 
       // Prev lines are ID only.
-      const prevIDs = Array.from(stats2.resultOf).sort();
+      const prevIDs = Array.from(stats2.inputs).sort();
       expect(prevIDs).toEqual(['ID1']);
     });
   });
