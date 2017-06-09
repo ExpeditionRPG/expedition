@@ -4,6 +4,11 @@ Minion pro font requires typekit snippet
 
 @import 'cards.scss';
 
+$huge: 64px;
+$large: 32px;
+$base: 16px;
+$small: 8px;
+
 a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
 
 body {
@@ -26,14 +31,20 @@ body {
   background: white;
 }
 
+.filter {
+  min-width: 80px;
+  max-width: 140px;
+  margin-right: $small;
+}
+
 #renderer {
-  margin-top: 20px;
+  margin-top: $base;
   z-index: -10000;
 
   &.bleed {
     $bleed: 0.125in; /* background art should extend to here */
-    $card-height: 3.5in + 2 * $bleed;
-    $card-width: 2.5in + 2 * $bleed;
+    $card-height: $card-height + 2 * $bleed;
+    $card-width: $card-width + 2 * $bleed;
 
     .printInstructions {
       display: none !important;
@@ -78,7 +89,7 @@ body {
   height: 8in;
   background: white;
   margin: auto;
-  font-size: 16px;
+  font-size: $base;
   line-height: 1.2;
   page-break-after: always;
 
@@ -106,7 +117,7 @@ body {
     list-style-type: upper-roman;
 
     li {
-      margin-top: 0.25in;
+      margin-top: $base;
     }
   }
 }
@@ -117,10 +128,10 @@ body {
 
   position: fixed;
   top: 0;
-  left: 10px;
-  margin: 10px auto;
-  width: 60px;
-  height: 60px;
+  left: $base;
+  margin: $base auto;
+  width: $huge;
+  height: $huge;
   color: white;
 
   .sk-child {

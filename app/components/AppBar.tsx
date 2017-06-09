@@ -41,11 +41,12 @@ class AppBar extends React.Component<AppBarProps, {}> {
       });
       return (
         <SelectField
+          className="filter"
           key={index}
           value={filtersCurrent[name]}
           floatingLabelText={name}
           onChange={(e, i, v) => { this.props.handleFilterChange(name, v); }}
-          style={{width: 'auto', minWidth: 80, maxWidth: 250}}
+          autoWidth={true}
         >
           {options}
         </SelectField>
@@ -54,13 +55,12 @@ class AppBar extends React.Component<AppBarProps, {}> {
     return (
       <Toolbar className="printHide">
         <ToolbarGroup>
-          <ToolbarTitle text="Expedition Card Creator" />
+          <ToolbarTitle text="Expedition" />
         </ToolbarGroup>
         <ToolbarGroup lastChild={true}>
-          <div id="filters">
-            <span id="dynamicFilters"></span>
-          </div>
-          {filters}
+
+            {filters}
+
           <IconButton tooltip="Reload Card Data" onTouchTap={this.props.downloadCards}>
             <AutoRenew />
           </IconButton>
