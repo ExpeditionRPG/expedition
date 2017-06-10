@@ -1,6 +1,7 @@
 import * as React from 'react'
-import DropDownMenu from 'material-ui/DropDownMenu'
+import FlatButton from 'material-ui/FlatButton'
 import MenuItem from 'material-ui/MenuItem'
+import SelectField from 'material-ui/SelectField'
 import TextField from 'material-ui/TextField'
 
 import Button from './base/Button'
@@ -10,8 +11,9 @@ import StarRating from './base/StarRating'
 
 import {SearchSettings, SearchPhase, SearchState, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
+import {GenreType, CONTENT_RATINGS, PLAYTIME_MINUTES_BUCKETS, SUMMARY_MAX_LENGTH} from '../Constants'
 
-import {SUMMARY_MAX_LENGTH} from '../Constants'
+const Moment = require('moment');
 
 export interface SearchStateProps extends SearchState {
   numPlayers: number;
@@ -52,48 +54,127 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
     this.setState({[attrib]: value});
   }
 
+// TODO once Material UI adds support for theming SelectFields (https://github.com/callemall/material-ui/issues/7044)
+// then remove the clutter here / move to Theme.tsx
   render() {
+    const rating = CONTENT_RATINGS[this.state.contentrating];
+    const timeBuckets = PLAYTIME_MINUTES_BUCKETS.map((minutes: number, index: number) => {
+      return <MenuItem key={index} value={minutes} primaryText={`${minutes} min`}/>;
+    });
+    // TODO Until we have at least 3 quests in all genres, only show limited options
+    const visibleGenres: GenreType[] = ['Comedy', 'Drama'];
     return (
-      <Card title="Public Quests" icon="adventurer">
-        <TextField
-          className="textfield"
-          fullWidth={true}
-          hintText="text search - title, author, ID"
-          onChange={(e: any) => this.onChange('text', e.target.value)}
-          underlineShow={false}
-          value={this.state.text}
-        />
-        <div>
-          for {this.props.numPlayers} adventurer{this.props.numPlayers > 1 ? 's' : ''} (changeable in settings)
-        </div>
-        <div>
-          published within
-          <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('age', v)} value={this.state.age}>
-            <MenuItem value="inf" primaryText="all time"/>
-            <MenuItem value="31536000" primaryText="the past year"/>
-            <MenuItem value="2592000" primaryText="the past month"/>
-            <MenuItem value="604800" primaryText="the past week"/>
-            <MenuItem value="86400" primaryText="the past 24 hours"/>
-            <MenuItem value="3600" primaryText="the past hour"/>
-          </DropDownMenu>
-        </div>
-        <div>
-          ordered by
-          <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('order', v)} value={this.state.order}>
+      <Card title="Quest Search">
+        <div className="searchForm">
+          <FlatButton disabled={true}>
+            For {this.props.numPlayers} adventurer{this.props.numPlayers > 1 ? 's' : ''} (changeable in settings)
+          </FlatButton>
+          <TextField
+            className="textfield"
+            fullWidth={true}
+            hintText="text search - title, author, ID"
+            onChange={(e: any) => this.onChange('text', e.target.value)}
+            underlineShow={false}
+            value={this.state.text}
+          />
+          <SelectField
+            className="selectfield"
+            floatingLabelText="Sort by"
+            onChange={(e: any, i: any, v: string) => this.onChange('order', v)}
+            value={this.state.order}
+            style={{color: 'black'}}
+            floatingLabelStyle={{color: 'black'}}
+            iconStyle={{fill: 'black'}}
+            underlineStyle={{borderColor: 'black'}}
+          >
             <MenuItem value="-created" primaryText="Newest"/>
-            <MenuItem value="+title" primaryText="Title"/>
-            <MenuItem value="-minTimeMinutes" primaryText="Play Time (longest)"/>
-            <MenuItem value="+maxTimeMinutes" primaryText="Play Time (shortest)"/>
-          </DropDownMenu>
+            <MenuItem value="+ratingavg" primaryText="Highest rated"/>
+            <MenuItem value="+title" primaryText="Title (A-Z)"/>
+            <MenuItem value="-title" primaryText="Title (Z-A)"/>
+          </SelectField>
+          <SelectField
+            className="selectfield halfLeft"
+            floatingLabelText="Minimum time"
+            floatingLabelFixed={true}
+            onChange={(e: any, i: any, v: string) => this.onChange('mintimeminutes', v)}
+            value={this.state.mintimeminutes}
+            style={{color: 'black'}}
+            floatingLabelStyle={{color: 'black'}}
+            iconStyle={{fill: 'black'}}
+            underlineStyle={{borderColor: 'black'}}
+            selectedMenuItemStyle={{paddingRight: '50px'}}
+          >
+            <MenuItem value={null} primaryText="Any length"/>
+            {timeBuckets}
+          </SelectField>
+          <SelectField
+            className="selectfield halfRight"
+            floatingLabelText="Maximum time"
+            floatingLabelFixed={true}
+            onChange={(e: any, i: any, v: string) => this.onChange('maxtimeminutes', v)}
+            value={this.state.maxtimeminutes}
+            style={{color: 'black'}}
+            floatingLabelStyle={{color: 'black'}}
+            iconStyle={{fill: 'black'}}
+            underlineStyle={{borderColor: 'black'}}
+          >
+            <MenuItem value={null} primaryText="Any length"/>
+            {timeBuckets}
+          </SelectField>
+          <SelectField
+            className="selectfield"
+            floatingLabelText="Recency"
+            onChange={(e: any, i: any, v: string) => this.onChange('age', v)}
+            value={this.state.age}
+            style={{color: 'black'}}
+            floatingLabelStyle={{color: 'black'}}
+            iconStyle={{fill: 'black'}}
+            underlineStyle={{borderColor: 'black'}}
+          >
+            <MenuItem value={null} primaryText="All quests"/>
+            <MenuItem value={31536000} primaryText="Published this year"/>
+            <MenuItem value={2592000} primaryText="Published this month"/>
+            <MenuItem value={604800} primaryText="Published this week"/>
+            <MenuItem value={86400} primaryText="Published today"/>
+          </SelectField>
+          <SelectField
+            className="selectfield"
+            floatingLabelText="Genre"
+            onChange={(e: any, i: any, v: string) => this.onChange('genre', v)}
+            value={this.state.genre}
+            style={{color: 'black'}}
+            floatingLabelStyle={{color: 'black'}}
+            iconStyle={{fill: 'black'}}
+            underlineStyle={{borderColor: 'black'}}
+          >
+            <MenuItem value={null} primaryText="All genres"/>
+            {visibleGenres.map((genre:string, i: number) => { return <MenuItem key={i} value={genre} primaryText={genre}></MenuItem>})}
+          </SelectField>
+          <SelectField
+            className="selectfield"
+            floatingLabelText="Content Rating"
+            onChange={(e: any, i: any, v: string) => this.onChange('contentrating', v)}
+            value={this.state.contentrating}
+            style={{color: 'black'}}
+            floatingLabelStyle={{color: 'black'}}
+            iconStyle={{fill: 'black'}}
+            underlineStyle={{borderColor: 'black'}}
+          >
+            <MenuItem value={null} primaryText="All ratings"/>
+            <MenuItem value="Everyone" primaryText="Kid-friendly"/>
+            <MenuItem value="Teen" primaryText="Teen"/>
+            <MenuItem value="Adult" primaryText="Adult"/>
+          </SelectField>
+          {rating && <div className="ratingDescription">
+            <span>"{this.state.contentrating}" rating means:</span>
+            <ul>
+              {Object.keys(rating).map((key: string, i: number) => {
+                return <li key={i}>{rating[key]}</li>
+              })}
+            </ul>
+          </div>}
+          <Button onTouchTap={() => this.props.onSearch(this.props.numPlayers, this.props.user, this.state)}>Search</Button>
         </div>
-        <div>
-          created by
-          <DropDownMenu onChange={(e: any, i: any, v: string) => this.onChange('owner', v)} value={this.state.owner}>
-            <MenuItem value="self" primaryText="You"/>
-            <MenuItem value="anyone" primaryText="Anyone"/>
-          </DropDownMenu>
-        </div>
-        <Button onTouchTap={() => this.props.onSearch(this.props.numPlayers, this.props.user, this.state)}>Search</Button>
       </Card>
     );
   }
@@ -120,16 +201,21 @@ export function truncateSummary(string: string) {
 }
 
 function renderResults(props: SearchProps): JSX.Element {
-  let items: JSX.Element[] = props.results.map(function(result: QuestDetails, index: number) {
+  const orderField = props.search.order.substring(1);
+  let items: JSX.Element[] = props.results.map((result: QuestDetails, index: number) => {
     return (
       <Button key={index} onTouchTap={() => props.onQuest(result)}>
         <div className="searchResult">
           <div className="title">{result.title}</div>
-          <div className="timing">
-            <img className="inline_icon" src="images/clock_small.svg"/>{formatPlayPeriod(result.mintimeminutes, result.maxtimeminutes)}
-          </div>
           <div className="summary">
             <div>{truncateSummary(result.summary)}</div>
+          </div>
+          <div className="timing">
+            {formatPlayPeriod(result.mintimeminutes, result.maxtimeminutes)}
+          </div>
+          <div className={`searchOrderDetail ${orderField}`}>
+            {orderField === 'ratingavg' && result.ratingcount >= 5 && <StarRating readOnly={true} value={+result.ratingavg} quantity={result.ratingcount}/>}
+            {orderField === 'created' && `Published ${Moment(result.created).format('MMM YYYY')}`}
           </div>
         </div>
       </Button>

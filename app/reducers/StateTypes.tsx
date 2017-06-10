@@ -2,6 +2,8 @@ import {QuestDetails, DifficultyType, QuestContext} from './QuestTypes'
 import {TemplatePhase} from '../cardtemplates/Template'
 import {ParserNode} from '../parser/Node'
 
+import {GenreType, ContentRatingLabelType} from '../Constants'
+
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
 export interface DOMElement {
@@ -42,9 +44,12 @@ export interface EndSettings {
 
 export interface SearchSettings {
   text: string;
-  age: string;
+  age: number;
   order: string;
-  owner: string;
+  mintimeminutes: number;
+  maxtimeminutes: number;
+  contentrating: ContentRatingLabelType;
+  genre: GenreType;
 }
 
 export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'DETAILS' | 'SEARCH';

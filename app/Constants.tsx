@@ -32,8 +32,10 @@ export const REGEX = {
   HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,
 };
 
-// Where inputting genre, also show "suggest a category" (contact link)
-export const GENRES = [
+export const PLAYTIME_MINUTES_BUCKETS = [20, 30, 45, 60, 90, 120];
+
+export type GenreType = 'Comedy' | 'Drama' | 'Horror' | 'Mystery' | 'Romance';
+export const GENRES: GenreType[] = [
   'Comedy',
   'Drama',
   'Horror',
@@ -42,7 +44,9 @@ export const GENRES = [
 ];
 
 // Content rating options and their definitions, generally based on MPAA guidelines
-export const CONTENT_RATINGS = {
+export type ContentRatingLabelType = 'Everyone' | 'Teen' | 'Adult';
+export type ContentRatingType = {[key: string]: {[key: string]: string}};
+export const CONTENT_RATINGS: ContentRatingType = {
   Everyone: {
     violence: 'No descriptions of violence allowed outside of combat mechanics.',
     language: 'Only very limited profanity allowed, and no sexually-derived words.',

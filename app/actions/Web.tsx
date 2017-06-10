@@ -42,27 +42,15 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
       throw new Error('Not logged in, cannot search');
     }
 
-    var params: any = {};
-    if (search.owner === 'self') {
-      params.owner = user.id;
-    }
-    params.players = numPlayers;
-    if (search.text) {
-      params.search = search.text;
-    }
-    if (search.age && search.age !== 'inf') {
-      params.published_after = parseInt(search.age, 10);
-    }
-    if (search.order) {
-      params.order = search.order;
-    }
+    let params: any = { players: numPlayers, ...search };
+    Object.keys(params).forEach((key: string) => { if (params[key] === null) { delete params[key]; }});
 
-    var xhr = new XMLHttpRequest();
-    // TODO: Pagination
+    const xhr = new XMLHttpRequest();
+    // TODO: Pagination / infinite scrolling
     xhr.open('POST', authSettings.urlBase + '/quests', true);
     xhr.setRequestHeader('Content-Type', 'text/plain');
     xhr.onload = () => {
-      var response: any = JSON.parse(xhr.responseText);
+      const response: any = JSON.parse(xhr.responseText);
       if (response.error) {
         return dispatch(openSnackbar('Network error when searching: ' + response.error));
       }
