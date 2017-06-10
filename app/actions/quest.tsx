@@ -21,6 +21,7 @@ import {
 } from '../constants'
 import {pushError, pushHTTPError} from '../error'
 import {renderXML} from '../parsing/QDLParser'
+import {crawlXML} from '../parsing/XMLCrawler'
 
 const Cheerio: any = require('cheerio');
 
@@ -249,6 +250,8 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
         dispatch({type: 'RECEIVE_QUEST_SAVE', meta} as ReceiveQuestSaveAction);
       }
     });
+
+    dispatch({type: 'QUEST_RUNTIME_CHECK', msgs: crawlXML(xmlResult)});
   };
 }
 

@@ -57,6 +57,7 @@ function formatScope(scope: any): any[] {
   return KVs;
 }
 
+// TODO: Rename to ContextPanel
 const ContextEditor = (props: ContextEditorProps): JSX.Element => {
   var KVs: any[] = [];
   for (let i = 0; i < props.scopeHistory.length; i++) {

@@ -23,6 +23,7 @@ function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: 
 
 export function annotations(state: AnnotationType[] = [], action: Redux.Action): AnnotationType[] {
   // Transfer accumulated errors into state.
+  // TODO: QUEST_RUNTIME_CHECK
   if (action.type !== 'QUEST_RENDER') {
     return state;
   }
