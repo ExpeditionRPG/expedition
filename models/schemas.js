@@ -40,8 +40,10 @@ schemas.quests = {
 schemas.questsSearch = Object.assign(schemas.quests, {
   order: Joi.string(), // TODO limit to schemas keys
   players: Joi.number().min(MIN_PLAYERS).max(MAX_PLAYERS),
-  published_after: Joi.number(),
-  search: Joi.string(),
+  published_after: Joi.number(), // DEPRECATED 6/10/17
+  search: Joi.string(), // DEPRECATED 6/10/17
+  age: Joi.number().min(0),
+  text: Joi.string().allow(''),
   mintimeminutes: schemas.quests.mintimeminutes,
   maxtimeminutes: schemas.quests.maxtimeminutes,
   contentrating: schemas.quests.contentrating,
