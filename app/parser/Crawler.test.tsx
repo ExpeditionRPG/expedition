@@ -1,4 +1,4 @@
-import {Crawler} from './Crawler'
+import {CrawlerBase, CrawlEntry, CrawlEvent} from './Crawler'
 import {ParserNode} from './Node'
 import {defaultQuestContext} from '../reducers/QuestTypes'
 
@@ -7,7 +7,30 @@ declare var global: any;
 var cheerio: any = require('cheerio');
 var window: any = cheerio.load('<div>');
 
-describe('Crawler', () => {
+class CrawlTest extends CrawlerBase {
+  efn: (q: CrawlEntry, e: CrawlEvent)=>any;
+  nfn: (q: CrawlEntry, nodeStr: string, id: string, line: number)=>any;
+
+  constructor(onEvent: (q: CrawlEntry, e: CrawlEvent)=>any,
+    onNode:(q: CrawlEntry, nodeStr: string, id: string, line: number)=>any) {
+    super()
+    this.efn = onEvent;
+    this.nfn = onNode;
+  }
+
+  protected onEvent(q: CrawlEntry, e: CrawlEvent) {
+    if (this.efn) {
+      this.efn(q, e);
+    }
+  }
+  protected onNode(q: CrawlEntry, nodeStr: string, id: string, line: number) {
+    if (this.nfn) {
+      this.nfn(q, nodeStr, id, line);
+    }
+  };
+}
+
+describe('StatsCrawler', () => {
   describe('crawl', () => {
     it('travels across combat events', () => {
       const xml = cheerio.load(`
@@ -16,23 +39,18 @@ describe('Crawler', () => {
             <roleplay id="test" data-line="1">test</roleplay>
             <trigger data-line="11">end</trigger>
           </event>
-          <event on="lose">
-            <roleplay id="test2" data-line="2">test 2</roleplay>
-            <trigger data-line="10">end</trigger>
-          </event>
         </combat>
       `)('combat');
-      const crawler = new Crawler();
+
+      let foundEnd = false;
+      const crawler = new CrawlTest((q: CrawlEntry, e: CrawlEvent)=>{
+        foundEnd = foundEnd || (e === 'END' && q.prevLine === 1 && q.prevId === 'test');
+        expect(e).not.toEqual('IMPLICIT_END');
+        expect(e).not.toEqual('INVALID');
+      }, null);
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
-      const stats = crawler.getStatsForLine(1);
-      const prevLine = JSON.parse(Array.from(stats.inputs)[0]).line;
-
-      expect(prevLine).toEqual(0);
-      expect(Array.from(stats.outputs)).toEqual(['END']);
-
-      const stats2 = crawler.getStatsForLine(2);
-      expect(Array.from(stats2.outputs)).toEqual(['END']);
+      expect(foundEnd).toEqual(true);
     });
 
     it('handles a roleplay node', () => {
@@ -49,11 +67,18 @@ describe('Crawler', () => {
         </choice>
       </roleplay>
       `)(':first-child');
-      const crawler = new Crawler();
+
+      let foundEnd = false;
+      const crawler = new CrawlTest((q: CrawlEntry, e: CrawlEvent)=>{
+        foundEnd = foundEnd || (e === 'END' && q.prevLine === 2 && q.prevId === 'A1');
+        expect(e).not.toEqual('IMPLICIT_END');
+        expect(e).not.toEqual('INVALID');
+      }, (q: CrawlEntry, nodeStr: string, id: string, line: number) => {
+        expect(line).not.toEqual(12);
+      });
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
-      // Note that hidden roleplay node isn't shown
-      expect(Array.from(crawler.getStatsForId('A1').outputs)).toEqual(['END']);
+      expect(foundEnd).toEqual(true);
     });
 
     it('handles gotos', () => {
@@ -74,28 +99,45 @@ describe('Crawler', () => {
         <trigger data-line="8">goto B4</trigger>
         </quest>
       `)('quest > :first-child');
-      const crawler = new Crawler();
+      let foundEnd = false;
+      const crawler = new CrawlTest((q: CrawlEntry, e: CrawlEvent)=>{
+        foundEnd = foundEnd || (e === 'END' && q.prevLine === 6 && q.prevId === 'B4');
+        expect(e).not.toEqual('IMPLICIT_END');
+        expect(e).not.toEqual('INVALID');
+      }, null);
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
-      expect(Array.from(crawler.getStatsForId('B4').outputs)).toEqual(['END']);
+      expect(foundEnd).toEqual(true);
     });
 
     it('tracks implicit end triggers', () => {
       const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
-      const crawler = new Crawler();
+      let foundImplicitEnd = false;
+      const crawler = new CrawlTest((q: CrawlEntry, e: CrawlEvent)=>{
+        foundImplicitEnd = foundImplicitEnd || (e === 'IMPLICIT_END' && q.prevLine === 2 && q.prevId === 'A1');
+        expect(e).not.toEqual('END');
+        expect(e).not.toEqual('INVALID');
+      }, null);
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
-      expect(Array.from(crawler.getStatsForId('A1').outputs)).toEqual(['IMPLICIT_END']);
+      expect(foundImplicitEnd).toEqual(true);
     });
 
     it('safely handles nodes without line annotations', () => {
-      const xml = cheerio.load(`<roleplay title="A0" id="A0" data-line="2"><p></p></roleplay><roleplay title="A1" id="A1"><p></p></roleplay><roleplay title="A2"><p></p></roleplay>`)(':first-child');
+      const xml = cheerio.load(`
+        <roleplay title="A0" id="A0" data-line="2"><p></p></roleplay>
+        <roleplay title="A1" id="A1"><p></p></roleplay>
+        <roleplay title="A2"><p></p></roleplay>`)(':first-child');
+      let foundInvalid = false;
+      const crawler = new CrawlTest((q: CrawlEntry, e: CrawlEvent)=>{
+        foundInvalid = foundInvalid || (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'A0');
 
-      const crawler = new Crawler();
+        // We don't traverse past.
+        expect(q.prevId).not.toEqual('A1');
+      }, null);
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
-      expect(crawler.getIds()).toEqual(['A0']);
-      expect(crawler.getLines()).toEqual([2]);
+      expect(foundInvalid).toEqual(true);
     });
 
     it('handles op state', () => {
@@ -112,11 +154,19 @@ describe('Crawler', () => {
           </roleplay>
         </quest>`)('quest > :first-child');
 
-        const crawler = new Crawler();
-        crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      let foundEnd = false;
+      let didLoop = false;
+      const crawler = new CrawlTest((q: CrawlEntry, e: CrawlEvent)=>{
+        foundEnd = foundEnd || (e === 'END' && q.prevLine === 10 && q.prevId === 'cond');
+        expect(e).not.toEqual('IMPLICIT_END');
+        expect(e).not.toEqual('INVALID');
+      }, (q: CrawlEntry, nodeStr: string, id: string, line: number) => {
+        didLoop = didLoop || (line === 6 && q.prevId === 'cond');
+      });
+      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
-        const nextIDs = Array.from(crawler.getStatsForId('cond').outputs).sort();
-        expect(nextIDs).toEqual(['END', 'loop']);
+      expect(didLoop).toEqual(true);
+      expect(foundEnd).toEqual(true);
     });
 
     it('bails out of infinite loops', () => {
@@ -126,7 +176,7 @@ describe('Crawler', () => {
           <trigger data-line="4">goto I</trigger>
         </quest>`)('quest > :first-child');
 
-      const crawler = new Crawler();
+      const crawler = new CrawlTest(null, null);
 
       // If crawl exits, we'll have succeeded.
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
@@ -134,116 +184,24 @@ describe('Crawler', () => {
 
     it('handles hanging choice node with no body', () => {
       const xml = cheerio.load(`<roleplay title="I" data-line="2"><choice text="a1"></choice></roleplay>`)(':first-child');
-      const crawler = new Crawler();
+      let foundInvalid = false;
+      const crawler = new CrawlTest((q: CrawlEntry, e: CrawlEvent)=>{
+        foundInvalid = foundInvalid || (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'START');
+      }, null);
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
-      expect(Array.from(crawler.getStatsForLine(2).outputs)).toEqual(['INVALID_NODE']);
+      expect(foundInvalid).toEqual(true);
     });
 
     it('handles node without data-line attribute', () => {
       const xml = cheerio.load(`<roleplay title="I" data-line="2"><choice text="a1"><roleplay></roleplay></choice></roleplay>`)(':first-child');
-      const crawler = new Crawler();
+      let foundInvalid = false;
+      const crawler = new CrawlTest((q: CrawlEntry, e: CrawlEvent)=>{
+        foundInvalid = foundInvalid || (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'START');
+      }, null);
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
 
-      expect(Array.from(crawler.getStatsForLine(2).outputs)).toEqual(['INVALID_NODE']);
-    });
-  });
-
-  describe('getStatsForId', () => {
-    it('gets stats for tag with id', () => {
-      const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
-      const crawler = new Crawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
-
-      expect(crawler.getStatsForId('A1')).toBeDefined();
-    });
-
-    it('aggregates stats on non-id tags until next id', () => {
-      const xml = cheerio.load(`
-        <roleplay title="ID1" id="ID1" data-line="2">
-        <choice text="a1">
-          <roleplay title="N1" data-line="6"><p></p></roleplay>
-          <roleplay title="N2" data-line="8"><p></p></roleplay>
-          <roleplay title="ID2" id="ID2" data-line="10"><p></p></roleplay>
-          <trigger data-line="12">end</trigger>
-        </choice>
-        <choice text="a3">
-          <roleplay title="N3" data-line="16"><p></p></roleplay>
-          <roleplay title="ID3" id="ID3" data-line="18"><p></p></roleplay>
-          <trigger data-line="20">end</trigger>
-        </choice>
-        </roleplay>`)(':first-child');
-      const crawler = new Crawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
-
-      const stats1 = crawler.getStatsForId('ID1');
-      const stats2 = crawler.getStatsForId('ID2');
-
-      // Next lines are ID or END/IMPLICIT_END only.
-      const nextIDs = Array.from(stats1.outputs).sort();
-      expect(nextIDs).toEqual(['ID2', 'ID3']);
-      expect(stats1.numInternalStates).toEqual(4);
-
-      // Prev lines are ID only.
-      const prevIDs = Array.from(stats2.inputs).sort();
-      expect(prevIDs).toEqual(['ID1']);
-    });
-  });
-
-  describe('getStatsForLine', () => {
-    it('gets stats for tag with line data', () => {
-      const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
-      const crawler = new Crawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
-
-      expect(crawler.getStatsForLine(2)).toBeDefined();
-    });
-
-    it('tracks min and max path actions', () => {
-      const xml = cheerio.load(`
-        <quest>
-          <roleplay title="A1" id="A1" data-line="2">
-          <choice text="minpath">
-            <trigger data-line="6">goto A3</trigger>
-          </choice>
-          <choice text="maxpath">
-            <trigger data-line="10">goto A2</trigger>
-          </choice>
-          </roleplay>
-          <roleplay title="A2" id="A2" data-line="12">
-            <p></p>
-          </roleplay>
-          <roleplay title="A3" id="A3" data-line="14">
-            <p></p>
-          </roleplay>
-          <trigger data-line="16">end</trigger>
-        </quest>`)('quest > :first-child');
-
-      const crawler = new Crawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
-
-      expect(crawler.getStatsForLine(14)).toEqual(jasmine.objectContaining({
-        minPathActions: 1,
-        maxPathActions: 2,
-      }));
-    });
-  });
-
-  describe('getIds/getLines', () => {
-    const xml = cheerio.load('<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay><roleplay title="A2" id="A2" data-line="4"><p></p></roleplay><roleplay title="A3" id="A3" data-line="6"><p></p></roleplay><trigger data-line="8">end</trigger>')(':first-child');
-
-    it('gets ids seen', () => {
-      const crawler = new Crawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
-
-      expect(crawler.getIds().sort()).toEqual(['A1', 'A2', 'A3']);
-    });
-
-    it('gets lines seen', () => {
-      const crawler = new Crawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
-
-      expect(crawler.getLines().sort()).toEqual([2, 4, 6]);
+      expect(foundInvalid).toEqual(true);
     });
   });
 });

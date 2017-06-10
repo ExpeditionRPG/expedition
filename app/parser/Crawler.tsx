@@ -1,97 +1,58 @@
 import {ParserNode} from './Node'
 import {handleAction} from './Handlers'
 
-export interface CrawlerAction {}
+export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END';
 
-export interface CrawlerStats {
-  inputs: Set<string>;
-  outputs: Set<string>;
-  minPathActions: number;
-  maxPathActions: number;
-  numInternalStates: number;
-}
+export type CrawlEntry = {node: ParserNode, prevNodeStr: string, prevId: string, prevLine: number, depth: number};
 
-type DoFn = (s: CrawlerStats, n :ParserNode) => void;
-
-
-export class Crawler {
-  statsById: {[id:string]: CrawlerStats};
-  statsByLine: {[line:number]: CrawlerStats};
-  seen: Set<string>;
+export abstract class CrawlerBase {
+  protected seen: Set<string>;
+  protected queue: CrawlEntry[];
 
   constructor() {
     this.seen = new Set();
-    this.statsById = {};
-    this.statsByLine = {};
+    this.queue = [];
   }
 
-  public crawl(root: ParserNode) {
-    this.traverse(root);
+  public crawl(root: ParserNode, depthLimit = 50) {
+    this.traverse(root, depthLimit);
   }
 
-  // Retrieves stats for a given node ID.
-  // These aggregates treat all nodes following the ID node
-  // as part of the ID node. For example, a graph like:
-  //
-  // <ID1> -> node1 -> node2 -> <ID2>
-  //   '-> node3 -> <ID3>
-  //
-  // would be shortened to:
-  //
-  // <ID1> -> <ID2>
-  //   '-> <ID3>
-  public getStatsForId(id: string): CrawlerStats {
-    return this.statsById[id];
-  }
+  protected abstract onEvent(q: CrawlEntry, e: CrawlEvent): void;
 
-  // Gets statistics (including inbound and outbound actions)
-  // for a block with a given line.
-  public getStatsForLine(line: number): CrawlerStats {
-    return this.statsByLine[line];
-  }
-
-  public getLines(): number[] {
-    return Object.keys(this.statsByLine).filter((k: string) => {return (k !== '-1');}).map((s: string) => parseInt(s, 10));
-  }
-
-  public getIds(): string[] {
-    return Object.keys(this.statsById).filter((k: string) => {return (k !== 'QUEST_START');});
-  }
+  protected abstract onNode(q: CrawlEntry, nodeStr: string, id: string, line: number): void;
 
   // Traverses the graph in breadth-first order starting with a given node.
   // Stats are collected separately per-id and per-line
-  private traverse(root: ParserNode) {
+  private traverse(root?: ParserNode, depthLimit?: number) {
+    if (root) {
+      this.queue.push({
+        node: root,  prevNodeStr: 'START', prevId: 'START', prevLine: -1, depth: 0
+      });
+    }
 
-    // Initialize stats with quest root to obviate need for undefined checking.
-    this.statsById = {
-      'QUEST_START': {inputs: new Set(), outputs: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1}
-    };
-    this.statsByLine = {
-      '-1': {inputs: new Set(), outputs: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1}
-    };
+    while(this.queue.length > 0 && (!depthLimit || this.queue[0].depth < depthLimit)) {
+      let q = this.queue.shift();
 
-    let queue: {node: ParserNode, prevNodeStr: string, prevId: string, prevLine: number}[] = [{
-      node: root,  prevNodeStr: 'QUEST_START', prevId: 'QUEST_START', prevLine: -1,
-    }];
+      // This happens if we've navigated "outside the quest", e.g. a user doesn't end all their nodes with end tag.
+      if (q.node === undefined || q.node === null) {
+        this.onEvent(q, 'IMPLICIT_END');
+        continue;
+      }
 
-    let maxPath = 0;
-    while(queue.length > 0 && maxPath < 50) {
-      let q = queue.shift();
       const id = q.node.elem.attr('id') || q.prevId;
       const line = parseInt(q.node.elem.attr('data-line'), 10);
 
       // This happens if for some reason line numbers weren't calculated for this quest.
-      // Don't traverse farther here, as it'll throw off our stats generation.
+      // Don't traverse farther, else it'll throw off our crawl state.
       if (isNaN(line)) {
-        this.statsById[q.prevId].outputs.add('INVALID_NODE');
-        this.statsByLine[q.prevLine].outputs.add('INVALID_NODE');
+        this.onEvent(q, 'INVALID');
         continue;
       }
 
       // This happens when we hit the end of a quest.
       if (q.node.getTag() === 'trigger' && q.node.elem.text().trim() === 'end') {
-        this.statsById[q.prevId].outputs.add('END');
-        this.statsByLine[q.prevLine].outputs.add('END');
+        this.onEvent(q, 'END');
         continue;
       }
 
@@ -104,53 +65,7 @@ export class Crawler {
       this.seen.add(nstr);
 
       // At this point, the node is valid and has never been visited before under the given context.
-
-      // Create stats for this line/id if they don't already exist
-      if (this.statsById[id] === undefined) {
-        this.statsById[id] = {
-          inputs: new Set(),
-          outputs: new Set(),
-          minPathActions: this.statsById[q.prevId].minPathActions + 1,
-          maxPathActions: this.statsById[q.prevId].maxPathActions + 1,
-          numInternalStates: 1,
-        };
-      }
-      if (this.statsByLine[line] === undefined) {
-        this.statsByLine[line] = {
-          inputs: new Set(),
-          outputs: new Set(),
-          minPathActions: this.statsByLine[q.prevLine].minPathActions + 1,
-          maxPathActions: this.statsByLine[q.prevLine].maxPathActions + 1,
-          numInternalStates: 0,
-        };
-      }
-
-      // Fetch statistics
-      let prevLineStats = this.statsByLine[q.prevLine];
-      let lineStats = this.statsByLine[line];
-
-      // Update ID statistics
-      if (id !== q.prevId) {
-        // We're in the boundary between ID sections. Update:
-        // - outbound edges for the previous ID
-        // - inbound edges for the next ID.
-        // - path actions
-        this.statsById[id].maxPathActions = Math.max(this.statsById[id].maxPathActions, (this.statsById[q.prevId].maxPathActions || 0) + 1);
-        this.statsById[id].minPathActions = Math.min(this.statsById[id].minPathActions, (this.statsById[q.prevId].minPathActions || 0) + 1);
-        this.statsById[id].inputs.add(q.prevId);
-        this.statsById[q.prevId].outputs.add(id);
-      } else {
-        // We're still within the same ID. Increment numInternalStates.
-        this.statsById[id].numInternalStates++;
-      }
-
-      // Update line stats for this line & prev line
-      this.statsByLine[line].maxPathActions = Math.max(this.statsByLine[line].maxPathActions, (this.statsByLine[q.prevLine].maxPathActions || 0) + 1);
-      this.statsByLine[line].minPathActions = Math.min(this.statsByLine[line].minPathActions, (this.statsByLine[q.prevLine].minPathActions || 0) + 1);
-      lineStats.inputs.add(q.prevNodeStr);
-      this.statsByLine[q.prevLine].outputs.add(nstr);
-
-      maxPath = Math.max(maxPath, this.statsByLine[line].maxPathActions);
+      this.onNode(q, nstr, id, line);
 
       // Push on all outbound edges as work to be done.
       const keys = q.node.getVisibleKeys();
@@ -159,22 +74,14 @@ export class Crawler {
         keys.push(0);
       }
       for (let k of keys) {
-        let node = handleAction(q.node, k);
-        if (node === undefined || node === null) {
-          this.statsById[id].outputs.add('IMPLICIT_END');
-          this.statsByLine[line].outputs.add('IMPLICIT_END');
-          continue;
-        }
-
-        queue.push({
-          node: node,
+        this.queue.push({
+          node: handleAction(q.node, k),
           prevNodeStr: nstr,
           prevId: id,
-          prevLine: line
+          prevLine: line,
+          depth: q.depth + 1
         });
       }
     }
-
-
   }
 }
