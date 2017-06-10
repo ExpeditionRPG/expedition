@@ -2,14 +2,13 @@ import Redux from 'redux'
 import {connect} from 'react-redux'
 
 import {QuestActionType} from '../actions/ActionTypes'
-import {getPlayNode} from '../actions/editor'
+import {getPlayNode, renderAndPlay} from '../actions/editor'
 import {saveQuest, publishQuestSetup, unpublishQuest} from '../actions/quest'
 import {logoutUser} from '../actions/user'
 import {AppState, QuestType, EditorState, UserState} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
 
 import {toCard} from 'expedition-app/app/actions/Card'
-import {ParserNode} from 'expedition-app/app/parser/Node'
 import {defaultQuestContext} from 'expedition-app/app/reducers/QuestTypes'
 
 import {DOCS_INDEX_URL, DEV_CONTACT_URL} from '../constants'

@@ -3,7 +3,7 @@ import {XMLRenderer} from './XMLRenderer'
 import TestData from '../TestData'
 
 var expect: any = require('expect');
-var cheerio: any = require('cheerio');
+var cheerio: any = require('cheerio') as CheerioAPI;
 
 describe('XMLRenderer', () => {
   describe('toCombat', () => {

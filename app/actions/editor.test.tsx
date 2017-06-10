@@ -1,7 +1,5 @@
 import {getPlayNode} from './editor'
 
-const cheerio: any = require('cheerio');
-
 describe('setCodeView', () => {
   it('creates action');
 });

@@ -21,9 +21,9 @@ import {
 } from '../constants'
 import {pushError, pushHTTPError} from '../error'
 import {renderXML} from '../parsing/QDLParser'
-import {crawlXML} from '../parsing/XMLCrawler'
+import {playtest} from '../parsing/crawler/PlaytestCrawler'
 
-const Cheerio: any = require('cheerio');
+const cheerio = require('cheerio') as CheerioAPI;
 
 // Loaded on index.html
 declare var window: any;
@@ -201,7 +201,7 @@ export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)
     // Insert metadata back into the XML. Temporary patch until ALL client apps
     // are running a version that supports DB metadata
     // TODO https://github.com/ExpeditionRPG/expedition-quest-creator/issues/270
-    const xml = Cheerio(renderResult.getResult()+'')
+    const xml = cheerio(renderResult.getResult()+'')
         .attr('summary', quest.summary)
         .attr('author', quest.author)
         .attr('email', quest.email)
@@ -251,7 +251,7 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
       }
     });
 
-    dispatch({type: 'QUEST_RUNTIME_CHECK', msgs: crawlXML(xmlResult)});
+    dispatch({type: 'QUEST_PLAYTEST', msgs: playtest(xmlResult.getResult())});
   };
 }
 

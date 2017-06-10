@@ -1,6 +1,6 @@
 import {Renderer, CombatChild, Instruction, RoleplayChild, sanitizeStyles} from './Renderer'
 
-var cheerio: any = require('cheerio');
+var cheerio: any = require('cheerio') as CheerioAPI;
 
 // TODO: Move error checks in this renderer to the QDLRenderer class.
 export var XMLRenderer: Renderer = {

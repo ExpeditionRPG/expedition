@@ -1,9 +1,9 @@
-import {crawlXML} from './XMLCrawler'
+import {playtest} from './PlaytestCrawler'
 
 var expect: any = require('expect');
-var cheerio: any = require('cheerio');
+const cheerio: any = require('cheerio') as CheerioAPI;
 
-describe('crawlXML', () => {
+describe('playtest', () => {
   describe('internal-level message', () => {
     it('logs if quest is unparseable');
   });
