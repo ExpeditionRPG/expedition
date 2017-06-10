@@ -3,14 +3,14 @@ import {
   QuestNodeAction,
   ViewQuestAction
 } from './ActionTypes'
-import {SettingsType, CheerioElement} from '../reducers/StateTypes'
+import {SettingsType} from '../reducers/StateTypes'
 import {toCard} from './Card'
 import {handleAction} from '../parser/Handlers'
 import {QuestDetails, QuestContext} from '../reducers/QuestTypes'
 import {ParserNode} from '../parser/Node'
 import {initCardTemplate} from '../cardtemplates/Template'
 
-export function initQuest(details: QuestDetails, questNode: CheerioElement, ctx: QuestContext): QuestNodeAction {
+export function initQuest(details: QuestDetails, questNode: Cheerio, ctx: QuestContext): QuestNodeAction {
   const firstNode = questNode.children().eq(0);
   return {type: 'QUEST_NODE', node: new ParserNode(firstNode, ctx), details};
 }
