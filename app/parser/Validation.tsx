@@ -1,5 +1,4 @@
 import * as React from 'react'
-import {CheerioElement} from '../reducers/StateTypes'
 
 // TODO(https://github.com/ExpeditionRPG/expedition-app/issues/291): Actually use this
 
@@ -7,7 +6,7 @@ export function isEmptyObject(obj: Object): boolean {
   return Object.keys(obj).length === 0 && JSON.stringify(obj) === JSON.stringify({});
 }
 
-export function validate(root: CheerioElement) {
+export function validate(root: Cheerio) {
   if (root === undefined) {
     throw new Error('Quest has invalid root node');
   }
@@ -25,7 +24,7 @@ export function validate(root: CheerioElement) {
 
 // Validate this node and all children for invalid tags.
 // Returns a map of tagName->count of the invalid elements found.
-function getInvalidNodesAndAttributes(node: CheerioElement): { [key:string]:number; } {
+function getInvalidNodesAndAttributes(node: Cheerio): { [key:string]:number; } {
   const results: any = {};
 
   // Quests must only contain these tags:
@@ -35,7 +34,7 @@ function getInvalidNodesAndAttributes(node: CheerioElement): { [key:string]:numb
     results[node.get(0).tagName.toLowerCase()] = (results[node.get(0).tagName.toLowerCase()] || 0) + 1;
   }
 
-  const attribNames = Object.keys(node.attribs);
+  const attribNames = Object.keys(node.get(0).attribs);
   for (let i = 0; i < attribNames.length; i++) {
     // All HTML event handlers are prefixed with 'on'.
     // See http://www.w3schools.com/tags/ref_eventattributes.asp
@@ -57,7 +56,7 @@ function getInvalidNodesAndAttributes(node: CheerioElement): { [key:string]:numb
 
 // Validate this node and all children for duplicate IDs.
 // Returns a map of id->[element] of all duplicate elements with the same IDs.
-function getDuplicateIds(node: CheerioElement): { [key:string]:string[]; } {
+function getDuplicateIds(node: Cheerio): { [key:string]:string[]; } {
   const map = generateIdMapping(node);
   const results: { [key:string]:string[]; } = {};
   Object.keys(map).forEach((k: string) => {
@@ -69,7 +68,7 @@ function getDuplicateIds(node: CheerioElement): { [key:string]:string[]; } {
 }
 
 // Builds and returns a map of all IDs to all nodes with that ID.
-function generateIdMapping(node: CheerioElement): { [key:string]:string[]; } {
+function generateIdMapping(node: Cheerio): { [key:string]:string[]; } {
   const map: { [key:string]:string[]; } = {};
   if (node.attr('id')) {
     const id = node.attr('id');
@@ -85,7 +84,7 @@ function generateIdMapping(node: CheerioElement): { [key:string]:string[]; } {
   return map;
 }
 
-function validateCombatNodes(root: CheerioElement) {
+function validateCombatNodes(root: Cheerio) {
   /* TODO
   if (winEventCount === 0) {
     throw new Error('<combat> must have at least one conditionally true child with on="win"');

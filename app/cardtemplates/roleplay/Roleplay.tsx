@@ -66,16 +66,7 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
       element.type = 'instruction';
       element.text = c.html();
     } else { // text
-      // If we received a Cheerio object, outerHTML will
-      // not be defined. toString will be, however.
-      // https://github.com/cheeriojs/cheerio/issues/54
-      if (c.get(0).outerHTML) {
-        element.text = c.get(0).outerHTML;
-      } else if (c.toString) {
-        element.text = c.toString();
-      } else {
-        throw new Error('Invalid element ' + c);
-      }
+      element.text = c.toString();
     }
 
     element.text = generateIconElements(element.text);

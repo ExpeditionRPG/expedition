@@ -6,6 +6,7 @@
   "bugs": "https://github.com/ExpeditionRPG/expedition-app/issues",
   "license": "CC-BY-NC-ND-4.0",
   "devDependencies": {
+    "@types/cheerio": "^0.22.1",
     "@types/enzyme": "^2.7.4",
     "@types/jasmine": "^2.5.43",
     "@types/jquery": "^2.0.40",

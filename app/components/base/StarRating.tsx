@@ -30,8 +30,8 @@ export default class StarRating extends React.Component<StarRatingProps, {}> {
         classes += ' outline';
       }
 
-      return <div className={classes}>
-        <FlatButton key={i} onTouchTap={() => { this.props.onChange(i) }}>
+      return <div key={i} className={classes}>
+        <FlatButton onTouchTap={() => { this.props.onChange(i) }}>
           {checked && <Star  color={colors.grey900} />}
           {!checked && <StarBorder color={colors.grey600} />}
         </FlatButton>

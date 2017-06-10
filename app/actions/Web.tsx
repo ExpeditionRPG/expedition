@@ -4,19 +4,19 @@ import {toCard} from './Card'
 import {initQuest} from './Quest'
 
 import {userFeedbackClear} from '../actions/UserFeedback'
-import {CheerioElement, SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} from '../reducers/StateTypes'
+import {SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} from '../reducers/StateTypes'
 import {QuestContext, defaultQuestContext} from '../reducers/QuestTypes'
 
 declare var window:any;
 declare var require:any;
-const Cheerio = require('cheerio'); // Doesn't like import statements
+const cheerio = require('cheerio') as CheerioAPI;
 
 export function fetchQuestXML(id: string, url: string) {
   return (dispatch: Redux.Dispatch<any>): any => {
     $.ajax({url,
       dataType: 'text',
       success: (data: string) => {
-        const quest = Cheerio.load(data)('quest');
+        const quest = cheerio.load(data)('quest');
         dispatch(loadQuestXML(id, quest, defaultQuestContext()));
       },
     });
@@ -24,7 +24,7 @@ export function fetchQuestXML(id: string, url: string) {
 }
 
 // for loading quests in the app - Quest Creator injects directly into initQuest
-export function loadQuestXML(id: string, questNode: CheerioElement, ctx: QuestContext) {
+export function loadQuestXML(id: string, questNode: Cheerio, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
 
     const init = initQuest(id, questNode, ctx);
