@@ -36,15 +36,6 @@ export let initialState: FiltersState = {
   },
 };
 
-// Load any initial values from URL / querystring
-declare var require: any;
-const qs = require('qs') as any;
-const query = qs.parse(window.location.search.substring(1));
-for (let key in query) {
-  initialState[key].current = query[key];
-}
-
-
 export default function Filters(state: FiltersState = initialState, action: Redux.Action) {
   let newState: FiltersState;
   switch (action.type) {
@@ -52,14 +43,6 @@ export default function Filters(state: FiltersState = initialState, action: Redu
       const filterChange = action as FilterChangeAction;
       newState = Object.assign({}, state);
       newState[filterChange.name].current = filterChange.value;
-      // Update URL - don't include in URL if it's the default value
-      let query = Object.assign(qs.parse(window.location.search.substring(1)), {[filterChange.name]: filterChange.value});
-      for (let key in query) {
-        if (query[key] === initialState[key].default) {
-          delete query[key];
-        }
-      }
-      window.history.pushState(null, 'Expedition Card Creator', '?' + qs.stringify(query));
       return newState;
     case 'FILTERS_CALCULATE':
       newState = Object.assign({}, state);

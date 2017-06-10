@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Redux from 'redux'
-import {FiltersCalculate} from './Filters'
+import {filtersCalculate} from './Filters'
 import {getStore} from '../Store'
 import {icon} from '../helpers'
 import {CardType, FiltersState} from '../reducers/StateTypes'
@@ -8,10 +8,10 @@ import {CardType, FiltersState} from '../reducers/StateTypes'
 declare var require: any;
 const Tabletop = require('tabletop') as any;
 
-export function DownloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
+export function downloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
     const store = getStore();
-    dispatch(CardsLoading());
+    dispatch(cardsLoading());
     Tabletop.init({
       key: store.getState().filters.source.current.split(':')[1],
       parseNumbers: true,
@@ -35,9 +35,9 @@ export function DownloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
             return card;
           }));
         });
-        dispatch(CardsUpdate(cards));
-        dispatch(CardsFilter(store.getState().cards.data, store.getState().filters));
-        dispatch(FiltersCalculate(store.getState().cards.filtered));
+        dispatch(cardsUpdate(cards));
+        dispatch(cardsFilter(store.getState().cards.data, store.getState().filters));
+        dispatch(filtersCalculate(store.getState().cards.filtered));
       }
     });
   }
@@ -47,7 +47,7 @@ export interface CardsLoadingAction extends Redux.Action {
   type: 'CARDS_LOADING';
 }
 
-export function CardsLoading(): CardsLoadingAction {
+export function cardsLoading(): CardsLoadingAction {
   return {type: 'CARDS_LOADING'};
 }
 
@@ -56,7 +56,7 @@ export interface CardsUpdateAction extends Redux.Action {
   cards: CardType[];
 }
 
-export function CardsUpdate(cards: CardType[]): CardsUpdateAction {
+export function cardsUpdate(cards: CardType[]): CardsUpdateAction {
   return {type: 'CARDS_UPDATE', cards};
 }
 
@@ -66,7 +66,7 @@ export interface CardsFilterAction extends Redux.Action {
   filters: FiltersState;
 }
 
-export function CardsFilter(cards: CardType[], filters: FiltersState): CardsFilterAction {
+export function cardsFilter(cards: CardType[], filters: FiltersState): CardsFilterAction {
   return {type: 'CARDS_FILTER', cards, filters};
 }
 
@@ -132,9 +132,9 @@ function formatCard(card: CardType, filters: FiltersState): CardType {
         if (boldColonedRegex.test(str)) {
           return <strong key={index}>{str}</strong>
         }
-        // Parse & wrap symbols for browser display (<, >, etc)
+        // Parse & wrap symbols (<, >, etc) in a span for better style control
         if (symbolRegex.test(str)) {
-          return <span key={index} className="symbol" dangerouslySetInnerHTML={{__html: str}}></span>;
+          return <span key={index} className="symbol">{str}</span>;
         }
         if (iconRegex.test(str)) {
           return icon(filters.theme.current, str.replace(iconRegex, (match: string) => match.substring(1) + '_small'), index);

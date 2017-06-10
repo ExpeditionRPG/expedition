@@ -1,8 +1,8 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
 import AppBar, {AppBarStateProps, AppBarDispatchProps} from './AppBar'
-import {DownloadCards} from '../actions/Cards'
-import {FilterChange} from '../actions/Filters'
+import {downloadCards} from '../actions/Cards'
+import {filterChange} from '../actions/Filters'
 import {initialState} from '../reducers/Filters'
 import {AppState} from '../reducers/StateTypes'
 
@@ -15,10 +15,10 @@ const mapStateToProps = (state: AppState, ownProps: any): AppBarStateProps => {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AppBarDispatchProps => {
   return {
     downloadCards: () => {
-      dispatch(DownloadCards());
+      dispatch(downloadCards());
     },
     handleFilterChange(name: string, value: string | number): void {
-      dispatch(FilterChange(name, value));
+      dispatch(filterChange(name, value));
     },
     openHelp: () => {
       window.open('https://github.com/Fabricate-IO/expedition-cards/blob/master/CARD-CREATION.md');

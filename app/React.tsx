@@ -4,7 +4,8 @@ import { Provider } from 'react-redux'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
-import {DownloadCards} from './actions/Cards'
+import {downloadCards} from './actions/Cards'
+import {loadFiltersFromUrl} from './actions/Filters'
 import MainContainer from './components/MainContainer'
 import { getStore } from './Store'
 import theme from './theme'
@@ -23,7 +24,8 @@ try {
 
 const store = getStore();
 
-store.dispatch(DownloadCards());
+store.dispatch(loadFiltersFromUrl());
+store.dispatch(downloadCards());
 
 let render = () => {
   var base = document.getElementById('app');

@@ -165,6 +165,25 @@ export default class CardFront extends React.Component<CardType, {}> {
             </div>
           </div>
         );
+      case 'Malady':
+        return (
+          <div className="white-background">
+            <div className={`card front dark horizontal ${card.sheet}`}>
+              <div className="contents">
+                <header>
+                  <div className="name">{card.name}</div>
+                </header>
+                <article>
+                  <div className="ongoing"><strong>Ongoing:</strong> {card.ongoing}</div>
+                  <div className="until"><strong>Until:</strong> {card.until}</div>
+                </article>
+                <footer>
+                  <div className="flavortext">{card.flavortext}</div>
+                </footer>
+              </div>
+            </div>
+          </div>
+        );
       default:
         return null;
     }

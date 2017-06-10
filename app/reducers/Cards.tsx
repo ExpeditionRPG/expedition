@@ -11,19 +11,19 @@ export const initialState: CardsState = {
 export default function Cards(state: CardsState = initialState, action: Redux.Action): CardsState {
   switch (action.type) {
     case 'CARDS_LOADING':
-      return Object.assign({}, state, {
+      return {...state,
         loading: true,
-      });
+      };
     case 'CARDS_UPDATE':
-      return Object.assign({}, state, {
+      return {...state,
         data: (action as CardsUpdateAction).cards,
         loading: false,
-      });
+      };
     case 'CARDS_FILTER':
       let cardsFilterAction = (action as CardsFilterAction);
-      return Object.assign({}, state, {
+      return {...state,
         filtered: filterAndFormatCards(cardsFilterAction.cards, cardsFilterAction.filters),
-      });
+      };
     default:
       return state;
   }

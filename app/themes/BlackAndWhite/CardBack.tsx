@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {romanize, healthCounter} from '../../helpers'
 import {CardType} from '../../reducers/StateTypes'
-
+import {MAX_COUNTER_HEALTH} from '../../Constants'
 
 export default class CardBack extends React.Component<CardType, {}> {
   render() {
@@ -33,7 +33,7 @@ export default class CardBack extends React.Component<CardType, {}> {
             <div className={`card back dark horizontal ${card.class} ${card.sheet} tier${card.tier}`}>
               <div className="contents">
                 <h1>{card.class}</h1>
-                {healthCounter(999)}
+                {healthCounter(MAX_COUNTER_HEALTH)}
                 {card.naming && <div className="naming">{card.naming}</div>}
                 <div className="tier">{romanize(card.tier)}</div>
               </div>
@@ -55,6 +55,16 @@ export default class CardBack extends React.Component<CardType, {}> {
               <h1>{card.sheet}</h1>
               <div className="tier">{romanize(card.tier)}</div>
               {card.naming && <div className="naming">{card.naming}</div>}
+            </div>
+          </div>
+        );
+      case 'Malady':
+        return (
+          <div className="white-background">
+            <div className={`card back dark horizontal ${card.sheet}`}>
+              <div className="contents">
+                <h1>{card.sheet}</h1>
+              </div>
             </div>
           </div>
         );

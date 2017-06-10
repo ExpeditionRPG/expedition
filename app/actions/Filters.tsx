@@ -1,8 +1,11 @@
 import Redux from 'redux'
-import {CardsFilter, DownloadCards} from './Cards'
+import {cardsFilter, downloadCards} from './Cards'
+import {initialState} from '../reducers/Filters'
 import {getStore} from '../Store'
 import {CardType} from '../reducers/StateTypes'
 
+declare var require: any;
+const qs = require('qs') as any;
 
 export interface FilterChangeAction extends Redux.Action {
   type: 'FILTER_CHANGE'
@@ -11,20 +14,40 @@ export interface FilterChangeAction extends Redux.Action {
 }
 
 // Filter changes trigger several things, including the actual FiltersChange action
-export function FilterChange(name: string, value: string | number): ((dispatch: Redux.Dispatch<any>)=>void) {
+export function filterChange(name: string, value: string | number): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
-    if (name === 'source' && value === 'custom') {
+    if (name === 'source' && value === 'Custom') {
       // TODO validate URL or ID, otherwise notify user + abort
       value = window.prompt('Please enter your card sheet publish URL (see "?" in the top right for help)', '');
-      value = 'Custom:' + value.replace('https://docs.google.com/spreadsheets/d/', '');
+      value = 'Custom:' + value.replace('https://docs.google.com/spreadsheets/d/', '').replace('/pubhtml', '');
     }
     dispatch({type: 'FILTER_CHANGE', name, value}) as FilterChangeAction;
+
+    // Update URL - don't include in URL if it's the default value
+    let query = {...qs.parse(window.location.search.substring(1)), [name]: value};
+    for (let key in query) {
+      if (query[key] === initialState[key].default) {
+        delete query[key];
+      }
+    }
+    window.history.pushState(null, 'Expedition Card Creator', '?' + qs.stringify(query));
+
     if (name === 'source') {
-      dispatch(DownloadCards());
+      dispatch(downloadCards());
     } else {
       const store = getStore();
-      dispatch(CardsFilter(store.getState().cards.data, store.getState().filters));
-      dispatch(FiltersCalculate(store.getState().cards.filtered));
+      dispatch(cardsFilter(store.getState().cards.data, store.getState().filters));
+      dispatch(filtersCalculate(store.getState().cards.filtered));
+    }
+  }
+}
+
+export function loadFiltersFromUrl(): ((dispatch: Redux.Dispatch<any>)=>void) {
+  return (dispatch: Redux.Dispatch<any>) => {
+    const query = qs.parse(window.location.search.substring(1));
+    for (let key in query) {
+      const val = (isNaN(query[key]) ? query[key] : Number(query[key]));
+      dispatch(filterChange(key, val));
     }
   }
 }
@@ -34,6 +57,6 @@ export interface FiltersCalculateAction extends Redux.Action {
   cardsFiltered: CardType[];
 }
 
-export function FiltersCalculate(cardsFiltered: CardType[]): FiltersCalculateAction {
+export function filtersCalculate(cardsFiltered: CardType[]): FiltersCalculateAction {
   return {type: 'FILTERS_CALCULATE', cardsFiltered};
 }
