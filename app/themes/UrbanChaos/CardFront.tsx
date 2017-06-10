@@ -16,8 +16,8 @@ export default class CardFront extends React.Component<CardType, {}> {
               </header>
               <article>
                 <div className="score">
-                  <div className={`scorePlus ${card.scorePlusMult}`} dangerouslySetInnerHTML={{__html: card.scorePlus}}></div>
-                  {card.scoreMinus && <div className="scoreMinus"><span dangerouslySetInnerHTML={{__html: card.scoreMinus}}></span></div>}
+                  <div className={`scorePlus ${card.scorePlusMult}`}>{card.scorePlus}</div>
+                  {card.scoreMinus && <div className="scoreMinus">{card.scoreMinus}</div>}
                 </div>
               </article>
               <footer>
@@ -34,7 +34,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="name">{card.name}</div>
               </header>
               <article>
-                <div className="effects" dangerouslySetInnerHTML={{__html: card.effects}}></div>
+                <div className="effects">{card.effects}</div>
               </article>
               <footer>
                 <div>{card.flavortext}</div>
@@ -58,10 +58,10 @@ export default class CardFront extends React.Component<CardType, {}> {
               </header>
               <article>
                 <div className="score">
-                  <div className="scorePlus" dangerouslySetInnerHTML={{__html: card.scorePlus1 + card.scorePlus2}}></div>
-                  {card.scoreMinus && <div className="scoreMinus"><span dangerouslySetInnerHTML={{__html: card.scoreMinus}}></span></div>}
+                  <div className="scorePlus">{card.scorePlus1 + card.scorePlus2}</div>
+                  {card.scoreMinus && <div className="scoreMinus">{card.scoreMinus}</div>}
                 </div>
-                {card.effects && <div className="effects" dangerouslySetInnerHTML={{__html: card.effects}}></div>}
+                {card.effects && <div className="effects">{card.effects}</div>}
               </article>
               <footer>
                 <div>{card.flavortext}</div>

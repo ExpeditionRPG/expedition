@@ -13,7 +13,7 @@ export default class CardFront extends React.Component<CardType, {}> {
           <div className={`card front vertical ${card.sheet} ${card.class}`} id={camelCase(name)}>
             <div className="contents">
               <header>
-                <div className="typeicon" dangerouslySetInnerHTML={{__html: card.typeicon}}></div>
+                <div className="typeicon">{card.typeicon}</div>
                 <div className="name">{card.name}</div>
                 <div className="classicon">
                   <div className="icon">{icon(theme, card.class.toLowerCase() + '_small')}</div>
@@ -31,12 +31,12 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="preamble">
                   <div className="hit">
                     <strong>Success: </strong>
-                    <span dangerouslySetInnerHTML={{__html: card.hit}}></span>
+                    <span>{card.hit}</span>
                     <br className="padded" />
                   </div>
                   {card.abilitytext &&
                     <div>
-                      <span dangerouslySetInnerHTML={{__html: card.abilitytext}}></span>
+                      <span>{card.abilitytext}</span>
                       <br className="padded" />
                     </div>
                   }
@@ -44,19 +44,19 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="rng">
                   {card.crithit &&
                     <div className="crithit">
-                      <strong>{icon(theme, 'd20_small')} <span className="symbol">&ge;</span> 20:</strong> <span dangerouslySetInnerHTML={{__html: card.crithit}}></span>
+                      <strong>{icon(theme, 'd20_small')} <span className="symbol">&ge;</span> 20:</strong> {card.crithit}
                       <br className="padded" />
                     </div>
                   }
                   {card.miss &&
                     <div className="miss">
-                      <strong>{icon(theme, 'd20_small')} <span className="symbol">&lt;</span> {card.risk}:</strong> <span dangerouslySetInnerHTML={{__html: card.miss}}></span>
+                      <strong>{icon(theme, 'd20_small')} <span className="symbol">&lt;</span> {card.risk}:</strong> {card.miss}
                       <br className="padded" />
                     </div>
                   }
                   {card.critmiss &&
                     <div className="critmiss">
-                      <strong>{icon(theme, 'd20_small')} <span className="symbol">&le;</span> 1:</strong> <span dangerouslySetInnerHTML={{__html: card.critmiss}}></span>
+                      <strong>{icon(theme, 'd20_small')} <span className="symbol">&le;</span> 1:</strong> {card.critmiss}
                     </div>
                   }
                 </div>
@@ -79,7 +79,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                   <div>
                     <strong>Starting abilities:</strong>
                     <br className="padded" />
-                    <span dangerouslySetInnerHTML={{__html: card.startingabilities}}></span>
+                    {card.startingabilities}
                   </div>
                 </div></div>
               </article>
@@ -105,13 +105,13 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <article>
                   <div className="type">Tier {romanize(card.tier)} {card.class}</div>
                   {card.ongoing1 &&
-                    <div className="ongoing" dangerouslySetInnerHTML={{__html: card.ongoing1}}></div>
+                    <div className="ongoing">{card.ongoing1}</div>
                   }
                   {card.ongoing2 &&
-                    <div className="ongoing2" dangerouslySetInnerHTML={{__html: card.ongoing2}}></div>
+                    <div className="ongoing2">{card.ongoing2}</div>
                   }
                   {card.surge &&
-                    <div className="surge"><strong>Surge: </strong><span dangerouslySetInnerHTML={{__html: card.surge}}></span></div>
+                    <div className="surge"><strong>Surge: </strong>{card.surge}</div>
                   }
                 </article>
                 <footer>
@@ -155,8 +155,8 @@ export default class CardFront extends React.Component<CardType, {}> {
                   <div className="useWhen">{card.usewhen}</div>
                 </div>
                 <br className="padded" />
-                <div className="abilitytext" dangerouslySetInnerHTML={{__html: card.text}}></div>
-                {card.roll && <div className="rng" dangerouslySetInnerHTML={{__html: card.roll}}></div>}
+                <div className="abilitytext">{card.text}</div>
+                {card.roll && <div className="rng">{card.roll}</div>}
               </article>
               <footer>
                 <div className="flavortext">{card.flavortext}</div>

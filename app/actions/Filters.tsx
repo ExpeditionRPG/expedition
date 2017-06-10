@@ -23,7 +23,7 @@ export function FilterChange(name: string, value: string | number): ((dispatch: 
       dispatch(DownloadCards());
     } else {
       const store = getStore();
-      dispatch(CardsFilter(store.getState().cards, store.getState().filters));
+      dispatch(CardsFilter(store.getState().cards.data, store.getState().filters));
       dispatch(FiltersCalculate(store.getState().cards.filtered));
     }
   }

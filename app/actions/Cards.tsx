@@ -36,7 +36,7 @@ export function DownloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
           }));
         });
         dispatch(CardsUpdate(cards));
-        dispatch(CardsFilter(store.getState.cards, store.getState().filters));
+        dispatch(CardsFilter(store.getState().cards.data, store.getState().filters));
         dispatch(FiltersCalculate(store.getState().cards.filtered));
       }
     });
@@ -80,46 +80,50 @@ export function filterAndFormatCards(cards: CardType[], filters: FiltersState): 
   const cardFilters = ['sheet', 'tier', 'class'].filter((filterName: string) => {
     return (filters[filterName].current !== 'All');
   });
-  cards = cards.filter((card: CardType) => {
-    for (let i = 0; i < cardFilters.length; i++) {
-      const filterName = cardFilters[i];
-      const filter = filters[filterName];
-      if (card[filterName] !== filter.current) {
-        return false;
+  return cards
+    .filter((card: CardType) => {
+      for (let i = 0; i < cardFilters.length; i++) {
+        const filterName = cardFilters[i];
+        const filter = filters[filterName];
+        if (card[filterName] !== filter.current) {
+          return false;
+        }
       }
-    }
-    return true;
-  }).map((card: CardType) => formatCard(card, filters));
-  return cards;
+      return true;
+    })
+    .map((card: CardType) => formatCard(card, filters));
 }
 
 
-const boldColonedRegex = /(.*: )/g;
+const boldColonedRegex = /.*: /g;
 const orRegex = /\nOR\n/g; // note: caps only
 const symbolRegex = /&[#a-z0-9]{1,7};/img;
 const iconRegex = /#\w*/mg;
 const doubleLinebreak = /\n\n/mg;
 const singleLinebreak = /\n/mg; // purposefully last
-const elementifyRegex = new RegExp([
+const elementifyRegex = new RegExp('(' + [
   boldColonedRegex.source,
   orRegex.source,
   symbolRegex.source,
   iconRegex.source,
   doubleLinebreak.source,
   singleLinebreak
-].join('|'), 'igm');
+].join('|') + ')', 'igm');
 
-// Returns each property either as a string or, if it contains icons, an array of JSX elements
+// Returns a new card with each property either as a string or, if it contains icons, an array of JSX elements
 function formatCard(card: CardType, filters: FiltersState): CardType {
+  const newCard: CardType = {};
   Object.keys(card).forEach((key: string) => {
     let value = card[key];
-    if (value === '-') { // clear and skip '-' proprties
-      card[key] = '';
+    if (value === '-' || value === '') { // skip '-' and blank proprties
+      return;
     } else if (typeof value === 'string') {
       // For each propery, split it up on anything that'll get turned into a JSX element
       // Then walk through the array and JSX-ify as needed, leaving the rest as strings
       // Parsing order is important here, for example \n\n vs \n
-      const values = value.split(elementifyRegex).map((str: string, index: number): string | JSX.Element => {
+      const values = value.split(elementifyRegex)
+        .filter((str: string) => (str && str !== ''))
+        .map((str: string, index: number): string | JSX.Element => {
         // Wrap "OR" in div for padding
         if (orRegex.test(str)) {
           return <div key={index} className="or">OR</div>;
@@ -133,7 +137,7 @@ function formatCard(card: CardType, filters: FiltersState): CardType {
           return <span key={index} className="symbol" dangerouslySetInnerHTML={{__html: str}}></span>;
         }
         if (iconRegex.test(str)) {
-          return icon(filters.theme.current, str.replace(iconRegex, (match: string) => match.substring(1) + '_small'));
+          return icon(filters.theme.current, str.replace(iconRegex, (match: string) => match.substring(1) + '_small'), index);
         }
         if (doubleLinebreak.test(str)) {
           return <br key={index} className="padded"/>;
@@ -143,10 +147,16 @@ function formatCard(card: CardType, filters: FiltersState): CardType {
         }
         return str;
       });
-      // If there's only one item, turn it back into an item to keep filter code simpler.
-      value = (values.length === 1) ? values[0] : values;
+
+      if (values.length === 0) {
+        value = null;
+      } else if (values.length === 1) {
+        value = values[0];
+      } else {
+        value = values;
+      }
     }
-    card[key] = value;
+    newCard[key] = value;
   });
-  return card;
+  return newCard;
 }

@@ -2,8 +2,8 @@ import * as React from 'react'
 
 import {MAX_COUNTER_HEALTH} from './Constants'
 
-export function icon(theme: string, name: string): JSX.Element {
-  return <img className="inline_icon svg" src={`/themes/${theme}/images/icon/${name}.svg`}/>;
+export function icon(theme: string, name: string, key?: number): JSX.Element {
+  return <img key={key || name} className="inline_icon svg" src={`/themes/${theme}/images/icon/${name}.svg`}/>;
 }
 
 export function camelCase(str: string): string {
