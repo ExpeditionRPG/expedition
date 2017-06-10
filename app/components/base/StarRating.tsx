@@ -21,18 +21,18 @@ export default class StarRating extends React.Component<StarRatingProps, {}> {
     const stars = [1,2,3,4,5].map((i: number): JSX.Element => {
       const onClick = this.props.readOnly ? undefined : this.props.onChange.bind(this, i);
       const checked = (i <= this.props.value);
-      let classes = 'star';
+      let classes = ['star'];
       if (!this.props.readOnly) {
-        classes += ' editable';
+        classes.push('editable');
       }
       // TODO support half-stars - https://github.com/ExpeditionRPG/expedition-app/issues/338
       if (checked) {
-        classes += ' filled';
+        classes.push('filled');
       } else {
-        classes += ' outline';
+        classes.push('outline');
       }
 
-      return <div key={i} className={classes}>
+      return <div key={i} className={classes.join(' ')}>
         <FlatButton disabled={this.props.readOnly} onTouchTap={() => { !this.props.readOnly && this.props.onChange(i); }}>
           {checked && <Star color={colors.grey900} />}
           {!checked && <StarBorder color={colors.grey600} />}

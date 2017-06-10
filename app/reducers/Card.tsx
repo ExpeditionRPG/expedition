@@ -1,6 +1,6 @@
 import Redux from 'redux'
 import {CardState} from './StateTypes'
-import {NavigateAction, ReturnAction} from '../actions/ActionTypes'
+import {NavigateAction} from '../actions/ActionTypes'
 import {NAVIGATION_DEBOUNCE_MS} from '../Constants'
 
 
