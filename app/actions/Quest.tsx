@@ -10,20 +10,8 @@ import {QuestDetails, QuestContext} from '../reducers/QuestTypes'
 import {ParserNode} from '../parser/Node'
 import {initCardTemplate} from '../cardtemplates/Template'
 
-export function initQuest(id: string, questNode: CheerioElement, ctx: QuestContext): QuestNodeAction {
+export function initQuest(details: QuestDetails, questNode: CheerioElement, ctx: QuestContext): QuestNodeAction {
   const firstNode = questNode.children().eq(0);
-  const details = {
-    id: id,
-    title: questNode.attr('title'),
-    summary: questNode.attr('summary'),
-    author: questNode.attr('author'),
-    email: questNode.attr('email'),
-    url: questNode.attr('url'),
-    minPlayers: questNode.attr('minPlayers'),
-    maxPlayers: questNode.attr('maxPlayers'),
-    minTimeMinutes: questNode.attr('minTimeMinutes'),
-    maxTimeMinutes: questNode.attr('maxTimeMinutes'),
-  };
   return {type: 'QUEST_NODE', node: new ParserNode(firstNode, ctx), details};
 }
 

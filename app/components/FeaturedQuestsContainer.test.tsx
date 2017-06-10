@@ -1,5 +1,3 @@
-
-
 describe('FeaturedQuestsContainer', () => {
-  it('TODO');
+  it('Loads / initializes a quest when selected');
 });

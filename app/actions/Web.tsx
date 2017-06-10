@@ -6,33 +6,32 @@ import {initQuest} from './Quest'
 import {openSnackbar} from '../actions/Snackbar'
 import {userFeedbackClear} from '../actions/UserFeedback'
 import {CheerioElement, SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} from '../reducers/StateTypes'
-import {QuestContext, defaultQuestContext} from '../reducers/QuestTypes'
+import {QuestContext, QuestDetails, defaultQuestContext} from '../reducers/QuestTypes'
 
 declare var window:any;
 declare var require:any;
 const Cheerio = require('cheerio'); // Doesn't like import statements
 
-export function fetchQuestXML(id: string, url: string) {
+export function fetchQuestXML(details: QuestDetails) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    $.ajax({url,
+    $.ajax({url: details.publishedurl,
       dataType: 'text',
       success: (data: string) => {
-        const quest = Cheerio.load(data)('quest');
-        dispatch(loadQuestXML(id, quest, defaultQuestContext()));
+        const questNode = Cheerio.load(data)('quest');
+        dispatch(loadQuestXML(details, questNode, defaultQuestContext()));
       },
       error: (xhr: any, error: string) => {
-        dispatch(openSnackbar('Network error when fetching quest'));
+        dispatch(openSnackbar('Network error: Please check your connection.'));
       },
     });
   };
 }
 
 // for loading quests in the app - Quest Creator injects directly into initQuest
-export function loadQuestXML(id: string, questNode: CheerioElement, ctx: QuestContext) {
+export function loadQuestXML(details: QuestDetails, questNode: CheerioElement, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    const init = initQuest(id, questNode, ctx);
-    window.FirebasePlugin.logEvent('quest_start', init.details); // here instead of initQuest b/c initQuest is also used by the editor
-    dispatch(init);
+    window.FirebasePlugin.logEvent('quest_start', details); // here instead of initQuest b/c initQuest is also used by the editor
+    dispatch(initQuest(details, questNode, ctx));
     dispatch(toCard('QUEST_START'));
   };
 }
@@ -78,7 +77,7 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
       dispatch(toCard('SEARCH_CARD', 'SEARCH'));
     };
     xhr.onerror = () => {
-      return dispatch(openSnackbar('Network error when searching'));
+      return dispatch(openSnackbar('Network error: Please check your connection.'));
     }
     xhr.withCredentials = true;
     xhr.send(JSON.stringify(params));
@@ -99,7 +98,7 @@ export function subscribe(email: string) {
       if (xhr.status === 200) {
         window.FirebasePlugin.logEvent('user_subscribe', email);
       } else {
-        dispatch(openSnackbar('Error when subscribing: ' + err));
+        dispatch(openSnackbar('Error subscribing: ' + err));
       }
     });
   };

@@ -26,7 +26,6 @@ export interface SearchDispatchProps {
   onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => void;
   onQuest: (quest: QuestDetails) => void;
   onPlay: (quest: QuestDetails) => void;
-  onOwnedChange: (checked: boolean) => void;
 }
 
 export interface SearchProps extends SearchStateProps, SearchDispatchProps {};
