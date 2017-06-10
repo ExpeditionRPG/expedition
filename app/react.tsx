@@ -18,7 +18,6 @@ import theme from './theme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
-const ReactGA = require('react-ga') as any;
 const Typo: any = require('typo-js');
 
 // Needed for onTouchTap
@@ -36,8 +35,10 @@ import {setSnackbar} from './actions/snackbar'
 import {store} from './store'
 import {VERSION} from './constants'
 
-let isQuest = false;
+const ReactGA = require('react-ga') as any;
+ReactGA.initialize('UA-47408800-7');
 
+let isQuest = false;
 if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
   // Try to parse from google drive menu action, e.g.
   // ?state=%7B"ids":%5B"0BzrQOdaJcH9MeDhic2ctdFNSdjg"%5D,"action":"open","userId":"106667818352266772866"%7D
@@ -46,11 +47,15 @@ if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
     window.location.href = '/#' + doc_json.ids[0];
     isQuest = true;
   } catch (e) {
+    ReactGA.event({
+      category: 'Error',
+      action: 'Failed to parse anticipated Drive open URI',
+      label: window.location.search,
+    });
     console.log('Failed to parse anticipated Drive open URI: ' + window.location.search);
   }
 }
 
-ReactGA.initialize('UA-47408800-7');
 if (isQuest) {
   ReactGA.pageview('/quest');
 } else {
