@@ -26,11 +26,11 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
     case 'QUEST_RENDER':
       const pageTitle = (action as QuestRenderAction).qdl.getMeta()['title'] + ' - Expedition Quest Creator';
       window.document.title = pageTitle;
-      History.replaceState({}, pageTitle, window.location.href);
       try {
         document.getElementsByTagName('title')[0].innerHTML = pageTitle;
       }
       catch ( Exception ) { }
+      window.history.replaceState(window.history.state, pageTitle, window.location.href);
       return Object.assign({}, state, {renderer: (action as QuestRenderAction).qdl});
     case 'QUEST_NODE':
       return Object.assign({}, state, {node: (action as any).node});
