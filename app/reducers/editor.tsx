@@ -24,7 +24,13 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
     case 'SET_LINE':
       return Object.assign({}, state, {line: (action as SetLineAction).line});
     case 'QUEST_RENDER':
-      window.document.title = 'Expedition Quest Creator - ' + (action as QuestRenderAction).qdl.getMeta()['title'];
+      const pageTitle = (action as QuestRenderAction).qdl.getMeta()['title'] + ' - Expedition Quest Creator';
+      window.document.title = pageTitle;
+      try {
+        document.getElementsByTagName('title')[0].innerHTML = pageTitle;
+      }
+      catch ( Exception ) { }
+      window.history.replaceState(window.history.state, pageTitle, window.location.href);
       return Object.assign({}, state, {renderer: (action as QuestRenderAction).qdl});
     case 'QUEST_NODE':
       return Object.assign({}, state, {node: (action as any).node});

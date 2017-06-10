@@ -26,7 +26,7 @@ exports.getById = function(id, callback) {
 exports.search = function(userId, params, callback) {
 
   if (!params) {
-    return callback(new Error("No search parameters given; requires at least one parameter"));
+    return callback(new Error('No search parameters given; requires at least one parameter'));
   }
 
   Joi.validate(params, Schemas.questsSearch, (err, params) => {
@@ -53,13 +53,22 @@ exports.search = function(userId, params, callback) {
                    .where('maxplayers >= ?', params.players);
     }
 
+    // DEPRECATED from app 6/10/17 (also in schemas.js)
     if (params.search) {
       const search = '%' + params.search.toLowerCase() + '%';
       query = query.where(Squel.expr().and('LOWER(title) LIKE ?', search).or('LOWER(summary) LIKE ?', search));
     }
-
     if (params.published_after) {
       query = query.where("published > NOW() - '? seconds'::INTERVAL", params.published_after);
+    }
+
+    if (params.text && params.text !== '') {
+      const text = '%' + params.text.toLowerCase() + '%';
+      query = query.where(Squel.expr().and('LOWER(title) LIKE ?', text).or('LOWER(summary) LIKE ?', text));
+    }
+
+    if (params.age) {
+      query = query.where("published > NOW() - '? seconds'::INTERVAL", params.age);
     }
 
     if (params.mintimeminutes) {
@@ -84,7 +93,7 @@ exports.search = function(userId, params, callback) {
           CASE
             WHEN ratingcount < 5 THEN 0
             ELSE ratingavg
-          END`, true);
+          END DESC NULLS LAST`, null);
       } else {
         query = query.order(params.order.substr(1), (params.order[0] === '+'));
       }
