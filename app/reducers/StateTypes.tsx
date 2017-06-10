@@ -52,13 +52,13 @@ export interface CardState {
 export type TransitionType = 'NEXT' | 'PREV' | 'INSTANT';
 
 export interface QuestState {
-  details?: QuestDetails;
-  node?: ParserNode;
+  details: QuestDetails;
+  node: ParserNode;
 }
 
 export interface SearchState {
   search: SearchSettings;
-  selected?: QuestDetails;
+  selected: QuestDetails;
   results: QuestDetails[];
 }
 
