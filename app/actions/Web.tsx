@@ -5,13 +5,8 @@ import {initQuest} from './Quest'
 
 import {openSnackbar} from '../actions/Snackbar'
 import {userFeedbackClear} from '../actions/UserFeedback'
-<<<<<<< HEAD
 import {SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} from '../reducers/StateTypes'
-import {QuestContext, defaultQuestContext} from '../reducers/QuestTypes'
-=======
-import {CheerioElement, SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} from '../reducers/StateTypes'
 import {QuestContext, QuestDetails, defaultQuestContext} from '../reducers/QuestTypes'
->>>>>>> 6bdeaba7896f20276295115b3ff5f9428e2683e0
 
 declare var window:any;
 declare var require:any;
@@ -22,7 +17,7 @@ export function fetchQuestXML(details: QuestDetails) {
     $.ajax({url: details.publishedurl,
       dataType: 'text',
       success: (data: string) => {
-        const questNode = Cheerio.load(data)('quest');
+        const questNode = cheerio.load(data)('quest');
         dispatch(loadQuestXML(details, questNode, defaultQuestContext()));
       },
       error: (xhr: any, error: string) => {
@@ -33,11 +28,7 @@ export function fetchQuestXML(details: QuestDetails) {
 }
 
 // for loading quests in the app - Quest Creator injects directly into initQuest
-<<<<<<< HEAD
-export function loadQuestXML(id: string, questNode: Cheerio, ctx: QuestContext) {
-=======
-export function loadQuestXML(details: QuestDetails, questNode: CheerioElement, ctx: QuestContext) {
->>>>>>> 6bdeaba7896f20276295115b3ff5f9428e2683e0
+export function loadQuestXML(details: QuestDetails, questNode: Cheerio, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
     window.FirebasePlugin.logEvent('quest_start', details); // here instead of initQuest b/c initQuest is also used by the editor
     dispatch(initQuest(details, questNode, ctx));
