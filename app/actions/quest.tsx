@@ -123,7 +123,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
     return newQuest(user, dispatch);
   }
   realtimeUtils.load(docid, function(doc: any) {
-    window.location.hash=docid;
+    window.location.hash = docid;
     const md = doc.getModel().getRoot().get('markdown');
     let notes = doc.getModel().getRoot().get('notes');
     let metadata = doc.getModel().getRoot().get('metadata');
