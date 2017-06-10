@@ -107,7 +107,7 @@ const elementifyRegex = new RegExp('(' + [
   symbolRegex.source,
   iconRegex.source,
   doubleLinebreak.source,
-  singleLinebreak
+  singleLinebreak.source
 ].join('|') + ')', 'igm');
 
 // Returns a new card with each property either as a string or, if it contains icons, an array of JSX elements

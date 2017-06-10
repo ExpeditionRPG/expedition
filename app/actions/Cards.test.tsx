@@ -67,6 +67,14 @@ describe('Cards actions', () => {
     expect(cleaned[0].text).toEqual(['Choose one ', <div key={1} className="or">OR</div>, ' two']);
   });
 
+  it('replaces newlines with <br/>s', () => {
+    const cards = [{
+      text: 'The target regains\n6 health.',
+    }];
+    const cleaned = filterAndFormatCards(cards, dummyFilters);
+    expect(cleaned[0].text).toEqual(['The target regains', <br key={1}/>, '6 health.']);
+  });
+
   it('filters by sheet, tier and class', () => {
     const filters = {
       sheet: {
