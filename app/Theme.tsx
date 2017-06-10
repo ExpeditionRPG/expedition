@@ -75,7 +75,7 @@ let theme: any = {
   colors: {
     // TODO: Consolidate this with the palette
     fontColorPrimary: '#000000',
-    fontColorFaded: '#777777',
+    fontColorFaded: '#666666',
     fontColorDarkPrimary: '#FFFFFF',
 
     backgroundColorPrimary: '#FFFFFF',

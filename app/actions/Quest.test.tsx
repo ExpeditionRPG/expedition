@@ -1,4 +1,5 @@
-
 describe('Quest action', () => {
-  it('TODO');
+  describe('initQuest', () => {
+    it('successfully returns the parsed quest node');
+  });
 });

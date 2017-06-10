@@ -4,6 +4,7 @@ import {templateScope, TemplateState} from '../cardtemplates/Template'
 export interface QuestDetails {
   id?: string;
   xml?: string;
+  created?: string;
   publishedurl?: string;
   published?: string;
   title?: string,
@@ -14,7 +15,9 @@ export interface QuestDetails {
   url?: string,
   mintimeminutes?: number,
   maxtimeminutes?: number,
-  author?: string
+  author?: string,
+  ratingcount?: number,
+  ratingavg?: number
 };
 
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';

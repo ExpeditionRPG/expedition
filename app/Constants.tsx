@@ -32,6 +32,41 @@ export const REGEX = {
   HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,
 };
 
+export const PLAYTIME_MINUTES_BUCKETS = [20, 30, 45, 60, 90, 120];
+
+export type GenreType = 'Comedy' | 'Drama' | 'Horror' | 'Mystery' | 'Romance';
+export const GENRES: GenreType[] = [
+  'Comedy',
+  'Drama',
+  'Horror',
+  'Mystery',
+  'Romance'
+];
+
+// Content rating options and their definitions, generally based on MPAA guidelines
+export type ContentRatingLabelType = 'Everyone' | 'Teen' | 'Adult';
+export type ContentRatingType = {[key: string]: {[key: string]: string}};
+export const CONTENT_RATINGS: ContentRatingType = {
+  Everyone: {
+    violence: 'No descriptions of violence allowed outside of combat mechanics.',
+    language: 'Only very limited profanity allowed, and no sexually-derived words.',
+    drugs: 'No drug use allowed.',
+    nudity: 'No nudity allowed.',
+  },
+  Teen: {
+    violence: 'May contain brief, limited descriptions of violence.',
+    language: 'May contain profanity except in a sexual context.',
+    drugs: 'May contain drug use, but not abuse.',
+    nudity: 'May contain non-sexual nudity.',
+  },
+  Adult: {
+    violence: 'All violence allowed.',
+    language: 'All profanity allowed.',
+    drugs: 'All drugs allowed.',
+    nudity: 'All nudity allowed.',
+  },
+};
+
 // converts a number to the English representation of the word
 // Note: for numbers outside of 0 and 10, standard to just output the numeric form
 export function numberToWord(input: number): string {

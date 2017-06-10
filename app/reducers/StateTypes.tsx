@@ -2,6 +2,8 @@ import {QuestDetails, DifficultyType, QuestContext} from './QuestTypes'
 import {TemplatePhase} from '../cardtemplates/Template'
 import {ParserNode} from '../parser/Node'
 
+import {GenreType, ContentRatingLabelType} from '../Constants'
+
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
 export interface EndSettings {
@@ -10,9 +12,12 @@ export interface EndSettings {
 
 export interface SearchSettings {
   text: string;
-  age: string;
+  age: number;
   order: string;
-  owner: string;
+  mintimeminutes: number;
+  maxtimeminutes: number;
+  contentrating: ContentRatingLabelType;
+  genre: GenreType;
 }
 
 export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'DETAILS' | 'SEARCH';
@@ -27,6 +32,12 @@ export interface SettingsType {
   showHelp: boolean;
   multitouch: boolean;
   vibration: boolean;
+}
+
+export interface SnackbarState {
+  open: boolean;
+  message?: string;
+  timeout?: number;
 }
 
 export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REPORT';
@@ -70,6 +81,7 @@ export interface AppState {
   quest: QuestState;
   search: SearchState;
   settings: SettingsType;
+  snackbar: SnackbarState;
   user: UserState;
   userFeedback: UserFeedbackState;
 }

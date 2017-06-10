@@ -1,6 +1,6 @@
 import Redux from 'redux'
 import {QuestState, AppState} from './StateTypes'
-import {QuestNodeAction} from '../actions/ActionTypes'
+import {QuestNodeAction, ViewQuestAction} from '../actions/ActionTypes'
 
 const initial_state: QuestState = {};
 
@@ -11,6 +11,8 @@ export function quest(state: QuestState = initial_state, action: Redux.Action): 
         details: (action as QuestNodeAction).details || state.details,
         node: (action as QuestNodeAction).node,
       };
+    case 'VIEW_QUEST':
+      return {...state, details: (action as ViewQuestAction).quest};
     default:
       return state;
   }

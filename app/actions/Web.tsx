@@ -3,33 +3,44 @@ import {authSettings} from '../Constants'
 import {toCard} from './Card'
 import {initQuest} from './Quest'
 
+import {openSnackbar} from '../actions/Snackbar'
 import {userFeedbackClear} from '../actions/UserFeedback'
+<<<<<<< HEAD
 import {SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} from '../reducers/StateTypes'
 import {QuestContext, defaultQuestContext} from '../reducers/QuestTypes'
+=======
+import {CheerioElement, SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} from '../reducers/StateTypes'
+import {QuestContext, QuestDetails, defaultQuestContext} from '../reducers/QuestTypes'
+>>>>>>> 6bdeaba7896f20276295115b3ff5f9428e2683e0
 
 declare var window:any;
 declare var require:any;
 const cheerio = require('cheerio') as CheerioAPI;
 
-export function fetchQuestXML(id: string, url: string) {
+export function fetchQuestXML(details: QuestDetails) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    $.ajax({url,
+    $.ajax({url: details.publishedurl,
       dataType: 'text',
       success: (data: string) => {
-        const quest = cheerio.load(data)('quest');
-        dispatch(loadQuestXML(id, quest, defaultQuestContext()));
+        const questNode = Cheerio.load(data)('quest');
+        dispatch(loadQuestXML(details, questNode, defaultQuestContext()));
+      },
+      error: (xhr: any, error: string) => {
+        dispatch(openSnackbar('Network error: Please check your connection.'));
       },
     });
   };
 }
 
 // for loading quests in the app - Quest Creator injects directly into initQuest
+<<<<<<< HEAD
 export function loadQuestXML(id: string, questNode: Cheerio, ctx: QuestContext) {
+=======
+export function loadQuestXML(details: QuestDetails, questNode: CheerioElement, ctx: QuestContext) {
+>>>>>>> 6bdeaba7896f20276295115b3ff5f9428e2683e0
   return (dispatch: Redux.Dispatch<any>): any => {
-
-    const init = initQuest(id, questNode, ctx);
-    window.FirebasePlugin.logEvent('quest_start', init.details); // here instead of initQuest b/c initQuest is also used by the editor
-    dispatch(init);
+    window.FirebasePlugin.logEvent('quest_start', details); // here instead of initQuest b/c initQuest is also used by the editor
+    dispatch(initQuest(details, questNode, ctx));
     dispatch(toCard('QUEST_START'));
   };
 }
@@ -40,29 +51,17 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
       throw new Error('Not logged in, cannot search');
     }
 
-    var params: any = {};
-    if (search.owner === 'self') {
-      params.owner = user.id;
-    }
-    params.players = numPlayers;
-    if (search.text) {
-      params.search = search.text;
-    }
-    if (search.age && search.age !== 'inf') {
-      params.published_after = parseInt(search.age, 10);
-    }
-    if (search.order) {
-      params.order = search.order;
-    }
+    let params: any = { players: numPlayers, ...search };
+    Object.keys(params).forEach((key: string) => { if (params[key] === null) { delete params[key]; }});
 
-    var xhr = new XMLHttpRequest();
-    // TODO: Pagination
+    const xhr = new XMLHttpRequest();
+    // TODO: Pagination / infinite scrolling
     xhr.open('POST', authSettings.urlBase + '/quests', true);
     xhr.setRequestHeader('Content-Type', 'text/plain');
-    xhr.onload = function() {
-      var response: any = JSON.parse(xhr.responseText);
+    xhr.onload = () => {
+      const response: any = JSON.parse(xhr.responseText);
       if (response.error) {
-        throw new Error(response.error);
+        return dispatch(openSnackbar('Network error when searching: ' + response.error));
       }
 
       dispatch({
@@ -74,6 +73,9 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
       });
       dispatch(toCard('SEARCH_CARD', 'SEARCH'));
     };
+    xhr.onerror = () => {
+      return dispatch(openSnackbar('Network error: Please check your connection.'));
+    }
     xhr.withCredentials = true;
     xhr.send(JSON.stringify(params));
   };
@@ -93,7 +95,7 @@ export function subscribe(email: string) {
       if (xhr.status === 200) {
         window.FirebasePlugin.logEvent('user_subscribe', email);
       } else {
-        console.log('Error encountered when subscribing: ' + err);
+        dispatch(openSnackbar('Error subscribing: ' + err));
       }
     });
   };
@@ -128,10 +130,10 @@ export function submitUserFeedback(quest: QuestState, settings: SettingsType, us
       if (xhr.status === 200) {
         window.FirebasePlugin.logEvent('user_feedback_' + userFeedback.type, data);
         dispatch(userFeedbackClear());
-        return alert('Submission successful. Thank you!');
+        return dispatch(openSnackbar('Submission successful. Thank you!'));
       }
       window.FirebasePlugin.logEvent('user_feedback_' + userFeedback.type + '_err', data);
-      alert('Error encountered when submitting: ' + err);
+      return dispatch(openSnackbar('Error submitting feedback: ' + err));
     });
   };
 }

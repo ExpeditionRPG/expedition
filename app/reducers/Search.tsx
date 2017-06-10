@@ -5,9 +5,12 @@ import {SearchState, isSearchPhase} from './StateTypes'
 export const initial_state: SearchState = {
   search: {
     text: '',
-    age: 'inf',
+    age: null,
     order: '-created',
-    owner: 'anyone',
+    genre: null,
+    contentrating: null,
+    mintimeminutes: null,
+    maxtimeminutes: null,
   },
   selected: null,
   results: []

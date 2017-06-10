@@ -65,6 +65,7 @@ $lineheight: 1.2;
 
 $sizemap: (
   appbar: 48px,
+  inputsquare: 48px,
   inputspacing: 16px, /* slightly larger on small devices (to prevent false touches) */
   input: 32px, /* size of input icon-style buttons */
   watermark: 36vh, /* height-specific */
@@ -81,6 +82,7 @@ $fontsizemap: (
   title: 6vmin,
   interactive: 5.5vmin,
   flavor: 4.7vmin,
+  label: 18px, // purposefully fixed-size
 );
 
 @function fontsize($key) {
@@ -104,12 +106,13 @@ $fontsizemap: (
 $headerfont: CinzelBold, serif;
 
 $font_color_primary: #000000;
-$font_color_faded: #707070;
+$font_color_faded: #666666;
 $font_color_dark_primary: #FFFFFF;
 
 $border_primary: 0.02in solid #000;
 $border_dark_primary: 0.02in solid #999;
 $border_accent: 0.02in solid #333;
+$border_accent_thin: 0.01in solid #333;
 $border_faded: 0.02in solid #777;
 $border_desktop: size(base) solid #777;
 
@@ -117,7 +120,7 @@ $bg_primary: #F4ECC8;
 $bg_inactive: #222222;
 $bg_titlebar: rgba(255, 255, 235, 0.65);
 $bg_accent: rgb(220, 220, 220);
-$bg_interactive: rgba(245, 235, 205, 0.7);
+$bg_interactive: rgba(245, 238, 210, 0.7);
 $bg_active: rgba(255, 255, 255, 0.9);
 $bg_dark_primary: #161011;
 $bg_dark_titlebar: rgba(110, 110, 110, 0.6);
@@ -154,6 +157,12 @@ body {
 
 .float_right {
   float: right;
+}
+
+.snackbar {
+  span {
+    color: $font_color_dark_primary !important;
+  }
 }
 
 @mixin styling() {
@@ -292,7 +301,7 @@ body {
   }
 
   ol, ul {
-    padding-left: size(large);
+    padding-left: size(icon);
 
     li {
       padding-bottom: size(tiny);
@@ -305,12 +314,16 @@ body {
   }
 
   .starContainer {
-    text-align: center;
+    .stars {
+      display: flex;
+      justify-content: center;
+    }
     .star {
-      display: inline-block;
+      order: 1;
+      height: size(inputsquare) !important;
       button {
         min-width: 0 !important;
-        height: auto !important;
+        height: size(inputsquare) !important;
         svg {
           width: size(input) !important;
           height: size(input) !important;
@@ -324,8 +337,15 @@ body {
         }
       }
     }
+    .quantity {
+      height: size(inputsquare);
+      line-height: size(inputsquare);
+      order: 2;
+      padding-left: size(small);
+    }
     .hint {
       color: #757575;
+      text-align: center;
     }
   }
 
@@ -422,7 +442,7 @@ body {
       line-height: $lineheight !important;
       padding: size(base) !important;
       background-color: $bg_interactive !important;
-      border: $border_accent !important;
+      border: $border_accent_thin !important;
       margin-top: 0 !important;
       user-select: all;
     }
@@ -432,7 +452,27 @@ body {
       height: auto !important;
       box-sizing: border-box;
       background-color: $bg_interactive !important;
-      border: $border_accent !important;
+      border: $border_accent_thin !important;
+    }
+  }
+
+  .selectfield {
+    margin-top: -6px;
+    width: 100% !important;
+    font-size: fontsize(flavor) !important;
+
+    label {
+      font-size: fontsize(label) !important;
+      transform: scale(1) translate(0px, -28px) !important;
+    }
+
+    &.halfLeft {
+      width: 45% !important;
+      margin-right: 5%;
+    }
+    &.halfRight {
+      width: 45% !important;
+      margin-left: 5%;
     }
   }
 
@@ -639,17 +679,8 @@ body {
       white-space: nowrap;
       overflow: hidden;
     }
-    .timing {
-      .inline_icon {
-        padding-left: size(base);
-        padding-right: size(tiny);
-        width: fontsize(interactive);
-        height: fontsize(interactive);
-      }
-    }
     .summary {
       display: flex;
-      padding-left: size(base);
       flex: 3;
       line-height: $lineheight;
       margin: 0;
@@ -658,6 +689,48 @@ body {
     .inline_icon {
       padding-right: size(base);
       margin-bottom: -1 * size(tiny);
+    }
+    .timing {
+      opacity: 0.65;
+      margin-top: size(small);
+      margin-right: fontsize(flavor);
+      font-size: fontsize(flavor);
+      display: inline-block;
+      .inline_icon {
+        padding-right: size(small);
+        width: fontsize(flavor);
+        height: fontsize(flavor);
+      }
+    }
+    .searchOrderDetail {
+      opacity: 0.65;
+      font-size: fontsize(flavor);
+      display: inline-block;
+      float: right;
+      margin-top: size(small);
+
+      &.ratingavg {
+        .starContainer {
+          .quantity {
+            height: fontsize(flavor);
+            line-height: fontsize(flavor);
+          }
+          .star {
+            $starSize: fontsize(flavor) + size(small);
+            margin-top: -0.5 * size(small) !important;
+            height: $starSize !important;
+            button {
+              height: $starSize !important;
+              line-height: $starSize !important;
+              svg {
+                height: $starSize !important;
+                width: $starSize !important;
+                padding: 0 !important;
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -681,6 +754,20 @@ body {
       border: 2px solid black !important;
     }
   }
+
+  .searchForm {
+    button:disabled {
+      color: $font_color_primary !important;
+    }
+  }
+
+  .ratingDescription {
+    font-size: fontsize(label);
+    ul {
+      margin-top: size(tiny);
+      padding-left: fontsize(label);
+    }
+  }
 }
 
 @include styling();
@@ -691,12 +778,13 @@ body {
 // ===============================================
 
 // On large screens, shrink a bit...
-$abs_scale_vw: $abswidthmax / 115vmin;
-$abs_scale_vh: $absheightmax / 115vmin;
+$abs_scale_vw: $abswidthmax / 120vmin;
+$abs_scale_vh: $absheightmax / 120vmin;
 
 $sizemap: (
   appbar: 48px,
   inputspacing: 14px,
+  inputsquare: 48px,
   input: 32px,
   watermark: 36vmin * $abs_scale_vh, /* note: height-specific */
   huge: 12vmin * $abs_scale_vh,
@@ -712,6 +800,7 @@ $fontsizemap: (
   timervalue: 24vmin * $abs_scale_vw,
   interactive: 5.5vmin * $abs_scale_vw,
   flavor: 4.7vmin * $abs_scale_vw,
+  label: 18px,
 );
 
 @media screen and (min-width: $abswidthmax), screen and (min-height: $absheightmax) {

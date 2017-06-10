@@ -78,10 +78,7 @@ gapi.load('client:auth2', () => {
   });
 });
 
-// Load Firebase - currently only works on cordova apps
-// TODO once logging working on web too, don't send analytics when window.location.hostname === 'localhost'
-// window.FirebasePlugin.logEvent = (name: string, args: any) => { console.log(name, args); }
-if (window.FirebasePlugin) {
+if (window.FirebasePlugin) { // Load Firebase - only works on cordova apps
   window.FirebasePlugin.onTokenRefresh((token: string) => {
     // TODO save this server-side and use it to push notifications to this device
   }, (error: string) => {

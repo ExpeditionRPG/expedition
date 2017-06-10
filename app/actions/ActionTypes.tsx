@@ -62,4 +62,14 @@ export interface UserLogoutAction extends Redux.Action {
   type: 'USER_LOGOUT';
 }
 
+export interface SnackbarOpenAction extends Redux.Action {
+  type: 'SNACKBAR_OPEN';
+  message?: string;
+  timeout?: number;
+}
+
+export interface SnackbarCloseAction extends Redux.Action {
+  type: 'SNACKBAR_CLOSE';
+}
+
 export interface QuestCardAction {}
