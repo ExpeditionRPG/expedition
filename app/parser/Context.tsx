@@ -1,5 +1,4 @@
 import * as React from 'react'
-import {CheerioElement} from '../reducers/StateTypes'
 import {defaultQuestContext, QuestContext} from '../reducers/QuestTypes'
 
 const Clone = require('clone');
@@ -87,7 +86,7 @@ function parseOpString(str: string): string {
   return op[1];
 }
 
-export function updateContext(node: CheerioElement, ctx: QuestContext, action?: string|number): QuestContext {
+export function updateContext(node: Cheerio, ctx: QuestContext, action?: string|number): QuestContext {
   if (!node) {
     return ctx;
   }

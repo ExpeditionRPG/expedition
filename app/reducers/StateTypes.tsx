@@ -6,38 +6,6 @@ import {GenreType, ContentRatingLabelType} from '../Constants'
 
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
-export interface DOMElement {
-  attributes: any; // NamedNodeMap
-  id: string;
-  outerHTML: string;
-  parentNode: DOMElement;
-  previousSibling: DOMElement;
-  tagName: string;
-};
-
-export interface CheerioElement {
-  append: (elem: CheerioElement) => void;
-  attr: (k: string, v?: string) => string;
-  attribs: {[k: string]: string};
-  children: (s?: string) => CheerioElementSet;
-  clone: () => CheerioElement;
-  find: (s: string) => CheerioElementSet;
-  get: (i: number) => DOMElement;
-  html: (htmlString?: string) => string;
-  length: number;
-  next: () => CheerioElement;
-  parent: () => CheerioElement;
-  text: () => string;
-}
-
-export interface CheerioElementSet {
-  eq: (n: number) => CheerioElement;
-  first: () => CheerioElement;
-  get: (i: number) => CheerioElement;
-  length: number;
-  [k: number]: DOMElement;
-}
-
 export interface EndSettings {
   text: string;
 }
