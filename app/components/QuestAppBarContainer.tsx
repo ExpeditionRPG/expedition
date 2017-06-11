@@ -15,7 +15,7 @@ import {toCard} from 'expedition-app/app/actions/Card'
 import {ParserNode} from 'expedition-app/app/parser/Node'
 import {defaultQuestContext} from 'expedition-app/app/reducers/QuestTypes'
 
-import {DOCS_INDEX_URL, DEV_CONTACT_URL} from '../constants'
+import {DOCS_INDEX_URL, DEV_CONTACT_URL} from '../Constants'
 
 const math = require('mathjs') as any;
 const ReactGA = require('react-ga') as any;

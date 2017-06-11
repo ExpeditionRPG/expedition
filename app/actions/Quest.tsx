@@ -7,18 +7,18 @@ import {
   RequestQuestPublishAction, ReceiveQuestPublishAction,
   RequestQuestUnpublishAction, ReceiveQuestUnpublishAction,
 } from './ActionTypes'
-import {setSnackbar} from './snackbar'
+import {setSnackbar} from './Snackbar'
 import {QuestType, UserState, ShareType} from '../reducers/StateTypes'
 
-import {setDialog} from './dialogs'
-import {realtimeUtils} from '../auth'
+import {setDialog} from './Dialogs'
+import {realtimeUtils} from '../Auth'
 import {
   NEW_QUEST_TEMPLATE,
   QUEST_DOCUMENT_HEADER,
   METADATA_FIELDS,
   METADATA_DEFAULTS,
   NEW_QUEST_TITLE
-} from '../constants'
+} from '../Constants'
 import {pushError, pushHTTPError} from '../error'
 import {renderXML} from '../parsing/QDLParser'
 

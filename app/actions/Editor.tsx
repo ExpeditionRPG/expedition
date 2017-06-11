@@ -1,8 +1,8 @@
 import Redux from 'redux'
 import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction} from './ActionTypes'
 import {PanelType} from '../reducers/StateTypes'
-import {store} from '../store'
-import {saveQuest} from './quest'
+import {store} from '../Store'
+import {saveQuest} from './Quest'
 import {CheerioElement} from 'expedition-app/app/reducers/StateTypes'
 
 export function setDirty(is_dirty: boolean): SetDirtyAction {

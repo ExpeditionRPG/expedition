@@ -13,10 +13,10 @@ import SelectField from 'material-ui/SelectField'
 import TextField from 'material-ui/TextField'
 import Toggle from 'material-ui/Toggle'
 
-import {ErrorType} from '../error'
+import {ErrorType} from '../Error'
 import {QuestType, ShareType, DialogsState, DialogIDType} from '../reducers/StateTypes'
-import theme from '../theme'
-import {MIN_PLAYERS, MAX_PLAYERS} from '../constants'
+import theme from '../Theme'
+import {MIN_PLAYERS, MAX_PLAYERS} from '../Constants'
 import {CONTENT_RATINGS, GENRES} from '../../node_modules/expedition-app/app/Constants'
 
 declare var ga: any;

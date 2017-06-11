@@ -14,7 +14,7 @@ declare var window:any;
 declare var unescape: any;
 
 // Material UI theming libs
-import theme from './theme'
+import theme from './Theme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
@@ -32,8 +32,8 @@ import MainContainer from './components/MainContainer'
 import {loginUser, setProfileMeta} from './actions/user'
 import {saveQuest} from './actions/quest'
 import {setSnackbar} from './actions/snackbar'
-import {store} from './store'
-import {VERSION} from './constants'
+import {store} from './Store'
+import {VERSION} from './Constants'
 
 const ReactGA = require('react-ga') as any;
 ReactGA.initialize('UA-47408800-7');

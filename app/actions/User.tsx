@@ -2,8 +2,8 @@ import Redux from 'redux'
 
 import {SetProfileMetaAction} from './ActionTypes'
 import {UserState} from '../reducers/StateTypes'
-import {loadQuestFromURL} from './quest'
-import {realtimeUtils} from '../auth'
+import {loadQuestFromURL} from './Quest'
+import {realtimeUtils} from '../Auth'
 
 declare var window: any;
 

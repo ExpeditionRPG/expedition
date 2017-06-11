@@ -3,8 +3,8 @@ const Typo: any = require('typo-js');
 const acequire: any = (require('brace') as any).acequire;
 const {Range} = acequire('ace/range');
 
-import REGEX from './regex'
-import {METADATA_FIELDS} from './constants'
+import REGEX from './Regex'
+import {METADATA_FIELDS} from './Constants'
 import {encounters} from '../node_modules/expedition-app/app/Encounters'
 const IGNORE = Object.keys(encounters);
 

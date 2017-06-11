@@ -2,7 +2,7 @@ import {Renderer, CombatChild, Instruction, RoleplayChild} from './Renderer'
 import {Block} from '../block/BlockList'
 import {Logger} from '../Logger'
 import {Normalize} from '../validation/Normalize'
-import REGEX from '../../regex'
+import REGEX from '../../Regex'
 
 
 // Does not implement Renderer interface, rather wraps
