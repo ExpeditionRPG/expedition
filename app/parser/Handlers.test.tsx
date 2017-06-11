@@ -44,6 +44,12 @@ describe('Handlers', () => {
       expect(result).toEqual(null);
     });
 
+    it('handles self-referential triggers', () => {
+      const node = cheerio.load('<roleplay><choice><trigger id="5">goto 5</trigger></choice></roleplay>')('roleplay');
+      const result = handleAction(new ParserNode(node, defaultQuestContext()), 0);
+      expect(result).toEqual(null);
+    });
+
     /* TODO
     it('uses programmatic triggers', () => {
       var quest = cheerio.load('<quest><roleplay><p>{{dest=5}}</p><choice><trigger>goto {{dest}}</trigger><trigger>end</trigger><roleplay id="5">expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');

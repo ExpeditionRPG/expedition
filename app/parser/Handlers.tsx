@@ -44,9 +44,8 @@ export function handleAction(pnode: ParserNode, action: number|string): ParserNo
       break;
     }
   }
-
   if (i >= MAX_GOTO_FOLLOW_DEPTH) {
-    throw new Error('Trigger follow depth exceeded');
+    return null;
   }
   return pnode;
 }

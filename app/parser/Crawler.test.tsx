@@ -110,7 +110,24 @@ describe('StatsCrawler', () => {
       expect(foundEnd).toEqual(true);
     });
 
-    it('tracks implicit end triggers', () => {
+    it('handles bad gotos', () => {
+      const xml = cheerio.load(`<quest>
+        <roleplay data-line="0"></roleplay>
+        <trigger data-line="1">goto nonexistant_id</trigger>
+        <trigger data-line="2">end</trigger>
+      </quest>`)('quest > :first-child');
+      let foundImplicitEnd = false;
+      const crawler = new CrawlTest((q: CrawlEntry, e: CrawlEvent)=>{
+        foundImplicitEnd = foundImplicitEnd || (e === 'IMPLICIT_END' && q.prevLine === 0 && q.prevId === 'START');
+        expect(e).not.toEqual('END');
+        expect(e).not.toEqual('INVALID');
+      }, null);
+      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+
+      expect(foundImplicitEnd).toEqual(true);
+    });
+
+    it('tracks implicit end', () => {
       const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
       let foundImplicitEnd = false;
       const crawler = new CrawlTest((q: CrawlEntry, e: CrawlEvent)=>{
