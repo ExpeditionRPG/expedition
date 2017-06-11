@@ -328,6 +328,7 @@ body {
           width: size(input) !important;
           height: size(input) !important;
           padding: size(inputspacing)/2 !important; /* /2 since applied to both sides */
+          margin-top: -0.5 * size(small) !important;
         }
         &:hover {
           fill: black !important;
@@ -335,10 +336,15 @@ body {
         &.editable:hover {
           cursor: pointer;
         }
+        &:disabled svg {
+          padding-left: 0 !important;
+          padding-right: 0 !important;
+        }
       }
     }
     .quantity {
       height: size(inputsquare);
+      font-size: size(inputsquare) / 2;
       line-height: size(inputsquare);
       order: 2;
       padding-left: size(small);

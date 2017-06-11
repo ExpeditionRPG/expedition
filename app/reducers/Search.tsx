@@ -12,7 +12,7 @@ export const initial_state: SearchState = {
     mintimeminutes: null,
     maxtimeminutes: null,
   },
-  selected: null,
+  selected: {},
   results: []
 };
 

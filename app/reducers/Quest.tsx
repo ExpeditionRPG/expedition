@@ -2,7 +2,10 @@ import Redux from 'redux'
 import {QuestState, AppState} from './StateTypes'
 import {QuestNodeAction, ViewQuestAction} from '../actions/ActionTypes'
 
-const initial_state: QuestState = {};
+const initial_state: QuestState = {
+  details: {},
+  node: null,
+};
 
 export function quest(state: QuestState = initial_state, action: Redux.Action): QuestState {
   switch (action.type) {
