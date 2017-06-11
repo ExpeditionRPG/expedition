@@ -148,7 +148,11 @@ export class ParserNode {
   }
 
   gotoId(id: string): ParserNode {
-    const search = this.getRootElem().find('#'+id);
+    const root = this.getRootElem();
+    if (root === null) {
+      return null;
+    }
+    const search = root.find('#'+id);
     if (search.length === 0) {
       return null;
     }

@@ -2,6 +2,8 @@ import * as React from 'react'
 import {Choice, defaultQuestContext, Enemy, EventParameters, RoleplayElement, QuestCardName, QuestContext} from '../reducers/QuestTypes'
 import {ParserNode} from './Node'
 
+const MAX_GOTO_FOLLOW_DEPTH = 50;
+
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
 // Returns the (cleaned) parameters of the event element
 export function getEventParameters(node: ParserNode, event: string): EventParameters {
@@ -34,7 +36,7 @@ export function handleAction(pnode: ParserNode, action: number|string): ParserNo
 
   // Immediately act on any gotos (with a max depth)
   let i = 0;
-  for (; i < 100 && pnode.getTag() === 'trigger'; i++) {
+  for (; i < MAX_GOTO_FOLLOW_DEPTH && pnode !== null && pnode.getTag() === 'trigger'; i++) {
     let id = getTriggerId(pnode.elem);
     if (id) {
       pnode = pnode.gotoId(id);
@@ -42,9 +44,8 @@ export function handleAction(pnode: ParserNode, action: number|string): ParserNo
       break;
     }
   }
-
-  if (i >= 100) {
-    throw new Error('Trigger follow depth exceeded');
+  if (i >= MAX_GOTO_FOLLOW_DEPTH) {
+    return null;
   }
   return pnode;
 }
