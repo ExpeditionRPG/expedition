@@ -46,6 +46,7 @@
         "karma-phantomjs-launcher": "^1.0.2",
         "karma-webpack": "^2.0.2",
         "merge-stream": "^1.0.1",
+        "mocha": "^3.4.2",
         "npm-check": "^5.4.0",
         "npm-check-updates": "^2.10.2",
         "phantomjs-polyfill-object-assign": "0.0.2",
@@ -69,7 +70,7 @@
         "webpack-dev-server": "^2.3.0"
     },
     "scripts": {
-        "test": "karma start --single-run --browsers PhantomJS",
+        "test": "mocha meta_tests.js && karma start --single-run --browsers PhantomJS",
         "watch:test": "karma start",
         "dev": "webpack-dev-server",
         "build": "webpack --config ./webpack.dist.config.js"
