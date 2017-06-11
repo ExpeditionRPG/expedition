@@ -17,33 +17,33 @@ export function initQuest(details: QuestDetails, questNode: Cheerio, ctx: QuestC
 
 export function choice(settings: SettingsType, node: ParserNode, index: number) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    loadNode(settings, dispatch, handleAction(node, index));
+    dispatch(loadNode(settings, handleAction(node, index)));
   }
-}
-
-export function loadNode(settings: SettingsType, dispatch: Redux.Dispatch<any>, node: ParserNode) {
-  var tag = node.getTag();
-
-  if (tag === 'trigger') {
-    let triggerName = node.elem.text().trim();
-    if (triggerName === 'end') {
-      return dispatch(toCard('QUEST_END'));
-    } else {
-      throw new Error('invalid trigger ' + triggerName);
-    }
-  }
-
-  return dispatch(initCardTemplate(node, settings));
 }
 
 export function event(node: ParserNode, evt: string) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    var nextNode = handleAction(node, evt);
-    loadNode(null, dispatch, nextNode);
+    dispatch(loadNode(null, handleAction(node, evt)));
   }
 }
 
 // TODO: This should probably go in a "search" actions file.
 export function viewQuest(quest: QuestDetails): ViewQuestAction {
   return {type: 'VIEW_QUEST', quest};
+}
+
+function loadNode(settings: SettingsType, node: ParserNode) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    const tag = node.getTag();
+    if (tag === 'trigger') {
+      const triggerName = node.elem.text().trim();
+      if (triggerName === 'end') {
+        dispatch(toCard('QUEST_END'));
+      } else {
+        throw new Error('invalid trigger ' + triggerName);
+      }
+    } else {
+      dispatch(initCardTemplate(node, settings));
+    }
+  }
 }

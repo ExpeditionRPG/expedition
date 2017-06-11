@@ -2,12 +2,12 @@ import Redux from 'redux'
 import {QuestState, AppState} from './StateTypes'
 import {QuestNodeAction, ViewQuestAction} from '../actions/ActionTypes'
 
-const initial_state: QuestState = {
+export const initialState: QuestState = {
   details: {},
   node: null,
 };
 
-export function quest(state: QuestState = initial_state, action: Redux.Action): QuestState {
+export function quest(state: QuestState = initialState, action: Redux.Action): QuestState {
   switch (action.type) {
     case 'QUEST_NODE':
       return {...state,
