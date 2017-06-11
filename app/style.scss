@@ -720,6 +720,7 @@ body {
           .quantity {
             height: fontsize(flavor);
             line-height: fontsize(flavor);
+            font-size: fontsize(flavor);
           }
           .star {
             $starSize: fontsize(flavor) + size(small);
