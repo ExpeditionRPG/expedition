@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'react-redux'
-import {loginUser} from './actions/User'
+import {loginUser, setProfileMeta} from './actions/User'
 import {saveQuest} from './actions/Quest'
 import {setSnackbar} from './actions/Snackbar'
 import MainContainer from './components/MainContainer'
@@ -49,10 +49,14 @@ if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
     console.log('Failed to parse anticipated Drive open URI: ' + window.location.search);
   }
 }
+if (window.location.hash) {
+  isQuest = true;
+}
 
 if (isQuest) {
   ReactGA.pageview('/quest');
 } else {
+  store.dispatch(setProfileMeta({loggedIn: false}));
   ReactGA.pageview('/');
 }
 
@@ -89,7 +93,7 @@ window.FirebasePlugin = {
 
 window.gapi.load('client,drive-realtime,drive-share', () => {
   window.gapi.client.load('drive', 'v2', () => {
-    if (window.location.hash) {
+    if (isQuest) {
       store.dispatch(loginUser(false));
     }
   });

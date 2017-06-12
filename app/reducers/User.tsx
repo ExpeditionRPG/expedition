@@ -3,7 +3,7 @@ import {SetProfileMetaAction} from '../actions/ActionTypes'
 import {UserState} from './StateTypes'
 
 const default_state: UserState = {
-  loggedIn: false,
+  loggedIn: null, // null = "loading", false = splash screen
   id: null,
   displayName: null,
   image: null,
