@@ -1,4 +1,4 @@
-import Spellcheck from './spellcheck'
+import Spellcheck from './Spellcheck'
 
 // TODO(scott): Find an alternative to file loading for unit
 // tests (allows us to continue to do browser-based testing)

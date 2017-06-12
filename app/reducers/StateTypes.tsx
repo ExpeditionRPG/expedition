@@ -1,4 +1,4 @@
-import {ErrorType} from '../error'
+import {ErrorType} from '../Error'
 import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
 import {QDLParser} from '../parsing/QDLParser'
 // TODO: URL type?

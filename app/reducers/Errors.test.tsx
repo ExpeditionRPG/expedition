@@ -1,4 +1,4 @@
-import {errors} from './errors'
+import {errors} from './Errors'
 
 describe('errors', () => {
   it('consumes errors')
