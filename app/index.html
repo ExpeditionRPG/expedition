@@ -4,68 +4,13 @@
     <meta charset="utf-8">
     <title>Expedition Card Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <link href='css/app.css' rel='stylesheet' type='text/css'>
-    <link href='css/themes.css' rel='stylesheet' type='text/css'>
-    <link href='css/print.css' rel='stylesheet' type='text/css' media="print">
     <script src="https://use.typekit.net/qvq0phl.js"></script>
     <script>try{Typekit.load({ async: true });}catch(e){}</script>
   </head>
 
-  <body id="cards">
-
-    <div class="sk-circle" id="loading">
-      <div class="sk-circle1 sk-child"></div>
-      <div class="sk-circle2 sk-child"></div>
-      <div class="sk-circle3 sk-child"></div>
-      <div class="sk-circle4 sk-child"></div>
-      <div class="sk-circle5 sk-child"></div>
-      <div class="sk-circle6 sk-child"></div>
-      <div class="sk-circle7 sk-child"></div>
-      <div class="sk-circle8 sk-child"></div>
-      <div class="sk-circle9 sk-child"></div>
-      <div class="sk-circle10 sk-child"></div>
-      <div class="sk-circle11 sk-child"></div>
-      <div class="sk-circle12 sk-child"></div>
-    </div>
-
-    <header id="topbar" style="margin-bottom: 0.1in;">
-      <a href="http://expeditiongame.com" target="_blank">
-        <img id="logo" src="img/logo.svg" />
-      </a>
-      <button style="float: right; margin-left: 10px;"><a href="https://github.com/Fabricate-IO/expedition-cards/blob/master/CARD-CREATION.md" target="_blank">Help</a></button>
-      <button style="float: right; margin-left: 10px;"><a href="http://expeditiongame.com/contact" target="_blank">Send Feedback</a></button>
-      <button style="float: right; margin-left: 10px;"><a href="javascript:window.print()">Print</a></button>
-      <button id="setSource" style="float: right; margin-left: 10px;">Set Source</button>
-      <button id="refreshCards" style="float: right;">Refresh cards</button>
-      <div id="filters">
-        <span id="dynamicFilters"></span>
-      </div>
-    </header>
-
-    <div class="printInstructions">
-      <img id="instructionLogo" src="img/logo.svg" />
-      <h1>The adventurer's guide to printing</h1>
-      <ol>
-        <li>Download this PDF and take it to your local print shop.</li>
-        <li>Have it printed on heavy white cardstock (usually 80-pound or heavier). Although the cards are black and white, you'll get nicer results on a color printer.</li>
-        <li>Make sure to print double-sided, and to set to document to 100% zoom.</li>
-        <li>Cut the cards using a paper cutter. The more precise you are, the easier they'll be to handle later.</li>
-        <li>Secure your cards with a small box or rubber band, and prepare to adventure!</li>
-      </ol>
-    </div>
-    <div class="printInstructions">
-      <p class="center">Blank page for printing purposes. Save paper by only printing pages 3+!</p>
-    </div>
-    <div id="renderArea" data-theme="official"></div>
-
-    <script src="js/libs/jquery-3.1.0.min.js"></script>
-    <script src="js/libs/jquery.query.js"></script>
-    <script src="js/libs/handlebars.js"></script>
-    <script src="js/libs/handlebars.swag.js"></script>
-    <script src="js/libs/tabletop.min.js"></script>
-    <script src="js/libs/svg.js"></script>
-    <script src="js/handlebars-helpers.js"></script>
-    <script src="js/app.bundle.js"></script>
+  <body>
+    <div id="app"></div>
+    <script src="bundle.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

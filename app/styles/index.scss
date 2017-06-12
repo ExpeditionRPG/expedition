@@ -1,0 +1,241 @@
+/* NOTE:
+Minion pro font requires typekit snippet
+*/
+
+@import 'cards.scss';
+
+$huge: 64px;
+$large: 32px;
+$base: 16px;
+$small: 8px;
+
+a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+
+body {
+  background: #151415;
+  font-size: 0; /* hack for display-inline gap */
+  font-family: "minion-pro", serif !important;
+  color: black;
+}
+
+.page {
+  width: 7.5in;
+  margin: auto;
+  background: black;
+  position: relative;
+}
+
+@page {
+  size: letter;
+  margin: 0.25in 0.5in;
+  background: white;
+}
+
+.filter {
+  min-width: 80px;
+  max-width: 140px;
+  margin-right: $small;
+}
+
+#renderer {
+  margin-top: $base;
+  z-index: -10000;
+
+  &.bleed {
+    $bleed: 0.125in; /* background art should extend to here */
+    $card-height: $card-height + 2 * $bleed;
+    $card-width: $card-width + 2 * $bleed;
+
+    .printInstructions {
+      display: none !important;
+    }
+
+    .page {
+      width: $card-width !important;
+      height: $card-height !important;
+    }
+
+    .card {
+      width: $card-width !important;
+      height: $card-height !important;
+      padding: 0 !important;
+
+      &.front, &.back {
+        &:before {
+          top: 0 !important;
+          left: 0 !important;
+        }
+      }
+
+      .contents {
+        top: $bleed !important;
+        left: $bleed !important;
+      }
+
+      &.front.horizontal {
+        .contents {
+          height: 2.25in !important;
+          width: 3.25in !important;
+          margin: 0 !important;
+        }
+      }
+    }
+  }
+}
+
+.printInstructions {
+  display: none;
+  width: 7.5in;
+  height: 8in;
+  background: white;
+  margin: auto;
+  font-size: $base;
+  line-height: 1.2;
+  page-break-after: always;
+
+  #instructionLogo {
+    width: 5.5in;
+    margin: auto;
+    display: block;
+  }
+
+  h1 {
+    font-size: 180%;
+    text-align: center;
+    font-family: "Cinzel", serif;
+  }
+
+  h2 {
+    font-size: 120%;
+    text-align: center;
+    font-family: "Cinzel", serif;
+  }
+
+  ol {
+    width: 4.25in;
+    margin: auto;
+    list-style-type: upper-roman;
+
+    li {
+      margin-top: $base;
+    }
+  }
+}
+
+
+/* http://tobiasahlin.com/spinkit/ */
+#loading {
+
+  position: fixed;
+  top: 0;
+  left: $base;
+  margin: $base auto;
+  width: $huge;
+  height: $huge;
+  color: white;
+
+  .sk-child {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  .sk-child:before {
+    content: '';
+    display: block;
+    margin: 0 auto;
+    width: 15%;
+    height: 15%;
+    background-color: white;
+    border-radius: 100%;
+    -webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
+            animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
+  }
+  .sk-circle1 { transform: rotate(30deg); }
+  .sk-circle2 { transform: rotate(60deg); }
+  .sk-circle3 { transform: rotate(90deg); }
+  .sk-circle4 { transform: rotate(120deg); }
+  .sk-circle5 { transform: rotate(150deg); }
+  .sk-circle6 { transform: rotate(180deg); }
+  .sk-circle7 { transform: rotate(210deg); }
+  .sk-circle8 { transform: rotate(240deg); }
+  .sk-circle9 { transform: rotate(270deg); }
+  .sk-circle10 { transform: rotate(300deg); }
+  .sk-circle11 { transform: rotate(330deg); }
+  .sk-circle1:before { animation-delay: -1.1s; }
+  .sk-circle2:before { animation-delay: -1s; }
+  .sk-circle3:before { animation-delay: -0.9s; }
+  .sk-circle4:before { animation-delay: -0.8s; }
+  .sk-circle5:before { animation-delay: -0.7s; }
+  .sk-circle6:before { animation-delay: -0.6s; }
+  .sk-circle7:before { animation-delay: -0.5s; }
+  .sk-circle8:before { animation-delay: -0.4s; }
+  .sk-circle9:before { animation-delay: -0.3s; }
+  .sk-circle10:before { animation-delay: -0.2s; }
+  .sk-circle11:before { animation-delay: -0.1s; }
+}
+
+@-webkit-keyframes sk-circleBounceDelay {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+@keyframes sk-circleBounceDelay {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+
+
+
+@media print {
+  body {
+    margin: 0;
+    background: white;
+  }
+
+  .printHide {
+    display: none !important;
+  }
+
+  .page {
+    page-break-before: always;
+    background: black;
+
+    &.backs {
+      height: auto;
+    }
+  }
+  .inline_icon {
+    margin-bottom: -0.02in;
+  }
+
+  #renderer {
+    margin: 0;
+
+    &:not(.DriveThruCards) {
+      .backs {
+        transform: scale(-1, 1);
+        .card {
+          transform: scale(-1, 1);
+        }
+        .Encounter, .Adventurer { /* Don't flip horizontal cards */
+          transform: scale(-1, 1) rotate(180deg);
+        }
+      }
+    }
+    &.DriveThruCards {
+      .card.back {
+        &.Adventurer, &.Encounter {
+          transform: rotate(180deg);
+        }
+      }
+    }
+    &.PrintAndPlay{
+      .printInstructions {
+        display: block;
+      }
+    }
+  }
+}
