@@ -1,5 +1,5 @@
 import thunk from 'redux-thunk'
-import { createStore, applyMiddleware } from 'redux'
+import {createStore, applyMiddleware} from 'redux'
 import app from './reducers/CombinedReducers'
 
 // For dev tools extension
@@ -9,7 +9,7 @@ declare var module:any;
 
 var store: any = null;
 
-export function installStore(createdStore: any) {
+function installStore(createdStore: any) {
   store = createdStore;
 }
 

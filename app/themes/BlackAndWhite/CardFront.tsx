@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {icon, camelCase, romanize, horizontalCounter, healthCounter, lootCounter} from '../../helpers'
 import {CardType} from '../../reducers/StateTypes'
+import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 
 
 export default class CardFront extends React.Component<CardType, {}> {
@@ -87,7 +88,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="flavortext">{card.flavortext}</div>
                 <div className="counter counter-horizontal">
                   {icon(theme, 'health_small')}
-                  {horizontalCounter(12)}
+                  {horizontalCounter(MAX_ADVENTURER_HEALTH)}
                 </div>
               </footer>
             </div>

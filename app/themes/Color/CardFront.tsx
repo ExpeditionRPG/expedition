@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {icon, camelCase, romanize, horizontalCounter, healthCounter, lootCounter} from '../../helpers'
 import {CardType} from '../../reducers/StateTypes'
+import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 
 
 export default class CardFront extends React.Component<CardType, {}> {
@@ -87,7 +88,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="flavortext">{card.flavortext}</div>
                 <div className="counter counter-horizontal">
                   {icon(theme, 'health_small')}
-                  {horizontalCounter(12)}
+                  {horizontalCounter(MAX_ADVENTURER_HEALTH)}
                 </div>
               </footer>
             </div>
@@ -160,6 +161,23 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="flavortext">{card.flavortext}</div>
               </footer>
               {card.tracker && lootCounter(card.tracker)}
+            </div>
+          </div>
+        );
+      case 'Malady':
+        return (
+          <div className={`card front dark horizontal ${card.sheet}`}>
+            <div className="contents">
+              <header>
+                <div className="name">{card.name}</div>
+              </header>
+              <article>
+                <div className="ongoing"><strong>Ongoing:</strong> {card.ongoing}</div>
+                <div className="until"><strong>Until:</strong> {card.until}</div>
+              </article>
+              <footer>
+                <div className="flavortext">{card.flavortext}</div>
+              </footer>
             </div>
           </div>
         );

@@ -58,7 +58,7 @@ export default class CardFront extends React.Component<CardType, {}> {
               </header>
               <article>
                 <div className="score">
-                  <div className="scorePlus">{card.scorePlus1 + card.scorePlus2}</div>
+                  {card.scorePlus1 && <div className="scorePlus">{card.scorePlus1}{card.scorePlus2}</div>}
                   {card.scoreMinus && <div className="scoreMinus">{card.scoreMinus}</div>}
                 </div>
                 {card.effects && <div className="effects">{card.effects}</div>}

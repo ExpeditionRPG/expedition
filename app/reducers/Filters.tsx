@@ -41,11 +41,11 @@ export default function Filters(state: FiltersState = initialState, action: Redu
   switch (action.type) {
     case 'FILTER_CHANGE':
       const filterChange = action as FilterChangeAction;
-      newState = Object.assign({}, state);
+      newState = {...state};
       newState[filterChange.name].current = filterChange.value;
       return newState;
     case 'FILTERS_CALCULATE':
-      newState = Object.assign({}, state);
+      newState = {...state};
       return updateFilterOptions(newState, (action as FiltersCalculateAction).cardsFiltered);
     default:
       return state;

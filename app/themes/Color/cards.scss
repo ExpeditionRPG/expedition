@@ -396,11 +396,11 @@ $footer-height: 0.4in;
 
       article {
         .ongoing {
-          margin-top: $text-size-content;
+          margin-top: $tiny;
         }
 
         .surge {
-          padding-top: $text-size-content;
+          padding-top: $tiny;
         }
       }
 
@@ -526,7 +526,6 @@ $footer-height: 0.4in;
   /* ===== BACKGROUNDS ===== */
 
   .card.front, .card.back {
-
     &:before {
       content: "";
       position: absolute;
@@ -593,43 +592,51 @@ $footer-height: 0.4in;
     }
   }
   .card.back.Beast {
-
     .tier {
       color: #ec1f24;
     }
-
     &:before {
       background-image: url(../themes/Color/images/backs/beast.jpg) !important;
     }
   }
   .card.back.Bandit {
-
     .tier {
       color: #FEDE1A;
     }
-
     &:before {
       background-image: url(../themes/Color/images/backs/bandit.jpg) !important;
     }
   }
   .card.back.Fae {
-
     .tier {
       color: #df3f95;
     }
-
     &:before {
       background-image: url(../themes/Color/images/backs/fae.jpg) !important;
     }
   }
   .card.back.Undead {
-
     .tier {
       color: #70c25e;
     }
-
     &:before {
       background-image: url(../themes/Color/images/backs/undead.jpg) !important;
+    }
+  }
+  /* TODO */
+  .card.front.Malady {
+    background: #333;
+  }
+  .card.back.Malady {
+    background: #333;
+  }
+  .card.back.Abomination {
+    background: black;
+    .tier {
+      color: #CCC;
+    }
+    &:before {
+      // background-image: url(../themes/Color/images/backs/undead.jpg) !important;
     }
   }
 }

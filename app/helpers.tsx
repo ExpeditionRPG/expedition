@@ -1,5 +1,4 @@
 import * as React from 'react'
-
 import {MAX_COUNTER_HEALTH} from './Constants'
 
 export function icon(theme: string, name: string, key?: number): JSX.Element {
@@ -15,11 +14,12 @@ export function camelCase(str: string): string {
 export function romanize(num: number): string { // http://blog.stevenlevithan.com/archives/javascript-roman-numeral-converter
   if (+num === 0) { return '0'; }
   if (!+num) { return ''; }
-  var digits = String(+num).split(''),
-      key = ['','C','CC','CCC','CD','D','DC','DCC','DCCC','CM',
+  const digits = String(+num).split('');
+  const key = ['','C','CC','CCC','CD','D','DC','DCC','DCCC','CM',
              '','X','XX','XXX','XL','L','LX','LXX','LXXX','XC',
-             '','I','II','III','IV','V','VI','VII','VIII','IX'],
-      roman = '', i = 3;
+             '','I','II','III','IV','V','VI','VII','VIII','IX'];
+  let roman = '';
+  let i = 3;
   while (i--) {
     roman = (key[+digits.pop() + (i * 10)] || '') + roman;
   }
