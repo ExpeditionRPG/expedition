@@ -2,8 +2,8 @@ import Redux from 'redux'
 import {connect} from 'react-redux'
 
 import {DialogIDType, DialogsState, AppState, QuestType} from '../reducers/StateTypes'
-import {setDialog} from '../actions/dialogs'
-import {publishQuest, questMetadataChange} from '../actions/quest'
+import {setDialog} from '../actions/Dialogs'
+import {publishQuest, questMetadataChange} from '../actions/Quest'
 import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
 
 import {CONTENT_RATINGS, GENRES} from '../../node_modules/expedition-app/app/Constants'

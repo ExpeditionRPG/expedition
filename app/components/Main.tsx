@@ -12,7 +12,7 @@ import ContextEditorContainer from './ContextEditorContainer'
 import NotesPanelContainer from './NotesPanelContainer'
 import {PanelType, SnackbarState} from '../reducers/StateTypes'
 
-var SplitPane = require('react-split-pane') as any;
+const SplitPane = require('react-split-pane') as any;
 
 export interface MainStateProps {
   loggedIn: boolean;
@@ -41,7 +41,7 @@ const Main = (props: MainProps): JSX.Element => {
     );
   }
 
-  var header = (
+  const header = (
     <div className="header">
       <FlatButton
         label="Context Explorer"

@@ -37,7 +37,7 @@
     "brace": "^0.10.0",
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.1",
-    "expedition-app": "https://github.com/ExpeditionRPG/expedition-app.git#ac5e26863c03763de83ace5b04109c572eab35fe",
+    "expedition-app": "https://github.com/ExpeditionRPG/expedition-app.git#03ba7ca04742a1c00824f9d22e7540bc5ade3042",
     "express": "^4.15.2",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.1",
@@ -84,6 +84,7 @@
     "winston": "^2.3.1"
   },
   "devDependencies": {
+    "@types/cheerio": "^0.22.1",
     "@types/jasmine": "^2.5.45",
     "@types/jquery": "^2.0.41",
     "@types/material-ui": "^0.17.1",

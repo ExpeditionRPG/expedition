@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-import {setLine, updateDirtyState} from '../actions/editor'
-import {saveQuest} from '../actions/quest'
+import {setLine, updateDirtyState} from '../actions/Editor'
+import {saveQuest} from '../actions/Quest'
 import {AppState, QuestType, EditorState} from '../reducers/StateTypes'
 import QuestIDE, {QuestIDEStateProps, QuestIDEDispatchProps} from './QuestIDE'
 

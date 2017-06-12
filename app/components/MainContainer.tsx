@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-import {setDirty, panelToggle} from '../actions/editor'
-import {setSnackbar} from '../actions/snackbar'
+import {setDirty, panelToggle} from '../actions/Editor'
+import {setSnackbar} from '../actions/Snackbar'
 import {AppState, PanelType} from '../reducers/StateTypes'
 import Main, {MainStateProps, MainDispatchProps} from './Main'
 

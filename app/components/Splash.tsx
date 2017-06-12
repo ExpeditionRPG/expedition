@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import loginUser from '../actions/user'
+import loginUser from '../actions/User'
 import {UserState} from '../reducers/StateTypes'
 
 import AppBar from 'material-ui/AppBar'

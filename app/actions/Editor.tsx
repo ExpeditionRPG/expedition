@@ -3,7 +3,6 @@ import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction} from './ActionType
 import {PanelType} from '../reducers/StateTypes'
 import {store} from '../Store'
 import {saveQuest} from './Quest'
-import {CheerioElement} from 'expedition-app/app/reducers/StateTypes'
 
 export function setDirty(is_dirty: boolean): SetDirtyAction {
   return {type: 'SET_DIRTY', is_dirty};
@@ -53,7 +52,7 @@ export function updateDirtyState(): ((dispatch: Redux.Dispatch<any>)=>any) {
   }
 }
 
-export function getPlayNode(node: CheerioElement): CheerioElement {
+export function getPlayNode(node: Cheerio): Cheerio {
   let tag = node.get(0).tagName;
   if (tag === 'quest') {
     node = node.children().first();

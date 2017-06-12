@@ -2,9 +2,9 @@ import Redux from 'redux'
 import {connect} from 'react-redux'
 
 import {QuestActionType} from '../actions/ActionTypes'
-import {getPlayNode} from '../actions/editor'
-import {saveQuest, publishQuestSetup, unpublishQuest} from '../actions/quest'
-import {logoutUser} from '../actions/user'
+import {getPlayNode} from '../actions/Editor'
+import {saveQuest, publishQuestSetup, unpublishQuest} from '../actions/Quest'
+import {logoutUser} from '../actions/User'
 import {AppState, QuestType, EditorState, UserState} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
 
@@ -82,7 +82,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       dispatch({type: 'REBOOT_APP'});
       const result = dispatch(initQuest('0', questNode, ctx));
       // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
-      loadNode({autoRoll: false, numPlayers: 1, difficulty: 'NORMAL', showHelp: false, multitouch: false, vibration: false}, dispatch, new ParserNode(newNode, ctx));
+      dispatch(loadNode({autoRoll: false, numPlayers: 1, difficulty: 'NORMAL', showHelp: false, multitouch: false, vibration: false}, new ParserNode(newNode, ctx)));
     },
   };
 }

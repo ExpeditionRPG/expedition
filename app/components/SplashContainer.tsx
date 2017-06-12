@@ -1,8 +1,8 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-import {loginUser} from '../actions/user'
-import {AppState, UserState} from '../reducers/StateTypes'
 import Splash, {SplashDispatchProps} from './Splash'
+import {loginUser} from '../actions/User'
+import {AppState, UserState} from '../reducers/StateTypes'
 
 const ReactGA = require('react-ga') as any;
 

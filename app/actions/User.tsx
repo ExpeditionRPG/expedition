@@ -18,8 +18,8 @@ export function loginUser(showPrompt: boolean): ((dispatch: Redux.Dispatch<any>)
       if (response.error){
         dispatch(setProfileMeta({loggedIn: false}));
       } else {
-        window.gapi.client.load('plus','v1', function(){
-          var request = window.gapi.client.plus.people.get({
+        window.gapi.client.load('plus','v1', () => {
+          const request = window.gapi.client.plus.people.get({
             'userId': 'me',
           });
           request.execute((res: any) => {

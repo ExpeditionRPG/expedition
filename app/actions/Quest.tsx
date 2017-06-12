@@ -19,7 +19,7 @@ import {
   METADATA_DEFAULTS,
   NEW_QUEST_TITLE
 } from '../Constants'
-import {pushError, pushHTTPError} from '../error'
+import {pushError, pushHTTPError} from '../Error'
 import {renderXML} from '../parsing/QDLParser'
 
 const Cheerio: any = require('cheerio');

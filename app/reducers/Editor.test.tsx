@@ -1,4 +1,4 @@
-import {editor} from './editor'
+import {editor} from './Editor'
 
 describe('editor', () => {
   it('returns initial state')
