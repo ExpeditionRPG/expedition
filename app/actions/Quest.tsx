@@ -27,12 +27,8 @@ export function event(node: ParserNode, evt: string) {
   }
 }
 
-// TODO: This should probably go in a "search" actions file.
-export function viewQuest(quest: QuestDetails): ViewQuestAction {
-  return {type: 'VIEW_QUEST', quest};
-}
-
-function loadNode(settings: SettingsType, node: ParserNode) {
+// used externally by the quest creator, but not by other external App code
+export function loadNode(settings: SettingsType, node: ParserNode) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const tag = node.getTag();
     if (tag === 'trigger') {
@@ -46,4 +42,9 @@ function loadNode(settings: SettingsType, node: ParserNode) {
       dispatch(initCardTemplate(node, settings));
     }
   }
+}
+
+// TODO: This should probably go in a "search" actions file.
+export function viewQuest(quest: QuestDetails): ViewQuestAction {
+  return {type: 'VIEW_QUEST', quest};
 }
