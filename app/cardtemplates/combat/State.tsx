@@ -1,5 +1,4 @@
 import {encounters} from '../../Encounters'
-import {randomPropertyValue} from '../../Constants'
 import {Enemy, Loot} from '../../reducers/QuestTypes'
 
 export interface CombatAttack {
@@ -57,3 +56,8 @@ export function combatScope() {
     },
   };
 }
+
+function randomPropertyValue(obj: any): any {
+  const keys = Object.keys(obj);
+  return obj[ keys[ Math.floor(keys.length * Math.random()) ] ];
+};

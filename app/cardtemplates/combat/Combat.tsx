@@ -5,7 +5,7 @@ import Card from '../../components/base/Card'
 import Picker from '../../components/base/Picker'
 import TimerCard from '../../components/base/TimerCard'
 import theme from '../../Theme'
-import {capitalizeFirstLetter, numberToWord, MAX_ADVENTURER_HEALTH, REGEX} from '../../Constants'
+import {MAX_ADVENTURER_HEALTH, REGEX} from '../../Constants'
 import {encounters} from '../../Encounters'
 import {isSurgeRound} from './Actions'
 import {SettingsType, CardState, CardName} from '../../reducers/StateTypes'
@@ -303,6 +303,27 @@ function renderTimerCard(props: CombatProps): JSX.Element {
       roundTimeTotalMillis={props.roundTimeMillis}
       onTimerStop={(ms: number) => props.onTimerStop(props.node, props.settings, ms, surge)} />
   );
+}
+
+function numberToWord(input: number): string {
+  switch (input) {
+    case 0: return 'zero';
+    case 1: return 'one';
+    case 2: return 'two';
+    case 3: return 'three';
+    case 4: return 'four';
+    case 5: return 'five';
+    case 6: return 'six';
+    case 7: return 'seven';
+    case 8: return 'eight';
+    case 9: return 'nine';
+    case 10: return 'ten';
+    default: return input.toString();
+  }
+}
+
+function capitalizeFirstLetter(input: string): string {
+  return input.charAt(0).toUpperCase() + input.slice(1);
 }
 
 const Combat = (props: CombatProps): JSX.Element => {

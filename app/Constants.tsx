@@ -66,33 +66,3 @@ export const CONTENT_RATINGS: ContentRatingType = {
     nudity: 'All nudity allowed.',
   },
 };
-
-// converts a number to the English representation of the word
-// Note: for numbers outside of 0 and 10, standard to just output the numeric form
-export function numberToWord(input: number): string {
-  switch (input) {
-    case 0: return 'zero';
-    case 1: return 'one';
-    case 2: return 'two';
-    case 3: return 'three';
-    case 4: return 'four';
-    case 5: return 'five';
-    case 6: return 'six';
-    case 7: return 'seven';
-    case 8: return 'eight';
-    case 9: return 'nine';
-    case 10: return 'ten';
-    default: return input.toString();
-  }
-}
-
-// capitalize the first letter in the provided string
-export function capitalizeFirstLetter(input: string): string {
-  return input.charAt(0).toUpperCase() + input.slice(1);
-}
-
-// return a random property from the provided object
-export function randomPropertyValue(obj: any): any {
-  const keys = Object.keys(obj);
-  return obj[ keys[ Math.floor(keys.length * Math.random()) ] ];
-};
