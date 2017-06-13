@@ -69,42 +69,44 @@ export function loadQuestFromURL(user: UserState, dispatch: Redux.Dispatch<any>)
   loadQuest(user, dispatch, (window.location.hash) ? window.location.hash.substr(1) : null);
 }
 
-export function newQuest(user: UserState, dispatch: any) {
-  var insertHash = {
-    'resource': {
-      mimeType: 'text/plain',
-      title: 'New Expedition Quest',
-      description: 'Created with the Expedition Quest Creator',
-    },
-  };
-  window.gapi.client.drive.files.insert(insertHash).execute((createResponse: {id: string}) => {
-    updateDriveFile(createResponse.id, {}, '', (err, result) => {
-      if (err) {
-        alert('Failed to create new quest: ' + err.message);
-      } else {
-        loadQuest(user, dispatch, createResponse.id);
-        window.gapi.client.request({
-          path: '/drive/v3/files/' + createResponse.id + '/permissions',
-          method: 'POST',
-          params: {sendNotificationEmails: false},
-          body: {
-            role: 'writer',
-            type: 'domain',
-            domain: 'Fabricate.io',
-            allowFileDiscovery: true,
-          },
-        }).then((json: any, raw: any) => {
-        }, (json: any) => {
-          ReactGA.event({
-            category: 'Error',
-            action: 'Error connecting quest file to Fabricate.IO',
-            label: createResponse.id,
+export function newQuest(user: UserState) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    const insertHash = {
+      'resource': {
+        mimeType: 'text/plain',
+        title: 'New Expedition Quest',
+        description: 'Created with the Expedition Quest Creator',
+      },
+    };
+    window.gapi.client.drive.files.insert(insertHash).execute((createResponse: {id: string}) => {
+      updateDriveFile(createResponse.id, {}, '', (err, result) => {
+        if (err) {
+          alert('Failed to create new quest: ' + err.message);
+        } else {
+          loadQuest(user, dispatch, createResponse.id);
+          window.gapi.client.request({
+            path: '/drive/v3/files/' + createResponse.id + '/permissions',
+            method: 'POST',
+            params: {sendNotificationEmails: false},
+            body: {
+              role: 'writer',
+              type: 'domain',
+              domain: 'Fabricate.io',
+              allowFileDiscovery: true,
+            },
+          }).then((json: any, raw: any) => {
+          }, (json: any) => {
+            ReactGA.event({
+              category: 'Error',
+              action: 'Error connecting quest file to Fabricate.IO',
+              label: createResponse.id,
+            });
+            console.log('Error connecting quest file to Fabricate.IO', json);
           });
-          console.log('Error connecting quest file to Fabricate.IO', json);
-        });
-      }
+        }
+      });
     });
-  });
+  }
 }
 
 function getPublishedQuestMeta(published_id: string, cb: (meta: QuestType)=>any) {
@@ -139,7 +141,7 @@ function createDocMetadata(model: any, defaults: any) {
 export function loadQuest(user: UserState, dispatch: any, docid?: string) {
   if (docid === null) {
     console.log('Creating new quest');
-    return newQuest(user, dispatch);
+    return dispatch(newQuest(user));
   }
   realtimeUtils.load(docid, function(doc: any) {
     window.location.hash = docid;

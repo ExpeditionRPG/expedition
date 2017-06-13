@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 
 import {QuestActionType} from '../actions/ActionTypes'
 import {getPlayNode} from '../actions/Editor'
-import {saveQuest, publishQuestSetup, unpublishQuest} from '../actions/Quest'
+import {newQuest, saveQuest, publishQuestSetup, unpublishQuest} from '../actions/Quest'
 import {logoutUser} from '../actions/User'
 import {AppState, QuestType, EditorState, UserState} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
@@ -43,8 +43,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         case 'SAVE_QUEST':
           return dispatch(saveQuest(quest));
         case 'NEW_QUEST':
-          window.open('/');
-          break;
+          return dispatch(newQuest(quest));
         case 'PUBLISH_QUEST':
           return dispatch(publishQuestSetup());
         case 'UNPUBLISH_QUEST':
