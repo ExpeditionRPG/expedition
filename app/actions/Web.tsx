@@ -112,10 +112,9 @@ export function submitUserFeedback(quest: QuestState, settings: SettingsType, us
       dataType: 'json',
     })
     .done((msg: string) => {
-      // TODO replace alerts with something nicer / more in-style
       window.FirebasePlugin.logEvent('user_feedback_' + userFeedback.type, data);
       dispatch(userFeedbackClear());
-      alert('Submission successful. Thank you!');
+      dispatch(openSnackbar('Submission successful. Thank you!'));
     })
     .fail((xhr: any, err: string) => {
       if (xhr.status === 200) {
