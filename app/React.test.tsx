@@ -1,7 +1,8 @@
 import configureStore  from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import {init, getDevicePlatform, getAppVersion, ReactWindow, Document, setWindowPropertyForTest} from './React'
+import {init, getDevicePlatform, getAppVersion, setWindowPropertyForTest} from './React'
 import {installStore} from './Store'
+import {setDocument, setWindow, setDevice} from './Globals'
 
 //setWindowPropertyForTest(window, 'test', true);
 
@@ -10,6 +11,25 @@ function dummyDOM(): Document {
   let result = document.createElement('div');
   result.id = 'react-app';
   doc.body.appendChild(result);
+
+  // PhantomJS has no custom event trigger setup. we must add our own.
+  const evtListeners: {[e:string]: ((event: any)=>any)[]} = {};
+  (doc as any).addEventListener = (e: string, f: ()=>any, useCapture?: boolean) => {
+    if (!evtListeners[e]) {
+      evtListeners[e] = [];
+    }
+    evtListeners[e].push(f);
+  };
+  doc.dispatchEvent = (e: Event) => {
+    if (!evtListeners[e.type]) {
+      return false;
+    }
+    for (let f of evtListeners[e.type]) {
+      f(e);
+    }
+    return true;
+  }
+
   return doc;
 }
 
@@ -31,7 +51,7 @@ function dummyGAPI(): any {
 
 const mockStore = configureStore([thunk]);
 
-fdescribe('React', () => {
+describe('React', () => {
   describe('init', () => {
     it('sets up tap events');
     it('loads google APIs');
@@ -41,14 +61,33 @@ fdescribe('React', () => {
     it('handles no hot reloading');
 
     describe('deviceready event', () => {
-      it('triggers silent login', () => {
-        const store = mockStore({});
-        installStore(store);
-        init(window, dummyDOM(), dummyGAPI());
+      it('triggers silent login'); // Holding off on testing this one until we propagate window state better.
+      it('adds backbutton listener', () => {
+        const fakeStore = mockStore();
+        installStore(fakeStore);
+        const doc = dummyDOM();
 
+        (window as any).plugins = {
+          insomnia: {
+            keepAwake: jasmine.createSpy('keepAwake'),
+          },
+        };
+
+        setWindow(window);
+        setDocument(doc);
+
+        //window, doc, {platform: 'web'}, undefined
+        init();
+
+        doc.dispatchEvent(new CustomEvent('deviceready', null));
+        doc.dispatchEvent(new CustomEvent('backbutton', null));
+
+        const actions = fakeStore.getActions();
+        expect(actions.length).toEqual(1);
+        expect(actions[0]).toEqual(jasmine.objectContaining({type:'RETURN'}));
       });
-      it('adds backbutton listener');
       it('keeps screen on');
+      it('sets device style');
       it('patches android browser scrolling');
       it('hides android system ui');
     });
@@ -66,17 +105,17 @@ fdescribe('React', () => {
     });
 
     it('defaults to web on unexpected device', () => {
-      setWindowPropertyForTest('device', {platform: 'zune'});
+      setDevice({platform: 'zune'});
       expect(getDevicePlatform()).toEqual('web');
     });
 
     it('reports ios if ios device initialized', () => {
-      setWindowPropertyForTest('device', {platform: 'ios'});
+      setDevice({platform: 'ios'});
       expect(getDevicePlatform()).toEqual('ios');
     });
 
     it('reports android if android device initialized', () => {
-      setWindowPropertyForTest('device', {platform: 'android'});
+      setDevice({platform: 'android'});
       expect(getDevicePlatform()).toEqual('android');
     });
   });
