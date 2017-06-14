@@ -18,7 +18,7 @@ const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): F
   ];
   if (process.env.NODE_ENV === 'dev') { // Dev test quest
     // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2bTVMdWc4NVk
-    quests.unshift({id: '-1', title: 'Test quest', summary: 'DEV', author: 'DEV', publishedurl: 'quests/test_quest.xml'});
+    quests.unshift({id: '1', title: 'Test quest', summary: 'DEV', author: 'DEV', publishedurl: 'quests/test_quest.xml'});
   }
   return {
     players: state.settings.numPlayers,
