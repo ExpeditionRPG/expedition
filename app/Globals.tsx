@@ -45,6 +45,14 @@ export function setDevice(device: any) {
   refs.device = device;
 }
 
+export function setGapi(gapi: any) {
+  refs.gapi = gapi;
+}
+
+export function setGA(ga: any) {
+  refs.ga = ga;
+}
+
 export function getWindow(): ReactWindow {
   return refs.window;
 }

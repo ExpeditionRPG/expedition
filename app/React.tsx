@@ -10,7 +10,7 @@ import {authSettings} from './Constants'
 import {toPrevious} from './actions/Card'
 import {silentLogin} from './actions/User'
 import {getStore} from './Store'
-import {getWindow, getGapi, getGA, getDevice, getDocument} from './Globals'
+import {getWindow, getGapi, getGA, getDevice, getDocument, setGA} from './Globals'
 
 const PACKAGE = require('../package.json');
 const injectTapEventPlugin = require('react-tap-event-plugin');
@@ -166,6 +166,7 @@ function setupHotReload() {
   }
 }
 
+declare var ga: any;
 function setupGoogleAnalytics() {
   const window = getWindow();
   const document = getDocument();
@@ -187,12 +188,14 @@ function setupGoogleAnalytics() {
     m.parentNode.insertBefore(a,m);
   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga',null, null);
 
-  const ga = getGA();
-  if (!ga) {
+  if (typeof ga === 'undefined') {
+    console.log('Could not load GA');
     return;
   }
+  setGA(ga);
   ga('create', 'UA-47408800-9', 'auto');
   ga('send', 'pageview');
+  console.log('google analytics set up');
 }
 
 export function init() {
@@ -214,6 +217,8 @@ export function init() {
   render();
 }
 
-if (require.main === module) {
+// doInit is defined in index.html
+declare var doInit: boolean;
+if (typeof doInit !== 'undefined') {
   init();
 }
