@@ -7,6 +7,7 @@ import {openSnackbar} from '../actions/Snackbar'
 import {userFeedbackClear} from '../actions/UserFeedback'
 import {SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} from '../reducers/StateTypes'
 import {QuestContext, QuestDetails, defaultQuestContext} from '../reducers/QuestTypes'
+import {getDevicePlatform, getAppVersion} from '../React'
 
 declare var window:any;
 declare var require:any;
@@ -99,8 +100,8 @@ export function submitUserFeedback(quest: QuestState, settings: SettingsType, us
       userid: user.id,
       players: settings.numPlayers,
       difficulty: settings.difficulty,
-      platform: window.platform,
-      version: window.APP_VERSION,
+      platform: getDevicePlatform(),
+      version: getAppVersion(),
       email: user.email,
       name: user.name,
       rating: userFeedback.rating,

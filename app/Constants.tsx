@@ -20,7 +20,7 @@ export const SUMMARY_MAX_LENGTH = 140; // length of a tweet
 
 export const URLS = {
   android: 'https://play.google.com/store/apps/details?id=io.fabricate.expedition',
-  feedback: 'http://www.expeditiongame.com/contact/?utm_source=app&utm_medium=' + window.platform,
+  feedbackBase: 'http://www.expeditiongame.com/contact/?utm_source=app&utm_medium=',
   ios: 'https://itunes.apple.com/us/app/expedition-roleplaying-card/id1085063478?ls=1&mt=8',
 };
 
