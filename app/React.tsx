@@ -19,10 +19,6 @@ export function getAppVersion(): string {
   return PACKAGE.version;
 }
 
-export function setWindowPropertyForTest(prop: string, val: any): void {
-  (window as any)[prop] = val;
-}
-
 function setupTapEvents() {
   try {
     injectTapEventPlugin();
@@ -217,7 +213,8 @@ export function init() {
   render();
 }
 
-// doInit is defined in index.html
+// doInit is defined in index.html, but not in tests.
+// This lets us setup the environment before initializing, or not init at all.
 declare var doInit: boolean;
 if (typeof doInit !== 'undefined') {
   init();

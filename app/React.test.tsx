@@ -1,10 +1,8 @@
 import configureStore  from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import {init, getDevicePlatform, getAppVersion, setWindowPropertyForTest} from './React'
+import {init, getDevicePlatform, getAppVersion} from './React'
 import {installStore} from './Store'
 import {setDocument, setWindow, setDevice} from './Globals'
-
-//setWindowPropertyForTest(window, 'test', true);
 
 function dummyDOM(): Document {
   const doc = document.implementation.createHTMLDocument('testdoc');
@@ -66,17 +64,14 @@ describe('React', () => {
         const fakeStore = mockStore();
         installStore(fakeStore);
         const doc = dummyDOM();
-
         (window as any).plugins = {
           insomnia: {
             keepAwake: jasmine.createSpy('keepAwake'),
           },
         };
-
         setWindow(window);
         setDocument(doc);
 
-        //window, doc, {platform: 'web'}, undefined
         init();
 
         doc.dispatchEvent(new CustomEvent('deviceready', null));
