@@ -50,23 +50,11 @@
 </head>
 <body unresolved class="fullbleed layout vertical center-justified">
   <section id="react-app" style="width:100%; height:100%;"></div>
+  <script type="text/javascript">var doInit = true;</script>
   <script type="text/javascript" src="bundle.js"></script>
   <noscript id="noscript">
     <p>The Companion App for <a href="https://expeditiongame.com">Expedition: The Roleplaying Card Game</a>.</p>
     <p><b>JavaScript is currently disabled. You must enabled JavaScript to use the app and play Expedition: The RPG.</b></p>
   </noscript>
-  <script>
-    // Only enable Google Analytics if we're on the web & not dev'ing locally
-    // And monkeypatch it into exisitng Firebase event for a consistent API for rest of code
-    if (window.platform === 'web' && window.location.hostname !== 'localhost') {
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-      ga('create', 'UA-47408800-9', 'auto');
-      ga('send', 'pageview');
-      window.FirebasePlugin.logEvent = (event, args) => { ga('send', 'event', event) };
-    }
-  </script>
 </body>
 </html>

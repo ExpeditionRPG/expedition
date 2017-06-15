@@ -1,109 +1,124 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-
-// So we can hot reload
 declare var require: any;
 declare var module: any;
 
-// Cordova device
-declare var device: any;
-declare var window: any;
-
-// For gapi login
-declare var gapi: any;
-
-const PACKAGE = require('../package.json');
-window.APP_VERSION = PACKAGE.version;
-
-// Material UI theming libs
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import theme from './Theme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
-
-// Needed for onTouchTap
-const injectTapEventPlugin = require('react-tap-event-plugin');
-try {
-  injectTapEventPlugin();
-} catch (e) {
-  console.log('Already injected tap event plugin');
-}
-
-// Custom components
 import {authSettings} from './Constants'
 import {toPrevious} from './actions/Card'
 import {silentLogin} from './actions/User'
 import {getStore} from './Store'
+import {getWindow, getGapi, getGA, getDevicePlatform, getDocument, setGA} from './Globals'
 
-// Wait for device API libraries to load
-document.addEventListener('deviceready', onDeviceReady, false);
+const injectTapEventPlugin = require('react-tap-event-plugin');
 
-// device APIs are available
-window.platform = 'web';
-function onDeviceReady() {
-  var p = device.platform.toLowerCase();
-  if (/android/i.test(p)) {
-    window.platform = 'android';
-    document.body.className += ' android';
-  } else if (/iphone|ipad|ipod|ios/i.test(p)) {
-    window.platform = 'ios';
-    document.body.className += ' ios';
+function setupTapEvents() {
+  try {
+    injectTapEventPlugin();
+  } catch (e) {
+    console.log('Already injected tap event plugin');
   }
-  document.addEventListener('backbutton', () => {
+}
+
+
+
+export function logEvent(name: string, args: any): void {
+  getWindow().FirebasePlugin.logEvent(name, args);
+
+  const ga = getGA()
+  if (ga) {
+    ga('send', 'event', name);
+  }
+}
+
+function setupDevice() {
+  const window = getWindow();
+
+  // Apply class-specific styling
+  const platform = getDevicePlatform();
+  document.body.className += ' ' + platform;
+
+  if (platform === 'android') {
+
+    // Hide system UI and keep it hidden (Android 4.4+ only)
+    window.AndroidFullScreen.immersiveMode(() => {
+      console.log('Immersive mode enabled');
+    }, () => {
+      console.log('Immersive mode failed');
+    });
+
+    // DOM ready
+    $(() => {
+      // patch for Android browser not properly scrolling to input when keyboard appears
+      $('body').on('focusin', 'input, textarea', (event) => {
+        if (navigator.userAgent.indexOf('Android') !== -1) {
+          var scroll = $(this).offset().top;
+          $('.base_card').scrollTop(scroll);
+        }
+      });
+    });
+  }
+
+  getDocument().addEventListener('backbutton', () => {
     getStore().dispatch(toPrevious());
   }, false);
+
   window.plugins.insomnia.keepAwake(); // keep screen on while app is open
-  // silent login here triggers for cordova plugin
+
+  // silent login here triggers for cordova plugin, if gapi is loaded
+  const gapi = getGapi();
+  if (!gapi) {
+    return;
+  }
   getStore().dispatch(silentLogin(() => {
     // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
     console.log('Silent login: ', gapi.auth2.getAuthInstance().isSignedIn);
   }));
-  // Hide system UI and keep it hidden (Android 4.4+ only)
-  window.AndroidFullScreen.immersiveMode(() => { console.log('Immersive mode'); },
-    () => { console.log('Immersive mode failed'); });
 }
 
-// TODO: API Auth
-gapi.load('client:auth2', () => {
-  gapi.client.setApiKey(authSettings.apiKey);
-  gapi.auth2.init({
-    client_id: authSettings.clientId,
-    scope: authSettings.scopes,
-    cookie_policy: 'none',
-  }).then(() => {
-    // silent login here triggers for web
-    getStore().dispatch(silentLogin(() => {
-      // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
-      console.log('Silent login: ', gapi.auth2.getAuthInstance().isSignedIn);
-    }));
-  });
-});
+function setupGoogleAPIs() {
+  const gapi = getGapi();
+  if (!gapi) {
+    return;
+  }
 
-if (window.FirebasePlugin) { // Load Firebase - only works on cordova apps
-  window.FirebasePlugin.onTokenRefresh((token: string) => {
-    // TODO save this server-side and use it to push notifications to this device
-  }, (error: string) => {
-    console.error(error);
+  gapi.load('client:auth2', () => {
+    gapi.client.setApiKey(authSettings.apiKey);
+    gapi.auth2.init({
+      client_id: authSettings.clientId,
+      scope: authSettings.scopes,
+      cookie_policy: 'none',
+    }).then(() => {
+      // silent login here triggers for web
+      getStore().dispatch(silentLogin(() => {
+        // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
+        console.log('Silent login: ', gapi.auth2.getAuthInstance().isSignedIn);
+      }));
+    });
   });
-} else {
-  window.FirebasePlugin = {
-    logEvent: (name: string, args: any) => { console.log(name, args); },
-  };
 }
 
-// DOM ready
-$(() => {
-  // patch for Android browser not properly scrolling to input when keyboard appears
-  $('body').on('focusin', 'input, textarea', (event) => {
-    if (navigator.userAgent.indexOf('Android') !== -1) {
-      var scroll = $(this).offset().top;
-      $('.base_card').scrollTop(scroll);
-    }
-  });
-});
+function setupEventLogging() {
+  const window = getWindow();
+  if (window.FirebasePlugin) { // Load Firebase - only works on cordova apps
+    window.FirebasePlugin.onTokenRefresh((token: string) => {
+      // TODO save this server-side and use it to push notifications to this device
+    }, (error: string) => {
+      console.error(error);
+    });
+  } else {
+    window.FirebasePlugin = {
+      logEvent: (name: string, args: any) => { console.log(name, args); },
+    };
+  }
+}
 
-let render = () => {
+function render() {
+  // Require is done INSIDE this function to reload app changes.
   var Main = require('./components/base/Main').default;
-  var base = document.getElementById('react-app');
+  var base = getDocument().getElementById('react-app');
   ReactDOM.unmountComponentAtNode(base);
   ReactDOM.render(
     <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
@@ -112,11 +127,69 @@ let render = () => {
     base
   );
 }
-render();
 
-if (module.hot) {
-  module.hot.accept();
-  module.hot.accept('./components/base/Main', () => {
-    setTimeout(render);
-  });
+function setupHotReload() {
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.accept('./components/base/Main', () => {
+      setTimeout(() => {render();});
+    });
+  }
+}
+
+declare var ga: any;
+function setupGoogleAnalytics() {
+  const window = getWindow();
+  const document = getDocument();
+  // Enable Google Analytics if we're not dev'ing locally
+  if (window.location.hostname === 'localhost') {
+    return;
+  }
+
+  (function(i: any,s: any,o: any,g: any,r: any,a: any,m: any){
+    i['GoogleAnalyticsObject']=r;
+    i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)
+    },
+    i[r].l=1*(new Date() as any);
+    a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];
+    a.async=1;
+    a.src=g;
+    m.parentNode.insertBefore(a,m);
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga',null, null);
+
+  if (typeof ga === 'undefined') {
+    console.log('Could not load GA');
+    return;
+  }
+  setGA(ga);
+  ga('create', 'UA-47408800-9', 'auto');
+  ga('send', 'pageview');
+  console.log('google analytics set up');
+}
+
+export function init() {
+  // TODO: remove these and have everyone use getPlatform()/getVersion().
+  const window = getWindow();
+  window.platform = 'web';
+
+  getDocument().addEventListener('deviceready', () => {
+    setupDevice();
+  }, false);
+
+  setupTapEvents();
+  setupGoogleAPIs();
+  setupEventLogging();
+  setupHotReload();
+  setupGoogleAnalytics();
+
+  render();
+}
+
+// doInit is defined in index.html, but not in tests.
+// This lets us setup the environment before initializing, or not init at all.
+declare var doInit: boolean;
+if (typeof doInit !== 'undefined') {
+  init();
 }

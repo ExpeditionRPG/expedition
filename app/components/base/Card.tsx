@@ -7,6 +7,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import {URLS} from '../../Constants'
 import {getStore} from '../../Store'
 import {toCard, toPrevious} from '../../actions/Card'
+import {getDevicePlatform} from '../../Globals'
 
 declare var window:any;
 
@@ -31,6 +32,10 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     getStore().dispatch(toPrevious());
   }
 
+  private getFeedbackURL(): string {
+    return URLS.feedbackBase + getDevicePlatform();
+  }
+
   onMenuSelect(value: string) {
     if (this.props && this.props.onMenuSelect) {
       return this.props.onMenuSelect(value);
@@ -42,15 +47,21 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
       case 'SETTINGS':
         return getStore().dispatch(toCard('SETTINGS'));
       case 'RATE':
-        if (window.platform === 'android') {
-          window.open(URLS.android, '_system');
-        }
-        else if (window.platform === 'ios') {
-          window.open(URLS.ios, '_system');
+        switch (getDevicePlatform()) {
+          case 'android':
+            window.open(URLS.android, '_system');
+            break;
+          case 'ios':
+            window.open(URLS.ios, '_system');
+            break;
+          case 'web':
+            throw new Error('Cannot rate web app');
+          default:
+            throw new Error('Uknown platform encountered');
         }
         break;
       case 'FEEDBACK':
-        window.open(URLS.feedback, '_system');
+        window.open(this.getFeedbackURL(), '_system');
         break;
       case 'REPORT':
         return getStore().dispatch(toCard('REPORT'));
@@ -75,7 +86,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
               onChange={(event: any, value: string)=>this.onMenuSelect(value)}>
                 <MenuItem value="HOME" primaryText="Home"/>
                 <MenuItem value="SETTINGS" primaryText="Settings"/>
-                {window.platform !== 'web' && <MenuItem value="RATE" primaryText="Rate the App"/>}
+                {getDevicePlatform() !== 'web' && <MenuItem value="RATE" primaryText="Rate the App"/>}
                 <MenuItem value="FEEDBACK" primaryText="Send app feedback"/>
                 {this.props.inQuest && <MenuItem value="REPORT" primaryText="Report this quest"/>}
             </IconMenu>
