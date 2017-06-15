@@ -94,6 +94,11 @@ exports.search = function(userId, params, callback) {
             WHEN ratingcount < 5 THEN 0
             ELSE ratingavg
           END DESC NULLS LAST`, null);
+        query = query.order(`
+          CASE
+            WHEN ratingcount < 5 THEN 0
+            ELSE ratingavg
+          END`, false);
       } else {
         query = query.order(params.order.substr(1), (params.order[0] === '+'));
       }
@@ -113,13 +118,14 @@ exports.search = function(userId, params, callback) {
 
 function convertQuestXMLToMetadata(text, callback) {
   const $ = Cheerio.load(text);
-  const attribs = $("quest")[0].attribs;
+  const attribs = $('quest')[0].attribs;
   delete attribs['data-line'];
-  Joi.validate(attribs, Schemas.quests, callback);
+  Joi.validate(attribs, Schemas.questsPublish, callback);
 }
 
-exports.publish = function(userId, id, xml, callback) {
-// TODO: Validate XML
+exports.publish = function(userId, id, params, xml, callback) {
+// TODO: Validate XML via crawler
+  params = Joi.validate(params, {majorRelease: Joi.boolean()}).value;
 
   if (!userId) {
     return callback(new Error('Invalid or missing User ID'));
@@ -171,6 +177,11 @@ exports.publish = function(userId, id, xml, callback) {
           }
         }
 
+        meta.questversion = (result.questversion || 0) + 1;
+        if (params.majorRelease) {
+          meta.questversionlastmajor = meta.questversion;
+        }
+
         Query.upsert(table, meta, 'id', (err, result) => {
           return callback(err, id);
         });
@@ -209,7 +220,9 @@ exports.updateRatings = function(id, callback) {
           return callback(err);
         }
 
-        const ratings = feedback.map((feedback) => {
+        const ratings = feedback.filter((feedback) => {
+          return (feedback.questversion >= quest.questversionlastmajor);
+        }).map((feedback) => {
           return feedback.rating;
         });
         quest.ratingcount = ratings.length;

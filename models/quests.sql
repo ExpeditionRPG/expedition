@@ -1,6 +1,9 @@
 CREATE TABLE quests (
   id VARCHAR(255) NOT NULL,
   PRIMARY KEY(id),
+  questversion INT DEFAULT 1,
+  questversionlastmajor INT DEFAULT 1,
+  engineversion VARCHAR(128),
   publishedurl VARCHAR(2048),
   userid VARCHAR(255),
   author VARCHAR(255),

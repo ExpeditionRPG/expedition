@@ -11,7 +11,7 @@ const {Range} = acequire('ace/range');
 
 import {QDLMode} from './QDLMode'
 import {AnnotationType} from '../../reducers/StateTypes'
-import Spellcheck from '../../spellcheck'
+import Spellcheck from '../../Spellcheck'
 const mode = new QDLMode();
 
 declare var gapi: any;

@@ -5,7 +5,7 @@ const Webpack = require('webpack');
 const options = {
   entry: {
     bundle: [
-      './app/react.tsx',
+      './app/React.tsx',
       './app/style.scss',
     ],
   },

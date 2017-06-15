@@ -1,4 +1,4 @@
-import {ErrorType} from '../error'
+import {ErrorType} from '../Error'
 import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
 import {QDLParser} from '../parsing/QDLParser'
 // TODO: URL type?
@@ -36,6 +36,8 @@ export interface XMLElement {
 
 export interface QuestType {
   id?: string;
+  engineversion?: string;
+  majorrelease?: boolean;
   xml?: string;
   md?: string;
   mdRealtime?: any; // Realtime API text node

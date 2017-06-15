@@ -41,5 +41,6 @@ describe('publishQuest', () => {
 
 describe('questMetadataChange', () => {
   it('updates realtime object')
-  it('creates action')
+
+  it('creates action / updates store')
 });

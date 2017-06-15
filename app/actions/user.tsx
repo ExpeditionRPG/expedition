@@ -2,8 +2,8 @@ import Redux from 'redux'
 
 import {SetProfileMetaAction} from './ActionTypes'
 import {UserState} from '../reducers/StateTypes'
-import {loadQuestFromURL} from './quest'
-import {realtimeUtils} from '../auth'
+import {loadQuestFromURL} from './Quest'
+import {realtimeUtils} from '../Auth'
 
 declare var window: any;
 
@@ -18,8 +18,8 @@ export function loginUser(showPrompt: boolean): ((dispatch: Redux.Dispatch<any>)
       if (response.error){
         dispatch(setProfileMeta({loggedIn: false}));
       } else {
-        window.gapi.client.load('plus','v1', function(){
-          var request = window.gapi.client.plus.people.get({
+        window.gapi.client.load('plus','v1', () => {
+          const request = window.gapi.client.plus.people.get({
             'userId': 'me',
           });
           request.execute((res: any) => {

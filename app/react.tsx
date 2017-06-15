@@ -1,7 +1,17 @@
-// <reference path="../typings/custom/custom.d.ts" />
-
 import * as React from 'react'
 import {render} from 'react-dom'
+import {Provider} from 'react-redux'
+import {loginUser, setProfileMeta} from './actions/User'
+import {saveQuest} from './actions/Quest'
+import {setSnackbar} from './actions/Snackbar'
+import MainContainer from './components/MainContainer'
+import {store} from './Store'
+import {VERSION} from './Constants'
+
+// Material UI theming
+import theme from './Theme'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
 // For hot reload
 declare var require: any;
@@ -13,27 +23,11 @@ declare var window:any;
 // For URL parsing
 declare var unescape: any;
 
-// Material UI theming libs
-import theme from './theme'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
-
 const Typo: any = require('typo-js');
 
 // Needed for onTouchTap
 const injectTapEventPlugin = require('react-tap-event-plugin');
 injectTapEventPlugin();
-
-// Redux libraries
-import {Provider} from 'react-redux'
-
-// Custom components
-import MainContainer from './components/MainContainer'
-import {loginUser, setProfileMeta} from './actions/user'
-import {saveQuest} from './actions/quest'
-import {setSnackbar} from './actions/snackbar'
-import {store} from './store'
-import {VERSION} from './constants'
 
 const ReactGA = require('react-ga') as any;
 ReactGA.initialize('UA-47408800-7');
@@ -55,10 +49,14 @@ if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
     console.log('Failed to parse anticipated Drive open URI: ' + window.location.search);
   }
 }
+if (window.location.hash) {
+  isQuest = true;
+}
 
 if (isQuest) {
   ReactGA.pageview('/quest');
 } else {
+  store.dispatch(setProfileMeta({loggedIn: false}));
   ReactGA.pageview('/');
 }
 
@@ -95,12 +93,8 @@ window.FirebasePlugin = {
 
 window.gapi.load('client,drive-realtime,drive-share', () => {
   window.gapi.client.load('drive', 'v2', () => {
-    if (window.location.hash) {
+    if (isQuest) {
       store.dispatch(loginUser(false));
-    } else {
-      store.dispatch(setProfileMeta({
-        loggedIn: false
-      }));
     }
   });
 });

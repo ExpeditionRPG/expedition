@@ -13,14 +13,16 @@ const schemas = {};
 
 schemas.quests = {
   id: ID_STRING, // google drive doc id
+  questversion: Joi.number().min(1),
+  questversionlastmajor: Joi.number().min(1),
+  engineversion: Joi.string().max(128),
   publishedurl: Joi.string().uri().max(2048),
   userid: ID_STRING,
   author: NAME,
-  contentrating: Joi.string(),
+  contentrating: Joi.string().max(128),
   email: EMAIL,
-  contentrating: Joi.string(),
   familyfriendly: Joi.boolean(),
-  genre: Joi.string(),
+  genre: Joi.string().max(128),
   maxplayers: Joi.number().min(MIN_PLAYERS).max(MAX_PLAYERS),
   maxtimeminutes: Joi.number().min(1),
   minplayers: Joi.number().min(MIN_PLAYERS).max(MAX_PLAYERS),
@@ -77,7 +79,7 @@ schemas.feedback = {
   questid: ID_STRING,
   userid: ID_STRING,
   rating: Joi.number().min(1).max(5),
-  text: Joi.string().max(2048),
+  text: Joi.string().max(2048).allow(''),
   difficulty: Joi.string().max(32),
   email: EMAIL,
   name: NAME,

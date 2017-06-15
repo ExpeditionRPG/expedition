@@ -3,6 +3,7 @@ CREATE TABLE feedback (
   userid VARCHAR(255) NOT NULL,
   PRIMARY KEY(questid, userid),
 
+  questversion INT DEFAULT 1,
   created TIMESTAMP NULL DEFAULT NOW(),
   rating INT,
   text VARCHAR(2048),

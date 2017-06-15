@@ -7,23 +7,23 @@ import {
   RequestQuestPublishAction, ReceiveQuestPublishAction,
   RequestQuestUnpublishAction, ReceiveQuestUnpublishAction,
 } from './ActionTypes'
-import {setSnackbar} from './snackbar'
+import {setSnackbar} from './Snackbar'
 import {QuestType, UserState, ShareType} from '../reducers/StateTypes'
 
-import {setDialog} from './dialogs'
-import {realtimeUtils} from '../auth'
+import {setDialog} from './Dialogs'
+import {realtimeUtils} from '../Auth'
 import {
+  VERSION,
   NEW_QUEST_TEMPLATE,
   QUEST_DOCUMENT_HEADER,
   METADATA_FIELDS,
   METADATA_DEFAULTS,
   NEW_QUEST_TITLE
-} from '../constants'
-import {pushError, pushHTTPError} from '../error'
+} from '../Constants'
+import {pushError, pushHTTPError} from '../Error'
 import {renderXML} from '../parsing/QDLParser'
-import {playtestXMLResult} from '../parsing/crawler/PlaytestCrawler'
 
-const cheerio = require('cheerio') as CheerioAPI;
+const Cheerio: any = require('cheerio');
 const ReactGA = require('react-ga') as any;
 
 // Loaded on index.html
@@ -39,8 +39,8 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
   const close_delim = '\r\n--' + boundary + '--';
 
   text = QUEST_DOCUMENT_HEADER + text;
-  var base64Data = btoa(text);
-  var multipartRequestBody =
+  const base64Data = btoa(text);
+  const multipartRequestBody =
       delimiter +
       'Content-Type: application/json\r\n\r\n' +
       JSON.stringify(fileMetadata) +
@@ -51,7 +51,7 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
       base64Data +
       close_delim;
 
-  var request = window.gapi.client.request({
+  const request = window.gapi.client.request({
       'path': '/upload/drive/v2/files/' + fileId,
       'method': 'PUT',
       'params': {'uploadType': 'multipart', 'alt': 'json'},
@@ -70,42 +70,44 @@ export function loadQuestFromURL(user: UserState, dispatch: Redux.Dispatch<any>)
   loadQuest(user, dispatch, (window.location.hash) ? window.location.hash.substr(1) : null);
 }
 
-export function newQuest(user: UserState, dispatch: any) {
-  var insertHash = {
-    'resource': {
-      mimeType: 'text/plain',
-      title: 'New Expedition Quest',
-      description: 'Created with the Expedition Quest Creator',
-    },
-  };
-  window.gapi.client.drive.files.insert(insertHash).execute((createResponse: {id: string}) => {
-    updateDriveFile(createResponse.id, {}, '', (err, result) => {
-      if (err) {
-        alert('Failed to create new quest: ' + err.message);
-      } else {
-        loadQuest(user, dispatch, createResponse.id);
-        window.gapi.client.request({
-          path: '/drive/v3/files/' + createResponse.id + '/permissions',
-          method: 'POST',
-          params: {sendNotificationEmails: false},
-          body: {
-            role: 'writer',
-            type: 'domain',
-            domain: 'Fabricate.io',
-            allowFileDiscovery: true,
-          },
-        }).then((json: any, raw: any) => {
-        }, (json: any) => {
-          ReactGA.event({
-            category: 'Error',
-            action: 'Error connecting quest file to Fabricate.IO',
-            label: createResponse.id,
+export function newQuest(user: UserState) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    const insertHash = {
+      'resource': {
+        mimeType: 'text/plain',
+        title: 'New Expedition Quest',
+        description: 'Created with the Expedition Quest Creator',
+      },
+    };
+    window.gapi.client.drive.files.insert(insertHash).execute((createResponse: {id: string}) => {
+      updateDriveFile(createResponse.id, {}, '', (err, result) => {
+        if (err) {
+          alert('Failed to create new quest: ' + err.message);
+        } else {
+          loadQuest(user, dispatch, createResponse.id);
+          window.gapi.client.request({
+            path: '/drive/v3/files/' + createResponse.id + '/permissions',
+            method: 'POST',
+            params: {sendNotificationEmails: false},
+            body: {
+              role: 'writer',
+              type: 'domain',
+              domain: 'Fabricate.io',
+              allowFileDiscovery: true,
+            },
+          }).then((json: any, raw: any) => {
+          }, (json: any) => {
+            ReactGA.event({
+              category: 'Error',
+              action: 'Error connecting quest file to Fabricate.IO',
+              label: createResponse.id,
+            });
+            console.log('Error connecting quest file to Fabricate.IO', json);
           });
-          console.log('Error connecting quest file to Fabricate.IO', json);
-        });
-      }
+        }
+      });
     });
-  });
+  }
 }
 
 function getPublishedQuestMeta(published_id: string, cb: (meta: QuestType)=>any) {
@@ -140,7 +142,7 @@ function createDocMetadata(model: any, defaults: any) {
 export function loadQuest(user: UserState, dispatch: any, docid?: string) {
   if (docid === null) {
     console.log('Creating new quest');
-    return newQuest(user, dispatch);
+    return dispatch(newQuest(user));
   }
   realtimeUtils.load(docid, function(doc: any) {
     window.location.hash = docid;
@@ -218,14 +220,13 @@ export function publishQuestSetup(): ((dispatch: Redux.Dispatch<any>)=>any) {
   }
 }
 
-export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function publishQuest(quest: QuestType, majorRelease?: boolean): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const renderResult = renderXML(quest.mdRealtime.getText());
-
     // Insert metadata back into the XML. Temporary patch until ALL client apps
     // are running a version that supports DB metadata
     // TODO https://github.com/ExpeditionRPG/expedition-quest-creator/issues/270
-    const xml = cheerio(renderResult.getResult()+'')
+    const xml = Cheerio(renderResult.getResult()+'')
         .attr('summary', quest.summary)
         .attr('author', quest.author)
         .attr('email', quest.email)
@@ -234,13 +235,14 @@ export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)
         .attr('mintimeminutes', quest.mintimeminutes)
         .attr('maxtimeminutes', quest.maxtimeminutes)
         .attr('genre', quest.genre)
-        .attr('contentrating', quest.contentrating);
+        .attr('contentrating', quest.contentrating)
+        .attr('engineversion', VERSION); // publish-specific
 
     dispatch({type: 'QUEST_RENDER', qdl: renderResult, msgs: renderResult.getFinalizedLogs()});
     dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
     return $.ajax({
       type: 'POST',
-      url: '/publish/' + quest.id,
+      url: '/publish/' + quest.id + '?majorRelease=' + majorRelease,
       data: xml.toString(),
     }).done((result_quest_id: string) => {
       quest.published = (new Date(Date.now()).toISOString());
@@ -262,7 +264,7 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
 
     const meta = xmlResult.getMeta();
     // For all metadata values, see https://developers.google.com/drive/v2/reference/files
-    var fileMeta = {
+    const fileMeta = {
       title: meta['title'] + '.quest',
       description: meta['summary'],
     };
@@ -283,8 +285,6 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
         dispatch({type: 'RECEIVE_QUEST_SAVE', meta} as ReceiveQuestSaveAction);
       }
     });
-
-    dispatch({type: 'QUEST_PLAYTEST', msgs: playtestXMLResult(xmlResult.getResult())});
   };
 }
 

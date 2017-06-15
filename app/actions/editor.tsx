@@ -1,14 +1,8 @@
 import Redux from 'redux'
 import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction} from './ActionTypes'
 import {PanelType} from '../reducers/StateTypes'
-import {store} from '../store'
-import {saveQuest} from './quest'
-import {renderXML} from '../parsing/QDLParser'
-import {playtestXMLResult} from '../parsing/crawler/PlaytestCrawler'
-
-import {QuestContext} from 'expedition-app/app/reducers/QuestTypes'
-import {initQuest, loadNode} from 'expedition-app/app/actions/Quest'
-import {ParserNode} from 'expedition-app/app/parser/Node'
+import {store} from '../Store'
+import {saveQuest} from './Quest'
 
 export function setDirty(is_dirty: boolean): SetDirtyAction {
   return {type: 'SET_DIRTY', is_dirty};
@@ -69,17 +63,4 @@ export function getPlayNode(node: Cheerio): Cheerio {
     return null;
   }
   return node;
-}
-
-export function renderAndPlay(qdl: string, line: number, ctx: QuestContext) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    const renderResult = renderXML(qdl);
-    const questNode = renderResult.getResult();
-    const newNode = new ParserNode(getPlayNode(renderResult.getResultAt(line)), ctx);
-    dispatch({type: 'REBOOT_APP'});
-    dispatch(initQuest('0', questNode, ctx));
-    // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
-    loadNode({autoRoll: false, numPlayers: 1, difficulty: 'NORMAL', showHelp: false, multitouch: false, vibration: false}, dispatch, newNode);
-    dispatch({type: 'QUEST_PLAYTEST', msgs: playtestXMLResult(questNode)});
-  };
 }

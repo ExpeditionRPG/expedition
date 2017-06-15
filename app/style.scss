@@ -144,6 +144,7 @@ label {
   }
 
   .body {
+    width: 100%;
     max-width: $bodyWidth;
     text-align: center;
     margin-left: auto;
@@ -420,10 +421,26 @@ label {
   }
 }
 
-.contentRatingInputContainer {
-  display: flex;
-  .ratingSelect {
-    width: 130px !important;
+.publishForm {
+  .halfWidth {
+    width: 50% !important;
+  }
+  .contentRatingInputContainer {
+    display: flex;
+    .ratingSelect {
+      width: 130px !important;
+    }
+  }
+}
+
+.creatorCheckbox {
+  .icon {
+    display: inline-block;
+    float: left;
+    padding-right: 5px;
+    svg {
+      height: 34px !important;
+    }
   }
 }
 
@@ -437,4 +454,80 @@ label {
 .misspelled {
   border-bottom: 1px solid red;
   margin-bottom: -1px;
+}
+
+.mobileOnly {
+  display: none;
+}
+
+/* Tablets and phones */
+@media only screen and (max-device-width: 800px) {
+  $fontSizeBase: 18px;
+  $fontSizeImportant: 24px;
+  $fontSizeHeader: 32px;
+  html, body, section#react-app, textarea {
+    font-size: $fontSizeBase;
+  }
+  .splash {
+    .previewVideo {
+      width: 100%;
+    }
+    .body {
+      h1, h2, h3, p {
+        padding-left: $padBase;
+        padding-right: $padBase;
+        line-height: 1.16;
+      }
+      h1 {
+        font-size: $fontSizeHeader !important;
+        margin: $padBase;
+      }
+      h2, h3 {
+        font-size: $fontSizeImportant !important;
+      }
+    }
+  }
+  .mobileOnly {
+    display: block;
+  }
+  .login {
+    display: none;
+  }
+}
+
+/* Phones */
+@media only screen and (max-device-width: 600px) {
+  $fontSizeBase: 18px;
+  $fontSizeImportant: 18px;
+  $fontSizeHeader: 24px;
+  html, body, section#react-app, textarea {
+    font-size: $fontSizeBase;
+  }
+  .splash {
+    .body {
+      h1 {
+        font-size: $fontSizeHeader !important;
+        margin: 0 0 $padBase 0;
+      }
+      h2, h3 {
+        font-size: $fontSizeImportant !important;
+      }
+    }
+    .showcase {
+      margin: 0;
+      &> div {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-width: auto;
+      }
+    }
+  }
+  h1, h2, h3, p, ul {
+    text-align: center !important;
+  }
+  ul {
+    list-style:none;
+    padding-left: 0;
+  }
 }

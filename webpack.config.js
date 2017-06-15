@@ -3,7 +3,6 @@ const DashboardPlugin = require('webpack-dashboard/plugin');
 const Path = require('path');
 const Webpack = require('webpack');
 
-
 const port = process.env.DOCKER_PORT || 8080;
 
 const options = {
@@ -12,7 +11,7 @@ const options = {
     bundle: [
       'webpack-dev-server/client?http://localhost:' + port,
       'webpack/hot/only-dev-server',
-      './app/react.tsx',
+      './app/React.tsx',
       './app/style.scss',
     ],
   },

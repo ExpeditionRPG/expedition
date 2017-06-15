@@ -1,26 +1,30 @@
-import {getPlayNode} from './editor'
+import {getPlayNode} from './Editor'
 
-describe('setCodeView', () => {
-  it('creates action');
-});
+const cheerio: any = require('cheerio');
 
-describe('setDirty', () => {
-  it('creates action');
-});
-
-describe('getPlayNode', () => {
-  it('works on root quest node', () => {
-    // TODO fix dependency chain loading - auth.tsx failing b/c utils not defined (external dependency)
-    // const quest = cheerio.load('<quest><roleplay>Foo</roleplay></quest>');
-    // expect(getPlayNode(quest)).toEqual(cheerio.load('<roleplay>Foo</roleplay>'));
+describe('Editor action', () => {
+  describe('setCodeView', () => {
+    it('creates action');
   });
 
-  it('works on roleplay node', () => {
-    // const quest = cheerio.load('<roleplay>Foo</roleplay>');
-    // expect(getPlayNode(quest)).toEqual(cheerio.load('<roleplay>Foo</roleplay>'));
+  describe('setDirty', () => {
+    it('creates action');
   });
 
-  it('works on combat node');
+  describe('getPlayNode', () => {
+    it('works on root quest node', () => {
+      // TODO fix dependency chain loading - auth.tsx failing b/c utils not defined (external dependency)
+      // const quest = cheerio.load('<quest><roleplay>Foo</roleplay></quest>');
+      // expect(getPlayNode(quest)).toEqual(cheerio.load('<roleplay>Foo</roleplay>'));
+    });
 
-  it('alerts on invalid node');
+    it('works on roleplay node', () => {
+      // const quest = cheerio.load('<roleplay>Foo</roleplay>');
+      // expect(getPlayNode(quest)).toEqual(cheerio.load('<roleplay>Foo</roleplay>'));
+    });
+
+    it('works on combat node');
+
+    it('alerts on invalid node');
+  });
 });

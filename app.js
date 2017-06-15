@@ -1,5 +1,3 @@
-'use strict';
-
 const nr = require('newrelic');
 const bodyParser = require('body-parser');
 const express = require('express');

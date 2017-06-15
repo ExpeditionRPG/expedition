@@ -24,7 +24,6 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
     case 'SET_LINE':
       return Object.assign({}, state, {line: (action as SetLineAction).line});
     case 'QUEST_RENDER':
-      // TODO: This should be done elsewhere (probably in an action).
       const pageTitle = (action as QuestRenderAction).qdl.getMeta()['title'] + ' - Expedition Quest Creator';
       window.document.title = pageTitle;
       try {
