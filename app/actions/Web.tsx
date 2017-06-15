@@ -7,7 +7,7 @@ import {openSnackbar} from '../actions/Snackbar'
 import {userFeedbackClear} from '../actions/UserFeedback'
 import {SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} from '../reducers/StateTypes'
 import {QuestContext, QuestDetails, defaultQuestContext} from '../reducers/QuestTypes'
-import {getDevicePlatform, getAppVersion} from '../React'
+import {getDevicePlatform, getAppVersion} from '../Globals'
 
 declare var window:any;
 declare var require:any;

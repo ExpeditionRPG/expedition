@@ -2,6 +2,8 @@ declare var device: any;
 declare var gapi: any;
 declare var ga: any;
 
+const PACKAGE = require('../package.json');
+
 export interface ReactDocument extends Document {
   addEventListener: (e: string, f: ()=>any, useCapture?: boolean) => void;
   dispatchEvent: (e: Event) => boolean;
@@ -32,6 +34,27 @@ const refs = {
   gapi: (typeof gapi !== 'undefined') ? gapi : null,
   ga: (typeof ga !== 'undefined') ? ga : null,
 };
+
+export function getAppVersion(): string {
+  return PACKAGE.version;
+}
+
+export function getDevicePlatform(): 'android' | 'ios' | 'web' {
+  const device = getDevice();
+
+  if (device === undefined) {
+    return 'web';
+  }
+
+  var p = (device.platform || '').toLowerCase();
+  if (/android/i.test(p)) {
+    return 'android';
+  } else if (/iphone|ipad|ipod|ios/i.test(p)) {
+    return 'ios';
+  } else {
+    return 'web';
+  }
+}
 
 export function setWindow(win: ReactWindow) {
   refs.window = win;

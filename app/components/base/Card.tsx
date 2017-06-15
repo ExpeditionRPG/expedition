@@ -7,7 +7,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import {URLS} from '../../Constants'
 import {getStore} from '../../Store'
 import {toCard, toPrevious} from '../../actions/Card'
-import {getDevicePlatform} from '../../React'
+import {getDevicePlatform} from '../../Globals'
 
 declare var window:any;
 
@@ -30,6 +30,10 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
       return this.props.onReturn();
     }
     getStore().dispatch(toPrevious());
+  }
+
+  private getFeedbackURL(): string {
+    return URLS.feedbackBase + getDevicePlatform();
   }
 
   onMenuSelect(value: string) {
@@ -57,7 +61,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
         }
         break;
       case 'FEEDBACK':
-        window.open(URLS.feedbackBase + getDevicePlatform(), '_system');
+        window.open(this.getFeedbackURL(), '_system');
         break;
       case 'REPORT':
         return getStore().dispatch(toCard('REPORT'));
