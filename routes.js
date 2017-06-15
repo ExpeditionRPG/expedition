@@ -1,4 +1,5 @@
 const express = require('express');
+const Braintree = require('braintree');
 const fs = require('fs');
 const Joi = require('joi');
 const Mailchimp = require('mailchimp-api-v3');
@@ -11,6 +12,13 @@ const Feedback = require('./models/feedback');
 const Mail = require('./mail');
 const oauth2 = require('./lib/oauth2');
 const Quests = require('./models/quests');
+
+const gateway = Braintree.connect({
+  environment: Braintree.Environment[Config.get('BRAINTREE_ENVIRONMENT')],
+  merchantId: Config.get('BRAINTREE_MERCHANT_ID'),
+  publicKey: Config.get('BRAINTREE_PUBLIC_KEY'),
+  privateKey: Config.get('BRAINTREE_PRIVATE_KEY'),
+});
 
 const mailchimp = (process.env.NODE_ENV !== 'dev') ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
@@ -191,6 +199,39 @@ router.post('/user/subscribe', (req, res) => {
         return res.status(err.status).send(err.title);
       });
     }
+  });
+});
+
+
+router.get('/braintree/token', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.get('origin'));
+  res.header('Access-Control-Allow-Credentials', 'true');
+  gateway.clientToken.generate({}, (err, response) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send('Error generating payment token.');
+    }
+    res.send(response.clientToken);
+  });
+});
+
+
+router.post('/braintree/checkout', (req, res) => {
+  req.body = JSON.parse(req.body);
+  res.header('Access-Control-Allow-Origin', req.get('origin'));
+  res.header('Access-Control-Allow-Credentials', 'true');
+  gateway.transaction.sale({
+    amount: req.body.amount,
+    paymentMethodNonce: req.body.nonce,
+    options: {
+      submitForSettlement: true,
+    },
+  }, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send('Error submitting payment.');
+    }
+    res.send(result);
   });
 });
 
