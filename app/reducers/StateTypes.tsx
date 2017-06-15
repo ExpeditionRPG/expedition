@@ -36,6 +36,8 @@ export interface XMLElement {
 
 export interface QuestType {
   id?: string;
+  engineversion?: string;
+  majorrelease?: boolean;
   xml?: string;
   md?: string;
   mdRealtime?: any; // Realtime API text node

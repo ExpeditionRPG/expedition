@@ -13,6 +13,7 @@ import {QuestType, UserState, ShareType} from '../reducers/StateTypes'
 import {setDialog} from './Dialogs'
 import {realtimeUtils} from '../Auth'
 import {
+  VERSION,
   NEW_QUEST_TEMPLATE,
   QUEST_DOCUMENT_HEADER,
   METADATA_FIELDS,
@@ -38,8 +39,8 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
   const close_delim = '\r\n--' + boundary + '--';
 
   text = QUEST_DOCUMENT_HEADER + text;
-  var base64Data = btoa(text);
-  var multipartRequestBody =
+  const base64Data = btoa(text);
+  const multipartRequestBody =
       delimiter +
       'Content-Type: application/json\r\n\r\n' +
       JSON.stringify(fileMetadata) +
@@ -50,7 +51,7 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
       base64Data +
       close_delim;
 
-  var request = window.gapi.client.request({
+  const request = window.gapi.client.request({
       'path': '/upload/drive/v2/files/' + fileId,
       'method': 'PUT',
       'params': {'uploadType': 'multipart', 'alt': 'json'},
@@ -219,10 +220,9 @@ export function publishQuestSetup(): ((dispatch: Redux.Dispatch<any>)=>any) {
   }
 }
 
-export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function publishQuest(quest: QuestType, majorRelease?: boolean): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const renderResult = renderXML(quest.mdRealtime.getText());
-
     // Insert metadata back into the XML. Temporary patch until ALL client apps
     // are running a version that supports DB metadata
     // TODO https://github.com/ExpeditionRPG/expedition-quest-creator/issues/270
@@ -235,13 +235,14 @@ export function publishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)
         .attr('mintimeminutes', quest.mintimeminutes)
         .attr('maxtimeminutes', quest.maxtimeminutes)
         .attr('genre', quest.genre)
-        .attr('contentrating', quest.contentrating);
+        .attr('contentrating', quest.contentrating)
+        .attr('engineversion', VERSION); // publish-specific
 
     dispatch({type: 'QUEST_RENDER', qdl: renderResult, msgs: renderResult.getFinalizedLogs()});
     dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
     return $.ajax({
       type: 'POST',
-      url: '/publish/' + quest.id,
+      url: '/publish/' + quest.id + '?majorRelease=' + majorRelease,
       data: xml.toString(),
     }).done((result_quest_id: string) => {
       quest.published = (new Date(Date.now()).toISOString());
@@ -263,7 +264,7 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
 
     const meta = xmlResult.getMeta();
     // For all metadata values, see https://developers.google.com/drive/v2/reference/files
-    var fileMeta = {
+    const fileMeta = {
       title: meta['title'] + '.quest',
       description: meta['summary'],
     };

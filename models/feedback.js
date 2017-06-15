@@ -26,15 +26,22 @@ exports.getRatingsByQuestId = function(questId, callback) {
 
 exports.submit = function(type, feedback, callback) {
   Joi.validate(feedback, Schemas.feedbackSubmit, (err, feedback) => {
-    Query.upsert(table, feedback, 'questid, userid', (err) => {
+    if (err) {
+      return callback(err);
+    }
+    callback(null, feedback.questid); // don't hold up the user
+
+    // Load the quest to get details like current version and author
+    Quests.getById(feedback.questid, (err, quest) => {
       if (err) {
-        return callback(err);
+        console.log(err);
+        quest = {};
       }
-      // don't hold up the user response for background functions like email and recalculating metadata
-      callback(null, feedback.questid);
-      Quests.getById(feedback.questid, (err, quest) => {
+      feedback.questversion = quest.questversion;
+
+      Query.upsert(table, feedback, 'questid, userid', (err) => {
         if (err) {
-          quest = {};
+          console.log(err);
         }
 
         const htmlMessage = `<p>User feedback:</p>

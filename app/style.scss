@@ -421,10 +421,26 @@ label {
   }
 }
 
-.contentRatingInputContainer {
-  display: flex;
-  .ratingSelect {
-    width: 130px !important;
+.publishForm {
+  .halfWidth {
+    width: 50% !important;
+  }
+  .contentRatingInputContainer {
+    display: flex;
+    .ratingSelect {
+      width: 130px !important;
+    }
+  }
+}
+
+.creatorCheckbox {
+  .icon {
+    display: inline-block;
+    float: left;
+    padding-right: 5px;
+    svg {
+      height: 34px !important;
+    }
   }
 }
 

@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
     onRequestClose: (dialog: DialogIDType): void => {
       dispatch(setDialog(dialog, false));
     },
-    onRequestPublish: (quest: QuestType): void => {
+    onRequestPublish: (quest: QuestType, majorRelease: boolean): void => {
       Joi.validate(quest, {
         title: Joi.string().min(4).max(100),
         summary: Joi.string().min(6).max(200),
@@ -45,7 +45,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
           return alert(err);
         }
         dispatch(setDialog('PUBLISHING', false));
-        dispatch(publishQuest(quest));
+        dispatch(publishQuest(quest, majorRelease));
       });
     },
   };

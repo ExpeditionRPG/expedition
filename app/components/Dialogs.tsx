@@ -13,6 +13,7 @@ import SelectField from 'material-ui/SelectField'
 import TextField from 'material-ui/TextField'
 import Toggle from 'material-ui/Toggle'
 
+import Checkbox from './base/Checkbox'
 import {ErrorType} from '../Error'
 import {QuestType, ShareType, DialogsState, DialogIDType} from '../reducers/StateTypes'
 import theme from '../Theme'
@@ -58,11 +59,18 @@ interface PublishingDialogProps extends React.Props<any> {
   handleMetadataChange: (quest: QuestType, key: string, value: any) => void;
   open: boolean;
   onRequestClose: () => void;
-  onRequestPublish: (quest: QuestType) => void;
+  onRequestPublish: (quest: QuestType, majorRelease: boolean) => void;
   quest: QuestType;
 }
 
 export class PublishingDialog extends React.Component<PublishingDialogProps, {}> {
+  state: { majorRelease: boolean };
+
+  constructor(props: PublishingDialogProps) {
+    super(props);
+    this.state = { majorRelease: false };
+  }
+
   render() {
     const metadata = this.props.quest.metadataRealtime;
     if (metadata === undefined) {
@@ -88,6 +96,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
       <Dialog
         title="Publish your quest"
         titleClassName={'dialogTitle dialogGood'}
+        className="publishForm"
         modal={false}
         open={Boolean(this.props.open)}
         autoScrollBodyContent={true}
@@ -97,7 +106,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
         />,<RaisedButton
           label="Publish"
           secondary={true}
-          onTouchTap={() => this.props.onRequestPublish(this.props.quest)}
+          onTouchTap={() => this.props.onRequestPublish(this.props.quest, this.state.majorRelease)}
         />]}
       >
         <TextField
@@ -107,16 +116,19 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           onChange={(e: any, val: string) => { this.props.handleMetadataChange(this.props.quest, 'summary', val)}}
         />
         <TextField
+          className="halfWidth"
           value={metadata.get('author')}
           floatingLabelText="Author name"
           onChange={(e: any, val: string) => { this.props.handleMetadataChange(this.props.quest, 'author', val)}}
         />
         <TextField
+          className="halfWidth"
           value={metadata.get('email')}
           floatingLabelText="Contact email (private)"
           onChange={(e: any, val: string) => { this.props.handleMetadataChange(this.props.quest, 'email', val)}}
         />
         <SelectField
+          className="halfWidth"
           floatingLabelText="Minimum players"
           value={metadata.get('minplayers')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'minplayers', val)}}
@@ -124,6 +136,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           {playerItems}
         </SelectField>
         <SelectField
+          className="halfWidth"
           floatingLabelText="Maximum players"
           value={metadata.get('maxplayers')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'maxplayers', val)}}
@@ -131,6 +144,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           {playerItems}
         </SelectField>
         <SelectField
+          className="halfWidth"
           floatingLabelText="Minimum play time"
           value={metadata.get('mintimeminutes')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'mintimeminutes', val)}}
@@ -146,6 +160,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           <MenuItem value={999} primaryText="Over 2 hours" />
         </SelectField>
         <SelectField
+          className="halfWidth"
           floatingLabelText="Maximum play time"
           value={metadata.get('maxtimeminutes')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'maxtimeminutes', val)}}
@@ -162,6 +177,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           <MenuItem value={999} primaryText="Over 3 hours" />
         </SelectField>
         <SelectField
+          className="halfWidth"
           floatingLabelText="Genre"
           value={metadata.get('genre')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'genre', val)}}
@@ -179,6 +195,11 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           </SelectField>
           {metadata.get('contentrating') !== null && <ul className="ratingDefinition">{ratingDefinitions}</ul>}
         </div>
+        <Checkbox
+          label="Major release (resets ratings & reviews)"
+          value={this.state.majorRelease}
+          onChange={(checked: boolean) => { this.setState({majorRelease: checked}); }}>
+        </Checkbox>
       </Dialog>
     );
   }
@@ -193,7 +214,7 @@ export interface DialogsStateProps {
 export interface DialogsDispatchProps {
   handleMetadataChange: (quest: QuestType, key: string, value: any) => void;
   onRequestClose: (dialog: DialogIDType) => void;
-  onRequestPublish: (quest: QuestType) => void;
+  onRequestPublish: (quest: QuestType, majorRelease: boolean) => void;
 }
 
 interface DialogsProps extends DialogsStateProps, DialogsDispatchProps {}

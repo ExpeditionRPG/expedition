@@ -51,5 +51,15 @@ describe('quest', () => {
     it('unpublishes owned quest');
 
     it('fails to publish/unpublish unowned quest');
+
+    it('always updates questversion');
+
+    it('increments questversionlastmajor when major release flag is true');
+  });
+
+  describe('calculate ratings', () => {
+    it('calulcates the count and average of multiple ratings');
+
+    it('excludes ratings from quest versions before the last major release');
   });
 });
