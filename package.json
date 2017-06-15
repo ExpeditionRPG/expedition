@@ -6,7 +6,7 @@
   "repository": "https://github.com/ExpeditionRPG/expedition-quest-creator",
   "main": "react.js",
   "scripts": {
-    "test": "karma start --single-run --browsers PhantomJS",
+    "test": "mocha meta_tests.js && karma start --single-run --browsers PhantomJS",
     "watch:test": "karma start",
     "start": "node ${SCRIPT:-app.js}",
     "dev-dash": "NODE_ENV=dev webpack-dashboard -- node ${SCRIPT:-app.js}",
@@ -37,7 +37,7 @@
     "brace": "^0.10.0",
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.1",
-    "expedition-app": "https://github.com/ExpeditionRPG/expedition-app.git#a8de1f3198f2641ba93b97c4d91d1898265c3c00",
+    "expedition-app": "https://github.com/ExpeditionRPG/expedition-app.git#4387bf40f1645d67803e1ea03d1d35ea64688a11",
     "express": "^4.15.2",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.1",

@@ -64,3 +64,11 @@ export function getPlayNode(node: Cheerio): Cheerio {
   }
   return node;
 }
+
+
+/* renderAndPlay
+      dispatch({type: 'REBOOT_APP'});
+      const result = dispatch(initQuest('0', questNode, ctx));
+      // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
+      dispatch(loadNode({autoRoll: false, numPlayers: 1, difficulty: 'NORMAL', showHelp: false, multitouch: false, vibration: false}, new ParserNode(newNode, ctx)));
+*/
