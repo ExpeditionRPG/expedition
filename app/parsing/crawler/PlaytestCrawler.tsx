@@ -32,15 +32,6 @@ class PlaytestCrawler extends StatsCrawler {
       this.logger.err('An action on this card leads nowhere (invalid goto id or no **end**)', '430', l);
     }
   }
-
-  protected onEvent(q: CrawlEntry, e: CrawlEvent): void {
-    super.onEvent(q, e);
-  }
-
-  protected onNode(q: CrawlEntry, nodeStr: string, id: string, line: number): void {
-    super.onNode(q, nodeStr, id, line);
-    // TODO: All the gooey internals
-  }
 }
 
 // TODO: Error and don't show stats calculations if an invalid node was discovered.
