@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {connect} from 'react-redux'
 import {AppState} from '../reducers/StateTypes'
 import PlaytestPanel, {PlaytestPanelDispatchProps, PlaytestPanelStateProps} from './PlaytestPanel'
-import {updateDirtyState} from '../actions/editor'
+import {updateDirtyState} from '../actions/Editor'
 
 const mapStateToProps = (state: AppState, ownProps: any): PlaytestPanelStateProps => {
   return {};
