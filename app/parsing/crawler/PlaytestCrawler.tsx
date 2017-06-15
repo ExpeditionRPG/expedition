@@ -2,7 +2,9 @@ import {CrawlEvent, CrawlEntry} from 'expedition-app/app/parser/Crawler'
 import {defaultQuestContext} from 'expedition-app/app/reducers/QuestTypes'
 import {StatsCrawler} from './StatsCrawler'
 import {ParserNode} from 'expedition-app/app/parser/Node'
-import {LogMessageMap} from '../Logger'
+import {Logger, LogMessageMap} from '../Logger'
+import {initQuest} from 'expedition-app/app/actions/Quest'
+
 
 const cheerio: any = require('cheerio') as CheerioAPI;
 
@@ -10,33 +12,47 @@ const cheerio: any = require('cheerio') as CheerioAPI;
 // about particular states encountered during play through the quest, or
 // about the quest in aggregate.
 class PlaytestCrawler extends StatsCrawler {
+  private logger: Logger;
+  private finalized: LogMessageMap;
+
+  constructor(logger: Logger) {
+    super()
+    this.logger = logger;
+  }
 
   public crawl(node: ParserNode) {
     super.crawl(node);
-    // TODO: Calculate and log aggregate stats.
-    // This *may* require writing a DFS that traverses the CrawlerStats entries (to do cycle detection, for instance)
+    // Calculate and log aggregate stats.
+
+    // This will probably require writing a DFS that traverses the
+    // CrawlerStats entries (to do cycle detection, for instance)
+
+    // Create gutter errors.
+    for (let l of this.statsByEvent['IMPLICIT_END'].lines) {
+      this.logger.err('An action on this card leads nowhere (invalid goto id or no **end**)', '430', l);
+    }
   }
 
   protected onEvent(q: CrawlEntry, e: CrawlEvent): void {
-
-  };
-
-  protected onNode(q: CrawlEntry, nodeStr: string, id: string, line: number): void {
-    // TODO: All the gooey internal shiz.
+    super.onEvent(q, e);
   }
 
-  public getFinalizedMessages(): LogMessageMap {
-    return null;
+  protected onNode(q: CrawlEntry, nodeStr: string, id: string, line: number): void {
+    super.onNode(q, nodeStr, id, line);
+    // TODO: All the gooey internals
   }
 }
 
 // TODO: Error and don't show stats calculations if an invalid node was discovered.
-export function playtest(elem: CheerioElement): LogMessageMap {
-  /*
-  const root = new ParserNode(cheerio.load(xml)('quest > :first-child'), defaultQuestContext());
-  const crawler = new PlaytestCrawler();
-  crawler.crawl(root);
-  return crawler.getFinalizedMessages();
-  */
-  return null;
+export function playtestXMLResult(parserResult: Cheerio): LogMessageMap {
+  const logger = new Logger();
+  try {
+    const root = initQuest('0', parserResult, defaultQuestContext()).node;
+    const crawler = new PlaytestCrawler(logger);
+    crawler.crawl(root);
+  } catch(e) {
+    logger.dbg('Auto-Playtest failed (likely a parser error)');
+  } finally {
+    return logger.getFinalizedLogs();
+  }
 }

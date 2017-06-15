@@ -4,7 +4,7 @@ import {PanelType} from '../reducers/StateTypes'
 import {store} from '../store'
 import {saveQuest} from './quest'
 import {renderXML} from '../parsing/QDLParser'
-import {playtest} from '../parsing/crawler/PlaytestCrawler'
+import {playtestXMLResult} from '../parsing/crawler/PlaytestCrawler'
 
 import {QuestContext} from 'expedition-app/app/reducers/QuestTypes'
 import {initQuest, loadNode} from 'expedition-app/app/actions/Quest'
@@ -75,11 +75,11 @@ export function renderAndPlay(qdl: string, line: number, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const renderResult = renderXML(qdl);
     const questNode = renderResult.getResult();
-    const newNode = getPlayNode(renderResult.getResultAt(line));
+    const newNode = new ParserNode(getPlayNode(renderResult.getResultAt(line)), ctx);
     dispatch({type: 'REBOOT_APP'});
-    const result = dispatch(initQuest('0', questNode, ctx));
+    dispatch(initQuest('0', questNode, ctx));
     // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
-    loadNode({autoRoll: false, numPlayers: 1, difficulty: 'NORMAL', showHelp: false, multitouch: false, vibration: false}, dispatch, new ParserNode(newNode, ctx));
-    dispatch({type: 'QUEST_PLAYTEST', msgs: playtest(questNode)});
+    loadNode({autoRoll: false, numPlayers: 1, difficulty: 'NORMAL', showHelp: false, multitouch: false, vibration: false}, dispatch, newNode);
+    dispatch({type: 'QUEST_PLAYTEST', msgs: playtestXMLResult(questNode)});
   };
 }

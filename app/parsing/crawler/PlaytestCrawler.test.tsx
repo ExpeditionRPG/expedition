@@ -1,17 +1,34 @@
-import {playtest} from './PlaytestCrawler'
+import {playtestXMLResult} from './PlaytestCrawler'
+import {QDLParser} from '../QDLparser'
 
 var expect: any = require('expect');
 const cheerio: any = require('cheerio') as CheerioAPI;
 
 describe('playtest', () => {
   describe('internal-level message', () => {
-    it('logs if quest is unparseable');
   });
 
   describe('error-level message', () => {
-    it('logs if quest path is broken'); // e.g. by a bad goto
+    /* // TODO: currently nonfunctional, fix is in app
+    it('logs if quest path is broken by bad goto', () => {
+      const msgs = playtestXMLResult(cheerio.load(`<quest>
+        <roleplay data-line="0"></roleplay>
+        <trigger data-line="1" goto="nonexistant_id"></trigger>
+        <roleplay data-line="2"></roleplay>
+      </quest>`)('quest'));
 
-    it('logs if a node has an implicit end (no **end** tag)');
+      expect(msgs.error.length).toEqual(1);
+      expect(msgs.error[0].text).toEqual('An action on this node leads nowhere (invalid goto id or no **end**)');
+    }); */
+
+    it('logs if a node has an implicit end (no **end** tag)', () => {
+      const msgs = playtestXMLResult(cheerio.load(`<quest>
+        <roleplay data-line="0"></roleplay>
+      </quest>`)('quest'));
+
+      expect(msgs.error.length).toEqual(1);
+      expect(msgs.error[0].text).toEqual('An action on this card leads nowhere (invalid goto id or no **end**)');
+    });
 
     it('logs if a node leads to an invalid node');
 
@@ -40,7 +57,13 @@ describe('playtest', () => {
     it('logs if there is uneven choice distribution') // (too few/too many, or alternating 0-2-0-2 etc.)
   });
 
-  describe('debug-level message', () => {
+  describe('info-level message', () => {
+    it('logs if quest is unparseable', () => {
+      const msgs = playtestXMLResult(null);
+      expect(msgs.info.length).toEqual(1);
+      expect(msgs.info[0].text).toEqual('Auto-Playtest failed (likely a parser error)');
+    });
+
     it('logs general reading level required for the quest');
 
     it('logs estimated minimum/maximum play time');

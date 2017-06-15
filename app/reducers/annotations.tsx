@@ -1,7 +1,7 @@
 import Redux from 'redux'
-import {LogMessage} from '../parsing/Logger'
+import {LogMessage, LogMessageMap} from '../parsing/Logger'
 import {AnnotationType} from './StateTypes'
-import {QuestRenderAction} from '../actions/ActionTypes'
+import {QuestRenderAction, QuestPlaytestAction} from '../actions/ActionTypes'
 
 function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: Set<number>): void {
   for (let m of msgs) {
@@ -23,19 +23,27 @@ function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: 
 
 export function annotations(state: AnnotationType[] = [], action: Redux.Action): AnnotationType[] {
   // Transfer accumulated errors into state.
-  // TODO: QUEST_RUNTIME_CHECK
-  if (action.type !== 'QUEST_RENDER') {
-    return state;
+  let msgs: LogMessageMap;
+  let result: AnnotationType[] = [];
+
+  switch (action.type) {
+    case 'QUEST_PLAYTEST':
+      msgs = (action as QuestPlaytestAction).msgs;
+      result = [...state]; // Persist other messages from render
+      break;
+    case 'QUEST_RENDER':
+      msgs = (action as QuestRenderAction).msgs;
+      break;
+    default:
+      return state;
   }
 
-  var msgsAction = (action as QuestRenderAction);
-  var result: AnnotationType[] = [];
   // Don't render info lines here.
   // TODO: Conditionally render info lines based on user settings
   var errorLines = new Set<number>();
-  toAnnotation(msgsAction.msgs.warning, result, errorLines);
-  toAnnotation(msgsAction.msgs.error, result, errorLines);
-  toAnnotation(msgsAction.msgs.internal, result, errorLines);
+  toAnnotation(msgs.warning, result, errorLines);
+  toAnnotation(msgs.error, result, errorLines);
+  toAnnotation(msgs.internal, result, errorLines);
 
   errorLines.forEach((l: number) => {
     result.push({

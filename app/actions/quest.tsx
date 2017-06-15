@@ -21,7 +21,7 @@ import {
 } from '../constants'
 import {pushError, pushHTTPError} from '../error'
 import {renderXML} from '../parsing/QDLParser'
-import {playtest} from '../parsing/crawler/PlaytestCrawler'
+import {playtestXMLResult} from '../parsing/crawler/PlaytestCrawler'
 
 const cheerio = require('cheerio') as CheerioAPI;
 const ReactGA = require('react-ga') as any;
@@ -284,7 +284,7 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
       }
     });
 
-    dispatch({type: 'QUEST_PLAYTEST', msgs: playtest(xmlResult.getResult())});
+    dispatch({type: 'QUEST_PLAYTEST', msgs: playtestXMLResult(xmlResult.getResult())});
   };
 }
 
