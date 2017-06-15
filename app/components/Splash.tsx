@@ -20,10 +20,12 @@ const Splash = (props: any): JSX.Element => {
           title="Expedition Quest Creator"
           showMenuIconButton={false}
           iconElementRight={
-            <FlatButton
-              label="Log In"
-              onTouchTap={() => props.onLogin('appbar')}
-            />
+            <div className="login">
+              <FlatButton
+                label="Log In"
+                onTouchTap={() => props.onLogin('appbar')}
+              />
+            </div>
           }
         />
       </div>
@@ -37,9 +39,12 @@ const Splash = (props: any): JSX.Element => {
           <h3>Write adventures for <a target="_blank" href="https://expeditiongame.com">Expedition: The Roleplaying Card Game</a></h3>
           <h3>Build a following of thousands of gamers across the globe</h3>
           <h3>Earn tips and donations from your followers</h3>
-          <div className="buttonBox">
+          <div className="buttonBox login">
             <Button onTouchTap={() => props.onLogin('main')}>Get Started</Button>
           </div>
+          <h3 className="mobileOnly">
+            <strong>Visit this page on a desktop browser to get started.</strong>
+          </h3>
         </div>
         <div>
           <h1>Built for <strong>Authors</strong></h1>
@@ -98,7 +103,7 @@ const Splash = (props: any): JSX.Element => {
             </div>
           </div>
 
-          <div className="buttonBox">
+          <div className="buttonBox login">
             <Button onTouchTap={() => props.onLogin('bottom')}>
               Get Started
             </Button>
