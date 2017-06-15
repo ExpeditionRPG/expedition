@@ -5,7 +5,6 @@ import {ParserNode} from 'expedition-app/app/parser/Node'
 import {Logger, LogMessageMap} from '../Logger'
 import {initQuest} from 'expedition-app/app/actions/Quest'
 
-
 const cheerio: any = require('cheerio') as CheerioAPI;
 
 // Surfaces errors, warnings, statistics, and other useful information
@@ -22,10 +21,9 @@ class PlaytestCrawler extends StatsCrawler {
 
   public crawl(node: ParserNode) {
     super.crawl(node);
-    // Calculate and log aggregate stats.
 
-    // This will probably require writing a DFS that traverses the
-    // CrawlerStats entries (to do cycle detection, for instance)
+    // TODO: We'll probably write a DFS here that traverses the
+    // CrawlerStats entries (e.g. for cycle detection)
 
     // Create gutter errors.
     for (let l of this.statsByEvent['IMPLICIT_END'].lines) {
@@ -34,7 +32,6 @@ class PlaytestCrawler extends StatsCrawler {
   }
 }
 
-// TODO: Error and don't show stats calculations if an invalid node was discovered.
 export function playtestXMLResult(parserResult: Cheerio): LogMessageMap {
   const logger = new Logger();
   try {
