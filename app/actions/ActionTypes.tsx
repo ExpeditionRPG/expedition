@@ -65,6 +65,11 @@ export interface QuestRenderAction extends Redux.Action {
   msgs: LogMessageMap;
 }
 
+export interface QuestPlaytestAction extends Redux.Action {
+  type: 'QUEST_PLAYTEST';
+  msgs: LogMessageMap;
+}
+
 export interface QuestMetadataChangeAction extends Redux.Action {
   type: 'QUEST_METADATA_CHANGE';
   key: string;

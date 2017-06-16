@@ -2,17 +2,13 @@ import Redux from 'redux'
 import {connect} from 'react-redux'
 
 import {QuestActionType} from '../actions/ActionTypes'
-import {getPlayNode} from '../actions/Editor'
+import {getPlayNode, renderAndPlay} from '../actions/Editor'
 import {newQuest, saveQuest, publishQuestSetup, unpublishQuest} from '../actions/Quest'
 import {logoutUser} from '../actions/User'
 import {AppState, QuestType, EditorState, UserState} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
 
-import {renderXML} from '../parsing/QDLParser'
-
-import {initQuest, loadNode} from 'expedition-app/app/actions/Quest'
 import {toCard} from 'expedition-app/app/actions/Card'
-import {ParserNode} from 'expedition-app/app/parser/Node'
 import {defaultQuestContext} from 'expedition-app/app/reducers/QuestTypes'
 
 import {DOCS_INDEX_URL, DEV_CONTACT_URL} from '../Constants'
@@ -65,10 +61,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       dispatch(logoutUser());
     },
     playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => {
-      const renderResult = renderXML(quest.mdRealtime.getText());
-      const questNode = renderResult.getResult();
-      const newNode = getPlayNode(renderResult.getResultAt(editor.line));
-
       let ctx = defaultQuestContext();
       Object.assign(ctx.scope, baseScope);
       try {
@@ -77,11 +69,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         // TODO: Display eval errors
         console.log(e);
       }
-
-      dispatch({type: 'REBOOT_APP'});
-      const result = dispatch(initQuest('0', questNode, ctx));
-      // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
-      dispatch(loadNode({autoRoll: false, numPlayers: 1, difficulty: 'NORMAL', showHelp: false, multitouch: false, vibration: false}, new ParserNode(newNode, ctx)));
+      dispatch(renderAndPlay(quest.mdRealtime.getText(), editor.line, ctx));
     },
   };
 }

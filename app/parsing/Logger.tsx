@@ -61,57 +61,82 @@ export class Logger {
     this.context = blockContext || [];
   }
 
-  dbg(text: string) {
+  public dbg(text: string) {
     this.info.push(text);
   }
 
-  internal(text: string, url: string, line?: number) {
-    this.msg(
+  public internal(text: string, url: string, line?: number) {
+    this.messages.push(this.msg(
       this.context,
       'internal',
       text,
       url,
       line
-    );
+    ));
   }
 
-  err(text: string, url: string, line?: number) {
-    this.msg(
+  public err(text: string, url: string, line?: number) {
+    this.messages.push(this.msg(
       this.context,
       'error',
       text,
       url,
       line
-    );
+    ));
   }
 
-  warn(text: string, url: string, line?: number) {
-    this.msg(
+  public warn(text: string, url: string, line?: number) {
+    this.messages.push(this.msg(
       this.context,
       'warning',
       text,
       url,
       line
-    );
+    ));
   }
 
-  extend(msgs: LogMessage[]) {
+  public extend(msgs: LogMessage[]) {
     Array.prototype.push.apply(this.messages, msgs);
   }
 
-  finalize(): LogMessage[] {
+  public finalize(): LogMessage[] {
     if (this.info.length > 0) {
-      this.msg(
+      this.messages.push(this.msg(
         this.context,
         'info',
         this.info.join('\n'),
         '100'
-      );
+      ));
     }
     return this.messages;
   }
 
-  private msg(group: Block[], type: LogSeverity, text: string, url: string, line?: number) {
+  public getFinalizedLogs(): LogMessageMap {
+    const finalized = this.finalize();
+    const logMap: LogMessageMap = {'info': [], 'warning': [], 'error': [], 'internal': []};
+    for (let m of finalized) {
+      switch(m.type) {
+        case 'info':
+          logMap.info.push(m);
+          break;
+        case 'warning':
+          logMap.warning.push(m);
+          break;
+        case 'error':
+          logMap.error.push(m);
+          break;
+        case 'internal':
+          logMap.internal.push(m);
+          break;
+        default:
+          logMap.internal.push(this.msg([], 'internal', 'Unknown message type', '506'));
+          break;
+      }
+    }
+    return logMap;
+  }
+
+  private msg(group: Block[], type: LogSeverity, text: string, url: string, line?: number): LogMessage {
     var message: LogMessage = {
       type: type,
       text: text,
@@ -122,6 +147,6 @@ export class Logger {
     } else {
       message.line = (group.length > 0) ? (group[0].startLine || 0) : 0
     }
-    this.messages.push(message);
+    return message;
   }
 };

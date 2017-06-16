@@ -7,7 +7,7 @@ import TestData from './TestData'
 var prettifyHTML = (require('html') as any).prettyPrint;
 
 var expect: any = require('expect');
-var cheerio: any = require('cheerio');
+var cheerio: any = require('cheerio') as CheerioAPI;
 
 
 
