@@ -13,7 +13,7 @@ const Mail = require('./mail');
 const oauth2 = require('./lib/oauth2');
 const Quests = require('./models/quests');
 
-const gateway = Braintree.connect({
+const braintree = Braintree.connect({
   environment: Braintree.Environment[Config.get('BRAINTREE_ENVIRONMENT')],
   merchantId: Config.get('BRAINTREE_MERCHANT_ID'),
   publicKey: Config.get('BRAINTREE_PUBLIC_KEY'),
@@ -206,7 +206,7 @@ router.post('/user/subscribe', (req, res) => {
 router.get('/braintree/token', (req, res) => {
   res.header('Access-Control-Allow-Origin', req.get('origin'));
   res.header('Access-Control-Allow-Credentials', 'true');
-  gateway.clientToken.generate({}, (err, response) => {
+  braintree.clientToken.generate({}, (err, response) => {
     if (err) {
       console.log(err);
       return res.status(500).send('Error generating payment token.');
@@ -220,12 +220,23 @@ router.post('/braintree/checkout', (req, res) => {
   req.body = JSON.parse(req.body);
   res.header('Access-Control-Allow-Origin', req.get('origin'));
   res.header('Access-Control-Allow-Credentials', 'true');
-  gateway.transaction.sale({
-    amount: req.body.amount,
+  braintree.transaction.sale({
+    amount: req.body.amount.toString(),
+    // TODO once we have submerchant accounts, and only if this is a quest and its author has a set-up submerchant account
+    // serviceFeeAmount: (0.3 + 0.23 * req.body.amount).toString(),
     paymentMethodNonce: req.body.nonce,
     options: {
       submitForSettlement: true,
+      storeInVaultOnSuccess: true,
     },
+    customer: {
+      email: req.body.useremail,
+      id: req.body.userid,
+    },
+    customFields: {
+      productcategory: req.body.productcategory,
+      productid: req.body.productid,
+    }
   }, (err, result) => {
     if (err) {
       console.log(err);
