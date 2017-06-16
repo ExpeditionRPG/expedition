@@ -11,10 +11,10 @@ test('inner content visible', function() {
   assert.isTrue(isVisible(f.$.content));
 });
 
-test('dark theme applied when dark attribute set', function() {
-  f.setAttribute('dark', true);
+test('applies theme', function() {
+  f.setAttribute("theme", "DARK");
   f.ready(); // Theme checking is applied on init
-  assert.isTrue(f.classList.contains('dark'));
+  assert.isTrue(f.classList.contains("DARK"));
 });
 
 test('return button fires return event', function(done) {

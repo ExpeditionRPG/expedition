@@ -63,7 +63,7 @@ function getEnemies(node: ParserNode): Enemy[] {
 function generateCombatAttack(node: ParserNode, settings: SettingsType, elapsedMillis: number): CombatAttack {
   // general balance based on 4 players, scaling up / down on a curve
   // since a bit more or less damage makes a huge difference in # of rounds survivable
-  let playerMultiplier = Math.sqrt(settings.numPlayers) / 2;
+  const playerMultiplier = Math.sqrt(settings.numPlayers) / 2;
   const combat = node.ctx.templates.combat;
 
   // enemies each get to hit once - 1.5x if the party took too long
@@ -149,8 +149,8 @@ function randomAttackDamage() {
 };
 
 export function isSurgeRound(node: ParserNode): boolean {
-  let rounds = node.ctx.templates.combat.roundCount;
-  let surgePd = node.ctx.templates.combat.surgePeriod;
+  const rounds = node.ctx.templates.combat.roundCount;
+  const surgePd = node.ctx.templates.combat.surgePeriod;
   return (surgePd - (rounds % surgePd + 1)) === 0;
 }
 

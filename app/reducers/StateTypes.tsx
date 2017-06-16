@@ -4,6 +4,7 @@ import {ParserNode} from '../parser/Node'
 
 import {GenreType, ContentRatingLabelType} from '../Constants'
 
+export type CardThemeType = 'LIGHT' | 'RED' | 'DARK';
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
 export interface EndSettings {
