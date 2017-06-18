@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="1005000" id="io.fabricate.expedition" version="1.5.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget android-versionCode="1005001" id="io.fabricate.expedition" version="1.5.1" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Expedition</name>
     <description>
     The Companion App for Expedition: The Roleplaying Card Game.
@@ -8,6 +8,7 @@
     FabricateIO
   </author>
     <content src="index.html" />
+    <icon src="www/images/icon/192x192.png" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -22,12 +23,6 @@
     <preference name="BackgroundColor" value="0x00000000" />
     <preference name="Orientation" value="portrait" />
     <preference name="SplashMaintainAspectRatio" value="true" />
-    <icon height="36" src="www/images/icon/36x36.png" width="36" />
-    <icon height="48" src="www/images/icon/48x48.png" width="48" />
-    <icon height="72" src="www/images/icon/72x72.png" width="72" />
-    <icon height="96" src="www/images/icon/96x96.png" width="96" />
-    <icon height="144" src="www/images/icon/144x144.png" width="144" />
-    <icon height="192" src="www/images/icon/192x192.png" width="192" />
     <gap:plugin name="cordova-plugin-googleplus" source="npm">
         <param name="REVERSED_CLIENT_ID" value="io.fabricate.expedition" />
     </gap:plugin>
@@ -35,10 +30,16 @@
     <preference name="deployment-target" value="9.0.0" />
     <platform name="android">
         <allow-intent href="market:*" />
-        <splash density="port-ldpi" src="app/images/splash/320x426.png" />
-        <splash density="port-mdpi" src="app/images/splash/320x470.png" />
-        <splash density="port-hdpi" src="app/images/splash/480x640.png" />
-        <splash density="port-xhdpi" src="app/images/splash/720x960.png" />
+        <icon height="36" src="www/images/icon/36x36.png" width="36" />
+        <icon height="48" src="www/images/icon/48x48.png" width="48" />
+        <icon height="72" src="www/images/icon/72x72.png" width="72" />
+        <icon height="96" src="www/images/icon/96x96.png" width="96" />
+        <icon height="144" src="www/images/icon/144x144.png" width="144" />
+        <icon height="192" src="www/images/icon/192x192.png" width="192" />
+        <splash density="port-ldpi" src="www/images/splash/320x426.png" />
+        <splash density="port-mdpi" src="www/images/splash/320x470.png" />
+        <splash density="port-hdpi" src="www/images/splash/480x640.png" />
+        <splash density="port-xhdpi" src="www/images/splash/720x960.png" />
     </platform>
     <gap:config-file parent="/manifest" platform="android">
         <application android:debuggable="true" />
@@ -46,25 +47,26 @@
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
-        <icon height="29" src="app/images/icon/29x29.png" width="29" />
-        <icon height="50" src="app/images/icon/50x50.png" width="50" />
-        <icon height="57" src="app/images/icon/57x57.png" width="57" />
-        <icon height="58" src="app/images/icon/58x58.png" width="58" />
-        <icon height="60" src="app/images/icon/60x60.png" width="60" />
-        <icon height="76" src="app/images/icon/76x76.png" width="76" />
-        <icon height="100" src="app/images/icon/100x100.png" width="100" />
-        <icon height="114" src="app/images/icon/114x114.png" width="114" />
-        <icon height="120" src="app/images/icon/120x120.png" width="120" />
-        <icon height="152" src="app/images/icon/152x152.png" width="152" />
-        <icon height="180" src="app/images/icon/180x180.png" width="180" />
-        <splash height="480" src="app/images/splash/320x480.png" width="320" />
-        <splash height="960" src="app/images/splash/640x960.png" width="640" />
-        <splash height="1024" src="app/images/splash/768x1024.png" width="768" />
-        <splash height="2048" src="app/images/splash/1536x2048.png" width="1536" />
-        <splash height="1136" src="app/images/splash/640x1136.png" width="640" />
-        <splash height="1334" src="app/images/splash/750x1334.png" width="750" />
-        <splash height="2208" src="app/images/splash/1242x2208.png" width="1242" />
+        <icon height="29" src="www/images/icon/29x29.png" width="29" />
+        <icon height="50" src="www/images/icon/50x50.png" width="50" />
+        <icon height="57" src="www/images/icon/57x57.png" width="57" />
+        <icon height="58" src="www/images/icon/58x58.png" width="58" />
+        <icon height="60" src="www/images/icon/60x60.png" width="60" />
+        <icon height="76" src="www/images/icon/76x76.png" width="76" />
+        <icon height="100" src="www/images/icon/100x100.png" width="100" />
+        <icon height="114" src="www/images/icon/114x114.png" width="114" />
+        <icon height="120" src="www/images/icon/120x120.png" width="120" />
+        <icon height="152" src="www/images/icon/152x152.png" width="152" />
+        <icon height="180" src="www/images/icon/180x180.png" width="180" />
+        <splash height="480" src="www/images/splash/320x480.png" width="320" />
+        <splash height="960" src="www/images/splash/640x960.png" width="640" />
+        <splash height="1024" src="www/images/splash/768x1024.png" width="768" />
+        <splash height="2048" src="www/images/splash/1536x2048.png" width="1536" />
+        <splash height="1136" src="www/images/splash/640x1136.png" width="640" />
+        <splash height="1334" src="www/images/splash/750x1334.png" width="750" />
+        <splash height="2208" src="www/images/splash/1242x2208.png" width="1242" />
     </platform>
+    <engine name="android" spec="^6.2.3" />
     <plugin name="cordova-plugin-firebase" spec="~0.1.18" />
     <plugin name="cordova-plugin-fullscreen" spec="~1.1.0" />
     <plugin name="cordova-plugin-googleplus" spec="https://github.com/EddyVerbruggen/cordova-plugin-googleplus">

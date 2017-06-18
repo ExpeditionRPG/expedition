@@ -19,6 +19,16 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   # Rebuild the web app files
   webpack --config ./webpack.dist.config.js
 
+  # Android: build the signed prod app
+  cordova build --release android
+  # Signing the release APK
+  # Requires android release key password entry
+  jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../android-release-key.keystore platforms/android/build/outputs/apk/android-release-unsigned.apk expedition_android
+  # Verification:
+  jarsigner -verify -verbose -certs platforms/android/build/outputs/apk/android-release-unsigned.apk
+  # Aligning memory blocks (takes less RAM on app)
+  ./zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk platforms/android/build/outputs/apk/expedition.apk
+
   # iOS
   cordova build ios
 
@@ -27,16 +37,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 
   # Invalidate files on cloudfront
   aws cloudfront create-invalidation --distribution-id E24IJ45RK0D6J8 --invalidation-batch file://cloudfront-invalidations-prod.json
-
-  # Android: build the signed prod app
-  # Last because it requires password entry
-  cordova build --release android
-  # Signing the release APK
-  jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../android-release-key.keystore platforms/android/build/outputs/apk/android-release-unsigned.apk expedition_android
-  # Verification:
-  jarsigner -verify -verbose -certs platforms/android/build/outputs/apk/android-release-unsigned.apk
-  # Aligning memory blocks (takes less RAM on app)
-  ./zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk platforms/android/build/outputs/apk/expedition.apk
 else
   echo "Prod build cancelled until tested on beta."
 fi
