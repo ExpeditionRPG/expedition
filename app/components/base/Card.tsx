@@ -7,6 +7,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import {URLS} from '../../Constants'
 import {getStore} from '../../Store'
 import {toCard, toPrevious} from '../../actions/Card'
+import {CardThemeType} from '../../reducers/StateTypes'
 import {getDevicePlatform} from '../../Globals'
 
 declare var window:any;
@@ -14,7 +15,7 @@ declare var window:any;
 
 // If onMenuSelect or onReturn is not set, default dispatch behavior is used.
 interface ExpeditionCardProps extends React.Props<any> {
-  dark?: boolean;
+  theme?: CardThemeType;
   header?: JSX.Element;
   icon?: string;
   inQuest?: boolean;
@@ -77,7 +78,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     }
     // TODO: Spacer ios-only as first child of card style
     return (
-      <div className={'base_card' + ((this.props.dark) ? ' dark' : '')}>
+      <div className={'base_card ' + (this.props.theme || 'LIGHT')}>
         <div className="title_container">
           <IconButton onTouchTap={() => this.onReturn()}><ChevronLeftIcon/></IconButton>
           <span className="menu">

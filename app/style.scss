@@ -104,10 +104,8 @@ $headerfont: CinzelBold, serif;
 
 $font_color_primary: #000000;
 $font_color_faded: #666666;
-$font_color_dark_primary: #FFFFFF;
 
 $border_primary: 0.02in solid #000;
-$border_dark_primary: 0.02in solid #999;
 $border_accent: 0.02in solid #333;
 $border_accent_thin: 0.01in solid #333;
 $border_faded: 0.02in solid #777;
@@ -119,12 +117,18 @@ $bg_titlebar: rgba(255, 255, 235, 0.65);
 $bg_accent: rgb(220, 220, 220);
 $bg_interactive: rgba(245, 238, 210, 0.7);
 $bg_active: rgba(255, 255, 255, 0.9);
+
+$font_color_dark_primary: #FFFFFF;
+$border_dark_primary: 0.02in solid #999;
 $bg_dark_primary: #161011;
 $bg_dark_titlebar: rgba(110, 110, 110, 0.6);
-$bg_dark_accent: rgb(60, 60, 60);
 $bg_dark_interactive: rgba(35, 35, 35, 0.5);
-$bg_dark_active: rgba(30, 30, 30, 1.0);
-$bg_surge_primary: #CC0000;
+
+$font_color_red_primary: #FFFFFF;
+$border_red_primary: 0.02in solid #999;
+$bg_red_primary: #B71C1C; /* red900 */
+$bg_red_titlebar: rgba(120, 14, 14, 1);
+$bg_red_interactive: rgba(60, 20, 20, 1);
 
 // ===============================================
 // Base/General Styles
@@ -175,7 +179,29 @@ body {
     background-position: 0 0;
     color: $font_color_primary;
     overflow-y: auto;
-    &.dark {
+    &.RED {
+      background: $bg_red_primary;
+      color: $font_color_red_primary;
+      .title_container {
+        background-color: $bg_red_titlebar;
+        svg {
+          color: $font_color_red_primary !important;
+        }
+      }
+      .scrollbox_top {
+        display: none;
+      }
+      .base_button > button, .base_checkbox button, .base_picker {
+        background-color: $bg_red_interactive !important;
+        svg {
+          color: $font_color_red_primary !important;
+        }
+      }
+      .base_button > button {
+        border: $border_red_primary !important;
+      }
+    }
+    &.DARK {
       background-color: $bg_dark_primary;
       background-image: url(images/encounter-tiled.jpg);
       color: $font_color_dark_primary;
@@ -563,7 +589,7 @@ body {
   }
 
   .base_timer_card {
-    &.dark {
+    &.DARK {
       color: $font_color_dark_primary;
       background-color: $bg_dark_primary;
     }

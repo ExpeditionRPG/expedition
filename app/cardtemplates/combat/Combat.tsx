@@ -45,7 +45,7 @@ const numerals: {[k: number]: string;} = {
 
 function renderSelectTier(props: CombatProps): JSX.Element {
   return (
-    <Card title="Draw Enemies" dark={true} inQuest={true}>
+    <Card title="Draw Enemies" theme="DARK" inQuest={true}>
       <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, i)} value={props.tier}>
         Set this to the combined tier you wish to fight.
       </Picker>
@@ -82,7 +82,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title="Draw Enemies" dark={true} inQuest={true}>
+    <Card title="Draw Enemies" theme="DARK" inQuest={true}>
       <p>
         Prepare to Fight:
       </p>
@@ -111,7 +111,7 @@ function renderPrepare(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title="Prepare for Combat" dark={true} inQuest={true}>
+    <Card title="Prepare for Combat" theme="DARK" inQuest={true}>
       {helpText}
       <Button className="bigbutton" onTouchTap={() => props.onNext('TIMER')}>Start Timer</Button>
     </Card>
@@ -133,7 +133,11 @@ function renderSurge(props: CombatProps): JSX.Element {
     );
   }
   return (
-    <Card title="Enemy Surge!" dark={true} inQuest={true} onReturn={() => props.onPostTimerReturn()}>
+    <Card title="Enemy Surge!"
+      theme="RED"
+      inQuest={true}
+      onReturn={() => props.onPostTimerReturn()}
+    >
       <h3>An enemy surge occurs!</h3>
       {helpText}
       <Button onTouchTap={() => props.onNext('RESOLVE_ABILITIES')}>Next</Button>
@@ -169,7 +173,7 @@ function renderResolve(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title="Roll &amp; Resolve" dark={true} inQuest={true} onReturn={() => props.onPostTimerReturn()}>
+    <Card title="Roll &amp; Resolve" theme="DARK" inQuest={true} onReturn={() => props.onPostTimerReturn()}>
       {helpText}
       {renderedRolls &&
         <div>
@@ -184,7 +188,7 @@ function renderResolve(props: CombatProps): JSX.Element {
 
 function renderEnemyTier(props: CombatProps): JSX.Element {
   return (
-    <Card title="Enemy Strength" dark={true} inQuest={true}>
+    <Card title="Enemy Strength" theme="DARK" inQuest={true}>
       <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, i)} value={props.tier}>
         Set this to the combined tier of the remaining enemies. You are victorious when this reaches zero.
       </Picker>
@@ -209,7 +213,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title="Take Damage" dark={true} inQuest={true}>
+    <Card title="Take Damage" theme="DARK" inQuest={true}>
       <h3 className="combat center">All adventurers:</h3>
       <h3 className="combat center">{damage} Damage</h3>
 
@@ -271,7 +275,7 @@ function renderVictory(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title="Victory" dark={true} inQuest={true}>
+    <Card title="Victory" theme="DARK" inQuest={true}>
       {contents}
       <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'win')}>Next</Button>
     </Card>
@@ -285,7 +289,7 @@ function renderDefeat(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title="Defeat" dark={true} inQuest={true}>
+    <Card title="Defeat" theme="DARK" inQuest={true}>
       <p>Your party was defeated.</p>
       {helpText}
       <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'lose')}>Next</Button>
@@ -294,11 +298,11 @@ function renderDefeat(props: CombatProps): JSX.Element {
 }
 
 function renderTimerCard(props: CombatProps): JSX.Element {
-  let surge: boolean = isSurgeRound(props.node);
+  const surge = isSurgeRound(props.node);
   return (
     <TimerCard
-      dark={true}
-      surgeWarning={surge}
+      theme="DARK"
+      surgeWarning={props.settings.difficulty === 'EASY' ? surge : false}
       numPlayers={(props.settings.multitouch) ? props.numAliveAdventurers : 1}
       roundTimeTotalMillis={props.roundTimeMillis}
       onTimerStop={(ms: number) => props.onTimerStop(props.node, props.settings, ms, surge)} />
