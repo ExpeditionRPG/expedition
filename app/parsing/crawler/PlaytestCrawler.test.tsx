@@ -1,5 +1,5 @@
 import {playtestXMLResult} from './PlaytestCrawler'
-import {QDLParser} from '../QDLparser'
+import {QDLParser} from '../QDLParser'
 
 var expect: any = require('expect');
 const cheerio: any = require('cheerio') as CheerioAPI;
