@@ -58,7 +58,11 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
   let enemyNames: Set<string> = new Set();
   let repeatEnemy = false;
   let enemies: JSX.Element[] = props.enemies.map((enemy: Enemy, index: number) => {
-    const icon = (enemy.class) ? `<img class="inline_icon" src="images/${enemy.class.replace(REGEX.HTML_TAG, '').toLowerCase()}_white_small.svg"/>` : '';
+    let icon = null;
+    if (enemy.class) {
+      const iconName = enemy.class.replace(REGEX.HTML_TAG, '').toLowerCase();
+      icon = <img className="inline_icon" src={`images/${iconName}_white_small.svg`} />;
+    }
     if (enemyNames.has(enemy.name)) {
       repeatEnemy = true;
     } else {
@@ -66,7 +70,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
     }
     return (
       <h2 className="combat draw_enemies center" key={index}>
-        {enemy.name} <span className="meta">(Tier {numerals[enemy.tier]} <span dangerouslySetInnerHTML={{__html: icon}}/>)</span>
+        {enemy.name} <span className="meta">(Tier {numerals[enemy.tier]} {icon})</span>
       </h2>
     );
   });
