@@ -41,6 +41,7 @@
     "expedition-app": "https://github.com/ExpeditionRPG/expedition-app.git#4387bf40f1645d67803e1ea03d1d35ea64688a11",
     "express": "^4.15.2",
     "express-handlebars": "^3.0.0",
+    "express-rate-limit": "^2.8.0",
     "express-session": "^1.15.1",
     "express-winston": "^2.3.0",
     "google-auth-library": "^0.10.0",

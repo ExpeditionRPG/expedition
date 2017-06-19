@@ -177,6 +177,8 @@ exports.publish = function(userId, id, params, xml, callback) {
           }
         }
 
+        result = result || {}; // if no result, don't break on result. references
+
         meta.questversion = (result.questversion || 0) + 1;
         if (params.majorRelease) {
           meta.questversionlastmajor = meta.questversion;

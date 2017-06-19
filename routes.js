@@ -5,6 +5,7 @@ const Joi = require('joi');
 const Mailchimp = require('mailchimp-api-v3');
 const passport = require('passport');
 const querystring = require('querystring');
+const RateLimit = require('express-rate-limit');
 const React = require('react');
 
 const Config = require('./config');
@@ -29,6 +30,13 @@ const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by e
 const router = express.Router();
 router.use(oauth2.template);
 
+const publishLimiter = new RateLimit({
+  windowMs: 60*1000, // 1 minute window
+  delayAfter: 2, // begin slowing down responses after the second request
+  delayMs: 3*1000, // slow down subsequent responses by 3 seconds per request
+  max: 5, // start blocking after 5 requests
+  message: "Publishing too frequently. Please wait 1 minute and then try again",
+});
 
 router.get('/', (req, res) => {
   res.render('app', {
@@ -113,7 +121,7 @@ router.get('/raw/:quest', (req, res) => {
 });
 
 
-router.post('/publish/:id', (req, res) => {
+router.post('/publish/:id', publishLimiter, (req, res) => {
 
   if (!res.locals.id) {
     return res.status(500).end("You are not signed in. Please sign in (by refreshing the page) to save your quest.");
@@ -137,7 +145,7 @@ router.post('/publish/:id', (req, res) => {
 router.post('/unpublish/:quest', (req, res) => {
 
   if (!res.locals.id) {
-    return res.status(500).end("You are not signed in. Please sign in (by refreshing the page) to save your quest.");
+    return res.status(500).end('You are not signed in. Please sign in (by refreshing the page) to save your quest.');
   }
 
   try {
