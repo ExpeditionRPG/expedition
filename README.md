@@ -69,6 +69,13 @@ Tests require Java 7 or higher. To update Java go to http://www.oracle.com/techn
 
 Tests require Chrome. Please make sure you have the Chrome browser installed and up-to-date on your system.
 
+#### Release checklist
+
+Before deploying to production, run `./beta.sh` to deploy to beta.expeditiongame.com and create beta versions of the Android and iOS apps. Then check that:
+
+- app icon and splashscreen appear properly on Android and iOS
+- basic functionality works (app loads, you can search and start quests, you can complete combat)
+
 #### Build for Web
 
 ```sh
