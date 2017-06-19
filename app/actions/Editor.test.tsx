@@ -27,4 +27,10 @@ describe('Editor action', () => {
 
     it('alerts on invalid node');
   });
+
+  describe('renderAndPlay', () => {
+    it('renders and plays');
+
+    it('auto-playtests');
+  });
 });
