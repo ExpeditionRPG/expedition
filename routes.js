@@ -46,12 +46,6 @@ const publishLimiter = new RateLimit({
   message: 'Publishing too frequently. Please wait 1 minute and then try again',
 });
 
-router.get('/', (req, res) => {
-  res.render('app', {
-    // state: JSON.stringify(res.locals),
-  });
-});
-
 // Phasing out as of 3/21/17; delete any time after 4/14/17
 // Joi validation: require title, author, email (valid email), feedback, players, difficulty
 // userEmail (valid email), platform, shareUserEmail (default false), version (number)

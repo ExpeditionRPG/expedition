@@ -29,12 +29,6 @@ app.disable('etag');
 const port = process.env.DOCKER_PORT || config.get('PORT');
 const port2 = process.env.DOCKER_PORT2 || 5000;
 
-// handlebars
-const setupView = function(app) {
-  app.engine('handlebars', exphbs({ defaultLayout: 'main'}));
-  app.set('view engine', 'handlebars');
-};
-
 const setupSession = function(app) {
   app.set('trust proxy', true);
 
@@ -92,7 +86,6 @@ const setupLogging = function(app) {
 }
 
 if (module === require.main) {
-  setupView(app);
   setupSession(app);
   setupRoutes(app);
   setupLogging(app);

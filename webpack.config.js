@@ -49,6 +49,7 @@ const options = {
       VERSION: JSON.stringify(require('./package.json').version)
     }),
     new CopyWebpackPlugin([
+      { from: 'app/index.html' },
       { from: 'node_modules/expedition-app/app/images', to: 'images'},
     ]),
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
