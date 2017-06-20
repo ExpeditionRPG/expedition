@@ -11,6 +11,8 @@
 # http://developer.android.com/tools/publishing/app-signing.html#signing-manually
 
 read -p "Did you test a quest on the beta build? (y/N) " -n 1
+printf "\nEnter android keystore passphrase: "
+read -s androidkeystorepassphrase
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   rm -rf www
@@ -22,8 +24,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   # Android: build the signed prod app
   cordova build --release android
   # Signing the release APK
-  # Requires android release key password entry
-  jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../android-release-key.keystore platforms/android/build/outputs/apk/android-release-unsigned.apk expedition_android
+  jarsigner -storepass $androidkeystorepassphrase -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../android-release-key.keystore platforms/android/build/outputs/apk/android-release-unsigned.apk expedition_android
   # Verification:
   jarsigner -verify -verbose -certs platforms/android/build/outputs/apk/android-release-unsigned.apk
   # Aligning memory blocks (takes less RAM on app)

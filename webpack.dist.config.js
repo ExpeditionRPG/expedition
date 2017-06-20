@@ -34,12 +34,12 @@ var options = {
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
     new CopyWebpackPlugin([
-        { from: 'app/images', to: 'images'},
-        { from: 'app/quests', to: 'quests'},
-        { from: 'app/scripts', to: 'scripts' },
-        { from: 'app/fonts', to: 'fonts'},
-        { from: 'app/index.html' },
-        { from: 'app/manifest.json' },
+      { from: 'app/images', to: 'images'},
+      { from: 'app/quests', to: 'quests'},
+      { from: 'app/scripts', to: 'scripts' },
+      { from: 'app/fonts', to: 'fonts'},
+      { from: 'app/index.html' },
+      { from: 'app/manifest.json' },
     ]),
     new webpack.LoaderOptionsPlugin({
       options: {

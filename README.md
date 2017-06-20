@@ -73,7 +73,7 @@ Tests require Chrome. Please make sure you have the Chrome browser installed and
 
 Before deploying to production, run `./beta.sh` to deploy to beta.expeditiongame.com and create beta versions of the Android and iOS apps. Then check that:
 
-- app icon and splashscreen appear properly on Android and iOS
+- app icon and splashscreen appear properly on Android and iOS. If properly configured, the icons and splashscreens WILL show up in the beta build.
 - basic functionality works (app loads, you can search and start quests, you can complete combat)
 
 #### Build for Web
