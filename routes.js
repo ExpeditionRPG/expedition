@@ -205,6 +205,8 @@ router.post('/user/subscribe', limitCors, (req, res) => {
 
 
 router.get('/braintree/token', limitCors, (req, res) => {
+  // If we ever need to disable app payments in a pinch, simply uncomment the following line:
+  // return res.status(500).send();
   braintree.clientToken.generate({}, (err, response) => {
     if (err) {
       console.log(err);
