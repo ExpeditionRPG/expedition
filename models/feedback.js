@@ -44,24 +44,27 @@ exports.submit = function(type, feedback, callback) {
           console.log(err);
         }
 
-        const htmlMessage = `<p>User feedback:</p>
-          <p>"${feedback.text}"</p>
-          <p>Was submitted for ${quest.title} by ${quest.author}</p>
-          <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
-          <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
-          <p>Quest id: ${feedback.questid}</p>
-        `;
+        Quests.updateRatings(feedback.questid, (err, quest) => {
+          if (err) {
+            console.log(err);
+          }
 
-        if (type === 'rating' && feedback.text && feedback.text.length > 0) {
-          Mail.send([quest.email, 'expedition+questfeedback@fabricate.io'], 'Quest rated ' + feedback.rating + '/5: ' + quest.title, htmlMessage, () => {});
-        } else if (type === 'report') {
-          Mail.send([quest.email, 'expedition+questreported@fabricate.io'], 'Quest reported: ' + quest.title, htmlMessage, () => {});
-        }
-      });
-      Quests.updateRatings(feedback.questid, (err) => {
-        if (err) {
-          console.log(err);
-        }
+          const htmlMessage = `<p>User feedback:</p>
+            <p>"${feedback.text}"</p>
+            <p>${feedback.rating} out of 5 stars</p>
+            <p>New quest overall rating: ${quest.ratingavg} out of 5 across ${quest.ratingcount} ratings.</p>
+            <p>Was submitted for ${quest.title} by ${quest.author}</p>
+            <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
+            <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
+            <p>Quest id: ${feedback.questid}</p>
+          `;
+
+          if (type === 'rating' && feedback.text && feedback.text.length > 0) {
+            Mail.send([quest.email, 'expedition+questfeedback@fabricate.io'], 'Quest rated ' + feedback.rating + '/5: ' + quest.title, htmlMessage, () => {});
+          } else if (type === 'report') {
+            Mail.send([quest.email, 'expedition+questreported@fabricate.io'], 'Quest reported: ' + quest.title, htmlMessage, () => {});
+          }
+        });
       });
     });
   });

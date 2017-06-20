@@ -230,7 +230,7 @@ exports.updateRatings = function(id, callback) {
         quest.ratingcount = ratings.length;
         quest.ratingavg = ratings.reduce((a, b) => { return a + b; }) / ratings.length;
         Query.upsert(table, quest, 'id', (err, result) => {
-          return callback(err, id);
+          return callback(err, quest);
         });
       });
     });
