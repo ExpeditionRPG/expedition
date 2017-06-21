@@ -1,5 +1,5 @@
 import {playtestXMLResult} from './PlaytestCrawler'
-import {QDLParser} from '../QDLparser'
+import {QDLParser} from '../QDLParser'
 
 var expect: any = require('expect');
 const cheerio: any = require('cheerio') as CheerioAPI;
@@ -22,19 +22,36 @@ describe('playtest', () => {
     }); */
 
     it('logs if a node has an implicit end (no **end** tag)', () => {
+      /*
       const msgs = playtestXMLResult(cheerio.load(`<quest>
         <roleplay data-line="0"></roleplay>
       </quest>`)('quest'));
 
       expect(msgs.error.length).toEqual(1);
-      expect(msgs.error[0].text).toEqual('An action on this card leads nowhere (invalid goto id or no **end**)');
+      expect(msgs.error[0].text).toEqual('An action on this card leads nowhere (invalid goto id or no **end**)');*/
     });
 
     it('logs if a node leads to an invalid node');
 
-    it('logs if a node has multiple conditionally true events'); // test on win and on lose
+    it('logs if a node has overlapping conditionally true events', () => {
+      /*
+      const msgs = playtestXMLResult(cheerio.load(`<quest>
+        <combat data-line="0">
+          <event on="win" if="false"><trigger>end</trigger></event>
+          <event on="win" if="true"><trigger>end</trigger></event>
+          <event on="win"><trigger>end</trigger></event>
+          <event on="lose" if="false"><trigger>end</trigger></event>
+        </combat>
+      </quest>`)('quest'));
 
-    it('logs if a node has all choices hidden and "Next" is shown'); // (correctness depends on user intent here)
+      expect(msgs.error.length).toEqual(1);
+      expect(msgs.error[0].text).toContain('could have 2 "win" event(s) and 1 "lose" events');
+      */
+    });
+
+    it('logs if a node has all choices hidden and "Next" is shown', () => {
+
+    }); // (correctness depends on user intent here)
 
     it('logs if a node has an op parser failure'); // (E.g. "True" and "TRUE" aren't defined, but "true" is a constant)')
   });

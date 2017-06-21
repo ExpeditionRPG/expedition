@@ -1,3 +1,5 @@
+//use strict
+
 const express = require('express');
 const fs = require('fs');
 const Joi = require('joi');

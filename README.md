@@ -26,6 +26,12 @@ sudo npm install -g webpack && npm install
 webpack --config=webpack.dll.js
 ```
 
+If you use windows, you may need to run the following:
+
+```shell
+npm install --global --production windows-build-tools
+```
+
 ### Config.json
 
 `Config.json` contains app secrets that shouldn't be committed to the repo. We've included an example file, `config-example.json`, that shows you what information is needed.

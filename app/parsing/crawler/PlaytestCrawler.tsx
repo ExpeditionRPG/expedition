@@ -30,6 +30,38 @@ class PlaytestCrawler extends StatsCrawler {
       this.logger.err('An action on this card leads nowhere (invalid goto id or no **end**)', '430', l);
     }
   }
+
+  // override onNode to track specific per-node bad events
+  protected onNode(q: CrawlEntry, nodeStr: string, id: string, line: number) {
+    const keys = q.node.getVisibleKeys();
+    const tag = q.node.getTag();
+
+    switch (tag) {
+      case 'combat':
+        const winCount = keys.reduce((acc: number, k: string) => {
+          return acc + ((k === 'win') ? 1 : 0);
+        }, 0);
+        const loseCount = keys.reduce((acc: number, k: string) => {
+          return acc + ((k === 'lose') ? 1 : 0);
+        }, 0);
+        if (winCount !== 1 || loseCount !== 1) {
+          this.logger.err('Detected a state where this card has ' + winCount +
+            ' "win" and ' + loseCount + ' "lose" events; want 1 and 1', '431', line);
+        }
+        break;
+      case 'roleplay':
+        let choiceCount = 0;
+        q.node.loopChildren((tag, child, orig) => {
+          choiceCount += (tag === 'choice') ? 1 : 0;
+        });
+        if (keys.length === 0 && choiceCount > 0) {
+          this.logger.err('Detected a state where this card has 0 active choices', '432', line);
+        }
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 export function playtestXMLResult(parserResult: Cheerio): LogMessageMap {
