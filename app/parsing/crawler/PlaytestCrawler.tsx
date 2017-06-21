@@ -32,7 +32,9 @@ class PlaytestCrawler extends StatsCrawler {
   }
 
   // override onNode to track specific per-node bad events
-  protected onNode(q: CrawlEntry, nodeStr: string, id: string, line: number) {
+  protected onNode(q: CrawlEntry, nodeStr: string, id: string, line: number): void {
+    super.onNode(q, nodeStr, id, line);
+
     const keys = q.node.getVisibleKeys();
     const tag = q.node.getTag();
 
@@ -68,6 +70,7 @@ export function playtestXMLResult(parserResult: Cheerio): LogMessageMap {
   const logger = new Logger();
   try {
     const root = initQuest('0', parserResult, defaultQuestContext()).node;
+    console.log('Playtesting from ' + root.getTag());
     const crawler = new PlaytestCrawler(logger);
     crawler.crawl(root);
   } catch(e) {

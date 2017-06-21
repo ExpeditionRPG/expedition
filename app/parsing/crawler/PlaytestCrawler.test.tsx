@@ -22,19 +22,17 @@ describe('playtest', () => {
     }); */
 
     it('logs if a node has an implicit end (no **end** tag)', () => {
-      /*
       const msgs = playtestXMLResult(cheerio.load(`<quest>
         <roleplay data-line="0"></roleplay>
       </quest>`)('quest'));
 
       expect(msgs.error.length).toEqual(1);
-      expect(msgs.error[0].text).toEqual('An action on this card leads nowhere (invalid goto id or no **end**)');*/
+      expect(msgs.error[0].text).toEqual('An action on this card leads nowhere (invalid goto id or no **end**)');
     });
 
     it('logs if a node leads to an invalid node');
 
     it('logs if a node has overlapping conditionally true events', () => {
-      /*
       const msgs = playtestXMLResult(cheerio.load(`<quest>
         <combat data-line="0">
           <event on="win" if="false"><trigger>end</trigger></event>
@@ -45,8 +43,7 @@ describe('playtest', () => {
       </quest>`)('quest'));
 
       expect(msgs.error.length).toEqual(1);
-      expect(msgs.error[0].text).toContain('could have 2 "win" event(s) and 1 "lose" events');
-      */
+      expect(msgs.error[0].text).toContain('2 "win" and 0 "lose" events');
     });
 
     it('logs if a node has all choices hidden and "Next" is shown', () => {
