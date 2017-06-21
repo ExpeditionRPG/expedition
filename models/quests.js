@@ -177,6 +177,8 @@ exports.publish = function(userId, id, params, xml, callback) {
           }
         }
 
+        result = result || {}; // if no result, don't break on result. references
+
         meta.questversion = (result.questversion || 0) + 1;
         if (params.majorRelease) {
           meta.questversionlastmajor = meta.questversion;
@@ -228,7 +230,7 @@ exports.updateRatings = function(id, callback) {
         quest.ratingcount = ratings.length;
         quest.ratingavg = ratings.reduce((a, b) => { return a + b; }) / ratings.length;
         Query.upsert(table, quest, 'id', (err, result) => {
-          return callback(err, id);
+          return callback(err, quest);
         });
       });
     });

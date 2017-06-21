@@ -1,11 +1,14 @@
 //use strict
 
+const Cors = require('cors');
 const express = require('express');
+const Braintree = require('braintree');
 const fs = require('fs');
 const Joi = require('joi');
 const Mailchimp = require('mailchimp-api-v3');
 const passport = require('passport');
 const querystring = require('querystring');
+const RateLimit = require('express-rate-limit');
 const React = require('react');
 
 const Config = require('./config');
@@ -13,6 +16,13 @@ const Feedback = require('./models/feedback');
 const Mail = require('./mail');
 const oauth2 = require('./lib/oauth2');
 const Quests = require('./models/quests');
+
+const braintree = Braintree.connect({
+  environment: Braintree.Environment[Config.get('BRAINTREE_ENVIRONMENT')],
+  merchantId: Config.get('BRAINTREE_MERCHANT_ID'),
+  publicKey: Config.get('BRAINTREE_PUBLIC_KEY'),
+  privateKey: Config.get('BRAINTREE_PRIVATE_KEY'),
+});
 
 const mailchimp = (process.env.NODE_ENV !== 'dev') ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
@@ -23,17 +33,25 @@ const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by e
 const router = express.Router();
 router.use(oauth2.template);
 
+const limitCors = Cors({
+  credentials: true,
+  // allows expedition domains, localhost and file (for dev + mobile apps)
+  origin: /(expedition(game|rpg)\.com$)|(localhost(:[0-9]+)?$)|(^file:\/\/)/i,
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+});
 
-router.get('/', (req, res) => {
-  res.render('app', {
-    state: JSON.stringify(res.locals),
-  });
+const publishLimiter = new RateLimit({
+  windowMs: 60*1000, // 1 minute window
+  delayAfter: 2, // begin slowing down responses after the second request
+  delayMs: 3*1000, // slow down subsequent responses by 3 seconds per request
+  max: 5, // start blocking after 5 requests
+  message: 'Publishing too frequently. Please wait 1 minute and then try again',
 });
 
 // Phasing out as of 3/21/17; delete any time after 4/14/17
 // Joi validation: require title, author, email (valid email), feedback, players, difficulty
 // userEmail (valid email), platform, shareUserEmail (default false), version (number)
-router.post('/feedback', (req, res) => {
+router.post('/feedback', limitCors, (req, res) => {
   const params = JSON.parse(req.body);
   // strip all HTML tags for protection, then replace newlines with br's
   const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
@@ -64,27 +82,21 @@ router.post('/feedback', (req, res) => {
 });
 
 
-router.post('/quests', (req, res) => {
+router.post('/quests', limitCors, (req, res) => {
   try {
     const token = req.params.token;
     if (!res.locals.id) {
-      res.header('Access-Control-Allow-Origin', req.get('origin'));
-      res.header('Access-Control-Allow-Credentials', 'true');
       return res.send(JSON.stringify([]));
     }
 
     const params = req.body;
     Quests.search(res.locals.id, params, (err, quests, nextToken) => {
       if (err) {
-        res.header('Access-Control-Allow-Origin', req.get('origin'));
-        res.header('Access-Control-Allow-Credentials', 'true');
         console.log(err);
         return res.status(500).send(GENERIC_ERROR_MESSAGE);
       }
       result = {error: err, quests: quests, nextToken: nextToken};
       console.log("Found " + quests.length + " quests for user " + res.locals.id);
-      res.header('Access-Control-Allow-Origin', req.get('origin'));
-      res.header('Access-Control-Allow-Credentials', 'true');
       res.send(JSON.stringify(result));
     });
   } catch (e) {
@@ -94,12 +106,11 @@ router.post('/quests', (req, res) => {
 });
 
 
-router.get('/raw/:quest', (req, res) => {
+router.get('/raw/:quest', limitCors, (req, res) => {
   Quests.getById(req.params.quest, (err, entity) => {
     if (err) {
       return res.status(500).send(GENERIC_ERROR_MESSAGE);
     }
-    res.header('Access-Control-Allow-Origin', req.get('origin'));
     res.header('Content-Type', 'text/xml');
     res.header('Location', entity.url);
     res.status(301).end();
@@ -107,7 +118,7 @@ router.get('/raw/:quest', (req, res) => {
 });
 
 
-router.post('/publish/:id', (req, res) => {
+router.post('/publish/:id', publishLimiter, limitCors, (req, res) => {
 
   if (!res.locals.id) {
     return res.status(500).end("You are not signed in. Please sign in (by refreshing the page) to save your quest.");
@@ -128,10 +139,10 @@ router.post('/publish/:id', (req, res) => {
 });
 
 
-router.post('/unpublish/:quest', (req, res) => {
+router.post('/unpublish/:quest', limitCors, (req, res) => {
 
   if (!res.locals.id) {
-    return res.status(500).end("You are not signed in. Please sign in (by refreshing the page) to save your quest.");
+    return res.status(500).end('You are not signed in. Please sign in (by refreshing the page) to save your quest.');
   }
 
   try {
@@ -149,14 +160,12 @@ router.post('/unpublish/:quest', (req, res) => {
 });
 
 
-router.post('/quest/feedback/:type', (req, res) => {
+router.post('/quest/feedback/:type', limitCors, (req, res) => {
   try {
     Feedback.submit(req.params.type, req.body, (err, id) => {
       if (err) {
         throw new Error(err);
       }
-      res.header('Access-Control-Allow-Origin', req.get('origin'));
-      res.header('Access-Control-Allow-Credentials', 'true');
       res.end(id);
     });
   } catch (e) {
@@ -166,7 +175,7 @@ router.post('/quest/feedback/:type', (req, res) => {
 });
 
 
-router.post('/user/subscribe', (req, res) => {
+router.post('/user/subscribe', limitCors, (req, res) => {
   req.body = JSON.parse(req.body);
   Joi.validate(req.body.email, Joi.string().email().invalid(''), (err, email) => {
 
@@ -193,6 +202,48 @@ router.post('/user/subscribe', (req, res) => {
         return res.status(err.status).send(err.title);
       });
     }
+  });
+});
+
+
+router.get('/braintree/token', limitCors, (req, res) => {
+  // If we ever need to disable app payments in a pinch, simply uncomment the following line:
+  // return res.status(500).send();
+  braintree.clientToken.generate({}, (err, response) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send('Error generating payment token.');
+    }
+    res.send(response.clientToken);
+  });
+});
+
+
+router.post('/braintree/checkout', limitCors, (req, res) => {
+  req.body = JSON.parse(req.body);
+  braintree.transaction.sale({
+    amount: req.body.amount.toString(),
+    // TODO once we have submerchant accounts, and only if this is a quest and its author has a set-up submerchant account
+    // serviceFeeAmount: (0.3 + 0.23 * req.body.amount).toString(),
+    paymentMethodNonce: req.body.nonce,
+    options: {
+      submitForSettlement: true,
+      storeInVaultOnSuccess: true,
+    },
+    customer: {
+      email: req.body.useremail,
+      id: req.body.userid,
+    },
+    customFields: {
+      productcategory: req.body.productcategory,
+      productid: req.body.productid,
+    }
+  }, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send('Error submitting payment.');
+    }
+    res.send(result);
   });
 });
 

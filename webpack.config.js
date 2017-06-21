@@ -33,7 +33,7 @@ const options = {
   module: {
     rules: [
       { enforce: 'pre', test: /\.tsx$/, loader: 'tslint-loader', exclude: /node_modules/ },
-      { test: /\.(ttf|eot|svg|jpg|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
+      { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.json$/, loader: 'json-loader' },
       // Specifically exclude building anything in node_modules, with the exception of the expedition-app lib we use for previewing quest code.
@@ -49,6 +49,7 @@ const options = {
       VERSION: JSON.stringify(require('./package.json').version)
     }),
     new CopyWebpackPlugin([
+      { from: 'app/index.html' },
       { from: 'node_modules/expedition-app/app/images', to: 'images'},
     ]),
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
