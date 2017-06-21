@@ -125,7 +125,6 @@
     "nodejs-repo-tools": "git+https://github.com/GoogleCloudPlatform/nodejs-repo-tools.git#21daa823090c43fb667157c8b5b0c3b7f45a8357",
     "npm-check-updates": "^2.10.3",
     "phantomjs-polyfill-object-assign": "0.0.2",
-    "proxy-middleware": "^0.15.0",
     "proxyquire": "^1.7.11",
     "react-hot-loader": "^3.0.0-beta.5",
     "sass-loader": "^6.0.3",
