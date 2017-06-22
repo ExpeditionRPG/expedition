@@ -58,13 +58,21 @@ export default class CardBack extends React.Component<CardType, {}> {
             </div>
           </div>
         );
-      case 'Malady':
+      // case 'Malady':
+      //   return (
+      //     <div className="white-background">
+      //       <div className={`card back dark horizontal ${card.sheet}`}>
+      //         <div className="contents">
+      //           <h1>{card.sheet}</h1>
+      //         </div>
+      //       </div>
+      //     </div>
+      //   );
+      case 'Personality':
         return (
-          <div className="white-background">
-            <div className={`card back dark horizontal ${card.sheet}`}>
-              <div className="contents">
-                <h1>{card.sheet}</h1>
-              </div>
+          <div className={`card back horizontal ${card.sheet}`}>
+            <div className="contents">
+              <h1>{card.sheet}</h1>
             </div>
           </div>
         );

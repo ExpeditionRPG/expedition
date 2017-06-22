@@ -17,12 +17,7 @@ module.exports = {
   module: {
     rules: [
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
-      {
-        test: /\.(gif|png|jpe?g|svg)$/i,
-        loaders: [
-          'file-loader',
-        ]
-      },
+      { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
       { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/ },
       {
         enforce: 'post',
@@ -44,8 +39,8 @@ module.exports = {
       },
     }),
     new CopyWebpackPlugin([
-        { from: 'app/index.html' },
-        { from: 'app/themes', to: 'themes' },
+      { from: 'app/index.html' },
+      { from: 'app/themes', to: 'themes' },
     ]),
     new Webpack.optimize.AggressiveMergingPlugin(),
     new UglifyJSPlugin({minimize: true, mangle: false}),

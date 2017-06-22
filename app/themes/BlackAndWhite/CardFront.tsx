@@ -166,22 +166,43 @@ export default class CardFront extends React.Component<CardType, {}> {
             </div>
           </div>
         );
-      case 'Malady':
+      // case 'Malady':
+      //   return (
+      //     <div className="white-background">
+      //       <div className={`card front dark horizontal ${card.sheet}`}>
+      //         <div className="contents">
+      //           <header>
+      //             <div className="name">{card.name}</div>
+      //           </header>
+      //           <article>
+      //             <div className="ongoing"><strong>Ongoing:</strong> {card.ongoing}</div>
+      //             <div className="until"><strong>Until:</strong> {card.until}</div>
+      //           </article>
+      //           <footer>
+      //             <div className="flavortext">{card.flavortext}</div>
+      //           </footer>
+      //         </div>
+      //       </div>
+      //     </div>
+      //   );
+      case 'Personality':
         return (
-          <div className="white-background">
-            <div className={`card front dark horizontal ${card.sheet}`}>
-              <div className="contents">
-                <header>
-                  <div className="name">{card.name}</div>
-                </header>
-                <article>
-                  <div className="ongoing"><strong>Ongoing:</strong> {card.ongoing}</div>
-                  <div className="until"><strong>Until:</strong> {card.until}</div>
-                </article>
-                <footer>
-                  <div className="flavortext">{card.flavortext}</div>
-                </footer>
-              </div>
+          <div className={`card front horizontal ${card.sheet} bottomBar`}>
+            <div className="contents">
+              <header>
+                <div className="name">{card.name}</div>
+              </header>
+              <article>
+                <ul>
+                  <li><strong>{card.empowered}: </strong>{card.power}</li>
+                  <li>+</li>
+                  <li>+</li>
+                  <li><strong>{card.base}</strong> (base)</li>
+                  <li>-</li>
+                  <li>-</li>
+                  <li><strong>{card.afflicted}: </strong>{card.affliction}</li>
+                </ul>
+              </article>
             </div>
           </div>
         );

@@ -116,6 +116,9 @@ $color-blue: #0D47A1; /* blue900 */
           stroke: $color-red;
           fill: $color-red;
         }
+        .scoreRule {
+          font-size: $text-size-content;
+        }
       }
     }
 
@@ -143,28 +146,6 @@ $color-blue: #0D47A1; /* blue900 */
     }
 
     &.Politics {
-      &.Infrastructure {
-        border-color: $color-red;
-      }
-      &.Services {
-        border-color: $color-blue;
-      }
-      &.Finance {
-        border-color: $color-green;
-      }
-      .advocates {
-        position: absolute;
-        bottom: 0.2in + $footer-height;
-        left: $edge;
-        right: $edge;
-        font-size: $text-size-small;
-        text-align: center;
-        padding: 0.18in;
-        border: 1px solid $black-faded;
-        background: $white-faded;
-        border-radius: $small;
-      }
-
       footer {
         background-color: white;
         padding-top: $small;

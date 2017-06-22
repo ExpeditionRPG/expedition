@@ -1,5 +1,4 @@
 import * as React from 'react'
-import {icon} from '../../helpers'
 import {CardType} from '../../reducers/StateTypes'
 
 
@@ -38,19 +37,13 @@ export default class CardBack extends React.Component<CardType, {}> {
             <div className="contents">
               <article>
                 <h3>End of year:</h3>
-                <p>Check ongoings</p>
-                <p>Vote on policies</p>
-                <p>Score</p>
-                <p>Reset cubes + policies</p>
+                <p>Vote on bills and score</p>
+                <p>Draw 1 influence + 2 cards</p>
+                <p>Draft citizens</p>
+                <p>Update city resources</p>
+                <p>Event!</p>
                 <p>Collect taxes ($20M/player)</p>
                 <p>Pass the chair</p>
-                <p>&nbsp;</p>
-                <h3>Resources:</h3>
-                {icon(theme, 'transportation_small')} transportation<br/>
-                {icon(theme, 'environment_small')} environment<br/>
-                {icon(theme, 'health_small')} health<br/>
-                {icon(theme, 'education_small')} education<br/>
-                {icon(theme, 'jobs_small')} jobs<br/>
               </article>
             </div>
           </div>
