@@ -303,10 +303,21 @@ function renderDefeat(props: CombatProps): JSX.Element {
 
 function renderTimerCard(props: CombatProps): JSX.Element {
   const surge = isSurgeRound(props.node);
+  const surgeWarning = (props.settings.difficulty === 'EASY' && surge) ? 'Surge Imminent' : null;
+  let instruction = null;
+  if (props.settings.showHelp) {
+    if (props.settings.multitouch) {
+      instruction = 'All players: hold one finger once you play an ability';
+    } else {
+      instruction = 'Tap the screen once all players have played an ability';
+    }
+  }
+
   return (
     <TimerCard
       theme="DARK"
-      surgeWarning={props.settings.difficulty === 'EASY' ? surge : false}
+      secondaryText={surgeWarning}
+      tertiaryText={instruction}
       numPlayers={(props.settings.multitouch) ? props.numAliveAdventurers : 1}
       roundTimeTotalMillis={props.roundTimeMillis}
       onTimerStop={(ms: number) => props.onTimerStop(props.node, props.settings, ms, surge)} />
