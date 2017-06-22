@@ -1,4 +1,4 @@
-//use strict
+"use strict";
 
 const Cors = require('cors');
 const express = require('express');

@@ -13,7 +13,8 @@
     "dev": "NODE_ENV=dev node app.js",
     "monitor": "nodemon ${SCRIPT:-app.js}",
     "deploy": "gcloud app deploy app.yaml",
-    "init-cloudsql": "node books/model-cloudsql.js"
+    "init-cloudsql": "node books/model-cloudsql.js",
+    "heroku-postbuild": "webpack --config webpack.dist.config.js"
   },
   "author": "Fabricate.IO",
   "license": "CC-BY-NC-SA-4.0",
