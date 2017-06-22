@@ -131,7 +131,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             iconStyle={{fill: 'black'}}
             underlineStyle={{borderColor: 'black'}}
           >
-            <MenuItem value={null} primaryText="All quests"/>
+            <MenuItem value={null} primaryText="All time"/>
             <MenuItem value={31536000} primaryText="Published this year"/>
             <MenuItem value={2592000} primaryText="Published this month"/>
             <MenuItem value={604800} primaryText="Published this week"/>
@@ -161,17 +161,12 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             underlineStyle={{borderColor: 'black'}}
           >
             <MenuItem value={null} primaryText="All ratings"/>
-            <MenuItem value="Everyone" primaryText="Kid-friendly"/>
+            <MenuItem value="Kid-friendly" primaryText="Kid-friendly"/>
             <MenuItem value="Teen" primaryText="Teen"/>
             <MenuItem value="Adult" primaryText="Adult"/>
           </SelectField>
           {rating && <div className="ratingDescription">
-            <span>"{this.state.contentrating}" rating means:</span>
-            <ul>
-              {Object.keys(rating).map((key: string, i: number) => {
-                return <li key={i}>{rating[key]}</li>
-              })}
-            </ul>
+            <span>"{this.state.contentrating}" rating means: {rating.summary}</span>
           </div>}
           <Button onTouchTap={() => this.props.onSearch(this.props.numPlayers, this.props.user, this.state)}>Search</Button>
         </div>
