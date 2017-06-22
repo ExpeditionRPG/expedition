@@ -1,7 +1,6 @@
 const nr = require('newrelic');
 const bodyParser = require('body-parser');
 const express = require('express');
-const exphbs = require('express-handlebars');
 const passport = require('passport');
 const path = require('path');
 const session = require('express-session');

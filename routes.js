@@ -1,3 +1,5 @@
+//use strict
+
 const Cors = require('cors');
 const express = require('express');
 const Braintree = require('braintree');
@@ -15,12 +17,16 @@ const Mail = require('./mail');
 const oauth2 = require('./lib/oauth2');
 const Quests = require('./models/quests');
 
-const braintree = Braintree.connect({
-  environment: Braintree.Environment[Config.get('BRAINTREE_ENVIRONMENT')],
-  merchantId: Config.get('BRAINTREE_MERCHANT_ID'),
-  publicKey: Config.get('BRAINTREE_PUBLIC_KEY'),
-  privateKey: Config.get('BRAINTREE_PRIVATE_KEY'),
-});
+if (Config.get('BRAINTREE_PUBLIC_KEY')) {
+  const braintree = Braintree.connect({
+    environment: Braintree.Environment[Config.get('BRAINTREE_ENVIRONMENT')],
+    merchantId: Config.get('BRAINTREE_MERCHANT_ID'),
+    publicKey: Config.get('BRAINTREE_PUBLIC_KEY'),
+    privateKey: Config.get('BRAINTREE_PRIVATE_KEY'),
+  });
+} else {
+  console.warn("Braintree config not set up, any payment requests will fail.")
+}
 
 const mailchimp = (process.env.NODE_ENV !== 'dev') ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
