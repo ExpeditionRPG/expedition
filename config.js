@@ -35,33 +35,56 @@ nconf
   .file({ file: path.join(__dirname, 'config.json') })
   // 4. Defaults
   .defaults({
-    BRAINTREE_ENVIRONMENT: 'Sandbox',
-    // Typically you will create a bucket with the same name as your project ID.
-    CLOUD_BUCKET: '',
+    // Quest storage config settings
+    GCLOUD_PROJECT: '', // This is the id of your project in the Google Cloud Developers Console.
+    CLOUD_BUCKET: '', // Bucket for compiled quest XML
+    DATABASE_URL: '', // URL of postgres database storing quest metadata, user data, feedback, etc.
 
-    // This is the id of your project in the Google Cloud Developers Console.
-    GCLOUD_PROJECT: '',
+    // Feedback email sender config settings
+    MAIL_EMAIL: '',
+    MAIL_PASSWORD: '',
 
-    MAILCHIMP_CREATORS_LIST_ID: 'baafc66d1b',
-    MAILCHIMP_PLAYERS_LIST_ID: '541cd63169',
+    // Authentication config settings
     OAUTH2_CLIENT_ID: '',
     OAUTH2_CLIENT_SECRET: '',
-    OAUTH2_CALLBACK: 'http://localhost:8080/auth/google/callback',
 
-    DATABASE_URL: '',
+    // Web server config settings
     PORT: 8080,
     SESSION_SECRET: '',
+
+    // Monitoring config settings
+    NEW_RELIC_LICENSE_KEY: '',
+
+    // (Optional) Pay-what-you-want config settings
+    BRAINTREE_ENVIRONMENT: 'Sandbox',
+    BRAINTREE_PUBLIC_KEY: '',
+    BRAINTREE_MERCHANT_ID: '',
+    BRAINTREE_PRIVATE_KEY: '',
+
+    // (Optional) mailing list config settings
+    MAILCHIMP_KEY: '',
+    MAILCHIMP_CREATORS_LIST_ID: '',
+    MAILCHIMP_PLAYERS_LIST_ID: '',
   });
 
 // Check for required settings
-checkConfig('GCLOUD_PROJECT');
-checkConfig('CLOUD_BUCKET');
-checkConfig('OAUTH2_CLIENT_ID');
-checkConfig('OAUTH2_CLIENT_SECRET');
+const REQUIRED_SETTINGS = [
+  'GCLOUD_PROJECT',
+  'CLOUD_BUCKET',
+  'DATABASE_URL',
+  'OAUTH2_CLIENT_ID',
+  'OAUTH2_CLIENT_SECRET',
+  'SESSION_SECRET',
+];
 
-function checkConfig (setting) {
-  if (!nconf.get(setting)) {
-    throw new Error('You must set the ' + setting + ' environment variable or' +
-      ' add it to config.json!');
+let missing = [];
+for (var i = 0; i < REQUIRED_SETTINGS.length; i++) {
+  if (!nconf.get(REQUIRED_SETTINGS[i])) {
+    missing.push(REQUIRED_SETTINGS[i]);
   }
+}
+if (missing.length > 0) {
+  throw new Error('Cannot find the following config settings:\n\t' + missing.join('\n\t') +
+    '\nSet them via environment variable or add them to a config.json file in the repository root.' +
+    '\nSee "config-example.json" for an example config with all required fields.\n');
 }

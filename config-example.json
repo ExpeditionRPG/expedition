@@ -1,11 +1,8 @@
 {
   "GCLOUD_PROJECT": "expedition-quest-ide",
-  "MAIL_EMAIL": "your email",
-  "MAIL_PASSWORD": "your email password",
-  "OAUTH2_CLIENT_ID": "____",
-  "OAUTH2_CLIENT_SECRET": "____",
-  "OAUTH2_CALLBACK": "http://quests.expeditionrpg.com/auth/google/callback",
   "CLOUD_BUCKET": "expedition-quest-ide",
-  "SESSION_SECRET": "____",
-  "DATABASE_URL": "____"
+  "DATABASE_URL": "",
+  "OAUTH2_CLIENT_ID": "",
+  "OAUTH2_CLIENT_SECRET": "",
+  "SESSION_SECRET": ""
 }

@@ -1,3 +1,5 @@
+const config = require('./config');
+
 const nr = require('newrelic');
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -6,7 +8,6 @@ const path = require('path');
 const session = require('express-session');
 const url = require('url');
 
-const config = require('./config');
 const logging = require('./lib/logging');
 const routes = require('./routes');
 
