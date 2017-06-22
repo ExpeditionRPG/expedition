@@ -66,7 +66,7 @@ export class StatsCrawler extends CrawlerBase {
     this.statsByEvent[e].ids.push(q.prevId);
   }
 
-  protected onNode(q: CrawlEntry, nodeStr: string, id: string, line: number) {
+  protected onNode(q: CrawlEntry, nodeStr: string, id: string, line: number): void {
     // Create stats for this line/id if they don't already exist
     if (this.statsById[id] === undefined) {
       this.statsById[id] = {

@@ -28,15 +28,15 @@ function renderTemplate (err: ErrorType) {
     doc += `## Details:\n\n${err.DESCRIPTION}\n`;
   }
   if (err.INVALID.length > 0) {
-    doc += `## Incorrect:\n\n`;
+    doc += '## Incorrect:\n\n';
     for (let i = 0; i < err.INVALID.length; i++) {
-      doc += "```markdown\n" + err.INVALID[i] + "\n```\n\n";
+      doc += '```markdown\n' + err.INVALID[i] + '\n```\n\n';
     }
   }
   if (err.VALID.length > 0) {
-    doc += `## Correct:\n\n`;
+    doc += '## Correct:\n\n';
     for (let i = 0; i < err.VALID.length; i++) {
-      doc += "```markdown\n" + err.VALID[i] + "\n```\n\n";
+      doc += '```markdown\n' + err.VALID[i] + '\n```\n\n';
     }
   }
   return doc;
