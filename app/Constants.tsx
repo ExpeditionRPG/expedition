@@ -30,6 +30,9 @@ export const NAVIGATION_DEBOUNCE_MS = 600;
 
 export const REGEX = {
   HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,
+
+  // \[([a-z_0-9]*)\]   Contents inside of []'s, only allowing for alphanumeric + _'s
+  ICON: /\[([a-z_0-9]*)\]/ig,
 };
 
 export const PLAYTIME_MINUTES_BUCKETS = [20, 30, 45, 60, 90, 120];

@@ -611,11 +611,20 @@ body {
       margin-top: -(fontsize(timervalue))/2;
       line-height: 1;
     }
-    .surge_warning {
+    .secondary {
+      font-size: 130%;
       text-align: center;
       position: absolute;
-      width: 100%;
+      left: 10%;
+      right: 10%;
       top: 60%;
+    }
+    .tertiary {
+      text-align: center;
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      bottom: 10%;
     }
   }
 

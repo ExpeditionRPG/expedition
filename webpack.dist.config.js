@@ -17,9 +17,8 @@ var options = {
   },
   module: {
     loaders: [
-      { test: /\.(ttf|eot|svg|jpg|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
+      { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
-      { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /node_modules/ },
       { enforce: 'post', test: /\.tsx$/, loaders: ['babel-loader'], exclude: /node_modules/ },
@@ -34,12 +33,12 @@ var options = {
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
     new CopyWebpackPlugin([
-        { from: 'app/images', to: 'images'},
-        { from: 'app/quests', to: 'quests'},
-        { from: 'app/scripts', to: 'scripts' },
-        { from: 'app/fonts', to: 'fonts'},
-        { from: 'app/index.html' },
-        { from: 'app/manifest.json' },
+      { from: 'app/images', to: 'images'},
+      { from: 'app/quests', to: 'quests'},
+      { from: 'app/scripts', to: 'scripts' },
+      { from: 'app/fonts', to: 'fonts'},
+      { from: 'app/index.html' },
+      { from: 'app/manifest.json' },
     ]),
     new webpack.LoaderOptionsPlugin({
       options: {
