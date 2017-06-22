@@ -83,9 +83,9 @@
     "typo-js": "^1.0.3",
     "warning": "^3.0.0",
     "webpack": "^2.2.1",
-    "winston": "^2.3.1"
-  },
-  "devDependencies": {
+    "winston": "^2.3.1",
+
+    // Dev dependencies. TODO: fix this partitioning after production is sane
     "@types/cheerio": "^0.22.1",
     "@types/jasmine": "^2.5.45",
     "@types/jquery": "^2.0.41",
@@ -144,6 +144,7 @@
     "webpack-dev-server": "^2.4.2",
     "yargs": "^7.0.2"
   },
+  "devDependencies": {},
   "engines": {
     "node": "^6.9.0"
   }
