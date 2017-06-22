@@ -99,7 +99,7 @@ router.post('/quests', limitCors, (req, res) => {
         console.log(err);
         return res.status(500).send(GENERIC_ERROR_MESSAGE);
       }
-      result = {error: err, quests: quests, nextToken: nextToken};
+      const result = {error: err, quests: quests, nextToken: nextToken};
       console.log("Found " + quests.length + " quests for user " + res.locals.id);
       res.send(JSON.stringify(result));
     });
