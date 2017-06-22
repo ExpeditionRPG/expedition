@@ -87,8 +87,8 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
     const ratings = Object.keys(CONTENT_RATINGS).map((rating: string, index: number) => {
       return <MenuItem key={index} value={rating} primaryText={rating} />;
     });
-    const ratingDefinitions = rating && Object.keys(rating).map((category: string, index: number) => {
-      return <li key={index}>{rating[category]}</li>;
+    const ratingDefinitions = rating && Object.keys(rating.details).map((category: string, index: number) => {
+      return <li key={index}>{rating.details[category]}</li>;
     });
 
     // TODO improve validation via errorText instead of alerts - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/274
