@@ -9,6 +9,7 @@ nconf
   .argv()
   // 2. Environment variables
   .env([
+    'ENABLE_PAYMENT',
     'BRAINTREE_ENVIRONMENT',
     'BRAINTREE_MERCHANT_ID',
     'BRAINTREE_PUBLIC_KEY',
@@ -35,6 +36,7 @@ nconf
   .file({ file: path.join(__dirname, 'config.json') })
   // 4. Defaults
   .defaults({
+    ENABLE_PAYMENT: false,
     BRAINTREE_ENVIRONMENT: 'Sandbox',
     // Typically you will create a bucket with the same name as your project ID.
     CLOUD_BUCKET: '',
