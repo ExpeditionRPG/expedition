@@ -14,7 +14,7 @@
     "monitor": "nodemon ${SCRIPT:-app.js}",
     "deploy": "gcloud app deploy app.yaml",
     "init-cloudsql": "node books/model-cloudsql.js",
-    "heroku-postbuild": "webpack --config webpack.dist.config.js"
+    "heroku-postbuild": "webpack -p --config webpack.dist.config.js --progress"
   },
   "author": "Fabricate.IO",
   "license": "CC-BY-NC-SA-4.0",
@@ -83,7 +83,9 @@
     "typo-js": "^1.0.3",
     "warning": "^3.0.0",
     "webpack": "^2.2.1",
-    "winston": "^2.3.1",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {
     "@types/cheerio": "^0.22.1",
     "@types/jasmine": "^2.5.45",
     "@types/jquery": "^2.0.41",
@@ -142,8 +144,7 @@
     "webpack-dev-server": "^2.4.2",
     "yargs": "^7.0.2"
   },
-  "devDependencies": {},
   "engines": {
-    "node": "^6.9.0"
+    "node": "^8.1.2"
   }
 }
