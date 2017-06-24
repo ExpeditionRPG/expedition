@@ -84,6 +84,8 @@
     "warning": "^3.0.0",
     "webpack": "^2.2.1",
     "winston": "^2.3.1",
+  },
+  "devDependencies": {
     "@types/cheerio": "^0.22.1",
     "@types/jasmine": "^2.5.45",
     "@types/jquery": "^2.0.41",
@@ -142,7 +144,6 @@
     "webpack-dev-server": "^2.4.2",
     "yargs": "^7.0.2"
   },
-  "devDependencies": {},
   "engines": {
     "node": "^6.9.0"
   }
