@@ -131,9 +131,13 @@ function createDocMetadata(model: any, defaults: any) {
   const map = model.createMap();
   Object.keys(defaults).forEach((key: string) => {
     const val = defaults[key];
+    // Don't allow undo
+    // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
+    model.beginCompoundOperation('', false);
     if (val) {
       map.set(key, val);
     }
+    model.endCompoundOperation();
   });
   model.getRoot().set('metadata', map);
   return map;
@@ -185,6 +189,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         mdRealtime: md,
         notesRealtime: notes,
         metadataRealtime: metadata,
+        realtimeModel: doc.getModel(),
         summary: metadata.get('summary'),
         author: metadata.get('author'),
         email: metadata.get('email'),
@@ -201,7 +206,11 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
   },
   (model: any) => {
     const string = model.createString();
+    // Don't allow undo
+    // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
+    model.beginCompoundOperation('', false);
     string.setText(NEW_QUEST_TEMPLATE);
+    model.endCompoundOperation();
     model.getRoot().set('markdown', string);
     createDocNotes(model);
   });
@@ -209,7 +218,11 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
 
 export function questMetadataChange(quest: QuestType, key: string, value: any): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
+    // Don't allow undo
+    // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
+    quest.realtimeModel.beginCompoundOperation('', false);
     quest.metadataRealtime.set(key, value);
+    quest.realtimeModel.endCompoundOperation();
     dispatch({type: 'QUEST_METADATA_CHANGE', key, value} as QuestMetadataChangeAction);
   }
 }

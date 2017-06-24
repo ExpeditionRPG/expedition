@@ -43,6 +43,7 @@ export interface QuestType {
   mdRealtime?: any; // Realtime API text node
   notesRealtime?: any;
   metadataRealtime?: any;
+  realtimeModel?: any;
   draftUrl?: string;
   publishedurl?: string;
   created?: string;
