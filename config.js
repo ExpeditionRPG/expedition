@@ -22,7 +22,7 @@ nconf
     'SESSION_SECRET',
 
     // Monitoring config settings
-
+    'NEW_RELIC_LICENSE_KEY',
 
     // (Optional) Pay-what-you-want config settings
     'BRAINTREE_ENVIRONMENT',
@@ -38,14 +38,6 @@ nconf
 
     // TODO is this reached through config.get?
     'NODE_ENV',
-
-    // TODO sort
-    'NEW_RELIC_LICENSE_KEY',
-
-    // TODO remove?
-    'SECRET',
-    'SUBSCRIPTION_NAME',
-    'TOPIC_NAME',
   ])
   .file({ file: path.join(__dirname, 'config.json') })
   .defaults({
