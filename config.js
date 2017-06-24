@@ -1,70 +1,56 @@
-// Hierarchical node.js configuration with command-line arguments, environment
-// variables, and files.
 const nconf = module.exports = require('nconf');
 const path = require('path');
-const Braintree = require("braintree");
 
 nconf
-  // 1. Command-line arguments
   .argv()
-  // 2. Environment variables
   .env([
+    // Quest storage config settings
+    'GCLOUD_PROJECT', // This is the id of your project in the Google Cloud Developers Console.
+    'CLOUD_BUCKET', // Bucket for compiled quest XML
+    'DATABASE_URL', // URL of postgres database storing quest metadata, user data, feedback, etc.
+
+    // Feedback email sender config settings
+    'MAIL_EMAIL',
+    'MAIL_PASSWORD',
+
+    // Authentication config settings
+    'OAUTH2_CLIENT_ID',
+    'OAUTH2_CLIENT_SECRET',
+
+    // Web server config settings
+    'PORT',
+    'SESSION_SECRET',
+
+    // Monitoring config settings
+
+
+    // (Optional) Pay-what-you-want config settings
     'BRAINTREE_ENVIRONMENT',
     'BRAINTREE_MERCHANT_ID',
     'BRAINTREE_PUBLIC_KEY',
     'BRAINTREE_PRIVATE_KEY',
-    'CLOUD_BUCKET',
-    'GCLOUD_PROJECT',
-    'MAIL_EMAIL',
-    'MAIL_PASSWORD',
+
+
+    // (Optional) mailing list config settings
     'MAILCHIMP_KEY',
     'MAILCHIMP_CREATORS_LIST_ID',
     'MAILCHIMP_PLAYERS_LIST_ID',
+
+    // TODO is this reached through config.get?
     'NODE_ENV',
-    'OAUTH2_CLIENT_ID',
-    'OAUTH2_CLIENT_SECRET',
-    'OAUTH2_CALLBACK',
-    'DATABASE_URL',
-    'PORT',
+
+    // TODO sort
+    'NEW_RELIC_LICENSE_KEY',
+
+    // TODO remove?
     'SECRET',
     'SUBSCRIPTION_NAME',
     'TOPIC_NAME',
-    'SESSION_SECRET',
   ])
-  // 3. Config file
   .file({ file: path.join(__dirname, 'config.json') })
-  // 4. Defaults
   .defaults({
-    // Quest storage config settings
-    GCLOUD_PROJECT: '', // This is the id of your project in the Google Cloud Developers Console.
-    CLOUD_BUCKET: '', // Bucket for compiled quest XML
-    DATABASE_URL: '', // URL of postgres database storing quest metadata, user data, feedback, etc.
-
-    // Feedback email sender config settings
-    MAIL_EMAIL: '',
-    MAIL_PASSWORD: '',
-
-    // Authentication config settings
-    OAUTH2_CLIENT_ID: '',
-    OAUTH2_CLIENT_SECRET: '',
-
-    // Web server config settings
     PORT: 8080,
-    SESSION_SECRET: '',
-
-    // Monitoring config settings
-    NEW_RELIC_LICENSE_KEY: '',
-
-    // (Optional) Pay-what-you-want config settings
     BRAINTREE_ENVIRONMENT: 'Sandbox',
-    BRAINTREE_PUBLIC_KEY: '',
-    BRAINTREE_MERCHANT_ID: '',
-    BRAINTREE_PRIVATE_KEY: '',
-
-    // (Optional) mailing list config settings
-    MAILCHIMP_KEY: '',
-    MAILCHIMP_CREATORS_LIST_ID: '',
-    MAILCHIMP_PLAYERS_LIST_ID: '',
   });
 
 // Check for required settings
