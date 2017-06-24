@@ -31,7 +31,6 @@ exports.submit = function(type, feedback, callback) {
     }
     callback(null, feedback.questid); // don't hold up the user
 
-    // Load the quest to get details like current version and author
     Quests.getById(feedback.questid, (err, quest) => {
       if (err) {
         console.log(err);
@@ -49,10 +48,12 @@ exports.submit = function(type, feedback, callback) {
             console.log(err);
           }
 
+          const ratingavg = (quest.ratingavg || 0).toFixed(1);
+
           const htmlMessage = `<p>User feedback:</p>
             <p>"${feedback.text}"</p>
             <p>${feedback.rating} out of 5 stars</p>
-            <p>New quest overall rating: ${quest.ratingavg} out of 5 across ${quest.ratingcount} ratings.</p>
+            <p>New quest overall rating: ${ratingavg} out of 5 across ${quest.ratingcount} ratings.</p>
             <p>Was submitted for ${quest.title} by ${quest.author}</p>
             <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
             <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
