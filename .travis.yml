@@ -9,7 +9,6 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.8
-before_deploy: "webpack -p --config ./webpack.dist.config.js"
 deploy:
   - provider: heroku
     api_key:
