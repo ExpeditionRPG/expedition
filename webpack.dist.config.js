@@ -23,6 +23,7 @@ const options = {
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /\/node_modules\/((?!expedition\-app).)*$/ },
+      { enforce: 'post', test: /\.tsx$/, loaders: ['babel-loader'], exclude: /\/node_modules\/((?!expedition\-app).)*$/ },
     ],
   },
   plugins: [
@@ -38,6 +39,14 @@ const options = {
       { from: 'app/dictionaries', to: 'dictionaries'},
       { from: 'app/scripts', to: 'scripts'},
     ]),
+    new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
+      options: {
+        babel: {
+          presets: ["es2015"],
+          cacheDirectory: true,
+        },
+      },
+    }),
   ],
 };
 
