@@ -2,8 +2,6 @@
 
 If something's amiss in production, look at this page for debugging tools and tricks.
 
-[TOC]
-
 ## DO THIS FIRST
 
 Check [prod dyno metrics](https://dashboard.heroku.com/apps/expedition-quest-creator/metrics/web) for failures.

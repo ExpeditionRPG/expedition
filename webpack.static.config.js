@@ -1,3 +1,4 @@
+// Use this for building static error/maintenance pages.
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const Path = require('path');
 const Webpack = require('webpack');

@@ -1,3 +1,4 @@
+// This config is run to compile and export the production environment to the dist/ folder.
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const Path = require('path');
 const Webpack = require('webpack');
