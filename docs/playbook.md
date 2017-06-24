@@ -22,7 +22,7 @@ In an emergency (runaway payments for instance), stop all new payment transactio
 heroku config:set ENABLE_PAYMENT=false -a expedition-quest-creator
 ```
 
-### Extended outages
+### Maintenance Page (for extended outages)
 
 In a hard outage where
 - the quest creator site is not visible at all
@@ -93,3 +93,17 @@ Restoring backups:
 ```shell
 heroku pg:backups:restore ${BACKUP} DATABASE_URL -a expedition-quest-creator
 ```
+
+### Quest DB
+
+Connecting to the DB:
+
+```shell
+heroku pg:psql -a expedition-quest-creator
+```
+
+## Monthly Actions
+
+- Check prod [datastore](https://data.heroku.com/) is below 80% of row quota and has recent backups.
+- Backup [prod heroku config variables](https://dashboard.heroku.com/apps/expedition-quest-creator/settings) to lastpass.
+- Test manual deployment via `git push heroku master`, and rollback with `heroku rollback` in dev environment.
