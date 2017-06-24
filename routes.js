@@ -1,5 +1,3 @@
-"use strict";
-
 const Cors = require('cors');
 const express = require('express');
 const Braintree = require('braintree');

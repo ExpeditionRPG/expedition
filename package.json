@@ -8,9 +8,9 @@
   "scripts": {
     "test": "mocha meta_tests.js && karma start --single-run --browsers PhantomJS",
     "watch:test": "karma start",
-    "start": "node app.js --use_strict",
-    "dev-dash": "NODE_ENV=dev webpack-dashboard -- node app.js --use_strict",
-    "dev": "NODE_ENV=dev node app.js --use_strict",
+    "start": "node app.js",
+    "dev-dash": "NODE_ENV=dev webpack-dashboard -- node app.js",
+    "dev": "NODE_ENV=dev node app.js",
     "monitor": "nodemon ${SCRIPT:-app.js}",
     "deploy": "gcloud app deploy app.yaml",
     "init-cloudsql": "node books/model-cloudsql.js",
