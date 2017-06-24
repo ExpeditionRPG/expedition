@@ -32,6 +32,16 @@ If you use windows, you may need to run the following:
 npm install --global --production windows-build-tools
 ```
 
+If you're working with the expedition production instance, install the `heroku` CLI:
+
+https://devcenter.heroku.com/articles/heroku-cli
+
+And `psql` command:
+
+https://devcenter.heroku.com/articles/heroku-postgresql#local-setup
+
+Be sure to try each of the sections in the [playbook](docs/playbook.md) and revisit them from time to time to keep your skills sharp for debugging production.
+
 ### Config.json
 
 `Config.json` contains app secrets that shouldn't be committed to the repo. We've included an example file, `config-example.json`, that shows you what information is needed.
@@ -72,8 +82,14 @@ If tests pass, the `master` branch is automatically deployed to production at [h
 
 The Quest Creator uses Postgres SQL. You can test functionality and scripts against a locally-hosted version of Postgres. To access the official databases, you'll need to be a regular contributor to the codebase and receive special permission from the creators.
 
-For database querying, make sure you have psql installed and can do `which psql`, then run `heroku pg:psql --app expedition-quest-creator-dev DATABASE` to connect
+For database querying, make sure you have psql installed and can do `which psql`, then run `heroku pg:psql --app expedition-quest-creator-dev DATABASE` to connect.
 
 On Mac, you may need to add `PATH=/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH` to your `.bash_profile` for your terminal to recognize the `psql` command.
 
-The production database is backed up daily. If worst comes to worst and we need to restore from a backup, simply follow these instructions: https://devcenter.heroku.com/articles/heroku-postgres-backups#restoring-backups
+The production database is backed up daily. See the [playbook](docs/playbook.md) on how to interact with these backups.
+
+If you need fresher data in devel, you can restore a prod backup into dev:
+
+```shell
+heroku pg:backups:restore expedition-quest-creator:: DATABASE_URL -a expedition-quest-creator-dev
+```

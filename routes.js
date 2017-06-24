@@ -17,7 +17,7 @@ const Mail = require('./mail');
 const oauth2 = require('./lib/oauth2');
 const Quests = require('./models/quests');
 
-if (Config.get('ENABLE_PAYMENT' && Config.get('BRAINTREE_PUBLIC_KEY')) {
+if (Config.get('ENABLE_PAYMENT') && Config.get('BRAINTREE_PUBLIC_KEY')) {
   const braintree = Braintree.connect({
     environment: Braintree.Environment[Config.get('BRAINTREE_ENVIRONMENT')],
     merchantId: Config.get('BRAINTREE_MERCHANT_ID'),

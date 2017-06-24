@@ -8,7 +8,7 @@ addons:
     packages:
     - g++-4.8
 before_install: "nvm install \"$(jq -r '.engines.node' package.json)\""
-before_deploy: "webpack -p --config ./webpack.dist.config.js"
+before_deploy: "npm run heroku-postbuild"
 deploy:
   - provider: heroku
     api_key:
