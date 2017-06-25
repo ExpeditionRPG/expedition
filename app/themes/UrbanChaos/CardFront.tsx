@@ -17,9 +17,10 @@ export default class CardFront extends React.Component<CardType, {}> {
               </header>
               <article>
                 <div className="score">
-                  <div className={`scorePlus ${card.scorePlusMult}`}>{card.scorePlus}</div>
-                  {card.scoreMinus && <div className="scoreMinus">{card.scoreMinus}</div>}
-                  {card.scoreRule && <div className="scoreRule">{card.scoreRule}</div>}
+                  {card.scoreBlack === 'plus' && <div className="scoreBlack plus">+</div>}
+                  {card.scoreBlack !== 'plus' && <div className="scoreBlack">{card.scoreBlack}</div>}
+                  {card.scoreRed === 'minus' && <div className="scoreRed minus">-</div>}
+                  {card.scoreRed !== 'minus' && <div className="scoreRed">{card.scoreRed}</div>}
                 </div>
               </article>
               <footer>
@@ -45,23 +46,32 @@ export default class CardFront extends React.Component<CardType, {}> {
           </div>
         );
       case 'Politics':
+        let budget = null;
+        if (card.cost !== null) {
+          budget = [];
+          if (card.cost > 0) {
+            for (let i = card.cost; i > 0; i--) {
+              budget.push(<span className="black">+</span>);
+            }
+          } else if (card.cost < 0) {
+            for (let i = card.cost; i < 0; i++) {
+              budget.push(<span className="red">-</span>);
+            }
+          }
+          budget = <div className="costs">{budget}</div>;
+        }
         return (
           <div className={`card front vertical ${card.sheet} ${card.committee}`}>
             <div className="contents">
               <header>
                 <div className="name">{card.name}</div>
-                <div className="type">{card.type}{card.secondary && ` - ${card.secondary}`}</div>
-                {card.cost !== null && <span className="costs">
-                  {card.cost < 0 && <span className="save">+${-1 * card.cost}M</span>}
-                  {card.cost === 0 && <span className="save">$0M</span>}
-                  {card.cost > 0 && <span className="spend">-${card.cost}M</span>}
-                  &nbsp;&nbsp;
-                </span>}
+                <div className="type">{card.type}</div>
+                {budget}
               </header>
               <article>
                 <div className="score">
-                  {card.scorePlus1 && <div className="scorePlus"><span>{card.scorePlus1}</span><span>{card.scorePlus2}</span></div>}
-                  {card.scoreMinus && <div className="scoreMinus">{card.scoreMinus}</div>}
+                  {card.scoreBlack1 && <div className="scoreBlack"><span>{card.scoreBlack1}</span><span>{card.scoreBlack2}</span></div>}
+                  {card.scoreRed1 && <div className="scoreRed"><span>{card.scoreRed1}</span><span>{card.scoreRed2}</span></div>}
                 </div>
                 {card.effects && <div className="effects">{card.effects}</div>}
               </article>

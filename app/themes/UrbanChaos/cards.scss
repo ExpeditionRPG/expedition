@@ -59,11 +59,22 @@ $color-blue: #0D47A1; /* blue900 */
 
       .costs {
         font-weight: bold;
-        .save {
-          color: $color-green;
+        color: white;
+        font-size: 1.1 * $text-size-content;
+        margin-top: $tiny;
+        .black, .red {
+          display: inline-block;
+          width: 0.21in;
+          height: 0.21in;
+          text-align: center;
+          margin-right: $tiny;
+          border-radius: 0.04in;
         }
-        .spend {
-          color: $color-red;
+        .black {
+          background: black;
+        }
+        .red {
+          background: $color-red;
         }
       }
     }
@@ -96,7 +107,7 @@ $color-blue: #0D47A1; /* blue900 */
           width: $large-icon;
           padding: $padding $small 0 $small;
         }
-        .scorePlus, .scoreMinus {
+        .scoreBlack, .scoreRed {
           position: relative;
           &:before {
             position: absolute;
@@ -104,20 +115,25 @@ $color-blue: #0D47A1; /* blue900 */
             left: 0.5in;
           }
         }
-        .scorePlus.two:before {
-          content: "2x";
-          left: 0.25in;
-        }
-        .scoreMinus:before {
-          content: "-";
+        .scoreRed {
           color: $color-red;
+          svg {
+            stroke: $color-red;
+            fill: $color-red;
+          }
         }
-        .scoreMinus svg {
-          stroke: $color-red;
-          fill: $color-red;
+        .scoreBlack.plus, .scoreRed.minus {
+          color: white;
+          height: 0.55in;
+          width: 0.55in;
+          border-radius: 0.05in;
+          margin: auto;
         }
-        .scoreRule {
-          font-size: $text-size-content;
+        .scoreBlack.plus {
+          background: $text-color;
+        }
+        .scoreRed.minus {
+          background: $color-red;
         }
       }
     }
