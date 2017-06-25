@@ -131,7 +131,7 @@ function createDocMetadata(model: any, defaults: any) {
   const map = model.createMap();
   Object.keys(defaults).forEach((key: string) => {
     const val = defaults[key];
-    // Don't allow undo
+    // Don't allow undo - these are default values
     // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
     model.beginCompoundOperation('', false);
     if (val) {
@@ -206,7 +206,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
   },
   (model: any) => {
     const string = model.createString();
-    // Don't allow undo
+    // Don't allow user undo, since it would revert everything back to a blank page.
     // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
     model.beginCompoundOperation('', false);
     string.setText(NEW_QUEST_TEMPLATE);
@@ -218,7 +218,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
 
 export function questMetadataChange(quest: QuestType, key: string, value: any): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    // Don't allow undo
+    // Don't allow undo, since these are set via UI and users don't expect Ctrl+Z to affec them.
     // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
     quest.realtimeModel.beginCompoundOperation('', false);
     quest.metadataRealtime.set(key, value);

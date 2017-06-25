@@ -30,7 +30,9 @@ interface TextViewProps extends React.Props<any> {
   lastSizeChangeMillis: number;
 }
 
-//
+// This class wraps the Realtime API undo commands in a way
+// that can substitute for Ace UndoManager. This is injected
+// into the editor via session.setUndoManager().
 // https://developers.google.com/google-apps/realtime/undo
 // https://github.com/ajaxorg/ace/blob/v1.1.4/lib/ace/undomanager.js
 class RealtimeUndoManager {
@@ -38,7 +40,6 @@ class RealtimeUndoManager {
 
   constructor(realtimeModel: any) {
     this.realtimeModel = realtimeModel;
-    console.log(realtimeModel);
   }
 
   public execute(options: any): void {
@@ -58,7 +59,6 @@ class RealtimeUndoManager {
     if (!this.hasRedo()) {
       return;
     }
-    console.log('Redoing realtime');
     this.realtimeModel.redo();
   }
 
@@ -66,7 +66,6 @@ class RealtimeUndoManager {
     if (!this.hasUndo()) {
       return;
     }
-    console.log('Undoing realtime');
     this.realtimeModel.undo();
   }
 
@@ -79,6 +78,7 @@ class RealtimeUndoManager {
   }
 
   public isClean(): boolean {
+    // Currently not supported. We check dirtyness via value anyways.
     return false;
   }
 }
@@ -124,10 +124,8 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       // adjusting the vertical height of Ace.
       ref.editor.resize();
       const session = ref.editor.getSession();
-      console.log(session);
 
       if (this.props.realtimeModel) {
-        console.log('Setting undo manager');
         this.ace.editor.getSession().setUndoManager(new RealtimeUndoManager(this.props.realtimeModel));
       }
 
@@ -165,7 +163,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
   }
 
   onTextInserted(event: any) {
-    if (event.isLocal && !event.isRedo && !event.isUndo) {
+    if (!this.ace || event.isLocal && !event.isRedo && !event.isUndo) {
       return;
     }
     const session = this.ace.editor.session;
@@ -177,13 +175,12 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     if (event.isLocal) {
       // Go to end of insert if we're doing a local add (redo/undo)
       const end = doc.indexToPosition(event.index + event.text.length)
-      console.log(end);
       this.ace.editor.gotoLine(end.row+1, end.column);
     }
   }
 
   onTextDeleted(event: any) {
-    if (event.isLocal && !event.isRedo && !event.isUndo) {
+    if (!this.ace || event.isLocal && !event.isRedo && !event.isUndo) {
       return;
     }
     const session = this.ace.editor.session;
@@ -196,7 +193,6 @@ export default class TextView extends React.Component<TextViewProps, {}> {
 
     if (event.isLocal) {
       // Go to beginning of segment if we're doing a local remove (redo/undo)
-      console.log(start);
       this.ace.editor.gotoLine(start.row+1, start.column);
     }
   }
