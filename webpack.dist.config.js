@@ -5,8 +5,11 @@ const Webpack = require('webpack');
 
 const options = {
   entry: {
-    bundle: [
+    dist: [
       './app/React.tsx',
+      './app/style.scss',
+    ],
+    static: [
       './app/style.scss',
     ],
   },
@@ -14,8 +17,8 @@ const options = {
     extensions: ['.js', '.ts', '.tsx', '.json', '.txt'],
   },
   output: {
-    path: Path.join(__dirname,'dist'),
-    filename: '[name].js',
+    path: __dirname,
+    filename: '[name]/bundle.js',
   },
   module: {
     loaders: [
@@ -35,10 +38,17 @@ const options = {
       },
     }),
     new CopyWebpackPlugin([
-      { from: 'app/index.html' },
-      { from: 'node_modules/expedition-app/app/images', to: 'images'},
-      { from: 'app/dictionaries', to: 'dictionaries'},
+      // Copy ops for dist folder (main app)
+      { from: 'app/index.html', to:'dist' },
+      { from: 'node_modules/expedition-app/app/images', to: 'dist/images'},
+      { from: 'app/dictionaries', to: 'dist/dictionaries'},
       { from: 'app/scripts', to: 'scripts'},
+
+      // Copy ops for static folder (error/maintenance pages)
+      { from: 'app/error.html', to: 'static' },
+      { from: 'app/maintenance.html', to: 'static' },
+      { from: 'app/assets', to: 'static/assets'},
+      { from: 'node_modules/expedition-app/app/images', to: 'static/images'},
     ]),
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {

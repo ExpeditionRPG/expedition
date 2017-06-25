@@ -10,6 +10,8 @@ If you see errors at the serving level (e.g. not a particular part of the quest 
 
 http://status.heroku.com/
 
+Check [newrelic monitoring](https://rpm.newrelic.com/accounts/988111/applications/65715175) for abnormal traffic patterns that indicate problems with specific requests or users.
+
 ## Actions
 
 ### Stop all payments
