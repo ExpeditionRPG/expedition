@@ -11,4 +11,16 @@ describe('Dialog action', () => {
       } as SetDialogAction);
     });
   });
+
+  describe('pushHTTPError', () => {
+    it('sets status as name');
+
+    it('logs to GA');
+  });
+
+  describe('pushError', () => {
+    it('pushes error');
+
+    it('logs to GA');
+  })
 });

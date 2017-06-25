@@ -1,4 +1,3 @@
-import {ErrorType} from '../Error'
 import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
 import {QDLParser} from '../parsing/QDLParser'
 // TODO: URL type?
@@ -76,14 +75,15 @@ export interface EditorState {
 }
 
 export interface DialogsState {
-  USER: boolean;
-  ERROR: boolean;
-  PUBLISHED: boolean;
-  UNPUBLISHED: boolean;
-  [key: string]: boolean;
+  open: {
+    USER: boolean;
+    ERROR: boolean;
+    PUBLISHED: boolean;
+    UNPUBLISHED: boolean;
+    [key: string]: boolean;
+  }
+  errors: Error[];
 }
-
-export type ErrorsState = ErrorType[];
 
 export interface SnackbarState {
   open: boolean;
@@ -105,7 +105,6 @@ export interface AppState {
   annotations: AnnotationType[];
   dialogs: DialogsState;
   editor: EditorState;
-  errors: ErrorsState;
   quest: QuestType;
   user: UserState;
   preview: AppStateWithHistory;
