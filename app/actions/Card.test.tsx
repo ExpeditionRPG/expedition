@@ -28,13 +28,13 @@ describe('Card action', () => {
     });
 
     it('returns a NAVIGATE action', () => {
-      expect(toCard('QUEST_CARD')).toEqual(jasmine.objectContaining({'type': 'NAVIGATE'}));
+      expect(toCard('QUEST_CARD')).toEqual(jasmine.objectContaining({'type': 'NAVIGATE'}) as any);
     });
   });
 
   describe('toPrevious', () => {
     it('returns a RETURN action', () => {
-      expect(toPrevious('QUEST_CARD')).toEqual(jasmine.objectContaining({'type': 'RETURN'}));
+      expect(toPrevious('QUEST_CARD')).toEqual(jasmine.objectContaining({'type': 'RETURN'}) as any);
     });
   });
 });

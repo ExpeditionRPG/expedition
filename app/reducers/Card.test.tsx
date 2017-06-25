@@ -6,14 +6,14 @@ describe('Card reducer', () => {
   it('Defaults to splash card', () => {
     expect(card(undefined, {type: 'NO_OP'})).toEqual(jasmine.objectContaining({
       name: 'SPLASH_CARD',
-    }));
+    }) as any);
   });
 
   it('Sets state and phase on toCard', () => {
     expect(card(undefined, toCard('SEARCH_CARD', 'DISCLAIMER'))).toEqual(jasmine.objectContaining({
       name: 'SEARCH_CARD',
       phase: 'DISCLAIMER',
-    }));
+    }) as any);
   });
 
   it('Does not debounce after some time', () => {
@@ -27,7 +27,7 @@ describe('Card reducer', () => {
     fixedNow += NAVIGATION_DEBOUNCE_MS + 10
     expect(card(state, toCard('QUEST_CARD'))).toEqual(jasmine.objectContaining({
       name: 'QUEST_CARD',
-    }));
+    }) as any);
   });
 
   it('Debounces NAVIGATE actions', () => {
@@ -41,7 +41,7 @@ describe('Card reducer', () => {
     fixedNow += 50 // ms
     expect(card(state, toCard('QUEST_CARD'))).toEqual(jasmine.objectContaining({
       name: 'SEARCH_CARD',
-    }));
+    }) as any);
   });
 
   it('Respects overrideDebounce', () => {
@@ -55,6 +55,6 @@ describe('Card reducer', () => {
     fixedNow += 50 // ms
     expect(card(state, toCard('QUEST_CARD', null, true))).toEqual(jasmine.objectContaining({
       name: 'QUEST_CARD',
-    }));
+    }) as any);
   })
 });

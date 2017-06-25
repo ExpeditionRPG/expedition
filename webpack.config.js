@@ -17,6 +17,7 @@ const options = {
     extensions: ['.js', '.ts', '.tsx', '.json'],
   },
   devServer: {
+    host: "0.0.0.0",
     contentBase: path.join(__dirname, "app"),
     publicPath: '/',
     port: port,
