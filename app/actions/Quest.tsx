@@ -20,7 +20,7 @@ import {
   METADATA_DEFAULTS,
   NEW_QUEST_TITLE
 } from '../Constants'
-import {pushError, pushHTTPError} from '../Error'
+import {pushError, pushHTTPError} from './Dialogs'
 import {renderXML} from '../parsing/QDLParser'
 
 const Cheerio: any = require('cheerio');
@@ -82,29 +82,29 @@ export function newQuest(user: UserState) {
     window.gapi.client.drive.files.insert(insertHash).execute((createResponse: {id: string}) => {
       updateDriveFile(createResponse.id, {}, '', (err, result) => {
         if (err) {
-          alert('Failed to create new quest: ' + err.message);
-        } else {
-          loadQuest(user, dispatch, createResponse.id);
-          window.gapi.client.request({
-            path: '/drive/v3/files/' + createResponse.id + '/permissions',
-            method: 'POST',
-            params: {sendNotificationEmails: false},
-            body: {
-              role: 'writer',
-              type: 'domain',
-              domain: 'Fabricate.io',
-              allowFileDiscovery: true,
-            },
-          }).then((json: any, raw: any) => {
-          }, (json: any) => {
-            ReactGA.event({
-              category: 'Error',
-              action: 'Error connecting quest file to Fabricate.IO',
-              label: createResponse.id,
-            });
-            console.log('Error connecting quest file to Fabricate.IO', json);
-          });
+          return dispatch(pushError(new Error('Failed to create new quest: ' + err.message)));
         }
+
+        loadQuest(user, dispatch, createResponse.id);
+        window.gapi.client.request({
+          path: '/drive/v3/files/' + createResponse.id + '/permissions',
+          method: 'POST',
+          params: {sendNotificationEmails: false},
+          body: {
+            role: 'writer',
+            type: 'domain',
+            domain: 'Fabricate.io',
+            allowFileDiscovery: true,
+          },
+        }).then((json: any, raw: any) => {
+        }, (json: any) => {
+          ReactGA.event({
+            category: 'Error',
+            action: 'Error connecting quest file to Fabricate.IO',
+            label: createResponse.id,
+          });
+          console.log('Error connecting quest file to Fabricate.IO', json);
+        });
       });
     });
   }
@@ -171,7 +171,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         };
         metadata = createDocMetadata(doc.getModel(), defaults);
       } catch(err) {
-        alert('Error parsing metadata. Please check your quest for validation errors, then try reloading the page. If this error persists, please contact support: Expedition@Fabricate.io');
+        dispatch(pushError(new Error('Error parsing metadata. Please check your quest for validation errors, then try reloading the page. If this error persists, please contact support: Expedition@Fabricate.io')));
         ReactGA.event({
           category: 'Error',
           action: 'Error parsing metadata',
@@ -261,7 +261,9 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean): ((dispat
       quest.published = (new Date(Date.now()).toISOString());
       dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
       dispatch(setSnackbar(true, 'Quest published successfully!'));
-    }).fail(pushHTTPError);
+    }).fail((error: {statusText: string, status: string, responseText: string}) => {
+      dispatch(pushHTTPError(error));
+    });
   }
 }
 
@@ -308,6 +310,8 @@ export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any
       quest.published = undefined;
       dispatch({type: 'RECEIVE_QUEST_UNPUBLISH', quest} as ReceiveQuestUnpublishAction);
       dispatch(setSnackbar(true, 'Quest un-published successfully!'));
-    }).fail(pushHTTPError);
+    }).fail((error: {statusText: string, status: string, responseText: string}) => {
+      dispatch(pushHTTPError(error));
+    });;
   };
 }

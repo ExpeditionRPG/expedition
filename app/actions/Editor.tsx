@@ -8,6 +8,7 @@ import {playtestXMLResult} from '../parsing/crawler/PlaytestCrawler'
 import {initQuest, loadNode} from 'expedition-app/app/actions/Quest'
 import {QuestContext} from 'expedition-app/app/reducers/QuestTypes'
 import {ParserNode} from 'expedition-app/app/parser/Node'
+import {pushError} from './Dialogs'
 
 export function setDirty(is_dirty: boolean): SetDirtyAction {
   return {type: 'SET_DIRTY', is_dirty};
@@ -64,7 +65,6 @@ export function getPlayNode(node: Cheerio): Cheerio {
     tag = node.get(0).tagName;
   }
   if (tag !== 'roleplay' && tag !== 'combat') {
-    alert('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
     return null;
   }
   return node;
@@ -74,7 +74,13 @@ export function renderAndPlay(qdl: string, line: number, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const renderResult = renderXML(qdl);
     const questNode = renderResult.getResult();
-    const newNode = new ParserNode(getPlayNode(renderResult.getResultAt(line)), ctx);
+    const playNode = getPlayNode(renderResult.getResultAt(line));
+    if (!playNode) {
+      const err = new Error('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
+      err.name = 'RenderError';
+      return dispatch(pushError(err))
+    }
+    const newNode = new ParserNode(playNode, ctx);
     dispatch({type: 'REBOOT_APP'});
     dispatch(initQuest('0', questNode, ctx));
     // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261

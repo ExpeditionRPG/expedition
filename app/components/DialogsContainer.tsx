@@ -11,12 +11,9 @@ import {CONTENT_RATINGS, GENRES} from '../../node_modules/expedition-app/app/Con
 const Joi = require('joi-browser');
 
 const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
-  let open_dialogs: DialogsState = Object.assign({}, state.dialogs);
-  open_dialogs['ERROR'] = Boolean(state.errors.length > 0);
   return {
-    open: open_dialogs,
+    dialogs: state.dialogs,
     quest: state.quest,
-    errors: state.errors
   };
 }
 
@@ -40,7 +37,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
         maxtimeminutes: Joi.number().min(Joi.ref('mintimeminutes')).max(999),
         genre: Joi.string().valid(GENRES),
         contentrating: Joi.string().valid(Object.keys(CONTENT_RATINGS)),
-      }, { allowUnknown: true, abortEarly: false }, (err: string, quest: QuestType) => {
+      }, { allowUnknown: true, abortEarly: false }, (err: Error, quest: QuestType) => {
         if (err) {
           return alert(err);
         }

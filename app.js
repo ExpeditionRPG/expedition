@@ -58,7 +58,6 @@ const setupRoutes = function(app) {
     const proxy = require('proxy-middleware');
     app.use('/', proxy(url.parse('http://localhost:' + port2 + '/')));
   } else {
-    // TODO: Serve files from dist/
     app.use('/assets', express.static('app/assets'));
     app.use(express.static('dist'));
   }
