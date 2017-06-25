@@ -21,12 +21,66 @@ interface TextViewProps extends React.Props<any> {
   onChange: any;
   onLine: any;
   realtime: any;
+  realtimeModel: any;
   annotations: AnnotationType[];
 
   // Use of SplitPane interferes with JS resize and rerendering.
   // When this value changes, the text view re-renders and the
   // correct vertical height is set.
   lastSizeChangeMillis: number;
+}
+
+// This class wraps the Realtime API undo commands in a way
+// that can substitute for Ace UndoManager. This is injected
+// into the editor via session.setUndoManager().
+// https://developers.google.com/google-apps/realtime/undo
+// https://github.com/ajaxorg/ace/blob/v1.1.4/lib/ace/undomanager.js
+class RealtimeUndoManager {
+  private realtimeModel: any;
+
+  constructor(realtimeModel: any) {
+    this.realtimeModel = realtimeModel;
+  }
+
+  public execute(options: any): void {
+    // Throw out ace editor deltas received, since
+    // we use the realtime API as a source of truth.
+  }
+
+  public hasUndo(): boolean {
+    return this.realtimeModel.canUndo;
+  }
+
+  public hasRedo(): boolean {
+    return this.realtimeModel.canRedo;
+  }
+
+  public redo(): void {
+    if (!this.hasRedo()) {
+      return;
+    }
+    this.realtimeModel.redo();
+  }
+
+  public undo(): void {
+    if (!this.hasUndo()) {
+      return;
+    }
+    this.realtimeModel.undo();
+  }
+
+  public reset(): void {
+    // No-op for now, but part of the Ace UndoManager interface.
+  }
+
+  public markClean(): void {
+    // No-op for now
+  }
+
+  public isClean(): boolean {
+    // Currently not supported. We check dirtyness via value anyways.
+    return false;
+  }
 }
 
 // See https://github.com/securingsincity/react-ace
@@ -36,19 +90,6 @@ export default class TextView extends React.Component<TextViewProps, {}> {
   onSelectionChange: () => any;
   silentChange: boolean;
   silentSelectionChangeTimer: any;
-
-  getValue() {
-    if (this.ace) {
-      return this.ace.editor.getValue();
-    }
-    return '';
-  }
-
-  setValue(value: string) {
-    if (this.ace) {
-      this.ace.editor.setValue(value);
-    }
-  }
 
   onRef(ref: any) {
     if (this.ace && this.onSelectionChange) {
@@ -84,6 +125,10 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       ref.editor.resize();
       const session = ref.editor.getSession();
 
+      if (this.props.realtimeModel) {
+        this.ace.editor.getSession().setUndoManager(new RealtimeUndoManager(this.props.realtimeModel));
+      }
+
       // Once dictionary ready & document loaded, spellcheck!
       if (!this.spellchecker && window.dictionary && this.ace.editor.session.getDocument().getLength() > 1) {
         this.spellchecker = new Spellcheck(session, window.dictionary);
@@ -118,25 +163,38 @@ export default class TextView extends React.Component<TextViewProps, {}> {
   }
 
   onTextInserted(event: any) {
-    if (event.isLocal) {
+    if (!this.ace || event.isLocal && !event.isRedo && !event.isUndo) {
       return;
     }
-    var doc = this.ace.editor.session.getDocument();
+    const session = this.ace.editor.session;
+    const doc = session.getDocument();
     this.silentChange = true;
     doc.insert(doc.indexToPosition(event.index, 0), event.text);
     this.silentChange = false;
+
+    if (event.isLocal) {
+      // Go to end of insert if we're doing a local add (redo/undo)
+      const end = doc.indexToPosition(event.index + event.text.length)
+      this.ace.editor.gotoLine(end.row+1, end.column);
+    }
   }
 
   onTextDeleted(event: any) {
-    if (event.isLocal) {
+    if (!this.ace || event.isLocal && !event.isRedo && !event.isUndo) {
       return;
     }
-    var doc = this.ace.editor.session.getDocument();
+    const session = this.ace.editor.session;
+    const doc = session.getDocument();
     this.silentChange = true;
-    var start = doc.indexToPosition(event.index, 0);
-    var end = doc.indexToPosition(event.index + event.text.length, 0);
+    const start = doc.indexToPosition(event.index, 0);
+    const end = doc.indexToPosition(event.index + event.text.length, 0);
     doc.remove(new Range(start.row, start.column, end.row, end.column));
     this.silentChange = false;
+
+    if (event.isLocal) {
+      // Go to beginning of segment if we're doing a local remove (redo/undo)
+      this.ace.editor.gotoLine(start.row+1, start.column);
+    }
   }
 
   componentWillReceiveProps(newProps: any) {

@@ -6,7 +6,8 @@ import {updateDirtyState} from '../actions/Editor'
 
 const mapStateToProps = (state: AppState, ownProps: any): NotesPanelStateProps => {
   return {
-    realtime: state.quest.notesRealtime
+    realtime: state.quest.notesRealtime,
+    realtimeModel: state.quest.realtimeModel,
   };
 }
 
