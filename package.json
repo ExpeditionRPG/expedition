@@ -72,8 +72,8 @@
     "scripts": {
         "test": "mocha meta_tests.js && karma start --single-run --browsers PhantomJS",
         "watch:test": "karma start",
-        "dev": "webpack-dev-server",
-        "build": "webpack --config ./webpack.dist.config.js"
+        "dev": "webpack-dev-server --progress",
+        "build": "webpack --config ./webpack.dist.config.js --progress"
     },
     "engines": {
         "node": ">=4.0.0"

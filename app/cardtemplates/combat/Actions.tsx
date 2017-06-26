@@ -52,7 +52,7 @@ function getEnemies(node: ParserNode): Enemy[] {
 
     if (!encounter) {
       // If we don't know about the enemy, just assume tier 1.
-      enemies.push({name: text, tier: 1});
+      enemies.push({name: text, tier: parseInt(c.attr('tier'), 10) || 1});
     } else {
       enemies.push({name: encounter.name, tier: encounter.tier, class: encounter.class});
     }

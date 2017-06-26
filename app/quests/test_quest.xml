@@ -9,7 +9,7 @@
       <combat data-line="23">
         <e>Thief</e>
         <e>Thief</e>
-        <e>Imp</e>
+        <e tier="3">Test</e>
         <event on="win">
           <trigger data-line="31">end</trigger>
         </event>

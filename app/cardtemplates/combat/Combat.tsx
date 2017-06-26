@@ -57,7 +57,9 @@ function renderSelectTier(props: CombatProps): JSX.Element {
 function renderDrawEnemies(props: CombatProps): JSX.Element {
   let enemyNames: Set<string> = new Set();
   let repeatEnemy = false;
+  let uniqueEnemy = false;
   let enemies: JSX.Element[] = props.enemies.map((enemy: Enemy, index: number) => {
+    uniqueEnemy = uniqueEnemy || !enemy.class;
     let icon = null;
     if (enemy.class) {
       const iconName = enemy.class.replace(REGEX.HTML_TAG, '').toLowerCase();
@@ -79,8 +81,12 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
   if (props.settings.showHelp) {
     helpText = (
       <div>
-        <p>Draw the enemies listed above. Place in the center and put tokens on their maximum health.</p>
-        {repeatEnemy && <p>Since there are multiple of a single enemy, you can use the back of another enemy of the same tier as a placeholder.</p>}
+        <p>Draw the enemies listed above.</p>
+        <ul>
+          {repeatEnemy && <li>Draw extra cards of the appropriate class for the duplicate enemies, and track health using the card backs.</li>}
+          {uniqueEnemy && <li>Draw cards of any class for enemies without class icons. Track health using the back.</li>}
+        </ul>
+        <p>Place these cards in the center and put tokens on their maximum health.</p>
       </div>
     );
   }
