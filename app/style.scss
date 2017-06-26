@@ -218,6 +218,7 @@ body {
         background-color: $bg_dark_interactive !important;
         svg {
           color: $font_color_dark_primary !important;
+          fill: $font_color_dark_primary !important;
         }
       }
       .base_button > button {
@@ -557,7 +558,7 @@ body {
     .value {
       flex: 10;
       font-family: $headerfont;
-      line-height: size(input);
+      line-height: size(inputsquare);
     }
     .controls {
       display: flex;
@@ -571,9 +572,9 @@ body {
         float: right;
       }
     }
-    .icon {
-      height: fontsize(interactive) !important;
-      width: fontsize(interactive) !important;
+    button {
+      height: size(inputsquare) !important;
+      width: size(inputsquare) !important;
       min-height: size(input) !important;
       min-width: size(input) !important;
       padding: 0 !important;
