@@ -25,7 +25,7 @@ data.badJSONXML = `<combat data-line="0">
 
 data.fullCombatXML = `<combat data-line="0">
     <e>e1</e>
-    <e>e2</e>
+    <e tier="3">e2</e>
     <event on="win">
         <roleplay>
             <p>win</p>
@@ -149,6 +149,10 @@ URL: 417
 ERROR L0:
 combat card must have "on lose" event
 URL: 417`;
+
+data.combatBadTierLog = `ERROR L2:
+tier must be a positive number
+URL: 418`;
 
 data.combatBadParseLog = `ERROR L0:
 could not parse block header

@@ -11,12 +11,12 @@ describe('XMLRenderer', () => {
       var dummyWin = cheerio.load('<div>win</div>')('div')
       var dummyLose = cheerio.load('<div>lose</div>')('div');
       expect(XMLRenderer.toCombat(
-        {'enemies': [{text: 'Enemy1'}, {text: 'Enemy2'}]},
+        {'enemies': [{text: 'Enemy1'}, {text: 'Enemy2', json: {tier: '3'}}]},
         [
           {text: 'on win', event: [dummyWin]},
           {text: 'on lose', event: [dummyLose]},
         ], null).toString())
-        .toEqual('<combat><e>Enemy1</e><e>Enemy2</e><event on="win"><div>win</div></event><event on="lose"><div>lose</div></event></combat>');
+        .toEqual('<combat><e>Enemy1</e><e tier="3">Enemy2</e><event on="win"><div>win</div></event><event on="lose"><div>lose</div></event></combat>');
     });
   });
 
