@@ -6,6 +6,8 @@ import {SettingsType} from '../../reducers/StateTypes'
 import {ParserNode} from '../../parser/Node'
 import {Choice, QuestContext, RoleplayElement} from '../../reducers/QuestTypes'
 
+import {REGEX} from '../../Constants'
+
 export interface RoleplayStateProps {
   node: ParserNode;
   settings: SettingsType;
@@ -19,9 +21,7 @@ export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps
 
 // Replaces [icon_name] with <img class="inline_icon" src="images/icon_name.svg">
 function generateIconElements(content: string): string {
-  // \[([a-zA-Z_0-9]*)\]   Contents inside of []'s, only allowing for alphanumeric + _'s
-  // /g                    Multiple times
-  return content.replace(/\[([a-zA-Z_0-9]*)\]/g, (match:string, group:string): string => {
+  return content.replace(REGEX.ICON, (match:string, group:string): string => {
     return `<img class="inline_icon" src="images/${group}_small.svg">`;
   });
 }

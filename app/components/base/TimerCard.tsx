@@ -4,7 +4,8 @@ import {CardThemeType} from '../../reducers/StateTypes'
 
 interface TimerCardProps extends React.Props<any> {
   numPlayers: number;
-  surgeWarning: boolean;
+  secondaryText?: string;
+  tertiaryText?: string;
   roundTimeTotalMillis: number;
   theme: CardThemeType;
   onTimerStop: (elapsedMillis: number) => any;
@@ -36,18 +37,18 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
 
   render() {
     let timeRemainingSec = this.state.timeRemaining / 1000;
-    var formattedTimer: string;
+    let formattedTimer: string;
     if (timeRemainingSec < 10 && timeRemainingSec > 0) {
       formattedTimer = timeRemainingSec.toFixed(1);
     }
     else {
       formattedTimer = timeRemainingSec.toFixed(0);
     }
-    var surgeWarning = (this.props.surgeWarning) ? (<h3 className="surge_warning">Surge Imminent</h3>) : (<span></span>);
     return (
       <div className={'base_timer_card ' + (this.props.theme || 'LIGHT')}>
         <div className="value">{formattedTimer}s</div>
-        {surgeWarning}
+        {this.props.secondaryText && <div className="secondary">{this.props.secondaryText}</div>}
+        {this.props.tertiaryText && <div className="tertiary">{this.props.tertiaryText}</div>}
         <MultiTouchTrigger onTouchChange={this.onTouchChange.bind(this)} />
       </div>
     );

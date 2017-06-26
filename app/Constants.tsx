@@ -30,6 +30,9 @@ export const NAVIGATION_DEBOUNCE_MS = 600;
 
 export const REGEX = {
   HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,
+
+  // \[([a-z_0-9]*)\]   Contents inside of []'s, only allowing for alphanumeric + _'s
+  ICON: /\[([a-z_0-9]*)\]/ig,
 };
 
 export const PLAYTIME_MINUTES_BUCKETS = [20, 30, 45, 60, 90, 120];
@@ -45,24 +48,36 @@ export const GENRES: GenreType[] = [
 
 // Content rating options and their definitions, generally based on MPAA guidelines
 export type ContentRatingLabelType = 'Everyone' | 'Teen' | 'Adult';
-export type ContentRatingType = {[key: string]: {[key: string]: string}};
-export const CONTENT_RATINGS: ContentRatingType = {
-  Everyone: {
-    violence: 'No descriptions of violence allowed outside of combat mechanics.',
-    language: 'Only very limited profanity allowed, and no sexually-derived words.',
-    drugs: 'No drug use allowed.',
-    nudity: 'No nudity allowed.',
+export interface ContentRatingType {
+  summary: string;
+  details: {[key: string]: string};
+}
+export const CONTENT_RATINGS: {[key: string]: ContentRatingType} = {
+  'Kid-friendly': {
+    summary: 'No drug use or nudity, very limited profanity, and no references to sex or detailed violence.',
+    details: {
+      violence: 'No descriptions of violence allowed outside of combat mechanics.',
+      language: 'Only very limited profanity allowed, and no sexually-derived words.',
+      drugs: 'No drug use allowed.',
+      nudity: 'No nudity allowed.',
+    },
   },
-  Teen: {
-    violence: 'May contain brief, limited descriptions of violence.',
-    language: 'May contain profanity except in a sexual context.',
-    drugs: 'May contain drug use, but not abuse.',
-    nudity: 'May contain non-sexual nudity.',
+  'Teen': {
+    summary: 'Brief and limited violence and profanity. Potential non-sexual nudity and responsible drug use.',
+    details: {
+      violence: 'May contain brief, limited descriptions of violence.',
+      language: 'May contain profanity except in a sexual context.',
+      drugs: 'May contain drug use, but not abuse.',
+      nudity: 'May contain non-sexual nudity.',
+    },
   },
-  Adult: {
-    violence: 'All violence allowed.',
-    language: 'All profanity allowed.',
-    drugs: 'All drugs allowed.',
-    nudity: 'All nudity allowed.',
+  'Adult': {
+    summary: 'Any level of violence, profanity, drug use, and sexuality.',
+    details: {
+      violence: 'All violence allowed.',
+      language: 'All profanity allowed.',
+      drugs: 'All drugs allowed.',
+      nudity: 'All nudity allowed.',
+    },
   },
 };
