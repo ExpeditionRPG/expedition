@@ -23,6 +23,7 @@ deploy:
     app: expedition-quest-creator-dev
     on:
       branch: master
+      branch: dev
 cache:
   directories:
     - node_modules
