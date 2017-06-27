@@ -5,7 +5,7 @@ import {CardType} from '../../reducers/StateTypes'
 export default class CardBack extends React.Component<CardType, {}> {
   render() {
     const card = this.props.card;
-    const theme = 'UrbanChaos';
+    const theme = 'Urbanity';
     switch (card.sheet) {
       case 'Citizen':
         return (

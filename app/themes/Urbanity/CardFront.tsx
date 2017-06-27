@@ -6,7 +6,7 @@ import {CardType} from '../../reducers/StateTypes'
 export default class CardFront extends React.Component<CardType, {}> {
   render() {
     const card = this.props.card;
-    const theme = 'UrbanChaos';
+    const theme = 'Urbanity';
     switch (card.sheet) {
       case 'Citizen':
         return (
@@ -51,22 +51,27 @@ export default class CardFront extends React.Component<CardType, {}> {
           budget = [];
           if (card.cost > 0) {
             for (let i = card.cost; i > 0; i--) {
-              budget.push(<span className="black">+</span>);
+              budget.push(<span className="budgetBlack">+</span>);
             }
           } else if (card.cost < 0) {
             for (let i = card.cost; i < 0; i++) {
-              budget.push(<span className="red">-</span>);
+              budget.push(<span className="budgetRed">-</span>);
             }
           }
-          budget = <div className="costs">{budget}</div>;
         }
         return (
-          <div className={`card front vertical ${card.sheet} ${card.committee}`}>
+          <div className={`card front vertical ${card.sheet} ${card.type}`}>
             <div className="contents">
               <header>
                 <div className="name">{card.name}</div>
+                <div className="icons">
+                  {budget}
+                  {card.scoreBlack1 && <span className="scoreBlack">{card.scoreBlack1}</span>}
+                  {card.scoreBlack2 && <span className="scoreBlack">{card.scoreBlack2}</span>}
+                  {card.scoreRed1 && <span className="scoreRed">{card.scoreRed1}</span>}
+                  {card.scoreRed2 && <span className="scoreRed">{card.scoreRed2}</span>}
+                </div>
                 <div className="type">{card.type}</div>
-                {budget}
               </header>
               <article>
                 <div className="score">

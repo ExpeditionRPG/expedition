@@ -22,7 +22,7 @@ export let initialState: FiltersState = {
   theme: {
     current: 'BlackAndWhite',
     default: 'BlackAndWhite',
-    options: ['BlackAndWhite', 'Color', 'UrbanChaos'],
+    options: ['BlackAndWhite', 'Color', 'Urbanity'],
   },
   export: {
     current: 'PrintAndPlay',
@@ -32,7 +32,7 @@ export let initialState: FiltersState = {
   source: {
     current: 'Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
     default: 'Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
-    options: ['Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM', 'UrbanChaos:1lZaRaRmBh2O1HBRUuczE4s7WqmCpS3Sphtu0DphyRk8', 'Custom'],
+    options: ['Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM', 'Urbanity:1lZaRaRmBh2O1HBRUuczE4s7WqmCpS3Sphtu0DphyRk8', 'Custom'],
   },
 };
 

@@ -29,7 +29,7 @@ $color-red: #D84315; /* red800 */
 $color-green: #1B5E20; /* green900 */
 $color-blue: #0D47A1; /* blue900 */
 
-#renderer.UrbanChaos {
+#renderer.Urbanity {
 
   /* ===== THE CARDS ===== */
 
@@ -57,23 +57,36 @@ $color-blue: #0D47A1; /* blue900 */
         line-height: 1.15;
       }
 
-      .costs {
+      .icons {
         font-weight: bold;
         color: white;
         font-size: 1.1 * $text-size-content;
-        margin-top: $tiny;
-        .black, .red {
+        margin-top: -$tiny;
+        margin-bottom: $small;
+        &>span {
+          margin-right: $tiny;
           display: inline-block;
           width: 0.21in;
           height: 0.21in;
           text-align: center;
-          margin-right: $tiny;
           border-radius: 0.04in;
         }
-        .black {
+        .scoreBlack, .scoreRed {
+          position: relative;
+          svg {
+            position: absolute;
+            top: $tiny + $tiny;
+            left: 0;
+          }
+        }
+        .scoreRed svg path {
+          fill: $color-red;
+          stroke: $color-red;
+        }
+        .budgetBlack {
           background: black;
         }
-        .red {
+        .budgetRed {
           background: $color-red;
         }
       }
@@ -117,7 +130,7 @@ $color-blue: #0D47A1; /* blue900 */
         }
         .scoreRed {
           color: $color-red;
-          svg {
+          svg path {
             stroke: $color-red;
             fill: $color-red;
           }
@@ -162,6 +175,9 @@ $color-blue: #0D47A1; /* blue900 */
     }
 
     &.Politics {
+      &.Basic.Action {
+        border-color: blue;
+      }
       footer {
         background-color: white;
         padding-top: $small;
