@@ -115,6 +115,7 @@ Notes and debugging:
 - requires a Mac with XCode installed
 - auth issues? Read https://github.com/EddyVerbruggen/cordova-plugin-googleplus
   - app crashing because of invalid REVERSE_CLIENT_ID? Check to see if `/platforms/ios/Expedition/Resources/GoogleService-Info.plist` or `/platforms/ios/Expedition/Resources/Resources/GoogleService-Info.plist` is corrupted. Replace it, and re-run `cordova build ios`
+- if Xcode complains about signing, try going to the project settings in Xcode, disabling automatic signing, re-enabling it, and then selecting your team again.
 
 #### Troubleshooting builds
 
