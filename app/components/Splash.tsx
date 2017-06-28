@@ -33,7 +33,7 @@ const Splash = (props: any): JSX.Element => {
         <div>
           <h1><span>Share your <strong>Stories</strong></span> <span>with the <strong>World</strong></span></h1>
           <div className="worldMap">
-            <img alt="Countries with Expedition adventurers - Jan-April 2017" src="/assets/img/worldmap.png"></img>
+            <img alt="Countries with Expedition adventurers - Jan-April 2017" src="/images/worldmap.png"></img>
           </div>
           <div className="imageText">Countries with Expedition adventurers - Jan-April 2017</div>
           <h3>Write adventures for <a target="_blank" href="https://expeditiongame.com">Expedition: The Roleplaying Card Game</a></h3>
@@ -82,7 +82,7 @@ const Splash = (props: any): JSX.Element => {
           </h3>
 
           <div className="showcase">
-            <div><img src="assets/img/code_example.png"></img></div>
+            <div><img src="/images/code_example.png"></img></div>
             <div>
               <p>
                 If you've never written code before, you don't have to.

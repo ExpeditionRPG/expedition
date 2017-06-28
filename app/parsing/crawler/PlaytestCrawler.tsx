@@ -80,7 +80,7 @@ class PlaytestCrawler extends StatsCrawler {
 export function playtestXMLResult(parserResult: Cheerio): LogMessageMap {
   const logger = new Logger();
   try {
-    const root = initQuest('0', parserResult, defaultQuestContext()).node;
+    const root = initQuest({id: '0'}, parserResult, defaultQuestContext()).node;
     const crawler = new PlaytestCrawler(logger);
     crawler.crawl(root);
   } catch(e) {

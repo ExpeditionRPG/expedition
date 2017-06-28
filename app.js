@@ -54,11 +54,11 @@ const setupRoutes = function(app) {
 
   if (process.env.NODE_ENV === 'dev') {
     // Set a catch-all route and proxy the request for static assets
-    console.log("Proxying static requests to webpack");
+    console.log('Proxying static requests to webpack');
     const proxy = require('proxy-middleware');
     app.use('/', proxy(url.parse('http://localhost:' + port2 + '/')));
   } else {
-    app.use('/assets', express.static('app/assets'));
+    app.use('/images', express.static('app/assets/images'));
     app.use(express.static('dist'));
   }
 };

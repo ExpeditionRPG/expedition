@@ -82,7 +82,7 @@ export function renderAndPlay(qdl: string, line: number, ctx: QuestContext) {
     }
     const newNode = new ParserNode(playNode, ctx);
     dispatch({type: 'REBOOT_APP'});
-    dispatch(initQuest('0', questNode, ctx));
+    dispatch(initQuest({id: '0'}, questNode, ctx));
     // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
     dispatch(loadNode({autoRoll: false, numPlayers: 1, difficulty: 'NORMAL', showHelp: false, multitouch: false, vibration: false}, newNode));
     dispatch({type: 'QUEST_PLAYTEST', msgs: playtestXMLResult(questNode)});

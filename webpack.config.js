@@ -50,7 +50,8 @@ const options = {
     }),
     new CopyWebpackPlugin([
       { from: 'app/index.html' },
-      { from: 'node_modules/expedition-app/app/images', to: 'images'},
+      { from: 'app/assets' },
+      { from: 'node_modules/expedition-app/app/images', to: 'images' },
     ]),
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {

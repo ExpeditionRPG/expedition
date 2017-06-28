@@ -23,14 +23,14 @@ $bgInteractive: rgb(20,20,20);
 $bgHighlight: #333;
 $textDisabled: #888;
 
-$bg_papyrus_img: url("/assets/img/papyrus-tiled.jpg");
-$bg_encounter_img: url("/assets/img/encounter-tiled.jpg");
+$bg_papyrus_img: url('/images/papyrus-tiled.jpg');
+$bg_encounter_img: url('/images/encounter-tiled.jpg');
 
 @font-face {
   font-family: 'Cinzel';
   font-style: normal;
   font-weight: 700;
-  src: local('Cinzel-Bold'), url(fonts/Cinzel-Bold.woff2) format('woff2');
+  src: local('Cinzel-Bold'), url('fonts/Cinzel-Bold.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -38,13 +38,13 @@ $bg_encounter_img: url("/assets/img/encounter-tiled.jpg");
   font-family: 'Cinzel';
   font-style: normal;
   font-weight: 400;
-  src: local('Cinzel-Regular'), url(fonts/Cinzel-Regular.woff2) format('woff2');
+  src: local('Cinzel-Regular'), url('fonts/Cinzel-Regular.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
 }
 
 @font-face {
-  font-family: 'MinionPro';
-  src: url('fonts/Minion Pro Regular.ttf') format('truetype');
+  font-family: 'Minion-Pro';
+  src: local('Minion-Pro'), url('fonts/Minion-Pro-Regular.ttf') format('truetype');
 }
 
 html, body, section#react-app, textarea {
@@ -52,7 +52,7 @@ html, body, section#react-app, textarea {
   height: 100%;
   padding: 0;
   margin: 0;
-  font-family: Monaco, Melo, "Ubuntu Mono", monospace;
+  font-family: 'Monaco', 'Melo', 'Ubuntu Mono', monospace;
   font-size: $fontSizeBase;
 }
 
@@ -108,7 +108,7 @@ label {
 
 .splash {
   background: $bg_primary;
-  font-family: 'MinionPro';
+  font-family: 'Minion-Pro';
   overflow-y: auto;
   font-size: $splashParagraphSize;
 
@@ -135,7 +135,7 @@ label {
       display: inline-block;
       padding: $padBase;
       &> button {
-        font-family: 'MinionPro', serif !important;
+        font-family: 'Minion-Pro', serif !important;
         font-size: $fontSizeBase !important;
         padding-left: 2*$padBase !important;
         padding-right: 2*$padBase !important;
@@ -307,7 +307,7 @@ label {
     }
 
     .app, button {
-      font-family: MinionPro, sans-serif !important;
+      font-family: 'Minion-Pro', sans-serif !important;
     }
   }
 }

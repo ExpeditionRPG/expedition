@@ -22,8 +22,12 @@ const options = {
   },
   module: {
     loaders: [
-      { enforce: 'pre', test: /\.js$/, loader: "source-map-loader" },
-      { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
+      { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
+      // TODO this does not export images to static/ for maintenance pages,
+      // but attempting to do so then breaks export to dist/
+      // Will be auto-fixed when we migrate all static pages to quests.expedition
+      // In the mean time, can manually copy images over when deploying static files
+      { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader?outputPath=dist/' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /\/node_modules\/((?!expedition\-app).)*$/ },
@@ -39,16 +43,17 @@ const options = {
     }),
     new CopyWebpackPlugin([
       // Copy ops for dist folder (main app)
-      { from: 'app/index.html', to:'dist' },
-      { from: 'node_modules/expedition-app/app/images', to: 'dist/images'},
+      { from: 'app/index.html', to: 'dist' },
+      { from: 'app/assets', to: 'dist' },
+      { from: 'node_modules/expedition-app/app/images', to: 'dist/images' },
       { from: 'app/dictionaries', to: 'dist/dictionaries'},
-      { from: 'app/scripts', to: 'scripts'},
+      { from: 'app/scripts', to: 'dist/scripts' },
 
       // Copy ops for static folder (error/maintenance pages)
       { from: 'app/error.html', to: 'static' },
       { from: 'app/maintenance.html', to: 'static' },
-      { from: 'app/assets', to: 'static/assets'},
-      { from: 'node_modules/expedition-app/app/images', to: 'static/images'},
+      { from: 'app/assets', to: 'dist' },
+      { from: 'node_modules/expedition-app/app/images', to: 'static/images' },
     ]),
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {

@@ -49,8 +49,14 @@ heroku logs -a expedition-quest-creator
 ### Deploy to prod
 
 ```shell
-git checkout ${BRANCH_TO_PUSH_TO_PROD}
-git push heroku prod
+git checkout ${BRANCH_TO_DEPLOY}
+git push heroku ${BRANCH_TO_DEPLOY}:master
+```
+
+If you want to be especially cautious, you can even set up your default heroku remote to point to dev, and create an explicit `prod` remote for pushing to prod:
+```
+heroku git:remote -a expedition-quest-creator-dev -r heroku
+heroku git:remote -a expedition-quest-creator -r prod
 ```
 
 ### Rollback

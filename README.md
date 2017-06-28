@@ -23,7 +23,6 @@ Now install the repo:
 git clone https://github.com/ExpeditionRPG/expedition-quest-creator
 cd expedition-quest-creator
 sudo npm install -g webpack && npm install
-webpack --config=webpack.dll.js
 ```
 
 If you use windows, you may need to run the following:
@@ -76,11 +75,13 @@ The Quest Creator uses Continuous Integration (via Travis CI) and Heroku hosting
 
 If tests pass, the `dev` branch is automatically deploy to the Heroku development environment at [http://devquests.expeditiongame.com](http://devquests.expeditiongame.com).
 
-If tests pass, the `master` branch is automatically deployed to production at [http://quests.expeditiongame.com](http://quests.expeditiongame.com).
+Once master has been thoroughly tested on dev, it can be deployed to master via `git push heroku master`. Branches besides master can also be deployed via `git push heroku branchname:master`.
 
 ### Database
 
 The Quest Creator uses Postgres SQL. You can test functionality and scripts against a locally-hosted version of Postgres. To access the official databases, you'll need to be a regular contributor to the codebase and receive special permission from the creators.
+
+If you are going to access prod, especially to edit data, make sure to make a backup [here](https://data.heroku.com/datastores/af009eae-3a7e-467b-9822-b368e0d4ed3a) first. Backups are automatically created daily, but this will allow zero-consequence rollbacks in case your query fails.
 
 For database querying, make sure you have psql installed and can do `which psql`, then run `heroku pg:psql --app expedition-quest-creator-dev DATABASE` to connect.
 
