@@ -161,16 +161,16 @@ function renderResolve(props: CombatProps): JSX.Element {
     helpText = (
       <span>
         <p>
-          Roll a die for each ability. If <img className="inline_icon" src="images/roll_white_small.svg"></img> &ge; X, the ability succeeds. Abilities may list additional effects based on the roll, even if they fail.
+          Each adventurer rolls a die for the ability they played. If <img className="inline_icon" src="images/roll_white_small.svg"></img> &ge; X, the ability succeeds. Abilities may list additional effects based on the roll, even if they fail.
         </p>
         <p>
           Adventurers may resolve their abilities in any order, and may apply their effects (such as roll and damage modifiers) retroactively to other abilities used this round.
         </p>
         <p>
-          Note that some enemies take more (or less) damage from certain ability types, as specified on their card.
+          Note that some enemies take more or less damage from certain ability types, as specified on their card.
         </p>
         <p>
-          Place all abilities played this round into your discard pile.
+          Discard all abilities played this round.
         </p>
       </span>
     );
