@@ -1,11 +1,11 @@
 declare var window:any;
 
 export const authSettings = {
-  urlBase: 'https://quests.expeditiongame.com',
+  urlBase: 'https://api.expeditiongame.com',
   // urlBase: 'http://devquests.expeditiongame.com',
   // urlBase: 'http://localhost:8080',
   apiKey: 'AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8',
-  scopes: 'profile',
+  scopes: 'profile email',
   // web:
   clientId: '545484140970-r95j0rmo8q1mefo0pko6l3v6p4s771ul.apps.googleusercontent.com',
   // iOS: (REVERSE_CLIENT_ID)

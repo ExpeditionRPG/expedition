@@ -14,3 +14,6 @@ npm-debug.log
 google-services.json
 GoogleService-Info.plist
 res/
+
+# Removed until NPM 5 sorts out bugs (breaks when building on different platforms)
+package-lock.json

@@ -49,7 +49,6 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     card: ownProps.card,
     settings: state.settings,
     node: state.quest && state.quest.node,
-    staticNode: ownProps.node,
     maxTier,
     victoryParameters,
     // Override with dynamic state for tier and adventurer count

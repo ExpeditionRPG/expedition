@@ -11,23 +11,34 @@ type UserLoginCallback = (user: UserState, err?: string) => any;
 
 
 function registerUserAndIdToken(user: {name: string, image: string, email: string}, idToken: string, callback: UserLoginCallback) {
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', authSettings.urlBase + '/auth/google', true);
-  xhr.setRequestHeader('Content-Type', 'text/plain');
-  xhr.onload = () => {
+  fetch(authSettings.urlBase + '/auth/google', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'text/plain',
+    },
+    body: JSON.stringify({
+      id_token: idToken,
+      name: user.name,
+      image: user.image,
+      email: user.email,
+    }),
+  })
+  .then((response: Response) => {
+    return response.text();
+  })
+  .then((id: string) => {
     callback({
       loggedIn: true,
-      id: xhr.responseText,
+      id,
       name: user.name,
       image: user.image,
       email: user.email,
     });
-  };
-  xhr.onerror = () => {
+  }).catch((error: Error) => {
+    console.log('Request failed', error);
     callback(null, 'Error authenticating.');
-  };
-  xhr.withCredentials = true;
-  xhr.send(JSON.stringify({id_token: idToken, name: user.name, image: user.image, email: user.email}));
+  });
 }
 
 function loginWeb(callback: UserLoginCallback) {
@@ -36,7 +47,9 @@ function loginWeb(callback: UserLoginCallback) {
     const idToken: string = googleUser.getAuthResponse().id_token;
     const basicProfile: any = googleUser.getBasicProfile();
     registerUserAndIdToken({
-      name: basicProfile.getName(), image: basicProfile.getImageUrl(), email: basicProfile.getEmail(),
+      name: basicProfile.getName(),
+      image: basicProfile.getImageUrl(),
+      email: basicProfile.getEmail(),
     }, idToken, callback);
   });
 }
@@ -48,7 +61,9 @@ function silentLoginWeb(callback: UserLoginCallback) {
     const idToken: string = googleUser.getAuthResponse().id_token;
     const basicProfile: any = googleUser.getBasicProfile();
     return registerUserAndIdToken({
-      name: basicProfile.getName(), image: basicProfile.getImageUrl(), email: basicProfile.getEmail(),
+      name: basicProfile.getName(),
+      image: basicProfile.getImageUrl(),
+      email: basicProfile.getEmail(),
     }, idToken, callback);
   }
   return callback(null);

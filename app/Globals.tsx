@@ -5,7 +5,7 @@ declare var ga: any;
 const PACKAGE = require('../package.json');
 
 export interface ReactDocument extends Document {
-  addEventListener: (e: string, f: ()=>any, useCapture?: boolean) => void;
+  addEventListener: (e: string, f: any, useCapture?: boolean) => void;
   dispatchEvent: (e: Event) => boolean;
 }
 

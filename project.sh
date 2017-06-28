@@ -216,30 +216,6 @@ if [[ $init = 1 ]] || [[ $icons = 1 ]] ; then
 fi
 
 # ----
-# Add Plugins
-
-if [[ $init = 1 ]] || [[ $plugins = 1 ]] ; then
-
-        message_info "Adding Device Plugin..."
-        cordova plugin add https://git-wip-us.apache.org/repos/asf/cordova-plugin-device.git
-
-        message_info "Adding In-App Browser Plugin..."
-        cordova plugin add https://git-wip-us.apache.org/repos/asf/cordova-plugin-inappbrowser.git
-
-        message_info "Adding Splashscreen Plugin..."
-        cordova plugin add https://git-wip-us.apache.org/repos/asf/cordova-plugin-splashscreen.git
-
-        message_info "Adding Fullscreen Plugin..."
-        cordova plugin add https://github.com/katzer/cordova-plugin-hidden-statusbar-overlay.git
-
-        message_info "Adding iOS Export Compliance Plugin..."
-        cordova plugin add https://github.com/andres-torres-marroquin/cordova-plugin-ios-no-export-compliance.git
-
-        message_info "Adding Google Plus Plugin..."
-        cordova plugin add cordova-plugin-googleplus
-fi
-
-# ----
 # Prepare Platforms
 if [[ $init = 1 ]] || [[ $update = 1 ]] ; then
         message_info "Syncing 'www' with Android platform..."

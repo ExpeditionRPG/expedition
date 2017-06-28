@@ -1,6 +1,8 @@
-# The Expedition Roleplaying Card Game App
+# Expedition: The Companion App
 
 [![Build Status](https://travis-ci.org/ExpeditionRPG/expedition-app.svg)](https://travis-ci.org/ExpeditionRPG/expedition-app)
+
+Learn more about Expedition and play the game at [ExpeditionGame.com](https://expeditiongame.com). The app is available at [App.ExpeditionGame.com](https://App.ExpeditionGame.com), and for Android and iOS.
 
 ## Contributing
 
@@ -16,11 +18,9 @@ Question? Email us at Expedition@Fabricate.io
 
 ### Requirements
 
-Requires NodeJS v4.0 or above:
+Requires NodeJS v6.0 or above. Check your version with `node -v`.
 
-```sh
-node --version
-```
+We recommend using [NVM](https://github.com/creationix/nvm) to install node to make it easier to swap between and upgrade Node versions in the future.
 
 Windows: must be run within a Unix-like shell (such as Git Bash)
 
@@ -38,21 +38,19 @@ With Node.js installed, run the following one liner from the root of the reposit
 npm install -g gulp webpack && npm install
 ```
 
-For building native apps, you will also need to set up cordova:
+For building native apps, you will also need to set up cordova. If you want to build with working authentication, first add `google-services.json` and `GoogleService-Info.plist` to the root of the repository (download from Firebase Console or get them from an admin). Then run:
 
 ```sh
 npm install -g cordova
 ./project.sh
 ```
 
-To build for deploying, you'll also need `google-services.json` and `GoogleService-Info.plist` for Firebase analytics, which can be fetched from the Firebase project console.
-
 ### Development workflow
 
 #### Serve / watch
 
 ```sh
-NODE_ENV=dev node ${SCRIPT:-app.js}
+npm run dev
 ```
 
 This runs the app at `http://localhost:8081/` (port may be different if you're using [Containerizer](https://github.com/ExpeditionRPG/containerizer)). It also outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
@@ -65,7 +63,7 @@ npm run test
 
 This runs the unit tests defined in the `app/test` directory.
 
-Tests require Java 7 or higher. To update Java go to http://www.oracle.com/technetwork/java/javase/downloads/index.html and download ***JDK*** and install it.
+Tests require Java JDK 7 or higher. To update Java go to http://www.oracle.com/technetwork/java/javase/downloads/index.html and download ***JDK*** and install it.
 
 Tests require Chrome. Please make sure you have the Chrome browser installed and up-to-date on your system.
 
@@ -74,7 +72,7 @@ Tests require Chrome. Please make sure you have the Chrome browser installed and
 Before deploying to production, run `./beta.sh` to deploy to beta.expeditiongame.com and create beta versions of the Android and iOS apps. Then check that:
 
 - app icon and splashscreen appear properly on Android and iOS. If properly configured, the icons and splashscreens WILL show up in the beta build.
-- basic functionality works (app loads, you can search and start quests, you can complete combat)
+- basic functionality works for all three builds (app loads, start quests, search quests, complete combat)
 
 #### Build for Web
 
@@ -100,7 +98,7 @@ For release:
 ./build_android_release.sh
 ```
 
-Notes:
+Notes and debugging:
 
 - requires the Android SDK
 - when deploying Android, you'll need to update `android-versionCode` in `config.xml`, not just `version`.
@@ -112,10 +110,11 @@ Notes:
 webpack --config ./webpack.dist.config.js && cordova build ios
 ```
 
-Notes:
+Notes and debugging:
 
-- must be done on a Mac with XCode installed
+- requires a Mac with XCode installed
 - auth issues? Read https://github.com/EddyVerbruggen/cordova-plugin-googleplus
+  - app crashing because of invalid REVERSE_CLIENT_ID? Check to see if `/platforms/ios/Expedition/Resources/GoogleService-Info.plist` or `/platforms/ios/Expedition/Resources/Resources/GoogleService-Info.plist` is corrupted. Replace it, and re-run `cordova build ios`
 
 #### Troubleshooting builds
 
