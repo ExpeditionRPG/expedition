@@ -7,7 +7,7 @@ import {getStore} from '../Store'
 export function toCard(name: CardName, phase?: CardPhase, overrideDebounce?: boolean): NavigateAction {
   let state: AppStateWithHistory = getStore().getState();
   const nav = getNavigator();
-  if (nav && state.settings.vibration) {
+  if (nav && nav.vibrate && state.settings.vibration) {
     if (phase === 'TIMER') {
       nav.vibrate(VIBRATION_LONG_MS);
     } else {

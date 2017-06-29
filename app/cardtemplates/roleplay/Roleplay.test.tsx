@@ -1,10 +1,10 @@
 // TODO: using require prevents this file from breaking, but can't actually write
 // useful tests without using import
 // (see: http://airbnb.io/enzyme/docs/guides/mocha.html)
-import Roleplay, {loadRoleplayNode, RoleplayResult} from './Roleplay'
 import {QuestContext} from '../../reducers/QuestTypes'
 import {defaultQuestContext} from '../../reducers/Quest'
 import {ParserNode} from '../../parser/Node'
+import Roleplay, {loadRoleplayNode, RoleplayResult} from './Roleplay'
 
 var cheerio: any = require('cheerio');
 
