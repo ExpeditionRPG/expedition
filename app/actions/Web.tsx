@@ -8,6 +8,7 @@ import {userFeedbackClear} from '../actions/UserFeedback'
 import {SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} from '../reducers/StateTypes'
 import {QuestContext, QuestDetails, defaultQuestContext} from '../reducers/QuestTypes'
 import {getDevicePlatform, getAppVersion} from '../Globals'
+import {logEvent} from '../React'
 
 declare var window:any;
 declare var require:any;
@@ -31,7 +32,7 @@ export function fetchQuestXML(details: QuestDetails) {
 // for loading quests in the app - Quest Creator injects directly into initQuest
 export function loadQuestXML(details: QuestDetails, questNode: Cheerio, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    window.FirebasePlugin.logEvent('quest_start', details); // here instead of initQuest b/c initQuest is also used by the editor
+    logEvent('quest_start', details); // here instead of initQuest b/c initQuest is also used by the editor
     dispatch(initQuest(details, questNode, ctx));
     dispatch(toCard('QUEST_START'));
   };
@@ -81,11 +82,11 @@ export function subscribe(email: string) {
       dataType: 'json',
     })
     .done((msg: string) => {
-      window.FirebasePlugin.logEvent('user_subscribe', email);
+      logEvent('user_subscribe', email);
     })
     .fail((xhr: any, err: string) => {
       if (xhr.status === 200) {
-        window.FirebasePlugin.logEvent('user_subscribe', email);
+        logEvent('user_subscribe', email);
       } else {
         dispatch(openSnackbar('Error subscribing: ' + err));
       }
@@ -113,17 +114,17 @@ export function submitUserFeedback(quest: QuestState, settings: SettingsType, us
       dataType: 'json',
     })
     .done((msg: string) => {
-      window.FirebasePlugin.logEvent('user_feedback_' + userFeedback.type, data);
+      logEvent('user_feedback_' + userFeedback.type, data);
       dispatch(userFeedbackClear());
       dispatch(openSnackbar('Submission successful. Thank you!'));
     })
     .fail((xhr: any, err: string) => {
       if (xhr.status === 200) {
-        window.FirebasePlugin.logEvent('user_feedback_' + userFeedback.type, data);
+        logEvent('user_feedback_' + userFeedback.type, data);
         dispatch(userFeedbackClear());
         return dispatch(openSnackbar('Submission successful. Thank you!'));
       }
-      window.FirebasePlugin.logEvent('user_feedback_' + userFeedback.type + '_err', data);
+      logEvent('user_feedback_' + userFeedback.type + '_err', data);
       return dispatch(openSnackbar('Error submitting feedback: ' + err));
     });
   };

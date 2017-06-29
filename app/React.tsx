@@ -25,7 +25,10 @@ function setupTapEvents() {
 
 
 export function logEvent(name: string, args: any): void {
-  getWindow().FirebasePlugin.logEvent(name, args);
+  const fbp = getWindow().FirebasePlugin;
+  if (fbp) {
+    fbp.logEvent(name, args);
+  }
 
   const ga = getGA()
   if (ga) {

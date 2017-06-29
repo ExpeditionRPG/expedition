@@ -33,6 +33,7 @@ const refs = {
   device: (typeof device !== 'undefined') ? device : {platform: null},
   gapi: (typeof gapi !== 'undefined') ? gapi : null,
   ga: (typeof ga !== 'undefined') ? ga : null,
+  navigator: (typeof navigator !== 'undefined') ? navigator : null,
 };
 
 export function getAppVersion(): string {
@@ -76,6 +77,10 @@ export function setGA(ga: any) {
   refs.ga = ga;
 }
 
+export function setNavigator(navigator: any) {
+  refs.navigator = navigator;
+}
+
 export function getWindow(): ReactWindow {
   return refs.window;
 }
@@ -94,4 +99,8 @@ export function getGapi(): any {
 
 export function getGA(): any {
   return refs.ga;
+}
+
+export function getNavigator(): any {
+  return refs.navigator;
 }
