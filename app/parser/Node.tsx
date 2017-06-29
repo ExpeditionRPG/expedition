@@ -1,6 +1,5 @@
 import {QuestContext} from '../reducers/QuestTypes'
 import {updateContext, evaluateContentOps} from './Context'
-import {defaultQuestContext} from '../reducers/Quest'
 
 const Clone = require('clone');
 const Math = require('mathjs') as any;
