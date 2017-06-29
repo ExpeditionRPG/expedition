@@ -1,6 +1,6 @@
 import {initQuest} from './Quest'
 import {initialState} from '../reducers/Quest'
-import {defaultQuestContext} from '../reducers/QuestTypes'
+import {defaultQuestContext} from '../reducers/Quest'
 
 declare var require:any;
 const cheerio = require('cheerio') as CheerioAPI;

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {QuestContext} from '../reducers/QuestTypes'
 import {updateContext, evaluateContentOps} from './Context'
+import {defaultQuestContext} from '../reducers/Quest'
 
 const Clone = require('clone');
 const Math = require('mathjs') as any;
@@ -47,7 +48,7 @@ export class ParserNode {
 
   constructor(elem: Cheerio, ctx: QuestContext, action?: string|number) {
     this.elem = elem;
-    this.ctx = updateContext(elem, ctx, action);
+    this.ctx = updateContext(elem, ctx, defaultQuestContext, action);
     this.renderChildren();
   }
 

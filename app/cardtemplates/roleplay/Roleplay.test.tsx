@@ -2,7 +2,8 @@
 // useful tests without using import
 // (see: http://airbnb.io/enzyme/docs/guides/mocha.html)
 import Roleplay, {loadRoleplayNode, RoleplayResult} from './Roleplay'
-import {defaultQuestContext, QuestContext} from '../../reducers/QuestTypes'
+import {QuestContext} from '../../reducers/QuestTypes'
+import {defaultQuestContext} from '../../reducers/Quest'
 import {ParserNode} from '../../parser/Node'
 
 var cheerio: any = require('cheerio');

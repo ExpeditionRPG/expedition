@@ -1,4 +1,5 @@
-import {defaultQuestContext, DifficultyType} from '../../reducers/QuestTypes'
+import {DifficultyType} from '../../reducers/QuestTypes'
+import {defaultQuestContext} from '../../reducers/Quest'
 import {initCombat, initCustomCombat, isSurgeRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta} from './Actions'
 import {ParserNode} from '../../parser/Node'
 import configureStore  from 'redux-mock-store'

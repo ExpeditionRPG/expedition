@@ -1,6 +1,6 @@
 import {CrawlerBase, CrawlEntry, CrawlEvent} from './Crawler'
 import {ParserNode} from './Node'
-import {defaultQuestContext} from '../reducers/QuestTypes'
+import {defaultQuestContext} from '../reducers/Quest'
 
 declare var global: any;
 

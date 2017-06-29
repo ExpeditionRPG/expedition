@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {defaultQuestContext, QuestContext} from '../reducers/QuestTypes'
+import {QuestContext} from '../reducers/QuestTypes'
 
 const Clone = require('clone');
 const HtmlDecode = (require('he') as any).decode;
@@ -86,7 +86,7 @@ function parseOpString(str: string): string {
   return op[1];
 }
 
-export function updateContext(node: Cheerio, ctx: QuestContext, action?: string|number): QuestContext {
+export function updateContext(node: Cheerio, ctx: QuestContext, defaultGen: ()=>QuestContext, action?: string|number): QuestContext {
   if (!node) {
     return ctx;
   }
@@ -99,6 +99,6 @@ export function updateContext(node: Cheerio, ctx: QuestContext, action?: string|
   if (action !== undefined) {
     newContext.path.push(action);
   }
-  newContext.scope._.viewCount = defaultQuestContext().scope._.viewCount.bind(newContext);
+  newContext.scope._.viewCount = defaultGen().scope._.viewCount.bind(newContext);
   return newContext;
 }
