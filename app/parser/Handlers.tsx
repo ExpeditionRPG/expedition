@@ -1,4 +1,3 @@
-import * as React from 'react'
 import {Choice, Enemy, EventParameters, RoleplayElement, QuestCardName, QuestContext} from '../reducers/QuestTypes'
 import {ParserNode} from './Node'
 

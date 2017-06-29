@@ -86,7 +86,7 @@ function parseOpString(str: string): string {
   return op[1];
 }
 
-export function updateContext(node: Cheerio, ctx: QuestContext, defaultGen: ()=>QuestContext, action?: string|number): QuestContext {
+export function updateContext(node: Cheerio, ctx: QuestContext, action?: string|number): QuestContext {
   if (!node) {
     return ctx;
   }
@@ -99,6 +99,12 @@ export function updateContext(node: Cheerio, ctx: QuestContext, defaultGen: ()=>
   if (action !== undefined) {
     newContext.path.push(action);
   }
-  newContext.scope._.viewCount = defaultGen().scope._.viewCount.bind(newContext);
+
+  // TODO(scott): This is a hack to remove dependency on defaultQuestContext, which adds a bunch
+  // of unnecessary dependencies in the quest service.
+  newContext.scope._.viewCount = function(id: string): number {
+    return this.views[id] || 0;
+  }.bind(newContext);
+
   return newContext;
 }

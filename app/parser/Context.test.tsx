@@ -39,16 +39,16 @@ describe('Context', () => {
     it('appends to path', () => {
       const ctx = defaultQuestContext();
       expect(ctx.path).toEqual([]);
-      const ctx2 = updateContext(dummyElem, ctx, defaultQuestContext, 2);
+      const ctx2 = updateContext(dummyElem, ctx, 2);
       expect(ctx2.path).toEqual([2]);
-      const ctx3 = updateContext(dummyElem, ctx2, defaultQuestContext, 'win');
+      const ctx3 = updateContext(dummyElem, ctx2, 'win');
       expect(ctx3.path).toEqual([2, 'win']);
-      const ctx4 = updateContext(dummyElem, ctx3, defaultQuestContext, '#testID');
+      const ctx4 = updateContext(dummyElem, ctx3, '#testID');
       expect(ctx4.path).toEqual([2, 'win', '#testID']);
     });
     it('does not affect other contexts', () => {
       const ctx = defaultQuestContext();
-      const ctx2 = updateContext(dummyElem, ctx, defaultQuestContext, 2);
+      const ctx2 = updateContext(dummyElem, ctx, 2);
       expect(ctx.path).not.toEqual([2]);
     })
     it('updates view count');
