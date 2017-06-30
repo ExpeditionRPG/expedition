@@ -53,7 +53,7 @@ class AppBar extends React.Component<AppBarProps, {}> {
       );
     });
     return (
-      <Toolbar className="printHide">
+      <Toolbar className="printHide appbar">
         <ToolbarGroup>
           <ToolbarTitle text="Expedition" />
         </ToolbarGroup>

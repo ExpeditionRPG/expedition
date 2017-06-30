@@ -95,17 +95,17 @@ export function filterAndFormatCards(cards: CardType[], filters: FiltersState): 
 }
 
 
-const boldColonedRegex = /.*: /g;
-const orRegex = /\nOR\n/g; // note: caps only
-const symbolRegex = /&[#a-z0-9]{1,7};/img;
 const iconRegex = /#\w*/mg;
+const boldColonedRegex = /[^#]*: /g;
+const orRegex = /\nOR\n/g; // purposefully caps only
+const symbolRegex = /&[#a-z0-9]{1,7};/img;
 const doubleLinebreak = /\n\n/mg;
 const singleLinebreak = /\n/mg; // purposefully last
 const elementifyRegex = new RegExp('(' + [
+  iconRegex.source,
   boldColonedRegex.source,
   orRegex.source,
   symbolRegex.source,
-  iconRegex.source,
   doubleLinebreak.source,
   singleLinebreak.source
 ].join('|') + ')', 'igm');
@@ -122,31 +122,31 @@ function formatCard(card: CardType, filters: FiltersState): CardType {
       // Then walk through the array and JSX-ify as needed, leaving the rest as strings
       // Parsing order is important here, for example \n\n vs \n
       const values = value.split(elementifyRegex)
-        .filter((str: string) => (str && str !== ''))
-        .map((str: string, index: number): string | JSX.Element => {
-        // Wrap "OR" in div for padding
-        if (orRegex.test(str)) {
-          return <div key={index} className="or">OR</div>;
-        }
-        // Bold "Declaration: "
-        if (boldColonedRegex.test(str)) {
-          return <strong key={index}>{str}</strong>
-        }
-        // Parse & wrap symbols (<, >, etc) in a span for better style control
-        if (symbolRegex.test(str)) {
-          return <span key={index} className="symbol">{str}</span>;
-        }
-        if (iconRegex.test(str)) {
-          return icon(filters.theme.current, str.replace(iconRegex, (match: string) => match.substring(1) + '_small'), index);
-        }
-        if (doubleLinebreak.test(str)) {
-          return <br key={index} className="padded"/>;
-        }
-        if (singleLinebreak.test(str)) {
-          return <br key={index}/>;
-        }
-        return str;
-      });
+          .filter((str: string) => (str && str !== ''))
+          .map((str: string, index: number): string | JSX.Element => {
+            if (iconRegex.test(str)) {
+              return icon(filters.theme.current, str.replace(iconRegex, (match: string) => match.substring(1) + '_small'), index);
+            }
+            // Wrap "OR" in div for padding
+            if (orRegex.test(str)) {
+              return <div key={index} className="or">OR</div>;
+            }
+            // Bold "Declaration: "
+            if (boldColonedRegex.test(str)) {
+              return <strong key={index}>{str}</strong>
+            }
+            // Parse & wrap symbols (<, >, etc) in a span for better style control
+            if (symbolRegex.test(str)) {
+              return <span key={index} className="symbol">{str}</span>;
+            }
+            if (doubleLinebreak.test(str)) {
+              return <br key={index} className="padded"/>;
+            }
+            if (singleLinebreak.test(str)) {
+              return <br key={index}/>;
+            }
+            return str;
+          });
 
       if (values.length === 0) {
         value = null;

@@ -408,6 +408,19 @@ $text-color-white: #fff;
       &.hp10 .hp-tracker-vertical-right li {
         padding-bottom: 0.042in;
       }
+
+      .art {
+        position: absolute;
+        top: 0.1in;
+        right: 0.3in;
+        width: 1.5in;
+      }
+
+      &.Horror {
+        article {
+          width: 35%;
+        }
+      }
     }
 
     &.Loot {
@@ -449,9 +462,22 @@ $text-color-white: #fff;
       }
     }
 
-    &.Personality {
+    &.Persona.front {
+      .contents {
+        margin: 0 !important;
+      }
       article {
         padding-left: 0;
+        padding-top: 0;
+        padding-right: 14pt;
+        top: 50%;
+        transform: translateY(-50%);
+        margin: 0;
+
+        tr td:first-child {
+          padding-right: 4pt;
+          vertical-align: middle;
+        }
       }
     }
   }
@@ -535,6 +561,12 @@ $text-color-white: #fff;
       }
       .hp-tracker-vertical-left {
         bottom: 0.09in;
+      }
+    }
+
+    &.Persona {
+      h1 {
+        top: 0.95in;
       }
     }
   }

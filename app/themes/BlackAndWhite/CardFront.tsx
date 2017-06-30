@@ -115,6 +115,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                     <div className="surge"><strong>Surge: </strong>{card.surge}</div>
                   }
                 </article>
+                {card.image && <img className="art" src={`/themes/${theme}/images/${card.image}.png`} />}
                 <footer>
                   <div className="flavortext">{card.flavortext}</div>
                 </footer>
@@ -185,7 +186,7 @@ export default class CardFront extends React.Component<CardType, {}> {
       //       </div>
       //     </div>
       //   );
-      case 'Personality':
+      case 'Persona':
         return (
           <div className={`card front horizontal ${card.sheet} bottomBar`}>
             <div className="contents">
@@ -193,15 +194,16 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="name">{card.name}</div>
               </header>
               <article>
-                <ul>
-                  <li><strong>{card.empowered}: </strong>{card.power}</li>
-                  <li>+</li>
-                  <li>+</li>
-                  <li><strong>{card.base}</strong> (base)</li>
-                  <li>-</li>
-                  <li>-</li>
-                  <li><strong>{card.afflicted}: </strong>{card.affliction}</li>
-                </ul>
+                <table>
+                  <tr><td>◯</td><td><strong>{card.empowered}: </strong>{card.power}</td></tr>
+                  <tr><td>△</td></tr>
+                  <tr><td>△</td></tr>
+                  <tr><td>△</td></tr>
+                  <tr><td>◯</td><td><strong>{card.base}</strong></td></tr>
+                  <tr><td>▽</td></tr>
+                  <tr><td>▽</td></tr>
+                  <tr><td>◯</td><td><strong>{card.afflicted}: </strong>{card.affliction}</td></tr>
+                </table>
               </article>
             </div>
           </div>

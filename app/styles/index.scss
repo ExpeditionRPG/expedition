@@ -31,6 +31,14 @@ body {
   background: white;
 }
 
+.appbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+}
+
 .filter {
   min-width: 80px;
   max-width: 140px;
@@ -38,7 +46,7 @@ body {
 }
 
 #renderer {
-  margin-top: $base;
+  margin-top: $base + 50px; // since appbar is fixed
   z-index: -10000;
 
   &.bleed {
