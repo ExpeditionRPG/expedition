@@ -53,7 +53,7 @@ export function healthCounter(health: number): JSX.Element {
   var outputtedWidth = 0;
 
   var max = false;
-  if (health > MAX_COUNTER_HEALTH) {
+  if (health >= MAX_COUNTER_HEALTH) {
     health = MAX_COUNTER_HEALTH + 1; // because the loop assumes you'll have the final value displayed
       // separately with a heart (as in, Encounter fronts), we have to force it to show all values here
     max = true;
