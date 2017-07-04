@@ -1,6 +1,6 @@
 {
     "name": "expedition-app",
-    "version": "1.5.2",
+    "version": "1.5.3",
     "description": "The App for Expedition: The Roleplaying Card Game",
     "homepage": "http://expeditiongame.com",
     "bugs": "https://github.com/ExpeditionRPG/expedition-app/issues",
@@ -78,6 +78,7 @@
         "webpack-dev-server": "^2.3.0"
     },
     "dependencies": {
+        "@types/promise-polyfill": "^6.0.0",
         "ansi-styles": "^3.0.0",
         "async-each-series": "^1.1.0",
         "browser-sync-client": "^2.4.1",
@@ -147,6 +148,7 @@
         "update": "^0.7.4",
         "vinyl": "^2.0.1",
         "webpack": "^2.2.1",
+        "whatwg-fetch": "^2.0.3",
         "xtend": "^4.0.1"
     },
     "cordova": {
