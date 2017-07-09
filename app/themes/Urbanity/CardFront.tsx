@@ -13,7 +13,7 @@ export default class CardFront extends React.Component<CardType, {}> {
           <div className={`card front vertical ${card.sheet}`}>
             <div className="contents">
               <header>
-                <div className="name">{card.name}</div>
+                <div className="name">{card.scoreBlack} {card.name}</div>
               </header>
               <article>
                 <div className="score">
@@ -91,7 +91,8 @@ export default class CardFront extends React.Component<CardType, {}> {
           <div className={`card front vertical ${card.sheet}`}>
             <div className="contents">
               <article>
-                <h3>End of quarter:</h3>
+                <h3>Quarter:</h3>
+                <p>Simultaneous action</p>
                 <p>Bundle policies into bills</p>
                 <p>Increment quarter tracker</p>
                 <p>End of year: resolve (see back)</p>

@@ -38,11 +38,10 @@ export default class CardBack extends React.Component<CardType, {}> {
               <article>
                 <h3>End of year:</h3>
                 <p>Vote on bills and score</p>
-                <p>Draw 1 influence + 2 cards</p>
-                <p>Draft citizens</p>
+                <p>Draw back to 7 cards</p>
                 <p>Update city resources</p>
-                <p>Event!</p>
-                <p>Collect taxes ($20M/player)</p>
+                <p>Draft citizens</p>
+                <p>Event</p>
                 <p>Pass the chair</p>
               </article>
             </div>
