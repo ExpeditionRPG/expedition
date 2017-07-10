@@ -3,6 +3,9 @@ declare var gapi: any;
 declare var ga: any;
 
 const PACKAGE = require('../package.json');
+import 'whatwg-fetch' // fetch polyfill
+import Promise from 'promise-polyfill' // promise polyfill
+
 
 export interface ReactDocument extends Document {
   addEventListener: (e: string, f: any, useCapture?: boolean) => void;
@@ -22,6 +25,7 @@ export interface ReactWindow extends Window {
   plugins?: {
     insomnia: {keepAwake: ()=>void},
   };
+  Promise?: any;
   test?: boolean;
   device?: {platform: string};
 }
@@ -35,6 +39,12 @@ const refs = {
   ga: (typeof ga !== 'undefined') ? ga : null,
   navigator: (typeof navigator !== 'undefined') ? navigator : null,
 };
+
+export function setupPolyfills(): void {
+  if (!window.Promise) {
+    window.Promise = Promise;
+  }
+}
 
 export function getAppVersion(): string {
   return PACKAGE.version;

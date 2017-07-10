@@ -5,6 +5,8 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var options = {
   entry: [
+    'whatwg-fetch',
+    'promise-polyfill',
     './app/React.tsx',
     './app/style.scss',
   ],

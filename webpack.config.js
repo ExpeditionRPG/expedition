@@ -8,6 +8,8 @@ const port = process.env.DOCKER_PORT || 8081;
 const options = {
   cache: true,
   entry: [
+    'whatwg-fetch',
+    'promise-polyfill',
     'webpack-dev-server/client?http://localhost:' + port,
     'webpack/hot/only-dev-server',
     './app/React.tsx',

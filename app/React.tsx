@@ -10,7 +10,8 @@ import {authSettings} from './Constants'
 import {toPrevious} from './actions/Card'
 import {silentLogin} from './actions/User'
 import {getStore} from './Store'
-import {getWindow, getGapi, getGA, getDevicePlatform, getDocument, setGA} from './Globals'
+import {getWindow, getGapi, getGA, getDevicePlatform, getDocument, setGA, setupPolyfills} from './Globals'
+
 
 const injectTapEventPlugin = require('react-tap-event-plugin');
 
@@ -21,7 +22,6 @@ function setupTapEvents() {
     console.log('Already injected tap event plugin');
   }
 }
-
 
 
 export function logEvent(name: string, args: any): void {
@@ -180,6 +180,8 @@ export function init() {
   getDocument().addEventListener('deviceready', () => {
     setupDevice();
   }, false);
+
+  setupPolyfills();
 
   setupTapEvents();
   setupGoogleAPIs();
