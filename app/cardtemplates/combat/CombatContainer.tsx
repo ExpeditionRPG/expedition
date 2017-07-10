@@ -54,6 +54,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     // Override with dynamic state for tier and adventurer count
     // Any combat param change (e.g. change in tier) causes a repaint
     tier: state.quest.node.ctx.templates.combat.tier,
+    mostRecentRolls: state.quest.node.ctx.templates.combat.mostRecentRolls,
     numAliveAdventurers: state.quest.node.ctx.templates.combat.numAliveAdventurers,
   };
 }
