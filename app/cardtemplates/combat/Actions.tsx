@@ -154,6 +154,14 @@ export function isSurgeRound(node: ParserNode): boolean {
   return (surgePd - (rounds % surgePd + 1)) === 0;
 }
 
+export function handleResolvePhase(node: ParserNode) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    // TODO: Allow for interstitial here
+    dispatch(toCard('QUEST_CARD', 'RESOLVE_ABILITIES', true));
+    dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
+  }
+}
+
 export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, elapsedMillis: number) {
   return (dispatch: Redux.Dispatch<any>): any => {
     node = node.clone();
@@ -161,8 +169,12 @@ export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, 
     node.ctx.templates.combat.mostRecentRolls = generateRolls(settings.numPlayers);
     node.ctx.templates.combat.roundCount++;
 
-    dispatch(toCard('QUEST_CARD', (node.ctx.templates.combat.mostRecentAttack.surge) ? 'SURGE' : 'RESOLVE_ABILITIES', true));
-    dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
+    if (node.ctx.templates.combat.mostRecentAttack.surge) {
+      dispatch(toCard('QUEST_CARD', 'SURGE', true));
+      dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
+    } else {
+      dispatch(handleResolvePhase(node));
+    }
   };
 }
 

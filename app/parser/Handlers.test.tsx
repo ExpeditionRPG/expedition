@@ -50,6 +50,10 @@ describe('Handlers', () => {
       expect(result).toEqual(null);
     });
 
+    it('triggers events', () => {
+      // TODO
+    });
+
     /* TODO
     it('uses programmatic triggers', () => {
       var quest = cheerio.load('<quest><roleplay><p>{{dest=5}}</p><choice><trigger>goto {{dest}}</trigger><trigger>end</trigger><roleplay id="5">expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');

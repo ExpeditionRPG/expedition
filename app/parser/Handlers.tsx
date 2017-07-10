@@ -24,6 +24,31 @@ function getTriggerId(elem: Cheerio): string {
   return (m) ? m[1] : null;
 }
 
+function handleTrigger(pnode: ParserNode): ParserNode {
+  // Immediately act on any gotos (with a max depth)
+  let i = 0;
+  for (; i < MAX_GOTO_FOLLOW_DEPTH && pnode !== null && pnode.getTag() === 'trigger'; i++) {
+    let id = getTriggerId(pnode.elem);
+    if (id) {
+      pnode = pnode.gotoId(id);
+    } else {
+      // Search upwards in the node heirarchy until an event attribute is found
+      const ref = pnode.elem.parent();
+      const event = pnode.elem.text().trim();
+      while (ref) {
+        if (ref.attr('on') === event) {
+          return handleAction(new ParserNode(ref, pnode.ctx), event);
+        }
+        pnode.elem.parent();
+      }
+      return null;
+    }
+  }
+  if (i >= MAX_GOTO_FOLLOW_DEPTH) {
+    return null;
+  }
+}
+
 // The passed action parameter is either
 // - a number indicating the choice number in the XML element, including conditional choices.
 // - a string indicating which event to fire based on the "on" attribute.
@@ -34,18 +59,8 @@ export function handleAction(pnode: ParserNode, action: number|string): ParserNo
     return null;
   }
 
-  // Immediately act on any gotos (with a max depth)
-  let i = 0;
-  for (; i < MAX_GOTO_FOLLOW_DEPTH && pnode !== null && pnode.getTag() === 'trigger'; i++) {
-    let id = getTriggerId(pnode.elem);
-    if (id) {
-      pnode = pnode.gotoId(id);
-    } else {
-      break;
-    }
-  }
-  if (i >= MAX_GOTO_FOLLOW_DEPTH) {
-    return null;
+  if (pnode.getTag() === 'trigger') {
+    return handleTrigger(pnode);
   }
   return pnode;
 }

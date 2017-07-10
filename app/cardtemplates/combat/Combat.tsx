@@ -330,6 +330,14 @@ function renderTimerCard(props: CombatProps): JSX.Element {
   );
 }
 
+function renderIntermission(props: CombatProps): JSX.Element {
+  return (
+    <Card title="TODO" theme="DARK" inQuest={true}>
+      <p>TODO</p>
+    </Card>
+  );
+}
+
 function numberToWord(input: number): string {
   switch (input) {
     case 0: return 'zero';
@@ -371,6 +379,8 @@ const Combat = (props: CombatProps): JSX.Element => {
       return renderVictory(props);
     case 'DEFEAT':
       return renderDefeat(props);
+    case 'INTERMISSION':
+      return renderIntermission(props);
     default:
       throw new Error('Unknown combat phase ' + props.card.phase);
   }
