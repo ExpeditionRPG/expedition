@@ -7,7 +7,7 @@ import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 export default class CardFront extends React.Component<CardType, {}> {
   render() {
     const card = this.props.card;
-    const theme = 'BlackAndWhite';
+    const theme = 'Color';
     switch (card.sheet) {
       case 'Ability':
         return (
@@ -164,20 +164,24 @@ export default class CardFront extends React.Component<CardType, {}> {
             </div>
           </div>
         );
-      case 'Malady':
+      case 'Persona':
         return (
-          <div className={`card front dark horizontal ${card.sheet}`}>
+          <div className={`card front horizontal ${card.sheet}`}>
             <div className="contents">
-              <header>
-                <div className="name">{card.name}</div>
-              </header>
               <article>
-                <div className="ongoing"><strong>Ongoing:</strong> {card.ongoing}</div>
-                <div className="until"><strong>Until:</strong> {card.until}</div>
+                <table>
+                  <tbody>
+                    <tr><td>◯</td><td><strong>{card.empowered}: </strong>{card.power}</td></tr>
+                    <tr><td>△</td></tr>
+                    <tr><td>△</td></tr>
+                    <tr><td>△</td></tr>
+                    <tr><td>◯</td><td><strong>{card.base}</strong></td></tr>
+                    <tr><td>▽</td></tr>
+                    <tr><td>▽</td></tr>
+                    <tr><td>◯</td><td><strong>{card.afflicted}: </strong>{card.affliction}</td></tr>
+                  </tbody>
+                </table>
               </article>
-              <footer>
-                <div className="flavortext">{card.flavortext}</div>
-              </footer>
             </div>
           </div>
         );

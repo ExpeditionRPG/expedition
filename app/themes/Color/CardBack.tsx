@@ -7,7 +7,7 @@ import {MAX_COUNTER_HEALTH} from '../../Constants'
 export default class CardBack extends React.Component<CardType, {}> {
   render() {
     const card = this.props.card;
-    const theme = 'BlackAndWhite';
+    const theme = 'Color';
     switch (card.sheet) {
       case 'Ability':
         return (
@@ -51,11 +51,11 @@ export default class CardBack extends React.Component<CardType, {}> {
             </div>
           </div>
         );
-      case 'Malady':
+      case 'Persona':
         return (
           <div className={`card back dark horizontal ${card.sheet}`}>
             <div className="contents">
-              <h1>Malady</h1>
+              <h1>Persona</h1>
             </div>
           </div>
         );

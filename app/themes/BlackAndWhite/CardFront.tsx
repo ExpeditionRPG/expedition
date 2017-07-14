@@ -167,25 +167,6 @@ export default class CardFront extends React.Component<CardType, {}> {
             </div>
           </div>
         );
-      // case 'Malady':
-      //   return (
-      //     <div className="white-background">
-      //       <div className={`card front dark horizontal ${card.sheet}`}>
-      //         <div className="contents">
-      //           <header>
-      //             <div className="name">{card.name}</div>
-      //           </header>
-      //           <article>
-      //             <div className="ongoing"><strong>Ongoing:</strong> {card.ongoing}</div>
-      //             <div className="until"><strong>Until:</strong> {card.until}</div>
-      //           </article>
-      //           <footer>
-      //             <div className="flavortext">{card.flavortext}</div>
-      //           </footer>
-      //         </div>
-      //       </div>
-      //     </div>
-      //   );
       case 'Persona':
         return (
           <div className={`card front horizontal ${card.sheet} bottomBar`}>
@@ -195,14 +176,16 @@ export default class CardFront extends React.Component<CardType, {}> {
               </header>
               <article>
                 <table>
-                  <tr><td>◯</td><td><strong>{card.empowered}: </strong>{card.power}</td></tr>
-                  <tr><td>△</td></tr>
-                  <tr><td>△</td></tr>
-                  <tr><td>△</td></tr>
-                  <tr><td>◯</td><td><strong>{card.base}</strong></td></tr>
-                  <tr><td>▽</td></tr>
-                  <tr><td>▽</td></tr>
-                  <tr><td>◯</td><td><strong>{card.afflicted}: </strong>{card.affliction}</td></tr>
+                  <tbody>
+                    <tr><td>◯</td><td><strong>{card.empowered}: </strong>{card.power}</td></tr>
+                    <tr><td>△</td></tr>
+                    <tr><td>△</td></tr>
+                    <tr><td>△</td></tr>
+                    <tr><td>◯</td><td><strong>{card.base}</strong></td></tr>
+                    <tr><td>▽</td></tr>
+                    <tr><td>▽</td></tr>
+                    <tr><td>◯</td><td><strong>{card.afflicted}: </strong>{card.affliction}</td></tr>
+                  </tbody>
                 </table>
               </article>
             </div>
