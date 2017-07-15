@@ -185,4 +185,8 @@ describe('Combat actions', () => {
       expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, 1000).node.ctx.templates.combat.numAliveAdventurers).toEqual(3);
     });
   });
+
+  it('handles global player count change');
+
+  it('clears combat state on completion');
 });

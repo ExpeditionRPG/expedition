@@ -12,6 +12,7 @@ import {SettingsType, CardState, CardName} from '../../reducers/StateTypes'
 import {ParserNode} from '../../parser/Node'
 import {QuestContext, EventParameters, Enemy, Loot} from '../../reducers/QuestTypes'
 import {CombatState, CombatPhase} from './State'
+import Roleplay from '../roleplay/Roleplay'
 
 export interface CombatStateProps extends CombatState {
   card: CardState;
@@ -31,6 +32,7 @@ export interface CombatDispatchProps {
   onAdventurerDelta: (node: ParserNode, settings: SettingsType, delta: number) => void;
   onEvent: (node: ParserNode, event: string) => void;
   onCustomEnd: () => void;
+  onChoice: (settings: SettingsType, parent: ParserNode, node: ParserNode, index: number) => void;
 }
 
 export interface CombatProps extends CombatStateProps, CombatDispatchProps {};
@@ -330,12 +332,16 @@ function renderTimerCard(props: CombatProps): JSX.Element {
   );
 }
 
-function renderIntermission(props: CombatProps): JSX.Element {
-  return (
-    <Card title="TODO" theme="DARK" inQuest={true}>
-      <p>TODO</p>
-    </Card>
-  );
+function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
+  if (!props.node.ctx.templates.combat.roleplay) {
+    return (<Card title="" inQuest={true} theme="DARK"></Card>);
+  }
+  const roleplay = Roleplay({
+    node: props.node.ctx.templates.combat.roleplay,
+    settings: props.settings,
+    onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(settings, props.node, node, index)},
+  }, 'DARK');
+  return roleplay;
 }
 
 function numberToWord(input: number): string {
@@ -379,13 +385,11 @@ const Combat = (props: CombatProps): JSX.Element => {
       return renderVictory(props);
     case 'DEFEAT':
       return renderDefeat(props);
-    case 'INTERMISSION':
-      return renderIntermission(props);
+    case 'ROLEPLAY':
+      return renderMidCombatRoleplay(props);
     default:
       throw new Error('Unknown combat phase ' + props.card.phase);
   }
 }
 
 export default Combat;
-
-

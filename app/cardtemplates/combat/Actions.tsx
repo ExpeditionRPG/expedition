@@ -6,6 +6,7 @@ import {ParserNode} from '../../parser/Node'
 import {toCard} from '../../actions/Card'
 import {encounters} from '../../Encounters'
 import {QuestNodeAction} from '../../actions/ActionTypes'
+import {handleAction} from '../../parser/Handlers'
 
 var cheerio: any = require('cheerio');
 
@@ -156,9 +157,43 @@ export function isSurgeRound(node: ParserNode): boolean {
 
 export function handleResolvePhase(node: ParserNode) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    // TODO: Allow for interstitial here
-    dispatch(toCard('QUEST_CARD', 'RESOLVE_ABILITIES', true));
+    if (node.getVisibleKeys().indexOf('round') !== -1) {
+      node = node.clone();
+      node.ctx.templates.combat.roleplay = node.getNext('round');
+      dispatch(toCard('QUEST_CARD', 'ROLEPLAY', true));
+    } else {
+      dispatch(toCard('QUEST_CARD', 'RESOLVE_ABILITIES', true));
+    }
+
     dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
+  }
+}
+
+export function midCombatChoice(settings: SettingsType, parent: ParserNode, node: ParserNode, index: number) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    var next = handleAction(node, index);
+
+    // Check for end triggers
+    const tag = next && next.getTag();
+    if (tag === 'trigger') {
+      const triggerName = next.elem.text().trim();
+      if (triggerName === 'end') {
+        return dispatch(toCard('QUEST_END'));
+      } else {
+        throw new Error('invalid trigger ' + triggerName);
+      }
+    }
+
+    // Check if we're still a child of the combat node.
+    // If not, then continue to the next round.
+    if (!next || next.getTag() !== 'roleplay' || !cheerio.contains(parent, next)) {
+      parent.ctx.templates.combat.roleplay = null;
+      dispatch(toCard('QUEST_CARD', 'RESOLVE_ABILITIES', true));
+    } else {
+      parent.ctx.templates.combat.roleplay = next;
+      dispatch(toCard('QUEST_CARD', 'ROLEPLAY', true));
+    }
+    dispatch({type: 'QUEST_NODE', node: parent} as QuestNodeAction);
   }
 }
 
@@ -229,4 +264,3 @@ export function adventurerDelta(node: ParserNode, settings: SettingsType, delta:
   node.ctx.templates.combat.numAliveAdventurers = newAdventurerCount;
   return {type: 'QUEST_NODE', node};
 }
-

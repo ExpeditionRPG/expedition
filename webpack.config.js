@@ -26,8 +26,7 @@ const options = {
     hot: true,
     quiet: false,
     noInfo: false,
-    historyApiFallback: true,
-    watchOptions: ((process.env.WATCH_POLL) ? {aggregateTimeout: 300, poll: 1000} : {}),
+    historyApiFallback: true
   },
   output: {
     path: path.join(__dirname, 'dist'),

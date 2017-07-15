@@ -2,7 +2,7 @@ import * as React from 'react'
 import Button from '../../components/base/Button'
 import Callout from '../../components/base/Callout'
 import Card from '../../components/base/Card'
-import {SettingsType} from '../../reducers/StateTypes'
+import {SettingsType, CardThemeType} from '../../reducers/StateTypes'
 import {ParserNode} from '../../parser/Node'
 import {Choice, QuestContext, RoleplayElement} from '../../reducers/QuestTypes'
 
@@ -109,7 +109,7 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
 }
 
 // TODO(scott): Convert this into a Template class implementation
-const Roleplay = (props: RoleplayProps): JSX.Element => {
+const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'LIGHT'): JSX.Element => {
   const rpResult = loadRoleplayNode(props.node)
 
   const renderedContent: JSX.Element[] = rpResult.content.map((element: RoleplayElement, idx: number): JSX.Element => {
@@ -143,7 +143,7 @@ const Roleplay = (props: RoleplayProps): JSX.Element => {
   });
 
   return (
-    <Card title={rpResult.title} icon={rpResult.icon} inQuest={true}>
+    <Card title={rpResult.title} icon={rpResult.icon} inQuest={true} theme={theme}>
       {renderedContent}
       {buttons}
     </Card>

@@ -12,6 +12,7 @@ import {QuestContext, EventParameters} from '../../reducers/QuestTypes'
 import {CombatPhase, MidCombatPhase} from './State'
 import {ParserNode} from '../../parser/Node'
 import {MAX_ADVENTURER_HEALTH} from '../../Constants'
+import {midCombatChoice} from './Actions'
 
 declare var window:any;
 
@@ -89,6 +90,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     },
     onCustomEnd: () => {
       dispatch(toPrevious('QUEST_CARD', 'DRAW_ENEMIES', false));
+    },
+    onChoice: (settings: SettingsType, parent: ParserNode, node: ParserNode, index: number) => {
+      dispatch(midCombatChoice(settings, parent, node, index));
     },
   };
 }

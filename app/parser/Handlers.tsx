@@ -33,13 +33,13 @@ function handleTrigger(pnode: ParserNode): ParserNode {
       pnode = pnode.gotoId(id);
     } else {
       // Search upwards in the node heirarchy until an event attribute is found
-      const ref = pnode.elem.parent();
+      let ref = pnode.elem.parent();
       const event = pnode.elem.text().trim();
-      while (ref) {
+      while (ref && ref.length > 0) {
         if (ref.attr('on') === event) {
           return handleAction(new ParserNode(ref, pnode.ctx), event);
         }
-        pnode.elem.parent();
+        ref = ref.parent();
       }
       return null;
     }
@@ -47,6 +47,7 @@ function handleTrigger(pnode: ParserNode): ParserNode {
   if (i >= MAX_GOTO_FOLLOW_DEPTH) {
     return null;
   }
+  return pnode;
 }
 
 // The passed action parameter is either
