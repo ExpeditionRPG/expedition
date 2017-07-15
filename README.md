@@ -26,7 +26,7 @@ Windows: must be run within a Unix-like shell (such as Git Bash)
 
 iOS: Building the iOS app requires a mac, and cordova setup scripts currently work for unix-like environments only (Linux + Mac).
 
-If you're having problems getting dependencies set up on your computer, try using this repo with [Containerizer](https://github.com/ExpeditionRPG/containerizer).
+If you're having problems getting dependencies set up on your computer, try using this repo with [Containerizer](https://github.com/Fabricate-IO/containerizer).
 
 ### Install dependencies
 
@@ -53,7 +53,7 @@ npm install -g cordova
 npm run dev
 ```
 
-This runs the app at `http://localhost:8081/` (port may be different if you're using [Containerizer](https://github.com/ExpeditionRPG/containerizer)). It also outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
+This runs the app at `http://localhost:8081/` (port may be different if you're using [Containerizer](https://github.com/Fabricate-IO/containerizer)). It also outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
 
 #### Run tests
 
