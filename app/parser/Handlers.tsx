@@ -24,6 +24,23 @@ function getTriggerId(elem: Cheerio): string {
   return (m) ? m[1] : null;
 }
 
+export function handleTriggerEvent(pnode: ParserNode): ParserNode {
+  // Search upwards in the node heirarchy and see if any of the parents successfully
+  // handle the event.
+  let ref = new ParserNode(pnode.elem.parent(), pnode.ctx);
+  const event = pnode.elem.text().trim();
+  while (ref.elem && ref.elem.length > 0) {
+    const handled = handleAction(ref, event);
+    if (handled !== null) {
+      return handled;
+    }
+    ref = new ParserNode(ref.elem.parent(), pnode.ctx);
+  }
+
+  // Return the trigger unchanged if a handler is not found.
+  return pnode;
+}
+
 function handleTrigger(pnode: ParserNode): ParserNode {
   // Immediately act on any gotos (with a max depth)
   let i = 0;
@@ -32,16 +49,7 @@ function handleTrigger(pnode: ParserNode): ParserNode {
     if (id) {
       pnode = pnode.gotoId(id);
     } else {
-      // Search upwards in the node heirarchy until an event attribute is found
-      let ref = pnode.elem.parent();
-      const event = pnode.elem.text().trim();
-      while (ref && ref.length > 0) {
-        if (ref.attr('on') === event) {
-          return handleAction(new ParserNode(ref, pnode.ctx), event);
-        }
-        ref = ref.parent();
-      }
-      return null;
+      return handleTriggerEvent(pnode);
     }
   }
   if (i >= MAX_GOTO_FOLLOW_DEPTH) {

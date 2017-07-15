@@ -6,7 +6,8 @@ import {ParserNode} from '../../parser/Node'
 import {toCard} from '../../actions/Card'
 import {encounters} from '../../Encounters'
 import {QuestNodeAction} from '../../actions/ActionTypes'
-import {handleAction} from '../../parser/Handlers'
+import {handleTriggerEvent} from '../../parser/Handlers'
+import {loadNode} from '../../actions/Quest'
 
 var cheerio: any = require('cheerio');
 
@@ -156,6 +157,9 @@ export function isSurgeRound(node: ParserNode): boolean {
 }
 
 export function handleResolvePhase(node: ParserNode) {
+  // Handles resolution, with a hook for if a <choice on="round"/> tag is specified.
+  // Note that handling new combat nodes within a "round" handler has undefined
+  // behavior and should be prevented when compiled.
   return (dispatch: Redux.Dispatch<any>): any => {
     if (node.getVisibleKeys().indexOf('round') !== -1) {
       node = node.clone();
@@ -169,27 +173,46 @@ export function handleResolvePhase(node: ParserNode) {
   }
 }
 
-export function midCombatChoice(settings: SettingsType, parent: ParserNode, node: ParserNode, index: number) {
+export function midCombatChoice(settings: SettingsType, parent: ParserNode, index: number) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    var next = handleAction(node, index);
+    parent = parent.clone();
+    let node = parent.ctx.templates.combat.roleplay;
+    var next = node.getNext(index);
 
-    // Check for end triggers
+    // Check for and resolve non-goto triggers
     const tag = next && next.getTag();
-    if (tag === 'trigger') {
+    if (tag === 'trigger' && !next.elem.text().toLowerCase().startsWith('goto')) {
+
+      // End the quest if end trigger
       const triggerName = next.elem.text().trim();
       if (triggerName === 'end') {
         return dispatch(toCard('QUEST_END'));
-      } else {
-        throw new Error('invalid trigger ' + triggerName);
+      }
+
+      next = handleTriggerEvent(next);
+
+      // If the trigger exits via the win/lose handlers, load it as normal.
+      // Otherwise, we're still in combat.
+      const parentCondition = next.elem.parent().attr('on');
+      if (parentCondition === 'win' || parentCondition === 'lose') {
+        return dispatch(loadNode(settings, next));
       }
     }
 
-    // Check if we're still a child of the combat node.
-    // If not, then continue to the next round.
-    if (!next || next.getTag() !== 'roleplay' || !cheerio.contains(parent, next)) {
-      parent.ctx.templates.combat.roleplay = null;
+    // Check if the next node is inside a combat node. Note that nested combat nodes are
+    // not currently supported.
+    let ptr = next.elem;
+    while (ptr !== null && ptr.length > 0 && ptr.get(0).tagName.toLowerCase() !== 'combat') {
+      ptr = ptr.parent();
+    }
+
+    // Check if we're still a child of the combat node or else doing something weird.
+    if (!next || next.getTag() !== 'roleplay' || !ptr || ptr.length === 0) {
+      // If so, then continue with the resolution phase.
+      parent.ctx.templates.combat = null;
       dispatch(toCard('QUEST_CARD', 'RESOLVE_ABILITIES', true));
     } else {
+      // Otherwise continue the roleplay phase.
       parent.ctx.templates.combat.roleplay = next;
       dispatch(toCard('QUEST_CARD', 'ROLEPLAY', true));
     }

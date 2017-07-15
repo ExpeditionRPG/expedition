@@ -77,6 +77,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     },
     onPostTimerReturn: () => {
       // Return to the "Ready for Combat?" card instead of doing the timed round again.
+      // TODO: Support the roleplay interjection
       dispatch(toPrevious('QUEST_CARD', 'PREPARE'));
     },
     onEvent: (node: ParserNode, evt: string) => {
@@ -91,8 +92,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     onCustomEnd: () => {
       dispatch(toPrevious('QUEST_CARD', 'DRAW_ENEMIES', false));
     },
-    onChoice: (settings: SettingsType, parent: ParserNode, node: ParserNode, index: number) => {
-      dispatch(midCombatChoice(settings, parent, node, index));
+    onChoice: (settings: SettingsType, parent: ParserNode, index: number) => {
+      dispatch(midCombatChoice(settings, parent, index));
     },
   };
 }

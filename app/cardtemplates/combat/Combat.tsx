@@ -32,7 +32,7 @@ export interface CombatDispatchProps {
   onAdventurerDelta: (node: ParserNode, settings: SettingsType, delta: number) => void;
   onEvent: (node: ParserNode, event: string) => void;
   onCustomEnd: () => void;
-  onChoice: (settings: SettingsType, parent: ParserNode, node: ParserNode, index: number) => void;
+  onChoice: (settings: SettingsType, parent: ParserNode, index: number) => void;
 }
 
 export interface CombatProps extends CombatStateProps, CombatDispatchProps {};
@@ -339,7 +339,7 @@ function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
   const roleplay = Roleplay({
     node: props.node.ctx.templates.combat.roleplay,
     settings: props.settings,
-    onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(settings, props.node, node, index)},
+    onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(settings, props.node, index)},
   }, 'DARK');
   return roleplay;
 }

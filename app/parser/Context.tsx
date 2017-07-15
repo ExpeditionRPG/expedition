@@ -92,7 +92,22 @@ export function updateContext(node: Cheerio, ctx: QuestContext, action?: string|
   }
 
   const nodeId = node.attr('id');
+
+  // Special handling of roleplay node - this is readonly and cannot be cloned.
+  let tmpCombatRoleplay: any = null;
+  if (ctx.templates && ctx.templates.combat && ctx.templates.combat.roleplay) {
+    tmpCombatRoleplay = ctx.templates.combat.roleplay
+    ctx.templates.combat.roleplay = null;
+  }
+
   let newContext: QuestContext = Clone(ctx);
+
+  // Reassign readonly (uncopyable) attributes
+  if (tmpCombatRoleplay) {
+    newContext.templates.combat.roleplay = tmpCombatRoleplay.clone();
+    ctx.templates.combat.roleplay = tmpCombatRoleplay;
+  }
+
   if (nodeId) {
     newContext.views[nodeId] = (newContext.views[nodeId] || 0) + 1;
   }
