@@ -32,7 +32,6 @@ class CrawlTest extends CrawlerBase {
 
 describe('CrawlerBase', () => {
   describe('crawl', () => {
-    /*
     it('travels across combat events', () => {
       const xml = cheerio.load(`
         <combat data-line="0">
@@ -234,6 +233,5 @@ describe('CrawlerBase', () => {
 
       expect(foundInvalid).toEqual(true);
     });
-    */
   });
 });

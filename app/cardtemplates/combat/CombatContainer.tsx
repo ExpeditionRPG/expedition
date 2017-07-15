@@ -79,7 +79,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     },
     onPostTimerReturn: () => {
       // Return to the "Ready for Combat?" card instead of doing the timed round again.
-      // TODO: Support the roleplay interjection
+      // TODO: Support return back into roleplay (not a huge problem for now, but may get
+      // annoying with longer mid-combat-roleplay sections)
       dispatch(toPrevious('QUEST_CARD', 'PREPARE'));
     },
     onEvent: (node: ParserNode, evt: string) => {
