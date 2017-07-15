@@ -51,12 +51,12 @@ const mockStore = configureStore([thunk]);
 
 describe('React', () => {
   describe('init', () => {
-    it('sets up tap events');
-    it('loads google APIs');
-    it('sets up event logging');
-    it('uses dummy logging if Firebase not loaded');
-    it('sets up hot reload');
-    it('handles no hot reloading');
+    it('sets up tap events');  // $10
+    it('loads google APIs');  // $10
+    it('sets up event logging'); // $10
+    it('uses dummy logging if Firebase not loaded'); // $10
+    it('sets up hot reload'); // $12
+    it('handles no hot reloading');  // $10
 
     describe('deviceready event', () => {
       it('triggers silent login'); // Holding off on testing this one until we propagate window state better.
@@ -89,8 +89,8 @@ describe('React', () => {
   });
 
   describe('logEvent', () => {
-    it('logs to firebase');
-    it('logs to google analytics if GA set up');
+    it('logs to firebase'); // $10
+    it('logs to google analytics if GA set up'); // $10
   })
 
 });

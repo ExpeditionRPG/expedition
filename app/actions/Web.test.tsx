@@ -1,7 +1,7 @@
 describe('Web action', () => {
   describe('fetchQuestXML', () => {
-    it('shows snackbar on request error');
-    it('dispatches loaded quest');
+    it('shows snackbar on request error'); // $10
+    it('dispatches loaded quest'); // $10
   });
 
   describe('loadQuestXML', () => {
@@ -9,17 +9,17 @@ describe('Web action', () => {
   });
 
   describe('search', () => {
-    it('shows snackbar on request error');
-    it('dispatches search response');
+    it('shows snackbar on request error');  // $10
+    it('dispatches search response'); // $10
   });
 
   describe('subscribe', () => {
-    it('shows snackbar on request error');
+    it('shows snackbar on request error'); // $10
   });
 
   describe('submitUserFeedback', () => {
-    it('shows snackbar on request error');
-    it('clears feedback after submission');
-    it('shows snackbar on successful submission');
+    it('shows snackbar on request error'); // $10
+    it('clears feedback after submission'); // $10
+    it('shows snackbar on successful submission'); // $10
   });
 });
