@@ -9,7 +9,7 @@ import {AppState, QuestType, EditorState, UserState} from '../reducers/StateType
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
 
 import {toCard} from 'expedition-app/app/actions/Card'
-import {defaultQuestContext} from 'expedition-app/app/reducers/QuestTypes'
+import {defaultQuestContext} from 'expedition-app/app/reducers/Quest'
 
 import {DOCS_INDEX_URL, DEV_CONTACT_URL} from '../Constants'
 

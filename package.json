@@ -30,15 +30,15 @@
   },
   "dependencies": {
     "@types/node": "^7.0.8",
+    "@types/promise-polyfill": "^6.0.0",
     "ace": "^1.3.0",
     "babel-core": "^6.24.0",
     "body-parser": "^1.17.1",
     "brace": "^0.10.0",
-    "braintree": "^2.1.1",
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.1",
     "cors": "^2.8.3",
-    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#43d1c9c487b9f1ca899b332be5f492c1fc6664ab",
+    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#cf4479b503292720e417f8519f9d457fda9ccd1d",
     "express": "^4.15.2",
     "express-rate-limit": "^2.8.0",
     "express-session": "^1.15.1",
@@ -47,6 +47,7 @@
     "google-auth-library": "^0.10.0",
     "google-cloud": "^0.55.0",
     "google-url": "0.0.4",
+    "grpc": "^1.4.1",
     "html": "^1.0.0",
     "joi": "^10.2.2",
     "joi-browser": "^10.0.6",
@@ -145,6 +146,6 @@
     "yargs": "^7.0.2"
   },
   "engines": {
-    "node": "8.1.2"
+    "node": "8.1.4"
   }
 }

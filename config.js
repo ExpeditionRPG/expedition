@@ -2,7 +2,6 @@
 // variables, and files.
 const nconf = module.exports = require('nconf');
 const path = require('path');
-const Braintree = require("braintree");
 
 nconf
   // 1. Command-line arguments
@@ -10,10 +9,6 @@ nconf
   // 2. Environment variables
   .env([
     'ENABLE_PAYMENT',
-    'BRAINTREE_ENVIRONMENT',
-    'BRAINTREE_MERCHANT_ID',
-    'BRAINTREE_PUBLIC_KEY',
-    'BRAINTREE_PRIVATE_KEY',
     'CLOUD_BUCKET',
     'GCLOUD_PROJECT',
     'MAIL_EMAIL',
@@ -37,7 +32,6 @@ nconf
   // 4. Defaults
   .defaults({
     ENABLE_PAYMENT: false,
-    BRAINTREE_ENVIRONMENT: 'Sandbox',
     // Typically you will create a bucket with the same name as your project ID.
     CLOUD_BUCKET: '',
 

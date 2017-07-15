@@ -1,6 +1,5 @@
 const Cors = require('cors');
 const express = require('express');
-const Braintree = require('braintree');
 const fs = require('fs');
 const Joi = require('joi');
 const Mailchimp = require('mailchimp-api-v3');
@@ -14,17 +13,6 @@ const Feedback = require('./models/feedback');
 const Mail = require('./mail');
 const oauth2 = require('./lib/oauth2');
 const Quests = require('./models/quests');
-
-if (Config.get('ENABLE_PAYMENT') && Config.get('BRAINTREE_PUBLIC_KEY')) {
-  const braintree = Braintree.connect({
-    environment: Braintree.Environment[Config.get('BRAINTREE_ENVIRONMENT')],
-    merchantId: Config.get('BRAINTREE_MERCHANT_ID'),
-    publicKey: Config.get('BRAINTREE_PUBLIC_KEY'),
-    privateKey: Config.get('BRAINTREE_PRIVATE_KEY'),
-  });
-} else {
-  console.warn("Braintree config not set up, any payment requests will fail.")
-}
 
 const mailchimp = (process.env.NODE_ENV !== 'dev') ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
@@ -204,54 +192,6 @@ router.post('/user/subscribe', limitCors, (req, res) => {
         return res.status(err.status).send(err.title);
       });
     }
-  });
-});
-
-
-router.get('/braintree/token', limitCors, (req, res) => {
-  if (!Config.get('ENABLE_PAYMENT')) {
-    return res.status(500).send();
-  }
-
-  braintree.clientToken.generate({}, (err, response) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send('Error generating payment token.');
-    }
-    res.send(response.clientToken);
-  });
-});
-
-
-router.post('/braintree/checkout', limitCors, (req, res) => {
-  if (!Config.get('ENABLE_PAYMENT')) {
-    return res.status(500).send();
-  }
-
-  req.body = JSON.parse(req.body);
-  braintree.transaction.sale({
-    amount: req.body.amount.toString(),
-    // TODO once we have submerchant accounts, and only if this is a quest and its author has a set-up submerchant account
-    // serviceFeeAmount: (0.3 + 0.23 * req.body.amount).toString(),
-    paymentMethodNonce: req.body.nonce,
-    options: {
-      submitForSettlement: true,
-      storeInVaultOnSuccess: true,
-    },
-    customer: {
-      email: req.body.useremail,
-      id: req.body.userid,
-    },
-    customFields: {
-      productcategory: req.body.productcategory,
-      productid: req.body.productid,
-    }
-  }, (err, result) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send('Error submitting payment.');
-    }
-    res.send(result);
   });
 });
 

@@ -98,10 +98,9 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
 
     return (
       <textarea
+        id="notesArea"
         ref={(ref: any) => this.onRef(ref)}
         onChange={(e: any) => this.onChange(e)}
-        width="100%"
-        height="100%"
       ></textarea>
     );
   }

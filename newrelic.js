@@ -13,7 +13,7 @@ exports.config = {
    *
    * @env NEW_RELIC_APP_NAME
    */
-  app_name: ['Expedition-Quest-Creator'],
+  app_name: ['expedition-quest-creator'],
   /**
    * The user's license key. Must be set by per-app configuration file.
    *
