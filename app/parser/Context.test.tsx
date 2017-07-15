@@ -1,5 +1,5 @@
 import {evaluateOp, evaluateContentOps, updateContext} from './Context'
-import {defaultQuestContext} from '../reducers/QuestTypes'
+import {defaultQuestContext} from '../reducers/Quest'
 
 declare var global: any;
 

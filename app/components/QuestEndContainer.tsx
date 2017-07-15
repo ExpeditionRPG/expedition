@@ -7,6 +7,7 @@ import {userFeedbackChange} from '../actions/UserFeedback'
 import {submitUserFeedback} from '../actions/Web'
 import {authSettings, MIN_FEEDBACK_LENGTH} from '../Constants'
 import {AppState, QuestState, SettingsType, UserState, UserFeedbackState} from '../reducers/StateTypes'
+import {logEvent} from '../React'
 
 declare var window:any;
 
@@ -34,10 +35,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         url: 'https://ExpeditionGame.com',
       };
       const onSuccess = function(result: any) {
-        window.FirebasePlugin.logEvent('share', Object.assign({}, quest.details, {app: result.app}));
+        logEvent('share', Object.assign({}, quest.details, {app: result.app}));
       }
       const onError = function(msg: string) {
-        window.FirebasePlugin.logEvent('share_error', {error: msg});
+        logEvent('share_error', {error: msg});
       }
       window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
     },
@@ -54,7 +55,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
           dispatch(submitUserFeedback(quest, settings, user, userFeedback));
         }
       }
-      window.FirebasePlugin.logEvent('quest_end', quest.details);
+      logEvent('quest_end', quest.details);
       dispatch(toPrevious('QUEST_START', undefined, true));
     },
   };

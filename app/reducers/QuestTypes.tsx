@@ -1,5 +1,18 @@
-import {getStore} from '../Store'
-import {templateScope, TemplateState} from '../cardtemplates/Template'
+import {TemplateState} from '../cardtemplates/TemplateTypes'
+
+export interface QuestContext {
+  // Scope is passed to the parser when rendering
+  // nodes that are potentially parseable via MathJS.
+  scope: any; // TODO: required fields later
+
+  views: {[id:string]: number};
+  templates: TemplateState;
+
+  // The list of choices, events, and jumps that produced this context, serialized.
+  // Given the path and original quest XML, we should be able to recreate
+  // context given this path.
+  path: (string|number)[];
+}
 
 export interface QuestDetails {
   id?: string;
@@ -23,43 +36,6 @@ export interface QuestDetails {
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';
 
 export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
-
-export interface QuestContext {
-  // Scope is passed to the parser when rendering
-  // nodes that are potentially parseable via MathJS.
-  scope: any; // TODO: required fields later
-
-  views: {[id:string]: number};
-  templates: TemplateState;
-
-  // The list of choices, events, and jumps that produced this context, serialized.
-  // Given the path and original quest XML, we should be able to recreate
-  // context given this path.
-  path: (string|number)[];
-}
-
-export function defaultQuestContext(): QuestContext {
-  // Caution: Scope is the API for Quest Creators.
-  // New endpoints should be added carefully b/c we'll have to support them.
-  // Behind-the-scenes data can be added to the context outside of scope
-  return {
-    scope: {
-      _: {
-        numAdventurers: function(): number {
-          const settings = getStore().getState().settings;
-          return settings && settings.numPlayers;
-        },
-        viewCount: function(id: string): number {
-          return this.views[id] || 0;
-        },
-        ...templateScope()
-      },
-    },
-    views: {},
-    templates: {},
-    path: [],
-  };
-}
 
 export interface Choice {
   text: string;

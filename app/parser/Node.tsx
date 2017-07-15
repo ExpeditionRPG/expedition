@@ -1,4 +1,3 @@
-import * as React from 'react'
 import {QuestContext} from '../reducers/QuestTypes'
 import {updateContext, evaluateContentOps} from './Context'
 

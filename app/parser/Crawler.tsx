@@ -14,8 +14,8 @@ export abstract class CrawlerBase {
     this.queue = [];
   }
 
-  public crawl(root: ParserNode, depthLimit = 50) {
-    this.traverse(root, depthLimit);
+  public crawl(root: ParserNode, timeLimitMillis = 500, depthLimit = 50) {
+    this.traverse(root, timeLimitMillis, depthLimit);
   }
 
   protected abstract onEvent(q: CrawlEntry, e: CrawlEvent): void;
@@ -24,14 +24,15 @@ export abstract class CrawlerBase {
 
   // Traverses the graph in breadth-first order starting with a given node.
   // Stats are collected separately per-id and per-line
-  private traverse(root?: ParserNode, depthLimit?: number) {
+  private traverse(root?: ParserNode, timeLimitMillis?: number, depthLimit?: number) {
     if (root) {
       this.queue.push({
         node: root,  prevNodeStr: 'START', prevId: 'START', prevLine: -1, depth: 0
       });
     }
 
-    while(this.queue.length > 0 && (!depthLimit || this.queue[0].depth < depthLimit)) {
+    let start = Date.now();
+    while(this.queue.length > 0 && (!depthLimit || this.queue[0].depth < depthLimit) && (!timeLimitMillis || (Date.now() - start) < timeLimitMillis)) {
       let q = this.queue.shift();
 
       // This happens if we've navigated "outside the quest", e.g. a user doesn't end all their nodes with end tag.

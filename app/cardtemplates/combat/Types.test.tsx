@@ -1,0 +1,2 @@
+describe('Combat template types', () => {
+});
