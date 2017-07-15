@@ -1,5 +1,4 @@
-import * as React from 'react'
-import {defaultQuestContext, QuestContext} from '../reducers/QuestTypes'
+import {QuestContext} from '../reducers/QuestTypes'
 
 const Clone = require('clone');
 const HtmlDecode = (require('he') as any).decode;
@@ -114,6 +113,12 @@ export function updateContext(node: Cheerio, ctx: QuestContext, action?: string|
   if (action !== undefined) {
     newContext.path.push(action);
   }
-  newContext.scope._.viewCount = defaultQuestContext().scope._.viewCount.bind(newContext);
+
+  // TODO(scott): This is a hack to remove dependency on defaultQuestContext, which adds a bunch
+  // of unnecessary dependencies in the quest service.
+  newContext.scope._.viewCount = function(id: string): number {
+    return this.views[id] || 0;
+  }.bind(newContext);
+
   return newContext;
 }

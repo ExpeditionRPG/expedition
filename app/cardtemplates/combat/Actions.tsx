@@ -1,6 +1,8 @@
 import Redux from 'redux'
-import {DifficultyType, defaultQuestContext, Enemy, Loot} from '../../reducers/QuestTypes'
-import {CombatDifficultySettings, CombatAttack} from './State'
+import {PLAYER_DAMAGE_MULT} from '../../Constants'
+import {DifficultyType, Enemy, Loot} from '../../reducers/QuestTypes'
+import {defaultQuestContext} from '../../reducers/Quest'
+import {CombatDifficultySettings, CombatAttack} from './Types'
 import {SettingsType} from '../../reducers/StateTypes'
 import {ParserNode} from '../../parser/Node'
 import {toCard} from '../../actions/Card'
@@ -63,9 +65,7 @@ function getEnemies(node: ParserNode): Enemy[] {
 }
 
 function generateCombatAttack(node: ParserNode, settings: SettingsType, elapsedMillis: number): CombatAttack {
-  // general balance based on 4 players, scaling up / down on a curve
-  // since a bit more or less damage makes a huge difference in # of rounds survivable
-  const playerMultiplier = Math.sqrt(settings.numPlayers) / 2;
+  const playerMultiplier = PLAYER_DAMAGE_MULT[settings.numPlayers] || 1;
   const combat = node.ctx.templates.combat;
 
   // enemies each get to hit once - 1.5x if the party took too long

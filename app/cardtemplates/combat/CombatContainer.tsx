@@ -13,6 +13,7 @@ import {CombatPhase, MidCombatPhase} from './State'
 import {ParserNode} from '../../parser/Node'
 import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 import {midCombatChoice} from './Actions'
+import {logEvent} from '../../React'
 
 declare var window:any;
 
@@ -55,6 +56,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     // Override with dynamic state for tier and adventurer count
     // Any combat param change (e.g. change in tier) causes a repaint
     tier: state.quest.node.ctx.templates.combat.tier,
+    mostRecentRolls: state.quest.node.ctx.templates.combat.mostRecentRolls,
     numAliveAdventurers: state.quest.node.ctx.templates.combat.numAliveAdventurers,
   };
 }
@@ -65,11 +67,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       dispatch(toCard('QUEST_CARD', phase));
     },
     onVictory: (node: ParserNode, settings: SettingsType, maxTier: number) => {
-      window.FirebasePlugin.logEvent('combat_victory', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
+      logEvent('combat_victory', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
       dispatch(handleCombatEnd(node, settings, true, maxTier));
     },
     onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number) => {
-      window.FirebasePlugin.logEvent('combat_defeat', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
+      logEvent('combat_defeat', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
       dispatch(handleCombatEnd(node, settings, false, maxTier));
     },
     onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => {

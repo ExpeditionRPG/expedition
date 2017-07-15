@@ -1,6 +1,6 @@
 import {mount} from 'enzyme'
 import {handleAction, getEventParameters} from './Handlers'
-import {defaultQuestContext} from '../reducers/QuestTypes'
+import {defaultQuestContext} from '../reducers/Quest'
 import {ParserNode} from './Node'
 
 declare var global: any;

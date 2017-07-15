@@ -1,5 +1,4 @@
-import * as React from 'react'
-import {Choice, defaultQuestContext, Enemy, EventParameters, RoleplayElement, QuestCardName, QuestContext} from '../reducers/QuestTypes'
+import {Choice, Enemy, EventParameters, RoleplayElement, QuestCardName, QuestContext} from '../reducers/QuestTypes'
 import {ParserNode} from './Node'
 
 const MAX_GOTO_FOLLOW_DEPTH = 50;

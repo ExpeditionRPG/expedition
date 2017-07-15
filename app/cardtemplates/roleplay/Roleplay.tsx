@@ -151,5 +151,3 @@ const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'LIGHT'): JSX.Ele
 }
 
 export default Roleplay;
-
-

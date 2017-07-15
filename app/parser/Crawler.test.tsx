@@ -1,6 +1,6 @@
 import {CrawlerBase, CrawlEntry, CrawlEvent} from './Crawler'
 import {ParserNode} from './Node'
-import {defaultQuestContext} from '../reducers/QuestTypes'
+import {defaultQuestContext} from '../reducers/Quest'
 
 declare var global: any;
 
@@ -198,6 +198,19 @@ describe('CrawlerBase', () => {
 
       // If crawl exits, we'll have succeeded.
       crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+    });
+
+    it('bails out of computationally expensive quests', () => {
+      const xml = cheerio.load(`
+        <quest>
+          <roleplay title="I" id="I" data-line="2"><p></p></roleplay>
+          <trigger data-line="4">goto I</trigger>
+        </quest>`)('quest > :first-child');
+
+      const crawler = new CrawlTest(null, null);
+
+      // Super-short time limit, super-high depth limit.
+      crawler.crawl(new ParserNode(xml, defaultQuestContext()), 1, 1000000);
     });
 
     it('handles hanging choice node with no body', () => {

@@ -1,5 +1,6 @@
 import {ParserNode} from './Node'
-import {defaultQuestContext, QuestContext} from '../reducers/QuestTypes'
+import {QuestContext} from '../reducers/QuestTypes'
+import {defaultQuestContext} from '../reducers/Quest'
 declare var global: any;
 
 const cheerio = require('cheerio') as CheerioAPI;
