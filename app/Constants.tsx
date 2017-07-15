@@ -37,6 +37,17 @@ export const REGEX = {
 
 export const PLAYTIME_MINUTES_BUCKETS = [20, 30, 45, 60, 90, 120];
 
+// general balance based on 4 players, scaling up / down on a curve
+// since a bit more or less damage makes a huge difference in # of rounds survivable
+export const PLAYER_DAMAGE_MULT: {[key: number]: number} = {
+  1: 0.4,
+  2: 0.6,
+  3: 0.8,
+  4: 1,
+  5: 1.1,
+  6: 1.2,
+};
+
 export type GenreType = 'Comedy' | 'Drama' | 'Horror' | 'Mystery' | 'Romance';
 export const GENRES: GenreType[] = [
   'Comedy',
