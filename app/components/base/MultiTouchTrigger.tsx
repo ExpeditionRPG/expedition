@@ -16,6 +16,7 @@ const styles = {
   },
 };
 
+// TODO: use new ES6 syntax
 export default class MultiTouchTrigger extends React.Component<MultiTouchTriggerProps, {}> {
   ctx: any;
   canvas: any;

@@ -1,6 +1,11 @@
-
 describe('Combat', () => {
-  it('TODO');
+  describe('renderDrawEnemies', () => {
+    it('renders all enemies in props');
+  });
+
+  describe('renderResolve', () => {
+    it('renders rolls if they are enabled in settings');
+  });
 });
 /*
 test('Loot returns viable value with tier sum = 1', function() {

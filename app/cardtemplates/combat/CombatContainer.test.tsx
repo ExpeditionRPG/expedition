@@ -1,4 +1,5 @@
-
 describe('CombatContainer', () => {
-  it('TODO');
+  it('calculates max tier from history');
+
+  it('handles undefined combat element');
 });

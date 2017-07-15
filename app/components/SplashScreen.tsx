@@ -23,7 +23,6 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
   }
 
   render() {
-    // TODO: Child components
     return (
        <MultiTouchTrigger onTouchChange={this.onTouchChange.bind(this)} />
     );

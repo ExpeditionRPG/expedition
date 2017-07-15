@@ -1,4 +1,3 @@
-
 describe('Report', () => {
-  it('TODO');
+  // Simple enough; no need to test.
 });
