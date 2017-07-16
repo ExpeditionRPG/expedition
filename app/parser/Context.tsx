@@ -95,7 +95,7 @@ export function updateContext(node: Cheerio, ctx: QuestContext, action?: string|
   // Special handling of roleplay node - this is readonly and cannot be cloned.
   let tmpCombatRoleplay: any = null;
   if (ctx.templates && ctx.templates.combat && ctx.templates.combat.roleplay) {
-    tmpCombatRoleplay = ctx.templates.combat.roleplay
+    tmpCombatRoleplay = ctx.templates.combat.roleplay;
     ctx.templates.combat.roleplay = null;
   }
 
