@@ -25,8 +25,7 @@ app.use(bodyParser.text({ type:'*/*', extended: true, limit: '5mb' }));
 
 app.disable('etag');
 
-const port = process.env.DOCKER_PORT || config.get('PORT');
-const port2 = process.env.DOCKER_PORT2 || 5000;
+const port = process.env.DOCKER_PORT2 || config.get('PORT');
 
 const setupSession = function(app) {
   app.set('trust proxy', true);
@@ -51,16 +50,8 @@ const setupSession = function(app) {
 
 const setupRoutes = function(app) {
   app.use(routes);
-
-  if (process.env.NODE_ENV === 'dev') {
-    // Set a catch-all route and proxy the request for static assets
-    console.log('Proxying static requests to webpack');
-    const proxy = require('proxy-middleware');
-    app.use('/', proxy(url.parse('http://localhost:' + port2 + '/')));
-  } else {
-    app.use('/images', express.static('app/assets/images'));
-    app.use(express.static('dist'));
-  }
+  app.use('/images', express.static('app/assets/images'));
+  app.use(express.static('dist'));
 };
 
 const setupLogging = function(app) {
@@ -87,37 +78,6 @@ if (module === require.main) {
   setupSession(app);
   setupRoutes(app);
   setupLogging(app);
-
-  // Setup webpack-dev-server & proxy requests
-  if (process.env.NODE_ENV === 'dev') {
-    var webpack_config = require('./webpack.config');
-    var webpack = require('webpack');
-    var WebpackDevServer = require('webpack-dev-server');
-    var compiler = webpack(webpack_config);
-    compiler.plugin("done", function() {
-      console.log("DONE");
-    });
-    var conf = {
-      publicPath: webpack_config.output.publicPath,
-      contentBase: webpack_config.devServer.contentBase,
-      hot: true,
-      quiet: false,
-      noInfo: false,
-      historyApiFallback: true
-    };
-
-    if (process.env.WATCH_POLL) { // if WATCH_POLL defined, revert watcher from inotify to polling
-      conf.watchOptions = {
-        poll: 2000,
-        ignored: /node_modules|typings|dist|dll|\.git/,
-      };
-    }
-
-    // Start the server
-    var server = new WebpackDevServer(compiler, conf);
-    server.listen(port2, "localhost", function() {});
-    console.log("Webpack listening on "+port2);
-  }
 
   var server = app.listen(port, function () {
     var port = server.address().port;
