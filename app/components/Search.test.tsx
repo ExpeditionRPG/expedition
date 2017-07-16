@@ -13,4 +13,8 @@ describe('Search', () => {
     expect(formatPlayPeriod(30, 120)).toEqual('30-120 min');
     expect(formatPlayPeriod(60, 120)).toEqual('1-2 hrs');
   });
+
+  it('gracefully handles no search results');
+  it('renders some search results');
+  it('renders selected quest details');
 });

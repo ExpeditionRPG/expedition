@@ -1,4 +1,3 @@
-
 describe('SearchContainer', () => {
-  it('TODO');
+  it('Subscribes user if they opt in');
 });

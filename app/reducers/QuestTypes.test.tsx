@@ -1,3 +1,3 @@
 describe('QuestTypes', () => {
-  it('TODO');
+  // All types & interfaces; no tests needed.
 });

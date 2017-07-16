@@ -1,4 +1,3 @@
-
 describe('Store', () => {
-  it('TODO');
+  // Currently simple enough; no tests needed.
 });

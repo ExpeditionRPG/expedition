@@ -1,4 +1,3 @@
-
 describe('PlayerCountSettingContainer', () => {
-  it('TODO');
+  // Pretty basic; no tests needed for now.
 });

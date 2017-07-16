@@ -1,4 +1,3 @@
-
 describe('Settings reducer', () => {
-  it('TODO');
+  // Currently simple enough; no tests needed.
 });

@@ -33,7 +33,10 @@ export function fetchQuestXML(details: QuestDetails) {
 // for loading quests in the app - Quest Creator injects directly into initQuest
 export function loadQuestXML(details: QuestDetails, questNode: Cheerio, ctx: QuestContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    logEvent('quest_start', details); // here instead of initQuest b/c initQuest is also used by the editor
+    // Quest start is here instead of initQuest because initQuest is also used by the editor
+    // and would over-report.
+    logEvent('quest_start', details);
+
     dispatch(initQuest(details, questNode, ctx));
     dispatch(toCard('QUEST_START'));
   };

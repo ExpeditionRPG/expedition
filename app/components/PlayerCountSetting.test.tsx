@@ -1,4 +1,3 @@
-
 describe('PlayerCountSetting', () => {
-  it('TODO');
+  // Pretty basic; no tests needed for now.
 });

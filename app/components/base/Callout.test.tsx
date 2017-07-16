@@ -1,4 +1,3 @@
-
 describe('Callout', () => {
-  it('TODO');
+  // Pretty simple; no testing needed right now.
 });
