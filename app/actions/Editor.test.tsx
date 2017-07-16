@@ -32,5 +32,7 @@ describe('Editor action', () => {
     it('renders and plays');
 
     it('auto-playtests');
+
+    it('pushes error on invalid node');
   });
 });

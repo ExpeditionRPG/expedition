@@ -27,8 +27,7 @@ app.use(bodyParser.text({ type:'*/*', extended: true, limit: '5mb' } as any));
 
 app.disable('etag');
 
-const port = process.env.DOCKER_PORT || config.get('PORT');
-const port2 = process.env.DOCKER_PORT2 || 5000;
+const port = process.env.DOCKER_PORT2 || config.get('PORT');
 
 const setupSession = function(app: any) {
   app.set('trust proxy', true);
@@ -52,18 +51,9 @@ const setupSession = function(app: any) {
 };
 
 const setupRoutes = function(app: any) {
-  //app.use(routes);
-
-  if (process.env.NODE_ENV === 'dev') {
-    // Set a catch-all route and proxy the request for static assets
-    console.log('Proxying static requests to webpack');
-    const proxy = require('proxy-middleware');
-    app.use('/', proxy(url.parse('http://localhost:' + port2 + '/')));
-  } else {
-    // TODO: Serve files from dist/
-    app.use('/assets', express.static('app/assets'));
-    app.use(express.static('dist'));
-  }
+  app.use(routes);
+  app.use('/images', express.static('app/assets/images'));
+  app.use(express.static('dist'));
 };
 
 const setupLogging = function(app: any) {
@@ -91,40 +81,8 @@ if (module === require.main) {
   setupRoutes(app);
   setupLogging(app);
 
-  // Setup webpack-dev-server & proxy requests
-  if (process.env.NODE_ENV === 'dev') {
-    /*
-    var webpack_config: any = require('./webpack.config');
-    var webpack: any = require('webpack');
-    //var WebpackDevServer: any = require('webpack-dev-server');
-    var compiler = webpack(webpack_config);
-    compiler.plugin('done', function() {
-      console.log('DONE');
-    });
-    var conf: any = {
-      publicPath: webpack_config.output.publicPath,
-      contentBase: webpack_config.devServer.contentBase,
-      hot: true,
-      quiet: false,
-      noInfo: false,
-      historyApiFallback: true,
-      watchOptions: null,
-    };
-
-    if (process.env.WATCH_POLL) { // if WATCH_POLL defined, revert watcher from inotify to polling
-      conf.watchOptions = {
-        poll: 2000,
-        ignored: /node_modules|typings|dist|dll|\.git/,
-      };
-    }
-
-    // Start the server
-    //new WebpackDevServer(compiler, conf).listen(port2, 'localhost', function() {});
-    console.log('Webpack listening on '+port2);
-    */
-  }
-
   app.listen(port, function () {
+    var port = server.address().port;
     console.log('App listening on port %s', port);
   });
 }

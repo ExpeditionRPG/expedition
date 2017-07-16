@@ -20,7 +20,7 @@ import {
   METADATA_DEFAULTS,
   NEW_QUEST_TITLE
 } from '../Constants'
-import {pushError, pushHTTPError} from '../Error'
+import {pushError, pushHTTPError} from './Dialogs'
 import {renderXML} from '../parsing/QDLParser'
 
 const Cheerio: any = require('cheerio');
@@ -82,29 +82,29 @@ export function newQuest(user: UserState) {
     window.gapi.client.drive.files.insert(insertHash).execute((createResponse: {id: string}) => {
       updateDriveFile(createResponse.id, {}, '', (err, result) => {
         if (err) {
-          alert('Failed to create new quest: ' + err.message);
-        } else {
-          loadQuest(user, dispatch, createResponse.id);
-          window.gapi.client.request({
-            path: '/drive/v3/files/' + createResponse.id + '/permissions',
-            method: 'POST',
-            params: {sendNotificationEmails: false},
-            body: {
-              role: 'writer',
-              type: 'domain',
-              domain: 'Fabricate.io',
-              allowFileDiscovery: true,
-            },
-          }).then((json: any, raw: any) => {
-          }, (json: any) => {
-            ReactGA.event({
-              category: 'Error',
-              action: 'Error connecting quest file to Fabricate.IO',
-              label: createResponse.id,
-            });
-            console.log('Error connecting quest file to Fabricate.IO', json);
-          });
+          return dispatch(pushError(new Error('Failed to create new quest: ' + err.message)));
         }
+
+        loadQuest(user, dispatch, createResponse.id);
+        window.gapi.client.request({
+          path: '/drive/v3/files/' + createResponse.id + '/permissions',
+          method: 'POST',
+          params: {sendNotificationEmails: false},
+          body: {
+            role: 'writer',
+            type: 'domain',
+            domain: 'Fabricate.io',
+            allowFileDiscovery: true,
+          },
+        }).then((json: any, raw: any) => {
+        }, (json: any) => {
+          ReactGA.event({
+            category: 'Error',
+            action: 'Error connecting quest file to Fabricate.IO',
+            label: createResponse.id,
+          });
+          console.log('Error connecting quest file to Fabricate.IO', json);
+        });
       });
     });
   }
@@ -131,9 +131,13 @@ function createDocMetadata(model: any, defaults: any) {
   const map = model.createMap();
   Object.keys(defaults).forEach((key: string) => {
     const val = defaults[key];
+    // Don't allow undo - these are default values
+    // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
+    model.beginCompoundOperation('', false);
     if (val) {
       map.set(key, val);
     }
+    model.endCompoundOperation();
   });
   model.getRoot().set('metadata', map);
   return map;
@@ -167,7 +171,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         };
         metadata = createDocMetadata(doc.getModel(), defaults);
       } catch(err) {
-        alert('Error parsing metadata. Please check your quest for validation errors, then try reloading the page. If this error persists, please contact support: Expedition@Fabricate.io');
+        dispatch(pushError(new Error('Error parsing metadata. Please check your quest for validation errors, then try reloading the page. If this error persists, please contact support: Expedition@Fabricate.io')));
         ReactGA.event({
           category: 'Error',
           action: 'Error parsing metadata',
@@ -185,6 +189,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         mdRealtime: md,
         notesRealtime: notes,
         metadataRealtime: metadata,
+        realtimeModel: doc.getModel(),
         summary: metadata.get('summary'),
         author: metadata.get('author'),
         email: metadata.get('email'),
@@ -201,7 +206,11 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
   },
   (model: any) => {
     const string = model.createString();
+    // Don't allow user undo, since it would revert everything back to a blank page.
+    // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
+    model.beginCompoundOperation('', false);
     string.setText(NEW_QUEST_TEMPLATE);
+    model.endCompoundOperation();
     model.getRoot().set('markdown', string);
     createDocNotes(model);
   });
@@ -209,7 +218,11 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
 
 export function questMetadataChange(quest: QuestType, key: string, value: any): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
+    // Don't allow undo, since these are set via UI and users don't expect Ctrl+Z to affec them.
+    // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
+    quest.realtimeModel.beginCompoundOperation('', false);
     quest.metadataRealtime.set(key, value);
+    quest.realtimeModel.endCompoundOperation();
     dispatch({type: 'QUEST_METADATA_CHANGE', key, value} as QuestMetadataChangeAction);
   }
 }
@@ -248,7 +261,9 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean): ((dispat
       quest.published = (new Date(Date.now()).toISOString());
       dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
       dispatch(setSnackbar(true, 'Quest published successfully!'));
-    }).fail(pushHTTPError);
+    }).fail((error: {statusText: string, status: string, responseText: string}) => {
+      dispatch(pushHTTPError(error));
+    });
   }
 }
 
@@ -295,6 +310,8 @@ export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any
       quest.published = undefined;
       dispatch({type: 'RECEIVE_QUEST_UNPUBLISH', quest} as ReceiveQuestUnpublishAction);
       dispatch(setSnackbar(true, 'Quest un-published successfully!'));
-    }).fail(pushHTTPError);
+    }).fail((error: {statusText: string, status: string, responseText: string}) => {
+      dispatch(pushHTTPError(error));
+    });;
   };
 }

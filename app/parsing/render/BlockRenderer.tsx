@@ -4,6 +4,9 @@ import {Logger} from '../Logger'
 import {Normalize} from '../validation/Normalize'
 import REGEX from '../../Regex'
 
+function isNumeric(n: any) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
 
 // Does not implement Renderer interface, rather wraps
 // an existing Renderer's functions to accept a block list.
@@ -140,12 +143,25 @@ export class BlockRenderer {
         if (!extractedBullet) {
           continue;
         }
+        var enemy = extractedBullet;
         if (!extractedBullet.text) {
           // Visible is actually a value expression
-          attribs['enemies'].push({text: '{{' + extractedBullet.visible + '}}'});
-        } else {
-          attribs['enemies'].push(extractedBullet);
+          enemy = {
+            text: '{{' + extractedBullet.visible + '}}',
+            visible: null,
+            json: extractedBullet.json
+          };
         }
+
+        // Validate tier if set
+        if (enemy.json && enemy.json.tier) {
+          const tier = enemy.json.tier;
+          if (!isNumeric(tier) || tier < 1) {
+            log.err('tier must be a positive number', '418', blocks[0].startLine + i);
+            continue;
+          }
+        }
+        attribs['enemies'].push(enemy);
       }
     }
 

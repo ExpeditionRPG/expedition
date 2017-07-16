@@ -115,3 +115,8 @@ export interface SnackbarSetAction extends SnackbarState {type: 'SNACKBAR_SET'}
 export interface QuestPublishingSetupAction extends Redux.Action {
   type: 'QUEST_PUBLISHING_SETUP';
 }
+
+export interface PushErrorAction extends Redux.Action {
+  type: 'PUSH_ERROR';
+  error: Error;
+}

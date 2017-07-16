@@ -1,6 +1,6 @@
 import {StatsCrawler} from './StatsCrawler'
 import {ParserNode} from 'expedition-app/app/parser/Node'
-import {defaultQuestContext} from 'expedition-app/app/reducers/QuestTypes'
+import {defaultQuestContext} from 'expedition-app/app/reducers/Quest'
 
 declare var global: any;
 

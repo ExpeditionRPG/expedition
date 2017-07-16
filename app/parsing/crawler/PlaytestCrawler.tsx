@@ -1,9 +1,10 @@
 import {CrawlEvent, CrawlEntry} from 'expedition-app/app/parser/Crawler'
-import {defaultQuestContext} from 'expedition-app/app/reducers/QuestTypes'
+import {defaultQuestContext} from 'expedition-app/app/reducers/Quest'
 import {StatsCrawler} from './StatsCrawler'
 import {ParserNode} from 'expedition-app/app/parser/Node'
 import {Logger, LogMessageMap} from '../Logger'
 import {initQuest} from 'expedition-app/app/actions/Quest'
+import {encounters} from 'expedition-app/app/Encounters'
 
 const cheerio: any = require('cheerio') as CheerioAPI;
 
@@ -50,6 +51,16 @@ class PlaytestCrawler extends StatsCrawler {
           this.logger.err('Detected a state where this card has ' + winCount +
             ' "win" and ' + loseCount + ' "lose" events; want 1 and 1', '431', line);
         }
+
+        // Check that enemies are all valid or have tier overrides set.
+        q.node.loopChildren((tag, child, orig) => {
+          if (tag !== 'e') {
+            return;
+          }
+          if (!encounters[child.text()] && !child.attr('tier')) {
+            this.logger.err('Detected a non-standard enemy "' + child.text() + '" without explicit tier JSON', '419', line);
+          }
+        });
         break;
       case 'roleplay':
         let choiceCount = 0;
@@ -69,7 +80,7 @@ class PlaytestCrawler extends StatsCrawler {
 export function playtestXMLResult(parserResult: Cheerio): LogMessageMap {
   const logger = new Logger();
   try {
-    const root = initQuest('0', parserResult, defaultQuestContext()).node;
+    const root = initQuest({id: '0'}, parserResult, defaultQuestContext()).node;
     const crawler = new PlaytestCrawler(logger);
     crawler.crawl(root);
   } catch(e) {

@@ -8,6 +8,7 @@ import QuestIDE, {QuestIDEStateProps, QuestIDEDispatchProps} from './QuestIDE'
 const mapStateToProps = (state: AppState, ownProps: any): QuestIDEStateProps => {
   return {
     realtime: state.quest.mdRealtime,
+    realtimeModel: state.quest.realtimeModel,
     annotations: state.annotations,
     lastSplitPaneDragMillis: state.editor.lastSplitPaneDragMillis,
   };

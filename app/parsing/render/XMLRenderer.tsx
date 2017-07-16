@@ -53,6 +53,9 @@ export var XMLRenderer: Renderer = {
     for (let i = 0; i < enemies.length; i++) {
       const e = cheerio.load('<e>' + enemies[i].text + '</e>')('e');
       e.attr('if', enemies[i].visible);
+      if (enemies[i].json && enemies[i].json.tier) {
+        e.attr('tier', enemies[i].json.tier);
+      }
       combat.append(e);
     }
 

@@ -8,6 +8,7 @@ import AppContainer from './AppContainer'
 
 export interface QuestIDEStateProps {
   realtime: any;
+  realtimeModel: any;
   annotations: AnnotationType[];
   lastSplitPaneDragMillis: number;
 };
@@ -26,6 +27,7 @@ const QuestIDE = (props: QuestIDEProps): JSX.Element => {
       <div className="editor">
         <TextView
           realtime={props.realtime}
+          realtimeModel={props.realtimeModel}
           annotations={props.annotations}
           lastSizeChangeMillis={props.lastSplitPaneDragMillis}
           onChange={(text: string) => props.onDirty(props.realtime, text)}

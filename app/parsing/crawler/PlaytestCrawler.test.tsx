@@ -30,6 +30,19 @@ describe('playtest', () => {
       expect(msgs.error[0].text).toEqual('An action on this card leads nowhere (invalid goto id or no **end**)');
     });
 
+    it('logs if a combat node has a custom enemy with unspecified tier', () => {
+      const msgs = playtestXMLResult(cheerio.load(`<quest>
+        <combat data-line="0">
+          <e>Custom Enemy</e>
+          <event on="win"><trigger>end</trigger></event>
+          <event on="lose"><trigger>end</trigger></event>
+        </combat>
+      </quest>`)('quest'));
+
+      expect(msgs.error.length).toEqual(1);
+      expect(msgs.error[0].text).toContain('without explicit tier');
+    })
+
     it('logs if a node leads to an invalid node');
 
     it('logs if a node has overlapping conditionally true events', () => {

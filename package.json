@@ -8,12 +8,14 @@
   "scripts": {
     "test": "mocha meta_tests.js && karma start --single-run --browsers PhantomJS",
     "watch:test": "karma start",
-    "start": "node ${SCRIPT:-app.js}",
-    "dev-dash": "NODE_ENV=dev webpack-dashboard -- node ${SCRIPT:-app.js}",
-    "dev": "webpack --config webpack.backend.config.js",
+    "dev-compile": "webpack --config webpack.backend.config.js",
+    "start": "node app.js",
+    "dev": "NODE_ENV=dev node app.js",
+    "dev:ide": "webpack-dev-server --progress",
     "monitor": "nodemon ${SCRIPT:-app.js}",
     "deploy": "gcloud app deploy app.yaml",
-    "init-cloudsql": "node books/model-cloudsql.js"
+    "init-cloudsql": "node books/model-cloudsql.js",
+    "heroku-postbuild": "webpack -p --config webpack.dist.config.js --progress"
   },
   "author": "Fabricate.IO",
   "license": "CC-BY-NC-SA-4.0",
@@ -29,22 +31,24 @@
   },
   "dependencies": {
     "@types/node": "^7.0.8",
+    "@types/promise-polyfill": "^6.0.0",
     "ace": "^1.3.0",
     "babel-core": "^6.24.0",
     "body-parser": "^1.17.1",
     "brace": "^0.10.0",
-    "braintree": "^2.1.1",
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.1",
     "cors": "^2.8.3",
-    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#0ddb13d873340bf56e7ed5492a1edb2cafdb5f2b",
+    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#cf4479b503292720e417f8519f9d457fda9ccd1d",
     "express": "^4.15.2",
     "express-rate-limit": "^2.8.0",
     "express-session": "^1.15.1",
     "express-winston": "^2.3.0",
+    "forwarded": "^0.1.0",
     "google-auth-library": "^0.10.0",
     "google-cloud": "^0.55.0",
     "google-url": "0.0.4",
+    "grpc": "^1.4.1",
     "html": "^1.0.0",
     "joi": "^10.2.2",
     "joi-browser": "^10.0.6",
@@ -56,7 +60,7 @@
     "multer": "^1.3.0",
     "nconf": "^0.8.4",
     "newrelic": "^1.40.0",
-    "nodemailer": "^3.1.7",
+    "nodemailer": "^4.0.1",
     "passport": "^0.3.2",
     "passport-google-id-token": "git+https://github.com/Fabricate-IO/passport-google-id-multi-token.git",
     "passport-google-oauth20": "^1.0.0",
@@ -147,6 +151,6 @@
     "yargs": "^7.0.2"
   },
   "engines": {
-    "node": "^6.9.0"
+    "node": "8.1.4"
   }
 }

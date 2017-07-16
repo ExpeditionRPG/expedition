@@ -25,11 +25,7 @@ nconf
     'NEW_RELIC_LICENSE_KEY',
 
     // (Optional) Pay-what-you-want config settings
-    'BRAINTREE_ENVIRONMENT',
-    'BRAINTREE_MERCHANT_ID',
-    'BRAINTREE_PUBLIC_KEY',
-    'BRAINTREE_PRIVATE_KEY',
-
+    'ENABLE_PAYMENT',
 
     // (Optional) mailing list config settings
     'MAILCHIMP_KEY',
@@ -42,7 +38,11 @@ nconf
   .file({ file: path.join(__dirname, 'config.json') })
   .defaults({
     PORT: 8080,
-    BRAINTREE_ENVIRONMENT: 'Sandbox',
+    ENABLE_PAYMENT: false,
+
+    OAUTH2_CLIENT_ID: '',
+    OAUTH2_CLIENT_SECRET: '',
+    OAUTH2_CALLBACK: 'http://localhost:8080/auth/google/callback',
   });
 
 // Check for required settings

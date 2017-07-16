@@ -14,7 +14,6 @@ import TextField from 'material-ui/TextField'
 import Toggle from 'material-ui/Toggle'
 
 import Checkbox from './base/Checkbox'
-import {ErrorType} from '../Error'
 import {QuestType, ShareType, DialogsState, DialogIDType} from '../reducers/StateTypes'
 import theme from '../Theme'
 import {MIN_PLAYERS, MAX_PLAYERS} from '../Constants'
@@ -24,23 +23,22 @@ declare var ga: any;
 
 interface ErrorDialogProps extends React.Props<any> {
   open: boolean;
-  errors: ErrorType[];
+  errors: Error[];
   onRequestClose: ()=>void;
 }
 
 export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
   render() {
-    var errors: ErrorType[] = [];
+    var errors: JSX.Element[] = [];
     for (var i = 0; i < this.props.errors.length; i++) {
       var error = this.props.errors[i];
-      ga('send', 'event', 'error', error.name, error.message);
-      console.log(error.stack);
-      errors.push(<div key={i}>{error.toString()}</div>);
+      // TODO: Include fold-out stack info
+      errors.push(<li key={i}><strong>{error.name}</strong>: {error.message}</li>);
     }
 
     return (
       <Dialog
-        title="Errors Occurred"
+        title={(errors.length > 1) ? 'Errors Occurred' : 'Error Occurred'}
         actions={[<RaisedButton
           label="OK"
           primary={true}
@@ -49,7 +47,9 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
         titleClassName={'dialogTitle dialogError'}
         modal={false}
         open={Boolean(this.props.open)}>
-        {errors}
+        <ul>
+          {errors}
+        </ul>
       </Dialog>
     );
   }
@@ -206,9 +206,8 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
 }
 
 export interface DialogsStateProps {
-  open: DialogsState;
+  dialogs: DialogsState;
   quest: QuestType;
-  errors: ErrorType[];
 };
 
 export interface DialogsDispatchProps {
@@ -223,17 +222,17 @@ interface DialogsProps extends DialogsStateProps, DialogsDispatchProps {}
 const Dialogs = (props: DialogsProps): JSX.Element => {
   return (
     <span>
-      <ErrorDialog
-        open={props.open['ERROR']}
-        onRequestClose={() => props.onRequestClose('ERROR')}
-        errors={props.errors}
-      />
       <PublishingDialog
         handleMetadataChange={props.handleMetadataChange}
-        open={props.open['PUBLISHING']}
+        open={props.dialogs.open['PUBLISHING']}
         onRequestClose={() => props.onRequestClose('PUBLISHING')}
         onRequestPublish={props.onRequestPublish}
         quest={props.quest}
+      />
+      <ErrorDialog
+        open={props.dialogs.open['ERROR']}
+        onRequestClose={() => props.onRequestClose('ERROR')}
+        errors={props.dialogs.errors}
       />
     </span>
   );

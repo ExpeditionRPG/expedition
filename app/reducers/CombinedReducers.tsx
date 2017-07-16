@@ -2,7 +2,6 @@ import Redux from 'redux'
 import {annotations} from './Annotations'
 import {dialogs} from './Dialogs'
 import {editor} from './Editor'
-import {errors} from './Errors'
 import {quest} from './Quest'
 import {snackbar} from './Snackbar'
 import {user} from './User'
@@ -20,7 +19,6 @@ export default function combinedReduce(state: AppState, action: Redux.Action): A
     annotations: annotations(state.annotations, action),
     dialogs: dialogs(state.dialogs, action),
     editor: editor(state.editor, action),
-    errors: errors(state.errors, action),
     preview: preview(state.preview, action),
     quest: quest(state.quest, action),
     snackbar: snackbar(state.snackbar, action),

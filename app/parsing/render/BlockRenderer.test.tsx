@@ -81,6 +81,37 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.combatNoEnemyOrEventsLog);
     })
 
+    it ('errors with bad enemy tier', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        {
+          indent: 0,
+          lines: ['_combat_', '', '- Thief {"tier": -1}', '- Thief', '', '* on win'],
+          startLine: 0,
+        },
+        {
+          indent: 2,
+          lines: [],
+          render: XMLRenderer.toRoleplay({}, ['win'], null),
+          startLine: 2,
+        },
+        {
+          indent: 0,
+          lines: ['* on lose'],
+          startLine: 4,
+        },
+        {
+          indent: 2,
+          lines: [],
+          render: XMLRenderer.toRoleplay({}, ['lose'], null),
+          startLine: 2,
+        },
+      ];
+
+      br.toCombat(blocks, log)
+      expect(prettifyMsgs(log.finalize())).toEqual(TestData.combatBadTierLog);
+    })
+
     it('errors on inner block without event bullet');
 
     it('renders full combat', () => {
@@ -88,7 +119,7 @@ describe('BlockRenderer', () => {
       var blocks: Block[] = [
         {
           indent: 0,
-          lines: ['_combat_', '', '- e1', '- e2', '* on win'],
+          lines: ['_combat_', '', '- e1', '- e2 {"tier": 3}', '* on win'],
           startLine: 0,
         },
         {

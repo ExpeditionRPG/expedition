@@ -3,6 +3,7 @@ import {OverrideTextArea} from './base/OverrideTextArea'
 
 export interface NotesPanelStateProps {
   realtime: any;
+  realtimeModel: any;
 }
 
 export interface NotesPanelDispatchProps {
@@ -13,6 +14,7 @@ interface NotesPanelProps extends NotesPanelStateProps, NotesPanelDispatchProps 
 
 interface RealtimeTextAreaProps extends React.Props<any> {
   realtime: any;
+  realtimeModel: any;
   onDirty: (realtime: any, text: string) => void;
 }
 
@@ -31,7 +33,12 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
 
   setValue(value: string) {
     if (this.props.realtime) {
+      // Don't allow async undo... for now. We instead rely on ace's UndoManager.
+      // TODO: Figure out UX when undoing notes from the main editor, and vice versa.
+      // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
+      this.props.realtimeModel.beginCompoundOperation('', false);
       this.props.realtime.setValue(value);
+      this.props.realtimeModel.endCompoundOperation();
     }
   }
 
@@ -91,10 +98,9 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
 
     return (
       <textarea
+        id="notesArea"
         ref={(ref: any) => this.onRef(ref)}
         onChange={(e: any) => this.onChange(e)}
-        width="100%"
-        height="100%"
       ></textarea>
     );
   }
@@ -108,7 +114,7 @@ const NotesPanel = (props: NotesPanelProps): JSX.Element => {
   return (
     <div className="console">
       <div className="interactive">
-        <RealtimeTextArea realtime={props.realtime} onDirty={props.onDirty}></RealtimeTextArea>
+        <RealtimeTextArea realtime={props.realtime} realtimeModel={props.realtimeModel} onDirty={props.onDirty}></RealtimeTextArea>
       </div>
     </div>
   );

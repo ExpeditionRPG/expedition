@@ -5,6 +5,9 @@ const Webpack = require('webpack');
 
 const port = process.env.DOCKER_PORT || 8080;
 
+const proxyDest = {target: 'http://localhost:'+ (process.env.DOCKER_PORT2 || 8081), secure: false};
+console.log('Proxying server requests to ' + proxyDest.target);
+
 const options = {
   cache: true,
   entry: {
@@ -19,7 +22,25 @@ const options = {
     extensions: ['.js', '.ts', '.tsx', '.json', '.txt'],
   },
   devServer: {
+    host: '0.0.0.0',
     contentBase: Path.join(__dirname, 'app'),
+    publicPath: '/',
+    port: port,
+    hot: true,
+    quiet: false,
+    noInfo: false,
+    historyApiFallback: true,
+    proxy: {
+      '/feedback': proxyDest,
+      '/quests': proxyDest,
+      '/raw': proxyDest,
+      '/publish': proxyDest,
+      '/unpublish': proxyDest,
+      '/quest': proxyDest,
+      '/user': proxyDest,
+      '/braintree': proxyDest,
+      '/auth': proxyDest
+    }
   },
   output: {
     path: Path.join(__dirname, 'dist'),
@@ -50,7 +71,8 @@ const options = {
     }),
     new CopyWebpackPlugin([
       { from: 'app/index.html' },
-      { from: 'node_modules/expedition-app/app/images', to: 'images'},
+      { from: 'app/assets' },
+      { from: 'node_modules/expedition-app/app/images', to: 'images' },
     ]),
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {
