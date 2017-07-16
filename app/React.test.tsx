@@ -89,7 +89,7 @@ describe('React', () => {
   });
 
   describe('logEvent', () => {
-    it('logs to firebase'); // $10
+    it('logs to firebase if firebase set up'); // $10
     it('logs to google analytics if GA set up'); // $10
   })
 
