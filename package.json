@@ -8,7 +8,7 @@
   "scripts": {
     "test": "mocha meta_tests.js && karma start --single-run --browsers PhantomJS",
     "watch:test": "karma start",
-    "dev-compile": "webpack --config webpack.backend.config.js",
+    "dev-compile": "webpack --config webpack.backend.config.js --progress",
     "start": "node app.js",
     "dev": "NODE_ENV=dev node app.js",
     "dev:ide": "webpack-dev-server --progress",
@@ -30,6 +30,7 @@
     ]
   },
   "dependencies": {
+    "@google-cloud/storage": "^1.2.0",
     "@types/node": "^7.0.8",
     "@types/promise-polyfill": "^6.0.0",
     "ace": "^1.3.0",
@@ -46,7 +47,6 @@
     "express-winston": "^2.3.0",
     "forwarded": "^0.1.0",
     "google-auth-library": "^0.10.0",
-    "google-cloud": "^0.55.0",
     "google-url": "0.0.4",
     "grpc": "^1.4.1",
     "html": "^1.0.0",
@@ -148,6 +148,7 @@
     "watch-run": "^1.2.5",
     "webpack-dashboard": "^0.3.0",
     "webpack-dev-server": "^2.4.2",
+    "webpack-node-externals": "^1.6.0",
     "yargs": "^7.0.2"
   },
   "engines": {

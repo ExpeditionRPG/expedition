@@ -1,7 +1,7 @@
 const config: any = require('./config');
 
 import bodyParser from 'body-parser'
-import express from 'express'
+import * as express from 'express'
 import passport from 'passport'
 import session from 'express-session'
 import path from 'path'
@@ -11,6 +11,7 @@ import url from 'url'
 const logging: any = require('./lib/logging');
 //const oauth2 = require('./lib/oauth2');
 //const routes: any = require('./routes');
+
 
 const app = express();
 
@@ -51,7 +52,7 @@ const setupSession = function(app: any) {
 };
 
 const setupRoutes = function(app: any) {
-  app.use(routes);
+  //app.use(routes);
   app.use('/images', express.static('app/assets/images'));
   app.use(express.static('dist'));
 };
@@ -82,9 +83,15 @@ if (module === require.main) {
   setupLogging(app);
 
   app.listen(port, function () {
-    var port = server.address().port;
     console.log('App listening on port %s', port);
   });
+
+  if ((module as any).hot) {
+    (module as any).hot.accept('./routes', () => {
+      console.log('should update');
+    });
+    //const routes: any = require('./routes');
+  }
 }
 
 module.exports = app;

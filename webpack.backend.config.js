@@ -2,30 +2,33 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const Path = require('path');
 const Webpack = require('webpack');
+const NodeExternals = require('webpack-node-externals');
 
-const port = process.env.DOCKER_PORT || 8080;
+const PORT = process.env.DOCKER_PORT || 8080;
 
 const options = {
   cache: true,
   entry: {
-    bundle: [
-      './app.tsx',
+    server: [
+      './app.ts',
     ],
   },
   resolve: {
-    extensions: ['.js', '.ts', '.tsx', '.json', '.txt'],
-  },
-  devServer: {
-    contentBase: Path.join(__dirname, 'app'),
+    extensions: ['.js', '.ts', '.json', '.txt'],
   },
   output: {
     path: Path.join(__dirname, 'dist'),
-    publicPath: 'http://localhost:' + port + '/',
+    publicPath: 'http://localhost:' + PORT + '/',
     filename: '[name].js',
   },
   stats: {
     colors: true,
     reasons: true,
+  },
+  node: {
+    // Don't touch __dirname or __filename (so they work as normal when starting w/ nodejs)
+    __dirname: false,
+    __filename: false,
   },
   module: {
     rules: [
@@ -33,12 +36,12 @@ const options = {
       { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.json$/, loader: 'json-loader' },
-      // Specifically exclude building anything in node_modules, with the exception of the expedition-app lib we use for previewing quest code.
-      { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /\/node_modules\/.*/ },
+      { test: /\.ts$/, loaders: ['awesome-typescript-loader'], exclude: /\/node_modules\/.*/ },
       { enforce: 'post', test: /\.tsx$/, loaders: ['babel-loader'], exclude: /\/node_modules\/.*/ },
     ]
   },
   target: 'node',
+  externals: [NodeExternals()], // Do not bundle anything in node_modules.
   plugins: [
     new DashboardPlugin(),
     new Webpack.HotModuleReplacementPlugin(),

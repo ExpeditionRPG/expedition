@@ -1,6 +1,10 @@
 const nconf = module.exports = require('nconf');
 const path = require('path');
 
+const CONFIG_PATH = path.join(__dirname, 'config.json');
+
+console.log('Loading config from ' + CONFIG_PATH);
+
 nconf
   .argv()
   .env([
@@ -35,7 +39,7 @@ nconf
     // TODO is this reached through config.get?
     'NODE_ENV',
   ])
-  .file({ file: path.join(__dirname, 'config.json') })
+  .file({ file: CONFIG_PATH })
   .defaults({
     PORT: 8080,
     ENABLE_PAYMENT: false,

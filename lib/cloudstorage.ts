@@ -1,5 +1,5 @@
 const request = require('request');
-const gcloud = require('google-cloud');
+const gcloudStorage = require('@google-cloud/storage');
 const path = require('path');
 
 const config = require('../config');
@@ -7,7 +7,7 @@ const logging = require('./logging');
 
 const CLOUD_BUCKET = config.get('CLOUD_BUCKET');
 
-const storage = gcloud.storage({
+const storage = gcloudStorage({
   projectId: config.get('GCLOUD_PROJECT'),
   credentials: (process.env.GOOGLE_SERVICE_KEY) ? JSON.parse(process.env.GOOGLE_SERVICE_KEY) : undefined
 });
