@@ -1,8 +1,10 @@
 import * as React from 'react'
 import {MAX_COUNTER_HEALTH} from './Constants'
 
-export function icon(theme: string, name: string, key?: number): JSX.Element {
-  return <img key={(key === null) ? name : key} className="inline_icon svg" src={`/themes/${theme}/images/icon/${name}.svg`}/>;
+export function icon(name: string, theme?: string, key?: number): JSX.Element {
+  const globalSrc = `/expedition-art/icons/${name}.svg`;
+  const themeSrc = (theme) ? `/themes/${theme}/images/icon/${name}.svg` : null;
+  return <img key={(key === null) ? name : key} className="inline_icon svg" src={themeSrc || globalSrc}/>;
 }
 
 export function camelCase(str: string): string {

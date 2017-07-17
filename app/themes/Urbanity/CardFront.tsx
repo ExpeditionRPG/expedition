@@ -98,11 +98,11 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <p>End of year: resolve (see back)</p>
                 <p>&nbsp;</p>
                 <h3>Resources:</h3>
-                {icon(theme, 'transportation_small')} transportation<br/>
-                {icon(theme, 'environment_small')} environment<br/>
-                {icon(theme, 'health_small')} health<br/>
-                {icon(theme, 'education_small')} education<br/>
-                {icon(theme, 'jobs_small')} jobs<br/>
+                {icon('transportation_small', theme)} transportation<br/>
+                {icon('environment_small', theme)} environment<br/>
+                {icon('health_small', theme)} health<br/>
+                {icon('education_small', theme)} education<br/>
+                {icon('jobs_small', theme)} jobs<br/>
               </article>
             </div>
           </div>

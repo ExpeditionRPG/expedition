@@ -474,9 +474,12 @@ $text-color-white: #fff;
         transform: translateY(-50%);
         margin: 0;
 
-        tr td:first-child {
-          padding-right: 4pt;
+        tr td {
           vertical-align: middle;
+        }
+        tr td:first-child {
+          padding: 4pt 6pt 4pt 0;
+          opacity: 0.7;
         }
       }
     }
@@ -589,25 +592,27 @@ $text-color-white: #fff;
   }
 
   .card.back.Magic { &:before {
-    background-image: url(../themes/BlackAndWhite/images/icon/magic.svg) !important;
+    background-image: url(../../node_modules/expedition-art/icons/magic.svg) !important;
   }}
   .card.back.Melee { &:before {
-    background-image: url(../themes/BlackAndWhite/images/icon/melee.svg) !important;
+    background-image: url(../../node_modules/expedition-art/icons/melee.svg) !important;
   }}
   .card.back.Music { &:before {
-    background-image: url(../themes/BlackAndWhite/images/icon/music.svg) !important;
+    background-image: url(../../node_modules/expedition-art/icons/music.svg) !important;
   }}
   .card.back.Ranged { &:before {
-    background-image: url(../themes/BlackAndWhite/images/icon/ranged.svg) !important;
+    background-image: url(../../node_modules/expedition-art/icons/ranged.svg) !important;
   }}
 
   .card.back.Adventurer { &:before {
     left: 0.4in;
-    background-image: url(../themes/BlackAndWhite/images/icon/adventurer_rotated.svg) !important;
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+    background-image: url(../../node_modules/expedition-art/icons/adventurer.svg) !important;
   }}
 
   .card.back.Helper { &:before {
-    background-image: url(../themes/BlackAndWhite/images/icon/helper.svg) !important;
+    background-image: url(../../node_modules/expedition-art/icons/helper.svg) !important;
   }}
 
   .card.back.Loot {
@@ -617,7 +622,7 @@ $text-color-white: #fff;
     }
 
     &:before {
-      background-image: url(../themes/BlackAndWhite/images/icon/loot.svg) !important;
+      background-image: url(../../node_modules/expedition-art/icons/loot.svg) !important;
     }
   }
 
@@ -628,15 +633,31 @@ $text-color-white: #fff;
     }
   }
   .card.back.Beast:before {
-    background-image: url(../themes/BlackAndWhite/images/icon/beast_white_rotated.svg) !important;
+    background-image: url(../../node_modules/expedition-art/icons/beast.svg) !important;
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
   }
   .card.back.Bandit:before {
-    background-image: url(../themes/BlackAndWhite/images/icon/bandit_white_rotated.svg) !important;
+    background-image: url(../../node_modules/expedition-art/icons/bandit.svg) !important;
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
   }
   .card.back.Fae:before {
-    background-image: url(../themes/BlackAndWhite/images/icon/fae_white_rotated.svg) !important;
+    background-image: url(../../node_modules/expedition-art/icons/fae.svg) !important;
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
   }
   .card.back.Undead:before {
-    background-image: url(../themes/BlackAndWhite/images/icon/undead_white_rotated.svg) !important;
+    background-image: url(../../node_modules/expedition-art/icons/undead.svg) !important;
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
   }
 }

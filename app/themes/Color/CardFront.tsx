@@ -17,16 +17,16 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="typeicon">{card.typeicon}</div>
                 <div className="name">{card.name}</div>
                 <div className="classicon">
-                  <div className="icon">{icon(theme, card.class.toLowerCase() + '_small')}</div>
+                  <div className="icon">{icon(card.class.toLowerCase() + '_small')}</div>
                 </div>
               </header>
               <article>
                 <div className="indicators">
                   <div className="risk">
-                    <strong>{icon(theme, 'd20_small')} <span className="symbol">&ge;</span> {card.risk}</strong>
+                    <strong>{icon('d20_small')} <span className="symbol">&ge;</span> {card.risk}</strong>
                   </div>
                   <div className="target">
-                    <strong>{icon(theme, 'target_small')}</strong> {card.target}
+                    <strong>{icon('target_small')}</strong> {card.target}
                   </div>
                 </div>
                 <div className="preamble">
@@ -45,19 +45,19 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="rng">
                   {card.crithit &&
                     <div className="crithit">
-                      <strong>{icon(theme, 'd20_small')} <span className="symbol">&ge;</span> 20:</strong> {card.crithit}
+                      <strong>{icon('d20_small')} <span className="symbol">&ge;</span> 20:</strong> {card.crithit}
                       <br className="padded" />
                     </div>
                   }
                   {card.miss &&
                     <div className="miss">
-                      <strong>{icon(theme, 'd20_small')} <span className="symbol">&lt;</span> {card.risk}:</strong> {card.miss}
+                      <strong>{icon('d20_small')} <span className="symbol">&lt;</span> {card.risk}:</strong> {card.miss}
                       <br className="padded" />
                     </div>
                   }
                   {card.critmiss &&
                     <div className="critmiss">
-                      <strong>{icon(theme, 'd20_small')} <span className="symbol">&le;</span> 1:</strong> {card.critmiss}
+                      <strong>{icon('d20_small')} <span className="symbol">&le;</span> 1:</strong> {card.critmiss}
                     </div>
                   }
                 </div>
@@ -87,7 +87,7 @@ export default class CardFront extends React.Component<CardType, {}> {
               <footer>
                 <div className="flavortext">{card.flavortext}</div>
                 <div className="counter counter-horizontal">
-                  {icon(theme, 'health_small')}
+                  {icon('health_small')}
                   {horizontalCounter(MAX_ADVENTURER_HEALTH)}
                 </div>
               </footer>
@@ -99,7 +99,7 @@ export default class CardFront extends React.Component<CardType, {}> {
           <div className={`card front dark horizontal ${card.sheet} ${card.class} tier${card.tier} ${card.health > 10 && 'bottomBar'} ${card.health === 10 && 'hp10'}`}>
             <div className="contents">
               <header>
-                <div className="health">{icon(theme, 'health_small')} {card.health}</div>
+                <div className="health">{icon('health_small')} {card.health}</div>
                 <div className="name">{card.name}</div>
               </header>
               <article>
@@ -114,6 +114,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                   <div className="surge"><strong>Surge: </strong>{card.surge}</div>
                 }
               </article>
+              {card.image && <img className="art" src={`/expedition-art/icons/${card.image}.png`} />}
               <footer>
                 <div className="flavortext">{card.flavortext}</div>
               </footer>
@@ -126,15 +127,15 @@ export default class CardFront extends React.Component<CardType, {}> {
           <div className={`card front vertical ${card.sheet}`}>
             <div className="contents">
               <article>
-                <div className="item">{icon(theme, 'health_small')} Health / regain health</div>
-                <div className="item">{icon(theme, 'd20_small')} A D20 die roll</div>
-                <div className="item">{icon(theme, 'target_small')} Unique target(s)</div>
-                <div className="item">{icon(theme, 'damage_small')} Damage / attack</div>
-                <div className="item">{icon(theme, 'melee_small')} Melee abilities</div>
-                <div className="item">{icon(theme, 'ranged_small')} Ranged abilities</div>
-                <div className="item">{icon(theme, 'magic_small')} Magic abilities</div>
-                <div className="item">{icon(theme, 'music_small')} Music abilities</div>
-                <div className="item">{icon(theme, 'cards_small')} Drawing / playing cards</div>
+                <div className="item">{icon('health_small')} Health / regain health</div>
+                <div className="item">{icon('d20_small')} A D20 die roll</div>
+                <div className="item">{icon('target_small')} Unique target(s)</div>
+                <div className="item">{icon('damage_small')} Damage / attack</div>
+                <div className="item">{icon('melee_small')} Melee abilities</div>
+                <div className="item">{icon('ranged_small')} Ranged abilities</div>
+                <div className="item">{icon('magic_small')} Magic abilities</div>
+                <div className="item">{icon('music_small')} Music abilities</div>
+                <div className="item">{icon('cards_small')} Drawing / playing cards</div>
                 <br />
                 <div className="item"><strong>I/II/III/IV</strong> &nbsp;Tier</div>
               </article>
@@ -150,6 +151,7 @@ export default class CardFront extends React.Component<CardType, {}> {
               </header>
               <article>
                 <div className="indicators">
+                  <div>Tier {card.tier} loot</div>
                   <div>{card.numberuses}</div>
                   <div>{card.usewhen}</div>
                 </div>
@@ -171,14 +173,11 @@ export default class CardFront extends React.Component<CardType, {}> {
               <article>
                 <table>
                   <tbody>
-                    <tr><td>◯</td><td><strong>{card.empowered}: </strong>{card.power}</td></tr>
+                    <tr><td>Max</td><td><strong>{card.empowered}: </strong>{card.power}</td></tr>
                     <tr><td>△</td></tr>
-                    <tr><td>△</td></tr>
-                    <tr><td>△</td></tr>
-                    <tr><td>◯</td><td><strong>{card.base}</strong></td></tr>
+                    <tr><td>Base</td><td><strong>{card.base}</strong></td></tr>
                     <tr><td>▽</td></tr>
-                    <tr><td>▽</td></tr>
-                    <tr><td>◯</td><td><strong>{card.afflicted}: </strong>{card.affliction}</td></tr>
+                    <tr><td>Min</td><td><strong>{card.afflicted}: </strong>{card.affliction}</td></tr>
                   </tbody>
                 </table>
               </article>

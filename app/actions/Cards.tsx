@@ -125,7 +125,12 @@ function formatCard(card: CardType, filters: FiltersState): CardType {
           .filter((str: string) => (str && str !== ''))
           .map((str: string, index: number): string | JSX.Element => {
             if (iconRegex.test(str)) {
-              return icon(filters.theme.current, str.replace(iconRegex, (match: string) => match.substring(1) + '_small'), index);
+              let theme = filters.theme.current;
+              // TODO improve icon() helper so that it falls back to load icon src from expedition-art/ if it's not available in theme folder
+              if (filters.theme.current === 'Color' || filters.theme.current === 'BlackAndWhite') {
+                theme = null;
+              }
+              return icon(str.replace(iconRegex, (match: string) => match.substring(1) + '_small'), theme, index);
             }
             // Wrap "OR" in div for padding
             if (orRegex.test(str)) {
