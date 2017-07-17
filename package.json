@@ -13,6 +13,9 @@
     "dev": "webpack-dev-server",
     "start": "webpack-dev-server"
   },
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "dependencies": {
     "expedition-art": "git+https://github.com/expeditionRPG/expedition-art.git",
     "joi-browser": "^9.0.4",
