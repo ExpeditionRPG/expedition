@@ -236,27 +236,12 @@ export function publishQuestSetup(): ((dispatch: Redux.Dispatch<any>)=>any) {
 export function publishQuest(quest: QuestType, majorRelease?: boolean): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const renderResult = renderXML(quest.mdRealtime.getText());
-    // Insert metadata back into the XML. Temporary patch until ALL client apps
-    // are running a version that supports DB metadata
-    // TODO https://github.com/ExpeditionRPG/expedition-quest-creator/issues/270
-    const xml = Cheerio(renderResult.getResult()+'')
-        .attr('summary', quest.summary)
-        .attr('author', quest.author)
-        .attr('email', quest.email)
-        .attr('minplayers', quest.minplayers)
-        .attr('maxplayers', quest.maxplayers)
-        .attr('mintimeminutes', quest.mintimeminutes)
-        .attr('maxtimeminutes', quest.maxtimeminutes)
-        .attr('genre', quest.genre)
-        .attr('contentrating', quest.contentrating)
-        .attr('engineversion', VERSION); // publish-specific
-
     dispatch({type: 'QUEST_RENDER', qdl: renderResult, msgs: renderResult.getFinalizedLogs()});
     dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
     return $.ajax({
       type: 'POST',
       url: '/publish/' + quest.id + '?majorRelease=' + majorRelease,
-      data: xml.toString(),
+      data: renderResult.getResult()+'',
     }).done((result_quest_id: string) => {
       quest.published = (new Date(Date.now()).toISOString());
       dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
