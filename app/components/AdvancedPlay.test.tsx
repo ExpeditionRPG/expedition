@@ -8,7 +8,8 @@ require('react-tap-event-plugin')();
 function setup() {
   const props: AdvancedPlayProps = {
     settings: initial_state,
-    onCustomCombatSelect: jasmine.createSpy('onCustomCombatSelect')
+    onCustomCombatSelect: jasmine.createSpy('onCustomCombatSelect'),
+    onQuestCreatorSelect: jasmine.createSpy('onQuestCreatorSelect'),
   }
   const enzymeWrapper = shallow(<AdvancedPlay {...props} />)
   return {props, enzymeWrapper};
