@@ -53,7 +53,7 @@ npm install -g cordova
 npm run dev
 ```
 
-This runs the app at `http://localhost:8081/` (port may be different if you're using [Containerizer](https://github.com/Fabricate-IO/containerizer)). It also outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
+This runs the app at [http://localhost:8082](http://localhost:8082) (port may be different if you're using [Containerizer](https://github.com/Fabricate-IO/containerizer)). It also outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
 
 #### Run tests
 

@@ -17,13 +17,13 @@ export interface AdvancedPlayProps extends AdvancedPlayStateProps, AdvancedPlayD
 const AdvancedPlay = (props: AdvancedPlayProps): JSX.Element => {
   return (
     <Card title="Tools">
-      <Button onTouchTap={() => props.onCustomCombatSelect(props.settings)}>
+      <Button id="selectCustomCombat" onTouchTap={() => props.onCustomCombatSelect(props.settings)}>
         <div className="advanced_play">
           <div className="title">Custom Combat</div>
           <div className="summary">A combat-only mode for those telling their own quests.</div>
         </div>
       </Button>
-      <Button onTouchTap={() => props.onQuestCreatorSelect()}>
+      <Button id="selectQuestCreator" onTouchTap={() => props.onQuestCreatorSelect()}>
         <div className="advanced_play">
           <div className="title">Quest Creator</div>
           <div className="summary">Write your own quests and share them with the world.</div>

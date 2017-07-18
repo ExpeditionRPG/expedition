@@ -3,7 +3,7 @@
 const webpack = require('webpack');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const path = require('path');
-const port = process.env.DOCKER_PORT || 8081;
+const port = process.env.DOCKER_PORT || 8082;
 
 const options = {
   cache: true,
