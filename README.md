@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/ExpeditionRPG/expedition-app.svg)](https://travis-ci.org/ExpeditionRPG/expedition-app)
 
-Learn more about Expedition and play the game at [ExpeditionGame.com](https://expeditiongame.com). The app is available at [App.ExpeditionGame.com](https://App.ExpeditionGame.com), and for Android and iOS.
+Learn more about Expedition and play the game at [ExpeditionGame.com](https://expeditiongame.com). The app is available for browsers at [App.ExpeditionGame.com](https://App.ExpeditionGame.com), on the [Android market](https://play.google.com/store/apps/details?id=io.fabricate.expedition) and on the [iOS market](https://itunes.apple.com/us/app/expedition-roleplaying-card/id1085063478?ls=1&mt=8).
 
 ## Contributing
 
