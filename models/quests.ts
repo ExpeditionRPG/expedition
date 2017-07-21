@@ -1,38 +1,40 @@
-const Joi = require('joi');
-const Squel = require('squel');
-const Cheerio = require('cheerio');
+import Joi from 'joi'
+import Query from './query'
+import Feedback from './feedback'
+import Schemas from './schemas'
+import Cheerio from 'cheerio'
 
-const CloudStorage = require('../lib/cloudstorage');
-const Mail = require('../mail');
-const Query = require('./query');
-const Feedback = require('./feedback');
-const Schemas = require('./schemas');
+const Squel = require('squel');
+
+import CloudStorage from '../lib/cloudstorage'
+import Mail from '../mail'
 
 const table = 'quests';
 
 
-exports.getById = function(id, callback) {
+export function getById(id: string, callback: (e: Error, v: any)=>any) {
 
-  Joi.validate(id, Schemas.quests.id, (err, id) => {
+  Joi.validate(id, Schemas.quests.id, (err: Error, id: string) => {
 
     if (err) {
-      return callback(err);
+      return callback(err, null);
     }
 
     return Query.getId(table, id, callback);
   });
 };
 
-exports.search = function(userId, params, callback) {
+// TODO: SearchParams interface
+export function search(userId: string, params: any, callback: (e: Error, results: any[], hasMore: boolean)=>any) {
 
   if (!params) {
-    return callback(new Error('No search parameters given; requires at least one parameter'));
+    return callback(new Error('No search parameters given; requires at least one parameter'), null, false);
   }
 
-  Joi.validate(params, Schemas.questsSearch, (err, params) => {
+  Joi.validate(params, Schemas.questsSearch, (err: Error, params: any) => {
 
     if (err) {
-      return callback(err);
+      return callback(err, null, false);
     }
 
     let query = Squel.select()
@@ -106,37 +108,37 @@ exports.search = function(userId, params, callback) {
 
     const limit = Math.max(params.limit || 0, 100);
     query = query.limit(limit);
-    Query.run(query, (err, results) => {
+    Query.run(query, (err: Error, results: any[]) => {
       if (err) {
-        return callback(err);
+        return callback(err, null, false);
       }
-      const hasMore = results.length === limit ? token + results.length : false;
+      const hasMore = (results.length === limit);
       return callback(null, results, hasMore);
     });
   });
 };
 
-function convertQuestXMLToMetadata(text, callback) {
+function convertQuestXMLToMetadata(text: string, callback: (e: Error, result: any)=>any) {
   const $ = Cheerio.load(text);
   const attribs = $('quest')[0].attribs;
   delete attribs['data-line'];
   Joi.validate(attribs, Schemas.questsPublish, callback);
 }
 
-exports.publish = function(userId, id, params, xml, callback) {
+export function publish(userId: string, id: string, params: any, xml: string, callback: (e: Error, id: string)=>any) {
 // TODO: Validate XML via crawler
   params = Joi.validate(params, {majorRelease: Joi.boolean()}).value;
 
   if (!userId) {
-    return callback(new Error('Invalid or missing User ID'));
+    return callback(new Error('Invalid or missing User ID'), null);
   }
 
   if (!id) {
-    return callback(new Error('Invalid or missing Quest Document ID'));
+    return callback(new Error('Invalid or missing Quest Document ID'), null);
   }
 
   if (!xml) {
-    return callback('Could not publish - no xml data.');
+    return callback(new Error('Could not publish - no xml data.'), null);
   }
 
   const cloudStorageData = {
@@ -145,15 +147,15 @@ exports.publish = function(userId, id, params, xml, callback) {
   };
 
   // Run in parallel with the Datastore model.
-  CloudStorage.upload(cloudStorageData, (err, data) => {
+  CloudStorage.upload(cloudStorageData, (err: Error) => {
     if (err) {
       console.log(err);
     }
   });
 
-  convertQuestXMLToMetadata(xml, (err, result) => {
+  convertQuestXMLToMetadata(xml, (err: Error, result: any) => {
     if (err) {
-      return callback(err);
+      return callback(err, null);
     }
 
     const meta = Object.assign({}, result, {
@@ -162,16 +164,16 @@ exports.publish = function(userId, id, params, xml, callback) {
       publishedurl: CloudStorage.getPublicUrl(cloudStorageData.gcsname),
     });
 
-    Joi.validate(meta, Schemas.questsPublish, (err, meta) => {
+    Joi.validate(meta, Schemas.questsPublish, (err: Error, meta: any) => {
       if (err) {
-        return callback(err);
+        return callback(err, null);
       }
 
-      Query.getId(table, meta.id, (err, result) => {
+      Query.getId(table, meta.id, (err: Error, result) => {
         if (err) {
-          if (err.code === 404) { // if this is a newly published quest, email us!
+          if ((err as any).code === 404) { // if this is a newly published quest, email us!
             const message = `Summary: ${meta.summary}. By ${meta.author}, for ${meta.minplayers} - ${meta.maxplayers} players.`;
-            Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + meta.title, message, (err, result) => {});
+            Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + meta.title, message, (err: Error, result: any) => {});
           } else { // this is just for notifying us, so don't return error if it fails
             console.log(err);
           }
@@ -184,7 +186,7 @@ exports.publish = function(userId, id, params, xml, callback) {
           meta.questversionlastmajor = meta.questversion;
         }
 
-        Query.upsert(table, meta, 'id', (err, result) => {
+        Query.upsert(table, meta, 'id', (err: Error, result: any) => {
           return callback(err, id);
         });
       });
@@ -192,44 +194,44 @@ exports.publish = function(userId, id, params, xml, callback) {
   });
 };
 
-exports.unpublish = function(id, callback) {
+export function unpublish(id: string, callback: (e: Error, v: any)=>any) {
 
-  Joi.validate(id, Schemas.quests.id, (err, id) => {
+  Joi.validate(id, Schemas.quests.id, (err: Error, id: string) => {
 
     if (err) {
-      return callback(err);
+      return callback(err, null);
     }
 
-    Query.deleteId(table, id, (err, result) => {
+    Query.deleteId(table, id, (err: Error, result: any) => {
       return callback(err, id);
     });
   });
 };
 
-exports.updateRatings = function(id, callback) {
-  Joi.validate(id, Schemas.quests.id, (err, id) => {
+export function updateRatings(id: string, callback: (e: Error, v: any)=>any) {
+  Joi.validate(id, Schemas.quests.id, (err: Error, id: string) => {
     if (err) {
-      return callback(err);
+      return callback(err, null);
     }
 
-    Query.getId(table, id, (err, quest) => {
+    Query.getId(table, id, (err: Error, quest: any) => {
       if (err) {
-        return callback(err);
+        return callback(err, null);
       }
 
-      Feedback.getRatingsByQuestId(id, (err, feedback) => {
+      Feedback.getRatingsByQuestId(id, (err: Error, feedback: any) => {
         if (err) {
-          return callback(err);
+          return callback(err, null);
         }
 
-        const ratings = feedback.filter((feedback) => {
+        const ratings = feedback.filter((feedback: any) => {
           return (feedback.questversion >= quest.questversionlastmajor);
-        }).map((feedback) => {
+        }).map((feedback: any) => {
           return feedback.rating;
         });
         quest.ratingcount = ratings.length;
-        quest.ratingavg = ratings.reduce((a, b) => { return a + b; }) / ratings.length;
-        Query.upsert(table, quest, 'id', (err, result) => {
+        quest.ratingavg = ratings.reduce((a: number, b: number) => { return a + b; }) / ratings.length;
+        Query.upsert(table, quest, 'id', (err: Error, result: any) => {
           return callback(err, quest);
         });
       });

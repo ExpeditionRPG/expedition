@@ -1,18 +1,18 @@
-const Joi = require('joi');
+import Joi from 'joi'
 const Squel = require('squel');
 
-const Mail = require('../mail');
-const Schemas = require('./schemas');
-const Query = require('./query');
-const Quests = require('./quests');
+import Mail from '../mail'
+import Schemas from './schemas'
+import Query from './query'
+import Quests from './quests'
+
 const table = 'feedback';
 
-
-exports.getRatingsByQuestId = function(questId, callback) {
+export function getRatingsByQuestId(questId: string, callback: (e: Error, r: any)=>any) {
   Joi.validate(questId, Schemas.feedback.questid, (err, questId) => {
 
     if (err) {
-      return callback(err);
+      return callback(err, null);
     }
 
     let query = Squel.select()
@@ -24,26 +24,27 @@ exports.getRatingsByQuestId = function(questId, callback) {
   });
 };
 
-exports.submit = function(type, feedback, callback) {
-  Joi.validate(feedback, Schemas.feedbackSubmit, (err, feedback) => {
+// TODO: Feedback interface
+export function submit(type: 'rating'|'report', feedback: any, callback: (e: Error, r: any)=>any) {
+  Joi.validate(feedback, Schemas.feedbackSubmit, (err: Error, feedback: any) => {
     if (err) {
-      return callback(err);
+      return callback(err, null);
     }
     callback(null, feedback.questid); // don't hold up the user
 
-    Quests.getById(feedback.questid, (err, quest) => {
+    Quests.getById(feedback.questid, (err: Error, quest: any) => {
       if (err) {
         console.log(err);
         quest = {};
       }
       feedback.questversion = quest.questversion;
 
-      Query.upsert(table, feedback, 'questid, userid', (err) => {
+      Query.upsert(table, feedback, 'questid, userid', (err: Error) => {
         if (err) {
           console.log(err);
         }
 
-        Quests.updateRatings(feedback.questid, (err, quest) => {
+        Quests.updateRatings(feedback.questid, (err: Error, quest: any) => {
           if (err) {
             console.log(err);
           }

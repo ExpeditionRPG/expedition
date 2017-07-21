@@ -9,7 +9,7 @@ const MIN_PLAYERS = 1;
 const MAX_PLAYERS = 20;
 
 
-const schemas = {};
+const schemas: any = {};
 
 schemas.quests = {
   id: ID_STRING, // google drive doc id
@@ -98,4 +98,4 @@ schemas.feedbackSubmit = Object.assign(schemas.feedback, {
   created: DATE_NOW,
 });
 
-module.exports = schemas;
+export default schemas;

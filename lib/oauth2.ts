@@ -1,9 +1,10 @@
+import Config from '../config'
+import Users from '../models/users'
+import * as express from 'express'
+
 const Express = require('express');
 const GoogleTokenStrategy = require('passport-google-id-token');
 const Passport = require('passport');
-
-const Config = require('../config');
-const Users = require('../models/users');
 
 // Configure the Google strategy for use by Passport.js.
 //
@@ -16,26 +17,26 @@ Passport.use(new GoogleTokenStrategy({
     clientID: Config.get('OAUTH2_CLIENT_ID').split(','), // allow for multiple keys
     clientSecret: Config.get('OAUTH2_CLIENT_SECRET'),
   },
-  (parsedToken, googleId, done) => {
+  (parsedToken: any, googleId: any, done: any) => {
     return done(null, googleId);
   }
 ));
 
-Passport.serializeUser((user, cb) => {
+Passport.serializeUser((user: any, cb: any) => {
   cb(null, user);
 });
-Passport.deserializeUser((obj, cb) => {
+Passport.deserializeUser((obj: any, cb: any) => {
   cb(null, obj);
 });
 // [END setup]
 
-const router = Express.Router();
+const router = express.Router();
 
 // [START middleware]
 // Middleware that requires the user to be logged in. If the user is not logged
 // in, it will redirect the user to authorize the application and then return
 // them to the original URL they requested.
-function authRequired (req, res, next) {
+function authRequired (req: express.Request, res: express.Response, next: express.NextFunction) {
   if (!req.user) {
     req.session.oauth2return = req.originalUrl;
     return res.redirect('/auth/login');
@@ -45,7 +46,7 @@ function authRequired (req, res, next) {
 
 // Middleware that exposes the user's profile as well as login/logout URLs to
 // any templates. These are available as `profile`, `login`, and `logout`.
-function addTemplateVariables (req, res, next) {
+function addTemplateVariables (req: express.Request, res: express.Response, next: express.NextFunction) {
   res.locals.id = req.user;
   res.locals.name = req.session.displayName;
   res.locals.image = req.session.image;
@@ -60,7 +61,7 @@ function addTemplateVariables (req, res, next) {
 // then they will be redirected to that URL when the flow is finished.
 // [START authorize]
 router.post('/auth/google', // LOGIN
-  (req, res, next) => {
+  (req: express.Request, res: express.Response, next: express.NextFunction) => {
     // TODO: Lock down origin
     try {
       req.body = JSON.parse(req.body);
@@ -75,7 +76,7 @@ router.post('/auth/google', // LOGIN
     }
   },
   Passport.authenticate('google-id-token'),
-  (req, res) => {
+  (req: express.Request, res: express.Response) => {
     res.header('Access-Control-Allow-Origin', req.get('origin'));
     res.header('Access-Control-Allow-Credentials', 'true');
     if (req.user) {
@@ -83,10 +84,10 @@ router.post('/auth/google', // LOGIN
     } else {
       res.end(401);
     }
-    const user = {id: req.user};
+    const user: any = {id: req.user};
     if (req.body.email) { user.email = req.body.email; }
     if (req.body.name) { user.name = req.body.name; }
-    Users.upsert(user, (err, result) => {
+    Users.upsert(user, (err: Error) => {
       if (err) {
         return console.log(err);
       }
@@ -98,7 +99,7 @@ router.post('/auth/google', // LOGIN
 // Deletes the user's credentials and profile from the session.
 // This does not revoke any active tokens.
 router.post('/auth/logout', // LOGOUT
-  (req, res) => {
+  (req: express.Request, res: express.Response) => {
     req.logout();
     delete req.user;
     delete req.session.image;
@@ -106,7 +107,7 @@ router.post('/auth/logout', // LOGOUT
   }
 );
 
-module.exports = {
+export default {
   router: router,
   required: authRequired,
   template: addTemplateVariables,

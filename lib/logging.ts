@@ -25,7 +25,7 @@ const errorLogger = expressWinston.errorLogger({
   ]
 });
 
-module.exports = {
+export default {
   requestLogger: requestLogger,
   errorLogger: errorLogger,
   error: winston.error,

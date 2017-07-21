@@ -3,7 +3,7 @@ const Pg = require('pg');
 const Squel = require('squel').useFlavour('postgres');
 const Url = require('url');
 
-const Config = require('../config');
+import Config from '../config'
 
 Pg.defaults.ssl = true;
 const urlparams = Url.parse(Config.get('DATABASE_URL'));
@@ -21,24 +21,24 @@ const pool = new Pg.Pool(poolConfig);
 
 // runs a Squel query object using a client from the pool
 // returns an array of all results converted to JS objects
-exports.run = function (query, callback) {
+export function run(query: any, callback: (e: Error, v: any) => any) {
 
-  pool.connect((err, client, done) => {
+  pool.connect((err: Error, client: any, done: ()=>void) => {
 
     if (err) {
-      return callback(new Error('error fetching client from pool: ' + err));
+      return callback(new Error('error fetching client from pool: ' + err), null);
     }
 
     query = query.toParam({ numberedParameters: true });
 
     console.log('SQL command:', query);
 
-    client.query(query.text, query.values, (err, result) => {
+    client.query(query.text, query.values, (err: Error, result: any) => {
 
       done(); // release the client back to the pool
 
       if (err) {
-        return callback(err);
+        return callback(err, null);
       }
 
       return callback(null, result.rows.map(internals.objectPgToJs));
@@ -49,24 +49,23 @@ exports.run = function (query, callback) {
 
 // returns the first result with id = id converted to a JS object
 // returns 404 error if no results found
-exports.getId = function (table, id, callback) {
+export function getId(table: any, id: string, callback: (e: Error, v: any) => any) {
 
   let query = Squel.select()
       .from(table)
       .where('id = ?', id)
       .limit(1);
 
-  exports.run(query, (err, results) => {
+  run(query, (err: Error, results: any) => {
 
     if (err) {
-      return callback(err);
+      return callback(err, null);
     }
 
     if (results.length === 0) {
-      return callback({
-        code: 404,
-        message: 'Not found',
-      });
+      const e = new Error('Not found');
+      (e as any).code = 404; // TODO: this in a better way
+      return callback(e, null);
     }
 
     return callback(null, results[0]);
@@ -75,16 +74,16 @@ exports.getId = function (table, id, callback) {
 
 
 // deletes row with matching id from table. Returns the id deleted.
-exports.deleteId = function (table, id, callback) {
+export function deleteId(table: any, id: string, callback: (e: Error, v: any) => any) {
 
-  exports.upsert(table, {id: id, tombstone: Date.now()}, 'id', (err, result) => {
+  upsert(table, {id: id, tombstone: Date.now()}, 'id', (err: Error, result: any) => {
     return callback(err, id);
   });
 };
 
 
 // inserts the object into the table
-exports.create = function (table, object, callback) {
+export function create(table: any, object: any, callback: (e: Error, v: any) => any) {
 
   object = internals.objectJsToPg(object);
 
@@ -92,13 +91,13 @@ exports.create = function (table, object, callback) {
       .into(table)
       .setFields(object);
 
-  exports.run(query, callback);
+  run(query, callback);
 };
 
 
 // inserts object into table, updating it if [id] field already exists
 // if checking against a combination of fields, pass string 'field1, field2'
-exports.upsert = function (table, object, id, callback) {
+export function upsert(table: any, object: any, id: string, callback: (e: Error, v: any) => any) {
 
   object = internals.objectJsToPg(object);
 
@@ -107,15 +106,15 @@ exports.upsert = function (table, object, id, callback) {
       .setFields(object)
       .onConflict(id, object);
 
-  exports.run(query, callback);
+  run(query, callback);
 };
 
 
 // updates object(s) in table
-exports.update = function (table, filters, updates, callback) {
+export function update(table: any, filters: any, updates: any, callback: (e: Error, v: any) => any) {
 
   filters = internals.objectJsToPg(filters);
-  object = internals.objectJsToPg(updates);
+  let object = internals.objectJsToPg(updates);
 
   let query = Squel.update()
         .table(table)
@@ -127,47 +126,46 @@ exports.update = function (table, filters, updates, callback) {
     });
   }
 
-  exports.run(query, callback);
+  run(query, callback);
 };
 
 
 /* ===== INTERNAL HELPERS ===== */
 
-const internals = {
+const internals: any = {
   dateKeys: ['created', 'lastLogin', 'published', 'tombstone', 'updated'], // columns that're always dates
   regexKeyJsToPg: /([A-Z])/g,
   regexKeyPgToJs: /_([a-z])/g,
-  replacerKeyJsToPg: (match, p1) => '_' + p1.toLowerCase(),
-  replacerKeyPgToJs: (match, p1) => p1.toUpperCase(),
+  replacerKeyJsToPg: (match: any, p1: string) => '_' + p1.toLowerCase(),
+  replacerKeyPgToJs: (match: any, p1: string) => p1.toUpperCase(),
 };
 
 
-internals.dateJsToPg = function (date) {
-
+internals.dateJsToPg = function (date: Date) {
   return Moment(date).utc().format('YYYY-MM-DD HH:mm:ss');
 };
 
 
-internals.stringJsToPg = function (str) {
+internals.stringJsToPg = function (str: string) {
   return str;
 }
 
 // switches prop names from lower camel case (javascript) to lower snake case (postgres)
 // ex: 'thisIsAPropName' -> 'this_is_a_prop_name'
-internals.keyJsToPg = function (str) {
+internals.keyJsToPg = function (str: string) {
 
   return str.replace(internals.regexKeyJsToPg, internals.replacerKeyJsToPg);
 };
 
 
 // want to use this on an array of objects? do const newArr = arr.map(internals.objectJsToPg);
-internals.objectJsToPg = function (object) {
+internals.objectJsToPg = function (object: any) {
 
-  const result = {};
+  const result: any = {};
 
-  Object.keys(object).forEach((key) => {
+  Object.keys(object).forEach((key: string) => {
 
-    let val = object[key];
+    let val: any = object[key];
     if (val instanceof Date || internals.dateKeys.indexOf(key) !== -1) {
       if (val != null) {
         val = internals.dateJsToPg(val);
@@ -185,25 +183,25 @@ internals.objectJsToPg = function (object) {
 
 // switches prop names from lower snake case (postgres) to lower camel case (javascript)
 // ex: 'this_is_a_prop_name' -> 'thisIsAPropName'
-internals.keyPgToJs = function (str) {
+internals.keyPgToJs = function (str: string) {
 
   return str.replace(internals.regexKeyPgToJs, internals.replacerKeyPgToJs);
 };
 
 
-internals.stringPgToJs = function (str) {
+internals.stringPgToJs = function (str: string) {
   return str.replace(/''/g, "\'");
 };
 
 
 // want to use this on an array of objects? do const newArr = arr.map(internals.objectPgToJs);
-internals.objectPgToJs = function (object) {
+internals.objectPgToJs = function (object: any) {
 
-  const result = {};
+  const result: any = {};
 
-  Object.keys(object).forEach((key) => {
+  Object.keys(object).forEach((key: string) => {
 
-    let val = object[key];
+    let val: any = object[key];
     if (typeof val === 'string') {
       val = internals.stringPgToJs(val);
     }
@@ -212,5 +210,3 @@ internals.objectPgToJs = function (object) {
 
   return result;
 };
-
-exports.internals = internals; // expose for testing; obviously not meant to be used by other code

@@ -70,3 +70,5 @@ if (missing.length > 0) {
     '\nSet them via environment variable or add them to a config.json file in the repository root.' +
     '\nSee "config-example.json" for an example config with all required fields.\n');
 }
+
+export default nconf;

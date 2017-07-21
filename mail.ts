@@ -1,6 +1,6 @@
 const Nodemailer = require('nodemailer');
 
-const Config = require('./config');
+import Config from './config'
 
 const transporter = Nodemailer.createTransport('smtps://' + Config.get('MAIL_EMAIL') + ':' + Config.get('MAIL_PASSWORD') + '@smtp.gmail.com');
 
@@ -11,7 +11,7 @@ const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
 // Will need an opt-out route
 
 // to: single email string, or array of emails
-exports.send = function (to, subject, htmlMessage, callback) {
+export function send(to: string|string[], subject: string, htmlMessage: string, callback: (e: Error, r: any)=>any) {
   // for plaintext version, turn end of paragraphs into double newlines
   var mailOptions = {
     from: '"Expedition" <expedition@fabricate.io>', // sender address
@@ -30,4 +30,4 @@ exports.send = function (to, subject, htmlMessage, callback) {
   } else {
     return transporter.sendMail(mailOptions, callback);
   }
-};
+}

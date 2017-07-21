@@ -1,18 +1,17 @@
+import express from 'express'
+import Joi from 'joi'
+import passport from 'passport'
+import Config from './config'
+import Mail from './mail'
+import oauth2 from './lib/oauth2'
+import Quests  from './models/quests'
+import Feedback from './models/feedback'
+
 const Cors = require('cors');
-const express = require('express');
 const fs = require('fs');
-const Joi = require('joi');
 const Mailchimp = require('mailchimp-api-v3');
-const passport = require('passport');
 const querystring = require('querystring');
 const RateLimit = require('express-rate-limit');
-const React = require('react');
-
-const Config = require('./config');
-const Feedback = require('./models/feedback');
-const Mail = require('./mail');
-const oauth2 = require('./lib/oauth2');
-const Quests = require('./models/quests');
 
 const mailchimp = (process.env.NODE_ENV !== 'dev') ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
@@ -41,7 +40,7 @@ const publishLimiter = new RateLimit({
 // Phasing out as of 3/21/17; delete any time after 4/14/17
 // Joi validation: require title, author, email (valid email), feedback, players, difficulty
 // userEmail (valid email), platform, shareUserEmail (default false), version (number)
-router.post('/feedback', limitCors, (req, res) => {
+router.post('/feedback', limitCors, (req: express.Request, res: express.Response) => {
   const params = JSON.parse(req.body);
   // strip all HTML tags for protection, then replace newlines with br's
   const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
@@ -72,7 +71,7 @@ router.post('/feedback', limitCors, (req, res) => {
 });
 
 
-router.post('/quests', limitCors, (req, res) => {
+router.post('/quests', limitCors, (req: express.Request, res: express.Response) => {
   try {
     const token = req.params.token;
     if (!res.locals.id) {
@@ -80,12 +79,12 @@ router.post('/quests', limitCors, (req, res) => {
     }
 
     const params = req.body;
-    Quests.search(res.locals.id, params, (err, quests, nextToken) => {
+    Quests.search(res.locals.id, params, (err: Error, quests: any[], hasMore: boolean) => {
       if (err) {
         console.log(err);
         return res.status(500).send(GENERIC_ERROR_MESSAGE);
       }
-      const result = {error: err, quests: quests, nextToken: nextToken};
+      const result = {error: err, quests, hasMore};
       console.log("Found " + quests.length + " quests for user " + res.locals.id);
       res.send(JSON.stringify(result));
     });
@@ -96,8 +95,8 @@ router.post('/quests', limitCors, (req, res) => {
 });
 
 
-router.get('/raw/:quest', limitCors, (req, res) => {
-  Quests.getById(req.params.quest, (err, entity) => {
+router.get('/raw/:quest', limitCors, (req: express.Request, res: express.Response) => {
+  Quests.getById(req.params.quest, (err: Error, entity: any) => {
     if (err) {
       return res.status(500).send(GENERIC_ERROR_MESSAGE);
     }
@@ -108,16 +107,16 @@ router.get('/raw/:quest', limitCors, (req, res) => {
 });
 
 
-router.post('/publish/:id', publishLimiter, limitCors, (req, res) => {
+router.post('/publish/:id', publishLimiter, limitCors, (req: express.Request, res: express.Response) => {
 
   if (!res.locals.id) {
     return res.status(500).end("You are not signed in. Please sign in (by refreshing the page) to save your quest.");
   }
 
   try {
-    Quests.publish(res.locals.id, req.params.id, req.query, req.body, (err, id) => {
+    Quests.publish(res.locals.id, req.params.id, req.query, req.body, (err: Error, id: string) => {
       if (err) {
-        throw new Error(err);
+        throw err;
       }
       console.log("Published quest " + id);
       res.end(id);
@@ -129,16 +128,16 @@ router.post('/publish/:id', publishLimiter, limitCors, (req, res) => {
 });
 
 
-router.post('/unpublish/:quest', limitCors, (req, res) => {
+router.post('/unpublish/:quest', limitCors, (req: express.Request, res: express.Response) => {
 
   if (!res.locals.id) {
     return res.status(500).end('You are not signed in. Please sign in (by refreshing the page) to save your quest.');
   }
 
   try {
-    Quests.unpublish(req.params.quest, (err, id) => {
+    Quests.unpublish(req.params.quest, (err: Error, id: string) => {
       if (err) {
-        throw new Error(err);
+        throw err;
       }
       console.log("Unpublished quest " + id);
       res.end(id.toString());
@@ -150,11 +149,11 @@ router.post('/unpublish/:quest', limitCors, (req, res) => {
 });
 
 
-router.post('/quest/feedback/:type', limitCors, (req, res) => {
+router.post('/quest/feedback/:type', limitCors, (req: express.Request, res: express.Response) => {
   try {
-    Feedback.submit(req.params.type, req.body, (err, id) => {
+    Feedback.submit(req.params.type, req.body, (err: Error, id: string) => {
       if (err) {
-        throw new Error(err);
+        throw err;
       }
       res.end(id);
     });
@@ -165,9 +164,9 @@ router.post('/quest/feedback/:type', limitCors, (req, res) => {
 });
 
 
-router.post('/user/subscribe', limitCors, (req, res) => {
+router.post('/user/subscribe', limitCors, (req: express.Request, res: express.Response) => {
   req.body = JSON.parse(req.body);
-  Joi.validate(req.body.email, Joi.string().email().invalid(''), (err, email) => {
+  Joi.validate(req.body.email, Joi.string().email().invalid(''), (err: Error, email: string) => {
 
     if (err) {
       return res.status(400).send('Valid email address required.');
@@ -183,17 +182,16 @@ router.post('/user/subscribe', limitCors, (req, res) => {
           SOURCE: 'app',
         },
       })
-      .then((result) => {
+      .then((result: any) => {
         console.log(email + ' subscribed as pending to player list');
         return res.status(200).send();
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         console.log('Mailchimp error', err);
-        return res.status(err.status).send(err.title);
+        return res.status((err as any).status).send((err as any).title);
       });
     }
   });
 });
 
-
-module.exports = router;
+export default router;

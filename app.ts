@@ -1,17 +1,14 @@
-const config: any = require('./config');
+import config from './config';
+import * as express from 'express'
+import oauth2 from './lib/oauth2'
 
 import bodyParser from 'body-parser'
-import * as express from 'express'
 import passport from 'passport'
 import session from 'express-session'
-import path from 'path'
-import url from 'url'
+import logging from './lib/logging'
+import routes from './routes'
 
-//const nr: any = require('newrelic');
-const logging: any = require('./lib/logging');
-//const oauth2 = require('./lib/oauth2');
-//const routes: any = require('./routes');
-
+const nr: any = require('newrelic');
 
 const app = express();
 
@@ -19,7 +16,7 @@ const app = express();
 // accurately log requests.
 app.use(logging.requestLogger);
 
-app.use(bodyParser.text({ type:'*/*', extended: true, limit: '5mb' } as any));
+//app.use(bodyParser.text({ type:'*/*', extended: true, limit: '5mb' } as any));
 // TODO: */* overrides all other body parsers. Eventually we'll want text to be the default
 // but allow for urlencoding and json parsing too, which will require extensive QC + app testing.
 // Issue / discussion: https://github.com/ExpeditionRPG/expedition-quest-creator/issues/228
@@ -41,13 +38,13 @@ const setupSession = function(app: any) {
     signed: true
   };
 
-  app.use(session(sessionConfig));
+  //app.use(session(sessionConfig));
 
   // OAuth2
-  app.use(passport.initialize());
+  //app.use(passport.initialize());
 
   // TODO: Use postgres session storage (to prevent session loss due to restarting task)
-  app.use(passport.session());
+  //app.use(passport.session());
   //app.use(oauth2.router);
 };
 
@@ -87,9 +84,9 @@ if (module === require.main) {
   });
 
   if ((module as any).hot) {
-    (module as any).hot.accept('./routes', () => {
-      console.log('should update');
-    });
+    //(module as any).hot.accept('./routes', () => {
+    //  console.log('should update');
+    //});
     //const routes: any = require('./routes');
   }
 }
