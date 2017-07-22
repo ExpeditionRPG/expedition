@@ -1,6 +1,6 @@
 import {CrawlerBase, CrawlEntry, CrawlEvent} from './Crawler'
 import {ParserNode} from './Node'
-import {defaultQuestContext} from '../reducers/Quest'
+import {defaultContext} from './Context'
 
 declare var global: any;
 
@@ -48,7 +48,7 @@ describe('CrawlerBase', () => {
         expect(e).not.toEqual('IMPLICIT_END');
         expect(e).not.toEqual('INVALID');
       }, null);
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new ParserNode(xml, defaultContext()));
 
       expect(foundEnd).toEqual(true);
     });
@@ -76,7 +76,7 @@ describe('CrawlerBase', () => {
       }, (q: CrawlEntry, nodeStr: string, id: string, line: number) => {
         expect(line).not.toEqual(12);
       });
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new ParserNode(xml, defaultContext()));
 
       expect(foundEnd).toEqual(true);
     });
@@ -105,7 +105,7 @@ describe('CrawlerBase', () => {
         expect(e).not.toEqual('IMPLICIT_END');
         expect(e).not.toEqual('INVALID');
       }, null);
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new ParserNode(xml, defaultContext()));
 
       expect(foundEnd).toEqual(true);
     });
@@ -122,7 +122,7 @@ describe('CrawlerBase', () => {
         expect(e).not.toEqual('END');
         expect(e).not.toEqual('INVALID');
       }, null);
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new ParserNode(xml, defaultContext()));
 
       expect(foundImplicitEnd).toEqual(true);
     });
@@ -135,7 +135,7 @@ describe('CrawlerBase', () => {
         expect(e).not.toEqual('END');
         expect(e).not.toEqual('INVALID');
       }, null);
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new ParserNode(xml, defaultContext()));
 
       expect(foundImplicitEnd).toEqual(true);
     });
@@ -152,7 +152,7 @@ describe('CrawlerBase', () => {
         // We don't traverse past.
         expect(q.prevId).not.toEqual('A1');
       }, null);
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new ParserNode(xml, defaultContext()));
 
       expect(foundInvalid).toEqual(true);
     });
@@ -180,7 +180,7 @@ describe('CrawlerBase', () => {
       }, (q: CrawlEntry, nodeStr: string, id: string, line: number) => {
         didLoop = didLoop || (line === 6 && q.prevId === 'cond');
       });
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new ParserNode(xml, defaultContext()));
 
       expect(didLoop).toEqual(true);
       expect(foundEnd).toEqual(true);
@@ -196,7 +196,7 @@ describe('CrawlerBase', () => {
       const crawler = new CrawlTest(null, null);
 
       // If crawl exits, we'll have succeeded.
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new ParserNode(xml, defaultContext()));
     });
 
     it('bails out of computationally expensive quests', () => {
@@ -209,7 +209,7 @@ describe('CrawlerBase', () => {
       const crawler = new CrawlTest(null, null);
 
       // Super-short time limit, super-high depth limit.
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()), 1, 1000000);
+      crawler.crawl(new ParserNode(xml, defaultContext()), 1, 1000000);
     });
 
     it('handles hanging choice node with no body', () => {
@@ -218,7 +218,7 @@ describe('CrawlerBase', () => {
       const crawler = new CrawlTest((q: CrawlEntry, e: CrawlEvent)=>{
         foundInvalid = foundInvalid || (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'START');
       }, null);
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new ParserNode(xml, defaultContext()));
 
       expect(foundInvalid).toEqual(true);
     });
@@ -229,7 +229,7 @@ describe('CrawlerBase', () => {
       const crawler = new CrawlTest((q: CrawlEntry, e: CrawlEvent)=>{
         foundInvalid = foundInvalid || (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'START');
       }, null);
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new ParserNode(xml, defaultContext()));
 
       expect(foundInvalid).toEqual(true);
     });

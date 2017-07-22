@@ -1,11 +1,39 @@
-import {QuestContext} from '../reducers/QuestTypes'
-
 const Clone = require('clone');
 const HtmlDecode = (require('he') as any).decode;
 const Math = require('mathjs') as any;
 
+export interface Context {
+  // Scope is passed to the parser when rendering
+  // nodes that are potentially parseable via MathJS.
+  scope: any; // TODO: required fields later
+
+  views: {[id:string]: number};
+
+  // The list of choices, events, and jumps that produced this context, serialized.
+  // Given the path and original quest XML, we should be able to recreate
+  // context given this path.
+  path: (string|number)[];
+}
+
+export function defaultContext(): Context {
+  // Caution: Scope is the API for all users of QDL.
+  // New endpoints should be added carefully b/c we'll have to support them.
+  // Behind-the-scenes data can be added to the context outside of scope
+  return {
+    scope: {
+      _: {
+        viewCount: function(id: string): number {
+          return this.views[id] || 0;
+        },
+      },
+    },
+    views: {},
+    path: [],
+  };
+}
+
 // Run MathJS over all detected {{operations}}.
-export function evaluateContentOps(content: string, ctx: QuestContext): string {
+export function evaluateContentOps(content: string, ctx: Context): string {
   // {{.+?(?=}})}}       Match "{{asdf\n1234}}"
   // |                   Or
   // .+?(?={{|$)         Nongreedy characters (including whitespace) until "{{" or end of string
@@ -34,7 +62,7 @@ export function evaluateContentOps(content: string, ctx: QuestContext): string {
 // Attempts to evaluate op using ctx.
 // If the evaluation is successful, the context is modified as determined by the op.
 // If the last operation does not assign a value, the result is returned.
-export function evaluateOp(op: string, ctx: QuestContext): any {
+export function evaluateOp(op: string, ctx: Context): any {
   const parsed = Math.parse(HtmlDecode(op));
   let evalResult;
 
@@ -85,27 +113,14 @@ function parseOpString(str: string): string {
   return op[1];
 }
 
-export function updateContext(node: Cheerio, ctx: QuestContext, action?: string|number): QuestContext {
+export function updateContext(node: Cheerio, ctx: Context, action?: string|number): Context {
   if (!node) {
     return ctx;
   }
 
   const nodeId = node.attr('id');
 
-  // Special handling of roleplay node - this is readonly and cannot be cloned.
-  let tmpCombatRoleplay: any = null;
-  if (ctx.templates && ctx.templates.combat && ctx.templates.combat.roleplay) {
-    tmpCombatRoleplay = ctx.templates.combat.roleplay;
-    ctx.templates.combat.roleplay = null;
-  }
-
-  let newContext: QuestContext = Clone(ctx);
-
-  // Reassign readonly (uncopyable) attributes
-  if (tmpCombatRoleplay) {
-    newContext.templates.combat.roleplay = tmpCombatRoleplay.clone();
-    ctx.templates.combat.roleplay = tmpCombatRoleplay;
-  }
+  let newContext: Context = Clone(ctx);
 
   if (nodeId) {
     newContext.views[nodeId] = (newContext.views[nodeId] || 0) + 1;
@@ -114,8 +129,6 @@ export function updateContext(node: Cheerio, ctx: QuestContext, action?: string|
     newContext.path.push(action);
   }
 
-  // TODO(scott): This is a hack to remove dependency on defaultQuestContext, which adds a bunch
-  // of unnecessary dependencies in the quest service.
   newContext.scope._.viewCount = function(id: string): number {
     return this.views[id] || 0;
   }.bind(newContext);

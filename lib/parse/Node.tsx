@@ -1,5 +1,4 @@
-import {QuestContext} from '../reducers/QuestTypes'
-import {updateContext, evaluateContentOps} from './Context'
+import {updateContext, evaluateContentOps, Context} from './Context'
 
 const Clone = require('clone');
 const Math = require('mathjs') as any;
@@ -41,10 +40,10 @@ function getSelector(elem: Cheerio): string {
 
 export class ParserNode {
   public elem: Cheerio;
-  public ctx: QuestContext;
+  public ctx: Context;
   private renderedChildren: {rendered: Cheerio, original: Cheerio}[];
 
-  constructor(elem: Cheerio, ctx: QuestContext, action?: string|number) {
+  constructor(elem: Cheerio, ctx: Context, action?: string|number) {
     this.elem = elem;
     this.ctx = updateContext(elem, ctx, action);
     this.renderChildren();

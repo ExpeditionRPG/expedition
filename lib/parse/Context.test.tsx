@@ -1,5 +1,4 @@
-import {evaluateOp, evaluateContentOps, updateContext} from './Context'
-import {defaultQuestContext} from '../reducers/Quest'
+import {evaluateOp, evaluateContentOps, updateContext, defaultContext} from './Context'
 
 declare var global: any;
 
@@ -8,27 +7,27 @@ var cheerio: any = require('cheerio');
 describe('Context', () => {
   describe('evaluateOp', () => {
     it('returns null on invalid eval', () => {
-      expect(evaluateOp('asdf', defaultQuestContext())).toEqual(null);
+      expect(evaluateOp('asdf', defaultContext())).toEqual(null);
     });
     it('returns value and updates context', () => {
-      const ctx = {...defaultQuestContext(), scope: {b: '1'} as any};
+      const ctx = {...defaultContext(), scope: {b: '1'} as any};
       expect(evaluateOp('a=b+1;a', ctx)).toEqual(2);
       expect(ctx.scope).toEqual({a: 2, b: '1'});
     });
     it('does not return if last operation assigns a value', () => {
-      expect(evaluateOp('a=1', defaultQuestContext())).toEqual(null);
+      expect(evaluateOp('a=1', defaultContext())).toEqual(null);
     });
   });
 
   describe('evaluateContentOps', () => {
     it('persists state', () => {
-      const ctx = defaultQuestContext();
+      const ctx = defaultContext();
       expect(evaluateContentOps('{{text="TEST"}}', ctx)).toEqual('');
       expect(evaluateContentOps('{{text}}', ctx)).toEqual('TEST');
     });
 
     it('handles multiple ops in one string', () => {
-      const ctx = defaultQuestContext();
+      const ctx = defaultContext();
       expect(evaluateContentOps('{{text="TEST"}}\n{{text}}', ctx)).toEqual('TEST');
     });
   });
@@ -37,7 +36,7 @@ describe('Context', () => {
     const dummyElem = cheerio.load('<combat></combat>')('combat');
 
     it('appends to path', () => {
-      const ctx = defaultQuestContext();
+      const ctx = defaultContext();
       expect(ctx.path).toEqual([]);
       const ctx2 = updateContext(dummyElem, ctx, 2);
       expect(ctx2.path).toEqual([2]);
@@ -47,7 +46,7 @@ describe('Context', () => {
       expect(ctx4.path).toEqual([2, 'win', '#testID']);
     });
     it('does not affect other contexts', () => {
-      const ctx = defaultQuestContext();
+      const ctx = defaultContext();
       const ctx2 = updateContext(dummyElem, ctx, 2);
       expect(ctx.path).not.toEqual([2]);
     })
