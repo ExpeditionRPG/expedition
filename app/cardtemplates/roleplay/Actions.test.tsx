@@ -1,4 +1,3 @@
-
 describe('Roleplay actions', () => {
-  it('TODO');
+  // Almost entirely glue code; no testing needed right now.
 });

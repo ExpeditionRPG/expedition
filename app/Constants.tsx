@@ -3,7 +3,7 @@ declare var window:any;
 export const authSettings = {
   urlBase: 'https://api.expeditiongame.com',
   // urlBase: 'http://devquests.expeditiongame.com',
-  // urlBase: 'http://localhost:8080',
+  // urlBase: 'http://localhost:8081',
   apiKey: 'AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8',
   scopes: 'profile email',
   // web:
@@ -22,6 +22,7 @@ export const URLS = {
   android: 'https://play.google.com/store/apps/details?id=io.fabricate.expedition',
   feedbackBase: 'http://www.expeditiongame.com/contact/?utm_source=app&utm_medium=',
   ios: 'https://itunes.apple.com/us/app/expedition-roleplaying-card/id1085063478?ls=1&mt=8',
+  questCreator: 'https://quests.expeditiongame.com/?utm_source=app',
 };
 
 export const VIBRATION_SHORT_MS = 30; // for navigation / card changes
@@ -46,6 +47,29 @@ export const PLAYER_DAMAGE_MULT: {[key: number]: number} = {
   4: 1,
   5: 1.1,
   6: 1.2,
+};
+
+export const COMBAT_DIFFICULTY: {[key: string]: any} = {
+  EASY: {
+    roundTimeMillis: 20000,
+    surgePeriod: 4,
+    damageMultiplier: 0.7,
+  },
+  NORMAL: {
+    roundTimeMillis: 10000,
+    surgePeriod: 3,
+    damageMultiplier: 1.0,
+  },
+  HARD: {
+    roundTimeMillis: 8000,
+    surgePeriod: 3,
+    damageMultiplier: 1.2,
+  },
+  IMPOSSIBLE: {
+    roundTimeMillis: 6000,
+    surgePeriod: 2,
+    damageMultiplier: 1.4,
+  },
 };
 
 export type GenreType = 'Comedy' | 'Drama' | 'Horror' | 'Mystery' | 'Romance';

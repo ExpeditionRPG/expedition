@@ -1,4 +1,3 @@
-
 describe('QuestStartContainer', () => {
-  it('TODO');
+  // Simple enough; no need to test.
 });

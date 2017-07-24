@@ -12,7 +12,13 @@ describe('Quest action', () => {
       const result = initQuest(initialState.details, questNode, defaultQuestContext());
       expect(result.node.getRootElem().toString()).toEqual('<quest><roleplay><p>Hello</p></roleplay></quest>');
     });
-
-    it('TODO what would cause it to fail, and how should it fail?');
   });
+
+  describe('loadNode', () => {
+    it('ends quest on end trigger');
+
+    it('dispatches roleplay on roleplay node');
+
+    it('dispatches combat on combat node');
+  })
 });

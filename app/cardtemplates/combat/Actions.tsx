@@ -6,6 +6,7 @@ import {CombatDifficultySettings, CombatAttack} from './Types'
 import {SettingsType} from '../../reducers/StateTypes'
 import {ParserNode} from '../../parser/Node'
 import {toCard} from '../../actions/Card'
+import {COMBAT_DIFFICULTY} from '../../Constants'
 import {encounters} from '../../Encounters'
 import {QuestNodeAction} from '../../actions/ActionTypes'
 import {handleTriggerEvent} from '../../parser/Handlers'
@@ -14,34 +15,11 @@ import {loadNode} from '../../actions/Quest'
 var cheerio: any = require('cheerio');
 
 function getDifficultySettings(difficulty: DifficultyType): CombatDifficultySettings {
-  // TODO(semartin): Make this a constant.
-  switch(difficulty) {
-    case 'EASY':
-    return {
-      roundTimeMillis: 20000,
-      surgePeriod: 4,
-      damageMultiplier: 0.7,
-    };
-    case 'NORMAL':
-    return {
-      roundTimeMillis: 10000,
-      surgePeriod: 3,
-      damageMultiplier: 1.0,
-    };
-    case 'HARD':
-    return {
-      roundTimeMillis: 8000,
-      surgePeriod: 3,
-      damageMultiplier: 1.5,
-    };
-    case 'IMPOSSIBLE':
-    return {
-      roundTimeMillis: 6000,
-      surgePeriod: 2,
-      damageMultiplier: 2.0,
-    };
-    default:
-      throw new Error('Unknown difficulty ' + difficulty);
+  const result = COMBAT_DIFFICULTY[difficulty];
+  if (result === null) {
+    throw new Error('Unknown difficulty ' + difficulty);
+  } else {
+    return result;
   }
 }
 
@@ -81,7 +59,13 @@ function generateCombatAttack(node: ParserNode, settings: SettingsType, elapsedM
   }
 
   // Scale according to multipliers, then round to nearest whole number and cap at 10 damage/round
-  damage = Math.min(10, Math.round(damage * combat.damageMultiplier * playerMultiplier));
+  damage = damage * combat.damageMultiplier * playerMultiplier;
+  if (damage > 1) {
+    damage = Math.round(damage);
+  } else { // prevent endless 0's during low-tier, <4 player encounters
+    damage = Math.ceil(damage);
+  }
+  damage = Math.min(10, damage);
 
   return {
     surge: isSurgeRound(node),

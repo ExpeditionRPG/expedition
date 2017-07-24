@@ -1,4 +1,3 @@
-
 describe('CardTemplates template', () => {
-  it('TODO');
+  // Entirely glue code; no testing needed right now.
 });

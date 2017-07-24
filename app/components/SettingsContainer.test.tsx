@@ -1,4 +1,3 @@
-
 describe('SettingsContainer', () => {
-  it('TODO');
+  // Simple enough; no need to test.
 });
