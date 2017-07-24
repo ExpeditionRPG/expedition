@@ -6,9 +6,13 @@
   "repository": "https://github.com/ExpeditionRPG/expedition-quest-creator",
   "main": "react.js",
   "scripts": {
-    "test": "mocha meta_tests.js && karma start --single-run --browsers PhantomJS",
-    "watch:test": "karma start",
-    "dev-compile": "webpack --config webpack.backend.config.js --progress",
+    // Web/UI scripts
+    "test": "mocha meta_tests.js && karma start karma.conf.js --single-run --browsers PhantomJS",
+    "watch:test": "karma start karma.conf.js ",
+    // Server scripts
+    "watch:test-server",
+    "dev": "webpack --config webpack.backend.config.js --progress",
+
     "start": "node app.js",
     "dev": "NODE_ENV=dev node app.js",
     "dev:ide": "webpack-dev-server --progress",

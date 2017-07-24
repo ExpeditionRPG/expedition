@@ -9,7 +9,6 @@ const mailchimp = (process.env.NODE_ENV !== 'dev') ? new Mailchimp(Config.get('M
 
 const table = 'users';
 
-
 export function upsert(user: any, callback: (e: Error, id: string) => any) {
   Joi.validate(user, Schemas.usersUpsert, (err: Error, user: any) => {
 
