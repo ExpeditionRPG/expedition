@@ -4105,7 +4105,7 @@ awry/RT
 ax/DRSZGM
 axehead/S
 Axel/M
-Axe/M
+axe/M
 axeman
 axial/Y
 axillary
@@ -4468,6 +4468,7 @@ banana/SM
 Bancroft/M
 bandager/M
 bandage/RSDMG
+bandana/SM
 bandanna/SM
 bandbox/MS
 bandeau/M
@@ -16956,6 +16957,7 @@ Dwain/M
 dwarfish
 dwarfism/MS
 dwarf/MTGSPRD
+dwarves/M
 Dwayne/M
 dweeb/S
 dweller/SM
@@ -23978,7 +23980,7 @@ Gretzky/M
 grew/A
 greybeard/M
 greyhound/MS
-Grey/M
+grey/M
 greyness/M
 gridded
 griddlecake/SM
@@ -33624,7 +33626,7 @@ Magdalena/M
 Magdalene/M
 Magdalen/M
 Magda/M
-mage/S
+mage/SM
 Magellanic
 Magellan/M
 magenta/MS
@@ -35040,6 +35042,7 @@ Melcher/M
 Melchior/M
 meld/SGD
 mêlée/MS
+melee/MS
 Melendez/M
 Melesa/M
 Melessa/M
