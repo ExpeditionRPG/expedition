@@ -25,6 +25,7 @@ import {renderXML} from '../parsing/QDLParser'
 
 const Cheerio: any = require('cheerio');
 const ReactGA = require('react-ga') as any;
+const QueryString = require('query-string');
 
 // Loaded on index.html
 declare var window: any;
@@ -34,36 +35,40 @@ function receiveQuestLoad(quest: QuestType): ReceiveQuestLoadAction {
 }
 
 function updateDriveFile(fileId: string, fileMetadata: any, text: string, callback: (err: any, result?: any) => any) {
-  const boundary = '-------314159265358979323846';
-  const delimiter = '\r\n--' + boundary + '\r\n';
-  const close_delim = '\r\n--' + boundary + '--';
+  try {
+    const boundary = '-------314159265358979323846';
+    const delimiter = '\r\n--' + boundary + '\r\n';
+    const close_delim = '\r\n--' + boundary + '--';
 
-  text = QUEST_DOCUMENT_HEADER + text;
-  const base64Data = btoa(text);
-  const multipartRequestBody =
-      delimiter +
-      'Content-Type: application/json\r\n\r\n' +
-      JSON.stringify(fileMetadata) +
-      delimiter +
-      'Content-Type: text/plain\r\n' +
-      'Content-Transfer-Encoding: base64\r\n' +
-      '\r\n' +
-      base64Data +
-      close_delim;
+    text = QUEST_DOCUMENT_HEADER + text;
+    const base64Data = btoa(window.unescape(window.encodeURIComponent(text)));
+    const multipartRequestBody =
+        delimiter +
+        'Content-Type: application/json\r\n\r\n' +
+        JSON.stringify(fileMetadata) +
+        delimiter +
+        'Content-Type: text/plain\r\n' +
+        'Content-Transfer-Encoding: base64\r\n' +
+        '\r\n' +
+        base64Data +
+        close_delim;
 
-  const request = window.gapi.client.request({
-      'path': '/upload/drive/v2/files/' + fileId,
-      'method': 'PUT',
-      'params': {'uploadType': 'multipart', 'alt': 'json'},
-      'headers': {
-        'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
-      },
-      'body': multipartRequestBody});
-  request.then((json: any, raw: any) => {
-    return callback(null, json);
-  }, (json: any) => {
-    return callback(json.result.error);
-  });
+    const request = window.gapi.client.request({
+        'path': '/upload/drive/v2/files/' + fileId,
+        'method': 'PUT',
+        'params': {'uploadType': 'multipart', 'alt': 'json'},
+        'headers': {
+          'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+        },
+        'body': multipartRequestBody});
+    request.then((json: any, raw: any) => {
+      return callback(null, json);
+    }, (json: any) => {
+      return callback(json.result.error);
+    });
+  } catch(err) {
+    return callback(err);
+  }
 }
 
 export function loadQuestFromURL(user: UserState, dispatch: Redux.Dispatch<any>) {
@@ -73,7 +78,7 @@ export function loadQuestFromURL(user: UserState, dispatch: Redux.Dispatch<any>)
 export function newQuest(user: UserState) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const insertHash = {
-      'resource': {
+      resource: {
         mimeType: 'text/plain',
         title: 'New Expedition Quest',
         description: 'Created with the Expedition Quest Creator',
@@ -84,7 +89,6 @@ export function newQuest(user: UserState) {
         if (err) {
           return dispatch(pushError(new Error('Failed to create new quest: ' + err.message)));
         }
-
         loadQuest(user, dispatch, createResponse.id);
         window.gapi.client.request({
           path: '/drive/v3/files/' + createResponse.id + '/permissions',
@@ -236,31 +240,50 @@ export function publishQuestSetup(): ((dispatch: Redux.Dispatch<any>)=>any) {
 export function publishQuest(quest: QuestType, majorRelease?: boolean): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const renderResult = renderXML(quest.mdRealtime.getText());
-    // Insert metadata back into the XML. Temporary patch until ALL client apps
-    // are running a version that supports DB metadata
-    // TODO https://github.com/ExpeditionRPG/expedition-quest-creator/issues/270
-    const xml = Cheerio(renderResult.getResult()+'')
-        .attr('summary', quest.summary)
-        .attr('author', quest.author)
-        .attr('email', quest.email)
-        .attr('minplayers', quest.minplayers)
-        .attr('maxplayers', quest.maxplayers)
-        .attr('mintimeminutes', quest.mintimeminutes)
-        .attr('maxtimeminutes', quest.maxtimeminutes)
-        .attr('genre', quest.genre)
-        .attr('contentrating', quest.contentrating)
-        .attr('engineversion', VERSION); // publish-specific
-
     dispatch({type: 'QUEST_RENDER', qdl: renderResult, msgs: renderResult.getFinalizedLogs()});
     dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
+    const params = QueryString.stringify({
+      title: quest.title,
+      summary: quest.summary,
+      author: quest.author,
+      email: quest.email,
+      minplayers: quest.minplayers,
+      maxplayers: quest.maxplayers,
+      mintimeminutes: quest.mintimeminutes,
+      maxtimeminutes: quest.maxtimeminutes,
+      genre: quest.genre,
+      contentrating: quest.contentrating,
+      majorRelease,
+    });
     return $.ajax({
       type: 'POST',
-      url: '/publish/' + quest.id + '?majorRelease=' + majorRelease,
-      data: xml.toString(),
+      url: '/publish/' + quest.id + '?' + params,
+      data: renderResult.getResult()+'',
     }).done((result_quest_id: string) => {
       quest.published = (new Date(Date.now()).toISOString());
       dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
       dispatch(setSnackbar(true, 'Quest published successfully!'));
+      // Makes up for the fact that auto-sharing on creation falls apart if the Google Doc
+      // was created before https://github.com/ExpeditionRPG/expedition-quest-creator/pull/282
+      window.gapi.client.request({
+        path: '/drive/v3/files/' + quest.id + '/permissions',
+        method: 'POST',
+        params: {sendNotificationEmails: false},
+        body: {
+          role: 'writer',
+          type: 'domain',
+          domain: 'Fabricate.io',
+          allowFileDiscovery: true,
+        },
+      }).then((json: any, raw: any) => {
+      }, (json: any) => {
+        ReactGA.event({
+          category: 'Error',
+          action: 'Error connecting quest file to Fabricate.IO on publish',
+          label: quest.id,
+        });
+        console.log('Error connecting quest file to Fabricate.IO on publish', json);
+      });
     }).fail((error: {statusText: string, status: string, responseText: string}) => {
       dispatch(pushHTTPError(error));
     });

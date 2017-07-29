@@ -7,7 +7,9 @@ import REGEX from './Regex'
 import {METADATA_FIELDS} from './Constants'
 import {encounters} from '../node_modules/expedition-app/app/Encounters'
 const IGNORE = Object.keys(encounters);
-
+const elementRegexes = new RegExp('(' + [REGEX.HTML_TAG, REGEX.TRIGGER, REGEX.ID, REGEX.OP].map((regex: any): string => {
+  return regex.toString().match(REGEX.EXTRACT_REGEX)[1];
+}).join('|') + ')', 'gm');
 
 export default class Spellcheck {
   private contentsModified = true;
@@ -27,10 +29,7 @@ export default class Spellcheck {
   // Note: metadata is determined by skipping everything until the first double line
   static cleanCorpus(text: string): string {
     // load all of the regexes and pull out their contents so that we can merge them + apply flags
-    const elementRegexes = [REGEX.HTML_TAG, REGEX.TRIGGER, REGEX.ID, REGEX.OP].map((regex: any): string => {
-      return regex.toString().match(REGEX.EXTRACT_REGEX)[1];
-    }).join('|');
-    text = text.toLowerCase().replace(new RegExp('(' + elementRegexes + ')', 'gm'), ' ');
+    text = text.toLowerCase().replace(elementRegexes, ' ');
     return text.slice(text.indexOf('\n\n'));
   }
 
@@ -71,15 +70,18 @@ export default class Spellcheck {
       const text = Spellcheck.cleanCorpus(this.session.getDocument().getValue());
       const words = Spellcheck.getUniqueWords(text);
 
-      // get list of invalid words (not in dictionary or our list of exceptions)
+      // get list of invalid words in corpus (aka not in dictionary or our list of exceptions)
       const misspellings = words.filter((word: string): boolean => {
         return (!this.dictionary.check(word) && IGNORE.indexOf(word.toLowerCase()) === -1);
       });
 
+      // create a regex to find all instances of the known mispelled words in the corpus
       const misspellingsRegex = new RegExp('\\b(' + misspellings.join('|') + ')\\b', 'g');
       // highlight all instances of all bad words in the document
       // since we need to reference row + column for markers, easiest way is to go row-by-row
       this.session.getDocument().getAllLines().forEach((line: string, i: number) => {
+        // Before we check for misspellings, remove elements we don't want to check
+        line = line.replace(elementRegexes, '');
         let match = misspellingsRegex.exec(line);
         if (match && match[0] !== '') { this.session.addGutterDecoration(i, 'misspelled'); }
         while (match && match[0] !== '') {

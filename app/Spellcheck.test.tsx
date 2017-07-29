@@ -37,5 +37,7 @@ describe('Spellcheck', () => {
     it('Allows enemy names');
     it('Catches misspelled English words');
     it('Catches multiple misspellings of the same word');
+    it('Does not flag misspelled words inside of triggers or IDs');
+    it('Does not flag misspelled words inside of triggers or IDs, even if misspelled words exist elsewhere in corpus');
   })
 });
