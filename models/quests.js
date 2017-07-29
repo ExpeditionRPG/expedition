@@ -124,69 +124,62 @@ function convertQuestXMLToMetadata(text, callback) {
 }
 
 exports.publish = function(userId, id, params, xml, callback) {
-// TODO: Validate XML via crawler
-  params = Joi.validate(params, {majorRelease: Joi.boolean()}).value;
-
-  if (!userId) {
-    return callback(new Error('Invalid or missing User ID'));
-  }
-
-  if (!id) {
-    return callback(new Error('Invalid or missing Quest Document ID'));
-  }
-
-  if (!xml) {
-    return callback('Could not publish - no xml data.');
-  }
-
-  const cloudStorageData = {
-    gcsname: userId + "/" + id + "/" + Date.now() + ".xml",
-    buffer: xml
-  };
-
-  // Run in parallel with the Datastore model.
-  CloudStorage.upload(cloudStorageData, (err, data) => {
-    if (err) {
-      console.log(err);
-    }
-  });
-
-  convertQuestXMLToMetadata(xml, (err, result) => {
+  // TODO: Validate XML via crawler
+  Joi.validate(params, Schemas.questsPublish, (err, params) => {
     if (err) {
       return callback(err);
     }
 
-    const meta = Object.assign({}, result, {
+    if (!userId) {
+      return callback(new Error('Invalid or missing User ID'));
+    }
+
+    if (!id) {
+      return callback(new Error('Invalid or missing Quest Document ID'));
+    }
+
+    if (!xml) {
+      return callback('Could not publish - no xml data.');
+    }
+
+    const cloudStorageData = {
+      gcsname: userId + "/" + id + "/" + Date.now() + ".xml",
+      buffer: xml
+    };
+
+    // Run in parallel with the Datastore model.
+    CloudStorage.upload(cloudStorageData, (err, data) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+
+    const meta = Object.assign({}, params, {
       id: id,
       userid: userId,
       publishedurl: CloudStorage.getPublicUrl(cloudStorageData.gcsname),
     });
 
-    Joi.validate(meta, Schemas.questsPublish, (err, meta) => {
+    Query.getId(table, meta.id, (err, result) => {
       if (err) {
-        return callback(err);
+        if (err.code === 404) { // if this is a newly published quest, email us!
+          const message = `Summary: ${meta.summary}. By ${meta.author}, for ${meta.minplayers} - ${meta.maxplayers} players.`;
+          Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + meta.title, message, (err, result) => {});
+        } else { // this is just for notifying us, so don't return error if it fails
+          console.log(err);
+        }
       }
 
-      Query.getId(table, meta.id, (err, result) => {
-        if (err) {
-          if (err.code === 404) { // if this is a newly published quest, email us!
-            const message = `Summary: ${meta.summary}. By ${meta.author}, for ${meta.minplayers} - ${meta.maxplayers} players.`;
-            Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + meta.title, message, (err, result) => {});
-          } else { // this is just for notifying us, so don't return error if it fails
-            console.log(err);
-          }
-        }
+      result = result || {}; // if no result, don't break on result. references
 
-        result = result || {}; // if no result, don't break on result. references
+      meta.questversion = (result.questversion || 0) + 1;
+      if (meta.majorRelease) {
+        meta.questversionlastmajor = meta.questversion;
+      }
+      delete meta.majorRelease; // delete whether true or false
 
-        meta.questversion = (result.questversion || 0) + 1;
-        if (params.majorRelease) {
-          meta.questversionlastmajor = meta.questversion;
-        }
-
-        Query.upsert(table, meta, 'id', (err, result) => {
-          return callback(err, id);
-        });
+      Query.upsert(table, meta, 'id', (err, result) => {
+        return callback(err, id);
       });
     });
   });

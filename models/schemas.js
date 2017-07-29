@@ -55,6 +55,7 @@ schemas.questsSearch = Object.assign(schemas.quests, {
 schemas.questsPublish = Object.assign(schemas.quests, {
   published: DATE_NOW,
   tombstone: DATE_NULL,
+  majorRelease: Joi.boolean(),
 });
 
 
