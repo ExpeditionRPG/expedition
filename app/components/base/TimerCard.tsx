@@ -36,7 +36,7 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
   }
 
   render() {
-    let timeRemainingSec = this.state.timeRemaining / 1000;
+    const timeRemainingSec = this.state.timeRemaining / 1000;
     let formattedTimer: string;
     if (timeRemainingSec < 10 && timeRemainingSec > 0) {
       formattedTimer = timeRemainingSec.toFixed(1);

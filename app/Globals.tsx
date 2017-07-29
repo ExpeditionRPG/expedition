@@ -8,7 +8,7 @@ import Promise from 'promise-polyfill' // promise polyfill
 
 
 export interface ReactDocument extends Document {
-  addEventListener: (e: string, f: any, useCapture?: boolean) => void;
+  addEventListener: (e: string, f: (this: any, ev: MouseEvent) => any, useCapture?: boolean) => void;
   dispatchEvent: (e: Event) => boolean;
 }
 
@@ -57,7 +57,7 @@ export function getDevicePlatform(): 'android' | 'ios' | 'web' {
     return 'web';
   }
 
-  var p = (device.platform || '').toLowerCase();
+  const p = (device.platform || '').toLowerCase();
   if (/android/i.test(p)) {
     return 'android';
   } else if (/iphone|ipad|ipod|ios/i.test(p)) {

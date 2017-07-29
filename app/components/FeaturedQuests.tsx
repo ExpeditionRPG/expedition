@@ -19,7 +19,7 @@ export interface FeaturedQuestsDispatchProps {
 export interface FeaturedQuestsProps extends FeaturedQuestsStateProps, FeaturedQuestsDispatchProps {}
 
 const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
-  let items: JSX.Element[] = props.quests.map((quest: QuestDetails, index: number): JSX.Element => {
+  const items: JSX.Element[] = props.quests.map((quest: QuestDetails, index: number): JSX.Element => {
     return (
       <Button onTouchTap={() => props.onQuestSelect(quest)} key={index}>
         <div className="featured_quest">

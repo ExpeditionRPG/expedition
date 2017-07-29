@@ -6,7 +6,7 @@ interface CalloutProps extends React.Props<any> {
 
 export default class Callout extends React.Component<CalloutProps, {}> {
   render() {
-    var icon: JSX.Element = <span></span>;
+    let icon: JSX.Element = <span></span>;
     if (this.props.icon) {
       // Wrap in a "p" tag to have same padding as inner text
       icon = <p><img src={'images/' + this.props.icon + '_small.svg'}></img></p>;

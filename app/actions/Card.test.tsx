@@ -1,6 +1,6 @@
 import configureStore  from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import {installStore, getStore} from '../Store'
+import {installStore} from '../Store'
 import {toCard, toPrevious} from './Card'
 import {setNavigator} from '../Globals'
 const mockStore = configureStore([thunk]);

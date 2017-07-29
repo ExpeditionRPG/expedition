@@ -26,10 +26,10 @@ const difficultyText: { [v: string]: any } = [
 ];
 
 const Settings = (props: SettingsProps): JSX.Element => {
-  var difficultyIdx = ['EASY', 'NORMAL', 'HARD', 'IMPOSSIBLE'].indexOf(props.difficulty);
+  const difficultyIdx = ['EASY', 'NORMAL', 'HARD', 'IMPOSSIBLE'].indexOf(props.difficulty);
 
-  var multitouchText = (props.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.';
-  var helpText = (props.showHelp) ? 'Setup and combat hints are shown.' : 'Setup and combat hints are hidden.';
+  const multitouchText = (props.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.';
+  const helpText = (props.showHelp) ? 'Setup and combat hints are shown.' : 'Setup and combat hints are hidden.';
   return (
     <Card title="Settings">
 

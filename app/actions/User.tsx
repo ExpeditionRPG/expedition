@@ -105,7 +105,7 @@ function loginCordova(callback: UserLoginCallback) {
 
 export function silentLogin(callback: () => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    let loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
+    const loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
       // Since it's silent, do nothing with error
       dispatch({type: 'USER_LOGIN', user});
       callback();
@@ -121,7 +121,7 @@ export function silentLogin(callback: () => any) {
 
 export function login(callback: (user: UserState) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    let loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
+    const loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
       if (err) {
         return dispatch(openSnackbar('Error logging in: ' + err));
       }

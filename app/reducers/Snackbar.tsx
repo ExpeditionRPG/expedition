@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {SnackbarCloseAction, SnackbarOpenAction} from '../actions/ActionTypes'
+import {SnackbarOpenAction} from '../actions/ActionTypes'
 import {SnackbarState} from './StateTypes'
 
 const default_state: SnackbarState = {

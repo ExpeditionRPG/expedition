@@ -22,9 +22,6 @@ export interface SearchSettings {
 }
 
 export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'DETAILS' | 'SEARCH';
-export function isSearchPhase(phase: string) : boolean {
-  return (phase === 'DISCLAIMER' || phase === 'SETTINGS' || phase === 'DETAILS' || phase === 'SEARCH');
-}
 
 export interface SettingsType {
   autoRoll: boolean;

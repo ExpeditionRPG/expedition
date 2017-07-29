@@ -8,7 +8,7 @@ import {
 import {fade} from 'material-ui/utils/colorManipulator'
 import spacing from 'material-ui/styles/spacing'
 
-let theme: any = {
+const theme: any = {
   spacing: spacing,
   fontFamily: 'MinionPro, serif',
   palette: {
@@ -90,4 +90,4 @@ let theme: any = {
   }
 };
 
-export default theme
+export default theme;

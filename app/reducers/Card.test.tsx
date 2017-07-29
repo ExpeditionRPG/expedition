@@ -17,12 +17,12 @@ describe('Card reducer', () => {
   });
 
   it('Does not debounce after some time', () => {
-    var fixedNow = Date.now();
+    let fixedNow = Date.now();
     spyOn(Date, 'now').and.callFake(function() {
       return fixedNow;
     });
 
-    var state = card(undefined, toCard('SEARCH_CARD'));
+    const state = card(undefined, toCard('SEARCH_CARD'));
 
     fixedNow += NAVIGATION_DEBOUNCE_MS + 10
     expect(card(state, toCard('QUEST_CARD'))).toEqual(jasmine.objectContaining({
@@ -31,12 +31,12 @@ describe('Card reducer', () => {
   });
 
   it('Debounces NAVIGATE actions', () => {
-    var fixedNow = Date.now();
+    let fixedNow = Date.now();
     spyOn(Date, 'now').and.callFake(function() {
       return fixedNow;
     });
 
-    var state = card(undefined, toCard('SEARCH_CARD'));
+    const state = card(undefined, toCard('SEARCH_CARD'));
 
     fixedNow += 50 // ms
     expect(card(state, toCard('QUEST_CARD'))).toEqual(jasmine.objectContaining({
@@ -45,12 +45,12 @@ describe('Card reducer', () => {
   });
 
   it('Respects overrideDebounce', () => {
-    var fixedNow = Date.now();
+    let fixedNow = Date.now();
     spyOn(Date, 'now').and.callFake(function() {
       return fixedNow;
     });
 
-    var state = card(undefined, toCard('SEARCH_CARD'));
+    const state = card(undefined, toCard('SEARCH_CARD'));
 
     fixedNow += 50 // ms
     expect(card(state, toCard('QUEST_CARD', null, true))).toEqual(jasmine.objectContaining({

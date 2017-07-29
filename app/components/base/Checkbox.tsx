@@ -11,7 +11,7 @@ export interface CheckboxProps {
 
 class ExpeditionCheckbox extends React.Component<CheckboxProps, {}> {
   render() {
-    var icon = (this.props.value) ? <CheckBoxIcon/> : <CheckBoxOutlineIcon/>;
+    const icon = (this.props.value) ? <CheckBoxIcon/> : <CheckBoxOutlineIcon/>;
     return (
       <span className="base_checkbox">
         <FlatButton onTouchTap={(e: any) => this.props.onChange(!this.props.value)}>

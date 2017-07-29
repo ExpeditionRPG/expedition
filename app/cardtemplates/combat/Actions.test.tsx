@@ -5,7 +5,7 @@ import {ParserNode} from '../../parser/Node'
 import configureStore  from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
-var cheerio: any = require('cheerio');
+const cheerio: any = require('cheerio');
 
 const mockStore = configureStore([ thunk ]);
 
@@ -141,9 +141,9 @@ describe('Combat actions', () => {
       const store = mockStore({});
       store.dispatch(handleCombatEnd(newCombatNode(), TEST_SETTINGS, true, 9));
 
-      let loot = store.getActions()[1].node.ctx.templates.combat.loot;
+      const loot = store.getActions()[1].node.ctx.templates.combat.loot;
       let lootCount = 0;
-      for(let l of loot) {
+      for(const l of loot) {
         lootCount += l.count;
       }
       expect(lootCount).toBeGreaterThan(0);
@@ -173,7 +173,7 @@ describe('Combat actions', () => {
 
   describe('adventurerDelta', () => {
     it('increases', () => {
-      let node = adventurerDelta(newCombatNode(), TEST_SETTINGS, -2).node;
+      const node = adventurerDelta(newCombatNode(), TEST_SETTINGS, -2).node;
       expect(adventurerDelta(node, TEST_SETTINGS, 1).node.ctx.templates.combat.numAliveAdventurers).toEqual(2);
     });
     it('decreases', () => {

@@ -23,8 +23,8 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
 }
 
 function isReturnState(state: AppState, action: ReturnAction): boolean {
-  let matchesName = state.card.name === action.to.name;
-  let matchesPhase = (action.to.phase && state.card && action.to.phase === state.card.phase);
+  const matchesName = state.card.name === action.to.name;
+  const matchesPhase = (action.to.phase && state.card && action.to.phase === state.card.phase);
   return (matchesName && (!action.to.phase || matchesPhase));
 }
 
@@ -39,7 +39,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
     if (action.type === 'RETURN') {
       let pastStateIdx: number = state._history.length-1;
 
-      let returnAction = action as ReturnAction;
+      const returnAction = action as ReturnAction;
       if (returnAction.to && (returnAction.to.name || returnAction.to.phase)) {
         while(pastStateIdx > 0 && !isReturnState(state._history[pastStateIdx], returnAction)) {
           pastStateIdx--;

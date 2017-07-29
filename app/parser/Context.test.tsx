@@ -3,7 +3,7 @@ import {defaultQuestContext} from '../reducers/Quest'
 
 declare var global: any;
 
-var cheerio: any = require('cheerio');
+const cheerio: any = require('cheerio');
 
 describe('Context', () => {
   describe('evaluateOp', () => {
@@ -48,7 +48,7 @@ describe('Context', () => {
     });
     it('does not affect other contexts', () => {
       const ctx = defaultQuestContext();
-      const ctx2 = updateContext(dummyElem, ctx, 2);
+      updateContext(dummyElem, ctx, 2);
       expect(ctx.path).not.toEqual([2]);
     })
     it('updates view count');
