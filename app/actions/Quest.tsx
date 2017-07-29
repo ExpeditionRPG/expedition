@@ -40,7 +40,7 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
   const close_delim = '\r\n--' + boundary + '--';
 
   text = QUEST_DOCUMENT_HEADER + text;
-  const base64Data = btoa(text);
+  const base64Data = btoa(window.unescape(window.encodeURIComponent(text)));
   const multipartRequestBody =
       delimiter +
       'Content-Type: application/json\r\n\r\n' +
