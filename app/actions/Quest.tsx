@@ -35,36 +35,40 @@ function receiveQuestLoad(quest: QuestType): ReceiveQuestLoadAction {
 }
 
 function updateDriveFile(fileId: string, fileMetadata: any, text: string, callback: (err: any, result?: any) => any) {
-  const boundary = '-------314159265358979323846';
-  const delimiter = '\r\n--' + boundary + '\r\n';
-  const close_delim = '\r\n--' + boundary + '--';
+  try {
+    const boundary = '-------314159265358979323846';
+    const delimiter = '\r\n--' + boundary + '\r\n';
+    const close_delim = '\r\n--' + boundary + '--';
 
-  text = QUEST_DOCUMENT_HEADER + text;
-  const base64Data = btoa(window.unescape(window.encodeURIComponent(text)));
-  const multipartRequestBody =
-      delimiter +
-      'Content-Type: application/json\r\n\r\n' +
-      JSON.stringify(fileMetadata) +
-      delimiter +
-      'Content-Type: text/plain\r\n' +
-      'Content-Transfer-Encoding: base64\r\n' +
-      '\r\n' +
-      base64Data +
-      close_delim;
+    text = QUEST_DOCUMENT_HEADER + text;
+    const base64Data = btoa(window.unescape(window.encodeURIComponent(text)));
+    const multipartRequestBody =
+        delimiter +
+        'Content-Type: application/json\r\n\r\n' +
+        JSON.stringify(fileMetadata) +
+        delimiter +
+        'Content-Type: text/plain\r\n' +
+        'Content-Transfer-Encoding: base64\r\n' +
+        '\r\n' +
+        base64Data +
+        close_delim;
 
-  const request = window.gapi.client.request({
-      'path': '/upload/drive/v2/files/' + fileId,
-      'method': 'PUT',
-      'params': {'uploadType': 'multipart', 'alt': 'json'},
-      'headers': {
-        'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
-      },
-      'body': multipartRequestBody});
-  request.then((json: any, raw: any) => {
-    return callback(null, json);
-  }, (json: any) => {
-    return callback(json.result.error);
-  });
+    const request = window.gapi.client.request({
+        'path': '/upload/drive/v2/files/' + fileId,
+        'method': 'PUT',
+        'params': {'uploadType': 'multipart', 'alt': 'json'},
+        'headers': {
+          'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+        },
+        'body': multipartRequestBody});
+    request.then((json: any, raw: any) => {
+      return callback(null, json);
+    }, (json: any) => {
+      return callback(json.result.error);
+    });
+  } catch(err) {
+    return callback(err);
+  }
 }
 
 export function loadQuestFromURL(user: UserState, dispatch: Redux.Dispatch<any>) {

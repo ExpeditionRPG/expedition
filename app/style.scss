@@ -106,6 +106,21 @@ label {
   font-weight: bold;
 }
 
+.saveIndicator {
+  &.error {
+    span, svg {
+      color: $red800 !important;
+      fill: $red800 !important;
+    }
+  }
+  &.success {
+    span, svg {
+      color: $lightGreen900;
+      fill: $lightGreen900;
+    }
+  }
+}
+
 .splash {
   background: $bg_primary;
   font-family: 'Minion-Pro';
