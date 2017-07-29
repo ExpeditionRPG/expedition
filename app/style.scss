@@ -68,7 +68,7 @@ $sizemap: (
   watermark: 36vh, /* height-specific */
   huge: 12vmin,
   large: 6vmin,
-  icon: 5vmin,
+  icon: 4.5vmin,
   base: 2vmin,
   small: 1vmin,
   tiny: 0.5vmin,
@@ -337,6 +337,11 @@ body {
     margin-bottom: -(size(tiny));
   }
 
+  i .inline_icon {
+    margin-left: fontsize(flavor)/8;
+    margin-right: -(fontsize(flavor)/8);
+  }
+
   .starContainer {
     .stars {
       display: flex;
@@ -380,9 +385,6 @@ body {
   }
 
   .base_button {
-    .inline_icon {
-      margin-bottom: -1 * size(small);
-    }
     > button {
       display: block !important;
       height: auto !important;
@@ -829,7 +831,7 @@ $sizemap: (
   watermark: 36vmin * $abs_scale_vh, /* note: height-specific */
   huge: 12vmin * $abs_scale_vh,
   large: 6vmin * $abs_scale_vh,
-  icon: 5vmin * $abs_scale_vh,
+  icon: 4vmin * $abs_scale_vh,
   base: 2vmin * $abs_scale_vh,
   small: 1vmin * $abs_scale_vh,
   tiny: 0.5vmin * $abs_scale_vh,

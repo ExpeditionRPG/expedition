@@ -2,6 +2,8 @@
   <roleplay title="Test" data-line="11">
     <p>{{one=1}}</p>
     <p>You face choices. Here's the value of one: {{one}}</p>
+    <p><i>Italic [roll] test text with icon</i></p>
+    <p>Multiline long text with an icon on the second line to check for gaps, see [adventurer]. Now here's even more text to check for gaps below the icon.</p>
     <choice text="End now">
       <trigger data-line="19">end</trigger>
     </choice>
@@ -17,6 +19,8 @@
           <trigger data-line="35">end</trigger>
         </event>
       </combat>
+    </choice>
+    <choice text="[roll] ≥ 7">
     </choice>
   </roleplay>
 </quest>
