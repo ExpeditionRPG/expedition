@@ -7,7 +7,7 @@ declare var window:any;
 declare var require:any;
 declare var module:any;
 
-var store: any = null;
+let store: any = null;
 
 export function installStore(createdStore: any) {
   store = createdStore;
@@ -15,14 +15,14 @@ export function installStore(createdStore: any) {
 
 function createAppStore() {
 
-  let devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
-  let middleware = applyMiddleware(thunk);
+  const devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
+  const middleware = applyMiddleware(thunk);
 
   installStore(middleware(devtools(createStore))(expeditionApp, {}));
 
   if (module && module.hot) {
     module.hot.accept('./reducers/CombinedReducers', () => {
-      let updated = require('./reducers/CombinedReducers').default;
+      const updated = require('./reducers/CombinedReducers').default;
       store.replaceReducer(updated);
     });
   }

@@ -36,9 +36,9 @@ export interface RoleplayResult {
 
 export function loadRoleplayNode(node: ParserNode): RoleplayResult {
   // Append elements to contents
-  let choices: Choice[] = [];
+  const choices: Choice[] = [];
   let choiceCount = -1;
-  let content: RoleplayElement[] = [];
+  const content: RoleplayElement[] = [];
 
   node.loopChildren((tag, c) => {
     c = c.clone();
@@ -97,11 +97,9 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
     choices.push({text: buttonText, idx: 0});
   }
 
-  let title = node.elem.attr('title');
-  let icon = node.elem.attr('icon');
   return {
-    title,
-    icon,
+    title: node.elem.attr('title'),
+    icon: node.elem.attr('icon'),
     content,
     choices,
     ctx: node.ctx,

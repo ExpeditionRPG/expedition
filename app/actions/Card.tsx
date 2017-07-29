@@ -5,7 +5,7 @@ import {getNavigator} from '../Globals'
 import {getStore} from '../Store'
 
 export function toCard(name: CardName, phase?: CardPhase, overrideDebounce?: boolean): NavigateAction {
-  let state: AppStateWithHistory = getStore().getState();
+  const state: AppStateWithHistory = getStore().getState();
   const nav = getNavigator();
   if (nav && nav.vibrate && state.settings.vibration) {
     if (phase === 'TIMER') {

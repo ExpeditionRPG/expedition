@@ -14,29 +14,12 @@ function getNodeAttributes(e: Cheerio): {[key:string]:string;} {
 }
 
 function getChildNumber(domElement: CheerioElement): number {
-    var i=1;
-    while(domElement.previousSibling){
+    let i = 1;
+    while (domElement.previousSibling) {
       domElement = domElement.previousSibling;
       i++;
     }
     return i;
-}
-
-function getSelector(elem: Cheerio): string {
-  var domElement = elem.get(0);
-  var selector = '';
-  do {
-      selector = '>' + domElement.tagName + ':nth-child(' + getChildNumber(domElement) + ')' + selector;
-      domElement = domElement.parentNode;
-  } while (domElement !== null && !domElement.attribs['id'] && domElement.tagName.toLowerCase() !== 'quest')
-
-  if (domElement === null) {
-    return selector;
-  } else if (domElement.tagName.toLowerCase() === 'quest') {
-    return 'quest ' + selector;
-  } else {
-    return '#' + domElement.attribs['id'] + selector;
-  }
 }
 
 export class ParserNode {
@@ -62,7 +45,7 @@ export class ParserNode {
 
   getVisibleKeys(): (string|number)[] {
     let choiceIdx = -1;
-    let keys: (string|number)[] = [];
+    const keys: (string|number)[] = [];
     this.loopChildren((tag, child, orig) => {
       if (child.attr('on') !== undefined) {
         keys.push(child.attr('on'));
@@ -80,7 +63,7 @@ export class ParserNode {
       next = this.getNextNode();
     } else if (isNumeric(key)) {
       // Scan the parent node to find the choice with the right number
-      let idx = (typeof(key) === 'number') ? key : parseInt(key, 10);
+      const idx = (typeof(key) === 'number') ? key : parseInt(key, 10);
       let choiceIdx = -1;
       next = this.loopChildren((tag, child, orig) => {
         if (tag !== 'choice') {
@@ -93,7 +76,7 @@ export class ParserNode {
 
         // Use original node here, so we don't break dom structure
         // due to child cloning/rendering.
-        let result = orig.children().eq(0);
+        const result = orig.children().eq(0);
         if (this.isElemEnabled(result)) {
           return result;
         }
@@ -120,22 +103,22 @@ export class ParserNode {
       // TODO(scott): Parsing of text nodes using .contents().
       // We should should handle programmatic gotos, for instance.
 
-      let child = this.elem.children().eq(i);
+      const child = this.elem.children().eq(i);
       if (!this.isElemEnabled(child)) {
         continue;
       }
 
-      let c = child.clone();
+      const c = child.clone();
 
       // Evaluate ops in attributes
       const attribs = getNodeAttributes(c);
-      for (let j in attribs) {
+      for (const j in attribs) {
         c.attr(j, evaluateContentOps(attribs[j], this.ctx));
       }
 
       // Evaluate all non-control node bodies
       if (!this.isElemControl(c)) {
-        let evaluated = evaluateContentOps(c.html(), this.ctx);
+        const evaluated = evaluateContentOps(c.html(), this.ctx);
         if (evaluated === '') {
           continue;
         }
@@ -162,9 +145,9 @@ export class ParserNode {
   // other than undefined, break the loop early and return the value.
   loopChildren(cb: (tag: string, child: Cheerio, original: Cheerio)=>any): any {
     for (let i = 0; i < this.renderedChildren.length; i++) {
-      let c = this.renderedChildren[i];
-      let tag = this.renderedChildren[i].rendered.get(0).tagName.toLowerCase();
-      let v = cb(tag, c.rendered, c.original);
+      const c = this.renderedChildren[i];
+      const tag = this.renderedChildren[i].rendered.get(0).tagName.toLowerCase();
+      const v = cb(tag, c.rendered, c.original);
       if (v !== undefined) {
         return v;
       }
@@ -179,14 +162,14 @@ export class ParserNode {
   // references, which prevent it from being a true "serialization" and instead more of a "comparison key"
   // for visit-tracking in quest traversal.
   getComparisonKey(): string {
-    let ctx = Clone(this.ctx);
+    const ctx = Clone(this.ctx);
 
     // Strip un-useful context
     ctx.path = undefined;
     ctx.scope._ = undefined;
     ctx.extern = undefined;
 
-    var ctx_json = JSON.stringify(ctx, (key, val) => {
+    const ctx_json = JSON.stringify(ctx, (key, val) => {
       return (typeof val === 'function') ? val.toString() : val;
     });
 

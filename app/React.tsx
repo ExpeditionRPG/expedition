@@ -57,7 +57,7 @@ function setupDevice() {
       // patch for Android browser not properly scrolling to input when keyboard appears
       $('body').on('focusin', 'input, textarea', (event) => {
         if (navigator.userAgent.indexOf('Android') !== -1) {
-          var scroll = $(this).offset().top;
+          const scroll = $(this).offset().top;
           $('.base_card').scrollTop(scroll);
         }
       });
@@ -120,8 +120,8 @@ function setupEventLogging() {
 
 function render() {
   // Require is done INSIDE this function to reload app changes.
-  var Main = require('./components/base/Main').default;
-  var base = getDocument().getElementById('react-app');
+  const Main = require('./components/base/Main').default;
+  const base = getDocument().getElementById('react-app');
   ReactDOM.unmountComponentAtNode(base);
   ReactDOM.render(
     <MuiThemeProvider muiTheme={getMuiTheme(theme)}>

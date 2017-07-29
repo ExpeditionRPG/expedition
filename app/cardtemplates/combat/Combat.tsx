@@ -57,10 +57,10 @@ function renderSelectTier(props: CombatProps): JSX.Element {
 }
 
 function renderDrawEnemies(props: CombatProps): JSX.Element {
-  let enemyNames: Set<string> = new Set();
   let repeatEnemy = false;
   let uniqueEnemy = false;
-  let enemies: JSX.Element[] = props.enemies.map((enemy: Enemy, index: number) => {
+  const enemyNames: Set<string> = new Set();
+  const enemies: JSX.Element[] = props.enemies.map((enemy: Enemy, index: number) => {
     uniqueEnemy = uniqueEnemy || !enemy.class;
     let icon = null;
     if (enemy.class) {
@@ -242,7 +242,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 }
 
 function renderVictory(props: CombatProps): JSX.Element {
-  var contents: JSX.Element[] = [];
+  const contents: JSX.Element[] = [];
 
   if (props.victoryParameters) {
     if (props.victoryParameters.heal > 0 && props.victoryParameters.heal < MAX_ADVENTURER_HEALTH) {
@@ -295,7 +295,7 @@ function renderVictory(props: CombatProps): JSX.Element {
 }
 
 function renderDefeat(props: CombatProps): JSX.Element {
-  var helpText = <span></span>
+  let helpText = <span></span>;
   if (props.settings.showHelp) {
     helpText = <p>Remember, you can adjust combat difficulty at any time in the settings menu at the top right of the app.</p>
   }

@@ -16,7 +16,7 @@ export function evaluateContentOps(content: string, ctx: QuestContext): string {
   }
 
   let result = '';
-  for (let m of matches) {
+  for (const m of matches) {
     const op = parseOpString(m);
     if (op) {
       const evalResult = evaluateOp(op, ctx);
@@ -99,7 +99,7 @@ export function updateContext(node: Cheerio, ctx: QuestContext, action?: string|
     ctx.templates.combat.roleplay = null;
   }
 
-  let newContext: QuestContext = Clone(ctx);
+  const newContext: QuestContext = Clone(ctx);
 
   // Reassign readonly (uncopyable) attributes
   if (tmpCombatRoleplay) {

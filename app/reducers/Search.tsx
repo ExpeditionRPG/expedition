@@ -1,6 +1,6 @@
 import Redux from 'redux'
-import {NavigateAction, SearchResponseAction, ViewQuestAction} from '../actions/ActionTypes'
-import {SearchState, isSearchPhase} from './StateTypes'
+import {SearchResponseAction, ViewQuestAction} from '../actions/ActionTypes'
+import {SearchState} from './StateTypes'
 
 export const initial_state: SearchState = {
   search: {

@@ -72,7 +72,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
   }
 
   render() {
-    var icon: JSX.Element = <span></span>;
+    let icon: JSX.Element = <span></span>;
     if (this.props.icon) {
       icon = <img id="bgimg" src={'images/' + this.props.icon + '.svg'}></img>;
     }

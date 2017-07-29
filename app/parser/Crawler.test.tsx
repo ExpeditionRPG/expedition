@@ -4,8 +4,8 @@ import {defaultQuestContext} from '../reducers/Quest'
 
 declare var global: any;
 
-var cheerio: any = require('cheerio');
-var window: any = cheerio.load('<div>');
+const cheerio: any = require('cheerio');
+const window: any = cheerio.load('<div>');
 
 class CrawlTest extends CrawlerBase {
   efn: (q: CrawlEntry, e: CrawlEvent)=>any;

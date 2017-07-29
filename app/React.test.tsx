@@ -2,11 +2,11 @@ import configureStore  from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import {init} from './React'
 import {installStore} from './Store'
-import {setDocument, setWindow, setDevice} from './Globals'
+import {setDocument, setWindow} from './Globals'
 
 function dummyDOM(): Document {
   const doc = document.implementation.createHTMLDocument('testdoc');
-  let result = document.createElement('div');
+  const result = document.createElement('div');
   result.id = 'react-app';
   doc.body.appendChild(result);
 
@@ -22,29 +22,13 @@ function dummyDOM(): Document {
     if (!evtListeners[e.type]) {
       return false;
     }
-    for (let f of evtListeners[e.type]) {
+    for (const f of evtListeners[e.type]) {
       f(e);
     }
     return true;
   }
 
   return doc;
-}
-
-function dummyGAPI(): any {
-  return {
-    load: (lib: string, cb: () => any) => {cb()},
-    client: {
-      setApiKey: (key: string) => {},
-    },
-    auth2: {
-      init: (settings: any) => {
-        return {
-          then: (fn: () => any) => {fn();}
-        };
-      },
-    },
-  };
 }
 
 const mockStore = configureStore([thunk]);

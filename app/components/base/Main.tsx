@@ -32,7 +32,7 @@ export default class Main extends React.Component<MainProps, {}> {
   }
 
   getUpdatedState() {
-    let state: AppStateWithHistory = getStore().getState();
+    const state: AppStateWithHistory = getStore().getState();
     if (state === undefined || this.state === undefined || Object.keys(state).length === 0) {
       return {key: 0, transition: 'INSTANT' as TransitionType, card: <SplashScreenContainer/>, snackbar: { open: false, message: '' }};
     }

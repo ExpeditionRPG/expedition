@@ -1,4 +1,4 @@
-import {Choice, Enemy, EventParameters, RoleplayElement, QuestCardName, QuestContext} from '../reducers/QuestTypes'
+import {EventParameters} from '../reducers/QuestTypes'
 import {ParserNode} from './Node'
 
 const MAX_GOTO_FOLLOW_DEPTH = 50;
@@ -44,7 +44,7 @@ function handleTrigger(pnode: ParserNode): ParserNode {
   // Immediately act on any gotos (with a max depth)
   let i = 0;
   for (; i < MAX_GOTO_FOLLOW_DEPTH && pnode !== null && pnode.getTag() === 'trigger'; i++) {
-    let id = getTriggerId(pnode.elem);
+    const id = getTriggerId(pnode.elem);
     if (id) {
       pnode = pnode.gotoId(id);
     } else {

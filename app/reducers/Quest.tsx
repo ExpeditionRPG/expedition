@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {QuestState, AppState} from './StateTypes'
+import {QuestState} from './StateTypes'
 import {QuestContext} from './QuestTypes'
 import {QuestNodeAction, ViewQuestAction} from '../actions/ActionTypes'
 import {getStore} from '../Store'

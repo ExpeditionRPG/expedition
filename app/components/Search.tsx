@@ -197,7 +197,7 @@ export function truncateSummary(string: string) {
 
 function renderResults(props: SearchProps): JSX.Element {
   const orderField = props.search.order.substring(1);
-  let items: JSX.Element[] = props.results.map((result: QuestDetails, index: number) => {
+  const items: JSX.Element[] = props.results.map((result: QuestDetails, index: number) => {
     return (
       <Button key={index} onTouchTap={() => props.onQuest(result)}>
         <div className="searchResult">
@@ -237,7 +237,7 @@ function renderResults(props: SearchProps): JSX.Element {
 }
 
 function renderDetails(props: SearchProps): JSX.Element {
-  let details: JSX.Element = <span></span>;
+  const details: JSX.Element = <span></span>;
   const quest = props.selected;
   return (
     <Card title="Quest Details">
