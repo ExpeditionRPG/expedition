@@ -1,5 +1,6 @@
 import Redux from 'redux'
 
+import {API_HOST} from '../Constants'
 import {SetProfileMetaAction} from './ActionTypes'
 import {UserState} from '../reducers/StateTypes'
 import {loadQuestFromURL} from './Quest'
@@ -29,7 +30,7 @@ export function loginUser(showPrompt: boolean): ((dispatch: Redux.Dispatch<any>)
               image: res.image.url,
               email: ((res.emails || [])[0] || {}).value,
             };
-            $.post('/auth/google', JSON.stringify(googleUser), (data) => {
+            $.post(API_HOST + '/auth/google', JSON.stringify(googleUser), (data) => {
               const user = {
                 loggedIn: true,
                 id: data,
