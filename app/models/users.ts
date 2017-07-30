@@ -1,11 +1,11 @@
-import Query from './query'
+import * as Query from './query'
 import Schemas from './schemas'
 import Config from '../config'
 
 const Joi = require('joi');
 
 const Mailchimp = require('mailchimp-api-v3');
-const mailchimp = (process.env.NODE_ENV !== 'dev' && Config.get('MAILCHIMP_KEY')) ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
+const mailchimp = (Config.get('NODE_ENV') !== 'dev' && Config.get('MAILCHIMP_KEY')) ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
 const table = 'users';
 
@@ -43,4 +43,4 @@ export function upsert(user: any, callback: (e: Error, id: string) => any) {
       });
     });
   });
-};
+}

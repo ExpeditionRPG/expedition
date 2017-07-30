@@ -1,8 +1,0 @@
-{
-  "GCLOUD_PROJECT": "expedition-quest-ide",
-  "CLOUD_BUCKET": "expedition-quest-ide",
-  "DATABASE_URL": "postgres://uhqfrlzcvjxqzj:3UDIH8WUR5zzq21sd9YGV-Dyuv@ec2-54-243-52-115.compute-1.amazonaws.com:5432/d2884uv642sokc",
-  "OAUTH2_CLIENT_ID": "545484140970-r95j0rmo8q1mefo0pko6l3v6p4s771ul.apps.googleusercontent.com,545484140970-lgcbm3df469kscbngg2iof57muj3p588.apps.googleusercontent.com",
-  "OAUTH2_CLIENT_SECRET": "sQ2rhcRiaHbnhoTANr9On3nt",
-  "SESSION_SECRET": "qHpVk%djNPoR4BSm9qgW"
-}

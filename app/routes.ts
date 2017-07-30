@@ -1,10 +1,10 @@
 import * as express from 'express'
 import passport from 'passport'
 import Config from './config'
-import Mail from './mail'
+import * as Mail from './mail'
 import * as oauth2 from './lib/oauth2'
-import Quests  from './models/quests'
-import Feedback from './models/feedback'
+import * as Quests  from './models/quests'
+import * as Feedback from './models/feedback'
 
 const Joi = require('joi');
 const Cors = require('cors');
@@ -13,7 +13,7 @@ const Mailchimp = require('mailchimp-api-v3');
 const querystring = require('querystring');
 const RateLimit = require('express-rate-limit');
 
-const mailchimp = (process.env.NODE_ENV !== 'dev' && Config.get('MAILCHIMP_KEY')) ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
+const mailchimp = (Config.get('NODE_ENV') !== 'dev' && Config.get('MAILCHIMP_KEY')) ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
 
@@ -70,7 +70,6 @@ router.post('/feedback', limitCors, (req: express.Request, res: express.Response
   });
 });
 
-
 router.post('/quests', limitCors, (req: express.Request, res: express.Response) => {
   try {
     const token = req.params.token;
@@ -94,7 +93,6 @@ router.post('/quests', limitCors, (req: express.Request, res: express.Response) 
   }
 });
 
-
 router.get('/raw/:quest', limitCors, (req: express.Request, res: express.Response) => {
   Quests.getById(req.params.quest, (err: Error, entity: any) => {
     if (err) {
@@ -105,7 +103,6 @@ router.get('/raw/:quest', limitCors, (req: express.Request, res: express.Respons
     res.status(301).end();
   });
 });
-
 
 router.post('/publish/:id', publishLimiter, limitCors, (req: express.Request, res: express.Response) => {
 
@@ -127,7 +124,6 @@ router.post('/publish/:id', publishLimiter, limitCors, (req: express.Request, re
   }
 });
 
-
 router.post('/unpublish/:quest', limitCors, (req: express.Request, res: express.Response) => {
 
   if (!res.locals.id) {
@@ -148,7 +144,6 @@ router.post('/unpublish/:quest', limitCors, (req: express.Request, res: express.
   }
 });
 
-
 router.post('/quest/feedback/:type', limitCors, (req: express.Request, res: express.Response) => {
   try {
     Feedback.submit(req.params.type, req.body, (err: Error, id: string) => {
@@ -162,7 +157,6 @@ router.post('/quest/feedback/:type', limitCors, (req: express.Request, res: expr
     return res.status(500).send(GENERIC_ERROR_MESSAGE);
   }
 });
-
 
 router.post('/user/subscribe', limitCors, (req: express.Request, res: express.Response) => {
   req.body = JSON.parse(req.body);

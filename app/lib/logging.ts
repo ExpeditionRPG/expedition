@@ -1,7 +1,9 @@
+import Config from '../config'
+
 const winston: any = require('winston');
 const expressWinston: any = require('express-winston');
 
-const colorize = process.env.NODE_ENV !== 'production';
+const colorize = (Config.get('NODE_ENV') !== 'production');
 
 // Logger to capture all requests and output them to the console.
 const requestLogger = expressWinston.logger({

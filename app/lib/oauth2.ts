@@ -1,5 +1,5 @@
 import Config from '../config'
-import Users from '../models/users'
+import * as Users from '../models/users'
 import * as express from 'express'
 
 const Express = require('express');
@@ -47,7 +47,7 @@ export function required(req: express.Request, res: express.Response, next: expr
 // Middleware that exposes the user's profile as well as login/logout URLs to
 // any templates. These are available as `profile`, `login`, and `logout`.
 export function template(req: express.Request, res: express.Response, next: express.NextFunction) {
-  res.locals.id = req.user;
+  res.locals.id = req.session.passport.user;
   res.locals.name = req.session.displayName;
   res.locals.image = req.session.image;
   next();

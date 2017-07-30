@@ -12,6 +12,7 @@ nconf
     'GCLOUD_PROJECT', // This is the id of your project in the Google Cloud Developers Console.
     'CLOUD_BUCKET', // Bucket for compiled quest XML
     'DATABASE_URL', // URL of postgres database storing quest metadata, user data, feedback, etc.
+    'GOOGLE_SERVICE_KEY', // Service key for cloud storage
 
     // Feedback email sender config settings
     'MAIL_EMAIL',
@@ -36,7 +37,7 @@ nconf
     'MAILCHIMP_CREATORS_LIST_ID',
     'MAILCHIMP_PLAYERS_LIST_ID',
 
-    // TODO is this reached through config.get?
+    // Specify prod or dev environment.
     'NODE_ENV',
   ])
   .file({ file: CONFIG_PATH })
@@ -57,6 +58,7 @@ const REQUIRED_SETTINGS = [
   'OAUTH2_CLIENT_ID',
   'OAUTH2_CLIENT_SECRET',
   'SESSION_SECRET',
+  'GOOGLE_SERVICE_KEY',
 ];
 
 let missing = [];
