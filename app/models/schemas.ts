@@ -57,6 +57,7 @@ schemas.questsPublish = {
   ...schemas.quests,
   published: DATE_NOW,
   tombstone: DATE_NULL,
+  majorRelease: Joi.boolean(),
 };
 
 
