@@ -1,6 +1,10 @@
 const packageJson: any = require('../package.json');
 
-export const API_HOST = 'http://api.expeditiongame.com';
+// env is exported from webpack
+declare var env: any;
+
+export const NODE_ENV = env.NODE_ENV;
+export const API_HOST = env.API_HOST;
 export const VERSION = packageJson.version;
 export const GITHUB_DOCS = 'https://github.com/Fabricate-IO/expedition-quest-ide/blob/master/docs/';
 export const DOCS_INDEX_URL = GITHUB_DOCS + 'index.md';

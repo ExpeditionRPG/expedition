@@ -68,7 +68,10 @@ const options = {
     new Webpack.HotModuleReplacementPlugin(),
     new Webpack.NoEmitOnErrorsPlugin(),
     new Webpack.DefinePlugin({
-      VERSION: JSON.stringify(require('./package.json').version)
+      'env': {
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV || "dev"),
+        'API_HOST': JSON.stringify(process.env.API_HOST || 'http://betaapi.expeditiongame.com'),
+      }
     }),
     new CopyWebpackPlugin([
       { from: 'app/index.html' },
