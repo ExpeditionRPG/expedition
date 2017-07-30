@@ -6,19 +6,10 @@
   "repository": "https://github.com/ExpeditionRPG/expedition-quest-creator",
   "main": "react.js",
   "scripts": {
-    // Web/UI scripts
     "test": "mocha meta_tests.js && karma start karma.conf.js --single-run --browsers PhantomJS",
-    "watch:test": "karma start karma.conf.js ",
-    // Server scripts
-    "watch:test-server",
-    "dev": "webpack --config webpack.backend.config.js --progress",
-
+    "watch:test": "karma start karma.conf.js",
+    "dev": "webpack-dev-server --progress",
     "start": "node app.js",
-    "dev": "NODE_ENV=dev node app.js",
-    "dev:ide": "webpack-dev-server --progress",
-    "monitor": "nodemon ${SCRIPT:-app.js}",
-    "deploy": "gcloud app deploy app.yaml",
-    "init-cloudsql": "node books/model-cloudsql.js",
     "heroku-postbuild": "webpack -p --config webpack.dist.config.js --progress"
   },
   "author": "Fabricate.IO",

@@ -5,7 +5,7 @@ const Webpack = require('webpack');
 
 const port = process.env.DOCKER_PORT || 8080;
 
-const proxyDest = {target: 'http://localhost:'+ (process.env.DOCKER_PORT2 || 8081), secure: false};
+const proxyDest = {target: 'http://localhost:'+ (process.env.DOCKER_PORT-1 || 8081), secure: false};
 console.log('Proxying server requests to ' + proxyDest.target);
 
 const options = {
