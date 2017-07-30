@@ -19,7 +19,7 @@ describe('Typescript', () => {
     let count = {};
     for(let f of files) {
       const ext = f.split('.').pop()
-      if ((ext === 'tsx' || ext === 'ts') && f.indexOf('TestData') === -1) {
+      if (ext === 'tsx' && f.indexOf('TestData') === -1) {
         const base = f.split('.')[1]; // "./app/..."
         count[base] = (count[base] || 0) + 1;
       }

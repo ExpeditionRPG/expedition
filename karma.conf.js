@@ -17,7 +17,6 @@ module.exports = function (config) {
     ],
     preprocessors: {
       'app/**/*.test.tsx': ['webpack'],
-      'app/**/*.test.ts': ['webpack'],
     },
     globals: {
       utils: {},
