@@ -6,7 +6,7 @@ import {saveQuest} from './actions/Quest'
 import {setSnackbar} from './actions/Snackbar'
 import MainContainer from './components/MainContainer'
 import {store} from './Store'
-import {VERSION, ENV} from './Constants'
+import {VERSION} from './Constants'
 
 // Material UI theming
 import theme from './Theme'
