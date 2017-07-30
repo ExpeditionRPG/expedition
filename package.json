@@ -46,6 +46,7 @@
     "joi-browser": "^10.0.6",
     "lodash": "^4.17.4",
     "mailchimp-api-v3": "^1.7.0",
+    "modelo": "^4.2.0",
     "moment": "^2.18.1",
     "multer": "^1.3.0",
     "nconf": "^0.8.4",
