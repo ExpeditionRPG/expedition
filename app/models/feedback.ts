@@ -1,10 +1,10 @@
 const Joi = require('joi');
 const Squel = require('squel');
 
-import Mail from '../mail'
+import * as Mail from '../mail'
 import Schemas from './schemas'
-import Query from './query'
-import Quests from './quests'
+import * as Query from './query'
+import * as Quests from './quests'
 
 const table = 'feedback';
 

@@ -1,13 +1,13 @@
-import Query from './query'
-import Feedback from './feedback'
+import * as Query from './query'
+import * as Feedback from './feedback'
 import Schemas from './schemas'
 
 const Cheerio = require('cheerio');
 const Joi = require('joi');
 const Squel = require('squel');
 
-import CloudStorage from '../lib/cloudstorage'
-import Mail from '../mail'
+import * as CloudStorage from '../lib/cloudstorage'
+import * as Mail from '../mail'
 
 const table = 'quests';
 
@@ -158,7 +158,8 @@ export function publish(userId: string, id: string, params: any, xml: string, ca
       return callback(err, null);
     }
 
-    const meta = {...result,
+    const meta = {
+      ...result,
       id: id,
       userid: userId,
       publishedurl: CloudStorage.getPublicUrl(cloudStorageData.gcsname)

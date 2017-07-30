@@ -5,11 +5,13 @@ const path = require('path');
 import Config from '../config'
 
 const CLOUD_BUCKET = Config.get('CLOUD_BUCKET');
+const SERVICE_KEY = (typeof Config.get('GOOGLE_SERVICE_KEY') === 'string') ? JSON.parse(Config.get('GOOGLE_SERVICE_KEY')) : Config.get('GOOGLE_SERVICE_KEY');
 
 const storage = gcloudStorage({
   projectId: Config.get('GCLOUD_PROJECT'),
-  credentials: (process.env.GOOGLE_SERVICE_KEY) ? JSON.parse(process.env.GOOGLE_SERVICE_KEY) : undefined
+  credentials: SERVICE_KEY,
 });
+
 const bucket = storage.bucket(CLOUD_BUCKET);
 
 // Returns the public, anonymously accessable URL to a given Cloud Storage

@@ -30,8 +30,6 @@ app.disable('etag');
 const port = process.env.DOCKER_PORT2 || config.get('PORT');
 
 const setupSession = function(app: any) {
-  app.set('trust proxy', true);
-
   // Configure the session and session storage.
   const sessionConfig = {
     resave: false,
