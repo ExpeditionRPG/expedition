@@ -1,5 +1,5 @@
 const request = require('request');
-const gcloudStorage = require('@google-cloud/storage');
+const gcloud = require('google-cloud');
 const path = require('path');
 
 import Config from '../config'
@@ -7,10 +7,10 @@ import Config from '../config'
 const CLOUD_BUCKET = Config.get('CLOUD_BUCKET');
 const SERVICE_KEY = (typeof Config.get('GOOGLE_SERVICE_KEY') === 'string') ? JSON.parse(Config.get('GOOGLE_SERVICE_KEY')) : Config.get('GOOGLE_SERVICE_KEY');
 
-const storage = gcloudStorage({
+const storage = gcloud({
   projectId: Config.get('GCLOUD_PROJECT'),
   credentials: SERVICE_KEY,
-});
+}).storage();
 
 const bucket = storage.bucket(CLOUD_BUCKET);
 
