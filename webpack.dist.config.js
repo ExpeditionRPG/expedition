@@ -39,7 +39,7 @@ const options = {
     new Webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production'),
-        'API_HOST': JSON.stringify(process.env.API_HOST || 'http://betaapi.expeditiongame.com'),
+        'API_HOST': JSON.stringify(process.env.API_HOST || 'http://api.expeditiongame.com'),
       },
     }),
     new CopyWebpackPlugin([
