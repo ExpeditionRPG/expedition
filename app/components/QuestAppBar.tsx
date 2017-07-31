@@ -9,6 +9,7 @@ import MenuItem from 'material-ui/MenuItem'
 import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar'
 
 import AlertError from 'material-ui/svg-icons/alert/error'
+import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down'
 import SyncIcon from 'material-ui/svg-icons/notification/sync'
 
 import {QuestActionType} from '../actions/ActionTypes'
@@ -62,19 +63,22 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
         title={questTitle}
         showMenuIconButton={false}
         iconElementRight={
-          <IconMenu
-            className="loginState"
-            iconButtonElement={
-              <IconButton><Avatar src={props.user.image}/></IconButton>
-            }
-            targetOrigin={{horizontal: 'right', vertical: 'top'}}
-            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-          >
-            <MenuItem primaryText={loginText} disabled={true}/>
-            <MenuItem primaryText="Sign Out"
-              onTouchTap={() => props.onUserDialogRequest(props.user)}
-            />
-          </IconMenu>
+          <div className="appBarRight">
+            <span className="email">{props.user.email}</span>
+            <IconMenu
+              className="loginState"
+              iconButtonElement={
+                <IconButton><NavigationArrowDropDown /></IconButton>
+              }
+              targetOrigin={{horizontal: 'right', vertical: 'top'}}
+              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+            >
+              <MenuItem primaryText={loginText} disabled={true}/>
+              <MenuItem primaryText="Sign Out"
+                onTouchTap={() => props.onUserDialogRequest(props.user)}
+              />
+            </IconMenu>
+          </div>
         }
       />
       <Toolbar className="toolbar">
@@ -87,7 +91,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
           <FlatButton label="Help" onTouchTap={(event: any) => props.onMenuSelect('HELP', props.quest)} />
           {saveIndicator}
         </ToolbarGroup>
-        <ToolbarGroup>
+        <ToolbarGroup lastChild={true}>
           <FlatButton
             onTouchTap={(event: any) => props.playFromCursor({}, props.editor, props.quest)}
             label="Play from Cursor">
