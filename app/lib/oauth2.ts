@@ -47,7 +47,13 @@ export function required(req: express.Request, res: express.Response, next: expr
 // Middleware that exposes the user's profile as well as login/logout URLs to
 // any templates. These are available as `profile`, `login`, and `logout`.
 export function template(req: express.Request, res: express.Response, next: express.NextFunction) {
-  res.locals.id = req.session.passport.user;
+  if (!req.session) {
+    return next();
+  }
+
+  if (req.session.passport) {
+    res.locals.id = req.session.passport.user;
+  }
   res.locals.name = req.session.displayName;
   res.locals.image = req.session.image;
   next();
