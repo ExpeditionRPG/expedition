@@ -38,15 +38,25 @@ export const REGEX = {
 
 export const PLAYTIME_MINUTES_BUCKETS = [20, 30, 45, 60, 90, 120];
 
-// general balance based on 4 players, scaling up / down on a curve
+// Based on 4 players, scaling up / down on a curve
 // since a bit more or less damage makes a huge difference in # of rounds survivable
 export const PLAYER_DAMAGE_MULT: {[key: number]: number} = {
-  1: 0.4,
-  2: 0.6,
+  1: 0.5,
+  2: 0.5,
   3: 0.8,
   4: 1,
   5: 1.1,
   6: 1.2,
+};
+
+// Give solo players 2x time since they're controlling two adventurers
+export const PLAYER_TIME_MULT: {[key: number]: number} = {
+  1: 2,
+  2: 1,
+  3: 1,
+  4: 1,
+  5: 1,
+  6: 1,
 };
 
 export const COMBAT_DIFFICULTY: {[key: string]: any} = {

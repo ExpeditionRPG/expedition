@@ -6,18 +6,49 @@ import {CombatDifficultySettings, CombatAttack} from './Types'
 import {SettingsType} from '../../reducers/StateTypes'
 import {ParserNode} from '../../parser/Node'
 import {toCard} from '../../actions/Card'
-import {COMBAT_DIFFICULTY} from '../../Constants'
+import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT} from '../../Constants'
 import {encounters} from '../../Encounters'
 import {QuestNodeAction} from '../../actions/ActionTypes'
 
 const cheerio: any = require('cheerio');
 
-function getDifficultySettings(difficulty: DifficultyType): CombatDifficultySettings {
+export function initCombat(node: ParserNode, settings: SettingsType, custom?: boolean) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    let tierSum: number = 0;
+    let enemies: Enemy[] = [];
+    if (node.elem) {
+      enemies = getEnemies(node);
+      for (const enemy of enemies) {
+        tierSum += enemy.tier;
+      }
+    }
+    node = node.clone();
+    node.ctx.templates.combat = {
+      custom: custom || false,
+      enemies,
+      roundCount: 0,
+      numAliveAdventurers: settings.numPlayers,
+      tier: tierSum,
+      ...getDifficultySettings(settings.difficulty, settings.numPlayers),
+    };
+    dispatch(toCard('QUEST_CARD', 'DRAW_ENEMIES'));
+    dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
+  };
+}
+
+export function initCustomCombat(settings: SettingsType) {
+  return initCombat(new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultQuestContext()), settings, true);
+}
+
+function getDifficultySettings(difficulty: DifficultyType, numPlayers: number): CombatDifficultySettings {
   const result = COMBAT_DIFFICULTY[difficulty];
   if (result === null) {
     throw new Error('Unknown difficulty ' + difficulty);
   } else {
-    return result;
+    return {
+      ...result,
+      roundTimeMillis: result.roundTimeMillis * (PLAYER_TIME_MULT[numPlayers] || 1),
+    };
   }
 }
 
@@ -159,34 +190,6 @@ export function handleCombatEnd(node: ParserNode, settings: SettingsType, victor
     dispatch(toCard('QUEST_CARD', (victory) ? 'VICTORY' : 'DEFEAT', true));
     dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
   };
-}
-
-export function initCombat(node: ParserNode, settings: SettingsType, custom?: boolean) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    let tierSum: number = 0;
-    let enemies: Enemy[] = [];
-    if (node.elem) {
-      enemies = getEnemies(node);
-      for (const enemy of enemies) {
-        tierSum += enemy.tier;
-      }
-    }
-    node = node.clone();
-    node.ctx.templates.combat = {
-      custom: custom || false,
-      enemies,
-      roundCount: 0,
-      numAliveAdventurers: settings.numPlayers,
-      tier: tierSum,
-      ...getDifficultySettings(settings.difficulty),
-    };
-    dispatch(toCard('QUEST_CARD', 'DRAW_ENEMIES'));
-    dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
-  };
-}
-
-export function initCustomCombat(settings: SettingsType) {
-  return initCombat(new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultQuestContext()), settings, true);
 }
 
 export function tierSumDelta(node: ParserNode, delta: number): QuestNodeAction {
