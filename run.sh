@@ -1,4 +1,4 @@
 #!/bin/bash
 cd /volume
 
-tmux new-session -s dev 'npm run dev || /bin/bash'
+tmux new-session -s dev '/bin/bash'
