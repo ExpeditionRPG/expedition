@@ -24,6 +24,7 @@
     ]
   },
   "dependencies": {
+    "@google-cloud/common": "^0.13.4",
     "@types/joi": "^10.4.0",
     "@types/node": "^7.0.8",
     "@types/promise-polyfill": "^6.0.0",
