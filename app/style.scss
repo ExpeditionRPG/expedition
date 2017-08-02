@@ -128,6 +128,10 @@ label {
   overflow-y: auto;
   font-size: $splashParagraphSize;
 
+  .login {
+    margin-top: -8px;
+  }
+
   .worldMap {
     border-left: 0;
     border-right: 0;
