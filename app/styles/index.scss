@@ -228,14 +228,14 @@ body {
         .card {
           transform: scale(-1, 1);
         }
-        .Encounter, .Adventurer { /* Don't flip horizontal cards */
+        .horizontal { /* Don't flip horizontal cards */
           transform: scale(-1, 1) rotate(180deg);
         }
       }
     }
     &.DriveThruCards {
       .card.back {
-        &.Adventurer, &.Encounter {
+        &.horizontal {
           transform: rotate(180deg);
         }
       }

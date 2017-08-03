@@ -4,7 +4,7 @@ import {MAX_COUNTER_HEALTH} from './Constants'
 export function icon(name: string, theme?: string, key?: number): JSX.Element {
   const globalSrc = `/expedition-art/icons/${name}.svg`;
   const themeSrc = (theme) ? `/themes/${theme}/images/icon/${name}.svg` : null;
-  return <img key={(key === null) ? name : key} className="inline_icon svg" src={themeSrc || globalSrc}/>;
+  return <img key={(key === null) ? name : key} className={'inline_icon svg ' + name} src={themeSrc || globalSrc}/>;
 }
 
 export function camelCase(str: string): string {

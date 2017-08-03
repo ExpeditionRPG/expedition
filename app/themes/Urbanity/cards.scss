@@ -25,9 +25,15 @@ $text-size-front-title: 14pt;
 $text-size-content: 12pt;
 $text-size-small: 9pt;
 
-$color-red: #D84315; /* red800 */
-$color-green: #1B5E20; /* green900 */
-$color-blue: #0D47A1; /* blue900 */
+// $color-red: #D84315; /* red800 */
+// $color-green: #1B5E20; /* green900 */
+// $color-blue: #0D47A1; /* blue900 */
+
+$color-education: #65318f;
+$color-transportation: #383839;
+$color-jobs: #3b2314;
+$color-health: #eb212e;
+$color-environment: #0d663a;
 
 #renderer.Urbanity {
 
@@ -79,16 +85,16 @@ $color-blue: #0D47A1; /* blue900 */
             left: 0;
           }
         }
-        .scoreRed svg path {
-          fill: $color-red;
-          stroke: $color-red;
-        }
+        // .scoreRed svg path {
+        //   fill: $color-red;
+        //   stroke: $color-red;
+        // }
         .budgetBlack {
           background: black;
         }
-        .budgetRed {
-          background: $color-red;
-        }
+        // .budgetRed {
+        //   background: $color-red;
+        // }
       }
     }
 
@@ -128,13 +134,13 @@ $color-blue: #0D47A1; /* blue900 */
             left: 0.5in;
           }
         }
-        .scoreRed {
-          color: $color-red;
-          svg path {
-            stroke: $color-red;
-            fill: $color-red;
-          }
-        }
+        // .scoreRed {
+        //   color: $color-red;
+        //   svg path {
+        //     stroke: $color-red;
+        //     fill: $color-red;
+        //   }
+        // }
         .scoreBlack.plus, .scoreRed.minus {
           color: white;
           height: 0.55in;
@@ -145,9 +151,9 @@ $color-blue: #0D47A1; /* blue900 */
         .scoreBlack.plus {
           background: $text-color;
         }
-        .scoreRed.minus {
-          background: $color-red;
-        }
+        // .scoreRed.minus {
+        //   background: $color-red;
+        // }
       }
     }
 
@@ -235,5 +241,26 @@ $color-blue: #0D47A1; /* blue900 */
       background: no-repeat center center;
       background-size: 1in 1in;
     }
+  }
+
+  .environment_small {
+    stroke: $color-environment;
+    fill: $color-environment;
+  }
+  .education_small {
+    stroke: $color-education;
+    fill: $color-education;
+  }
+  .transportation_small {
+    stroke: $color-transportation;
+    fill: $color-transportation;
+  }
+  .jobs_small {
+    stroke: $color-jobs;
+    fill: $color-jobs;
+  }
+  .health_small {
+    stroke: $color-health;
+    fill: $color-health;
   }
 }

@@ -63,6 +63,7 @@ export default class CardBack extends React.Component<CardType, {}> {
           <div className={`card back horizontal ${card.sheet}`}>
             <div className="contents">
               <h1>{card.sheet}</h1>
+              {card.naming && <div className="naming">{card.naming}</div>}
             </div>
           </div>
         );

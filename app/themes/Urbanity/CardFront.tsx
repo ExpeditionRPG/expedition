@@ -14,6 +14,7 @@ export default class CardFront extends React.Component<CardType, {}> {
             <div className="contents">
               <header>
                 <div className="name">{card.scoreBlack} {card.name}</div>
+                <div className="type">Citizen</div>
               </header>
               <article>
                 <div className="score">
@@ -21,6 +22,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                   {card.scoreBlack !== 'plus' && <div className="scoreBlack">{card.scoreBlack}</div>}
                   {card.scoreRed === 'minus' && <div className="scoreRed minus">-</div>}
                   {card.scoreRed !== 'minus' && <div className="scoreRed">{card.scoreRed}</div>}
+                  {card.scoreText && <div className="scoreText">{card.scoreText}</div>}
                 </div>
               </article>
               <footer>
@@ -91,18 +93,16 @@ export default class CardFront extends React.Component<CardType, {}> {
           <div className={`card front vertical ${card.sheet}`}>
             <div className="contents">
               <article>
-                <h3>Quarter:</h3>
-                <p>Simultaneous action</p>
-                <p>Bundle policies into bills</p>
-                <p>Increment quarter tracker</p>
-                <p>End of year: resolve (see back)</p>
-                <p>&nbsp;</p>
-                <h3>Resources:</h3>
-                {icon('transportation_small', theme)} transportation<br/>
-                {icon('environment_small', theme)} environment<br/>
-                {icon('health_small', theme)} health<br/>
-                {icon('education_small', theme)} education<br/>
-                {icon('jobs_small', theme)} jobs<br/>
+                <h3>Each Session</h3>
+                <p>Discard politics of your choice, draw back up to 7.</p>
+                <p>Draw 1 influence.</p>
+                <p>Event!</p>
+                <p>Draft pick back to 4 citizens.</p>
+                <p>4 turns: simulatenous action, bundle bills</p>
+                <p>Vote on each bill</p>
+                <p>Reveal citizens, score</p>
+                <p>Discard policies, citizens</p>
+                <p>Pass the chairperson</p>
               </article>
             </div>
           </div>

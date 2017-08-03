@@ -53,8 +53,9 @@ export default class CardBack extends React.Component<CardType, {}> {
         );
       case 'Persona':
         return (
-          <div className={`card back dark horizontal ${card.sheet}`}>
+          <div className={`card back horizontal ${card.sheet}`}>
             <div className="contents">
+              {card.naming && <div className="naming">{card.naming}</div>}
             </div>
           </div>
         );

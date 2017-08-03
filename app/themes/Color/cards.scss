@@ -13,8 +13,6 @@ $large-icon-width: 0.195in;
 
 #renderer.Color {
 
-  color: blue !important;
-
   body.singlePage {
 
     .card {
@@ -410,6 +408,19 @@ $large-icon-width: 0.195in;
         color: #CFCFCF;
       }
 
+      .art {
+        position: absolute;
+        top: 0.1in;
+        right: 0.3in;
+        width: 1.5in;
+      }
+
+      &.Horror {
+        article {
+          width: 35%;
+        }
+      }
+
       &.hp10 .hp-tracker-vertical-right li {
         padding-bottom: 0.042in;
       }
@@ -473,8 +484,13 @@ $large-icon-width: 0.195in;
           vertical-align: middle;
         }
         tr td:first-child {
-          padding: 4pt 6pt 4pt 0;
+          padding: 4pt 4pt 4pt 0;
           opacity: 0.7;
+          text-align: center;
+          border-right: 1px solid #ccc;
+        }
+        tr td:nth-child(2) {
+          padding-left: 4pt;
         }
       }
     }
@@ -646,8 +662,7 @@ $large-icon-width: 0.195in;
   }
   .card.back.Horror {
     .tier {
-// TODO horror color... white?
-      color: #c9cbd3;
+      color: #00aeef;
     }
     &:before {
       background-image: url(../../node_modules/expedition-art/cards/backs/encounter-horror.jpg) !important;
