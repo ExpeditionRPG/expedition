@@ -1,5 +1,7 @@
 const packageJson: any = require('../package.json');
 
+export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || "dev";
+export const API_HOST = (process && process.env && process.env.API_HOST) || "";
 export const VERSION = packageJson.version;
 export const GITHUB_DOCS = 'https://github.com/Fabricate-IO/expedition-quest-ide/blob/master/docs/';
 export const DOCS_INDEX_URL = GITHUB_DOCS + 'index.md';

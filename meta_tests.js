@@ -1,7 +1,7 @@
 const fs = require('fs');
 const expect = require('expect');
 
-describe('Typescript files', () => {
+describe('Typescript', () => {
   function walkDir(root) {
     const stat = fs.statSync(root);
     if (stat.isDirectory()) {
@@ -13,12 +13,13 @@ describe('Typescript files', () => {
     }
   }
 
-  it('are always in pairs of *.tsx and *.test.tsx', () => {
+  it('is always in pairs of *.tsx and *.test.tsx', () => {
     const files = walkDir('./app');
 
     let count = {};
     for(let f of files) {
-      if (f.split('.').pop() === 'tsx' && f.indexOf('TestData') === -1) {
+      const ext = f.split('.').pop()
+      if (ext === 'tsx' && f.indexOf('TestData') === -1) {
         const base = f.split('.')[1]; // "./app/..."
         count[base] = (count[base] || 0) + 1;
       }

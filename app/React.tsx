@@ -130,6 +130,13 @@ window.gapi.load('client,drive-realtime,drive-share', () => {
   }, 12 * 60 * 60 * 1000);
 })();
 
+// Pass credentials to API server despite cross-origin
+$.ajaxSetup({
+  xhrFields: {
+    withCredentials: true
+  }
+});
+
 render(
   <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
     <Provider store={store}>

@@ -18,7 +18,8 @@ import {
   QUEST_DOCUMENT_HEADER,
   METADATA_FIELDS,
   METADATA_DEFAULTS,
-  NEW_QUEST_TITLE
+  NEW_QUEST_TITLE,
+  API_HOST,
 } from '../Constants'
 import {pushError, pushHTTPError} from './Dialogs'
 import {renderXML} from '../parsing/QDLParser'
@@ -115,13 +116,12 @@ export function newQuest(user: UserState) {
 }
 
 function getPublishedQuestMeta(published_id: string, cb: (meta: QuestType)=>any) {
-  $.post('/quests', JSON.stringify({id: published_id}), (result: any) => {
+  $.post(API_HOST + '/quests', JSON.stringify({id: published_id}), (result: any) => {
     result = JSON.parse(result);
     if (result.error) {
       throw new Error(result.error);
     }
-
-    cb(result.quests[0] as QuestType);
+    cb(result && result.quests && result.quests[0] as QuestType);
   });
 }
 
@@ -257,7 +257,7 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean): ((dispat
     });
     return $.ajax({
       type: 'POST',
-      url: '/publish/' + quest.id + '?' + params,
+      url: API_HOST + '/publish/' + quest.id + '?' + params,
       data: renderResult.getResult()+'',
     }).done((result_quest_id: string) => {
       quest.published = (new Date(Date.now()).toISOString());
@@ -329,7 +329,7 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
 export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_UNPUBLISH', quest} as RequestQuestUnpublishAction);
-    return $.post('/unpublish/' + quest.id, function(result_quest_id: string) {
+    return $.post(API_HOST + '/unpublish/' + quest.id, function(result_quest_id: string) {
       quest.published = undefined;
       dispatch({type: 'RECEIVE_QUEST_UNPUBLISH', quest} as ReceiveQuestUnpublishAction);
       dispatch(setSnackbar(true, 'Quest un-published successfully!'));

@@ -5,7 +5,8 @@ const Webpack = require('webpack');
 
 const port = process.env.DOCKER_PORT || 8080;
 
-const proxyDest = {target: 'http://localhost:'+ (process.env.DOCKER_PORT2 || 8081), secure: false};
+// TODO(semartin): Figure out a way to proxy to another docker container
+const proxyDest = {target: 'http://localhost:'+ (process.env.DOCKER_PORT-1 || 8081), secure: false};
 console.log('Proxying server requests to ' + proxyDest.target);
 
 const options = {
@@ -67,7 +68,10 @@ const options = {
     new Webpack.HotModuleReplacementPlugin(),
     new Webpack.NoEmitOnErrorsPlugin(),
     new Webpack.DefinePlugin({
-      VERSION: JSON.stringify(require('./package.json').version)
+      'env': {
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV || "dev"),
+        'API_HOST': JSON.stringify(process.env.API_HOST || 'http://betaapi.expeditiongame.com'),
+      }
     }),
     new CopyWebpackPlugin([
       { from: 'app/index.html' },

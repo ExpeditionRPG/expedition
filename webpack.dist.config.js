@@ -38,7 +38,8 @@ const options = {
     new Webpack.optimize.AggressiveMergingPlugin(),
     new Webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('production'),
+        'NODE_ENV': JSON.stringify('production'),
+        'API_HOST': JSON.stringify(process.env.API_HOST || 'https://api.expeditiongame.com'),
       },
     }),
     new CopyWebpackPlugin([
