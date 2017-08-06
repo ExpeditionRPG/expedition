@@ -17,7 +17,8 @@ export function user(state: UserState = default_state, action: Redux.Action): Us
         loggedIn: profile_action.user.loggedIn,
         id: profile_action.user.id,
         displayName: profile_action.user.displayName,
-        image: profile_action.user.image
+        image: profile_action.user.image,
+        email: profile_action.user.email,
       };
     default:
       return state;

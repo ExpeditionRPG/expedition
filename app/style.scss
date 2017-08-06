@@ -7,7 +7,7 @@ $lightGreen900: #33691E;
 $brightShadow: #616161;
 $red800: #C62828;
 $previewPanelWidth: 560px;
-$padBase: 24px;
+$padBase: 16px;
 $hBarThickness: 42px;
 $videoSize: 700px;
 $showcaseFeatureSize: 350px;
@@ -17,6 +17,7 @@ $border: 1px $borderColor solid;
 $fontSizeBase: 20px;
 $fontSizeImportant: 28px;
 $fontSizeHeader: 45px;
+$fontSizeSmall: 12px;
 $bodyWidth: 1000px;
 $splashParagraphSize: 16px;
 $bgInteractive: rgb(20,20,20);
@@ -126,6 +127,10 @@ label {
   font-family: 'Minion-Pro';
   overflow-y: auto;
   font-size: $splashParagraphSize;
+
+  .login {
+    margin-top: -8px;
+  }
 
   .worldMap {
     border-left: 0;
@@ -242,8 +247,6 @@ label {
     }
   }
 
-
-
   h1 {
     font-size: 2*$fontSizeBase;
     font-weight: normal;
@@ -277,18 +280,35 @@ label {
 .quest_app_bar {
   background-image: $bg_encounter_img;
 
-  // Override AppBar style
   >div {
-    background-color: transparent !important;
+    background-color: transparent !important; // Override
+    height: $hBarThickness !important;
   }
 
   h1 {
     font-family: 'Cinzel';
-    font-weight: bold;
+    font-weight: 700 !important;
+    font-size: 22px !important;
+    height: $hBarThickness !important;
+    line-height: $hBarThickness !important;
+    margin-top: 1px !important;
+    margin-left: -8px !important;
   }
 
-  .loginState {
-    margin-top: -8px;
+  .appBarRight {
+    opacity: 0.8;
+    .email {
+      font-size: $fontSizeSmall;
+      vertical-align: super;
+    }
+    .loginState {
+      margin-top: -8px; // Override
+      margin-right: -8px;
+      button {
+        height: $hBarThickness;
+        width: $hBarThickness;
+      }
+    }
   }
 
   .toolbar {
@@ -297,6 +317,9 @@ label {
     button {
       margin: 4px 0 !important;
       min-width: 60px !important;
+      span {
+        font-size: $fontSizeSmall !important;
+      }
     }
 
     .errorButton {
@@ -468,12 +491,12 @@ label {
 .ace_marker-layer .misspelled {
   position: absolute;
   z-index: -2;
-  border-bottom: 1px solid red;
-  margin-bottom: -1px;
+  border-bottom: 2px dashed red;
+  margin-bottom: -2px;
+  border-radius: 0;
 }
-.misspelled {
-  border-bottom: 1px solid red;
-  margin-bottom: -1px;
+.ace_gutter-cell.misspelled {
+  background: rgba(255, 0, 0, 0.3);
 }
 
 .mobileOnly {
