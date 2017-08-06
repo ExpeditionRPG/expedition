@@ -234,8 +234,8 @@ describe('Combat actions', () => {
       store.clearActions();
 
       store.dispatch(handleResolvePhase(node));
-      expect(store.getActions()[0].to.phase).toEqual('ROLEPLAY');
-      expect(store.getActions()[1].node.ctx.templates.combat.roleplay.elem.text()).toEqual('expected');
+      expect(store.getActions()[0].node.ctx.templates.combat.roleplay.elem.text()).toEqual('expected');
+      expect(store.getActions()[1].to.phase).toEqual('ROLEPLAY');
     });
   });
 
@@ -263,7 +263,7 @@ describe('Combat actions', () => {
       store.clearActions();
 
       store.dispatch(handleResolvePhase(baseNode));
-      baseNode = store.getActions()[store.getActions().length-1].node;
+      baseNode = store.getActions()[store.getActions().length-2].node;
     }
 
     const newCombatNode = () => {
@@ -293,7 +293,7 @@ describe('Combat actions', () => {
       const node = newCombatNode();
 
       store.dispatch(midCombatChoice(TEST_SETTINGS, node, 3));
-      let rp2 = store.getActions()[1].node;
+      const rp2 = store.getActions()[1].node;
       store.clearActions();
 
       store.dispatch(midCombatChoice(TEST_SETTINGS, rp2, 0));

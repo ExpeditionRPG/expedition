@@ -342,7 +342,7 @@ function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
     node: props.node.ctx.templates.combat.roleplay,
     settings: props.settings,
     onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(settings, props.node, index)},
-    onReturn: () => {props.onReturn(props.node)},
+    onReturn: () => {props.onReturn()},
   }, 'DARK');
   return roleplay;
 }
