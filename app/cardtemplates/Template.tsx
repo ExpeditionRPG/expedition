@@ -24,6 +24,7 @@ export function initCardTemplate(node: ParserNode, settings: SettingsType) {
 }
 
 export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Element {
+  // Always pass node directly, to prevent jitter to the next card on transition.
   switch(node.getTag()) {
     case 'roleplay':
       return <RoleplayContainer node={node}/>;

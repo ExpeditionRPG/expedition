@@ -16,18 +16,18 @@
           <trigger data-line="31">end</trigger>
         </event>
         <event on="round">
-          <roleplay>
+          <roleplay data-line="32">
             <p>A round card during combat!</p>
             <choice text="A choice">
-              <roleplay>
+              <roleplay data-line="33">
                 <p>Another card</p>
               </roleplay>
             </choice>
             <choice text="Choice with goto">
-              <trigger>goto test</trigger>
+              <trigger data-line="34">goto test</trigger>
             </choice>
             <choice text="End the quest">
-              <trigger>end</trigger>
+              <trigger data-line="35">end</trigger>
             </choice>
           </roleplay>
         </event>
@@ -37,6 +37,10 @@
       </combat>
     </choice>
     <choice text="[roll] ≥ 7">
+      <roleplay data-line="37">
+        <p>You did a roll thing.</p>
+      </roleplay>
+      <trigger data-line="38">end</trigger>
     </choice>
   </roleplay>
 </quest>

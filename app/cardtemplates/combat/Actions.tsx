@@ -148,20 +148,21 @@ export function handleResolvePhase(node: ParserNode) {
     if (node.getVisibleKeys().indexOf('round') !== -1) {
       node = node.clone();
       node.ctx.templates.combat.roleplay = node.getNext('round');
+      // Set node *before* navigation to prevent a blank first roleplay card.
+      dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
       dispatch(toCard('QUEST_CARD', 'ROLEPLAY', true));
     } else {
       dispatch(toCard('QUEST_CARD', 'RESOLVE_ABILITIES', true));
+      dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
     }
-
-    dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
   }
 }
 
 export function midCombatChoice(settings: SettingsType, parent: ParserNode, index: number) {
   return (dispatch: Redux.Dispatch<any>): any => {
     parent = parent.clone();
-    let node = parent.ctx.templates.combat.roleplay;
-    var next = node.getNext(index);
+    const node = parent.ctx.templates.combat.roleplay;
+    let next = node.getNext(index);
 
     // Check for and resolve non-goto triggers
     const tag = next && next.getTag();
@@ -185,7 +186,7 @@ export function midCombatChoice(settings: SettingsType, parent: ParserNode, inde
 
     // Check if the next node is inside a combat node. Note that nested combat nodes are
     // not currently supported.
-    let ptr = next.elem;
+    let ptr = next && next.elem;
     while (ptr !== null && ptr.length > 0 && ptr.get(0).tagName.toLowerCase() !== 'combat') {
       ptr = ptr.parent();
     }
@@ -193,7 +194,7 @@ export function midCombatChoice(settings: SettingsType, parent: ParserNode, inde
     // Check if we're still a child of the combat node or else doing something weird.
     if (!next || next.getTag() !== 'roleplay' || !ptr || ptr.length === 0) {
       // If so, then continue with the resolution phase.
-      parent.ctx.templates.combat = null;
+      parent.ctx.templates.combat.roleplay = null;
       dispatch(toCard('QUEST_CARD', 'RESOLVE_ABILITIES', true));
     } else {
       // Otherwise continue the roleplay phase.

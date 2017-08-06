@@ -27,7 +27,7 @@ export interface CombatDispatchProps {
   onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number) => void;
   onVictory: (node: ParserNode, settings: SettingsType, maxTier: number) => void;
   onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => void;
-  onPostTimerReturn: () => void;
+  onReturn: () => void;
   onTierSumDelta: (node: ParserNode, delta: number) => void;
   onAdventurerDelta: (node: ParserNode, settings: SettingsType, delta: number) => void;
   onEvent: (node: ParserNode, event: string) => void;
@@ -148,7 +148,7 @@ function renderSurge(props: CombatProps): JSX.Element {
     <Card title="Enemy Surge!"
       theme="RED"
       inQuest={true}
-      onReturn={() => props.onPostTimerReturn()}
+      onReturn={() => props.onReturn()}
     >
       <h3>An enemy surge occurs!</h3>
       {helpText}
@@ -185,7 +185,7 @@ function renderResolve(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title="Roll &amp; Resolve" theme="DARK" inQuest={true} onReturn={() => props.onPostTimerReturn()}>
+    <Card title="Roll &amp; Resolve" theme="DARK" inQuest={true} onReturn={() => props.onReturn()}>
       {helpText}
       {renderedRolls &&
         <div>
@@ -333,13 +333,16 @@ function renderTimerCard(props: CombatProps): JSX.Element {
 }
 
 function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
+  // Empty card to handle default case of no roleplay (happens when just starting into the RP section).
   if (!props.node.ctx.templates.combat.roleplay) {
     return (<Card title="" inQuest={true} theme="DARK"></Card>);
   }
+
   const roleplay = Roleplay({
     node: props.node.ctx.templates.combat.roleplay,
     settings: props.settings,
     onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(settings, props.node, index)},
+    onReturn: () => {props.onReturn(props.node)},
   }, 'DARK');
   return roleplay;
 }

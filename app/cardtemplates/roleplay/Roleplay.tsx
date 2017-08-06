@@ -11,6 +11,7 @@ import {REGEX} from '../../Constants'
 export interface RoleplayStateProps {
   node: ParserNode;
   settings: SettingsType;
+  onReturn?: () => any;
 }
 
 export interface RoleplayDispatchProps {
@@ -141,7 +142,7 @@ const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'LIGHT'): JSX.Ele
   });
 
   return (
-    <Card title={rpResult.title} icon={rpResult.icon} inQuest={true} theme={theme}>
+    <Card title={rpResult.title} icon={rpResult.icon} inQuest={true} theme={theme} onReturn={props.onReturn}>
       {renderedContent}
       {buttons}
     </Card>

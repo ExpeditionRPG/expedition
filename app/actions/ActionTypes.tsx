@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {CardState, CardName, SettingNameType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState} from '../reducers/StateTypes'
+import {CardState, CardName, CardPhase, SettingNameType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../parser/Node'
 
@@ -12,6 +12,7 @@ export interface ReturnAction extends Redux.Action {
   type: 'RETURN';
   to: CardState;
   before: boolean;
+  skip?: {name: CardName, phase: CardPhase}[]; // Skip any occurrences of these cards
 };
 
 export interface QuestNodeAction extends Redux.Action {
