@@ -1,5 +1,5 @@
 <quest title="Test Quest" summary="For dev testing" author="Fabricate" email="contact@fabricate.io" url="expeditiongame.com" minplayers="1" maxplayers="6" mintimeminutes="10" maxtimeminutes="40" familyFriendly="true" data-line="0">
-  <roleplay title="Test" data-line="11">
+  <roleplay id="test" title="Test" data-line="11">
     <p>{{one=1}}</p>
     <p>You face choices. Here's the value of one: {{one}}</p>
     <p><i>Italic [roll] test text with icon</i></p>
@@ -15,12 +15,32 @@
         <event on="win">
           <trigger data-line="31">end</trigger>
         </event>
+        <event on="round">
+          <roleplay data-line="32">
+            <p>A round card during combat!</p>
+            <choice text="A choice">
+              <roleplay data-line="33">
+                <p>Another card</p>
+              </roleplay>
+            </choice>
+            <choice text="Choice with goto">
+              <trigger data-line="34">goto test</trigger>
+            </choice>
+            <choice text="End the quest">
+              <trigger data-line="35">end</trigger>
+            </choice>
+          </roleplay>
+        </event>
         <event on="lose">
           <trigger data-line="35">end</trigger>
         </event>
       </combat>
     </choice>
     <choice text="[roll] ≥ 7">
+      <roleplay data-line="37">
+        <p>You did a roll thing.</p>
+      </roleplay>
+      <trigger data-line="38">end</trigger>
     </choice>
   </roleplay>
 </quest>

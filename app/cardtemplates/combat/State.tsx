@@ -1,5 +1,6 @@
 import {encounters} from '../../Encounters'
 import {Enemy, Loot} from '../../reducers/QuestTypes'
+import {ParserNode} from '../../parser/Node'
 
 export interface CombatAttack {
   surge: boolean;
@@ -13,6 +14,7 @@ export interface MidCombatPhase {
   numAliveAdventurers: number;
   roundCount: number;
   tier: number;
+  roleplay?: ParserNode;
 }
 export interface EndCombatPhase {
   levelUp?: boolean;
@@ -29,7 +31,7 @@ export interface CombatState extends CombatDifficultySettings, MidCombatPhase, E
   custom: boolean;
 }
 
-export type CombatPhase = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER' | 'VICTORY' | 'DEFEAT';
+export type CombatPhase = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER' | 'VICTORY' | 'DEFEAT' | 'ROLEPLAY';
 
 export function combatScope() {
   return {

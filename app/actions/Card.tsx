@@ -1,5 +1,5 @@
 import {NavigateAction, ReturnAction} from './ActionTypes'
-import {AppStateWithHistory, CardName, CardPhase} from '../reducers/StateTypes'
+import {AppStateWithHistory, CardName, CardPhase, CardState} from '../reducers/StateTypes'
 import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants'
 import {getNavigator} from '../Globals'
 import {getStore} from '../Store'
@@ -17,6 +17,6 @@ export function toCard(name: CardName, phase?: CardPhase, overrideDebounce?: boo
   return {type: 'NAVIGATE', to: {name, ts: Date.now(), phase, overrideDebounce}};
 }
 
-export function toPrevious(name?: CardName, phase?: CardPhase, before?: boolean): ReturnAction {
-  return {type: 'RETURN', to: {name, ts: Date.now(), phase}, before: Boolean(before)};
+export function toPrevious(name?: CardName, phase?: CardPhase, before?: boolean, skip?: {name: CardName, phase: CardPhase}[]): ReturnAction {
+  return {type: 'RETURN', to: {name, ts: Date.now(), phase}, before: Boolean(before), skip};
 }

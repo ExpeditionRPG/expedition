@@ -44,7 +44,23 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         while(pastStateIdx > 0 && !isReturnState(state._history[pastStateIdx], returnAction)) {
           pastStateIdx--;
         }
+      } else if (returnAction.skip) {
+        // Skip past any explicitly blacklisted card types
+        while(pastStateIdx > 0) {
+          let skipCard: boolean = false;
+          for (const s of returnAction.skip) {
+            if (s.name === state._history[pastStateIdx].card.name && (!s.phase || s.phase === state._history[pastStateIdx].card.phase)) {
+              skipCard = true;
+              break;
+            }
+          }
+          if (!skipCard) {
+            break;
+          }
+          pastStateIdx--;
+        }
       }
+
       if (returnAction.before) {
         pastStateIdx--;
       }

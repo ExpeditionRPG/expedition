@@ -9,6 +9,8 @@ import {toCard} from '../../actions/Card'
 import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT} from '../../Constants'
 import {encounters} from '../../Encounters'
 import {QuestNodeAction} from '../../actions/ActionTypes'
+import {handleTriggerEvent} from '../../parser/Handlers'
+import {loadNode} from '../../actions/Quest'
 
 const cheerio: any = require('cheerio');
 
@@ -169,6 +171,71 @@ export function isSurgeRound(node: ParserNode): boolean {
   return (surgePd - (rounds % surgePd + 1)) === 0;
 }
 
+export function handleResolvePhase(node: ParserNode) {
+  // Handles resolution, with a hook for if a <choice on="round"/> tag is specified.
+  // Note that handling new combat nodes within a "round" handler has undefined
+  // behavior and should be prevented when compiled.
+  return (dispatch: Redux.Dispatch<any>): any => {
+    if (node.getVisibleKeys().indexOf('round') !== -1) {
+      node = node.clone();
+      node.ctx.templates.combat.roleplay = node.getNext('round');
+      // Set node *before* navigation to prevent a blank first roleplay card.
+      dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
+      dispatch(toCard('QUEST_CARD', 'ROLEPLAY', true));
+    } else {
+      dispatch(toCard('QUEST_CARD', 'RESOLVE_ABILITIES', true));
+      dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
+    }
+  }
+}
+
+export function midCombatChoice(settings: SettingsType, parent: ParserNode, index: number) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    parent = parent.clone();
+    const node = parent.ctx.templates.combat.roleplay;
+    let next = node.getNext(index);
+
+    // Check for and resolve non-goto triggers
+    const tag = next && next.getTag();
+    if (tag === 'trigger' && !next.elem.text().toLowerCase().startsWith('goto')) {
+
+      // End the quest if end trigger
+      const triggerName = next.elem.text().trim();
+      if (triggerName === 'end') {
+        return dispatch(toCard('QUEST_END'));
+      }
+
+      next = handleTriggerEvent(next);
+
+      // If the trigger exits via the win/lose handlers, load it as normal.
+      // Otherwise, we're still in combat.
+      const parentCondition = next.elem.parent().attr('on');
+      if (parentCondition === 'win' || parentCondition === 'lose') {
+        return dispatch(loadNode(settings, next));
+      }
+    }
+
+    // Check if the next node is inside a combat node. Note that nested combat nodes are
+    // not currently supported.
+    let ptr = next && next.elem;
+    while (ptr !== null && ptr.length > 0 && ptr.get(0).tagName.toLowerCase() !== 'combat') {
+      ptr = ptr.parent();
+    }
+
+    // Check if we're still a child of the combat node or else doing something weird.
+    if (!next || next.getTag() !== 'roleplay' || !ptr || ptr.length === 0) {
+      // If so, then continue with the resolution phase.
+      parent.ctx.templates.combat.roleplay = null;
+      dispatch(toCard('QUEST_CARD', 'RESOLVE_ABILITIES', true));
+    } else {
+      // Otherwise continue the roleplay phase.
+      parent.ctx.templates.combat.roleplay = next;
+      dispatch(toCard('QUEST_CARD', 'ROLEPLAY', true));
+    }
+    dispatch({type: 'QUEST_NODE', node: parent} as QuestNodeAction);
+  }
+}
+
 export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, elapsedMillis: number) {
   return (dispatch: Redux.Dispatch<any>): any => {
     node = node.clone();
@@ -176,8 +243,12 @@ export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, 
     node.ctx.templates.combat.mostRecentRolls = generateRolls(settings.numPlayers);
     node.ctx.templates.combat.roundCount++;
 
-    dispatch(toCard('QUEST_CARD', (node.ctx.templates.combat.mostRecentAttack.surge) ? 'SURGE' : 'RESOLVE_ABILITIES', true));
-    dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
+    if (node.ctx.templates.combat.mostRecentAttack.surge) {
+      dispatch(toCard('QUEST_CARD', 'SURGE', true));
+      dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
+    } else {
+      dispatch(handleResolvePhase(node));
+    }
   };
 }
 
@@ -204,4 +275,3 @@ export function adventurerDelta(node: ParserNode, settings: SettingsType, delta:
   node.ctx.templates.combat.numAliveAdventurers = newAdventurerCount;
   return {type: 'QUEST_NODE', node};
 }
-

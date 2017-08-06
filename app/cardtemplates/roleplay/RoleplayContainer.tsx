@@ -11,6 +11,7 @@ const mapStateToProps = (state: AppState, ownProps: RoleplayStateProps): Rolepla
   return {
     node: ownProps.node, // Persist state to prevent sudden jumps during card change.
     settings: state.settings,
+    onReturn: ownProps.onReturn,
   };
 }
 

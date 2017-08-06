@@ -49,6 +49,13 @@ describe('Handlers', () => {
       expect(result).toEqual(null);
     });
 
+    it('triggers events', () => {
+      // Note that this even works for handling reserved (e.g. "end") triggers.
+      const node = cheerio.load('<roleplay id="rp1"><choice><trigger>end</trigger></choice><choice on="end"><roleplay>expected</roleplay></choice></roleplay>')('#rp1');
+      const result = handleAction(new ParserNode(node, defaultQuestContext()), 0);
+      expect(result.elem.text()).toEqual('expected');
+    });
+
     /* TODO
     it('uses programmatic triggers', () => {
       var quest = cheerio.load('<quest><roleplay><p>{{dest=5}}</p><choice><trigger>goto {{dest}}</trigger><trigger>end</trigger><roleplay id="5">expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');

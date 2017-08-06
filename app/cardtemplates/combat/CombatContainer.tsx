@@ -12,6 +12,7 @@ import {QuestContext, EventParameters} from '../../reducers/QuestTypes'
 import {CombatPhase, MidCombatPhase} from './State'
 import {ParserNode} from '../../parser/Node'
 import {MAX_ADVENTURER_HEALTH} from '../../Constants'
+import {midCombatChoice} from './Actions'
 import {logEvent} from '../../React'
 
 declare var window:any;
@@ -44,12 +45,11 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
       };
     }
   }
-
   return {
     ...combat,
     card: ownProps.card,
     settings: state.settings,
-    node: state.quest && state.quest.node,
+    node: ownProps.node, // Persist state to prevent sudden jumps during card change.
     maxTier,
     victoryParameters,
     // Override with dynamic state for tier and adventurer count
@@ -58,6 +58,11 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     mostRecentRolls: state.quest.node.ctx.templates.combat.mostRecentRolls,
     numAliveAdventurers: state.quest.node.ctx.templates.combat.numAliveAdventurers,
   };
+}
+
+function postTimerReturn(dispatch: Redux.Dispatch<any>) {
+  // Return to the "Ready for Combat?" card instead of doing the timed round again.
+  dispatch(toPrevious(null, null, false, [{name: 'QUEST_CARD', phase: 'TIMER'}]));
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CombatDispatchProps => {
@@ -76,10 +81,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => {
       dispatch(handleCombatTimerStop(node, settings, elapsedMillis));
     },
-    onPostTimerReturn: () => {
-      // Return to the "Ready for Combat?" card instead of doing the timed round again.
-      dispatch(toPrevious('QUEST_CARD', 'PREPARE'));
-    },
+    onReturn: () => {postTimerReturn(dispatch)},
     onEvent: (node: ParserNode, evt: string) => {
       dispatch(event(node, evt));
     },
@@ -91,6 +93,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     },
     onCustomEnd: () => {
       dispatch(toPrevious('QUEST_CARD', 'DRAW_ENEMIES', false));
+    },
+    onChoice: (settings: SettingsType, parent: ParserNode, index: number) => {
+      dispatch(midCombatChoice(settings, parent, index));
     },
   };
 }
