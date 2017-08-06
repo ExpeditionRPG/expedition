@@ -12,6 +12,9 @@ export interface QuestContext {
   // Given the path and original quest XML, we should be able to recreate
   // context given this path.
   path: (string|number)[];
+
+  // Regenerate template scope (all of "_") with this function.
+  _templateScopeFn: () => any;
 }
 
 export interface QuestDetails {

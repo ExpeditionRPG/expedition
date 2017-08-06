@@ -1,4 +1,4 @@
-import {initCombat, initCustomCombat, isSurgeRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta, handleResolvePhase, midCombatChoice} from './Actions'
+import {initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta, handleResolvePhase, midCombatChoice} from './Actions'
 import {DifficultyType} from '../../reducers/QuestTypes'
 import {defaultQuestContext} from '../../reducers/Quest'
 import {ParserNode} from '../../parser/Node'
@@ -82,17 +82,17 @@ describe('Combat actions', () => {
     });
   });
 
-  describe('isSurgeRound', () => {
+  describe('isSurgeNextRound', () => {
     it('surges according to the period', () => {
       // "Play" until surge
       const store = mockStore({});
       let node = newCombatNode();
-      for(let i = 0; i < 10 && (!node || !isSurgeRound(node)); i++) {
+      for(let i = 0; i < 10 && (!node || !isSurgeNextRound(node)); i++) {
         store.clearActions();
         store.dispatch(handleCombatTimerStop(node, TEST_SETTINGS, 1000));
         node = store.getActions()[1].node;
       }
-      expect(isSurgeRound(node)).toEqual(true);
+      expect(isSurgeNextRound(node)).toEqual(true);
 
       // Count time till next surge
       let pd = 0;
@@ -101,7 +101,7 @@ describe('Combat actions', () => {
         store.dispatch(handleCombatTimerStop(node, TEST_SETTINGS, 1000));
         node = store.getActions()[1].node;
         pd++;
-      } while (pd < 10 && !isSurgeRound(node));
+      } while (pd < 10 && !isSurgeNextRound(node));
       expect(pd).toEqual(3); // Default for normal difficulty
     });
   });

@@ -18,6 +18,9 @@
         <event on="round">
           <roleplay data-line="32">
             <p>A round card during combat!</p>
+            <p>Current round: {{_.currentCombatRound()}}</p>
+            <p>Surge round: {{string(_.isCombatSurgeRound())}}</p>
+            <p>Random enemy: {{_.randomEnemy()}}</p>
             <choice text="A choice">
               <roleplay data-line="33">
                 <p>Another card</p>

@@ -7,7 +7,7 @@ import TimerCard from '../../components/base/TimerCard'
 import theme from '../../Theme'
 import {MAX_ADVENTURER_HEALTH, REGEX} from '../../Constants'
 import {encounters} from '../../Encounters'
-import {isSurgeRound} from './Actions'
+import {isSurgeNextRound} from './Actions'
 import {SettingsType, CardState, CardName} from '../../reducers/StateTypes'
 import {ParserNode} from '../../parser/Node'
 import {QuestContext, EventParameters, Enemy, Loot} from '../../reducers/QuestTypes'
@@ -33,6 +33,7 @@ export interface CombatDispatchProps {
   onEvent: (node: ParserNode, event: string) => void;
   onCustomEnd: () => void;
   onChoice: (settings: SettingsType, parent: ParserNode, index: number) => void;
+  onSurgeNext: (node: ParserNode) => void;
 }
 
 export interface CombatProps extends CombatStateProps, CombatDispatchProps {};
@@ -144,6 +145,7 @@ function renderSurge(props: CombatProps): JSX.Element {
       </span>
     );
   }
+  console.log(props.node.ctx.templates.combat.roundCount);
   return (
     <Card title="Enemy Surge!"
       theme="RED"
@@ -152,7 +154,7 @@ function renderSurge(props: CombatProps): JSX.Element {
     >
       <h3>An enemy surge occurs!</h3>
       {helpText}
-      <Button onTouchTap={() => props.onNext('RESOLVE_ABILITIES')}>Next</Button>
+      <Button onTouchTap={() => props.onSurgeNext(props.node)}>Next</Button>
     </Card>
   );
 }
@@ -310,7 +312,7 @@ function renderDefeat(props: CombatProps): JSX.Element {
 }
 
 function renderTimerCard(props: CombatProps): JSX.Element {
-  const surge = isSurgeRound(props.node);
+  const surge = isSurgeNextRound(props.node);
   const surgeWarning = (props.settings.difficulty === 'EASY' && surge) ? 'Surge Imminent' : null;
   let instruction = null;
   if (props.settings.showHelp) {

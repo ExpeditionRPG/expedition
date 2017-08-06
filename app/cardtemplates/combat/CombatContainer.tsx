@@ -12,7 +12,7 @@ import {QuestContext, EventParameters} from '../../reducers/QuestTypes'
 import {CombatPhase, MidCombatPhase} from './State'
 import {ParserNode} from '../../parser/Node'
 import {MAX_ADVENTURER_HEALTH} from '../../Constants'
-import {midCombatChoice} from './Actions'
+import {midCombatChoice, handleResolvePhase} from './Actions'
 import {logEvent} from '../../React'
 
 declare var window:any;
@@ -80,6 +80,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     },
     onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => {
       dispatch(handleCombatTimerStop(node, settings, elapsedMillis));
+    },
+    onSurgeNext: (node: ParserNode) => {
+      dispatch(handleResolvePhase(node));
     },
     onReturn: () => {postTimerReturn(dispatch)},
     onEvent: (node: ParserNode, evt: string) => {
