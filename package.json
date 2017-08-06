@@ -34,7 +34,7 @@
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.1",
     "cors": "^2.8.3",
-    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#cf4479b503292720e417f8519f9d457fda9ccd1d",
+    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#a40478817cc6b91ddff114480f6e723735c276c3",
     "express": "^4.15.2",
     "express-rate-limit": "^2.8.0",
     "express-session": "^1.15.1",
