@@ -145,7 +145,6 @@ function renderSurge(props: CombatProps): JSX.Element {
       </span>
     );
   }
-  console.log(props.node.ctx.templates.combat.roundCount);
   return (
     <Card title="Enemy Surge!"
       theme="RED"
