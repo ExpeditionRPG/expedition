@@ -114,11 +114,10 @@ export function updateContext(node: Cheerio, ctx: QuestContext, action?: string|
     newContext.path.push(action);
   }
 
-  // TODO(scott): This is a hack to remove dependency on defaultQuestContext, which adds a bunch
-  // of unnecessary dependencies in the quest service.
-  newContext.scope._.viewCount = function(id: string): number {
-    return this.views[id] || 0;
-  }.bind(newContext);
-
+  // Create new copies of all scope functions and bind them
+  newContext.scope._ = newContext._templateScopeFn();
+  for (const k of Object.keys(newContext.scope._)) {
+    newContext.scope._[k] = (newContext.scope._[k] as any).bind(newContext);
+  }
   return newContext;
 }

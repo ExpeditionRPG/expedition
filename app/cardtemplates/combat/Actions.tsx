@@ -99,7 +99,7 @@ function generateCombatAttack(node: ParserNode, settings: SettingsType, elapsedM
   damage = Math.min(10, damage);
 
   return {
-    surge: isSurgeRound(node),
+    surge: isSurgeNextRound(node),
     damage,
   }
 }
@@ -165,10 +165,14 @@ function randomAttackDamage() {
   }
 };
 
-export function isSurgeRound(node: ParserNode): boolean {
+export function isSurgeRound(rounds: number, surgePd: number): boolean {
+  return (surgePd - ((rounds - 1) % surgePd + 1)) === 0;
+}
+
+export function isSurgeNextRound(node: ParserNode): boolean {
   const rounds = node.ctx.templates.combat.roundCount;
   const surgePd = node.ctx.templates.combat.surgePeriod;
-  return (surgePd - (rounds % surgePd + 1)) === 0;
+  return isSurgeRound(rounds + 1, surgePd);
 }
 
 export function handleResolvePhase(node: ParserNode) {
@@ -244,8 +248,12 @@ export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, 
     node.ctx.templates.combat.roundCount++;
 
     if (node.ctx.templates.combat.mostRecentAttack.surge) {
-      dispatch(toCard('QUEST_CARD', 'SURGE', true));
+      // Since we always skip the previous card (the timer) when going back,
+      // We can preset the quest node here. This populates context in a way that
+      // the latest round is considered when the "on round" branch is evaluated.
       dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
+      dispatch(toCard('QUEST_CARD', 'SURGE', true));
+
     } else {
       dispatch(handleResolvePhase(node));
     }
