@@ -90,7 +90,13 @@ describe('Combat actions', () => {
       for(let i = 0; i < 10 && (!node || !isSurgeNextRound(node)); i++) {
         store.clearActions();
         store.dispatch(handleCombatTimerStop(node, TEST_SETTINGS, 1000));
-        node = store.getActions()[1].node;
+        const actions = store.getActions();
+        for (const a of actions) {
+          if (a.type === 'QUEST_NODE') {
+            node = a.node;
+            break;
+          }
+        }
       }
       expect(isSurgeNextRound(node)).toEqual(true);
 
@@ -99,7 +105,13 @@ describe('Combat actions', () => {
       do {
         store.clearActions();
         store.dispatch(handleCombatTimerStop(node, TEST_SETTINGS, 1000));
-        node = store.getActions()[1].node;
+        const actions = store.getActions();
+        for (const a of actions) {
+          if (a.type === 'QUEST_NODE') {
+            node = a.node;
+            break;
+          }
+        }
         pd++;
       } while (pd < 10 && !isSurgeNextRound(node));
       expect(pd).toEqual(3); // Default for normal difficulty
