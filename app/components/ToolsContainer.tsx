@@ -1,19 +1,19 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-import AdvancedPlay, {AdvancedPlayStateProps, AdvancedPlayDispatchProps} from './AdvancedPlay'
+import Tools, {ToolsStateProps, ToolsDispatchProps} from './Tools'
 import {AppState, SettingsType} from '../reducers/StateTypes'
 import {initCustomCombat} from '../cardtemplates/combat/Actions'
 import {URLS} from '../Constants'
 
 declare var window:any;
 
-const mapStateToProps = (state: AppState, ownProps: AdvancedPlayStateProps): AdvancedPlayStateProps => {
+const mapStateToProps = (state: AppState, ownProps: ToolsStateProps): ToolsStateProps => {
   return {
     settings: state.settings,
   };
 }
 
-export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AdvancedPlayDispatchProps => {
+export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): ToolsDispatchProps => {
   return {
     onCustomCombatSelect(settings: SettingsType): void {
       dispatch(initCustomCombat(settings));
@@ -24,9 +24,9 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
   };
 }
 
-const AdvancedPlayContainer = connect(
+const ToolsContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AdvancedPlay);
+)(Tools);
 
-export default AdvancedPlayContainer
+export default ToolsContainer

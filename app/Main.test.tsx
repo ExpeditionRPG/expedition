@@ -1,6 +1,6 @@
 import configureStore  from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import {init} from './React'
+import {init} from './Main'
 import {installStore} from './Store'
 import {setDocument, setWindow} from './Globals'
 

@@ -9,7 +9,7 @@ import {SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} 
 import {QuestContext, QuestDetails} from '../reducers/QuestTypes'
 import {defaultQuestContext} from '../reducers/Quest'
 import {getDevicePlatform, getAppVersion} from '../Globals'
-import {logEvent} from '../React'
+import {logEvent} from '../Main'
 
 declare var window:any;
 declare var require:any;

@@ -1,11 +1,11 @@
 import {initial_state} from '../reducers/Settings'
-import {mapDispatchToProps} from './AdvancedPlayContainer'
+import {mapDispatchToProps} from './ToolsContainer'
 import configureStore  from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
 const mockStore = configureStore([thunk]);
 
-describe('AdvancedPlayContainer', () => {
+describe('ToolsContainer', () => {
   it('dispatches custom combat on callback', () => {
     const store = mockStore({});
     mapDispatchToProps(store.dispatch, null).onCustomCombatSelect(initial_state);

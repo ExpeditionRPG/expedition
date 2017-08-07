@@ -7,8 +7,8 @@ var options = {
   entry: [
     'whatwg-fetch',
     'promise-polyfill',
-    './app/React.tsx',
-    './app/style.scss',
+    './app/Main.tsx',
+    './app/Style.scss',
   ],
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.json'],

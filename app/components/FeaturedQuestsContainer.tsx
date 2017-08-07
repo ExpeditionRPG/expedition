@@ -29,7 +29,7 @@ const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): F
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): FeaturedQuestsDispatchProps => {
   return {
-    onAdvancedPlay(): void {
+    onTools(): void {
       dispatch(toCard('ADVANCED'));
     },
     onSearchSelect(user: UserState, players: number): void {

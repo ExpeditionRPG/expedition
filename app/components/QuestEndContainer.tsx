@@ -7,7 +7,7 @@ import {userFeedbackChange} from '../actions/UserFeedback'
 import {submitUserFeedback} from '../actions/Web'
 import {authSettings, MIN_FEEDBACK_LENGTH} from '../Constants'
 import {AppState, QuestState, SettingsType, UserState, UserFeedbackState} from '../reducers/StateTypes'
-import {logEvent} from '../React'
+import {logEvent} from '../Main'
 
 declare var window:any;
 

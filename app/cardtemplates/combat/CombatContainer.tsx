@@ -13,7 +13,7 @@ import {CombatPhase, MidCombatPhase} from './State'
 import {ParserNode} from '../../parser/Node'
 import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 import {midCombatChoice, handleResolvePhase} from './Actions'
-import {logEvent} from '../../React'
+import {logEvent} from '../../Main'
 
 declare var window:any;
 

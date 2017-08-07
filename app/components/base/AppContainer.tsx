@@ -2,7 +2,7 @@ import * as React from 'react'
 import {Provider} from 'react-redux'
 import Snackbar from 'material-ui/Snackbar'
 
-import AdvancedPlayContainer from '../AdvancedPlayContainer'
+import ToolsContainer from '../ToolsContainer'
 import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
 import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
 import ReportContainer from '../ReportContainer'
@@ -73,7 +73,7 @@ export default class Main extends React.Component<MainProps, {}> {
         card = <QuestEndContainer/>;
         break;
       case 'ADVANCED':
-        card = <AdvancedPlayContainer />;
+        card = <ToolsContainer />;
         break;
       case 'SEARCH_CARD':
         card = <SearchContainer phase={state.card.phase as SearchPhase} />;

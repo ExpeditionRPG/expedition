@@ -120,12 +120,12 @@ function setupEventLogging() {
 
 function render() {
   // Require is done INSIDE this function to reload app changes.
-  const Main = require('./components/base/Main').default;
+  const AppContainer = require('./components/base/AppContainer').default;
   const base = getDocument().getElementById('react-app');
   ReactDOM.unmountComponentAtNode(base);
   ReactDOM.render(
     <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-      <Main/>
+      <AppContainer/>
     </MuiThemeProvider>,
     base
   );
@@ -134,7 +134,7 @@ function render() {
 function setupHotReload() {
   if (module.hot) {
     module.hot.accept();
-    module.hot.accept('./components/base/Main', () => {
+    module.hot.accept('./components/base/AppContainer', () => {
       setTimeout(() => {render();});
     });
   }

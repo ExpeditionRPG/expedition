@@ -12,8 +12,8 @@ const options = {
     'promise-polyfill',
     'webpack-dev-server/client?http://localhost:' + port,
     'webpack/hot/only-dev-server',
-    './app/React.tsx',
-    './app/style.scss',
+    './app/Main.tsx',
+    './app/Style.scss',
   ],
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.json'],

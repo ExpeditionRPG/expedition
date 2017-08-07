@@ -11,7 +11,7 @@ export interface FeaturedQuestsStateProps {
 }
 
 export interface FeaturedQuestsDispatchProps {
-  onAdvancedPlay: () => any;
+  onTools: () => any;
   onSearchSelect: (user: UserState, players: number) => any;
   onQuestSelect: (quest: QuestDetails) => any;
 }
@@ -39,7 +39,7 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
           <div className="summary">Explore and play quests written by adventurers around the world.</div>
         </div>
       </Button>
-      <Button onTouchTap={()=>props.onAdvancedPlay()}>
+      <Button onTouchTap={()=>props.onTools()}>
         <div className="advanced_play">
           <div className="title"><img className="inline_icon" src="images/roll_small.svg"/>Tools</div>
         </div>

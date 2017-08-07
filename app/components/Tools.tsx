@@ -3,18 +3,18 @@ import Card from './base/Card'
 import Button from './base/Button'
 import {SettingsType} from '../reducers/StateTypes'
 
-export interface AdvancedPlayStateProps {
+export interface ToolsStateProps {
   settings: SettingsType;
 }
 
-export interface AdvancedPlayDispatchProps {
+export interface ToolsDispatchProps {
   onCustomCombatSelect: (settings: SettingsType) => any;
   onQuestCreatorSelect: () => any;
 }
 
-export interface AdvancedPlayProps extends AdvancedPlayStateProps, AdvancedPlayDispatchProps {}
+export interface ToolsProps extends ToolsStateProps, ToolsDispatchProps {}
 
-const AdvancedPlay = (props: AdvancedPlayProps): JSX.Element => {
+const Tools = (props: ToolsProps): JSX.Element => {
   return (
     <Card title="Tools">
       <Button id="selectCustomCombat" onTouchTap={() => props.onCustomCombatSelect(props.settings)}>
@@ -33,4 +33,4 @@ const AdvancedPlay = (props: AdvancedPlayProps): JSX.Element => {
   );
 }
 
-export default AdvancedPlay;
+export default Tools;
