@@ -35,7 +35,7 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
       {items}
       <Button onTouchTap={() => props.onSearchSelect(props.user, props.players)}>
         <div className="advanced_play">
-          <div className="title"><img className="inline_icon" src="images/book_small.svg"/>Community Quests</div>
+          <div className="title"><img className="inline_icon" src="images/book_small.svg"/>More Quests</div>
           <div className="summary">Explore and play quests written by adventurers around the world.</div>
         </div>
       </Button>

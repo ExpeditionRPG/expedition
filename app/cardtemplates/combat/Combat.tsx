@@ -111,7 +111,12 @@ function renderPrepare(props: CombatProps): JSX.Element {
   if (props.settings.showHelp) {
     helpText = (
       <ol>
-        <li>Shuffle your ability draw pile. If you don't have enough abilities to draw, shuffle in your discard pile.</li>
+        <li>Shuffle your ability draw pile.
+          <ul>
+            <li>Keep abilities played this combat in a separate discard pile.</li>
+            <li>If you run out of abilities to draw, shuffle in your discard pile.</li>
+          </ul>
+        </li>
         <li>Pre-draw three abilities face down.</li>
         <li>Start the timer.</li>
         <li>Look at your hand and play one ability.</li>
@@ -247,11 +252,11 @@ function renderVictory(props: CombatProps): JSX.Element {
 
   if (props.victoryParameters) {
     if (props.victoryParameters.heal > 0 && props.victoryParameters.heal < MAX_ADVENTURER_HEALTH) {
-      contents.push(<p key="c1">All adventurers (dead and alive) heal <strong>{props.victoryParameters.heal}</strong> health.</p>);
+      contents.push(<p key="c1">All adventurers (even if at 0 health) heal <strong>{props.victoryParameters.heal}</strong> health.</p>);
     } else if (props.victoryParameters.heal === 0) {
       contents.push(<p key="c1">Adventurers <strong>do not heal</strong>.</p>);
     } else {
-      contents.push(<p key="c1">All adventurers (dead and alive) heal to <strong>full</strong> health.</p>);
+      contents.push(<p key="c1">All adventurers (even if at 0 health) heal to <strong>full</strong> health.</p>);
     }
 
     // TODO improved leveling up: https://github.com/Fabricate-IO/expedition-app/issues/226
@@ -315,10 +320,14 @@ function renderTimerCard(props: CombatProps): JSX.Element {
   const surgeWarning = (props.settings.difficulty === 'EASY' && surge) ? 'Surge Imminent' : null;
   let instruction = null;
   if (props.settings.showHelp) {
-    if (props.settings.multitouch) {
-      instruction = 'All players: hold one finger once you play an ability';
+    if (props.settings.numPlayers > 1) {
+      if (props.settings.multitouch) {
+        instruction = 'All players: hold one finger once you play an ability';
+      } else {
+        instruction = 'Tap the screen once all players have played an ability';
+      }
     } else {
-      instruction = 'Tap the screen once all players have played an ability';
+      instruction = 'Tap the screen once you\'ve played an ability for each adventurer';
     }
   }
 

@@ -3,5 +3,5 @@ describe('FeaturedQuestsContainer', () => {
 
   it('Initializes a local quest when selected');
 
-  it('Shows search disclaimer if user not logged in and Community Quest clicked');
+  it('Shows search disclaimer if user not logged in and More Quests clicked');
 });
