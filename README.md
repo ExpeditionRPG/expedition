@@ -10,8 +10,8 @@ Install:
 Now install the repo:
 
 ```shell
-git clone https://github.com/ExpeditionRPG/expedition-quest-creator
-cd expedition-quest-creator
+git clone https://github.com/ExpeditionRPG/expedition-api
+cd expedition-api
 sudo npm install -g webpack && npm install
 ```
 
