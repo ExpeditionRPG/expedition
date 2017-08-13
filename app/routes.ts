@@ -37,6 +37,17 @@ const publishLimiter = new RateLimit({
   message: 'Publishing too frequently. Please wait 1 minute and then try again',
 });
 
+router.get('/healthcheck', limitCors, (req: express.Request, res: express.Response) => {
+  res.send(' ');
+});
+
+router.get('/announcements', limitCors, (req: express.Request, res: express.Response) => {
+  res.json({
+    message: 'The first expansion is now on Kickstarter! Click here to check it out',
+    link: 'https://ExpeditionGame.com/kickstarter',
+  });
+});
+
 // Phasing out as of 3/21/17; delete any time after 4/14/17
 // Joi validation: require title, author, email (valid email), feedback, players, difficulty
 // userEmail (valid email), platform, shareUserEmail (default false), version (number)

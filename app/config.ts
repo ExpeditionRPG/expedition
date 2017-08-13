@@ -1,7 +1,7 @@
 const nconf = require('nconf');
 const path = require('path');
 
-const CONFIG_PATH = path.join(__dirname, 'config_base.json');
+const CONFIG_PATH = path.join(__dirname, 'config.json');
 
 console.log('Loading config from ' + CONFIG_PATH);
 
@@ -42,7 +42,7 @@ nconf
   ])
   .file({ file: CONFIG_PATH })
   .defaults({
-    PORT: 8080,
+    PORT: 8081,
     ENABLE_PAYMENT: false,
 
     OAUTH2_CLIENT_ID: '',
