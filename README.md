@@ -42,7 +42,7 @@ npm run build
 npm run start
 ```
 
-The server is then available at http://localhost:8080 by default.
+The server is then available at http://localhost:8081 by default.
 
 When running on Windows, must be run within a Unix-like shell (such as Git Bash)
 

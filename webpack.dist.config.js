@@ -3,7 +3,7 @@ const Path = require('path');
 const Webpack = require('webpack');
 const NodeExternals = require('webpack-node-externals');
 
-const PORT = process.env.DOCKER_PORT || 8080;
+const PORT = process.env.DOCKER_PORT || 8081;
 
 const options = {
   cache: true,
