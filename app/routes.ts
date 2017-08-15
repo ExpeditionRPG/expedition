@@ -42,6 +42,11 @@ router.get('/healthcheck', limitCors, (req: express.Request, res: express.Respon
 });
 
 router.get('/announcements', limitCors, (req: express.Request, res: express.Response) => {
+  // empty / no announcement: {message: '', link: ''}
+  // res.json({
+  //   message: '',
+  //   link: '',
+  // });
   res.json({
     message: 'The first expansion is now on Kickstarter! Click here to check it out',
     link: 'https://ExpeditionGame.com/kickstarter',
