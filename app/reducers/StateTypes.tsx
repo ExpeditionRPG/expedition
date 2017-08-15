@@ -4,6 +4,12 @@ import {ParserNode} from '../parser/Node'
 
 import {GenreType, ContentRatingLabelType} from '../Constants'
 
+export interface AnnouncementState {
+  open: boolean;
+  message?: string;
+  link?: string;
+}
+
 export type CardThemeType = 'LIGHT' | 'RED' | 'DARK';
 export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
@@ -75,6 +81,7 @@ export interface UserFeedbackState {
 }
 
 export interface AppState {
+  announcement: AnnouncementState;
   card: CardState;
   quest: QuestState;
   search: SearchState;

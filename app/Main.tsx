@@ -7,6 +7,7 @@ import theme from './Theme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import {authSettings} from './Constants'
+import {fetchAnnouncements} from './actions/Announcement'
 import {toPrevious} from './actions/Card'
 import {silentLogin} from './actions/User'
 import {getStore} from './Store'
@@ -188,6 +189,7 @@ export function init() {
   setupEventLogging();
   setupHotReload();
   setupGoogleAnalytics();
+  getStore().dispatch(fetchAnnouncements());
 
   render();
 }

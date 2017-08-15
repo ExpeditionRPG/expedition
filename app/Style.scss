@@ -303,7 +303,7 @@ body {
     }
     .header {
       background-color: $bg_titlebar;
-      line-height: 1.2;
+      line-height: $lineheight;
       padding: size(base)/2 size(base) size(base)/2 size(base);
       font-size: fontsize(flavor);
 
@@ -652,7 +652,7 @@ body {
   // Card-specific styles
   // ===============================================
 
-  .splash_screen {
+  .splashScreen {
     width: 100%;
     height: 100%;
     position: relative;
@@ -691,6 +691,28 @@ body {
       button {
         text-align: center !important;
         font-size: fontsize(flavor) !important;
+      }
+    }
+
+    &.announcing .logo {
+      // (2 text lines) + (small top & bottom padding and top margin for logo)
+      top: 2 * $lineheight * fontsize(interactive) + 3 * size(base);
+    }
+    .announcement {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      button {
+        margin: 0 !important;
+        padding: size(base) !important;
+        border: none !important;
+        border-radius: 0 !important;
+        background: $bg_red_primary !important;
+        text-align: center !important;
+        font-size: fontsize(interactive) !important;
+        line-height: $lineheight !important;
       }
     }
   }

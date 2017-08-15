@@ -3,6 +3,7 @@ import {authSettings} from '../Constants'
 import {toCard} from './Card'
 import {initQuest} from './Quest'
 
+import {setAnnouncement} from '../actions/Announcement'
 import {openSnackbar} from '../actions/Snackbar'
 import {userFeedbackClear} from '../actions/UserFeedback'
 import {SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} from '../reducers/StateTypes'

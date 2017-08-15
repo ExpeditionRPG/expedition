@@ -2,6 +2,8 @@ import * as React from 'react'
 import MultiTouchTrigger from './base/MultiTouchTrigger'
 import Button from './base/Button'
 
+import {AnnouncementState} from '../reducers/StateTypes'
+
 interface PlayerCounterProps extends React.Props<any> {
   debounceMillis: number;
   onPlayerCountSelect: (touches: any) => any;
@@ -29,9 +31,12 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
   }
 }
 
-export interface SplashScreenStateProps {};
+export interface SplashScreenStateProps {
+  announcement: AnnouncementState;
+};
 
 export interface SplashScreenDispatchProps {
+  onAnnouncementTap: (announcement: AnnouncementState) => void;
   onPlayerCountSelect: (numPlayers: number) => void;
   onNoMultiTouch: (touches: any) => any;
 }
@@ -39,8 +44,15 @@ export interface SplashScreenDispatchProps {
 interface SplashScreenProps extends SplashScreenStateProps, SplashScreenDispatchProps {}
 
 const SplashScreen = (props: SplashScreenProps): JSX.Element => {
+  const announcementVisible = (props.announcement && props.announcement.open && props.announcement.message !== '');
+  const splashClass = 'splashScreen' + (announcementVisible ? ' announcing' : '');
   return (
-    <div className="splash_screen">
+    <div className={splashClass}>
+      {announcementVisible &&
+        <Button className="announcement" onTouchTap={() => props.onAnnouncementTap(props.announcement)}>
+          {props.announcement.message}
+        </Button>
+      }
       <div className="logo">
         <img src="images/logo-colorized.png"></img>
       </div>

@@ -1,4 +1,5 @@
 import Redux from 'redux'
+import {announcement} from './Announcement'
 import {card} from './Card'
 import {quest} from './Quest'
 import {search} from './Search'
@@ -12,6 +13,7 @@ import {ReturnAction} from '../actions/ActionTypes'
 function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppState {
   state = state || ({} as AppStateWithHistory);
   return {
+    announcement: announcement(state.announcement, action),
     card: card(state.card, action),
     quest: quest(state.quest, action),
     search: search(state.search, action),

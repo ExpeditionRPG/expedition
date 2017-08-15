@@ -3,6 +3,13 @@ import {CardState, CardName, CardPhase, SettingNameType, SearchPhase, SearchSett
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../parser/Node'
 
+export interface AnnouncementSetAction extends Redux.Action {
+  type: 'ANNOUNCEMENT_SET';
+  open: boolean;
+  message?: string;
+  link?: string;
+}
+
 export interface NavigateAction extends Redux.Action {
   type: 'NAVIGATE';
   to: CardState;
