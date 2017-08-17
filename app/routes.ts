@@ -197,8 +197,13 @@ router.post('/user/subscribe', limitCors, (req: express.Request, res: express.Re
         return res.status(200).send();
       })
       .catch((err: Error) => {
-        console.log('Mailchimp error', err);
-        return res.status((err as any).status).send((err as any).title);
+        const status = (err as any).status;
+        if (status === 400) {
+          return res.status(200).send(); // Already on the list - but that's ok!
+        } else {
+          console.log('Mailchimp error', err);
+          return res.status(status).send((err as any).title);
+        }
       });
     }
   });
