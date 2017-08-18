@@ -43,14 +43,14 @@ router.get('/healthcheck', limitCors, (req: express.Request, res: express.Respon
 
 router.get('/announcements', limitCors, (req: express.Request, res: express.Response) => {
   // empty / no announcement: {message: '', link: ''}
-  res.json({
-    message: '',
-    link: '',
-  });
   // res.json({
-  //   message: 'The first expansion is now on Kickstarter! Click here to check it out',
-  //   link: 'https://ExpeditionGame.com/kickstarter',
+  //   message: '',
+  //   link: '',
   // });
+  res.json({
+    message: 'The first expansion is now on Kickstarter! Click here to check it out',
+    link: 'https://ExpeditionGame.com/kickstarter',
+  });
 });
 
 // Phasing out as of 3/21/17; delete any time after 4/14/17
