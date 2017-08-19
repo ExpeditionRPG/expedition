@@ -28,8 +28,8 @@ export interface CombatDispatchProps {
   onVictory: (node: ParserNode, settings: SettingsType, maxTier: number) => void;
   onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => void;
   onReturn: () => void;
-  onTierSumDelta: (node: ParserNode, delta: number) => void;
-  onAdventurerDelta: (node: ParserNode, settings: SettingsType, delta: number) => void;
+  onTierSumDelta: (node: ParserNode, current: number, delta: number) => void;
+  onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => void;
   onEvent: (node: ParserNode, event: string) => void;
   onCustomEnd: () => void;
   onChoice: (settings: SettingsType, parent: ParserNode, index: number) => void;
@@ -49,7 +49,7 @@ const numerals: {[k: number]: string;} = {
 function renderSelectTier(props: CombatProps): JSX.Element {
   return (
     <Card title="Draw Enemies" theme="DARK" inQuest={true}>
-      <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, i)} value={props.tier}>
+      <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, props.tier, i)} value={props.tier}>
         Set this to the combined tier you wish to fight.
       </Picker>
       <Button onTouchTap={() => props.onNext('PREPARE')} disabled={props.tier <= 0}>Next</Button>
@@ -207,7 +207,7 @@ function renderResolve(props: CombatProps): JSX.Element {
 function renderEnemyTier(props: CombatProps): JSX.Element {
   return (
     <Card title="Enemy Strength" theme="DARK" inQuest={true}>
-      <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, i)} value={props.tier}>
+      <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, props.tier, i)} value={props.tier}>
         Set this to the combined tier of the remaining enemies. You are victorious when this reaches zero.
       </Picker>
 
@@ -237,7 +237,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
       {helpText}
 
-      <Picker label="Adventurers" onDelta={(i: number)=>props.onAdventurerDelta(props.node, props.settings, i)} value={props.numAliveAdventurers}>
+      <Picker label="Adventurers" onDelta={(i: number)=>props.onAdventurerDelta(props.node, props.settings, props.numAliveAdventurers, i)} value={props.numAliveAdventurers}>
         Set this to the number of adventurers above zero health. You are defeated when this reaches zero.
       </Picker>
 

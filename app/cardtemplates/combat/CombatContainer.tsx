@@ -88,11 +88,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     onEvent: (node: ParserNode, evt: string) => {
       dispatch(event(node, evt));
     },
-    onTierSumDelta: (node: ParserNode, delta: number) => {
-      dispatch(tierSumDelta(node, delta));
+    onTierSumDelta: (node: ParserNode, current: number, delta: number) => {
+      dispatch(tierSumDelta(node, current, delta));
     },
-    onAdventurerDelta: (node: ParserNode, settings: SettingsType, delta: number) => {
-      dispatch(adventurerDelta(node, settings, delta));
+    onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => {
+      dispatch(adventurerDelta(node, settings, current, delta));
     },
     onCustomEnd: () => {
       dispatch(toPrevious('QUEST_CARD', 'DRAW_ENEMIES', false));

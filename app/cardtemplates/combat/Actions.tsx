@@ -271,14 +271,14 @@ export function handleCombatEnd(node: ParserNode, settings: SettingsType, victor
   };
 }
 
-export function tierSumDelta(node: ParserNode, delta: number): QuestNodeAction {
+export function tierSumDelta(node: ParserNode, current: number, delta: number): QuestNodeAction {
   node = node.clone();
-  node.ctx.templates.combat.tier = Math.max(node.ctx.templates.combat.tier + delta, 0);
+  node.ctx.templates.combat.tier = Math.max(current + delta, 0);
   return {type: 'QUEST_NODE', node};
 }
 
-export function adventurerDelta(node: ParserNode, settings: SettingsType, delta: number): QuestNodeAction {
-  const newAdventurerCount = Math.min(Math.max(0, node.ctx.templates.combat.numAliveAdventurers + delta), settings.numPlayers);
+export function adventurerDelta(node: ParserNode, settings: SettingsType, current: number, delta: number): QuestNodeAction {
+  const newAdventurerCount = Math.min(Math.max(0, current + delta), settings.numPlayers);
   node = node.clone();
   node.ctx.templates.combat.numAliveAdventurers = newAdventurerCount;
   return {type: 'QUEST_NODE', node};

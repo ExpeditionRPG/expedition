@@ -173,29 +173,34 @@ describe('Combat actions', () => {
 
   describe('tierSumDelta', () => {
     it('increases', () => {
-      expect(tierSumDelta(newCombatNode(), 1).node.ctx.templates.combat.tier).toEqual(10);
+      expect(tierSumDelta(newCombatNode(), 9, 1).node.ctx.templates.combat.tier).toEqual(10);
     });
     it('decreases', () => {
-      expect(tierSumDelta(newCombatNode(), -1).node.ctx.templates.combat.tier).toEqual(8);
+      expect(tierSumDelta(newCombatNode(), 9, -1).node.ctx.templates.combat.tier).toEqual(8);
     });
     it('does not go below 0', () => {
-      expect(tierSumDelta(newCombatNode(), -1000).node.ctx.templates.combat.tier).toEqual(0);
+      expect(tierSumDelta(newCombatNode(), 9, -1000).node.ctx.templates.combat.tier).toEqual(0);
     });
   })
 
   describe('adventurerDelta', () => {
     it('increases', () => {
-      const node = adventurerDelta(newCombatNode(), TEST_SETTINGS, -2).node;
-      expect(adventurerDelta(node, TEST_SETTINGS, 1).node.ctx.templates.combat.numAliveAdventurers).toEqual(2);
+      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, 1, 2).node.ctx.templates.combat.numAliveAdventurers).toEqual(3);
     });
     it('decreases', () => {
-      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, -1).node.ctx.templates.combat.numAliveAdventurers).toEqual(2);
+      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, 3, -1).node.ctx.templates.combat.numAliveAdventurers).toEqual(2);
+    });
+    it('does not go above player count', () => {
+      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, TEST_SETTINGS.numPlayers, 1).node.ctx.templates.combat.numAliveAdventurers).toEqual(TEST_SETTINGS.numPlayers);
     });
     it('does not go below 0', () => {
-      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, -1000).node.ctx.templates.combat.numAliveAdventurers).toEqual(0);
+      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, 1, -2).node.ctx.templates.combat.numAliveAdventurers).toEqual(0);
+    });
+    it('does not go below 0', () => {
+      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, 3, -1000).node.ctx.templates.combat.numAliveAdventurers).toEqual(0);
     });
     it('does not go above the player count', () => {
-      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, 1000).node.ctx.templates.combat.numAliveAdventurers).toEqual(3);
+      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, 2, 1000).node.ctx.templates.combat.numAliveAdventurers).toEqual(3);
     });
   });
 
