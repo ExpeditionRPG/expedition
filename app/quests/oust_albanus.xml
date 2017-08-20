@@ -1,4 +1,4 @@
-<quest title="Oust Albanus" data-line="0">
+<quest title="Oust Albanus" data-line="0" summary="Your party encounters a smelly situation." author="Scott Martin" email="smartin015@gmail.com" minplayers="1" maxplayers="6" mintimeminutes="20" maxtimeminutes="40" genre="Comedy" contentrating="Teen" engineversion="1.3.2">
   <roleplay icon="adventurer" title="A Strange Arrival" data-line="2">
     <p>Your party arrives in Gruyere, a small plains town known for their cheese. The townspeople emerge and see you - they stamp towards you, furious.</p>
     <p>"He's gone and taken it! He's taken it all!"</p>
@@ -135,7 +135,7 @@
   <roleplay icon="adventurer" title="Desperation" data-line="182">
     <p>You begin searching for some way out of this mess. You managed to slip your bonds - the bandits aren't very good at tying knots - and you immediately see two ways to ruin their day.</p>
     <p>There's a small powder keg nearby. If it were to "accidentally" land in the fire, the walls would probably get a new coat of red paint. And soot.</p>
-    <p>You also spy a giant rat in a cage, over in the corner. It looks malnourished and _very_ hungry.</p>
+    <p>You also spy a giant rat in a cage, over in the corner. It looks malnourished and <i>very</i> hungry.</p>
     <choice text="Toss the powder keg into the fire.">
       <roleplay title="Bang!" data-line="192">
         <p>The worry of setting off an explosion in a small, mostly-sealed room is dismissed from your mind as you grab the keg and lob it at the fire.</p>
