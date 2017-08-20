@@ -159,8 +159,6 @@ export function publish(userId: string, id: string, params: any, xml: string, ca
     publishedurl: CloudStorage.getPublicUrl(cloudStorageData.gcsname)
   };
 
-console.log(meta);
-
   Joi.validate(meta, Schemas.questsPublish, (err: Error, meta: any) => {
     if (err) {
       return callback(err, null);
