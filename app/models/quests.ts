@@ -127,7 +127,6 @@ function convertQuestXMLToMetadata(text: string, callback: (e: Error, result: an
 
 export function publish(userId: string, id: string, params: any, xml: string, callback: (e: Error, id: string)=>any) {
 // TODO: Validate XML via crawler
-  params = Joi.validate(params, {majorRelease: Joi.boolean()}).value;
 
   if (!userId) {
     return callback(new Error('Invalid or missing User ID'), null);
@@ -153,43 +152,40 @@ export function publish(userId: string, id: string, params: any, xml: string, ca
     }
   });
 
-  convertQuestXMLToMetadata(xml, (err: Error, result: any) => {
+  const meta = {
+    ...params,
+    id: id,
+    userid: userId,
+    publishedurl: CloudStorage.getPublicUrl(cloudStorageData.gcsname)
+  };
+
+console.log(meta);
+
+  Joi.validate(meta, Schemas.questsPublish, (err: Error, meta: any) => {
     if (err) {
       return callback(err, null);
     }
 
-    const meta = {
-      ...result,
-      id: id,
-      userid: userId,
-      publishedurl: CloudStorage.getPublicUrl(cloudStorageData.gcsname)
-    };
-
-    Joi.validate(meta, Schemas.questsPublish, (err: Error, meta: any) => {
+    Query.getId(table, meta.id, (err: Error, result) => {
       if (err) {
-        return callback(err, null);
+        if ((err as any).code === 404) { // if this is a newly published quest, email us!
+          const message = `Summary: ${meta.summary}. By ${meta.author}, for ${meta.minplayers} - ${meta.maxplayers} players.`;
+          Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + meta.title, message, (err: Error, result: any) => {});
+        } else { // this is just for notifying us, so don't return error if it fails
+          console.log(err);
+        }
       }
 
-      Query.getId(table, meta.id, (err: Error, result) => {
-        if (err) {
-          if ((err as any).code === 404) { // if this is a newly published quest, email us!
-            const message = `Summary: ${meta.summary}. By ${meta.author}, for ${meta.minplayers} - ${meta.maxplayers} players.`;
-            Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + meta.title, message, (err: Error, result: any) => {});
-          } else { // this is just for notifying us, so don't return error if it fails
-            console.log(err);
-          }
-        }
+      result = result || {}; // if no result, don't break on result. references
 
-        result = result || {}; // if no result, don't break on result. references
+      meta.questversion = (result.questversion || 0) + 1;
+      if (meta.majorRelease) {
+        meta.questversionlastmajor = meta.questversion;
+      }
+      delete meta.majorRelease; // delete even if false!
 
-        meta.questversion = (result.questversion || 0) + 1;
-        if (params.majorRelease) {
-          meta.questversionlastmajor = meta.questversion;
-        }
-
-        Query.upsert(table, meta, 'id', (err: Error, result: any) => {
-          return callback(err, id);
-        });
+      Query.upsert(table, meta, 'id', (err: Error, result: any) => {
+        return callback(err, id);
       });
     });
   });
