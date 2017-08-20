@@ -265,8 +265,8 @@ function renderVictory(props: CombatProps): JSX.Element {
       if (props.settings.showHelp) {
         contents.push(
           <ul key="c3">
-            <li>You may discard one of your current abilities.</li>
-            <li>Draw 3 ability cards from one of the decks listed on your Adventurer card.</li>
+            <li>You <strong>may</strong> choose to discard an ability.</li>
+            <li>Draw 3 abilities from one of the decks listed on your adventurer card.</li>
             <li>Add 1 to your ability deck, and place the remaining 2 at the bottom of the deck you drew from.</li>
           </ul>
         );
