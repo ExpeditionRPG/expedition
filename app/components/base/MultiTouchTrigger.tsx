@@ -110,9 +110,7 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
     for (const k of Object.keys(this.listeners)) {
       this.canvas.addEventListener(k, this.listeners[k]);
     }
-
     this.touchEvent({touches: [], preventDefault: ()=>{}});
-    window.requestAnimationFrame(this.boundDrawTouchPoints);
   }
 
   private destroyCanvas() {
