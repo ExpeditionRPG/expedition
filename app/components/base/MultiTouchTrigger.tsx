@@ -22,41 +22,61 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
   canvas: any;
   inputArray: number[][];
   mouseDown: Boolean;
+  private listeners: {[k: string]: () => void};
+  private boundDrawTouchPoints: () => void;
 
-  _touchEvent(e: any) {
+  constructor(props: MultiTouchTriggerProps) {
+    super(props);
+    // We track bound listener functions in this way so we can unsubscribe
+    // them later.
+    this.listeners = {
+      'touchstart': this.touchEvent.bind(this),
+      'touchmove': this.touchEvent.bind(this),
+      'touchend': this.touchEvent.bind(this),
+      'mousedown': this.mouseDownEvent.bind(this),
+      'mousemove': this.mouseMoveEvent.bind(this),
+      'mouseup': this.mouseUpEvent.bind(this),
+    };
+    this.boundDrawTouchPoints = this.drawTouchPoints.bind(this);
+  }
+
+  private touchEvent(e: any) {
     const xyArray: number[][] = [];
     for (let i = 0; i < e.touches.length; i++) {
       xyArray.push([e.touches[i].clientX, e.touches[i].clientY]);
     }
-    this._processInput(xyArray);
+    this.processInput(xyArray);
     e.preventDefault();
   }
 
-  _mouseDownEvent(e: any) {
+  private mouseDownEvent(e: any) {
     this.mouseDown = true;
-    this._processInput([[e.layerX, e.layerY]]);
+    this.processInput([[e.layerX, e.layerY]]);
   }
 
-  _mouseMoveEvent(e: any) {
+  private mouseMoveEvent(e: any) {
     if (this.mouseDown) {
-      this._processInput([[e.layerX, e.layerY]]);
+      this.processInput([[e.layerX, e.layerY]]);
     }
   }
 
-  _mouseUpEvent() {
+  private mouseUpEvent() {
     this.mouseDown = false;
-    this._processInput([]);
+    this.processInput([]);
   }
 
-  _processInput(xyArray: number[][]) {
+  private processInput(xyArray: number[][]) {
     if (!Boolean(this.inputArray) || xyArray.length !== this.inputArray.length) {
       this.props.onTouchChange(xyArray.length);
     }
     this.inputArray = xyArray;
+
+    // Request a single animation frame every time our input values change,
+    // instead of rendering continuously (saves render load).
+    window.requestAnimationFrame(this.boundDrawTouchPoints);
   }
 
-  _drawTouchPoints() {
-
+  private drawTouchPoints() {
     const inputs = this.inputArray;
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     for (let i = 0; i < inputs.length; i++) {
@@ -70,11 +90,16 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
       this.ctx.arc(inputs[i][0], inputs[i][1], styles.ring.radius, 0, 2 * Math.PI, false);
       this.ctx.stroke();
     }
-    window.requestAnimationFrame(() => {this._drawTouchPoints(); });
   }
 
   setupCanvas(ref: any) {
+    // We have nothing to do if we're given the same canvas as previous.
+    if (this.canvas === ref) {
+      return;
+    }
+
     // Setup canvas element and touch listeners
+    this.destroyCanvas();
     this.canvas = ref;
     if (!this.canvas) {
       return;
@@ -82,20 +107,29 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
     this.ctx = this.canvas.getContext('2d');
     this.ctx.canvas.width = window.innerWidth;
     this.ctx.canvas.height = window.innerHeight;
-    this.canvas.addEventListener('touchstart', this._touchEvent.bind(this));
-    this.canvas.addEventListener('touchmove', this._touchEvent.bind(this));
-    this.canvas.addEventListener('touchend', this._touchEvent.bind(this));
-    this.canvas.addEventListener('mousedown', this._mouseDownEvent.bind(this));
-    this.canvas.addEventListener('mousemove', this._mouseMoveEvent.bind(this));
-    this.canvas.addEventListener('mouseup', this._mouseUpEvent.bind(this));
+    for (const k of Object.keys(this.listeners)) {
+      this.canvas.addEventListener(k, this.listeners[k]);
+    }
+    this.touchEvent({touches: [], preventDefault: ()=>{}});
+  }
 
-    this._touchEvent({touches: [], preventDefault: ()=>{}});
-    window.requestAnimationFrame(() => {this._drawTouchPoints(); });
+  private destroyCanvas() {
+    if (!this.canvas) {
+      return;
+    }
+    // Remove event listener references from canvas so they don't stick around.
+    for (const k of Object.keys(this.listeners)) {
+      this.canvas.removeEventListener(k, this.listeners[k]);
+    }
+  }
+
+  componentWillUnmount() {
+    this.destroyCanvas();
   }
 
   render() {
     return (
-       <canvas className="base_multi_touch_trigger" ref={this.setupCanvas.bind(this)} />
+       <canvas className="base_multi_touch_trigger" ref={(ref: any) => {this.setupCanvas(ref);}} />
     );
   }
 }
