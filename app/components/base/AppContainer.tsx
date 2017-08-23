@@ -24,11 +24,18 @@ interface MainProps extends React.Props<any> {}
 
 export default class Main extends React.Component<MainProps, {}> {
   state: {key: number, transition: TransitionType, card: JSX.Element, snackbar: SnackbarState};
+  storeUnsubscribeHandle: () => any;
 
   constructor(props: MainProps) {
     super(props);
     this.state = this.getUpdatedState();
-    getStore().subscribe(this.handleChange.bind(this));
+    this.storeUnsubscribeHandle = getStore().subscribe(this.handleChange.bind(this));
+  }
+
+  componentWillUnmount() {
+    // 2017-08-16: Failing to unsubscribe here is likely to have caused unnecessary references to previous
+    // JS objects, which prevents garbage collection and causes runaway memory consumption.
+    this.storeUnsubscribeHandle();
   }
 
   getUpdatedState() {
