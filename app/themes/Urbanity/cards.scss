@@ -180,6 +180,18 @@ $color-environment: #0d663a;
       }
     }
 
+    &.Event {
+      .effects {
+        h3 {
+          font-weight: bold;
+          font-size: 150%;
+        }
+        p {
+          margin-bottom: $padding;
+        }
+      }
+    }
+
     &.Politics {
       &.Basic.Action {
         border-color: blue;

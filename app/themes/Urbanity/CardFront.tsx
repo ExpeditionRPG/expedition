@@ -39,7 +39,16 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="name">{card.name}</div>
               </header>
               <article>
-                <div className="effects">{card.effects}</div>
+                <div className="effects">
+                  <h3>Bill 1:</h3>
+                  <p>{card.turn1 || '-'}</p>
+                  <h3>Bill 2:</h3>
+                  <p>{card.turn2 || '-'}</p>
+                  <h3>Bill 3:</h3>
+                  <p>{card.turn3 || '-'}</p>
+                  <h3>Bill 4:</h3>
+                  <p>{card.turn4 || '-'}</p>
+                </div>
               </article>
               <footer>
                 <div>{card.flavortext}</div>

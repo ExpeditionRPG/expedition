@@ -413,6 +413,12 @@ $large-icon-width: 0.195in;
         top: 0.1in;
         right: 0.3in;
         width: 1.5in;
+        height: 1.5in;
+
+        svg {
+          width: 100%;
+          height: 100%;
+        }
       }
 
       &.Horror {
@@ -641,7 +647,7 @@ $large-icon-width: 0.195in;
   .card.back.Encounter {
     .tier {
       left: 0.03in;
-      bottom: 0.48in;
+      bottom: 0.46in;
     }
   }
   .card.back.Beast {

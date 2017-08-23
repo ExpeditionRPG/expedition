@@ -103,7 +103,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="name">{card.name}</div>
               </header>
               <article>
-                <div className="type">Tier {romanize(card.tier)} {card.class}</div>
+                <div className="type">Tier {romanize(card.tier)} {card.class} {icon(card.class.toLowerCase() + '_small')}</div>
                 {card.ongoing1 &&
                   <div className="ongoing">{card.ongoing1}</div>
                 }
@@ -114,7 +114,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                   <div className="surge"><strong>Surge: </strong>{card.surge}</div>
                 }
               </article>
-              {card.image && <img className="art" src={`/expedition-art/icons/${card.image}.png`} />}
+              {card.image && <div className="art">{icon(card.image)}</div>}
               <footer>
                 <div className="flavortext">{card.flavortext}</div>
               </footer>
