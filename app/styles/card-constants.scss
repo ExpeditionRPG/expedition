@@ -17,7 +17,7 @@ $icon-width: 0.15in;
 $font-header: "Cinzel", serif !important;
 $font-body: "minion-pro", serif !important;
 
-$text-color: #2e200f;
+$text-color: black; /* #2e200f may look better on a monitor, but pure black prints much sharper */
 $text-color-white: #eee;
 $text-size-back-title: 22pt;
 $text-size-front-title: 12pt;
