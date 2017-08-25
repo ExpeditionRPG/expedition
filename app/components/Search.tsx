@@ -281,8 +281,9 @@ class SearchDisclaimerCard extends React.Component<SearchDisclaimerCardProps, {}
     return (
       <Card title="Disclaimer">
         <p>
-          Community quests are published by other adventurers like yourselves using the free quest creator (Quests.ExpeditionGame.com).
-          We offer no guarantees of completeness, correctness of grammar, or sanity in any of the quests you are about to see.
+          Community quests are written by adventurers like yourselves using the free quest creator (Quests.ExpeditionGame.com).
+          We offer no guarantees for the quests you are about to play, but do our best to review them for quality, and provide players with
+          the ability to rate, review and report quests.
         </p>
         <p>
           We use your Google email as your identity when rating and reviewing quests.
