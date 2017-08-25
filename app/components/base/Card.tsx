@@ -44,7 +44,11 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
 
     switch(value) {
       case 'HOME':
-        return getStore().dispatch(toPrevious('SPLASH_CARD', undefined, false));
+        let result = true;
+        if (this.props.inQuest) {
+          result = window.confirm('Are you sure you want to exit this quest?');
+        }
+        return result && getStore().dispatch(toPrevious('SPLASH_CARD', undefined, false));
       case 'SETTINGS':
         return getStore().dispatch(toCard('SETTINGS'));
       case 'RATE':
