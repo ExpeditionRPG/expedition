@@ -7,7 +7,7 @@
   "main": "react.js",
   "scripts": {
     "test": "mocha meta_tests.js && ts-mocha app/**/*.test.ts",
-    "build": "webpack --config webpack.config.js --progress",
+    "build": "webpack --config webpack.dist.config.js --progress",
     "start": "node dist/server.js",
     "heroku-postbuild": "webpack -p --config webpack.dist.config.js --progress"
   },
@@ -28,6 +28,7 @@
     "@types/joi": "^10.4.0",
     "@types/node": "^7.0.8",
     "@types/promise-polyfill": "^6.0.0",
+    "@types/sequelize": "^4.0.70",
     "babel-core": "^6.24.0",
     "body-parser": "^1.17.2",
     "cheerio": "^1.0.0-rc.2",
@@ -59,7 +60,10 @@
     "pg": "^6.1.4",
     "proxy-middleware": "^0.15.0",
     "request": "^2.81.0",
+    "sequelize": "^4.7.2",
     "simple-assign": "^0.1.0",
+    "sinon": "^3.2.1",
+    "sqlite3": "^3.1.9",
     "squel": "^5.11.1",
     "ts-mocha": "^1.0.3",
     "typescript-formatter": "^5.1.1",

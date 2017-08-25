@@ -1,6 +1,7 @@
 CREATE TABLE quests (
+  partition VARCHAR(32),
   id VARCHAR(255) NOT NULL,
-  PRIMARY KEY(id),
+  PRIMARY KEY(partition, id),
   questversion INT DEFAULT 1,
   questversionlastmajor INT DEFAULT 1,
   engineversion VARCHAR(128),
@@ -20,7 +21,6 @@ CREATE TABLE quests (
   ratingcount INT,
   genre VARCHAR(128),
   contentrating VARCHAR(128),
-
   created TIMESTAMP NULL DEFAULT NOW(),
   published TIMESTAMP NULL DEFAULT NOW(),
   tombstone TIMESTAMP NULL DEFAULT NULL,

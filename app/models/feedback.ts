@@ -1,57 +1,135 @@
-const Joi = require('joi');
-const Squel = require('squel');
-
 import * as Mail from '../mail'
-import Schemas from './schemas'
-import * as Query from './query'
-import * as Quests from './quests'
+import {Quest, QuestInstance} from './quests'
+import * as Sequelize from 'sequelize'
 
-const table = 'feedback';
+export interface FeedbackAttributes {
+  questid?: string;
+  userid?: string;
+  questversion?: number;
+  created?: Date;
+  rating?: number;
+  text?: string;
+  email?: string;
+  name?: string;
+  difficulty?: string;
+  platform?: string;
+  players?: number;
+  version?: string;
+}
 
-export function getRatingsByQuestId(questId: string, callback: (e: Error, r: any)=>any) {
-  Joi.validate(questId, Schemas.feedback.questid, (err: Error, questId: string) => {
+export interface FeedbackInstance extends Sequelize.Instance<FeedbackAttributes> {
+  dataValues: FeedbackAttributes;
+}
 
-    if (err) {
-      return callback(err, null);
-    }
+export type FeedbackModel = Sequelize.Model<FeedbackInstance, FeedbackAttributes>;
 
-    const query = Squel.select()
-      .from(table)
-      .where('questid = ?', questId)
-      .where('rating IS NOT NULL');
+export class Feedback {
+  private s: Sequelize.Sequelize;
+  private mail: any;
+  public model: FeedbackModel;
+  private quest: Quest;
 
-    return Query.run(query, callback);
-  });
-};
+  constructor(s: Sequelize.Sequelize) {
+    this.s = s;
+    this.model = this.s.define<FeedbackInstance, FeedbackAttributes>('feedback', {
+      questid: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        primaryKey: true,
+        validate: {
+          max: 255,
+        },
+      },
+      userid: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        primaryKey: true,
+        validate: {
+          max: 255,
+        },
+      },
+      questversion: {
+        type: Sequelize.INTEGER,
+        defaultValue: 1,
+      },
+      created: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+      },
+      rating: Sequelize.INTEGER,
+      text: {
+        type: Sequelize.STRING,
+        validate: {
+          max: 2048,
+        },
+      },
+      email: {
+        type: Sequelize.STRING,
+        validate: {
+          isEmail: true,
+        },
+      },
+      name: {
+        type: Sequelize.STRING,
+        validate: {
+          max: 255,
+        },
+      },
+      difficulty: {
+        type: Sequelize.STRING,
+        validate: {
+          max: 32,
+        },
+      },
+      platform: {
+        type: Sequelize.STRING,
+        validate: {
+          max: 32,
+        },
+      },
+      players: Sequelize.INTEGER,
+      version: {
+        type: Sequelize.STRING,
+        validate: {
+          max: 32,
+        },
+      },
+    });
+  }
 
-// TODO: Feedback interface
-export function submit(type: 'rating'|'report', feedback: any, callback: (e: Error, r: any)=>any) {
-  Joi.validate(feedback, Schemas.feedbackSubmit, (err: Error, feedback: any) => {
-    if (err) {
-      return callback(err, null);
-    }
-    callback(null, feedback.questid); // don't hold up the user
+  public associate(models: {Quest: Quest}) {
+    this.quest = models.Quest;
+  }
 
-    Quests.getById(feedback.questid, (err: Error, quest: any) => {
-      if (err) {
-        console.log(err);
-        quest = {};
-      }
-      feedback.questversion = quest.questversion;
+  public getByQuestId(questid: string): Promise<FeedbackInstance[]> {
+    return this.model.findAll({where: {questid, rating: {$ne: null}}});
+  };
 
-      Query.upsert(table, feedback, 'questid, userid', (err: Error) => {
-        if (err) {
-          console.log(err);
-        }
+  public submit(type: 'rating'|'report', feedback: FeedbackAttributes): Promise<FeedbackInstance> {
+    // Get quest version, then upsert feedback with the version of the quest.
+    // Recalculate ratings on the quest
+    // Then send a mail.
 
-        Quests.updateRatings(feedback.questid, (err: Error, quest: any) => {
-          if (err) {
-            console.log(err);
-          }
+    let quest: QuestInstance;
+    return this.s.authenticate()
+      .then(() => {return this.quest.get('todo', feedback.questid)})
+      .then((q: QuestInstance) => {
+        quest = q;
+        feedback.questid = quest.id;
+        return this.model.create(feedback)})
+      .then((feedback: FeedbackInstance) => {})
+      .then(() => {
+        this.quest.recalculateFeedback();
+      })
+      .then(() => {
+        if (this.mail) {
+          return this.mail.send('/lists/' + Config.get('MAILCHIMP_CREATORS_LIST_ID') + '/members/', {
+            email_address: user.email,
+            status: 'subscribed',
+          });
 
           const ratingavg = (quest.ratingavg || 0).toFixed(1);
-
-          const htmlMessage = `<p>User feedback:</p>
+          const message = `<p>User feedback:</p>
             <p>"${feedback.text}"</p>
             <p>${feedback.rating} out of 5 stars</p>
             <p>New quest overall rating: ${ratingavg} out of 5 across ${quest.ratingcount} ratings.</p>
@@ -61,13 +139,16 @@ export function submit(type: 'rating'|'report', feedback: any, callback: (e: Err
             <p>Quest id: ${feedback.questid}</p>
           `;
 
-          if (type === 'rating' && feedback.text && feedback.text.length > 0) {
-            Mail.send([quest.email, 'expedition+questfeedback@fabricate.io'], 'Quest rated ' + feedback.rating + '/5: ' + quest.title, htmlMessage, () => {});
+          if (type === 'rating' && feedback.dataValues.text.length > 0) {
+            Mail.send([quest.email, 'expedition+questfeedback@fabricate.io'], 'Quest rated ' + feedback.rating + '/5: ' + quest.title, message, () => {});
           } else if (type === 'report') {
-            Mail.send([quest.email, 'expedition+questreported@fabricate.io'], 'Quest reported: ' + quest.title, htmlMessage, () => {});
+            Mail.send([quest.email, 'expedition+questreported@fabricate.io'], 'Quest reported: ' + quest.title, message, () => {});
           }
-        });
+        }
+      })
+      .then((result: any) => {
+        console.log(user.email + ' subscribed to creators list');
       });
-    });
-  });
-};
+  }
+}
+
