@@ -15,6 +15,7 @@ import QuestEndContainer from '../QuestEndContainer'
 import {renderCardTemplate} from '../../cardtemplates/Template'
 
 import {closeSnackbar} from '../../actions/Snackbar'
+import {initialState} from '../../reducers/Snackbar'
 import {AppStateWithHistory, TransitionType, SearchPhase, SnackbarState} from '../../reducers/StateTypes'
 import {getStore} from '../../Store'
 
@@ -41,7 +42,7 @@ export default class Main extends React.Component<MainProps, {}> {
   getUpdatedState() {
     const state: AppStateWithHistory = getStore().getState();
     if (state === undefined || this.state === undefined || Object.keys(state).length === 0) {
-      return {key: 0, transition: 'INSTANT' as TransitionType, card: <SplashScreenContainer/>, snackbar: { open: false, message: '' }};
+      return {key: 0, transition: 'INSTANT' as TransitionType, card: <SplashScreenContainer/>, snackbar: initialState};
     }
 
     if (state.snackbar.open !== this.state.snackbar.open) {

@@ -6,8 +6,8 @@ import {GenreType, ContentRatingLabelType} from '../Constants'
 
 export interface AnnouncementState {
   open: boolean;
-  message?: string;
-  link?: string;
+  message: string;
+  link: string;
 }
 
 export type CardThemeType = 'LIGHT' | 'RED' | 'DARK';
@@ -40,8 +40,8 @@ export interface SettingsType {
 
 export interface SnackbarState {
   open: boolean;
-  message?: string;
-  timeout?: number;
+  message: string;
+  timeout: number;
 }
 
 export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REPORT';
