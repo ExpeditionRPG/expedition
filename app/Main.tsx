@@ -53,16 +53,15 @@ function setupDevice() {
       console.log('Immersive mode failed');
     });
 
-    // DOM ready
-    $(() => {
-      // patch for Android browser not properly scrolling to input when keyboard appears
-      $('body').on('focusin', 'input, textarea', (event) => {
-        if (navigator.userAgent.indexOf('Android') !== -1) {
-          const scroll = $(this).offset().top;
-          $('.base_card').scrollTop(scroll);
+    // Patch for Android browser not properly scrolling to input when keyboard appears
+    // https://stackoverflow.com/a/43502958/1332186
+    if(/Android/.test(navigator.appVersion)) {
+      window.addEventListener('resize', () => {
+        if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
+          document.activeElement.scrollIntoView();
         }
-      });
-    });
+      })
+    }
   }
 
   getDocument().addEventListener('backbutton', () => {

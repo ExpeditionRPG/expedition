@@ -16,17 +16,28 @@ declare var window:any;
 declare var require:any;
 const cheerio = require('cheerio') as CheerioAPI;
 
+// fetch can be used for anything except local files, so anything that might download from file://
+// (aka quests) should use this instead
+export function fetchLocal(url: string, callback: Function) {
+  const xhr = new XMLHttpRequest;
+  xhr.onload = function() {
+    return callback(null, xhr.responseText);
+  }
+  xhr.onerror = () => {
+    return callback(new Error('Network error'));
+  }
+  xhr.open('GET', url);
+  xhr.send(null);
+}
+
 export function fetchQuestXML(details: QuestDetails) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    $.ajax({url: details.publishedurl,
-      dataType: 'text',
-      success: (data: string) => {
-        const questNode = cheerio.load(data)('quest');
-        dispatch(loadQuestXML(details, questNode, defaultQuestContext()));
-      },
-      error: (xhr: any, error: string) => {
-        dispatch(openSnackbar('Network error: Please check your connection.'));
-      },
+    fetchLocal(details.publishedurl, (err: Error, result: string) => {
+      if (err) {
+        return dispatch(openSnackbar('Network error: Please check your connection.'));
+      }
+      const questNode = cheerio.load(result)('quest');
+      dispatch(loadQuestXML(details, questNode, defaultQuestContext()));
     });
   };
 }
@@ -81,20 +92,18 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
 
 export function subscribe(email: string) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    $.post({
-      url: authSettings.urlBase + '/user/subscribe',
-      data: JSON.stringify({email}),
-      dataType: 'json',
+    fetch(authSettings.urlBase + '/user/subscribe', {
+      method: 'POST',
+      body: JSON.stringify({email}),
     })
-    .done((msg: string) => {
+    .then((response: Response) => {
+      return response.text();
+    })
+    .then((data: string) => {
       logEvent('user_subscribe', email);
-    })
-    .fail((xhr: any, err: string) => {
-      if (xhr.status === 200) {
-        logEvent('user_subscribe', email);
-      } else {
-        dispatch(openSnackbar('Error subscribing: ' + err));
-      }
+      dispatch(openSnackbar('Thank you for subscribing!'));
+    }).catch((error: Error) => {
+      dispatch(openSnackbar('Error subscribing: ' + error));
     });
   };
 }
@@ -113,24 +122,21 @@ export function submitUserFeedback(quest: QuestState, settings: SettingsType, us
       rating: userFeedback.rating,
       text: userFeedback.text,
     });
-    $.post({
-      url: authSettings.urlBase + '/quest/feedback/' + userFeedback.type,
-      data: JSON.stringify(data),
-      dataType: 'json',
+
+    fetch(authSettings.urlBase + '/quest/feedback/' + userFeedback.type, {
+      method: 'POST',
+      body: JSON.stringify(data),
     })
-    .done((msg: string) => {
+    .then((response: Response) => {
+      return response.text();
+    })
+    .then((data: string) => {
       logEvent('user_feedback_' + userFeedback.type, data);
       dispatch(userFeedbackClear());
       dispatch(openSnackbar('Submission successful. Thank you!'));
-    })
-    .fail((xhr: any, err: string) => {
-      if (xhr.status === 200) {
-        logEvent('user_feedback_' + userFeedback.type, data);
-        dispatch(userFeedbackClear());
-        return dispatch(openSnackbar('Submission successful. Thank you!'));
-      }
+    }).catch((error: Error) => {
       logEvent('user_feedback_' + userFeedback.type + '_err', data);
-      return dispatch(openSnackbar('Error submitting feedback: ' + err));
+      dispatch(openSnackbar('Error submitting feedback: ' + error));
     });
   };
 }
