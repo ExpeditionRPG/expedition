@@ -2,10 +2,10 @@ import Redux from 'redux'
 import {connect} from 'react-redux'
 
 import {QuestActionType} from '../actions/ActionTypes'
-import {getPlayNode, renderAndPlay} from '../actions/Editor'
+import {getPlayNode, renderAndPlay, setLine} from '../actions/Editor'
 import {newQuest, saveQuest, publishQuestSetup, unpublishQuest} from '../actions/Quest'
 import {logoutUser} from '../actions/User'
-import {AppState, QuestType, EditorState, UserState} from '../reducers/StateTypes'
+import {AnnotationType, AppState, QuestType, EditorState, UserState} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
 
 import {toCard} from 'expedition-app/app/actions/Card'
@@ -59,6 +59,14 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
     },
     onUserDialogRequest: (user: UserState) => {
       dispatch(logoutUser());
+    },
+    onViewError: (annotations: AnnotationType[], editor: EditorState) => {
+      // Jump to the next error below the current line, looping back to the top error
+      const errors = annotations.filter((annotation) => { return annotation.type === 'error' })
+          .sort((a, b) => { return a.row - b.row });
+      const errorsAfterCursor = errors.filter((error) => { return error.row > editor.line }) || [];
+      const errorLine = (errorsAfterCursor.length > 0) ? errorsAfterCursor[0].row : errors[0].row;
+      dispatch(setLine(errorLine));
     },
     playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => {
       let ctx = defaultQuestContext();

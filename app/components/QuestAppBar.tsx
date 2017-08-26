@@ -26,6 +26,7 @@ export interface QuestAppBarStateProps {
 export interface QuestAppBarDispatchProps {
   onMenuSelect: (action: QuestActionType, quest: QuestType) => void;
   onUserDialogRequest: (user: UserState)=>void;
+  onViewError: (annotations: AnnotationType[], editor: EditorState) => void;
   playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => void;
 }
 
@@ -45,12 +46,14 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
     saveIndicator = <span className="success saveIndicator"><FlatButton label="All changes saved" disabled={true} /></span>
   }
   const errors = props.annotations.filter((annotation) => { return annotation.type === 'error' });
-  const errorLabel = (errors.length > 1) ? 'Validation Errors' : 'Validation Error';
+  const errorLabel = (errors.length > 1) ? 'View Errors' : 'View Error';
   const publishButton = (errors.length > 0) ?
-    <span className="errorButton"><FlatButton
-      label={errorLabel}
-      icon={<AlertError />}
-      disabled={true} /></span>
+    <span className="errorButton">
+      <FlatButton
+        label={errorLabel}
+        icon={<AlertError />}
+        onTouchTap={(event: any) => props.onViewError(props.annotations, props.editor)} />
+    </span>
     :
     <FlatButton
       label={(props.quest.published) ? 'Update' : 'Publish'}

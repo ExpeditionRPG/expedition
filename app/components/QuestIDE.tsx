@@ -7,10 +7,11 @@ import {AnnotationType} from '../reducers/StateTypes'
 import AppContainer from './AppContainer'
 
 export interface QuestIDEStateProps {
-  realtime: any;
-  realtimeModel: any;
   annotations: AnnotationType[];
   lastSplitPaneDragMillis: number;
+  line: number;
+  realtime: any;
+  realtimeModel: any;
 };
 
 export interface QuestIDEDispatchProps {
@@ -30,6 +31,7 @@ const QuestIDE = (props: QuestIDEProps): JSX.Element => {
           realtimeModel={props.realtimeModel}
           annotations={props.annotations}
           lastSizeChangeMillis={props.lastSplitPaneDragMillis}
+          scrollLineTarget={props.line}
           onChange={(text: string) => props.onDirty(props.realtime, text)}
           onLine={(line: number) => props.onLine(line)} />
       </div>

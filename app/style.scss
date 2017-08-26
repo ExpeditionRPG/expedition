@@ -323,7 +323,12 @@ label {
     }
 
     .errorButton {
-      color: $red800;
+      button {
+        color: $red800 !important;
+      }
+      svg {
+        fill: $red800 !important;
+      }
     }
   }
 }

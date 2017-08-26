@@ -18,16 +18,19 @@ declare var gapi: any;
 declare var window:any;
 
 interface TextViewProps extends React.Props<any> {
+  annotations: AnnotationType[];
   onChange: any;
   onLine: any;
   realtime: any;
   realtimeModel: any;
-  annotations: AnnotationType[];
 
   // Use of SplitPane interferes with JS resize and rerendering.
   // When this value changes, the text view re-renders and the
   // correct vertical height is set.
   lastSizeChangeMillis: number;
+
+  // Hook for external control of scroll position
+  scrollLineTarget?: number;
 }
 
 // This class wraps the Realtime API undo commands in a way
@@ -107,9 +110,9 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       }
       this.silentSelectionChangeTimer = setTimeout(() => {
         this.silentSelectionChangeTimer = null;
-        var selection = this.ace.editor.getSelection();
-        var lead = selection.selectionLead;
-        var anchor = selection.anchor;
+        const selection = this.ace.editor.getSelection();
+        const lead = selection.selectionLead;
+        const anchor = selection.anchor;
         if (lead.row !== anchor.row || lead.column !== anchor.column) {
           return;
         }
@@ -204,6 +207,14 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     }
     newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, (event: any) => { this.onTextInserted(event); });
     newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, (event: any) => { this.onTextDeleted(event); });
+
+    // If we've been supplied with a different line number, scroll to it
+    if (this.ace) {
+      const row = this.ace.editor.getSelection().anchor.row;
+      if (newProps.scrollLineTarget !== row) {
+        this.ace.editor.gotoLine(newProps.scrollLineTarget+1, 0, true);
+      }
+    }
   }
 
   onChange(text: string) {
@@ -221,7 +232,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
   }
 
   render() {
-    var text = 'Loading...';
+    let text = 'Loading...';
     if (this.props.realtime) {
       text = this.props.realtime.getText();
     }
