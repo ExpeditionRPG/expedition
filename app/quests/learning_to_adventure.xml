@@ -1,4 +1,4 @@
-<quest title="Learning to Adventure" data-line="0" summary="Your first adventure" author="Expedition" email="todd@fabricate.io" minplayers="1" maxplayers="6" mintimeminutes="10" maxtimeminutes="10" genre="Comedy" contentrating="Kid-friendly" engineversion="1.3.2">
+<quest title="Learning to Adventure" data-line="0">
   <roleplay title="Your adventure begins" data-line="2">
     <p>"So, you want to go on an adventure?" the grizzly town guardsman asks with a smile.</p>
     <p>You, the trouble-making children of the town, nod eagerly.</p>
@@ -101,47 +101,53 @@
       <p>[fae] You're about to enter combat for the first time. The app will guide you through each round.</p>
     </instruction>
     <instruction>
+      <p>[fae] The app will tell you which enemies to draw, along with their class / deck icon (on the back of the black enemy cards).</p>
+    </instruction>
+    <instruction>
       <p>To win, you must defeat all enemies. If all adventurers are knocked out, you lose the battle - but you might not have lost the quest.</p>
     </instruction>
     <instruction>
       <p>[damage] The app will also tell you when enemies surge, which triggers the special ability listed on each enemy's card.</p>
     </instruction>
   </roleplay>
-  <combat data-line="128">
+  <combat data-line="130">
     <e>Imp</e>
     <e>Magic Mushroom</e>
     <event on="win" loot="false" xp="false">
-      <roleplay title="Victory" data-line="135">
+      <roleplay title="Victory" data-line="137">
         <p>With a final hit, the imp and mushroom collapse to the ground, exhausted.</p>
         <p>"Alright, you win! We give up!"</p>
         <p>You handcuff them and drag them to the town guard.</p>
       </roleplay>
-      <roleplay title="A Just Reward" data-line="143">
+      <roleplay title="A Just Reward" data-line="145">
         <p>"Ah! I'm impressed, nice work!" says the guardsman, "Now, for your reward...."</p>
         <p>He laughs and smiles, reaching down to tousle your hair.</p>
         <p>"I won't tell your parents what you were up to! Now, you better get back home before it gets dark!"</p>
         <p>You head home, excited for your next adventure.</p>
       </roleplay>
-      <trigger data-line="153">goto end</trigger>
+      <trigger data-line="155">goto end</trigger>
     </event>
     <event on="lose">
-      <roleplay title="Defeat" data-line="157">
+      <roleplay title="Defeat" data-line="159">
         <p>The magical duo were simply too powerful- your wooden swords were no match.</p>
         <p>The Imp, seeing you on the verge of collapsing, lets you off easy "Ah, they're just kids. Not bad for such young 'uns. Let's go terrorize a different town!"</p>
         <p>The Imp and Mushroom run and float down main street. They knock over a horse's water trough, but are gone soon enough.</p>
       </roleplay>
-      <roleplay title="Back to the Guard" data-line="165">
+      <roleplay title="Back to the Guard" data-line="167">
         <p>You return to the guard house, bruised and dejected.</p>
         <p>The grizzly guardsman looks up from his crossword puzzle in surprise.</p>
         <p>"Ah! Looks like you had quite an adventure!"</p>
         <p>Seeing the lack of prisoners, he adds "don't worry about those two - there'll be plenty more adventures to come!"</p>
       </roleplay>
-      <trigger data-line="175">goto end</trigger>
+      <trigger data-line="177">goto end</trigger>
     </event>
   </combat>
-  <roleplay title="A Beastly Battle" id="beastfight" data-line="177">
+  <roleplay title="A Beastly Battle" id="beastfight" data-line="179">
     <instruction>
       <p>[beast] You're about to enter combat for the first time. The app will guide you through each round.</p>
+    </instruction>
+    <instruction>
+      <p>[beast] The app will tell you which enemies to draw, along with their class / deck icon (on the back of the black enemy cards).</p>
     </instruction>
     <instruction>
       <p>To win, you must defeat all enemies. If all adventurers are knocked out, you lose the battle - but you might not have lost the quest.</p>
@@ -150,10 +156,10 @@
       <p>[damage] The app will also tell you when enemies surge, which triggers the special ability listed on each enemy's card.</p>
     </instruction>
   </roleplay>
-  <combat data-line="185">
+  <combat data-line="189">
     <e>Spider</e>
     <event on="win" loot="false" xp="false">
-      <roleplay title="Victory" data-line="191">
+      <roleplay title="Victory" data-line="195">
         <p>You triumphantly crush the spider with the broom, shouting with glee.</p>
         <p>Hearing your victory, the guardsman peeks out from the door behind you.</p>
         <p>"Ah, thank goodness!" he sighs with relief.</p>
@@ -161,24 +167,24 @@
         <p>"I mean, good work cleaning the guardhouse. Run along home now, before it gets dark, and I'll tell your parents what a good help you've been!"</p>
         <p>You head home, excited for your next adventure.</p>
       </roleplay>
-      <trigger data-line="205">goto end</trigger>
+      <trigger data-line="209">goto end</trigger>
     </event>
     <event on="lose">
-      <roleplay title="defeat" data-line="209">
+      <roleplay title="defeat" data-line="213">
         <p>You've never seen a spider so big!</p>
         <p>Now you understand why the guardsman was scared. Just before the spider actually touches you, you run out of the room, letting loose a scream.</p>
         <p>The grizzly guardsman looks up from his crossword puzzle and smiles.</p>
         <p>"Not as easy as it looks, is it?" he says, "Now, run along home now, before it gets dark. Don't worry, not every adventure has spiders!"</p>
       </roleplay>
-      <trigger data-line="219">goto end</trigger>
+      <trigger data-line="223">goto end</trigger>
     </event>
   </combat>
-  <roleplay title="The End" id="end" data-line="221">
+  <roleplay title="The End" id="end" data-line="225">
     <p>That's all it takes to play Expedition!</p>
     <p>From here, you can play other featured quests on the home page of the app.</p>
     <p>You can also dive into more advanced game modes if you're feeling adventurous.</p>
     <p>
       <b>Don't forget to check out the settings</b> (in the drop-down menu in the top right) to customize your experience, including changing difficulty.</p>
   </roleplay>
-  <trigger data-line="231">end</trigger>
+  <trigger data-line="235">end</trigger>
 </quest>
