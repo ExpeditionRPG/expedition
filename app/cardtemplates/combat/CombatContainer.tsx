@@ -74,6 +74,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       logEvent('combat_victory', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
       dispatch(handleCombatEnd(node, settings, true, maxTier));
     },
+    onRetry: () => {
+      dispatch(toPrevious('QUEST_CARD', 'DRAW_ENEMIES', true));
+    },
     onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number) => {
       logEvent('combat_defeat', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
       dispatch(handleCombatEnd(node, settings, false, maxTier));

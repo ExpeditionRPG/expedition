@@ -9,6 +9,7 @@ import {MAX_ADVENTURER_HEALTH, REGEX} from '../../Constants'
 import {encounters} from '../../Encounters'
 import {isSurgeNextRound} from './Actions'
 import {SettingsType, CardState, CardName} from '../../reducers/StateTypes'
+import {handleAction, isEndNode} from '../../parser/Handlers'
 import {ParserNode} from '../../parser/Node'
 import {QuestContext, EventParameters, Enemy, Loot} from '../../reducers/QuestTypes'
 import {CombatState, CombatPhase} from './State'
@@ -26,6 +27,7 @@ export interface CombatStateProps extends CombatState {
 export interface CombatDispatchProps {
   onNext: (phase: CombatPhase) => void;
   onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number) => void;
+  onRetry: () => void;
   onVictory: (node: ParserNode, settings: SettingsType, maxTier: number) => void;
   onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => void;
   onReturn: () => void;
@@ -338,15 +340,32 @@ function renderVictory(props: CombatProps): JSX.Element {
 }
 
 function renderDefeat(props: CombatProps): JSX.Element {
-  let helpText = <span></span>;
-  if (props.settings.showHelp) {
-    helpText = <p>Remember, you can adjust combat difficulty at any time in the settings menu at the top right of the app.</p>
+  const helpfulHints = [
+    <p>Remember, you can adjust combat difficulty at any time in the settings menu (in the top right).</p>,
+    <p>Don't forget! Healing abilities and loot can be used on adventurers at 0 health.</p>,
+    <p>Tip: battles are not won by healing, but by defeating the enemy.</p>,
+    <p>Want to deal more damage? Look for combinations in your abilities - two adventurers working together can often do more damage than two alone.</p>
+  ];
+
+  // Always show a helpful hint here - it's not getting in the way like other help text might
+  // and it's a good opportunity to mitigate a potentially bad user experience
+  // Use a random number in the state to keep it consistent / not change on new render events
+  const helpText = helpfulHints[props.mostRecentRolls[0] % helpfulHints.length];
+
+  // If onLose is just an **end**, offer a retry button
+  let retryButton = <span></span>;
+  if (!props.custom) {
+    const nextNode = handleAction(props.node, 'lose');
+    if (isEndNode(nextNode)) {
+      retryButton = <Button onTouchTap={() => props.onRetry()}>Retry</Button>;
+    }
   }
 
   return (
     <Card title="Defeat" theme="DARK" inQuest={true}>
       <p>Your party was defeated.</p>
       {helpText}
+      {retryButton}
       <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'lose')}>Next</Button>
     </Card>
   );
@@ -387,8 +406,10 @@ function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
 
   const roleplay = Roleplay({
     node: props.node.ctx.templates.combat.roleplay,
+    prevNode: null,
     settings: props.settings,
     onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(settings, props.node, index)},
+    onRetry: () => {props.onRetry()},
     onReturn: () => {props.onReturn()},
   }, 'DARK');
   return roleplay;
