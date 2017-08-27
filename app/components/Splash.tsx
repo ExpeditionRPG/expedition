@@ -35,15 +35,15 @@ const Splash = (props: any): JSX.Element => {
           <div className="worldMap">
             <img alt="Countries with Expedition adventurers - Jan-April 2017" src="/images/worldmap.png"></img>
           </div>
-          <div className="imageText">Countries with Expedition adventurers - Jan-April 2017</div>
+          <div className="imageText">Countries with Expedition players</div>
           <h3>Write adventures for <a target="_blank" href="https://expeditiongame.com">Expedition: The Roleplaying Card Game</a></h3>
-          <h3>Build a following of thousands of gamers across the globe</h3>
+          <h3>Build an international fanbase</h3>
           <h3>Earn tips and donations from your followers</h3>
           <div className="buttonBox login">
             <Button onTouchTap={() => props.onLogin('main')}>Get Started</Button>
           </div>
           <h3 className="mobileOnly">
-            <strong>Visit this page on a desktop browser to get started.</strong>
+            <strong>Visit this page on a desktop browser to get started: <a href="https://Quests.ExpeditionGame.com">Quests.ExpeditionGame.com</a></strong>
           </h3>
         </div>
         <div>
@@ -77,9 +77,7 @@ const Splash = (props: any): JSX.Element => {
         </div>
         <div>
           <h1><span>Interactive storytelling</span> <span>for <strong>everyone</strong></span></h1>
-          <h3>
-            <span>Join the bleeding edge of storytelling,</span> <span>no experience required.</span>
-          </h3>
+          <h3>Join the bleeding edge of storytelling technology, no experience required.</h3>
 
           <div className="showcase">
             <div><img src="/images/code_example.png"></img></div>
