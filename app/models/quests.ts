@@ -3,6 +3,7 @@ import {Feedback, FeedbackInstance} from './feedback'
 
 import * as CloudStorage from '../lib/cloudstorage'
 import * as Mail from '../mail'
+import * as Promise from 'bluebird';
 
 export interface QuestAttributes {
   partition?: string;
@@ -162,9 +163,9 @@ export class Quest {
   }
 
   // TODO: SearchParams interface
-  search(userId: string, params: any): Promise<QuestInstance[]> {
+  search(partition: string, userId: string, params: any): Promise<QuestInstance[]> {
     // TODO: Validate search params
-    const where: Sequelize.WhereOptions<QuestAttributes> = {tombstone: null};
+    const where: Sequelize.WhereOptions<QuestAttributes> = {partition, tombstone: null};
 
     if (params.id) {
       where.id = params.id;
@@ -293,7 +294,7 @@ export class Quest {
       })
       .then((q: QuestInstance) => {
         quest = q;
-        return this.feedback.getByQuestId(quest.dataValues.id);
+        return this.feedback.getByQuestId(partition, quest.dataValues.id);
       })
       .then((feedback: FeedbackInstance[]) => {
         const ratings = feedback.filter((f: FeedbackInstance) => {

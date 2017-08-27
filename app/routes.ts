@@ -3,8 +3,8 @@ import passport from 'passport'
 import Config from './config'
 import * as Mail from './mail'
 import * as oauth2 from './lib/oauth2'
-import * as Quests  from './models/quests'
-import * as Feedback from './models/feedback'
+import {QuestInstance} from './models/Quests'
+import {models} from './models/database'
 
 const Joi = require('joi');
 const Cors = require('cors');
@@ -16,6 +16,9 @@ const RateLimit = require('express-rate-limit');
 const mailchimp = (Config.get('NODE_ENV') !== 'dev' && Config.get('MAILCHIMP_KEY')) ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
+
+// Use this partition for any operations on public-facing quests.
+const PUBLIC_PARTITION = 'expedition-public';
 
 // Use the oauth middleware to automatically get the user's profile
 // information and expose login/logout URLs to templates.
@@ -76,102 +79,89 @@ router.post('/feedback', limitCors, (req: express.Request, res: express.Response
   <p>Todd & Scott</p>`;
 
   res.header('Access-Control-Allow-Origin', req.get('origin'));
-  Mail.send(params.email, 'Feedback on your Expedition quest: ' + title, htmlMessage, (err, result) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send(GENERIC_ERROR_MESSAGE);
-    } else {
-      return res.send(result.response);
-    }
+  Mail.send(params.email, 'Feedback on your Expedition quest: ' + title, htmlMessage)
+    .then((result: any) => {
+      res.send(result.response);
+    })
+    .catch((e: Error) => {
+      console.log(e);
+      res.status(500).send(GENERIC_ERROR_MESSAGE);
+    });
   });
 });
 
 router.post('/quests', limitCors, (req: express.Request, res: express.Response) => {
-  try {
-    const token = req.params.token;
-    if (!res.locals.id) {
-      return res.send(JSON.stringify([]));
-    }
-
-    const params = req.body;
-    Quests.search(res.locals.id, params, (err: Error, quests: any[], hasMore: boolean) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).send(GENERIC_ERROR_MESSAGE);
-      }
-      const result = {error: err, quests, hasMore};
+  if (!res.locals || !res.locals.id) {
+    return res.send(JSON.stringify([]));
+  }
+  const params = req.body;
+  models.Quest.search(PUBLIC_PARTITION, res.locals.id, params)
+    .then((quests: QuestInstance[]) => {
+      const result = {error: null, quests, hasMore};
       console.log('Found ' + quests.length + ' quests for user ' + res.locals.id);
       res.send(JSON.stringify(result));
+    })
+    .catch((e: Error) => {
+      console.log(e);
+      return res.status(500).send(GENERIC_ERROR_MESSAGE);
     });
-  } catch (e) {
-    console.log(e);
-    return res.status(500).send(GENERIC_ERROR_MESSAGE);
-  }
 });
 
 router.get('/raw/:quest', limitCors, (req: express.Request, res: express.Response) => {
-  Quests.getById(req.params.quest, (err: Error, entity: any) => {
-    if (err) {
+  models.Quest.get(PUBLIC_PARTITION, req.params.quest)
+    .then((quest: QuestInstance) => {
+      res.header('Content-Type', 'text/xml');
+      res.header('Location', quest.dataValues.url);
+      res.status(301).end();
+    })
+    .catch((e: Error) => {
+      console.log(e);
       return res.status(500).send(GENERIC_ERROR_MESSAGE);
-    }
-    res.header('Content-Type', 'text/xml');
-    res.header('Location', entity.url);
-    res.status(301).end();
-  });
+    });
 });
 
 router.post('/publish/:id', publishLimiter, limitCors, (req: express.Request, res: express.Response) => {
-
   if (!res.locals.id) {
     return res.status(500).end('You are not signed in. Please sign in (by refreshing the page) to save your quest.');
   }
 
-  try {
-    Quests.publish(res.locals.id, req.params.id, req.query, req.body, (err: Error, id: string) => {
-      if (err) {
-        throw err;
-      }
+  // TODO: Construct quest attributes
+  //  req.params.id, req.query
+
+  models.Quest.publish(PUBLIC_PARTITION, res.locals.id, {}, req.body)
+    .then((id: string) => {
       console.log('Published quest ' + id);
       res.end(id);
-    });
-  } catch(e) {
-    console.log(e);
-    return res.status(500).send(GENERIC_ERROR_MESSAGE);
-  }
+    })
+    .catch((e: Error) => {
+      console.log(e);
+      return res.status(500).send(GENERIC_ERROR_MESSAGE);
+    })
 });
 
 router.post('/unpublish/:quest', limitCors, (req: express.Request, res: express.Response) => {
-
   if (!res.locals.id) {
     return res.status(500).end('You are not signed in. Please sign in (by refreshing the page) to save your quest.');
   }
 
-  try {
-    Quests.unpublish(req.params.quest, (err: Error, id: string) => {
-      if (err) {
-        throw err;
-      }
-      console.log('Unpublished quest ' + id);
-      res.end(id.toString());
+  models.Quest.unpublish(PUBLIC_PARTITION, req.params.quest)
+    .then(() => {
+      res.end('ok');
+    })
+    .catch((e: Error) => {
+      console.log(e);
+      return res.status(500).send(GENERIC_ERROR_MESSAGE);
     });
-  } catch(e) {
-    console.log(e);
-    return res.status(500).send(GENERIC_ERROR_MESSAGE);
-  }
 });
 
 router.post('/quest/feedback/:type', limitCors, (req: express.Request, res: express.Response) => {
-  try {
-    Feedback.submit(req.params.type, req.body, (err: Error, id: string) => {
-      if (err) {
-        throw err;
-      }
-      res.end(id);
+  models.Feedback.submit(req.params.type, req.body)
+    .then((id: string) => {
+      res.end('ok');
+    }).catch((e: Error) => {
+      console.log(e);
+      return res.status(500).send(GENERIC_ERROR_MESSAGE);
     });
-  } catch (e) {
-    console.log(e);
-    return res.status(500).send(GENERIC_ERROR_MESSAGE);
-  }
 });
 
 router.post('/user/subscribe', limitCors, (req: express.Request, res: express.Response) => {
@@ -182,6 +172,7 @@ router.post('/user/subscribe', limitCors, (req: express.Request, res: express.Re
       return res.status(400).send('Valid email address required.');
     }
 
+    // TODO: Move this logic into the mail.ts file.
     if (!mailchimp) {
       return res.status(200).send();
     } else {
@@ -191,19 +182,18 @@ router.post('/user/subscribe', limitCors, (req: express.Request, res: express.Re
         merge_fields: {
           SOURCE: 'app',
         },
-      })
-      .then((result: any) => {
+      }, (result: any, err: Error) => {
+        if (err) {
+          const status = (err as any).status;
+          if (status === 400) {
+            return res.status(200).send(); // Already on the list - but that's ok!
+          } else {
+            console.log('Mailchimp error', err);
+            return res.status(status).send((err as any).title);
+          }
+        }
         console.log(email + ' subscribed as pending to player list');
         return res.status(200).send();
-      })
-      .catch((err: Error) => {
-        const status = (err as any).status;
-        if (status === 400) {
-          return res.status(200).send(); // Already on the list - but that's ok!
-        } else {
-          console.log('Mailchimp error', err);
-          return res.status(status).send((err as any).title);
-        }
       });
     }
   });

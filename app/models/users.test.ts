@@ -1,8 +1,9 @@
 import {User, UserAttributes} from './users'
 import * as Sequelize from 'sequelize'
 
-const expect = require('expect');
-const sinon = require('sinon');
+import * as expect from 'expect'
+import * as sinon from 'sinon'
+import {} from 'jasmine'
 
 describe('users', () => {
   let u: User;

@@ -1,7 +1,6 @@
 import Config from '../config'
 import * as Sequelize from 'sequelize'
-
-const Mailchimp = require('mailchimp-api-v3');
+import * as Mailchimp from 'mailchimp-api-v3'
 const mailchimp = (Config.get('NODE_ENV') !== 'dev' && Config.get('MAILCHIMP_KEY')) ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
 export interface UserAttributes {
@@ -56,13 +55,10 @@ export class User {
   }
 
   public upsert(user: UserAttributes): Promise<any> {
-    let u: UserInstance = null;
-
     return this.s.authenticate()
-      .then(() => {return this.model.create(user)})
-      .then((user: UserInstance) => {
-        u = user;
-        if (this.mc) {
+      .then(() => {return this.model.upsert(user)})
+      .then((created: Boolean) => {
+        if (created && this.mc) {
           return this.mc.post('/lists/' + Config.get('MAILCHIMP_CREATORS_LIST_ID') + '/members/', {
             email_address: u.dataValues.email,
             status: 'subscribed',
@@ -70,7 +66,9 @@ export class User {
         }
       })
       .then((result: any) => {
-        console.log(u.dataValues.email + ' subscribed to creators list');
+        if (result) {
+          console.log(user.email + ' subscribed to creators list');
+        }
       });
   }
 

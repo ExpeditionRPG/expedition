@@ -1,3 +1,0 @@
-describe('validation', () => {
-  // TODO
-});

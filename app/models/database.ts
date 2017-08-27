@@ -1,4 +1,4 @@
-import SequelizeStatic, {Sequelize} from 'sequelize'
+import * as Sequelize from 'sequelize'
 import {User, UserModel} from './users'
 import {Quest, QuestModel} from './quests'
 import {Feedback, FeedbackModel} from './feedback'
@@ -7,14 +7,14 @@ import Config from '../config'
 const Url = require('url');
 
 export interface Models {
-  User: Model;
-  Quest: Model;
-  Feedback: Model;
+  User: User;
+  Quest: Quest;
+  Feedback: Feedback;
 }
 
 class Database {
   private models: Models;
-  private sequelize: Sequelize;
+  private sequelize: Sequelize.Sequelize;
 
   constructor(s?: Sequelize.Sequelize) {
     if (!s) {
@@ -30,7 +30,7 @@ class Database {
         ssl: true,
       };
 
-      this.sequelize = new SequelizeStatic(dbName, userauth[0], userauth[1], {
+      this.sequelize = new Sequelize(dbName, userauth[0], userauth[1], {
         host: urlparams.hostname,
         dialect: 'postgres',
       });
@@ -50,7 +50,7 @@ class Database {
     }
   }
 
-  getModels() {
+  getModels(): Models {
     return this.models;
   }
 

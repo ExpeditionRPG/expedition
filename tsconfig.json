@@ -5,7 +5,8 @@
     "noImplicitAny": true,
     "module": "commonjs",
     "target": "es2015",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types" : [ "node", "jasmine", "core-js" ]
   },
   "exclude": [
     "node_modules",

@@ -1,22 +1,71 @@
-// TODO: test https://github.com/Fabricate-IO/expedition-quest-creator/issues/184
-// We should see how to start a local msyql instance (and bigstore)
-// and point the configs at it.
-// (note: current travis environment variables are fillter values)
-
+import {Quest, QuestAttributes, QuestInstance} from './quests'
+import * as Sequelize from 'sequelize'
 const expect = require('expect');
+import {} from 'jasmine'
 
 describe('quest', () => {
+  let q: Quest;
+
+  const insertedQuest: QuestAttributes = {
+    partition: 'testpartition',
+    author: 'testauthor',
+    contentrating: 'mature',
+    engineversion: '1.0.0',
+    familyfriendly: false,
+    genre: 'testgenre',
+    maxplayers: 6,
+    maxtimeminutes: 60,
+    minplayers: 1,
+    mintimeminutes: 30,
+    summary: 'This be a test quest!',
+    title: 'Test Quest',
+    userid: 'testuser',
+    id: 'questid',
+    ratingavg: 0,
+    ratingcount: 0,
+    email: 'author@test.com',
+    url: 'http://test.com',
+    created: new Date(),
+    published: new Date(),
+    publishedurl: 'http://testpublishedquesturl.com',
+    questversion: 1,
+    questversionlastmajor: 1,
+    ratingavg: 0,
+    ratingcount: 0,
+    tombstone: null
+  };
+
+  beforeEach((done: () => any) => {
+    const s = new Sequelize({dialect: 'sqlite', storage: ':memory:'})
+    q = new Quest(s);
+    q.model.sync()
+      .then(() => {
+        return q.model.create(insertedQuest);
+      })
+      .then(() => {done();})
+      .catch((e: Error) => {throw e;});
+  });
+
 
   describe('searchQuests', () => {
-    it('returns an empty array on empty');
+    it('returns an empty array if no results', (done: ()=>any) => {
+      q.search('otherpartition', '', {})
+        .then((results: QuestInstance[]) => {
+          expect(results.length).toEqual(0);
+          done();
+        });
+    });
 
-    it('returns full single quest data');
+    it('returns full quest data', (done: ()=>any) => {
+      q.search('testpartition', '', {})
+        .then((results: QuestInstance[]) => {
+          expect(results.length).toEqual(1);
+          expect(results[0].dataValues).toEqual(insertedQuest);
+          done();
+        });
+    });
 
-    it('only returns published quests when no loggedInUser');
-
-    it('also displays published quests when loggedInUser');
-
-    it('does not display other user quests when loggedInUser');
+    it('also displays draft quests when user provided');
   });
 
   describe('read', () => {
@@ -40,9 +89,7 @@ describe('quest', () => {
   describe('tombstone', () => {
     it('sets tombstone if matching id and user');
 
-    it('fails to set tombstone if no user match');
-
-    it('fails to set tombstone if no id match');
+    it('fails to set tombstone if no match');
   });
 
   describe('publish', () => {
