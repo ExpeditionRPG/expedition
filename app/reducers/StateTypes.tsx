@@ -1,4 +1,4 @@
-import {QuestDetails, DifficultyType, QuestContext} from './QuestTypes'
+import {QuestDetails, QuestContext} from './QuestTypes'
 import {TemplatePhase} from '../cardtemplates/Template'
 import {ParserNode} from '../parser/Node'
 
@@ -11,11 +11,12 @@ export interface AnnouncementState {
 }
 
 export type CardThemeType = 'LIGHT' | 'RED' | 'DARK';
-export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
 export interface EndSettings {
   text: string;
 }
+
+export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'DETAILS' | 'SEARCH';
 
 export interface SearchSettings {
   text: string;
@@ -27,14 +28,17 @@ export interface SearchSettings {
   genre: GenreType;
 }
 
-export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'DETAILS' | 'SEARCH';
+export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
+export type FontSizeType = 'SMALL' | 'NORMAL' | 'LARGE';
 
 export interface SettingsType {
   autoRoll: boolean;
-  numPlayers: number;
   difficulty: DifficultyType;
-  showHelp: boolean;
+  fontSize: FontSizeType;
   multitouch: boolean;
+  numPlayers: number;
+  showHelp: boolean;
+  timerSeconds: number;
   vibration: boolean;
 }
 

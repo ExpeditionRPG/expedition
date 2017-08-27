@@ -1,13 +1,13 @@
 import * as React from 'react'
 import {shallow} from 'enzyme'
 import Tools, {ToolsProps} from './Tools'
-import {initial_state} from '../reducers/Settings'
+import {initialSettings} from '../reducers/Settings'
 
 require('react-tap-event-plugin')();
 
 function setup() {
   const props: ToolsProps = {
-    settings: initial_state,
+    settings: initialSettings,
     onCustomCombatSelect: jasmine.createSpy('onCustomCombatSelect'),
     onQuestCreatorSelect: jasmine.createSpy('onQuestCreatorSelect'),
   }

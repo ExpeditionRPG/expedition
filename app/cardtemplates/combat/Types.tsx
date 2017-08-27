@@ -19,7 +19,6 @@ export interface EndCombatPhase {
 }
 
 export interface CombatDifficultySettings {
-  roundTimeMillis: number,
   surgePeriod: number,
   damageMultiplier: number,
 }
@@ -27,6 +26,7 @@ export interface CombatDifficultySettings {
 export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {
   custom: boolean;
   roleplay?: any; // Actually ParserNode, but set to the any type to minimize dependencies.
+  roundTimeMillis: number;
 }
 
 export type CombatPhase = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER' | 'VICTORY' | 'DEFEAT';

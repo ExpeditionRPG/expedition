@@ -38,8 +38,6 @@ export interface QuestDetails {
 
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';
 
-export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
-
 export interface Choice {
   text: string;
   idx: number;

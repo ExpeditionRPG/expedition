@@ -61,22 +61,18 @@ export const PLAYER_TIME_MULT: {[key: number]: number} = {
 
 export const COMBAT_DIFFICULTY: {[key: string]: any} = {
   EASY: {
-    roundTimeMillis: 20000,
     surgePeriod: 4,
     damageMultiplier: 0.7,
   },
   NORMAL: {
-    roundTimeMillis: 10000,
     surgePeriod: 3,
     damageMultiplier: 1.0,
   },
   HARD: {
-    roundTimeMillis: 8000,
     surgePeriod: 3,
     damageMultiplier: 1.2,
   },
   IMPOSSIBLE: {
-    roundTimeMillis: 6000,
     surgePeriod: 2,
     damageMultiplier: 1.4,
   },

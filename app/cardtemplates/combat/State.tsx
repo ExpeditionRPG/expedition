@@ -23,7 +23,6 @@ export interface EndCombatPhase {
 }
 
 export interface CombatDifficultySettings {
-  roundTimeMillis: number,
   surgePeriod: number,
   damageMultiplier: number,
 }
@@ -32,7 +31,7 @@ export interface CombatState extends CombatDifficultySettings, MidCombatPhase, E
   custom: boolean;
 }
 
-export type CombatPhase = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER' | 'VICTORY' | 'DEFEAT' | 'ROLEPLAY';
+export type CombatPhase = 'DRAW_ENEMIES' | 'PREPARE' | 'NO_TIMER' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER' | 'VICTORY' | 'DEFEAT' | 'ROLEPLAY';
 
 export function combatScope() {
   return {

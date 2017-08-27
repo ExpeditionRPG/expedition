@@ -1,5 +1,5 @@
 import {initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta, handleResolvePhase, midCombatChoice} from './Actions'
-import {DifficultyType} from '../../reducers/QuestTypes'
+import {DifficultyType, FontSizeType} from '../../reducers/StateTypes'
 import {defaultQuestContext} from '../../reducers/Quest'
 import {ParserNode} from '../../parser/Node'
 import configureStore  from 'redux-mock-store'
@@ -12,9 +12,11 @@ const mockStore = configureStore([ thunk ]);
 const TEST_SETTINGS = {
   autoRoll: false,
   difficulty: 'NORMAL' as DifficultyType,
+  fontSize: 'NORMAL' as FontSizeType,
   multitouch: true,
   numPlayers: 3,
   showHelp: true,
+  timerSeconds: 10,
   vibration: true,
 };
 

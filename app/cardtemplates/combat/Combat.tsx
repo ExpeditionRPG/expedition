@@ -19,6 +19,7 @@ export interface CombatStateProps extends CombatState {
   settings: SettingsType;
   maxTier?: number;
   node: ParserNode;
+  roundTimeMillis: number;
   victoryParameters?: EventParameters;
 }
 
@@ -47,17 +48,19 @@ const numerals: {[k: number]: string;} = {
 };
 
 function renderSelectTier(props: CombatProps): JSX.Element {
+  const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
   return (
     <Card title="Draw Enemies" theme="DARK" inQuest={true}>
       <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, props.tier, i)} value={props.tier}>
         Set this to the combined tier you wish to fight.
       </Picker>
-      <Button onTouchTap={() => props.onNext('PREPARE')} disabled={props.tier <= 0}>Next</Button>
+      <Button onTouchTap={() => props.onNext(nextCard)} disabled={props.tier <= 0}>Next</Button>
     </Card>
   );
 }
 
 function renderDrawEnemies(props: CombatProps): JSX.Element {
+  const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
   let repeatEnemy = false;
   let uniqueEnemy = false;
   const enemyNames: Set<string> = new Set();
@@ -101,12 +104,14 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
       </p>
       {enemies}
       {helpText}
-      <Button onTouchTap={() => props.onNext('PREPARE')}>Next</Button>
+      <Button onTouchTap={() => props.onNext(nextCard)}>Next</Button>
     </Card>
   );
 }
 
-function renderPrepare(props: CombatProps): JSX.Element {
+function renderNoTimer(props: CombatProps): JSX.Element {
+  // Note: similar help text in renderPrepareTimer()
+  const surge = isSurgeNextRound(props.node);
   let helpText: JSX.Element = (<span></span>);
   if (props.settings.showHelp) {
     helpText = (
@@ -117,7 +122,38 @@ function renderPrepare(props: CombatProps): JSX.Element {
             <li>If you run out of abilities to draw, shuffle in your discard pile.</li>
           </ul>
         </li>
-        <li>Pre-draw three abilities face down.</li>
+        <li>No timer: Draw three abilities from your draw pile and play one ability.</li>
+        <li>Once everyone has selected an ability, tap next.</li>
+      </ol>
+    );
+  }
+
+  return (
+    <Card title="Select Ability" theme="DARK" inQuest={true}>
+      {helpText}
+      <Button
+        className="bigbutton"
+        onTouchTap={() => props.onTimerStop(props.node, props.settings, 0, surge)}
+      >
+        Next
+      </Button>
+    </Card>
+  );
+}
+
+function renderPrepareTimer(props: CombatProps): JSX.Element {
+  // Note: similar help text in renderNoTimer()
+  let helpText: JSX.Element = (<span></span>);
+  if (props.settings.showHelp) {
+    helpText = (
+      <ol>
+        <li>Shuffle your ability draw pile.
+          <ul>
+            <li>Keep abilities played this combat in a separate discard pile.</li>
+            <li>If you run out of abilities to draw, shuffle in your discard pile.</li>
+          </ul>
+        </li>
+        <li>Pre-draw three abilities face down from your draw pile.</li>
         <li>Start the timer.</li>
         <li>Look at your hand and play one ability.</li>
         {props.settings.multitouch && <li>Place your finger on the screen.</li>}
@@ -218,6 +254,7 @@ function renderEnemyTier(props: CombatProps): JSX.Element {
 }
 
 function renderPlayerTier(props: CombatProps): JSX.Element {
+  const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
   let helpText: JSX.Element = (<span></span>);
   const damage = (props.mostRecentAttack) ? props.mostRecentAttack.damage : -1;
 
@@ -242,7 +279,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
       </Picker>
 
       <Button onTouchTap={() => props.onDefeat(props.node, props.settings, props.maxTier)}>Defeat (Adventurers = 0)</Button>
-      <Button onTouchTap={() => props.onNext('PREPARE')} disabled={props.numAliveAdventurers <= 0}>Next</Button>
+      <Button onTouchTap={() => props.onNext(nextCard)} disabled={props.numAliveAdventurers <= 0}>Next</Button>
     </Card>
   );
 }
@@ -382,8 +419,10 @@ const Combat = (props: CombatProps): JSX.Element => {
   switch(props.card.phase) {
     case 'DRAW_ENEMIES':
       return (props.custom) ? renderSelectTier(props) : renderDrawEnemies(props);
+    case 'NO_TIMER':
+      return renderNoTimer(props);
     case 'PREPARE':
-      return renderPrepare(props);
+      return renderPrepareTimer(props);
     case 'TIMER':
       return renderTimerCard(props);
     case 'SURGE':

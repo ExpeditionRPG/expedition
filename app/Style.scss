@@ -60,6 +60,9 @@ $absheightmax: 1025px;
 $absmaxdimension: 1025px;
 $lineheight: 1.2;
 
+$largeFontMult: 1.25;
+$smallFontMult: 0.8;
+
 $sizemap: (
   appbar: 48px,
   inputsquare: 48px,
@@ -167,6 +170,33 @@ body {
 }
 
 @mixin styling() {
+
+  .app_container {
+    &.largeFont {
+      .article {
+        font-size: $largeFontMult * fontsize(flavor);
+        .base_button > button {
+          font-size: $largeFontMult * fontsize(flavor) !important;
+        }
+        .inline_icon {
+          height: $largeFontMult * fontsize(flavor);
+          width: $largeFontMult * fontsize(flavor);
+        }
+      }
+    }
+    &.smallFont {
+      .article {
+        font-size: $smallFontMult * fontsize(flavor);
+        .base_button > button {
+          font-size: $smallFontMult * fontsize(flavor) !important;
+        }
+        .inline_icon {
+          height: $smallFontMult * fontsize(flavor);
+          width: $smallFontMult * fontsize(flavor);
+        }
+      }
+    }
+  }
 
   .base_card {
     height: 100%;

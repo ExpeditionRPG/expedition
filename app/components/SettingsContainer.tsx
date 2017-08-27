@@ -1,9 +1,8 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-import {AppState} from '../reducers/StateTypes'
+import {AppState, DifficultyType, FontSizeType} from '../reducers/StateTypes'
 import {changeSettings} from '../actions/Settings'
-import Settings, {SettingsStateProps, SettingsDispatchProps} from './Settings'
-import {DifficultyType} from '../reducers/QuestTypes'
+import Settings, {SettingsStateProps, SettingsDispatchProps, fontSizeValues, timerValues} from './Settings'
 
 const mapStateToProps = (state: AppState, ownProps: SettingsStateProps): SettingsStateProps => {
   return state.settings;
@@ -51,6 +50,24 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Setti
         difficulty = difficultySub[difficulty];
       }
       dispatch(changeSettings({difficulty}));
+    },
+    onFontSizeDelta: (idx: number, delta: number) => {
+      let i = idx + delta;
+      if (i >= fontSizeValues.length) {
+        i = 0;
+      } else if (i < 0) {
+        i = fontSizeValues.length - 1;
+      }
+      dispatch(changeSettings({fontSize: fontSizeValues[i]}));
+    },
+    onTimerSecondsDelta: (idx: number, delta: number) => {
+      let i = idx + delta;
+      if (i >= timerValues.length) {
+        i = 0;
+      } else if (i < 0) {
+        i = timerValues.length - 1;
+      }
+      dispatch(changeSettings({timerSeconds: timerValues[i]}));
     },
   };
 }
