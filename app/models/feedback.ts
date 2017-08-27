@@ -3,6 +3,8 @@ import {Quest, QuestInstance} from './quests'
 import * as Sequelize from 'sequelize'
 import * as Promise from 'bluebird';
 
+export type FeedbackType = 'rating'|'report';
+
 export interface FeedbackAttributes {
   partition?: string;
   questid?: string;
@@ -129,7 +131,7 @@ export class Feedback {
       });
   };
 
-  public submit(type: 'rating'|'report', feedback: FeedbackAttributes): Promise<any> {
+  public submit(type: FeedbackType, feedback: FeedbackAttributes): Promise<any> {
     // Get quest version, then upsert feedback with the version of the quest.
     // Recalculate ratings on the quest
     // Then send a mail.

@@ -5,6 +5,8 @@ import * as CloudStorage from '../lib/cloudstorage'
 import * as Mail from '../mail'
 import * as Promise from 'bluebird';
 
+export const MAX_SEARCH_LIMIT = 100;
+
 export interface QuestAttributes {
   partition?: string;
   id?: string;
@@ -30,6 +32,21 @@ export interface QuestAttributes {
   created?: Date;
   published?: Date;
   tombstone?: Date;
+}
+
+export interface QuestSearchParams {
+  id?: string;
+  owner?: string;
+  players?: number;
+  search?: string;
+  text?: string;
+  age?: number;
+  mintimeminutes?: number;
+  maxtimeminutes?: number;
+  contentrating?: string;
+  genre?: string;
+  order?: string;
+  limit?: number;
 }
 
 export interface QuestInstance extends Sequelize.Instance<QuestAttributes> {
@@ -163,7 +180,7 @@ export class Quest {
   }
 
   // TODO: SearchParams interface
-  search(partition: string, userId: string, params: any): Promise<QuestInstance[]> {
+  search(partition: string, userId: string, params: QuestSearchParams): Promise<QuestInstance[]> {
     // TODO: Validate search params
     const where: Sequelize.WhereOptions<QuestAttributes> = {partition, tombstone: null};
 
@@ -226,7 +243,7 @@ export class Quest {
       }
     }
 
-    const limit = Math.max(params.limit || 0, 100);
+    const limit = Math.min(Math.max(params.limit || 0, 0), MAX_SEARCH_LIMIT);
 
     return this.model.findAll({where, order, limit});
   }
