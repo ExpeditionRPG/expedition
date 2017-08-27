@@ -1,5 +1,5 @@
 import * as Mail from '../mail'
-import {Quest, QuestInstance} from './quests'
+import {Quest, QuestInstance} from './Quests'
 import * as Sequelize from 'sequelize'
 import * as Promise from 'bluebird';
 
@@ -28,10 +28,10 @@ export interface FeedbackInstance extends Sequelize.Instance<FeedbackAttributes>
 export type FeedbackModel = Sequelize.Model<FeedbackInstance, FeedbackAttributes>;
 
 export class Feedback {
-  private s: Sequelize.Sequelize;
-  private mail: any;
+  protected s: Sequelize.Sequelize;
+  protected mail: any;
   public model: FeedbackModel;
-  private quest: Quest;
+  protected quest: Quest;
 
   constructor(s: Sequelize.Sequelize) {
     this.s = s;

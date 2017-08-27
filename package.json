@@ -1,9 +1,9 @@
 {
-  "name": "expedition-quest-creator",
-  "version": "1.3.2",
-  "description": "The Expedition Quest Creation",
+  "name": "expedition-api",
+  "version": "1.4.0",
+  "description": "The Expedition API Server",
   "homepage": "http://expeditiongame.com",
-  "repository": "https://github.com/ExpeditionRPG/expedition-quest-creator",
+  "repository": "https://github.com/ExpeditionRPG/expedition-api",
   "main": "react.js",
   "scripts": {
     "test": "mocha meta_tests.js && ts-mocha app/**/*.test.ts",
@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@google-cloud/common": "^0.13.4",
+    "@types/bluebird": "^3.5.8",
     "@types/joi": "^10.4.0",
     "@types/node": "^7.0.8",
     "@types/promise-polyfill": "^6.0.0",

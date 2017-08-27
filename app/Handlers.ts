@@ -24,19 +24,20 @@ export function search(quest: Quest, req: express.Request, res: express.Response
   if (!res.locals || !res.locals.id) {
     return res.send(JSON.stringify([]));
   }
+  const body = JSON.parse(req.body);
   const params: QuestSearchParams = {
-    id: req.body.id,
-    owner: req.body.owner,
-    players: req.body.players,
-    search: req.body.search,
-    text: req.body.text,
-    age: req.body.age,
-    mintimeminutes: req.body.mintimeminutes,
-    maxtimeminutes: req.body.maxtimeminutes,
-    contentrating: req.body.contentrating,
-    genre: req.body.genre,
-    order: req.body.order,
-    limit: req.body.limit,
+    id: body.id,
+    owner: body.owner,
+    players: body.players,
+    search: body.search,
+    text: body.text,
+    age: body.age,
+    mintimeminutes: body.mintimeminutes,
+    maxtimeminutes: body.maxtimeminutes,
+    contentrating: body.contentrating,
+    genre: body.genre,
+    order: body.order,
+    limit: body.limit,
   };
   quest.search(PUBLIC_PARTITION, res.locals.id, params)
     .then((quests: QuestInstance[]) => {
@@ -91,9 +92,9 @@ export function publish(quest: Quest, req: express.Request, res: express.Respons
   const majorRelease = req.query.majorRelease || false;
 
   quest.publish(res.locals.id, majorRelease, attribs, req.body)
-    .then((id: string) => {
-      console.log('Published quest ' + id);
-      res.end(id);
+    .then((quest: QuestInstance) => {
+      console.log('Published quest ' + quest.dataValues.id);
+      res.end(quest.dataValues.id);
     })
     .catch((e: Error) => {
       console.log(e);
@@ -114,7 +115,7 @@ export function unpublish(quest: Quest, req: express.Request, res: express.Respo
       console.log(e);
       return res.status(500).send(GENERIC_ERROR_MESSAGE);
     });
-});
+}
 
 export function feedback(feedback: Feedback, req: express.Request, res: express.Response) {
 
@@ -146,7 +147,7 @@ export function feedback(feedback: Feedback, req: express.Request, res: express.
       console.log(e);
       return res.status(500).send(GENERIC_ERROR_MESSAGE);
     });
-});
+}
 
 export function subscribe(mailchimp: any, listId: string, req: express.Request, res: express.Response) {
   req.body = JSON.parse(req.body);

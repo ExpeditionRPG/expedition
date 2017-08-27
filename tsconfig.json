@@ -6,7 +6,7 @@
     "module": "commonjs",
     "target": "es2015",
     "allowSyntheticDefaultImports": true,
-    "types" : [ "node", "jasmine", "core-js" ]
+    "types" : [ "jasmine" ]
   },
   "exclude": [
     "node_modules",

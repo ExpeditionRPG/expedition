@@ -1,9 +1,9 @@
 import * as Sequelize from 'sequelize'
-import {Feedback, FeedbackInstance} from './feedback'
+import {Feedback, FeedbackInstance} from './Feedback'
 
 import * as CloudStorage from '../lib/cloudstorage'
 import * as Mail from '../mail'
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 
 export const MAX_SEARCH_LIMIT = 100;
 
@@ -56,9 +56,9 @@ export interface QuestInstance extends Sequelize.Instance<QuestAttributes> {
 export type QuestModel = Sequelize.Model<QuestInstance, QuestAttributes>;
 
 export class Quest {
-  private s: Sequelize.Sequelize;
-  private mc: any;
-  private feedback: Feedback;
+  protected s: Sequelize.Sequelize;
+  protected mc: any;
+  protected feedback: Feedback;
   public model: QuestModel;
 
   constructor(s: Sequelize.Sequelize) {
@@ -174,13 +174,15 @@ export class Quest {
     this.feedback = models.Feedback;
   }
 
-  get(partition: string, id: string): Promise<QuestInstance> {
+  get(partition: string, id: string): Bluebird<QuestInstance> {
     return this.s.authenticate()
-      .then(() => {return this.model.findOne({where: [{partition, id}]})});
+      .then(() => {
+        return this.model.findOne({where: {partition, id}})
+      });
   }
 
   // TODO: SearchParams interface
-  search(partition: string, userId: string, params: QuestSearchParams): Promise<QuestInstance[]> {
+  search(partition: string, userId: string, params: QuestSearchParams): Bluebird<QuestInstance[]> {
     // TODO: Validate search params
     const where: Sequelize.WhereOptions<QuestAttributes> = {partition, tombstone: null};
 
@@ -194,13 +196,15 @@ export class Quest {
     }
 
     if (params.players) {
-      where.minplayers = {$lt: params.players};
-      where.maxplayers = {$gt: params.players};
+      where.minplayers = {$lte: params.players};
+      where.maxplayers = {$gte: params.players};
     }
 
     // DEPRECATED from app 6/10/17 (also in schemas.js)
     (where as Sequelize.AnyWhereOptions).$and = [];
     if (params.search) {
+      console.log(params);
+      console.log(params.search);
       const search = '%' + params.search.toLowerCase() + '%';
       (where as any).$and.push(Sequelize.where(Sequelize.fn('LOWER', 'title'), {$like: search}));
     }
@@ -248,13 +252,13 @@ export class Quest {
     return this.model.findAll({where, order, limit});
   }
 
-  publish(userid: string, majorRelease: boolean, params: QuestAttributes, xml: string): Promise<QuestInstance> {
+  publish(userid: string, majorRelease: boolean, params: QuestAttributes, xml: string): Bluebird<QuestInstance> {
     // TODO: Validate XML via crawler
     if (!userid) {
-      return Promise.reject(new Error('Could not publish - no user id.'));
+      return Bluebird.reject(new Error('Could not publish - no user id.'));
     }
     if (!xml) {
-      return Promise.reject(new Error('Could not publish - no xml data.'));
+      return Bluebird.reject(new Error('Could not publish - no xml data.'));
     }
 
     let quest: QuestInstance;
@@ -265,12 +269,13 @@ export class Quest {
       .spread((q: QuestInstance, created: boolean) => {
         quest = q;
         if (created) {
-          // if this is a newly published quest, email us!
+          // If this is a newly published quest, email us!
+          // We don't care if this fails.
           const message = `Summary: ${params.summary}. By ${params.author}, for ${params.minplayers} - ${params.maxplayers} players.`;
-          Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + params.title, message, (err: Error, result: any) => {});
+          Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + params.title, message);
         }
 
-        quest.dataValues = {...quest.dataValues, params};
+        quest.dataValues = {...quest.dataValues, ...params};
         quest.dataValues.questversion = (quest.dataValues.questversion || 0) + 1;
 
         if (majorRelease) {
@@ -296,14 +301,14 @@ export class Quest {
       });
   };
 
-  unpublish(partition: string, id: string): Promise<QuestInstance> {
+  unpublish(partition: string, id: string): Bluebird<any> {
     return this.s.authenticate()
       .then(() => {
-        return this.model.update({tombstone: new Date()}, {where: {partition, id}})
+        return this.model.update({tombstone: new Date()}, {where: {partition, id}, limit: 1})
       });
   }
 
-  updateRatings(partition: string, id: string): Promise<QuestInstance> {
+  updateRatings(partition: string, id: string): Bluebird<QuestInstance> {
     let quest: QuestInstance;
     return this.s.authenticate()
       .then(() => {

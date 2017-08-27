@@ -1,6 +1,7 @@
 import Config from '../config'
 import * as Sequelize from 'sequelize'
-import * as Mailchimp from 'mailchimp-api-v3'
+import * as Bluebird from 'bluebird'
+const Mailchimp = require('mailchimp-api-v3');
 const mailchimp = (Config.get('NODE_ENV') !== 'dev' && Config.get('MAILCHIMP_KEY')) ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
 export interface UserAttributes {
@@ -18,8 +19,8 @@ export interface UserInstance extends Sequelize.Instance<UserAttributes> {
 export type UserModel = Sequelize.Model<UserInstance, UserAttributes>;
 
 export class User {
-  private s: Sequelize.Sequelize;
-  private mc: any;
+  protected s: Sequelize.Sequelize;
+  protected mc: any;
   public model: UserModel;
 
   constructor(s: Sequelize.Sequelize, mc?: any) {
@@ -54,13 +55,15 @@ export class User {
     }) as UserModel);
   }
 
-  public upsert(user: UserAttributes): Promise<any> {
+  public associate(models: any) {}
+
+  public upsert(user: UserAttributes): Bluebird<any> {
     return this.s.authenticate()
       .then(() => {return this.model.upsert(user)})
       .then((created: Boolean) => {
         if (created && this.mc) {
           return this.mc.post('/lists/' + Config.get('MAILCHIMP_CREATORS_LIST_ID') + '/members/', {
-            email_address: u.dataValues.email,
+            email_address: user.email,
             status: 'subscribed',
           });
         }
@@ -72,9 +75,9 @@ export class User {
       });
   }
 
-  public get(id: string): Promise<UserInstance> {
+  public get(id: string): Bluebird<UserInstance> {
     return this.s.authenticate()
-      .then(() => {return this.model.findAll({where: [{id}]})})
+      .then(() => {return this.model.findAll({where: {id}})})
       .then((results: UserInstance[]) => {
         if (results.length !== 1) {
           throw new Error("Expected single result for user; got " + results.length);
