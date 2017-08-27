@@ -84,7 +84,16 @@ export function renderAndPlay(qdl: string, line: number, ctx: QuestContext) {
     dispatch({type: 'REBOOT_APP'});
     dispatch(initQuest({id: '0'}, questNode, ctx));
     // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
-    dispatch(loadNode({autoRoll: false, numPlayers: 1, difficulty: 'NORMAL', showHelp: false, multitouch: false, vibration: false}, newNode));
+    dispatch(loadNode({
+      autoRoll: false,
+      difficulty: 'NORMAL',
+      fontSize: 'SMALL',
+      multitouch: false,
+      numPlayers: 1,
+      showHelp: false,
+      timerSeconds: 10,
+      vibration: false
+    }, newNode));
     // TODO fix perf issues with crawler on long quests (example ID 0B7ligyKcIb7OWUhPQ0dNemZUUkE)
     // dispatch({type: 'QUEST_PLAYTEST', msgs: playtestXMLResult(questNode)});
   };

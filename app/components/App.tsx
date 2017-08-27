@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import Main from 'expedition-app/app/components/base/Main'
+import AppContainer from 'expedition-app/app/components/base/AppContainer'
 import FlatButton from 'material-ui/FlatButton'
 
 require('expedition-app/app/style.scss')
@@ -23,7 +23,7 @@ const App = (props: AppProps): JSX.Element => {
   return (
     <div className="app_root">
       <div className="app editor_override">
-        <Main/>
+        <AppContainer/>
       </div>
     </div>
   );

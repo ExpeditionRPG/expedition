@@ -10,7 +10,7 @@
     "watch:test": "karma start karma.conf.js",
     "dev": "webpack-dev-server --progress",
     "start": "node app.js",
-    "heroku-postbuild": "webpack -p --config webpack.dist.config.js --progress"
+    "build": "webpack -p --config webpack.dist.config.js --progress"
   },
   "author": "Fabricate.IO",
   "license": "CC-BY-NC-SA-4.0",
@@ -34,7 +34,7 @@
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.1",
     "cors": "^2.8.3",
-    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#a40478817cc6b91ddff114480f6e723735c276c3",
+    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#924a2d39362d053f5f16f26bc7c749a674bf0983",
     "express": "^4.15.2",
     "express-rate-limit": "^2.8.0",
     "express-session": "^1.15.1",

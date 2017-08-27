@@ -75,7 +75,7 @@ The Quest Creator uses Continuous Integration (via Travis CI) and Heroku hosting
 
 If tests pass, the `dev` branch is automatically deploy to the Heroku development environment at [http://devquests.expeditiongame.com](http://devquests.expeditiongame.com).
 
-Once master has been thoroughly tested on dev, it can be deployed to master via `git push heroku master`. Branches besides master can also be deployed via `git push heroku branchname:master`.
+Once master has been thoroughly tested on dev, it can be deployed to master via `npm run build` and uploading to S3.
 
 ### Database
 
