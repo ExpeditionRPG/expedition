@@ -37,28 +37,19 @@ export class Feedback {
     this.s = s;
     this.model = this.s.define<FeedbackInstance, FeedbackAttributes>('feedback', {
       partition: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(32),
         allowNull: false,
         primaryKey: true,
-        validate: {
-          max: 32,
-        }
       },
       questid: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(255),
         allowNull: false,
         primaryKey: true,
-        validate: {
-          max: 255,
-        },
       },
       userid: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(255),
         allowNull: false,
         primaryKey: true,
-        validate: {
-          max: 255,
-        },
       },
       questversion: {
         type: Sequelize.INTEGER,
@@ -69,43 +60,18 @@ export class Feedback {
         defaultValue: Sequelize.NOW,
       },
       rating: Sequelize.INTEGER,
-      text: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 2048,
-        },
-      },
+      text: Sequelize.STRING(2048),
       email: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(255),
         validate: {
           isEmail: true,
         },
       },
-      name: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 255,
-        },
-      },
-      difficulty: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 32,
-        },
-      },
-      platform: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 32,
-        },
-      },
+      name: Sequelize.STRING(255),
+      difficulty: Sequelize.STRING(32),
+      platform: Sequelize.STRING(32),
       players: Sequelize.INTEGER,
-      version: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 32,
-        },
-      },
+      version: Sequelize.STRING(32),
     }, {
       freezeTableName: true,
       timestamps: false, // TODO: eventually switch to sequelize timestamps

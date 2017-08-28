@@ -19,7 +19,6 @@ class Database {
   constructor(s?: Sequelize.Sequelize) {
     if (!s) {
       this.sequelize = new Sequelize(Config.get('DATABASE_URL'), {
-        logging: true,
         dialectOptions: {
           ssl: true,
         },

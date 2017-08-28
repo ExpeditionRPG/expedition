@@ -124,20 +124,22 @@ export function feedback(feedback: Feedback, req: express.Request, res: express.
     return res.status(500).end('Unknown feedback type: ' + req.params.type);
   }
 
+  // TODO: Try/catch
+  const body = JSON.parse(req.body);
   const attribs: FeedbackAttributes = {
-    partition: req.body.partition,
-    questid: req.body.questid,
-    userid: req.body.userid,
-    questversion: req.body.questversion,
-    created: req.body.created,
-    rating: req.body.rating,
-    text: req.body.text,
-    email: req.body.email,
-    name: req.body.name,
-    difficulty: req.body.difficulty,
-    platform: req.body.platform,
-    players: req.body.players,
-    version: req.body.version,
+    partition: body.partition || PUBLIC_PARTITION,
+    questid: body.questid,
+    userid: body.userid,
+    questversion: body.questversion,
+    created: body.created,
+    rating: body.rating,
+    text: body.text,
+    email: body.email,
+    name: body.name,
+    difficulty: body.difficulty,
+    platform: body.platform,
+    players: body.players,
+    version: body.version,
   }
 
   feedback.submit(type, attribs)

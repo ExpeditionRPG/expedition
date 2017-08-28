@@ -65,18 +65,12 @@ export class Quest {
     this.s = s;
     this.model = this.s.define<QuestInstance, QuestAttributes>('quests', {
       partition: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 32,
-        },
+        type: Sequelize.STRING(32),
         allowNull: false,
         primaryKey: true,
       },
       id: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 255,
-        },
+        type: Sequelize.STRING(255),
         allowNull: false,
         primaryKey: true,
       },
@@ -88,73 +82,23 @@ export class Quest {
         type: Sequelize.INTEGER,
         defaultValue: 1,
       },
-      engineversion: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 128,
-        },
-      },
-      publishedurl: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 2048,
-        },
-      },
-      userid: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 255,
-        },
-      },
-      author: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 255,
-        },
-      },
-      email: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 255,
-        },
-      },
+      engineversion: Sequelize.STRING(128),
+      publishedurl: Sequelize.STRING(2048),
+      userid: Sequelize.STRING(255),
+      author: Sequelize.STRING(255),
+      email: Sequelize.STRING(255),
       maxplayers: Sequelize.INTEGER,
       maxtimeminutes: Sequelize.INTEGER,
       minplayers: Sequelize.INTEGER,
       mintimeminutes: Sequelize.INTEGER,
-      summary: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 1024,
-        },
-      },
-      title: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 255,
-        },
-      },
-      url: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 2048,
-        },
-      },
+      summary: Sequelize.STRING(1024),
+      title: Sequelize.STRING(255),
+      url: Sequelize.STRING(2048),
       familyfriendly: Sequelize.BOOLEAN,
       ratingavg: Sequelize.DECIMAL(4, 2),
       ratingcount: Sequelize.INTEGER,
-      genre: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 128,
-        },
-      },
-      contentrating: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 128,
-        },
-      },
+      genre: Sequelize.STRING(128),
+      contentrating: Sequelize.STRING(128),
       created: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
@@ -247,7 +191,7 @@ export class Quest {
       }
     }
 
-    const limit = Math.min(Math.max(params.limit || 0, 0), MAX_SEARCH_LIMIT);
+    const limit = Math.min(Math.max(params.limit || MAX_SEARCH_LIMIT, 0), MAX_SEARCH_LIMIT);
 
     return this.model.findAll({where, order, limit});
   }
@@ -262,29 +206,15 @@ export class Quest {
     }
 
     let quest: QuestInstance;
+    let isNew: boolean = false;
     return this.s.authenticate()
       .then(() => {
         return this.model.findOne({where: {id: params.id}});
       })
-      .spread((q: QuestInstance, created: boolean) => {
-        quest = q;
-        if (created) {
-          // If this is a newly published quest, email us!
-          // We don't care if this fails.
-          const message = `Summary: ${params.summary}. By ${params.author}, for ${params.minplayers} - ${params.maxplayers} players.`;
-          Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + params.title, message);
-        }
+      .then((q: QuestInstance) => {
+        isNew = !Boolean(q);
+        quest = q || this.model.build(params);
 
-        quest.dataValues = {...quest.dataValues, ...params};
-        quest.dataValues.questversion = (quest.dataValues.questversion || 0) + 1;
-
-        if (majorRelease) {
-          quest.dataValues.questversionlastmajor = quest.dataValues.questversion;
-        }
-
-        return quest.validate();
-      })
-      .then(() => {
         const cloudStorageData = {
           gcsname: userid + '/' + quest.dataValues.id + '/' + Date.now() + '.xml',
           buffer: xml
@@ -296,8 +226,25 @@ export class Quest {
             console.log(err);
           }
         });
-        quest.dataValues.publishedurl = CloudStorage.getPublicUrl(cloudStorageData.gcsname);
-        return quest.save();
+        const publishedurl = CloudStorage.getPublicUrl(cloudStorageData.gcsname);
+        console.log('Uploading to URL ' + publishedurl);
+
+        if (isNew) {
+          // If this is a newly published quest, email us!
+          // We don't care if this fails.
+          const message = `Summary: ${params.summary}. By ${params.author}, for ${params.minplayers} - ${params.maxplayers} players.`;
+          Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + params.title, message);
+        }
+
+        const updateValues: QuestAttributes = {
+          ...params,
+          questversion: (quest.dataValues.questversion || 0) + 1,
+          publishedurl,
+        };
+        if (majorRelease) {
+          updateValues.questversionlastmajor = updateValues.questversion;
+        }
+        return quest.update(updateValues);
       });
   };
 

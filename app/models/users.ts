@@ -28,25 +28,17 @@ export class User {
     this.mc = mc || mailchimp;
     this.model = (this.s.define('users', {
       id: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(255),
         allowNull: false,
         primaryKey: true,
-        validate: {
-          max: 255,
-        },
       },
       email: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(255),
         validate: {
           isEmail: true,
         }
       },
-      name: {
-        type: Sequelize.STRING,
-        validate: {
-          max: 255,
-        },
-      },
+      name: Sequelize.STRING(255),
       created: Sequelize.DATE,
       lastLogin: Sequelize.DATE,
     }, {
