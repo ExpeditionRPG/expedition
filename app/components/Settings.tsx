@@ -31,11 +31,12 @@ export const fontSizeValues: FontSizeType[] = ['SMALL', 'NORMAL', 'LARGE'];
 
 const timerText: { [v: string]: any } = [
   {title: 'Disabled', text: 'Timer disabled.' },
-  {title: 'Relaxed', text: 'Take your time, you have 30 seconds.' },
+  {title: 'Strategic', text: 'Time to plan, 30 seconds per round.' },
+  {title: 'Relaxed', text: 'Breathing room, 15 seconds per round.' },
   {title: 'Normal', text: 'Classic Expedition, 10 seconds per round.' },
   {title: 'Fast', text: 'Act fast! 6 seconds per round.' },
 ];
-export const timerValues: number[] = [null, 30, 10, 6];
+export const timerValues: number[] = [null, 30, 15, 10, 6];
 
 const Settings = (props: SettingsProps): JSX.Element => {
   const difficultyIdx = ['EASY', 'NORMAL', 'HARD', 'IMPOSSIBLE'].indexOf(props.difficulty);

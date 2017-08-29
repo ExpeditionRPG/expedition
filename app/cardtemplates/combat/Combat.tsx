@@ -66,6 +66,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
   let repeatEnemy = false;
   let uniqueEnemy = false;
   const enemyNames: Set<string> = new Set();
+  const oneEnemy = (props.enemies.length === 1);
   const enemies: JSX.Element[] = props.enemies.map((enemy: Enemy, index: number) => {
     uniqueEnemy = uniqueEnemy || !enemy.class;
     let icon = null;
@@ -89,12 +90,13 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
   if (props.settings.showHelp) {
     helpText = (
       <div>
-        <p>Draw the enemies listed above.</p>
+        <p>Draw the enemy {oneEnemy ? 'card' : 'cards'} listed above.</p>
         <ul>
           {repeatEnemy && <li>Draw extra cards of the appropriate class for the duplicate enemies, and track health using the card backs.</li>}
           {uniqueEnemy && <li>Draw cards of any class for enemies without class icons. Track health using the back.</li>}
         </ul>
-        <p>Place these cards in the center and put tokens on their maximum health.</p>
+        {oneEnemy && <p>Place it in the center and put a token on its maximum health.</p>}
+        {!oneEnemy && <p>Place them in the center and put tokens on their maximum health.</p>}
       </div>
     );
   }
@@ -180,10 +182,10 @@ function renderSurge(props: CombatProps): JSX.Element {
     helpText = (
       <span>
         <p>
-          Immediately follow the surge action listed on all remaining encounter cards. Some encounters' surges may also apply after they've been killed.
+          Immediately follow the surge action listed on all remaining encounter cards. Some encounters' surges may also apply after they've been knocked out.
         </p>
         <p>
-          Surge effects happen before abilities. Abilities that apply "this round" do not affect surges (however, loot may still be used during a surge). If you are killed during a surge, do not resolve your abilities.
+          Surge effects happen before abilities. Abilities that apply "this round" do not affect surges (however, loot may still be used during a surge). If you are knocked out during a surge, do not resolve your abilities.
         </p>
       </span>
     );
