@@ -4,7 +4,7 @@
 // (note: current travis environment variables are fillter values)
 
 import {Feedback, FeedbackAttributes, FeedbackInstance} from './Feedback'
-import {Quest, QuestAttributes, QuestInstance} from './quests'
+import {Quest, QuestAttributes, QuestInstance} from './Quests'
 import * as Sequelize from 'sequelize'
 import * as expect from 'expect'
 import {} from 'jasmine'

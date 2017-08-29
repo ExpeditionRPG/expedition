@@ -1,4 +1,4 @@
-import {User, UserAttributes} from './users'
+import {User, UserAttributes} from './Users'
 import * as Sequelize from 'sequelize'
 
 import * as expect from 'expect'

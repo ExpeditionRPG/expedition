@@ -1,4 +1,4 @@
-import {Quest, QuestAttributes, QuestInstance} from './quests'
+import {Quest, QuestAttributes, QuestInstance} from './Quests'
 import * as Sequelize from 'sequelize'
 const expect = require('expect');
 import {} from 'jasmine'
