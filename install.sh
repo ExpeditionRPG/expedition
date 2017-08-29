@@ -8,7 +8,7 @@ ln -s /usr/bin/nodejs /usr/bin/node
 
 curl https://raw.githubusercontent.com/creationix/nvm/v0.25.0/install.sh | bash
 
-/bin/bash -l -c 'source ~/.nvm/nvm.sh && nvm install v8.1.2 && nvm alias default v8.1.2'
+/bin/bash -l -c 'source ~/.nvm/nvm.sh && nvm install v8.1.4 && nvm alias default v8.1.4'
 
 npm install -g webpack
 
