@@ -109,7 +109,7 @@ export class Feedback {
       })
       .then((q: QuestInstance) => {
         if (!q) {
-          throw new Error("No such quest with id " + feedback.questid);
+          throw new Error('No such quest with id ' + feedback.questid);
         }
 
         feedback.questversion = q.dataValues.questversion;

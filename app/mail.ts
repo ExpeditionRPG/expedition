@@ -12,7 +12,7 @@ const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
 // to: single email string, or array of emails
 export function send(to: string|string[], subject: string, htmlMessage: string): Bluebird<any> {
   // for plaintext version, turn end of paragraphs into double newlines
-  var mailOptions = {
+  const mailOptions = {
     from: '"Expedition" <expedition@fabricate.io>', // sender address
     to: [].concat(to).join(','),
     bcc: 'todd@fabricate.io',

@@ -31,8 +31,7 @@ const options = {
   },
   module: {
     rules: [
-      // TODO(scott): Enable linting
-      // { enforce: 'pre', test: /\.ts$/, loader: 'tslint-loader', exclude: /node_modules/ },
+      { enforce: 'pre', test: /\.ts$/, loader: 'tslint-loader', exclude: /node_modules/ },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.ts$/, loaders: ['awesome-typescript-loader'], exclude: [/\/node_modules\/.*/, /\/dist\/.*/] },
     ]

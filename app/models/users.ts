@@ -72,7 +72,7 @@ export class User {
       .then(() => {return this.model.findAll({where: {id}})})
       .then((results: UserInstance[]) => {
         if (results.length !== 1) {
-          throw new Error("Expected single result for user; got " + results.length);
+          throw new Error('Expected single result for user; got ' + results.length);
         }
         return results[0];
       });
