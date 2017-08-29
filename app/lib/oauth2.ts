@@ -1,5 +1,5 @@
 import Config from '../config'
-import * as Users from '../models/users'
+import {models} from '../models/Database'
 import * as express from 'express'
 
 const Express = require('express');
@@ -93,11 +93,10 @@ router.post('/auth/google', // LOGIN
     const user: any = {id: req.user};
     if (req.body.email) { user.email = req.body.email; }
     if (req.body.name) { user.name = req.body.name; }
-    Users.upsert(user, (err: Error) => {
-      if (err) {
-        return console.log(err);
-      }
-    });
+    models.User.upsert(user)
+      .catch((err: Error) => {
+        console.log(err);
+      });
   }
 );
 // [END authorize]

@@ -1,46 +1,81 @@
-import * as Query from './query'
-import Schemas from './schemas'
 import Config from '../config'
-
-const Joi = require('joi');
-
+import * as Sequelize from 'sequelize'
+import * as Bluebird from 'bluebird'
 const Mailchimp = require('mailchimp-api-v3');
 const mailchimp = (Config.get('NODE_ENV') !== 'dev' && Config.get('MAILCHIMP_KEY')) ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
-const table = 'users';
-
-export function upsert(user: any, callback: (e: Error, id: string) => any) {
-  Joi.validate(user, Schemas.usersUpsert, (err: Error, user: any) => {
-
-    if (err) {
-      return callback(err, null);
-    }
-
-    Query.getId(table, 'id', (err: Error, result: any) => {
-
-      if (err && (err as any).code !== 404) { // don't fail to upsert if the getId fails
-        console.log(err);
-      } else if (mailchimp) {
-        mailchimp.post('/lists/' + Config.get('MAILCHIMP_CREATORS_LIST_ID') + '/members/', {
-          email_address: user.email,
-          status: 'subscribed',
-        })
-        .then((result: any) => {
-          console.log(user.email + ' subscribed to creators list');
-        })
-        .catch((err: Error) => {
-          console.log('Mailchimp error', err);
-        });
-      }
-
-      Query.upsert(table, user, 'id', (err: Error, result: any) => {
-
-        if (err) {
-          return callback(err, null);
-        }
-
-        return callback(null, user.id);
-      });
-    });
-  });
+export interface UserAttributes {
+  id: string;
+  email: string;
+  name: string;
+  created: Date;
+  lastLogin: Date;
 }
+
+export interface UserInstance extends Sequelize.Instance<UserAttributes> {
+  dataValues: UserAttributes;
+}
+
+export type UserModel = Sequelize.Model<UserInstance, UserAttributes>;
+
+export class User {
+  protected s: Sequelize.Sequelize;
+  protected mc: any;
+  public model: UserModel;
+
+  constructor(s: Sequelize.Sequelize, mc?: any) {
+    this.s = s;
+    this.mc = mc || mailchimp;
+    this.model = (this.s.define('users', {
+      id: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+        primaryKey: true,
+      },
+      email: {
+        type: Sequelize.STRING(255),
+        validate: {
+          isEmail: true,
+        }
+      },
+      name: Sequelize.STRING(255),
+      created: Sequelize.DATE,
+      lastLogin: Sequelize.DATE,
+    }, {
+      timestamps: false, // TODO: eventually switch to sequelize timestamps
+      underscored: true,
+    }) as UserModel);
+  }
+
+  public associate(models: any) {}
+
+  public upsert(user: UserAttributes): Bluebird<any> {
+    return this.s.authenticate()
+      .then(() => {return this.model.upsert(user)})
+      .then((created: Boolean) => {
+        if (created && this.mc) {
+          return this.mc.post('/lists/' + Config.get('MAILCHIMP_CREATORS_LIST_ID') + '/members/', {
+            email_address: user.email,
+            status: 'subscribed',
+          });
+        }
+      })
+      .then((result: any) => {
+        if (result) {
+          console.log(user.email + ' subscribed to creators list');
+        }
+      });
+  }
+
+  public get(id: string): Bluebird<UserInstance> {
+    return this.s.authenticate()
+      .then(() => {return this.model.findAll({where: {id}})})
+      .then((results: UserInstance[]) => {
+        if (results.length !== 1) {
+          throw new Error("Expected single result for user; got " + results.length);
+        }
+        return results[0];
+      });
+  }
+}
+

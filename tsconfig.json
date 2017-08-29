@@ -4,8 +4,9 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "module": "commonjs",
-    "target": "ES5",
-    "allowSyntheticDefaultImports": true
+    "target": "es2015",
+    "allowSyntheticDefaultImports": true,
+    "types" : [ "jasmine" ]
   },
   "exclude": [
     "node_modules",

@@ -1,235 +1,279 @@
-import * as Query from './query'
-import * as Feedback from './feedback'
-import Schemas from './schemas'
-
-const Cheerio = require('cheerio');
-const Joi = require('joi');
-const Squel = require('squel');
+import * as Sequelize from 'sequelize'
+import {Feedback, FeedbackInstance} from './Feedback'
 
 import * as CloudStorage from '../lib/cloudstorage'
 import * as Mail from '../mail'
+import * as Bluebird from 'bluebird';
 
-const table = 'quests';
+export const MAX_SEARCH_LIMIT = 100;
 
+export interface QuestAttributes {
+  partition?: string;
+  id?: string;
+  questversion?: number;
+  questversionlastmajor?: number;
+  engineversion?: string;
+  publishedurl?: string;
+  userid?: string;
+  author?: string;
+  email?: string;
+  maxplayers?: number;
+  maxtimeminutes?: number;
+  minplayers?: number;
+  mintimeminutes?: number;
+  summary?: string;
+  title?: string;
+  url?: string;
+  familyfriendly?: boolean;
+  ratingavg?: number;
+  ratingcount?: number;
+  genre?: string;
+  contentrating?: string;
+  created?: Date;
+  published?: Date;
+  tombstone?: Date;
+}
 
-export function getById(id: string, callback: (e: Error, v: any)=>any) {
+export interface QuestSearchParams {
+  id?: string;
+  owner?: string;
+  players?: number;
+  search?: string;
+  text?: string;
+  age?: number;
+  mintimeminutes?: number;
+  maxtimeminutes?: number;
+  contentrating?: string;
+  genre?: string;
+  order?: string;
+  limit?: number;
+}
 
-  Joi.validate(id, Schemas.quests.id, (err: Error, id: string) => {
+export interface QuestInstance extends Sequelize.Instance<QuestAttributes> {
+  dataValues: QuestAttributes;
+}
 
-    if (err) {
-      return callback(err, null);
-    }
+export type QuestModel = Sequelize.Model<QuestInstance, QuestAttributes>;
 
-    return Query.getId(table, id, callback);
-  });
-};
+export class Quest {
+  protected s: Sequelize.Sequelize;
+  protected mc: any;
+  protected feedback: Feedback;
+  public model: QuestModel;
 
-// TODO: SearchParams interface
-export function search(userId: string, params: any, callback: (e: Error, results: any[], hasMore: boolean)=>any) {
-
-  if (!params) {
-    return callback(new Error('No search parameters given; requires at least one parameter'), null, false);
+  constructor(s: Sequelize.Sequelize) {
+    this.s = s;
+    this.model = this.s.define<QuestInstance, QuestAttributes>('quests', {
+      partition: {
+        type: Sequelize.STRING(32),
+        allowNull: false,
+        primaryKey: true,
+      },
+      id: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+        primaryKey: true,
+      },
+      questversion: {
+        type: Sequelize.INTEGER,
+        defaultValue: 1,
+      },
+      questversionlastmajor: {
+        type: Sequelize.INTEGER,
+        defaultValue: 1,
+      },
+      engineversion: Sequelize.STRING(128),
+      publishedurl: Sequelize.STRING(2048),
+      userid: Sequelize.STRING(255),
+      author: Sequelize.STRING(255),
+      email: Sequelize.STRING(255),
+      maxplayers: Sequelize.INTEGER,
+      maxtimeminutes: Sequelize.INTEGER,
+      minplayers: Sequelize.INTEGER,
+      mintimeminutes: Sequelize.INTEGER,
+      summary: Sequelize.STRING(1024),
+      title: Sequelize.STRING(255),
+      url: Sequelize.STRING(2048),
+      familyfriendly: Sequelize.BOOLEAN,
+      ratingavg: Sequelize.DECIMAL(4, 2),
+      ratingcount: Sequelize.INTEGER,
+      genre: Sequelize.STRING(128),
+      contentrating: Sequelize.STRING(128),
+      created: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+      },
+      published: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+      },
+      tombstone: Sequelize.DATE,
+    }, {
+      timestamps: false, // TODO: eventually switch to sequelize timestamps
+      underscored: true,
+    });
   }
 
-  Joi.validate(params, Schemas.questsSearch, (err: Error, params: any) => {
+  associate(models: {Feedback: Feedback}) {
+    this.feedback = models.Feedback;
+  }
 
-    if (err) {
-      return callback(err, null, false);
-    }
+  get(partition: string, id: string): Bluebird<QuestInstance> {
+    return this.s.authenticate()
+      .then(() => {
+        return this.model.findOne({where: {partition, id}})
+      });
+  }
 
-    let query = Squel.select()
-      .from(table)
-      .where('tombstone IS NULL');
+  // TODO: SearchParams interface
+  search(partition: string, userId: string, params: QuestSearchParams): Bluebird<QuestInstance[]> {
+    // TODO: Validate search params
+    const where: Sequelize.WhereOptions<QuestAttributes> = {partition, tombstone: null};
 
     if (params.id) {
-      query = query.where('id = ?', params.id);
+      where.id = params.id;
     }
 
     // Require results to be published if we're not querying our own quests
     if (params.owner !== userId || userId === '') {
-      query = query.where('published IS NOT NULL');
+      where.published = {$ne: null};
     }
 
     if (params.players) {
-      query = query.where('minplayers <= ?', params.players)
-                   .where('maxplayers >= ?', params.players);
+      where.minplayers = {$lte: params.players};
+      where.maxplayers = {$gte: params.players};
     }
 
     // DEPRECATED from app 6/10/17 (also in schemas.js)
+    (where as Sequelize.AnyWhereOptions).$and = [];
     if (params.search) {
+      console.log(params);
+      console.log(params.search);
       const search = '%' + params.search.toLowerCase() + '%';
-      query = query.where(Squel.expr().and('LOWER(title) LIKE ?', search).or('LOWER(summary) LIKE ?', search));
-    }
-    if (params.published_after) {
-      query = query.where('published > NOW() - \'? seconds\'::INTERVAL', params.published_after);
+      (where as any).$and.push(Sequelize.where(Sequelize.fn('LOWER', 'title'), {$like: search}));
     }
 
     if (params.text && params.text !== '') {
       const text = '%' + params.text.toLowerCase() + '%';
-      query = query.where(Squel.expr().and('LOWER(title) LIKE ?', text).or('LOWER(summary) LIKE ?', text));
+      (where as any).$and.push(Sequelize.where(Sequelize.fn('LOWER', 'title'), {$like: text}));
     }
 
     if (params.age) {
-      query = query.where('published > NOW() - \'? seconds\'::INTERVAL', params.age);
+      where.published = {$gt: Date.now() - params.age};
     }
 
     if (params.mintimeminutes) {
-      query = query.where('mintimeminutes >= ?', params.mintimeminutes);
+      where.mintimeminutes = {$gte: params.mintimeminutes};
     }
 
     if (params.maxtimeminutes) {
-      query = query.where('maxtimeminutes <= ?', params.maxtimeminutes);
+      where.maxtimeminutes = {$lte: params.maxtimeminutes};
     }
 
     if (params.contentrating) {
-      query = query.where('contentrating = ?', params.contentrating);
+      where.contentrating = params.contentrating;
     }
 
     if (params.genre) {
-      query = query.where('genre = ?', params.genre);
+      where.genre = params.genre;
     }
 
+    const order = [];
     if (params.order) {
       if (params.order === '+ratingavg') {
-        query = query.order(`
+        order.push(Sequelize.literal(`
           CASE
             WHEN ratingcount < 5 THEN 0
             ELSE ratingavg
-          END DESC NULLS LAST`, null);
-        query = query.order(`
-          CASE
-            WHEN ratingcount < 5 THEN 0
-            ELSE ratingavg
-          END`, false);
+          END DESC NULLS LAST`));
       } else {
-        query = query.order(params.order.substr(1), (params.order[0] === '+'));
+        order.push([params.order.substr(1), (params.order[0] === '+') ? 'ASC' : 'DESC']);
       }
     }
 
-    const limit = Math.max(params.limit || 0, 100);
-    query = query.limit(limit);
-    Query.run(query, (err: Error, results: any[]) => {
-      if (err) {
-        return callback(err, null, false);
-      }
-      const hasMore = (results.length === limit);
-      return callback(null, results, hasMore);
-    });
-  });
-};
+    const limit = Math.min(Math.max(params.limit || MAX_SEARCH_LIMIT, 0), MAX_SEARCH_LIMIT);
 
-function convertQuestXMLToMetadata(text: string, callback: (e: Error, result: any)=>any) {
-  const $ = Cheerio.load(text);
-  const attribs = $('quest')[0].attribs;
-  delete attribs['data-line'];
-  Joi.validate(attribs, Schemas.questsPublish, callback);
+    return this.model.findAll({where, order, limit});
+  }
+
+  publish(userid: string, majorRelease: boolean, params: QuestAttributes, xml: string): Bluebird<QuestInstance> {
+    // TODO: Validate XML via crawler
+    if (!userid) {
+      return Bluebird.reject(new Error('Could not publish - no user id.'));
+    }
+    if (!xml) {
+      return Bluebird.reject(new Error('Could not publish - no xml data.'));
+    }
+
+    let quest: QuestInstance;
+    let isNew: boolean = false;
+    return this.s.authenticate()
+      .then(() => {
+        return this.model.findOne({where: {id: params.id}});
+      })
+      .then((q: QuestInstance) => {
+        isNew = !Boolean(q);
+        quest = q || this.model.build(params);
+
+        const cloudStorageData = {
+          gcsname: userid + '/' + quest.dataValues.id + '/' + Date.now() + '.xml',
+          buffer: xml
+        };
+
+        // Run the update in parallel with the Datastore model now that we know the update is valid.
+        CloudStorage.upload(cloudStorageData, (err: Error) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+        const publishedurl = CloudStorage.getPublicUrl(cloudStorageData.gcsname);
+        console.log('Uploading to URL ' + publishedurl);
+
+        if (isNew) {
+          // If this is a newly published quest, email us!
+          // We don't care if this fails.
+          const message = `Summary: ${params.summary}. By ${params.author}, for ${params.minplayers} - ${params.maxplayers} players.`;
+          Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + params.title, message);
+        }
+
+        const updateValues: QuestAttributes = {
+          ...params,
+          questversion: (quest.dataValues.questversion || 0) + 1,
+          publishedurl,
+        };
+        if (majorRelease) {
+          updateValues.questversionlastmajor = updateValues.questversion;
+        }
+        return quest.update(updateValues);
+      });
+  };
+
+  unpublish(partition: string, id: string): Bluebird<any> {
+    return this.s.authenticate()
+      .then(() => {
+        return this.model.update({tombstone: new Date()}, {where: {partition, id}, limit: 1})
+      });
+  }
+
+  updateRatings(partition: string, id: string): Bluebird<QuestInstance> {
+    let quest: QuestInstance;
+    return this.s.authenticate()
+      .then(() => {
+        return this.model.findOne({where: {partition, id}});
+      })
+      .then((q: QuestInstance) => {
+        quest = q;
+        return this.feedback.getByQuestId(partition, quest.dataValues.id);
+      })
+      .then((feedback: FeedbackInstance[]) => {
+        const ratings = feedback.filter((f: FeedbackInstance) => {
+          return (f.dataValues.questversion >= quest.dataValues.questversionlastmajor);
+        }).map((f: FeedbackInstance) => {
+          return f.dataValues.rating;
+        });
+        const ratingcount = ratings.length;
+        const ratingavg = ratings.reduce((a: number, b: number) => { return a + b; }) / ratings.length;
+        return quest.update({ratingcount, ratingavg});
+      });
+  }
 }
-
-export function publish(userId: string, id: string, params: any, xml: string, callback: (e: Error, id: string)=>any) {
-// TODO: Validate XML via crawler
-
-  if (!userId) {
-    return callback(new Error('Invalid or missing User ID'), null);
-  }
-
-  if (!id) {
-    return callback(new Error('Invalid or missing Quest Document ID'), null);
-  }
-
-  if (!xml) {
-    return callback(new Error('Could not publish - no xml data.'), null);
-  }
-
-  const cloudStorageData = {
-    gcsname: userId + '/' + id + '/' + Date.now() + '.xml',
-    buffer: xml
-  };
-
-  // Run in parallel with the Datastore model.
-  CloudStorage.upload(cloudStorageData, (err: Error) => {
-    if (err) {
-      console.log(err);
-    }
-  });
-
-  const meta = {
-    ...params,
-    id: id,
-    userid: userId,
-    publishedurl: CloudStorage.getPublicUrl(cloudStorageData.gcsname)
-  };
-
-  Joi.validate(meta, Schemas.questsPublish, (err: Error, meta: any) => {
-    if (err) {
-      return callback(err, null);
-    }
-
-    Query.getId(table, meta.id, (err: Error, result) => {
-      if (err) {
-        if ((err as any).code === 404) { // if this is a newly published quest, email us!
-          const message = `Summary: ${meta.summary}. By ${meta.author}, for ${meta.minplayers} - ${meta.maxplayers} players.`;
-          Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + meta.title, message, (err: Error, result: any) => {});
-        } else { // this is just for notifying us, so don't return error if it fails
-          console.log(err);
-        }
-      }
-
-      result = result || {}; // if no result, don't break on result. references
-
-      meta.questversion = (result.questversion || 0) + 1;
-      if (meta.majorRelease) {
-        meta.questversionlastmajor = meta.questversion;
-      }
-      delete meta.majorRelease; // delete even if false!
-
-      Query.upsert(table, meta, 'id', (err: Error, result: any) => {
-        return callback(err, id);
-      });
-    });
-  });
-};
-
-export function unpublish(id: string, callback: (e: Error, v: any)=>any) {
-
-  Joi.validate(id, Schemas.quests.id, (err: Error, id: string) => {
-
-    if (err) {
-      return callback(err, null);
-    }
-
-    Query.deleteId(table, id, (err: Error, result: any) => {
-      return callback(err, id);
-    });
-  });
-};
-
-export function updateRatings(id: string, callback: (e: Error, v: any)=>any) {
-  Joi.validate(id, Schemas.quests.id, (err: Error, id: string) => {
-    if (err) {
-      return callback(err, null);
-    }
-
-    Query.getId(table, id, (err: Error, quest: any) => {
-      if (err) {
-        return callback(err, null);
-      }
-
-      Feedback.getRatingsByQuestId(id, (err: Error, feedback: any) => {
-        if (err) {
-          return callback(err, null);
-        }
-
-        const ratings = feedback.filter((feedback: any) => {
-          return (feedback.questversion >= quest.questversionlastmajor);
-        }).map((feedback: any) => {
-          return feedback.rating;
-        });
-        quest.ratingcount = ratings.length;
-        quest.ratingavg = ratings.reduce((a: number, b: number) => { return a + b; }) / ratings.length;
-        Query.upsert(table, quest, 'id', (err: Error, result: any) => {
-          return callback(err, quest);
-        });
-      });
-    });
-  });
-};

@@ -1,73 +1,153 @@
-const Joi = require('joi');
-const Squel = require('squel');
-
 import * as Mail from '../mail'
-import Schemas from './schemas'
-import * as Query from './query'
-import * as Quests from './quests'
+import {Quest, QuestInstance} from './Quests'
+import * as Sequelize from 'sequelize'
+import * as Promise from 'bluebird';
 
-const table = 'feedback';
+export type FeedbackType = 'rating'|'report';
 
-export function getRatingsByQuestId(questId: string, callback: (e: Error, r: any)=>any) {
-  Joi.validate(questId, Schemas.feedback.questid, (err: Error, questId: string) => {
+export interface FeedbackAttributes {
+  partition?: string;
+  questid?: string;
+  userid?: string;
+  questversion?: number;
+  created?: Date;
+  rating?: number;
+  text?: string;
+  email?: string;
+  name?: string;
+  difficulty?: string;
+  platform?: string;
+  players?: number;
+  version?: string;
+}
 
-    if (err) {
-      return callback(err, null);
-    }
+export interface FeedbackInstance extends Sequelize.Instance<FeedbackAttributes> {
+  dataValues: FeedbackAttributes;
+}
 
-    const query = Squel.select()
-      .from(table)
-      .where('questid = ?', questId)
-      .where('rating IS NOT NULL');
+export type FeedbackModel = Sequelize.Model<FeedbackInstance, FeedbackAttributes>;
 
-    return Query.run(query, callback);
-  });
-};
+export class Feedback {
+  protected s: Sequelize.Sequelize;
+  protected mail: any;
+  public model: FeedbackModel;
+  protected quest: Quest;
 
-// TODO: Feedback interface
-export function submit(type: 'rating'|'report', feedback: any, callback: (e: Error, r: any)=>any) {
-  Joi.validate(feedback, Schemas.feedbackSubmit, (err: Error, feedback: any) => {
-    if (err) {
-      return callback(err, null);
-    }
-    callback(null, feedback.questid); // don't hold up the user
+  constructor(s: Sequelize.Sequelize) {
+    this.s = s;
+    this.model = this.s.define<FeedbackInstance, FeedbackAttributes>('feedback', {
+      partition: {
+        type: Sequelize.STRING(32),
+        allowNull: false,
+        primaryKey: true,
+      },
+      questid: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+        primaryKey: true,
+      },
+      userid: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+        primaryKey: true,
+      },
+      questversion: {
+        type: Sequelize.INTEGER,
+        defaultValue: 1,
+      },
+      created: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+      },
+      rating: Sequelize.INTEGER,
+      text: Sequelize.STRING(2048),
+      email: {
+        type: Sequelize.STRING(255),
+        validate: {
+          isEmail: true,
+        },
+      },
+      name: Sequelize.STRING(255),
+      difficulty: Sequelize.STRING(32),
+      platform: Sequelize.STRING(32),
+      players: Sequelize.INTEGER,
+      version: Sequelize.STRING(32),
+    }, {
+      freezeTableName: true,
+      timestamps: false, // TODO: eventually switch to sequelize timestamps
+      underscored: true,
+    });
+  }
 
-    Quests.getById(feedback.questid, (err: Error, quest: any) => {
-      if (err) {
-        console.log(err);
-        quest = {};
-      }
-      feedback.questversion = quest.questversion;
+  public associate(models: {Quest: Quest}) {
+    this.quest = models.Quest;
+  }
 
-      Query.upsert(table, feedback, 'questid, userid', (err: Error) => {
-        if (err) {
-          console.log(err);
+  public get(partition: string, questid: string, userid: string): Promise<FeedbackInstance> {
+    return this.s.authenticate()
+      .then(() => {
+        return this.model.findOne({where: {partition, questid, userid}});
+      });
+  }
+
+  public getByQuestId(partition: string, questid: string): Promise<FeedbackInstance[]> {
+    return this.s.authenticate()
+      .then(() => {
+        return this.model.findAll({where: {partition, questid, rating: {$ne: null}}});
+      });
+  };
+
+  public submit(type: FeedbackType, feedback: FeedbackAttributes): Promise<any> {
+    // Get quest version, then upsert feedback with the version of the quest.
+    // Recalculate ratings on the quest
+    // Then send a mail.
+
+    let quest: QuestInstance;
+    return this.s.authenticate()
+      .then(() => {
+        return this.quest.get(feedback.partition, feedback.questid);
+      })
+      .then((q: QuestInstance) => {
+        if (!q) {
+          throw new Error("No such quest with id " + feedback.questid);
         }
 
-        Quests.updateRatings(feedback.questid, (err: Error, quest: any) => {
-          if (err) {
-            console.log(err);
-          }
+        feedback.questversion = q.dataValues.questversion;
+        return this.model.upsert(feedback);
+      })
+      .then((created: Boolean) => {
+        return this.quest.updateRatings(feedback.partition, feedback.questid);
+      })
+      .then((q: QuestInstance) => {
+        quest = q;
+        if (!this.mail) {
+          return Promise.resolve();
+        }
 
-          const ratingavg = (quest.ratingavg || 0).toFixed(1);
+        const ratingavg = (quest.dataValues.ratingavg || 0).toFixed(1);
+        const message = `<p>User feedback:</p>
+          <p>"${feedback.text}"</p>
+          <p>${feedback.rating} out of 5 stars</p>
+          <p>New quest overall rating: ${ratingavg} out of 5 across ${quest.dataValues.ratingcount} ratings.</p>
+          <p>Was submitted for ${quest.dataValues.title} by ${quest.dataValues.author}</p>
+          <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
+          <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
+          <p>Quest id: ${feedback.questid}</p>
+        `;
 
-          const htmlMessage = `<p>User feedback:</p>
-            <p>"${feedback.text}"</p>
-            <p>${feedback.rating} out of 5 stars</p>
-            <p>New quest overall rating: ${ratingavg} out of 5 across ${quest.ratingcount} ratings.</p>
-            <p>Was submitted for ${quest.title} by ${quest.author}</p>
-            <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
-            <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
-            <p>Quest id: ${feedback.questid}</p>
-          `;
-
-          if (type === 'rating' && feedback.text && feedback.text.length > 0) {
-            Mail.send([quest.email, 'expedition+questfeedback@fabricate.io'], 'Quest rated ' + feedback.rating + '/5: ' + quest.title, htmlMessage, () => {});
-          } else if (type === 'report') {
-            Mail.send([quest.email, 'expedition+questreported@fabricate.io'], 'Quest reported: ' + quest.title, htmlMessage, () => {});
-          }
-        });
+        if (type === 'rating' && feedback.text.length > 0) {
+          const subject = `Quest rated ${feedback.rating}/5: ${quest.dataValues.title}`;
+          console.log(subject);
+          return Mail.send([quest.dataValues.email, 'expedition+questfeedback@fabricate.io'], subject, message);
+        } else if (type === 'report') {
+          const subject = `Quest reported: ${quest.dataValues.title}`;
+          console.log(subject);
+          return Mail.send([quest.dataValues.email, 'expedition+questreported@fabricate.io'], subject, message);
+        }
+      })
+      .then(() => {
+        console.log('Feedback sent for quest (' + quest.dataValues.title + ')');
       });
-    });
-  });
-};
+  }
+}
+
