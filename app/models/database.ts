@@ -34,7 +34,7 @@ class Database {
     };
 
     // Associate models with each other
-    for (let k of Object.keys(this.models)) {
+    for (const k of Object.keys(this.models)) {
       (this.models as any)[k].associate(this.models);
     }
   }

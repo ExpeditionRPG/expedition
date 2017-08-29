@@ -24,7 +24,12 @@ export function search(quest: Quest, req: express.Request, res: express.Response
   if (!res.locals || !res.locals.id) {
     return res.send(JSON.stringify([]));
   }
-  const body = JSON.parse(req.body);
+  let body: any;
+  try {
+    body = JSON.parse(req.body);
+  } catch (e) {
+    return res.status(500).end('Error reading request.');
+  }
   const params: QuestSearchParams = {
     id: body.id,
     owner: body.owner,
@@ -124,8 +129,12 @@ export function feedback(feedback: Feedback, req: express.Request, res: express.
     return res.status(500).end('Unknown feedback type: ' + req.params.type);
   }
 
-  // TODO: Try/catch
-  const body = JSON.parse(req.body);
+  let body: any;
+  try {
+    body = JSON.parse(req.body);
+  } catch (e) {
+    return res.status(500).end('Error reading request.');
+  }
   const attribs: FeedbackAttributes = {
     partition: body.partition || PUBLIC_PARTITION,
     questid: body.questid,

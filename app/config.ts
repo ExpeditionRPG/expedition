@@ -61,7 +61,7 @@ const REQUIRED_SETTINGS = [
   'GOOGLE_SERVICE_KEY',
 ];
 
-let missing = [];
+const missing = [];
 for (let i = 0; i < REQUIRED_SETTINGS.length; i++) {
   if (!nconf.get(REQUIRED_SETTINGS[i])) {
     missing.push(REQUIRED_SETTINGS[i]);
