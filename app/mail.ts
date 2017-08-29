@@ -1,6 +1,6 @@
 import Config from './config'
 const Nodemailer = require('nodemailer');
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 
 const transporter = Nodemailer.createTransport('smtps://' + Config.get('MAIL_EMAIL') + ':' + Config.get('MAIL_PASSWORD') + '@smtp.gmail.com');
 const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
@@ -10,7 +10,7 @@ const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
 // Will need an opt-out route
 
 // to: single email string, or array of emails
-export function send(to: string|string[], subject: string, htmlMessage: string): Promise<any> {
+export function send(to: string|string[], subject: string, htmlMessage: string): Bluebird<any> {
   // for plaintext version, turn end of paragraphs into double newlines
   var mailOptions = {
     from: '"Expedition" <expedition@fabricate.io>', // sender address
@@ -25,9 +25,9 @@ export function send(to: string|string[], subject: string, htmlMessage: string):
     console.log('TO: '+ mailOptions.to);
     console.log('Subject: ' + subject);
     console.log('Text: ' + htmlMessage);
-    return Promise.resolve({response: ''});
+    return Bluebird.resolve({response: ''});
   } else {
-    return new Promise((resolve, reject) => {
+    return new Bluebird((resolve, reject) => {
       transporter.sendMailAsync(mailOptions, (err: Error, data: any) => {
         if (err) {
           reject(err);
