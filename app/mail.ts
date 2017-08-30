@@ -28,7 +28,7 @@ export function send(to: string|string[], subject: string, htmlMessage: string):
     return Bluebird.resolve({response: ''});
   } else {
     return new Bluebird((resolve, reject) => {
-      transporter.sendMailAsync(mailOptions, (err: Error, data: any) => {
+      transporter.sendMail(mailOptions, (err: Error, data: any) => {
         if (err) {
           reject(err);
         } else {
