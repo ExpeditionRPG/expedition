@@ -7,10 +7,12 @@ const options = {
   entry: {
     dist: [
       './app/React.tsx',
-      './app/style.scss',
+      './app/Style.scss',
+      './node_modules/expedition-app/app/Style.scss',
     ],
     static: [
-      './app/style.scss',
+      './app/Style.scss',
+      './node_modules/expedition-app/app/Style.scss',
     ],
   },
   resolve: {

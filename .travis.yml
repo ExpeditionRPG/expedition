@@ -1,4 +1,6 @@
 language: node_js
+node_js:
+ - '8'
 env:
 - CXX=g++-4.8
 addons:
@@ -7,7 +9,20 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.8
-before_install: "nvm install \"$(jq -r '.engines.node' package.json)\" && node --version"
+before_install: nvm install "$(jq -r '.engines.node' package.json)" && node --version
+before_deploy: "webpack -p --config ./webpack.dist.config.js"
 cache:
   directories:
-    - node_modules
+  - node_modules
+deploy:
+  provider: s3
+  access_key_id: AKIAIBLY5YNK2YNG4GYQ
+  secret_access_key:
+    secure: lkag8xQxo3jJnE8V6IGCRaJ+Gg4lFzOS8ygkVBeh6Re2p3UVqasvTABFcc0ompSdH3uKD7PxD9ypmT+m1aZV4dlcXfAZsbrEbFTFlPY0728kU16Dz9E2ugZoWKMc1i1p7R/ReoKvX4W3xFr2KAYleDn2qnRsVfDLLATXYhBs1BH/wQ6jdBoYG0YL7F/CC5obYTL4iRQNEUtJE5jcDM3rOH2OQs0GuAR3oTIx0MlZY/twFfedXO9R7SE5NhiMIXhBXWAYBOark9lgJ9Lj6vU40JQOuXDVk9AnOATQVDuC8WV1DN389WdqR5GIPhv8O/oeswY+devNJIx6fviKz56FZjHbsW02MXasJ3xltnIHlD1Yi+mGHnJ5+AES1d4Lkp9j/m1g+0zENp3WOJcTRhsqRr80POnbChN+FQWQElXBIdPLh/g5UVaRO6ZY1DimFj3L77w8Q8C+i8Wr5vR53YFL8EyXh3TFLPSyEdjt4i5KUQl5CkveRscddWleDZSgjWmAVwhZFHNn3628imStWtYLSL9wiqXddo2fxLbrk9+BId835oVFlglyXbEmSAYDdeESJyJuXj6nrfY+gJ0uckGlxr3L0tKSPdWvmBRhUKFrb/V8hEeEILIUqVfL0YqM0BtjFSjyS/NRGIfMQIjxVZTOYHcCk/ZhZtEuI6kOzIJ2r7Y=
+  bucket: betaquests.expeditiongame.com
+  region: us-east-2
+  skip_cleanup: true
+  local-dir: dist
+  on:
+    repo: ExpeditionRPG/expedition-quest-creator
+    all_branches: true

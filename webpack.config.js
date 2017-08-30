@@ -12,7 +12,8 @@ const options = {
       'webpack-dev-server/client?http://localhost:' + port,
       'webpack/hot/only-dev-server',
       './app/React.tsx',
-      './app/style.scss',
+      './app/Style.scss',
+      './node_modules/expedition-app/app/Style.scss',
     ],
   },
   resolve: {

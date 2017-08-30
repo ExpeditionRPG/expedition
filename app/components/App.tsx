@@ -3,8 +3,6 @@ import * as React from 'react'
 import AppContainer from 'expedition-app/app/components/base/AppContainer'
 import FlatButton from 'material-ui/FlatButton'
 
-require('expedition-app/app/style.scss')
-
 import {EditorState, QuestType} from '../reducers/StateTypes'
 
 export interface AppStateProps {
