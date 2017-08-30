@@ -73,7 +73,21 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
 }
 
 export function loadQuestFromURL(user: UserState, dispatch: Redux.Dispatch<any>) {
-  loadQuest(user, dispatch, (window.location.hash) ? window.location.hash.substr(1) : null);
+  let id = null;
+  if (window.location.hash) {
+    id = window.location.hash.substr(1);
+    ReactGA.event({
+      category: 'Background',
+      action: 'QUEST_LOAD_EXISTING',
+      label: id,
+    });
+  } else {
+    ReactGA.event({
+      category: 'Background',
+      action: 'QUEST_LOAD_NEW',
+    });
+  }
+  loadQuest(user, dispatch, id);
 }
 
 export function newQuest(user: UserState) {
