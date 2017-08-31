@@ -16,7 +16,7 @@ export default class CardBack extends React.Component<CardType, {}> {
             </div>
           </div>
         );
-      case 'Event':
+      case 'Crisis':
         return (
           <div className={`card back vertical ${card.sheet}`}>
             <div className="contents">

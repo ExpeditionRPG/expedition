@@ -32,7 +32,7 @@ export let initialState: FiltersState = {
   source: {
     current: 'Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
     default: 'Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
-    options: ['Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM', 'The Horror:1K08sXHXyW7TAMXJnHOv9V3QtjxwjAf2-cvbaO-S2fDQ', 'Urbanity:1lZaRaRmBh2O1HBRUuczE4s7WqmCpS3Sphtu0DphyRk8', 'Custom'],
+    options: ['Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM', 'The Horror:1K08sXHXyW7TAMXJnHOv9V3QtjxwjAf2-cvbaO-S2fDQ', 'Urbanity:15fCVz2AqylRxgnWybuRfJO22GvyTin1QnA8WgI43PFY', 'Custom'],
   },
 };
 

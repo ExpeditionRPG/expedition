@@ -85,10 +85,17 @@ $color-environment: #0d663a;
             left: 0;
           }
         }
-        // .scoreRed svg path {
-        //   fill: $color-red;
-        //   stroke: $color-red;
-        // }
+        .scoreRed:before {
+          content: "-";
+          font-size: 1.1 * $text-size-content;
+          position: absolute;
+          top: $tiny + $tiny;
+          left: -0.5 * $text-size-content;
+          color: black;
+        }
+        .scoreRed {
+          left: 1.5 * $text-size-content;
+        }
         .budgetBlack {
           background: black;
         }
@@ -133,6 +140,10 @@ $color-environment: #0d663a;
             top: 0.2in;
             left: 0.5in;
           }
+        }
+        .scoreRed:before {
+          content: "-";
+          font-size: 0.8 * $large-icon;
         }
         // .scoreRed {
         //   color: $color-red;
@@ -180,7 +191,7 @@ $color-environment: #0d663a;
       }
     }
 
-    &.Event {
+    &.Crisis {
       .effects {
         h3 {
           font-weight: bold;

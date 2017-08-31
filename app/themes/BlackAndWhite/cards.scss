@@ -582,7 +582,6 @@ $text-color-white: #fff;
   /* ===== BACKGROUNDS ===== */
 
   .card.front, .card.back {
-
     &:before {
       content: "";
       position: absolute;
@@ -593,6 +592,29 @@ $text-color-white: #fff;
       background: no-repeat center center;
       background-size: 1in 1in;
     }
+  }
+
+  .card.back:after {
+    /* Image is 2000x351 */
+    content: "";
+    position: absolute;
+    bottom: 0.25in; left: .625in;
+    width: 1in;
+    height: 0.175in;
+
+    background: no-repeat center center;
+    background-size: 1in 0.175in;
+    background-image: url(../../node_modules/expedition-art/logo/logo-black-on-white.png) !important;
+  }
+
+  .card.back.horizontal:after {
+    left: 1.5in;
+    top: 1.5in;
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+  }
+  .card.back.dark:after {
+    background-image: url(../../node_modules/expedition-art/logo/logo-white-on-black.png) !important;
   }
 
   .card.back.Influence { &:before {
@@ -623,11 +645,9 @@ $text-color-white: #fff;
   }}
 
   .card.back.Loot {
-
     .tier {
       bottom: 0.55in;
     }
-
     &:before {
       background-image: url(../../node_modules/expedition-art/icons/loot.svg) !important;
     }

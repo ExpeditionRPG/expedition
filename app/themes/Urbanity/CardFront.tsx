@@ -31,25 +31,26 @@ export default class CardFront extends React.Component<CardType, {}> {
             </div>
           </div>
         );
-      case 'Event':
+      case 'Crisis':
         return (
           <div className={`card front vertical ${card.sheet}`}>
             <div className="contents">
               <header>
                 <div className="name">{card.name}</div>
               </header>
-              <article>
-                <div className="effects">
-                  <h3>Bill 1:</h3>
-                  <p>{card.turn1 || '-'}</p>
-                  <h3>Bill 2:</h3>
-                  <p>{card.turn2 || '-'}</p>
-                  <h3>Bill 3:</h3>
-                  <p>{card.turn3 || '-'}</p>
-                  <h3>Bill 4:</h3>
-                  <p>{card.turn4 || '-'}</p>
+              {card.resource && <article>
+                <div className="score">
+                  <span className="scoreBlack">{card.resource}</span>
                 </div>
+                <div className="effects">
+                  <p>This year: You must pass at least {card.resource} equal to the number of representatives minus 1.</p>
+                  <p>At the end of voting: If you've failed to pass sufficient resources, the citizens enact an emergency vote and fire everyone!</p>
+                </div>
+              </article>}
+              {card.effect && <article>
+                <div className="effects">{card.effect}</div>
               </article>
+              }
               <footer>
                 <div>{card.flavortext}</div>
               </footer>
