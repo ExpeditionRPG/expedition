@@ -54,14 +54,17 @@ export function loadQuestXML(details: QuestDetails, questNode: Cheerio, ctx: Que
   };
 }
 
-export function search(numPlayers: number, user: UserState, search: SearchSettings) {
+export function search(search: SearchSettings) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    if (!user.loggedIn) {
-      throw new Error('Not logged in, cannot search');
-    }
+    const params = {...search};
+    Object.keys(params).forEach((key: string) => {
+      if ((params as any)[key] === null) {
+        delete (params as any)[key];
+      }
+    });
 
-    const params: any = { players: numPlayers, ...search };
-    Object.keys(params).forEach((key: string) => { if (params[key] === null) { delete params[key]; }});
+    // Send search request action; clears previous results.
+    dispatch({type: 'SEARCH_REQUEST'});
 
     const xhr = new XMLHttpRequest();
     // TODO: Pagination / infinite scrolling
@@ -80,7 +83,11 @@ export function search(numPlayers: number, user: UserState, search: SearchSettin
         receivedAt: response.receivedAt,
         search: search,
       });
-      dispatch(toCard('SEARCH_CARD', 'SEARCH'));
+      if (search.partition === 'expedition-private') {
+        dispatch(toCard('SEARCH_CARD', 'PRIVATE'));
+      } else {
+        dispatch(toCard('SEARCH_CARD', 'SEARCH'));
+      }
     };
     xhr.onerror = () => {
       return dispatch(openSnackbar('Network error: Please check your connection.'));
