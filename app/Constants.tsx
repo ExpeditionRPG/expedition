@@ -1,8 +1,12 @@
 declare var window:any;
 
+export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
+export const API_HOST = (process && process.env && process.env.API_HOST) || 'http://betaapi.expeditiongame.com';
+
 export const authSettings = {
-  urlBase: 'https://api.expeditiongame.com',
-  // urlBase: 'http://devquests.expeditiongame.com',
+  urlBase: API_HOST,
+  // urlBase: 'https://api.expeditiongame.com',
+  // urlBase: 'http://betaapi.expeditiongame.com',
   // urlBase: 'http://localhost:8081',
   apiKey: 'AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8',
   scopes: 'profile email',

@@ -49,7 +49,8 @@ const options = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('dev'),
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'dev'),
+        'API_HOST': JSON.stringify(process.env.API_HOST || 'http://betaapi.expeditiongame.com'),
       },
     }),
     new DashboardPlugin(),
