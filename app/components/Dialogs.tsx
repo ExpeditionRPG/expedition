@@ -59,19 +59,19 @@ interface PublishingDialogProps extends React.Props<any> {
   handleMetadataChange: (quest: QuestType, key: string, value: any) => void;
   open: boolean;
   onRequestClose: () => void;
-  onRequestPublish: (quest: QuestType, majorRelease: boolean) => void;
+  onRequestPublish: (quest: QuestType, majorRelease: boolean, privatePublish: boolean) => void;
   quest: QuestType;
 }
 
 export class PublishingDialog extends React.Component<PublishingDialogProps, {}> {
-  state: { majorRelease: boolean };
+  state: { majorRelease: boolean, privatePublish: boolean };
 
   constructor(props: PublishingDialogProps) {
     super(props);
-    this.state = { majorRelease: false };
+    this.state = { majorRelease: false, privatePublish: false };
   }
 
-  render() {
+  render(): JSX.Element {
     const metadata = this.props.quest.metadataRealtime;
     if (metadata === undefined) {
       return null;
@@ -106,7 +106,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
         />,<RaisedButton
           label="Publish"
           secondary={true}
-          onTouchTap={() => this.props.onRequestPublish(this.props.quest, this.state.majorRelease)}
+          onTouchTap={() => this.props.onRequestPublish(this.props.quest, this.state.majorRelease, this.state.privatePublish)}
         />]}
       >
         <TextField
@@ -195,11 +195,20 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           </SelectField>
           {metadata.get('contentrating') !== null && <ul className="ratingDefinition">{ratingDefinitions}</ul>}
         </div>
-        <Checkbox
-          label="Major release (resets ratings & reviews)"
-          value={this.state.majorRelease}
-          onChange={(checked: boolean) => { this.setState({majorRelease: checked}); }}>
-        </Checkbox>
+        <div>
+          <Checkbox
+            label="Major release (resets ratings & reviews)"
+            value={this.state.majorRelease}
+            onChange={(checked: boolean) => { this.setState({majorRelease: checked}); }}>
+          </Checkbox>
+        </div>
+        <div>
+          <Checkbox
+            label="Publish privately"
+            value={this.state.privatePublish}
+            onChange={(checked: boolean) => { this.setState({privatePublish: checked}); }}>
+          </Checkbox>
+        </div>
       </Dialog>
     );
   }
@@ -213,7 +222,7 @@ export interface DialogsStateProps {
 export interface DialogsDispatchProps {
   handleMetadataChange: (quest: QuestType, key: string, value: any) => void;
   onRequestClose: (dialog: DialogIDType) => void;
-  onRequestPublish: (quest: QuestType, majorRelease: boolean) => void;
+  onRequestPublish: (quest: QuestType, majorRelease: boolean, privatePublish: boolean) => void;
 }
 
 interface DialogsProps extends DialogsStateProps, DialogsDispatchProps {}
