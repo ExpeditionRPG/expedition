@@ -1,13 +1,10 @@
 import * as express from 'express'
-import {Quest, QuestInstance, QuestAttributes, QuestSearchParams, MAX_SEARCH_LIMIT} from './models/Quests'
+import {Quest, QuestInstance, QuestAttributes, QuestSearchParams, MAX_SEARCH_LIMIT, PUBLIC_PARTITION} from './models/Quests'
 import {Feedback, FeedbackType, FeedbackAttributes} from './models/Feedback'
 
 const Joi = require('joi');
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
-
-// Use this partition for any operations on public-facing quests.
-const PUBLIC_PARTITION = 'expedition-public';
 
 export function healthCheck(req: express.Request, res: express.Response) {
   res.send(' ');
@@ -43,8 +40,9 @@ export function search(quest: Quest, req: express.Request, res: express.Response
     genre: body.genre,
     order: body.order,
     limit: body.limit,
+    partition: body.partition || PUBLIC_PARTITION,
   };
-  quest.search(PUBLIC_PARTITION, res.locals.id, params)
+  quest.search(res.locals.id, params)
     .then((quests: QuestInstance[]) => {
       const results = quests.map((q: QuestInstance) => {
         return q.dataValues;
