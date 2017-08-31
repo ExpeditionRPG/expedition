@@ -204,7 +204,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
         </div>
         <div>
           <Checkbox
-            label="Publish privately"
+            label="Publish privately (visible in Tools)"
             value={this.state.privatePublish}
             onChange={(checked: boolean) => { this.setState({privatePublish: checked}); }}>
           </Checkbox>
