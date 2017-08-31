@@ -20,6 +20,7 @@ import {
   METADATA_DEFAULTS,
   NEW_QUEST_TITLE,
   API_HOST,
+  PARTITIONS,
 } from '../Constants'
 import {pushError, pushHTTPError} from './Dialogs'
 import {renderXML} from '../parsing/QDLParser'
@@ -251,7 +252,7 @@ export function publishQuestSetup(): ((dispatch: Redux.Dispatch<any>)=>any) {
   }
 }
 
-export function publishQuest(quest: QuestType, majorRelease?: boolean): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePublish?: boolean): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const renderResult = renderXML(quest.mdRealtime.getText());
     dispatch({type: 'QUEST_RENDER', qdl: renderResult, msgs: renderResult.getFinalizedLogs()});
@@ -267,6 +268,7 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean): ((dispat
       maxtimeminutes: quest.maxtimeminutes,
       genre: quest.genre,
       contentrating: quest.contentrating,
+      partition: (privatePublish) ? PARTITIONS.PRIVATE : PARTITIONS.PUBLIC,
       majorRelease,
     });
     return $.ajax({
