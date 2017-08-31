@@ -33,7 +33,7 @@ const Tools = (props: ToolsProps): JSX.Element => {
       </Button>
       <Button onTouchTap={() => props.onPrivateQuestsSelect(props.user)}>
         <div className="advanced_play">
-          <div className="title">Privately Published Quests</div>
+          <div className="title">Private Quests</div>
           <div className="summary">View quests you've published privately with the Quest Creator.</div>
         </div>
       </Button>

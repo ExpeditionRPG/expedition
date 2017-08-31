@@ -195,7 +195,7 @@ export function truncateSummary(string: string) {
   }
 }
 
-function renderResults(props: SearchProps, showHeader?: boolean): JSX.Element {
+function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
   const orderField = props.search.order.substring(1);
   const items: JSX.Element[] = props.results.map((result: QuestDetails, index: number) => {
     return (
@@ -220,7 +220,7 @@ function renderResults(props: SearchProps, showHeader?: boolean): JSX.Element {
   return (
     <Card
       title="Quest Search Results"
-      header={showHeader && <div className="searchHeader">
+      header={!hideHeader && <div className="searchHeader">
         <span>{props.results.length} quests for {props.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></span>
         <Button className="float_right filter_button" onTouchTap={() => props.onFilter()}>Filter ></Button>
       </div>}
@@ -228,7 +228,7 @@ function renderResults(props: SearchProps, showHeader?: boolean): JSX.Element {
       {items.length === 0 &&
         <div>
           <div>No results found.</div>
-          {showHeader && <div>Try broadening your search.</div>}
+          {!hideHeader && <div>Try broadening your search.</div>}
         </div>
       }
       {items}
@@ -312,7 +312,7 @@ const Search = (props: SearchProps): JSX.Element => {
     case 'SEARCH':
       return renderResults(props);
     case 'PRIVATE':
-      return renderResults(props, false);
+      return renderResults(props, true);
     case 'DETAILS':
       return renderDetails(props);
     default:

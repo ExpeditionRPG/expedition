@@ -43,13 +43,17 @@ export function loadQuestXML(details: QuestDetails, questNode: Cheerio, ctx: Que
   };
 }
 
-export function search(params: SearchSettings) {
+export function search(search: SearchSettings) {
   return (dispatch: Redux.Dispatch<any>): any => {
+    const params = {...search};
     Object.keys(params).forEach((key: string) => {
       if ((params as any)[key] === null) {
         delete (params as any)[key];
       }
     });
+
+    // Send search request action; clears previous results.
+    dispatch({type: 'SEARCH_REQUEST'});
 
     const xhr = new XMLHttpRequest();
     // TODO: Pagination / infinite scrolling
