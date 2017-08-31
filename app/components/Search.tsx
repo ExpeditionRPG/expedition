@@ -235,12 +235,13 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
         <Button className="float_right filter_button" onTouchTap={() => props.onFilter()}>Filter ></Button>
       </div>}
     >
-      {items.length === 0 &&
+      {items.length === 0 && !props.searching &&
         <div>
           <div>No results found.</div>
           {!hideHeader && <div>Try broadening your search.</div>}
         </div>
       }
+      {items.length === 0 && props.searching && <div>Loading...</div>}
       {items}
     </Card>
   );

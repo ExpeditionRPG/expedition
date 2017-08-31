@@ -14,18 +14,20 @@ export const initial_state: SearchState = {
     partition: null,
   },
   selected: {},
-  results: []
+  results: [],
+  searching: false,
 };
 
 export function search(state: SearchState = initial_state, action: Redux.Action): SearchState {
   switch(action.type) {
     case 'SEARCH_REQUEST':
       // Clear the searched quests if we're starting a new search.
-      return {...state, results: [], selected: {}};
+      return {...state, results: [], selected: {}, searching: true};
     case 'SEARCH_RESPONSE':
       return {...state,
         results: (action as SearchResponseAction).quests,
         search: (action as SearchResponseAction).search,
+        searching: false,
       };
     case 'VIEW_QUEST':
       return {...state, selected: (action as ViewQuestAction).quest};

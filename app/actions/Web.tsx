@@ -72,7 +72,11 @@ export function search(search: SearchSettings) {
         receivedAt: response.receivedAt,
         search: search,
       });
-      dispatch(toCard('SEARCH_CARD', 'SEARCH'));
+      if (search.partition === 'expedition-private') {
+        dispatch(toCard('SEARCH_CARD', 'PRIVATE'));
+      } else {
+        dispatch(toCard('SEARCH_CARD', 'SEARCH'));
+      }
     };
     xhr.onerror = () => {
       return dispatch(openSnackbar('Network error: Please check your connection.'));

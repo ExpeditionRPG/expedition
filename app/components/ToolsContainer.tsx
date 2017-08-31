@@ -28,7 +28,6 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
     onPrivateQuestsSelect(user: UserState): void {
       const privateSearch = (u: UserState) => {
         dispatch(search({owner: u.id, partition: 'expedition-private'}));
-        dispatch(toCard('SEARCH_CARD', 'PRIVATE'));
       };
 
       if (!user) {

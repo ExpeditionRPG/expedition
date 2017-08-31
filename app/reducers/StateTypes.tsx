@@ -67,6 +67,7 @@ export interface SearchState {
   search: SearchSettings;
   selected: QuestDetails;
   results: QuestDetails[];
+  searching: boolean;
 }
 
 export interface UserState {
