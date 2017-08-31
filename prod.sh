@@ -19,6 +19,8 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   rm platforms/android/build/outputs/apk/expedition.apk
 
   # Rebuild the web app files
+  export NODE_ENV='production'
+  export API_HOST='https://api.expeditiongame.com'
   webpack --config ./webpack.dist.config.js
 
   # Android: build the signed prod app
@@ -34,10 +36,11 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   cordova build ios
 
   # Deploy web app to prod once apps built
+  export AWS_DEFAULT_REGION='us-east-2'
   aws s3 cp www s3://app.expeditiongame.com --recursive
 
   # Invalidate files on cloudfront
-  aws cloudfront create-invalidation --distribution-id E24IJ45RK0D6J8 --invalidation-batch file://cloudfront-invalidations-prod.json
+  aws cloudfront create-invalidation --distribution-id EDFP2F13AASZW --invalidation-batch file://cloudfront-invalidations-prod.json
 else
   echo "Prod build cancelled until tested on beta."
 fi
