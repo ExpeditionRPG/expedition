@@ -11,6 +11,7 @@ export const initial_state: SearchState = {
     contentrating: null,
     mintimeminutes: null,
     maxtimeminutes: null,
+    partition: null,
   },
   selected: {},
   results: []

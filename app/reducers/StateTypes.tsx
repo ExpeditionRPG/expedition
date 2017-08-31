@@ -27,6 +27,7 @@ export interface SearchSettings {
   genre?: GenreType;
   players?: number;
   owner?: string;
+  partition?: 'expedition-public' | 'expedition-private';
 }
 
 export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'DETAILS' | 'SEARCH' | 'PRIVATE';

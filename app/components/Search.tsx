@@ -187,7 +187,11 @@ export function formatPlayPeriod(minMinutes: number, maxMinutes: number): string
   }
 }
 
-export function truncateSummary(string: string) {
+export function truncateSummary(string: string): string {
+  if (!string) {
+    return '';
+  }
+
   if (string.length < SUMMARY_MAX_LENGTH) {
     return string;
   } else {
@@ -196,8 +200,17 @@ export function truncateSummary(string: string) {
 }
 
 function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
-  const orderField = props.search.order.substring(1);
+  const orderField = props.search.order && props.search.order.substring(1);
   const items: JSX.Element[] = props.results.map((result: QuestDetails, index: number) => {
+    let orderDetails = <span></span>;
+    if (orderField) {
+      orderDetails = (
+        <div className={`searchOrderDetail ${orderField}`}>
+          {orderField === 'ratingavg' && result.ratingcount >= 5 && <StarRating readOnly={true} value={+result.ratingavg} quantity={result.ratingcount}/>}
+          {orderField === 'created' && `Published ${Moment(result.created).format('MMM YYYY')}`}
+        </div>
+      );
+    }
     return (
       <Button key={index} onTouchTap={() => props.onQuest(result)}>
         <div className="searchResult">
@@ -208,10 +221,7 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
           <div className="timing">
             {formatPlayPeriod(result.mintimeminutes, result.maxtimeminutes)}
           </div>
-          <div className={`searchOrderDetail ${orderField}`}>
-            {orderField === 'ratingavg' && result.ratingcount >= 5 && <StarRating readOnly={true} value={+result.ratingavg} quantity={result.ratingcount}/>}
-            {orderField === 'created' && `Published ${Moment(result.created).format('MMM YYYY')}`}
-          </div>
+          {orderDetails}
         </div>
       </Button>
     );

@@ -6,6 +6,7 @@ import {initCustomCombat} from '../cardtemplates/combat/Actions'
 import {URLS} from '../Constants'
 import {toCard} from '../actions/Card'
 import {search} from '../actions/Web'
+import {login} from '../actions/User'
 
 declare var window:any;
 
@@ -25,8 +26,16 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
       window.open(URLS.questCreator, '_system');
     },
     onPrivateQuestsSelect(user: UserState): void {
-      dispatch(search({owner: user.id}));
-      dispatch(toCard('SEARCH_CARD', 'PRIVATE'));
+      const privateSearch = (u: UserState) => {
+        dispatch(search({owner: u.id, partition: 'expedition-private'}));
+        dispatch(toCard('SEARCH_CARD', 'PRIVATE'));
+      };
+
+      if (!user) {
+        dispatch(login(privateSearch));
+      } else {
+        privateSearch(user);
+      }
     },
   };
 }
