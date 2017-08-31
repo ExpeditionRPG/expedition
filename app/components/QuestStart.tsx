@@ -21,8 +21,8 @@ const QuestStart = (props: QuestStartProps): JSX.Element => {
   return (
     <Card title="Setup">
       <ol>
-        {singlePlayer && <li><strong>Solo play:</strong> Select two adventurers.</li>}
-        {multiPlayer && <li><strong>Select</strong> one adventurer from the deck and pass the deck along.</li>}
+        {singlePlayer && <li><strong>Solo play:</strong> Select two adventurers of your choice.</li>}
+        {multiPlayer && <li><strong>Select</strong> one adventurer of your choice from the deck and pass the deck along.</li>}
         {twoAdventurer && <ul><li><strong>1-2 players:</strong> Adventurers with music abilities are not recommended.</li></ul>}
 
         <li><strong>Clip</strong> a health tracker onto your adventurer at full health.</li>
@@ -30,7 +30,7 @@ const QuestStart = (props: QuestStartProps): JSX.Element => {
         <li><strong>Keep</strong> this card face up in front of you.</li>
 
         <li><strong>Draw</strong> the starting abilities listed on your adventurer.</li>
-        {twoAdventurer && <ul><li><strong>1-2 players:</strong> Draft pick each ability (draw three, keep one).</li></ul>}
+        {twoAdventurer && <ul><li><strong>1-2 players:</strong> Draft pick each ability (draw three, keep one, put the other two on the bottom of the deck).</li></ul>}
 
         <li><strong>Read</strong> through your abilities.</li>
 

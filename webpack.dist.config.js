@@ -29,7 +29,9 @@ var options = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('production'),
+        // Default to beta for safety
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'dev'),
+        'API_HOST': JSON.stringify(process.env.API_HOST || 'http://betaapi.expeditiongame.com'),
       },
     }),
     new webpack.optimize.AggressiveMergingPlugin(),

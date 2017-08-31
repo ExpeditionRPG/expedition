@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {CardState, CardName, CardPhase, SettingNameType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState} from '../reducers/StateTypes'
+import {CardState, CardName, CardPhase, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../parser/Node'
 

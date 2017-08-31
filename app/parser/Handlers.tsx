@@ -61,7 +61,7 @@ function handleTrigger(pnode: ParserNode): ParserNode {
 // - a number indicating the choice number in the XML element, including conditional choices.
 // - a string indicating which event to fire based on the "on" attribute.
 // Returns the card inside of / referenced by the choice/event element
-export function handleAction(pnode: ParserNode, action: number|string): ParserNode {
+export function handleAction(pnode: ParserNode, action?: number|string): ParserNode {
   pnode = pnode.getNext(action);
   if (!pnode) {
     return null;
@@ -71,4 +71,9 @@ export function handleAction(pnode: ParserNode, action: number|string): ParserNo
     return handleTrigger(pnode);
   }
   return pnode;
+}
+
+// Returns if the supplied node is an **end** trigger
+export function isEndNode(pnode: ParserNode): Boolean {
+  return (pnode.getTag() === 'trigger' && pnode.elem.text().toLowerCase().split(' ')[0].trim() === 'end');
 }

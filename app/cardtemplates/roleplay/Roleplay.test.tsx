@@ -36,4 +36,6 @@ describe('Roleplay', () => {
   });
 
   it('appends generic Next button if no explicit choices');
+
+  it('appends a Retry button if you just got out of combat and next node is **end**');
 });

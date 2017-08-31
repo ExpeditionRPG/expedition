@@ -1,9 +1,9 @@
 import Redux from 'redux'
 import {PLAYER_DAMAGE_MULT} from '../../Constants'
-import {DifficultyType, Enemy, Loot} from '../../reducers/QuestTypes'
+import {Enemy, Loot} from '../../reducers/QuestTypes'
 import {defaultQuestContext} from '../../reducers/Quest'
 import {CombatDifficultySettings, CombatAttack} from './Types'
-import {SettingsType} from '../../reducers/StateTypes'
+import {DifficultyType, SettingsType} from '../../reducers/StateTypes'
 import {ParserNode} from '../../parser/Node'
 import {toCard} from '../../actions/Card'
 import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT} from '../../Constants'
@@ -31,7 +31,8 @@ export function initCombat(node: ParserNode, settings: SettingsType, custom?: bo
       roundCount: 0,
       numAliveAdventurers: settings.numPlayers,
       tier: tierSum,
-      ...getDifficultySettings(settings.difficulty, settings.numPlayers),
+      roundTimeMillis: settings.timerSeconds * 1000 * (PLAYER_TIME_MULT[settings.numPlayers] || 1),
+      ...getDifficultySettings(settings.difficulty),
     };
     dispatch(toCard('QUEST_CARD', 'DRAW_ENEMIES'));
     dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
@@ -42,16 +43,12 @@ export function initCustomCombat(settings: SettingsType) {
   return initCombat(new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultQuestContext()), settings, true);
 }
 
-function getDifficultySettings(difficulty: DifficultyType, numPlayers: number): CombatDifficultySettings {
+function getDifficultySettings(difficulty: DifficultyType): CombatDifficultySettings {
   const result = COMBAT_DIFFICULTY[difficulty];
   if (result === null) {
     throw new Error('Unknown difficulty ' + difficulty);
-  } else {
-    return {
-      ...result,
-      roundTimeMillis: result.roundTimeMillis * (PLAYER_TIME_MULT[numPlayers] || 1),
-    };
   }
+  return result;
 }
 
 function getEnemies(node: ParserNode): Enemy[] {
@@ -271,14 +268,14 @@ export function handleCombatEnd(node: ParserNode, settings: SettingsType, victor
   };
 }
 
-export function tierSumDelta(node: ParserNode, delta: number): QuestNodeAction {
+export function tierSumDelta(node: ParserNode, current: number, delta: number): QuestNodeAction {
   node = node.clone();
-  node.ctx.templates.combat.tier = Math.max(node.ctx.templates.combat.tier + delta, 0);
+  node.ctx.templates.combat.tier = Math.max(current + delta, 0);
   return {type: 'QUEST_NODE', node};
 }
 
-export function adventurerDelta(node: ParserNode, settings: SettingsType, delta: number): QuestNodeAction {
-  const newAdventurerCount = Math.min(Math.max(0, node.ctx.templates.combat.numAliveAdventurers + delta), settings.numPlayers);
+export function adventurerDelta(node: ParserNode, settings: SettingsType, current: number, delta: number): QuestNodeAction {
+  const newAdventurerCount = Math.min(Math.max(0, current + delta), settings.numPlayers);
   node = node.clone();
   node.ctx.templates.combat.numAliveAdventurers = newAdventurerCount;
   return {type: 'QUEST_NODE', node};

@@ -14,8 +14,10 @@ import QuestEndContainer from '../QuestEndContainer'
 
 import {renderCardTemplate} from '../../cardtemplates/Template'
 
+import {initialSettings} from '../../reducers/Settings'
 import {closeSnackbar} from '../../actions/Snackbar'
-import {AppStateWithHistory, TransitionType, SearchPhase, SnackbarState} from '../../reducers/StateTypes'
+import {initialState} from '../../reducers/Snackbar'
+import {AppStateWithHistory, TransitionType, SearchPhase, SettingsType, SnackbarState} from '../../reducers/StateTypes'
 import {getStore} from '../../Store'
 
 const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
@@ -23,7 +25,7 @@ const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group'
 interface MainProps extends React.Props<any> {}
 
 export default class Main extends React.Component<MainProps, {}> {
-  state: {key: number, transition: TransitionType, card: JSX.Element, snackbar: SnackbarState};
+  state: {key: number, transition: TransitionType, card: JSX.Element, settings: SettingsType, snackbar: SnackbarState};
   storeUnsubscribeHandle: () => any;
 
   constructor(props: MainProps) {
@@ -41,7 +43,7 @@ export default class Main extends React.Component<MainProps, {}> {
   getUpdatedState() {
     const state: AppStateWithHistory = getStore().getState();
     if (state === undefined || this.state === undefined || Object.keys(state).length === 0) {
-      return {key: 0, transition: 'INSTANT' as TransitionType, card: <SplashScreenContainer/>, snackbar: { open: false, message: '' }};
+      return {key: 0, transition: 'INSTANT' as TransitionType, card: <SplashScreenContainer/>, settings: initialSettings, snackbar: initialState};
     }
 
     if (state.snackbar.open !== this.state.snackbar.open) {
@@ -101,7 +103,7 @@ export default class Main extends React.Component<MainProps, {}> {
     } else if (state.card.name === 'SPLASH_CARD') {
       transition = 'INSTANT';
     }
-    return {key: state.card.ts, transition, card, snackbar: state.snackbar};
+    return {key: state.card.ts, transition, card, settings: state.settings, snackbar: state.snackbar};
   }
 
   handleChange() {
@@ -110,13 +112,20 @@ export default class Main extends React.Component<MainProps, {}> {
   }
 
   render() {
+    let containerClass = 'app_container ';
+    if (this.state.settings.fontSize === 'SMALL') {
+      containerClass += 'smallFont';
+    } else if (this.state.settings.fontSize === 'LARGE') {
+      containerClass += 'largeFont';
+    }
+
     const cards: any = [
       <div className="base_main" key={this.state.key}>
         {this.state.card}
       </div>
     ];
     return (
-      <div className="app_container">
+      <div className={containerClass}>
         <Provider store={getStore()}>
           <ReactCSSTransitionGroup
             transitionName={this.state.transition}

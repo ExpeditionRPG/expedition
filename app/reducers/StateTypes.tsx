@@ -1,4 +1,4 @@
-import {QuestDetails, DifficultyType, QuestContext} from './QuestTypes'
+import {QuestDetails, QuestContext} from './QuestTypes'
 import {TemplatePhase} from '../cardtemplates/Template'
 import {ParserNode} from '../parser/Node'
 
@@ -6,16 +6,17 @@ import {GenreType, ContentRatingLabelType} from '../Constants'
 
 export interface AnnouncementState {
   open: boolean;
-  message?: string;
-  link?: string;
+  message: string;
+  link: string;
 }
 
 export type CardThemeType = 'LIGHT' | 'RED' | 'DARK';
-export type SettingNameType = 'numPlayers' | 'difficulty' | 'viewMode';
 
 export interface EndSettings {
   text: string;
 }
+
+export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'DETAILS' | 'SEARCH' | 'PRIVATE';
 
 export interface SearchSettings {
   text?: string;
@@ -30,21 +31,24 @@ export interface SearchSettings {
   partition?: 'expedition-public' | 'expedition-private';
 }
 
-export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'DETAILS' | 'SEARCH' | 'PRIVATE';
+export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
+export type FontSizeType = 'SMALL' | 'NORMAL' | 'LARGE';
 
 export interface SettingsType {
   autoRoll: boolean;
-  numPlayers: number;
   difficulty: DifficultyType;
-  showHelp: boolean;
+  fontSize: FontSizeType;
   multitouch: boolean;
+  numPlayers: number;
+  showHelp: boolean;
+  timerSeconds: number;
   vibration: boolean;
 }
 
 export interface SnackbarState {
   open: boolean;
-  message?: string;
-  timeout?: number;
+  message: string;
+  timeout: number;
 }
 
 export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REPORT';

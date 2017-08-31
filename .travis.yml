@@ -9,7 +9,14 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.8
-before_deploy: "webpack -p --config ./webpack.dist.config.js"
+before_deploy: "pip install awscli --upgrade --user"
 cache:
   directories:
     - node_modules
+deploy:
+  - provider: script
+    script: ./beta.sh
+    skip_cleanup: true
+    on:
+      repo: ExpeditionRPG/expedition-app
+      all_branches: true

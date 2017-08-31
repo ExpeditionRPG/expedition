@@ -9,6 +9,7 @@ import {MAX_ADVENTURER_HEALTH, REGEX} from '../../Constants'
 import {encounters} from '../../Encounters'
 import {isSurgeNextRound} from './Actions'
 import {SettingsType, CardState, CardName} from '../../reducers/StateTypes'
+import {handleAction, isEndNode} from '../../parser/Handlers'
 import {ParserNode} from '../../parser/Node'
 import {QuestContext, EventParameters, Enemy, Loot} from '../../reducers/QuestTypes'
 import {CombatState, CombatPhase} from './State'
@@ -19,17 +20,19 @@ export interface CombatStateProps extends CombatState {
   settings: SettingsType;
   maxTier?: number;
   node: ParserNode;
+  roundTimeMillis: number;
   victoryParameters?: EventParameters;
 }
 
 export interface CombatDispatchProps {
   onNext: (phase: CombatPhase) => void;
   onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number) => void;
+  onRetry: () => void;
   onVictory: (node: ParserNode, settings: SettingsType, maxTier: number) => void;
   onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => void;
   onReturn: () => void;
-  onTierSumDelta: (node: ParserNode, delta: number) => void;
-  onAdventurerDelta: (node: ParserNode, settings: SettingsType, delta: number) => void;
+  onTierSumDelta: (node: ParserNode, current: number, delta: number) => void;
+  onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => void;
   onEvent: (node: ParserNode, event: string) => void;
   onCustomEnd: () => void;
   onChoice: (settings: SettingsType, parent: ParserNode, index: number) => void;
@@ -47,20 +50,23 @@ const numerals: {[k: number]: string;} = {
 };
 
 function renderSelectTier(props: CombatProps): JSX.Element {
+  const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
   return (
     <Card title="Draw Enemies" theme="DARK" inQuest={true}>
-      <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, i)} value={props.tier}>
+      <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, props.tier, i)} value={props.tier}>
         Set this to the combined tier you wish to fight.
       </Picker>
-      <Button onTouchTap={() => props.onNext('PREPARE')} disabled={props.tier <= 0}>Next</Button>
+      <Button onTouchTap={() => props.onNext(nextCard)} disabled={props.tier <= 0}>Next</Button>
     </Card>
   );
 }
 
 function renderDrawEnemies(props: CombatProps): JSX.Element {
+  const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
   let repeatEnemy = false;
   let uniqueEnemy = false;
   const enemyNames: Set<string> = new Set();
+  const oneEnemy = (props.enemies.length === 1);
   const enemies: JSX.Element[] = props.enemies.map((enemy: Enemy, index: number) => {
     uniqueEnemy = uniqueEnemy || !enemy.class;
     let icon = null;
@@ -84,12 +90,13 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
   if (props.settings.showHelp) {
     helpText = (
       <div>
-        <p>Draw the enemies listed above.</p>
+        <p>Draw the enemy {oneEnemy ? 'card' : 'cards'} listed above.</p>
         <ul>
           {repeatEnemy && <li>Draw extra cards of the appropriate class for the duplicate enemies, and track health using the card backs.</li>}
           {uniqueEnemy && <li>Draw cards of any class for enemies without class icons. Track health using the back.</li>}
         </ul>
-        <p>Place these cards in the center and put tokens on their maximum health.</p>
+        {oneEnemy && <p>Place it in the center and put a token on its maximum health.</p>}
+        {!oneEnemy && <p>Place them in the center and put tokens on their maximum health.</p>}
       </div>
     );
   }
@@ -101,12 +108,14 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
       </p>
       {enemies}
       {helpText}
-      <Button onTouchTap={() => props.onNext('PREPARE')}>Next</Button>
+      <Button onTouchTap={() => props.onNext(nextCard)}>Next</Button>
     </Card>
   );
 }
 
-function renderPrepare(props: CombatProps): JSX.Element {
+function renderNoTimer(props: CombatProps): JSX.Element {
+  // Note: similar help text in renderPrepareTimer()
+  const surge = isSurgeNextRound(props.node);
   let helpText: JSX.Element = (<span></span>);
   if (props.settings.showHelp) {
     helpText = (
@@ -117,7 +126,38 @@ function renderPrepare(props: CombatProps): JSX.Element {
             <li>If you run out of abilities to draw, shuffle in your discard pile.</li>
           </ul>
         </li>
-        <li>Pre-draw three abilities face down.</li>
+        <li>No timer: Draw three abilities from your draw pile and play one ability.</li>
+        <li>Once everyone has selected an ability, tap next.</li>
+      </ol>
+    );
+  }
+
+  return (
+    <Card title="Select Ability" theme="DARK" inQuest={true}>
+      {helpText}
+      <Button
+        className="bigbutton"
+        onTouchTap={() => props.onTimerStop(props.node, props.settings, 0, surge)}
+      >
+        Next
+      </Button>
+    </Card>
+  );
+}
+
+function renderPrepareTimer(props: CombatProps): JSX.Element {
+  // Note: similar help text in renderNoTimer()
+  let helpText: JSX.Element = (<span></span>);
+  if (props.settings.showHelp) {
+    helpText = (
+      <ol>
+        <li>Shuffle your ability draw pile.
+          <ul>
+            <li>Keep abilities played this combat in a separate discard pile.</li>
+            <li>If you run out of abilities to draw, shuffle in your discard pile.</li>
+          </ul>
+        </li>
+        <li>Pre-draw three abilities face down from your draw pile.</li>
         <li>Start the timer.</li>
         <li>Look at your hand and play one ability.</li>
         {props.settings.multitouch && <li>Place your finger on the screen.</li>}
@@ -142,10 +182,10 @@ function renderSurge(props: CombatProps): JSX.Element {
     helpText = (
       <span>
         <p>
-          Immediately follow the surge action listed on all remaining encounter cards. Some encounters' surges may also apply after they've been killed.
+          Immediately follow the surge action listed on all remaining encounter cards. Some encounters' surges may also apply after they've been knocked out.
         </p>
         <p>
-          Surge effects happen before abilities. Abilities that apply "this round" do not affect surges (however, loot may still be used during a surge). If you are killed during a surge, do not resolve your abilities.
+          Surge effects happen before abilities. Abilities that apply "this round" do not affect surges (however, loot may still be used during a surge). If you are knocked out during a surge, do not resolve your abilities.
         </p>
       </span>
     );
@@ -207,7 +247,7 @@ function renderResolve(props: CombatProps): JSX.Element {
 function renderEnemyTier(props: CombatProps): JSX.Element {
   return (
     <Card title="Enemy Strength" theme="DARK" inQuest={true}>
-      <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, i)} value={props.tier}>
+      <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, props.tier, i)} value={props.tier}>
         Set this to the combined tier of the remaining enemies. You are victorious when this reaches zero.
       </Picker>
 
@@ -218,6 +258,7 @@ function renderEnemyTier(props: CombatProps): JSX.Element {
 }
 
 function renderPlayerTier(props: CombatProps): JSX.Element {
+  const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
   let helpText: JSX.Element = (<span></span>);
   const damage = (props.mostRecentAttack) ? props.mostRecentAttack.damage : -1;
 
@@ -237,12 +278,12 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
       {helpText}
 
-      <Picker label="Adventurers" onDelta={(i: number)=>props.onAdventurerDelta(props.node, props.settings, i)} value={props.numAliveAdventurers}>
+      <Picker label="Adventurers" onDelta={(i: number)=>props.onAdventurerDelta(props.node, props.settings, props.numAliveAdventurers, i)} value={props.numAliveAdventurers}>
         Set this to the number of adventurers above zero health. You are defeated when this reaches zero.
       </Picker>
 
       <Button onTouchTap={() => props.onDefeat(props.node, props.settings, props.maxTier)}>Defeat (Adventurers = 0)</Button>
-      <Button onTouchTap={() => props.onNext('PREPARE')} disabled={props.numAliveAdventurers <= 0}>Next</Button>
+      <Button onTouchTap={() => props.onNext(nextCard)} disabled={props.numAliveAdventurers <= 0}>Next</Button>
     </Card>
   );
 }
@@ -265,8 +306,8 @@ function renderVictory(props: CombatProps): JSX.Element {
       if (props.settings.showHelp) {
         contents.push(
           <ul key="c3">
-            <li>You may discard one of your current abilities.</li>
-            <li>Draw 3 ability cards from one of the decks listed on your Adventurer card.</li>
+            <li>You <strong>may</strong> choose to discard an ability.</li>
+            <li>Draw 3 abilities from one of the decks listed on your adventurer card.</li>
             <li>Add 1 to your ability deck, and place the remaining 2 at the bottom of the deck you drew from.</li>
           </ul>
         );
@@ -301,15 +342,32 @@ function renderVictory(props: CombatProps): JSX.Element {
 }
 
 function renderDefeat(props: CombatProps): JSX.Element {
-  let helpText = <span></span>;
-  if (props.settings.showHelp) {
-    helpText = <p>Remember, you can adjust combat difficulty at any time in the settings menu at the top right of the app.</p>
+  const helpfulHints = [
+    <p>Remember, you can adjust combat difficulty at any time in the settings menu (in the top right).</p>,
+    <p>Don't forget! Healing abilities and loot can be used on adventurers at 0 health.</p>,
+    <p>Tip: battles are not won by healing, but by defeating the enemy.</p>,
+    <p>Want to deal more damage? Look for combinations in your abilities - two adventurers working together can often do more damage than two alone.</p>
+  ];
+
+  // Always show a helpful hint here - it's not getting in the way like other help text might
+  // and it's a good opportunity to mitigate a potentially bad user experience
+  // Use a random number in the state to keep it consistent / not change on new render events
+  const helpText = helpfulHints[props.mostRecentRolls[0] % helpfulHints.length];
+
+  // If onLose is just an **end**, offer a retry button
+  let retryButton = <span></span>;
+  if (!props.custom) {
+    const nextNode = handleAction(props.node, 'lose');
+    if (isEndNode(nextNode)) {
+      retryButton = <Button onTouchTap={() => props.onRetry()}>Retry</Button>;
+    }
   }
 
   return (
     <Card title="Defeat" theme="DARK" inQuest={true}>
       <p>Your party was defeated.</p>
       {helpText}
+      {retryButton}
       <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'lose')}>Next</Button>
     </Card>
   );
@@ -350,8 +408,10 @@ function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
 
   const roleplay = Roleplay({
     node: props.node.ctx.templates.combat.roleplay,
+    prevNode: null,
     settings: props.settings,
     onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(settings, props.node, index)},
+    onRetry: () => {props.onRetry()},
     onReturn: () => {props.onReturn()},
   }, 'DARK');
   return roleplay;
@@ -382,8 +442,10 @@ const Combat = (props: CombatProps): JSX.Element => {
   switch(props.card.phase) {
     case 'DRAW_ENEMIES':
       return (props.custom) ? renderSelectTier(props) : renderDrawEnemies(props);
+    case 'NO_TIMER':
+      return renderNoTimer(props);
     case 'PREPARE':
-      return renderPrepare(props);
+      return renderPrepareTimer(props);
     case 'TIMER':
       return renderTimerCard(props);
     case 'SURGE':

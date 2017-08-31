@@ -3,6 +3,7 @@ import Button from '../../components/base/Button'
 import Callout from '../../components/base/Callout'
 import Card from '../../components/base/Card'
 import {SettingsType, CardThemeType} from '../../reducers/StateTypes'
+import {isEndNode} from '../../parser/Handlers'
 import {ParserNode} from '../../parser/Node'
 import {Choice, QuestContext, RoleplayElement} from '../../reducers/QuestTypes'
 
@@ -10,12 +11,14 @@ import {REGEX} from '../../Constants'
 
 export interface RoleplayStateProps {
   node: ParserNode;
+  prevNode: ParserNode;
   settings: SettingsType;
   onReturn?: () => any;
 }
 
 export interface RoleplayDispatchProps {
   onChoice: (settings: SettingsType, node: ParserNode, index: number) => void;
+  onRetry: () => void;
 }
 
 export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps {};
@@ -109,7 +112,7 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
 
 // TODO(scott): Convert this into a Template class implementation
 const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'LIGHT'): JSX.Element => {
-  const rpResult = loadRoleplayNode(props.node)
+  const rpResult = loadRoleplayNode(props.node);
 
   const renderedContent: JSX.Element[] = rpResult.content.map((element: RoleplayElement, idx: number): JSX.Element => {
     switch (element.type) {
@@ -140,6 +143,15 @@ const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'LIGHT'): JSX.Ele
       </Button>
     );
   });
+
+  // If we just got out of combat and the quest is about to end, offer the choice to retry combat
+  if (props.prevNode && props.prevNode.getTag() === 'combat' && rpResult.choices.length === 1 && isEndNode(props.node.getNext())) {
+    buttons.unshift(
+      <Button key={-1} onTouchTap={() => props.onRetry()}>
+        Retry combat
+      </Button>
+    );
+  }
 
   return (
     <Card title={rpResult.title} icon={rpResult.icon} inQuest={true} theme={theme} onReturn={props.onReturn}>
