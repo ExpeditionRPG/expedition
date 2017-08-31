@@ -43,14 +43,13 @@ export function loadQuestXML(details: QuestDetails, questNode: Cheerio, ctx: Que
   };
 }
 
-export function search(numPlayers: number, user: UserState, search: SearchSettings) {
+export function search(params: SearchSettings) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    if (!user.loggedIn) {
-      throw new Error('Not logged in, cannot search');
-    }
-
-    const params: any = { players: numPlayers, ...search };
-    Object.keys(params).forEach((key: string) => { if (params[key] === null) { delete params[key]; }});
+    Object.keys(params).forEach((key: string) => {
+      if ((params as any)[key] === null) {
+        delete (params as any)[key];
+      }
+    });
 
     const xhr = new XMLHttpRequest();
     // TODO: Pagination / infinite scrolling

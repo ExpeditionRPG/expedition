@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {UserState} from './StateTypes'
 import {UserLoginAction} from '../actions/ActionTypes'
 
-const initial_state: UserState = {
+export const initial_state: UserState = {
   loggedIn: false,
   id: '',
   name: '',

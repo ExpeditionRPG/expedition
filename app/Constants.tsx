@@ -2,7 +2,7 @@ declare var window:any;
 
 export const authSettings = {
   urlBase: 'https://api.expeditiongame.com',
-  // urlBase: 'http://devquests.expeditiongame.com',
+  // urlBase: 'http://devapi.expeditiongame.com',
   // urlBase: 'http://localhost:8081',
   apiKey: 'AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8',
   scopes: 'profile email',
