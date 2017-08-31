@@ -49,7 +49,7 @@ describe('quest', () => {
 
   describe('searchQuests', () => {
     it('returns an empty array if no results', (done: ()=>any) => {
-      q.search('otherpartition', '', {})
+      q.search('', {partition: 'otherpartition'})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(0);
           done();
@@ -57,7 +57,7 @@ describe('quest', () => {
     });
 
     it('returns full quest data', (done: ()=>any) => {
-      q.search('testpartition', '', {})
+      q.search('', {partition: 'testpartition'})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(1);
           expect(results[0].dataValues).toEqual(insertedQuest);

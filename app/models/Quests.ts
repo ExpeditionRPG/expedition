@@ -7,6 +7,9 @@ import * as Bluebird from 'bluebird';
 
 export const MAX_SEARCH_LIMIT = 100;
 
+// Use this partition for any operations on public-facing quests.
+export const PUBLIC_PARTITION = 'expedition-public';
+
 export interface QuestAttributes {
   partition?: string;
   id?: string;
@@ -47,6 +50,7 @@ export interface QuestSearchParams {
   genre?: string;
   order?: string;
   limit?: number;
+  partition?: string;
 }
 
 export interface QuestInstance extends Sequelize.Instance<QuestAttributes> {
@@ -125,10 +129,11 @@ export class Quest {
       });
   }
 
-  // TODO: SearchParams interface
-  search(partition: string, userId: string, params: QuestSearchParams): Bluebird<QuestInstance[]> {
+  search(userId: string, params: QuestSearchParams): Bluebird<QuestInstance[]> {
     // TODO: Validate search params
-    const where: Sequelize.WhereOptions<QuestAttributes> = {partition, published: {$ne: null}, tombstone: null};
+    const where: Sequelize.WhereOptions<QuestAttributes> = {published: {$ne: null}, tombstone: null};
+
+    where.partition = params.partition || PUBLIC_PARTITION;
 
     if (params.id) {
       where.id = params.id;
