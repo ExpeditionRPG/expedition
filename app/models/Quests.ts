@@ -128,15 +128,15 @@ export class Quest {
   // TODO: SearchParams interface
   search(partition: string, userId: string, params: QuestSearchParams): Bluebird<QuestInstance[]> {
     // TODO: Validate search params
-    const where: Sequelize.WhereOptions<QuestAttributes> = {partition, tombstone: null};
+    const where: Sequelize.WhereOptions<QuestAttributes> = {partition, published: {$ne: null}, tombstone: null};
 
     if (params.id) {
       where.id = params.id;
     }
 
     // Require results to be published if we're not querying our own quests
-    if (params.owner !== userId || userId === '') {
-      where.published = {$ne: null};
+    if (params.owner) {
+      where.userid = params.owner;
     }
 
     if (params.players) {
