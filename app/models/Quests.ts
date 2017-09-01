@@ -243,6 +243,7 @@ export class Quest {
 
         const updateValues: QuestAttributes = {
           ...params,
+          userid, // Not included in the request - pull from auth
           questversion: (quest.dataValues.questversion || 0) + 1,
           publishedurl,
         };
