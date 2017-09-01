@@ -7,14 +7,14 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.8
-before_install: "nvm install \"$(jq -r '.engines.node' package.json)\" && node --version"
+before_install: nvm install "$(jq -r '.engines.node' package.json)" && node --version
 cache:
   directories:
-    - node_modules
+  - node_modules
 deploy:
-  - provider: heroku
-    api_key:
-      secure: XLGBJWLsqKzMBKZ44F5xDlS9y/djWNklbyeKE32F5aXPLzcCHwvWOeHGJqipdh7EQ4OFqfTt8DLT3vQbriI+5MjObkfq+V/UEedBtSCLP2cZo0OyrW0scinRwprNUZQMTKGu0EnJZJnRcEbzaXZCsXwMC1iW/HZSs6Ka/W6H3wKLu4ahyJHsUHh7+Z8qMBWIh88hvQ7u1FYPCpbcT8fdDAIwuT+LHNOf0KrA54a8CM711je1bUd+defWTc7tRXv3OAvttILjkAYvEaQY7uP/A50Yos9TRkDmb7W7+QT0nDaqGvaSZVoCHbtbO1D8nV6lx8Q++Itk/OkzCbDczE0BL6p5DeAnuJ1asMtNQPeIokHsposZHYJIIdkCDQlrFRQqIc4EwPlbOUZ3m60AUQ6WewOstQv66wfq0kueZn4zia3DL79OMIwQM57AcD1bF2EZsgNRx+BLRPVjgy098xHImG5ZZMVsQBfws+xcw6I5lPmpmQDz1R9jdr4G5GvFq5LDvs6lECfmpsYyERJNtLGPsf3Ws0EA3UXje/wcfIx3hAW1rGsYNhINQAA1HwJwYuZBq7puIa68FYFrIFuJUSJQKKUTG+uFNaJkx+ZCXPJGhcw+b/VyFMT2N/bSQLDfuZ8F4wXkP0ccIk8Zx9qwqUv6VjJfddktj11PWpXk+mkwM04=
-    app: expedition-quest-creator-dev
-    on:
-       all_branches: true
+  provider: heroku
+  app: expedition-quest-creator-dev
+  api_key:
+    secure: ivwlN52rZMK+kXym8xMhJJBgMGISC0QaiyKxpm25KKeNaO9nM3h2wmfimBays+RGy2zBX1Osan6HZL3cAA+F40ZEvgMO7LmkPr1QUGsH4eCK1elF+rynPcZcBgTyS5kpjOagQs62ThT8WX1BQlcbc/GEttBjUGVY53RebWm8ONQWYbcDM/aNfk/y1sSe3NByxeK6bKvOJmjce4NukDIRJrjedbnok79SyRXiQGLnlZPJXLNv3kbwKQvjsKpxAO9fawyepWZlIt8hVPk/Lrn+yRONRIYHeg4A/hJdNvFkYT7aCmCiMKokqu4YWTMTBaYeU50THC/wjR0uhXoE5b7xAXbqI5YpyXuV5E42ILMLvqwrGRxu8xyx61LdeFJGT/UcOnI1H4SqYSXnrP3QAgApkIPOm7ASj9uUBO98fiuv0W9JG/3HuXgTsdHbS2aaH5Jp6GxDlBsFd6wNbYj8tETDq5biwmg8RRq2VaYwwqpmP3Ysy1vkhBhZa3+dL4odo4VRbOhK+wqqldRv+rQqayKqAOAIctjMikgdHkOaMMj9bIeE6hbFaTJ8vWEVM/9hbyNJJgZtZo2pXBkzRfrA83oRXqLGFh4lCJ05PoFrb5FgCQy3QqqVM9W3Z7QJ4v/mSCnJ3WO/xf8moE1xkcDWX9fwQe41jaoiMn255rCzt4WWzng=
+  on:
+    all_branches: true
