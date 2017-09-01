@@ -40,7 +40,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   aws s3 cp www s3://app.expeditiongame.com --recursive
 
   # Invalidate files on cloudfront
-  aws cloudfront create-invalidation --distribution-id EDFP2F13AASZW --invalidation-batch file://cloudfront-invalidations-prod.json
+  aws cloudfront create-invalidation --distribution-id EDFP2F13AASZW --paths /\*
 else
   echo "Prod build cancelled until tested on beta."
 fi
