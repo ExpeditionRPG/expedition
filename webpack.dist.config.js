@@ -40,9 +40,10 @@ const options = {
     new Webpack.optimize.AggressiveMergingPlugin(),
     new Webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify('production'),
-        'API_HOST': JSON.stringify(process.env.API_HOST || 'https://api.expeditiongame.com'),
-      },
+        // Default to beta for safety
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'dev'),
+        'API_HOST': JSON.stringify(process.env.API_HOST || 'http://betaapi.expeditiongame.com'),
+      }
     }),
     new CopyWebpackPlugin([
       // Copy ops for dist folder (main app)
