@@ -15,6 +15,10 @@ export const METADATA_FIELDS = [
   'mintimeminutes',
   'maxtimeminutes'
 ];
+export const PARTITIONS = {
+  PUBLIC: 'expedition-public',
+  PRIVATE: 'expedition-private',
+};
 export const MIN_PLAYERS = 1;
 export const MAX_PLAYERS = 6;
 export const METADATA_DEFAULTS = {

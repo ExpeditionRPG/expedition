@@ -11,11 +11,6 @@ This is the companion to the [Expedition App](https://github.com/ExpeditionRPG/e
 Install:
 - [redux-devtools-extension](https://github.com/zalmoxisus/redux-devtools-extension) for Chrome.
 - [NodeJS v6.0+](nodejs.org)
-- [Google Cloud SDK](https://cloud.google.com/sdk/docs/), then configure access:
-
-```shell
-gcloud auth login
-````
 
 Now install the repo:
 
@@ -30,16 +25,6 @@ If you use windows, you may need to run the following:
 ```shell
 npm install --global --production windows-build-tools
 ```
-
-If you're working with the expedition production instance, install the `heroku` CLI:
-
-https://devcenter.heroku.com/articles/heroku-cli
-
-And `psql` command:
-
-https://devcenter.heroku.com/articles/heroku-postgresql#local-setup
-
-Be sure to try each of the sections in the [playbook](docs/playbook.md) and revisit them from time to time to keep your skills sharp for debugging production.
 
 ### Config.json
 
@@ -57,9 +42,9 @@ To populate all of the values, you'll need to create a Google Cloud project and 
 npm run dev
 ```
 
-The Quest Creator is then available at http://localhost:8080 by default.
+The Quest Creator is then available at http://localhost:8080 by default. Note that dev defaults to using the beta API, running on a free Heroku instance - if you haven't dev'd in a while, it may take a minute to spin up after the first request.
 
-When running on Windows, must be run within a Unix-like shell (such as Git Bash)
+When running on Windows, must be run within a Unix-like shell (such as Git Bash).
 
 The IDE automatically loads `config.json` on start - this is excluded from the repo as it holds secrets unfit for mortal eyes.
 
@@ -73,9 +58,9 @@ npm test
 
 The Quest Creator uses Continuous Integration (via Travis CI) and Heroku hosting to make deployment super easy.
 
-If tests pass, the `dev` branch is automatically deploy to the Heroku development environment at [http://devquests.expeditiongame.com](http://devquests.expeditiongame.com).
+If tests pass, that code is automatically deployed to AWS S3 at [http://betaquests.expeditiongame.com](http://betaquests.expeditiongame.com).
 
-Once master has been thoroughly tested on dev, it can be deployed to master via `npm run build` and uploading to S3.
+Once master has been thoroughly tested on dev, you can deploy to prod with `./prod.sh` - if you run into any deploy issues, make sure to read the notes in that file!
 
 ### Database
 
