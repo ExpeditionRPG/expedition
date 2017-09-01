@@ -187,7 +187,11 @@ export function formatPlayPeriod(minMinutes: number, maxMinutes: number): string
   }
 }
 
-export function truncateSummary(string: string) {
+export function truncateSummary(string: string): string {
+  if (!string) {
+    return '';
+  }
+
   if (string.length < SUMMARY_MAX_LENGTH) {
     return string;
   } else {
@@ -195,9 +199,18 @@ export function truncateSummary(string: string) {
   }
 }
 
-function renderResults(props: SearchProps): JSX.Element {
-  const orderField = props.search.order.substring(1);
+function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
+  const orderField = props.search.order && props.search.order.substring(1);
   const items: JSX.Element[] = props.results.map((result: QuestDetails, index: number) => {
+    let orderDetails = <span></span>;
+    if (orderField) {
+      orderDetails = (
+        <div className={`searchOrderDetail ${orderField}`}>
+          {orderField === 'ratingavg' && result.ratingcount >= 5 && <StarRating readOnly={true} value={+result.ratingavg} quantity={result.ratingcount}/>}
+          {orderField === 'created' && `Published ${Moment(result.created).format('MMM YYYY')}`}
+        </div>
+      );
+    }
     return (
       <Button key={index} onTouchTap={() => props.onQuest(result)}>
         <div className="searchResult">
@@ -208,10 +221,7 @@ function renderResults(props: SearchProps): JSX.Element {
           <div className="timing">
             {formatPlayPeriod(result.mintimeminutes, result.maxtimeminutes)}
           </div>
-          <div className={`searchOrderDetail ${orderField}`}>
-            {orderField === 'ratingavg' && result.ratingcount >= 5 && <StarRating readOnly={true} value={+result.ratingavg} quantity={result.ratingcount}/>}
-            {orderField === 'created' && `Published ${Moment(result.created).format('MMM YYYY')}`}
-          </div>
+          {orderDetails}
         </div>
       </Button>
     );
@@ -220,17 +230,18 @@ function renderResults(props: SearchProps): JSX.Element {
   return (
     <Card
       title="Quest Search Results"
-      header={<div className="searchHeader">
+      header={!hideHeader && <div className="searchHeader">
         <span>{props.results.length} quests for {props.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></span>
         <Button className="float_right filter_button" onTouchTap={() => props.onFilter()}>Filter ></Button>
       </div>}
     >
-      {items.length === 0 &&
+      {items.length === 0 && !props.searching &&
         <div>
           <div>No results found.</div>
-          <div>Try broadening your search.</div>
+          {!hideHeader && <div>Try broadening your search.</div>}
         </div>
       }
+      {items.length === 0 && props.searching && <div>Loading...</div>}
       {items}
     </Card>
   );
@@ -312,6 +323,8 @@ const Search = (props: SearchProps): JSX.Element => {
       return renderSettings(props);
     case 'SEARCH':
       return renderResults(props);
+    case 'PRIVATE':
+      return renderResults(props, true);
     case 'DETAILS':
       return renderDetails(props);
     default:

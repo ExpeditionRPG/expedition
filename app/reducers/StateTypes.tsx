@@ -16,16 +16,19 @@ export interface EndSettings {
   text: string;
 }
 
-export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'DETAILS' | 'SEARCH';
+export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'DETAILS' | 'SEARCH' | 'PRIVATE';
 
 export interface SearchSettings {
-  text: string;
-  age: number;
-  order: string;
-  mintimeminutes: number;
-  maxtimeminutes: number;
-  contentrating: ContentRatingLabelType;
-  genre: GenreType;
+  text?: string;
+  age?: number;
+  order?: string;
+  mintimeminutes?: number;
+  maxtimeminutes?: number;
+  contentrating?: ContentRatingLabelType;
+  genre?: GenreType;
+  players?: number;
+  owner?: string;
+  partition?: 'expedition-public' | 'expedition-private';
 }
 
 export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
@@ -68,6 +71,7 @@ export interface SearchState {
   search: SearchSettings;
   selected: QuestDetails;
   results: QuestDetails[];
+  searching: boolean;
 }
 
 export interface UserState {

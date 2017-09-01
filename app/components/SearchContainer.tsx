@@ -35,7 +35,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
       dispatch(toCard('SEARCH_CARD', 'SETTINGS'));
     },
     onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => {
-      dispatch(search(numPlayers, user, request));
+      dispatch(search({players: numPlayers, ...request}));
     },
     onQuest: (quest: QuestDetails) => {
       dispatch(viewQuest(quest));

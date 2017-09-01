@@ -48,6 +48,10 @@ export interface UserFeedbackClearAction extends Redux.Action {
   type: 'USER_FEEDBACK_CLEAR';
 }
 
+export interface SearchRequestAction extends Redux.Action {
+  type: 'SEARCH_REQUEST';
+}
+
 export interface SearchResponseAction extends Redux.Action {
   type: 'SEARCH_RESPONSE';
   quests: QuestDetails[];

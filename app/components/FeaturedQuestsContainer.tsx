@@ -5,7 +5,7 @@ import FeaturedQuests, {FeaturedQuestsStateProps, FeaturedQuestsDispatchProps} f
 
 import {toCard} from '../actions/Card'
 import {fetchQuestXML, search} from '../actions/Web'
-import {initial_state} from '../reducers/Search'
+import {initial_state as search_initial_state} from '../reducers/Search'
 import {AppState, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 
@@ -34,7 +34,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Featu
     },
     onSearchSelect(user: UserState, players: number): void {
       if (user && user.loggedIn) {
-        dispatch(search(players, user, initial_state.search));
+        dispatch(search({players, ...search_initial_state.search}));
       } else {
         dispatch(toCard('SEARCH_CARD', 'DISCLAIMER'));
       }
