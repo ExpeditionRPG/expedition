@@ -88,7 +88,7 @@ const Main = (props: MainProps): JSX.Element => {
       <DialogsContainer/>
       {contents}
       <Snackbar
-        className="snackbar"
+        className="editor_snackbar"
         open={props.snackbar.open}
         message={props.snackbar.message || ''}
         action={props.snackbar.actionLabel}

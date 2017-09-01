@@ -113,19 +113,26 @@ window.gapi.load('client,drive-realtime,drive-share', () => {
 
   // every 12 hours, check for the latest version
   setInterval(() => {
-    $.getJSON('https://raw.githubusercontent.com/ExpeditionRPG/expedition-quest-creator/master/package.json', (data) => {
-      if (data && data.version) {
-        const newVersion = data.version.split('.').map(Number);
-        const oldVersion = VERSION.split('.').map(Number);
-        if (newVersion[0] > oldVersion[0] || newVersion[1] > oldVersion[1] || newVersion[2] > oldVersion[2]) {
-          store.dispatch(setSnackbar(true,
-            'There\'s a new version of the Quest Creator available!',
-            (event: any) => { location.reload(); },
-            'reload',
-            true
-          ));
+    $.ajax({
+      url: 'https://raw.githubusercontent.com/ExpeditionRPG/expedition-quest-creator/master/package.json',
+      dataType: 'json',
+      xhrFields: {
+        withCredentials: false,
+      },
+      success: (data: any) => {
+        if (data && data.version) {
+          const newVersion = data.version.split('.').map(Number);
+          const oldVersion = VERSION.split('.').map(Number);
+          if (newVersion[0] > oldVersion[0] || newVersion[1] > oldVersion[1] || newVersion[2] > oldVersion[2]) {
+            store.dispatch(setSnackbar(true,
+              'There\'s a new version of the Quest Creator available!',
+              (event: any) => { location.reload(); },
+              'reload',
+              true
+            ));
+          }
         }
-      }
+      },
     });
   }, 12 * 60 * 60 * 1000);
 })();

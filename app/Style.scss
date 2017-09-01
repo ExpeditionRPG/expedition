@@ -267,9 +267,9 @@ label {
   }
 }
 
-.snackbar {
-  background: $grey600;
-  span {
+.editor_snackbar {
+  background: $grey600 !important;
+  div, span {
     color: $bg_primary !important;
   }
   button span {
