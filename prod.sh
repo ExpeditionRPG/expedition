@@ -18,7 +18,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   aws s3 cp dist s3://quests.expeditiongame.com --recursive
 
   # Invalidate files on cloudfront
-  aws cloudfront create-invalidation --distribution-id E1MQUM2X3AHFSG --invalidation-batch file://cloudfront-invalidations-prod.json
+  aws cloudfront create-invalidation --distribution-id E1MQUM2X3AHFSG --paths /\*
 else
   echo "Prod build cancelled until tested on beta."
 fi
