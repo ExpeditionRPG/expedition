@@ -39,6 +39,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   export AWS_DEFAULT_REGION='us-east-2'
   aws s3 cp www s3://app.expeditiongame.com --recursive
 
+  # Upload the APK for side-loading
+  aws s3 cp platforms/android/build/outputs/apk/expedition.apk s3://app.expeditiongame.com/expedition.apk
+
   # Invalidate files on cloudfront
   aws cloudfront create-invalidation --distribution-id EDFP2F13AASZW --paths /\*
 else
