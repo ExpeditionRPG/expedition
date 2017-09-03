@@ -14,8 +14,8 @@ export abstract class CrawlerBase {
     this.queue = [];
   }
 
-  public crawl(root: ParserNode, timeLimitMillis = 500, depthLimit = 50) {
-    this.traverse(root, timeLimitMillis, depthLimit);
+  public crawl(root?: ParserNode, timeLimitMillis = 500, depthLimit = 50): boolean {
+    return this.traverse(root, timeLimitMillis, depthLimit);
   }
 
   protected abstract onEvent(q: CrawlEntry, e: CrawlEvent): void;
@@ -24,7 +24,7 @@ export abstract class CrawlerBase {
 
   // Traverses the graph in breadth-first order starting with a given node.
   // Stats are collected separately per-id and per-line
-  private traverse(root?: ParserNode, timeLimitMillis?: number, depthLimit?: number) {
+  private traverse(root?: ParserNode, timeLimitMillis?: number, depthLimit?: number): boolean {
     if (root) {
       this.queue.push({
         node: root,  prevNodeStr: 'START', prevId: 'START', prevLine: -1, depth: 0
@@ -84,5 +84,6 @@ export abstract class CrawlerBase {
         });
       }
     }
+    return (this.queue.length > 0);
   }
 }
