@@ -1,5 +1,4 @@
-import {mount} from 'enzyme'
-import {handleAction} from './Handlers'
+import {handleAction, getEventParameters} from './Handlers'
 import {defaultContext} from './Context'
 import {ParserNode} from './Node'
 
@@ -9,6 +8,20 @@ const cheerio: any = require('cheerio');
 const window: any = cheerio.load('<div>');
 
 describe('Handlers', () => {
+  describe('getEventParameters', () => {
+    it('gets parameters', () => {
+      const node = cheerio.load('<combat><event on="win" heal="5" loot="false" xp="false"><roleplay></roleplay></event></combat>')('combat');
+      expect(getEventParameters(new ParserNode(node, defaultContext()), 'win')).toEqual({
+        heal: 5, loot: false, xp: false
+      });
+    });
+
+    it('safely handles event with no params', () => {
+      const node = cheerio.load('<combat><event on="win"><roleplay></roleplay></event></combat>')('combat');
+      expect(getEventParameters(new ParserNode(node, defaultContext()), 'win')).toEqual({});
+    });
+  });
+
   describe('handleAction', () => {
     it('skips hidden triggers', () => {
       const node = cheerio.load('<roleplay><choice><trigger if="a">goto 5</trigger><trigger>end</trigger></choice></roleplay>')('roleplay');

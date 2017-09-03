@@ -2,7 +2,7 @@ import {evaluateOp, evaluateContentOps, updateContext, defaultContext} from './C
 
 declare var global: any;
 
-var cheerio: any = require('cheerio');
+const cheerio: any = require('cheerio');
 
 describe('Context', () => {
   describe('evaluateOp', () => {
@@ -47,7 +47,7 @@ describe('Context', () => {
     });
     it('does not affect other contexts', () => {
       const ctx = defaultContext();
-      const ctx2 = updateContext(dummyElem, ctx, 2);
+      updateContext(dummyElem, ctx, 2);
       expect(ctx.path).not.toEqual([2]);
     })
     it('updates view count');

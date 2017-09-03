@@ -14,8 +14,8 @@ export abstract class CrawlerBase {
     this.queue = [];
   }
 
-  public crawl(root: ParserNode, timeLimitMillis = 500, depthLimit = 50) {
-    this.traverse(root, timeLimitMillis, depthLimit);
+  public crawl(root?: ParserNode, timeLimitMillis = 500, depthLimit = 50): boolean {
+    return this.traverse(root, timeLimitMillis, depthLimit);
   }
 
   protected abstract onEvent(q: CrawlEntry, e: CrawlEvent): void;
@@ -24,16 +24,16 @@ export abstract class CrawlerBase {
 
   // Traverses the graph in breadth-first order starting with a given node.
   // Stats are collected separately per-id and per-line
-  private traverse(root?: ParserNode, timeLimitMillis?: number, depthLimit?: number) {
+  private traverse(root?: ParserNode, timeLimitMillis?: number, depthLimit?: number): boolean {
     if (root) {
       this.queue.push({
         node: root,  prevNodeStr: 'START', prevId: 'START', prevLine: -1, depth: 0
       });
     }
 
-    let start = Date.now();
+    const start = Date.now();
     while(this.queue.length > 0 && (!depthLimit || this.queue[0].depth < depthLimit) && (!timeLimitMillis || (Date.now() - start) < timeLimitMillis)) {
-      let q = this.queue.shift();
+      const q = this.queue.shift();
 
       // This happens if we've navigated "outside the quest", e.g. a user doesn't end all their nodes with end tag.
       if (q.node === undefined || q.node === null) {
@@ -74,7 +74,7 @@ export abstract class CrawlerBase {
         // 0 is default "next" button id
         keys.push(0);
       }
-      for (let k of keys) {
+      for (const k of keys) {
         this.queue.push({
           node: handleAction(q.node, k),
           prevNodeStr: nstr,
@@ -84,5 +84,6 @@ export abstract class CrawlerBase {
         });
       }
     }
+    return (this.queue.length > 0);
   }
 }

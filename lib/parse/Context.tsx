@@ -13,23 +13,37 @@ export interface Context {
   // Given the path and original quest XML, we should be able to recreate
   // context given this path.
   path: (string|number)[];
+
+  // Regenerate template scope (all of "_") with this function.
+  _templateScopeFn: () => any;
 }
 
 export function defaultContext(): Context {
-  // Caution: Scope is the API for all users of QDL.
+  const populateScopeFn = function() {
+    return {
+      viewCount: function(id: string): number {
+        return this.views[id] || 0;
+      },
+    };
+  };
+
+  // Caution: Scope is the API for Quest Creators.
   // New endpoints should be added carefully b/c we'll have to support them.
   // Behind-the-scenes data can be added to the context outside of scope
-  return {
+  const newContext: Context = {
     scope: {
-      _: {
-        viewCount: function(id: string): number {
-          return this.views[id] || 0;
-        },
-      },
+      _: populateScopeFn(),
     },
     views: {},
-    path: [],
+    path: ([] as any),
+    _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
   };
+
+  for (const k of Object.keys(newContext.scope._)) {
+    newContext.scope._[k] = (newContext.scope._[k] as any).bind(newContext);
+  }
+
+  return newContext;
 }
 
 // Run MathJS over all detected {{operations}}.
@@ -44,7 +58,7 @@ export function evaluateContentOps(content: string, ctx: Context): string {
   }
 
   let result = '';
-  for (let m of matches) {
+  for (const m of matches) {
     const op = parseOpString(m);
     if (op) {
       const evalResult = evaluateOp(op, ctx);
@@ -120,7 +134,7 @@ export function updateContext(node: Cheerio, ctx: Context, action?: string|numbe
 
   const nodeId = node.attr('id');
 
-  let newContext: Context = Clone(ctx);
+  const newContext: Context = Clone(ctx);
 
   if (nodeId) {
     newContext.views[nodeId] = (newContext.views[nodeId] || 0) + 1;
@@ -129,9 +143,11 @@ export function updateContext(node: Cheerio, ctx: Context, action?: string|numbe
     newContext.path.push(action);
   }
 
-  newContext.scope._.viewCount = function(id: string): number {
-    return this.views[id] || 0;
-  }.bind(newContext);
+  // Create new copies of all scope functions and bind them
+  newContext.scope._ = newContext._templateScopeFn();
+  for (const k of Object.keys(newContext.scope._)) {
+    newContext.scope._[k] = (newContext.scope._[k] as any).bind(newContext);
+  }
 
   return newContext;
 }
