@@ -2,6 +2,27 @@ import {ParserNode} from './Node'
 
 const MAX_GOTO_FOLLOW_DEPTH = 50;
 
+export interface EventParameters {
+  xp?: boolean;
+  loot?: boolean;
+  heal?: number;
+}
+
+// The passed event parameter is a string indicating which event to fire based on the "on" attribute.
+// Returns the (cleaned) parameters of the event element
+export function getEventParameters(node: ParserNode, event: string): EventParameters {
+  const evt = node.getNext(event);
+  if (!evt) {
+    return null;
+  }
+  const p = evt.elem.parent();
+  const ret: EventParameters = {};
+  if (p.attr('xp')) { ret.xp = (p.attr('xp') === 'true'); }
+  if (p.attr('loot')) { ret.loot = (p.attr('loot') === 'true'); }
+  if (p.attr('heal')) { ret.heal = parseInt(p.attr('heal'), 10); }
+  return ret;
+}
+
 function getTriggerId(elem: Cheerio): string {
   const m = elem.text().trim().match(/\s*goto\s+(.*)/);
   return (m) ? m[1] : null;
@@ -28,7 +49,7 @@ function handleTrigger(pnode: ParserNode): ParserNode {
   // Immediately act on any gotos (with a max depth)
   let i = 0;
   for (; i < MAX_GOTO_FOLLOW_DEPTH && pnode !== null && pnode.getTag() === 'trigger'; i++) {
-    let id = getTriggerId(pnode.elem);
+    const id = getTriggerId(pnode.elem);
     if (id) {
       pnode = pnode.gotoId(id);
     } else {
@@ -45,7 +66,7 @@ function handleTrigger(pnode: ParserNode): ParserNode {
 // - a number indicating the choice number in the XML element, including conditional choices.
 // - a string indicating which event to fire based on the "on" attribute.
 // Returns the card inside of / referenced by the choice/event element
-export function handleAction(pnode: ParserNode, action: number|string): ParserNode {
+export function handleAction(pnode: ParserNode, action?: number|string): ParserNode {
   pnode = pnode.getNext(action);
   if (!pnode) {
     return null;
@@ -55,4 +76,9 @@ export function handleAction(pnode: ParserNode, action: number|string): ParserNo
     return handleTrigger(pnode);
   }
   return pnode;
+}
+
+// Returns if the supplied node is an **end** trigger
+export function isEndNode(pnode: ParserNode): Boolean {
+  return (pnode.getTag() === 'trigger' && pnode.elem.text().toLowerCase().split(' ')[0].trim() === 'end');
 }

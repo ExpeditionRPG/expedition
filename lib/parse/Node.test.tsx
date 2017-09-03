@@ -3,13 +3,13 @@ import {Context, defaultContext} from './Context'
 declare var global: any;
 
 const cheerio = require('cheerio') as CheerioAPI;
-var window: any = cheerio.load('<div>');
+const window: any = cheerio.load('<div>');
 
 describe('Node', () => {
   describe('getNext', () => {
     it('returns next node if enabled', () => {
       const quest = cheerio.load('<quest><roleplay></roleplay><roleplay if="asdf">expected</roleplay><roleplay>wrong</roleplay></quest>')('quest');
-      let ctx = defaultContext();
+      const ctx = defaultContext();
       ctx.scope.asdf = true;
       const pnode = new ParserNode(quest.children().eq(0), ctx);
       expect(pnode.getNext().elem.text()).toEqual('expected');
@@ -95,13 +95,13 @@ describe('Node', () => {
   describe('loopChildren', () => {
     it('handles empty case', () => {
       const pnode = new ParserNode(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultContext());
-      let sawChild = pnode.loopChildren((tag, c) => { return true; }) || false;
+      const sawChild = pnode.loopChildren((tag, c) => { return true; }) || false;
       expect(sawChild).toEqual(false);
     })
     it('loops only enabled children', () => {
       const pnode = new ParserNode(cheerio.load('<roleplay><p>1</p><b>2</b><p if="a">3</p><i>4</i></roleplay>')('roleplay'), defaultContext());
-      let agg: any[] = [];
-      let result = pnode.loopChildren((tag, c) => {
+      const agg: any[] = [];
+      const result = pnode.loopChildren((tag, c) => {
         agg.push(tag);
       });
       expect(result).toEqual(undefined);
@@ -109,7 +109,7 @@ describe('Node', () => {
     });
     it('stops early when a value is returned', () => {
       const pnode = new ParserNode(cheerio.load('<roleplay><p>1</p><b>2</b><p if="a">3</p><i>4</i></roleplay>')('roleplay'), defaultContext());
-      let result = pnode.loopChildren((tag, c) => {
+      const result = pnode.loopChildren((tag, c) => {
         if (c.text() === '2') {
           return tag;
         }
@@ -225,7 +225,7 @@ describe('Node', () => {
     });
 
     it('increments scope._.views.<id>', () => {
-      let ctx = defaultContext();
+      const ctx = defaultContext();
       let result = new ParserNode(cheerio.load('<roleplay id="foo"><p>[roll]</p></roleplay>')('roleplay'), ctx);
       expect(result.ctx.views).toEqual({foo: 1});
       expect(result.ctx.scope._.viewCount('foo')).toEqual(1);
