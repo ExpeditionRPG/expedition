@@ -5,6 +5,7 @@ import {getStore} from '../Store'
 import {CardType} from '../reducers/StateTypes'
 
 declare var require: any;
+declare var window: any;
 const qs = require('qs') as any;
 
 export interface FilterChangeAction extends Redux.Action {
@@ -18,8 +19,11 @@ export function filterChange(name: string, value: string | number): ((dispatch: 
   return (dispatch: Redux.Dispatch<any>) => {
     if (name === 'source' && value === 'Custom') {
       // TODO validate URL or ID, otherwise notify user + abort
-      value = window.prompt('Please enter your card sheet publish URL (see "?" in the top right for help)', '');
-      value = 'Custom:' + value.replace('https://docs.google.com/spreadsheets/d/', '').replace('/pubhtml', '');
+      value = window.prompt('Please enter your card sheet publish URL (see "?" in the top right for help)', '') as string;
+      if (value.indexOf('/e/') !== -1) {
+        return alert('Please use the URL of the Google Doc, not the publish link');
+      }
+      value = 'Custom:' + value.replace('https://docs.google.com/spreadsheets/d/', '').split('/')[0];
     }
     dispatch({type: 'FILTER_CHANGE', name, value}) as FilterChangeAction;
 
