@@ -18,7 +18,6 @@
         "@types/cheerio": "^0.22.1",
         "@types/enzyme": "^2.7.4",
         "@types/jasmine": "^2.5.43",
-        "@types/jquery": "^2.0.40",
         "@types/material-ui": "^0.16.50",
         "@types/promise-polyfill": "^6.0.0",
         "@types/react": "^15.0.9",
