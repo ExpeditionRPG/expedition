@@ -135,7 +135,7 @@ export class Feedback {
           <p>Quest id: ${feedback.questid}</p>
         `;
 
-        if (type === 'rating' && feedback.text.length > 0) {
+        if (type === 'rating' && (feedback.text.length > 0 || feedback.rating < 3)) {
           const subject = `Quest rated ${feedback.rating}/5: ${quest.dataValues.title}`;
           console.log(subject);
           return Mail.send([quest.dataValues.email, 'expedition+questfeedback@fabricate.io'], subject, message);
