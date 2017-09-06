@@ -61,7 +61,7 @@ const Settings = (props: SettingsProps): JSX.Element => {
         {difficultyText[difficultyIdx].text}
       </Picker>
 
-      <Picker label="Timer Speed" value={timerText[timerIdx].title} onDelta={(i: number)=>props.onTimerSecondsDelta(timerIdx, i)}>
+      <Picker label="Timer" value={timerText[timerIdx].title} onDelta={(i: number)=>props.onTimerSecondsDelta(timerIdx, i)}>
         {timerText[timerIdx].text}
       </Picker>
 
