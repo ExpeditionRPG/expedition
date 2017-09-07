@@ -127,7 +127,7 @@ function parseOpString(str: string): string {
   return op[1];
 }
 
-export function updateContext<C extends Context>(node: Cheerio, ctx: C, action?: string|number): Context {
+export function updateContext<C extends Context>(node: Cheerio, ctx: C, action?: string|number): C {
   if (!node) {
     return ctx;
   }
