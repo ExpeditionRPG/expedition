@@ -4,11 +4,11 @@ import {Context} from './Context'
 
 export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END';
 
-export type CrawlEntry = {node: ParserNode<any>, prevNodeStr: string, prevId: string, prevLine: number, depth: number};
+export type CrawlEntry<C extends Context> = {node: ParserNode<C>, prevNodeStr: string, prevId: string, prevLine: number, depth: number};
 
 export abstract class CrawlerBase<C extends Context> {
   protected seen: Set<string>;
-  protected queue: CrawlEntry[];
+  protected queue: CrawlEntry<C>[];
 
   constructor() {
     this.seen = new Set();
@@ -19,9 +19,9 @@ export abstract class CrawlerBase<C extends Context> {
     return this.traverse(root, timeLimitMillis, depthLimit);
   }
 
-  protected abstract onEvent(q: CrawlEntry, e: CrawlEvent): void;
+  protected abstract onEvent(q: CrawlEntry<C>, e: CrawlEvent): void;
 
-  protected abstract onNode(q: CrawlEntry, nodeStr: string, id: string, line: number): void;
+  protected abstract onNode(q: CrawlEntry<C>, nodeStr: string, id: string, line: number): void;
 
   // Traverses the graph in breadth-first order starting with a given node.
   // Stats are collected separately per-id and per-line
