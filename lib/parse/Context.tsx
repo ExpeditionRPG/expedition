@@ -127,14 +127,14 @@ function parseOpString(str: string): string {
   return op[1];
 }
 
-export function updateContext(node: Cheerio, ctx: Context, action?: string|number): Context {
+export function updateContext<C extends Context>(node: Cheerio, ctx: C, action?: string|number): C {
   if (!node) {
     return ctx;
   }
 
   const nodeId = node.attr('id');
 
-  const newContext: Context = Clone(ctx);
+  const newContext: C = Clone(ctx);
 
   if (nodeId) {
     newContext.views[nodeId] = (newContext.views[nodeId] || 0) + 1;

@@ -1,4 +1,5 @@
 import {ParserNode} from './Node'
+import {Context} from './Context'
 
 const MAX_GOTO_FOLLOW_DEPTH = 50;
 
@@ -10,7 +11,7 @@ export interface EventParameters {
 
 // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
 // Returns the (cleaned) parameters of the event element
-export function getEventParameters(node: ParserNode, event: string): EventParameters {
+export function getEventParameters(node: ParserNode<Context>, event: string): EventParameters {
   const evt = node.getNext(event);
   if (!evt) {
     return null;
@@ -28,7 +29,7 @@ function getTriggerId(elem: Cheerio): string {
   return (m) ? m[1] : null;
 }
 
-export function handleTriggerEvent(pnode: ParserNode): ParserNode {
+export function handleTriggerEvent<C extends Context>(pnode: ParserNode<C>): ParserNode<C> {
   // Search upwards in the node heirarchy and see if any of the parents successfully
   // handle the event.
   let ref = new ParserNode(pnode.elem.parent(), pnode.ctx);
@@ -45,7 +46,7 @@ export function handleTriggerEvent(pnode: ParserNode): ParserNode {
   return pnode;
 }
 
-function handleTrigger(pnode: ParserNode): ParserNode {
+function handleTrigger<C extends Context>(pnode: ParserNode<C>): ParserNode<C> {
   // Immediately act on any gotos (with a max depth)
   let i = 0;
   for (; i < MAX_GOTO_FOLLOW_DEPTH && pnode !== null && pnode.getTag() === 'trigger'; i++) {
@@ -66,7 +67,7 @@ function handleTrigger(pnode: ParserNode): ParserNode {
 // - a number indicating the choice number in the XML element, including conditional choices.
 // - a string indicating which event to fire based on the "on" attribute.
 // Returns the card inside of / referenced by the choice/event element
-export function handleAction(pnode: ParserNode, action?: number|string): ParserNode {
+export function handleAction<C extends Context>(pnode: ParserNode<C>, action?: number|string): ParserNode<C> {
   pnode = pnode.getNext(action);
   if (!pnode) {
     return null;
@@ -79,6 +80,6 @@ export function handleAction(pnode: ParserNode, action?: number|string): ParserN
 }
 
 // Returns if the supplied node is an **end** trigger
-export function isEndNode(pnode: ParserNode): Boolean {
+export function isEndNode(pnode: ParserNode<Context>): Boolean {
   return (pnode.getTag() === 'trigger' && pnode.elem.text().toLowerCase().split(' ')[0].trim() === 'end');
 }
