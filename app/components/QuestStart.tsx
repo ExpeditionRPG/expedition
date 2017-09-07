@@ -1,4 +1,5 @@
 import * as React from 'react'
+import Callout from './base/Callout'
 import Card from './base/Card'
 import Button from './base/Button'
 import {SettingsType} from '../reducers/StateTypes'
@@ -20,28 +21,21 @@ const QuestStart = (props: QuestStartProps): JSX.Element => {
   const multiPlayer = (props.settings.numPlayers > 1);
   return (
     <Card title="Setup">
-      <ol>
-        {singlePlayer && <li><strong>Solo play:</strong> Select two adventurers of your choice.</li>}
-        {multiPlayer && <li><strong>Select</strong> one adventurer of your choice from the deck and pass the deck along.</li>}
-        {twoAdventurer && <ul><li><strong>1-2 players:</strong> Adventurers with music abilities are not recommended.</li></ul>}
+      <h2>Adventurers</h2>
+      {singlePlayer && <p><strong>Solo play:</strong> Select two adventurers of your choice and set them face up in front of you.</p>}
+      {multiPlayer && <p><strong>Select</strong> one adventurer of your choice from the deck, set it face up in front of you and pass the deck along.</p>}
+      {twoAdventurer && <Callout icon="adventurer"><strong>1-2 players:</strong> Adventurers with music abilities are not recommended.</Callout>}
+      <p><strong>Clip</strong> a health tracker onto your adventurer at full health.</p>
 
-        <li><strong>Clip</strong> a health tracker onto your adventurer at full health.</li>
+      <h2>Abilities</h2>
+      <p><strong>Draw</strong> the starting abilities listed on your adventurer.</p>
+      {twoAdventurer && <Callout icon="adventurer"><strong>1-2 players:</strong> Draft pick each ability (draw three, keep one, put the other two on the bottom of the deck).</Callout>}
+      <p><strong>Read</strong> through your abilities. You may mulligan (redraw all) once if desired.</p>
+      <p><strong>Shuffle</strong> them into a stack face-down in front of you.</p>
 
-        <li><strong>Keep</strong> this card face up in front of you.</li>
-
-        <li><strong>Draw</strong> the starting abilities listed on your adventurer.</li>
-        {twoAdventurer && <ul><li><strong>1-2 players:</strong> Draft pick each ability (draw three, keep one, put the other two on the bottom of the deck).</li></ul>}
-
-        <li><strong>Read</strong> through your abilities.</li>
-
-        <li>You may mulligan (redraw all of your abilities) once if desired.</li>
-
-        <li><strong>Shuffle</strong> them into a stack face-down in front of you.</li>
-
-        <li><strong>Get</strong>{multiPlayer && ' at least'} one D20 die.</li>
-
-        <li><strong>Draw</strong> a <strong>helper card</strong> for reference.</li>
-      </ol>
+      <h2>Sundries</h2>
+      <p><strong>Get</strong>{multiPlayer && ' at least'} one D20 die.</p>
+      <p><strong>Draw</strong> a <strong>helper card</strong> for reference.</p>
 
       {multiPlayer && <p>
         During your adventure, pass this device to your right whenever you make a decision

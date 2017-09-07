@@ -12,7 +12,7 @@
         "build": "webpack --config ./webpack.dist.config.js --progress"
     },
     "engines": {
-        "node": ">=6.0.0"
+        "node": "8.1.4"
     },
     "devDependencies": {
         "@types/cheerio": "^0.22.1",
