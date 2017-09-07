@@ -1,13 +1,13 @@
 import {CrawlerBase, CrawlEntry, CrawlEvent} from './Crawler'
 import {ParserNode} from './Node'
-import {defaultContext} from './Context'
+import {defaultContext, Context} from './Context'
 
 declare var global: any;
 
 const cheerio: any = require('cheerio');
 const window: any = cheerio.load('<div>');
 
-class CrawlTest extends CrawlerBase {
+class CrawlTest extends CrawlerBase<Context> {
   efn: (q: CrawlEntry, e: CrawlEvent)=>any;
   nfn: (q: CrawlEntry, nodeStr: string, id: string, line: number)=>any;
 

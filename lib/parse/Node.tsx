@@ -38,20 +38,20 @@ function getSelector(elem: Cheerio): string {
   }
 }
 
-export class ParserNode {
+export class ParserNode<C extends Context> {
   public elem: Cheerio;
-  public ctx: Context;
+  public ctx: C;
   private renderedChildren: {rendered: Cheerio, original: Cheerio}[];
 
-  constructor(elem: Cheerio, ctx: Context, action?: string|number) {
+  constructor(elem: Cheerio, ctx: C, action?: string|number) {
     this.elem = elem;
-    this.ctx = updateContext(elem, ctx, action);
+    this.ctx = updateContext<C>(elem, ctx, action);
     this.renderChildren();
   }
 
-  clone(): ParserNode {
+  clone(): ParserNode<C> {
     // Context is deep-copied via updateContext.
-    return new ParserNode(this.elem, this.ctx);
+    return new ParserNode<C>(this.elem, this.ctx);
   }
 
   getTag(): string {
@@ -73,7 +73,7 @@ export class ParserNode {
     return keys;
   }
 
-  getNext(key?: string|number): ParserNode {
+  getNext(key?: string|number): ParserNode<C> {
     let next: Cheerio = null;
     if (key === undefined) {
       next = this.getNextNode();
@@ -107,7 +107,7 @@ export class ParserNode {
         }
       }) || null;
     }
-    return (next) ? new ParserNode(next, this.ctx, key) : null;
+    return (next) ? new ParserNode<C>(next, this.ctx, key) : null;
   }
 
   // Evaluates all content ops in-place and creates a list of
@@ -145,7 +145,7 @@ export class ParserNode {
     }
   }
 
-  gotoId(id: string): ParserNode {
+  gotoId(id: string): ParserNode<C> {
     const root = this.getRootElem();
     if (root === null) {
       return null;
@@ -154,7 +154,7 @@ export class ParserNode {
     if (search.length === 0) {
       return null;
     }
-    return new ParserNode(search.eq(0), this.ctx, '#'+id);
+    return new ParserNode<C>(search.eq(0), this.ctx, '#'+id);
   }
 
   // Loop through all rendered children. If a call to cb() returns a value
@@ -178,12 +178,11 @@ export class ParserNode {
   // references, which prevent it from being a true "serialization" and instead more of a "comparison key"
   // for visit-tracking in quest traversal.
   getComparisonKey(): string {
-    const ctx = Clone(this.ctx);
+    const ctx: C = Clone(this.ctx);
 
     // Strip un-useful context
     ctx.path = undefined;
     ctx.scope._ = undefined;
-    ctx.extern = undefined;
 
     const ctx_json = JSON.stringify(ctx, (key, val) => {
       return (typeof val === 'function') ? val.toString() : val;
