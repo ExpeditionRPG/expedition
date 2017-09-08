@@ -3,6 +3,7 @@ import {updateContext, evaluateContentOps, Context} from './Context'
 const Clone = require('clone');
 const Math = require('mathjs') as any;
 
+
 function isNumeric(n: any): boolean {
   // http://stackoverflow.com/questions/9716468/is-there-any-function-like-isnumeric-in-javascript-to-validate-numbers
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -45,8 +46,15 @@ export class ParserNode<C extends Context> {
 
   constructor(elem: Cheerio, ctx: C, action?: string|number) {
     this.elem = elem;
-    this.ctx = updateContext<C>(elem, ctx, action);
+    this.ctx = this.updateContext(elem, ctx, action);
     this.renderChildren();
+  }
+
+  // updateContext is broken out here so it can be overridden if context is mutated.
+  // This is useful e.g. when un-cloneable objects are in the context and need
+  // to be removed before the call to Clone in updateContext().
+  protected updateContext(elem: Cheerio, ctx: C, action?: string | number): C {
+    return updateContext<C>(elem, ctx, action);
   }
 
   clone(): ParserNode<C> {
