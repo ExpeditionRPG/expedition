@@ -1,4 +1,4 @@
-import {ParserNode} from './Node'
+import {Node} from './Node'
 import {Context, defaultContext} from './Context'
 declare var global: any;
 
@@ -11,95 +11,95 @@ describe('Node', () => {
       const quest = cheerio.load('<quest><roleplay></roleplay><roleplay if="asdf">expected</roleplay><roleplay>wrong</roleplay></quest>')('quest');
       const ctx = defaultContext();
       ctx.scope.asdf = true;
-      const pnode = new ParserNode(quest.children().eq(0), ctx);
+      const pnode = new Node(quest.children().eq(0), ctx);
       expect(pnode.getNext().elem.text()).toEqual('expected');
     });
     it('skips disabled elements', () => {
       const quest = cheerio.load('<quest><roleplay></roleplay><roleplay if="asdf">wrong</roleplay><roleplay>expected</roleplay></quest>')('quest');
-      const pnode = new ParserNode(quest.children().eq(0), defaultContext());
+      const pnode = new Node(quest.children().eq(0), defaultContext());
       expect(pnode.getNext().elem.text()).toEqual('expected');
     });
     it('returns null if no next element', () => {
-      const pnode = new ParserNode(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultContext());
+      const pnode = new Node(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultContext());
       expect(pnode.getNext()).toEqual(null);
     });
     it('returns next node if choice=0 and no choice', () => {
       const quest = cheerio.load('<quest><roleplay></roleplay><roleplay>expected</roleplay></quest>')('quest');
-      const pnode = new ParserNode(quest.children().eq(0), defaultContext());
+      const pnode = new Node(quest.children().eq(0), defaultContext());
       expect(pnode.getNext(0).elem.text()).toEqual('expected');
     });
     it('returns node given by choice index', () => {
       const quest = cheerio.load('<quest><roleplay><choice></choice><choice if="asdf"></choice><choice><roleplay>expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
-      const pnode = new ParserNode(quest.children().eq(0), defaultContext());
+      const pnode = new Node(quest.children().eq(0), defaultContext());
       expect(pnode.getNext(1).elem.text()).toEqual('expected');
     });
     it('returns node given by event name', () => {
       const quest = cheerio.load('<quest><roleplay><event></event><choice></choice><event on="test"><roleplay>expected</roleplay><roleplay>wrong</roleplay></event></roleplay></quest>')('quest');
-      const pnode = new ParserNode(quest.children().eq(0), defaultContext());
+      const pnode = new Node(quest.children().eq(0), defaultContext());
       expect(pnode.getNext('test').elem.text()).toEqual('expected');
     });
   });
 
   describe('getVisibleKeys', () => {
     it('shows events', () => {
-      const pnode = new ParserNode(cheerio.load('<combat><event on="win"></event><event if="true" on="lose"></event></combat>')('combat'), defaultContext());
+      const pnode = new Node(cheerio.load('<combat><event on="win"></event><event if="true" on="lose"></event></combat>')('combat'), defaultContext());
       expect (pnode.getVisibleKeys()).toEqual(['win', 'lose']);
     });
     it('shows choices', () => {
-      const pnode = new ParserNode(cheerio.load('<roleplay><choice text="a"></choice><choice if="true" text="b"></choice></roleplay>')('roleplay'), defaultContext());
+      const pnode = new Node(cheerio.load('<roleplay><choice text="a"></choice><choice if="true" text="b"></choice></roleplay>')('roleplay'), defaultContext());
       expect (pnode.getVisibleKeys()).toEqual([0, 1]);
     });
     it('hides conditionally false events', () => {
-      const pnode = new ParserNode(cheerio.load('<combat><event if="false" on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
+      const pnode = new Node(cheerio.load('<combat><event if="false" on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
       expect (pnode.getVisibleKeys()).toEqual(['lose']);
     });
     it('hides conditionally false choices', () => {
-      const pnode = new ParserNode(cheerio.load('<roleplay><choice text="a" if="false"></choice><choice text="b"></choice></roleplay>')('roleplay'), defaultContext());
+      const pnode = new Node(cheerio.load('<roleplay><choice text="a" if="false"></choice><choice text="b"></choice></roleplay>')('roleplay'), defaultContext());
       expect (pnode.getVisibleKeys()).toEqual([0]);
     });
     it('is empty when no choices/events', () => {
-      const pnode = new ParserNode(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultContext());
+      const pnode = new Node(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultContext());
       expect (pnode.getVisibleKeys()).toEqual([]);
     });
   });
 
   describe('getTag', () => {
     it('gets the tag', () => {
-      expect(new ParserNode(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultContext()).getTag()).toEqual('roleplay');
-      expect(new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext()).getTag()).toEqual('combat');
+      expect(new Node(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultContext()).getTag()).toEqual('roleplay');
+      expect(new Node(cheerio.load('<combat></combat>')('combat'), defaultContext()).getTag()).toEqual('combat');
     });
   })
 
   describe('gotoId', () => {
     it('goes to ID', () => {
       const quest = cheerio.load('<quest><roleplay></roleplay><roleplay>wrong</roleplay><roleplay id="test">expected</roleplay></quest>')('quest');
-      const pnode = new ParserNode(quest.children().eq(0), defaultContext());
+      const pnode = new Node(quest.children().eq(0), defaultContext());
       expect(pnode.gotoId('test').elem.text()).toEqual('expected');
     });
     it('returns null if ID does not exist', () => {
       const quest = cheerio.load('<quest><roleplay>wrong</roleplay></quest>')('quest');
-      const pnode = new ParserNode(quest.children().eq(0), defaultContext());
+      const pnode = new Node(quest.children().eq(0), defaultContext());
       expect(pnode.gotoId('test')).toEqual(null);
     });
     it('returns null when no <quest> tag', () => {
-      const pnode = new ParserNode(cheerio.load('<roleplay><choice><roleplay id="test">wrong</roleplay></choice></roleplay>')('#test').eq(0), defaultContext());
+      const pnode = new Node(cheerio.load('<roleplay><choice><roleplay id="test">wrong</roleplay></choice></roleplay>')('#test').eq(0), defaultContext());
       expect(pnode.gotoId('test')).toEqual(null);
     });
     it('safely handles multiple identical ids', () => {
       const quest = cheerio.load('<quest><roleplay></roleplay><roleplay id="test">expected</roleplay><roleplay id="test">expected</roleplay></quest>')('quest');
-      const pnode = new ParserNode(quest.children().eq(0), defaultContext());
+      const pnode = new Node(quest.children().eq(0), defaultContext());
       expect(pnode.gotoId('test').elem.text()).toEqual('expected');
     });
   });
 
   describe('loopChildren', () => {
     it('handles empty case', () => {
-      const pnode = new ParserNode(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultContext());
+      const pnode = new Node(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultContext());
       const sawChild = pnode.loopChildren((tag, c) => { return true; }) || false;
       expect(sawChild).toEqual(false);
     })
     it('loops only enabled children', () => {
-      const pnode = new ParserNode(cheerio.load('<roleplay><p>1</p><b>2</b><p if="a">3</p><i>4</i></roleplay>')('roleplay'), defaultContext());
+      const pnode = new Node(cheerio.load('<roleplay><p>1</p><b>2</b><p if="a">3</p><i>4</i></roleplay>')('roleplay'), defaultContext());
       const agg: any[] = [];
       const result = pnode.loopChildren((tag, c) => {
         agg.push(tag);
@@ -108,7 +108,7 @@ describe('Node', () => {
       expect(agg).toEqual(['p', 'b', 'i']);
     });
     it('stops early when a value is returned', () => {
-      const pnode = new ParserNode(cheerio.load('<roleplay><p>1</p><b>2</b><p if="a">3</p><i>4</i></roleplay>')('roleplay'), defaultContext());
+      const pnode = new Node(cheerio.load('<roleplay><p>1</p><b>2</b><p if="a">3</p><i>4</i></roleplay>')('roleplay'), defaultContext());
       const result = pnode.loopChildren((tag, c) => {
         if (c.text() === '2') {
           return tag;
@@ -121,7 +121,7 @@ describe('Node', () => {
   describe('rendering', () => {
     const renderedChildren = function(elem: Cheerio, ctx: Context): string[] {
       const result: string[] = [];
-      new ParserNode(elem, ctx).loopChildren((tag, c) => {
+      new Node(elem, ctx).loopChildren((tag, c) => {
         result.push(c.toString());
       });
       return result;
@@ -226,15 +226,15 @@ describe('Node', () => {
 
     it('increments scope._.views.<id>', () => {
       const ctx = defaultContext();
-      let result = new ParserNode(cheerio.load('<roleplay id="foo"><p>[roll]</p></roleplay>')('roleplay'), ctx);
+      let result = new Node(cheerio.load('<roleplay id="foo"><p>[roll]</p></roleplay>')('roleplay'), ctx);
       expect(result.ctx.views).toEqual({foo: 1});
       expect(result.ctx.scope._.viewCount('foo')).toEqual(1);
       expect(result.ctx.scope._.viewCount('bar')).toEqual(0);
-      result = new ParserNode(cheerio.load('<roleplay id="foo"><p>[roll]</p></roleplay>')('roleplay'), result.ctx);
+      result = new Node(cheerio.load('<roleplay id="foo"><p>[roll]</p></roleplay>')('roleplay'), result.ctx);
       expect(result.ctx.views).toEqual({foo: 2});
       expect(result.ctx.scope._.viewCount('foo')).toEqual(2);
       expect(result.ctx.scope._.viewCount('bar')).toEqual(0);
-      result = new ParserNode(cheerio.load('<roleplay id="bar"><p>[roll]</p></roleplay>')('roleplay'), result.ctx);
+      result = new Node(cheerio.load('<roleplay id="bar"><p>[roll]</p></roleplay>')('roleplay'), result.ctx);
       expect(result.ctx.views).toEqual({foo: 2, bar: 1});
       expect(result.ctx.scope._.viewCount('foo')).toEqual(2);
       expect(result.ctx.scope._.viewCount('bar')).toEqual(1);
@@ -244,10 +244,10 @@ describe('Node', () => {
   describe('getComparisonKey', () => {
     it('equates separate but identical contexts/node references', () => {
       const e1 = cheerio.load('<quest><roleplay><choice><combat data-line="110"></combat></choice></roleplay></quest>')('combat');
-      const p1 = new ParserNode(e1, defaultContext());
+      const p1 = new Node(e1, defaultContext());
 
       const e2 = cheerio.load('<quest><roleplay><choice><combat data-line="110"></combat></choice></roleplay></quest>')('combat');
-      const p2 = new ParserNode(e2, defaultContext());
+      const p2 = new Node(e2, defaultContext());
 
       expect(p1.getComparisonKey()).toEqual(p2.getComparisonKey());
     });
@@ -255,10 +255,10 @@ describe('Node', () => {
     it('treats different nodes as unequal', () => {
       const dom = cheerio.load('<quest><roleplay><choice><combat id="c1" data-line="110"></combat><combat id="c2" data-line="111"></combat></choice></roleplay></quest>');
       const e1 = dom('#c1');
-      const p1 = new ParserNode(e1, defaultContext());
+      const p1 = new Node(e1, defaultContext());
 
       const e2 = dom('#c2');
-      const p2 = new ParserNode(e2, defaultContext());
+      const p2 = new Node(e2, defaultContext());
 
       expect(p1.getComparisonKey()).not.toEqual(p2.getComparisonKey());
     });
@@ -267,18 +267,18 @@ describe('Node', () => {
       const e = cheerio.load('<quest>')('quest');
       const c1 = defaultContext();
       c1.scope.a = 'test';
-      const p1 = new ParserNode(e, c1);
+      const p1 = new Node(e, c1);
 
       const c2 = defaultContext();
       c2.scope.a = 5;
-      const p2 = new ParserNode(e, c2);
+      const p2 = new Node(e, c2);
 
       expect(p1.getComparisonKey()).not.toEqual(p2.getComparisonKey());
     })
 
     it('safely handles lack of quest root', () => {
       const e1 = cheerio.load('<roleplay><choice><combat data-line="110"></combat></choice></roleplay>')('combat');
-      const p1 = new ParserNode(e1, defaultContext());
+      const p1 = new Node(e1, defaultContext());
 
       expect(p1.getComparisonKey()).toBeDefined();
     });
@@ -287,7 +287,7 @@ describe('Node', () => {
   describe('getEventParameters', () => {
     it('gets parameters', () => {
       const node = cheerio.load('<combat><event on="win" heal="5" loot="false" xp="false"><roleplay></roleplay></event></combat>')('combat');
-      const pnode = new ParserNode(node, defaultContext());
+      const pnode = new Node(node, defaultContext());
       expect(pnode.getEventParameters('win')).toEqual({
         heal: 5, loot: false, xp: false
       });
@@ -295,7 +295,7 @@ describe('Node', () => {
 
     it('safely handles event with no params', () => {
       const node = cheerio.load('<combat><event on="win"><roleplay></roleplay></event></combat>')('combat');
-      const pnode = new ParserNode(node, defaultContext());
+      const pnode = new Node(node, defaultContext());
       expect(pnode.getEventParameters('win')).toEqual({});
     });
   });
@@ -303,7 +303,7 @@ describe('Node', () => {
   describe('handleAction', () => {
     it('skips hidden triggers', () => {
       const node = cheerio.load('<roleplay><choice><trigger if="a">goto 5</trigger><trigger>end</trigger></choice></roleplay>')('roleplay');
-      const pnode = new ParserNode(node, defaultContext());
+      const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(0);
       expect(result.elem.text()).toEqual('end');
     });
@@ -312,21 +312,21 @@ describe('Node', () => {
       const quest = cheerio.load('<quest><roleplay><choice><trigger if="a">goto 5</trigger><trigger>end</trigger><roleplay id="5">expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
       const ctx = defaultContext();
       ctx.scope.a = true;
-      const pnode = new ParserNode(quest.children().eq(0), ctx);
+      const pnode = new Node(quest.children().eq(0), ctx);
       const result = pnode.handleAction(0);
       expect(result.elem.text()).toEqual('expected');
     });
 
     it('handles invalid triggers', () => {
       const node = cheerio.load('<roleplay><choice><trigger>goto 5</trigger></choice></roleplay>')('roleplay');
-      const pnode = new ParserNode(node, defaultContext());
+      const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(0);
       expect(result).toEqual(null);
     });
 
     it('handles self-referential triggers', () => {
       const node = cheerio.load('<roleplay><choice><trigger id="5">goto 5</trigger></choice></roleplay>')('roleplay');
-      const pnode = new ParserNode(node, defaultContext());
+      const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(0);
       expect(result).toEqual(null);
     });
@@ -334,7 +334,7 @@ describe('Node', () => {
     it('triggers events', () => {
       // Note that this even works for handling reserved (e.g. "end") triggers.
       const node = cheerio.load('<roleplay id="rp1"><choice><trigger>end</trigger></choice><choice on="end"><roleplay>expected</roleplay></choice></roleplay>')('#rp1');
-      const pnode = new ParserNode(node, defaultContext());
+      const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(0);
       expect(result.elem.text()).toEqual('expected');
     });
@@ -350,28 +350,28 @@ describe('Node', () => {
 
     it('can handle multiple gotos', () => {
       const quest = cheerio.load('<quest><roleplay><choice><trigger>goto 1</trigger><trigger id="1">goto 2</trigger><trigger id="2">end</trigger><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
-      const pnode = new ParserNode(quest.children().eq(0), defaultContext());
+      const pnode = new Node(quest.children().eq(0), defaultContext());
       const result = pnode.handleAction(0);
       expect(result.elem.text()).toEqual('end');
     })
 
     it('goes to correct choice', () => {
       const node = cheerio.load('<roleplay><choice></choice><choice><roleplay>herp</roleplay><roleplay>derp</roleplay></choice></roleplay>')('roleplay');
-      const pnode = new ParserNode(node, defaultContext());
+      const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(1);
       expect(result.elem.text()).toEqual('herp');
     });
 
     it('goes to next roleplay node', () => {
       const node = cheerio.load('<roleplay id="rp1">rp1</roleplay><roleplay>rp2</roleplay>')('#rp1');
-      const pnode = new ParserNode(node, defaultContext());
+      const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(1);
       expect(result.elem.text()).toEqual('rp2');
     });
 
     it('goes to correct event', () => {
       const node = cheerio.load('<roleplay><event></event><event on="test"><roleplay>herp</roleplay><roleplay>derp</roleplay></event></roleplay>')('roleplay');
-      const pnode = new ParserNode(node, defaultContext());
+      const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction('test');
       expect(result.elem.text()).toEqual('herp');
     });
@@ -384,14 +384,14 @@ describe('Node', () => {
       rootNode.append(choiceNode);
       rootNode.append(jumpNode);
 
-      const pnode = new ParserNode(choiceNode, defaultContext());
+      const pnode = new Node(choiceNode, defaultContext());
       const result = pnode.handleAction(0);
       expect(result.elem.text()).toEqual('Jumped');
     });
 
     it('does not immediately follow triggers on non-empty choices', () => {
       const node = cheerio.load('<roleplay><choice><roleplay>Not empty</roleplay><trigger>goto jump</trigger></choice></roleplay><roleplay id="jump">Hello</roleplay>')('roleplay');
-      const pnode = new ParserNode(node, defaultContext());
+      const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(0);
       expect(result.elem.text()).toEqual('Not empty');
     });

@@ -1,9 +1,9 @@
-import {ParserNode} from './Node'
+import {Node} from './Node'
 import {Context} from './Context'
 
 export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END';
 
-export type CrawlEntry<C extends Context> = {node: ParserNode<C>, prevNodeStr: string, prevId: string, prevLine: number, depth: number};
+export type CrawlEntry<C extends Context> = {node: Node<C>, prevNodeStr: string, prevId: string, prevLine: number, depth: number};
 
 export abstract class CrawlerBase<C extends Context> {
   protected seen: Set<string>;
@@ -14,7 +14,7 @@ export abstract class CrawlerBase<C extends Context> {
     this.queue = [];
   }
 
-  public crawl(root?: ParserNode<C>, timeLimitMillis = 500, depthLimit = 50): boolean {
+  public crawl(root?: Node<C>, timeLimitMillis = 500, depthLimit = 50): boolean {
     return this.traverse(root, timeLimitMillis, depthLimit);
   }
 
@@ -24,7 +24,7 @@ export abstract class CrawlerBase<C extends Context> {
 
   // Traverses the graph in breadth-first order starting with a given node.
   // Stats are collected separately per-id and per-line
-  private traverse(root?: ParserNode<C>, timeLimitMillis?: number, depthLimit?: number): boolean {
+  private traverse(root?: Node<C>, timeLimitMillis?: number, depthLimit?: number): boolean {
     if (root) {
       this.queue.push({
         node: root,  prevNodeStr: 'START', prevId: 'START', prevLine: -1, depth: 0
