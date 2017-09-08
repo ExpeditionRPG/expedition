@@ -1,5 +1,4 @@
 import {ParserNode} from './Node'
-import {handleAction} from './Handlers'
 import {Context} from './Context'
 
 export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END';
@@ -77,7 +76,7 @@ export abstract class CrawlerBase<C extends Context> {
       }
       for (const k of keys) {
         this.queue.push({
-          node: handleAction(q.node, k),
+          node: q.node.handleAction(k),
           prevNodeStr: nstr,
           prevId: id,
           prevLine: line,

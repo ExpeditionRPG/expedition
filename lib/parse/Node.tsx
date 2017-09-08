@@ -3,6 +3,13 @@ import {updateContext, evaluateContentOps, Context} from './Context'
 const Clone = require('clone');
 const Math = require('mathjs') as any;
 
+const MAX_GOTO_FOLLOW_DEPTH = 50;
+
+export interface EventParameters {
+  xp?: boolean;
+  loot?: boolean;
+  heal?: number;
+}
 
 function isNumeric(n: any): boolean {
   // http://stackoverflow.com/questions/9716468/is-there-any-function-like-isnumeric-in-javascript-to-validate-numbers
@@ -20,6 +27,11 @@ function getChildNumber(domElement: CheerioElement): number {
       i++;
     }
     return i;
+}
+
+function getTriggerId(elem: Cheerio): string {
+  const m = elem.text().trim().match(/\s*goto\s+(.*)/);
+  return (m) ? m[1] : null;
 }
 
 function getSelector(elem: Cheerio): string {
@@ -262,5 +274,76 @@ export class ParserNode<C extends Context> {
       // If we fail to evaluate (e.g. symbol not defined), treat the elem as not visible.
       return false;
     }
+  }
+
+  // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
+  // Returns the (cleaned) parameters of the event element
+  getEventParameters(event: string): EventParameters {
+    const evt = this.getNext(event);
+    if (!evt) {
+      return null;
+    }
+    const p = evt.elem.parent();
+    const ret: EventParameters = {};
+    if (p.attr('xp')) { ret.xp = (p.attr('xp') === 'true'); }
+    if (p.attr('loot')) { ret.loot = (p.attr('loot') === 'true'); }
+    if (p.attr('heal')) { ret.heal = parseInt(p.attr('heal'), 10); }
+    return ret;
+  }
+
+  handleTriggerEvent(): ParserNode<C> {
+    // Search upwards in the node heirarchy and see if any of the parents successfully
+    // handle the event.
+    let ref = new ParserNode<C>(this.elem.parent(), this.ctx);
+    const event = this.elem.text().trim();
+    while (ref.elem && ref.elem.length > 0) {
+      const handled = ref.handleAction(event);
+      if (handled !== null) {
+        return handled;
+      }
+      ref = new ParserNode(ref.elem.parent(), this.ctx);
+    }
+
+    // Return the trigger unchanged if a handler is not found.
+    return this;
+  }
+
+  handleTrigger(): ParserNode<C> {
+    // Immediately act on any gotos (with a max depth)
+    let i = 0;
+    let ref = this.clone();
+    for (; i < MAX_GOTO_FOLLOW_DEPTH && ref !== null && ref.getTag() === 'trigger'; i++) {
+      const id = getTriggerId(ref.elem);
+      if (id) {
+        ref = ref.gotoId(id);
+      } else {
+        return ref.handleTriggerEvent();
+      }
+    }
+    if (i >= MAX_GOTO_FOLLOW_DEPTH) {
+      return null;
+    }
+    return ref;
+  }
+
+  // The passed action parameter is either
+  // - a number indicating the choice number in the XML element, including conditional choices.
+  // - a string indicating which event to fire based on the "on" attribute.
+  // Returns the card inside of / referenced by the choice/event element
+  handleAction(action?: number|string): ParserNode<C> {
+    const next = this.getNext(action);
+    if (!next) {
+      return null;
+    }
+
+    if (next.getTag() === 'trigger') {
+      return next.handleTrigger();
+    }
+    return next;
+  }
+
+  // Returns if the supplied node is an **end** trigger
+  isEnd(): Boolean {
+    return (this.getTag() === 'trigger' && this.elem.text().toLowerCase().split(' ')[0].trim() === 'end');
   }
 }
