@@ -87,6 +87,9 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
           <IconButton onTouchTap={() => this.onReturn()}><ChevronLeftIcon/></IconButton>
           <span className="menu">
             <IconMenu
+              menuStyle={{background: '#f4ebcc'}}
+              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+              targetOrigin={{ vertical: 'top', horizontal: 'right' }}
               iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
               onChange={(event: any, value: string)=>this.onMenuSelect(value)}>
                 <MenuItem value="HOME" primaryText="Home"/>
