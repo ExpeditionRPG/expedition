@@ -23,7 +23,7 @@ import {
   PARTITIONS,
 } from '../Constants'
 import {pushError, pushHTTPError} from './Dialogs'
-import {renderXML} from '../parsing/QDLParser'
+import {renderXML} from 'expedition-qdl/lib/render/QDLParser'
 
 const Cheerio: any = require('cheerio');
 const ReactGA = require('react-ga') as any;

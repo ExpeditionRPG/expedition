@@ -1,5 +1,5 @@
 import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
-import {QDLParser} from '../parsing/QDLParser'
+import {QDLParser} from 'expedition-qdl/lib/render/QDLParser'
 // TODO: URL type?
 
 export type DialogIDType = 'ERROR' | 'PUBLISHING' | 'UNPUBLISHED';

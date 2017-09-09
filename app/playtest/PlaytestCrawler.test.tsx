@@ -1,31 +1,40 @@
-import {playtestXMLResult} from './PlaytestCrawler'
-import {QDLParser} from '../QDLParser'
+import {PlaytestCrawler} from './PlaytestCrawler'
+import {Logger, LogMessageMap} from 'expedition-qdl/lib/render/Logger'
+import {Node} from 'expedition-qdl/lib/parse/Node'
+import {defaultContext} from 'expedition-qdl/lib/parse/Context'
 
 var expect: any = require('expect');
 const cheerio: any = require('cheerio') as CheerioAPI;
 
-describe('playtest', () => {
+function playtestXMLResult(elem: Cheerio): LogMessageMap {
+  const crawler = new PlaytestCrawler(null);
+  const logger = new Logger();
+  crawler.crawlWithLog(new Node(elem, defaultContext()), logger);
+  return logger.getFinalizedLogs();
+}
+
+describe('PlaytestCrawler', () => {
   describe('internal-level message', () => {
   });
 
   describe('error-level message', () => {
-    /* // TODO: currently nonfunctional, fix is in app
-    it('logs if quest path is broken by bad goto', () => {
-      const msgs = playtestXMLResult(cheerio.load(`<quest>
-        <roleplay data-line="0"></roleplay>
-        <trigger data-line="1" goto="nonexistant_id"></trigger>
-        <roleplay data-line="2"></roleplay>
-      </quest>`)('quest'));
-
-      expect(msgs.error.length).toEqual(1);
-      expect(msgs.error[0].text).toEqual('An action on this node leads nowhere (invalid goto id or no **end**)');
-    }); */
+    // TODO: currently nonfunctional, fix is in app
+    //it('logs if quest path is broken by bad goto', () => {
+//      const msgs = playtestXMLResult(cheerio.load(`<quest>
+        //<roleplay data-line="0"></roleplay>
+        //<trigger data-line="1" goto="nonexistant_id"></trigger>
+        //<roleplay data-line="2"></roleplay>
+      //</quest>`)('quest'));
+      //expect(msgs.error.length).toEqual(1);
+      //expect(msgs.error[0].text).toEqual('An action on this node leads nowhere (invalid goto id or no **end**)');
+    //});
 
     it('logs if a node has an implicit end (no **end** tag)', () => {
       const msgs = playtestXMLResult(cheerio.load(`<quest>
         <roleplay data-line="0"></roleplay>
-      </quest>`)('quest'));
+      </quest>`)('quest > :first-child'));
 
+      console.log(msgs);
       expect(msgs.error.length).toEqual(1);
       expect(msgs.error[0].text).toEqual('An action on this card leads nowhere (invalid goto id or no **end**)');
     });
@@ -37,7 +46,7 @@ describe('playtest', () => {
           <event on="win"><trigger>end</trigger></event>
           <event on="lose"><trigger>end</trigger></event>
         </combat>
-      </quest>`)('quest'));
+      </quest>`)('quest > :first-child'));
 
       expect(msgs.error.length).toEqual(1);
       expect(msgs.error[0].text).toContain('without explicit tier');
@@ -53,7 +62,7 @@ describe('playtest', () => {
           <event on="win"><trigger>end</trigger></event>
           <event on="lose" if="false"><trigger>end</trigger></event>
         </combat>
-      </quest>`)('quest'));
+      </quest>`)('quest > :first-child'));
 
       expect(msgs.error.length).toEqual(1);
       expect(msgs.error[0].text).toContain('2 "win" and 0 "lose" events');
@@ -85,12 +94,6 @@ describe('playtest', () => {
   });
 
   describe('info-level message', () => {
-    it('logs if quest is unparseable', () => {
-      const msgs = playtestXMLResult(null);
-      expect(msgs.info.length).toEqual(1);
-      expect(msgs.info[0].text).toEqual('Auto-Playtest failed (likely a parser error)');
-    });
-
     it('logs general reading level required for the quest');
 
     it('logs estimated minimum/maximum play time');

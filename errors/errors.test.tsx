@@ -1,7 +1,7 @@
-import {QDLParser} from '../app/parsing/QDLParser'
-import {prettifyMsgs} from '../app/parsing/Logger'
-import {BlockList} from '../app/parsing/block/BlockList'
-import {XMLRenderer} from '../app/parsing/render/XMLRenderer'
+import {QDLParser} from 'expedition-qdl/lib/render/QDLParser'
+import {prettifyMsgs} from 'expedition-qdl/lib/render/Logger'
+import {BlockList} from 'expedition-qdl/lib/render/block/BlockList'
+import {XMLRenderer} from 'expedition-qdl/lib/render/render/XMLRenderer'
 
 const Errors: any = require('./errors');
 const expect: any = require('expect');

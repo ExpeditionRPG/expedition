@@ -1,4 +1,5 @@
-import {CrawlerBase, CrawlEvent, CrawlEntry} from 'expedition-app/app/parser/Crawler'
+import {CrawlerBase, CrawlEvent, CrawlEntry} from 'expedition-qdl/lib/parse/Crawler'
+import {Context} from 'expedition-qdl/lib/parse/Context'
 
 export interface CrawlerStats {
   inputs: Set<string>;
@@ -8,7 +9,9 @@ export interface CrawlerStats {
   numInternalStates: number;
 }
 
-export class StatsCrawler extends CrawlerBase {
+export type StatsCrawlEntry = CrawlEntry<Context>;
+
+export class StatsCrawler extends CrawlerBase<Context> {
   protected statsById: {[id:string]: CrawlerStats};
   protected statsByLine: {[line:number]: CrawlerStats};
   protected statsByEvent: {[event: string]: {lines: number[], ids: string[]}};
@@ -59,14 +62,14 @@ export class StatsCrawler extends CrawlerBase {
     return Object.keys(this.statsById).filter((k: string) => {return (k !== 'START');});
   }
 
-  protected onEvent(q: CrawlEntry, e: CrawlEvent) {
+  protected onEvent(q: StatsCrawlEntry, e: CrawlEvent) {
     this.statsById[q.prevId].outputs.add(e);
     this.statsByLine[q.prevLine].outputs.add(e);
     this.statsByEvent[e].lines.push(q.prevLine);
     this.statsByEvent[e].ids.push(q.prevId);
   }
 
-  protected onNode(q: CrawlEntry, nodeStr: string, id: string, line: number): void {
+  protected onNode(q: StatsCrawlEntry, nodeStr: string, id: string, line: number): void {
     // Create stats for this line/id if they don't already exist
     if (this.statsById[id] === undefined) {
       this.statsById[id] = {
