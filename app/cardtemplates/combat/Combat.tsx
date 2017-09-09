@@ -119,16 +119,19 @@ function renderNoTimer(props: CombatProps): JSX.Element {
   let helpText: JSX.Element = (<span></span>);
   if (props.settings.showHelp) {
     helpText = (
-      <ol>
-        <li>Shuffle your ability draw pile.
-          <ul>
-            <li>Keep abilities played this round in a separate discard pile.</li>
-            <li>If you don't have enough cards to draw a full hand, shuffle in your discard pile before drawing.</li>
-          </ul>
-        </li>
-        <li>No timer: Draw three abilities from your draw pile and play one ability.</li>
-        <li>Once everyone has selected an ability, tap next.</li>
-      </ol>
+      <div>
+        {props.settings.numPlayers === 1 && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
+        <ol>
+          <li>Shuffle your ability draw pile.
+            <ul>
+              <li>Keep abilities played this round in a separate discard pile.</li>
+              <li>If you don't have enough cards to draw a full hand, shuffle in your discard pile before drawing.</li>
+            </ul>
+          </li>
+          <li>No timer: Draw three abilities from your draw pile and play one ability.</li>
+          <li>Once everyone has selected an ability, tap next.</li>
+        </ol>
+      </div>
     );
   }
 
@@ -150,21 +153,24 @@ function renderPrepareTimer(props: CombatProps): JSX.Element {
   let helpText: JSX.Element = (<span></span>);
   if (props.settings.showHelp) {
     helpText = (
-      <ol>
-        <li>Shuffle your ability draw pile.
-          <ul>
-            <li>Keep abilities played this combat in a separate discard pile.</li>
-            <li>If you run out of abilities to draw, shuffle in your discard pile.</li>
-          </ul>
-        </li>
-        <li>Pre-draw three abilities face down from your draw pile.</li>
-        <li>Start the timer.</li>
-        <li>Look at your hand and play one ability.</li>
-        {props.settings.multitouch && <li>Place your finger on the screen.</li>}
-        {props.settings.multitouch && <li>When all fingers are down, the timer stops.</li>}
-        {!props.settings.multitouch && <li>Once everyone has selected an ability, tap the screen to stop the timer.</li>}
-        <li>If the timer runs out, you'll take additional damage.</li>
-      </ol>
+      <div>
+        {props.settings.numPlayers === 1 && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
+        <ol>
+          <li>Shuffle your ability draw pile.
+            <ul>
+              <li>Keep abilities played this combat in a separate discard pile.</li>
+              <li>If you run out of abilities to draw, shuffle in your discard pile.</li>
+            </ul>
+          </li>
+          <li>Pre-draw three abilities face down from your draw pile.</li>
+          <li>Start the timer.</li>
+          <li>Look at your hand and play one ability.</li>
+          {props.settings.multitouch && <li>Place your finger on the screen.</li>}
+          {props.settings.multitouch && <li>When all fingers are down, the timer stops.</li>}
+          {!props.settings.multitouch && <li>Once everyone has selected an ability, tap the screen to stop the timer.</li>}
+          <li>If the timer runs out, you'll take additional damage.</li>
+        </ol>
+      </div>
     );
   }
 
@@ -306,9 +312,9 @@ function renderVictory(props: CombatProps): JSX.Element {
       if (props.settings.showHelp) {
         contents.push(
           <ul key="c3">
-            <li>You <strong>may</strong> choose to discard an ability.</li>
             <li>Draw 3 abilities from one of the decks listed on your adventurer card.</li>
             <li>Add 1 to your ability deck, and place the remaining 2 at the bottom of the deck you drew from.</li>
+            <li>You <strong>may</strong> choose to discard an ability.</li>
           </ul>
         );
       }
@@ -326,7 +332,7 @@ function renderVictory(props: CombatProps): JSX.Element {
       if (props.settings.showHelp) {
         contents.push(
           <span key="c6">
-            <p>Loot should be divided amongst Adventurers now. It can be used at any time and does not cost an action (unless otherwise specified).</p>
+            <p>Divide the loot amongst adventurers. It can be used at any time and does not cost an action (unless otherwise specified).</p>
           </span>
         );
       }
