@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Card from './base/Card'
 import Button from './base/Button'
+import {getAppVersion} from'../Globals'
 import {SettingsType, UserState} from '../reducers/StateTypes'
 
 export interface ToolsStateProps {
@@ -37,6 +38,7 @@ const Tools = (props: ToolsProps): JSX.Element => {
           <div className="summary">View quests you've published privately with the Quest Creator.</div>
         </div>
       </Button>
+      <div className="version">Expedition App v{getAppVersion()}</div>
     </Card>
   );
 }
