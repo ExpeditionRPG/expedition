@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {toCard} from '../../actions/Card'
 import {SettingsType} from '../../reducers/StateTypes'
-import {ParserNode} from '../../parser/Node'
+import {ParserNode} from '../Template'
 import {QuestNodeAction} from '../../actions/ActionTypes'
 
 export function initRoleplay(node: ParserNode, settings: SettingsType, custom?: boolean) {

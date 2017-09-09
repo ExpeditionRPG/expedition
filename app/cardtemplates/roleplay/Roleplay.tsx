@@ -3,9 +3,9 @@ import Button from '../../components/base/Button'
 import Callout from '../../components/base/Callout'
 import Card from '../../components/base/Card'
 import {SettingsType, CardThemeType} from '../../reducers/StateTypes'
-import {isEndNode} from '../../parser/Handlers'
-import {ParserNode} from '../../parser/Node'
-import {Choice, QuestContext, RoleplayElement} from '../../reducers/QuestTypes'
+import {ParserNode} from '../Template'
+import {Choice, RoleplayElement} from '../../reducers/QuestTypes'
+import {TemplateContext} from '../TemplateTypes'
 
 import {REGEX} from '../../Constants'
 
@@ -35,7 +35,7 @@ export interface RoleplayResult {
   title: string;
   content: RoleplayElement[];
   choices: Choice[];
-  ctx: QuestContext;
+  ctx: TemplateContext;
 }
 
 export function loadRoleplayNode(node: ParserNode): RoleplayResult {
@@ -145,7 +145,7 @@ const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'LIGHT'): JSX.Ele
   });
 
   // If we just got out of combat and the quest is about to end, offer the choice to retry combat
-  if (props.prevNode && props.prevNode.getTag() === 'combat' && rpResult.choices.length === 1 && isEndNode(props.node.getNext())) {
+  if (props.prevNode && props.prevNode.getTag() === 'combat' && rpResult.choices.length === 1 && props.node.getNext().isEnd()) {
     buttons.unshift(
       <Button key={-1} onTouchTap={() => props.onRetry()}>
         Retry combat

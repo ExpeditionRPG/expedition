@@ -1,15 +1,13 @@
 import Redux from 'redux'
 import {PLAYER_DAMAGE_MULT} from '../../Constants'
 import {Enemy, Loot} from '../../reducers/QuestTypes'
-import {defaultQuestContext} from '../../reducers/Quest'
 import {CombatDifficultySettings, CombatAttack} from './Types'
 import {DifficultyType, SettingsType} from '../../reducers/StateTypes'
-import {ParserNode} from '../../parser/Node'
+import {ParserNode, defaultContext} from '../Template'
 import {toCard} from '../../actions/Card'
 import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT} from '../../Constants'
 import {encounters} from '../../Encounters'
 import {QuestNodeAction} from '../../actions/ActionTypes'
-import {handleTriggerEvent} from '../../parser/Handlers'
 import {loadNode} from '../../actions/Quest'
 
 const cheerio: any = require('cheerio');
@@ -40,7 +38,7 @@ export function initCombat(node: ParserNode, settings: SettingsType, custom?: bo
 }
 
 export function initCustomCombat(settings: SettingsType) {
-  return initCombat(new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultQuestContext()), settings, true);
+  return initCombat(new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext()), settings, true);
 }
 
 function getDifficultySettings(difficulty: DifficultyType): CombatDifficultySettings {
@@ -206,7 +204,7 @@ export function midCombatChoice(settings: SettingsType, parent: ParserNode, inde
         return dispatch(toCard('QUEST_END'));
       }
 
-      next = handleTriggerEvent(next);
+      next = next.handleTriggerEvent();
 
       // If the trigger exits via the win/lose handlers, load it as normal.
       // Otherwise, we're still in combat.

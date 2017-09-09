@@ -1,6 +1,6 @@
 import {encounters} from '../../Encounters'
 import {Enemy, Loot} from '../../reducers/QuestTypes'
-import {ParserNode} from '../../parser/Node'
+import {ParserNode} from '../Template'
 import {isSurgeRound} from './Actions'
 
 export interface CombatAttack {
@@ -30,8 +30,6 @@ export interface CombatDifficultySettings {
 export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {
   custom: boolean;
 }
-
-export type CombatPhase = 'DRAW_ENEMIES' | 'PREPARE' | 'NO_TIMER' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER' | 'VICTORY' | 'DEFEAT' | 'ROLEPLAY';
 
 export function combatScope() {
   return {

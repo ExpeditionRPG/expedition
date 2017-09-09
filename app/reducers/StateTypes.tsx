@@ -1,6 +1,6 @@
-import {QuestDetails, QuestContext} from './QuestTypes'
-import {TemplatePhase} from '../cardtemplates/Template'
-import {ParserNode} from '../parser/Node'
+import {QuestDetails} from './QuestTypes'
+import {TemplatePhase, TemplateContext} from '../cardtemplates/TemplateTypes'
+import {ParserNode} from '../cardtemplates/Template'
 
 import {GenreType, ContentRatingLabelType} from '../Constants'
 

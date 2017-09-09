@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {CardState, CardName, CardPhase, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
-import {ParserNode} from '../parser/Node'
+import {ParserNode} from '../cardtemplates/Template'
 
 export interface AnnouncementSetAction extends Redux.Action {
   type: 'ANNOUNCEMENT_SET';

@@ -9,10 +9,10 @@ import {MAX_ADVENTURER_HEALTH, REGEX} from '../../Constants'
 import {encounters} from '../../Encounters'
 import {isSurgeNextRound} from './Actions'
 import {SettingsType, CardState, CardName} from '../../reducers/StateTypes'
-import {handleAction, isEndNode} from '../../parser/Handlers'
-import {ParserNode} from '../../parser/Node'
-import {QuestContext, EventParameters, Enemy, Loot} from '../../reducers/QuestTypes'
-import {CombatState, CombatPhase} from './State'
+import {ParserNode} from '../Template'
+import {EventParameters, Enemy, Loot} from '../../reducers/QuestTypes'
+import {CombatState} from './State'
+import {CombatPhase} from './Types'
 import Roleplay from '../roleplay/Roleplay'
 
 export interface CombatStateProps extends CombatState {
@@ -357,8 +357,8 @@ function renderDefeat(props: CombatProps): JSX.Element {
   // If onLose is just an **end**, offer a retry button
   let retryButton = <span></span>;
   if (!props.custom) {
-    const nextNode = handleAction(props.node, 'lose');
-    if (isEndNode(nextNode)) {
+    const nextNode = props.node.handleAction('lose');
+    if (nextNode.isEnd()) {
       retryButton = <Button onTouchTap={() => props.onRetry()}>Retry</Button>;
     }
   }

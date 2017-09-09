@@ -7,10 +7,11 @@ import {setAnnouncement} from '../actions/Announcement'
 import {openSnackbar} from '../actions/Snackbar'
 import {userFeedbackClear} from '../actions/UserFeedback'
 import {SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} from '../reducers/StateTypes'
-import {QuestContext, QuestDetails} from '../reducers/QuestTypes'
-import {defaultQuestContext} from '../reducers/Quest'
+import {QuestDetails} from '../reducers/QuestTypes'
 import {getDevicePlatform, getAppVersion} from '../Globals'
 import {logEvent} from '../Main'
+import {TemplateContext} from '../cardtemplates/TemplateTypes'
+import {defaultContext} from '../cardtemplates/Template'
 
 declare var window:any;
 declare var require:any;
@@ -37,13 +38,13 @@ export function fetchQuestXML(details: QuestDetails) {
         return dispatch(openSnackbar('Network error: Please check your connection.'));
       }
       const questNode = cheerio.load(result)('quest');
-      dispatch(loadQuestXML(details, questNode, defaultQuestContext()));
+      dispatch(loadQuestXML(details, questNode, defaultContext()));
     });
   };
 }
 
 // for loading quests in the app - Quest Creator injects directly into initQuest
-export function loadQuestXML(details: QuestDetails, questNode: Cheerio, ctx: QuestContext) {
+export function loadQuestXML(details: QuestDetails, questNode: Cheerio, ctx: TemplateContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
     // Quest start is here instead of initQuest because initQuest is also used by the editor
     // and would over-report.
