@@ -1,4 +1,5 @@
-import {CrawlerBase, CrawlEvent, CrawlEntry} from 'expedition-app/app/parser/Crawler'
+import {CrawlerBase, CrawlEvent, CrawlEntry} from 'expedition-qdl/lib/parse/Crawler'
+import {Context} from 'expedition-qdl/lib/parse/Context'
 
 export interface CrawlerStats {
   inputs: Set<string>;
@@ -8,7 +9,7 @@ export interface CrawlerStats {
   numInternalStates: number;
 }
 
-export class StatsCrawler extends CrawlerBase {
+export class StatsCrawler extends CrawlerBase<Context> {
   protected statsById: {[id:string]: CrawlerStats};
   protected statsByLine: {[line:number]: CrawlerStats};
   protected statsByEvent: {[event: string]: {lines: number[], ids: string[]}};

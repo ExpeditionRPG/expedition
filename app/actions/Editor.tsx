@@ -3,11 +3,10 @@ import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction} from './ActionType
 import {PanelType} from '../reducers/StateTypes'
 import {store} from '../Store'
 import {saveQuest} from './Quest'
-import {renderXML} from '../parsing/QDLParser'
-import {playtestXMLResult} from '../parsing/crawler/PlaytestCrawler'
+import {renderXML} from 'expedition-qdl/lib/render/QDLParser'
 import {initQuest, loadNode} from 'expedition-app/app/actions/Quest'
-import {QuestContext} from 'expedition-app/app/reducers/QuestTypes'
-import {ParserNode} from 'expedition-app/app/parser/Node'
+import {ParserNode} from 'expedition-app/app/cardtemplates/Template'
+import {TemplateContext} from 'expedition-app/app/cardtemplates/TemplateTypes'
 import {pushError} from './Dialogs'
 
 export function setDirty(is_dirty: boolean): SetDirtyAction {
@@ -70,7 +69,27 @@ export function getPlayNode(node: Cheerio): Cheerio {
   return node;
 }
 
-export function renderAndPlay(qdl: string, line: number, ctx: QuestContext) {
+function startPlaytestWorker(pnode: ParserNode) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+
+    if (!(window as any).Worker) {
+      return;
+    }
+
+    // TODO fix perf issues with crawler on long quests (example ID 0B7ligyKcIb7OWUhPQ0dNemZUUkE)
+    const worker = new Worker('playtest.js');
+    worker.onerror = (e: Event) => {
+      dispatch({type: 'PLAYTEST_ERROR', msg: e});
+    };
+    worker.onmessage = (e: Event) => {
+      dispatch({type: 'PLAYTEST_MESSAGE', msg: e});
+    };
+    worker.postMessage({type: 'RUN', node: pnode});
+    dispatch({type: 'PLAYTEST_INIT', worker});
+  }
+}
+
+export function renderAndPlay(qdl: string, line: number, ctx: TemplateContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const renderResult = renderXML(qdl);
     const questNode = renderResult.getResult();
@@ -94,7 +113,7 @@ export function renderAndPlay(qdl: string, line: number, ctx: QuestContext) {
       timerSeconds: 10,
       vibration: false
     }, newNode));
-    // TODO fix perf issues with crawler on long quests (example ID 0B7ligyKcIb7OWUhPQ0dNemZUUkE)
-    // dispatch({type: 'QUEST_PLAYTEST', msgs: playtestXMLResult(questNode)});
+    // Results will be shown and added to annotations as they arise.
+    dispatch(startPlaytestWorker(questNode));
   };
 }

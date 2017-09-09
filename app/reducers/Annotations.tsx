@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {LogMessage, LogMessageMap} from '../parsing/Logger'
+import {LogMessage, LogMessageMap} from 'expedition-qdl/lib/render/Logger'
 import {AnnotationType} from './StateTypes'
 import {QuestRenderAction, QuestPlaytestAction} from '../actions/ActionTypes'
 

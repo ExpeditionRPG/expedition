@@ -9,7 +9,7 @@ import {AnnotationType, AppState, QuestType, EditorState, UserState} from '../re
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
 
 import {toCard} from 'expedition-app/app/actions/Card'
-import {defaultQuestContext} from 'expedition-app/app/reducers/Quest'
+import {defaultContext} from 'expedition-app/app/cardtemplates/Template'
 
 import {DOCS_INDEX_URL, DEV_CONTACT_URL} from '../Constants'
 
@@ -69,7 +69,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       dispatch(setLine(errorLine));
     },
     playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => {
-      let ctx = defaultQuestContext();
+      let ctx = defaultContext();
       Object.assign(ctx.scope, baseScope);
       try {
         math.eval(editor.opInit, ctx.scope);
