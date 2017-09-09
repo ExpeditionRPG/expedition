@@ -69,7 +69,6 @@ export function updateContext(node: Cheerio, ctx: TemplateContext, action?: stri
 
 
 export function defaultContext(): TemplateContext {
-  // TODO: Merge w/ node default context
   const populateScopeFn = function() {
     return {
       numAdventurers: function(): number {
