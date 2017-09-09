@@ -1,5 +1,5 @@
 import {CrawlEvent, CrawlEntry} from 'expedition-qdl/lib/parse/Crawler'
-import {StatsCrawler} from './StatsCrawler'
+import {StatsCrawler, StatsCrawlEntry} from './StatsCrawler'
 import {ParserNode} from 'expedition-app/app/cardtemplates/Template'
 import {Logger, LogMessageMap} from 'expedition-qdl/lib/render/Logger'
 import {initQuest} from 'expedition-app/app/actions/Quest'
@@ -19,11 +19,11 @@ export class PlaytestCrawler extends StatsCrawler {
     this.logger = logger;
   }
 
-  public crawl(node: ParserNode, logger?: Logger): boolean {
+  public crawlWithLog(node: ParserNode, logger: Logger): boolean {
     if (logger) {
       this.logger = logger;
     }
-    const crawlResult = super.crawl(node);
+    const isDone = this.crawl(node);
 
     // TODO: We'll probably write a DFS here that traverses the
     // CrawlerStats entries (e.g. for cycle detection)
@@ -32,11 +32,11 @@ export class PlaytestCrawler extends StatsCrawler {
     for (let l of this.statsByEvent['IMPLICIT_END'].lines) {
       this.logger.err('An action on this card leads nowhere (invalid goto id or no **end**)', '430', l);
     }
-    return crawlResult;
+    return isDone;
   }
 
   // override onNode to track specific per-node bad events
-  protected onNode(q: CrawlEntry, nodeStr: string, id: string, line: number): void {
+  protected onNode(q: StatsCrawlEntry, nodeStr: string, id: string, line: number): void {
     super.onNode(q, nodeStr, id, line);
 
     const keys = q.node.getVisibleKeys();
