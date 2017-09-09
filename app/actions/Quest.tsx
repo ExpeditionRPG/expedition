@@ -5,25 +5,25 @@ import {
 } from './ActionTypes'
 import {SettingsType} from '../reducers/StateTypes'
 import {toCard} from './Card'
-import {handleAction} from '../parser/Handlers'
-import {QuestDetails, QuestContext} from '../reducers/QuestTypes'
-import {ParserNode} from '../parser/Node'
-import {initCardTemplate} from '../cardtemplates/Template'
+import {QuestDetails} from '../reducers/QuestTypes'
+import {initCardTemplate, ParserNode} from '../cardtemplates/Template'
+import {TemplateContext} from '../cardtemplates/TemplateTypes'
 
-export function initQuest(details: QuestDetails, questNode: Cheerio, ctx: QuestContext): QuestNodeAction {
+export function initQuest(details: QuestDetails, questNode: Cheerio, ctx: TemplateContext): QuestNodeAction {
   const firstNode = questNode.children().eq(0);
-  return {type: 'QUEST_NODE', node: new ParserNode(firstNode, ctx), details};
+  const node = new ParserNode(firstNode, ctx);
+  return {type: 'QUEST_NODE', node, details};
 }
 
 export function choice(settings: SettingsType, node: ParserNode, index: number) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    dispatch(loadNode(settings, handleAction(node, index)));
+    dispatch(loadNode(settings, node.handleAction(index)));
   }
 }
 
 export function event(node: ParserNode, evt: string) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    dispatch(loadNode(null, handleAction(node, evt)));
+    dispatch(loadNode(null, node.handleAction(evt)));
   }
 }
 

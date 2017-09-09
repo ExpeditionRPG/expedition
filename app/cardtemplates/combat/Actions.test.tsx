@@ -1,7 +1,6 @@
 import {initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta, handleResolvePhase, midCombatChoice} from './Actions'
 import {DifficultyType, FontSizeType} from '../../reducers/StateTypes'
-import {defaultQuestContext} from '../../reducers/Quest'
-import {ParserNode} from '../../parser/Node'
+import {ParserNode, defaultContext} from '../Template'
 import configureStore  from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
@@ -20,7 +19,7 @@ const TEST_SETTINGS = {
   vibration: true,
 };
 
-const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultQuestContext());
+const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
 describe('Combat actions', () => {
 
@@ -214,7 +213,7 @@ describe('Combat actions', () => {
         <e>lich</e>
         <event on="win"></event>
         <event on="lose"></event>
-      </combat>`)('combat'), defaultQuestContext());
+      </combat>`)('combat'), defaultContext());
       const store = mockStore({});
       store.dispatch(handleResolvePhase(node));
       expect(store.getActions()[0].to.phase).toEqual('RESOLVE_ABILITIES');
@@ -229,7 +228,7 @@ describe('Combat actions', () => {
         <event on="win"></event>
         <event on="lose"></event>
         <event if="false" on="round"><roleplay>bad</roleplay></event>
-      </combat>`)('combat'), defaultQuestContext());
+      </combat>`)('combat'), defaultContext());
       const store = mockStore({});
       store.dispatch(handleResolvePhase(node));
       expect(store.getActions()[0].to.phase).toEqual('RESOLVE_ABILITIES');
@@ -246,7 +245,7 @@ describe('Combat actions', () => {
           <roleplay>expected</roleplay>
         </event>
         <event on="lose"></event>
-      </combat>`)('combat'), defaultQuestContext());
+      </combat>`)('combat'), defaultContext());
       const store = mockStore({});
       store.dispatch(initCombat(node.clone(), TEST_SETTINGS));
       node = store.getActions()[1].node;
@@ -274,7 +273,7 @@ describe('Combat actions', () => {
         </roleplay></event>
       </combat>
       <roleplay id="outside"></roleplay>
-    </quest>`)('#c1'), defaultQuestContext());
+    </quest>`)('#c1'), defaultContext());
     {
       const store = mockStore({});
       store.dispatch(initCombat(baseNode, TEST_SETTINGS));

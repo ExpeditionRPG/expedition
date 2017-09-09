@@ -1,3 +1,5 @@
 describe('CardTemplates template', () => {
-  // Entirely glue code; no testing needed right now.
+  describe('updateContext', () => {
+    it('persists readonly template nodes');
+  });
 });

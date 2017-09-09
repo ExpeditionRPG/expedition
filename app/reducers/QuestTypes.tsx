@@ -1,22 +1,5 @@
 import {TemplateState} from '../cardtemplates/TemplateTypes'
 
-export interface QuestContext {
-  // Scope is passed to the parser when rendering
-  // nodes that are potentially parseable via MathJS.
-  scope: any; // TODO: required fields later
-
-  views: {[id:string]: number};
-  templates: TemplateState;
-
-  // The list of choices, events, and jumps that produced this context, serialized.
-  // Given the path and original quest XML, we should be able to recreate
-  // context given this path.
-  path: (string|number)[];
-
-  // Regenerate template scope (all of "_") with this function.
-  _templateScopeFn: () => any;
-}
-
 export interface QuestDetails {
   id?: string;
   xml?: string;

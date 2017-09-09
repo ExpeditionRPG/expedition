@@ -3,17 +3,18 @@ import {connect} from 'react-redux'
 
 import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
 
-import {getEventParameters} from '../../parser/Handlers'
 import {toPrevious, toCard} from '../../actions/Card'
 import {handleCombatTimerStop, tierSumDelta, adventurerDelta, handleCombatEnd} from './Actions'
 import {event} from '../../actions/Quest'
 import {AppStateWithHistory, SettingsType, CardName} from '../../reducers/StateTypes'
-import {QuestContext, EventParameters} from '../../reducers/QuestTypes'
-import {CombatPhase, MidCombatPhase} from './State'
-import {ParserNode} from '../../parser/Node'
+import {EventParameters} from '../../reducers/QuestTypes'
+import {MidCombatPhase} from './State'
+import {CombatPhase} from './Types'
+import {ParserNode} from '../Template'
 import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 import {midCombatChoice, handleResolvePhase} from './Actions'
 import {logEvent} from '../../Main'
+import {TemplateContext} from '../TemplateTypes'
 
 declare var window:any;
 
@@ -36,7 +37,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
   let victoryParameters: EventParameters = null;
   if (combat) {
     if (!combat.custom) {
-      victoryParameters = getEventParameters(ownProps.node, 'win');
+      victoryParameters = ownProps.node.getEventParameters('win');
     } else {
       victoryParameters = {
         heal: MAX_ADVENTURER_HEALTH,
