@@ -1,6 +1,7 @@
 import {CrawlEvent, CrawlEntry} from 'expedition-qdl/lib/parse/Crawler'
+import {Context} from 'expedition-qdl/lib/parse/Context'
 import {StatsCrawler, StatsCrawlEntry} from './StatsCrawler'
-import {ParserNode} from 'expedition-app/app/cardtemplates/Template'
+import {Node} from 'expedition-qdl/lib/parse/Node'
 import {Logger, LogMessageMap} from 'expedition-qdl/lib/render/Logger'
 import {initQuest} from 'expedition-app/app/actions/Quest'
 import {encounters} from 'expedition-app/app/Encounters'
@@ -19,7 +20,7 @@ export class PlaytestCrawler extends StatsCrawler {
     this.logger = logger;
   }
 
-  public crawlWithLog(node: ParserNode, logger: Logger): boolean {
+  public crawlWithLog(node: Node<Context>, logger: Logger): boolean {
     if (logger) {
       this.logger = logger;
     }
@@ -60,7 +61,7 @@ export class PlaytestCrawler extends StatsCrawler {
           if (tag !== 'e') {
             return;
           }
-          if (!encounters[child.text()] && !child.attr('tier')) {
+          if (!encounters[child.text().toLowerCase()] && !child.attr('tier')) {
             this.logger.err('Detected a non-standard enemy "' + child.text() + '" without explicit tier JSON', '419', line);
           }
         });

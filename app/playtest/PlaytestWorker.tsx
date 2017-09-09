@@ -1,11 +1,13 @@
 // This file is a WebWorker - see the spec at
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
 
-import {ParserNode, defaultContext} from 'expedition-app/app/cardtemplates/Template'
+import {Node} from 'expedition-qdl/lib/parse/Node'
+import {defaultContext} from 'expedition-qdl/lib/parse/Context'
 import {PlaytestCrawler} from './PlaytestCrawler'
 import {Logger, LogMessageMap} from 'expedition-qdl/lib/render/Logger'
 import {initQuest} from 'expedition-app/app/actions/Quest'
 
+const cheerio: any = require('cheerio') as CheerioAPI;
 
 function maybePublishLog(logger: Logger) {
   const m = logger.getFinalizedLogs();
@@ -14,21 +16,24 @@ function maybePublishLog(logger: Logger) {
   }
 }
 
-export function handleMessage(e: {type: 'RUN', timeoutMillis: number, node: ParserNode}) {
-  try {
-    const crawler = new PlaytestCrawler(null);
-    const start = Date.now();
-    let hasMore = true;
-    while ((Date.now() - start) < e.timeoutMillis && hasMore) {
-      const logger = new Logger();
-      hasMore = crawler.crawlWithLog(e.node, logger);
-      maybePublishLog(logger);
-    }
-  } catch(e) {
+export function handleMessage(e: {data: {type: 'RUN', timeoutMillis: number, xml: string}}) {
+  const crawler = new PlaytestCrawler(null);
+  const start = Date.now();
+  const timeout = e.data.timeoutMillis || 10000; // 10s to render
+  const logger = new Logger();
+  const elem = cheerio.load(e.data.xml)('quest > :first-child');
+  if (!elem) {
+    throw new Error('Invalid element passed to webworker');
+  }
+  let hasMore = crawler.crawlWithLog(new Node(elem, defaultContext()), logger);
+  maybePublishLog(logger);
+
+  while ((Date.now() - start) < timeout && hasMore) {
     const logger = new Logger();
-    logger.dbg('Auto-Playtest failed (likely a parser error)');
+    hasMore = crawler.crawlWithLog(null, logger);
     maybePublishLog(logger);
   }
+  console.log('Playtest complete (' + (Date.now() - start) + 'ms)');
   close();
 }
 

@@ -69,31 +69,32 @@ export function getPlayNode(node: Cheerio): Cheerio {
   return node;
 }
 
-function startPlaytestWorker(pnode: ParserNode) {
+function startPlaytestWorker(elem: Cheerio) {
   return (dispatch: Redux.Dispatch<any>): any => {
-
     if (!(window as any).Worker) {
+      console.log('Web worker not available in this browser, skipping playtest.');
       return;
     }
-
-    // TODO fix perf issues with crawler on long quests (example ID 0B7ligyKcIb7OWUhPQ0dNemZUUkE)
     const worker = new Worker('playtest.js');
-    worker.onerror = (e: Event) => {
-      dispatch({type: 'PLAYTEST_ERROR', msg: e});
+    worker.onerror = (ev: ErrorEvent) => {
+      dispatch({type: 'PLAYTEST_ERROR', msg: ev.error});
+      worker.terminate();
     };
-    worker.onmessage = (e: Event) => {
-      dispatch({type: 'PLAYTEST_MESSAGE', msg: e});
+    worker.onmessage = (e: MessageEvent) => {
+      dispatch({type: 'PLAYTEST_MESSAGE', msgs: e.data});
     };
-    worker.postMessage({type: 'RUN', node: pnode});
+    worker.postMessage({type: 'RUN', xml: elem.toString()});
     dispatch({type: 'PLAYTEST_INIT', worker});
   }
 }
 
 export function renderAndPlay(qdl: string, line: number, ctx: TemplateContext) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    const renderResult = renderXML(qdl);
-    const questNode = renderResult.getResult();
-    const playNode = getPlayNode(renderResult.getResultAt(line));
+    const xmlResult = renderXML(qdl);
+    dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
+
+    const questNode: Cheerio = xmlResult.getResult();
+    const playNode = getPlayNode(xmlResult.getResultAt(line));
     if (!playNode) {
       const err = new Error('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
       err.name = 'RenderError';

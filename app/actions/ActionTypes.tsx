@@ -66,7 +66,7 @@ export interface QuestRenderAction extends Redux.Action {
 }
 
 export interface QuestPlaytestAction extends Redux.Action {
-  type: 'QUEST_PLAYTEST';
+  type: 'PLAYTEST_MESSAGE';
   msgs: LogMessageMap;
 }
 

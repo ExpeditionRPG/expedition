@@ -27,7 +27,7 @@ export function annotations(state: AnnotationType[] = [], action: Redux.Action):
   let result: AnnotationType[] = [];
 
   switch (action.type) {
-    case 'QUEST_PLAYTEST':
+    case 'PLAYTEST_MESSAGE':
       msgs = (action as QuestPlaytestAction).msgs;
       result = [...state]; // Persist other messages from render
       break;
