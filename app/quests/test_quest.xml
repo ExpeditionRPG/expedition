@@ -1,49 +1,44 @@
-<quest title="Test Quest" summary="For dev testing" author="Fabricate" email="contact@fabricate.io" url="expeditiongame.com" minplayers="1" maxplayers="6" mintimeminutes="10" maxtimeminutes="40" familyFriendly="true" data-line="0">
-  <roleplay id="test" title="Test" data-line="11">
+<quest title="Test Quest" data-line="0">
+  <roleplay title="Test" id="start" data-line="2">
     <p>{{one=1}}</p>
     <p>You face choices. Here's the value of one: {{one}}</p>
-    <p><i>Italic [roll] test text with icon</i></p>
-    <p>Multiline long text with an icon on the second line to check for gaps, see [adventurer]. Now here's even more text to check for gaps below the icon.</p>
-    <choice text="End now">
-      <trigger data-line="19">end</trigger>
-    </choice>
-    <choice text="{{one}}=one Fight">
-      <combat data-line="23">
+    <choice text="Fight">
+      <combat data-line="10">
         <e>Thief</e>
         <e>Thief</e>
-        <e tier="3">Test</e>
-        <event on="win">
-          <trigger data-line="31">end</trigger>
-        </event>
+        <e>Imp</e>
         <event on="round">
-          <roleplay data-line="32">
+          <roleplay title="" data-line="18">
             <p>A round card during combat!</p>
             <p>Current round: {{_.currentCombatRound()}}</p>
             <p>Surge round: {{string(_.isCombatSurgeRound())}}</p>
             <p>Random enemy: {{_.randomEnemy()}}</p>
-            <choice text="A choice">
-              <roleplay data-line="33">
-                <p>Another card</p>
+            <choice text="A choice to another RP card">
+              <roleplay title="" data-line="28">
+                <p>More text!</p>
               </roleplay>
             </choice>
-            <choice text="Choice with goto">
-              <trigger data-line="34">goto test</trigger>
+            <choice text="A choice with a non-combat GOTO">
+              <trigger data-line="32">goto start</trigger>
             </choice>
             <choice text="End the quest">
-              <trigger data-line="35">end</trigger>
+              <trigger data-line="36">end</trigger>
             </choice>
           </roleplay>
         </event>
+        <event on="win">
+          <trigger data-line="40">end</trigger>
+        </event>
         <event on="lose">
-          <trigger data-line="35">end</trigger>
+          <trigger data-line="44">end</trigger>
         </event>
       </combat>
     </choice>
-    <choice text="[roll] ≥ 7">
-      <roleplay data-line="37">
-        <p>You did a roll thing.</p>
-      </roleplay>
-      <trigger data-line="38">end</trigger>
+    <choice text="Go to start">
+      <trigger data-line="48">goto start</trigger>
+    </choice>
+    <choice text="End now">
+      <trigger data-line="52">end</trigger>
     </choice>
   </roleplay>
 </quest>

@@ -75,11 +75,38 @@ function generateCombatAttack(node: ParserNode, settings: SettingsType, elapsedM
   // enemies each get to hit once - 1.5x if the party took too long
   let attackCount = combat.tier;
   if (combat.roundTimeMillis - elapsedMillis < 0) {
-    attackCount = Math.round(attackCount * 1.5);
+    attackCount = attackCount * 1.5;
+  }
+
+  // If the fight's been going on for a while and there's only a tier 1 enemy left,
+  // Slowly exponentially increase damage to prevent camping / exploiting game mechanics (like combat heals)
+  // Rounds after 6th round: damage multiplier:
+  // 1: 1.2
+  // 2: 1.4
+  // 3: 1.7
+  // 4: 2
+  // 5: 2.5
+  // 6: 3
+  if (combat.tier === 1 && combat.roundCount > 6) {
+    attackCount = attackCount * Math.pow(1.2, combat.roundCount - 6);
+  }
+
+  // If the fight's been going on for a while and there's only one adventurer left (but more than one player IRL),
+  // Slowly exponentially increase damage to prevent other players from getting bored
+  // Rounds after 6th round: damage multiplier:
+  // 1: 1.2
+  // 2: 1.4
+  // 3: 1.7
+  // 4: 2
+  // 5: 2.5
+  // 6: 3
+  if (combat.numAliveAdventurers === 1 && settings.numPlayers > 1 && combat.roundCount > 6) {
+    attackCount = attackCount * Math.pow(1.2, combat.roundCount - 6);
   }
 
   // Attack once for each tier
   let damage = 0;
+  attackCount = Math.round(attackCount);
   for (let i = 0; i < attackCount; i++) {
     damage += randomAttackDamage();
   }
@@ -106,9 +133,16 @@ function generateLoot(maxTier: number): Loot[] {
     {tier: 3, count: 0},
   ];
 
-  // apply a slight logarithmic curve to loot rewards
-  // ie tier 1 = 1, 4 = 3, 8 = 5, 12 = 6
-  maxTier = Math.round(Math.log(maxTier) / Math.log(1.5));
+  // Apply logarithmic curve to loot rewards. Outcomes (tier: loot):
+  // 1: 1
+  // 2: 1
+  // 3: 2
+  // 4: 3
+  // 5: 3
+  // 6: 4
+  // 7: 4
+  // 8+: 5
+  maxTier = Math.min(1, Math.round(Math.log(maxTier - 1) / Math.log(1.5)));
 
   while (maxTier > 0) {
     const r: number = Math.random();
