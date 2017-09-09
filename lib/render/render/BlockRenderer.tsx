@@ -29,6 +29,10 @@ export class BlockRenderer {
     attribs['title'] = attribs['title'] || extracted.title;
     attribs['id'] = attribs['id'] || extracted.id;
 
+    if (attribs.title.length >= 25) {
+      log.err('card title too long', '433');
+    }
+
     // The only inner stuff
     var i = 0;
     var body: (string|RoleplayChild|Instruction)[] = [];
