@@ -20,7 +20,7 @@ export class PlaytestCrawler extends StatsCrawler {
     this.logger = logger;
   }
 
-  public crawlWithLog(node: Node<Context>, logger: Logger): boolean {
+  public crawlWithLog(node: Node<Context>, logger: Logger): [boolean, number, number] {
     if (logger) {
       this.logger = logger;
     }
@@ -33,7 +33,7 @@ export class PlaytestCrawler extends StatsCrawler {
     for (let l of this.statsByEvent['IMPLICIT_END'].lines) {
       this.logger.err('An action on this card leads nowhere (invalid goto id or no **end**)', '430', l);
     }
-    return isDone;
+    return [isDone, this.queue.length, this.seen.size];
   }
 
   // override onNode to track specific per-node bad events

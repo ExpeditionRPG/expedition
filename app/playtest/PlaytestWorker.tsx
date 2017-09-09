@@ -19,18 +19,22 @@ function maybePublishLog(logger: Logger) {
 export function handleMessage(e: {data: {type: 'RUN', timeoutMillis: number, xml: string}}) {
   const crawler = new PlaytestCrawler(null);
   const start = Date.now();
-  const timeout = e.data.timeoutMillis || 10000; // 10s to render
+  const timeout = e.data.timeoutMillis || 10000; // 10s to playtest results
   const logger = new Logger();
   const elem = cheerio.load(e.data.xml)('quest > :first-child');
   if (!elem) {
     throw new Error('Invalid element passed to webworker');
   }
+  console.log('playtesting...');
   let hasMore = crawler.crawlWithLog(new Node(elem, defaultContext()), logger);
+  let queueLen = 0;
+  let numSeen = 0;
   maybePublishLog(logger);
 
   while ((Date.now() - start) < timeout && hasMore) {
     const logger = new Logger();
-    hasMore = crawler.crawlWithLog(null, logger);
+    let [hasMore, queueLen, numSeen] = crawler.crawlWithLog(null, logger);
+    console.log('... (queueLen: ' + queueLen, + ', seen ' + numSeen + ')');
     maybePublishLog(logger);
   }
   console.log('Playtest complete (' + (Date.now() - start) + 'ms)');
