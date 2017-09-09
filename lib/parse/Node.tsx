@@ -69,9 +69,9 @@ export class Node<C extends Context> {
     return updateContext<C>(elem, ctx, action);
   }
 
-  clone(): Node<C> {
+  clone(): this {
     // Context is deep-copied via updateContext.
-    return new Node<C>(this.elem, this.ctx);
+    return new (this.constructor as any)(this.elem, this.ctx);
   }
 
   getTag(): string {
@@ -93,7 +93,7 @@ export class Node<C extends Context> {
     return keys;
   }
 
-  getNext(key?: string|number): Node<C> {
+  getNext(key?: string|number): this {
     let next: Cheerio = null;
     if (key === undefined) {
       next = this.getNextNode();
@@ -127,7 +127,7 @@ export class Node<C extends Context> {
         }
       }) || null;
     }
-    return (next) ? new Node<C>(next, this.ctx, key) : null;
+    return (next) ? new (this.constructor as any)(next, this.ctx, key) : null;
   }
 
   // Evaluates all content ops in-place and creates a list of
@@ -165,7 +165,7 @@ export class Node<C extends Context> {
     }
   }
 
-  gotoId(id: string): Node<C> {
+  gotoId(id: string): this {
     const root = this.getRootElem();
     if (root === null) {
       return null;
@@ -174,7 +174,7 @@ export class Node<C extends Context> {
     if (search.length === 0) {
       return null;
     }
-    return new Node<C>(search.eq(0), this.ctx, '#'+id);
+    return new (this.constructor as any)(search.eq(0), this.ctx, '#'+id);
   }
 
   // Loop through all rendered children. If a call to cb() returns a value
@@ -291,10 +291,10 @@ export class Node<C extends Context> {
     return ret;
   }
 
-  handleTriggerEvent(): Node<C> {
+  handleTriggerEvent(): this {
     // Search upwards in the node heirarchy and see if any of the parents successfully
     // handle the event.
-    let ref = new Node<C>(this.elem.parent(), this.ctx);
+    let ref = new (this.constructor as any)(this.elem.parent(), this.ctx);
     const event = this.elem.text().trim();
     while (ref.elem && ref.elem.length > 0) {
       const handled = ref.handleAction(event);
@@ -308,7 +308,7 @@ export class Node<C extends Context> {
     return this;
   }
 
-  handleTrigger(): Node<C> {
+  handleTrigger(): this {
     // Immediately act on any gotos (with a max depth)
     let i = 0;
     let ref = this.clone();
@@ -330,7 +330,7 @@ export class Node<C extends Context> {
   // - a number indicating the choice number in the XML element, including conditional choices.
   // - a string indicating which event to fire based on the "on" attribute.
   // Returns the card inside of / referenced by the choice/event element
-  handleAction(action?: number|string): Node<C> {
+  handleAction(action?: number|string): this {
     const next = this.getNext(action);
     if (!next) {
       return null;
