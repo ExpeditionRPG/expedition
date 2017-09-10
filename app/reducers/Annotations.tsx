@@ -49,7 +49,7 @@ export function annotations(state: AnnotationType[] = [], action: Redux.Action):
     result.push({
       row: l,
       column: 0,
-      text: '(See HELP for more details)',
+      text: '(Click the icon for details)',
       type: 'info',
     });
   });
