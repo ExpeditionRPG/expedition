@@ -308,7 +308,7 @@ We've included a couple functions that you can call anywhere in your quest code.
 
 **viewCount(<string>)**
 
-To look at the number of times an element with an ID of e.g. "testID" has been visited by the player during a quest, use `{{ _.viewCount("testID") }}`. 
+To look at the number of times an element with an ID of e.g. "testID" has been visited by the player during a quest, use `{{ _.viewCount("testID") }}`.
 
 **random([size, min, max]) and other MathJS functions**
 
@@ -327,7 +327,7 @@ As covered in the **branching** section, you can include choice elements inside 
 
 ### Icons
 
-You can embed inline icons to make your quest more visually interesting! Simply add `[icon_name]` to roleplaying text, instructions or choices.
+You can embed inline icons to make your quest more visually interesting! Simply add `:icon_name:` to roleplaying text, instructions or choices.
 
 Visit the [icon help page](icons.md) to learn more and see what icons are available.
 
@@ -409,7 +409,7 @@ email: Expedition@Fabricate.IO
 url: ExpeditionGame.com
 familyFriendly: false
 minPlayers: 1
-maxPlayers: 6 
+maxPlayers: 6
 minTimeMinutes: 20
 maxTimeMinutes: 60
 ```
