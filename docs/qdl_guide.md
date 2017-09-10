@@ -1,6 +1,5 @@
 # Expedition QDL Help
 
-
 ## Getting Started
 
 Welcome, fearless mortal, to the [Expedition Quest Editor](http://quests.expeditiongame.com)! Use this tool to craft custom quests of dangerous deeds and awful alliteration with speed and ease.
@@ -295,6 +294,27 @@ Expedition uses [MathJS](http://mathjs.org/) to handle the context. If you're tr
 
 **Debugging note:** in the Quest Creator, if you use "Play from Cursor", context variables that are defined in earlier cards will not be set. We're currently working on additional tooling around context to help you set context variables without having to replay large portions of your quest, but a handy debugging trick for now is to set the variables to your desired values at the top of the card you're starting from - just make sure to remove them when you're done debugging!
 
+### Static Functions
+
+We've included a couple functions that you can call anywhere in your quest code.
+
+**numAdventurers()**
+
+`{{ _.numAdventurers() }}` returns the current number of players. This is often used in [ternary](https://en.wikipedia.org/wiki/%3F:) operators to change the singular/plural nature of words, or to change instructions based on how many people are playing. For example:
+
+```markdown
+> {{(_.numAdventurers() > 1) ? "Every player rolls a D20" : "Roll a D20"}}
+```
+
+**viewCount(<string>)**
+
+To look at the number of times an element with an ID of e.g. "testID" has been visited by the player during a quest, use `{{ _.viewCount("testID") }}`. 
+
+**random([size, min, max]) and other MathJS functions**
+
+`{{random()}}` is actually a built-in function to MathJS, and returns a random decimal value between 0 and 1. It supports a number of optional arguments; check [here](http://mathjs.org/docs/reference/functions/random.html) for more details. You may also be interested in [pickRandom](http://mathjs.org/docs/reference/functions/pickRandom.html) for randomly selecting from a list of values.
+
+MathJS includes a number of other useful geometric, combinatorial, algebraic, trigonometric, and other functions that you can also use in your quests. You can find a full list [here](http://mathjs.org/docs/reference/functions.html)
 
 ## Elements
 
