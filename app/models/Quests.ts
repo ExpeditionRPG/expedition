@@ -35,6 +35,7 @@ export interface QuestAttributes {
   created?: Date;
   published?: Date;
   tombstone?: Date;
+  expansionhorror?: boolean;
 }
 
 export interface QuestSearchParams {
@@ -51,6 +52,7 @@ export interface QuestSearchParams {
   order?: string;
   limit?: number;
   partition?: string;
+  expansions?: string[]
 }
 
 export interface QuestInstance extends Sequelize.Instance<QuestAttributes> {
@@ -112,6 +114,10 @@ export class Quest {
         defaultValue: Sequelize.NOW,
       },
       tombstone: Sequelize.DATE,
+      expansionhorror: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
     }, {
       timestamps: false, // TODO: eventually switch to sequelize timestamps
       underscored: true,
@@ -184,6 +190,15 @@ export class Quest {
     }
 
     const order = [];
+
+    // Hide expansion if not specified, otherwise prioritize results
+    // that have the expansion
+    if (!params.expansions || params.expansions.indexOf('horror') === -1) {
+      where.expansionhorror =  {$ne: true};
+    } else {
+      order.push(['expansionhorror', 'DESC']);
+    }
+
     if (params.order) {
       if (params.order === '+ratingavg') {
         order.push(Sequelize.literal(`
