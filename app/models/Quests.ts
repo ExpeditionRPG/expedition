@@ -265,7 +265,7 @@ export class Quest {
                 `<p>${params.author},</p>
                 <p>Congratulations on publishing your first Expedition quest!</p>
                 <p>For all of the adventurers across the world, thank you for sharing your story with us - we can't wait to play it!</p>
-                <p>And remember, if you have any questions or run into any issues, please don't hesistate to email Authors@Fabricate.io</p>
+                <p>And remember, if you have any questions or run into any issues, please don't hesistate to email <a href="mailto:Authors@Fabricate.io"/>Authors@Fabricate.io</a></p>
                 <p>Sincerely,</p>
                 <p>Todd, Scott & The Expedition Team</p>`);
             }
