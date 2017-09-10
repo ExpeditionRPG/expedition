@@ -229,7 +229,7 @@ export class Quest {
     let isNew: boolean = false;
     return this.s.authenticate()
       .then(() => {
-        return this.model.findOne({where: {id: params.id}});
+        return this.model.findOne({where: {id: params.id, partition: params.partition}});
       })
       .then((q: QuestInstance) => {
         isNew = !Boolean(q);
@@ -252,8 +252,24 @@ export class Quest {
         if (isNew) {
           // If this is a newly published quest, email us!
           // We don't care if this fails.
-          const message = `Summary: ${params.summary}. By ${params.author}, for ${params.minplayers} - ${params.maxplayers} players.`;
-          Mail.send('expedition+newquest@fabricate.io', 'New quest published: ' + params.title, message);
+          Mail.send('expedition+newquest@fabricate.io',
+            'New quest published: ' + params.title,
+            `Partition: ${params.partition}. Summary: ${params.summary}. By ${params.author}, for ${params.minplayers} - ${params.maxplayers} players.`);
+
+          // If this is the author's first published quest, email them a congratulations
+          this.model.findOne({where: {userid: params.userid}})
+          .then((q: QuestInstance) => {
+            if (!Boolean(q)) {
+              Mail.send([params.email,'expedition+newquest@fabricate.io'],
+                'Congratulations on publishing your first quest!',
+                `<p>${params.author},</p>
+                <p>Congratulations on publishing your first Expedition quest!</p>
+                <p>For all of the adventurers across the world, thank you for sharing your story with us - we can't wait to play it!</p>
+                <p>And remember, if you have any questions or run into any issues, please don't hesistate to email <a href="mailto:Authors@Fabricate.io"/>Authors@Fabricate.io</a></p>
+                <p>Sincerely,</p>
+                <p>Todd, Scott & The Expedition Team</p>`);
+            }
+          })
         }
 
         const updateValues: QuestAttributes = {
