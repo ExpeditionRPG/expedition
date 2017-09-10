@@ -248,20 +248,24 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
 }
 
 function renderDetails(props: SearchProps): JSX.Element {
-  const details: JSX.Element = <span></span>;
   const quest = props.selected;
   return (
     <Card title="Quest Details">
       <div className="searchDetails">
-        <h3>{quest.title}</h3>
+        <h2>{quest.title}</h2>
+        <div>{quest.summary}</div>
         <div className="author">by {quest.author}</div>
-        <p>
-          {quest.summary}
-        </p>
         {quest.ratingcount && quest.ratingcount >= 5 && <StarRating readOnly={true} value={+quest.ratingavg} quantity={quest.ratingcount}/>}
       </div>
-      {details}
       <Button onTouchTap={(e)=>props.onPlay(quest)}>Play</Button>
+      <div className="searchDetailsExtended">
+        <h3>Details:</h3>
+        <div className="timing">
+          Play time: {formatPlayPeriod(quest.mintimeminutes, quest.maxtimeminutes)}
+        </div>
+        <div>Genre: {quest.genre}</div>
+        <div>Content rating: {quest.contentrating}</div>
+      </div>
     </Card>
   );
 }

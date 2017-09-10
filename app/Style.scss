@@ -861,9 +861,18 @@ p:first-child {
 
   .searchDetails {
     text-align: center;
+    margin-top: size(large);
+    margin-bottom: size(large);
 
     .author {
       font-style: italic;
+    }
+  }
+
+  .searchDetailsExtended {
+    margin-top: size(large);
+    h3 {
+      margin-bottom: size(small);
     }
   }
 

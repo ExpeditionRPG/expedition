@@ -16,7 +16,9 @@ export interface QuestDetails {
   maxtimeminutes?: number,
   author?: string,
   ratingcount?: number,
-  ratingavg?: number
+  ratingavg?: number,
+  genre?: string,
+  contentrating?: string
 };
 
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';
