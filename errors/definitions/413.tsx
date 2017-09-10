@@ -1,4 +1,5 @@
-export const NAME = `could not parse block header`;
+export const NUMBER = 413;
+export const NAME = `Could not parse block header`;
 export const DESCRIPTION = `Generally caused by an invalid JSON annotation`;
 
 export const INVALID = [

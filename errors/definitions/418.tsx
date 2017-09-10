@@ -1,3 +1,4 @@
+export const NUMBER = 418;
 export const NAME = `Tier must be a number between 1 and 9, inclusive`;
 export const DESCRIPTION = `A tier was specified that was either not a number, or not within the range of valid tiers.`;
 

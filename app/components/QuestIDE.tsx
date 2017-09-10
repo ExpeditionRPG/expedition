@@ -17,6 +17,7 @@ export interface QuestIDEStateProps {
 export interface QuestIDEDispatchProps {
   onDirty: (realtime: any, text: string) => void;
   onLine: (line: number) => void;
+  onAnnotationClick: (annotations: number[]) => void;
 }
 
 interface QuestIDEProps extends QuestIDEStateProps, QuestIDEDispatchProps {}
@@ -33,7 +34,8 @@ const QuestIDE = (props: QuestIDEProps): JSX.Element => {
           lastSizeChangeMillis={props.lastSplitPaneDragMillis}
           scrollLineTarget={props.line}
           onChange={(text: string) => props.onDirty(props.realtime, text)}
-          onLine={(line: number) => props.onLine(line)} />
+          onLine={(line: number) => props.onLine(line)}
+          onAnnotationClick={(annotations: number[]) => props.onAnnotationClick(annotations)} />
       </div>
       <div className="preview">
         <AppContainer/>

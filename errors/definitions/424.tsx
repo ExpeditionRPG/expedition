@@ -1,4 +1,5 @@
-export const NAME = `missing: "<key>"`;
+export const NUMBER = 424;
+export const NAME = `Missing: "<key>"`;
 export const METADATA_ERROR = true;
 export const DESCRIPTION = `You're missing the specified metadata key, which is required for quests.`;
 

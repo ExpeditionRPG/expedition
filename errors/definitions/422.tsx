@@ -1,4 +1,5 @@
-export const NAME = `no quest blocks found`;
+export const NUMBER = 422;
+export const NAME = `No quest blocks found`;
 export const METADATA_ERROR = true;
 export const DESCRIPTION = ``;
 

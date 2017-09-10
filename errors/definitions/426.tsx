@@ -1,3 +1,4 @@
+export const NUMBER = 426;
 export const NAME = `<key> should be a number, but is <type>`;
 export const METADATA_ERROR = true;
 export const DESCRIPTION = `The quest metadata key you're trying to use must be a number.`;

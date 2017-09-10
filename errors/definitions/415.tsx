@@ -1,4 +1,5 @@
-export const NAME = `found inner block of combat block without an event bullet`;
+export const NUMBER = 415;
+export const NAME = `Found inner block of combat block without an event bullet`;
 export const DESCRIPTION = ``;
 
 export const INVALID = [

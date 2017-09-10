@@ -1,3 +1,4 @@
+export const NUMBER = 434;
 export const NAME = `Health/Ability/Loot-affecting instructions should follow the format...`;
 export const DESCRIPTION = `Instructions that modify a player's health, ability, and/or loot should follow a standard format.`;
 

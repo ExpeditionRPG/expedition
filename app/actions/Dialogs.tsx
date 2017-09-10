@@ -3,8 +3,8 @@ import {DialogIDType} from '../reducers/StateTypes'
 
 const ReactGA = require('react-ga') as any;
 
-export function setDialog(dialog: DialogIDType, shown: boolean): SetDialogAction {
-  return {type: 'SET_DIALOG', dialog, shown};
+export function setDialog(dialog: DialogIDType, shown: boolean, annotations?: number[]): SetDialogAction {
+  return {type: 'SET_DIALOG', dialog, shown, annotations};
 }
 
 export function pushHTTPError(err: {statusText: string, status: string, responseText: string}): PushErrorAction {
