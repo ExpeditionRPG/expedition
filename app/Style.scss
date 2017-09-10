@@ -157,20 +157,15 @@ body {
   right: 0;
 }
 
-.float_left {
-  float: left;
-}
-
-.float_right {
-  float: right;
-}
-
 .snackbar {
   span {
     color: $font_color_dark_primary !important;
   }
 }
 
+h1, h2, h3 {
+  font-family: $headerFont;
+}
 h2 {
   margin: 0.5em 0 0.1em 0;
 }
@@ -358,13 +353,16 @@ p:first-child {
       font-size: fontsize(flavor);
 
       .searchHeader {
-        .filter_button button {
-          padding: 0 !important;
-          border: 0 !important;
-          margin: 0 !important;
-          background: transparent !important;
-          font-size: fontsize(flavor) !important;
-          min-width: 40px !important;
+        .filter_button {
+          float: right;
+          button {
+            padding: 0 !important;
+            border: 0 !important;
+            margin: 0 !important;
+            background: transparent !important;
+            font-size: fontsize(flavor) !important;
+            min-width: 40px !important;
+          }
         }
         .inline_icon {
           height: fontsize(flavor);

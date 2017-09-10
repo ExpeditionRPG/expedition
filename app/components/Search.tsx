@@ -232,7 +232,7 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
       title="Quest Search Results"
       header={!hideHeader && <div className="searchHeader">
         <span>{props.results.length} quests for {props.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></span>
-        <Button className="float_right filter_button" onTouchTap={() => props.onFilter()}>Filter ></Button>
+        <Button className="filter_button" onTouchTap={() => props.onFilter()}>Filter ></Button>
       </div>}
     >
       {items.length === 0 && !props.searching &&

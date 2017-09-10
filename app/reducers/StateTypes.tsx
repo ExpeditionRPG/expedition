@@ -10,6 +10,12 @@ export interface AnnouncementState {
   link: string;
 }
 
+export type DialogIDType = null | 'EXIT_QUEST';
+
+export interface DialogState {
+  open: DialogIDType;
+}
+
 export type CardThemeType = 'LIGHT' | 'RED' | 'DARK';
 
 export interface EndSettings {
@@ -91,6 +97,7 @@ export interface UserFeedbackState {
 export interface AppState {
   announcement: AnnouncementState;
   card: CardState;
+  dialog: DialogState;
   quest: QuestState;
   search: SearchState;
   settings: SettingsType;

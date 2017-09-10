@@ -7,6 +7,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import {URLS} from '../../Constants'
 import {getStore} from '../../Store'
 import {toCard, toPrevious} from '../../actions/Card'
+import {setDialog} from '../../actions/Dialog'
 import {CardThemeType} from '../../reducers/StateTypes'
 import {getDevicePlatform} from '../../Globals'
 
@@ -19,7 +20,6 @@ interface ExpeditionCardProps extends React.Props<any> {
   header?: JSX.Element;
   icon?: string;
   inQuest?: boolean;
-  onMenuSelect?: (value: string) => any;
   onReturn?: () => any;
   title?: string;
 }
@@ -38,19 +38,16 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
   }
 
   onMenuSelect(value: string) {
-    if (this.props && this.props.onMenuSelect) {
-      return this.props.onMenuSelect(value);
-    }
-
+    const dispatch = getStore().dispatch;
     switch(value) {
       case 'HOME':
-        let result = true;
-        if (this.props.inQuest) {
-          result = window.confirm('Are you sure you want to exit this quest?');
+        if (!this.props.inQuest) {
+          return dispatch(toPrevious('SPLASH_CARD', undefined, false));
+        } else {
+          return dispatch(setDialog('EXIT_QUEST'));
         }
-        return result && getStore().dispatch(toPrevious('SPLASH_CARD', undefined, false));
       case 'SETTINGS':
-        return getStore().dispatch(toCard('SETTINGS'));
+        return dispatch(toCard('SETTINGS'));
       case 'RATE':
         switch (getDevicePlatform()) {
           case 'android':
@@ -69,7 +66,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
         window.open(this.getFeedbackURL(), '_system');
         break;
       case 'REPORT':
-        return getStore().dispatch(toCard('REPORT'));
+        return dispatch(toCard('REPORT'));
       default:
         throw new Error('Unknown menu option ' + value);
     }
@@ -91,12 +88,13 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
               anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
               targetOrigin={{ vertical: 'top', horizontal: 'right' }}
               iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-              onChange={(event: any, value: string)=>this.onMenuSelect(value)}>
-                <MenuItem value="HOME" primaryText="Home"/>
-                <MenuItem value="SETTINGS" primaryText="Settings"/>
-                {getDevicePlatform() !== 'web' && <MenuItem value="RATE" primaryText="Rate the App"/>}
-                <MenuItem value="FEEDBACK" primaryText="Send app feedback"/>
-                {this.props.inQuest && <MenuItem value="REPORT" primaryText="Report this quest"/>}
+              onChange={(event: any, value: string)=>this.onMenuSelect(value)}
+            >
+              <MenuItem value="HOME" primaryText="Home"/>
+              <MenuItem value="SETTINGS" primaryText="Settings"/>
+              {getDevicePlatform() !== 'web' && <MenuItem value="RATE" primaryText="Rate the App"/>}
+              <MenuItem value="FEEDBACK" primaryText="Send app feedback"/>
+              {this.props.inQuest && <MenuItem value="REPORT" primaryText="Report this quest"/>}
             </IconMenu>
           </span>
           <div className="title">{this.props.title}</div>

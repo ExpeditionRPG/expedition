@@ -1,6 +1,7 @@
 import Redux from 'redux'
 import {announcement} from './Announcement'
 import {card} from './Card'
+import {dialog} from './Dialog'
 import {quest} from './Quest'
 import {search} from './Search'
 import {settings} from './Settings'
@@ -15,6 +16,7 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
   return {
     announcement: announcement(state.announcement, action),
     card: card(state.card, action),
+    dialog: dialog(state.dialog, action),
     quest: quest(state.quest, action),
     search: search(state.search, action),
     settings: settings(state.settings, action),
@@ -43,12 +45,12 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
 
       const returnAction = action as ReturnAction;
       if (returnAction.to && (returnAction.to.name || returnAction.to.phase)) {
-        while(pastStateIdx > 0 && !isReturnState(state._history[pastStateIdx], returnAction)) {
+        while (pastStateIdx > 0 && !isReturnState(state._history[pastStateIdx], returnAction)) {
           pastStateIdx--;
         }
       } else if (returnAction.skip) {
         // Skip past any explicitly blacklisted card types
-        while(pastStateIdx > 0) {
+        while (pastStateIdx > 0) {
           let skipCard: boolean = false;
           for (const s of returnAction.skip) {
             if (s.name === state._history[pastStateIdx].card.name && (!s.phase || s.phase === state._history[pastStateIdx].card.phase)) {

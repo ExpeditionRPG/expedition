@@ -3,7 +3,7 @@ import {
   lightGreen300, lightGreen700, lightGreen900,
   grey100, grey300, grey700, grey800, grey900,
   red900,
-  darkBlack, fullBlack
+  darkBlack, fullBlack, white
 } from 'material-ui/styles/colors'
 import {fade} from 'material-ui/utils/colorManipulator'
 import spacing from 'material-ui/styles/spacing'
@@ -30,6 +30,9 @@ const theme: any = {
   },
   checkbox: {
     checkedColor: darkBlack,
+  },
+  raisedButton: {
+    primaryColor: grey300,
   },
   vw: {
     huge: '12vw',

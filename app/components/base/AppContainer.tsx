@@ -1,7 +1,9 @@
 import * as React from 'react'
 import {Provider} from 'react-redux'
+import FlatButton from 'material-ui/FlatButton'
 import Snackbar from 'material-ui/Snackbar'
 
+import DialogsContainer from './DialogsContainer'
 import ToolsContainer from '../ToolsContainer'
 import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
 import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
@@ -13,7 +15,6 @@ import QuestStartContainer from '../QuestStartContainer'
 import QuestEndContainer from '../QuestEndContainer'
 
 import {renderCardTemplate} from '../../cardtemplates/Template'
-
 import {initialSettings} from '../../reducers/Settings'
 import {closeSnackbar} from '../../actions/Snackbar'
 import {initialState} from '../../reducers/Snackbar'
@@ -25,7 +26,13 @@ const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group'
 interface MainProps extends React.Props<any> {}
 
 export default class Main extends React.Component<MainProps, {}> {
-  state: {key: number, transition: TransitionType, card: JSX.Element, settings: SettingsType, snackbar: SnackbarState};
+  state: {
+    card: JSX.Element,
+    key: number,
+    transition: TransitionType,
+    settings: SettingsType,
+    snackbar: SnackbarState,
+  };
   storeUnsubscribeHandle: () => any;
 
   constructor(props: MainProps) {
@@ -43,13 +50,20 @@ export default class Main extends React.Component<MainProps, {}> {
   getUpdatedState() {
     const state: AppStateWithHistory = getStore().getState();
     if (state === undefined || this.state === undefined || Object.keys(state).length === 0) {
-      return {key: 0, transition: 'INSTANT' as TransitionType, card: <SplashScreenContainer/>, settings: initialSettings, snackbar: initialState};
+      return {
+        card: <SplashScreenContainer/>,
+        key: 0,
+        transition: 'INSTANT' as TransitionType,
+        settings: initialSettings,
+        snackbar: initialState,
+      };
     }
 
     if (state.snackbar.open !== this.state.snackbar.open) {
       return {...this.state, snackbar: state.snackbar};
     }
 
+    // After this point, only naviation-related state changes will result in a state change
     if (!state.card || (this.state && state.card.ts === this.state.key)) {
       return this.state;
     }
@@ -103,7 +117,14 @@ export default class Main extends React.Component<MainProps, {}> {
     } else if (state.card.name === 'SPLASH_CARD') {
       transition = 'INSTANT';
     }
-    return {key: state.card.ts, transition, card, settings: state.settings, snackbar: state.snackbar};
+
+    return {
+      card,
+      key: state.card.ts,
+      transition,
+      settings: state.settings,
+      snackbar: state.snackbar
+    };
   }
 
   handleChange() {
@@ -124,6 +145,7 @@ export default class Main extends React.Component<MainProps, {}> {
         {this.state.card}
       </div>
     ];
+
     return (
       <div className={containerClass}>
         <Provider store={getStore()}>
@@ -132,6 +154,7 @@ export default class Main extends React.Component<MainProps, {}> {
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}>
             {cards}
+            <DialogsContainer />
             <Snackbar
               className="snackbar"
               open={this.state.snackbar.open}
