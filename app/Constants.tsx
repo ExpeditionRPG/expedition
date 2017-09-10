@@ -85,10 +85,12 @@ Each time there is a choice (indicated with the *), indent one additional level.
   If the players need to do something out of character, like roll a die, draw loot,
   or increment health, instruct them to do so via an instruction (indicated with a >).
 
-  > Roll a [roll] to see if you sneak past the guards
+  > :roll: Roll to see if you sneak past the :bandit:.
 
-  Notice how the bracketed [roll] in the instruction gets turned into an icon?
-  Check out "help" for the list of available icons.
+  Notice how the :roll: and :bandit: in the instruction gets turned into an icon?
+  Check out "help" or the link below for the list of available icons.
+
+  // https://github.com/ExpeditionRPG/expedition-quest-creator/blob/master/docs/icons.md
 
   * Rolled 10 or higher
 

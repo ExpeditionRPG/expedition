@@ -15,7 +15,7 @@ function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: 
     result.push({
       row: m.line,
       column: 0,
-      text: m.type + ' ' + m.url + ': ' +m.text,
+      text: m.type[0].toUpperCase() + m.type.substring(1) + ' ' + m.url + ': ' +m.text,
       type: m.type,
     });
   }

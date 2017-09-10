@@ -91,6 +91,14 @@ describe('PlaytestCrawler', () => {
     it('logs if there are too many consecutive combats'); // 2 combats back-to-back? bad idea. 3 combats with single cards in between? Also bad idea.
 
     it('logs if there is uneven choice distribution') // (too few/too many, or alternating 0-2-0-2 etc.)
+
+    it('logs if instructions involving loot fail to validate');
+
+    it('logs if instructions involving abilities fail to validate');
+
+    it('logs if instructions involving health fail to validate');
+
+    it('logs if instructions include reference to "player" or "players"');
   });
 
   describe('info-level message', () => {
