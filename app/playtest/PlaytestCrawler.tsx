@@ -110,17 +110,17 @@ export class PlaytestCrawler extends StatsCrawler {
       const inst = child.text();
       for (let m of (inst.match(HEALTH_INSTRUCTION) || [])) {
         if (!m.match(VALID_HEALTH_INSTRUCTION)) {
-          this.logger.warn('Health-affecting instructions should\nfollow the format "Gain/Lose <number> Health",\ninstead saw "' + m + '"', '429', line);
+          this.logger.warn('Health-affecting instructions should\nfollow the format "Gain/Lose <number> Health",\ninstead saw "' + m + '"', '434', line);
         }
       }
       for (let m of (inst.match(ABILITY_INSTRUCTION) || [])) {
         if (!m.match(VALID_ABILITY_INSTRUCTION)) {
-          this.logger.warn('Ability-affecting instructions should\nfollow the format "Learn/Discard <number> Abilit(y/ies)",\ninstead saw "' + m + '"', '429', line);
+          this.logger.warn('Ability-affecting instructions should\nfollow the format "Learn/Discard <number> Abilit(y/ies)",\ninstead saw "' + m + '"', '434', line);
         }
       }
       for (let m of (inst.match(LOOT_INSTRUCTION) || [])) {
         if (!m.match(VALID_LOOT_INSTRUCTION)) {
-          this.logger.warn('Loot-affecting instructions should\nread as follows: "Draw 1 Tier IV Loot",\ninstead saw "' + m + '"', '429', line);
+          this.logger.warn('Loot-affecting instructions should\nread as follows: "Draw 1 Tier IV Loot",\ninstead saw "' + m + '"', '434', line);
         }
       }
     });
