@@ -97,6 +97,8 @@ describe('PlaytestCrawler', () => {
     it('logs if instructions involving abilities fail to validate');
 
     it('logs if instructions involving health fail to validate');
+
+    it('logs if instructions include reference to "player" or "players"');
   });
 
   describe('info-level message', () => {

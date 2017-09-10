@@ -13,11 +13,12 @@ const cheerio: any = require('cheerio') as CheerioAPI;
 // <count> is a positive integer, and <type> is any of ability/health/loot.
 // These matches are case insensitive and global, using the /gi suffix.
 const HEALTH_INSTRUCTION = /(\w+ \w+ (health|hp))/gi;
-const VALID_HEALTH_INSTRUCTION = /((gain|lose) \d+ health)/i;
+const VALID_HEALTH_INSTRUCTION = /(([gG]ain|[lL]ose) (all|\d+) health)/;
 const ABILITY_INSTRUCTION = /(\w+ \w+ abili(ty|ties))/gi;
-const VALID_ABILITY_INSTRUCTION = /((learn|discard) \d+ abili(ty|ties))/i;
+const VALID_ABILITY_INSTRUCTION = /(([lL]earn|[dD]iscard) (one|two|three|four|five|six|seven|eight|nine|ten) abili(ty|ties))/;
 const LOOT_INSTRUCTION = /(\w*\s*\w*\s*\w+ \w+ loot)/gi;
-const VALID_LOOT_INSTRUCTION = /((draw|discard) \d+ tier (I|II|III|IV|V) loot)|(discard \d+ loot)/i;
+const VALID_LOOT_INSTRUCTION = /(([dD]raw|[dD]iscard) (one|two|three|four|five|six|seven|eight|nine|ten) tier (I|II|III|IV|V) loot)|(discard \d+ loot)/;
+const ADVENTURER_INSTRUCTION = /(\w*\s*player(s?)\s*\w*)/g;
 
 // Surfaces errors, warnings, statistics, and other useful information
 // about particular states encountered during play through the quest, or
@@ -110,18 +111,24 @@ export class PlaytestCrawler extends StatsCrawler {
       const inst = child.text();
       for (let m of (inst.match(HEALTH_INSTRUCTION) || [])) {
         if (!m.match(VALID_HEALTH_INSTRUCTION)) {
-          this.logger.warn('Health-affecting instructions should\nfollow the format "Gain/Lose <number> Health",\ninstead saw "' + m + '"', '434', line);
+          this.logger.warn('Health-affecting instructions should\nfollow the format "Gain/Lose <number> health",\ninstead saw "' + m + '"', '434', line);
         }
       }
       for (let m of (inst.match(ABILITY_INSTRUCTION) || [])) {
         if (!m.match(VALID_ABILITY_INSTRUCTION)) {
-          this.logger.warn('Ability-affecting instructions should\nfollow the format "Learn/Discard <number> Abilit(y/ies)",\ninstead saw "' + m + '"', '434', line);
+          this.logger.warn('Ability-affecting instructions should\nfollow the format "Learn/Discard <number> abilit(y/ies)",\ninstead saw "' + m + '"', '434', line);
         }
       }
       for (let m of (inst.match(LOOT_INSTRUCTION) || [])) {
         if (!m.match(VALID_LOOT_INSTRUCTION)) {
-          this.logger.warn('Loot-affecting instructions should\nread as follows: "Draw 1 Tier IV Loot",\ninstead saw "' + m + '"', '434', line);
+          this.logger.warn('Loot-affecting instructions should\nread as follows: "Draw (one/two/three/four/five/six) tier (I/II/III/IV/V) loot",\ninstead saw "' + m + '"', '434', line);
         }
+      }
+      const badPlayerReferences = (inst.match(ADVENTURER_INSTRUCTION) || []).map((m: string) => {
+        return '"' + m.replace('"', '\'') + '"';
+      });
+      if (badPlayerReferences) {
+        this.logger.warn('Prefer using "adventurer" over "player"\n(in ' + badPlayerReferences.join(', ') + ')', '435', line);
       }
     });
   }
