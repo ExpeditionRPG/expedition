@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Splas
       dispatch(changeSettings({numPlayers, multitouch: true}));
       dispatch(toCard('FEATURED_QUESTS'));
     },
-    onNoMultiTouch: () => {
+    onPlayerManualSelect: () => {
       dispatch(toCard('PLAYER_COUNT_SETTING'));
     }
   };

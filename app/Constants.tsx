@@ -32,6 +32,7 @@ export const URLS = {
 export const VIBRATION_SHORT_MS = 30; // for navigation / card changes
 export const VIBRATION_LONG_MS = 400; // for unique events, like start of the timer
 export const NAVIGATION_DEBOUNCE_MS = 600;
+export const DOUBLE_TAP_MS = 500; // Maximum ms between tap / clicks to count as a double click
 
 export const REGEX = {
   HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,

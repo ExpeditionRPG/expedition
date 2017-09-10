@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from 'react'
 
 interface MultiTouchTriggerProps extends React.Props<any> {
   onTouchChange: (touches: any) => any;
@@ -27,8 +27,7 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
 
   constructor(props: MultiTouchTriggerProps) {
     super(props);
-    // We track bound listener functions in this way so we can unsubscribe
-    // them later.
+    // We track bound listener functions in this way so we can unsubscribe later.
     this.listeners = {
       'touchstart': this.touchEvent.bind(this),
       'touchmove': this.touchEvent.bind(this),

@@ -2,31 +2,69 @@ import * as React from 'react'
 import MultiTouchTrigger from './base/MultiTouchTrigger'
 import Button from './base/Button'
 
+import {DOUBLE_TAP_MS} from '../Constants'
 import {AnnouncementState} from '../reducers/StateTypes'
 
 interface PlayerCounterProps extends React.Props<any> {
-  debounceMillis: number;
+  transitionMillis: number;
+  onDoubleTap: () => any;
   onPlayerCountSelect: (touches: any) => any;
 }
 
 class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
-  timeout: any;
+  state: {
+    lastTouchTime: number;
+    maxTouches: number;
+    touchCount: number;
+    transitionTimeout: any;
+  };
 
+  constructor(props: PlayerCounterProps) {
+    super(props)
+    this.state = {
+      lastTouchTime: 0,
+      maxTouches: 0,
+      touchCount: 0,
+      transitionTimeout: null,
+    };
+  }
+
+  // NOTE: transitionMillis is also defined in scss for the timer spinner
   onTouchChange(numFingers: number) {
-    if (this.timeout) {
-      clearTimeout(this.timeout);
+    if (this.state.transitionTimeout) {
+      clearTimeout(this.state.transitionTimeout);
+      this.setState({transitionTimeout: null});
     }
 
     if (numFingers > 0) {
-      this.timeout = setTimeout(function() {
+      if (numFingers > this.state.touchCount) {
+        // Double tap to set manually
+        if (numFingers === 1 && Date.now() - this.state.lastTouchTime < DOUBLE_TAP_MS) {
+          this.props.onDoubleTap();
+        }
+        this.setState({lastTouchTime: Date.now()});
+      }
+      this.setState({transitionTimeout: setTimeout(() => {
         this.props.onPlayerCountSelect(numFingers);
-      }.bind(this), this.props.debounceMillis);
+      }, this.props.transitionMillis)});
     }
+    this.setState({touchCount: numFingers, maxTouches: Math.max(this.state.maxTouches, numFingers)});
   }
 
   render() {
+    const showInstruction = (this.state.touchCount === 0 || (this.state.maxTouches === 1 && Date.now() - this.state.lastTouchTime < DOUBLE_TAP_MS));
     return (
-       <MultiTouchTrigger onTouchChange={this.onTouchChange.bind(this)} />
+      <div>
+        {showInstruction && <div className="splashMultitouchInstruction">
+          <h2>To Begin:</h2>
+          <p>All players hold one finger on the screen.<br/>
+          Or, double tap to manually set player count.</p>
+        </div>}
+        {!showInstruction && <div className="splashMultitouchPlayerCount">
+          <h1>{this.state.touchCount}</h1>
+        </div>}
+        <MultiTouchTrigger onTouchChange={this.onTouchChange.bind(this)} />
+      </div>
     );
   }
 }
@@ -38,7 +76,7 @@ export interface SplashScreenStateProps {
 export interface SplashScreenDispatchProps {
   onAnnouncementTap: (announcement: AnnouncementState) => void;
   onPlayerCountSelect: (numPlayers: number) => void;
-  onNoMultiTouch: (touches: any) => any;
+  onPlayerManualSelect: () => any;
 }
 
 interface SplashScreenProps extends SplashScreenStateProps, SplashScreenDispatchProps {}
@@ -56,13 +94,11 @@ const SplashScreen = (props: SplashScreenProps): JSX.Element => {
       <div className="logo">
         <img src="images/logo-colorized.png"></img>
       </div>
-      <div className="center">
-        <div>To Begin:<br/>All players hold one finger on the screen.</div>
-      </div>
-      <PlayerCounter onPlayerCountSelect={props.onPlayerCountSelect} debounceMillis={1200} />
-      <Button onTouchTap={props.onNoMultiTouch} className="no_multi_button">
-        No Multi-touch? Click here!
-      </Button>
+      <PlayerCounter
+        onDoubleTap={props.onPlayerManualSelect}
+        onPlayerCountSelect={props.onPlayerCountSelect}
+        transitionMillis={1500}
+      />
     </div>
   );
 }
