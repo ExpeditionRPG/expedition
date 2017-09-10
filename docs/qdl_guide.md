@@ -184,7 +184,7 @@ Note that at least one enemy, exactly one valid `on win` and one valid `on lose`
 
 `on round` is an optional event that can spice up combat by injecting roleplay cards into specific rounds of combat. For instance, you can add a roleplay card to a boss battle to check if a certain enemy is dead:
 
-```
+```markdown
 _combat_
 
 - Zombie
@@ -211,6 +211,30 @@ _combat_
 * on lose
 
   ...
+```
+
+You can also only show the event on a particular round (or with a particular frequency) to surprise and delight your players:
+
+```markdown
+_combat_
+
+...
+
+* {{_.currentCombatRound() % 3 == 2}} on round
+
+  This happens on rounds 3, 6, 9, etc.
+```
+
+Or show additional instruction during a surge:
+
+```markdown
+_combat_
+
+...
+
+* {{_.isSurgeRound()}} on round
+
+  Extra surge dialogue!
 ```
 
 #### Scaling your combat encounters
@@ -339,7 +363,7 @@ We've included a couple functions that you can call anywhere in your quest code.
 
 **viewCount(<string>)**
 
-To look at the number of times an element with an ID of e.g. "testID" has been visited by the player during a quest, use `{{ _.viewCount("testID") }}`. 
+To look at the number of times an element with an ID of e.g. "testID" has been visited by the player during a quest, use `{{ _.viewCount("testID") }}`.
 
 **random([size, min, max]) and other MathJS functions**
 

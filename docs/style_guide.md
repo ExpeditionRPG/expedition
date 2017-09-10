@@ -6,8 +6,7 @@ This is a style guide on how to write QDL.
 
 ## Why?
 
-Maintaining consistent style in your quest makes future migrations / improvements / experiences easier to implement and makes
-common idioms easier to understand for editors and others that see your quest code.
+Maintaining consistent style in your quest makes your life easier when authoring/debugging a quest, and makes it easier for the Expedition team to help you if you run into any issues with quest creation.
 
 ## Titles
 
@@ -73,6 +72,8 @@ that is designed to fail and move the story forward from there; others may start
 
 To keep combat interesting, it's recommended to have at least one combat in the quest do something interesting with the `on round` event. You can read more about this in the [QDL Guide](qdl_guide.md#combat_card)
 
+And if you ever reward players with loot (for example, after solving a puzzle or for befriending a particular faction) you should make future fights even harder to compensate. For every 2 tiers of loot you reward players outside of combat, expect to increase the tier of the next fight by about 1 tier.
+
 ## Instructions
 
 Generally, try to organize instructions with the most important information first, and have all closely related instructions in the same block. For example:
@@ -117,4 +118,4 @@ Note that the number of loot to draw should be the word, tier and loot are not c
 > Draw one tier III loot
 ```
 
-- Generally try to avoid "Each adventurer draw one loot" as this imbalances the game and makes larger parties overpowered.
+- Generally try to reward a fixed amount of loot instead of saying "Each adventurer draws 1 tier I loot", as this imbalances the game and makes larger parties overpowered.
