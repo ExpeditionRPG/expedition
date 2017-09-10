@@ -41,6 +41,7 @@ export function search(quest: Quest, req: express.Request, res: express.Response
     order: body.order,
     limit: body.limit,
     partition: body.partition || PUBLIC_PARTITION,
+    expansions: body.expansions,
   };
   quest.search(res.locals.id, params)
     .then((quests: QuestInstance[]) => {
@@ -91,6 +92,7 @@ export function publish(quest: Quest, req: express.Request, res: express.Respons
     maxtimeminutes: req.query.maxtimeminutes,
     genre: req.query.genre,
     contentrating: req.query.contentrating,
+    expansionhorror: req.query.expansionhorror || false,
   };
   const majorRelease = req.query.majorRelease || false;
 
