@@ -7,7 +7,8 @@ describe('Dialog action', () => {
       expect(setDialog('ERROR', true)).toEqual({
         type: 'SET_DIALOG',
         dialog: 'ERROR',
-        shown: true
+        shown: true,
+        annotations: undefined,
       } as SetDialogAction);
     });
   });
