@@ -18,8 +18,8 @@ export interface Renderer {
 // turns all no-attribute <strong>, <b>, <em>, <i> and <del> into markdown versions (aka whitelist)
 // removes all HTML tags
 // turns markdown styles into HTML tags:
-// * to <i>
-// ** to <b>
+// * and _ to <i>
+// ** and __ to <b>
 // ~~ to <del>
 export function sanitizeStyles(string: string): string {
 
@@ -35,7 +35,9 @@ export function sanitizeStyles(string: string): string {
 
   // replace markdown with HTML tags
   string = string.replace(/(\*\*)([^\*]*)(\*\*)/g, '<b>$2</b>');
+  string = string.replace(/(\_\_)([^\_]*)(\_\_)/g, '<b>$2</b>');
   string = string.replace(/(\*)([^\*]*)(\*)/g, '<i>$2</i>');
+  string = string.replace(/(\_)([^\_]*)(\_)/g, '<i>$2</i>');
   string = string.replace(/(~~)([^~]*)(~~)/g, '<del>$2</del>');
 
   return string;
