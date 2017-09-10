@@ -32,8 +32,39 @@ describe('quest', () => {
     questversionlastmajor: 1,
     ratingavg: 0,
     ratingcount: 0,
-    tombstone: null
+    tombstone: null,
+    expansionhorror: false,
   };
+
+  const expansionQuest: QuestAttributes = {
+    partition: 'testpartition',
+    author: 'testauthor',
+    contentrating: 'mature',
+    engineversion: '1.0.0',
+    familyfriendly: false,
+    genre: 'testgenre',
+    maxplayers: 6,
+    maxtimeminutes: 60,
+    minplayers: 1,
+    mintimeminutes: 30,
+    summary: 'This be a horror quest! AHHH!',
+    title: 'Horror Quest',
+    userid: 'testuser',
+    id: 'questidhorror',
+    ratingavg: 0,
+    ratingcount: 0,
+    email: 'author@test.com',
+    url: 'http://test.com',
+    created: new Date(),
+    published: new Date(),
+    publishedurl: 'http://testpublishedquesturl.com',
+    questversion: 1,
+    questversionlastmajor: 1,
+    ratingavg: 0,
+    ratingcount: 0,
+    tombstone: null,
+    expansionhorror: true,
+  }
 
   beforeEach((done: () => any) => {
     const s = new Sequelize({dialect: 'sqlite', storage: ':memory:'})
@@ -41,6 +72,9 @@ describe('quest', () => {
     q.model.sync()
       .then(() => {
         return q.model.create(insertedQuest);
+      })
+      .then(() => {
+        return q.model.create(expansionQuest);
       })
       .then(() => {done();})
       .catch((e: Error) => {throw e;});
@@ -61,6 +95,24 @@ describe('quest', () => {
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(1);
           expect(results[0].dataValues).toEqual(insertedQuest);
+          done();
+        });
+    });
+
+    it('does not return expansions if unspecified', (done: ()=>any) => {
+      q.search('', {partition: 'testpartition'})
+        .then((results: QuestInstance[]) => {
+          expect(results.length).toEqual(1);
+          expect(results[0].dataValues).toEqual(insertedQuest);
+          done();
+        });
+    });
+
+    it('returns expansion quests first if specified', (done: ()=>any) => {
+      q.search('', {partition: 'testpartition', expansions: ['horror']})
+        .then((results: QuestInstance[]) => {
+          expect(results.length).toEqual(2);
+          expect(results[0].dataValues).toEqual(expansionQuest);
           done();
         });
     });
