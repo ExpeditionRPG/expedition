@@ -156,7 +156,7 @@ Where choices are triggered by adventurers making a choice between buttons, even
 Cards are your basic storytelling tool in QDL. You have at your disposal:
 
 
-### Combat Cards
+### Combat Cards (#combat_cards)
 
 What's an adventure without some swordplay? The basic syntax for a combat card is:
 
@@ -181,6 +181,61 @@ _combat_
 Allowable enemy names are the enemies in the Expedition deck - you can look through your copy of the game, or reference the [master spreadsheet](https://docs.google.com/spreadsheets/d/1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM/edit#gid=1555320979) to see all of your options.
 
 Note that at least one enemy, exactly one valid `on win` and one valid `on lose` are required.
+
+`on round` is an optional event that can spice up combat by injecting roleplay cards into specific rounds of combat. For instance, you can add a roleplay card to a boss battle to check if a certain enemy is dead:
+
+```markdown
+_combat_
+
+- Zombie
+- Lich
+
+* on round
+
+  > Is the Lich dead?
+
+  *  Yes
+
+     **win**
+
+  *  No
+
+     The Lich engulfs your party in frost!
+
+     > All adventurers take 1 damage
+
+* on win
+
+  ...
+
+* on lose
+
+  ...
+```
+
+You can also only show the event on a particular round (or with a particular frequency) to surprise and delight your players:
+
+```markdown
+_combat_
+
+...
+
+* {{_.currentCombatRound() % 3 == 2}} on round
+
+  This happens on rounds 3, 6, 9, etc.
+```
+
+Or show additional instruction during a surge:
+
+```markdown
+_combat_
+
+...
+
+* {{_.isSurgeRound()}} on round
+
+  Extra surge dialogue!
+```
 
 #### Scaling your combat encounters
 
