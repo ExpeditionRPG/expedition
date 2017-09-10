@@ -4,6 +4,7 @@ import {setLine, updateDirtyState} from '../actions/Editor'
 import {saveQuest} from '../actions/Quest'
 import {AppState, QuestType, EditorState} from '../reducers/StateTypes'
 import QuestIDE, {QuestIDEStateProps, QuestIDEDispatchProps} from './QuestIDE'
+import {setDialog} from '../actions/Dialogs'
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestIDEStateProps => {
   return {
@@ -24,6 +25,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
     onLine: (line: number) => {
       dispatch(setLine(line));
     },
+    onAnnotationClick: (annotations: number[]) => {
+      dispatch(setDialog('ANNOTATION_DETAIL', true, annotations));
+    }
   };
 }
 

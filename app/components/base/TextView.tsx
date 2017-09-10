@@ -17,10 +17,13 @@ const mode = new QDLMode();
 declare var gapi: any;
 declare var window:any;
 
+type AceAnnotation = {row: number, column: number, text: string, type: 'error'|'info'|'warning'};
+
 interface TextViewProps extends React.Props<any> {
   annotations: AnnotationType[];
-  onChange: any;
-  onLine: any;
+  onChange: (text: string) => any;
+  onLine: (line: number) => any;
+  onAnnotationClick: (annotations: number[]) => any;
   realtime: any;
   realtimeModel: any;
 
@@ -158,11 +161,46 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       ref.editor.setOption('useSoftTabs', true);
 
       ref.editor.on('changeSelection', this.onSelectionChange);
+      ref.editor.on('gutterclick', (e: any) => {this.onGutterClick(e)});
 
       if (this.props.annotations) {
         session.setAnnotations(this.props.annotations);
       }
     }
+  }
+
+  onGutterClick(event: any): AceAnnotation[] {
+    const path: Element[] = event.domEvent.path;
+    if (!path.length) {
+      return;
+    }
+
+    const ICON_CLASSES = ['ace_error', 'ace_warning', 'ace_info']
+    let isIcon = false;
+    for (const c of path[0].classList) {
+      if (ICON_CLASSES.indexOf(c) !== -1) {
+        isIcon = true;
+        break;
+      }
+    }
+
+    if (!isIcon) {
+      return;
+    }
+    const rowNum = parseInt(path[0].textContent, 10) - 1;
+    const annotations: number[] = event.editor.session.getAnnotations().map((a: AceAnnotation) => {
+      if (a.row !== rowNum) {
+        return null;
+      }
+
+      const m = a.text.match(/^\w+ (\d+):/);
+      if (!m) {
+        return null;
+      }
+      return parseInt(m[1], 10);
+    }).filter((n?: number) => {return n;});
+    this.props.onAnnotationClick(Array.from(new Set(annotations)));
+    event.preventDefault();
   }
 
   onTextInserted(event: any) {

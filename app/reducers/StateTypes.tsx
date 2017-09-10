@@ -1,8 +1,9 @@
 import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
 import {QDLParser} from 'expedition-qdl/lib/render/QDLParser'
+import {ErrorType} from '../../errors/types'
 // TODO: URL type?
 
-export type DialogIDType = 'ERROR' | 'PUBLISHING' | 'UNPUBLISHED';
+export type DialogIDType = 'ERROR' | 'ANNOTATION_DETAIL' | 'PUBLISHING' | 'UNPUBLISHED';
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 
@@ -84,6 +85,7 @@ export interface DialogsState {
     [key: string]: boolean;
   }
   errors: Error[];
+  annotations: (ErrorType|number)[];
 }
 
 export interface SnackbarState {

@@ -1,3 +1,4 @@
+export const NUMBER = 427;
 export const NAME = `unknown key: <key>`;
 export const METADATA_ERROR = true;
 export const DESCRIPTION = `The quest metadata key you're trying to use must be a number.`;

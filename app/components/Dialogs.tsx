@@ -18,6 +18,7 @@ import {QuestType, ShareType, DialogsState, DialogIDType} from '../reducers/Stat
 import theme from '../Theme'
 import {MIN_PLAYERS, MAX_PLAYERS} from '../Constants'
 import {CONTENT_RATINGS, GENRES} from '../../node_modules/expedition-app/app/Constants'
+import {ErrorType} from '../../errors/types'
 
 declare var ga: any;
 
@@ -50,6 +51,72 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
         <ul>
           {errors}
         </ul>
+      </Dialog>
+    );
+  }
+}
+
+interface AnnotationDetailDialogProps extends React.Props<any> {
+  open: boolean;
+  annotations: (ErrorType|number)[];
+  onRequestClose: ()=>void;
+}
+
+export class AnnotationDetailDialog extends React.Component<AnnotationDetailDialogProps, {}> {
+  render() {
+    if (!this.props.annotations) {
+      return <span></span>;
+    }
+
+    const missingAnnotations: string = this.props.annotations.filter((v: number|ErrorType) => {
+      return typeof(v) === 'number';
+    }).join(', ');
+
+    const renderedAnnotations: JSX.Element[] = this.props.annotations.filter((v: number | ErrorType) => {
+      return typeof(v) !== 'number';
+    }).map((a: ErrorType, i: number) => {
+      const goodExampleJSX: JSX.Element[] = a.VALID.map((v: string, i: number) => {
+        return <pre className="example" key={i}>{v}</pre>;
+      });
+
+      const badExampleJSX: JSX.Element[] = a.INVALID.map((v: string, i: number) => {
+        return <pre className="example" key={i}>{v}</pre>;
+      });
+
+      return (
+        <div className="annotation" key={i}>
+          <h3>({a.NUMBER}): {a.NAME}</h3>
+          <p>{a.DESCRIPTION}</p>
+          <strong>Good Examples:</strong>
+          <div>{goodExampleJSX}</div>
+          <strong>Invalid Examples</strong>
+          <div>{badExampleJSX}</div>
+        </div>
+       );
+    });
+
+    return (
+      <Dialog
+        title={'Annotation Details'}
+        actions={[
+          <RaisedButton
+            label="OK"
+            primary={true}
+            onTouchTap={() => this.props.onRequestClose()}
+          />,
+        ]}
+        titleClassName={'dialogTitle'}
+        modal={false}
+        autoScrollBodyContent={true}
+        open={Boolean(this.props.open)}>
+        <div className="annotation_details">
+          {renderedAnnotations}
+          {missingAnnotations && <div>Couldn't find info for some annotations: {missingAnnotations}.</div>}
+          <div className="reminder">
+            Remember: You can ask for help at any time using the "Contact us" button at the bottom right
+            of the page.
+          </div>
+        </div>
       </Dialog>
     );
   }
@@ -256,6 +323,11 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         open={props.dialogs.open['ERROR']}
         onRequestClose={() => props.onRequestClose('ERROR')}
         errors={props.dialogs.errors}
+      />
+      <AnnotationDetailDialog
+        open={props.dialogs.open['ANNOTATION_DETAIL']}
+        onRequestClose={() => props.onRequestClose('ANNOTATION_DETAIL')}
+        annotations={props.dialogs.annotations}
       />
     </span>
   );

@@ -1,3 +1,4 @@
+export const NUMBER = 415;
 export const NAME = `found inner block of combat block without an event bullet`;
 export const DESCRIPTION = ``;
 

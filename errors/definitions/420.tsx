@@ -1,3 +1,4 @@
+export const NUMBER = 420;
 export const NAME = `invalid quest attribute line "<text>"`;
 export const METADATA_ERROR = true;
 export const DESCRIPTION = ``;
@@ -14,7 +15,7 @@ maxtimeminutes: 10`
 ];
 
 export const INVALID_ERRORS = [
-"invalid quest attribute line \"text that doesn't belong here\""
+`invalid quest attribute line "text that doesn't belong here"`
 ]
 
 export const VALID = [

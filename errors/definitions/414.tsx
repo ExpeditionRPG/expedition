@@ -1,3 +1,4 @@
+export const NUMBER = 414;
 export const NAME = `combat card has no enemies listed`;
 export const DESCRIPTION = ``;
 

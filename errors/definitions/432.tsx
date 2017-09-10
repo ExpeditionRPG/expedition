@@ -1,3 +1,4 @@
+export const NUMBER = 432;
 export const NAME = `Detected a state where this card has 0 active choices`;
 export const DESCRIPTION = `Some path to this card results in no defined choices.`;
 

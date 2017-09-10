@@ -1,3 +1,4 @@
+export const NUMBER = 423;
 export const NAME = `quest block group cannot contain multiple blocks`;
 export const METADATA_ERROR = true;
 export const DESCRIPTION = ``;

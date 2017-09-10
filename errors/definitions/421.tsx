@@ -1,3 +1,4 @@
+export const NUMBER = 421;
 export const NAME = `root block must be a quest header`;
 export const METADATA_ERROR = true;
 export const DESCRIPTION = ``;

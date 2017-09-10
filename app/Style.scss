@@ -92,6 +92,26 @@ body > :first-child:not(#react-app) { display: none; }
   }
 }
 
+.annotation_details {
+  h3 {
+    color: white;
+  }
+
+  .example {
+    background-color: rgba(0,0,0,0.5);
+    padding: $padBase;
+    margin-bottom: $padBase;
+  }
+
+  .reminder {
+    font-style: italic;
+    text-align: center;
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 label {
   color: $grey600 !important;
 }

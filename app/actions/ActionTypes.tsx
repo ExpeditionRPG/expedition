@@ -22,6 +22,9 @@ export interface SetDialogAction extends Redux.Action {
   type: 'SET_DIALOG';
   dialog: DialogIDType;
   shown: boolean;
+
+  // For annotation detail dialog only
+  annotations?: number[];
 }
 
 export interface SetDirtyAction extends Redux.Action {
