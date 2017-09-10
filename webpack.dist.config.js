@@ -11,6 +11,9 @@ const options = {
     server: [
       './app/app.ts',
     ],
+    batchRunner: [
+      './app/batch.ts'
+    ],
   },
   resolve: {
     extensions: ['.ts', '.js', '.json', '.txt'],

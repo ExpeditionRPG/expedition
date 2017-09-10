@@ -194,7 +194,7 @@ export class Quest {
     // Hide expansion if not specified, otherwise prioritize results
     // that have the expansion
     if (!params.expansions || params.expansions.indexOf('horror') === -1) {
-      where.expansionhorror =  {$ne: true};
+      where.expansionhorror =  {$not: true};
     } else {
       order.push(['expansionhorror', 'DESC']);
     }
