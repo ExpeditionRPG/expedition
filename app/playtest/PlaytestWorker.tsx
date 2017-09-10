@@ -26,14 +26,12 @@ export function handleMessage(e: {data: {type: 'RUN', timeoutMillis: number, xml
     throw new Error('Invalid element passed to webworker');
   }
   console.log('playtesting...');
-  let hasMore = crawler.crawlWithLog(new Node(elem, defaultContext()), logger);
-  let queueLen = 0;
-  let numSeen = 0;
+  let [queueLen, numSeen] = crawler.crawlWithLog(new Node(elem, defaultContext()), logger);
   maybePublishLog(logger);
 
-  while ((Date.now() - start) < timeout && hasMore) {
+  while ((Date.now() - start) < timeout && queueLen > 0) {
     const logger = new Logger();
-    let [hasMore, queueLen, numSeen] = crawler.crawlWithLog(null, logger);
+    let [queueLen, numSeen] = crawler.crawlWithLog(null, logger);
     console.log('... (queueLen: ' + queueLen, + ', seen ' + numSeen + ')');
     maybePublishLog(logger);
   }
