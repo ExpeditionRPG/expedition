@@ -18,22 +18,22 @@ export const INVALID = [
 export const VALID = [
 `_A card_
 
-> Draw 1 Tier I loot.
+> Draw one tier I loot.
 
 **end**`,
 `_A card_
 
-> Your party discards 1 loot.
+> Each adventurer: discard 1 loot.
 
 **end**`,
 `_A card_
 
-> You may learn 1 ability
+> You may learn one ability
 
 **end**`,
 `_A card_
 
-> Discard 2 abilities
+> Discard two abilities
 
 **end**`,
 `_A card_
