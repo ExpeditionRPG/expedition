@@ -39,7 +39,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         case 'SAVE_QUEST':
           return dispatch(saveQuest(quest));
         case 'NEW_QUEST':
-          return dispatch(newQuest(quest));
+          window.open('/#');
+          break;
         case 'PUBLISH_QUEST':
           return dispatch(publishQuestSetup());
         case 'UNPUBLISH_QUEST':

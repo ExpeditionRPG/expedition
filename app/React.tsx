@@ -49,7 +49,7 @@ if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
     console.log('Failed to parse anticipated Drive open URI: ' + window.location.search);
   }
 }
-if (window.location.hash) {
+if (window.location.hash || window.location.href.endsWith('#')) {
   isQuest = true;
 }
 
