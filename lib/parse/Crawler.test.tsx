@@ -233,5 +233,35 @@ describe('CrawlerBase', () => {
 
       expect(foundInvalid).toEqual(true);
     });
+
+    it('visits other parts of the quest before returning to already-seen lines', () => {
+      const xml = cheerio.load(`
+        <quest>
+          <roleplay data-line="0">{{count = 0}}</roleplay>
+          <roleplay id="R1" data-line="1">
+            <choice text="a1">
+              <roleplay data-line="2">{{count = count + 1}}</roleplay>
+              <trigger data-line="3">goto R1</trigger>
+            </choice>
+            <choice text="a2">
+              <roleplay data-line="4">This gets seen before others repeat</roleplay>
+            </choice>
+            <choice text="a3">
+              <roleplay data-line="5">{{count = count + 1}}</roleplay>
+              <trigger data-line="6">goto R1</trigger>
+            </choice>
+          </roleplay>
+        </quest>`)('quest > :first-child');
+      let uniqueCounter: {[line: number]: boolean} = {};
+      let lineOrder: number[] = [];
+      const crawler = new CrawlTest(null, (q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => {
+        lineOrder.push(line);
+        if (Object.keys(uniqueCounter).length < 5 && uniqueCounter[line]) {
+          throw new Error('Came across second instance of line ' + line + ' when only ' + Object.keys(uniqueCounter) + ' and not all 0,1,2,4,5 seen. Order: ' + lineOrder);
+        }
+        uniqueCounter[line] = true;
+      });
+      crawler.crawl(new Node(xml, defaultContext()));
+    })
   });
 });

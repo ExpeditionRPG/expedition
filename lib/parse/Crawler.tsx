@@ -1,17 +1,42 @@
 import {Node} from './Node'
 import {Context} from './Context'
 
+const FastPriorityQueue: any = require('fastpriorityqueue');
+
 export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END';
 
 export type CrawlEntry<C extends Context> = {node: Node<C>, prevNodeStr: string, prevId: string, prevLine: number, depth: number};
 
+interface CrawlPriorityQueue<C extends Context> {
+  add: (v: CrawlEntry<C>) => void;
+  size: number;
+  poll: () => CrawlEntry<C>;
+  peek: () => CrawlEntry<C>;
+}
+
+function getNodeLine(node: Node<Context>): number {
+  try {
+    return parseInt(node.elem.attr('data-line'), 10);
+  } catch (e) {
+    return -1;
+  }
+}
+
 export abstract class CrawlerBase<C extends Context> {
   protected seen: Set<string>;
-  protected queue: CrawlEntry<C>[];
+  protected lineVisitCount: {[line: number]: number};
+  protected queue: CrawlPriorityQueue<C>;
 
   constructor() {
     this.seen = new Set();
-    this.queue = [];
+    this.lineVisitCount = {};
+
+    // This is a priority queue based on the number of times we've visited the
+    // node in question (e.g. with different contexts). This ensures relatively
+    // even coverage of all the nodes in the story.
+    this.queue = new FastPriorityQueue((a: CrawlEntry<C>, b: CrawlEntry<C>) => {
+      return (this.lineVisitCount[getNodeLine(a.node)] || 0) < (this.lineVisitCount[getNodeLine(b.node)] || 0);
+    });
   }
 
   public crawl(root?: Node<C>, timeLimitMillis = 500, depthLimit = 50): boolean {
@@ -26,14 +51,14 @@ export abstract class CrawlerBase<C extends Context> {
   // Stats are collected separately per-id and per-line
   private traverse(root?: Node<C>, timeLimitMillis?: number, depthLimit?: number): boolean {
     if (root) {
-      this.queue.push({
+      this.queue.add({
         node: root,  prevNodeStr: 'START', prevId: 'START', prevLine: -1, depth: 0
       });
     }
 
     const start = Date.now();
-    while(this.queue.length > 0 && (!depthLimit || this.queue[0].depth < depthLimit) && (!timeLimitMillis || (Date.now() - start) < timeLimitMillis)) {
-      const q = this.queue.shift();
+    while(this.queue.size > 0 && (!depthLimit || this.queue.peek().depth < depthLimit) && (!timeLimitMillis || (Date.now() - start) < timeLimitMillis)) {
+      const q = this.queue.poll();
 
       // This happens if we've navigated "outside the quest", e.g. a user doesn't end all their nodes with end tag.
       if (q.node === undefined || q.node === null) {
@@ -43,6 +68,7 @@ export abstract class CrawlerBase<C extends Context> {
 
       const id = q.node.elem.attr('id') || q.prevId;
       const line = parseInt(q.node.elem.attr('data-line'), 10);
+      this.lineVisitCount[line] = (this.lineVisitCount[line] || 0) + 1;
 
       // This happens if for some reason line numbers weren't calculated for this quest.
       // Don't traverse farther, else it'll throw off our crawl state.
@@ -75,7 +101,7 @@ export abstract class CrawlerBase<C extends Context> {
         keys.push(0);
       }
       for (const k of keys) {
-        this.queue.push({
+        this.queue.add({
           node: q.node.handleAction(k),
           prevNodeStr: nstr,
           prevId: id,
@@ -84,6 +110,6 @@ export abstract class CrawlerBase<C extends Context> {
         });
       }
     }
-    return (this.queue.length > 0);
+    return (this.queue.size > 0);
   }
 }
