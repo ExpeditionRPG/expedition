@@ -13,9 +13,9 @@ cache:
   directories:
     - node_modules
 deploy:
-  - provider: script
-    script: ./beta.sh
-    skip_cleanup: true
-    on:
-      repo: ExpeditionRPG/expedition-app
-      all_branches: true
+  provider: script
+  script: ./beta.sh
+  skip_cleanup: true
+  on:
+    repo: ExpeditionRPG/expedition-app
+    branch: master
