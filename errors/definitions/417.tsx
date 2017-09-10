@@ -1,5 +1,5 @@
 export const NUMBER = 417;
-export const NAME = `combat card must have '<on win/on lose>' event`;
+export const NAME = `Combat card must have '<on win/on lose>' event`;
 export const DESCRIPTION = ``;
 
 export const INVALID = [

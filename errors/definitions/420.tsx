@@ -1,5 +1,5 @@
 export const NUMBER = 420;
-export const NAME = `invalid quest attribute line "<text>"`;
+export const NAME = `Invalid quest attribute line "<text>"`;
 export const METADATA_ERROR = true;
 export const DESCRIPTION = ``;
 

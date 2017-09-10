@@ -1,5 +1,5 @@
 export const NUMBER = 416;
-export const NAME = `lines within combat block must be events or enemies, not freestanding text`;
+export const NAME = `Lines within combat block must be events or enemies, not freestanding text`;
 export const DESCRIPTION = ``;
 
 export const INVALID = [

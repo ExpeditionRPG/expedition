@@ -97,7 +97,7 @@ export class AnnotationDetailDialog extends React.Component<AnnotationDetailDial
 
     return (
       <Dialog
-        title={'Annotation Details'}
+        title={'Message Details'}
         actions={[
           <RaisedButton
             label="OK"
@@ -111,7 +111,7 @@ export class AnnotationDetailDialog extends React.Component<AnnotationDetailDial
         open={Boolean(this.props.open)}>
         <div className="annotation_details">
           {renderedAnnotations}
-          {missingAnnotations && <div>Couldn't find info for some annotations: {missingAnnotations}.</div>}
+          {missingAnnotations && <div className="reminder">Couldn't find info for ID(s): {missingAnnotations}.</div>}
           <div className="reminder">
             Remember: You can ask for help at any time using the "Contact us" button at the bottom right
             of the page.

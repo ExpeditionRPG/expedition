@@ -1,5 +1,5 @@
 export const NUMBER = 411;
-export const NAME = `roleplay blocks cannot contain indented sections that are not choices`;
+export const NAME = `Roleplay blocks cannot contain indented sections that are not choices`;
 export const DESCRIPTION = `Indentation is used to keep track of branches, which are created by choices and events.
 If you want to create a branch, use one of those elements.`;
 

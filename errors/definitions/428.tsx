@@ -1,5 +1,5 @@
 export const NUMBER = 428;
-export const NAME = `choice missing title`;
+export const NAME = `Choice missing title`;
 export const DESCRIPTION = `All choices need titles, which is used as the label for adventurers to click on.`;
 
 export const INVALID = [
