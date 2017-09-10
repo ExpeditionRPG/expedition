@@ -3,11 +3,10 @@ import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction} from './ActionType
 import {PanelType} from '../reducers/StateTypes'
 import {store} from '../Store'
 import {saveQuest} from './Quest'
-import {renderXML} from '../parsing/QDLParser'
-import {playtestXMLResult} from '../parsing/crawler/PlaytestCrawler'
+import {renderXML} from 'expedition-qdl/lib/render/QDLParser'
 import {initQuest, loadNode} from 'expedition-app/app/actions/Quest'
-import {QuestContext} from 'expedition-app/app/reducers/QuestTypes'
-import {ParserNode} from 'expedition-app/app/parser/Node'
+import {ParserNode} from 'expedition-app/app/cardtemplates/Template'
+import {TemplateContext} from 'expedition-app/app/cardtemplates/TemplateTypes'
 import {pushError} from './Dialogs'
 
 export function setDirty(is_dirty: boolean): SetDirtyAction {
@@ -70,11 +69,32 @@ export function getPlayNode(node: Cheerio): Cheerio {
   return node;
 }
 
-export function renderAndPlay(qdl: string, line: number, ctx: QuestContext) {
+function startPlaytestWorker(elem: Cheerio) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    const renderResult = renderXML(qdl);
-    const questNode = renderResult.getResult();
-    const playNode = getPlayNode(renderResult.getResultAt(line));
+    if (!(window as any).Worker) {
+      console.log('Web worker not available in this browser, skipping playtest.');
+      return;
+    }
+    const worker = new Worker('playtest.js');
+    worker.onerror = (ev: ErrorEvent) => {
+      dispatch({type: 'PLAYTEST_ERROR', msg: ev.error});
+      worker.terminate();
+    };
+    worker.onmessage = (e: MessageEvent) => {
+      dispatch({type: 'PLAYTEST_MESSAGE', msgs: e.data});
+    };
+    worker.postMessage({type: 'RUN', xml: elem.toString()});
+    dispatch({type: 'PLAYTEST_INIT', worker});
+  }
+}
+
+export function renderAndPlay(qdl: string, line: number, ctx: TemplateContext) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    const xmlResult = renderXML(qdl);
+    dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
+
+    const questNode: Cheerio = xmlResult.getResult();
+    const playNode = getPlayNode(xmlResult.getResultAt(line));
     if (!playNode) {
       const err = new Error('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
       err.name = 'RenderError';
@@ -94,7 +114,7 @@ export function renderAndPlay(qdl: string, line: number, ctx: QuestContext) {
       timerSeconds: 10,
       vibration: false
     }, newNode));
-    // TODO fix perf issues with crawler on long quests (example ID 0B7ligyKcIb7OWUhPQ0dNemZUUkE)
-    // dispatch({type: 'QUEST_PLAYTEST', msgs: playtestXMLResult(questNode)});
+    // Results will be shown and added to annotations as they arise.
+    dispatch(startPlaytestWorker(questNode));
   };
 }

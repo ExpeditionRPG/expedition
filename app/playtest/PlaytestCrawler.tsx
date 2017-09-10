@@ -1,8 +1,8 @@
-import {CrawlEvent, CrawlEntry} from 'expedition-app/app/parser/Crawler'
-import {defaultQuestContext} from 'expedition-app/app/reducers/Quest'
-import {StatsCrawler} from './StatsCrawler'
-import {ParserNode} from 'expedition-app/app/parser/Node'
-import {Logger, LogMessageMap} from '../Logger'
+import {CrawlEvent, CrawlEntry} from 'expedition-qdl/lib/parse/Crawler'
+import {Context} from 'expedition-qdl/lib/parse/Context'
+import {StatsCrawler, StatsCrawlEntry} from './StatsCrawler'
+import {Node} from 'expedition-qdl/lib/parse/Node'
+import {Logger, LogMessageMap} from 'expedition-qdl/lib/render/Logger'
 import {initQuest} from 'expedition-app/app/actions/Quest'
 import {encounters} from 'expedition-app/app/Encounters'
 
@@ -11,7 +11,7 @@ const cheerio: any = require('cheerio') as CheerioAPI;
 // Surfaces errors, warnings, statistics, and other useful information
 // about particular states encountered during play through the quest, or
 // about the quest in aggregate.
-class PlaytestCrawler extends StatsCrawler {
+export class PlaytestCrawler extends StatsCrawler {
   private logger: Logger;
   private finalized: LogMessageMap;
 
@@ -20,8 +20,11 @@ class PlaytestCrawler extends StatsCrawler {
     this.logger = logger;
   }
 
-  public crawl(node: ParserNode) {
-    super.crawl(node);
+  public crawlWithLog(node: Node<Context>, logger: Logger): [boolean, number, number] {
+    if (logger) {
+      this.logger = logger;
+    }
+    const isDone = this.crawl(node);
 
     // TODO: We'll probably write a DFS here that traverses the
     // CrawlerStats entries (e.g. for cycle detection)
@@ -30,10 +33,11 @@ class PlaytestCrawler extends StatsCrawler {
     for (let l of this.statsByEvent['IMPLICIT_END'].lines) {
       this.logger.err('An action on this card leads nowhere (invalid goto id or no **end**)', '430', l);
     }
+    return [isDone, this.queue.length, this.seen.size];
   }
 
   // override onNode to track specific per-node bad events
-  protected onNode(q: CrawlEntry, nodeStr: string, id: string, line: number): void {
+  protected onNode(q: StatsCrawlEntry, nodeStr: string, id: string, line: number): void {
     super.onNode(q, nodeStr, id, line);
 
     const keys = q.node.getVisibleKeys();
@@ -57,7 +61,7 @@ class PlaytestCrawler extends StatsCrawler {
           if (tag !== 'e') {
             return;
           }
-          if (!encounters[child.text()] && !child.attr('tier')) {
+          if (!encounters[child.text().toLowerCase()] && !child.attr('tier')) {
             this.logger.err('Detected a non-standard enemy "' + child.text() + '" without explicit tier JSON', '419', line);
           }
         });
@@ -74,18 +78,5 @@ class PlaytestCrawler extends StatsCrawler {
       default:
         break;
     }
-  }
-}
-
-export function playtestXMLResult(parserResult: Cheerio): LogMessageMap {
-  const logger = new Logger();
-  try {
-    const root = initQuest({id: '0'}, parserResult, defaultQuestContext()).node;
-    const crawler = new PlaytestCrawler(logger);
-    crawler.crawl(root);
-  } catch(e) {
-    logger.dbg('Auto-Playtest failed (likely a parser error)');
-  } finally {
-    return logger.getFinalizedLogs();
   }
 }

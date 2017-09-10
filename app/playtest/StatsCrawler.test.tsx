@@ -1,6 +1,6 @@
 import {StatsCrawler} from './StatsCrawler'
-import {ParserNode} from 'expedition-app/app/parser/Node'
-import {defaultQuestContext} from 'expedition-app/app/reducers/Quest'
+import {Node} from 'expedition-qdl/lib/parse/Node'
+import {defaultContext} from 'expedition-qdl/lib/parse/Context'
 
 declare var global: any;
 
@@ -23,7 +23,7 @@ describe('StatsCrawler', () => {
         </combat>
       `)('combat');
       const crawler = new StatsCrawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new Node(xml, defaultContext()));
 
       const stats = crawler.getStatsForLine(1);
       const prevLine = JSON.parse(Array.from(stats.inputs)[0]).line;
@@ -50,7 +50,7 @@ describe('StatsCrawler', () => {
       </roleplay>
       `)(':first-child');
       const crawler = new StatsCrawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new Node(xml, defaultContext()));
 
       // Note that hidden roleplay node isn't shown
       expect(Array.from(crawler.getStatsForId('A1').outputs)).toEqual(['END']);
@@ -75,7 +75,7 @@ describe('StatsCrawler', () => {
         </quest>
       `)('quest > :first-child');
       const crawler = new StatsCrawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new Node(xml, defaultContext()));
 
       expect(Array.from(crawler.getStatsForId('B4').outputs)).toEqual(['END']);
     });
@@ -83,7 +83,7 @@ describe('StatsCrawler', () => {
     it('tracks implicit end triggers', () => {
       const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
       const crawler = new StatsCrawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new Node(xml, defaultContext()));
 
       expect(Array.from(crawler.getStatsForId('A1').outputs)).toEqual(['IMPLICIT_END']);
     });
@@ -92,7 +92,7 @@ describe('StatsCrawler', () => {
       const xml = cheerio.load(`<roleplay title="A0" id="A0" data-line="2"><p></p></roleplay><roleplay title="A1" id="A1"><p></p></roleplay><roleplay title="A2"><p></p></roleplay>`)(':first-child');
 
       const crawler = new StatsCrawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new Node(xml, defaultContext()));
 
       expect(crawler.getIds()).toEqual(['A0']);
       expect(crawler.getLines()).toEqual([2]);
@@ -113,7 +113,7 @@ describe('StatsCrawler', () => {
         </quest>`)('quest > :first-child');
 
         const crawler = new StatsCrawler();
-        crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+        crawler.crawl(new Node(xml, defaultContext()));
 
         const nextIDs = Array.from(crawler.getStatsForId('cond').outputs).sort();
         expect(nextIDs).toEqual(['END', 'loop']);
@@ -129,13 +129,13 @@ describe('StatsCrawler', () => {
       const crawler = new StatsCrawler();
 
       // If crawl exits, we'll have succeeded.
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new Node(xml, defaultContext()));
     });
 
     it('handles hanging choice node with no body', () => {
       const xml = cheerio.load(`<roleplay title="I" data-line="2"><choice text="a1"></choice></roleplay>`)(':first-child');
       const crawler = new StatsCrawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new Node(xml, defaultContext()));
 
       expect(Array.from(crawler.getStatsForLine(2).outputs)).toEqual(['INVALID']);
     });
@@ -143,7 +143,7 @@ describe('StatsCrawler', () => {
     it('handles node without data-line attribute', () => {
       const xml = cheerio.load(`<roleplay title="I" data-line="2"><choice text="a1"><roleplay></roleplay></choice></roleplay>`)(':first-child');
       const crawler = new StatsCrawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new Node(xml, defaultContext()));
 
       expect(Array.from(crawler.getStatsForLine(2).outputs)).toEqual(['INVALID']);
     });
@@ -153,7 +153,7 @@ describe('StatsCrawler', () => {
     it('gets stats for tag with id', () => {
       const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
       const crawler = new StatsCrawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new Node(xml, defaultContext()));
 
       expect(crawler.getStatsForId('A1')).toBeDefined();
     });
@@ -174,7 +174,7 @@ describe('StatsCrawler', () => {
         </choice>
         </roleplay>`)(':first-child');
       const crawler = new StatsCrawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new Node(xml, defaultContext()));
 
       const stats1 = crawler.getStatsForId('ID1');
       const stats2 = crawler.getStatsForId('ID2');
@@ -194,7 +194,7 @@ describe('StatsCrawler', () => {
     it('gets stats for tag with line data', () => {
       const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
       const crawler = new StatsCrawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new Node(xml, defaultContext()));
 
       expect(crawler.getStatsForLine(2)).toBeDefined();
     });
@@ -220,7 +220,7 @@ describe('StatsCrawler', () => {
         </quest>`)('quest > :first-child');
 
       const crawler = new StatsCrawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new Node(xml, defaultContext()));
 
       expect(crawler.getStatsForLine(14)).toEqual(jasmine.objectContaining({
         minPathActions: 1,
@@ -234,14 +234,14 @@ describe('StatsCrawler', () => {
 
     it('gets ids seen', () => {
       const crawler = new StatsCrawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new Node(xml, defaultContext()));
 
       expect(crawler.getIds().sort()).toEqual(['A1', 'A2', 'A3']);
     });
 
     it('gets lines seen', () => {
       const crawler = new StatsCrawler();
-      crawler.crawl(new ParserNode(xml, defaultQuestContext()));
+      crawler.crawl(new Node(xml, defaultContext()));
 
       expect(crawler.getLines().sort()).toEqual([2, 4, 6]);
     });
