@@ -20,4 +20,4 @@ deploy:
     skip_cleanup: true
     on:
       repo: ExpeditionRPG/expedition-quest-creator
-      all_branches: true
+      branch: master
