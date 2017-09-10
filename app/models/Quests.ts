@@ -35,7 +35,7 @@ export interface QuestAttributes {
   created?: Date;
   published?: Date;
   tombstone?: Date;
-  horrorexpansion?: boolean;
+  expansionhorror?: boolean;
 }
 
 export interface QuestSearchParams {
@@ -114,7 +114,7 @@ export class Quest {
         defaultValue: Sequelize.NOW,
       },
       tombstone: Sequelize.DATE,
-      horrorexpansion: {
+      expansionhorror: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
@@ -189,9 +189,16 @@ export class Quest {
       where.genre = params.genre;
     }
 
-    where.horrorexpansion = (params.expansions && params.expansions.indexOf('horror') !== -1) ? true : {$ne: true};
-
     const order = [];
+
+    // Hide expansion if not specified, otherwise prioritize results
+    // that have the expansion
+    if (!params.expansions || params.expansions.indexOf('horror') === -1) {
+      where.expansionhorror =  {$ne: true};
+    } else {
+      order.push(['expansionhorror', 'DESC']);
+    }
+
     if (params.order) {
       if (params.order === '+ratingavg') {
         order.push(Sequelize.literal(`

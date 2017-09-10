@@ -33,7 +33,7 @@ describe('quest', () => {
     ratingavg: 0,
     ratingcount: 0,
     tombstone: null,
-    horrorexpansion: false,
+    expansionhorror: false,
   };
 
   const expansionQuest: QuestAttributes = {
@@ -63,7 +63,7 @@ describe('quest', () => {
     ratingavg: 0,
     ratingcount: 0,
     tombstone: null,
-    horrorexpansion: true,
+    expansionhorror: true,
   }
 
   beforeEach((done: () => any) => {
@@ -108,10 +108,10 @@ describe('quest', () => {
         });
     });
 
-    it('returns only expansions if specified', (done: ()=>any) => {
+    it('returns expansion quests first if specified', (done: ()=>any) => {
       q.search('', {partition: 'testpartition', expansions: ['horror']})
         .then((results: QuestInstance[]) => {
-          expect(results.length).toEqual(1);
+          expect(results.length).toEqual(2);
           expect(results[0].dataValues).toEqual(expansionQuest);
           done();
         });
