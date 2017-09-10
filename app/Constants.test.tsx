@@ -21,5 +21,19 @@ describe('Constants', () => {
         expect(test.match(REGEX.HTML_TAG)).toEqual(null);
       });
     });
+    describe('ICON', () => {
+      it('Properly identifies [icon]', () => {
+        const test = '<p>[fae]</p>';
+        expect(test.match(REGEX.ICON)).toEqual(['[fae]']);
+      });
+      it('Properly identifies :icon:', () => {
+        const test = '<p>:fae:</p>';
+        expect(test.match(REGEX.ICON)).toEqual([':fae:']);
+      });
+      it('Passes on non-icon text', () => {
+        const test = '<p>Test foo</p>';
+        expect(test.match(REGEX.ICON)).toEqual(null);
+      });
+    })
   });
 });

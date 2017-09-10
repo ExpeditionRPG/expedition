@@ -99,16 +99,16 @@
   </roleplay>
   <roleplay icon="fae" title="A Magical Fight" id="magicfight" data-line="130">
     <instruction>
-      <p>[fae] You're about to enter combat for the first time. The app will guide you through each round.</p>
+      <p>:fae: You're about to enter combat for the first time. The app will guide you through each round.</p>
     </instruction>
     <instruction>
-      <p>[fae] The app will tell you which enemies to draw, along with their class / deck icon (on the back of the black enemy cards).</p>
+      <p>:fae: The app will tell you which enemies to draw, along with their class / deck icon (on the back of the black enemy cards).</p>
     </instruction>
     <instruction>
       <p>To win, you must defeat all enemies. If all adventurers are knocked out, you lose the battle - but you might not have lost the quest.</p>
     </instruction>
     <instruction>
-      <p>[damage] The app will also tell you when enemies surge, which triggers the special ability listed on each enemy's card.</p>
+      <p>:damage: The app will also tell you when enemies surge, which triggers the special ability listed on each enemy's card.</p>
     </instruction>
   </roleplay>
   <combat data-line="140">
@@ -145,16 +145,16 @@
   </combat>
   <roleplay icon="beast" title="A Beastly Battle" id="beastfight" data-line="189">
     <instruction>
-      <p>[beast] You're about to enter combat for the first time. The app will guide you through each round.</p>
+      <p>:beast: You're about to enter combat for the first time. The app will guide you through each round.</p>
     </instruction>
     <instruction>
-      <p>[beast] The app will tell you which enemies to draw, along with their class / deck icon (on the back of the black enemy cards).</p>
+      <p>:beast: The app will tell you which enemies to draw, along with their class / deck icon (on the back of the black enemy cards).</p>
     </instruction>
     <instruction>
       <p>To win, you must defeat all enemies. If all adventurers are knocked out, you lose the battle - but you might not have lost the quest.</p>
     </instruction>
     <instruction>
-      <p>[damage] The app will also tell you when enemies surge, which triggers the special ability listed on each enemy's card.</p>
+      <p>:damage: The app will also tell you when enemies surge, which triggers the special ability listed on each enemy's card.</p>
     </instruction>
   </roleplay>
   <combat data-line="199">

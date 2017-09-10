@@ -37,8 +37,8 @@ export const DOUBLE_TAP_MS = 500; // Maximum ms between tap / clicks to count as
 export const REGEX = {
   HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,
 
-  // \[([a-z_0-9]*)\]   Contents inside of []'s, only allowing for alphanumeric + _'s
-  ICON: /\[([a-z_0-9]*)\]/ig,
+  // Contents inside of [] or ::, only allowing for alphanumeric + _'s
+  ICON: /[\[:]([a-z_0-9]*)[\]:]/ig,
 };
 
 export const PLAYTIME_MINUTES_BUCKETS = [20, 30, 45, 60, 90, 120];
