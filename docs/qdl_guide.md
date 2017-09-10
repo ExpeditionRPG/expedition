@@ -157,7 +157,7 @@ Where choices are triggered by adventurers making a choice between buttons, even
 Cards are your basic storytelling tool in QDL. You have at your disposal:
 
 
-### Combat Cards
+### Combat Cards (#combat_cards)
 
 What's an adventure without some swordplay? The basic syntax for a combat card is:
 
@@ -182,6 +182,37 @@ _combat_
 Allowable enemy names are the enemies in the Expedition deck - you can look through your copy of the game, or reference the [master spreadsheet](https://docs.google.com/spreadsheets/d/1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM/edit#gid=1555320979) to see all of your options.
 
 Note that at least one enemy, exactly one valid `on win` and one valid `on lose` are required.
+
+`on round` is an optional event that can spice up combat by injecting roleplay cards into specific rounds of combat. For instance, you can add a roleplay card to a boss battle to check if a certain enemy is dead:
+
+```
+_combat_
+
+- Zombie
+- Lich
+
+* on round
+
+  > Is the Lich dead?
+
+  *  Yes
+
+     **win**
+
+  *  No
+
+     The Lich engulfs your party in frost!
+
+     > All adventurers take 1 damage
+
+* on win
+
+  ...
+
+* on lose
+
+  ...
+```
 
 #### Scaling your combat encounters
 
@@ -389,7 +420,7 @@ email: Expedition@Fabricate.IO
 url: ExpeditionGame.com
 familyFriendly: false
 minPlayers: 1
-maxPlayers: 6 
+maxPlayers: 6
 minTimeMinutes: 20
 maxTimeMinutes: 60
 ```

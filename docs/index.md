@@ -7,6 +7,7 @@ The first time you open the [quest creator](http://quests.expeditionrpg.com), it
 If you're looking for more specific, in-detail documentation, check out:
 
 * [Quest Design Guide](qdl_guide.md): More details on the Quest Design Language.
+* [Style Guide](style_guide.md): A guide on how to style your quests, plus rules of thumb for combat.
 * [Icon List](icons.md): A list of all available icons you can use in your quest.
 * [XML Spec](quest_spec.md): The underlying XML used by the app, in great detail.
 
