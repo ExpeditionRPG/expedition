@@ -61,6 +61,7 @@ export interface QuestType {
   contentrating?: string;
   valid?: boolean;
   saveError?: string;
+  expansionhorror?: boolean;
 };
 
 export interface EditorState {
