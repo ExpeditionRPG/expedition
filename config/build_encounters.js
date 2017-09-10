@@ -1,12 +1,11 @@
 var fs = require('fs');
 var Tabletop = require('./tabletop.js');
 
-// Result directory to store the generated files.
-var dest = "./app/Encounters.tsx";
-
 // ID of the spreadsheet to load
-var docID = "1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM";
+var docID = process.argv[2] || "1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM";
 
+// Result directory to store the generated files.
+var dest = process.argv[3] || "./app/Encounters.tsx";
 
 function parseEncounters(rows) {
   var result = {};
