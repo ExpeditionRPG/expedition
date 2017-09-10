@@ -25,7 +25,6 @@ function doFn(quest: QuestInstance) {
 }
 
 function main() {
-  // TODO Multithread
   models.Quest.model.findAll().then((quests: QuestInstance[]) => {
       console.log('Running job over ' + quests.length + ' quests');
       quests.map((q: QuestInstance) => {
