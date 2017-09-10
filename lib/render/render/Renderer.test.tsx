@@ -25,9 +25,9 @@ describe('Renderer', () => {
       expect(output).toEqual(expected);
     });
     it('turns markdown styles into HTML tags', () => {
-      const input = '**1***2*~~3~~';
+      const input = '**1**__1__*2*_2_~~3~~';
       const output = sanitizeStyles(input);
-      const expected = '<b>1</b><i>2</i><del>3</del>';
+      const expected = '<b>1</b><b>1</b><i>2</i><i>2</i><del>3</del>';
       expect(output).toEqual(expected);
     });
     it('collapses nested styles', () => {
