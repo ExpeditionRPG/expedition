@@ -240,5 +240,65 @@ export var encounters: any = {
     "health": 20,
     "tier": 4,
     "class": "Undead"
+  },
+  "acolyte": {
+    "name": "Acolyte",
+    "health": 6,
+    "tier": 1,
+    "class": "Horror"
+  },
+  "dark young": {
+    "name": "Dark Young",
+    "health": 7,
+    "tier": 1,
+    "class": "Horror"
+  },
+  "nightgaunt": {
+    "name": "Nightgaunt",
+    "health": 7,
+    "tier": 1,
+    "class": "Horror"
+  },
+  "shoggoth": {
+    "name": "Shoggoth",
+    "health": 10,
+    "tier": 2,
+    "class": "Horror"
+  },
+  "dhole": {
+    "name": "Dhole",
+    "health": 11,
+    "tier": 2,
+    "class": "Horror"
+  },
+  "moon-beast": {
+    "name": "Moon-Beast",
+    "health": 10,
+    "tier": 2,
+    "class": "Horror"
+  },
+  "tindalos hound": {
+    "name": "Tindalos Hound",
+    "health": 18,
+    "tier": 3,
+    "class": "Horror"
+  },
+  "soul eater": {
+    "name": "Soul Eater",
+    "health": 15,
+    "tier": 3,
+    "class": "Horror"
+  },
+  "deep one": {
+    "name": "Deep One",
+    "health": 21,
+    "tier": 4,
+    "class": "Horror"
+  },
+  "cthulhi": {
+    "name": "Cthulhi",
+    "health": 26,
+    "tier": 5,
+    "class": "Horror"
   }
 };
