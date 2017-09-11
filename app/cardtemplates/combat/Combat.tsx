@@ -308,13 +308,13 @@ function renderVictory(props: CombatProps): JSX.Element {
 
     // TODO improved leveling up: https://github.com/Fabricate-IO/expedition-app/issues/226
     if (props.victoryParameters.xp !== false && props.levelUp) {
-      contents.push(<p key="c2">Each Adventurer may learn a new ability:</p>);
+      contents.push(<p key="c2"><strong>LEVEL UP!</strong> Each Adventurer may learn a new ability:</p>);
       if (props.settings.showHelp) {
         contents.push(
           <ul key="c3">
             <li>Draw 3 abilities from one of the decks listed on your adventurer card.</li>
             <li>Add 1 to your ability deck, and place the remaining 2 at the bottom of the deck you drew from.</li>
-            <li>You <strong>may</strong> choose to discard an ability.</li>
+            <li>You <i>may</i> choose to discard an ability.</li>
           </ul>
         );
       }
