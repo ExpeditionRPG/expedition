@@ -158,6 +158,7 @@ label {
     border-left: 0;
     border-right: 0;
     padding: $padBase 0;
+    margin-bottom: $padBase / 2;
     background-color: rgba(255,255,255,0.4);
     border-top: $border;
     border-bottom: $border;
@@ -436,6 +437,27 @@ label {
       flex-direction: row;
       color: white;
 
+      button {
+        min-height: $padBase !important;
+        padding: $padBase/2 !important;
+        padding-left: 3*$padBase !important;
+        border-bottom: $border !important;
+        display: flex !important;
+        width: 100%;
+        height: auto !important;
+        flex-direction: row;
+        position: relative;
+        transition: background-color 0.3s ease;
+        text-align: left !important;
+
+        svg {
+          position: absolute;
+          top: 50%;
+          margin-top: -$padBase/2;
+          left: $padBase*0.75;
+        }
+      }
+
       .interactive {
         width: 100%;
         background: $bgInteractive;
@@ -457,7 +479,8 @@ label {
       .preview {
         width: $previewPanelWidth;
         button {
-          line-height: 1em !important;
+          min-height: 2.2em !important;
+          line-height: 1.1em !important;
         }
       }
 
@@ -465,27 +488,6 @@ label {
         color: $textDisabled;
         margin-top: $padBase;
         padding: $padBase/2;
-      }
-
-      button {
-        min-height: $padBase !important;
-        padding: $padBase/2 !important;
-        padding-left: $padBase !important;
-        border-bottom: $border gray solid !important;
-        display: flex !important;
-        width: 100%;
-        height: auto !important;
-        flex-direction: row;
-        position: relative;
-        transition: background-color 0.3s ease;
-        text-align: left !important;
-
-        svg {
-          position: absolute;
-          top: 50%;
-          margin-top: -$padBase/2;
-          left: 0;
-        }
       }
     }
   }
