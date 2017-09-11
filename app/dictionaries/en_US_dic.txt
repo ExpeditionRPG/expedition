@@ -282,6 +282,7 @@ Acadia/M
 acanthus/MS
 Acapulco/M
 accede/SDG
+accelerando
 accelerated/U
 accelerate/NGSDXV
 accelerating/Y
@@ -33645,6 +33646,7 @@ magician/MS
 magicked
 magicking
 magic/SM
+magick/S
 Magill/M
 Magi/M
 Maginot/M
@@ -50346,6 +50348,7 @@ shocking/Y
 Shockley/M
 shockproof
 shock/SGZRD
+shockwave/SM
 shoddily
 shoddiness/SM
 shoddy/RSTP
@@ -51888,6 +51891,7 @@ sos
 SOS
 Sosa/M
 Sosanna/M
+sostenuto
 Soto/M
 sot/SM
 sottish
@@ -57309,6 +57313,7 @@ trite/SRPTY
 tritium/MS
 triton/M
 Triton/M
+tritone/M
 triumphal
 triumphalism
 triumphant/Y
