@@ -24212,6 +24212,7 @@ guaranteeing
 guarantee/RSDZM
 guarantor/SM
 guaranty/MSDG
+guard/SM
 guardedness/UM
 guarded/UYP
 guarder/M

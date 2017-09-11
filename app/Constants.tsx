@@ -188,7 +188,7 @@ for example, you have {{gold}} gold.
 
 _Going deeper_
 
-You can also check the state before choices, instructions, gotos and events
+You can also check the state before choices, instructions, GOTOs and events
 (i.e. on win, on lose) to decide if they happen or not. For example, the
 "turn the corner" choice will only appear if your party decided to draw its
 weapons, and the "Next" button below it will only appear if your party did NOT
