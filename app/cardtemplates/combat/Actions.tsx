@@ -142,7 +142,7 @@ function generateLoot(maxTier: number): Loot[] {
   // 6: 4
   // 7: 4
   // 8+: 5
-  maxTier = Math.min(1, Math.round(Math.log(maxTier - 1) / Math.log(1.5)));
+  maxTier = Math.max(1, Math.round(Math.log(maxTier - 1) / Math.log(1.5)));
 
   while (maxTier > 0) {
     const r: number = Math.random();
