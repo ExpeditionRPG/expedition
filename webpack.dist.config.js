@@ -5,14 +5,13 @@ const Webpack = require('webpack');
 
 const options = {
   entry: {
-    dist: [
+    bundle: [
       './app/React.tsx',
       './app/Style.scss',
       './node_modules/expedition-app/app/Style.scss',
     ],
-    static: [
-      './app/Style.scss',
-      './node_modules/expedition-app/app/Style.scss',
+    playtest: [
+      './app/playtest/PlaytestWorker.tsx',
     ],
   },
   resolve: {
@@ -20,7 +19,7 @@ const options = {
   },
   output: {
     path: __dirname,
-    filename: '[name]/bundle.js',
+    filename: 'dist/[name].js',
   },
   module: {
     loaders: [
@@ -54,10 +53,8 @@ const options = {
       { from: 'app/scripts', to: 'dist/scripts' },
 
       // Copy ops for static folder (error/maintenance pages)
-      { from: 'app/error.html', to: 'static' },
-      { from: 'app/maintenance.html', to: 'static' },
-      { from: 'app/assets', to: 'dist' },
-      { from: 'node_modules/expedition-app/app/images', to: 'static/images' },
+      { from: 'app/error.html', to: 'dist' },
+      { from: 'app/maintenance.html', to: 'dist' },
     ]),
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {
