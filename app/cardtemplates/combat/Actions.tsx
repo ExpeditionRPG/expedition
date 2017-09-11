@@ -291,12 +291,13 @@ export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, 
 
 export function handleCombatEnd(node: ParserNode, settings: SettingsType, victory: boolean, maxTier: number) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    node = node.clone();
+    // Edit the final card before cloning
     if (victory) {
       node.ctx.templates.combat.tier = 0;
     } else {
       node.ctx.templates.combat.numAliveAdventurers = 0;
     }
+    node = node.clone();
     node.ctx.templates.combat.levelUp = (victory) ? (settings.numPlayers <= maxTier) : false;
     node.ctx.templates.combat.loot = (victory) ? generateLoot(maxTier) : [];
 
