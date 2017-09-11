@@ -176,10 +176,10 @@ export function init() {
   // Setup as web platform as default; we might find out later we're an app
   const window = getWindow();
   window.platform = 'web';
-  window.addEventListener('hashchange', (e) => {
+  window.onpopstate = function(e) {
     getStore().dispatch(toPrevious());
     e.preventDefault();
-  });
+  };
 
   // Only triggers on app builds
   getDocument().addEventListener('deviceready', () => {
