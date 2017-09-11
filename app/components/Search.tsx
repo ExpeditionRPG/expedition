@@ -259,12 +259,12 @@ function renderDetails(props: SearchProps): JSX.Element {
       </div>
       <Button onTouchTap={(e)=>props.onPlay(quest)}>Play</Button>
       <div className="searchDetailsExtended">
-        <h3>Details:</h3>
+        <h3>Details</h3>
+        <div><strong>Content rating:</strong> {quest.contentrating}</div>
         <div className="timing">
-          Play time: {formatPlayPeriod(quest.mintimeminutes, quest.maxtimeminutes)}
+          <strong>Play time:</strong> {formatPlayPeriod(quest.mintimeminutes, quest.maxtimeminutes)}
         </div>
-        <div>Genre: {quest.genre}</div>
-        <div>Content rating: {quest.contentrating}</div>
+        <div><strong>Genre:</strong> {quest.genre}</div>
       </div>
     </Card>
   );

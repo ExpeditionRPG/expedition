@@ -5,7 +5,6 @@ import RaisedButton from 'material-ui/RaisedButton'
 
 import {DialogIDType, DialogState} from '../../reducers/StateTypes'
 
-
 interface ExitQuestDialogProps extends React.Props<any> {
   open: boolean;
   onExitQuest: () => void;
@@ -18,7 +17,7 @@ export class ExitQuestDialog extends React.Component<ExitQuestDialogProps, {}> {
       <Dialog
         title="Exit quest?"
         modal={true}
-        contentStyle={{width: '90%'}}
+        contentClassName="dialog"
         open={Boolean(this.props.open)}
         actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()}>Cancel</FlatButton>,
           <RaisedButton primary={true} onTouchTap={() => this.props.onExitQuest()}>Exit</RaisedButton>

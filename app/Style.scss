@@ -165,9 +165,21 @@ body {
 
 h1, h2, h3 {
   font-family: $headerFont;
+  margin: 0.5em 0 0.2em 0;
+  line-height: 1.2;
+}
+h1 {
+  font-size: 2em;
 }
 h2 {
-  margin: 0.5em 0 0.1em 0;
+  font-size: 1.5em;
+  .inline_icon {
+    width: 6.5vmin;
+    margin-bottom: -1.0vmin;
+  }
+}
+h3 {
+  font-size: 1.25em;
 }
 
 p {
@@ -298,6 +310,7 @@ p:first-child {
         display: flex;
         flex-direction: column;
         width: 100%;
+        min-height: 50vh;
         #bgimg {
           position: absolute;
           height: size(watermark);
@@ -892,15 +905,13 @@ p:first-child {
     margin-bottom: size(large);
 
     .author {
+      padding-top: size(small);
       font-style: italic;
     }
   }
 
   .searchDetailsExtended {
     margin-top: size(large);
-    h3 {
-      margin-bottom: size(small);
-    }
   }
 
   .reportCategory {
@@ -934,6 +945,13 @@ p:first-child {
     text-align: center;
     opacity: 0.7;
     margin-top: size(huge);
+  }
+
+  .dialog {
+    width: 90% !important;
+    & > div {
+      background: #f4ebcc !important;
+    }
   }
 }
 
