@@ -35,6 +35,7 @@ export interface SearchSettings {
   players?: number;
   owner?: string;
   partition?: 'expedition-public' | 'expedition-private';
+  expansions?: string[];
 }
 
 export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
