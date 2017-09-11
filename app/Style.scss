@@ -723,13 +723,17 @@ p:first-child {
       font-size: fontsize(flavor);
       text-align: center;
       opacity: 0;
-      -webkit-animation: fadein 1s ease-in 0.5s forwards;
-         -moz-animation: fadein 1s ease-in 0.5s forwards;
-          -ms-animation: fadein 1s ease-in 0.5s forwards;
-           -o-animation: fadein 1s ease-in 0.5s forwards;
-              animation: fadein 1s ease-in 0.5s forwards;
+      transition: opacity 1s;
+      -webkit-animation: fadein 1s ease-in;
+         -moz-animation: fadein 1s ease-in;
+          -ms-animation: fadein 1s ease-in;
+           -o-animation: fadein 1s ease-in;
+              animation: fadein 1s ease-in;
       h2 {
         margin-bottom: 0;
+      }
+      &.visible {
+        opacity: 1;
       }
     }
     .splashMultitouchPlayerCount {
@@ -740,6 +744,11 @@ p:first-child {
       top: 50%;
       margin-top: -10%;
       text-align: center;
+      -webkit-animation: fadein 1s ease-in 0s forwards;
+         -moz-animation: fadein 1s ease-in 0s forwards;
+          -ms-animation: fadein 1s ease-in 0s forwards;
+           -o-animation: fadein 1s ease-in 0s forwards;
+              animation: fadein 1s ease-in 0s forwards;
       h1 {
         font-size: fontsize(timervalue);
         margin: 0;

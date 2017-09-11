@@ -52,14 +52,14 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
   }
 
   render() {
-    const showInstruction = (this.state.touchCount === 0 || (this.state.maxTouches === 1 && Date.now() - this.state.lastTouchTime < DOUBLE_TAP_MS));
+    const showInstruction = (this.state.touchCount === 0);
     return (
       <div>
-        {showInstruction && <div className="splashMultitouchInstruction">
+        <div className={'splashMultitouchInstruction ' + (showInstruction ? 'visible' : '')}>
           <h2>To Begin:</h2>
           <p>All players hold one finger on the screen.<br/>
           Or, double tap to manually set player count.</p>
-        </div>}
+        </div>
         {!showInstruction && <div className="splashMultitouchPlayerCount">
           <h1>{this.state.touchCount}</h1>
         </div>}
