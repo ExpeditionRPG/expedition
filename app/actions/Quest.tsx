@@ -270,6 +270,7 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
       contentrating: quest.contentrating,
       partition: (privatePublish) ? PARTITIONS.PRIVATE : PARTITIONS.PUBLIC,
       majorRelease,
+      expansionhorror: quest.expansionhorror,
     });
     return $.ajax({
       type: 'POST',
