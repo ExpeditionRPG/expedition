@@ -9,6 +9,13 @@ export default class CardFront extends React.Component<CardType, {}> {
     const card = this.props.card;
     const theme = 'Color';
     switch (card.sheet) {
+      case '-Title':
+        return (
+          <div className={`card front horizontal ${card.sheet} title-${card.image}`}>
+            <div className="contents">
+            </div>
+          </div>
+        );
       case 'Ability':
         return (
           <div className={`card front vertical ${card.sheet} ${card.class}`} id={camelCase(name)}>
@@ -174,9 +181,9 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <table>
                   <tbody>
                     <tr><td>Max</td><td><strong>{card.empowered}: </strong>{card.power}</td></tr>
-                    <tr><td>△</td></tr>
-                    <tr><td>Base</td><td><strong>{card.base}</strong></td></tr>
-                    <tr><td>▽</td></tr>
+                    <tr className="personaMarker personaMarkerTop"><td>△</td></tr>
+                    <tr><td>Base</td><td><strong>{card.base}</strong>&nbsp;&nbsp;({card.class} type)</td></tr>
+                    <tr className="personaMarker personaMarkerBottom"><td>▽</td></tr>
                     <tr><td>Min</td><td><strong>{card.afflicted}: </strong>{card.affliction}</td></tr>
                   </tbody>
                 </table>

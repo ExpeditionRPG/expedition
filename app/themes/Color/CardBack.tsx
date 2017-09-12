@@ -9,6 +9,13 @@ export default class CardBack extends React.Component<CardType, {}> {
     const card = this.props.card;
     const theme = 'Color';
     switch (card.sheet) {
+      case '-Title':
+        return (
+          <div className={`card back horizontal ${card.sheet} title-${card.image}`}>
+            <div className="contents">
+            </div>
+          </div>
+        );
       case 'Ability':
         return (
           <div className={`card back vertical ${card.class} ${card.sheet}`}>

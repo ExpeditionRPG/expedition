@@ -61,7 +61,7 @@ $large-icon-width: 0.195in;
     margin: 0;
     padding: 0;
     position: absolute;
-    bottom: 0.21in;
+    bottom: 0.11in;
     left: $border;
     z-index: 99;
     font-size: $text-size-content;
@@ -84,14 +84,14 @@ $large-icon-width: 0.195in;
     margin: 0;
     padding: 0;
     position: absolute;
-    top: 0.27in;
+    top: 0.23in;
     right: $border;
     z-index: 99;
     font-size: $text-size-content;
 
     li {
       line-height: 1;
-      padding-bottom: 4.3pt;
+      padding-bottom: 4.8pt;
     }
   }
 
@@ -100,7 +100,7 @@ $large-icon-width: 0.195in;
     list-style: none;
     display: block;
     margin: 0;
-    padding: 0 10pt 0.03in 10pt;
+    padding: 0 12pt 0.03in 12pt;
     position: absolute;
     right: $border;
     bottom: 0.1in;
@@ -488,6 +488,7 @@ $large-icon-width: 0.195in;
 
         tr td {
           vertical-align: middle;
+          position: relative;
         }
         tr td:first-child {
           padding: 4pt 4pt 4pt 0;
@@ -497,6 +498,35 @@ $large-icon-width: 0.195in;
         }
         tr td:nth-child(2) {
           padding-left: 4pt;
+        }
+
+        .personaMarker {
+          margin: 0;
+          td {
+            &:before, &:after {
+              content: "-";
+              position: absolute;
+              top: 0.02in;
+            }
+            &:before {
+              left: 0;
+            }
+            &:after {
+              left: 0.219in;
+            }
+          }
+          &.personaMarkerTop td {
+            &:before, &:after {
+              top: 0.035in;
+            }
+          }
+          &.personaMarkerBottom td {
+            padding-top: 6pt;
+            padding-bottom: 2pt;
+            &:before, &:after {
+              top: 2pt + 0.02in;
+            }
+          }
         }
       }
     }
@@ -554,13 +584,13 @@ $large-icon-width: 0.195in;
 
     &.Encounter {
       .hp-tracker-vertical-right {
-        top: 0.10in;
+        top: 0.12in;
       }
       .hp-tracker-horizontal {
         bottom: 0;
       }
       .hp-tracker-vertical-left {
-        bottom: 0.09in;
+        bottom: 0.01in;
       }
     }
 
@@ -584,6 +614,19 @@ $large-icon-width: 0.195in;
 
       background: no-repeat center center;
       background-size: 2.75in 3.75in;
+    }
+  }
+
+
+  .card.back.-Title {
+    &.title-Horror:before {
+      background-image: url(../../node_modules/expedition-art/cards/backs/TitleCardHorror.jpg) !important;
+    }
+  }
+
+  .card.front.-Title {
+    &.title-Horror:before {
+      background-image: url(../../node_modules/expedition-art/cards/fronts/TitleCardHorror.jpg) !important;
     }
   }
 

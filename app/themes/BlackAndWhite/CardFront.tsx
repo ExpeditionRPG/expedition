@@ -170,18 +170,15 @@ export default class CardFront extends React.Component<CardType, {}> {
         );
       case 'Persona':
         return (
-          <div className={`card front horizontal ${card.sheet} bottomBar`}>
+          <div className={`card front horizontal ${card.sheet}`}>
             <div className="contents">
-              <header>
-                <div className="name">{card.name}</div>
-              </header>
               <article>
                 <table>
                   <tbody>
                     <tr><td>Max</td><td><strong>{card.empowered}: </strong>{card.power}</td></tr>
-                    <tr><td>△</td></tr>
-                    <tr><td>Base</td><td><strong>{card.base}</strong></td></tr>
-                    <tr><td>▽</td></tr>
+                    <tr className="personaMarker personaMarkerTop"><td>△</td></tr>
+                    <tr><td>Base</td><td><strong>{card.base}</strong>&nbsp;&nbsp;({card.class} type)</td></tr>
+                    <tr className="personaMarker personaMarkerBottom"><td>▽</td></tr>
                     <tr><td>Min</td><td><strong>{card.afflicted}: </strong>{card.affliction}</td></tr>
                   </tbody>
                 </table>
