@@ -224,7 +224,7 @@ function renderResolve(props: CombatProps): JSX.Element {
           Note that some enemies take more or less damage from certain ability types, as specified on their card.
         </p>
         <p>
-          Discard all abilities played this round.
+          Discard all abilities resolved this round, putting the rest of your hand back into your draw pile.
         </p>
       </span>
     );
