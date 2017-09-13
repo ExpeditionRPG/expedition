@@ -22,9 +22,9 @@ Requires NodeJS v6.0 or above. Check your version with `node -v`.
 
 We recommend using [NVM](https://github.com/creationix/nvm) to install node to make it easier to swap between and upgrade Node versions in the future.
 
-Windows: must be run within a Unix-like shell (such as Git Bash)
+**Windows:** must be run within a Unix-like shell (such as Git Bash)
 
-iOS: Building the iOS app requires a mac, and cordova setup scripts currently work for unix-like environments only (Linux + Mac).
+**iOS:** Building the iOS app requires a mac, and cordova setup scripts currently work for unix-like environments only (Linux + Mac).
 
 If you're having problems getting dependencies set up on your computer, try using this repo with [Containerizer](https://github.com/Fabricate-IO/containerizer).
 
@@ -32,13 +32,15 @@ If you're having problems getting dependencies set up on your computer, try usin
 
 #### Quick-start
 
-With Node.js installed, run the following one liner from the root of the repository:
+With Node.js installed, run the following to download the repository, enter the project folder and install dependencies:
 
 ```sh
+git clone https://github.com/ExpeditionRPG/expedition-app.git
+cd expedition-app
 npm install -g gulp webpack && npm install
 ```
 
-For building native apps, you will also need to set up cordova. If you want to build with working authentication, first add `google-services.json` and `GoogleService-Info.plist` to the root of the repository (download from Firebase Console or get them from an admin). Then run:
+For building native apps, you will also need to set up cordova. If you want to build with working authentication, you'll need to talk to an admin to get `google-services.json` and `GoogleService-Info.plist` and put them in the main project directory (which they'll download from the Firebase Console). Then run this setup command:
 
 ```sh
 npm install -g cordova
