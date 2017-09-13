@@ -23,9 +23,11 @@ function makeSecret(): SessionSecret {
 
 export abstract class BrokerBase {
   abstract storeSession(s: Session): Bluebird<any>;
+  abstract addClient(c: ClientID, s: Session): Bluebird<any>;
+
   abstract fetchSessionBySecret(secret: SessionSecret): Bluebird<Session>;
   abstract fetchSessionById(id: SessionID): Bluebird<Session>;
-  abstract addClient(c: ClientID, s: Session): Bluebird<boolean>;
+
   abstract broadcast(e: RemotePlayEvent): void;
 
   createSession(): Bluebird<Session> {
