@@ -6,11 +6,7 @@ const port = process.env.DOCKER_PORT || 8080;
 
 const options = {
   cache: true,
-  entry: {
-    bundle: [
-      './app/App.tsx',
-    ],
-  },
+  entry: {},
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.json', '.txt'],
   },
