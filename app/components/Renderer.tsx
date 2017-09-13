@@ -119,7 +119,9 @@ class Renderer extends React.Component<RendererProps, {}> {
                 <li>Have it printed on heavy white cardstock (usually 80-pound or heavier). Although the cards are black and white, you'll get nicer results on a color printer.</li>
                 <li>Make sure to print double-sided, and to set to document to 100% zoom.</li>
                 <li>Cut the cards using a paper cutter. The more precise you are, the easier they'll be to handle later.</li>
-                <li>Secure your cards with a small box or rubber band, and prepare to adventure!</li>
+                <li>Secure your cards with a box or rubber band.</li>
+                <li>Rules: All of the rules are in the app! Get it at ExpeditionGame.com/app</li>
+                <li>Prepare to adventure!</li>
               </ol>
             </div>
             <div className="printInstructions">

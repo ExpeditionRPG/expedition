@@ -11,7 +11,7 @@ export default class CardFront extends React.Component<CardType, {}> {
     switch (card.sheet) {
       case '-Title':
         return (
-          <div className={`card front horizontal ${card.sheet} title-${card.image}`}>
+          <div className={`card front vertical ${card.sheet} title-${card.image}`}>
             <div className="contents">
             </div>
           </div>

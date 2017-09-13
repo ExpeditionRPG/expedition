@@ -11,7 +11,7 @@ export default class CardBack extends React.Component<CardType, {}> {
     switch (card.sheet) {
       case '-Title':
         return (
-          <div className={`card back horizontal ${card.sheet} title-${card.image}`}>
+          <div className={`card back vertical ${card.sheet} title-${card.image}`}>
             <div className="contents">
             </div>
           </div>
