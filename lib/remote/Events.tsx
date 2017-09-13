@@ -34,14 +34,12 @@ export interface TouchEvent extends EventBase {
   positions: TouchList;
 }
 
-export interface CardEvent extends EventBase {
-  type: 'CARD';
-  card: string; // Serialized card state
-}
-
-export interface NavEvent extends EventBase {
-  type: 'NAV';
-  state: any; // TODO SERIALIZED CARD STATE
+export interface ActionEvent extends EventBase {
+  type: 'ACTION';
+  // Redux action, compressed & serialized to JSON.
+  // It's up to the client implementation to determine
+  // what (if anything) to do with the action.
+  action: string;
 }
 
 export interface ErrorEvent extends EventBase {
@@ -49,12 +47,6 @@ export interface ErrorEvent extends EventBase {
   error: string;
 }
 
-export interface SettingsEvent extends EventBase {
-  type: 'SETTING';
-  key: string;
-  value: string;
-}
+export type RemotePlayEvent = StatusEvent|TouchEvent|ErrorEvent|ActionEvent;
 
-export type RemotePlayEvent = StatusEvent|TouchEvent|CardEvent|NavEvent|ErrorEvent|SettingsEvent;
-
-export type MessageType = 'STATUS'|'TOUCH'|'CARD'|'NAV'|'ERROR'|'SETTING';
+export type MessageType = 'STATUS'|'TOUCH'|'ACTION'|'ERROR';
