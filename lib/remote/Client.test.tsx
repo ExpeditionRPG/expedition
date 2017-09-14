@@ -10,10 +10,6 @@ export class TestClient extends ClientBase {
     this.b = b;
   }
 
-  sendEvent(e: RemotePlayEvent) {
-    this.b.broadcast(e);
-  }
-
   getMessageHandler(): ((e: RemotePlayEvent) => any) {
     return this.handleMessage;
   }
@@ -21,6 +17,8 @@ export class TestClient extends ClientBase {
   getID() {
     return this.id;
   }
+
+  sendEvent(e: RemotePlayEvent) {}
 }
 
 describe('Client', () => {
