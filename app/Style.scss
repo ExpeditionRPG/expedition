@@ -790,6 +790,24 @@ p:first-child {
     }
   }
 
+  .remoteplay {
+    .helptext {
+      text-align: center;
+      padding: size(base);
+    }
+
+    input {
+      width: 50%;
+      background: rgba(255,255,255,0.3);
+      padding: size(base);
+      font-size: fontsize(interactive) * 2;
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+  }
+
   .combat {
     &.center {
       text-align: center;

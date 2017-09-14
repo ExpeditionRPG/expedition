@@ -19,7 +19,7 @@ import {renderCardTemplate} from '../../cardtemplates/Template'
 import {initialSettings} from '../../reducers/Settings'
 import {closeSnackbar} from '../../actions/Snackbar'
 import {initialState} from '../../reducers/Snackbar'
-import {AppStateWithHistory, TransitionType, SearchPhase, SettingsType, SnackbarState} from '../../reducers/StateTypes'
+import {AppStateWithHistory, TransitionType, SearchPhase, RemotePlayPhase, SettingsType, SnackbarState} from '../../reducers/StateTypes'
 import {getStore} from '../../Store'
 
 const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
@@ -109,7 +109,7 @@ export default class Main extends React.Component<MainProps, {}> {
         card = <ReportContainer />;
         break;
       case 'REMOTE_PLAY':
-        card = <RemotePlayContainer />;
+        card = <RemotePlayContainer phase={state.card.phase as RemotePlayPhase} />;
         break;
       default:
         throw new Error('Unknown card ' + state.card.name);

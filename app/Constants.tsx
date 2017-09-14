@@ -2,7 +2,7 @@ declare var window:any;
 
 export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
 export const API_HOST = (process && process.env && process.env.API_HOST) || 'http://betaapi.expeditiongame.com';
-
+export const REMOTE_HOST = (process && process.env && process.env.REMOTE_HOST) || 'http://localhost:8080';
 export const authSettings = {
   urlBase: API_HOST,
   // urlBase: 'https://api.expeditiongame.com',
@@ -16,6 +16,10 @@ export const authSettings = {
   // clientId: '545484140970-lgcbm3df469kscbngg2iof57muj3p588.apps.googleusercontent.com',
   // Android:
   // 545484140970-qrhcn069bbvae1mub2237h5k32mnp04k.apps.googleusercontent.com
+};
+
+export const remotePlaySettings = {
+  connectURI: REMOTE_HOST + '/remoteplay/v1/connect',
 };
 
 export const MAX_ADVENTURER_HEALTH = 12;
