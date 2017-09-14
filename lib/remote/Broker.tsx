@@ -28,8 +28,6 @@ export abstract class BrokerBase {
   abstract fetchSessionBySecret(secret: SessionSecret): Bluebird<Session>;
   abstract fetchSessionById(id: SessionID): Bluebird<Session>;
 
-  abstract broadcast(e: RemotePlayEvent): void;
-
   createSession(): Bluebird<Session> {
     const s: Session = {secret: makeSecret(), id: Date.now(), lock: null};
     return this.storeSession(s).then(() => {
@@ -114,18 +112,5 @@ export class InMemoryBroker extends BrokerBase {
 
   addClientHandler(c: ClientID, ch: (e: RemotePlayEvent)=>any) {
     this.handlers[c] = ch;
-  }
-
-  broadcast(e: RemotePlayEvent): void {
-    for (const c of this.clients) {
-      if (c.client === e.client) {
-        const session = c.session;
-        for (const d of this.clients) {
-          if (d.session === session && d.client !== e.client) {
-            this.handlers[d.client] && this.handlers[d.client](e);
-          }
-        }
-      }
-    }
   }
 }

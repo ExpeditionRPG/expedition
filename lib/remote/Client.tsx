@@ -23,7 +23,7 @@ export abstract class ClientBase {
 
   protected handleMessage(e: RemotePlayEvent) {
     // Error if we get a weird message type
-    if (['STATUS', 'TOUCH', 'CARD', 'NAV', 'ERROR', 'SETTING'].indexOf(e.type) < 0) {
+    if (['STATUS', 'TOUCH', 'ACTION', 'ERROR'].indexOf(e.type) < 0) {
       this.publish({client: e.client, type: 'ERROR', error: 'Received unknown message of type "' + e.type + '"'});
       return;
     }
