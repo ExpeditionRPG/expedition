@@ -12,6 +12,7 @@ import {getDevicePlatform, getAppVersion} from '../Globals'
 import {logEvent} from '../Main'
 import {TemplateContext} from '../cardtemplates/TemplateTypes'
 import {defaultContext} from '../cardtemplates/Template'
+import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 
 declare var window:any;
 declare var require:any;
@@ -146,5 +147,12 @@ export function submitUserFeedback(quest: QuestState, settings: SettingsType, us
       logEvent('user_feedback_' + userFeedback.type + '_err', data);
       dispatch(openSnackbar('Error submitting feedback: ' + error));
     });
+  };
+}
+
+export function handleRemotePlayEvent(e: RemotePlayEvent) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    console.log('TODO REMOTE PLAY EVENT HANDLER');
+    console.log(e);
   };
 }

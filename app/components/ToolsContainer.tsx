@@ -36,6 +36,9 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
         privateSearch(user);
       }
     },
+    onRemotePlaySelect(user: UserState): void {
+      dispatch(toCard('REMOTE_PLAY', 'CONNECT'));
+    }
   };
 }
 

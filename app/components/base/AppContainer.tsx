@@ -13,6 +13,7 @@ import SettingsContainer from '../SettingsContainer'
 import SplashScreenContainer from '../SplashScreenContainer'
 import QuestStartContainer from '../QuestStartContainer'
 import QuestEndContainer from '../QuestEndContainer'
+import RemotePlayContainer from '../RemotePlayContainer'
 
 import {renderCardTemplate} from '../../cardtemplates/Template'
 import {initialSettings} from '../../reducers/Settings'
@@ -107,8 +108,11 @@ export default class Main extends React.Component<MainProps, {}> {
       case 'REPORT':
         card = <ReportContainer />;
         break;
+      case 'REMOTE_PLAY':
+        card = <RemotePlayContainer />;
+        break;
       default:
-        throw new Error('Unknown card ' + state.card);
+        throw new Error('Unknown card ' + state.card.name);
     }
 
     let transition: TransitionType = 'NEXT';

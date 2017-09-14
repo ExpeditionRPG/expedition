@@ -13,6 +13,7 @@ function setup() {
     onCustomCombatSelect: jasmine.createSpy('onCustomCombatSelect'),
     onQuestCreatorSelect: jasmine.createSpy('onQuestCreatorSelect'),
     onPrivateQuestsSelect: jasmine.createSpy('onPrivateQuestsSelect'),
+    onRemotePlaySelect: jasmine.createSpy('onRemotePlaySelect'),
   }
   const enzymeWrapper = shallow(<Tools {...props} />);
   return {props, enzymeWrapper};

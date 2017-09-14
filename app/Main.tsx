@@ -10,8 +10,11 @@ import {authSettings} from './Constants'
 import {fetchAnnouncements} from './actions/Announcement'
 import {toPrevious} from './actions/Card'
 import {silentLogin} from './actions/User'
+import {handleRemotePlayEvent} from './actions/Web'
 import {getStore} from './Store'
 import {getWindow, getGapi, getGA, getDevicePlatform, getDocument, setGA, setupPolyfills} from './Globals'
+import {client as remotePlayClient} from './RemotePlay'
+import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 
 
 const injectTapEventPlugin = require('react-tap-event-plugin');
@@ -24,6 +27,11 @@ function setupTapEvents() {
   }
 }
 
+function setupRemotePlay() {
+  remotePlayClient.subscribe((e: RemotePlayEvent) => {
+    getStore().dispatch(handleRemotePlayEvent(e));
+  });
+}
 
 export function logEvent(name: string, args: any): void {
   const fbp = getWindow().FirebasePlugin;
@@ -193,6 +201,7 @@ export function init() {
   setupEventLogging();
   setupHotReload();
   setupGoogleAnalytics();
+  setupRemotePlay();
   getStore().dispatch(fetchAnnouncements());
 
   render();
