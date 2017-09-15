@@ -35,16 +35,16 @@ export abstract class BrokerBase {
     });
   }
 
-  joinSession(cID: ClientID, secret: SessionSecret): Bluebird<boolean> {
+  joinSession(cID: ClientID, secret: SessionSecret): Bluebird<SessionID> {
     return this.fetchSessionBySecret(secret)
       .then((s: Session) => {
         if (!s) {
-          return false;
+          return null;
         }
         if (s.lock) {
-          return false;
+          return null;
         } else {
-          return this.addClient(cID, s).then(() => {return true;});
+          return this.addClient(cID, s).then(() => {return s.id;});
         }
       });
   }
