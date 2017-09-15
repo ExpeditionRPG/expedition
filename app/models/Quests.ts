@@ -52,7 +52,7 @@ export interface QuestSearchParams {
   order?: string;
   limit?: number;
   partition?: string;
-  expansions?: string[]
+  expansions?: string[];
 }
 
 export interface QuestInstance extends Sequelize.Instance<QuestAttributes> {
@@ -253,11 +253,11 @@ export class Quest {
           // If this is a newly published quest, email us!
           // We don't care if this fails.
           Mail.send('expedition+newquest@fabricate.io',
-            'New quest published: ' + params.title,
-            `Partition: ${params.partition}. Summary: ${params.summary}. By ${params.author}, for ${params.minplayers} - ${params.maxplayers} players.`);
+            `New quest published: ${params.title} (${params.partition})`,
+            `Summary: ${params.summary}. By ${params.author}, for ${params.minplayers} - ${params.maxplayers} players. ${params.expansionhorror ? 'Requires The Horror expansion.' : 'No expansions required.'}`);
 
           // If this is the author's first published quest, email them a congratulations
-          this.model.findOne({where: {userid: params.userid}})
+          this.model.findOne({where: {userid}})
           .then((q: QuestInstance) => {
             if (!Boolean(q)) {
               Mail.send([params.email,'expedition+newquest@fabricate.io'],
