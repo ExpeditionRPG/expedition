@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import {toCard} from '../actions/Card'
 import {AppState, UserState} from '../reducers/StateTypes'
 import {openSnackbar} from '../actions/Snackbar'
-import {remotePlayConnect} from '../actions/Web'
+import {remotePlayConnect, remotePlayNewSession} from '../actions/Web'
 import RemotePlay, {RemotePlayStateProps, RemotePlayDispatchProps} from './RemotePlay'
 
 const mapStateToProps = (state: AppState, ownProps: RemotePlayStateProps): RemotePlayStateProps => {
@@ -25,9 +25,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Remot
       console.log('TODO RECONNECT ' + id);
       dispatch(toCard('REMOTE_PLAY', 'LOBBY'));
     },
-    onNewSessionRequest: () => {
-      console.log('TODO NEWSESSION');
-      dispatch(toCard('REMOTE_PLAY', 'LOBBY'));
+    onNewSessionRequest: (user: UserState) => {
+      return dispatch(remotePlayNewSession(user));
     },
     onLockSession: () => {
       console.log('TODO LOCKSESSION');

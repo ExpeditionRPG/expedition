@@ -18,7 +18,7 @@ export class RemotePlayClient extends ClientBase {
     }
     this.resetState();
     this.websocketURI = websocketURI;
-    this.sock = new WebSocket(this.websocketURI);
+    this.sock = new WebSocket(this.websocketURI, 'expedition-remote-play-1.0');
 
     this.sock.onerror = (e: Event) => {
       this.handleMessage({client: this.id, type: 'ERROR', error: 'Socket error: ' + e.toString()});

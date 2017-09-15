@@ -158,10 +158,37 @@ export function handleRemotePlayEvent(e: RemotePlayEvent) {
   };
 }
 
+export function remotePlayNewSession(user: UserState) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    fetch(remotePlaySettings.newSessionURI, {
+      method: 'POST',
+      mode: 'cors',
+      headers: new Headers({
+        'Accept': 'text/html',
+        'Content-Type': 'text/html',
+      }),
+    })
+    .then((response: Response) => {
+      return response.json();
+    })
+    .then((data: any) => {
+      console.log(data);
+      if (!data.secret) {
+        return dispatch(openSnackbar('Error parsing new session secret'));
+      }
+      console.log('Made new session; secret is ' + data.secret);
+      return dispatch(remotePlayConnect(user, data.secret));
+    })
+    .catch((error: Error) => {
+      logEvent('remote_play_new_session_err', error.toString());
+      dispatch(openSnackbar('Error creating session: ' + error.toString()));
+    });
+  };
+}
+
 export function remotePlayConnect(user: UserState, secret: string) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    console.log('TODO CONNECT ' + secret);
-
+    console.log('Attempting to connect to session with secret ' + secret);
     fetch(remotePlaySettings.connectURI, {
       method: 'POST',
       mode: 'cors',
@@ -175,7 +202,7 @@ export function remotePlayConnect(user: UserState, secret: string) {
       return response.json();
     })
     .then((data: any) => {
-      console.log(data.uri);
+      console.log(data);
       if (!data.uri) {
         return dispatch(openSnackbar('Error parsing session URI'));
       }
@@ -185,9 +212,8 @@ export function remotePlayConnect(user: UserState, secret: string) {
       //dispatch(toCard('REMOTE_PLAY', 'LOBBY'));
     })
     .catch((error: Error) => {
-      logEvent('remote_play_new_session_err', error.toString());
-      dispatch(openSnackbar('Error creating session: ' + error.toString()));
-    })
-
-  }
+      logEvent('remote_play_connect_err', error.toString());
+      dispatch(openSnackbar('Error connecting: ' + error.toString()));
+    });
+  };
 }

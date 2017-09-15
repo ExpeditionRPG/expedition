@@ -19,6 +19,7 @@ export const authSettings = {
 };
 
 export const remotePlaySettings = {
+  newSessionURI: REMOTE_HOST + '/remoteplay/v1/new_session',
   connectURI: REMOTE_HOST + '/remoteplay/v1/connect',
 };
 
