@@ -123,6 +123,7 @@ class Renderer extends React.Component<RendererProps, {}> {
                 <li>Rules: All of the rules are in the app! Get it at ExpeditionGame.com/app</li>
                 <li>Prepare to adventure!</li>
               </ol>
+              <p>Note that some printers, especially consumer printers, don't handle front-back alignment well, and you may end up with up to a 1/8" difference between the front and back of cards. If this bugs you, professionally printed copies are available for $30 at ExpeditionGame.com</p>
             </div>
             <div className="printInstructions">
               <p className="center">Blank page for printing purposes. Save paper by only printing pages 3+!</p>
