@@ -5,7 +5,7 @@ import {AppState, SettingsType, UserState} from '../reducers/StateTypes'
 import {initCustomCombat} from '../cardtemplates/combat/Actions'
 import {URLS} from '../Constants'
 import {toCard} from '../actions/Card'
-import {search} from '../actions/Web'
+import {search, loadRemotePlay} from '../actions/Web'
 import {login} from '../actions/User'
 
 declare var window:any;
@@ -37,7 +37,7 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
       }
     },
     onRemotePlaySelect(user: UserState): void {
-      dispatch(toCard('REMOTE_PLAY', 'CONNECT'));
+      dispatch(loadRemotePlay(user));
     }
   };
 }

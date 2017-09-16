@@ -2,16 +2,18 @@ import * as React from 'react'
 import Card from './base/Card'
 import Button from './base/Button'
 import {getAppVersion} from'../Globals'
-import {SettingsType, CardState, UserState, RemotePlayPhase} from '../reducers/StateTypes'
+import {SessionID, SessionSecret} from 'expedition-qdl/lib/remote/Broker'
+import {SettingsType, CardState, UserState, RemotePlayPhase, RemotePlayState, SessionMetadata} from '../reducers/StateTypes'
 
 export interface RemotePlayStateProps {
   phase: RemotePlayPhase;
   user: UserState;
+  remotePlay: RemotePlayState;
 }
 
 export interface RemotePlayDispatchProps {
-  onConnect: (user: UserState, secret: string) => void;
-  onReconnect: (user: UserState, id: string) => void;
+  onConnect: (user: UserState, secret: SessionSecret) => void;
+  onReconnect: (user: UserState, id: SessionID) => void;
   onNewSessionRequest: (user: UserState) => void;
   onLockSession: () => void;
 }
@@ -36,6 +38,12 @@ class RemotePlayConnect extends React.Component<RemotePlayProps, {}> {
   }
 
   render() {
+
+    const history = this.props.remotePlay.history.map((m: SessionMetadata, i: number) => {
+      return (<Button key={i} onTouchTap={()=>{this.props.onReconnect(this.props.user, m.id)}}>
+        {m.questTitle} ({m.peerCount} peers) - {m.firstContact}</Button>);
+    });
+
     return (
       <Card title="Remote Play">
         <div className="remoteplay">
@@ -44,9 +52,7 @@ class RemotePlayConnect extends React.Component<RemotePlayProps, {}> {
           <Button onTouchTap={() =>{this.props.onConnect(this.props.user, this.state.secret)}}>Connect</Button>
           <Button onTouchTap={() =>{this.props.onNewSessionRequest(this.props.user)}}>Start a new Session</Button>
           <div className="helptext">You may also reconnect to these active sessions:</div>
-          <Button onTouchTap={() =>{this.props.onReconnect(this.props.user, 'TEST1')}}>Session 1</Button>
-          <Button onTouchTap={() =>{this.props.onReconnect(this.props.user, 'TEST2')}}>Session 2</Button>
-          <Button onTouchTap={() =>{this.props.onReconnect(this.props.user, 'TEST3')}}>Session 3</Button>
+          {history}
         </div>
       </Card>
     );
@@ -56,15 +62,18 @@ class RemotePlayConnect extends React.Component<RemotePlayProps, {}> {
 function renderLobby(props: RemotePlayProps): JSX.Element {
   return (
     <Card title="Lobby">
-      <div>Connected to Session: TODO</div>
-      <div>
-        <img src="static/icon/adventurer_small.svg"></img>
-        <img src="static/icon/adventurer_small.svg"></img>
-        <img src="static/icon/adventurer_small.svg"></img>
-        <img src="static/icon/adventurer_small.svg"></img>
+      <div className="remoteplay">
+        <div>Connected to Session!</div>
+        <div>Session secret: {props.remotePlay.session.secret}</div>
+        <div className="connect_bar">
+          <img src="images/adventurer_small.svg"></img>
+          <img src="images/adventurer_small.svg"></img>
+          <img src="images/adventurer_small.svg"></img>
+          <img src="images/adventurer_small.svg"></img>
+        </div>
+        <div>Once all players are connected, do the lock thing!</div>
+        <Button onTouchTap={() =>{props.onLockSession()}}>Lock it!</Button>
       </div>
-      <div>Once all players are connected, do the lock thing!</div>
-      <Button onTouchTap={() =>{props.onLockSession()}}>Lock it!</Button>
     </Card>
   );
 }

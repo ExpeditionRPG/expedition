@@ -796,6 +796,18 @@ p:first-child {
       padding: size(base);
     }
 
+    .connect_bar {
+      img {
+        width: 20%;
+        display: inline-block;
+        padding: size(small);
+
+        &:nth-child(0) {
+          color: red;
+        }
+      }
+    }
+
     input {
       width: 50%;
       background: rgba(255,255,255,0.3);

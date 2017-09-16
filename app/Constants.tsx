@@ -21,6 +21,7 @@ export const authSettings = {
 export const remotePlaySettings = {
   newSessionURI: REMOTE_HOST + '/remoteplay/v1/new_session',
   connectURI: REMOTE_HOST + '/remoteplay/v1/connect',
+  firstLoadURI: REMOTE_HOST + '/remoteplay/v1/user',
 };
 
 export const MAX_ADVENTURER_HEALTH = 12;

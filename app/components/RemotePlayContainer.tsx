@@ -5,23 +5,25 @@ import {AppState, UserState} from '../reducers/StateTypes'
 import {openSnackbar} from '../actions/Snackbar'
 import {remotePlayConnect, remotePlayNewSession} from '../actions/Web'
 import RemotePlay, {RemotePlayStateProps, RemotePlayDispatchProps} from './RemotePlay'
+import {SessionID, SessionSecret} from 'expedition-qdl/lib/remote/Broker'
 
 const mapStateToProps = (state: AppState, ownProps: RemotePlayStateProps): RemotePlayStateProps => {
   return {
     phase: ownProps.phase,
-    user: state.user
+    user: state.user,
+    remotePlay: state.remotePlay,
   };
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): RemotePlayDispatchProps => {
   return {
-    onConnect: (user: UserState, secret: string) => {
+    onConnect: (user: UserState, secret: SessionSecret) => {
       if (secret.length !== 4) {
         return dispatch(openSnackbar('Please enter the full session code (4 characters)'));
       }
       return dispatch(remotePlayConnect(user, secret));
     },
-    onReconnect: (user: UserState, id: string) => {
+    onReconnect: (user: UserState, id: SessionID) => {
       console.log('TODO RECONNECT ' + id);
       dispatch(toCard('REMOTE_PLAY', 'LOBBY'));
     },

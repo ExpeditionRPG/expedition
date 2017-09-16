@@ -1,7 +1,8 @@
 import Redux from 'redux'
-import {CardState, CardName, CardPhase, DialogIDType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState} from '../reducers/StateTypes'
+import {CardState, CardName, CardPhase, DialogIDType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, SessionMetadata} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../cardtemplates/Template'
+import {Session} from 'expedition-qdl/lib/remote/Broker'
 
 export interface AnnouncementSetAction extends Redux.Action {
   type: 'ANNOUNCEMENT_SET';
@@ -89,4 +90,13 @@ export interface SnackbarCloseAction extends Redux.Action {
   type: 'SNACKBAR_CLOSE';
 }
 
-export interface QuestCardAction {}
+export interface RemotePlaySessionAction extends Redux.Action {
+  type: 'REMOTE_PLAY_SESSION';
+  session: Session;
+  uri: string;
+}
+
+export interface RemotePlayHistoryAction extends Redux.Action {
+  type: 'REMOTE_PLAY_HISTORY';
+  history: SessionMetadata[];
+}
