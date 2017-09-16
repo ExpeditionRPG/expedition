@@ -209,8 +209,8 @@ export function handleResolvePhase(node: ParserNode) {
   // Note that handling new combat nodes within a "round" handler has undefined
   // behavior and should be prevented when compiled.
   return (dispatch: Redux.Dispatch<any>): any => {
+    node = node.clone();
     if (node.getVisibleKeys().indexOf('round') !== -1) {
-      node = node.clone();
       node.ctx.templates.combat.roleplay = node.getNext('round');
       // Set node *before* navigation to prevent a blank first roleplay card.
       dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);

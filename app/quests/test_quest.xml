@@ -1,44 +1,80 @@
 <quest title="Test Quest" data-line="0">
-  <roleplay title="Test" id="start" data-line="2">
+  <roleplay title="Setup" data-line="2">
+    <p>Custom setup card, replacing the default quest setup card.</p>
+  </roleplay>
+  <roleplay title="Test" id="start" data-line="6">
     <p>{{one=1}}</p>
     <p>You face choices. Here's the value of one: {{one}}</p>
     <choice text="Fight">
-      <combat data-line="10">
+      <combat data-line="14">
         <e>Thief</e>
         <e>Thief</e>
         <e>Imp</e>
         <event on="round">
-          <roleplay title="" data-line="18">
+          <roleplay title="" data-line="22">
             <p>A round card during combat!</p>
             <p>Current round: {{_.currentCombatRound()}}</p>
             <p>Surge round: {{string(_.isCombatSurgeRound())}}</p>
             <p>Random enemy: {{_.randomEnemy()}}</p>
             <choice text="A choice to another RP card">
-              <roleplay title="" data-line="28">
+              <roleplay title="" data-line="32">
                 <p>More text!</p>
               </roleplay>
             </choice>
             <choice text="A choice with a non-combat GOTO">
-              <trigger data-line="32">goto start</trigger>
+              <trigger data-line="36">goto start</trigger>
             </choice>
             <choice text="End the quest">
-              <trigger data-line="36">end</trigger>
+              <trigger data-line="40">end</trigger>
             </choice>
           </roleplay>
         </event>
         <event on="win">
-          <trigger data-line="40">end</trigger>
+          <roleplay title="" data-line="44">
+            <p>You win!</p>
+          </roleplay>
+          <trigger data-line="46">end</trigger>
         </event>
         <event on="lose">
-          <trigger data-line="44">end</trigger>
+          <roleplay title="" data-line="50">
+            <p>You lose! There should be a retry button here.</p>
+          </roleplay>
+          <trigger data-line="52">end</trigger>
         </event>
       </combat>
     </choice>
+    <choice text="Complex fight">
+      <trigger data-line="56">goto conditionalRound</trigger>
+    </choice>
     <choice text="Go to start">
-      <trigger data-line="48">goto start</trigger>
+      <trigger data-line="60">goto start</trigger>
     </choice>
     <choice text="End now">
-      <trigger data-line="52">end</trigger>
+      <trigger data-line="64">end</trigger>
     </choice>
   </roleplay>
+  <roleplay title="A new fight" id="conditionalRound" data-line="66">
+    <p>This combat uses custom enemies and a conditional on round card.</p>
+  </roleplay>
+  <combat data-line="70">
+    <e tier="1">Custom</e>
+    <e>Giant Rat</e>
+    <event on="round" if="_.currentCombatRound() % 2 == 1">
+      <roleplay title="" data-line="68">
+        <p>This appears every other round (1, 3, 5, etc)</p>
+      </roleplay>
+    </event>
+    <event on="win">
+      <roleplay title="" data-line="81">
+        <p>You win!</p>
+      </roleplay>
+      <trigger data-line="83">end</trigger>
+    </event>
+    <event on="lose">
+      <roleplay title="" data-line="87">
+        <p>You lose! There should be a retry button here.</p>
+      </roleplay>
+      <trigger data-line="89">end</trigger>
+    </event>
+  </combat>
 </quest>
