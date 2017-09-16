@@ -1,4 +1,4 @@
-import {RemotePlayEvent, ClientID, ClientStatus} from './Events'
+import {RemotePlayEvent, RemotePlayEventBody, ClientID, ClientStatus} from './Events'
 
 declare type EventHandler = (e: RemotePlayEvent) => any;
 
@@ -19,22 +19,22 @@ export abstract class ClientBase {
     this.clientStatusSet = {};
   }
 
-  abstract sendEvent(e: RemotePlayEvent): void;
+  abstract sendEvent(e: RemotePlayEventBody): void;
 
   protected handleMessage(e: RemotePlayEvent) {
     // Error if we get a weird message type
     if (['STATUS', 'TOUCH', 'ACTION', 'ERROR'].indexOf(e.type) < 0) {
-      this.publish({client: e.client, type: 'ERROR', error: 'Received unknown message of type "' + e.type + '"'});
+      this.publish({client: e.client, event: {type: 'ERROR', error: 'Received unknown message of type "' + e.event.type + '"'}});
       return;
     }
 
     // Dedupe messages to prevent unnecessary handler action
-    if (e.type === 'STATUS') {
+    if (e.event.type === 'STATUS') {
       const s = this.clientStatusSet[e.client];
-      if (s.line === e.status.line && s.waiting === e.status.waiting) {
+      if (s.line === e.event.status.line && s.waiting === e.event.status.waiting) {
         return;
       }
-      this.clientStatusSet[e.client] = e.status;
+      this.clientStatusSet[e.client] = e.event.status;
     }
 
     this.publish(e);
