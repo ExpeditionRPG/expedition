@@ -116,7 +116,7 @@
     <e>Magic Mushroom</e>
     <event on="win" loot="false" xp="false">
       <roleplay title="Victory" data-line="147">
-        <p>With a final hit, the imp and mushroom collapse to the ground, exhausted.</p>
+        <p>With a final hit, the wisp and mushroom collapse to the ground, exhausted.</p>
         <p>"Alright, you win! We give up!"</p>
         <p>You handcuff them and drag them to the town guard.</p>
       </roleplay>
@@ -131,8 +131,8 @@
     <event on="lose">
       <roleplay title="Defeat" data-line="169">
         <p>The magical duo were simply too powerful - your wooden swords were no match.</p>
-        <p>The Imp, seeing you on the verge of collapsing, lets you off easy "Ah, they're just kids. Not bad for such young 'uns. Let's go terrorize a different town!"</p>
-        <p>The Imp and Mushroom run and float down main street. They knock over a horse's water trough, but are gone soon enough.</p>
+        <p>The Wisp, seeing you on the verge of collapsing, lets you off easy, "They're just kids - not bad for such young 'uns. Let's go terrorize a different town!"</p>
+        <p>The Wisp and Mushroom float down main street, knocking over a final merchant's stall with a giggle on their way out.</p>
       </roleplay>
       <roleplay title="Back to the Guard" data-line="177">
         <p>You return to the guard house, bruised and dejected.</p>
