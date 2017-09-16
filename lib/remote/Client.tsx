@@ -22,6 +22,11 @@ export abstract class ClientBase {
   abstract sendEvent(e: RemotePlayEventBody): void;
 
   protected handleMessage(e: RemotePlayEvent) {
+    if (!e.event) {
+      console.log('Malformed message: ' + e.toString());
+      return;
+    }
+
     // Error if we get a weird message type
     if (['STATUS', 'TOUCH', 'ACTION', 'ERROR'].indexOf(e.event.type) < 0) {
       this.publish({client: e.client, event: {type: 'ERROR', error: 'Received unknown message of type "' + e.event.type + '"'}});
