@@ -27,6 +27,7 @@ export abstract class BrokerBase {
 
   abstract fetchSessionBySecret(secret: SessionSecret): Bluebird<Session>;
   abstract fetchSessionById(id: SessionID): Bluebird<Session>;
+  abstract fetchSessionsByClient(client: ClientID): Bluebird<Session[]>;
 
   createSession(): Bluebird<Session> {
     const s: Session = {secret: makeSecret(), id: Date.now(), lock: null};
@@ -85,7 +86,7 @@ export class InMemoryBroker extends BrokerBase {
 
   fetchSessionBySecret(secret: SessionSecret): Bluebird<Session> {
     return new Bluebird((resolve, reject) => {
-      for(let i = 0; i < this.sessions.length; i++) {
+      for (let i = 0; i < this.sessions.length; i++) {
         if (this.sessions[i].secret === secret) {
           return resolve(this.sessions[i]);
         }
@@ -96,12 +97,28 @@ export class InMemoryBroker extends BrokerBase {
 
   fetchSessionById(id: SessionID): Bluebird<Session> {
     return new Bluebird((resolve, reject) => {
-      for(let i = 0; i < this.sessions.length; i++) {
+      for (let i = 0; i < this.sessions.length; i++) {
         if (this.sessions[i].id === id) {
           return resolve(this.sessions[i]);
         }
       }
       return reject();
+    });
+  }
+
+  fetchSessionsByClient(client: ClientID): Bluebird<Session[]> {
+    return new Bluebird<Session[]>((resolve, reject) => {
+      const sessions = this.clients.filter((c) => {return c.client === client;}).map((c) => {return c.session;});
+
+      const results: Session[] = [];
+      for (const s1 of sessions) {
+        for (const s2 of this.sessions) {
+          if (s2.id === s1) {
+            results.push(s2);
+          }
+        }
+      }
+      return resolve(results);
     });
   }
 
