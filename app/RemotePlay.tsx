@@ -1,4 +1,4 @@
-import {RemotePlayEvent, ClientID} from 'expedition-qdl/lib/remote/Events'
+import {RemotePlayEvent, RemotePlayEventBody, ClientID} from 'expedition-qdl/lib/remote/Events'
 import {ClientBase} from 'expedition-qdl/lib/remote/Client'
 import * as Bluebird from 'bluebird'
 
@@ -29,10 +29,10 @@ export class RemotePlayClient extends ClientBase {
 
 
       this.sock.onerror = (e: Event) => {
-        this.handleMessage({client: this.id, type: 'ERROR', error: 'Socket error: ' + e.toString()});
+        this.handleMessage({client: this.id, event: {type: 'ERROR', error: 'Socket error: ' + e.toString()}});
       };
       this.sock.onmessage = (e: MessageEvent) => {
-        this.handleMessage(e.data);
+        this.handleMessage(JSON.parse(e.data));
       };
 
       let opened = false;
@@ -52,7 +52,7 @@ export class RemotePlayClient extends ClientBase {
             console.log('Stopped sending status; socket not open');
           }
           console.log('Sending status');
-          this.sendEvent({client: this.id, type: 'STATUS', status: {line: 0, waiting: false}});
+          this.sendEvent({type: 'STATUS', status: {line: 0, waiting: false}});
         }, 5000)) as any;
 
         resolve();
@@ -68,8 +68,12 @@ export class RemotePlayClient extends ClientBase {
     this.sock.close();
   }
 
-  sendEvent(e: RemotePlayEvent): void {
-    this.sock.send(JSON.stringify(e));
+  sendEvent(e: RemotePlayEventBody): void {
+    if (!this.sock || this.sock.readyState !== this.sock.OPEN) {
+      return;
+    }
+    const event: RemotePlayEvent = {client: this.id, event: e};
+    this.sock.send(JSON.stringify(event));
   }
 }
 

@@ -15,12 +15,15 @@ import QuestStartContainer from '../QuestStartContainer'
 import QuestEndContainer from '../QuestEndContainer'
 import RemotePlayContainer from '../RemotePlayContainer'
 
+import RemoteTouchPanel from './RemoteTouchPanel'
+
 import {renderCardTemplate} from '../../cardtemplates/Template'
 import {initialSettings} from '../../reducers/Settings'
 import {closeSnackbar} from '../../actions/Snackbar'
 import {initialState} from '../../reducers/Snackbar'
 import {AppStateWithHistory, TransitionType, SearchPhase, RemotePlayPhase, SettingsType, SnackbarState} from '../../reducers/StateTypes'
 import {getStore} from '../../Store'
+import {client as remotePlayClient} from '../../RemotePlay'
 
 const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
 
@@ -131,6 +134,28 @@ export default class Main extends React.Component<MainProps, {}> {
     };
   }
 
+  handleBaseMainRef(r: HTMLElement) {
+    if (!r) {
+      return;
+    }
+
+    // Capture the event during the "capture" phase of event flow
+    // https://www.w3.org/TR/DOM-Level-3-Events/#event-flow
+    // TODO: Unsubscribe listeners, prevent duplicate subscriptions
+    r.addEventListener('touchstart', (e: any) => {
+      const positions: number[][] = Array(e.touches.length);
+      const boundingRect = r.getBoundingClientRect();
+      for (let i = 0; i < e.touches.length; i++) {
+        // Get adjusted coordinates as the percentage of div width/height as measured
+        // from the top left corner of the div.
+        const x = (e.touches[i].clientX - boundingRect.left) / r.offsetWidth * 100;
+        const y = (e.touches[i].clientY - boundingRect.top) / r.offsetHeight * 100;
+        positions[i] = [x, y];
+      }
+      remotePlayClient.sendEvent({type: 'TOUCH', positions});
+    }, true);
+  }
+
   handleChange() {
     // TODO: Handle no-op on RESET_APP from IDE
     this.setState(this.getUpdatedState());
@@ -145,8 +170,9 @@ export default class Main extends React.Component<MainProps, {}> {
     }
 
     const cards: any = [
-      <div className="base_main" key={this.state.key}>
+      <div className="base_main" key={this.state.key} ref={(r: HTMLElement) => this.handleBaseMainRef(r)}>
         {this.state.card}
+        <RemoteTouchPanel/>
       </div>
     ];
 

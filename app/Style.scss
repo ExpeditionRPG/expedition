@@ -586,6 +586,12 @@ p:first-child {
 
   .base_multi_touch_trigger {
     position: absolute;
+
+    &.touchpanel {
+      pointer-events: none;
+      top: 0;
+      left: 0;
+    }
   }
 
   .base_picker {
