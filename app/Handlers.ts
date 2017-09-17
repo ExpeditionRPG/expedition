@@ -12,8 +12,8 @@ export function healthCheck(req: express.Request, res: express.Response) {
 
 export function announcement(req: express.Request, res: express.Response) {
   res.json({
-    message: 'The first expansion is now on Kickstarter! Click here to check it out',
-    link: 'https://ExpeditionGame.com/kickstarter',
+    message: '',
+    link: '',
   });
 }
 
