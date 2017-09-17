@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import {toCard} from '../actions/Card'
 import {AppState, UserState} from '../reducers/StateTypes'
 import {openSnackbar} from '../actions/Snackbar'
-import {remotePlayConnect, remotePlayNewSession} from '../actions/Web'
+import {remotePlayConnect, remotePlayNewSession} from '../actions/RemotePlay'
 import RemotePlay, {RemotePlayStateProps, RemotePlayDispatchProps} from './RemotePlay'
 import {SessionID, SessionSecret} from 'expedition-qdl/lib/remote/Broker'
 

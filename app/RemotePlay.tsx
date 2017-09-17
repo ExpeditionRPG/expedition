@@ -1,5 +1,7 @@
+import Redux from 'redux'
 import {RemotePlayEvent, RemotePlayEventBody, ClientID} from 'expedition-qdl/lib/remote/Events'
 import {ClientBase} from 'expedition-qdl/lib/remote/Client'
+import {NavigateAction} from './actions/ActionTypes'
 import * as Bluebird from 'bluebird'
 
 // The base layer of the remote play network framework; handles
@@ -23,7 +25,6 @@ export class RemotePlayClient extends ClientBase {
       if (this.isConnected()) {
         this.disconnect();
       }
-      this.resetState();
       this.websocketURI = websocketURI;
       this.sock = new WebSocket(this.websocketURI, 'expedition-remote-play-1.0');
 
@@ -74,8 +75,32 @@ export class RemotePlayClient extends ClientBase {
     }
     const event: RemotePlayEvent = {client: this.id, event: e};
     this.sock.send(JSON.stringify(event));
+    console.log('Sent ' + e.type);
+  }
+
+  public createActionMiddleware(): Redux.Middleware {
+    return (api: Redux.MiddlewareAPI<any>) => (next: Redux.Dispatch<any>) => <A extends Redux.Action>(action: A) => {
+      switch(action.type) {
+        case 'NAVIGATE':
+          const na = (action as any as NavigateAction);
+          if (na.to.name !== 'QUEST_CARD') {
+            this.sendEvent({type: 'ACTION', action: JSON.stringify(na)});
+          }
+          break;
+        default:
+          break;
+      }
+      return next(action);
+    }
   }
 }
 
 // TODO: Proper device ID
-export const client = new RemotePlayClient('test');
+let client: RemotePlayClient = null;
+export function getRemotePlayClient(): RemotePlayClient {
+  if (client !== null) {
+    return client
+  }
+  client = new RemotePlayClient('test');
+  return client;
+}

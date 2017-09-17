@@ -10,10 +10,10 @@ import {authSettings} from './Constants'
 import {fetchAnnouncements} from './actions/Announcement'
 import {toPrevious} from './actions/Card'
 import {silentLogin} from './actions/User'
-import {handleRemotePlayEvent} from './actions/Web'
+import {handleRemotePlayEvent} from './actions/RemotePlay'
 import {getStore} from './Store'
 import {getWindow, getGapi, getGA, getDevicePlatform, getDocument, setGA, setupPolyfills} from './Globals'
-import {client as remotePlayClient} from './RemotePlay'
+import {getRemotePlayClient} from './RemotePlay'
 import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 
 
@@ -28,7 +28,8 @@ function setupTapEvents() {
 }
 
 function setupRemotePlay() {
-  remotePlayClient.subscribe((e: RemotePlayEvent) => {
+  getRemotePlayClient().subscribe((e: RemotePlayEvent) => {
+    console.log('HERP');
     getStore().dispatch(handleRemotePlayEvent(e));
   });
 }

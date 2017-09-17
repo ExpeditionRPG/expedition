@@ -1,6 +1,6 @@
 import * as React from 'react'
 import TouchPanel, {TouchPanelProps} from './TouchPanel'
-import {client as remotePlayClient} from '../../RemotePlay'
+import {getRemotePlayClient} from '../../RemotePlay'
 import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 
 export default class RemoteTouchPanel extends TouchPanel {
@@ -12,7 +12,7 @@ export default class RemoteTouchPanel extends TouchPanel {
   constructor(props: TouchPanelProps) {
     super(props);
     this.boundHandleRemotePlayEvent = this.handleRemotePlayEvent.bind(this);
-    remotePlayClient.subscribe(this.boundHandleRemotePlayEvent);
+    getRemotePlayClient().subscribe(this.boundHandleRemotePlayEvent);
     this.styles = {
       center: {
         radius: 24,
@@ -31,12 +31,12 @@ export default class RemoteTouchPanel extends TouchPanel {
       return;
     }
 
-    // TODO: Use e.client for color table lookup
+    // TODO: Use e.client for color table lookup, handle multiple clients
     this.processInput(e.event.positions);
   }
 
   componentWillUnmount() {
     super.componentWillUnmount();
-    remotePlayClient.unsubscribe(this.boundHandleRemotePlayEvent);
+    getRemotePlayClient().unsubscribe(this.boundHandleRemotePlayEvent);
   }
 }

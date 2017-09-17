@@ -23,7 +23,7 @@ import {closeSnackbar} from '../../actions/Snackbar'
 import {initialState} from '../../reducers/Snackbar'
 import {AppStateWithHistory, TransitionType, SearchPhase, RemotePlayPhase, SettingsType, SnackbarState} from '../../reducers/StateTypes'
 import {getStore} from '../../Store'
-import {client as remotePlayClient} from '../../RemotePlay'
+import {getRemotePlayClient} from '../../RemotePlay'
 
 const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
 
@@ -152,7 +152,7 @@ export default class Main extends React.Component<MainProps, {}> {
         const y = (e.touches[i].clientY - boundingRect.top) / r.offsetHeight * 100;
         positions[i] = [x, y];
       }
-      remotePlayClient.sendEvent({type: 'TOUCH', positions});
+      getRemotePlayClient().sendEvent({type: 'TOUCH', positions});
     }, true);
   }
 

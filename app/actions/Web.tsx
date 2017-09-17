@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {authSettings, remotePlaySettings} from '../Constants'
+import {authSettings} from '../Constants'
 import {toCard} from './Card'
 import {initQuest} from './Quest'
 
@@ -12,8 +12,6 @@ import {getDevicePlatform, getAppVersion} from '../Globals'
 import {logEvent} from '../Main'
 import {TemplateContext} from '../cardtemplates/TemplateTypes'
 import {defaultContext} from '../cardtemplates/Template'
-import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
-import {client as remotePlayClient} from '../RemotePlay'
 
 declare var window:any;
 declare var require:any;
@@ -148,100 +146,5 @@ export function submitUserFeedback(quest: QuestState, settings: SettingsType, us
       logEvent('user_feedback_' + userFeedback.type + '_err', data);
       dispatch(openSnackbar('Error submitting feedback: ' + error));
     });
-  };
-}
-
-export function handleRemotePlayEvent(e: RemotePlayEvent) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    console.log('TODO REMOTE PLAY EVENT HANDLER');
-    console.log(e);
-  };
-}
-
-export function remotePlayNewSession(user: UserState) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    fetch(remotePlaySettings.newSessionURI, {
-      method: 'POST',
-      mode: 'cors',
-      headers: new Headers({
-        'Accept': 'text/html',
-        'Content-Type': 'text/html',
-      }),
-    })
-    .then((response: Response) => {
-      return response.json();
-    })
-    .then((data: any) => {
-      console.log(data);
-      if (!data.secret) {
-        return dispatch(openSnackbar('Error parsing new session secret'));
-      }
-      console.log('Made new session; secret is ' + data.secret);
-      return dispatch(remotePlayConnect(user, data.secret));
-    })
-    .catch((error: Error) => {
-      logEvent('remote_play_new_session_err', error.toString());
-      dispatch(openSnackbar('Error creating session: ' + error.toString()));
-    });
-  };
-}
-
-export function remotePlayConnect(user: UserState, secret: string) {
-  let uri = '';
-  return (dispatch: Redux.Dispatch<any>): any => {
-    console.log('Attempting to connect to session with secret ' + secret);
-    fetch(remotePlaySettings.connectURI, {
-      method: 'POST',
-      mode: 'cors',
-      headers: new Headers({
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }),
-      body: JSON.stringify({secret}),
-    })
-    .then((response: Response) => {
-      return response.json();
-    })
-    .then((data: any) => {
-      console.log(data);
-      if (!data.uri) {
-        return dispatch(openSnackbar('Error parsing session URI'));
-      }
-      uri = data.uri;
-
-      console.log('Connecting to client with URI: ' + uri);
-      remotePlayClient.setID(user.id.toString());
-      return remotePlayClient.connect(uri);
-    })
-    .then(() => {
-      dispatch({type: 'REMOTE_PLAY_SESSION', session: {secret}, uri});
-      dispatch(toCard('REMOTE_PLAY', 'LOBBY'));
-    })
-    .catch((error: Error) => {
-      logEvent('remote_play_connect_err', error.toString());
-      dispatch(openSnackbar('Error connecting: ' + error.toString()));
-    });
-  };
-}
-
-// TODO: Move to RemotePlay actions file
-export function loadRemotePlay(user: UserState) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    console.log('Loading remote play page');
-    fetch(remotePlaySettings.firstLoadURI + '?id=' + user.id, {
-      method: 'GET',
-      mode: 'cors',
-    })
-    .then((response: Response) => {
-      return response.json();
-    })
-    .then((data: any) => {
-      dispatch({type: 'REMOTE_PLAY_HISTORY', history: data.history});
-      dispatch(toCard('REMOTE_PLAY', 'CONNECT'));
-    })
-    .catch((error: Error) => {
-      logEvent('remote_play_init_err', error.toString());
-      dispatch(openSnackbar('Remote play service unavailable: ' + error.toString()));
-    })
   };
 }
