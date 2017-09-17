@@ -35,6 +35,10 @@ export abstract class ClientBase {
 
     // Dedupe messages to prevent unnecessary handler action
     if (e.event.type === 'STATUS') {
+      if (!this.clientStatusSet[e.client]) {
+        this.clientStatusSet[e.client] = {line: -1, waiting: null};
+      }
+
       const s = this.clientStatusSet[e.client];
       if (s.line === e.event.status.line && s.waiting === e.event.status.waiting) {
         return;
