@@ -21,6 +21,18 @@ describe('QDLParser', () => {
     expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.basicXML);
   });
 
+  it('parses QDL to XML with lots of conditionals', () => {
+    var qdl = new QDLParser(XMLRenderer);
+
+    qdl.render(new BlockList(TestData.conditionalsMD));
+    var msgs = qdl.getFinalizedLogs();
+
+    expect(msgs['error']).toEqual([]);
+    expect(msgs['warning']).toEqual([]);
+    expect(msgs['internal']).toEqual([]);
+    expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.conditionalsXML);
+  });
+
   it('parses QDL to XML with lots of comments', () => {
     var qdl = new QDLParser(XMLRenderer);
 
