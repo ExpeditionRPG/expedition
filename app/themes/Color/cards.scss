@@ -233,6 +233,7 @@ $large-icon-width: 0.195in;
         bottom: 0;
         left: 0;
         z-index: 999;
+        line-height: 1.1;
       }
     }
 
@@ -369,7 +370,7 @@ $large-icon-width: 0.195in;
       }
 
       &.bottomBar .flavortext {
-        padding-bottom: 0.8*$padding;
+        padding-bottom: 0.75*$padding;
       }
     }
 
@@ -397,6 +398,7 @@ $large-icon-width: 0.195in;
       article {
         .ongoing {
           margin-top: $tiny;
+          margin-right: -$tiny;
         }
 
         .surge {

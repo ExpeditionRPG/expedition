@@ -177,7 +177,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                   <tbody>
                     <tr><td>Max</td><td><strong>{card.empowered}: </strong>{card.power}</td></tr>
                     <tr className="personaMarker personaMarkerTop"><td>△</td></tr>
-                    <tr><td>Base</td><td><strong>{card.base}</strong>&nbsp;&nbsp;({card.class} type)</td></tr>
+                    <tr><td>Base</td><td><strong>{card.base}</strong>&nbsp;&nbsp;(Type: {card.class})</td></tr>
                     <tr className="personaMarker personaMarkerBottom"><td>▽</td></tr>
                     <tr><td>Min</td><td><strong>{card.afflicted}: </strong>{card.affliction}</td></tr>
                   </tbody>
