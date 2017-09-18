@@ -156,7 +156,7 @@ Where choices are triggered by adventurers making a choice between buttons, even
 Cards are your basic storytelling tool in QDL. You have at your disposal:
 
 
-### Combat Cards (#combat_cards)
+### Combat Cards
 
 What's an adventure without some swordplay? The basic syntax for a combat card is:
 
