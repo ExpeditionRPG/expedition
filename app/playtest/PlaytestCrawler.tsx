@@ -45,7 +45,7 @@ export class PlaytestCrawler extends StatsCrawler {
     for (let l of this.statsByEvent['IMPLICIT_END'].lines) {
       this.logger.err('An action on this card leads nowhere (invalid goto id or no **end**)', '430', l);
     }
-    return [this.queue.length, this.seen.size];
+    return [this.queue.size, this.seen.size];
   }
 
   // override onNode to validate each node as we see them.
