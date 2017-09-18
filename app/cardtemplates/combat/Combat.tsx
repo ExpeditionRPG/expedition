@@ -188,7 +188,7 @@ function renderSurge(props: CombatProps): JSX.Element {
     helpText = (
       <span>
         <p>
-          Immediately follow the surge action listed on all remaining encounter cards. Some encounters' surges may also apply after they've been knocked out.
+          Immediately follow the surge action listed on all remaining encounter cards. Some Undead surges apply after they've been knocked out.
         </p>
         <p>
           Surge effects happen before abilities. Abilities that apply "this round" do not affect surges (however, loot may still be used during a surge). If you are knocked out during a surge, do not resolve your abilities.
