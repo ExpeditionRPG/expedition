@@ -99,6 +99,34 @@ data.basicXML = `<quest title="Quest Title" data-line="0">
     <trigger data-line="49">end</trigger>
 </quest>`;
 
+data.conditionalsMD = `#Quest Title
+
+_Roleplay Card_
+
+{{a=1}}
+
+{{b="b"}}
+
+> {{a == 1}} Visible {{b}}
+
+> {{a > 1}} Invisible {{b}}
+
+**end**`;
+
+data.conditionalsXML = `<quest title="Quest Title" data-line="0">
+    <roleplay title="Roleplay Card" data-line="2">
+        <p>{{a=1}}</p>
+        <p>{{b=&quot;b&quot;}}</p>
+        <instruction if="a == 1">
+            <p>Visible {{b}}</p>
+        </instruction>
+        <instruction if="a &gt; 1">
+            <p>Invisible {{b}}</p>
+        </instruction>
+    </roleplay>
+    <trigger data-line="12">end</trigger>
+</quest>`;
+
 data.commentsMD = `#Quest Title
 
 _Roleplay Card_
