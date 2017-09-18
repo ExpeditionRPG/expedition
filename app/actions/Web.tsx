@@ -11,7 +11,7 @@ import {QuestDetails} from '../reducers/QuestTypes'
 import {getDevicePlatform, getAppVersion} from '../Globals'
 import {logEvent} from '../Main'
 import {TemplateContext} from '../cardtemplates/TemplateTypes'
-import {defaultContext} from '../cardtemplates/Template'
+import {defaultContext, ParserNode} from '../cardtemplates/Template'
 
 declare var window:any;
 declare var require:any;
@@ -51,7 +51,15 @@ export function loadQuestXML(details: QuestDetails, questNode: Cheerio, ctx: Tem
     logEvent('quest_start', details);
 
     dispatch(initQuest(details, questNode, ctx));
-    dispatch(toCard('QUEST_START'));
+
+    const firstNode = questNode.children().eq(0);
+    const node = new ParserNode(firstNode, ctx);
+
+    if (node.elem[0].attribs.skipsetup) {
+      dispatch(toCard('QUEST_CARD'));
+    } else {
+      dispatch(toCard('QUEST_START'));
+    }
   };
 }
 

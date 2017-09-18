@@ -1,5 +1,5 @@
 <quest title="Test Quest" data-line="0">
-  <roleplay title="Setup" data-line="2">
+  <roleplay skipSetup="true" title="Setup" data-line="2">
     <p>Custom setup card, replacing the default quest setup card.</p>
   </roleplay>
   <roleplay title="Test" id="start" data-line="6">
@@ -65,16 +65,16 @@
       </roleplay>
     </event>
     <event on="win">
-      <roleplay title="" data-line="81">
+      <roleplay title="" data-line="84">
         <p>You win!</p>
       </roleplay>
-      <trigger data-line="83">end</trigger>
+      <trigger data-line="86">end</trigger>
     </event>
     <event on="lose">
-      <roleplay title="" data-line="87">
+      <roleplay title="" data-line="90">
         <p>You lose! There should be a retry button here.</p>
       </roleplay>
-      <trigger data-line="89">end</trigger>
+      <trigger data-line="92">end</trigger>
     </event>
   </combat>
 </quest>
