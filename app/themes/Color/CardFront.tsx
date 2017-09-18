@@ -112,7 +112,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="name">{card.name}</div>
               </header>
               <article>
-                <div className="type">Tier {romanize(card.tier)} {card.class} {icon(card.class.toLowerCase() + '_small')}</div>
+                <div className="type">Tier {romanize(card.tier)} {card.class}</div>
                 {card.ongoing1 &&
                   <div className="ongoing">{card.ongoing1}</div>
                 }
