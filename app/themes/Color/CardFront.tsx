@@ -72,6 +72,7 @@ export default class CardFront extends React.Component<CardType, {}> {
               <footer>
                 <div className="flavortext">{card.flavortext}</div>
               </footer>
+              {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
             </div>
           </div>
         );
@@ -98,6 +99,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                   {horizontalCounter(MAX_ADVENTURER_HEALTH)}
                 </div>
               </footer>
+              {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
             </div>
           </div>
         );
@@ -125,6 +127,7 @@ export default class CardFront extends React.Component<CardType, {}> {
               <footer>
                 <div className="flavortext">{card.flavortext}</div>
               </footer>
+              {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
               {healthCounter(card.health)}
             </div>
           </div>
@@ -169,6 +172,7 @@ export default class CardFront extends React.Component<CardType, {}> {
               <footer>
                 <div className="flavortext">{card.flavortext}</div>
               </footer>
+              {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
               {card.tracker && lootCounter(card.tracker)}
             </div>
           </div>
@@ -182,7 +186,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                   <tbody>
                     <tr><td>Max</td><td><strong>{card.empowered}: </strong>{card.power}</td></tr>
                     <tr className="personaMarker personaMarkerTop"><td>△</td></tr>
-                    <tr><td>Base</td><td><strong>{card.base}</strong>&nbsp;&nbsp;(Type: {card.class})</td></tr>
+                    <tr><td>Base</td><td><strong>{card.base}</strong>&nbsp;&nbsp;(Type: {card.class}) {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}</td></tr>
                     <tr className="personaMarker personaMarkerBottom"><td>▽</td></tr>
                     <tr><td>Min</td><td><strong>{card.afflicted}: </strong>{card.affliction}</td></tr>
                   </tbody>

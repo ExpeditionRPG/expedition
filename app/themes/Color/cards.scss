@@ -14,9 +14,7 @@ $large-icon-width: 0.195in;
 #renderer.Color {
 
   body.singlePage {
-
     .card {
-
       &.Ability {
         border-color: #E5DFBF;
       }
@@ -54,7 +52,6 @@ $large-icon-width: 0.195in;
   }
 
   .hp-tracker-vertical-left {
-
     list-style: none;
     text-align: right;
     display: block;
@@ -77,7 +74,6 @@ $large-icon-width: 0.195in;
   }
 
   .hp-tracker-vertical-right {
-
     list-style: none;
     text-align: right;
     display: block;
@@ -96,7 +92,6 @@ $large-icon-width: 0.195in;
   }
 
   .hp-tracker-horizontal, .counter-horizontal {
-
     list-style: none;
     display: block;
     margin: 0;
@@ -126,7 +121,6 @@ $large-icon-width: 0.195in;
   }
 
   .adventurer-hp-tracker {
-
     font-size: $text-size-content;
     font-family: $font-body;
     list-style: none;
@@ -146,6 +140,13 @@ $large-icon-width: 0.195in;
     }
   }
 
+  .expansionIcon {
+    position: absolute;
+    bottom: $edge;
+    right: -0.5pt;
+    opacity: 0.5;
+  }
+
 
   /* ===== THE CARDS ===== */
 
@@ -154,7 +155,6 @@ $large-icon-width: 0.195in;
     font-family: $font-body;
 
     header {
-
       position: relative;
       margin: $top-padding $edge 3pt $edge;
 
@@ -183,7 +183,6 @@ $large-icon-width: 0.195in;
 
 
     article {
-
       position: relative;
       clear: left;
       margin: 0 $edge $edge $edge;
@@ -220,7 +219,6 @@ $large-icon-width: 0.195in;
     }
 
     footer {
-
       position: absolute;
       left: $edge; bottom: $border; right: $edge;
       height: $footer-height;
@@ -229,18 +227,16 @@ $large-icon-width: 0.195in;
       .flavortext {
         font-style: italic;
         position: absolute;
-        right: 0;
+        right: $tiny;
         bottom: 0;
-        left: 0;
+        left: $tiny;
         z-index: 999;
         line-height: 1.1;
       }
     }
 
     &.horizontal {
-
       &.front.Encounter {
-
         .contents {
           margin-left: 0;
         }
@@ -265,14 +261,11 @@ $large-icon-width: 0.195in;
     }
 
     &.Ability {
-
       header {
-
         padding: 0;
         text-align: center;
 
         .typeicon {
-
           position: absolute;
           left: -3.3pt;
           top: -1.5pt;
@@ -284,7 +277,6 @@ $large-icon-width: 0.195in;
         }
 
         .classicon {
-
           position: absolute;
           right: -5pt;
           top: -1.5pt;
@@ -302,7 +294,6 @@ $large-icon-width: 0.195in;
       }
 
       article {
-
         .preamble {
           min-height: 0.65in;
           text-align: center;
@@ -319,6 +310,8 @@ $large-icon-width: 0.195in;
     }
 
     &.Loot {
+      text-align: center;
+
       .abilitytext {
         height: auto;
         min-height: 0.4in;
@@ -331,13 +324,15 @@ $large-icon-width: 0.195in;
     }
 
     &.Helper {
-
       article {
         padding-top: 0.2in;
+
+        div {
+          padding-bottom: 0.02in;
+        }
       }
 
       .inline_icon {
-
         height: $large-icon-width;
         line-height: $large-icon-width;
         margin-top: 0.055in;
@@ -375,7 +370,6 @@ $large-icon-width: 0.195in;
     }
 
     &.Adventurer {
-
       text-align: center;
 
       .adventurertext {
@@ -387,10 +381,14 @@ $large-icon-width: 0.195in;
         right: 0.1in;
         left: 0.1in;
       }
+
+      .expansionIcon {
+        top: 0;
+        right: 0;
+      }
     }
 
     &.Encounter {
-
       header {
         padding-right: 0;
       }
@@ -432,43 +430,30 @@ $large-icon-width: 0.195in;
       &.hp10 .hp-tracker-vertical-right li {
         padding-bottom: 0.042in;
       }
-    }
 
-    &.Loot {
-
-      text-align: center;
-
-      &.tracker {
-
-        article {
-          padding: 0 0.15in;
-        }
-
-        .hp-tracker {
-          color: #888;
-        }
-
-        .hp-tracker-vertical-right {
-          top: 0.02in;
-        }
-
-        &.bottomBar {
-
-          footer {
-            bottom: 0.28in;
-          }
-        }
-      }
-
-      footer {
-        text-align: center;
+      .expansionIcon {
+        top: -1pt;
+        right: 0.51in;
+        opacity: 0.6;
       }
     }
 
-    &.Helper {
+    &.Loot.tracker {
       article {
-        div {
-          padding-bottom: 0.02in;
+        padding: 0 0.15in;
+      }
+
+      .hp-tracker {
+        color: #888;
+      }
+
+      .hp-tracker-vertical-right {
+        top: 0.02in;
+      }
+
+      &.bottomBar {
+        footer {
+          bottom: 0.28in;
         }
       }
     }
@@ -478,6 +463,16 @@ $large-icon-width: 0.195in;
         margin: 0 !important;
         transform-origin: 38% 51%;
       }
+
+      .expansionIcon {
+        position: relative;
+        display: inline-block;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
       article {
         padding: 0;
         top: 50%;
@@ -538,7 +533,6 @@ $large-icon-width: 0.195in;
   /* ===== THE CARD BACKS ===== */
 
   .card.back {
-
     .naming {
       font-family: $font-body;
       color: #F6EECA;
