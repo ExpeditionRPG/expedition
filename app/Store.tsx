@@ -17,7 +17,7 @@ export function installStore(createdStore: any) {
 function createAppStore() {
 
   const devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
-  const middleware = [thunk, getRemotePlayClient().createActionMiddleware()];
+  const middleware = [getRemotePlayClient().createActionMiddleware(), thunk];
 
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   installStore(createStore(expeditionApp,  composeEnhancers(applyMiddleware(...middleware))));

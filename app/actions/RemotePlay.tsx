@@ -1,22 +1,29 @@
 import Redux from 'redux'
-import {toCard} from './Card'
+import {toCard, toPrevious} from './Card'
 import {remotePlaySettings} from '../Constants'
-import {NavigateAction} from './ActionTypes'
+import {RemotePlayAction, NavigateAction, ReturnAction} from './ActionTypes'
 import {UserState} from '../reducers/StateTypes'
 import {logEvent} from '../Main'
 import {openSnackbar} from '../actions/Snackbar'
 import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 import {getRemotePlayClient} from '../RemotePlay'
 
+function local(a: Redux.Action): RemotePlayAction {
+  return {type: 'REMOTE_PLAY_ACTION', action: a};
+}
 
 function handleRemoteAction(e: Redux.Action) {
   return (dispatch: Redux.Dispatch<any>): any => {
     switch (e.type) {
       case 'NAVIGATE':
         const na = (e as NavigateAction);
-        dispatch(toCard(na.to.name, na.to.phase, na.to.overrideDebounce));
+        dispatch(local(toCard(na.to.name, na.to.phase, na.to.overrideDebounce)));
+        break;
+      case 'RETURN':
+        const ra = (e as ReturnAction);
+        dispatch(local(toPrevious(ra.to.name, ra.to.phase, ra.before, ra.skip)));
       default:
-        return;
+        break;
     }
   };
 }
@@ -25,16 +32,19 @@ export function handleRemotePlayEvent(e: RemotePlayEvent) {
   return (dispatch: Redux.Dispatch<any>): any => {
     switch (e.event.type) {
       case 'STATUS':
-        return console.log('TODO USE STATUS ' + JSON.stringify(e.event));
+        console.log('TODO USE STATUS ' + JSON.stringify(e.event));
+        break;
       case 'TOUCH':
         // We don't care about dispatching touch events (they're tracked elsewhere)
-        return;
+        break;
       case 'ACTION':
         dispatch(handleRemoteAction(JSON.parse(e.event.action)));
+        break;
       case 'ERROR':
-        return console.error(e.event.toString());
+        console.error(JSON.stringify(e.event));
+        break;
       default:
-         console.log('UNKNOWN EVENT ' + (e.event as any).type);
+        console.log('UNKNOWN EVENT ' + (e.event as any).type);
     }
   };
 }

@@ -100,3 +100,12 @@ export interface RemotePlayHistoryAction extends Redux.Action {
   type: 'REMOTE_PLAY_HISTORY';
   history: SessionMetadata[];
 }
+
+// RemotePlayActions wrap an existing action; this is so that inbound
+// actions to the redux dispatch middleware that were created from
+// another client's interaction are not re-broadcast in an endless loop
+// to other clients.
+export interface RemotePlayAction extends Redux.Action {
+  type: 'REMOTE_PLAY_ACTION';
+  action: Redux.Action;
+}

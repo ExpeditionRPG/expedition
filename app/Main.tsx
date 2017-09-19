@@ -29,7 +29,6 @@ function setupTapEvents() {
 
 function setupRemotePlay() {
   getRemotePlayClient().subscribe((e: RemotePlayEvent) => {
-    console.log('HERP');
     getStore().dispatch(handleRemotePlayEvent(e));
   });
 }

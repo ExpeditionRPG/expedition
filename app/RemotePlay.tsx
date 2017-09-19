@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {RemotePlayEvent, RemotePlayEventBody, ClientID} from 'expedition-qdl/lib/remote/Events'
 import {ClientBase} from 'expedition-qdl/lib/remote/Client'
-import {NavigateAction} from './actions/ActionTypes'
+import {NavigateAction, RemotePlayAction} from './actions/ActionTypes'
 import * as Bluebird from 'bluebird'
 
 // The base layer of the remote play network framework; handles
@@ -52,7 +52,6 @@ export class RemotePlayClient extends ClientBase {
             clearInterval(this.statusTimer);
             console.log('Stopped sending status; socket not open');
           }
-          console.log('Sending status');
           this.sendEvent({type: 'STATUS', status: {line: 0, waiting: false}});
         }, 5000)) as any;
 
@@ -80,17 +79,40 @@ export class RemotePlayClient extends ClientBase {
 
   public createActionMiddleware(): Redux.Middleware {
     return (api: Redux.MiddlewareAPI<any>) => (next: Redux.Dispatch<any>) => <A extends Redux.Action>(action: A) => {
-      switch(action.type) {
+      if (!action) {
+        next(action);
+        return;
+      }
+
+      // If the action currently dispatched was dispatched from remote play,
+      // let it pass through and don't broadcast it to other devices.
+      // TODO: Get this to handle multiple async dispatches, probably by reimplementing redux-thunk.
+      let nextAction: Redux.Action;
+      if (action.type === 'REMOTE_PLAY_ACTION') {
+        next((action as any as RemotePlayAction).action);
+        return;
+      } else {
+        nextAction = next(action);
+      }
+
+      if (!nextAction) {
+        return;
+      }
+
+      switch(nextAction.type) {
         case 'NAVIGATE':
-          const na = (action as any as NavigateAction);
+          const na = (nextAction as any as NavigateAction);
           if (na.to.name !== 'QUEST_CARD') {
             this.sendEvent({type: 'ACTION', action: JSON.stringify(na)});
           }
           break;
+        case 'RETURN':
+          this.sendEvent({type: 'ACTION', action: JSON.stringify(nextAction)});
+          break;
         default:
           break;
       }
-      return next(action);
+      return;
     }
   }
 }
