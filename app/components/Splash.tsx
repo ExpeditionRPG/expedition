@@ -31,25 +31,25 @@ const Splash = (props: any): JSX.Element => {
       </div>
       <div className="body">
         <div>
+          <div className="mobileOnly alert">
+            <h3>Looks like you're on mobile! Visit this page on a desktop browser to get started: <strong><a href="https://Quests.ExpeditionGame.com">Quests.ExpeditionGame.com</a></strong></h3>
+          </div>
           <h1><span>Share your <strong>Stories</strong></span> <span>with the <strong>World</strong></span></h1>
           <div className="worldMap">
             <img alt="Countries with Expedition adventurers - Jan-April 2017" src="/images/worldmap.png"></img>
           </div>
-          <div className="imageText">Countries with Expedition players</div>
-          <h3>Write adventures for <a target="_blank" href="https://expeditiongame.com">Expedition: The Roleplaying Card Game</a></h3>
+          <div className="imageText">Adventurers waiting for your next hit</div>
+          <h3>Write interactive adventures for <a target="_blank" href="https://expeditiongame.com">Expedition: The Roleplaying Card Game</a></h3>
           <h3>Build an international fanbase</h3>
-          <h3>Earn tips and donations from your followers</h3>
+          <h3>Get paid for writing through tips from your fans</h3>
           <div className="buttonBox login">
             <Button onTouchTap={() => props.onLogin('main')}>Get Started</Button>
           </div>
-          <h3 className="mobileOnly">
-            <strong>Visit this page on a desktop browser to get started: <a href="https://Quests.ExpeditionGame.com">Quests.ExpeditionGame.com</a></strong>
-          </h3>
         </div>
         <div>
           <h1>Built for <strong>Authors</strong></h1>
           <h3>
-            <span>Everything you need to write, test,</span> <span>and publish your own quests.</span>
+            <span>Everything you need to write</span> <span>and publish your own quests.</span>
           </h3>
           <div className="showcase">
             <div>

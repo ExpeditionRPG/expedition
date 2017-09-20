@@ -154,6 +154,12 @@ label {
     margin-top: -8px;
   }
 
+  .alert {
+    background: white;
+    padding: 5%;
+    margin-bottom: 5%;
+  }
+
   .worldMap {
     border-left: 0;
     border-right: 0;
@@ -197,6 +203,7 @@ label {
     .imageText {
       font-style: italic;
       color: rgba(0,0,0,0.5);
+      margin-bottom: $padBase;
     }
 
     h1, h3 {
@@ -218,6 +225,7 @@ label {
 
     h3 {
       font-size: $fontSizeImportant;
+      font-family: 'Minion-Pro', serif !important;
     }
 
     &>* {
