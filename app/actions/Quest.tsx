@@ -10,7 +10,8 @@ import {
 import {setSnackbar} from './Snackbar'
 import {QuestType, UserState, ShareType} from '../reducers/StateTypes'
 
-import {setDialog} from './Dialogs'
+import {setDialog, pushError, pushHTTPError} from './Dialogs'
+import {startPlaytestWorker} from './Editor'
 import {realtimeUtils} from '../Auth'
 import {
   VERSION,
@@ -22,7 +23,6 @@ import {
   API_HOST,
   PARTITIONS,
 } from '../Constants'
-import {pushError, pushHTTPError} from './Dialogs'
 import {renderXML} from 'expedition-qdl/lib/render/QDLParser'
 
 const Cheerio: any = require('cheerio');
@@ -221,6 +221,8 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
       });
       dispatch(receiveQuestLoad(quest));
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
+      // Kick off a playtest after allowing the main thread to re-paint
+      setTimeout(() => dispatch(startPlaytestWorker(xmlResult.getResult())), 1);
     });
   },
   (model: any) => {

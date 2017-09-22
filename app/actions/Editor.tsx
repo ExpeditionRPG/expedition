@@ -69,7 +69,7 @@ export function getPlayNode(node: Cheerio): Cheerio {
   return node;
 }
 
-function startPlaytestWorker(elem: Cheerio) {
+export function startPlaytestWorker(elem: Cheerio) {
   return (dispatch: Redux.Dispatch<any>): any => {
     if (!(window as any).Worker) {
       console.log('Web worker not available in this browser, skipping playtest.');
