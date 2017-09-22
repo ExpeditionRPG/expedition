@@ -180,13 +180,13 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
     if (!metadata) { // Create metadata if it's an old quest w/o metadata attribute
       // Default to any metadata set in the markdown metadata (migrate from the old format)
       try {
-        const oldMeta = renderXML(md.toString()).getMeta();
         const defaults = {
           ...METADATA_DEFAULTS,
           summary: '',
           author: user.displayName,
           email: user.email,
-          ...oldMeta,
+          minplayers: 1,
+          maxplayers: 6,
         };
         metadata = createDocMetadata(doc.getModel(), defaults);
       } catch(err) {
@@ -203,7 +203,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
     const text: string = md.getText();
     getPublishedQuestMeta(docid, (quest: QuestType) => {
       const xmlResult = renderXML(text);
-      quest = Object.assign(quest || {}, xmlResult.getMeta(), {
+      quest = Object.assign(quest || {}, {
         id: docid,
         mdRealtime: md,
         notesRealtime: notes,

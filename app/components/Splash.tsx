@@ -38,7 +38,7 @@ const Splash = (props: any): JSX.Element => {
           <div className="worldMap">
             <img alt="Countries with Expedition adventurers - Jan-April 2017" src="/images/worldmap.png"></img>
           </div>
-          <div className="imageText">Adventurers waiting for your next hit</div>
+          <div className="imageText">Adventurers waiting for your next story</div>
           <h3>Write interactive adventures for <a target="_blank" href="https://expeditiongame.com">Expedition: The Roleplaying Card Game</a></h3>
           <h3>Build an international fanbase</h3>
           <h3>Get paid for writing through tips from your fans</h3>
