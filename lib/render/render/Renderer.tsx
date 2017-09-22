@@ -34,11 +34,11 @@ export function sanitizeStyles(string: string): string {
   string = string.replace(REGEX.HTML_TAG, '');
 
   // replace markdown with HTML tags
-  string = string.replace(/(\*\*)([^\*]*)(\*\*)/g, '<b>$2</b>');
-  string = string.replace(/(\_\_)([^\_]*)(\_\_)/g, '<b>$2</b>');
-  string = string.replace(/(\*)([^\*]*)(\*)/g, '<i>$2</i>');
-  string = string.replace(/(\_)([^\_]*)(\_)/g, '<i>$2</i>');
-  string = string.replace(/(~~)([^~]*)(~~)/g, '<del>$2</del>');
+  string = string.replace(/(\*\*)([^\*{}]*)(\*\*)/g, '<b>$2</b>');
+  string = string.replace(/(\_\_)([^\_{}]*)(\_\_)/g, '<b>$2</b>');
+  string = string.replace(/(\*)([^\*{}]*)(\*)/g, '<i>$2</i>');
+  string = string.replace(/(\_)([^\_{}]*)(\_)/g, '<i>$2</i>');
+  string = string.replace(/(~~)([^~{}]*)(~~)/g, '<del>$2</del>');
 
   return string;
 }

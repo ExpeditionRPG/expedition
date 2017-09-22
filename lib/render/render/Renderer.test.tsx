@@ -30,6 +30,12 @@ describe('Renderer', () => {
       const expected = '<b>1</b><b>1</b><i>2</i><i>2</i><del>3</del>';
       expect(output).toEqual(expected);
     });
+    it('does not stylize inside of ops', () => {
+      const input = '{{_.run()}}_1_{{_.stop()}}{_text in curlies_}';
+      const output = sanitizeStyles(input);
+      const expected = '{{_.run()}}<i>1</i>{{_.stop()}}{<i>text in curlies</i>}';
+      expect(output).toEqual(expected);
+    });
     it('collapses nested styles', () => {
       const input = '<strong><strong>1</strong></strong><em><em>2</em></em><del><del>3</del></del>';
       const output = sanitizeStyles(input);
