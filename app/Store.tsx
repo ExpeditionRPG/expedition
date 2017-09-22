@@ -1,4 +1,3 @@
-import thunk from 'redux-thunk'
 import { createStore, applyMiddleware, compose } from 'redux'
 import expeditionApp from './reducers/CombinedReducers'
 import {getRemotePlayClient} from './RemotePlay'
@@ -17,7 +16,7 @@ export function installStore(createdStore: any) {
 function createAppStore() {
 
   const devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
-  const middleware = [getRemotePlayClient().createActionMiddleware(), thunk];
+  const middleware = [getRemotePlayClient().createActionMiddleware()];
 
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   installStore(createStore(expeditionApp,  composeEnhancers(applyMiddleware(...middleware))));

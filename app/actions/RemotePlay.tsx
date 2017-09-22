@@ -1,32 +1,33 @@
 import Redux from 'redux'
-import {toCard, toPrevious} from './Card'
+import {toCard} from './Card'
 import {remotePlaySettings} from '../Constants'
-import {RemotePlayAction, NavigateAction, ReturnAction} from './ActionTypes'
+import {RemotePlayAction, RemotePlayFunctionAction, NavigateAction, ReturnAction, ActionFn, ActionFnArgs} from './ActionTypes'
 import {UserState} from '../reducers/StateTypes'
 import {logEvent} from '../Main'
 import {openSnackbar} from '../actions/Snackbar'
 import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 import {getRemotePlayClient} from '../RemotePlay'
 
-function local(a: Redux.Action): RemotePlayAction {
+export function local(a: Redux.Action): RemotePlayAction {
   return {type: 'REMOTE_PLAY_ACTION', action: a};
 }
 
-function handleRemoteAction(e: Redux.Action) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    switch (e.type) {
-      case 'NAVIGATE':
-        const na = (e as NavigateAction);
-        dispatch(local(toCard(na.to.name, na.to.phase, na.to.overrideDebounce)));
-        break;
-      case 'RETURN':
-        const ra = (e as ReturnAction);
-        dispatch(local(toPrevious(ra.to.name, ra.to.phase, ra.before, ra.skip)));
-      default:
-        break;
-    }
-  };
+/*
+function handleRemoteAction(e: Redux.Action): ActionFn {
+
+  switch (e.type) {
+    case 'NAVIGATE':
+      return toCard(...e);
+    case 'RETURN':
+      const ra = (e as ReturnAction);
+      return toPrevious(ra.to.name, ra.to.phase, ra.before, ra.skip);
+    case 'REMOTE_PLAY_FN':
+      const fa = (e as RemotePlayFunctionAction);
+    default:
+      return
+  }
 }
+*/
 
 export function handleRemotePlayEvent(e: RemotePlayEvent) {
   return (dispatch: Redux.Dispatch<any>): any => {
@@ -38,7 +39,12 @@ export function handleRemotePlayEvent(e: RemotePlayEvent) {
         // We don't care about dispatching touch events (they're tracked elsewhere)
         break;
       case 'ACTION':
-        dispatch(handleRemoteAction(JSON.parse(e.event.action)));
+        // TODO: remove this whitelist
+        const a: ActionFnArgs = JSON.parse(e.event.action);
+        if (a.fn !== 'toCardBase') {
+          break;
+        }
+        //dispatch(getAction(a.fn)(a));
         break;
       case 'ERROR':
         console.error(JSON.stringify(e.event));

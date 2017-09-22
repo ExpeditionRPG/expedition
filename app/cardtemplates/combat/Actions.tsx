@@ -223,7 +223,7 @@ export function handleResolvePhase(node: ParserNode) {
 }
 
 export function midCombatChoice(settings: SettingsType, parent: ParserNode, index: number) {
-  return (dispatch: Redux.Dispatch<any>): any => {
+  const midCombatChoice = (dispatch: Redux.Dispatch<any>): any => {
     parent = parent.clone();
     const node = parent.ctx.templates.combat.roleplay;
     let next = node.getNext(index);
@@ -266,11 +266,12 @@ export function midCombatChoice(settings: SettingsType, parent: ParserNode, inde
       dispatch(toCard('QUEST_CARD', 'ROLEPLAY', true));
     }
     dispatch({type: 'QUEST_NODE', node: parent} as QuestNodeAction);
-  }
+  };
+  return midCombatChoice;
 }
 
 export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, elapsedMillis: number) {
-  return (dispatch: Redux.Dispatch<any>): any => {
+  const handleCombatTimerStop = (dispatch: Redux.Dispatch<any>): any => {
     node = node.clone();
     node.ctx.templates.combat.mostRecentAttack = generateCombatAttack(node, settings, elapsedMillis);
     node.ctx.templates.combat.mostRecentRolls = generateRolls(settings.numPlayers);
@@ -287,10 +288,11 @@ export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, 
       dispatch(handleResolvePhase(node));
     }
   };
+  return handleCombatTimerStop;
 }
 
 export function handleCombatEnd(node: ParserNode, settings: SettingsType, victory: boolean, maxTier: number) {
-  return (dispatch: Redux.Dispatch<any>): any => {
+  const handleCombatEnd = (dispatch: Redux.Dispatch<any>): any => {
     node = node.clone();
     node.ctx.templates.combat.levelUp = (victory) ? (settings.numPlayers <= maxTier) : false;
     node.ctx.templates.combat.loot = (victory) ? generateLoot(maxTier) : [];
@@ -298,6 +300,7 @@ export function handleCombatEnd(node: ParserNode, settings: SettingsType, victor
     dispatch(toCard('QUEST_CARD', (victory) ? 'VICTORY' : 'DEFEAT', true));
     dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
   };
+  return handleCombatEnd;
 }
 
 export function tierSumDelta(node: ParserNode, current: number, delta: number): QuestNodeAction {

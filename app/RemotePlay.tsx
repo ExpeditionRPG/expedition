@@ -1,8 +1,18 @@
 import Redux from 'redux'
 import {RemotePlayEvent, RemotePlayEventBody, ClientID} from 'expedition-qdl/lib/remote/Events'
 import {ClientBase} from 'expedition-qdl/lib/remote/Client'
-import {NavigateAction, RemotePlayAction} from './actions/ActionTypes'
+import {NavigateAction, RemotePlayAction, ActionFn, ActionFnArgs} from './actions/ActionTypes'
+import {local} from './actions/RemotePlay'
 import * as Bluebird from 'bluebird'
+
+export type BaseAction = (a: Object, dispatch: Redux.Dispatch<any>, dispatchLocal: Redux.Dispatch<any>, isRemote: boolean) => Redux.Action;
+
+export function explodeActionFn(a: any) {
+  // Takes function, returns a function that returns the self-reference to the function and the set of the function's args
+  return (args: ActionFnArgs) => {
+    return [a.name, a, args];
+  }
+}
 
 // The base layer of the remote play network framework; handles
 // web socket connections & reconnect policy.
@@ -10,6 +20,7 @@ export class RemotePlayClient extends ClientBase {
   private websocketURI: string;
   private sock: WebSocket;
   private statusTimer: number;
+  private actionSet: {[name: string]: ActionFn<any>} = {};
 
   constructor(id: ClientID) {
     super(id);
@@ -68,7 +79,7 @@ export class RemotePlayClient extends ClientBase {
     this.sock.close();
   }
 
-  sendEvent(e: RemotePlayEventBody): void {
+  sendEvent(e: any): void { // TODO: e: RemotePlayEventBody
     if (!this.sock || this.sock.readyState !== this.sock.OPEN) {
       return;
     }
@@ -77,8 +88,20 @@ export class RemotePlayClient extends ClientBase {
     console.log('Sent ' + e.type);
   }
 
+  public registerModuleActions(module: any) {
+    for (const e of Object.keys(module.exports)) {
+      // Registered actions must be single-argument, named functions.
+      if (typeof(module.exports[e]) !== 'function' || !module.exports[e].name || module.exports[e].length !== 1) {
+        continue;
+      }
+      const f: (...args: any[])=>any = module.exports[e];
+      this.actionSet[f.name] = f;
+      module.exports[e] = explodeActionFn(e);
+    }
+  }
+
   public createActionMiddleware(): Redux.Middleware {
-    return (api: Redux.MiddlewareAPI<any>) => (next: Redux.Dispatch<any>) => <A extends Redux.Action>(action: A) => {
+    return ({dispatch, getState}: Redux.MiddlewareAPI<any>) => (next: Redux.Dispatch<any>) => (action: any) => {
       if (!action) {
         next(action);
         return;
@@ -89,10 +112,36 @@ export class RemotePlayClient extends ClientBase {
       // TODO: Get this to handle multiple async dispatches, probably by reimplementing redux-thunk.
       let nextAction: Redux.Action;
       if (action.type === 'REMOTE_PLAY_ACTION') {
-        next((action as any as RemotePlayAction).action);
+        if (action.action) {
+          // Unwrap if action is object-like
+          next((action as any as RemotePlayAction).action);
+        } else {
+          // Call function if action is function-like
+          const fn = this.actionSet[action.name];
+          if (!fn) {
+            console.log('Failed to find registered action ' + action.name);
+          }
+          fn(action.args, (a: Redux.Action) => {dispatch(local(a));}, true);
+        }
+
+        // Remote actions should never re-broadcast
         return;
       } else {
-        nextAction = next(action);
+        if (action instanceof Array) {
+          const [name, fn, args] = action;
+          console.log('Action is array yo');
+          const remoteArgs = fn(args, dispatch, (a: Redux.Action) => {dispatch(local(a));}, false);
+          // TODO: Prevent sending if function name ends in _LOCAL_ONLY
+          this.sendEvent({type: 'ACTION', name, args: remoteArgs});
+          return;
+        } else if (typeof(action) === 'function') {
+          // TODO: Remove this once redux-thunk based actions are converted to the new format.
+          action(dispatch, getState);
+          return;
+        } else {
+          // Pass through generated actions.
+          nextAction = next(action);
+        }
       }
 
       if (!nextAction) {
@@ -110,6 +159,7 @@ export class RemotePlayClient extends ClientBase {
           this.sendEvent({type: 'ACTION', action: JSON.stringify(nextAction)});
           break;
         default:
+          // By default, we don't broadcast actions. They must be opted in.
           break;
       }
       return;

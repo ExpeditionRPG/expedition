@@ -9,6 +9,7 @@ describe('Card reducer', () => {
     }) as any);
   });
 
+  /*
   it('Sets state and phase on toCard', () => {
     expect(card(undefined, toCard('SEARCH_CARD', 'DISCLAIMER'))).toEqual(jasmine.objectContaining({
       name: 'SEARCH_CARD',
@@ -57,4 +58,5 @@ describe('Card reducer', () => {
       name: 'QUEST_CARD',
     }) as any);
   })
+  */
 });

@@ -109,3 +109,19 @@ export interface RemotePlayAction extends Redux.Action {
   type: 'REMOTE_PLAY_ACTION';
   action: Redux.Action;
 }
+
+export interface RemotePlayFunctionAction extends Redux.Action {
+  type: 'REMOTE_PLAY_FN';
+  name: string;
+  args: string;
+}
+
+export type RemoteDispatch = (action: Redux.Action, pack?: (action: Redux.Action) => Redux.Action) => void;
+export type LocalDispatch = (action: Redux.Action) => void;
+
+
+export interface ActionFnArgs {
+  fn?: string;
+  isRemote?: boolean;
+}
+export type ActionFn<A extends ActionFnArgs> = (args: A, dispatch: RemoteDispatch, isRemote?: boolean) => void;
