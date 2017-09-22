@@ -35,7 +35,7 @@
     "copy-webpack-plugin": "^4.0.1",
     "cors": "^2.8.3",
     "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#7530a8a00217f56ac6a3ddfdffaa864034fc1613",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#fb687416437b1c6d1273648f21a25ad4ce4a4a7f",
+    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#9e948a2856d46da780363869066ec299ca663c8a",
     "express": "^4.15.2",
     "express-rate-limit": "^2.8.0",
     "express-session": "^1.15.1",
