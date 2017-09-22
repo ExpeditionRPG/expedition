@@ -10,6 +10,9 @@ const mockStore = configureStore([ thunk ]);
 
 const TEST_SETTINGS = {
   autoRoll: false,
+  contentSets: {
+    horror: false,
+  },
   difficulty: 'NORMAL' as DifficultyType,
   fontSize: 'NORMAL' as FontSizeType,
   multitouch: true,

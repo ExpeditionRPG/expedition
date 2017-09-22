@@ -9,6 +9,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import {authSettings} from './Constants'
 import {fetchAnnouncements} from './actions/Announcement'
 import {toPrevious} from './actions/Card'
+import {setDialog} from './actions/Dialog'
 import {silentLogin} from './actions/User'
 import {getStore} from './Store'
 import {getWindow, getGapi, getGA, getDevicePlatform, getDocument, setGA, setupPolyfills} from './Globals'
@@ -194,6 +195,19 @@ export function init() {
   setupHotReload();
   setupGoogleAnalytics();
   getStore().dispatch(fetchAnnouncements());
+
+  const settings = getStore().getState().settings;
+  if (settings) {
+    const contentSets = (settings || {}).contentSets;
+    for (const set in contentSets) {
+      if (contentSets[set] === null) {
+        getStore().dispatch(setDialog('EXPANSION_SELECT'));
+        break;
+      }
+    }
+  } else {
+    getStore().dispatch(setDialog('EXPANSION_SELECT'));
+  }
 
   render();
 }

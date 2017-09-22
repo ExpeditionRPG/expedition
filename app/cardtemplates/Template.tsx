@@ -71,6 +71,10 @@ export function updateContext(node: Cheerio, ctx: TemplateContext, action?: stri
 export function defaultContext(): TemplateContext {
   const populateScopeFn = function() {
     return {
+      contentSets: function(): number {
+        const settings = getStore().getState().settings;
+        return settings && settings.contentSets;
+      },
       numAdventurers: function(): number {
         const settings = getStore().getState().settings;
         return settings && settings.numPlayers;

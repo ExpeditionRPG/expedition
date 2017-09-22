@@ -188,11 +188,43 @@ p {
 p:first-child {
   margin-top: 1em;
 }
-.callout + p {
-  margin-top: 0.5em;
+
+.callout {
+  p {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  & > p {
+    margin-top: 0.25em;
+  }
+  margin-bottom: 1em;
+}
+span.line {
+  display: inline-block;
+}
+.expansionLabel {
+  text-align: center;
+  margin-top: 0.25em;
 }
 
 @mixin styling() {
+
+  button {
+    &.large {
+      width: 100% !important;
+      height: auto !important;
+      div {
+        font-size: fontsize(interactive) !important;
+        line-height: 1.2 !important;
+        margin: 0.5em !important;
+      }
+    }
+    &.primary {
+      font-family: $headerFont !important;
+      border: $border_accent !important;
+      background: $bg_interactive !important;
+    }
+  }
 
   .app_container {
     &.largeFont {
@@ -623,7 +655,9 @@ p:first-child {
       flex: 10;
       font-family: $headerFont;
       letter-spacing: $headerFontLetterSpacing;
-      line-height: size(inputsquare);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .controls {
       display: flex;
@@ -815,6 +849,12 @@ p:first-child {
   .combat {
     &.center {
       text-align: center;
+      &.damage-label {
+        margin-bottom: 0;
+      }
+      &.damage {
+        margin-top: 0;
+      }
     }
     &.draw_enemies {
       span.meta {
@@ -950,7 +990,7 @@ p:first-child {
   .dialog {
     width: 90% !important;
     & > div {
-      background: #f4ebcc !important;
+      background: url(images/papyrus-tiled.jpg) !important;
     }
   }
 }

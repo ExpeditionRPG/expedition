@@ -18,7 +18,8 @@ export interface QuestDetails {
   ratingcount?: number,
   ratingavg?: number,
   genre?: string,
-  contentrating?: string
+  contentrating?: string,
+  expansionhorror?: boolean,
 };
 
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';

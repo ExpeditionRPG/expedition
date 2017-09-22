@@ -22,7 +22,7 @@ const Tools = (props: ToolsProps): JSX.Element => {
     <Card title="Tools">
       <Button id="selectCustomCombat" onTouchTap={() => props.onCustomCombatSelect(props.settings)}>
         <div className="questButtonWithIcon">
-          <div className="title">GM Mode (Custom Combat)</div>
+          <div className="title">GM Mode</div>
           <div className="summary">You tell the story; the app runs the combat.</div>
         </div>
       </Button>

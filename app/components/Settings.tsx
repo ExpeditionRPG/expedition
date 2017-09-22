@@ -1,14 +1,17 @@
 import * as React from 'react'
+import FlatButton from 'material-ui/FlatButton'
+
 import Card from './base/Card'
-import {DifficultyType, FontSizeType, SettingsType} from '../reducers/StateTypes'
-import Picker from './base/Picker'
 import Checkbox from './base/Checkbox'
+import Picker from './base/Picker'
+import {DifficultyType, FontSizeType, SettingsType} from '../reducers/StateTypes'
 
 export interface SettingsStateProps extends SettingsType {}
 
 export interface SettingsDispatchProps {
   onAutoRollChange: (change: boolean) => void;
   onDifficultyDelta: (difficulty: DifficultyType, i: number) => void;
+  onExpansionSelect: () => void;
   onFontSizeDelta: (idx: number, delta: number) => void;
   onMultitouchChange: (change: boolean) => void;
   onPlayerDelta: (numPlayers: number, i: number) => void;
@@ -45,6 +48,9 @@ const Settings = (props: SettingsProps): JSX.Element => {
 
   return (
     <Card title="Settings">
+      <FlatButton className="primary large" onTouchTap={() => props.onExpansionSelect()}>Choose game / expansion</FlatButton>
+      <p className="expansionLabel">Currently playing: {props.contentSets.horror ? <strong>Expedition + Horror</strong> : <strong>Expedition Base</strong>}</p>
+
       <Picker label="Adventurers" value={props.numPlayers} onDelta={(i: number)=>props.onPlayerDelta(props.numPlayers, i)}>
         {(props.numPlayers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
       </Picker>
@@ -53,7 +59,7 @@ const Settings = (props: SettingsProps): JSX.Element => {
         {(props.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
       </Checkbox>
 
-      <Picker label="Level" value={difficultyText[difficultyIdx].title} onDelta={(i: number)=>props.onDifficultyDelta(props.difficulty, i)}>
+      <Picker label="Difficulty" value={difficultyText[difficultyIdx].title} onDelta={(i: number)=>props.onDifficultyDelta(props.difficulty, i)}>
         {difficultyText[difficultyIdx].text}
       </Picker>
 

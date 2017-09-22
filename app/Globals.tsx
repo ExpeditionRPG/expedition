@@ -91,11 +91,17 @@ export function setNavigator(navigator: any) {
   refs.navigator = navigator;
 }
 
-export function setStorageKey(key: string, value: any) {
+// Value can be boolean, number, string or stringifiable JSON
+export function setStorageKeyValue(key: string, value: any) {
   try {
-    getWindow().localStorage.setItem(key, value.toString());
-  } catch (e) {
-    console.log('Error setting storage key', key, 'to', value, e);
+    if (typeof value === 'object') {
+      value = JSON.stringify(value);
+    } else {
+      value = value.toString();
+    }
+    getWindow().localStorage.setItem(key, value);
+  } catch (err) {
+    console.error('Error setting storage key', key, 'to', value, err);
   }
 }
 
@@ -124,17 +130,22 @@ export function getNavigator(): any {
 }
 
 // Force specifying a default, since just doing (|| fallback) would bork on stored falsey values
-export function getStorageKeyBoolean(key: string, fallback: boolean): boolean {
+export function getStorageBoolean(key: string, fallback: boolean): boolean {
   const val = getWindow().localStorage.getItem(key);
   return (val !== null) ? (val.toLowerCase() === 'true') : fallback;
 }
 
-export function getStorageKeyNumber(key: string, fallback?: number): number {
+export function getStorageJson(key: string, fallback?: object): object {
+  const val = getWindow().localStorage.getItem(key);
+  return (val !== null) ? JSON.parse(val) : fallback;
+}
+
+export function getStorageNumber(key: string, fallback?: number): number {
   const val = getWindow().localStorage.getItem(key);
   return (val !== null) ? Number(val) : fallback;
 }
 
-export function getStorageKeyString(key: string, fallback?: string): string {
+export function getStorageString(key: string, fallback?: string): string {
   const val = getWindow().localStorage.getItem(key);
   return (val !== null) ? val : fallback;
 }

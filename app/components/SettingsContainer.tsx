@@ -1,7 +1,9 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-import {AppState, DifficultyType, FontSizeType} from '../reducers/StateTypes'
+
+import {setDialog} from '../actions/Dialog'
 import {changeSettings} from '../actions/Settings'
+import {AppState, DifficultyType, FontSizeType} from '../reducers/StateTypes'
 import Settings, {SettingsStateProps, SettingsDispatchProps, fontSizeValues, timerValues} from './Settings'
 
 const mapStateToProps = (state: AppState, ownProps: SettingsStateProps): SettingsStateProps => {
@@ -26,6 +28,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Setti
   return {
     onAutoRollChange: (v: boolean) => {
       dispatch(changeSettings({autoRoll: v}));
+    },
+    onExpansionSelect: () => {
+      dispatch(setDialog('EXPANSION_SELECT'));
     },
     onShowHelpChange: (v: boolean) => {
       dispatch(changeSettings({showHelp: v}));

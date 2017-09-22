@@ -4,12 +4,13 @@
   </roleplay>
   <roleplay title="Test" id="start" data-line="6">
     <p>{{one=1}}</p>
-    <p>You face choices. Here's the value of one: {{one}}</p>
+    <p>You face choices. Here's the value of one: {{one}}. And a symbol: &#x261E;</p>
     <choice text="Fight">
       <combat data-line="14">
         <e>Thief</e>
         <e>Thief</e>
         <e>Imp</e>
+        <e>{{_.randomEnemy()}}</e>
         <event on="round">
           <roleplay title="" data-line="22">
             <p>A round card during combat!</p>
