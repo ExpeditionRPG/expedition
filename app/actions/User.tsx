@@ -2,7 +2,9 @@ import Redux from 'redux'
 import {toCard} from './Card'
 import {openSnackbar} from '../actions/Snackbar'
 import {UserState} from '../reducers/StateTypes'
+import {ActionFnArgs} from './ActionTypes'
 import {authSettings} from '../Constants'
+import {remoteify} from '../RemotePlay'
 
 declare var gapi: any;
 declare var window: any;
@@ -103,21 +105,22 @@ function loginCordova(callback: UserLoginCallback) {
   });
 }
 
-export function silentLogin(callback: () => any) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    const loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
-      // Since it's silent, do nothing with error
-      dispatch({type: 'USER_LOGIN', user});
-      callback();
-    }
-
-    if (window.plugins && window.plugins.googleplus) {
-      silentLoginCordova(loginCallback);
-    } else {
-      silentLoginWeb(loginCallback);
-    }
-  }
+interface LoginArgs extends ActionFnArgs {
+  callback?: () => any;
 }
+export const silentLogin = remoteify(function silentLogin(a: LoginArgs, dispatch: Redux.Dispatch<any>) {
+  const loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
+    // Since it's silent, do nothing with error
+    dispatch({type: 'USER_LOGIN', user});
+    a.callback && a.callback();
+  };
+
+  if (window.plugins && window.plugins.googleplus) {
+    silentLoginCordova(loginCallback);
+  } else {
+    silentLoginWeb(loginCallback);
+  }
+});
 
 export function login(callback: (user: UserState) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {

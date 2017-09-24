@@ -23,8 +23,8 @@ const Tools = (props: ToolsProps): JSX.Element => {
     <Card title="Tools">
       <Button id="selectCustomCombat" onTouchTap={() => props.onCustomCombatSelect(props.settings)}>
         <div className="questButtonWithIcon">
-          <div className="title">Custom Combat</div>
-          <div className="summary">A combat-only mode for those telling their own quests.</div>
+          <div className="title">GM Mode</div>
+          <div className="summary">You tell the story; the app runs the combat.</div>
         </div>
       </Button>
       <Button id="selectQuestCreator" onTouchTap={() => props.onQuestCreatorSelect()}>
@@ -39,12 +39,14 @@ const Tools = (props: ToolsProps): JSX.Element => {
           <div className="summary">View quests you've published privately with the Quest Creator.</div>
         </div>
       </Button>
+      {process.env.NODE_ENV === 'dev' &&
       <Button onTouchTap={() => props.onRemotePlaySelect(props.user)}>
         <div className="questButtonWithIcon">
           <div className="title">(BETA) Remote Play</div>
           <div className="summary">Sync your app with friends on another device.</div>
         </div>
       </Button>
+      }
       <div className="version">Expedition App v{getAppVersion()}</div>
     </Card>
   );

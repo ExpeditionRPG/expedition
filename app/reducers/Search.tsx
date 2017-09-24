@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {SearchResponseAction, ViewQuestAction, NavigateAction} from '../actions/ActionTypes'
 import {SearchState} from './StateTypes'
 
-export const initial_state: SearchState = {
+export const initialSearch: SearchState = {
   search: {
     text: '',
     age: null,
@@ -12,13 +12,14 @@ export const initial_state: SearchState = {
     mintimeminutes: null,
     maxtimeminutes: null,
     partition: null,
+    expansions: [],
   },
   selected: {},
   results: [],
   searching: false,
 };
 
-export function search(state: SearchState = initial_state, action: Redux.Action): SearchState {
+export function search(state: SearchState = initialSearch, action: Redux.Action): SearchState {
   switch(action.type) {
     case 'SEARCH_REQUEST':
       // Clear the searched quests if we're starting a new search.

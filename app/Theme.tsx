@@ -32,7 +32,7 @@ const theme: any = {
     checkedColor: darkBlack,
   },
   raisedButton: {
-    primaryColor: grey300,
+    primaryColor: grey100,
   },
   vw: {
     huge: '12vw',

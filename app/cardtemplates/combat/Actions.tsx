@@ -7,8 +7,9 @@ import {ParserNode, defaultContext} from '../Template'
 import {toCard} from '../../actions/Card'
 import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT} from '../../Constants'
 import {encounters} from '../../Encounters'
-import {QuestNodeAction} from '../../actions/ActionTypes'
+import {QuestNodeAction, ActionFnArgs} from '../../actions/ActionTypes'
 import {loadNode} from '../../actions/Quest'
+import {remoteify} from '../../RemotePlay'
 
 const cheerio: any = require('cheerio');
 
@@ -142,7 +143,7 @@ function generateLoot(maxTier: number): Loot[] {
   // 6: 4
   // 7: 4
   // 8+: 5
-  maxTier = Math.min(1, Math.round(Math.log(maxTier - 1) / Math.log(1.5)));
+  maxTier = Math.max(1, Math.round(Math.log(maxTier - 1) / Math.log(1.5)));
 
   while (maxTier > 0) {
     const r: number = Math.random();
@@ -209,8 +210,8 @@ export function handleResolvePhase(node: ParserNode) {
   // Note that handling new combat nodes within a "round" handler has undefined
   // behavior and should be prevented when compiled.
   return (dispatch: Redux.Dispatch<any>): any => {
+    node = node.clone();
     if (node.getVisibleKeys().indexOf('round') !== -1) {
-      node = node.clone();
       node.ctx.templates.combat.roleplay = node.getNext('round');
       // Set node *before* navigation to prevent a blank first roleplay card.
       dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
@@ -291,17 +292,33 @@ export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, 
   return handleCombatTimerStop;
 }
 
-export function handleCombatEnd(node: ParserNode, settings: SettingsType, victory: boolean, maxTier: number) {
-  const handleCombatEnd = (dispatch: Redux.Dispatch<any>): any => {
-    node = node.clone();
-    node.ctx.templates.combat.levelUp = (victory) ? (settings.numPlayers <= maxTier) : false;
-    node.ctx.templates.combat.loot = (victory) ? generateLoot(maxTier) : [];
-
-    dispatch(toCard('QUEST_CARD', (victory) ? 'VICTORY' : 'DEFEAT', true));
-    dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
-  };
-  return handleCombatEnd;
+interface HandleCombatEndArgs extends ActionFnArgs {
+  node?: ParserNode;
+  serializedNode?: ParserNode;
+  settings: SettingsType;
+  victory: boolean;
+  maxTier: number;
 }
+export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleCombatEndArgs, dispatch: Redux.Dispatch<any>) {
+  if (a.serializedNode) {
+    console.error('Unimplemented: remote play combat end deserialization');
+  }
+
+  // Edit the final card before cloning
+  if (a.victory) {
+    a.node.ctx.templates.combat.tier = 0;
+  } else {
+    a.node.ctx.templates.combat.numAliveAdventurers = 0;
+  }
+  a.node = a.node.clone();
+  a.node.ctx.templates.combat.levelUp = (a.victory) ? (a.settings.numPlayers <= a.maxTier) : false;
+  a.node.ctx.templates.combat.loot = (a.victory) ? generateLoot(a.maxTier) : [];
+
+  dispatch(toCard('QUEST_CARD', (a.victory) ? 'VICTORY' : 'DEFEAT', true));
+  dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
+
+  return {...a, serializedNode: a.node.getComparisonKey(), node: null};
+});
 
 export function tierSumDelta(node: ParserNode, current: number, delta: number): QuestNodeAction {
   node = node.clone();

@@ -9,6 +9,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import {authSettings} from './Constants'
 import {fetchAnnouncements} from './actions/Announcement'
 import {toPrevious} from './actions/Card'
+import {setDialog} from './actions/Dialog'
 import {silentLogin} from './actions/User'
 import {handleRemotePlayEvent} from './actions/RemotePlay'
 import {getStore} from './Store'
@@ -83,10 +84,10 @@ function setupDevice() {
   if (!gapi) {
     return;
   }
-  getStore().dispatch(silentLogin(() => {
+  getStore().dispatch(silentLogin({callback: () => {
     // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
     console.log('Silent login: ', gapi.auth2.getAuthInstance().isSignedIn);
-  }));
+  }}));
 }
 
 function setupGoogleAPIs() {
@@ -103,10 +104,10 @@ function setupGoogleAPIs() {
       cookie_policy: 'none',
     }).then(() => {
       // silent login here triggers for web
-      getStore().dispatch(silentLogin(() => {
+      getStore().dispatch(silentLogin({callback: () => {
         // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
         console.log('Silent login: ', gapi.auth2.getAuthInstance().isSignedIn);
-      }));
+      }}));
     });
   });
 }
@@ -184,10 +185,10 @@ export function init() {
   // Setup as web platform as default; we might find out later we're an app
   const window = getWindow();
   window.platform = 'web';
-  window.addEventListener('hashchange', (e) => {
+  window.onpopstate = function(e) {
     getStore().dispatch(toPrevious());
     e.preventDefault();
-  });
+  };
 
   // Only triggers on app builds
   getDocument().addEventListener('deviceready', () => {
@@ -203,6 +204,19 @@ export function init() {
   setupGoogleAnalytics();
   setupRemotePlay();
   getStore().dispatch(fetchAnnouncements());
+
+  const settings = getStore().getState().settings;
+  if (settings) {
+    const contentSets = (settings || {}).contentSets;
+    for (const set in contentSets) {
+      if (contentSets[set] === null) {
+        getStore().dispatch(setDialog('EXPANSION_SELECT'));
+        break;
+      }
+    }
+  } else {
+    getStore().dispatch(setDialog('EXPANSION_SELECT'));
+  }
 
   render();
 }

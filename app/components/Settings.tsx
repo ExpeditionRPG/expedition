@@ -1,14 +1,17 @@
 import * as React from 'react'
+import FlatButton from 'material-ui/FlatButton'
+
 import Card from './base/Card'
-import {DifficultyType, FontSizeType, SettingsType} from '../reducers/StateTypes'
-import Picker from './base/Picker'
 import Checkbox from './base/Checkbox'
+import Picker from './base/Picker'
+import {DifficultyType, FontSizeType, SettingsType} from '../reducers/StateTypes'
 
 export interface SettingsStateProps extends SettingsType {}
 
 export interface SettingsDispatchProps {
   onAutoRollChange: (change: boolean) => void;
   onDifficultyDelta: (difficulty: DifficultyType, i: number) => void;
+  onExpansionSelect: () => void;
   onFontSizeDelta: (idx: number, delta: number) => void;
   onMultitouchChange: (change: boolean) => void;
   onPlayerDelta: (numPlayers: number, i: number) => void;
@@ -43,38 +46,40 @@ const Settings = (props: SettingsProps): JSX.Element => {
   const fontSizeIdx = fontSizeValues.indexOf(props.fontSize);
   const timerIdx = timerValues.indexOf(props.timerSeconds);
 
-  const multitouchText = (props.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.';
-  const helpText = (props.showHelp) ? 'Setup and combat hints are shown.' : 'Setup and combat hints are hidden.';
-  const playerText = (props.numPlayers > 1) ? 'The number of players.' : 'Solo play: Play as two adventurers, and get twice as long to play in combat.';
   return (
     <Card title="Settings">
+      <FlatButton className="primary large" onTouchTap={() => props.onExpansionSelect()}>Choose game / expansion</FlatButton>
+      <p className="expansionLabel">Currently playing: {props.contentSets.horror ? <strong>Expedition + Horror</strong> : <strong>Expedition Base</strong>}</p>
 
       <Picker label="Adventurers" value={props.numPlayers} onDelta={(i: number)=>props.onPlayerDelta(props.numPlayers, i)}>
-        {playerText}
+        {(props.numPlayers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
       </Picker>
 
       <Checkbox label="Multitouch" value={props.multitouch} onChange={props.onMultitouchChange}>
-        {multitouchText}
+        {(props.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
       </Checkbox>
 
-      <Picker label="Level" value={difficultyText[difficultyIdx].title} onDelta={(i: number)=>props.onDifficultyDelta(props.difficulty, i)}>
+      <Picker label="Difficulty" value={difficultyText[difficultyIdx].title} onDelta={(i: number)=>props.onDifficultyDelta(props.difficulty, i)}>
         {difficultyText[difficultyIdx].text}
       </Picker>
 
       <Picker label="Timer" value={timerText[timerIdx].title} onDelta={(i: number)=>props.onTimerSecondsDelta(timerIdx, i)}>
-        {timerText[timerIdx].text}
+        <div>
+          {timerText[timerIdx].text}
+          {props.numPlayers === 1 ? <span><br/><strong>Solo play:</strong> Timers are doubled.</span> : ''}
+        </div>
       </Picker>
 
       <Checkbox label="Show Help" value={props.showHelp} onChange={props.onShowHelpChange}>
-        {helpText}
+        {(props.showHelp) ? 'Setup and combat hints are shown.' : 'Setup and combat hints are hidden.'}
       </Checkbox>
 
       <Checkbox label="Vibration" value={props.vibration} onChange={props.onVibrationChange}>
-        Vibrate on touch
+        {(props.vibration) ? 'Vibrate on touch.' : 'Do not vibrate.'}
       </Checkbox>
 
       <Checkbox label="Auto-Roll" value={props.autoRoll} onChange={props.onAutoRollChange}>
-        Automatically roll for the party when resolving combat.
+        {(props.autoRoll) ? 'Automatically roll for the party when resolving combat.' : 'Do not show pre-generated rolls in combat.'}
       </Checkbox>
 
       <Picker label="Font Size" value={fontSizeValues[fontSizeIdx]} onDelta={(i: number)=>props.onFontSizeDelta(fontSizeIdx, i)}>

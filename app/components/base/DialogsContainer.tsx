@@ -4,7 +4,8 @@ import {connect} from 'react-redux'
 import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
 import {toPrevious} from '../../actions/Card'
 import {setDialog} from '../../actions/Dialog'
-import {AppState, DialogIDType, DialogState} from '../../reducers/StateTypes'
+import {changeSettings} from '../../actions/Settings'
+import {AppState, ContentSetsType, DialogIDType, DialogState} from '../../reducers/StateTypes'
 
 
 const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
@@ -18,6 +19,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
     onExitQuest: (): void => {
       dispatch(setDialog(null));
       dispatch(toPrevious('SPLASH_CARD', undefined, false));
+    },
+    onExpansionSelect: (contentSets: ContentSetsType): void => {
+      dispatch(setDialog(null));
+      dispatch(changeSettings({contentSets}));
     },
     onRequestClose: (): void => {
       dispatch(setDialog(null));

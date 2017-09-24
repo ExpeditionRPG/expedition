@@ -1,12 +1,12 @@
 import * as React from 'react'
 
 import Button from '../../components/base/Button'
+import Callout from '../../components/base/Callout'
 import Card from '../../components/base/Card'
 import Picker from '../../components/base/Picker'
 import TimerCard from '../../components/base/TimerCard'
 import theme from '../../Theme'
 import {MAX_ADVENTURER_HEALTH, REGEX} from '../../Constants'
-import {encounters} from '../../Encounters'
 import {isSurgeNextRound} from './Actions'
 import {SettingsType, CardState, CardName} from '../../reducers/StateTypes'
 import {ParserNode} from '../Template'
@@ -188,7 +188,7 @@ function renderSurge(props: CombatProps): JSX.Element {
     helpText = (
       <span>
         <p>
-          Immediately follow the surge action listed on all remaining encounter cards. Some encounters' surges may also apply after they've been knocked out.
+          Immediately follow the surge action listed on all remaining encounter cards. Some Undead surges apply after they've been knocked out.
         </p>
         <p>
           Surge effects happen before abilities. Abilities that apply "this round" do not affect surges (however, loot may still be used during a surge). If you are knocked out during a surge, do not resolve your abilities.
@@ -211,9 +211,11 @@ function renderSurge(props: CombatProps): JSX.Element {
 
 function renderResolve(props: CombatProps): JSX.Element {
   let helpText: JSX.Element = (<p>Resolve all played abilities.</p>);
+  const theHorror = (props.settings.contentSets.horror === true);
   if (props.settings.showHelp) {
     helpText = (
       <span>
+        {theHorror && <Callout icon="horror_white"><strong>The Horror:</strong> Any adventurers at Min persona must resolve their persona effect and then return to Base persona before resolving abilities. Adventurers at Max persona may choose to resolve and reset now or in a later round.</Callout>}
         <p>
           Each adventurer rolls a die for the ability they played. If <img className="inline_icon" src="images/roll_white_small.svg"></img> &ge; X, the ability succeeds. Abilities may list additional effects based on the roll, even if they fail.
         </p>
@@ -224,7 +226,7 @@ function renderResolve(props: CombatProps): JSX.Element {
           Note that some enemies take more or less damage from certain ability types, as specified on their card.
         </p>
         <p>
-          Discard all abilities played this round.
+          Discard all abilities resolved this round, putting the rest of your hand back into your draw pile.
         </p>
       </span>
     );
@@ -254,7 +256,7 @@ function renderEnemyTier(props: CombatProps): JSX.Element {
   return (
     <Card title="Enemy Strength" theme="DARK" inQuest={true}>
       <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, props.tier, i)} value={props.tier}>
-        Set this to the combined tier of the remaining enemies. You are victorious when this reaches zero.
+        {props.settings.showHelp && 'Set this to the combined tier of the remaining enemies.'}
       </Picker>
 
       <Button onTouchTap={() => props.onVictory(props.node, props.settings, props.maxTier)}>Victory (Tier = 0)</Button>
@@ -267,27 +269,29 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
   const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
   let helpText: JSX.Element = (<span></span>);
   const damage = (props.mostRecentAttack) ? props.mostRecentAttack.damage : -1;
+  const theHorror = (props.settings.contentSets.horror === true);
+  const injured = props.numAliveAdventurers < props.settings.numPlayers;
 
   if (props.settings.showHelp) {
     helpText = (
       <span>
-        <p>Slide your Adventurer health down {damage} space{damage > 1 ? 's' : ''}.</p>
-        <p>If you reach zero health, you are knocked out. After resolving this turn, you cannot play further cards until you are healed by another adventurer or revived at the end of the encounter.</p>
+        {injured && <p>
+          If you reach zero health, you are knocked out.
+          After resolving this turn, you cannot play further cards until you are healed by another adventurer or revived at the end of the encounter.
+        </p>}
+        {theHorror && injured && <Callout icon="horror_white"><strong>The Horror:</strong> Upon being knocked out, reset your persona to Base.</Callout>}
       </span>
     );
   }
 
   return (
     <Card title="Take Damage" theme="DARK" inQuest={true}>
-      <h3 className="combat center">All adventurers:</h3>
-      <h3 className="combat center">{damage} Damage</h3>
-
-      {helpText}
-
+      <h4 className="combat center damage-label">All adventurers take:</h4>
+      <h1 className="combat center damage">{damage} Damage</h1>
       <Picker label="Adventurers" onDelta={(i: number)=>props.onAdventurerDelta(props.node, props.settings, props.numAliveAdventurers, i)} value={props.numAliveAdventurers}>
-        Set this to the number of adventurers above zero health. You are defeated when this reaches zero.
+        {props.settings.showHelp && 'Set this to the number of adventurers above zero health.'}
       </Picker>
-
+      {helpText}
       <Button onTouchTap={() => props.onDefeat(props.node, props.settings, props.maxTier)}>Defeat (Adventurers = 0)</Button>
       <Button onTouchTap={() => props.onNext(nextCard)} disabled={props.numAliveAdventurers <= 0}>Next</Button>
     </Card>
@@ -296,6 +300,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
 function renderVictory(props: CombatProps): JSX.Element {
   const contents: JSX.Element[] = [];
+  const theHorror = (props.settings.contentSets.horror === true);
 
   if (props.victoryParameters) {
     if (props.victoryParameters.heal > 0 && props.victoryParameters.heal < MAX_ADVENTURER_HEALTH) {
@@ -304,20 +309,6 @@ function renderVictory(props: CombatProps): JSX.Element {
       contents.push(<p key="c1">Adventurers <strong>do not heal</strong>.</p>);
     } else {
       contents.push(<p key="c1">All adventurers (even if at 0 health) heal to <strong>full</strong> health.</p>);
-    }
-
-    // TODO improved leveling up: https://github.com/Fabricate-IO/expedition-app/issues/226
-    if (props.victoryParameters.xp !== false && props.levelUp) {
-      contents.push(<p key="c2">Each Adventurer may learn a new ability:</p>);
-      if (props.settings.showHelp) {
-        contents.push(
-          <ul key="c3">
-            <li>Draw 3 abilities from one of the decks listed on your adventurer card.</li>
-            <li>Add 1 to your ability deck, and place the remaining 2 at the bottom of the deck you drew from.</li>
-            <li>You <strong>may</strong> choose to discard an ability.</li>
-          </ul>
-        );
-      }
     }
 
     if (props.victoryParameters.loot !== false && props.loot && props.loot.length > 0) {
@@ -334,6 +325,23 @@ function renderVictory(props: CombatProps): JSX.Element {
           <span key="c6">
             <p>Divide the loot amongst adventurers. It can be used at any time and does not cost an action (unless otherwise specified).</p>
           </span>
+        );
+      }
+    }
+
+    // TODO improved leveling up: https://github.com/Fabricate-IO/expedition-app/issues/226
+    if (props.victoryParameters.xp !== false && props.levelUp) {
+      contents.push(<span key="c2"><h3>LEVEL UP!</h3><p>All adventurers may learn a new ability:</p></span>);
+      if (props.settings.showHelp) {
+        contents.push(
+          <ul key="c3">
+            <li>Draw 3 abilities from one of the decks listed on your adventurer card.</li>
+            {theHorror && <ul>
+              <li><strong>The Horror:</strong> All adventurers may also draw from the Influence deck.</li>
+            </ul>}
+            <li>Add 1 to your ability deck, and place the remaining 2 at the bottom of the deck you drew from.</li>
+            <li>You <i>may</i> choose to discard an ability.</li>
+          </ul>
         );
       }
     }

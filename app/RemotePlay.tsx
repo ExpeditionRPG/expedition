@@ -7,10 +7,10 @@ import * as Bluebird from 'bluebird'
 
 export type BaseAction = (a: Object, dispatch: Redux.Dispatch<any>, dispatchLocal: Redux.Dispatch<any>, isRemote: boolean) => Redux.Action;
 
-export function explodeActionFn(a: any) {
+export function remoteify<A extends ActionFnArgs>(a: (args: A, dispatch?: Redux.Dispatch<any>)=>any) {
   // Takes function, returns a function that returns the self-reference to the function and the set of the function's args
-  return (args: ActionFnArgs) => {
-    return [a.name, a, args];
+  return (args: A) => {
+    return ([a.name, a, args] as any) as Redux.Action; // We know better >:}
   }
 }
 
@@ -96,7 +96,7 @@ export class RemotePlayClient extends ClientBase {
       }
       const f: (...args: any[])=>any = module.exports[e];
       this.actionSet[f.name] = f;
-      module.exports[e] = explodeActionFn(e);
+      //module.exports[e] = explodeActionFn(e);
     }
   }
 
@@ -104,14 +104,10 @@ export class RemotePlayClient extends ClientBase {
     return ({dispatch, getState}: Redux.MiddlewareAPI<any>) => (next: Redux.Dispatch<any>) => (action: any) => {
       if (!action) {
         next(action);
-        return;
-      }
+      } else if (action.type === 'REMOTE_PLAY_ACTION') {
+        // If the action currently dispatched was dispatched from remote play,
+        // let it pass through and don't broadcast it to other devices.
 
-      // If the action currently dispatched was dispatched from remote play,
-      // let it pass through and don't broadcast it to other devices.
-      // TODO: Get this to handle multiple async dispatches, probably by reimplementing redux-thunk.
-      let nextAction: Redux.Action;
-      if (action.type === 'REMOTE_PLAY_ACTION') {
         if (action.action) {
           // Unwrap if action is object-like
           next((action as any as RemotePlayAction).action);
@@ -123,46 +119,22 @@ export class RemotePlayClient extends ClientBase {
           }
           fn(action.args, (a: Redux.Action) => {dispatch(local(a));}, true);
         }
-
-        // Remote actions should never re-broadcast
-        return;
-      } else {
-        if (action instanceof Array) {
-          const [name, fn, args] = action;
-          console.log('Action is array yo');
-          const remoteArgs = fn(args, dispatch, (a: Redux.Action) => {dispatch(local(a));}, false);
-          // TODO: Prevent sending if function name ends in _LOCAL_ONLY
-          this.sendEvent({type: 'ACTION', name, args: remoteArgs});
-          return;
-        } else if (typeof(action) === 'function') {
-          // TODO: Remove this once redux-thunk based actions are converted to the new format.
-          action(dispatch, getState);
-          return;
-        } else {
-          // Pass through generated actions.
-          nextAction = next(action);
+      } else if (action instanceof Array) {
+        console.log('Dispatching array fn');
+        console.log(action);
+        const [name, fn, args] = action;
+        const remoteArgs = fn(args, dispatch, (a: Redux.Action) => {dispatch(local(a));}, false);
+        if (remoteArgs) {
+          console.log('Sending remote event ' + name);
+          this.sendEvent({type: 'ACTION', name, args: JSON.stringify(remoteArgs)});
         }
+      } else if (typeof(action) === 'function') {
+        // TODO: Remove this once redux-thunk based actions are converted to the new format.
+        action(dispatch, getState);
+      } else {
+        // Pass through regular action objects
+        next(action);
       }
-
-      if (!nextAction) {
-        return;
-      }
-
-      switch(nextAction.type) {
-        case 'NAVIGATE':
-          const na = (nextAction as any as NavigateAction);
-          if (na.to.name !== 'QUEST_CARD') {
-            this.sendEvent({type: 'ACTION', action: JSON.stringify(na)});
-          }
-          break;
-        case 'RETURN':
-          this.sendEvent({type: 'ACTION', action: JSON.stringify(nextAction)});
-          break;
-        default:
-          // By default, we don't broadcast actions. They must be opted in.
-          break;
-      }
-      return;
     }
   }
 }

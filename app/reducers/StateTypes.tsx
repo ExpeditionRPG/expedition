@@ -10,7 +10,7 @@ export interface AnnouncementState {
   link: string;
 }
 
-export type DialogIDType = null | 'EXIT_QUEST';
+export type DialogIDType = null | 'EXIT_QUEST' | 'EXPANSION_SELECT';
 
 export interface DialogState {
   open: DialogIDType;
@@ -35,13 +35,21 @@ export interface SearchSettings {
   players?: number;
   owner?: string;
   partition?: 'expedition-public' | 'expedition-private';
+  expansions?: ExpansionsType[];
 }
 
 export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
 export type FontSizeType = 'SMALL' | 'NORMAL' | 'LARGE';
 
+export type ExpansionsType = 'horror';
+export interface ContentSetsType {
+  [index:string]: boolean;
+  horror: boolean;
+}
+
 export interface SettingsType {
   autoRoll: boolean;
+  contentSets: ContentSetsType;
   difficulty: DifficultyType;
   fontSize: FontSizeType;
   multitouch: boolean;

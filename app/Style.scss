@@ -165,9 +165,21 @@ body {
 
 h1, h2, h3 {
   font-family: $headerFont;
+  margin: 0.5em 0 0.2em 0;
+  line-height: 1.2;
+}
+h1 {
+  font-size: 2em;
 }
 h2 {
-  margin: 0.5em 0 0.1em 0;
+  font-size: 1.5em;
+  .inline_icon {
+    width: 6.5vmin;
+    margin-bottom: -1.0vmin;
+  }
+}
+h3 {
+  font-size: 1.25em;
 }
 
 p {
@@ -176,11 +188,43 @@ p {
 p:first-child {
   margin-top: 1em;
 }
-.callout + p {
-  margin-top: 0.5em;
+
+.callout {
+  p {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  & > p {
+    margin-top: 0.25em;
+  }
+  margin-bottom: 1em;
+}
+span.line {
+  display: inline-block;
+}
+.expansionLabel {
+  text-align: center;
+  margin-top: 0.25em;
 }
 
 @mixin styling() {
+
+  button {
+    &.large {
+      width: 100% !important;
+      height: auto !important;
+      div {
+        font-size: fontsize(interactive) !important;
+        line-height: 1.2 !important;
+        margin: 0.5em !important;
+      }
+    }
+    &.primary {
+      font-family: $headerFont !important;
+      border: $border_accent !important;
+      background: $bg_interactive !important;
+    }
+  }
 
   .app_container {
     &.largeFont {
@@ -298,6 +342,7 @@ p:first-child {
         display: flex;
         flex-direction: column;
         width: 100%;
+        min-height: 50vh;
         #bgimg {
           position: absolute;
           height: size(watermark);
@@ -616,7 +661,9 @@ p:first-child {
       flex: 10;
       font-family: $headerFont;
       letter-spacing: $headerFontLetterSpacing;
-      line-height: size(inputsquare);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .controls {
       display: flex;
@@ -729,13 +776,17 @@ p:first-child {
       font-size: fontsize(flavor);
       text-align: center;
       opacity: 0;
-      -webkit-animation: fadein 1s ease-in 0.5s forwards;
-         -moz-animation: fadein 1s ease-in 0.5s forwards;
-          -ms-animation: fadein 1s ease-in 0.5s forwards;
-           -o-animation: fadein 1s ease-in 0.5s forwards;
-              animation: fadein 1s ease-in 0.5s forwards;
+      transition: opacity 1s;
+      -webkit-animation: fadein 1s ease-in;
+         -moz-animation: fadein 1s ease-in;
+          -ms-animation: fadein 1s ease-in;
+           -o-animation: fadein 1s ease-in;
+              animation: fadein 1s ease-in;
       h2 {
         margin-bottom: 0;
+      }
+      &.visible {
+        opacity: 1;
       }
     }
     .splashMultitouchPlayerCount {
@@ -746,6 +797,11 @@ p:first-child {
       top: 50%;
       margin-top: -10%;
       text-align: center;
+      -webkit-animation: fadein 1s ease-in 0s forwards;
+         -moz-animation: fadein 1s ease-in 0s forwards;
+          -ms-animation: fadein 1s ease-in 0s forwards;
+           -o-animation: fadein 1s ease-in 0s forwards;
+              animation: fadein 1s ease-in 0s forwards;
       h1 {
         font-size: fontsize(timervalue);
         margin: 0;
@@ -829,6 +885,12 @@ p:first-child {
   .combat {
     &.center {
       text-align: center;
+      &.damage-label {
+        margin-bottom: 0;
+      }
+      &.damage {
+        margin-top: 0;
+      }
     }
     &.draw_enemies {
       span.meta {
@@ -919,15 +981,13 @@ p:first-child {
     margin-bottom: size(large);
 
     .author {
+      padding-top: size(small);
       font-style: italic;
     }
   }
 
   .searchDetailsExtended {
     margin-top: size(large);
-    h3 {
-      margin-bottom: size(small);
-    }
   }
 
   .reportCategory {
@@ -961,6 +1021,13 @@ p:first-child {
     text-align: center;
     opacity: 0.7;
     margin-top: size(huge);
+  }
+
+  .dialog {
+    width: 90% !important;
+    & > div {
+      background: url(images/papyrus-tiled.jpg) !important;
+    }
   }
 }
 

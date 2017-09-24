@@ -144,8 +144,9 @@ const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'LIGHT'): JSX.Ele
     );
   });
 
-  // If we just got out of combat and the quest is about to end, offer the choice to retry combat
-  if (props.prevNode && props.prevNode.getTag() === 'combat' && rpResult.choices.length === 1 && props.node.getNext().isEnd()) {
+  // If we just got out of combat (loss: advenutrers = 0) and the quest is about to end, offer the choice to retry combat
+  if (props.prevNode && props.prevNode.getTag() === 'combat' && props.prevNode.ctx.templates.combat.numAliveAdventurers === 0 &&
+      rpResult.choices.length === 1 && props.node.getNext().isEnd()) {
     buttons.unshift(
       <Button key={-1} onTouchTap={() => props.onRetry()}>
         Retry combat
