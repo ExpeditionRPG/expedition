@@ -3,20 +3,26 @@ import thunk from 'redux-thunk'
 import {installStore} from '../Store'
 import {toCard, toPrevious} from './Card'
 import {setNavigator} from '../Globals'
-const mockStore = configureStore([thunk]);
+import {RemotePlayClient, remoteify} from '../RemotePlay'
 
 describe('Card action', () => {
+  let client: any;
+  let mockStore: any;
+  beforeEach(() => {
+    client = new RemotePlayClient();
+    mockStore = (initialState: any) => {return configureStore([client.createActionMiddleware()])(initialState)};
+  });
+
   describe('toCard', () => {
     const navigator = {vibrate: () => {}};
     setNavigator(navigator);
 
-    /*
     it('causes vibration if vibration enabled', () => {
       const store = mockStore({settings: {vibration: true}});
       installStore(store);
       spyOn(navigator, 'vibrate');
 
-      store.dispatch(toCard('QUEST_CARD')(store.dispatch, store.dispatch));
+      store.dispatch(toCard('QUEST_CARD'));
       expect(navigator.vibrate).toHaveBeenCalledTimes(1);
     });
 
@@ -25,17 +31,16 @@ describe('Card action', () => {
       installStore(store);
       spyOn(navigator, 'vibrate');
 
-      store.dispatch(toCard('QUEST_CARD')(store.dispatch, store.dispatch));
+      store.dispatch(toCard('QUEST_CARD'));
       expect(navigator.vibrate).toHaveBeenCalledTimes(0);
     });
 
     it('dispatches a NAVIGATE action', () => {
       const store = mockStore({});
       installStore(store);
-      store.dispatch(toCard('QUEST_CARD')(store.dispatch, store.dispatch));
+      store.dispatch(toCard('QUEST_CARD'));
       expect(store.getActions()[0]).toEqual(jasmine.objectContaining({'type': 'NAVIGATE'}) as any);
     });
-    */
   });
 
   describe('toPrevious', () => {
