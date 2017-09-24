@@ -1,4 +1,4 @@
-import {ClientID, RemotePlayEvent} from './Events'
+import {ClientID, RemotePlayEvent, RemotePlayEventBody} from './Events'
 import {ClientBase} from './Client'
 import {BrokerBase, InMemoryBroker} from './Broker'
 
@@ -18,7 +18,7 @@ export class TestClient extends ClientBase {
     return this.id;
   }
 
-  sendEvent(e: RemotePlayEvent) {}
+  sendEvent(e: RemotePlayEventBody) {}
 }
 
 describe('Client', () => {
