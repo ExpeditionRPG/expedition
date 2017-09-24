@@ -9,9 +9,12 @@ export abstract class ClientBase {
   private handlers: EventHandler[];
   private clientStatusSet: {[id: string]: ClientStatus};
 
-  constructor(id: ClientID) {
-    this.id = id;
+  constructor() {
     this.resetState();
+  }
+
+  setID(id: ClientID) {
+    this.id = id;
   }
 
   resetState() {
