@@ -1,14 +1,16 @@
 import Redux from 'redux'
 import {RemotePlayEvent, ClientID} from 'expedition-qdl/lib/remote/Events'
 import {ClientBase} from 'expedition-qdl/lib/remote/Client'
-import {NavigateAction, RemotePlayAction, ActionFnArgs} from './actions/ActionTypes'
+import {NavigateAction, RemotePlayAction} from './actions/ActionTypes'
 import {local} from './actions/RemotePlay'
 import * as Bluebird from 'bluebird'
+
+const REMOTEPLAY_CLIENT_STATUS_POLL_MS = 5000;
 
 // Returns a generator of an "executable array" of the original action.
 // This array can be passed to the generated RemotePlay redux middleware
 // which invokes it and packages it to send to other remote play clients.
-export function remoteify<A extends ActionFnArgs>(a: (args: A, dispatch?: Redux.Dispatch<any>)=>any) {
+export function remoteify<A>(a: (args: A, dispatch?: Redux.Dispatch<any>)=>any) {
   return (args: A) => {
     return ([a.name, a, args] as any) as Redux.Action; // We know better >:}
   }
@@ -32,8 +34,6 @@ export class RemotePlayClient extends ClientBase {
       }
       this.websocketURI = websocketURI;
       this.sock = new WebSocket(this.websocketURI, 'expedition-remote-play-1.0');
-
-
       this.sock.onerror = (e: Event) => {
         this.handleMessage({client: this.id, event: {type: 'ERROR', error: 'Socket error: ' + e.toString()}});
       };
@@ -50,17 +50,17 @@ export class RemotePlayClient extends ClientBase {
           reject('Socket closed');
         }
       };
-
       this.sock.onopen = () => {
         opened = true;
-        // We periodically broadcast our status to other players so they know we're connected and healthy.
+        // We periodically broadcast our status to other players so they
+        // know we're connected and healthy.
         this.statusTimer = (setInterval(() => {
           if (this.sock.readyState !== this.sock.OPEN) {
             clearInterval(this.statusTimer);
             console.log('Stopped sending status; socket not open');
           }
           this.sendEvent({type: 'STATUS', status: {line: 0, waiting: false}});
-        }, 5000)) as any;
+        }, REMOTEPLAY_CLIENT_STATUS_POLL_MS)) as any;
 
         resolve();
       }
@@ -68,7 +68,7 @@ export class RemotePlayClient extends ClientBase {
   }
 
   isConnected(): boolean {
-    return false;
+    return (this.sock.readyState === this.sock.OPEN);
   }
 
   disconnect() {

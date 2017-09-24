@@ -64,8 +64,7 @@ export default class TouchPanel extends React.Component<TouchPanelProps, {}> {
       return;
     }
 
-    // Setup canvas element and touch listeners
-    this.destroyCanvas();
+    // Setup canvas element
     this.canvas = ref;
     if (!this.canvas) {
       return;
@@ -73,13 +72,6 @@ export default class TouchPanel extends React.Component<TouchPanelProps, {}> {
     this.ctx = this.canvas.getContext('2d');
     this.ctx.canvas.width = ref.parentElement.offsetWidth;
     this.ctx.canvas.height = ref.parentElement.offsetHeight;
-  }
-
-  private destroyCanvas() {
-  }
-
-  componentWillUnmount() {
-    this.destroyCanvas();
   }
 
   render() {

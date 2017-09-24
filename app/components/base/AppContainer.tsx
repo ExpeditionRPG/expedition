@@ -135,11 +135,12 @@ export default class Main extends React.Component<MainProps, {}> {
   }
 
   handleBaseMainRef(r: HTMLElement) {
-    if (!r) {
+    if (!r || process.env.NODE_ENV !== 'dev') {
       return;
     }
 
-    // Capture the event during the "capture" phase of event flow
+    // Intercept all 'touch start' events and pass it to the remote play client.
+    // Touch events are propagated here during the "capture" phase of event flow
     // https://www.w3.org/TR/DOM-Level-3-Events/#event-flow
     // TODO: Unsubscribe listeners, prevent duplicate subscriptions
     r.addEventListener('touchstart', (e: any) => {

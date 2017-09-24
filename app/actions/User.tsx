@@ -2,7 +2,6 @@ import Redux from 'redux'
 import {toCard} from './Card'
 import {openSnackbar} from '../actions/Snackbar'
 import {UserState} from '../reducers/StateTypes'
-import {ActionFnArgs} from './ActionTypes'
 import {authSettings} from '../Constants'
 import {remoteify} from '../RemotePlay'
 
@@ -105,7 +104,7 @@ function loginCordova(callback: UserLoginCallback) {
   });
 }
 
-interface LoginArgs extends ActionFnArgs {
+interface LoginArgs {
   callback?: () => any;
 }
 export const silentLogin = remoteify(function silentLogin(a: LoginArgs, dispatch: Redux.Dispatch<any>) {

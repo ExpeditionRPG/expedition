@@ -7,7 +7,7 @@ import {ParserNode, defaultContext} from '../Template'
 import {toCard} from '../../actions/Card'
 import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT} from '../../Constants'
 import {encounters} from '../../Encounters'
-import {QuestNodeAction, ActionFnArgs} from '../../actions/ActionTypes'
+import {QuestNodeAction} from '../../actions/ActionTypes'
 import {loadNode} from '../../actions/Quest'
 import {remoteify} from '../../RemotePlay'
 
@@ -224,7 +224,7 @@ export function handleResolvePhase(node: ParserNode) {
 }
 
 export function midCombatChoice(settings: SettingsType, parent: ParserNode, index: number) {
-  const midCombatChoice = (dispatch: Redux.Dispatch<any>): any => {
+  return (dispatch: Redux.Dispatch<any>): any => {
     parent = parent.clone();
     const node = parent.ctx.templates.combat.roleplay;
     let next = node.getNext(index);
@@ -268,11 +268,10 @@ export function midCombatChoice(settings: SettingsType, parent: ParserNode, inde
     }
     dispatch({type: 'QUEST_NODE', node: parent} as QuestNodeAction);
   };
-  return midCombatChoice;
 }
 
 export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, elapsedMillis: number) {
-  const handleCombatTimerStop = (dispatch: Redux.Dispatch<any>): any => {
+  return (dispatch: Redux.Dispatch<any>): any => {
     node = node.clone();
     node.ctx.templates.combat.mostRecentAttack = generateCombatAttack(node, settings, elapsedMillis);
     node.ctx.templates.combat.mostRecentRolls = generateRolls(settings.numPlayers);
@@ -289,10 +288,9 @@ export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, 
       dispatch(handleResolvePhase(node));
     }
   };
-  return handleCombatTimerStop;
 }
 
-interface HandleCombatEndArgs extends ActionFnArgs {
+interface HandleCombatEndArgs {
   node?: ParserNode;
   serializedNode?: ParserNode;
   settings: SettingsType;
