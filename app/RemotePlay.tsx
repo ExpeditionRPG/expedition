@@ -7,20 +7,25 @@ import * as Bluebird from 'bluebird'
 
 export type BaseAction = (a: Object, dispatch: Redux.Dispatch<any>, dispatchLocal: Redux.Dispatch<any>, isRemote: boolean) => Redux.Action;
 
+// Returns a generator of an "executable array" of the original action.
+// This array can be passed to the generated RemotePlay redux middleware
+// which invokes it and packages it to send to other remote play clients.
 export function remoteify<A extends ActionFnArgs>(a: (args: A, dispatch?: Redux.Dispatch<any>)=>any) {
-  // Takes function, returns a function that returns the self-reference to the function and the set of the function's args
   return (args: A) => {
     return ([a.name, a, args] as any) as Redux.Action; // We know better >:}
   }
 }
 
-// The base layer of the remote play network framework; handles
-// web socket connections & reconnect policy.
+// The base layer of the remote play network framework. Key features:
+// - handling of web socket connections
+// - reconnect policy
+// - Serializing "executable arrays" and broadcasting them
+// - Unpacking and executing serialized actions locally
 export class RemotePlayClient extends ClientBase {
   private websocketURI: string;
   private sock: WebSocket;
   private statusTimer: number;
-  private actionSet: {[name: string]: ActionFn<any>} = {};
+  private actionSet: {[name: string]: any} = {};
 
   constructor(id: ClientID) {
     super(id);
@@ -30,7 +35,6 @@ export class RemotePlayClient extends ClientBase {
     this.id = id;
   }
 
-  // Connect asynchronously and reconnect as needed
   connect(websocketURI: string): Bluebird<{}> {
     return new Bluebird<{}>((resolve, reject) => {
       if (this.isConnected()) {
@@ -49,8 +53,9 @@ export class RemotePlayClient extends ClientBase {
 
       let opened = false;
       this.sock.onclose = () => {
-        // TODO: REXP reconnect
-        console.log('Socket closed');
+        // TODO: Attempt to reconnect with random exponential backoff.
+        // This should be displayed to the user in some way.
+        console.error('Socket closed');
         if (!opened) {
           reject('Socket closed');
         }
@@ -58,6 +63,7 @@ export class RemotePlayClient extends ClientBase {
 
       this.sock.onopen = () => {
         opened = true;
+        // We periodically broadcast our status to other players so they know we're connected and healthy.
         this.statusTimer = (setInterval(() => {
           if (this.sock.readyState !== this.sock.OPEN) {
             clearInterval(this.statusTimer);
@@ -79,24 +85,22 @@ export class RemotePlayClient extends ClientBase {
     this.sock.close();
   }
 
-  sendEvent(e: any): void { // TODO: e: RemotePlayEventBody
+  sendEvent(e: any): void {
     if (!this.sock || this.sock.readyState !== this.sock.OPEN) {
       return;
     }
     const event: RemotePlayEvent = {client: this.id, event: e};
     this.sock.send(JSON.stringify(event));
-    console.log('Sent ' + e.type);
   }
 
   public registerModuleActions(module: any) {
     for (const e of Object.keys(module.exports)) {
       // Registered actions must be single-argument, named functions.
-      if (typeof(module.exports[e]) !== 'function' || !module.exports[e].name || module.exports[e].length !== 1) {
+      if (typeof(module.exports[e]) !== 'function' || !module.exports[e].name || module.exports[e].length !== 2) {
         continue;
       }
       const f: (...args: any[])=>any = module.exports[e];
       this.actionSet[f.name] = f;
-      //module.exports[e] = explodeActionFn(e);
     }
   }
 

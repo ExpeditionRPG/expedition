@@ -1,4 +1,4 @@
-import {NavigateAction, ReturnAction, ActionFn, ActionFnArgs, RemoteDispatch} from './ActionTypes'
+import {NavigateAction, ReturnAction, ActionFnArgs, RemoteDispatch} from './ActionTypes'
 import {AppStateWithHistory, CardName, CardPhase, CardState} from '../reducers/StateTypes'
 import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants'
 import {getNavigator} from '../Globals'

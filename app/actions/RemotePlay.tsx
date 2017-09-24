@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {toCard} from './Card'
 import {remotePlaySettings} from '../Constants'
-import {RemotePlayAction, RemotePlayFunctionAction, NavigateAction, ReturnAction, ActionFn, ActionFnArgs} from './ActionTypes'
+import {RemotePlayAction, NavigateAction, ReturnAction, ActionFnArgs} from './ActionTypes'
 import {UserState} from '../reducers/StateTypes'
 import {logEvent} from '../Main'
 import {openSnackbar} from '../actions/Snackbar'
@@ -11,23 +11,6 @@ import {getRemotePlayClient} from '../RemotePlay'
 export function local(a: Redux.Action): RemotePlayAction {
   return {type: 'REMOTE_PLAY_ACTION', action: a};
 }
-
-/*
-function handleRemoteAction(e: Redux.Action): ActionFn {
-
-  switch (e.type) {
-    case 'NAVIGATE':
-      return toCard(...e);
-    case 'RETURN':
-      const ra = (e as ReturnAction);
-      return toPrevious(ra.to.name, ra.to.phase, ra.before, ra.skip);
-    case 'REMOTE_PLAY_FN':
-      const fa = (e as RemotePlayFunctionAction);
-    default:
-      return
-  }
-}
-*/
 
 export function handleRemotePlayEvent(e: RemotePlayEvent) {
   return (dispatch: Redux.Dispatch<any>): any => {
