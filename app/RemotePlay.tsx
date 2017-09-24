@@ -1,11 +1,9 @@
 import Redux from 'redux'
-import {RemotePlayEvent, RemotePlayEventBody, ClientID} from 'expedition-qdl/lib/remote/Events'
+import {RemotePlayEvent, ClientID} from 'expedition-qdl/lib/remote/Events'
 import {ClientBase} from 'expedition-qdl/lib/remote/Client'
-import {NavigateAction, RemotePlayAction, ActionFn, ActionFnArgs} from './actions/ActionTypes'
+import {NavigateAction, RemotePlayAction, ActionFnArgs} from './actions/ActionTypes'
 import {local} from './actions/RemotePlay'
 import * as Bluebird from 'bluebird'
-
-export type BaseAction = (a: Object, dispatch: Redux.Dispatch<any>, dispatchLocal: Redux.Dispatch<any>, isRemote: boolean) => Redux.Action;
 
 // Returns a generator of an "executable array" of the original action.
 // This array can be passed to the generated RemotePlay redux middleware
@@ -26,14 +24,6 @@ export class RemotePlayClient extends ClientBase {
   private sock: WebSocket;
   private statusTimer: number;
   private actionSet: {[name: string]: any} = {};
-
-  constructor(id: ClientID) {
-    super(id);
-  }
-
-  setID(id: ClientID) {
-    this.id = id;
-  }
 
   connect(websocketURI: string): Bluebird<{}> {
     return new Bluebird<{}>((resolve, reject) => {
@@ -149,6 +139,6 @@ export function getRemotePlayClient(): RemotePlayClient {
   if (client !== null) {
     return client
   }
-  client = new RemotePlayClient('test');
+  client = new RemotePlayClient();
   return client;
 }

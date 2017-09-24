@@ -96,6 +96,9 @@ export interface RemotePlaySessionAction extends Redux.Action {
   uri: string;
 }
 
+// History of remote play sessions, as reported from the API server.
+// We can use these to reconnect to earlier sessions we may have been
+// disconnected from.
 export interface RemotePlayHistoryAction extends Redux.Action {
   type: 'REMOTE_PLAY_HISTORY';
   history: SessionMetadata[];
