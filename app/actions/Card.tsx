@@ -1,10 +1,10 @@
 import * as Redux from 'redux'
-import {NavigateAction, ReturnAction} from './ActionTypes'
+import {NavigateAction, ReturnAction, remoteify} from './ActionTypes'
 import {AppStateWithHistory, CardName, CardPhase, CardState} from '../reducers/StateTypes'
 import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants'
 import {getNavigator} from '../Globals'
 import {getStore} from '../Store'
-import {getRemotePlayClient, remoteify} from '../RemotePlay'
+import {getRemotePlayClient} from '../RemotePlay'
 
 interface ToCardArgs {
   name: CardName;
@@ -12,7 +12,6 @@ interface ToCardArgs {
   overrideDebounce?: boolean;
 }
 export const toCardBase = remoteify(function toCardBase(a: ToCardArgs, dispatch?: Redux.Dispatch<any>): ToCardArgs {
-  console.log('toCarding');
   const state: AppStateWithHistory = getStore().getState();
   const nav = getNavigator();
   if (nav && nav.vibrate && state.settings.vibration) {
@@ -36,4 +35,4 @@ export function toPrevious(name?: CardName, phase?: CardPhase, before?: boolean,
   return {type: 'RETURN', to: {name, ts: Date.now(), phase}, before: Boolean(before), skip};
 }
 
-getRemotePlayClient().registerModuleActions(module);
+// TODO: getRemotePlayClient().registerModuleActions(module);

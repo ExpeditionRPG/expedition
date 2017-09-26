@@ -3,7 +3,7 @@ import thunk from 'redux-thunk'
 import {installStore} from '../Store'
 import {toCard, toPrevious} from './Card'
 import {setNavigator} from '../Globals'
-import {RemotePlayClient, remoteify} from '../RemotePlay'
+import {RemotePlayClient} from '../RemotePlay'
 
 describe('Card action', () => {
   let client: any;
@@ -36,7 +36,7 @@ describe('Card action', () => {
     });
 
     it('dispatches a NAVIGATE action', () => {
-      const store = mockStore({});
+      const store = mockStore({settings: {vibration: false}});
       installStore(store);
       store.dispatch(toCard('QUEST_CARD'));
       expect(store.getActions()[0]).toEqual(jasmine.objectContaining({'type': 'NAVIGATE'}) as any);

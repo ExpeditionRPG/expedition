@@ -7,9 +7,8 @@ import {ParserNode, defaultContext} from '../Template'
 import {toCard} from '../../actions/Card'
 import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT} from '../../Constants'
 import {encounters} from '../../Encounters'
-import {QuestNodeAction} from '../../actions/ActionTypes'
+import {QuestNodeAction, remoteify} from '../../actions/ActionTypes'
 import {loadNode} from '../../actions/Quest'
-import {remoteify} from '../../RemotePlay'
 
 const cheerio: any = require('cheerio');
 

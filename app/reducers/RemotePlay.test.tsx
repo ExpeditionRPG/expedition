@@ -1,3 +1,3 @@
-define('RemotePlay reducer', () => {
+describe('RemotePlay reducer', () => {
   // TODO
 });

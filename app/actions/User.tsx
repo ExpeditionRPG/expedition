@@ -3,7 +3,7 @@ import {toCard} from './Card'
 import {openSnackbar} from '../actions/Snackbar'
 import {UserState} from '../reducers/StateTypes'
 import {authSettings} from '../Constants'
-import {remoteify} from '../RemotePlay'
+import {remoteify} from './ActionTypes'
 
 declare var gapi: any;
 declare var window: any;

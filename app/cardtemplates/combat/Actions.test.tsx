@@ -2,11 +2,9 @@ import {initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, h
 import {DifficultyType, FontSizeType} from '../../reducers/StateTypes'
 import {ParserNode, defaultContext} from '../Template'
 import configureStore  from 'redux-mock-store'
-import thunk from 'redux-thunk'
+import {RemotePlayClient} from '../../RemotePlay'
 
 const cheerio: any = require('cheerio');
-
-const mockStore = configureStore([ thunk ]);
 
 const TEST_SETTINGS = {
   autoRoll: false,
@@ -25,6 +23,10 @@ const TEST_SETTINGS = {
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
 describe('Combat actions', () => {
+  const mockStore = (initialState: any) => {
+    const client = new RemotePlayClient();
+    return configureStore([client.createActionMiddleware()])(initialState);
+  };
 
   let baseNode: ParserNode = null;
   {
