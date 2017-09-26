@@ -1,8 +1,23 @@
 import {card} from './Card'
 import {toCard} from '../actions/Card'
 import {NAVIGATION_DEBOUNCE_MS}  from '../Constants'
+import configureStore  from 'redux-mock-store'
+import {RemotePlayClient} from '../RemotePlay'
 
 describe('Card reducer', () => {
+  let client: any;
+  let dispatched: any;
+  beforeEach(() => {
+    client = new RemotePlayClient();
+    const store = configureStore([client.createActionMiddleware()])({});
+    dispatched = (a: any) => {
+      store.dispatch(a);
+      const result = store.getActions();
+      store.clearActions();
+      return result[result.length-1];
+    }
+  });
+
   it('Defaults to splash card', () => {
     expect(card(undefined, {type: 'NO_OP'})).toEqual(jasmine.objectContaining({
       name: 'SPLASH_CARD',
@@ -10,7 +25,7 @@ describe('Card reducer', () => {
   });
 
   it('Sets state and phase on toCard', () => {
-    expect(card(undefined, toCard('SEARCH_CARD', 'DISCLAIMER'))).toEqual(jasmine.objectContaining({
+    expect(card(undefined, dispatched(toCard('SEARCH_CARD', 'DISCLAIMER')))).toEqual(jasmine.objectContaining({
       name: 'SEARCH_CARD',
       phase: 'DISCLAIMER',
     }) as any);
@@ -22,10 +37,10 @@ describe('Card reducer', () => {
       return fixedNow;
     });
 
-    const state = card(undefined, toCard('SEARCH_CARD'));
+    const state = card(undefined, dispatched(toCard('SEARCH_CARD')));
 
     fixedNow += NAVIGATION_DEBOUNCE_MS + 10
-    expect(card(state, toCard('QUEST_CARD'))).toEqual(jasmine.objectContaining({
+    expect(card(state, dispatched(toCard('QUEST_CARD')))).toEqual(jasmine.objectContaining({
       name: 'QUEST_CARD',
     }) as any);
   });
@@ -36,10 +51,10 @@ describe('Card reducer', () => {
       return fixedNow;
     });
 
-    const state = card(undefined, toCard('SEARCH_CARD'));
+    const state = card(undefined, dispatched(toCard('SEARCH_CARD')));
 
     fixedNow += 50 // ms
-    expect(card(state, toCard('QUEST_CARD'))).toEqual(jasmine.objectContaining({
+    expect(card(state, dispatched(toCard('QUEST_CARD')))).toEqual(jasmine.objectContaining({
       name: 'SEARCH_CARD',
     }) as any);
   });
@@ -50,10 +65,10 @@ describe('Card reducer', () => {
       return fixedNow;
     });
 
-    const state = card(undefined, toCard('SEARCH_CARD'));
+    const state = card(undefined, dispatched(toCard('SEARCH_CARD')));
 
     fixedNow += 50 // ms
-    expect(card(state, toCard('QUEST_CARD', null, true))).toEqual(jasmine.objectContaining({
+    expect(card(state, dispatched(toCard('QUEST_CARD', null, true)))).toEqual(jasmine.objectContaining({
       name: 'QUEST_CARD',
     }) as any);
   })

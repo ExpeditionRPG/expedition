@@ -3,9 +3,16 @@ import thunk from 'redux-thunk'
 import {installStore} from '../Store'
 import {toCard, toPrevious} from './Card'
 import {setNavigator} from '../Globals'
-const mockStore = configureStore([thunk]);
+import {RemotePlayClient} from '../RemotePlay'
 
 describe('Card action', () => {
+  let client: any;
+  let mockStore: any;
+  beforeEach(() => {
+    client = new RemotePlayClient();
+    mockStore = (initialState: any) => {return configureStore([client.createActionMiddleware()])(initialState)};
+  });
+
   describe('toCard', () => {
     const navigator = {vibrate: () => {}};
     setNavigator(navigator);
@@ -28,8 +35,11 @@ describe('Card action', () => {
       expect(navigator.vibrate).toHaveBeenCalledTimes(0);
     });
 
-    it('returns a NAVIGATE action', () => {
-      expect(toCard('QUEST_CARD')).toEqual(jasmine.objectContaining({'type': 'NAVIGATE'}) as any);
+    it('dispatches a NAVIGATE action', () => {
+      const store = mockStore({settings: {vibration: false}});
+      installStore(store);
+      store.dispatch(toCard('QUEST_CARD'));
+      expect(store.getActions()[0]).toEqual(jasmine.objectContaining({'type': 'NAVIGATE'}) as any);
     });
   });
 

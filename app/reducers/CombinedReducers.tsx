@@ -8,6 +8,7 @@ import {settings} from './Settings'
 import {snackbar} from './Snackbar'
 import {user} from './User'
 import {userFeedback} from './UserFeedback'
+import {remotePlay} from './RemotePlay'
 import {AppStateWithHistory, AppState} from './StateTypes'
 import {ReturnAction} from '../actions/ActionTypes'
 
@@ -23,6 +24,7 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     snackbar: snackbar(state.snackbar, action),
     user: user(state.user, action),
     userFeedback: userFeedback(state.userFeedback, action),
+    remotePlay: remotePlay(state.remotePlay, action),
   };
 }
 

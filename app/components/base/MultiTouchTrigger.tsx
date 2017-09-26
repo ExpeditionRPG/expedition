@@ -16,7 +16,7 @@ const styles = {
   },
 };
 
-// TODO: use new ES6 syntax
+// TODO: inherit from TouchPanel class
 export default class MultiTouchTrigger extends React.Component<MultiTouchTriggerProps, {}> {
   ctx: any;
   canvas: any;

@@ -7,7 +7,7 @@ import {ParserNode, defaultContext} from '../Template'
 import {toCard} from '../../actions/Card'
 import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT} from '../../Constants'
 import {encounters} from '../../Encounters'
-import {QuestNodeAction} from '../../actions/ActionTypes'
+import {QuestNodeAction, remoteify} from '../../actions/ActionTypes'
 import {loadNode} from '../../actions/Quest'
 
 const cheerio: any = require('cheerio');
@@ -266,7 +266,7 @@ export function midCombatChoice(settings: SettingsType, parent: ParserNode, inde
       dispatch(toCard('QUEST_CARD', 'ROLEPLAY', true));
     }
     dispatch({type: 'QUEST_NODE', node: parent} as QuestNodeAction);
-  }
+  };
 }
 
 export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, elapsedMillis: number) {
@@ -289,22 +289,33 @@ export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, 
   };
 }
 
-export function handleCombatEnd(node: ParserNode, settings: SettingsType, victory: boolean, maxTier: number) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    // Edit the final card before cloning
-    if (victory) {
-      node.ctx.templates.combat.tier = 0;
-    } else {
-      node.ctx.templates.combat.numAliveAdventurers = 0;
-    }
-    node = node.clone();
-    node.ctx.templates.combat.levelUp = (victory) ? (settings.numPlayers <= maxTier) : false;
-    node.ctx.templates.combat.loot = (victory) ? generateLoot(maxTier) : [];
-
-    dispatch(toCard('QUEST_CARD', (victory) ? 'VICTORY' : 'DEFEAT', true));
-    dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
-  };
+interface HandleCombatEndArgs {
+  node?: ParserNode;
+  serializedNode?: ParserNode;
+  settings: SettingsType;
+  victory: boolean;
+  maxTier: number;
 }
+export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleCombatEndArgs, dispatch: Redux.Dispatch<any>) {
+  if (a.serializedNode) {
+    console.error('Unimplemented: remote play combat end deserialization');
+  }
+
+  // Edit the final card before cloning
+  if (a.victory) {
+    a.node.ctx.templates.combat.tier = 0;
+  } else {
+    a.node.ctx.templates.combat.numAliveAdventurers = 0;
+  }
+  a.node = a.node.clone();
+  a.node.ctx.templates.combat.levelUp = (a.victory) ? (a.settings.numPlayers <= a.maxTier) : false;
+  a.node.ctx.templates.combat.loot = (a.victory) ? generateLoot(a.maxTier) : [];
+
+  dispatch(toCard('QUEST_CARD', (a.victory) ? 'VICTORY' : 'DEFEAT', true));
+  dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
+
+  return {...a, serializedNode: a.node.getComparisonKey(), node: null};
+});
 
 export function tierSumDelta(node: ParserNode, current: number, delta: number): QuestNodeAction {
   node = node.clone();

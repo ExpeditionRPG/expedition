@@ -631,6 +631,12 @@ span.line {
 
   .base_multi_touch_trigger {
     position: absolute;
+
+    &.touchpanel {
+      pointer-events: none;
+      top: 0;
+      left: 0;
+    }
   }
 
   .base_picker {
@@ -843,6 +849,36 @@ span.line {
         line-height: $lineheight !important;
         text-shadow: $white_on_red_text_shadow;
       }
+    }
+  }
+
+  .remoteplay {
+    .helptext {
+      text-align: center;
+      padding: size(base);
+    }
+
+    .connect_bar {
+      img {
+        width: 20%;
+        display: inline-block;
+        padding: size(small);
+
+        &:nth-child(0) {
+          color: red;
+        }
+      }
+    }
+
+    input {
+      width: 50%;
+      background: rgba(255,255,255,0.3);
+      padding: size(base);
+      font-size: fontsize(interactive) * 2;
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
     }
   }
 

@@ -11,8 +11,11 @@ import {fetchAnnouncements} from './actions/Announcement'
 import {toPrevious} from './actions/Card'
 import {setDialog} from './actions/Dialog'
 import {silentLogin} from './actions/User'
+import {handleRemotePlayEvent} from './actions/RemotePlay'
 import {getStore} from './Store'
 import {getWindow, getGapi, getGA, getDevicePlatform, getDocument, setGA, setupPolyfills} from './Globals'
+import {getRemotePlayClient} from './RemotePlay'
+import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 
 
 const injectTapEventPlugin = require('react-tap-event-plugin');
@@ -25,6 +28,11 @@ function setupTapEvents() {
   }
 }
 
+function setupRemotePlay() {
+  getRemotePlayClient().subscribe((e: RemotePlayEvent) => {
+    getStore().dispatch(handleRemotePlayEvent(e));
+  });
+}
 
 export function logEvent(name: string, args: any): void {
   const fbp = getWindow().FirebasePlugin;
@@ -76,10 +84,10 @@ function setupDevice() {
   if (!gapi) {
     return;
   }
-  getStore().dispatch(silentLogin(() => {
+  getStore().dispatch(silentLogin({callback: () => {
     // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
     console.log('Silent login: ', gapi.auth2.getAuthInstance().isSignedIn);
-  }));
+  }}));
 }
 
 function setupGoogleAPIs() {
@@ -96,10 +104,10 @@ function setupGoogleAPIs() {
       cookie_policy: 'none',
     }).then(() => {
       // silent login here triggers for web
-      getStore().dispatch(silentLogin(() => {
+      getStore().dispatch(silentLogin({callback: () => {
         // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
         console.log('Silent login: ', gapi.auth2.getAuthInstance().isSignedIn);
-      }));
+      }}));
     });
   });
 }
@@ -194,6 +202,7 @@ export function init() {
   setupEventLogging();
   setupHotReload();
   setupGoogleAnalytics();
+  setupRemotePlay();
   getStore().dispatch(fetchAnnouncements());
 
   const settings = getStore().getState().settings;

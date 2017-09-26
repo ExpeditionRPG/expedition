@@ -2,11 +2,9 @@ import {initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, h
 import {DifficultyType, FontSizeType} from '../../reducers/StateTypes'
 import {ParserNode, defaultContext} from '../Template'
 import configureStore  from 'redux-mock-store'
-import thunk from 'redux-thunk'
+import {RemotePlayClient} from '../../RemotePlay'
 
 const cheerio: any = require('cheerio');
-
-const mockStore = configureStore([ thunk ]);
 
 const TEST_SETTINGS = {
   autoRoll: false,
@@ -25,6 +23,10 @@ const TEST_SETTINGS = {
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
 describe('Combat actions', () => {
+  const mockStore = (initialState: any) => {
+    const client = new RemotePlayClient();
+    return configureStore([client.createActionMiddleware()])(initialState);
+  };
 
   let baseNode: ParserNode = null;
   {
@@ -141,21 +143,21 @@ describe('Combat actions', () => {
   describe('handleCombatEnd', () => {
     it('levels up if high maxTier on victory', () => {
       const store = mockStore({});
-      store.dispatch(handleCombatEnd(newCombatNode(), TEST_SETTINGS, true, 9));
+      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 9}));
 
       expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(true);
     });
 
     it('does not level up if low maxTier on victory', () => {
       const store = mockStore({});
-      store.dispatch(handleCombatEnd(newCombatNode(), TEST_SETTINGS, true, 1));
+      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 1}));
 
       expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(false);
     })
 
     it('assigns random loot on victory', () => {
       const store = mockStore({});
-      store.dispatch(handleCombatEnd(newCombatNode(), TEST_SETTINGS, true, 9));
+      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 9}));
 
       const loot = store.getActions()[1].node.ctx.templates.combat.loot;
       let lootCount = 0;
@@ -167,7 +169,7 @@ describe('Combat actions', () => {
 
     it('never assigns loot or levels up on defeat', () => {
       const store = mockStore({});
-      store.dispatch(handleCombatEnd(newCombatNode(), TEST_SETTINGS, false, 9));
+      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: false, maxTier: 9}));
       expect(store.getActions()[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
         levelUp: false,
         loot: [],
