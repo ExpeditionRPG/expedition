@@ -20,21 +20,17 @@ export interface ClientStatus {
 
 // ------ Events from Client to Client --------
 
-export interface EventBase {
-  client: ClientID;
-}
-
-export interface StatusEvent extends EventBase {
+export interface StatusEvent {
   type: 'STATUS';
   status: ClientStatus;
 }
 
-export interface TouchEvent extends EventBase {
+export interface TouchEvent {
   type: 'TOUCH';
   positions: TouchList;
 }
 
-export interface ActionEvent extends EventBase {
+export interface ActionEvent {
   type: 'ACTION';
   // Redux action, compressed & serialized to JSON.
   // It's up to the client implementation to determine
@@ -42,11 +38,16 @@ export interface ActionEvent extends EventBase {
   action: string;
 }
 
-export interface ErrorEvent extends EventBase {
+export interface ErrorEvent {
   type: 'ERROR';
   error: string;
 }
 
-export type RemotePlayEvent = StatusEvent|TouchEvent|ErrorEvent|ActionEvent;
+export type RemotePlayEventBody = StatusEvent|TouchEvent|ErrorEvent|ActionEvent;
+
+export interface RemotePlayEvent {
+  client: ClientID;
+  event: RemotePlayEventBody;
+}
 
 export type MessageType = 'STATUS'|'TOUCH'|'ACTION'|'ERROR';

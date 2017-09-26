@@ -1,12 +1,12 @@
-import {ClientID, RemotePlayEvent} from './Events'
+import {ClientID, RemotePlayEvent, RemotePlayEventBody} from './Events'
 import {ClientBase} from './Client'
 import {BrokerBase, InMemoryBroker} from './Broker'
 
 export class TestClient extends ClientBase {
   b: BrokerBase;
 
-  constructor(id: ClientID, b: BrokerBase) {
-    super(id);
+  constructor(b: BrokerBase) {
+    super();
     this.b = b;
   }
 
@@ -18,7 +18,7 @@ export class TestClient extends ClientBase {
     return this.id;
   }
 
-  sendEvent(e: RemotePlayEvent) {}
+  sendEvent(e: RemotePlayEventBody) {}
 }
 
 describe('Client', () => {
@@ -33,8 +33,8 @@ describe('Broker/Client Behavior', () => {
 
   beforeEach(() => {
     b = new InMemoryBroker();
-    c1 = new TestClient('c1', b);
-    c2 = new TestClient('c2', b);
+    c1 = new TestClient(b);
+    c2 = new TestClient(b);
     b.addClientHandler(c1.getID(), c1.getMessageHandler());
     b.addClientHandler(c2.getID(), c2.getMessageHandler());
   });
