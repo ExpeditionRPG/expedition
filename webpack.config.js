@@ -15,9 +15,9 @@ const options = {
       './app/Style.scss',
       './node_modules/expedition-app/app/Style.scss',
     ],
-    playtest: [
-      './app/playtest/PlaytestWorker.tsx',
-    ],
+    // playtest: [
+    //   './app/playtest/PlaytestWorker.tsx',
+    // ],
   },
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.json', '.txt'],
