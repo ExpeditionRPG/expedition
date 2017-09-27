@@ -34,6 +34,8 @@ export function sanitizeStyles(string: string): string {
   string = string.replace(REGEX.HTML_TAG, '');
 
   // replace markdown with HTML tags
+  // general case: replace anything surrounded by markdown styles with their matching HTML tag:
+  // (\*\*)([^\*]*)(\*\*)       non-greedily match the contents between two sets of **
   // special / more complex regex for single _'s since they sometimes appear in {{_.ops()}}:
   // (\_)                       starting _
   // (                          unlimited number of:
@@ -42,11 +44,11 @@ export function sanitizeStyles(string: string): string {
   //   ((?!({{)|(}}))[^\_])*    again, any non-_ characters not wrapped in double curlies
   // )*
   //(\_)                        ending _
-  string = string.replace(/(\*\*)([^\*{}]*)(\*\*)/g, '<b>$2</b>');
-  string = string.replace(/(\_\_)([^\_{}]*)(\_\_)/g, '<b>$2</b>');
+  string = string.replace(/(\*\*)([^\*]*)(\*\*)/g, '<b>$2</b>');
+  string = string.replace(/(\_\_)([^\_]*)(\_\_)/g, '<b>$2</b>');
   string = string.replace(/(\*)([^\*{}]*)(\*)/g, '<i>$2</i>');
   string = string.replace(/(\_)(((?!({{)|(}}))[^\_])*({{.*}})*((?!({{)|(}}))[^\_])*)*(\_)/g, '<i>$2</i>');
-  string = string.replace(/(~~)([^~{}]*)(~~)/g, '<del>$2</del>');
+  string = string.replace(/(~~)([^~]*)(~~)/g, '<del>$2</del>');
 
   return string;
 }
