@@ -42,7 +42,9 @@ Quest error codes:
   * If there is no danger, there is no roll. Just assume your players will take the time to do it right.
   * If there is danger, specify it before they roll: if you fail to climb the rope, you'll lose 2 health.
 * Balancing combat: generally, start with a tier 3 encounter, and build up 1 additional tier per fight up to around tier sum 6 or 7 for a boss fight. Every 4 tier sum of loot you award out of combat means they'll be able to defeat one additional tier in their next fight (ie if you give htem 8 tier of loot right before the boss fight, you can pit them against a tier 9 fight with a reasonable chance of success)
-* A [fantastic video](http://www.gdcvault.com/play/1023346/Choice-Consequence-and) that covers designing meaningful and fulfilling decision design in quests.
+* [A fantastic video on creating meaningful and fulfilling decisions](http://www.gdcvault.com/play/1023346/Choice-Consequence-and)
+* [A great video on designing interesting AI](https://www.youtube.com/watch?v=9bbhJi0NBkk)
+* [Creating a good detective / mystery game](https://youtu.be/gwV_mA2cv_0)
 
 ## How do I share quests? Can multiple people edit a quest?
 
