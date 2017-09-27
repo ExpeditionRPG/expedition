@@ -30,7 +30,7 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
         dispatch(search({owner: u.id, partition: 'expedition-private', expansions: ['horror']}));
       };
 
-      if (!user) {
+      if (!user || user.id === '') {
         dispatch(login(privateSearch));
       } else {
         privateSearch(user);
