@@ -1,7 +1,7 @@
 import {QuestDetails} from './QuestTypes'
 import {TemplatePhase, TemplateContext} from '../cardtemplates/TemplateTypes'
 import {ParserNode} from '../cardtemplates/Template'
-
+import {Session, SessionID} from 'expedition-qdl/lib/remote/Broker'
 import {GenreType, ContentRatingLabelType} from '../Constants'
 
 export interface AnnouncementState {
@@ -65,8 +65,10 @@ export interface SnackbarState {
   timeout: number;
 }
 
-export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REPORT';
-export type CardPhase = TemplatePhase | SearchPhase;
+export type RemotePlayPhase = 'CONNECT'|'LOBBY';
+
+export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REPORT' | 'REMOTE_PLAY';
+export type CardPhase = TemplatePhase | SearchPhase|RemotePlayPhase;
 export interface CardState {
   name: CardName;
   ts: number;
@@ -102,6 +104,13 @@ export interface UserFeedbackState {
   text: string;
 }
 
+export type SessionMetadata = {id: SessionID, peerCount: number, questTitle: string, firstContact: Date};
+export interface RemotePlayState {
+  session: Session;
+  uri: string;
+  history: SessionMetadata[];
+}
+
 export interface AppState {
   announcement: AnnouncementState;
   card: CardState;
@@ -112,6 +121,7 @@ export interface AppState {
   snackbar: SnackbarState;
   user: UserState;
   userFeedback: UserFeedbackState;
+  remotePlay: RemotePlayState;
 }
 
 export interface AppStateWithHistory extends AppState {

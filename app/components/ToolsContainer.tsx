@@ -7,6 +7,7 @@ import {URLS} from '../Constants'
 import {toCard} from '../actions/Card'
 import {search} from '../actions/Web'
 import {login} from '../actions/User'
+import {loadRemotePlay} from '../actions/RemotePlay'
 
 declare var window:any;
 
@@ -36,6 +37,9 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
         privateSearch(user);
       }
     },
+    onRemotePlaySelect(user: UserState): void {
+      dispatch(loadRemotePlay(user));
+    }
   };
 }
 

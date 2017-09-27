@@ -73,14 +73,14 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     },
     onVictory: (node: ParserNode, settings: SettingsType, maxTier: number) => {
       logEvent('combat_victory', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
-      dispatch(handleCombatEnd(node, settings, true, maxTier));
+      dispatch(handleCombatEnd({node, settings, victory: true, maxTier}));
     },
     onRetry: () => {
       dispatch(toPrevious('QUEST_CARD', 'DRAW_ENEMIES', true));
     },
     onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number) => {
       logEvent('combat_defeat', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
-      dispatch(handleCombatEnd(node, settings, false, maxTier));
+      dispatch(handleCombatEnd({node, settings, victory: false, maxTier}));
     },
     onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => {
       dispatch(handleCombatTimerStop(node, settings, elapsedMillis));

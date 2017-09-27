@@ -44,7 +44,7 @@
         "enzyme": "^2.6.0",
         "es6-shim": "^0.35.3",
         "expect": "^1.20.2",
-        "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#3ec3d198288747b898442fd5e445bde80bc77de3",
+        "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#17b1b0c6d19e36e68db405d3b8e8029bea72116a",
         "file-loader": "^0.10.0",
         "glob": "^7.1.1",
         "jasmine": "^2.5.3",

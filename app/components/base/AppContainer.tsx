@@ -13,13 +13,17 @@ import SettingsContainer from '../SettingsContainer'
 import SplashScreenContainer from '../SplashScreenContainer'
 import QuestStartContainer from '../QuestStartContainer'
 import QuestEndContainer from '../QuestEndContainer'
+import RemotePlayContainer from '../RemotePlayContainer'
+
+import RemoteTouchPanel from './RemoteTouchPanel'
 
 import {renderCardTemplate} from '../../cardtemplates/Template'
 import {initialSettings} from '../../reducers/Settings'
 import {closeSnackbar} from '../../actions/Snackbar'
 import {initialState} from '../../reducers/Snackbar'
-import {AppStateWithHistory, TransitionType, SearchPhase, SettingsType, SnackbarState} from '../../reducers/StateTypes'
+import {AppStateWithHistory, TransitionType, SearchPhase, RemotePlayPhase, SettingsType, SnackbarState} from '../../reducers/StateTypes'
 import {getStore} from '../../Store'
+import {getRemotePlayClient} from '../../RemotePlay'
 
 const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
 
@@ -107,8 +111,11 @@ export default class Main extends React.Component<MainProps, {}> {
       case 'REPORT':
         card = <ReportContainer />;
         break;
+      case 'REMOTE_PLAY':
+        card = <RemotePlayContainer phase={state.card.phase as RemotePlayPhase} />;
+        break;
       default:
-        throw new Error('Unknown card ' + state.card);
+        throw new Error('Unknown card ' + state.card.name);
     }
 
     let transition: TransitionType = 'NEXT';
@@ -127,6 +134,29 @@ export default class Main extends React.Component<MainProps, {}> {
     };
   }
 
+  handleBaseMainRef(r: HTMLElement) {
+    if (!r || process.env.NODE_ENV !== 'dev') {
+      return;
+    }
+
+    // Intercept all 'touch start' events and pass it to the remote play client.
+    // Touch events are propagated here during the "capture" phase of event flow
+    // https://www.w3.org/TR/DOM-Level-3-Events/#event-flow
+    // TODO: Unsubscribe listeners, prevent duplicate subscriptions
+    r.addEventListener('touchstart', (e: any) => {
+      const positions: number[][] = Array(e.touches.length);
+      const boundingRect = r.getBoundingClientRect();
+      for (let i = 0; i < e.touches.length; i++) {
+        // Get adjusted coordinates as the percentage of div width/height as measured
+        // from the top left corner of the div.
+        const x = (e.touches[i].clientX - boundingRect.left) / r.offsetWidth * 100;
+        const y = (e.touches[i].clientY - boundingRect.top) / r.offsetHeight * 100;
+        positions[i] = [x, y];
+      }
+      getRemotePlayClient().sendEvent({type: 'TOUCH', positions});
+    }, true);
+  }
+
   handleChange() {
     // TODO: Handle no-op on RESET_APP from IDE
     this.setState(this.getUpdatedState());
@@ -141,8 +171,9 @@ export default class Main extends React.Component<MainProps, {}> {
     }
 
     const cards: any = [
-      <div className="base_main" key={this.state.key}>
+      <div className="base_main" key={this.state.key} ref={(r: HTMLElement) => this.handleBaseMainRef(r)}>
         {this.state.card}
+        <RemoteTouchPanel/>
       </div>
     ];
 

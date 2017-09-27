@@ -2,7 +2,7 @@ import Redux from 'redux'
 import { connect } from 'react-redux'
 import {AppState} from '../reducers/StateTypes'
 import {changeSettings} from '../actions/Settings'
-import {toCard} from '../actions/Card'
+import {toCardBase} from '../actions/Card'
 import {AnnouncementState} from '../reducers/StateTypes'
 import SplashScreen, {SplashScreenStateProps, SplashScreenDispatchProps} from './SplashScreen'
 
@@ -23,10 +23,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Splas
     },
     onPlayerCountSelect: (numPlayers: number) => {
       dispatch(changeSettings({numPlayers, multitouch: true}));
-      dispatch(toCard('FEATURED_QUESTS'));
+      dispatch(toCardBase({name: 'FEATURED_QUESTS'}));
     },
     onPlayerManualSelect: () => {
-      dispatch(toCard('PLAYER_COUNT_SETTING'));
+      dispatch(toCardBase({name: 'PLAYER_COUNT_SETTING'}));
     }
   };
 }

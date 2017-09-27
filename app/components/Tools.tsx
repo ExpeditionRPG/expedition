@@ -10,9 +10,10 @@ export interface ToolsStateProps {
 }
 
 export interface ToolsDispatchProps {
-  onCustomCombatSelect: (settings: SettingsType) => any;
-  onQuestCreatorSelect: () => any;
-  onPrivateQuestsSelect: (user: UserState) => any;
+  onCustomCombatSelect: (settings: SettingsType) => void;
+  onQuestCreatorSelect: () => void;
+  onPrivateQuestsSelect: (user: UserState) => void;
+  onRemotePlaySelect: (user: UserState) => void;
 }
 
 export interface ToolsProps extends ToolsStateProps, ToolsDispatchProps {}
@@ -38,6 +39,14 @@ const Tools = (props: ToolsProps): JSX.Element => {
           <div className="summary">View quests you've published privately with the Quest Creator.</div>
         </div>
       </Button>
+      {process.env.NODE_ENV === 'dev' &&
+      <Button onTouchTap={() => props.onRemotePlaySelect(props.user)}>
+        <div className="questButtonWithIcon">
+          <div className="title">(BETA) Remote Play</div>
+          <div className="summary">Sync your app with friends on another device.</div>
+        </div>
+      </Button>
+      }
       <div className="version">Expedition App v{getAppVersion()}</div>
     </Card>
   );
