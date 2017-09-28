@@ -119,29 +119,46 @@ export class Feedback {
         return this.quest.updateRatings(feedback.partition, feedback.questid);
       })
       .then((q: QuestInstance) => {
-        quest = q;
         if (!this.mail) {
           return Promise.resolve();
         }
 
+        quest = q;
         const ratingavg = (quest.dataValues.ratingavg || 0).toFixed(1);
-        const message = `<p>User feedback:</p>
-          <p>"${feedback.text}"</p>
-          <p>${feedback.rating} out of 5 stars</p>
-          <p>New quest overall rating: ${ratingavg} out of 5 across ${quest.dataValues.ratingcount} ratings.</p>
-          <p>Was submitted for ${quest.dataValues.title} by ${quest.dataValues.author}</p>
-          <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
-          <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
-          <p>Quest id: ${feedback.questid}</p>
-        `;
 
-        if (type === 'rating' && (feedback.text.length > 0 || feedback.rating < 3)) {
+        if (type === 'rating' && quest.dataValues.ratingcount === 1) {
+          const subject = `Your quest just received its first rating!`;
+          let message = `<p>${quest.dataValues.author},</p>
+            <p>Your quest, ${quest.dataValues.title}, just received its first rating!</p>
+            <p>${feedback.rating} out of 5 stars.</p>
+          `;
+          if (feedback.text.length > 0) {
+            message += `<p>User feedback:</p><p>"${feedback.text}"</p>`;
+          }
+          return Mail.send([quest.dataValues.email, 'expedition+questfeedback@fabricate.io'], subject, message);
+        } else if (type === 'rating' && (feedback.text.length > 0 || feedback.rating < 3)) {
           const subject = `Quest rated ${feedback.rating}/5: ${quest.dataValues.title}`;
-          console.log(subject);
+          const message = `<p>User feedback:</p>
+            <p>"${feedback.text}"</p>
+            <p>${feedback.rating} out of 5 stars</p>
+            <p>New quest overall rating: ${ratingavg} out of 5 across ${quest.dataValues.ratingcount} ratings.</p>
+            <p>Was submitted for ${quest.dataValues.title} by ${quest.dataValues.author}</p>
+            <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
+            <p>Reviewer email: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
+            <p>Quest id: ${feedback.questid}</p>
+          `;
           return Mail.send([quest.dataValues.email, 'expedition+questfeedback@fabricate.io'], subject, message);
         } else if (type === 'report') {
           const subject = `Quest reported: ${quest.dataValues.title}`;
-          console.log(subject);
+          const message = `<p>User feedback:</p>
+            <p>"${feedback.text}"</p>
+            <p>${feedback.rating} out of 5 stars</p>
+            <p>New quest overall rating: ${ratingavg} out of 5 across ${quest.dataValues.ratingcount} ratings.</p>
+            <p>Was submitted for ${quest.dataValues.title} by ${quest.dataValues.author}</p>
+            <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
+            <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
+            <p>Quest id: ${feedback.questid}</p>
+          `;
           return Mail.send([quest.dataValues.email, 'expedition+questreported@fabricate.io'], subject, message);
         }
       })
