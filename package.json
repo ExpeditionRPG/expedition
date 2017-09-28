@@ -10,7 +10,9 @@
     "watch:test": "karma start karma.conf.js",
     "dev": "webpack-dev-server --progress",
     "start": "node app.js",
-    "build": "webpack -p --config webpack.dist.config.js --progress"
+    "build": "webpack -p --config webpack.dist.config.js --progress",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "Fabricate.IO",
   "license": "CC-BY-NC-SA-4.0",
@@ -59,7 +61,7 @@
     "passport": "^0.3.2",
     "passport-google-id-token": "git+https://github.com/Fabricate-IO/passport-google-id-multi-token.git",
     "passport-google-oauth20": "^1.0.0",
-    "pg": "6.1.4",
+    "pg": "6.1.6",
     "proxy-middleware": "^0.15.0",
     "query-string": "^4.3.4",
     "react": "^15.4.2",
@@ -82,7 +84,8 @@
     "warning": "^3.0.0",
     "webpack": "^2.2.1",
     "winston": "^2.3.1",
-    "yargs-parser": "^7.0.0"
+    "yargs-parser": "^7.0.0",
+    "snyk": "^1.41.1"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.1",
@@ -145,5 +148,6 @@
   },
   "engines": {
     "node": "8.1.4"
-  }
+  },
+  "snyk": true
 }
