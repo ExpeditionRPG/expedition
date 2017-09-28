@@ -9,7 +9,7 @@ import {encounters} from '../node_modules/expedition-app/app/Encounters'
 const IGNORE = Object.keys(encounters);
 const elementRegexes = new RegExp('(' + [REGEX.HTML_TAG, REGEX.TRIGGER, REGEX.ID, REGEX.OP].map((regex: any): string => {
   return regex.toString().match(REGEX.EXTRACT_REGEX)[1];
-}).join('|') + ')', 'gm');
+}).join('|') + ')[^\s]*', 'gm');
 
 export default class Spellcheck {
   private contentsModified = true;
@@ -25,12 +25,12 @@ export default class Spellcheck {
 
   // Cleanup includes:
   // lowercases (for search simplicity, since we aren't touching the editor's text)
-  // removes zones we aren't spellchecking (metadata, html tags, ids, ops)
-  // Note: metadata is determined by skipping everything until the first double line
+  // removes zones we aren't spellchecking (html tags, ids, ops), including anything touching them,
+  // for example "the {{singer}}'s mother"
   static cleanCorpus(text: string): string {
     // load all of the regexes and pull out their contents so that we can merge them + apply flags
     text = text.toLowerCase().replace(elementRegexes, ' ');
-    return text.slice(text.indexOf('\n\n'));
+    return text;
   }
 
   // Return a list of all unique words in the provided text

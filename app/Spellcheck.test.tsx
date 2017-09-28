@@ -34,10 +34,14 @@ describe('Spellcheck', () => {
     it('Removes HTML tags');
   });
   describe('Spellcheck', () => {
-    it('Allows enemy names');
-    it('Catches misspelled English words');
-    it('Catches multiple misspellings of the same word');
-    it('Does not flag misspelled words inside of triggers or IDs');
-    it('Does not flag misspelled words inside of triggers or IDs, even if misspelled words exist elsewhere in corpus');
+    it('allows enemy names');
+    it('catches misspelled English words');
+    it('catches multiple misspellings of the same word');
+    it('does not flag misspelled words inside of triggers or IDs');
+    it('does not flag misspelled words inside of triggers or IDs, even if misspelled words exist elsewhere in corpus');
+    it('does not flag suffixes touching ops', () => {
+      // const input = "The {{singer}}'s mother, now that's not a bug";
+      // expected: no spelling errors
+    })
   })
 });
