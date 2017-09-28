@@ -349,6 +349,8 @@ Expedition uses [MathJS](http://mathjs.org/) to handle the context. If you're tr
 
 **Debugging note:** in the Quest Creator, if you use "Play from Cursor", context variables that are defined in earlier cards will not be set. We're currently working on additional tooling around context to help you set context variables without having to replay large portions of your quest, but a handy debugging trick for now is to set the variables to your desired values at the top of the card you're starting from - just make sure to remove them when you're done debugging!
 
+**Setting variables based on other variables:** To set a variable based on another variable, you can use the output of a ternary operator, for example: `{{ variable2 = (variable1 == "cats" ? "I like cats" : "I like dogs") }}`
+
 ### Static Functions
 
 We've included a couple functions that you can call anywhere in your quest code.
