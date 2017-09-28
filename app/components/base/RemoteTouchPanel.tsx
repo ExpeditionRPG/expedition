@@ -36,7 +36,6 @@ export default class RemoteTouchPanel extends TouchPanel {
   }
 
   componentWillUnmount() {
-    super.componentWillUnmount();
     getRemotePlayClient().unsubscribe(this.boundHandleRemotePlayEvent);
   }
 }
