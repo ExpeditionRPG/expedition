@@ -209,6 +209,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         notesRealtime: notes,
         metadataRealtime: metadata,
         realtimeModel: doc.getModel(),
+        title: xmlResult.getMeta().title,
         summary: metadata.get('summary'),
         author: metadata.get('author'),
         email: metadata.get('email'),
