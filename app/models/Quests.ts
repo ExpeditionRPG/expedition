@@ -120,6 +120,7 @@ export class Quest {
       },
     }, {
       timestamps: false, // TODO: eventually switch to sequelize timestamps
+      // https://github.com/ExpeditionRPG/expedition-api/issues/39
       underscored: true,
     });
   }
@@ -277,6 +278,8 @@ export class Quest {
           userid, // Not included in the request - pull from auth
           questversion: (quest.dataValues.questversion || 0) + 1,
           publishedurl,
+          tombstone: null, // Remove tombstone
+          published: new Date(),
         };
         if (majorRelease) {
           updateValues.questversionlastmajor = updateValues.questversion;
