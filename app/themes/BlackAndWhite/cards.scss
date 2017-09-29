@@ -135,6 +135,13 @@ $text-color-white: #fff;
       margin-top: -$border;
     }
 
+    .expansionIcon {
+      position: absolute;
+      bottom: $edge;
+      right: -0.5pt;
+      opacity: 0.6;
+    }
+
     header {
 
       position: relative;
@@ -382,6 +389,11 @@ $text-color-white: #fff;
         right: 0.1in;
         left: 0.1in;
       }
+
+      .expansionIcon {
+        top: 0;
+        right: 0.05in;
+      }
     }
 
     &.Encounter {
@@ -419,6 +431,12 @@ $text-color-white: #fff;
         article {
           width: 35%;
         }
+      }
+
+      .expansionIcon {
+        top: -1pt;
+        right: 0.51in;
+        opacity: 0.7;
       }
     }
 
@@ -518,31 +536,11 @@ $text-color-white: #fff;
         }
       }
 
-    // &.Persona.front {
-    //   .contents {
-    //     margin: 0 !important;
-    //   }
-    //   article {
-    //     padding-left: 0;
-    //     padding-top: 0;
-    //     padding-right: 14pt;
-    //     top: 50%;
-    //     transform: translateY(-50%);
-    //     margin: 0;
-
-    //     tr td {
-    //       vertical-align: middle;
-    //     }
-    //     tr td:first-child {
-    //       padding: 4pt 4pt 4pt 0;
-    //       opacity: 0.7;
-    //       text-align: center;
-    //       border-right: 1px solid #ccc;
-    //     }
-    //     tr td:nth-child(2) {
-    //       padding-left: 4pt;
-    //     }
-    //   }
+      .expansionIcon {
+        position: absolute;
+        bottom: 0.1in;
+        right: -0.1in;
+      }
     }
   }
 

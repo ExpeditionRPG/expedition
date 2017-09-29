@@ -144,7 +144,6 @@ $large-icon-width: 0.195in;
     position: absolute;
     bottom: $edge;
     right: -0.5pt;
-    opacity: 0.5;
   }
 
 
@@ -409,7 +408,7 @@ $large-icon-width: 0.195in;
       }
 
       .health, .hp-tracker {
-        color: #CFCFCF;
+        // color: #CFCFCF;
       }
 
       .art {
@@ -438,7 +437,6 @@ $large-icon-width: 0.195in;
       .expansionIcon {
         top: -1pt;
         right: 0.51in;
-        opacity: 0.6;
       }
     }
 
@@ -448,7 +446,7 @@ $large-icon-width: 0.195in;
       }
 
       .hp-tracker {
-        color: #888;
+        // color: #888;
       }
 
       .hp-tracker-vertical-right {
@@ -469,12 +467,9 @@ $large-icon-width: 0.195in;
       }
 
       .expansionIcon {
-        position: relative;
-        display: inline-block;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        position: absolute;
+        bottom: 0.1in;
+        right: -0.15in;
       }
 
       article {
@@ -493,7 +488,7 @@ $large-icon-width: 0.195in;
         }
         tr td:first-child {
           padding: 4pt 4pt 4pt 0;
-          opacity: 0.7;
+          // opacity: 0.7;
           text-align: center;
           border-right: 1px solid #ccc;
         }

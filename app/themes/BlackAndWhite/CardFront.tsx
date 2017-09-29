@@ -65,6 +65,7 @@ export default class CardFront extends React.Component<CardType, {}> {
               <footer>
                 <div className="flavortext">{card.flavortext}</div>
               </footer>
+              {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
             </div>
           </div>
         );
@@ -91,6 +92,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                   {horizontalCounter(MAX_ADVENTURER_HEALTH)}
                 </div>
               </footer>
+              {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
             </div>
           </div>
         );
@@ -120,6 +122,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                   <div className="flavortext">{card.flavortext}</div>
                 </footer>
                 {healthCounter(card.health)}
+                {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
               </div>
             </div>
           </div>
@@ -165,6 +168,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="flavortext">{card.flavortext}</div>
               </footer>
               {card.tracker && lootCounter(card.tracker)}
+              {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
             </div>
           </div>
         );
@@ -183,6 +187,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                   </tbody>
                 </table>
               </article>
+              {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
             </div>
           </div>
         );

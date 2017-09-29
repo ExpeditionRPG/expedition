@@ -186,12 +186,13 @@ export default class CardFront extends React.Component<CardType, {}> {
                   <tbody>
                     <tr><td>Max</td><td><strong>{card.empowered}: </strong>{card.power}</td></tr>
                     <tr className="personaMarker personaMarkerTop"><td>△</td></tr>
-                    <tr><td>Base</td><td><strong>{card.base}</strong>&nbsp;&nbsp;(Type: {card.class}) {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}</td></tr>
+                    <tr><td>Base</td><td><strong>{card.base}</strong>&nbsp;&nbsp;(Type: {card.class})</td></tr>
                     <tr className="personaMarker personaMarkerBottom"><td>▽</td></tr>
                     <tr><td>Min</td><td><strong>{card.afflicted}: </strong>{card.affliction}</td></tr>
                   </tbody>
                 </table>
               </article>
+              {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
             </div>
           </div>
         );

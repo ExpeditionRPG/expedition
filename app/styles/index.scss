@@ -9,12 +9,15 @@ $large: 32px;
 $base: 16px;
 $small: 8px;
 
+$fontBody: "minion-pro", serif !important;
+$fontHeader: "Cinzel", serif;
+
 a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
 
 body {
   background: #151415;
   font-size: 0; /* hack for display-inline gap */
-  font-family: "minion-pro", serif !important;
+  font-family: $fontBody;
   color: black;
 }
 
@@ -101,31 +104,56 @@ body {
   line-height: 1.2;
   page-break-after: always;
 
-  #instructionLogo {
-    width: 5.5in;
+  .halfWidth {
+    width: 3.8in;
     margin: auto;
-    display: block;
+  }
+
+  .fullWidth {
+    width: 7in;
+    margin: auto;
+  }
+
+  .topAlert {
+    text-align: center;
+    margin-bottom: 2em;
+  }
+
+  h1, h2, h3 {
+    font-family: $fontHeader;
+    margin-bottom: 0.5em;
   }
 
   h1 {
     font-size: 180%;
     text-align: center;
-    font-family: "Cinzel", serif;
   }
 
   h2 {
     font-size: 120%;
     text-align: center;
-    font-family: "Cinzel", serif;
   }
 
-  ol, p {
-    width: 3.8in;
-    margin: 0.5in auto 0 auto;
+  h3 {
+    font-size: 120%;
+  }
+
+  ol {
+    margin-top: 0.5in;
+    margin-bottom: 0;
     list-style-type: upper-roman;
 
     li {
       margin-top: $base;
+    }
+  }
+
+  p {
+    margin-bottom: 0.75em;
+
+    strong {
+      font-weight: bold;
+      font-family: $fontBody;
     }
   }
 }
