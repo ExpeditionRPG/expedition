@@ -51,9 +51,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         case 'HELP':
           window.open(DOCS_INDEX_URL, '_blank');
           break;
-        case 'FEEDBACK':
-          window.open(DEV_CONTACT_URL, '_blank');
-          break;
         default:
           throw new Error('Could not handle menu action ' + action);
       }
