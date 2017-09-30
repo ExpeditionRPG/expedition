@@ -620,6 +620,16 @@ $large-icon-width: 0.195in;
   }
 
   .card.front.-Title {
+    .UPC {
+      position: absolute;
+      bottom: -0.16in;
+      left: 0;
+      right: 0;
+      text-align: center;
+      img {
+        width: 1.6in;
+      }
+    }
     &.title-Horror:before {
       background-image: url(../../node_modules/expedition-art/cards/fronts/TitleCardHorror.jpg) !important;
     }

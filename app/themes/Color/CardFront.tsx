@@ -13,6 +13,9 @@ export default class CardFront extends React.Component<CardType, {}> {
         return (
           <div className={`card front vertical ${card.sheet} title-${card.image}`}>
             <div className="contents">
+              <div className="UPC">
+                <img src={`/expedition-art/cards/fronts/UPC${card.image}.svg`} />
+              </div>
             </div>
           </div>
         );
