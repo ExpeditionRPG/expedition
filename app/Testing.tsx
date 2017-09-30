@@ -2,7 +2,6 @@ import * as Redux from 'redux'
 import configureStore from 'redux-mock-store'
 import {RemotePlayClient} from './RemotePlay'
 import {AppState} from './reducers/StateTypes'
-import * as _ from 'lodash'
 
 export function Reducer<A extends Redux.Action>(reducer: (state: Object, action: A) => Object) {
   const defaultInitialState = reducer(undefined, ({type: '@@INIT'} as any));
