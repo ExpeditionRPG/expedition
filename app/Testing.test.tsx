@@ -9,7 +9,7 @@ function testReducer<A extends Redux.Action>(a: {b: number}, action: A) {
   return {b: (action as any).b};
 }
 
-fdescribe('Test Environment', () => {
+describe('Test Environment', () => {
   describe('Reducer', () => {
     it('supports general execution', () => {
       const result = Reducer(testReducer).withState({}).execute({type: 'TEST_ACTION', b: 5} as Redux.Action);

@@ -15,7 +15,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: Object, action:
         store.dispatch(action);
         let newState = initialState;
         for (const a of store.getActions()) {
-          newState = reducer(newState, action);
+          newState = reducer(newState, a);
         }
         return {
           toReturnState: (expected: Object) => {

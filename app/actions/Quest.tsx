@@ -34,7 +34,7 @@ export function loadNode(settings: SettingsType, node: ParserNode) {
     if (tag === 'trigger') {
       const triggerName = node.elem.text().trim();
       if (triggerName === 'end') {
-        dispatch(toCard('QUEST_END'));
+        dispatch(toCard({name: 'QUEST_END'}));
       } else {
         throw new Error('invalid trigger ' + triggerName);
       }

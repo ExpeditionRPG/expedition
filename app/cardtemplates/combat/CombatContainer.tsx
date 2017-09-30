@@ -69,7 +69,7 @@ function postTimerReturn(dispatch: Redux.Dispatch<any>) {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CombatDispatchProps => {
   return {
     onNext: (phase: CombatPhase) => {
-      dispatch(toCard('QUEST_CARD', phase));
+      dispatch(toCard({name: 'QUEST_CARD', phase}));
     },
     onVictory: (node: ParserNode, settings: SettingsType, maxTier: number) => {
       logEvent('combat_victory', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});

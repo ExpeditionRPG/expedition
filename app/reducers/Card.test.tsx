@@ -3,6 +3,7 @@ import {toCard} from '../actions/Card'
 import {NAVIGATION_DEBOUNCE_MS}  from '../Constants'
 import configureStore  from 'redux-mock-store'
 import {RemotePlayClient} from '../RemotePlay'
+import {Reducer} from '../Testing'
 
 describe('Card reducer', () => {
   let client: any;
@@ -19,57 +20,42 @@ describe('Card reducer', () => {
   });
 
   it('Defaults to splash card', () => {
-    expect(card(undefined, {type: 'NO_OP'})).toEqual(jasmine.objectContaining({
-      name: 'SPLASH_CARD',
-    }) as any);
+    expect(card(undefined, {type: 'NO_OP'})).toEqual(jasmine.objectContaining({name: 'SPLASH_CARD'} as any));
   });
 
   it('Sets state and phase on toCard', () => {
-    expect(card(undefined, dispatched(toCard('SEARCH_CARD', 'DISCLAIMER')))).toEqual(jasmine.objectContaining({
-      name: 'SEARCH_CARD',
-      phase: 'DISCLAIMER',
-    }) as any);
+    Reducer(card).withState({})
+      .expect(toCard({name: 'SEARCH_CARD', phase: 'DISCLAIMER'}))
+      .toChangeState({name: 'SEARCH_CARD', phase: 'DISCLAIMER'});
   });
 
   it('Does not debounce after some time', () => {
-    let fixedNow = Date.now();
+    const then = Date.now();
     spyOn(Date, 'now').and.callFake(function() {
-      return fixedNow;
+      return then + NAVIGATION_DEBOUNCE_MS + 10;
     });
-
-    const state = card(undefined, dispatched(toCard('SEARCH_CARD')));
-
-    fixedNow += NAVIGATION_DEBOUNCE_MS + 10
-    expect(card(state, dispatched(toCard('QUEST_CARD')))).toEqual(jasmine.objectContaining({
-      name: 'QUEST_CARD',
-    }) as any);
+    Reducer(card).withState({name: 'SEARCH_CARD', ts: then})
+      .expect(toCard({name: 'QUEST_CARD'}))
+      .toChangeState({name: 'QUEST_CARD'});
   });
 
   it('Debounces NAVIGATE actions', () => {
-    let fixedNow = Date.now();
+    const then = Date.now();
     spyOn(Date, 'now').and.callFake(function() {
-      return fixedNow;
+      return then + 50;
     });
-
-    const state = card(undefined, dispatched(toCard('SEARCH_CARD')));
-
-    fixedNow += 50 // ms
-    expect(card(state, dispatched(toCard('QUEST_CARD')))).toEqual(jasmine.objectContaining({
-      name: 'SEARCH_CARD',
-    }) as any);
+    Reducer(card).withState({name: 'SEARCH_CARD', ts: then})
+      .expect(toCard({name: 'QUEST_CARD'}))
+      .toChangeState({name: 'SEARCH_CARD'});
   });
 
   it('Respects overrideDebounce', () => {
-    let fixedNow = Date.now();
+    const then = Date.now();
     spyOn(Date, 'now').and.callFake(function() {
-      return fixedNow;
+      return then + 50;
     });
-
-    const state = card(undefined, dispatched(toCard('SEARCH_CARD')));
-
-    fixedNow += 50 // ms
-    expect(card(state, dispatched(toCard('QUEST_CARD', null, true)))).toEqual(jasmine.objectContaining({
-      name: 'QUEST_CARD',
-    }) as any);
-  })
+    Reducer(card).withState({name: 'SEARCH_CARD', ts: then})
+      .expect(toCard({name: 'QUEST_CARD', overrideDebounce: true}))
+      .toChangeState({name: 'QUEST_CARD'});
+  });
 });

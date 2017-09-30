@@ -28,18 +28,18 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
         if (sub && user.email && user.email !== '') {
           dispatch(subscribe(user.email));
         }
-        dispatch(toCard('SEARCH_CARD', 'SETTINGS'));
+        dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
       }));
     },
     onFilter: () => {
-      dispatch(toCard('SEARCH_CARD', 'SETTINGS'));
+      dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
     },
     onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => {
       dispatch(search({players: numPlayers, ...request}));
     },
     onQuest: (quest: QuestDetails) => {
       dispatch(viewQuest(quest));
-      dispatch(toCard('SEARCH_CARD', 'DETAILS'));
+      dispatch(toCard({name: 'SEARCH_CARD', phase: 'DETAILS'}));
     },
     onPlay: (quest: QuestDetails) => {
       dispatch(fetchQuestXML(quest));

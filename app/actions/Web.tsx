@@ -56,9 +56,9 @@ export function loadQuestXML(details: QuestDetails, questNode: Cheerio, ctx: Tem
     const node = new ParserNode(firstNode, ctx);
 
     if (node.elem[0].attribs.skipsetup) {
-      dispatch(toCard('QUEST_CARD'));
+      dispatch(toCard({name: 'QUEST_CARD'}));
     } else {
-      dispatch(toCard('QUEST_START'));
+      dispatch(toCard({name: 'QUEST_START'}));
     }
   };
 }
@@ -93,9 +93,9 @@ export function search(search: SearchSettings) {
         search: search,
       });
       if (search.partition === 'expedition-private') {
-        dispatch(toCard('SEARCH_CARD', 'PRIVATE'));
+        dispatch(toCard({name: 'SEARCH_CARD', phase: 'PRIVATE'}));
       } else {
-        dispatch(toCard('SEARCH_CARD', 'SEARCH'));
+        dispatch(toCard({name: 'SEARCH_CARD', phase: 'SEARCH'}));
       }
     };
     xhr.onerror = () => {
