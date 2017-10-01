@@ -4,6 +4,7 @@ import {installStore} from '../Store'
 import {toCard, toPrevious} from './Card'
 import {setNavigator} from '../Globals'
 import {RemotePlayClient} from '../RemotePlay'
+import {Action} from '../Testing'
 
 describe('Card action', () => {
   let client: any;
@@ -21,8 +22,7 @@ describe('Card action', () => {
       const store = mockStore({settings: {vibration: true}});
       installStore(store);
       spyOn(navigator, 'vibrate');
-
-      store.dispatch(toCard('QUEST_CARD'));
+      Action(toCard).execute({name: 'QUEST_CARD'});
       expect(navigator.vibrate).toHaveBeenCalledTimes(1);
     });
 
@@ -30,16 +30,14 @@ describe('Card action', () => {
       const store = mockStore({settings: {vibration: false}});
       installStore(store);
       spyOn(navigator, 'vibrate');
-
-      store.dispatch(toCard('QUEST_CARD'));
+      Action(toCard).execute({name: 'QUEST_CARD'});
       expect(navigator.vibrate).toHaveBeenCalledTimes(0);
     });
 
     it('dispatches a NAVIGATE action', () => {
       const store = mockStore({settings: {vibration: false}});
       installStore(store);
-      store.dispatch(toCard('QUEST_CARD'));
-      expect(store.getActions()[0]).toEqual(jasmine.objectContaining({'type': 'NAVIGATE'}) as any);
+      Action(toCard).expect({name: 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({'type': 'NAVIGATE'}));
     });
   });
 

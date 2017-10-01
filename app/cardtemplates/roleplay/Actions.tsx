@@ -10,7 +10,7 @@ export function initRoleplay(node: ParserNode, settings: SettingsType, custom?: 
     // the history from grabbing the quest state before navigating.
     // This bug manifests as toPrevious() sliding back to the same card
     // content.
-    dispatch(toCard('QUEST_CARD', null));
+    dispatch(toCard({name: 'QUEST_CARD'}));
     dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
   };
 }

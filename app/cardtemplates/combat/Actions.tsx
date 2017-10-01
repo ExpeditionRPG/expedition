@@ -32,7 +32,7 @@ export function initCombat(node: ParserNode, settings: SettingsType, custom?: bo
       roundTimeMillis: settings.timerSeconds * 1000 * (PLAYER_TIME_MULT[settings.numPlayers] || 1),
       ...getDifficultySettings(settings.difficulty),
     };
-    dispatch(toCard('QUEST_CARD', 'DRAW_ENEMIES'));
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES'}));
     dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
   };
 }
@@ -214,9 +214,9 @@ export function handleResolvePhase(node: ParserNode) {
       node.ctx.templates.combat.roleplay = node.getNext('round');
       // Set node *before* navigation to prevent a blank first roleplay card.
       dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
-      dispatch(toCard('QUEST_CARD', 'ROLEPLAY', true));
+      dispatch(toCard({name: 'QUEST_CARD', phase: 'ROLEPLAY', overrideDebounce: true}));
     } else {
-      dispatch(toCard('QUEST_CARD', 'RESOLVE_ABILITIES', true));
+      dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true}));
       dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
     }
   }
@@ -235,7 +235,7 @@ export function midCombatChoice(settings: SettingsType, parent: ParserNode, inde
       // End the quest if end trigger
       const triggerName = next.elem.text().trim();
       if (triggerName === 'end') {
-        return dispatch(toCard('QUEST_END'));
+        return dispatch(toCard({name: 'QUEST_END'}));
       }
 
       next = next.handleTriggerEvent();
@@ -259,11 +259,11 @@ export function midCombatChoice(settings: SettingsType, parent: ParserNode, inde
     if (!next || next.getTag() !== 'roleplay' || !ptr || ptr.length === 0) {
       // If so, then continue with the resolution phase.
       parent.ctx.templates.combat.roleplay = null;
-      dispatch(toCard('QUEST_CARD', 'RESOLVE_ABILITIES', true));
+      dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true}));
     } else {
       // Otherwise continue the roleplay phase.
       parent.ctx.templates.combat.roleplay = next;
-      dispatch(toCard('QUEST_CARD', 'ROLEPLAY', true));
+      dispatch(toCard({name: 'QUEST_CARD', phase: 'ROLEPLAY', overrideDebounce: true}));
     }
     dispatch({type: 'QUEST_NODE', node: parent} as QuestNodeAction);
   };
@@ -281,7 +281,7 @@ export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, 
       // We can preset the quest node here. This populates context in a way that
       // the latest round is considered when the "on round" branch is evaluated.
       dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
-      dispatch(toCard('QUEST_CARD', 'SURGE', true));
+      dispatch(toCard({name: 'QUEST_CARD', phase: 'SURGE', overrideDebounce: true}));
 
     } else {
       dispatch(handleResolvePhase(node));
@@ -311,7 +311,7 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
   a.node.ctx.templates.combat.levelUp = (a.victory) ? (a.settings.numPlayers <= a.maxTier) : false;
   a.node.ctx.templates.combat.loot = (a.victory) ? generateLoot(a.maxTier) : [];
 
-  dispatch(toCard('QUEST_CARD', (a.victory) ? 'VICTORY' : 'DEFEAT', true));
+  dispatch(toCard({name: 'QUEST_CARD', phase: (a.victory) ? 'VICTORY' : 'DEFEAT',  overrideDebounce: true}));
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
 
   return {...a, serializedNode: a.node.getComparisonKey(), node: null};

@@ -47,7 +47,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
           return dispatch(setDialog('EXIT_QUEST'));
         }
       case 'SETTINGS':
-        return dispatch(toCard('SETTINGS'));
+        return dispatch(toCard({name: 'SETTINGS'}));
       case 'RATE':
         switch (getDevicePlatform()) {
           case 'android':
@@ -66,7 +66,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
         window.open(this.getFeedbackURL(), '_system');
         break;
       case 'REPORT':
-        return dispatch(toCard('REPORT'));
+        return dispatch(toCard({name: 'REPORT'}));
       default:
         throw new Error('Unknown menu option ' + value);
     }

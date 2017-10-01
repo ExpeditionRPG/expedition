@@ -31,7 +31,7 @@ const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): F
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): FeaturedQuestsDispatchProps => {
   return {
     onTools(): void {
-      dispatch(toCard('ADVANCED'));
+      dispatch(toCard({name: 'ADVANCED'}));
     },
     onSearchSelect(user: UserState, settings: SettingsType): void {
       if (user && user.loggedIn) {
@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Featu
           expansions: Object.keys(settings.contentSets).filter( key => settings.contentSets[key] ) as ExpansionsType[],
         }));
       } else {
-        dispatch(toCard('SEARCH_CARD', 'DISCLAIMER'));
+        dispatch(toCard({name: 'SEARCH_CARD', phase: 'DISCLAIMER'}));
       }
     },
     onQuestSelect(quest: QuestDetails): void {

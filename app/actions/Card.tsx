@@ -11,7 +11,7 @@ interface ToCardArgs {
   phase?: CardPhase;
   overrideDebounce?: boolean;
 }
-export const toCardBase = remoteify(function toCardBase(a: ToCardArgs, dispatch?: Redux.Dispatch<any>): ToCardArgs {
+export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch?: Redux.Dispatch<any>): ToCardArgs {
   const state: AppStateWithHistory = getStore().getState();
   const nav = getNavigator();
   if (nav && nav.vibrate && state.settings.vibration) {
@@ -25,11 +25,6 @@ export const toCardBase = remoteify(function toCardBase(a: ToCardArgs, dispatch?
 
   return a;
 });
-
-// TODO: Remove once everything is migrated to new fn({args}) format
-export function toCard(name: CardName, phase?: CardPhase, overrideDebounce?: boolean) {
-  return toCardBase({name, phase, overrideDebounce});
-}
 
 export function toPrevious(name?: CardName, phase?: CardPhase, before?: boolean, skip?: {name: CardName, phase: CardPhase}[]): ReturnAction {
   return {type: 'RETURN', to: {name, ts: Date.now(), phase}, before: Boolean(before), skip};

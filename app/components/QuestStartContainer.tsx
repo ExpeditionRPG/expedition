@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestStartStateProps =
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestStartDispatchProps => {
   return {
     onNext: () => {
-      dispatch(toCard('QUEST_CARD'));
+      dispatch(toCard({name: 'QUEST_CARD'}));
     }
   };
 }

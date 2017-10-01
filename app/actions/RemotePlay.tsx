@@ -87,7 +87,7 @@ export function remotePlayConnect(user: UserState, secret: string) {
     })
     .then(() => {
       dispatch({type: 'REMOTE_PLAY_SESSION', session: {secret}, uri});
-      dispatch(toCard('REMOTE_PLAY', 'LOBBY'));
+      dispatch(toCard({name: 'REMOTE_PLAY', phase: 'LOBBY'}));
     })
     .catch((error: Error) => {
       logEvent('remote_play_connect_err', error.toString());
@@ -108,7 +108,7 @@ export function loadRemotePlay(user: UserState) {
     })
     .then((data: any) => {
       dispatch({type: 'REMOTE_PLAY_HISTORY', history: data.history});
-      dispatch(toCard('REMOTE_PLAY', 'CONNECT'));
+      dispatch(toCard({name: 'REMOTE_PLAY', phase: 'CONNECT'}));
     })
     .catch((error: Error) => {
       logEvent('remote_play_init_err', error.toString());
