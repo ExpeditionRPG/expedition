@@ -37,7 +37,7 @@
     "copy-webpack-plugin": "^4.0.1",
     "cors": "^2.8.3",
     "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#7530a8a00217f56ac6a3ddfdffaa864034fc1613",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#21e4b51c7d64c2d7a187971d5a7fd6b3cb570334",
+    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#3acfa125c5e96f247bc41ee4f45facbde07b828c",
     "express": "^4.15.2",
     "express-rate-limit": "^2.8.0",
     "express-session": "^1.15.1",
@@ -76,6 +76,7 @@
     "redux-thunk": "^2.2.0",
     "request": "^2.81.0",
     "simple-assign": "^0.1.0",
+    "snyk": "^1.41.1",
     "squel": "^5.8.0",
     "timeago-react": "^1.0.8",
     "to-markdown": "^3.0.3",
@@ -84,8 +85,7 @@
     "warning": "^3.0.0",
     "webpack": "^2.2.1",
     "winston": "^2.3.1",
-    "yargs-parser": "^7.0.0",
-    "snyk": "^1.41.1"
+    "yargs-parser": "^7.0.0"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.1",
