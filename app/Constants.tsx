@@ -34,100 +34,67 @@ export const NEW_QUEST_TEMPLATE = `# ${NEW_QUEST_TITLE}
 
 _Introduction_
 
-Welcome to the Expedition Quest Editor! This quest serves as an introduction,
-showing you how to get started writing your own adventures.
+Welcome to the Expedition Quest Creator! This is an example quest that will help you get started creating your own custom adventure.
 
-Play along in app using the "Play From Cursor" button on the top right. You can
-move your cursor to a different part of the quest and hit "Play" to start playing from that spot.
-You can also make changes to this text and play it in the app to see what happens!
+To see what the quest looks like in the app, move your cursor to the part you want to see and click the "Play From Cursor" button on the top right. Try changing this paragraph, then clicking the button to see what happens!
 
-If you have questions, feedback or found a bug, let us know at Expedition@Fabricate.io
+When you have questions or feedback, click the "Contact us" button on the bottom right of the page - We'll do our best to respond within 24 hours.
 
 _Quests_
 
-Quests are stored in your Google drive with a ".quest" extension. To open them, right click on the file in Drive and select "Open With > Expedition Quest Creator".
+When you visit the Quest Creator directly, it creates a new quest with this template. Quests are saved in your Google Drive (they'll have a ".quest" extension).
 
-If you visit the Quest Creator directly, it'll create a brand new quest with this template.
+To open an existing quest, search for the quest by its title in Google Drive, then right click on the file and select "Open With > Expedition Quest Creator".
 
 _Starting a story_
 
-At the beginning of the story, give some background -
-who are your adventurers? Where are they? Why are they here?
-
-Use "_Title_" lines split text into new cards.
+At the beginning of the story, give some background - who are your adventurers? Where are they? Why?
 
 Use blank lines to separate text into paragraphs.
 
-When you have to have long sections of text,
-it's good to break them up into multiple cards, each about a screen's length,
-so that one person isn't stuck reading a small novel out loud.
+Use "_Title_" lines to split text into new pages. Typically, each page should have at most a phone screen's worth of text. This separation gives everyone an equal chance to read and make choices.
+
+// This is a comment. You can use comments as reminders about the story or TODOs to work on later. They aren't seen by players.
 
 _Decision time_
 
-The exciting thing about quest writing is that you get to
-present players with choices that affect their story -
-but make sure to give them enough context to make a meaningful decision.
+Give players a choice in how they play your quest - choices keep the story exciting and engaging.
 
-For example, don't just ask them "left or right?" or "kill or spare the king?" -
-give them a hint at the consequences. Maybe the left fork smells of death,
-or you'd be tried for treason if your attempted assassination fails.
+However, players need enough context to make a meaningful decision. For example, don't just ask them "left or right?" or "kill or spare the king?"; give them a hint at the consequences. Maybe the left fork smells of death, or you'd be tried for treason if your assassination attempt fails.
 
-Each time there is a choice (indicated with the *), indent one additional level.
-
-// Side note: This is a comment. Comments are handy for making notes that your
-// players won't see, such as reminders about the story or TODOs to work on later.
+Each time you write a choice (indicated with the *), indent the outcomes one additional level as follows:
 
 * Sneak in through the rear, but risk getting trapped
 
-  You can present players with some sort of challenge to see if they succeed -
-  for example, rolling to sneak or trying to convince a guard they aren't thieves.
-
-  If the players need to do something out of character, like roll a die, draw loot,
-  or increment health, instruct them to do so via an instruction (indicated with a >).
+  You can add flavor to your choices with challenges - for example, by asking players to roll a die for a risky action. When you need to instruct players to do something outside of the quest (like roll a die, draw loot, or increment health), instruct them to do so as follows:
 
   > :roll: Roll to see if you sneak past the :bandit:.
 
-  Notice how the :roll: and :bandit: in the instruction gets turned into an icon?
-  Check out "help" or the link below for the list of available icons.
-
-  // https://github.com/ExpeditionRPG/expedition-quest-creator/blob/master/docs/icons.md
+  The colons around :roll: and :bandit: in the instruction turns the text into an icon! Click the "HELP" button above for the list of available icons.
 
   * Rolled 10 or higher
 
     You sneak past!
 
-    Goto statements jump the players to another card with a specified ID.
-    Here, we're jumping to the card further down with the ID "victory",
-    which you can defined via (#victory) after the roleplaying card title.
+    Goto statements jump the players to another page with a specified ID. The following line jumps to the page with "(#victory)" after its title:
 
     **goto victory**
 
   * Rolled Below 10
 
-    A guard spotted you... prepare to fight!
+    The guards spot you... prepare to fight! Also, they're skeletons. That's unexpected.
 
-    Also, he seems to be a skeleton. That's... unexpected.
-
-    Note that this is the end of the branch, so it falls through
-    and continues to the next un-indented card (in this case, combat
-    since the choice below is still part of the "Decision Time" card).
+    Since this is the end of the original choice ("Sneak in through the rear") we fall through and continue to the next un-indented section ("Fighting").
 
 * Fight your way through the front, but risk the king escaping
 
-  You decide to use your heads and bash your way in.
+  You decide bash your way in.
 
-  Note that this is the end of the branch, so it falls through
-  and continues to the next un-indented card (in this case, combat).
+  Note that this is the end of the branch, so it falls through and continues to the next un-indented section ("Fighting").
 
 _Fighting_
 
-You're about to enter combat. Things to note:
-
-Enemies are listed with a hyphen (-).
-
-All combat must have both "* on win" and "* on lose" outcomes.
-
-Losing a fight doesn't always have to mean the end of a quest.
+The next page (marked "_combat_") will send players into combat. You specify enemies with a hyphenated list (-), and win and lose outcomes with "on win" and "on lose" choices. Every combat must have both win and lose outcomes, but remember: losing a fight doesn't always have to mean the end of a quest.
 
 _combat_
 
@@ -136,171 +103,20 @@ _combat_
 
 * on win
 
-  Victory! You proceed to the inner castle.
+  Victory!
+
+  **goto victory**
 
 * on lose
 
-  With your last breath, you type an end card, and the story is over.
-
-  **end**
+  As the skeletons prepare the final blow, they stop and realize you're actually famous musicians from their favorite band. They help you up, and apologize for their mistake.
 
 _Victory!_ (#victory)
 
-Congratulations, you've made it through your first quest! You now know everything you need to start creating your own adventures.
+You can end the quest at any time with an "end" tag, as below:
 
-You can stop reading here, and start writing your own quest. Or, if you've got the hang of things and want to learn some more advanced techniques, read on!
+**end**
 
+// Congratulations - you now know everything you need to start creating your own adventures!
 
-
-_The Inner Castle_ (#victory)
-
-Now things start to get really interesting.
-
-The parenthesis and pound sign creates an ID for this card
-that you jump to with **goto ID** statements. You can jump to any card,
-whether it's before or after your current card.
-
-As your adventurers make decisions, you might want to keep track of things
-to affect the game in the future. We call this the state.
-
-_Inside the State_
-
-{{weaponsDrawn = false}}
-{{gold = 10}}
-{{noise = 0}}
-
-You can set the state at the top of roleplaying cards like so.
-
-Use double curly brackets whenever you're working with the state.
-
-You can display values to the party inside of text -
-for example, you have {{gold}} gold.
-
-* Draw your weapons and prepare for attack
-
-  {{weaponsDrawn = true}}
-
-  You draw your weapons in anticipation of the battle ahead.
-
-* Remain stealthy
-
-  You decide not to draw attention to yourself.
-
-_Going deeper_
-
-You can also check the state before choices, instructions, GOTOs and events
-(i.e. on win, on lose) to decide if they happen or not. For example, the
-"turn the corner" choice will only appear if your party decided to draw its
-weapons, and the "Next" button below it will only appear if your party did NOT
-draw their weapons.
-
-Note that, by default, single buttons that just continue the story
-are labeled "Next", but we highly recommend making them more interesting!
-
-You hear a guard approaching...
-
-* {{weaponsDrawn == true}} Attack!
-
-  _combat_
-
-  - Skeleton Mage
-
-  * on win
-
-    _Victory_
-
-    {{noise = noise + 1}}
-
-    You defeat the guard, but you made a lot of noise in the process...
-
-    // Note: see how we hinted at the consequences of their action
-
-  * on lose
-
-    The guards overpower you. You have failed to assassinate the king.
-
-    **end**
-
-* {{weaponsDrawn == false}} Wait for the guard to pass
-
-  You avoid drawing the guard's attention, your weapons still sheathed.
-
-_Continuing on_
-
-The state can also be used to adjust combat - both the enemies you face, and the win and lose conditions. For example,
-if your party made too much noise, they might be in for a bit of a surprise.
-
-If you want to get really fancy, you can even use a state variable to declare an enemy. For example...
-
-{{enemy="Zombie Hand"}}
-
-_combat_
-
-- {{enemy}}
-- {{noise > 0}} Undead Viking
-
-* {{noise == 0}} on win
-
-  Silent but deadly.
-
-* {{noise > 0}} on win
-
-  {{noise = noise + 1}}
-
-  You can't catch a break! Another noisy fight, soon the whole army will know
-  you're here.
-
-* on lose
-
-  You succumb to death.
-
-  **end**
-
-_Winning_
-
-Congratulations! You now know enough to build amazing adventures.
-
-If you have any questions - or ideas on how we can make quest writing easier
-or more awesome, let us know! Contact@Fabricate.IO
-
-Now, there's just one thing left to do...
-
-_combat_
-
-- Lich
-- {{noise > 0}} Skeleton Swordsman
-- {{noise > 1}} Floating Skull
-
-* on win
-
-  You completed your mission and return home victorious, but must live with the
-  death of an innocent undead dictator for the rest of your years.
-
-  **end**
-
-* on lose
-
-  That was no mere King, that was a undead Lich!
-  They sent you on a suicide mission!
-
-  * Surrender
-
-    Realizing that your country isn't that great anyway, you surrender and
-    offer your services to the undead Lich King.
-
-    Turns out, he's actually a really nice guy. You become his advisors
-    to all things assassination, living a life of luxury and respect,
-    and retiring at an early age to study the art of quest writing.
-
-    **end**
-
-  * Fight to the death
-
-    Despite your country sending you on a suicide mission, you keep fighting
-    for them.
-
-    Alas, it was a suicide mission.
-
-    **end**
-
-**end**`;
+// If you'd like to learn more advanced techniques and discover writing inspirations, check out the Expedition Quest Crafter series at http://expeditiongame.com/questcrafter. Happy questing!`;
