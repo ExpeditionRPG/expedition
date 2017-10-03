@@ -6,8 +6,10 @@ import {LogMessage, LogMessageMap, Logger} from './Logger'
 import REGEX from '../Regex'
 
 export function renderXML(md: string): QDLParser {
+  const startTime = Date.now();
   const qdl = new QDLParser(XMLRenderer);
   qdl.render(new BlockList(md));
+  console.log('XML rendered in ' + (Date.now() - startTime) + 'ms');
   return qdl;
 }
 

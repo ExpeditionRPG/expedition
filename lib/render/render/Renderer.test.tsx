@@ -42,6 +42,12 @@ describe('Renderer', () => {
       const expected = '<i>{{_.run()}}</i>';
       expect(output).toEqual(expected);
     });
+    it('preserves the contents of multiple ops', () => {
+      const input = '_{{_.run()}} {{_.two()}}_';
+      const output = sanitizeStyles(input);
+      const expected = '<i>{{_.run()}} {{_.two()}}</i>';
+      expect(output).toEqual(expected);
+    });
     it('stylizes around ops and text', () => {
       const input = '_text{{_.run()}}text_';
       const output = sanitizeStyles(input);
