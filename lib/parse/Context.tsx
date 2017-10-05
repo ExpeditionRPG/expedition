@@ -77,13 +77,13 @@ export function evaluateContentOps(content: string, ctx: Context): string {
 // If the evaluation is successful, the context is modified as determined by the op.
 // If the last operation does not assign a value, the result is returned.
 export function evaluateOp(op: string, ctx: Context): any {
-  const parsed = Math.parse(HtmlDecode(op));
+  let parsed;
   let evalResult;
-
   try {
+    parsed = Math.parse(HtmlDecode(op));
     evalResult = parsed.compile().eval(ctx.scope);
-  } catch(e) {
-    return null;
+  } catch (err) {
+    return window.onerror(err.message + ' Op: (' + op + ')');
   }
 
   // Only return the result IF it doesn't assign a value as its last action.

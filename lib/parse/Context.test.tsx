@@ -6,8 +6,15 @@ const cheerio: any = require('cheerio');
 
 describe('Context', () => {
   describe('evaluateOp', () => {
-    it('returns null on invalid eval', () => {
-      expect(evaluateOp('asdf', defaultContext())).toEqual(null);
+    it('calls window.onerr on invalid parse', () => {
+      (window as any).onerror = jasmine.createSpy('onerror');
+      evaluateOp('foo==\'a\'', defaultContext())
+      expect(window.onerror).toHaveBeenCalledTimes(1);
+    });
+    it('calls window.onerr on invalid eval', () => {
+      (window as any).onerror = jasmine.createSpy('onerror');
+      evaluateOp('asdf', defaultContext());
+      expect(window.onerror).toHaveBeenCalledTimes(1);
     });
     it('returns value and updates context', () => {
       const ctx = {...defaultContext(), scope: {b: '1'} as any};
