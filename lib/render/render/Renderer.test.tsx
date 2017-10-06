@@ -54,6 +54,12 @@ describe('Renderer', () => {
       const expected = '<i>text{{_.run()}}text</i>';
       expect(output).toEqual(expected);
     });
+    it('stylizes around ops, ignoring closing brackets in ops string', () => {
+      const input = '_text{{foo = "}}" & _.run()}}text_';
+      const output = sanitizeStyles(input);
+      const expected = '<i>text{{foo = "}}" & _.run()}}text</i>';
+      expect(output).toEqual(expected);
+    });
     it('collapses nested styles', () => {
       const input = '<strong><strong>1</strong></strong><em><em>2</em></em><del><del>3</del></del>';
       const output = sanitizeStyles(input);

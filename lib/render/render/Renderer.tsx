@@ -25,7 +25,7 @@ export function sanitizeStyles(string: string): string {
 
   // First, store and remove the contents of {{ops}} so they don't interfere with styling
   const ops: string[] = [];
-  const opsRegex = /({{.*?}})/g; // non-greedily capture {{ops}}
+  const opsRegex = /({{.*?[^"}]}})/g; // non-greedily capture {{ops="}}"}}
   let matches = opsRegex.exec(string);
   while (matches) {
     ops.push(matches[1]);

@@ -9,7 +9,7 @@ export function renderXML(md: string): QDLParser {
   const startTime = Date.now();
   const qdl = new QDLParser(XMLRenderer);
   qdl.render(new BlockList(md));
-  console.log('XML rendered in ' + (Date.now() - startTime) + 'ms');
+  console.info('XML rendered in ' + (Date.now() - startTime) + 'ms');
   return qdl;
 }
 
