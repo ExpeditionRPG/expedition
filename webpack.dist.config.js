@@ -1,4 +1,3 @@
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const Path = require('path');
 const Webpack = require('webpack');
 const NodeExternals = require('webpack-node-externals');
@@ -47,9 +46,6 @@ const options = {
     new Webpack.DefinePlugin({
       VERSION: JSON.stringify(require('./package.json').version)
     }),
-    new CopyWebpackPlugin([
-      { from: 'newrelic.js' },
-    ]),
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {
         tslint: {

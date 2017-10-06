@@ -9,9 +9,6 @@ import * as oauth2 from './lib/oauth2'
 import logging from './lib/logging'
 import routes from './routes'
 
-// TODO(semartin): Reenable
-// const nr: any = require('newrelic');
-
 const app = express();
 
 // Add the request logger before anything else so that it can
