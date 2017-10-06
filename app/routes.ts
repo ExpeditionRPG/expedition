@@ -1,6 +1,6 @@
 import * as express from 'express'
 import Config from './config'
-import * as Mail from './mail'
+import * as Mail from './Mail'
 import * as oauth2 from './lib/oauth2'
 import * as Handlers from './Handlers'
 import {models} from './models/Database'

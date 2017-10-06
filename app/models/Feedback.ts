@@ -1,4 +1,4 @@
-import * as Mail from '../mail'
+import * as Mail from '../Mail'
 import {Quest, QuestInstance} from './Quests'
 import * as Sequelize from 'sequelize'
 import * as Promise from 'bluebird';
@@ -119,13 +119,13 @@ export class Feedback {
         return this.quest.updateRatings(feedback.partition, feedback.questid);
       })
       .then((q: QuestInstance) => {
+        quest = q;
+
         if (!this.mail) {
           return Promise.resolve();
         }
 
-        quest = q;
         const ratingavg = (quest.dataValues.ratingavg || 0).toFixed(1);
-
         if (type === 'rating' && quest.dataValues.ratingcount === 1) {
           const subject = `Your quest just received its first rating!`;
           let message = `<p>${quest.dataValues.author},</p>
