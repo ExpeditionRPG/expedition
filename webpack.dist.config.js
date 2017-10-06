@@ -1,9 +1,7 @@
-'use strict'
+const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-var webpack = require('webpack');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-
-var options = {
+const options = {
   entry: [
     'whatwg-fetch',
     'promise-polyfill',

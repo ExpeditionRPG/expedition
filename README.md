@@ -37,7 +37,7 @@ With Node.js installed, run the following to download the repository, enter the 
 ```sh
 git clone https://github.com/ExpeditionRPG/expedition-app.git
 cd expedition-app
-npm install -g gulp webpack && npm install
+npm install -g webpack && npm install
 ```
 
 For building native apps, you will also need to set up cordova. If you want to build with working authentication, you'll need to talk to an admin to get `google-services.json` and `GoogleService-Info.plist` and put them in the main project directory (which they'll download from the Firebase Console). Then run this setup command:

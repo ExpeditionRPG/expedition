@@ -127,19 +127,6 @@ function setupEventLogging() {
   }
 }
 
-function render() {
-  // Require is done INSIDE this function to reload app changes.
-  const AppContainer = require('./components/base/AppContainer').default;
-  const base = getDocument().getElementById('react-app');
-  ReactDOM.unmountComponentAtNode(base);
-  ReactDOM.render(
-    <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-      <AppContainer/>
-    </MuiThemeProvider>,
-    base
-  );
-}
-
 function setupHotReload() {
   if (module.hot) {
     module.hot.accept();
@@ -219,6 +206,19 @@ export function init() {
   }
 
   render();
+}
+
+function render() {
+  // Require is done INSIDE this function to reload app changes.
+  const AppContainer = require('./components/base/AppContainer').default;
+  const base = getDocument().getElementById('react-app');
+  ReactDOM.unmountComponentAtNode(base);
+  ReactDOM.render(
+    <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
+      <AppContainer/>
+    </MuiThemeProvider>,
+    base
+  );
 }
 
 // doInit is defined in index.html, but not in tests.

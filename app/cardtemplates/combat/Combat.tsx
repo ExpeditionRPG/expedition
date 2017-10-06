@@ -329,7 +329,6 @@ function renderVictory(props: CombatProps): JSX.Element {
       }
     }
 
-    // TODO improved leveling up: https://github.com/Fabricate-IO/expedition-app/issues/226
     if (props.victoryParameters.xp !== false && props.levelUp) {
       contents.push(<span key="c2"><h3>LEVEL UP!</h3><p>All adventurers may learn a new ability:</p></span>);
       if (props.settings.showHelp) {

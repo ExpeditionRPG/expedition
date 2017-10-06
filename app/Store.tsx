@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, compose } from 'redux'
+import {createStore, applyMiddleware, compose} from 'redux'
 import expeditionApp from './reducers/CombinedReducers'
 import {getRemotePlayClient} from './RemotePlay'
 

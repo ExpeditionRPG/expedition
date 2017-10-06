@@ -55,14 +55,14 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
   }
 
 // TODO once Material UI adds support for theming SelectFields (https://github.com/callemall/material-ui/issues/7044)
-// then remove the clutter here / move to Theme.tsx
+// (aka Material UI 1.0) then remove the clutter here / move to Theme.tsx
   render() {
     const rating = CONTENT_RATINGS[this.state.contentrating];
     const timeBuckets = PLAYTIME_MINUTES_BUCKETS.map((minutes: number, index: number) => {
       return <MenuItem key={index} value={minutes} primaryText={`${minutes} min`}/>;
     });
-    // TODO Until we have at least 3 quests in all genres, only show limited options
-    const visibleGenres: GenreType[] = ['Comedy', 'Drama'];
+    // TODO Once we have 3 romance quests, change code to just display genre list
+    const visibleGenres: GenreType[] = ['Comedy', 'Drama', 'Horror', 'Mystery'];
     return (
       <Card title="Quest Search">
         <div className="searchForm">
