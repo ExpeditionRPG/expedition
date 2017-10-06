@@ -12,9 +12,9 @@ import {} from 'jasmine'
 describe('feedback', () => {
   let f: Feedback;
   let q: Quest;
-  beforeEach((done: () => any) => {
-    const s = new Sequelize({dialect: 'sqlite', storage: ':memory:'})
 
+  beforeEach((done: () => any) => {
+    const s = new Sequelize({dialect: 'sqlite', storage: ':memory:'});
     q = new Quest(s);
     q.model.sync()
       .then(() => {
