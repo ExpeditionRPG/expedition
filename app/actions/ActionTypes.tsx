@@ -116,8 +116,14 @@ export interface RemotePlayAction extends Redux.Action {
 // Returns a generator of an "executable array" of the original action.
 // This array can be passed to the generated RemotePlay redux middleware
 // which invokes it and packages it to send to other remote play clients.
+const REMOTE_ACTIONS: {[action: string]: (args: any) => Redux.Action} = {}
 export function remoteify<A>(a: (args: A, dispatch?: Redux.Dispatch<any>)=>any) {
-  return (args: A) => {
+  const remoted = (args: A) => {
     return ([a.name, a, args] as any) as Redux.Action; // We know better >:}
   }
+  REMOTE_ACTIONS[a.name] = remoted;
+  return remoted;
+}
+export function getRemoteAction(name: string) {
+  return REMOTE_ACTIONS[name];
 }

@@ -46,7 +46,7 @@ export class RemotePlayClient extends ClientBase {
         // We periodically broadcast our status to other players so they
         // know we're connected and healthy.
         this.statusTimer = (setInterval(() => {
-          if (this.sock.readyState !== this.sock.OPEN) {
+          if (!this.isConnected()) {
             clearInterval(this.statusTimer);
             console.log('Stopped sending status; socket not open');
           }
@@ -59,7 +59,7 @@ export class RemotePlayClient extends ClientBase {
   }
 
   isConnected(): boolean {
-    return (this.sock.readyState === this.sock.OPEN);
+    return (this.sock && this.sock.readyState === this.sock.OPEN);
   }
 
   disconnect() {
@@ -68,42 +68,23 @@ export class RemotePlayClient extends ClientBase {
 
   sendEvent(e: any): void {
     if (!this.sock || this.sock.readyState !== this.sock.OPEN) {
+      console.log('Skipping, sock not open');
       return;
     }
     const event: RemotePlayEvent = {client: this.id, event: e};
     this.sock.send(JSON.stringify(event));
   }
 
-  public registerModuleActions(module: any) {
-    for (const e of Object.keys(module.exports)) {
-      // Registered actions must be single-argument, named functions.
-      if (typeof(module.exports[e]) !== 'function' || !module.exports[e].name || module.exports[e].length !== 2) {
-        continue;
-      }
-      const f: (...args: any[])=>any = module.exports[e];
-      this.actionSet[f.name] = f;
-    }
-  }
-
   public createActionMiddleware(): Redux.Middleware {
     return ({dispatch, getState}: Redux.MiddlewareAPI<any>) => (next: Redux.Dispatch<any>) => (action: any) => {
+      console.log(action);
       if (!action) {
         next(action);
       } else if (action.type === 'REMOTE_PLAY_ACTION') {
         // If the action currently dispatched was dispatched from remote play,
         // let it pass through and don't broadcast it to other devices.
-
-        if (action.action) {
-          // Unwrap if action is object-like
-          next((action as any as RemotePlayAction).action);
-        } else {
-          // Call function if action is function-like
-          const fn = this.actionSet[action.name];
-          if (!fn) {
-            console.log('Failed to find registered action ' + action.name);
-          }
-          fn(action.args, (a: Redux.Action) => {dispatch(local(a));}, true);
-        }
+        const [name, fn, args] = action.action;
+        fn(args, dispatch, (a: Redux.Action) => {dispatch(local(a));}, false);
       } else if (action instanceof Array) {
         console.log('Dispatching array fn');
         console.log(action);

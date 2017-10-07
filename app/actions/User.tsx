@@ -104,31 +104,30 @@ function loginCordova(callback: UserLoginCallback) {
   });
 }
 
-interface LoginArgs {
-  callback?: () => any;
-}
-export const silentLogin = remoteify(function silentLogin(a: LoginArgs, dispatch: Redux.Dispatch<any>) {
-  const loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
-    // Since it's silent, do nothing with error
-    dispatch({type: 'USER_LOGIN', user});
-    a.callback && a.callback();
+export function silentLogin(a: {callback?: () => any}) {
+  return (dispatch: Redux.Dispatch<any>) => {
+    const loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
+      // Since it's silent, do nothing with error
+      dispatch({type: 'USER_LOGIN', user});
+      a.callback && a.callback();
+    };
+
+    if (window.plugins && window.plugins.googleplus) {
+      silentLoginCordova(loginCallback);
+    } else {
+      silentLoginWeb(loginCallback);
+    }
   };
+}
 
-  if (window.plugins && window.plugins.googleplus) {
-    silentLoginCordova(loginCallback);
-  } else {
-    silentLoginWeb(loginCallback);
-  }
-});
-
-export function login(callback: (user: UserState) => any) {
+export function login(a: {callback: (user: UserState) => any}) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
       if (err) {
         return dispatch(openSnackbar('Error logging in: ' + err));
       }
       dispatch({type: 'USER_LOGIN', user});
-      callback(user);
+      a.callback(user);
     }
 
     if (window.plugins && window.plugins.googleplus) {

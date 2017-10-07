@@ -12,6 +12,7 @@ import {getDevicePlatform, getAppVersion} from '../Globals'
 import {logEvent} from '../Main'
 import {TemplateContext} from '../cardtemplates/TemplateTypes'
 import {defaultContext, ParserNode} from '../cardtemplates/Template'
+import {remoteify} from './ActionTypes'
 
 declare var window:any;
 declare var require:any;
@@ -38,32 +39,33 @@ export function fetchQuestXML(details: QuestDetails) {
         return dispatch(openSnackbar('Network error: Please check your connection.'));
       }
       const questNode = cheerio.load(result)('quest');
-      dispatch(loadQuestXML(details, questNode, defaultContext()));
+      dispatch(loadQuestXML({details, questNode, ctx: defaultContext()}));
     });
   };
 }
 
 // for loading quests in the app - Quest Creator injects directly into initQuest
-export function loadQuestXML(details: QuestDetails, questNode: Cheerio, ctx: TemplateContext) {
-  return (dispatch: Redux.Dispatch<any>): any => {
+function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: TemplateContext}) {
+  return (dispatch: Redux.Dispatch<any>) => {
     // Quest start is here instead of initQuest because initQuest is also used by the editor
     // and would over-report.
-    logEvent('quest_start', details);
+    logEvent('quest_start', a.details);
 
-    dispatch(initQuest(details, questNode, ctx));
+    dispatch(initQuest(a.details, a.questNode, a.ctx));
 
-    const firstNode = questNode.children().eq(0);
-    const node = new ParserNode(firstNode, ctx);
+    const firstNode = a.questNode.children().eq(0);
+    const node = new ParserNode(firstNode, a.ctx);
 
     if (node.elem[0].attribs.skipsetup) {
       dispatch(toCard({name: 'QUEST_CARD'}));
     } else {
       dispatch(toCard({name: 'QUEST_START'}));
     }
-  };
+    return {...a, questNode: (null as Cheerio)};
+  }
 }
 
-export function search(search: SearchSettings) {
+export const search = remoteify(function search(search: SearchSettings) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const params = {...search};
     Object.keys(params).forEach((key: string) => {
@@ -104,42 +106,45 @@ export function search(search: SearchSettings) {
     xhr.withCredentials = true;
     xhr.send(JSON.stringify(params));
   };
-}
+});
 
-export function subscribe(email: string) {
-  return (dispatch: Redux.Dispatch<any>): any => {
+export function subscribe(a: {email: string}) {
+  return (dispatch: Redux.Dispatch<any>) => {
     fetch(authSettings.urlBase + '/user/subscribe', {
       method: 'POST',
-      body: JSON.stringify({email}),
+      body: JSON.stringify({email: a.email}),
     })
     .then((response: Response) => {
       return response.text();
     })
     .then((data: string) => {
-      logEvent('user_subscribe', email);
+      logEvent('user_subscribe', a.email);
       dispatch(openSnackbar('Thank you for subscribing!'));
     }).catch((error: Error) => {
       dispatch(openSnackbar('Error subscribing: ' + error));
     });
   };
-}
+};
 
-export function submitUserFeedback(quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) {
-  return (dispatch: Redux.Dispatch<any>): any => {
+interface SubmitUserFeedbackArgs {
+
+}
+export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState}) {
+  return (dispatch: Redux.Dispatch<any>) => {
     const data = Object.assign({}, {
-      questid: quest.details.id,
-      userid: user.id,
-      players: settings.numPlayers,
-      difficulty: settings.difficulty,
+      questid: a.quest.details.id,
+      userid: a.user.id,
+      players: a.settings.numPlayers,
+      difficulty: a.settings.difficulty,
       platform: getDevicePlatform(),
       version: getAppVersion(),
-      email: user.email,
-      name: user.name,
-      rating: userFeedback.rating,
-      text: userFeedback.text,
+      email: a.user.email,
+      name: a.user.name,
+      rating: a.userFeedback.rating,
+      text: a.userFeedback.text,
     });
 
-    fetch(authSettings.urlBase + '/quest/feedback/' + userFeedback.type, {
+    fetch(authSettings.urlBase + '/quest/feedback/' + a.userFeedback.type, {
       method: 'POST',
       body: JSON.stringify(data),
     })
@@ -147,11 +152,11 @@ export function submitUserFeedback(quest: QuestState, settings: SettingsType, us
       return response.text();
     })
     .then((data: string) => {
-      logEvent('user_feedback_' + userFeedback.type, data);
+      logEvent('user_feedback_' + a.userFeedback.type, data);
       dispatch(userFeedbackClear());
       dispatch(openSnackbar('Submission successful. Thank you!'));
     }).catch((error: Error) => {
-      logEvent('user_feedback_' + userFeedback.type + '_err', data);
+      logEvent('user_feedback_' + a.userFeedback.type + '_err', data);
       dispatch(openSnackbar('Error submitting feedback: ' + error));
     });
   };

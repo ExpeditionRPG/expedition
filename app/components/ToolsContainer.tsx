@@ -32,7 +32,7 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
       };
 
       if (!user || user.id === '') {
-        dispatch(login(privateSearch));
+        dispatch(login({callback: privateSearch}));
       } else {
         privateSearch(user);
       }

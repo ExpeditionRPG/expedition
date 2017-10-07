@@ -24,12 +24,12 @@ const mapStateToProps = (state: AppState, ownProps: SearchStateProps): SearchSta
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SearchDispatchProps => {
   return {
     onLoginRequest: (sub: boolean) => {
-      dispatch(login((user: UserState)=> {
+      dispatch(login({callback: (user: UserState)=> {
         if (sub && user.email && user.email !== '') {
-          dispatch(subscribe(user.email));
+          dispatch(subscribe({email: user.email}));
         }
         dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
-      }));
+      }}));
     },
     onFilter: () => {
       dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
