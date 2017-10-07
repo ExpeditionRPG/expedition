@@ -1,6 +1,6 @@
 import {initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta, handleResolvePhase, midCombatChoice} from './Actions'
 import {DifficultyType, FontSizeType} from '../../reducers/StateTypes'
-import {ParserNode, defaultContext} from '../Template'
+import {ParserNode, defaultContext, renderCardTemplate} from '../Template'
 import configureStore  from 'redux-mock-store'
 import {RemotePlayClient} from '../../RemotePlay'
 
@@ -54,7 +54,7 @@ describe('Combat actions', () => {
           phase: 'DRAW_ENEMIES',
         })
       }));
-    })
+    });
 
     it('parses initial state', () => {
       // "Unknown" enemies are given tier 1.
@@ -154,7 +154,7 @@ describe('Combat actions', () => {
       store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 1}));
 
       expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(false);
-    })
+    });
 
     it('assigns random loot on victory', () => {
       const store = mockStore({});
@@ -239,7 +239,7 @@ describe('Combat actions', () => {
       store.dispatch(handleResolvePhase(node));
       expect(store.getActions()[0].to.phase).toEqual('RESOLVE_ABILITIES');
       expect(store.getActions()[1].type).toEqual('QUEST_NODE');
-    })
+    });
 
     it('goes to roleplay card on round event handler', () => {
       let node = new ParserNode(cheerio.load(`<combat>
@@ -267,6 +267,7 @@ describe('Combat actions', () => {
     // Setup combat state where we've initialized combat and just finished a timed round.
 
     let baseNode = new ParserNode(cheerio.load(`<quest>
+      <roleplay>Text</roleplay>
       <combat id="c1">
         <e>Test</e>
         <event on="win"><roleplay>win card</roleplay></event>
@@ -275,10 +276,12 @@ describe('Combat actions', () => {
           <choice><trigger>win</trigger></choice>
           <choice><trigger>lose</trigger></choice>
           <choice><trigger>end</trigger></choice>
-          <choice><roleplay>rp2</roleplay></choice>
+          <choice><roleplay id="rp2">rp2</roleplay></choice>
+          <choice><trigger>goto outside</trigger></choice>
+          <choice><trigger>goto rp2</trigger></choice>
         </roleplay></event>
       </combat>
-      <roleplay id="outside"></roleplay>
+      <roleplay id="outside">Outside Roleplay</roleplay>
     </quest>`)('#c1'), defaultContext());
     {
       const store = mockStore({});
@@ -322,6 +325,26 @@ describe('Combat actions', () => {
 
       store.dispatch(midCombatChoice(TEST_SETTINGS, rp2, 0));
       expect(store.getActions()[0].to.phase).toEqual('RESOLVE_ABILITIES');
+    });
+
+    it('handles gotos that point to outside of combat', () => {
+      const store = mockStore({});
+      store.dispatch(midCombatChoice(TEST_SETTINGS, newCombatNode(), 4));
+      expect(store.getActions()[1].node.getTag()).toEqual('roleplay');
+      expect(store.getActions()[1].node.elem.text()).toEqual('Outside Roleplay');
+    });
+
+    it('handles GOTOs that point to other roleplaying inside of the same combat', () => {
+      const store = mockStore({});
+      store.dispatch(midCombatChoice(TEST_SETTINGS, newCombatNode(), 5));
+      expect(store.getActions()[1].node.getTag()).toEqual('combat');
+      expect(store.getActions()[1].node.ctx.templates.combat.roleplay.elem.text()).toEqual('rp2');
+    });
+
+    it('renders as combat for RPs inside of same combat', () => {
+      const store = mockStore({});
+      store.dispatch(midCombatChoice(TEST_SETTINGS, newCombatNode(), 3));
+      expect(store.getActions()[1].node.getTag()).toEqual('combat');
     });
   });
 

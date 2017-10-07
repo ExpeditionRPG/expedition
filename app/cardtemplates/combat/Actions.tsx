@@ -226,43 +226,45 @@ export function midCombatChoice(settings: SettingsType, parent: ParserNode, inde
   return (dispatch: Redux.Dispatch<any>): any => {
     parent = parent.clone();
     const node = parent.ctx.templates.combat.roleplay;
-    let next = node.getNext(index);
-
-    // Check for and resolve non-goto triggers
-    const tag = next && next.getTag();
-    if (tag === 'trigger' && !next.elem.text().toLowerCase().startsWith('goto')) {
-
-      // End the quest if end trigger
-      const triggerName = next.elem.text().trim();
-      if (triggerName === 'end') {
-        return dispatch(toCard({name: 'QUEST_END'}));
-      }
-
-      next = next.handleTriggerEvent();
-
-      // If the trigger exits via the win/lose handlers, load it as normal.
-      // Otherwise, we're still in combat.
-      const parentCondition = next.elem.parent().attr('on');
-      if (parentCondition === 'win' || parentCondition === 'lose') {
-        return dispatch(loadNode(settings, next));
-      }
-    }
-
-    // Check if the next node is inside a combat node. Note that nested combat nodes are
-    // not currently supported.
-    let ptr = next && next.elem;
+    const next = node.getNext(index);
+    const nextNode = node.handleAction(index);
+    // Check if the next node is inside a combat node. Bad things will happen if you try to nest combat.
+    let ptr = nextNode && nextNode.elem;
     while (ptr !== null && ptr.length > 0 && ptr.get(0).tagName.toLowerCase() !== 'combat') {
       ptr = ptr.parent();
     }
+    const nextIsTrigger = (next && next.getTag() === 'trigger');
+    const nextIsInCombat = (nextNode && ptr && ptr.length > 0);
 
-    // Check if we're still a child of the combat node or else doing something weird.
-    if (!next || next.getTag() !== 'roleplay' || !ptr || ptr.length === 0) {
-      // If so, then continue with the resolution phase.
+    // Check for and resolve triggers
+    if (nextIsTrigger) {
+      const triggerName = next.elem.text().trim().toLowerCase();
+
+      if (triggerName.startsWith('goto')) {
+        if (!nextIsInCombat) { // Break out of combat
+          return dispatch(loadNode(null, nextNode));
+        }
+        // If in combat, fall through and handle like a normal combat RP node
+      } else {
+        if (next.isEnd()) {
+          return dispatch(toCard({name: 'QUEST_END'}));
+        }
+
+        // If the trigger exits via the win/lose handlers, break out of combat
+        const parentCondition = nextNode.elem.parent().attr('on');
+        if (parentCondition === 'win' || parentCondition === 'lose') {
+          return dispatch(loadNode(settings, nextNode));
+        }
+      }
+    }
+
+    if (!nextIsInCombat) {
+      // Ignore this as invalid and proceed to the resolution phase
       parent.ctx.templates.combat.roleplay = null;
       dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true}));
     } else {
-      // Otherwise continue the roleplay phase.
-      parent.ctx.templates.combat.roleplay = next;
+      // Continue in-combat roleplay
+      parent.ctx.templates.combat.roleplay = nextNode;
       dispatch(toCard({name: 'QUEST_CARD', phase: 'ROLEPLAY', overrideDebounce: true}));
     }
     dispatch({type: 'QUEST_NODE', node: parent} as QuestNodeAction);
