@@ -26,6 +26,9 @@ const difficultySub: any = {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SettingsDispatchProps => {
   return {
+    onAudioChange: (v: boolean) => {
+      dispatch(changeSettings({audioEnabled: v}));
+    },
     onAutoRollChange: (v: boolean) => {
       dispatch(changeSettings({autoRoll: v}));
     },

@@ -4,78 +4,86 @@
   </roleplay>
   <roleplay title="Test" id="start" data-line="6">
     <p>{{one=1}}</p>
+    <p>{{foo=='a'}}</p>
+    <p>You should see an error notification, but everything should work.</p>
     <p>You face choices. Here's the value of one: {{one}}. And a symbol: &#x261E;</p>
     <choice text="Fight">
       <combat data-line="14">
         <e>Thief</e>
         <e>Thief</e>
         <e>Imp</e>
-        <e>{{_.randomEnemy()}}</e>
         <event on="round">
           <roleplay title="" data-line="22">
+            <p>{{one = 2}}</p>
+            <p>Two: {{one}}</p>
             <p>A round card during combat!</p>
             <p>Current round: {{_.currentCombatRound()}}</p>
             <p>Surge round: {{string(_.isCombatSurgeRound())}}</p>
             <p>Random enemy: {{_.randomEnemy()}}</p>
             <choice text="A choice to another RP card">
-              <roleplay title="" data-line="32">
+              <roleplay title="" data-line="36">
+                <p>{{one = 3}}</p>
+                <p>Three: {{one}}</p>
                 <p>More text!</p>
               </roleplay>
             </choice>
             <choice text="A choice with a non-combat GOTO">
-              <trigger data-line="36">goto start</trigger>
+              <trigger data-line="44">goto start</trigger>
             </choice>
             <choice text="End the quest">
-              <trigger data-line="40">end</trigger>
+              <trigger data-line="48">end</trigger>
             </choice>
           </roleplay>
         </event>
-        <event on="win">
-          <roleplay title="" data-line="44">
-            <p>You win!</p>
+        <event on="win" heal="0" loot="true" xp="true">
+          <roleplay title="" data-line="52">
+            <p>You win! You should have not healed, but gained loot and leveled up.</p>
           </roleplay>
-          <trigger data-line="46">end</trigger>
+          <trigger data-line="54">end</trigger>
         </event>
         <event on="lose">
-          <roleplay title="" data-line="50">
+          <roleplay title="" data-line="58">
             <p>You lose! There should be a retry button here.</p>
           </roleplay>
-          <trigger data-line="52">end</trigger>
+          <trigger data-line="60">end</trigger>
         </event>
       </combat>
     </choice>
     <choice text="Complex fight">
-      <trigger data-line="56">goto conditionalRound</trigger>
+      <trigger data-line="64">goto conditionalRound</trigger>
     </choice>
     <choice text="Go to start">
-      <trigger data-line="60">goto start</trigger>
+      <trigger data-line="68">goto start</trigger>
     </choice>
     <choice text="End now">
-      <trigger data-line="64">end</trigger>
+      <trigger data-line="72">end</trigger>
     </choice>
   </roleplay>
-  <roleplay title="A new fight" id="conditionalRound" data-line="66">
+  <roleplay title="A new fight" id="conditionalRound" data-line="74">
     <p>This combat uses custom enemies and a conditional on round card.</p>
+    <p>{{food = 1}}</p>
   </roleplay>
-  <combat data-line="70">
+  <combat data-line="80">
     <e tier="1">Custom</e>
     <e>Giant Rat</e>
     <event on="round" if="_.currentCombatRound() % 2 == 1">
-      <roleplay title="" data-line="68">
+      <roleplay title="" data-line="87">
+        <p>{{food = food + 1}}</p>
+        <p>Food (+1): {{food}}</p>
         <p>This appears every other round (1, 3, 5, etc)</p>
       </roleplay>
     </event>
-    <event on="win">
-      <roleplay title="" data-line="84">
-        <p>You win!</p>
+    <event on="win" heal="1" loot="false" xp="false">
+      <roleplay title="" data-line="95">
+        <p>You win! You should have healed 1 health, but gained no loot or xp.</p>
       </roleplay>
-      <trigger data-line="86">end</trigger>
+      <trigger data-line="97">end</trigger>
     </event>
     <event on="lose">
-      <roleplay title="" data-line="90">
+      <roleplay title="" data-line="101">
         <p>You lose! There should be a retry button here.</p>
       </roleplay>
-      <trigger data-line="92">end</trigger>
+      <trigger data-line="103">end</trigger>
     </event>
   </combat>
 </quest>

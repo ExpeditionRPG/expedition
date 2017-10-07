@@ -1,5 +1,6 @@
 import Redux from 'redux'
 import {announcement} from './Announcement'
+import {audio} from './audio'
 import {card} from './Card'
 import {dialog} from './Dialog'
 import {quest} from './Quest'
@@ -16,6 +17,7 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
   state = state || ({} as AppStateWithHistory);
   return {
     announcement: announcement(state.announcement, action),
+    audio: audio(state.audio, action),
     card: card(state.card, action),
     dialog: dialog(state.dialog, action),
     quest: quest(state.quest, action),

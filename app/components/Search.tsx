@@ -55,14 +55,14 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
   }
 
 // TODO once Material UI adds support for theming SelectFields (https://github.com/callemall/material-ui/issues/7044)
-// then remove the clutter here / move to Theme.tsx
+// (aka Material UI 1.0) then remove the clutter here / move to Theme.tsx
   render() {
     const rating = CONTENT_RATINGS[this.state.contentrating];
     const timeBuckets = PLAYTIME_MINUTES_BUCKETS.map((minutes: number, index: number) => {
       return <MenuItem key={index} value={minutes} primaryText={`${minutes} min`}/>;
     });
-    // TODO Until we have at least 3 quests in all genres, only show limited options
-    const visibleGenres: GenreType[] = ['Comedy', 'Drama'];
+    // TODO Once we have 3 romance quests, change code to just display genre list
+    const visibleGenres: GenreType[] = ['Comedy', 'Drama', 'Horror', 'Mystery'];
     return (
       <Card title="Quest Search">
         <div className="searchForm">
@@ -206,7 +206,7 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
     if (orderField) {
       orderDetails = (
         <div className={`searchOrderDetail ${orderField}`}>
-          {orderField === 'ratingavg' && result.ratingcount >= 5 && <StarRating readOnly={true} value={+result.ratingavg} quantity={result.ratingcount}/>}
+          {orderField === 'ratingavg' && result.ratingcount >= 1 && <StarRating readOnly={true} value={+result.ratingavg} quantity={result.ratingcount}/>}
           {orderField === 'created' && `Published ${Moment(result.created).format('MMM YYYY')}`}
         </div>
       );
@@ -255,7 +255,7 @@ function renderDetails(props: SearchProps): JSX.Element {
         <h2>{quest.title}</h2>
         <div>{quest.summary}</div>
         <div className="author">by {quest.author}</div>
-        {quest.ratingcount && quest.ratingcount >= 5 && <StarRating readOnly={true} value={+quest.ratingavg} quantity={quest.ratingcount}/>}
+        {quest.ratingcount && quest.ratingcount >= 1 && <StarRating readOnly={true} value={+quest.ratingavg} quantity={quest.ratingcount}/>}
       </div>
       <Button onTouchTap={(e)=>props.onPlay(quest)}>Play</Button>
       <div className="searchDetailsExtended">

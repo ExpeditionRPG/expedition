@@ -21,15 +21,15 @@ const cheerio = require('cheerio') as CheerioAPI;
 // fetch can be used for anything except local files, so anything that might download from file://
 // (aka quests) should use this instead
 export function fetchLocal(url: string, callback: Function) {
-  const xhr = new XMLHttpRequest;
-  xhr.onload = function() {
-    return callback(null, xhr.responseText);
+  const request = new XMLHttpRequest();
+  request.onload = function() {
+    return callback(null, request.response);
   }
-  xhr.onerror = () => {
+  request.onerror = () => {
     return callback(new Error('Network error'));
   }
-  xhr.open('GET', url);
-  xhr.send(null);
+  request.open('GET', url);
+  request.send();
 }
 
 export function fetchQuestXML(details: QuestDetails) {

@@ -10,6 +10,13 @@ export interface AnnouncementState {
   link: string;
 }
 
+export interface AudioState {
+  paused: boolean;
+  intensity: number;
+  sfx: string;
+  timestamp: number;
+}
+
 export type DialogIDType = null | 'EXIT_QUEST' | 'EXPANSION_SELECT';
 
 export interface DialogState {
@@ -48,6 +55,7 @@ export interface ContentSetsType {
 }
 
 export interface SettingsType {
+  audioEnabled: boolean;
   autoRoll: boolean;
   contentSets: ContentSetsType;
   difficulty: DifficultyType;
@@ -113,6 +121,7 @@ export interface RemotePlayState {
 
 export interface AppState {
   announcement: AnnouncementState;
+  audio: AudioState;
   card: CardState;
   dialog: DialogState;
   quest: QuestState;

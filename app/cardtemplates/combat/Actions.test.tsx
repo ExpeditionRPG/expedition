@@ -7,6 +7,7 @@ import {RemotePlayClient} from '../../RemotePlay'
 const cheerio: any = require('cheerio');
 
 const TEST_SETTINGS = {
+  audioEnabled: false,
   autoRoll: false,
   contentSets: {
     horror: false,

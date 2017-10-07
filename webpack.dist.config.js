@@ -1,9 +1,7 @@
-'use strict'
+const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-var webpack = require('webpack');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-
-var options = {
+const options = {
   entry: [
     'whatwg-fetch',
     'promise-polyfill',
@@ -38,6 +36,7 @@ var options = {
     new webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
     new CopyWebpackPlugin([
       { from: 'app/images', to: 'images'},
+      { from: 'app/audio', to: 'audio'},
       { from: 'app/quests', to: 'quests'},
       { from: 'app/scripts', to: 'scripts' },
       { from: 'app/fonts', to: 'fonts'},

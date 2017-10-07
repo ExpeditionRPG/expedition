@@ -6,10 +6,13 @@ import * as ReactDOM from 'react-dom'
 import theme from './Theme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
+
 import {authSettings} from './Constants'
 import {fetchAnnouncements} from './actions/Announcement'
+import {audioPause, audioResume} from './actions/Audio'
 import {toPrevious} from './actions/Card'
 import {setDialog} from './actions/Dialog'
+import {openSnackbar} from './actions/Snackbar'
 import {silentLogin} from './actions/User'
 import {handleRemotePlayEvent} from './actions/RemotePlay'
 import {getStore} from './Store'
@@ -40,9 +43,9 @@ export function logEvent(name: string, args: any): void {
     fbp.logEvent(name, args);
   }
 
-  const ga = getGA()
+  const ga = getGA();
   if (ga) {
-    ga('send', 'event', name);
+    ga('send', 'event', name, args.action || '', args.label || '', args.value || null);
   }
 }
 
@@ -75,6 +78,14 @@ function setupDevice() {
 
   getDocument().addEventListener('backbutton', () => {
     getStore().dispatch(toPrevious({}));
+  }, false);
+
+  getDocument().addEventListener('pause', () => {
+    getStore().dispatch(audioPause());
+  }, false);
+
+  getDocument().addEventListener('resume', () => {
+    getStore().dispatch(audioResume());
   }, false);
 
   window.plugins.insomnia.keepAwake(); // keep screen on while app is open
@@ -127,19 +138,6 @@ function setupEventLogging() {
   }
 }
 
-function render() {
-  // Require is done INSIDE this function to reload app changes.
-  const AppContainer = require('./components/base/AppContainer').default;
-  const base = getDocument().getElementById('react-app');
-  ReactDOM.unmountComponentAtNode(base);
-  ReactDOM.render(
-    <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-      <AppContainer/>
-    </MuiThemeProvider>,
-    base
-  );
-}
-
 function setupHotReload() {
   if (module.hot) {
     module.hot.accept();
@@ -178,33 +176,53 @@ function setupGoogleAnalytics() {
   setGA(ga);
   ga('create', 'UA-47408800-9', 'auto');
   ga('send', 'pageview');
-  console.log('google analytics set up');
 }
 
 export function init() {
-  // Setup as web platform as default; we might find out later we're an app
   const window = getWindow();
+  const document = getDocument();
+
+  // Catch and display + log all errors
+  window.onerror = function(message: string, source: string, line: number) {
+    const quest = getStore().getState().quest;
+    if (quest && quest.details && quest.details.id) {
+      message = `Quest: ${quest.details.id} - ${quest.details.title}. Error: ${message}`;
+    }
+    const label = (source) ? `${source} line ${line}` : null;
+    console.error(message, label);
+    logEvent('APP_ERROR', {action: message, label});
+    getStore().dispatch(openSnackbar('Error! Please send feedback.'));
+    return true;
+  };
+
+  // Setup as web platform as default; we might find out later we're an app
   window.platform = 'web';
   window.onpopstate = function(e) {
     getStore().dispatch(toPrevious({}));
     e.preventDefault();
   };
-
-  // Only triggers on app builds
-  getDocument().addEventListener('deviceready', () => {
-    setupDevice();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      getStore().dispatch(audioPause());
+    } else if (document.visibilityState === 'visible') {
+      getStore().dispatch(audioResume());
+    }
   }, false);
 
-  setupPolyfills();
+  // Only triggers on app builds
+  document.addEventListener('deviceready', setupDevice, false);
 
+  setupPolyfills();
   setupTapEvents();
   setupGoogleAPIs();
   setupEventLogging();
   setupHotReload();
   setupGoogleAnalytics();
   setupRemotePlay();
-  getStore().dispatch(fetchAnnouncements());
 
+  render();
+
+  // Wait to process settings & dispatch additional UI until render complete
   const settings = getStore().getState().settings;
   if (settings) {
     const contentSets = (settings || {}).contentSets;
@@ -217,8 +235,20 @@ export function init() {
   } else {
     getStore().dispatch(setDialog('EXPANSION_SELECT'));
   }
+  getStore().dispatch(fetchAnnouncements());
+}
 
-  render();
+function render() {
+  // Require is done INSIDE this function to reload app changes.
+  const AppContainer = require('./components/base/AppContainer').default;
+  const base = getDocument().getElementById('react-app');
+  ReactDOM.unmountComponentAtNode(base);
+  ReactDOM.render(
+    <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
+      <AppContainer/>
+    </MuiThemeProvider>,
+    base
+  );
 }
 
 // doInit is defined in index.html, but not in tests.

@@ -56,7 +56,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         }
       }
       logEvent('quest_end', quest.details);
-      dispatch(toPrevious({name: 'QUEST_START', before: true}));
+      dispatch(toPrevious({name: 'FEATURED_QUESTS'}));
     },
   };
 }

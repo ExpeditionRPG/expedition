@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import { connect } from 'react-redux'
+import {connect} from 'react-redux'
 import {toCard} from '../actions/Card'
 import {AppState, UserState} from '../reducers/StateTypes'
 import {openSnackbar} from '../actions/Snackbar'

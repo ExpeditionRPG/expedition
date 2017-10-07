@@ -11,6 +11,17 @@ export interface AnnouncementSetAction extends Redux.Action {
   link?: string;
 }
 
+export interface AudioSetAction extends Redux.Action {
+  type: 'AUDIO_SET';
+  changes: any;
+}
+
+export interface AudioStoreBufferAction extends Redux.Action {
+  type: 'AUDIO_STORE_BUFFER';
+  name: string;
+  buffer: any;
+}
+
 export interface DialogSetAction extends Redux.Action {
   type: 'DIALOG_SET';
   dialogID: DialogIDType;

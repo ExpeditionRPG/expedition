@@ -90,13 +90,12 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
   if (props.settings.showHelp) {
     helpText = (
       <div>
-        <p>Draw the enemy {oneEnemy ? 'card' : 'cards'} listed above.</p>
-        <ul>
-          {repeatEnemy && <li>Draw extra cards of the appropriate class for the duplicate enemies, and track health using the card backs.</li>}
-          {uniqueEnemy && <li>Draw cards of any class for enemies without class icons. Track health using the back.</li>}
-        </ul>
-        {oneEnemy && <p>Place it in the center and put a token on its maximum health.</p>}
-        {!oneEnemy && <p>Place them in the center and put tokens on their maximum health.</p>}
+        <p>
+          Draw the enemy {oneEnemy ? 'card' : 'cards'} listed above and place {oneEnemy ? 'it' : 'them'} in the center of the table.
+          Put {oneEnemy ? 'a token on the largest number on its health tracker' : 'tokens on the largest numbers on their health trackers'}.
+        </p>
+        {repeatEnemy && <p><strong>Duplicate enemies:</strong> Draw extra cards of the appropriate class and track health using the card backs.</p>}
+        {uniqueEnemy && <p><strong>Custom enemies:</strong> Draw a card of the listed tier (of any class) for enemies without class icons. Track health using the card backs.</p>}
       </div>
     );
   }
@@ -124,12 +123,12 @@ function renderNoTimer(props: CombatProps): JSX.Element {
         <ol>
           <li>Shuffle your ability draw pile.
             <ul>
-              <li>Keep abilities played this round in a separate discard pile.</li>
-              <li>If you don't have enough cards to draw a full hand, shuffle in your discard pile before drawing.</li>
+              <li>Keep abilities played this combat in a separate discard pile.</li>
+              <li>If you run out of ability cards in your draw pile, shuffle your discards into a new draw pile.</li>
             </ul>
           </li>
-          <li>No timer: Draw three abilities from your draw pile and play one ability.</li>
-          <li>Once everyone has selected an ability, tap next.</li>
+          <li><strong>No timer:</strong> Draw three abilities from your draw pile and play one ability.</li>
+          <li>Once everyone has selected their ability, tap next.</li>
         </ol>
       </div>
     );
@@ -156,19 +155,18 @@ function renderPrepareTimer(props: CombatProps): JSX.Element {
       <div>
         {props.settings.numPlayers === 1 && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
         <ol>
-          <li>Shuffle your ability draw pile.
+          <li><strong>Shuffle</strong> your ability draw pile.
             <ul>
               <li>Keep abilities played this combat in a separate discard pile.</li>
-              <li>If you run out of abilities to draw, shuffle in your discard pile.</li>
+              <li>If you run out of ability cards in your draw pile, shuffle your discards into a new draw pile.</li>
             </ul>
           </li>
-          <li>Pre-draw three abilities face down from your draw pile.</li>
-          <li>Start the timer.</li>
-          <li>Look at your hand and play one ability.</li>
-          {props.settings.multitouch && <li>Place your finger on the screen.</li>}
-          {props.settings.multitouch && <li>When all fingers are down, the timer stops.</li>}
-          {!props.settings.multitouch && <li>Once everyone has selected an ability, tap the screen to stop the timer.</li>}
-          <li>If the timer runs out, you'll take additional damage.</li>
+          <li><strong>Pre-draw your hand</strong> of three abilities face-down from your draw pile. Do not look at these cards until you start the timer.</li>
+          <li><strong>Start the timer.</strong></li>
+          <li><strong>Play one ability</strong> from your hand.</li>
+          {props.settings.multitouch && <li><strong>Place your finger</strong> on the screen. When all fingers are down, the timer stops.</li>}
+          {!props.settings.multitouch && <li><strong>Tap the screen</strong> once everyone has selected their abilities to stop the timer.</li>}
+          <li><strong>Be careful!</strong> If the timer runs out, you'll all take additional damage.</li>
         </ol>
       </div>
     );
@@ -217,16 +215,17 @@ function renderResolve(props: CombatProps): JSX.Element {
       <span>
         {theHorror && <Callout icon="horror_white"><strong>The Horror:</strong> Any adventurers at Min persona must resolve their persona effect and then return to Base persona before resolving abilities. Adventurers at Max persona may choose to resolve and reset now or in a later round.</Callout>}
         <p>
-          Each adventurer rolls a die for the ability they played. If <img className="inline_icon" src="images/roll_white_small.svg"></img> &ge; X, the ability succeeds. Abilities may list additional effects based on the roll, even if they fail.
+          Each adventurer rolls a die for each ability they played. If <img className="inline_icon" src="images/roll_white_small.svg"></img> &ge; X, the ability succeeds. Ability cards may list additional effects based on the roll, even if they fail.
         </p>
         <p>
-          Adventurers may resolve their abilities in any order, and may apply their effects (such as roll and damage modifiers) retroactively to other abilities used this round.
+          Adventurers may resolve their abilities in any order. You may apply ability effects (such as roll and damage modifiers) retroactively to other abilities used this round.
         </p>
         <p>
-          Note that some enemies take more or less damage from certain ability types, as specified on their card.
+          Note that some enemies take more or less damage from certain ability types, as specified on their cards. These modifiers apply once per damage source.
+          For example, an ability that critically succeeds and deals double damage would be modified after the damage doubling, but if you play two abilties or an ability and a loot, each would separately be affected by the modifier.
         </p>
         <p>
-          Discard all abilities resolved this round, putting the rest of your hand back into your draw pile.
+          Discard all abilities resolved this round. Shuffle the rest of your hand back into your draw pile.
         </p>
       </span>
     );
@@ -271,6 +270,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
   const damage = (props.mostRecentAttack) ? props.mostRecentAttack.damage : -1;
   const theHorror = (props.settings.contentSets.horror === true);
   const injured = props.numAliveAdventurers < props.settings.numPlayers;
+  const soloPlay = props.settings.numPlayers === 1;
 
   if (props.settings.showHelp) {
     helpText = (
@@ -289,7 +289,8 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
       <h4 className="combat center damage-label">All adventurers take:</h4>
       <h1 className="combat center damage">{damage} Damage</h1>
       <Picker label="Adventurers" onDelta={(i: number)=>props.onAdventurerDelta(props.node, props.settings, props.numAliveAdventurers, i)} value={props.numAliveAdventurers}>
-        {props.settings.showHelp && 'Set this to the number of adventurers above zero health.'}
+        {props.settings.showHelp && soloPlay && <span><strong>Solo play:</strong> Keep this at 1 unless all adventurers are knocked out.</span>}
+        {props.settings.showHelp && !soloPlay && <span>Set this to the number of adventurers above zero health.</span>}
       </Picker>
       {helpText}
       <Button onTouchTap={() => props.onDefeat(props.node, props.settings, props.maxTier)}>Defeat (Adventurers = 0)</Button>
@@ -304,11 +305,11 @@ function renderVictory(props: CombatProps): JSX.Element {
 
   if (props.victoryParameters) {
     if (props.victoryParameters.heal > 0 && props.victoryParameters.heal < MAX_ADVENTURER_HEALTH) {
-      contents.push(<p key="c1">All adventurers (even if at 0 health) heal <strong>{props.victoryParameters.heal}</strong> health.</p>);
+      contents.push(<p key="c1">All adventurers regain <strong>{props.victoryParameters.heal}</strong> health (even if at 0 health).</p>);
     } else if (props.victoryParameters.heal === 0) {
       contents.push(<p key="c1">Adventurers <strong>do not heal</strong>.</p>);
     } else {
-      contents.push(<p key="c1">All adventurers (even if at 0 health) heal to <strong>full</strong> health.</p>);
+      contents.push(<p key="c1">All adventurers heal to <strong>full</strong> health (even if at 0 health).</p>);
     }
 
     if (props.victoryParameters.loot !== false && props.loot && props.loot.length > 0) {
@@ -329,7 +330,6 @@ function renderVictory(props: CombatProps): JSX.Element {
       }
     }
 
-    // TODO improved leveling up: https://github.com/Fabricate-IO/expedition-app/issues/226
     if (props.victoryParameters.xp !== false && props.levelUp) {
       contents.push(<span key="c2"><h3>LEVEL UP!</h3><p>All adventurers may learn a new ability:</p></span>);
       if (props.settings.showHelp) {
@@ -349,6 +349,7 @@ function renderVictory(props: CombatProps): JSX.Element {
 
   return (
     <Card title="Victory" theme="DARK" inQuest={true}>
+      {props.settings.showHelp && <p>Shuffle all of your ability cards back into your ability draw pile.</p>}
       {contents}
       <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'win')}>Next</Button>
     </Card>
@@ -380,6 +381,7 @@ function renderDefeat(props: CombatProps): JSX.Element {
   return (
     <Card title="Defeat" theme="DARK" inQuest={true}>
       <p>Your party was defeated.</p>
+      {props.settings.showHelp && <p>Shuffle all of your ability cards back into your ability draw pile.</p>}
       {helpText}
       {retryButton}
       <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'lose')}>Next</Button>

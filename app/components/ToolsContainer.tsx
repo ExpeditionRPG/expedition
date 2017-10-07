@@ -3,10 +3,12 @@ import {connect} from 'react-redux'
 import Tools, {ToolsStateProps, ToolsDispatchProps} from './Tools'
 import {AppState, SettingsType, UserState} from '../reducers/StateTypes'
 import {initCustomCombat} from '../cardtemplates/combat/Actions'
-import {URLS} from '../Constants'
+import {audioSetIntensity, audioPlaySfx} from '../actions/Audio'
 import {toCard} from '../actions/Card'
 import {search} from '../actions/Search'
 import {login} from '../actions/User'
+import {URLS} from '../Constants'
+import {getStore} from '../Store'
 import {loadRemotePlay} from '../actions/RemotePlay'
 
 declare var window:any;
@@ -28,7 +30,11 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
     },
     onPrivateQuestsSelect(user: UserState): void {
       const privateSearch = (u: UserState) => {
-        dispatch(search({owner: u.id, partition: 'expedition-private', expansions: ['horror']}));
+        dispatch(search({owner: u.id,
+          partition: 'expedition-private',
+          expansions: ['horror'],
+          order: '-published',
+        }));
       };
 
       if (!user || user.id === '') {
@@ -39,7 +45,16 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
     },
     onRemotePlaySelect(user: UserState): void {
       dispatch(loadRemotePlay(user));
-    }
+    },
+    testMusic(): void {
+      dispatch(audioSetIntensity(1));
+    },
+    testMusicStop(): void {
+      dispatch(audioSetIntensity(0));
+    },
+    testSfx(): void {
+      dispatch(audioPlaySfx('sfx_combat_defeat'));
+    },
   };
 }
 

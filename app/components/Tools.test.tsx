@@ -14,6 +14,9 @@ function setup() {
     onQuestCreatorSelect: jasmine.createSpy('onQuestCreatorSelect'),
     onPrivateQuestsSelect: jasmine.createSpy('onPrivateQuestsSelect'),
     onRemotePlaySelect: jasmine.createSpy('onRemotePlaySelect'),
+    testMusic: jasmine.createSpy('testMusic'),
+    testMusicStop: jasmine.createSpy('testMusicStop'),
+    testSfx: jasmine.createSpy('testSfx'),
   }
   const enzymeWrapper = shallow(<Tools {...props} />);
   return {props, enzymeWrapper};

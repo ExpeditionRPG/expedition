@@ -421,7 +421,11 @@ span.line {
     padding-left: size(icon);
 
     li {
-      padding-bottom: size(tiny);
+      padding-bottom: size(small);
+
+      ol li, ul li {
+        padding-bottom: 0;
+      }
     }
   }
 
