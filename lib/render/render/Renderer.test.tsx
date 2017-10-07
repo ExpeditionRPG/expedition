@@ -25,9 +25,27 @@ describe('Renderer', () => {
       expect(output).toEqual(expected);
     });
     it('turns markdown styles into HTML tags', () => {
-      const input = '**1***2*~~3~~';
+      const input = '**1**__1__*2*_2_~~3~~';
       const output = sanitizeStyles(input);
-      const expected = '<b>1</b><i>2</i><del>3</del>';
+      const expected = '<b>1</b><b>1</b><i>2</i><i>2</i><del>3</del>';
+      expect(output).toEqual(expected);
+    });
+    it('does not stylize inside of ops', () => {
+      const input = '{{_.run()}}_1_{{_.stop()}}{_text in curlies_}';
+      const output = sanitizeStyles(input);
+      const expected = '{{_.run()}}<i>1</i>{{_.stop()}}{<i>text in curlies</i>}';
+      expect(output).toEqual(expected);
+    });
+    it('stylizes around ops', () => {
+      const input = '_{{_.run()}}_';
+      const output = sanitizeStyles(input);
+      const expected = '<i>{{_.run()}}</i>';
+      expect(output).toEqual(expected);
+    });
+    it('stylizes around ops and text', () => {
+      const input = '_text{{_.run()}}text_';
+      const output = sanitizeStyles(input);
+      const expected = '<i>text{{_.run()}}text</i>';
       expect(output).toEqual(expected);
     });
     it('collapses nested styles', () => {

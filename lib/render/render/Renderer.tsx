@@ -18,8 +18,8 @@ export interface Renderer {
 // turns all no-attribute <strong>, <b>, <em>, <i> and <del> into markdown versions (aka whitelist)
 // removes all HTML tags
 // turns markdown styles into HTML tags:
-// * to <i>
-// ** to <b>
+// * and _ to <i>
+// ** and __ to <b>
 // ~~ to <del>
 export function sanitizeStyles(string: string): string {
 
@@ -34,8 +34,19 @@ export function sanitizeStyles(string: string): string {
   string = string.replace(REGEX.HTML_TAG, '');
 
   // replace markdown with HTML tags
+  // general case: replace anything surrounded by markdown styles with their matching HTML tag:
+  // (\*\*)([^\*]*)(\*\*)       non-greedily match the contents between two sets of **
+  // special / more complex regex for single _'s since they sometimes appear in {{_.ops()}}:
+  // (\_)                           starting _
+  // (                              unlimited number of:
+  //   ((?!({{)|(}})|\n|\r)[^\_])*  non-_ characters not wrapped in double curlies and not spanning multiple lines
+  //   ({{.*}})*                    any characters wrapped in double curlies (aka ignore _'s in ops)
+  // )*
+  //(\_)                        ending _
   string = string.replace(/(\*\*)([^\*]*)(\*\*)/g, '<b>$2</b>');
-  string = string.replace(/(\*)([^\*]*)(\*)/g, '<i>$2</i>');
+  string = string.replace(/(\_\_)([^\_]*)(\_\_)/g, '<b>$2</b>');
+  string = string.replace(/(\*)([^\*{}]*)(\*)/g, '<i>$2</i>');
+  string = string.replace(/(\_)(((?!({{)|(}})|\n|\r)[^\_])*({{.*}})*)*(\_)/g, '<i>$2</i>');
   string = string.replace(/(~~)([^~]*)(~~)/g, '<del>$2</del>');
 
   return string;
