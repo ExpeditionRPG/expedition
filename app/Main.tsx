@@ -10,6 +10,7 @@ import {authSettings} from './Constants'
 import {fetchAnnouncements} from './actions/Announcement'
 import {toPrevious} from './actions/Card'
 import {setDialog} from './actions/Dialog'
+import {openSnackbar} from './actions/Snackbar'
 import {silentLogin} from './actions/User'
 import {handleRemotePlayEvent} from './actions/RemotePlay'
 import {getStore} from './Store'
@@ -40,9 +41,9 @@ export function logEvent(name: string, args: any): void {
     fbp.logEvent(name, args);
   }
 
-  const ga = getGA()
+  const ga = getGA();
   if (ga) {
-    ga('send', 'event', name);
+    ga('send', 'event', name, args.action || '', args.label || '', args.value || null);
   }
 }
 
@@ -165,12 +166,25 @@ function setupGoogleAnalytics() {
   setGA(ga);
   ga('create', 'UA-47408800-9', 'auto');
   ga('send', 'pageview');
-  console.log('google analytics set up');
 }
 
 export function init() {
-  // Setup as web platform as default; we might find out later we're an app
   const window = getWindow();
+
+  // Catch and display + log all errors
+  window.onerror = function(message: string, source: string, line: number) {
+    const quest = getStore().getState().quest;
+    if (quest && quest.details && quest.details.id) {
+      message = `Quest: ${quest.details.id} - ${quest.details.title}. Error: ${message}`;
+    }
+    const label = (source) ? `${source} line ${line}` : null;
+    console.error(message, label);
+    logEvent('APP_ERROR', {action: message, label});
+    getStore().dispatch(openSnackbar('Error! Please send feedback.'));
+    return true;
+  };
+
+  // Setup as web platform as default; we might find out later we're an app
   window.platform = 'web';
   window.onpopstate = function(e) {
     getStore().dispatch(toPrevious());

@@ -93,8 +93,8 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
               <MenuItem value="HOME" primaryText="Home"/>
               <MenuItem value="SETTINGS" primaryText="Settings"/>
               {getDevicePlatform() !== 'web' && <MenuItem value="RATE" primaryText="Rate the App"/>}
-              <MenuItem value="FEEDBACK" primaryText="Send app feedback"/>
-              {this.props.inQuest && <MenuItem value="REPORT" primaryText="Report this quest"/>}
+              <MenuItem value="FEEDBACK" primaryText="Send feedback"/>
+              {this.props.inQuest && <MenuItem value="REPORT" primaryText="Report quest"/>}
             </IconMenu>
           </span>
           <div className="title">{this.props.title}</div>
