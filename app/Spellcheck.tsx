@@ -2,9 +2,10 @@ import brace from 'brace'
 const Typo: any = require('typo-js');
 const acequire: any = (require('brace') as any).acequire;
 const {Range} = acequire('ace/range');
-
-import REGEX from './Regex'
 import {METADATA_FIELDS} from './Constants'
+import REGEX from './Regex'
+import {store} from './Store'
+import {setWordCount} from './actions/Editor'
 import {encounters} from '../node_modules/expedition-app/app/Encounters'
 const IGNORE = Object.keys(encounters);
 const elementRegexes = new RegExp('(' + [REGEX.HTML_TAG, REGEX.TRIGGER, REGEX.ID, REGEX.OP].map((regex: any): string => {
@@ -31,6 +32,12 @@ export default class Spellcheck {
     // load all of the regexes and pull out their contents so that we can merge them + apply flags
     text = text.toLowerCase().replace(elementRegexes, ' ');
     return text;
+  }
+
+  // Gets the number of words in the text
+  // Most accurage if text has already been cleaned
+  static getWordCount(text: string): number {
+    return text.trim().split(/\s+/).length;
   }
 
   // Return a list of all unique words in the provided text
@@ -68,6 +75,7 @@ export default class Spellcheck {
       }
 
       const text = Spellcheck.cleanCorpus(this.session.getDocument().getValue());
+      store.dispatch(setWordCount(Spellcheck.getWordCount(text)));
       const words = Spellcheck.getUniqueWords(text);
 
       // get list of invalid words in corpus (aka not in dictionary or our list of exceptions)

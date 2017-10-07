@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction} from './ActionTypes'
+import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction} from './ActionTypes'
 import {PanelType} from '../reducers/StateTypes'
 import {store} from '../Store'
 import {saveQuest} from './Quest'
@@ -23,6 +23,10 @@ export function setLine(line: number): SetLineAction {
 
 export function setOpInit(mathjs: string) {
   return {type: 'SET_OP_INIT', mathjs};
+}
+
+export function setWordCount(count: number): SetWordCountAction {
+  return {type: 'SET_WORD_COUNT', count};
 }
 
 export function panelToggle(panel: PanelType) {
@@ -106,6 +110,7 @@ export function renderAndPlay(qdl: string, line: number, ctx: TemplateContext) {
     // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
     // And make contentSets based on enabled sets for quest
     dispatch(loadNode({
+      audioEnabled: false,
       autoRoll: false,
       contentSets: {
         horror: true,

@@ -74,6 +74,7 @@ export interface EditorState {
   opInit: string; // Initial mathjs to run when loading a quest
   lastSplitPaneDragMillis: number; // Informs re-rendering of text editor
   bottomPanel: PanelType;
+  wordCount: number;
 }
 
 export interface DialogsState {

@@ -144,6 +144,10 @@ label {
   }
 }
 
+body .olark-launch-button { /*must be more specifc than olark styles */
+  bottom: 32px !important;
+}
+
 .splash {
   background: $bg_primary;
   font-family: 'Minion-Pro';
@@ -426,6 +430,10 @@ label {
     .header {
       border-bottom: $border;
       height: $hBarThickness - 2; // Subtract to account for border size
+
+      .bottomPanel--right {
+        float: right;
+      }
 
       button:hover {
         color: #FFF !important;

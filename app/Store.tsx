@@ -1,5 +1,5 @@
-import Redux from 'redux'
-import {createStore, applyMiddleware, compose} from 'redux'
+import Redux, {createStore, applyMiddleware, compose} from 'redux'
+import thunk from 'redux-thunk'
 import questIDEApp from './reducers/CombinedReducers'
 import {installStore} from 'expedition-app/app/Store'
 import {getRemotePlayClient} from 'expedition-app/app/RemotePlay'
@@ -12,7 +12,7 @@ declare var module:any;
 // from https://github.com/zalmoxisus/redux-devtools-extension#13-use-redux-devtools-extension-package-from-npm
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const initialState = {preview: {}};
-const middleware = [getRemotePlayClient().createActionMiddleware()];
+const middleware = [thunk, getRemotePlayClient().createActionMiddleware()];
 export const store: any = createStore(questIDEApp, initialState, composeEnhancers(applyMiddleware(...middleware)));
 
 installStore({

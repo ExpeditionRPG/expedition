@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {PanelToggleAction, SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, QuestRenderAction, SetOpInitAction} from '../actions/ActionTypes'
+import {PanelToggleAction, SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction, QuestRenderAction, SetOpInitAction} from '../actions/ActionTypes'
 import {EditorState, PanelType} from './StateTypes'
 
 const defaultState: EditorState = {
@@ -11,6 +11,7 @@ const defaultState: EditorState = {
   opInit: '',
   lastSplitPaneDragMillis: 0,
   bottomPanel: null,
+  wordCount: 0,
 };
 
 export function editor(state: EditorState = defaultState, action: Redux.Action): EditorState {
@@ -23,6 +24,8 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
       return Object.assign({}, state, {dirty: false});
     case 'SET_LINE':
       return Object.assign({}, state, {line: (action as SetLineAction).line});
+    case 'SET_WORD_COUNT':
+      return {...state, wordCount: (action as SetWordCountAction).count};
     case 'QUEST_RENDER':
       const pageTitle = (action as QuestRenderAction).qdl.getMeta()['title'] + ' - Expedition Quest Creator';
       window.document.title = pageTitle;
