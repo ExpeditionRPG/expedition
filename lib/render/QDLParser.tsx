@@ -24,6 +24,7 @@ export class QDLParser {
   }
 
   public render(blockList: BlockList) {
+    const startTime = Date.now();
     this.log = new Logger();
     if (!blockList || blockList.length === 0) {
       this.result = this.renderer.finalize([], this.log);
@@ -80,6 +81,8 @@ export class QDLParser {
         }
       }
     }
+
+    this.log.dbg('XML rendered in ' + (Date.now() - startTime) + 'ms');
   }
 
   // Returns a rendered version of the current markdown document.

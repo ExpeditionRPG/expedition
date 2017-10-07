@@ -42,10 +42,28 @@ describe('Renderer', () => {
       const expected = '<i>{{_.run()}}</i>';
       expect(output).toEqual(expected);
     });
+    it('preserves the contents of multiple ops', () => {
+      const input = '_{{_.run()}} {{_.two()}}_';
+      const output = sanitizeStyles(input);
+      const expected = '<i>{{_.run()}} {{_.two()}}</i>';
+      expect(output).toEqual(expected);
+    });
     it('stylizes around ops and text', () => {
       const input = '_text{{_.run()}}text_';
       const output = sanitizeStyles(input);
       const expected = '<i>text{{_.run()}}text</i>';
+      expect(output).toEqual(expected);
+    });
+    it('stylizes around ops, ignoring quoted closing brackets in ops string', () => {
+      const input = '_text{{foo = "a}}a" & _.run()}}text_';
+      const output = sanitizeStyles(input);
+      const expected = '<i>text{{foo = "a}}a" & _.run()}}text</i>';
+      expect(output).toEqual(expected);
+    });
+    it('stylizes around ops, ignoring dictionaries in ops string', () => {
+      const input = '_text{{var = {a: {b: "5}}"}}}}text_';
+      const output = sanitizeStyles(input);
+      const expected = '<i>text{{var = {a: {b: "5}}"}}}}text</i>';
       expect(output).toEqual(expected);
     });
     it('collapses nested styles', () => {

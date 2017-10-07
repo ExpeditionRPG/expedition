@@ -23,6 +23,26 @@ export interface Renderer {
 // ~~ to <del>
 export function sanitizeStyles(string: string): string {
 
+  // First, store and remove the contents of {{ops}} so they don't interfere with styling
+  const ops: string[] = [];
+  // non-greedily capture, e.g. {{ var = {a: {b: "5}}"}} }}
+  // ({{               Capture everything inside of {{}}
+  //  (?:              Including 0+ of the following possibilities:
+  //    [^}{"]+        All non-breaking characters
+  //    |(?:"[^"]*?")  Anything (including brackets) in quotes (skipping cases like var = "a}}")
+  //    |{             Any pairs of brackets; skipping over quotes inside of them (like {a: "}}"})
+  //      (?:[^}{]+|{[^}{]*?|"[^"]*?"})*?
+  //    }
+  //  )*?
+  // }})
+  const opsRegex = /({{(?:[^}{"]+|(?:"[^"]*?")|{(?:[^}{]+|{[^}{]*?|"[^"]*?"})*?})*?}})/g;
+  let matches = opsRegex.exec(string);
+  while (matches) {
+    ops.push(matches[1]);
+    matches = opsRegex.exec(string);
+  }
+  string = string.replace(opsRegex, '{{}}');
+
   // replace whitelist w/ markdown
   string = string.replace(/<strong>(.*)<\/strong>/igm, '**$1**');
   string = string.replace(/<b>(.*)<\/b>/igm, '**$1**');
@@ -35,19 +55,15 @@ export function sanitizeStyles(string: string): string {
 
   // replace markdown with HTML tags
   // general case: replace anything surrounded by markdown styles with their matching HTML tag:
-  // (\*\*)([^\*]*)(\*\*)       non-greedily match the contents between two sets of **
-  // special / more complex regex for single _'s since they sometimes appear in {{_.ops()}}:
-  // (\_)                           starting _
-  // (                              unlimited number of:
-  //   ((?!({{)|(}})|\n|\r)[^\_])*  non-_ characters not wrapped in double curlies and not spanning multiple lines
-  //   ({{.*}})*                    any characters wrapped in double curlies (aka ignore _'s in ops)
-  // )*
-  //(\_)                        ending _
-  string = string.replace(/(\*\*)([^\*]*)(\*\*)/g, '<b>$2</b>');
-  string = string.replace(/(\_\_)([^\_]*)(\_\_)/g, '<b>$2</b>');
-  string = string.replace(/(\*)([^\*{}]*)(\*)/g, '<i>$2</i>');
-  string = string.replace(/(\_)(((?!({{)|(}})|\n|\r)[^\_])*({{.*}})*)*(\_)/g, '<i>$2</i>');
-  string = string.replace(/(~~)([^~]*)(~~)/g, '<del>$2</del>');
+  // \*\*([^\*]*)\*\*       non-greedily match the contents between two sets of **
+  string = string.replace(/\*\*([^\*]*)\*\*/g, '<b>$1</b>');
+  string = string.replace(/\_\_([^\_]*)\_\_/g, '<b>$1</b>');
+  string = string.replace(/\*([^\*]*)\*/g, '<i>$1</i>');
+  string = string.replace(/\_([^\_]*)\_/g, '<i>$1</i>');
+  string = string.replace(/~~([^~]*)~~/g, '<del>$1</del>');
+
+  // Insert stored ops contents back into ops
+  string = string.replace(/{{}}/g, () => ops.shift());
 
   return string;
 }
