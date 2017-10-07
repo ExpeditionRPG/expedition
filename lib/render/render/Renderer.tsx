@@ -25,7 +25,17 @@ export function sanitizeStyles(string: string): string {
 
   // First, store and remove the contents of {{ops}} so they don't interfere with styling
   const ops: string[] = [];
-  const opsRegex = /({{.*?[^"}]}})/g; // non-greedily capture {{ops="}}"}}
+  // non-greedily capture, e.g. {{ var = {a: {b: "5}}"}} }}
+  // ({{               Capture everything inside of {{}}
+  //  (?:              Including 0+ of the following possibilities:
+  //    [^}{"]+        All non-breaking characters
+  //    |(?:"[^"]*?")  Anything (including brackets) in quotes (skipping cases like var = "a}}")
+  //    |{             Any pairs of brackets; skipping over quotes inside of them (like {a: "}}"})
+  //      (?:[^}{]+|{[^}{]*?|"[^"]*?"})*?
+  //    }
+  //  )*?
+  // }})
+  const opsRegex = /({{(?:[^}{"]+|(?:"[^"]*?")|{(?:[^}{]+|{[^}{]*?|"[^"]*?"})*?})*?}})/g;
   let matches = opsRegex.exec(string);
   while (matches) {
     ops.push(matches[1]);
