@@ -32,10 +32,8 @@ export interface TouchEvent {
 
 export interface ActionEvent {
   type: 'ACTION';
-  // Redux action, compressed & serialized to JSON.
-  // It's up to the client implementation to determine
-  // what (if anything) to do with the action.
-  action: string;
+  name: string;
+  args: string;
 }
 
 export interface ErrorEvent {
