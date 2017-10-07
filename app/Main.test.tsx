@@ -45,7 +45,10 @@ describe('React', () => {
     describe('deviceready event', () => {
       it('triggers silent login'); // Holding off on testing this one until we propagate window state better.
       it('adds backbutton listener', () => {
-        const fakeStore = newMockStore();
+        const fakeStore = newMockStore({
+          snackbar: {open: false},
+          settings: {audioEnabled: false}
+        });
         installStore(fakeStore);
         const doc = dummyDOM();
         (window as any).plugins = {
@@ -62,9 +65,9 @@ describe('React', () => {
         doc.dispatchEvent(new CustomEvent('backbutton', null));
 
         const actions = fakeStore.getActions();
-        expect(actions.length).toEqual(2);
+        expect(actions.length).toEqual(1);
         // Action 0 is expansion select dialog
-        expect(actions[1]).toEqual(jasmine.objectContaining({type:'RETURN'}));
+        expect(actions[0]).toEqual(jasmine.objectContaining({type:'RETURN'}));
       });
       it('keeps screen on');
       it('sets device style');

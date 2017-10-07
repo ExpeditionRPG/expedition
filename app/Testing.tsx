@@ -3,9 +3,9 @@ import configureStore from 'redux-mock-store'
 import {RemotePlayClient} from './RemotePlay'
 import {AppState} from './reducers/StateTypes'
 
-export function newMockStore() {
+export function newMockStore(state: Object) {
   const client = new RemotePlayClient();
-  const store = configureStore([client.createActionMiddleware()])({});
+  const store = configureStore([client.createActionMiddleware()])(state);
   return store;
 }
 
