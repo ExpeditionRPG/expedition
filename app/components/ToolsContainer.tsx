@@ -5,7 +5,7 @@ import {AppState, SettingsType, UserState} from '../reducers/StateTypes'
 import {initCustomCombat} from '../cardtemplates/combat/Actions'
 import {URLS} from '../Constants'
 import {toCard} from '../actions/Card'
-import {search} from '../actions/Web'
+import {search} from '../actions/Search'
 import {login} from '../actions/User'
 import {loadRemotePlay} from '../actions/RemotePlay'
 

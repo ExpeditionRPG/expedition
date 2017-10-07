@@ -1,8 +1,7 @@
-import configureStore  from 'redux-mock-store'
-import thunk from 'redux-thunk'
 import {init} from './Main'
 import {installStore} from './Store'
 import {setDocument, setWindow} from './Globals'
+import {newMockStore} from './Testing'
 
 function dummyDOM(): Document {
   const doc = document.implementation.createHTMLDocument('testdoc');
@@ -31,8 +30,6 @@ function dummyDOM(): Document {
   return doc;
 }
 
-const mockStore = configureStore([thunk]);
-
 describe('React', () => {
   describe('init', () => {
     it('sets up tap events');  // $10
@@ -48,7 +45,7 @@ describe('React', () => {
     describe('deviceready event', () => {
       it('triggers silent login'); // Holding off on testing this one until we propagate window state better.
       it('adds backbutton listener', () => {
-        const fakeStore = mockStore();
+        const fakeStore = newMockStore();
         installStore(fakeStore);
         const doc = dummyDOM();
         (window as any).plugins = {

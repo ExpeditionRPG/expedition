@@ -74,7 +74,7 @@ function setupDevice() {
   }
 
   getDocument().addEventListener('backbutton', () => {
-    getStore().dispatch(toPrevious());
+    getStore().dispatch(toPrevious({}));
   }, false);
 
   window.plugins.insomnia.keepAwake(); // keep screen on while app is open
@@ -186,7 +186,7 @@ export function init() {
   const window = getWindow();
   window.platform = 'web';
   window.onpopstate = function(e) {
-    getStore().dispatch(toPrevious());
+    getStore().dispatch(toPrevious({}));
     e.preventDefault();
   };
 

@@ -41,7 +41,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Repor
       } else {
         dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
       }
-      dispatch(toPrevious());
+      dispatch(toPrevious({}));
     },
   };
 }

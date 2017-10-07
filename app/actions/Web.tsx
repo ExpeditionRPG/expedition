@@ -65,49 +65,6 @@ function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: Templa
   }
 }
 
-export const search = remoteify(function search(search: SearchSettings) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    const params = {...search};
-    Object.keys(params).forEach((key: string) => {
-      if ((params as any)[key] === null) {
-        delete (params as any)[key];
-      }
-    });
-
-    // Send search request action; clears previous results.
-    dispatch({type: 'SEARCH_REQUEST'});
-
-    const xhr = new XMLHttpRequest();
-    // TODO: Pagination / infinite scrolling
-    xhr.open('POST', authSettings.urlBase + '/quests', true);
-    xhr.setRequestHeader('Content-Type', 'text/plain');
-    xhr.onload = () => {
-      const response: any = JSON.parse(xhr.responseText);
-      if (response.error) {
-        return dispatch(openSnackbar('Network error when searching: ' + response.error));
-      }
-
-      dispatch({
-        type: 'SEARCH_RESPONSE',
-        quests: response.quests,
-        nextToken: response.nextToken,
-        receivedAt: response.receivedAt,
-        search: search,
-      });
-      if (search.partition === 'expedition-private') {
-        dispatch(toCard({name: 'SEARCH_CARD', phase: 'PRIVATE'}));
-      } else {
-        dispatch(toCard({name: 'SEARCH_CARD', phase: 'SEARCH'}));
-      }
-    };
-    xhr.onerror = () => {
-      return dispatch(openSnackbar('Network error: Please check your connection.'));
-    }
-    xhr.withCredentials = true;
-    xhr.send(JSON.stringify(params));
-  };
-});
-
 export function subscribe(a: {email: string}) {
   return (dispatch: Redux.Dispatch<any>) => {
     fetch(authSettings.urlBase + '/user/subscribe', {
@@ -126,9 +83,6 @@ export function subscribe(a: {email: string}) {
   };
 };
 
-interface SubmitUserFeedbackArgs {
-
-}
 export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState}) {
   return (dispatch: Redux.Dispatch<any>) => {
     const data = Object.assign({}, {

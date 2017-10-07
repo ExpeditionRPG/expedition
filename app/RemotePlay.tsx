@@ -68,7 +68,6 @@ export class RemotePlayClient extends ClientBase {
 
   sendEvent(e: any): void {
     if (!this.sock || this.sock.readyState !== this.sock.OPEN) {
-      console.log('Skipping, sock not open');
       return;
     }
     const event: RemotePlayEvent = {client: this.id, event: e};

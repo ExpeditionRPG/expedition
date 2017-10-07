@@ -30,7 +30,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     if (this.props && this.props.onReturn) {
       return this.props.onReturn();
     }
-    getStore().dispatch(toPrevious());
+    getStore().dispatch(toPrevious({}));
   }
 
   private getFeedbackURL(): string {
@@ -42,7 +42,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     switch(value) {
       case 'HOME':
         if (!this.props.inQuest) {
-          return dispatch(toPrevious('SPLASH_CARD', undefined, false));
+          return dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
         } else {
           return dispatch(setDialog('EXIT_QUEST'));
         }
