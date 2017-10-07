@@ -1,17 +1,20 @@
-import thunk from 'redux-thunk'
-import { createStore, applyMiddleware } from 'redux'
+import Redux from 'redux'
+import {createStore, applyMiddleware, compose} from 'redux'
 import questIDEApp from './reducers/CombinedReducers'
 import {installStore} from 'expedition-app/app/Store'
+import {getRemotePlayClient} from 'expedition-app/app/RemotePlay'
 
 // For dev tools extension
 declare var window:any;
 declare var require:any;
 declare var module:any;
 
-let devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
-let middleware = applyMiddleware(thunk);
+// from https://github.com/zalmoxisus/redux-devtools-extension#13-use-redux-devtools-extension-package-from-npm
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const initialState = {preview: {}};
+const middleware = [getRemotePlayClient().createActionMiddleware()];
+export const store: any = createStore(questIDEApp, initialState, composeEnhancers(applyMiddleware(...middleware)));
 
-export const store: any = middleware(devtools(createStore))(questIDEApp, {preview: {}});
 installStore({
   getState: function() {
     return store.getState().preview || {};

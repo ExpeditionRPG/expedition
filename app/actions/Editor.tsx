@@ -104,8 +104,12 @@ export function renderAndPlay(qdl: string, line: number, ctx: TemplateContext) {
     dispatch({type: 'REBOOT_APP'});
     dispatch(initQuest({id: '0'}, questNode, ctx));
     // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
+    // And make contentSets based on enabled sets for quest
     dispatch(loadNode({
       autoRoll: false,
+      contentSets: {
+        horror: true,
+      },
       difficulty: 'NORMAL',
       fontSize: 'SMALL',
       multitouch: false,
