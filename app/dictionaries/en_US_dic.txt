@@ -11928,7 +11928,7 @@ constriction/MS
 constrictor/MS
 constrict/SDGV
 construable
-construct/ASDGV
+construct/CASDGV
 constructibility
 constructible/A
 constructional/Y
