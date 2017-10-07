@@ -76,7 +76,6 @@ export class RemotePlayClient extends ClientBase {
 
   public createActionMiddleware(): Redux.Middleware {
     return ({dispatch, getState}: Redux.MiddlewareAPI<any>) => (next: Redux.Dispatch<any>) => (action: any) => {
-      console.log(action);
       if (!action) {
         next(action);
       } else if (action.type === 'REMOTE_PLAY_ACTION') {
