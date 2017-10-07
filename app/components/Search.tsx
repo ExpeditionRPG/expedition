@@ -206,7 +206,7 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
     if (orderField) {
       orderDetails = (
         <div className={`searchOrderDetail ${orderField}`}>
-          {orderField === 'ratingavg' && result.ratingcount >= 5 && <StarRating readOnly={true} value={+result.ratingavg} quantity={result.ratingcount}/>}
+          {orderField === 'ratingavg' && result.ratingcount >= 1 && <StarRating readOnly={true} value={+result.ratingavg} quantity={result.ratingcount}/>}
           {orderField === 'created' && `Published ${Moment(result.created).format('MMM YYYY')}`}
         </div>
       );
@@ -255,7 +255,7 @@ function renderDetails(props: SearchProps): JSX.Element {
         <h2>{quest.title}</h2>
         <div>{quest.summary}</div>
         <div className="author">by {quest.author}</div>
-        {quest.ratingcount && quest.ratingcount >= 5 && <StarRating readOnly={true} value={+quest.ratingavg} quantity={quest.ratingcount}/>}
+        {quest.ratingcount && quest.ratingcount >= 1 && <StarRating readOnly={true} value={+quest.ratingavg} quantity={quest.ratingcount}/>}
       </div>
       <Button onTouchTap={(e)=>props.onPlay(quest)}>Play</Button>
       <div className="searchDetailsExtended">
