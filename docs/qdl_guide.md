@@ -232,7 +232,7 @@ _combat_
 
 ...
 
-* {{_.isSurgeRound()}} on round
+* {{_.isCombatSurgeRound()}} on round
 
   Extra surge dialogue! Perhaps your allies also surge for a bonus, or you take damage from the room collapsing.
 ```
