@@ -1,6 +1,6 @@
 import Redux from 'redux'
 import {announcement} from './Announcement'
-import {audio} from './audio'
+import {audio} from './Audio'
 import {card} from './Card'
 import {dialog} from './Dialog'
 import {quest} from './Quest'
