@@ -30,7 +30,86 @@ const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group'
 
 interface MainProps extends React.Props<any> {}
 
-export default class Main extends React.Component<MainProps, {}> {
+class TouchIntercepter<P, S> extends React.Component<P, S> {
+  private ref: HTMLElement;
+  private boundingRect: ClientRect;
+  private listeners: {[k: string]: () => void};
+  mouseDown: Boolean;
+
+  constructor(props: P) {
+    super(props);
+    this.listeners = {
+      'touchstart': this.touchEvent.bind(this),
+      'touchmove': this.touchEvent.bind(this),
+      'touchend': this.touchEvent.bind(this),
+      'mousedown': this.mouseDownEvent.bind(this),
+      'mousemove': this.mouseMoveEvent.bind(this),
+      'mouseup': this.mouseUpEvent.bind(this),
+    };
+  }
+
+  private touchEvent(e: any) {
+    const xyArray: number[][] = Array(e.touches.length);
+    const boundingRect = this.ref.getBoundingClientRect();
+    for (let i = 0; i < e.touches.length; i++) {
+      xyArray[i] = [
+        (e.touches[i].clientX - boundingRect.left) / this.ref.offsetWidth * 100,
+        (e.touches[i].clientY - boundingRect.top) / this.ref.offsetHeight * 100
+      ];
+    }
+    this.processInput(xyArray);
+  }
+
+  private mouseDownEvent(e: any) {
+    this.mouseDown = true;
+    const boundingRect = this.ref.getBoundingClientRect();
+    this.processInput([[e.layerX, e.layerY]]);
+  }
+
+  private mouseMoveEvent(e: any) {
+    if (this.mouseDown) {
+      const boundingRect = this.ref.getBoundingClientRect();
+      this.processInput([[
+        (e.layerX - boundingRect.left) / this.ref.offsetWidth * 100,
+        (e.layerY - boundingRect.top) / this.ref.offsetHeight * 100
+      ]]);
+    }
+  }
+
+  private mouseUpEvent() {
+    this.mouseDown = false;
+    this.processInput([]);
+  }
+
+  private processInput(positions: number[][]) {
+    getRemotePlayClient().sendEvent({type: 'TOUCH', positions});
+  }
+
+  subscribeInterceptingElement(r: HTMLElement) {
+    if (!r || process.env.NODE_ENV !== 'dev') {
+      return;
+    }
+    this.ref = r;
+    for (const k of Object.keys(this.listeners)) {
+      // The `true` arg ensures touch events are propagated here during
+      // the "capture" phase of event flow.
+      // https://www.w3.org/TR/DOM-Level-3-Events/#event-flow
+      this.ref.addEventListener(k, this.listeners[k], true);
+    }
+  }
+
+  componentWillUnmount() {
+    if (!this.ref) {
+      return;
+    }
+
+    for (const k of Object.keys(this.listeners)) {
+      this.ref.removeEventListener(k, this.listeners[k], true);
+    }
+  }
+}
+
+export default class Main extends TouchIntercepter<MainProps, {}> {
   state: {
     card: JSX.Element,
     key: number,
@@ -47,6 +126,8 @@ export default class Main extends React.Component<MainProps, {}> {
   }
 
   componentWillUnmount() {
+    super.componentWillUnmount();
+
     // 2017-08-16: Failing to unsubscribe here is likely to have caused unnecessary references to previous
     // JS objects, which prevents garbage collection and causes runaway memory consumption.
     this.storeUnsubscribeHandle();
@@ -135,30 +216,6 @@ export default class Main extends React.Component<MainProps, {}> {
     };
   }
 
-  handleBaseMainRef(r: HTMLElement) {
-    if (!r || process.env.NODE_ENV !== 'dev') {
-      return;
-    }
-
-    // Intercept all 'touch start' events and pass it to the remote play client.
-    // Touch events are propagated here during the "capture" phase of event flow
-    // https://www.w3.org/TR/DOM-Level-3-Events/#event-flow
-    // TODO: Unsubscribe listeners, prevent duplicate subscriptions
-    // TODO: Make this also work for desktops
-    r.addEventListener('touchstart', (e: any) => {
-      const positions: number[][] = Array(e.touches.length);
-      const boundingRect = r.getBoundingClientRect();
-      for (let i = 0; i < e.touches.length; i++) {
-        // Get adjusted coordinates as the percentage of div width/height as measured
-        // from the top left corner of the div.
-        const x = (e.touches[i].clientX - boundingRect.left) / r.offsetWidth * 100;
-        const y = (e.touches[i].clientY - boundingRect.top) / r.offsetHeight * 100;
-        positions[i] = [x, y];
-      }
-      getRemotePlayClient().sendEvent({type: 'TOUCH', positions});
-    }, true);
-  }
-
   handleChange() {
     // TODO: Handle no-op on RESET_APP from IDE
     this.setState(this.getUpdatedState());
@@ -173,7 +230,7 @@ export default class Main extends React.Component<MainProps, {}> {
     }
 
     const cards: any = [
-      <div className="base_main" key={this.state.key} ref={(r: HTMLElement) => this.handleBaseMainRef(r)}>
+      <div className="base_main" key={this.state.key} ref={(r: HTMLElement) => this.subscribeInterceptingElement(r)}>
         {this.state.card}
         <RemoteTouchPanel/>
       </div>
