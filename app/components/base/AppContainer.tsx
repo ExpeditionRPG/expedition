@@ -3,6 +3,7 @@ import {Provider} from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
 import Snackbar from 'material-ui/Snackbar'
 
+import AudioContainer from './AudioContainer'
 import DialogsContainer from './DialogsContainer'
 import ToolsContainer from '../ToolsContainer'
 import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
@@ -193,6 +194,7 @@ export default class Main extends React.Component<MainProps, {}> {
               autoHideDuration={this.state.snackbar.timeout}
               onRequestClose={() => getStore().dispatch(closeSnackbar())}
             />
+            <AudioContainer />
           </ReactCSSTransitionGroup>
         </Provider>
       </div>

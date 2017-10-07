@@ -9,6 +9,7 @@ import {DifficultyType, FontSizeType, SettingsType} from '../reducers/StateTypes
 export interface SettingsStateProps extends SettingsType {}
 
 export interface SettingsDispatchProps {
+  onAudioChange: (change: boolean) => void;
   onAutoRollChange: (change: boolean) => void;
   onDifficultyDelta: (difficulty: DifficultyType, i: number) => void;
   onExpansionSelect: () => void;
@@ -69,6 +70,12 @@ const Settings = (props: SettingsProps): JSX.Element => {
           {props.numPlayers === 1 ? <span><br/><strong>Solo play:</strong> Timers are doubled.</span> : ''}
         </div>
       </Picker>
+
+      {process.env.NODE_ENV === 'dev' &&
+        <Checkbox label="Sound" value={props.audioEnabled} onChange={props.onAudioChange}>
+          {(props.audioEnabled) ? 'Music and sound effects enabled.' : 'Music and sound effects disabled.'}
+        </Checkbox>
+      }
 
       <Checkbox label="Show Help" value={props.showHelp} onChange={props.onShowHelpChange}>
         {(props.showHelp) ? 'Setup and combat hints are shown.' : 'Setup and combat hints are hidden.'}

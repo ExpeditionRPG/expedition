@@ -6,8 +6,10 @@ import * as ReactDOM from 'react-dom'
 import theme from './Theme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
+
 import {authSettings} from './Constants'
 import {fetchAnnouncements} from './actions/Announcement'
+import {audioPause, audioResume} from './actions/Audio'
 import {toPrevious} from './actions/Card'
 import {setDialog} from './actions/Dialog'
 import {openSnackbar} from './actions/Snackbar'
@@ -76,6 +78,14 @@ function setupDevice() {
 
   getDocument().addEventListener('backbutton', () => {
     getStore().dispatch(toPrevious());
+  }, false);
+
+  getDocument().addEventListener('pause', () => {
+    getStore().dispatch(audioPause());
+  }, false);
+
+  getDocument().addEventListener('resume', () => {
+    getStore().dispatch(audioResume());
   }, false);
 
   window.plugins.insomnia.keepAwake(); // keep screen on while app is open
@@ -170,6 +180,7 @@ function setupGoogleAnalytics() {
 
 export function init() {
   const window = getWindow();
+  const document = getDocument();
 
   // Catch and display + log all errors
   window.onerror = function(message: string, source: string, line: number) {
@@ -190,22 +201,28 @@ export function init() {
     getStore().dispatch(toPrevious());
     e.preventDefault();
   };
-
-  // Only triggers on app builds
-  getDocument().addEventListener('deviceready', () => {
-    setupDevice();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      getStore().dispatch(audioPause());
+    } else if (document.visibilityState === 'visible') {
+      getStore().dispatch(audioResume());
+    }
   }, false);
 
-  setupPolyfills();
+  // Only triggers on app builds
+  document.addEventListener('deviceready', setupDevice, false);
 
+  setupPolyfills();
   setupTapEvents();
   setupGoogleAPIs();
   setupEventLogging();
   setupHotReload();
   setupGoogleAnalytics();
   setupRemotePlay();
-  getStore().dispatch(fetchAnnouncements());
 
+  render();
+
+  // Wait to process settings & dispatch additional UI until render complete
   const settings = getStore().getState().settings;
   if (settings) {
     const contentSets = (settings || {}).contentSets;
@@ -218,8 +235,7 @@ export function init() {
   } else {
     getStore().dispatch(setDialog('EXPANSION_SELECT'));
   }
-
-  render();
+  getStore().dispatch(fetchAnnouncements());
 }
 
 function render() {

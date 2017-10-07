@@ -14,6 +14,9 @@ export interface ToolsDispatchProps {
   onQuestCreatorSelect: () => void;
   onPrivateQuestsSelect: (user: UserState) => void;
   onRemotePlaySelect: (user: UserState) => void;
+  testMusic: () => void;
+  testMusicStop: () => void;
+  testSfx: () => void;
 }
 
 export interface ToolsProps extends ToolsStateProps, ToolsDispatchProps {}
@@ -21,6 +24,13 @@ export interface ToolsProps extends ToolsStateProps, ToolsDispatchProps {}
 const Tools = (props: ToolsProps): JSX.Element => {
   return (
     <Card title="Tools">
+      {process.env.NODE_ENV === 'dev' &&
+        <div>
+          <Button onTouchTap={() => props.testMusic()}>Music</Button>
+          <Button onTouchTap={() => props.testMusicStop()}>Stop Music</Button>
+          <Button onTouchTap={() => props.testSfx()}>SFX</Button>
+        </div>
+      }
       <Button id="selectCustomCombat" onTouchTap={() => props.onCustomCombatSelect(props.settings)}>
         <div className="questButtonWithIcon">
           <div className="title">GM Mode</div>

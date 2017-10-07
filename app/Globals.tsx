@@ -18,6 +18,8 @@ export interface ReactWindow extends Window {
   AndroidFullScreen?: {
     immersiveMode: (success: () => any, failure: () => any) => void,
   };
+  AudioContext?: AudioContext;
+  webkitAudioContext?: AudioContext;
   FirebasePlugin?: {
     onTokenRefresh?: (success: (token: string) => any, failure: (error: string) => any) => void,
     logEvent: (name: string, args: any) => any,

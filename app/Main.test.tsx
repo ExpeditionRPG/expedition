@@ -73,12 +73,14 @@ describe('React', () => {
       it('sets device style');
       it('patches android browser scrolling');
       it('hides android system ui');
+      it('pauses music on window pause event');
+      it('resumes music on window resume event');
     });
   });
 
   describe('logEvent', () => {
     it('logs to firebase if firebase set up'); // $10
     it('logs to google analytics if GA set up'); // $10
-  })
+  });
 
 });

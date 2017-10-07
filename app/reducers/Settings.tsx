@@ -3,7 +3,10 @@ import {ContentSetsType, DifficultyType, FontSizeType, SettingsType} from './Sta
 import {ChangeSettingsAction} from '../actions/ActionTypes'
 import {getStorageBoolean, getStorageJson, getStorageNumber, getStorageString, setStorageKeyValue} from '../Globals'
 
+// TODO reduce redundancy by setting initial value to default,
+// and then looping over with the getStorage based on key + type
 export const initialSettings: SettingsType = {
+  audioEnabled: getStorageBoolean('audioEnabled', true),
   autoRoll: getStorageBoolean('autoRoll', false),
   contentSets: getStorageJson('contentSets') as ContentSetsType || {
     horror: null,
