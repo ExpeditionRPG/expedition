@@ -24,7 +24,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Rolep
       dispatch(choice(settings, node, index));
     },
     onRetry: () => {
-      dispatch(toPrevious('QUEST_CARD', 'DRAW_ENEMIES', true));
+      dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: true}));
     },
   };
 }

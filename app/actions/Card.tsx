@@ -26,8 +26,27 @@ export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch?: Redux.
   return a;
 });
 
-export function toPrevious(name?: CardName, phase?: CardPhase, before?: boolean, skip?: {name: CardName, phase: CardPhase}[]): ReturnAction {
-  return {type: 'RETURN', to: {name, ts: Date.now(), phase}, before: Boolean(before), skip};
+interface ToPreviousArgs {
+  name?: CardName;
+  phase?: CardPhase;
+  before?: boolean;
+  skip?: {name: CardName, phase: CardPhase}[];
 }
+export const toPrevious = remoteify(function toPrevious(a?: ToPreviousArgs, dispatch?: Redux.Dispatch<any>): ToPreviousArgs {
+  const result = {
+    type: 'RETURN',
+    to: {
+      name: a.name,
+      ts: Date.now(),
+      phase: a.phase
+    },
+    before: Boolean(a.before),
+    skip: a.skip
+  };
+
+  dispatch(result);
+
+  return result;
+});
 
 // TODO: getRemotePlayClient().registerModuleActions(module);

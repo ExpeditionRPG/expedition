@@ -43,8 +43,3 @@ export function loadNode(settings: SettingsType, node: ParserNode) {
     }
   }
 }
-
-// TODO: This should probably go in a "search" actions file.
-export function viewQuest(quest: QuestDetails): ViewQuestAction {
-  return {type: 'VIEW_QUEST', quest};
-}

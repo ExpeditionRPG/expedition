@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
   return {
     onExitQuest: (): void => {
       dispatch(setDialog(null));
-      dispatch(toPrevious('SPLASH_CARD', undefined, false));
+      dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
     },
     onExpansionSelect: (contentSets: ContentSetsType): void => {
       dispatch(setDialog(null));

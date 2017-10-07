@@ -35,15 +35,13 @@ describe('Card action', () => {
     });
 
     it('dispatches a NAVIGATE action', () => {
-      const store = mockStore({settings: {vibration: false}});
-      installStore(store);
       Action(toCard).expect({name: 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({'type': 'NAVIGATE'}));
     });
   });
 
   describe('toPrevious', () => {
     it('returns a RETURN action', () => {
-      expect(toPrevious('QUEST_CARD')).toEqual(jasmine.objectContaining({'type': 'RETURN'}) as any);
+      Action(toPrevious).expect({name: 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({'type': 'RETURN'}));
     });
   });
 });

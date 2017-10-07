@@ -35,13 +35,13 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Repor
         return alert('Issue description must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value.');
       }
       if (!user || !user.loggedIn) {
-        dispatch(login((user: UserState) => {
-          dispatch(submitUserFeedback(quest, settings, user, userFeedback));
-        }));
+        dispatch(login({callback: (user: UserState) => {
+          dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
+        }}));
       } else {
-        dispatch(submitUserFeedback(quest, settings, user, userFeedback));
+        dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
       }
-      dispatch(toPrevious());
+      dispatch(toPrevious({}));
     },
   };
 }

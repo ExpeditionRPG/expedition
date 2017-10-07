@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {toCard} from './Card'
 import {remotePlaySettings} from '../Constants'
-import {RemotePlayAction, NavigateAction, ReturnAction} from './ActionTypes'
+import {RemotePlayAction, NavigateAction, ReturnAction, getRemoteAction} from './ActionTypes'
 import {UserState} from '../reducers/StateTypes'
 import {logEvent} from '../Main'
 import {openSnackbar} from '../actions/Snackbar'
@@ -24,7 +24,13 @@ export function handleRemotePlayEvent(e: RemotePlayEvent) {
         // We don't care about dispatching touch events (they're tracked elsewhere)
         break;
       case 'ACTION':
-        // dispatch(getAction(a.fn)(a));
+        const a = getRemoteAction(e.event.name);
+        if (!a) {
+          console.log('Received unknown remote action ' + e.event.name);
+        } else {
+          console.log('Dispatching remote action ' + e.event.name);
+          dispatch(local(a(JSON.parse(e.event.args))));
+        }
         break;
       case 'ERROR':
         console.error(JSON.stringify(e.event));

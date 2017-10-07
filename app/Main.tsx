@@ -77,7 +77,7 @@ function setupDevice() {
   }
 
   getDocument().addEventListener('backbutton', () => {
-    getStore().dispatch(toPrevious());
+    getStore().dispatch(toPrevious({}));
   }, false);
 
   getDocument().addEventListener('pause', () => {
@@ -198,7 +198,7 @@ export function init() {
   // Setup as web platform as default; we might find out later we're an app
   window.platform = 'web';
   window.onpopstate = function(e) {
-    getStore().dispatch(toPrevious());
+    getStore().dispatch(toPrevious({}));
     e.preventDefault();
   };
   document.addEventListener('visibilitychange', () => {

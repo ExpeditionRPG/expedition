@@ -5,7 +5,7 @@ import {AppState, SettingsType, UserState} from '../reducers/StateTypes'
 import {initCustomCombat} from '../cardtemplates/combat/Actions'
 import {audioSetIntensity, audioPlaySfx} from '../actions/Audio'
 import {toCard} from '../actions/Card'
-import {search} from '../actions/Web'
+import {search} from '../actions/Search'
 import {login} from '../actions/User'
 import {URLS} from '../Constants'
 import {getStore} from '../Store'
@@ -38,7 +38,7 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
       };
 
       if (!user || user.id === '') {
-        dispatch(login(privateSearch));
+        dispatch(login({callback: privateSearch}));
       } else {
         privateSearch(user);
       }

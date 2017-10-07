@@ -63,7 +63,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
 
 function postTimerReturn(dispatch: Redux.Dispatch<any>) {
   // Return to the "Ready for Combat?" card instead of doing the timed round again.
-  dispatch(toPrevious(null, null, false, [{name: 'QUEST_CARD', phase: 'TIMER'}]));
+  dispatch(toPrevious({before: false, skip: [{name: 'QUEST_CARD', phase: 'TIMER'}]}));
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CombatDispatchProps => {
@@ -76,7 +76,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       dispatch(handleCombatEnd({node, settings, victory: true, maxTier}));
     },
     onRetry: () => {
-      dispatch(toPrevious('QUEST_CARD', 'DRAW_ENEMIES', true));
+      dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: true}));
     },
     onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number) => {
       logEvent('combat_defeat', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
@@ -99,7 +99,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       dispatch(adventurerDelta(node, settings, current, delta));
     },
     onCustomEnd: () => {
-      dispatch(toPrevious('QUEST_CARD', 'DRAW_ENEMIES', false));
+      dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: false}));
     },
     onChoice: (settings: SettingsType, parent: ParserNode, index: number) => {
       dispatch(midCombatChoice(settings, parent, index));

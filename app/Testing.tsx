@@ -3,6 +3,12 @@ import configureStore from 'redux-mock-store'
 import {RemotePlayClient} from './RemotePlay'
 import {AppState} from './reducers/StateTypes'
 
+export function newMockStore(state: Object) {
+  const client = new RemotePlayClient();
+  const store = configureStore([client.createActionMiddleware()])(state);
+  return store;
+}
+
 export function Reducer<A extends Redux.Action>(reducer: (state: Object, action: A) => Object) {
   const defaultInitialState = reducer(undefined, ({type: '@@INIT'} as any));
 
