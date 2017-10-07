@@ -44,11 +44,11 @@ export function sanitizeStyles(string: string): string {
   string = string.replace(opsRegex, '{{}}');
 
   // replace whitelist w/ markdown
-  string = string.replace(/<strong>(.*)<\/strong>/igm, '**$1**');
-  string = string.replace(/<b>(.*)<\/b>/igm, '**$1**');
-  string = string.replace(/<em>(.*)<\/em>/igm, '*$1*');
-  string = string.replace(/<i>(.*)<\/i>/igm, '*$1*');
-  string = string.replace(/<del>(.*)<\/del>/igm, '~~$1~~');
+  string = string.replace(/<strong>(.*?)<\/strong>/igm, '**$1**');
+  string = string.replace(/<b>(.*?)<\/b>/igm, '**$1**');
+  string = string.replace(/<em>(.*?)<\/em>/igm, '*$1*');
+  string = string.replace(/<i>(.*?)<\/i>/igm, '*$1*');
+  string = string.replace(/<del>(.*?)<\/del>/igm, '~~$1~~');
 
   // strip html tags and attributes (but leave contents)
   string = string.replace(REGEX.HTML_TAG, '');

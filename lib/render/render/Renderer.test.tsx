@@ -30,6 +30,18 @@ describe('Renderer', () => {
       const expected = '<b>1</b><b>1</b><i>2</i><i>2</i><del>3</del>';
       expect(output).toEqual(expected);
     });
+    it('turns turns two separate markdown styles into two separate tags', () => {
+      const input = '_i1_ teddy bears are cute _i2_';
+      const output = sanitizeStyles(input);
+      const expected = '<i>i1</i> teddy bears are cute <i>i2</i>';
+      expect(output).toEqual(expected);
+    });
+    it('turns turns two separate HTML styles into two separate tags', () => {
+      const input = '<i>i1</i> teddy bears are cute <i>i2</i>';
+      const output = sanitizeStyles(input);
+      const expected = '<i>i1</i> teddy bears are cute <i>i2</i>';
+      expect(output).toEqual(expected);
+    });
     it('does not stylize inside of ops', () => {
       const input = '{{_.run()}}_1_{{_.stop()}}{_text in curlies_}';
       const output = sanitizeStyles(input);
