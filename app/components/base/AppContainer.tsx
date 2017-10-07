@@ -143,6 +143,7 @@ export default class Main extends React.Component<MainProps, {}> {
     // Touch events are propagated here during the "capture" phase of event flow
     // https://www.w3.org/TR/DOM-Level-3-Events/#event-flow
     // TODO: Unsubscribe listeners, prevent duplicate subscriptions
+    // TODO: Make this also work for desktops
     r.addEventListener('touchstart', (e: any) => {
       const positions: number[][] = Array(e.touches.length);
       const boundingRect = r.getBoundingClientRect();
