@@ -54,42 +54,24 @@ export class BlockRenderer {
       let lineIdx = 0;
       for (let line of lines) {
         lineIdx++;
-        if (line.indexOf('* ') === 0) {
+        // TODO November / once we have support for [art] - remove [icon] errors if they're on their own line
+        // https://github.com/ExpeditionRPG/expedition-app/issues/403
+        if (REGEX.ICON_OLD.test(line)) {
+          const icon = line.match(REGEX.ICON_OLD)[0].replace('[', '').replace(']', '');
+          log.err(
+            `use :${icon}: instead of [${icon}]`,
+            '435',
+            block.startLine
+          );
+        } else if (line.indexOf('* ') === 0) {
           let bullet = this.extractBulleted(line, block.startLine + lineIdx, log);
-          if (REGEX.ICON_OLD.test(bullet.text)) {
-            log.err(
-              'use :icon: instead of [icon]',
-              '435',
-              block.startLine + lineIdx + 1
-            );
-          } else {
-            choice = (bullet) ? Object.assign({}, bullet, {choice: []}) : null;
-            // TODO: Assert end of lines.
-          }
+          choice = (bullet) ? Object.assign({}, bullet, {choice: []}) : null;
+          // TODO: Assert end of lines.
         } else if (line.indexOf('> ') === 0) {
           instruction = this.extractInstruction(line);
-          if (REGEX.ICON_OLD.test(instruction.text)) {
-            log.err(
-              'use :icon: instead of [icon]',
-              '435',
-              block.startLine + lineIdx + 1
-            );
-          } else {
-            body.push(instruction);
-          }
+          body.push(instruction);
         } else {
-          // TODO November / once we have support for [art] - remove [icon] errors
-          // In roleplaying cards - still invalid in instructions and choices
-          // https://github.com/ExpeditionRPG/expedition-app/issues/403
-          if (REGEX.ICON_OLD.test(line)) {
-            log.err(
-              'use :icon: instead of [icon]',
-              '435',
-              block.startLine + lineIdx + 1
-            );
-          } else {
-            body.push(line);
-          }
+          body.push(line);
         }
       }
 
