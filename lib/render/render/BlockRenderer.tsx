@@ -80,6 +80,7 @@ export class BlockRenderer {
         } else {
           // TODO November / once we have support for [art] - remove [icon] errors
           // In roleplaying cards - still invalid in instructions and choices
+          // https://github.com/ExpeditionRPG/expedition-app/issues/403
           if (REGEX.ICON_OLD.test(line)) {
             log.err(
               'use :icon: instead of [icon]',
