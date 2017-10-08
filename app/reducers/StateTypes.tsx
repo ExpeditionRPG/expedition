@@ -70,7 +70,10 @@ export interface EditorState {
   node: any;
   dirty: boolean;
   dirtyTimeout: any;
-  line: number;
+  line: {
+    number: number;
+    ts: number;
+  }
   opInit: string; // Initial mathjs to run when loading a quest
   lastSplitPaneDragMillis: number; // Informs re-rendering of text editor
   bottomPanel: PanelType;

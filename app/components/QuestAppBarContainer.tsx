@@ -62,7 +62,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       // Jump to the next error below the current line, looping back to the top error
       const errors = annotations.filter((annotation) => { return annotation.type === 'error' })
           .sort((a, b) => { return a.row - b.row });
-      const errorsAfterCursor = errors.filter((error) => { return error.row > editor.line }) || [];
+      const errorsAfterCursor = errors.filter((error) => { return error.row > editor.line.number }) || [];
       const errorLine = (errorsAfterCursor.length > 0) ? errorsAfterCursor[0].row : errors[0].row;
       dispatch(setLine(errorLine));
     },
@@ -75,7 +75,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         // TODO: Display eval errors
         console.log(e);
       }
-      dispatch(renderAndPlay(quest.mdRealtime.getText(), editor.line, ctx));
+      dispatch(renderAndPlay(quest.mdRealtime.getText(), editor.line.number, ctx));
     },
   };
 }

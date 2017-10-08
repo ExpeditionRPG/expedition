@@ -6,7 +6,10 @@ const defaultState: EditorState = {
   renderer: null,
   dirty: false,
   dirtyTimeout: null,
-  line: 0,
+  line: {
+    number: 0,
+    ts: 0,
+  },
   node: null,
   opInit: '',
   lastSplitPaneDragMillis: 0,
@@ -23,7 +26,10 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
     case 'RECEIVE_QUEST_SAVE':
       return Object.assign({}, state, {dirty: false});
     case 'SET_LINE':
-      return Object.assign({}, state, {line: (action as SetLineAction).line});
+      return {...state, line: {
+        number: (action as SetLineAction).line,
+        ts: Date.now(),
+      }};
     case 'SET_WORD_COUNT':
       return {...state, wordCount: (action as SetWordCountAction).count};
     case 'QUEST_RENDER':
