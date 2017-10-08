@@ -25,11 +25,18 @@ export interface StatusEvent {
   status: ClientStatus;
 }
 
-export interface TouchEvent {
-  type: 'TOUCH';
-  positions: TouchList;
+// Interaction events indicate what remote clients are doing,
+// without significantly affecting the state of the app.
+// This includes button taps and finger placement on the
+// combat timer.
+export interface InteractionEvent {
+  type: 'INTERACTION';
+  id: string; // unique ID for the UI element
+  event: string; // "touchstart", etc
+  positions: TouchList; // 0-100 relative positioning from top left of UI element.
 }
 
+// Action events invoke registered action functions on remote clients when they are broadcast.
 export interface ActionEvent {
   type: 'ACTION';
   name: string;
@@ -41,7 +48,7 @@ export interface ErrorEvent {
   error: string;
 }
 
-export type RemotePlayEventBody = StatusEvent|TouchEvent|ErrorEvent|ActionEvent;
+export type RemotePlayEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent;
 
 export interface RemotePlayEvent {
   client: ClientID;
