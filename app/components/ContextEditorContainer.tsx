@@ -4,8 +4,6 @@ import {AppState} from '../reducers/StateTypes'
 import ContextEditor, {ContextEditorDispatchProps, ContextEditorStateProps} from './ContextEditor'
 import {setOpInit} from '../actions/Editor'
 
-var math = require('mathjs') as any;
-
 const mapStateToProps = (state: AppState, ownProps: any): ContextEditorStateProps => {
   var scopeHistory: any[] = [];
 

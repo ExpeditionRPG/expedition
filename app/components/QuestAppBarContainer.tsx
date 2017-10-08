@@ -75,7 +75,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         // TODO: Display eval errors
         console.log(e);
       }
-      dispatch(renderAndPlay(quest.mdRealtime.getText(), editor.line.number, ctx));
+      dispatch(renderAndPlay(quest.mdRealtime.getText(), editor.line.number, ctx, editor.worker));
     },
   };
 }

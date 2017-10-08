@@ -78,6 +78,7 @@ export interface EditorState {
   lastSplitPaneDragMillis: number; // Informs re-rendering of text editor
   bottomPanel: PanelType;
   wordCount: number;
+  worker: Worker;
 }
 
 export interface DialogsState {

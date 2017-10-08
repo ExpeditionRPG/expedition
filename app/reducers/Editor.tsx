@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {PanelToggleAction, SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction, QuestRenderAction, SetOpInitAction} from '../actions/ActionTypes'
+import {PanelToggleAction, SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction, QuestRenderAction, SetOpInitAction, PlaytestInitAction} from '../actions/ActionTypes'
 import {EditorState, PanelType} from './StateTypes'
 
 const defaultState: EditorState = {
@@ -14,17 +14,18 @@ const defaultState: EditorState = {
   opInit: '',
   lastSplitPaneDragMillis: 0,
   bottomPanel: null,
+  worker: null,
   wordCount: 0,
 };
 
 export function editor(state: EditorState = defaultState, action: Redux.Action): EditorState {
   switch (action.type) {
     case 'SET_DIRTY':
-      return Object.assign({}, state, {dirty: (action as SetDirtyAction).is_dirty});
+      return {...state, dirty: (action as SetDirtyAction).is_dirty};
     case 'SET_DIRTY_TIMEOUT':
-      return Object.assign({}, state, {dirtyTimeout: (action as SetDirtyTimeoutAction).timer});
+      return {...state, dirtyTimeout: (action as SetDirtyTimeoutAction).timer};
     case 'RECEIVE_QUEST_SAVE':
-      return Object.assign({}, state, {dirty: false});
+      return {...state, dirty: false};
     case 'SET_LINE':
       return {...state, line: {
         number: (action as SetLineAction).line,
@@ -40,16 +41,18 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
       }
       catch ( Exception ) { }
       window.history.replaceState(window.history.state, pageTitle, window.location.href);
-      return Object.assign({}, state, {renderer: (action as QuestRenderAction).qdl});
+      return {...state, renderer: (action as QuestRenderAction).qdl};
     case 'QUEST_NODE':
-      return Object.assign({}, state, {node: (action as any).node});
+      return {...state, node: (action as any).node};
     case 'SET_OP_INIT':
-      return Object.assign({}, state, {opInit: (action as SetOpInitAction).mathjs});
+      return {...state, opInit: (action as SetOpInitAction).mathjs};
     case 'PANEL_DRAG':
-      return Object.assign({}, state, {lastSplitPaneDragMillis: Date.now()});
+      return {...state, lastSplitPaneDragMillis: Date.now()};
     case 'PANEL_TOGGLE':
       const panel = (action as PanelToggleAction).panel;
-      return Object.assign({}, state, {bottomPanel: (state.bottomPanel !== panel) ? panel : null});
+      return {...state, bottomPanel: (state.bottomPanel !== panel) ? panel : null};
+    case 'PLAYTEST_INIT':
+      return {...state, worker: (action as PlaytestInitAction).worker};
     default:
       return state;
   }
