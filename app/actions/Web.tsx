@@ -32,17 +32,17 @@ export function fetchLocal(url: string, callback: Function) {
   request.send();
 }
 
-export function fetchQuestXML(details: QuestDetails) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    fetchLocal(details.publishedurl, (err: Error, result: string) => {
-      if (err) {
-        return dispatch(openSnackbar('Network error: Please check your connection.'));
-      }
-      const questNode = cheerio.load(result)('quest');
-      dispatch(loadQuestXML({details, questNode, ctx: defaultContext()}));
-    });
-  };
-}
+export const fetchQuestXML = remoteify(function fetchQuestXML(details: QuestDetails, dispatch: Redux.Dispatch<any>) {
+  fetchLocal(details.publishedurl, (err: Error, result: string) => {
+    if (err) {
+      return dispatch(openSnackbar('Network error: Please check your connection.'));
+    }
+    const questNode = cheerio.load(result)('quest');
+    dispatch(loadQuestXML({details, questNode, ctx: defaultContext()}));
+  });
+
+  return details;
+});
 
 // for loading quests in the app - Quest Creator injects directly into initQuest
 function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: TemplateContext}) {
@@ -61,6 +61,7 @@ function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: Templa
     } else {
       dispatch(toCard({name: 'QUEST_START'}));
     }
+
     return {...a, questNode: (null as Cheerio)};
   }
 }

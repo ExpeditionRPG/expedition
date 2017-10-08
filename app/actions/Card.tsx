@@ -3,23 +3,25 @@ import {NavigateAction, ReturnAction, remoteify} from './ActionTypes'
 import {AppStateWithHistory, CardName, CardPhase, CardState} from '../reducers/StateTypes'
 import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants'
 import {getNavigator} from '../Globals'
-import {getStore} from '../Store'
 import {getRemotePlayClient} from '../RemotePlay'
 
 interface ToCardArgs {
   name: CardName;
   phase?: CardPhase;
   overrideDebounce?: boolean;
+  noHistory?: boolean;
 }
-export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch?: Redux.Dispatch<any>): ToCardArgs {
-  const state: AppStateWithHistory = getStore().getState();
+export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch?: Redux.Dispatch<any>, getState?: ()=>AppStateWithHistory): ToCardArgs {
   const nav = getNavigator();
-  if (nav && nav.vibrate && state.settings.vibration) {
+  if (nav && nav.vibrate && getState().settings.vibration) {
     if (a.phase === 'TIMER') {
       nav.vibrate(VIBRATION_LONG_MS);
     } else {
       nav.vibrate(VIBRATION_SHORT_MS);
     }
+  }
+  if (!a.noHistory) {
+    dispatch({type: 'PUSH_HISTORY'});
   }
   dispatch({type: 'NAVIGATE', to: {...a, ts: Date.now()}} as NavigateAction);
 
@@ -46,7 +48,7 @@ export const toPrevious = remoteify(function toPrevious(a?: ToPreviousArgs, disp
 
   dispatch(result);
 
-  return result;
+  return a;
 });
 
 // TODO: getRemotePlayClient().registerModuleActions(module);
