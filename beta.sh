@@ -1,7 +1,6 @@
 #!/bin/bash
 # Requires the aws cli for s3 deploys (make sure to set your bucket region!)
-# Builds beta versions of the android (android-debug.apk), iOS and web apps
-# and deploys to beta.expeditiongame.com
+# Deploys to betacards.expeditiongame.com
 # Make sure to set your credentials via `aws configure`, environment variables or credentials file
 # http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
 

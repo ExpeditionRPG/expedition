@@ -17,5 +17,5 @@ deploy:
   script: ./beta.sh
   skip_cleanup: true
   on:
-    repo: ExpeditionRPG/expedition-app
+    repo: ExpeditionRPG/expedition-cards
     branch: master
