@@ -57,20 +57,16 @@ export class RemoteAffector extends React.Component<RemoteAffectorProps,{}> {
     // TODO: Add scroll abort from
     // https://github.com/callemall/material-ui/blob/master/src/internal/TouchRipple.js
 
-
     if (e.type === 'touchstart') {
       console.log('TOUCH START');
       this.ignoreNextMouseDown = true;
     }
 
-    /*
-    // TODO: Figure out why this significantly slows down touch bubbling
     const xyArray: number[][] = Array(e.touches.length);
     for (let i = 0; i < e.touches.length; i++) {
       xyArray[i] = [e.touches[i].clientX, e.touches[i].clientY, e.touches[i].identifier];
     }
     this.processInput(e.type, xyArray);
-    */
   }
 
   private mouseDownEvent(e: MouseEvent) {
@@ -135,6 +131,7 @@ export class RemoteAffector extends React.Component<RemoteAffectorProps,{}> {
       <div
         id={this.props.id}
         className={this.props.className}
+        style={{touchAction: 'pan-y'}}
         ref={(r: HTMLElement) => {this.onRef(r)}}>
         {this.props.children}
       </div>
