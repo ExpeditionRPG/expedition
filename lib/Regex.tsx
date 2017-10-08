@@ -7,6 +7,9 @@ export default {
   // (.|\n)*?>                Greedily match any character (incl newline) until closing ">"
   HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,
 
+  // Detects icons in []'s (old syntax)
+  ICON_OLD: /[\[]([a-z_0-9]*)[\]]/ig,
+
   // For selecting ID references, example: (#idName)
   ID: /\(#[a-zA-Z]*\)/g,
 
