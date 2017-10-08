@@ -69,10 +69,15 @@ export function getPlayNode(node: Cheerio): Cheerio {
   return node;
 }
 
-export function startPlaytestWorker(elem: Cheerio) {
+
+export function startPlaytestWorker(oldWorker: Worker, elem: Cheerio) {
   return (dispatch: Redux.Dispatch<any>): any => {
+    if (oldWorker) {
+      oldWorker.terminate();
+    }
+
     if (!(window as any).Worker) {
-      console.log('Web worker not available in this browser, skipping playtest.');
+      console.log('Web worker not available, skipping playtest.');
       return;
     }
     const worker = new Worker('playtest.js');
@@ -88,33 +93,36 @@ export function startPlaytestWorker(elem: Cheerio) {
   }
 }
 
-export function renderAndPlay(qdl: string, line: number, ctx: TemplateContext) {
+export function renderAndPlay(qdl: string, line: number, ctx: TemplateContext, oldWorker: Worker) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    const xmlResult = renderXML(qdl);
-    dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
+    // Do rendering after timeout to stay outside the event handler.
+    setTimeout(() => {
+      const xmlResult = renderXML(qdl);
+      dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
 
-    const questNode: Cheerio = xmlResult.getResult();
-    const playNode = getPlayNode(xmlResult.getResultAt(line));
-    if (!playNode) {
-      const err = new Error('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
-      err.name = 'RenderError';
-      return dispatch(pushError(err))
-    }
-    const newNode = new ParserNode(playNode, ctx);
-    dispatch({type: 'REBOOT_APP'});
-    dispatch(initQuest({id: '0'}, questNode, ctx));
-    // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
-    dispatch(loadNode({
-      autoRoll: false,
-      difficulty: 'NORMAL',
-      fontSize: 'SMALL',
-      multitouch: false,
-      numPlayers: 1,
-      showHelp: false,
-      timerSeconds: 10,
-      vibration: false
-    }, newNode));
-    // Results will be shown and added to annotations as they arise.
-    dispatch(startPlaytestWorker(questNode));
+      const questNode: Cheerio = xmlResult.getResult();
+      console.log('renderAndPlay ' + line);
+      const playNode = getPlayNode(xmlResult.getResultAt(line));
+      if (!playNode) {
+        const err = new Error('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
+        err.name = 'RenderError';
+        return dispatch(pushError(err))
+      }
+      const newNode = new ParserNode(playNode, ctx);
+      dispatch({type: 'REBOOT_APP'});
+      // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
+      dispatch(loadNode({
+        autoRoll: false,
+        difficulty: 'NORMAL',
+        fontSize: 'SMALL',
+        multitouch: false,
+        numPlayers: 1,
+        showHelp: false,
+        timerSeconds: 10,
+        vibration: false
+      }, newNode));
+      // Results will be shown and added to annotations as they arise.
+      dispatch(startPlaytestWorker(oldWorker, questNode));
+    }, 0);
   };
 }

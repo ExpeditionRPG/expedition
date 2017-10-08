@@ -123,3 +123,8 @@ export interface PushErrorAction extends Redux.Action {
   type: 'PUSH_ERROR';
   error: Error;
 }
+
+export interface PlaytestInitAction extends Redux.Action {
+  type: 'PLAYTEST_INIT';
+  worker: Worker;
+}
