@@ -126,9 +126,9 @@ export class PlaytestCrawler extends StatsCrawler {
       }
       const badPlayerReferences = (inst.match(ADVENTURER_INSTRUCTION) || []).map((m: string) => {
         return '"' + m.replace('"', '\'') + '"';
-      });
+      }).join(', ');
       if (badPlayerReferences) {
-        this.logger.warn('Prefer using "adventurer" over "player"\n(in ' + badPlayerReferences.join(', ') + ')', '435', line);
+        this.logger.warn('Prefer using "adventurer" over "player"\n(in ' + badPlayerReferences + ')', '435', line);
       }
     });
   }

@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {PanelToggleAction, SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction, QuestRenderAction, SetOpInitAction} from '../actions/ActionTypes'
+import {PanelToggleAction, SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction, QuestRenderAction, SetOpInitAction, PlaytestInitAction} from '../actions/ActionTypes'
 import {EditorState, PanelType} from './StateTypes'
 
 const defaultState: EditorState = {
@@ -14,11 +14,8 @@ const defaultState: EditorState = {
   opInit: '',
   lastSplitPaneDragMillis: 0,
   bottomPanel: null,
-<<<<<<< HEAD
   worker: null,
-=======
   wordCount: 0,
->>>>>>> 5ee656d4c2bb2362c682f70ba944dd25a7947944
 };
 
 export function editor(state: EditorState = defaultState, action: Redux.Action): EditorState {
@@ -30,16 +27,12 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
     case 'RECEIVE_QUEST_SAVE':
       return {...state, dirty: false};
     case 'SET_LINE':
-<<<<<<< HEAD
-      return {...state, line: (action as SetLineAction).line};
-=======
       return {...state, line: {
         number: (action as SetLineAction).line,
         ts: Date.now(),
       }};
     case 'SET_WORD_COUNT':
       return {...state, wordCount: (action as SetWordCountAction).count};
->>>>>>> 5ee656d4c2bb2362c682f70ba944dd25a7947944
     case 'QUEST_RENDER':
       const pageTitle = (action as QuestRenderAction).qdl.getMeta()['title'] + ' - Expedition Quest Creator';
       window.document.title = pageTitle;

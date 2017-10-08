@@ -104,32 +104,33 @@ export function renderAndPlay(qdl: string, line: number, ctx: TemplateContext, o
       const xmlResult = renderXML(qdl);
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
 
-    const questNode: Cheerio = xmlResult.getResult();
-    const playNode = getPlayNode(xmlResult.getResultAt(line));
-    if (!playNode) {
-      const err = new Error('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
-      err.name = 'RenderError';
-      return dispatch(pushError(err))
-    }
-    const newNode = new ParserNode(playNode, ctx);
-    dispatch({type: 'REBOOT_APP'});
-    // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
-    // And make contentSets based on enabled sets for quest
-    dispatch(loadNode({
-      audioEnabled: false,
-      autoRoll: false,
-      contentSets: {
-        horror: true,
-      },
-      difficulty: 'NORMAL',
-      fontSize: 'SMALL',
-      multitouch: false,
-      numPlayers: 1,
-      showHelp: false,
-      timerSeconds: 10,
-      vibration: false
-    }, newNode));
-    // Results will be shown and added to annotations as they arise.
-    dispatch(startPlaytestWorker(questNode));
+      const questNode: Cheerio = xmlResult.getResult();
+      const playNode = getPlayNode(xmlResult.getResultAt(line));
+      if (!playNode) {
+        const err = new Error('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
+        err.name = 'RenderError';
+        return dispatch(pushError(err))
+      }
+      const newNode = new ParserNode(playNode, ctx);
+      dispatch({type: 'REBOOT_APP'});
+      // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
+      // And make contentSets based on enabled sets for quest
+      dispatch(loadNode({
+        audioEnabled: false,
+        autoRoll: false,
+        contentSets: {
+          horror: true,
+        },
+        difficulty: 'NORMAL',
+        fontSize: 'SMALL',
+        multitouch: false,
+        numPlayers: 1,
+        showHelp: false,
+        timerSeconds: 10,
+        vibration: false
+      }, newNode));
+      // Results will be shown and added to annotations as they arise.
+      dispatch(startPlaytestWorker(oldWorker, questNode));
+    });
   };
 }

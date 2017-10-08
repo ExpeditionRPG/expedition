@@ -223,7 +223,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
       dispatch(receiveQuestLoad(quest));
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
       // Kick off a playtest after allowing the main thread to re-paint
-      setTimeout(() => dispatch(startPlaytestWorker(xmlResult.getResult())), 1);
+      setTimeout(() => dispatch(startPlaytestWorker(null, xmlResult.getResult())), 0);
     });
   },
   (model: any) => {

@@ -4,8 +4,6 @@ export const DESCRIPTION = `Using brackets for icons has been depricated to make
 
 export const TEST_WITH_CRAWLER = true;
 
-
-Actual tests
 export const INVALID = [
 `_A card_
 

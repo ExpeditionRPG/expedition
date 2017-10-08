@@ -35,14 +35,8 @@
     "brace": "^0.10.0",
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.1",
-<<<<<<< HEAD
-    "cors": "^2.8.3",
-    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#49befb9538ffd28e6ce50f5b7c786dac856d74b4",
+    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#06f841a39ca50ffe77aac197222abed5fa7a4f29",
     "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#e98e5a1b0231703ae2c2a33f53b7ca2c4114d7f6",
-=======
-    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#1f2ccbaeaddc9551a944a9f799ad13c792d2efeb",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#f8ca58f3cc5b00992b99d1f435169075edf0ef9b",
->>>>>>> 5ee656d4c2bb2362c682f70ba944dd25a7947944
     "express": "^4.15.2",
     "express-rate-limit": "^2.8.0",
     "express-session": "^1.15.1",
@@ -56,6 +50,7 @@
     "lodash": "^4.17.4",
     "markdown": "^0.5.0",
     "material-ui": "^0.17.4",
+    "mathjs": "^3.16.4",
     "moment": "^2.17.1",
     "multer": "^1.3.0",
     "nconf": "^0.8.4",
