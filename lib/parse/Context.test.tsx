@@ -6,15 +6,11 @@ const cheerio: any = require('cheerio');
 
 describe('Context', () => {
   describe('evaluateOp', () => {
-    it('calls window.onerr on invalid parse', () => {
-      (window as any).onerror = jasmine.createSpy('onerror');
-      evaluateOp('foo==\'a\'', defaultContext())
-      expect(window.onerror).toHaveBeenCalledTimes(1);
+    it('throws error on invalid parse', () => {
+      expect(() => {evaluateOp('foo==\'a\'', defaultContext());}).toThrow(new Error('Value expected. Note: strings must be enclosed by double quotes (char 6) Op: (foo==\'a\')'));
     });
-    it('calls window.onerr on invalid eval', () => {
-      (window as any).onerror = jasmine.createSpy('onerror');
-      evaluateOp('asdf', defaultContext());
-      expect(window.onerror).toHaveBeenCalledTimes(1);
+    it('throws error on invalid eval', () => {
+      expect(() => {evaluateOp('asdf', defaultContext());}).toThrow(new Error('Undefined symbol asdf Op: (asdf)'));
     });
     it('returns value and updates context', () => {
       const ctx = {...defaultContext(), scope: {b: '1'} as any};
