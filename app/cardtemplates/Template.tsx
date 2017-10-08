@@ -21,7 +21,7 @@ export function initCardTemplate(node: ParserNode, settings: SettingsType) {
       case 'roleplay':
         return dispatch(initRoleplay(node, settings));
       case 'combat':
-        return dispatch(initCombat(node, settings));
+        return dispatch(initCombat({node, settings}));
       default:
         throw new Error('Unsupported node type ' + node.getTag());
     }

@@ -15,7 +15,7 @@ describe('ToolsContainer', () => {
     const store = mockStore({});
     mapDispatchToProps(store.dispatch, null).onCustomCombatSelect(initialSettings);
     // TODO: Simplify/remove.
-    expect(store.getActions()[0]).toEqual(jasmine.objectContaining({
+    expect(store.getActions()[1]).toEqual(jasmine.objectContaining({
       type: 'NAVIGATE',
       to: jasmine.objectContaining({name:'QUEST_CARD', phase: 'DRAW_ENEMIES'}),
     }));

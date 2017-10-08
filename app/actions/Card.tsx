@@ -13,7 +13,9 @@ interface ToCardArgs {
 }
 export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch?: Redux.Dispatch<any>, getState?: ()=>AppStateWithHistory): ToCardArgs {
   const nav = getNavigator();
-  if (nav && nav.vibrate && getState().settings.vibration) {
+  const state = getState();
+  const vibration = state.settings && state.settings.vibration;
+  if (nav && nav.vibrate && vibration) {
     if (a.phase === 'TIMER') {
       nav.vibrate(VIBRATION_LONG_MS);
     } else {
