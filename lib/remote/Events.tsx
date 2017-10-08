@@ -10,7 +10,7 @@ CARD <serialized card state>
 
 export type ClientID = string;
 
-// Array of [vw, vh] coordinates, e.g. [[1,2], [3,4]].
+// Array of [vw, vh, id] coordinates, e.g. [[1,2,0], [3,4,1]].
 export type TouchList = number[][];
 
 export interface ClientStatus {
@@ -33,7 +33,7 @@ export interface InteractionEvent {
   type: 'INTERACTION';
   id: string; // unique ID for the UI element
   event: string; // "touchstart", etc
-  positions: TouchList; // 0-100 relative positioning from top left of UI element.
+  positions: TouchList; // 0-1000 relative positioning from top left of UI element.
 }
 
 // Action events invoke registered action functions on remote clients when they are broadcast.

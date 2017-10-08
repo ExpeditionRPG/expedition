@@ -83,7 +83,7 @@ export function evaluateOp(op: string, ctx: Context): any {
     parsed = Math.parse(HtmlDecode(op));
     evalResult = parsed.compile().eval(ctx.scope);
   } catch (err) {
-    return window.onerror(err.message + ' Op: (' + op + ')');
+    throw new Error(err.message + ' Op: (' + op + ')');
   }
 
   // Only return the result IF it doesn't assign a value as its last action.
