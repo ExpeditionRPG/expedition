@@ -57,8 +57,14 @@ export abstract class CrawlerBase<C extends Context> {
     }
 
     const start = Date.now();
-    while(this.queue.size > 0 && (!depthLimit || this.queue.peek().depth < depthLimit) && (!timeLimitMillis || (Date.now() - start) < timeLimitMillis)) {
+    while(this.queue.size > 0 && (!timeLimitMillis || (Date.now() - start) < timeLimitMillis)) {
+
       const q = this.queue.poll();
+
+      // If we've gone too deep into the quest, don't crawl further.
+      if (depthLimit && q.depth >= depthLimit) {
+        continue;
+      }
 
       // This happens if we've navigated "outside the quest", e.g. a user doesn't end all their nodes with end tag.
       if (q.node === undefined || q.node === null) {
