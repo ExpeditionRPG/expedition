@@ -4,7 +4,7 @@ import {
   QuestNodeAction,
   ViewQuestAction
 } from './ActionTypes'
-import {AppState, SettingsType} from '../reducers/StateTypes'
+import {AppStateWithHistory, SettingsType} from '../reducers/StateTypes'
 import {toCard} from './Card'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {initCardTemplate, ParserNode} from '../cardtemplates/Template'
@@ -21,7 +21,7 @@ interface ChoiceArgs {
   node?: ParserNode;
   index: number;
 }
-export const choice = remoteify(function choice(a: ChoiceArgs, dispatch: Redux.Dispatch<any>, getState: ()=>AppState): ChoiceArgs {
+export const choice = remoteify(function choice(a: ChoiceArgs, dispatch: Redux.Dispatch<any>, getState: ()=>AppStateWithHistory): ChoiceArgs {
   if (!a.node || !a.settings) {
     a.node = getState().quest.node;
     a.settings = getState().settings;
@@ -30,11 +30,17 @@ export const choice = remoteify(function choice(a: ChoiceArgs, dispatch: Redux.D
   return {index: a.index};
 });
 
-export function event(node: ParserNode, evt: string) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    dispatch(loadNode(null, node.handleAction(evt)));
-  }
+interface EventArgs {
+  node?: ParserNode;
+  evt: string;
 }
+export const event = remoteify(function event(a: EventArgs, dispatch: Redux.Dispatch<any>, getState: ()=>AppStateWithHistory): EventArgs {
+  if (!a.node) {
+    a.node = getState().quest.node;
+  }
+  dispatch(loadNode(null, a.node.handleAction(a.evt)));
+  return {evt: a.evt};
+});
 
 // used externally by the quest creator, but not by other external App code
 export function loadNode(settings: SettingsType, node: ParserNode) {

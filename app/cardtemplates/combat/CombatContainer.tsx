@@ -94,7 +94,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     },
     onReturn: () => {postTimerReturn(dispatch)},
     onEvent: (node: ParserNode, evt: string) => {
-      dispatch(event(node, evt));
+      dispatch(event({node, evt}));
     },
     onTierSumDelta: (node: ParserNode, current: number, delta: number) => {
       dispatch(tierSumDelta(node, current, delta));
