@@ -7,6 +7,7 @@ import Main, {MainStateProps, MainDispatchProps} from './Main'
 
 const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
   return {
+    editor: state.editor,
     loggedIn: state.user.loggedIn,
     bottomPanel: state.editor.bottomPanel,
     snackbar: state.snackbar,

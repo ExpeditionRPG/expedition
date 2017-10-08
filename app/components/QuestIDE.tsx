@@ -10,6 +10,7 @@ export interface QuestIDEStateProps {
   annotations: AnnotationType[];
   lastSplitPaneDragMillis: number;
   line: number;
+  lineTs: number;
   realtime: any;
   realtimeModel: any;
 };
@@ -33,6 +34,7 @@ const QuestIDE = (props: QuestIDEProps): JSX.Element => {
           annotations={props.annotations}
           lastSizeChangeMillis={props.lastSplitPaneDragMillis}
           scrollLineTarget={props.line}
+          scrollLineTargetTs={props.lineTs}
           onChange={(text: string) => props.onDirty(props.realtime, text)}
           onLine={(line: number) => props.onLine(line)}
           onAnnotationClick={(annotations: number[]) => props.onAnnotationClick(annotations)} />

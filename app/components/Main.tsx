@@ -10,11 +10,12 @@ import QuestAppBarContainer from './QuestAppBarContainer'
 import QuestIDEContainer from './QuestIDEContainer'
 import ContextEditorContainer from './ContextEditorContainer'
 import NotesPanelContainer from './NotesPanelContainer'
-import {PanelType, SnackbarState} from '../reducers/StateTypes'
+import {EditorState, PanelType, SnackbarState} from '../reducers/StateTypes'
 
 const SplitPane = require('react-split-pane') as any;
 
 export interface MainStateProps {
+  editor: EditorState;
   loggedIn: boolean;
   bottomPanel: PanelType;
   snackbar: SnackbarState;
@@ -53,12 +54,23 @@ const Main = (props: MainProps): JSX.Element => {
         secondary={props.bottomPanel !== 'NOTES'}
         onTouchTap={(event: any) => {props.onPanelToggle('NOTES');}}
       />
+      <div className="bottomPanel--right">
+        <FlatButton
+          label={`Line: ${props.editor.line.number}`}
+          disabled={true}
+        />
+        {props.editor.wordCount > 0 && <FlatButton
+          label={`Words: ${props.editor.wordCount}`}
+          disabled={true}
+        />}
+      </div>
     </div>
   );
 
   // TODO: Constant-ify default size of split pane
+  let contents = <span></span>;
   if (!props.bottomPanel) {
-    var contents = (
+    contents = (
       <div className="contents">
         <QuestIDEContainer/>
         <div className="bottomPanel">
@@ -67,7 +79,7 @@ const Main = (props: MainProps): JSX.Element => {
       </div>);
   } else {
     // SplitPane dimensions are measured as the size of the *editor* pane, not the bottom pane.
-    var contents = (<div className="contents"><SplitPane
+    contents = (<div className="contents"><SplitPane
       split="horizontal"
       defaultSize={window.innerHeight - 400}
       minSize={40}

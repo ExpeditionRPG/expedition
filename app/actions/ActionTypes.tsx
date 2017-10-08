@@ -42,6 +42,11 @@ export interface SetLineAction extends Redux.Action {
   line: number;
 }
 
+export interface SetWordCountAction extends Redux.Action {
+  type: 'SET_WORD_COUNT';
+  count: number;
+}
+
 export interface ReceiveQuestLoadAction extends Redux.Action {
   type: 'RECEIVE_QUEST_LOAD';
   quest: QuestType;

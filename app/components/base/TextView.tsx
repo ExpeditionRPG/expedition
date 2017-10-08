@@ -34,6 +34,7 @@ interface TextViewProps extends React.Props<any> {
 
   // Hook for external control of scroll position
   scrollLineTarget?: number;
+  scrollLineTargetTs?: number;
 }
 
 // This class wraps the Realtime API undo commands in a way
@@ -92,6 +93,7 @@ class RealtimeUndoManager {
 // See https://github.com/securingsincity/react-ace
 export default class TextView extends React.Component<TextViewProps, {}> {
   ace: any;
+  lineChangeTs: number;
   spellchecker: any;
   onSelectionChange: () => any;
   silentChange: boolean;
@@ -250,8 +252,9 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     // If we've been supplied with a different line number, scroll to it
     if (this.ace) {
       const row = this.ace.editor.getSelection().anchor.row;
-      if (newProps.scrollLineTarget !== row) {
+      if (newProps.scrollLineTarget !== row && newProps.scrollLineTargetTs > (this.lineChangeTs || 0)) {
         this.ace.editor.gotoLine(newProps.scrollLineTarget+1, 0, true);
+        this.lineChangeTs = newProps.scrollLineTargetTs;
       }
     }
   }

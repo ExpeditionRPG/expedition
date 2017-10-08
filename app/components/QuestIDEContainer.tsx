@@ -10,7 +10,8 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestIDEStateProps => 
   return {
     annotations: state.annotations,
     lastSplitPaneDragMillis: state.editor.lastSplitPaneDragMillis,
-    line: state.editor.line,
+    line: state.editor.line.number,
+    lineTs: state.editor.line.ts,
     realtime: state.quest.mdRealtime,
     realtimeModel: state.quest.realtimeModel,
   };

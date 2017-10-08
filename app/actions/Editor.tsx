@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction} from './ActionTypes'
+import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction} from './ActionTypes'
 import {PanelType} from '../reducers/StateTypes'
 import {store} from '../Store'
 import {saveQuest} from './Quest'
@@ -23,6 +23,10 @@ export function setLine(line: number): SetLineAction {
 
 export function setOpInit(mathjs: string) {
   return {type: 'SET_OP_INIT', mathjs};
+}
+
+export function setWordCount(count: number): SetWordCountAction {
+  return {type: 'SET_WORD_COUNT', count};
 }
 
 export function panelToggle(panel: PanelType) {
@@ -100,29 +104,32 @@ export function renderAndPlay(qdl: string, line: number, ctx: TemplateContext, o
       const xmlResult = renderXML(qdl);
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
 
-      const questNode: Cheerio = xmlResult.getResult();
-      console.log('renderAndPlay ' + line);
-      const playNode = getPlayNode(xmlResult.getResultAt(line));
-      if (!playNode) {
-        const err = new Error('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
-        err.name = 'RenderError';
-        return dispatch(pushError(err))
-      }
-      const newNode = new ParserNode(playNode, ctx);
-      dispatch({type: 'REBOOT_APP'});
-      // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
-      dispatch(loadNode({
-        autoRoll: false,
-        difficulty: 'NORMAL',
-        fontSize: 'SMALL',
-        multitouch: false,
-        numPlayers: 1,
-        showHelp: false,
-        timerSeconds: 10,
-        vibration: false
-      }, newNode));
-      // Results will be shown and added to annotations as they arise.
-      dispatch(startPlaytestWorker(oldWorker, questNode));
-    }, 0);
+    const questNode: Cheerio = xmlResult.getResult();
+    const playNode = getPlayNode(xmlResult.getResultAt(line));
+    if (!playNode) {
+      const err = new Error('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
+      err.name = 'RenderError';
+      return dispatch(pushError(err))
+    }
+    const newNode = new ParserNode(playNode, ctx);
+    dispatch({type: 'REBOOT_APP'});
+    // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
+    // And make contentSets based on enabled sets for quest
+    dispatch(loadNode({
+      audioEnabled: false,
+      autoRoll: false,
+      contentSets: {
+        horror: true,
+      },
+      difficulty: 'NORMAL',
+      fontSize: 'SMALL',
+      multitouch: false,
+      numPlayers: 1,
+      showHelp: false,
+      timerSeconds: 10,
+      vibration: false
+    }, newNode));
+    // Results will be shown and added to annotations as they arise.
+    dispatch(startPlaytestWorker(questNode));
   };
 }

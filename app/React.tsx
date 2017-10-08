@@ -27,6 +27,12 @@ declare var unescape: any;
 
 const Typo: any = require('typo-js');
 
+window.onerror = (message: string, source: string, line: number) => {
+  console.error(message, source, line);
+  store.dispatch(setSnackbar(true, 'Error! ' + message));
+  return true; // prevents the firing of the default event handler
+};
+
 // Needed for onTouchTap
 const injectTapEventPlugin = require('react-tap-event-plugin');
 injectTapEventPlugin();

@@ -33,6 +33,10 @@ describe('Spellcheck', () => {
     it('Removes ID references');
     it('Removes HTML tags');
   });
+  describe('Word Count', () => {
+    it('returns correct amount even if multiple spaces between words');
+    it('returns correct amount even if ops and other elements present');
+  });
   describe('Spellcheck', () => {
     it('allows enemy names');
     it('catches misspelled English words');

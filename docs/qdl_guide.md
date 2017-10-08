@@ -148,7 +148,7 @@ Adventurers will see this card after both options fall through (unless they're r
 
 ### Events
 
-Where choices are triggered by adventurers making a choice between buttons, events are triggered by the app when certain criteria are met. Right now, there are only `* on win` and `* on lose` events in combat, though this may be expanded in the future.
+Where choices are triggered by adventurers making a choice between buttons, events are triggered by the app when certain criteria are met. Right now, there are `* on round`, `* on win` and `* on lose` events in combat, though this may be expanded in the future.
 
 
 ## Cards
@@ -220,9 +220,9 @@ _combat_
 
 ...
 
-* {{_.currentCombatRound() % 3 == 2}} on round
+* {{_.currentCombatRound() % 2 == 1}} on round
 
-  This happens on rounds 3, 6, 9, etc.
+  This happens on rounds 1, 3, 5, etc. (The first round is round 1)
 ```
 
 Or show additional instruction during a surge:
@@ -232,9 +232,9 @@ _combat_
 
 ...
 
-* {{_.isSurgeRound()}} on round
+* {{_.isCombatSurgeRound()}} on round
 
-  Extra surge dialogue!
+  Extra surge dialogue! Perhaps your allies also surge for a bonus, or you take damage from the room collapsing.
 ```
 
 #### Scaling your combat encounters
@@ -246,6 +246,10 @@ Fights that are too easy (or too hard!) can ruin an adventure. Here are our reco
 - The hardest / boss fight should generally be around tier 6-8, assuming players have had a few fights to prepare.
 
 We've found that the two biggest factors that influence fight difficulty are loot and practice. So, if you reward your players with loot outside of combat (ie finding a treasure chest, visiting a merchant), you can scale combat faster. Conversely, if you want your quest to go on for longer and have more than 3-5 fights, you should refrain from awarding additional loot early on.
+
+#### Losing encounters
+
+When writing your story, we encourage you to think about what would happen if the adventurers lost the fight but didn't die. What if they were knocked out and taken prisoner, and then had to escape? Or what if they were fighting to protect the king and failed, and now you had to figure out where the bandits took the king? Having `* on lose` lead to an interesting twist of the story is much more satisfying for your players!
 
 #### Random encounters
 

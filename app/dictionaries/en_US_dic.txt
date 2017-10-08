@@ -11928,7 +11928,7 @@ constriction/MS
 constrictor/MS
 constrict/SDGV
 construable
-construct/ASDGV
+construct/CASDGV
 constructibility
 constructible/A
 constructional/Y
@@ -34676,7 +34676,7 @@ Maud/M
 Maugham/M
 Maui/M
 mauler/M
-maul/RDGZS
+maul/RDGZSJ
 maunder/GDS
 Maupassant/M
 Maura/M
@@ -35132,7 +35132,7 @@ memoryless
 memory/MS
 memo/SM
 Memphis/M
-menace/GSD
+menace/GSDM
 menacing/Y
 menagerie/SM
 menage/S
@@ -41500,6 +41500,7 @@ peccary/MS
 Pechora/M
 pecker/M
 peck/GZSDRM
+peckish
 Peckinpah/M
 Peck/M
 Pecos/M
@@ -51131,7 +51132,7 @@ slavish/YP
 Slav/MS
 Slavonic/M
 slaw/MS
-slay/RGZS
+slay/RGZSD
 sleaze/S
 sleazily
 sleaziness/SM
@@ -52049,6 +52050,7 @@ sparing/UY
 sparker/M
 sparkle/DRSGZ
 sparkler/M
+sparkly
 Sparkman/M
 Sparks
 spark/SGMRD
@@ -58517,7 +58519,9 @@ unprovocative
 unpunctual
 unquestionable
 unraisable
-unravellings
+unravel
+unravelled
+unravelling/S
 unreadability
 unread/B
 unreal
