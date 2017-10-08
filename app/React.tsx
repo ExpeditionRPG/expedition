@@ -20,8 +20,6 @@ declare var module: any;
 // For dev tools extension
 declare var window:any;
 
-window.onerror = (msg: string) => {console.error(msg);};
-
 // For URL parsing
 declare var unescape: any;
 
