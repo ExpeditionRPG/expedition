@@ -4,7 +4,6 @@
 import {Node} from 'expedition-qdl/lib/parse/Node'
 import {PlaytestCrawler} from './PlaytestCrawler'
 import {Logger, LogMessageMap} from 'expedition-qdl/lib/render/Logger'
-// import {defaultContext} from 'expedition-qdl/lib/parse/Context'
 import {initQuest} from 'expedition-app/app/actions/Quest'
 
 // TODO: This Card context shouldn't have to be mocked here - update cardtemplates in the app
