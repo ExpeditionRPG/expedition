@@ -56,7 +56,7 @@ describe('Cards actions', () => {
         text: '#roll',
       }];
       const cleaned = filterAndFormatCards(cards, dummyFilters);
-      expect(cleaned[0].text).toEqual(<img key={0} className="inline_icon svg" src={`/themes/BlackAndWhite/images/icon/roll_small.svg`}/>);
+      expect(cleaned[0].text).toEqual(<img key={0} className="inline_icon svg roll_small" src={`/expedition-art/icons/roll_small.svg`}/>);
     });
 
     it('wraps \nOR\n for better styling', () => {
