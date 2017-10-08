@@ -46,6 +46,10 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
       };
     }
   }
+
+  const stateCombat = (state.quest.node && state.quest.node.ctx && state.quest.node.ctx.templates && state.quest.node.ctx.templates.combat)
+    || {tier: 0, mostRecentRolls: [10], numAliveAdventurers: 1};
+
   return {
     ...combat,
     card: ownProps.card,
@@ -55,9 +59,9 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     victoryParameters,
     // Override with dynamic state for tier and adventurer count
     // Any combat param change (e.g. change in tier) causes a repaint
-    tier: state.quest.node.ctx.templates.combat.tier,
-    mostRecentRolls: state.quest.node.ctx.templates.combat.mostRecentRolls,
-    numAliveAdventurers: state.quest.node.ctx.templates.combat.numAliveAdventurers,
+    tier: stateCombat.tier,
+    mostRecentRolls: stateCombat.mostRecentRolls,
+    numAliveAdventurers: stateCombat.numAliveAdventurers,
   };
 }
 
