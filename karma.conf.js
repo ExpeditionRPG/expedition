@@ -14,9 +14,10 @@ module.exports = function (config) {
       'node_modules/babel-polyfill/dist/polyfill.js',
       'node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
       { pattern: 'app/**/*.test.tsx' },
+      'errors/errors.text.tsx',
     ],
     preprocessors: {
-      'app/**/*.test.tsx': ['webpack'],
+      '**/*.test.tsx': ['webpack'],
     },
     globals: {
       utils: {},

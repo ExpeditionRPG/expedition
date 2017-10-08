@@ -36,7 +36,7 @@
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.1",
     "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#1f2ccbaeaddc9551a944a9f799ad13c792d2efeb",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#bb72ff11a409776496637a1fbed82ddf26f524fd",
+    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#f8ca58f3cc5b00992b99d1f435169075edf0ef9b",
     "express": "^4.15.2",
     "express-rate-limit": "^2.8.0",
     "express-session": "^1.15.1",
