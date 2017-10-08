@@ -264,6 +264,7 @@ span.line {
     background-position: 0 0;
     color: $font_color_primary;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     &.RED {
       background: $bg_red_primary;
       color: $font_color_red_primary;

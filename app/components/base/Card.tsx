@@ -77,7 +77,6 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     if (this.props.icon) {
       icon = <img id="bgimg" src={'images/' + this.props.icon + '.svg'}></img>;
     }
-    // TODO: Spacer ios-only as first child of card style
     return (
       <div className={'base_card ' + (this.props.theme || 'LIGHT')}>
         <div className="title_container">
