@@ -56,7 +56,7 @@ const Main = (props: MainProps): JSX.Element => {
       />
       <div className="bottomPanel--right">
         <FlatButton
-          label={`Line: ${props.editor.line}`}
+          label={`Line: ${props.editor.line.number}`}
           disabled={true}
         />
         {props.editor.wordCount > 0 && <FlatButton
