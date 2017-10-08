@@ -17,7 +17,7 @@
     "node": "8.1.4"
   },
   "dependencies": {
-    "expedition-art": "git+https://github.com/expeditionRPG/expedition-art.git",
+    "expedition-art": "git://github.com/expeditionRPG/expedition-art.git#master",
     "joi-browser": "^9.0.4",
     "material-ui": "^0.17.4",
     "node-sass": "^4.5.2",

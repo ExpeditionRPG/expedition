@@ -3,3 +3,4 @@ dist/
 */Thumbs.db
 www/
 npm-debug.log
+package-lock.json
