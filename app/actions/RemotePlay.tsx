@@ -20,8 +20,8 @@ export function handleRemotePlayEvent(e: RemotePlayEvent) {
       case 'STATUS':
         console.log('TODO: USE STATUS ' + JSON.stringify(e.event));
         break;
-      case 'TOUCH':
-        // We don't care about dispatching touch events (they're tracked elsewhere)
+      case 'INTERACTION':
+        // Interaction events must not be dispatched.
         break;
       case 'ACTION':
         const a = getRemoteAction(e.event.name);

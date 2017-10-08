@@ -71,7 +71,7 @@ export function updateContext(node: Cheerio, ctx: TemplateContext, action?: stri
 export function defaultContext(): TemplateContext {
   const populateScopeFn = function() {
     return {
-      contentSets: function(): number {
+      contentSets: function(): {[content: string]: boolean} {
         const settings = getStore().getState().settings;
         return settings && settings.contentSets;
       },

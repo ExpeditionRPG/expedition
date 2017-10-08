@@ -31,26 +31,26 @@ const Tools = (props: ToolsProps): JSX.Element => {
           <Button onTouchTap={() => props.testSfx()}>SFX</Button>
         </div>
       }
-      <Button id="selectCustomCombat" onTouchTap={() => props.onCustomCombatSelect(props.settings)}>
+      <Button remoteID="0" id="selectCustomCombat" onTouchTap={() => props.onCustomCombatSelect(props.settings)}>
         <div className="questButtonWithIcon">
           <div className="title">GM Mode</div>
           <div className="summary">You tell the story; the app runs the combat.</div>
         </div>
       </Button>
-      <Button id="selectQuestCreator" onTouchTap={() => props.onQuestCreatorSelect()}>
+      <Button remoteID="1" id="selectQuestCreator" onTouchTap={() => props.onQuestCreatorSelect()}>
         <div className="questButtonWithIcon">
           <div className="title">Quest Creator</div>
           <div className="summary">Write your own quests and share them with the world.</div>
         </div>
       </Button>
-      <Button onTouchTap={() => props.onPrivateQuestsSelect(props.user)}>
+      <Button remoteID="2" onTouchTap={() => props.onPrivateQuestsSelect(props.user)}>
         <div className="questButtonWithIcon">
           <div className="title">Private Quests</div>
           <div className="summary">View quests you've published privately with the Quest Creator.</div>
         </div>
       </Button>
       {process.env.NODE_ENV === 'dev' &&
-        <Button onTouchTap={() => props.onRemotePlaySelect(props.user)}>
+        <Button remoteID="3" onTouchTap={() => props.onRemotePlaySelect(props.user)}>
           <div className="questButtonWithIcon">
             <div className="title">(BETA) Remote Play</div>
             <div className="summary">Sync your app with friends on another device.</div>

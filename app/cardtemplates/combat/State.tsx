@@ -68,9 +68,12 @@ export function combatScope() {
         ) || {}).name;
     },
     currentCombatRound: function(): number {
-      return this.templates.combat.roundCount || 0;
+      return (this.templates && this.templates.combat && this.templates.combat.roundCount) || 0;
     },
     isCombatSurgeRound: function(): boolean {
+      if (!this.templates || !this.templates.combat) {
+        return false;
+      }
       return isSurgeRound(this.templates.combat.roundCount, this.templates.combat.surgePeriod);
     },
   };
