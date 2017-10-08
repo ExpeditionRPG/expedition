@@ -56,13 +56,40 @@ export class BlockRenderer {
         lineIdx++;
         if (line.indexOf('* ') === 0) {
           let bullet = this.extractBulleted(line, block.startLine + lineIdx, log);
-          choice = (bullet) ? Object.assign({}, bullet, {choice: []}) : null;
-          // TODO: Assert end of lines.
+          if (REGEX.ICON_OLD.test(bullet.text)) {
+            log.err(
+              'use :icon: instead of [icon]',
+              '435',
+              block.startLine + lineIdx + 1
+            );
+          } else {
+            choice = (bullet) ? Object.assign({}, bullet, {choice: []}) : null;
+            // TODO: Assert end of lines.
+          }
         } else if (line.indexOf('> ') === 0) {
           instruction = this.extractInstruction(line);
-          body.push(instruction);
+          if (REGEX.ICON_OLD.test(instruction.text)) {
+            log.err(
+              'use :icon: instead of [icon]',
+              '435',
+              block.startLine + lineIdx + 1
+            );
+          } else {
+            body.push(instruction);
+          }
         } else {
-          body.push(line);
+          // TODO November / once we have support for [art] - remove [icon] errors
+          // In roleplaying cards - still invalid in instructions and choices
+          // https://github.com/ExpeditionRPG/expedition-app/issues/403
+          if (REGEX.ICON_OLD.test(line)) {
+            log.err(
+              'use :icon: instead of [icon]',
+              '435',
+              block.startLine + lineIdx + 1
+            );
+          } else {
+            body.push(line);
+          }
         }
       }
 

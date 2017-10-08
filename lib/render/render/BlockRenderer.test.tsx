@@ -366,6 +366,11 @@ describe('BlockRenderer', () => {
 
     it('errors if invalid choice attribute');
 
+    it('errors if old [icon] syntax is used in text');
+
+    it('errors if old [icon] syntax is used in choice');
+
+    it('errors if old [icon] syntax is used in instruction');
   });
 
   describe('toTrigger', () => {
