@@ -1,9 +1,10 @@
 import Redux from 'redux'
 import {
+  remoteify,
   QuestNodeAction,
   ViewQuestAction
 } from './ActionTypes'
-import {SettingsType} from '../reducers/StateTypes'
+import {AppStateWithHistory, SettingsType} from '../reducers/StateTypes'
 import {toCard} from './Card'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {initCardTemplate, ParserNode} from '../cardtemplates/Template'
@@ -15,17 +16,31 @@ export function initQuest(details: QuestDetails, questNode: Cheerio, ctx: Templa
   return {type: 'QUEST_NODE', node, details};
 }
 
-export function choice(settings: SettingsType, node: ParserNode, index: number) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    dispatch(loadNode(settings, node.handleAction(index)));
-  }
+interface ChoiceArgs {
+  settings?: SettingsType;
+  node?: ParserNode;
+  index: number;
 }
+export const choice = remoteify(function choice(a: ChoiceArgs, dispatch: Redux.Dispatch<any>, getState: ()=>AppStateWithHistory): ChoiceArgs {
+  if (!a.node || !a.settings) {
+    a.node = getState().quest.node;
+    a.settings = getState().settings;
+  }
+  dispatch(loadNode(a.settings, a.node.handleAction(a.index)));
+  return {index: a.index};
+});
 
-export function event(node: ParserNode, evt: string) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    dispatch(loadNode(null, node.handleAction(evt)));
-  }
+interface EventArgs {
+  node?: ParserNode;
+  evt: string;
 }
+export const event = remoteify(function event(a: EventArgs, dispatch: Redux.Dispatch<any>, getState: ()=>AppStateWithHistory): EventArgs {
+  if (!a.node) {
+    a.node = getState().quest.node;
+  }
+  dispatch(loadNode(null, a.node.handleAction(a.evt)));
+  return {evt: a.evt};
+});
 
 // used externally by the quest creator, but not by other external App code
 export function loadNode(settings: SettingsType, node: ParserNode) {

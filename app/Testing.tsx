@@ -53,10 +53,10 @@ export function Reducer<A extends Redux.Action>(reducer: (state: Object, action:
   };
 }
 
-export function Action<A>(action: (a: A) => Redux.Action) {
+export function Action<A>(action: (a: A) => Redux.Action, baseState?: Object) {
   const client = new RemotePlayClient();
   client.sendEvent = jasmine.createSpy('sendEvent');
-  let store = configureStore([client.createActionMiddleware()])({});
+  let store = configureStore([client.createActionMiddleware()])(baseState || {});
 
   function internalActionCommands() {
     return {

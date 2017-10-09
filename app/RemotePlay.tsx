@@ -1,7 +1,6 @@
 import Redux from 'redux'
 import {RemotePlayEvent, ClientID} from 'expedition-qdl/lib/remote/Events'
 import {ClientBase} from 'expedition-qdl/lib/remote/Client'
-import {NavigateAction, RemotePlayAction} from './actions/ActionTypes'
 import {local} from './actions/RemotePlay'
 import * as Bluebird from 'bluebird'
 
@@ -76,25 +75,30 @@ export class RemotePlayClient extends ClientBase {
 
   public createActionMiddleware(): Redux.Middleware {
     return ({dispatch, getState}: Redux.MiddlewareAPI<any>) => (next: Redux.Dispatch<any>) => (action: any) => {
+      const dispatchLocal = (a: Redux.Action) => {dispatch(local(a));};
+
       if (!action) {
         next(action);
-      } else if (action.type === 'REMOTE_PLAY_ACTION') {
-        // If the action currently dispatched was dispatched from remote play,
-        // let it pass through and don't broadcast it to other devices.
-        const [name, fn, args] = action.action;
-        fn(args, dispatch, (a: Redux.Action) => {dispatch(local(a));}, false);
-      } else if (action instanceof Array) {
-        console.log('Dispatching array fn');
-        console.log(action);
+        return;
+      }
+
+      const localOnly = (action.type === 'LOCAL');
+      if (localOnly) {
+        // Unwrap local actions
+        action = action.action;
+      }
+
+      if (action instanceof Array) {
         const [name, fn, args] = action;
-        const remoteArgs = fn(args, dispatch, (a: Redux.Action) => {dispatch(local(a));}, false);
-        if (remoteArgs) {
-          console.log('Sending remote event ' + name);
-          this.sendEvent({type: 'ACTION', name, args: JSON.stringify(remoteArgs)});
+        const remoteArgs = fn(args, dispatchLocal, getState);
+        if (remoteArgs && !localOnly) {
+          const argstr = JSON.stringify(remoteArgs);
+          console.log('Outbound: ' + name + '(' + argstr + ')');
+          this.sendEvent({type: 'ACTION', name, args: argstr});
         }
       } else if (typeof(action) === 'function') {
-        // TODO: Remove this once redux-thunk based actions are converted to the new format.
-        action(dispatch, getState);
+        // Dispatch async actions
+        action(dispatchLocal, getState);
       } else {
         // Pass through regular action objects
         next(action);

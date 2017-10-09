@@ -84,8 +84,8 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
     // Create a new array (objects may be shared)
     history = state._history.slice();
 
-    if (action.type === 'NAVIGATE') {
-      // Save a copy of existing state to _history whenever we go to a new card
+    if (action.type === 'PUSH_HISTORY') {
+      // Save a copy of existing state to _history
       history.push({...state, _history: undefined, _return: undefined, settings: undefined} as AppState);
     }
   }

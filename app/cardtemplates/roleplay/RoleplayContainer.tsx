@@ -21,7 +21,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: RoleplayStateProp
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): RoleplayDispatchProps => {
   return {
     onChoice: (settings: SettingsType, node: ParserNode, index: number) => {
-      dispatch(choice(settings, node, index));
+      dispatch(choice({settings, node, index}));
     },
     onRetry: () => {
       dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: true}));

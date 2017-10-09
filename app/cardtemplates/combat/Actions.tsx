@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {PLAYER_DAMAGE_MULT} from '../../Constants'
 import {Enemy, Loot} from '../../reducers/QuestTypes'
 import {CombatDifficultySettings, CombatAttack} from './Types'
-import {DifficultyType, SettingsType} from '../../reducers/StateTypes'
+import {DifficultyType, SettingsType, AppStateWithHistory} from '../../reducers/StateTypes'
 import {ParserNode, defaultContext} from '../Template'
 import {toCard} from '../../actions/Card'
 import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT} from '../../Constants'
@@ -12,34 +12,48 @@ import {loadNode} from '../../actions/Quest'
 
 const cheerio: any = require('cheerio');
 
-export function initCombat(node: ParserNode, settings: SettingsType, custom?: boolean) {
+interface InitCombatArgs {
+  node: ParserNode;
+  settings: SettingsType;
+  custom?: boolean;
+}
+export function initCombat(a: InitCombatArgs) {
   return (dispatch: Redux.Dispatch<any>): any => {
     let tierSum: number = 0;
     let enemies: Enemy[] = [];
-    if (node.elem) {
-      enemies = getEnemies(node);
+    if (a.node.elem) {
+      enemies = getEnemies(a.node);
       for (const enemy of enemies) {
         tierSum += enemy.tier;
       }
     }
-    node = node.clone();
-    node.ctx.templates.combat = {
-      custom: custom || false,
+    a.node = a.node.clone();
+    a.node.ctx.templates.combat = {
+      custom: a.custom || false,
       enemies,
       roundCount: 0,
-      numAliveAdventurers: settings.numPlayers,
+      numAliveAdventurers: a.settings.numPlayers,
       tier: tierSum,
-      roundTimeMillis: settings.timerSeconds * 1000 * (PLAYER_TIME_MULT[settings.numPlayers] || 1),
-      ...getDifficultySettings(settings.difficulty),
+      roundTimeMillis: a.settings.timerSeconds * 1000 * (PLAYER_TIME_MULT[a.settings.numPlayers] || 1),
+      ...getDifficultySettings(a.settings.difficulty),
     };
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES'}));
-    dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
+    dispatch({type: 'PUSH_HISTORY'});
+    dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', noHistory: true}));
   };
 }
 
-export function initCustomCombat(settings: SettingsType) {
-  return initCombat(new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext()), settings, true);
+interface InitCustomCombatArgs {
+  settings?: SettingsType;
 }
+export const initCustomCombat = remoteify(function initCustomCombat(a: InitCustomCombatArgs, dispatch: Redux.Dispatch<any>): InitCustomCombatArgs {
+  dispatch(initCombat({
+    node: new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext()),
+    settings: a.settings,
+    custom: true
+  }));
+  return {};
+});
 
 function getDifficultySettings(difficulty: DifficultyType): CombatDifficultySettings {
   const result = COMBAT_DIFFICULTY[difficulty];
@@ -204,103 +218,132 @@ export function isSurgeNextRound(node: ParserNode): boolean {
   return isSurgeRound(rounds + 1, surgePd);
 }
 
-export function handleResolvePhase(node: ParserNode) {
+interface HandleResolvePhaseArgs {
+  node?: ParserNode;
+}
+export const handleResolvePhase = remoteify(function handleResolvePhase(a: HandleResolvePhaseArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): HandleResolvePhaseArgs {
+  if (!a.node) {
+    a.node = getState().quest.node;
+  }
+
   // Handles resolution, with a hook for if a <choice on="round"/> tag is specified.
   // Note that handling new combat nodes within a "round" handler has undefined
   // behavior and should be prevented when compiled.
-  return (dispatch: Redux.Dispatch<any>): any => {
-    node = node.clone();
-    if (node.getVisibleKeys().indexOf('round') !== -1) {
-      node.ctx.templates.combat.roleplay = node.getNext('round');
-      // Set node *before* navigation to prevent a blank first roleplay card.
-      dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
-      dispatch(toCard({name: 'QUEST_CARD', phase: 'ROLEPLAY', overrideDebounce: true}));
-    } else {
-      dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true}));
-      dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
-    }
+  a.node = a.node.clone();
+  if (a.node.getVisibleKeys().indexOf('round') !== -1) {
+    a.node.ctx.templates.combat.roleplay = a.node.getNext('round');
+    // Set node *before* navigation to prevent a blank first roleplay card.
+    dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'ROLEPLAY', overrideDebounce: true}));
+  } else {
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true}));
+    dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
   }
+  return {};
+});
+
+interface MidCombatChoiceArgs {
+  settings?: SettingsType;
+  parent?: ParserNode;
+  index: number;
 }
+export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatChoiceArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): MidCombatChoiceArgs {
+  if (!a.parent || !a.settings) {
+    a.parent = getState().quest.node;
+    a.settings = getState().settings;
+  }
+  const remoteArgs: MidCombatChoiceArgs = {index: a.index};
 
-export function midCombatChoice(settings: SettingsType, parent: ParserNode, index: number) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    parent = parent.clone();
-    const node = parent.ctx.templates.combat.roleplay;
-    const next = node.getNext(index);
-    const nextNode = node.handleAction(index);
-    // Check if the next node is inside a combat node. Bad things will happen if you try to nest combat.
-    let ptr = nextNode && nextNode.elem;
-    while (ptr !== null && ptr.length > 0 && ptr.get(0).tagName.toLowerCase() !== 'combat') {
-      ptr = ptr.parent();
-    }
-    const nextIsTrigger = (next && next.getTag() === 'trigger');
-    const nextIsInCombat = (nextNode && ptr && ptr.length > 0);
+  a.parent = a.parent.clone();
+  const node = a.parent.ctx.templates.combat.roleplay;
+  const next = node.getNext(a.index);
+  const nextNode = node.handleAction(a.index);
+  // Check if the next node is inside a combat node. Bad things will happen if you try to nest combat.
+  let ptr = nextNode && nextNode.elem;
+  while (ptr !== null && ptr.length > 0 && ptr.get(0).tagName.toLowerCase() !== 'combat') {
+    ptr = ptr.parent();
+  }
+  const nextIsTrigger = (next && next.getTag() === 'trigger');
+  const nextIsInCombat = (nextNode && ptr && ptr.length > 0);
 
-    // Check for and resolve triggers
-    if (nextIsTrigger) {
-      const triggerName = next.elem.text().trim().toLowerCase();
+  // Check for and resolve triggers
+  if (nextIsTrigger) {
+    const triggerName = next.elem.text().trim().toLowerCase();
 
-      if (triggerName.startsWith('goto')) {
-        if (!nextIsInCombat) { // Break out of combat
-          return dispatch(loadNode(null, nextNode));
-        }
-        // If in combat, fall through and handle like a normal combat RP node
-      } else {
-        if (next.isEnd()) {
-          return dispatch(toCard({name: 'QUEST_END'}));
-        }
+    if (triggerName.startsWith('goto')) {
+      if (!nextIsInCombat) { // Break out of combat
+        dispatch(loadNode(null, nextNode));
+        return remoteArgs;
+      }
+      // If in combat, fall through and handle like a normal combat RP node
+    } else {
+      if (next.isEnd()) {
+        dispatch(toCard({name: 'QUEST_END'}));
+        return remoteArgs;
+      }
 
-        // If the trigger exits via the win/lose handlers, break out of combat
-        const parentCondition = nextNode.elem.parent().attr('on');
-        if (parentCondition === 'win' || parentCondition === 'lose') {
-          return dispatch(loadNode(settings, nextNode));
-        }
+      // If the trigger exits via the win/lose handlers, break out of combat
+      const parentCondition = nextNode.elem.parent().attr('on');
+      if (parentCondition === 'win' || parentCondition === 'lose') {
+        dispatch(loadNode(a.settings, nextNode));
+        return remoteArgs;
       }
     }
+  }
 
-    if (!nextIsInCombat) {
-      // Ignore this as invalid and proceed to the resolution phase
-      parent.ctx.templates.combat.roleplay = null;
-      dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true}));
-    } else {
-      // Continue in-combat roleplay
-      parent.ctx.templates.combat.roleplay = nextNode;
-      dispatch(toCard({name: 'QUEST_CARD', phase: 'ROLEPLAY', overrideDebounce: true}));
-    }
-    dispatch({type: 'QUEST_NODE', node: parent} as QuestNodeAction);
-  };
+  if (!nextIsInCombat) {
+    // Ignore this as invalid and proceed to the resolution phase
+    a.parent.ctx.templates.combat.roleplay = null;
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true}));
+  } else {
+    // Continue in-combat roleplay
+    a.parent.ctx.templates.combat.roleplay = nextNode;
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'ROLEPLAY', overrideDebounce: true}));
+  }
+  dispatch({type: 'QUEST_NODE', node: a.parent} as QuestNodeAction);
+
+  return remoteArgs;
+});
+
+interface HandleCombatTimerStopArgs {
+  node?: ParserNode;
+  settings?: SettingsType;
+  elapsedMillis: number;
 }
+export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a: HandleCombatTimerStopArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): HandleCombatTimerStopArgs {
+  if (!a.node || !a.settings) {
+    a.node = getState().quest.node;
+    a.settings = getState().settings;
+  }
 
-export function handleCombatTimerStop(node: ParserNode, settings: SettingsType, elapsedMillis: number) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    node = node.clone();
-    node.ctx.templates.combat.mostRecentAttack = generateCombatAttack(node, settings, elapsedMillis);
-    node.ctx.templates.combat.mostRecentRolls = generateRolls(settings.numPlayers);
-    node.ctx.templates.combat.roundCount++;
+  a.node = a.node.clone();
+  a.node.ctx.templates.combat.mostRecentAttack = generateCombatAttack(a.node, a.settings, a.elapsedMillis);
+  a.node.ctx.templates.combat.mostRecentRolls = generateRolls(a.settings.numPlayers);
+  a.node.ctx.templates.combat.roundCount++;
 
-    if (node.ctx.templates.combat.mostRecentAttack.surge) {
-      // Since we always skip the previous card (the timer) when going back,
-      // We can preset the quest node here. This populates context in a way that
-      // the latest round is considered when the "on round" branch is evaluated.
-      dispatch({type: 'QUEST_NODE', node: node} as QuestNodeAction);
-      dispatch(toCard({name: 'QUEST_CARD', phase: 'SURGE', overrideDebounce: true}));
+  if (a.node.ctx.templates.combat.mostRecentAttack.surge) {
+    // Since we always skip the previous card (the timer) when going back,
+    // We can preset the quest node here. This populates context in a way that
+    // the latest round is considered when the "on round" branch is evaluated.
+    dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'SURGE', overrideDebounce: true}));
+  } else {
+    dispatch(handleResolvePhase({node: a.node}));
+  }
 
-    } else {
-      dispatch(handleResolvePhase(node));
-    }
-  };
-}
+  return {elapsedMillis: a.elapsedMillis};
+});
 
 interface HandleCombatEndArgs {
   node?: ParserNode;
-  serializedNode?: ParserNode;
   settings: SettingsType;
   victory: boolean;
   maxTier: number;
 }
-export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleCombatEndArgs, dispatch: Redux.Dispatch<any>) {
-  if (a.serializedNode) {
-    console.error('Unimplemented: remote play combat end deserialization');
+export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleCombatEndArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory) {
+  if (!a.node || !a.settings) {
+    a.node = getState().quest.node;
+    a.settings = getState().settings;
   }
 
   // Edit the final card before cloning
@@ -316,18 +359,42 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
   dispatch(toCard({name: 'QUEST_CARD', phase: (a.victory) ? 'VICTORY' : 'DEFEAT',  overrideDebounce: true}));
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
 
-  return {...a, serializedNode: a.node.getComparisonKey(), node: null};
+  return {victory: a.victory, maxTier: a.maxTier};
 });
 
-export function tierSumDelta(node: ParserNode, current: number, delta: number): QuestNodeAction {
-  node = node.clone();
-  node.ctx.templates.combat.tier = Math.max(current + delta, 0);
-  return {type: 'QUEST_NODE', node};
+interface TierSumDeltaArgs {
+  node?: ParserNode;
+  current: number;
+  delta: number;
 }
+export const tierSumDelta = remoteify(function tierSumDelta(a: TierSumDeltaArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): TierSumDeltaArgs {
+  if (!a.node) {
+    a.node = getState().quest.node;
+  }
 
-export function adventurerDelta(node: ParserNode, settings: SettingsType, current: number, delta: number): QuestNodeAction {
-  const newAdventurerCount = Math.min(Math.max(0, current + delta), settings.numPlayers);
-  node = node.clone();
-  node.ctx.templates.combat.numAliveAdventurers = newAdventurerCount;
-  return {type: 'QUEST_NODE', node};
+  a.node = a.node.clone();
+  a.node.ctx.templates.combat.tier = Math.max(a.current + a.delta, 0);
+  dispatch({type: 'QUEST_NODE', node: a.node});
+
+  return {current: a.current, delta: a.delta};
+});
+
+interface AdventurerDeltaArgs {
+  node?: ParserNode;
+  settings?: SettingsType;
+  current: number;
+  delta: number;
 }
+export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerDeltaArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): AdventurerDeltaArgs {
+  if (!a.node || !a.settings) {
+    a.node = getState().quest.node;
+    a.settings = getState().settings;
+  }
+
+  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), a.settings.numPlayers);
+  a.node = a.node.clone();
+  a.node.ctx.templates.combat.numAliveAdventurers = newAdventurerCount;
+  dispatch({type: 'QUEST_NODE', node: a.node});
+
+  return {current: a.current, delta: a.delta};
+});
