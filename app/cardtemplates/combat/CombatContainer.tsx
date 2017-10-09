@@ -87,26 +87,26 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       dispatch(handleCombatEnd({node, settings, victory: false, maxTier}));
     },
     onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => {
-      dispatch(handleCombatTimerStop(node, settings, elapsedMillis));
+      dispatch(handleCombatTimerStop({node, settings, elapsedMillis}));
     },
     onSurgeNext: (node: ParserNode) => {
-      dispatch(handleResolvePhase(node));
+      dispatch(handleResolvePhase({node}));
     },
     onReturn: () => {postTimerReturn(dispatch)},
     onEvent: (node: ParserNode, evt: string) => {
       dispatch(event({node, evt}));
     },
     onTierSumDelta: (node: ParserNode, current: number, delta: number) => {
-      dispatch(tierSumDelta(node, current, delta));
+      dispatch(tierSumDelta({node, current, delta}));
     },
     onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => {
-      dispatch(adventurerDelta(node, settings, current, delta));
+      dispatch(adventurerDelta({node, settings, current, delta}));
     },
     onCustomEnd: () => {
       dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: false}));
     },
     onChoice: (settings: SettingsType, parent: ParserNode, index: number) => {
-      dispatch(midCombatChoice(settings, parent, index));
+      dispatch(midCombatChoice({settings, parent, index}));
     },
   };
 }
