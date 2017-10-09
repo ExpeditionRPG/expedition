@@ -24,11 +24,7 @@ const TEST_SETTINGS = {
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
 describe('Combat actions', () => {
-  let baseNode: ParserNode = null;
-  {
-    const actions = Action(initCombat as any).execute({node: TEST_NODE.clone(), settings: TEST_SETTINGS});
-    baseNode = actions[actions.length-1].node;
-  }
+  const baseNode = Action(initCombat as any).execute({node: TEST_NODE.clone(), settings: TEST_SETTINGS})[1].node;;
 
   const newCombatNode = () => {
     return baseNode.clone();
@@ -38,7 +34,7 @@ describe('Combat actions', () => {
     const actions = Action(initCombat as any).execute({node: TEST_NODE.clone(), settings: TEST_SETTINGS});
 
     it('triggers nav to combat start', () => {
-      expect(actions[1]).toEqual(jasmine.objectContaining({
+      expect(actions[2]).toEqual(jasmine.objectContaining({
         type: 'NAVIGATE',
         to: jasmine.objectContaining({
           name: 'QUEST_CARD',
@@ -50,7 +46,7 @@ describe('Combat actions', () => {
     it('parses initial state', () => {
       // "Unknown" enemies are given tier 1.
       // Known enemies' tier is parsed from constants.
-      expect(actions[2].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
+      expect(actions[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
         custom: false,
         roundCount: 0,
         tier: 9,
@@ -66,16 +62,16 @@ describe('Combat actions', () => {
   });
 
   describe('initCustomCombat', () => {
-    const actions = Action(initCustomCombat as any).execute(TEST_SETTINGS);
+    const actions = Action(initCustomCombat as any).execute({settings: TEST_SETTINGS});
 
     it('has custom=true', () => {
-      expect(actions[2].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
+      expect(actions[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
         custom: true
       }));
     });
 
     it('identifies as a combat element', () => {
-      expect(actions[2].node.getTag()).toEqual('combat');
+      expect(actions[1].node.getTag()).toEqual('combat');
     });
   });
 
@@ -249,7 +245,7 @@ describe('Combat actions', () => {
         </event>
         <event on="lose"></event>
       </combat>`)('combat'), defaultContext());
-      node = Action(initCombat as any).execute({node: node.clone(), settings: TEST_SETTINGS})[2].node;
+      node = Action(initCombat as any).execute({node: node.clone(), settings: TEST_SETTINGS})[1].node;
       const actions = Action(handleResolvePhase).execute({node});
       expect(actions[0].node.ctx.templates.combat.roleplay.elem.text()).toEqual('expected');
       expect(actions[2].to.phase).toEqual('ROLEPLAY');
@@ -277,8 +273,7 @@ describe('Combat actions', () => {
       <roleplay id="outside">Outside Roleplay</roleplay>
     </quest>`)('#c1'), defaultContext());
     {
-      let actions = Action(initCombat as any).execute({node: baseNode, settings: TEST_SETTINGS});
-      baseNode = actions[2].node;
+      baseNode = Action(initCombat as any).execute({node: baseNode, settings: TEST_SETTINGS})[1].node;
       baseNode = Action(handleResolvePhase).execute({node: baseNode})[0].node;
     }
 
