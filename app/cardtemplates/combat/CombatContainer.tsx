@@ -60,6 +60,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     // Override with dynamic state for tier and adventurer count
     // Any combat param change (e.g. change in tier) causes a repaint
     tier: stateCombat.tier,
+    seed: state.quest.seed,
     mostRecentRolls: stateCombat.mostRecentRolls,
     numAliveAdventurers: stateCombat.numAliveAdventurers,
   };
@@ -75,19 +76,19 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     onNext: (phase: CombatPhase) => {
       dispatch(toCard({name: 'QUEST_CARD', phase}));
     },
-    onVictory: (node: ParserNode, settings: SettingsType, maxTier: number) => {
+    onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {
       logEvent('combat_victory', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
-      dispatch(handleCombatEnd({node, settings, victory: true, maxTier}));
+      dispatch(handleCombatEnd({node, settings, victory: true, maxTier, seed}));
     },
     onRetry: () => {
       dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: true}));
     },
-    onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number) => {
+    onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {
       logEvent('combat_defeat', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
-      dispatch(handleCombatEnd({node, settings, victory: false, maxTier}));
+      dispatch(handleCombatEnd({node, settings, victory: false, maxTier, seed}));
     },
-    onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => {
-      dispatch(handleCombatTimerStop({node, settings, elapsedMillis}));
+    onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => {
+      dispatch(handleCombatTimerStop({node, settings, elapsedMillis, seed}));
     },
     onSurgeNext: (node: ParserNode) => {
       dispatch(handleResolvePhase({node}));

@@ -9,6 +9,7 @@ import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT} from '../../Constants'
 import {encounters} from '../../Encounters'
 import {QuestNodeAction, remoteify} from '../../actions/ActionTypes'
 import {loadNode} from '../../actions/Quest'
+import * as seedrandom from 'seedrandom'
 
 const cheerio: any = require('cheerio');
 
@@ -46,7 +47,10 @@ export function initCombat(a: InitCombatArgs) {
 interface InitCustomCombatArgs {
   settings?: SettingsType;
 }
-export const initCustomCombat = remoteify(function initCustomCombat(a: InitCustomCombatArgs, dispatch: Redux.Dispatch<any>): InitCustomCombatArgs {
+export const initCustomCombat = remoteify(function initCustomCombat(a: InitCustomCombatArgs, dispatch: Redux.Dispatch<any>,  getState: () => AppStateWithHistory): InitCustomCombatArgs {
+  if (!a.settings) {
+    a.settings = getState().settings;
+  }
   dispatch(initCombat({
     node: new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext()),
     settings: a.settings,
@@ -82,7 +86,7 @@ function getEnemies(node: ParserNode): Enemy[] {
   return enemies;
 }
 
-function generateCombatAttack(node: ParserNode, settings: SettingsType, elapsedMillis: number): CombatAttack {
+function generateCombatAttack(node: ParserNode, settings: SettingsType, elapsedMillis: number, rng: () => number): CombatAttack {
   const playerMultiplier = PLAYER_DAMAGE_MULT[settings.numPlayers] || 1;
   const combat = node.ctx.templates.combat;
 
@@ -122,7 +126,7 @@ function generateCombatAttack(node: ParserNode, settings: SettingsType, elapsedM
   let damage = 0;
   attackCount = Math.round(attackCount);
   for (let i = 0; i < attackCount; i++) {
-    damage += randomAttackDamage();
+    damage += randomAttackDamage(rng);
   }
 
   // Scale according to multipliers, then round to nearest whole number and cap at 10 damage/round
@@ -140,7 +144,7 @@ function generateCombatAttack(node: ParserNode, settings: SettingsType, elapsedM
   }
 }
 
-function generateLoot(maxTier: number): Loot[] {
+function generateLoot(maxTier: number, rng: () => number): Loot[] {
   const loot: Loot[] = [
     {tier: 1, count: 0},
     {tier: 2, count: 0},
@@ -159,7 +163,7 @@ function generateLoot(maxTier: number): Loot[] {
   maxTier = Math.max(1, Math.round(Math.log(maxTier - 1) / Math.log(1.5)));
 
   while (maxTier > 0) {
-    const r: number = Math.random();
+    const r: number = rng();
 
     if (r < 0.1 && maxTier >= 3) {
       maxTier -= 3;
@@ -182,15 +186,15 @@ function generateLoot(maxTier: number): Loot[] {
   return loot;
 }
 
-function generateRolls(count: number): number[] {
+function generateRolls(count: number, rng: ()=>number): number[] {
   const rolls = [];
   for (let i = 0; i < count; i++) {
-    rolls.push(Math.floor(Math.random() * 20) + 1);
+    rolls.push(Math.floor(rng() * 20) + 1);
   }
   return rolls;
 }
 
-function randomAttackDamage() {
+function randomAttackDamage(rng: () => number) {
   // D = Damage per ddt (0, 1, or 2 discrete)
   // M = miss, H = hit, C = crit, P(M) + P(H) + P(C) = 1
   // E[D] = Expected damage for a single second
@@ -198,7 +202,7 @@ function randomAttackDamage() {
   // P(M) = 1 - 4/3 * P(H)
   // E[D] = 0 * P(M) + 1 * P(H) + 2 * P(C) = 0.9
 
-  const r = Math.random();
+  const r = rng();
   if (r < 0.35) {
     return 0;
   } else if (r < 0.45) {
@@ -309,6 +313,7 @@ interface HandleCombatTimerStopArgs {
   node?: ParserNode;
   settings?: SettingsType;
   elapsedMillis: number;
+  seed: string;
 }
 export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a: HandleCombatTimerStopArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): HandleCombatTimerStopArgs {
   if (!a.node || !a.settings) {
@@ -317,8 +322,9 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
   }
 
   a.node = a.node.clone();
-  a.node.ctx.templates.combat.mostRecentAttack = generateCombatAttack(a.node, a.settings, a.elapsedMillis);
-  a.node.ctx.templates.combat.mostRecentRolls = generateRolls(a.settings.numPlayers);
+  const arng = seedrandom.alea(a.seed);
+  a.node.ctx.templates.combat.mostRecentAttack = generateCombatAttack(a.node, a.settings, a.elapsedMillis, arng);
+  a.node.ctx.templates.combat.mostRecentRolls = generateRolls(a.settings.numPlayers, arng);
   a.node.ctx.templates.combat.roundCount++;
 
   if (a.node.ctx.templates.combat.mostRecentAttack.surge) {
@@ -331,7 +337,7 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
     dispatch(handleResolvePhase({node: a.node}));
   }
 
-  return {elapsedMillis: a.elapsedMillis};
+  return {elapsedMillis: a.elapsedMillis, seed: a.seed};
 });
 
 interface HandleCombatEndArgs {
@@ -339,6 +345,7 @@ interface HandleCombatEndArgs {
   settings: SettingsType;
   victory: boolean;
   maxTier: number;
+  seed: string;
 }
 export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleCombatEndArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory) {
   if (!a.node || !a.settings) {
@@ -354,12 +361,15 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
   }
   a.node = a.node.clone();
   a.node.ctx.templates.combat.levelUp = (a.victory) ? (a.settings.numPlayers <= a.maxTier) : false;
-  a.node.ctx.templates.combat.loot = (a.victory) ? generateLoot(a.maxTier) : [];
 
-  dispatch(toCard({name: 'QUEST_CARD', phase: (a.victory) ? 'VICTORY' : 'DEFEAT',  overrideDebounce: true}));
+  const arng = seedrandom.alea(a.seed);
+  a.node.ctx.templates.combat.loot = (a.victory) ? generateLoot(a.maxTier, arng) : [];
+
+  dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
+  dispatch(toCard({name: 'QUEST_CARD', phase: (a.victory) ? 'VICTORY' : 'DEFEAT',  overrideDebounce: true, noHistory: true}));
 
-  return {victory: a.victory, maxTier: a.maxTier};
+  return {victory: a.victory, maxTier: a.maxTier, seed: a.seed};
 });
 
 interface TierSumDeltaArgs {

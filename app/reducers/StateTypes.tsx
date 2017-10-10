@@ -89,6 +89,7 @@ export type TransitionType = 'NEXT' | 'PREV' | 'INSTANT';
 export interface QuestState {
   details: QuestDetails;
   node: ParserNode;
+  seed: string;
 }
 
 export interface SearchState {
