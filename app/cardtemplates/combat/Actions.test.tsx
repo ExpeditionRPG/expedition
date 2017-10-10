@@ -82,7 +82,7 @@ describe('Combat actions', () => {
       let node = newCombatNode();
       for(let i = 0; i < 10 && (!node || !isSurgeNextRound(node)); i++) {
         store.clearActions();
-        store.dispatch(handleCombatTimerStop({node, settings: TEST_SETTINGS, elapsedMillis: 1000}));
+        store.dispatch(handleCombatTimerStop({node, settings: TEST_SETTINGS, elapsedMillis: 1000, seed: ''}));
         const actions = store.getActions();
         for (const a of actions) {
           if (a.type === 'QUEST_NODE') {
@@ -97,7 +97,7 @@ describe('Combat actions', () => {
       let pd = 0;
       do {
         store.clearActions();
-        store.dispatch(handleCombatTimerStop({node, settings: TEST_SETTINGS, elapsedMillis: 1000}));
+        store.dispatch(handleCombatTimerStop({node, settings: TEST_SETTINGS, elapsedMillis: 1000, seed: ''}));
         const actions = store.getActions();
         for (const a of actions) {
           if (a.type === 'QUEST_NODE') {
@@ -113,7 +113,7 @@ describe('Combat actions', () => {
 
   describe('handleCombatTimerStop', () => {
     const store = newMockStore({});
-    store.dispatch(handleCombatTimerStop({node: newCombatNode(), settings: TEST_SETTINGS, elapsedMillis: 1000}));
+    store.dispatch(handleCombatTimerStop({node: newCombatNode(), settings: TEST_SETTINGS, elapsedMillis: 1000, seed: ''}));
     const actions = store.getActions();
 
     it('randomly assigns damage', () => {
@@ -130,23 +130,23 @@ describe('Combat actions', () => {
   describe('handleCombatEnd', () => {
     it('levels up if high maxTier on victory', () => {
       const store = newMockStore({});
-      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 9}));
+      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 9, seed: ''}));
 
-      expect(store.getActions()[2].node.ctx.templates.combat.levelUp).toEqual(true);
+      expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(true);
     });
 
     it('does not level up if low maxTier on victory', () => {
       const store = newMockStore({});
-      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 1}));
+      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 1, seed: ''}));
 
-      expect(store.getActions()[2].node.ctx.templates.combat.levelUp).toEqual(false);
+      expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(false);
     });
 
     it('assigns random loot on victory', () => {
       const store = newMockStore({});
-      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 9}));
+      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 9, seed: ''}));
 
-      const loot = store.getActions()[2].node.ctx.templates.combat.loot;
+      const loot = store.getActions()[1].node.ctx.templates.combat.loot;
       let lootCount = 0;
       for(const l of loot) {
         lootCount += l.count;
@@ -156,8 +156,8 @@ describe('Combat actions', () => {
 
     it('never assigns loot or levels up on defeat', () => {
       const store = newMockStore({});
-      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: false, maxTier: 9}));
-      expect(store.getActions()[2].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
+      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: false, maxTier: 9, seed: ''}));
+      expect(store.getActions()[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
         levelUp: false,
         loot: [],
       }));

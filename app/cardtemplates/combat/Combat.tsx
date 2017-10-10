@@ -20,16 +20,17 @@ export interface CombatStateProps extends CombatState {
   settings: SettingsType;
   maxTier?: number;
   node: ParserNode;
+  seed: string;
   roundTimeMillis: number;
   victoryParameters?: EventParameters;
 }
 
 export interface CombatDispatchProps {
   onNext: (phase: CombatPhase) => void;
-  onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number) => void;
+  onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
   onRetry: () => void;
-  onVictory: (node: ParserNode, settings: SettingsType, maxTier: number) => void;
-  onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => void;
+  onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
+  onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => void;
   onReturn: () => void;
   onTierSumDelta: (node: ParserNode, current: number, delta: number) => void;
   onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => void;
@@ -139,7 +140,7 @@ function renderNoTimer(props: CombatProps): JSX.Element {
       {helpText}
       <Button
         className="bigbutton"
-        onTouchTap={() => props.onTimerStop(props.node, props.settings, 0, surge)}
+        onTouchTap={() => props.onTimerStop(props.node, props.settings, 0, surge, props.seed)}
       >
         Next
       </Button>
@@ -258,7 +259,7 @@ function renderEnemyTier(props: CombatProps): JSX.Element {
         {props.settings.showHelp && 'Set this to the combined tier of the remaining enemies.'}
       </Picker>
 
-      <Button onTouchTap={() => props.onVictory(props.node, props.settings, props.maxTier)}>Victory (Tier = 0)</Button>
+      <Button onTouchTap={() => props.onVictory(props.node, props.settings, props.maxTier, props.seed)}>Victory (Tier = 0)</Button>
       <Button onTouchTap={() => props.onNext('PLAYER_TIER')} disabled={props.tier <= 0}>Next</Button>
     </Card>
   );
@@ -293,7 +294,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
         {props.settings.showHelp && !soloPlay && <span>Set this to the number of adventurers above zero health.</span>}
       </Picker>
       {helpText}
-      <Button onTouchTap={() => props.onDefeat(props.node, props.settings, props.maxTier)}>Defeat (Adventurers = 0)</Button>
+      <Button onTouchTap={() => props.onDefeat(props.node, props.settings, props.maxTier, props.seed)}>Defeat (Adventurers = 0)</Button>
       <Button onTouchTap={() => props.onNext(nextCard)} disabled={props.numAliveAdventurers <= 0}>Next</Button>
     </Card>
   );
@@ -412,7 +413,7 @@ function renderTimerCard(props: CombatProps): JSX.Element {
       tertiaryText={instruction}
       numPlayers={(props.settings.multitouch) ? props.numAliveAdventurers : 1}
       roundTimeTotalMillis={props.roundTimeMillis}
-      onTimerStop={(ms: number) => props.onTimerStop(props.node, props.settings, ms, surge)} />
+      onTimerStop={(ms: number) => props.onTimerStop(props.node, props.settings, ms, surge, props.seed)} />
   );
 }
 
