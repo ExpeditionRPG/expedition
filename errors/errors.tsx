@@ -23,6 +23,7 @@ import * as e431 from './definitions/431'
 import * as e432 from './definitions/432'
 import * as e433 from './definitions/433'
 import * as e434 from './definitions/434'
+import * as e435 from './definitions/435'
 
 const errors: {[id: number]: ErrorType} = {
   411: e411,
@@ -47,7 +48,7 @@ const errors: {[id: number]: ErrorType} = {
   431: e431,
   432: e432,
   433: e433,
-  434: e434,
+  435: e435,
 };
 
 // TODO(scott): Bulk-rename all this to "annotation" instead of "error"
