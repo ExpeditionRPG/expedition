@@ -7,7 +7,7 @@ import * as express from 'express'
 
 import * as oauth2 from './lib/oauth2'
 import logging from './lib/logging'
-import routes from './routes'
+import Routes from './Routes'
 
 const app = express();
 
@@ -46,7 +46,7 @@ const setupSession = function(app: any) {
 };
 
 const setupRoutes = function(app: any) {
-  app.use(routes);
+  app.use(Routes);
   app.use('/images', express.static('app/assets/images'));
   app.use(express.static('dist'));
 };
@@ -80,10 +80,10 @@ function init() {
   });
 
   if ((module as any).hot) {
-    (module as any).hot.accept('./routes', () => {
+    (module as any).hot.accept('./Routes', () => {
       console.log('should update');
     });
-    const routes: any = require('./routes');
+    const Routes: any = require('./Routes');
   }
 }
 init();

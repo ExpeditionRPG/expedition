@@ -15,8 +15,8 @@ const mailchimp = (Config.get('NODE_ENV') !== 'dev' && Config.get('MAILCHIMP_KEY
 
 // Use the oauth middleware to automatically get the user's profile
 // information and expose login/logout URLs to templates.
-const router = express.Router();
-router.use(oauth2.template);
+const Router = express.Router();
+Router.use(oauth2.template);
 
 const limitCors = Cors({
   credentials: true,
@@ -33,13 +33,13 @@ const publishLimiter = new RateLimit({
   message: 'Publishing too frequently. Please wait 1 minute and then try again',
 });
 
-router.get('/healthcheck', limitCors, Handlers.healthCheck);
-router.get('/announcements', limitCors, Handlers.announcement);
-router.post('/quests', limitCors, (req, res) => {Handlers.search(models.Quest, req, res);});
-router.get('/raw/:quest', limitCors, (req, res) => {Handlers.questXMLRedirect(models.Quest, req, res);});
-router.post('/publish/:id', publishLimiter, limitCors, (req, res) => {Handlers.publish(models.Quest, req, res);});
-router.post('/unpublish/:quest', limitCors, (req, res) => {Handlers.unpublish(models.Quest, req, res);});
-router.post('/quest/feedback/:type', limitCors, (req, res) => {Handlers.feedback(models.Feedback, req, res);});
-router.post('/user/subscribe', limitCors, (req, res) => {Handlers.subscribe(mailchimp, Config.get('MAILCHIMP_PLAYERS_LIST_ID'), req, res);});
+Router.get('/healthcheck', limitCors, Handlers.healthCheck);
+Router.get('/announcements', limitCors, Handlers.announcement);
+Router.post('/quests', limitCors, (req, res) => {Handlers.search(models.Quest, req, res);});
+Router.get('/raw/:quest', limitCors, (req, res) => {Handlers.questXMLRedirect(models.Quest, req, res);});
+Router.post('/publish/:id', publishLimiter, limitCors, (req, res) => {Handlers.publish(models.Quest, req, res);});
+Router.post('/unpublish/:quest', limitCors, (req, res) => {Handlers.unpublish(models.Quest, req, res);});
+Router.post('/quest/feedback/:type', limitCors, (req, res) => {Handlers.feedback(models.Feedback, req, res);});
+Router.post('/user/subscribe', limitCors, (req, res) => {Handlers.subscribe(mailchimp, Config.get('MAILCHIMP_PLAYERS_LIST_ID'), req, res);});
 
-export default router;
+export default Router;
