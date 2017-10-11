@@ -49,13 +49,15 @@ const Splash = (props: any): JSX.Element => {
             <img alt="Countries with Expedition adventurers - Jan-April 2017" src="/images/worldmap.png"></img>
           </div>
           <div className="imageText">Adventurers waiting for your next story</div>
-          <h3>Write interactive adventures for <a target="_blank" href="https://expeditiongame.com">Expedition: The Roleplaying Card Game</a></h3>
           <h3>Build an international fanbase</h3>
-          <h3>Get paid for writing through tips from your fans</h3>
+          <h3>Write on the bleeding edge of interactive storytelling</h3>
+          <h3>Earn money through <a target="_blank" href="https://expeditiongame.com/writing-contests">monthly writing contests</a></h3>
           <div className="buttonBox login">
             <Button onTouchTap={() => props.user.loggedIn ? props.onNewQuest(props.user) : props.onLogin('main')}>Get Started</Button>
           </div>
+          <p>Learn more about <a target="_blank" href="https://expeditiongame.com">Expedition: The Roleplaying Card Game</a></p>
         </div>
+
         <div>
           <h1>Built for <strong>Authors</strong></h1>
           <h3>
@@ -85,6 +87,7 @@ const Splash = (props: any): JSX.Element => {
             </div>
           </div>
         </div>
+
         <div>
           <h1><span>Interactive storytelling</span> <span>for <strong>everyone</strong></span></h1>
           <h3>Join the bleeding edge of storytelling technology, no experience required.</h3>
@@ -106,7 +109,7 @@ const Splash = (props: any): JSX.Element => {
                 <li>Jump to parts of your story</li>
                 <li>Templates for repetitive actions</li>
                 <li>Variables &amp; programmatic text</li>
-                <li>Contextual Showing/hiding of user actions</li>
+                <li>Contextual showing/hiding of user actions</li>
               </ul>
             </div>
           </div>
@@ -119,6 +122,26 @@ const Splash = (props: any): JSX.Element => {
               Expedition Home Page
             </Button>
           </div>
+        </div>
+
+        <div>
+          <h1>Frequently Asked Questions</h1>
+          <h4>Will I still own my work?</h4>
+          <p>
+            <strong>YES!</strong> By publishing your quest on the Expedition Quest Creator, you agree to grant Fabricate, LLC an exclusive, royalty-free, worldwide, perpetual license
+            to your work for the purposes of board and video gaming. But, you still own the core intellectual property, and are welcome to use it in books, poetry, television, and more.
+            In fact, we encourage you to port your Expedition quests to other mediums to capitalize on the fanbase you'll build here!
+          </p>
+          <h4>Can I write in any genre?</h4>
+          <p>
+            <strong>YES!</strong> You can select the genre and age level of your quest before publishing, so you can publishing anything from a kid-friendly comedy
+            to an adults-only murder mystery. Note that we reserve the right to remove offensive and pornographic material, and provide tools to users to report
+            quests that violate our community and quality standards.
+          </p>
+
+          <footer>
+            <p>© 2015-2017 Fabricate, LLC. Powered by <a target="_blank" href="https://expeditiongame.com">Expedition: The Tabletop Roleplaying Game</a></p>
+          </footer>
         </div>
       </div>
     </div>
