@@ -31,6 +31,7 @@
     "@types/promise-polyfill": "^6.0.0",
     "@types/sequelize": "^4.0.70",
     "babel-core": "^6.24.0",
+    "bluebird": "^3.5.1",
     "body-parser": "^1.17.2",
     "cors": "^2.8.4",
     "express": "^4.15.3",
