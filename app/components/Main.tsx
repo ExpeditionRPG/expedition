@@ -12,6 +12,7 @@ import ContextEditorContainer from './ContextEditorContainer'
 import NotesPanelContainer from './NotesPanelContainer'
 import {EditorState, PanelType, SnackbarState} from '../reducers/StateTypes'
 
+const numeral = require('numeral') as any;
 const SplitPane = require('react-split-pane') as any;
 
 export interface MainStateProps {
@@ -56,13 +57,11 @@ const Main = (props: MainProps): JSX.Element => {
       />
       <div className="bottomPanel--right">
         <FlatButton
-          label={`Line: ${props.editor.line.number}`}
           disabled={true}
-        />
-        {props.editor.wordCount > 0 && <FlatButton
-          label={`Words: ${props.editor.wordCount}`}
+          label={`Line: ${numeral(props.editor.line.number).format('0,0')}`}/>
+        <FlatButton
           disabled={true}
-        />}
+          label={`Words: ${props.editor.wordCount > 0 ? numeral(props.editor.wordCount).format('0,0') : '-'}`}/>
       </div>
     </div>
   );

@@ -11165,14 +11165,15 @@ comet/SM
 comeuppance/SM
 comfit's
 comfit/SE
+comfort/ESMDG
 comfortability/S
 comfortableness/MS
 comfortable/U
 comfortably/U
 comforted/U
 comforter/MS
-comfort/ESMDG
 comforting/YE
+comfortless
 comfy/RT
 comicality/MS
 comical/Y
@@ -15716,6 +15717,7 @@ disharmonious
 dishcloth/M
 dishcloths
 dishevel/LDGS
+dishevelled
 dishevelment/MS
 dish/GD
 dishonest
@@ -16532,6 +16534,7 @@ drastically
 drat/S
 dratted
 dratting
+draught
 Dravidian/M
 drawable
 draw/ASG
@@ -23518,6 +23521,7 @@ Goldstein/M
 Goldwater/M
 Goldwyn/M
 Goldy/M
+golem/SM
 Goleta/M
 golfer/M
 golf/RDMGZS
@@ -24632,6 +24636,7 @@ halfback/SM
 halfbreed
 halfheartedness/MS
 halfhearted/PY
+halfling/SM
 halfpence/S
 halfpenny/MS
 halfpennyworth
@@ -24925,6 +24930,7 @@ hare/MGDS
 harem/SM
 Hargreaves/M
 hark/GDS
+harken
 Harland/M
 Harlan/M
 Harlem/M
@@ -25730,6 +25736,7 @@ Hewie/M
 Hewitt/M
 Hewlett/M
 Hew/M
+hewn
 hexachloride/M
 hexadecimal/YS
 hexafluoride/M
@@ -30004,6 +30011,7 @@ Jude/M
 judge/AGDS
 judger/M
 judge's
+judgement/S
 judgeship/SM
 judgmental/Y
 judgment/MS
@@ -31841,6 +31849,7 @@ leash/UGSD
 leasing/M
 leas/SRDGZ
 least/S
+leastways
 leastwise
 leatherette/S
 leather/MDSG
@@ -34447,6 +34456,7 @@ Marva/M
 marvel/DGS
 Marvell/M
 marvelous/PY
+marvellous/PY
 Marve/M
 Marven/M
 Marvin/M
@@ -44005,6 +44015,7 @@ pretender/M
 pretending/U
 pretend/SDRZG
 pretense/MNVSX
+pretence
 pretension/GDM
 pretentiousness/S
 pretentious/UYP
@@ -48079,6 +48090,7 @@ Russia/M
 Russian/SM
 Russo/M
 Russ/S
+rust/MSDG
 Rustbelt/M
 rustically
 rusticate/GSD
@@ -48090,7 +48102,6 @@ rustiness/MS
 Rustin/M
 rustler/M
 rustle/RSDGZ
-rust/MSDG
 rustproof/DGS
 Rusty/M
 rusty/XNRTP
@@ -49927,12 +49938,13 @@ shade/SM
 shadily
 shadiness/MS
 shading/M
+shadow/GSDRM
+Shadow/M
 shadowbox/SDG
 shadower/M
-shadow/GSDRM
 shadowiness/M
-Shadow/M
 shadowy/TRP
+shadowless
 shady/TRP
 Shae/M
 Shafer/M
@@ -50088,6 +50100,7 @@ Shauna/M
 Shaun/M
 shave/DSRJGZ
 shaved/U
+shaven
 shaver/M
 Shavian
 shaving/M
@@ -50486,6 +50499,7 @@ shrinker/M
 shrinking/U
 shrink/SRBG
 shrivel/GSD
+shrivelled
 shriven
 shrive/RSDG
 Shropshire/M
@@ -51875,10 +51889,11 @@ sorrel/SM
 Sorrentine/M
 sorrily
 sorriness/SM
+sorrow/GRDMS
 sorrower/M
 sorrowfulness/SM
 sorrowful/YP
-sorrow/GRDMS
+sorrowless
 sorry/PTSR
 sorta
 sortable
@@ -54391,7 +54406,7 @@ sweater/M
 sweatily
 sweatiness/M
 sweatpants
-sweat/SGZRM
+sweat/SGZRMD
 sweatshirt/S
 sweatshop/MS
 sweaty/TRP
@@ -57380,8 +57395,9 @@ trotted
 trotter/SM
 trotting
 troubadour/SM
+trouble/DRSM
 troubled/U
-trouble/GDRSM
+troubling/U
 troublemaker/MS
 troubler/M
 troubleshooter/M

@@ -2,6 +2,7 @@ import * as React from 'react'
 
 import AppBar from 'material-ui/AppBar'
 import Avatar from 'material-ui/Avatar'
+import CircularProgress from 'material-ui/CircularProgress'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
@@ -45,20 +46,29 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   } else if (!props.editor.dirty) {
     saveIndicator = <span className="success saveIndicator"><FlatButton label="All changes saved" disabled={true} /></span>
   }
+
+  let publishButton = <FlatButton
+    label={(props.quest.published) ? 'Update' : 'Publish'}
+    disabled={!questLoaded}
+    onTouchTap={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.quest)} />;
   const errors = props.annotations.filter((annotation) => { return annotation.type === 'error' });
-  const errorLabel = (errors.length > 1) ? 'View Errors' : 'View Error';
-  const publishButton = (errors.length > 0) ?
-    <span className="errorButton">
+  const validating = (props.editor.worker !== null);
+  if (validating) {
+    publishButton = <span className="validatingButton">
+      <FlatButton
+        label="Validating..."
+        icon={<CircularProgress size={28} thickness={6} />}
+        disabled={true} />
+    </span>;
+  } else if (errors.length > 0) {
+    const errorLabel = (errors.length > 1) ? 'View Errors' : 'View Error';
+    publishButton = <span className="errorButton">
       <FlatButton
         label={errorLabel}
         icon={<AlertError />}
         onTouchTap={(event: any) => props.onViewError(props.annotations, props.editor)} />
-    </span>
-    :
-    <FlatButton
-      label={(props.quest.published) ? 'Update' : 'Publish'}
-      disabled={!questLoaded}
-      onTouchTap={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.quest)} />;
+    </span>;
+  }
 
   return (
     <span className="quest_app_bar">

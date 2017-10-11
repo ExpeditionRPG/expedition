@@ -95,6 +95,7 @@ function handleMessage(e: {data: RunMessage}) {
     const asyncTest = () => {
       if (elapsed > timeout || !(queueLen > 0)) {
         console.log('Playtest COMPLETE (' + (Date.now() - start) + 'ms)');
+        (postMessage as any)({status: 'COMPLETE'});
         close();
         return;
       }

@@ -53,6 +53,8 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
       return {...state, bottomPanel: (state.bottomPanel !== panel) ? panel : null};
     case 'PLAYTEST_INIT':
       return {...state, worker: (action as PlaytestInitAction).worker};
+    case 'PLAYTEST_COMPLETE':
+      return {...state, worker: null};
     default:
       return state;
   }

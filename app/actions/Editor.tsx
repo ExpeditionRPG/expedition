@@ -90,7 +90,11 @@ export function startPlaytestWorker(oldWorker: Worker, elem: Cheerio) {
       worker.terminate();
     };
     worker.onmessage = (e: MessageEvent) => {
-      dispatch({type: 'PLAYTEST_MESSAGE', msgs: e.data});
+      if (e.data.status === 'COMPLETE') {
+        dispatch({type: 'PLAYTEST_COMPLETE'});
+      } else {
+        dispatch({type: 'PLAYTEST_MESSAGE', msgs: e.data});
+      }
     };
     worker.postMessage({type: 'RUN', xml: elem.toString()});
     dispatch({type: 'PLAYTEST_INIT', worker});
