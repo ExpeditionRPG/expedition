@@ -108,6 +108,15 @@ window.FirebasePlugin = {
   logEvent: console.log,
 };
 
+window.onOlarkLoad = () => {
+  window.olark('api.chat.onBeginConversation', () => {
+    // Invisible to user
+    window.olark('api.chat.sendNotificationToOperator', {
+      body: 'Quest name: ' + store.getState().quest.title,
+    });
+  });
+};
+
 (() => {
   // load spellcheck dictionary asynchronously after waiting 1s for rest of the page to load
   const affPath = '/dictionaries/en_US_aff.txt';
