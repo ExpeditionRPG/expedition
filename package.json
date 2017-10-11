@@ -7,7 +7,9 @@
   "main": "react.js",
   "scripts": {
     "test": "mocha meta_tests.js && karma start karma.conf.js --single-run --browsers PhantomJS",
-    "watch:test": "karma start karma.conf.js "
+    "watch:test": "karma start karma.conf.js ",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "Fabricate.IO",
   "license": "CC-BY-NC-SA-4.0",
@@ -52,7 +54,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.2",
     "mathjs": "^3.14.2",
-    "mocha": "^3.2.0",
+    "mocha": "^4.0.0",
     "mocha-loader": "^1.1.1",
     "mocha-webpack": "^0.7.0",
     "seedrandom": "^2.4.3",
@@ -61,12 +63,14 @@
     "tslint": "^4.0.0",
     "tslint-loader": "^3.4.3",
     "typescript": "^2.2.1",
-    "webpack": "^3.3.0"
+    "webpack": "^3.3.0",
+    "snyk": "^1.42.5"
   },
   "engines": {
     "node": "8.1.4"
   },
   "devDependencies": {
     "babel-core": "^6.25.0"
-  }
+  },
+  "snyk": true
 }
