@@ -1,6 +1,16 @@
 const Clone = require('clone');
 const HtmlDecode = (require('he') as any).decode;
 const Math = require('mathjs') as any;
+import * as seedrandom from 'seedrandom'
+
+export function generateSeed(): string {
+  let seed: string;
+  seedrandom(null, { pass: function(p: seedrandom.prng, s: string): seedrandom.prng {
+    seed = s;
+    return p;
+  }});
+  return seed;
+}
 
 export interface Context {
   // Scope is passed to the parser when rendering
@@ -16,6 +26,9 @@ export interface Context {
 
   // Regenerate template scope (all of "_") with this function.
   _templateScopeFn: () => any;
+
+  // Optional contextual arg to seed the random number generator.
+  seed?: string;
 }
 
 export function defaultContext(): Context {
@@ -148,6 +161,9 @@ export function updateContext<C extends Context>(node: Cheerio, ctx: C, action?:
   for (const k of Object.keys(newContext.scope._)) {
     newContext.scope._[k] = (newContext.scope._[k] as any).bind(newContext);
   }
+
+  // Update random seed
+  newContext.seed = generateSeed();
 
   return newContext;
 }
