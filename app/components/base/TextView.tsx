@@ -161,7 +161,6 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       ref.editor.setOption('wrapBehavioursEnabled', true);
       ref.editor.setOption('wrap', true);
       ref.editor.setOption('useSoftTabs', true);
-      ref.editor.renderer.setOption('showLineNumbers', false);
 
       ref.editor.on('changeSelection', this.onSelectionChange);
       ref.editor.on('gutterclick', (e: any) => {this.onGutterClick(e)});

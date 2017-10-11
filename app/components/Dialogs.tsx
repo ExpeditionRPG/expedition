@@ -87,7 +87,7 @@ export class AnnotationDetailDialog extends React.Component<AnnotationDetailDial
         <div className="annotation" key={i}>
           <h3>({a.NUMBER}): {a.NAME}</h3>
           <p>{a.DESCRIPTION}</p>
-          <strong>Good Examples:</strong>
+          <strong>Good Examples</strong>
           <div>{goodExampleJSX}</div>
           <strong>Invalid Examples</strong>
           <div>{badExampleJSX}</div>
