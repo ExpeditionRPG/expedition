@@ -324,9 +324,9 @@ export class Node<C extends Context> {
     let i = 0;
     let ref = this.clone();
     for (; i < MAX_GOTO_FOLLOW_DEPTH && ref !== null && ref.getTag() === 'trigger'; i++) {
-      const id = evaluateContentOps(getTriggerId(ref.elem), ref.ctx);
+      const id = getTriggerId(ref.elem);
       if (id) {
-        ref = ref.gotoId(id, seed);
+        ref = ref.gotoId(evaluateContentOps(id, ref.ctx), seed);
       } else {
         return ref.handleTriggerEvent(seed);
       }
