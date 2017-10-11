@@ -48,6 +48,7 @@ const errors: {[id: number]: ErrorType} = {
   431: e431,
   432: e432,
   433: e433,
+  434: e434,
   435: e435,
 };
 

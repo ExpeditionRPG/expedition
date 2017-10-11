@@ -10,21 +10,31 @@ import Button from 'expedition-app/app/components/base/Button'
 
 export interface SplashDispatchProps {
   onLogin: (position: string) => void;
+  onNewQuest: (user: UserState) => void;
 }
 
 const Splash = (props: any): JSX.Element => {
   return (
     <div className="main splash">
-      <div className="quest_app_bar">
+      <div className="splash_app_bar">
         <AppBar
           title="Expedition Quest Creator"
           showMenuIconButton={false}
           iconElementRight={
-            <div className="login">
-              <FlatButton
-                label="Log In"
-                onTouchTap={() => props.onLogin('appbar')}
-              />
+            <div className="appBarRight">
+              {props.user.loggedIn && <div className="login">
+                <FlatButton
+                  label="New Quest"
+                  onTouchTap={() => props.onNewQuest(props.user)}
+                />
+                <span className="email">{props.user.email}</span>
+              </div>}
+              {!props.user.loggedIn && <div className="login">
+                <FlatButton
+                  label="Log In"
+                  onTouchTap={() => props.onLogin('appbar')}
+                />
+              </div>}
             </div>
           }
         />
@@ -43,7 +53,7 @@ const Splash = (props: any): JSX.Element => {
           <h3>Build an international fanbase</h3>
           <h3>Get paid for writing through tips from your fans</h3>
           <div className="buttonBox login">
-            <Button onTouchTap={() => props.onLogin('main')}>Get Started</Button>
+            <Button onTouchTap={() => props.user.loggedIn ? props.onNewQuest(props.user) : props.onLogin('main')}>Get Started</Button>
           </div>
         </div>
         <div>

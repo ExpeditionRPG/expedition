@@ -312,7 +312,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
   }
 }
 
-.quest_app_bar {
+.splash_app_bar, .quest_app_bar {
   background-image: $bg_encounter_img;
 
   >div {
@@ -330,19 +330,22 @@ body .olark-launch-button { /*must be more specifc than olark styles */
     margin-left: -8px !important;
   }
 
-  .appBarRight {
+  .email {
     opacity: 0.8;
-    .email {
-      font-size: $fontSizeSmall;
-      vertical-align: super;
-    }
-    .loginState {
-      margin-top: -8px; // Override
-      margin-right: -8px;
-      button {
-        height: $hBarThickness;
-        width: $hBarThickness;
-      }
+    font-size: $fontSizeSmall;
+  }
+}
+
+.quest_app_bar {
+  .email {
+    vertical-align: super;
+  }
+  .loginState {
+    margin-top: -8px; // Override
+    margin-right: -8px;
+    button {
+      height: $hBarThickness;
+      width: $hBarThickness;
     }
   }
 

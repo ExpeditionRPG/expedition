@@ -22,6 +22,8 @@ export function quest(state: QuestType = initial_state, action: Redux.Action): Q
       return Object.assign({}, state, (action as ReceiveQuestPublishAction).quest);
     case 'RECEIVE_QUEST_UNPUBLISH':
       return Object.assign({}, state, (action as ReceiveQuestUnpublishAction).quest);
+    case 'QUEST_LOADING':
+      return initial_state;
     case 'NEW_QUEST':
       return initial_state;
     default:

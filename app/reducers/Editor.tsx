@@ -3,6 +3,7 @@ import {PanelToggleAction, SetDirtyAction, SetDirtyTimeoutAction, SetLineAction,
 import {EditorState, PanelType} from './StateTypes'
 
 const defaultState: EditorState = {
+  loadingQuest: false,
   renderer: null,
   dirty: false,
   dirtyTimeout: null,
@@ -31,6 +32,10 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
         number: (action as SetLineAction).line,
         ts: Date.now(),
       }};
+    case 'RECEIVE_QUEST_LOAD':
+      return {...state, loadingQuest: false};
+    case 'QUEST_LOADING':
+      return {...state, loadingQuest: true};
     case 'SET_WORD_COUNT':
       return {...state, wordCount: (action as SetWordCountAction).count};
     case 'QUEST_RENDER':

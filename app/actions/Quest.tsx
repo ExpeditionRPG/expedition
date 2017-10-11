@@ -3,6 +3,7 @@ import {
   NEW_QUEST, LOAD_QUEST, SAVE_QUEST,
   ReceiveQuestLoadAction,
   RequestQuestSaveAction, ReceiveQuestSaveAction, ReceiveQuestSaveErrAction,
+  QuestLoadingAction,
   QuestPublishingSetupAction, QuestMetadataChangeAction,
   RequestQuestPublishAction, ReceiveQuestPublishAction,
   RequestQuestUnpublishAction, ReceiveQuestUnpublishAction,
@@ -34,6 +35,10 @@ declare var window: any;
 
 function receiveQuestLoad(quest: QuestType): ReceiveQuestLoadAction {
   return {type: 'RECEIVE_QUEST_LOAD', quest};
+}
+
+export function questLoading(): QuestLoadingAction {
+  return {type: 'QUEST_LOADING'};
 }
 
 function updateDriveFile(fileId: string, fileMetadata: any, text: string, callback: (err: any, result?: any) => any) {
@@ -73,22 +78,23 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
   }
 }
 
-export function loadQuestFromURL(user: UserState, dispatch: Redux.Dispatch<any>) {
-  let id = null;
-  if (window.location.hash) {
-    id = window.location.hash.substr(1);
-    ReactGA.event({
-      category: 'Background',
-      action: 'QUEST_LOAD_EXISTING',
-      label: id,
-    });
-  } else {
-    ReactGA.event({
-      category: 'Background',
-      action: 'QUEST_LOAD_NEW',
-    });
+export function loadQuestFromURL(user: UserState, id?: string) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    dispatch(questLoading());
+    if (id) {
+      ReactGA.event({
+        category: 'Background',
+        action: 'QUEST_LOAD_EXISTING',
+        label: id,
+      });
+    } else {
+      ReactGA.event({
+        category: 'Background',
+        action: 'QUEST_LOAD_NEW',
+      });
+    }
+    loadQuest(user, dispatch, id || null);
   }
-  loadQuest(user, dispatch, id);
 }
 
 export function newQuest(user: UserState) {
@@ -100,30 +106,34 @@ export function newQuest(user: UserState) {
         description: 'Created with the Expedition Quest Creator',
       },
     };
-    window.gapi.client.drive.files.insert(insertHash).execute((createResponse: {id: string}) => {
-      updateDriveFile(createResponse.id, {}, '', (err, result) => {
-        if (err) {
-          return dispatch(pushError(new Error('Failed to create new quest: ' + err.message)));
-        }
-        loadQuest(user, dispatch, createResponse.id);
-        window.gapi.client.request({
-          path: '/drive/v3/files/' + createResponse.id + '/permissions',
-          method: 'POST',
-          params: {sendNotificationEmails: false},
-          body: {
-            role: 'writer',
-            type: 'domain',
-            domain: 'Fabricate.io',
-            allowFileDiscovery: true,
-          },
-        }).then((json: any, raw: any) => {
-        }, (json: any) => {
-          ReactGA.event({
-            category: 'Error',
-            action: 'Error connecting quest file to Fabricate.IO',
-            label: createResponse.id,
+    // TODO migrate this to use same upload method as updateDriveFile to remove dependency
+    // on loading drive2 api
+    window.gapi.client.load('drive', 'v2', () => {
+      window.gapi.client.drive.files.insert(insertHash).execute((createResponse: {id: string}) => {
+        updateDriveFile(createResponse.id, {}, '', (err, result) => {
+          if (err) {
+            return dispatch(pushError(new Error('Failed to create new quest: ' + err.message)));
+          }
+          loadQuest(user, dispatch, createResponse.id);
+          window.gapi.client.request({
+            path: '/drive/v3/files/' + createResponse.id + '/permissions',
+            method: 'POST',
+            params: {sendNotificationEmails: false},
+            body: {
+              role: 'writer',
+              type: 'domain',
+              domain: 'Fabricate.io',
+              allowFileDiscovery: true,
+            },
+          }).then((json: any, raw: any) => {
+          }, (json: any) => {
+            ReactGA.event({
+              category: 'Error',
+              action: 'Error connecting quest file to Fabricate.IO',
+              label: createResponse.id,
+            });
+            console.log('Error connecting quest file to Fabricate.IO', json);
           });
-          console.log('Error connecting quest file to Fabricate.IO', json);
         });
       });
     });

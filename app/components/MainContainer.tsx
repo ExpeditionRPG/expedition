@@ -11,6 +11,7 @@ const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
     loggedIn: state.user.loggedIn,
     bottomPanel: state.editor.bottomPanel,
     snackbar: state.snackbar,
+    quest: state.quest,
   };
 }
 

@@ -13,9 +13,9 @@ export function setProfileMeta(user: UserState): SetProfileMetaAction {
   return {type: 'SET_PROFILE_META', user};
 }
 
-export function loginUser(showPrompt: boolean): ((dispatch: Redux.Dispatch<any>)=>void) {
+export function loginUser(showPrompt: boolean, quest?: boolean | string): ((dispatch: Redux.Dispatch<any>)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
-    realtimeUtils.authorize(function(response:any){
+    realtimeUtils.authorize((response:any) => {
       if (response.error){
         dispatch(setProfileMeta({loggedIn: false}));
       } else {
@@ -39,7 +39,13 @@ export function loginUser(showPrompt: boolean): ((dispatch: Redux.Dispatch<any>)
                 email: googleUser.email,
               };
               dispatch(setProfileMeta(user));
-              loadQuestFromURL(user, dispatch);
+              if (quest) {
+                if (quest === true) { // create a new quest
+                  dispatch(loadQuestFromURL(user, null));
+                } else if (typeof quest === 'string') {
+                  dispatch(loadQuestFromURL(user, quest));
+                }
+              }
             });
           });
         });

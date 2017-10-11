@@ -10,7 +10,7 @@ import QuestAppBarContainer from './QuestAppBarContainer'
 import QuestIDEContainer from './QuestIDEContainer'
 import ContextEditorContainer from './ContextEditorContainer'
 import NotesPanelContainer from './NotesPanelContainer'
-import {EditorState, PanelType, SnackbarState} from '../reducers/StateTypes'
+import {EditorState, PanelType, SnackbarState, QuestType} from '../reducers/StateTypes'
 
 const numeral = require('numeral') as any;
 const SplitPane = require('react-split-pane') as any;
@@ -20,6 +20,7 @@ export interface MainStateProps {
   loggedIn: boolean;
   bottomPanel: PanelType;
   snackbar: SnackbarState;
+  quest: QuestType;
 };
 
 export interface MainDispatchProps {
@@ -31,13 +32,13 @@ export interface MainDispatchProps {
 interface MainProps extends MainStateProps, MainDispatchProps {}
 
 const Main = (props: MainProps): JSX.Element => {
-  if (props.loggedIn === null || props.loggedIn === undefined) {
+  if (props.editor.loadingQuest) {
     return (
       <div className="main loading">
         Loading Expedition Quest Creator...
       </div>
     );
-  } else if (props.loggedIn !== true) {
+  } else if (props.loggedIn === false || Object.keys(props.quest).length === 0) {
     return (
       <SplashContainer/>
     );

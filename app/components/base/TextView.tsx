@@ -251,7 +251,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     // If we've been supplied with a different line number, scroll to it
     if (this.ace) {
       const row = this.ace.editor.getSelection().anchor.row;
-      if (newProps.scrollLineTarget !== row && newProps.scrollLineTargetTs > (this.lineChangeTs || 0)) {
+      if (newProps.scrollLineTarget !== row && newProps.scrollLineTargetTs > (this.lineChangeTs || -1)) {
         this.ace.editor.gotoLine(newProps.scrollLineTarget+1, 0, true);
         this.lineChangeTs = newProps.scrollLineTargetTs;
       }
