@@ -52,7 +52,7 @@
     "nodemailer": "^4.0.1",
     "on-build-webpack": "^0.1.0",
     "passport": "^0.3.2",
-    "passport-google-id-token": "git+https://github.com/Fabricate-IO/passport-google-id-multi-token.git",
+    "passport-google-id-token": "^0.4.3",
     "passport-google-oauth20": "^1.0.0",
     "pg": "^6.1.4",
     "proxy-middleware": "^0.15.0",
