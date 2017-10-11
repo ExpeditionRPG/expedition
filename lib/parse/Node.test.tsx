@@ -239,6 +239,19 @@ describe('Node', () => {
       expect(result.ctx.scope._.viewCount('foo')).toEqual(2);
       expect(result.ctx.scope._.viewCount('bar')).toEqual(1);
     });
+
+    it('renders deterministically when a seed is given', () => {
+      const ctx = defaultContext();
+      ctx.seed = 'randomseed';
+      const result = new Node(cheerio.load('<roleplay><p>{{a=pickRandom([1,2,3,4,5])}}{{b=round(random(0,100), 4)}}{{c=randomInt(0, 100)}}</p></roleplay>')('roleplay'), ctx, null, ctx.seed);
+      expect(result.ctx.scope).toEqual(jasmine.objectContaining({a: 2, b: 32.3244, c: 40}));
+    });
+
+    it('renders next node via getNext deterministically when a seed is given', () => {
+      const ctx = defaultContext();
+      const result = new Node(cheerio.load('<quest><roleplay></roleplay><roleplay><p>{{a=pickRandom([1,2,3,4,5])}}{{b=round(random(0,100), 4)}}{{c=randomInt(0, 100)}}</p></roleplay></quest>')('quest > :first-child'), ctx);
+      expect(result.getNext(0, 'randomseed').ctx.scope).toEqual(jasmine.objectContaining({a: 2, b: 32.3244, c: 40}));
+    })
   });
 
   describe('getComparisonKey', () => {
@@ -339,21 +352,29 @@ describe('Node', () => {
       expect(result.elem.text()).toEqual('expected');
     });
 
-    /* TODO
     it('uses programmatic triggers', () => {
-      var quest = cheerio.load('<quest><roleplay><p>{{dest=5}}</p><choice><trigger>goto {{dest}}</trigger><trigger>end</trigger><roleplay id="5">expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
-      let ctx = defaultContext();
-      var result = handleAction(quest.children().eq(0), 0, ctx);
-      expect(result.text()).toEqual('expected');
-    })
-    */
+      var quest = cheerio.load(`<quest>
+        <roleplay>
+          <p>{{dest=5}}</p>
+          <choice>
+            <trigger>goto {{dest}}</trigger>
+            <trigger>end</trigger>
+            <roleplay id="5">expected</roleplay>
+            <roleplay>wrong</roleplay>
+          </choice>
+        </roleplay>
+      </quest>`)('quest');
+      const pnode = new Node(quest.children().eq(0), defaultContext());
+      var result = pnode.handleAction(0);
+      expect(result.elem.text()).toEqual('expected');
+    });
 
     it('can handle multiple gotos', () => {
       const quest = cheerio.load('<quest><roleplay><choice><trigger>goto 1</trigger><trigger id="1">goto 2</trigger><trigger id="2">end</trigger><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
       const result = pnode.handleAction(0);
       expect(result.elem.text()).toEqual('end');
-    })
+    });
 
     it('goes to correct choice', () => {
       const node = cheerio.load('<roleplay><choice></choice><choice><roleplay>herp</roleplay><roleplay>derp</roleplay></choice></roleplay>')('roleplay');
@@ -395,5 +416,50 @@ describe('Node', () => {
       const result = pnode.handleAction(0);
       expect(result.elem.text()).toEqual('Not empty');
     });
+
+    it('handles basic choices deterministically when seed is set', () => {
+      const node = cheerio.load('<roleplay><choice><roleplay><p>{{a=round(random(0,100), 4)}}</p></roleplay></choice></roleplay>')('roleplay');
+      const pnode = new Node(node, defaultContext());
+      const result = pnode.handleAction(0, 'randomseed');
+      expect(result.ctx.scope.a).toEqual(32.8971);
+    });
+
+    it('handles choices with id gotos deterministically when seed is set', () => {
+      const rootNode = cheerio.load('<quest></quest>')('quest');
+      const choiceNode = cheerio.load('<roleplay><choice><trigger>goto jump</trigger></choice></roleplay>')('roleplay');
+      const jumpNode = cheerio.load('<roleplay id="jump"><p>{{a=round(random(0,100), 4)}}</p></roleplay>')('roleplay');
+
+      rootNode.append(choiceNode);
+      rootNode.append(jumpNode);
+
+      const pnode = new Node(choiceNode, defaultContext());
+      const result = pnode.handleAction(0, 'randomseed');
+      expect(result.ctx.scope.a).toEqual(32.8971);
+    });
+
+    it('handles choices with event gotos deterministically when seed is set', () => {
+      const node = cheerio.load('<roleplay id="rp1"><choice><trigger>end</trigger></choice><choice on="end"><roleplay><p>{{a=round(random(0,100), 4)}}</p></roleplay></choice></roleplay>')('#rp1');
+      const pnode = new Node(node, defaultContext());
+      const result = pnode.handleAction(0, 'randomseed');
+      expect(result.ctx.scope.a).toEqual(32.8971);
+    });
+
+    fit('handles randomly-generated triggers deterministically when seed is set', () => {
+      var quest = cheerio.load(`<quest>
+        <roleplay>
+          <choice>
+            <trigger>goto {{randomInt(5)}}</trigger>
+          </choice>
+        </roleplay>
+        <roleplay id="0">r0</roleplay>
+        <roleplay id="1">r1</roleplay>
+        <roleplay id="2">r2</roleplay>
+        <roleplay id="3">r3</roleplay>
+        <roleplay id="4">r4</roleplay>
+      </quest>`)('quest');
+      const pnode = new Node(quest.children().eq(0), defaultContext());
+      var result = pnode.handleAction(0, 'randomseed');
+      expect(result.elem.text()).toEqual('r1');
+    })
   });
 });
