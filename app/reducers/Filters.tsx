@@ -42,7 +42,9 @@ export default function Filters(state: FiltersState = initialState, action: Redu
     case 'FILTER_CHANGE':
       const filterChange = action as FilterChangeAction;
       newState = {...state};
-      newState[filterChange.name].current = filterChange.value;
+      if (newState[filterChange.name]) { // Protect against URL parameters that aren't ours, such as search / social media links
+        newState[filterChange.name].current = filterChange.value;
+      }
       return newState;
     case 'FILTERS_CALCULATE':
       newState = {...state};

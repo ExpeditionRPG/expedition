@@ -30,7 +30,7 @@ export function filterChange(name: string, value: string | number): ((dispatch: 
     // Update URL - don't include in URL if it's the default value
     let query = {...qs.parse(window.location.search.substring(1)), [name]: value};
     for (let key in query) {
-      if (query[key] === initialState[key].default) {
+      if (initialState[key] && query[key] === initialState[key].default) {
         delete query[key];
       }
     }
