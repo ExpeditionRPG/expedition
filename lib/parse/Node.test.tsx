@@ -444,7 +444,7 @@ describe('Node', () => {
       expect(result.ctx.scope.a).toEqual(32.8971);
     });
 
-    fit('handles randomly-generated triggers deterministically when seed is set', () => {
+    it('handles randomly-generated triggers deterministically when seed is set', () => {
       var quest = cheerio.load(`<quest>
         <roleplay>
           <choice>
