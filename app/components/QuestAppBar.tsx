@@ -109,10 +109,10 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
             label="Play from Cursor">
           </FlatButton>
           {props.editor.bottomPanel &&
-          <FlatButton
-            onTouchTap={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)}
-            label="Play from Cursor (preserve context)">
-          </FlatButton>
+            <FlatButton
+              onTouchTap={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)}
+              label="Play from Cursor (preserve context)">
+            </FlatButton>
           }
         </ToolbarGroup>
       </Toolbar>

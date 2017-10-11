@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'react-redux'
+import {renderAndPlay} from './actions/Editor'
 import {loginUser, setProfileMeta} from './actions/User'
 import {saveQuest} from './actions/Quest'
 import {setSnackbar} from './actions/Snackbar'
@@ -75,16 +76,21 @@ window.onbeforeunload = function () {
 }
 
 // Ctrl + <hotkey>
-window.addEventListener('keydown', function checkForCtrlS (event: any) {
+window.addEventListener('keydown', (event: any) => {
   if (event.ctrlKey || event.metaKey) {
+    const state = store.getState();
     switch (String.fromCharCode(event.which).toLowerCase()) {
       case 's': // ctrl + s to save
         event.preventDefault();
-        const state = store.getState();
         if (state.editor.dirty) {
           store.dispatch(saveQuest(state.quest));
         }
         break;
+      case '\n':
+      case '\r':
+        if (state.quest.mdRealtime) {
+          store.dispatch(renderAndPlay(state.quest.mdRealtime.getText(), state.editor.line.number, state.editor.worker));
+        }
       default:
         // Do nothing
         break;

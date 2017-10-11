@@ -5,7 +5,7 @@ import {store} from '../Store'
 import {saveQuest} from './Quest'
 import {renderXML} from 'expedition-qdl/lib/render/QDLParser'
 import {initQuest, loadNode} from 'expedition-app/app/actions/Quest'
-import {ParserNode} from 'expedition-app/app/cardtemplates/Template'
+import {defaultContext, ParserNode} from 'expedition-app/app/cardtemplates/Template'
 import {TemplateContext} from 'expedition-app/app/cardtemplates/TemplateTypes'
 import {pushError} from './Dialogs'
 
@@ -101,7 +101,7 @@ export function startPlaytestWorker(oldWorker: Worker, elem: Cheerio) {
   }
 }
 
-export function renderAndPlay(qdl: string, line: number, ctx: TemplateContext, oldWorker: Worker) {
+export function renderAndPlay(qdl: string, line: number, oldWorker: Worker, ctx: TemplateContext = defaultContext()) {
   return (dispatch: Redux.Dispatch<any>): any => {
     // Do rendering after timeout to stay outside the event handler.
     setTimeout(() => {
