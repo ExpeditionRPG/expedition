@@ -93,6 +93,7 @@
     "mocha": "^3.2.0",
     "mocha-loader": "^1.1.1",
     "mocha-webpack": "^0.7.0",
+    "node-uuid": "^1.4.8",
     "nodejs-repo-tools": "git+https://github.com/GoogleCloudPlatform/nodejs-repo-tools.git#21daa823090c43fb667157c8b5b0c3b7f45a8357",
     "npm-check-updates": "^2.10.3",
     "proxyquire": "^1.7.11",
