@@ -79,7 +79,7 @@ You can also reward players with loot outside of combat (`> Draw one tier III lo
 Generally, try to organize instructions with the most important information first, and have all closely related instructions in the same block. For example:
 
 ```
-> Svella casts Fireball. Roll once. If [roll] > 10, deal one enemy 3 damage.
+> Svella casts Fireball. Roll once. If :roll: > 10, deal one enemy 3 damage.
 
 > {{prepared==true}} +2 to Svella's roll.
 
@@ -97,15 +97,15 @@ Skill checks should generally result in branches of similar lengths - otherwise,
 ```
 > Roll to sneak past the guard.
 
-* [roll] ≥ 15
+* :roll: ≥ 15
 
   Something happens
 
-* [roll] 10 - 14
+* :roll: 10 - 14
 
   Something else
 
-* [roll] < 10
+* :roll: < 10
 
   Something new
 ```
