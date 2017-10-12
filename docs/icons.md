@@ -40,6 +40,14 @@ At this time, you can use the following Expedition-themed icons:
 
 <img src="https://cdn.rawgit.com/Fabricate-IO/expedition-app/master/app/images/undead_small.svg" width="48" height="48"/> undead
 
+<img src="https://cdn.rawgit.com/Fabricate-IO/expedition-app/master/app/images/medical_small.svg" width="48" height="48"/> medical / caduceus
+
+<img src="https://cdn.rawgit.com/Fabricate-IO/expedition-app/master/app/images/key_small.svg" width="48" height="48"/> key
+
+<img src="https://cdn.rawgit.com/Fabricate-IO/expedition-app/master/app/images/influence_small.svg" width="48" height="48"/> influence
+
+<img src="https://cdn.rawgit.com/Fabricate-IO/expedition-app/master/app/images/horror_small.svg" width="48" height="48"/> horror
+
 There are also a variety of other icons available, courtesy of game-icons.net:
 
 <img src="https://cdn.rawgit.com/Fabricate-IO/expedition-app/master/app/images/anticlockwise_small.svg" width="48" height="48"/> <a href="http://game-icons.net/delapouite/gui/anticlockwise-rotation.html">anticlockwise</a>
