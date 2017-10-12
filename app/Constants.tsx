@@ -133,3 +133,16 @@ export const CONTENT_RATINGS: {[key: string]: ContentRatingType} = {
     },
   },
 };
+
+// A slight variation on the cubehelix pattern. This contains 6 categories,
+// which is convenient for e.g. displaying 6 distinct character icons.
+// https://jiffyclub.github.io/palettable/cubehelix/
+// https://github.com/jiffyclub/palettable/blob/29ca166e8eb81797a5417d637f8d0b4901d4dbd0/palettable/cubehelix/cubehelix.py
+export const COLORBLIND_FRIENDLY_PALETTE = [
+  '#182044',
+  '#0e5e4a',
+  '#507d23',
+  '#be7555',
+  '#db8acb',
+  '#bfc9fb',
+];

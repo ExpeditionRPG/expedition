@@ -110,7 +110,6 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
   };
 }
 
-// TODO(scott): Convert this into a Template class implementation
 const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'LIGHT'): JSX.Element => {
   const rpResult = loadRoleplayNode(props.node);
 
