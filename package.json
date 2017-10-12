@@ -9,7 +9,9 @@
     "test": "mocha meta_tests.js && ts-mocha app/**/*.test.ts",
     "build": "webpack --config webpack.dist.config.js --progress",
     "start": "node dist/server.js",
-    "heroku-postbuild": "webpack -p --config webpack.dist.config.js --progress"
+    "heroku-postbuild": "webpack -p --config webpack.dist.config.js --progress",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "Fabricate.IO",
   "license": "CC-BY-NC-SA-4.0",
@@ -66,7 +68,8 @@
     "typescript-formatter": "^5.1.1",
     "warning": "^3.0.0",
     "webpack": "^2.7.0",
-    "winston": "^2.3.1"
+    "winston": "^2.3.1",
+    "snyk": "^1.42.6"
   },
   "devDependencies": {
     "@types/body-parser": "^1.16.4",
@@ -106,5 +109,6 @@
   },
   "engines": {
     "node": "8.1.4"
-  }
+  },
+  "snyk": true
 }
