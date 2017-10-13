@@ -47,6 +47,8 @@ export default class Main extends React.Component<MainProps, {}> {
   }
 
   componentWillUnmount() {
+    super.componentWillUnmount();
+
     // 2017-08-16: Failing to unsubscribe here is likely to have caused unnecessary references to previous
     // JS objects, which prevents garbage collection and causes runaway memory consumption.
     this.storeUnsubscribeHandle();
@@ -135,30 +137,6 @@ export default class Main extends React.Component<MainProps, {}> {
     };
   }
 
-  handleBaseMainRef(r: HTMLElement) {
-    if (!r || process.env.NODE_ENV !== 'dev') {
-      return;
-    }
-
-    // Intercept all 'touch start' events and pass it to the remote play client.
-    // Touch events are propagated here during the "capture" phase of event flow
-    // https://www.w3.org/TR/DOM-Level-3-Events/#event-flow
-    // TODO: Unsubscribe listeners, prevent duplicate subscriptions
-    // TODO: Make this also work for desktops
-    r.addEventListener('touchstart', (e: any) => {
-      const positions: number[][] = Array(e.touches.length);
-      const boundingRect = r.getBoundingClientRect();
-      for (let i = 0; i < e.touches.length; i++) {
-        // Get adjusted coordinates as the percentage of div width/height as measured
-        // from the top left corner of the div.
-        const x = (e.touches[i].clientX - boundingRect.left) / r.offsetWidth * 100;
-        const y = (e.touches[i].clientY - boundingRect.top) / r.offsetHeight * 100;
-        positions[i] = [x, y];
-      }
-      getRemotePlayClient().sendEvent({type: 'TOUCH', positions});
-    }, true);
-  }
-
   handleChange() {
     // TODO: Handle no-op on RESET_APP from IDE
     this.setState(this.getUpdatedState());
@@ -173,7 +151,7 @@ export default class Main extends React.Component<MainProps, {}> {
     }
 
     const cards: any = [
-      <div className="base_main" key={this.state.key} ref={(r: HTMLElement) => this.handleBaseMainRef(r)}>
+      <div className="base_main" key={this.state.key}>
         {this.state.card}
         <RemoteTouchPanel/>
       </div>

@@ -1,17 +1,16 @@
+import React from 'react'
 import Redux from 'redux'
 import {toCard} from './Card'
 import {remotePlaySettings} from '../Constants'
-import {RemotePlayAction, NavigateAction, ReturnAction, getRemoteAction} from './ActionTypes'
+import {LocalAction, NavigateAction, ReturnAction, getRemoteAction} from './ActionTypes'
 import {UserState} from '../reducers/StateTypes'
 import {logEvent} from '../Main'
 import {openSnackbar} from '../actions/Snackbar'
 import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 import {getRemotePlayClient} from '../RemotePlay'
 
-export function local(a: Redux.Action): RemotePlayAction {
-  // We return a 'remote play' action here as it's not re-broadcast by
-  // remote play middleware.
-  return {type: 'REMOTE_PLAY_ACTION', action: a};
+export function local(a: Redux.Action): LocalAction {
+  return {type: 'LOCAL', action: a};
 }
 
 export function handleRemotePlayEvent(e: RemotePlayEvent) {
@@ -20,16 +19,18 @@ export function handleRemotePlayEvent(e: RemotePlayEvent) {
       case 'STATUS':
         console.log('TODO: USE STATUS ' + JSON.stringify(e.event));
         break;
-      case 'TOUCH':
-        // We don't care about dispatching touch events (they're tracked elsewhere)
+      case 'INTERACTION':
+        // Interaction events must not be dispatched.
         break;
       case 'ACTION':
         const a = getRemoteAction(e.event.name);
         if (!a) {
           console.log('Received unknown remote action ' + e.event.name);
         } else {
-          console.log('Dispatching remote action ' + e.event.name);
-          dispatch(local(a(JSON.parse(e.event.args))));
+          console.log('Inbound: ' + e.event.name + '(' + e.event.args + ')');
+          // Note: This is still dispatched locally; it's called as a
+          // secondary dispatch.
+          dispatch(a(JSON.parse(e.event.args)));
         }
         break;
       case 'ERROR':

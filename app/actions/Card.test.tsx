@@ -1,6 +1,4 @@
 import configureStore  from 'redux-mock-store'
-import thunk from 'redux-thunk'
-import {installStore} from '../Store'
 import {toCard, toPrevious} from './Card'
 import {setNavigator} from '../Globals'
 import {RemotePlayClient} from '../RemotePlay'
@@ -19,18 +17,14 @@ describe('Card action', () => {
     setNavigator(navigator);
 
     it('causes vibration if vibration enabled', () => {
-      const store = mockStore({settings: {vibration: true}});
-      installStore(store);
       spyOn(navigator, 'vibrate');
-      Action(toCard).execute({name: 'QUEST_CARD'});
+      Action(toCard, {settings: {vibration: true}}).execute({name: 'QUEST_CARD'});
       expect(navigator.vibrate).toHaveBeenCalledTimes(1);
     });
 
     it('does not vibrate if vibration not enabled', () => {
-      const store = mockStore({settings: {vibration: false}});
-      installStore(store);
       spyOn(navigator, 'vibrate');
-      Action(toCard).execute({name: 'QUEST_CARD'});
+      Action(toCard, {settings: {vibration: false}}).execute({name: 'QUEST_CARD'});
       expect(navigator.vibrate).toHaveBeenCalledTimes(0);
     });
 

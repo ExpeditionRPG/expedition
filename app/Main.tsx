@@ -20,6 +20,11 @@ import {getWindow, getGapi, getGA, getDevicePlatform, getDocument, setGA, setupP
 import {getRemotePlayClient} from './RemotePlay'
 import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 
+// Thunk is unused, but necessary to prevent compiler errors
+// until types are fixed for remote play.
+// TODO: Fix redux types
+import thunk from 'redux-thunk'
+
 
 const injectTapEventPlugin = require('react-tap-event-plugin');
 

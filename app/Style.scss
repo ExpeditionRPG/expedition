@@ -483,6 +483,8 @@ span.line {
   }
 
   .base_button {
+    position: relative;
+
     > button {
       display: block !important;
       height: auto !important;

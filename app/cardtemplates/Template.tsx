@@ -21,7 +21,7 @@ export function initCardTemplate(node: ParserNode, settings: SettingsType) {
       case 'roleplay':
         return dispatch(initRoleplay(node, settings));
       case 'combat':
-        return dispatch(initCombat(node, settings));
+        return dispatch(initCombat({node, settings}));
       default:
         throw new Error('Unsupported node type ' + node.getTag());
     }
@@ -71,7 +71,7 @@ export function updateContext(node: Cheerio, ctx: TemplateContext, action?: stri
 export function defaultContext(): TemplateContext {
   const populateScopeFn = function() {
     return {
-      contentSets: function(): number {
+      contentSets: function(): {[content: string]: boolean} {
         const settings = getStore().getState().settings;
         return settings && settings.contentSets;
       },

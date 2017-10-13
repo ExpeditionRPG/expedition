@@ -1,10 +1,12 @@
 import * as React from 'react'
 import FlatButton from 'material-ui/FlatButton'
+import {RemoteRipple} from './RemoteAffector'
 
 interface ButtonProps extends React.Props<any> {
   className?: string;
   disabled?: boolean;
   id?: string;
+  remoteID?: string;
   onTouchTap?: (e:any) => any;
 }
 
@@ -29,12 +31,23 @@ export default class Button extends React.Component<ButtonProps, {}> {
 
   render() {
     const className = 'base_button ' + (this.props.className || '');
-    return (
-      <span id={this.props.id} className={className}>
+
+    if (!this.props.remoteID) {
+      return (
+        <div id={this.props.id} className={className}>
         <FlatButton disabled={this.props.disabled} onTouchTap={(e:any) => this._onTouchTap(e)}>
           <div>{this.props.children}</div>
         </FlatButton>
-      </span>
+        </div>
+      )
+    }
+
+    return (
+      <RemoteRipple remoteID={this.props.remoteID} className={className} id={this.props.id}>
+        <FlatButton disabled={this.props.disabled} onTouchTap={(e:any) => this._onTouchTap(e)}>
+          <div>{this.props.children}</div>
+        </FlatButton>
+      </RemoteRipple>
     );
   }
 }

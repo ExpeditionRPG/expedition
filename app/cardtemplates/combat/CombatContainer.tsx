@@ -46,6 +46,10 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
       };
     }
   }
+
+  const stateCombat = (state.quest.node && state.quest.node.ctx && state.quest.node.ctx.templates && state.quest.node.ctx.templates.combat)
+    || {tier: 0, mostRecentRolls: [10], numAliveAdventurers: 1};
+
   return {
     ...combat,
     card: ownProps.card,
@@ -55,9 +59,10 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     victoryParameters,
     // Override with dynamic state for tier and adventurer count
     // Any combat param change (e.g. change in tier) causes a repaint
-    tier: state.quest.node.ctx.templates.combat.tier,
-    mostRecentRolls: state.quest.node.ctx.templates.combat.mostRecentRolls,
-    numAliveAdventurers: state.quest.node.ctx.templates.combat.numAliveAdventurers,
+    tier: stateCombat.tier,
+    seed: state.quest.seed,
+    mostRecentRolls: stateCombat.mostRecentRolls,
+    numAliveAdventurers: stateCombat.numAliveAdventurers,
   };
 }
 
@@ -71,38 +76,38 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     onNext: (phase: CombatPhase) => {
       dispatch(toCard({name: 'QUEST_CARD', phase}));
     },
-    onVictory: (node: ParserNode, settings: SettingsType, maxTier: number) => {
+    onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {
       logEvent('combat_victory', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
-      dispatch(handleCombatEnd({node, settings, victory: true, maxTier}));
+      dispatch(handleCombatEnd({node, settings, victory: true, maxTier, seed}));
     },
     onRetry: () => {
       dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: true}));
     },
-    onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number) => {
+    onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {
       logEvent('combat_defeat', {difficulty: settings.difficulty, maxTier: maxTier, players: settings.numPlayers});
-      dispatch(handleCombatEnd({node, settings, victory: false, maxTier}));
+      dispatch(handleCombatEnd({node, settings, victory: false, maxTier, seed}));
     },
-    onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean) => {
-      dispatch(handleCombatTimerStop(node, settings, elapsedMillis));
+    onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => {
+      dispatch(handleCombatTimerStop({node, settings, elapsedMillis, seed}));
     },
     onSurgeNext: (node: ParserNode) => {
-      dispatch(handleResolvePhase(node));
+      dispatch(handleResolvePhase({node}));
     },
     onReturn: () => {postTimerReturn(dispatch)},
     onEvent: (node: ParserNode, evt: string) => {
-      dispatch(event(node, evt));
+      dispatch(event({node, evt}));
     },
     onTierSumDelta: (node: ParserNode, current: number, delta: number) => {
-      dispatch(tierSumDelta(node, current, delta));
+      dispatch(tierSumDelta({node, current, delta}));
     },
     onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => {
-      dispatch(adventurerDelta(node, settings, current, delta));
+      dispatch(adventurerDelta({node, settings, current, delta}));
     },
     onCustomEnd: () => {
       dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: false}));
     },
     onChoice: (settings: SettingsType, parent: ParserNode, index: number) => {
-      dispatch(midCombatChoice(settings, parent, index));
+      dispatch(midCombatChoice({settings, parent, index}));
     },
   };
 }

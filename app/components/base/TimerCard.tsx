@@ -35,6 +35,14 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
     }
   }
 
+  componentWillUnmount() {
+    // Remote play may unmount this component without a touch event.
+    // This makes sure our timer eventually stops.
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+  }
+
   render() {
     const timeRemainingSec = this.state.timeRemaining / 1000;
     let formattedTimer: string;

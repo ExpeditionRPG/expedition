@@ -1,8 +1,12 @@
 import Redux from 'redux'
-import {CardState, CardName, CardPhase, DialogIDType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, SessionMetadata} from '../reducers/StateTypes'
+import {CardState, CardName, CardPhase, DialogIDType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, SessionMetadata, AppState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../cardtemplates/Template'
 import {Session} from 'expedition-qdl/lib/remote/Broker'
+
+export interface PushHistoryAction extends Redux.Action {
+  type: 'PUSH_HISTORY';
+}
 
 export interface AnnouncementSetAction extends Redux.Action {
   type: 'ANNOUNCEMENT_SET';
@@ -115,12 +119,12 @@ export interface RemotePlayHistoryAction extends Redux.Action {
   history: SessionMetadata[];
 }
 
-// RemotePlayActions wrap an existing action; this is so that inbound
+// LocalActions wrap an existing action; this is so that inbound
 // actions to the redux dispatch middleware that were created from
 // another client's interaction are not re-broadcast in an endless loop
 // to other clients.
-export interface RemotePlayAction extends Redux.Action {
-  type: 'REMOTE_PLAY_ACTION';
+export interface LocalAction extends Redux.Action {
+  type: 'LOCAL';
   action: Redux.Action;
 }
 
@@ -128,7 +132,7 @@ export interface RemotePlayAction extends Redux.Action {
 // This array can be passed to the generated RemotePlay redux middleware
 // which invokes it and packages it to send to other remote play clients.
 const REMOTE_ACTIONS: {[action: string]: (args: any) => Redux.Action} = {}
-export function remoteify<A>(a: (args: A, dispatch?: Redux.Dispatch<any>)=>any) {
+export function remoteify<A>(a: (args: A, dispatch?: Redux.Dispatch<any>, getState?: ()=>AppState)=>any) {
   const remoted = (args: A) => {
     return ([a.name, a, args] as any) as Redux.Action; // We know better >:}
   }

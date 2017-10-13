@@ -27,7 +27,7 @@ export default class RemoteTouchPanel extends TouchPanel {
   }
 
   private handleRemotePlayEvent(e: RemotePlayEvent) {
-    if (e.event.type !== 'TOUCH') {
+    if (e.event.type !== 'INTERACTION') {
       return;
     }
 

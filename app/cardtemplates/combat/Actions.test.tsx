@@ -1,7 +1,7 @@
 import {initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta, handleResolvePhase, midCombatChoice} from './Actions'
 import {DifficultyType, FontSizeType} from '../../reducers/StateTypes'
 import {ParserNode, defaultContext, renderCardTemplate} from '../Template'
-import configureStore  from 'redux-mock-store'
+import {newMockStore, Action} from '../../Testing'
 import {RemotePlayClient} from '../../RemotePlay'
 
 const cheerio: any = require('cheerio');
@@ -24,30 +24,17 @@ const TEST_SETTINGS = {
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
 describe('Combat actions', () => {
-  const mockStore = (initialState: any) => {
-    const client = new RemotePlayClient();
-    return configureStore([client.createActionMiddleware()])(initialState);
-  };
-
-  let baseNode: ParserNode = null;
-  {
-    // Initialize combat
-    const store = mockStore({});
-    store.dispatch(initCombat(TEST_NODE.clone(), TEST_SETTINGS));
-    baseNode = store.getActions()[1].node;
-  }
+  const baseNode = Action(initCombat as any).execute({node: TEST_NODE.clone(), settings: TEST_SETTINGS})[1].node;;
 
   const newCombatNode = () => {
     return baseNode.clone();
   }
 
   describe('initCombat', () => {
-    const store = mockStore({});
-    store.dispatch(initCombat(TEST_NODE.clone(), TEST_SETTINGS));
-    const actions = store.getActions();
+    const actions = Action(initCombat as any).execute({node: TEST_NODE.clone(), settings: TEST_SETTINGS});
 
     it('triggers nav to combat start', () => {
-      expect(actions[0]).toEqual(jasmine.objectContaining({
+      expect(actions[2]).toEqual(jasmine.objectContaining({
         type: 'NAVIGATE',
         to: jasmine.objectContaining({
           name: 'QUEST_CARD',
@@ -71,12 +58,11 @@ describe('Combat actions', () => {
         ],
       }));
     });
+
   });
 
   describe('initCustomCombat', () => {
-    const store = mockStore({});
-    store.dispatch(initCustomCombat(TEST_SETTINGS));
-    const actions = store.getActions();
+    const actions = Action(initCustomCombat as any).execute({settings: TEST_SETTINGS});
 
     it('has custom=true', () => {
       expect(actions[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
@@ -92,11 +78,11 @@ describe('Combat actions', () => {
   describe('isSurgeNextRound', () => {
     it('surges according to the period', () => {
       // "Play" until surge
-      const store = mockStore({});
+      const store = newMockStore({});
       let node = newCombatNode();
       for(let i = 0; i < 10 && (!node || !isSurgeNextRound(node)); i++) {
         store.clearActions();
-        store.dispatch(handleCombatTimerStop(node, TEST_SETTINGS, 1000));
+        store.dispatch(handleCombatTimerStop({node, settings: TEST_SETTINGS, elapsedMillis: 1000, seed: ''}));
         const actions = store.getActions();
         for (const a of actions) {
           if (a.type === 'QUEST_NODE') {
@@ -111,7 +97,7 @@ describe('Combat actions', () => {
       let pd = 0;
       do {
         store.clearActions();
-        store.dispatch(handleCombatTimerStop(node, TEST_SETTINGS, 1000));
+        store.dispatch(handleCombatTimerStop({node, settings: TEST_SETTINGS, elapsedMillis: 1000, seed: ''}));
         const actions = store.getActions();
         for (const a of actions) {
           if (a.type === 'QUEST_NODE') {
@@ -126,39 +112,39 @@ describe('Combat actions', () => {
   });
 
   describe('handleCombatTimerStop', () => {
-    const store = mockStore({});
-    store.dispatch(handleCombatTimerStop(newCombatNode(), TEST_SETTINGS, 1000));
+    const store = newMockStore({});
+    store.dispatch(handleCombatTimerStop({node: newCombatNode(), settings: TEST_SETTINGS, elapsedMillis: 1000, seed: ''}));
     const actions = store.getActions();
 
     it('randomly assigns damage', () => {
-      expect(actions[1].node.ctx.templates.combat.mostRecentAttack.damage).toBeDefined();
+      expect(actions[2].node.ctx.templates.combat.mostRecentAttack.damage).toBeDefined();
     });
     it('generates rolls according to player count', () => {
-      expect(actions[1].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
+      expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
     });
     it('increments the round counter', () => {
-      expect(actions[1].node.ctx.templates.combat.roundCount).toEqual(1);
+      expect(actions[2].node.ctx.templates.combat.roundCount).toEqual(1);
     });
   });
 
   describe('handleCombatEnd', () => {
     it('levels up if high maxTier on victory', () => {
-      const store = mockStore({});
-      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 9}));
+      const store = newMockStore({});
+      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 9, seed: ''}));
 
       expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(true);
     });
 
     it('does not level up if low maxTier on victory', () => {
-      const store = mockStore({});
-      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 1}));
+      const store = newMockStore({});
+      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 1, seed: ''}));
 
       expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(false);
     });
 
     it('assigns random loot on victory', () => {
-      const store = mockStore({});
-      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 9}));
+      const store = newMockStore({});
+      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 9, seed: ''}));
 
       const loot = store.getActions()[1].node.ctx.templates.combat.loot;
       let lootCount = 0;
@@ -169,8 +155,8 @@ describe('Combat actions', () => {
     });
 
     it('never assigns loot or levels up on defeat', () => {
-      const store = mockStore({});
-      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: false, maxTier: 9}));
+      const store = newMockStore({});
+      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: false, maxTier: 9, seed: ''}));
       expect(store.getActions()[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
         levelUp: false,
         loot: [],
@@ -180,34 +166,43 @@ describe('Combat actions', () => {
 
   describe('tierSumDelta', () => {
     it('increases', () => {
-      expect(tierSumDelta(newCombatNode(), 9, 1).node.ctx.templates.combat.tier).toEqual(10);
+      const node = Action(tierSumDelta).execute({node: newCombatNode(), current: 9, delta: 1})[0].node;
+      expect(node.ctx.templates.combat.tier).toEqual(10);
     });
     it('decreases', () => {
-      expect(tierSumDelta(newCombatNode(), 9, -1).node.ctx.templates.combat.tier).toEqual(8);
+      const node = Action(tierSumDelta).execute({node: newCombatNode(), current: 9, delta: -1})[0].node;
+      expect(node.ctx.templates.combat.tier).toEqual(8);
     });
     it('does not go below 0', () => {
-      expect(tierSumDelta(newCombatNode(), 9, -1000).node.ctx.templates.combat.tier).toEqual(0);
+      const node = Action(tierSumDelta).execute({node: newCombatNode(), current: 9, delta: -1000})[0].node;
+      expect(node.ctx.templates.combat.tier).toEqual(0);
     });
   })
 
   describe('adventurerDelta', () => {
     it('increases', () => {
-      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, 1, 2).node.ctx.templates.combat.numAliveAdventurers).toEqual(3);
+      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: 1, delta: 2})[0].node;
+      expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(3);
     });
     it('decreases', () => {
-      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, 3, -1).node.ctx.templates.combat.numAliveAdventurers).toEqual(2);
+      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: 3, delta: -1})[0].node;
+      expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(2);
     });
     it('does not go above player count', () => {
-      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, TEST_SETTINGS.numPlayers, 1).node.ctx.templates.combat.numAliveAdventurers).toEqual(TEST_SETTINGS.numPlayers);
+      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: TEST_SETTINGS.numPlayers, delta: 1})[0].node;
+      expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(TEST_SETTINGS.numPlayers);
     });
     it('does not go below 0', () => {
-      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, 1, -2).node.ctx.templates.combat.numAliveAdventurers).toEqual(0);
+      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: 1, delta: -2})[0].node;
+      expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(0);
     });
     it('does not go below 0', () => {
-      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, 3, -1000).node.ctx.templates.combat.numAliveAdventurers).toEqual(0);
+      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: 3, delta: -1000})[0].node;
+      expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(0);
     });
     it('does not go above the player count', () => {
-      expect(adventurerDelta(newCombatNode(), TEST_SETTINGS, 2, 1000).node.ctx.templates.combat.numAliveAdventurers).toEqual(3);
+      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: 2, delta: 1000})[0].node;
+      expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(3);
     });
   });
 
@@ -220,10 +215,9 @@ describe('Combat actions', () => {
         <event on="win"></event>
         <event on="lose"></event>
       </combat>`)('combat'), defaultContext());
-      const store = mockStore({});
-      store.dispatch(handleResolvePhase(node));
-      expect(store.getActions()[0].to.phase).toEqual('RESOLVE_ABILITIES');
-      expect(store.getActions()[1].type).toEqual('QUEST_NODE');
+      const actions = Action(handleResolvePhase).execute({node});
+      expect(actions[1].to.phase).toEqual('RESOLVE_ABILITIES');
+      expect(actions[2].type).toEqual('QUEST_NODE');
     });
 
     it('goes to resolve card if conditionally false round event handler', () => {
@@ -235,10 +229,9 @@ describe('Combat actions', () => {
         <event on="lose"></event>
         <event if="false" on="round"><roleplay>bad</roleplay></event>
       </combat>`)('combat'), defaultContext());
-      const store = mockStore({});
-      store.dispatch(handleResolvePhase(node));
-      expect(store.getActions()[0].to.phase).toEqual('RESOLVE_ABILITIES');
-      expect(store.getActions()[1].type).toEqual('QUEST_NODE');
+      const actions = Action(handleResolvePhase).execute({node});
+      expect(actions[1].to.phase).toEqual('RESOLVE_ABILITIES');
+      expect(actions[2].type).toEqual('QUEST_NODE');
     });
 
     it('goes to roleplay card on round event handler', () => {
@@ -252,14 +245,10 @@ describe('Combat actions', () => {
         </event>
         <event on="lose"></event>
       </combat>`)('combat'), defaultContext());
-      const store = mockStore({});
-      store.dispatch(initCombat(node.clone(), TEST_SETTINGS));
-      node = store.getActions()[1].node;
-      store.clearActions();
-
-      store.dispatch(handleResolvePhase(node));
-      expect(store.getActions()[0].node.ctx.templates.combat.roleplay.elem.text()).toEqual('expected');
-      expect(store.getActions()[1].to.phase).toEqual('ROLEPLAY');
+      node = Action(initCombat as any).execute({node: node.clone(), settings: TEST_SETTINGS})[1].node;
+      const actions = Action(handleResolvePhase).execute({node});
+      expect(actions[0].node.ctx.templates.combat.roleplay.elem.text()).toEqual('expected');
+      expect(actions[2].to.phase).toEqual('ROLEPLAY');
     });
   });
 
@@ -284,13 +273,8 @@ describe('Combat actions', () => {
       <roleplay id="outside">Outside Roleplay</roleplay>
     </quest>`)('#c1'), defaultContext());
     {
-      const store = mockStore({});
-      store.dispatch(initCombat(baseNode, TEST_SETTINGS));
-      baseNode = store.getActions()[store.getActions().length-1].node;
-      store.clearActions();
-
-      store.dispatch(handleResolvePhase(baseNode));
-      baseNode = store.getActions()[store.getActions().length-2].node;
+      baseNode = Action(initCombat as any).execute({node: baseNode, settings: TEST_SETTINGS})[1].node;
+      baseNode = Action(handleResolvePhase).execute({node: baseNode})[0].node;
     }
 
     const newCombatNode = () => {
@@ -298,57 +282,47 @@ describe('Combat actions', () => {
     }
 
     it('goes to win screen on **win**', () => {
-      const store = mockStore({});
-      store.dispatch(midCombatChoice(TEST_SETTINGS, newCombatNode(), 0));
-      expect(store.getActions()[1].node.elem.text()).toEqual('win card');
+      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, parent: newCombatNode(), index: 0});
+      expect(actions[1].node.elem.text()).toEqual('win card');
     });
 
     it('goes to lose screen on **lose**', () => {
-      const store = mockStore({});
-      store.dispatch(midCombatChoice(TEST_SETTINGS, newCombatNode(), 1));
-      expect(store.getActions()[1].node.elem.text()).toEqual('lose card');
+      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, parent: newCombatNode(), index: 1});
+      expect(actions[1].node.elem.text()).toEqual('lose card');
     });
 
     it('ends quest on **end**', () => {
-      const store = mockStore({});
-      store.dispatch(midCombatChoice(TEST_SETTINGS, newCombatNode(), 2));
-      expect(store.getActions()[0].to.name).toEqual('QUEST_END');
+      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, parent: newCombatNode(), index: 2});
+      expect(actions[1].to.name).toEqual('QUEST_END');
     });
 
     it('goes to next round when pnode.getNext() falls outside of combat scope', () => {
-      const store = mockStore({});
       const node = newCombatNode();
-
-      store.dispatch(midCombatChoice(TEST_SETTINGS, node, 3));
-      const rp2 = store.getActions()[1].node;
-      store.clearActions();
-
-      store.dispatch(midCombatChoice(TEST_SETTINGS, rp2, 0));
-      expect(store.getActions()[0].to.phase).toEqual('RESOLVE_ABILITIES');
+      const rp2 = Action(midCombatChoice).execute({settings: TEST_SETTINGS, parent: node, index: 3})[2].node;
+      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, parent: rp2, index: 0});
+      expect(actions[1].to.phase).toEqual('RESOLVE_ABILITIES');
     });
 
     it('handles gotos that point to outside of combat', () => {
-      const store = mockStore({});
-      store.dispatch(midCombatChoice(TEST_SETTINGS, newCombatNode(), 4));
-      expect(store.getActions()[1].node.getTag()).toEqual('roleplay');
-      expect(store.getActions()[1].node.elem.text()).toEqual('Outside Roleplay');
+      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, parent: newCombatNode(), index: 4});
+      expect(actions[1].node.getTag()).toEqual('roleplay');
+      expect(actions[1].node.elem.text()).toEqual('Outside Roleplay');
     });
 
     it('handles GOTOs that point to other roleplaying inside of the same combat', () => {
-      const store = mockStore({});
-      store.dispatch(midCombatChoice(TEST_SETTINGS, newCombatNode(), 5));
-      expect(store.getActions()[1].node.getTag()).toEqual('combat');
-      expect(store.getActions()[1].node.ctx.templates.combat.roleplay.elem.text()).toEqual('rp2');
+      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, parent: newCombatNode(), index: 5});
+      expect(actions[2].node.getTag()).toEqual('combat');
+      expect(actions[2].node.ctx.templates.combat.roleplay.elem.text()).toEqual('rp2');
     });
 
     it('renders as combat for RPs inside of same combat', () => {
-      const store = mockStore({});
-      store.dispatch(midCombatChoice(TEST_SETTINGS, newCombatNode(), 3));
-      expect(store.getActions()[1].node.getTag()).toEqual('combat');
+      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, parent: newCombatNode(), index: 3});
+      expect(actions[2].node.getTag()).toEqual('combat');
     });
   });
 
   it('handles global player count change');
 
   it('clears combat state on completion');
+
 });
