@@ -6,8 +6,8 @@
     <p>{{one=1}}</p>
     <p>{{foo=='a'}}</p>
     <p>You should see an error notification, but everything should work.</p>
-    <p>You face choices. Here's the value of one: {{one}}. And a symbol: ☞</p>
-    <choice text="Fight">
+    <p>You face choices. Here's the value of one: {{one}}. And a symbol: ☞ and an icon :roll:</p>
+    <choice text=":fae: Fight">
       <combat data-line="18">
         <e>Thief</e>
         <e>Thief</e>

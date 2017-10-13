@@ -32,6 +32,7 @@ const options = {
         'API_HOST': JSON.stringify(process.env.API_HOST || 'http://betaapi.expeditiongame.com'),
       },
     }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
     new CopyWebpackPlugin([
