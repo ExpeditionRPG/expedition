@@ -1,5 +1,5 @@
 import * as Redux from 'redux'
-import {ViewQuestAction} from './ActionTypes'
+import {SearchResponseAction, ViewQuestAction} from './ActionTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {SearchSettings} from '../reducers/StateTypes'
 import {remoteify} from './ActionTypes'
@@ -39,8 +39,8 @@ export const search = remoteify(function search(a: SearchSettings, dispatch: Red
       quests: response.quests,
       nextToken: response.nextToken,
       receivedAt: response.receivedAt,
-      search: search,
-    });
+      search: a,
+    } as SearchResponseAction);
     if (a.partition === 'expedition-private') {
       dispatch(toCard({name: 'SEARCH_CARD', phase: 'PRIVATE'}));
     } else {
