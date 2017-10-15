@@ -13,9 +13,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   export API_HOST='https://api.expeditiongame.com'
   webpack --config ./webpack.dist.config.js
 
-  # Deploy to prod
+  # Deploy to prod with a 1 day cache
   export AWS_DEFAULT_REGION='us-east-2'
-  aws s3 cp dist s3://quests.expeditiongame.com --recursive
+  aws s3 cp dist s3://quests.expeditiongame.com --recursive --cache-control max-age=86400 --cache-control public
 
   # Invalidate files on cloudfront
   aws cloudfront create-invalidation --distribution-id E1MQUM2X3AHFSG --paths /\*

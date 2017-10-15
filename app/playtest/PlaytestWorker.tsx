@@ -74,7 +74,6 @@ interface RunMessage {
 }
 
 function handleMessage(e: {data: RunMessage}) {
-
   try {
     const crawler = new PlaytestCrawler(null);
     const start = Date.now();
@@ -117,6 +116,7 @@ function handleMessage(e: {data: RunMessage}) {
     asyncTest();
   } catch (e) {
     console.error(e.toString());
+    (postMessage as any)({status: 'COMPLETE'});
   }
 }
 
