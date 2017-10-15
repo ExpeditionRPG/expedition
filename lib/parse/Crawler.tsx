@@ -43,6 +43,13 @@ export abstract class CrawlerBase<C extends Context> {
     return this.traverse(root, timeLimitMillis, depthLimit);
   }
 
+  protected calculateAddedDepth(n: Node<C>): number {
+    // This function calculates and returns the depth "cost" of a node.
+    // Nodes that take more time to engage with (e.g. combat or "prosaic" nodes)
+    // may return a higher score.
+    return 1;
+  }
+
   protected abstract onEvent(q: CrawlEntry<C>, e: CrawlEvent): void;
 
   protected abstract onNode(q: CrawlEntry<C>, nodeStr: string, id: string, line: number): void;
@@ -112,7 +119,7 @@ export abstract class CrawlerBase<C extends Context> {
           prevNodeStr: nstr,
           prevId: id,
           prevLine: line,
-          depth: q.depth + 1
+          depth: q.depth + this.calculateAddedDepth(q.node);
         });
       }
     }
