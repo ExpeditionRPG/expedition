@@ -111,6 +111,12 @@ _Roleplay Card_
 
 > {{a > 1}} Invisible {{b}}
 
+* choice ({{b}})
+
+    _Title {{b}}_
+
+    Text
+
 **end**`;
 
 data.conditionalsXML = `<quest title="Quest Title" data-line="0">
@@ -123,8 +129,13 @@ data.conditionalsXML = `<quest title="Quest Title" data-line="0">
         <instruction if="a &gt; 1">
             <p>Invisible {{b}}</p>
         </instruction>
+        <choice text="choice ({{b}})">
+            <roleplay title="Title {{b}}" data-line="14">
+                <p>Text</p>
+            </roleplay>
+        </choice>
     </roleplay>
-    <trigger data-line="12">end</trigger>
+    <trigger data-line="18">end</trigger>
 </quest>`;
 
 data.commentsMD = `#Quest Title

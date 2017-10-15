@@ -354,11 +354,14 @@ export class BlockRenderer {
     // \*\s*                    Match "*" or "-" and any number of spaces (greedy)
     // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
     // \s*                      Match any number of spaces (greedy)
-    // ([^{]*)                  Match all characters until "{" (greedy)
-    // (\{.*\})?                Optionally match a JSON blob (greedy)
+    // ((?:                     Capture an unlimited number of:
+    //  [^{]|                   Text except {'s
+    //  (?:{{[^}]*}})*)         Ops inside of {{}}'s
+    // *)*)
+    // (\{.*\})?                Optionally match a final JSON blob (greedy)
     // $                        End of string
     try {
-      const m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*([^{]*)(\{.*\})?$/);
+      const m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*((?:[^{]|(?:{{[^}]*}})*)*)(\{.*\})?$/);
       if (m === null) {
         return {
           visible: 'false',
