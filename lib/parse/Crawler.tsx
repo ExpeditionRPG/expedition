@@ -119,7 +119,7 @@ export abstract class CrawlerBase<C extends Context> {
           prevNodeStr: nstr,
           prevId: id,
           prevLine: line,
-          depth: q.depth + this.calculateAddedDepth(q.node);
+          depth: q.depth + this.calculateAddedDepth(q.node),
         });
       }
     }
