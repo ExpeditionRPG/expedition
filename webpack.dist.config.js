@@ -32,6 +32,7 @@ const options = {
         'API_HOST': JSON.stringify(process.env.API_HOST || 'http://betaapi.expeditiongame.com'),
       },
     }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
     new CopyWebpackPlugin([
@@ -42,6 +43,7 @@ const options = {
       { from: 'app/fonts', to: 'fonts'},
       { from: 'app/index.html' },
       { from: 'app/manifest.json' },
+      { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
     ]),
     new webpack.LoaderOptionsPlugin({
       options: {

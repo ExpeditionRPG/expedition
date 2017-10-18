@@ -35,9 +35,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   # iOS
   cordova build ios
 
-  # Deploy web app to prod once apps built
+  # Deploy web app to prod with 1 day cache
   export AWS_DEFAULT_REGION='us-east-2'
-  aws s3 cp www s3://app.expeditiongame.com --recursive
+  aws s3 cp www s3://app.expeditiongame.com --recursive --cache-control max-age=86400 --cache-control public
 
   # Upload the APK for side-loading
   aws s3 cp platforms/android/build/outputs/apk/expedition.apk s3://app.expeditiongame.com/expedition.apk

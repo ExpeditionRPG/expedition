@@ -11,15 +11,15 @@ function loadRP(xml: any, ctx: TemplateContext): RoleplayResult {
 describe('Roleplay', () => {
   describe('Icons', () => {
     it('Parses in body', () => {
-      const result = loadRP(cheerio.load('<roleplay><p>[roll]</p></roleplay>')('roleplay'), defaultContext());
+      const result = loadRP(cheerio.load('<roleplay><p>:roll:</p></roleplay>')('roleplay'), defaultContext());
       expect(result.content).toEqual([ { type: 'text', text: '<p><img class="inline_icon" src="images/roll_small.svg"></p>' } ]);
     });
     it('Parses in choices', () => {
-      const result = loadRP(cheerio.load('<roleplay><choice text="[roll]"></choice></roleplay>')('roleplay'), defaultContext());
+      const result = loadRP(cheerio.load('<roleplay><choice text=":roll:"></choice></roleplay>')('roleplay'), defaultContext());
       expect(result.choices).toEqual([ { idx: 0, text: '<img class="inline_icon" src="images/roll_small.svg">' } ]);
     });
     it('Parses in instructions', () => {
-      const result = loadRP(cheerio.load('<roleplay><instruction>Text [roll]</instruction></roleplay>')('roleplay'), defaultContext());
+      const result = loadRP(cheerio.load('<roleplay><instruction>Text :roll:</instruction></roleplay>')('roleplay'), defaultContext());
       expect(result.content).toEqual([ { type: 'instruction', text: 'Text <img class="inline_icon" src="images/roll_small.svg">' } ]);
     });
   });
@@ -40,6 +40,10 @@ describe('Roleplay', () => {
     it('Processes and displays strings', () => {
       const result = loadRP(cheerio.load('<roleplay><p>{{j = "BOB"}}{{j}}</p></roleplay>')('roleplay'), defaultContext());
       expect(result.content).toEqual([ { type: 'text', text: '<p>BOB</p>' } ]);
+    });
+    it('Displays ops inside of choices', () => {
+      const result = loadRP(cheerio.load('<roleplay><p>{{j = "BOB"}}</p><choice text="{{j}}"></choice></roleplay>')('roleplay'), defaultContext());
+      expect(result.choices).toEqual([ { idx: 0, text: 'BOB' } ]);
     });
     it('Respects conditionals when computing Next vs End button', () => {
       const quest = cheerio.load('<quest><roleplay><p>{{a=true}}</p></roleplay><trigger if="a">end</trigger><roleplay>test</roleplay></quest>')('quest');
