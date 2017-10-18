@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const path = require('path');
 const port = process.env.DOCKER_PORT || 8082;
@@ -51,6 +52,9 @@ const options = {
         'API_HOST': JSON.stringify(process.env.API_HOST || 'http://betaapi.expeditiongame.com'),
       },
     }),
+    new CopyWebpackPlugin([
+      { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
+    ]),
     new DashboardPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),

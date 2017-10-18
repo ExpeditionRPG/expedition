@@ -43,6 +43,7 @@ const options = {
       { from: 'app/fonts', to: 'fonts'},
       { from: 'app/index.html' },
       { from: 'app/manifest.json' },
+      { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
     ]),
     new webpack.LoaderOptionsPlugin({
       options: {
