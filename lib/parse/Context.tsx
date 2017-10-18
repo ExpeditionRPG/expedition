@@ -98,7 +98,7 @@ export function evaluateOp(op: string, ctx: Context): any {
   } catch (err) {
     const message = err.message + ' Op: (' + op + ')';
     if (window.onerror) {
-      window.onerror(message, 'expedition-qdl/parse/context');
+      return window.onerror(message, 'expedition-qdl/parse/context');
     } else {
       throw new Error(message);
     }
