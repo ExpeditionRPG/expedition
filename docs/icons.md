@@ -1,8 +1,10 @@
 # Expedition Quest Creator Icons
 
-You can insert icons into your quest using `:icon_name:`. Inline icons are currently supported in roleplaying cards, instruction elements and in the titles of choices.
+You can insert icons into your quest using `:icon_name:`. Inline icons are currently supported in roleplaying cards, instruction elements, and in the titles of choices. You can also use icons as the background watermark on a page via `_Card title_ {"icon":"adventurer"}`, though we recommend using watermarks on less than a quarter of your cards, so that when the watermark does appear, players know it's emphasizing something.
 
-We recommend only using icons as unique symbols, not as a replacement for words. (i.e. **DON'T:** use the d20 icon instead of the word die, such as in `> Roll a die`. **DO:** use the bandit icon to show what the thief's tatoo looks like)
+We recommend using icons as unique symbols, not as a replacement for words. (i.e. **DON'T:** use the d20 icon instead of the word die, such as in `> Roll a die`. **DO:** use the bandit icon to show what the thief's tatoo looks like). You can also replace the default instruction icon to make it clearer what the instruction is about; for example `> :loot: Draw one tier II loot` or `> :roll: Roll a die to try to sneak past the guards`.
+
+Want an icon that's not on this list? [Create a new issue](https://github.com/ExpeditionRPG/expedition-quest-creator/issues/new) to let us know!
 
 At this time, you can use the following Expedition-themed icons:
 
