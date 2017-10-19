@@ -54,16 +54,16 @@ export class BlockRenderer {
       let lineIdx = 0;
       for (let line of lines) {
         lineIdx++;
-        // TODO November / once we have support for [art] - remove [icon] errors if they're on their own line
-        // https://github.com/ExpeditionRPG/expedition-app/issues/403
-        if (REGEX.ICON_OLD.test(line)) {
-          const icon = line.match(REGEX.ICON_OLD)[0].replace('[', '').replace(']', '');
+        const invalidArt = REGEX.INVALID_ART.exec(line);
+        if (invalidArt) {
           log.err(
-            `use :${icon}: instead of [${icon}]`,
+            `[${invalidArt[1]}] should be on its own line`,
             '435',
             block.startLine
           );
-        } else if (line.indexOf('* ') === 0) {
+        }
+
+        if (line.indexOf('* ') === 0) {
           let bullet = this.extractBulleted(line, block.startLine + lineIdx, log);
           choice = (bullet) ? Object.assign({}, bullet, {choice: []}) : null;
           // TODO: Assert end of lines.
