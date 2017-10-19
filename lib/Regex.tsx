@@ -8,7 +8,7 @@ export default {
   HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,
 
   // Detects icons in []'s (old syntax)
-  ICON_OLD: /\[([a-z_0-9]*)\]/ig,
+  INVALID_ART: /.+\[([a-z_0-9]*)\].+/ig,
 
   // For selecting ID references, example: (#idName)
   ID: /\(#[a-zA-Z]*\)/g,
