@@ -3,7 +3,7 @@ import {Context} from './Context'
 
 const FastPriorityQueue: any = require('fastpriorityqueue');
 
-export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END';
+export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END' | 'MAX_DEPTH_EXCEEDED';
 
 export type CrawlEntry<C extends Context> = {node: Node<C>, prevNodeStr: string, prevId: string, prevLine: number, depth: number};
 
@@ -70,6 +70,7 @@ export abstract class CrawlerBase<C extends Context> {
 
       // If we've gone too deep into the quest, don't crawl further.
       if (depthLimit && q.depth >= depthLimit) {
+        this.onEvent(q, 'MAX_DEPTH_EXCEEDED');
         continue;
       }
 
