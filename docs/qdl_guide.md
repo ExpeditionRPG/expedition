@@ -386,6 +386,10 @@ Using elements, roleplaying cards can be more than just text.
 
 As covered in the **branching** section, you can include choice elements inside of cards.
 
+### Art
+
+You can embed large images in cards for visually important things, such as showing off a symbol found on a lock. Simply add `[art_name]` to a roleplaying card's contents. By default, art takes up 50% of the width of the card, reducing the amount players need to scroll. If it's important for the art to take up the full width of the card, you can append `_full` to the end, such as `[art_name_full]`. As of October 19th, 2017, you can use any icon listed on the [icon help page](icons.md) as art, with more art on its way!
+
 ### Icons
 
 You can embed inline icons to make your quest more visually interesting! Simply add `:icon_name:` to roleplaying text, instructions or choices.

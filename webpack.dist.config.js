@@ -49,6 +49,7 @@ const options = {
       { from: 'app/index.html', to: 'dist' },
       { from: 'app/assets', to: 'dist' },
       { from: 'node_modules/expedition-app/app/images', to: 'dist/images' },
+      { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './dist/images' },
       { from: 'app/dictionaries', to: 'dist/dictionaries'},
       { from: 'app/scripts', to: 'dist/scripts' },
 

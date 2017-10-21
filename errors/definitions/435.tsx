@@ -1,6 +1,6 @@
 export const NUMBER = 435;
-export const NAME = `Use :icon: instead of [icon]`;
-export const DESCRIPTION = `Using brackets for icons has been depricated to make way for more features! Icons should now be surrounded by colons.`;
+export const NAME = `[art] should be on its own line.`;
+export const DESCRIPTION = `Or, you can change it to :icon: for a smaller icon that's inline with the text.`;
 
 export const TEST_WITH_CRAWLER = true;
 
