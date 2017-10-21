@@ -20,8 +20,12 @@ Router.use(oauth2.template);
 
 const limitCors = Cors({
   credentials: true,
-  // allows expedition domains, localhost and file (for dev + mobile apps)
-  origin: /(expedition(game|rpg)\.com$)|(localhost(:[0-9]+)?$)|(^file:\/\/)/i,
+  // Allow:
+  // - expedition domains (for web apps)
+  // - file (for mobile apps)
+  // - localhost (for local dev)
+  // - *.local (for dev on mobile)
+  origin: /(expedition(game|rpg)\.com$)|(^file:\/\/)|(localhost(:[0-9]+)?$)|(.*\.local(:[0-9]+)?$)/i,
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 });
 
