@@ -3,7 +3,7 @@ import {Context} from './Context'
 
 const FastPriorityQueue: any = require('fastpriorityqueue');
 
-export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END' | 'MAX_DEPTH_EXCEEDED';
+export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END' | 'MAX_DEPTH_EXCEEDED' | 'ALREADY_SEEN';
 
 export type CrawlEntry<C extends Context> = {node: Node<C>, prevNodeStr: string, prevId: string, prevLine: number, depth: number};
 
@@ -65,7 +65,6 @@ export abstract class CrawlerBase<C extends Context> {
 
     const start = Date.now();
     while(this.queue.size > 0 && (!timeLimitMillis || (Date.now() - start) < timeLimitMillis)) {
-
       const q = this.queue.poll();
 
       // If we've gone too deep into the quest, don't crawl further.
@@ -101,6 +100,7 @@ export abstract class CrawlerBase<C extends Context> {
       // don't act on it.
       const nstr = q.node.getComparisonKey();
       if (this.seen.has(nstr)) {
+        this.onEvent(q, 'ALREADY_SEEN');
         continue;
       }
       this.seen.add(nstr);
