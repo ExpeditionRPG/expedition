@@ -10,6 +10,9 @@ export default {
   // Detects icons in []'s (old syntax)
   INVALID_ART: /.+\[([a-z_0-9]*)\].+/ig,
 
+  // [art] or :icon: - captures the entire thing
+  ART_OR_ICON: /([\[:][a-z_0-9]*[\]:])/ig,
+
   // For selecting ID references, example: (#idName)
   ID: /\(#[a-zA-Z]*\)/g,
 
