@@ -48,6 +48,24 @@ patch:
         patched: '2017-09-27T14:10:03.844Z'
     - expedition-app > socket.io > socket.io-parser > debug:
         patched: '2017-09-27T14:10:03.844Z'
+    - expedition-app > expedition-qdl > karma > socket.io > socket.io-parser > debug:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma > socket.io > socket.io-client > socket.io-parser > debug:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma-phantomjs-launcher > phantomjs-prebuilt > extract-zip > debug:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma > socket.io > socket.io-adapter > debug:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma > socket.io > debug:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma > socket.io > engine.io > debug:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma > socket.io > socket.io-client > debug:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma > socket.io > socket.io-client > engine.io-client > debug:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma > socket.io > socket.io-adapter > socket.io-parser > debug:
+        patched: '2017-10-21T16:29:53.455Z'
   'npm:ms:20170412':
     - ace > debug > ms:
         patched: '2017-09-27T14:10:03.844Z'
@@ -91,6 +109,24 @@ patch:
         patched: '2017-09-27T14:10:03.844Z'
     - expedition-qdl > karma > socket.io > socket.io-client > engine.io-client > debug > ms:
         patched: '2017-09-27T14:10:03.844Z'
+    - expedition-app > expedition-qdl > karma > socket.io > socket.io-client > engine.io-client > debug > ms:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma > socket.io > socket.io-adapter > socket.io-parser > debug > ms:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma > socket.io > socket.io-client > socket.io-parser > debug > ms:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma-phantomjs-launcher > phantomjs-prebuilt > extract-zip > debug > ms:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma > socket.io > socket.io-adapter > debug > ms:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma > socket.io > debug > ms:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma > socket.io > engine.io > debug > ms:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma > socket.io > socket.io-client > debug > ms:
+        patched: '2017-10-21T16:29:53.455Z'
+    - expedition-app > expedition-qdl > karma > socket.io > socket.io-parser > debug > ms:
+        patched: '2017-10-21T16:29:53.455Z'
   'npm:ms:20151024':
     - expedition-app > serve-waterfall > send > debug > ms:
         patched: '2017-09-27T14:10:03.844Z'
