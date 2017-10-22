@@ -25,7 +25,6 @@ import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 // TODO: Fix redux types
 import thunk from 'redux-thunk'
 
-
 const injectTapEventPlugin = require('react-tap-event-plugin');
 
 function setupTapEvents() {

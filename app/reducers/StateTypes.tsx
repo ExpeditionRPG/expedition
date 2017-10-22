@@ -116,7 +116,6 @@ export interface UserFeedbackState {
 export type SessionMetadata = {id: SessionID, peerCount: number, questTitle: string, firstContact: Date};
 export interface RemotePlayState {
   session: Session;
-  uri: string;
   history: SessionMetadata[];
 }
 

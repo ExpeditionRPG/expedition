@@ -3,8 +3,24 @@ import {RemotePlayEvent, ClientID} from 'expedition-qdl/lib/remote/Events'
 import {ClientBase} from 'expedition-qdl/lib/remote/Client'
 import {local} from './actions/RemotePlay'
 import * as Bluebird from 'bluebird'
+import * as firebase from 'firebase'
+require('firebase/firestore'); // Needed as side effect to use firestore
+
+firebase.initializeApp({
+  apiKey: 'AIzaSyAVJX4xTB6eREniGPl6QmreR4y_rtxeSCY',
+  authDomain: 'expedition-remote-play.firebaseapp.com',
+  databaseURL: 'https://expedition-remote-play.firebaseio.com',
+  projectId: 'expedition-remote-play',
+  storageBucket: 'expedition-remote-play.appspot.com',
+  messagingSenderId: '22607012202',
+});
 
 const REMOTEPLAY_CLIENT_STATUS_POLL_MS = 5000;
+
+console.log(firebase);
+
+// Initialize Cloud Firestore through Firebase
+const db = firebase.firestore();
 
 // The base layer of the remote play network framework. Key features:
 // - handling of web socket connections
@@ -12,65 +28,83 @@ const REMOTEPLAY_CLIENT_STATUS_POLL_MS = 5000;
 // - Serializing "executable arrays" and broadcasting them
 // - Unpacking and executing serialized actions locally
 export class RemotePlayClient extends ClientBase {
-  private websocketURI: string;
-  private sock: WebSocket;
-  private statusTimer: number;
-  private actionSet: {[name: string]: any} = {};
+  private sessionRef: firebase.firestore.DocumentReference;
+  private connected: boolean;
+  private unsubscribers: any[];
 
-  connect(websocketURI: string): Bluebird<{}> {
-    return new Bluebird<{}>((resolve, reject) => {
-      if (this.isConnected()) {
-        this.disconnect();
-      }
-      this.websocketURI = websocketURI;
-      this.sock = new WebSocket(this.websocketURI, 'expedition-remote-play-1.0');
-      this.sock.onerror = (e: Event) => {
-        this.handleMessage({client: this.id, event: {type: 'ERROR', error: 'Socket error: ' + e.toString()}});
-      };
-      this.sock.onmessage = (e: MessageEvent) => {
-        this.handleMessage(JSON.parse(e.data));
-      };
 
-      let opened = false;
-      this.sock.onclose = () => {
-        // TODO: Attempt to reconnect with random exponential backoff.
-        // This should be displayed to the user in some way.
-        console.error('Socket closed');
-        if (!opened) {
-          reject('Socket closed');
+  connect(sessionID: string): Bluebird<{}> {
+    if (this.isConnected() || (this.unsubscribers && this.unsubscribers.length)) {
+      this.disconnect();
+    }
+    this.unsubscribers = [];
+    this.sessionRef = db.collection('sessions').doc(sessionID.toString());
+
+
+    this.unsubscribers.push(this.sessionRef.collection('events').onSnapshot((events) => {
+      events.docChanges.forEach((change) => {
+          if (change.type !== 'added') {
+            console.log('Mod or removed events. This is weird! TODO');
+            return;
+          }
+          this.handleMessage(change.doc.data() as RemotePlayEvent);
+      });
+    }));
+
+
+    this.sessionRef.set({lastUpdate: Date.now()}).then(() => {
+      firebase.database().ref('.info/connected').on('value', (snapshot) => {
+      // If we're not currently connected, don't do anything.
+      if (snapshot.val() === false) {
+        this.connected = false;
+          return;
+      } else {
+        console.log('Connected!');
+        this.connected = true;
+        if (this.sessionRef) {
+          this.sendEvent({type: 'STATUS', status: {line: 0, waiting: false}});
         }
       };
-      this.sock.onopen = () => {
-        opened = true;
-        // We periodically broadcast our status to other players so they
-        // know we're connected and healthy.
-        this.statusTimer = (setInterval(() => {
-          if (!this.isConnected()) {
-            clearInterval(this.statusTimer);
-            console.log('Stopped sending status; socket not open');
-          }
-          this.sendEvent({type: 'STATUS', status: {line: 0, waiting: false}});
-        }, REMOTEPLAY_CLIENT_STATUS_POLL_MS)) as any;
-
-        resolve();
-      }
+      // TODO: Use onDisconnect() to set online state for others to see
+      });
     });
+
+    return Bluebird.resolve({});
   }
 
   isConnected(): boolean {
-    return (this.sock && this.sock.readyState === this.sock.OPEN);
+    return this.connected;
   }
 
   disconnect() {
-    this.sock.close();
+    for (const unsub of this.unsubscribers) {
+      unsub();
+    }
+    this.connected = false;
+    firebase.database().ref('.info/connected').off();
+    firebase.database().goOffline();
   }
 
   sendEvent(e: any): void {
-    if (!this.sock || this.sock.readyState !== this.sock.OPEN) {
+    if (!this.isConnected()) {
       return;
     }
+    console.log('Starting transaction');
+    const start = Date.now();
     const event: RemotePlayEvent = {client: this.id, event: e};
-    this.sock.send(JSON.stringify(event));
+    db.runTransaction((txn) => {
+        // This code may get re-run multiple times if there are conflicts.
+        return txn.get(this.sessionRef).then((sessionDoc) => {
+          // Update the main document here, to prevent concurrent events from causing conflicts.
+          txn.update(this.sessionRef, {lastUpdate: Date.now()});
+          txn.set(this.sessionRef.collection('events').doc(), event);
+        });
+    }).then(() => {
+        const runtime = (Date.now() - start);
+        console.log('Event published - took ' + runtime + ' ms');
+    }).catch((error) => {
+        console.error(error);
+    });
   }
 
   public createActionMiddleware(): Redux.Middleware {

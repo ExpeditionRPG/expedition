@@ -30,6 +30,7 @@ const options = {
         // Default to beta for safety
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'dev'),
         'API_HOST': JSON.stringify(process.env.API_HOST || 'http://betaapi.expeditiongame.com'),
+        'SERVICE_HOST': JSON.stringify(process.env.SERVICE_HOST || 'http://localhost:8080'),
       },
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),

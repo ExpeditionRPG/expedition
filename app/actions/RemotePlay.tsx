@@ -69,7 +69,7 @@ export function remotePlayNewSession(user: UserState) {
 }
 
 export function remotePlayConnect(user: UserState, secret: string) {
-  let uri = '';
+  let session = '';
   return (dispatch: Redux.Dispatch<any>): any => {
     fetch(remotePlaySettings.connectURI, {
       method: 'POST',
@@ -84,21 +84,24 @@ export function remotePlayConnect(user: UserState, secret: string) {
       return response.json();
     })
     .then((data: any) => {
-      if (!data.uri) {
-        return dispatch(openSnackbar('Error parsing session URI'));
+      if (!data.session) {
+        console.log(data);
+        return dispatch(openSnackbar('Error parsing session'));
       }
-      uri = data.uri;
+      session = data.session;
       const c = getRemotePlayClient();
       c.setID(user.id.toString());
-      return c.connect(uri);
+      return (c.connect(session) as any);
     })
     .then(() => {
-      dispatch({type: 'REMOTE_PLAY_SESSION', session: {secret}, uri});
+      dispatch({type: 'REMOTE_PLAY_SESSION', session: {secret, id: session}});
       dispatch(toCard({name: 'REMOTE_PLAY', phase: 'LOBBY'}));
     })
     .catch((error: Error) => {
       logEvent('remote_play_connect_err', error.toString());
+      console.error(error);
       dispatch(openSnackbar('Error connecting: ' + error.toString()));
+
     });
   };
 }
@@ -106,6 +109,9 @@ export function remotePlayConnect(user: UserState, secret: string) {
 // TODO: Move to RemotePlay actions file
 export function loadRemotePlay(user: UserState) {
   return (dispatch: Redux.Dispatch<any>): any => {
+    if (!user || !user.id) {
+      throw new Error('you are not logged in');
+    }
     fetch(remotePlaySettings.firstLoadURI + '?id=' + user.id, {
       method: 'GET',
       mode: 'cors',

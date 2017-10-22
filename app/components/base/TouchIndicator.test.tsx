@@ -1,3 +1,3 @@
-describe('TouchPanel', () => {
+describe('TouchIndicator', () => {
   // TODO
 });
