@@ -1,9 +1,7 @@
 declare var window:any;
-console.log(process);
-console.log(process && process.env);
 export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
 export const API_HOST = (process && process.env && process.env.API_HOST) || 'http://betaapi.expeditiongame.com';
-export const SERVICE_HOST = (process && process.env && process.env.SERVICE_HOST) || 'http://localhost:8080';
+export const SERVICE_HOST = (process && process.env && process.env.SERVICE_HOST) || 'http://betaservice.expeditiongame.com';
 export const authSettings = {
   urlBase: API_HOST,
   // urlBase: 'https://api.expeditiongame.com',
