@@ -1,6 +1,6 @@
 {
   "name": "expedition-quest-creator",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "The Expedition Quest Creation",
   "homepage": "http://expeditiongame.com",
   "repository": "https://github.com/ExpeditionRPG/expedition-quest-creator",
@@ -34,8 +34,8 @@
     "brace": "^0.10.0",
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.1",
-    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#8ac4d15347299ac3302e3a8cb3495ba3beb112e8",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#6e685feb417016035f44044b1dbdf111da0c6de3",
+    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#5e74e4285741b13d281c8991d5b269b6a69317da",
+    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#c8ecfd1d99713f31bbcc8bd181582c1b7c1a658c",
     "forwarded": "^0.1.0",
     "google-auth-library": "^0.10.0",
     "google-url": "0.0.4",
