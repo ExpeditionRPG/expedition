@@ -1,6 +1,8 @@
 <quest title="Test Quest" data-line="0">
   <roleplay skipSetup="true" title="Setup" data-line="2">
-    <p>Custom setup card, replacing the default quest setup card.</p>
+    <p>Custom setup card, replacing the default quest setup card. Half and full-width art:</p>
+    <p>[roll]</p>
+    <p>[hound_of_tindalos_full]</p>
   </roleplay>
   <roleplay title="Test" id="start" data-line="6">
     <p>{{one=1}}</p>

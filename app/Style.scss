@@ -174,7 +174,7 @@ h1 {
 h2 {
   font-size: 1.5em;
   .inline_icon {
-    width: 6.5vmin;
+    height: 6.5vmin;
     margin-bottom: -1.0vmin;
   }
 }
@@ -207,6 +207,34 @@ span.line {
   margin-top: 0.25em;
 }
 
+.artFull {
+  .art {
+    max-width: 100%;
+    margin: auto;
+    display: block;
+  }
+}
+.artHalf {
+  width: 100%;
+  padding-top: 50%;
+  position: relative;
+  overflow: hidden;
+  height: auto;
+  display: block;
+
+  .art {
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
 @mixin styling() {
 
   button {
@@ -235,7 +263,6 @@ span.line {
         }
         .inline_icon {
           height: $largeFontMult * fontsize(flavor);
-          width: $largeFontMult * fontsize(flavor);
         }
       }
     }
@@ -247,7 +274,6 @@ span.line {
         }
         .inline_icon {
           height: $smallFontMult * fontsize(flavor);
-          width: $smallFontMult * fontsize(flavor);
         }
       }
     }
@@ -258,10 +284,6 @@ span.line {
     display: flex;
     flex-direction: column;
     background-color: $bg_primary;
-    background-image: url(images/papyrus-tiled.jpg);
-    background-size: 100% auto;
-    background-repeat: repeat;
-    background-position: 0 0;
     color: $font_color_primary;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -280,6 +302,9 @@ span.line {
       .scrollbox_top {
         display: none;
       }
+      .article {
+        background: none;
+      }
       .base_button > button, .base_checkbox button, .base_picker {
         background-color: $bg_red_interactive !important;
         svg {
@@ -292,7 +317,6 @@ span.line {
     }
     &.DARK {
       background-color: $bg_dark_primary;
-      background-image: url(images/encounter-tiled.jpg);
       color: $font_color_dark_primary;
       .scrollbox_top {
         display: none;
@@ -302,6 +326,9 @@ span.line {
         svg {
           color: $font_color_dark_primary !important;
         }
+      }
+      .article {
+        background-image: url(images/encounter-tiled.jpg);
       }
       .base_button > button, .base_checkbox button, .base_picker {
         background-color: $bg_dark_interactive !important;
@@ -331,8 +358,15 @@ span.line {
     }
     .article {
       position: relative;
+      min-height: max-content;
+      height: 100%;
       padding: size(base) 0;
       font-size: fontsize(flavor);
+      background-image: url(images/papyrus-tiled.jpg);
+      background-size: 100% auto;
+      background-repeat: repeat;
+      background-position: 0 0;
+
       .scrollbox_top {
         margin-top: size(tiny);
         margin-bottom: -(size(base));
@@ -412,7 +446,6 @@ span.line {
         }
         .inline_icon {
           height: fontsize(flavor);
-          width: fontsize(flavor);
         }
       }
     }
@@ -431,7 +464,7 @@ span.line {
   }
 
   .inline_icon {
-    width: size(icon);
+    height: size(icon);
     margin-bottom: -(size(tiny));
   }
 
@@ -940,7 +973,6 @@ span.line {
       display: inline-block;
       .inline_icon {
         padding-right: size(small);
-        width: fontsize(flavor);
         height: fontsize(flavor);
       }
     }

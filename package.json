@@ -75,6 +75,7 @@
   "dependencies": {
     "@types/seedrandom": "^2.4.27",
     "ansi-styles": "^3.0.0",
+    "bluebird": "^3.5.1",
     "browser-sync-client": "^2.4.1",
     "browser-sync-ui": "^0.6.3",
     "chalk": "^1.1.1",
@@ -104,7 +105,7 @@
     "es6-promise-plugin": "^4.1.0",
     "escape-string-regexp": "^1.0.4",
     "expedition-art": "git+https://github.com/ExpeditionRPG/expedition-art.git",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#bd38b3c68a262bd41cc6533b548b37f35c7622c3",
+    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#9c0128b844108007798efafc86c271ae16ccba4c",
     "findup-sync": "^0.4.3",
     "has-ansi": "^2.0.0",
     "he": "^1.1.0",
@@ -131,13 +132,13 @@
     "serve-index": "^1.7.3",
     "serve-static": "^1.10.2",
     "serve-waterfall": "^1.1.1",
+    "snyk": "^1.44.1",
     "socket.io": "^1.4.5",
     "strip-ansi": "^3.0.0",
     "ucfirst": "^1.0.0",
     "update": "^0.7.4",
     "whatwg-fetch": "^2.0.3",
-    "xtend": "^4.0.1",
-    "snyk": "^1.44.1"
+    "xtend": "^4.0.1"
   },
   "cordova": {
     "plugins": {
