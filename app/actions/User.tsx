@@ -2,6 +2,7 @@ import Redux from 'redux'
 
 import {API_HOST} from '../Constants'
 import {SetProfileMetaAction} from './ActionTypes'
+import {setSnackbar} from './Snackbar'
 import {UserState} from '../reducers/StateTypes'
 import {loadQuestFromURL} from './Quest'
 import {realtimeUtils} from '../Auth'
@@ -30,23 +31,27 @@ export function loginUser(showPrompt: boolean, quest?: boolean | string): ((disp
               image: res.image.url,
               email: ((res.emails || [])[0] || {}).value,
             };
-            $.post(API_HOST + '/auth/google', JSON.stringify(googleUser), (data) => {
-              const user = {
-                loggedIn: true,
-                id: data,
-                displayName: googleUser.name,
-                image: googleUser.image,
-                email: googleUser.email,
-              };
-              dispatch(setProfileMeta(user));
-              if (quest) {
-                if (quest === true) { // create a new quest
-                  dispatch(loadQuestFromURL(user, null));
-                } else if (typeof quest === 'string') {
-                  dispatch(loadQuestFromURL(user, quest));
-                }
-              }
-            });
+            $.post(API_HOST + '/auth/google', JSON.stringify(googleUser))
+                .done((data: any) => {
+                  const user = {
+                    loggedIn: true,
+                    id: data,
+                    displayName: googleUser.name,
+                    image: googleUser.image,
+                    email: googleUser.email,
+                  };
+                  dispatch(setProfileMeta(user));
+                  if (quest) {
+                    if (quest === true) { // create a new quest
+                      dispatch(loadQuestFromURL(user, null));
+                    } else if (typeof quest === 'string') {
+                      dispatch(loadQuestFromURL(user, quest));
+                    }
+                  }
+                })
+                .fail((xhr: any, status: string) => {
+                  dispatch(setSnackbar(true, 'Login error ' + status + ' - please report via Contact Us button!'));
+                });
           });
         });
       }

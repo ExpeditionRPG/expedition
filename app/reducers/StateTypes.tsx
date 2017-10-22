@@ -16,6 +16,11 @@ export interface AnnotationType {
   type: 'warning' | 'error' | 'info' | 'internal';
 }
 
+export interface AnnotationsState {
+  spellcheck: AnnotationType[];
+  playtest: AnnotationType[];
+}
+
 export interface XMLElement {
   remove(): void;
   children: XMLElement[];
@@ -111,7 +116,7 @@ export interface UserState {
 }
 
 export interface AppState {
-  annotations: AnnotationType[];
+  annotations: AnnotationsState;
   dialogs: DialogsState;
   editor: EditorState;
   quest: QuestType;

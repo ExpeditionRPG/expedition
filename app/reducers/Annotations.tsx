@@ -1,7 +1,12 @@
 import Redux from 'redux'
 import {LogMessage, LogMessageMap} from 'expedition-qdl/lib/render/Logger'
-import {AnnotationType} from './StateTypes'
+import {AnnotationType, AnnotationsState} from './StateTypes'
 import {QuestRenderAction, QuestPlaytestAction} from '../actions/ActionTypes'
+
+const initialAnnotations: AnnotationsState = {
+  spellcheck: [],
+  playtest: [],
+};
 
 function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: Set<number>): void {
   for (let m of msgs) {
@@ -21,26 +26,11 @@ function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: 
   }
 }
 
-export function annotations(state: AnnotationType[] = [], action: Redux.Action): AnnotationType[] {
-  // Transfer accumulated errors into state.
-  let msgs: LogMessageMap;
-  let result: AnnotationType[] = [];
-
-  switch (action.type) {
-    case 'PLAYTEST_MESSAGE':
-      msgs = (action as QuestPlaytestAction).msgs;
-      result = [...state]; // Persist other messages from render
-      break;
-    case 'QUEST_RENDER':
-      msgs = (action as QuestRenderAction).msgs;
-      break;
-    default:
-      return state;
-  }
-
+function messagesToErrors(msgs: LogMessageMap): AnnotationType[] {
   // Don't render info lines here.
   // TODO: Conditionally render info lines based on user settings
-  var errorLines = new Set<number>();
+  let result: AnnotationType[] = [];
+  const errorLines = new Set<number>();
   toAnnotation(msgs.warning, result, errorLines);
   toAnnotation(msgs.error, result, errorLines);
   toAnnotation(msgs.internal, result, errorLines);
@@ -55,4 +45,25 @@ export function annotations(state: AnnotationType[] = [], action: Redux.Action):
   });
 
   return result;
+}
+
+export function annotations(state: AnnotationsState = initialAnnotations, action: Redux.Action): AnnotationsState {
+  switch (action.type) {
+    case 'PLAYTEST_INIT':
+      return {...state, playtest: []};
+    case 'PLAYTEST_MESSAGE':
+      return {
+        ...state,
+        playtest: [...state.playtest, ...messagesToErrors((action as QuestPlaytestAction).msgs)],
+      };
+    case 'QUEST_RENDER':
+      return {
+        ...state,
+        spellcheck: messagesToErrors((action as QuestRenderAction).msgs),
+      };
+    default:
+      return state;
+  }
+
+
 }
