@@ -65,11 +65,11 @@ export function sanitizeStyles(string: string): string {
   // replace markdown with HTML tags
   // general case: replace anything surrounded by markdown styles with their matching HTML tag:
   // \*\*([^\*]*)\*\*       non-greedily match the contents between two sets of **
-  string = string.replace(/\*\*([^\*]*)\*\*/g, '<b>$1</b>');
-  string = string.replace(/\_\_([^\_]*)\_\_/g, '<b>$1</b>');
-  string = string.replace(/\*([^\*]*)\*/g, '<i>$1</i>');
-  string = string.replace(/\_([^\_]*)\_/g, '<i>$1</i>');
-  string = string.replace(/~~([^~]*)~~/g, '<del>$1</del>');
+  string = string.replace(REGEX.BOLD_ASTERISKS, '<b>$1</b>');
+  string = string.replace(REGEX.BOLD_UNDERSCORES, '<b>$1</b>');
+  string = string.replace(REGEX.ITALIC_ASTERISKS, '<i>$1</i>');
+  string = string.replace(REGEX.ITALIC_UNDERSCORES, '<i>$1</i>');
+  string = string.replace(REGEX.STRIKETHROUGH, '<del>$1</del>');
 
   // Insert stored ops contents back into ops
   string = string.replace(/{{}}/g, () => ops.shift());
