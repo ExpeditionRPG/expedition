@@ -1,6 +1,7 @@
+import REGEX from '../../../node_modules/expedition-qdl/lib/Regex'
 const acequire: any = (require('brace') as any).acequire;
 const oop = acequire('ace/lib/oop') as any;
-const { Range } = acequire('ace/range');
+const {Range} = acequire('ace/range');
 const TextMode = (acequire('ace/mode/text') as any).Mode;
 const MatchingBraceOutdent = (acequire('ace/mode/matching_brace_outdent') as any).MatchingBraceOutdent;
 const MarkdownHighlightRules = (acequire('ace/mode/markdown_highlight_rules') as any).MarkdownHighlightRules;
@@ -18,21 +19,56 @@ var QDLHighlightRules: any = function() {
     }
   }
 
-  let start = this.$rules['start'];
-  for (let s in start) {
-    if (start[s].token === 'markup.list') {
-      start[s].regex = '^\\s*(?:[*+-]|\\d+\\.)\\s+';
-    }
-    if (start[s].token === 'markup.heading.1') {
-      start[s].regex = '^\s*(> .*)';
-    }
-  }
+  // Override Markdown defaults for a better QDL experience
+  // token names are separated by .'s; they're all applied as class ace_[token] to matching elements
+  this.$rules['start'] = [
+    {
+      token: 'comment', // faded and italic
+      regex: /^\s*(\/\/.*)|(\/\*.*\*\/)/,
+    },
+    {
+      token: 'variable', // blue
+      regex: combineRegexs([
+        REGEX.OP,
+        REGEX.TRIGGER,
+        REGEX.ID
+      ]),
+    },
+    {
+      token: 'heading', // red
+      regex: /^\s*((> .*)|(_.*_))/,
+    },
+    {
+      token: 'list', // yellow
+      regex: /^\s*[*+-]\s+.*/,
+    },
+    {
+      token: 'string', // green
+      regex: combineRegexs([
+        REGEX.ART_OR_ICON,
+        REGEX.BOLD_ASTERISKS,
+        REGEX.BOLD_UNDERSCORES,
+        REGEX.ITALIC_ASTERISKS,
+        REGEX.ITALIC_UNDERSCORES,
+        REGEX.STRIKETHROUGH
+      ]),
+    },
+    {
+      defaultToken: 'text.xml',
+    },
+  ];
 };
 oop.inherits(QDLHighlightRules, MarkdownHighlightRules);
 
 
-class QDLFoldMode {
+// Takes in array of regexs, returns a single regex that ORs them
+function combineRegexs(regexs: any): any {
+  const sources = regexs.map((regex: any) => { return regex.source});
+  return new RegExp(sources.join('|'));
+}
 
+
+class QDLFoldMode {
   // least to most important; which is to say that folds end on lines of equal or greater importance
   // will fold all less important lines inside of them (ie titles will fold cards, but choices will stop at cards)
   static foldingStartMarkers = [
