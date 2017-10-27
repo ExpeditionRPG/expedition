@@ -268,6 +268,36 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
+    it('renders roleplay with title that has icon', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        { lines: ['_Title with :roll:, :rune_alpha:_', 'Victory!', '' ],
+          indent: 4,
+          startLine: 21
+        }
+      ];
+
+      br.toRoleplay(blocks, log)
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayTitleIcons);
+      expect(prettifyMsgs(log.finalize())).toEqual('');
+    });
+
+    it('renders roleplay with title that has icon and ID', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        { lines: ['_Title with :roll:, :rune_alpha:_ (#id)', 'Victory!', '' ],
+          indent: 4,
+          startLine: 21
+        }
+      ];
+
+      br.toRoleplay(blocks, log)
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayTitleIconsId);
+      expect(prettifyMsgs(log.finalize())).toEqual('');
+    });
+
     it('renders conditional choices', () => {
       var log = new Logger();
       var blocks: Block[] = [

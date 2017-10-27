@@ -122,6 +122,14 @@ data.roleplayNoTitle = `<roleplay title="" data-line="21">
     <p>Victory!</p>
 </roleplay>`;
 
+data.roleplayTitleIcons = `<roleplay title="Title with :roll:, :rune_alpha:" data-line="21">
+    <p>Victory!</p>
+</roleplay>`;
+
+data.roleplayTitleIconsId = `<roleplay title="Title with :roll:, :rune_alpha:" id="id" data-line="21">
+    <p>Victory!</p>
+</roleplay>`;
+
 data.roleplayWithID = `<roleplay title="Title" id="testid123" data-line="21">
     <p>hi</p>
 </roleplay>`;

@@ -29,7 +29,8 @@ export class BlockRenderer {
     attribs['title'] = attribs['title'] || extracted.title;
     attribs['id'] = attribs['id'] || extracted.id;
 
-    if (attribs.title.length >= 25) {
+    // don't count length of icon names, just that they take up ~1 character
+    if (attribs.title.replace(/:.*?:/g, '#'), length >= 25) {
       log.err('card title too long', '433');
     }
 
@@ -324,7 +325,8 @@ export class BlockRenderer {
 
   private extractCombatOrRoleplay(line: string, log: Logger): {title: string, id: string, json: {[k: string]: any}} {
     // Breakdown:
-    // ^_(.*?)_                 Match italicized text at start of string
+    // ^_(.*)_                  Match italicized text at start of string until there's a break
+    //                          which may contain multiple :icon_names: (hence the greedy selection)
     //
     // [^{\(]*                  Greedy match all characters until "{" or "("
     //
@@ -335,7 +337,7 @@ export class BlockRenderer {
     //
     // (\{.*\})?                Optionally match a JSON blob (greedy)
     try {
-      const m = line.match(/^_(.*?)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/);
+      const m = line.match(/^_(.*)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/);
       return {
         title: m[1],
         id: m[3],
