@@ -25,7 +25,7 @@ export interface SettingsProps extends SettingsStateProps, SettingsDispatchProps
 
 // For all cycles, going to the right = harder, left = easier
 const difficultyText: { [v: string]: any } = [
-  {title: 'Easy', text: 'Enemies go easy on you.'},
+  {title: 'Story', text: 'You\'re here for the story. Enemies go easy on you.'},
   {title: 'Normal', text: 'Expedition as it was meant to be played. Adventurers start here!'},
   {title: 'Hard', text: 'Enemies are relentless; a true challenge for seasoned adventurers only.'},
   {title: 'Impossible', text: 'You will almost surely die, so make your death a glorious one!'},
