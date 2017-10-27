@@ -43,7 +43,7 @@ function generateIconElements(content: string): JSX.Element {
 
 export interface RoleplayResult {
   icon: string;
-  title: string;
+  title: string | JSX.Element;
   content: RoleplayElement[];
   choices: Choice[];
   ctx: TemplateContext;
@@ -122,7 +122,7 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
   }
 
   return {
-    title: node.elem.attr('title'),
+    title: generateIconElements(node.elem.attr('title')),
     icon: node.elem.attr('icon'),
     content,
     choices,

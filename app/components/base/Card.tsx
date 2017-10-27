@@ -21,7 +21,7 @@ interface ExpeditionCardProps extends React.Props<any> {
   icon?: string;
   inQuest?: boolean;
   onReturn?: () => any;
-  title?: string;
+  title?: string | JSX.Element;
 }
 
 export default class ExpeditionCard extends React.Component<ExpeditionCardProps, {}> {
