@@ -34,5 +34,12 @@ export default {
   // ({{(.*?)}})?             Optionally match "{{some stuff}}" (lazy)
   // \s*                      Match any number of spaces (greedy)
   // ((end)|(goto .*))\*\*$   Match only "end" and "goto (any)" until "**" + end of the string.
-  TRIGGER: /^\*\*\s*({{(.*?)}})?\s*((end)|(goto .*))\*\*$/,
+  TRIGGER: /^\s*\*\*\s*({{(.*?)}})?\s*((end)|(goto .*))\*\*\s*$/,
+
+  // Detecting markdown styles
+  BOLD_ASTERISKS: /\*\*([^\*]*)\*\*/g,
+  BOLD_UNDERSCORES: /\_\_([^\_]*)\_\_/g,
+  ITALIC_ASTERISKS: /\*([^\*]*)\*/g,
+  ITALIC_UNDERSCORES: /\_([^\_]*)\_/g,
+  STRIKETHROUGH: /~~([^~]*)~~/g,
 };
