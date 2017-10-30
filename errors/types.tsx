@@ -10,4 +10,5 @@ export type ErrorType = {
   // Additional details on the error
   METADATA_ERROR?: boolean;
   AFFECTED_BY_OPS?: boolean;
+  TEST_WITH_CRAWLER?: boolean;
 };

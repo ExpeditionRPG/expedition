@@ -1,24 +1,33 @@
 export const NUMBER = 418;
-export const NAME = `Tier must be a number between 1 and 9, inclusive`;
+export const NAME = `Tier must be a positive number`;
 export const DESCRIPTION = `A tier was specified that was either not a number, or not within the range of valid tiers.`;
 
 export const INVALID = [
 `_combat_
 
-- Enemy {"tier": "hello"}
+- Enemy {"tier": "three"}
+- Enemy {"tier": 1}
 
-...`,
-`_combat_
+* on win
 
-- Enemy {"tier": 10}
+  text
 
-...`
+* on lose
+
+  text`
 ];
 
 export const VALID = [
 `_combat_
 
 - Enemy {"tier": 3}
+- Enemy {"tier": 1}
 
-...`
+* on win
+
+  text
+
+* on lose
+
+  text`
 ];

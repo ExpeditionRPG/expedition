@@ -29,5 +29,5 @@ Text :icon:`,
 
 * Choice :icon:
 
-  Text`,
+  Text`
 ];

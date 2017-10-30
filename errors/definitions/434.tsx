@@ -41,5 +41,5 @@ export const VALID = [
 
 > Gain 5 Health.
 
-**end**`,
+**end**`
 ];

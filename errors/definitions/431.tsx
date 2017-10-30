@@ -1,6 +1,7 @@
 export const NUMBER = 431;
 export const NAME = `Detected a state where this card has # "win" and # "lose" events; want 1 and 1`;
 export const DESCRIPTION = `Some path to this combat card results in an incorrect number of win and lose events. There must be exactly one of each.`;
+export const TEST_WITH_CRAWLER = true;
 
 export const INVALID = [
 `_A card_
@@ -43,4 +44,5 @@ _combat_
 
 * on lose
 
-  **end**`];
+  **end**`
+];
