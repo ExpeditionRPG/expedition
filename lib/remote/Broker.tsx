@@ -39,10 +39,10 @@ export abstract class BrokerBase {
     return this.fetchSessionBySecret(secret)
       .then((s: Session) => {
         if (!s) {
-          throw new Error("Session not set");
+          throw new Error('Session not set');
         }
         if (s.lock) {
-          throw new Error("Session is locked");
+          throw new Error('Session is locked');
         } else {
           return this.addClient(cID, s).then(() => {return s.id;});
         }
