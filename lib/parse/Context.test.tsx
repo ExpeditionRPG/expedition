@@ -1,16 +1,21 @@
 import {evaluateOp, evaluateContentOps, updateContext, defaultContext} from './Context'
-
-declare var global: any;
-
 const cheerio: any = require('cheerio');
 
+declare var window: any;
+
 describe('Context', () => {
+  beforeEach(function() {
+    spyOn(window, 'onerror');
+  });
+
   describe('evaluateOp', () => {
     it('throws error on invalid parse', () => {
-      expect(() => {evaluateOp('foo==\'a\'', defaultContext());}).toThrow(new Error('Value expected. Note: strings must be enclosed by double quotes (char 6) Op: (foo==\'a\')'));
+      evaluateOp('foo==\'a\'', defaultContext());
+      expect(window.onerror).toHaveBeenCalledWith('Value expected. Note: strings must be enclosed by double quotes (char 6) Op: (foo==\'a\')', 'expedition-qdl/parse/context');
     });
     it('throws error on invalid eval', () => {
-      expect(() => {evaluateOp('asdf', defaultContext());}).toThrow(new Error('Undefined symbol asdf Op: (asdf)'));
+      evaluateOp('asdf', defaultContext());
+      expect(window.onerror).toHaveBeenCalledWith('Undefined symbol asdf Op: (asdf)', 'expedition-qdl/parse/context');
     });
     it('returns value and updates context', () => {
       const ctx = {...defaultContext(), scope: {b: '1'} as any};

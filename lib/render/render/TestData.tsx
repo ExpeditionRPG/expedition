@@ -114,7 +114,19 @@ data.roleplayChoiceNoTitle = `<roleplay title="roleplay" data-line="5">
     </choice>
 </roleplay>`;
 
+data.roleplayArt = `<roleplay title="roleplay" data-line="5">
+    <p>text [art] text</p>
+</roleplay>`;
+
 data.roleplayNoTitle = `<roleplay title="" data-line="21">
+    <p>Victory!</p>
+</roleplay>`;
+
+data.roleplayTitleIcons = `<roleplay title="Title with :roll:, :rune_alpha:" data-line="21">
+    <p>Victory!</p>
+</roleplay>`;
+
+data.roleplayTitleIconsId = `<roleplay title="Title with :roll:, :rune_alpha:" id="id" data-line="21">
     <p>Victory!</p>
 </roleplay>`;
 
@@ -153,6 +165,10 @@ URL: 417`;
 data.combatBadTierLog = `ERROR L2:
 tier must be a positive number
 URL: 418`;
+
+data.badArtErr = `ERROR L5:
+[art] should be on its own line
+URL: 435`;
 
 data.combatBadParseLog = `ERROR L0:
 could not parse block header

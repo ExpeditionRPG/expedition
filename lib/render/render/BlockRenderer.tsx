@@ -29,7 +29,8 @@ export class BlockRenderer {
     attribs['title'] = attribs['title'] || extracted.title;
     attribs['id'] = attribs['id'] || extracted.id;
 
-    if (attribs.title.length >= 25) {
+    // don't count length of icon names, just that they take up ~1 character
+    if (attribs.title.replace(/:.*?:/g, '#'), length >= 25) {
       log.err('card title too long', '433');
     }
 
@@ -54,6 +55,15 @@ export class BlockRenderer {
       let lineIdx = 0;
       for (let line of lines) {
         lineIdx++;
+        const invalidArt = REGEX.INVALID_ART.exec(line);
+        if (invalidArt) {
+          log.err(
+            `[${invalidArt[1]}] should be on its own line`,
+            '435',
+            block.startLine
+          );
+        }
+
         if (line.indexOf('* ') === 0) {
           let bullet = this.extractBulleted(line, block.startLine + lineIdx, log);
           choice = (bullet) ? Object.assign({}, bullet, {choice: []}) : null;
@@ -315,7 +325,8 @@ export class BlockRenderer {
 
   private extractCombatOrRoleplay(line: string, log: Logger): {title: string, id: string, json: {[k: string]: any}} {
     // Breakdown:
-    // ^_(.*?)_                 Match italicized text at start of string
+    // ^_(.*)_                  Match italicized text at start of string until there's a break
+    //                          which may contain multiple :icon_names: (hence the greedy selection)
     //
     // [^{\(]*                  Greedy match all characters until "{" or "("
     //
@@ -326,7 +337,7 @@ export class BlockRenderer {
     //
     // (\{.*\})?                Optionally match a JSON blob (greedy)
     try {
-      const m = line.match(/^_(.*?)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/);
+      const m = line.match(/^_(.*)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/);
       return {
         title: m[1],
         id: m[3],
@@ -345,11 +356,14 @@ export class BlockRenderer {
     // \*\s*                    Match "*" or "-" and any number of spaces (greedy)
     // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
     // \s*                      Match any number of spaces (greedy)
-    // ([^{]*)                  Match all characters until "{" (greedy)
-    // (\{.*\})?                Optionally match a JSON blob (greedy)
+    // ((?:                     Capture an unlimited number of:
+    //  [^{]|                   Text except {'s
+    //  (?:{{[^}]*}})*)         Ops inside of {{}}'s
+    // *)*)
+    // (\{.*\})?                Optionally match a final JSON blob (greedy)
     // $                        End of string
     try {
-      const m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*([^{]*)(\{.*\})?$/);
+      const m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*((?:[^{]|(?:{{[^}]*}})*)*)(\{.*\})?$/);
       if (m === null) {
         return {
           visible: 'false',

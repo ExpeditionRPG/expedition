@@ -32,7 +32,7 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.combatBadParseLog);
     });
 
-     it('errors on bad bullet json', () => {
+    it('errors on bad bullet json', () => {
       var log = new Logger();
       var blocks: Block[] = [
         {
@@ -268,6 +268,36 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
+    it('renders roleplay with title that has icon', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        { lines: ['_Title with :roll:, :rune_alpha:_', 'Victory!', '' ],
+          indent: 4,
+          startLine: 21
+        }
+      ];
+
+      br.toRoleplay(blocks, log)
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayTitleIcons);
+      expect(prettifyMsgs(log.finalize())).toEqual('');
+    });
+
+    it('renders roleplay with title that has icon and ID', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        { lines: ['_Title with :roll:, :rune_alpha:_ (#id)', 'Victory!', '' ],
+          indent: 4,
+          startLine: 21
+        }
+      ];
+
+      br.toRoleplay(blocks, log)
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayTitleIconsId);
+      expect(prettifyMsgs(log.finalize())).toEqual('');
+    });
+
     it('renders conditional choices', () => {
       var log = new Logger();
       var blocks: Block[] = [
@@ -366,6 +396,21 @@ describe('BlockRenderer', () => {
 
     it('errors if invalid choice attribute');
 
+    it('errors if [art] syntax is used as part of a line / not standalone', () => {
+      var log = new Logger();
+      var blocks: Block[] = [
+        {
+          indent: 0,
+          lines: ['_roleplay_', '', 'text [art] text'],
+          startLine: 5,
+        },
+      ];
+
+      br.toRoleplay(blocks, log);
+
+      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayArt);
+      expect(prettifyMsgs(log.finalize())).toEqual(TestData.badArtErr);
+    });
   });
 
   describe('toTrigger', () => {

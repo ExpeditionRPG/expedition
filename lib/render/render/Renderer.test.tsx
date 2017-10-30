@@ -78,6 +78,18 @@ describe('Renderer', () => {
       const expected = '<i>text{{var = {a: {b: "5}}"}}}}text</i>';
       expect(output).toEqual(expected);
     });
+    it('properly handles _ inside of [art_file_full]', () => {
+      const input = '[art_file_full]';
+      const output = sanitizeStyles(input);
+      const expected = input;
+      expect(output).toEqual(expected);
+    });
+    it('properly handles multiple [art] and :icon:', () => {
+      const input = 'Text containing many :roll: and [art_file_full] and :roll_white_small: and [art_white]';
+      const output = sanitizeStyles(input);
+      const expected = input;
+      expect(output).toEqual(expected);
+    });
     it('collapses nested styles', () => {
       const input = '<strong><strong>1</strong></strong><em><em>2</em></em><del><del>3</del></del>';
       const output = sanitizeStyles(input);

@@ -7,6 +7,12 @@ export default {
   // (.|\n)*?>                Greedily match any character (incl newline) until closing ">"
   HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,
 
+  // Detects icons in []'s (old syntax)
+  INVALID_ART: /.+\[([a-z_0-9]*)\].+/ig,
+
+  // [art] or :icon: - captures the entire thing
+  ART_OR_ICON: /([\[:][a-z_0-9]*[\]:])/ig,
+
   // For selecting ID references, example: (#idName)
   ID: /\(#[a-zA-Z]*\)/g,
 
@@ -28,5 +34,12 @@ export default {
   // ({{(.*?)}})?             Optionally match "{{some stuff}}" (lazy)
   // \s*                      Match any number of spaces (greedy)
   // ((end)|(goto .*))\*\*$   Match only "end" and "goto (any)" until "**" + end of the string.
-  TRIGGER: /^\*\*\s*({{(.*?)}})?\s*((end)|(goto .*))\*\*$/,
+  TRIGGER: /^\s*\*\*\s*({{(.*?)}})?\s*((end)|(goto .*))\*\*\s*$/,
+
+  // Detecting markdown styles
+  BOLD_ASTERISKS: /\*\*([^\*]*)\*\*/g,
+  BOLD_UNDERSCORES: /\_\_([^\_]*)\_\_/g,
+  ITALIC_ASTERISKS: /\*([^\*]*)\*/g,
+  ITALIC_UNDERSCORES: /\_([^\_]*)\_/g,
+  STRIKETHROUGH: /~~([^~]*)~~/g,
 };

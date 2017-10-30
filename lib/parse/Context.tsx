@@ -96,7 +96,13 @@ export function evaluateOp(op: string, ctx: Context): any {
     parsed = Math.parse(HtmlDecode(op));
     evalResult = parsed.compile().eval(ctx.scope);
   } catch (err) {
-    throw new Error(err.message + ' Op: (' + op + ')');
+    const message = err.message + ' Op: (' + op + ')';
+    if (window.onerror) {
+      window.onerror(message, 'expedition-qdl/parse/context');
+      return null;
+    } else {
+      throw new Error(message);
+    }
   }
 
   // Only return the result IF it doesn't assign a value as its last action.
