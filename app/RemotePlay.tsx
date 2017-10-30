@@ -17,16 +17,11 @@ firebase.initializeApp({
 
 const REMOTEPLAY_CLIENT_STATUS_POLL_MS = 5000;
 
-console.log(firebase);
-
 // Initialize Cloud Firestore through Firebase
 const db = firebase.firestore();
 
-// The base layer of the remote play network framework. Key features:
-// - handling of web socket connections
-// - reconnect policy
-// - Serializing "executable arrays" and broadcasting them
-// - Unpacking and executing serialized actions locally
+// This is the base layer of the remote play network framework, implemented
+// using firebase FireStore.
 export class RemotePlayClient extends ClientBase {
   private sessionRef: firebase.firestore.DocumentReference;
   private connected: boolean;
@@ -38,8 +33,6 @@ export class RemotePlayClient extends ClientBase {
     }
     this.unsubscribers = [];
     this.sessionRef = db.collection('sessions').doc(sessionID.toString());
-
-    console.log('Signing in with token ' + authToken);
     return firebase.auth().signInWithCustomToken(authToken)
       .then(() => {
         this.unsubscribers.push(this.sessionRef.collection('events').onSnapshot((events) => {
@@ -90,13 +83,12 @@ export class RemotePlayClient extends ClientBase {
     if (!this.isConnected()) {
       return;
     }
-    console.log('Starting transaction');
     const start = Date.now();
     const event: RemotePlayEvent = {client: this.id, event: e};
     try {
       this.sessionRef.collection('events').doc().set(event).then(() => {
           const runtime = (Date.now() - start);
-          console.log('Event published - took ' + runtime + ' ms');
+          console.log('Firebase event (' + runtime + ' ms)');
       });
     } catch (e) {
       // Error could be either on invocation of doc().set() or on response,

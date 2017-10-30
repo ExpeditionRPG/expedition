@@ -89,6 +89,9 @@ export function remotePlayConnect(user: UserState, secret: string) {
       session = data.session;
 
       const c = getRemotePlayClient();
+      // TODO: This may need to pull some kind of repeatable "device ID"
+      // to allow for reconnects.
+      // For initial dev work, we make it always unique.
       c.setID(user.id.toString() + '-' + Date.now());
       return (c.connect(session, data.authToken) as any);
     })
