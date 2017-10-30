@@ -163,6 +163,10 @@ body {
   }
 }
 
+.remote-affector {
+  position: relative;
+}
+
 h1, h2, h3 {
   font-family: $headerFont;
   margin: 0.5em 0 0.2em 0;

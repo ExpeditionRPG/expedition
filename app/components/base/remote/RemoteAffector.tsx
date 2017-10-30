@@ -59,9 +59,9 @@ export default class RemoteAffector extends React.Component<RemoteAffectorProps,
       this.ignoreNextMouseDown = true;
     }
 
-    const xyArray: number[][] = Array(e.touches.length);
+    const xyArray: {[id: string]: number[]} = {};
     for (let i = 0; i < e.touches.length; i++) {
-      xyArray[i] = [e.touches[i].clientX, e.touches[i].clientY, e.touches[i].identifier];
+      xyArray[e.touches[i].identifier] = [e.touches[i].clientX, e.touches[i].clientY];
     }
     this.processInput(e.type, xyArray);
   }
@@ -76,28 +76,35 @@ export default class RemoteAffector extends React.Component<RemoteAffectorProps,
       return;
     }
     this.mouseDown = true;
-    this.processInput('touchstart', [[e.layerX, e.layerY, 0]]);
+    this.processInput('touchstart', {0: [e.layerX, e.layerY]});
   }
 
   private mouseMoveEvent(e: MouseEvent) {
     if (this.mouseDown) {
-      this.processInput('touchmove', [[e.layerX, e.layerY, 0]]);
+      this.processInput('touchmove', {0: [e.layerX, e.layerY]});
     }
   }
 
   private mouseUpEvent() {
+    console.log('MouseUP');
     this.mouseDown = false;
-    this.processInput('touchend', []);
+    this.processInput('touchend', {});
   }
 
-  private processInput(type: string, positions: number[][]) {
+  private processInput(type: string, positions: {[id: string]: number[]}) {
     const boundingRect = this.ref.getBoundingClientRect();
-    for (let i = 0; i < positions.length; i++) {
-      positions[i][0] = Math.floor((positions[i][0] - boundingRect.left) / this.ref.offsetWidth * 1000);
-      positions[i][1] = Math.floor((positions[i][1] - boundingRect.top) / this.ref.offsetHeight * 1000);
+    for (const k of Object.keys(positions)) {
+      positions[k][0] = Math.floor((positions[k][0] - boundingRect.left) / this.ref.offsetWidth * 1000);
+      positions[k][1] = Math.floor((positions[k][1] - boundingRect.top) / this.ref.offsetHeight * 1000);
     }
     const e: InteractionEvent = {type: 'INTERACTION', positions, id: this.props.remoteID, event: type};
-    getRemotePlayClient().sendEvent(e);
+
+    // Don't send move events over remote play.
+    // Our implementation does not allow high-frequency value updates.
+    if (type !== 'touchmove') {
+      getRemotePlayClient().sendEvent(e);
+    }
+
     if (this.props.includeLocalInteractions) {
       this.props.onInteraction('local', e);
     }
@@ -131,7 +138,7 @@ export default class RemoteAffector extends React.Component<RemoteAffectorProps,
     return (
       <div
         id={this.props.id}
-        className={this.props.className}
+        className={this.props.className + ' remote-affector'}
         style={{touchAction: 'pan-y'}}
         ref={(r: HTMLElement) => {this.onRef(r)}}>
         {this.props.children}

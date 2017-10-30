@@ -1,7 +1,6 @@
 declare var window:any;
 export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
 export const API_HOST = (process && process.env && process.env.API_HOST) || 'http://betaapi.expeditiongame.com';
-export const SERVICE_HOST = (process && process.env && process.env.SERVICE_HOST) || 'http://betaservice.expeditiongame.com';
 export const authSettings = {
   urlBase: API_HOST,
   // urlBase: 'https://api.expeditiongame.com',
@@ -18,9 +17,9 @@ export const authSettings = {
 };
 
 export const remotePlaySettings = {
-  newSessionURI: SERVICE_HOST + '/remoteplay/v1/new_session',
-  connectURI: SERVICE_HOST + '/remoteplay/v1/connect',
-  firstLoadURI: SERVICE_HOST + '/remoteplay/v1/user',
+  newSessionURI: API_HOST + '/remoteplay/v1/new_session',
+  connectURI: API_HOST + '/remoteplay/v1/connect',
+  firstLoadURI: API_HOST + '/remoteplay/v1/user',
 };
 
 export const MAX_ADVENTURER_HEALTH = 12;

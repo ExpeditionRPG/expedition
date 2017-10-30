@@ -8,7 +8,7 @@ interface MultiTouchTriggerProps extends React.Props<any> {
   onTouchChange: (touches: any) => any;
 }
 interface MultiTouchTriggerState {
-  clientInputs: {[client: string]: number[][]};
+  clientInputs: {[client: string]: {[id: string]: number[]}};
   lastTouchSum: number;
   mouseDown: Boolean;
 }
@@ -30,16 +30,16 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
     }
   }
 
-  private processInput(xyArray: number[][], client: string) {
+  private processInput(xyArray: {[id: string]: number[]}, client: string) {
     let touchSum = 0;
     const newInputs = {...this.state.clientInputs};
     newInputs[client] = xyArray;
     for (const k of Object.keys(newInputs)) {
-      touchSum += newInputs[k].length;
+      touchSum += Object.keys(newInputs[k]).length;
     }
 
     if (touchSum !== this.state.lastTouchSum) {
-      this.props.onTouchChange(xyArray.length);
+      this.props.onTouchChange(Object.keys(newInputs.local || {}).length);
     }
 
     this.setState({lastTouchSum: touchSum, clientInputs: newInputs});

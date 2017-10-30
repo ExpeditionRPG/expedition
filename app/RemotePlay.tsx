@@ -32,44 +32,45 @@ export class RemotePlayClient extends ClientBase {
   private connected: boolean;
   private unsubscribers: any[];
 
-
-  connect(sessionID: string): Bluebird<{}> {
+  connect(sessionID: string, authToken: string): Promise<void> {
     if (this.isConnected() || (this.unsubscribers && this.unsubscribers.length)) {
       this.disconnect();
     }
     this.unsubscribers = [];
     this.sessionRef = db.collection('sessions').doc(sessionID.toString());
 
+    console.log('Signing in with token ' + authToken);
+    return firebase.auth().signInWithCustomToken(authToken)
+      .then(() => {
+        this.unsubscribers.push(this.sessionRef.collection('events').onSnapshot((events) => {
+          events.docChanges.forEach((change) => {
+              if (change.type !== 'added') {
+                console.error('Unexpected modified or removed event: ' + JSON.stringify(change.doc.data()));
+                return;
+              }
+              const event = change.doc.data() as RemotePlayEvent;
+              // Ignore messages from ourselves
+              if (event.client === this.id) {
+                return;
+              }
+              this.handleMessage(event);
+          });
+        }));
 
-    this.unsubscribers.push(this.sessionRef.collection('events').onSnapshot((events) => {
-      events.docChanges.forEach((change) => {
-          if (change.type !== 'added') {
-            console.log('Mod or removed events. This is weird! TODO');
+        firebase.database().ref('.info/connected').on('value', (snapshot) => {
+        // If we're not currently connected, don't do anything.
+        if (snapshot.val() === false) {
+          this.connected = false;
             return;
+        } else {
+          this.connected = true;
+          if (this.sessionRef) {
+            this.sendEvent({type: 'STATUS', status: {line: 0, waiting: false}});
           }
-          this.handleMessage(change.doc.data() as RemotePlayEvent);
+        };
+        // TODO: Use onDisconnect() to set online state for others to see
+        });
       });
-    }));
-
-
-    this.sessionRef.set({lastUpdate: Date.now()}).then(() => {
-      firebase.database().ref('.info/connected').on('value', (snapshot) => {
-      // If we're not currently connected, don't do anything.
-      if (snapshot.val() === false) {
-        this.connected = false;
-          return;
-      } else {
-        console.log('Connected!');
-        this.connected = true;
-        if (this.sessionRef) {
-          this.sendEvent({type: 'STATUS', status: {line: 0, waiting: false}});
-        }
-      };
-      // TODO: Use onDisconnect() to set online state for others to see
-      });
-    });
-
-    return Bluebird.resolve({});
   }
 
   isConnected(): boolean {
@@ -92,19 +93,17 @@ export class RemotePlayClient extends ClientBase {
     console.log('Starting transaction');
     const start = Date.now();
     const event: RemotePlayEvent = {client: this.id, event: e};
-    db.runTransaction((txn) => {
-        // This code may get re-run multiple times if there are conflicts.
-        return txn.get(this.sessionRef).then((sessionDoc) => {
-          // Update the main document here, to prevent concurrent events from causing conflicts.
-          txn.update(this.sessionRef, {lastUpdate: Date.now()});
-          txn.set(this.sessionRef.collection('events').doc(), event);
-        });
-    }).then(() => {
-        const runtime = (Date.now() - start);
-        console.log('Event published - took ' + runtime + ' ms');
-    }).catch((error) => {
-        console.error(error);
-    });
+    try {
+      this.sessionRef.collection('events').doc().set(event).then(() => {
+          const runtime = (Date.now() - start);
+          console.log('Event published - took ' + runtime + ' ms');
+      });
+    } catch (e) {
+      // Error could be either on invocation of doc().set() or on response,
+      // so we use a try/catch here instead of .catch() promise handling.
+      console.error('Error sending firebase event ' + JSON.stringify(event) + ' (see next error)');
+      console.error(e);
+    }
   }
 
   public createActionMiddleware(): Redux.Middleware {

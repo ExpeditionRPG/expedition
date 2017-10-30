@@ -49,7 +49,6 @@ export function remotePlayNewSession(user: UserState) {
       mode: 'cors',
       headers: new Headers({
         'Accept': 'text/html',
-        'Content-Type': 'text/html',
       }),
     })
     .then((response: Response) => {
@@ -76,7 +75,6 @@ export function remotePlayConnect(user: UserState, secret: string) {
       mode: 'cors',
       headers: new Headers({
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
       }),
       body: JSON.stringify({secret}),
     })
@@ -89,9 +87,10 @@ export function remotePlayConnect(user: UserState, secret: string) {
         return dispatch(openSnackbar('Error parsing session'));
       }
       session = data.session;
+
       const c = getRemotePlayClient();
-      c.setID(user.id.toString());
-      return (c.connect(session) as any);
+      c.setID(user.id.toString() + '-' + Date.now());
+      return (c.connect(session, data.authToken) as any);
     })
     .then(() => {
       dispatch({type: 'REMOTE_PLAY_SESSION', session: {secret, id: session}});

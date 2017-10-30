@@ -195,7 +195,13 @@ export function init() {
     const label = (source) ? `${source} line ${line}` : null;
     console.error(message, label);
     logEvent('APP_ERROR', {action: message, label});
-    getStore().dispatch(openSnackbar('Error! Please send feedback.'));
+
+    // Dispatch the snackbar change after resolving intermediate state.
+    // Otherwise, redux handlers may perform strange actions like calling
+    // setState inside of a render() cycle.
+    setTimeout(() => {
+      getStore().dispatch(openSnackbar('Error! Please send feedback.'));
+    }, 0);
     return true;
   };
 

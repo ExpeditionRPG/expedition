@@ -2,7 +2,7 @@ import * as React from 'react'
 import {COLORBLIND_FRIENDLY_PALETTE} from '../../Constants'
 
 export interface TouchIndicatorProps extends React.Props<any> {
-  clientInputs: {[client: string]: number[][]};
+  clientInputs: {[client: string]: {[id: string]: number[]}};
 }
 
 export default class TouchIndicator extends React.Component<TouchIndicatorProps, {}> {
@@ -50,8 +50,8 @@ export default class TouchIndicator extends React.Component<TouchIndicatorProps,
     for (let i = 0; i < keys.length && i < COLORBLIND_FRIENDLY_PALETTE.length; i++) {
       const color = COLORBLIND_FRIENDLY_PALETTE[i];
       const inputs = this.props.clientInputs[keys[i]];
-      for (let i = 0; i < inputs.length; i++) {
-        this.drawTouchPoint(inputs[i][0] * this.ctx.canvas.width / 1000, inputs[i][1] * this.ctx.canvas.height / 1000, color);
+      for (const k of Object.keys(inputs)) {
+        this.drawTouchPoint(inputs[k][0] * this.ctx.canvas.width / 1000, inputs[k][1] * this.ctx.canvas.height / 1000, color);
       }
     }
   }

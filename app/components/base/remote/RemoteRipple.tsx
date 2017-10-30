@@ -43,11 +43,9 @@ export default class RemoteRipple extends React.Component<RemoteRippleProps, Rem
 
   handle(client: string, e: InteractionEvent) {
     // TODO keep start/end hashed by client, apply client color
-
-    if (e.event === 'touchmove') {
+    if (this.props.remoteID === null || e.event === 'touchmove' || e.id !== this.props.remoteID) {
       return;
     }
-
     switch (e.event) {
       case 'touchstart':
         return this.start(e.positions[0][0], e.positions[0][1], 'red');
