@@ -1,3 +1,4 @@
+import * as React from 'react'
 import {TemplateState} from '../cardtemplates/TemplateTypes'
 
 export interface QuestDetails {
@@ -25,8 +26,8 @@ export interface QuestDetails {
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';
 
 export interface Choice {
-  text: string;
   idx: number;
+  jsx: JSX.Element;
 }
 
 export interface EventParameters {
@@ -37,7 +38,7 @@ export interface EventParameters {
 
 export interface RoleplayElement {
   type: 'text' | 'instruction';
-  text: string;
+  jsx: JSX.Element;
   icon?: string;
 }
 

@@ -23,16 +23,28 @@ export interface RoleplayDispatchProps {
 
 export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps {};
 
-// Replaces [icon_name] with <img class="inline_icon" src="images/icon_name.svg">
-function generateIconElements(content: string): string {
-  return content.replace(REGEX.ICON, (match:string, group:string): string => {
-    return `<img class="inline_icon" src="images/${group}_small.svg">`;
-  });
+// Replaces :icon_name: with <img class="inline_icon" src="images/icon_name_small.svg">
+// And [art_name] with <img class="art" src="images/art_name.svg">
+// if [art_name] ends will _full, adds class="full"; otherwise displays at 50% size
+function generateIconElements(content: string): JSX.Element {
+  content = content || '';
+  return <span dangerouslySetInnerHTML={{__html: content
+      .replace(REGEX.ICON, (match:string, group:string): string => {
+        return `<img class="inline_icon" src="images/${group}_small.svg" />`;
+      })
+      .replace(REGEX.ART, (match:string, group:string): string => {
+        if (group.slice(-5) === '_full') {
+          return `<div class="artFull"><img class="art" src="images/${group.replace('_full', '')}.svg" /></div>`;
+        } else {
+          return `<div class="artHalf"><img class="art" src="images/${group}.svg" /></div>`;
+        }
+      })
+  }} />;
 }
 
 export interface RoleplayResult {
   icon: string;
-  title: string;
+  title: string | JSX.Element;
   content: RoleplayElement[];
   choices: Choice[];
   ctx: TemplateContext;
@@ -45,6 +57,7 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
   const content: RoleplayElement[] = [];
 
   node.loopChildren((tag, c) => {
+    let text = '';
     c = c.clone();
 
     // Accumulate 'choice' tags in choices[]
@@ -53,8 +66,8 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
       if (!c.attr('text')) {
         throw new Error('<choice> inside <roleplay> must have "text" attribute');
       }
-      const text = c.attr('text');
-      choices.push({text: generateIconElements(text), idx: choiceCount});
+      text = c.attr('text');
+      choices.push({jsx: generateIconElements(text), idx: choiceCount});
       return;
     }
 
@@ -64,18 +77,26 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
 
     const element: RoleplayElement = {
       type: 'text',
-      text: '',
-    }
+      jsx: null,
+    };
     if (tag === 'instruction') {
       element.type = 'instruction';
-      element.text = c.html();
+      text = c.html();
+      let icon = 'adventurer';
+
+      // if there's an icon at the begining, replace default icon and remove that icon from text
+      const matches = text.match(REGEX.ICON);
+      if (matches && text.trim().indexOf('<p>' + matches[0]) === 0) {
+        text = text.replace(matches[0], ''); // replace only the first occurence of the first icon
+        icon = matches[0].replace(/:/g, '');
+      }
+      element.jsx = <Callout icon={icon}>{generateIconElements(text)}</Callout>;
     } else { // text
-      element.text = c.toString();
+      text = c.toString();
+      element.jsx = generateIconElements(text);
     }
 
-    element.text = generateIconElements(element.text);
-
-    if (element.text !== '') {
+    if (text !== '') {
       content.push(element);
     }
   });
@@ -85,12 +106,12 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
   if (choices.length === 0) {
     // Handle custom generic next button text based on if we're heading into a trigger node.
     const nextNode = node.getNext();
-    let buttonText = 'Next';
+    let buttonText = <span>Next</span>;
     if (nextNode && nextNode.getTag() === 'trigger') {
       const triggerText = nextNode.elem.text().toLowerCase().split(' ')[0].trim();
       switch(triggerText) {
         case 'end':
-          buttonText = 'The End';
+          buttonText = <span>The End</span>;
           break;
         case 'goto':
           break;
@@ -98,11 +119,11 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
           throw new Error('Unknown trigger with text ' + triggerText);
       }
     }
-    choices.push({text: buttonText, idx: 0});
+    choices.push({jsx: buttonText, idx: 0});
   }
 
   return {
-    title: node.elem.attr('title'),
+    title: generateIconElements(node.elem.attr('title')),
     icon: node.elem.attr('icon'),
     content,
     choices,
@@ -114,31 +135,13 @@ const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'LIGHT'): JSX.Ele
   const rpResult = loadRoleplayNode(props.node);
 
   const renderedContent: JSX.Element[] = rpResult.content.map((element: RoleplayElement, idx: number): JSX.Element => {
-    switch (element.type) {
-      case 'instruction':
-        const matches = element.text.match(/src="images\/([a-zA-Z0-9_]*)/);
-        let icon = 'adventurer';
-        let text = element.text;
-        // if there's an icon at the begining, replace default icon and remove that icon from text
-        if (matches && element.text.trim().indexOf('<p><img') === 0) {
-          icon = matches[1].replace('_small', '');
-          text = text.replace(/<img class="inline_icon" src="images\/([a-zA-Z0-9_]*)_small\.svg">/, '');
-        }
-        return (
-          <Callout key={idx} icon={icon}>
-            <span dangerouslySetInnerHTML={{__html: text}} />
-          </Callout>
-        );
-      case 'text':
-      default:
-        return <span key={idx} dangerouslySetInnerHTML={{__html: element.text}} />;
-    }
+    return <span key={idx}>{element.jsx}</span>;
   });
 
   const buttons: JSX.Element[] = rpResult.choices.map((choice: Choice): JSX.Element => {
     return (
       <Button key={choice.idx} onTouchTap={() => props.onChoice(props.settings, props.node, choice.idx)}>
-        <span dangerouslySetInnerHTML={{__html: choice.text}} />
+        {choice.jsx}
       </Button>
     );
   });
