@@ -199,6 +199,21 @@ describe('CrawlerBase', () => {
       crawler.crawl(new Node(xml, defaultContext()));
     });
 
+    it('notifies on max depth exceeded', () => {
+      const xml = cheerio.load(`
+        <quest>
+          <roleplay title="I" id="I" data-line="2"><p></p></roleplay>
+          <trigger data-line="4">goto I</trigger>
+        </quest>`)('quest > :first-child');
+
+      let foundExceeded = false;
+      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent)=>{
+        foundExceeded = foundExceeded || (e === 'MAX_DEPTH_EXCEEDED');
+      }, null);
+      crawler.crawl(new Node(xml, defaultContext()));
+      expect(foundExceeded).toEqual(true);
+    });
+
     it('bails out of computationally expensive quests', () => {
       const xml = cheerio.load(`
         <quest>

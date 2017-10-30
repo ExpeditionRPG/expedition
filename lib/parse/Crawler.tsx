@@ -3,7 +3,7 @@ import {Context} from './Context'
 
 const FastPriorityQueue: any = require('fastpriorityqueue');
 
-export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END';
+export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END' | 'MAX_DEPTH_EXCEEDED' | 'ALREADY_SEEN';
 
 export type CrawlEntry<C extends Context> = {node: Node<C>, prevNodeStr: string, prevId: string, prevLine: number, depth: number};
 
@@ -43,6 +43,13 @@ export abstract class CrawlerBase<C extends Context> {
     return this.traverse(root, timeLimitMillis, depthLimit);
   }
 
+  protected calculateAddedDepth(n: Node<C>): number {
+    // This function calculates and returns the depth "cost" of a node.
+    // Nodes that take more time to engage with (e.g. combat or "prosaic" nodes)
+    // may return a higher score.
+    return 1;
+  }
+
   protected abstract onEvent(q: CrawlEntry<C>, e: CrawlEvent): void;
 
   protected abstract onNode(q: CrawlEntry<C>, nodeStr: string, id: string, line: number): void;
@@ -58,11 +65,11 @@ export abstract class CrawlerBase<C extends Context> {
 
     const start = Date.now();
     while(this.queue.size > 0 && (!timeLimitMillis || (Date.now() - start) < timeLimitMillis)) {
-
       const q = this.queue.poll();
 
       // If we've gone too deep into the quest, don't crawl further.
       if (depthLimit && q.depth >= depthLimit) {
+        this.onEvent(q, 'MAX_DEPTH_EXCEEDED');
         continue;
       }
 
@@ -93,6 +100,7 @@ export abstract class CrawlerBase<C extends Context> {
       // don't act on it.
       const nstr = q.node.getComparisonKey();
       if (this.seen.has(nstr)) {
+        this.onEvent(q, 'ALREADY_SEEN');
         continue;
       }
       this.seen.add(nstr);
@@ -112,7 +120,7 @@ export abstract class CrawlerBase<C extends Context> {
           prevNodeStr: nstr,
           prevId: id,
           prevLine: line,
-          depth: q.depth + 1
+          depth: q.depth + this.calculateAddedDepth(q.node),
         });
       }
     }

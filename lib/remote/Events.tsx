@@ -10,8 +10,8 @@ CARD <serialized card state>
 
 export type ClientID = string;
 
-// Array of [vw, vh, id] coordinates, e.g. [[1,2,0], [3,4,1]].
-export type TouchList = number[][];
+// Array of [vw, vh] coordinates keyed by ID, e.g. {0: [1,2], 1: [3,4]}.
+export type TouchList = {[id: string]: number[]};
 
 export interface ClientStatus {
   line: number;

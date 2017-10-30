@@ -1,4 +1,3 @@
-import * as Bluebird from 'bluebird'
 import {RemotePlayEvent, ClientID} from './Events'
 
 export type SessionID = number;
@@ -22,35 +21,35 @@ function makeSecret(): SessionSecret {
 }
 
 export abstract class BrokerBase {
-  abstract storeSession(s: Session): Bluebird<any>;
-  abstract addClient(c: ClientID, s: Session): Bluebird<any>;
+  abstract storeSession(s: Session): Promise<any>;
+  abstract addClient(c: ClientID, s: Session): Promise<any>;
 
-  abstract fetchSessionBySecret(secret: SessionSecret): Bluebird<Session>;
-  abstract fetchSessionById(id: SessionID): Bluebird<Session>;
-  abstract fetchSessionsByClient(client: ClientID): Bluebird<Session[]>;
+  abstract fetchSessionBySecret(secret: SessionSecret): Promise<Session>;
+  abstract fetchSessionById(id: SessionID): Promise<Session>;
+  abstract fetchSessionsByClient(client: ClientID): Promise<Session[]>;
 
-  createSession(): Bluebird<Session> {
+  createSession(): Promise<Session> {
     const s: Session = {secret: makeSecret(), id: Date.now(), lock: null};
     return this.storeSession(s).then(() => {
       return s;
     });
   }
 
-  joinSession(cID: ClientID, secret: SessionSecret): Bluebird<SessionID> {
+  joinSession(cID: ClientID, secret: SessionSecret): Promise<SessionID> {
     return this.fetchSessionBySecret(secret)
       .then((s: Session) => {
         if (!s) {
-          return null;
+          throw new Error('Session not set');
         }
         if (s.lock) {
-          return null;
+          throw new Error('Session is locked');
         } else {
           return this.addClient(cID, s).then(() => {return s.id;});
         }
       });
   }
 
-  lockSession(s: SessionID): Bluebird<boolean> {
+  lockSession(s: SessionID): Promise<boolean> {
     // After everyone joins, prevent new session joiners.
     return this.fetchSessionById(s).then((s: Session) => {
       return this.storeSession({...s, lock: new Date()});
@@ -70,8 +69,8 @@ export class InMemoryBroker extends BrokerBase {
     this.handlers = {};
   }
 
-  storeSession(s: Session): Bluebird<any> {
-    return new Bluebird((resolve, reject) => {
+  storeSession(s: Session): Promise<any> {
+    return new Promise((resolve, reject) => {
       for(let i = 0; i < this.sessions.length; i++) {
         if (this.sessions[i].id === s.id) {
           this.sessions[i] = s;
@@ -84,8 +83,8 @@ export class InMemoryBroker extends BrokerBase {
 
   }
 
-  fetchSessionBySecret(secret: SessionSecret): Bluebird<Session> {
-    return new Bluebird((resolve, reject) => {
+  fetchSessionBySecret(secret: SessionSecret): Promise<Session> {
+    return new Promise((resolve, reject) => {
       for (let i = 0; i < this.sessions.length; i++) {
         if (this.sessions[i].secret === secret) {
           return resolve(this.sessions[i]);
@@ -95,8 +94,8 @@ export class InMemoryBroker extends BrokerBase {
     });
   }
 
-  fetchSessionById(id: SessionID): Bluebird<Session> {
-    return new Bluebird((resolve, reject) => {
+  fetchSessionById(id: SessionID): Promise<Session> {
+    return new Promise((resolve, reject) => {
       for (let i = 0; i < this.sessions.length; i++) {
         if (this.sessions[i].id === id) {
           return resolve(this.sessions[i]);
@@ -106,8 +105,8 @@ export class InMemoryBroker extends BrokerBase {
     });
   }
 
-  fetchSessionsByClient(client: ClientID): Bluebird<Session[]> {
-    return new Bluebird<Session[]>((resolve, reject) => {
+  fetchSessionsByClient(client: ClientID): Promise<Session[]> {
+    return new Promise<Session[]>((resolve, reject) => {
       const sessions = this.clients.filter((c) => {return c.client === client;}).map((c) => {return c.session;});
 
       const results: Session[] = [];
@@ -122,9 +121,9 @@ export class InMemoryBroker extends BrokerBase {
     });
   }
 
-  addClient(c: ClientID, s: Session): Bluebird<boolean> {
+  addClient(c: ClientID, s: Session): Promise<boolean> {
     this.clients.push({client: c, session: s.id});
-    return Bluebird.resolve(true);
+    return Promise.resolve(true);
   }
 
   addClientHandler(c: ClientID, ch: (e: RemotePlayEvent)=>any) {
