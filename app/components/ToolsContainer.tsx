@@ -6,6 +6,7 @@ import {initCustomCombat} from '../cardtemplates/combat/Actions'
 import {audioSetIntensity, audioPlaySfx} from '../actions/Audio'
 import {toCard} from '../actions/Card'
 import {search} from '../actions/Search'
+import {openSnackbar} from '../actions/Snackbar'
 import {login} from '../actions/User'
 import {URLS} from '../Constants'
 import {getStore} from '../Store'
@@ -47,7 +48,20 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
       dispatch(loadRemotePlay(user));
     },
     testMusic(): void {
-      dispatch(audioSetIntensity(1));
+      const intensity = Number(prompt('Enter intensity (0-8)'));
+      if (intensity) {
+        dispatch(audioSetIntensity(intensity));
+      }
+    },
+    testMusicRandom(): void {
+      const getRandomIntInclusive = function(min: number, max: number) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive
+      }
+      const intensity = getRandomIntInclusive(0, 8);
+      dispatch(openSnackbar('Setting intensity to ' + intensity));
+      dispatch(audioSetIntensity(intensity));
     },
     testMusicStop(): void {
       dispatch(audioSetIntensity(0));

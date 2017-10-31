@@ -15,6 +15,7 @@ export interface ToolsDispatchProps {
   onPrivateQuestsSelect: (user: UserState) => void;
   onRemotePlaySelect: (user: UserState) => void;
   testMusic: () => void;
+  testMusicRandom: () => void;
   testMusicStop: () => void;
   testSfx: () => void;
 }
@@ -26,7 +27,8 @@ const Tools = (props: ToolsProps): JSX.Element => {
     <Card title="Tools">
       {process.env.NODE_ENV === 'dev' &&
         <div>
-          <Button onTouchTap={() => props.testMusic()}>Music</Button>
+          <Button onTouchTap={() => props.testMusic()}>Set Music Intensity (user)</Button>
+          <Button onTouchTap={() => props.testMusicRandom()}>Set Music Intensity (random)</Button>
           <Button onTouchTap={() => props.testMusicStop()}>Stop Music</Button>
           <Button onTouchTap={() => props.testSfx()}>SFX</Button>
         </div>

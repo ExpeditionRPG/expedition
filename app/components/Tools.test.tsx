@@ -15,6 +15,7 @@ function setup() {
     onPrivateQuestsSelect: jasmine.createSpy('onPrivateQuestsSelect'),
     onRemotePlaySelect: jasmine.createSpy('onRemotePlaySelect'),
     testMusic: jasmine.createSpy('testMusic'),
+    testMusicRandom: jasmine.createSpy('testMusicRandom'),
     testMusicStop: jasmine.createSpy('testMusicStop'),
     testSfx: jasmine.createSpy('testSfx'),
   }
