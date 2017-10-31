@@ -35,10 +35,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         url: 'https://ExpeditionGame.com',
       };
       const onSuccess = function(result: any) {
-        logEvent('share', Object.assign({}, quest.details, {app: result.app}));
+        logEvent('share', { ...quest.details, label: result.app });
       }
       const onError = function(msg: string) {
-        logEvent('share_error', {error: msg});
+        logEvent('share_error', { label: msg });
       }
       window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
     },
@@ -55,7 +55,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
           dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
         }
       }
-      logEvent('quest_end', quest.details);
+      logEvent('quest_end', { ...quest.details, action: quest.details.title, label: quest.details.id });
       dispatch(toPrevious({name: 'FEATURED_QUESTS'}));
     },
   };

@@ -120,6 +120,7 @@
         "react-addons-css-transition-group": "^15.3.2",
         "react-addons-test-utils": "^15.4.1",
         "react-dom": "^15.3.2",
+        "react-ga": "^2.3.5",
         "react-motion": "^0.4.5",
         "react-redux": "^5.0.2",
         "react-tap-event-plugin": "^2.0.1",

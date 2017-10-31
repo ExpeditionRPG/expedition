@@ -49,7 +49,7 @@ function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: Templa
   return (dispatch: Redux.Dispatch<any>) => {
     // Quest start is here instead of initQuest because initQuest is also used by the editor
     // and would over-report.
-    logEvent('quest_start', a.details);
+    logEvent('quest_start', { ...a.details, action: a.details.title, label: a.details.id });
 
     dispatch(initQuest(a.details, a.questNode, a.ctx));
 
@@ -76,7 +76,7 @@ export function subscribe(a: {email: string}) {
       return response.text();
     })
     .then((data: string) => {
-      logEvent('user_subscribe', a.email);
+      logEvent('user_subscribe', {});
       dispatch(openSnackbar('Thank you for subscribing!'));
     }).catch((error: Error) => {
       dispatch(openSnackbar('Error subscribing: ' + error));
@@ -86,7 +86,7 @@ export function subscribe(a: {email: string}) {
 
 export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState}) {
   return (dispatch: Redux.Dispatch<any>) => {
-    const data = Object.assign({}, {
+    const data = {
       questid: a.quest.details.id,
       userid: a.user.id,
       players: a.settings.numPlayers,
@@ -97,7 +97,7 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       name: a.user.name,
       rating: a.userFeedback.rating,
       text: a.userFeedback.text,
-    });
+    };
 
     fetch(authSettings.urlBase + '/quest/feedback/' + a.userFeedback.type, {
       method: 'POST',
@@ -106,12 +106,12 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
     .then((response: Response) => {
       return response.text();
     })
-    .then((data: string) => {
-      logEvent('user_feedback_' + a.userFeedback.type, data);
+    .then((response: string) => {
+      logEvent('user_feedback_' + a.userFeedback.type, { label: data.questid, value: data.rating });
       dispatch(userFeedbackClear());
       dispatch(openSnackbar('Submission successful. Thank you!'));
     }).catch((error: Error) => {
-      logEvent('user_feedback_' + a.userFeedback.type + '_err', data);
+      logEvent('user_feedback_' + a.userFeedback.type + '_err', { label: error });
       dispatch(openSnackbar('Error submitting feedback: ' + error));
     });
   };

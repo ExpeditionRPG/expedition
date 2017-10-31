@@ -4,6 +4,7 @@ import {openSnackbar} from '../actions/Snackbar'
 import {UserState} from '../reducers/StateTypes'
 import {authSettings} from '../Constants'
 import {remoteify} from './ActionTypes'
+import {getGA} from '../Globals'
 
 declare var gapi: any;
 declare var window: any;
@@ -29,6 +30,7 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
     return response.text();
   })
   .then((id: string) => {
+    getGA().set({ userId: id });
     callback({
       loggedIn: true,
       id,

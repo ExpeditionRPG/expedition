@@ -16,7 +16,7 @@ import {openSnackbar} from './actions/Snackbar'
 import {silentLogin} from './actions/User'
 import {handleRemotePlayEvent} from './actions/RemotePlay'
 import {getStore} from './Store'
-import {getWindow, getGapi, getGA, getDevicePlatform, getDocument, setGA, setupPolyfills} from './Globals'
+import {getAppVersion, getWindow, getGapi, getGA, getDevicePlatform, getDocument, setGA, setupPolyfills} from './Globals'
 import {getRemotePlayClient} from './RemotePlay'
 import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 
@@ -27,6 +27,7 @@ import thunk from 'redux-thunk'
 
 
 const injectTapEventPlugin = require('react-tap-event-plugin');
+const ReactGA = require('react-ga');
 
 function setupTapEvents() {
   try {
@@ -42,6 +43,8 @@ function setupRemotePlay() {
   });
 }
 
+// TODO record modal views as users navigate: ReactGA.modalview('/about/contact-us');
+// likely as a separate logView or logNavigate or something
 export function logEvent(name: string, args: any): void {
   const fbp = getWindow().FirebasePlugin;
   if (fbp) {
@@ -50,7 +53,12 @@ export function logEvent(name: string, args: any): void {
 
   const ga = getGA();
   if (ga) {
-    ga('send', 'event', name, args.action || '', args.label || '', args.value || null);
+    ga.event({
+      category: name,
+      action: args.action || '',
+      label: args.label || '',
+      value: args.value || undefined,
+    });
   }
 }
 
@@ -138,7 +146,7 @@ function setupEventLogging() {
     });
   } else {
     window.FirebasePlugin = {
-      logEvent: (name: string, args: any) => { console.log(name, args); },
+      logEvent: (name: string, args: any) => { console.info('Firebase log skipped: ', name, args); },
     };
   }
 }
@@ -152,35 +160,21 @@ function setupHotReload() {
   }
 }
 
+// disabled during local dev
 declare var ga: any;
 function setupGoogleAnalytics() {
-  const window = getWindow();
-  const document = getDocument();
-  // Enable Google Analytics if we're not dev'ing locally
   if (window.location.hostname === 'localhost') {
-    return;
+    return console.log('Google Analytics disabled during local dev.');
   }
-
-  (function(i: any,s: any,o: any,g: any,r: any,a: any,m: any){
-    i['GoogleAnalyticsObject']=r;
-    i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)
+  ReactGA.initialize('UA-47408800-9', {
+    titleCase: false,
+    gaOptions: {
+      appVersion: getAppVersion(),
+      appName: getDevicePlatform(),
     },
-    i[r].l=1*(new Date() as any);
-    a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];
-    a.async=1;
-    a.src=g;
-    m.parentNode.insertBefore(a,m);
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga',null, null);
-
-  if (typeof ga === 'undefined') {
-    console.log('Could not load GA');
-    return;
-  }
-  setGA(ga);
-  ga('create', 'UA-47408800-9', 'auto');
-  ga('send', 'pageview');
+  });
+  ReactGA.pageview('/');
+  setGA(ReactGA);
 }
 
 export function init() {
@@ -219,10 +213,10 @@ export function init() {
 
   setupPolyfills();
   setupTapEvents();
+  setupGoogleAnalytics(); // before anything else that might log in the user
   setupGoogleAPIs();
   setupEventLogging();
   setupHotReload();
-  setupGoogleAnalytics();
   setupRemotePlay();
 
   render();
