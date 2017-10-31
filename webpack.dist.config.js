@@ -37,12 +37,12 @@ const options = {
     new webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
     new CopyWebpackPlugin([
       { from: 'app/images', to: 'images'},
-      { from: 'app/audio', to: 'audio'},
       { from: 'app/quests', to: 'quests'},
       { from: 'app/scripts', to: 'scripts' },
       { from: 'app/fonts', to: 'fonts'},
       { from: 'app/index.html' },
       { from: 'app/manifest.json' },
+      { from: { glob: 'app/audio/*.mp3' }, flatten: true, to: './audio' },
       { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
     ]),
     new webpack.LoaderOptionsPlugin({
