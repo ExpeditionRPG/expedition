@@ -55,7 +55,6 @@ export default class RemoteAffector extends React.Component<RemoteAffectorProps,
     // https://github.com/callemall/material-ui/blob/master/src/internal/TouchRipple.js
 
     if (e.type === 'touchstart') {
-      console.log('TOUCH START');
       this.ignoreNextMouseDown = true;
     }
 
@@ -86,7 +85,6 @@ export default class RemoteAffector extends React.Component<RemoteAffectorProps,
   }
 
   private mouseUpEvent() {
-    console.log('MouseUP');
     this.mouseDown = false;
     this.processInput('touchend', {});
   }

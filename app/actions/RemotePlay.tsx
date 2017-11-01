@@ -83,7 +83,6 @@ export function remotePlayConnect(user: UserState, secret: string) {
     })
     .then((data: any) => {
       if (!data.session) {
-        console.log(data);
         return dispatch(openSnackbar('Error parsing session'));
       }
       session = data.session;
