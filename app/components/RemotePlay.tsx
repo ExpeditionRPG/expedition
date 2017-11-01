@@ -38,7 +38,6 @@ class RemotePlayConnect extends React.Component<RemotePlayProps, {}> {
   }
 
   render() {
-
     const history = this.props.remotePlay.history.map((m: SessionMetadata, i: number) => {
       return (<Button key={i} onTouchTap={()=>{this.props.onReconnect(this.props.user, m.id)}}>
         {m.questTitle} ({m.peerCount} peers) - {m.firstContact}</Button>);

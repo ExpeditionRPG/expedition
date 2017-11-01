@@ -77,6 +77,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         ...state._history[pastStateIdx],
         _history: state._history.slice(0, pastStateIdx),
         settings: state.settings, // global settings should not be rewound.
+        remotePlay: state.remotePlay, // remote play settings should not be rewound.
         _return: true,
       } as AppStateWithHistory;
     }
@@ -85,8 +86,14 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
     history = state._history.slice();
 
     if (action.type === 'PUSH_HISTORY') {
-      // Save a copy of existing state to _history
-      history.push({...state, _history: undefined, _return: undefined, settings: undefined} as AppState);
+      // Save a copy of existing state to _history, excluding non-historical fields.
+      history.push({
+        ...state,
+        _history: undefined,
+        _return: undefined,
+        settings: undefined,
+        remotePlay: undefined
+      } as AppState);
     }
   }
 

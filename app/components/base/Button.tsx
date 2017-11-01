@@ -1,6 +1,6 @@
 import * as React from 'react'
 import FlatButton from 'material-ui/FlatButton'
-import {RemoteRipple} from './RemoteAffector'
+import RemoteRipple from './remote/RemoteRipple'
 
 interface ButtonProps extends React.Props<any> {
   className?: string;

@@ -105,7 +105,7 @@
         "es6-promise-plugin": "^4.1.0",
         "escape-string-regexp": "^1.0.4",
         "expedition-art": "git+https://github.com/ExpeditionRPG/expedition-art.git",
-        "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#9c0128b844108007798efafc86c271ae16ccba4c",
+        "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#819fcfc8c2189bd8f7701e9e6f3bc3c5b7c16b53",
         "findup-sync": "^0.4.3",
         "has-ansi": "^2.0.0",
         "he": "^1.1.0",

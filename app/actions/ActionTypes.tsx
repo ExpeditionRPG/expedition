@@ -108,7 +108,6 @@ export interface SnackbarCloseAction extends Redux.Action {
 export interface RemotePlaySessionAction extends Redux.Action {
   type: 'REMOTE_PLAY_SESSION';
   session: Session;
-  uri: string;
 }
 
 // History of remote play sessions, as reported from the API server.

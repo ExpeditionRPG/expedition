@@ -1,23 +1,22 @@
 import * as React from 'react'
+import {COLORBLIND_FRIENDLY_PALETTE} from '../../Constants'
 
-export interface TouchPanelProps extends React.Props<any> {
-  onTouchChange?: (touches: any) => any;
+export interface TouchIndicatorProps extends React.Props<any> {
+  clientInputs: {[client: string]: {[id: string]: number[]}};
 }
 
-export default class TouchPanel extends React.Component<TouchPanelProps, {}> {
+export default class TouchIndicator extends React.Component<TouchIndicatorProps, {}> {
   ctx: any;
   canvas: any;
-  inputArray: number[][];
   private boundDrawTouchPoints: () => void;
   styles: any;
 
-  constructor(props: TouchPanelProps) {
+  constructor(props: TouchIndicatorProps) {
     super(props);
     this.boundDrawTouchPoints = this.drawTouchPoints.bind(this);
     this.styles = {
       center: {
         radius: 36,
-        color: '#1B1718',
       },
       ring: {
         radius: 44,
@@ -27,19 +26,14 @@ export default class TouchPanel extends React.Component<TouchPanelProps, {}> {
     };
   }
 
-  public processInput(xyArray: number[][]) {
-    if (!Boolean(this.inputArray) || xyArray.length !== this.inputArray.length) {
-      this.props.onTouchChange && this.props.onTouchChange(xyArray.length);
-    }
-    this.inputArray = xyArray;
-
+  componentWillReceiveProps(nextProps: TouchIndicatorProps) {
     // Request a single animation frame every time our input values change,
     // instead of rendering continuously (saves render load).
     window.requestAnimationFrame(this.boundDrawTouchPoints);
   }
 
-  protected drawTouchPoint(x: number, y: number) {
-    this.ctx.fillStyle = this.styles.center.color;
+  protected drawTouchPoint(x: number, y: number, color: string) {
+    this.ctx.fillStyle = color;
     this.ctx.beginPath();
     this.ctx.arc(x, y, this.styles.center.radius, 0, 2 * Math.PI, false);
     this.ctx.fill();
@@ -51,10 +45,14 @@ export default class TouchPanel extends React.Component<TouchPanelProps, {}> {
   }
 
   private drawTouchPoints() {
-    const inputs = this.inputArray;
+    const keys = Object.keys(this.props.clientInputs);
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    for (let i = 0; i < inputs.length; i++) {
-      this.drawTouchPoint(inputs[i][0] * this.ctx.canvas.width / 100, inputs[i][1] * this.ctx.canvas.height / 100);
+    for (let i = 0; i < keys.length && i < COLORBLIND_FRIENDLY_PALETTE.length; i++) {
+      const color = COLORBLIND_FRIENDLY_PALETTE[i];
+      const inputs = this.props.clientInputs[keys[i]];
+      for (const k of Object.keys(inputs)) {
+        this.drawTouchPoint(inputs[k][0] * this.ctx.canvas.width / 1000, inputs[k][1] * this.ctx.canvas.height / 1000, color);
+      }
     }
   }
 
@@ -76,7 +74,7 @@ export default class TouchPanel extends React.Component<TouchPanelProps, {}> {
 
   render() {
     return (
-       <canvas className="base_multi_touch_trigger touchpanel" ref={(ref: Element) => {this.setupCanvas(ref);}} />
+       <canvas className="base_multi_touch_trigger touch_indicator" ref={(ref: Element) => {this.setupCanvas(ref);}} />
     );
   }
 }

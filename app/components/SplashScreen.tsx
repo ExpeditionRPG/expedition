@@ -54,7 +54,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
   render() {
     const showInstruction = (this.state.touchCount === 0);
     return (
-      <div>
+      <div className="playerCounterContainer">
         <div className={'splashMultitouchInstruction ' + (showInstruction ? 'visible' : '')}>
           <h2>To Begin:</h2>
           <p>All players hold one finger on the screen.<br/>
