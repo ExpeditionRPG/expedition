@@ -8,6 +8,7 @@ export interface Session {
   secret?: SessionSecret;
   id?: SessionID;
   lock?: SessionLock;
+  created?: number;
 }
 
 function makeSecret(): SessionSecret {
@@ -29,7 +30,12 @@ export abstract class BrokerBase {
   abstract fetchSessionsByClient(client: ClientID): Promise<Session[]>;
 
   createSession(): Promise<Session> {
-    const s: Session = {secret: makeSecret(), id: Date.now(), lock: null};
+    const s: Session = {
+      id: Date.now(),
+      secret: makeSecret(),
+      lock: null,
+      created: Date.now()
+    };
     return this.storeSession(s).then(() => {
       return s;
     });
