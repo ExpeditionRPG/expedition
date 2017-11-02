@@ -386,15 +386,13 @@ Using elements, roleplaying cards can be more than just text.
 
 As covered in the **branching** section, you can include choice elements inside of cards.
 
-### Art
-
-You can embed large images in cards for visually important things, such as showing off a symbol found on a lock. Simply add `[art_name]` to a roleplaying card's contents. By default, art takes up 50% of the width of the card, reducing the amount players need to scroll. If it's important for the art to take up the full width of the card, you can append `_full` to the end, such as `[art_name_full]`. As of October 19th, 2017, you can use any icon listed on the [icon help page](icons.md) as art, with more art on its way!
-
 ### Icons
 
-You can embed inline icons to make your quest more visually interesting! Simply add `:icon_name:` to roleplaying text, instructions or choices.
+You can embed inline icons to make your quest more visually interesting! Simply add `:icon_name:` to roleplaying text, instructions or choices. You can also use icons as the background watermark on a page via `_Card title_ {"icon":"adventurer"}`, though we recommend using watermarks on less than a quarter of your cards, so that when the watermark does appear, players know it's emphasizing something.
 
-Visit the [icon help page](icons.md) to learn more and see what icons are available.
+We recommend using icons as unique symbols, not as a replacement for words. (i.e. DON'T: use the d20 icon instead of the word die, such as in `> Roll a die`. DO: use the bandit icon to show what the thief's tatoo looks like). You can also replace the default instruction icon to make it clearer what the instruction is about; for example `> :loot: Draw one tier II loot` or `> :roll: Roll a die to try to sneak past the guards`.
+
+[Here's the list of available icons](https://github.com/expeditionrpg/expedition-art#icons)
 
 ### Instructions
 
@@ -404,6 +402,10 @@ You can also display helpful instructional callouts in the card via **instructio
 > Draw one tier 1 loot
 > {{ onFire == true }} Reduce all adventurers' health by 1
 ```
+
+### Art
+
+You can embed large images in cards for visually important things, such as showing off a symbol found on a lock. Simply add `[art_name]` to a roleplaying card's contents. By default, art takes up 50% of the width of the card, reducing the amount players need to scroll. If it's important for the art to take up the full width of the card, you can append `_full` to the end, such as `[art_name_full]`. You can use any icon listed in the **Icons** section. You can also use [the art files listed here](https://github.com/ExpeditionRPG/expedition-art/tree/master/art) - note that because those files are PNG extension, you'll need to add `_png` after the file name and before `_full`, for example `[darker_at_dawn_png_full]`
 
 ### Context
 
