@@ -1,3 +1,3 @@
 describe('Events', () => {
-  // Only types currently.
+  // There's only type/interface definitions here currently.
 });

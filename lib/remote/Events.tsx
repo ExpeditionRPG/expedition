@@ -1,28 +1,30 @@
+// ------ Primitives Passed in Events ---------
 
-/*
-ERROR {code: number, message: string}
-TOUCH {positions: number[][]}
-STATUS {line: number, waiting?: boolean}
-CARD <serialized card state>
-*/
-
-// ------ Primitives passed in Events ---------
-
+// This maps to an authenticated user.
 export type ClientID = string;
 
+// A user may have multiple devices authenticated with the same ClientID.
+// The InstanceID is unique per-device owned by the user. Combined with
+// the ClientID, it uniquely identifies a device.
+export type InstanceID = string;
+
 // Array of [vw, vh] coordinates keyed by ID, e.g. {0: [1,2], 1: [3,4]}.
+// The object structure is influenced by Cloud Firestore restrictions on nested arrays.
 export type TouchList = {[id: string]: number[]};
 
-export interface ClientStatus {
-  line: number;
-  waiting?: boolean;
-}
+// ------ Events (Passed Client-to-Client) --------
 
-// ------ Events from Client to Client --------
-
+// StatusEvent is published by a client to indicate some change in state.
 export interface StatusEvent {
   type: 'STATUS';
-  status: ClientStatus;
+
+  // The line of the quest the client is currently synced to, if any.
+  line?: number;
+
+  // Whether or not the client is waiting for action by other clients.
+  // For example, this could be set to 'LOBBY' to indicate the client is
+  // ready to leave a remote play lobby page.
+  waitingOn?: string;
 }
 
 // Interaction events indicate what remote clients are doing,
@@ -31,15 +33,26 @@ export interface StatusEvent {
 // combat timer.
 export interface InteractionEvent {
   type: 'INTERACTION';
-  id: string; // unique ID for the UI element
-  event: string; // "touchstart", etc
-  positions: TouchList; // 0-1000 relative positioning from top left of UI element.
+
+  // unique ID for the UI element
+  id: string;
+
+  // "touchstart", etc
+  event: string;
+
+  // 0-1000 relative positioning from top left of the UI element.
+  positions: TouchList;
 }
 
 // Action events invoke registered action functions on remote clients when they are broadcast.
 export interface ActionEvent {
   type: 'ACTION';
+
+  // The name of the action. The client uses this to determine what action to perform.
+  // Example: https://github.com/ExpeditionRPG/expedition-app/blob/1d9a123598d6b119157e394b28bc1e6c9633f1c6/app/actions/ActionTypes.tsx#L133
   name: string;
+
+  // JSON string of arguments to pass to the action.
   args: string;
 }
 
@@ -49,10 +62,8 @@ export interface ErrorEvent {
 }
 
 export type RemotePlayEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent;
-
 export interface RemotePlayEvent {
   client: ClientID;
+  instance: InstanceID;
   event: RemotePlayEventBody;
 }
-
-export type MessageType = 'STATUS'|'TOUCH'|'ACTION'|'ERROR';

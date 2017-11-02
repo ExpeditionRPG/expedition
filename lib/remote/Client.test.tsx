@@ -1,43 +1,72 @@
 import {ClientID, RemotePlayEvent, RemotePlayEventBody} from './Events'
 import {ClientBase} from './Client'
-import {BrokerBase, InMemoryBroker} from './Broker'
 
 export class TestClient extends ClientBase {
-  b: BrokerBase;
+  public events: RemotePlayEvent[];
 
-  constructor(b: BrokerBase) {
+  constructor() {
     super();
-    this.b = b;
+    this.events = [];
   }
 
-  getMessageHandler(): ((e: RemotePlayEvent) => any) {
-    return this.handleMessage;
+  doHandleMessage(e: RemotePlayEvent) {
+    return this.handleMessage(e);
   }
 
-  getID() {
-    return this.id;
+  setConnectState(connected: boolean) {
+    this.connected = connected;
   }
 
-  sendEvent(e: RemotePlayEventBody) {}
+  sendFinalizedEvent(e: RemotePlayEvent) {
+    this.events.push(e);
+  }
+
+  disconnect() {}
 }
 
 describe('Client', () => {
-  it('handles unknown message types');
-  it('dedupes client statuses');
-});
+  const basicEventBody: RemotePlayEventBody = {type: 'STATUS'};
+  const basicEvent: RemotePlayEvent = {client: 'testclient', instance: 'testinstance', event: basicEventBody};
 
-describe('Broker/Client Behavior', () => {
-  let b: InMemoryBroker;
-  let c1: TestClient;
-  let c2: TestClient;
-
-  beforeEach(() => {
-    b = new InMemoryBroker();
-    c1 = new TestClient(b);
-    c2 = new TestClient(b);
-    b.addClientHandler(c1.getID(), c1.getMessageHandler());
-    b.addClientHandler(c2.getID(), c2.getMessageHandler());
+  it('safely handles malformed messages', (done) => {
+    const c = new TestClient();
+    c.subscribe((e: RemotePlayEvent) => {
+      expect(e.event.type).toEqual('ERROR');
+      done();
+    });
+    c.doHandleMessage({} as any as RemotePlayEvent);
   });
 
-  it('can pass messages');
+  it('safely handles unknown message types', (done) => {
+    const c = new TestClient();
+    c.subscribe((e: RemotePlayEvent) => {
+      expect(e.event.type).toEqual('ERROR');
+      done();
+    });
+    c.doHandleMessage({client: 'testclient', instance: 'testinstance', event: {type: 'UNKNOWN_EVENT_TYPE'}} as any as RemotePlayEvent);
+  });
+
+  it('can subscribe & callback handlers', (done) => {
+    const c = new TestClient();
+    c.subscribe((e: RemotePlayEvent) => {
+      expect(e).toEqual(basicEvent);
+      done();
+    });
+    c.doHandleMessage(basicEvent);
+  });
+
+  it('does not try to send if not connected', () => {
+    const c = new TestClient();
+    c.setConnectState(false);
+    c.sendEvent(basicEventBody);
+    expect(c.events).toEqual([]);
+  });
+
+  it('finalizes and sends messages', () => {
+    const c = new TestClient();
+    c.configure('testclient', 'testinstance');
+    c.setConnectState(true);
+    c.sendEvent(basicEventBody);
+    expect(c.events).toEqual([basicEvent]);
+  })
 });
