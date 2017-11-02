@@ -1,4 +1,4 @@
-import {RemotePlayEvent, ClientID} from './Events'
+import {RemotePlayEvent, ClientID, SessionMetadata} from './Events'
 
 export type SessionID = number;
 export type SessionSecret = string; // 4-character entry code
@@ -27,7 +27,7 @@ export abstract class BrokerBase {
 
   abstract fetchSessionBySecret(secret: SessionSecret): Promise<Session>;
   abstract fetchSessionById(id: SessionID): Promise<Session>;
-  abstract fetchSessionsByClient(client: ClientID): Promise<Session[]>;
+  abstract fetchSessionsByClient(client: ClientID): Promise<SessionMetadata[]>;
 
   createSession(): Promise<Session> {
     const s: Session = {
@@ -111,8 +111,8 @@ export class InMemoryBroker extends BrokerBase {
     });
   }
 
-  fetchSessionsByClient(client: ClientID): Promise<Session[]> {
-    return new Promise<Session[]>((resolve, reject) => {
+  fetchSessionsByClient(client: ClientID): Promise<SessionMetadata[]> {
+    return new Promise<SessionMetadata[]>((resolve, reject) => {
       const sessions = this.clients.filter((c) => {return c.client === client;}).map((c) => {return c.session;});
 
       const results: Session[] = [];

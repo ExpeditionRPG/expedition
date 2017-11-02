@@ -67,3 +67,10 @@ export interface RemotePlayEvent {
   instance: InstanceID;
   event: RemotePlayEventBody;
 }
+
+export interface SessionMetadata {
+  id: SessionID;
+  peerCount?: number;
+  questTitle?: string;
+  lastAction?: number;
+}
