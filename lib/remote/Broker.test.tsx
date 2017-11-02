@@ -82,7 +82,7 @@ describe('Broker', () => {
       broker.createSession()
         .then((s: Session) => {
           session = s.id;
-          return broker.lockSession(s.id);
+          return broker.lockSession(session);
         })
         .then((s: Session) => {
           return broker.lockSession(session);
