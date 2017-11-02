@@ -2,18 +2,18 @@
 
 ## Getting Started
 
-The first time you open the [quest creator](http://quests.expeditionrpg.com), it will populate itself with a "Getting Started" quest that walks you through the basics of creating Expedition quests.
+The first time you open the [quest creator](https://quests.expeditiongame.com), it will populate itself with a "Getting Started" quest that walks you through the basics of creating Expedition quests.
 
 If you're looking for more specific, in-detail documentation, check out:
 
 * [Quest Design Guide](qdl_guide.md): More details on the Quest Design Language.
 * [Style Guide](style_guide.md): A guide on how to style your quests, plus rules of thumb for combat.
-* [Icon List](icons.md): A list of all available icons you can use in your quest.
+* [Icon List](https://github.com/expeditionrpg/expedition-art#icons): A list of all available icons you can use in your quest.
 * [XML Spec](quest_spec.md): The underlying XML used by the app, in great detail.
 
 ## I have an error, now what?
 
-If your error says `PLEASE REPORT`, [report it!](https://github.com/Fabricate-IO/expedition-quest-ide/issues/new)
+If your error says `PLEASE REPORT`, [report it!](https://github.com/ExpeditionRPG/expedition-quest-creator/issues/new)
 
 Otherwise, it's probably an error in your quest. If you run into any issues or can't figure out how to fix it, please report it and we'll help you get to the bottom of it (and improve the documentation so that others don't run into the same issue).
 
