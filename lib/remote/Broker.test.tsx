@@ -1,4 +1,5 @@
 import {BrokerBase, InMemoryBroker, Session, SessionSecret} from './Broker'
+import {SessionID} from './Events'
 import * as Bluebird from 'bluebird';
 
 describe('Broker', () => {
@@ -84,7 +85,7 @@ describe('Broker', () => {
           session = s.id;
           return broker.lockSession(session);
         })
-        .then((s: Session) => {
+        .then((s: boolean) => {
           return broker.lockSession(session);
         })
         .then(() => {
@@ -93,8 +94,8 @@ describe('Broker', () => {
     });
     it('fails when session does not exist', (done) => {
       let session: SessionID = null;
-      broker.lockSession('nonexistant_session_id')
-        .catch((e) => {
+      broker.lockSession(-1)
+        .catch((e: Error) => {
           done();
         });
     });
