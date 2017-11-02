@@ -1,16 +1,20 @@
-import {RemotePlayEvent, RemotePlayEventBody, ClientID, ClientStatus} from './Events'
+import {RemotePlayEvent, RemotePlayEventBody, ClientID, InstanceID} from './Events'
 
 declare type EventHandler = (e: RemotePlayEvent) => any;
 
-// ClientBase is a remote play client that is designed to communicate
-// with like peers.
+// ClientBase is a remote play client that is designed to communicate with like peers.
 export abstract class ClientBase {
   protected id: ClientID;
+  protected instance: InstanceID;
+  protected connected: boolean;
   private handlers: EventHandler[];
-  private clientStatusSet: {[id: string]: ClientStatus};
 
   constructor() {
     this.resetState();
+  }
+
+  isConnected(): boolean {
+    return this.connected;
   }
 
   setID(id: ClientID) {
@@ -19,34 +23,34 @@ export abstract class ClientBase {
 
   resetState() {
     this.handlers = [];
-    this.clientStatusSet = {};
+    this.connected = false;
   }
 
-  abstract sendEvent(e: RemotePlayEventBody): void;
+  abstract sendFinalizedEvent(e: RemotePlayEvent): void;
+  abstract disconnect(): void;
+
+  configure(id: string, instance: string): void {
+    this.id = id;
+    this.instance = instance;
+  }
+
+  sendEvent(event: RemotePlayEventBody): void {
+    if (!this.isConnected()) {
+      return;
+    }
+    this.sendFinalizedEvent({client: this.id, instance: this.instance, event});
+  }
 
   protected handleMessage(e: RemotePlayEvent) {
-    if (!e.event) {
-      console.log('Malformed message: ' + e.toString());
+    if (!e.event || !e.client || !e.instance) {
+      this.publish({client: null, instance: null, event: {type: 'ERROR', error: 'Received malformed message'}});
       return;
     }
 
-    // Error if we get a weird message type
+    // Error out if we get an unrecognized message
     if (['STATUS', 'INTERACTION', 'ACTION', 'ERROR'].indexOf(e.event.type) < 0) {
-      this.publish({client: e.client, event: {type: 'ERROR', error: 'Received unknown message of type "' + e.event.type + '"'}});
+      this.publish({client: null, instance: null, event: {type: 'ERROR', error: 'Received unknown message of type "' + e.event.type + '"'}});
       return;
-    }
-
-    // Dedupe messages to prevent unnecessary handler action
-    if (e.event.type === 'STATUS') {
-      if (!this.clientStatusSet[e.client]) {
-        this.clientStatusSet[e.client] = {line: -1, waiting: null};
-      }
-
-      const s = this.clientStatusSet[e.client];
-      if (s.line === e.event.status.line && s.waiting === e.event.status.waiting) {
-        return;
-      }
-      this.clientStatusSet[e.client] = e.event.status;
     }
 
     this.publish(e);

@@ -33,15 +33,71 @@ describe('Broker', () => {
   });
 
   describe('joinSession', () => {
-    it('joins session if secret matches');
-    it('fails to join session if secret does not match');
-    it('fails to join session if it is locked');
+    it('joins session if secret matches', (done) => {
+      broker.createSession()
+        .then((s: Session) => {
+          return broker.joinSession('testclient', s.secret);
+        })
+        .then(() => {
+          done();
+        });
+    });
+    it('fails to join session if secret does not match', (done) => {
+      broker.createSession()
+        .then((s: Session) => {
+          return broker.joinSession('testclient', s.secret + 'A');
+        })
+        .catch((e) => {
+          done();
+        });
+    });
+    it('fails to join session if it is locked', (done) => {
+      let secret: string = null;
+      broker.createSession()
+        .then((s: Session) => {
+          secret = s.secret;
+          return broker.lockSession(s.id);
+        })
+        .then(() => {
+          return broker.joinSession('testclient', secret);
+        })
+        .catch((e) => {
+          done();
+        });
+    });
   });
 
   describe('lockSession', () => {
-    it('locks existing session');
-    it('treats already locked session as success');
-    it('fails when session does not exist');
+    it('locks existing session', (done) => {
+      broker.createSession()
+        .then((s: Session) => {
+          return broker.lockSession(s.id);
+        })
+        .then(() => {
+          done();
+        });
+    });
+    it('treats already locked session as success', (done) => {
+      let session: SessionID = null;
+      broker.createSession()
+        .then((s: Session) => {
+          session = s.id;
+          return broker.lockSession(session);
+        })
+        .then((s: Session) => {
+          return broker.lockSession(session);
+        })
+        .then(() => {
+          done();
+        });
+    });
+    it('fails when session does not exist', (done) => {
+      let session: SessionID = null;
+      broker.lockSession('nonexistant_session_id')
+        .catch((e) => {
+          done();
+        });
+    });
   });
 
 });
