@@ -1,4 +1,4 @@
-import {RemotePlayEvent, ClientID, SessionMetadata} from './Events'
+import {RemotePlayEvent, ClientID} from './Events'
 
 export type SessionID = number;
 export type SessionSecret = string; // 4-character entry code
@@ -9,6 +9,13 @@ export interface Session {
   id?: SessionID;
   lock?: SessionLock;
   created?: number;
+}
+
+export interface SessionMetadata {
+  id: SessionID;
+  peerCount?: number;
+  questTitle?: string;
+  lastAction?: number;
 }
 
 function makeSecret(): SessionSecret {
@@ -115,11 +122,11 @@ export class InMemoryBroker extends BrokerBase {
     return new Promise<SessionMetadata[]>((resolve, reject) => {
       const sessions = this.clients.filter((c) => {return c.client === client;}).map((c) => {return c.session;});
 
-      const results: Session[] = [];
+      const results: SessionMetadata[] = [];
       for (const s1 of sessions) {
         for (const s2 of this.sessions) {
           if (s2.id === s1) {
-            results.push(s2);
+            results.push({id: s2.id});
           }
         }
       }

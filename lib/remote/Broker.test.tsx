@@ -1,5 +1,4 @@
-import {BrokerBase, InMemoryBroker, Session, SessionSecret} from './Broker'
-import {SessionID} from './Events'
+import {BrokerBase, InMemoryBroker, Session, SessionSecret, SessionID} from './Broker'
 import * as Bluebird from 'bluebird';
 
 describe('Broker', () => {
