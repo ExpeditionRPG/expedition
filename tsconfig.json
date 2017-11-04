@@ -4,9 +4,10 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "module": "commonjs",
-    "target": "ES5",
+    "target": "es6",
     "allowSyntheticDefaultImports": true,
-    "types" : [ "jasmine" ]
+    "types" : [ "jasmine" ],
+    "jsx": "preserve"
   },
   "exclude": [
     "node_modules",

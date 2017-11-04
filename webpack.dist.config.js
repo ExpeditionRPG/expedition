@@ -15,7 +15,7 @@ const options = {
     ],
   },
   resolve: {
-    extensions: ['.ts', '.js', '.json', '.txt'],
+    extensions: ['.ts', '.js', '.tsx', '.json', '.txt'],
   },
   output: {
     path: Path.join(__dirname, 'dist'),
@@ -35,11 +35,11 @@ const options = {
     rules: [
       { enforce: 'pre', test: /\.ts$/, loader: 'tslint-loader', exclude: /node_modules/ },
       { test: /\.json$/, loader: 'json-loader' },
-      { test: /\.ts$/, loaders: ['awesome-typescript-loader'], exclude: [/\/node_modules\/.*/, /\/dist\/.*/] },
+      { test: /\.ts(x?)$/, loaders: ['awesome-typescript-loader'], exclude: [/\/node_modules\/((?!expedition\-qdl).)*$/, /\/dist\/.*/] },
     ]
   },
   target: 'node',
-  externals: [NodeExternals()], // Do not bundle anything in node_modules.
+  externals: [NodeExternals({whitelist: [/expedition/]})], // Do not bundle anything in node_modules.
   plugins: [
     new Webpack.HotModuleReplacementPlugin(),
     new Webpack.NoEmitOnErrorsPlugin(),

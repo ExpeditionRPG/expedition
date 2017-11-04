@@ -14,6 +14,8 @@ nconf
     'DATABASE_URL', // URL of postgres database storing quest metadata, user data, feedback, etc.
     'GOOGLE_SERVICE_KEY', // Service key for cloud storage
 
+    'FIREBASE_SERVICE_KEY', // Service key for firebase firestore
+
     // Feedback email sender config settings
     'MAIL_EMAIL',
     'MAIL_PASSWORD',
@@ -59,6 +61,7 @@ const REQUIRED_SETTINGS = [
   'OAUTH2_CLIENT_SECRET',
   'SESSION_SECRET',
   'GOOGLE_SERVICE_KEY',
+  'FIREBASE_SERVICE_KEY',
 ];
 
 const missing = [];

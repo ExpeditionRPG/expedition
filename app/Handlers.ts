@@ -1,6 +1,8 @@
 import * as express from 'express'
 import {Quest, QuestInstance, QuestAttributes, QuestSearchParams, MAX_SEARCH_LIMIT, PUBLIC_PARTITION} from './models/Quests'
 import {Feedback, FeedbackType, FeedbackAttributes} from './models/Feedback'
+import broker from './remoteplay/Broker'
+import {Session, SessionID, SessionMetadata} from 'expedition-qdl/lib/remote/Broker'
 
 const Joi = require('joi');
 
@@ -56,7 +58,7 @@ export function search(quest: Quest, req: express.Request, res: express.Response
         hasMore: (quests.length === (params.limit || MAX_SEARCH_LIMIT))}));
     })
     .catch((e: Error) => {
-      console.log(e);
+      console.error(e);
       return res.status(500).send(GENERIC_ERROR_MESSAGE);
     });
 }
@@ -69,13 +71,13 @@ export function questXMLRedirect(quest: Quest, req: express.Request, res: expres
       res.status(301).end();
     })
     .catch((e: Error) => {
-      console.log(e);
+      console.error(e);
       return res.status(500).send(GENERIC_ERROR_MESSAGE);
     });
 }
 
 export function publish(quest: Quest, req: express.Request, res: express.Response) {
-  if (!res.locals.id) {
+  if (!res.locals || !res.locals.id) {
     return res.status(500).end('You are not signed in. Please sign in (by refreshing the page) to save your quest.');
   }
 
@@ -102,13 +104,13 @@ export function publish(quest: Quest, req: express.Request, res: express.Respons
       res.end(quest.dataValues.id);
     })
     .catch((e: Error) => {
-      console.log(e);
+      console.error(e);
       return res.status(500).send(GENERIC_ERROR_MESSAGE);
     })
 }
 
 export function unpublish(quest: Quest, req: express.Request, res: express.Response) {
-  if (!res.locals.id) {
+  if (!res.locals || !res.locals.id) {
     return res.status(500).end('You are not signed in. Please sign in (by refreshing the page) to save your quest.');
   }
 
@@ -117,13 +119,12 @@ export function unpublish(quest: Quest, req: express.Request, res: express.Respo
       res.end('ok');
     })
     .catch((e: Error) => {
-      console.log(e);
+      console.error(e);
       return res.status(500).send(GENERIC_ERROR_MESSAGE);
     });
 }
 
 export function feedback(feedback: Feedback, req: express.Request, res: express.Response) {
-
   const type: FeedbackType = req.params.type;
   if (req.params.type !== 'rating' && req.params.type !== 'report') {
     return res.status(500).end('Unknown feedback type: ' + req.params.type);
@@ -155,7 +156,7 @@ export function feedback(feedback: Feedback, req: express.Request, res: express.
     .then((id: string) => {
       res.end('ok');
     }).catch((e: Error) => {
-      console.log(e);
+      console.error(e);
       return res.status(500).send(GENERIC_ERROR_MESSAGE);
     });
 }
@@ -188,9 +189,62 @@ export function subscribe(mailchimp: any, listId: string, req: express.Request, 
             return res.status(status).send((err as any).title);
           }
         }
-        console.log(email + ' subscribed as pending to player list');
+        console.error(email + ' subscribed as pending to player list');
         return res.status(200).send();
       });
     }
   });
+}
+
+export function remotePlayUser(req: express.Request, res: express.Response) {
+  if (!res.locals || !res.locals.id) {
+    return res.status(500).end('You are not signed in.');
+  }
+
+  broker.fetchSessionsByClient(res.locals.id).then((fetched: SessionMetadata[]) => {
+    res.status(200).send(JSON.stringify({history: fetched}));
+  })
+  .catch((e: Error) => {
+    return res.status(500).send(JSON.stringify({error: 'Error looking up user details: ' + e.toString()}));
+  });
+}
+
+export function remotePlayNewSession(req: express.Request, res: express.Response) {
+  if (!res.locals || !res.locals.id) {
+    return res.status(500).end('You are not signed in.');
+  }
+
+  broker.createSession().then((s: Session) => {
+    console.log('Created session', s);
+    res.status(200).send(JSON.stringify({secret: s.secret}));
+  })
+  .catch((e: Error) => {
+    return res.status(500).send(JSON.stringify({error: 'Error creating session: ' + e.toString()}));
+  });
+}
+
+export function remotePlayConnect(req: express.Request, res: express.Response) {
+  if (!res.locals || !res.locals.id) {
+    return res.status(500).end('You are not signed in.');
+  }
+
+  let body: any;
+  try {
+    body = JSON.parse(req.body);
+  } catch (e) {
+    return res.status(500).end('Error reading request.');
+  }
+  let session: number;
+
+  broker.joinSession(res.locals.id, body.secret)
+    .then((s: SessionID) => {
+      session = s;
+      return broker.createAuthToken(res.locals.id);
+    })
+    .then((authToken: string) => {
+      return res.status(200).send(JSON.stringify({session, authToken}));
+    })
+    .catch((e: Error) => {
+      return res.status(500).send(JSON.stringify({error: 'Could not join session: ' + e.toString()}));
+    });
 }

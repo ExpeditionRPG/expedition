@@ -37,6 +37,8 @@ const publishLimiter = new RateLimit({
   message: 'Publishing too frequently. Please wait 1 minute and then try again',
 });
 
+// TODO: Rate-limit session creation
+
 Router.get('/healthcheck', limitCors, Handlers.healthCheck);
 Router.get('/announcements', limitCors, Handlers.announcement);
 Router.post('/quests', limitCors, (req, res) => {Handlers.search(models.Quest, req, res);});
@@ -45,5 +47,8 @@ Router.post('/publish/:id', publishLimiter, limitCors, (req, res) => {Handlers.p
 Router.post('/unpublish/:quest', limitCors, (req, res) => {Handlers.unpublish(models.Quest, req, res);});
 Router.post('/quest/feedback/:type', limitCors, (req, res) => {Handlers.feedback(models.Feedback, req, res);});
 Router.post('/user/subscribe', limitCors, (req, res) => {Handlers.subscribe(mailchimp, Config.get('MAILCHIMP_PLAYERS_LIST_ID'), req, res);});
+Router.get('/remoteplay/v1/user', limitCors, Handlers.remotePlayUser);
+Router.post('/remoteplay/v1/new_session', limitCors, Handlers.remotePlayNewSession);
+Router.post('/remoteplay/v1/connect', limitCors, Handlers.remotePlayConnect);
 
 export default Router;
