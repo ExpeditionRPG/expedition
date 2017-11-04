@@ -5,7 +5,6 @@ import {Session} from 'expedition-qdl/lib/remote/Broker'
 
 export const initial_state: RemotePlayState = {
   session: null,
-  uri: null,
   history: []
 };
 
@@ -13,7 +12,7 @@ export function remotePlay(state: RemotePlayState = initial_state, action: Redux
   switch(action.type) {
     case 'REMOTE_PLAY_SESSION':
       const rpsa = (action as any) as RemotePlaySessionAction;
-      return {...state, session: rpsa.session, uri: rpsa.uri};
+      return {...state, session: rpsa.session};
     case 'REMOTE_PLAY_HISTORY':
       const rph = (action as any) as RemotePlayHistoryAction;
       return {...state, history: rph.history || []};

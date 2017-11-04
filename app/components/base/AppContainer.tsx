@@ -16,8 +16,6 @@ import QuestStartContainer from '../QuestStartContainer'
 import QuestEndContainer from '../QuestEndContainer'
 import RemotePlayContainer from '../RemotePlayContainer'
 
-import RemoteTouchPanel from './RemoteTouchPanel'
-
 import {renderCardTemplate} from '../../cardtemplates/Template'
 import {initialSettings} from '../../reducers/Settings'
 import {closeSnackbar} from '../../actions/Snackbar'
@@ -153,7 +151,6 @@ export default class Main extends React.Component<MainProps, {}> {
     const cards: any = [
       <div className="base_main" key={this.state.key}>
         {this.state.card}
-        <RemoteTouchPanel/>
       </div>
     ];
 

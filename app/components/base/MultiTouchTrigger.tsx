@@ -1,134 +1,59 @@
 import * as React from 'react'
+import {InteractionEvent} from 'expedition-qdl/lib/remote/Events'
+import RemoteAffector from './remote/RemoteAffector'
+import TouchIndicator from './TouchIndicator'
 
 interface MultiTouchTriggerProps extends React.Props<any> {
+  remoteID?: string;
   onTouchChange: (touches: any) => any;
 }
-
-const styles = {
-  center: {
-    radius: 36,
-    color: '#1B1718',
-  },
-  ring: {
-    radius: 44,
-    width: 5,
-    color: '#FFFFFF',
-  },
-};
-
-// TODO: inherit from TouchPanel class
-export default class MultiTouchTrigger extends React.Component<MultiTouchTriggerProps, {}> {
-  ctx: any;
-  canvas: any;
-  inputArray: number[][];
+interface MultiTouchTriggerState {
+  clientInputs: {[client: string]: {[id: string]: number[]}};
+  lastTouchSum: number;
   mouseDown: Boolean;
-  private listeners: {[k: string]: () => void};
-  private boundDrawTouchPoints: () => void;
+}
+export default class MultiTouchTrigger extends React.Component<MultiTouchTriggerProps, MultiTouchTriggerState> {
 
   constructor(props: MultiTouchTriggerProps) {
     super(props);
-    // We track bound listener functions in this way so we can unsubscribe later.
-    this.listeners = {
-      'touchstart': this.touchEvent.bind(this),
-      'touchmove': this.touchEvent.bind(this),
-      'touchend': this.touchEvent.bind(this),
-      'mousedown': this.mouseDownEvent.bind(this),
-      'mousemove': this.mouseMoveEvent.bind(this),
-      'mouseup': this.mouseUpEvent.bind(this),
-    };
-    this.boundDrawTouchPoints = this.drawTouchPoints.bind(this);
+    this.state = {clientInputs: {}, lastTouchSum: 0, mouseDown: false};
   }
 
-  private touchEvent(e: any) {
-    const xyArray: number[][] = [];
-    for (let i = 0; i < e.touches.length; i++) {
-      xyArray.push([e.touches[i].clientX, e.touches[i].clientY]);
-    }
-    this.processInput(xyArray);
-    e.preventDefault();
-  }
-
-  private mouseDownEvent(e: any) {
-    this.mouseDown = true;
-    this.processInput([[e.layerX, e.layerY]]);
-  }
-
-  private mouseMoveEvent(e: any) {
-    if (this.mouseDown) {
-      this.processInput([[e.layerX, e.layerY]]);
+  remoteEvent(client: string, e: InteractionEvent) {
+    switch (e.event) {
+      case 'touchstart':
+      case 'touchend':
+      case 'touchmove':
+        return this.processInput(e.positions, client);
+      default:
+        return;
     }
   }
 
-  private mouseUpEvent() {
-    this.mouseDown = false;
-    this.processInput([]);
-  }
-
-  private processInput(xyArray: number[][]) {
-    if (!Boolean(this.inputArray) || xyArray.length !== this.inputArray.length) {
-      this.props.onTouchChange(xyArray.length);
-    }
-    this.inputArray = xyArray;
-
-    // Request a single animation frame every time our input values change,
-    // instead of rendering continuously (saves render load).
-    window.requestAnimationFrame(this.boundDrawTouchPoints);
-  }
-
-  private drawTouchPoints() {
-    const inputs = this.inputArray;
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    for (let i = 0; i < inputs.length; i++) {
-      this.ctx.fillStyle = styles.center.color;
-      this.ctx.beginPath();
-      this.ctx.arc(inputs[i][0], inputs[i][1], styles.center.radius, 0, 2 * Math.PI, false);
-      this.ctx.fill();
-      this.ctx.strokeStyle = styles.ring.color;
-      this.ctx.lineWidth = styles.ring.width;
-      this.ctx.beginPath();
-      this.ctx.arc(inputs[i][0], inputs[i][1], styles.ring.radius, 0, 2 * Math.PI, false);
-      this.ctx.stroke();
-    }
-  }
-
-  setupCanvas(ref: any) {
-    // We have nothing to do if we're given the same canvas as previous.
-    if (this.canvas === ref) {
-      return;
+  private processInput(xyArray: {[id: string]: number[]}, client: string) {
+    let touchSum = 0;
+    const newInputs = {...this.state.clientInputs};
+    newInputs[client] = xyArray;
+    for (const k of Object.keys(newInputs)) {
+      touchSum += Object.keys(newInputs[k]).length;
     }
 
-    // Setup canvas element and touch listeners
-    this.destroyCanvas();
-    this.canvas = ref;
-    if (!this.canvas) {
-      return;
+    if (touchSum !== this.state.lastTouchSum) {
+      this.props.onTouchChange(Object.keys(newInputs.local || {}).length);
     }
-    this.ctx = this.canvas.getContext('2d');
-    this.ctx.canvas.width = window.innerWidth;
-    this.ctx.canvas.height = window.innerHeight;
-    for (const k of Object.keys(this.listeners)) {
-      this.canvas.addEventListener(k, this.listeners[k]);
-    }
-    this.touchEvent({touches: [], preventDefault: ()=>{}});
-  }
 
-  private destroyCanvas() {
-    if (!this.canvas) {
-      return;
-    }
-    // Remove event listener references from canvas so they don't stick around.
-    for (const k of Object.keys(this.listeners)) {
-      this.canvas.removeEventListener(k, this.listeners[k]);
-    }
-  }
-
-  componentWillUnmount() {
-    this.destroyCanvas();
+    this.setState({lastTouchSum: touchSum, clientInputs: newInputs});
   }
 
   render() {
     return (
-       <canvas className="base_multi_touch_trigger" ref={(ref: any) => {this.setupCanvas(ref);}} />
+      <RemoteAffector
+        remoteID={this.props.remoteID}
+        className="base_multi_touch_remote_affector"
+        includeLocalInteractions={true}
+        onInteraction={(c: string, i: InteractionEvent) => {this.remoteEvent(c, i)}}>
+        <TouchIndicator clientInputs={this.state.clientInputs} />
+      </RemoteAffector>
     );
   }
 }

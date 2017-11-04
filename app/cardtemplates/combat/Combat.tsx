@@ -54,7 +54,11 @@ function renderSelectTier(props: CombatProps): JSX.Element {
   const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
   return (
     <Card title="Draw Enemies" theme="DARK" inQuest={true}>
-      <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, props.tier, i)} value={props.tier}>
+      <Picker
+        label="Tier Sum"
+        remoteID="tier_sum"
+        onDelta={(i: number)=>props.onTierSumDelta(props.node, props.tier, i)}
+        value={props.tier}>
         Set this to the combined tier you wish to fight.
       </Picker>
       <Button onTouchTap={() => props.onNext(nextCard)} disabled={props.tier <= 0}>Next</Button>
@@ -255,7 +259,11 @@ function renderResolve(props: CombatProps): JSX.Element {
 function renderEnemyTier(props: CombatProps): JSX.Element {
   return (
     <Card title="Enemy Strength" theme="DARK" inQuest={true}>
-      <Picker label="Tier Sum" onDelta={(i: number)=>props.onTierSumDelta(props.node, props.tier, i)} value={props.tier}>
+      <Picker
+        label="Tier Sum"
+        remoteID="tier_sum"
+        onDelta={(i: number)=>props.onTierSumDelta(props.node, props.tier, i)}
+        value={props.tier}>
         {props.settings.showHelp && 'Set this to the combined tier of the remaining enemies.'}
       </Picker>
 
@@ -289,7 +297,11 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
     <Card title="Take Damage" theme="DARK" inQuest={true}>
       <h4 className="combat center damage-label">All adventurers take:</h4>
       <h1 className="combat center damage">{damage} Damage</h1>
-      <Picker label="Adventurers" onDelta={(i: number)=>props.onAdventurerDelta(props.node, props.settings, props.numAliveAdventurers, i)} value={props.numAliveAdventurers}>
+      <Picker
+        label="Adventurers"
+        remoteID="adventurers"
+        onDelta={(i: number)=>props.onAdventurerDelta(props.node, props.settings, props.numAliveAdventurers, i)}
+        value={props.numAliveAdventurers}>
         {props.settings.showHelp && soloPlay && <span><strong>Solo play:</strong> Keep this at 1 unless all adventurers are knocked out.</span>}
         {props.settings.showHelp && !soloPlay && <span>Set this to the number of adventurers above zero health.</span>}
       </Picker>

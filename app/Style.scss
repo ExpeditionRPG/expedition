@@ -163,6 +163,10 @@ body {
   }
 }
 
+.remote-affector {
+  position: relative;
+}
+
 h1, h2, h3 {
   font-family: $headerFont;
   margin: 0.5em 0 0.2em 0;
@@ -672,11 +676,17 @@ span.line {
   .base_multi_touch_trigger {
     position: absolute;
 
-    &.touchpanel {
+    &.touch_indicator {
       pointer-events: none;
       top: 0;
       left: 0;
     }
+  }
+
+  .base_multi_touch_remote_affector {
+    position:absolute;
+    width: 100%;
+    height: 100%;
   }
 
   .base_picker {
@@ -805,6 +815,11 @@ span.line {
     background-image: url(images/leather.jpg);
     background-size: cover;
     color: $font_color_dark_primary;
+
+    .playerCounterContainer {
+      width: 100%;
+      height: 100%;
+    }
 
     .splashMultitouchInstruction {
       width: 90%;
