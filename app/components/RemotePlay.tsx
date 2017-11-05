@@ -2,8 +2,10 @@ import * as React from 'react'
 import Card from './base/Card'
 import Button from './base/Button'
 import {getAppVersion} from'../Globals'
-import {SessionID, SessionSecret} from 'expedition-qdl/lib/remote/Broker'
-import {SettingsType, CardState, UserState, RemotePlayPhase, RemotePlayState, SessionMetadata} from '../reducers/StateTypes'
+import {SessionID, SessionSecret, SessionMetadata} from 'expedition-qdl/lib/remote/Broker'
+import {SettingsType, CardState, UserState, RemotePlayPhase, RemotePlayState} from '../reducers/StateTypes'
+
+const Moment = require('moment');
 
 export interface RemotePlayStateProps {
   phase: RemotePlayPhase;
@@ -39,8 +41,11 @@ class RemotePlayConnect extends React.Component<RemotePlayProps, {}> {
 
   render() {
     const history = this.props.remotePlay.history.map((m: SessionMetadata, i: number) => {
-      return (<Button key={i} onTouchTap={()=>{this.props.onReconnect(this.props.user, m.id)}}>
-        {m.questTitle} ({m.peerCount} peers) - {m.firstContact}</Button>);
+      return (
+        <Button key={i} onTouchTap={()=>{this.props.onReconnect(this.props.user, m.id)}}>
+          {m.questTitle} ({m.peerCount-1} peers) - {Moment(m.lastAction).fromNow()}
+        </Button>
+      );
     });
 
     return (
@@ -63,7 +68,7 @@ function renderLobby(props: RemotePlayProps): JSX.Element {
     <Card title="Lobby">
       <div className="remoteplay">
         <div>Connected to Session!</div>
-        <div>Session secret: {props.remotePlay.session.secret}</div>
+        <div>Session secret: {props.remotePlay.session && props.remotePlay.session.secret}</div>
         <div className="connect_bar">
           <img src="images/adventurer_small.svg"></img>
           <img src="images/adventurer_small.svg"></img>

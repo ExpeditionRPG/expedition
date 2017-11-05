@@ -24,7 +24,6 @@ const db = firebase.firestore();
 // using firebase FireStore.
 export class RemotePlayClient extends ClientBase {
   private sessionRef: firebase.firestore.DocumentReference;
-  private connected: boolean;
   private unsubscribers: any[];
 
   connect(sessionID: string, authToken: string): Promise<void> {
@@ -58,16 +57,12 @@ export class RemotePlayClient extends ClientBase {
         } else {
           this.connected = true;
           if (this.sessionRef) {
-            this.sendEvent({type: 'STATUS', status: {line: 0, waiting: false}});
+            this.sendEvent({type: 'STATUS'});
           }
         };
         // TODO: Use onDisconnect() to set online state for others to see
         });
       });
-  }
-
-  isConnected(): boolean {
-    return this.connected;
   }
 
   disconnect() {
@@ -79,13 +74,12 @@ export class RemotePlayClient extends ClientBase {
     firebase.database().goOffline();
   }
 
-  sendEvent(e: any): void {
-    if (!this.isConnected()) {
-      return;
-    }
+  sendFinalizedEvent(event: RemotePlayEvent): void {
     const start = Date.now();
-    const event: RemotePlayEvent = {client: this.id, event: e};
     try {
+      // Transparently add firebase-specific attributes the app doesn't care about
+      (event as any)['added'] = start;
+
       this.sessionRef.collection('events').doc().set(event).then(() => {
           const runtime = (Date.now() - start);
           console.log('Firebase event (' + runtime + ' ms)');

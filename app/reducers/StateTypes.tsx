@@ -1,7 +1,7 @@
 import {QuestDetails} from './QuestTypes'
 import {TemplatePhase, TemplateContext} from '../cardtemplates/TemplateTypes'
 import {ParserNode} from '../cardtemplates/Template'
-import {Session, SessionID} from 'expedition-qdl/lib/remote/Broker'
+import {Session, SessionID, SessionMetadata} from 'expedition-qdl/lib/remote/Broker'
 import {GenreType, ContentRatingLabelType} from '../Constants'
 
 export interface AnnouncementState {
@@ -113,7 +113,6 @@ export interface UserFeedbackState {
   text: string;
 }
 
-export type SessionMetadata = {id: SessionID, peerCount: number, questTitle: string, firstContact: Date};
 export interface RemotePlayState {
   session: Session;
   history: SessionMetadata[];

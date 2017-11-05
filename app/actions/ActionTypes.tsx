@@ -1,8 +1,8 @@
 import Redux from 'redux'
-import {CardState, CardName, CardPhase, DialogIDType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, SessionMetadata, AppState} from '../reducers/StateTypes'
+import {CardState, CardName, CardPhase, DialogIDType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, AppState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../cardtemplates/Template'
-import {Session} from 'expedition-qdl/lib/remote/Broker'
+import {Session, SessionMetadata} from 'expedition-qdl/lib/remote/Broker'
 
 export interface PushHistoryAction extends Redux.Action {
   type: 'PUSH_HISTORY';

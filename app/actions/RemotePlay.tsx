@@ -50,6 +50,7 @@ export function remotePlayNewSession(user: UserState) {
       headers: new Headers({
         'Accept': 'text/html',
       }),
+      credentials: 'include',
     })
     .then((response: Response) => {
       return response.json();
@@ -69,6 +70,9 @@ export function remotePlayNewSession(user: UserState) {
 
 export function remotePlayConnect(user: UserState, secret: string) {
   let session = '';
+  const clientID = user.id.toString();
+  const instanceID = Date.now().toString();
+
   return (dispatch: Redux.Dispatch<any>): any => {
     fetch(remotePlaySettings.connectURI, {
       method: 'POST',
@@ -76,7 +80,8 @@ export function remotePlayConnect(user: UserState, secret: string) {
       headers: new Headers({
         'Accept': 'application/json',
       }),
-      body: JSON.stringify({secret}),
+      credentials: 'include',
+      body: JSON.stringify({instance: instanceID, secret}),
     })
     .then((response: Response) => {
       return response.json();
@@ -88,10 +93,7 @@ export function remotePlayConnect(user: UserState, secret: string) {
       session = data.session;
 
       const c = getRemotePlayClient();
-      // TODO: This may need to pull some kind of repeatable "device ID"
-      // to allow for reconnects.
-      // For initial dev work, we make it always unique.
-      c.setID(user.id.toString() + '-' + Date.now());
+      c.configure(clientID, instanceID);
       return (c.connect(session, data.authToken) as any);
     })
     .then(() => {
@@ -113,9 +115,10 @@ export function loadRemotePlay(user: UserState) {
     if (!user || !user.id) {
       throw new Error('you are not logged in');
     }
-    fetch(remotePlaySettings.firstLoadURI + '?id=' + user.id, {
+    fetch(remotePlaySettings.firstLoadURI, {
       method: 'GET',
       mode: 'cors',
+      credentials: 'include',
     })
     .then((response: Response) => {
       return response.json();

@@ -14,6 +14,7 @@ import {QuestDetails} from '../reducers/QuestTypes'
 
 const mapStateToProps = (state: AppState, ownProps: SearchStateProps): SearchStateProps => {
   return {
+    results: [], // Default in case search results are not defined
     ...state.search,
     numPlayers: state.settings.numPlayers,
     phase: ownProps.phase,
