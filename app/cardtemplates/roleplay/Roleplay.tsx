@@ -28,16 +28,25 @@ export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps
 // if [art_name] ends will _full, adds class="full"; otherwise displays at 50% size
 function generateIconElements(content: string): JSX.Element {
   content = content || '';
-  return <span dangerouslySetInnerHTML={{__html: content
-      .replace(REGEX.ICON, (match:string, group:string): string => {
+  return <span dangerouslySetInnerHTML={{__html:
+    content.replace(REGEX.ICON, (match:string, group:string): string => {
         return `<img class="inline_icon" src="images/${group}_small.svg" />`;
       })
       .replace(REGEX.ART, (match:string, group:string): string => {
+        let imgName = `images/${group}`;
+        let imgClass = 'artHalf';
         if (group.slice(-5) === '_full') {
-          return `<div class="artFull"><img class="art" src="images/${group.replace('_full', '')}.svg" /></div>`;
-        } else {
-          return `<div class="artHalf"><img class="art" src="images/${group}.svg" /></div>`;
+          imgName = imgName.slice(0, -5);
+          imgClass = 'artFull';
         }
+        if (imgName.slice(-4) === '_png') {
+          imgName = imgName.slice(0, -4) + '.png';
+        } else {
+          imgName = imgName + '.svg';
+        }
+        return `<div class="${imgClass}">
+          <img class="art" src="${imgName}" />
+        </div>`;
       })
   }} />;
 }

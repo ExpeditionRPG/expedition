@@ -44,6 +44,7 @@ const options = {
       { from: 'app/manifest.json' },
       { from: { glob: 'app/audio/*.mp3' }, flatten: true, to: './audio' },
       { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
+      { from: { glob: 'node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
     ]),
     new webpack.LoaderOptionsPlugin({
       options: {

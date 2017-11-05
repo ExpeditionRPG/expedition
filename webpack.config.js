@@ -18,7 +18,7 @@ const options = {
     extensions: ['.js', '.ts', '.tsx', '.json'],
   },
   devServer: {
-    host: "0.0.0.0",
+    host: '0.0.0.0',
     contentBase: path.join(__dirname, "app"),
     disableHostCheck: true,
     publicPath: '/',
@@ -55,6 +55,7 @@ const options = {
     }),
     new CopyWebpackPlugin([
       { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
+      { from: { glob: 'node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
     ]),
     new DashboardPlugin(),
     new webpack.HotModuleReplacementPlugin(),

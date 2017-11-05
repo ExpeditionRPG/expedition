@@ -3,6 +3,7 @@
     <p>Custom setup card, replacing the default quest setup card. Half and full-width art:</p>
     <p>[roll]</p>
     <p>[hound_of_tindalos_full]</p>
+    <p>[darker_at_dawn_png_full]</p>
   </roleplay>
   <roleplay title="Test" id="start" data-line="6">
     <p>{{one=1}}</p>
