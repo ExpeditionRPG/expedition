@@ -182,6 +182,8 @@ Allowable enemy names are the enemies in the Expedition deck - you can look thro
 
 Note that at least one enemy, exactly one valid `on win` and one valid `on lose` are required.
 
+You can specify custom enemies with the following syntax: `- Custom Enemy Name {"tier": 3}`. If you do this, players will be instructed to draw a random enemy of that tier and use its health and abilities.
+
 `on round` is an optional event that can spice up combat by injecting roleplay cards into specific rounds of combat. For instance, you can add a roleplay card to a boss battle to check if a certain enemy is dead:
 
 ```markdown
