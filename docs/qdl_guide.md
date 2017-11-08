@@ -35,8 +35,8 @@ Attributes can be added to specific cards and elements to give you additional ca
 For **cards**, you can add an ID that can be jumped to from anywhere else in the quest via **goto elements**. Note: **IDs must be unique across the entire quest**. ID's should be written in camelCase and only use alphanumeric characters. This looks like:
 
 ```
-_roleplay title (#id)_
-_combat (#longCardId)_
+_roleplay title_ (#id)
+_combat_ (#longCardId)
 ```
 
 IDs allow you to reference that specific card in other places in the quest. You can use a GOTO statement to jump to that card:
@@ -56,13 +56,13 @@ You can also see how many times the user has viewed that specific card:
 This can be very powerful - for example, if you wanted to create a conversation where the user could only ask each question once, you could do something like:
 
 ```
-_Conversation loop (#conversation)_
+_Conversation loop_ (#conversation)
 
 You prepare to ask John a question...
 
 * {{_.viewCount("question1") == 0}} Question 1
 
-  _Question 1 (#question1)_
+  _Question 1_ (#question1)
 
   His answer
 
@@ -70,7 +70,7 @@ You prepare to ask John a question...
 
 * {{_.viewCount("question2") == 0}} Question 2
 
-  _Question 2 (#question2)_
+  _Question 2_ (#question2)
 
   His answer
 
@@ -443,7 +443,7 @@ The user sees this card, with one button.
 
   **goto another**
 
-_Another card (#another)_
+_Another card_ (#another)
 
 After clicking "Jump me!", the app will immediately proceed to this card.
 ```
@@ -461,7 +461,7 @@ The user sees this card, with one button.
 
   **goto another**
 
-_Another card (#another)_
+_Another card_ (#another)
 
 After clicking "Jump me!", the app will immediately proceed to this card.
 ```
