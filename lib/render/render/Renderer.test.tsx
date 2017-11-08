@@ -73,11 +73,25 @@ describe('Renderer', () => {
       expect(output).toEqual(expected);
     });
     it('stylizes around ops, ignoring dictionaries in ops string', () => {
-      const input = '_text{{var = {a: {b: "5}}"}}}}text_';
+      const input = '_text{{var = {a: {b: "5}}"}} & _.run()}}text_';
       const output = sanitizeStyles(input);
-      const expected = '<i>text{{var = {a: {b: "5}}"}}}}text</i>';
+      const expected = '<i>text{{var = {a: {b: "5}}"}} & _.run()}}text</i>';
       expect(output).toEqual(expected);
     });
+    it('stylizes around ops, ignoring escaped characters', () => {
+      const input = '_text{{foo = "\\"}}a" & _.run()}}text_';
+      const output = sanitizeStyles(input);
+      const expected = '<i>text{{foo = "\\"}}a" & _.run()}}text</i>';
+      expect(output).toEqual(expected);
+    });
+    it('stylizes around mangled ops', () => {
+      // This op doesn't have a chance of parsing correctly, but
+      // that's no reason to break styling.
+      const input = '_text{{ { & _.run()}}text_';
+      const output = sanitizeStyles(input);
+      const expected = '<i>text{{ { & _.run()}}text</i>';
+      expect(output).toEqual(expected);
+    })
     it('properly handles _ inside of [art_file_full]', () => {
       const input = '[art_file_full]';
       const output = sanitizeStyles(input);
