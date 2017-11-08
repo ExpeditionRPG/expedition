@@ -10,9 +10,7 @@
     "watch:test": "karma start karma.conf.js",
     "dev": "webpack-dev-server --progress",
     "start": "node app.js",
-    "build": "webpack -p --config webpack.dist.config.js --progress",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "build": "webpack -p --config webpack.dist.config.js --progress"
   },
   "author": "Fabricate.IO",
   "license": "CC-BY-NC-SA-4.0",
@@ -35,7 +33,7 @@
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.1",
     "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#914cd19fe5be1688ca1fa13c2833915f69c36f89",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#ad05f5784fa63f3cdd769f25e5418e7e15722b1f",
+    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#98c634c161cd9f2268e774d80146c0eb54213c25",
     "forwarded": "^0.1.0",
     "google-auth-library": "^0.10.0",
     "google-url": "0.0.4",
