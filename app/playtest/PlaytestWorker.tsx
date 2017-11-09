@@ -114,8 +114,8 @@ function handleMessage(e: {data: RunMessage}) {
       setTimeout(asyncTest, 0);
     };
     asyncTest();
-  } catch (e) {
-    console.error(e.toString());
+  } catch (err) {
+    console.error(err.toString());
     (postMessage as any)({status: 'COMPLETE'});
   }
 }

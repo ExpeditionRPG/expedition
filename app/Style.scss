@@ -565,7 +565,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
   width: 0 !important;
 }
 .ace_gutter-cell.misspelled {
-  background: rgba(255, 0, 0, 0.3);
+  background-color: rgba(255, 0, 0, 0.3);
 }
 .ace_error, .ace_warning, .ace_info {
   &:hover {

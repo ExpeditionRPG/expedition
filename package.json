@@ -33,7 +33,7 @@
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.1",
     "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#914cd19fe5be1688ca1fa13c2833915f69c36f89",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#98c634c161cd9f2268e774d80146c0eb54213c25",
+    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#d03fb93104ab7fdda3ac51229b84930f87a3f3e5",
     "forwarded": "^0.1.0",
     "google-auth-library": "^0.10.0",
     "google-url": "0.0.4",
