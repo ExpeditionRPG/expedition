@@ -1,3 +1,5 @@
+import {Logger} from '../Logger'
+
 // Terms:
 // - Indent level: The number of preceding spaces to a given line.
 // - Position: The number of blocks between this block and the start of the file.
@@ -18,9 +20,11 @@ export interface Block {
 export class BlockList {
   private blocks: Block[];
   public length: number;
+  public logger: Logger;
 
-  constructor(md: string) {
-    this.parse(md);
+  constructor(md: string, logger: Logger = new Logger()) {
+    this.parse(md, logger);
+    this.logger = logger;
   }
 
   debugLines(): string {
@@ -74,7 +78,7 @@ export class BlockList {
   }
 
   // Construct a list of blocks, given an entire QDL document as a string.
-  private parse(md: string) {
+  private parse(md: string, logger: Logger) {
 
     // Replace tabs with spaces (just in case)
     md = md.replace(/\t/g, '  ');
@@ -103,6 +107,11 @@ export class BlockList {
         if (currBlock) {
           currBlock.lines.push('');
         }
+        continue;
+      }
+
+      if (indent % 2 === 1) {
+        logger.err('Incorrect indentation: leading spaces must be multiple of two.', '436', lineNumber);
         continue;
       }
 

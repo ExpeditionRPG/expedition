@@ -25,7 +25,7 @@ export class QDLParser {
 
   public render(blockList: BlockList) {
     const startTime = Date.now();
-    this.log = new Logger();
+    this.log = blockList.logger || new Logger();
     if (!blockList || blockList.length === 0) {
       this.result = this.renderer.finalize([], this.log);
       return;
@@ -67,7 +67,7 @@ export class QDLParser {
     this.result = this.renderer.finalize(zeroIndentBlockRoots, this.log);
 
     // Validate the result
-    //this.log.extend(this.renderer.validate(this.blockList.at(0).render));
+    // this.log.extend(this.renderer.validate(this.blockList.at(0).render));
 
     // Create a reverse lookup of block => root block
     // for use by getResultAt()
