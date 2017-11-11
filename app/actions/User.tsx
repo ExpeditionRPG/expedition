@@ -30,7 +30,9 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
     return response.text();
   })
   .then((id: string) => {
-    getGA().set({ userId: id });
+    if (getGA()) {
+      getGA().set({ userId: id });
+    }
     callback({
       loggedIn: true,
       id,
