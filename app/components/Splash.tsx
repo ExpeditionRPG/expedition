@@ -128,8 +128,9 @@ const Splash = (props: any): JSX.Element => {
           <h1>Frequently Asked Questions</h1>
           <h4>Will I still own my work?</h4>
           <p>
-            <strong>YES!</strong> By publishing your quest on the Expedition Quest Creator, you agree to grant Fabricate, LLC an exclusive, royalty-free, worldwide, perpetual license
-            to your work for the purposes of board and video gaming. But, you still own the core intellectual property, and are welcome to use it in books, poetry, television, and more.
+            <strong>YES!</strong> By publishing your quest on the Expedition Quest Creator, you agree to grant Fabricate, LLC
+            an exclusive, royalty-free, worldwide, perpetual license to your work for the purposes of board and video gaming.
+            But, you still own the core intellectual property, and are welcome to use it in books, poetry, television, and anything else that's not a game.
             In fact, we encourage you to port your Expedition quests to other mediums to capitalize on the fanbase you'll build here!
           </p>
           <h4>Can I write in any genre?</h4>

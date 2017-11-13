@@ -556,14 +556,6 @@ body .olark-launch-button { /*must be more specifc than olark styles */
   margin-bottom: -2px;
   border-radius: 0;
 }
-.ace_gutter, .ace_gutter-layer {
-  width: 34px !important;
-  margin-right: 6px !important;
-}
-.ace_gutter-cell {
-  font-size: 0 !important;
-  width: 0 !important;
-}
 .ace_gutter-cell.misspelled {
   background-color: rgba(255, 0, 0, 0.3);
 }
@@ -572,8 +564,18 @@ body .olark-launch-button { /*must be more specifc than olark styles */
     cursor: pointer;
   }
 }
-.ace_fold-widget {
-  width: 14px !important;
+.ace.noLineNumbers {
+  .ace_gutter, .ace_gutter-layer {
+    width: 34px !important;
+    margin-right: 6px !important;
+  }
+  .ace_gutter-cell {
+    font-size: 0 !important;
+    width: 0 !important;
+  }
+  .ace_fold-widget {
+    width: 14px !important;
+  }
 }
 
 .mobileOnly {

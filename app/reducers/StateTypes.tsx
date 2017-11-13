@@ -83,6 +83,7 @@ export interface EditorState {
   lastSplitPaneDragMillis: number; // Informs re-rendering of text editor
   bottomPanel: PanelType;
   loadingQuest: boolean;
+  showLineNumbers: boolean;
   wordCount: number;
   worker: Worker;
 }

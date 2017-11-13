@@ -33,6 +33,10 @@ export function panelToggle(panel: PanelType) {
   return {type: 'PANEL_TOGGLE', panel};
 }
 
+export function lineNumbersToggle() {
+  return {type: 'LINE_NUMBERS_TOGGLE'};
+}
+
 export function updateDirtyState(): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const editor = store.getState();

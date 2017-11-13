@@ -14,6 +14,7 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestIDEStateProps => 
     lineTs: state.editor.line.ts,
     realtime: state.quest.mdRealtime,
     realtimeModel: state.quest.realtimeModel,
+    showLineNumbers: state.editor.showLineNumbers,
   };
 }
 
