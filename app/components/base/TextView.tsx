@@ -35,6 +35,8 @@ interface TextViewProps extends React.Props<any> {
   // Hook for external control of scroll position
   scrollLineTarget?: number;
   scrollLineTargetTs?: number;
+
+  showLineNumbers?: boolean;
 }
 
 // This class wraps the Realtime API undo commands in a way
@@ -280,6 +282,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
 
     return (
       <AceEditor
+        className={'ace ' + (!this.props.showLineNumbers && 'noLineNumbers')}
         ref={this.onRef.bind(this)}
         mode="markdown"
         theme="twilight"

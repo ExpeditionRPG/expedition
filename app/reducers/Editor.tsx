@@ -15,6 +15,7 @@ const defaultState: EditorState = {
   opInit: '',
   lastSplitPaneDragMillis: 0,
   bottomPanel: null,
+  showLineNumbers: false,
   worker: null,
   wordCount: 0,
 };
@@ -60,6 +61,8 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
       return {...state, worker: (action as PlaytestInitAction).worker};
     case 'PLAYTEST_COMPLETE':
       return {...state, worker: null};
+    case 'LINE_NUMBERS_TOGGLE':
+      return {...state, showLineNumbers: !state.showLineNumbers};
     default:
       return state;
   }

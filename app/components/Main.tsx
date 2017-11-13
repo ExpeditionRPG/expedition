@@ -25,6 +25,7 @@ export interface MainStateProps {
 
 export interface MainDispatchProps {
   onDragFinished: (size: number) => void;
+  onLineNumbersToggle: () => void;
   onPanelToggle: (panel: PanelType) => void;
   onSnackbarClose: () => void;
 }
@@ -58,11 +59,13 @@ const Main = (props: MainProps): JSX.Element => {
       />
       <div className="bottomPanel--right">
         <FlatButton
-          disabled={true}
-          label={`Line: ${numeral(props.editor.line.number).format('0,0')}`}/>
+          label={`Line: ${numeral(props.editor.line.number).format('0,0')}`}
+          onTouchTap={(event: any) => {props.onLineNumbersToggle();}}
+        />
         <FlatButton
           disabled={true}
-          label={`Words: ${props.editor.wordCount > 0 ? numeral(props.editor.wordCount).format('0,0') : '-'}`}/>
+          label={`Words: ${props.editor.wordCount > 0 ? numeral(props.editor.wordCount).format('0,0') : '-'}`}
+        />
       </div>
     </div>
   );
