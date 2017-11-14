@@ -67,6 +67,7 @@ const options = {
       { from: 'app/assets' },
       { from: 'node_modules/expedition-app/app/images', to: 'images' },
       { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
+      { from: { glob: 'node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
     ]),
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {

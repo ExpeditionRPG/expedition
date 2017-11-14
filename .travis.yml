@@ -1,8 +1,6 @@
 language: node_js
 node_js:
 - '8'
-git:
-- lfs_skip_smudge: true
 env:
 - CXX=g++-4.8
 addons:
@@ -11,7 +9,8 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.8
-before_install: nvm install "$(jq -r '.engines.node' package.json)" && node --version
+before_install:
+- nvm install "$(jq -r '.engines.node' package.json)" && node --version
 before_deploy: "pip install awscli --upgrade --user"
 cache:
   directories:

@@ -95,6 +95,7 @@ class RealtimeUndoManager {
 // See https://github.com/securingsincity/react-ace
 export default class TextView extends React.Component<TextViewProps, {}> {
   ace: any;
+  focused: boolean;
   lineChangeTs: number;
   spellchecker: any;
   onSelectionChange: () => any;
@@ -253,7 +254,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     // If we've been supplied with a different line number, scroll to it
     if (this.ace) {
       const row = this.ace.editor.getSelection().anchor.row;
-      if (newProps.scrollLineTarget !== row && newProps.scrollLineTargetTs > (this.lineChangeTs || -1)) {
+      if (!this.focused && newProps.scrollLineTarget !== row && newProps.scrollLineTargetTs > (this.lineChangeTs || -1)) {
         this.ace.editor.gotoLine(newProps.scrollLineTarget+1, 0, true);
         this.lineChangeTs = newProps.scrollLineTargetTs;
       }
@@ -287,7 +288,9 @@ export default class TextView extends React.Component<TextViewProps, {}> {
         mode="markdown"
         theme="twilight"
         fontSize={20}
+        onBlur={() => this.focused = false}
         onChange={(text: string) => this.onChange(text)}
+        onFocus={() => this.focused = true}
         width="100%"
         height="100%"
         name={'editor'}
