@@ -63,6 +63,9 @@ export class StatsCrawler extends CrawlerBase<Context> {
   }
 
   protected onEvent(q: StatsCrawlEntry, e: CrawlEvent) {
+    if (e === 'MAX_DEPTH_EXCEEDED') {
+      return;
+    }
     this.statsById[q.prevId].outputs.add(e);
     this.statsByLine[q.prevLine].outputs.add(e);
     this.statsByEvent[e].lines.push(q.prevLine);

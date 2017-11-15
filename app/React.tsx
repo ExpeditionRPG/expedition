@@ -153,6 +153,26 @@ window.onOlarkLoad = () => {
       },
     });
   }, 12 * 60 * 60 * 1000);
+
+  // Alert user if cookies disabled
+  // Based on https://github.com/Modernizr/Modernizr/blob/master/feature-detects/cookies.js
+  try {
+    document.cookie = 'cookietest=1';
+    const ret = document.cookie.indexOf('cookietest=') !== -1;
+    document.cookie = 'cookietest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT';
+    if (!ret) {
+      throw new Error('Cookies disabled');
+    }
+  } catch (err) {
+    setTimeout(() => {
+      store.dispatch(setSnackbar(true,
+        'Please enable cookies for the Quest Creator to function properly.',
+        (event: any) => { store.dispatch(setSnackbar(false)); },
+        'X',
+        true
+      ));
+  }, 0);
+  }
 })();
 
 // Pass credentials to API server despite cross-origin

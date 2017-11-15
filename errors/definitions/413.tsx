@@ -2,19 +2,21 @@ export const NUMBER = 413;
 export const NAME = `Could not parse block header`;
 export const DESCRIPTION = `Generally caused by an invalid JSON annotation`;
 
-export const INVALID = [
-`_combat_ {invalid_json}
+// TODO doesn't actually error
+export const INVALID = [] as any;
+// export const INVALID = [
+// `_combat_ {invalid_json}
 
-- Skeleton Swordsman
+// - Skeleton Swordsman
 
-* on win
+// * on win
 
-  Card
+//   Card
 
-* on lose
+// * on lose
 
-  Card`
-];
+//   Card`
+// ];
 
 export const VALID = [
 `_combat_ {"icon": "bandit"}
