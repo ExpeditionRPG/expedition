@@ -30,7 +30,7 @@ export class BlockRenderer {
     attribs['id'] = attribs['id'] || extracted.id;
 
     // don't count length of icon names, just that they take up ~1 character
-    if (attribs.title.replace(/:.*?:/g, '#'), length >= 25) {
+    if (attribs.title.replace(/:.*?:/g, '#').length >= 25) {
       log.err('card title too long', '433');
     }
 
