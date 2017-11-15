@@ -6,12 +6,10 @@
   "repository": "https://github.com/ExpeditionRPG/expedition-api",
   "main": "react.js",
   "scripts": {
-    "test": "mocha meta_tests.js && ts-mocha app/**/*.test.ts",
+    "test": "mocha meta_tests.js && NODE_ENV='dev' ts-mocha app/**/*.test.ts",
     "build": "webpack --config webpack.dist.config.js --progress",
     "start": "node dist/server.js",
-    "heroku-postbuild": "webpack -p --config webpack.dist.config.js --progress",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "heroku-postbuild": "webpack -p --config webpack.dist.config.js --progress"
   },
   "author": "Fabricate.IO",
   "license": "CC-BY-NC-SA-4.0",

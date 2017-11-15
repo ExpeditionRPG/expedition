@@ -20,6 +20,7 @@ export function send(to: string|string[], subject: string, htmlMessage: string):
     text: htmlMessage.replace(/<\/p>/g, '\r\n\r\n').replace(HTML_REGEX, ''), // plaintext body
     html: htmlMessage, // html body
   };
+
   if (Config.get('NODE_ENV') === 'dev') {
     console.log('DEV: email not sent (mocked). Email:');
     console.log('TO: '+ mailOptions.to);
