@@ -9,7 +9,7 @@
     "test": "mocha meta_tests.js && NODE_ENV='dev' ts-mocha app/**/*.test.ts",
     "build": "webpack --config webpack.dist.config.js --progress",
     "start": "node dist/server.js",
-    "heroku-postbuild": "webpack -p --config webpack.dist.config.js --progress"
+    "heroku-postbuild": "NODE_ENV='production' webpack -p --config webpack.dist.config.js --progress"
   },
   "author": "Fabricate.IO",
   "license": "CC-BY-NC-SA-4.0",
