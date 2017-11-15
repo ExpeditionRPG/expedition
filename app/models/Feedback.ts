@@ -121,10 +121,6 @@ export class Feedback {
       .then((q: QuestInstance) => {
         quest = q;
 
-        if (!this.mail) {
-          return Promise.resolve();
-        }
-
         const ratingavg = (quest.dataValues.ratingavg || 0).toFixed(1);
         if (type === 'rating' && quest.dataValues.ratingcount === 1) {
           const subject = `Your quest just received its first rating!`;

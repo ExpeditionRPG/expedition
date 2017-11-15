@@ -29,6 +29,7 @@
     "@google-cloud/common": "^0.13.4",
     "@types/bluebird": "^3.5.8",
     "@types/body-parser": "^1.16.5",
+    "@types/firebase": "^2.4.32",
     "@types/joi": "^10.4.0",
     "@types/node": "^7.0.46",
     "@types/promise-polyfill": "^6.0.0",
@@ -64,6 +65,7 @@
     "proxy-middleware": "^0.15.0",
     "sequelize": "^4.7.2",
     "sinon": "^3.2.1",
+    "snyk": "^1.47.0",
     "sqlite3": "^3.1.9",
     "squel": "^5.11.1",
     "through2": "^2.0.3",
@@ -71,8 +73,7 @@
     "typescript-formatter": "^5.1.1",
     "warning": "^3.0.0",
     "webpack": "^2.7.0",
-    "winston": "^2.3.1",
-    "snyk": "^1.47.0"
+    "winston": "^2.3.1"
   },
   "devDependencies": {
     "@types/express": "^4.0.36",
