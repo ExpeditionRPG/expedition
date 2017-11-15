@@ -1,13 +1,13 @@
 import {SessionID, BrokerBase, Session, SessionSecret, SessionMetadata} from 'expedition-qdl/lib/remote/Broker'
 import {ClientID, RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 
-import config from '../config'
+import Config from '../config'
 import * as Bluebird from 'bluebird';
 
 import * as firebaseAdmin from 'firebase-admin';
 
 firebaseAdmin.initializeApp({
-  credential: firebaseAdmin.credential.cert(config.get('FIREBASE_SERVICE_KEY'))
+  credential: firebaseAdmin.credential.cert((typeof Config.get('FIREBASE_SERVICE_KEY') === 'string') ? JSON.parse(Config.get('FIREBASE_SERVICE_KEY')) : Config.get('FIREBASE_SERVICE_KEY'))
 });
 
 const db = firebaseAdmin.firestore();
