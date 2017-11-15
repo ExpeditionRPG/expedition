@@ -104,7 +104,6 @@
     "emitter-steward": "^1.0.0",
     "es6-promise-plugin": "^4.1.0",
     "escape-string-regexp": "^1.0.4",
-    "expedition-art": "git+https://github.com/ExpeditionRPG/expedition-art.git",
     "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#7fddbf9c8cb3e24f83f4882f3e84e831eb635c8b",
     "findup-sync": "^0.4.3",
     "firebase": "^4.6.1",
@@ -140,6 +139,9 @@
     "update": "^0.7.4",
     "whatwg-fetch": "^2.0.3",
     "xtend": "^4.0.1"
+  },
+  "optionalDependencies": {
+    "expedition-art": "git+https://github.com/ExpeditionRPG/expedition-art.git",
   },
   "cordova": {
     "plugins": {
