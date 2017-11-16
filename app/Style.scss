@@ -395,6 +395,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
   .preview {
     flex: 0 0 $previewPanelWidth;
     max-width: $previewPanelWidth;
+    overflow: hidden;
 
     .app_root, .editor_override {
       height: 100%;
