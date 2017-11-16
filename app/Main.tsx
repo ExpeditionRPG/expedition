@@ -16,8 +16,9 @@ import {openSnackbar} from './actions/Snackbar'
 import {silentLogin} from './actions/User'
 import {handleRemotePlayEvent} from './actions/RemotePlay'
 import {getStore} from './Store'
-import {enableLocalStorage, getAppVersion, getWindow, getGapi, getGA, getDevicePlatform, getDocument, setGA, setupPolyfills} from './Globals'
+import {enableLocalStorage, getAppVersion, getWindow, getGA, getDevicePlatform, getDocument, setGA, setupPolyfills} from './Globals'
 import {getRemotePlayClient} from './RemotePlay'
+import {UserState} from './reducers/StateTypes'
 import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 
 // Thunk is unused, but necessary to prevent compiler errors
@@ -102,37 +103,8 @@ function setupDevice() {
 
   window.plugins.insomnia.keepAwake(); // keep screen on while app is open
 
-  // silent login here triggers for cordova plugin, if gapi is loaded
-  const gapi = getGapi();
-  if (!gapi) {
-    return;
-  }
-  getStore().dispatch(silentLogin({callback: () => {
-    // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
-    console.log('Silent login: ', gapi.auth2.getAuthInstance().isSignedIn);
-  }}));
-}
-
-function setupGoogleAPIs() {
-  const gapi = getGapi();
-  if (!gapi) {
-    return;
-  }
-
-  gapi.load('client:auth2', () => {
-    gapi.client.setApiKey(authSettings.apiKey);
-    gapi.auth2.init({
-      client_id: authSettings.clientId,
-      scope: authSettings.scopes,
-      cookie_policy: 'none',
-    }).then(() => {
-      // silent login here triggers for web
-      getStore().dispatch(silentLogin({callback: () => {
-        // TODO have silentLogin return if successful or not, since will vary btwn cordova and web
-        console.log('Silent login: ', gapi.auth2.getAuthInstance().isSignedIn);
-      }}));
-    });
-  });
+  // silent login here triggers for cordova plugin
+  getStore().dispatch(silentLogin({callback: (user: UserState) => { console.log(user); }}));
 }
 
 function setupEventLogging() {
@@ -163,6 +135,10 @@ function setupHotReload() {
 declare var ga: any;
 function setupGoogleAnalytics() {
   if (window.location.hostname === 'localhost') {
+    setGA({
+      set: (): void => null,
+      event: (): void => null,
+    });
     return console.log('Google Analytics disabled during local dev.');
   }
   ReactGA.initialize('UA-47408800-9', {
@@ -230,11 +206,14 @@ export function init() {
 
   // Only triggers on app builds
   document.addEventListener('deviceready', setupDevice, false);
+  // For non-app builds
+  setTimeout(() => {
+    getStore().dispatch(silentLogin({callback: (user: UserState) => { console.log(user); }}));
+  }, 2000);
 
   setupPolyfills();
   setupTapEvents();
   setupGoogleAnalytics(); // before anything else that might log in the user
-  setupGoogleAPIs();
   setupEventLogging();
   setupHotReload();
   setupRemotePlay();
@@ -242,6 +221,7 @@ export function init() {
   render();
 
   // Wait to process settings & dispatch additional UI until render complete
+  getStore().dispatch(fetchAnnouncements());
   const settings = getStore().getState().settings;
   if (settings) {
     const contentSets = (settings || {}).contentSets;
@@ -254,7 +234,6 @@ export function init() {
   } else {
     getStore().dispatch(setDialog('EXPANSION_SELECT'));
   }
-  getStore().dispatch(fetchAnnouncements());
 }
 
 function render() {

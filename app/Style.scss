@@ -370,6 +370,9 @@ span.line {
       background-size: 100% auto;
       background-repeat: repeat;
       background-position: 0 0;
+      width: 100%;
+      max-width: $absmaxdimension;
+      margin: auto;
 
       .scrollbox_top {
         margin-top: size(tiny);
@@ -401,6 +404,9 @@ span.line {
       padding: 0;
       line-height: size(appbar);
       height: size(appbar);
+      width: 100%;
+      max-width: $absmaxdimension;
+      margin: auto;
       > button {
         float: left;
         padding: 0 !important;
@@ -669,8 +675,6 @@ span.line {
     position: absolute;
     width: 100%;
     height: 100%;
-    max-width: $absmaxdimension;
-    max-height: $absmaxdimension;
   }
 
   .base_multi_touch_trigger {
@@ -870,6 +874,9 @@ span.line {
       right: size(small);
       img {
         width: 100%;
+        max-width: $absmaxdimension;
+        margin: auto;
+        display: block;
       }
     }
     .no_multi_button {
@@ -1113,8 +1120,8 @@ $sizemap: (
 $fontsizemap: (
   title: 6vmin * $abs_scale_vw,
   timervalue: 24vmin * $abs_scale_vw,
-  interactive: 5.5vmin * $abs_scale_vw,
-  flavor: 4.7vmin * $abs_scale_vw,
+  interactive: 5vmin * $abs_scale_vw,
+  flavor: 4.5vmin * $abs_scale_vw,
   label: 18px,
 );
 
@@ -1134,29 +1141,11 @@ $fontsizemap: (
 
   .app_container {
     position: relative;
-    border-left: $border_desktop;
-    border-right: $border_desktop;
     display: block;
-    overflow: hidden;
-    width: $abswidthmax;
-    height: $absheightmax;
+    width: 100%;
+    height: 100%;
     max-width: 100%;
     max-height: 100%;
-    margin: auto;
-  }
-}
-
-@media screen and (min-height: $absheightmax + size(base)) {
-  .app_container {
-    border-top: $border_desktop;
-    border-bottom: $border_desktop;
-    border-radius: size(base);
-  }
-}
-
-@media screen and (min-height: $absheightmax + 2 * size(base) + 40px) {
-  .app_container {
-    margin-top: 20px;
   }
 }
 

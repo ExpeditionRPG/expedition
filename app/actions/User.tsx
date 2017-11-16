@@ -4,13 +4,35 @@ import {openSnackbar} from '../actions/Snackbar'
 import {UserState} from '../reducers/StateTypes'
 import {authSettings} from '../Constants'
 import {remoteify} from './ActionTypes'
-import {getGA} from '../Globals'
+import {getGA, getGapi} from '../Globals'
 
 declare var gapi: any;
 declare var window: any;
 
 type UserLoginCallback = (user: UserState, err?: string) => any;
 
+
+function loadGapi(callback: (gapi: any, async: boolean) => void) {
+  const gapi = getGapi();
+  if (!gapi) {
+    return;
+  }
+  if (window.gapiLoaded) {
+    return callback(gapi, false);
+  }
+
+  gapi.load('client:auth2', () => {
+    gapi.client.setApiKey(authSettings.apiKey);
+    gapi.auth2.init({
+      client_id: authSettings.clientId,
+      scope: authSettings.scopes,
+      cookie_policy: 'none',
+    }).then(() => {
+      window.gapiLoaded = true;
+      return callback(gapi, true);
+    });
+  });
+}
 
 function registerUserAndIdToken(user: {name: string, image: string, email: string}, idToken: string, callback: UserLoginCallback) {
   fetch(authSettings.urlBase + '/auth/google', {
@@ -48,30 +70,39 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
 
 function loginWeb(callback: UserLoginCallback) {
   const that = this;
-  gapi.auth2.getAuthInstance().signIn({redirect_uri: 'postmessage'}).then((googleUser: any) => {
-    const idToken: string = googleUser.getAuthResponse().id_token;
-    const basicProfile: any = googleUser.getBasicProfile();
-    registerUserAndIdToken({
-      name: basicProfile.getName(),
-      image: basicProfile.getImageUrl(),
-      email: basicProfile.getEmail(),
-    }, idToken, callback);
+  loadGapi((gapi, async) => {
+    // Since this is a user action, we can't show pop-ups if we get sidetracked loading,
+    // so we'll attempt a silent login instead. If that fails, their next attempt should be instant.
+    if (async) {
+      return silentLoginWeb(callback);
+    }
+    gapi.auth2.getAuthInstance().signIn({redirect_uri: 'postmessage'}).then((googleUser: any) => {
+      const idToken: string = googleUser.getAuthResponse().id_token;
+      const basicProfile: any = googleUser.getBasicProfile();
+      registerUserAndIdToken({
+        name: basicProfile.getName(),
+        image: basicProfile.getImageUrl(),
+        email: basicProfile.getEmail(),
+      }, idToken, callback);
+    });
   });
 }
 
 function silentLoginWeb(callback: UserLoginCallback) {
   const that = this;
-  if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-    const googleUser: any = gapi.auth2.getAuthInstance().currentUser.get();
-    const idToken: string = googleUser.getAuthResponse().id_token;
-    const basicProfile: any = googleUser.getBasicProfile();
-    return registerUserAndIdToken({
-      name: basicProfile.getName(),
-      image: basicProfile.getImageUrl(),
-      email: basicProfile.getEmail(),
-    }, idToken, callback);
-  }
-  return callback(null);
+  loadGapi((gapi, async) => {
+    if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+      const googleUser: any = gapi.auth2.getAuthInstance().currentUser.get();
+      const idToken: string = googleUser.getAuthResponse().id_token;
+      const basicProfile: any = googleUser.getBasicProfile();
+      return registerUserAndIdToken({
+        name: basicProfile.getName(),
+        image: basicProfile.getImageUrl(),
+        email: basicProfile.getEmail(),
+      }, idToken, callback);
+    }
+    return callback(null);
+  });
 }
 
 function silentLoginCordova(callback: UserLoginCallback) {
@@ -108,12 +139,12 @@ function loginCordova(callback: UserLoginCallback) {
   });
 }
 
-export function silentLogin(a: {callback?: () => any}) {
+export function silentLogin(a: {callback?: (user: UserState) => void}) {
   return (dispatch: Redux.Dispatch<any>) => {
     const loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
       // Since it's silent, do nothing with error
       dispatch({type: 'USER_LOGIN', user});
-      a.callback && a.callback();
+      a.callback && a.callback(user);
     };
 
     if (window.plugins && window.plugins.googleplus) {

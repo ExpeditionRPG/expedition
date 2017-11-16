@@ -1,6 +1,6 @@
 declare var device: any;
-declare var gapi: any;
 declare var ga: any;
+declare var gapi: any;
 
 const PACKAGE = require('../package.json');
 import 'whatwg-fetch' // fetch polyfill
@@ -45,8 +45,8 @@ const refs = {
     length: 0,
   } as Storage,
   device: (typeof device !== 'undefined') ? device : {platform: null},
-  gapi: (typeof gapi !== 'undefined') ? gapi : null,
   ga: (typeof ga !== 'undefined') ? ga : null,
+  gapi: (typeof gapi !== 'undefined') ? gapi : null,
   navigator: (typeof navigator !== 'undefined') ? navigator : null,
 };
 
@@ -89,10 +89,6 @@ export function setDevice(device: any) {
   refs.device = device;
 }
 
-export function setGapi(gapi: any) {
-  refs.gapi = gapi;
-}
-
 export function setGA(ga: any) {
   refs.ga = ga;
 }
@@ -127,12 +123,12 @@ export function getDevice(): any {
   return refs.device;
 }
 
-export function getGapi(): any {
-  return refs.gapi;
-}
-
 export function getGA(): any {
   return refs.ga;
+}
+
+export function getGapi(): any {
+  return refs.gapi;
 }
 
 export function getNavigator(): any {
