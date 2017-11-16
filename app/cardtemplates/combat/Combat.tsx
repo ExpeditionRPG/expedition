@@ -100,7 +100,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
           Put {oneEnemy ? 'a token on the largest number on its health tracker' : 'tokens on the largest numbers on their health trackers'}.
         </p>
         {repeatEnemy && <p><strong>Duplicate enemies:</strong> Draw extra cards of the appropriate class and track health using the card backs.</p>}
-        {uniqueEnemy && <p><strong>Custom enemies:</strong> Draw a card of the listed tier (of any class) for enemies without class icons. Track health using the card backs.</p>}
+        {uniqueEnemy && <p><strong>Custom enemies (no icon):</strong> Draw a random card of the listed tier (of any class). If health is specified, track it using the back of the card and ignore all card-specific surges and effects. Otherwise, use the front of the card, starting at full health.</p>}
       </div>
     );
   }
