@@ -29,4 +29,4 @@ export interface CombatState extends CombatDifficultySettings, MidCombatPhase, E
   roundTimeMillis: number;
 }
 
-export type CombatPhase = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'ENEMY_TIER' | 'PLAYER_TIER' | 'VICTORY' | 'DEFEAT' | 'NO_TIMER';
+export type CombatPhase = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'RESOLVE_DAMAGE' | 'VICTORY' | 'DEFEAT' | 'NO_TIMER';
