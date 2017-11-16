@@ -109,7 +109,7 @@ export default class RemoteAffector extends React.Component<RemoteAffectorProps,
   }
 
   onRef(r: HTMLElement) {
-    if (!r || process.env.NODE_ENV !== 'dev') {
+    if (!r) {
       return;
     }
     this.ref = r;

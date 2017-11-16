@@ -34,7 +34,7 @@ const options = {
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
-    new webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
+    // new webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
     new CopyWebpackPlugin([
       { from: 'app/images', to: 'images'},
       { from: 'app/quests', to: 'quests'},
