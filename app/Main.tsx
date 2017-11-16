@@ -16,7 +16,7 @@ import {openSnackbar} from './actions/Snackbar'
 import {silentLogin} from './actions/User'
 import {handleRemotePlayEvent} from './actions/RemotePlay'
 import {getStore} from './Store'
-import {getAppVersion, getWindow, getGapi, getGA, getDevicePlatform, getDocument, setGA, setupPolyfills} from './Globals'
+import {enableLocalStorage, getAppVersion, getWindow, getGapi, getGA, getDevicePlatform, getDocument, setGA, setupPolyfills} from './Globals'
 import {getRemotePlayClient} from './RemotePlay'
 import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 
@@ -197,6 +197,22 @@ export function init() {
     }, 0);
     return true;
   };
+
+  // Alert user if cookies disabled (after error display set up)
+  // Based on https://github.com/Modernizr/Modernizr/blob/master/feature-detects/cookies.js
+  try {
+    document.cookie = 'cookietest=1';
+    const ret = document.cookie.indexOf('cookietest=') !== -1;
+    document.cookie = 'cookietest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT';
+    if (!ret) {
+      throw 'Cookies disabled';
+    }
+    enableLocalStorage();
+  } catch (err) {
+    setTimeout(() => {
+      getStore().dispatch(openSnackbar('Please enable cookies for the app to function properly.'));
+    }, 0);
+  }
 
   // Setup as web platform as default; we might find out later we're an app
   window.platform = 'web';
