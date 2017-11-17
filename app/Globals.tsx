@@ -36,14 +36,7 @@ declare var window: ReactWindow;
 const refs = {
   window: window,
   document: document,
-  localStorage: { // only enable if supported by browser settings, see enableLocalStorage()
-    clear: () => { return null },
-    getItem: (s: string) => { return null },
-    setItem: () => { return null },
-    removeItem: () => { return null },
-    key: null,
-    length: 0,
-  } as Storage,
+  localStorage: null as Storage,
   device: (typeof device !== 'undefined') ? device : {platform: null},
   ga: (typeof ga !== 'undefined') ? ga : null,
   gapi: (typeof gapi !== 'undefined') ? gapi : null,
@@ -136,27 +129,52 @@ export function getNavigator(): any {
 }
 
 // Can't set it by default, since some browsers on high privacy throw an error when accessing window.localStorage
-export function enableLocalStorage(): void {
-  refs.localStorage = getWindow().localStorage;
+function getLocalStorage(): Storage {
+  if (refs.localStorage) {
+    return refs.localStorage;
+  }
+
+  // Alert user if cookies disabled (after error display set up)
+  // Based on https://github.com/Modernizr/Modernizr/blob/master/feature-detects/cookies.js
+  try {
+    document.cookie = 'cookietest=1';
+    const ret = document.cookie.indexOf('cookietest=') !== -1;
+    document.cookie = 'cookietest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT';
+    if (!ret) {
+      throw 'Cookies disabled';
+    }
+    refs.localStorage = getWindow().localStorage;
+  } catch (err) {
+    refs.localStorage = {
+      clear: () => { return null },
+      getItem: (s: string) => { return null },
+      setItem: () => { return null },
+      removeItem: () => { return null },
+      key: null,
+      length: 0,
+    } as Storage;
+  } finally {
+    return refs.localStorage;
+  }
 }
 
 // Force specifying a default, since just doing (|| fallback) would bork on stored falsey values
 export function getStorageBoolean(key: string, fallback: boolean): boolean {
-  const val = refs.localStorage.getItem(key);
+  const val = getLocalStorage().getItem(key);
   return (val !== null) ? (val.toLowerCase() === 'true') : fallback;
 }
 
 export function getStorageJson(key: string, fallback?: object): object {
-  const val = refs.localStorage.getItem(key);
+  const val = getLocalStorage().getItem(key);
   return (val !== null) ? JSON.parse(val) : fallback;
 }
 
 export function getStorageNumber(key: string, fallback?: number): number {
-  const val = refs.localStorage.getItem(key);
+  const val = getLocalStorage().getItem(key);
   return (val !== null) ? Number(val) : fallback;
 }
 
 export function getStorageString(key: string, fallback?: string): string {
-  const val = refs.localStorage.getItem(key);
+  const val = getLocalStorage().getItem(key);
   return (val !== null) ? val : fallback;
 }
