@@ -249,6 +249,7 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
 
 function renderDetails(props: SearchProps): JSX.Element {
   const quest = props.selected;
+  const expansions = (quest.expansionhorror) ? <span><img className="inline_icon" src="images/horror_small.svg"/>The Horror</span> : 'None';
   return (
     <Card title="Quest Details">
       <div className="searchDetails">
@@ -260,6 +261,7 @@ function renderDetails(props: SearchProps): JSX.Element {
       <Button onTouchTap={(e)=>props.onPlay(quest)}>Play</Button>
       <div className="searchDetailsExtended">
         <h3>Details</h3>
+        <div><strong>Expansions required: </strong>{expansions}</div>
         <div><strong>Content rating:</strong> {quest.contentrating}</div>
         <div className="timing">
           <strong>Play time:</strong> {formatPlayPeriod(quest.mintimeminutes, quest.maxtimeminutes)}

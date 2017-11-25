@@ -437,10 +437,14 @@ span.line {
       }
     }
     .header {
+      width: 100%;
+      max-width: $absmaxdimension;
+      margin: auto;
       background-color: $bg_titlebar;
       line-height: $lineheight;
       padding: size(base)/2 size(base) size(base)/2 size(base);
       font-size: fontsize(flavor);
+      box-sizing: border-box;
 
       .searchHeader {
         .filter_button {
