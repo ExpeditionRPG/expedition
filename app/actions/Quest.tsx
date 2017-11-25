@@ -229,6 +229,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         maxtimeminutes: +metadata.get('maxtimeminutes'),
         genre: metadata.get('genre'),
         contentrating: metadata.get('contentrating'),
+        expansionhorror: metadata.get('expansionhorror'),
       });
       dispatch(receiveQuestLoad(quest));
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
