@@ -129,7 +129,7 @@ function renderNoTimer(props: CombatProps): JSX.Element {
           <li>Shuffle your ability draw pile.
             <ul>
               <li>Keep abilities played this combat in a separate discard pile.</li>
-              <li>If you run out of ability cards in your draw pile, shuffle your discards into a new draw pile.</li>
+              <li><strong>If you run out of ability cards to draw</strong>, shuffle your discards into a new draw pile.</li>
             </ul>
           </li>
           <li><strong>No timer:</strong> Draw three abilities from your draw pile and play one ability.</li>
@@ -163,7 +163,7 @@ function renderPrepareTimer(props: CombatProps): JSX.Element {
           <li><strong>Shuffle</strong> your ability draw pile.
             <ul>
               <li>Keep abilities played this combat in a separate discard pile.</li>
-              <li>If you run out of ability cards in your draw pile, shuffle your discards into a new draw pile.</li>
+              <li><strong>If you run out of ability cards to draw</strong>, shuffle your discards into a new draw pile.</li>
             </ul>
           </li>
           <li><strong>Pre-draw your hand</strong> of three abilities face-down from your draw pile. Do not look at these cards until you start the timer.</li>
