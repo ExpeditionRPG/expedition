@@ -239,6 +239,22 @@ _combat_
   Extra surge dialogue! Perhaps your allies also surge for a bonus, or you take damage from the room collapsing.
 ```
 
+You can also have mid-combat choices lead to the end of combat by having them use the win / lose triggers outside of the normal combat flow. For example:
+
+```markdown
+* on round
+
+  Did you kill the Lich?
+  
+  * Yes
+  
+    **win**
+    
+  * No
+  
+    The battle continues...
+```
+
 #### Scaling your combat encounters
 
 Fights that are too easy (or too hard!) can ruin an adventure. Here are our recommendations for balancing your fights to make them fun but challenging (we'll take care of scaling the difficult based on number of adventurers and app difficulty):
@@ -290,11 +306,11 @@ Note: In cases where adventurers won't heal at the end of combat, it's nice to w
 Everything except for combat happens in roleplay cards, including showing text and choices to adventurers. The basic syntax for a roleplaying card is:
 
 ```
-_card title_
+_Card Title_
 
-card text.
+Card text.
 
-more card text.
+More card text.
 ```
 
 Note that you cannot title roleplaying cards `combat` / `Combat`, because that is reserved for combat cards.
@@ -306,13 +322,15 @@ Context allows you to use variables in your quest. This is a powerful tool with 
 
 A quick example of using context variables to display values to the party, optionally show / hide a choice to them, and adjust an encounter based on past events.
 
-```
+```markdown
 _title_
 
 {{ hasPotion = false }}
 {{ gold = 10 }}
 
-Your party has {{ gold }} gold. You walk by a merchant stall offering to sell you a potion for 5 gold.
+{{gold > 0}} Your party has {{ gold }} gold. You walk by a merchant stall offering to sell you a potion for 5 gold.
+
+{{gold == 0}} You have no gold!
 
 * {{ gold >= 5 }} Buy the potion
 
@@ -351,7 +369,13 @@ _combat_
 
 Expedition uses [MathJS](http://mathjs.org/) to handle the context. If you're trying to figure out how to do something specific or complex (for example, arrays and strings), we recommend using the console on their website to quickly test ideas, and checking out their [documentation](http://mathjs.org/docs/index.html) to see what functions they have available.
 
-**Syntax notes:** Boolean variables are lowercase, ie **true** and **false**. Relative operations are not (currently) supported, so you'll need to write them out in long form, ie **gold = gold - 5**
+**Conditional display**: You can conditionally show / hide paragraphs, instructions and choices by having an operation at the start that evaluates to `true` or `false`:
+
+- Paragraphs: `{{gold == 0}} This text only appears if you have 0 gold.`
+- Instruction: `> {{injured == true}} You'll be shown this instructional text if you are injured.`
+- Choices: `* {{hasPotion == true}} You'll only be shown this option if you have the potion.`
+
+**Syntax notes:** Boolean variables are lowercase, ie `true` and `false`. Relative operations (for example `gold -= 5`) are not currently supported, so you'll need to write them out in long form, ie `gold = gold - 5`.
 
 **Debugging note:** in the Quest Creator, if you use "Play from Cursor", context variables that are defined in earlier cards will not be set. We're currently working on additional tooling around context to help you set context variables without having to replay large portions of your quest, but a handy debugging trick for now is to set the variables to your desired values at the top of the card you're starting from - just make sure to remove them when you're done debugging!
 
@@ -360,6 +384,13 @@ Expedition uses [MathJS](http://mathjs.org/) to handle the context. If you're tr
 ### Static Functions
 
 We've included a couple functions that you can call anywhere in your quest code.
+
+**aliveAdventurers()**
+
+Only usable during a combat `* on round` event. `{{_.aliveAdventurers()}}` returns how many adventurers are currently above 0 health.
+
+**currentCombatTier()**
+Only usable during a combat `* on round` event. `{{_.currentCombatTier()}}` returns the current tier sum of the enemies.
 
 **numAdventurers()**
 
@@ -371,7 +402,7 @@ We've included a couple functions that you can call anywhere in your quest code.
 
 **viewCount(<string>)**
 
-To look at the number of times an element with an ID of e.g. "testID" has been visited by the player during a quest, use `{{ _.viewCount("testID") }}`.
+Returns the number of times an element with the specified ID has been visited by the player during a quest. For example, `{{ _.viewCount("testID") }}` would tell you how many times the party has been to the node with ID "testID".
 
 **random([size, min, max]) and other MathJS functions**
 
