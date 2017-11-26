@@ -6,7 +6,8 @@ import Card from '../../components/base/Card'
 import Picker from '../../components/base/Picker'
 import TimerCard from '../../components/base/TimerCard'
 import theme from '../../Theme'
-import {MAX_ADVENTURER_HEALTH, REGEX} from '../../Constants'
+import {MAX_ADVENTURER_HEALTH} from '../../Constants'
+import REGEX from 'expedition-qdl/lib/Regex'
 import {isSurgeNextRound} from './Actions'
 import {SettingsType, CardState, CardName} from '../../reducers/StateTypes'
 import {ParserNode} from '../Template'
@@ -76,7 +77,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
     uniqueEnemy = uniqueEnemy || !enemy.class;
     let icon = null;
     if (enemy.class) {
-      const iconName = enemy.class.replace(REGEX.HTML_TAG, '').toLowerCase();
+      const iconName = enemy.class.replace(new RegExp(REGEX.HTML_TAG, 'g'), '').toLowerCase();
       icon = <img className="inline_icon" src={`images/${iconName}_white_small.svg`} />;
     }
     if (enemyNames.has(enemy.name)) {

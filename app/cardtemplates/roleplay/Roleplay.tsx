@@ -7,7 +7,7 @@ import {ParserNode} from '../Template'
 import {Choice, RoleplayElement} from '../../reducers/QuestTypes'
 import {TemplateContext} from '../TemplateTypes'
 
-import {REGEX} from '../../Constants'
+import REGEX from 'expedition-qdl/lib/Regex'
 
 export interface RoleplayStateProps {
   node: ParserNode;
@@ -29,10 +29,10 @@ export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps
 function generateIconElements(content: string): JSX.Element {
   content = content || '';
   return <span dangerouslySetInnerHTML={{__html:
-    content.replace(REGEX.ICON, (match:string, group:string): string => {
+    content.replace(new RegExp(REGEX.ICON.source, 'g'), (match:string, group:string): string => {
         return `<img class="inline_icon" src="images/${group}_small.svg" />`;
       })
-      .replace(REGEX.ART, (match:string, group:string): string => {
+      .replace(new RegExp(REGEX.ART.source, 'g'), (match:string, group:string): string => {
         let imgName = `images/${group}`;
         let imgClass = 'artHalf';
         if (group.slice(-5) === '_full') {

@@ -168,7 +168,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
           {rating && <div className="ratingDescription">
             <span>"{this.state.contentrating}" rating means: {rating.summary}</span>
           </div>}
-          <Button onTouchTap={() => this.props.onSearch(this.props.numPlayers, this.props.user, this.state)}>Search</Button>
+          <Button onTouchTap={() => this.props.onSearch(this.props.numPlayers, this.props.user, this.state)} remoteID="search">Search</Button>
         </div>
       </Card>
     );
@@ -212,7 +212,7 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
       );
     }
     return (
-      <Button key={index} onTouchTap={() => props.onQuest(result)}>
+      <Button key={index} onTouchTap={() => props.onQuest(result)} remoteID={'quest-'+index}>
         <div className="searchResult">
           <div className="title">{result.title}</div>
           <div className="summary">
@@ -232,7 +232,7 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
       title="Quest Search Results"
       header={!hideHeader && <div className="searchHeader">
         <span>{props.results.length} quests for {props.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></span>
-        <Button className="filter_button" onTouchTap={() => props.onFilter()}>Filter ></Button>
+        <Button className="filter_button" onTouchTap={() => props.onFilter()} remoteID="filter">Filter ></Button>
       </div>}
     >
       {items.length === 0 && !props.searching &&
@@ -258,7 +258,7 @@ function renderDetails(props: SearchProps): JSX.Element {
         <div className="author">by {quest.author}</div>
         {quest.ratingcount && quest.ratingcount >= 1 && <StarRating readOnly={true} value={+quest.ratingavg} quantity={quest.ratingcount}/>}
       </div>
-      <Button onTouchTap={(e)=>props.onPlay(quest)}>Play</Button>
+      <Button onTouchTap={(e)=>props.onPlay(quest)} remoteID="play">Play</Button>
       <div className="searchDetailsExtended">
         <h3>Details</h3>
         <div><strong>Expansions required: </strong>{expansions}</div>

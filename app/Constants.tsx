@@ -39,16 +39,6 @@ export const NAVIGATION_DEBOUNCE_MS = 600;
 export const DOUBLE_TAP_MS = 500; // Maximum ms between tap / clicks to count as a double click
 export const AUDIO_COMMAND_DEBOUNCE_MS = 300;
 
-export const REGEX = {
-  // Contents inside of [], only allowing for alphanumerics + _'s
-  ART: /\[([a-z_0-9]*)\]/ig,
-
-  HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,
-
-  // Contents inside of ::, only allowing for alphanumeric + _'s
-  ICON: /:([a-z_0-9]*):/ig,
-};
-
 export const PLAYTIME_MINUTES_BUCKETS = [20, 30, 45, 60, 90, 120];
 
 // Based on 4 players, scaling up / down on a curve

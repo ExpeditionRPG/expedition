@@ -54,8 +54,10 @@ const Tools = (props: ToolsProps): JSX.Element => {
       {process.env.NODE_ENV === 'dev' &&
         <Button remoteID="3" onTouchTap={() => props.onRemotePlaySelect(props.user)}>
           <div className="questButtonWithIcon">
-            <div className="title">(ALPHA) Remote Play</div>
-            <div className="summary">Sync your app with friends on another device.</div>
+            <div className="title">Remote Play - Alpha</div>
+            <div className="summary">
+              {(!props.user || !props.user.loggedIn) && 'Login and'} sync your app with friends on another device.
+            </div>
           </div>
         </Button>
       }

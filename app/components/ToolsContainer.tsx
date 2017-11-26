@@ -45,7 +45,13 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
       }
     },
     onRemotePlaySelect(user: UserState): void {
-      dispatch(loadRemotePlay(user));
+      if (user && user.loggedIn) {
+        dispatch(loadRemotePlay(user));
+      } else {
+        dispatch(login({callback: (user: UserState)=> {
+          dispatch(loadRemotePlay(user));
+        }}));
+      }
     },
     testMusic(): void {
       const intensity = Number(prompt('Enter intensity (0-8)'));

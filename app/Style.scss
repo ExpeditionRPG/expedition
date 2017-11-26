@@ -65,6 +65,7 @@ $smallFontMult: 0.8;
 
 $sizemap: (
   appbar: 48px,
+  remotefooter: 50px,
   inputsquare: 48px,
   inputspacing: 16px, /* slightly larger on small devices (to prevent false touches) */
   input: 32px, /* size of input icon-style buttons */
@@ -118,7 +119,6 @@ $border_desktop: size(base) solid #777;
 $bg_primary: #F4ECC8;
 $bg_inactive: #222222;
 $bg_titlebar: rgba(255, 255, 235, 0.65);
-$bg_accent: rgb(220, 220, 220);
 $bg_interactive: rgba(245, 238, 210, 0.7);
 $bg_active: rgba(255, 255, 255, 0.9);
 
@@ -160,6 +160,29 @@ body {
 .snackbar {
   span {
     color: $font_color_dark_primary !important;
+  }
+}
+
+.remote_footer {
+  position:absolute;
+  bottom: 0;
+  height: size(remotefooter);
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  color: white;
+  box-sizing: border-box;
+  padding-top: size(remotefooter) / 10;
+  background-color: $bg_primary;
+  border-top: $border_accent;
+
+  .peers {
+    flex: 8;
+    text-align: center;
+
+    svg {
+      padding: 0 size(base);
+    }
   }
 }
 
@@ -677,6 +700,11 @@ span.line {
     position: absolute;
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
+
+    &.has_footer {
+      padding-bottom: size(remotefooter);
+    }
   }
 
   .base_multi_touch_trigger {

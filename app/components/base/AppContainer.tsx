@@ -15,12 +15,14 @@ import SplashScreenContainer from '../SplashScreenContainer'
 import QuestStartContainer from '../QuestStartContainer'
 import QuestEndContainer from '../QuestEndContainer'
 import RemotePlayContainer from '../RemotePlayContainer'
+import RemoteFooterContainer from './remote/RemoteFooterContainer'
 
 import {renderCardTemplate} from '../../cardtemplates/Template'
 import {initialSettings} from '../../reducers/Settings'
 import {closeSnackbar} from '../../actions/Snackbar'
 import {initialState} from '../../reducers/Snackbar'
-import {AppStateWithHistory, TransitionType, SearchPhase, RemotePlayPhase, SettingsType, SnackbarState} from '../../reducers/StateTypes'
+import {initialRemotePlay} from '../../reducers/RemotePlay'
+import {AppStateWithHistory, TransitionType, SearchPhase, RemotePlayPhase, SettingsType, SnackbarState, RemotePlayState} from '../../reducers/StateTypes'
 import {getStore} from '../../Store'
 import {getRemotePlayClient} from '../../RemotePlay'
 
@@ -28,14 +30,17 @@ const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group'
 
 interface MainProps extends React.Props<any> {}
 
+interface MainState {
+  card: JSX.Element;
+  key: number;
+  transition: TransitionType;
+  settings: SettingsType;
+  snackbar: SnackbarState;
+  remotePlay: RemotePlayState;
+}
+
 export default class Main extends React.Component<MainProps, {}> {
-  state: {
-    card: JSX.Element,
-    key: number,
-    transition: TransitionType,
-    settings: SettingsType,
-    snackbar: SnackbarState,
-  };
+  state: MainState;
   storeUnsubscribeHandle: () => any;
 
   constructor(props: MainProps) {
@@ -52,7 +57,7 @@ export default class Main extends React.Component<MainProps, {}> {
     this.storeUnsubscribeHandle();
   }
 
-  getUpdatedState() {
+  getUpdatedState(): MainState {
     const state: AppStateWithHistory = getStore().getState();
     if (state === undefined || this.state === undefined || Object.keys(state).length === 0) {
       return {
@@ -61,7 +66,12 @@ export default class Main extends React.Component<MainProps, {}> {
         transition: 'INSTANT' as TransitionType,
         settings: initialSettings,
         snackbar: initialState,
+        remotePlay: initialRemotePlay,
       };
+    }
+
+    if (state.remotePlay !== this.state.remotePlay) {
+      return {...this.state, remotePlay: state.remotePlay};
     }
 
     if (state.snackbar.open !== this.state.snackbar.open) {
@@ -131,7 +141,8 @@ export default class Main extends React.Component<MainProps, {}> {
       key: state.card.ts,
       transition,
       settings: state.settings,
-      snackbar: state.snackbar
+      snackbar: state.snackbar,
+      remotePlay: state.remotePlay,
     };
   }
 
@@ -148,20 +159,19 @@ export default class Main extends React.Component<MainProps, {}> {
       containerClass += 'largeFont';
     }
 
-    const cards: any = [
-      <div className="base_main" key={this.state.key}>
-        {this.state.card}
-      </div>
-    ];
-
     return (
       <div className={containerClass}>
         <Provider store={getStore()}>
-          <ReactCSSTransitionGroup
-            transitionName={this.state.transition}
-            transitionEnterTimeout={300}
-            transitionLeaveTimeout={300}>
-            {cards}
+          <span>
+            <ReactCSSTransitionGroup
+                transitionName={this.state.transition}
+                transitionEnterTimeout={300}
+                transitionLeaveTimeout={300}>
+              <div className={'base_main' + ((this.state.remotePlay && this.state.remotePlay.session) ? ' has_footer' : '')} key={this.state.key}>
+                  {this.state.card}
+              </div>
+            </ReactCSSTransitionGroup>
+            {this.state.remotePlay && this.state.remotePlay.session && <RemoteFooterContainer/>}
             <DialogsContainer />
             <Snackbar
               className="snackbar"
@@ -171,7 +181,7 @@ export default class Main extends React.Component<MainProps, {}> {
               onRequestClose={() => getStore().dispatch(closeSnackbar())}
             />
             <AudioContainer />
-          </ReactCSSTransitionGroup>
+          </span>
         </Provider>
       </div>
     );

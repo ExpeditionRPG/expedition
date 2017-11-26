@@ -3,12 +3,12 @@ import {RemotePlaySessionAction, RemotePlayHistoryAction} from '../actions/Actio
 import {RemotePlayState} from './StateTypes'
 import {Session} from 'expedition-qdl/lib/remote/Broker'
 
-export const initial_state: RemotePlayState = {
+export const initialRemotePlay: RemotePlayState = {
   session: null,
   history: []
 };
 
-export function remotePlay(state: RemotePlayState = initial_state, action: Redux.Action|RemotePlaySessionAction): RemotePlayState {
+export function remotePlay(state: RemotePlayState = initialRemotePlay, action: Redux.Action|RemotePlaySessionAction): RemotePlayState {
   switch(action.type) {
     case 'REMOTE_PLAY_SESSION':
       const rpsa = (action as any) as RemotePlaySessionAction;

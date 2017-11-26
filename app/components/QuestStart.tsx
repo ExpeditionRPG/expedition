@@ -46,7 +46,7 @@ const QuestStart = (props: QuestStartProps): JSX.Element => {
         {!props.settings.multitouch && <span> During combat, one player should manage the device.</span>}
       </p>}
 
-      <Button onTouchTap={() => props.onNext()}>Next</Button>
+      <Button onTouchTap={() => props.onNext()} remoteID="queststart">Next</Button>
     </Card>
   );
 }
