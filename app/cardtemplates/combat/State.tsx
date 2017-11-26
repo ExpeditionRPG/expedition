@@ -67,8 +67,14 @@ export function combatScope() {
           .map( key => ({ [key]: encounters[key] }) ) )
         ) || {}).name;
     },
+    aliveAdventurers: function(): number {
+      return (this.templates && this.templates.combat && this.templates.combat.numAliveAdventurers) || 0;
+    },
     currentCombatRound: function(): number {
       return (this.templates && this.templates.combat && this.templates.combat.roundCount) || 0;
+    },
+    currentCombatTier: function(): number {
+      return (this.templates && this.templates.combat && this.templates.combat.tier) || 0;
     },
     isCombatSurgeRound: function(): boolean {
       if (!this.templates || !this.templates.combat) {

@@ -1,8 +1,7 @@
 <quest title="Test Quest" data-line="0">
   <roleplay skipSetup="true" title="Setup :loot:" data-line="2">
-    <p>Custom setup card, replacing the default quest setup card. Half and full-width art:</p>
-    <p>[roll]</p>
-    <p>[hound_of_tindalos_full]</p>
+    <p>Custom setup card, replacing the default quest setup card. {{_.hasTheHorror() ? "The Horror" : "Base Game"}}. Half and full-width art:</p>
+    <p>[hound_of_tindalos]</p>
     <p>[darker_at_dawn_png_full]</p>
   </roleplay>
   <roleplay title="Test" id="start" data-line="6">
@@ -25,6 +24,8 @@
             <p>Current round: {{_.currentCombatRound()}}</p>
             <p>Surge round: {{string(_.isCombatSurgeRound())}}</p>
             <p>Random enemy: {{_.randomEnemy()}}</p>
+            <p>Number of alive adventurers: {{_.aliveAdventurers()}}</p>
+            <p>Current tier: {{_.currentCombatTier()}}</p>
             <choice text="A choice to another RP card">
               <roleplay title="On Round" id="onround" data-line="40">
                 <p>{{one = 3}}</p>
