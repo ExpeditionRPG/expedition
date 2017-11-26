@@ -107,6 +107,10 @@ _Roleplay Card_
 
 {{b="b"}}
 
+{{a == 1}} Visible {{b}}
+
+{{a > 1}} Invisible {{b}}
+
 > {{a == 1}} Visible {{b}}
 
 > {{a > 1}} Invisible {{b}}
@@ -123,6 +127,8 @@ data.conditionalsXML = `<quest title="Quest Title" data-line="0">
     <roleplay title="Roleplay Card" data-line="2">
         <p>{{a=1}}</p>
         <p>{{b=&quot;b&quot;}}</p>
+        <p if="a == 1">Visible {{b}}</p>
+        <p if="a &gt; 1">Invisible {{b}}</p>
         <instruction if="a == 1">
             <p>Visible {{b}}</p>
         </instruction>
@@ -130,12 +136,12 @@ data.conditionalsXML = `<quest title="Quest Title" data-line="0">
             <p>Invisible {{b}}</p>
         </instruction>
         <choice text="choice ({{b}})">
-            <roleplay title="Title {{b}}" data-line="14">
+            <roleplay title="Title {{b}}" data-line="18">
                 <p>Text</p>
             </roleplay>
         </choice>
     </roleplay>
-    <trigger data-line="18">end</trigger>
+    <trigger data-line="22">end</trigger>
 </quest>`;
 
 data.commentsMD = `#Quest Title

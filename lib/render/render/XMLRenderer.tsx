@@ -2,6 +2,20 @@ import {Renderer, CombatChild, Instruction, RoleplayChild, sanitizeStyles} from 
 
 var cheerio: any = require('cheerio') as CheerioAPI;
 
+// from https://stackoverflow.com/questions/7918868/how-to-escape-xml-entities-in-javascript
+function escapeXml(unsafe: string) {
+  return unsafe.replace(/[<>&'"]/g, (c: string) => {
+    switch (c) {
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '&': return '&amp;';
+      case '\'': return '&apos;';
+      case '"': return '&quot;';
+      default: return c;
+    }
+  });
+}
+
 // TODO: Move error checks in this renderer to the QDLRenderer class.
 export var XMLRenderer: Renderer = {
   toRoleplay: function(attribs: {[k: string]: string}, body: (string|RoleplayChild|Instruction)[], line: number): any {
@@ -15,8 +29,15 @@ export var XMLRenderer: Renderer = {
     for (var i = 0; i < body.length; i++) {
       let section = body[i];
       if (typeof(section) === 'string') {
-        let node = section as string;
-        roleplay.append('<p>' + sanitizeStyles(node) + '</p>');
+        let text = section as string;
+        const INITIAL_OP_WITH_PARAGRAPH = /^\s*{{(.*?)}}\s*[^\s]+/;
+        const visible = (text.match(INITIAL_OP_WITH_PARAGRAPH) || [])[1];
+        let paragraph = `<p>${sanitizeStyles(text)}</p>`;
+        if (visible) {
+          text = text.replace('{{' + visible + '}}', '');
+          paragraph = `<p if="${escapeXml(visible)}">${sanitizeStyles(text)}</p>`;
+        }
+        roleplay.append(paragraph);
       } else if (Boolean((section as RoleplayChild).choice)) { // choice
         let node = section as RoleplayChild;
         let choice = cheerio.load('<choice></choice>')('choice');
