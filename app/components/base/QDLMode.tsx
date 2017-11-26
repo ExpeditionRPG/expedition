@@ -1,4 +1,4 @@
-import REGEX from '../../../node_modules/expedition-qdl/lib/Regex'
+import REGEX, {combinedRegex} from '../../../node_modules/expedition-qdl/lib/Regex'
 const acequire: any = (require('brace') as any).acequire;
 const oop = acequire('ace/lib/oop') as any;
 const {Range} = acequire('ace/range');
@@ -28,7 +28,7 @@ var QDLHighlightRules: any = function() {
     },
     {
       token: 'variable', // blue
-      regex: combineRegexs([
+      regex: combinedRegex([
         REGEX.OP,
         REGEX.TRIGGER,
         REGEX.ID
@@ -44,8 +44,9 @@ var QDLHighlightRules: any = function() {
     },
     {
       token: 'string', // green
-      regex: combineRegexs([
-        REGEX.ART_OR_ICON,
+      regex: combinedRegex([
+        REGEX.ART,
+        REGEX.ICON,
         REGEX.BOLD_ASTERISKS,
         REGEX.BOLD_UNDERSCORES,
         REGEX.ITALIC_ASTERISKS,
@@ -59,13 +60,6 @@ var QDLHighlightRules: any = function() {
   ];
 };
 oop.inherits(QDLHighlightRules, MarkdownHighlightRules);
-
-
-// Takes in array of regexs, returns a single regex that ORs them
-function combineRegexs(regexs: any): any {
-  const sources = regexs.map((regex: any) => { return regex.source});
-  return new RegExp(sources.join('|'));
-}
 
 
 class QDLFoldMode {
