@@ -76,7 +76,7 @@ export interface SnackbarState {
 export type RemotePlayPhase = 'CONNECT'|'LOBBY';
 
 export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REPORT' | 'REMOTE_PLAY';
-export type CardPhase = TemplatePhase | SearchPhase|RemotePlayPhase;
+export type CardPhase = TemplatePhase | SearchPhase | RemotePlayPhase;
 export interface CardState {
   name: CardName;
   ts: number;

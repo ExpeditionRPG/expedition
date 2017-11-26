@@ -235,78 +235,14 @@ export const handleResolvePhase = remoteify(function handleResolvePhase(a: Handl
   // behavior and should be prevented when compiled.
   a.node = a.node.clone();
   if (a.node.getVisibleKeys().indexOf('round') !== -1) {
-    a.node.ctx.templates.combat.roleplay = a.node.getNext('round');
     // Set node *before* navigation to prevent a blank first roleplay card.
-    dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'ROLEPLAY', overrideDebounce: true}));
+    dispatch({type: 'QUEST_NODE', node: a.node.getNext('round')} as QuestNodeAction);
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_ROLEPLAY', overrideDebounce: true}));
   } else {
     dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true}));
     dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
   }
   return {};
-});
-
-interface MidCombatChoiceArgs {
-  settings?: SettingsType;
-  parent?: ParserNode;
-  index: number;
-}
-export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatChoiceArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): MidCombatChoiceArgs {
-  if (!a.parent || !a.settings) {
-    a.parent = getState().quest.node;
-    a.settings = getState().settings;
-  }
-  const remoteArgs: MidCombatChoiceArgs = {index: a.index};
-
-  a.parent = a.parent.clone();
-  const node = a.parent.ctx.templates.combat.roleplay;
-  const next = node.getNext(a.index);
-  const nextNode = node.handleAction(a.index);
-  // Check if the next node is inside a combat node. Bad things will happen if you try to nest combat.
-  let ptr = nextNode && nextNode.elem;
-  while (ptr !== null && ptr.length > 0 && ptr.get(0).tagName.toLowerCase() !== 'combat') {
-    ptr = ptr.parent();
-  }
-  const nextIsTrigger = (next && next.getTag() === 'trigger');
-  const nextIsInCombat = (nextNode && ptr && ptr.length > 0);
-
-  // Check for and resolve triggers
-  if (nextIsTrigger) {
-    const triggerName = next.elem.text().trim().toLowerCase();
-
-    if (triggerName.startsWith('goto')) {
-      if (!nextIsInCombat) { // Break out of combat
-        dispatch(loadNode(null, nextNode));
-        return remoteArgs;
-      }
-      // If in combat, fall through and handle like a normal combat RP node
-    } else {
-      if (next.isEnd()) {
-        dispatch(toCard({name: 'QUEST_END'}));
-        return remoteArgs;
-      }
-
-      // If the trigger exits via the win/lose handlers, break out of combat
-      const parentCondition = nextNode.elem.parent().attr('on');
-      if (parentCondition === 'win' || parentCondition === 'lose') {
-        dispatch(loadNode(a.settings, nextNode));
-        return remoteArgs;
-      }
-    }
-  }
-
-  if (!nextIsInCombat) {
-    // Ignore this as invalid and proceed to the resolution phase
-    a.parent.ctx.templates.combat.roleplay = null;
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true}));
-  } else {
-    // Continue in-combat roleplay
-    a.parent.ctx.templates.combat.roleplay = nextNode;
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'ROLEPLAY', overrideDebounce: true}));
-  }
-  dispatch({type: 'QUEST_NODE', node: a.parent} as QuestNodeAction);
-
-  return remoteArgs;
 });
 
 interface HandleCombatTimerStopArgs {
@@ -370,6 +306,78 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
   dispatch(toCard({name: 'QUEST_CARD', phase: (a.victory) ? 'VICTORY' : 'DEFEAT',  overrideDebounce: true, noHistory: true}));
 
   return {victory: a.victory, maxTier: a.maxTier, seed: a.seed};
+});
+
+function findCombatParent(node: ParserNode) {
+  let elem = node && node.elem;
+  while (elem !== null && elem.length > 0 && elem.get(0).tagName.toLowerCase() !== 'combat') {
+    elem = elem.parent();
+  }
+  return elem;
+}
+
+interface MidCombatChoiceArgs {
+  settings?: SettingsType;
+  node?: ParserNode;
+  maxTier: number;
+  index: number;
+  seed: string;
+}
+export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatChoiceArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): MidCombatChoiceArgs {
+  if (!a.node || !a.settings) {
+    a.node = getState().quest.node;
+    a.settings = getState().settings;
+  }
+  const remoteArgs: MidCombatChoiceArgs = {index: a.index, seed: a.seed, maxTier: a.maxTier};
+  const parentCombatElem = findCombatParent(a.node);
+  const nextNode = a.node.handleAction(a.index);
+  const nextParentCombatElem = findCombatParent(nextNode);
+  const nextIsInSameCombat = (nextParentCombatElem && nextParentCombatElem.length > 0) && parentCombatElem.attr('data-line') === nextParentCombatElem.attr('data-line');
+
+  // Check for and resolve triggers
+  const next = a.node.getNext(a.index);
+  const nextIsTrigger = (next && next.getTag() === 'trigger');
+  if (nextIsTrigger) {
+    const triggerName = next.elem.text().trim().toLowerCase();
+    if (triggerName.startsWith('goto') && nextIsInSameCombat) {
+      // If we jump to somewhere in the same combat,
+      // it's handled like a normal combat RP choice change (below).
+    } else if (next.isEnd()) {
+      // Treat quest end as normal
+      dispatch(toCard({name: 'QUEST_END'}));
+      return remoteArgs;
+    } else {
+      // If the trigger exits via the win/lose handlers, go to the appropriate
+      // combat end card
+      const parentCondition = nextNode.elem.parent().attr('on');
+      if (parentCondition === 'win' || parentCondition === 'lose') {
+        dispatch(handleCombatEnd({
+          node: new ParserNode(parentCombatElem, a.node.ctx),
+          settings: a.settings,
+          victory: (parentCondition === 'win'),
+          maxTier: a.maxTier,
+          seed: a.seed,
+        }));
+        return remoteArgs;
+      } else {
+        // Otherwise, treat like a typical event trigger
+        dispatch(loadNode(a.settings, nextNode));
+        return remoteArgs;
+      }
+    }
+  }
+
+  if (nextIsInSameCombat) {
+    // Continue in-combat roleplay with the next node.
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_ROLEPLAY', overrideDebounce: true}));
+    dispatch({type: 'QUEST_NODE', node: nextNode} as QuestNodeAction);
+  } else {
+    // If the next node is out of this combat, that means we've dropped off the end of the
+    // interestitial roleplay. Go back to combat resolution phase.
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true}));
+    dispatch({type: 'QUEST_NODE', node: new ParserNode(parentCombatElem, a.node.ctx)} as QuestNodeAction);
+  }
+  return remoteArgs;
 });
 
 interface TierSumDeltaArgs {

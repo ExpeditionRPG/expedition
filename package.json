@@ -70,7 +70,7 @@
         "watch-run": "^1.2.4",
         "webpack": "^3.6.0",
         "webpack-dashboard": "^0.3.0",
-        "webpack-dev-server": "^2.3.0"
+        "webpack-dev-server": "^2.9.4"
     },
     "dependencies": {
         "@types/seedrandom": "^2.4.27",

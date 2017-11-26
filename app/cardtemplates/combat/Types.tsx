@@ -25,8 +25,7 @@ export interface CombatDifficultySettings {
 
 export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {
   custom: boolean;
-  roleplay?: any; // Actually ParserNode, but set to the any type to minimize dependencies.
   roundTimeMillis: number;
 }
 
-export type CombatPhase = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'RESOLVE_DAMAGE' | 'VICTORY' | 'DEFEAT' | 'NO_TIMER';
+export type CombatPhase = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'RESOLVE_DAMAGE' | 'VICTORY' | 'DEFEAT' | 'NO_TIMER' | 'MID_COMBAT_ROLEPLAY';
