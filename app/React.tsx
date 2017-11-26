@@ -94,7 +94,7 @@ window.addEventListener('keydown', (event: any) => {
       case '\n':
       case '\r':
         if (state.quest.mdRealtime) {
-          store.dispatch(renderAndPlay(state.quest.mdRealtime.getText(), state.editor.line.number, state.editor.worker));
+          store.dispatch(renderAndPlay(state.quest, state.quest.mdRealtime.getText(), state.editor.line.number, state.editor.worker));
         }
       default:
         // Do nothing

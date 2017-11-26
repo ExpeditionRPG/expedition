@@ -1,8 +1,9 @@
 // This file is a WebWorker - see the spec at
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
 
-import {Node} from 'expedition-qdl/lib/parse/Node'
 import {PlaytestCrawler} from './PlaytestCrawler'
+import {PlaytestSettings} from '../reducers/StateTypes'
+import {Node} from 'expedition-qdl/lib/parse/Node'
 import {Logger, LogMessageMap} from 'expedition-qdl/lib/render/Logger'
 import {initQuest} from 'expedition-app/app/actions/Quest'
 
@@ -70,12 +71,13 @@ function maybePublishLog(logger: Logger) {
 interface RunMessage {
   type: 'RUN';
   timeoutMillis: number;
+  settings: PlaytestSettings;
   xml: string;
 }
 
 function handleMessage(e: {data: RunMessage}) {
   try {
-    const crawler = new PlaytestCrawler(null);
+    const crawler = new PlaytestCrawler(null, e.data.settings);
     const start = Date.now();
     const timeout = e.data.timeoutMillis || 10000; // 10s to playtest results
     const logger = new Logger();
@@ -115,6 +117,8 @@ function handleMessage(e: {data: RunMessage}) {
     };
     asyncTest();
   } catch (err) {
+
+console.log(err);
     console.error(err.toString());
     (postMessage as any)({status: 'COMPLETE'});
   }

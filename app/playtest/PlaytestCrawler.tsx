@@ -1,6 +1,7 @@
-import {CrawlEvent, CrawlEntry} from 'expedition-qdl/lib/parse/Crawler'
-import {Context} from 'expedition-qdl/lib/parse/Context'
 import {StatsCrawler, StatsCrawlEntry} from './StatsCrawler'
+import {PlaytestSettings} from '../reducers/StateTypes'
+import {Context} from 'expedition-qdl/lib/parse/Context'
+import {CrawlEvent, CrawlEntry} from 'expedition-qdl/lib/parse/Crawler'
 import {Node} from 'expedition-qdl/lib/parse/Node'
 import {Logger, LogMessageMap} from 'expedition-qdl/lib/render/Logger'
 import {initQuest} from 'expedition-app/app/actions/Quest'
@@ -26,10 +27,12 @@ const ADVENTURER_INSTRUCTION = /(\w*\s*player(s?)\s*\w*)/g;
 export class PlaytestCrawler extends StatsCrawler {
   private logger: Logger;
   private finalized: LogMessageMap;
+  private settings: PlaytestSettings;
 
-  constructor(logger: Logger) {
+  constructor(logger: Logger, settings?: PlaytestSettings) {
     super()
     this.logger = logger;
+    this.settings = settings || {} as PlaytestSettings;
   }
 
   public crawlWithLog(node: Node<Context>, logger: Logger): [number, number] {
@@ -55,7 +58,7 @@ export class PlaytestCrawler extends StatsCrawler {
     switch (q.node.getTag()) {
       case 'combat':
         this.verifyCombatEventCounts(q.node, line);
-        this.verifyEnemyTiers(q.node, line);
+        this.verifyEnemies(q.node, line);
         break;
       case 'roleplay':
         this.verifyChoiceCount(q.node, line);
@@ -80,14 +83,22 @@ export class PlaytestCrawler extends StatsCrawler {
     }
   }
 
-  private verifyEnemyTiers(combatNode: Node<Context>, line: number) {
-    // Check that enemies are all valid or have tier overrides set.
+  private verifyEnemies(combatNode: Node<Context>, line: number) {
+
     combatNode.loopChildren((tag, child, orig) => {
       if (tag !== 'e') {
         return;
       }
-      if (!encounters[child.text().toLowerCase()] && !child.attr('tier')) {
+      const encounter = encounters[child.text().toLowerCase()];
+      // Check that enemies are standard or are custome + have tier overrides set.
+      if (!encounter && !child.attr('tier')) {
         this.logger.err('Detected a non-standard enemy "' + child.text() + '" without explicit tier JSON', '419', line);
+      }
+      // Check that defined, non-base enemies listed do not belong to disabled content sets
+      if (encounter && encounter.set !== 'base') {
+        if (!this.settings['expansion' + encounter.set]) {
+          this.logger.warn(`Detected a ${encounter.set} enemy (${child.text()}) but this quest does not require ${encounter.set} content set.`, '437', line);
+        }
       }
     });
   }

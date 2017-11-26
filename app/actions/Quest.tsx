@@ -229,12 +229,14 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         maxtimeminutes: +metadata.get('maxtimeminutes'),
         genre: metadata.get('genre'),
         contentrating: metadata.get('contentrating'),
-        expansionhorror: metadata.get('expansionhorror'),
+        expansionhorror: metadata.get('expansionhorror') || false,
       });
       dispatch(receiveQuestLoad(quest));
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
       // Kick off a playtest after allowing the main thread to re-paint
-      setTimeout(() => dispatch(startPlaytestWorker(null, xmlResult.getResult())), 0);
+      setTimeout(() => dispatch(startPlaytestWorker(null, xmlResult.getResult(), {
+        expansionhorror: quest.expansionhorror,
+      })), 0);
     });
   },
   (model: any) => {

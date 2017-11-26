@@ -126,4 +126,9 @@ export interface AppState {
   snackbar: SnackbarState;
 }
 
+export interface PlaytestSettings {
+  [key:string]: any;
+  expansionhorror: boolean;
+}
+
 export type ValidState = boolean;

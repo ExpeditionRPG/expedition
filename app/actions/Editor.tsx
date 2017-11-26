@@ -1,6 +1,6 @@
 import Redux from 'redux'
 import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction} from './ActionTypes'
-import {PanelType} from '../reducers/StateTypes'
+import {PanelType, PlaytestSettings, QuestType} from '../reducers/StateTypes'
 import {store} from '../Store'
 import {saveQuest} from './Quest'
 import {renderXML} from 'expedition-qdl/lib/render/QDLParser'
@@ -78,7 +78,7 @@ export function getPlayNode(node: Cheerio): Cheerio {
 }
 
 
-export function startPlaytestWorker(oldWorker: Worker, elem: Cheerio) {
+export function startPlaytestWorker(oldWorker: Worker, elem: Cheerio, settings: PlaytestSettings) {
   return (dispatch: Redux.Dispatch<any>): any => {
     if (oldWorker) {
       oldWorker.terminate();
@@ -100,12 +100,12 @@ export function startPlaytestWorker(oldWorker: Worker, elem: Cheerio) {
         dispatch({type: 'PLAYTEST_MESSAGE', msgs: e.data});
       }
     };
-    worker.postMessage({type: 'RUN', xml: elem.toString()});
+    worker.postMessage({type: 'RUN', xml: elem.toString(), settings});
     dispatch({type: 'PLAYTEST_INIT', worker});
   }
 }
 
-export function renderAndPlay(qdl: string, line: number, oldWorker: Worker, ctx: TemplateContext = defaultContext()) {
+export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWorker: Worker, ctx: TemplateContext = defaultContext()) {
   return (dispatch: Redux.Dispatch<any>): any => {
     // Do rendering after timeout to stay outside the event handler.
     setTimeout(() => {
@@ -122,23 +122,24 @@ export function renderAndPlay(qdl: string, line: number, oldWorker: Worker, ctx:
       const newNode = new ParserNode(playNode, ctx);
       dispatch({type: 'REBOOT_APP'});
       // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
-      // And make contentSets based on enabled sets for quest
       dispatch(loadNode({
         audioEnabled: false,
         autoRoll: false,
         contentSets: {
-          horror: true,
+          horror: quest.expansionhorror,
         },
         difficulty: 'NORMAL',
         fontSize: 'SMALL',
         multitouch: false,
-        numPlayers: 1,
+        numPlayers: quest.minplayers,
         showHelp: false,
         timerSeconds: 10,
-        vibration: false
+        vibration: false,
       }, newNode));
       // Results will be shown and added to annotations as they arise.
-      dispatch(startPlaytestWorker(oldWorker, questNode));
+      dispatch(startPlaytestWorker(oldWorker, questNode, {
+        expansionhorror: quest.expansionhorror,
+      }));
     });
   };
 }
