@@ -367,12 +367,10 @@ span.line {
       padding: size(base) 0;
       font-size: fontsize(flavor);
       background-image: url(images/papyrus-tiled.jpg);
-      background-size: 100% auto;
       background-repeat: repeat;
-      background-position: 0 0;
+      background-position: center;
       width: 100%;
-      max-width: $absmaxdimension;
-      margin: auto;
+      overflow-x: hidden;
 
       .scrollbox_top {
         margin-top: size(tiny);
@@ -384,18 +382,19 @@ span.line {
         display: flex;
         flex-direction: column;
         width: 100%;
+        max-width: $absmaxdimension;
+        margin: auto;
         min-height: 50vh;
-        #bgimg {
-          position: absolute;
-          height: size(watermark);
-          width: size(watermark);
-          right: 0;
-          top: size(huge);
-          margin-right: -10%;
-          margin-top: 4vh;
-          opacity: 0.2;
-        }
-        overflow-x: hidden;
+      }
+      #bgimg {
+        position: absolute;
+        height: size(watermark);
+        width: size(watermark);
+        right: 0;
+        top: size(huge);
+        margin-right: -0.35 * size(watermark);
+        margin-top: 4vh;
+        opacity: 0.2;
       }
     }
     .title_container {
@@ -405,8 +404,7 @@ span.line {
       line-height: size(appbar);
       height: size(appbar);
       width: 100%;
-      max-width: $absmaxdimension;
-      margin: auto;
+
       > button {
         float: left;
         padding: 0 !important;
