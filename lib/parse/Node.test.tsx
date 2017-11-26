@@ -397,6 +397,25 @@ describe('Node', () => {
       expect(result.elem.text()).toEqual('herp');
     });
 
+    it('follows non-goto triggers within scope', () => {
+      const node = cheerio.load(`
+        <roleplay>
+          <choice>
+            <roleplay>
+              <choice>
+                <trigger>test</trigger>
+              </choice>
+            </roleplay>
+          </choice>
+          <event on="test"><roleplay><p>herp</p></roleplay></event>
+        </roleplay>
+      `)('roleplay');
+      const pnode = new Node(node, defaultContext());
+      let result = pnode.handleAction('0');
+      result = result.handleAction('0');
+      expect(result.elem.text()).toEqual('herp');
+    });
+
     it('immediately follows triggers on otherwise empty choices', () => {
       const rootNode = cheerio.load('<quest></quest>')('quest');
       const choiceNode = cheerio.load('<roleplay><choice><trigger>goto jump</trigger></choice></roleplay>')('roleplay');

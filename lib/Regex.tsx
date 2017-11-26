@@ -1,20 +1,33 @@
-export default {
-  // Extracts the string between the first / and last / in a regex
-  EXTRACT_REGEX: /^\/(.*)\/[igmxs]*$/,
+// !!!!!!!!!!!!!!! DO NOT USE /g ON REGEXES HERE !!!!!!!!!!!!!!!!!
+// https://stackoverflow.com/questions/4688518/why-does-javascripts-regexp-maintain-state-between-calls
+// Constructing a regex with the 'g' flag causes the expression to maintain state between calls.
+// This can be a source of heisenbugs when calls to match(), exec(), and test() return false to indicate the
+// end of processing a previous test.
+// Avoid ending a regex with /g here and instead apply the global flag on a copy before matching, if needed.
 
+// Takes in array of RegEx, returns a single regex that ORs them
+export function combinedRegex(regexs: RegExp[], flags?: string): RegExp {
+  const sources = regexs.map((regex) => { return regex.source});
+  return new RegExp(sources.join('|'), flags);
+}
+
+export default {
   // Breakdown:
   // <(\w|(\/\w))             Math "<" or "</" plus an immediate alphanumeric
   // (.|\n)*?>                Greedily match any character (incl newline) until closing ">"
-  HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,
+  HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/im,
 
   // Detects icons in []'s (old syntax)
-  INVALID_ART: /.+\[([a-z_0-9]*)\].+/ig,
+  INVALID_ART: /.+\[([a-zA-Z_0-9]*)\].+/,
 
-  // [art] or :icon: - captures the entire thing
-  ART_OR_ICON: /([\[:][a-z_0-9]*[\]:])/ig,
+  // Contents inside of [], only allowing for alphanumerics + _'s
+  ART: /\[([a-zA-Z_0-9]*)\]/,
+
+  // Contents inside of ::, only allowing for alphanumeric + _'s
+  ICON: /:([a-zA-Z_0-9]*):/,
 
   // For selecting ID references, example: (#idName)
-  ID: /\(#[a-zA-Z]*\)/g,
+  ID: /\(#[a-zA-Z0-9]+\)/,
 
   // Breakdown:
   // \*\s*                    Match ">" and any number of spaces (greedy)
@@ -24,22 +37,23 @@ export default {
   INSTRUCTION: /^[>]\s*({{(.*?)}})?\s*(.*)$/,
 
   // For removing all not-word characters (aka anything except letters and ')
-  NOT_WORD: /[^a-zA-Z']/g,
+  NOT_WORD: /[^a-zA-Z']/,
 
   // match op elements (single + multiple lines)
-  OP: /{{[^}]*}}/gm,
+  OP: /{{[^}]*}}/m,
 
   // Breakdown:
-  // \*\*\s*                  Match "**" and any number of spaces (greedy)
+  // ^\s*\*\*\s*              Match "**" and any number of spaces (greedy)
   // ({{(.*?)}})?             Optionally match "{{some stuff}}" (lazy)
   // \s*                      Match any number of spaces (greedy)
-  // ((end)|(goto .*))\*\*$   Match only "end" and "goto (any)" until "**" + end of the string.
-  TRIGGER: /^\s*\*\*\s*({{(.*?)}})?\s*((end)|(goto .*))\*\*\s*$/,
+  // (([a-z]+)|(goto [a-zA-Z0-9]+)) Match single alpha word or "goto <word>"
+  // \*\*\s*$                 Match "**" + end of the string.
+  TRIGGER: /^\s*\*\*\s*({{(.*?)}})?\s*(([a-z]+)|(goto [a-zA-Z0-9]+))\*\*\s*$/,
 
   // Detecting markdown styles
-  BOLD_ASTERISKS: /\*\*([^\*]*)\*\*/g,
-  BOLD_UNDERSCORES: /\_\_([^\_]*)\_\_/g,
-  ITALIC_ASTERISKS: /\*([^\*]*)\*/g,
-  ITALIC_UNDERSCORES: /\_([^\_]*)\_/g,
-  STRIKETHROUGH: /~~([^~]*)~~/g,
+  BOLD_ASTERISKS: /\*\*([^\*]*)\*\*/,
+  BOLD_UNDERSCORES: /\_\_([^\_]*)\_\_/,
+  ITALIC_ASTERISKS: /\*([^\*]*)\*/,
+  ITALIC_UNDERSCORES: /\_([^\_]*)\_/,
+  STRIKETHROUGH: /~~([^~]*)~~/,
 };

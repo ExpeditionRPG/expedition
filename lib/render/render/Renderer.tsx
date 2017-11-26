@@ -85,13 +85,15 @@ export function sanitizeStyles(text: string): string {
   }
 
   // Now extract [art] and :icons:
+  // This uses the global tag to statefully search for values.
+  const art_or_icon = new RegExp(`(${REGEX.ART.source}|${REGEX.ICON.source})`, 'g');
   const art: string[] = [];
-  let matches = REGEX.ART_OR_ICON.exec(text);
+  let matches = art_or_icon.exec(text);
   while (matches) {
     art.push(matches[1]);
-    matches = REGEX.ART_OR_ICON.exec(text);
+    matches = art_or_icon.exec(text);
   }
-  text = text.replace(REGEX.ART_OR_ICON, '[art]');
+  text = text.replace(art_or_icon, '[art]');
 
   // replace whitelist w/ markdown
   text = text.replace(/<strong>(.*?)<\/strong>/igm, '**$1**');
@@ -101,16 +103,16 @@ export function sanitizeStyles(text: string): string {
   text = text.replace(/<del>(.*?)<\/del>/igm, '~~$1~~');
 
   // strip html tags and attributes (but leave contents)
-  text = text.replace(REGEX.HTML_TAG, '');
+  text = text.replace(new RegExp(REGEX.HTML_TAG.source, 'g'), '');
 
   // replace markdown with HTML tags
   // general case: replace anything surrounded by markdown styles with their matching HTML tag:
   // \*\*([^\*]*)\*\*       non-greedily match the contents between two sets of **
-  text = text.replace(REGEX.BOLD_ASTERISKS, '<b>$1</b>');
-  text = text.replace(REGEX.BOLD_UNDERSCORES, '<b>$1</b>');
-  text = text.replace(REGEX.ITALIC_ASTERISKS, '<i>$1</i>');
-  text = text.replace(REGEX.ITALIC_UNDERSCORES, '<i>$1</i>');
-  text = text.replace(REGEX.STRIKETHROUGH, '<del>$1</del>');
+  text = text.replace(new RegExp(REGEX.BOLD_ASTERISKS.source, 'g'), '<b>$1</b>');
+  text = text.replace(new RegExp(REGEX.BOLD_UNDERSCORES.source, 'g'), '<b>$1</b>');
+  text = text.replace(new RegExp(REGEX.ITALIC_ASTERISKS.source, 'g'), '<i>$1</i>');
+  text = text.replace(new RegExp(REGEX.ITALIC_UNDERSCORES.source, 'g'), '<i>$1</i>');
+  text = text.replace(new RegExp(REGEX.STRIKETHROUGH.source, 'g'), '<del>$1</del>');
 
   // Insert stored ops contents back into ops
   text = text.replace(/{{}}/g, () => { return '{{' + ops.shift() + '}}'; });
