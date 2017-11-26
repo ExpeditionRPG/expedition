@@ -37,7 +37,7 @@ export interface CombatDispatchProps {
   onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => void;
   onEvent: (node: ParserNode, event: string) => void;
   onCustomEnd: () => void;
-  onChoice: (settings: SettingsType, parent: ParserNode, index: number) => void;
+  onChoice: (node: ParserNode, settings: SettingsType, index: number, maxTier: number, seed: string) => void;
   onSurgeNext: (node: ParserNode) => void;
 }
 
@@ -429,16 +429,11 @@ function renderTimerCard(props: CombatProps): JSX.Element {
 }
 
 function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
-  // Empty card to handle default case of no roleplay (happens when just starting into the RP section).
-  if (!props.node.ctx.templates.combat.roleplay) {
-    return (<Card title="" inQuest={true} theme="DARK"></Card>);
-  }
-
   const roleplay = Roleplay({
-    node: props.node.ctx.templates.combat.roleplay,
+    node: props.node,
     prevNode: null,
     settings: props.settings,
-    onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(settings, props.node, index)},
+    onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(props.node, settings, index, props.maxTier, props.seed)},
     onRetry: () => {props.onRetry()},
     onReturn: () => {props.onReturn()},
   }, 'DARK');
@@ -486,7 +481,7 @@ const Combat = (props: CombatProps): JSX.Element => {
       return renderVictory(props);
     case 'DEFEAT':
       return renderDefeat(props);
-    case 'ROLEPLAY':
+    case 'MID_COMBAT_ROLEPLAY':
       return renderMidCombatRoleplay(props);
     default:
       throw new Error('Unknown combat phase ' + props.card.phase);

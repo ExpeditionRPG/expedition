@@ -10,7 +10,6 @@ import CombatContainer from './combat/CombatContainer'
 import {combatScope, CombatState} from './combat/State'
 import {CombatPhase} from './combat/Types'
 
-import {updateContext as oldUpdateContext} from 'expedition-qdl/lib/parse/Context'
 import {Node} from 'expedition-qdl/lib/parse/Node'
 import {TemplateContext} from './TemplateTypes'
 import {getStore} from '../Store'
@@ -30,10 +29,19 @@ export function initCardTemplate(node: ParserNode, settings: SettingsType) {
 
 export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Element {
   // Always pass node directly, to prevent jitter to the next card on transition.
-  switch(node.getTag()) {
-    case 'roleplay':
+  switch(card.phase || 'ROLEPLAY') {
+    case 'ROLEPLAY':
       return <RoleplayContainer node={node}/>;
-    case 'combat':
+    case 'DRAW_ENEMIES':
+    case 'PREPARE':
+    case 'TIMER':
+    case 'SURGE':
+    case 'RESOLVE_ABILITIES':
+    case 'RESOLVE_DAMAGE':
+    case 'VICTORY':
+    case 'DEFEAT':
+    case 'NO_TIMER':
+    case 'MID_COMBAT_ROLEPLAY':
       return <CombatContainer card={card} node={node}/>;
     default:
       return null;
@@ -43,30 +51,6 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
 export function templateScope() {
   return combatScope();
 }
-
-export function updateContext(node: Cheerio, ctx: TemplateContext, action?: string|number): TemplateContext {
-  if (!node) {
-    return ctx;
-  }
-
-  // Special handling of roleplay node - this is readonly and cannot be cloned.
-  let tmpCombatRoleplay: any = null;
-  if (ctx.templates && ctx.templates.combat && ctx.templates.combat.roleplay) {
-    tmpCombatRoleplay = ctx.templates.combat.roleplay;
-    ctx.templates.combat.roleplay = null;
-  }
-
-  const newContext = oldUpdateContext(node, ctx, action);
-
-  // Reassign readonly (uncopyable) attributes
-  if (tmpCombatRoleplay) {
-    newContext.templates.combat.roleplay = tmpCombatRoleplay.clone();
-    ctx.templates.combat.roleplay = tmpCombatRoleplay;
-  }
-
-  return newContext;
-}
-
 
 export function defaultContext(): TemplateContext {
   const populateScopeFn = function() {
@@ -106,12 +90,4 @@ export function defaultContext(): TemplateContext {
   return newContext;
 }
 
-export class ParserNode extends Node<TemplateContext>{
-  constructor(elem: Cheerio, ctx: TemplateContext, action?: string|number) {
-    super(elem, ctx, action);
-  }
-
-  protected updateContext(elem: Cheerio, ctx: TemplateContext, action?: string | number): TemplateContext {
-    return updateContext(elem, ctx, action);
-  }
-};
+export class ParserNode extends Node<TemplateContext>{};

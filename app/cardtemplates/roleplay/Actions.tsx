@@ -12,6 +12,6 @@ export function initRoleplay(node: ParserNode, settings: SettingsType, custom?: 
     // content.
     dispatch({type: 'PUSH_HISTORY'});
     dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', noHistory: true}));
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'ROLEPLAY', noHistory: true}));
   };
 }

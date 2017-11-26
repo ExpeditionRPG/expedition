@@ -39,6 +39,9 @@
             <choice text="A choice with a combat GOTO">
               <trigger data-line="54">goto onround</trigger>
             </choice>
+            <choice text="Win the combat">
+              <trigger data-line="56">win</trigger>
+            </choice>
             <choice text="End the quest">
               <trigger data-line="58">end</trigger>
             </choice>

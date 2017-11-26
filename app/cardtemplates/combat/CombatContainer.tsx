@@ -118,8 +118,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     onCustomEnd: () => {
       dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: false}));
     },
-    onChoice: (settings: SettingsType, parent: ParserNode, index: number) => {
-      dispatch(midCombatChoice({settings, parent, index}));
+    onChoice: (node: ParserNode, settings: SettingsType, index: number, maxTier: number, seed: string) => {
+      dispatch(midCombatChoice({node, settings, index, maxTier, seed}));
     },
   };
 }
