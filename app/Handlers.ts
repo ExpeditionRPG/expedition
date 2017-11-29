@@ -14,7 +14,7 @@ export function healthCheck(req: express.Request, res: express.Response) {
 
 export function announcement(req: express.Request, res: express.Response) {
   res.json({
-    message: 'November: $500 Quest Writing Contest',
+    message: '$500 Quest Writing Contest extended',
     link: 'https://expeditiongame.com/writing-contests',
   });
 }
