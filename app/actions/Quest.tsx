@@ -4,8 +4,9 @@ import {
   QuestNodeAction,
   ViewQuestAction
 } from './ActionTypes'
-import {AppStateWithHistory, SettingsType} from '../reducers/StateTypes'
 import {toCard} from './Card'
+import {changeSettings} from './Settings'
+import {AppStateWithHistory, SettingsType} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {initCardTemplate, ParserNode} from '../cardtemplates/Template'
 import {TemplateContext} from '../cardtemplates/TemplateTypes'
@@ -45,6 +46,7 @@ export const event = remoteify(function event(a: EventArgs, dispatch: Redux.Disp
 // used externally by the quest creator, but not by other external App code
 export function loadNode(settings: SettingsType, node: ParserNode) {
   return (dispatch: Redux.Dispatch<any>): any => {
+    dispatch(changeSettings(settings));
     const tag = node.getTag();
     if (tag === 'trigger') {
       const triggerName = node.elem.text().trim();
