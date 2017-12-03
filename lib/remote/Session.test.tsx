@@ -1,4 +1,4 @@
-import {Session, SessionSecret, SessionID} from './Broker'
+import {Session, SessionSecret, SessionID} from './Session'
 import * as Bluebird from 'bluebird';
 
 describe('Session', () => {

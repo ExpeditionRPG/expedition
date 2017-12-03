@@ -34,11 +34,12 @@ export abstract class ClientBase {
     this.instance = instance;
   }
 
-  sendEvent(eventID: number, event: RemotePlayEventBody): void {
+  sendEvent(event: RemotePlayEventBody): void {
     if (!this.isConnected()) {
       return;
     }
-    this.sendFinalizedEvent({id: eventID, client: this.id, instance: this.instance, event});
+    // ID is set in sendFinalizedEvent
+    this.sendFinalizedEvent({id: null, client: this.id, instance: this.instance, event});
   }
 
   protected handleMessage(e: RemotePlayEvent) {
