@@ -34,22 +34,22 @@ export abstract class ClientBase {
     this.instance = instance;
   }
 
-  sendEvent(event: RemotePlayEventBody): void {
+  sendEvent(eventID: number, event: RemotePlayEventBody): void {
     if (!this.isConnected()) {
       return;
     }
-    this.sendFinalizedEvent({client: this.id, instance: this.instance, event});
+    this.sendFinalizedEvent({id: eventID, client: this.id, instance: this.instance, event});
   }
 
   protected handleMessage(e: RemotePlayEvent) {
     if (!e.event || !e.client || !e.instance) {
-      this.publish({client: null, instance: null, event: {type: 'ERROR', error: 'Received malformed message'}});
+      this.publish({id: null, client: null, instance: null, event: {type: 'ERROR', error: 'Received malformed message'}});
       return;
     }
 
     // Error out if we get an unrecognized message
     if (['STATUS', 'INTERACTION', 'ACTION', 'ERROR'].indexOf(e.event.type) < 0) {
-      this.publish({client: null, instance: null, event: {type: 'ERROR', error: 'Received unknown message of type "' + e.event.type + '"'}});
+      this.publish({id: null, client: null, instance: null, event: {type: 'ERROR', error: 'Received unknown message of type "' + e.event.type + '"'}});
       return;
     }
 

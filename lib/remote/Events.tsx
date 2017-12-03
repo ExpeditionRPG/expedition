@@ -66,4 +66,5 @@ export interface RemotePlayEvent {
   client: ClientID;
   instance: InstanceID;
   event: RemotePlayEventBody;
+  id: number; // Monotonically increasing, unique to a single event per session
 }
