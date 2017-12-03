@@ -221,7 +221,7 @@ Divide the loot amongst adventurers. It can be used at any time and does not cos
 
 When you level up, all adventurers may learn a new ability:
 
-* Draw 3 abiltiies from one of the decks listed on your adventurer card. *If you are playing with The Horror*: All adventurers may also draw from the influence deck.
+* Draw 3 abilties from one of the decks listed on your adventurer card. *If you are playing with The Horror*: All adventurers may also draw from the influence deck.
 * Add 1 to your ability deck, and place the remaining 2 at the bottom of the deck you drew from.
 * You *may* choose to discard an ability.
 
