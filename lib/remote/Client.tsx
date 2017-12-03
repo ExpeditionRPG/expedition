@@ -48,7 +48,7 @@ export abstract class ClientBase {
     }
 
     // Error out if we get an unrecognized message
-    if (['STATUS', 'INTERACTION', 'ACTION', 'ERROR'].indexOf(e.event.type) < 0) {
+    if (['STATUS', 'INTERACTION', 'ACTION', 'ERROR', 'INFLIGHT_COMMIT', 'INFLIGHT_REJECT'].indexOf(e.event.type) < 0) {
       this.publish({id: null, client: null, instance: null, event: {type: 'ERROR', error: 'Received unknown message of type "' + e.event.type + '"'}});
       return;
     }
