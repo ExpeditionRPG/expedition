@@ -61,7 +61,16 @@ export interface ErrorEvent {
   error: string;
 }
 
-export type RemotePlayEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent;
+export interface InflightCommitEvent {
+  type: 'INFLIGHT_COMMIT';
+}
+
+export interface InflightRejectEvent {
+  type: 'INFLIGHT_REJECT';
+  error: string;
+}
+
+export type RemotePlayEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent|InflightCommitEvent|InflightRejectEvent;
 export interface RemotePlayEvent {
   client: ClientID;
   instance: InstanceID;
