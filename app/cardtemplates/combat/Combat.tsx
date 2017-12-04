@@ -9,7 +9,7 @@ import theme from '../../Theme'
 import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 import REGEX from 'expedition-qdl/lib/Regex'
 import {isSurgeNextRound} from './Actions'
-import {SettingsType, CardState, CardName} from '../../reducers/StateTypes'
+import {SettingsType, CardState, CardName, RemotePlayState} from '../../reducers/StateTypes'
 import {ParserNode} from '../Template'
 import {EventParameters, Enemy, Loot} from '../../reducers/QuestTypes'
 import {CombatState} from './State'
@@ -24,6 +24,7 @@ export interface CombatStateProps extends CombatState {
   seed: string;
   roundTimeMillis: number;
   victoryParameters?: EventParameters;
+  remotePlayState?: RemotePlayState;
 }
 
 export interface CombatDispatchProps {
@@ -31,6 +32,7 @@ export interface CombatDispatchProps {
   onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
   onRetry: () => void;
   onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
+  onTimerHeld: (node: ParserNode) => void;
   onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => void;
   onReturn: () => void;
   onTierSumDelta: (node: ParserNode, current: number, delta: number) => void;
@@ -424,6 +426,7 @@ function renderTimerCard(props: CombatProps): JSX.Element {
       tertiaryText={instruction}
       numPlayers={(props.settings.multitouch) ? props.numAliveAdventurers : 1}
       roundTimeTotalMillis={props.roundTimeMillis}
+      remotePlayState={props.remotePlayState}
       onTimerStop={(ms: number) => props.onTimerStop(props.node, props.settings, ms, surge, props.seed)} />
   );
 }

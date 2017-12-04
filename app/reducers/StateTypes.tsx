@@ -1,7 +1,8 @@
+import * as Redux from 'redux'
 import {QuestDetails} from './QuestTypes'
 import {TemplatePhase, TemplateContext} from '../cardtemplates/TemplateTypes'
 import {ParserNode} from '../cardtemplates/Template'
-import {Session, SessionID, SessionMetadata} from 'expedition-qdl/lib/remote/Broker'
+import {Session, SessionID, SessionMetadata} from 'expedition-qdl/lib/remote/Session'
 import {GenreType, ContentRatingLabelType} from '../Constants'
 
 export interface AnnouncementState {
@@ -116,6 +117,7 @@ export interface UserFeedbackState {
 export interface RemotePlayState {
   session: Session;
   history: SessionMetadata[];
+  syncing: boolean;
 }
 
 export interface AppState {
@@ -135,4 +137,6 @@ export interface AppState {
 export interface AppStateWithHistory extends AppState {
   _history: AppState[];
   _return: boolean;
+  _inflight: {id: string, committed: boolean, action: Redux.Action}[];
+  _committed: AppState[]; // A trailing version of _history, before _inflight actions are applied.
 }

@@ -10,12 +10,19 @@ import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 import {getRemotePlayClient} from '../RemotePlay'
 
 export function local(a: Redux.Action): LocalAction {
-  return {type: 'LOCAL', action: a};
+  const inflight = (a as any)._inflight;
+  return {type: 'LOCAL', action: a, _inflight: inflight} as any as LocalAction;
 }
 
 export function handleRemotePlayEvent(e: RemotePlayEvent) {
   return (dispatch: Redux.Dispatch<any>): any => {
     switch (e.event.type) {
+      case 'INFLIGHT_COMMIT':
+        dispatch({type: 'INFLIGHT_COMMIT', id: e.id});
+        break;
+      case 'INFLIGHT_REJECT':
+        dispatch({type: 'INFLIGHT_REJECT', id: e.id, error: e.event.error});
+        break;
       case 'STATUS':
         console.log('TODO: USE STATUS ' + JSON.stringify(e.event));
         break;
@@ -94,7 +101,7 @@ export function remotePlayConnect(user: UserState, secret: string) {
 
       const c = getRemotePlayClient();
       c.configure(clientID, instanceID);
-      return (c.connect(session, data.authToken) as any);
+      return c.connect(session, clientID, secret);
     })
     .then(() => {
       dispatch({type: 'REMOTE_PLAY_SESSION', session: {secret, id: session}});

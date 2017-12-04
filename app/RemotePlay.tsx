@@ -1,95 +1,64 @@
 import Redux from 'redux'
-import {RemotePlayEvent, ClientID} from 'expedition-qdl/lib/remote/Events'
+import {RemotePlayEvent, ActionEvent, ClientID} from 'expedition-qdl/lib/remote/Events'
 import {ClientBase} from 'expedition-qdl/lib/remote/Client'
 import {local} from './actions/RemotePlay'
+import {getStore} from './Store'
 import * as Bluebird from 'bluebird'
-import * as firebase from 'firebase'
-require('firebase/firestore'); // Needed as side effect to use firestore
-
-firebase.initializeApp({
-  apiKey: 'AIzaSyAVJX4xTB6eREniGPl6QmreR4y_rtxeSCY',
-  authDomain: 'expedition-remote-play.firebaseapp.com',
-  databaseURL: 'https://expedition-remote-play.firebaseio.com',
-  projectId: 'expedition-remote-play',
-  storageBucket: 'expedition-remote-play.appspot.com',
-  messagingSenderId: '22607012202',
-});
+import {remotePlaySettings} from './Constants'
 
 const REMOTEPLAY_CLIENT_STATUS_POLL_MS = 5000;
-
-// Initialize Cloud Firestore through Firebase
-const db = firebase.firestore();
 
 // This is the base layer of the remote play network framework, implemented
 // using firebase FireStore.
 export class RemotePlayClient extends ClientBase {
-  private sessionRef: firebase.firestore.DocumentReference;
-  private unsubscribers: any[];
+  private session: WebSocket;
+  private sessionClientIDs: string[];
 
-  connect(sessionID: string, authToken: string): Promise<void> {
-    if (this.isConnected() || (this.unsubscribers && this.unsubscribers.length)) {
+  // Mirrors the committed counter on the websocket server.
+  // Used to maintain a transactional event queue.
+  private localEventCounter: number;
+
+  connect(sessionID: string, clientID: string, secret: string): void {
+    if (this.isConnected()) {
       this.disconnect();
     }
-    this.unsubscribers = [];
-    this.sessionRef = db.collection('sessions').doc(sessionID.toString());
-    return firebase.auth().signInWithCustomToken(authToken)
-      .then(() => {
-        this.unsubscribers.push(this.sessionRef.collection('events').onSnapshot((events) => {
-          events.docChanges.forEach((change) => {
-              if (change.type !== 'added') {
-                console.error('Unexpected modified or removed event: ' + JSON.stringify(change.doc.data()));
-                return;
-              }
-              const event = change.doc.data() as RemotePlayEvent;
-              // Ignore messages from ourselves
-              if (event.client === this.id) {
-                return;
-              }
-              this.handleMessage(event);
-          });
-        }));
+    this.sessionClientIDs = [this.id];
+    this.localEventCounter = 0;
 
-        firebase.database().ref('.info/connected').on('value', (snapshot) => {
-        // If we're not currently connected, don't do anything.
-        if (snapshot.val() === false) {
-          this.connected = false;
-            return;
-        } else {
-          this.connected = true;
-          if (this.sessionRef) {
-            this.sendEvent({type: 'STATUS'});
-          }
-        };
-        // TODO: Use onDisconnect() to set online state for others to see
-        });
-      });
+    this.session = new WebSocket(`${remotePlaySettings.websocketSession}/${sessionID}?client=${this.id}&instance=${this.instance}&secret=${secret}`);
+
+    this.session.onmessage = (ev: MessageEvent) => {
+      const parsed = JSON.parse(ev.data) as RemotePlayEvent;
+      this.localEventCounter = parsed.id;
+      this.handleMessage(parsed);
+    };
+
+    this.session.onerror = (ev: Event) => {
+      console.error(ev);
+    }
+    this.session.onclose = () => {
+      console.error('TODO RECONNECT');
+    }
+    this.session.onopen = () => {
+      console.log('Open and ready to send');
+      this.connected = true;
+    }
   }
 
   disconnect() {
-    for (const unsub of this.unsubscribers) {
-      unsub();
-    }
+    this.session.close();
     this.connected = false;
-    firebase.database().ref('.info/connected').off();
-    firebase.database().goOffline();
   }
 
   sendFinalizedEvent(event: RemotePlayEvent): void {
     const start = Date.now();
-    try {
-      // Transparently add firebase-specific attributes the app doesn't care about
-      (event as any)['added'] = start;
 
-      this.sessionRef.collection('events').doc().set(event).then(() => {
-          const runtime = (Date.now() - start);
-          console.log('Firebase event (' + runtime + ' ms)');
-      });
-    } catch (e) {
-      // Error could be either on invocation of doc().set() or on response,
-      // so we use a try/catch here instead of .catch() promise handling.
-      console.error('Error sending firebase event ' + JSON.stringify(event) + ' (see next error)');
-      console.error(e);
+    if (event.event.type === 'ACTION') {
+      this.localEventCounter++;
+      event.id = this.localEventCounter;
     }
+    console.log(event);
+    this.session.send(JSON.stringify(event));
   }
 
   public createActionMiddleware(): Redux.Middleware {
@@ -101,23 +70,44 @@ export class RemotePlayClient extends ClientBase {
         return;
       }
 
+      let inflight: number = (action as any)._inflight;
       const localOnly = (action.type === 'LOCAL');
+
       if (localOnly) {
-        // Unwrap local actions
+        // Unwrap local actions, passing through inflight data.
         action = action.action;
       }
 
       if (action instanceof Array) {
         const [name, fn, args] = action;
-        const remoteArgs = fn(args, dispatchLocal, getState);
+        if (this.isConnected() && !localOnly && !inflight) {
+          inflight = this.localEventCounter+1;
+        }
+
+        // TODO: Handle txn mismatch when remoteArgs is null
+        const remoteArgs = fn(args, (a: Redux.Action) => {
+          // Assign an inflight transaction ID to be consumed by the inflight() reducer
+          if (inflight) {
+            (a as any)._inflight=inflight;
+          }
+          return dispatchLocal(a);
+        }, getState);
+
         if (remoteArgs && !localOnly) {
           const argstr = JSON.stringify(remoteArgs);
-          console.log('Outbound: ' + name + '(' + argstr + ')');
-          this.sendEvent({type: 'ACTION', name, args: argstr});
+          console.log('Outbound: ' + name + '(' + argstr + ') ' + inflight);
+          this.sendEvent({type: 'ACTION', name, args: argstr} as ActionEvent);
         }
       } else if (typeof(action) === 'function') {
-        // Dispatch async actions
-        action(dispatchLocal, getState);
+        if (inflight !== undefined) {
+          action((a: Redux.Action) => {
+            (a as any)._inflight = inflight;
+            dispatchLocal(a);
+          }, getState);
+        } else {
+          // Dispatch async actions
+          action(dispatchLocal, getState);
+        }
       } else {
         // Pass through regular action objects
         next(action);

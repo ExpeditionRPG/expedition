@@ -1,11 +1,12 @@
 import Redux from 'redux'
 import {RemotePlaySessionAction, RemotePlayHistoryAction} from '../actions/ActionTypes'
 import {RemotePlayState} from './StateTypes'
-import {Session} from 'expedition-qdl/lib/remote/Broker'
+import {Session} from 'expedition-qdl/lib/remote/Session'
 
 export const initialRemotePlay: RemotePlayState = {
   session: null,
-  history: []
+  history: [],
+  syncing: false,
 };
 
 export function remotePlay(state: RemotePlayState = initialRemotePlay, action: Redux.Action|RemotePlaySessionAction): RemotePlayState {
@@ -16,6 +17,10 @@ export function remotePlay(state: RemotePlayState = initialRemotePlay, action: R
     case 'REMOTE_PLAY_HISTORY':
       const rph = (action as any) as RemotePlayHistoryAction;
       return {...state, history: rph.history || []};
+    case 'INFLIGHT_REJECT':
+      return {...state, syncing: true};
+    case 'INFLIGHT_COMPACT':
+      return {...state, syncing: false};
     default:
       return state;
   }

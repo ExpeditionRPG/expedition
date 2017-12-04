@@ -1,6 +1,7 @@
 import * as React from 'react'
 import MultiTouchTrigger from './MultiTouchTrigger'
 import {CardThemeType} from '../../reducers/StateTypes'
+import {RemotePlayState} from '../../reducers/StateTypes'
 
 interface TimerCardProps extends React.Props<any> {
   numPlayers: number;
@@ -8,6 +9,7 @@ interface TimerCardProps extends React.Props<any> {
   tertiaryText?: string;
   roundTimeTotalMillis: number;
   theme: CardThemeType;
+  remotePlayState: RemotePlayState;
   onTimerStop: (elapsedMillis: number) => any;
 }
 

@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {CardState, CardName, CardPhase, DialogIDType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, AppState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../cardtemplates/Template'
-import {Session, SessionMetadata} from 'expedition-qdl/lib/remote/Broker'
+import {Session, SessionMetadata} from 'expedition-qdl/lib/remote/Session'
 
 export interface PushHistoryAction extends Redux.Action {
   type: 'PUSH_HISTORY';
@@ -125,6 +125,18 @@ export interface RemotePlayHistoryAction extends Redux.Action {
 export interface LocalAction extends Redux.Action {
   type: 'LOCAL';
   action: Redux.Action;
+}
+
+// Commits an in-flight action transaction (remote play)
+export interface InflightCommitAction extends Redux.Action {
+  type: 'INFLIGHT_COMMIT';
+  id: string;
+}
+
+// Rejects an in-flight action transaction (remote play)
+export interface InflightRejectAction extends Redux.Action {
+  type: 'INFLIGHT_REJECT';
+  id: string;
 }
 
 // Returns a generator of an "executable array" of the original action.

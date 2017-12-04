@@ -16,6 +16,7 @@ import QuestStartContainer from '../QuestStartContainer'
 import QuestEndContainer from '../QuestEndContainer'
 import RemotePlayContainer from '../RemotePlayContainer'
 import RemoteFooterContainer from './remote/RemoteFooterContainer'
+import RemoteSyncContainer from './remote/RemoteSyncContainer'
 
 import {renderCardTemplate} from '../../cardtemplates/Template'
 import {initialSettings} from '../../reducers/Settings'
@@ -173,6 +174,7 @@ export default class Main extends React.Component<MainProps, {}> {
             </ReactCSSTransitionGroup>
             {this.state.remotePlay && this.state.remotePlay.session && <RemoteFooterContainer/>}
             <DialogsContainer />
+            <RemoteSyncContainer />
             <Snackbar
               className="snackbar"
               open={this.state.snackbar.open}

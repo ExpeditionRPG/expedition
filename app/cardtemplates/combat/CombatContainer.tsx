@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
 
 import {toPrevious, toCard} from '../../actions/Card'
-import {handleCombatTimerStop, tierSumDelta, adventurerDelta, handleCombatEnd} from './Actions'
+import {handleCombatTimerStop, tierSumDelta, adventurerDelta, handleCombatEnd, midCombatChoice, handleResolvePhase} from './Actions'
 import {event} from '../../actions/Quest'
 import {AppStateWithHistory, SettingsType, CardName} from '../../reducers/StateTypes'
 import {EventParameters} from '../../reducers/QuestTypes'
@@ -12,7 +12,6 @@ import {MidCombatPhase} from './State'
 import {CombatPhase} from './Types'
 import {ParserNode} from '../Template'
 import {MAX_ADVENTURER_HEALTH} from '../../Constants'
-import {midCombatChoice, handleResolvePhase} from './Actions'
 import {logEvent} from '../../Main'
 import {TemplateContext} from '../TemplateTypes'
 
@@ -98,6 +97,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
         value: maxTier,
       });
       dispatch(handleCombatEnd({node, settings, victory: false, maxTier, seed}));
+    },
+    onTimerHeld: (node: ParserNode) => {
+      // TODO
+      //dispatch(handleCombatTimerHeld({node}));
     },
     onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => {
       dispatch(handleCombatTimerStop({node, settings, elapsedMillis, seed}));

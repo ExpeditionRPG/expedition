@@ -2,7 +2,7 @@ import * as React from 'react'
 import Card from './base/Card'
 import Button from './base/Button'
 import {getAppVersion} from'../Globals'
-import {SessionID, SessionSecret, SessionMetadata} from 'expedition-qdl/lib/remote/Broker'
+import {SessionID, SessionSecret, SessionMetadata} from 'expedition-qdl/lib/remote/Session'
 import {SettingsType, CardState, UserState, RemotePlayPhase, RemotePlayState} from '../reducers/StateTypes'
 
 const Moment = require('moment');

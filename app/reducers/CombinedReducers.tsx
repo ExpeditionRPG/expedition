@@ -10,6 +10,7 @@ import {snackbar} from './Snackbar'
 import {user} from './User'
 import {userFeedback} from './UserFeedback'
 import {remotePlay} from './RemotePlay'
+import {inflight} from './InFlight'
 import {AppStateWithHistory, AppState} from './StateTypes'
 import {ReturnAction} from '../actions/ActionTypes'
 
@@ -39,10 +40,14 @@ function isReturnState(state: AppState, action: ReturnAction): boolean {
 export default function combinedReducerWithHistory(state: AppStateWithHistory, action: Redux.Action): AppStateWithHistory {
   let history: AppState[] = [];
 
+  // Manage inflight transactions
+  state = inflight(state, action, combinedReduce);
+
   if (state !== undefined) {
     if (state._history === undefined) {
       state._history = [];
     }
+
     // If action is "Return", pop history accordingly
     if (action.type === 'RETURN') {
       let pastStateIdx: number = state._history.length-1;
@@ -76,6 +81,8 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
       return {
         ...state._history[pastStateIdx],
         _history: state._history.slice(0, pastStateIdx),
+        _inflight: state._inflight, // TODO: Copy?
+        _committed: state._committed,
         settings: state.settings, // global settings should not be rewound.
         remotePlay: state.remotePlay, // remote play settings should not be rewound.
         _return: true,
@@ -91,6 +98,8 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         ...state,
         _history: undefined,
         _return: undefined,
+        _inflight: undefined,
+        _committed: undefined,
         settings: undefined,
         remotePlay: undefined
       } as AppState);
@@ -98,5 +107,10 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
   }
 
   // Run the reducers on the new action
-  return Object.assign(combinedReduce(state, action), {_history: history, _return: false}) as AppStateWithHistory;
+  return {...combinedReduce(state, action),
+    _history: history,
+    _inflight: state && state._inflight,
+    _committed: state && state._committed,
+    _return: false,
+  } as AppStateWithHistory;
 }

@@ -16,10 +16,12 @@ export const authSettings = {
   // 545484140970-qrhcn069bbvae1mub2237h5k32mnp04k.apps.googleusercontent.com
 };
 
+const splitURL = API_HOST.split('/');
 export const remotePlaySettings = {
   newSessionURI: API_HOST + '/remoteplay/v1/new_session',
   connectURI: API_HOST + '/remoteplay/v1/connect',
   firstLoadURI: API_HOST + '/remoteplay/v1/user',
+  websocketSession: 'ws://' + splitURL[splitURL.length-1] + '/ws/remoteplay/v1/session',
 };
 
 export const MAX_ADVENTURER_HEALTH = 12;

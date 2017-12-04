@@ -51,6 +51,23 @@
   transition: transform 300ms ease-in-out;
 }
 
+
+.fade-enter {
+  opacity: 0.01;
+}
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+.fade-leave {
+  opacity: 1;
+}
+.fade-leave.fade-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
+
 // ===============================================
 // Constants
 // ===============================================
@@ -188,6 +205,23 @@ body {
 
 .remote-affector {
   position: relative;
+}
+
+.remote_sync {
+  width: 100%;
+  height: 100%;
+  background: black;
+  position:fixed;
+  z-index: 1000;
+
+  > div {
+    color: $font_color_dark_primary;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 
 h1, h2, h3 {

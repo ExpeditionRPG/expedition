@@ -51,3 +51,9 @@ describe('RemotePlay', () => {
   });
 });
 */
+
+
+describe('RemotePlay txn failure handler', () => {
+  it('handles conflict on two actions')
+  it('handles conflict on action & prev')
+})
