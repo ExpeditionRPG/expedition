@@ -3,7 +3,10 @@ import Config from './config'
 import * as Mail from './Mail'
 import * as oauth2 from './lib/oauth2'
 import * as Handlers from './Handlers'
+import * as RemotePlayHandlers from './remoteplay/Handlers'
 import {models} from './models/Database'
+import * as ws from 'ws';
+import * as http from 'http';
 
 const Cors = require('cors');
 
@@ -47,8 +50,21 @@ Router.post('/publish/:id', publishLimiter, limitCors, (req, res) => {Handlers.p
 Router.post('/unpublish/:quest', limitCors, (req, res) => {Handlers.unpublish(models.Quest, req, res);});
 Router.post('/quest/feedback/:type', limitCors, (req, res) => {Handlers.feedback(models.Feedback, req, res);});
 Router.post('/user/subscribe', limitCors, (req, res) => {Handlers.subscribe(mailchimp, Config.get('MAILCHIMP_PLAYERS_LIST_ID'), req, res);});
-Router.get('/remoteplay/v1/user', limitCors, Handlers.remotePlayUser);
-Router.post('/remoteplay/v1/new_session', limitCors, Handlers.remotePlayNewSession);
-Router.post('/remoteplay/v1/connect', limitCors, Handlers.remotePlayConnect);
+Router.get('/remoteplay/v1/user', limitCors, (req, res) => {RemotePlayHandlers.user(models.SessionClient, req, res);});
+Router.post('/remoteplay/v1/new_session', limitCors, (req, res) => {RemotePlayHandlers.newSession(models.Session, req, res);});
+Router.post('/remoteplay/v1/connect', limitCors, (req, res) => {RemotePlayHandlers.connect(models.Session, models.SessionClient, req, res);});
+
+export function setupWebsockets(server: any) {
+  const wss = new ws.Server({
+    server,
+    verifyClient: (info: any, cb: (verified: boolean)=>any) => {
+      RemotePlayHandlers.verifyWebsocket(models.SessionClient, info, cb);
+    }
+  });
+
+  wss.on('connection', (ws: any, req: http.IncomingMessage) => {
+    RemotePlayHandlers.websocketSession(models.Session, models.SessionClient, ws, req);
+  });
+}
 
 export default Router;

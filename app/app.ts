@@ -4,12 +4,15 @@ import * as bodyParser from 'body-parser'
 import * as passport from 'passport'
 import * as session from 'express-session'
 import * as express from 'express'
+import * as http from 'http';
+import Routes, {setupWebsockets} from './Routes'
 
 import * as oauth2 from './lib/oauth2'
 import logging from './lib/logging'
-import Routes from './Routes'
 
 const app = express();
+const server = http.createServer(app);
+setupWebsockets(server);
 
 // Add the request logger before anything else so that it can
 // accurately log requests.
@@ -75,7 +78,7 @@ function init() {
   setupRoutes(app);
   setupLogging(app);
 
-  app.listen(port, function () {
+  server.listen(port, function () {
     console.log('App listening on port %s', port);
   });
 

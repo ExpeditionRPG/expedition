@@ -1,8 +1,6 @@
 import * as express from 'express'
 import {Quest, QuestInstance, QuestAttributes, QuestSearchParams, MAX_SEARCH_LIMIT, PUBLIC_PARTITION} from './models/Quests'
 import {Feedback, FeedbackType, FeedbackAttributes} from './models/Feedback'
-import broker from './remoteplay/Broker'
-import {Session, SessionID, SessionMetadata} from 'expedition-qdl/lib/remote/Broker'
 
 const Joi = require('joi');
 
@@ -194,57 +192,4 @@ export function subscribe(mailchimp: any, listId: string, req: express.Request, 
       });
     }
   });
-}
-
-export function remotePlayUser(req: express.Request, res: express.Response) {
-  if (!res.locals || !res.locals.id) {
-    return res.status(500).end('You are not signed in.');
-  }
-
-  broker.fetchSessionsByClient(res.locals.id).then((fetched: SessionMetadata[]) => {
-    res.status(200).send(JSON.stringify({history: fetched}));
-  })
-  .catch((e: Error) => {
-    return res.status(500).send(JSON.stringify({error: 'Error looking up user details: ' + e.toString()}));
-  });
-}
-
-export function remotePlayNewSession(req: express.Request, res: express.Response) {
-  if (!res.locals || !res.locals.id) {
-    return res.status(500).end('You are not signed in.');
-  }
-
-  broker.createSession().then((s: Session) => {
-    console.log('Created session', s);
-    res.status(200).send(JSON.stringify({secret: s.secret}));
-  })
-  .catch((e: Error) => {
-    return res.status(500).send(JSON.stringify({error: 'Error creating session: ' + e.toString()}));
-  });
-}
-
-export function remotePlayConnect(req: express.Request, res: express.Response) {
-  if (!res.locals || !res.locals.id) {
-    return res.status(500).end('You are not signed in.');
-  }
-
-  let body: any;
-  try {
-    body = JSON.parse(req.body);
-  } catch (e) {
-    return res.status(500).end('Error reading request.');
-  }
-  let session: number;
-
-  broker.joinSession(res.locals.id, body.secret)
-    .then((s: SessionID) => {
-      session = s;
-      return broker.createAuthToken(res.locals.id);
-    })
-    .then((authToken: string) => {
-      return res.status(200).send(JSON.stringify({session, authToken}));
-    })
-    .catch((e: Error) => {
-      return res.status(500).send(JSON.stringify({error: 'Could not join session: ' + e.toString()}));
-    });
 }
