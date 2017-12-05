@@ -9,7 +9,7 @@ const increment = (state: AppStateWithHistory, action: Redux.Action) => { return
 const testAction = {type: 'TEST_ACTION', _inflight: 'action1'} as Redux.Action;
 const testAction2 = {type: 'TEST_ACTION2', _inflight: 'action2'} as Redux.Action;
 
-fdescribe('InFlight reducer', () => {
+describe('InFlight reducer', () => {
 
   let stateWithInflight: AppStateWithHistory;
   beforeEach(() => {

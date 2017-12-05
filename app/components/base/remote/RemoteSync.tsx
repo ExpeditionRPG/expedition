@@ -33,7 +33,7 @@ export default class RemoteSync extends React.Component<RemoteSyncProps, {}> {
     // Multiple actions or non-choice:
     // - Sweep an equivalent # "micro-card" symbols across the screen, then Next to the result.
     let body = null;
-    if (this.props.remotePlay.syncing === true) {
+    if (this.props.remotePlay && this.props.remotePlay.syncing === true) {
       body = (<div key={0} className="remote_sync">
         <div>
           <div className="spinner">

@@ -305,8 +305,8 @@ describe('Combat actions', () => {
 
     it('handles gotos that point to outside of combat', () => {
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newCombatNode(), index: 4, maxTier: 0, seed: ''});
-      expect(actions[2].to.phase).toEqual('ROLEPLAY');
-      expect(actions[1].node.elem.text()).toEqual('Outside Roleplay');
+      expect(actions[3].to.phase).toEqual('ROLEPLAY');
+      expect(actions[2].node.elem.text()).toEqual('Outside Roleplay');
     });
 
     it('handles GOTOs that point to other roleplaying inside of the same combat', () => {

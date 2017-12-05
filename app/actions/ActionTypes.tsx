@@ -3,6 +3,7 @@ import {CardState, CardName, CardPhase, DialogIDType, SearchPhase, SearchSetting
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../cardtemplates/Template'
 import {Session, SessionMetadata} from 'expedition-qdl/lib/remote/Session'
+import {ClientID, InstanceID, StatusEvent} from 'expedition-qdl/lib/remote/Events'
 
 export interface PushHistoryAction extends Redux.Action {
   type: 'PUSH_HISTORY';
@@ -116,6 +117,13 @@ export interface RemotePlaySessionAction extends Redux.Action {
 export interface RemotePlayHistoryAction extends Redux.Action {
   type: 'REMOTE_PLAY_HISTORY';
   history: SessionMetadata[];
+}
+
+export interface RemotePlayClientStatus extends Redux.Action {
+  type: 'REMOTE_PLAY_CLIENT_STATUS';
+  client: ClientID;
+  instance: InstanceID;
+  status: StatusEvent;
 }
 
 // LocalActions wrap an existing action; this is so that inbound

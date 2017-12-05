@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {RemotePlayEvent, ActionEvent, ClientID} from 'expedition-qdl/lib/remote/Events'
+import {RemotePlayEvent, ActionEvent, StatusEvent, ClientID} from 'expedition-qdl/lib/remote/Events'
 import {ClientBase} from 'expedition-qdl/lib/remote/Client'
 import {local} from './actions/RemotePlay'
 import {getStore} from './Store'
@@ -8,17 +8,52 @@ import {remotePlaySettings} from './Constants'
 
 const REMOTEPLAY_CLIENT_STATUS_POLL_MS = 5000;
 
+// Max reconnect time is slot_time * 2^(slot_idx) + base = 10440 ms
+const RECONNECT_MAX_SLOT_IDX = 10;
+const RECONNECT_SLOT_DELAY_MS = 10;
+const RECONNECT_DELAY_BASE_MS = 200;
+
 // This is the base layer of the remote play network framework, implemented
 // using firebase FireStore.
 export class RemotePlayClient extends ClientBase {
   private session: WebSocket;
   private sessionClientIDs: string[];
+  private reconnectAttempts: number;
+  private sessionID: string;
+  private secret: string;
 
   // Mirrors the committed counter on the websocket server.
   // Used to maintain a transactional event queue.
   private localEventCounter: number;
 
-  connect(sessionID: string, clientID: string, secret: string): void {
+  constructor() {
+    super();
+    this.reconnectAttempts = 0;
+  }
+
+  reconnect() {
+    if (this.session) {
+      this.session.close();
+    }
+
+    // Random exponential backoff reconnect
+    // https://en.wikipedia.org/wiki/Exponential_backoff
+    const slot_idx = Math.floor(Math.random() * (this.reconnectAttempts+1))
+    const slot = Math.pow(2,slot_idx);
+    const delay = RECONNECT_SLOT_DELAY_MS * slot + RECONNECT_DELAY_BASE_MS;
+    console.log(`WS: Waiting to reconnect (${delay} ms)`);
+    setTimeout(() => {
+      console.log('WS: reconnecting...');
+      this.connect(this.sessionID, this.secret);
+    }, delay);
+    this.reconnectAttempts = Math.min(this.reconnectAttempts + 1, RECONNECT_MAX_SLOT_IDX);
+  }
+
+  connect(sessionID: string, secret: string): void {
+    // Save these for reconnect
+    this.sessionID = sessionID;
+    this.secret = secret;
+
     if (this.isConnected()) {
       this.disconnect();
     }
@@ -33,15 +68,45 @@ export class RemotePlayClient extends ClientBase {
       this.handleMessage(parsed);
     };
 
-    this.session.onerror = (ev: Event) => {
+    this.session.onerror = (ev: ErrorEvent) => {
       console.error(ev);
-    }
-    this.session.onclose = () => {
-      console.error('TODO RECONNECT');
-    }
+    };
+
+    this.session.onclose = (ev: CloseEvent) => {
+      switch (ev.code) {
+        case 1000:  // CLOSE_NORMAL
+          console.log('WS: closed normally');
+          break;
+        default:  // Abnormal closure
+          console.error('WS: abnormal closure');
+          this.reconnect();
+          break;
+      }
+
+      // Notify listeners that we've disconnected
+      this.publish({
+        id: null,
+        client: this.id,
+        instance: this.instance,
+        event: {
+          type: 'STATUS',
+          connected: false,
+        },
+      });
+    };
+
     this.session.onopen = () => {
-      console.log('Open and ready to send');
+      console.log('WS: open');
       this.connected = true;
+      this.publish({
+        id: null,
+        client: this.id,
+        instance: this.instance,
+        event: {
+          type: 'STATUS',
+          connected: true,
+        },
+      });
     }
   }
 
@@ -95,7 +160,7 @@ export class RemotePlayClient extends ClientBase {
 
         if (remoteArgs && !localOnly) {
           const argstr = JSON.stringify(remoteArgs);
-          console.log('Outbound: ' + name + '(' + argstr + ') ' + inflight);
+          console.log('WS: outbound ' + name + '(' + argstr + ') ' + inflight);
           this.sendEvent({type: 'ACTION', name, args: argstr} as ActionEvent);
         }
       } else if (typeof(action) === 'function') {
@@ -125,3 +190,4 @@ export function getRemotePlayClient(): RemotePlayClient {
   client = new RemotePlayClient();
   return client;
 }
+

@@ -24,7 +24,12 @@ export function handleRemotePlayEvent(e: RemotePlayEvent) {
         dispatch({type: 'INFLIGHT_REJECT', id: e.id, error: e.event.error});
         break;
       case 'STATUS':
-        console.log('TODO: USE STATUS ' + JSON.stringify(e.event));
+        dispatch({
+          type: 'REMOTE_PLAY_CLIENT_STATUS',
+          client: e.client,
+          instance: e.instance,
+          status: e.event
+        });
         break;
       case 'INTERACTION':
         // Interaction events must not be dispatched.
@@ -101,7 +106,7 @@ export function remotePlayConnect(user: UserState, secret: string) {
 
       const c = getRemotePlayClient();
       c.configure(clientID, instanceID);
-      return c.connect(session, clientID, secret);
+      return c.connect(session, secret);
     })
     .then(() => {
       dispatch({type: 'REMOTE_PLAY_SESSION', session: {secret, id: session}});
