@@ -21,6 +21,14 @@ export abstract class ClientBase {
     this.id = id;
   }
 
+  getID() {
+    return this.id;
+  }
+
+  getInstance() {
+    return this.instance;
+  }
+
   resetState() {
     this.handlers = [];
     this.connected = false;

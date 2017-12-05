@@ -25,6 +25,9 @@ export interface StatusEvent {
   // For example, this could be set to 'LOBBY' to indicate the client is
   // ready to leave a remote play lobby page.
   waitingOn?: string;
+
+  // Whether the client is connected or not.
+  connected?: boolean;
 }
 
 // Interaction events indicate what remote clients are doing,
