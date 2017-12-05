@@ -97,7 +97,9 @@ export function evaluateOp(op: string, ctx: Context): any {
     evalResult = parsed.compile().eval(ctx.scope);
   } catch (err) {
     const message = err.message + ' Op: (' + op + ')';
-    if (window.onerror) {
+    if (self && !self.document) { // webworker
+      return null;
+    } else if (window && window.onerror) {
       window.onerror(message, 'expedition-qdl/parse/context');
       return null;
     } else {
