@@ -21,6 +21,14 @@ export abstract class ClientBase {
     this.id = id;
   }
 
+  getID() {
+    return this.id;
+  }
+
+  getInstance() {
+    return this.instance;
+  }
+
   resetState() {
     this.handlers = [];
     this.connected = false;
@@ -38,18 +46,19 @@ export abstract class ClientBase {
     if (!this.isConnected()) {
       return;
     }
-    this.sendFinalizedEvent({client: this.id, instance: this.instance, event});
+    // ID is set in sendFinalizedEvent
+    this.sendFinalizedEvent({id: null, client: this.id, instance: this.instance, event});
   }
 
   protected handleMessage(e: RemotePlayEvent) {
     if (!e.event || !e.client || !e.instance) {
-      this.publish({client: null, instance: null, event: {type: 'ERROR', error: 'Received malformed message'}});
+      this.publish({id: null, client: null, instance: null, event: {type: 'ERROR', error: 'Received malformed message'}});
       return;
     }
 
     // Error out if we get an unrecognized message
-    if (['STATUS', 'INTERACTION', 'ACTION', 'ERROR'].indexOf(e.event.type) < 0) {
-      this.publish({client: null, instance: null, event: {type: 'ERROR', error: 'Received unknown message of type "' + e.event.type + '"'}});
+    if (['STATUS', 'INTERACTION', 'ACTION', 'ERROR', 'INFLIGHT_COMMIT', 'INFLIGHT_REJECT'].indexOf(e.event.type) < 0) {
+      this.publish({id: null, client: null, instance: null, event: {type: 'ERROR', error: 'Received unknown message of type "' + e.event.type + '"'}});
       return;
     }
 

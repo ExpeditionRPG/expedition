@@ -26,7 +26,7 @@ export class TestClient extends ClientBase {
 
 describe('Client', () => {
   const basicEventBody: RemotePlayEventBody = {type: 'STATUS'};
-  const basicEvent: RemotePlayEvent = {client: 'testclient', instance: 'testinstance', event: basicEventBody};
+  const basicEvent: RemotePlayEvent = {client: 'testclient', instance: 'testinstance', event: basicEventBody, id: null};
 
   it('safely handles malformed messages', (done) => {
     const c = new TestClient();
@@ -43,7 +43,7 @@ describe('Client', () => {
       expect(e.event.type).toEqual('ERROR');
       done();
     });
-    c.doHandleMessage({client: 'testclient', instance: 'testinstance', event: {type: 'UNKNOWN_EVENT_TYPE'}} as any as RemotePlayEvent);
+    c.doHandleMessage({client: 'testclient', instance: 'testinstance', event: {type: 'UNKNOWN_EVENT_TYPE'}, id: null} as any as RemotePlayEvent);
   });
 
   it('can subscribe & callback handlers', (done) => {

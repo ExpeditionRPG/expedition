@@ -25,6 +25,9 @@ export interface StatusEvent {
   // For example, this could be set to 'LOBBY' to indicate the client is
   // ready to leave a remote play lobby page.
   waitingOn?: string;
+
+  // Whether the client is connected or not.
+  connected?: boolean;
 }
 
 // Interaction events indicate what remote clients are doing,
@@ -61,9 +64,19 @@ export interface ErrorEvent {
   error: string;
 }
 
-export type RemotePlayEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent;
+export interface InflightCommitEvent {
+  type: 'INFLIGHT_COMMIT';
+}
+
+export interface InflightRejectEvent {
+  type: 'INFLIGHT_REJECT';
+  error: string;
+}
+
+export type RemotePlayEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent|InflightCommitEvent|InflightRejectEvent;
 export interface RemotePlayEvent {
   client: ClientID;
   instance: InstanceID;
   event: RemotePlayEventBody;
+  id: number; // Monotonically increasing, unique to a single event per session
 }
