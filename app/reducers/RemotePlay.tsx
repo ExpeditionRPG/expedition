@@ -27,7 +27,7 @@ export function remotePlay(state: RemotePlayState = initialRemotePlay, action: R
       const newClientStatus = {...state.clientStatus}
       const k = rpcs.client+'|'+rpcs.instance;
       newClientStatus[k] = {...newClientStatus[k], ...rpcs.status};
-      return {...state, }
+      return {...state, clientStatus: newClientStatus};
     default:
       return state;
   }

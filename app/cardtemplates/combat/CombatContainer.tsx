@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
 
 import {toPrevious, toCard} from '../../actions/Card'
-import {handleCombatTimerStop, tierSumDelta, adventurerDelta, handleCombatEnd, midCombatChoice, handleResolvePhase} from './Actions'
+import {handleCombatTimerHold, handleCombatTimerStop, tierSumDelta, adventurerDelta, handleCombatEnd, midCombatChoice, handleResolvePhase} from './Actions'
 import {event} from '../../actions/Quest'
 import {AppStateWithHistory, SettingsType, CardName} from '../../reducers/StateTypes'
 import {EventParameters} from '../../reducers/QuestTypes'
@@ -14,6 +14,7 @@ import {ParserNode} from '../Template'
 import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 import {logEvent} from '../../Main'
 import {TemplateContext} from '../TemplateTypes'
+import {getRemotePlayClient} from '../../RemotePlay'
 
 declare var window:any;
 
@@ -62,6 +63,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     seed: state.quest.seed,
     mostRecentRolls: stateCombat.mostRecentRolls,
     numAliveAdventurers: stateCombat.numAliveAdventurers,
+    remotePlayState: state.remotePlay,
   };
 }
 
@@ -98,12 +100,18 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       });
       dispatch(handleCombatEnd({node, settings, victory: false, maxTier, seed}));
     },
-    onTimerHeld: (node: ParserNode) => {
-      // TODO
-      //dispatch(handleCombatTimerHeld({node}));
-    },
     onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => {
-      dispatch(handleCombatTimerStop({node, settings, elapsedMillis, seed}));
+      const remotePlayConnected = getRemotePlayClient().isConnected();
+
+      // We don't want to **stop** the timer if we're connected to remote
+      // play. Rather, we want to wait until everyone's timer is stopped
+      // before moving on.
+      // The server will tell us once everyone's ready.
+      if (remotePlayConnected) {
+        dispatch(handleCombatTimerHold({elapsedMillis}));
+      } else {
+        dispatch(handleCombatTimerStop({node, settings, elapsedMillis, seed}));
+      }
     },
     onSurgeNext: (node: ParserNode) => {
       dispatch(handleResolvePhase({node}));

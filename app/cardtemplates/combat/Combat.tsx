@@ -32,7 +32,6 @@ export interface CombatDispatchProps {
   onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
   onRetry: () => void;
   onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
-  onTimerHeld: (node: ParserNode) => void;
   onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => void;
   onReturn: () => void;
   onTierSumDelta: (node: ParserNode, current: number, delta: number) => void;

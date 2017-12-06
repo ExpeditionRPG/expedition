@@ -2,6 +2,7 @@ import * as React from 'react'
 import MultiTouchTrigger from './MultiTouchTrigger'
 import {CardThemeType} from '../../reducers/StateTypes'
 import {RemotePlayState} from '../../reducers/StateTypes'
+import {getRemotePlayClient} from '../../RemotePlay'
 
 interface TimerCardProps extends React.Props<any> {
   numPlayers: number;
@@ -46,20 +47,52 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
   }
 
   render() {
-    const timeRemainingSec = this.state.timeRemaining / 1000;
+    let unheldClientCount = 0;
+    let timerHeld = false;
+    if (this.props.remotePlayState && this.props.remotePlayState.clientStatus) {
+      const rpClientID = getRemotePlayClient().getClientKey();
+      for (const client of Object.keys(this.props.remotePlayState.clientStatus)) {
+        const waitingOn = this.props.remotePlayState.clientStatus[client].waitingOn;
+        const waitingOnTimer = (waitingOn && waitingOn.type === 'TIMER');
+        if (client === rpClientID) {
+          timerHeld = waitingOnTimer;
+        } else if (!waitingOnTimer) {
+          unheldClientCount++;
+        }
+      }
+    }
+
     let formattedTimer: string;
-    if (timeRemainingSec < 10 && timeRemainingSec > 0) {
-      formattedTimer = timeRemainingSec.toFixed(1);
+    let secondaryText = this.props.secondaryText;
+    let tertiaryText = this.props.tertiaryText;
+
+    if (timerHeld) {
+      if (unheldClientCount > 0) {
+        formattedTimer = unheldClientCount.toString();
+        secondaryText = 'waiting on peers';
+        tertiaryText = '';
+      } else {
+        formattedTimer = '';
+        secondaryText = '';
+        tertiaryText = 'waiting for server...';
+      }
+    } else {
+      const timeRemainingSec = this.state.timeRemaining / 1000;
+      if (timeRemainingSec < 10 && timeRemainingSec > 0) {
+        formattedTimer = timeRemainingSec.toFixed(1);
+      }
+      else {
+        formattedTimer = timeRemainingSec.toFixed(0);
+      }
+      formattedTimer += 's';
     }
-    else {
-      formattedTimer = timeRemainingSec.toFixed(0);
-    }
+
     return (
       <div className={'base_timer_card ' + (this.props.theme || 'LIGHT')}>
-        <div className="value">{formattedTimer}s</div>
-        {this.props.secondaryText && <div className="secondary">{this.props.secondaryText}</div>}
-        {this.props.tertiaryText && <div className="tertiary">{this.props.tertiaryText}</div>}
-        <MultiTouchTrigger onTouchChange={this.onTouchChange.bind(this)} />
+        <div className="value">{formattedTimer}</div>
+        {secondaryText && <div className="secondary">{secondaryText}</div>}
+        {tertiaryText && <div className="tertiary">{tertiaryText}</div>}
+        {!timerHeld && <MultiTouchTrigger onTouchChange={this.onTouchChange.bind(this)} />}
       </div>
     );
   }

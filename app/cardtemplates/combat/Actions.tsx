@@ -7,9 +7,11 @@ import {ParserNode, defaultContext} from '../Template'
 import {toCard} from '../../actions/Card'
 import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT} from '../../Constants'
 import {encounters} from '../../Encounters'
-import {QuestNodeAction, remoteify} from '../../actions/ActionTypes'
+import {RemotePlayClientStatus, QuestNodeAction, remoteify} from '../../actions/ActionTypes'
 import {loadNode} from '../../actions/Quest'
 import * as seedrandom from 'seedrandom'
+import {StatusEvent} from 'expedition-qdl/lib/remote/Events'
+import {getRemotePlayClient} from '../../RemotePlay'
 
 const cheerio: any = require('cheerio');
 
@@ -243,6 +245,32 @@ export const handleResolvePhase = remoteify(function handleResolvePhase(a: Handl
     dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
   }
   return {};
+});
+
+// NOTE: Instead of an ACTION event, this sends a STATUS
+// which is non-transactional and unlikely to conflict
+// when all users are trying to stop the timer.
+interface HandleCombatTimerHoldArgs {
+  elapsedMillis: number;
+}
+export const handleCombatTimerHold = remoteify(function handleCombatTimerHold(a: HandleCombatTimerHoldArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory) {
+  const ev: StatusEvent = {
+    type: 'STATUS',
+    waitingOn: {
+      type: 'TIMER',
+      elapsedMillis: a.elapsedMillis,
+    },
+  };
+  const c = getRemotePlayClient();
+
+  c.sendEvent(ev);
+  dispatch({
+    type: 'REMOTE_PLAY_CLIENT_STATUS',
+    client: c.getID(),
+    instance: c.getInstance(),
+    status: ev,
+  } as RemotePlayClientStatus);
+  return null;
 });
 
 interface HandleCombatTimerStopArgs {

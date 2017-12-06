@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {RemotePlayEvent, ActionEvent, StatusEvent, ClientID} from 'expedition-qdl/lib/remote/Events'
+import {RemotePlayEvent, RemotePlayEventBody, ActionEvent, StatusEvent, ClientID} from 'expedition-qdl/lib/remote/Events'
 import {ClientBase} from 'expedition-qdl/lib/remote/Client'
 import {local} from './actions/RemotePlay'
 import {getStore} from './Store'
@@ -29,6 +29,12 @@ export class RemotePlayClient extends ClientBase {
   constructor() {
     super();
     this.reconnectAttempts = 0;
+  }
+
+  // This crafts a key that can be used to populate maps of client information
+  // (e.g. past StatusEvents in redux store)
+  getClientKey(): string {
+    return this.id+'|'+this.instance;
   }
 
   reconnect() {
@@ -64,7 +70,9 @@ export class RemotePlayClient extends ClientBase {
 
     this.session.onmessage = (ev: MessageEvent) => {
       const parsed = JSON.parse(ev.data) as RemotePlayEvent;
-      this.localEventCounter = parsed.id;
+      if (parsed.id) {
+        this.localEventCounter = parsed.id;
+      }
       this.handleMessage(parsed);
     };
 
@@ -98,14 +106,17 @@ export class RemotePlayClient extends ClientBase {
     this.session.onopen = () => {
       console.log('WS: open');
       this.connected = true;
+      const event: StatusEvent = {
+        type: 'STATUS',
+        connected: true,
+      };
+      // Send remote and also publish locally
+      this.sendEvent(event);
       this.publish({
         id: null,
         client: this.id,
         instance: this.instance,
-        event: {
-          type: 'STATUS',
-          connected: true,
-        },
+        event,
       });
     }
   }
