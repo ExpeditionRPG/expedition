@@ -15,6 +15,7 @@ export type TouchList = {[id: string]: number[]};
 // ------ Events (Passed Client-to-Client) --------
 
 // StatusEvent is published by a client to indicate some change in state.
+export type WaitType = {type: 'TIMER', elapsedMillis: number};
 export interface StatusEvent {
   type: 'STATUS';
 
@@ -24,7 +25,7 @@ export interface StatusEvent {
   // Whether or not the client is waiting for action by other clients.
   // For example, this could be set to 'LOBBY' to indicate the client is
   // ready to leave a remote play lobby page.
-  waitingOn?: string;
+  waitingOn?: WaitType;
 
   // Whether the client is connected or not.
   connected?: boolean;
