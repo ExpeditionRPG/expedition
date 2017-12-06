@@ -5,13 +5,13 @@
       <p>During setup, each adventurer also draws a persona card and sets it to Base persona. Your persona reveals details about your character and how they react to events in the game. As your persona changes, you'll react differently. For players who enjoy roleplaying, this adds more depth to characters. Of course, roleplaying is always optional.</p>
     </instruction>
     <instruction>
-      <p>[persona] Persona cards have 5 levels. If you reach Min or Max, you resolve the effect at the "Roll &amp; Resolve" phase of the next round of combat and then reset to Base persona. If you're at Max, you can choose to not resolve and reset this round. The intermediate levels (indicated by arrows) offer no bonuses.</p>
+      <p>:persona: Persona cards have 5 levels. If you reach Min or Max, you resolve the effect at the "Roll &amp; Resolve" phase of the next round of combat and then reset to Base persona. If you're at Max, you can choose to not resolve and reset this round. The intermediate levels (indicated by arrows) offer no bonuses.</p>
     </instruction>
     <instruction>
-      <p>[persona] Influence abilities and Horror enemy surges will raise and lower your persona level. Your decisions in quests may also affect your persona level, if the quest indicates it.</p>
+      <p>:persona: Influence abilities and Horror enemy surges will raise and lower your persona level. Your decisions in quests may also affect your persona level, if the quest indicates it.</p>
     </instruction>
     <instruction>
-      <p>[persona] Persona levels persist across fights. If you are knocked out, reset to Base.</p>
+      <p>:persona: Persona levels persist across fights. If you are knocked out, reset to Base.</p>
     </instruction>
   </roleplay>
   <roleplay icon="influence" title="New: Influence" data-line="14">
@@ -20,10 +20,10 @@
       <p>During setup, each adventurer draws an additional Influence ability card (for a total of 7 starting abilities).</p>
     </instruction>
     <instruction>
-      <p>[influence] Influence abilities are a powerful way to boost you and your allies' personas... or turn your persona into even more powerful abilities.</p>
+      <p>:influence: Influence abilities are a powerful way to boost you and your allies' personas... or turn your persona into even more powerful abilities.</p>
     </instruction>
     <instruction>
-      <p>[influence] When you level up, you can now also choose to learn a new Influence ability.</p>
+      <p>:influence: When you level up, you can now also choose to learn a new Influence ability.</p>
     </instruction>
   </roleplay>
   <roleplay icon="adventurer" title="Your adventure begins" data-line="24">
@@ -63,7 +63,7 @@
     </instruction>
     <p>"Here, this might help," he says, offering you a glowing vial.</p>
     <instruction>
-      <p>[loot] Draw the "Holy Water" tier 2 loot.</p>
+      <p>:loot: Draw the "Holy Water" tier 2 loot.</p>
     </instruction>
     <p>You depart the guardhouse and head to the town square.</p>
   </roleplay>
@@ -102,7 +102,7 @@
     </p>
     <p>To be continued with the next expansion, coming 2018.</p>
     <instruction>
-      <p>[horror] And you're now ready to adventure with The Horror!</p>
+      <p>:horror: And you're now ready to adventure with The Horror!</p>
     </instruction>
   </roleplay>
   <trigger data-line="134">end</trigger>
