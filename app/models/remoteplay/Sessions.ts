@@ -94,14 +94,16 @@ export class Session {
     return Bluebird.reject(null);
   }
 
-  public commitEvent(session: number, event: number, type: string, json: string): Bluebird<Sequelize.Transaction> {
+  public commitEvent(session: number, client: string, event: number, type: string, json: string): Bluebird<number> {
     return this.s.transaction((txn: Sequelize.Transaction) => {
       return this.model.findOne({where: {id: session}, transaction: txn})
         .then((s: SessionInstance) => {
           if (!s) {
             throw new Error('unknown session');
           }
-          if ((s.dataValues.eventCounter + 1) !== event) {
+          if (event === null) {
+            event = s.dataValues.eventCounter + 1;
+          } else if ((s.dataValues.eventCounter + 1) !== event) {
             throw new Error('eventCounter increment mismatch');
           }
           return s.update({eventCounter: event}, {transaction: txn});
@@ -109,11 +111,15 @@ export class Session {
         .then(() => {
           return this.event.model.upsert({
             session,
+            client,
+            timestamp: new Date(),
             id: event,
             type,
             json,
           }, {transaction: txn});
         });
+    }).then(() => {
+      return event;
     });
   }
 }

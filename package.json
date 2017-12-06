@@ -36,7 +36,7 @@
     "bluebird": "^3.5.1",
     "body-parser": "^1.17.2",
     "cors": "^2.8.4",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#bd49d79fcdcbb6d61ddaeb622fdac4633f5bf7bd",
+    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#158a3fb41cae75d1509b110120fc7013053e2016",
     "express": "^4.15.3",
     "express-rate-limit": "^2.9.0",
     "express-session": "^1.15.4",

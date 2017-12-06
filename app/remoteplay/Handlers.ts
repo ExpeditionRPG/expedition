@@ -1,9 +1,10 @@
+import Config from '../config'
 import * as express from 'express'
 import * as Sequelize from 'sequelize'
 import {Session, SessionID, SessionMetadata} from 'expedition-qdl/lib/remote/Session'
 import {Session as SessionModel, SessionInstance} from '../models/remoteplay/Sessions'
 import {SessionClient, SessionClientInstance} from '../models/remoteplay/SessionClients'
-import {ClientID, RemotePlayEvent, InflightCommitEvent, InflightRejectEvent} from 'expedition-qdl/lib/remote/Events'
+import {ClientID, WaitType, StatusEvent, ActionEvent, RemotePlayEvent, InflightCommitEvent, InflightRejectEvent} from 'expedition-qdl/lib/remote/Events'
 import * as url from 'url'
 import * as http from 'http'
 
@@ -107,10 +108,60 @@ function broadcastFrom(session: number, client: string, instance: string, msg: s
       continue;
     }
 
-    const peerWS = inMemorySessions[session][peerID];
+    const peerWS = inMemorySessions[session][peerID].socket;
     if (peerWS) {
       peerWS.send(msg);
     }
+  }
+}
+
+// We need a little custom server code to pay attention when clients
+// are all waiting on something.
+function handleClientStatus(rpSession: SessionModel, session: number, client: ClientID, instance: string, ev: StatusEvent) {
+  const s = inMemorySessions[session];
+  s[client+'|'+instance].status = ev;
+
+  const waitCounts: {[wait: string]: number} = {};
+  let maxElapsedMillis = 0;
+  for (const c of Object.keys(s)) {
+    const wo: WaitType = s[c].status.waitingOn;
+    if (wo) {
+      waitCounts[wo.type] = (waitCounts[wo.type] || 0) + 1;
+      if (wo.type === 'TIMER') {
+        maxElapsedMillis = Math.max(maxElapsedMillis, wo.elapsedMillis);
+      }
+    }
+  }
+
+  if (waitCounts['TIMER'] === Object.keys(s).length) {
+    const combatStopEvent = {
+      client: 'SERVER',
+      instance: Config.get('NODE_ENV'),
+      event: {
+        type: 'ACTION',
+        name: 'handleCombatTimerStop',
+        args: JSON.stringify({elapsedMillis: maxElapsedMillis, seed: Date.now()}),
+      } as ActionEvent,
+      id: null,
+    } as RemotePlayEvent;
+
+    rpSession.commitEvent(session, client, null, 'ACTION', JSON.stringify(combatStopEvent))
+      .then((eventCount: number) => {
+        // Broadcast to all peers
+        combatStopEvent.id = eventCount;
+        broadcastFrom(session, '', '', JSON.stringify(combatStopEvent));
+      })
+      .catch((error: Error) => {
+        broadcastFrom(session, '', '', JSON.stringify({
+          client: 'SERVER',
+          instance: Config.get('NODE_ENV'),
+          event: {
+            type: 'ERROR',
+            error: error.toString(),
+          },
+          id: null
+        } as RemotePlayEvent));
+      });
   }
 }
 
@@ -121,20 +172,27 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
   if (!inMemorySessions[params.session]) {
     inMemorySessions[params.session] = {};
   }
-  inMemorySessions[params.session][params.client+'|'+params.instance] = ws;
+  inMemorySessions[params.session][params.client+'|'+params.instance] = {socket: ws, status: null};
 
   // TODO: Broadcast new client event to other clients
+  // TODO: Replay latest client statuses to the new socket
 
   ws.on('message', (msg: any) => {
     const event: RemotePlayEvent = JSON.parse(msg);
 
     // If it's not a transactioned action, just broadcast it.
+    // TODO: Log it as well as actions
     if (event.event.type !== 'ACTION') {
       broadcastFrom(params.session, params.client, params.instance, msg);
+
+      if (event.event.type === 'STATUS') {
+        handleClientStatus(rpSession, params.session, event.client, event.instance, event.event);
+      }
+
       return;
     }
 
-    rpSession.commitEvent(params.session, event.id, event.event.type, msg)
+    rpSession.commitEvent(params.session, params.client, event.id, event.event.type, msg)
       .then(() => {
         // Broadcast to all peers
         broadcastFrom(params.session, params.client, params.instance, msg);

@@ -3,6 +3,8 @@ import * as Bluebird from 'bluebird'
 
 export interface EventAttributes {
   session: number;
+  client: string;
+  timestamp: Date;
   id: number;
   type: string;
   json: string;
@@ -26,10 +28,18 @@ export class Event {
         allowNull: false,
         primaryKey: true,
       },
-      id: {
-        type: Sequelize.BIGINT,
+      client: {
+        type: Sequelize.STRING(255),
         allowNull: false,
         primaryKey: true,
+      },
+      timestamp: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        primaryKey: true,
+      },
+      id: {
+        type: Sequelize.BIGINT,
       },
       type: {
         type: Sequelize.STRING(32),
