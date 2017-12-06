@@ -11,7 +11,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: RoleplayStateProp
   const prevNode = state._history[histIdx] && state._history[histIdx].quest && state._history[histIdx].quest.node;
 
   return {
-    node: state.quest.node,
+    node: ownProps.node, // Using this instead of state.node prevents weird errors when transitioning to / from combat
     prevNode,
     settings: state.settings,
     onReturn: ownProps.onReturn,
