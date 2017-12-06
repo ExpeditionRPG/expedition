@@ -11,7 +11,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: RoleplayStateProp
   const prevNode = state._history[histIdx] && state._history[histIdx].quest && state._history[histIdx].quest.node;
 
   return {
-    node: ownProps.node, // Persist state to prevent sudden jumps during card change.
+    node: state.quest.node,
     prevNode,
     settings: state.settings,
     onReturn: ownProps.onReturn,

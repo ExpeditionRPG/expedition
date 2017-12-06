@@ -372,7 +372,7 @@ function renderVictory(props: CombatProps): JSX.Element {
 function renderDefeat(props: CombatProps): JSX.Element {
   const helpfulHints = [
     <p>Remember, you can adjust combat difficulty at any time in the settings menu (in the top right).</p>,
-    <p>Don't forget! Healing abilities and loot can be used on adventurers at 0 health.</p>,
+    <p>Don't forget! Healing abilities and loot can be used on all adventurers, even those at 0 health.</p>,
     <p>Tip: battles are not won by healing, but by defeating the enemy.</p>,
     <p>Want to deal more damage? Look for combinations in your abilities - two adventurers working together can often do more damage than two alone.</p>
   ];
@@ -380,13 +380,13 @@ function renderDefeat(props: CombatProps): JSX.Element {
   // Always show a helpful hint here - it's not getting in the way like other help text might
   // and it's a good opportunity to mitigate a potentially bad user experience
   // Use a random number in the state to keep it consistent / not change on new render events
-  const helpText = helpfulHints[props.mostRecentRolls[0] % helpfulHints.length];
+  const helpText = props.mostRecentRolls && helpfulHints[props.mostRecentRolls[0] % helpfulHints.length];
 
   // If onLose is just an **end**, offer a retry button
   let retryButton = <span></span>;
   if (!props.custom) {
     const nextNode = props.node.handleAction('lose');
-    if (nextNode.isEnd()) {
+    if (nextNode && nextNode.isEnd()) {
       retryButton = <Button onTouchTap={() => props.onRetry()}>Retry</Button>;
     }
   }

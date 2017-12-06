@@ -82,6 +82,7 @@ export type CardPhase = TemplatePhase | SearchPhase | RemotePlayPhase;
 export interface CardState {
   name: CardName;
   ts: number;
+  transitioning?: boolean;
   phase?: CardPhase;
   overrideDebounce?: boolean;
 }

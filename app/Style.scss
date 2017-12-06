@@ -335,6 +335,9 @@ span.line {
         .inline_icon {
           height: $smallFontMult * fontsize(flavor);
         }
+        h2 .inline_icon {
+          height: 1.1em;
+        }
       }
     }
   }

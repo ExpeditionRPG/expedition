@@ -54,7 +54,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     ...combat,
     card: ownProps.card,
     settings: state.settings,
-    node: ownProps.node, // Persist state to prevent sudden jumps during card change.
+    node: state.quest.node,
     maxTier,
     victoryParameters,
     // Override with dynamic state for tier and adventurer count

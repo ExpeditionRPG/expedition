@@ -1,6 +1,6 @@
 import Redux from 'redux'
 import {CardState} from './StateTypes'
-import {NavigateAction} from '../actions/ActionTypes'
+import {CardTransitioningAction, NavigateAction} from '../actions/ActionTypes'
 import {NAVIGATION_DEBOUNCE_MS} from '../Constants'
 
 const historyApi = (typeof history.pushState !== 'undefined');
@@ -19,6 +19,8 @@ export function card(state: CardState = {name: 'SPLASH_CARD', ts: 0}, action: Re
         return state;
       }
       return to;
+    case 'CARD_TRANSITIONING':
+      return {...state, transitioning: (action as CardTransitioningAction).isTransitioning};
     default:
       return state;
   }

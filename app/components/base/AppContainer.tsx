@@ -18,8 +18,10 @@ import RemotePlayContainer from '../RemotePlayContainer'
 import RemoteFooterContainer from './remote/RemoteFooterContainer'
 import RemoteSyncContainer from './remote/RemoteSyncContainer'
 
+import {CARD_TRANSITION_ANIMATION_MS} from '../../Constants'
 import {renderCardTemplate} from '../../cardtemplates/Template'
 import {initialSettings} from '../../reducers/Settings'
+import {cardTransitioning} from '../../actions/Card'
 import {closeSnackbar} from '../../actions/Snackbar'
 import {initialState} from '../../reducers/Snackbar'
 import {initialRemotePlay} from '../../reducers/RemotePlay'
@@ -137,6 +139,12 @@ export default class Main extends React.Component<MainProps, {}> {
       transition = 'INSTANT';
     }
 
+    // At this point, we know a transition is happening for sure, so dispatch card.transitioning flag changes
+    if (!state.card.transitioning && transition !== 'INSTANT') {
+      getStore().dispatch(cardTransitioning(true));
+      setTimeout(() => { getStore().dispatch(cardTransitioning(false)) }, CARD_TRANSITION_ANIMATION_MS);
+    }
+
     return {
       card,
       key: state.card.ts,
@@ -166,8 +174,8 @@ export default class Main extends React.Component<MainProps, {}> {
           <span>
             <ReactCSSTransitionGroup
                 transitionName={this.state.transition}
-                transitionEnterTimeout={300}
-                transitionLeaveTimeout={300}>
+                transitionEnterTimeout={CARD_TRANSITION_ANIMATION_MS}
+                transitionLeaveTimeout={CARD_TRANSITION_ANIMATION_MS}>
               <div className={'base_main' + ((this.state.remotePlay && this.state.remotePlay.session) ? ' has_footer' : '')} key={this.state.key}>
                   {this.state.card}
               </div>

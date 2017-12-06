@@ -27,6 +27,12 @@ export interface AudioStoreBufferAction extends Redux.Action {
   buffer: any;
 }
 
+export interface CardTransitioningAction extends Redux.Action {
+  type: 'CARD_TRANSITIONING';
+  isTransitioning: boolean;
+}
+
+
 export interface DialogSetAction extends Redux.Action {
   type: 'DIALOG_SET';
   dialogID: DialogIDType;

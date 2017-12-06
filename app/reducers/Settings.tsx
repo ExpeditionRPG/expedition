@@ -23,7 +23,7 @@ export const initialSettings: SettingsType = {
 export function settings(state: SettingsType = initialSettings, action: Redux.Action): SettingsType {
   switch(action.type) {
     case 'CHANGE_SETTINGS':
-      const changes = (action as ChangeSettingsAction).settings;
+      const changes = (action as ChangeSettingsAction).settings || {};
       Object.keys(changes).forEach((key: string) => {
         setStorageKeyValue(key, changes[key]);
       });
