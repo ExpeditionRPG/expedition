@@ -26,7 +26,6 @@ export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch?: Redux.
     dispatch({type: 'PUSH_HISTORY'});
   }
   dispatch({type: 'NAVIGATE', to: {...a, ts: Date.now()}} as NavigateAction);
-
   return a;
 });
 

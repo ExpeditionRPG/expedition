@@ -2,9 +2,8 @@ import Redux from 'redux'
 import {connect} from 'react-redux'
 
 import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
-
 import {toPrevious, toCard} from '../../actions/Card'
-import {handleCombatTimerHold, handleCombatTimerStop, tierSumDelta, adventurerDelta, handleCombatEnd, midCombatChoice, handleResolvePhase} from './Actions'
+import {handleCombatTimerStart, handleCombatTimerHold, handleCombatTimerStop, tierSumDelta, adventurerDelta, handleCombatEnd, midCombatChoice, handleResolvePhase} from './Actions'
 import {event} from '../../actions/Quest'
 import {AppStateWithHistory, SettingsType, CardName} from '../../reducers/StateTypes'
 import {EventParameters} from '../../reducers/QuestTypes'
@@ -99,6 +98,13 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
         value: maxTier,
       });
       dispatch(handleCombatEnd({node, settings, victory: false, maxTier, seed}));
+    },
+    onTimerStart: () => {
+      dispatch(handleCombatTimerStart({}));
+    },
+    onTimerHeld: (node: ParserNode) => {
+      // TODO
+      //dispatch(handleCombatTimerHeld({node}));
     },
     onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => {
       const remotePlayConnected = getRemotePlayClient().isConnected();

@@ -15,6 +15,7 @@ export interface AnnouncementState {
 export interface AudioState {
   paused: boolean;
   intensity: number;
+  peakIntensity: number;
   sfx: string;
   timestamp: number;
 }

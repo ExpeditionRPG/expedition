@@ -5,6 +5,7 @@ import {AudioState} from './StateTypes'
 const initialState: AudioState = {
   paused: false,
   intensity: 0,
+  peakIntensity: 0,
   sfx: null,
   timestamp: 0,
 };

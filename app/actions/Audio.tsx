@@ -8,6 +8,12 @@ export function audioSetIntensity(intensity: number) {
   }
 }
 
+export function audioSetPeakIntensity(peakIntensity: number) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    dispatch(audioSet({peakIntensity}));
+  }
+}
+
 export function audioPlaySfx(sfx: string) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch(audioSet({sfx}));

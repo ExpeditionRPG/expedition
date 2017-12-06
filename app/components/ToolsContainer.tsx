@@ -8,7 +8,7 @@ import {toCard} from '../actions/Card'
 import {search} from '../actions/Search'
 import {openSnackbar} from '../actions/Snackbar'
 import {login} from '../actions/User'
-import {URLS} from '../Constants'
+import {URLS, MUSIC_INTENSITY_MAX} from '../Constants'
 import {getStore} from '../Store'
 import {loadRemotePlay} from '../actions/RemotePlay'
 
@@ -54,7 +54,7 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
       }
     },
     testMusic(): void {
-      const intensity = Number(prompt('Enter intensity (0-8)'));
+      const intensity = Number(prompt(`Enter intensity (0-${MUSIC_INTENSITY_MAX})`));
       if (intensity) {
         dispatch(audioSetIntensity(intensity));
       }
@@ -65,7 +65,7 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive
       }
-      const intensity = getRandomIntInclusive(0, 8);
+      const intensity = getRandomIntInclusive(0, MUSIC_INTENSITY_MAX);
       dispatch(openSnackbar('Setting intensity to ' + intensity));
       dispatch(audioSetIntensity(intensity));
     },
@@ -73,7 +73,7 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
       dispatch(audioSetIntensity(0));
     },
     testSfx(): void {
-      dispatch(audioPlaySfx('sfx_combat_defeat'));
+      dispatch(audioPlaySfx('combat_defeat'));
     },
   };
 }

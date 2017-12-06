@@ -71,11 +71,9 @@ const Settings = (props: SettingsProps): JSX.Element => {
         </div>
       </Picker>
 
-      {process.env.NODE_ENV === 'dev' &&
-        <Checkbox label="Sound" value={props.audioEnabled} onChange={props.onAudioChange}>
-          {(props.audioEnabled) ? 'Music and sound effects enabled.' : 'Music and sound effects disabled.'}
-        </Checkbox>
-      }
+      <Checkbox label="Sound" value={props.audioEnabled} onChange={props.onAudioChange}>
+        {(props.audioEnabled) ? 'Music and sound effects enabled.' : 'Music and sound effects disabled.'}
+      </Checkbox>
 
       <Checkbox label="Show Help" value={props.showHelp} onChange={props.onShowHelpChange}>
         {(props.showHelp) ? 'Setup and combat hints are shown.' : 'Setup and combat hints are hidden.'}

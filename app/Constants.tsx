@@ -41,6 +41,7 @@ export const VIBRATION_LONG_MS = 400; // for unique events, like start of the ti
 export const NAVIGATION_DEBOUNCE_MS = 600;
 export const DOUBLE_TAP_MS = 500; // Maximum ms between tap / clicks to count as a double click
 export const AUDIO_COMMAND_DEBOUNCE_MS = 300;
+export const MUSIC_INTENSITY_MAX = 36;
 
 export const PLAYTIME_MINUTES_BUCKETS = [20, 30, 45, 60, 90, 120];
 

@@ -117,13 +117,13 @@ describe('Combat actions', () => {
     const actions = store.getActions();
 
     it('randomly assigns damage', () => {
-      expect(actions[2].node.ctx.templates.combat.mostRecentAttack.damage).toBeDefined();
+      expect(actions[3].node.ctx.templates.combat.mostRecentAttack.damage).toBeDefined();
     });
     it('generates rolls according to player count', () => {
-      expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
+      expect(actions[3].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
     });
     it('increments the round counter', () => {
-      expect(actions[2].node.ctx.templates.combat.roundCount).toEqual(1);
+      expect(actions[3].node.ctx.templates.combat.roundCount).toEqual(1);
     });
   });
 

@@ -1,6 +1,6 @@
 {
     "name": "expedition-app",
-    "version": "1.10.3",
+    "version": "1.11.0",
     "description": "The App for Expedition: The Roleplaying Card Game",
     "homepage": "http://expeditiongame.com",
     "bugs": "https://github.com/ExpeditionRPG/expedition-app/issues",
@@ -17,6 +17,7 @@
         "node": "8.1.4"
     },
     "devDependencies": {
+        "@types/async": "^2.0.45",
         "@types/cheerio": "^0.22.1",
         "@types/enzyme": "^2.7.4",
         "@types/jasmine": "^2.5.43",
@@ -27,6 +28,7 @@
         "@types/react-redux": "^4.4.36",
         "@types/react-tap-event-plugin": "0.0.30",
         "@types/redux-mock-store": "0.0.7",
+        "@types/seedrandom": "^2.4.27",
         "awesome-typescript-loader": "^3.0.4-rc.2",
         "babel-cli": "^6.24.0",
         "babel-core": "^6.17.0",
@@ -74,8 +76,8 @@
         "webpack-dev-server": "^2.9.4"
     },
     "dependencies": {
-        "@types/seedrandom": "^2.4.27",
         "ansi-styles": "^3.0.0",
+        "async": "^2.6.0",
         "bluebird": "^3.5.1",
         "browser-sync-client": "^2.4.1",
         "browser-sync-ui": "^0.6.3",

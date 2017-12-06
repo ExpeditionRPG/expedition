@@ -4,8 +4,9 @@ import {Enemy, Loot} from '../../reducers/QuestTypes'
 import {CombatDifficultySettings, CombatAttack} from './Types'
 import {DifficultyType, SettingsType, AppStateWithHistory} from '../../reducers/StateTypes'
 import {ParserNode, defaultContext} from '../Template'
+import {audioSetIntensity, audioSetPeakIntensity, audioPlaySfx} from '../../actions/Audio'
 import {toCard} from '../../actions/Card'
-import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT} from '../../Constants'
+import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT, MUSIC_INTENSITY_MAX} from '../../Constants'
 import {encounters} from '../../Encounters'
 import {RemotePlayClientStatus, QuestNodeAction, remoteify} from '../../actions/ActionTypes'
 import {loadNode} from '../../actions/Quest'
@@ -43,6 +44,7 @@ export function initCombat(a: InitCombatArgs) {
     dispatch({type: 'PUSH_HISTORY'});
     dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
     dispatch(toCard({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', noHistory: true}));
+    dispatch(audioSetIntensity(calculateAudioIntensity(tierSum, tierSum, 0, 0)));
   };
 }
 
@@ -60,6 +62,11 @@ export const initCustomCombat = remoteify(function initCustomCombat(a: InitCusto
   }));
   return {};
 });
+
+function calculateAudioIntensity(currentTier: number, maxTier: number, deadAdventurers: number, roundCount: number): number {
+  // Some pretty arbitrary weights on different combat factors and how they affect music intensity
+  return Math.round(Math.min(MUSIC_INTENSITY_MAX, 2 * currentTier + 1 * maxTier + 4 * deadAdventurers + 0.5 * roundCount));
+}
 
 function getDifficultySettings(difficulty: DifficultyType): CombatDifficultySettings {
   const result = COMBAT_DIFFICULTY[difficulty];
@@ -247,6 +254,14 @@ export const handleResolvePhase = remoteify(function handleResolvePhase(a: Handl
   return {};
 });
 
+export const handleCombatTimerStart = remoteify(function handleCombatTimerStart(a: any, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): void {
+  if (!a.settings) {
+    a.settings = getState().settings;
+  }
+  dispatch(toCard({name: 'QUEST_CARD', phase: 'TIMER'}));
+  dispatch(audioSetPeakIntensity(1));
+});
+
 // NOTE: Instead of an ACTION event, this sends a STATUS
 // which is non-transactional and unlikely to conflict
 // when all users are trying to stop the timer.
@@ -284,6 +299,8 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
     a.node = getState().quest.node;
     a.settings = getState().settings;
   }
+
+  dispatch(audioSetPeakIntensity(0));
 
   a.node = a.node.clone();
   const arng = seedrandom.alea(a.seed);
@@ -332,7 +349,7 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
   dispatch(toCard({name: 'QUEST_CARD', phase: (a.victory) ? 'VICTORY' : 'DEFEAT',  overrideDebounce: true, noHistory: true}));
-
+  dispatch(audioSetIntensity(0));
   return {victory: a.victory, maxTier: a.maxTier, seed: a.seed};
 });
 
@@ -421,7 +438,11 @@ export const tierSumDelta = remoteify(function tierSumDelta(a: TierSumDeltaArgs,
   a.node = a.node.clone();
   a.node.ctx.templates.combat.tier = Math.max(a.current + a.delta, 0);
   dispatch({type: 'QUEST_NODE', node: a.node});
-
+  dispatch(audioSetIntensity(calculateAudioIntensity(a.node.ctx.scope._.currentCombatTier(),
+    a.node.ctx.scope._.currentCombatTier(),
+    a.node.ctx.scope._.numAdventurers() - a.node.ctx.scope._.aliveAdventurers(),
+    a.node.ctx.scope._.currentCombatRound()
+  )));
   return {current: a.current, delta: a.delta};
 });
 
@@ -441,6 +462,10 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
   a.node = a.node.clone();
   a.node.ctx.templates.combat.numAliveAdventurers = newAdventurerCount;
   dispatch({type: 'QUEST_NODE', node: a.node});
-
+  dispatch(audioSetIntensity(calculateAudioIntensity(a.node.ctx.scope._.currentCombatTier(),
+    a.node.ctx.scope._.currentCombatTier(),
+    a.node.ctx.scope._.numAdventurers() - a.node.ctx.scope._.aliveAdventurers(),
+    a.node.ctx.scope._.currentCombatRound()
+  )));
   return {current: a.current, delta: a.delta};
 });
