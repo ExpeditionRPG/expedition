@@ -30,9 +30,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Remot
     onNewSessionRequest: (user: UserState) => {
       return dispatch(remotePlayNewSession(user));
     },
-    onLockSession: () => {
-      console.log('TODO LOCKSESSION');
-      dispatch(toCard({name: 'REMOTE_PLAY', phase: 'LOBBY'}));
+    onContinue: () => {
+      dispatch(toCard({name: 'FEATURED_QUESTS'}));
     },
   };
 }

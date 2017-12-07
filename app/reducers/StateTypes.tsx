@@ -20,7 +20,7 @@ export interface AudioState {
   timestamp: number;
 }
 
-export type DialogIDType = null | 'EXIT_QUEST' | 'EXPANSION_SELECT';
+export type DialogIDType = null | 'EXIT_QUEST' | 'EXPANSION_SELECT' | 'EXIT_REMOTE_PLAY';
 
 export interface DialogState {
   open: DialogIDType;

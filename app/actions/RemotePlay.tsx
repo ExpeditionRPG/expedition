@@ -14,6 +14,11 @@ export function local(a: Redux.Action): LocalAction {
   return {type: 'LOCAL', action: a, _inflight: inflight} as any as LocalAction;
 }
 
+export function remotePlayDisconnect() {
+  getRemotePlayClient().disconnect();
+  return {type: 'REMOTE_PLAY_DISCONNECT'};
+}
+
 export function handleRemotePlayEvent(e: RemotePlayEvent) {
   return (dispatch: Redux.Dispatch<any>): any => {
     switch (e.event.type) {

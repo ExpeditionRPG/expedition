@@ -10,8 +10,7 @@
         "watch:test": "karma start",
         "dev": "webpack-dev-server --progress",
         "build": "webpack --config ./webpack.dist.config.js --progress",
-        "snyk-protect": "snyk protect",
-        "prepublish": "npm run snyk-protect"
+        "snyk-protect": "snyk protect"
     },
     "engines": {
         "node": "8.1.4"
@@ -167,5 +166,5 @@
             "ios"
         ]
     },
-    "snyk": true
+    "snyk": false
 }

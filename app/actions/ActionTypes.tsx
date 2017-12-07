@@ -125,6 +125,10 @@ export interface RemotePlayHistoryAction extends Redux.Action {
   history: SessionMetadata[];
 }
 
+export interface RemotePlayDisconnectAction extends Redux.Action {
+  type: 'REMOTE_PLAY_DISCONNECT';
+}
+
 export interface RemotePlayClientStatus extends Redux.Action {
   type: 'REMOTE_PLAY_CLIENT_STATUS';
   client: ClientID;

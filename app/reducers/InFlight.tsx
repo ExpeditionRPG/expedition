@@ -97,6 +97,8 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
         _committed: newCommitted,
         _inflight: [],
       };
+    case 'REMOTE_PLAY_DISCONNECT':
+      return {...state, _committed: undefined, _inflight: undefined};
     default:
       // Add all other actions to the inflight queue.
       if ((action as any)._inflight) {

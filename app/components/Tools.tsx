@@ -56,7 +56,7 @@ const Tools = (props: ToolsProps): JSX.Element => {
           <div className="questButtonWithIcon">
             <div className="title">Remote Play - Alpha</div>
             <div className="summary">
-              {(!props.user || !props.user.loggedIn) && 'Login and'} sync your app with friends on another device.
+              {(!props.user || !props.user.loggedIn) && 'Login and'} sync your app with friends on another device (work in progress).
             </div>
           </div>
         </Button>

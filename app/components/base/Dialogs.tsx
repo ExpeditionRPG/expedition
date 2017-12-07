@@ -29,6 +29,30 @@ export class ExitQuestDialog extends React.Component<ExitQuestDialogProps, {}> {
   }
 }
 
+interface ExitRemotePlayDialogProps extends React.Props<any> {
+  open: boolean;
+  onExitRemotePlay: () => void;
+  onRequestClose: () => void;
+}
+
+export class ExitRemotePlayDialog extends React.Component<ExitRemotePlayDialogProps, {}> {
+  render(): JSX.Element {
+    return (
+      <Dialog
+        title="Exit Remote Play?"
+        modal={true}
+        contentClassName="dialog"
+        open={Boolean(this.props.open)}
+        actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()}>Cancel</FlatButton>,
+          <FlatButton className="primary" onTouchTap={() => this.props.onExitRemotePlay()}>Exit</FlatButton>
+        ]}
+      >
+        <p>Tapping exit will disconnect you from your peers and return you to the home screen.</p>
+      </Dialog>
+    );
+  }
+}
+
 interface ExpansionSelectDialogProps extends React.Props<any> {
   open: boolean;
   onExpansionSelect: (contentSets: ContentSetsType) => void;
@@ -62,6 +86,7 @@ export interface DialogsStateProps {
 
 export interface DialogsDispatchProps {
   onExitQuest: () => void;
+  onExitRemotePlay: () => void;
   onExpansionSelect: (contentSets: ContentSetsType) => void;
   onRequestClose: () => void;
 }
@@ -79,6 +104,11 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
       <ExpansionSelectDialog
         open={props.dialog && props.dialog.open === 'EXPANSION_SELECT'}
         onExpansionSelect={(contentSets: ContentSetsType) => props.onExpansionSelect(contentSets)}
+      />
+      <ExitRemotePlayDialog
+        open={props.dialog && props.dialog.open === 'EXIT_REMOTE_PLAY'}
+        onExitRemotePlay={() => props.onExitRemotePlay()}
+        onRequestClose={() => props.onRequestClose()}
       />
     </span>
   );
