@@ -142,5 +142,5 @@ export interface AppStateWithHistory extends AppState {
   _history: AppState[];
   _return: boolean;
   _inflight: {id: string, committed: boolean, action: Redux.Action}[];
-  _committed: AppState[]; // A trailing version of _history, before _inflight actions are applied.
+  _committed: AppStateWithHistory; // A trailing version of _history, before _inflight actions are applied.
 }

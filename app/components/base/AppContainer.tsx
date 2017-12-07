@@ -73,8 +73,12 @@ export default class Main extends React.Component<MainProps, {}> {
       };
     }
 
-    if (state.remotePlay !== this.state.remotePlay) {
-      return {...this.state, remotePlay: state.remotePlay};
+    if (state.remotePlay && state.remotePlay !== this.state.remotePlay) {
+      // We only prevent card transition when we're not
+      // transitioning away from a remote play "syncing" state.
+      if (state.remotePlay.syncing || !this.state.remotePlay.syncing) {
+        return {...this.state, remotePlay: state.remotePlay};
+      }
     }
 
     if (state.snackbar.open !== this.state.snackbar.open) {
@@ -133,7 +137,9 @@ export default class Main extends React.Component<MainProps, {}> {
     }
 
     let transition: TransitionType = 'NEXT';
-    if (state._return) {
+    if (state.remotePlay && !state.remotePlay.syncing && this.state.remotePlay.syncing) {
+      transition = 'INSTANT';
+    } else if (state._return) {
       transition = 'PREV';
     } else if (state.card.name === 'SPLASH_CARD') {
       transition = 'INSTANT';

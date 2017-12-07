@@ -67,11 +67,10 @@ describe('InFlight reducer', () => {
         stateWithInflight,
         {type: 'INFLIGHT_COMMIT', id: 'action1'} as InflightCommitAction, increment),
         {type: 'INFLIGHT_COMPACT'}, increment);
-      expect(newState._committed).toEqual([{user: {id: 'a'}} as AppState]);
+      expect(newState._committed).toEqual(jasmine.objectContaining({user: {id: 'a'}} as AppStateWithHistory));
 
-      // Action2 still in flight
-      expect(newState._inflight[0]).toEqual(jasmine.objectContaining({action: testAction2}));
-      expect(newState._inflight.length).toEqual(1);
+      // All other inflight actions are discarded
+      expect(newState._inflight).toEqual([]);
     });
 
     it('safely handles no inflight actions', () => {

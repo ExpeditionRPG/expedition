@@ -13,7 +13,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: RemoteSyncStatePr
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): RemoteSyncDispatchProps => {
   return {
     onAnimationComplete: () => {
-      throw new Error('TODO');
+      dispatch({type: 'INFLIGHT_COMPACT'});
     },
   };
 }
