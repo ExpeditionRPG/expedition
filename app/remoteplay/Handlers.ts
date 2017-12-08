@@ -103,8 +103,11 @@ export function verifyWebsocket(sessionClients: SessionClient, info: {origin: st
 const inMemorySessions: {[sessionID: number]: {[clientAndInstance: string]: any}} = {};
 
 function broadcastFrom(session: number, client: string, instance: string, msg: string) {
-  for(const peerID of Object.keys(inMemorySessions[session])) {
-    if (peerID === client+'|'+instance) {
+  if (inMemorySessions[session] === null) {
+    return;
+  }
+  for (const peerID of Object.keys(inMemorySessions[session])) {
+    if (peerID === client+'|'+instance || inMemorySessions[session][peerID] === null) {
       continue;
     }
 
