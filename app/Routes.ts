@@ -4,6 +4,7 @@ import * as Mail from './Mail'
 import * as oauth2 from './lib/oauth2'
 import * as Handlers from './Handlers'
 import * as RemotePlayHandlers from './remoteplay/Handlers'
+import * as Stripe from './Stripe'
 import {models} from './models/Database'
 import * as ws from 'ws';
 import * as http from 'http';
@@ -53,6 +54,7 @@ Router.post('/user/subscribe', limitCors, (req, res) => {Handlers.subscribe(mail
 Router.get('/remoteplay/v1/user', limitCors, (req, res) => {RemotePlayHandlers.user(models.SessionClient, req, res);});
 Router.post('/remoteplay/v1/new_session', limitCors, (req, res) => {RemotePlayHandlers.newSession(models.Session, req, res);});
 Router.post('/remoteplay/v1/connect', limitCors, (req, res) => {RemotePlayHandlers.connect(models.Session, models.SessionClient, req, res);});
+Router.post('/stripe/checkout', limitCors, (req, res) => {Stripe.checkout(req, res);});
 
 export function setupWebsockets(server: any) {
   const wss = new ws.Server({
