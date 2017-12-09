@@ -31,6 +31,9 @@ nconf
     // Monitoring config settings
     'NEW_RELIC_LICENSE_KEY',
 
+    // Stripe API key
+    'STRIPE_PRIVATE_KEY',
+
     // (Optional) Pay-what-you-want config settings
     'ENABLE_PAYMENT',
 
