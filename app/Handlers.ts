@@ -31,7 +31,6 @@ export function search(quest: Quest, req: express.Request, res: express.Response
     id: body.id,
     owner: body.owner,
     players: body.players,
-    search: body.search,
     text: body.text,
     age: body.age,
     mintimeminutes: body.mintimeminutes,
