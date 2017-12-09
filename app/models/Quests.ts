@@ -42,7 +42,6 @@ export interface QuestSearchParams {
   id?: string;
   owner?: string;
   players?: number;
-  search?: string;
   text?: string;
   age?: number;
   mintimeminutes?: number;
@@ -157,17 +156,12 @@ export class Quest {
     }
 
     // DEPRECATED from app 6/10/17 (also in schemas.js)
-    (where as Sequelize.AnyWhereOptions).$and = [];
-    if (params.search) {
-      console.log(params);
-      console.log(params.search);
-      const search = '%' + params.search.toLowerCase() + '%';
-      (where as any).$and.push(Sequelize.where(Sequelize.fn('LOWER', 'title'), {$like: search}));
-    }
-
     if (params.text && params.text !== '') {
       const text = '%' + params.text.toLowerCase() + '%';
-      (where as any).$and.push(Sequelize.where(Sequelize.fn('LOWER', 'title'), {$like: text}));
+      (where as Sequelize.AnyWhereOptions).$or = [
+        Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('title')), {$like: text}),
+        Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('author')), {$like: text}),
+      ];
     }
 
     if (params.age) {
@@ -191,15 +185,6 @@ export class Quest {
     }
 
     const order = [];
-
-    // Hide expansion if not specified, otherwise prioritize results
-    // that have the expansion
-    if (!params.expansions || params.expansions.indexOf('horror') === -1) {
-      where.expansionhorror =  {$not: true};
-    } else {
-      order.push(['expansionhorror', 'DESC']);
-    }
-
     if (params.order) {
       if (params.order === '+ratingavg') {
         order.push(Sequelize.literal(`
@@ -210,6 +195,14 @@ export class Quest {
       } else {
         order.push([params.order.substr(1), (params.order[0] === '+') ? 'ASC' : 'DESC']);
       }
+    }
+
+    // Hide expansion if not specified, otherwise prioritize results
+    // that have the expansion as a secondary sort
+    if (!params.expansions || params.expansions.indexOf('horror') === -1) {
+      where.expansionhorror =  {$not: true};
+    } else {
+      order.push(['expansionhorror', 'DESC']);
     }
 
     const limit = Math.min(Math.max(params.limit || MAX_SEARCH_LIMIT, 0), MAX_SEARCH_LIMIT);
