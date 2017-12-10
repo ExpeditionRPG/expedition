@@ -10,7 +10,9 @@
     "watch:test": "karma start karma.conf.js",
     "dev": "webpack-dev-server --progress",
     "start": "node app.js",
-    "build": "webpack -p --config webpack.dist.config.js --progress"
+    "build": "webpack -p --config webpack.dist.config.js --progress",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "Fabricate.IO",
   "license": "CC-BY-NC-SA-4.0",
@@ -59,7 +61,7 @@
     "redux-thunk": "^2.2.0",
     "request": "^2.81.0",
     "simple-assign": "^0.1.0",
-    "snyk": "^1.45.0",
+    "snyk": "^1.54.1",
     "timeago-react": "^1.0.8",
     "to-markdown": "^3.0.3",
     "typescript-formatter": "^5.1.1",
