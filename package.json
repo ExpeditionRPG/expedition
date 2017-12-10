@@ -1,6 +1,6 @@
 {
   "name": "expedition-quest-creator",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "The Expedition Quest Creation",
   "homepage": "http://expeditiongame.com",
   "repository": "https://github.com/ExpeditionRPG/expedition-quest-creator",
@@ -25,15 +25,13 @@
     ]
   },
   "dependencies": {
-    "@types/node": "^7.0.8",
-    "@types/promise-polyfill": "^6.0.0",
     "ace": "^1.3.0",
     "babel-core": "^6.24.0",
     "brace": "^0.10.0",
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.1",
-    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#130e796ec6e3eb90024fb5e5ffa10288dd8595b3",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#2bb9d3cc69bf5d55808e74a922ca830970c835d1",
+    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#81389130b714d96330944fc4fa459ce38596f6bd",
+    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#158a3fb41cae75d1509b110120fc7013053e2016",
     "forwarded": "^0.1.0",
     "google-auth-library": "^0.10.0",
     "google-url": "0.0.4",
@@ -70,10 +68,13 @@
     "webpack": "^2.2.1"
   },
   "devDependencies": {
+    "@types/async": "^2.0.45",
     "@types/cheerio": "^0.22.1",
     "@types/jasmine": "^2.5.45",
     "@types/jquery": "^2.0.41",
     "@types/material-ui": "^0.17.1",
+    "@types/node": "^7.0.8",
+    "@types/promise-polyfill": "^6.0.0",
     "@types/react": "^15.6.2",
     "@types/react-dom": "^0.14.23",
     "@types/react-redux": "^4.4.37",
