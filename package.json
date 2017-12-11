@@ -9,9 +9,7 @@
         "test": "mocha meta_tests.js && karma start --single-run --browsers PhantomJS",
         "watch:test": "karma start",
         "dev": "webpack-dev-server --progress",
-        "build": "webpack --config ./webpack.dist.config.js --progress",
-        "snyk-protect": "snyk protect",
-        "prepublish": "npm run snyk-protect"
+        "build": "webpack --config ./webpack.dist.config.js --progress"
     },
     "engines": {
         "node": "8.1.4"
@@ -136,7 +134,6 @@
         "serve-index": "^1.7.3",
         "serve-static": "^1.10.2",
         "serve-waterfall": "^1.1.1",
-        "snyk": "^1.49.3",
         "strip-ansi": "^3.0.0",
         "ucfirst": "^1.0.0",
         "update": "^0.7.4",
@@ -166,6 +163,5 @@
             "android",
             "ios"
         ]
-    },
-    "snyk": true
+    }
 }
