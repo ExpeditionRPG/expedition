@@ -59,7 +59,6 @@
     "redux-thunk": "^2.2.0",
     "request": "^2.81.0",
     "simple-assign": "^0.1.0",
-    "snyk": "^1.45.0",
     "timeago-react": "^1.0.8",
     "to-markdown": "^3.0.3",
     "typescript-formatter": "^5.1.1",
@@ -128,6 +127,5 @@
   },
   "engines": {
     "node": "8.1.4"
-  },
-  "snyk": true
+  }
 }
