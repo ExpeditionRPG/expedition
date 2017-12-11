@@ -28,6 +28,8 @@ export function remotePlay(state: RemotePlayState = initialRemotePlay, action: R
       const k = rpcs.client+'|'+rpcs.instance;
       newClientStatus[k] = {...newClientStatus[k], ...rpcs.status};
       return {...state, clientStatus: newClientStatus};
+    case 'REMOTE_PLAY_DISCONNECT':
+      return initialRemotePlay;
     default:
       return state;
   }

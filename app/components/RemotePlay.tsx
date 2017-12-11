@@ -17,7 +17,7 @@ export interface RemotePlayDispatchProps {
   onConnect: (user: UserState, secret: SessionSecret) => void;
   onReconnect: (user: UserState, id: SessionID) => void;
   onNewSessionRequest: (user: UserState) => void;
-  onLockSession: () => void;
+  onContinue: () => void;
 }
 
 export interface RemotePlayProps extends RemotePlayStateProps, RemotePlayDispatchProps {}
@@ -51,11 +51,11 @@ class RemotePlayConnect extends React.Component<RemotePlayProps, {}> {
     return (
       <Card title="Remote Play">
         <div className="remoteplay">
-          <div className="helptext">Lorem Ipsum Connect Here:</div>
+          <div className="helptext">Type a code and hit Connect, or start a new session:</div>
           <input type="text" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false} onChange={(e: any) => {this.handleSecret(e)}} value={this.state.secret}></input>
           <Button onTouchTap={() =>{this.props.onConnect(this.props.user, this.state.secret)}}>Connect</Button>
           <Button onTouchTap={() =>{this.props.onNewSessionRequest(this.props.user)}}>Start a new Session</Button>
-          <div className="helptext">You may also reconnect to these active sessions:</div>
+          {history.length > 0 && <div className="helptext">You may also reconnect to these active sessions:</div>}
           {history}
         </div>
       </Card>
@@ -67,16 +67,17 @@ function renderLobby(props: RemotePlayProps): JSX.Element {
   return (
     <Card title="Lobby">
       <div className="remoteplay">
-        <div>Connected to Session!</div>
-        <div>Session secret: {props.remotePlay.session && props.remotePlay.session.secret}</div>
-        <div className="connect_bar">
-          <img src="images/adventurer_small.svg"></img>
-          <img src="images/adventurer_small.svg"></img>
-          <img src="images/adventurer_small.svg"></img>
-          <img src="images/adventurer_small.svg"></img>
-        </div>
-        <div>Once all players are connected, do the lock thing!</div>
-        <Button onTouchTap={() =>{props.onLockSession()}}>Lock it!</Button>
+        <strong>Connected!</strong>
+        <div>Tell your peers to connect with the following code:</div>
+        <h1>{props.remotePlay.session && props.remotePlay.session.secret}</h1>
+        <div>The bottom bar indicates your remote play status:</div>
+        <ul>
+          <li>how many peers are connected (center)</li>
+          <li>your connection state (bottom right)</li>
+          <li>button to exit remote play (bottom left)</li>
+        </ul>
+        <div>Once all peers are connected, click the button below.</div>
+        <Button remoteID="1" onTouchTap={() =>{props.onContinue()}}>Continue</Button>
       </div>
     </Card>
   );

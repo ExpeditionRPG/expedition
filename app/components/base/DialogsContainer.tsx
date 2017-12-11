@@ -5,8 +5,8 @@ import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
 import {toPrevious} from '../../actions/Card'
 import {setDialog} from '../../actions/Dialog'
 import {changeSettings} from '../../actions/Settings'
+import {remotePlayDisconnect} from '../../actions/RemotePlay'
 import {AppState, ContentSetsType, DialogIDType, DialogState} from '../../reducers/StateTypes'
-
 
 const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
   return {
@@ -16,15 +16,20 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DialogsDispatchProps => {
   return {
-    onExitQuest: (): void => {
+    onExitQuest: () => {
       dispatch(setDialog(null));
       dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
     },
-    onExpansionSelect: (contentSets: ContentSetsType): void => {
+    onExitRemotePlay: () => {
+      dispatch(remotePlayDisconnect());
+      dispatch(setDialog(null));
+      dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
+    },
+    onExpansionSelect: (contentSets: ContentSetsType) => {
       dispatch(setDialog(null));
       dispatch(changeSettings({contentSets}));
     },
-    onRequestClose: (): void => {
+    onRequestClose: () => {
       dispatch(setDialog(null));
     },
   };

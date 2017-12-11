@@ -2,6 +2,15 @@ import {InflightCommitAction, InflightRejectAction} from '../actions/ActionTypes
 import Redux from 'redux'
 import {AppStateWithHistory, AppState} from './StateTypes'
 
+function stripState(state: AppStateWithHistory): AppStateWithHistory {
+  const newState = {...state};
+  delete newState._inflight;
+  delete newState._committed;
+  delete newState.settings;
+  delete newState.remotePlay;
+  return newState;
+}
+
 export function inflight(state: AppStateWithHistory, action: Redux.Action, combinedReduce: Redux.Reducer<any>): AppStateWithHistory {
   if (!state) {
     return;
@@ -14,10 +23,13 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
     // in-flight actions.
     // TODO: How to handle actions with side effects?!?! Vibration & sound... Use a sideEffect() function wrapper?
     state._inflight = [];
-    state._committed = [];
+    state._committed = stripState(state);
   }
 
   switch(action.type) {
+    case 'REMOTE_PLAY_SESSION':
+      // Initialize committed state
+      return {...state, _committed: stripState(state)};
     case 'INFLIGHT_COMMIT':
       console.log('got INFLIGHT_COMMIT');
       let found = false;
@@ -45,7 +57,7 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
         return {
           ...state,
           _inflight: [],
-          _committed: state._history,
+          _committed: stripState(state),
         } as AppStateWithHistory;
       } else {
         return state;
@@ -56,9 +68,10 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
       // Note that we continue in the aborted state until INFLIGHT_COMPACT is fired.
       // This allows for UX indicators when we eventually mutate state to correct the
       // rejected transaction.
-      console.log('got INFLIGHT_REJECT');
+      const id = (action as InflightRejectAction).id;
+      console.log('INFLIGHT_REJECT id ' + id);
       for (let i = 0; i < state._inflight.length; i++) {
-        if (state._inflight[i].id === (action as InflightRejectAction).id) {
+        if (state._inflight[i].id === id) {
           const newInflight = [...state._inflight];
           newInflight.splice(i, 1);
           return {
@@ -70,30 +83,22 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
       console.error('Reject status received for unknown inflight action ' + (action as InflightCommitAction).id);
       break;
     case 'INFLIGHT_COMPACT':
-      consecutiveCommits = 0;
+      console.log('INFLIGHT COMPACT');
+      // Run through inflight actions until encountering one that isn't committed. That's our new
+      // committed state.
+      let newCommitted = {...state._committed};
       for (let i = 0; i < state._inflight.length && state._inflight[i].committed; i++) {
-        consecutiveCommits++;
+        newCommitted = combinedReduce(newCommitted, state._inflight[i].action);
       }
-      if (consecutiveCommits === state._inflight.length) {
-        return {
-          ...state,
-          _inflight: [],
-          _committed: state._history,
-        } as AppStateWithHistory;
-      } else {
-        // Run through inflight actions until encountering one that isn't committed. That's our new
-        // committed state.
-        const newCommitted = [...state._committed];
-        for (let i = 0; i < consecutiveCommits; i++) {
-          newCommitted.push(combinedReduce(newCommitted[newCommitted.length-1], state._inflight[i].action));
-        }
-        return {
-          ...state,
-          _inflight: state._inflight.slice(consecutiveCommits),
-          _committed: newCommitted,
-          _return: false,
-        };
-      }
+
+      return {
+        ...state,
+        ...stripState(newCommitted),
+        _committed: newCommitted,
+        _inflight: [],
+      };
+    case 'REMOTE_PLAY_DISCONNECT':
+      return {...state, _committed: undefined, _inflight: undefined};
     default:
       // Add all other actions to the inflight queue.
       if ((action as any)._inflight) {

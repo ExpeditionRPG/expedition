@@ -13,6 +13,7 @@ export interface RemoteFooterStateProps {
 }
 
 export interface RemoteFooterDispatchProps {
+  onRemotePlayExit: () => void;
 }
 
 export interface RemoteFooterProps extends RemoteFooterStateProps, RemoteFooterDispatchProps {}
@@ -37,7 +38,7 @@ const RemoteFooter = (props: RemoteFooterProps): JSX.Element => {
 
   return (
     <div className="remote_footer">
-      <FlatButton icon={<Close/>} onTouchTap={(e: any) => {console.log('TODO');}}/>
+      <FlatButton icon={<Close/>} onTouchTap={(e: any) => {props.onRemotePlayExit();}}/>
       {(peers.length > 0) ?
         <FlatButton className="peers">
           {peers}

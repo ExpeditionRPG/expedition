@@ -10,6 +10,9 @@ import CircularProgress from 'material-ui/CircularProgress';
 
 const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
 
+export const FADE_ENTER_ANIMATION_MS = 500;
+export const FADE_LEAVE_ANIMATION_MS = 500;
+
 export interface RemoteSyncStateProps {
   remotePlay: RemotePlayState;
   inflight: any[]; // TODO
@@ -21,7 +24,18 @@ export interface RemoteSyncDispatchProps {
 
 export interface RemoteSyncProps extends RemoteSyncStateProps, RemoteSyncDispatchProps {}
 
+class SyncContainer extends React.Component<RemoteSyncDispatchProps, {}> {
+  componentDidMount() {
+    setTimeout(() => {this.props.onAnimationComplete();}, FADE_ENTER_ANIMATION_MS);
+  }
+
+  render() {
+    return <div className="remote_sync">{this.props.children}</div>;
+  }
+}
+
 export default class RemoteSync extends React.Component<RemoteSyncProps, {}> {
+
   render() {
     // TODO: this could be much more fancy.
     // Single action (choice):
@@ -34,21 +48,21 @@ export default class RemoteSync extends React.Component<RemoteSyncProps, {}> {
     // - Sweep an equivalent # "micro-card" symbols across the screen, then Next to the result.
     let body = null;
     if (this.props.remotePlay && this.props.remotePlay.syncing === true) {
-      body = (<div key={0} className="remote_sync">
+      body = (<SyncContainer key={0} onAnimationComplete={this.props.onAnimationComplete}>
         <div>
           <div className="spinner">
             <CircularProgress size={200} thickness={10} />
           </div>
           <h1>Syncing...</h1>
         </div>
-      </div>);
+      </SyncContainer>);
     }
 
     return (
       <ReactCSSTransitionGroup
                 transitionName="fade"
-                transitionEnterTimeout={500}
-                transitionLeaveTimeout={300}>
+                transitionEnterTimeout={FADE_ENTER_ANIMATION_MS}
+                transitionLeaveTimeout={FADE_LEAVE_ANIMATION_MS}>
         {body}
       </ReactCSSTransitionGroup>
     );
