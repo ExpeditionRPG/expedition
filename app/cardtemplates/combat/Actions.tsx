@@ -65,7 +65,9 @@ export const initCustomCombat = remoteify(function initCustomCombat(a: InitCusto
 
 function calculateAudioIntensity(currentTier: number, maxTier: number, deadAdventurers: number, roundCount: number): number {
   // Some pretty arbitrary weights on different combat factors and how they affect music intensity
-  return Math.round(Math.min(MUSIC_INTENSITY_MAX, 2 * currentTier + 1 * maxTier + 4 * deadAdventurers + 0.5 * roundCount));
+  // Optimized for a tier 3 fight being 12, tier 8 (max relevant tier) being 32
+  // With intensity increasing generally over time, but fading off quickly as you defeat enemies
+  return Math.round(Math.min(MUSIC_INTENSITY_MAX, 2 * currentTier + 2 * maxTier + 4 * deadAdventurers + 0.5 * roundCount));
 }
 
 function getDifficultySettings(difficulty: DifficultyType): CombatDifficultySettings {
