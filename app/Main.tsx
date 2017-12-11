@@ -169,7 +169,7 @@ export function init() {
     // Otherwise, redux handlers may perform strange actions like calling
     // setState inside of a render() cycle.
     setTimeout(() => {
-      getStore().dispatch(openSnackbar('Error! Please send feedback.'));
+      getStore().dispatch(openSnackbar('Error! Please send feedback.', message));
     }, 0);
     return true;
   };

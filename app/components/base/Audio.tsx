@@ -329,8 +329,8 @@ export default class Audio extends React.Component<AudioProps, {}> {
   // Fade in / out tracks on the current theme for a smoother + more immediate change in intensity
   private updateExistingTheme(intensityDelta: number) {
     const theme = this.currentMusicTheme;
-    if (intensityDelta > 0 && this.currentMusicTracks.length > 1) {
-      // Fade out of one active baseline track randomly
+    if (intensityDelta > 0) {
+      // Fade in one active baseline track randomly
       const fadeInInstruments = theme.baselineInstruments.map((instrument: string, i: number) => {
         return i;
       }).filter((i: number) => {
@@ -341,8 +341,8 @@ export default class Audio extends React.Component<AudioProps, {}> {
         nodes.gain.gain.linearRampToValueAtTime(1.0, this.ctx.currentTime + MUSIC_FADE_SECONDS); // Fade in
         this.currentMusicTracks = this.currentMusicTracks.concat(fadeInInstruments[0]);
       }
-    } else if (intensityDelta < 0) {
-      // Fade in one inactive baseline track randomly
+    } else if (intensityDelta < 0 && this.currentMusicTracks.length > 1) {
+      // Fade out of one inactive baseline track randomly
       const fadeOutInstruments = theme.baselineInstruments.map((instrument: string, i: number) => {
         return i;
       }).filter((i: number) => {

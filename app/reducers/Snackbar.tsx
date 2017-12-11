@@ -3,9 +3,11 @@ import {SnackbarOpenAction} from '../actions/ActionTypes'
 import {SnackbarState} from './StateTypes'
 
 export const initialState: SnackbarState = {
+  action: null,
+  actionLabel: null,
   open: false,
   message: '',
-  timeout: 4000,
+  timeout: 8000,
 };
 
 export function snackbar(state: SnackbarState = initialState, action: Redux.Action): SnackbarState {
@@ -14,10 +16,12 @@ export function snackbar(state: SnackbarState = initialState, action: Redux.Acti
       const openAction = (action as SnackbarOpenAction);
       if (openAction.message && openAction.message !== '') {
         return {
-        open: true,
-        message: openAction.message,
-        timeout: openAction.timeout || initialState.timeout,
-      };
+          open: true,
+          message: openAction.message,
+          timeout: initialState.timeout,
+          action: openAction.action || initialState.action,
+          actionLabel: openAction.actionLabel || initialState.actionLabel,
+        };
       }
     case 'SNACKBAR_CLOSE':
       return {...initialState};

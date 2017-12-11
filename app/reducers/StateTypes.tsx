@@ -71,6 +71,8 @@ export interface SettingsType {
 }
 
 export interface SnackbarState {
+  action?: (e: any) => void;
+  actionLabel?: string;
   open: boolean;
   message: string;
   timeout: number;

@@ -104,8 +104,9 @@ export interface UserLogoutAction extends Redux.Action {
 
 export interface SnackbarOpenAction extends Redux.Action {
   type: 'SNACKBAR_OPEN';
-  message?: string;
-  timeout?: number;
+  message: string;
+  action?: (e: any) => void;
+  actionLabel?: string;
 }
 
 export interface SnackbarCloseAction extends Redux.Action {
