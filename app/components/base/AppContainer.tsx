@@ -5,6 +5,7 @@ import Snackbar from 'material-ui/Snackbar'
 
 import AudioContainer from './AudioContainer'
 import DialogsContainer from './DialogsContainer'
+import CheckoutContainer from '../CheckoutContainer'
 import ToolsContainer from '../ToolsContainer'
 import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
 import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
@@ -116,6 +117,9 @@ export default class Main extends React.Component<MainProps, {}> {
         break;
       case 'QUEST_END':
         card = <QuestEndContainer/>;
+        break;
+      case 'CHECKOUT':
+        card = <CheckoutContainer />;
         break;
       case 'ADVANCED':
         card = <ToolsContainer />;

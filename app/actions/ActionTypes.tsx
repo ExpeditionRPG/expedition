@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {CardState, CardName, CardPhase, DialogIDType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, AppState} from '../reducers/StateTypes'
+import {CardState, CardName, CardPhase, CheckoutState, DialogIDType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, AppState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../cardtemplates/Template'
 import {Session, SessionMetadata} from 'expedition-qdl/lib/remote/Session'
@@ -32,6 +32,9 @@ export interface CardTransitioningAction extends Redux.Action {
   isTransitioning: boolean;
 }
 
+export interface CheckoutSetStateAction extends Redux.Action, CheckoutState {
+  type: 'CHECKOUT_SET_STATE';
+}
 
 export interface DialogSetAction extends Redux.Action {
   type: 'DIALOG_SET';

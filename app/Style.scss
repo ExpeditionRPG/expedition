@@ -495,8 +495,6 @@ span.line {
     }
     .header {
       width: 100%;
-      max-width: $absmaxdimension;
-      margin: auto;
       background-color: $bg_titlebar;
       line-height: $lineheight;
       padding: size(base)/2 size(base) size(base)/2 size(base);
@@ -504,6 +502,9 @@ span.line {
       box-sizing: border-box;
 
       .searchHeader {
+        width: 100%;
+        max-width: $absmaxdimension;
+        margin: auto;
         .filter_button {
           float: right;
           button {
@@ -1150,6 +1151,50 @@ span.line {
     width: 90% !important;
     & > div {
       background: url(images/papyrus-tiled.jpg) !important;
+    }
+  }
+
+  .centralMessage {
+    text-align: center;
+    margin-top: size(appbar);
+    margin-bottom: size(appbar);
+  }
+
+  .checkoutDisabled {
+    button {
+      color: $font_color_faded !important;
+      border-color: $font_color_faded !important;
+    }
+  }
+
+  .tipAmounts {
+    margin-bottom: size(large);
+    .base_button {
+      width: 25%;
+      display: inline-block;
+      margin: 0 4%;
+      button {
+        text-align: center !important;
+        min-width: 0 !important;
+      }
+    }
+  }
+
+  #stripe {
+    #stripeErrors {
+      color: $bg_red_primary;
+      text-align: center;
+      padding-top: size(small);
+    }
+    .security {
+      display: block;
+      margin: size(base) 0 size(large) 0;
+      svg {
+        margin-bottom: -1 * size(tiny);
+        margin-right: size(tiny);
+        height: fontsize(interactive) !important;
+        width: fontsize(interactive) !important;
+      }
     }
   }
 }

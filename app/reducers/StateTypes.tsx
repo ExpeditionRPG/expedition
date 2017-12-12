@@ -20,8 +20,15 @@ export interface AudioState {
   timestamp: number;
 }
 
-export type DialogIDType = null | 'EXIT_QUEST' | 'EXPANSION_SELECT' | 'EXIT_REMOTE_PLAY';
+export interface CheckoutState {
+  amount: number;
+  processing: boolean;
+  productcategory: string;
+  productid: string;
+  stripe: any;
+}
 
+export type DialogIDType = null | 'EXIT_QUEST' | 'EXPANSION_SELECT' | 'EXIT_REMOTE_PLAY';
 export interface DialogState {
   open: DialogIDType;
 }
@@ -79,9 +86,9 @@ export interface SnackbarState {
 }
 
 export type RemotePlayPhase = 'CONNECT'|'LOBBY';
-
-export type CardName = 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REPORT' | 'REMOTE_PLAY';
-export type CardPhase = TemplatePhase | SearchPhase | RemotePlayPhase;
+export type CheckoutPhase = 'ENTRY' | 'DONE';
+export type CardName = 'CHECKOUT' | 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REPORT' | 'REMOTE_PLAY';
+export type CardPhase = TemplatePhase | SearchPhase | RemotePlayPhase | CheckoutPhase;
 export interface CardState {
   name: CardName;
   ts: number;
@@ -130,6 +137,7 @@ export interface AppState {
   announcement: AnnouncementState;
   audio: AudioState;
   card: CardState;
+  checkout: CheckoutState;
   dialog: DialogState;
   quest: QuestState;
   search: SearchState;

@@ -2,6 +2,7 @@ import Redux from 'redux'
 import {announcement} from './Announcement'
 import {audio} from './Audio'
 import {card} from './Card'
+import {checkout} from './Checkout'
 import {dialog} from './Dialog'
 import {quest} from './Quest'
 import {search} from './Search'
@@ -20,6 +21,7 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     announcement: announcement(state.announcement, action),
     audio: audio(state.audio, action),
     card: card(state.card, action),
+    checkout: checkout(state.checkout, action),
     dialog: dialog(state.dialog, action),
     quest: quest(state.quest, action),
     search: search(state.search, action),

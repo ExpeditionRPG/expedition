@@ -2,6 +2,8 @@ import Redux from 'redux'
 import {connect} from 'react-redux'
 import QuestEnd, {QuestEndStateProps, QuestEndDispatchProps} from './QuestEnd'
 import {toCard, toPrevious} from '../actions/Card'
+import {checkoutSetState, toCheckout} from '../actions/Checkout'
+import {openSnackbar} from '../actions/Snackbar'
 import {login} from '../actions/User'
 import {userFeedbackChange} from '../actions/UserFeedback'
 import {submitUserFeedback} from '../actions/Web'
@@ -14,6 +16,7 @@ declare var window:any;
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestEndStateProps => {
   return {
+    checkout: state.checkout,
     quest: state.quest,
     settings: state.settings,
     user: state.user,
@@ -57,6 +60,14 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       }
       logEvent('quest_end', { ...quest.details, action: quest.details.title, label: quest.details.id });
       dispatch(toPrevious({name: 'FEATURED_QUESTS'}));
+    },
+    onTip: (checkoutEnabled: boolean, amount: number, quest: QuestState, user: UserState) => {
+      if (!checkoutEnabled) {
+        dispatch(openSnackbar('Error encountered loading checkout'));
+      } else {
+        dispatch(checkoutSetState({amount, productcategory: 'Quest Tip', productid: quest.details.id}));
+        dispatch(toCheckout(user, amount));
+      }
     },
   };
 }

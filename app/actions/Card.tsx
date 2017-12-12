@@ -41,10 +41,10 @@ export const toPrevious = remoteify(function toPrevious(a?: ToPreviousArgs, disp
     to: {
       name: a.name,
       ts: Date.now(),
-      phase: a.phase
+      phase: a.phase,
     },
     before: Boolean(a.before),
-    skip: a.skip
+    skip: a.skip,
   };
 
   dispatch(result);

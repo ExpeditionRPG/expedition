@@ -121,7 +121,6 @@ export function remotePlayConnect(user: UserState, secret: string) {
       logEvent('remote_play_connect_err', error.toString());
       console.error(error);
       dispatch(openSnackbar('Error connecting: ' + error.toString()));
-
     });
   };
 }

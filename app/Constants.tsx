@@ -14,6 +14,7 @@ export const authSettings = {
   // clientId: '545484140970-lgcbm3df469kscbngg2iof57muj3p588.apps.googleusercontent.com',
   // Android:
   // 545484140970-qrhcn069bbvae1mub2237h5k32mnp04k.apps.googleusercontent.com
+  stripe: (NODE_ENV === 'production') ? 'pk_live_vcpOgs95UFKNV0kYOwj9JWPp' : 'pk_test_8SATEnwfIx0U2vkomn04kSou',
 };
 
 const splitURL = API_HOST.split('/');
