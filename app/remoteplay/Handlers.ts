@@ -111,8 +111,8 @@ function broadcastFrom(session: number, client: string, instance: string, msg: s
       continue;
     }
 
-    const peerWS = inMemorySessions[session][peerID].socket;
-    if (peerWS) {
+    const peerWS = inMemorySessions[session][peerID] && inMemorySessions[session][peerID].socket;
+    if (peerWS && peerWS.readyState === 1 /* OPEN */) {
       peerWS.send(msg);
     }
   }
@@ -127,6 +127,9 @@ function handleClientStatus(rpSession: SessionModel, session: number, client: Cl
   const waitCounts: {[wait: string]: number} = {};
   let maxElapsedMillis = 0;
   for (const c of Object.keys(s)) {
+    if (!s[c] || !s[c].status) {
+      continue;
+    }
     const wo: WaitType = s[c].status.waitingOn;
     if (wo) {
       waitCounts[wo.type] = (waitCounts[wo.type] || 0) + 1;
@@ -181,6 +184,11 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
   // TODO: Replay latest client statuses to the new socket
 
   ws.on('message', (msg: any) => {
+    // Ignore pings
+    if (msg === 'PING') {
+      return;
+    }
+
     const event: RemotePlayEvent = JSON.parse(msg);
 
     // If it's not a transactioned action, just broadcast it.
