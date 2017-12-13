@@ -163,5 +163,6 @@
             "android",
             "ios"
         ]
-    }
+    },
+    "snyk": false
 }

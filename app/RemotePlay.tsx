@@ -29,6 +29,16 @@ export class RemotePlayClient extends ClientBase {
   constructor() {
     super();
     this.reconnectAttempts = 0;
+
+    // Websocket timeout defaults to ~55 seconds. We send a periodic
+    // packet to the server to keep it advised that we're still connected.
+    setInterval(() => {this.keepalive();}, 40);
+  }
+
+  private keepalive() {
+    if (this.isConnected()) {
+      this.session.send('PING');
+    }
   }
 
   // This crafts a key that can be used to populate maps of client information
@@ -169,7 +179,7 @@ export class RemotePlayClient extends ClientBase {
           return dispatchLocal(a);
         }, getState);
 
-        if (remoteArgs && !localOnly) {
+        if (remoteArgs !== null && remoteArgs !== undefined && !localOnly) {
           const argstr = JSON.stringify(remoteArgs);
           console.log('WS: outbound ' + name + '(' + argstr + ') ' + inflight);
           this.sendEvent({type: 'ACTION', name, args: argstr} as ActionEvent);

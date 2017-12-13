@@ -10,6 +10,7 @@ import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT, MUSIC_INTENSITY_MAX} from '../../Co
 import {encounters} from '../../Encounters'
 import {RemotePlayClientStatus, QuestNodeAction, remoteify} from '../../actions/ActionTypes'
 import {loadNode} from '../../actions/Quest'
+import {setRemoteStatus} from '../../actions/RemotePlay'
 import * as seedrandom from 'seedrandom'
 import {StatusEvent} from 'expedition-qdl/lib/remote/Events'
 import {getRemotePlayClient} from '../../RemotePlay'
@@ -256,12 +257,17 @@ export const handleResolvePhase = remoteify(function handleResolvePhase(a: Handl
   return {};
 });
 
-export const handleCombatTimerStart = remoteify(function handleCombatTimerStart(a: any, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): void {
+interface HandleCombatTimerStartArgs {
+  settings?: SettingsType;
+}
+export const handleCombatTimerStart = remoteify(function handleCombatTimerStart(a: HandleCombatTimerStartArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory) {
+  console.log('handling combat timer start');
   if (!a.settings) {
     a.settings = getState().settings;
   }
   dispatch(toCard({name: 'QUEST_CARD', phase: 'TIMER'}));
   dispatch(audioSetPeakIntensity(1));
+  return {};
 });
 
 // NOTE: Instead of an ACTION event, this sends a STATUS
@@ -271,22 +277,13 @@ interface HandleCombatTimerHoldArgs {
   elapsedMillis: number;
 }
 export const handleCombatTimerHold = remoteify(function handleCombatTimerHold(a: HandleCombatTimerHoldArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory) {
-  const ev: StatusEvent = {
+  dispatch(setRemoteStatus({
     type: 'STATUS',
     waitingOn: {
       type: 'TIMER',
       elapsedMillis: a.elapsedMillis,
     },
-  };
-  const c = getRemotePlayClient();
-
-  c.sendEvent(ev);
-  dispatch({
-    type: 'REMOTE_PLAY_CLIENT_STATUS',
-    client: c.getID(),
-    instance: c.getInstance(),
-    status: ev,
-  } as RemotePlayClientStatus);
+  }));
   return null;
 });
 
@@ -319,6 +316,12 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
   } else {
     dispatch(handleResolvePhase({node: a.node}));
   }
+
+  // Tell everyone we're no longer waiting on anything
+  dispatch(setRemoteStatus({
+    type: 'STATUS',
+    waitingOn: null,
+  }));
 
   return {elapsedMillis: a.elapsedMillis, seed: a.seed};
 });

@@ -2,11 +2,11 @@ import React from 'react'
 import Redux from 'redux'
 import {toCard} from './Card'
 import {remotePlaySettings} from '../Constants'
-import {LocalAction, NavigateAction, ReturnAction, getRemoteAction} from './ActionTypes'
+import {LocalAction, NavigateAction, ReturnAction, getRemoteAction, RemotePlayClientStatus} from './ActionTypes'
 import {UserState} from '../reducers/StateTypes'
 import {logEvent} from '../Main'
 import {openSnackbar} from '../actions/Snackbar'
-import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
+import {RemotePlayEvent, StatusEvent} from 'expedition-qdl/lib/remote/Events'
 import {getRemotePlayClient} from '../RemotePlay'
 
 export function local(a: Redux.Action): LocalAction {
@@ -148,4 +148,19 @@ export function loadRemotePlay(user: UserState) {
       dispatch(openSnackbar('Remote play service unavailable: ' + error.toString()));
     })
   };
+}
+
+
+export function setRemoteStatus(ev: StatusEvent) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    const c = getRemotePlayClient();
+    c.sendEvent(ev);
+    dispatch({
+      type: 'REMOTE_PLAY_CLIENT_STATUS',
+      client: c.getID(),
+      instance: c.getInstance(),
+      status: ev,
+    } as RemotePlayClientStatus);
+    return null;
+  }
 }

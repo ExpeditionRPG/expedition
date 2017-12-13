@@ -113,6 +113,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
     _history: history,
     _inflight: state && state._inflight,
     _committed: state && state._committed,
-    _return: false,
+    // Persist return state on transition actions
+    _return: (action.type === 'CARD_TRANSITIONING') ? state._return : false,
   } as AppStateWithHistory;
 }
