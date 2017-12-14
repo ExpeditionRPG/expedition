@@ -7,6 +7,7 @@ import {SessionClient, SessionClientInstance} from '../models/remoteplay/Session
 import {ClientID, WaitType, StatusEvent, ActionEvent, RemotePlayEvent, InflightCommitEvent, InflightRejectEvent} from 'expedition-qdl/lib/remote/Events'
 import * as url from 'url'
 import * as http from 'http'
+import * as WebSocket from 'ws'
 
 export function user(sc: SessionClient, req: express.Request, res: express.Response) {
   if (!res.locals || !res.locals.id) {
@@ -107,7 +108,7 @@ function broadcastFrom(session: number, client: string, instance: string, msg: s
     return;
   }
   for (const peerID of Object.keys(inMemorySessions[session])) {
-    if (peerID === client+'|'+instance || inMemorySessions[session][peerID] === null) {
+    if (peerID === clientKey(client, instance) || inMemorySessions[session][peerID] === null) {
       continue;
     }
 
@@ -118,11 +119,15 @@ function broadcastFrom(session: number, client: string, instance: string, msg: s
   }
 }
 
+function clientKey(client: ClientID, instance: string) {
+  return client+'|'+instance;
+}
+
 // We need a little custom server code to pay attention when clients
 // are all waiting on something.
 function handleClientStatus(rpSession: SessionModel, session: number, client: ClientID, instance: string, ev: StatusEvent) {
   const s = inMemorySessions[session];
-  s[client+'|'+instance].status = ev;
+  s[clientKey(client, instance)].status = ev;
 
   const waitCounts: {[wait: string]: number} = {};
   let maxElapsedMillis = 0;
@@ -178,10 +183,34 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
   if (!inMemorySessions[params.session]) {
     inMemorySessions[params.session] = {};
   }
-  inMemorySessions[params.session][params.client+'|'+params.instance] = {socket: ws, status: null};
+  inMemorySessions[params.session][clientKey(params.client, params.instance)] = {
+    socket: ws,
+    status: null,
+    client: params.client,
+    instance: params.instance,
+  };
 
-  // TODO: Broadcast new client event to other clients
-  // TODO: Replay latest client statuses to the new socket
+
+  if (ws.readyState === WebSocket.OPEN) {
+    // Replay latest client statuses to the new socket so they know
+    // who is connected.
+    const s = inMemorySessions[params.session];
+    if (s) {
+      for (const k of Object.keys(s)) {
+        console.log('Initial notify of status for ' + k);
+        ws.send(JSON.stringify({
+          client: s[k].client,
+          instance: s[k].instance,
+          event: {
+            type: 'STATUS',
+            connected: true,
+          },
+          id: null,
+        } as RemotePlayEvent));
+      }
+    }
+  }
+
 
   ws.on('message', (msg: any) => {
     // Ignore pings
@@ -222,7 +251,17 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
   });
 
   ws.on('close', () => {
-    inMemorySessions[params.session][params.client] = null;
-    // TODO: Broadcast lost client to other clients
+    delete inMemorySessions[params.session][clientKey(params.client, params.instance)];
+
+    // Notify other clients this client has disconnected
+    broadcastFrom(params.session, params.client, params.instance, JSON.stringify({
+      client: params.client,
+      instance: params.instance,
+      event: {
+        type: 'STATUS',
+        connected: false,
+      },
+      id: null,
+    } as RemotePlayEvent));
   });
 }
