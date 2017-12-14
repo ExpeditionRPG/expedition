@@ -20,5 +20,4 @@ cordova build android
 cordova build ios
 
 # Deploy web app to beta once apps built
-export AWS_DEFAULT_REGION='us-east-2'
-aws s3 cp www s3://beta.expeditiongame.com --recursive
+aws s3 cp www s3://beta.expeditiongame.com --recursive --region us-east-2

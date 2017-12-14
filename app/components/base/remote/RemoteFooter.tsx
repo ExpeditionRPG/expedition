@@ -27,7 +27,9 @@ const RemoteFooter = (props: RemoteFooterProps): JSX.Element => {
       continue;
     }
     const lastStatus = props.remotePlay.clientStatus[client];
-    console.log(lastStatus);
+    if (!lastStatus.connected) {
+      continue;
+    }
     peers.push(<Person key={client}/>);
   }
 
@@ -43,7 +45,7 @@ const RemoteFooter = (props: RemoteFooterProps): JSX.Element => {
         <FlatButton className="peers">
           {peers}
         </FlatButton>
-        : <div className="peers">No peers connected yet.</div>
+        : <div className="peers">No peers connected.</div>
       }
       {statusIcon}
     </div>
