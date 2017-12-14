@@ -60,7 +60,7 @@ export function getDevicePlatform(): 'android' | 'ios' | 'web' {
     return 'web';
   }
 
-  const p = (device.platform || '').toLowerCase();
+  const p = (device.platform || window.navigator.appVersion || '').toLowerCase();
   if (/android/i.test(p)) {
     return 'android';
   } else if (/iphone|ipad|ipod|ios/i.test(p)) {

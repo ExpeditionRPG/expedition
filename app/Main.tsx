@@ -160,7 +160,7 @@ export function init() {
   window.onerror = function(message: string, source: string, line: number) {
     const quest = getStore().getState().quest;
     if (quest && quest.details && quest.details.id) {
-      message = `Quest: ${quest.details.id} - ${quest.details.title}. Error: ${message}`;
+      message = `Quest: ${quest.details.id} - ${quest.details.title}. Error: ${message}.`;
     }
     const label = (source) ? `${source} line ${line}` : null;
     console.error(message, label);
@@ -169,7 +169,7 @@ export function init() {
     // Otherwise, redux handlers may perform strange actions like calling
     // setState inside of a render() cycle.
     setTimeout(() => {
-      getStore().dispatch(openSnackbar('Error! Please send feedback.', message));
+      getStore().dispatch(openSnackbar('Error! Please send feedback.', message + ' Source: ' + label));
     }, 0);
     return true;
   };

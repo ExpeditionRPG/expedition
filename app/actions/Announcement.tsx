@@ -1,5 +1,6 @@
 import Redux from 'redux'
 import {AnnouncementSetAction} from './ActionTypes'
+import {handleFetchErrors} from './Web'
 import {authSettings} from '../Constants'
 import {logEvent} from '../Main'
 
@@ -8,6 +9,7 @@ export function fetchAnnouncements() {
     fetch(authSettings.urlBase + '/announcements', {
       method: 'GET',
     })
+    .then(handleFetchErrors)
     .then((response: Response) => {
       return response.json();
     })

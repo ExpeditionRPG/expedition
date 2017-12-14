@@ -13,11 +13,26 @@ export function openSnackbar(message: string, errorMessage?: string): SnackbarOp
   if (errorMessage) {
     action.actionLabel = 'Report';
     const quest = getStore().getState().quest.details || {};
-    const subject = encodeURIComponent(`App error: ${getDevicePlatform()} v${getAppVersion()}`);
-    const body = encodeURIComponent(`Error: ${errorMessage}. Quest: ${quest.title} (ID: ${quest.id})`);
+    const email = 'expedition@fabricate.io';
+    const subject = `App error: ${getDevicePlatform()} v${getAppVersion()}`;
+    const body = `Error: ${errorMessage}. Quest: ${quest.title} (ID: ${quest.id})`;
     action.action = () => {
-      window.open(`mailto:expedition@fabricate.io?subject=${subject}&body=${body}`, '_system');
+      if (window.plugin && window.plugin.email) {
+        window.plugin.email.isAvailable((hasAccount: boolean) => {
+          window.plugin.email.open({
+            to: [email],
+            subject,
+            body,
+          });
+        });
+      } else {
+        openEmailLink(email, subject, body);
+      }
     };
   }
   return action;
+}
+
+function openEmailLink(email: string, subject: string, body: string) {
+  window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_system');
 }

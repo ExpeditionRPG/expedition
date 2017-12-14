@@ -1,9 +1,10 @@
 import Redux from 'redux'
+import {remoteify} from './ActionTypes'
 import {toCard} from './Card'
-import {openSnackbar} from '../actions/Snackbar'
+import {handleFetchErrors} from './Web'
+import {openSnackbar} from './Snackbar'
 import {UserState} from '../reducers/StateTypes'
 import {authSettings} from '../Constants'
-import {remoteify} from './ActionTypes'
 import {getGA, getGapi} from '../Globals'
 
 declare var gapi: any;
@@ -48,6 +49,7 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
       email: user.email,
     }),
   })
+  .then(handleFetchErrors)
   .then((response: Response) => {
     return response.text();
   })

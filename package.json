@@ -1,6 +1,6 @@
 {
     "name": "expedition-app",
-    "version": "1.12.0",
+    "version": "1.12.1",
     "description": "The App for Expedition: The Roleplaying Card Game",
     "homepage": "http://expeditiongame.com",
     "bugs": "https://github.com/ExpeditionRPG/expedition-app/issues",
@@ -89,6 +89,7 @@
         "cordova-ios": "^4.4.0",
         "cordova-ios-plugin-no-export-compliance": "git+https://github.com/mikaoelitiana/cordova-plugin-ios-no-export-compliance.git",
         "cordova-plugin-device": "^1.1.6",
+        "cordova-plugin-email-composer": "^0.8.11",
         "cordova-plugin-firebase": "^0.1.21",
         "cordova-plugin-fullscreen": "^1.1.0",
         "cordova-plugin-googleplus": "git+https://github.com/EddyVerbruggen/cordova-plugin-googleplus.git",
@@ -157,12 +158,12 @@
             "cordova-plugin-hidden-statusbar-overlay": {},
             "cordova-plugin-ios-no-export-compliance": {},
             "cordova-plugin-splashscreen": {},
-            "cordova-plugin-device": {}
+            "cordova-plugin-device": {},
+            "cordova-plugin-email-composer": {}
         },
         "platforms": [
             "android",
             "ios"
         ]
-    },
-    "snyk": false
+    }
 }

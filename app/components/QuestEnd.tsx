@@ -15,6 +15,7 @@ declare var window:any;
 
 export interface QuestEndStateProps {
   checkout: CheckoutState;
+  platform: string;
   quest: QuestState;
   settings: SettingsType;
   user: UserState;
@@ -25,7 +26,7 @@ export interface QuestEndDispatchProps {
   onChange: (key: string, value: any) => void;
   onShare: (quest: QuestState) => void;
   onSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
-  onTip: (checkoutEnabled: boolean, amount: number, quest: QuestState, user: UserState) => void;
+  onTip: (checkoutError: string, amount: number, quest: QuestState, user: UserState) => void;
 }
 
 export interface QuestEndProps extends QuestEndStateProps, QuestEndDispatchProps {};
@@ -34,9 +35,9 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
   render() {
     const loggedIn = (this.props.user && this.props.user.loggedIn);
     const rated = (this.props.userFeedback.rating > 0);
-    // TODO develop system for letting the app know when payments are offline
-    const checkoutEnabled = true;
-
+    // TODO ping server to determine if payments are enabled
+    // TODO figure out why loading Stripe crashes iOS app
+    const checkoutError = (this.props.platform === 'ios') ? 'Checkout currently disabled on iOS app' : null;
     return (
       <Card title={this.props.quest.details.title}>
         <p>We hope you enjoyed <i>{this.props.quest.details.title}</i> by {this.props.quest.details.author}!</p>
@@ -59,14 +60,14 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
           </div>
         }
         Tip the author:
-        <div className={'tipAmounts ' + (checkoutEnabled ? '' : 'checkoutDisabled')}>
-          <Button onTouchTap={() => this.props.onTip(checkoutEnabled, 1, this.props.quest, this.props.user)}>
+        <div className={'tipAmounts ' + (checkoutError === null ? '' : 'checkoutDisabled')}>
+          <Button onTouchTap={() => this.props.onTip(checkoutError, 1, this.props.quest, this.props.user)}>
             $1
           </Button>
-          <Button onTouchTap={() => this.props.onTip(checkoutEnabled, 3, this.props.quest, this.props.user)}>
+          <Button onTouchTap={() => this.props.onTip(checkoutError, 3, this.props.quest, this.props.user)}>
             $3
           </Button>
-          <Button onTouchTap={() => this.props.onTip(checkoutEnabled, 5, this.props.quest, this.props.user)}>
+          <Button onTouchTap={() => this.props.onTip(checkoutError, 5, this.props.quest, this.props.user)}>
             $5
           </Button>
         </div>

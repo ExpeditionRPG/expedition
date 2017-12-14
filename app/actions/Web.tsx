@@ -72,6 +72,7 @@ export function subscribe(a: {email: string}) {
       method: 'POST',
       body: JSON.stringify({email: a.email}),
     })
+    .then(handleFetchErrors)
     .then((response: Response) => {
       return response.text();
     })
@@ -103,6 +104,7 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       method: 'POST',
       body: JSON.stringify(data),
     })
+    .then(handleFetchErrors)
     .then((response: Response) => {
       return response.text();
     })
@@ -115,4 +117,11 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       dispatch(openSnackbar('Error submitting feedback: ' + error));
     });
   };
+}
+
+export function handleFetchErrors(response: any) {
+  if (!response.ok) {
+    throw Error(response.statusText);
+  }
+  return response;
 }

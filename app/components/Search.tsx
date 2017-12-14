@@ -266,6 +266,7 @@ function renderDetails(props: SearchProps): JSX.Element {
         <div className="timing">
           <strong>Play time:</strong> {formatPlayPeriod(quest.mintimeminutes, quest.maxtimeminutes)}
         </div>
+        <div><strong>Players:</strong> {quest.minplayers}-{quest.maxplayers}</div>
         <div><strong>Genre:</strong> {quest.genre}</div>
         <div><strong>Last updated: </strong> {Moment(quest.published).format('MMMM D, YYYY')}</div>
       </div>

@@ -1,6 +1,7 @@
 import React from 'react'
 import Redux from 'redux'
 import {toCard} from './Card'
+import {handleFetchErrors} from './Web'
 import {remotePlaySettings} from '../Constants'
 import {LocalAction, NavigateAction, ReturnAction, getRemoteAction, RemotePlayClientStatus} from './ActionTypes'
 import {UserState} from '../reducers/StateTypes'
@@ -69,6 +70,7 @@ export function remotePlayNewSession(user: UserState) {
       }),
       credentials: 'include',
     })
+    .then(handleFetchErrors)
     .then((response: Response) => {
       return response.json();
     })
@@ -100,6 +102,7 @@ export function remotePlayConnect(user: UserState, secret: string) {
       credentials: 'include',
       body: JSON.stringify({instance: instanceID, secret}),
     })
+    .then(handleFetchErrors)
     .then((response: Response) => {
       return response.json();
     })
@@ -136,6 +139,7 @@ export function loadRemotePlay(user: UserState) {
       mode: 'cors',
       credentials: 'include',
     })
+    .then(handleFetchErrors)
     .then((response: Response) => {
       return response.json();
     })

@@ -70,6 +70,7 @@
     <engine name="android" spec="^6.2.3" />
     <engine name="ios" spec="^4.4.0" />
     <plugin name="cordova-plugin-device" spec="^1.1.6" />
+    <plugin name="cordova-plugin-email-composer" spec="^0.8.11" />
     <plugin name="cordova-plugin-firebase" spec="^0.1.21" />
     <plugin name="cordova-plugin-fullscreen" spec="^1.1.0" />
     <plugin name="cordova-plugin-googleplus" spec="git+https://github.com/EddyVerbruggen/cordova-plugin-googleplus.git">
