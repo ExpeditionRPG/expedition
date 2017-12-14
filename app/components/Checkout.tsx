@@ -85,7 +85,7 @@ export default class Checkout extends React.Component<CheckoutProps, {}> {
             <div id="stripe">
               <form id="stripeForm" action="/charge" method="post" className={this.props.checkout.processing && 'disabled'}>
                 <div className="form-row">
-                  <p>Please enter your credit or debit card to tip {this.props.quest.details.author} ${this.props.checkout.amount} for <i>{this.props.quest.details.author}</i>.</p>
+                  <p>Please enter your credit or debit card to tip {this.props.quest.details.author} ${this.props.checkout.amount} for <i>{this.props.quest.details.title}</i>.</p>
                   <label className="security"><LockIcon />Payments processed securely by Stripe.</label>
                   <div id="stripeCard"></div>
                   <div id="stripeErrors" role="alert">{this.state.paymentError}</div>
