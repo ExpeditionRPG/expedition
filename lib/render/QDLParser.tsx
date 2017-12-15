@@ -111,6 +111,9 @@ export class QDLParser {
   }
 
   public getMeta(): {[k: string]: any} {
+    if (!this.blockList) {
+      return {};
+    }
     return this.renderer.toMeta(this.blockList.at(0), null);
   }
 
