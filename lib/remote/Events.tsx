@@ -29,6 +29,9 @@ export interface StatusEvent {
 
   // Whether the client is connected or not.
   connected?: boolean;
+
+  // Count of players playing on this client - used for e.g. damage calculation
+  numPlayers?: number;
 }
 
 // Interaction events indicate what remote clients are doing,
