@@ -140,7 +140,8 @@ export function loadRemotePlay(user: UserState) {
       credentials: 'include',
     })
     // NOTE: We do not handle fetch errors here - failing this
-    // fetch does not prevent users from using remote play.
+    // fetch should not prevent users from using remote play.
+    // .then(handleFetchErrors)
     .then((response: Response) => {
       return response.json();
     })

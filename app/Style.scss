@@ -197,6 +197,7 @@ body {
     text-align: center;
 
     svg {
+      vertical-align: middle;
       padding: 0 size(base);
     }
   }
@@ -978,6 +979,10 @@ span.line {
   }
 
   .remoteplay {
+    .sessionCode {
+      text-align: center;
+      margin: size(base) 0;
+    }
     .helptext {
       text-align: center;
       padding: size(base);

@@ -17,7 +17,8 @@ const mapStateToProps = (state: AppState, ownProps: RemotePlayStateProps): Remot
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): RemotePlayDispatchProps => {
   return {
-    onConnect: (user: UserState, secret: SessionSecret) => {
+    onConnect: (user: UserState) => {
+      const secret = window.prompt('Enter the session\'s 4 character code to join.');
       if (secret.length !== 4) {
         return dispatch(openSnackbar('Please enter the full session code (4 characters)'));
       }

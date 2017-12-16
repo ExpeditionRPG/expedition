@@ -39,6 +39,16 @@ const Tools = (props: ToolsProps): JSX.Element => {
           <div className="summary">You tell the story; the app runs the combat.</div>
         </div>
       </Button>
+      {process.env.NODE_ENV === 'dev' &&
+        <Button remoteID="3" onTouchTap={() => props.onRemotePlaySelect(props.user)}>
+          <div className="questButtonWithIcon">
+            <div className="title">Remote Play - Alpha</div>
+            <div className="summary">
+              {(!props.user || !props.user.loggedIn) ? 'Login and sync' : 'Sync'} your app with friends on another device.
+            </div>
+          </div>
+        </Button>
+      }
       <Button remoteID="1" id="selectQuestCreator" onTouchTap={() => props.onQuestCreatorSelect()}>
         <div className="questButtonWithIcon">
           <div className="title">Quest Creator</div>
@@ -51,16 +61,6 @@ const Tools = (props: ToolsProps): JSX.Element => {
           <div className="summary">View quests you've published privately with the Quest Creator.</div>
         </div>
       </Button>
-      {process.env.NODE_ENV === 'dev' &&
-        <Button remoteID="3" onTouchTap={() => props.onRemotePlaySelect(props.user)}>
-          <div className="questButtonWithIcon">
-            <div className="title">Remote Play - Alpha</div>
-            <div className="summary">
-              {(!props.user || !props.user.loggedIn) && 'Login and'} sync your app with friends on another device (work in progress).
-            </div>
-          </div>
-        </Button>
-      }
       <div className="version">Expedition App v{getAppVersion()}</div>
     </Card>
   );
