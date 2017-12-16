@@ -201,10 +201,7 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
         ws.send(JSON.stringify({
           client: s[k].client,
           instance: s[k].instance,
-          event: {
-            type: 'STATUS',
-            connected: true,
-          },
+          event: s[k].status,
           id: null,
         } as RemotePlayEvent));
       }
@@ -232,7 +229,8 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
       return;
     }
 
-    rpSession.commitEvent(params.session, params.client, event.id, event.event.type, msg)
+    setTimeout(() => {
+      rpSession.commitEvent(params.session, params.client, event.id, event.event.type, msg)
       .then(() => {
         // Broadcast to all peers
         broadcastFrom(params.session, params.client, params.instance, msg);
@@ -248,6 +246,8 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
           error: error.toString(),
         }} as RemotePlayEvent));
       });
+    }, Config.get('REMOTE_PLAY_COMMIT_LAG_MILLIS') || 0);
+
   });
 
   ws.on('close', () => {
