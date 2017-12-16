@@ -139,7 +139,8 @@ export function loadRemotePlay(user: UserState) {
       mode: 'cors',
       credentials: 'include',
     })
-    .then(handleFetchErrors)
+    // NOTE: We do not handle fetch errors here - failing this
+    // fetch does not prevent users from using remote play.
     .then((response: Response) => {
       return response.json();
     })

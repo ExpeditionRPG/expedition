@@ -113,12 +113,14 @@ export class RemotePlayClient extends ClientBase {
       });
     };
 
+    const settings = getStore().getState().settings;
     this.session.onopen = () => {
       console.log('WS: open');
       this.connected = true;
       const event: StatusEvent = {
         type: 'STATUS',
         connected: true,
+        numPlayers: (settings && settings.numPlayers) || 1,
       };
       // Send remote and also publish locally
       this.sendEvent(event);

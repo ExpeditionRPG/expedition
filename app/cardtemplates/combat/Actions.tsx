@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {PLAYER_DAMAGE_MULT} from '../../Constants'
 import {Enemy, Loot} from '../../reducers/QuestTypes'
 import {CombatDifficultySettings, CombatAttack} from './Types'
-import {DifficultyType, SettingsType, AppStateWithHistory} from '../../reducers/StateTypes'
+import {DifficultyType, SettingsType, AppStateWithHistory, RemotePlayState} from '../../reducers/StateTypes'
 import {ParserNode, defaultContext} from '../Template'
 import {audioSetIntensity, audioSetPeakIntensity, audioPlaySfx} from '../../actions/Audio'
 import {toCard} from '../../actions/Card'
@@ -17,44 +17,64 @@ import {getRemotePlayClient} from '../../RemotePlay'
 
 const cheerio: any = require('cheerio');
 
+function numLocalAndRemotePlayers(settings: SettingsType, rp: RemotePlayState): number {
+  if (!rp) {
+    return settings.numPlayers;
+  }
+
+  let count = 0;
+  for (const c of Object.keys(rp.clientStatus)) {
+    const status = rp.clientStatus[c];
+    if (!status.connected) {
+      continue;
+    }
+    count += (status.numPlayers || 1);
+  }
+  return count;
+}
+
 interface InitCombatArgs {
   node: ParserNode;
   settings: SettingsType;
   custom?: boolean;
 }
-export function initCombat(a: InitCombatArgs) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    let tierSum: number = 0;
-    let enemies: Enemy[] = [];
-    if (a.node.elem) {
-      enemies = getEnemies(a.node);
-      for (const enemy of enemies) {
-        tierSum += enemy.tier;
-      }
+export const initCombat = remoteify(function initCombat(a: InitCombatArgs, dispatch: Redux.Dispatch<any>,  getState: () => AppStateWithHistory) {
+  let tierSum: number = 0;
+  let enemies: Enemy[] = [];
+  if (a.node.elem) {
+    enemies = getEnemies(a.node);
+    for (const enemy of enemies) {
+      tierSum += enemy.tier;
     }
-    a.node = a.node.clone();
-    a.node.ctx.templates.combat = {
-      custom: a.custom || false,
-      enemies,
-      roundCount: 0,
-      numAliveAdventurers: a.settings.numPlayers,
-      tier: tierSum,
-      roundTimeMillis: a.settings.timerSeconds * 1000 * (PLAYER_TIME_MULT[a.settings.numPlayers] || 1),
-      ...getDifficultySettings(a.settings.difficulty),
-    };
-    dispatch({type: 'PUSH_HISTORY'});
-    dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', noHistory: true}));
-    dispatch(audioSetIntensity(calculateAudioIntensity(tierSum, tierSum, 0, 0)));
+  }
+  a.node = a.node.clone();
+  const totalPlayerCount = numLocalAndRemotePlayers(a.settings, getState().remotePlay);
+  a.node.ctx.templates.combat = {
+    custom: a.custom || false,
+    enemies,
+    roundCount: 0,
+    numAliveAdventurers: totalPlayerCount,
+    tier: tierSum,
+    roundTimeMillis: a.settings.timerSeconds * 1000 * (PLAYER_TIME_MULT[totalPlayerCount] || 1),
+    ...getDifficultySettings(a.settings.difficulty),
   };
-}
+  dispatch({type: 'PUSH_HISTORY'});
+  dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
+  dispatch(toCard({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', noHistory: true}));
+  dispatch(audioSetIntensity(calculateAudioIntensity(tierSum, tierSum, 0, 0)));
+  return null;
+});
 
 interface InitCustomCombatArgs {
   settings?: SettingsType;
+  rp?: RemotePlayState;
 }
 export const initCustomCombat = remoteify(function initCustomCombat(a: InitCustomCombatArgs, dispatch: Redux.Dispatch<any>,  getState: () => AppStateWithHistory): InitCustomCombatArgs {
   if (!a.settings) {
     a.settings = getState().settings;
+  }
+  if (!a.rp) {
+    a.rp = getState().remotePlay;
   }
   dispatch(initCombat({
     node: new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext()),
@@ -98,8 +118,9 @@ function getEnemies(node: ParserNode): Enemy[] {
   return enemies;
 }
 
-function generateCombatAttack(node: ParserNode, settings: SettingsType, elapsedMillis: number, rng: () => number): CombatAttack {
-  const playerMultiplier = PLAYER_DAMAGE_MULT[settings.numPlayers] || 1;
+function generateCombatAttack(node: ParserNode, settings: SettingsType, rp: RemotePlayState, elapsedMillis: number, rng: () => number): CombatAttack {
+  const totalPlayerCount = numLocalAndRemotePlayers(settings, rp);
+  const playerMultiplier = PLAYER_DAMAGE_MULT[totalPlayerCount] || 1;
   const combat = node.ctx.templates.combat;
 
   // enemies each get to hit once - 1.5x if the party took too long
@@ -130,7 +151,7 @@ function generateCombatAttack(node: ParserNode, settings: SettingsType, elapsedM
   // 4: 2
   // 5: 2.5
   // 6: 3
-  if (combat.numAliveAdventurers === 1 && settings.numPlayers > 1 && combat.roundCount > 6) {
+  if (combat.numAliveAdventurers === 1 && totalPlayerCount > 1 && combat.roundCount > 6) {
     attackCount = attackCount * Math.pow(1.2, combat.roundCount - 6);
   }
 
@@ -290,6 +311,7 @@ export const handleCombatTimerHold = remoteify(function handleCombatTimerHold(a:
 interface HandleCombatTimerStopArgs {
   node?: ParserNode;
   settings?: SettingsType;
+  rp?: RemotePlayState;
   elapsedMillis: number;
   seed: string;
 }
@@ -298,12 +320,15 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
     a.node = getState().quest.node;
     a.settings = getState().settings;
   }
+  if (!a.rp) {
+    a.rp = getState().remotePlay;
+  }
 
   dispatch(audioSetPeakIntensity(0));
 
   a.node = a.node.clone();
   const arng = seedrandom.alea(a.seed);
-  a.node.ctx.templates.combat.mostRecentAttack = generateCombatAttack(a.node, a.settings, a.elapsedMillis, arng);
+  a.node.ctx.templates.combat.mostRecentAttack = generateCombatAttack(a.node, a.settings, a.rp, a.elapsedMillis, arng);
   a.node.ctx.templates.combat.mostRecentRolls = generateRolls(a.settings.numPlayers, arng);
   a.node.ctx.templates.combat.roundCount++;
 
@@ -329,6 +354,7 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
 interface HandleCombatEndArgs {
   node?: ParserNode;
   settings: SettingsType;
+  rp?: RemotePlayState;
   victory: boolean;
   maxTier: number;
   seed: string;
@@ -338,6 +364,9 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
     a.node = getState().quest.node;
     a.settings = getState().settings;
   }
+  if (!a.rp) {
+    a.rp = getState().remotePlay;
+  }
 
   // Edit the final card before cloning
   if (a.victory) {
@@ -346,7 +375,7 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
     a.node.ctx.templates.combat.numAliveAdventurers = 0;
   }
   a.node = a.node.clone();
-  a.node.ctx.templates.combat.levelUp = (a.victory) ? (a.settings.numPlayers <= a.maxTier) : false;
+  a.node.ctx.templates.combat.levelUp = (a.victory) ? (numLocalAndRemotePlayers(a.settings, a.rp) <= a.maxTier) : false;
 
   const arng = seedrandom.alea(a.seed);
   a.node.ctx.templates.combat.loot = (a.victory) ? generateLoot(a.maxTier, arng) : [];
@@ -456,14 +485,18 @@ interface AdventurerDeltaArgs {
   settings?: SettingsType;
   current: number;
   delta: number;
+  rp?: RemotePlayState;
 }
 export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerDeltaArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): AdventurerDeltaArgs {
   if (!a.node || !a.settings) {
     a.node = getState().quest.node;
     a.settings = getState().settings;
   }
+  if (!a.rp) {
+    a.rp = getState().remotePlay;
+  }
 
-  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), a.settings.numPlayers);
+  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), numLocalAndRemotePlayers(a.settings, a.rp));
   a.node = a.node.clone();
   a.node.ctx.templates.combat.numAliveAdventurers = newAdventurerCount;
   dispatch({type: 'QUEST_NODE', node: a.node});

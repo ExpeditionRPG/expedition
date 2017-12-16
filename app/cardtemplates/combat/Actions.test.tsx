@@ -125,6 +125,8 @@ describe('Combat actions', () => {
     it('increments the round counter', () => {
       expect(actions[3].node.ctx.templates.combat.roundCount).toEqual(1);
     });
+
+    it('includes remote players when generating rolls');
   });
 
   describe('handleCombatEnd', () => {
@@ -162,6 +164,8 @@ describe('Combat actions', () => {
         loot: [],
       }));
     });
+
+    it('does not level up if remote play count exceeds tier sum');
   });
 
   describe('tierSumDelta', () => {

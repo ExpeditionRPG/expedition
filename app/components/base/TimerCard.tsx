@@ -52,7 +52,11 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
     if (this.props.remotePlayState && this.props.remotePlayState.clientStatus) {
       const rpClientID = getRemotePlayClient().getClientKey();
       for (const client of Object.keys(this.props.remotePlayState.clientStatus)) {
-        const waitingOn = this.props.remotePlayState.clientStatus[client].waitingOn;
+        const clientStatus = this.props.remotePlayState.clientStatus[client];
+        if (!clientStatus.connected) {
+          continue;
+        }
+        const waitingOn = clientStatus.waitingOn;
         const waitingOnTimer = (waitingOn && waitingOn.type === 'TIMER');
         if (client === rpClientID) {
           timerHeld = waitingOnTimer;
