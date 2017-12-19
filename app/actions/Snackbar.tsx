@@ -12,7 +12,7 @@ export function openSnackbar(message: string, errorMessage?: string): SnackbarOp
   const action = {type: 'SNACKBAR_OPEN', message} as SnackbarOpenAction;
   if (errorMessage) {
     action.actionLabel = 'Report';
-    const quest = getStore().getState().quest.details || {};
+    const quest = (getStore().getState().quest || {}).details || {};
     const email = 'expedition@fabricate.io';
     const subject = `App error: ${getDevicePlatform()} v${getAppVersion()}`;
     const body = `Error: ${errorMessage}. Quest: ${quest.title} (ID: ${quest.id})`;

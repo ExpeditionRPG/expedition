@@ -24,7 +24,7 @@ import {renderCardTemplate} from '../../cardtemplates/Template'
 import {initialSettings} from '../../reducers/Settings'
 import {cardTransitioning} from '../../actions/Card'
 import {closeSnackbar} from '../../actions/Snackbar'
-import {initialState} from '../../reducers/Snackbar'
+import {initialSnackbar} from '../../reducers/Snackbar'
 import {initialRemotePlay} from '../../reducers/RemotePlay'
 import {AppStateWithHistory, TransitionType, SearchPhase, RemotePlayPhase, SettingsType, SnackbarState, RemotePlayState} from '../../reducers/StateTypes'
 import {getStore} from '../../Store'
@@ -69,7 +69,7 @@ export default class Main extends React.Component<MainProps, {}> {
         key: 0,
         transition: 'INSTANT' as TransitionType,
         settings: initialSettings,
-        snackbar: initialState,
+        snackbar: initialSnackbar,
         remotePlay: initialRemotePlay,
       };
     }
