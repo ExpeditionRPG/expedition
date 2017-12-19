@@ -53,7 +53,13 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
   .then((response: Response) => {
     return response.text();
   })
-  .then((id: string) => {
+  .then((userResult: string) => {
+    let id = '';
+    try {
+      id = JSON.parse(userResult).id || userResult;
+    } catch(err) {
+      id = userResult;
+    }
     if (getGA()) {
       getGA().set({ userId: id });
     }
