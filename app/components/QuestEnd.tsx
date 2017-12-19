@@ -26,7 +26,7 @@ export interface QuestEndDispatchProps {
   onChange: (key: string, value: any) => void;
   onShare: (quest: QuestState) => void;
   onSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
-  onTip: (checkoutError: string, amount: number, quest: QuestState, user: UserState) => void;
+  onTip: (checkoutError: string, amount: number, quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
 }
 
 export interface QuestEndProps extends QuestEndStateProps, QuestEndDispatchProps {};
@@ -59,15 +59,15 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
             />
           </div>
         }
-        Tip the author:
+        Tip the author and submit your review:
         <div className={'tipAmounts ' + (checkoutError === null ? '' : 'checkoutDisabled')}>
-          <Button onTouchTap={() => this.props.onTip(checkoutError, 1, this.props.quest, this.props.user)}>
+          <Button onTouchTap={() => this.props.onTip(checkoutError, 1, this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>
             $1
           </Button>
-          <Button onTouchTap={() => this.props.onTip(checkoutError, 3, this.props.quest, this.props.user)}>
+          <Button onTouchTap={() => this.props.onTip(checkoutError, 3, this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>
             $3
           </Button>
-          <Button onTouchTap={() => this.props.onTip(checkoutError, 5, this.props.quest, this.props.user)}>
+          <Button onTouchTap={() => this.props.onTip(checkoutError, 5, this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>
             $5
           </Button>
         </div>

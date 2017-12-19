@@ -13,6 +13,7 @@ import {logEvent} from '../Main'
 import {TemplateContext} from '../cardtemplates/TemplateTypes'
 import {defaultContext, ParserNode} from '../cardtemplates/Template'
 import {remoteify} from './ActionTypes'
+import {MIN_FEEDBACK_LENGTH} from '../Constants'
 
 declare var window:any;
 declare var require:any;
@@ -87,6 +88,12 @@ export function subscribe(a: {email: string}) {
 
 export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState}) {
   return (dispatch: Redux.Dispatch<any>) => {
+    if (a.userFeedback.rating < 3 && (!a.userFeedback.text || a.userFeedback.text.length < MIN_FEEDBACK_LENGTH)) {
+      return alert('Sounds like the quest needs work! Please provide feedback of at least ' + MIN_FEEDBACK_LENGTH + ' characters to help the author improve.');
+    } else if (a.userFeedback.text.length > 0 && a.userFeedback.text.length < MIN_FEEDBACK_LENGTH) {
+      return alert('Reviews must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value to authors.');
+    }
+
     const data = {
       questid: a.quest.details.id,
       userid: a.user.id,
@@ -111,10 +118,10 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
     .then((response: string) => {
       logEvent('user_feedback_' + a.userFeedback.type, { label: data.questid, value: data.rating });
       dispatch(userFeedbackClear());
-      dispatch(openSnackbar('Submission successful. Thank you!'));
+      dispatch(openSnackbar('Review submitted. Thank you!'));
     }).catch((error: Error) => {
       logEvent('user_feedback_' + a.userFeedback.type + '_err', { label: error });
-      dispatch(openSnackbar('Error submitting feedback: ' + error));
+      dispatch(openSnackbar('Error submitting review: ' + error));
     });
   };
 }

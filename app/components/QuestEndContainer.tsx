@@ -7,7 +7,7 @@ import {openSnackbar} from '../actions/Snackbar'
 import {login} from '../actions/User'
 import {userFeedbackChange} from '../actions/UserFeedback'
 import {submitUserFeedback} from '../actions/Web'
-import {authSettings, MIN_FEEDBACK_LENGTH} from '../Constants'
+import {authSettings} from '../Constants'
 import {AppState, QuestState, SettingsType, UserState, UserFeedbackState} from '../reducers/StateTypes'
 import {getDevicePlatform} from '../Globals'
 import {logEvent} from '../Main'
@@ -49,11 +49,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
     },
     onSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => {
       if (userFeedback.rating && userFeedback.rating > 0) {
-        if (userFeedback.rating < 3 && (!userFeedback.text || userFeedback.text.length < MIN_FEEDBACK_LENGTH)) {
-          return alert('Sounds like the quest needs work! Please provide a review of at least ' + MIN_FEEDBACK_LENGTH + ' characters to help the author improve.');
-        } else if (userFeedback.text.length > 0 && userFeedback.text.length < MIN_FEEDBACK_LENGTH) {
-          return alert('Reviews must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value to authors.');
-        }
         if (!user || !user.loggedIn) {
           dispatch(login({callback: (user: UserState) => {
             dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
@@ -65,13 +60,26 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       logEvent('quest_end', { ...quest.details, action: quest.details.title, label: quest.details.id });
       dispatch(toPrevious({name: 'FEATURED_QUESTS'}));
     },
-    onTip: (checkoutError: string, amount: number, quest: QuestState, user: UserState) => {
+    onTip: (checkoutError: string, amount: number, quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => {
       logEvent('tip_start', { value: amount, action: quest.details.title, label: quest.details.id });
-      if (checkoutError !== null) {
-        dispatch(openSnackbar(checkoutError));
+      if (!user || !user.loggedIn) {
+        dispatch(login({callback: (user: UserState) => {
+          dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
+          if (checkoutError !== null) {
+            dispatch(openSnackbar(checkoutError));
+          } else {
+            dispatch(checkoutSetState({amount, productcategory: 'Quest Tip', productid: quest.details.id}));
+            dispatch(toCheckout(user, amount));
+          }
+        }}));
       } else {
-        dispatch(checkoutSetState({amount, productcategory: 'Quest Tip', productid: quest.details.id}));
-        dispatch(toCheckout(user, amount));
+        dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
+        if (checkoutError !== null) {
+          dispatch(openSnackbar(checkoutError));
+        } else {
+          dispatch(checkoutSetState({amount, productcategory: 'Quest Tip', productid: quest.details.id}));
+          dispatch(toCheckout(user, amount));
+        }
       }
     },
   };

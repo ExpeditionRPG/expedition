@@ -25,6 +25,7 @@ import {AUDIO_COMMAND_DEBOUNCE_MS} from '../../Constants'
 
 const SFX_FILES = ['sfx/combat_defeat', 'sfx/combat_victory'];
 const MUSIC_FADE_SECONDS = 1.5;
+const MUSIC_FADE_LONG_SECONDS = 3.5; // for fade outs, such as the end of combat
 const MUSIC_DEFINITIONS = {
   combat: {
     light: {
@@ -361,12 +362,13 @@ export default class Audio extends React.Component<AudioProps, {}> {
       clearTimeout(this.musicTimeout);
       this.musicTimeout = null;
     }
+    const fadeSeconds = (this.intensity > 0) ? MUSIC_FADE_SECONDS : MUSIC_FADE_LONG_SECONDS;
     for (let i = 0; i < this.musicNodes.length; i++) {
       const track = this.musicNodes[i];
       if (track.source.playbackState === track.source.PLAYING_STATE) {
-        track.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + MUSIC_FADE_SECONDS); // Fade out
+        track.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + fadeSeconds); // Fade out
         track.source.stop = track.source.stop || track.source.noteOff; // polyfill for old browsers
-        track.source.stop(this.ctx.currentTime + MUSIC_FADE_SECONDS);
+        track.source.stop(this.ctx.currentTime + fadeSeconds);
       }
     }
   }
