@@ -18,7 +18,7 @@ import {getRemotePlayClient} from '../../RemotePlay'
 const cheerio: any = require('cheerio');
 
 function numLocalAndRemotePlayers(settings: SettingsType, rp: RemotePlayState): number {
-  if (!rp) {
+  if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length === 0) {
     return settings.numPlayers;
   }
 
