@@ -22,7 +22,7 @@ describe('users', () => {
     email: "test@test.com",
     name: "Test Testerson",
     created: new Date(Date.now()),
-    lastLogin: new Date(Date.now()),
+    last_login: new Date(Date.now()),
   };
 
   describe('upsert', () => {
@@ -30,7 +30,7 @@ describe('users', () => {
       u.upsert(testUserData).then(() => {
         return u.get("test");
       }).then((user: any) => {
-        expect(user.dataValues).toEqual(testUserData);
+        expect(user).toContain(testUserData);
         done();
       }).catch((err: Error) => {
         throw err;

@@ -8,8 +8,10 @@ export interface UserAttributes {
   id: string;
   email: string;
   name: string;
+  loot_points: number;
   created: Date;
-  lastLogin: Date;
+  login_count: number;
+  last_login: Date;
 }
 
 export interface UserInstance extends Sequelize.Instance<UserAttributes> {
@@ -39,17 +41,24 @@ export class User {
         }
       },
       name: Sequelize.STRING(255),
+      loot_points: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
       created: Sequelize.DATE,
-      lastLogin: Sequelize.DATE,
+      login_count: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
+      last_login: Sequelize.DATE,
     }, {
       timestamps: false, // TODO: eventually switch to sequelize timestamps
-      underscored: true,
     }) as UserModel);
   }
 
   public associate(models: any) {}
 
-  public upsert(user: UserAttributes): Bluebird<any> {
+  public upsert(user: UserAttributes): Bluebird<UserAttributes> {
     return this.s.authenticate()
       .then(() => {return this.model.upsert(user)})
       .then((created: Boolean) => {
@@ -60,22 +69,22 @@ export class User {
           });
         }
       })
-      .then((result: any) => {
-        if (result) {
+      .then((subscribed: Boolean) => {
+        if (subscribed) {
           console.log(user.email + ' subscribed to creators list');
         }
+      })
+      .then(() => {return this.model.findOne({where: {id: user.id}})})
+      .then((result: UserInstance) => {
+        result.increment('login_count');
+        return result.dataValues;
       });
   }
 
-  public get(id: string): Bluebird<UserInstance> {
+  public get(id: string): Bluebird<UserAttributes> {
     return this.s.authenticate()
-      .then(() => {return this.model.findAll({where: {id}})})
-      .then((results: UserInstance[]) => {
-        if (results.length !== 1) {
-          throw new Error('Expected single result for user; got ' + results.length);
-        }
-        return results[0];
-      });
+      .then(() => {return this.model.findOne({where: {id}})})
+      .then((result: UserInstance) => {return result.dataValues});
   }
 }
 

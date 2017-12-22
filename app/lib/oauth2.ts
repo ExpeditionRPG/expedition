@@ -1,5 +1,6 @@
 import Config from '../config'
 import {models} from '../models/Database'
+import {UserAttributes} from '../models/Users'
 import * as express from 'express'
 
 const Express = require('express');
@@ -65,6 +66,7 @@ export function template(req: express.Request, res: express.Response, next: expr
 // information. Upon approval the user is redirected to `/auth/google/callback`.
 // If the `return` query parameter is specified when sending a user to this URL
 // then they will be redirected to that URL when the flow is finished.
+// This also fetches their info from the DB and returns that (if available).
 // [START authorize]
 router.post('/auth/google', // LOGIN
   (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -85,16 +87,18 @@ router.post('/auth/google', // LOGIN
   (req: express.Request, res: express.Response) => {
     res.header('Access-Control-Allow-Origin', req.get('origin'));
     res.header('Access-Control-Allow-Credentials', 'true');
-    if (req.user) {
-      res.end(req.user);
-    } else {
+    if (!req.user) {
       res.end(401);
     }
     const user: any = {id: req.user};
     if (req.body.email) { user.email = req.body.email; }
     if (req.body.name) { user.name = req.body.name; }
     models.User.upsert(user)
+      .then((user: UserAttributes) => {
+        res.end(JSON.stringify(user));
+      })
       .catch((err: Error) => {
+        res.end(JSON.stringify(user)); // Don't break login if DB fails - they're still authenticated
         console.log(err);
       });
   }
