@@ -76,7 +76,7 @@
     <p>{{food = 1}}</p>
   </roleplay>
   <combat data-line="106">
-    <e tier="1">Custom</e>
+    <e tier="2">Custom</e>
     <e>Giant Rat</e>
     <event on="round" if="_.currentCombatRound() % 2 == 1">
       <roleplay title="" data-line="113">

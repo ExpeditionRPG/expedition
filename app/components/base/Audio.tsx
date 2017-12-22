@@ -183,7 +183,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
         this.currentMusicTheme = null;
         this.currentMusicTracks = null;
         this.fadeOutMusic();
-      } else if (oldIntensity === 0) { // Starting from silence, immediately start the theme
+      } else if (this.currentMusicTheme === null || oldIntensity === 0) { // Starting from silence, immediately start the theme
         if (newIntensity <= 18) {
           this.playNewMusicTheme(MUSIC_DEFINITIONS.combat.light);
         } else {

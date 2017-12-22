@@ -15,7 +15,7 @@ export function openSnackbar(message: string, errorMessage?: string): SnackbarOp
     const quest = (getStore().getState().quest || {}).details || {};
     const email = 'expedition@fabricate.io';
     const subject = `App error: ${getDevicePlatform()} v${getAppVersion()}`;
-    const body = `Error: ${errorMessage}. Quest: ${quest.title} (ID: ${quest.id})`;
+    const body = `PLEASE TYPE WHAT YOU WHERE DOING AT THE TIME OF THE ERROR HERE: ...\n\nError: ${errorMessage}. Quest: ${quest.title} (ID: ${quest.id})`;
     action.action = () => {
       if (window.plugin && window.plugin.email) {
         window.plugin.email.isAvailable((hasAccount: boolean) => {
