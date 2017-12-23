@@ -140,7 +140,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
     }
 
     // AUDIO COMMANDS. Ignore if old or duplicate (aka from going back, or settings change)
-    if (nextProps.audio.timestamp <= this.lastCommandTimestamp + AUDIO_COMMAND_DEBOUNCE_MS) {
+    if (AUDIO_COMMAND_DEBOUNCE_MS > Math.abs(nextProps.audio.timestamp - this.lastCommandTimestamp)) {
       return;
     }
     this.lastCommandTimestamp = nextProps.audio.timestamp;

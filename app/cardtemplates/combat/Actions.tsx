@@ -18,7 +18,7 @@ import {getRemotePlayClient} from '../../RemotePlay'
 const cheerio: any = require('cheerio');
 
 function numLocalAndRemotePlayers(settings: SettingsType, rp: RemotePlayState): number {
-  if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length === 0) {
+  if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
     return settings.numPlayers;
   }
 
@@ -496,7 +496,7 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
     a.rp = getState().remotePlay;
   }
 
-  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), numLocalAndRemotePlayers(a.settings, a.rp));
+  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta));
   a.node = a.node.clone();
   a.node.ctx.templates.combat.numAliveAdventurers = newAdventurerCount;
   dispatch({type: 'QUEST_NODE', node: a.node});
