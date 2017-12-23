@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Remot
       if (secret.length !== 4) {
         return dispatch(openSnackbar('Please enter the full session code (4 characters)'));
       }
-      return dispatch(remotePlayConnect(user, secret));
+      return dispatch(remotePlayConnect(user, secret.toUpperCase()));
     },
     onReconnect: (user: UserState, id: SessionID) => {
       console.log('TODO RECONNECT ' + id);
