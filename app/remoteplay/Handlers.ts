@@ -197,7 +197,11 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
     const s = inMemorySessions[params.session];
     if (s) {
       for (const k of Object.keys(s)) {
+        if (!s[k].status) {
+          continue;
+        }
         console.log('Initial notify of status for ' + k);
+
         ws.send(JSON.stringify({
           client: s[k].client,
           instance: s[k].instance,
