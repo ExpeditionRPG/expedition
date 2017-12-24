@@ -250,6 +250,10 @@ p:first-child {
   margin-top: 1em;
 }
 
+a {
+  color: $font_color_primary;
+}
+
 .callout {
   p {
     margin-top: 0;
@@ -1150,6 +1154,11 @@ span.line {
     text-align: center;
     opacity: 0.7;
     margin-top: size(huge);
+  }
+  .privacy {
+    text-align: center;
+    opacity: 0.7;
+    margin-top: size(base);
   }
 
   .dialog {

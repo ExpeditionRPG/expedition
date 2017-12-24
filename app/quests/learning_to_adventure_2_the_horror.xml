@@ -43,7 +43,7 @@
     </choice>
     <choice text="Fought the Wisp and Mushroom in the market">
       <roleplay icon="fae" title="The Fae" data-line="48">
-        <p>The guardsman clears his throat and begins, "After you so bravely fought off the Fae causing a commotion in the market, the town was quite... for a while.</p>
+        <p>The guardsman clears his throat and begins, "After you so bravely fought off the Fae causing a commotion in the market, the town was quiet... for a while.</p>
         <p>"But little did we know, they were gathering forces to get revenge on us. For the past month, the guard has had our hands full fighting them off. But their most recent attacks have been more than we can handle. Frustrated at their lack of progress, they brought in allies of unspeakable horror.</p>
         <p>"Some of these horrors have managed to get inside of the town, but we can't spare anyone from the wall. We need you to stop them."</p>
       </roleplay>

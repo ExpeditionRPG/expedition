@@ -496,7 +496,7 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
     a.rp = getState().remotePlay;
   }
 
-  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta));
+  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), numLocalAndRemotePlayers(a.settings, a.rp));
   a.node = a.node.clone();
   a.node.ctx.templates.combat.numAliveAdventurers = newAdventurerCount;
   dispatch({type: 'QUEST_NODE', node: a.node});
