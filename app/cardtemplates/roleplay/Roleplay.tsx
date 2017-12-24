@@ -27,28 +27,26 @@ export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps
 // And [art_name] with <img class="art" src="images/art_name.svg">
 // if [art_name] ends will _full, adds class="full"; otherwise displays at 50% size
 function generateIconElements(content: string): JSX.Element {
-  content = content || '';
-  return <span dangerouslySetInnerHTML={{__html:
-    content.replace(new RegExp(REGEX.ICON.source, 'g'), (match:string, group:string): string => {
-        return `<img class="inline_icon" src="images/${group}_small.svg" />`;
-      })
-      .replace(new RegExp(REGEX.ART.source, 'g'), (match:string, group:string): string => {
-        let imgName = `images/${group}`;
-        let imgClass = 'artHalf';
-        if (group.slice(-5) === '_full') {
-          imgName = imgName.slice(0, -5);
-          imgClass = 'artFull';
-        }
-        if (imgName.slice(-4) === '_png') {
-          imgName = imgName.slice(0, -4) + '.png';
-        } else {
-          imgName = imgName + '.svg';
-        }
-        return `<div class="${imgClass}">
-          <img class="art" src="${imgName}" />
-        </div>`;
-      })
-  }} />;
+  content = (content || '').replace(new RegExp(REGEX.ICON.source, 'g'), (match:string, group:string): string => {
+      return `<img class="inline_icon" src="images/${group.toLowerCase()}_small.svg" />`;
+    })
+    .replace(new RegExp(REGEX.ART.source, 'g'), (match:string, group:string): string => {
+      let imgName = `images/${group}`;
+      let imgClass = 'artHalf';
+      if (group.slice(-5) === '_full') {
+        imgName = imgName.slice(0, -5);
+        imgClass = 'artFull';
+      }
+      if (imgName.slice(-4) === '_png') {
+        imgName = imgName.slice(0, -4) + '.png';
+      } else {
+        imgName = imgName + '.svg';
+      }
+      return `<div class="${imgClass}">
+        <img class="art" src="${imgName.toLowerCase()}" />
+      </div>`;
+    });
+  return <span dangerouslySetInnerHTML={{__html: content }} />;
 }
 
 export interface RoleplayResult {
