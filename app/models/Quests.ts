@@ -243,7 +243,7 @@ export class Quest {
         const publishedurl = CloudStorage.getPublicUrl(cloudStorageData.gcsname);
         console.log('Uploading to URL ' + publishedurl);
 
-        if (isNew) {
+        if (isNew && quest.dataValues.partition === PUBLIC_PARTITION) {
           // If this is a newly published quest, email us!
           // We don't care if this fails.
           Mail.send('expedition+newquest@fabricate.io',
@@ -252,18 +252,18 @@ export class Quest {
 
           // If this is the author's first published quest, email them a congratulations
           this.model.findOne({where: {userid}})
-          .then((q: QuestInstance) => {
-            if (!Boolean(q)) {
-              Mail.send([params.email,'expedition+newquest@fabricate.io'],
-                'Congratulations on publishing your first quest!',
-                `<p>${params.author},</p>
-                <p>Congratulations on publishing your first Expedition quest!</p>
-                <p>For all of the adventurers across the world, thank you for sharing your story with us - we can't wait to play it!</p>
-                <p>And remember, if you have any questions or run into any issues, please don't hesistate to email <a href="mailto:Authors@Fabricate.io"/>Authors@Fabricate.io</a></p>
-                <p>Sincerely,</p>
-                <p>Todd, Scott & The Expedition Team</p>`);
-            }
-          })
+            .then((q: QuestInstance) => {
+              if (!Boolean(q)) {
+                Mail.send([params.email,'expedition+newquest@fabricate.io'],
+                  'Congratulations on publishing your first quest!',
+                  `<p>${params.author},</p>
+                  <p>Congratulations on publishing your first Expedition quest!</p>
+                  <p>For all of the adventurers across the world, thank you for sharing your story with us - we can't wait to play it!</p>
+                  <p>And remember, if you have any questions or run into any issues, please don't hesistate to email <a href="mailto:Authors@Fabricate.io"/>Authors@Fabricate.io</a></p>
+                  <p>Sincerely,</p>
+                  <p>Todd, Scott & The Expedition Team</p>`);
+              }
+            });
         }
 
         const updateValues: QuestAttributes = {
