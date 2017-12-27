@@ -248,7 +248,9 @@ export class Quest {
           // We don't care if this fails.
           Mail.send('expedition+newquest@fabricate.io',
             `New quest published: ${params.title} (${params.partition})`,
-            `Summary: ${params.summary}. By ${params.author}, for ${params.minplayers} - ${params.maxplayers} players. ${params.expansionhorror ? 'Requires The Horror expansion.' : 'No expansions required.'}`);
+            `Summary: ${params.summary}.\n
+            By ${params.author}, for ${params.minplayers} - ${params.maxplayers} players over ${params.mintimeminutes} - ${params.maxtimeminutes} minutes. ${params.genre}.
+            ${params.expansionhorror ? 'Requires The Horror expansion.' : 'No expansions required.'}`);
 
           // If this is the author's first published quest, email them a congratulations
           this.model.findOne({where: {userid}})
