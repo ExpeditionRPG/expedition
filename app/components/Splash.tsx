@@ -23,11 +23,11 @@ const Splash = (props: any): JSX.Element => {
           iconElementRight={
             <div className="appBarRight">
               {props.user.loggedIn && <div className="login">
+                <span className="email">{props.user.email}</span>
                 <FlatButton
                   label="New Quest"
                   onTouchTap={() => props.onNewQuest(props.user)}
                 />
-                <span className="email">{props.user.email}</span>
               </div>}
               {!props.user.loggedIn && <div className="login">
                 <FlatButton
