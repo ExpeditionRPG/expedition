@@ -45,7 +45,13 @@ function setupRemotePlay() {
 
 // TODO record modal views as users navigate: ReactGA.modalview('/about/contact-us');
 // likely as a separate logView or logNavigate or something
-export function logEvent(name: string, args: any): void {
+export function logEvent(name: string, argsInput: any): void {
+  // Firebase requires that keys are < 40 character, values are < 100 characters
+  name = (name || '').slice(0, 100);
+  const args = {} as any;
+  Object.keys(argsInput).forEach((key: string) => {
+    args[key.toString().slice(0, 40)] = argsInput[key].toString().slice(0, 100);
+  });
   const fbp = getWindow().FirebasePlugin;
   if (fbp) {
     fbp.logEvent(name, args);
@@ -160,7 +166,7 @@ export function init() {
   window.onerror = function(message: string, source: string, line: number) {
     const quest = getStore().getState().quest;
     if (quest && quest.details && quest.details.id) {
-      message = `Quest: ${quest.details.id} - ${quest.details.title}. Error: ${message}.`;
+      message = `Quest: ${quest.details.title}. Error: ${message}.`;
     }
     const label = (source) ? `${source} line ${line}` : null;
     console.error(message, label);
