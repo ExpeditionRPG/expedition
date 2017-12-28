@@ -14,6 +14,7 @@ import {remotePlay} from './RemotePlay'
 import {inflight} from './InFlight'
 import {AppStateWithHistory, AppState} from './StateTypes'
 import {ReturnAction} from '../actions/ActionTypes'
+import {getNavigator} from '../Globals'
 
 function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppState {
   state = state || ({} as AppStateWithHistory);
@@ -52,8 +53,17 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
 
     // If action is "Return", pop history accordingly
     if (action.type === 'RETURN') {
-      let pastStateIdx: number = state._history.length-1;
+      // Backing all the way out of the Android app should kill it
+      if (state._history.length === 0) {
+        const navigator = getNavigator();
+        if (navigator.app) {
+            navigator.app.exitApp();
+        } else if (navigator.device) {
+            navigator.device.exitApp();
+        }
+      }
 
+      let pastStateIdx: number = state._history.length-1;
       const returnAction = action as ReturnAction;
       if (returnAction.to && (returnAction.to.name || returnAction.to.phase)) {
         while (pastStateIdx > 0 && !isReturnState(state._history[pastStateIdx], returnAction)) {
