@@ -7,6 +7,7 @@ const default_state: UserState = {
   id: null,
   displayName: null,
   image: null,
+  email: null,
 };
 
 export function user(state: UserState = default_state, action: Redux.Action): UserState {

@@ -14,6 +14,7 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
   return {
     dialogs: state.dialogs,
     quest: state.quest,
+    user: state.user,
   };
 }
 
