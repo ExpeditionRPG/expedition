@@ -49,13 +49,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
     },
     onSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => {
       if (userFeedback.rating && userFeedback.rating > 0) {
-        if (!user || !user.loggedIn) {
-          dispatch(login({callback: (user: UserState) => {
-            dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
-          }}));
-        } else {
-          dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
-        }
+        dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
       }
       logEvent('quest_end', { ...quest.details, action: quest.details.title, label: quest.details.id });
       dispatch(toPrevious({name: 'FEATURED_QUESTS'}));

@@ -1,4 +1,5 @@
 import {SnackbarCloseAction, SnackbarOpenAction} from './ActionTypes'
+import {setDialog} from './Dialog'
 import {getAppVersion, getDevicePlatform} from '../Globals'
 import {getStore} from '../Store'
 
@@ -12,27 +13,9 @@ export function openSnackbar(message: string, errorMessage?: string): SnackbarOp
   const action = {type: 'SNACKBAR_OPEN', message} as SnackbarOpenAction;
   if (errorMessage) {
     action.actionLabel = 'Report';
-    const quest = (getStore().getState().quest || {}).details || {};
-    const email = 'expedition@fabricate.io';
-    const subject = `App error: ${getDevicePlatform()} v${getAppVersion()}`;
-    const body = `PLEASE TYPE WHAT YOU WHERE DOING AT THE TIME OF THE ERROR HERE: ...\n\nError: ${errorMessage}. Quest: ${quest.title} (ID: ${quest.id})`;
     action.action = () => {
-      if (window.plugin && window.plugin.email) {
-        window.plugin.email.isAvailable((hasAccount: boolean) => {
-          window.plugin.email.open({
-            to: [email],
-            subject,
-            body,
-          });
-        });
-      } else {
-        openEmailLink(email, subject, body);
-      }
+      return getStore().dispatch(setDialog('REPORT_ERROR', errorMessage));
     };
   }
   return action;
-}
-
-function openEmailLink(email: string, subject: string, body: string) {
-  window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_system');
 }

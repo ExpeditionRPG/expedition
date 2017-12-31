@@ -70,6 +70,11 @@ export function getDevicePlatform(): 'android' | 'ios' | 'web' {
   }
 }
 
+
+export function getPlatformDump(): string {
+  return (window.navigator.platform || '') + ': ' + (window.navigator.userAgent || '') + ': ' + (window.navigator.cookieEnabled ? 'W/COOKIES' : 'NO COOKIES');
+}
+
 export function setWindow(win: ReactWindow) {
   refs.window = win;
 }

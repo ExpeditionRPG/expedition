@@ -39,6 +39,7 @@ export interface CheckoutSetStateAction extends Redux.Action, CheckoutState {
 export interface DialogSetAction extends Redux.Action {
   type: 'DIALOG_SET';
   dialogID: DialogIDType;
+  message?: string;
 }
 
 export interface NavigateAction extends Redux.Action {

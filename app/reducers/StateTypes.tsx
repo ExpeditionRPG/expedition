@@ -28,9 +28,10 @@ export interface CheckoutState {
   stripe: any;
 }
 
-export type DialogIDType = null | 'EXIT_QUEST' | 'EXPANSION_SELECT' | 'EXIT_REMOTE_PLAY';
+export type DialogIDType = null | 'EXIT_QUEST' | 'EXPANSION_SELECT' | 'EXIT_REMOTE_PLAY' | 'FEEDBACK' | 'REPORT_ERROR' | 'REPORT_QUEST';
 export interface DialogState {
   open: DialogIDType;
+  message: string;
 }
 
 export type CardThemeType = 'LIGHT' | 'RED' | 'DARK';
@@ -87,7 +88,7 @@ export interface SnackbarState {
 
 export type RemotePlayPhase = 'CONNECT'|'LOBBY';
 export type CheckoutPhase = 'ENTRY' | 'DONE';
-export type CardName = 'CHECKOUT' | 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REPORT' | 'REMOTE_PLAY';
+export type CardName = 'CHECKOUT' | 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REMOTE_PLAY';
 export type CardPhase = TemplatePhase | SearchPhase | RemotePlayPhase | CheckoutPhase;
 export interface CardState {
   name: CardName;
@@ -121,7 +122,7 @@ export interface UserState {
 }
 
 export interface UserFeedbackState {
-  type: 'rating' | 'report';
+  type: 'feedback' | 'rating' | 'report_error' | 'report_quest';
   rating?: number;
   text: string;
 }

@@ -89,7 +89,6 @@
         "cordova-ios": "^4.4.0",
         "cordova-ios-plugin-no-export-compliance": "git+https://github.com/mikaoelitiana/cordova-plugin-ios-no-export-compliance.git",
         "cordova-plugin-device": "^1.1.6",
-        "cordova-plugin-email-composer": "^0.8.11",
         "cordova-plugin-firebase": "^0.1.21",
         "cordova-plugin-fullscreen": "^1.1.0",
         "cordova-plugin-googleplus": "git+https://github.com/EddyVerbruggen/cordova-plugin-googleplus.git",
@@ -158,8 +157,7 @@
             "cordova-plugin-hidden-statusbar-overlay": {},
             "cordova-plugin-ios-no-export-compliance": {},
             "cordova-plugin-splashscreen": {},
-            "cordova-plugin-device": {},
-            "cordova-plugin-email-composer": {}
+            "cordova-plugin-device": {}
         },
         "platforms": [
             "android",

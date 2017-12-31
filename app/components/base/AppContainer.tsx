@@ -9,7 +9,6 @@ import CheckoutContainer from '../CheckoutContainer'
 import ToolsContainer from '../ToolsContainer'
 import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
 import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
-import ReportContainer from '../ReportContainer'
 import SearchContainer from '../SearchContainer'
 import SettingsContainer from '../SettingsContainer'
 import SplashScreenContainer from '../SplashScreenContainer'
@@ -125,9 +124,6 @@ export default class Main extends React.Component<MainProps, {}> {
         break;
       case 'SETTINGS':
         card = <SettingsContainer />;
-        break;
-      case 'REPORT':
-        card = <ReportContainer />;
         break;
       case 'REMOTE_PLAY':
         card = <RemotePlayContainer phase={state.card.phase as RemotePlayPhase} />;

@@ -67,10 +67,9 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
         }
         break;
       case 'FEEDBACK':
-        window.open(this.getFeedbackURL(), '_system');
-        break;
+        return dispatch(setDialog('FEEDBACK'));
       case 'REPORT':
-        return dispatch(toCard({name: 'REPORT'}));
+        return dispatch(setDialog('REPORT_QUEST'));
       default:
         throw new Error('Unknown menu option ' + value);
     }

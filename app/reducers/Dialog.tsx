@@ -5,6 +5,7 @@ import {DialogState} from './StateTypes'
 
 export const initialDialog: DialogState = {
   open: null,
+  message: '',
 };
 
 export function dialog(state: DialogState = initialDialog, action: Redux.Action): DialogState {
@@ -14,6 +15,7 @@ export function dialog(state: DialogState = initialDialog, action: Redux.Action)
       return {
         ...state,
         open: setAction.dialogID,
+        message: setAction.message,
       };
     default:
       return state;
