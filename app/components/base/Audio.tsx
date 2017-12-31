@@ -205,10 +205,12 @@ export default class Audio extends React.Component<AudioProps, {}> {
     if (newPeak !== oldPeak) {
       this.peakIntensity = newPeak;
       const peakNode = this.musicNodes[this.musicNodes.length - 1];
-      if (newPeak > 0) {
-        peakNode.gain.gain.linearRampToValueAtTime(newPeak, this.ctx.currentTime + MUSIC_FADE_SECONDS); // Fade in
-      } else {
-        peakNode.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + MUSIC_FADE_SECONDS); // Fade out
+      if (peakNode && peakNode.gain) {
+        if (newPeak > 0) {
+          peakNode.gain.gain.linearRampToValueAtTime(newPeak, this.ctx.currentTime + MUSIC_FADE_SECONDS); // Fade in
+        } else {
+          peakNode.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + MUSIC_FADE_SECONDS); // Fade out
+        }
       }
     }
   }
