@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const options = {
   entry: [
@@ -34,7 +35,16 @@ const options = {
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
-    new webpack.optimize.UglifyJsPlugin({minimize: true, mangle: false}),
+    new UglifyJsPlugin({
+      uglifyOptions: {
+        mangle: {
+          keep_fnames: true, // Critical for remote play / remoteify!
+        },
+        compress: {
+          keep_fnames: true, // Critical for remote play / remoteify!
+        },
+      },
+    }),
     new CopyWebpackPlugin([
       { from: 'app/images', to: 'images'},
       { from: 'app/quests', to: 'quests'},
