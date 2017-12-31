@@ -169,6 +169,9 @@ export function remoteify<A>(a: (args: A, dispatch?: Redux.Dispatch<any>, getSta
   const remoted = (args: A) => {
     return ([a.name, a, args] as any) as Redux.Action; // We know better >:}
   }
+  if (REMOTE_ACTIONS[a.name]) {
+    console.error('ERROR: Remote action ' + a.name + ' already registered elsewhere! This will break remote play!');
+  }
   REMOTE_ACTIONS[a.name] = remoted;
   return remoted;
 }

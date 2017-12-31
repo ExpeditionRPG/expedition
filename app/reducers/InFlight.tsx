@@ -2,7 +2,7 @@ import {InflightCommitAction, InflightRejectAction} from '../actions/ActionTypes
 import Redux from 'redux'
 import {AppStateWithHistory, AppState} from './StateTypes'
 
-function stripState(state: AppStateWithHistory): AppStateWithHistory {
+export function stripRemoteStateAndSettings(state: AppStateWithHistory): AppStateWithHistory {
   const newState = {...state};
   delete newState._inflight;
   delete newState._committed;
@@ -23,13 +23,13 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
     // in-flight actions.
     // TODO: How to handle actions with side effects?!?! Vibration & sound... Use a sideEffect() function wrapper?
     state._inflight = [];
-    state._committed = stripState(state);
+    state._committed = stripRemoteStateAndSettings(state);
   }
 
   switch(action.type) {
     case 'REMOTE_PLAY_SESSION':
       // Initialize committed state
-      return {...state, _committed: stripState(state)};
+      return {...state, _committed: stripRemoteStateAndSettings(state)};
     case 'INFLIGHT_COMMIT':
       console.log('got INFLIGHT_COMMIT');
       let found = false;
@@ -57,7 +57,7 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
         return {
           ...state,
           _inflight: [],
-          _committed: stripState(state),
+          _committed: stripRemoteStateAndSettings(state),
         } as AppStateWithHistory;
       } else {
         return state;
@@ -70,22 +70,27 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
       // rejected transaction.
       const id = (action as InflightRejectAction).id;
       console.log('INFLIGHT_REJECT id ' + id);
-      for (let i = 0; i < state._inflight.length; i++) {
-        if (state._inflight[i].id === id) {
-          const newInflight = [...state._inflight];
+      const newInflight = [...state._inflight];
+      for (let i = 0; i < newInflight.length; i++) {
+        if (newInflight[i].id === id) {
           newInflight.splice(i, 1);
-          return {
-            ...state,
-            _inflight: newInflight
-          };
+          i--;
         }
       }
-      console.error('Reject status received for unknown inflight action ' + (action as InflightCommitAction).id);
+      if (newInflight.length >= state._inflight.length) {
+        console.error('Reject status received for unknown inflight action ' + (action as InflightCommitAction).id);
+      } else {
+        return {
+          ...state,
+          _inflight: newInflight
+        };
+      }
       break;
     case 'INFLIGHT_COMPACT':
       console.log('INFLIGHT COMPACT');
       // Run through inflight actions until encountering one that isn't committed. That's our new
       // committed state.
+      // TODO: also count as committed any inflight actions older than ~10 seconds
       let newCommitted = {...state._committed};
       for (let i = 0; i < state._inflight.length && state._inflight[i].committed; i++) {
         newCommitted = combinedReduce(newCommitted, state._inflight[i].action);
@@ -93,18 +98,39 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
 
       return {
         ...state,
-        ...stripState(newCommitted),
-        _committed: newCommitted,
+        ...stripRemoteStateAndSettings(newCommitted),
         _inflight: [],
+        // _committed is updated in CombinedReducers whenever _inflight is empty
       };
     case 'REMOTE_PLAY_DISCONNECT':
       return {...state, _committed: undefined, _inflight: undefined};
     default:
-      // Add all other actions to the inflight queue.
-      if ((action as any)._inflight) {
+      // Add all other actions to the inflight queue if
+      // there's uncommitted actions.
+      if (!(action as any)._inflight || (action as any)._inflight === 'remote' && state._inflight.length > 0) {
+        // We still need to add other peers' remote actions to the inflight queue to handle
+        // the chain of events where:
+        // 1. Client publishes an action
+        // 2. Remote peer's conflicting action arrives, delayed
+        // 3. INFLIGHT_REJECT is returned for client's action in #1
         return {
           ...state,
-          _inflight: [...state._inflight, {id: (action as any)._inflight, committed: false, action}]
+          _inflight: [...state._inflight, {
+            id: (action as any)._inflight,
+            committed: true,
+            action
+          }]
+        };
+      } else if ((action as any)._inflight) {
+        // Regular inflight actions should accumulate
+        // until they are confirmed to be committed.
+        return {
+          ...state,
+          _inflight: [...state._inflight, {
+            id: (action as any)._inflight,
+            committed: false,
+            action
+          }]
         };
       } else {
         return state;

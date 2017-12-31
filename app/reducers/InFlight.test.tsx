@@ -67,7 +67,9 @@ describe('InFlight reducer', () => {
         stateWithInflight,
         {type: 'INFLIGHT_COMMIT', id: 'action1'} as InflightCommitAction, increment),
         {type: 'INFLIGHT_COMPACT'}, increment);
-      expect(newState._committed).toEqual(jasmine.objectContaining({user: {id: 'a'}} as AppStateWithHistory));
+
+      // The new state should reflect the committed/compacted action.
+      expect(newState).toEqual(jasmine.objectContaining({user: {id: 'a'}} as AppStateWithHistory));
 
       // All other inflight actions are discarded
       expect(newState._inflight).toEqual([]);

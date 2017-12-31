@@ -24,7 +24,7 @@ const TEST_SETTINGS = {
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
 describe('Combat actions', () => {
-  const baseNode = Action(initCombat as any).execute({node: TEST_NODE.clone(), settings: TEST_SETTINGS})[1].node;;
+  const baseNode = Action(initCombat as any).execute({node: TEST_NODE.clone(), settings: TEST_SETTINGS})[1].node;
 
   const newCombatNode = () => {
     return baseNode.clone();
@@ -302,9 +302,9 @@ describe('Combat actions', () => {
 
     it('goes to next round when pnode.getNext() falls outside of combat scope', () => {
       const node = newCombatNode();
-      const rp2 = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: node, index: 3, maxTier: 0, seed: ''})[2].node;
+      const rp2 = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: node, index: 3, maxTier: 0, seed: ''})[1].node;
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: rp2, index: 0, maxTier: 0, seed: ''});
-      expect(actions[1].to.phase).toEqual('RESOLVE_ABILITIES');
+      expect(actions[2].to.phase).toEqual('RESOLVE_ABILITIES');
     });
 
     it('handles gotos that point to outside of combat', () => {
@@ -315,13 +315,13 @@ describe('Combat actions', () => {
 
     it('handles GOTOs that point to other roleplaying inside of the same combat', () => {
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newCombatNode(), index: 5, maxTier: 0, seed: ''});
-      expect(actions[1].to.phase).toEqual('MID_COMBAT_ROLEPLAY');
-      expect(actions[2].node.elem.text()).toEqual('rp2');
+      expect(actions[2].to.phase).toEqual('MID_COMBAT_ROLEPLAY');
+      expect(actions[1].node.elem.text()).toEqual('rp2');
     });
 
     it('renders as combat for RPs inside of same combat', () => {
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newCombatNode(), index: 3, maxTier: 0, seed: ''});
-      expect(actions[1].to.phase).toEqual('MID_COMBAT_ROLEPLAY');
+      expect(actions[2].to.phase).toEqual('MID_COMBAT_ROLEPLAY');
     });
   });
 

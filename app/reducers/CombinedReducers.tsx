@@ -11,7 +11,7 @@ import {snackbar} from './Snackbar'
 import {user} from './User'
 import {userFeedback} from './UserFeedback'
 import {remotePlay} from './RemotePlay'
-import {inflight} from './InFlight'
+import {inflight, stripRemoteStateAndSettings} from './InFlight'
 import {AppStateWithHistory, AppState} from './StateTypes'
 import {ReturnAction} from '../actions/ActionTypes'
 import {getNavigator} from '../Globals'
@@ -51,6 +51,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
       state._history = [];
     }
 
+    // TODO: Convert history into a separate reducer.
     // If action is "Return", pop history accordingly
     if (action.type === 'RETURN') {
       // Backing all the way out of the Android app should kill it
@@ -118,11 +119,16 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
     }
   }
 
+  // Keep committed state up to date if there are no _inflight actions.
+  const newCommitted = (state && state._inflight.length > 0)
+    ? (state && state._committed)
+    : stripRemoteStateAndSettings(state);
+
   // Run the reducers on the new action
   return {...combinedReduce(state, action),
     _history: history,
     _inflight: state && state._inflight,
-    _committed: state && state._committed,
+    _committed: newCommitted,
     // Persist return state on transition actions
     _return: (action.type === 'CARD_TRANSITIONING') ? state._return : false,
   } as AppStateWithHistory;

@@ -79,7 +79,10 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
     }
 
     if (tag === 'event') {
-      throw new Error('<roleplay> cannot contain <event>.');
+      // This sometimes triggers on the boundaries between roleplay and combat.
+      // TODO(scott): Find a more principled solution for these errors.
+      console.warn('Warning: <roleplay> cannot contain <event>.');
+      return;
     }
 
     const element: RoleplayElement = {

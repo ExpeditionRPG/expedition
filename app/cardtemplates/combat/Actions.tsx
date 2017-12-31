@@ -448,13 +448,15 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
 
   if (nextIsInSameCombat) {
     // Continue in-combat roleplay with the next node.
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_ROLEPLAY', overrideDebounce: true}));
+    dispatch({type: 'PUSH_HISTORY'});
     dispatch({type: 'QUEST_NODE', node: nextNode} as QuestNodeAction);
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_ROLEPLAY', overrideDebounce: true, noHistory: true}));
   } else {
     // If the next node is out of this combat, that means we've dropped off the end of the
     // interestitial roleplay. Go back to combat resolution phase.
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true}));
+    dispatch({type: 'PUSH_HISTORY'});
     dispatch({type: 'QUEST_NODE', node: new ParserNode(parentCombatElem, a.node.ctx)} as QuestNodeAction);
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true, noHistory: true}));
   }
   return remoteArgs;
 });

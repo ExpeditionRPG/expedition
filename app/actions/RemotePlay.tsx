@@ -46,9 +46,15 @@ export function handleRemotePlayEvent(e: RemotePlayEvent) {
           console.log('Received unknown remote action ' + e.event.name);
         } else {
           console.log('Inbound: ' + e.event.name + '(' + e.event.args + ')');
+
+          // Set a "remote" inflight marker so it's identifiable
+          // when debugging.
+          const action = a(JSON.parse(e.event.args));
+          (action as any)._inflight = 'remote';
+
           // Note: This is still dispatched locally; it's called as a
           // secondary dispatch.
-          dispatch(a(JSON.parse(e.event.args)));
+          dispatch(action);
         }
         break;
       case 'ERROR':
