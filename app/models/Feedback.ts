@@ -1,9 +1,9 @@
 import * as Mail from '../Mail'
-import {Quest, QuestInstance} from './Quests'
+import {Quest, QuestAttributes, QuestInstance} from './Quests'
 import * as Sequelize from 'sequelize'
 import * as Promise from 'bluebird';
 
-export type FeedbackType = 'rating'|'report';
+export type FeedbackType = 'feedback'|'rating'|'report_error'|'report_quest';
 
 export interface FeedbackAttributes {
   partition?: string;
@@ -17,6 +17,7 @@ export interface FeedbackAttributes {
   name?: string;
   difficulty?: string;
   platform?: string;
+  platformDump?: string;
   players?: number;
   version?: string;
 }
@@ -97,32 +98,42 @@ export class Feedback {
       });
   };
 
-  public submit(type: FeedbackType, feedback: FeedbackAttributes): Promise<any> {
-    // Get quest version, then upsert feedback with the version of the quest.
-    // Recalculate ratings on the quest
-    // Then send a mail.
+  public submitFeedback(feedback: FeedbackAttributes): Promise<any> {
+    // App feedback: Email us
+    return this.s.authenticate()
+      .then(() => {
+        const subject = `App feedback (${feedback.platform} v${feedback.version})`;
+        const message = `<p>Message: ${feedback.text}</p>
+          <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty.</p>
+          <p>Raw platform string: ${feedback.platformDump}</p>
+          <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
+          <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
+        `;
+        return Mail.send(['expedition+appfeedback@fabricate.io'], subject, message);
+      });
+  }
 
-    let quest: QuestInstance;
+  public submitRating(feedback: FeedbackAttributes): Promise<any> {
+    // Quest rating: Get quest, upsert feedback tagged with the current quest version,
+    // Recalculate ratings on the quest, then send a mail if it's remarkable.
     return this.s.authenticate()
       .then(() => {
         return this.quest.get(feedback.partition, feedback.questid);
       })
-      .then((q: QuestInstance) => {
-        if (!q) {
+      .then((quest: QuestInstance) => {
+        if (!quest) {
           throw new Error('No such quest with id ' + feedback.questid);
         }
 
-        feedback.questversion = q.dataValues.questversion;
+        feedback.questversion = quest.dataValues.questversion;
         return this.model.upsert(feedback);
       })
       .then((created: Boolean) => {
         return this.quest.updateRatings(feedback.partition, feedback.questid);
       })
-      .then((q: QuestInstance) => {
-        quest = q;
-
+      .then((quest: QuestInstance) => {
         const ratingavg = (quest.dataValues.ratingavg || 0).toFixed(1);
-        if (type === 'rating' && quest.dataValues.ratingcount === 1) {
+        if (quest.dataValues.ratingcount === 1) {
           const subject = `Your quest just received its first rating!`;
           let message = `<p>${quest.dataValues.author},</p>
             <p>Your quest, ${quest.dataValues.title}, just received its first rating!</p>
@@ -134,7 +145,7 @@ export class Feedback {
           message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
             <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>`;
           return Mail.send([quest.dataValues.email, 'expedition+questfeedback@fabricate.io'], subject, message);
-        } else if (type === 'rating' && feedback.text.length > 0) {
+        } else if (feedback.text.length > 0) {
           const subject = `Quest rated ${feedback.rating}/5: ${quest.dataValues.title}`;
           const message = `<p>User feedback:</p>
             <p>"${feedback.text}"</p>
@@ -146,23 +157,49 @@ export class Feedback {
             <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
           `;
           return Mail.send([quest.dataValues.email, 'expedition+questfeedback@fabricate.io'], subject, message);
-        } else if (type === 'report') {
-          const subject = `Quest reported: ${quest.dataValues.title}`;
-          const message = `<p>User feedback:</p>
-            <p>"${feedback.text}"</p>
-            <p>${feedback.rating} out of 5 stars</p>
-            <p>New quest overall rating: ${ratingavg} out of 5 across ${quest.dataValues.ratingcount} ratings.</p>
-            <p>Was submitted for ${quest.dataValues.title} by ${quest.dataValues.author}</p>
-            <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
-            <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
-            <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
-          `;
-          return Mail.send([quest.dataValues.email, 'expedition+questreported@fabricate.io'], subject, message);
         }
-      })
+      });
+  }
+
+  public submitReportError(feedback: FeedbackAttributes): Promise<any> {
+    // Error report: Email us
+    return this.s.authenticate()
       .then(() => {
-        console.log('Feedback sent for quest (' + quest.dataValues.title + ')');
+        return this.quest.get(feedback.partition, feedback.questid);
+      })
+      .then((quest: QuestInstance) => {
+        const questData = (quest || {} as QuestInstance).dataValues || {} as QuestAttributes;
+        const subject = `Error on ${feedback.platform} v${feedback.version}`;
+        const message = `<p>Message: ${feedback.text}</p>
+          <p>Quest: ${questData.title}</p>
+          <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty.</p>
+          <p>Raw platform string: ${feedback.platformDump}</p>
+          <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
+          <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
+        `;
+        return Mail.send([questData.email, 'expedition+apperror@fabricate.io'], subject, message);
+      });
+  }
+
+  public submitReportQuest(feedback: FeedbackAttributes): Promise<any> {
+    // Report / flag quest: Email us
+    return this.s.authenticate()
+      .then(() => {
+        return this.quest.get(feedback.partition, feedback.questid);
+      })
+      .then((quest: QuestInstance) => {
+        if (!quest) {
+          throw new Error('No such quest with id ' + feedback.questid);
+        }
+
+        const subject = `Quest reported: ${quest.dataValues.title}`;
+        const message = `<p>Message: ${feedback.text}</p>
+          <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
+          <p>Raw platform string: ${feedback.platformDump}</p>
+          <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
+          <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
+        `;
+        return Mail.send([quest.dataValues.email, 'expedition+apperror@fabricate.io'], subject, message);
       });
   }
 }
-

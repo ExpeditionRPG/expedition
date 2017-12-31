@@ -122,18 +122,13 @@ export function unpublish(quest: Quest, req: express.Request, res: express.Respo
 }
 
 export function feedback(feedback: Feedback, req: express.Request, res: express.Response) {
-  const type: FeedbackType = req.params.type;
-  if (req.params.type !== 'rating' && req.params.type !== 'report') {
-    return res.status(500).end('Unknown feedback type: ' + req.params.type);
-  }
-
   let body: any;
   try {
     body = JSON.parse(req.body);
   } catch (e) {
     return res.status(500).end('Error reading request.');
   }
-  const attribs: FeedbackAttributes = {
+  const data: FeedbackAttributes = {
     partition: body.partition || PUBLIC_PARTITION,
     questid: body.questid,
     userid: body.userid,
@@ -145,11 +140,30 @@ export function feedback(feedback: Feedback, req: express.Request, res: express.
     name: body.name,
     difficulty: body.difficulty,
     platform: body.platform,
+    platformDump: body.platformDump,
     players: body.players,
     version: body.version,
   }
 
-  feedback.submit(type, attribs)
+  let handler = null;
+  switch (req.params.type as FeedbackType) {
+    case 'feedback':
+      handler = feedback.submitFeedback.bind(feedback);
+      break;
+    case 'rating':
+      handler = feedback.submitRating.bind(feedback);
+      break;
+    case 'report_error':
+      handler = feedback.submitReportError.bind(feedback);
+      break;
+    case 'report_quest':
+      handler = feedback.submitReportQuest.bind(feedback);
+      break;
+    default:
+      return res.status(500).end('Unknown feedback type: ' + req.params.type);
+  }
+
+  handler(data)
     .then((id: string) => {
       res.end('ok');
     }).catch((e: Error) => {
