@@ -4,8 +4,8 @@ const Math = require('mathjs') as any;
 import * as seedrandom from 'seedrandom'
 
 export function generateSeed(): string {
-  let seed: string;
-  seedrandom(null, { pass: function(p: seedrandom.prng, s: string): seedrandom.prng {
+  let seed: string = '';
+  seedrandom(undefined, { pass: function(p: seedrandom.prng, s: string): seedrandom.prng {
     seed = s;
     return p;
   }});
@@ -140,7 +140,7 @@ function lastExpressionAssignsValue(parsed: any): boolean {
   return (parsed.type === 'AssignmentNode' || parsed.type === 'FunctionAssignmentNode');
 }
 
-function parseOpString(str: string): string {
+function parseOpString(str: string): string | null {
   const op = str.match(/{{([\s\S]+?)}}/);
   if (!op) {
     return null;

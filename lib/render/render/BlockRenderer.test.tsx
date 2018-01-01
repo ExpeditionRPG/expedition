@@ -43,7 +43,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['win'], null),
+          render: XMLRenderer.toRoleplay({}, ['win'], 2),
           startLine: 2,
         },
         {
@@ -54,7 +54,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['lose'], null),
+          render: XMLRenderer.toRoleplay({}, ['lose'], 3),
           startLine: 2,
         },
       ];
@@ -92,7 +92,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['win'], null),
+          render: XMLRenderer.toRoleplay({}, ['win'], 2),
           startLine: 2,
         },
         {
@@ -103,7 +103,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['lose'], null),
+          render: XMLRenderer.toRoleplay({}, ['lose'], 3),
           startLine: 2,
         },
       ];
@@ -125,7 +125,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['win'], null),
+          render: XMLRenderer.toRoleplay({}, ['win'], 2),
           startLine: 2,
         },
         {
@@ -136,7 +136,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['lose'], null),
+          render: XMLRenderer.toRoleplay({}, ['lose'], 3),
           startLine: 2,
         },
       ];
@@ -157,7 +157,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['win'], null),
+          render: XMLRenderer.toRoleplay({}, ['win'], 2),
           startLine: 2,
         },
         {
@@ -168,7 +168,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['lose'], null),
+          render: XMLRenderer.toRoleplay({}, ['lose'], 3),
           startLine: 2,
         },
       ];
@@ -190,7 +190,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['win'], null),
+          render: XMLRenderer.toRoleplay({}, ['win'], 2),
           startLine: 2,
         },
         {
@@ -201,7 +201,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['lose'], null),
+          render: XMLRenderer.toRoleplay({}, ['lose'], 3),
           startLine: 2,
         },
       ];
@@ -231,7 +231,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['choice text'], null),
+          render: XMLRenderer.toRoleplay({}, ['choice text'], 2),
           startLine: 2,
         },
         {
@@ -242,7 +242,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['other choice text'], null),
+          render: XMLRenderer.toRoleplay({}, ['other choice text'], 3),
           startLine: 2,
         },
       ];
@@ -309,7 +309,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['choice text'], null),
+          render: XMLRenderer.toRoleplay({}, ['choice text'], 2),
           startLine: 2,
         },
         {
@@ -320,7 +320,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['other choice text'], null),
+          render: XMLRenderer.toRoleplay({}, ['other choice text'], 3),
           startLine: 2,
         },
       ];
@@ -331,7 +331,7 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
-    it('alerts the user to choices without titles', () => {
+    it('alerts the user to choice without text', () => {
       var log = new Logger();
       var blocks: Block[] = [
         {
@@ -342,7 +342,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['choice text'], null),
+          render: XMLRenderer.toRoleplay({}, ['choice text'], 7),
           startLine: 7,
         },
       ];
@@ -353,7 +353,7 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.missingTitleErr);
     });
 
-    it('alerts the user to choices without titles - invalid choice string', () => {
+    it('alerts the user to choice with invalid choice string', () => {
       var log = new Logger();
       var blocks: Block[] = [
         {
@@ -364,7 +364,7 @@ describe('BlockRenderer', () => {
         {
           indent: 2,
           lines: [],
-          render: XMLRenderer.toRoleplay({}, ['choice text'], null),
+          render: XMLRenderer.toRoleplay({}, ['choice text'], 7),
           startLine: 7,
         },
       ];
@@ -372,7 +372,7 @@ describe('BlockRenderer', () => {
       br.toRoleplay(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayChoiceNoParse);
-      expect(prettifyMsgs(log.finalize())).toEqual(TestData.missingTitleErr);
+      expect(prettifyMsgs(log.finalize())).toEqual(TestData.invalidChoiceStringErr);
     });
 
     it('renders with ID', () => {

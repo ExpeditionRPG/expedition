@@ -29,7 +29,7 @@ function getChildNumber(domElement: CheerioElement): number {
     return i;
 }
 
-function getTriggerId(elem: Cheerio): string {
+function getTriggerId(elem: Cheerio): string|null {
   const m = elem.text().trim().match(/\s*goto\s+(.*)/);
   return (m) ? m[1] : null;
 }
@@ -79,7 +79,7 @@ export class Node<C extends Context> {
     return new (this.constructor as any)(this.elem, this.ctx, null, this.ctx.seed);
   }
 
-  getTag(): string {
+  getTag(): string|null {
     const e = this.elem.get(0);
     return (e) ? e.tagName.toLowerCase() : null;
   }
@@ -100,8 +100,8 @@ export class Node<C extends Context> {
 
   // nextSeed is passed as the initial render seed for the resulting
   // Node returned by this function.
-  getNext(key?: string|number, nextSeed?: string): this {
-    let next: Cheerio = null;
+  getNext(key?: string|number, nextSeed?: string): this|null {
+    let next: Cheerio | null;
     if (key === undefined) {
       next = this.getNextNode();
     } else if (isNumeric(key)) {
@@ -175,7 +175,7 @@ export class Node<C extends Context> {
     }
   }
 
-  gotoId(id: string, seed?: string): this {
+  gotoId(id: string, seed?: string): this|null {
     const root = this.getRootElem();
     if (root === null) {
       return null;
@@ -208,7 +208,7 @@ export class Node<C extends Context> {
   // references, which prevent it from being a true "serialization" and instead more of a "comparison key"
   // for visit-tracking in quest traversal.
   getComparisonKey(): string {
-    const ctx: C = Clone(this.ctx);
+    const ctx: any = Clone(this.ctx);
 
     // Strip un-useful context
     ctx.path = undefined;
@@ -225,7 +225,7 @@ export class Node<C extends Context> {
     });
   }
 
-  private getNextNode(elem?: Cheerio): Cheerio {
+  private getNextNode(elem?: Cheerio): Cheerio|null {
     if (!elem) {
       elem = this.elem;
     }
@@ -289,7 +289,7 @@ export class Node<C extends Context> {
 
   // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
   // Returns the (cleaned) parameters of the event element
-  getEventParameters(event: string, seed?: string): EventParameters {
+  getEventParameters(event: string, seed?: string): EventParameters|null {
     const evt = this.getNext(event, seed);
     if (!evt) {
       return null;
@@ -312,20 +312,20 @@ export class Node<C extends Context> {
       if (handled !== null) {
         return handled;
       }
-      ref = new Node(ref.elem.parent(), this.ctx, null, seed);
+      ref = new Node(ref.elem.parent(), this.ctx, undefined, seed);
     }
 
     // Return the trigger unchanged if a handler is not found.
     return this;
   }
 
-  private handleTrigger(seed?: string): this {
+  private handleTrigger(seed?: string): this|null {
     // Immediately act on any gotos (with a max depth)
     let i = 0;
-    let ref = this.clone();
+    let ref: this|null = this.clone();
     for (; i < MAX_GOTO_FOLLOW_DEPTH && ref !== null && ref.getTag() === 'trigger'; i++) {
       const id = getTriggerId(ref.elem);
-      if (id) {
+      if (id !== null) {
         ref = ref.gotoId(evaluateContentOps(id, ref.ctx), seed);
       } else {
         return ref.handleTriggerEvent(seed);
@@ -341,7 +341,7 @@ export class Node<C extends Context> {
   // - a number indicating the choice number in the XML element, including conditional choices.
   // - a string indicating which event to fire based on the "on" attribute.
   // Returns the card inside of / referenced by the choice/event element
-  handleAction(action?: number|string, seed?: string): this {
+  handleAction(action?: number|string, seed?: string): this|null {
     const next = this.getNext(action, seed);
     if (!next) {
       return null;

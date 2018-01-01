@@ -52,13 +52,13 @@ export abstract class ClientBase {
 
   protected handleMessage(e: RemotePlayEvent) {
     if (!e.event || !e.client || !e.instance) {
-      this.publish({id: null, client: null, instance: null, event: {type: 'ERROR', error: 'Received malformed message'}});
+      this.publish({id: null, client: this.id, instance: this.instance, event: {type: 'ERROR', error: 'Received malformed message'}});
       return;
     }
 
     // Error out if we get an unrecognized message
     if (['STATUS', 'INTERACTION', 'ACTION', 'ERROR', 'INFLIGHT_COMMIT', 'INFLIGHT_REJECT'].indexOf(e.event.type) < 0) {
-      this.publish({id: null, client: null, instance: null, event: {type: 'ERROR', error: 'Received unknown message of type "' + e.event.type + '"'}});
+      this.publish({id: null, client: e.client, instance: e.instance, event: {type: 'ERROR', error: 'Received unknown message of type "' + e.event.type + '"'}});
       return;
     }
 

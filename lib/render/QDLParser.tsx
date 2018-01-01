@@ -14,7 +14,7 @@ export function renderXML(md: string): QDLParser {
 export class QDLParser {
   private renderer: BlockRenderer;
   private result: any;
-  private log: Logger;
+  private log: Logger | null;
   private blockList: BlockList;
   private reverseLookup: {[n: number]: number};
 
@@ -114,14 +114,14 @@ export class QDLParser {
     if (!this.blockList) {
       return {};
     }
-    return this.renderer.toMeta(this.blockList.at(0), null);
+    return this.renderer.toMeta(this.blockList.at(0), undefined);
   }
 
   private hasHeader(block: Block): boolean {
     return (
-      block &&
-      block.lines.length &&
-      block.lines[0].length &&
+      Boolean(block) &&
+      Boolean(block.lines.length) &&
+      Boolean(block.lines[0].length) &&
       (block.lines[0][0] === '_' ||
        block.lines[0][0] === '#' ||
        REGEX.TRIGGER.test(block.lines[0]))
@@ -169,6 +169,9 @@ export class QDLParser {
   }
 
   public getFinalizedLogs(): LogMessageMap {
+    if (!this.log) {
+      throw new Error('No log assigned to QDLParser');
+    }
     const finalized = this.log.finalize();
     this.log = null;
 

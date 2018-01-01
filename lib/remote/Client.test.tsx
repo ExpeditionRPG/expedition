@@ -43,7 +43,7 @@ describe('Client', () => {
       expect(e.event.type).toEqual('ERROR');
       done();
     });
-    c.doHandleMessage({client: 'testclient', instance: 'testinstance', event: {type: 'UNKNOWN_EVENT_TYPE'}, id: null} as any as RemotePlayEvent);
+    c.doHandleMessage({client: 'testclient', instance: 'testinstance', event: {type: 'UNKNOWN_EVENT_TYPE'}, id: 0} as any as RemotePlayEvent);
   });
 
   it('can subscribe & callback handlers', (done) => {

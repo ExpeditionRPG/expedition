@@ -8,11 +8,11 @@ const cheerio: any = require('cheerio');
 const window: any = cheerio.load('<div>');
 
 class CrawlTest extends CrawlerBase<Context> {
-  efn: (q: CrawlEntry<Context>, e: CrawlEvent)=>any;
-  nfn: (q: CrawlEntry<Context>, nodeStr: string, id: string, line: number)=>any;
+  efn: ((q: CrawlEntry<Context>, e: CrawlEvent)=>any)|null;
+  nfn: ((q: CrawlEntry<Context>, nodeStr: string, id: string, line: number)=>any)|null;
 
-  constructor(onEvent: (q: CrawlEntry<Context>, e: CrawlEvent)=>any,
-    onNode:(q: CrawlEntry<Context>, nodeStr: string, id: string, line: number)=>any) {
+  constructor(onEvent: ((q: CrawlEntry<Context>, e: CrawlEvent)=>any)|null,
+    onNode: ((q: CrawlEntry<Context>, nodeStr: string, id: string, line: number)=>any)|null) {
     super()
     this.efn = onEvent;
     this.nfn = onNode;

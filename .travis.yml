@@ -9,7 +9,7 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.8
-before_install: nvm install "$(jq -r '.engines.node' package.json)" && node --version
+before_install: nvm install "$(jq -r '.engines.node' package.json)" && nvm alias default "$(jq -r '.engines.node' package.json)" && node --version
 cache:
   directories:
   - node_modules

@@ -40,7 +40,7 @@ export class BlockList {
     return this.blocks[idx];
   }
 
-  private shouldStartNewBlock(currBlock: Block, line: string, indent: number, prevEmpty: boolean): boolean {
+  private shouldStartNewBlock(currBlock: Block|null, line: string, indent: number, prevEmpty: boolean): boolean {
     // Start a new block if...
     // there is no current block
     if (!currBlock) {
@@ -93,7 +93,7 @@ export class BlockList {
     const split = md.split('\n');
     var accumulated: string[] = [];
     var prevEmpty = false;
-    var currBlock: Block = null;
+    var currBlock: Block|null = null;
     for (let lineNumber = 0; lineNumber < split.length; lineNumber++) {
       let line = split[lineNumber];
       let indent = 0;
@@ -129,7 +129,9 @@ export class BlockList {
       }
 
       // Trim *all* whitespace from added strings when adding into blocks.
-      currBlock.lines.push(line.trim());
+      if (currBlock) {
+        currBlock.lines.push(line.trim());
+      }
       prevEmpty = false;
     }
 

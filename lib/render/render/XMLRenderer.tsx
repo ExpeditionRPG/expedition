@@ -57,7 +57,9 @@ export var XMLRenderer: Renderer = {
         roleplay.append(instruction);
       }
     }
-    roleplay.attr('data-line', line);
+    if (line >= 0) {
+      roleplay.attr('data-line', line);
+    }
     return roleplay;
   },
 
@@ -98,7 +100,9 @@ export var XMLRenderer: Renderer = {
       }
       combat.append(currEvent);
     }
-    combat.attr('data-line', line);
+    if (line >= 0) {
+      combat.attr('data-line', line);
+    }
     return combat;
   },
 
@@ -107,7 +111,9 @@ export var XMLRenderer: Renderer = {
     if (attribs['visible']) {
       trigger.attr('if', attribs['visible']);
     }
-    trigger.attr('data-line', line);
+    if (line >= 0) {
+      trigger.attr('data-line', line);
+    }
     return trigger;
   },
 
@@ -117,7 +123,9 @@ export var XMLRenderer: Renderer = {
     for(var i = 0; i < keys.length; i++) {
       quest.attr(keys[i], attribs[keys[i]]);
     }
-    quest.attr('data-line', line);
+    if (line >= 0) {
+      quest.attr('data-line', line);
+    }
     return quest;
   },
 

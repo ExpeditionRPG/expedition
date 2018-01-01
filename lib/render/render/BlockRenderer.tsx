@@ -20,8 +20,8 @@ export class BlockRenderer {
   toRoleplay(blocks: Block[], log: Logger) {
     // There are cases where we don't have a roleplay header, e.g.
     // the first roleplay block inside a choice. This is fine,
-    // and not an error.
-    var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], null);
+    // and not an error, so we don't pass a logger here.
+    var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], undefined);
     var hasHeader = Boolean(extracted);
     extracted = extracted || {title: '', id: undefined, json: {}};
 
@@ -50,7 +50,7 @@ export class BlockRenderer {
 
       // Append rendered stuff
       var lines = this.collate((i === 0 && hasHeader) ? block.lines.slice(1) : block.lines);
-      var choice: RoleplayChild;
+      var choice: RoleplayChild | null = null;
       var instruction: Instruction;
       let lineIdx = 0;
       for (let line of lines) {
@@ -162,7 +162,6 @@ export class BlockRenderer {
           // Visible is actually a value expression
           enemy = {
             text: '{{' + extractedBullet.visible + '}}',
-            visible: null,
             json: extractedBullet.json
           };
         }
@@ -186,7 +185,7 @@ export class BlockRenderer {
 
 
     var events: CombatChild[] = [];
-    var currEvent: CombatChild = null;
+    var currEvent: CombatChild | null = null;
     for (let i = 0; i < blocks.length; i++) {
       var block = blocks[i];
       if (block.render) {
@@ -214,7 +213,7 @@ export class BlockRenderer {
         // These blocks are only single lines.
         let evt = this.extractBulleted(line, block.startLine + j, log);
         var extractedEvent = (evt) ? Object.assign({}, evt, {event: []}) : null;
-        if (!Boolean(extractedEvent) || !extractedEvent.text) {
+        if (!extractedEvent || !extractedEvent.text) {
           log.err(
             'lines within combat block must be events or enemies, not freestanding text',
             '416',
@@ -242,17 +241,17 @@ export class BlockRenderer {
     }
     if (!hasWin) {
       log.err('combat card must have "on win" event', '417');
-      events.push({text: 'on win', event: [this.renderer.toTrigger({text: 'end'}, null)]});
+      events.push({text: 'on win', event: [this.renderer.toTrigger({text: 'end'}, -1)]});
     }
     if (!hasLose) {
       log.err('combat card must have "on lose" event', '417');
-      events.push({text: 'on lose', event: [this.renderer.toTrigger({text: 'end'}, null)]});
+      events.push({text: 'on lose', event: [this.renderer.toTrigger({text: 'end'}, -1)]});
     }
 
     blocks[0].render = this.renderer.toCombat(attribs, events, blocks[0].startLine);
   }
 
-  toMeta(block: Block, log: Logger): {[k: string]: any} {
+  toMeta(block: Block, log?: Logger): {[k: string]: any} {
     // Parse meta using the block itself.
     // Metadata format is standard across all renderers.
     if (!block) {
@@ -293,11 +292,11 @@ export class BlockRenderer {
       } else {
         // Error here. We can still handle null quests in the renderer.
         log.err('root block must be a quest header', '421', 0);
-        quest = this.renderer.toQuest({title: 'Error'}, null);
+        quest = this.renderer.toQuest({title: 'Error'}, -1);
       }
     } else {
       log.err('no quest blocks found', '422');
-      quest = this.renderer.toQuest({title: 'Error'}, null);
+      quest = this.renderer.toQuest({title: 'Error'}, -1);
     }
 
     for (var i = 1; i < zeroIndentBlockGroupRoots.length; i++) {
@@ -314,16 +313,14 @@ export class BlockRenderer {
       toRender.push(zeroIndentBlockGroupRoots[i].render);
     }
 
-
-
     if (toRender.length === 0) {
-      toRender.push(this.renderer.toRoleplay({}, [], null));
+      toRender.push(this.renderer.toRoleplay({}, [], -1));
     }
 
     return this.renderer.finalize(quest, toRender);
   }
 
-  private extractCombatOrRoleplay(line: string, log: Logger): {title: string, id: string, json: {[k: string]: any}} {
+  private extractCombatOrRoleplay(line: string, log?: Logger): {title: string, id?: string, json: {[k: string]: any}} | null {
     // Breakdown:
     // ^_(.*)_                  Match italicized text at start of string until there's a break
     //                          which may contain multiple :icon_names: (hence the greedy selection)
@@ -338,6 +335,9 @@ export class BlockRenderer {
     // (\{.*\})?                Optionally match a JSON blob (greedy)
     try {
       const m = line.match(/^_(.*)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/);
+      if (!m || !m[1]) {
+        throw new Error('Missing title');
+      }
       return {
         title: m[1],
         id: m[3],
@@ -351,7 +351,7 @@ export class BlockRenderer {
     }
   }
 
-  private extractBulleted(line: string, idx: number, log: Logger): {text: string, visible: string, json: {[k: string]: any}} {
+  private extractBulleted(line: string, idx: number, log: Logger): {text: string, visible?: string, json: {[k: string]: any}} | null {
     // Breakdown:
     // \*\s*                    Match "*" or "-" and any number of spaces (greedy)
     // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
@@ -364,16 +364,12 @@ export class BlockRenderer {
     // $                        End of string
     try {
       const m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*((?:[^{]|(?:{{[^}]*}})*)*)(\{.*\})?$/);
-      if (m === null) {
-        return {
-          visible: 'false',
-          text: '',
-          json: {},
-        };
+      if (!m) {
+        throw new Error('Match failed');
       }
       return {
-        visible: m[2],
-        text: m[3].trim(),
+        visible: m[2] || undefined,
+        text: (m[3]) ? m[3].trim() : '',
         json: (m[4]) ? JSON.parse(m[4]) : {},
       };
     } catch(e) {
@@ -384,16 +380,28 @@ export class BlockRenderer {
     }
   }
 
-  private extractInstruction(line: string): {text: string, visible: string} {
+  private extractInstruction(line: string): Instruction {
     const m = line.match(REGEX.INSTRUCTION);
+    if (!m) {
+      return {
+        visible: 'false',
+        text: '',
+      };
+    }
     return {
       visible: m[2],
-      text: m[3],
+      text: m[3] || '',
     };
   }
 
-  private extractTrigger(line: string): {text: string, visible: string} {
+  private extractTrigger(line: string): {text: string|null, visible: string|null} {
     const m = line.match(REGEX.TRIGGER);
+    if (!m) {
+      return {
+        visible: 'false',
+        text: '',
+      };
+    }
     return {
       visible: m[2],
       text: m[3],

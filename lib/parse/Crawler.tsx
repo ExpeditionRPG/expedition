@@ -5,7 +5,7 @@ const FastPriorityQueue: any = require('fastpriorityqueue');
 
 export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END' | 'MAX_DEPTH_EXCEEDED' | 'ALREADY_SEEN';
 
-export type CrawlEntry<C extends Context> = {node: Node<C>, prevNodeStr: string, prevId: string, prevLine: number, depth: number};
+export type CrawlEntry<C extends Context> = {node: Node<C>|null, prevNodeStr: string, prevId: string, prevLine: number, depth: number};
 
 interface CrawlPriorityQueue<C extends Context> {
   add: (v: CrawlEntry<C>) => void;
@@ -14,7 +14,11 @@ interface CrawlPriorityQueue<C extends Context> {
   peek: () => CrawlEntry<C>;
 }
 
-function getNodeLine(node: Node<Context>): number {
+function getNodeLine(node: Node<Context>|null): number {
+  if (node === null) {
+    return -1;
+  }
+
   try {
     return parseInt(node.elem.attr('data-line'), 10);
   } catch (e) {

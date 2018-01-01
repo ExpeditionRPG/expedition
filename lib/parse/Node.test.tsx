@@ -12,12 +12,20 @@ describe('Node', () => {
       const ctx = defaultContext();
       ctx.scope.asdf = true;
       const pnode = new Node(quest.children().eq(0), ctx);
-      expect(pnode.getNext().elem.text()).toEqual('expected');
+      const next = pnode.getNext();
+      if (next === null) {
+        throw new Error('getNext returned null node');
+      }
+      expect(next.elem.text()).toEqual('expected');
     });
     it('skips disabled elements', () => {
       const quest = cheerio.load('<quest><roleplay></roleplay><roleplay if="asdf">wrong</roleplay><roleplay>expected</roleplay></quest>')('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
-      expect(pnode.getNext().elem.text()).toEqual('expected');
+      const next = pnode.getNext();
+      if (next === null) {
+        throw new Error('getNext returned null node');
+      }
+      expect(next.elem.text()).toEqual('expected');
     });
     it('returns null if no next element', () => {
       const pnode = new Node(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultContext());
@@ -26,17 +34,29 @@ describe('Node', () => {
     it('returns next node if choice=0 and no choice', () => {
       const quest = cheerio.load('<quest><roleplay></roleplay><roleplay>expected</roleplay></quest>')('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
-      expect(pnode.getNext(0).elem.text()).toEqual('expected');
+      const next = pnode.getNext(0);
+      if (next === null) {
+        throw new Error('getNext returned null node');
+      }
+      expect(next.elem.text()).toEqual('expected');
     });
     it('returns node given by choice index', () => {
       const quest = cheerio.load('<quest><roleplay><choice></choice><choice if="asdf"></choice><choice><roleplay>expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
-      expect(pnode.getNext(1).elem.text()).toEqual('expected');
+      const next = pnode.getNext(1);
+      if (next === null) {
+        throw new Error('getNext returned null node');
+      }
+      expect(next.elem.text()).toEqual('expected');
     });
     it('returns node given by event name', () => {
       const quest = cheerio.load('<quest><roleplay><event></event><choice></choice><event on="test"><roleplay>expected</roleplay><roleplay>wrong</roleplay></event></roleplay></quest>')('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
-      expect(pnode.getNext('test').elem.text()).toEqual('expected');
+      const next = pnode.getNext('test');
+      if (next === null) {
+        throw new Error('getNext returned null node');
+      }
+      expect(next.elem.text()).toEqual('expected');
     });
   });
 
@@ -74,7 +94,11 @@ describe('Node', () => {
     it('goes to ID', () => {
       const quest = cheerio.load('<quest><roleplay></roleplay><roleplay>wrong</roleplay><roleplay id="test">expected</roleplay></quest>')('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
-      expect(pnode.gotoId('test').elem.text()).toEqual('expected');
+      const next = pnode.gotoId('test');
+      if (next === null) {
+        throw new Error('gotoID returned null node');
+      }
+      expect(next.elem.text()).toEqual('expected');
     });
     it('returns null if ID does not exist', () => {
       const quest = cheerio.load('<quest><roleplay>wrong</roleplay></quest>')('quest');
@@ -88,7 +112,11 @@ describe('Node', () => {
     it('safely handles multiple identical ids', () => {
       const quest = cheerio.load('<quest><roleplay></roleplay><roleplay id="test">expected</roleplay><roleplay id="test">expected</roleplay></quest>')('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
-      expect(pnode.gotoId('test').elem.text()).toEqual('expected');
+      const next = pnode.gotoId('test');
+      if (next === null) {
+        throw new Error('gotoID returned null node');
+      }
+      expect(next.elem.text()).toEqual('expected');
     });
   });
 
@@ -243,14 +271,18 @@ describe('Node', () => {
     it('renders deterministically when a seed is given', () => {
       const ctx = defaultContext();
       ctx.seed = 'randomseed';
-      const result = new Node(cheerio.load('<roleplay><p>{{a=pickRandom([1,2,3,4,5])}}{{b=round(random(0,100), 4)}}{{c=randomInt(0, 100)}}</p></roleplay>')('roleplay'), ctx, null, ctx.seed);
+      const result = new Node(cheerio.load('<roleplay><p>{{a=pickRandom([1,2,3,4,5])}}{{b=round(random(0,100), 4)}}{{c=randomInt(0, 100)}}</p></roleplay>')('roleplay'), ctx, undefined, ctx.seed);
       expect(result.ctx.scope).toEqual(jasmine.objectContaining({a: 2, b: 32.3244, c: 40}));
     });
 
     it('renders next node via getNext deterministically when a seed is given', () => {
       const ctx = defaultContext();
       const result = new Node(cheerio.load('<quest><roleplay></roleplay><roleplay><p>{{a=pickRandom([1,2,3,4,5])}}{{b=round(random(0,100), 4)}}{{c=randomInt(0, 100)}}</p></roleplay></quest>')('quest > :first-child'), ctx);
-      expect(result.getNext(0, 'randomseed').ctx.scope).toEqual(jasmine.objectContaining({a: 2, b: 32.3244, c: 40}));
+      const next = result.getNext(0, 'randomseed');
+      if (next === null) {
+        throw new Error('getNext returned null node');
+      }
+      expect(next.ctx.scope).toEqual(jasmine.objectContaining({a: 2, b: 32.3244, c: 40}));
     })
   });
 
@@ -318,6 +350,9 @@ describe('Node', () => {
       const node = cheerio.load('<roleplay><choice><trigger if="a">goto 5</trigger><trigger>end</trigger></choice></roleplay>')('roleplay');
       const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(0);
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.elem.text()).toEqual('end');
     });
 
@@ -327,6 +362,9 @@ describe('Node', () => {
       ctx.scope.a = true;
       const pnode = new Node(quest.children().eq(0), ctx);
       const result = pnode.handleAction(0);
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.elem.text()).toEqual('expected');
     });
 
@@ -349,6 +387,9 @@ describe('Node', () => {
       const node = cheerio.load('<roleplay id="rp1"><choice><trigger>end</trigger></choice><choice on="end"><roleplay>expected</roleplay></choice></roleplay>')('#rp1');
       const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(0);
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.elem.text()).toEqual('expected');
     });
 
@@ -366,6 +407,9 @@ describe('Node', () => {
       </quest>`)('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
       var result = pnode.handleAction(0);
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.elem.text()).toEqual('expected');
     });
 
@@ -373,6 +417,9 @@ describe('Node', () => {
       const quest = cheerio.load('<quest><roleplay><choice><trigger>goto 1</trigger><trigger id="1">goto 2</trigger><trigger id="2">end</trigger><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
       const result = pnode.handleAction(0);
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.elem.text()).toEqual('end');
     });
 
@@ -380,6 +427,9 @@ describe('Node', () => {
       const node = cheerio.load('<roleplay><choice></choice><choice><roleplay>herp</roleplay><roleplay>derp</roleplay></choice></roleplay>')('roleplay');
       const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(1);
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.elem.text()).toEqual('herp');
     });
 
@@ -387,6 +437,9 @@ describe('Node', () => {
       const node = cheerio.load('<roleplay id="rp1">rp1</roleplay><roleplay>rp2</roleplay>')('#rp1');
       const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(1);
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.elem.text()).toEqual('rp2');
     });
 
@@ -394,6 +447,9 @@ describe('Node', () => {
       const node = cheerio.load('<roleplay><event></event><event on="test"><roleplay>herp</roleplay><roleplay>derp</roleplay></event></roleplay>')('roleplay');
       const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction('test');
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.elem.text()).toEqual('herp');
     });
 
@@ -412,7 +468,13 @@ describe('Node', () => {
       `)('roleplay');
       const pnode = new Node(node, defaultContext());
       let result = pnode.handleAction('0');
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       result = result.handleAction('0');
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.elem.text()).toEqual('herp');
     });
 
@@ -426,6 +488,9 @@ describe('Node', () => {
 
       const pnode = new Node(choiceNode, defaultContext());
       const result = pnode.handleAction(0);
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.elem.text()).toEqual('Jumped');
     });
 
@@ -433,6 +498,9 @@ describe('Node', () => {
       const node = cheerio.load('<roleplay><choice><roleplay>Not empty</roleplay><trigger>goto jump</trigger></choice></roleplay><roleplay id="jump">Hello</roleplay>')('roleplay');
       const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(0);
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.elem.text()).toEqual('Not empty');
     });
 
@@ -440,6 +508,9 @@ describe('Node', () => {
       const node = cheerio.load('<roleplay><choice><roleplay><p>{{a=round(random(0,100), 4)}}</p></roleplay></choice></roleplay>')('roleplay');
       const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(0, 'randomseed');
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.ctx.scope.a).toEqual(32.8971);
     });
 
@@ -453,6 +524,9 @@ describe('Node', () => {
 
       const pnode = new Node(choiceNode, defaultContext());
       const result = pnode.handleAction(0, 'randomseed');
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.ctx.scope.a).toEqual(32.8971);
     });
 
@@ -460,6 +534,9 @@ describe('Node', () => {
       const node = cheerio.load('<roleplay id="rp1"><choice><trigger>end</trigger></choice><choice on="end"><roleplay><p>{{a=round(random(0,100), 4)}}</p></roleplay></choice></roleplay>')('#rp1');
       const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(0, 'randomseed');
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.ctx.scope.a).toEqual(32.8971);
     });
 
@@ -478,6 +555,9 @@ describe('Node', () => {
       </quest>`)('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
       var result = pnode.handleAction(0, 'randomseed');
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
       expect(result.elem.text()).toEqual('r1');
     })
   });

@@ -14,7 +14,7 @@ data.genericCombatXML = `<combat data-line="0">
 data.badJSONXML = `<combat data-line="0">
     <e>e1</e>
     <event on="lose">
-        <roleplay>
+        <roleplay data-line="3">
             <p>lose</p>
         </roleplay>
     </event>
@@ -27,12 +27,12 @@ data.fullCombatXML = `<combat data-line="0">
     <e>e1</e>
     <e tier="3">e2</e>
     <event on="win">
-        <roleplay>
+        <roleplay data-line="2">
             <p>win</p>
         </roleplay>
     </event>
     <event on="lose">
-        <roleplay>
+        <roleplay data-line="3">
             <p>lose</p>
         </roleplay>
     </event>
@@ -42,12 +42,12 @@ data.combatConditionalEventXML = `<combat data-line="0">
     <e>e1</e>
     <e>e2</e>
     <event on="win" if="test1">
-        <roleplay>
+        <roleplay data-line="2">
             <p>win</p>
         </roleplay>
     </event>
     <event on="lose" if="test2">
-        <roleplay>
+        <roleplay data-line="3">
             <p>lose</p>
         </roleplay>
     </event>
@@ -57,12 +57,12 @@ data.combatJSONEnemyXML = `<combat data-line="0">
     <e>skeleton</e>
     <e if="cond">test</e>
     <event on="win" if="test1" heal="2">
-        <roleplay>
+        <roleplay data-line="2">
             <p>win</p>
         </roleplay>
     </event>
     <event on="lose" if="test2">
-        <roleplay>
+        <roleplay data-line="3">
             <p>lose</p>
         </roleplay>
     </event>
@@ -71,12 +71,12 @@ data.combatJSONEnemyXML = `<combat data-line="0">
 data.fullRoleplayXML = `<roleplay title="roleplay" data-line="0">
     <p>text</p>
     <choice text="choice">
-        <roleplay>
+        <roleplay data-line="2">
             <p>choice text</p>
         </roleplay>
     </choice>
     <choice text="other choice">
-        <roleplay>
+        <roleplay data-line="3">
             <p>other choice text</p>
         </roleplay>
     </choice>
@@ -85,12 +85,12 @@ data.fullRoleplayXML = `<roleplay title="roleplay" data-line="0">
 data.roleplayConditionalChoiceXML = `<roleplay title="roleplay" data-line="0">
     <p>text</p>
     <choice text="choice" if="test1">
-        <roleplay>
+        <roleplay data-line="2">
             <p>choice text</p>
         </roleplay>
     </choice>
     <choice text="other choice" if="test2">
-        <roleplay>
+        <roleplay data-line="3">
             <p>other choice text</p>
         </roleplay>
     </choice>
@@ -98,17 +98,13 @@ data.roleplayConditionalChoiceXML = `<roleplay title="roleplay" data-line="0">
 
 data.roleplayChoiceNoParse = `<roleplay title="roleplay" data-line="5">
     <p>text</p>
-    <choice text="" if="false">
-        <roleplay>
-            <p>choice text</p>
-        </roleplay>
-    </choice>
+    <p></p>
 </roleplay>`;
 
 data.roleplayChoiceNoTitle = `<roleplay title="roleplay" data-line="5">
     <p>text</p>
     <choice text="" if="test1">
-        <roleplay>
+        <roleplay data-line="7">
             <p>choice text</p>
         </roleplay>
     </choice>
@@ -190,8 +186,14 @@ data.badParseQuestAttrError = `ERROR L1:
 invalid quest attribute line "minplayers1"
 URL: 420`;
 
-data.missingTitleErr = `ERROR L5:
-choice missing title
-URL: 428`;
+data.missingTitleErr = `ERROR L5:\nchoice missing title\nURL: 428`;
+
+data.invalidChoiceStringErr = `ERROR L7:
+failed to parse bulleted line (check your JSON)
+URL: 412
+
+ERROR L5:
+roleplay blocks cannot contain indented sections that are not choices
+URL: 411`;
 
 export default data;

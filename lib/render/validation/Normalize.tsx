@@ -3,9 +3,9 @@ import {Logger} from '../Logger'
 export class AttributeNormalizer {
   private keySet: string[];
   private attrs: {[k: string]: string};
-  private log: Logger;
+  private log?: Logger;
 
-  constructor(attrs: {[k: string]: string}, log: Logger) {
+  constructor(attrs: {[k: string]: string}, log?: Logger) {
     this.keySet = [];
     this.attrs = attrs;
     this.log = log;
@@ -99,7 +99,7 @@ export class AttributeNormalizer {
 }
 
 export class Normalize {
-  static questAttrs(attrs: {[k: string]: string}, log: Logger): ({[k: string]: any}) {
+  static questAttrs(attrs: {[k: string]: string}, log?: Logger): ({[k: string]: any}) {
     var n = new AttributeNormalizer(attrs, log);
     var result = {
       title: n.getString('title', true),
@@ -117,11 +117,11 @@ export class Normalize {
     return result;
   }
 
-  static combatAttrs(attrs: {[k: string]: string}, log: Logger): ({[k: string]: any}) {
+  static combatAttrs(attrs: {[k: string]: string}, log?: Logger): ({[k: string]: any}) {
     return {}; // TODO
   }
 
-  static roleplayAttrs(attrs: {[k: string]: string}, log: Logger): ({[k: string]: any}) {
+  static roleplayAttrs(attrs: {[k: string]: string}, log?: Logger): ({[k: string]: any}) {
     return {}; // TODO
   }
 }

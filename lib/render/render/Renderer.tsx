@@ -28,7 +28,7 @@ export function sanitizeStyles(text: string): string {
   // This handles the cases of escaped characters, curlies in strings, and MathJS objects
   // which would normally confuse op node extraction.
   const ops: string[] = [];
-  let startOfCapture: number = null;
+  let startOfCapture: number|undefined = undefined;
   let syntaxStack: string[] = [];
   for (let i = 0; i < text.length; i++) {
     const c1 = text[i];
@@ -116,7 +116,13 @@ export function sanitizeStyles(text: string): string {
 
   // Insert stored ops contents back into ops
   text = text.replace(/{{}}/g, () => { return '{{' + ops.shift() + '}}'; });
-  text = text.replace(/\[art\]/g, () => art.shift());
+  text = text.replace(/\[art\]/g, () => {
+    const a = art.shift();
+    if (a === undefined) {
+      throw new Error('Mismatch in [art] tag vs captured art');
+    }
+    return a;
+  });
 
   return text;
 }
