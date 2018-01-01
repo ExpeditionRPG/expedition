@@ -12,8 +12,8 @@ export function healthCheck(req: express.Request, res: express.Response) {
 
 export function announcement(req: express.Request, res: express.Response) {
   res.json({
-    message: '$500 Quest Writing Contest extended',
-    link: 'https://expeditiongame.com/writing-contests',
+    message: 'Help improve Expedition! (short survey)',
+    link: 'https://docs.google.com/forms/d/e/1FAIpQLSeXh1taZOGboxaKMtao9wLkBWVyJUtJbHo1U-s7C8xfO9TT-w/viewform?usp=sf_link',
   });
 }
 
