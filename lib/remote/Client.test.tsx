@@ -1,4 +1,4 @@
-import {ClientID, RemotePlayEvent, RemotePlayEventBody} from './Events'
+import {RemotePlayEvent, RemotePlayEventBody} from './Events'
 import {ClientBase} from './Client'
 
 export class TestClient extends ClientBase {

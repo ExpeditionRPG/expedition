@@ -21,11 +21,11 @@ export class BlockRenderer {
     // There are cases where we don't have a roleplay header, e.g.
     // the first roleplay block inside a choice. This is fine,
     // and not an error, so we don't pass a logger here.
-    var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], undefined);
-    var hasHeader = Boolean(extracted);
+    let extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], undefined);
+    const hasHeader = Boolean(extracted);
     extracted = extracted || {title: '', id: undefined, json: {}};
 
-    var attribs = extracted.json;
+    const attribs = extracted.json;
     attribs['title'] = attribs['title'] || extracted.title;
     attribs['id'] = attribs['id'] || extracted.id;
 
@@ -35,10 +35,10 @@ export class BlockRenderer {
     }
 
     // The only inner stuff
-    var i = 0;
-    var body: (string|RoleplayChild|Instruction)[] = [];
+    let i = 0;
+    const body: (string|RoleplayChild|Instruction)[] = [];
     while (i < blocks.length) {
-      var block = blocks[i];
+      const block = blocks[i];
       if (block.render) {
         // Only the blocks within choices should be rendered at this point.
         log.err(
@@ -49,11 +49,11 @@ export class BlockRenderer {
       }
 
       // Append rendered stuff
-      var lines = this.collate((i === 0 && hasHeader) ? block.lines.slice(1) : block.lines);
-      var choice: RoleplayChild | null = null;
-      var instruction: Instruction;
+      const lines = this.collate((i === 0 && hasHeader) ? block.lines.slice(1) : block.lines);
+      let choice: RoleplayChild | null = null;
+      let instruction: Instruction;
       let lineIdx = 0;
-      for (let line of lines) {
+      for (const line of lines) {
         lineIdx++;
         const invalidArt = REGEX.INVALID_ART.exec(line);
         if (invalidArt) {
@@ -65,7 +65,7 @@ export class BlockRenderer {
         }
 
         if (line.indexOf('* ') === 0) {
-          let bullet = this.extractBulleted(line, block.startLine + lineIdx, log);
+          const bullet = this.extractBulleted(line, block.startLine + lineIdx, log);
           choice = (bullet) ? Object.assign({}, bullet, {choice: []}) : null;
           // TODO: Assert end of lines.
         } else if (line.indexOf('> ') === 0) {
@@ -79,7 +79,7 @@ export class BlockRenderer {
       if (choice) {
         // If we ended in a choice, continue through subsequent blocks until we end
         // up outside the choice block again.
-        var inner = blocks[++i];
+        let inner = blocks[++i];
         while (i < blocks.length && inner.indent !== block.indent) {
           if (!inner.render) {
             log.internal('found unexpected block with no render', '501', blocks[0].startLine);
@@ -115,8 +115,9 @@ export class BlockRenderer {
       log.internal('trigger found with multiple blocks', '502');
     }
 
+    let extracted: any;
     try {
-      var extracted: any = this.extractTrigger(blocks[0].lines[0]);
+      extracted = this.extractTrigger(blocks[0].lines[0]);
     } catch (e) {
       log.err('could not parse trigger', '410');
       extracted = {title: 'end', visible: undefined};
@@ -144,20 +145,20 @@ export class BlockRenderer {
       );
     }
 
-    var extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], log) || {title: 'combat', id: undefined, json: {}};
+    const extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], log) || {title: 'combat', id: undefined, json: {}};
 
-    var attribs = extracted.json;
+    const attribs = extracted.json;
     attribs['id'] = attribs['id'] || extracted.id;
 
     attribs['enemies'] = attribs['enemies'] || [];
     for (let i = 0; i < blocks[0].lines.length; i++) {
-      let line = blocks[0].lines[i];
+      const line = blocks[0].lines[i];
       if (line[0] === '-') {
-        let extractedBullet = this.extractBulleted(line, blocks[0].startLine + i, log);
+        const extractedBullet = this.extractBulleted(line, blocks[0].startLine + i, log);
         if (!extractedBullet) {
           continue;
         }
-        var enemy = extractedBullet;
+        let enemy = extractedBullet;
         if (!extractedBullet.text) {
           // Visible is actually a value expression
           enemy = {
@@ -184,10 +185,10 @@ export class BlockRenderer {
     }
 
 
-    var events: CombatChild[] = [];
-    var currEvent: CombatChild | null = null;
+    const events: CombatChild[] = [];
+    let currEvent: CombatChild | null = null;
     for (let i = 0; i < blocks.length; i++) {
-      var block = blocks[i];
+      const block = blocks[i];
       if (block.render) {
         if (!currEvent) {
           log.err(
@@ -203,7 +204,7 @@ export class BlockRenderer {
 
       // Skip the first line if we're at the root block (already parsed)
       for (let j = (i===0) ? 1 : 0; j < block.lines.length; j++) {
-        let line = block.lines[j];
+        const line = block.lines[j];
         // Skip empty lines, enemy list
         if (line === '' || line[0] === '-') {
           continue;
@@ -211,8 +212,8 @@ export class BlockRenderer {
 
         // We should only ever see event blocks within the combat block.
         // These blocks are only single lines.
-        let evt = this.extractBulleted(line, block.startLine + j, log);
-        var extractedEvent = (evt) ? Object.assign({}, evt, {event: []}) : null;
+        const evt = this.extractBulleted(line, block.startLine + j, log);
+        const extractedEvent = (evt) ? Object.assign({}, evt, {event: []}) : null;
         if (!extractedEvent || !extractedEvent.text) {
           log.err(
             'lines within combat block must be events or enemies, not freestanding text',
@@ -232,8 +233,8 @@ export class BlockRenderer {
       events.push(currEvent);
     }
 
-    var hasWin = false;
-    var hasLose = false;
+    let hasWin = false;
+    let hasLose = false;
 
     for (let i = 0; i < events.length; i++) {
       hasWin = hasWin || (events[i].text === 'on win');
@@ -258,17 +259,17 @@ export class BlockRenderer {
       return {'title': 'UNKNOWN'};
     }
 
-    var attrs: {[k: string]: string} = {title: block.lines[0].substr(1).trim()};
+    const attrs: {[k: string]: string} = {title: block.lines[0].substr(1).trim()};
     for (let i = 1; i < block.lines.length && block.lines[i] !== ''; i++) {
-      let kv = block.lines[i].split(':');
+      const kv = block.lines[i].split(':');
       if (kv.length !== 2) {
         if (log) {
           log.err('invalid quest attribute line "' + block.lines[i] + '"', '420', block.startLine + i);
         }
         continue;
       }
-      let k = kv[0].toLowerCase();
-      let v = kv[1].trim();
+      const k = kv[0].toLowerCase();
+      const v = kv[1].trim();
       attrs[k] = v;
 
       if (k !== 'title') {
@@ -282,11 +283,11 @@ export class BlockRenderer {
   }
 
   finalize(zeroIndentBlockGroupRoots: Block[], log: Logger): any {
-    var toRender: any[] = [];
+    const toRender: any[] = [];
 
-    var quest: any = null;
+    let quest: any = null;
     if (zeroIndentBlockGroupRoots && zeroIndentBlockGroupRoots.length > 0) {
-      var questBlock = zeroIndentBlockGroupRoots[0];
+      const questBlock = zeroIndentBlockGroupRoots[0];
       if (questBlock.lines.length && questBlock.lines[0].length && questBlock.lines[0][0] === '#') {
         quest = questBlock.render;
       } else {
@@ -299,8 +300,8 @@ export class BlockRenderer {
       quest = this.renderer.toQuest({title: 'Error'}, -1);
     }
 
-    for (var i = 1; i < zeroIndentBlockGroupRoots.length; i++) {
-      var block = zeroIndentBlockGroupRoots[i];
+    for (let i = 1; i < zeroIndentBlockGroupRoots.length; i++) {
+      const block = zeroIndentBlockGroupRoots[i];
       if (!block) {
         log.internal('empty block found in finalize step', '503');
         continue;
@@ -409,7 +410,7 @@ export class BlockRenderer {
   }
 
   private collate(lines: string[]): string[] {
-    var result: string[] = [''];
+    const result: string[] = [''];
     for (let i = 0; i < lines.length; i++) {
       if (lines[i] === '') {
         continue;

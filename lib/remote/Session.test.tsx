@@ -1,5 +1,3 @@
-import {Session, SessionSecret, SessionID} from './Session'
-import * as Bluebird from 'bluebird';
 
 describe('Session', () => {
   describe('makeSecret', () => {

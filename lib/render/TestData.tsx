@@ -1,5 +1,5 @@
 
-var data = Object();
+const data = Object();
 
 data.basicMD = `#Quest Title
 

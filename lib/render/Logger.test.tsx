@@ -1,8 +1,7 @@
 import {Block} from './block/BlockList'
 import {LogMessage, Logger, prettifyMsg, prettifyMsgs} from './Logger'
-import TestData from './TestData'
 
-var expect: any = require('expect');
+const expect: any = require('expect');
 
 const testBlock: Block = {indent: 0, startLine: 0, lines: ['hello world']};
 
@@ -17,32 +16,32 @@ describe('LogMessage', () => {
 
   describe('Logger', () => {
     it('extends with messages', () => {
-      var msg = new Logger();
+      const msg = new Logger();
       msg.extend(testMsgs);
       expect(msg.finalize()).toEqual(testMsgs);
     });
 
     it('logs error', () => {
-      var msg = new Logger();
+      const msg = new Logger();
       msg.err('test error', 'test', 5);
       expect(msg.finalize()).toEqual([testMsgs[0]]);
     });
 
     it('logs debug (concatenated)', () => {
-      var msg = new Logger();
+      const msg = new Logger();
       msg.dbg('test debug');
       msg.dbg('stuff');
       expect(msg.finalize()).toEqual([testMsgs[2]]);
     });
 
     it('logs warning', () => {
-      var msg = new Logger([testBlock]);
+      const msg = new Logger([testBlock]);
       msg.warn('test warning', '404', 7);
       expect(msg.finalize()).toEqual([testMsgs[1]]);
     });
 
     it('logs internal', () => {
-      var msg = new Logger();
+      const msg = new Logger();
       msg.internal('internal error', '505', 5);
       expect(msg.finalize()).toEqual([testMsgs[3]]);
     })

@@ -1,7 +1,7 @@
 import {QDLParser} from './QDLParser'
 import {prettifyMsgs} from './Logger'
 import {XMLRenderer} from './render/XMLRenderer'
-import {Block, BlockList} from './block/BlockList'
+import {BlockList} from './block/BlockList'
 import TestData from './TestData'
 
 const expect: any = require('expect');

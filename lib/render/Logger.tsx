@@ -29,7 +29,7 @@ export interface LogMessageMap {
 
 
 export function prettifyMsg(msg: LogMessage): string {
-  var result = '';
+  let result = '';
   result += msg.type.toUpperCase();
   result += ' L' + ((msg.line !== undefined) ? msg.line : 0);
   result += ':\n';
@@ -43,8 +43,8 @@ export function prettifyMsg(msg: LogMessage): string {
 }
 
 export function prettifyMsgs(msgs: LogMessage[]): string {
-  var prettyMsgs: string[] = [];
-  for (var i = 0; i < msgs.length; i++) {
+  const prettyMsgs: string[] = [];
+  for (let i = 0; i < msgs.length; i++) {
     prettyMsgs.push(prettifyMsg(msgs[i]));
   }
   return prettyMsgs.join('\n\n');
@@ -114,7 +114,7 @@ export class Logger {
   public getFinalizedLogs(): LogMessageMap {
     const finalized = this.finalize();
     const logMap: LogMessageMap = {'info': [], 'warning': [], 'error': [], 'internal': []};
-    for (let m of finalized) {
+    for (const m of finalized) {
       switch(m.type) {
         case 'info':
           logMap.info.push(m);
@@ -137,7 +137,7 @@ export class Logger {
   }
 
   private msg(group: Block[], type: LogSeverity, text: string, url: string, line?: number): LogMessage {
-    var message: LogMessage = {
+    const message: LogMessage = {
       type: type,
       text: text,
       url: url

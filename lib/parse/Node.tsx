@@ -20,35 +20,9 @@ function getNodeAttributes(e: Cheerio): {[key:string]:string;} {
   return e.get(0).attribs;
 }
 
-function getChildNumber(domElement: CheerioElement): number {
-    let i = 1;
-    while (domElement.previousSibling) {
-      domElement = domElement.previousSibling;
-      i++;
-    }
-    return i;
-}
-
 function getTriggerId(elem: Cheerio): string|null {
   const m = elem.text().trim().match(/\s*goto\s+(.*)/);
   return (m) ? m[1] : null;
-}
-
-function getSelector(elem: Cheerio): string {
-  let domElement = elem.get(0);
-  let selector = '';
-  do {
-      selector = '>' + domElement.tagName + ':nth-child(' + getChildNumber(domElement) + ')' + selector;
-      domElement = domElement.parentNode;
-  } while (domElement !== null && !domElement.attribs['id'] && domElement.tagName.toLowerCase() !== 'quest')
-
-  if (domElement === null) {
-    return selector;
-  } else if (domElement.tagName.toLowerCase() === 'quest') {
-    return 'quest ' + selector;
-  } else {
-    return '#' + domElement.attribs['id'] + selector;
-  }
 }
 
 export class Node<C extends Context> {

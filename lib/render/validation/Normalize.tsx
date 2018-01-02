@@ -13,7 +13,7 @@ export class AttributeNormalizer {
 
   private extract(k: string, required?: boolean): string {
     this.keySet.push(k);
-    var v = this.attrs[k];
+    const v = this.attrs[k];
 
     if (!v && required) {
       if (this.log) {
@@ -24,7 +24,7 @@ export class AttributeNormalizer {
   }
 
   getBoolean(k: string, required?: boolean) {
-    var v = this.extract(k, required);
+    const v = this.extract(k, required);
 
     if (v === undefined) {
       return v;
@@ -47,7 +47,7 @@ export class AttributeNormalizer {
   }
 
   getString(k: string, required?: boolean) {
-    var v = this.extract(k, required);
+    const v = this.extract(k, required);
 
     if (v === undefined) {
       return v;
@@ -61,7 +61,7 @@ export class AttributeNormalizer {
   }
 
   getNumber(k: string, required?: boolean) {
-    var v: any = this.extract(k, required);
+    const v: any = this.extract(k, required);
 
     if (v === undefined) {
       return v;
@@ -78,9 +78,9 @@ export class AttributeNormalizer {
   }
 
   confirmNoExtra() {
-    for (let k of Object.keys(this.attrs)) {
-      var found = false;
-      for (let j of this.keySet) {
+    for (const k of Object.keys(this.attrs)) {
+      let found = false;
+      for (const j of this.keySet) {
         if (k === j) {
           found = true;
           break;
@@ -100,8 +100,8 @@ export class AttributeNormalizer {
 
 export class Normalize {
   static questAttrs(attrs: {[k: string]: string}, log?: Logger): ({[k: string]: any}) {
-    var n = new AttributeNormalizer(attrs, log);
-    var result = {
+    const n = new AttributeNormalizer(attrs, log);
+    const result = {
       title: n.getString('title', true),
       summary: n.getString('summary'),
       author: n.getString('author'),

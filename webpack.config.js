@@ -51,12 +51,10 @@ const options = {
               typeofCompare: true,
               useIsnan: true,
               indent: [true, "spaces"],
-              // This can be uncommented occassionally to help clean up the codebase
-              // But complains about enough false things that it's not worth leaving on
-              // noUnusedVariable: true,
-              // noVarKeyword: true,
-              // preferConst: true,
-              // trailingComma: true,
+              noUnusedVariable: true,
+              noVarKeyword: true,
+              preferConst: true,
+              trailingComma: true,
             }
           },
           emitErrors: true,

@@ -1,5 +1,5 @@
 
-var data = Object();
+const data = Object();
 
 data.genericCombatXML = `<combat data-line="0">
     <e>UNKNOWN</e>

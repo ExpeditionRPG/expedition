@@ -1,15 +1,13 @@
-import {Block} from '../block/BlockList'
 import {XMLRenderer} from './XMLRenderer'
-import TestData from '../TestData'
 
-var expect: any = require('expect');
-var cheerio: any = require('cheerio') as CheerioAPI;
+const expect: any = require('expect');
+const cheerio: any = require('cheerio') as CheerioAPI;
 
 describe('XMLRenderer', () => {
   describe('toCombat', () => {
     it('renders', () => {
-      var dummyWin = cheerio.load('<div>win</div>')('div')
-      var dummyLose = cheerio.load('<div>lose</div>')('div');
+      const dummyWin = cheerio.load('<div>win</div>')('div')
+      const dummyLose = cheerio.load('<div>lose</div>')('div');
       expect(XMLRenderer.toCombat(
         {'enemies': [{text: 'Enemy1'}, {text: 'Enemy2', json: {tier: '3'}}]},
         [
@@ -49,7 +47,7 @@ describe('XMLRenderer', () => {
     });
 
     it('renders with choice', () => {
-      var choice: any = XMLRenderer.toRoleplay({}, ['choice body'], 1);
+      const choice: any = XMLRenderer.toRoleplay({}, ['choice body'], 1);
 
       expect(XMLRenderer.toRoleplay({}, [{text: 'choice', choice}], 0).toString())
         .toEqual('<roleplay data-line="0"><choice text="choice"><roleplay data-line="1"><p>choice body</p></roleplay></choice></roleplay>');
@@ -58,9 +56,9 @@ describe('XMLRenderer', () => {
 
   describe('finalize', () => {
     it('coalesces all elements into first block', () => {
-      var quest = XMLRenderer.toQuest({}, 0);
-      var r = XMLRenderer.toRoleplay({}, ['test'], 1);
-      var t = XMLRenderer.toTrigger({text: 'end'}, 2);
+      const quest = XMLRenderer.toQuest({}, 0);
+      const r = XMLRenderer.toRoleplay({}, ['test'], 1);
+      const t = XMLRenderer.toTrigger({text: 'end'}, 2);
 
       expect(XMLRenderer.finalize(quest, [r,t]).toString())
         .toEqual('<quest data-line="0"><roleplay data-line="1"><p>test</p></roleplay><trigger data-line="2">end</trigger></quest>');

@@ -5,7 +5,6 @@ import {defaultContext, Context} from './Context'
 declare var global: any;
 
 const cheerio: any = require('cheerio');
-const window: any = cheerio.load('<div>');
 
 class CrawlTest extends CrawlerBase<Context> {
   efn: ((q: CrawlEntry<Context>, e: CrawlEvent)=>any)|null;
@@ -267,8 +266,8 @@ describe('CrawlerBase', () => {
             </choice>
           </roleplay>
         </quest>`)('quest > :first-child');
-      let uniqueCounter: {[line: number]: boolean} = {};
-      let lineOrder: number[] = [];
+      const uniqueCounter: {[line: number]: boolean} = {};
+      const lineOrder: number[] = [];
       const crawler = new CrawlTest(null, (q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => {
         lineOrder.push(line);
         if (Object.keys(uniqueCounter).length < 5 && uniqueCounter[line]) {

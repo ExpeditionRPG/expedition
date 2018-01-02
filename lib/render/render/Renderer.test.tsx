@@ -1,7 +1,6 @@
 import {sanitizeStyles} from './Renderer'
 
-var expect: any = require('expect');
-
+const expect: any = require('expect');
 
 describe('Renderer', () => {
 

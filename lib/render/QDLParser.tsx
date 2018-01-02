@@ -176,7 +176,7 @@ export class QDLParser {
     this.log = null;
 
     const logMap: LogMessageMap = {'info': [], 'warning': [], 'error': [], 'internal': []};
-    for (let m of finalized) {
+    for (const m of finalized) {
       switch(m.type) {
         case 'info':
           logMap.info.push(m);
@@ -229,7 +229,7 @@ export class QDLParser {
       // Add unrendered baseIndent blocks and meaningfully-rendered nextIndent blocks.
       if (block.render === undefined) {
         if (block.indent !== baseIndent) {
-          var l2 = new Logger([block]);
+          const l2 = new Logger([block]);
           l2.internal('found unrendered non-baseIndent block', '507');
           log.extend(l2.finalize());
         }
@@ -264,7 +264,7 @@ export class QDLParser {
     const headerLine = blocks[0].lines[0];
 
     let lines = '';
-    for (let b of blocks) {
+    for (const b of blocks) {
       lines += ' ' + b.startLine;
 
       // Explicitly mark each block as 'seen'

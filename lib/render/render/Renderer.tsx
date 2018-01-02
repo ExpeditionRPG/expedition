@@ -29,7 +29,7 @@ export function sanitizeStyles(text: string): string {
   // which would normally confuse op node extraction.
   const ops: string[] = [];
   let startOfCapture: number|undefined = undefined;
-  let syntaxStack: string[] = [];
+  const syntaxStack: string[] = [];
   for (let i = 0; i < text.length; i++) {
     const c1 = text[i];
     const c2 = text[i+1];

@@ -3,7 +3,6 @@ import {Context, defaultContext} from './Context'
 declare var global: any;
 
 const cheerio = require('cheerio') as CheerioAPI;
-const window: any = cheerio.load('<div>');
 
 describe('Node', () => {
   describe('getNext', () => {
@@ -394,7 +393,7 @@ describe('Node', () => {
     });
 
     it('uses programmatic triggers', () => {
-      var quest = cheerio.load(`<quest>
+      const quest = cheerio.load(`<quest>
         <roleplay>
           <p>{{dest=5}}</p>
           <choice>
@@ -406,7 +405,7 @@ describe('Node', () => {
         </roleplay>
       </quest>`)('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
-      var result = pnode.handleAction(0);
+      const result = pnode.handleAction(0);
       if (result === null) {
         throw new Error('handleAction returned null node');
       }
@@ -541,7 +540,7 @@ describe('Node', () => {
     });
 
     it('handles randomly-generated triggers deterministically when seed is set', () => {
-      var quest = cheerio.load(`<quest>
+      const quest = cheerio.load(`<quest>
         <roleplay>
           <choice>
             <trigger>goto {{randomInt(5)}}</trigger>
@@ -554,7 +553,7 @@ describe('Node', () => {
         <roleplay id="4">r4</roleplay>
       </quest>`)('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
-      var result = pnode.handleAction(0, 'randomseed');
+      const result = pnode.handleAction(0, 'randomseed');
       if (result === null) {
         throw new Error('handleAction returned null node');
       }

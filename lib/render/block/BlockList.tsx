@@ -29,8 +29,8 @@ export class BlockList {
 
   debugLines(): string {
     // For debugging
-    var result = '#\tLine#\tIndent\tLines';
-    for(var i = 0; i < this.blocks.length; i++) {
+    let result = '#\tLine#\tIndent\tLines';
+    for(let i = 0; i < this.blocks.length; i++) {
       result += i + '\t' + this.blocks[i].startLine + '\t' + this.blocks[i].indent + '\t' + this.blocks[i].lines;
     }
     return result;
@@ -69,7 +69,7 @@ export class BlockList {
     }
 
     // after a trigger and whitespace
-    var currBlockStart = currBlock.lines && currBlock.lines[0];
+    const currBlockStart = currBlock.lines && currBlock.lines[0];
     if (prevEmpty && currBlockStart && currBlockStart[0] === '*' && currBlockStart[1] === '*') {
       return true;
     }
@@ -91,11 +91,10 @@ export class BlockList {
     // continuation of bulleted strings)
     // The result is a map of indent level to Block[].
     const split = md.split('\n');
-    var accumulated: string[] = [];
-    var prevEmpty = false;
-    var currBlock: Block|null = null;
+    let prevEmpty = false;
+    let currBlock: Block|null = null;
     for (let lineNumber = 0; lineNumber < split.length; lineNumber++) {
-      let line = split[lineNumber];
+      const line = split[lineNumber];
       let indent = 0;
       while(line[indent] === ' ') {
         indent++;

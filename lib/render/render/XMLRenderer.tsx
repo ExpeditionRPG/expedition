@@ -1,6 +1,6 @@
 import {Renderer, CombatChild, Instruction, RoleplayChild, sanitizeStyles} from './Renderer'
 
-var cheerio: any = require('cheerio') as CheerioAPI;
+const cheerio: any = require('cheerio') as CheerioAPI;
 
 // from https://stackoverflow.com/questions/7918868/how-to-escape-xml-entities-in-javascript
 function escapeXml(unsafe: string) {
@@ -17,17 +17,17 @@ function escapeXml(unsafe: string) {
 }
 
 // TODO: Move error checks in this renderer to the QDLRenderer class.
-export var XMLRenderer: Renderer = {
+export const XMLRenderer: Renderer = {
   toRoleplay: function(attribs: {[k: string]: string}, body: (string|RoleplayChild|Instruction)[], line: number): any {
-    var roleplay = cheerio.load('<roleplay>')('roleplay');
+    const roleplay = cheerio.load('<roleplay>')('roleplay');
 
-    var keys = Object.keys(attribs);
-    for (var i = 0; i < keys.length; i++) {
+    const keys = Object.keys(attribs);
+    for (let i = 0; i < keys.length; i++) {
       roleplay.attr(keys[i], attribs[keys[i]]);
     }
 
-    for (var i = 0; i < body.length; i++) {
-      let section = body[i];
+    for (let i = 0; i < body.length; i++) {
+      const section = body[i];
       if (typeof(section) === 'string') {
         let text = section as string;
         const INITIAL_OP_WITH_PARAGRAPH = /^\s*{{(.*?)}}\s*[^\s]+/;
@@ -39,8 +39,8 @@ export var XMLRenderer: Renderer = {
         }
         roleplay.append(paragraph);
       } else if (Boolean((section as RoleplayChild).choice)) { // choice
-        let node = section as RoleplayChild;
-        let choice = cheerio.load('<choice></choice>')('choice');
+        const node = section as RoleplayChild;
+        const choice = cheerio.load('<choice></choice>')('choice');
         choice.attr('text', sanitizeStyles(node.text));
         if (node.visible) {
           choice.attr('if', node.visible);
@@ -48,8 +48,8 @@ export var XMLRenderer: Renderer = {
         choice.append(node.choice);
         roleplay.append(choice);
       } else { // instruction
-        let node = section as Instruction;
-        let instruction = cheerio.load('<instruction></instruction>')('instruction');
+        const node = section as Instruction;
+        const instruction = cheerio.load('<instruction></instruction>')('instruction');
         instruction.append('<p>' + sanitizeStyles(node.text) + '</p>');
         if (node.visible) {
           instruction.attr('if', node.visible);
@@ -107,7 +107,7 @@ export var XMLRenderer: Renderer = {
   },
 
   toTrigger: function(attribs: {[k: string]: any}, line: number): any {
-    var trigger = cheerio.load('<trigger>'+attribs['text']+'</trigger>')('trigger');
+    const trigger = cheerio.load('<trigger>'+attribs['text']+'</trigger>')('trigger');
     if (attribs['visible']) {
       trigger.attr('if', attribs['visible']);
     }
@@ -118,9 +118,9 @@ export var XMLRenderer: Renderer = {
   },
 
   toQuest: function(attribs: {[k: string]: string}, line: number): any {
-    var quest = cheerio.load('<quest>')('quest');
-    var keys = Object.keys(attribs);
-    for(var i = 0; i < keys.length; i++) {
+    const quest = cheerio.load('<quest>')('quest');
+    const keys = Object.keys(attribs);
+    for(let i = 0; i < keys.length; i++) {
       quest.attr(keys[i], attribs[keys[i]]);
     }
     if (line >= 0) {
@@ -130,7 +130,7 @@ export var XMLRenderer: Renderer = {
   },
 
   finalize: function(quest: any, inner: any[]): any {
-    for (var i = 0; i < inner.length; i++) {
+    for (let i = 0; i < inner.length; i++) {
       quest.append(inner[i]);
     }
     return quest;

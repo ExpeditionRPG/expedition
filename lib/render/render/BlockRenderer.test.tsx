@@ -4,21 +4,18 @@ import {XMLRenderer} from './XMLRenderer'
 import {Logger, prettifyMsgs} from '../Logger'
 import TestData from './TestData'
 
-var prettifyHTML = (require('html') as any).prettyPrint;
+const prettifyHTML = (require('html') as any).prettyPrint;
 
-var expect: any = require('expect');
-var cheerio: any = require('cheerio') as CheerioAPI;
-
-
+const expect: any = require('expect');
 
 describe('BlockRenderer', () => {
   // BlockRenderer is stateless
-  var br = new BlockRenderer(XMLRenderer);
+  const br = new BlockRenderer(XMLRenderer);
 
   describe('toCombat', () => {
     it('errors on bad parsing', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         {
           indent: 0,
           lines: ['ha! this will never parse'],
@@ -33,8 +30,8 @@ describe('BlockRenderer', () => {
     });
 
     it('errors on bad bullet json', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         {
           indent: 0,
           lines: ['_combat_', '', '- e1', '* on win {invalid_json}'],
@@ -66,8 +63,8 @@ describe('BlockRenderer', () => {
     });
 
     it ('errors without enemies or events', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         {
           indent: 0,
           lines: ['_combat_'],
@@ -82,8 +79,8 @@ describe('BlockRenderer', () => {
     })
 
     it ('errors with bad enemy tier', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         {
           indent: 0,
           lines: ['_combat_', '', '- Thief {"tier": -1}', '- Thief', '', '* on win'],
@@ -115,8 +112,8 @@ describe('BlockRenderer', () => {
     it('errors on inner block without event bullet');
 
     it('renders full combat', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         {
           indent: 0,
           lines: ['_combat_', '', '- e1', '- e2 {"tier": 3}', '* on win'],
@@ -147,8 +144,8 @@ describe('BlockRenderer', () => {
     });
 
     it('renders conditional events', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         {
           indent: 0,
           lines: ['_combat_', '', '- e1', '- e2', '* {{test1}} on win'],
@@ -180,8 +177,8 @@ describe('BlockRenderer', () => {
     });
 
     it('renders with JSON', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         {
           indent: 0,
           lines: ['_combat_ {"enemies": [{"text":"skeleton"}, {"text":"test", "visible":"cond"}]}', '', '* {{test1}} on win {"heal": 2}'],
@@ -221,8 +218,8 @@ describe('BlockRenderer', () => {
 
   describe('toRoleplay', () => {
     it('renders full roleplay', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         {
           indent: 0,
           lines: ['_roleplay_', '', 'text', '', '* choice'],
@@ -254,8 +251,8 @@ describe('BlockRenderer', () => {
     });
 
     it('renders roleplay without title', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         { lines: [ 'Victory!', '' ],
           indent: 4,
           startLine: 21
@@ -269,8 +266,8 @@ describe('BlockRenderer', () => {
     });
 
     it('renders roleplay with title that has icon', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         { lines: ['_Title with :roll:, :rune_alpha:_', 'Victory!', '' ],
           indent: 4,
           startLine: 21
@@ -284,8 +281,8 @@ describe('BlockRenderer', () => {
     });
 
     it('renders roleplay with title that has icon and ID', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         { lines: ['_Title with :roll:, :rune_alpha:_ (#id)', 'Victory!', '' ],
           indent: 4,
           startLine: 21
@@ -299,8 +296,8 @@ describe('BlockRenderer', () => {
     });
 
     it('renders conditional choices', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         {
           indent: 0,
           lines: ['_roleplay_', '', 'text', '', '* {{test1}} choice'],
@@ -332,8 +329,8 @@ describe('BlockRenderer', () => {
     });
 
     it('alerts the user to choice without text', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         {
           indent: 0,
           lines: ['_roleplay_', '', 'text', '', '* {{test1}}'],
@@ -354,8 +351,8 @@ describe('BlockRenderer', () => {
     });
 
     it('alerts the user to choice with invalid choice string', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         {
           indent: 0,
           lines: ['_roleplay_', '', 'text', '', '* {{test1'],
@@ -376,8 +373,8 @@ describe('BlockRenderer', () => {
     });
 
     it('renders with ID', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         { lines: [ '_Title_ (#testid123)', '', 'hi' ],
           indent: 4,
           startLine: 21
@@ -397,8 +394,8 @@ describe('BlockRenderer', () => {
     it('errors if invalid choice attribute');
 
     it('errors if [art] syntax is used as part of a line / not standalone', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         {
           indent: 0,
           lines: ['_roleplay_', '', 'text [art] text'],
@@ -415,8 +412,8 @@ describe('BlockRenderer', () => {
 
   describe('toTrigger', () => {
     it('renders end', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         { lines: [ '**end**', '' ],
           indent: 4,
           startLine: 21
@@ -430,8 +427,8 @@ describe('BlockRenderer', () => {
     });
 
     it('renders goto', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         { lines: [ '**goto testid123**', '' ],
           indent: 4,
           startLine: 21
@@ -445,8 +442,8 @@ describe('BlockRenderer', () => {
     });
 
     it('renders condition', () => {
-      var log = new Logger();
-      var blocks: Block[] = [
+      const log = new Logger();
+      const blocks: Block[] = [
         { lines: [ '**{{a}} end**', '' ],
           indent: 4,
           startLine: 21
@@ -466,8 +463,8 @@ describe('BlockRenderer', () => {
 
   describe('toQuest', () => {
     it('renders', () => {
-      var log = new Logger();
-      var block: Block = {
+      const log = new Logger();
+      const block: Block = {
         lines: [ '#Quest Title' ],
         indent: 0,
         startLine: 0
@@ -480,8 +477,8 @@ describe('BlockRenderer', () => {
     })
 
     it('errors if unparseable quest attribute', () => {
-      var log = new Logger();
-      var block: Block = {
+      const log = new Logger();
+      const block: Block = {
         lines: [ '#Quest Title', 'minplayers1' ],
         indent: 0,
         startLine: 0
