@@ -46,25 +46,26 @@ function setupRemotePlay() {
 // TODO record modal views as users navigate: ReactGA.modalview('/about/contact-us');
 // likely as a separate logView or logNavigate or something
 export function logEvent(name: string, argsInput: any): void {
-  // Firebase requires that keys are < 40 character, values are < 100 characters
-  name = (name || '').slice(0, 100);
-  const args = {} as any;
-  Object.keys(argsInput).forEach((key: string) => {
-    args[key.toString().slice(0, 40)] = argsInput[key].toString().slice(0, 100);
-  });
-  const fbp = getWindow().FirebasePlugin;
-  if (fbp) {
-    fbp.logEvent(name, args);
-  }
-
   const ga = getGA();
   if (ga) {
     ga.event({
       category: name,
-      action: args.action || '',
-      label: args.label || '',
-      value: args.value || undefined,
+      action: argsInput.action || '',
+      label: argsInput.label || '',
+      value: argsInput.value || undefined,
     });
+  }
+
+  const fbp = getWindow().FirebasePlugin;
+  if (fbp) {
+    const FIREBASE_MAX_NAME_LENGTH = 40;
+    const FIREBASE_MAX_VALUE_LENGTH = 100;
+    name = (name || '').slice(0, FIREBASE_MAX_VALUE_LENGTH);
+    const args = {} as any;
+    Object.keys(argsInput).forEach((key: string) => {
+      args[(key || '').toString().slice(0, FIREBASE_MAX_NAME_LENGTH)] = (argsInput[key] || '').toString().slice(0, FIREBASE_MAX_VALUE_LENGTH);
+    });
+    fbp.logEvent(name, args);
   }
 }
 

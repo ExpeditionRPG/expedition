@@ -1,6 +1,6 @@
 import Redux from 'redux'
 import * as React from 'react'
-import {CardState, SettingsType} from '../reducers/StateTypes'
+import {CardState, CardThemeType, SettingsType} from '../reducers/StateTypes'
 
 import {initRoleplay} from './roleplay/Actions'
 import RoleplayContainer from './roleplay/RoleplayContainer'
@@ -42,6 +42,26 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
     case 'NO_TIMER':
     case 'MID_COMBAT_ROLEPLAY':
       return <CombatContainer card={card} node={node}/>;
+    default:
+      return null;
+  }
+}
+
+export function getCardTemplateTheme(card: CardState): CardThemeType {
+  switch(card.phase || 'ROLEPLAY') {
+    case 'ROLEPLAY':
+      return 'LIGHT';
+    case 'DRAW_ENEMIES':
+    case 'PREPARE':
+    case 'TIMER':
+    case 'SURGE':
+    case 'RESOLVE_ABILITIES':
+    case 'RESOLVE_DAMAGE':
+    case 'VICTORY':
+    case 'DEFEAT':
+    case 'NO_TIMER':
+    case 'MID_COMBAT_ROLEPLAY':
+      return 'DARK';
     default:
       return null;
   }

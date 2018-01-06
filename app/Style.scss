@@ -201,6 +201,11 @@ body {
       padding: 0 size(base);
     }
   }
+
+  &.DARK {
+    background-color: $bg_dark_primary;
+    color: $font_color_dark_primary;
+  }
 }
 
 .remote-affector {

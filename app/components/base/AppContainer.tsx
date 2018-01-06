@@ -19,13 +19,13 @@ import RemoteFooterContainer from './remote/RemoteFooterContainer'
 import RemoteSyncContainer from './remote/RemoteSyncContainer'
 
 import {CARD_TRANSITION_ANIMATION_MS} from '../../Constants'
-import {renderCardTemplate} from '../../cardtemplates/Template'
+import {getCardTemplateTheme, renderCardTemplate} from '../../cardtemplates/Template'
 import {initialSettings} from '../../reducers/Settings'
 import {cardTransitioning} from '../../actions/Card'
 import {closeSnackbar} from '../../actions/Snackbar'
 import {initialSnackbar} from '../../reducers/Snackbar'
 import {initialRemotePlay} from '../../reducers/RemotePlay'
-import {AppStateWithHistory, TransitionType, SearchPhase, RemotePlayPhase, SettingsType, SnackbarState, RemotePlayState} from '../../reducers/StateTypes'
+import {AppStateWithHistory, CardThemeType, TransitionType, SearchPhase, RemotePlayPhase, SettingsType, SnackbarState, RemotePlayState} from '../../reducers/StateTypes'
 import {getStore} from '../../Store'
 import {getRemotePlayClient} from '../../RemotePlay'
 
@@ -36,6 +36,7 @@ interface MainProps extends React.Props<any> {}
 interface MainState {
   card: JSX.Element;
   key: number;
+  theme: CardThemeType;
   transition: TransitionType;
   settings: SettingsType;
   snackbar: SnackbarState;
@@ -66,6 +67,7 @@ export default class Main extends React.Component<MainProps, {}> {
       return {
         card: <SplashScreenContainer/>,
         key: 0,
+        theme: 'LIGHT',
         transition: 'INSTANT' as TransitionType,
         settings: initialSettings,
         snackbar: initialSnackbar,
@@ -87,6 +89,7 @@ export default class Main extends React.Component<MainProps, {}> {
     }
 
     let card: JSX.Element = null;
+    let theme: CardThemeType = 'LIGHT';
     switch(state.card.name) {
       case 'SPLASH_CARD':
         card = <SplashScreenContainer/>;
@@ -109,6 +112,7 @@ export default class Main extends React.Component<MainProps, {}> {
           console.log('Unknown quest card name ' + name);
           return this.state;
         }
+        theme = getCardTemplateTheme(state.card);
         break;
       case 'QUEST_END':
         card = <QuestEndContainer/>;
@@ -150,6 +154,7 @@ export default class Main extends React.Component<MainProps, {}> {
     return {
       card,
       key: state.card.ts,
+      theme,
       transition,
       settings: state.settings,
       snackbar: state.snackbar,
@@ -182,7 +187,7 @@ export default class Main extends React.Component<MainProps, {}> {
                   {this.state.card}
               </div>
             </ReactCSSTransitionGroup>
-            {this.state.remotePlay && this.state.remotePlay.session && <RemoteFooterContainer/>}
+            {this.state.remotePlay && this.state.remotePlay.session && <RemoteFooterContainer theme={this.state.theme}/>}
             <DialogsContainer />
             <RemoteSyncContainer />
             <Snackbar
