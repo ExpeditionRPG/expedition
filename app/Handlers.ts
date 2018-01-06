@@ -12,8 +12,8 @@ export function healthCheck(req: express.Request, res: express.Response) {
 
 export function announcement(req: express.Request, res: express.Response) {
   res.json({
-    message: 'Help improve Expedition! (short survey)',
-    link: 'https://docs.google.com/forms/d/e/1FAIpQLSeXh1taZOGboxaKMtao9wLkBWVyJUtJbHo1U-s7C8xfO9TT-w/viewform?usp=sf_link',
+    message: 'Click here to vote on the best new quest!',
+    link: 'https://goo.gl/forms/V9YpbzCl5a7ZGxJF2',
   });
 }
 
