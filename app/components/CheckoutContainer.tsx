@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Check
       dispatch(openSnackbar('Error encountered: ' + err));
     },
     onHome: (): void => {
-      dispatch(toPrevious({name: 'QUEST_START', before: true}));
+      dispatch(toPrevious({name: 'FEATURED_QUESTS'}));
     },
     onPhaseChange: (phase: CheckoutPhase): void => {
       dispatch(checkoutSetState({phase}));

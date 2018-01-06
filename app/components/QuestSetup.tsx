@@ -4,18 +4,18 @@ import Card from './base/Card'
 import Button from './base/Button'
 import {SettingsType} from '../reducers/StateTypes'
 
-export interface QuestStartStateProps {
+export interface QuestSetupStateProps {
   settings: SettingsType;
 }
 
-export interface QuestStartDispatchProps {
+export interface QuestSetupDispatchProps {
   onNext: () => void;
 }
 
-export interface QuestStartProps extends QuestStartStateProps, QuestStartDispatchProps {};
+export interface QuestSetupProps extends QuestSetupStateProps, QuestSetupDispatchProps {};
 
 // TODO: Refactor this into a QUEST_CARD
-const QuestStart = (props: QuestStartProps): JSX.Element => {
+const QuestSetup = (props: QuestSetupProps): JSX.Element => {
   const singlePlayer = (props.settings.numPlayers === 1);
   const twoAdventurer = (props.settings.numPlayers === 1 || props.settings.numPlayers === 2);
   const multiPlayer = (props.settings.numPlayers > 1);
@@ -46,9 +46,9 @@ const QuestStart = (props: QuestStartProps): JSX.Element => {
         {!props.settings.multitouch && <span> During combat, one player should manage the device.</span>}
       </p>}
 
-      <Button onTouchTap={() => props.onNext()} remoteID="queststart">Next</Button>
+      <Button onTouchTap={() => props.onNext()} remoteID="questsetup">Next</Button>
     </Card>
   );
 }
 
-export default QuestStart;
+export default QuestSetup;

@@ -11,6 +11,7 @@ import {SearchSettings, SettingsType, QuestState, UserState, UserFeedbackState} 
 import {QuestDetails} from '../reducers/QuestTypes'
 import {getDevicePlatform, getPlatformDump, getAppVersion} from '../Globals'
 import {logEvent} from '../Main'
+import {getStore} from '../Store'
 import {TemplateContext} from '../cardtemplates/TemplateTypes'
 import {defaultContext, ParserNode} from '../cardtemplates/Template'
 import {remoteify} from './ActionTypes'
@@ -49,9 +50,10 @@ export const fetchQuestXML = remoteify(function fetchQuestXML(details: QuestDeta
 // for loading quests in the app - Quest Creator injects directly into initQuest
 function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: TemplateContext}) {
   return (dispatch: Redux.Dispatch<any>) => {
-    // Quest start is here instead of initQuest because initQuest is also used by the editor
+    // Quest start logging is here instead of initQuest because initQuest is also used by the editor
     // and would over-report.
     logEvent('quest_start', { ...a.details, action: a.details.title, label: a.details.id });
+    logQuestPlay({phase: 'start'});
 
     dispatch(initQuest(a.details, a.questNode, a.ctx));
 
@@ -61,11 +63,35 @@ function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: Templa
     if (node.elem[0].attribs.skipsetup) {
       dispatch(toCard({name: 'QUEST_CARD'}));
     } else {
-      dispatch(toCard({name: 'QUEST_START'}));
+      dispatch(toCard({name: 'QUEST_SETUP'}));
     }
 
     return {...a, questNode: (null as Cheerio)};
   }
+}
+
+export function logQuestPlay(a: {phase: 'start'|'end'}) {
+  const state = getStore().getState();
+  const data = {
+    questid: state.quest.details.id,
+    questversion: state.quest.details.questversion,
+    userid: state.user.id,
+    players: state.settings.numPlayers,
+    difficulty: state.settings.difficulty,
+    platform: getDevicePlatform(),
+    version: getAppVersion(),
+    email: state.user.email,
+    name: state.user.name,
+  };
+
+  fetch(authSettings.urlBase + '/analytics/quest/' + a.phase, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+    .then(handleFetchErrors)
+    .catch((error: Error) => {
+      logEvent('analytics_quest_err', { label: error });
+    });
 }
 
 export function subscribe(a: {email: string}) {
@@ -85,7 +111,7 @@ export function subscribe(a: {email: string}) {
       dispatch(openSnackbar('Error subscribing: ' + error));
     });
   };
-};
+}
 
 export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState}) {
   return (dispatch: Redux.Dispatch<any>) => {

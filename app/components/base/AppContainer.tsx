@@ -12,7 +12,7 @@ import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
 import SearchContainer from '../SearchContainer'
 import SettingsContainer from '../SettingsContainer'
 import SplashScreenContainer from '../SplashScreenContainer'
-import QuestStartContainer from '../QuestStartContainer'
+import QuestSetupContainer from '../QuestSetupContainer'
 import QuestEndContainer from '../QuestEndContainer'
 import RemotePlayContainer from '../RemotePlayContainer'
 import RemoteFooterContainer from './remote/RemoteFooterContainer'
@@ -97,8 +97,8 @@ export default class Main extends React.Component<MainProps, {}> {
       case 'FEATURED_QUESTS':
         card = <FeaturedQuestsContainer/>;
         break;
-      case 'QUEST_START':
-        card = <QuestStartContainer/>;
+      case 'QUEST_SETUP':
+        card = <QuestSetupContainer/>;
         break;
       case 'QUEST_CARD':
         if (!state.quest || !state.quest.node) {

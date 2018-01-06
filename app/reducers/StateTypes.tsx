@@ -88,7 +88,7 @@ export interface SnackbarState {
 
 export type RemotePlayPhase = 'CONNECT'|'LOBBY';
 export type CheckoutPhase = 'ENTRY' | 'DONE';
-export type CardName = 'CHECKOUT' | 'PLAYER_COUNT_SETTING' | 'QUEST_START' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REMOTE_PLAY';
+export type CardName = 'CHECKOUT' | 'PLAYER_COUNT_SETTING' | 'QUEST_SETUP' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REMOTE_PLAY';
 export type CardPhase = TemplatePhase | SearchPhase | RemotePlayPhase | CheckoutPhase;
 export interface CardState {
   name: CardName;

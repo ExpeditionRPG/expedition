@@ -8,6 +8,7 @@ import Card from './base/Card'
 import Checkbox from './base/Checkbox'
 import StarRating from './base/StarRating'
 
+import {logQuestPlay} from '../actions/Web'
 import {CheckoutState, QuestState, SettingsType, UserState, UserFeedbackState} from '../reducers/StateTypes'
 
 declare var window:any;
@@ -32,6 +33,11 @@ export interface QuestEndDispatchProps {
 export interface QuestEndProps extends QuestEndStateProps, QuestEndDispatchProps {};
 
 export default class QuestEnd extends React.Component<QuestEndProps, {}> {
+  constructor(props: QuestEndProps) {
+    super(props);
+    logQuestPlay({phase: 'end'});
+  }
+
   render() {
     const loggedIn = (this.props.user && this.props.user.loggedIn);
     const rated = (this.props.userFeedback.rating > 0);
