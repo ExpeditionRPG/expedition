@@ -50,12 +50,12 @@ export const fetchQuestXML = remoteify(function fetchQuestXML(details: QuestDeta
 // for loading quests in the app - Quest Creator injects directly into initQuest
 function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: TemplateContext}) {
   return (dispatch: Redux.Dispatch<any>) => {
-    // Quest start logging is here instead of initQuest because initQuest is also used by the editor
-    // and would over-report.
+    dispatch(initQuest(a.details, a.questNode, a.ctx));
+
+    // Quest start logging is here instead of initQuest because initQuest is also used by the QC / would over-report.
+    // Logging done after quest initialized so that the new quest info is in the state (logQuestPlay pulls from state).
     logEvent('quest_start', { ...a.details, action: a.details.title, label: a.details.id });
     logQuestPlay({phase: 'start'});
-
-    dispatch(initQuest(a.details, a.questNode, a.ctx));
 
     const firstNode = a.questNode.children().eq(0);
     const node = new ParserNode(firstNode, a.ctx);
