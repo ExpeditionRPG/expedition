@@ -370,7 +370,11 @@ export default class Audio extends React.Component<AudioProps, {}> {
       if (track && track.source && track.source.playbackState === track.source.PLAYING_STATE) {
         track.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + fadeSeconds); // Fade out
         track.source.stop = track.source.stop || track.source.noteOff; // polyfill for old browsers
-        track.source.stop(this.ctx.currentTime + fadeSeconds);
+        try {
+          track.source.stop(this.ctx.currentTime + fadeSeconds);
+        } catch (err) { // polyfill for iOS
+          track.gain.disconnect();
+        }
       }
     }
   }
