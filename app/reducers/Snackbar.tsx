@@ -7,7 +7,7 @@ export const initialSnackbar: SnackbarState = {
   actionLabel: null,
   open: false,
   message: '',
-  timeout: 8000,
+  timeout: 6000,
 };
 
 export function snackbar(state: SnackbarState = initialSnackbar, action: Redux.Action): SnackbarState {

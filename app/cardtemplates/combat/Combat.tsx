@@ -80,7 +80,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
     uniqueEnemy = uniqueEnemy || !enemy.class;
     let icon = null;
     if (enemy.class) {
-      const iconName = enemy.class.replace(new RegExp(REGEX.HTML_TAG, 'g'), '').toLowerCase();
+      const iconName = enemy.class.replace(new RegExp(REGEX.HTML_TAG.source, 'g'), '').toLowerCase();
       icon = <img className="inline_icon" src={`images/${iconName}_white_small.svg`} />;
     }
     if (enemyNames.has(enemy.name)) {

@@ -30,6 +30,7 @@ const difficultyText: { [v: string]: any } = [
   {title: 'Hard', text: 'Enemies are relentless; a true challenge for seasoned adventurers only.'},
   {title: 'Impossible', text: 'You will almost surely die, so make your death a glorious one!'},
 ];
+const difficultyValues: string[] = ['EASY', 'NORMAL', 'HARD', 'IMPOSSIBLE'];
 
 export const fontSizeValues: FontSizeType[] = ['SMALL', 'NORMAL', 'LARGE'];
 
@@ -43,9 +44,9 @@ const timerText: { [v: string]: any } = [
 export const timerValues: number[] = [null, 30, 15, 10, 6];
 
 const Settings = (props: SettingsProps): JSX.Element => {
-  const difficultyIdx = ['EASY', 'NORMAL', 'HARD', 'IMPOSSIBLE'].indexOf(props.difficulty);
+  const difficultyIdx = difficultyValues.indexOf(props.difficulty);
   const fontSizeIdx = fontSizeValues.indexOf(props.fontSize);
-  const timerIdx = timerValues.indexOf(props.timerSeconds);
+  const timerIdx = props.timerSeconds ? timerValues.indexOf(props.timerSeconds) : 0;
 
   return (
     <Card title="Settings">
@@ -95,5 +96,3 @@ const Settings = (props: SettingsProps): JSX.Element => {
 }
 
 export default Settings;
-
-

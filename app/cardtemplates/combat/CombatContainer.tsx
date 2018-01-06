@@ -23,12 +23,10 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
   // card.phase currently represents combat boundaries - non-combat cards don't use phases
   while (Boolean(state._history[histIdx]) && state._history[histIdx].quest && state._history[histIdx].quest.node && state._history[histIdx].quest.node.ctx.templates.combat && histIdx > 0) {
     const tier = state._history[histIdx].quest.node.ctx.templates.combat.tier;
-    if (!tier || state._history[histIdx].card.phase !== 'PREPARE') {
-      histIdx--;
-      continue;
-    }
-    maxTier = Math.max(maxTier, tier);
     histIdx--;
+    if (tier && ['PREPARE', 'NO_TIMER'].indexOf(state._history[histIdx].card.phase) !== -1) {
+      maxTier = Math.max(maxTier, tier);
+    }
   }
 
   const combat = ownProps.node && ownProps.node.ctx && ownProps.node.ctx.templates && ownProps.node.ctx.templates.combat;

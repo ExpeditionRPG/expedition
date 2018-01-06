@@ -170,8 +170,12 @@ export function getStorageBoolean(key: string, fallback: boolean): boolean {
 }
 
 export function getStorageJson(key: string, fallback?: object): object {
-  const val = getLocalStorage().getItem(key);
-  return (val !== null) ? JSON.parse(val) : fallback;
+  try {
+    const val = JSON.parse(getLocalStorage().getItem(key));
+    return (val !== null) ? val : fallback;
+  } catch (err) {
+    return fallback;
+  }
 }
 
 export function getStorageNumber(key: string, fallback?: number): number {
