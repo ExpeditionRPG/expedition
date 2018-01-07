@@ -71,27 +71,34 @@ function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: Templa
 }
 
 export function logQuestPlay(a: {phase: 'start'|'end'}) {
-  const state = getStore().getState();
-  const data = {
-    questid: state.quest.details.id,
-    questversion: state.quest.details.questversion,
-    userid: state.user.id,
-    players: state.settings.numPlayers,
-    difficulty: state.settings.difficulty,
-    platform: getDevicePlatform(),
-    version: getAppVersion(),
-    email: state.user.email,
-    name: state.user.name,
-  };
+  try {
+    const state = {
+      ...getStore().getState(),
+      user: {} as any, // TODO fix user being null when not logged in
+    };
+    const data = {
+      questid: state.quest.details.id,
+      questversion: state.quest.details.questversion,
+      userid: state.user.id,
+      players: state.settings.numPlayers,
+      difficulty: state.settings.difficulty,
+      platform: getDevicePlatform(),
+      version: getAppVersion(),
+      email: state.user.email,
+      name: state.user.name,
+    };
 
-  fetch(authSettings.urlBase + '/analytics/quest/' + a.phase, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    })
-    .then(handleFetchErrors)
-    .catch((error: Error) => {
-      logEvent('analytics_quest_err', { label: error });
-    });
+    fetch(authSettings.urlBase + '/analytics/quest/' + a.phase, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      })
+      .then(handleFetchErrors)
+      .catch((error: Error) => {
+        logEvent('analytics_quest_err', { label: error });
+      });
+  } catch (err) {
+    // Fail silently
+  }
 }
 
 export function subscribe(a: {email: string}) {
@@ -120,6 +127,8 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
     } else if (a.userFeedback.text.length > 0 && a.userFeedback.text.length < MIN_FEEDBACK_LENGTH) {
       return alert('Reviews must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value to authors.');
     }
+
+    a.user = a.user || {} as any; // TODO fix user being null when not logged in
 
     const data = {
       questid: a.quest.details.id,
