@@ -1,8 +1,3 @@
-// TODO: test https://github.com/Fabricate-IO/expedition-quest-creator/issues/184
-// We should see how to start a local msyql instance (and bigstore)
-// and point the configs at it.
-// (note: current travis environment variables are fillter values)
-
 import {Feedback, FeedbackAttributes, FeedbackInstance} from './Feedback'
 import {Quest, QuestAttributes, QuestInstance} from './Quests'
 import * as Sequelize from 'sequelize'

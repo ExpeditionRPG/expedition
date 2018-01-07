@@ -45,6 +45,7 @@ const publishLimiter = new RateLimit({
 
 Router.get('/healthcheck', limitCors, Handlers.healthCheck);
 Router.get('/announcements', limitCors, Handlers.announcement);
+Router.post('/analytics/:category/:action', limitCors, (req, res) => {Handlers.postAnalyticsEvent(models.AnalyticsEvent, req, res);});
 Router.post('/quests', limitCors, (req, res) => {Handlers.search(models.Quest, req, res);});
 Router.get('/raw/:quest', limitCors, (req, res) => {Handlers.questXMLRedirect(models.Quest, req, res);});
 Router.post('/publish/:id', publishLimiter, limitCors, (req, res) => {Handlers.publish(models.Quest, req, res);});

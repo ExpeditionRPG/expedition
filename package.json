@@ -1,6 +1,6 @@
 {
   "name": "expedition-api",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "The Expedition API Server",
   "homepage": "http://expeditiongame.com",
   "repository": "https://github.com/ExpeditionRPG/expedition-api",

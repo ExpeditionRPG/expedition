@@ -1,6 +1,7 @@
 import * as express from 'express'
-import {Quest, QuestInstance, QuestAttributes, QuestSearchParams, MAX_SEARCH_LIMIT, PUBLIC_PARTITION} from './models/Quests'
+import {AnalyticsEvent} from './models/AnalyticsEvents'
 import {Feedback, FeedbackType, FeedbackAttributes} from './models/Feedback'
+import {Quest, QuestInstance, QuestAttributes, QuestSearchParams, MAX_SEARCH_LIMIT, PUBLIC_PARTITION} from './models/Quests'
 
 const Joi = require('joi');
 
@@ -116,6 +117,32 @@ export function unpublish(quest: Quest, req: express.Request, res: express.Respo
       res.end('ok');
     })
     .catch((e: Error) => {
+      console.error(e);
+      return res.status(500).send(GENERIC_ERROR_MESSAGE);
+    });
+}
+
+export function postAnalyticsEvent(analyticsEvent: AnalyticsEvent, req: express.Request, res: express.Response) {
+  let body: any;
+  try {
+    body = JSON.parse(req.body);
+  } catch (e) {
+    return res.status(500).end('Error reading request.');
+  }
+
+  analyticsEvent.create({
+      category: req.params.category,
+      action: req.params.action,
+      questid: body.questid,
+      userid: body.userid,
+      questversion: body.questversion,
+      difficulty: body.difficulty,
+      platform: body.platform,
+      players: body.players,
+      version: body.version,
+    }).then(() => {
+      res.end('ok');
+    }).catch((e: Error) => {
       console.error(e);
       return res.status(500).send(GENERIC_ERROR_MESSAGE);
     });

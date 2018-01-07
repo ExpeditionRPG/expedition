@@ -3,7 +3,7 @@ import {Feedback, FeedbackInstance} from './Feedback'
 
 import * as CloudStorage from '../lib/cloudstorage'
 import * as Mail from '../Mail'
-import * as Bluebird from 'bluebird';
+import * as Bluebird from 'bluebird'
 
 export const MAX_SEARCH_LIMIT = 100;
 
