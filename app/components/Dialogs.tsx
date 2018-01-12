@@ -14,7 +14,7 @@ import TextField from 'material-ui/TextField'
 import Toggle from 'material-ui/Toggle'
 
 import Checkbox from './base/Checkbox'
-import {QuestType, ShareType, DialogsState, DialogIDType} from '../reducers/StateTypes'
+import {QuestType, ShareType, DialogsState, DialogIDType, UserState} from '../reducers/StateTypes'
 import theme from '../Theme'
 import {MIN_PLAYERS, MAX_PLAYERS} from '../Constants'
 import {CONTENT_RATINGS, GENRES} from '../../node_modules/expedition-app/app/Constants'
@@ -132,6 +132,7 @@ interface PublishingDialogProps extends React.Props<any> {
   onRequestClose: () => void;
   onRequestPublish: (quest: QuestType, majorRelease: boolean, privatePublish: boolean) => void;
   quest: QuestType;
+  user: UserState;
 }
 
 export class PublishingDialog extends React.Component<PublishingDialogProps, {}> {
@@ -197,12 +198,6 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           value={metadata.get('author')}
           floatingLabelText="Author name"
           onChange={(e: any, val: string) => { this.props.handleMetadataChange(this.props.quest, 'author', val); }}
-        />
-        <TextField
-          className="halfWidth"
-          value={metadata.get('email')}
-          floatingLabelText="Contact email (private)"
-          onChange={(e: any, val: string) => { this.props.handleMetadataChange(this.props.quest, 'email', val); }}
         />
         <SelectField
           className="halfWidth"
@@ -302,6 +297,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
 export interface DialogsStateProps {
   dialogs: DialogsState;
   quest: QuestType;
+  user: UserState;
 };
 
 export interface DialogsDispatchProps {
@@ -322,6 +318,7 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         onRequestClose={() => props.onRequestClose('PUBLISHING')}
         onRequestPublish={props.onRequestPublish}
         quest={props.quest}
+        user={props.user}
       />
       <ErrorDialog
         open={props.dialogs.open['ERROR']}

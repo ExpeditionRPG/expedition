@@ -37,6 +37,9 @@ const Main = (props: MainProps): JSX.Element => {
     return (
       <div className="main loading">
         Loading Expedition Quest Creator...
+        <div className="fadeIn">
+          Not loading? Try disabling your ad blocker. If that doesn't work, hit the "Contact Us" button in the bottom right - make sure to include the title of your quest.
+        </div>
       </div>
     );
   } else if (props.loggedIn === false || Object.keys(props.quest).length === 0) {
