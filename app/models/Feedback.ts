@@ -133,6 +133,10 @@ export class Feedback {
       })
       .then((quest: QuestInstance) => {
         const ratingavg = (quest.dataValues.ratingavg || 0).toFixed(1);
+        const emails = [quest.dataValues.email];
+        if (!feedback.rating || feedback.rating <= 3) {
+          emails.push('expedition+questfeedback@fabricate.io');
+        }
         if (quest.dataValues.ratingcount === 1) {
           const subject = `Your quest just received its first rating!`;
           let message = `<p>${quest.dataValues.author},</p>
@@ -144,7 +148,7 @@ export class Feedback {
           }
           message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
             <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>`;
-          return Mail.send([quest.dataValues.email, 'expedition+questfeedback@fabricate.io'], subject, message);
+          return Mail.send(emails, subject, message);
         } else if (feedback.text.length > 0) {
           const subject = `Quest rated ${feedback.rating}/5: ${quest.dataValues.title}`;
           const message = `<p>User feedback:</p>
@@ -156,7 +160,7 @@ export class Feedback {
             <p>Reviewer email: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
             <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
           `;
-          return Mail.send([quest.dataValues.email, 'expedition+questfeedback@fabricate.io'], subject, message);
+          return Mail.send(emails, subject, message);
         }
       });
   }
