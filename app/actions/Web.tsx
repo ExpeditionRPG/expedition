@@ -70,10 +70,8 @@ function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: Templa
 
 export function logQuestPlay(a: {phase: 'start'|'end'}) {
   try {
-    const state = {
-      ...getStore().getState(),
-      user: {} as any, // TODO fix user being null when not logged in
-    };
+    const state = getStore().getState();
+    state.user = state.user || {} as any; // TODO fix user being null when not logged in
     const data = {
       questid: state.quest.details.id,
       questversion: state.quest.details.questversion,
