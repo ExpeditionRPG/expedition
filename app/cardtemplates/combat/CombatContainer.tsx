@@ -3,17 +3,17 @@ import {connect} from 'react-redux'
 
 import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
 import {toPrevious, toCard} from '../../actions/Card'
-import {handleCombatTimerStart, handleCombatTimerHold, handleCombatTimerStop, tierSumDelta, adventurerDelta, handleCombatEnd, midCombatChoice, handleResolvePhase} from './Actions'
+import {handleCombatTimerStart, handleCombatTimerHold, handleCombatTimerStop, tierSumDelta, adventurerDelta, handleCombatEnd, midCombatChoice, handleResolvePhase, generateCombatTemplate} from './Actions'
 import {event} from '../../actions/Quest'
 import {AppStateWithHistory, SettingsType, CardName} from '../../reducers/StateTypes'
 import {EventParameters} from '../../reducers/QuestTypes'
-import {MidCombatPhase} from './State'
+import {MidCombatPhase, CombatState} from './State'
 import {CombatPhase} from './Types'
-import {ParserNode} from '../Template'
 import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 import {logEvent} from '../../Main'
-import {TemplateContext} from '../TemplateTypes'
+import {TemplateContext, ParserNode} from '../TemplateTypes'
 import {getRemotePlayClient} from '../../RemotePlay'
+import {getStore} from '../../Store'
 
 declare var window:any;
 
@@ -22,25 +22,32 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
   let histIdx: number = state._history.length-1;
   // card.phase currently represents combat boundaries - non-combat cards don't use phases
   while (Boolean(state._history[histIdx]) && state._history[histIdx].quest && state._history[histIdx].quest.node && state._history[histIdx].quest.node.ctx.templates.combat && histIdx > 0) {
-    const tier = state._history[histIdx].quest.node.ctx.templates.combat.tier;
+    const combat = state._history[histIdx].quest.node.ctx.templates.combat;
+    if (!combat) {
+      break;
+    }
+    const tier = combat.tier;
     histIdx--;
-    if (tier && ['PREPARE', 'NO_TIMER'].indexOf(state._history[histIdx].card.phase) !== -1) {
+    const phase = state._history[histIdx].card.phase;
+    if (tier && phase !== null && ['PREPARE', 'NO_TIMER'].indexOf(phase) !== -1) {
       maxTier = Math.max(maxTier, tier);
     }
   }
 
-  const combat = ownProps.node && ownProps.node.ctx && ownProps.node.ctx.templates && ownProps.node.ctx.templates.combat;
+  const combatFromNode = (ownProps.node && ownProps.node.ctx && ownProps.node.ctx.templates && ownProps.node.ctx.templates.combat);
+  const combat: CombatState = combatFromNode || generateCombatTemplate(state.settings, false, state.quest.node, getStore().getState);
 
-  let victoryParameters: EventParameters = null;
-  if (combat) {
+  let victoryParameters: EventParameters = {
+    heal: MAX_ADVENTURER_HEALTH,
+    loot: true,
+    xp: true,
+  };
+  if (combatFromNode) {
     if (!combat.custom) {
-      victoryParameters = ownProps.node.getEventParameters('win');
-    } else {
-      victoryParameters = {
-        heal: MAX_ADVENTURER_HEALTH,
-        loot: true,
-        xp: true,
-      };
+      const parsedParams = ownProps.node.getEventParameters('win');
+      if (parsedParams !== null) {
+        victoryParameters = parsedParams;
+      }
     }
   }
 
@@ -48,7 +55,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     || {tier: 0, mostRecentRolls: [10], numAliveAdventurers: 1};
 
   return {
-    ...combat,
+    combat,
     card: ownProps.card,
     settings: state.settings,
     node: state.quest.node,

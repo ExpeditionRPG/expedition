@@ -257,7 +257,7 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         userFeedback={props.userFeedback}
       />
       <ReportErrorDialog
-        error={props.dialog && props.dialog.message}
+        error={props.dialog && props.dialog.message || ''}
         open={props.dialog && props.dialog.open === 'REPORT_ERROR'}
         onFeedbackChange={props.onFeedbackChange}
         onReportErrorSubmit={props.onReportErrorSubmit}

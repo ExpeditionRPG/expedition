@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {CardState, CardName, CardPhase, CheckoutState, DialogIDType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, AppState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
-import {ParserNode} from '../cardtemplates/Template'
+import {ParserNode} from '../cardtemplates/TemplateTypes'
 import {Session, SessionMetadata} from 'expedition-qdl/lib/remote/Session'
 import {ClientID, InstanceID, StatusEvent} from 'expedition-qdl/lib/remote/Events'
 
@@ -24,7 +24,7 @@ export interface AudioSetAction extends Redux.Action {
 export interface AudioStoreBufferAction extends Redux.Action {
   type: 'AUDIO_STORE_BUFFER';
   name: string;
-  buffer: any;
+  buffer: AudioBuffer;
 }
 
 export interface CardTransitioningAction extends Redux.Action {

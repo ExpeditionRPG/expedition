@@ -6,7 +6,6 @@ import {AppStateWithHistory} from '../../../reducers/StateTypes'
 const mapStateToProps = (state: AppStateWithHistory, ownProps: RemoteSyncStateProps): RemoteSyncStateProps => {
   return {
     remotePlay: state.remotePlay,
-    inflight: state._inflight,
   };
 }
 

@@ -1,20 +1,27 @@
 import * as Redux from 'redux'
+import * as ReduxMockStore from 'redux-mock-store'
 import configureStore from 'redux-mock-store'
 import {RemotePlayClient} from './RemotePlay'
-import {AppState} from './reducers/StateTypes'
+import {AppState, AppStateWithHistory} from './reducers/StateTypes'
 
-export function newMockStore(state: Object) {
+export function newMockStore(state: object) {
   const client = new RemotePlayClient();
-  const store = configureStore([client.createActionMiddleware()])(state);
+  // Since this is a testing function, we play it a bit loose with the state type.
+  const store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(state as any as AppStateWithHistory);
   return store;
 }
 
-export function Reducer<A extends Redux.Action>(reducer: (state: Object, action: A) => Object) {
+// Put stuff here that is assumed to always exist (like settings)
+const defaultGlobalState = {
+  settings: {numPlayers: 1}
+} as any as AppStateWithHistory;
+
+export function Reducer<A extends Redux.Action>(reducer: (state: Object|undefined, action: A) => Object) {
   const defaultInitialState = reducer(undefined, ({type: '@@INIT'} as any));
 
   function internalReducerCommands(initialState: Object) {
     const client = new RemotePlayClient();
-    const store = configureStore([client.createActionMiddleware()])({});
+    const store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(defaultGlobalState);
     return {
       expect: (action: A) => {
         store.dispatch(action);
@@ -56,7 +63,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: Object, action:
 export function Action<A>(action: (a: A) => Redux.Action, baseState?: Object) {
   const client = new RemotePlayClient();
   client.sendEvent = jasmine.createSpy('sendEvent');
-  let store = configureStore([client.createActionMiddleware()])(baseState || {});
+  let store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])((baseState as any as AppStateWithHistory) ||  defaultGlobalState);
 
   function internalActionCommands() {
     return {
@@ -91,7 +98,7 @@ export function Action<A>(action: (a: A) => Redux.Action, baseState?: Object) {
 
   return {
     withState(storeState: Object) {
-      store = configureStore([client.createActionMiddleware()])(storeState);
+      store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(storeState as AppStateWithHistory);
       return internalActionCommands();
     },
     ...internalActionCommands()

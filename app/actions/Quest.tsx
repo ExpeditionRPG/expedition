@@ -8,8 +8,8 @@ import {toCard} from './Card'
 import {changeSettings} from './Settings'
 import {AppStateWithHistory, SettingsType} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
-import {initCardTemplate, ParserNode} from '../cardtemplates/Template'
-import {TemplateContext} from '../cardtemplates/TemplateTypes'
+import {initCardTemplate} from '../cardtemplates/Template'
+import {TemplateContext, ParserNode} from '../cardtemplates/TemplateTypes'
 
 export function initQuest(details: QuestDetails, questNode: Cheerio, ctx: TemplateContext): QuestNodeAction {
   const firstNode = questNode.children().eq(0);
@@ -27,26 +27,35 @@ export const choice = remoteify(function choice(a: ChoiceArgs, dispatch: Redux.D
     a.node = getState().quest.node;
     a.settings = getState().settings;
   }
-  dispatch(loadNode(a.settings, a.node.handleAction(a.index)));
+  const nextNode = a.node.handleAction(a.index);
+  if (nextNode === null) {
+    throw new Error('Could not find next node');
+  }
+  dispatch(loadNode(nextNode));
   return {index: a.index};
 });
 
 interface EventArgs {
   node?: ParserNode;
   evt: string;
+  settings?: SettingsType;
 }
 export const event = remoteify(function event(a: EventArgs, dispatch: Redux.Dispatch<any>, getState: ()=>AppStateWithHistory): EventArgs {
   if (!a.node) {
     a.node = getState().quest.node;
   }
-  dispatch(loadNode(null, a.node.handleAction(a.evt)));
+  const nextNode = a.node.handleAction(a.evt);
+  if (!nextNode) {
+    throw new Error('Could not get next node for event ' + a.evt);
+  }
+  dispatch(loadNode(nextNode));
   return {evt: a.evt};
 });
 
 // used externally by the quest creator, but not by other external App code
-export function loadNode(settings: SettingsType, node: ParserNode) {
+// TODO: In quest creator, be sure to set settings before loading node.
+export function loadNode(node: ParserNode) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    dispatch(changeSettings(settings));
     const tag = node.getTag();
     if (tag === 'trigger') {
       const triggerName = node.elem.text().trim();
@@ -56,7 +65,7 @@ export function loadNode(settings: SettingsType, node: ParserNode) {
         throw new Error('invalid trigger ' + triggerName);
       }
     } else {
-      dispatch(initCardTemplate(node, settings));
+      dispatch(initCardTemplate(node));
     }
   }
 }

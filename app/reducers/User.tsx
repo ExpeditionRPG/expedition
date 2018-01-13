@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {UserState} from './StateTypes'
 import {UserLoginAction} from '../actions/ActionTypes'
 
-export const initialUser: UserState = {
+export const loggedOutUser: UserState = {
   loggedIn: false,
   id: '',
   name: '',
@@ -10,12 +10,12 @@ export const initialUser: UserState = {
   email: '',
 };
 
-export function user(state: UserState = initialUser, action: Redux.Action): UserState {
+export function user(state: UserState = loggedOutUser, action: Redux.Action): UserState {
   switch (action.type) {
     case 'USER_LOGIN':
       return (action as UserLoginAction).user;
     case 'USER_LOGOUT':
-      return initialUser;
+      return loggedOutUser;
     default:
       return state;
   }

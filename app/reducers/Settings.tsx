@@ -8,9 +8,7 @@ import {getStorageBoolean, getStorageJson, getStorageNumber, getStorageString, s
 export const initialSettings: SettingsType = {
   audioEnabled: getStorageBoolean('audioEnabled', true),
   autoRoll: getStorageBoolean('autoRoll', false),
-  contentSets: getStorageJson('contentSets') as ContentSetsType || {
-    horror: null,
-  },
+  contentSets: getStorageJson('contentSets', {horror: null}) as ContentSetsType,
   difficulty: getStorageString('difficulty', 'NORMAL') as DifficultyType,
   fontSize: getStorageString('fontSize', 'NORMAL') as FontSizeType,
   multitouch: getStorageBoolean('multitouch', true),

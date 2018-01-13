@@ -4,7 +4,7 @@ import {newMockStore} from '../Testing'
 
 describe('ToolsContainer', () => {
   it('dispatches custom combat on callback', () => {
-    const store = newMockStore({});
+    const store = newMockStore({settings: initialSettings});
     mapDispatchToProps(store.dispatch, null).onCustomCombatSelect(initialSettings);
     // TODO: Simplify/remove.
     expect(store.getActions()[2]).toEqual(jasmine.objectContaining({

@@ -57,7 +57,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
 // TODO once Material UI adds support for theming SelectFields (https://github.com/callemall/material-ui/issues/7044)
 // (aka Material UI 1.0) then remove the clutter here / move to Theme.tsx
   render() {
-    const rating = CONTENT_RATINGS[this.state.contentrating];
+    const rating = (this.state.contentrating) ? CONTENT_RATINGS[this.state.contentrating] : undefined;
     const timeBuckets = PLAYTIME_MINUTES_BUCKETS.map((minutes: number, index: number) => {
       return <MenuItem key={index} value={minutes} primaryText={`${minutes} min`}/>;
     });
@@ -204,9 +204,11 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
   const items: JSX.Element[] = props.results.map((result: QuestDetails, index: number) => {
     let orderDetails = <span></span>;
     if (orderField) {
+      const ratingCount = result.ratingcount || 0;
+      const ratingAvg = result.ratingavg || 0;
       orderDetails = (
         <div className={`searchOrderDetail ${orderField}`}>
-          {orderField === 'ratingavg' && result.ratingcount >= 1 && <StarRating readOnly={true} value={+result.ratingavg} quantity={result.ratingcount}/>}
+          {orderField === 'ratingavg' && ratingCount >= 1 && <StarRating readOnly={true} value={+ratingAvg} quantity={ratingCount}/>}
           {orderField === 'created' && `Published ${Moment(result.created).format('MMM YYYY')}`}
         </div>
       );
@@ -216,11 +218,13 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
         <div className="searchResult">
           <div className="title">{result.title}</div>
           <div className="summary">
-            <div>{truncateSummary(result.summary)}</div>
+            <div>{truncateSummary(result.summary || '')}</div>
           </div>
+          {result.mintimeminutes !== undefined && result.maxtimeminutes !== undefined &&
           <div className="timing">
             {formatPlayPeriod(result.mintimeminutes, result.maxtimeminutes)}
           </div>
+          }
           {orderDetails}
         </div>
       </Button>
@@ -230,7 +234,7 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
   return (
     <Card
       title="Quest Search Results"
-      header={!hideHeader && <div className="searchHeader">
+      header={(hideHeader) ? undefined : <div className="searchHeader">
         <span>{props.results.length} quests for {props.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></span>
         <Button className="filter_button" onTouchTap={() => props.onFilter()} remoteID="filter">Filter ></Button>
       </div>}
@@ -249,23 +253,29 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
 
 function renderDetails(props: SearchProps): JSX.Element {
   const quest = props.selected;
+  if (!quest) {
+    return <Card title="Quest Details">Loading...</Card>
+  }
   const expansions = (quest.expansionhorror) ? <span><img className="inline_icon" src="images/horror_small.svg"/>The Horror</span> : 'None';
+  const ratingAvg = quest.ratingavg || 0;
   return (
     <Card title="Quest Details">
       <div className="searchDetails">
         <h2>{quest.title}</h2>
         <div>{quest.summary}</div>
         <div className="author">by {quest.author}</div>
-        {quest.ratingcount && quest.ratingcount >= 1 && <StarRating readOnly={true} value={+quest.ratingavg} quantity={quest.ratingcount}/>}
+        {quest.ratingcount && quest.ratingcount >= 1 && <StarRating readOnly={true} value={+ratingAvg} quantity={quest.ratingcount}/>}
       </div>
       <Button onTouchTap={(e)=>props.onPlay(quest)} remoteID="play">Play</Button>
       <div className="searchDetailsExtended">
         <h3>Details</h3>
         <div><strong>Expansions required: </strong>{expansions}</div>
         <div><strong>Content rating:</strong> {quest.contentrating}</div>
-        <div className="timing">
-          <strong>Play time:</strong> {formatPlayPeriod(quest.mintimeminutes, quest.maxtimeminutes)}
-        </div>
+        {quest.mintimeminutes !== undefined && quest.maxtimeminutes !== undefined &&
+          <div className="timing">
+            <strong>Play time:</strong> {formatPlayPeriod(quest.mintimeminutes, quest.maxtimeminutes)}
+          </div>
+        }
         <div><strong>Players:</strong> {quest.minplayers}-{quest.maxplayers}</div>
         <div><strong>Genre:</strong> {quest.genre}</div>
         <div><strong>Last updated: </strong> {Moment(quest.published).format('MMMM D, YYYY')}</div>

@@ -4,7 +4,7 @@ import {AppStateWithHistory, SettingsType} from '../../reducers/StateTypes'
 import {toPrevious, toCard} from '../../actions/Card'
 import {choice} from '../../actions/Quest'
 import Roleplay, {RoleplayStateProps, RoleplayDispatchProps} from './Roleplay'
-import {ParserNode} from '../Template'
+import {ParserNode} from '../TemplateTypes'
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: RoleplayStateProps): RoleplayStateProps => {
   const histIdx = state._history.length - 2; // the card before this one

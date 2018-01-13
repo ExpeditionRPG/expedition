@@ -205,7 +205,7 @@ export class RemotePlayClient extends ClientBase {
 }
 
 // TODO: Proper device ID
-let client: RemotePlayClient = null;
+let client: RemotePlayClient|null = null;
 export function getRemotePlayClient(): RemotePlayClient {
   if (client !== null) {
     return client

@@ -1,10 +1,10 @@
 import Redux from 'redux'
 import {toCard} from '../../actions/Card'
 import {SettingsType} from '../../reducers/StateTypes'
-import {ParserNode} from '../Template'
+import {ParserNode} from '../TemplateTypes'
 import {QuestNodeAction} from '../../actions/ActionTypes'
 
-export function initRoleplay(node: ParserNode, settings: SettingsType, custom?: boolean) {
+export function initRoleplay(node: ParserNode, custom?: boolean) {
   return (dispatch: Redux.Dispatch<any>): any => {
     // We set the quest state *after* updating the history to prevent
     // the history from grabbing the quest state before navigating.

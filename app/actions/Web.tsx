@@ -12,8 +12,8 @@ import {QuestDetails} from '../reducers/QuestTypes'
 import {getDevicePlatform, getPlatformDump, getAppVersion} from '../Globals'
 import {logEvent} from '../Main'
 import {getStore} from '../Store'
-import {TemplateContext} from '../cardtemplates/TemplateTypes'
-import {defaultContext, ParserNode} from '../cardtemplates/Template'
+import {TemplateContext, ParserNode} from '../cardtemplates/TemplateTypes'
+import {defaultContext} from '../cardtemplates/Template'
 import {remoteify} from './ActionTypes'
 import {MIN_FEEDBACK_LENGTH} from '../Constants'
 
@@ -65,8 +65,6 @@ function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: Templa
     } else {
       dispatch(toCard({name: 'QUEST_SETUP'}));
     }
-
-    return {...a, questNode: (null as Cheerio)};
   }
 }
 
@@ -122,7 +120,7 @@ export function subscribe(a: {email: string}) {
 
 export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState}) {
   return (dispatch: Redux.Dispatch<any>) => {
-    if (a.userFeedback.rating < 3 && (!a.userFeedback.text || a.userFeedback.text.length < MIN_FEEDBACK_LENGTH)) {
+    if (a.userFeedback.rating && a.userFeedback.rating < 3 && (!a.userFeedback.text || a.userFeedback.text.length < MIN_FEEDBACK_LENGTH)) {
       return alert('Sounds like the quest needs work! Please provide feedback of at least ' + MIN_FEEDBACK_LENGTH + ' characters to help the author improve.');
     } else if (a.userFeedback.text.length > 0 && a.userFeedback.text.length < MIN_FEEDBACK_LENGTH) {
       return alert('Reviews must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value to authors.');

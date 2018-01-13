@@ -1,3 +1,5 @@
+import * as Redux from 'redux'
+import {AppStateWithHistory} from './reducers/StateTypes'
 import {init} from './Main'
 import {installStore} from './Store'
 import {setDocument, setWindow} from './Globals'
@@ -49,7 +51,7 @@ describe('React', () => {
           snackbar: {open: false},
           settings: {audioEnabled: false}
         });
-        installStore(fakeStore);
+        installStore(fakeStore as any as Redux.Store<AppStateWithHistory>);
         const doc = dummyDOM();
         (window as any).plugins = {
           insomnia: {
@@ -61,8 +63,8 @@ describe('React', () => {
 
         init();
 
-        doc.dispatchEvent(new CustomEvent('deviceready', null));
-        doc.dispatchEvent(new CustomEvent('backbutton', null));
+        doc.dispatchEvent(new CustomEvent('deviceready'));
+        doc.dispatchEvent(new CustomEvent('backbutton'));
 
         const actions = fakeStore.getActions();
         expect(actions.length).toEqual(1);

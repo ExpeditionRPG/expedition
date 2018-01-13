@@ -10,7 +10,7 @@ interface TimerCardProps extends React.Props<any> {
   tertiaryText?: string;
   roundTimeTotalMillis: number;
   theme: CardThemeType;
-  remotePlayState: RemotePlayState;
+  remotePlayState?: RemotePlayState;
   onTimerStop: (elapsedMillis: number) => any;
 }
 
@@ -57,7 +57,7 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
           continue;
         }
         const waitingOn = clientStatus.waitingOn;
-        const waitingOnTimer = (waitingOn && waitingOn.type === 'TIMER');
+        const waitingOnTimer = (waitingOn && waitingOn.type === 'TIMER') || false;
         if (client === rpClientID) {
           timerHeld = waitingOnTimer;
         } else if (!waitingOnTimer) {

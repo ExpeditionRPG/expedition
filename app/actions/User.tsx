@@ -4,6 +4,7 @@ import {toCard} from './Card'
 import {handleFetchErrors} from './Web'
 import {openSnackbar} from './Snackbar'
 import {UserState} from '../reducers/StateTypes'
+import {loggedOutUser} from '../reducers/User'
 import {authSettings} from '../Constants'
 import {getGA, getGapi} from '../Globals'
 
@@ -72,12 +73,11 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
     });
   }).catch((error: Error) => {
     console.log('Request failed', error);
-    callback(null, 'Error authenticating.');
+    callback(loggedOutUser, 'Error authenticating.');
   });
 }
 
 function loginWeb(callback: UserLoginCallback) {
-  const that = this;
   loadGapi((gapi, async) => {
     // Since this is a user action, we can't show pop-ups if we get sidetracked loading,
     // so we'll attempt a silent login instead. If that fails, their next attempt should be instant.
@@ -97,7 +97,6 @@ function loginWeb(callback: UserLoginCallback) {
 }
 
 function silentLoginWeb(callback: UserLoginCallback) {
-  const that = this;
   loadGapi((gapi, async) => {
     if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
       const googleUser: any = gapi.auth2.getAuthInstance().currentUser.get();
@@ -109,7 +108,7 @@ function silentLoginWeb(callback: UserLoginCallback) {
         email: basicProfile.getEmail(),
       }, idToken, callback);
     }
-    return callback(null);
+    return callback(loggedOutUser);
   });
 }
 
@@ -127,12 +126,11 @@ function silentLoginCordova(callback: UserLoginCallback) {
       email: obj.email,
     }, obj.idToken, callback);
   }, (err: string) => {
-    callback(null, err);
+    callback(loggedOutUser, err);
   });
 }
 
 function loginCordova(callback: UserLoginCallback) {
-  const that = this;
   window.plugins.googleplus.login({
     scopes: authSettings.scopes,
     webClientId: authSettings.clientId,
@@ -143,7 +141,7 @@ function loginCordova(callback: UserLoginCallback) {
       email: obj.email,
     }, obj.idToken, callback);
   }, (err: string) => {
-    callback(null, err);
+    callback(loggedOutUser, err);
   });
 }
 

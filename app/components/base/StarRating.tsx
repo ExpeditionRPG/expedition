@@ -13,14 +13,13 @@ export interface StarRatingProps {
   quantity?: number;
   readOnly?: boolean;
   style?: any;
-  value?: number;
+  value: number;
 }
 
 export default class StarRating extends React.Component<StarRatingProps, {}> {
   render() {
     const ratings = [null, 'Hated it', 'Disliked it', 'It\'s OK', 'Liked it', 'Loved it'];
     const stars = [1,2,3,4,5].map((i: number): JSX.Element => {
-      const onClick = this.props.readOnly ? undefined : this.props.onChange.bind(this, i);
       let star = null;
 
       const classes = ['star'];
@@ -40,7 +39,7 @@ export default class StarRating extends React.Component<StarRatingProps, {}> {
       }
 
       return <div key={i} className={classes.join(' ')}>
-        <FlatButton disabled={this.props.readOnly} onTouchTap={() => { !this.props.readOnly && this.props.onChange(i); }}>
+        <FlatButton disabled={this.props.readOnly} onTouchTap={() => { !this.props.readOnly && this.props.onChange && this.props.onChange(i); }}>
           {star}
         </FlatButton>
       </div>;

@@ -10,17 +10,16 @@ import CombatContainer from './combat/CombatContainer'
 import {combatScope, CombatState} from './combat/State'
 import {CombatPhase} from './combat/Types'
 
-import {Node} from 'expedition-qdl/lib/parse/Node'
-import {TemplateContext} from './TemplateTypes'
+import {TemplateContext, ParserNode} from './TemplateTypes'
 import {getStore} from '../Store'
 
-export function initCardTemplate(node: ParserNode, settings: SettingsType) {
+export function initCardTemplate(node: ParserNode) {
   return (dispatch: Redux.Dispatch<any>): any => {
     switch (node.getTag()) {
       case 'roleplay':
-        return dispatch(initRoleplay(node, settings));
+        return dispatch(initRoleplay(node));
       case 'combat':
-        return dispatch(initCombat({node, settings}));
+        return dispatch(initCombat({node}));
       default:
         throw new Error('Unsupported node type ' + node.getTag());
     }
@@ -43,7 +42,7 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
     case 'MID_COMBAT_ROLEPLAY':
       return <CombatContainer card={card} node={node}/>;
     default:
-      return null;
+      throw new Error('Unknown template for card phase ' + card.phase);
   }
 }
 
@@ -63,7 +62,7 @@ export function getCardTemplateTheme(card: CardState): CardThemeType {
     case 'MID_COMBAT_ROLEPLAY':
       return 'DARK';
     default:
-      return null;
+      throw new Error('Unknown theme for card phase ' + card.phase);
   }
 }
 
@@ -108,5 +107,3 @@ export function defaultContext(): TemplateContext {
 
   return newContext;
 }
-
-export class ParserNode extends Node<TemplateContext>{};

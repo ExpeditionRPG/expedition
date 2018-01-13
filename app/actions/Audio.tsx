@@ -33,19 +33,20 @@ export function audioResume() {
 }
 
 // can't use Fetch for local files since audio files might come from file://, must use this instead
-export function loadAudioLocalFile(context: any, url: string, callback: (err: string, buffer: any) => void) {
+// TODO: Switch to using promises
+export function loadAudioLocalFile(context: AudioContext, url: string, callback: (err: Error|null, buffer: AudioBuffer|null) => void) {
   const request = new XMLHttpRequest();
   request.open('GET', url, true);
   request.responseType = 'arraybuffer';
   request.onload = () => {
-    context.decodeAudioData(request.response, (buffer: any) => {
+    context.decodeAudioData(request.response, (buffer: AudioBuffer) => {
       return callback(null, buffer);
-    }, (err: string) => {
+    }, (err: Error) => {
       return callback(err, null);
     });
   };
   request.onerror = () => {
-    return callback('Network error', null);
+    return callback(Error('Network error'), null);
   };
   request.send();
 }

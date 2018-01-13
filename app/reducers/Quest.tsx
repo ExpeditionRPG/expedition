@@ -2,11 +2,14 @@ import Redux from 'redux'
 import {QuestState} from './StateTypes'
 import {QuestNodeAction, ViewQuestAction} from '../actions/ActionTypes'
 import {getStore} from '../Store'
+import {ParserNode} from '../cardtemplates/TemplateTypes'
 import * as seedrandom from 'seedrandom'
 
+const cheerio = require('cheerio') as CheerioAPI;
+
 function autoseed(): string {
-  let seed: string;
-  seedrandom(null, { pass: function(p: seedrandom.prng, s: string): seedrandom.prng {
+  let seed = '';
+  seedrandom(undefined, { pass: function(p: seedrandom.prng, s: string): seedrandom.prng {
     seed = s;
     return p;
   }});
@@ -14,9 +17,21 @@ function autoseed(): string {
 }
 
 export const initialState: QuestState = {
-  details: {},
-  node: null,
+  details: {
+    id: '',
+    title: '',
+    summary: '',
+    author: '',
+    publishedurl: '',
+  },
   seed: autoseed(),
+  node: new ParserNode(cheerio.load('<quest></quest>')('quest'), {
+    scope: {_: {}},
+    views: {},
+    templates: {},
+    path: ([] as any),
+    _templateScopeFn: ()=>{ return {}; },
+  }),
 };
 
 export function quest(state: QuestState = initialState, action: Redux.Action): QuestState {

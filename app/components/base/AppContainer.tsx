@@ -54,7 +54,7 @@ export default class Main extends React.Component<MainProps, {}> {
   }
 
   componentWillUnmount() {
-    super.componentWillUnmount();
+    super.componentWillUnmount && super.componentWillUnmount();
 
     // 2017-08-16: Failing to unsubscribe here is likely to have caused unnecessary references to previous
     // JS objects, which prevents garbage collection and causes runaway memory consumption.
@@ -88,7 +88,7 @@ export default class Main extends React.Component<MainProps, {}> {
       return this.state;
     }
 
-    let card: JSX.Element = null;
+    let card: JSX.Element;
     let theme: CardThemeType = 'LIGHT';
     switch(state.card.name) {
       case 'SPLASH_CARD':

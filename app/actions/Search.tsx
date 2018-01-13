@@ -34,9 +34,19 @@ export const search = remoteify(function search(a: SearchSettings, dispatch: Red
       return dispatch(openSnackbar('Network error when searching: ' + response.error));
     }
 
+    // Simple validation of response quests
+    const quests: QuestDetails[] = [];
+    for (const q of response.quests) {
+      if (!q.id || !q.title || !q.summary || !q.author || !q.publishedurl) {
+        console.error('Parsed invalid quest: ' + JSON.stringify(q));
+      } else {
+        quests.push(q);
+      }
+    }
+
     dispatch({
       type: 'SEARCH_RESPONSE',
-      quests: response.quests,
+      quests: quests,
       nextToken: response.nextToken,
       receivedAt: response.receivedAt,
       search: a,

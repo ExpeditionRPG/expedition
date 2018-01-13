@@ -1,5 +1,7 @@
+import Redux from 'redux'
 import {createStore, applyMiddleware, compose} from 'redux'
 import expeditionApp from './reducers/CombinedReducers'
+import {AppStateWithHistory} from './reducers/StateTypes'
 import {getRemotePlayClient} from './RemotePlay'
 
 // For dev tools extension
@@ -7,9 +9,9 @@ declare var window:any;
 declare var require:any;
 declare var module:any;
 
-let store: any = null;
+let store: Redux.Store<AppStateWithHistory>;
 
-export function installStore(createdStore: any) {
+export function installStore(createdStore: Redux.Store<AppStateWithHistory>) {
   store = createdStore;
 }
 
@@ -30,7 +32,7 @@ function createAppStore() {
 }
 
 export function getStore() {
-  if (store !== null) {
+  if (store !== undefined) {
     return store;
   }
   createAppStore();
