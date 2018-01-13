@@ -130,7 +130,7 @@ label {
   font-family: $fontFamilyHeader;
   font-weight: bold;
 
-  .fadeIn {
+  .slowLoadPrompt {
     opacity: 0;
     padding-top: 2*$padBase;
     font-family: $fontFamilyBody;
@@ -138,7 +138,7 @@ label {
     max-width: 720px;
     margin: 0 auto;
     animation: fadein 1s;
-    animation-delay: 2s;
+    animation-delay: 4s;
     animation-fill-mode: forwards;
   }
 }

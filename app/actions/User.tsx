@@ -41,6 +41,9 @@ export function loginUser(showPrompt: boolean, quest?: boolean | string): ((disp
                     email: googleUser.email,
                   };
                   dispatch(setProfileMeta(user));
+                  if (user.email === null) {
+                    alert('Issue logging in! Please contact support about user ID ' + user.id);
+                  }
                   if (quest) {
                     if (quest === true) { // create a new quest
                       dispatch(loadQuestFromURL(user, null));
