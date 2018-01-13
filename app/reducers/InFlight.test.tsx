@@ -19,7 +19,11 @@ describe('InFlight reducer', () => {
   describe('on non-INFLIGHT message', () => {
     it('pushes new inflight actions onto the stack', () => {
       const state = {} as AppStateWithHistory;
-      expect(inflight(state, testAction, identity)._inflight[0]).toEqual(jasmine.objectContaining({action: testAction}));
+      const newInflight = inflight(state, testAction, identity)._inflight;
+      if (!newInflight) {
+        throw new Error('inflight() returned undefined _inflight');
+      }
+      expect(newInflight[0]).toEqual(jasmine.objectContaining({action: testAction}));
     });
   });
 

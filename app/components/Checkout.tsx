@@ -6,9 +6,6 @@ import Card from './base/Card'
 import {authSettings} from '../Constants'
 import {CardState, CheckoutState, QuestState, UserState} from '../reducers/StateTypes'
 
-declare var Stripe: any;
-
-
 export interface CheckoutStateProps extends React.Props<any> {
   card: CardState,
   checkout: CheckoutState,
@@ -20,7 +17,7 @@ export interface CheckoutDispatchProps {
   onError: (error: string) => void;
   onHome: () => void;
   onPhaseChange: (phase: string) => void;
-  onStripeLoad: (stripe: any) => void;
+  onStripeLoad: (stripe: stripe.Stripe) => void;
   onSubmit: (stripeToken: string, checkout: CheckoutState, user: UserState) => void;
 }
 
@@ -28,15 +25,10 @@ export interface CheckoutProps extends CheckoutStateProps, CheckoutDispatchProps
 
 // Docs: https://stripe.com/docs/stripe-js
 export default class Checkout extends React.Component<CheckoutProps, {}> {
-  state: { card: any, paymentError: string, paymentValid: boolean };
+  state: { card: stripe.elements.Element, paymentError: string|null, paymentValid: boolean, mounted: boolean };
 
   constructor(props: CheckoutProps) {
     super(props);
-    this.state = { card: null, paymentError: null, paymentValid: false };
-  }
-
-  componentDidMount() {
-    if (this.state.card) { return; }
     let stripe = this.props.checkout.stripe;
     if (!stripe) {
       stripe = Stripe(authSettings.stripe);
@@ -51,22 +43,30 @@ export default class Checkout extends React.Component<CheckoutProps, {}> {
         },
       },
     });
-    card.mount('#stripeCard');
-    this.setState({card});
-
-    card.on('change', (response: any) => {
+    this.state.card.on('change', (response: any) => {
       this.setState({
         paymentError: (response.error) ? response.error.message : null,
         paymentValid: response.complete,
       });
     });
+    this.state = { card, paymentError: null, paymentValid: false, mounted: false };
+  }
+
+  componentDidMount() {
+    if (this.state.mounted) { return; }
+
+    this.state.card.mount('#stripeCard');
+    this.setState({mounted: true});
   }
 
   componentWillUnmount() {
     this.state.card.unmount();
   }
 
-  handleSubmit(event: any) {
+  handleSubmit(event: TouchEvent) {
+    if (!this.props.checkout.stripe) {
+      throw Error('Error in checkout');
+    }
     this.props.checkout.stripe.createToken(this.state.card).then((result: any) => {
       if (result.error) {
         this.setState({paymentError: result.error.message});
@@ -83,14 +83,14 @@ export default class Checkout extends React.Component<CheckoutProps, {}> {
         return (
           <Card title="Tip the Author">
             <div id="stripe">
-              <form id="stripeForm" action="/charge" method="post" className={this.props.checkout.processing && 'disabled'}>
+              <form id="stripeForm" action="/charge" method="post" className={this.props.checkout.processing ? 'disabled' : ''}>
                 <div className="form-row">
                   <p>Please enter your credit or debit card to tip {this.props.quest.details.author} ${this.props.checkout.amount} for <i>{this.props.quest.details.title}</i>.</p>
                   <label className="security"><LockIcon />Payments processed securely by Stripe.</label>
                   <div id="stripeCard"></div>
                   <div id="stripeErrors" role="alert">{this.state.paymentError}</div>
                 </div>
-                {!this.props.checkout.processing && <Button id="stripeSubmit" disabled={!this.state.paymentValid} onTouchTap={(e: any) => this.handleSubmit(e)}>
+                {!this.props.checkout.processing && <Button id="stripeSubmit" disabled={!this.state.paymentValid} onTouchTap={(e: TouchEvent) => this.handleSubmit(e)}>
                   {(this.state.paymentValid) ? 'Pay' : 'Enter payment info'}
                 </Button>}
                 {this.props.checkout.processing && <div className="centralMessage">Processing payment, one moment...</div>}

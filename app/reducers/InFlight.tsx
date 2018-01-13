@@ -13,7 +13,7 @@ export function stripRemoteStateAndSettings(state: AppStateWithHistory): AppStat
 
 export function inflight(state: AppStateWithHistory, action: Redux.Action, combinedReduce: Redux.Reducer<any>): AppStateWithHistory {
   if (!state) {
-    return;
+    return state;
   }
   if (state._inflight === undefined || state._committed === undefined) {
     // We store local (and remote) actions as in-flight until the oldest in-flight action's
@@ -136,4 +136,5 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
         return state;
       }
   }
+  return state;
 }

@@ -4,7 +4,6 @@ import {RemotePlayState} from './StateTypes'
 import {Session} from 'expedition-qdl/lib/remote/Session'
 
 export const initialRemotePlay: RemotePlayState = {
-  session: null,
   history: [],
   syncing: false,
   clientStatus: {},

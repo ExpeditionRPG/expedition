@@ -3,15 +3,14 @@ import Button from '../../components/base/Button'
 import Callout from '../../components/base/Callout'
 import Card from '../../components/base/Card'
 import {SettingsType, CardThemeType} from '../../reducers/StateTypes'
-import {ParserNode} from '../Template'
 import {Choice, RoleplayElement} from '../../reducers/QuestTypes'
-import {TemplateContext} from '../TemplateTypes'
+import {TemplateContext, ParserNode} from '../TemplateTypes'
 
 import REGEX from 'expedition-qdl/lib/Regex'
 
 export interface RoleplayStateProps {
   node: ParserNode;
-  prevNode: ParserNode;
+  prevNode?: ParserNode;
   settings: SettingsType;
   onReturn?: () => any;
 }
@@ -87,7 +86,7 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
 
     const element: RoleplayElement = {
       type: 'text',
-      jsx: null,
+      jsx: <span></span>,
     };
     if (tag === 'instruction') {
       element.type = 'instruction';
@@ -156,9 +155,13 @@ const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'LIGHT'): JSX.Ele
     );
   });
 
-  // If we just got out of combat (loss: advenutrers = 0) and the quest is about to end, offer the choice to retry combat
-  if (props.prevNode && props.prevNode.getTag() === 'combat' && props.prevNode.ctx.templates.combat.numAliveAdventurers === 0 &&
-      rpResult.choices.length === 1 && props.node.getNext().isEnd()) {
+  // If we just got out of combat (loss: adventurers = 0) and the quest is about to end, offer the choice to retry combat
+  const prevNodeCombatAdventurers =
+    props.prevNode && props.prevNode.getTag() === 'combat'
+    && props.prevNode.ctx.templates.combat
+    && props.prevNode.ctx.templates.combat.numAliveAdventurers;
+  const nextNode = props.node.getNext();
+  if (prevNodeCombatAdventurers === 0 && rpResult.choices.length === 1 && nextNode && nextNode.isEnd()) {
     buttons.unshift(
       <Button key={-1} onTouchTap={() => props.onRetry()}>
         Retry combat

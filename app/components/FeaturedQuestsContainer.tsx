@@ -11,7 +11,7 @@ import {AppState, ExpansionsType, SettingsType, UserState} from '../reducers/Sta
 import {QuestDetails} from '../reducers/QuestTypes'
 
 const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): FeaturedQuestsStateProps => {
-  const quests = [ // Featured quests (id's generated from publishing, but don't leave them published!)
+  const quests: QuestDetails[] = [ // Featured quests (id's generated from publishing, but don't leave them published!)
     {id: '0B7K9abSH1xEOeEZSVVMwNHNqaFE', title: 'Learning to Adventure', summary: 'Your first adventure.', author: 'Todd Medema', publishedurl: 'quests/learning_to_adventure.xml'},
     {id: '0B7K9abSH1xEOWVpEV1JGWDFtWmc', title: 'Learning 2: The Horror', summary: 'Your first adventure continues with Expedition: The Horror.', author: 'Todd Medema', publishedurl: 'quests/learning_to_adventure_2_the_horror.xml', expansionhorror: true },
     {id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs', title: 'Oust Albanus', summary: 'Your party encounters a smelly situation.', author: 'Scott Martin', publishedurl: 'quests/oust_albanus.xml'},

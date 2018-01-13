@@ -116,7 +116,7 @@ export default class RemoteRipple extends React.Component<RemoteRippleProps, Rem
   }
 
   render() {
-    let rippleGroup: JSX.Element;
+    let rippleGroup: JSX.Element|null = null;
     if (this.state.hasRipples) {
       const style = {
         height: '100%',

@@ -79,11 +79,15 @@ function setupDevice() {
   if (platform === 'android') {
 
     // Hide system UI and keep it hidden (Android 4.4+ only)
-    window.AndroidFullScreen.immersiveMode(() => {
-      console.log('Immersive mode enabled');
-    }, () => {
-      console.log('Immersive mode failed');
-    });
+    if (window.AndroidFullScreen) {
+      window.AndroidFullScreen.immersiveMode(() => {
+        console.log('Immersive mode enabled');
+      }, () => {
+        console.error('Immersive mode failed');
+      });
+    } else {
+      console.warn('Immersive mode not supported on this device');
+    }
 
     // Patch for Android browser not properly scrolling to input when keyboard appears
     // https://stackoverflow.com/a/43502958/1332186
@@ -108,7 +112,11 @@ function setupDevice() {
     getStore().dispatch(audioResume());
   }, false);
 
-  window.plugins.insomnia.keepAwake(); // keep screen on while app is open
+  if (window.plugins !== undefined && window.plugins.insomnia !== undefined) {
+    window.plugins.insomnia.keepAwake(); // keep screen on while app is open
+  } else {
+    console.warn('Insomnia plugin not found');
+  }
 
   // silent login here triggers for cordova plugin
   getStore().dispatch(silentLogin({callback: (user: UserState) => { console.log(user); }}));
@@ -116,7 +124,7 @@ function setupDevice() {
 
 function setupEventLogging() {
   const window = getWindow();
-  if (window.FirebasePlugin) { // Load Firebase - only works on cordova apps
+  if (window.FirebasePlugin !== undefined) { // Load Firebase - only works on cordova apps
     window.FirebasePlugin.onTokenRefresh((token: string) => {
       // TODO save this server-side and use it to push notifications to this device
     }, (error: string) => {
@@ -124,6 +132,7 @@ function setupEventLogging() {
     });
   } else {
     window.FirebasePlugin = {
+      onTokenRefresh: (cb: (token: string) => void) => {},
       logEvent: (name: string, args: any) => { console.info('Firebase log skipped: ', name, args); },
     };
   }
@@ -143,8 +152,8 @@ declare var ga: any;
 function setupGoogleAnalytics() {
   if (window.location.hostname === 'localhost') {
     setGA({
-      set: (): void => null,
-      event: (): void => null,
+      set: (): void => {},
+      event: (): void => {},
     });
     return console.log('Google Analytics disabled during local dev.');
   }
@@ -246,6 +255,9 @@ function render() {
   // Require is done INSIDE this function to reload app changes.
   const AppContainer = require('./components/base/AppContainer').default;
   const base = getDocument().getElementById('react-app');
+  if (!base) {
+    throw new Error('Could not find react-app element');
+  }
   ReactDOM.unmountComponentAtNode(base);
   ReactDOM.render(
     <MuiThemeProvider muiTheme={getMuiTheme(theme)}>

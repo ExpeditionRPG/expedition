@@ -41,7 +41,7 @@ const timerText: { [v: string]: any } = [
   {title: 'Normal', text: 'Classic Expedition, 10 seconds per round.' },
   {title: 'Fast', text: 'Act fast! 6 seconds per round.' },
 ];
-export const timerValues: number[] = [null, 30, 15, 10, 6];
+export const timerValues: (number|null)[] = [null, 30, 15, 10, 6];
 
 const Settings = (props: SettingsProps): JSX.Element => {
   const difficultyIdx = difficultyValues.indexOf(props.difficulty);

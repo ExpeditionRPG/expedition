@@ -27,7 +27,7 @@ export interface QuestEndDispatchProps {
   onChange: (key: string, value: any) => void;
   onShare: (quest: QuestState) => void;
   onSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
-  onTip: (checkoutError: string, amount: number, quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
+  onTip: (checkoutError: string|null, amount: number, quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
 }
 
 export interface QuestEndProps extends QuestEndStateProps, QuestEndDispatchProps {};
@@ -40,7 +40,7 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
 
   render() {
     const loggedIn = (this.props.user && this.props.user.loggedIn);
-    const rated = (this.props.userFeedback.rating > 0);
+    const rated = this.props.userFeedback.rating !== undefined && (this.props.userFeedback.rating > 0);
     // TODO ping server to determine if payments are enabled
     // TODO figure out why loading Stripe crashes iOS app
     const checkoutError = (this.props.platform === 'ios') ? 'Checkout currently disabled on iOS app' : null;
@@ -48,7 +48,7 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
       <Card title={this.props.quest.details.title}>
         <p>We hope you enjoyed <i>{this.props.quest.details.title}</i> by {this.props.quest.details.author}!</p>
         <p>Rate this quest:</p>
-        <StarRating hintText={true} value={this.props.userFeedback.rating} onChange={(rating: number) => { this.props.onChange('rating', rating); }}></StarRating>
+        <StarRating hintText={true} value={this.props.userFeedback.rating || 0} onChange={(rating: number) => { this.props.onChange('rating', rating); }}></StarRating>
         {rated &&
           <div>
             <p>Write a short review:</p>

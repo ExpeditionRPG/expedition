@@ -47,7 +47,7 @@ export default class RemoteAffector extends React.Component<RemoteAffectorProps,
     if (e.event.type !== 'INTERACTION' || e.event.id !== this.props.remoteID) {
       return;
     }
-    this.props.onInteraction(e.client, e.event);
+    this.props.onInteraction && this.props.onInteraction(e.client, e.event);
   }
 
   private touchEvent(e: TouchEvent) {
@@ -95,7 +95,7 @@ export default class RemoteAffector extends React.Component<RemoteAffectorProps,
       positions[k][0] = Math.floor((positions[k][0] - boundingRect.left) / this.ref.offsetWidth * 1000);
       positions[k][1] = Math.floor((positions[k][1] - boundingRect.top) / this.ref.offsetHeight * 1000);
     }
-    const e: InteractionEvent = {type: 'INTERACTION', positions, id: this.props.remoteID, event: type};
+    const e: InteractionEvent = {type: 'INTERACTION', positions, id: this.props.remoteID || '', event: type};
 
     // Don't send move events over remote play.
     // Our implementation does not allow high-frequency value updates.
@@ -104,12 +104,12 @@ export default class RemoteAffector extends React.Component<RemoteAffectorProps,
     }
 
     if (this.props.includeLocalInteractions) {
-      this.props.onInteraction('local', e);
+      this.props.onInteraction && this.props.onInteraction('local', e);
     }
   }
 
-  onRef(r: HTMLElement) {
-    if (!r) {
+  onRef(r: HTMLElement|null) {
+    if (r === null) {
       return;
     }
     this.ref = r;
@@ -138,7 +138,7 @@ export default class RemoteAffector extends React.Component<RemoteAffectorProps,
         id={this.props.id}
         className={this.props.className + ' remote-affector'}
         style={{touchAction: 'pan-y'}}
-        ref={(r: HTMLElement) => {this.onRef(r)}}>
+        ref={(r: HTMLElement|null) => {this.onRef(r)}}>
         {this.props.children}
       </div>
     );

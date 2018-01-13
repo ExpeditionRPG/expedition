@@ -24,7 +24,7 @@ const mapStateToProps = (state: AppState, ownProps: ToolsStateProps): ToolsState
 export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): ToolsDispatchProps => {
   return {
     onCustomCombatSelect(settings: SettingsType): void {
-      dispatch(initCustomCombat({settings}));
+      dispatch(initCustomCombat({}));
     },
     onQuestCreatorSelect(): void {
       window.open(URLS.questCreator, '_system');

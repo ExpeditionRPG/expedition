@@ -15,7 +15,6 @@ export const FADE_LEAVE_ANIMATION_MS = 500;
 
 export interface RemoteSyncStateProps {
   remotePlay: RemotePlayState;
-  inflight: any[]; // TODO
 }
 
 export interface RemoteSyncDispatchProps {

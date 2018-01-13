@@ -6,11 +6,11 @@
         "module": "commonjs",
         "target": "es6",
         "jsx": "react",
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "strictNullChecks": true,
     },
     "exclude": [
         "node_modules",
-        "app/bower_components",
         "app/quests",
         "platforms",
         "plugins",

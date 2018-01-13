@@ -4,6 +4,7 @@ import {AppStateWithHistory, CardName, CardPhase, CardState} from '../reducers/S
 import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants'
 import {getNavigator} from '../Globals'
 import {getRemotePlayClient} from '../RemotePlay'
+import {getStore} from '../Store'
 
 interface ToCardArgs {
   name: CardName;
@@ -11,9 +12,9 @@ interface ToCardArgs {
   overrideDebounce?: boolean;
   noHistory?: boolean;
 }
-export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch?: Redux.Dispatch<any>, getState?: ()=>AppStateWithHistory): ToCardArgs {
+export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch: Redux.Dispatch<any>, getState?: ()=>AppStateWithHistory): ToCardArgs {
   const nav = getNavigator();
-  const state = getState();
+  const state = (getState !== undefined) ? getState() : getStore().getState();
   const vibration = state.settings && state.settings.vibration;
   if (nav && nav.vibrate && vibration) {
     if (a.phase === 'TIMER') {
@@ -35,7 +36,7 @@ interface ToPreviousArgs {
   before?: boolean;
   skip?: {name: CardName, phase: CardPhase}[];
 }
-export const toPrevious = remoteify(function toPrevious(a?: ToPreviousArgs, dispatch?: Redux.Dispatch<any>): ToPreviousArgs {
+export const toPrevious = remoteify(function toPrevious(a: ToPreviousArgs, dispatch: Redux.Dispatch<any>): ToPreviousArgs {
   const result = {
     type: 'RETURN',
     to: {

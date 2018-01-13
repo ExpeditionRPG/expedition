@@ -8,7 +8,7 @@ import {AppState, AudioState, SettingsType} from '../../reducers/StateTypes'
 const mapStateToProps = (state: AppState, ownProps: AudioStateProps): AudioStateProps => {
   return {
     audio: state.audio,
-    cardName: state.card ? state.card.name : null,
+    cardName: state.card ? state.card.name : 'SPLASH_CARD',
     cardPhase: state.card ? state.card.phase : null,
     enabled: state.settings.audioEnabled,
   };

@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Remot
   return {
     onConnect: (user: UserState) => {
       const secret = window.prompt('Enter the session\'s 4 character code to join.');
-      if (secret.length !== 4) {
+      if (secret === null || secret.length !== 4) {
         return dispatch(openSnackbar('Please enter the full session code (4 characters)'));
       }
       return dispatch(remotePlayConnect(user, secret.toUpperCase()));

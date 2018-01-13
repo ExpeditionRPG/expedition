@@ -3,8 +3,6 @@ import {SnackbarOpenAction} from '../actions/ActionTypes'
 import {SnackbarState} from './StateTypes'
 
 export const initialSnackbar: SnackbarState = {
-  action: null,
-  actionLabel: null,
   open: false,
   message: '',
   timeout: 6000,

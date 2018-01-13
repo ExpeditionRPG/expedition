@@ -21,11 +21,11 @@ export interface ReactWindow extends Window {
   AudioContext?: AudioContext;
   webkitAudioContext?: AudioContext;
   FirebasePlugin?: {
-    onTokenRefresh?: (success: (token: string) => any, failure: (error: string) => any) => void,
+    onTokenRefresh: (success: (token: string) => any, failure: (error: string) => any) => void,
     logEvent: (name: string, args: any) => any,
   };
   plugins?: {
-    insomnia: {keepAwake: ()=>void},
+    insomnia?: {keepAwake: ()=>void},
   };
   Promise?: any;
   test?: boolean;
@@ -36,7 +36,7 @@ declare var window: ReactWindow;
 const refs = {
   window: window,
   document: document,
-  localStorage: null as Storage,
+  localStorage: null as (Storage|null),
   device: (typeof device !== 'undefined') ? device : {platform: null},
   ga: (typeof ga !== 'undefined') ? ga : null,
   gapi: (typeof gapi !== 'undefined') ? gapi : null,
@@ -150,15 +150,18 @@ function getLocalStorage(): Storage {
     }
     refs.localStorage = getWindow().localStorage;
   } catch (err) {
-    refs.localStorage = {
-      clear: () => { return null },
-      getItem: (s: string) => { return null },
-      setItem: () => { return null },
-      removeItem: () => { return null },
-      key: null,
-      length: 0,
-    } as Storage;
+    console.error(err);
   } finally {
+    if (!refs.localStorage) {
+      refs.localStorage = {
+        clear: () => { return null },
+        getItem: (s: string) => { return null },
+        setItem: () => { return null },
+        removeItem: () => { return null },
+        key: (index: number|string) => {return null},
+        length: 0,
+      } as Storage;
+    }
     return refs.localStorage;
   }
 }
@@ -169,21 +172,25 @@ export function getStorageBoolean(key: string, fallback: boolean): boolean {
   return (val !== null) ? (val.toLowerCase() === 'true') : fallback;
 }
 
-export function getStorageJson(key: string, fallback?: object): object {
+export function getStorageJson(key: string, fallback: object): object {
   try {
-    const val = JSON.parse(getLocalStorage().getItem(key));
+    const item = getLocalStorage().getItem(key);
+    if (item === null) {
+      return fallback;
+    }
+    const val = JSON.parse(item);
     return (val !== null) ? val : fallback;
   } catch (err) {
     return fallback;
   }
 }
 
-export function getStorageNumber(key: string, fallback?: number): number {
+export function getStorageNumber(key: string, fallback: number): number {
   const val = getLocalStorage().getItem(key);
   return (val !== null) ? Number(val) : fallback;
 }
 
-export function getStorageString(key: string, fallback?: string): string {
+export function getStorageString(key: string, fallback: string): string {
   const val = getLocalStorage().getItem(key);
   return (val !== null) ? val : fallback;
 }

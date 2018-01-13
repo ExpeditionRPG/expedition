@@ -52,8 +52,8 @@ const MUSIC_DEFINITIONS = {
       variants: 6,
     },
   },
-} as {[key: string]: {[key: string]: MusicDefintion}};
-interface MusicDefintion {
+} as {[key: string]: {[key: string]: MusicDefinition}};
+interface MusicDefinition {
   bpm: number,
   directory: string,
   instruments: string[],
@@ -73,8 +73,8 @@ interface NodeSet {
 
 export interface AudioStateProps {
   audio: AudioState;
-  cardName?: CardName;
-  cardPhase?: CardPhase;
+  cardName: CardName;
+  cardPhase: CardPhase|null;
   enabled: boolean;
 }
 
@@ -95,7 +95,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
   private paused: boolean;
   private loaded: null | 'LOADING' | 'LOADED';
   private lastCommandTimestamp: number;
-  private currentMusicTheme: MusicDefintion;
+  private currentMusicTheme: MusicDefinition|null;
   private currentMusicTracks: number[];
   private musicNodes: NodeSet[];
   private musicTimeout: any;
@@ -105,7 +105,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
     this.buffers = {};
     this.lastCommandTimestamp = 0;
     this.currentMusicTheme = null;
-    this.currentMusicTracks = null;
+    this.currentMusicTracks = [];
     this.musicNodes = [] as NodeSet[];
     this.paused = false;
     this.enabled = props.enabled;
@@ -181,7 +181,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
       this.intensity = newIntensity;
       if (newIntensity === 0) { // fade out
         this.currentMusicTheme = null;
-        this.currentMusicTracks = null;
+        this.currentMusicTracks = [];
         this.fadeOutMusic();
       } else if (this.currentMusicTheme === null || oldIntensity === 0) { // Starting from silence, immediately start the theme
         if (newIntensity <= 18) {
@@ -230,8 +230,8 @@ export default class Audio extends React.Component<AudioProps, {}> {
         }, []));
       }, []);
       const files = [...SFX_FILES, ...musicFiles];
-      Async.eachLimit(files, 4, (file: string, callback: (err?: string) => void) => {
-        loadAudioLocalFile(this.ctx, 'audio/' + file + '.mp3', (err: string, buffer: any) => {
+      Async.eachLimit(files, 4, (file: string, callback: (err?: Error) => void) => {
+        loadAudioLocalFile(this.ctx, 'audio/' + file + '.mp3', (err: Error|null, buffer: any) => {
           if (err) {
             console.log('Error loading audio file: ' + file);
             return callback(err);
@@ -239,7 +239,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
           this.buffers[file] = buffer;
           return callback();
         });
-      }, (err: string) => {
+      }, (err: Error) => {
         if (err) {
           console.error('Error loading audio files: ', err);
         }
@@ -248,7 +248,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
     }
   }
 
-  private playFileOnce(file: string, initialVolume: number = 1, fadeInVolume: number = 0): NodeSet {
+  private playFileOnce(file: string, initialVolume: number = 1, fadeInVolume: number = 0): NodeSet|null {
     if (!this.buffers[file]) {
       console.log('Skipping playing audio ' + file + ', not loaded yet.');
       return null;
@@ -269,7 +269,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
 
   // Starts the music from scratch with a new theme, fading out any existing music
   // If no theme specified, uses existing music (for example, resuming from a pause)
-  private playNewMusicTheme(theme: MusicDefintion = this.currentMusicTheme) {
+  private playNewMusicTheme(theme: MusicDefinition|null = this.currentMusicTheme) {
     this.fadeOutMusic();
     this.currentMusicTheme = theme;
     this.loopTheme(true);
@@ -322,7 +322,10 @@ export default class Audio extends React.Component<AudioProps, {}> {
         }
       }
       // Start all tracks at 0 volume, and fade them in to 1 if they're active
-      this.musicNodes[i] = this.playFileOnce(theme.directory + instrument + themeIntensity, initialVolume, targetVolume);
+      const newNode = this.playFileOnce(theme.directory + instrument + themeIntensity, initialVolume, targetVolume);
+      if (newNode) {
+        this.musicNodes[i] = newNode;
+      }
     });
     this.musicTimeout = setTimeout(() => {
       this.loopTheme();
@@ -332,6 +335,10 @@ export default class Audio extends React.Component<AudioProps, {}> {
   // Fade in / out tracks on the current theme for a smoother + more immediate change in intensity
   private updateExistingTheme(intensityDelta: number) {
     const theme = this.currentMusicTheme;
+    if (theme === null) {
+      return;
+    }
+
     if (intensityDelta > 0) {
       // Fade in one active baseline track randomly
       const fadeInInstruments = theme.baselineInstruments.map((instrument: string, i: number) => {
@@ -393,7 +400,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
     this.playNewMusicTheme();
   }
 
-  render(): JSX.Element {
+  render(): JSX.Element|null {
     return null;
   }
 }

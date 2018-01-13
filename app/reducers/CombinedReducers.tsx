@@ -12,7 +12,7 @@ import {user} from './User'
 import {userFeedback} from './UserFeedback'
 import {remotePlay} from './RemotePlay'
 import {inflight, stripRemoteStateAndSettings} from './InFlight'
-import {AppStateWithHistory, AppState} from './StateTypes'
+import {AppStateWithHistory, AppState, AppStateBase} from './StateTypes'
 import {ReturnAction} from '../actions/ActionTypes'
 import {getNavigator} from '../Globals'
 
@@ -34,14 +34,14 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
   };
 }
 
-function isReturnState(state: AppState, action: ReturnAction): boolean {
+function isReturnState(state: AppStateBase, action: ReturnAction): boolean {
   const matchesName = state.card.name === action.to.name;
   const matchesPhase = (action.to.phase && state.card && action.to.phase === state.card.phase);
-  return (matchesName && (!action.to.phase || matchesPhase));
+  return (matchesName && (!action.to.phase || matchesPhase)) || false;
 }
 
 export default function combinedReducerWithHistory(state: AppStateWithHistory, action: Redux.Action): AppStateWithHistory {
-  let history: AppState[] = [];
+  let history: AppStateBase[] = [];
 
   // Manage inflight transactions
   state = inflight(state, action, combinedReduce);
@@ -115,12 +115,12 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         _committed: undefined,
         settings: undefined,
         remotePlay: undefined
-      } as AppState);
+      } as AppStateBase);
     }
   }
 
   // Keep committed state up to date if there are no _inflight actions.
-  const newCommitted = (state && state._inflight.length > 0)
+  const newCommitted = (state && state._inflight && state._inflight.length > 0)
     ? (state && state._committed)
     : stripRemoteStateAndSettings(state);
 

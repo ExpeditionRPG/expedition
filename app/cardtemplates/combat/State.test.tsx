@@ -1,3 +1,4 @@
+
 import {defaultContext} from '../Template'
 import {encounters} from '../../Encounters'
 

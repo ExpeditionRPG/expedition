@@ -56,7 +56,7 @@ export default class TouchIndicator extends React.Component<TouchIndicatorProps,
     }
   }
 
-  setupCanvas(ref: Element) {
+  setupCanvas(ref: Element|null) {
     // We have nothing to do if we're given the same canvas as previous.
     if (this.canvas === ref) {
       return;
@@ -68,13 +68,17 @@ export default class TouchIndicator extends React.Component<TouchIndicatorProps,
       return;
     }
     this.ctx = this.canvas.getContext('2d');
-    this.ctx.canvas.width = ref.parentElement.offsetWidth;
-    this.ctx.canvas.height = ref.parentElement.offsetHeight;
+    if (!this.canvas.parentElement) {
+      console.error('Could not find canvas parent element');
+      return;
+    }
+    this.ctx.canvas.width = this.canvas.parentElement.offsetWidth;
+    this.ctx.canvas.height = this.canvas.parentElement.offsetHeight;
   }
 
   render() {
     return (
-       <canvas className="base_multi_touch_trigger touch_indicator" ref={(ref: Element) => {this.setupCanvas(ref);}} />
+       <canvas className="base_multi_touch_trigger touch_indicator" ref={(ref: Element|null) => {this.setupCanvas(ref);}} />
     );
   }
 }

@@ -25,6 +25,8 @@ Once you're ready to play, each player besides the GM should:
 
 **Select** one adventurer of your choice from the deck, set it face up in front of you and pass the deck along.
 
+*If playing with only one player*: Select and set up two adventurers.
+
 *If playing with The Horror*: Draw a persona card, set it face up in front of you, and attach a clip at "Base".
 
 **Clip** a health tracker onto your adventurer at full health (12).

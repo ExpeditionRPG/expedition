@@ -36,7 +36,7 @@ module.exports = function (config) {
       terminal: true,
     },
     reporters: ['progress'],
-    port: 9876,
+    port: 8081,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,

@@ -10,21 +10,24 @@ import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 import REGEX from 'expedition-qdl/lib/Regex'
 import {isSurgeNextRound} from './Actions'
 import {SettingsType, CardState, CardName, RemotePlayState} from '../../reducers/StateTypes'
-import {ParserNode} from '../Template'
+import {ParserNode} from '../TemplateTypes'
 import {EventParameters, Enemy, Loot} from '../../reducers/QuestTypes'
 import {CombatState} from './State'
 import {CombatPhase} from './Types'
 import Roleplay from '../roleplay/Roleplay'
 
-export interface CombatStateProps extends CombatState {
+export interface CombatStateProps {
   card: CardState;
+  combat: CombatState;
   settings: SettingsType;
-  maxTier?: number;
+  maxTier: number;
   node: ParserNode;
   seed: string;
-  roundTimeMillis: number;
   victoryParameters?: EventParameters;
   remotePlayState?: RemotePlayState;
+  tier: number;
+  numAliveAdventurers: number;
+  mostRecentRolls?: number[];
 }
 
 export interface CombatDispatchProps {
@@ -75,8 +78,8 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
   let repeatEnemy = false;
   let uniqueEnemy = false;
   const enemyNames: Set<string> = new Set();
-  const oneEnemy = (props.enemies.length === 1);
-  const enemies: JSX.Element[] = props.enemies.map((enemy: Enemy, index: number) => {
+  const oneEnemy = (props.combat.enemies.length === 1);
+  const enemies: JSX.Element[] = props.combat.enemies.map((enemy: Enemy, index: number) => {
     uniqueEnemy = uniqueEnemy || !enemy.class;
     let icon = null;
     if (enemy.class) {
@@ -123,7 +126,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
 
 function renderNoTimer(props: CombatProps): JSX.Element {
   // Note: similar help text in renderPrepareTimer()
-  const surge = isSurgeNextRound(props.node);
+  const surge = isSurgeNextRound(props.node.ctx.templates.combat);
   let helpText: JSX.Element = (<span></span>);
   if (props.settings.showHelp) {
     helpText = (
@@ -245,7 +248,7 @@ function renderResolve(props: CombatProps): JSX.Element {
       </span>
     );
   }
-  let renderedRolls: JSX.Element[] = null;
+  let renderedRolls: JSX.Element[]|null = null;
   if (props.settings.autoRoll && props.mostRecentRolls) {
     renderedRolls = props.mostRecentRolls.map((roll: number, index: number) => {
       return (<div className="roll" key={index}>{roll}</div>);
@@ -269,7 +272,7 @@ function renderResolve(props: CombatProps): JSX.Element {
 function renderPlayerTier(props: CombatProps): JSX.Element {
   const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
   let helpText: JSX.Element = (<span></span>);
-  const damage = (props.mostRecentAttack) ? props.mostRecentAttack.damage : -1;
+  const damage = (props.combat.mostRecentAttack) ? props.combat.mostRecentAttack.damage : -1;
   const theHorror = (props.settings.contentSets.horror === true);
   const injured = props.numAliveAdventurers < props.settings.numPlayers;
   const soloPlay = props.settings.numPlayers === 1;
@@ -319,7 +322,7 @@ function renderVictory(props: CombatProps): JSX.Element {
   const theHorror = (props.settings.contentSets.horror === true);
 
   if (props.victoryParameters) {
-    if (props.victoryParameters.heal > 0 && props.victoryParameters.heal < MAX_ADVENTURER_HEALTH) {
+    if (props.victoryParameters.heal && props.victoryParameters.heal > 0 && props.victoryParameters.heal < MAX_ADVENTURER_HEALTH) {
       contents.push(<p key="c1">All adventurers regain <strong>{props.victoryParameters.heal}</strong> health (even if at 0 health).</p>);
     } else if (props.victoryParameters.heal === 0) {
       contents.push(<p key="c1">Adventurers <strong>do not heal</strong>.</p>);
@@ -327,11 +330,11 @@ function renderVictory(props: CombatProps): JSX.Element {
       contents.push(<p key="c1">All adventurers heal to <strong>full</strong> health (even if at 0 health).</p>);
     }
 
-    if (props.victoryParameters.loot !== false && props.loot && props.loot.length > 0) {
+    if (props.victoryParameters.loot !== false && props.combat.loot && props.combat.loot.length > 0) {
       contents.push(
         <p key="c4">The party draws the following loot:</p>
       );
-      const renderedLoot = props.loot.map((loot: Loot, index: number) => {
+      const renderedLoot = props.combat.loot.map((loot: Loot, index: number) => {
         return (<li key={index}><strong>{capitalizeFirstLetter(numberToWord(loot.count))} tier {numerals[loot.tier]} loot</strong></li>)
       });
       contents.push(<ul key="c5">{renderedLoot}</ul>);
@@ -345,7 +348,7 @@ function renderVictory(props: CombatProps): JSX.Element {
       }
     }
 
-    if (props.victoryParameters.xp !== false && props.levelUp) {
+    if (props.victoryParameters.xp !== false && props.combat.levelUp) {
       contents.push(<span key="c2"><h3>LEVEL UP!</h3><p>All adventurers may learn a new ability:</p></span>);
       if (props.settings.showHelp) {
         contents.push(
@@ -366,7 +369,7 @@ function renderVictory(props: CombatProps): JSX.Element {
     <Card title="Victory" theme="DARK" inQuest={true}>
       {props.settings.showHelp && <p>Shuffle all of your ability cards back into your ability draw pile.</p>}
       {contents}
-      <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'win')}>Next</Button>
+      <Button onTouchTap={() => (props.combat.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'win')}>Next</Button>
     </Card>
   );
 }
@@ -386,7 +389,7 @@ function renderDefeat(props: CombatProps): JSX.Element {
 
   // If onLose is just an **end**, offer a retry button
   let retryButton = <span></span>;
-  if (!props.custom) {
+  if (!props.combat.custom) {
     const nextNode = props.node.handleAction('lose');
     if (nextNode && nextNode.isEnd()) {
       retryButton = <Button onTouchTap={() => props.onRetry()}>Retry</Button>;
@@ -399,15 +402,15 @@ function renderDefeat(props: CombatProps): JSX.Element {
       {props.settings.showHelp && <p>Shuffle all of your ability cards back into your ability draw pile.</p>}
       {helpText}
       {retryButton}
-      <Button onTouchTap={() => (props.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'lose')}>Next</Button>
+      <Button onTouchTap={() => (props.combat.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'lose')}>Next</Button>
     </Card>
   );
 }
 
 function renderTimerCard(props: CombatProps): JSX.Element {
-  const surge = isSurgeNextRound(props.node);
-  const surgeWarning = (props.settings.difficulty === 'EASY' && surge) ? 'Surge Imminent' : null;
-  let instruction = null;
+  const surge = isSurgeNextRound(props.node.ctx.templates.combat);
+  const surgeWarning = (props.settings.difficulty === 'EASY' && surge) ? 'Surge Imminent' : undefined;
+  let instruction: string|undefined = undefined;
   if (props.settings.showHelp) {
     if (props.settings.numPlayers > 1) {
       if (props.settings.multitouch) {
@@ -426,7 +429,7 @@ function renderTimerCard(props: CombatProps): JSX.Element {
       secondaryText={surgeWarning}
       tertiaryText={instruction}
       numPlayers={(props.settings.multitouch) ? props.numAliveAdventurers : 1}
-      roundTimeTotalMillis={props.roundTimeMillis}
+      roundTimeTotalMillis={props.combat.roundTimeMillis}
       remotePlayState={props.remotePlayState}
       onTimerStop={(ms: number) => props.onTimerStop(props.node, props.settings, ms, surge, props.seed)} />
   );
@@ -435,7 +438,6 @@ function renderTimerCard(props: CombatProps): JSX.Element {
 function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
   const roleplay = Roleplay({
     node: props.node,
-    prevNode: null,
     settings: props.settings,
     onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(props.node, settings, index, props.maxTier, props.seed)},
     onRetry: () => {props.onRetry()},
@@ -468,7 +470,7 @@ function capitalizeFirstLetter(input: string): string {
 const Combat = (props: CombatProps): JSX.Element => {
   switch(props.card.phase) {
     case 'DRAW_ENEMIES':
-      return (props.custom) ? renderSelectTier(props) : renderDrawEnemies(props);
+      return (props.combat.custom) ? renderSelectTier(props) : renderDrawEnemies(props);
     case 'NO_TIMER':
       return renderNoTimer(props);
     case 'PREPARE':

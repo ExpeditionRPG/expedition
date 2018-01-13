@@ -9,7 +9,6 @@ import {AppState, CheckoutPhase, CheckoutState, UserState} from '../reducers/Sta
 
 declare var window:any;
 
-
 const mapStateToProps = (state: AppState, ownProps: any): CheckoutStateProps => {
   return {
     card: state.card,
@@ -31,7 +30,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Check
     onPhaseChange: (phase: CheckoutPhase): void => {
       dispatch(checkoutSetState({phase}));
     },
-    onStripeLoad: (stripe: any): void => {
+    onStripeLoad: (stripe: stripe.Stripe): void => {
       dispatch(checkoutSetState({stripe}));
     },
     onSubmit: (stripeToken: string, checkout: CheckoutState, user: UserState): void => {

@@ -6,7 +6,7 @@ export const initialState: CheckoutState = {
   amount: 0,
   processing: false,
   productcategory: '',
-  productid: null,
+  productid: '',
   stripe: null,
 };
 

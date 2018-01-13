@@ -1,7 +1,7 @@
 import * as Redux from 'redux'
 import {QuestDetails} from './QuestTypes'
 import {TemplatePhase, TemplateContext} from '../cardtemplates/TemplateTypes'
-import {ParserNode} from '../cardtemplates/Template'
+import {ParserNode} from '../cardtemplates/TemplateTypes'
 import {Session, SessionID, SessionMetadata} from 'expedition-qdl/lib/remote/Session'
 import {StatusEvent} from 'expedition-qdl/lib/remote/Events'
 import {GenreType, ContentRatingLabelType} from '../Constants'
@@ -16,22 +16,23 @@ export interface AudioState {
   paused: boolean;
   intensity: number;
   peakIntensity: number;
-  sfx: string;
+  sfx: string|null;
   timestamp: number;
 }
 
+/// <reference path="../node_modules/@types/stripe-v3/index.d.ts" />
 export interface CheckoutState {
   amount: number;
   processing: boolean;
   productcategory: string;
   productid: string;
-  stripe: any;
+  stripe: stripe.Stripe|null;
 }
 
 export type DialogIDType = null | 'EXIT_QUEST' | 'EXPANSION_SELECT' | 'EXIT_REMOTE_PLAY' | 'FEEDBACK' | 'REPORT_ERROR' | 'REPORT_QUEST';
 export interface DialogState {
   open: DialogIDType;
-  message: string;
+  message?: string;
 }
 
 export type CardThemeType = 'LIGHT' | 'RED' | 'DARK';
@@ -94,7 +95,7 @@ export interface CardState {
   name: CardName;
   ts: number;
   transitioning?: boolean;
-  phase?: CardPhase;
+  phase: CardPhase|null;
   overrideDebounce?: boolean;
 }
 
@@ -108,7 +109,7 @@ export interface QuestState {
 
 export interface SearchState {
   search: SearchSettings;
-  selected: QuestDetails;
+  selected: QuestDetails|null;
   results: QuestDetails[];
   searching: boolean;
 }
@@ -128,13 +129,18 @@ export interface UserFeedbackState {
 }
 
 export interface RemotePlayState {
-  session: Session;
+  session?: Session;
   history: SessionMetadata[];
   syncing: boolean;
   clientStatus: {[client: string]: StatusEvent},
 }
 
-export interface AppState {
+// AppStateBase is what's stored in AppState._history.
+// It contains all the reduced state that should be restored
+// to the redux main state when the "<" button is pressed in
+// the UI. Notably, it does NOT include non-undoable attributes
+// such as settings.
+export interface AppStateBase {
   announcement: AnnouncementState;
   audio: AudioState;
   card: CardState;
@@ -142,16 +148,19 @@ export interface AppState {
   dialog: DialogState;
   quest: QuestState;
   search: SearchState;
-  settings: SettingsType;
   snackbar: SnackbarState;
   user: UserState;
   userFeedback: UserFeedbackState;
+}
+
+export interface AppState extends AppStateBase {
+  settings: SettingsType;
   remotePlay: RemotePlayState;
 }
 
 export interface AppStateWithHistory extends AppState {
-  _history: AppState[];
+  _history: AppStateBase[];
   _return: boolean;
-  _inflight: {id: string, committed: boolean, action: Redux.Action}[];
-  _committed: AppStateWithHistory; // A trailing version of _history, before _inflight actions are applied.
+  _inflight?: {id: string, committed: boolean, action: Redux.Action}[];
+  _committed?: AppStateWithHistory; // A trailing version of _history, before _inflight actions are applied.
 }

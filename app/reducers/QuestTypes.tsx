@@ -1,27 +1,29 @@
 import * as React from 'react'
 import {TemplateState} from '../cardtemplates/TemplateTypes'
 
+// TODO: Dedupe this with expedition-api/app/models/Quests QuestAttributes interface.
 export interface QuestDetails {
-  id?: string;
+  id: string;
+  title: string;
+  summary: string;
+  author: string;
+  publishedurl: string;
   xml?: string;
   created?: string;
-  publishedurl?: string;
   published?: string;
-  title?: string,
-  summary?: string,
-  minplayers?: number,
-  maxplayers?: number,
-  email?: string,
-  url?: string,
-  mintimeminutes?: number,
-  maxtimeminutes?: number,
-  author?: string,
-  ratingcount?: number,
-  ratingavg?: number,
-  genre?: string,
-  contentrating?: string,
-  expansionhorror?: boolean,
-};
+  minplayers?: number;
+  maxplayers?: number;
+  email?: string;
+  url?: string;
+  mintimeminutes?: number;
+  maxtimeminutes?: number;
+  ratingcount?: number;
+  ratingavg?: number;
+  genre?: string;
+  contentrating?: string;
+  expansionhorror?: boolean;
+  questversion?: number;
+}
 
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';
 

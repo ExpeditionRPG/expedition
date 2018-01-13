@@ -16,14 +16,14 @@ export default class Picker extends React.Component<PickerProps, {}> {
     return (
       <div className="base_picker">
         <div className="controls">
-          <RemoteRipple remoteID={(this.props.remoteID) ? this.props.remoteID + '-' : null}>
+          <RemoteRipple remoteID={(this.props.remoteID) ? this.props.remoteID + '-' : undefined}>
           <FlatButton
             onTouchTap={(e: any) => this.props.onDelta(-1)}
             icon={<ChevronLeft/>}
           />
           </RemoteRipple>
           <div className="value">{this.props.label}: {this.props.value}</div>
-          <RemoteRipple remoteID={(this.props.remoteID) ? this.props.remoteID + '+' : null}>
+          <RemoteRipple remoteID={(this.props.remoteID) ? this.props.remoteID + '+' : undefined}>
           <FlatButton
             onTouchTap={(e: any) => this.props.onDelta(1)}
             icon={<ChevronRight/>}
