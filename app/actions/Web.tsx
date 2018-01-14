@@ -71,7 +71,6 @@ function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: Templa
 export function logQuestPlay(a: {phase: 'start'|'end'}) {
   try {
     const state = getStore().getState();
-    state.user = state.user || {} as any; // TODO fix user being null when not logged in
     const data = {
       questid: state.quest.details.id,
       questversion: state.quest.details.questversion,
@@ -124,9 +123,7 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       return alert('Reviews must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value to authors.');
     }
 
-    a.user = a.user || {} as any; // TODO fix user being null when not logged in
-
-    const data = {
+    let data = {
       questid: a.quest.details.id,
       userid: a.user.id,
       players: a.settings.numPlayers,
@@ -142,6 +139,11 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
 
     if (!a.user || !a.user.loggedIn) {
       dispatch(login({callback: (user: UserState) => {
+        data = {...data,
+          userid: user.id,
+          email: user.email,
+          name: user.name,
+        };
         dispatch(postUserFeedback(a.userFeedback.type, data));
       }}));
     } else {
