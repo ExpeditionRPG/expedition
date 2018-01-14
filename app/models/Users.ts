@@ -1,6 +1,7 @@
 import Config from '../config'
 import * as Sequelize from 'sequelize'
 import * as Bluebird from 'bluebird'
+import {AnalyticsEvent, AnalyticsEventAttributes, AnalyticsEventInstance} from './AnalyticsEvents'
 const Mailchimp = require('mailchimp-api-v3');
 const mailchimp = (Config.get('NODE_ENV') !== 'dev' && Config.get('MAILCHIMP_KEY')) ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
@@ -12,6 +13,9 @@ export interface UserAttributes {
   created: Date;
   login_count: number;
   last_login: Date;
+  quest_plays: {
+    string: Date;
+  };
 }
 
 export interface UserInstance extends Sequelize.Instance<UserAttributes> {
@@ -21,6 +25,7 @@ export interface UserInstance extends Sequelize.Instance<UserAttributes> {
 export type UserModel = Sequelize.Model<UserInstance, UserAttributes>;
 
 export class User {
+  protected ae: AnalyticsEvent;
   protected s: Sequelize.Sequelize;
   protected mc: any;
   public model: UserModel;
@@ -56,7 +61,9 @@ export class User {
     }) as UserModel);
   }
 
-  public associate(models: any) {}
+  public associate(models: {AnalyticsEvent: AnalyticsEvent}) {
+    this.ae = models.AnalyticsEvent;
+  }
 
   public upsert(user: UserAttributes): Bluebird<UserAttributes> {
     return this.s.authenticate()
@@ -77,7 +84,17 @@ export class User {
       .then(() => {return this.model.findOne({where: {id: user.id}})})
       .then((result: UserInstance) => {
         result.increment('login_count');
-        return result.dataValues;
+        user = result.dataValues;
+      })
+      .then(() => {return this.ae.model.findAll({
+        attributes: ['quest_id', [Sequelize.fn('MAX', Sequelize.col('created')), 'last_played']],
+        where: {user_id: user.id, category: 'quest', action: 'end'},
+        group: 'quest_id',
+      })})
+      .then((results: any[]) => {
+        user.quest_plays = {} as {string: Date};
+        (results || []).forEach((result: any) => { user.quest_plays[result.dataValues['quest_id']] = result.dataValues['last_played']; });
+        return user;
       });
   }
 

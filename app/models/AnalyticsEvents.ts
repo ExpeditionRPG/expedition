@@ -5,9 +5,9 @@ import {Quest} from './Quests'
 export interface AnalyticsEventAttributes {
   category?: string;
   action?: string;
-  questid?: string;
-  userid?: string;
-  questversion?: number;
+  quest_id?: string;
+  user_id?: string;
+  quest_version?: number;
   created?: Date;
   difficulty?: string;
   platform?: string;
@@ -37,12 +37,12 @@ export class AnalyticsEvent {
         type: Sequelize.STRING(255),
         allowNull: false,
       },
-      questid: Sequelize.STRING(255),
-      userid: {
+      quest_id: Sequelize.STRING(255),
+      user_id: {
         type: Sequelize.STRING(255),
         primaryKey: true,
       },
-      questversion: Sequelize.INTEGER,
+      quest_version: Sequelize.INTEGER,
       created: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,

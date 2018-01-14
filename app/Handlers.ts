@@ -133,9 +133,9 @@ export function postAnalyticsEvent(analyticsEvent: AnalyticsEvent, req: express.
   analyticsEvent.create({
       category: req.params.category,
       action: req.params.action,
-      questid: body.questid,
-      userid: body.userid,
-      questversion: body.questversion,
+      quest_id: body.questid,
+      user_id: body.userid,
+      quest_version: body.questversion,
       difficulty: body.difficulty,
       platform: body.platform,
       players: body.players,

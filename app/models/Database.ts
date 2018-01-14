@@ -37,9 +37,9 @@ class Database {
 
     this.models = {
       AnalyticsEvent: new AnalyticsEvent(this.sequelize),
-      User: new User(this.sequelize),
-      Quest: new Quest(this.sequelize),
       Feedback: new Feedback(this.sequelize),
+      Quest: new Quest(this.sequelize),
+      User: new User(this.sequelize),
 
       // For remote play:
       Session: new Session(this.sequelize),

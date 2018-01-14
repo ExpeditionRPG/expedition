@@ -1,3 +1,4 @@
+import {AnalyticsEvent} from './AnalyticsEvents'
 import {User, UserAttributes} from './Users'
 import * as Sequelize from 'sequelize'
 
@@ -6,15 +7,23 @@ import * as sinon from 'sinon'
 import {} from 'jasmine'
 
 describe('users', () => {
+  let ae: AnalyticsEvent;
   let u: User;
   let mc: any;
   beforeEach((done: () => any) => {
     const s = new Sequelize({dialect: 'sqlite', storage: ':memory:'})
     mc = {post: sinon.spy()};
-    u = new User(s, mc);
-    u.model.sync()
-      .then(() => {done();})
-      .catch((e: Error) => {throw e;});
+    ae = new AnalyticsEvent(s);
+    ae.model.sync()
+      .then(() => {
+        u = new User(s, mc);
+        u.model.sync()
+          .then(() => {
+            u.associate({AnalyticsEvent: ae});
+          })
+          .then(() => {done();})
+          .catch((e: Error) => {throw e;});
+      });
   });
 
   const testUserData: UserAttributes = {
