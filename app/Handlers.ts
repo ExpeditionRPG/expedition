@@ -13,8 +13,8 @@ export function healthCheck(req: express.Request, res: express.Response) {
 
 export function announcement(req: express.Request, res: express.Response) {
   res.json({
-    message: 'Click here to vote on the best new quest!',
-    link: 'https://goo.gl/forms/V9YpbzCl5a7ZGxJF2',
+    message: '',
+    link: '',
   });
 }
 
