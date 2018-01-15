@@ -104,7 +104,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             underlineStyle={{borderColor: 'black'}}
             selectedMenuItemStyle={{paddingRight: '50px'}}
           >
-            <MenuItem value={null} primaryText="Any length"/>
+            <MenuItem value={undefined} primaryText="Any length"/>
             {timeBuckets}
           </SelectField>
           <SelectField
@@ -118,7 +118,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             iconStyle={{fill: 'black'}}
             underlineStyle={{borderColor: 'black'}}
           >
-            <MenuItem value={null} primaryText="Any length"/>
+            <MenuItem value={undefined} primaryText="Any length"/>
             {timeBuckets}
           </SelectField>
           <SelectField
@@ -131,7 +131,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             iconStyle={{fill: 'black'}}
             underlineStyle={{borderColor: 'black'}}
           >
-            <MenuItem value={null} primaryText="All time"/>
+            <MenuItem value={undefined} primaryText="All time"/>
             <MenuItem value={31536000} primaryText="Published this year"/>
             <MenuItem value={2592000} primaryText="Published this month"/>
             <MenuItem value={604800} primaryText="Published this week"/>
@@ -147,7 +147,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             iconStyle={{fill: 'black'}}
             underlineStyle={{borderColor: 'black'}}
           >
-            <MenuItem value={null} primaryText="All genres"/>
+            <MenuItem value={undefined} primaryText="All genres"/>
             {visibleGenres.map((genre:string, i: number) => { return <MenuItem key={i} value={genre} primaryText={genre}></MenuItem>})}
           </SelectField>
           <SelectField
@@ -160,7 +160,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             iconStyle={{fill: 'black'}}
             underlineStyle={{borderColor: 'black'}}
           >
-            <MenuItem value={null} primaryText="All ratings"/>
+            <MenuItem value={undefined} primaryText="All ratings"/>
             <MenuItem value="Kid-friendly" primaryText="Kid-friendly"/>
             <MenuItem value="Teen" primaryText="Teen"/>
             <MenuItem value="Adult" primaryText="Adult"/>
