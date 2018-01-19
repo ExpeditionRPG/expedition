@@ -10,7 +10,7 @@
   </roleplay>
   <roleplay title="Level 1" id="level1" data-line="16">
     <p>You charge into the dungeon, weapon drawn.</p>
-    <p>As you run down the narrow stone tunnel, you look to down a corridor to your right - and see a wizard freezing a skeleton. To your left, a warrior beheading a zombie. You begin to worry that all the good fights are claimed.</p>
+    <p>As you run down the narrow stone tunnel, you look down a corridor to your right - and see a wizard freezing a skeleton. To your left, a warrior beheading a zombie. You begin to worry that all the good fights are claimed.</p>
     <p>Distracted, you run right into...</p>
     <instruction>
       <p>Note: During Spring Cleaning, healing after combat is different than normal.</p>

@@ -10,6 +10,14 @@
 # Tutorial:
 # http://developer.android.com/tools/publishing/app-signing.html#signing-manually
 
+# Read current version (as a string) from package.json
+key="version"
+re="\"($key)\": \"([^\"]*)\""
+package=`cat package.json`
+if [[ $package =~ $re ]]; then
+  version="${BASH_REMATCH[2]}"
+fi
+
 read -p "Did you test a quest on the beta build? (y/N) " -n 1
 printf "\nEnter android keystore passphrase: "
 read -s androidkeystorepassphrase
@@ -39,6 +47,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   export AWS_DEFAULT_REGION='us-east-2'
   aws s3 cp www s3://app.expeditiongame.com --recursive --exclude '*.mp3' --exclude '*.jpg' --exclude '*.png' --cache-control max-age=86400 --cache-control public
   aws s3 cp www s3://app.expeditiongame.com --recursive --exclude '*' --include '*.mp3' --include '*.jpg' --include '*.png' --cache-control max-age=2592000 --cache-control public
+  aws s3 cp s3://app.expeditiongame.com/expedition.apk s3://app.expeditiongame.com/apk-archive/expedition-$version.apk --cache-control public
 
   # Upload the APK for side-loading
   aws s3 cp platforms/android/build/outputs/apk/expedition.apk s3://app.expeditiongame.com/expedition.apk
