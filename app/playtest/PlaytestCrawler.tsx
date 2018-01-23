@@ -6,6 +6,7 @@ import {Node} from 'expedition-qdl/lib/parse/Node'
 import {Logger, LogMessageMap} from 'expedition-qdl/lib/render/Logger'
 import {initQuest} from 'expedition-app/app/actions/Quest'
 import {encounters} from 'expedition-app/app/Encounters'
+import REGEX from 'expedition-qdl/lib/Regex'
 
 const cheerio: any = require('cheerio') as CheerioAPI;
 
@@ -63,10 +64,22 @@ export class PlaytestCrawler extends StatsCrawler {
       case 'roleplay':
         this.verifyChoiceCount(q.node, line);
         this.verifyInstructionFormat(q.node, line);
+        this.verifyRoleplayArt(q.node, line);
         break;
       default:
         break;
     }
+  }
+
+  private verifyRoleplayArt(roleplayNode: Node<Context>, line: number) {
+    roleplayNode.loopChildren((tag, child, orig) => {
+      const inst = child.text();
+      const invalidArt = REGEX.INVALID_ART.exec(inst);
+      if (invalidArt) {
+        this.logger.err(`[${invalidArt[1]}] should be on its own line`, '435', line);
+      }
+    });
+
   }
 
   private verifyCombatEventCounts(combatNode: Node<Context>, line: number) {
@@ -135,6 +148,7 @@ export class PlaytestCrawler extends StatsCrawler {
           this.logger.warn('Loot-affecting instructions should\nread as follows: "Draw (one/two/three/four/five/six) tier (I/II/III/IV/V) loot",\ninstead saw "' + m + '"', '434', line);
         }
       }
+
       const badPlayerReferences = (inst.match(ADVENTURER_INSTRUCTION) || []).map((m: string) => {
         return '"' + m.replace('"', '\'') + '"';
       }).join(', ');

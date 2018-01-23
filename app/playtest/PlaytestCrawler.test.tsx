@@ -68,6 +68,8 @@ describe('PlaytestCrawler', () => {
       expect(msgs.error[0].text).toContain('2 "win" and 0 "lose" events');
     });
 
+    it('logs if a node contains an [art] tag not on its own line');
+
     it('logs if a node has all choices hidden and "Next" is shown', () => {
 
     }); // (correctness depends on user intent here)
