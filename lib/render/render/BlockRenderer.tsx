@@ -55,14 +55,6 @@ export class BlockRenderer {
       let lineIdx = 0;
       for (const line of lines) {
         lineIdx++;
-        const invalidArt = REGEX.INVALID_ART.exec(line);
-        if (invalidArt) {
-          log.err(
-            `[${invalidArt[1]}] should be on its own line`,
-            '435',
-            block.startLine
-          );
-        }
 
         if (line.indexOf('* ') === 0) {
           const bullet = this.extractBulleted(line, block.startLine + lineIdx, log);

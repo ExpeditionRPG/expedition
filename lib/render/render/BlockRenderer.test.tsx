@@ -393,21 +393,6 @@ describe('BlockRenderer', () => {
 
     it('errors if invalid choice attribute');
 
-    it('errors if [art] syntax is used as part of a line / not standalone', () => {
-      const log = new Logger();
-      const blocks: Block[] = [
-        {
-          indent: 0,
-          lines: ['_roleplay_', '', 'text [art] text'],
-          startLine: 5,
-        },
-      ];
-
-      br.toRoleplay(blocks, log);
-
-      expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayArt);
-      expect(prettifyMsgs(log.finalize())).toEqual(TestData.badArtErr);
-    });
   });
 
   describe('toTrigger', () => {
