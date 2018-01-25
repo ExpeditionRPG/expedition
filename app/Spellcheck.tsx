@@ -46,7 +46,7 @@ export default class Spellcheck {
     return text
       .replace(/\n/g, ' ') // newlines -> space
       .split(' ') // split to array of words on spaces
-      .filter((s: string): boolean => { return (s && s.length > 0); }) // remove empty strings
+      .filter((s: string): boolean => { return (Boolean(s) && s.length > 0); }) // remove empty strings
       .map((s: string): string => { return s.replace(REGEX.NOT_WORD, ''); }) // remove non-word characters
       .filter((s: string, i: number, arr: string[]): boolean => { return arr.indexOf(s) === i; }); // only return the first instance of each word
   }

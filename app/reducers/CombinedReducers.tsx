@@ -12,7 +12,8 @@ export default function combinedReduce(state: AppState, action: Redux.Action): A
   state = state || ({} as AppState);
 
   if (action.type === 'REBOOT_APP') {
-    state.preview = undefined;
+    // Setting to undefined here causes defaults to be populated in the preview() reducer.
+    state.preview = (undefined as any);
   }
 
   return {

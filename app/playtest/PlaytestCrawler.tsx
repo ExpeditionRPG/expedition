@@ -30,13 +30,13 @@ export class PlaytestCrawler extends StatsCrawler {
   private finalized: LogMessageMap;
   private settings: PlaytestSettings;
 
-  constructor(logger: Logger, settings?: PlaytestSettings) {
+  constructor(settings?: PlaytestSettings) {
     super()
-    this.logger = logger;
+    this.logger = new Logger();
     this.settings = settings || {} as PlaytestSettings;
   }
 
-  public crawlWithLog(node: Node<Context>, logger: Logger): [number, number] {
+  public crawlWithLog(node: Node<Context>|undefined, logger: Logger): [number, number] {
     if (logger) {
       this.logger = logger;
     }
@@ -55,6 +55,10 @@ export class PlaytestCrawler extends StatsCrawler {
   // override onNode to validate each node as we see them.
   protected onNode(q: StatsCrawlEntry, nodeStr: string, id: string, line: number): void {
     super.onNode(q, nodeStr, id, line);
+
+    if (!q.node) {
+      return;
+    }
 
     switch (q.node.getTag()) {
       case 'combat':

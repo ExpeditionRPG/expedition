@@ -7,7 +7,7 @@ var expect: any = require('expect');
 const cheerio: any = require('cheerio') as CheerioAPI;
 
 function playtestXMLResult(elem: Cheerio): LogMessageMap {
-  const crawler = new PlaytestCrawler(null);
+  const crawler = new PlaytestCrawler();
   const logger = new Logger();
   crawler.crawlWithLog(new Node(elem, defaultContext()), logger);
   return logger.getFinalizedLogs();

@@ -77,7 +77,7 @@ interface RunMessage {
 
 function handleMessage(e: {data: RunMessage}) {
   try {
-    const crawler = new PlaytestCrawler(null, e.data.settings);
+    const crawler = new PlaytestCrawler(e.data.settings);
     const start = Date.now();
     const timeout = e.data.timeoutMillis || 10000; // 10s to playtest results
     const logger = new Logger();
@@ -102,7 +102,7 @@ function handleMessage(e: {data: RunMessage}) {
       }
 
       const logger = new Logger();
-      const result = crawler.crawlWithLog(null, logger);
+      const result = crawler.crawlWithLog(undefined, logger);
       queueLen = result[0];
       numSeen = result[1];
       if (elapsed - lastLog > 250) {

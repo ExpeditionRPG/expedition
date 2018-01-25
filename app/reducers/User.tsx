@@ -2,15 +2,15 @@ import Redux from 'redux'
 import {SetProfileMetaAction} from '../actions/ActionTypes'
 import {UserState} from './StateTypes'
 
-const default_state: UserState = {
+export const loggedOutUser: UserState = {
   loggedIn: false,
-  id: null,
-  displayName: null,
-  image: null,
-  email: null,
+  id: '',
+  displayName: '',
+  image: '',
+  email: '',
 };
 
-export function user(state: UserState = default_state, action: Redux.Action): UserState {
+export function user(state: UserState = loggedOutUser, action: Redux.Action): UserState {
   switch(action.type) {
     case 'SET_PROFILE_META':
       let profile_action = (action as SetProfileMetaAction);

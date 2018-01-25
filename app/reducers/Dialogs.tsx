@@ -12,7 +12,7 @@ const initialState: DialogsState = {
     ANNOTATION_DETAIL: false
   },
   errors: [],
-  annotations: null,
+  annotations: [],
 };
 
 export function dialogs(state: DialogsState = initialState, action: Redux.Action): DialogsState {
@@ -33,10 +33,10 @@ export function dialogs(state: DialogsState = initialState, action: Redux.Action
 
       // Assign the appropriate error details when showing annotation details dialog
       if (dialog_action.dialog === 'ANNOTATION_DETAIL') {
-        if (dialog_action.shown) {
+        if (dialog_action.shown && dialog_action.annotations) {
           newState.annotations = dialog_action.annotations.map((a: number) => {return errors[a] || a});
         } else {
-          newState.annotations = null;
+          newState.annotations = [];
         }
       }
 

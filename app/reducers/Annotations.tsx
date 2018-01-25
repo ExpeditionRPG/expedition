@@ -10,7 +10,7 @@ const initialAnnotations: AnnotationsState = {
 
 function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: Set<number>): void {
   for (let m of msgs) {
-    errorLines.add(m.line);
+    errorLines.add(m.line || 0);
 
     if (m.type === 'internal') {
       m.text = 'PLEASE REPORT: ' + m.text;
@@ -18,7 +18,7 @@ function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: 
     }
 
     result.push({
-      row: m.line,
+      row: m.line || 0,
       column: 0,
       text: m.type[0].toUpperCase() + m.type.substring(1) + ' ' + m.url + ': ' +m.text,
       type: m.type,

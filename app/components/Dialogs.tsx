@@ -152,7 +152,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
   render(): JSX.Element {
     const metadata = this.props.quest.metadataRealtime;
     if (metadata === undefined) {
-      return null;
+      return <span></span>;
     }
     const playerItems = [];
     for (let i = 1; i <= MAX_PLAYERS; i++) {

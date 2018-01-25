@@ -4,6 +4,7 @@ import {API_HOST} from '../Constants'
 import {SetProfileMetaAction} from './ActionTypes'
 import {setSnackbar} from './Snackbar'
 import {UserState} from '../reducers/StateTypes'
+import {loggedOutUser} from '../reducers/User'
 import {loadQuestFromURL} from './Quest'
 import {realtimeUtils} from '../Auth'
 
@@ -18,7 +19,7 @@ export function loginUser(showPrompt: boolean, quest?: boolean | string): ((disp
   return (dispatch: Redux.Dispatch<any>) => {
     realtimeUtils.authorize((response:any) => {
       if (response.error){
-        dispatch(setProfileMeta({loggedIn: false}));
+        dispatch(setProfileMeta(loggedOutUser));
       } else {
         window.gapi.client.load('plus','v1', () => {
           const request = window.gapi.client.plus.people.get({
@@ -46,7 +47,7 @@ export function loginUser(showPrompt: boolean, quest?: boolean | string): ((disp
                   }
                   if (quest) {
                     if (quest === true) { // create a new quest
-                      dispatch(loadQuestFromURL(user, null));
+                      dispatch(loadQuestFromURL(user, undefined));
                     } else if (typeof quest === 'string') {
                       dispatch(loadQuestFromURL(user, quest));
                     }

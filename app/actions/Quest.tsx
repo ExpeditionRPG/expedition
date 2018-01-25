@@ -93,7 +93,7 @@ export function loadQuestFromURL(user: UserState, id?: string) {
         action: 'QUEST_LOAD_NEW',
       });
     }
-    loadQuest(user, dispatch, id || null);
+    loadQuest(user, dispatch, id);
   }
 }
 
@@ -173,7 +173,7 @@ function createDocMetadata(model: any, defaults: any) {
 }
 
 export function loadQuest(user: UserState, dispatch: any, docid?: string) {
-  if (docid === null) {
+  if (docid === undefined) {
     console.log('Creating new quest');
     return dispatch(newQuest(user));
   }
@@ -235,7 +235,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
       // Kick off a playtest after allowing the main thread to re-paint
       setTimeout(() => dispatch(startPlaytestWorker(null, xmlResult.getResult(), {
-        expansionhorror: quest.expansionhorror,
+        expansionhorror: Boolean(quest.expansionhorror),
       })), 0);
     });
   },
@@ -340,6 +340,9 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
       description: meta['summary'],
     };
 
+    if (quest.id === undefined) {
+      throw new Error('Undefined quest ID');
+    }
     updateDriveFile(quest.id, fileMeta, text, function(err, result) {
       if (err) {
         ReactGA.event({

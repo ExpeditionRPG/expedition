@@ -1,6 +1,20 @@
 import * as React from 'react'
 import brace from 'brace'
-import AceEditor from 'react-ace'
+import AceEditorOrig from 'react-ace'
+
+// The current version of AceEditor fails to compile when used as a JSX.Element:
+/*
+  JSX element type 'AceEditor' is not a constructor function for JSX elements.
+  Types of property 'setState' are incompatible.
+    Type '{ <K extends never>(f: (prevState: undefined, props: AceEditorProps) => Pick<undefined, K>, callb...' is not assignable to type '{
+ <K extends never>(f: (prevState: {}, props: any) => Pick<{}, K>, callback?: (() => any) | undef...'.
+      Types of parameters 'f' and 'f' are incompatible.
+        Types of parameters 'prevState' and 'prevState' are incompatible.
+          Type 'undefined' is not assignable to type '{}'.
+*/
+// I suspect this can be fixed by upgrading Ace, but that's likely to break other things.
+// See https://github.com/ExpeditionRPG/expedition-quest-creator/issues/466
+var AceEditor = AceEditorOrig as any;
 
 import 'brace/ext/searchbox'
 import 'brace/mode/markdown'
@@ -174,7 +188,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     }
   }
 
-  onGutterClick(event: any): AceAnnotation[] {
+  onGutterClick(event: any) {
     const path: Element[] = event.domEvent.path;
     if (!path.length) {
       return;
@@ -192,7 +206,11 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     if (!isIcon) {
       return;
     }
-    const rowNum = parseInt(path[0].textContent, 10) - 1;
+    const textInt = path[0].textContent;
+    if (textInt === null) {
+      throw new Error('Could not parse gutter index');
+    }
+    const rowNum = parseInt(textInt, 10) - 1;
     const annotations: number[] = event.editor.session.getAnnotations().map((a: AceAnnotation) => {
       if (a.row !== rowNum) {
         return null;

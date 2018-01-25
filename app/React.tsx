@@ -39,7 +39,7 @@ injectTapEventPlugin();
 const ReactGA = require('react-ga') as any;
 ReactGA.initialize('UA-47408800-7');
 
-let questId: string = null;
+let questId: string = '';
 if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
   // Try to parse from google drive menu action, e.g.
   // ?state=%7B"ids":%5B"0BzrQOdaJcH9MeDhic2ctdFNSdjg"%5D,"action":"open","userId":"106667818352266772866"%7D
@@ -58,7 +58,7 @@ if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
   questId = window.location.hash.slice(1);
 }
 
-if (questId) {
+if (questId !== '') {
   store.dispatch(questLoading());
   ReactGA.pageview('/quest');
 } else {

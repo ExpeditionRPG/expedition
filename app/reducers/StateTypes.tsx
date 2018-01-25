@@ -7,7 +7,7 @@ export type DialogIDType = 'ERROR' | 'ANNOTATION_DETAIL' | 'PUBLISHING' | 'UNPUB
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 
-export type PanelType = 'CONTEXT' | 'NOTES';
+export type PanelType = 'CONTEXT' | 'NOTES' | null;
 
 export interface AnnotationType {
   row: number;
@@ -71,7 +71,7 @@ export interface QuestType {
 };
 
 export interface EditorState {
-  renderer: QDLParser;
+  renderer: QDLParser|null;
   node: any;
   dirty: boolean;
   dirtyTimeout: any;
@@ -85,7 +85,7 @@ export interface EditorState {
   loadingQuest: boolean;
   showLineNumbers: boolean;
   wordCount: number;
-  worker: Worker;
+  worker: Worker|null;
 }
 
 export interface DialogsState {
@@ -109,11 +109,11 @@ export interface SnackbarState {
 }
 
 export interface UserState {
-  loggedIn?: boolean;
-  id?: string;
-  displayName?: string;
-  image?: string;
-  email?: string;
+  loggedIn: boolean;
+  id: string;
+  displayName: string;
+  image: string;
+  email: string;
 }
 
 export interface AppState {
