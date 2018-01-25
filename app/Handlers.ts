@@ -140,6 +140,7 @@ export function postAnalyticsEvent(analyticsEvent: AnalyticsEvent, req: express.
       platform: body.platform,
       players: body.players,
       version: body.version,
+      json: JSON.stringify(body.data),
     }).then(() => {
       res.end('ok');
     }).catch((e: Error) => {

@@ -13,6 +13,7 @@ export interface AnalyticsEventAttributes {
   platform?: string;
   players?: number;
   version?: string;
+  json?: string;
 }
 
 export interface AnalyticsEventInstance extends Sequelize.Instance<AnalyticsEventAttributes> {
@@ -52,6 +53,7 @@ export class AnalyticsEvent {
       platform: Sequelize.STRING(32),
       players: Sequelize.INTEGER,
       version: Sequelize.STRING(32),
+      json: Sequelize.TEXT,
     }, {
       freezeTableName: true,
       timestamps: false, // TODO: eventually switch to sequelize timestamps
