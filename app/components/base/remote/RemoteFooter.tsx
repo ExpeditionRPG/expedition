@@ -13,6 +13,7 @@ export interface RemoteFooterStateProps {
 
 export interface RemoteFooterDispatchProps {
   onRemotePlayExit: () => void;
+  onRemotePlayStatusIconTap: () => void;
 }
 
 export interface RemoteFooterProps extends RemoteFooterStateProps, RemoteFooterDispatchProps {
@@ -34,7 +35,7 @@ const RemoteFooter = (props: RemoteFooterProps): JSX.Element => {
   }
 
   // TODO: Indicate when waiting for other user action
-  const statusIcon = (<FlatButton icon={
+  const statusIcon = (<FlatButton onTouchTap={(e: any) => {props.onRemotePlayStatusIconTap();}} icon={
     (rpClient.isConnected()) ? <NetworkWifi color={color} /> : <SignalWifiOff color={color} />
   }/>);
 

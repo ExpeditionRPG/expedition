@@ -3,7 +3,7 @@ import {AppStateWithHistory} from './reducers/StateTypes'
 import {init} from './Main'
 import {installStore} from './Store'
 import {setDocument, setWindow} from './Globals'
-import {newMockStore} from './Testing'
+import {newMockStoreWithInitializedState} from './Testing'
 
 function dummyDOM(): Document {
   const doc = document.implementation.createHTMLDocument('testdoc');
@@ -47,10 +47,7 @@ describe('React', () => {
     describe('deviceready event', () => {
       it('triggers silent login'); // Holding off on testing this one until we propagate window state better.
       it('adds backbutton listener', () => {
-        const fakeStore = newMockStore({
-          snackbar: {open: false},
-          settings: {audioEnabled: false}
-        });
+        const fakeStore = newMockStoreWithInitializedState();
         installStore(fakeStore as any as Redux.Store<AppStateWithHistory>);
         const doc = dummyDOM();
         (window as any).plugins = {
@@ -64,8 +61,9 @@ describe('React', () => {
         init();
 
         doc.dispatchEvent(new CustomEvent('deviceready'));
-        doc.dispatchEvent(new CustomEvent('backbutton'));
+        fakeStore.clearActions();
 
+        doc.dispatchEvent(new CustomEvent('backbutton'));
         const actions = fakeStore.getActions();
         expect(actions.length).toEqual(1);
         // Action 0 is expansion select dialog

@@ -29,7 +29,7 @@ export interface CheckoutState {
   stripe: stripe.Stripe|null;
 }
 
-export type DialogIDType = null | 'EXIT_QUEST' | 'EXPANSION_SELECT' | 'EXIT_REMOTE_PLAY' | 'FEEDBACK' | 'REPORT_ERROR' | 'REPORT_QUEST';
+export type DialogIDType = null | 'EXIT_QUEST' | 'EXPANSION_SELECT' | 'EXIT_REMOTE_PLAY' | 'FEEDBACK' | 'REPORT_ERROR' | 'REPORT_QUEST' | 'REMOTE_PLAY_STATUS';
 export interface DialogState {
   open: DialogIDType;
   message?: string;

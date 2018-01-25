@@ -3,6 +3,11 @@ import * as ReduxMockStore from 'redux-mock-store'
 import configureStore from 'redux-mock-store'
 import {RemotePlayClient} from './RemotePlay'
 import {AppState, AppStateWithHistory} from './reducers/StateTypes'
+import combinedReducers from './reducers/CombinedReducers'
+
+export function newMockStoreWithInitializedState() {
+  return newMockStore(combinedReducers({} as any, {type: '@@INIT'}));
+}
 
 export function newMockStore(state: object) {
   const client = new RemotePlayClient();

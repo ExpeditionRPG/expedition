@@ -14,6 +14,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Remot
   return {
     onRemotePlayExit: () => {
       dispatch(setDialog('EXIT_REMOTE_PLAY'));
+    },
+    onRemotePlayStatusIconTap: () => {
+      dispatch(setDialog('REMOTE_PLAY_STATUS'));
     }
   };
 }

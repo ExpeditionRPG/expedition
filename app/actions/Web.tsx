@@ -16,6 +16,7 @@ import {TemplateContext, ParserNode} from '../cardtemplates/TemplateTypes'
 import {defaultContext} from '../cardtemplates/Template'
 import {remoteify} from './ActionTypes'
 import {MIN_FEEDBACK_LENGTH} from '../Constants'
+import {RemotePlayCounters} from '../RemotePlay'
 
 declare var window:any;
 declare var require:any;
@@ -178,4 +179,32 @@ function postUserFeedback(type: string, data: any) {
         dispatch(openSnackbar('Error submitting review: ' + error));
       });
   };
+}
+
+export function logRemotePlayStats(user: UserState, quest: QuestDetails, stats: RemotePlayCounters): Promise<Response> {
+  try {
+    const state = getStore().getState();
+    const data = {
+      questid: quest.id,
+      questversion: quest.questversion,
+      userid: user.id,
+      platform: getDevicePlatform(),
+      version: getAppVersion(),
+      email: user.email,
+      name: user.name,
+      data: stats,
+    };
+
+    return fetch(authSettings.urlBase + '/analytics/remoteplay/stats', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      })
+      .then(handleFetchErrors)
+      .catch((error: Error) => {
+        logEvent('analytics_quest_err', { label: error });
+      });
+  } catch(e) {
+    console.error('Failed to log remote play stats');
+    return Promise.resolve(new Response(''));
+  }
 }

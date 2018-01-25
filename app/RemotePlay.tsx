@@ -13,6 +13,30 @@ const RECONNECT_MAX_SLOT_IDX = 10;
 const RECONNECT_SLOT_DELAY_MS = 10;
 const RECONNECT_DELAY_BASE_MS = 200;
 
+export interface RemotePlayCounters {
+  [field: string]: number;
+
+  sessionCount: number,
+  disconnectCount: number,
+  reconnectCount: number,
+  compactionEvents: number,
+  receivedEvents: number,
+  errorEvents: number,
+  failedTransactions: number,
+  successfulTransactions: number,
+}
+
+export const initialRemotePlayCounters = {
+  sessionCount: 0,
+  disconnectCount: 0,
+  reconnectCount: 0,
+  compactionEvents: 0,
+  receivedEvents: 0,
+  errorEvents: 0,
+  successfulTransactions: 0,
+  failedTransactions: 0,
+};
+
 // This is the base layer of the remote play network framework, implemented
 // using firebase FireStore.
 export class RemotePlayClient extends ClientBase {
@@ -21,6 +45,7 @@ export class RemotePlayClient extends ClientBase {
   private reconnectAttempts: number;
   private sessionID: string;
   private secret: string;
+  private stats: RemotePlayCounters;
 
   // Mirrors the committed counter on the websocket server.
   // Used to maintain a transactional event queue.
@@ -29,6 +54,15 @@ export class RemotePlayClient extends ClientBase {
   constructor() {
     super();
     this.reconnectAttempts = 0;
+
+    this.stats = {...initialRemotePlayCounters};
+
+    this.subscribe((e: RemotePlayEvent) => {
+      this.stats.receivedEvents++;
+      if (e.event.type === 'ERROR') {
+        this.stats.errorEvents++;
+      }
+    });
 
     // Websocket timeout defaults to ~55 seconds. We send a periodic
     // packet to the server to keep it advised that we're still connected.
@@ -41,6 +75,10 @@ export class RemotePlayClient extends ClientBase {
     }
   }
 
+  getStats(): RemotePlayCounters {
+    return this.stats;
+  }
+
   // This crafts a key that can be used to populate maps of client information
   // (e.g. past StatusEvents in redux store)
   getClientKey(): string {
@@ -51,6 +89,8 @@ export class RemotePlayClient extends ClientBase {
     if (this.session) {
       this.session.close();
     }
+
+    this.stats.reconnectCount++;
 
     // Random exponential backoff reconnect
     // https://en.wikipedia.org/wiki/Exponential_backoff
@@ -91,6 +131,8 @@ export class RemotePlayClient extends ClientBase {
     };
 
     this.session.onclose = (ev: CloseEvent) => {
+      this.stats.disconnectCount++;
+
       switch (ev.code) {
         case 1000:  // CLOSE_NORMAL
           console.log('WS: closed normally');
@@ -115,6 +157,7 @@ export class RemotePlayClient extends ClientBase {
 
     const settings = getStore().getState().settings;
     this.session.onopen = () => {
+      this.stats.sessionCount++;
       console.log('WS: open');
       this.connected = true;
       const event: StatusEvent = {
@@ -136,6 +179,7 @@ export class RemotePlayClient extends ClientBase {
   disconnect() {
     this.session.close();
     this.connected = false;
+    this.stats.disconnectCount++;
   }
 
   sendFinalizedEvent(event: RemotePlayEvent): void {
@@ -164,6 +208,22 @@ export class RemotePlayClient extends ClientBase {
       if (localOnly) {
         // Unwrap local actions, passing through inflight data.
         action = action.action;
+      }
+
+      if (action && action.type) {
+        switch (action.type) {
+          case 'INFLIGHT_REJECT':
+            this.stats.failedTransactions++;
+            break;
+          case 'INFLIGHT_COMMIT':
+            this.stats.successfulTransactions++;
+            break;
+          case 'INFLIGHT_COMPACT':
+            this.stats.compactionEvents++;
+            break;
+          default:
+            break;
+        }
       }
 
       if (action instanceof Array) {
