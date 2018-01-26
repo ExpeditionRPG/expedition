@@ -13,8 +13,8 @@ export function healthCheck(req: express.Request, res: express.Response) {
 
 export function announcement(req: express.Request, res: express.Response) {
   res.json({
-    message: '',
-    link: '',
+    message: 'The Horror now available!',
+    link: 'https://expeditiongame.com/store/horror?utm_source=app',
   });
 }
 
