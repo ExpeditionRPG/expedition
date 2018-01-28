@@ -94,8 +94,7 @@ export function publish(quest: Quest, req: express.Request, res: express.Respons
     contentrating: req.query.contentrating,
     expansionhorror: req.query.expansionhorror || false,
   };
-  const majorRelease = req.query.majorRelease || false;
-
+  const majorRelease = (req.query.majorRelease === 'true');
   quest.publish(res.locals.id, majorRelease, attribs, req.body)
     .then((quest: QuestInstance) => {
       console.log('Published quest ' + quest.dataValues.id);
