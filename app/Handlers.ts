@@ -2,8 +2,7 @@ import * as express from 'express'
 import {AnalyticsEvent} from './models/AnalyticsEvents'
 import {Feedback, FeedbackType, FeedbackAttributes} from './models/Feedback'
 import {Quest, QuestInstance, QuestAttributes, QuestSearchParams, MAX_SEARCH_LIMIT, PUBLIC_PARTITION} from './models/Quests'
-
-const Joi = require('joi');
+import * as Joi from 'joi'
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
 
@@ -19,9 +18,6 @@ export function announcement(req: express.Request, res: express.Response) {
 }
 
 export function search(quest: Quest, req: express.Request, res: express.Response) {
-  if (!res.locals || !res.locals.id) {
-    return res.send(JSON.stringify([]));
-  }
   let body: any;
   try {
     body = JSON.parse(req.body);
@@ -75,10 +71,6 @@ export function questXMLRedirect(quest: Quest, req: express.Request, res: expres
 }
 
 export function publish(quest: Quest, req: express.Request, res: express.Response) {
-  if (!res.locals || !res.locals.id) {
-    return res.status(500).end('You are not signed in. Please sign in (by refreshing the page) to save your quest.');
-  }
-
   const attribs: QuestAttributes = {
     id: req.params.id,
     partition: req.query.partition || PUBLIC_PARTITION,
@@ -107,10 +99,6 @@ export function publish(quest: Quest, req: express.Request, res: express.Respons
 }
 
 export function unpublish(quest: Quest, req: express.Request, res: express.Response) {
-  if (!res.locals || !res.locals.id) {
-    return res.status(500).end('You are not signed in. Please sign in (by refreshing the page) to save your quest.');
-  }
-
   quest.unpublish(PUBLIC_PARTITION, req.params.quest)
     .then(() => {
       res.end('ok');

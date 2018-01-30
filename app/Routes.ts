@@ -42,19 +42,34 @@ const publishLimiter = new RateLimit({
 });
 
 // TODO: Rate-limit session creation
+const sessionLimiter = new RateLimit({
+  windowMs: 60*1000, // 1 minute window
+  delayAfter: 4,     // begin slowing down responses after the fourth request
+  delayMs: 3*1000,   // slow down subsequent responses by 3 seconds per request
+  max: 5,            // start blocking after 5 requests
+  message: 'Creating sessions too frequently. Please wait 1 minute and then try again',
+});
+
+// We store auth details in res.locals. If there's no stored data there, the user is not logged in.
+function requireAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  if (!res.locals || !res.locals.id) {
+    return res.status(500).end('You are not signed in.');
+  }
+  next();
+}
 
 Router.get('/healthcheck', limitCors, Handlers.healthCheck);
 Router.get('/announcements', limitCors, Handlers.announcement);
 Router.post('/analytics/:category/:action', limitCors, (req, res) => {Handlers.postAnalyticsEvent(models.AnalyticsEvent, req, res);});
-Router.post('/quests', limitCors, (req, res) => {Handlers.search(models.Quest, req, res);});
+Router.post('/quests', limitCors, requireAuth, (req, res) => {Handlers.search(models.Quest, req, res);});
 Router.get('/raw/:quest', limitCors, (req, res) => {Handlers.questXMLRedirect(models.Quest, req, res);});
-Router.post('/publish/:id', publishLimiter, limitCors, (req, res) => {Handlers.publish(models.Quest, req, res);});
-Router.post('/unpublish/:quest', limitCors, (req, res) => {Handlers.unpublish(models.Quest, req, res);});
+Router.post('/publish/:id', publishLimiter, limitCors, requireAuth, (req, res) => {Handlers.publish(models.Quest, req, res);});
+Router.post('/unpublish/:quest', limitCors, requireAuth, (req, res) => {Handlers.unpublish(models.Quest, req, res);});
 Router.post('/quest/feedback/:type', limitCors, (req, res) => {Handlers.feedback(models.Feedback, req, res);});
 Router.post('/user/subscribe', limitCors, (req, res) => {Handlers.subscribe(mailchimp, Config.get('MAILCHIMP_PLAYERS_LIST_ID'), req, res);});
-Router.get('/remoteplay/v1/user', limitCors, (req, res) => {RemotePlayHandlers.user(models.SessionClient, req, res);});
-Router.post('/remoteplay/v1/new_session', limitCors, (req, res) => {RemotePlayHandlers.newSession(models.Session, req, res);});
-Router.post('/remoteplay/v1/connect', limitCors, (req, res) => {RemotePlayHandlers.connect(models.Session, models.SessionClient, req, res);});
+Router.get('/remoteplay/v1/user', limitCors, requireAuth, (req, res) => {RemotePlayHandlers.user(models.SessionClient, req, res);});
+Router.post('/remoteplay/v1/new_session', sessionLimiter, limitCors, requireAuth, (req, res) => {RemotePlayHandlers.newSession(models.Session, req, res);});
+Router.post('/remoteplay/v1/connect', limitCors, requireAuth, (req, res) => {RemotePlayHandlers.connect(models.Session, models.SessionClient, req, res);});
 Router.post('/stripe/checkout', limitCors, (req, res) => {Stripe.checkout(req, res);});
 
 export function setupWebsockets(server: any) {

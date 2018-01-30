@@ -1,12 +1,12 @@
 import * as Express from 'express'
 import Config from './config'
-const Joi = require('joi');
+import * as Stripe from 'stripe'
+import * as Joi from 'joi';
 
-let Stripe = require('stripe');
+let stripe: Stripe|null = null;
 if (Config.get('ENABLE_PAYMENT') && Config.get('STRIPE_PRIVATE_KEY')) {
-  Stripe = Stripe(Config.get('STRIPE_PRIVATE_KEY'));
+  stripe = new Stripe(Config.get('STRIPE_PRIVATE_KEY'));
 } else {
-  Stripe = null;
   console.warn('** Payments disabled or Stripe config not set up, any payment requests will fail. **');
 }
 
@@ -17,14 +17,18 @@ export function checkout(req: Express.Request, res: Express.Response) {
   if (!Config.get('ENABLE_PAYMENT')) {
     return res.status(500).send();
   }
-  const body = JSON.parse(req.body);
+  const body: any = JSON.parse(req.body);
   Joi.validate(body, {
     amount: Joi.number().min(MIN_PAYMENT_DOLLARS),
   }, {allowUnknown: true}, (err, body) => {
     if (err) {
-      return res.status(400).send(err.details.message);
+      let result = 'ERROR: ';
+      for (const d of err.details) {
+        result += '\n' + d.message;
+      }
+      return res.status(400).send(result);
     }
-    const charge = Stripe.charges.create({
+    const charge = stripe.charges.create({
       amount: body.amount * 100, // charges in smallest whole units, so must convert dollars to pennies
       currency: 'usd',
       description: `Category: ${body.productcategory} - ID: ${body.productid}`,
@@ -35,7 +39,7 @@ export function checkout(req: Express.Request, res: Express.Response) {
         useremail: body.useremail,
       },
       source: body.token,
-    }, (err, charge) => {
+    }, (err: Stripe.IStripeError, charge: Stripe.charges.ICharge) => {
       if (err) {
         console.log(err);
         return res.status(500).send('Error submitting payment.');

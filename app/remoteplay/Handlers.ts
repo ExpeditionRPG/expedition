@@ -9,11 +9,9 @@ import * as url from 'url'
 import * as http from 'http'
 import * as WebSocket from 'ws'
 
-export function user(sc: SessionClient, req: express.Request, res: express.Response) {
-  if (!res.locals || !res.locals.id) {
-    return res.status(500).end('You are not signed in.');
-  }
 
+
+export function user(sc: SessionClient, req: express.Request, res: express.Response) {
   sc.getSessionsByClient(res.locals.id).then((fetched: any[]) => {
     // TODO map data to most recent event, plus number of other players connected
     res.status(200).send(JSON.stringify({history: fetched}));
@@ -24,10 +22,6 @@ export function user(sc: SessionClient, req: express.Request, res: express.Respo
 }
 
 export function newSession(rpSessions: SessionModel, req: express.Request, res: express.Response) {
-  if (!res.locals || !res.locals.id) {
-    return res.status(500).end('You are not signed in.');
-  }
-
   rpSessions.create().then((s: SessionInstance) => {
     res.status(200).send(JSON.stringify({secret: s.dataValues.secret}));
   })
@@ -37,10 +31,6 @@ export function newSession(rpSessions: SessionModel, req: express.Request, res: 
 }
 
 export function connect(rpSessions: SessionModel, sessionClients: SessionClient, req: express.Request, res: express.Response) {
-  if (!res.locals || !res.locals.id) {
-    return res.status(500).end('You are not signed in.');
-  }
-
   let body: any;
   try {
     body = JSON.parse(req.body);

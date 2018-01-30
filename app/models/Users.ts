@@ -13,9 +13,7 @@ export interface UserAttributes {
   created: Date;
   login_count: number;
   last_login: Date;
-  quest_plays: {
-    string: Date;
-  };
+  quest_plays: {[id: string]: Date};
 }
 
 export interface UserInstance extends Sequelize.Instance<UserAttributes> {
@@ -86,14 +84,18 @@ export class User {
         result.increment('login_count');
         user = result.dataValues;
       })
-      .then(() => {return this.ae.model.findAll({
-        attributes: ['quest_id', [Sequelize.fn('MAX', Sequelize.col('created')), 'last_played']],
-        where: {user_id: user.id, category: 'quest', action: 'end'},
-        group: 'quest_id',
-      })})
+      .then(() => {
+        return this.ae.model.findAll({
+          attributes: ['quest_id', [Sequelize.fn('MAX', Sequelize.col('created')), 'last_played']],
+          where: {user_id: user.id, category: 'quest', action: 'end'},
+          group: 'quest_id',
+        })
+      })
       .then((results: any[]) => {
-        user.quest_plays = {} as {string: Date};
-        (results || []).forEach((result: any) => { user.quest_plays[result.dataValues['quest_id']] = result.dataValues['last_played']; });
+        user.quest_plays = {} as {[id: string]: Date};
+        (results || []).forEach((result: any) => { 
+          user.quest_plays[result.dataValues['quest_id']] = result.dataValues['last_played']; 
+        });
         return user;
       });
   }
