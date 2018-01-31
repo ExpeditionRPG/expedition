@@ -1,0 +1,18 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.10.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:debug:20170905':
+    - serve-waterfall > send > debug:
+        patched: '2018-01-31T13:06:26.965Z'
+    - expedition-qdl > karma > log4js > mailgun-js > debug:
+        patched: '2018-01-31T13:06:26.965Z'
+  'npm:ms:20170412':
+    - expedition-qdl > karma > log4js > mailgun-js > debug > ms:
+        patched: '2018-01-31T13:06:26.965Z'
+  'npm:ms:20151024':
+    - serve-waterfall > send > ms:
+        patched: '2018-01-31T13:06:26.965Z'
+    - serve-waterfall > send > debug > ms:
+        patched: '2018-01-31T13:06:26.965Z'
