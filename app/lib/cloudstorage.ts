@@ -25,9 +25,9 @@ export function getPublicUrl (filename: string) {
 // req.file is processed and will have two new properties:
 // * ``cloudStorageObject`` the object name in cloud storage.
 // * ``cloudStoragePublicUrl`` the public url to the object.
-export function upload (data: any, cb: (e: Error) => any) {
+export function upload (data: any, cb: (e?: Error) => any) {
   if (!data) {
-    return cb(undefined);
+    return cb();
   }
   const file = bucket.file(data.gcsname);
   const stream = file.createWriteStream();
@@ -37,7 +37,7 @@ export function upload (data: any, cb: (e: Error) => any) {
   });
 
   stream.on('finish', function () {
-    cb(null);
+    cb();
   });
 
   stream.end(data.buffer);

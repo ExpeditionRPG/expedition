@@ -7,13 +7,13 @@ const mailchimp = (Config.get('NODE_ENV') !== 'dev' && Config.get('MAILCHIMP_KEY
 
 export interface UserAttributes {
   id: string;
-  email: string;
-  name: string;
-  loot_points: number;
-  created: Date;
-  login_count: number;
-  last_login: Date;
-  quest_plays: {[id: string]: Date};
+  email?: string|null;
+  name?: string|null;
+  loot_points?: number|null;
+  created?: Date|null;
+  login_count?: number|null;
+  last_login?: Date|null;
+  quest_plays: {[id: string]: Date}; // TODO: this is not a value in the User table and shouldn't be an attribute.
 }
 
 export interface UserInstance extends Sequelize.Instance<UserAttributes> {
@@ -64,6 +64,9 @@ export class User {
   }
 
   public upsert(user: UserAttributes): Bluebird<UserAttributes> {
+    // TODO: refactor this - upsert shouldn't be subscribing people to a mailing list, or 
+    // calculating derived values and returning them.
+    // https://github.com/ExpeditionRPG/expedition-api/issues/70
     return this.s.authenticate()
       .then(() => {return this.model.upsert(user)})
       .then((created: Boolean) => {

@@ -2,7 +2,6 @@ import {Feedback, FeedbackAttributes, FeedbackInstance} from './Feedback'
 import {Quest, QuestAttributes, QuestInstance} from './Quests'
 import * as Sequelize from 'sequelize'
 import * as expect from 'expect'
-import {} from 'jasmine'
 
 describe('feedback', () => {
   let f: Feedback;
@@ -25,13 +24,15 @@ describe('feedback', () => {
   };
 
   describe('submitFeedback', () => {
-    it('TODO');
+    it('TODO write tests');
   });
+
   describe('submitReportError', () => {
-    it('TODO');
+    it('TODO write tests');
   });
+
   describe('submitReportQuest', () => {
-    it('TODO');
+    it('TODO write tests');
   });
 
   describe('submitRating', () => {
@@ -95,7 +96,7 @@ describe('feedback', () => {
         });
     });
 
-    it('re-calculates quest rating avg and count on new feedback (only counting feedback with non-null ratings)', (done: () => any) => {
+    it('re-calculates quest rating avg and count on new feedback (only counting feedback with defined ratings)', (done: () => any) => {
       const rating1 = {...testRatingData, rating: 3.0, userid: "1"};
       const rating2 = {...testRatingData, rating: 4.0, userid: "2"};
       const rating3 = {...testRatingData, rating: 1.0, userid: "3"};
@@ -109,6 +110,9 @@ describe('feedback', () => {
         })
         .then((quest: QuestInstance) => {
           expect(quest.dataValues.ratingcount).toEqual(3); // Null is not counted
+          if (!quest.dataValues.ratingavg) {
+            throw Error('Undefined average rating');
+          }
           expect(quest.dataValues.ratingavg.toFixed(2)).toEqual(2.67);
           done();
         });

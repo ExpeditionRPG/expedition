@@ -6,20 +6,20 @@ import * as Promise from 'bluebird';
 export type FeedbackType = 'feedback'|'rating'|'report_error'|'report_quest';
 
 export interface FeedbackAttributes {
-  partition?: string;
-  questid?: string;
-  userid?: string;
-  questversion?: number;
-  created?: Date;
-  rating?: number;
-  text?: string;
-  email?: string;
-  name?: string;
-  difficulty?: string;
-  platform?: string;
-  platformDump?: string;
-  players?: number;
-  version?: string;
+  partition: string;
+  questid: string;
+  userid: string;
+  questversion?: number|null;
+  created?: Date|null;
+  rating?: number|null;
+  text?: string|null;
+  email?: string|null;
+  name?: string|null;
+  difficulty?: string|null;
+  platform?: string|null;
+  platformDump?: string|null;
+  players?: number|null;
+  version?: string|null;
 }
 
 export interface FeedbackInstance extends Sequelize.Instance<FeedbackAttributes> {
@@ -84,17 +84,17 @@ export class Feedback {
     this.quest = models.Quest;
   }
 
-  public get(partition: string, questid: string, userid: string): Promise<FeedbackInstance> {
+  public get(partition: string, questid: string, userid: string): Promise<FeedbackInstance|null> {
     return this.s.authenticate()
       .then(() => {
-        return this.model.findOne({where: {partition, questid, userid}});
+        return this.model.findOne({where: {partition, questid, userid} as any});
       });
   }
 
   public getByQuestId(partition: string, questid: string): Promise<FeedbackInstance[]> {
     return this.s.authenticate()
       .then(() => {
-        return this.model.findAll({where: {partition, questid, rating: {$ne: null}}});
+        return this.model.findAll({where: {partition, questid, rating: {$ne: null}} as any});
       });
   };
 
@@ -133,7 +133,10 @@ export class Feedback {
       })
       .then((quest: QuestInstance) => {
         const ratingavg = (quest.dataValues.ratingavg || 0).toFixed(1);
-        const emails = [quest.dataValues.email];
+        const emails = [];
+        if (quest.dataValues.email) {
+          emails.push(quest.dataValues.email);
+        }
         if (!feedback.rating || feedback.rating <= 3) {
           emails.push('expedition+questfeedback@fabricate.io');
         }
@@ -143,13 +146,13 @@ export class Feedback {
             <p>Your quest, ${quest.dataValues.title}, just received its first rating!</p>
             <p>${feedback.rating} out of 5 stars.</p>
           `;
-          if (feedback.text.length > 0) {
+          if (feedback.text && feedback.text.length > 0) {
             message += `<p>User feedback:</p><p>"${feedback.text}"</p>`;
           }
           message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
             <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>`;
           return Mail.send(emails, subject, message);
-        } else if (feedback.text.length > 0) {
+        } else if (feedback.text && feedback.text.length > 0) {
           const subject = `Quest rated ${feedback.rating}/5: ${quest.dataValues.title}`;
           const message = `<p>User feedback:</p>
             <p>"${feedback.text}"</p>
@@ -181,7 +184,11 @@ export class Feedback {
           <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
           <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
         `;
-        return Mail.send([questData.email, 'expedition+apperror@fabricate.io'], subject, message);
+        const to = ['expedition+apperror@fabricate.io'];
+        if (questData.email) {
+          to.push(questData.email);
+        }
+        return Mail.send(to, subject, message);
       });
   }
 
@@ -203,7 +210,11 @@ export class Feedback {
           <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
           <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
         `;
-        return Mail.send([quest.dataValues.email, 'expedition+apperror@fabricate.io'], subject, message);
+        const to = ['expedition+apperror@fabricate.io'];
+        if (quest.dataValues.email) {
+          to.push(quest.dataValues.email);
+        }
+        return Mail.send(to, subject, message);
       });
   }
 }

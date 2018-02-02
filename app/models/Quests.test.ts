@@ -1,7 +1,6 @@
 import {Quest, QuestAttributes, QuestInstance} from './Quests'
 import * as Sequelize from 'sequelize'
 const expect = require('expect');
-import {} from 'jasmine'
 
 describe('quest', () => {
   let q: Quest;
@@ -30,8 +29,6 @@ describe('quest', () => {
     publishedurl: 'http://testpublishedquesturl.com',
     questversion: 1,
     questversionlastmajor: 1,
-    ratingavg: 0,
-    ratingcount: 0,
     tombstone: null,
     expansionhorror: false,
   };
@@ -60,8 +57,6 @@ describe('quest', () => {
     publishedurl: 'http://testpublishedquesturl.com',
     questversion: 1,
     questversionlastmajor: 1,
-    ratingavg: 0,
-    ratingcount: 0,
     tombstone: null,
     expansionhorror: true,
   }
@@ -82,39 +77,35 @@ describe('quest', () => {
 
 
   describe('searchQuests', () => {
-    it('returns an empty array if no results', (done: ()=>any) => {
-      q.search('', {partition: 'otherpartition'})
+    it('returns an empty array if no results', () => {
+      return q.search('', {partition: 'otherpartition'})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(0);
-          done();
         });
     });
 
-    it('returns full quest data', (done: ()=>any) => {
-      q.search('', {partition: 'testpartition'})
+    it('returns full quest data', () => {
+      return q.search('', {partition: 'testpartition'})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(1);
           expect(results[0].dataValues).toEqual(insertedQuest);
-          done();
-        });
+        })
     });
 
-    it('does not return expansions if unspecified', (done: ()=>any) => {
-      q.search('', {partition: 'testpartition'})
+    it('does not return expansions if unspecified', () => {
+      return q.search('', {partition: 'testpartition'})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(1);
           expect(results[0].dataValues).toEqual(insertedQuest);
-          done();
-        });
+        })
     });
 
-    it('returns expansion quests first if specified', (done: ()=>any) => {
-      q.search('', {partition: 'testpartition', expansions: ['horror']})
+    it('returns expansion quests first if specified', () => {
+      return q.search('', {partition: 'testpartition', expansions: ['horror']})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(2);
           expect(results[0].dataValues).toEqual(expansionQuest);
-          done();
-        });
+        })
     });
 
     it('also displays draft quests when user provided');
@@ -154,6 +145,8 @@ describe('quest', () => {
     it('always updates questversion');
 
     it('increments questversionlastmajor when major release flag is true');
+
+    it('removes a set tombstone');
   });
 
   describe('calculate ratings', () => {

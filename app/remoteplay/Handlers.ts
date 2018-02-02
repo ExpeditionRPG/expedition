@@ -54,13 +54,25 @@ export function connect(rpSessions: SessionModel, sessionClients: SessionClient,
     });
 }
 
-function wsParamsFromReq(req: http.IncomingMessage) {
+interface WebsocketSessionParams {
+  session: number;
+  client: string;
+  secret: string;
+  instance: string;
+}
+
+function wsParamsFromReq(req: http.IncomingMessage): WebsocketSessionParams|null {
   if (!req || !req.url) {
     console.error('req.url not defined');
     console.log(req);
     return null;
   }
   const parsedURL = url.parse(req.url, true);
+  if (!parsedURL || !parsedURL.pathname) {
+    console.error('failed to parse url');
+    console.log(req.url);
+    return null;
+  }
   const splitPath = parsedURL.pathname.match(/\/ws\/remoteplay\/v1\/session\/(\d+).*/);
 
   if (splitPath === null) {
@@ -168,6 +180,10 @@ function handleClientStatus(rpSession: SessionModel, session: number, client: Cl
 
 export function websocketSession(rpSession: SessionModel, sessionClients: SessionClient, ws: any, req: http.IncomingMessage) {
   const params = wsParamsFromReq(req);
+  if (params === null) {
+    throw new Error('Null params, session not validated correctly');
+  }
+
   console.log(`Client ${params.client} connected to session ${params.session} with secret ${params.secret}`);
 
   if (!inMemorySessions[params.session]) {

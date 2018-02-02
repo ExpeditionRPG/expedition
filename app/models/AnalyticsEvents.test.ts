@@ -2,7 +2,6 @@ import {AnalyticsEvent, AnalyticsEventAttributes, AnalyticsEventInstance} from '
 import {Quest, QuestAttributes, QuestInstance} from './Quests'
 import * as Sequelize from 'sequelize'
 import * as expect from 'expect'
-import {} from 'jasmine'
 
 describe('AnalyticsEvent', () => {
   let ae: AnalyticsEvent;
@@ -22,17 +21,22 @@ describe('AnalyticsEvent', () => {
   };
 
   describe('submitAnalyticsEvent', () => {
-    beforeEach((done: () => any) => {
+    beforeEach((done: DoneFn) => {
       const s = new Sequelize({dialect: 'sqlite', storage: ':memory:'});
       q = new Quest(s);
       q.model.sync()
         .then(() => {
-          return q.model.create({partition: 'testpartition', id: 'questid', ratingavg: 0, ratingcount: 0, email: 'author@test.com'});
+          return q.model.create({
+            partition: 'testpartition', 
+            id: 'questid', 
+            ratingavg: 0, 
+            ratingcount: 0, 
+            email: 'author@test.com'
+          });
         })
         .then(() => {
           ae = new AnalyticsEvent(s);
           ae.associate({Quest: q});
-          q.associate({AnalyticsEvent: ae});
           ae.model.sync()
             .then(() => {done();})
             .catch((e: Error) => {throw e;});
@@ -41,7 +45,7 @@ describe('AnalyticsEvent', () => {
     });
 
     // TODO once we have / need event getting, get and confirm entry here
-    it('created an entry', (done: ()=>any) => {
+    it('created an entry', (done: DoneFn) => {
       ae.create(testData)
         .then(() => {
           done();

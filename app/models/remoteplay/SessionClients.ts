@@ -6,7 +6,7 @@ export interface SessionClientAttributes {
   session: number;
   client: string;
   secret: string;
-  created_at?: Date;
+  created_at?: Date|null;
 }
 
 export interface SessionClientInstance extends Sequelize.Instance<SessionClientAttributes> {
@@ -93,7 +93,12 @@ export class SessionClient {
           const result: any = {session: r.dataValues.session};
           return this.event.getLast(result.session);
         }));
-      });
+      })
+      .then((events: (EventInstance|null)[]) => {
+        return events.filter((e: EventInstance|null): e is EventInstance => {
+          return e !== null;
+        });
+      });;
   }
 }
 

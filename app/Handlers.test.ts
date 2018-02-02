@@ -1,5 +1,4 @@
 import * as expect from 'expect'
-import {} from 'jasmine'
 
 describe('handlers', () => {
   describe('healthCheck', () => {
@@ -30,7 +29,7 @@ describe('handlers', () => {
     it('handles missing locals');
   });
 
-  desribe('feedback', () => {
+  describe('feedback', () => {
     it('publishes feedback');
     it('handles bad feedback type');
   });

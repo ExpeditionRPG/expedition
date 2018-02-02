@@ -4,7 +4,6 @@ import * as Sequelize from 'sequelize'
 
 import * as expect from 'expect'
 import * as sinon from 'sinon'
-import {} from 'jasmine'
 
 describe('users', () => {
   let ae: AnalyticsEvent;
@@ -32,10 +31,11 @@ describe('users', () => {
     name: "Test Testerson",
     created: new Date(Date.now()),
     last_login: new Date(Date.now()),
-  };
+    loot_points: 0,
+  } as any; // TODO: remove this any assertion once we've split out quest_plays
 
   describe('upsert', () => {
-    it('inserts user when none exists', (done: ()=>any) => {
+    it('inserts user when none exists', (done: DoneFn) => {
       u.upsert(testUserData).then(() => {
         return u.get("test");
       }).then((user: any) => {

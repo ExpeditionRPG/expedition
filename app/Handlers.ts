@@ -60,6 +60,9 @@ export function search(quest: Quest, req: express.Request, res: express.Response
 export function questXMLRedirect(quest: Quest, req: express.Request, res: express.Response) {
   quest.get(PUBLIC_PARTITION, req.params.quest)
     .then((quest: QuestInstance) => {
+      if (quest.dataValues.url === null) {
+        throw new Error('Quest did not have published URL');
+      }
       res.header('Content-Type', 'text/xml');
       res.header('Location', quest.dataValues.url);
       res.status(301).end();

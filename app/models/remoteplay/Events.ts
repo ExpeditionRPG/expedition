@@ -5,9 +5,9 @@ export interface EventAttributes {
   session: number;
   client: string;
   timestamp: Date;
-  id: number;
+  id?: number|null;
   type: string;
-  json: string;
+  json?: string|null;
 }
 
 export interface EventInstance extends Sequelize.Instance<EventAttributes> {
@@ -56,14 +56,14 @@ export class Event {
 
   public associate(models: any) {}
 
-  public upsert(attrs: EventAttributes): Bluebird<boolean> {
-    return this.model.upsert(attrs);
+  public upsert(attrs: EventAttributes): Bluebird<void> {
+    return this.model.upsert(attrs).then(()=>{});
   }
 
-  public getLast(session: string): Bluebird<EventInstance> {
+  public getLast(session: number): Bluebird<EventInstance|null> {
     return this.model.findOne({
-      where: {session},
-      order: ['created_at', 'DESC']
+      where: {session} as any,
+      order: [['created_at', 'DESC']]
     });
   }
 }

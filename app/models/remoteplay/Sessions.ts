@@ -94,7 +94,7 @@ export class Session {
     return Bluebird.reject(null);
   }
 
-  public commitEvent(session: number, client: string, event: number, type: string, json: string): Bluebird<number> {
+  public commitEvent(session: number, client: string, event: number|null, type: string, json: string): Bluebird<number|null> {
     return this.s.transaction((txn: Sequelize.Transaction) => {
       return this.model.findOne({where: {id: session}, transaction: txn})
         .then((s: SessionInstance) => {
@@ -113,7 +113,7 @@ export class Session {
             session,
             client,
             timestamp: new Date(),
-            id: event,
+            id: (event !== null) ? event : undefined,
             type,
             json,
           }, {transaction: txn});

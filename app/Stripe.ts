@@ -14,13 +14,10 @@ const MIN_PAYMENT_DOLLARS = 0.5; // Anything below this would be eaten by transa
 
 
 export function checkout(req: Express.Request, res: Express.Response) {
-  if (!Config.get('ENABLE_PAYMENT')) {
-    return res.status(500).send();
-  }
   const body: any = JSON.parse(req.body);
   Joi.validate(body, {
     amount: Joi.number().min(MIN_PAYMENT_DOLLARS),
-  }, {allowUnknown: true}, (err, body) => {
+  }, {allowUnknown: true}, (err, validBody) => {
     if (err) {
       let result = 'ERROR: ';
       for (const d of err.details) {
@@ -28,23 +25,36 @@ export function checkout(req: Express.Request, res: Express.Response) {
       }
       return res.status(400).send(result);
     }
-    const charge = stripe.charges.create({
-      amount: body.amount * 100, // charges in smallest whole units, so must convert dollars to pennies
+    if (!validBody) {
+      return res.status(400).send('No valid checkout data received');
+    }
+    
+    if (stripe === null) {
+      return res.status(500).send();
+    }
+
+    if (stripe.charges === null) {
+      console.error('Stripe charges object not defined');
+      return res.status(500).send('Error submitting payment');
+    }
+
+    stripe.charges.create({
+      amount: validBody.amount * 100, // charges in smallest whole units, so must convert dollars to pennies
       currency: 'usd',
-      description: `Category: ${body.productcategory} - ID: ${body.productid}`,
+      description: `Category: ${validBody.productcategory} - ID: ${validBody.productid}`,
       metadata: {
-        productcategory: body.productcategory,
-        productid: body.productid,
-        userid: body.userid,
-        useremail: body.useremail,
+        productcategory: validBody.productcategory,
+        productid: validBody.productid,
+        userid: validBody.userid,
+        useremail: validBody.useremail,
       },
-      source: body.token,
-    }, (err: Stripe.IStripeError, charge: Stripe.charges.ICharge) => {
+      source: validBody.token,
+    }, (err: Stripe.IStripeError, chargeResult: Stripe.charges.ICharge) => {
       if (err) {
-        console.log(err);
+        console.error(err);
         return res.status(500).send('Error submitting payment.');
       }
-      res.send(charge);
+      res.send(chargeResult);
     });
   });
 }

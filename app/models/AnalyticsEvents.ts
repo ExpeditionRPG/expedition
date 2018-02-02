@@ -3,17 +3,17 @@ import * as Promise from 'bluebird'
 import {Quest} from './Quests'
 
 export interface AnalyticsEventAttributes {
-  category?: string;
-  action?: string;
-  quest_id?: string;
-  user_id?: string;
-  quest_version?: number;
-  created?: Date;
-  difficulty?: string;
-  platform?: string;
-  players?: number;
-  version?: string;
-  json?: string;
+  category: string;
+  action: string;
+  quest_id?: string|null;
+  user_id?: string|null;
+  quest_version?: number|null;
+  created?: Date|null;
+  difficulty?: string|null;
+  platform?: string|null;
+  players?: number|null;
+  version?: string|null;
+  json?: string|null;
 }
 
 export interface AnalyticsEventInstance extends Sequelize.Instance<AnalyticsEventAttributes> {

@@ -11,47 +11,47 @@ export const MAX_SEARCH_LIMIT = 100;
 export const PUBLIC_PARTITION = 'expedition-public';
 
 export interface QuestAttributes {
-  partition?: string;
-  id?: string;
-  questversion?: number;
-  questversionlastmajor?: number;
-  engineversion?: string;
-  publishedurl?: string;
-  userid?: string;
-  author?: string;
-  email?: string;
-  maxplayers?: number;
-  maxtimeminutes?: number;
-  minplayers?: number;
-  mintimeminutes?: number;
-  summary?: string;
-  title?: string;
-  url?: string;
-  familyfriendly?: boolean;
-  ratingavg?: number;
-  ratingcount?: number;
-  genre?: string;
-  contentrating?: string;
-  created?: Date;
-  published?: Date;
-  tombstone?: Date;
-  expansionhorror?: boolean;
+  partition: string;
+  id: string;
+  questversion?: number|null;
+  questversionlastmajor?: number|null;
+  engineversion?: string|null;
+  publishedurl?: string|null;
+  userid?: string|null;
+  author?: string|null;
+  email?: string|null;
+  maxplayers?: number|null;
+  maxtimeminutes?: number|null;
+  minplayers?: number|null;
+  mintimeminutes?: number|null;
+  summary?: string|null;
+  title?: string|null;
+  url?: string|null;
+  familyfriendly?: boolean|null;
+  ratingavg?: number|null;
+  ratingcount?: number|null;
+  genre?: string|null;
+  contentrating?: string|null;
+  created?: Date|null;
+  published?: Date|null;
+  tombstone?: Date|null;
+  expansionhorror?: boolean|null;
 }
 
 export interface QuestSearchParams {
-  id?: string;
-  owner?: string;
-  players?: number;
-  text?: string;
-  age?: number;
-  mintimeminutes?: number;
-  maxtimeminutes?: number;
-  contentrating?: string;
-  genre?: string;
-  order?: string;
-  limit?: number;
-  partition?: string;
-  expansions?: string[];
+  id?: string|null;
+  owner?: string|null;
+  players?: number|null;
+  text?: string|null;
+  age?: number|null;
+  mintimeminutes?: number|null;
+  maxtimeminutes?: number|null;
+  contentrating?: string|null;
+  genre?: string|null;
+  order?: string|null;
+  limit?: number|null;
+  partition?: string|null;
+  expansions?: string[]|null;
 }
 
 export interface QuestInstance extends Sequelize.Instance<QuestAttributes> {
@@ -128,16 +128,16 @@ export class Quest {
     this.feedback = models.Feedback;
   }
 
-  get(partition: string, id: string): Bluebird<QuestInstance> {
+  get(partition: string, id: string): Bluebird<QuestInstance|null> {
     return this.s.authenticate()
       .then(() => {
-        return this.model.findOne({where: {partition, id}})
+        return this.model.findOne({where: {partition, id} as any})
       });
   }
 
   search(userId: string, params: QuestSearchParams): Bluebird<QuestInstance[]> {
     // TODO: Validate search params
-    const where: Sequelize.WhereOptions<QuestAttributes> = {published: {$ne: null}, tombstone: null};
+    const where: Sequelize.WhereOptions<QuestAttributes> = {published: {$ne: null}, tombstone: null} as any;
 
     where.partition = params.partition || PUBLIC_PARTITION;
 
@@ -246,7 +246,7 @@ export class Quest {
         if (isNew && quest.dataValues.partition === PUBLIC_PARTITION) {
           // If this is a newly published quest, email us!
           // We don't care if this fails.
-          Mail.send('expedition+newquest@fabricate.io',
+          Mail.send(['expedition+newquest@fabricate.io'],
             `New quest published: ${params.title} (${params.partition})`,
             `Summary: ${params.summary}.\n
             By ${params.author}, for ${params.minplayers} - ${params.maxplayers} players over ${params.mintimeminutes} - ${params.maxtimeminutes} minutes. ${params.genre}.
@@ -256,7 +256,11 @@ export class Quest {
           this.model.findOne({where: {userid}})
             .then((q: QuestInstance) => {
               if (!Boolean(q)) {
-                Mail.send([params.email,'expedition+newquest@fabricate.io'],
+                const to = ['expedition+newquest@fabricate.io'];
+                if (params.email) {
+                  to.push(params.email);
+                }
+                Mail.send(to,
                   'Congratulations on publishing your first quest!',
                   `<p>${params.author},</p>
                   <p>Congratulations on publishing your first Expedition quest!</p>
@@ -273,7 +277,7 @@ export class Quest {
           userid, // Not included in the request - pull from auth
           questversion: (quest.dataValues.questversion || 0) + 1,
           publishedurl,
-          tombstone: null, // Remove tombstone
+          tombstone: undefined, // Remove tombstone
           published: new Date(),
         };
         if (majorRelease) {
@@ -286,7 +290,7 @@ export class Quest {
   unpublish(partition: string, id: string): Bluebird<any> {
     return this.s.authenticate()
       .then(() => {
-        return this.model.update({tombstone: new Date()}, {where: {partition, id}, limit: 1})
+        return this.model.update({tombstone: new Date()} as any, {where: {partition, id}, limit: 1})
       });
   }
 
@@ -301,9 +305,20 @@ export class Quest {
         return this.feedback.getByQuestId(partition, quest.dataValues.id);
       })
       .then((feedback: FeedbackInstance[]) => {
-        const ratings = feedback.filter((f: FeedbackInstance) => {
+        const ratings: number[] = feedback.filter((f: FeedbackInstance) => {
+          if (!quest.dataValues.questversionlastmajor) {
+            return true;
+          }
+          if (!f.dataValues.questversion || !f.dataValues.rating) {
+            return false;
+          }
           return (f.dataValues.questversion >= quest.dataValues.questversionlastmajor);
         }).map((f: FeedbackInstance) => {
+          if (f.dataValues.rating === undefined || f.dataValues.rating === null) {
+            // typescript isn't quite smart enough to realize we already filtered 
+            // out any null ratings. We add this here to appease it.
+            throw Error('Failed to filter out null ratings');
+          }
           return f.dataValues.rating;
         });
         const ratingcount = ratings.length;

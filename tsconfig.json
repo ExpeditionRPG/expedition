@@ -6,6 +6,7 @@
     "module": "commonjs",
     "target": "es6",
     "allowSyntheticDefaultImports": true,
+    "strictNullChecks": true,
     "types" : [ "jasmine" ],
     "jsx": "preserve"
   },
