@@ -2,6 +2,7 @@ import {Feedback, FeedbackAttributes, FeedbackInstance} from './Feedback'
 import {Quest, QuestAttributes, QuestInstance} from './Quests'
 import * as Sequelize from 'sequelize'
 import * as expect from 'expect'
+import * as sinon from 'sinon'
 
 describe('feedback', () => {
   let f: Feedback;

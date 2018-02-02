@@ -17,7 +17,7 @@ export interface FeedbackAttributes {
   name?: string|null;
   difficulty?: string|null;
   platform?: string|null;
-  platformDump?: string|null;
+  platformDump?: string|null; // TODO: Remove this from sequelize table attributes
   players?: number|null;
   version?: string|null;
 }

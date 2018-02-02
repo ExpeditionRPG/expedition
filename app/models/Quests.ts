@@ -10,6 +10,9 @@ export const MAX_SEARCH_LIMIT = 100;
 // Use this partition for any operations on public-facing quests.
 export const PUBLIC_PARTITION = 'expedition-public';
 
+// Use this partition for any operations on private (creator-visible-only) quests.
+export const PRIVATE_PARTITION = 'expedition-private';
+
 export interface QuestAttributes {
   partition: string;
   id: string;
