@@ -4,19 +4,19 @@ import {models} from './models/Database'
 const request = require('request');
 
 function doFn(quest: QuestInstance) {
-  if (!quest.dataValues.published) {
-    console.log(`Skipping "${quest.dataValues.title}" (unpublished)`);
+  if (!quest.get('published')) {
+    console.log(`Skipping "${quest.get('title')}" (unpublished)`);
     return;
   }
-  if (quest.dataValues.tombstone) {
-    console.log(`Skipping "${quest.dataValues.title}" (tombstoned)`);
+  if (quest.get('tombstone')) {
+    console.log(`Skipping "${quest.get('title')}" (tombstoned)`);
     return;
   }
   // Fetch XML
-  request(quest.dataValues.publishedurl, {}, (err: Error, res: any, body: any) => {
-    console.log(`${quest.dataValues.partition}: ${quest.dataValues.title} (${quest.dataValues.id})`);
+  request(quest.get('publishedurl'), {}, (err: Error, res: any, body: any) => {
+    console.log(`${quest.get('partition')}: ${quest.get('title')} (${quest.get('id')})`);
     if (!body.startsWith('<quest')) {
-      return console.error(`${quest.dataValues.id}: "${quest.dataValues.title}" points to invalid XML: ${body}`);
+      return console.error(`${quest.get('id')}: "${quest.get('title')}" points to invalid XML: ${body}`);
     }
 
     // TODO: Your Code Here

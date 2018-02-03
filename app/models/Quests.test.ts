@@ -88,7 +88,7 @@ describe('quest', () => {
       return q.search('', {partition: 'testpartition'})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(1);
-          expect(results[0].dataValues).toEqual(insertedQuest);
+          expect((results[0] as any).dataValues).toEqual(insertedQuest);
         })
     });
 
@@ -96,7 +96,7 @@ describe('quest', () => {
       return q.search('', {partition: 'testpartition'})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(1);
-          expect(results[0].dataValues).toEqual(insertedQuest);
+          expect((results[0] as any).dataValues).toEqual(insertedQuest);
         })
     });
 
@@ -104,7 +104,7 @@ describe('quest', () => {
       return q.search('', {partition: 'testpartition', expansions: ['horror']})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(2);
-          expect(results[0].dataValues).toEqual(expansionQuest);
+          expect((results[0] as any).dataValues).toEqual(expansionQuest);
         })
     });
 
@@ -118,6 +118,21 @@ describe('quest', () => {
 
     it('reads published quest when no logged in user match');
   });
+
+  describe('resolveInstance', () => {
+    it('resolves all attributes with defaults', () => {
+      const resolved = q.resolveInstance({get: () => {return undefined;}} as any);
+      // To prevent flakiness, just check a couple values are defined.
+      // Coverage should be guaranteed by compile-time type checking.
+      expect(resolved.partition).toEqual('');
+      expect(resolved.id).toEqual('');
+      expect(resolved.userid).toEqual('');
+
+      // Dated events should explicitly be null when not defined
+      expect(resolved.tombstone).toEqual(null);
+      expect(resolved.published).toEqual(null);
+    });
+  })
 
   describe('update', () => {
     it('updates all non-automatic quest fields');

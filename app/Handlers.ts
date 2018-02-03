@@ -42,9 +42,7 @@ export function search(quest: Quest, req: express.Request, res: express.Response
   };
   quest.search(res.locals.id, params)
     .then((quests: QuestInstance[]) => {
-      const results = quests.map((q: QuestInstance) => {
-        return q.dataValues;
-      });
+      const results: QuestAttributes[] = quests.map(quest.resolveInstance);
 
       console.log('Found ' + quests.length + ' quests for user ' + res.locals.id);
       res.send(JSON.stringify({
@@ -60,12 +58,13 @@ export function search(quest: Quest, req: express.Request, res: express.Response
 
 export function questXMLRedirect(quest: Quest, req: express.Request, res: express.Response) {
   quest.get(PUBLIC_PARTITION, req.params.quest)
-    .then((quest: QuestInstance) => {
-      if (quest.dataValues.url === null) {
+    .then((instance: QuestInstance) => {
+      const url = instance.get('url');
+      if (!url) {
         throw new Error('Quest did not have published URL');
       }
       res.header('Content-Type', 'text/xml');
-      res.header('Location', quest.dataValues.url);
+      res.header('Location', url);
       res.status(301).end();
     })
     .catch((e: Error) => {
@@ -75,7 +74,7 @@ export function questXMLRedirect(quest: Quest, req: express.Request, res: expres
 }
 
 export function publish(quest: Quest, req: express.Request, res: express.Response) {
-  const attribs: QuestAttributes = {
+  const attribs: Partial<QuestAttributes> = {
     id: req.params.id,
     partition: req.query.partition || PUBLIC_PARTITION,
     title: req.query.title,
@@ -93,8 +92,8 @@ export function publish(quest: Quest, req: express.Request, res: express.Respons
   const majorRelease = (req.query.majorRelease === 'true');
   quest.publish(res.locals.id, majorRelease, attribs, req.body)
     .then((quest: QuestInstance) => {
-      console.log('Published quest ' + quest.dataValues.id);
-      res.end(quest.dataValues.id);
+      console.log('Published quest ' + quest.get('id'));
+      res.end(quest.get('id'));
     })
     .catch((e: Error) => {
       console.error(e);

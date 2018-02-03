@@ -16,29 +16,29 @@ export const PRIVATE_PARTITION = 'expedition-private';
 export interface QuestAttributes {
   partition: string;
   id: string;
-  questversion?: number|null;
-  questversionlastmajor?: number|null;
-  engineversion?: string|null;
-  publishedurl?: string|null;
-  userid?: string|null;
-  author?: string|null;
-  email?: string|null;
-  maxplayers?: number|null;
-  maxtimeminutes?: number|null;
-  minplayers?: number|null;
-  mintimeminutes?: number|null;
-  summary?: string|null;
-  title?: string|null;
-  url?: string|null;
-  familyfriendly?: boolean|null;
-  ratingavg?: number|null;
-  ratingcount?: number|null;
-  genre?: string|null;
-  contentrating?: string|null;
-  created?: Date|null;
-  published?: Date|null;
-  tombstone?: Date|null;
-  expansionhorror?: boolean|null;
+  questversion: number;
+  questversionlastmajor: number;
+  engineversion: string;
+  publishedurl: string;
+  userid: string;
+  author: string;
+  email: string;
+  maxplayers: number;
+  maxtimeminutes: number;
+  minplayers: number;
+  mintimeminutes: number;
+  summary: string;
+  title: string;
+  url: string;
+  familyfriendly: boolean;
+  ratingavg: number;
+  ratingcount: number;
+  genre: string;
+  contentrating: string;
+  created: Date;
+  published: Date|null;
+  tombstone: Date|null;
+  expansionhorror: boolean;
 }
 
 export interface QuestSearchParams {
@@ -57,11 +57,9 @@ export interface QuestSearchParams {
   expansions?: string[]|null;
 }
 
-export interface QuestInstance extends Sequelize.Instance<QuestAttributes> {
-  dataValues: QuestAttributes;
-}
+export interface QuestInstance extends Sequelize.Instance<Partial<QuestAttributes>> {}
 
-export type QuestModel = Sequelize.Model<QuestInstance, QuestAttributes>;
+export type QuestModel = Sequelize.Model<QuestInstance, Partial<QuestAttributes>>;
 
 export class Quest {
   protected s: Sequelize.Sequelize;
@@ -71,7 +69,7 @@ export class Quest {
 
   constructor(s: Sequelize.Sequelize) {
     this.s = s;
-    this.model = this.s.define<QuestInstance, QuestAttributes>('quests', {
+    this.model = this.s.define<QuestInstance, Partial<QuestAttributes>>('quests', {
       partition: {
         type: Sequelize.STRING(32),
         allowNull: false,
@@ -136,6 +134,36 @@ export class Quest {
       .then(() => {
         return this.model.findOne({where: {partition, id} as any})
       });
+  }
+
+  resolveInstance(q: QuestInstance): QuestAttributes {
+    return {
+      partition: q.get('partition') || '',
+      id: q.get('id') || '',
+      questversion: q.get('questversion') || 0,
+      questversionlastmajor: q.get('questversionlastmajor') || 0,
+      engineversion: q.get('engineversion') || '',
+      publishedurl: q.get('publishedurl') || '',
+      userid: q.get('userid') || '',
+      author: q.get('author') || '',
+      email: q.get('email') || '',
+      maxplayers: q.get('maxplayers') || 0,
+      maxtimeminutes: q.get('maxtimeminutes') || 0,
+      minplayers: q.get('minplayers') || 0,
+      mintimeminutes: q.get('mintimeminutes') || 0,
+      summary: q.get('summary') || '',
+      title: q.get('title') || '',
+      url: q.get('url') || '',
+      familyfriendly: q.get('familyfriendly') || false,
+      ratingavg: q.get('ratingavg') || 0,
+      ratingcount: q.get('ratingcount') || 0,
+      genre: q.get('genre') || '',
+      contentrating: q.get('contentrating') || '',
+      created: q.get('created') || new Date(0),
+      published: q.get('published') || null,
+      tombstone: q.get('tombstone') || null,
+      expansionhorror: q.get('expansionhorror') || false,
+    };
   }
 
   search(userId: string, params: QuestSearchParams): Bluebird<QuestInstance[]> {
@@ -213,7 +241,7 @@ export class Quest {
     return this.model.findAll({where, order, limit});
   }
 
-  publish(userid: string, majorRelease: boolean, params: QuestAttributes, xml: string): Bluebird<QuestInstance> {
+  publish(userid: string, majorRelease: boolean, params: Partial<QuestAttributes>, xml: string): Bluebird<QuestInstance> {
     // TODO: Validate XML via crawler
     if (!userid) {
       return Bluebird.reject(new Error('Could not publish - no user id.'));
@@ -233,7 +261,7 @@ export class Quest {
         quest = q || this.model.build(params);
 
         const cloudStorageData = {
-          gcsname: userid + '/' + quest.dataValues.id + '/' + Date.now() + '.xml',
+          gcsname: userid + '/' + quest.get('id') + '/' + Date.now() + '.xml',
           buffer: xml
         };
 
@@ -246,7 +274,7 @@ export class Quest {
         const publishedurl = CloudStorage.getPublicUrl(cloudStorageData.gcsname);
         console.log('Uploading to URL ' + publishedurl);
 
-        if (isNew && quest.dataValues.partition === PUBLIC_PARTITION) {
+        if (isNew && quest.get('partition') === PUBLIC_PARTITION) {
           // If this is a newly published quest, email us!
           // We don't care if this fails.
           Mail.send(['expedition+newquest@fabricate.io'],
@@ -275,10 +303,10 @@ export class Quest {
             });
         }
 
-        const updateValues: QuestAttributes = {
+        const updateValues: Partial<QuestAttributes> = {
           ...params,
           userid, // Not included in the request - pull from auth
-          questversion: (quest.dataValues.questversion || 0) + 1,
+          questversion: (quest.get('questversion') || 0) + 1,
           publishedurl,
           tombstone: undefined, // Remove tombstone
           published: new Date(),
@@ -305,24 +333,24 @@ export class Quest {
       })
       .then((q: QuestInstance) => {
         quest = q;
-        return this.feedback.getByQuestId(partition, quest.dataValues.id);
+        return this.feedback.getByQuestId(partition, quest.get('id'));
       })
       .then((feedback: FeedbackInstance[]) => {
         const ratings: number[] = feedback.filter((f: FeedbackInstance) => {
-          if (!quest.dataValues.questversionlastmajor) {
+          if (!quest.get('questversionlastmajor')) {
             return true;
           }
-          if (!f.dataValues.questversion || !f.dataValues.rating) {
+          if (!f.get('questversion') || !f.get('rating')) {
             return false;
           }
-          return (f.dataValues.questversion >= quest.dataValues.questversionlastmajor);
+          return (f.get('questversion') >= quest.get('questversionlastmajor'));
         }).map((f: FeedbackInstance) => {
-          if (f.dataValues.rating === undefined || f.dataValues.rating === null) {
+          if (f.get('rating') === undefined || f.get('rating') === null) {
             // typescript isn't quite smart enough to realize we already filtered 
             // out any null ratings. We add this here to appease it.
             throw Error('Failed to filter out null ratings');
           }
-          return f.dataValues.rating;
+          return f.get('rating');
         });
         const ratingcount = ratings.length;
         const ratingavg = ratings.reduce((a: number, b: number) => { return a + b; }) / ratings.length;

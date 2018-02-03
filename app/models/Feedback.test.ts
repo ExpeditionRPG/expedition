@@ -71,7 +71,7 @@ describe('feedback', () => {
           return f.get("testpartition", "questid", "userid");
         })
         .then((result: FeedbackInstance) => {
-          expect(result.dataValues).toEqual(testRatingData);
+          expect(result.dataValues as any).toEqual(testRatingData);
           done();
         });
     });
@@ -91,8 +91,8 @@ describe('feedback', () => {
           return q.get("testpartition", "questid");
         })
         .then((quest: QuestInstance) => {
-          expect(quest.dataValues.ratingcount).toEqual(1);
-          expect(quest.dataValues.ratingavg).toEqual(5);
+          expect(quest.get('ratingcount')).toEqual(1);
+          expect(quest.get('ratingavg')).toEqual(5);
           done();
         });
     });
@@ -110,11 +110,11 @@ describe('feedback', () => {
           return q.get("testpartition", "questid");
         })
         .then((quest: QuestInstance) => {
-          expect(quest.dataValues.ratingcount).toEqual(3); // Null is not counted
-          if (!quest.dataValues.ratingavg) {
+          expect(quest.get('ratingcount')).toEqual(3); // Null is not counted
+          if (!quest.get('ratingavg')) {
             throw Error('Undefined average rating');
           }
-          expect(quest.dataValues.ratingavg.toFixed(2)).toEqual(2.67);
+          expect(quest.get('ratingavg').toFixed(2)).toEqual(2.67);
           done();
         });
     });
