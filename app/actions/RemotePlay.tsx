@@ -61,7 +61,7 @@ export function handleRemotePlayEvent(e: RemotePlayEvent) {
         console.error(JSON.stringify(e.event));
         break;
       default:
-        console.log('UNKNOWN EVENT ' + (e.event as any).type);
+        console.error('UNKNOWN EVENT ' + (e.event as any).type);
     }
   };
 }
@@ -134,7 +134,6 @@ export function remotePlayConnect(user: UserState, secret: string) {
   };
 }
 
-// TODO: Move to RemotePlay actions file
 export function loadRemotePlay(user: UserState) {
   return (dispatch: Redux.Dispatch<any>): any => {
     if (!user || !user.id) {
@@ -161,7 +160,6 @@ export function loadRemotePlay(user: UserState) {
     })
   };
 }
-
 
 export function setRemoteStatus(ev: StatusEvent) {
   return (dispatch: Redux.Dispatch<any>): any => {

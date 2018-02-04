@@ -143,7 +143,7 @@ export class RemotePlayClient extends ClientBase {
           break;
       }
 
-      // Notify listeners that we've disconnected
+      // Notify local listeners that we've disconnected
       this.publish({
         id: null,
         client: this.id,
@@ -173,7 +173,13 @@ export class RemotePlayClient extends ClientBase {
         instance: this.instance,
         event,
       });
+      this.fastForwardFromLastCommittedEvent();
     }
+  }
+
+  fastForwardFromLastCommittedEvent() {
+    // TODO: Request a list of committed events from the server and dispatch them here under a "syncing" state.
+    console.log('TODO: Fast-forward logic');
   }
 
   disconnect() {
@@ -189,7 +195,6 @@ export class RemotePlayClient extends ClientBase {
       this.localEventCounter++;
       event.id = this.localEventCounter;
     }
-    console.log(event);
     this.session.send(JSON.stringify(event));
   }
 

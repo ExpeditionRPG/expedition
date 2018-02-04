@@ -1,5 +1,9 @@
 describe('RemotePlay actions', () => {
   describe('handleRemotePlayEvent', () => {
+    it('does not dispatch INTERACTION events');
+    it('resolves and dispatches ACTION events');
+    it('shows a snackbar on ERROR events');
+    it('safely handles unknown events');
   });
 
   describe('remotePlayNewSession', () => {
