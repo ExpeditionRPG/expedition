@@ -27,4 +27,8 @@ describe('events', () => {
         .finally(done);
     });
   });
+
+  describe('getlast', () => {
+    it('gets the most recent event in the session');
+  });
 });

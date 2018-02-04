@@ -90,10 +90,6 @@ export class Session {
     });
   }
 
-  public joinSession(secret: string, client: string): Bluebird<SessionInstance> {
-    return Bluebird.reject(null);
-  }
-
   public commitEvent(session: number, client: string, event: number|null, type: string, json: string): Bluebird<number|null> {
     return this.s.transaction((txn: Sequelize.Transaction) => {
       return this.model.findOne({where: {id: session}, transaction: txn})

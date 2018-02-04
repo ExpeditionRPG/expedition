@@ -1,7 +1,7 @@
 import Config from '../config'
 import * as express from 'express'
 import * as Sequelize from 'sequelize'
-import {Session, SessionID, SessionMetadata} from 'expedition-qdl/lib/remote/Session'
+import {Session, SessionID} from 'expedition-qdl/lib/remote/Session'
 import {Session as SessionModel, SessionInstance} from '../models/remoteplay/Sessions'
 import {SessionClient, SessionClientInstance} from '../models/remoteplay/SessionClients'
 import {ClientID, WaitType, StatusEvent, ActionEvent, RemotePlayEvent, InflightCommitEvent, InflightRejectEvent} from 'expedition-qdl/lib/remote/Events'
@@ -178,7 +178,20 @@ function handleClientStatus(rpSession: SessionModel, session: number, client: Cl
   }
 }
 
-export function websocketSession(rpSession: SessionModel, sessionClients: SessionClient, ws: any, req: http.IncomingMessage) {
+function sendError(ws: WebSocket, e: string) {
+  console.error(e);
+  ws.send(JSON.stringify({
+    client: 'SERVER',
+    instance: Config.get('NODE_ENV'),
+    event: {
+      type: 'ERROR',
+      error: e,
+    },
+    id: null
+  } as RemotePlayEvent));
+}
+
+export function websocketSession(rpSession: SessionModel, sessionClients: SessionClient, ws: WebSocket, req: http.IncomingMessage) {
   const params = wsParamsFromReq(req);
   if (params === null) {
     throw new Error('Null params, session not validated correctly');
@@ -219,26 +232,41 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
   }
 
 
-  ws.on('message', (msg: any) => {
+  ws.on('message', (msg: WebSocket.Data) => {
     // Ignore pings
     if (msg === 'PING') {
       return;
     }
 
-    const event: RemotePlayEvent = JSON.parse(msg);
+    if (typeof(msg) !== 'string') {
+      sendError(ws, 'Invalid type for inbound message: ' + typeof(msg));
+      return;
+    }
+
+    let event: RemotePlayEvent;
+    try {
+      event = JSON.parse(msg);
+    } catch (e) {
+      sendError(ws, 'Could not parse inbound event starting with: ' + msg.substr(0, 32));
+      return;
+    }
+
+    if (!event || !event.event || !event.event.type) {
+      sendError(ws, 'No parsed type for event starting with: ' + msg.substr(0, 32));
+      return;
+    }
 
     // If it's not a transactioned action, just broadcast it.
     // TODO: Log it as well as actions
     if (event.event.type !== 'ACTION') {
       broadcastFrom(params.session, params.client, params.instance, msg);
-
       if (event.event.type === 'STATUS') {
         handleClientStatus(rpSession, params.session, event.client, event.instance, event.event);
       }
-
       return;
     }
 
+    // Precondition: event is an ACTION
     setTimeout(() => {
       rpSession.commitEvent(params.session, params.client, event.id, event.event.type, msg)
       .then(() => {
