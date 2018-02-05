@@ -63,6 +63,7 @@
   <roleplay title="Level 4" data-line="86">
     <p>As you clean your weapon, you remember another tip your coach gave you. In level four, breath more.</p>
     <p>You realized you'd been holding your breath. With a few deep breaths of stale dungeon air, you feel more energized. Just in time to fight...</p>
+    <p>[dungeon_crawl_png_full]</p>
   </roleplay>
   <combat data-line="92">
     <e>{{_.randomEnemyOfTier(2)}}</e>

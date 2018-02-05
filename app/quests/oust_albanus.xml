@@ -127,6 +127,7 @@
   <roleplay icon="bandit" title="Plots and Schemes" data-line="172">
     <p>"Wot we gon' do wid em, Albanus?" a scratchy voice asks.</p>
     <p>"Looks like they're from out of town. No one around here's gonna miss 'em." another colder voice replies.</p>
+    <p>[oust_albanus_png_full]</p>
     <p>You open bleary eyes and behold a small cavern in the sewers. Albanus and his cronies are huddled by a fire in the center of the room. You and your troupe are off in a corner, battered and wounded but still among the living.</p>
     <instruction>
       <p>All adventurers now have 6 HP</p>

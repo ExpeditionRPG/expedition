@@ -106,6 +106,7 @@
   <roleplay icon="adventurer" title="The Party Emerges" data-line="143">
     <p>You emerge from the tomb, taking a moment to breathe the (mostly) fresh air. What you mistook for a headstone begins to move, shocking you out of complacency.</p>
     <p>The moving headstone is actually an old, feeble woman, who was apparently waiting for you to emerge. She calls herself Malaise, and begs for you to listen.</p>
+    <p>[mistress_malaise_png_full]</p>
     <choice text="Listen to her story">
       <roleplay icon="adventurer" title="Malaise Unmasked" data-line="151">
         <p>Malaise begins to tell a rather different story from Pell's - that the sickness began after her departure, but that the surge in undead activity is the fault of an old resident of Brustwick. A man skilled in binding rituals.</p>
