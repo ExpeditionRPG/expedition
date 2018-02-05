@@ -80,7 +80,8 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
     if (tag === 'event') {
       // This sometimes triggers on the boundaries between roleplay and combat.
       // TODO(scott): Find a more principled solution for these errors.
-      console.warn('Warning: <roleplay> cannot contain <event>.');
+      const on = ((c[0].attribs || {}).on || '').toLowerCase();
+      console.warn('Warning: <roleplay> cannot contain event ' + on);
       return;
     }
 
@@ -141,6 +142,10 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
 }
 
 const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'LIGHT'): JSX.Element => {
+  if (props.node.getTag() !== 'roleplay') {
+    console.log('Roleplay constructor called with non-roleplay node.');
+    return <span></span>;
+  }
   const rpResult = loadRoleplayNode(props.node);
 
   const renderedContent: JSX.Element[] = rpResult.content.map((element: RoleplayElement, idx: number): JSX.Element => {

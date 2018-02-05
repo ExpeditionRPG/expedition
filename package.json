@@ -9,9 +9,7 @@
     "test": "mocha meta_tests.js && karma start --single-run --browsers PhantomJS",
     "watch:test": "karma start",
     "dev": "webpack-dev-server --progress",
-    "build": "webpack --config ./webpack.dist.config.js --progress",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "build": "webpack --config ./webpack.dist.config.js --progress"
   },
   "engines": {
     "node": "8.1.4"
@@ -142,8 +140,7 @@
     "ucfirst": "^1.0.0",
     "update": "^0.7.4",
     "whatwg-fetch": "^2.0.3",
-    "xtend": "^4.0.1",
-    "snyk": "^1.69.5"
+    "xtend": "^4.0.1"
   },
   "optionalDependencies": {
     "expedition-art": "git+https://github.com/ExpeditionRPG/expedition-art.git"
@@ -168,6 +165,5 @@
       "android",
       "ios"
     ]
-  },
-  "snyk": true
+  }
 }

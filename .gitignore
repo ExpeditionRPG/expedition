@@ -5,6 +5,7 @@ dist
 hooks
 www
 bower_components
+.snyk
 .tmp
 Thumbs.db
 *.apk
