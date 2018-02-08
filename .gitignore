@@ -4,10 +4,6 @@ logs
 npm-debug.log*
 docker_context
 
-# New file in node 8... removed June 26, 2017 due to outstanding issues with the lock file
-# when building on different platforms (aka prod)... can add back once Node resolves
-package-lock.json
-
 # Runtime data
 pids
 *.pid
