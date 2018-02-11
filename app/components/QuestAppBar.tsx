@@ -77,6 +77,9 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
         showMenuIconButton={false}
         iconElementRight={
           <div className="appBarRight">
+            <a href="https://expeditiongame.com/loot" target="_blank" className="lootPoints">
+              {props.user.lootPoints} <img className="inline_icon" src="images/loot_white_small.svg" />
+            </a>
             <span className="email">{props.user.email}</span>
             <IconMenu
               className="loginState"

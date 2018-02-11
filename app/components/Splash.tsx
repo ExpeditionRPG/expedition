@@ -23,6 +23,9 @@ const Splash = (props: any): JSX.Element => {
           iconElementRight={
             <div className="appBarRight">
               {props.user.loggedIn && <div className="login">
+                <a href="https://expeditiongame.com/loot" target="_blank" className="lootPoints">
+                  {props.user.lootPoints} <img className="inline_icon" src="images/loot_white_small.svg" />
+                </a>
                 <span className="email">{props.user.email}</span>
                 <FlatButton
                   label="New Quest"

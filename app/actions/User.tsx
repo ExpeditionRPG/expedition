@@ -35,12 +35,21 @@ export function loginUser(showPrompt: boolean, quest?: boolean | string): ((disp
             $.post(API_HOST + '/auth/google', JSON.stringify(googleUser))
                 .done((data: any) => {
                   const user = {
+                    id: '',
+                    lootPoints: 0,
                     loggedIn: true,
-                    id: data,
                     displayName: googleUser.name,
                     image: googleUser.image,
                     email: googleUser.email,
                   };
+                  try {
+                    data = JSON.parse(data);
+                    user.id = data.id;
+                    user.lootPoints = data.loot_points;
+                  } catch(err) {
+                    user.id = data;
+                  }
+
                   dispatch(setProfileMeta(user));
                   if (user.email === null) {
                     alert('Issue logging in! Please contact support about user ID ' + user.id);

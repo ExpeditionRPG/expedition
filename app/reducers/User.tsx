@@ -8,6 +8,7 @@ export const loggedOutUser: UserState = {
   displayName: '',
   image: '',
   email: '',
+  lootPoints: 0,
 };
 
 export function user(state: UserState = loggedOutUser, action: Redux.Action): UserState {
@@ -20,6 +21,7 @@ export function user(state: UserState = loggedOutUser, action: Redux.Action): Us
         displayName: profile_action.user.displayName,
         image: profile_action.user.image,
         email: profile_action.user.email,
+        lootPoints: profile_action.user.lootPoints,
       };
     default:
       return state;

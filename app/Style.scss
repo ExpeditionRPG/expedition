@@ -359,10 +359,21 @@ body .olark-launch-button { /*must be more specifc than olark styles */
     opacity: 0.8;
     font-size: $fontSizeSmall;
   }
+
+  .lootPoints {
+    font-size: $fontSizeSmall;
+    margin-right: $fontSizeBase;
+    text-decoration: none;
+
+    .inline_icon {
+      height: 1.3 * $fontSizeSmall;
+      width: 1.3 * $fontSizeSmall;
+    }
+  }
 }
 
 .quest_app_bar {
-  .email {
+  .email, .lootPoints {
     vertical-align: super;
   }
   .loginState {

@@ -114,6 +114,7 @@ export interface UserState {
   displayName: string;
   image: string;
   email: string;
+  lootPoints: number;
 }
 
 export interface AppState {
