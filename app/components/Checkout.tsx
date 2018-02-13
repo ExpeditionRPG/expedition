@@ -43,7 +43,7 @@ export default class Checkout extends React.Component<CheckoutProps, {}> {
         },
       },
     });
-    this.state.card.on('change', (response: any) => {
+    card.on('change', (response: any) => {
       this.setState({
         paymentError: (response.error) ? response.error.message : null,
         paymentValid: response.complete,

@@ -68,8 +68,8 @@ export class RemotePlayStatusDialog extends React.Component<RemotePlayStatusDial
   render(): JSX.Element {
 
     const stats = <ul>{
-        Object.keys(this.props.stats).map((k) => {
-          return <li>{k}: {this.props.stats[k]}</li>
+        Object.keys(this.props.stats).map((k, i) => {
+          return <li key={i}>{k}: {this.props.stats[k]}</li>
         })
       }</ul>;
 

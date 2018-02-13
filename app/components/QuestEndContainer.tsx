@@ -57,7 +57,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       logEvent('tip_start', { value: amount, action: quest.details.title, label: quest.details.id });
       if (!user || !user.loggedIn) {
         dispatch(login({callback: (user: UserState) => {
-          dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
+          if (userFeedback.rating && userFeedback.rating > 0) {
+            dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
+          }
           if (checkoutError !== null) {
             dispatch(openSnackbar(checkoutError));
           } else {
@@ -66,7 +68,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
           }
         }}));
       } else {
-        dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
+        if (userFeedback.rating && userFeedback.rating > 0) {
+          dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
+        }
         if (checkoutError !== null) {
           dispatch(openSnackbar(checkoutError));
         } else {
