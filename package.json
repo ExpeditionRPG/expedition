@@ -51,7 +51,7 @@
     "google-url": "0.0.4",
     "html": "^1.0.0",
     "jasmine-ts": "^0.2.1",
-    "joi": "^10.6.0",
+    "joi": "^13.0.0",
     "lodash": "^4.17.4",
     "mailchimp-api-v3": "^1.7.0",
     "moment": "^2.18.1",
