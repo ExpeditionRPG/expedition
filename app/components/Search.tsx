@@ -252,7 +252,7 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
           {!hideHeader && <div>Try broadening your search.</div>}
         </div>
       }
-      {items.length === 0 && props.searching && <div>Loading...</div>}
+      {items.length === 0 && props.searching && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
       {items}
     </Card>
   );

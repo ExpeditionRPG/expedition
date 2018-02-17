@@ -18,6 +18,8 @@ export function search(state: SearchState = initialSearch, action: Redux.Action)
     case 'SEARCH_REQUEST':
       // Clear the searched quests if we're starting a new search.
       return {...state, results: [], selected: null, searching: true};
+    case 'SEARCH_ERROR':
+      return {...state, searching: false};
     case 'SEARCH_RESPONSE':
       return {...state,
         results: (action as SearchResponseAction).quests,

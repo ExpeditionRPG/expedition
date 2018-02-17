@@ -21,7 +21,7 @@ export const search = remoteify(function search(a: SearchSettings, dispatch: Red
     }
   });
 
-  // Send search request action; clears previous results.
+  // Clear previous results
   dispatch({type: 'SEARCH_REQUEST'});
 
   const xhr = new XMLHttpRequest();
@@ -31,6 +31,7 @@ export const search = remoteify(function search(a: SearchSettings, dispatch: Red
   xhr.onload = () => {
     const response: any = JSON.parse(xhr.responseText);
     if (response.error) {
+      dispatch({type: 'SEARCH_ERROR'});
       return dispatch(openSnackbar('Network error when searching: ' + response.error));
     }
 
