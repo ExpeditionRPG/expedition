@@ -19,3 +19,5 @@ deploy:
   on:
     repo: ExpeditionRPG/expedition-app
     branch: master
+notifications:
+  email: false
