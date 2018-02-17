@@ -257,6 +257,9 @@ p:first-child {
 
 a {
   color: $font_color_primary;
+  &.linkButton {
+    text-decoration: none;
+  }
 }
 
 .callout {

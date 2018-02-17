@@ -48,6 +48,11 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
           <div className="title"><img className="inline_icon" src="images/roll_small.svg"/>Tools</div>
         </div>
       </Button>
+      <a href="https://expeditiongame.com/store?utm_source=app" target="_blank" className="linkButton"><Button>
+        <div className="questButtonWithIcon">
+          <div className="title"><img className="inline_icon" src="images/loot_small.svg"/>Shop</div>
+        </div>
+      </Button></a>
     </Card>
   );
 }
