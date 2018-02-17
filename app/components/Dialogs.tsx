@@ -199,6 +199,12 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           floatingLabelText="Author name"
           onChange={(e: any, val: string) => { this.props.handleMetadataChange(this.props.quest, 'author', val); }}
         />
+        <TextField
+          className="halfWidth"
+          value={metadata.get('email')}
+          floatingLabelText="Author email (private)"
+          onChange={(e: any, val: string) => { this.props.handleMetadataChange(this.props.quest, 'email', val); }}
+        />
         <SelectField
           className="halfWidth"
           floatingLabelText="Minimum players"
@@ -229,7 +235,8 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           <MenuItem value={60} primaryText="60 minutes" />
           <MenuItem value={90} primaryText="90 minutes" />
           <MenuItem value={120} primaryText="2 hours" />
-          <MenuItem value={999} primaryText="Over 2 hours" />
+          <MenuItem value={180} primaryText="3 hours" />
+          <MenuItem value={999} primaryText="Over 3 hours" />
         </SelectField>
         <SelectField
           className="halfWidth"
