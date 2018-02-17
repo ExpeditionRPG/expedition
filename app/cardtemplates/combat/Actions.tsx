@@ -463,8 +463,10 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
           }));
           return remoteArgs;
         } else {
-          // Otherwise, treat like a typical event trigger
+          // Otherwise, treat like a typical event trigger.
+          // Make sure we stop combat audio since we're exiting this combat.
           dispatch(loadNode(nextNode));
+          dispatch(audioSetIntensity(0));
           return remoteArgs;
         }
       }
