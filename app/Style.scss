@@ -164,6 +164,8 @@ body {
   margin: 0;
   padding: 0;
   font-family: MinionPro;
+  -webkit-user-select: none;
+  -moz-user-select: none;
   user-select: none;
 }
 
@@ -695,6 +697,8 @@ span.line {
       background-color: $bg_interactive !important;
       border: $border_accent_thin !important;
       margin-top: 0 !important;
+      -webkit-user-select: all;
+      -moz-user-select: all;
       user-select: all;
     }
 
