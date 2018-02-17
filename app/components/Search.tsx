@@ -135,7 +135,6 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             <MenuItem value={31536000} primaryText="Published this year"/>
             <MenuItem value={2592000} primaryText="Published this month"/>
             <MenuItem value={604800} primaryText="Published this week"/>
-            <MenuItem value={86400} primaryText="Published today"/>
           </SelectField>
           <SelectField
             className="selectfield"
@@ -209,7 +208,7 @@ export function truncateSummary(string: string): string {
 
 function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
   const orderField = props.search.order && props.search.order.substring(1);
-  const items: JSX.Element[] = props.results.map((result: QuestDetails, index: number) => {
+  const items: JSX.Element[] = (props.results || []).map((result: QuestDetails, index: number) => {
     let orderDetails = <span></span>;
     if (orderField) {
       const ratingCount = result.ratingcount || 0;
