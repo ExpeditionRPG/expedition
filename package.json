@@ -1,15 +1,12 @@
 {
   "name": "expedition-qdl",
-  "version": "1.3.6",
+  "version": "1.3.7",
   "description": "The Expedition Quest Design Language",
   "homepage": "http://expeditiongame.com",
   "repository": "https://github.com/ExpeditionRPG/expedition-qdl",
-  "main": "react.js",
   "scripts": {
     "test": "mocha meta_tests.js && karma start karma.conf.js --single-run --browsers PhantomJS",
-    "watch:test": "karma start karma.conf.js ",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "watch:test": "karma start karma.conf.js "
   },
   "author": "Fabricate.IO",
   "license": "CC-BY-NC-SA-4.0",

@@ -18,13 +18,21 @@ describe('REGEX', () => {
   describe('HTML tag', () => {
     it('TODO');
   });
+  describe('INVALID_ART', () => {
+    it('matches [art] on a line with other content', () => {
+      expect(REGEX.INVALID_ART.test(' text[art_with_CAPS_and_Underscores_1234]')).toBe(true);
+    });
+    it('does not match [art] tags on their own lines', () => {
+      expect(REGEX.INVALID_ART.test('   [art_with_CAPS_and_Underscores_1234]   ')).toBe(false);
+    });
+  });
   describe('ART', () => {
     it('matches [art] tags', () => {
       expect(REGEX.ART.test('[art_with_CAPS_and_Underscores_1234]')).toBe(true);
     });
     it('does not match non-art tags', () => {
       expect(REGEX.ART.test('[this is just a random bracket thing]')).toBe(false);
-    })
+    });
   });
   describe('ICON', () => {
     it('matches :icon: tags', () => {
@@ -32,7 +40,7 @@ describe('REGEX', () => {
     });
     it('does not match non-icon tags', () => {
       expect(REGEX.ICON.test(':this is just misuse of colons:')).toBe(false);
-    })
+    });
   });
   describe('ID', () => {
     it('matches alphanumeric text', () => {

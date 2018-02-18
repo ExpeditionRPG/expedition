@@ -17,8 +17,8 @@ export default {
   // (.|\n)*?>                Greedily match any character (incl newline) until closing ">"
   HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/im,
 
-  // Detects icons in []'s (old syntax)
-  INVALID_ART: /.+\[([a-zA-Z_0-9]*)\].+/,
+  // Detects art with non-space characters on the same line
+  INVALID_ART: /\s*[^\s]+\s*\[([a-zA-Z_0-9]*)\]/,
 
   // Contents inside of [], only allowing for alphanumerics + _'s
   ART: /\[([a-zA-Z_0-9]*)\]/,
