@@ -67,7 +67,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
       <Card title="Quest Search">
         <div className="searchForm">
           <FlatButton disabled={true}>
-            For {this.props.numPlayers} adventurer{this.props.numPlayers > 1 ? 's' : ''} (changeable in settings)
+            For {this.props.numPlayers} adventurer{this.props.numPlayers > 1 ? 's' : ''} (based on party size)
           </FlatButton>
           <TextField
             className="textfield"
@@ -243,7 +243,7 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
       title="Quest Search Results"
       header={(hideHeader) ? undefined : <div className="searchHeader">
         <span>{props.results.length} quests for {props.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></span>
-        <Button className="filter_button" onTouchTap={() => props.onFilter()} remoteID="filter">Filter ></Button>
+        <Button className="filter_button" onTouchTap={() => props.onFilter()} remoteID="filter">Filter &amp; Sort ></Button>
       </div>}
     >
       {items.length === 0 && !props.searching &&
