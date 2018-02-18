@@ -67,10 +67,11 @@
     </instruction>
     <p>You depart the guardhouse and head to the town square.</p>
   </roleplay>
-  <roleplay icon="horror" title="The Town Square" data-line="78">
+  <roleplay title="The Town Square" data-line="78">
     <p>The town square is silent and empty, with the sounds of battle echoing from the distant town walls.</p>
     <p>You glance around, confused. The guardsman definitely said the town square...</p>
     <p>And then... you hear something. The clatter of hooves. Growing louder. You spin to face it, weapons drawn... and the sight of a massive, skeletal hound fills your vision!</p>
+    <p>[learning_2_png_full]</p>
   </roleplay>
   <combat data-line="90">
     <e>Tindalos Hound</e>
