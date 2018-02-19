@@ -7,13 +7,13 @@ export const TEST_WITH_CRAWLER = true;
 export const INVALID = [
 `_A card_
 
-Text [icon]`,
+Text [art]`,
 `_A card_
 
-> Instruction [icon]`,
+> Instruction [art]`,
 `_A card_
 
-* Choice [icon]
+* Choice [art]
 
   Text`
 ];
@@ -21,7 +21,9 @@ Text [icon]`,
 export const VALID = [
 `_A card_
 
-Text :icon:`,
+Text
+
+[art]`,
 `_A card_
 
 > Instruction :icon:`,

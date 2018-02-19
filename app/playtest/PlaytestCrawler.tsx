@@ -77,6 +77,9 @@ export class PlaytestCrawler extends StatsCrawler {
 
   private verifyRoleplayArt(roleplayNode: Node<Context>, line: number) {
     roleplayNode.loopChildren((tag, child, orig) => {
+      if (tag === 'choice') { // Only validate nodes' direct contents so that formatting is correct
+        return;
+      }
       const inst = child.text();
       const invalidArt = REGEX.INVALID_ART.exec(inst);
       if (invalidArt) {
