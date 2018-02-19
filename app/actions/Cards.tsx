@@ -96,7 +96,7 @@ export function filterAndFormatCards(cards: CardType[], filters: FiltersState): 
 
 
 const iconRegex = /#\w*/mg;
-const boldColonedRegex = /[^#]*: /g;
+const boldColonedRegex = /[^#:.\n]*?:/g;
 const orRegex = /\nOR\n/g; // purposefully caps only
 const symbolRegex = /&[#a-z0-9]{1,7};/img;
 const doubleLinebreak = /\n\n/mg;
