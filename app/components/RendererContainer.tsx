@@ -7,6 +7,7 @@ const mapStateToProps = (state: AppState, ownProps: any): RendererStateProps => 
   return {
     cards: state.cards.filtered,
     filters: state.filters,
+    translations: state.cards.translations,
   };
 }
 

@@ -40,7 +40,15 @@ describe('Cards actions', () => {
         text: 'statement: text',
       }];
       const cleaned = filterAndFormatCards(cards, dummyFilters);
-      expect(cleaned[0].text).toEqual([<strong key={0}>statement: </strong>, 'text']);
+      expect(cleaned[0].text).toEqual([<strong key={0}>statement:</strong>, ' text']);
+    });
+
+    it('bolds "statement: text. statement: text" structures', () => {
+      const cards = [{
+        text: 'statement: text. statement: text',
+      }];
+      const cleaned = filterAndFormatCards(cards, dummyFilters);
+      expect(cleaned[0].text).toEqual([<strong key={0}>statement:</strong>, ' text.', <strong key={2}> statement:</strong>, ' text']);
     });
 
     it('wraps symbols like &gt; in a symbol span', () => {
