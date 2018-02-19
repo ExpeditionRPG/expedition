@@ -17,6 +17,7 @@ import {defaultContext} from '../cardtemplates/Template'
 import {remoteify} from './ActionTypes'
 import {MIN_FEEDBACK_LENGTH} from '../Constants'
 import {RemotePlayCounters} from '../RemotePlay'
+import {getLogBuffer} from '../Console'
 
 declare var window:any;
 declare var require:any;
@@ -124,7 +125,8 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       return alert('Reviews must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value to authors.');
     }
 
-    let data = {
+    let data: any = {
+      partition: a.quest.details.partition,
       questid: a.quest.details.id,
       userid: a.user.id,
       players: a.settings.numPlayers,
@@ -137,6 +139,12 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       rating: a.userFeedback.rating,
       text: a.userFeedback.text,
     };
+
+    // If we're not rating, we're providing other feedback.
+    // Provide a snapshot of the console to facilitate bug-hunting
+    if (!a.userFeedback.rating) {
+      data.console = getLogBuffer();
+    }
 
     if (!a.user || !a.user.loggedIn) {
       dispatch(login({callback: (user: UserState) => {
@@ -193,6 +201,7 @@ export function logRemotePlayStats(user: UserState, quest: QuestDetails, stats: 
       email: user.email,
       name: user.name,
       data: stats,
+      console: getLogBuffer(),
     };
 
     return fetch(authSettings.urlBase + '/analytics/remoteplay/stats', {

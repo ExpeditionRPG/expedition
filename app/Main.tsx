@@ -1,6 +1,38 @@
 declare var require: any;
 declare var module: any;
 
+// Before we even import other modules, first hook into
+// console logging so we can pass details along with error reports.
+import {logToBuffer} from './Console'
+
+const logHook = function(f: Function, objects: any[]) {
+  logToBuffer(objects.map((o: any) => {
+    if (o.stack) {
+      return o.toString() + '<<<' + o.stack + '>>>';
+    }
+    const str = o.toString();
+    if (str === '[object Object]') {
+      try {
+        return JSON.stringify(o).substr(0, 512);
+      } catch (e) {
+        return '<un-stringifiable Object>';
+      }
+    }
+    return o.toString();
+  }).join(' '));
+  return f(...objects);
+};
+{
+  const oldLog = console.log;
+  console.log = (...objs: any[]) => {return logHook(oldLog, objs);};
+
+  const oldWarn = console.warn;
+  console.warn = (...objs: any[]) => {return logHook(oldWarn, objs);};
+
+  const oldError = console.error;
+  console.error = (...objs: any[]) => {return logHook(oldError, objs);};
+}
+
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import theme from './Theme'

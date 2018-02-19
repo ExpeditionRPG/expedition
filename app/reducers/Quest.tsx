@@ -18,6 +18,7 @@ function autoseed(): string {
 
 export const initialState: QuestState = {
   details: {
+    partition: '',
     id: '',
     title: '',
     summary: '',

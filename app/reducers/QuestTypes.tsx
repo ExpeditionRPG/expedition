@@ -23,6 +23,7 @@ export interface QuestDetails {
   contentrating?: string;
   expansionhorror?: boolean;
   questversion?: number;
+  partition?: string;
 }
 
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';
