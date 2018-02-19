@@ -3,7 +3,7 @@ import Redux from 'redux'
 import {filtersCalculate} from './Filters'
 import {getStore} from '../Store'
 import {icon} from '../helpers'
-import {CardType, FiltersState} from '../reducers/StateTypes'
+import {CardType, TranslationsType, FiltersState} from '../reducers/StateTypes'
 
 declare var require: any;
 const Tabletop = require('tabletop') as any;
@@ -20,6 +20,7 @@ export function downloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
         // TODO parse / validate / clean the object here. Use Joi? Expose validation errors to the user
         // Note that we can't make too many assumptions about the data coming in if we want this to work with
         // multiple games... unless each theme has its own validation schema!
+        // Note: also have to be careful about the translations settings sheet
         // Note: doesn't yet have access to sheet name, that's assigned in callback
         return card;
       },
@@ -27,6 +28,18 @@ export function downloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
         // Turn into an array, remove commented out / hidden cards, attach sheet name
         let cards: CardType[] = [];
         const sheets = tabletop.sheets();
+
+        let translations = null;
+        if (sheets.Translations) {
+          translations = sheets.Translations.elements.reduce((acculumator: TranslationsType, translation: {Language: string, Translated: string | boolean}) => {
+            acculumator[translation.Language.toLowerCase()] = translation.Translated;
+            return acculumator;
+          }, {});
+          // Delete the translations lookup table since it's not cards
+          delete sheets.Translations;
+        }
+        dispatch(translationsUpdate(translations));
+
         Object.keys(sheets).sort().forEach((sheetName: string) => {
           cards = cards.concat(sheets[sheetName].elements.filter((card: CardType) => {
             return (card.Comment === '' || card.hide === '');
@@ -58,6 +71,15 @@ export interface CardsUpdateAction extends Redux.Action {
 
 export function cardsUpdate(cards: CardType[]): CardsUpdateAction {
   return {type: 'CARDS_UPDATE', cards};
+}
+
+export interface TranslationsUpdateAction extends Redux.Action {
+  type: 'TRANSLATIONS_UPDATE';
+  translations: TranslationsType;
+}
+
+export function translationsUpdate(translations: TranslationsType): TranslationsUpdateAction {
+  return {type: 'TRANSLATIONS_UPDATE', translations};
 }
 
 export interface CardsFilterAction extends Redux.Action {

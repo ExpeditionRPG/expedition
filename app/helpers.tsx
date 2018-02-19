@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {MAX_COUNTER_HEALTH} from './Constants'
+import {TranslationsType} from './reducers/StateTypes'
 
 export function icon(name: string, theme?: string, key?: number): JSX.Element {
   const globalSrc = `/expedition-art/icons/${name}.svg`;
@@ -41,6 +42,34 @@ export function horizontalCounter(count: number): JSX.Element {
     outputted++;
   }
   return <span>{output}</span>;
+}
+
+// Returns the translated version of the string if available, otherwise the supplied English
+export function translate(english: string, translations: TranslationsType): string {
+  if (translations) {
+    const translation = translations[english.toLowerCase()];
+    if (translation) {
+      return translation.toString(); // .toString() is just for typescript
+    } else {
+      console.error('Failed to locate translation for string: ' + english);
+    }
+  }
+  return english;
+}
+
+// Turns "Tier 2 Loot" into the correct translation, respecting adjective order
+export function translateTier(tier: number, english: string, translations: TranslationsType): string {
+  const tierRoman = romanize(tier);
+  if (translations) {
+    const translated = translate(english, translations);
+    const translatedTier = translate('Tier', translations);
+    if (translations.AdjectiveAfterNoun) {
+      return translated + ' ' + translatedTier + ' ' + tierRoman;
+    } else {
+      return translatedTier + ' ' + translated + ' ' + tierRoman;
+    }
+  }
+  return 'Tier ' + tierRoman + ' ' + english;
 }
 
 // generate U-shaped healthCounters with two special cases:

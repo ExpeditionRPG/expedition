@@ -1,10 +1,11 @@
 import Redux from 'redux'
 import {CardType, CardsState, FiltersState} from './StateTypes'
-import {CardsFilterAction, CardsUpdateAction, filterAndFormatCards} from '../actions/Cards'
+import {CardsFilterAction, CardsUpdateAction, filterAndFormatCards, TranslationsUpdateAction} from '../actions/Cards'
 
 export const initialState: CardsState = {
   data: null,
   filtered: null,
+  translations: null,
   loading: true,
 };
 
@@ -18,6 +19,10 @@ export default function Cards(state: CardsState = initialState, action: Redux.Ac
       return {...state,
         data: (action as CardsUpdateAction).cards,
         loading: false,
+      };
+    case 'TRANSLATIONS_UPDATE':
+      return {...state,
+        translations: (action as TranslationsUpdateAction).translations,
       };
     case 'CARDS_FILTER':
       let cardsFilterAction = (action as CardsFilterAction);

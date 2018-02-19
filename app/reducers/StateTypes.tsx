@@ -3,9 +3,17 @@ export interface CardType {
   [key: string]: any;
 }
 
+export interface TranslationsType {
+  // Settings
+  AdjectiveAfterNoun: boolean;
+  // Mapping of English string -> translation
+  [key: string]: string | boolean;
+}
+
 export interface CardsState {
   data: CardType[], // array of all downloaded cards
   filtered: CardType[], // only cards valid with current filters
+  translations: TranslationsType,
   loading: boolean,
 }
 

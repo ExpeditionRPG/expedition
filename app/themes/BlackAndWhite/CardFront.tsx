@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {icon, camelCase, romanize, horizontalCounter, healthCounter, lootCounter} from '../../helpers'
+import {icon, camelCase, romanize, horizontalCounter, healthCounter, lootCounter, translate, translateTier} from '../../helpers'
 import {CardType} from '../../reducers/StateTypes'
 import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 
@@ -7,17 +7,18 @@ import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 export default class CardFront extends React.Component<CardType, {}> {
   render() {
     const card = this.props.card;
+    const translations = this.props.translations;
     const theme = 'BlackAndWhite';
     switch (card.sheet) {
       case 'Ability':
         return (
-          <div className={`card front vertical ${card.sheet} ${card.class}`} id={camelCase(name)}>
+          <div className={`card front vertical ${card.sheet} ${card.classicon || card.class}`} id={camelCase(name)}>
             <div className="contents">
               <header>
                 <div className="typeicon">{card.typeicon}</div>
                 <div className="name">{card.name}</div>
                 <div className="classicon">
-                  <div className="icon">{icon(card.class.toLowerCase() + '_small')}</div>
+                  <div className="icon">{icon((card.classicon || card.class).toLowerCase() + '_small')}</div>
                 </div>
               </header>
               <article>
@@ -31,7 +32,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                 </div>
                 <div className="preamble">
                   <div className="hit">
-                    <strong>Success: </strong>
+                    <strong>{translate('Success', translations)}: </strong>
                     <span>{card.hit}</span>
                     <br className="padded" />
                   </div>
@@ -79,7 +80,7 @@ export default class CardFront extends React.Component<CardType, {}> {
               <article>
                 <div className="adventurertext" ><div className="child">
                   <div>
-                    <strong>Starting abilities:</strong>
+                    <strong>{translate('Starting Abilities', translations)}:</strong>
                     <br className="padded" />
                     {card.startingabilities}
                   </div>
@@ -99,14 +100,14 @@ export default class CardFront extends React.Component<CardType, {}> {
       case 'Encounter':
         return (
           <div className="white-background">
-            <div className={`card front dark horizontal ${card.sheet} ${card.class} tier${card.tier} ${card.health > 10 && 'bottomBar'} ${card.health === 10 && 'hp10'}`}>
+            <div className={`card front dark horizontal ${card.sheet} ${card.classicon || card.class} tier${card.tier} ${card.health > 10 && 'bottomBar'} ${card.health === 10 && 'hp10'}`}>
               <div className="contents">
                 <header>
                   <div className="health">{icon('health_small')} {card.health}</div>
                   <div className="name">{card.name}</div>
                 </header>
                 <article>
-                  <div className="type">Tier {romanize(card.tier)} {card.class}</div>
+                  <div className="type">{translateTier(card.tier, card.classicon || card.class, translations)}</div>
                   {card.ongoing1 &&
                     <div className="ongoing">{card.ongoing1}</div>
                   }
@@ -114,7 +115,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                     <div className="ongoing2">{card.ongoing2}</div>
                   }
                   {card.surge &&
-                    <div className="surge"><strong>Surge: </strong>{card.surge}</div>
+                    <div className="surge"><strong>{translate('Surge', translations)}: </strong>{card.surge}</div>
                   }
                 </article>
                 {card.image && <img className="art" src={`/expedition-art/icons/${card.image}.png`} />}
@@ -132,17 +133,17 @@ export default class CardFront extends React.Component<CardType, {}> {
           <div className={`card front vertical ${card.sheet}`}>
             <div className="contents">
               <article>
-                <div className="item">{icon('health_small')} Health / regain health</div>
-                <div className="item">{icon('d20_small')} A D20 die roll</div>
-                <div className="item">{icon('target_small')} Unique target(s)</div>
-                <div className="item">{icon('damage_small')} Damage / attack</div>
-                <div className="item">{icon('melee_small')} Melee abilities</div>
-                <div className="item">{icon('ranged_small')} Ranged abilities</div>
-                <div className="item">{icon('magic_small')} Magic abilities</div>
-                <div className="item">{icon('music_small')} Music abilities</div>
-                <div className="item">{icon('cards_small')} Drawing / playing cards</div>
+                <div className="item">{icon('health_small')} {translate('Health / Regain Health', translations)}</div>
+                <div className="item">{icon('d20_small')} {translate('A D20 die roll', translations)}</div>
+                <div className="item">{icon('target_small')} {translate('Unique target(s)', translations)}</div>
+                <div className="item">{icon('damage_small')} {translate('Damage / Attack', translations)}</div>
+                <div className="item">{icon('melee_small')} {translate('Melee abilities', translations)}</div>
+                <div className="item">{icon('ranged_small')} {translate('Ranged abilities', translations)}</div>
+                <div className="item">{icon('magic_small')} {translate('Magic abilities', translations)}</div>
+                <div className="item">{icon('music_small')} {translate('Music abilities', translations)}</div>
+                <div className="item">{icon('cards_small')} {translate('Drawing / Playing cards', translations)}</div>
                 <br />
-                <div className="item"><strong>I/II/III/IV</strong> &nbsp;Tier</div>
+                <div className="item"><strong>I/II/III/IV</strong> &nbsp;{translate('Tier', translations)}</div>
               </article>
             </div>
           </div>
@@ -156,7 +157,7 @@ export default class CardFront extends React.Component<CardType, {}> {
               </header>
               <article>
                 <div className="indicators">
-                  <div>Tier {card.tier} loot</div>
+                  <div>{translateTier(card.tier, 'Loot', translations)}</div>
                   <div className="numUses">{card.numberuses}</div>
                   <div className="useWhen">{card.usewhen}</div>
                 </div>
@@ -179,11 +180,11 @@ export default class CardFront extends React.Component<CardType, {}> {
               <article>
                 <table>
                   <tbody>
-                    <tr><td>Max</td><td><strong>{card.empowered}: </strong>{card.power}</td></tr>
+                    <tr><td>{translate('Max', translations)}</td><td><strong>{card.empowered}: </strong>{card.power}</td></tr>
                     <tr className="personaMarker personaMarkerTop"><td>△</td></tr>
-                    <tr><td>Base</td><td><strong>{card.base}</strong>&nbsp;&nbsp;(Type: {card.class})</td></tr>
+                    <tr><td>{translate('Base', translations)}</td><td><strong>{card.base}</strong>&nbsp;&nbsp;({translate('Type', translations)}: {card.class})</td></tr>
                     <tr className="personaMarker personaMarkerBottom"><td>▽</td></tr>
-                    <tr><td>Min</td><td><strong>{card.afflicted}: </strong>{card.affliction}</td></tr>
+                    <tr><td>{translate('Min', translations)}</td><td><strong>{card.afflicted}: </strong>{card.affliction}</td></tr>
                   </tbody>
                 </table>
               </article>

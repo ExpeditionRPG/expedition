@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import {POKER_CARDS_PER_LETTER_PAGE} from '../Constants'
-import {CardType, FiltersState} from '../reducers/StateTypes'
+import {CardType, FiltersState, TranslationsType} from '../reducers/StateTypes'
 
 declare var require: any;
 const SVGInjector = require('svg-injector') as any;
@@ -21,6 +21,7 @@ const CardFronts: any = {
 export interface RendererStateProps {
   cards: CardType[];
   filters: FiltersState;
+  translations: TranslationsType;
 }
 
 export interface RendererProps extends RendererStateProps {};
@@ -67,6 +68,8 @@ class Renderer extends React.Component<RendererProps, {}> {
         break;
     }
 
+    // Bugfix 2/18/18 - if you render elements with the same ID (aka incrementing integers) when their contents change
+    // (aka source change), React gets confused; hence IDs based on card.name when possible
     const CardBack = CardBacks[renderSettings.theme].default;
     const CardFront = CardFronts[renderSettings.theme].default;
     const frontPageList = [];
@@ -78,15 +81,15 @@ class Renderer extends React.Component<RendererProps, {}> {
         backPageList.push([]);
       }
       if (renderSettings.showFronts) {
-        frontPageList[frontPageList.length-1].push(<CardFront key={i} card={card}></CardFront>);
+        frontPageList[frontPageList.length-1].push(<CardFront key={card.name || i} card={card} translations={this.props.translations}></CardFront>);
       }
       if (renderSettings.showBacks) {
         if (renderSettings.uniqueBacksOnly && i > 0) {
           if (card.naming !== '' || card.class !== cards[i-1].class || card.tier !== cards[i-1].tier) {
-            backPageList[backPageList.length-1].push(<CardBack key={i} card={card}></CardBack>);
+            backPageList[backPageList.length-1].push(<CardBack key={card.name || i} card={card} translations={this.props.translations}></CardBack>);
           }
         } else {
-          backPageList[backPageList.length-1].push(<CardBack key={i} card={card}></CardBack>);
+          backPageList[backPageList.length-1].push(<CardBack key={card.name || i} card={card} translations={this.props.translations}></CardBack>);
         }
       }
     }
