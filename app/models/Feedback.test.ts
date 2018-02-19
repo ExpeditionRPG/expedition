@@ -25,15 +25,14 @@ describe('feedback', () => {
   };
 
   describe('submitFeedback', () => {
-    it('TODO write tests');
-  });
-
-  describe('submitReportError', () => {
-    it('TODO write tests');
-  });
+    it('sends feedback when not in quest')
+    it('sends feedback when in quest');
+    it('sends a thank-you to the reporter');
+  });;
 
   describe('submitReportQuest', () => {
-    it('TODO write tests');
+    it('sends report with quest info');
+    it('does NOT send to the quest author');
   });
 
   describe('submitRating', () => {

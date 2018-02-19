@@ -162,12 +162,15 @@ export function feedback(feedback: Feedback, req: express.Request, res: express.
     platformDump: body.platformDump,
     players: body.players,
     version: body.version,
+    console: body.console,
   }
 
+  // Partition & quest ID may not be populated if 
+  // feedback occurs outside of a quest.
+  // The only thing we require is the user's ID.
   Joi.validate(data, Joi.object().keys({
-    // TODO make partition required after specifying it in the app
     partition: Joi.string().valid([PRIVATE_PARTITION, PUBLIC_PARTITION]),
-    questid: Joi.string().required(),
+    questid: Joi.string().allow(''),
     userid: Joi.string().required(),
     questversion: Joi.number(),
     rating: Joi.number(),
@@ -179,6 +182,7 @@ export function feedback(feedback: Feedback, req: express.Request, res: express.
     platformDump: Joi.string(),
     players: Joi.number(),
     version: Joi.string(),
+    console: Joi.array().items(Joi.string()),
   }), (err: Error, dataValid: FeedbackAttributes) => {
     if (err) {
       console.error(err);
@@ -188,13 +192,13 @@ export function feedback(feedback: Feedback, req: express.Request, res: express.
     let action: Promise<any>;
     switch (req.params.type as FeedbackType) {
       case 'feedback':
-        action = feedback.submitFeedback(dataValid);
+        action = feedback.submitFeedback(req.params.type, dataValid);
         break;
       case 'rating':
         action = feedback.submitRating(dataValid);
         break;
       case 'report_error':
-        action = feedback.submitReportError(dataValid);
+        action = feedback.submitFeedback(req.params.type, dataValid);
         break;
       case 'report_quest':
         action = feedback.submitReportQuest(dataValid);
