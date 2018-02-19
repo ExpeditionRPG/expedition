@@ -5,7 +5,7 @@ import {CombatDifficultySettings, CombatAttack} from './Types'
 import {DifficultyType, SettingsType, AppStateWithHistory, RemotePlayState} from '../../reducers/StateTypes'
 import {defaultContext} from '../Template'
 import {ParserNode} from '../TemplateTypes'
-import {CombatState} from './State'
+import {CombatState} from './Types'
 import {audioSetIntensity, audioSetPeakIntensity, audioPlaySfx} from '../../actions/Audio'
 import {toCard} from '../../actions/Card'
 import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT, MUSIC_INTENSITY_MAX} from '../../Constants'
@@ -22,7 +22,8 @@ const cheerio: any = require('cheerio');
 
 function numLocalAndRemotePlayers(settings: SettingsType, rp: RemotePlayState): number {
   if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
-    return settings.numPlayers;
+    // Since single player still has two adventurers, the minimum possible is two.
+    return Math.max(2, settings.numPlayers);
   }
 
   let count = 0;
@@ -47,6 +48,7 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
   }
   const remotePlay = (getState) ? getState().remotePlay : getStore().getState().remotePlay;
   const totalPlayerCount = numLocalAndRemotePlayers(settings, remotePlay);
+
   return {
     custom: custom,
     enemies,
@@ -170,14 +172,14 @@ function generateCombatAttack(node: ParserNode, settings: SettingsType, rp: Remo
     damage += randomAttackDamage(rng);
   }
 
-  // Scale according to multipliers, then round to nearest whole number and cap at 10 damage/round
+  // Scale according to multipliers, then round to nearest whole number and cap at maxRoundDamage constant
   damage = damage * combat.damageMultiplier * playerMultiplier;
   if (damage > 1) {
     damage = Math.round(damage);
   } else { // prevent endless 0's during low-tier, <4 player encounters
     damage = Math.ceil(damage);
   }
-  damage = Math.min(10, damage);
+  damage = Math.min(combat.maxRoundDamage, damage);
 
   return {
     surge: isSurgeNextRound(combat),

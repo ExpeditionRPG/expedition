@@ -4,7 +4,7 @@ Diese Regeln sind dazu gedacht, das Spiel ohne ein elektronisches Gerät zu spie
 
 Wenn man die aktuellste und beste Version von Expedition spielen möchte (einschließlich von dutzenden beinhalteten Abenteuern), welchen keinen SL benötigen, ist es möglich eine Webseiten, Android oder iOS Applikation auf [ExpeditionGame.com/app](http://ExpeditionGame.com/app) zu nutzen.
 
-*Dieses Dokument basiert auf der Version Expedition App v1.10.2. Die aktuelle Version der App kann man in den "Einstellungen" die Versionssnummer am Ende der Seite finden.*
+*Dieses Dokument basiert auf der Version Expedition App v1.13.8. Die aktuelle Version der App kann man in den "Einstellungen" die Versionssnummer am Ende der Seite finden.*
 
 ## Vorbereitungen
 
@@ -18,7 +18,7 @@ Zum Spielen benötigt man die Expedition Spielkarten.
 Ebenso sollte man diese Regeln als Hilfestellung ausdrucken.
 
 Sollte man einen schnelleren Spielfluss wünschen, kann man in der App einen Timer zwischen 10 und 30 Sekunden einstellen.
-  
+
 ## Aufbau
 
 Sobald man bereit ist, sollten alle Spieler außer dem SL folgendes tun:
@@ -62,7 +62,7 @@ Zum Beispiel können diese ihren Wurf um +1 erhöhen, wenn sie mehrere Fähigkei
 | Magie | Intelligenz, Wissen, Kunde, Geschichte, Weisheit |
 | Musik | Charisma, Diplomatie, Überzeugen, Verhandeln |
 
-Der SL kann es dem Spieler auch erlauben eine spezielle Fähigkeiten Karte als "Abkürzung" zu nutzen - Zum Beispiel, um eine Tür aufzubrechen, kann man statt roher Gewalt auch einen Feuerball auf diese schleudern. 
+Der SL kann es dem Spieler auch erlauben eine spezielle Fähigkeiten Karte als "Abkürzung" zu nutzen - Zum Beispiel, um eine Tür aufzubrechen, kann man statt roher Gewalt auch einen Feuerball auf diese schleudern.
 
 ## Kampf
 
@@ -132,69 +132,68 @@ Wenn der Kampf leichter sein soll, nutze die Tabelle für einen Spieler weniger.
 
 | Stufen Summe | Wurf: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (Durchschnitt) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 0 | 0 | 1 | 2 | 0.5 |
+| 1 | 0 | 0 | 0 | 1 | 2 | 0.6 |
 | 2 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 3 | 0 | 1 | 2 | 2 | 3 | 1.5 |
-| 4 | 1 | 2 | 2 | 3 | 3 | 2 |
-| 5 | 2 | 2 | 3 | 3 | 4 | 2.5 |
-| 6 | 2 | 3 | 3 | 4 | 5 | 3 |
-| 7 | 3 | 3 | 4 | 4 | 6 | 3.5 |
-| 8 | 4 | 4 | 4 | 5 | 6 | 4 |
-| 9 | 4 | 4 | 5 | 6 | 7 | 4.5 |
-| 10+ | 4 | 5 | 6 | 6 | 8 | 5 |
+| 3 | 0 | 1 | 2 | 2 | 3 | 1.6 |
+| 4 | 1 | 2 | 2 | 2 | 3 | 2 |
+| 5 | 2 | 2 | 2 | 3 | 4 | 2.6 |
+| 6 | 2 | 2 | 3 | 4 | 4 | 3 |
+| 7 | 2 | 3 | 4 | 4 | 5 | 3.6 |
+| 8 | 3 | 3 | 4 | 5 | 5 | 4 |
+| 9+ | 4 | 4 | 4 | 5 | 6 | 4.6 |
 
 ##### 3 Spieler
 | Stufen Summe | Wurf: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (Durchschnitt) |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 0 | 0 | 1 | 1 | 2 | 0.8 |
-| 2 | 0 | 1 | 2 | 2 | 3 | 1.6 |
-| 3 | 1 | 2 | 2 | 3 | 4 | 2.4 |
-| 4 | 2 | 3 | 3 | 3 | 5 | 3.2 |
-| 5 | 2 | 3 | 4 | 5 | 6 | 4 |
-| 6 | 3 | 4 | 5 | 5 | 7 | 4.8 |
-| 7 | 3 | 5 | 6 | 7 | 7 | 5.6 |
-| 8 | 4 | 6 | 7 | 7 | 8 | 6.4 |
-| 9+ | 5 | 7 | 7 | 8 | 9 | 7.2 |
+| 2 | 1 | 1 | 1 | 2 | 2 | 1.4 |
+| 3 | 1 | 2 | 2 | 3 | 3 | 2.2 |
+| 4 | 1 | 2 | 3 | 3 | 4 | 2.6 |
+| 5 | 3 | 3 | 3 | 4 | 4 | 3.4 |
+| 6 | 3 | 3 | 4 | 4 | 5 | 3.8 |
+| 7 | 3 | 4 | 5 | 5 | 5 | 4.4 |
+| 8 | 4 | 4 | 5 | 5 | 6 | 4.8 |
+| 9+ | 5 | 5 | 5 | 6 | 6 | 5.4 |
 
 ##### 4 Spieler
 
 | Stufen Summe | Wurf: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (Durchschnitt) |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 2 | 1 | 1 | 2 | 2 | 4 | 2 |
-| 3 | 2 | 2 | 3 | 4 | 4 | 3 |
-| 4 | 2 | 4 | 4 | 5 | 5 | 4 |
-| 5 | 3 | 4 | 5 | 6 | 7 | 5 |
-| 6 | 4 | 6 | 6 | 6 | 8 | 6 |
-| 7 | 6 | 7 | 7 | 7 | 8 | 7 |
-| 8 | 7 | 8 | 8 | 8 | 9 | 8 |
-| 9+ | 7 | 8 | 8 | 8 | 11 | 9 |
+| 2 | 1 | 1 | 2 | 2 | 2 | 1.6 |
+| 3 | 2 | 2 | 2 | 3 | 3 | 2.4 |
+| 4 | 2 | 2 | 3 | 4 | 4 | 3 |
+| 5 | 3 | 3 | 4 | 4 | 4 | 3.6 |
+| 6 | 3 | 4 | 4 | 5 | 5 | 4.2 |
+| 7 | 4 | 4 | 5 | 5 | 6 | 4.8 |
+| 8 | 5 | 5 | 5 | 6 | 6 | 5.4 |
+| 9+ | 5 | 6 | 6 | 6 | 7 | 6 |
 
 ##### 5 Spieler
 | Stufen Summe | Wurf: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (Durchschnitt) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 1 | 1 | 1 | 2 | 1.1 |
-| 2 | 1 | 1 | 2 | 3 | 4 | 2.2 |
-| 3 | 2 | 2 | 4 | 4 | 4 | 3.3 |
-| 4 | 2 | 4 | 5 | 5 | 6 | 4.4 |
-| 5 | 3 | 5 | 6 | 6 | 7 | 5.5 |
-| 6 | 5 | 6 | 7 | 7 | 8 | 6.6 |
-| 7 | 7 | 7 | 8 | 8 | 8 | 7.7 |
-| 8 | 7 | 8 | 8 | 8 | 10 | 8.8 |
-| 9+ | 8 | 8 | 8 | 8 | 11 | 9.9 |
+| 1 | 0 | 1 | 1 | 1 | 2 | 1 |
+| 2 | 1 | 1 | 2 | 2 | 3 | 1.8 |
+| 3 | 2 | 2 | 2 | 3 | 4 | 2.6 |
+| 4 | 2 | 2 | 3 | 4 | 5 | 3.2 |
+| 5 | 3 | 3 | 4 | 4 | 5 | 3.8 |
+| 6 | 3 | 4 | 4 | 5 | 6 | 4.4 |
+| 7 | 4 | 5 | 5 | 5 | 6 | 5 |
+| 8 | 5 | 6 | 6 | 6 | 6 | 5.8 |
+| 9+ | 6 | 6 | 6 | 7 | 7 | 6.4 |
 
 ##### 6 Spieler
 | Stufen Summe | Wurf: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (Durchschnitt) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 1 | 1 | 2 | 2 | 1.2 |
-| 2 | 1 | 2 | 2 | 3 | 4 | 2.4 |
-| 3 | 2 | 3 | 4 | 4 | 5 | 3.6 |
-| 4 | 3 | 5 | 5 | 5 | 6 | 4.8 |
-| 5 | 5 | 5 | 6 | 7 | 7 | 6 |
-| 6 | 6 | 7 | 7 | 8 | 8 | 7.2 |
-| 7 | 7 | 8 | 8 | 9 | 10 | 8.4 |
-| 8 | 8 | 8 | 8 | 8 | 11 | 9.6 |
-| 9+ | 8 | 8 | 8 | 11 | 11 | 10.8 |
+| 1 | 1 | 1 | 1 | 1 | 2 | 1.2 |
+| 2 | 1 | 2 | 2 | 2 | 3 | 2 |
+| 3 | 2 | 2 | 3 | 3 | 4 | 2.8 |
+| 4 | 3 | 3 | 3 | 4 | 5 | 3.6 |
+| 5 | 4 | 4 | 4 | 4 | 5 | 4.2 |
+| 6 | 4 | 4 | 5 | 5 | 6 | 4.8 |
+| 7 | 5 | 5 | 6 | 6 | 6 | 5.6 |
+| 8 | 6 | 6 | 6 | 7 | 7 | 6.4 |
+| 9+ | 6 | 7 | 7 | 7 | 8 | 7 |
 
 ### Sieg
 
@@ -211,11 +210,11 @@ Verteile die Beute unter den Abenteurern. Die Beute kann jederzeit genutzt werde
 | Kampfstufe | Beute Belohnung |
 | --- | --- |
 | 1 | 1 |
-| 2 | 1 | 
-| 3 | 2 | 
+| 2 | 1 |
+| 3 | 2 |
 | 4 | 3 |
 | 5 | 3 |
-| 6 | 4 | 
+| 6 | 4 |
 | 7 | 4 |
 | 8+ | 5 |
 

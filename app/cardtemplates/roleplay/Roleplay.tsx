@@ -25,9 +25,11 @@ export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps
 // Replaces :icon_name: with <img class="inline_icon" src="images/icon_name_small.svg">
 // And [art_name] with <img class="art" src="images/art_name.svg">
 // if [art_name] ends will _full, adds class="full"; otherwise displays at 50% size
-function generateIconElements(content: string): JSX.Element {
+function generateIconElements(content: string, theme: CardThemeType): JSX.Element {
   content = (content || '').replace(new RegExp(REGEX.ICON.source, 'g'), (match:string, group:string): string => {
-      return `<img class="inline_icon" src="images/${group.toLowerCase()}_small.svg" />`;
+      const icon = group.toLowerCase();
+      const suffix = (theme === 'DARK' && icon.indexOf('_white') === -1) ? '_white' : '';
+      return `<img class="inline_icon" src="images/${icon}${suffix}_small.svg" />`;
     })
     .replace(new RegExp(REGEX.ART.source, 'g'), (match:string, group:string): string => {
       let imgName = `images/${group}`;
@@ -56,7 +58,7 @@ export interface RoleplayResult {
   ctx: TemplateContext;
 }
 
-export function loadRoleplayNode(node: ParserNode): RoleplayResult {
+export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'LIGHT'): RoleplayResult {
   // Append elements to contents
   const choices: Choice[] = [];
   let choiceCount = -1;
@@ -73,7 +75,7 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
         throw new Error('<choice> inside <roleplay> must have "text" attribute');
       }
       text = c.attr('text');
-      choices.push({jsx: generateIconElements(text), idx: choiceCount});
+      choices.push({jsx: generateIconElements(text, theme), idx: choiceCount});
       return;
     }
 
@@ -100,10 +102,10 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
         text = text.replace(matches[0], ''); // replace only the first occurence of the first icon
         icon = matches[0].replace(/:/g, '');
       }
-      element.jsx = <Callout icon={icon}>{generateIconElements(text)}</Callout>;
+      element.jsx = <Callout icon={icon}>{generateIconElements(text, theme)}</Callout>;
     } else { // text
       text = c.toString();
-      element.jsx = generateIconElements(text);
+      element.jsx = generateIconElements(text, theme);
     }
 
     if (text !== '') {
@@ -133,7 +135,7 @@ export function loadRoleplayNode(node: ParserNode): RoleplayResult {
   }
 
   return {
-    title: generateIconElements(node.elem.attr('title')),
+    title: generateIconElements(node.elem.attr('title'), theme),
     icon: node.elem.attr('icon'),
     content,
     choices,
@@ -146,7 +148,7 @@ const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'LIGHT'): JSX.Ele
     console.log('Roleplay constructor called with non-roleplay node.');
     return <span></span>;
   }
-  const rpResult = loadRoleplayNode(props.node);
+  const rpResult = loadRoleplayNode(props.node, theme);
 
   const renderedContent: JSX.Element[] = rpResult.content.map((element: RoleplayElement, idx: number): JSX.Element => {
     return <span key={idx}>{element.jsx}</span>;

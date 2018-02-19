@@ -7,7 +7,7 @@ import {handleCombatTimerStart, handleCombatTimerHold, handleCombatTimerStop, ti
 import {event} from '../../actions/Quest'
 import {AppStateWithHistory, SettingsType, CardName} from '../../reducers/StateTypes'
 import {EventParameters} from '../../reducers/QuestTypes'
-import {MidCombatPhase, CombatState} from './State'
+import {MidCombatPhase, CombatState} from './Types'
 import {CombatPhase} from './Types'
 import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 import {logEvent} from '../../Main'

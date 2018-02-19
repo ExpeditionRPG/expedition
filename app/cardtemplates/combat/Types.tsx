@@ -1,3 +1,4 @@
+import {ParserNode} from '../TemplateTypes'
 import {Enemy, Loot} from '../../reducers/QuestTypes'
 
 export interface CombatAttack {
@@ -10,9 +11,12 @@ export interface MidCombatPhase {
   mostRecentAttack?: CombatAttack;
   mostRecentRolls?: number[];
   numAliveAdventurers: number;
+  roundTimeMillis: number;
   roundCount: number;
   tier: number;
+  roleplay?: ParserNode;
 }
+
 export interface EndCombatPhase {
   levelUp?: boolean;
   loot?: Loot[];
@@ -21,6 +25,7 @@ export interface EndCombatPhase {
 export interface CombatDifficultySettings {
   surgePeriod: number,
   damageMultiplier: number,
+  maxRoundDamage: number,
 }
 
 export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {

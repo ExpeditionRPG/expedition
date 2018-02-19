@@ -4,7 +4,7 @@ These rules are meant for playing without a device and with one player acting as
 
 If you want to play the latest and greatest version of Expedition, including dozens of built-in adventures that don't require a GM, you can use the Web, Android or iOS app available at [ExpeditionGame.com/app](http://ExpeditionGame.com/app).
 
-*This document is based on Expedition App v1.10.2. You can view the app's current version by going to Tools and looking for the version number on the bottom of the screen.*
+*This document is based on Expedition App v1.13.8. You can view the app's current version by going to Tools and looking for the version number on the bottom of the screen.*
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ To play, you'll need a copy of the Expedition cards. You can:
 You'll also want to print out these rules for reference while playing.
 
 If you enjoy the timed aspect of Expedition, you'll also want to find a 10 second or 30 second timer.
-  
+
 ## Setup
 
 Once you're ready to play, each player besides the GM should:
@@ -88,7 +88,7 @@ Each player should, at the same time:
 
 **Shuffle** your ability draw pile. Keep abilities played this combat in a separate discard pile. If you run out of ability cards in your draw pile, shuffle your discards into a new draw pile.
 
-If you're playing with a timer: 
+If you're playing with a timer:
 
 * **Pre-draw your hand** of three abilities face-down from your draw pile. Do not look at these cards until you start the timer.
 * **Start the timer**.
@@ -128,73 +128,75 @@ After you have resolve your abilities, the enemies deal the party damage. All ad
 
 If you'd like combat to be easier, use the table for 1 fewer players. If you'd like it to be harder, use the table for 1 more players.
 
-##### 1 - 2 players
+##### 1 - 2 players (2 adventurers)
 
 | Tier Sum | Roll: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (average) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 0 | 0 | 1 | 2 | 0.5 |
+| 1 | 0 | 0 | 0 | 1 | 2 | 0.6 |
 | 2 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 3 | 0 | 1 | 2 | 2 | 3 | 1.5 |
-| 4 | 1 | 2 | 2 | 3 | 3 | 2 |
-| 5 | 2 | 2 | 3 | 3 | 4 | 2.5 |
-| 6 | 2 | 3 | 3 | 4 | 5 | 3 |
-| 7 | 3 | 3 | 4 | 4 | 6 | 3.5 |
-| 8 | 4 | 4 | 4 | 5 | 6 | 4 |
-| 9 | 4 | 4 | 5 | 6 | 7 | 4.5 |
-| 10+ | 4 | 5 | 6 | 6 | 8 | 5 |
+| 3 | 0 | 1 | 2 | 2 | 3 | 1.6 |
+| 4 | 1 | 2 | 2 | 2 | 3 | 2 |
+| 5 | 2 | 2 | 2 | 3 | 4 | 2.6 |
+| 6 | 2 | 2 | 3 | 4 | 4 | 3 |
+| 7 | 2 | 3 | 4 | 4 | 5 | 3.6 |
+| 8 | 3 | 3 | 4 | 5 | 5 | 4 |
+| 9+ | 4 | 4 | 4 | 5 | 6 | 4.6 |
 
 ##### 3 players
+
 | Tier Sum | Roll: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (average) |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 0 | 0 | 1 | 1 | 2 | 0.8 |
-| 2 | 0 | 1 | 2 | 2 | 3 | 1.6 |
-| 3 | 1 | 2 | 2 | 3 | 4 | 2.4 |
-| 4 | 2 | 3 | 3 | 3 | 5 | 3.2 |
-| 5 | 2 | 3 | 4 | 5 | 6 | 4 |
-| 6 | 3 | 4 | 5 | 5 | 7 | 4.8 |
-| 7 | 3 | 5 | 6 | 7 | 7 | 5.6 |
-| 8 | 4 | 6 | 7 | 7 | 8 | 6.4 |
-| 9+ | 5 | 7 | 7 | 8 | 9 | 7.2 |
+| 2 | 1 | 1 | 1 | 2 | 2 | 1.4 |
+| 3 | 1 | 2 | 2 | 3 | 3 | 2.2 |
+| 4 | 1 | 2 | 3 | 3 | 4 | 2.6 |
+| 5 | 3 | 3 | 3 | 4 | 4 | 3.4 |
+| 6 | 3 | 3 | 4 | 4 | 5 | 3.8 |
+| 7 | 3 | 4 | 5 | 5 | 5 | 4.4 |
+| 8 | 4 | 4 | 5 | 5 | 6 | 4.8 |
+| 9+ | 5 | 5 | 5 | 6 | 6 | 5.4 |
 
 ##### 4 players
 
 | Tier Sum | Roll: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (average) |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 2 | 1 | 1 | 2 | 2 | 4 | 2 |
-| 3 | 2 | 2 | 3 | 4 | 4 | 3 |
-| 4 | 2 | 4 | 4 | 5 | 5 | 4 |
-| 5 | 3 | 4 | 5 | 6 | 7 | 5 |
-| 6 | 4 | 6 | 6 | 6 | 8 | 6 |
-| 7 | 6 | 7 | 7 | 7 | 8 | 7 |
-| 8 | 7 | 8 | 8 | 8 | 9 | 8 |
-| 9+ | 7 | 8 | 8 | 8 | 11 | 9 |
+| 2 | 1 | 1 | 2 | 2 | 2 | 1.6 |
+| 3 | 2 | 2 | 2 | 3 | 3 | 2.4 |
+| 4 | 2 | 2 | 3 | 4 | 4 | 3 |
+| 5 | 3 | 3 | 4 | 4 | 4 | 3.6 |
+| 6 | 3 | 4 | 4 | 5 | 5 | 4.2 |
+| 7 | 4 | 4 | 5 | 5 | 6 | 4.8 |
+| 8 | 5 | 5 | 5 | 6 | 6 | 5.4 |
+| 9+ | 5 | 6 | 6 | 6 | 7 | 6 |
 
 ##### 5 players
+
 | Tier Sum | Roll: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (average) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 1 | 1 | 1 | 2 | 1.1 |
-| 2 | 1 | 1 | 2 | 3 | 4 | 2.2 |
-| 3 | 2 | 2 | 4 | 4 | 4 | 3.3 |
-| 4 | 2 | 4 | 5 | 5 | 6 | 4.4 |
-| 5 | 3 | 5 | 6 | 6 | 7 | 5.5 |
-| 6 | 5 | 6 | 7 | 7 | 8 | 6.6 |
-| 7 | 7 | 7 | 8 | 8 | 8 | 7.7 |
-| 8 | 7 | 8 | 8 | 8 | 10 | 8.8 |
-| 9+ | 8 | 8 | 8 | 8 | 11 | 9.9 |
+| 1 | 0 | 1 | 1 | 1 | 2 | 1 |
+| 2 | 1 | 1 | 2 | 2 | 3 | 1.8 |
+| 3 | 2 | 2 | 2 | 3 | 4 | 2.6 |
+| 4 | 2 | 2 | 3 | 4 | 5 | 3.2 |
+| 5 | 3 | 3 | 4 | 4 | 5 | 3.8 |
+| 6 | 3 | 4 | 4 | 5 | 6 | 4.4 |
+| 7 | 4 | 5 | 5 | 5 | 6 | 5 |
+| 8 | 5 | 6 | 6 | 6 | 6 | 5.8 |
+| 9+ | 6 | 6 | 6 | 7 | 7 | 6.4 |
 
 ##### 6 players
+
 | Tier Sum | Roll: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (average) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 1 | 1 | 2 | 2 | 1.2 |
-| 2 | 1 | 2 | 2 | 3 | 4 | 2.4 |
-| 3 | 2 | 3 | 4 | 4 | 5 | 3.6 |
-| 4 | 3 | 5 | 5 | 5 | 6 | 4.8 |
-| 5 | 5 | 5 | 6 | 7 | 7 | 6 |
-| 6 | 6 | 7 | 7 | 8 | 8 | 7.2 |
-| 7 | 7 | 8 | 8 | 9 | 10 | 8.4 |
-| 8 | 8 | 8 | 8 | 8 | 11 | 9.6 |
-| 9+ | 8 | 8 | 8 | 11 | 11 | 10.8 |
+| 1 | 1 | 1 | 1 | 1 | 2 | 1.2 |
+| 2 | 1 | 2 | 2 | 2 | 3 | 2 |
+| 3 | 2 | 2 | 3 | 3 | 4 | 2.8 |
+| 4 | 3 | 3 | 3 | 4 | 5 | 3.6 |
+| 5 | 4 | 4 | 4 | 4 | 5 | 4.2 |
+| 6 | 4 | 4 | 5 | 5 | 6 | 4.8 |
+| 7 | 5 | 5 | 6 | 6 | 6 | 5.6 |
+| 8 | 6 | 6 | 6 | 7 | 7 | 6.4 |
+| 9+ | 6 | 7 | 7 | 7 | 8 | 7 |
 
 ### Victory
 
@@ -211,11 +213,11 @@ Divide the loot amongst adventurers. It can be used at any time and does not cos
 | Combat tier | Loot reward |
 | --- | --- |
 | 1 | 1 |
-| 2 | 1 | 
-| 3 | 2 | 
+| 2 | 1 |
+| 3 | 2 |
 | 4 | 3 |
 | 5 | 3 |
-| 6 | 4 | 
+| 6 | 4 |
 | 7 | 4 |
 | 8+ | 5 |
 

@@ -12,8 +12,7 @@ import {isSurgeNextRound} from './Actions'
 import {SettingsType, CardState, CardName, RemotePlayState} from '../../reducers/StateTypes'
 import {ParserNode} from '../TemplateTypes'
 import {EventParameters, Enemy, Loot} from '../../reducers/QuestTypes'
-import {CombatState} from './State'
-import {CombatPhase} from './Types'
+import {CombatPhase, CombatState} from './Types'
 import Roleplay from '../roleplay/Roleplay'
 
 export interface CombatStateProps {
@@ -323,11 +322,16 @@ function renderVictory(props: CombatProps): JSX.Element {
 
   if (props.victoryParameters) {
     if (props.victoryParameters.heal && props.victoryParameters.heal > 0 && props.victoryParameters.heal < MAX_ADVENTURER_HEALTH) {
-      contents.push(<p key="c1">All adventurers regain <strong>{props.victoryParameters.heal}</strong> health (even if at 0 health).</p>);
+      contents.push(<p key="c1">All adventurers <strong>regain {props.victoryParameters.heal} health</strong> (even if at 0 health).</p>);
     } else if (props.victoryParameters.heal === 0) {
       contents.push(<p key="c1">Adventurers <strong>do not heal</strong>.</p>);
     } else {
-      contents.push(<p key="c1">All adventurers heal to <strong>full</strong> health (even if at 0 health).</p>);
+      contents.push(<p key="c1">All adventurers heal to full health (even if at 0 health).</p>);
+    }
+
+    if (theHorror) {
+      // Mimic <instruction> appearance
+      contents.push(<div key="c1_horror" className="callout"><p><img className="inline_icon" src={`images/horror_white_small.svg`} /></p><div className="text"><p>The Horror: Keep your current Persona level.</p></div></div>);
     }
 
     if (props.victoryParameters.loot !== false && props.combat.loot && props.combat.loot.length > 0) {
@@ -392,7 +396,7 @@ function renderDefeat(props: CombatProps): JSX.Element {
   if (!props.combat.custom) {
     const nextNode = props.node.handleAction('lose');
     if (nextNode && nextNode.isEnd()) {
-      retryButton = <Button onTouchTap={() => props.onRetry()}>Retry</Button>;
+      retryButton = <Button onTouchTap={() => props.onRetry()}>Retry (heal to full)</Button>;
     }
   }
 

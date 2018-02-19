@@ -19,7 +19,7 @@
           <roleplay title="" data-line="34">
             <p>{{one = 2}}</p>
             <p>Two: {{one}}</p>
-            <p>A round card during combat!</p>
+            <p>:damage: A round card during combat!</p>
             <p>Current round: {{_.currentCombatRound()}}</p>
             <p>Surge round: {{string(_.isCombatSurgeRound())}}</p>
             <p>Random enemy: {{_.randomEnemy()}}</p>

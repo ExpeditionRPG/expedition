@@ -1,36 +1,6 @@
 import {encounters} from '../../Encounters'
 import {Enemy, Loot} from '../../reducers/QuestTypes'
-import {ParserNode} from '../TemplateTypes'
 import {isSurgeRound} from './Actions'
-
-export interface CombatAttack {
-  surge: boolean;
-  damage: number;
-}
-
-export interface MidCombatPhase {
-  enemies: Enemy[];
-  mostRecentAttack?: CombatAttack;
-  mostRecentRolls?: number[];
-  numAliveAdventurers: number;
-  roundTimeMillis: number;
-  roundCount: number;
-  tier: number;
-  roleplay?: ParserNode;
-}
-export interface EndCombatPhase {
-  levelUp?: boolean;
-  loot?: Loot[];
-}
-
-export interface CombatDifficultySettings {
-  surgePeriod: number,
-  damageMultiplier: number,
-}
-
-export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {
-  custom: boolean;
-}
 
 export function combatScope() {
   return {

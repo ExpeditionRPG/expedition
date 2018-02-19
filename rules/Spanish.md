@@ -4,7 +4,7 @@ Estas reglas han sido diseñadas para jugar sin dispositivos móviles y con un j
 
 Si quieres jugar a la última versión de Expedition, la cual incluye una gran cantidad de aventuras que no requieren un GM, puedes usar la aplicación para Web, Android o iOS disponible en [ExpeditionGame.com/app](http://ExpeditionGame.com/app).
 
-*Este documento está basado en la App Expedition v1.10.2. Puedes consultar la versión de la app yendo a Herramientas y buscando el número de versión en la parte inferior de la pantalla.*
+*Este documento está basado en la App Expedition v1.13.8. Puedes consultar la versión de la app yendo a Herramientas y buscando el número de versión en la parte inferior de la pantalla.*
 
 ## Prerrequisitos
 
@@ -16,7 +16,7 @@ Para jugar, necesitarás una copia de las cartas de Expedition, Puedes:
 También querrás imprimir estas reglas para poder consultarlas mientras juegas.
 
 Si te gusta el aspecto temporizado de Expedition, busca un temporizador de 10 o 30 segundos.
-  
+
 ## Preparación
 
 Cuando estéis listos para jugar, cada jugador a excepción del GM debe:
@@ -25,7 +25,7 @@ Cuando estéis listos para jugar, cada jugador a excepción del GM debe:
 
 **Selecciona** un aventurero a tu elección de la baraja, ponlo boca arriba frente a ti y pasa la baraja al siguiente jugador.
 
-*Si jugáis con The Horror*: Roba una carta de Persona, ponla boca arriba frente a ti y pone un clip en "Base". 
+*Si jugáis con The Horror*: Roba una carta de Persona, ponla boca arriba frente a ti y pone un clip en "Base".
 
 Pon un **Clip** como indicador de salud de tu aventurero al máximo (12).
 
@@ -49,7 +49,7 @@ Pon un **Clip** como indicador de salud de tu aventurero al máximo (12).
 
 Sin la app, Expedition funciona como un juego de rol tradicional. Un jugador hará de GM, contando la historia y permitiendo a los jugadores saber los resultados de sus decisiones.
 
-Como novedad en Expedition, cuando el GM trate con tiradas de habilidad (como al intentar escabullirse de un guardia), podría dejaros usar vuestras habilidades para modificar la tirada.  
+Como novedad en Expedition, cuando el GM trate con tiradas de habilidad (como al intentar escabullirse de un guardia), podría dejaros usar vuestras habilidades para modificar la tirada.
 
 Por ejemplo, podría dejaros incrementar la tirada en +1 por cada habilidad de un tipo relevante que tengáis:
 
@@ -92,7 +92,7 @@ Si jugáis con un temporizador:
 * **Robad de antemano** tres habilidades y ponedlas boca abajo. No las miréis hasta que empiece el temporizador.
 * **Iniciad el temporizador**.
 * **Jugad una habilidad** de vuestra mano.
-* Si el temporizador finaliza, multiplica el daño recibido esta ronda por 1.5 (redondea al alza). 
+* Si el temporizador finaliza, multiplica el daño recibido esta ronda por 1.5 (redondea al alza).
 
 Si jugáis sin temporizador:
 
@@ -127,73 +127,72 @@ Después de que hayáis resuelto vuestras habilidades, los enemigos infligirán 
 
 Si queréis que el combate sea más fácil, usad la tabla para 1 jugador menos. Si lo queréis más difícil, usad la tabla para 1 jugador más.
 
-##### 1 - 2 jugadores
+##### 1 - 2 jugadores (2 aventureros)
 
 | Suma de Nivel | Tirada: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (promedio) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 0 | 0 | 1 | 2 | 0.5 |
+| 1 | 0 | 0 | 0 | 1 | 2 | 0.6 |
 | 2 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 3 | 0 | 1 | 2 | 2 | 3 | 1.5 |
-| 4 | 1 | 2 | 2 | 3 | 3 | 2 |
-| 5 | 2 | 2 | 3 | 3 | 4 | 2.5 |
-| 6 | 2 | 3 | 3 | 4 | 5 | 3 |
-| 7 | 3 | 3 | 4 | 4 | 6 | 3.5 |
-| 8 | 4 | 4 | 4 | 5 | 6 | 4 |
-| 9 | 4 | 4 | 5 | 6 | 7 | 4.5 |
-| 10+ | 4 | 5 | 6 | 6 | 8 | 5 |
+| 3 | 0 | 1 | 2 | 2 | 3 | 1.6 |
+| 4 | 1 | 2 | 2 | 2 | 3 | 2 |
+| 5 | 2 | 2 | 2 | 3 | 4 | 2.6 |
+| 6 | 2 | 2 | 3 | 4 | 4 | 3 |
+| 7 | 2 | 3 | 4 | 4 | 5 | 3.6 |
+| 8 | 3 | 3 | 4 | 5 | 5 | 4 |
+| 9+ | 4 | 4 | 4 | 5 | 6 | 4.6 |
 
 ##### 3 jugadores
 | Suma de Nivel | Tirada: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (promedio) |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 0 | 0 | 1 | 1 | 2 | 0.8 |
-| 2 | 0 | 1 | 2 | 2 | 3 | 1.6 |
-| 3 | 1 | 2 | 2 | 3 | 4 | 2.4 |
-| 4 | 2 | 3 | 3 | 3 | 5 | 3.2 |
-| 5 | 2 | 3 | 4 | 5 | 6 | 4 |
-| 6 | 3 | 4 | 5 | 5 | 7 | 4.8 |
-| 7 | 3 | 5 | 6 | 7 | 7 | 5.6 |
-| 8 | 4 | 6 | 7 | 7 | 8 | 6.4 |
-| 9+ | 5 | 7 | 7 | 8 | 9 | 7.2 |
+| 2 | 1 | 1 | 1 | 2 | 2 | 1.4 |
+| 3 | 1 | 2 | 2 | 3 | 3 | 2.2 |
+| 4 | 1 | 2 | 3 | 3 | 4 | 2.6 |
+| 5 | 3 | 3 | 3 | 4 | 4 | 3.4 |
+| 6 | 3 | 3 | 4 | 4 | 5 | 3.8 |
+| 7 | 3 | 4 | 5 | 5 | 5 | 4.4 |
+| 8 | 4 | 4 | 5 | 5 | 6 | 4.8 |
+| 9+ | 5 | 5 | 5 | 6 | 6 | 5.4 |
 
 ##### 4 jugadores
 
 | Suma de Nivel | Tirada: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (promedio) |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 2 | 1 | 1 | 2 | 2 | 4 | 2 |
-| 3 | 2 | 2 | 3 | 4 | 4 | 3 |
-| 4 | 2 | 4 | 4 | 5 | 5 | 4 |
-| 5 | 3 | 4 | 5 | 6 | 7 | 5 |
-| 6 | 4 | 6 | 6 | 6 | 8 | 6 |
-| 7 | 6 | 7 | 7 | 7 | 8 | 7 |
-| 8 | 7 | 8 | 8 | 8 | 9 | 8 |
-| 9+ | 7 | 8 | 8 | 8 | 11 | 9 |
+| 2 | 1 | 1 | 2 | 2 | 2 | 1.6 |
+| 3 | 2 | 2 | 2 | 3 | 3 | 2.4 |
+| 4 | 2 | 2 | 3 | 4 | 4 | 3 |
+| 5 | 3 | 3 | 4 | 4 | 4 | 3.6 |
+| 6 | 3 | 4 | 4 | 5 | 5 | 4.2 |
+| 7 | 4 | 4 | 5 | 5 | 6 | 4.8 |
+| 8 | 5 | 5 | 5 | 6 | 6 | 5.4 |
+| 9+ | 5 | 6 | 6 | 6 | 7 | 6 |
 
 ##### 5 jugadores
 | Suma de Nivel | Tirada: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (promedio) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 1 | 1 | 1 | 2 | 1.1 |
-| 2 | 1 | 1 | 2 | 3 | 4 | 2.2 |
-| 3 | 2 | 2 | 4 | 4 | 4 | 3.3 |
-| 4 | 2 | 4 | 5 | 5 | 6 | 4.4 |
-| 5 | 3 | 5 | 6 | 6 | 7 | 5.5 |
-| 6 | 5 | 6 | 7 | 7 | 8 | 6.6 |
-| 7 | 7 | 7 | 8 | 8 | 8 | 7.7 |
-| 8 | 7 | 8 | 8 | 8 | 10 | 8.8 |
-| 9+ | 8 | 8 | 8 | 8 | 11 | 9.9 |
+| 1 | 0 | 1 | 1 | 1 | 2 | 1 |
+| 2 | 1 | 1 | 2 | 2 | 3 | 1.8 |
+| 3 | 2 | 2 | 2 | 3 | 4 | 2.6 |
+| 4 | 2 | 2 | 3 | 4 | 5 | 3.2 |
+| 5 | 3 | 3 | 4 | 4 | 5 | 3.8 |
+| 6 | 3 | 4 | 4 | 5 | 6 | 4.4 |
+| 7 | 4 | 5 | 5 | 5 | 6 | 5 |
+| 8 | 5 | 6 | 6 | 6 | 6 | 5.8 |
+| 9+ | 6 | 6 | 6 | 7 | 7 | 6.4 |
 
 ##### 6 jugadores
 | Suma de Nivel | Tirada: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (promedio) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 1 | 1 | 2 | 2 | 1.2 |
-| 2 | 1 | 2 | 2 | 3 | 4 | 2.4 |
-| 3 | 2 | 3 | 4 | 4 | 5 | 3.6 |
-| 4 | 3 | 5 | 5 | 5 | 6 | 4.8 |
-| 5 | 5 | 5 | 6 | 7 | 7 | 6 |
-| 6 | 6 | 7 | 7 | 8 | 8 | 7.2 |
-| 7 | 7 | 8 | 8 | 9 | 10 | 8.4 |
-| 8 | 8 | 8 | 8 | 8 | 11 | 9.6 |
-| 9+ | 8 | 8 | 8 | 11 | 11 | 10.8 |
+| 1 | 1 | 1 | 1 | 1 | 2 | 1.2 |
+| 2 | 1 | 2 | 2 | 2 | 3 | 2 |
+| 3 | 2 | 2 | 3 | 3 | 4 | 2.8 |
+| 4 | 3 | 3 | 3 | 4 | 5 | 3.6 |
+| 5 | 4 | 4 | 4 | 4 | 5 | 4.2 |
+| 6 | 4 | 4 | 5 | 5 | 6 | 4.8 |
+| 7 | 5 | 5 | 6 | 6 | 6 | 5.6 |
+| 8 | 6 | 6 | 6 | 7 | 7 | 6.4 |
+| 9+ | 6 | 7 | 7 | 7 | 8 | 7 |
 
 ### Victoria
 
@@ -210,15 +209,15 @@ Dividid el botín entre los aventureros. Podéis utilizarlo en cualquier momento
 | Nivel de combate | Botín de recompensa |
 | --- | --- |
 | 1 | 1 |
-| 2 | 1 | 
-| 3 | 2 | 
+| 2 | 1 |
+| 3 | 2 |
 | 4 | 3 |
 | 5 | 3 |
-| 6 | 4 | 
+| 6 | 4 |
 | 7 | 4 |
 | 8+ | 5 |
 
-**Subir de nivel**: El grupo gana tanta experiencia como la suma del nivel del combate. Llevad la cuenta de la experiencia ganada con el dorso de una carta de encuentro o con una hoja de papel. Llevad la cuenta del total de experiencia necesaria para subir de nivel en el dorso de otra carta de encuentro. Este total empieza en 4 y aumenta en 1 cada vez que subís de nivel. 
+**Subir de nivel**: El grupo gana tanta experiencia como la suma del nivel del combate. Llevad la cuenta de la experiencia ganada con el dorso de una carta de encuentro o con una hoja de papel. Llevad la cuenta del total de experiencia necesaria para subir de nivel en el dorso de otra carta de encuentro. Este total empieza en 4 y aumenta en 1 cada vez que subís de nivel.
 
 Cuando subáis de nivel, todos los aventureros aprenden una nueva habilidad:
 
