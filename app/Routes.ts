@@ -4,9 +4,10 @@ import * as Mail from './Mail'
 import * as oauth2 from './lib/oauth2'
 import * as Handlers from './Handlers'
 import * as RemotePlayHandlers from './remoteplay/Handlers'
+import {maybeChaosWS, maybeChaosSession, maybeChaosSessionClient} from './remoteplay/Chaos'
 import * as Stripe from './Stripe'
 import {models} from './models/Database'
-import * as ws from 'ws';
+import * as WebSocket from 'ws';
 import * as http from 'http';
 
 const Cors = require('cors');
@@ -73,15 +74,19 @@ Router.post('/remoteplay/v1/connect', limitCors, requireAuth, (req, res) => {Rem
 Router.post('/stripe/checkout', limitCors, (req, res) => {Stripe.checkout(req, res);});
 
 export function setupWebsockets(server: any) {
-  const wss = new ws.Server({
+  const wss = new WebSocket.Server({
     server,
     verifyClient: (info: any, cb: (verified: boolean)=>any) => {
       RemotePlayHandlers.verifyWebsocket(models.SessionClient, info, cb);
     }
   });
 
-  wss.on('connection', (ws: any, req: http.IncomingMessage) => {
-    RemotePlayHandlers.websocketSession(models.Session, models.SessionClient, ws, req);
+  wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
+    RemotePlayHandlers.websocketSession(
+      maybeChaosSession(models.Session),
+      maybeChaosSessionClient(models.SessionClient),
+      maybeChaosWS(ws),
+      req);
   });
 }
 
