@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize'
 import * as Bluebird from 'bluebird'
 import {SessionClient} from './SessionClients'
-import {Event} from './Events'
+import {Event, EventInstance} from './Events'
 import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
 import {makeSecret} from 'expedition-qdl/lib/remote/Session'
 
@@ -12,9 +12,7 @@ export interface SessionAttributes {
   locked: boolean;
 }
 
-export interface SessionInstance extends Sequelize.Instance<SessionAttributes> {
-  dataValues: SessionAttributes;
-}
+export interface SessionInstance extends Sequelize.Instance<SessionAttributes> {}
 
 export type SessionModel = Sequelize.Model<SessionInstance, SessionAttributes>;
 
@@ -90,32 +88,64 @@ export class Session {
     });
   }
 
-  public commitEvent(session: number, client: string, event: number|null, type: string, json: string): Bluebird<number|null> {
+  public getEventSequence(session: number, client: string, start: number, end: number): Bluebird<EventInstance[]> {
+    return this.event.model.findAll({where: {session, id: {$between: [start, end]}}});
+  }
+
+  public commitEvent(session: number, client: string, instance: string, event: number|null, type: string, json: string): Bluebird<number|null> {
+    let s: SessionInstance;
     return this.s.transaction((txn: Sequelize.Transaction) => {
       return this.model.findOne({where: {id: session}, transaction: txn})
-        .then((s: SessionInstance) => {
-          if (!s) {
+        .then((sessionInstance: SessionInstance) => {
+          if (!sessionInstance) {
             throw new Error('unknown session');
           }
+          s = sessionInstance;
+          if (event !== null) {
+            return this.event.getById(session, event);
+          } else {
+            return null;
+          }
+        })
+        .then((eventInstance: EventInstance|null) => {
           if (event === null) {
-            event = s.dataValues.eventCounter + 1;
-          } else if ((s.dataValues.eventCounter + 1) !== event) {
+            // Events created by the server (e.g. "combat timer stop")
+            // are assigned event IDs here.
+            event = s.get('eventCounter') + 1;
+          } else if (eventInstance !== null &&
+              eventInstance.get('client') === client &&
+              eventInstance.get('instance') === instance &&
+              eventInstance.get('type') === type &&
+              eventInstance.get('json') === json) {
+            // The client does retry requests - if we've already successfully
+            // committed this event, return success and don't try to commit it again.
+            console.log('Trivial txn: ' + event + ' already committed for client ' + client + ' instance ' + instance);
+            return false;
+          } else if ((s.get('eventCounter') + 1) !== event) {
             throw new Error('eventCounter increment mismatch');
           }
-          return s.update({eventCounter: event}, {transaction: txn});
+          return s.update({eventCounter: event}, {transaction: txn}).then(() => {return true;});
         })
-        .then(() => {
+        .then((incremented: boolean) => {
+          if (!incremented) {
+            // Skip upsert if we didn't increment the event counter
+            return false;
+          }
+          if (event === null) {
+            throw new Error('Found null event after it should be set');
+          }
           return this.event.model.upsert({
             session,
             client,
+            instance,
             timestamp: new Date(),
-            id: (event !== null) ? event : undefined,
+            id: event,
             type,
             json,
           }, {transaction: txn});
         });
-    }).then(() => {
-      return event;
+    }).then((updated: boolean) => {
+      return (updated) ? event : null;
     });
   }
 }

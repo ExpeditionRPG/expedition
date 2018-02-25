@@ -82,12 +82,12 @@ export function chaosSessionModel(s: SessionModel): SessionModel {
 
   // Randomly rejects upserts (as conflicting)
   const oldCommit = s.commitEvent.bind(s);
-  s.commitEvent = (session: number, client: string, event: number|null, type: string, json: string) => {
+  s.commitEvent = (session: number, client: string, instance: string, event: number|null, type: string, json: string) => {
     if (Math.random() < (Config.get('CHAOS_FRACTION') || 0)) {
       console.log('CHAOS: rejecting session txn');
       return Bluebird.reject(new Error('CHAOS: eventCounter increment mismatch'));
     }
-    return oldCommit(session, client, event, type, json);
+    return oldCommit(session, client, instance, event, type, json);
   };
   return s;
 }

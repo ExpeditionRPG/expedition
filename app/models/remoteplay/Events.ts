@@ -4,8 +4,9 @@ import * as Bluebird from 'bluebird'
 export interface EventAttributes {
   session: number;
   client: string;
+  instance: string;
   timestamp: Date;
-  id?: number|null;
+  id: number;
   type: string;
   json?: string|null;
 }
@@ -28,18 +29,22 @@ export class Event {
         allowNull: false,
         primaryKey: true,
       },
-      client: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-        primaryKey: true,
-      },
       timestamp: {
         type: Sequelize.DATE,
         allowNull: false,
         primaryKey: true,
       },
+      client: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+      },
+      instance: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+      },
       id: {
         type: Sequelize.BIGINT,
+        allowNull: false,
       },
       type: {
         type: Sequelize.STRING(32),
@@ -58,6 +63,12 @@ export class Event {
 
   public upsert(attrs: EventAttributes): Bluebird<void> {
     return this.model.upsert(attrs).then(()=>{});
+  }
+
+  public getById(session: number, id: number): Bluebird<EventInstance|null> {
+    return this.model.findOne({
+      where: {session, id}
+    });
   }
 
   public getLast(session: number): Bluebird<EventInstance|null> {

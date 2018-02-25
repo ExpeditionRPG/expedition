@@ -11,17 +11,17 @@ describe('events', () => {
   });
 
   describe('upsert', () => {
-    it('is valid without id and json field', (done: DoneFn) => {
-      e.upsert({id: undefined, json: undefined, session: 0, client: 'testclient', timestamp: new Date(), type: 'test'})
+    it('is valid without json field', (done: DoneFn) => {
+      e.upsert({id: 1, json: undefined, session: 0, client: 'testclient', instance: 'testinstance', timestamp: new Date(), type: 'test'})
         .then(() => {
           return e.getLast(0);
         })
         .then((i: EventInstance|null) => {
-          if (!i || !i.dataValues) {
+          if (!i) {
             throw Error('no event instance found!');
           }
-          expect(i.dataValues.id).not.toBeTruthy();
-          expect(i.dataValues.json).not.toBeTruthy();
+          expect(i.get('id')).toEqual(1);
+          expect(i.get('json')).not.toBeTruthy();
         })
         .catch((e: Error) => {throw e;})
         .finally(done);

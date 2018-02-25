@@ -1,7 +1,7 @@
 import Config from '../config'
 import * as express from 'express'
 import * as Sequelize from 'sequelize'
-import {Session, SessionID} from 'expedition-qdl/lib/remote/Session'
+import {SessionID, toClientKey} from 'expedition-qdl/lib/remote/Session'
 import {Session as SessionModel, SessionInstance} from '../models/remoteplay/Sessions'
 import {SessionClient, SessionClientInstance} from '../models/remoteplay/SessionClients'
 import {ClientID, WaitType, StatusEvent, ActionEvent, RemotePlayEvent, InflightCommitEvent, InflightRejectEvent} from 'expedition-qdl/lib/remote/Events'
@@ -23,7 +23,7 @@ export function user(sc: SessionClient, req: express.Request, res: express.Respo
 
 export function newSession(rpSessions: SessionModel, req: express.Request, res: express.Response) {
   rpSessions.create().then((s: SessionInstance) => {
-    res.status(200).send(JSON.stringify({secret: s.dataValues.secret}));
+    res.status(200).send(JSON.stringify({secret: s.get('secret')}));
   })
   .catch((e: Error) => {
     return res.status(500).send(JSON.stringify({error: 'Error creating session: ' + e.toString()}));
@@ -42,10 +42,10 @@ export function connect(rpSessions: SessionModel, sessionClients: SessionClient,
   rpSessions.getBySecret(body.secret)
     .then((s: SessionInstance) => {
       session = s;
-      return sessionClients.upsert(session.dataValues.id, res.locals.id, body.secret);
+      return sessionClients.upsert(session.get('id'), res.locals.id, body.secret);
     })
     .then(() => {
-      return res.status(200).send(JSON.stringify({session: session.dataValues.id}));
+      return res.status(200).send(JSON.stringify({session: session.get('id')}));
     })
     .catch((e: Error) => {
       return res.status(500).send(JSON.stringify({
@@ -103,14 +103,16 @@ export function verifyWebsocket(sessionClients: SessionClient, info: {origin: st
     });
 }
 
-const inMemorySessions: {[sessionID: number]: {[clientAndInstance: string]: any}} = {};
+const inMemorySessions: {[sessionID: number]: {
+  [clientAndInstance: string]: {socket: WebSocket, status: StatusEvent|null, client: string, instance: string}
+}} = {};
 
 function broadcastFrom(session: number, client: string, instance: string, msg: string) {
   if (inMemorySessions[session] === null) {
     return;
   }
   for (const peerID of Object.keys(inMemorySessions[session])) {
-    if (peerID === clientKey(client, instance) || inMemorySessions[session][peerID] === null) {
+    if (peerID === toClientKey(client, instance) || inMemorySessions[session][peerID] === null) {
       continue;
     }
 
@@ -121,23 +123,22 @@ function broadcastFrom(session: number, client: string, instance: string, msg: s
   }
 }
 
-function clientKey(client: ClientID, instance: string) {
-  return client+'|'+instance;
-}
-
 // We need a little custom server code to pay attention when clients
 // are all waiting on something.
 function handleClientStatus(rpSession: SessionModel, session: number, client: ClientID, instance: string, ev: StatusEvent) {
+  console.log(toClientKey(client, instance) + ': ' + JSON.stringify(ev));
+
   const s = inMemorySessions[session];
-  s[clientKey(client, instance)].status = ev;
+  s[toClientKey(client, instance)].status = ev;
 
   const waitCounts: {[wait: string]: number} = {};
   let maxElapsedMillis = 0;
   for (const c of Object.keys(s)) {
-    if (!s[c] || !s[c].status) {
+    const sc = s[c];
+    if (!sc || sc.status === null) {
       continue;
     }
-    const wo: WaitType = s[c].status.waitingOn;
+    const wo: WaitType|undefined = sc.status.waitingOn;
     if (wo) {
       waitCounts[wo.type] = (waitCounts[wo.type] || 0) + 1;
       if (wo.type === 'TIMER') {
@@ -158,8 +159,8 @@ function handleClientStatus(rpSession: SessionModel, session: number, client: Cl
       id: null,
     } as RemotePlayEvent;
 
-    rpSession.commitEvent(session, client, null, 'ACTION', JSON.stringify(combatStopEvent))
-      .then((eventCount: number) => {
+    rpSession.commitEvent(session, client, instance, null, 'ACTION', JSON.stringify(combatStopEvent))
+      .then((eventCount: number|null) => {
         // Broadcast to all peers
         combatStopEvent.id = eventCount;
         broadcastFrom(session, '', '', JSON.stringify(combatStopEvent));
@@ -176,6 +177,8 @@ function handleClientStatus(rpSession: SessionModel, session: number, client: Cl
         } as RemotePlayEvent));
       });
   }
+
+  // TODO(scott): Identify most recent event and fast forward the client if they're behind
 }
 
 function sendError(ws: WebSocket, e: string) {
@@ -202,7 +205,7 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
   if (!inMemorySessions[params.session]) {
     inMemorySessions[params.session] = {};
   }
-  inMemorySessions[params.session][clientKey(params.client, params.instance)] = {
+  inMemorySessions[params.session][toClientKey(params.client, params.instance)] = {
     socket: ws,
     status: null,
     client: params.client,
@@ -268,14 +271,18 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
 
     // Precondition: event is an ACTION
     setTimeout(() => {
-      rpSession.commitEvent(params.session, params.client, event.id, event.event.type, msg)
-      .then(() => {
-        // Broadcast to all peers
-        broadcastFrom(params.session, params.client, params.instance, msg);
+      rpSession.commitEvent(params.session, params.client, params.instance, event.id, event.event.type, msg)
+      .then((result: number|null) => {
         ws.send(JSON.stringify({...event, event:{
           type: 'INFLIGHT_COMMIT',
           id: event.id,
         }} as RemotePlayEvent));
+
+        if (result !== null) {
+          // Broadcast to all peers, but only if this event was not
+          // previously committed.
+          broadcastFrom(params.session, params.client, params.instance, msg);
+        }
       })
       .catch((error: Error) => {
         ws.send(JSON.stringify({...event, event: {
@@ -289,7 +296,7 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
   });
 
   ws.on('close', () => {
-    delete inMemorySessions[params.session][clientKey(params.client, params.instance)];
+    delete inMemorySessions[params.session][toClientKey(params.client, params.instance)];
 
     // Notify other clients this client has disconnected
     broadcastFrom(params.session, params.client, params.instance, JSON.stringify({
