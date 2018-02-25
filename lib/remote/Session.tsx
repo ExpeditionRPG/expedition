@@ -1,24 +1,8 @@
-import {RemotePlayEvent, ClientID} from './Events'
+import {RemotePlayEvent, ClientID, InstanceID} from './Events'
 
 export type SessionID = number;
-export type SessionSecret = string; // 4-character entry code
-export type SessionLock = Date;
 
-export interface Session {
-  secret?: SessionSecret;
-  id?: SessionID;
-  lock?: SessionLock;
-  created?: number;
-}
-
-export interface SessionMetadata {
-  id: SessionID;
-  peerCount?: number;
-  questTitle?: string;
-  lastAction?: number;
-}
-
-export function makeSecret(): SessionSecret {
+export function makeSecret(): string {
   let text = '';
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -26,4 +10,11 @@ export function makeSecret(): SessionSecret {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
+}
+
+// Devices are uniquely identified by the logged in user ID and
+// by an instance number. In order to use these in a simple map,
+// they are concatenated with a separating pipe '|'
+export function toClientKey(client: ClientID, instance: InstanceID) {
+  return client+'|'+instance;
 }

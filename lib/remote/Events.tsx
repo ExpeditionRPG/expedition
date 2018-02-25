@@ -32,6 +32,10 @@ export interface StatusEvent {
 
   // Count of players playing on this client - used for e.g. damage calculation
   numPlayers?: number;
+
+  // The last seen event ID from the client. This is used to keep
+  // the client in sync.
+  lastEventID?: number;
 }
 
 // Interaction events indicate what remote clients are doing,
@@ -63,6 +67,13 @@ export interface ActionEvent {
   args: string;
 }
 
+// MultiAction events allow fast-forwarding of clients without having to send individual packets.
+export interface MultiActionEvent {
+  type: 'MULTI_ACTION';
+  actions: ActionEvent[];
+  lastId: number;
+}
+
 export interface ErrorEvent {
   type: 'ERROR';
   error: string;
@@ -77,7 +88,7 @@ export interface InflightRejectEvent {
   error: string;
 }
 
-export type RemotePlayEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent|InflightCommitEvent|InflightRejectEvent;
+export type RemotePlayEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent|MultiActionEvent|InflightCommitEvent|InflightRejectEvent;
 export interface RemotePlayEvent {
   client: ClientID;
   instance: InstanceID;

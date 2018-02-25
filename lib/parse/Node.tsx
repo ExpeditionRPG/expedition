@@ -138,7 +138,7 @@ export class Node<C extends Context> {
 
       // Evaluate all non-control node bodies
       if (!this.isElemControl(c)) {
-        const evaluated = evaluateContentOps(c.html(), this.ctx);
+        const evaluated = evaluateContentOps(c.html() || '', this.ctx);
         if (evaluated === '') {
           continue;
         }
