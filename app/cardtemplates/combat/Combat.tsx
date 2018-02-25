@@ -432,7 +432,7 @@ function renderTimerCard(props: CombatProps): JSX.Element {
       theme="DARK"
       secondaryText={surgeWarning}
       tertiaryText={instruction}
-      numPlayers={(props.settings.multitouch) ? props.numAliveAdventurers : 1}
+      numPlayers={(props.settings.multitouch && props.settings.numPlayers > 1) ? props.numAliveAdventurers : 1}
       roundTimeTotalMillis={props.combat.roundTimeMillis}
       remotePlayState={props.remotePlayState}
       onTimerStop={(ms: number) => props.onTimerStop(props.node, props.settings, ms, surge, props.seed)} />

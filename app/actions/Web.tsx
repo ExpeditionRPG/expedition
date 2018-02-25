@@ -181,7 +181,7 @@ function postUserFeedback(type: string, data: any) {
       .then((response: string) => {
         logEvent('user_feedback_' + type, { label: data.questid, value: data.rating });
         dispatch(userFeedbackClear());
-        dispatch(openSnackbar('Review submitted. Thank you!'));
+        dispatch(openSnackbar('Submission successful. Thank you!'));
       }).catch((error: Error) => {
         logEvent('user_feedback_' + type + '_err', { label: error });
         dispatch(openSnackbar('Error submitting review: ' + error));
