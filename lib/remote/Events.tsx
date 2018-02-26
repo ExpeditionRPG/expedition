@@ -68,6 +68,7 @@ export interface ActionEvent {
 }
 
 // MultiAction events allow fast-forwarding of clients without having to send individual packets.
+// The .actions parameter must contain actions in event ID order, earliest to latest.
 export interface MultiActionEvent {
   type: 'MULTI_ACTION';
   actions: ActionEvent[];
