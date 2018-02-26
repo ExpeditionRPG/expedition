@@ -2,7 +2,7 @@ import * as Redux from 'redux'
 import {QuestDetails} from './QuestTypes'
 import {TemplatePhase, TemplateContext} from '../cardtemplates/TemplateTypes'
 import {ParserNode} from '../cardtemplates/TemplateTypes'
-import {Session, SessionID, SessionMetadata} from 'expedition-qdl/lib/remote/Session'
+import {SessionID} from 'expedition-qdl/lib/remote/Session'
 import {StatusEvent} from 'expedition-qdl/lib/remote/Events'
 import {GenreType, ContentRatingLabelType} from '../Constants'
 
@@ -128,9 +128,16 @@ export interface UserFeedbackState {
   text: string;
 }
 
+export interface RemotePlaySessionMeta {
+  id: number;
+  questTitle: string;
+  peerCount: number;
+  lastAction: string;
+}
+
 export interface RemotePlayState {
-  session?: Session;
-  history: SessionMetadata[];
+  session: {secret: string, id: SessionID}|null;
+  history: RemotePlaySessionMeta[];
   syncing: boolean;
   clientStatus: {[client: string]: StatusEvent},
 }
@@ -161,6 +168,6 @@ export interface AppState extends AppStateBase {
 export interface AppStateWithHistory extends AppState {
   _history: AppStateBase[];
   _return: boolean;
-  _inflight?: {id: string, committed: boolean, action: Redux.Action}[];
+  _inflight?: {id: number, committed: boolean, action: Redux.Action}[];
   _committed?: AppStateWithHistory; // A trailing version of _history, before _inflight actions are applied.
 }

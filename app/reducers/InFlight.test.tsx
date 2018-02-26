@@ -6,8 +6,8 @@ import {InflightRejectAction, InflightCommitAction} from '../actions/ActionTypes
 const identity = (state: AppStateWithHistory, action: Redux.Action) => { return state; };
 const increment = (state: AppStateWithHistory, action: Redux.Action) => { return {...state, user: {id: (state && state.user && state.user.id || '') + 'a'}}; };
 
-const testAction = {type: 'TEST_ACTION', _inflight: 'action1'} as Redux.Action;
-const testAction2 = {type: 'TEST_ACTION2', _inflight: 'action2'} as Redux.Action;
+const testAction = {type: 'TEST_ACTION', _inflight: 1} as Redux.Action;
+const testAction2 = {type: 'TEST_ACTION2', _inflight: 2} as Redux.Action;
 
 describe('InFlight reducer', () => {
 
@@ -29,14 +29,19 @@ describe('InFlight reducer', () => {
 
   describe('on INFLIGHT_REJECT', () => {
     it('marks rejection but does not change state', () => {
-      const newState = inflight(stateWithInflight, {type: 'INFLIGHT_REJECT', id: 'action1'} as InflightRejectAction, increment);
-      expect(newState._inflight).not.toContain(jasmine.objectContaining({action: testAction}));
-      expect(newState._inflight).toContain(jasmine.objectContaining({action: testAction2}));
+      const newState = inflight(stateWithInflight, {type: 'INFLIGHT_REJECT', id: 2} as InflightRejectAction, increment);
+      expect(newState._inflight).toContain(jasmine.objectContaining({action: testAction}));
+      expect(newState._inflight).not.toContain(jasmine.objectContaining({action: testAction2}));
     });
 
     it('safely handles unknown inflight id', () => {
       // Does not throw error
-      inflight(stateWithInflight, {type: 'INFLIGHT_REJECT', id: 'notarealid'} as InflightRejectAction, increment);
+      inflight(stateWithInflight, {type: 'INFLIGHT_REJECT', id: 50} as InflightRejectAction, increment);
+    });
+
+    it('rejects higher-valued uncommitted actions', () => {
+      const newState = inflight(stateWithInflight, {type: 'INFLIGHT_REJECT', id: 1} as InflightRejectAction, increment);
+      expect(newState._inflight).toEqual([]);
     });
   });
 
@@ -44,8 +49,8 @@ describe('InFlight reducer', () => {
     it('compacts fully-committed actions automatically', () => {
       const newState = inflight(inflight(
         stateWithInflight,
-        {type: 'INFLIGHT_COMMIT', id: 'action1'} as InflightCommitAction, increment),
-        {type: 'INFLIGHT_COMMIT', id: 'action2'} as InflightCommitAction, increment);
+        {type: 'INFLIGHT_COMMIT', id: 1} as InflightCommitAction, increment),
+        {type: 'INFLIGHT_COMMIT', id: 2} as InflightCommitAction, increment);
       expect(newState._inflight).toEqual([]);
       expect(newState.user).toBeUndefined();
     });
@@ -53,15 +58,15 @@ describe('InFlight reducer', () => {
     it('handles out-of-order commits', () => {
       const newState = inflight(inflight(
         stateWithInflight,
-        {type: 'INFLIGHT_COMMIT', id: 'action2'} as InflightCommitAction, increment),
-        {type: 'INFLIGHT_COMMIT', id: 'action1'} as InflightCommitAction, increment);
+        {type: 'INFLIGHT_COMMIT', id: 2} as InflightCommitAction, increment),
+        {type: 'INFLIGHT_COMMIT', id: 1} as InflightCommitAction, increment);
       expect(newState._inflight).toEqual([]);
       expect(newState.user).toBeUndefined();
     });
 
     it('safely handles unknown inflight id', () => {
       // Does not throw error
-      inflight(stateWithInflight, {type: 'INFLIGHT_COMMIT', id: 'notarealid'} as InflightCommitAction, increment);
+      inflight(stateWithInflight, {type: 'INFLIGHT_COMMIT', id: 69} as InflightCommitAction, increment);
     });
   });
 
@@ -69,7 +74,7 @@ describe('InFlight reducer', () => {
     it('appends committed state from consecutive committed actions', () => {
       const newState = inflight(inflight(
         stateWithInflight,
-        {type: 'INFLIGHT_COMMIT', id: 'action1'} as InflightCommitAction, increment),
+        {type: 'INFLIGHT_COMMIT', id: 1} as InflightCommitAction, increment),
         {type: 'INFLIGHT_COMPACT'}, increment);
 
       // The new state should reflect the committed/compacted action.

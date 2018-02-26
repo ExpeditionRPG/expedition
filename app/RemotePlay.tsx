@@ -7,6 +7,10 @@ import * as Bluebird from 'bluebird'
 import {remotePlaySettings} from './Constants'
 
 const REMOTEPLAY_CLIENT_STATUS_POLL_MS = 5000;
+const CONNECTION_LOOP_MS = 200;
+const RETRY_DELAY_MS = 2000;
+const STATUS_MS = 20000;
+const MAX_RETRIES = 2;
 
 // Max reconnect time is slot_time * 2^(slot_idx) + base = 10440 ms
 const RECONNECT_MAX_SLOT_IDX = 10;
@@ -46,37 +50,122 @@ export class RemotePlayClient extends ClientBase {
   private sessionID: string;
   private secret: string;
   private stats: RemotePlayCounters;
+  private messageBuffer: {id: number, msg: string, retries: number, ts: number}[]
+  private lastStatusMs: number;
 
   // Mirrors the committed counter on the websocket server.
   // Used to maintain a transactional event queue.
+  private committedEventCounter: number;
+
+  // Counter used for sending new events (we can have multiple in-flight).
   private localEventCounter: number;
+
 
   constructor() {
     super();
-    this.reconnectAttempts = 0;
-
-    this.stats = {...initialRemotePlayCounters};
+    this.resetState();
 
     this.subscribe((e: RemotePlayEvent) => {
+      // Update stats
       this.stats.receivedEvents++;
       if (e.event.type === 'ERROR') {
         this.stats.errorEvents++;
       }
+
+      // Remove message from the retry buffer if it was acknowledged.
+      if (e.id !== null) {
+        for (let i = 0; i < this.messageBuffer.length; i++) {
+          if (e.id === this.messageBuffer[i].id) {
+            this.messageBuffer.splice(i, 1);
+            i--;
+          }
+        }
+      }
+      
     });
 
-    // Websocket timeout defaults to ~55 seconds. We send a periodic
-    // packet to the server to keep it advised that we're still connected.
-    setInterval(() => {this.keepalive();}, 40);
+    setInterval(() => {this.connectionLoop();}, CONNECTION_LOOP_MS);
   }
 
-  private keepalive() {
-    if (this.isConnected()) {
-      this.session.send('PING');
+  resetState() {
+    super.resetState();
+    this.localEventCounter = 0;
+    this.committedEventCounter = 0;
+    this.messageBuffer = [];
+    this.reconnectAttempts = 0;
+    this.lastStatusMs = 0;
+    this.stats = {...initialRemotePlayCounters};
+  }
+
+  private connectionLoop() {
+    if (!this.isConnected()) {
+      return;
     }
+    // Retransmit messages that have been ignored for too long.
+    const now = Date.now();
+    for (let i = 0; i < this.messageBuffer.length; i++) {
+      const b = this.messageBuffer[i];
+      if (now - b.ts > RETRY_DELAY_MS) {
+        if (b.retries >= MAX_RETRIES) {
+          // Publish a local rejection if the server hasn't seen the message after many retries.
+          this.messageBuffer.splice(i, 1);
+          this.publish({id: b.id, client: this.id, instance: this.instance, event: {type: 'INFLIGHT_REJECT', id: b.id, error: 'Too many retries'}});
+          console.warn('Failed to get response for msg ' + b.id);
+        } else {
+          this.session.send(b.msg);
+          b.retries++;
+          b.ts = now;
+          console.warn('Retrying msg ' + b.id);
+        }
+      }
+    }
+    
+    // We send a periodic status to the server to keep it advised 
+    // of our connection and event ID state.
+    if (now - this.lastStatusMs > STATUS_MS) {
+      this.sendStatus();
+      this.lastStatusMs = now;
+    }
+  }
+
+  // When transactions are committed/rejected, we may need to to amend the
+  // counter to get back on track.
+  committedEvent(n: number) {
+    this.localEventCounter = Math.max(this.localEventCounter, n);
+    this.committedEventCounter = Math.max(this.committedEventCounter, n);
+  }
+  rejectedEvent(n: number) {
+    this.localEventCounter = Math.min(this.localEventCounter, Math.max(this.committedEventCounter, n-1));
   }
 
   getStats(): RemotePlayCounters {
     return this.stats;
+  }
+
+  sendStatus(partialStatus?: StatusEvent): void {
+    const state = getStore().getState();
+    const elem = (state.quest && state.quest.node && state.quest.node.elem);
+    const selfStatus = (state.remotePlay && state.remotePlay.clientStatus && state.remotePlay.clientStatus[this.id]);
+    let event: StatusEvent = {
+      type: 'STATUS',
+      connected: true,
+      numPlayers: (state.settings && state.settings.numPlayers) || 1,
+      line: (elem && parseInt(elem.attr('data-line'), 10)),
+      lastEventID: this.committedEventCounter,
+      waitingOn: (selfStatus && selfStatus.waitingOn),
+    };
+    if (partialStatus) {
+      event = {...event, ...partialStatus};
+    }
+
+    // Send remote and also publish locally
+    this.sendEvent(event);
+    this.publish({
+      id: null,
+      client: this.id,
+      instance: this.instance,
+      event,
+    });
   }
 
   // This crafts a key that can be used to populate maps of client information
@@ -89,7 +178,6 @@ export class RemotePlayClient extends ClientBase {
     if (this.session) {
       this.session.close();
     }
-
     this.stats.reconnectCount++;
 
     // Random exponential backoff reconnect
@@ -114,7 +202,6 @@ export class RemotePlayClient extends ClientBase {
       this.disconnect();
     }
     this.sessionClientIDs = [this.id];
-    this.localEventCounter = 0;
 
     this.session = new WebSocket(`${remotePlaySettings.websocketSession}/${sessionID}?client=${this.id}&instance=${this.instance}&secret=${secret}`);
 
@@ -155,31 +242,12 @@ export class RemotePlayClient extends ClientBase {
       });
     };
 
-    const settings = getStore().getState().settings;
     this.session.onopen = () => {
       this.stats.sessionCount++;
       console.log('WS: open');
       this.connected = true;
-      const event: StatusEvent = {
-        type: 'STATUS',
-        connected: true,
-        numPlayers: (settings && settings.numPlayers) || 1,
-      };
-      // Send remote and also publish locally
-      this.sendEvent(event);
-      this.publish({
-        id: null,
-        client: this.id,
-        instance: this.instance,
-        event,
-      });
-      this.fastForwardFromLastCommittedEvent();
+      this.sendStatus();
     }
-  }
-
-  fastForwardFromLastCommittedEvent() {
-    // TODO: Request a list of committed events from the server and dispatch them here under a "syncing" state.
-    console.log('TODO: Fast-forward logic');
   }
 
   disconnect() {
@@ -195,7 +263,13 @@ export class RemotePlayClient extends ClientBase {
       this.localEventCounter++;
       event.id = this.localEventCounter;
     }
-    this.session.send(JSON.stringify(event));
+    const msg = JSON.stringify(event);
+    this.session.send(msg);
+    if (event.id !== null) {
+      // If the event is transactional, push it onto the messageBuffer
+      // so we can retry sending it if needed.
+      this.messageBuffer.push({id: event.id, msg, retries: 0, ts: Date.now()});
+    }
   }
 
   public createActionMiddleware(): Redux.Middleware {
@@ -234,14 +308,14 @@ export class RemotePlayClient extends ClientBase {
       if (action instanceof Array) {
         const [name, fn, args] = action;
         if (this.isConnected() && !localOnly && !inflight) {
-          inflight = this.localEventCounter+1;
+          inflight = this.localEventCounter + 1;
         }
 
         // TODO: Handle txn mismatch when remoteArgs is null
         const remoteArgs = fn(args, (a: Redux.Action) => {
           // Assign an inflight transaction ID to be consumed by the inflight() reducer
           if (inflight) {
-            (a as any)._inflight=inflight;
+            (a as any)._inflight = inflight;
           }
           return dispatchLocal(a);
         }, getState);

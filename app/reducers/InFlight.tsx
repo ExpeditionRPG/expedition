@@ -47,7 +47,9 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
       }
 
       if (!found) {
-        console.error('Commit status received for unknown inflight action ' + (action as InflightCommitAction).id);
+        // Duplicate commit messages can sometimes happen, e.g. when we retry a message
+        // request to the server. If the commit references an action not in flight, just
+        // ignore it.
         break;
       }
       // When all actions have been committed, we're already at the correct state.
@@ -64,7 +66,7 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
       }
     case 'INFLIGHT_REJECT':
       // If a transaction has failed (e.g. due to conflict with other player actions),
-      // we strike it from the actions queue.
+      // we strike it and all following inflight actions from the actions queue.
       // Note that we continue in the aborted state until INFLIGHT_COMPACT is fired.
       // This allows for UX indicators when we eventually mutate state to correct the
       // rejected transaction.
@@ -72,7 +74,7 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
       console.log('INFLIGHT_REJECT id ' + id);
       const newInflight = [...state._inflight];
       for (let i = 0; i < newInflight.length; i++) {
-        if (newInflight[i].id === id) {
+        if (newInflight[i].id >= id && newInflight[i].committed === false) {
           newInflight.splice(i, 1);
           i--;
         }

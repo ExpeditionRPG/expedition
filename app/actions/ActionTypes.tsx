@@ -1,8 +1,7 @@
 import Redux from 'redux'
-import {CardState, CardName, CardPhase, CheckoutState, DialogIDType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, AppState} from '../reducers/StateTypes'
+import {CardState, CardName, CardPhase, CheckoutState, DialogIDType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, AppState, RemotePlaySessionMeta} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../cardtemplates/TemplateTypes'
-import {Session, SessionMetadata} from 'expedition-qdl/lib/remote/Session'
 import {ClientID, InstanceID, StatusEvent} from 'expedition-qdl/lib/remote/Events'
 
 export interface PushHistoryAction extends Redux.Action {
@@ -119,7 +118,7 @@ export interface SnackbarCloseAction extends Redux.Action {
 
 export interface RemotePlaySessionAction extends Redux.Action {
   type: 'REMOTE_PLAY_SESSION';
-  session: Session;
+  session: {id: number, secret: string};
 }
 
 // History of remote play sessions, as reported from the API server.
@@ -127,7 +126,7 @@ export interface RemotePlaySessionAction extends Redux.Action {
 // disconnected from.
 export interface RemotePlayHistoryAction extends Redux.Action {
   type: 'REMOTE_PLAY_HISTORY';
-  history: SessionMetadata[];
+  history: RemotePlaySessionMeta[];
 }
 
 export interface RemotePlayDisconnectAction extends Redux.Action {
@@ -153,13 +152,13 @@ export interface LocalAction extends Redux.Action {
 // Commits an in-flight action transaction (remote play)
 export interface InflightCommitAction extends Redux.Action {
   type: 'INFLIGHT_COMMIT';
-  id: string;
+  id: number;
 }
 
 // Rejects an in-flight action transaction (remote play)
 export interface InflightRejectAction extends Redux.Action {
   type: 'INFLIGHT_REJECT';
-  id: string;
+  id: number;
 }
 
 // Returns a generator of an "executable array" of the original action.

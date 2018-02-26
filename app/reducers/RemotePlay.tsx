@@ -1,12 +1,12 @@
 import Redux from 'redux'
 import {RemotePlaySessionAction, RemotePlayHistoryAction, RemotePlayClientStatus} from '../actions/ActionTypes'
 import {RemotePlayState} from './StateTypes'
-import {Session} from 'expedition-qdl/lib/remote/Session'
 
 export const initialRemotePlay: RemotePlayState = {
   history: [],
   syncing: false,
   clientStatus: {},
+  session: null,
 };
 
 export function remotePlay(state: RemotePlayState = initialRemotePlay, action: Redux.Action|RemotePlaySessionAction): RemotePlayState {

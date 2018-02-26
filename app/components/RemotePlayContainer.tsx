@@ -5,7 +5,7 @@ import {AppState, UserState} from '../reducers/StateTypes'
 import {openSnackbar} from '../actions/Snackbar'
 import {remotePlayConnect, remotePlayNewSession} from '../actions/RemotePlay'
 import RemotePlay, {RemotePlayStateProps, RemotePlayDispatchProps} from './RemotePlay'
-import {SessionID, SessionSecret} from 'expedition-qdl/lib/remote/Session'
+import {SessionID} from 'expedition-qdl/lib/remote/Session'
 
 const mapStateToProps = (state: AppState, ownProps: RemotePlayStateProps): RemotePlayStateProps => {
   return {
