@@ -69,9 +69,9 @@ export interface ActionEvent {
 
 // MultiAction events allow fast-forwarding of clients without having to send individual packets.
 // The .actions parameter must contain actions in event ID order, earliest to latest.
-export interface MultiActionEvent {
-  type: 'MULTI_ACTION';
-  actions: ActionEvent[];
+export interface MultiEvent {
+  type: 'MULTI_EVENT';
+  events: string[];
   lastId: number;
 }
 
@@ -89,7 +89,7 @@ export interface InflightRejectEvent {
   error: string;
 }
 
-export type RemotePlayEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent|MultiActionEvent|InflightCommitEvent|InflightRejectEvent;
+export type RemotePlayEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent|MultiEvent|InflightCommitEvent|InflightRejectEvent;
 export interface RemotePlayEvent {
   client: ClientID;
   instance: InstanceID;
