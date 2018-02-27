@@ -63,6 +63,16 @@ export function handleRemotePlayEvent(e: RemotePlayEvent) {
           dispatch(action);
         }
         break;
+      case 'MULTI_EVENT':
+        for (const e2 of e.event.events) {
+          try {
+            handleRemotePlayEvent(JSON.parse(e2).event);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+        getRemotePlayClient().committedEvent(e.event.lastId);
+        break;
       case 'ERROR':
         console.error(JSON.stringify(e.event));
         break;

@@ -222,7 +222,12 @@ export class RemotePlayClient extends ClientBase {
 
       switch (ev.code) {
         case 1000:  // CLOSE_NORMAL
-          console.log('WS: closed normally');
+          if (this.connected === false) {
+            console.log('WS: closed normally');
+          } else {
+            console.warn('WS: closed by server');
+            this.reconnect();
+          }
           break;
         default:  // Abnormal closure
           console.error('WS: abnormal closure');
@@ -251,8 +256,8 @@ export class RemotePlayClient extends ClientBase {
   }
 
   disconnect() {
-    this.session.close();
     this.connected = false;
+    this.session.close();
     this.stats.disconnectCount++;
   }
 
