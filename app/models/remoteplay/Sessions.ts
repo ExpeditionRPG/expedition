@@ -88,8 +88,17 @@ export class Session {
     });
   }
 
-  public getEventSequence(session: number, client: string, start: number, end: number): Bluebird<EventInstance[]> {
-    return this.event.model.findAll({where: {session, id: {$between: [start, end]}}});
+  public getLargestEventID(session: number): Bluebird<number> {
+    return this.event.getLast(session).then((e: EventInstance|null) => {
+      if (e === null) {
+        return 0;
+      }
+      return parseInt(e.get('id'), 10);
+    });
+  }
+
+  public getOrderedAfter(session: number, start: number): Bluebird<EventInstance[]> {
+    return this.event.getOrderedAfter(session, start);
   }
 
   public commitEvent(session: number, client: string, instance: string, event: number|null, type: string, json: string): Bluebird<number|null> {

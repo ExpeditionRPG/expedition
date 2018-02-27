@@ -74,7 +74,14 @@ export class Event {
   public getLast(session: number): Bluebird<EventInstance|null> {
     return this.model.findOne({
       where: {session} as any,
-      order: [['created_at', 'DESC']]
+      order: [['created_at', 'DESC']],
+    });
+  }
+
+  public getOrderedAfter(session: number, start: number): Bluebird<EventInstance[]> {
+    return this.model.findAll({
+      where: {session, id: {$gt: start}},
+      order: [['created_at', 'ASC']],
     });
   }
 }

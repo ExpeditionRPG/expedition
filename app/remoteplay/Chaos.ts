@@ -26,7 +26,9 @@ export function chaosWS(ws: WebSocket): WebSocket {
   const oldMessageBuf: string[] = [];
   const oldSend = ws.send.bind(ws);
 
-  ws.send = (s: string) => {
+  // Replacement conflicts with polymorphic send() function, so we
+  // cast to any here.
+  (ws as any).send = (s: string, errCallback?: (err: Error) => void) => {
     // Keep a running buffer of messages for later replay
     oldMessageBuf.push(s);
     while (oldMessageBuf.length > CHAOS_REPLAY_BUF_LENGTH) {
@@ -34,7 +36,7 @@ export function chaosWS(ws: WebSocket): WebSocket {
     }
 
     if (Math.random() <= (Config.get('CHAOS_FRACTION') || 0)) {
-      oldSend(s);
+      oldSend(s, errCallback);
       return;
     }
 
@@ -46,7 +48,7 @@ export function chaosWS(ws: WebSocket): WebSocket {
       // Randomly delay outbound messages
       const delay = Math.floor(CHAOS_MAX_DELAY * Math.random());
       console.log('CHAOS: delaying outbound message by ' + delay + 'ms');
-      setTimeout(() => {oldSend(s)}, delay);
+      setTimeout(() => {oldSend(s, errCallback)}, delay);
     }
   };
 
@@ -61,7 +63,11 @@ export function chaosWS(ws: WebSocket): WebSocket {
       return;
     }
     
-    if (Math.random() < 0.5) {
+    const r = Math.random();
+    if (r < 0.05) {
+      console.log('CHAOS: closing socket!');
+      ws.close();
+    } else if (r < 0.5) {
       // Send fuzz to server
       const fuzzmsg = fuzzMessage();
       console.log('CHAOS: fuzzing ws message to server: ' + fuzzmsg);
@@ -71,24 +77,31 @@ export function chaosWS(ws: WebSocket): WebSocket {
       // Send replay to client
       const replaymsg = oldMessageBuf[Math.floor(Math.random() * oldMessageBuf.length)];
       console.log('CHAOS: replaying msg to client: ' + replaymsg.substr(0, 128));
-      oldSend(replaymsg);
+      oldSend(replaymsg, (e: Error) => {console.error(e);});
     }
   }, CHAOS_INTERVAL);
   return ws;
 }
 
-export function chaosSessionModel(s: SessionModel): SessionModel {
-  console.log('CHAOS: wrapping SessionModel');
+export function chaosSessionModel(s: SessionModel, session: number, ws: WebSocket): SessionModel {
+  console.log('CHAOS: setting up SessionModel chaos');
 
-  // Randomly rejects upserts (as conflicting)
-  const oldCommit = s.commitEvent.bind(s);
-  s.commitEvent = (session: number, client: string, instance: string, event: number|null, type: string, json: string) => {
-    if (Math.random() < (Config.get('CHAOS_FRACTION') || 0)) {
-      console.log('CHAOS: rejecting session txn');
-      return Bluebird.reject(new Error('CHAOS: eventCounter increment mismatch'));
+  // Randomly injects events (results in conflicts in commitEvent)
+  const chaosInterval = setInterval(() => {
+    if (ws.readyState !== WebSocket.OPEN) {
+      console.log('CHAOS: stopping interval');
+      clearInterval(chaosInterval);
+      return;
     }
-    return oldCommit(session, client, instance, event, type, json);
-  };
+
+    if (Math.random() < (Config.get('CHAOS_FRACTION') || 0)) {
+      console.log('CHAOS: injecting an id\'d event');
+      s.getLargestEventID(session).then((latestID) => {
+        s.commitEvent(session, 'chaos', 'chaos', latestID+1, 'CHAOS', '"chaos!"');
+      });
+    }
+  }, CHAOS_INTERVAL);
+
   return s;
 }
 
@@ -115,9 +128,9 @@ export function maybeChaosWS(ws: WebSocket): WebSocket {
   return ws;
 }
 
-export function maybeChaosSession(s: SessionModel): SessionModel {
+export function maybeChaosSession(s: SessionModel, session: number, ws: WebSocket): SessionModel {
   if (Config.get('NODE_ENV') !== 'production' && Config.get('REMOTEPLAY_CHAOS') === true) {
-    return chaosSessionModel(s);
+    return chaosSessionModel(s, session, ws);
   }
   return s;
 }

@@ -3,8 +3,10 @@ import * as express from 'express'
 import * as Sequelize from 'sequelize'
 import {SessionID, toClientKey} from 'expedition-qdl/lib/remote/Session'
 import {Session as SessionModel, SessionInstance} from '../models/remoteplay/Sessions'
+import {EventInstance} from '../models/remoteplay/Events'
 import {SessionClient, SessionClientInstance} from '../models/remoteplay/SessionClients'
 import {ClientID, WaitType, StatusEvent, ActionEvent, RemotePlayEvent, InflightCommitEvent, InflightRejectEvent} from 'expedition-qdl/lib/remote/Events'
+import {maybeChaosWS, maybeChaosSession, maybeChaosSessionClient} from './Chaos'
 import * as url from 'url'
 import * as http from 'http'
 import * as WebSocket from 'ws'
@@ -123,6 +125,36 @@ function broadcastFrom(session: number, client: string, instance: string, msg: s
   }
 }
 
+// Identify most recent event and fast forward the client if they're behind
+function maybeFastForwardClient(rpSession: SessionModel, session: number, client: ClientID, instance: string, lastEventID: number, ws: WebSocket) {
+  rpSession.getLargestEventID(session).then((dbLastEventID: number) => {
+    if (lastEventID >= dbLastEventID) {
+      return;
+    }
+    return rpSession.getOrderedAfter(session, lastEventID).then((eventInstances: (EventInstance[]|null)) => {
+      if (eventInstances === null) {
+        return;
+      }
+      let lastId = dbLastEventID;
+      const events = eventInstances.filter((e: EventInstance) => {
+          // For now, only return action events when fast-forwarding.
+          return e.get('type') === 'ACTION' && e.get('id') !== null;
+        }).map((e: EventInstance) => {
+          lastId = Math.max(lastId, e.get('id'));
+          return e.get('json');
+        });
+
+      if (ws.readyState !== WebSocket.OPEN) {
+        return;
+      }
+      ws.send(JSON.stringify({
+        client, instance, id: null,
+        event: {type: 'MULTI_EVENT', events, lastId},
+      } as RemotePlayEvent));
+    });
+  });
+}
+
 // We need a little custom server code to pay attention when clients
 // are all waiting on something.
 function handleClientStatus(rpSession: SessionModel, session: number, client: ClientID, instance: string, ev: StatusEvent) {
@@ -178,7 +210,10 @@ function handleClientStatus(rpSession: SessionModel, session: number, client: Cl
       });
   }
 
-  // TODO(scott): Identify most recent event and fast forward the client if they're behind
+  const lastEventID = ev.lastEventID;
+  if (lastEventID !== null && lastEventID !== undefined) {
+    maybeFastForwardClient(rpSession, session, client, instance, lastEventID, s[toClientKey(client, instance)].socket);
+  }
 }
 
 function sendError(ws: WebSocket, e: string) {
@@ -191,7 +226,9 @@ function sendError(ws: WebSocket, e: string) {
       error: e,
     },
     id: null
-  } as RemotePlayEvent));
+  } as RemotePlayEvent), (e: Error) => {
+    console.error(e);
+  });
 }
 
 export function websocketSession(rpSession: SessionModel, sessionClients: SessionClient, ws: WebSocket, req: http.IncomingMessage) {
@@ -202,6 +239,11 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
 
   console.log(`Client ${params.client} connected to session ${params.session} with secret ${params.secret}`);
 
+  // Setup chaos handlers (if configured)
+  rpSession = maybeChaosSession(rpSession, params.session, ws);
+  sessionClients = maybeChaosSessionClient(sessionClients);
+  ws = maybeChaosWS(ws);
+
   if (!inMemorySessions[params.session]) {
     inMemorySessions[params.session] = {};
   }
@@ -211,7 +253,6 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
     client: params.client,
     instance: params.instance,
   };
-
 
   if (ws.readyState === WebSocket.OPEN) {
     // Replay latest client statuses to the new socket so they know
@@ -229,7 +270,9 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
           instance: s[k].instance,
           event: s[k].status,
           id: null,
-        } as RemotePlayEvent));
+        } as RemotePlayEvent), (e: Error) => {
+          console.error(e);
+        });
       }
     }
   }
@@ -276,7 +319,9 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
         ws.send(JSON.stringify({...event, event:{
           type: 'INFLIGHT_COMMIT',
           id: event.id,
-        }} as RemotePlayEvent));
+        }} as RemotePlayEvent), (e: Error) => {
+          console.error(e);
+        });
 
         if (result !== null) {
           // Broadcast to all peers, but only if this event was not
@@ -289,7 +334,9 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
           type: 'INFLIGHT_REJECT',
           id: event.id,
           error: error.toString(),
-        }} as RemotePlayEvent));
+        }} as RemotePlayEvent), (e: Error) => {
+          console.error(e);
+        });
       });
     }, Config.get('REMOTE_PLAY_COMMIT_LAG_MILLIS') || 0);
 

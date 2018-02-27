@@ -4,7 +4,6 @@ import * as Mail from './Mail'
 import * as oauth2 from './lib/oauth2'
 import * as Handlers from './Handlers'
 import * as RemotePlayHandlers from './remoteplay/Handlers'
-import {maybeChaosWS, maybeChaosSession, maybeChaosSessionClient} from './remoteplay/Chaos'
 import * as Stripe from './Stripe'
 import {models} from './models/Database'
 import * as WebSocket from 'ws';
@@ -82,11 +81,7 @@ export function setupWebsockets(server: any) {
   });
 
   wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
-    RemotePlayHandlers.websocketSession(
-      maybeChaosSession(models.Session),
-      maybeChaosSessionClient(models.SessionClient),
-      maybeChaosWS(ws),
-      req);
+    RemotePlayHandlers.websocketSession(models.Session, models.SessionClient, ws, req);
   });
 }
 
