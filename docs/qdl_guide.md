@@ -91,7 +91,7 @@ For **elements** (including listing combat enemies), you can add IF statements t
 > {{ onFire == true }} Lose 1 health
 * {{ gold >= 10 }} Buy a potion for 10 gold
 **{{ food <= 0 }} end**
-**{{ hasKey == true }} openSafe**
+**{{ hasKey == true }} goto openSafe**
 - {{ killedTheArcher == false}} Archer
 ```
 
