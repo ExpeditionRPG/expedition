@@ -1,6 +1,7 @@
 import Redux from 'redux'
 import {RemotePlayEvent, RemotePlayEventBody, ActionEvent, StatusEvent, ClientID} from 'expedition-qdl/lib/remote/Events'
 import {ClientBase} from 'expedition-qdl/lib/remote/Client'
+import {toClientKey} from 'expedition-qdl/lib/remote/Session'
 import {local} from './actions/RemotePlay'
 import {getStore} from './Store'
 import * as Bluebird from 'bluebird'
@@ -9,7 +10,7 @@ import {remotePlaySettings} from './Constants'
 const REMOTEPLAY_CLIENT_STATUS_POLL_MS = 5000;
 const CONNECTION_LOOP_MS = 200;
 const RETRY_DELAY_MS = 2000;
-const STATUS_MS = 20000;
+const STATUS_MS = 5000;
 const MAX_RETRIES = 2;
 
 // Max reconnect time is slot_time * 2^(slot_idx) + base = 10440 ms
@@ -109,7 +110,17 @@ export class RemotePlayClient extends ClientBase {
         if (b.retries >= MAX_RETRIES) {
           // Publish a local rejection if the server hasn't seen the message after many retries.
           this.messageBuffer.splice(i, 1);
-          this.publish({id: b.id, client: this.id, instance: this.instance, event: {type: 'INFLIGHT_REJECT', id: b.id, error: 'Too many retries'}});
+          this.publish({
+            id: b.id,
+            client: this.id,
+            instance: this.instance,
+            event: {
+              type: 'INFLIGHT_REJECT',
+              id: b.id,
+              error: 'Too many retries',
+              conflicts: null,
+            },
+          });
           console.warn('Failed to get response for msg ' + b.id);
         } else {
           this.session.send(b.msg);
@@ -136,6 +147,10 @@ export class RemotePlayClient extends ClientBase {
   }
   rejectedEvent(n: number) {
     this.localEventCounter = Math.min(this.localEventCounter, Math.max(this.committedEventCounter, n-1));
+  }
+
+  getCommittedEventCounter() {
+    return this.committedEventCounter;
   }
 
   getStats(): RemotePlayCounters {
@@ -168,10 +183,8 @@ export class RemotePlayClient extends ClientBase {
     });
   }
 
-  // This crafts a key that can be used to populate maps of client information
-  // (e.g. past StatusEvents in redux store)
   getClientKey(): string {
-    return this.id+'|'+this.instance;
+    return toClientKey(this.id, this.instance);
   }
 
   reconnect() {
@@ -207,9 +220,14 @@ export class RemotePlayClient extends ClientBase {
 
     this.session.onmessage = (ev: MessageEvent) => {
       const parsed = JSON.parse(ev.data) as RemotePlayEvent;
-      if (parsed.id) {
-        this.localEventCounter = parsed.id;
+      if (parsed.id && parsed.id !== (this.committedEventCounter + 1)) {
+        // We should ignore actions that we don't expect, and instead let the server
+        // know we're behind so we can fast-forward appropriately.
+        // Note that MULTI_EVENTs have no top-level ID and aren't affected by this check.
+        this.sendStatus();
+        return;
       }
+
       this.handleMessage(parsed);
     };
 

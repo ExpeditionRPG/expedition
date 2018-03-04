@@ -30,9 +30,24 @@ export function handleRemotePlayEvent(e: RemotePlayEvent) {
         }
         break;
       case 'INFLIGHT_REJECT':
-        dispatch({type: 'INFLIGHT_REJECT', id: e.id, error: e.event.error});
+        dispatch({
+          type: 'INFLIGHT_REJECT',
+          id: e.id,
+          error: e.event.error,
+        });
         if (e.id !== null) {
           getRemotePlayClient().rejectedEvent(e.id);
+        }
+        if (e.event.conflicts !== null) {
+          // Typically, INFLIGHT_REJECT comes with a list of events that conflict
+          // with the inflight event. We treat these as if they were an independent
+          // MULTI_EVENT so we can catch up in state.
+          dispatch(handleRemotePlayEvent({
+            id: e.id,
+            client: e.client,
+            instance: e.instance,
+            event: e.event.conflicts
+          }));
         }
         break;
       case 'STATUS':
@@ -64,14 +79,36 @@ export function handleRemotePlayEvent(e: RemotePlayEvent) {
         }
         break;
       case 'MULTI_EVENT':
-        for (const e2 of e.event.events) {
+        const c = getRemotePlayClient();
+        const committedCounter = c.getCommittedEventCounter();
+
+        for (let i = 0; i < e.event.events.length; i++) {
+          let parsed: RemotePlayEvent;
           try {
-            handleRemotePlayEvent(JSON.parse(e2).event);
-          } catch (e) {
+            parsed = JSON.parse(e.event.events[i]);
+            if (!parsed.event) {
+              throw new Error('Invalid MULTI_EVENT json: ' + parsed);
+            }
+          } catch(e) {
             console.error(e);
+            continue;
           }
+
+          // Reject if it does not contain events that we need.
+          if (i === 0 && parsed.id && parsed.id > committedCounter + 1) {
+            console.error('MULTI_EVENT starting with ID ' + parsed.id + ' when counter is ' + committedCounter + '; cannot fast-forward.');
+            return;
+          }
+
+          // Ignore if it contains events earlier than our committed event counter.
+          if (parsed.id && parsed.id <= committedCounter) {
+            continue;
+          }
+
+          console.info(parsed); // TODO(scott): Remove
+          dispatch(handleRemotePlayEvent(parsed));
         }
-        getRemotePlayClient().committedEvent(e.event.lastId);
+        c.committedEvent(e.event.lastId);
         break;
       case 'ERROR':
         console.error(JSON.stringify(e.event));
