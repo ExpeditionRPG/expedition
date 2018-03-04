@@ -87,6 +87,11 @@ export interface InflightCommitEvent {
 export interface InflightRejectEvent {
   type: 'INFLIGHT_REJECT';
   error: string;
+
+  // A list of one or more events that conflict with the inflight event.
+  // This may not be all events up to the most recent one, due to query
+  // limits and potential transactions occuring as this event is sent out.
+  conflicts: MultiEvent|null;
 }
 
 export type RemotePlayEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent|MultiEvent|InflightCommitEvent|InflightRejectEvent;
