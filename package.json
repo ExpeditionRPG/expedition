@@ -40,7 +40,7 @@
     "bluebird": "^3.5.1",
     "body-parser": "^1.17.2",
     "cors": "^2.8.4",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#4b5f074e8cc5851a29e8c2cd2bba8de0919c58bd",
+    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#0716eb2bdf6af4bb5f58331b8eed02ecda3ad699",
     "express": "^4.15.3",
     "express-rate-limit": "^2.9.0",
     "express-session": "^1.15.4",
@@ -75,7 +75,7 @@
     "warning": "^3.0.0",
     "webpack": "^2.7.0",
     "winston": "^2.3.1",
-    "ws": "^3.3.2"
+    "ws": "^4.1.0"
   },
   "devDependencies": {
     "@types/express": "^4.0.36",

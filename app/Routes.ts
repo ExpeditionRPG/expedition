@@ -80,6 +80,11 @@ export function setupWebsockets(server: any) {
     }
   });
 
+  wss.on('error', (err) => {
+    console.error('Caught WSS error: ');
+    console.error(err.stack);
+  });
+
   wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     RemotePlayHandlers.websocketSession(models.Session, models.SessionClient, ws, req);
   });

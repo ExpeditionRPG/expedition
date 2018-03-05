@@ -7,7 +7,7 @@ describe('remoteplay handlers', () => {
     it('simply broadcasts non-ACTION events');
     it('handles client status messages');
     it('notifies on ACTION commit success');
-    it('notifies on ACTION commit failure');
+    it('notifies on ACTION commit failure (with conflicting actions)');
     it('broadcasts client disconnection');
   });
 

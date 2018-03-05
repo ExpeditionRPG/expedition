@@ -83,8 +83,8 @@ export class SessionClient {
       .then(() => {
         return this.model.findAll({
           where: {client},
-          order: [['created_at', 'DESC']],
-          limit: 10,
+          order: [['updated_at', 'DESC']],
+          limit: 5,
         });
       })
       .then((results: SessionClientInstance[]) => {
@@ -94,11 +94,11 @@ export class SessionClient {
           return this.event.getLast(result.session);
         }));
       })
-      .then((events: (EventInstance|null)[]) => {
-        return events.filter((e: EventInstance|null): e is EventInstance => {
+      .then((e: EventInstance[]) => {
+        return e.filter((e: EventInstance|null): e is EventInstance => {
           return e !== null;
         });
-      });;
+      });
   }
 }
 

@@ -5,18 +5,34 @@ import {SessionID, toClientKey} from 'expedition-qdl/lib/remote/Session'
 import {Session as SessionModel, SessionInstance} from '../models/remoteplay/Sessions'
 import {EventInstance} from '../models/remoteplay/Events'
 import {SessionClient, SessionClientInstance} from '../models/remoteplay/SessionClients'
-import {ClientID, WaitType, StatusEvent, ActionEvent, RemotePlayEvent, InflightCommitEvent, InflightRejectEvent} from 'expedition-qdl/lib/remote/Events'
+import {ClientID, WaitType, StatusEvent, ActionEvent, RemotePlayEvent, MultiEvent, InflightCommitEvent, InflightRejectEvent} from 'expedition-qdl/lib/remote/Events'
 import {maybeChaosWS, maybeChaosSession, maybeChaosSessionClient} from './Chaos'
 import * as url from 'url'
 import * as http from 'http'
 import * as WebSocket from 'ws'
 
 
+export interface RemotePlaySessionMeta {
+  id: number;
+  questTitle: string;
+  peerCount: number;
+  lastAction: Date;
+}
 
 export function user(sc: SessionClient, req: express.Request, res: express.Response) {
-  sc.getSessionsByClient(res.locals.id).then((fetched: any[]) => {
-    // TODO map data to most recent event, plus number of other players connected
-    res.status(200).send(JSON.stringify({history: fetched}));
+  sc.getSessionsByClient(res.locals.id).then((lastEvents: EventInstance[]) => {
+    // TODO get current quest name from action = fetchQuestXML
+    const sessionMetadata = lastEvents.map((e: EventInstance) => {
+      return {
+        id: e.get('session'),
+        questTitle: '',
+        peerCount: sessionClientCount(e.get('session')),
+        lastAction: e.get('updated_at'),
+      };
+    }).filter((session: RemotePlaySessionMeta) => {
+      return session.peerCount > 0;
+    });
+    res.status(200).send(JSON.stringify({history: sessionMetadata}));
   })
   .catch((e: Error) => {
     return res.status(500).send(JSON.stringify({error: 'Error looking up user details: ' + e.toString()}));
@@ -109,6 +125,12 @@ const inMemorySessions: {[sessionID: number]: {
   [clientAndInstance: string]: {socket: WebSocket, status: StatusEvent|null, client: string, instance: string}
 }} = {};
 
+export function sessionClientCount(sessionID: number): number {
+  const session = inMemorySessions[sessionID] || {};
+  const instances = Object.keys(session);
+  return instances.length;
+}
+
 function broadcastFrom(session: number, client: string, instance: string, msg: string) {
   if (inMemorySessions[session] === null) {
     return;
@@ -119,10 +141,29 @@ function broadcastFrom(session: number, client: string, instance: string, msg: s
     }
 
     const peerWS = inMemorySessions[session][peerID] && inMemorySessions[session][peerID].socket;
-    if (peerWS && peerWS.readyState === 1 /* OPEN */) {
-      peerWS.send(msg);
+    if (peerWS && peerWS.readyState === WebSocket.OPEN) {
+      peerWS.send(msg, (e: Error) => {
+        console.error(e);
+      });
     }
   }
+}
+
+function makeMultiEvent(rpSession: SessionModel, session: number, lastEventID: number) {
+  return rpSession.getOrderedAfter(session, lastEventID).then((eventInstances: (EventInstance[]|null)) => {
+    if (eventInstances === null) {
+      return;
+    }
+    let lastId = 0;
+    const events = eventInstances.filter((e: EventInstance) => {
+        // For now, only return action events when fast-forwarding.
+        return e.get('id') !== null;
+      }).map((e: EventInstance) => {
+        lastId = Math.max(lastId, e.get('id'));
+        return e.get('json');
+      });
+    return {type: 'MULTI_EVENT', events, lastId};
+  });
 }
 
 // Identify most recent event and fast forward the client if they're behind
@@ -131,37 +172,32 @@ function maybeFastForwardClient(rpSession: SessionModel, session: number, client
     if (lastEventID >= dbLastEventID) {
       return;
     }
-    return rpSession.getOrderedAfter(session, lastEventID).then((eventInstances: (EventInstance[]|null)) => {
-      if (eventInstances === null) {
-        return;
-      }
-      let lastId = dbLastEventID;
-      const events = eventInstances.filter((e: EventInstance) => {
-          // For now, only return action events when fast-forwarding.
-          return e.get('type') === 'ACTION' && e.get('id') !== null;
-        }).map((e: EventInstance) => {
-          lastId = Math.max(lastId, e.get('id'));
-          return e.get('json');
-        });
-
+    makeMultiEvent(rpSession, session, lastEventID).then((event: MultiEvent) => {
       if (ws.readyState !== WebSocket.OPEN) {
         return;
       }
-      ws.send(JSON.stringify({
-        client, instance, id: null,
-        event: {type: 'MULTI_EVENT', events, lastId},
-      } as RemotePlayEvent));
+      ws.send(JSON.stringify({client, instance, id: null, event} as RemotePlayEvent));
     });
   });
 }
 
 // We need a little custom server code to pay attention when clients
 // are all waiting on something.
-function handleClientStatus(rpSession: SessionModel, session: number, client: ClientID, instance: string, ev: StatusEvent) {
+function handleClientStatus(rpSession: SessionModel, session: number, client: ClientID, instance: string, ev: StatusEvent, ws: WebSocket) {
   console.log(toClientKey(client, instance) + ': ' + JSON.stringify(ev));
 
   const s = inMemorySessions[session];
-  s[toClientKey(client, instance)].status = ev;
+  let cli = s[toClientKey(client, instance)];
+  if (!cli) {
+    s[toClientKey(client, instance)] = {
+      socket: ws,
+      status: null,
+      client: client,
+      instance: instance,
+    };
+    cli = s[toClientKey(client, instance)];
+  }
+  cli.status = ev;
 
   const waitCounts: {[wait: string]: number} = {};
   let maxElapsedMillis = 0;
@@ -303,18 +339,23 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
     }
 
     // If it's not a transactioned action, just broadcast it.
-    // TODO: Log it as well as actions
     if (event.event.type !== 'ACTION') {
       broadcastFrom(params.session, params.client, params.instance, msg);
       if (event.event.type === 'STATUS') {
-        handleClientStatus(rpSession, params.session, event.client, event.instance, event.event);
+        handleClientStatus(rpSession, params.session, event.client, event.instance, event.event, ws);
       }
       return;
     }
 
     // Precondition: event is an ACTION
+    const eventID = event.id;
+    if (eventID === null) {
+      console.error('Received ACTION event with null ID');
+      return;
+    }
+
     setTimeout(() => {
-      rpSession.commitEvent(params.session, params.client, params.instance, event.id, event.event.type, msg)
+      rpSession.commitEvent(params.session, params.client, params.instance, eventID, event.event.type, msg)
       .then((result: number|null) => {
         ws.send(JSON.stringify({...event, event:{
           type: 'INFLIGHT_COMMIT',
@@ -330,13 +371,22 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
         }
       })
       .catch((error: Error) => {
-        ws.send(JSON.stringify({...event, event: {
-          type: 'INFLIGHT_REJECT',
-          id: event.id,
-          error: error.toString(),
-        }} as RemotePlayEvent), (e: Error) => {
+        let multiEvent: MultiEvent|null = null;
+        makeMultiEvent(rpSession, params.session, eventID).then((e: MultiEvent) => {
+          multiEvent = e;
+        }).catch((e: Error) => {
           console.error(e);
+        }).finally(() => {
+          ws.send(JSON.stringify({...event, event: {
+            type: 'INFLIGHT_REJECT',
+            id: eventID,
+            error: error.toString(),
+            conflicts: multiEvent,
+          }} as RemotePlayEvent), (e: Error) => {
+            console.error(e);
+          });
         });
+
       });
     }, Config.get('REMOTE_PLAY_COMMIT_LAG_MILLIS') || 0);
 
