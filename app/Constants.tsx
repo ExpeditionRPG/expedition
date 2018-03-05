@@ -1,19 +1,15 @@
 declare var window:any;
 export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
+// Should be overriden via env vars to use local server
 export const API_HOST = (process && process.env && process.env.API_HOST) || 'http://betaapi.expeditiongame.com';
 export const authSettings = {
   urlBase: API_HOST,
-  // urlBase: 'https://api.expeditiongame.com',
-  // urlBase: 'http://betaapi.expeditiongame.com',
-  // urlBase: 'http://localhost:8081',
   apiKey: 'AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8',
   scopes: 'profile email',
   // web:
   clientId: '545484140970-r95j0rmo8q1mefo0pko6l3v6p4s771ul.apps.googleusercontent.com',
-  // iOS: (REVERSE_CLIENT_ID)
-  // clientId: '545484140970-lgcbm3df469kscbngg2iof57muj3p588.apps.googleusercontent.com',
-  // Android:
-  // 545484140970-qrhcn069bbvae1mub2237h5k32mnp04k.apps.googleusercontent.com
+  // iOS: (REVERSE_CLIENT_ID) '545484140970-lgcbm3df469kscbngg2iof57muj3p588.apps.googleusercontent.com',
+  // Android: '545484140970-qrhcn069bbvae1mub2237h5k32mnp04k.apps.googleusercontent.com',
   stripe: (NODE_ENV === 'production') ? 'pk_live_vcpOgs95UFKNV0kYOwj9JWPp' : 'pk_test_8SATEnwfIx0U2vkomn04kSou',
 };
 

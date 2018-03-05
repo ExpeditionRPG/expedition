@@ -46,7 +46,7 @@ class RemotePlayConnect extends React.Component<RemotePlayProps, {}> {
     const history = this.props.remotePlay.history.map((m: RemotePlaySessionMeta, i: number) => {
       return (
         <Button key={i} onTouchTap={()=>{this.props.onReconnect(this.props.user, m.id)}}>
-          {m.questTitle} ({(m.peerCount) ? m.peerCount-1 : 0} peers) - {Moment(m.lastAction).fromNow()}
+          {m.questTitle} ({m.peerCount || 0} peers) - {Moment(m.lastAction).fromNow()}
         </Button>
       );
     });
@@ -57,7 +57,7 @@ class RemotePlayConnect extends React.Component<RemotePlayProps, {}> {
           <p>Remote play allows you to go on adventures with your friends, no matter where they are! Simply start a new session and have your friends join.</p>
           <Button onTouchTap={() =>{this.props.onNewSessionRequest(this.props.user)}}>Start a new session</Button>
           <Button onTouchTap={() =>{this.props.onConnect(this.props.user)}}>Join a session</Button>
-          {history.length > 0 && <div className="helptext">You may also reconnect to these active sessions:</div>}
+          {history.length > 0 && <div className="helptext">You may also reconnect to these sessions:</div>}
           {history}
           <br/>
           <p>You can have multiple people play off one device, with a maximum of 6 players across all devices. Each device / group will need a set of <a href="https://expeditiongame.com/store" target="_blank">Expedition cards</a> to play.</p>
