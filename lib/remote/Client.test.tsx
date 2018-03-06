@@ -9,8 +9,8 @@ export class TestClient extends ClientBase {
     this.events = [];
   }
 
-  doHandleMessage(e: RemotePlayEvent) {
-    return this.handleMessage(e);
+  doParseEvent(s: string) {
+    return this.parseEvent(s);
   }
 
   setConnectState(connected: boolean) {
@@ -28,31 +28,21 @@ describe('Client', () => {
   const basicEventBody: RemotePlayEventBody = {type: 'STATUS'};
   const basicEvent: RemotePlayEvent = {client: 'testclient', instance: 'testinstance', event: basicEventBody, id: null};
 
-  it('safely handles malformed messages', (done) => {
+  it('safely handles malformed messages', () => {
     const c = new TestClient();
-    c.subscribe((e: RemotePlayEvent) => {
-      expect(e.event.type).toEqual('ERROR');
-      done();
-    });
-    c.doHandleMessage({} as any as RemotePlayEvent);
+    expect(c.doParseEvent('{}').event.type).toEqual('ERROR');
   });
 
-  it('safely handles unknown message types', (done) => {
+  it('safely handles unknown message types', () => {
     const c = new TestClient();
-    c.subscribe((e: RemotePlayEvent) => {
-      expect(e.event.type).toEqual('ERROR');
-      done();
-    });
-    c.doHandleMessage({client: 'testclient', instance: 'testinstance', event: {type: 'UNKNOWN_EVENT_TYPE'}, id: 0} as any as RemotePlayEvent);
+    expect(c.doParseEvent(JSON.stringify({
+      client: 'testclient', instance: 'testinstance', event: {type: 'UNKNOWN_EVENT_TYPE'}, id: 0
+    } as any as RemotePlayEvent)).event.type).toEqual('ERROR');
   });
 
-  it('can subscribe & callback handlers', (done) => {
+  it('can subscribe & callback handlers', () => {
     const c = new TestClient();
-    c.subscribe((e: RemotePlayEvent) => {
-      expect(e).toEqual(basicEvent);
-      done();
-    });
-    c.doHandleMessage(basicEvent);
+    expect(c.doParseEvent(JSON.stringify(basicEvent))).toEqual(basicEvent);
   });
 
   it('does not try to send if not connected', () => {

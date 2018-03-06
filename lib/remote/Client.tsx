@@ -50,19 +50,24 @@ export abstract class ClientBase {
     this.sendFinalizedEvent({id: null, client: this.id, instance: this.instance, event});
   }
 
-  protected handleMessage(e: RemotePlayEvent) {
-    if (!e.event || !e.client || !e.instance) {
-      this.publish({id: null, client: this.id, instance: this.instance, event: {type: 'ERROR', error: 'Received malformed message'}});
-      return;
+  protected parseEvent(s: string): RemotePlayEvent {
+    let parsed: RemotePlayEvent;
+
+    try {
+      parsed = JSON.parse(s) as RemotePlayEvent;
+    } catch(e) {
+      return {id: null, client: e.client, instance: e.instance, event: {type: 'ERROR', error: 'Failed to parse JSON message'}};
     }
 
-    // Error out if we get an unrecognized message
-    if (['STATUS', 'INTERACTION', 'ACTION', 'MULTI_EVENT', 'ERROR', 'INFLIGHT_COMMIT', 'INFLIGHT_REJECT'].indexOf(e.event.type) < 0) {
-      this.publish({id: null, client: e.client, instance: e.instance, event: {type: 'ERROR', error: 'Received unknown message of type "' + e.event.type + '"'}});
-      return;
+    if (!parsed.event || !parsed.client || !parsed.instance) {
+      return {id: null, client: parsed.client, instance: parsed.instance, event: {type: 'ERROR', error: 'Received malformed message'}};
     }
 
-    this.publish(e);
+    if (['STATUS', 'INTERACTION', 'ACTION', 'MULTI_EVENT', 'ERROR', 'INFLIGHT_COMMIT', 'INFLIGHT_REJECT'].indexOf(parsed.event.type) < 0) {
+      return {id: null, client: parsed.client, instance: parsed.instance, event: {type: 'ERROR', error: 'Received unknown message of type "' + parsed.event.type + '"'}};
+    }
+
+    return parsed;
   }
 
   publish(e: RemotePlayEvent) {
