@@ -46,7 +46,6 @@ import {toPrevious} from './actions/Card'
 import {setDialog} from './actions/Dialog'
 import {openSnackbar} from './actions/Snackbar'
 import {silentLogin} from './actions/User'
-import {handleRemotePlayEvent} from './actions/RemotePlay'
 import {getStore} from './Store'
 import {getAppVersion, getWindow, getGA, getDevicePlatform, getDocument, setGA, setupPolyfills} from './Globals'
 import {getRemotePlayClient} from './RemotePlay'
@@ -67,12 +66,6 @@ function setupTapEvents() {
   } catch (e) {
     console.log('Already injected tap event plugin');
   }
-}
-
-function setupRemotePlay() {
-  getRemotePlayClient().subscribe((e: RemotePlayEvent) => {
-    getStore().dispatch(handleRemotePlayEvent(e));
-  });
 }
 
 // TODO record modal views as users navigate: ReactGA.modalview('/about/contact-us');
@@ -263,7 +256,6 @@ export function init() {
   setupGoogleAnalytics(); // before anything else that might log in the user
   setupEventLogging();
   setupHotReload();
-  setupRemotePlay();
 
   render();
 

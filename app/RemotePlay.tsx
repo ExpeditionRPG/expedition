@@ -1,4 +1,5 @@
 import Redux from 'redux'
+import {getRemoteAction} from './actions/ActionTypes'
 import {RemotePlayEvent, RemotePlayEventBody, ActionEvent, StatusEvent, ClientID} from 'expedition-qdl/lib/remote/Events'
 import {ClientBase} from 'expedition-qdl/lib/remote/Client'
 import {toClientKey} from 'expedition-qdl/lib/remote/Session'
@@ -42,6 +43,13 @@ export const initialRemotePlayCounters = {
   failedTransactions: 0,
 };
 
+
+function hasUncommittedInFlight(id: number): boolean {
+  const inflight = getStore().getState()._inflight;
+  const filtered = (inflight || []).filter((i) => {return i.id === id;});
+  return (filtered.length > 0 && !filtered[0].committed);
+}
+
 // This is the base layer of the remote play network framework, implemented
 // using firebase FireStore.
 export class RemotePlayClient extends ClientBase {
@@ -65,26 +73,6 @@ export class RemotePlayClient extends ClientBase {
   constructor() {
     super();
     this.resetState();
-
-    this.subscribe((e: RemotePlayEvent) => {
-      // Update stats
-      this.stats.receivedEvents++;
-      if (e.event.type === 'ERROR') {
-        this.stats.errorEvents++;
-      }
-
-      // Remove message from the retry buffer if it was acknowledged.
-      if (e.id !== null) {
-        for (let i = 0; i < this.messageBuffer.length; i++) {
-          if (e.id === this.messageBuffer[i].id) {
-            this.messageBuffer.splice(i, 1);
-            i--;
-          }
-        }
-      }
-      
-    });
-
     setInterval(() => {this.connectionLoop();}, CONNECTION_LOOP_MS);
   }
 
@@ -139,6 +127,138 @@ export class RemotePlayClient extends ClientBase {
     }
   }
 
+  handleEvent(e: RemotePlayEvent) {
+    // Update stats
+    this.stats.receivedEvents++;
+    if (e.event.type === 'ERROR') {
+      this.stats.errorEvents++;
+    }
+
+    // Remove message from the retry buffer if it was acknowledged.
+    if (e.id !== null) {
+      for (let i = 0; i < this.messageBuffer.length; i++) {
+        if (e.id === this.messageBuffer[i].id) {
+          this.messageBuffer.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+    if (e.id && e.id !== (this.committedEventCounter + 1)) {
+      // We should ignore actions that we don't expect, and instead let the server
+      // know we're behind so we can fast-forward appropriately.
+      // Note that MULTI_EVENTs have no top-level ID and aren't affected by this check.
+      console.log('Ignoring old ' + e.event.type + ' message with ID ' + e.id);
+      this.sendStatus();
+      return;
+    }
+
+    this.routeEvent(e, getStore().dispatch);
+  }
+
+  routeEvent(e: RemotePlayEvent, dispatch: Redux.Dispatch<any>) {
+    switch (e.event.type) {
+      case 'INFLIGHT_COMMIT':
+        if (e.id === null || !hasUncommittedInFlight(e.id)) {
+          this.sendStatus();
+          return;
+        }
+
+        dispatch({type: 'INFLIGHT_COMMIT', id: e.id});
+        this.committedEvent(e.id);
+        break;
+      case 'INFLIGHT_REJECT':
+        if (e.id === null || !hasUncommittedInFlight(e.id)) {
+          this.sendStatus();
+          return;
+        }
+        dispatch({
+          type: 'INFLIGHT_REJECT',
+          id: e.id,
+          error: e.event.error,
+        });
+        this.rejectedEvent(e.id);
+        if (e.event.conflicts !== null) {
+          // Typically, INFLIGHT_REJECT comes with a list of events that conflict
+          // with the inflight event. We treat these as if they were an independent
+          // MULTI_EVENT so we can catch up in state.
+          this.routeEvent({
+            id: e.id,
+            client: e.client,
+            instance: e.instance,
+            event: e.event.conflicts
+          }, dispatch);
+        }
+        break;
+      case 'STATUS':
+        dispatch({
+          type: 'REMOTE_PLAY_CLIENT_STATUS',
+          client: e.client,
+          instance: e.instance,
+          status: e.event
+        });
+        break;
+      case 'INTERACTION':
+        // Interaction events are not dispatched; UI element subscribers pick up the event on publish().
+        break;
+      case 'ACTION':
+        const a = getRemoteAction(e.event.name);
+        if (!a) {
+          console.error('Received unknown remote action ' + e.event.name);
+          return;
+        } else {
+          console.log('Inbound: ' + e.event.name + '(' + e.event.args + ') ' + e.id);
+
+          // Set a "remote" inflight marker so it's identifiable
+          // when debugging.
+          const action = a(JSON.parse(e.event.args));
+          (action as any)._inflight = 'remote';
+
+          dispatch(local(action));
+
+          if (e.id !== null) {
+            this.committedEvent(e.id);
+          }
+        }
+        break;
+      case 'MULTI_EVENT':
+        for (let i = 0; i < e.event.events.length; i++) {
+          let parsed: RemotePlayEvent;
+          try {
+            parsed = JSON.parse(e.event.events[i]);
+            if (!parsed.event) {
+              throw new Error('Invalid MULTI_EVENT json: ' + parsed);
+            }
+          } catch(e) {
+            console.error(e);
+            continue;
+          }
+
+          // Reject the whole event it does not contain events that we need.
+          if (i === 0 && parsed.id && parsed.id > this.committedEventCounter + 1) {
+            console.error('MULTI_EVENT starting with ID ' + parsed.id + ' when counter is ' + this.committedEventCounter + '; cannot fast-forward.');
+            return;
+          }
+
+          // Ignore if it contains events earlier than our committed event counter.
+          if (parsed.id && parsed.id <= this.committedEventCounter) {
+            continue;
+          }
+
+          this.routeEvent(parsed, dispatch);
+        }
+        this.committedEvent(e.event.lastId);
+        break;
+      case 'ERROR':
+        console.error(JSON.stringify(e.event));
+        break;
+      default:
+        console.error('UNKNOWN EVENT ' + (e.event as any).type);
+    }
+
+    this.publish(e);
+  }
+
   // When transactions are committed/rejected, we may need to to amend the
   // counter to get back on track.
   committedEvent(n: number) {
@@ -147,10 +267,6 @@ export class RemotePlayClient extends ClientBase {
   }
   rejectedEvent(n: number) {
     this.localEventCounter = Math.min(this.localEventCounter, Math.max(this.committedEventCounter, n-1));
-  }
-
-  getCommittedEventCounter() {
-    return this.committedEventCounter;
   }
 
   getStats(): RemotePlayCounters {
@@ -219,16 +335,7 @@ export class RemotePlayClient extends ClientBase {
     this.session = new WebSocket(`${remotePlaySettings.websocketSession}/${sessionID}?client=${this.id}&instance=${this.instance}&secret=${secret}`);
 
     this.session.onmessage = (ev: MessageEvent) => {
-      const parsed = JSON.parse(ev.data) as RemotePlayEvent;
-      if (parsed.id && parsed.id !== (this.committedEventCounter + 1)) {
-        // We should ignore actions that we don't expect, and instead let the server
-        // know we're behind so we can fast-forward appropriately.
-        // Note that MULTI_EVENTs have no top-level ID and aren't affected by this check.
-        this.sendStatus();
-        return;
-      }
-
-      this.handleMessage(parsed);
+      this.handleEvent(this.parseEvent(ev.data));
     };
 
     this.session.onerror = (ev: ErrorEvent) => {

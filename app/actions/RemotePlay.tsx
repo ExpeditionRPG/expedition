@@ -3,7 +3,7 @@ import Redux from 'redux'
 import {toCard} from './Card'
 import {handleFetchErrors} from './Web'
 import {remotePlaySettings} from '../Constants'
-import {LocalAction, NavigateAction, ReturnAction, getRemoteAction, RemotePlayClientStatus} from './ActionTypes'
+import {LocalAction, NavigateAction, ReturnAction, RemotePlayClientStatus} from './ActionTypes'
 import {UserState} from '../reducers/StateTypes'
 import {logEvent} from '../Main'
 import {openSnackbar} from '../actions/Snackbar'
@@ -18,105 +18,6 @@ export function local(a: Redux.Action): LocalAction {
 export function remotePlayDisconnect() {
   getRemotePlayClient().disconnect();
   return {type: 'REMOTE_PLAY_DISCONNECT'};
-}
-
-export function handleRemotePlayEvent(e: RemotePlayEvent) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    switch (e.event.type) {
-      case 'INFLIGHT_COMMIT':
-        dispatch({type: 'INFLIGHT_COMMIT', id: e.id});
-        if (e.id !== null) {
-          getRemotePlayClient().committedEvent(e.id);
-        }
-        break;
-      case 'INFLIGHT_REJECT':
-        dispatch({
-          type: 'INFLIGHT_REJECT',
-          id: e.id,
-          error: e.event.error,
-        });
-        if (e.id !== null) {
-          getRemotePlayClient().rejectedEvent(e.id);
-        }
-        if (e.event.conflicts !== null) {
-          // Typically, INFLIGHT_REJECT comes with a list of events that conflict
-          // with the inflight event. We treat these as if they were an independent
-          // MULTI_EVENT so we can catch up in state.
-          dispatch(handleRemotePlayEvent({
-            id: e.id,
-            client: e.client,
-            instance: e.instance,
-            event: e.event.conflicts
-          }));
-        }
-        break;
-      case 'STATUS':
-        dispatch({
-          type: 'REMOTE_PLAY_CLIENT_STATUS',
-          client: e.client,
-          instance: e.instance,
-          status: e.event
-        });
-        break;
-      case 'INTERACTION':
-        // Interaction events must not be dispatched.
-        break;
-      case 'ACTION':
-        const a = getRemoteAction(e.event.name);
-        if (!a) {
-          console.log('Received unknown remote action ' + e.event.name);
-        } else {
-          console.log('Inbound: ' + e.event.name + '(' + e.event.args + ')');
-
-          // Set a "remote" inflight marker so it's identifiable
-          // when debugging.
-          const action = a(JSON.parse(e.event.args));
-          (action as any)._inflight = 'remote';
-
-          // Note: This is still dispatched locally; it's called as a
-          // secondary dispatch.
-          dispatch(action);
-        }
-        break;
-      case 'MULTI_EVENT':
-        const c = getRemotePlayClient();
-        const committedCounter = c.getCommittedEventCounter();
-
-        for (let i = 0; i < e.event.events.length; i++) {
-          let parsed: RemotePlayEvent;
-          try {
-            parsed = JSON.parse(e.event.events[i]);
-            if (!parsed.event) {
-              throw new Error('Invalid MULTI_EVENT json: ' + parsed);
-            }
-          } catch(e) {
-            console.error(e);
-            continue;
-          }
-
-          // Reject if it does not contain events that we need.
-          if (i === 0 && parsed.id && parsed.id > committedCounter + 1) {
-            console.error('MULTI_EVENT starting with ID ' + parsed.id + ' when counter is ' + committedCounter + '; cannot fast-forward.');
-            return;
-          }
-
-          // Ignore if it contains events earlier than our committed event counter.
-          if (parsed.id && parsed.id <= committedCounter) {
-            continue;
-          }
-
-          console.info(parsed); // TODO(scott): Remove
-          dispatch(handleRemotePlayEvent(parsed));
-        }
-        c.committedEvent(e.event.lastId);
-        break;
-      case 'ERROR':
-        console.error(JSON.stringify(e.event));
-        break;
-      default:
-        console.error('UNKNOWN EVENT ' + (e.event as any).type);
-    }
-  };
 }
 
 export function remotePlayNewSession(user: UserState) {
