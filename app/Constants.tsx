@@ -131,6 +131,13 @@ export const CONTENT_RATINGS: {[key: string]: ContentRatingType} = {
   },
 };
 
+export const SPLASH_SCREEN_TIPS = [
+  `Tip: You can change which expansions you're playing with in settings.`,
+  `Tip: Enemies deal more damage over time, so try to win quickly!`,
+  `Make sure to rate quests after you play them!`,
+  `You can submit feedback at any time from the top right menu.`,
+];
+
 // A slight variation on the cubehelix pattern. This contains 6 categories,
 // which is convenient for e.g. displaying 6 distinct character icons.
 // https://jiffyclub.github.io/palettable/cubehelix/

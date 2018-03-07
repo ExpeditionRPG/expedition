@@ -2,7 +2,7 @@ import * as React from 'react'
 import MultiTouchTrigger from './base/MultiTouchTrigger'
 import Button from './base/Button'
 
-import {DOUBLE_TAP_MS} from '../Constants'
+import {SPLASH_SCREEN_TIPS, DOUBLE_TAP_MS} from '../Constants'
 import {AnnouncementState} from '../reducers/StateTypes'
 
 interface PlayerCounterProps extends React.Props<any> {
@@ -13,6 +13,7 @@ interface PlayerCounterProps extends React.Props<any> {
 
 class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
   state: {
+    didYouKnow: string;
     lastTouchTime: number;
     maxTouches: number;
     touchCount: number;
@@ -22,6 +23,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
   constructor(props: PlayerCounterProps) {
     super(props)
     this.state = {
+      didYouKnow: SPLASH_SCREEN_TIPS[Math.floor(Math.random() * SPLASH_SCREEN_TIPS.length)],
       lastTouchTime: 0,
       maxTouches: 0,
       touchCount: 0,
@@ -63,6 +65,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
         {!showInstruction && <div className="splashMultitouchPlayerCount">
           <h1>{this.state.touchCount}</h1>
         </div>}
+        <div className="splashTips">{this.state.didYouKnow}</div>
         <MultiTouchTrigger onTouchChange={this.onTouchChange.bind(this)} />
       </div>
     );

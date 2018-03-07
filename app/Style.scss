@@ -909,7 +909,6 @@ span.line {
       height: 100%;
     }
 
-
     .splashMultitouchInstruction, .splashMultitouchPlayerCount {
       width: 90%;
       left: 50%;
@@ -991,6 +990,14 @@ span.line {
         line-height: $lineheight !important;
         text-shadow: $white_on_red_text_shadow;
       }
+    }
+    .splashTips {
+      font-size: font(flavor);
+      text-align: center;
+      position: absolute;
+      bottom: size(small);
+      left: size(base);
+      right: size(base);
     }
   }
 
