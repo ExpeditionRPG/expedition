@@ -13,7 +13,7 @@ interface PlayerCounterProps extends React.Props<any> {
 
 class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
   state: {
-    didYouKnow: string;
+    tip: string;
     lastTouchTime: number;
     maxTouches: number;
     touchCount: number;
@@ -23,7 +23,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
   constructor(props: PlayerCounterProps) {
     super(props)
     this.state = {
-      didYouKnow: SPLASH_SCREEN_TIPS[Math.floor(Math.random() * SPLASH_SCREEN_TIPS.length)],
+      tip: SPLASH_SCREEN_TIPS[Math.floor(Math.random() * SPLASH_SCREEN_TIPS.length)],
       lastTouchTime: 0,
       maxTouches: 0,
       touchCount: 0,
@@ -65,7 +65,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
         {!showInstruction && <div className="splashMultitouchPlayerCount">
           <h1>{this.state.touchCount}</h1>
         </div>}
-        <div className="splashTips">{this.state.didYouKnow}</div>
+        <div className="splashTips">{this.state.tip}</div>
         <MultiTouchTrigger onTouchChange={this.onTouchChange.bind(this)} />
       </div>
     );
