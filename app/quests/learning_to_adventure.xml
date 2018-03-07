@@ -88,6 +88,7 @@
           <p>:loot: Playing loot during combat does not count as an action and can be used at any time (unless stated otherwise) - even after you've used an ability.</p>
         </instruction>
         <p>You turn around slowly... crawling in front of you is a spider the size of your head!</p>
+        <p>[learning_spider_png_full]</p>
         <choice text="&lt;i&gt;Eeek!&lt;/i&gt;">
           <roleplay icon="beast" title="Eeek!" data-line="118">
             <p>You scream in surprise; that's a big spider! You try to turn and run, but it's too late... the spider has spotted you!</p>
