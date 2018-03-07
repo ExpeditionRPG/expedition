@@ -50,6 +50,10 @@ function hasUncommittedInFlight(id: number): boolean {
   return (filtered.length > 0 && !filtered[0].committed);
 }
 
+function isSyncing(): boolean {
+  return getStore().getState().remotePlay.syncing;
+}
+
 // This is the base layer of the remote play network framework, implemented
 // using firebase FireStore.
 export class RemotePlayClient extends ClientBase {
@@ -98,7 +102,7 @@ export class RemotePlayClient extends ClientBase {
         if (b.retries >= MAX_RETRIES) {
           // Publish a local rejection if the server hasn't seen the message after many retries.
           this.messageBuffer.splice(i, 1);
-          this.publish({
+          this.handleEvent({
             id: b.id,
             client: this.id,
             instance: this.instance,
@@ -134,7 +138,8 @@ export class RemotePlayClient extends ClientBase {
       this.stats.errorEvents++;
     }
 
-    // Remove message from the retry buffer if it was acknowledged.
+    // Remove message from the retry buffer if an event of a similar ID is mentioned
+    // by the server.
     if (e.id !== null) {
       for (let i = 0; i < this.messageBuffer.length; i++) {
         if (e.id === this.messageBuffer[i].id) {
@@ -148,7 +153,7 @@ export class RemotePlayClient extends ClientBase {
       // We should ignore actions that we don't expect, and instead let the server
       // know we're behind so we can fast-forward appropriately.
       // Note that MULTI_EVENTs have no top-level ID and aren't affected by this check.
-      console.log('Ignoring old ' + e.event.type + ' message with ID ' + e.id);
+      console.log('Ignoring #' + e.id + ' ' + e.event.type + ' (counter at #' + this.committedEventCounter + ')');
       this.sendStatus();
       return;
     }
@@ -202,12 +207,37 @@ export class RemotePlayClient extends ClientBase {
         // Interaction events are not dispatched; UI element subscribers pick up the event on publish().
         break;
       case 'ACTION':
+        // Actions must have IDs.
+        if (e.id === null) {
+          return;
+        }
+
+        // We must be ready to receive the action (it will get retransmitted otherwise)
+        if (isSyncing()) {
+          console.warn('Ignoring #' + e.id + ' (syncing)');
+          return;
+        }
+
+        // If the server is describing an event and we have a similar ID in-flight,
+        // cancel the in-flight event in favor of the server's opinion.
+        // This can happen in edge cases, e.g. client sends event A, connection flaps,
+        // server responds to client status with MULTI_ACTION on event A.
+        if (hasUncommittedInFlight(e.id)) {
+          dispatch({
+            type: 'INFLIGHT_REJECT',
+            id: e.id,
+            error: 'Received remote ACTION with matching id',
+          });
+          this.rejectedEvent(e.id);
+          return;
+        }
+
         const a = getRemoteAction(e.event.name);
         if (!a) {
           console.error('Received unknown remote action ' + e.event.name);
           return;
         } else {
-          console.log('Inbound: ' + e.event.name + '(' + e.event.args + ') ' + e.id);
+          console.log('WS: Inbound #' + e.id + ': ' + e.event.name + '(' + e.event.args + ')');
 
           // Set a "remote" inflight marker so it's identifiable
           // when debugging.
@@ -222,12 +252,18 @@ export class RemotePlayClient extends ClientBase {
         }
         break;
       case 'MULTI_EVENT':
+        // We must be ready to receive the actions (they will get retransmitted otherwise)
+        if (isSyncing()) {
+          console.warn('Ignoring #' + e.id + ' (syncing)');
+          return;
+        }
+
         for (let i = 0; i < e.event.events.length; i++) {
           let parsed: RemotePlayEvent;
           try {
             parsed = JSON.parse(e.event.events[i]);
-            if (!parsed.event) {
-              throw new Error('Invalid MULTI_EVENT json: ' + parsed);
+            if (!parsed.id) {
+              throw new Error('MULTI_EVENT without ID: ' + parsed);
             }
           } catch(e) {
             console.error(e);
@@ -236,13 +272,24 @@ export class RemotePlayClient extends ClientBase {
 
           // Reject the whole event it does not contain events that we need.
           if (i === 0 && parsed.id && parsed.id > this.committedEventCounter + 1) {
-            console.error('MULTI_EVENT starting with ID ' + parsed.id + ' when counter is ' + this.committedEventCounter + '; cannot fast-forward.');
+            console.error('Ignoring MULTI_EVENT starting with #' + parsed.id + ' when counter is #' + this.committedEventCounter);
             return;
           }
 
           // Ignore if it contains events earlier than our committed event counter.
-          if (parsed.id && parsed.id <= this.committedEventCounter) {
+          if (parsed.id !== null && parsed.id <= this.committedEventCounter) {
             continue;
+          }
+
+          // Defer to the server if it knows about an event that we currently think is in-flight.
+          if (parsed.id !== null && hasUncommittedInFlight(parsed.id)) {
+            dispatch({
+              type: 'INFLIGHT_REJECT',
+              id: parsed.id,
+              error: 'Received remote ACTION with matching id',
+            });
+            this.rejectedEvent(parsed.id);
+            return;
           }
 
           this.routeEvent(parsed, dispatch);
@@ -452,7 +499,7 @@ export class RemotePlayClient extends ClientBase {
 
         if (remoteArgs !== null && remoteArgs !== undefined && !localOnly) {
           const argstr = JSON.stringify(remoteArgs);
-          console.log('WS: outbound ' + name + '(' + argstr + ') ' + inflight);
+          console.log('WS: outbound #' + inflight + ': ' + name + '(' + argstr + ')');
           this.sendEvent({type: 'ACTION', name, args: argstr} as ActionEvent);
         }
       } else if (typeof(action) === 'function') {
@@ -468,6 +515,14 @@ export class RemotePlayClient extends ClientBase {
       } else {
         // Pass through regular action objects
         next(action);
+      }
+
+
+      // INFLIGHT_COMPACT actions happen after inconsistent state is discovered
+      // between the server and client and the client state has just been thrown out.
+      // Send a status ping to the server to inform it of our new state.
+      if (action.type === 'INFLIGHT_COMPACT') {
+        this.sendStatus();
       }
     }
   }
