@@ -31,7 +31,7 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
       // Initialize committed state
       return {...state, _committed: stripRemoteStateAndSettings(state)};
     case 'INFLIGHT_COMMIT':
-      console.log('got INFLIGHT_COMMIT');
+      console.log('INFLIGHT_COMMIT #' + (action as InflightCommitAction).id);
       let found = false;
       let consecutiveCommits = 0;
       let consecutive = true;
@@ -71,7 +71,7 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
       // This allows for UX indicators when we eventually mutate state to correct the
       // rejected transaction.
       const id = (action as InflightRejectAction).id;
-      console.log('INFLIGHT_REJECT id ' + id);
+      console.log('INFLIGHT_REJECT #' + id);
       const newInflight = [...state._inflight];
       for (let i = 0; i < newInflight.length; i++) {
         if (newInflight[i].id >= id && newInflight[i].committed === false) {
@@ -92,7 +92,6 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
       console.log('INFLIGHT COMPACT');
       // Run through inflight actions until encountering one that isn't committed. That's our new
       // committed state.
-      // TODO: also count as committed any inflight actions older than ~10 seconds
       let newCommitted = {...state._committed};
       for (let i = 0; i < state._inflight.length && state._inflight[i].committed; i++) {
         newCommitted = combinedReduce(newCommitted, state._inflight[i].action);

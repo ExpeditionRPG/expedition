@@ -1,9 +1,12 @@
 describe('RemotePlay actions', () => {
-  describe('handleRemotePlayEvent', () => {
+  describe('routeEvent', () => {
     it('does not dispatch INTERACTION events');
     it('resolves and dispatches ACTION events');
     it('shows a snackbar on ERROR events');
     it('safely handles unknown events');
+    it('rejects COMMIT when no matching inflight action');
+    it('rejects REJECT when no matching inflight action');
+    it('rejects ACTIONs when id is not an increment');
   });
 
   describe('remotePlayNewSession', () => {
