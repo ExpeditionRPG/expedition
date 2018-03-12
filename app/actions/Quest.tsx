@@ -179,6 +179,13 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
   }
   realtimeUtils.load(docid, function(doc: any) {
     window.location.hash = docid;
+    doc.addEventListener('collaborator_joined', (e: any) => {
+      ReactGA.event({
+        category: 'Background',
+        action: 'COLLABORATOR_JOINED',
+        label: docid,
+      });
+    });
     const md = doc.getModel().getRoot().get('markdown');
     let notes = doc.getModel().getRoot().get('notes');
     let metadata = doc.getModel().getRoot().get('metadata');
