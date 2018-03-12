@@ -12,7 +12,11 @@ Making your own cards is easy! The card creator uses Google Sheets as its data s
 
 ## Issues / Known Bugs / Notes
 
-We recommend disabling your ad blocker for Cards.ExpeditionGame.com - they've been known to block important files from loading (plus, we don't show any ads).
+If you're running into issues, please try the following steps. If they don't work, please add a [new issue here](https://github.com/ExpeditionRPG/expedition-cards/issues/new) and we'll get back to you ASAP!
+
+1. Use Google Chrome (although it generally works in other browsers, we've found Chrome to be the most consistently reliable)
+2. Disable your adblocker for cards.expeditiongame.com
+3. If you're trying to print color files, make sure to enable "show background graphics" in the print dialog
 
 ## Questions? Feedback? Found a bug?
 
