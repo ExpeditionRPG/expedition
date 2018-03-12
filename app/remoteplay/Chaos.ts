@@ -73,6 +73,7 @@ export function chaosWS(ws: WebSocket): WebSocket {
       console.log('CHAOS: fuzzing ws message to server: ' + fuzzmsg);
 
       (ws as any)._receiver.onmessage(fuzzmsg); //{data: fuzzmsg, type: 'test', target: ws});
+
     } else if (oldMessageBuf.length > 0) {
       // Send replay to client
       const replaymsg = oldMessageBuf[Math.floor(Math.random() * oldMessageBuf.length)];
@@ -97,7 +98,7 @@ export function chaosSessionModel(s: SessionModel, session: number, ws: WebSocke
     if (Math.random() < (Config.get('CHAOS_FRACTION') || 0)) {
       console.log('CHAOS: injecting an id\'d event');
       s.getLargestEventID(session).then((latestID) => {
-        s.commitEvent(session, 'chaos', 'chaos', latestID+1, 'CHAOS', '"chaos!"');
+        s.commitEvent(session, 'chaos', 'chaos', latestID+1, 'CHAOS', JSON.stringify({id: latestID+1, event: {type: 'chaos!'}}));
       });
     }
   }, CHAOS_INTERVAL);

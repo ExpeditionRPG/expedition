@@ -86,6 +86,7 @@ export function setupWebsockets(server: any) {
   });
 
   wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
+    ws.on('error', (e: Error) => console.error(e));
     RemotePlayHandlers.websocketSession(models.Session, models.SessionClient, ws, req);
   });
 }

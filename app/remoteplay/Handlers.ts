@@ -176,7 +176,7 @@ function maybeFastForwardClient(rpSession: SessionModel, session: number, client
       if (ws.readyState !== WebSocket.OPEN) {
         return;
       }
-      ws.send(JSON.stringify({client, instance, id: null, event} as RemotePlayEvent));
+      ws.send(JSON.stringify({client, instance, id: null, event} as RemotePlayEvent), (e: Error) => {console.error(e);});
     });
   });
 }
