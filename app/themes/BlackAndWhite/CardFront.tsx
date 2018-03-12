@@ -90,7 +90,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="flavortext">{card.flavortext}</div>
                 <div className="counter counter-horizontal">
                   {icon('health_small')}
-                  {horizontalCounter(MAX_ADVENTURER_HEALTH)}
+                  {horizontalCounter(card.health || MAX_ADVENTURER_HEALTH)}
                 </div>
               </footer>
               {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
