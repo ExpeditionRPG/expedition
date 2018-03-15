@@ -151,7 +151,7 @@
         <e>Captain</e>
         <event on="win" loot="false" xp="false">
           <roleplay title="" data-line="210">
-            <p>Your eats still ringing from the explosion and exhausted from the fight, you slump to the ground and pass out.</p>
+            <p>Your ears still ringing from the explosion and exhausted from the fight, you slump to the ground and pass out.</p>
           </roleplay>
           <roleplay title="A Cheesy Ending" data-line="212">
             <p>Awakening some time later, you find yourself in Gruyere's apothecary house; the local herbalist took you in and treated your wounds, free of charge.</p>
