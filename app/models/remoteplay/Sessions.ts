@@ -101,7 +101,58 @@ export class Session {
     return this.event.getOrderedAfter(session, start);
   }
 
-  public commitEvent(session: number, client: string, instance: string, event: number|null, type: string, json: string): Bluebird<number|null> {
+  public commitEventWithoutID(session: number, client: string, instance: string, type: string, struct: Object): Bluebird<number|null> {
+    // Events by the server may need to be committed without a specific set ID.
+    // In these cases, we pass the full object before serialization and fill it
+    // with the next available event ID.
+    let s: SessionInstance;
+    let id: number;
+    return this.s.transaction((txn: Sequelize.Transaction) => {
+      return this.model.findOne({where: {id: session}, transaction: txn})
+        .then((sessionInstance: SessionInstance) => {
+          if (!sessionInstance) {
+            throw new Error('unknown session');
+          }
+          s = sessionInstance;
+          return this.event.getLast(session);
+        })
+        .then((eventInstance: EventInstance|null) => {
+          if (eventInstance !== null &&
+              eventInstance.get('client') === client &&
+              eventInstance.get('instance') === instance &&
+              eventInstance.get('type') === type &&
+              eventInstance.get('json') === JSON.stringify(struct)) {
+            console.log('Trivial txn: ' + event + ' already committed for client ' + client + ' instance ' + instance);
+            id = s.get('eventCounter');
+            (struct as any).id = id;
+            return false;
+          }
+
+          id = s.get('eventCounter') + 1;
+          (struct as any).id = id;
+          return s.update({eventCounter: id}, {transaction: txn}).then(() => {return true;});
+        })
+        .then((incremented: boolean) => {
+          if (!incremented) {
+            // Skip upsert if we didn't increment the event counter
+            return false;
+          }
+          return this.event.model.upsert({
+            session,
+            client,
+            instance,
+            timestamp: new Date(),
+            id,
+            type,
+            json: JSON.stringify(struct),
+          }, {transaction: txn});
+        });
+    }).then((updated: boolean) => {
+      return id;
+    });
+  }
+
+  public commitEvent(session: number, client: string, instance: string, event: number, type: string, json: string): Bluebird<number|null> {
     let s: SessionInstance;
     return this.s.transaction((txn: Sequelize.Transaction) => {
       return this.model.findOne({where: {id: session}, transaction: txn})
@@ -110,18 +161,10 @@ export class Session {
             throw new Error('unknown session');
           }
           s = sessionInstance;
-          if (event !== null) {
-            return this.event.getById(session, event);
-          } else {
-            return null;
-          }
+          return this.event.getById(session, event);
         })
         .then((eventInstance: EventInstance|null) => {
-          if (event === null) {
-            // Events created by the server (e.g. "combat timer stop")
-            // are assigned event IDs here.
-            event = s.get('eventCounter') + 1;
-          } else if (eventInstance !== null &&
+          if (eventInstance !== null &&
               eventInstance.get('client') === client &&
               eventInstance.get('instance') === instance &&
               eventInstance.get('type') === type &&

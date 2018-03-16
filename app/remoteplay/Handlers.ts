@@ -5,7 +5,7 @@ import {SessionID, toClientKey} from 'expedition-qdl/lib/remote/Session'
 import {Session as SessionModel, SessionInstance} from '../models/remoteplay/Sessions'
 import {EventInstance} from '../models/remoteplay/Events'
 import {SessionClient, SessionClientInstance} from '../models/remoteplay/SessionClients'
-import {ClientID, WaitType, StatusEvent, ActionEvent, RemotePlayEvent, MultiEvent, InflightCommitEvent, InflightRejectEvent} from 'expedition-qdl/lib/remote/Events'
+import {ClientID, WaitType, StatusEvent, ActionEvent, RemotePlayEvent, MultiEvent} from 'expedition-qdl/lib/remote/Events'
 import {maybeChaosWS, maybeChaosSession, maybeChaosSessionClient} from './Chaos'
 import * as url from 'url'
 import * as http from 'http'
@@ -81,14 +81,12 @@ interface WebsocketSessionParams {
 
 function wsParamsFromReq(req: http.IncomingMessage): WebsocketSessionParams|null {
   if (!req || !req.url) {
-    console.error('req.url not defined');
-    console.log(req);
+    console.error('req.url not defined', req);
     return null;
   }
   const parsedURL = url.parse(req.url, true);
   if (!parsedURL || !parsedURL.pathname) {
-    console.error('failed to parse url');
-    console.log(req.url);
+    console.error('failed to parse url ', req.url);
     return null;
   }
   const splitPath = parsedURL.pathname.match(/\/ws\/remoteplay\/v1\/session\/(\d+).*/);
@@ -131,15 +129,11 @@ export function sessionClientCount(sessionID: number): number {
   return instances.length;
 }
 
-function broadcastFrom(session: number, client: string, instance: string, msg: string) {
+function broadcast(session: number, msg: string) {
   if (inMemorySessions[session] === null) {
     return;
   }
   for (const peerID of Object.keys(inMemorySessions[session])) {
-    if (peerID === toClientKey(client, instance) || inMemorySessions[session][peerID] === null) {
-      continue;
-    }
-
     const peerWS = inMemorySessions[session][peerID] && inMemorySessions[session][peerID].socket;
     if (peerWS && peerWS.readyState === WebSocket.OPEN) {
       peerWS.send(msg, (e: Error) => {
@@ -176,7 +170,12 @@ function maybeFastForwardClient(rpSession: SessionModel, session: number, client
       if (ws.readyState !== WebSocket.OPEN) {
         return;
       }
-      ws.send(JSON.stringify({client, instance, id: null, event} as RemotePlayEvent), (e: Error) => {console.error(e);});
+      ws.send(JSON.stringify({
+        client: 'SERVER',
+        instance: Config.get('NODE_ENV'),
+        id: null,
+        event
+      } as RemotePlayEvent), (e: Error) => {console.error(e);});
     });
   });
 }
@@ -227,19 +226,18 @@ function handleClientStatus(rpSession: SessionModel, session: number, client: Cl
       id: null,
     } as RemotePlayEvent;
 
-    rpSession.commitEvent(session, client, instance, null, 'ACTION', JSON.stringify(combatStopEvent))
+    rpSession.commitEventWithoutID(session, client, instance, 'ACTION', combatStopEvent)
       .then((eventCount: number|null) => {
-        // Broadcast to all peers
-        combatStopEvent.id = eventCount;
-        broadcastFrom(session, '', '', JSON.stringify(combatStopEvent));
+        // Broadcast to all peers - note that the event will be set by commitEventWithoutID
+        broadcast(session, JSON.stringify(combatStopEvent));
       })
       .catch((error: Error) => {
-        broadcastFrom(session, '', '', JSON.stringify({
+        broadcast(session, JSON.stringify({
           client: 'SERVER',
           instance: Config.get('NODE_ENV'),
           event: {
             type: 'ERROR',
-            error: error.toString(),
+            error: 'Server error: ' + error.toString(),
           },
           id: null
         } as RemotePlayEvent));
@@ -340,7 +338,7 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
 
     // If it's not a transactioned action, just broadcast it.
     if (event.event.type !== 'ACTION') {
-      broadcastFrom(params.session, params.client, params.instance, msg);
+      broadcast(params.session, msg);
       if (event.event.type === 'STATUS') {
         handleClientStatus(rpSession, params.session, event.client, event.instance, event.event, ws);
       }
@@ -354,49 +352,32 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
       return;
     }
 
-    setTimeout(() => {
-      rpSession.commitEvent(params.session, params.client, params.instance, eventID, event.event.type, msg)
-      .then((result: number|null) => {
-        ws.send(JSON.stringify({...event, event:{
-          type: 'INFLIGHT_COMMIT',
-          id: event.id,
-        }} as RemotePlayEvent), (e: Error) => {
-          console.error(e);
-        });
-
-        if (result !== null) {
-          // Broadcast to all peers, but only if this event was not
-          // previously committed.
-          broadcastFrom(params.session, params.client, params.instance, msg);
-        }
-      })
-      .catch((error: Error) => {
-        let multiEvent: MultiEvent|null = null;
-        makeMultiEvent(rpSession, params.session, eventID).then((e: MultiEvent) => {
-          multiEvent = e;
-        }).catch((e: Error) => {
-          console.error(e);
-        }).finally(() => {
-          ws.send(JSON.stringify({...event, event: {
-            type: 'INFLIGHT_REJECT',
-            id: eventID,
-            error: error.toString(),
-            conflicts: multiEvent,
-          }} as RemotePlayEvent), (e: Error) => {
-            console.error(e);
-          });
-        });
-
+    rpSession.commitEvent(params.session, params.client, params.instance, eventID, event.event.type, msg)
+    .then((result: number|null) => {
+      broadcast(params.session, msg);
+    })
+    .catch((error: Error) => {
+      let multiEvent: MultiEvent|null = null;
+      makeMultiEvent(rpSession, params.session, eventID).then((e: MultiEvent) => {
+        multiEvent = e;
+      }).catch((e: Error) => {
+        console.error('makeMultiEvent Error: ' + e);
+      }).finally(() => {
+        ws.send(JSON.stringify({
+          client: 'SERVER',
+          instance: Config.get('NODE_ENV'),
+          id: null,
+          event: multiEvent,
+        } as RemotePlayEvent), (e: Error) => {console.error(e);});
       });
-    }, Config.get('REMOTE_PLAY_COMMIT_LAG_MILLIS') || 0);
-
+    });
   });
 
   ws.on('close', () => {
     delete inMemorySessions[params.session][toClientKey(params.client, params.instance)];
 
     // Notify other clients this client has disconnected
-    broadcastFrom(params.session, params.client, params.instance, JSON.stringify({
+    broadcast(params.session, JSON.stringify({
       client: params.client,
       instance: params.instance,
       event: {
