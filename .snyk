@@ -1,5 +1,5 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.10.1
+version: v1.10.2
 ignore: {}
 # patches apply the minimum changes required to fix a vulnerability
 patch:
@@ -20,6 +20,8 @@ patch:
         patched: '2018-01-31T13:05:55.489Z'
     - expedition-qdl > karma > socket.io > engine.io > debug:
         patched: '2018-01-31T13:05:55.489Z'
+    - expedition-qdl > karma > log4js > mailgun-js > debug:
+        patched: '2018-03-16T16:50:05.819Z'
   'npm:ms:20170412':
     - expedition-qdl > karma > socket.io > socket.io-client > socket.io-parser > debug > ms:
         patched: '2018-01-31T13:05:55.489Z'
@@ -39,3 +41,7 @@ patch:
         patched: '2018-01-31T13:05:55.489Z'
     - passport-google-id-token > jsonwebtoken > ms:
         patched: '2018-01-31T13:05:55.489Z'
+    - passport-google-id-token > jsonwebtoken > ms:
+        patched: '2018-03-16T16:50:05.819Z'
+    - expedition-qdl > karma > log4js > mailgun-js > debug > ms:
+        patched: '2018-03-16T16:50:05.819Z'
