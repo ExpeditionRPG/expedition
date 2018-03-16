@@ -11,7 +11,7 @@ import {snackbar} from './Snackbar'
 import {user} from './User'
 import {userFeedback} from './UserFeedback'
 import {remotePlay} from './RemotePlay'
-import {inflight, stripRemoteStateAndSettings} from './InFlight'
+import {inflight} from './InFlight'
 import {AppStateWithHistory, AppState, AppStateBase} from './StateTypes'
 import {ReturnAction} from '../actions/ActionTypes'
 import {getNavigator} from '../Globals'
@@ -31,6 +31,7 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     user: user(state.user, action),
     userFeedback: userFeedback(state.userFeedback, action),
     remotePlay: remotePlay(state.remotePlay, action),
+    commitID: state.commitID, // Handled by inflight()
   };
 }
 
@@ -94,10 +95,10 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
       return {
         ...state._history[pastStateIdx],
         _history: state._history.slice(0, pastStateIdx),
-        _inflight: state._inflight, // TODO: Copy?
         _committed: state._committed,
         settings: state.settings, // global settings should not be rewound.
         remotePlay: state.remotePlay, // remote play settings should not be rewound.
+        commitID: state.commitID, // commit ID should not be rewound
         _return: true,
       } as AppStateWithHistory;
     }
@@ -111,7 +112,6 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         ...state,
         _history: undefined,
         _return: undefined,
-        _inflight: undefined,
         _committed: undefined,
         settings: undefined,
         remotePlay: undefined
@@ -119,16 +119,10 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
     }
   }
 
-  // Keep committed state up to date if there are no _inflight actions.
-  const newCommitted = (state && state._inflight && state._inflight.length > 0)
-    ? (state && state._committed)
-    : stripRemoteStateAndSettings(state);
-
   // Run the reducers on the new action
   return {...combinedReduce(state, action),
     _history: history,
-    _inflight: state && state._inflight,
-    _committed: newCommitted,
+    _committed: (state && state._committed),
     // Persist return state on transition actions
     _return: (action.type === 'CARD_TRANSITIONING') ? state._return : false,
   } as AppStateWithHistory;

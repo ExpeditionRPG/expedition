@@ -139,7 +139,7 @@ export interface RemotePlayState {
   session: {secret: string, id: SessionID}|null;
   history: RemotePlaySessionMeta[];
   syncing: boolean;
-  clientStatus: {[client: string]: StatusEvent},
+  clientStatus: {[client: string]: StatusEvent};
 }
 
 // AppStateBase is what's stored in AppState._history.
@@ -158,6 +158,7 @@ export interface AppStateBase {
   snackbar: SnackbarState;
   user: UserState;
   userFeedback: UserFeedbackState;
+  commitID: number;
 }
 
 export interface AppState extends AppStateBase {
@@ -168,6 +169,5 @@ export interface AppState extends AppStateBase {
 export interface AppStateWithHistory extends AppState {
   _history: AppStateBase[];
   _return: boolean;
-  _inflight?: {id: number, committed: boolean, action: Redux.Action}[];
-  _committed?: AppStateWithHistory; // A trailing version of _history, before _inflight actions are applied.
+  _committed?: AppStateWithHistory; // A trailing version of _history, before all in-flight actions are resolved.
 }
