@@ -6,21 +6,31 @@ declare var module: any;
 import {logToBuffer} from './Console'
 
 const logHook = function(f: Function, objects: any[]) {
-  logToBuffer(objects.map((o: any) => {
-    if (o.stack) {
-      return o.toString() + '<<<' + o.stack + '>>>';
-    }
-    const str = o.toString();
-    if (str === '[object Object]') {
-      try {
-        return JSON.stringify(o).substr(0, 512);
-      } catch (e) {
-        return '<un-stringifiable Object>';
+  try {
+    logToBuffer(objects.map((o: any) => {
+      if (o === null) {
+        return 'null';
       }
-    }
-    return o.toString();
-  }).join(' '));
-  return f(...objects);
+      if (o === undefined) {
+        return 'undefined';
+      }
+      if (o.stack) {
+        return o.toString() + '<<<' + o.stack + '>>>';
+      }
+      const str = o.toString();
+      if (str === '[object Object]') {
+        try {
+          return JSON.stringify(o).substr(0, 512);
+        } catch (e) {
+          return '<un-stringifiable Object>';
+        }
+      }
+      return o.toString();
+    }).join(' '));
+    return f(...objects);
+  } catch (e) {
+    f(e);
+  }
 };
 {
   const oldLog = console.log;

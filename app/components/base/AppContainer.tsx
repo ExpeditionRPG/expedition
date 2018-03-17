@@ -35,7 +35,7 @@ interface MainProps extends React.Props<any> {}
 
 interface MainState {
   card: JSX.Element;
-  key: number;
+  key: string;
   theme: CardThemeType;
   transition: TransitionType;
   settings: SettingsType;
@@ -66,7 +66,7 @@ export default class Main extends React.Component<MainProps, {}> {
     if (state === undefined || this.state === undefined || Object.keys(state).length === 0) {
       return {
         card: <SplashScreenContainer/>,
-        key: 0,
+        key: '',
         theme: 'LIGHT',
         transition: 'INSTANT' as TransitionType,
         settings: initialSettings,
@@ -84,7 +84,8 @@ export default class Main extends React.Component<MainProps, {}> {
     }
 
     // After this point, only naviation-related state changes will result in a state change
-    if (!state.card || (this.state && state.card.ts === this.state.key)) {
+    const newKey = state.card && (state.card.ts + state.card.name);
+    if (!state.card || (this.state && newKey === this.state.key)) {
       return this.state;
     }
 
@@ -153,7 +154,7 @@ export default class Main extends React.Component<MainProps, {}> {
 
     return {
       card,
-      key: state.card.ts,
+      key: newKey,
       theme,
       transition,
       settings: state.settings,

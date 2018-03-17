@@ -159,6 +159,7 @@ export interface InflightCommitAction extends Redux.Action {
 export interface InflightRejectAction extends Redux.Action {
   type: 'INFLIGHT_REJECT';
   id: number;
+  error: string;
 }
 
 // Returns a generator of an "executable array" of the original action.

@@ -130,6 +130,7 @@
     "react-tap-event-plugin": "^2.0.1",
     "readable-stream": "^2.0.5",
     "redux": "^3.6.0",
+    "redux-devtools-extension": "^2.13.2",
     "redux-thunk": "^2.1.0",
     "resp-modifier": "^6.0.0",
     "seedrandom": "^2.4.3",
