@@ -78,25 +78,13 @@ export class SessionClient {
     return this.model.upsert({session, client, secret});
   }
 
-  public getSessionsByClient(client: string): Bluebird<EventInstance[]> {
+  public getSessionsByClient(client: string): Bluebird<SessionClientInstance[]> {
     return this.s.authenticate()
       .then(() => {
         return this.model.findAll({
           where: {client},
           order: [['updated_at', 'DESC']],
           limit: 5,
-        });
-      })
-      .then((results: SessionClientInstance[]) => {
-        return Promise.all(results.map((r) => {
-          // Get last action on this session
-          const result: any = {session: r.dataValues.session};
-          return this.event.getLast(result.session);
-        }));
-      })
-      .then((e: EventInstance[]) => {
-        return e.filter((e: EventInstance|null): e is EventInstance => {
-          return e !== null;
         });
       });
   }

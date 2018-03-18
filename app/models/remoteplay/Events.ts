@@ -78,6 +78,27 @@ export class Event {
     });
   }
 
+  public getCurrentQuestTitle(session: number): Bluebird<string|null> {
+    return this.model.findOne({
+      attributes: ['json'],
+      where: {session, json: {$like: '%fetchQuestXML%'}} as any,
+      order: [['created_at', 'DESC']],
+    })
+    .then((e: EventInstance) => {
+      if (e === null) {
+        return null;
+      }
+
+      try {
+        const event = JSON.parse(e.get('json')).event;
+        const args = JSON.parse(event.args);
+        return args.title;
+      } catch (e) {
+        return null;
+      }
+    })
+  }
+
   public getOrderedAfter(session: number, start: number): Bluebird<EventInstance[]> {
     return this.model.findAll({
       where: {session, id: {$gt: start}},

@@ -3,7 +3,7 @@ import * as express from 'express'
 import * as Sequelize from 'sequelize'
 import {SessionID, toClientKey} from 'expedition-qdl/lib/remote/Session'
 import {Session as SessionModel, SessionInstance} from '../models/remoteplay/Sessions'
-import {EventInstance} from '../models/remoteplay/Events'
+import {Event as EventModel, EventInstance} from '../models/remoteplay/Events'
 import {SessionClient, SessionClientInstance} from '../models/remoteplay/SessionClients'
 import {ClientID, WaitType, StatusEvent, ActionEvent, RemotePlayEvent, MultiEvent} from 'expedition-qdl/lib/remote/Events'
 import {maybeChaosWS, maybeChaosSession, maybeChaosSessionClient} from './Chaos'
@@ -14,25 +14,47 @@ import * as WebSocket from 'ws'
 
 export interface RemotePlaySessionMeta {
   id: number;
+  secret: string;
   questTitle: string;
   peerCount: number;
   lastAction: Date;
 }
 
-export function user(sc: SessionClient, req: express.Request, res: express.Response) {
-  sc.getSessionsByClient(res.locals.id).then((lastEvents: EventInstance[]) => {
-    // TODO get current quest name from action = fetchQuestXML
-    const sessionMetadata = lastEvents.map((e: EventInstance) => {
-      return {
-        id: e.get('session'),
-        questTitle: '',
-        peerCount: sessionClientCount(e.get('session')),
-        lastAction: e.get('updated_at'),
+export function user(sc: SessionClient, ev: EventModel, req: express.Request, res: express.Response) {
+  sc.getSessionsByClient(res.locals.id).then((sessions: SessionClientInstance[]) => {
+    return Promise.all(sessions.map((sci: SessionClientInstance) => {
+      const id = sci.get('session');
+      const meta: Partial<RemotePlaySessionMeta> = {
+        id,
+        secret: sci.get('secret'),
+        peerCount: sessionClientCount(id),
       };
-    }).filter((session: RemotePlaySessionMeta) => {
-      return session.peerCount > 0;
-    });
-    res.status(200).send(JSON.stringify({history: sessionMetadata}));
+
+      if (meta.peerCount === undefined || meta.peerCount <= 0) {
+        return null;
+      }
+
+      // Get last action on this session
+      return ev.getLast(id)
+        .then((e: EventInstance) => {
+          if (e === null) {
+            return null;
+          }
+          meta.lastAction = e.get('updated_at');
+          return ev.getCurrentQuestTitle(id);
+        })
+        .then((q: string|null) => {
+          if (q === null) {
+            return null;
+          }
+          meta.questTitle = q;
+          return meta;
+        });
+    }));
+  })
+  .filter((m: RemotePlaySessionMeta|null) => {return m !== null})
+  .then((history: RemotePlaySessionMeta[]) => {
+    res.status(200).send(JSON.stringify({history}));
   })
   .catch((e: Error) => {
     return res.status(500).send(JSON.stringify({error: 'Error looking up user details: ' + e.toString()}));

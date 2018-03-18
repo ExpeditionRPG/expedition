@@ -13,6 +13,7 @@ nconf
     'CLOUD_BUCKET', // Bucket for compiled quest XML
     'DATABASE_URL', // URL of postgres database storing quest metadata, user data, feedback, etc.
     'GOOGLE_SERVICE_KEY', // Service key for cloud storage
+    'SEQUELIZE_LOGGING', // Enable console logging of sequelize SQL queries
 
     'FIREBASE_SERVICE_KEY', // Service key for firebase firestore
 
@@ -49,6 +50,7 @@ nconf
   .defaults({
     PORT: 8081,
     ENABLE_PAYMENT: false,
+    SEQUELIZE_LOGGING: true,
 
     OAUTH2_CLIENT_ID: '',
     OAUTH2_CLIENT_SECRET: '',

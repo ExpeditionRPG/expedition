@@ -30,6 +30,7 @@ class Database {
         dialectOptions: {
           ssl: true,
         },
+        logging: Config.get('SEQUELIZE_LOGGING'),
       });
     } else {
       this.sequelize = s;
