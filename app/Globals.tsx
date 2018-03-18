@@ -1,3 +1,4 @@
+declare var cordova: any;
 declare var device: any;
 declare var ga: any;
 declare var gapi: any;
@@ -24,6 +25,11 @@ export interface ReactWindow extends Window {
     onTokenRefresh: (success: (token: string) => any, failure: (error: string) => any) => void,
     logEvent: (name: string, args: any) => any,
   };
+  cordova?: {
+    InAppBrowser?: {
+      open?: any;
+    }
+  }
   plugins?: {
     insomnia?: {keepAwake: ()=>void},
   };

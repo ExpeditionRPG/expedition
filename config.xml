@@ -76,6 +76,7 @@
         <variable name="REVERSED_CLIENT_ID" value="com.googleusercontent.apps.545484140970-lgcbm3df469kscbngg2iof57muj3p588" />
     </plugin>
     <plugin name="cordova-plugin-hidden-statusbar-overlay" spec="git+https://github.com/katzer/cordova-plugin-hidden-statusbar-overlay.git" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^2.0.2" />
     <plugin name="cordova-plugin-insomnia" spec="git+https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git" />
     <plugin name="cordova-plugin-ios-no-export-compliance" spec="0.0.1-security" />
     <plugin name="cordova-plugin-splashscreen" spec="^4.0.3" />

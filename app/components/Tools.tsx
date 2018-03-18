@@ -62,7 +62,7 @@ const Tools = (props: ToolsProps): JSX.Element => {
         </div>
       </Button>
       <div className="version">Expedition App v{getAppVersion()}</div>
-      <div className="privacy"><a href="https://expeditiongame.com/privacy" target="_blank">Privacy Policy</a></div>
+      <div className="privacy"><a href="#" onClick={() => window.open('https://expeditiongame.com/privacy', '_blank')}>Privacy Policy</a></div>
     </Card>
   );
 }

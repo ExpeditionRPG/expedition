@@ -96,6 +96,7 @@
     "cordova-plugin-fullscreen": "^1.1.0",
     "cordova-plugin-googleplus": "git+https://github.com/EddyVerbruggen/cordova-plugin-googleplus.git",
     "cordova-plugin-hidden-statusbar-overlay": "git+https://github.com/katzer/cordova-plugin-hidden-statusbar-overlay.git",
+    "cordova-plugin-inappbrowser": "^2.0.2",
     "cordova-plugin-insomnia": "git+https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git",
     "cordova-plugin-ios-no-export-compliance": "0.0.1-security",
     "cordova-plugin-splashscreen": "^4.0.3",
@@ -161,7 +162,8 @@
       "cordova-plugin-hidden-statusbar-overlay": {},
       "cordova-plugin-ios-no-export-compliance": {},
       "cordova-plugin-splashscreen": {},
-      "cordova-plugin-device": {}
+      "cordova-plugin-device": {},
+      "cordova-plugin-inappbrowser": {}
     },
     "platforms": [
       "android",
