@@ -26,7 +26,16 @@ export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch: Redux.D
   if (!a.noHistory) {
     dispatch({type: 'PUSH_HISTORY'});
   }
-  dispatch({type: 'NAVIGATE', to: {...a, ts: Date.now()}} as NavigateAction);
+
+  const keylist: string[] = [a.name];
+  if (a.phase) {
+    keylist.push(a.phase);
+  }
+  const line = state.quest && state.quest.node && state.quest.node.elem.attr('data-line');
+  if (line !== undefined) {
+    keylist.push('L' + line);
+  }
+  dispatch({type: 'NAVIGATE', to: {...a, ts: Date.now(), key: keylist.join('|')}} as NavigateAction);
   return a;
 });
 

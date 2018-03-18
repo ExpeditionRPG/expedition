@@ -18,7 +18,7 @@ export interface RemotePlayStateProps {
 
 export interface RemotePlayDispatchProps {
   onConnect: (user: UserState) => void;
-  onReconnect: (user: UserState, id: SessionID) => void;
+  onReconnect: (user: UserState, id: SessionID, secret: string) => void;
   onNewSessionRequest: (user: UserState) => void;
   onContinue: () => void;
 }
@@ -45,7 +45,7 @@ class RemotePlayConnect extends React.Component<RemotePlayProps, {}> {
   render() {
     const history = this.props.remotePlay.history.map((m: RemotePlaySessionMeta, i: number) => {
       return (
-        <Button key={i} onTouchTap={()=>{this.props.onReconnect(this.props.user, m.id)}}>
+        <Button key={i} onTouchTap={()=>{this.props.onReconnect(this.props.user, m.id, m.secret)}}>
           {m.questTitle} ({m.peerCount || 0} peers) - {Moment(m.lastAction).fromNow()}
         </Button>
       );

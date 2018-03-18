@@ -25,28 +25,30 @@ const cheerio = require('cheerio') as CheerioAPI;
 
 // fetch can be used for anything except local files, so anything that might download from file://
 // (aka quests) should use this instead
-export function fetchLocal(url: string, callback: Function) {
-  const request = new XMLHttpRequest();
-  request.onload = function() {
-    return callback(null, request.response);
-  }
-  request.onerror = () => {
-    return callback(new Error('Network error'));
-  }
-  request.open('GET', url);
-  request.send();
+export function fetchLocal(url: string) {
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.onload = function() {
+      resolve(request.response);
+    }
+    request.onerror = () => {
+      reject(new Error('network error'));
+    }
+    request.open('GET', url);
+    request.send();
+  });
 }
 
 export const fetchQuestXML = remoteify(function fetchQuestXML(details: QuestDetails, dispatch: Redux.Dispatch<any>) {
-  fetchLocal(details.publishedurl, (err: Error, result: string) => {
-    if (err) {
-      return dispatch(openSnackbar('Network error: Please check your connection.'));
-    }
+  const promise = fetchLocal(details.publishedurl).then((result: string) => {
     const questNode = cheerio.load(result)('quest');
-    dispatch(loadQuestXML({details, questNode, ctx: defaultContext()}));
+    return dispatch(loadQuestXML({details, questNode, ctx: defaultContext()}));
+  })
+  .catch((e: Error) => {
+    return dispatch(openSnackbar('Network error: Please check your connection.'));
   });
 
-  return details;
+  return {...details, promise};
 });
 
 // for loading quests in the app - Quest Creator injects directly into initQuest

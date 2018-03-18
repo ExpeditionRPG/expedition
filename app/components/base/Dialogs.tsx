@@ -79,6 +79,7 @@ export class RemotePlayStatusDialog extends React.Component<RemotePlayStatusDial
         modal={true}
         contentClassName="dialog"
         open={Boolean(this.props.open)}
+        autoScrollBodyContent={true}
         actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()}>Cancel</FlatButton>,
           <FlatButton className="primary" onTouchTap={() => this.props.onSendReport(this.props.user, this.props.questDetails, this.props.stats)}>Send Report</FlatButton>
         ]}

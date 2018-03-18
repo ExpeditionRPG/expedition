@@ -7,7 +7,7 @@ const historyApi = (typeof history.pushState !== 'undefined');
 
 // ts: 0 solves an obscure bug (instead of Date.now()) where rapidly triggering navigations with undefined states
 // (specifically from the editor) wouldn't work b/c their ts diffs were < DEBOUNCE
-export function card(state: CardState = {name: 'SPLASH_CARD', phase: null, ts: 0}, action: Redux.Action): CardState {
+export function card(state: CardState = {name: 'SPLASH_CARD', phase: null, key: '', ts: 0}, action: Redux.Action): CardState {
   switch (action.type) {
     case 'NAVIGATE':
       const navigateAction = (action as NavigateAction);
@@ -15,7 +15,7 @@ export function card(state: CardState = {name: 'SPLASH_CARD', phase: null, ts: 0
         history.pushState(null, '', window.location.hash || '#');
       }
       const to = navigateAction.to;
-      if (to.ts - state.ts < NAVIGATION_DEBOUNCE_MS && !to.overrideDebounce) {
+      if (to.key === state.key && to.ts - state.ts < NAVIGATION_DEBOUNCE_MS && !to.overrideDebounce) {
         return state;
       }
       return to;

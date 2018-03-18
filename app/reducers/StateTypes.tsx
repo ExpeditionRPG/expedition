@@ -94,6 +94,7 @@ export type CardPhase = TemplatePhase | SearchPhase | RemotePlayPhase | Checkout
 export interface CardState {
   name: CardName;
   ts: number;
+  key: string;
   transitioning?: boolean;
   phase: CardPhase|null;
   overrideDebounce?: boolean;
@@ -130,6 +131,7 @@ export interface UserFeedbackState {
 
 export interface RemotePlaySessionMeta {
   id: number;
+  secret: string;
   questTitle: string;
   peerCount: number;
   lastAction: string;

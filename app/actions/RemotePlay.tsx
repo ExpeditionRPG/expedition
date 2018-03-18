@@ -71,14 +71,18 @@ export function remotePlayConnect(user: UserState, secret: string) {
         return dispatch(openSnackbar('Error parsing session'));
       }
       session = data.session;
-
+    })
+    .then(() => {
+      // Dispatch navigation and settings **before** opening the client connection.
+      // This lets us navigate to the lobby, then immediately receive a MULTI_EVENT
+      // to fast-forward to the current state.
+      dispatch({type: 'REMOTE_PLAY_SESSION', session: {secret, id: session}});
+      return dispatch(toCard({name: 'REMOTE_PLAY', phase: 'LOBBY'}));
+    })
+    .then(() => {
       const c = getRemotePlayClient();
       c.configure(clientID, instanceID);
       return c.connect(session, secret);
-    })
-    .then(() => {
-      dispatch({type: 'REMOTE_PLAY_SESSION', session: {secret, id: session}});
-      dispatch(toCard({name: 'REMOTE_PLAY', phase: 'LOBBY'}));
     })
     .catch((error: Error) => {
       logEvent('remote_play_connect_err', error.toString());

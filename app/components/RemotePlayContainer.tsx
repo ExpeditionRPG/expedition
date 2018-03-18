@@ -24,9 +24,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Remot
       }
       return dispatch(remotePlayConnect(user, secret.toUpperCase()));
     },
-    onReconnect: (user: UserState, id: SessionID) => {
-      console.log('TODO RECONNECT ' + id);
-      dispatch(toCard({name: 'REMOTE_PLAY', phase: 'LOBBY'}));
+    onReconnect: (user: UserState, id: SessionID, secret: string) => {
+      dispatch(remotePlayConnect(user, secret.toUpperCase()));
     },
     onNewSessionRequest: (user: UserState) => {
       return dispatch(remotePlayNewSession(user));

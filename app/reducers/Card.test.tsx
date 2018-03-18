@@ -45,7 +45,7 @@ describe('Card reducer', () => {
       return then + 50;
     });
     Reducer(card).withState({name: 'SEARCH_CARD', ts: then})
-      .expect(toCard({name: 'QUEST_CARD'}))
+      .expect(toCard({name: 'SEARCH_CARD'}))
       .toChangeState({name: 'SEARCH_CARD'});
   });
 

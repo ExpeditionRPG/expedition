@@ -205,17 +205,19 @@ export class RemotePlayClient extends ClientBase {
           const action = a(JSON.parse(e.event.args));
           (action as any)._inflight = 'remote';
 
+          let result: any;
           try {
-            dispatch(local(action));
+            result = dispatch(local(action));
           } finally {
             if (e.id !== null) {
               this.removeFromQueue(e.id);
               this.committedEvent(e.id);
             }
           }
+          return result;
         }
-        break;
       case 'MULTI_EVENT':
+        let chain = Promise.resolve();
         for (let i = 0; i < e.event.events.length; i++) {
           let parsed: RemotePlayEvent;
           try {
@@ -227,7 +229,18 @@ export class RemotePlayClient extends ClientBase {
             console.error(e);
             continue;
           }
-          this.routeEvent(parsed, dispatch);
+
+          // Sometimes we need to handle async actions - e.g. when calls to dispatch() return a promise in the inner routeEvent().
+          // This constructs a chain of promises out of the calls to MULTI_EVENT so that async actions like fetchQuestXML are
+          // allowed to complete before the next action is processed.
+          chain = chain.then((_: any) => {
+            const result: any = this.routeEvent(parsed, dispatch);
+            if (result && typeof(result) === 'object' && result.then) {
+              console.log('Chaining promise from event: ', parsed);
+              return result;
+            }
+            return Promise.resolve();
+          });
         }
         break;
       case 'ERROR':
@@ -411,7 +424,7 @@ export class RemotePlayClient extends ClientBase {
 
   public createActionMiddleware(): Redux.Middleware {
     return ({dispatch, getState}: Redux.MiddlewareAPI<any>) => (next: Redux.Dispatch<any>) => (action: any) => {
-      const dispatchLocal = (a: Redux.Action) => {dispatch(local(a));};
+      const dispatchLocal = (a: Redux.Action) => {return dispatch(local(a));};
 
       if (!action) {
         next(action);
@@ -457,20 +470,26 @@ export class RemotePlayClient extends ClientBase {
           return dispatchLocal(a);
         }, getState);
 
+        // Extract any promises made in the remotified function to allow for us to block to completion.
+        const result = (remoteArgs !== null && remoteArgs !== undefined && remoteArgs.promise) ? remoteArgs.promise : null;
+
         if (remoteArgs !== null && remoteArgs !== undefined && !localOnly) {
+          // Remove any promises made for completion tracking
+          delete remoteArgs.promise;
           const argstr = JSON.stringify(remoteArgs);
           console.log('WS: outbound #' + inflight + ': ' + name + '(' + argstr + ')');
           this.sendEvent({type: 'ACTION', name, args: argstr} as ActionEvent);
         }
+        return result;
       } else if (typeof(action) === 'function') {
         if (inflight !== undefined) {
-          action((a: Redux.Action) => {
+          return action((a: Redux.Action) => {
             (a as any)._inflight = inflight;
-            dispatchLocal(a);
+            return dispatchLocal(a);
           }, getState);
         } else {
           // Dispatch async actions
-          action(dispatchLocal, getState);
+          return action(dispatchLocal, getState);
         }
       } else {
         // Pass through regular action objects
