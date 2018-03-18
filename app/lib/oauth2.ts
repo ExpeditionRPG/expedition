@@ -39,7 +39,9 @@ export const router = express.Router();
 // them to the original URL they requested.
 export function required(req: express.Request, res: express.Response, next: express.NextFunction) {
   if (!req.user) {
-    req.session.oauth2return = req.originalUrl;
+    if (req.session) {
+      req.session.oauth2return = req.originalUrl;
+    }
     return res.redirect('/auth/login');
   }
   next();
@@ -73,9 +75,11 @@ router.post('/auth/google', // LOGIN
     // TODO: Lock down origin
     try {
       req.body = JSON.parse(req.body);
-      req.session.displayName = req.body.name;
-      req.session.image = req.body.image;
-      req.session.email = req.body.email;
+      if (req.session) {
+        req.session.displayName = req.body.name || '';
+        req.session.image = req.body.image || '';
+        req.session.email = req.body.email || '';
+      }
       next();
     } catch (e) {
       res.header('Access-Control-Allow-Origin', req.get('origin'));
@@ -111,7 +115,9 @@ router.post('/auth/logout', // LOGOUT
   (req: express.Request, res: express.Response) => {
     req.logout();
     delete req.user;
-    delete req.session.image;
-    delete req.session.displayName;
+    if (req.session) {
+      delete req.session.image;
+      delete req.session.displayName;
+    }
   }
 );
