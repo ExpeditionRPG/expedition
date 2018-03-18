@@ -56,11 +56,11 @@ export abstract class ClientBase {
     try {
       parsed = JSON.parse(s) as RemotePlayEvent;
     } catch(e) {
-      return {id: null, client: e.client, instance: e.instance, event: {type: 'ERROR', error: 'Failed to parse JSON message'}};
+      return {id: null, client: e.client, instance: e.instance, event: {type: 'ERROR', error: 'Failed to parse JSON message: ' + s}};
     }
 
     if (!parsed.event || !parsed.client || !parsed.instance) {
-      return {id: null, client: parsed.client, instance: parsed.instance, event: {type: 'ERROR', error: 'Received malformed message'}};
+      return {id: null, client: parsed.client, instance: parsed.instance, event: {type: 'ERROR', error: 'Received malformed message: ' + s}};
     }
 
     if (['STATUS', 'INTERACTION', 'ACTION', 'MULTI_EVENT', 'ERROR', 'INFLIGHT_COMMIT', 'INFLIGHT_REJECT'].indexOf(parsed.event.type) < 0) {
