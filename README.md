@@ -30,9 +30,7 @@ npm install --global --production windows-build-tools
 
 `Config.json` contains app secrets that shouldn't be committed to the repo. We've included an example file, `config-example.json`, that shows you what information is needed.
 
-To populate all of the values, you'll need to create a Google Cloud project and connect it to a Postgres database (either run locally or remote).
-
-[TODO](https://github.com/ExpeditionRPG/expedition-quest-creator/issues/226): from a clean installation on a new machine, what config properties are actually required to run? What setup steps are required to generate them?
+To populate all of the values, you'll need to create a Google Cloud project and connect it to a Postgres database (either run locally or remote). If you have any issues with setup, you can create an issue here or email us at contact@expeditiongame.com and we'll help you get them sorted out!
 
 ### Development workflow
 
