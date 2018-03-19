@@ -15,6 +15,8 @@ import SyncIcon from 'material-ui/svg-icons/notification/sync'
 
 import {UserState} from '../reducers/StateTypes'
 
+//TODO INCLUDE VERSION
+
 export interface TopBarStateProps {
   user: UserState;
 };

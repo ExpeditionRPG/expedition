@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'react-redux'
-import {loginUser, setProfileMeta} from './actions/User'
+import {silentLogin, setProfileMeta} from './actions/User'
 import {setSnackbar} from './actions/Snackbar'
 import MainContainer from './components/MainContainer'
 import {store} from './Store'
@@ -38,10 +38,10 @@ ReactGA.initialize('UA-47408800-7');
 ReactGA.pageview('/');
 
 // Try silently logging in
-// 10/10/2017: Also avoids popup blockers by making future login attempts
-// Trigger directly from the user action, rather than needing to load files
 window.gapi.load('client,drive-realtime,drive-share', () => {
-  store.dispatch(loginUser(false));
+  store.dispatch(silentLogin(() => {
+    console.error('TODO');
+  }));
 });
 
 // alert user if they try to close the page with unsaved changes

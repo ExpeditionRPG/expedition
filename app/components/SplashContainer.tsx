@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
 import Splash, {SplashDispatchProps} from './Splash'
-import {loginUser} from '../actions/User'
+import {login} from '../actions/User'
 import {AppState, UserState} from '../reducers/StateTypes'
 
 const ReactGA = require('react-ga') as any;
@@ -19,7 +19,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Splas
         action: 'LOGIN',
         label: 'splashscreen' + position,
       });
-      dispatch(loginUser(true));
+      dispatch(login((user: UserState) => {
+        console.error('TODO');
+      }));
     },
   };
 }
