@@ -1,5 +1,5 @@
 export const NUMBER = 416;
-export const NAME = `Lines within combat block must be events or enemies, not freestanding text`;
+export const NAME = `Lines within combat card must be events or enemies, not freestanding text`;
 export const DESCRIPTION = ``;
 
 // TODO fixme; need to check if line is bulleted in QDL before trying to .extractBulleted

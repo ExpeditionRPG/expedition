@@ -1,5 +1,5 @@
 export const NUMBER = 413;
-export const NAME = `Could not parse block header`;
+export const NAME = `Could not parse card header`;
 export const DESCRIPTION = `Generally caused by an invalid JSON annotation`;
 
 // TODO doesn't actually error
