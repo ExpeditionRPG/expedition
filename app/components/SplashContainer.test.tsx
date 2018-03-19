@@ -1,0 +1,3 @@
+describe('SplashContainer', () => {
+  // TODO
+});

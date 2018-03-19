@@ -1,0 +1,3 @@
+describe('Snackbar action', () => {
+  // TODO
+});
