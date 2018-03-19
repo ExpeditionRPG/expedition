@@ -42,7 +42,7 @@ export class BlockRenderer {
       if (block.render) {
         // Only the blocks within choices should be rendered at this point.
         log.err(
-          'roleplay blocks cannot contain indented sections that are not choices',
+          'roleplay cards cannot contain indented sections that are not choices',
           '411',
           blocks[0].startLine
         );
@@ -184,7 +184,7 @@ export class BlockRenderer {
       if (block.render) {
         if (!currEvent) {
           log.err(
-            'found inner block of combat block without an event bullet',
+            'found inner card of combat card without an event bullet',
             '415',
             block.startLine
           );
@@ -208,7 +208,7 @@ export class BlockRenderer {
         const extractedEvent = (evt) ? Object.assign({}, evt, {event: []}) : null;
         if (!extractedEvent || !extractedEvent.text) {
           log.err(
-            'lines within combat block must be events or enemies, not freestanding text',
+            'lines within combat card must be events or enemies, not freestanding text',
             '416',
             block.startLine + j
           );
@@ -284,7 +284,7 @@ export class BlockRenderer {
         quest = questBlock.render;
       } else {
         // Error here. We can still handle null quests in the renderer.
-        log.err('root block must be a quest header', '421', 0);
+        log.err('root card must be a quest header', '421', 0);
         quest = this.renderer.toQuest({title: 'Error'}, -1);
       }
     } else {
@@ -338,7 +338,7 @@ export class BlockRenderer {
       };
     } catch(e) {
       if (log) {
-        log.err('could not parse block header', '413');
+        log.err('could not parse card header', '413');
       }
       return null;
     }

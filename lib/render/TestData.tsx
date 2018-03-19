@@ -288,7 +288,7 @@ stuff
 **end**`;
 
 data.noHeaderError = `ERROR L0:
-root block must be a quest header
+root card must be a quest header
 URL: 421`;
 
 data.emptyXML = `<quest title="Error">

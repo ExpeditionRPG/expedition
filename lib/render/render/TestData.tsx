@@ -131,11 +131,11 @@ failed to parse bulleted line (check your JSON)
 URL: 412
 
 ERROR L3:
-lines within combat block must be events or enemies, not freestanding text
+lines within combat card must be events or enemies, not freestanding text
 URL: 416
 
 ERROR L2:
-found inner block of combat block without an event bullet
+found inner card of combat card without an event bullet
 URL: 415
 
 ERROR L0:
@@ -159,7 +159,7 @@ tier must be a positive number
 URL: 418`;
 
 data.combatBadParseLog = `ERROR L0:
-could not parse block header
+could not parse card header
 URL: 413
 
 ERROR L0:
@@ -185,7 +185,7 @@ failed to parse bulleted line (check your JSON)
 URL: 412
 
 ERROR L5:
-roleplay blocks cannot contain indented sections that are not choices
+roleplay cards cannot contain indented sections that are not choices
 URL: 411`;
 
 export default data;

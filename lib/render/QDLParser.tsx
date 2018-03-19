@@ -277,7 +277,7 @@ export class QDLParser {
     if (headerLine[0] === '#') {
       if (blocks.length !== 1) {
         log.err(
-          'quest block group cannot contain multiple blocks',
+          'quest card group cannot contain multiple cards',
           '423'
         );
       }
