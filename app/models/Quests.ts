@@ -313,6 +313,7 @@ export class Quest {
         };
         if (majorRelease) {
           updateValues.questversionlastmajor = updateValues.questversion;
+          updateValues.created = new Date();
         }
         return quest.update(updateValues);
       });
@@ -346,7 +347,7 @@ export class Quest {
           return (f.get('questversion') >= quest.get('questversionlastmajor'));
         }).map((f: FeedbackInstance) => {
           if (f.get('rating') === undefined || f.get('rating') === null) {
-            // typescript isn't quite smart enough to realize we already filtered 
+            // typescript isn't quite smart enough to realize we already filtered
             // out any null ratings. We add this here to appease it.
             throw Error('Failed to filter out null ratings');
           }
