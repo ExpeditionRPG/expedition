@@ -28,6 +28,8 @@
     </gap:plugin>
     <preference name="android-minSdkVersion" value="22" />
     <preference name="deployment-target" value="9.0.0" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="webviewbounce" value="false" />
     <platform name="android">
         <allow-intent href="market:*" />
         <icon height="36" src="www/images/icon/36x36.png" width="36" />
