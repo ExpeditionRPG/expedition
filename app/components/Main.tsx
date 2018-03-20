@@ -1,19 +1,27 @@
 import * as React from 'react'
 import FlatButton from 'material-ui/FlatButton'
 import Snackbar from 'material-ui/Snackbar'
-
+import Drawer from 'material-ui/Drawer'
+import MenuItem from 'material-ui/MenuItem'
 import DialogsContainer from './DialogsContainer'
 import SplashContainer from './SplashContainer'
 import TopBarContainer from './TopBarContainer'
-import {SnackbarState} from '../reducers/StateTypes'
+import FeedbackViewContainer from './views/FeedbackViewContainer'
+import QuestsViewContainer from './views/QuestsViewContainer'
+import UsersViewContainer from './views/UsersViewContainer'
+import {SnackbarState, ViewType} from '../reducers/StateTypes'
 
 export interface MainStateProps {
   loggedIn: boolean;
   snackbar: SnackbarState;
+  drawer: boolean;
+  view: ViewType;
 };
 
 export interface MainDispatchProps {
   onSnackbarClose: () => void;
+  onDrawerClose: () => void;
+  onViewChange: (view: ViewType) => void;
 }
 
 interface MainProps extends MainStateProps, MainDispatchProps {}
@@ -25,12 +33,32 @@ const Main = (props: MainProps): JSX.Element => {
     );
   }
 
+  let view: JSX.Element;
+  switch(props.view) {
+    case 'USERS':
+      view = <UsersViewContainer/>;
+      break;
+    case 'QUESTS':
+      view = <QuestsViewContainer/>;
+      break;
+    case 'FEEDBACK':
+      view = <FeedbackViewContainer/>;
+      break;
+    default:
+      throw new Error('Unimplemented view ' + props.view);
+  }
+
   return (
     <div className="main">
       <TopBarContainer/>
       <DialogsContainer/>
+      <Drawer open={props.drawer} docked={false} onRequestChange={(open) => props.onDrawerClose()}>
+        <MenuItem onTouchTap={() => props.onViewChange('USERS')}>Users</MenuItem>
+        <MenuItem onTouchTap={() => props.onViewChange('QUESTS')}>Quests</MenuItem>
+        <MenuItem onTouchTap={() => props.onViewChange('FEEDBACK')}>Feedback</MenuItem>
+      </Drawer>
       <div className="contents">
-        TODO contents here
+        {view}
       </div>
       <Snackbar
         className="editor_snackbar"

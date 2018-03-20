@@ -1,7 +1,11 @@
-import {SetDialogAction} from './ActionTypes'
+import {SetDialogAction, ToggleDrawerAction} from './ActionTypes'
 import {DialogIDType} from '../reducers/StateTypes'
 
 const ReactGA = require('react-ga') as any;
+
+export function toggleDrawer(): ToggleDrawerAction {
+  return {type: 'TOGGLE_DRAWER'};
+}
 
 export function setDialog(dialog: DialogIDType, shown: boolean, annotations?: number[]): SetDialogAction {
   return {type: 'SET_DIALOG', dialog, shown, annotations};

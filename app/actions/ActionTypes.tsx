@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {UserState, DialogIDType, SnackbarState} from '../reducers/StateTypes'
+import {UserState, DialogIDType, SnackbarState, ViewType} from '../reducers/StateTypes'
 
 export const SIGN_IN: string = 'SIGN_IN';
 export const SIGN_OUT: string = 'SIGN_OUT';
@@ -18,4 +18,13 @@ export interface SetDialogAction extends Redux.Action {
   annotations?: number[];
 }
 
+export interface ToggleDrawerAction extends Redux.Action {
+  type: 'TOGGLE_DRAWER';
+}
+
 export interface SnackbarSetAction extends SnackbarState {type: 'SNACKBAR_SET'}
+
+export interface SetViewAction extends Redux.Action {
+  type: 'SET_VIEW';
+  view: ViewType;
+}

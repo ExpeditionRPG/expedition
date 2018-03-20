@@ -1,6 +1,7 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
 
+import {toggleDrawer} from '../actions/Dialogs'
 import {logoutUser} from '../actions/User'
 import {AppState, UserState} from '../reducers/StateTypes'
 import TopBar, {TopBarStateProps, TopBarDispatchProps} from './TopBar'
@@ -16,6 +17,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): TopBa
     onUserDialogRequest: (user: UserState) => {
       dispatch(logoutUser());
     },
+    onMenuIconTap: () => {
+      dispatch(toggleDrawer());
+    }
   };
 }
 

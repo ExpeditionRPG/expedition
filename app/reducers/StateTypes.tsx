@@ -1,4 +1,5 @@
-// TODO: Change dialogs
+// TODO: Change dialogs. Add single-quest and single-user dialogs.
+export type ViewType = 'USERS' | 'QUESTS' | 'FEEDBACK';
 export type DialogIDType = 'ANNOTATION_DETAIL' | 'PUBLISHING' | 'UNPUBLISHED';
 
 export interface DialogsState {
@@ -9,6 +10,7 @@ export interface DialogsState {
     UNPUBLISHED: boolean;
     [key: string]: boolean;
   }
+  drawer: boolean;
 }
 
 export interface SnackbarState {
@@ -27,8 +29,13 @@ export interface UserState {
   email: string;
 }
 
+export interface ViewState {
+  view: ViewType;
+}
+
 export interface AppState {
   dialogs: DialogsState;
   user: UserState;
   snackbar: SnackbarState;
+  view: ViewState;
 }

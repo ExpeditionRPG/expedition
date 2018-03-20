@@ -36,7 +36,7 @@ const Splash = (props: any): JSX.Element => {
         />
       </div>
       <div className="body">
-        TODO
+        Splash page!
       </div>
     </div>
   );

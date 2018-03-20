@@ -9,6 +9,7 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar'
 
+import MenuIcon from 'material-ui/svg-icons/navigation/menu'
 import AlertError from 'material-ui/svg-icons/alert/error'
 import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down'
 import SyncIcon from 'material-ui/svg-icons/notification/sync'
@@ -23,6 +24,7 @@ export interface TopBarStateProps {
 
 export interface TopBarDispatchProps {
   onUserDialogRequest: (user: UserState)=>void;
+  onMenuIconTap: ()=>void;
 }
 
 interface TopBarProps extends TopBarStateProps, TopBarDispatchProps {}
@@ -35,7 +37,7 @@ const TopBar = (props: TopBarProps): JSX.Element => {
     <span className="quest_app_bar">
       <AppBar
         title={questTitle}
-        showMenuIconButton={false}
+        iconElementLeft={<IconButton onTouchTap={() => props.onMenuIconTap()}><MenuIcon/></IconButton>}
         iconElementRight={
           <div className="appBarRight">
             <span className="email">{props.user.email}</span>

@@ -6,6 +6,7 @@ import {setSnackbar} from './actions/Snackbar'
 import MainContainer from './components/MainContainer'
 import {store} from './Store'
 import {VERSION} from './Constants'
+import {UserState} from './reducers/StateTypes'
 
 // Material UI theming
 import theme from './Theme'
@@ -35,12 +36,10 @@ injectTapEventPlugin();
 const ReactGA = require('react-ga') as any;
 ReactGA.initialize('UA-47408800-7');
 
-ReactGA.pageview('/');
-
 // Try silently logging in
 window.gapi.load('client,drive-realtime,drive-share', () => {
-  store.dispatch(silentLogin(() => {
-    console.error('TODO');
+  store.dispatch(silentLogin((user: UserState) => {
+    store.dispatch(setProfileMeta(user));
   }));
 });
 
