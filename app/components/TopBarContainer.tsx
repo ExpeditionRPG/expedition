@@ -9,6 +9,7 @@ import TopBar, {TopBarStateProps, TopBarDispatchProps} from './TopBar'
 const mapStateToProps = (state: AppState, ownProps: any): TopBarStateProps => {
   return {
     user: state.user,
+    view: state.view.view,
   };
 }
 

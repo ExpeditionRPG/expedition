@@ -5,7 +5,9 @@ import {AppState} from '../../reducers/StateTypes'
 import QuestsView, {QuestsViewStateProps, QuestsViewDispatchProps} from './QuestsView'
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestsViewStateProps => {
-  return {};
+  return {
+    list: state.view.quests,
+  };
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestsViewDispatchProps => {

@@ -29,9 +29,40 @@ export interface UserState {
   email: string;
 }
 
+export interface FeedbackEntry {
+  partition: string;
+  quest: {id: string, title: string};
+  user: {id: string, email: string};
+  rating: number;
+  text: string;
+}
+
+export interface UserEntry {
+  id: string;
+  email: string;
+  name: string;
+  loot_points: number;
+  last_login: Date;
+}
+
+export interface QuestEntry {
+  id: string;
+  title: string;
+  partition: string;
+  ratingavg: number;
+  ratingcount: number;
+  user: {id: string, email: string};
+  published: 'PUBLIC'|'PRIVATE'|'NOT PUBLISHED';
+}
+
 export interface ViewState {
   view: ViewType;
+  feedback: FeedbackEntry[];
+  users: UserEntry[];
+  quests: QuestEntry[];
 }
+
+
 
 export interface AppState {
   dialogs: DialogsState;

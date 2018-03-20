@@ -15,7 +15,7 @@ const Splash = (props: any): JSX.Element => {
     <div className="main splash">
       <div className="splash_app_bar">
         <AppBar
-          title="Expedition Quest Creator"
+          title="Expedition Admin Dashboard"
           showMenuIconButton={false}
           iconElementRight={
             <div className="appBarRight">
@@ -36,7 +36,7 @@ const Splash = (props: any): JSX.Element => {
         />
       </div>
       <div className="body">
-        Splash page!
+        TODO: Splash Page
       </div>
     </div>
   );

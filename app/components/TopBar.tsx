@@ -14,11 +14,12 @@ import AlertError from 'material-ui/svg-icons/alert/error'
 import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down'
 import SyncIcon from 'material-ui/svg-icons/notification/sync'
 
-import {UserState} from '../reducers/StateTypes'
+import {UserState, ViewType} from '../reducers/StateTypes'
 
 //TODO INCLUDE VERSION
 
 export interface TopBarStateProps {
+  view: ViewType;
   user: UserState;
 };
 
@@ -31,7 +32,7 @@ interface TopBarProps extends TopBarStateProps, TopBarDispatchProps {}
 
 const TopBar = (props: TopBarProps): JSX.Element => {
   const loginText = 'Logged in as ' + props.user.displayName;
-  const questTitle = 'TITLE HERE';
+  const questTitle = props.view;
 
   return (
     <span className="quest_app_bar">

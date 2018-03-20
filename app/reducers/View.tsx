@@ -4,6 +4,9 @@ import {ViewState} from './StateTypes'
 
 export const defaultView: ViewState = {
   view: 'FEEDBACK',
+  feedback: [{partition: 'expedition-public', quest: {id: '129348', title: 'test quest'}, user: {id: '12345', email: 'asdf@ghkjl.com'}, rating: 5, text: 'Test feedback'}],
+  users: [{id: '12345', email: 'asdf@ghjkl.com', name: 'Test user', loot_points: 5, last_login: new Date()}],
+  quests: [{id: '129348', title: 'test quest', partition: 'expedition-public', ratingavg: 3.5, ratingcount: 10, user: {id: '12345', email: 'author@test.com'}, published: 'PUBLIC'}],
 };
 
 export function view(state: ViewState = defaultView, action: Redux.Action): ViewState {

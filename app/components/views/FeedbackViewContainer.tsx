@@ -5,7 +5,9 @@ import {AppState} from '../../reducers/StateTypes'
 import FeedbackView, {FeedbackViewStateProps, FeedbackViewDispatchProps} from './FeedbackView'
 
 const mapStateToProps = (state: AppState, ownProps: any): FeedbackViewStateProps => {
-  return {};
+  return {
+    list: state.view.feedback,
+  };
 }
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): FeedbackViewDispatchProps => {
