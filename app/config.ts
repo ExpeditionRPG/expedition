@@ -45,12 +45,16 @@ nconf
 
     // Specify prod or dev environment.
     'NODE_ENV',
+
+    // Users allowed to access the admin pages
+    'SUPER_USER_IDS',
   ])
   .file({ file: CONFIG_PATH })
   .defaults({
     PORT: 8081,
     ENABLE_PAYMENT: false,
     SEQUELIZE_LOGGING: true,
+    SUPER_USER_IDS: [],
 
     OAUTH2_CLIENT_ID: '',
     OAUTH2_CLIENT_SECRET: '',

@@ -8,6 +8,7 @@ import * as Stripe from './Stripe'
 import {models} from './models/Database'
 import * as WebSocket from 'ws';
 import * as http from 'http';
+import {installRoutes as installAdminRoutes} from './admin/Routes'
 
 const Cors = require('cors');
 
@@ -71,6 +72,8 @@ Router.get('/remoteplay/v1/user', limitCors, requireAuth, (req, res) => {RemoteP
 Router.post('/remoteplay/v1/new_session', sessionLimiter, limitCors, requireAuth, (req, res) => {RemotePlayHandlers.newSession(models.Session, req, res);});
 Router.post('/remoteplay/v1/connect', limitCors, requireAuth, (req, res) => {RemotePlayHandlers.connect(models.Session, models.SessionClient, req, res);});
 Router.post('/stripe/checkout', limitCors, (req, res) => {Stripe.checkout(req, res);});
+
+installAdminRoutes(Router);
 
 export function setupWebsockets(server: any) {
   const wss = new WebSocket.Server({
