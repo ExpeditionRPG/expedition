@@ -22,7 +22,7 @@ function createAppStore() {
   const middleware = [getRemotePlayClient().createActionMiddleware()];
 
   const composeEnhancers = composeWithDevTools({
-    actionsBlacklist: ['REMOTE_PLAY_CLIENT_STATUS'],
+    actionsBlacklist: ['REMOTE_PLAY_CLIENT_STATUS', 'CARD_TRANSITIONING'],
   });
   installStore(createStore(expeditionApp,  composeEnhancers(applyMiddleware(...middleware))));
 
