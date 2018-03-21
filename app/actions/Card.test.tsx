@@ -5,7 +5,7 @@ import {RemotePlayClient} from '../RemotePlay'
 import {Action} from '../Testing'
 
 describe('Card action', () => {
-  let client: any;
+  let client: RemotePlayClient;
   let mockStore: any;
   beforeEach(() => {
     client = new RemotePlayClient();

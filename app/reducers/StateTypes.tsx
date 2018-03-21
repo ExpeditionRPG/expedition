@@ -130,6 +130,11 @@ export interface UserFeedbackState {
   text: string;
 }
 
+export interface RemotePlaySessionType {
+  secret: string;
+  id: SessionID;
+}
+
 export interface RemotePlaySessionMeta {
   id: number;
   secret: string;
@@ -139,7 +144,7 @@ export interface RemotePlaySessionMeta {
 }
 
 export interface RemotePlayState {
-  session: {secret: string, id: SessionID}|null;
+  session: RemotePlaySessionType|null;
   history: RemotePlaySessionMeta[];
   syncing: boolean;
   clientStatus: {[client: string]: StatusEvent};

@@ -4,7 +4,7 @@ import {toCard} from './Card'
 import {handleFetchErrors} from './Web'
 import {remotePlaySettings} from '../Constants'
 import {LocalAction, NavigateAction, RemotePlayClientStatus} from './ActionTypes'
-import {UserState} from '../reducers/StateTypes'
+import {RemotePlaySessionMeta, UserState} from '../reducers/StateTypes'
 import {logEvent} from '../Main'
 import {openSnackbar} from '../actions/Snackbar'
 import {RemotePlayEvent, StatusEvent} from 'expedition-qdl/lib/remote/Events'
@@ -34,7 +34,7 @@ export function remotePlayNewSession(user: UserState) {
     .then((response: Response) => {
       return response.json();
     })
-    .then((data: any) => {
+    .then((data: {secret: string}) => {
       if (!data.secret) {
         return dispatch(openSnackbar('Error parsing new session secret'));
       }
@@ -48,7 +48,7 @@ export function remotePlayNewSession(user: UserState) {
 }
 
 export function remotePlayConnect(user: UserState, secret: string) {
-  let session = '';
+  let sessionID = '';
   const clientID = user.id.toString();
   const instanceID = Date.now().toString();
 
@@ -66,23 +66,23 @@ export function remotePlayConnect(user: UserState, secret: string) {
     .then((response: Response) => {
       return response.json();
     })
-    .then((data: any) => {
+    .then((data: {session: string}) => {
       if (!data.session) {
         return dispatch(openSnackbar('Error parsing session'));
       }
-      session = data.session;
+      sessionID = data.session;
     })
     .then(() => {
       // Dispatch navigation and settings **before** opening the client connection.
       // This lets us navigate to the lobby, then immediately receive a MULTI_EVENT
       // to fast-forward to the current state.
-      dispatch({type: 'REMOTE_PLAY_SESSION', session: {secret, id: session}});
+      dispatch({type: 'REMOTE_PLAY_SESSION', session: {secret, id: sessionID}});
       return dispatch(toCard({name: 'REMOTE_PLAY', phase: 'LOBBY'}));
     })
     .then(() => {
       const c = getRemotePlayClient();
       c.configure(clientID, instanceID);
-      return c.connect(session, secret);
+      return c.connect(sessionID, secret);
     })
     .catch((error: Error) => {
       logEvent('remote_play_connect_err', error.toString());
@@ -108,7 +108,7 @@ export function loadRemotePlay(user: UserState) {
     .then((response: Response) => {
       return response.json();
     })
-    .then((data: any) => {
+    .then((data: {history: RemotePlaySessionMeta[]}) => {
       dispatch({type: 'REMOTE_PLAY_HISTORY', history: data.history});
       dispatch(toCard({name: 'REMOTE_PLAY', phase: 'CONNECT'}));
     })

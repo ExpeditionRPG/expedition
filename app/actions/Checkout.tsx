@@ -8,8 +8,6 @@ import {authSettings} from '../Constants'
 import {logEvent} from '../Main'
 import {CheckoutState, UserState} from '../reducers/StateTypes'
 
-declare var window:any;
-
 
 export function checkoutSetState(delta: any) {
   return (dispatch: Redux.Dispatch<any>): any => {

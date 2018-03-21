@@ -13,7 +13,7 @@ export function fetchAnnouncements() {
     .then((response: Response) => {
       return response.json();
     })
-    .then((data: any) => {
+    .then((data: {message: string, link: string}) => {
       if (data !== null && data.message !== null) {
         dispatch(setAnnouncement(true, data.message, data.link));
       }

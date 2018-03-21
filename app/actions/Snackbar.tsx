@@ -3,8 +3,6 @@ import {setDialog} from './Dialog'
 import {getAppVersion, getDevicePlatform} from '../Globals'
 import {getStore} from '../Store'
 
-declare var window:any;
-
 export function closeSnackbar(): SnackbarCloseAction {
   return {type: 'SNACKBAR_CLOSE'};
 }

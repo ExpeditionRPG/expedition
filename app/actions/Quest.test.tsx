@@ -2,7 +2,6 @@ import {initQuest} from './Quest'
 import {initialState} from '../reducers/Quest'
 import {defaultContext} from '../cardtemplates/Template'
 
-declare var require:any;
 const cheerio = require('cheerio') as CheerioAPI;
 
 describe('Quest action', () => {
