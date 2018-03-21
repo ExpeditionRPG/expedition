@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import {QuestEntry} from '../../reducers/StateTypes'
+import {QuestEntry} from 'expedition-api/app/admin/QueryTypes'
 import {
   Table,
   TableBody,
@@ -26,7 +26,7 @@ const QuestsView = (props: QuestsViewProps): JSX.Element => {
       <TableRow key={i}>
         <TableRowColumn>{entry.partition}</TableRowColumn>
         <TableRowColumn>{entry.title}</TableRowColumn>
-        <TableRowColumn>{entry.published}</TableRowColumn>
+        <TableRowColumn>{entry.visibility}</TableRowColumn>
         <TableRowColumn>{entry.ratingavg}/5 ({entry.ratingcount})</TableRowColumn>
         <TableRowColumn>{entry.user.email}</TableRowColumn>
       </TableRow>
@@ -39,7 +39,7 @@ const QuestsView = (props: QuestsViewProps): JSX.Element => {
         <TableRow>
           <TableHeaderColumn>Partition</TableHeaderColumn>
           <TableHeaderColumn>Title</TableHeaderColumn>
-          <TableHeaderColumn>Published</TableHeaderColumn>
+          <TableHeaderColumn>Visibility</TableHeaderColumn>
           <TableHeaderColumn>Rating</TableHeaderColumn>
           <TableHeaderColumn>Author</TableHeaderColumn>
         </TableRow>

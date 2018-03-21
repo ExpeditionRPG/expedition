@@ -2,6 +2,7 @@ import * as React from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'react-redux'
 import {silentLogin, setProfileMeta} from './actions/User'
+import {feedbackQuery} from './actions/Web'
 import {setSnackbar} from './actions/Snackbar'
 import MainContainer from './components/MainContainer'
 import {store} from './Store'
@@ -36,10 +37,18 @@ injectTapEventPlugin();
 const ReactGA = require('react-ga') as any;
 ReactGA.initialize('UA-47408800-7');
 
+// Pass credentials to API server despite cross-origin
+$.ajaxSetup({
+  xhrFields: {
+    withCredentials: true
+  }
+});
+
 // Try silently logging in
 window.gapi.load('client,drive-realtime,drive-share', () => {
   store.dispatch(silentLogin((user: UserState) => {
     store.dispatch(setProfileMeta(user));
+    store.dispatch(feedbackQuery({}));
   }));
 });
 
@@ -56,12 +65,6 @@ window.FirebasePlugin = {
   logEvent: console.log,
 };
 
-// Pass credentials to API server despite cross-origin
-$.ajaxSetup({
-  xhrFields: {
-    withCredentials: true
-  }
-});
 
 render(
   <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
