@@ -44,6 +44,7 @@ export interface EndSettings {
 export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'DETAILS' | 'SEARCH' | 'PRIVATE';
 
 export interface SearchSettings {
+  id?: string;
   text?: string;
   age?: number;
   order?: string;

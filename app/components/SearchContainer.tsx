@@ -40,7 +40,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
     },
     onQuest: (quest: QuestDetails) => {
       dispatch(viewQuest({quest}));
-      dispatch(toCard({name: 'SEARCH_CARD', phase: 'DETAILS'}));
     },
     onPlay: (quest: QuestDetails) => {
       dispatch(fetchQuestXML(quest));

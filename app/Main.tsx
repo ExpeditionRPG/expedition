@@ -54,6 +54,7 @@ import {fetchAnnouncements} from './actions/Announcement'
 import {audioPause, audioResume} from './actions/Audio'
 import {toPrevious} from './actions/Card'
 import {setDialog} from './actions/Dialog'
+import {searchAndPlay} from './actions/Search'
 import {openSnackbar} from './actions/Snackbar'
 import {silentLogin} from './actions/User'
 import {getStore} from './Store'
@@ -204,6 +205,14 @@ function setupGoogleAnalytics() {
   setGA(ReactGA);
 }
 
+// URL hashes link directly to a quest, so download it and start playing immediately
+function handleUrlHash() {
+  const hash = (window.location.hash || '#').substring(1);
+  if (hash.length > 10) {
+    getStore().dispatch(searchAndPlay(hash));
+  }
+}
+
 export function init() {
   const window = getWindow();
   const document = getDocument();
@@ -267,6 +276,7 @@ export function init() {
   setupGoogleAnalytics(); // before anything else that might log in the user
   setupEventLogging();
   setupHotReload();
+  handleUrlHash();
 
   render();
 
