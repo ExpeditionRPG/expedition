@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {SetViewAction, SetViewFeedbackAction} from '../actions/ActionTypes'
+import {SetViewAction, SetViewFeedbackAction, SetViewQuestsAction, SetViewUsersAction} from '../actions/ActionTypes'
 import {ViewState} from './StateTypes'
 
 export const defaultView: ViewState = {
@@ -15,6 +15,10 @@ export function view(state: ViewState = defaultView, action: Redux.Action): View
       return {...state, view: (action as SetViewAction).view};      
     case 'SET_VIEW_FEEDBACK':
       return {...state, feedback: (action as SetViewFeedbackAction).entries};
+    case 'SET_VIEW_QUESTS':
+      return {...state, quests: (action as SetViewQuestsAction).entries};
+    case 'SET_VIEW_USERS':
+      return {...state, users: (action as SetViewUsersAction).entries};
     default:
       return state;
   }

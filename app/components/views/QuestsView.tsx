@@ -27,7 +27,7 @@ const QuestsView = (props: QuestsViewProps): JSX.Element => {
         <TableRowColumn>{entry.partition}</TableRowColumn>
         <TableRowColumn>{entry.title}</TableRowColumn>
         <TableRowColumn>{entry.visibility}</TableRowColumn>
-        <TableRowColumn>{entry.ratingavg}/5 ({entry.ratingcount})</TableRowColumn>
+        <TableRowColumn>{(entry.ratingavg === null) ? 'None' : (entry.ratingavg + ' (' + entry.ratingcount + ')')}</TableRowColumn>
         <TableRowColumn>{entry.user.email}</TableRowColumn>
       </TableRow>
     );
@@ -40,7 +40,7 @@ const QuestsView = (props: QuestsViewProps): JSX.Element => {
           <TableHeaderColumn>Partition</TableHeaderColumn>
           <TableHeaderColumn>Title</TableHeaderColumn>
           <TableHeaderColumn>Visibility</TableHeaderColumn>
-          <TableHeaderColumn>Rating</TableHeaderColumn>
+          <TableHeaderColumn>Avg Rating</TableHeaderColumn>
           <TableHeaderColumn>Author</TableHeaderColumn>
         </TableRow>
       </TableHeader>

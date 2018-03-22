@@ -2,7 +2,7 @@ import * as React from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'react-redux'
 import {silentLogin, setProfileMeta} from './actions/User'
-import {feedbackQuery} from './actions/Web'
+import {feedbackQuery, questsQuery, usersQuery} from './actions/Web'
 import {setSnackbar} from './actions/Snackbar'
 import MainContainer from './components/MainContainer'
 import {store} from './Store'
@@ -49,6 +49,8 @@ window.gapi.load('client,drive-realtime,drive-share', () => {
   store.dispatch(silentLogin((user: UserState) => {
     store.dispatch(setProfileMeta(user));
     store.dispatch(feedbackQuery({}));
+    store.dispatch(questsQuery({}));
+    store.dispatch(usersQuery({}));
   }));
 });
 
