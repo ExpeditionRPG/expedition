@@ -2,6 +2,7 @@ import * as express from 'express'
 import * as Handlers from './Handlers'
 import Config from '../config'
 import {models} from '../models/Database'
+import {limitCors} from '../lib/cors'
 
 // We store auth details in res.locals. If there's no stored data there, the user is not logged in.
 function requireAdminAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
@@ -17,10 +18,10 @@ function requireAdminAuth(req: express.Request, res: express.Response, next: exp
 }
 
 export function installRoutes(router: express.Router) {
-  router.post('/admin/feedback/query', requireAdminAuth, (req, res) => {Handlers.queryFeedback(models.Feedback, req, res);});
-  router.post('/admin/feedback/modify', requireAdminAuth, (req, res) => {Handlers.modifyFeedback(models.Feedback, req, res);});
-  router.post('/admin/quest/query', requireAdminAuth, (req, res) => {Handlers.queryQuest(models.Quest, req, res);});
-  router.post('/admin/quest/modify', requireAdminAuth, (req, res) => {Handlers.modifyQuest(models.Quest, req, res);});
-  router.post('/admin/user/query', requireAdminAuth, (req, res) => {Handlers.queryUser(models.User, req, res);});
-  router.post('/admin/user/modify', requireAdminAuth, (req, res) => {Handlers.modifyUser(models.User, req, res);});
+  router.post('/admin/feedback/query', requireAdminAuth, limitCors, (req, res) => {Handlers.queryFeedback(models.Feedback, models.Quest, models.User, req, res);});
+  router.post('/admin/feedback/modify', requireAdminAuth, limitCors, (req, res) => {Handlers.modifyFeedback(models.Feedback, req, res);});
+  router.post('/admin/quest/query', requireAdminAuth, limitCors, (req, res) => {Handlers.queryQuest(models.Quest, req, res);});
+  router.post('/admin/quest/modify', requireAdminAuth, limitCors, (req, res) => {Handlers.modifyQuest(models.Quest, req, res);});
+  router.post('/admin/user/query', requireAdminAuth, limitCors, (req, res) => {Handlers.queryUser(models.User, req, res);});
+  router.post('/admin/user/modify', requireAdminAuth, limitCors, (req, res) => {Handlers.modifyUser(models.User, req, res);});
 }
