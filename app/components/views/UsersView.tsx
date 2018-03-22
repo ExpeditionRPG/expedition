@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import {UserEntry} from '../../reducers/StateTypes'
+import {UserEntry} from 'expedition-api/app/admin/QueryTypes'
 import {
   Table,
   TableBody,
