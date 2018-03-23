@@ -7,8 +7,8 @@ export function toggleDrawer(): ToggleDrawerAction {
   return {type: 'TOGGLE_DRAWER'};
 }
 
-export function setDialog(dialog: DialogIDType, shown: boolean, annotations?: number[]): SetDialogAction {
-  return {type: 'SET_DIALOG', dialog, shown, annotations};
+export function setDialog(dialog: DialogIDType): SetDialogAction {
+  return {type: 'SET_DIALOG', dialog};
 }
 
 /*

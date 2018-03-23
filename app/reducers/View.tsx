@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {SetViewAction, SetViewFeedbackAction, SetViewQuestsAction, SetViewUsersAction} from '../actions/ActionTypes'
+import {SetViewAction, SetViewFeedbackAction, SetViewQuestsAction, SetViewUsersAction, SelectRowAction} from '../actions/ActionTypes'
 import {ViewState} from './StateTypes'
 
 export const defaultView: ViewState = {
@@ -7,6 +7,7 @@ export const defaultView: ViewState = {
   feedback: [{partition: 'expedition-public', quest: {id: '129348', title: 'test quest'}, user: {id: '12345', email: 'asdf@ghkjl.com'}, rating: 5, text: 'Test feedback'}],
   users: [{id: '12345', email: 'asdf@ghjkl.com', name: 'Test user', loot_points: 5, last_login: new Date()}],
   quests: [{id: '129348', title: 'test quest', partition: 'expedition-public', ratingavg: 3.5, ratingcount: 10, user: {id: '12345', email: 'author@test.com'}, visibility: 'PUBLIC'}],
+  selected: {user: null, quest: null, feedback: null},
 };
 
 export function view(state: ViewState = defaultView, action: Redux.Action): ViewState {
@@ -19,6 +20,9 @@ export function view(state: ViewState = defaultView, action: Redux.Action): View
       return {...state, quests: (action as SetViewQuestsAction).entries};
     case 'SET_VIEW_USERS':
       return {...state, users: (action as SetViewUsersAction).entries};
+    case 'SELECT_ROW':
+      const sra = action as SelectRowAction;
+      return {...state, selected: {...state.selected, [sra.table]: sra.row}};
     default:
       return state;
   }

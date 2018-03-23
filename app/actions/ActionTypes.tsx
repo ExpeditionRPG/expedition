@@ -13,7 +13,6 @@ export interface SetProfileMetaAction {
 export interface SetDialogAction extends Redux.Action {
   type: 'SET_DIALOG';
   dialog: DialogIDType;
-  shown: boolean;
 
   // For annotation detail dialog only
   annotations?: number[];
@@ -43,4 +42,10 @@ export interface SetViewQuestsAction extends Redux.Action {
 export interface SetViewUsersAction extends Redux.Action {
   type: 'SET_VIEW_USERS';
   entries: UserEntry[];
+}
+
+export interface SelectRowAction extends Redux.Action {
+  type: 'SELECT_ROW';
+  table: 'feedback'|'users'|'quests';
+  row: number|null;
 }
