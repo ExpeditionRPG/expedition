@@ -12,9 +12,11 @@ import {
 
 export interface QuestsViewStateProps {
   list: QuestEntry[];
+  selected: number|null;
 }
 
 export interface QuestsViewDispatchProps {
+  onRowSelect: (row: number) => any;
 }
 
 export interface QuestsViewProps extends QuestsViewStateProps, QuestsViewDispatchProps {}
@@ -23,24 +25,24 @@ const QuestsView = (props: QuestsViewProps): JSX.Element => {
 
   const rows = props.list.map((entry, i) => {
     return (
-      <TableRow key={i}>
+      <TableRow key={i} selected={i === props.selected}>
         <TableRowColumn>{entry.partition}</TableRowColumn>
         <TableRowColumn>{entry.title}</TableRowColumn>
         <TableRowColumn>{entry.visibility}</TableRowColumn>
-        <TableRowColumn>{entry.ratingavg}/5 ({entry.ratingcount})</TableRowColumn>
+        <TableRowColumn>{(entry.ratingavg === null) ? 'None' : (entry.ratingavg + ' (' + entry.ratingcount + ')')}</TableRowColumn>
         <TableRowColumn>{entry.user.email}</TableRowColumn>
       </TableRow>
     );
   });
 
   return (
-    <Table>
+    <Table onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}} selectable={false}>
       <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
         <TableRow>
           <TableHeaderColumn>Partition</TableHeaderColumn>
           <TableHeaderColumn>Title</TableHeaderColumn>
           <TableHeaderColumn>Visibility</TableHeaderColumn>
-          <TableHeaderColumn>Rating</TableHeaderColumn>
+          <TableHeaderColumn>Avg Rating</TableHeaderColumn>
           <TableHeaderColumn>Author</TableHeaderColumn>
         </TableRow>
       </TableHeader>

@@ -2,16 +2,10 @@ import {FeedbackEntry, UserEntry, QuestEntry} from 'expedition-api/app/admin/Que
 
 // TODO: Change dialogs. Add single-quest and single-user dialogs.
 export type ViewType = 'USERS' | 'QUESTS' | 'FEEDBACK';
-export type DialogIDType = 'ANNOTATION_DETAIL' | 'PUBLISHING' | 'UNPUBLISHED';
+export type DialogIDType = 'FEEDBACK_DETAILS' | 'QUEST_DETAILS' | 'USER_DETAILS' | 'NONE';
 
 export interface DialogsState {
-  open: {
-    USER: boolean;
-    ERROR: boolean;
-    PUBLISHED: boolean;
-    UNPUBLISHED: boolean;
-    [key: string]: boolean;
-  }
+  open: DialogIDType;
   drawer: boolean;
 }
 
@@ -36,9 +30,8 @@ export interface ViewState {
   feedback: FeedbackEntry[];
   users: UserEntry[];
   quests: QuestEntry[];
+  selected: {feedback: number|null, user: number|null, quest: number|null};
 }
-
-
 
 export interface AppState {
   dialogs: DialogsState;

@@ -12,9 +12,11 @@ import {
 
 export interface UsersViewStateProps {
   list: UserEntry[];
+  selected: number|null;
 }
 
 export interface UsersViewDispatchProps {
+  onRowSelect: (row: number) => any;
 }
 
 export interface UsersViewProps extends UsersViewStateProps, UsersViewDispatchProps {}
@@ -23,7 +25,7 @@ const UsersView = (props: UsersViewProps): JSX.Element => {
 
   const rows = props.list.map((entry, i) => {
     return (
-      <TableRow key={i}>
+      <TableRow key={i} selected={i === props.selected}>
         <TableRowColumn>{entry.email}</TableRowColumn>
         <TableRowColumn>{entry.name}</TableRowColumn>
         <TableRowColumn>{entry.loot_points}</TableRowColumn>
@@ -33,7 +35,7 @@ const UsersView = (props: UsersViewProps): JSX.Element => {
   });
 
   return (
-    <Table>
+    <Table onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}} selectable={false}>
       <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
         <TableRow>
           <TableHeaderColumn>Email</TableHeaderColumn>

@@ -12,9 +12,11 @@ import {
 
 export interface FeedbackViewStateProps {
   list: FeedbackEntry[];
+  selected: number|null;
 }
 
 export interface FeedbackViewDispatchProps {
+  onRowSelect: (row: number) => any;
 }
 
 export interface FeedbackViewProps extends FeedbackViewStateProps, FeedbackViewDispatchProps {}
@@ -23,7 +25,7 @@ const FeedbackView = (props: FeedbackViewProps): JSX.Element => {
 
   const rows = props.list.map((entry, i) => {
     return (
-      <TableRow key={i}>
+      <TableRow key={i} selected={i === props.selected}>
         <TableRowColumn>{entry.partition}</TableRowColumn>
         <TableRowColumn>{entry.quest.title}</TableRowColumn>
         <TableRowColumn>{entry.rating}</TableRowColumn>
@@ -34,7 +36,7 @@ const FeedbackView = (props: FeedbackViewProps): JSX.Element => {
   });
 
   return (
-    <Table>
+    <Table onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}} selectable={false}>
       <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
         <TableRow>
           <TableHeaderColumn>Partition</TableHeaderColumn>
@@ -44,7 +46,7 @@ const FeedbackView = (props: FeedbackViewProps): JSX.Element => {
           <TableHeaderColumn>Email</TableHeaderColumn>
         </TableRow>
       </TableHeader>
-      <TableBody displayRowCheckbox={false}>
+      <TableBody displayRowCheckbox={false} deselectOnClickaway={true}>
         {rows}
       </TableBody>
     </Table>
