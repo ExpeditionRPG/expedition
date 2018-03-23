@@ -13,6 +13,7 @@ export const authSettings = {
   // iOS: (REVERSE_CLIENT_ID) '545484140970-lgcbm3df469kscbngg2iof57muj3p588.apps.googleusercontent.com',
   // Android: '545484140970-qrhcn069bbvae1mub2237h5k32mnp04k.apps.googleusercontent.com',
   stripe: (NODE_ENV === 'production') ? 'pk_live_vcpOgs95UFKNV0kYOwj9JWPp' : 'pk_test_8SATEnwfIx0U2vkomn04kSou',
+  raven: 'https://990df74f1b58424395ec3d3ec6f79b42@sentry.io/420182',
 };
 
 const splitURL = API_HOST.split('/');
@@ -30,7 +31,7 @@ export const FEATURED_QUESTS: QuestDetails[] = [ // Featured quest ids generated
   {id: '0B7K9abSH1xEORjdkMWtTY3ZtNGs', partition: 'expedition-public', title: 'Mistress Malaise', summary: 'Mystery, Misfortune, and a Mistress.', author: 'Scott Martin', publishedurl: 'quests/mistress_malaise.xml', minplayers: 1, maxplayers: 6, mintimeminutes: 30, maxtimeminutes: 60, genre: 'Drama', contentrating: 'Everyone'},
   {id: '0B7K9abSH1xEOUUR1Z0lncm9NRjQ', partition: 'expedition-public', title: 'Dungeon Crawl', summary: 'How deep can you delve?', author: 'Todd Medema', publishedurl: 'quests/dungeon_crawl.xml', minplayers: 1, maxplayers: 6, mintimeminutes: 20, maxtimeminutes: 60, genre: 'Drama', contentrating: 'Everyone'},
 ];
-if (process.env.NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2bTVMdWc4NVk
+if (NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2bTVMdWc4NVk
   FEATURED_QUESTS.unshift({id: '1', title: 'Test quest', summary: 'DEV', author: 'DEV', publishedurl: 'quests/test_quest.xml'});
 }
 

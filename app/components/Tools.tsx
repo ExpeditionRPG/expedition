@@ -1,7 +1,8 @@
 import * as React from 'react'
 import Card from './base/Card'
 import Button from './base/Button'
-import {getAppVersion} from'../Globals'
+import {NODE_ENV} from '../Constants'
+import {getAppVersion} from '../Globals'
 import {SettingsType, UserState} from '../reducers/StateTypes'
 
 export interface ToolsStateProps {
@@ -25,7 +26,7 @@ export interface ToolsProps extends ToolsStateProps, ToolsDispatchProps {}
 const Tools = (props: ToolsProps): JSX.Element => {
   return (
     <Card title="Tools">
-      {process.env.NODE_ENV === 'dev' &&
+      {NODE_ENV === 'dev' &&
         <div>
           <Button onTouchTap={() => props.testMusic()}>Set Music Intensity (user)</Button>
           <Button onTouchTap={() => props.testMusicRandom()}>Set Music Intensity (random)</Button>
@@ -39,10 +40,10 @@ const Tools = (props: ToolsProps): JSX.Element => {
           <div className="summary">You tell the story; the app runs the combat.</div>
         </div>
       </Button>
-      {process.env.NODE_ENV === 'dev' &&
+      {NODE_ENV === 'dev' &&
         <Button remoteID="3" onTouchTap={() => props.onRemotePlaySelect(props.user)}>
           <div className="questButtonWithIcon">
-            <div className="title">Remote Play - Alpha</div>
+            <div className="title">Remote Play - Beta</div>
             <div className="summary">
               {(!props.user || !props.user.loggedIn) ? 'Login and sync' : 'Sync'} your app with friends on another device.
             </div>

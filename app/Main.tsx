@@ -45,11 +45,12 @@ const logHook = function(f: Function, objects: any[]) {
 
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+import * as Raven from 'raven-js'
 import theme from './Theme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
-import {authSettings} from './Constants'
+import {authSettings, NODE_ENV} from './Constants'
 import {fetchAnnouncements} from './actions/Announcement'
 import {audioPause, audioResume} from './actions/Audio'
 import {toPrevious} from './actions/Card'
@@ -70,6 +71,11 @@ import thunk from 'redux-thunk'
 
 const injectTapEventPlugin = require('react-tap-event-plugin');
 const ReactGA = require('react-ga');
+
+Raven.config(authSettings.raven, {
+    release: getAppVersion(),
+    environment: NODE_ENV,
+  }).install();
 
 function setupTapEvents() {
   try {
@@ -187,7 +193,7 @@ function setupHotReload() {
 // disabled during local dev
 declare var ga: any;
 function setupGoogleAnalytics() {
-  if (window.location.hostname === 'localhost') {
+  if (window.location.hostname === 'localhost' || NODE_ENV === 'dev') {
     setGA({
       set: (): void => {},
       event: (): void => {},
@@ -218,82 +224,89 @@ export function init() {
   const document = getDocument();
 
   // Catch and display + log all errors
-  window.onerror = function(message: string, source: string, line: number) {
-    const quest = getStore().getState().quest;
-    if (quest && quest.details && quest.details.id) {
-      message = `Quest: ${quest.details.title}. Error: ${message}.`;
-    }
-    const label = (source) ? `${source} line ${line}` : null;
-    console.error(message, label);
-    logEvent('APP_ERROR', {action: message, label});
-    // Dispatch the snackbar change after resolving intermediate state.
-    // Otherwise, redux handlers may perform strange actions like calling
-    // setState inside of a render() cycle.
-    setTimeout(() => {
-      getStore().dispatch(openSnackbar('Error! Please send feedback.', message + ' Source: ' + label));
-    }, 0);
-    return true;
-  };
-
-  // Alert user if cookies disabled
-  // Based on https://github.com/Modernizr/Modernizr/blob/master/feature-detects/cookies.js
-  try {
-    document.cookie = 'cookietest=1';
-    const ret = document.cookie.indexOf('cookietest=') !== -1;
-    document.cookie = 'cookietest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT';
-    if (!ret) {
-      throw 'Cookies disabled';
-    }
-  } catch (err) {
-    setTimeout(() => {
-      getStore().dispatch(openSnackbar('Please enable cookies for the app to function properly.'));
-    }, 0);
-  }
-
-  // Setup as web platform as default; we might find out later we're an app
-  window.platform = 'web';
-  window.onpopstate = function(e) {
-    getStore().dispatch(toPrevious({}));
-    e.preventDefault();
-  };
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') {
-      getStore().dispatch(audioPause());
-    } else if (document.visibilityState === 'visible') {
-      getStore().dispatch(audioResume());
-    }
-  }, false);
-
-  // Only triggers on app builds
-  document.addEventListener('deviceready', setupDevice, false);
-  // For non-app builds
-  setTimeout(() => {
-    getStore().dispatch(silentLogin({callback: (user: UserState) => { console.log(user); }}));
-  }, 2000);
-
-  setupPolyfills();
-  setupTapEvents();
-  setupGoogleAnalytics(); // before anything else that might log in the user
-  setupEventLogging();
-  setupHotReload();
-  handleUrlHash();
-
-  render();
-
-  // Wait to process settings & dispatch additional UI until render complete
-  getStore().dispatch(fetchAnnouncements());
-  const settings = getStore().getState().settings;
-  if (settings) {
-    const contentSets = (settings || {}).contentSets;
-    for (const set in contentSets) {
-      if (contentSets[set] === null) {
-        getStore().dispatch(setDialog('EXPANSION_SELECT'));
-        break;
+  Raven.context(() => {
+    window.onerror = function(message: string, source: string, line: number) {
+      const quest = (getStore().getState().quest || {}).details || {};
+      Raven.setExtraContext({
+        questName: quest.title,
+        questId: quest.id,
+      });
+      Raven.captureException(new Error(message));
+      if (quest.id) {
+        message = `Quest: ${quest.title}. Error: ${message}.`;
       }
+      const label = (source) ? `${source} line ${line}` : null;
+      console.error(message, label);
+      logEvent('APP_ERROR', {action: message, label});
+      // Dispatch the snackbar change after resolving intermediate state.
+      // Otherwise, redux handlers may perform strange actions like calling
+      // setState inside of a render() cycle.
+      setTimeout(() => {
+        getStore().dispatch(openSnackbar('Error! Please send feedback.', message + ' Source: ' + label));
+      }, 0);
+      return true;
+    };
+
+    // Alert user if cookies disabled
+    // Based on https://github.com/Modernizr/Modernizr/blob/master/feature-detects/cookies.js
+    try {
+      document.cookie = 'cookietest=1';
+      const ret = document.cookie.indexOf('cookietest=') !== -1;
+      document.cookie = 'cookietest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT';
+      if (!ret) {
+        throw 'Cookies disabled';
+      }
+    } catch (err) {
+      setTimeout(() => {
+        getStore().dispatch(openSnackbar('Please enable cookies for the app to function properly.'));
+      }, 0);
     }
-  } else {
-    getStore().dispatch(setDialog('EXPANSION_SELECT'));
-  }
+
+    // Setup as web platform as default; we might find out later we're an app
+    window.platform = 'web';
+    window.onpopstate = function(e) {
+      getStore().dispatch(toPrevious({}));
+      e.preventDefault();
+    };
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        getStore().dispatch(audioPause());
+      } else if (document.visibilityState === 'visible') {
+        getStore().dispatch(audioResume());
+      }
+    }, false);
+
+    // Only triggers on app builds
+    document.addEventListener('deviceready', setupDevice, false);
+    // For non-app builds
+    setTimeout(() => {
+      getStore().dispatch(silentLogin({callback: (user: UserState) => { console.log(user); }}));
+    }, 2000);
+
+    setupPolyfills();
+    setupTapEvents();
+    setupGoogleAnalytics(); // before anything else that might log in the user
+    setupEventLogging();
+    setupHotReload();
+    handleUrlHash();
+
+    render();
+
+    // Wait to process settings & dispatch additional UI until render complete
+    getStore().dispatch(fetchAnnouncements());
+    const settings = getStore().getState().settings;
+    if (settings) {
+      const contentSets = (settings || {}).contentSets;
+      for (const set in contentSets) {
+        if (contentSets[set] === null) {
+          getStore().dispatch(setDialog('EXPANSION_SELECT'));
+          break;
+        }
+      }
+    } else {
+      getStore().dispatch(setDialog('EXPANSION_SELECT'));
+    }
+  });
 }
 
 function render() {

@@ -1,4 +1,5 @@
 import Redux from 'redux'
+import * as Raven from 'raven-js'
 import {remoteify} from './ActionTypes'
 import {toCard} from './Card'
 import {handleFetchErrors} from './Web'
@@ -63,6 +64,7 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
     if (getGA()) {
       getGA().set({ userId: id });
     }
+    Raven.setUserContext({id});
     callback({
       loggedIn: true,
       id,

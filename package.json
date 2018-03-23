@@ -121,6 +121,7 @@
     "nomnom": "^1.8.1",
     "parser": "^0.1.4",
     "promise-polyfill": "^6.0.2",
+    "raven-js": "^3.23.3",
     "react": "^15.4.2",
     "react-addons-css-transition-group": "^15.3.2",
     "react-addons-test-utils": "^15.4.1",
