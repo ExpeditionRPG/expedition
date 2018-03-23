@@ -13,7 +13,6 @@ declare var window: any;
 
 type UserLoginCallback = (user: UserState, err?: string) => any;
 
-
 function loadGapi(callback: (gapi: any, async: boolean) => void) {
   const gapi = getGapi();
   if (!gapi) {

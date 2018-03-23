@@ -1,3 +1,5 @@
+import {QuestDetails} from './reducers/QuestTypes'
+
 declare var window:any;
 export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
 // Should be overriden via env vars to use local server
@@ -20,6 +22,17 @@ export const remotePlaySettings = {
   firstLoadURI: API_HOST + '/remoteplay/v1/user',
   websocketSession: 'ws://' + splitURL[splitURL.length-1] + '/ws/remoteplay/v1/session',
 };
+
+export const FEATURED_QUESTS: QuestDetails[] = [ // Featured quest ids generated from publishing, but don't leave them published!
+  {id: '0B7K9abSH1xEOeEZSVVMwNHNqaFE', partition: 'expedition-public', title: 'Learning to Adventure', summary: 'Your first adventure.', author: 'Todd Medema', publishedurl: 'quests/learning_to_adventure.xml', minplayers: 1, maxplayers: 6, mintimeminutes: 20, maxtimeminutes: 30, genre: 'Drama', contentrating: 'Everyone' },
+  {id: '0B7K9abSH1xEOWVpEV1JGWDFtWmc', partition: 'expedition-public', title: 'Learning 2: The Horror', summary: 'Your first adventure continues with Expedition: The Horror.', author: 'Todd Medema', publishedurl: 'quests/learning_to_adventure_2_the_horror.xml', expansionhorror: true, minplayers: 1, maxplayers: 6, mintimeminutes: 20, maxtimeminutes: 40, genre: 'Drama', contentrating: 'Everyone' },
+  {id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs', partition: 'expedition-public', title: 'Oust Albanus', summary: 'Your party encounters a smelly situation.', author: 'Scott Martin', publishedurl: 'quests/oust_albanus.xml', minplayers: 1, maxplayers: 6, mintimeminutes: 20, maxtimeminutes: 40, genre: 'Comedy', contentrating: 'Everyone'},
+  {id: '0B7K9abSH1xEORjdkMWtTY3ZtNGs', partition: 'expedition-public', title: 'Mistress Malaise', summary: 'Mystery, Misfortune, and a Mistress.', author: 'Scott Martin', publishedurl: 'quests/mistress_malaise.xml', minplayers: 1, maxplayers: 6, mintimeminutes: 30, maxtimeminutes: 60, genre: 'Drama', contentrating: 'Everyone'},
+  {id: '0B7K9abSH1xEOUUR1Z0lncm9NRjQ', partition: 'expedition-public', title: 'Dungeon Crawl', summary: 'How deep can you delve?', author: 'Todd Medema', publishedurl: 'quests/dungeon_crawl.xml', minplayers: 1, maxplayers: 6, mintimeminutes: 20, maxtimeminutes: 60, genre: 'Drama', contentrating: 'Everyone'},
+];
+if (process.env.NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2bTVMdWc4NVk
+  FEATURED_QUESTS.unshift({id: '1', title: 'Test quest', summary: 'DEV', author: 'DEV', publishedurl: 'quests/test_quest.xml'});
+}
 
 export const MAX_ADVENTURER_HEALTH = 12;
 export const MIN_FEEDBACK_LENGTH = 16;

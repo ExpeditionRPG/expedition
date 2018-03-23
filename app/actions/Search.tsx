@@ -3,7 +3,7 @@ import {SearchResponseAction, ViewQuestAction} from './ActionTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {SearchSettings} from '../reducers/StateTypes'
 import {remoteify} from './ActionTypes'
-import {authSettings} from '../Constants'
+import {authSettings, FEATURED_QUESTS} from '../Constants'
 import {toCard} from './Card'
 import {openSnackbar} from '../actions/Snackbar'
 
@@ -40,31 +40,33 @@ export const search = remoteify(function search(a: SearchSettings, dispatch: Red
   return a;
 });
 
-// TODO this doesn't handle featured quests since they don't show up in a DB search
-// Perhaps just manually checks against the featured quests array?
 export const searchAndPlay = remoteify(function searchAndPlay(id: string, dispatch: Redux.Dispatch<any>) {
   const params = {
     id,
     partition: 'expedition-public',
   } as SearchSettings;
-  dispatch(getSearchResults(params, (quests: QuestDetails[], response: any) => {
-    dispatch({
-      type: 'SEARCH_RESPONSE',
-      quests: quests,
-      nextToken: response.nextToken,
-      receivedAt: response.receivedAt,
-      search: {}, // Don't specify search params because this one's weird and uses ID
-    } as SearchResponseAction);
-    if (quests.length === 0) {
-      // TODO better alert / failure UI (dialog)
-      // https://github.com/ExpeditionRPG/expedition-app/issues/625
-      alert('Quest not found, returning to home screen.');
-      dispatch(toCard({name: 'SPLASH_CARD'}));
-    } else {
-      dispatch(viewQuest({quest: quests[0]}));
-    }
-  }));
-
+  const featuredQuest = FEATURED_QUESTS.filter((q: QuestDetails) => q.id === id);
+  if (featuredQuest.length === 1) {
+    dispatch(viewQuest({quest: featuredQuest[0]}));
+  } else {
+    dispatch(getSearchResults(params, (quests: QuestDetails[], response: any) => {
+      dispatch({
+        type: 'SEARCH_RESPONSE',
+        quests: quests,
+        nextToken: response.nextToken,
+        receivedAt: response.receivedAt,
+        search: {}, // Don't specify search params because this one's weird and uses ID
+      } as SearchResponseAction);
+      if (quests.length === 0) {
+        // TODO better alert / failure UI (dialog)
+        // https://github.com/ExpeditionRPG/expedition-app/issues/625
+        alert('Quest not found, returning to home screen.');
+        dispatch(toCard({name: 'SPLASH_CARD'}));
+      } else {
+        dispatch(viewQuest({quest: quests[0]}));
+      }
+    }));
+  }
   return params;
 });
 
