@@ -1,10 +1,10 @@
 import * as React from 'react'
-import Async from 'async'
 import {loadAudioLocalFile} from '../../actions/Audio'
 import {AudioState, CardName, CardPhase, SettingsType} from '../../reducers/StateTypes'
 import {getWindow} from '../../Globals'
 import {logEvent} from '../../Main'
 import {AUDIO_COMMAND_DEBOUNCE_MS} from '../../Constants'
+const eachLimit = require('async/eachLimit');
 
 /* Notes on audio implementation:
 - intensity (0-36) used as baseline for combat situation, and changes slowly (mostly on loop reset).
@@ -230,7 +230,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
         }, []));
       }, []);
       const files = [...SFX_FILES, ...musicFiles];
-      Async.eachLimit(files, 4, (file: string, callback: (err?: Error) => void) => {
+      eachLimit(files, 4, (file: string, callback: (err?: Error) => void) => {
         loadAudioLocalFile(this.ctx, 'audio/' + file + '.mp3', (err: Error|null, buffer: any) => {
           if (err) {
             console.log('Error loading audio file: ' + file);

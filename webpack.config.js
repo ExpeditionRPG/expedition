@@ -53,6 +53,7 @@ const options = {
         'API_HOST': JSON.stringify(process.env.API_HOST || 'http://betaapi.expeditiongame.com'),
       },
     }),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // Don't import bloated Moment locales
     new CopyWebpackPlugin([
       { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
       { from: { glob: 'node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
