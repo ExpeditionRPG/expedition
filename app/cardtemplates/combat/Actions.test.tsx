@@ -14,6 +14,7 @@ const TEST_SETTINGS = {
     horror: false,
   },
   difficulty: 'NORMAL' as DifficultyType,
+  experimental: false,
   fontSize: 'NORMAL' as FontSizeType,
   multitouch: true,
   numPlayers: 3,

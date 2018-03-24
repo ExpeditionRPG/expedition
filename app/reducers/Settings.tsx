@@ -10,6 +10,7 @@ export const initialSettings: SettingsType = {
   autoRoll: getStorageBoolean('autoRoll', false),
   contentSets: getStorageJson('contentSets', {horror: null}) as ContentSetsType,
   difficulty: getStorageString('difficulty', 'NORMAL') as DifficultyType,
+  experimental: getStorageBoolean('experimental', false),
   fontSize: getStorageString('fontSize', 'NORMAL') as FontSizeType,
   multitouch: getStorageBoolean('multitouch', true),
   numPlayers: getStorageNumber('numPlayers', 1),

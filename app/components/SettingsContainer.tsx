@@ -1,6 +1,7 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
 
+import {logEvent} from '../Main'
 import {setDialog} from '../actions/Dialog'
 import {changeSettings} from '../actions/Settings'
 import {AppState, DifficultyType, FontSizeType} from '../reducers/StateTypes'
@@ -34,6 +35,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Setti
     },
     onExpansionSelect: () => {
       dispatch(setDialog('EXPANSION_SELECT'));
+    },
+    onExperimentalChange: (v: boolean) => {
+      logEvent('experimental_settings_changed_to', v.toString());
+      dispatch(changeSettings({experimental: v}));
     },
     onShowHelpChange: (v: boolean) => {
       dispatch(changeSettings({showHelp: v}));

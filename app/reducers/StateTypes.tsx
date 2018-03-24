@@ -72,6 +72,7 @@ export interface SettingsType {
   autoRoll: boolean;
   contentSets: ContentSetsType;
   difficulty: DifficultyType;
+  experimental: boolean;
   fontSize: FontSizeType;
   multitouch: boolean;
   numPlayers: number;

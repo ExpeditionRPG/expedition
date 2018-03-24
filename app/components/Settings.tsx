@@ -13,6 +13,7 @@ export interface SettingsDispatchProps {
   onAutoRollChange: (change: boolean) => void;
   onDifficultyDelta: (difficulty: DifficultyType, i: number) => void;
   onExpansionSelect: () => void;
+  onExperimentalChange: (change: boolean) => void;
   onFontSizeDelta: (idx: number, delta: number) => void;
   onMultitouchChange: (change: boolean) => void;
   onPlayerDelta: (numPlayers: number, i: number) => void;
@@ -91,6 +92,10 @@ const Settings = (props: SettingsProps): JSX.Element => {
       <Picker label="Font Size" value={fontSizeValues[fontSizeIdx]} onDelta={(i: number)=>props.onFontSizeDelta(fontSizeIdx, i)}>
         Takes effect once you leave settings.
       </Picker>
+
+      <Checkbox label="Experimental" value={props.experimental} onChange={props.onExperimentalChange}>
+        {(props.experimental) ? 'Experimental features enabled.' : 'Experimental features disabled.'}
+      </Checkbox>
     </Card>
   );
 }
