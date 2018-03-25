@@ -55,7 +55,7 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
     roundCount: 0,
     numAliveAdventurers: totalPlayerCount,
     tier: tierSum,
-    roundTimeMillis: settings.timerSeconds * 1000 * (PLAYER_TIME_MULT[totalPlayerCount] || 1),
+    roundTimeMillis: settings.timerSeconds * 1000 * (PLAYER_TIME_MULT[settings.numPlayers] || 1),
     ...getDifficultySettings(settings.difficulty),
   }
 }
