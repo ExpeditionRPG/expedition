@@ -46,6 +46,7 @@ const refs = {
   device: (typeof device !== 'undefined') ? device : {platform: null},
   ga: (typeof ga !== 'undefined') ? ga : null,
   gapi: (typeof gapi !== 'undefined') ? gapi : null,
+  history: (typeof history !== 'undefined') ? history : {pushState: () => {return null;}},
   navigator: (typeof navigator !== 'undefined') ? navigator : null,
 };
 
@@ -133,6 +134,10 @@ export function getGA(): any {
 
 export function getGapi(): any {
   return refs.gapi;
+}
+
+export function getHistoryApi(): any {
+  return refs.history;
 }
 
 export function getNavigator(): any {

@@ -14,7 +14,7 @@ import {remotePlay} from './RemotePlay'
 import {inflight} from './InFlight'
 import {AppStateWithHistory, AppState, AppStateBase} from './StateTypes'
 import {ReturnAction} from '../actions/ActionTypes'
-import {getNavigator} from '../Globals'
+import {getHistoryApi, getNavigator} from '../Globals'
 
 function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppState {
   state = state || ({} as AppStateWithHistory);
@@ -42,7 +42,7 @@ function isReturnState(state: AppStateBase, action: ReturnAction): boolean {
 }
 
 export default function combinedReducerWithHistory(state: AppStateWithHistory, action: Redux.Action): AppStateWithHistory {
-  let history: AppStateBase[] = [];
+  let stateHistory: AppStateBase[] = [];
 
   // Manage inflight transactions
   state = inflight(state, action, combinedReduce);
@@ -92,6 +92,11 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         pastStateIdx--;
       }
 
+      // If we're going back to a point where the quest is no longer defined, clear the URL hash
+      if (pastStateIdx === 0 || state._history[pastStateIdx-1].quest.details.id === '') {
+        getHistoryApi().pushState(null, '', '#');
+      }
+
       return {
         ...state._history[pastStateIdx],
         _history: state._history.slice(0, pastStateIdx),
@@ -104,11 +109,11 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
     }
 
     // Create a new array (objects may be shared)
-    history = state._history.slice();
+    stateHistory = state._history.slice();
 
     if (action.type === 'PUSH_HISTORY') {
       // Save a copy of existing state to _history, excluding non-historical fields.
-      history.push({
+      stateHistory.push({
         ...state,
         _history: undefined,
         _return: undefined,
@@ -121,7 +126,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
 
   // Run the reducers on the new action
   return {...combinedReduce(state, action),
-    _history: history,
+    _history: stateHistory,
     _committed: (state && state._committed),
     // Persist return state on transition actions
     _return: (action.type === 'CARD_TRANSITIONING') ? state._return : false,

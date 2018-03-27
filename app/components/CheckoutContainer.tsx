@@ -28,6 +28,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Check
       dispatch(toPrevious({name: 'FEATURED_QUESTS'}));
     },
     onPhaseChange: (phase: CheckoutPhase): void => {
+      logEvent('checkout_phase', phase);
       dispatch(checkoutSetState({phase}));
     },
     onStripeLoad: (stripe: stripe.Stripe): void => {

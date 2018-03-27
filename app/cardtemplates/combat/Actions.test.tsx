@@ -1,4 +1,4 @@
-import {initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta, handleResolvePhase, midCombatChoice} from './Actions'
+import {generateCombatTemplate, initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta, handleResolvePhase, midCombatChoice} from './Actions'
 import {DifficultyType, FontSizeType} from '../../reducers/StateTypes'
 import {defaultContext, renderCardTemplate} from '../Template'
 import {ParserNode} from '../TemplateTypes'
@@ -32,6 +32,21 @@ describe('Combat actions', () => {
     return baseNode.clone();
   }
 
+  describe('generateCombatTemplate', () => {
+    it('Set timer to 10s with two+ players', () => {
+      const result = generateCombatTemplate({...TEST_SETTINGS, numPlayers: 2}, false);
+      expect(result).toEqual(jasmine.objectContaining({
+        roundTimeMillis: 10000,
+      }));
+    });
+    it('Set timer to 20s with one player', () => {
+      const result = generateCombatTemplate({...TEST_SETTINGS, numPlayers: 1}, false);
+      expect(result).toEqual(jasmine.objectContaining({
+        roundTimeMillis: 20000,
+      }));
+    });
+  });
+
   describe('initCombat', () => {
     const actions = Action(initCombat, {settings: TEST_SETTINGS}).execute({node: TEST_NODE.clone()});
 
@@ -60,7 +75,6 @@ describe('Combat actions', () => {
         ],
       }));
     });
-
   });
 
   describe('initCustomCombat', () => {

@@ -20,7 +20,8 @@ import {getStore} from '../../Store'
 
 const cheerio: any = require('cheerio');
 
-function numLocalAndRemotePlayers(settings: SettingsType, rp: RemotePlayState): number {
+// Number of adventurers (such as for damage)
+function numLocalAndRemoteAdventurers(settings: SettingsType, rp: RemotePlayState): number {
   if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
     // Since single player still has two adventurers, the minimum possible is two.
     return Math.max(2, settings.numPlayers);
@@ -34,7 +35,24 @@ function numLocalAndRemotePlayers(settings: SettingsType, rp: RemotePlayState): 
     }
     count += (status.numPlayers || 1);
   }
-  return count;
+  return count || 1;
+}
+
+// Number of fingers
+function numLocalAndRemotePlayers(settings: SettingsType, rp: RemotePlayState): number {
+  if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
+    return settings.numPlayers;
+  }
+
+  let count = 0;
+  for (const c of Object.keys(rp.clientStatus)) {
+    const status = rp.clientStatus[c];
+    if (!status.connected) {
+      continue;
+    }
+    count += (status.numPlayers || 1);
+  }
+  return count || 1;
 }
 
 export function generateCombatTemplate(settings: SettingsType, custom: boolean, node?: ParserNode, getState?: () => AppStateWithHistory): CombatState {
@@ -47,15 +65,16 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
     }
   }
   const remotePlay = (getState) ? getState().remotePlay : getStore().getState().remotePlay;
+  const totalAdventurerCount = numLocalAndRemoteAdventurers(settings, remotePlay);
   const totalPlayerCount = numLocalAndRemotePlayers(settings, remotePlay);
 
   return {
     custom: custom,
     enemies,
     roundCount: 0,
-    numAliveAdventurers: totalPlayerCount,
+    numAliveAdventurers: totalAdventurerCount,
     tier: tierSum,
-    roundTimeMillis: settings.timerSeconds * 1000 * (PLAYER_TIME_MULT[settings.numPlayers] || 1),
+    roundTimeMillis: settings.timerSeconds * 1000 * PLAYER_TIME_MULT[totalPlayerCount],
     ...getDifficultySettings(settings.difficulty),
   }
 }
@@ -398,7 +417,7 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
     combat.numAliveAdventurers = 0;
   }
   a.node = a.node.clone();
-  combat.levelUp = (a.victory) ? (numLocalAndRemotePlayers(a.settings, a.rp) <= a.maxTier) : false;
+  combat.levelUp = (a.victory) ? (numLocalAndRemoteAdventurers(a.settings, a.rp) <= a.maxTier) : false;
 
   const arng = seedrandom.alea(a.seed);
   combat.loot = (a.victory) ? generateLoot(a.maxTier, arng) : [];
@@ -532,7 +551,7 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
     a.rp = getState().remotePlay;
   }
 
-  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), numLocalAndRemotePlayers(a.settings, a.rp));
+  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), numLocalAndRemoteAdventurers(a.settings, a.rp));
   a.node = a.node.clone();
   let combat = a.node.ctx.templates.combat;
   if (!combat) {
