@@ -50,8 +50,8 @@ import theme from './Theme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
-import {authSettings, NODE_ENV} from './Constants'
-import {fetchAnnouncements} from './actions/Announcement'
+import {authSettings, NODE_ENV, UNSUPPORTED_BROWSERS} from './Constants'
+import {fetchAnnouncements, setAnnouncement} from './actions/Announcement'
 import {audioPause, audioResume} from './actions/Audio'
 import {toPrevious} from './actions/Card'
 import {setDialog} from './actions/Dialog'
@@ -59,7 +59,7 @@ import {searchAndPlay} from './actions/Search'
 import {openSnackbar} from './actions/Snackbar'
 import {silentLogin} from './actions/User'
 import {getStore} from './Store'
-import {getAppVersion, getWindow, getGA, getDevicePlatform, getDocument, setGA, setupPolyfills} from './Globals'
+import {getAppVersion, getWindow, getGA, getDevicePlatform, getDocument, getNavigator, setGA, setupPolyfills} from './Globals'
 import {getRemotePlayClient} from './RemotePlay'
 import {UserState} from './reducers/StateTypes'
 import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
@@ -75,6 +75,9 @@ const ReactGA = require('react-ga');
 Raven.config(authSettings.raven, {
     release: getAppVersion(),
     environment: NODE_ENV,
+    shouldSendCallback(data) {
+      return !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent);
+    }
   }).install();
 
 function setupTapEvents() {
@@ -226,14 +229,19 @@ export function init() {
   // Catch and display + log all errors
   Raven.context(() => {
     window.onerror = function(message: string, source: string, line: number) {
-      const quest = (getStore().getState().quest || {}).details || {};
+      const state = getStore().getState();
+      const quest = state.quest || {};
+      const questNode = quest.node && quest.node.elem && quest.node.elem[0];
       Raven.setExtraContext({
-        questName: quest.title,
-        questId: quest.id,
+        questName: quest.details.title,
+        questId: quest.details.id,
+        questCardTitle: (questNode) ? questNode.attribs.title : '',
+        questLine: (questNode) ? questNode.attribs['data-line'] : '',
+        settings: JSON.stringify(state.settings),
       });
       Raven.captureException(new Error(message));
-      if (quest.id) {
-        message = `Quest: ${quest.title}. Error: ${message}.`;
+      if (quest.details.id) {
+        message = `Quest: ${quest.details.title}. Error: ${message}.`;
       }
       const label = (source) ? `${source} line ${line}` : null;
       console.error(message, label);
@@ -293,7 +301,11 @@ export function init() {
     render();
 
     // Wait to process settings & dispatch additional UI until render complete
-    getStore().dispatch(fetchAnnouncements());
+    if (UNSUPPORTED_BROWSERS.test(getNavigator().userAgent)) {
+      getStore().dispatch(setAnnouncement(true, 'Unknown browser. Please use a standard browser like Chrome or Firefox for the best experience.'));
+    } else {
+      getStore().dispatch(fetchAnnouncements());
+    }
     const settings = getStore().getState().settings;
     if (settings) {
       const contentSets = (settings || {}).contentSets;
