@@ -271,7 +271,7 @@ function renderDetails(props: SearchProps): JSX.Element {
         <h2>{quest.title}</h2>
         <div>{quest.summary}</div>
         <div className="author">by {quest.author}</div>
-        {quest.ratingcount && quest.ratingcount >= 1 && <StarRating readOnly={true} value={+ratingAvg} quantity={quest.ratingcount}/>}
+        {(quest.ratingcount && quest.ratingcount >= 1) ? <StarRating readOnly={true} value={+ratingAvg} quantity={quest.ratingcount}/> : ''}
       </div>
       <Button onTouchTap={(e)=>props.onPlay(quest)} remoteID="play">Play</Button>
       <div className="searchDetailsExtended">
