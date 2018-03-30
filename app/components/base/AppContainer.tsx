@@ -81,7 +81,7 @@ export default class Main extends React.Component<MainProps, {}> {
       return {...this.state, remotePlay: state.remotePlay};
     }
 
-    if (state.snackbar.open !== this.state.snackbar.open) {
+    if (state.snackbar && state.snackbar.open !== this.state.snackbar.open) {
       return {...this.state, snackbar: state.snackbar};
     }
 

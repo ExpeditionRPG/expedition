@@ -93,7 +93,8 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
       }
 
       // If we're going back to a point where the quest is no longer defined, clear the URL hash
-      if (pastStateIdx === 0 || state._history[pastStateIdx-1].quest.details.id === '') {
+      if (pastStateIdx === 0 ||
+         (state._history[pastStateIdx-1] && state._history[pastStateIdx-1].quest && state._history[pastStateIdx-1].quest.details.id === '')) {
         getHistoryApi().pushState(null, '', '#');
       }
 
