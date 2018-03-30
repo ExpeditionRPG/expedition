@@ -24,7 +24,8 @@
     ]
   },
   "dependencies": {
-    "@google-cloud/common": "^0.13.4",
+    "@google-cloud/bigquery": "^1.0.0",
+    "@google-cloud/common": "^0.17.0",
     "babel-core": "^6.24.0",
     "bluebird": "^3.5.1",
     "body-parser": "^1.17.2",
