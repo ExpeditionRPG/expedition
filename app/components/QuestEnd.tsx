@@ -43,7 +43,13 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
     const rated = this.props.userFeedback.rating !== undefined && (this.props.userFeedback.rating > 0);
     // TODO ping server to determine if payments are enabled
     // TODO figure out why loading Stripe crashes iOS app
-    const checkoutError = (this.props.platform === 'ios') ? 'Checkout currently disabled on iOS app' : null;
+    let checkoutError: string|null = null;
+    if (this.props.platform === 'ios') {
+      checkoutError = 'Checkout currently disabled on iOS app';
+    }
+    if (!window.Stripe) {
+      checkoutError = 'Tipping temporarily unavailable.';
+    }
     return (
       <Card title={this.props.quest.details.title}>
         <p>We hope you enjoyed <i>{this.props.quest.details.title}</i> by {this.props.quest.details.author}!</p>
@@ -65,7 +71,7 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
             />
           </div>
         }
-        Tip the author and submit your review:
+        Tip the author{this.props.userFeedback.rating && ' and submit your review:'}
         <div className={'tipAmounts ' + (checkoutError === null ? '' : 'checkoutDisabled')}>
           <Button onTouchTap={() => this.props.onTip(checkoutError, 1, this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>
             $1
