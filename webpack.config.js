@@ -89,7 +89,9 @@ const options = {
           tsConfigFile: 'tsconfig.json',
         },
         babel: {
-          presets: ["es2015"],
+          presets: ["es2015", ["env", {
+            "targets": {"browsers": ["last 2 years", "last 3 iOS versions"]}
+          }]],
           cacheDirectory: true,
         },
       },
