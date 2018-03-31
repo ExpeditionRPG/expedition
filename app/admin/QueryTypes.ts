@@ -49,17 +49,22 @@ export interface QuestEntry {
 }
 
 export interface FeedbackMutation {
-  questid?: string;
-  userid?: string;
+  questid: string;
+  userid: string;
   suppress?: boolean;
 }
 
 export interface QuestMutation {
-  questid?: string;
-  visibility: VisibilityType;
+  questid: string;
+  visibility?: VisibilityType;
 }
 
 export interface UserMutation {
-  userid?: string;
-  loot?: number;
+  userid: string;
+  loot_points?: number;
+}
+
+export interface Response {
+  status: 'OK'|'ERROR'
+  error?: string;
 }

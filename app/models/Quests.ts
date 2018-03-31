@@ -1,8 +1,8 @@
 import * as Sequelize from 'sequelize'
 import {Feedback, FeedbackInstance} from './Feedback'
+import {RenderedQuest} from './RenderedQuests'
 import {User, UserAttributes} from './Users'
 
-import * as CloudStorage from '../lib/cloudstorage'
 import * as Mail from '../Mail'
 import * as Bluebird from 'bluebird'
 
@@ -66,6 +66,7 @@ export class Quest {
   protected s: Sequelize.Sequelize;
   protected mc: any;
   protected feedback: Feedback;
+  protected rendered: RenderedQuest;
   protected user: User;
   public model: QuestModel;
 
@@ -127,8 +128,9 @@ export class Quest {
     });
   }
 
-  associate(models: {Feedback: Feedback, User: User}) {
+  associate(models: {Feedback: Feedback, RenderedQuest: RenderedQuest, User: User}) {
     this.feedback = models.Feedback;
+    this.rendered = models.RenderedQuest;
     this.user = models.User;
   }
 
@@ -263,20 +265,6 @@ export class Quest {
         isNew = !Boolean(q);
         quest = q || this.model.build(params);
 
-        const cloudStorageData = {
-          gcsname: userid + '/' + quest.get('id') + '/' + Date.now() + '.xml',
-          buffer: xml
-        };
-
-        // Run the update in parallel with the Datastore model now that we know the update is valid.
-        CloudStorage.upload(cloudStorageData, (err: Error) => {
-          if (err) {
-            console.log(err);
-          }
-        });
-        const publishedurl = CloudStorage.getPublicUrl(cloudStorageData.gcsname);
-        console.log('Uploading to URL ' + publishedurl);
-
         if (isNew && quest.get('partition') === PUBLIC_PARTITION) {
           // If this is a newly published quest, email us!
           // We don't care if this fails.
@@ -317,7 +305,7 @@ export class Quest {
           ...params,
           userid, // Not included in the request - pull from auth
           questversion: (quest.get('questversion') || 0) + 1,
-          publishedurl,
+          publishedurl: `http://quests.expeditiongame.com/raw/${quest.get('partition')}/${quest.get('id')}/${quest.get('questversion')}`,
           tombstone: undefined, // Remove tombstone
           published: new Date(),
         };
@@ -325,6 +313,18 @@ export class Quest {
           updateValues.questversionlastmajor = updateValues.questversion;
           updateValues.created = new Date();
         }
+
+        // Publish to RenderedQuests
+        this.rendered.model.create({
+          partition: params.partition,
+          id: params.id,
+          questversion: updateValues.questversion,
+          xml
+        })
+        .then(() => {
+          console.log(`Stored XML for quest ${params.id} in RenderedQuests`);
+        });
+
         return quest.update(updateValues);
       });
   };

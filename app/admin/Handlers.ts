@@ -5,7 +5,6 @@ import {User, UserInstance} from '../models/Users'
 import * as QT from './QueryTypes'
 
 const QUERY_ROW_LIMIT = 100;
-const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
 
 function validateOrder(body: any) {
   if (body.order && (!body.order.column || !body.order.ascending)) {
@@ -97,7 +96,7 @@ export function queryFeedback(feedback: Feedback, quests: Quest, users: User, re
 
 export function modifyFeedback(feedback: Feedback, req: express.Request, res: express.Response) {
   console.error('Unimplemented');
-  return res.status(500).send(GENERIC_ERROR_MESSAGE);
+  res.status(500).send(JSON.stringify({status: 'ERROR', error: 'Unimplemented'} as QT.Response));
 }
 
 export function queryQuest(quest: Quest, req: express.Request, res: express.Response) {
@@ -157,13 +156,13 @@ export function queryQuest(quest: Quest, req: express.Request, res: express.Resp
     });
   } catch (e) {
     console.error(e);
-    return res.status(500).end('Error reading request.');
+    res.status(500).send(JSON.stringify({status: 'ERROR', error: e.toString()} as QT.Response));
   }
 }
 
 export function modifyQuest(quest: Quest, req: express.Request, res: express.Response) {
   console.error('Unimplemented');
-  return res.status(500).send(GENERIC_ERROR_MESSAGE);
+  res.status(500).send(JSON.stringify({status: 'ERROR', error: 'Unimplemented'} as QT.Response));
 }
 
 export function queryUser(user: User, req: express.Request, res: express.Response) {
@@ -205,11 +204,29 @@ export function queryUser(user: User, req: express.Request, res: express.Respons
     });
   } catch (e) {
     console.error(e);
-    return res.status(500).end('Error reading request.');
+    res.status(500).send(JSON.stringify({status: 'ERROR', error: e.toString()} as QT.Response));
   }
 }
 
 export function modifyUser(user: User, req: express.Request, res: express.Response) {
-  console.error('Unimplemented');
-  return res.status(500).send(GENERIC_ERROR_MESSAGE);
+  try {
+    let body: any;
+    body = JSON.parse(req.body);
+
+    // setLootPoints
+    const q: QT.UserMutation = {
+      userid: body.userid || null,
+      loot_points: body.loot_points || null,
+    };
+
+    if (q.loot_points) {
+      return user.setLootPoints(q.userid, q.loot_points)
+        .then(() => {
+          res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
+        })
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500).send(JSON.stringify({status: 'ERROR', error: e.toString()} as QT.Response));
+  }
 }

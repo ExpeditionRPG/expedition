@@ -9,13 +9,8 @@ nconf
   .argv()
   .env([
     // Quest storage config settings
-    'GCLOUD_PROJECT', // This is the id of your project in the Google Cloud Developers Console.
-    'CLOUD_BUCKET', // Bucket for compiled quest XML
     'DATABASE_URL', // URL of postgres database storing quest metadata, user data, feedback, etc.
-    'GOOGLE_SERVICE_KEY', // Service key for cloud storage
     'SEQUELIZE_LOGGING', // Enable console logging of sequelize SQL queries
-
-    'FIREBASE_SERVICE_KEY', // Service key for firebase firestore
 
     // Feedback email sender config settings
     'MAIL_EMAIL',
@@ -46,6 +41,9 @@ nconf
     // Specify prod or dev environment.
     'NODE_ENV',
 
+    // The URL that points to this server.
+    'API_URL_BASE',
+
     // Users allowed to access the admin pages
     'SUPER_USER_IDS',
   ])
@@ -63,14 +61,10 @@ nconf
 
 // Check for required settings
 const REQUIRED_SETTINGS = [
-  'GCLOUD_PROJECT',
-  'CLOUD_BUCKET',
   'DATABASE_URL',
   'OAUTH2_CLIENT_ID',
   'OAUTH2_CLIENT_SECRET',
   'SESSION_SECRET',
-  'GOOGLE_SERVICE_KEY',
-  'FIREBASE_SERVICE_KEY',
 ];
 
 const missing = [];

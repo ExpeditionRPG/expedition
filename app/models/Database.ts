@@ -1,8 +1,9 @@
 import * as Sequelize from 'sequelize'
-import {AnalyticsEvent, AnalyticsEventModel} from './AnalyticsEvents'
-import {Feedback, FeedbackModel} from './Feedback'
-import {User, UserModel} from './Users'
-import {Quest, QuestModel} from './Quests'
+import {AnalyticsEvent} from './AnalyticsEvents'
+import {Feedback} from './Feedback'
+import {User} from './Users'
+import {Quest} from './Quests'
+import {RenderedQuest} from './RenderedQuests'
 import {Session} from './remoteplay/Sessions'
 import {SessionClient} from './remoteplay/SessionClients'
 import {Event} from './remoteplay/Events'
@@ -15,6 +16,7 @@ export interface Models {
   Feedback: Feedback;
   User: User;
   Quest: Quest;
+  RenderedQuest: RenderedQuest;
   Session: Session;
   SessionClient: SessionClient;
   Event: Event;
@@ -40,6 +42,7 @@ class Database {
       AnalyticsEvent: new AnalyticsEvent(this.sequelize),
       Feedback: new Feedback(this.sequelize),
       Quest: new Quest(this.sequelize),
+      RenderedQuest: new RenderedQuest(this.sequelize),
       User: new User(this.sequelize),
 
       // For remote play:

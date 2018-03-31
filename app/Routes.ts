@@ -51,7 +51,7 @@ Router.get('/healthcheck', limitCors, Handlers.healthCheck);
 Router.get('/announcements', limitCors, Handlers.announcement);
 Router.post('/analytics/:category/:action', limitCors, (req, res) => {Handlers.postAnalyticsEvent(models.AnalyticsEvent, req, res);});
 Router.post('/quests', limitCors, requireAuth, (req, res) => {Handlers.search(models.Quest, req, res);});
-Router.get('/raw/:quest', limitCors, (req, res) => {Handlers.questXMLRedirect(models.Quest, req, res);});
+Router.get('/raw/:partition/:quest/:version', limitCors, (req, res) => {Handlers.questXMLHandler(models.Quest, models.RenderedQuest, req, res);});
 Router.post('/publish/:id', publishLimiter, limitCors, requireAuth, (req, res) => {Handlers.publish(models.Quest, req, res);});
 Router.post('/unpublish/:quest', limitCors, requireAuth, (req, res) => {Handlers.unpublish(models.Quest, req, res);});
 Router.post('/quest/feedback/:type', limitCors, (req, res) => {Handlers.feedback(models.Feedback, req, res);});

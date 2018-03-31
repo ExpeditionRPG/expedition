@@ -63,6 +63,14 @@ export class User {
     this.ae = models.AnalyticsEvent;
   }
 
+  public setLootPoints(id: string, loot_points: number) {
+    return this.s.authenticate()
+      .then(() => {return this.model.findOne({where: {id}})})
+      .then((result: UserInstance) => {
+        return result.update({loot_points});
+      });
+  }
+
   public upsert(user: UserAttributes): Bluebird<UserAttributes> {
     // TODO: refactor this - upsert shouldn't be subscribing people to a mailing list, or 
     // calculating derived values and returning them.

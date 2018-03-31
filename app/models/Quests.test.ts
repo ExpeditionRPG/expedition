@@ -6,7 +6,7 @@ describe('quest', () => {
   let q: Quest;
 
   const insertedQuest: QuestAttributes = {
-    partition: 'testpartition',
+    partition: 'expedition-public',
     author: 'testauthor',
     contentrating: 'mature',
     engineversion: '1.0.0',
@@ -34,7 +34,7 @@ describe('quest', () => {
   };
 
   const expansionQuest: QuestAttributes = {
-    partition: 'testpartition',
+    partition: 'expedition-public',
     author: 'testauthor',
     contentrating: 'mature',
     engineversion: '1.0.0',
@@ -85,7 +85,7 @@ describe('quest', () => {
     });
 
     it('returns full quest data', () => {
-      return q.search('', {partition: 'testpartition'})
+      return q.search('', {partition: 'expedition-public'})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(1);
           expect((results[0] as any).dataValues).toEqual(insertedQuest);
@@ -93,7 +93,7 @@ describe('quest', () => {
     });
 
     it('does not return expansions if unspecified', () => {
-      return q.search('', {partition: 'testpartition'})
+      return q.search('', {partition: 'expedition-public'})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(1);
           expect((results[0] as any).dataValues).toEqual(insertedQuest);
@@ -101,7 +101,7 @@ describe('quest', () => {
     });
 
     it('returns expansion quests first if specified', () => {
-      return q.search('', {partition: 'testpartition', expansions: ['horror']})
+      return q.search('', {partition: 'expedition-public', expansions: ['horror']})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(2);
           expect((results[0] as any).dataValues).toEqual(expansionQuest);

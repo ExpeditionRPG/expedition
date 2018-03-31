@@ -2,8 +2,10 @@ import * as express from 'express'
 import {AnalyticsEvent} from './models/AnalyticsEvents'
 import {Feedback, FeedbackType, FeedbackAttributes} from './models/Feedback'
 import {Quest, QuestInstance, QuestAttributes, QuestSearchParams, MAX_SEARCH_LIMIT, PUBLIC_PARTITION, PRIVATE_PARTITION} from './models/Quests'
+import {RenderedQuest, RenderedQuestInstance} from './models/RenderedQuests'
 import * as Joi from 'joi'
-import * as Promise from 'bluebird';
+import * as Promise from 'bluebird'
+import Config from './config'
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
 
@@ -42,7 +44,11 @@ export function search(quest: Quest, req: express.Request, res: express.Response
   };
   quest.search(res.locals.id, params)
     .then((quests: QuestInstance[]) => {
-      const results: QuestAttributes[] = quests.map(quest.resolveInstance);
+      // Map quest published URL to the API server so we can proxy quest data.
+      const results: QuestAttributes[] = quests.map(quest.resolveInstance).map((q: QuestAttributes) => {
+        q.publishedurl = (Config.get('API_URL_BASE') || 'http://quests.expeditiongame.com') + `/raw/${q.partition}/${q.id}/${q.questversion}`;
+        return q;
+      });
 
       console.log('Found ' + quests.length + ' quests for user ' + res.locals.id);
       res.send(JSON.stringify({
@@ -56,16 +62,23 @@ export function search(quest: Quest, req: express.Request, res: express.Response
     });
 }
 
-export function questXMLRedirect(quest: Quest, req: express.Request, res: express.Response) {
-  quest.get(PUBLIC_PARTITION, req.params.quest)
-    .then((instance: QuestInstance) => {
-      const url = instance.get('url');
-      if (!url) {
-        throw new Error('Quest did not have published URL');
+export function questXMLHandler(quest: Quest, renderedQuest: RenderedQuest, req: express.Request, res: express.Response) {
+  renderedQuest.get(req.params.partition, req.params.quest, req.params.version)
+    .then((instance: RenderedQuestInstance) => {
+      if (!instance) {
+        return quest.get(req.params.partition, req.params.quest)
+          .then((instance: QuestInstance) => {
+            const url = instance.get('publishedurl');
+            if (!url) {
+              throw new Error('Quest did not have published URL');
+            }
+            res.header('Content-Type', 'text/xml');
+            res.header('Location', url);
+            res.status(301).end();
+          });
       }
       res.header('Content-Type', 'text/xml');
-      res.header('Location', url);
-      res.status(301).end();
+      res.status(200).send(instance.get('xml'));
     })
     .catch((e: Error) => {
       console.error(e);
