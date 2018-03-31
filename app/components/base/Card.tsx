@@ -9,9 +9,7 @@ import {getStore} from '../../Store'
 import {toCard, toPrevious} from '../../actions/Card'
 import {setDialog} from '../../actions/Dialog'
 import {CardThemeType} from '../../reducers/StateTypes'
-import {getDevicePlatform} from '../../Globals'
-
-declare var window:any;
+import {getDevicePlatform, openWindow} from '../../Globals'
 
 
 // If onMenuSelect or onReturn is not set, default dispatch behavior is used.
@@ -55,10 +53,10 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
       case 'RATE':
         switch (getDevicePlatform()) {
           case 'android':
-            window.open(URLS.android, '_system');
+            openWindow(URLS.android);
             break;
           case 'ios':
-            window.open(URLS.ios, '_system');
+            openWindow(URLS.ios);
             break;
           case 'web':
             throw new Error('Cannot rate web app');

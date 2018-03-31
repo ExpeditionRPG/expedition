@@ -116,7 +116,6 @@ export function logEvent(name: string, argsInput: any): void {
 
 function setupDevice() {
   const window = getWindow();
-  window.open = ((window.cordova || {}).InAppBrowser || {}).open || window.open;
 
   // Apply class-specific styling
   const platform = getDevicePlatform();

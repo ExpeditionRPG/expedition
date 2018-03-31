@@ -5,8 +5,7 @@ import {changeSettings} from '../actions/Settings'
 import {toCard} from '../actions/Card'
 import {AnnouncementState} from '../reducers/StateTypes'
 import SplashScreen, {SplashScreenStateProps, SplashScreenDispatchProps} from './SplashScreen'
-
-declare var window:any;
+import {openWindow} from '../Globals'
 
 const mapStateToProps = (state: AppState, ownProps: any): SplashScreenStateProps => {
   return {
@@ -18,7 +17,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Splas
   return {
     onAnnouncementTap: (announcement: AnnouncementState) => {
       if (announcement.link !== '') {
-        window.open(announcement.link + '?utm_source=app', '_system');
+        openWindow(announcement.link + '?utm_source=app');
       }
     },
     onPlayerCountSelect: (numPlayers: number) => {

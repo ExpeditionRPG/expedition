@@ -9,10 +9,10 @@ import {search} from '../actions/Search'
 import {openSnackbar} from '../actions/Snackbar'
 import {login} from '../actions/User'
 import {URLS, MUSIC_INTENSITY_MAX} from '../Constants'
+import {openWindow} from '../Globals'
 import {getStore} from '../Store'
 import {loadRemotePlay} from '../actions/RemotePlay'
 
-declare var window:any;
 
 const mapStateToProps = (state: AppState, ownProps: ToolsStateProps): ToolsStateProps => {
   return {
@@ -27,7 +27,7 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
       dispatch(initCustomCombat({}));
     },
     onQuestCreatorSelect(): void {
-      window.open(URLS.questCreator, '_system');
+      openWindow(URLS.questCreator);
     },
     onPrivateQuestsSelect(user: UserState): void {
       const privateSearch = (u: UserState) => {

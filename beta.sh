@@ -11,13 +11,7 @@ rm platforms/android/build/outputs/apk/android-debug.apk
 # Rebuild the web app files
 export NODE_ENV='dev'
 export API_HOST='http://betaapi.expeditiongame.com'
-webpack --config ./webpack.dist.config.js
-
-# Android: build debug app
-cordova build android
-
-# iOS
-cordova build ios
+npm run build-all
 
 # Deploy web app to beta once apps built
 aws s3 cp www s3://beta.expeditiongame.com --recursive --region us-east-2

@@ -144,6 +144,17 @@ export function getNavigator(): any {
   return refs.navigator;
 }
 
+export function openWindow(url: string): any {
+  const platform = getDevicePlatform();
+  // Android is special; iOS and web use the same
+  if (platform === 'android') {
+    getNavigator().app.loadUrl(url, { openExternal: true });
+  } else {
+    const open = ((window.cordova || {}).InAppBrowser || {}).open || window.open;
+    open(url, '_system');
+  }
+}
+
 // Can't set it by default, since some browsers on high privacy throw an error when accessing window.localStorage
 function getLocalStorage(): Storage {
   if (refs.localStorage) {

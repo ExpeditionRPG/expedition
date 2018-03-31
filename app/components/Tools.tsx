@@ -2,7 +2,7 @@ import * as React from 'react'
 import Card from './base/Card'
 import Button from './base/Button'
 import {NODE_ENV} from '../Constants'
-import {getAppVersion} from '../Globals'
+import {getAppVersion, openWindow} from '../Globals'
 import {SettingsType, UserState} from '../reducers/StateTypes'
 
 export interface ToolsStateProps {
@@ -63,7 +63,7 @@ const Tools = (props: ToolsProps): JSX.Element => {
         </div>
       </Button>
       <div className="version">Expedition App v{getAppVersion()}</div>
-      <div className="privacy"><a href="#" onClick={() => window.open('https://expeditiongame.com/privacy', '_system')}>Privacy Policy</a></div>
+      <div className="privacy"><a href="#" onClick={() => openWindow('https://expeditiongame.com/privacy')}>Privacy Policy</a></div>
     </Card>
   );
 }

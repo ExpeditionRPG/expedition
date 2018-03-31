@@ -1,6 +1,7 @@
 import * as React from 'react'
 import FlatButton from 'material-ui/FlatButton'
 import RemoteRipple from './remote/RemoteRipple'
+import {openWindow} from '../../Globals'
 
 interface ButtonProps extends React.Props<any> {
   className?: string;
@@ -18,7 +19,7 @@ export default class Button extends React.Component<ButtonProps, {}> {
     }
 
     if (target && target.getAttribute('href')) {
-      window.open(target.getAttribute('href'));
+      openWindow(target.getAttribute('href'));
       e.stopPropagation();
     }
     else {

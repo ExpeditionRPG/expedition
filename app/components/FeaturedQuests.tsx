@@ -3,6 +3,7 @@ import Card from './base/Card'
 import Button from './base/Button'
 import {SettingsType, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
+import {openWindow} from '../Globals'
 
 export interface FeaturedQuestsStateProps {
   quests: QuestDetails[];
@@ -48,11 +49,11 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
           <div className="title"><img className="inline_icon" src="images/roll_small.svg"/>Tools</div>
         </div>
       </Button>
-      <a href="#" onClick={() => window.open('https://expeditiongame.com/store?utm_source=app', '_system')} className="linkButton"><Button>
+      <Button onTouchTap={()=>openWindow('https://expeditiongame.com/store?utm_source=app')}>
         <div className="questButtonWithIcon">
           <div className="title"><img className="inline_icon" src="images/loot_small.svg"/>Shop</div>
         </div>
-      </Button></a>
+      </Button>
     </Card>
   );
 }
