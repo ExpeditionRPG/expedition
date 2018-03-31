@@ -1,5 +1,6 @@
 import * as Sequelize from 'sequelize'
 import {Feedback, FeedbackInstance} from './Feedback'
+import {User, UserAttributes} from './Users'
 
 import * as CloudStorage from '../lib/cloudstorage'
 import * as Mail from '../Mail'
@@ -65,6 +66,7 @@ export class Quest {
   protected s: Sequelize.Sequelize;
   protected mc: any;
   protected feedback: Feedback;
+  protected user: User;
   public model: QuestModel;
 
   constructor(s: Sequelize.Sequelize) {
@@ -125,8 +127,9 @@ export class Quest {
     });
   }
 
-  associate(models: {Feedback: Feedback}) {
+  associate(models: {Feedback: Feedback, User: User}) {
     this.feedback = models.Feedback;
+    this.user = models.User;
   }
 
   get(partition: string, id: string): Bluebird<QuestInstance|null> {
@@ -282,6 +285,13 @@ export class Quest {
             `Summary: ${params.summary}.\n
             By ${params.author}, for ${params.minplayers} - ${params.maxplayers} players over ${params.mintimeminutes} - ${params.maxtimeminutes} minutes. ${params.genre}.
             ${params.expansionhorror ? 'Requires The Horror expansion.' : 'No expansions required.'}`);
+
+          // New publish on public = 100 loot point award
+          this.user.get(userid)
+            .then((u: UserAttributes) => {
+              u.loot_points = (u.loot_points || 0) + 100;
+              this.user.upsert(u);
+            });
 
           // If this is the author's first published quest, email them a congratulations
           this.model.findOne({where: {userid}})

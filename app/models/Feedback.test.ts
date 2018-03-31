@@ -1,5 +1,6 @@
 import {Feedback, FeedbackAttributes, FeedbackInstance} from './Feedback'
 import {Quest, QuestAttributes, QuestInstance} from './Quests'
+import {User} from './Users'
 import * as Sequelize from 'sequelize'
 import * as expect from 'expect'
 import * as sinon from 'sinon'
@@ -7,6 +8,7 @@ import * as sinon from 'sinon'
 describe('feedback', () => {
   let f: Feedback;
   let q: Quest;
+  let u: User;
 
   const testRatingData: FeedbackAttributes = {
     created: new Date(),
@@ -45,8 +47,9 @@ describe('feedback', () => {
         })
         .then(() => {
           f = new Feedback(s);
+          u = new User(s);
           f.associate({Quest: q});
-          q.associate({Feedback: f});
+          q.associate({Feedback: f, User: u});
           f.model.sync()
             .then(() => {done();})
             .catch((e: Error) => {throw e;});

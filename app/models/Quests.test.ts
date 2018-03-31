@@ -153,6 +153,10 @@ describe('quest', () => {
   describe('publish', () => {
     it('publishes owned quest');
 
+    it('increments user loot_points by 100 if new and public');
+
+    it('does not change user loot_points if not new or not public');
+
     it('unpublishes owned quest');
 
     it('fails to publish/unpublish unowned quest');
@@ -162,6 +166,10 @@ describe('quest', () => {
     it('increments questversionlastmajor when major release flag is true');
 
     it('removes a set tombstone');
+
+    it('blocks publish if fields missing or invalid');
+
+    it('blocks publish if title is still default');
   });
 
   describe('calculate ratings', () => {
