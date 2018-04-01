@@ -46,7 +46,7 @@ export function search(quest: Quest, req: express.Request, res: express.Response
     .then((quests: QuestInstance[]) => {
       // Map quest published URL to the API server so we can proxy quest data.
       const results: QuestAttributes[] = quests.map(quest.resolveInstance).map((q: QuestAttributes) => {
-        q.publishedurl = (Config.get('API_URL_BASE') || 'http://quests.expeditiongame.com') + `/raw/${q.partition}/${q.id}/${q.questversion}`;
+        q.publishedurl = (Config.get('API_URL_BASE') || 'http://api.expeditiongame.com') + `/raw/${q.partition}/${q.id}/${q.questversion}`;
         return q;
       });
 
@@ -176,6 +176,7 @@ export function feedback(feedback: Feedback, req: express.Request, res: express.
     players: body.players,
     version: body.version,
     console: body.console,
+    anonymous: body.anonymous,
   }
 
   // Partition & quest ID may not be populated if 
@@ -196,6 +197,7 @@ export function feedback(feedback: Feedback, req: express.Request, res: express.
     players: Joi.number(),
     version: Joi.string(),
     console: Joi.array().items(Joi.string()),
+    anonymous: Joi.boolean(),
   }), (err: Error, dataValid: FeedbackAttributes) => {
     if (err) {
       console.error(err);

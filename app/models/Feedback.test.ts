@@ -24,6 +24,7 @@ describe('feedback', () => {
     platform: "ios",
     players: 5,
     version: "1.0.0",
+    anonymous: false,
   };
 
   describe('submitFeedback', () => {
@@ -121,5 +122,7 @@ describe('feedback', () => {
           done();
         });
     });
+
+    it('excludes user email when anonymous');
   });
 });

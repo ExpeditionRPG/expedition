@@ -21,6 +21,7 @@ export interface FeedbackAttributes {
   players?: number|null;
   version?: string|null;
   console?: string[]|null;
+  anonymous?: boolean|null;
 }
 
 export interface FeedbackInstance extends Sequelize.Instance<FeedbackAttributes> {
@@ -69,6 +70,7 @@ export class Feedback {
           isEmail: true,
         },
       },
+      anonymous: Sequelize.BOOLEAN,
       name: Sequelize.STRING(255),
       difficulty: Sequelize.STRING(32),
       platform: Sequelize.STRING(32),
@@ -202,22 +204,24 @@ export class Feedback {
           if (feedback.text && feedback.text.length > 0) {
             message += `<p>User feedback:</p><p>"${feedback.text}"</p>`;
           }
-          if (feedback.email) {
+          if (feedback.email && !feedback.anonymous) {
             message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${feedback.email}</a></p>`;
           }
           message += `<p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>`;
           return Mail.send(emails, subject, message);
         } else if (feedback.text && feedback.text.length > 0) {
           const subject = `Quest rated ${feedback.rating}/5: ${q.title}`;
-          const message = `<p>User feedback:</p>
+          let message = `<p>User feedback:</p>
             <p>"${feedback.text}"</p>
             <p>${feedback.rating} out of 5 stars</p>
             <p>New quest overall rating: ${ratingavg} out of 5 across ${q.ratingcount} ratings.</p>
             <p>Was submitted for ${q.title} by ${q.author}</p>
             <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
-            <p>Reviewer email: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
             <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
           `;
+          if (feedback.email && !feedback.anonymous) {
+            message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${feedback.email}</a></p>`;
+          }
           return Mail.send(emails, subject, message);
         }
       });
