@@ -28,8 +28,8 @@ const QuestsView = (props: QuestsViewProps): JSX.Element => {
       <TableRow key={i} selected={i === props.selected}>
         <TableRowColumn>{entry.partition}</TableRowColumn>
         <TableRowColumn>{entry.title}</TableRowColumn>
-        <TableRowColumn>{entry.visibility}</TableRowColumn>
-        <TableRowColumn>{(entry.ratingavg === null) ? 'None' : (entry.ratingavg + ' (' + entry.ratingcount + ')')}</TableRowColumn>
+        <TableRowColumn className="smallColumn">{(entry.published) ? 'X' : ''}</TableRowColumn>
+        <TableRowColumn className="smallColumn">{(entry.ratingavg === null) ? 'None' : (entry.ratingavg + ' (' + entry.ratingcount + ')')}</TableRowColumn>
         <TableRowColumn>{entry.user.email}</TableRowColumn>
       </TableRow>
     );
@@ -41,8 +41,8 @@ const QuestsView = (props: QuestsViewProps): JSX.Element => {
         <TableRow>
           <TableHeaderColumn>Partition</TableHeaderColumn>
           <TableHeaderColumn>Title</TableHeaderColumn>
-          <TableHeaderColumn>Visibility</TableHeaderColumn>
-          <TableHeaderColumn>Avg Rating</TableHeaderColumn>
+          <TableHeaderColumn className="smallColumn">Published</TableHeaderColumn>
+          <TableHeaderColumn className="smallColumn">Avg Rating</TableHeaderColumn>
           <TableHeaderColumn>Author</TableHeaderColumn>
         </TableRow>
       </TableHeader>

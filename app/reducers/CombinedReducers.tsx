@@ -5,7 +5,7 @@ import {user} from './User'
 import {view} from './View'
 import {AppState} from './StateTypes'
 
-export default function combinedReduce(state: AppState, action: Redux.Action): AppState {
+export default function combinedReduce(state: AppState, action: any): AppState {
   state = state || ({} as AppState);
   return {
     dialogs: dialogs(state.dialogs, action),

@@ -1,6 +1,6 @@
 import Redux from 'redux'
 import {UserState, DialogIDType, SnackbarState, ViewType} from '../reducers/StateTypes'
-import {FeedbackEntry, QuestEntry, UserEntry} from 'expedition-api/app/admin/QueryTypes'
+import {FeedbackEntry, QuestEntry, UserEntry, FeedbackMutation, QuestMutation, UserMutation} from 'expedition-api/app/admin/QueryTypes'
 
 export const SIGN_IN: string = 'SIGN_IN';
 export const SIGN_OUT: string = 'SIGN_OUT';
@@ -48,4 +48,19 @@ export interface SelectRowAction extends Redux.Action {
   type: 'SELECT_ROW';
   table: 'feedback'|'users'|'quests';
   row: number|null;
+}
+
+export interface UpdateUserAction extends Redux.Action {
+  type: 'UPDATE_USER';
+  m: UserMutation;
+}
+
+export interface UpdateQuestAction extends Redux.Action {
+  type: 'UPDATE_QUEST';
+  m: QuestMutation;
+}
+
+export interface UpdateFeedbackAction extends Redux.Action {
+  type: 'UPDATE_FEEDBACK';
+  m: FeedbackMutation;
 }

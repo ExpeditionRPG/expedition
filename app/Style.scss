@@ -573,6 +573,11 @@ body .olark-launch-button { /*must be more specifc than olark styles */
   }
 }
 
+.smallColumn {
+  width: 50px;
+  text-align: center !important;
+}
+
 /* Ace editor */
 .ace_marker-layer .misspelled {
   position: absolute;

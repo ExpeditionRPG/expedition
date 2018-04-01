@@ -28,7 +28,8 @@ const FeedbackView = (props: FeedbackViewProps): JSX.Element => {
       <TableRow key={i} selected={i === props.selected}>
         <TableRowColumn>{entry.partition}</TableRowColumn>
         <TableRowColumn>{entry.quest.title}</TableRowColumn>
-        <TableRowColumn>{entry.rating}</TableRowColumn>
+        <TableHeaderColumn className="smallColumn">{entry.suppressed ? 'X' : ''}</TableHeaderColumn>
+        <TableRowColumn className="smallColumn">{entry.rating}</TableRowColumn>
         <TableRowColumn>{entry.text}</TableRowColumn>
         <TableRowColumn>{entry.user.email}</TableRowColumn>
       </TableRow>
@@ -41,7 +42,8 @@ const FeedbackView = (props: FeedbackViewProps): JSX.Element => {
         <TableRow>
           <TableHeaderColumn>Partition</TableHeaderColumn>
           <TableHeaderColumn>Quest</TableHeaderColumn>
-          <TableHeaderColumn>Rating</TableHeaderColumn>
+          <TableHeaderColumn className="smallColumn">Suppressed</TableHeaderColumn>
+          <TableHeaderColumn className="smallColumn">Rating</TableHeaderColumn>
           <TableHeaderColumn>Text</TableHeaderColumn>
           <TableHeaderColumn>Email</TableHeaderColumn>
         </TableRow>

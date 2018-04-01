@@ -28,7 +28,7 @@ const UsersView = (props: UsersViewProps): JSX.Element => {
       <TableRow key={i} selected={i === props.selected}>
         <TableRowColumn>{entry.email}</TableRowColumn>
         <TableRowColumn>{entry.name}</TableRowColumn>
-        <TableRowColumn>{entry.loot_points}</TableRowColumn>
+        <TableRowColumn className="smallColumn">{entry.loot_points}</TableRowColumn>
         <TableRowColumn>{entry.last_login.toISOString()}</TableRowColumn>
       </TableRow>
     );
@@ -40,7 +40,7 @@ const UsersView = (props: UsersViewProps): JSX.Element => {
         <TableRow>
           <TableHeaderColumn>Email</TableHeaderColumn>
           <TableHeaderColumn>Name</TableHeaderColumn>
-          <TableHeaderColumn>Loot Points</TableHeaderColumn>
+          <TableHeaderColumn className="smallColumn">Loot Points</TableHeaderColumn>
           <TableHeaderColumn>Last Login</TableHeaderColumn>
         </TableRow>
       </TableHeader>
