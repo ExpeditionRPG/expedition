@@ -233,12 +233,14 @@ export class Quest {
       }
     }
 
-    // Hide expansion if not specified, otherwise prioritize results
+    // Hide expansion if searching & not specified, otherwise prioritize results
     // that have the expansion as a secondary sort
-    if (!params.expansions || params.expansions.indexOf('horror') === -1) {
-      where.expansionhorror =  {$not: true};
-    } else {
-      order.push(['expansionhorror', 'DESC']);
+    if (!params.id) {
+      if (!params.expansions || params.expansions.indexOf('horror') === -1) {
+        where.expansionhorror =  {$not: true};
+      } else {
+        order.push(['expansionhorror', 'DESC']);
+      }
     }
 
     const limit = Math.min(Math.max(params.limit || MAX_SEARCH_LIMIT, 0), MAX_SEARCH_LIMIT);
