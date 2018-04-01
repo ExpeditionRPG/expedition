@@ -7,7 +7,7 @@ import * as QT from './QueryTypes'
 const QUERY_ROW_LIMIT = 100;
 
 function validateOrder(body: any) {
-  if (body.order && (!body.order.column || !body.order.ascending)) {
+  if (body.order && (!body.order.column || body.order.ascending === undefined)) {
     throw new Error('Invalid query order');
   }
   return body;
@@ -31,6 +31,7 @@ export function queryFeedback(feedback: Feedback, quests: Quest, users: User, re
       userid: body.userid || null,
       rating: body.rating || null,
       substring: body.substring || null,
+      order: body.order || null,
     };
 
     const where: any = {};
@@ -57,7 +58,7 @@ export function queryFeedback(feedback: Feedback, quests: Quest, users: User, re
 
     return feedback.model.findAll({
       where,
-      order: (q.order) ? [q.order.column, (q.order.ascending) ? 'ASC' : 'DESC'] : undefined,
+      order: (q.order) ? [[q.order.column, (q.order.ascending) ? 'ASC' : 'DESC']] : undefined,
       limit: QUERY_ROW_LIMIT,
     }).then((results: FeedbackInstance[]) => {
       return Promise.all(results.map((r: FeedbackInstance) => {
@@ -108,6 +109,7 @@ export function queryQuest(quest: Quest, req: express.Request, res: express.Resp
       questid: body.questid || null,
       userid: body.userid || null,
       substring: body.substring || null,
+      order: body.order || null,
     };
 
     const where: any = {};
@@ -126,7 +128,7 @@ export function queryQuest(quest: Quest, req: express.Request, res: express.Resp
 
     return quest.model.findAll({
       where,
-      order: (q.order) ? [q.order.column, (q.order.ascending) ? 'ASC' : 'DESC'] : undefined,
+      order: (q.order) ? [[q.order.column, (q.order.ascending) ? 'ASC' : 'DESC']] : undefined,
       limit: QUERY_ROW_LIMIT,
     }).then((results: QuestInstance[]) => {
       return results.map((r: QuestInstance) => {
@@ -172,6 +174,7 @@ export function queryUser(user: User, req: express.Request, res: express.Respons
     const q: QT.UserQuery = {
       userid: body.userid || null,
       substring: body.substring || null,
+      order: body.order || null,
     };
 
     const where: any = {};
@@ -187,7 +190,7 @@ export function queryUser(user: User, req: express.Request, res: express.Respons
 
     return user.model.findAll({
       where,
-      order: (q.order) ? [q.order.column, (q.order.ascending) ? 'ASC' : 'DESC'] : undefined,
+      order: (q.order) ? [[q.order.column, (q.order.ascending) ? 'ASC' : 'DESC']] : undefined,
       limit: QUERY_ROW_LIMIT,
     }).then((results: UserInstance[]) => {
       return results.map((r: UserInstance) => {
