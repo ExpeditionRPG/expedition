@@ -2,10 +2,10 @@ import * as React from 'react'
 
 import {colors} from 'material-ui/styles'
 import TextField from 'material-ui/TextField'
+import Checkbox from 'material-ui/Checkbox'
 
 import Button from './base/Button'
 import Card from './base/Card'
-import Checkbox from './base/Checkbox'
 import StarRating from './base/StarRating'
 
 import {logQuestPlay} from '../actions/Web'
@@ -69,6 +69,11 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
               underlineShow={false}
               value={this.props.userFeedback.text}
             />
+            <Checkbox
+              className="anonymous_feedback"
+              checked={this.props.userFeedback.anonymous}
+              onCheck={() => { this.props.onChange('anonymous', !this.props.userFeedback.anonymous); }}
+              label="Give feedback anonymously"/>
           </div>
         }
         Tip the author{this.props.userFeedback.rating && ' and submit your review:'}

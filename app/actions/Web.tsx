@@ -140,6 +140,7 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       name: a.user.name,
       rating: a.userFeedback.rating,
       text: a.userFeedback.text,
+      anonymous: a.userFeedback.anonymous,
     };
 
     // If we're not rating, we're providing other feedback.

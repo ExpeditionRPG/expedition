@@ -711,6 +711,10 @@ span.line {
     }
   }
 
+  .anonymous_feedback {
+    padding: size(base) 0 size(large) 0 !important;
+  }
+
   .selectfield {
     margin-top: -6px;
     width: 100% !important;

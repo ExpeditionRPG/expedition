@@ -5,6 +5,7 @@ import {UserFeedbackChangeAction} from '../actions/ActionTypes'
 const initialState: UserFeedbackState = {
   type: 'rating',
   text: '',
+  anonymous: false,
 };
 
 export function userFeedback(state: UserFeedbackState = initialState, action: Redux.Action): UserFeedbackState {

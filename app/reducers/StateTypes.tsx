@@ -130,6 +130,7 @@ export interface UserFeedbackState {
   type: 'feedback' | 'rating' | 'report_error' | 'report_quest';
   rating?: number;
   text: string;
+  anonymous: boolean;
 }
 
 export interface RemotePlaySessionType {
