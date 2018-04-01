@@ -8,7 +8,7 @@ import {openSnackbar} from '../../actions/Snackbar'
 import {changeSettings} from '../../actions/Settings'
 import {remotePlayDisconnect} from '../../actions/RemotePlay'
 import {userFeedbackChange} from '../../actions/UserFeedback'
-import {submitUserFeedback, logRemotePlayStats} from '../../actions/Web'
+import {submitUserFeedback, logRemotePlayStats, fetchQuestXML} from '../../actions/Web'
 import {MIN_FEEDBACK_LENGTH} from '../../Constants'
 import {getRemotePlayClient, RemotePlayCounters, initialRemotePlayCounters} from '../../RemotePlay'
 import {AppState, ContentSetsType, DialogIDType, DialogState, SettingsType, QuestState, UserState, UserFeedbackState} from '../../reducers/StateTypes'
@@ -16,7 +16,7 @@ import {QuestDetails} from '../../reducers/QuestTypes'
 
 const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
   let remotePlayStats: RemotePlayCounters;
-  if (state.dialog.open === 'REMOTE_PLAY_STATUS') {
+  if (state.dialog && state.dialog.open === 'REMOTE_PLAY_STATUS') {
     remotePlayStats = getRemotePlayClient().getStats();
   } else {
     remotePlayStats = initialRemotePlayCounters;
@@ -43,6 +43,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
       dispatch(setDialog(null));
       dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
     },
+    onMultitouchChange: (v: boolean) => {
+      dispatch(changeSettings({multitouch: v}));
+    },
     onSendRemotePlayReport: (user: UserState, quest: QuestDetails, stats: RemotePlayCounters) => {
       logRemotePlayStats(user, quest, stats)
         .then((r: Response) => {
@@ -67,6 +70,13 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
       }
       dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
       dispatch(setDialog(null));
+    },
+    onPlayerDelta: (numPlayers: number, delta: number) => {
+      numPlayers += delta;
+      if (numPlayers <= 0 || numPlayers > 6) {
+        return;
+      }
+      dispatch(changeSettings({numPlayers}));
     },
     onReportErrorSubmit: (error: string, quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => {
       userFeedback.type = 'report_error';
@@ -94,6 +104,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
     onRequestClose: () => {
       dispatch(setDialog(null));
     },
+    playQuest: (quest: QuestDetails) => {
+      dispatch(setDialog(null));
+      dispatch(fetchQuestXML(quest));
+    }
   };
 }
 

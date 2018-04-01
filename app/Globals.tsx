@@ -147,7 +147,7 @@ export function getNavigator(): any {
 export function openWindow(url: string): any {
   const platform = getDevicePlatform();
   // Android is special; iOS and web use the same
-  if (platform === 'android') {
+  if (platform === 'android' && getNavigator().app) {
     getNavigator().app.loadUrl(url, { openExternal: true });
   } else {
     const open = ((window.cordova || {}).InAppBrowser || {}).open || window.open;

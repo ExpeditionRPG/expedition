@@ -3,6 +3,8 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
+import Checkbox from './Checkbox'
+import Picker from './Picker'
 import {RemotePlayCounters} from '../../RemotePlay'
 import {ContentSetsType, DialogIDType, DialogState, QuestState, SettingsType, UserState, UserFeedbackState} from '../../reducers/StateTypes'
 import {QuestDetails} from '../../reducers/QuestTypes'
@@ -102,8 +104,6 @@ interface ExpansionSelectDialogProps extends React.Props<any> {
   onExpansionSelect: (contentSets: ContentSetsType) => void;
 }
 
-// TODO November: once The Horror is available for purchase, add a buy button that links to Expedition store page
-// https://github.com/ExpeditionRPG/expedition-app/issues/476
 export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialogProps, {}> {
   render(): JSX.Element {
     return (
@@ -252,6 +252,51 @@ export class ReportQuestDialog extends React.Component<ReportQuestDialogProps, {
   }
 }
 
+interface SetPlayerCountDialogProps extends React.Props<any> {
+  open: boolean;
+  onMultitouchChange: (v: boolean) => void;
+  onPlayerDelta: (numPlayers: number, delta: number) => void;
+  onRequestClose: () => void;
+  playQuest: (quest: QuestDetails) => void;
+  quest: QuestDetails;
+  settings: SettingsType;
+}
+
+export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogProps, {}> {
+  render(): JSX.Element {
+    const quest = this.props.quest;
+    let playersAllowed = true;
+    if (quest.minplayers && quest.maxplayers) {
+      playersAllowed = (this.props.settings.numPlayers >= quest.minplayers &&
+        this.props.settings.numPlayers <= quest.maxplayers);
+    }
+    const horrorError = quest.expansionhorror && !this.props.settings.contentSets.horror;
+    return (
+      <Dialog
+        title={horrorError ? 'Expansion Required' : 'How many players?'}
+        modal={true}
+        contentClassName="dialog"
+        open={Boolean(this.props.open)}
+        actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()}>Cancel</FlatButton>,
+          (!horrorError ? <FlatButton disabled={!playersAllowed} className="primary" onTouchTap={() => this.props.playQuest(this.props.quest)}>Play</FlatButton> : <span></span>),
+        ]}
+      >
+        {horrorError && <div className="error">The Horror expansion is required to play this quest. If you have it, make sure to enable it in settings. Otherwise, you can pick up a copy on <a href="#" onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>the Expedition Store</a>.</div>}
+        {!horrorError &&
+          <div>
+            <Picker label="Adventurers" value={this.props.settings.numPlayers} onDelta={(i: number)=>this.props.onPlayerDelta(this.props.settings.numPlayers, i)}>
+              {!playersAllowed && `Quest requires ${quest.minplayers} - ${quest.maxplayers} players.`}
+            </Picker>
+            <Checkbox label="Multitouch" value={this.props.settings.multitouch} onChange={this.props.onMultitouchChange}>
+              {(this.props.settings.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
+            </Checkbox>
+          </div>
+        }
+      </Dialog>
+    );
+  }
+}
+
 export interface DialogsStateProps {
   dialog: DialogState;
   quest: QuestState;
@@ -267,10 +312,13 @@ export interface DialogsDispatchProps {
   onExpansionSelect: (contentSets: ContentSetsType) => void;
   onFeedbackChange: (text: string) => void;
   onFeedbackSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
+  onMultitouchChange: (v: boolean) => void;
+  onPlayerDelta: (numPlayers: number, delta: number) => void;
   onReportErrorSubmit: (error: string, quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
   onReportQuestSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
   onSendRemotePlayReport: (user: UserState, quest: QuestDetails, stats: RemotePlayCounters) => void;
   onRequestClose: () => void;
+  playQuest: (quest: QuestDetails) => void;
 }
 
 interface DialogsProps extends DialogsStateProps, DialogsDispatchProps {}
@@ -330,6 +378,15 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         settings={props.settings}
         user={props.user}
         userFeedback={props.userFeedback}
+      />
+      <SetPlayerCountDialog
+        open={props.dialog && props.dialog.open === 'SET_PLAYER_COUNT'}
+        onMultitouchChange={props.onMultitouchChange}
+        onPlayerDelta={props.onPlayerDelta}
+        onRequestClose={props.onRequestClose}
+        playQuest={props.playQuest}
+        quest={props.quest.details}
+        settings={props.settings}
       />
     </span>
   );

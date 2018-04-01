@@ -16,6 +16,7 @@ import {GenreType, CONTENT_RATINGS, PLAYTIME_MINUTES_BUCKETS, SUMMARY_MAX_LENGTH
 const Moment = require('moment');
 
 export interface SearchStateProps extends SearchState {
+  isDirectLinked: boolean;
   numPlayers: number;
   phase: SearchPhase;
   search: SearchSettings;
@@ -27,7 +28,7 @@ export interface SearchDispatchProps {
   onFilter: () => void;
   onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => void;
   onQuest: (quest: QuestDetails) => void;
-  onPlay: (quest: QuestDetails) => void;
+  onPlay: (quest: QuestDetails, isDirectLinked: boolean) => void;
 }
 
 export interface SearchProps extends SearchStateProps, SearchDispatchProps {};
@@ -273,7 +274,7 @@ function renderDetails(props: SearchProps): JSX.Element {
         <div className="author">by {quest.author}</div>
         {(quest.ratingcount && quest.ratingcount >= 1) ? <StarRating readOnly={true} value={+ratingAvg} quantity={quest.ratingcount}/> : ''}
       </div>
-      <Button onTouchTap={(e)=>props.onPlay(quest)} remoteID="play">Play</Button>
+      <Button onTouchTap={(e)=>props.onPlay(quest, props.isDirectLinked)} remoteID="play">Play</Button>
       <div className="searchDetailsExtended">
         <h3>Details</h3>
         <div><strong>Expansions required: </strong>{expansions}</div>
