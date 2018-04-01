@@ -79,6 +79,7 @@ export function queryFeedback(feedback: Feedback, quests: Quest, users: User, re
               },
               text: r.get('text'),
               rating: r.get('rating'),
+              suppressed: r.get('tombstone') !== null,
             } as QT.FeedbackEntry;
           });
       }));
@@ -96,8 +97,27 @@ export function queryFeedback(feedback: Feedback, quests: Quest, users: User, re
 }
 
 export function modifyFeedback(feedback: Feedback, req: express.Request, res: express.Response) {
-  console.error('Unimplemented');
-  res.status(500).send(JSON.stringify({status: 'ERROR', error: 'Unimplemented'} as QT.Response));
+  try {
+    let body: any;
+    body = JSON.parse(req.body);
+
+    const m: QT.FeedbackMutation = {
+      partition: body.partition || null,
+      questid: body.questid || null,
+      userid: body.userid || null,
+      suppress: body.suppress,
+    };
+
+    if (m.suppress !== null) {
+      return feedback.suppress(m.partition, m.questid, m.userid, m.suppress || false)
+        .then(() => {
+          res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
+        });
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500).send(JSON.stringify({status: 'ERROR', error: e.toString()} as QT.Response));
+  }
 }
 
 export function queryQuest(quest: Quest, req: express.Request, res: express.Response) {
@@ -132,14 +152,6 @@ export function queryQuest(quest: Quest, req: express.Request, res: express.Resp
       limit: QUERY_ROW_LIMIT,
     }).then((results: QuestInstance[]) => {
       return results.map((r: QuestInstance) => {
-        let visibility: QT.VisibilityType = 'NOT PUBLISHED';
-        if (!r.get('tombstone') && r.get('published') !== null) {
-          if (r.get('partition') === 'expedition-public') {
-            visibility = 'PUBLIC';
-          } else {
-            visibility = 'PRIVATE';
-          }
-        }
         return {
           id: r.get('id'),
           title: r.get('title'),
@@ -150,7 +162,7 @@ export function queryQuest(quest: Quest, req: express.Request, res: express.Resp
             id: r.get('userid'),
             email: r.get('email'),
           },
-          visibility,
+          published: (!r.get('tombstone') && r.get('published') !== null),
         } as QT.QuestEntry;
       });
     }).then((results: QT.QuestEntry[]) => {
@@ -163,8 +175,32 @@ export function queryQuest(quest: Quest, req: express.Request, res: express.Resp
 }
 
 export function modifyQuest(quest: Quest, req: express.Request, res: express.Response) {
-  console.error('Unimplemented');
-  res.status(500).send(JSON.stringify({status: 'ERROR', error: 'Unimplemented'} as QT.Response));
+  try {
+    let body: any;
+    body = JSON.parse(req.body);
+
+    const m: QT.QuestMutation = {
+      partition: body.partition || null,
+      questid: body.questid || null,
+      published: (body.published !== undefined) ? body.published : null,
+    };
+
+    if (m.published === true) {
+      return quest.republish(m.partition, m.questid)
+        .then(() => {
+          res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
+        });
+    } else if (m.published === false) {
+      return quest.unpublish(m.partition, m.questid)
+        .then(() => {
+          res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
+        });
+    }
+    throw Error('invalid modifier');
+  } catch (e) {
+    console.error(e);
+    res.status(500).send(JSON.stringify({status: 'ERROR', error: e.toString()} as QT.Response));
+  }
 }
 
 export function queryUser(user: User, req: express.Request, res: express.Response) {
@@ -216,14 +252,13 @@ export function modifyUser(user: User, req: express.Request, res: express.Respon
     let body: any;
     body = JSON.parse(req.body);
 
-    // setLootPoints
-    const q: QT.UserMutation = {
+    const m: QT.UserMutation = {
       userid: body.userid || null,
       loot_points: body.loot_points || null,
     };
 
-    if (q.loot_points) {
-      return user.setLootPoints(q.userid, q.loot_points)
+    if (m.loot_points) {
+      return user.setLootPoints(m.userid, m.loot_points)
         .then(() => {
           res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
         })

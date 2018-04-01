@@ -22,6 +22,7 @@ export interface FeedbackAttributes {
   version?: string|null;
   console?: string[]|null;
   anonymous?: boolean|null;
+  tombstone?: Date|null;
 }
 
 export interface FeedbackInstance extends Sequelize.Instance<FeedbackAttributes> {
@@ -71,6 +72,7 @@ export class Feedback {
         },
       },
       anonymous: Sequelize.BOOLEAN,
+      tombstone: Sequelize.DATE,
       name: Sequelize.STRING(255),
       difficulty: Sequelize.STRING(32),
       platform: Sequelize.STRING(32),
@@ -224,6 +226,16 @@ export class Feedback {
           }
           return Mail.send(emails, subject, message);
         }
+      });
+  }
+
+  public suppress(partition: string, questid: string, userid:string, suppress: boolean): Promise<any> {
+    return this.s.authenticate()
+      .then(() => {
+        return this.model.update({tombstone: (suppress) ? new Date() : null} as any, {where: {partition, questid, userid}, limit: 1})
+      })
+      .then(() => {
+        return this.quest.updateRatings(partition, questid);
       });
   }
 

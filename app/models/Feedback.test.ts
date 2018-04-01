@@ -25,6 +25,7 @@ describe('feedback', () => {
     players: 5,
     version: "1.0.0",
     anonymous: false,
+    tombstone: null,
   };
 
   describe('submitFeedback', () => {

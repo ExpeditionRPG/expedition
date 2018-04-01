@@ -1,5 +1,3 @@
-export type VisibilityType = 'PUBLIC'|'PRIVATE'|'NOT PUBLISHED';
-
 interface QueryBase {
   order?: {column: string, ascending: boolean};
 }
@@ -28,6 +26,7 @@ export interface FeedbackEntry {
   user: {id: string, email: string};
   rating: number;
   text: string;
+  suppressed: boolean;
 }
 
 export interface UserEntry {
@@ -45,18 +44,20 @@ export interface QuestEntry {
   ratingavg: number;
   ratingcount: number;
   user: {id: string, email: string};
-  visibility: VisibilityType;
+  published: boolean;
 }
 
 export interface FeedbackMutation {
+  partition: string;
   questid: string;
   userid: string;
   suppress?: boolean;
 }
 
 export interface QuestMutation {
+  partition: string;
   questid: string;
-  visibility?: VisibilityType;
+  published?: boolean;
 }
 
 export interface UserMutation {

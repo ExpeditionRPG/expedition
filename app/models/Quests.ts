@@ -338,6 +338,13 @@ export class Quest {
       });
   }
 
+  republish(partition: string, id: string): Bluebird<any> {
+    return this.s.authenticate()
+      .then(() => {
+        return this.model.update({tombstone: null} as any, {where: {partition, id}, limit: 1})
+      });
+  }
+
   updateRatings(partition: string, id: string): Bluebird<QuestInstance> {
     let quest: QuestInstance;
     return this.s.authenticate()
@@ -350,6 +357,9 @@ export class Quest {
       })
       .then((feedback: FeedbackInstance[]) => {
         const ratings: number[] = feedback.filter((f: FeedbackInstance) => {
+          if (f.get('tombstone')) {
+            return false;
+          }
           if (!quest.get('questversionlastmajor')) {
             return true;
           }
@@ -366,6 +376,10 @@ export class Quest {
           return f.get('rating');
         });
         const ratingcount = ratings.length;
+        if (ratingcount === 0) {
+          return quest.update({ratingcount: null, ratingavg: null});
+        }
+
         const ratingavg = ratings.reduce((a: number, b: number) => { return a + b; }) / ratings.length;
         return quest.update({ratingcount, ratingavg});
       });
