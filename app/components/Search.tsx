@@ -29,6 +29,7 @@ export interface SearchDispatchProps {
   onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => void;
   onQuest: (quest: QuestDetails) => void;
   onPlay: (quest: QuestDetails, isDirectLinked: boolean) => void;
+  onReturn: () => void;
 }
 
 export interface SearchProps extends SearchStateProps, SearchDispatchProps {};
@@ -274,7 +275,8 @@ function renderDetails(props: SearchProps): JSX.Element {
         <div className="author">by {quest.author}</div>
         {(quest.ratingcount && quest.ratingcount >= 1) ? <StarRating readOnly={true} value={+ratingAvg} quantity={quest.ratingcount}/> : ''}
       </div>
-      <Button onTouchTap={(e)=>props.onPlay(quest, props.isDirectLinked)} remoteID="play">Play</Button>
+      <Button className="bigbutton" onTouchTap={(e)=>props.onPlay(quest, props.isDirectLinked)} remoteID="play">Play</Button>
+      <Button onTouchTap={(e)=>props.onReturn()} remoteID="back">Pick a different quest</Button>
       <div className="searchDetailsExtended">
         <h3>Details</h3>
         <div><strong>Expansions required: </strong>{expansions}</div>

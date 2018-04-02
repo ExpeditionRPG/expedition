@@ -50,6 +50,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
         dispatch(fetchQuestXML(quest));
       }
     },
+    onReturn: () => {
+      dispatch(toPrevious({}));
+    },
   };
 }
 
