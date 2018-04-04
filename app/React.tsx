@@ -48,9 +48,15 @@ $.ajaxSetup({
 window.gapi.load('client,drive-realtime,drive-share', () => {
   store.dispatch(silentLogin((user: UserState) => {
     store.dispatch(setProfileMeta(user));
-    store.dispatch(feedbackQuery({}));
-    store.dispatch(questsQuery({}));
-    store.dispatch(usersQuery({}));
+    store.dispatch(feedbackQuery({
+      order: {column: 'created', ascending: true},
+    }));
+    store.dispatch(questsQuery({
+      order: {column: 'created', ascending: false},
+    }));
+    store.dispatch(usersQuery({
+      order: {column: 'last_login', ascending: false},
+    }));
   }));
 });
 

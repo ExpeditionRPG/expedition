@@ -1,0 +1,3 @@
+describe('Web actions', () => {
+  // TODO
+});
