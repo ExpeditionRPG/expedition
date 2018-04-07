@@ -36,7 +36,7 @@ export default class CardBack extends React.Component<CardType, {}> {
         return (
           <div className={`card back dark horizontal ${card.class} ${card.sheet} tier${card.tier}`}>
             <div className="contents">
-              {healthCounter(MAX_COUNTER_HEALTH)}
+              {healthCounter(MAX_COUNTER_HEALTH, true)}
               {card.naming && <div className="naming">{card.naming}</div>}
               <div className="tier">{romanize(card.tier)}</div>
             </div>

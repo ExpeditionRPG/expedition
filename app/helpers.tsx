@@ -77,22 +77,20 @@ export function translateTier(tier: number, english: string, translations: Trans
   // the number of numbers that fit onto the bottom track depends on the number of single vs double digit numbers
     // (since they have different widths)
 // TODO modernize
-export function healthCounter(health: number): JSX.Element {
+export function healthCounter(health: number, back = false): JSX.Element {
 
   var digitWidth = [0, 16, 23];
   var maxWidth = 269;
   var outputtedWidth = 0;
 
-  var max = false;
-  if (health >= MAX_COUNTER_HEALTH) {
+  if (back) {
     health = MAX_COUNTER_HEALTH + 1; // because the loop assumes you'll have the final value displayed
       // separately with a heart (as in, Encounter fronts), we have to force it to show all values here
-    max = true;
   }
 
   var output = '<ul class="hp-tracker hp-tracker-vertical-right">';
   var temp = ''; // temp storage for when we have to output in reverse in horizontal and vertical-right
-  var outputted = (max) ? -1 : 0; // put one extra on the vertical to fill out max
+  var outputted = (back) ? -1 : 0; // put one extra on the vertical to fill out max
 
   while (health > 0) {
     health--; //subtract HP first, since we're already showing the max HP at the top
