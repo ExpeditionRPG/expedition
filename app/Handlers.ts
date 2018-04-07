@@ -179,16 +179,16 @@ export function feedback(feedback: Feedback, req: express.Request, res: express.
     anonymous: body.anonymous,
   }
 
-  // Partition & quest ID may not be populated if 
+  // Partition & quest ID may not be populated if
   // feedback occurs outside of a quest.
   // The only thing we require is the user's ID.
   Joi.validate(data, Joi.object().keys({
-    partition: Joi.string().valid([PRIVATE_PARTITION, PUBLIC_PARTITION]),
+    partition: Joi.string().valid([PRIVATE_PARTITION, PUBLIC_PARTITION, '']),
     questid: Joi.string().allow(''),
     userid: Joi.string().required(),
     questversion: Joi.number(),
     rating: Joi.number(),
-    text: Joi.string(),
+    text: Joi.string().allow(''),
     email: Joi.string().email(),
     name: Joi.string(),
     difficulty: Joi.string().valid(['EASY','NORMAL','HARD', 'IMPOSSIBLE']),
