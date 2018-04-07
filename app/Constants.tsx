@@ -21,7 +21,7 @@ export const remotePlaySettings = {
   newSessionURI: API_HOST + '/remoteplay/v1/new_session',
   connectURI: API_HOST + '/remoteplay/v1/connect',
   firstLoadURI: API_HOST + '/remoteplay/v1/user',
-  websocketSession: 'ws://' + splitURL[splitURL.length-1] + '/ws/remoteplay/v1/session',
+  websocketSession: ((NODE_ENV === 'production') ? 'wss://' : 'ws://') + splitURL[splitURL.length-1] + '/ws/remoteplay/v1/session',
 };
 
 export const FEATURED_QUESTS: QuestDetails[] = [ // Featured quest ids generated from publishing, but don't leave them published!
