@@ -8,7 +8,7 @@ import {makeSecret} from 'expedition-qdl/lib/remote/Session'
 export interface SessionAttributes {
   id: number;
   secret: string;
-  eventCounter: number;
+  eventcounter: number;
   locked: boolean;
 }
 
@@ -24,7 +24,7 @@ export class Session {
 
   constructor(s: Sequelize.Sequelize) {
     this.s = s;
-    this.model = (this.s.define('Sessions', {
+    this.model = (this.s.define('sessions', {
       id: {
         type: Sequelize.BIGINT,
         allowNull: false,
@@ -34,7 +34,7 @@ export class Session {
         type: Sequelize.STRING(32),
         allowNull: false,
       },
-      eventCounter: {
+      eventcounter: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
@@ -83,7 +83,7 @@ export class Session {
     return this.model.create({
       id: Date.now(),
       secret: makeSecret(),
-      eventCounter: 0,
+      eventcounter: 0,
       locked: false,
     });
   }
@@ -123,14 +123,14 @@ export class Session {
               eventInstance.get('type') === type &&
               eventInstance.get('json') === JSON.stringify(struct)) {
             console.log('Trivial txn: ' + event + ' already committed for client ' + client + ' instance ' + instance);
-            id = s.get('eventCounter');
+            id = s.get('eventcounter');
             (struct as any).id = id;
             return false;
           }
 
-          id = s.get('eventCounter') + 1;
+          id = s.get('eventcounter') + 1;
           (struct as any).id = id;
-          return s.update({eventCounter: id}, {transaction: txn}).then(() => {return true;});
+          return s.update({eventcounter: id}, {transaction: txn}).then(() => {return true;});
         })
         .then((incremented: boolean) => {
           if (!incremented) {
@@ -173,10 +173,10 @@ export class Session {
             // committed this event, return success and don't try to commit it again.
             console.log('Trivial txn: ' + event + ' already committed for client ' + client + ' instance ' + instance);
             return false;
-          } else if ((s.get('eventCounter') + 1) !== event) {
-            throw new Error('eventCounter increment mismatch');
+          } else if ((s.get('eventcounter') + 1) !== event) {
+            throw new Error('eventcounter increment mismatch');
           }
-          return s.update({eventCounter: event}, {transaction: txn}).then(() => {return true;});
+          return s.update({eventcounter: event}, {transaction: txn}).then(() => {return true;});
         })
         .then((incremented: boolean) => {
           if (!incremented) {

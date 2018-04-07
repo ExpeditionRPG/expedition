@@ -23,7 +23,7 @@ export class Event {
 
   constructor(s: Sequelize.Sequelize) {
     this.s = s;
-    this.model = (this.s.define('Events', {
+    this.model = (this.s.define('events', {
       session: {
         type: Sequelize.BIGINT,
         allowNull: false,

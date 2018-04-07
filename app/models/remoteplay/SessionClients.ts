@@ -22,7 +22,7 @@ export class SessionClient {
 
   constructor(s: Sequelize.Sequelize) {
     this.s = s;
-    this.model = (this.s.define('SessionClients', {
+    this.model = (this.s.define('sessionclients', {
       session: {
         type: Sequelize.BIGINT,
         allowNull: false,
