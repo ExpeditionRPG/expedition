@@ -232,6 +232,7 @@ export function init() {
       const quest = state.quest || {};
       const questNode = quest.node && quest.node.elem && quest.node.elem[0];
       Raven.setExtraContext({
+        card: state.card.key,
         questName: quest.details.title,
         questId: quest.details.id,
         questCardTitle: (questNode) ? questNode.attribs.title : '',
