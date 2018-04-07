@@ -8,7 +8,6 @@ const options = {
     bundle: [
       './app/React.tsx',
       './app/Style.scss',
-      './node_modules/expedition-app/app/Style.scss',
     ],
   },
   resolve: {
@@ -45,10 +44,6 @@ const options = {
       // Copy ops for dist folder (main app)
       { from: 'app/index.html', to: 'dist' },
       { from: 'app/assets', to: 'dist' },
-      { from: 'node_modules/expedition-app/app/images', to: 'dist/images' },
-      { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './dist/images' },
-      { from: { glob: 'node_modules/expedition-art/art/*.png' }, flatten: true, to: './dist/images' },
-      { from: 'app/dictionaries', to: 'dist/dictionaries'},
       { from: 'app/scripts', to: 'dist/scripts' },
 
       // Copy ops for static folder (error/maintenance pages)

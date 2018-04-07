@@ -60,8 +60,6 @@ const options = {
     new CopyWebpackPlugin([
       { from: 'app/index.html' },
       { from: 'app/assets' },
-      { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
-      { from: { glob: 'node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
     ]),
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {
