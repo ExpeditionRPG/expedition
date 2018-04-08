@@ -20,6 +20,7 @@ const options = {
   },
   devServer: {
     host: '0.0.0.0',
+    disableHostCheck: true,
     contentBase: Path.join(__dirname, 'app'),
     publicPath: '/',
     port: port,
