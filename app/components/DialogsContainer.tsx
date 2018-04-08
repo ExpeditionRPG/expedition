@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
       dispatch(setDialog('NONE'));
     },
     onSetUserLootPoints: (user: UserEntry, loot_points: number) => {
-      dispatch(mutateUser({userid: user.id, loot_points: user.loot_points}));
+      dispatch(mutateUser({userid: user.id, loot_points}));
     },
     onSetQuestPublishState: (quest: QuestEntry, published: boolean) => {
       dispatch(mutateQuest({questid: quest.id, partition: quest.partition, published}));
