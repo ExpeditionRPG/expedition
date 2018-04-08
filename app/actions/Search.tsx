@@ -1,7 +1,7 @@
 import * as Redux from 'redux'
 import {SearchResponseAction, ViewQuestAction} from './ActionTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
-import {SearchSettings} from '../reducers/StateTypes'
+import {ExpansionsType, SearchSettings, SettingsType} from '../reducers/StateTypes'
 import {remoteify} from './ActionTypes'
 import {authSettings, FEATURED_QUESTS} from '../Constants'
 import {toCard} from './Card'
@@ -14,13 +14,15 @@ export const viewQuest = remoteify(function viewQuest(a: {quest: QuestDetails}, 
 });
 
 // TODO: Make search options propagate to other clients
-export const search = remoteify(function search(a: SearchSettings, dispatch: Redux.Dispatch<any>) {
-  const params = {...a};
+export const search = remoteify(function search(a: {search: SearchSettings, settings: SettingsType}, dispatch: Redux.Dispatch<any>) {
+  const params = {...a.search};
   Object.keys(params).forEach((key: string) => {
     if ((params as any)[key] === null) {
       delete (params as any)[key];
     }
   });
+  params.players = a.settings.numPlayers;
+  params.expansions = Object.keys(a.settings.contentSets).filter( key => a.settings.contentSets[key] ) as ExpansionsType[],
 
   dispatch(getSearchResults(params, (quests: QuestDetails[], response: any) => {
     dispatch({

@@ -6,7 +6,6 @@ export const initialSearch: SearchState = {
   search: {
     text: '',
     order: '-created',
-    expansions: [],
   },
   selected: null,
   results: [],

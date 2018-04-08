@@ -9,7 +9,7 @@ import Card from './base/Card'
 import Checkbox from './base/Checkbox'
 import StarRating from './base/StarRating'
 
-import {SearchSettings, SearchPhase, SearchState, UserState} from '../reducers/StateTypes'
+import {SearchSettings, SearchPhase, SearchState, SettingsType, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {GenreType, CONTENT_RATINGS, PLAYTIME_MINUTES_BUCKETS, SUMMARY_MAX_LENGTH} from '../Constants'
 
@@ -17,16 +17,16 @@ const Moment = require('moment');
 
 export interface SearchStateProps extends SearchState {
   isDirectLinked: boolean;
-  numPlayers: number;
   phase: SearchPhase;
   search: SearchSettings;
+  settings: SettingsType;
   user: UserState;
 }
 
 export interface SearchDispatchProps {
   onLoginRequest: (subscribe: boolean) => void;
   onFilter: () => void;
-  onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => void;
+  onSearch: (search: SearchSettings, settings: SettingsType) => void;
   onQuest: (quest: QuestDetails) => void;
   onPlay: (quest: QuestDetails, isDirectLinked: boolean) => void;
   onReturn: () => void;
@@ -37,10 +37,10 @@ export interface SearchProps extends SearchStateProps, SearchDispatchProps {};
 // We make this a react component to hold a bit of state and avoid sending
 // redux actions for every single change to input.
 interface SearchSettingsCardProps {
-  numPlayers: number;
   user: UserState;
   search: SearchSettings;
-  onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => void;
+  settings: SettingsType;
+  onSearch: (search: SearchSettings, settings: SettingsType) => void;
 }
 
 
@@ -69,7 +69,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
       <Card title="Quest Search">
         <div className="searchForm">
           <FlatButton disabled={true}>
-            For {this.props.numPlayers} adventurer{this.props.numPlayers > 1 ? 's' : ''} (based on party size)
+            For {this.props.settings.numPlayers} adventurer{this.props.settings.numPlayers > 1 ? 's' : ''} (based on party size)
           </FlatButton>
           <TextField
             className="textfield"
@@ -169,7 +169,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
           {rating && <div className="ratingDescription">
             <span>"{this.state.contentrating}" rating means: {rating.summary}</span>
           </div>}
-          <Button onTouchTap={() => this.props.onSearch(this.props.numPlayers, this.props.user, this.state)} remoteID="search">Search</Button>
+          <Button onTouchTap={() => this.props.onSearch(this.state, this.props.settings)} remoteID="search">Search</Button>
         </div>
       </Card>
     );
@@ -177,7 +177,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
 }
 
 function renderSettings(props: SearchProps): JSX.Element {
-  return (<SearchSettingsCard search={props.search} onSearch={props.onSearch} user={props.user} numPlayers={props.numPlayers}/>);
+  return (<SearchSettingsCard search={props.search} settings={props.settings} onSearch={props.onSearch} user={props.user} />);
 }
 
 export function formatPlayPeriod(minMinutes: number, maxMinutes: number): string {
@@ -244,7 +244,7 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
     <Card
       title="Quest Search Results"
       header={(hideHeader) ? undefined : <div className="searchHeader">
-        <span>{props.results.length} quests for {props.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></span>
+        <span>{props.results.length} quests for {props.settings.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></span>
         <Button className="filter_button" onTouchTap={() => props.onFilter()} remoteID="filter">Filter &amp; Sort ></Button>
       </div>}
     >

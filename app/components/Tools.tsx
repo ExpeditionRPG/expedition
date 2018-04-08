@@ -13,7 +13,7 @@ export interface ToolsStateProps {
 export interface ToolsDispatchProps {
   onCustomCombatSelect: (settings: SettingsType) => void;
   onQuestCreatorSelect: () => void;
-  onPrivateQuestsSelect: (user: UserState) => void;
+  onPrivateQuestsSelect: (settings: SettingsType, user: UserState) => void;
   onRemotePlaySelect: (user: UserState) => void;
   testMusic: () => void;
   testMusicRandom: () => void;
@@ -56,10 +56,10 @@ const Tools = (props: ToolsProps): JSX.Element => {
           <div className="summary">Write your own quests and share them with the world.</div>
         </div>
       </Button>
-      <Button remoteID="2" onTouchTap={() => props.onPrivateQuestsSelect(props.user)}>
+      <Button remoteID="2" onTouchTap={() => props.onPrivateQuestsSelect(props.settings, props.user)}>
         <div className="questButtonWithIcon">
           <div className="title">Private Quests</div>
-          <div className="summary">View quests you've published privately with the Quest Creator.</div>
+          <div className="summary">View quests you've published privately with the Quest Creator (uses your current player count!)</div>
         </div>
       </Button>
       <div className="version">Expedition App v{getAppVersion()}</div>

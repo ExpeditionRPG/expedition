@@ -29,12 +29,20 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
     onQuestCreatorSelect(): void {
       openWindow(URLS.questCreator);
     },
-    onPrivateQuestsSelect(user: UserState): void {
+    onPrivateQuestsSelect(settings: SettingsType, user: UserState): void {
       const privateSearch = (u: UserState) => {
-        dispatch(search({owner: u.id,
-          partition: 'expedition-private',
-          expansions: ['horror'],
-          order: '-published',
+        dispatch(search({
+          search: {
+            owner: u.id,
+            partition: 'expedition-private',
+            order: '-published',
+          },
+          settings: {
+            ...settings,
+            contentSets: {
+              horror: true,
+            },
+          }
         }));
       };
 

@@ -90,7 +90,7 @@ const options = {
         },
         babel: {
           presets: ["es2015", ["env", {
-            "targets": {"browsers": ["last 2 years", "last 3 iOS versions"]}
+            "targets": {"browsers": [">5%", "last 2 years", "last 3 iOS versions"]}
           }]],
           cacheDirectory: true,
         },

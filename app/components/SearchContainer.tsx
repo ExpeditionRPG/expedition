@@ -9,7 +9,7 @@ import {changeSettings} from '../actions/Settings'
 import {login} from '../actions/User'
 import {fetchQuestXML, subscribe} from '../actions/Web'
 import {search, viewQuest} from '../actions/Search'
-import {AppStateWithHistory, SearchSettings, UserState} from '../reducers/StateTypes'
+import {AppStateWithHistory, SearchSettings, SettingsType, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 
 
@@ -18,7 +18,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: SearchStateProps)
     isDirectLinked: state._history.length <= 2,
     results: [], // Default in case search results are not defined
     ...state.search,
-    numPlayers: state.settings.numPlayers,
+    settings: state.settings,
     phase: ownProps.phase,
     user: state.user,
   };
@@ -37,8 +37,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
     onFilter: () => {
       dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
     },
-    onSearch: (numPlayers: number, user: UserState, request: SearchSettings) => {
-      dispatch(search({players: numPlayers, ...request}));
+    onSearch: (s: SearchSettings, settings: SettingsType) => {
+      dispatch(search({search: s, settings}));
     },
     onQuest: (quest: QuestDetails) => {
       dispatch(viewQuest({quest}));

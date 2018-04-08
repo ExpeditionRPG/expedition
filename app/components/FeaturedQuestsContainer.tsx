@@ -25,9 +25,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Featu
     },
     onSearchSelect(user: UserState, settings: SettingsType): void {
       if (user && user.loggedIn) {
-        dispatch(search({...initialSearch.search,
-          players: settings.numPlayers,
-          expansions: Object.keys(settings.contentSets).filter( key => settings.contentSets[key] ) as ExpansionsType[],
+        dispatch(search({
+          search: initialSearch.search,
+          settings,
         }));
       } else {
         dispatch(toCard({name: 'SEARCH_CARD', phase: 'DISCLAIMER'}));
