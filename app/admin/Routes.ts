@@ -9,7 +9,14 @@ function requireAdminAuth(req: express.Request, res: express.Response, next: exp
   if (!res.locals || !res.locals.id) {
     return res.status(500).end('You are not signed in.');
   }
-  for (const id of Config.get('SUPER_USER_IDS')) {
+  let superUsers: string[] = [];
+  try {
+    superUsers = JSON.parse(Config.get('SUPER_USER_IDS'));
+  } catch (e) {
+    console.error('Failed to parse SUPER_USER_IDS');
+    return res.status(401).end('You are not authorized.');
+  }
+  for (const id of superUsers) {
     if (res.locals.id === id) {
       return next();
     }

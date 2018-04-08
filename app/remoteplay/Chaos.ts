@@ -35,7 +35,7 @@ export function chaosWS(ws: WebSocket): WebSocket {
       oldMessageBuf.shift();
     }
 
-    if (Math.random() <= (Config.get('CHAOS_FRACTION') || 0)) {
+    if (Math.random() <= (parseFloat(Config.get('CHAOS_FRACTION')) || 0)) {
       oldSend(s, errCallback);
       return;
     }
@@ -59,7 +59,7 @@ export function chaosWS(ws: WebSocket): WebSocket {
       return;
     }
 
-    if (Math.random() >= (Config.get('CHAOS_FRACTION') || 0)) {
+    if (Math.random() >= (parseFloat(Config.get('CHAOS_FRACTION')) || 0)) {
       return;
     }
     
@@ -95,7 +95,7 @@ export function chaosSessionModel(s: SessionModel, session: number, ws: WebSocke
       return;
     }
 
-    if (Math.random() < (Config.get('CHAOS_FRACTION') || 0)) {
+    if (Math.random() < (parseFloat(Config.get('CHAOS_FRACTION')) || 0)) {
       console.log('CHAOS: injecting an id\'d event');
       s.getLargestEventID(session).then((latestID) => {
         s.commitEvent(session, 'chaos', 'chaos', latestID+1, 'CHAOS', JSON.stringify({id: latestID+1, event: {type: 'chaos!'}}));
@@ -112,7 +112,7 @@ export function chaosSessionClientModel(sc: SessionClient): SessionClient {
   // Randomly fail to verify user membership in a session
   const oldVerify = sc.verify.bind(sc);
   sc.verify = (session: number, client: string, secret: string) => {
-    if (Math.random() < (Config.get('CHAOS_FRACTION') || 0)) {
+    if (Math.random() < (parseFloat(Config.get('CHAOS_FRACTION')) || 0)) {
       console.log('CHAOS: failing session client check');
       return Bluebird.resolve(false);
     }
@@ -123,21 +123,21 @@ export function chaosSessionClientModel(sc: SessionClient): SessionClient {
 
 
 export function maybeChaosWS(ws: WebSocket): WebSocket {
-  if (Config.get('NODE_ENV') !== 'production' && Config.get('REMOTEPLAY_CHAOS') === true) {
+  if (Config.get('NODE_ENV') !== 'production' && Config.get('REMOTEPLAY_CHAOS') === 'true') {
     return chaosWS(ws);
   }
   return ws;
 }
 
 export function maybeChaosSession(s: SessionModel, session: number, ws: WebSocket): SessionModel {
-  if (Config.get('NODE_ENV') !== 'production' && Config.get('REMOTEPLAY_CHAOS') === true) {
+  if (Config.get('NODE_ENV') !== 'production' && Config.get('REMOTEPLAY_CHAOS') === 'true') {
     return chaosSessionModel(s, session, ws);
   }
   return s;
 }
 
 export function maybeChaosSessionClient(sc: SessionClient): SessionClient {
-  if (Config.get('NODE_ENV') !== 'production' && Config.get('REMOTEPLAY_CHAOS') === true) {
+  if (Config.get('NODE_ENV') !== 'production' && Config.get('REMOTEPLAY_CHAOS') === 'true') {
     return chaosSessionClientModel(sc);
   }
   return sc;
