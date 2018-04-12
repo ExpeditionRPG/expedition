@@ -2,7 +2,7 @@ import * as React from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'react-redux'
 import {silentLogin, setProfileMeta} from './actions/User'
-import {feedbackQuery, questsQuery, usersQuery} from './actions/Web'
+import {queryView} from './actions/View'
 import {setSnackbar} from './actions/Snackbar'
 import MainContainer from './components/MainContainer'
 import {store} from './Store'
@@ -48,15 +48,9 @@ $.ajaxSetup({
 window.gapi.load('client,drive-realtime,drive-share', () => {
   store.dispatch(silentLogin((user: UserState) => {
     store.dispatch(setProfileMeta(user));
-    store.dispatch(feedbackQuery({
-      order: {column: 'created', ascending: true},
-    }));
-    store.dispatch(questsQuery({
-      order: {column: 'created', ascending: false},
-    }));
-    store.dispatch(usersQuery({
-      order: {column: 'last_login', ascending: false},
-    }));
+    store.dispatch(queryView('USERS'));
+    store.dispatch(queryView('QUESTS'));
+    store.dispatch(queryView('FEEDBACK'));
   }));
 });
 

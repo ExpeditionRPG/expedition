@@ -3,13 +3,14 @@ import {connect} from 'react-redux'
 
 import {toggleDrawer} from '../actions/Dialogs'
 import {logoutUser} from '../actions/User'
-import {AppState, UserState} from '../reducers/StateTypes'
+import {queryView} from '../actions/View'
+import {AppState, UserState, ViewType} from '../reducers/StateTypes'
 import TopBar, {TopBarStateProps, TopBarDispatchProps} from './TopBar'
 
 const mapStateToProps = (state: AppState, ownProps: any): TopBarStateProps => {
   return {
     user: state.user,
-    view: state.view.view,
+    view: state.view,
   };
 }
 
@@ -20,6 +21,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): TopBa
     },
     onMenuIconTap: () => {
       dispatch(toggleDrawer());
+    },
+    onFilterUpdate: (view: ViewType, filter: string) => {
+      dispatch(queryView(view, filter));
     }
   };
 }

@@ -27,10 +27,12 @@ export interface UserState {
 
 export interface ViewState {
   view: ViewType;
+  filter: string;
   feedback: FeedbackEntry[];
   users: UserEntry[];
   quests: QuestEntry[];
   selected: {feedback: number|null, user: number|null, quest: number|null};
+  lastQueryError: {view: ViewType, error: Error}|null;
 }
 
 export interface AppState {
