@@ -11,8 +11,15 @@ import {
   UserEntry,
   Response as APIResponse
 } from 'expedition-api/app/admin/QueryTypes'
-import {UpdateFeedbackAction, UpdateQuestAction, UpdateUserAction} from './ActionTypes'
+import {UpdateFeedbackAction, UpdateQuestAction, UpdateUserAction, QueryErrorAction} from './ActionTypes'
 import {authSettings} from '../Constants'
+
+function maybeParse(r: Response) {
+  if (!r.ok) {
+    return r.json().then((r: any) => {throw Error(r.error || 'Server Error');});
+  }
+  return r.json();
+}
 
 export function feedbackQuery(q: FeedbackQuery) {
   return (dispatch: Redux.Dispatch<any>) => {
@@ -25,14 +32,12 @@ export function feedbackQuery(q: FeedbackQuery) {
       body: JSON.stringify(q),
     })
     .then((response: Response) => {
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      return response.json()
+      return maybeParse(response);
     }).then((entries: FeedbackEntry[]) => {
       dispatch({type: 'SET_VIEW_FEEDBACK', entries});
     }).catch((error: Error) => {
       console.error('Request failed', error);
+      dispatch({type: 'QUERY_ERROR', view: 'FEEDBACK', error} as QueryErrorAction);
     });
   };
 }
@@ -48,14 +53,12 @@ export function questsQuery(q: QuestQuery) {
       body: JSON.stringify(q),
     })
     .then((response: Response) => {
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      return response.json()
+      return maybeParse(response);
     }).then((entries: QuestEntry[]) => {
       dispatch({type: 'SET_VIEW_QUESTS', entries});
     }).catch((error: Error) => {
       console.error('Request failed', error);
+      dispatch({type: 'QUERY_ERROR', view: 'QUESTS', error} as QueryErrorAction);
     });
   };
 }
@@ -72,16 +75,14 @@ export function usersQuery(q: UserQuery) {
       body: JSON.stringify(q),
     })
     .then((response: Response) => {
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      return response.json();
+      return maybeParse(response);
     }).then((entries: UserEntry[]) => {
       dispatch({type: 'SET_VIEW_USERS', entries: entries.map((e: UserEntry) => {
         return {...e, last_login: new Date(e.last_login.toString())};
       })});
     }).catch((error: Error) => {
       console.error('Request failed', error);
+      dispatch({type: 'QUERY_ERROR', view: 'USERS', error} as QueryErrorAction);
     });
   };
 }
@@ -97,10 +98,7 @@ export function mutateFeedback(m: FeedbackMutation) {
       body: JSON.stringify(m),
     })
     .then((response: Response) => {
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      return response.json();
+      return maybeParse(response);
     }).then((response: APIResponse) => {
       if (response.status !== 'OK') {
         throw Error(response.error);
@@ -109,6 +107,7 @@ export function mutateFeedback(m: FeedbackMutation) {
       dispatch({type: 'UPDATE_FEEDBACK', m} as UpdateFeedbackAction);
     }).catch((error: Error) => {
       console.error('Request failed', error);
+      dispatch({type: 'QUERY_ERROR', view: 'FEEDBACK', error} as QueryErrorAction);
     });
   };
 }
@@ -124,10 +123,7 @@ export function mutateQuest(m: QuestMutation) {
       body: JSON.stringify(m),
     })
     .then((response: Response) => {
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      return response.json();
+      return maybeParse(response);
     }).then((response: APIResponse) => {
       if (response.status !== 'OK') {
         throw Error(response.error);
@@ -136,6 +132,7 @@ export function mutateQuest(m: QuestMutation) {
       dispatch({type: 'UPDATE_QUEST', m} as UpdateQuestAction);
     }).catch((error: Error) => {
       console.error('Request failed', error);
+      dispatch({type: 'QUERY_ERROR', view: 'QUESTS', error} as QueryErrorAction);
     });
   };
 }
@@ -151,10 +148,7 @@ export function mutateUser(m: UserMutation) {
       body: JSON.stringify(m),
     })
     .then((response: Response) => {
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      return response.json();
+      return maybeParse(response);
     }).then((response: APIResponse) => {
       if (response.status !== 'OK') {
         throw Error(response.error);
@@ -163,6 +157,7 @@ export function mutateUser(m: UserMutation) {
       dispatch({type: 'UPDATE_USER', m} as UpdateUserAction);
     }).catch((error: Error) => {
       console.error('Request failed', error);
+      dispatch({type: 'QUERY_ERROR', view: 'USERS', error} as QueryErrorAction);
     });
   };
 }

@@ -64,3 +64,9 @@ export interface UpdateFeedbackAction extends Redux.Action {
   type: 'UPDATE_FEEDBACK';
   m: FeedbackMutation;
 }
+
+export interface QueryErrorAction extends Redux.Action {
+  type: 'QUERY_ERROR';
+  view: ViewType;
+  error: Error;
+}
