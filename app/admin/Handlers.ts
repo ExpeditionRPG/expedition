@@ -13,6 +13,13 @@ function validateOrder(body: any) {
   return body;
 }
 
+function handleErrors(res: express.Response) {
+  return (e: Error) => {
+    console.error(e);
+    res.status(500).send(JSON.stringify({status: 'ERROR', error: e.toString()} as QT.Response));
+  };
+}
+
 export function queryFeedback(feedback: Feedback, quests: Quest, users: User, req: express.Request, res: express.Response) {
   try {
     let body: any;
@@ -50,9 +57,9 @@ export function queryFeedback(feedback: Feedback, quests: Quest, users: User, re
     }
     if (q.substring) {
       where.$or = [
-        {text: {$contains: [q.substring]}},
-        {email: {$contains: [q.substring]}},
-        {name: {$contains: [q.substring]}},
+        {text: {$regexp: q.substring}},
+        {email: {$regexp: q.substring}},
+        {name: {$regexp: q.substring}},
       ];
     }
 
@@ -89,10 +96,9 @@ export function queryFeedback(feedback: Feedback, quests: Quest, users: User, re
       })
     }).then((results: QT.FeedbackEntry[]) => {
       res.status(200).send(JSON.stringify(results));
-    });
+    }).catch(handleErrors(res));
   } catch (e) {
-    console.error(e);
-    return res.status(500).end('Error reading request.');
+    handleErrors(res)(e);
   }
 }
 
@@ -112,11 +118,10 @@ export function modifyFeedback(feedback: Feedback, req: express.Request, res: ex
       return feedback.suppress(m.partition, m.questid, m.userid, m.suppress || false)
         .then(() => {
           res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
-        });
+        }).catch(handleErrors(res));
     }
   } catch (e) {
-    console.error(e);
-    res.status(500).send(JSON.stringify({status: 'ERROR', error: e.toString()} as QT.Response));
+    handleErrors(res)(e);
   }
 }
 
@@ -141,8 +146,8 @@ export function queryQuest(quest: Quest, req: express.Request, res: express.Resp
     }
     if (q.substring) {
       where.$or = [
-        {title: {$contains: [q.substring]}},
-        {summary: {$contains: [q.substring]}},
+        {title: {$regexp: q.substring}},
+        {summary: {$regexp: q.substring}},
       ];
     }
 
@@ -167,10 +172,9 @@ export function queryQuest(quest: Quest, req: express.Request, res: express.Resp
       });
     }).then((results: QT.QuestEntry[]) => {
       res.status(200).send(JSON.stringify(results));
-    });
+    }).catch(handleErrors(res));
   } catch (e) {
-    console.error(e);
-    res.status(500).send(JSON.stringify({status: 'ERROR', error: e.toString()} as QT.Response));
+    handleErrors(res)(e);
   }
 }
 
@@ -189,17 +193,16 @@ export function modifyQuest(quest: Quest, req: express.Request, res: express.Res
       return quest.republish(m.partition, m.questid)
         .then(() => {
           res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
-        });
+        }).catch(handleErrors(res));
     } else if (m.published === false) {
       return quest.unpublish(m.partition, m.questid)
         .then(() => {
           res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
-        });
+        }).catch(handleErrors(res));
     }
     throw Error('invalid modifier');
   } catch (e) {
-    console.error(e);
-    res.status(500).send(JSON.stringify({status: 'ERROR', error: e.toString()} as QT.Response));
+    handleErrors(res)(e);
   }
 }
 
@@ -219,8 +222,8 @@ export function queryUser(user: User, req: express.Request, res: express.Respons
     }
     if (q.substring) {
       where.$or = [
-        {email: {$contains: [q.substring]}},
-        {name: {$contains: [q.substring]}},
+        {email: {$regexp: q.substring}},
+        {name: {$regexp: q.substring}},
       ];
     }
 
@@ -240,10 +243,9 @@ export function queryUser(user: User, req: express.Request, res: express.Respons
       });
     }).then((results: QT.UserEntry[]) => {
       res.status(200).send(JSON.stringify(results));
-    });
+    }).catch(handleErrors(res));
   } catch (e) {
-    console.error(e);
-    res.status(500).send(JSON.stringify({status: 'ERROR', error: e.toString()} as QT.Response));
+    handleErrors(res)(e);
   }
 }
 
@@ -261,10 +263,9 @@ export function modifyUser(user: User, req: express.Request, res: express.Respon
       return user.setLootPoints(m.userid, m.loot_points)
         .then(() => {
           res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
-        })
+        }).catch(handleErrors(res));
     }
   } catch (e) {
-    console.error(e);
-    res.status(500).send(JSON.stringify({status: 'ERROR', error: e.toString()} as QT.Response));
+    handleErrors(res)(e);
   }
 }
