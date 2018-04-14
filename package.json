@@ -28,7 +28,7 @@
     "@types/stripe-v3": "^3.0.5",
     "babel-core": "^6.24.0",
     "copy-webpack-plugin": "^4.0.1",
-    "expedition-api": "git+https://github.com/ExpeditionRPG/expedition-api.git#eecefe18bac702c11e6045806592ea8bbc6748b9",
+    "expedition-api": "git+https://github.com/ExpeditionRPG/expedition-api.git#9f64563923ef110eedafb2c949279085a720959d",
     "google-auth-library": "^0.10.0",
     "google-url": "0.0.4",
     "html": "^1.0.0",
