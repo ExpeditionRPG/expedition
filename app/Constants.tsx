@@ -111,6 +111,16 @@ export const GENRES: GenreType[] = [
   'Romance'
 ];
 
+export type LanguageType = 'English' | 'French' | 'German' | 'Italian' | 'Portuguese' | 'Spanish';
+export const LANGUAGES: LanguageType[] = [
+  'English',
+  'French',
+  'German',
+  'Italian',
+  'Portuguese',
+  'Spanish'
+];
+
 // Content rating options and their definitions, generally based on MPAA guidelines
 export type ContentRatingLabelType = 'Everyone' | 'Teen' | 'Adult';
 export interface ContentRatingType {
