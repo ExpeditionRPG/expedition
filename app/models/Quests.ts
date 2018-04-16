@@ -40,6 +40,7 @@ export interface QuestAttributes {
   published: Date|null;
   tombstone: Date|null;
   expansionhorror: boolean;
+  language: string;
 }
 
 export interface QuestSearchParams {
@@ -56,6 +57,7 @@ export interface QuestSearchParams {
   limit?: number|null;
   partition?: string|null;
   expansions?: string[]|null;
+  language?: string|null;
 }
 
 export interface QuestInstance extends Sequelize.Instance<Partial<QuestAttributes>> {}
@@ -121,6 +123,10 @@ export class Quest {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
+      language: {
+        type: Sequelize.STRING(128),
+        defaultValue: 'English',
+      },
     }, {
       timestamps: false, // TODO: eventually switch to sequelize timestamps
       // https://github.com/ExpeditionRPG/expedition-api/issues/39
@@ -168,6 +174,7 @@ export class Quest {
       published: q.get('published') || null,
       tombstone: q.get('tombstone') || null,
       expansionhorror: q.get('expansionhorror') || false,
+      language: q.get('language') || 'English',
     };
   }
 
@@ -218,6 +225,10 @@ export class Quest {
 
     if (params.genre) {
       where.genre = params.genre;
+    }
+
+    if (params.language) {
+      where.language = params.language;
     }
 
     const order = [];
@@ -271,7 +282,7 @@ export class Quest {
           // If this is a newly published quest, email us!
           // We don't care if this fails.
           Mail.send(['expedition+newquest@fabricate.io'],
-            `New quest published: ${params.title} (${params.partition})`,
+            `New quest published: ${params.title} (${params.partition}, ${params.language})`,
             `Summary: ${params.summary}.\n
             By ${params.author}, for ${params.minplayers} - ${params.maxplayers} players over ${params.mintimeminutes} - ${params.maxtimeminutes} minutes. ${params.genre}.
             ${params.expansionhorror ? 'Requires The Horror expansion.' : 'No expansions required.'}`);

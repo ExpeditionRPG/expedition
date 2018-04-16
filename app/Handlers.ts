@@ -101,6 +101,7 @@ export function publish(quest: Quest, req: express.Request, res: express.Respons
     genre: req.query.genre,
     contentrating: req.query.contentrating,
     expansionhorror: req.query.expansionhorror || false,
+    language: req.query.language,
   };
   const majorRelease = (req.query.majorRelease === 'true');
   quest.publish(res.locals.id, majorRelease, attribs, req.body)

@@ -31,6 +31,7 @@ describe('quest', () => {
     questversionlastmajor: 1,
     tombstone: null,
     expansionhorror: false,
+    language: 'English',
   };
 
   const expansionQuest: QuestAttributes = {
@@ -59,6 +60,7 @@ describe('quest', () => {
     questversionlastmajor: 1,
     tombstone: null,
     expansionhorror: true,
+    language: 'English',
   }
 
   beforeEach((done: () => any) => {
