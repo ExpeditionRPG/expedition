@@ -353,7 +353,7 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         onFeedbackChange={props.onFeedbackChange}
         onFeedbackSubmit={props.onFeedbackSubmit}
         onRequestClose={props.onRequestClose}
-        quest={props.quest || {details: {}} as any}
+        quest={props.quest}
         settings={props.settings}
         user={props.user}
         userFeedback={props.userFeedback}
@@ -364,7 +364,7 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         onFeedbackChange={props.onFeedbackChange}
         onReportErrorSubmit={props.onReportErrorSubmit}
         onRequestClose={props.onRequestClose}
-        quest={props.quest || {details: {}} as any}
+        quest={props.quest}
         settings={props.settings}
         user={props.user}
         userFeedback={props.userFeedback}
@@ -374,7 +374,7 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         onFeedbackChange={props.onFeedbackChange}
         onReportQuestSubmit={props.onReportQuestSubmit}
         onRequestClose={props.onRequestClose}
-        quest={props.quest || {details: {}} as any}
+        quest={props.quest}
         settings={props.settings}
         user={props.user}
         userFeedback={props.userFeedback}

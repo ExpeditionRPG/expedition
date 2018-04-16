@@ -1,9 +1,10 @@
 import {generateCombatTemplate, initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta, handleResolvePhase, midCombatChoice} from './Actions'
-import {DifficultyType, FontSizeType} from '../../reducers/StateTypes'
+import {DifficultyType, FontSizeType, RemotePlayState} from '../../reducers/StateTypes'
 import {defaultContext, renderCardTemplate} from '../Template'
 import {ParserNode} from '../TemplateTypes'
 import {newMockStore, Action} from '../../Testing'
 import {RemotePlayClient} from '../../RemotePlay'
+import {initialRemotePlay} from '../../reducers/RemotePlay'
 
 const cheerio: any = require('cheerio');
 
@@ -22,6 +23,22 @@ const TEST_SETTINGS = {
   timerSeconds: 10,
   vibration: true,
 };
+
+const TEST_RP = {
+  ...initialRemotePlay,
+  clientStatus: {
+    1: {
+      type: 'STATUS',
+      connected: true,
+      numPlayers: 3,
+    },
+    2: {
+      type: 'STATUS',
+      connected: true,
+      numPlayers: 2,
+    },
+  },
+} as RemotePlayState;
 
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
@@ -142,7 +159,18 @@ describe('Combat actions', () => {
       expect(actions[3].node.ctx.templates.combat.roundCount).toEqual(1);
     });
 
-    it('includes remote players when generating rolls');
+    it('only generates rolls for local, not remote, players', () => {
+      const store = newMockStore({});
+      store.dispatch(handleCombatTimerStop({
+        node: newCombatNode(),
+        settings: TEST_SETTINGS,
+        elapsedMillis: 1000,
+        seed: '',
+        rp: TEST_RP,
+      }));
+      const actions = store.getActions();
+      expect(actions[3].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
+    });
   });
 
   describe('handleCombatEnd', () => {
@@ -182,7 +210,19 @@ describe('Combat actions', () => {
       }));
     });
 
-    it('does not level up if remote play count exceeds tier sum');
+    it('does not level up if remote play count exceeds tier sum', () => {
+      const store = newMockStore({settings: TEST_SETTINGS});
+      store.dispatch(handleCombatEnd({
+        node: newCombatNode(),
+        settings: TEST_SETTINGS,
+        victory: true,
+        maxTier: 4,
+        seed: '',
+        rp: TEST_RP,
+      }));
+
+      expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(false);
+    });
   });
 
   describe('tierSumDelta', () => {

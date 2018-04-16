@@ -24,7 +24,7 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
 
   return {
     dialog: state.dialog,
-    quest: state.quest,
+    quest: state.quest || {details: {}} as any,
     settings: state.settings,
     user: state.user,
     remotePlayStats,
