@@ -37,7 +37,7 @@ export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch: Redux.D
     keylist.push('L' + line);
   }
 
-  dispatch({type: 'NAVIGATE', to: {...a, ts: Date.now(), key: keylist.join('|'), questId}} as NavigateAction);
+  dispatch({type: 'NAVIGATE', to: {...a, ts: Date.now(), key: keylist.join('|'), questId}, dontUpdateUrl: state.settings && state.settings.simulator} as NavigateAction);
   return a;
 });
 

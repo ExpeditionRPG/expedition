@@ -77,6 +77,7 @@ export interface SettingsType {
   multitouch: boolean;
   numPlayers: number;
   showHelp: boolean;
+  simulator: boolean;
   timerSeconds: number;
   vibration: boolean;
 }

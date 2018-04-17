@@ -38,12 +38,12 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
   return (
     <Card title="Select Your Quest" icon="adventurer">
       {items}
-      <Button onTouchTap={() => props.onSearchSelect(props.user, props.settings)} remoteID="morequests">
+      {!props.settings.simulator && <Button onTouchTap={() => props.onSearchSelect(props.user, props.settings)} remoteID="morequests">
         <div className="questButtonWithIcon">
           <div className="title"><img className="inline_icon" src="images/book_small.svg"/>More Quests</div>
           <div className="summary">Explore and play community-written quests.</div>
         </div>
-      </Button>
+      </Button>}
       <Button onTouchTap={()=>props.onTools()} remoteID="tools">
         <div className="questButtonWithIcon">
           <div className="title"><img className="inline_icon" src="images/roll_small.svg"/>Tools</div>

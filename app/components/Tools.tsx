@@ -40,7 +40,7 @@ const Tools = (props: ToolsProps): JSX.Element => {
           <div className="summary">You tell the story; the app runs the combat.</div>
         </div>
       </Button>
-      {(NODE_ENV === 'dev' || props.settings.experimental) &&
+      {(NODE_ENV === 'dev' || props.settings.experimental) && !props.settings.simulator &&
         <Button remoteID="3" onTouchTap={() => props.onRemotePlaySelect(props.user)}>
           <div className="questButtonWithIcon">
             <div className="title">Remote Play - Beta</div>
@@ -50,18 +50,18 @@ const Tools = (props: ToolsProps): JSX.Element => {
           </div>
         </Button>
       }
-      <Button remoteID="1" id="selectQuestCreator" onTouchTap={() => props.onQuestCreatorSelect()}>
+      {!props.settings.simulator && <Button remoteID="1" id="selectQuestCreator" onTouchTap={() => props.onQuestCreatorSelect()}>
         <div className="questButtonWithIcon">
           <div className="title">Quest Creator</div>
           <div className="summary">Write your own quests and share them with the world.</div>
         </div>
-      </Button>
-      <Button remoteID="2" onTouchTap={() => props.onPrivateQuestsSelect(props.settings, props.user)}>
+      </Button>}
+      {!props.settings.simulator && <Button remoteID="2" onTouchTap={() => props.onPrivateQuestsSelect(props.settings, props.user)}>
         <div className="questButtonWithIcon">
           <div className="title">Private Quests</div>
           <div className="summary">View quests you've published privately with the Quest Creator (uses your current player count!)</div>
         </div>
-      </Button>
+      </Button>}
       <div className="version">Expedition App v{getAppVersion()}</div>
       <div className="privacy"><a href="#" onClick={() => openWindow('https://expeditiongame.com/privacy')}>Privacy Policy</a></div>
     </Card>

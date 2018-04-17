@@ -15,6 +15,7 @@ export const initialSettings: SettingsType = {
   multitouch: getStorageBoolean('multitouch', true),
   numPlayers: getStorageNumber('numPlayers', 1),
   showHelp: getStorageBoolean('showHelp', true),
+  simulator: false, // this is only set by the Quest Creator
   timerSeconds: getStorageNumber('timerSeconds', 10),
   vibration: getStorageBoolean('vibration', true),
 };

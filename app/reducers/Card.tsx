@@ -10,7 +10,9 @@ export function card(state: CardState = {name: 'SPLASH_CARD', phase: null, key: 
   switch (action.type) {
     case 'NAVIGATE':
       const to = (action as NavigateAction).to;
-      getHistoryApi().pushState(null, '', '#' + (to.questId || ''));
+      if (!(action as NavigateAction).dontUpdateUrl) {
+        getHistoryApi().pushState(null, '', '#' + (to.questId || ''));
+      }
       if (to.key === state.key && to.ts - state.ts < NAVIGATION_DEBOUNCE_MS && !to.overrideDebounce) {
         return state;
       }

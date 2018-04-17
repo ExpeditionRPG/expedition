@@ -44,6 +44,7 @@ export interface DialogSetAction extends Redux.Action {
 export interface NavigateAction extends Redux.Action {
   type: 'NAVIGATE';
   to: CardState;
+  dontUpdateUrl: boolean;
 };
 
 export interface ReturnAction extends Redux.Action {

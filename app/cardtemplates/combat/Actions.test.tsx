@@ -20,6 +20,7 @@ const TEST_SETTINGS = {
   multitouch: true,
   numPlayers: 3,
   showHelp: true,
+  simulator: false,
   timerSeconds: 10,
   vibration: true,
 };
