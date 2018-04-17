@@ -3,7 +3,7 @@ import * as React from 'react'
 import {Tab} from 'material-ui/Tabs'
 
 import TextView from './base/TextView'
-import {AnnotationType} from '../reducers/StateTypes'
+import {AnnotationType, TutorialState} from '../reducers/StateTypes'
 import AppContainer from './AppContainer'
 
 export interface QuestIDEStateProps {
@@ -14,6 +14,7 @@ export interface QuestIDEStateProps {
   realtime: any;
   realtimeModel: any;
   showLineNumbers: boolean;
+  tutorial: TutorialState;
 };
 
 export interface QuestIDEDispatchProps {
@@ -42,7 +43,9 @@ const QuestIDE = (props: QuestIDEProps): JSX.Element => {
           onAnnotationClick={(annotations: number[]) => props.onAnnotationClick(annotations)} />
       </div>
       <div className="preview">
+        {props.tutorial.playFromCursor && <div className="play-from-cursor-tutorial">Click "Play from Cursor" above<br/>to test your quest.</div>}
         <AppContainer/>
+        }
       </div>
     </div>
   );

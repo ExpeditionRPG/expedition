@@ -419,6 +419,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
     flex: 0 0 $previewPanelWidth;
     max-width: $previewPanelWidth;
     overflow: hidden;
+    position: relative;
 
     .app_root, .editor_override {
       height: 100%;
@@ -426,6 +427,22 @@ body .olark-launch-button { /*must be more specifc than olark styles */
 
     .app, button {
       font-family: $fontFamilyBody !important;
+    }
+
+    .play-from-cursor-tutorial {
+      font-family: Roboto, sans-serif;
+      z-index: 99999;
+      color: white;
+      text-align: center;
+      display: flex;
+      align-items: center; /* Vertical center alignment */
+      justify-content: center; /* Horizontal center alignment */
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.75);
     }
   }
 }

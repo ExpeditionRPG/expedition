@@ -4,6 +4,7 @@ import {dialogs} from './Dialogs'
 import {editor} from './Editor'
 import {quest} from './Quest'
 import {snackbar} from './Snackbar'
+import {tutorial} from './Tutorial'
 import {user} from './User'
 import preview from 'expedition-app/app/reducers/CombinedReducers'
 import {AppState} from './StateTypes'
@@ -23,6 +24,7 @@ export default function combinedReduce(state: AppState, action: Redux.Action): A
     preview: preview(state.preview, action),
     quest: quest(state.quest, action),
     snackbar: snackbar(state.snackbar, action),
+    tutorial: tutorial(state.tutorial, action),
     user: user(state.user, action),
   };
 }

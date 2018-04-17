@@ -110,6 +110,10 @@ export interface SnackbarState {
   persist?: boolean;
 }
 
+export interface TutorialState {
+  playFromCursor: boolean;
+}
+
 export interface UserState {
   loggedIn: boolean;
   id: string;
@@ -127,6 +131,7 @@ export interface AppState {
   user: UserState;
   preview: AppStateWithHistory;
   snackbar: SnackbarState;
+  tutorial: TutorialState;
 }
 
 export interface PlaytestSettings {
