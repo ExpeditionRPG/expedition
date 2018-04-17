@@ -1,10 +1,8 @@
 declare var utils: any;
 declare var window: any;
 
-const Config = require('../config.json');
-
 export const realtimeUtils = new utils.RealtimeUtils({
-  clientId: process.env.OAUTH2_CLIENT_ID || Config.OAUTH2_CLIENT_ID,
+  clientId: (process && process.env && process.env.OAUTH2_CLIENT_ID) || '',
   scopes: [ // https://developers.google.com/identity/protocols/googlescopes
     'https://www.googleapis.com/auth/drive.install', // ?
     'https://www.googleapis.com/auth/drive.file', // view and manage drive files opened / created in app

@@ -26,12 +26,6 @@ If you use windows, you may need to run the following:
 npm install --global --production windows-build-tools
 ```
 
-### Config.json
-
-`Config.json` contains app secrets that shouldn't be committed to the repo. We've included an example file, `config-example.json`, that shows you what information is needed.
-
-To populate all of the values, you'll need to create a Google Cloud project and connect it to a Postgres database (either run locally or remote). If you have any issues with setup, you can create an issue here or email us at contact@expeditiongame.com and we'll help you get them sorted out!
-
 ### Development workflow
 
 #### Serve / watch
@@ -43,8 +37,6 @@ npm run dev
 The Quest Creator is then available at http://localhost:8080 by default. Note that dev defaults to using the beta API, running on a free Heroku instance - if you haven't dev'd in a while, it may take a minute to spin up after the first request.
 
 When running on Windows, must be run within a Unix-like shell (such as Git Bash).
-
-The IDE automatically loads `config.json` on start - this is excluded from the repo as it holds secrets unfit for mortal eyes.
 
 #### Testing
 
