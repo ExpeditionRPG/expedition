@@ -160,7 +160,7 @@ export function updateContext<C extends Context>(node: Cheerio, ctx: C, action?:
   if (nodeId) {
     newContext.views[nodeId] = (newContext.views[nodeId] || 0) + 1;
   }
-  if (action !== undefined) {
+  if (action !== undefined && action !== null) {
     newContext.path.push(action);
   }
 
