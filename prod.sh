@@ -11,6 +11,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   # Build the app - manually configure for production
   export NODE_ENV='production'
   export API_HOST='https://api.expeditiongame.com'
+  export OAUTH2_CLIENT_ID='545484140970-r95j0rmo8q1mefo0pko6l3v6p4s771ul.apps.googleusercontent.com'
   webpack --config ./webpack.dist.config.js
 
   # Deploy to prod with a 1 day cache

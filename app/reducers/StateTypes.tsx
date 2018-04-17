@@ -1,3 +1,4 @@
+import {LanguageType} from 'expedition-app/app/Constants'
 import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
 import {QDLParser} from 'expedition-qdl/lib/render/QDLParser'
 import {ErrorType} from '../../errors/types'
@@ -68,6 +69,7 @@ export interface QuestType {
   valid?: boolean;
   saveError?: string;
   expansionhorror?: boolean;
+  language?: LanguageType;
 };
 
 export interface EditorState {

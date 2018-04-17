@@ -17,7 +17,7 @@ import Checkbox from './base/Checkbox'
 import {QuestType, ShareType, DialogsState, DialogIDType, UserState} from '../reducers/StateTypes'
 import theme from '../Theme'
 import {MIN_PLAYERS, MAX_PLAYERS} from '../Constants'
-import {CONTENT_RATINGS, GENRES} from '../../node_modules/expedition-app/app/Constants'
+import {CONTENT_RATINGS, GENRES, LANGUAGES} from '../../node_modules/expedition-app/app/Constants'
 import {ErrorType} from '../../errors/types'
 
 declare var ga: any;
@@ -161,6 +161,9 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
     const genres = GENRES.map((genre: string, index: number) => {
       return <MenuItem key={index} value={genre} primaryText={genre} />;
     });
+    const languages = LANGUAGES.map((language: string, index: number) => {
+      return <MenuItem key={index} value={language} primaryText={language} />;
+    });
     const rating = (CONTENT_RATINGS as any)[metadata.get('contentrating')];
     const ratings = Object.keys(CONTENT_RATINGS).map((rating: string, index: number) => {
       return <MenuItem key={index} value={rating} primaryText={rating} />;
@@ -254,6 +257,14 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           <MenuItem value={120} primaryText="2 hours" />
           <MenuItem value={180} primaryText="3 hours" />
           <MenuItem value={999} primaryText="Over 3 hours" />
+        </SelectField>
+        <SelectField
+          className="halfWidth"
+          floatingLabelText="Language"
+          value={metadata.get('language') || 'English'}
+          onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'language', val); }}
+        >
+          {languages}
         </SelectField>
         <SelectField
           className="halfWidth"

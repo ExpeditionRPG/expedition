@@ -6,7 +6,7 @@ import {setDialog} from '../actions/Dialogs'
 import {publishQuest, questMetadataChange} from '../actions/Quest'
 import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
 
-import {CONTENT_RATINGS, GENRES} from '../../node_modules/expedition-app/app/Constants'
+import {CONTENT_RATINGS, LANGUAGES, GENRES} from '../../node_modules/expedition-app/app/Constants'
 
 const Joi = require('joi-browser');
 
@@ -39,6 +39,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
         genre: Joi.string().valid(GENRES),
         contentrating: Joi.string().valid(Object.keys(CONTENT_RATINGS)),
         expansionhorror: Joi.boolean(),
+        language: Joi.string().valid(LANGUAGES),
       }, { allowUnknown: true, abortEarly: false }, (err: Error, quest: QuestType) => {
         if (err) {
           return alert(err);

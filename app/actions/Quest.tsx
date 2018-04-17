@@ -204,6 +204,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
           email: user.email,
           minplayers: 1,
           maxplayers: 6,
+          language: 'English',
         };
         metadata = createDocMetadata(doc.getModel(), defaults);
       } catch(err) {
@@ -237,6 +238,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         genre: metadata.get('genre'),
         contentrating: metadata.get('contentrating'),
         expansionhorror: metadata.get('expansionhorror') || false,
+        language: metadata.get('language') || 'English',
       });
       dispatch(receiveQuestLoad(quest));
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
@@ -294,6 +296,7 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
       partition: (privatePublish) ? PARTITIONS.PRIVATE : PARTITIONS.PUBLIC,
       majorRelease,
       expansionhorror: quest.expansionhorror,
+      language: quest.language,
     });
     return $.ajax({
       type: 'POST',
