@@ -41,6 +41,7 @@ export function search(quest: Quest, req: express.Request, res: express.Response
     limit: body.limit,
     partition: body.partition || PUBLIC_PARTITION,
     expansions: body.expansions,
+    language: body.language,
   };
   quest.search(res.locals.id, params)
     .then((quests: QuestInstance[]) => {
