@@ -40,7 +40,7 @@ const Tools = (props: ToolsProps): JSX.Element => {
           <div className="summary">You tell the story; the app runs the combat.</div>
         </div>
       </Button>
-      {(NODE_ENV === 'dev' || props.settings.experimental) && !props.settings.simulator &&
+      {props.settings.experimental && !props.settings.simulator &&
         <Button remoteID="3" onTouchTap={() => props.onRemotePlaySelect(props.user)}>
           <div className="questButtonWithIcon">
             <div className="title">Remote Play - Beta</div>

@@ -5,6 +5,7 @@ import {card} from './Card'
 import {checkout} from './Checkout'
 import {dialog} from './Dialog'
 import {quest} from './Quest'
+import {saved} from './Saved'
 import {search} from './Search'
 import {settings} from './Settings'
 import {snackbar} from './Snackbar'
@@ -25,6 +26,7 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     checkout: checkout(state.checkout, action),
     dialog: dialog(state.dialog, action),
     quest: quest(state.quest, action),
+    saved: saved(state.saved, action),
     search: search(state.search, action),
     settings: settings(state.settings, action),
     snackbar: snackbar(state.snackbar, action),
@@ -105,6 +107,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         settings: state.settings, // global settings should not be rewound.
         remotePlay: state.remotePlay, // remote play settings should not be rewound.
         commitID: state.commitID, // commit ID should not be rewound
+        saved: state.saved, // saved quests should not be rewound
         _return: true,
       } as AppStateWithHistory;
     }
@@ -120,7 +123,8 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         _return: undefined,
         _committed: undefined,
         settings: undefined,
-        remotePlay: undefined
+        remotePlay: undefined,
+        saved: undefined,
       } as AppStateBase);
     }
   }

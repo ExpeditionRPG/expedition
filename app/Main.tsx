@@ -58,6 +58,7 @@ import {setDialog} from './actions/Dialog'
 import {searchAndPlay} from './actions/Search'
 import {openSnackbar} from './actions/Snackbar'
 import {silentLogin} from './actions/User'
+import {listSavedQuests} from './actions/SavedQuests'
 import {getStore} from './Store'
 import {getAppVersion, getWindow, getGA, getDevicePlatform, getDocument, getNavigator, setGA, setupPolyfills} from './Globals'
 import {getRemotePlayClient} from './RemotePlay'
@@ -192,6 +193,10 @@ function setupHotReload() {
   }
 }
 
+function setupSavedQuests() {
+  getStore().dispatch(listSavedQuests());
+}
+
 // disabled during local dev
 declare var ga: any;
 function setupGoogleAnalytics() {
@@ -296,6 +301,7 @@ export function init() {
     setupGoogleAnalytics(); // before anything else that might log in the user
     setupEventLogging();
     setupHotReload();
+    setupSavedQuests();
     handleUrlHash();
 
     render();

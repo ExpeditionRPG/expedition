@@ -1,5 +1,19 @@
 import Redux from 'redux'
-import {CardState, CardName, CardPhase, CheckoutState, DialogIDType, SearchPhase, SearchSettings, SettingsType, TransitionType, UserState, AppState, RemotePlaySessionMeta} from '../reducers/StateTypes'
+import {
+  CardState,
+  CardName,
+  CardPhase,
+  CheckoutState,
+  DialogIDType,
+  SearchPhase,
+  SearchSettings,
+  SettingsType,
+  TransitionType,
+  UserState,
+  AppState,
+  RemotePlaySessionMeta,
+  SavedQuestMeta,
+} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../cardtemplates/TemplateTypes'
 import {ClientID, InstanceID, StatusEvent} from 'expedition-qdl/lib/remote/Events'
@@ -115,6 +129,26 @@ export interface SnackbarOpenAction extends Redux.Action {
 
 export interface SnackbarCloseAction extends Redux.Action {
   type: 'SNACKBAR_CLOSE';
+}
+
+export interface SavedQuestStoredAction {
+  type: 'SAVED_QUEST_STORED';
+  savedQuests: SavedQuestMeta[];
+}
+
+export interface SavedQuestDeletedAction {
+  type: 'SAVED_QUEST_DELETED';
+  savedQuests: SavedQuestMeta[];
+}
+
+export interface SavedQuestListAction {
+  type: 'SAVED_QUEST_LIST';
+  savedQuests: SavedQuestMeta[];
+}
+
+export interface SavedQuestSelectedAction {
+  type: 'SAVED_QUEST_SELECTED';
+  selected: SavedQuestMeta;
 }
 
 export interface RemotePlaySessionAction extends Redux.Action {

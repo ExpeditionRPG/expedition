@@ -176,3 +176,5 @@ export const COLORBLIND_FRIENDLY_PALETTE = [
   '#db8acb',
   '#bfc9fb',
 ];
+
+export const SAVED_QUESTS_KEY = 'SAVED_QUESTS';

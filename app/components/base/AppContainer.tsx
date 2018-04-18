@@ -9,6 +9,7 @@ import CheckoutContainer from '../CheckoutContainer'
 import ToolsContainer from '../ToolsContainer'
 import FeaturedQuestsContainer from '../FeaturedQuestsContainer'
 import PlayerCountSettingContainer from '../PlayerCountSettingContainer'
+import SavedQuestsContainer from '../SavedQuestsContainer'
 import SearchContainer from '../SearchContainer'
 import SettingsContainer from '../SettingsContainer'
 import SplashScreenContainer from '../SplashScreenContainer'
@@ -25,7 +26,7 @@ import {cardTransitioning} from '../../actions/Card'
 import {closeSnackbar} from '../../actions/Snackbar'
 import {initialSnackbar} from '../../reducers/Snackbar'
 import {initialRemotePlay} from '../../reducers/RemotePlay'
-import {AppStateWithHistory, CardThemeType, TransitionType, SearchPhase, RemotePlayPhase, SettingsType, SnackbarState, RemotePlayState} from '../../reducers/StateTypes'
+import {AppStateWithHistory, CardThemeType, TransitionType, SearchPhase, RemotePlayPhase, SavedQuestsPhase, SettingsType, SnackbarState, RemotePlayState} from '../../reducers/StateTypes'
 import {getStore} from '../../Store'
 import {getRemotePlayClient} from '../../RemotePlay'
 
@@ -103,6 +104,9 @@ export default class Main extends React.Component<MainProps, {}> {
         break;
       case 'FEATURED_QUESTS':
         card = <FeaturedQuestsContainer/>;
+        break;
+      case 'SAVED_QUESTS':
+        card = <SavedQuestsContainer  phase={state.card.phase as SavedQuestsPhase}/>;
         break;
       case 'QUEST_SETUP':
         card = <QuestSetupContainer/>;

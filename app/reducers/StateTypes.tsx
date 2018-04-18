@@ -90,10 +90,17 @@ export interface SnackbarState {
   timeout: number;
 }
 
+export interface SavedQuestMeta {
+  details: QuestDetails;
+  ts: number;
+}
+
+export type SavedQuestsPhase = 'LIST' | 'DETAILS';
+
 export type RemotePlayPhase = 'CONNECT'|'LOBBY';
 export type CheckoutPhase = 'ENTRY' | 'DONE';
-export type CardName = 'CHECKOUT' | 'PLAYER_COUNT_SETTING' | 'QUEST_SETUP' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REMOTE_PLAY';
-export type CardPhase = TemplatePhase | SearchPhase | RemotePlayPhase | CheckoutPhase;
+export type CardName = 'SAVED_QUESTS' | 'CHECKOUT' | 'PLAYER_COUNT_SETTING' | 'QUEST_SETUP' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REMOTE_PLAY';
+export type CardPhase = TemplatePhase | SearchPhase | RemotePlayPhase | CheckoutPhase | SavedQuestsPhase;
 export interface CardState {
   questId: string;
   name: CardName;
@@ -112,12 +119,19 @@ export interface QuestState {
   seed: string;
 }
 
+export interface SavedQuestState {
+  list: SavedQuestMeta[];
+  selected: SavedQuestMeta|null
+}
+
 export interface SearchState {
   search: SearchSettings;
   selected: QuestDetails|null;
   results: QuestDetails[];
   searching: boolean;
 }
+
+
 
 export interface UserState {
   loggedIn: boolean;
@@ -176,6 +190,7 @@ export interface AppStateBase {
 export interface AppState extends AppStateBase {
   settings: SettingsType;
   remotePlay: RemotePlayState;
+  saved: SavedQuestState;
 }
 
 export interface AppStateWithHistory extends AppState {

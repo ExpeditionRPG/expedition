@@ -10,6 +10,9 @@ import {toCard, toPrevious} from '../../actions/Card'
 import {setDialog} from '../../actions/Dialog'
 import {CardThemeType} from '../../reducers/StateTypes'
 import {getDevicePlatform, openWindow} from '../../Globals'
+import {storeSavedQuest} from '../../actions/SavedQuests'
+import {openSnackbar} from '../../actions/Snackbar'
+import {NODE_ENV} from '../../Constants'
 
 
 // If onMenuSelect or onReturn is not set, default dispatch behavior is used.
@@ -48,6 +51,10 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
         } else {
           return dispatch(setDialog('EXIT_QUEST'));
         }
+      case 'SAVE':
+        const state = getStore().getState();
+        dispatch(storeSavedQuest(state.quest.node, state.quest.details, Date.now()));
+        return dispatch(openSnackbar('Quest saved.'));
       case 'SETTINGS':
         return dispatch(toCard({name: 'SETTINGS'}));
       case 'RATE':
@@ -78,6 +85,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     if (this.props.icon) {
       icon = <img id="bgimg" src={'images/' + this.props.icon + '.svg'}></img>;
     }
+    const isExperimental = getStore().getState().settings.experimental;
     return (
       <div className={'base_card ' + (this.props.theme || 'LIGHT')}>
         <div className="title_container">
@@ -95,6 +103,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
               {getDevicePlatform() !== 'web' && <MenuItem value="RATE" primaryText="Rate the App"/>}
               <MenuItem value="FEEDBACK" primaryText="Send feedback"/>
               {this.props.inQuest && <MenuItem value="REPORT" primaryText="Report quest"/>}
+              {this.props.inQuest && isExperimental && <MenuItem value="SAVE" primaryText="Save Quest"/>}
             </IconMenu>
           </span>
           <div className="title">{this.props.title}</div>

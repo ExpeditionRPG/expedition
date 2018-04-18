@@ -48,6 +48,7 @@ const refs = {
   gapi: (typeof gapi !== 'undefined') ? gapi : null,
   history: (typeof history !== 'undefined') ? history : {pushState: () => {return null;}},
   navigator: (typeof navigator !== 'undefined') ? navigator : null,
+  cheerio: require('cheerio') as CheerioAPI,
 };
 
 export function setupPolyfills(): void {
@@ -142,6 +143,10 @@ export function getHistoryApi(): any {
 
 export function getNavigator(): any {
   return refs.navigator;
+}
+
+export function getCheerio(): CheerioAPI {
+  return refs.cheerio;
 }
 
 export function openWindow(url: string): any {
