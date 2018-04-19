@@ -11,7 +11,7 @@ import StarRating from './base/StarRating'
 
 import {SearchSettings, SearchPhase, SearchState, SettingsType, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
-import {GenreType, CONTENT_RATINGS, PLAYTIME_MINUTES_BUCKETS, SUMMARY_MAX_LENGTH} from '../Constants'
+import {GenreType, CONTENT_RATINGS, LANGUAGES, PLAYTIME_MINUTES_BUCKETS, SUMMARY_MAX_LENGTH} from '../Constants'
 
 const Moment = require('moment');
 
@@ -68,9 +68,9 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
     return (
       <Card title="Quest Search">
         <div className="searchForm">
-          <FlatButton disabled={true}>
-            For {this.props.settings.numPlayers} adventurer{this.props.settings.numPlayers > 1 ? 's' : ''} (based on party size)
-          </FlatButton>
+          <div className="searchDescription">
+            For {this.props.settings.numPlayers} adventurer{this.props.settings.numPlayers > 1 ? 's' : ''} with {this.props.settings.contentSets.horror ? 'The Horror' : 'the base game'} (based on settings)
+          </div>
           <TextField
             className="textfield"
             fullWidth={true}
@@ -84,9 +84,6 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             floatingLabelText="Sort by"
             onChange={(e: any, i: any, v: string) => this.onChange('order', v)}
             value={this.state.order}
-            style={{color: 'black'}}
-            floatingLabelStyle={{color: 'black'}}
-            iconStyle={{fill: 'black'}}
             underlineStyle={{borderColor: 'black'}}
           >
             <MenuItem value="-created" primaryText="Newest"/>
@@ -100,9 +97,6 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             floatingLabelFixed={true}
             onChange={(e: any, i: any, v: string) => this.onChange('mintimeminutes', v)}
             value={this.state.mintimeminutes}
-            style={{color: 'black'}}
-            floatingLabelStyle={{color: 'black'}}
-            iconStyle={{fill: 'black'}}
             underlineStyle={{borderColor: 'black'}}
             selectedMenuItemStyle={{paddingRight: '50px'}}
           >
@@ -115,9 +109,6 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             floatingLabelFixed={true}
             onChange={(e: any, i: any, v: string) => this.onChange('maxtimeminutes', v)}
             value={this.state.maxtimeminutes}
-            style={{color: 'black'}}
-            floatingLabelStyle={{color: 'black'}}
-            iconStyle={{fill: 'black'}}
             underlineStyle={{borderColor: 'black'}}
           >
             <MenuItem value={undefined} primaryText="Any length"/>
@@ -128,9 +119,6 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             floatingLabelText="Recency"
             onChange={(e: any, i: any, v: string) => this.onChange('age', v)}
             value={this.state.age}
-            style={{color: 'black'}}
-            floatingLabelStyle={{color: 'black'}}
-            iconStyle={{fill: 'black'}}
             underlineStyle={{borderColor: 'black'}}
           >
             <MenuItem value={undefined} primaryText="All time"/>
@@ -140,12 +128,18 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
           </SelectField>
           <SelectField
             className="selectfield"
+            floatingLabelText="Language"
+            onChange={(e: any, i: any, v: string) => this.onChange('language', v)}
+            value={this.state.language}
+            underlineStyle={{borderColor: 'black'}}
+          >
+            {LANGUAGES.map((language:string, i: number) => { return <MenuItem key={i} value={language} primaryText={language}></MenuItem>})}
+          </SelectField>
+          <SelectField
+            className="selectfield"
             floatingLabelText="Genre"
             onChange={(e: any, i: any, v: string) => this.onChange('genre', v)}
             value={this.state.genre}
-            style={{color: 'black'}}
-            floatingLabelStyle={{color: 'black'}}
-            iconStyle={{fill: 'black'}}
             underlineStyle={{borderColor: 'black'}}
           >
             <MenuItem value={undefined} primaryText="All genres"/>
@@ -156,9 +150,6 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             floatingLabelText="Content Rating"
             onChange={(e: any, i: any, v: string) => this.onChange('contentrating', v)}
             value={this.state.contentrating}
-            style={{color: 'black'}}
-            floatingLabelStyle={{color: 'black'}}
-            iconStyle={{fill: 'black'}}
             underlineStyle={{borderColor: 'black'}}
           >
             <MenuItem value={undefined} primaryText="All ratings"/>
@@ -288,6 +279,7 @@ function renderDetails(props: SearchProps): JSX.Element {
         }
         <div><strong>Players:</strong> {quest.minplayers}-{quest.maxplayers}</div>
         <div><strong>Genre:</strong> {quest.genre}</div>
+        <div><strong>Language:</strong> {quest.language}</div>
         <div><strong>Last updated: </strong> {Moment(quest.published).format('MMMM D, YYYY')}</div>
       </div>
     </Card>

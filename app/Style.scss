@@ -719,10 +719,16 @@ span.line {
     margin-top: -6px;
     width: 100% !important;
     font-size: fontsize(flavor) !important;
+    color: black !important;
 
     label {
+      color: black !important;
       font-size: fontsize(label) !important;
       transform: scale(1) translate(0px, -28px) !important;
+    }
+
+    svg {
+      fill: black !important;
     }
 
     &.halfLeft {
@@ -1163,6 +1169,11 @@ span.line {
     button:disabled {
       color: $font_color_primary !important;
     }
+  }
+
+  .searchDescription {
+    text-align: center;
+    margin: size(small) 0;
   }
 
   .ratingDescription {

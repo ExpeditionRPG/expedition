@@ -26,7 +26,7 @@ function setup() {
 describe('Tools', () => {
   it('calls onCustomCombatSelect on custom combat select', () => {
     const {props, enzymeWrapper} = setup();
-    const button = enzymeWrapper.find('#selectCustomCombat').simulate('touchTap');
+    enzymeWrapper.find('#selectCustomCombat').simulate('touchTap');
     expect(props.onCustomCombatSelect).toHaveBeenCalledTimes(1);
   });
 });

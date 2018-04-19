@@ -6,6 +6,7 @@ export const initialSearch: SearchState = {
   search: {
     text: '',
     order: '-created',
+    language: 'English',
   },
   selected: null,
   results: [],

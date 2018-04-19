@@ -4,7 +4,7 @@ import {TemplatePhase, TemplateContext} from '../cardtemplates/TemplateTypes'
 import {ParserNode} from '../cardtemplates/TemplateTypes'
 import {SessionID} from 'expedition-qdl/lib/remote/Session'
 import {StatusEvent} from 'expedition-qdl/lib/remote/Events'
-import {GenreType, ContentRatingLabelType} from '../Constants'
+import {GenreType, ContentRatingLabelType, LanguageType} from '../Constants'
 
 export interface AnnouncementState {
   open: boolean;
@@ -56,6 +56,7 @@ export interface SearchSettings {
   owner?: string;
   partition?: 'expedition-public' | 'expedition-private';
   expansions?: ExpansionsType[];
+  language?: LanguageType;
 }
 
 export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';

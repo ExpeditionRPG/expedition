@@ -24,6 +24,7 @@ export interface QuestDetails {
   expansionhorror?: boolean;
   questversion?: number;
   partition?: string;
+  language?: string;
 }
 
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';
