@@ -36,7 +36,7 @@ export interface SearchProps extends SearchStateProps, SearchDispatchProps {};
 
 // We make this a react component to hold a bit of state and avoid sending
 // redux actions for every single change to input.
-interface SearchSettingsCardProps {
+export interface SearchSettingsCardProps {
   user: UserState;
   search: SearchSettings;
   settings: SettingsType;
@@ -44,7 +44,7 @@ interface SearchSettingsCardProps {
 }
 
 
-class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
+export class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
   state: SearchSettings;
 
   constructor(props: SearchSettingsCardProps) {
@@ -72,17 +72,19 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             For {this.props.settings.numPlayers} adventurer{this.props.settings.numPlayers > 1 ? 's' : ''} with {this.props.settings.contentSets.horror ? 'The Horror' : 'the base game'} (based on settings)
           </div>
           <TextField
+            id="text"
             className="textfield"
             fullWidth={true}
             hintText="text search - title, author, ID"
-            onChange={(e: any) => this.onChange('text', e.target.value)}
+            onChange={(e: any, v: string) => this.onChange('text', v)}
             underlineShow={false}
             value={this.state.text}
           />
           <SelectField
+            id="order"
             className="selectfield"
             floatingLabelText="Sort by"
-            onChange={(e: any, i: any, v: string) => this.onChange('order', v)}
+            onChange={(e: any, i: number, v: string) => this.onChange('order', v)}
             value={this.state.order}
             underlineStyle={{borderColor: 'black'}}
           >
@@ -92,10 +94,11 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             <MenuItem value="-title" primaryText="Title (Z-A)"/>
           </SelectField>
           <SelectField
+            id="mintimeminutes"
             className="selectfield halfLeft"
             floatingLabelText="Minimum time"
             floatingLabelFixed={true}
-            onChange={(e: any, i: any, v: string) => this.onChange('mintimeminutes', v)}
+            onChange={(e: any, i: number, v: string) => this.onChange('mintimeminutes', v)}
             value={this.state.mintimeminutes}
             underlineStyle={{borderColor: 'black'}}
             selectedMenuItemStyle={{paddingRight: '50px'}}
@@ -104,10 +107,11 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             {timeBuckets}
           </SelectField>
           <SelectField
+            id="maxtimeminutes"
             className="selectfield halfRight"
             floatingLabelText="Maximum time"
             floatingLabelFixed={true}
-            onChange={(e: any, i: any, v: string) => this.onChange('maxtimeminutes', v)}
+            onChange={(e: any, i: number, v: string) => this.onChange('maxtimeminutes', v)}
             value={this.state.maxtimeminutes}
             underlineStyle={{borderColor: 'black'}}
           >
@@ -115,9 +119,10 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             {timeBuckets}
           </SelectField>
           <SelectField
+            id="age"
             className="selectfield"
             floatingLabelText="Recency"
-            onChange={(e: any, i: any, v: string) => this.onChange('age', v)}
+            onChange={(e: any, i: number, v: string) => this.onChange('age', v)}
             value={this.state.age}
             underlineStyle={{borderColor: 'black'}}
           >
@@ -127,18 +132,20 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             <MenuItem value={604800} primaryText="Published this week"/>
           </SelectField>
           <SelectField
+            id="language"
             className="selectfield"
             floatingLabelText="Language"
-            onChange={(e: any, i: any, v: string) => this.onChange('language', v)}
+            onChange={(e: any, i: number, v: string) => this.onChange('language', v)}
             value={this.state.language}
             underlineStyle={{borderColor: 'black'}}
           >
             {LANGUAGES.map((language:string, i: number) => { return <MenuItem key={i} value={language} primaryText={language}></MenuItem>})}
           </SelectField>
           <SelectField
+            id="genre"
             className="selectfield"
             floatingLabelText="Genre"
-            onChange={(e: any, i: any, v: string) => this.onChange('genre', v)}
+            onChange={(e: any, i: number, v: string) => this.onChange('genre', v)}
             value={this.state.genre}
             underlineStyle={{borderColor: 'black'}}
           >
@@ -146,9 +153,10 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
             {visibleGenres.map((genre:string, i: number) => { return <MenuItem key={i} value={genre} primaryText={genre}></MenuItem>})}
           </SelectField>
           <SelectField
+            id="contentrating"
             className="selectfield"
             floatingLabelText="Content Rating"
-            onChange={(e: any, i: any, v: string) => this.onChange('contentrating', v)}
+            onChange={(e: any, i: number, v: string) => this.onChange('contentrating', v)}
             value={this.state.contentrating}
             underlineStyle={{borderColor: 'black'}}
           >
@@ -160,7 +168,7 @@ class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
           {rating && <div className="ratingDescription">
             <span>"{this.state.contentrating}" rating means: {rating.summary}</span>
           </div>}
-          <Button onTouchTap={() => this.props.onSearch(this.state, this.props.settings)} remoteID="search">Search</Button>
+          <Button onTouchTap={() => this.props.onSearch(this.state, this.props.settings)} remoteID="search" id="search">Search</Button>
         </div>
       </Card>
     );
