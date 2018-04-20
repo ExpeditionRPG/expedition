@@ -1,4 +1,5 @@
 import * as React from 'react'
+import Truncate from 'react-truncate'
 import FlatButton from 'material-ui/FlatButton'
 import MenuItem from 'material-ui/MenuItem'
 import SelectField from 'material-ui/SelectField'
@@ -11,7 +12,7 @@ import StarRating from './base/StarRating'
 
 import {SearchSettings, SearchPhase, SearchState, SettingsType, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
-import {GenreType, CONTENT_RATINGS, LANGUAGES, PLAYTIME_MINUTES_BUCKETS, SUMMARY_MAX_LENGTH} from '../Constants'
+import {GenreType, CONTENT_RATINGS, LANGUAGES, PLAYTIME_MINUTES_BUCKETS} from '../Constants'
 
 const Moment = require('moment');
 
@@ -195,48 +196,54 @@ export function formatPlayPeriod(minMinutes: number, maxMinutes: number): string
   }
 }
 
-export function truncateSummary(string: string): string {
-  if (!string) {
-    return '';
+export interface SearchResultProps {
+  index: number;
+  quest: QuestDetails;
+  search: SearchSettings;
+  onQuest: (quest: QuestDetails) => void;
+}
+
+export function renderResult(props: SearchResultProps): JSX.Element {
+  const orderField = props.search.order && props.search.order.substring(1);
+  const quest = props.quest;
+  let orderDetails = <span></span>;
+  if (orderField) {
+    const ratingCount = quest.ratingcount || 0;
+    const ratingAvg = quest.ratingavg || 0;
+    orderDetails = (
+      <div className={`searchOrderDetail ${orderField}`}>
+        {orderField === 'ratingavg' && ratingCount >= 1 && <StarRating readOnly={true} value={+ratingAvg} quantity={ratingCount}/>}
+        {orderField === 'created' && `Published ${Moment(quest.created).format('MMM YYYY')}`}
+      </div>
+    );
   }
 
-  if (string.length < SUMMARY_MAX_LENGTH) {
-    return string;
-  } else {
-    return string.substring(0, SUMMARY_MAX_LENGTH - 3) + '...';
-  }
+  return (
+    <Button key={props.index} onTouchTap={() => props.onQuest(quest)} remoteID={'quest-'+props.index}>
+      <div className="searchResult">
+        <div className="title">{quest.title}</div>
+        <div className="summary">
+          <Truncate lines={3}>
+            {quest.summary || ''}
+          </Truncate>
+        </div>
+        {quest.mintimeminutes !== undefined && quest.maxtimeminutes !== undefined &&
+          <div className="timing">
+            {formatPlayPeriod(quest.mintimeminutes, quest.maxtimeminutes)}
+          </div>
+        }
+        {orderDetails}
+        <span className="expansions">
+          {quest.expansionhorror && <img className="inline_icon" src="images/horror_small.svg"></img>}
+        </span>
+      </div>
+    </Button>
+  );
 }
 
 function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
-  const orderField = props.search.order && props.search.order.substring(1);
-  const items: JSX.Element[] = (props.results || []).map((result: QuestDetails, index: number) => {
-    let orderDetails = <span></span>;
-    if (orderField) {
-      const ratingCount = result.ratingcount || 0;
-      const ratingAvg = result.ratingavg || 0;
-      orderDetails = (
-        <div className={`searchOrderDetail ${orderField}`}>
-          {orderField === 'ratingavg' && ratingCount >= 1 && <StarRating readOnly={true} value={+ratingAvg} quantity={ratingCount}/>}
-          {orderField === 'created' && `Published ${Moment(result.created).format('MMM YYYY')}`}
-        </div>
-      );
-    }
-    return (
-      <Button key={index} onTouchTap={() => props.onQuest(result)} remoteID={'quest-'+index}>
-        <div className="searchResult">
-          <div className="title">{result.title}</div>
-          <div className="summary">
-            <div>{truncateSummary(result.summary || '')}</div>
-          </div>
-          {result.mintimeminutes !== undefined && result.maxtimeminutes !== undefined &&
-          <div className="timing">
-            {formatPlayPeriod(result.mintimeminutes, result.maxtimeminutes)}
-          </div>
-          }
-          {orderDetails}
-        </div>
-      </Button>
-    );
+  const results: JSX.Element[] = (props.results || []).map((quest: QuestDetails, index: number) => {
+    return renderResult({index, quest, search: props.search, onQuest: props.onQuest});
   });
 
   return (
@@ -247,14 +254,14 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
         <Button className="filter_button" onTouchTap={() => props.onFilter()} remoteID="filter">Filter &amp; Sort ></Button>
       </div>}
     >
-      {items.length === 0 && !props.searching &&
+      {results.length === 0 && !props.searching &&
         <div>
           <div>No results found.</div>
           {!hideHeader && <div>Try broadening your search.</div>}
         </div>
       }
-      {items.length === 0 && props.searching && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
-      {items}
+      {results.length === 0 && props.searching && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
+      {results}
     </Card>
   );
 }

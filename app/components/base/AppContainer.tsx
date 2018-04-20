@@ -206,7 +206,7 @@ export default class Main extends React.Component<MainProps, {}> {
               autoHideDuration={this.state.snackbar.timeout}
               onRequestClose={() => getStore().dispatch(closeSnackbar())}
               action={this.state.snackbar.actionLabel}
-              onActionTouchTap={this.state.snackbar.action}
+              onActionClick={this.state.snackbar.action}
             />
             <AudioContainer />
           </span>

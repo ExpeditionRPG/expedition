@@ -37,7 +37,6 @@ if (NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2
 
 export const MAX_ADVENTURER_HEALTH = 12;
 export const MIN_FEEDBACK_LENGTH = 16;
-export const SUMMARY_MAX_LENGTH = 140; // length of a tweet
 
 export const UNSUPPORTED_BROWSERS = /^(.*amazon silk.*)|(.*(iphone|ipad|ipod|ios) os 9_.*)$/i;
 
