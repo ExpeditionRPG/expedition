@@ -111,7 +111,7 @@ const Main = (props: MainProps): JSX.Element => {
         message={props.snackbar.message || ''}
         action={props.snackbar.actionLabel}
         autoHideDuration={(props.snackbar.persist) ? undefined : 4000}
-        onActionTouchTap={props.snackbar.action}
+        onActionClick={props.snackbar.action}
         onRequestClose={props.onSnackbarClose}
       />
     </div>
