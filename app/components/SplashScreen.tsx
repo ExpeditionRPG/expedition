@@ -95,7 +95,7 @@ const SplashScreen = (props: SplashScreenProps): JSX.Element => {
         </Button>
       }
       <div className="logo">
-        <img src="images/logo-colorized.png"></img>
+        <img src="images/logo.png"></img>
       </div>
       <PlayerCounter
         onDoubleTap={props.onPlayerManualSelect}
