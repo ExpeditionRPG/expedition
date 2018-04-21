@@ -236,6 +236,7 @@ export function init() {
     window.onerror = function(message: string, source: string, line: number) {
       const state = getStore().getState();
       const quest = state.quest || {};
+      const settings = state.settings || {};
       const questNode = quest.node && quest.node.elem && quest.node.elem[0];
       Raven.setExtraContext({
         card: state.card.key,
@@ -243,7 +244,12 @@ export function init() {
         questId: quest.details.id,
         questCardTitle: (questNode) ? questNode.attribs.title : '',
         questLine: (questNode) ? questNode.attribs['data-line'] : '',
-        settings: JSON.stringify(state.settings),
+        settings: JSON.stringify(settings),
+      });
+      Raven.setTagsContext(); // Clear any existing tags
+      Raven.setTagsContext({
+        audio: settings.audioEnabled,
+        remotePlay: state.remotePlay.session !== null,
       });
       Raven.captureException(new Error(message));
       if (quest.details.id) {
