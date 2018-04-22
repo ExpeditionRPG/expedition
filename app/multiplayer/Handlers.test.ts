@@ -1,6 +1,6 @@
 import * as expect from 'expect'
 
-describe('remoteplay handlers', () => {
+describe('multiplayer handlers', () => {
   describe('websocketSession', () => {
     it('returns an error on unparseable websocket messages');
     it('ignores PING messages');

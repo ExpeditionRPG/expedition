@@ -41,6 +41,9 @@ nconf
     // Specify prod or dev environment.
     'NODE_ENV',
 
+    // If we are to induce chaos and random drops into multiplayer (for testing only)
+    'MULTIPLAYER_CHAOS',
+
     // The URL that points to this server.
     'API_URL_BASE',
 

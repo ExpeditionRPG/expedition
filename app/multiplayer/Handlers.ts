@@ -1,18 +1,18 @@
 import Config from '../config'
 import * as express from 'express'
 import * as Sequelize from 'sequelize'
-import {SessionID, toClientKey} from 'expedition-qdl/lib/remote/Session'
-import {Session as SessionModel, SessionInstance} from '../models/remoteplay/Sessions'
-import {Event as EventModel, EventInstance} from '../models/remoteplay/Events'
-import {SessionClient, SessionClientInstance} from '../models/remoteplay/SessionClients'
-import {ClientID, WaitType, StatusEvent, ActionEvent, RemotePlayEvent, MultiEvent} from 'expedition-qdl/lib/remote/Events'
+import {SessionID, toClientKey} from 'expedition-qdl/lib/multiplayer/Session'
+import {Session as SessionModel, SessionInstance} from '../models/multiplayer/Sessions'
+import {Event as EventModel, EventInstance} from '../models/multiplayer/Events'
+import {SessionClient, SessionClientInstance} from '../models/multiplayer/SessionClients'
+import {ClientID, WaitType, StatusEvent, ActionEvent, MultiplayerEvent, MultiEvent} from 'expedition-qdl/lib/multiplayer/Events'
 import {maybeChaosWS, maybeChaosSession, maybeChaosSessionClient} from './Chaos'
 import * as url from 'url'
 import * as http from 'http'
 import * as WebSocket from 'ws'
 
 
-export interface RemotePlaySessionMeta {
+export interface MultiplayerSessionMeta {
   id: number;
   secret: string;
   questTitle: string;
@@ -24,7 +24,7 @@ export function user(sc: SessionClient, ev: EventModel, req: express.Request, re
   sc.getSessionsByClient(res.locals.id).then((sessions: SessionClientInstance[]) => {
     return Promise.all(sessions.map((sci: SessionClientInstance) => {
       const id = sci.get('session');
-      const meta: Partial<RemotePlaySessionMeta> = {
+      const meta: Partial<MultiplayerSessionMeta> = {
         id,
         secret: sci.get('secret'),
         peerCount: sessionClientCount(id),
@@ -52,8 +52,8 @@ export function user(sc: SessionClient, ev: EventModel, req: express.Request, re
         });
     }));
   })
-  .filter((m: RemotePlaySessionMeta|null) => {return m !== null})
-  .then((history: RemotePlaySessionMeta[]) => {
+  .filter((m: MultiplayerSessionMeta|null) => {return m !== null})
+  .then((history: MultiplayerSessionMeta[]) => {
     res.status(200).send(JSON.stringify({history}));
   })
   .catch((e: Error) => {
@@ -111,7 +111,7 @@ function wsParamsFromReq(req: http.IncomingMessage): WebsocketSessionParams|null
     console.error('failed to parse url ', req.url);
     return null;
   }
-  const splitPath = parsedURL.pathname.match(/\/ws\/remoteplay\/v1\/session\/(\d+).*/);
+  const splitPath = parsedURL.pathname.match(/\/ws\/multiplayer\/v1\/session\/(\d+).*/);
 
   if (splitPath === null) {
     console.error('Invalid upgrade request path, cancelling websocket connection.');
@@ -197,7 +197,7 @@ function maybeFastForwardClient(rpSession: SessionModel, session: number, client
         instance: Config.get('NODE_ENV'),
         id: null,
         event
-      } as RemotePlayEvent), (e: Error) => {console.error(e);});
+      } as MultiplayerEvent), (e: Error) => {console.error(e);});
     });
   });
 }
@@ -246,7 +246,7 @@ function handleClientStatus(rpSession: SessionModel, session: number, client: Cl
         args: JSON.stringify({elapsedMillis: maxElapsedMillis, seed: Date.now()}),
       } as ActionEvent,
       id: null,
-    } as RemotePlayEvent;
+    } as MultiplayerEvent;
 
     rpSession.commitEventWithoutID(session, client, instance, 'ACTION', combatStopEvent)
       .then((eventCount: number|null) => {
@@ -262,7 +262,7 @@ function handleClientStatus(rpSession: SessionModel, session: number, client: Cl
             error: 'Server error: ' + error.toString(),
           },
           id: null
-        } as RemotePlayEvent));
+        } as MultiplayerEvent));
       });
   }
 
@@ -282,7 +282,7 @@ function sendError(ws: WebSocket, e: string) {
       error: e,
     },
     id: null
-  } as RemotePlayEvent), (e: Error) => {
+  } as MultiplayerEvent), (e: Error) => {
     console.error(e);
   });
 }
@@ -326,7 +326,7 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
           instance: s[k].instance,
           event: s[k].status,
           id: null,
-        } as RemotePlayEvent), (e: Error) => {
+        } as MultiplayerEvent), (e: Error) => {
           console.error(e);
         });
       }
@@ -345,7 +345,7 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
       return;
     }
 
-    let event: RemotePlayEvent;
+    let event: MultiplayerEvent;
     try {
       event = JSON.parse(msg);
     } catch (e) {
@@ -390,7 +390,7 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
           instance: Config.get('NODE_ENV'),
           id: null,
           event: multiEvent,
-        } as RemotePlayEvent), (e: Error) => {console.error(e);});
+        } as MultiplayerEvent), (e: Error) => {console.error(e);});
       });
     });
   });
@@ -407,6 +407,6 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
         connected: false,
       },
       id: null,
-    } as RemotePlayEvent));
+    } as MultiplayerEvent));
   });
 }

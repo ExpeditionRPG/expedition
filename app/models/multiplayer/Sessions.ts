@@ -2,8 +2,8 @@ import * as Sequelize from 'sequelize'
 import * as Bluebird from 'bluebird'
 import {SessionClient} from './SessionClients'
 import {Event, EventInstance} from './Events'
-import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
-import {makeSecret} from 'expedition-qdl/lib/remote/Session'
+import {MultiplayerEvent} from 'expedition-qdl/lib/multiplayer/Events'
+import {makeSecret} from 'expedition-qdl/lib/multiplayer/Session'
 
 export interface SessionAttributes {
   id: number;

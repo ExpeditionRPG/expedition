@@ -1,8 +1,8 @@
 // Wrappers that simulate degraded network performance, bugs in code, and fuzzed packets
 import Config from '../config'
 import * as WebSocket from 'ws'
-import {Session as SessionModel} from '../models/remoteplay/Sessions'
-import {SessionClient} from '../models/remoteplay/SessionClients'
+import {Session as SessionModel} from '../models/multiplayer/Sessions'
+import {SessionClient} from '../models/multiplayer/SessionClients'
 import * as Bluebird from 'bluebird';
 
 const CHAOS_FUZZ_LENGTH = 80;
@@ -62,7 +62,7 @@ export function chaosWS(ws: WebSocket): WebSocket {
     if (Math.random() >= (parseFloat(Config.get('CHAOS_FRACTION')) || 0)) {
       return;
     }
-    
+
     const r = Math.random();
     if (r < 0.05) {
       console.log('CHAOS: closing socket!');
@@ -123,21 +123,21 @@ export function chaosSessionClientModel(sc: SessionClient): SessionClient {
 
 
 export function maybeChaosWS(ws: WebSocket): WebSocket {
-  if (Config.get('NODE_ENV') !== 'production' && Config.get('REMOTEPLAY_CHAOS') === 'true') {
+  if (Config.get('NODE_ENV') !== 'production' && Config.get('MULTIPLAYER_CHAOS') === 'true') {
     return chaosWS(ws);
   }
   return ws;
 }
 
 export function maybeChaosSession(s: SessionModel, session: number, ws: WebSocket): SessionModel {
-  if (Config.get('NODE_ENV') !== 'production' && Config.get('REMOTEPLAY_CHAOS') === 'true') {
+  if (Config.get('NODE_ENV') !== 'production' && Config.get('MULTIPLAYER_CHAOS') === 'true') {
     return chaosSessionModel(s, session, ws);
   }
   return s;
 }
 
 export function maybeChaosSessionClient(sc: SessionClient): SessionClient {
-  if (Config.get('NODE_ENV') !== 'production' && Config.get('REMOTEPLAY_CHAOS') === 'true') {
+  if (Config.get('NODE_ENV') !== 'production' && Config.get('MULTIPLAYER_CHAOS') === 'true') {
     return chaosSessionClientModel(sc);
   }
   return sc;

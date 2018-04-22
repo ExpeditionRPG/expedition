@@ -4,9 +4,9 @@ import {Feedback} from './Feedback'
 import {User} from './Users'
 import {Quest} from './Quests'
 import {RenderedQuest} from './RenderedQuests'
-import {Session} from './remoteplay/Sessions'
-import {SessionClient} from './remoteplay/SessionClients'
-import {Event} from './remoteplay/Events'
+import {Session} from './multiplayer/Sessions'
+import {SessionClient} from './multiplayer/SessionClients'
+import {Event} from './multiplayer/Events'
 
 import Config from '../config'
 const Url = require('url');
@@ -45,7 +45,7 @@ class Database {
       RenderedQuest: new RenderedQuest(this.sequelize),
       User: new User(this.sequelize),
 
-      // For remote play:
+      // For multiplayer:
       Session: new Session(this.sequelize),
       SessionClient: new SessionClient(this.sequelize),
       Event: new Event(this.sequelize),

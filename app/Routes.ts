@@ -3,7 +3,7 @@ import Config from './config'
 import * as Mail from './Mail'
 import * as oauth2 from './lib/oauth2'
 import * as Handlers from './Handlers'
-import * as RemotePlayHandlers from './remoteplay/Handlers'
+import * as MultiplayerHandlers from './multiplayer/Handlers'
 import * as Stripe from './Stripe'
 import {models} from './models/Database'
 import * as WebSocket from 'ws';
@@ -58,9 +58,9 @@ Router.post('/publish/:id', publishLimiter, limitCors, requireAuth, (req, res) =
 Router.post('/unpublish/:quest', limitCors, requireAuth, (req, res) => {Handlers.unpublish(models.Quest, req, res);});
 Router.post('/quest/feedback/:type', limitCors, (req, res) => {Handlers.feedback(models.Feedback, req, res);});
 Router.post('/user/subscribe', limitCors, (req, res) => {Handlers.subscribe(mailchimp, Config.get('MAILCHIMP_PLAYERS_LIST_ID'), req, res);});
-Router.get('/remoteplay/v1/user', limitCors, requireAuth, (req, res) => {RemotePlayHandlers.user(models.SessionClient, models.Event, req, res);});
-Router.post('/remoteplay/v1/new_session', sessionLimiter, limitCors, requireAuth, (req, res) => {RemotePlayHandlers.newSession(models.Session, req, res);});
-Router.post('/remoteplay/v1/connect', limitCors, requireAuth, (req, res) => {RemotePlayHandlers.connect(models.Session, models.SessionClient, req, res);});
+Router.get('/multiplayer/v1/user', limitCors, requireAuth, (req, res) => {MultiplayerHandlers.user(models.SessionClient, models.Event, req, res);});
+Router.post('/multiplayer/v1/new_session', sessionLimiter, limitCors, requireAuth, (req, res) => {MultiplayerHandlers.newSession(models.Session, req, res);});
+Router.post('/multiplayer/v1/connect', limitCors, requireAuth, (req, res) => {MultiplayerHandlers.connect(models.Session, models.SessionClient, req, res);});
 Router.post('/stripe/checkout', limitCors, (req, res) => {Stripe.checkout(req, res);});
 
 installAdminRoutes(Router);
@@ -69,7 +69,7 @@ export function setupWebsockets(server: any) {
   const wss = new WebSocket.Server({
     server,
     verifyClient: (info: any, cb: (verified: boolean)=>any) => {
-      RemotePlayHandlers.verifyWebsocket(models.SessionClient, info, cb);
+      MultiplayerHandlers.verifyWebsocket(models.SessionClient, info, cb);
     }
   });
 
@@ -80,7 +80,7 @@ export function setupWebsockets(server: any) {
 
   wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     ws.on('error', (e: Error) => console.error(e));
-    RemotePlayHandlers.websocketSession(models.Session, models.SessionClient, ws, req);
+    MultiplayerHandlers.websocketSession(models.Session, models.SessionClient, ws, req);
   });
 }
 

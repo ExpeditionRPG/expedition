@@ -51,7 +51,7 @@
     "body-parser": "^1.17.2",
     "cheerio": "^1.0.0-rc.2",
     "cors": "^2.8.4",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#8f275bdf26f7147789347988b554feae8ce0378f",
+    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#12a8ca264549b22eeb1e8ac097ca515019f5e484",
     "express": "^4.15.3",
     "express-rate-limit": "^2.9.0",
     "express-session": "^1.15.4",
