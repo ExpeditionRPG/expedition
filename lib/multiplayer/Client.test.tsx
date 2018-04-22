@@ -1,8 +1,8 @@
-import {RemotePlayEvent, RemotePlayEventBody} from './Events'
+import {MultiplayerEvent, MultiplayerEventBody} from './Events'
 import {ClientBase} from './Client'
 
 export class TestClient extends ClientBase {
-  public events: RemotePlayEvent[];
+  public events: MultiplayerEvent[];
 
   constructor() {
     super();
@@ -17,7 +17,7 @@ export class TestClient extends ClientBase {
     this.connected = connected;
   }
 
-  sendFinalizedEvent(e: RemotePlayEvent) {
+  sendFinalizedEvent(e: MultiplayerEvent) {
     this.events.push(e);
   }
 
@@ -25,8 +25,8 @@ export class TestClient extends ClientBase {
 }
 
 describe('Client', () => {
-  const basicEventBody: RemotePlayEventBody = {type: 'STATUS'};
-  const basicEvent: RemotePlayEvent = {client: 'testclient', instance: 'testinstance', event: basicEventBody, id: null};
+  const basicEventBody: MultiplayerEventBody = {type: 'STATUS'};
+  const basicEvent: MultiplayerEvent = {client: 'testclient', instance: 'testinstance', event: basicEventBody, id: null};
 
   it('safely handles malformed messages', () => {
     const c = new TestClient();
@@ -37,7 +37,7 @@ describe('Client', () => {
     const c = new TestClient();
     expect(c.doParseEvent(JSON.stringify({
       client: 'testclient', instance: 'testinstance', event: {type: 'UNKNOWN_EVENT_TYPE'}, id: 0
-    } as any as RemotePlayEvent)).event.type).toEqual('ERROR');
+    } as any as MultiplayerEvent)).event.type).toEqual('ERROR');
   });
 
   it('can subscribe & callback handlers', () => {

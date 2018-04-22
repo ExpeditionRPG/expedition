@@ -1,8 +1,8 @@
-import {RemotePlayEvent, RemotePlayEventBody, ClientID, InstanceID} from './Events'
+import {MultiplayerEvent, MultiplayerEventBody, ClientID, InstanceID} from './Events'
 
-declare type EventHandler = (e: RemotePlayEvent) => any;
+declare type EventHandler = (e: MultiplayerEvent) => any;
 
-// ClientBase is a remote play client that is designed to communicate with like peers.
+// ClientBase is a multiplayer play client that is designed to communicate with like peers.
 export abstract class ClientBase {
   protected id: ClientID;
   protected instance: InstanceID;
@@ -34,7 +34,7 @@ export abstract class ClientBase {
     this.connected = false;
   }
 
-  abstract sendFinalizedEvent(e: RemotePlayEvent): void;
+  abstract sendFinalizedEvent(e: MultiplayerEvent): void;
   abstract disconnect(): void;
 
   configure(id: string, instance: string): void {
@@ -42,7 +42,7 @@ export abstract class ClientBase {
     this.instance = instance;
   }
 
-  sendEvent(event: RemotePlayEventBody): void {
+  sendEvent(event: MultiplayerEventBody): void {
     if (!this.isConnected()) {
       return;
     }
@@ -50,11 +50,11 @@ export abstract class ClientBase {
     this.sendFinalizedEvent({id: null, client: this.id, instance: this.instance, event});
   }
 
-  protected parseEvent(s: string): RemotePlayEvent {
-    let parsed: RemotePlayEvent;
+  protected parseEvent(s: string): MultiplayerEvent {
+    let parsed: MultiplayerEvent;
 
     try {
-      parsed = JSON.parse(s) as RemotePlayEvent;
+      parsed = JSON.parse(s) as MultiplayerEvent;
     } catch(e) {
       return {id: null, client: e.client, instance: e.instance, event: {type: 'ERROR', error: 'Failed to parse JSON message: ' + s}};
     }
@@ -70,7 +70,7 @@ export abstract class ClientBase {
     return parsed;
   }
 
-  publish(e: RemotePlayEvent) {
+  publish(e: MultiplayerEvent) {
     for (const h of this.handlers) {
       h(e);
     }

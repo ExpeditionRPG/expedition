@@ -24,7 +24,7 @@ export interface StatusEvent {
 
   // Whether or not the client is waiting for action by other clients.
   // For example, this could be set to 'LOBBY' to indicate the client is
-  // ready to leave a remote play lobby page.
+  // ready to leave a multiplayer play lobby page.
   waitingOn?: WaitType;
 
   // Whether the client is connected or not.
@@ -38,7 +38,7 @@ export interface StatusEvent {
   lastEventID?: number;
 }
 
-// Interaction events indicate what remote clients are doing,
+// Interaction events indicate what multiplayer clients are doing,
 // without significantly affecting the state of the app.
 // This includes button taps and finger placement on the
 // combat timer.
@@ -55,7 +55,7 @@ export interface InteractionEvent {
   positions: TouchList;
 }
 
-// Action events invoke registered action functions on remote clients when they are broadcast.
+// Action events invoke registered action functions on multiplayer clients when they are broadcast.
 export interface ActionEvent {
   type: 'ACTION';
 
@@ -94,10 +94,10 @@ export interface InflightRejectEvent {
   conflicts: MultiEvent|null;
 }
 
-export type RemotePlayEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent|MultiEvent|InflightCommitEvent|InflightRejectEvent;
-export interface RemotePlayEvent {
+export type MultiplayerEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent|MultiEvent|InflightCommitEvent|InflightRejectEvent;
+export interface MultiplayerEvent {
   client: ClientID;
   instance: InstanceID;
-  event: RemotePlayEventBody;
+  event: MultiplayerEventBody;
   id: number|null; // Monotonically increasing, unique to a single event per session
 }

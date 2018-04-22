@@ -1,4 +1,4 @@
-import {RemotePlayEvent, ClientID, InstanceID} from './Events'
+import {MultiplayerEvent, ClientID, InstanceID} from './Events'
 
 export type SessionID = number;
 
