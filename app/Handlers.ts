@@ -75,8 +75,8 @@ export function announcement(req: express.Request, res: express.Response) {
   memoizedVersions(new Date().toJSON().slice(0,10))
     .then((versions: versions) => {
       res.json({
-        message: Config.ANNOUNCEMENT_MESSAGE || '',
-        link: Config.ANNOUNCEMENT_LINK || '',
+        message: Config.get('ANNOUNCEMENT_MESSAGE') || '',
+        link: Config.get('ANNOUNCEMENT_LINK') || '',
         versions,
       });
     });
