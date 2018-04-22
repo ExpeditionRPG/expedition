@@ -50,7 +50,7 @@ function requireAuth(req: express.Request, res: express.Response, next: express.
 }
 
 Router.get('/healthcheck', limitCors, Handlers.healthCheck);
-Router.get('/announcements', limitCors, cache('24 hours'), Handlers.announcement);
+Router.get('/announcements', cache('24 hours'), limitCors, Handlers.announcement);
 Router.post('/analytics/:category/:action', limitCors, (req, res) => {Handlers.postAnalyticsEvent(models.AnalyticsEvent, req, res);});
 Router.post('/quests', limitCors, (req, res) => {Handlers.search(models.Quest, req, res);});
 Router.get('/raw/:partition/:quest/:version', limitCors, (req, res) => {Handlers.questXMLHandler(models.Quest, models.RenderedQuest, req, res);});
