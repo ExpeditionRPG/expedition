@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import semver from 'semver'
+import * as semver from 'semver'
 import {AnnouncementSetAction, FetchAnnouncementResponse} from './ActionTypes'
 import {handleFetchErrors} from './Web'
 import {authSettings, URLS} from '../Constants'
