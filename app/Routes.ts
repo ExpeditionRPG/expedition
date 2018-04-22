@@ -14,6 +14,9 @@ import {limitCors} from './lib/cors'
 const apicache = require('apicache');
 const querystring = require('querystring');
 const RateLimit = require('express-rate-limit');
+apicache.options({
+  headerBlacklist: ['Access-Control-Allow-Origin'],
+});
 const cache = apicache.middleware;
 
 const Mailchimp = require('mailchimp-api-v3');
