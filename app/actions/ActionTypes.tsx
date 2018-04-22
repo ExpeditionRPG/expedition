@@ -18,6 +18,16 @@ import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../cardtemplates/TemplateTypes'
 import {ClientID, InstanceID, StatusEvent} from 'expedition-qdl/lib/multiplayer/Events'
 
+export interface FetchAnnouncementResponse {
+  message: string;
+  link: string;
+  versions: {
+    android: string;
+    ios: string;
+    web: string;
+  };
+}
+
 export interface PushHistoryAction extends Redux.Action {
   type: 'PUSH_HISTORY';
 }

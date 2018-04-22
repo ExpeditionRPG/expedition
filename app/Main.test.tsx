@@ -43,6 +43,7 @@ describe('React', () => {
     it('does not show game content dialog if all content sets defined');
     it('shows game content dialog if settings undefined');
     it('shows game content dialog if any content sets undefined');
+    it('checks for announcements and new versions');
 
     describe('deviceready event', () => {
       it('triggers silent login'); // Holding off on testing this one until we propagate window state better.
@@ -82,5 +83,4 @@ describe('React', () => {
     it('logs to firebase if firebase set up'); // $10
     it('logs to google analytics if GA set up'); // $10
   });
-
 });
