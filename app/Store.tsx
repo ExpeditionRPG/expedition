@@ -2,7 +2,7 @@ import Redux, {createStore, applyMiddleware, compose} from 'redux'
 import thunk from 'redux-thunk'
 import questIDEApp from './reducers/CombinedReducers'
 import {installStore as installAppStore} from 'expedition-app/app/Store'
-import {getRemotePlayClient} from 'expedition-app/app/RemotePlay'
+import {getMultiplayerClient} from 'expedition-app/app/Multiplayer'
 
 // For dev tools extension
 declare var window:any;
@@ -13,7 +13,7 @@ export let store: Redux.Store<any>;
 
 // This code re-routes the getState() method passed to the app's redux middleware,
 // correctly scoping it only to the ".preview" param where it expects the app's state to live.
-const appMiddleware = getRemotePlayClient().createActionMiddleware();
+const appMiddleware = getMultiplayerClient().createActionMiddleware();
 const adjustedAppMiddleware = ({dispatch, getState}: Redux.MiddlewareAPI<any>) => {
   return appMiddleware({
     dispatch,
