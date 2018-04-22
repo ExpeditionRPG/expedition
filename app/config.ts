@@ -46,6 +46,10 @@ nconf
 
     // Users allowed to access the admin pages
     'SUPER_USER_IDS',
+
+    // Announcements
+    'ANNOUNCEMENT_MESSAGE',
+    'ANNOUNCEMENT_LINK',
   ])
   .file({ file: CONFIG_PATH })
   .defaults({

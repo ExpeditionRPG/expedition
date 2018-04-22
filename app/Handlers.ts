@@ -1,4 +1,7 @@
+import * as Bluebird from 'bluebird'
+import * as cheerio from 'cheerio'
 import * as express from 'express'
+import * as request from 'request-promise'
 import {AnalyticsEvent} from './models/AnalyticsEvents'
 import {Feedback, FeedbackType, FeedbackAttributes} from './models/Feedback'
 import {Quest, QuestInstance, QuestAttributes, QuestSearchParams, MAX_SEARCH_LIMIT, PUBLIC_PARTITION, PRIVATE_PARTITION} from './models/Quests'
@@ -8,16 +11,73 @@ import * as Promise from 'bluebird'
 import Config from './config'
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
+const REGEX_SEMVER = /[1-9][0-9]?[0-9]?\.[1-9][0-9]?[0-9]?\.[1-9][0-9]?[0-9]?/g;
 
 export function healthCheck(req: express.Request, res: express.Response) {
   res.send(' ');
 }
 
+interface versions {
+  android: string;
+  ios: string;
+  web: string;
+}
+
+function getAndroidVersion(): Bluebird<string|null> {
+  return request('https://play.google.com/store/apps/details?id=io.fabricate.expedition')
+    .then(function (body: string) {
+      const $ = cheerio.load(body);
+      const versionText = $('div:contains("Version")').text() || '';
+      const result = REGEX_SEMVER.exec(versionText) || [];
+      return result[0] || '1.0.0';
+    })
+    .catch((e: Error) => {
+      return null;
+    });
+}
+
+function getIosVersion(): Bluebird<string|null> {
+  return request('http://itunes.apple.com/lookup?bundleId=io.fabricate.expedition')
+    .then(function (body: string) {
+      const version = JSON.parse(body).results[0].version;
+      return version;
+    })
+    .catch((e: Error) => {
+      return null;
+    });
+}
+
+function getWebVersion(): Bluebird<string|null> {
+  return request('http://app.expeditiongame.com/package.json')
+    .then(function (body: string) {
+      const version = JSON.parse(body).version;
+      return version;
+    })
+    .catch((e: Error) => {
+      return null;
+    });
+}
+
+function getVersions(): Bluebird<versions> {
+  return Promise.all([getAndroidVersion(), getIosVersion(), getWebVersion()])
+    .then((values) => {
+      return {
+        android: values[0] || values[1] || '1.0.0', // Android scraping is fragile; fall back to iOS
+        ios: values[1] || '1.0.0',
+        web: values[2] || '1.0.0',
+      };
+    });
+}
+
 export function announcement(req: express.Request, res: express.Response) {
-  res.json({
-    message: '',
-    link: '',
-  });
+  getVersions()
+    .then((versions: versions) => {
+      res.json({
+        message: Config.ANNOUNCEMENT_MESSAGE || '',
+        link: Config.ANNOUNCEMENT_LINK || '',
+        versions,
+      });
+    });
 }
 
 export function search(quest: Quest, req: express.Request, res: express.Response) {

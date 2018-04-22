@@ -11,8 +11,10 @@ import * as http from 'http';
 import {installRoutes as installAdminRoutes} from './admin/Routes'
 import {limitCors} from './lib/cors'
 
+const apicache = require('apicache');
 const querystring = require('querystring');
 const RateLimit = require('express-rate-limit');
+const cache = apicache.middleware;
 
 const Mailchimp = require('mailchimp-api-v3');
 const mailchimp = (Config.get('NODE_ENV') !== 'dev' && Config.get('MAILCHIMP_KEY')) ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
@@ -48,7 +50,7 @@ function requireAuth(req: express.Request, res: express.Response, next: express.
 }
 
 Router.get('/healthcheck', limitCors, Handlers.healthCheck);
-Router.get('/announcements', limitCors, Handlers.announcement);
+Router.get('/announcements', limitCors, cache('24 hours'), Handlers.announcement);
 Router.post('/analytics/:category/:action', limitCors, (req, res) => {Handlers.postAnalyticsEvent(models.AnalyticsEvent, req, res);});
 Router.post('/quests', limitCors, (req, res) => {Handlers.search(models.Quest, req, res);});
 Router.get('/raw/:partition/:quest/:version', limitCors, (req, res) => {Handlers.questXMLHandler(models.Quest, models.RenderedQuest, req, res);});
