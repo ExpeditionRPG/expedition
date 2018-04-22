@@ -78,7 +78,7 @@ Raven.config(authSettings.raven, {
     environment: NODE_ENV,
     shouldSendCallback(data) {
       const supportedBrowser = !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent);
-      return supportedBrowser && !getStore().getState().settings.simulator;
+      return supportedBrowser && NODE_ENV !== 'dev' && !getStore().getState().settings.simulator;
     }
   }).install();
 
