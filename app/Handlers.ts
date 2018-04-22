@@ -2,6 +2,7 @@ import * as Bluebird from 'bluebird'
 import * as cheerio from 'cheerio'
 import * as express from 'express'
 import * as request from 'request-promise'
+import * as memoize from 'memoizee'
 import {AnalyticsEvent} from './models/AnalyticsEvents'
 import {Feedback, FeedbackType, FeedbackAttributes} from './models/Feedback'
 import {Quest, QuestInstance, QuestAttributes, QuestSearchParams, MAX_SEARCH_LIMIT, PUBLIC_PARTITION, PRIVATE_PARTITION} from './models/Quests'
@@ -58,7 +59,7 @@ function getWebVersion(): Bluebird<string|null> {
     });
 }
 
-function getVersions(): Bluebird<versions> {
+function getVersions(date: string): Bluebird<versions> {
   return Promise.all([getAndroidVersion(), getIosVersion(), getWebVersion()])
     .then((values) => {
       return {
@@ -68,9 +69,10 @@ function getVersions(): Bluebird<versions> {
       };
     });
 }
+const memoizedVersions = memoize(getVersions, { promise: true });
 
 export function announcement(req: express.Request, res: express.Response) {
-  getVersions()
+  memoizedVersions(new Date().toJSON().slice(0,10))
     .then((versions: versions) => {
       res.json({
         message: Config.ANNOUNCEMENT_MESSAGE || '',
