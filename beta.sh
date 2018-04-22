@@ -8,6 +8,7 @@ rm -rf dist
 # Build the app - manually configure for dev environment
 export NODE_ENV='dev'
 export API_HOST='http://betaapi.expeditiongame.com'
+export OAUTH2_CLIENT_ID='545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com'
 webpack --config ./webpack.dist.config.js
 
 # Deploy to beta
