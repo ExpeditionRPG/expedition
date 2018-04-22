@@ -1,0 +1,3 @@
+describe('MultiplayerSync', () => {
+  // TODO
+});

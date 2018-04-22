@@ -16,7 +16,7 @@ import {TemplateContext, ParserNode} from '../cardtemplates/TemplateTypes'
 import {defaultContext} from '../cardtemplates/Template'
 import {remoteify} from './ActionTypes'
 import {MIN_FEEDBACK_LENGTH} from '../Constants'
-import {RemotePlayCounters} from '../RemotePlay'
+import {MultiplayerCounters} from '../Multiplayer'
 import {getLogBuffer} from '../Console'
 
 declare var window:any;
@@ -192,7 +192,7 @@ function postUserFeedback(type: string, data: any) {
   };
 }
 
-export function logRemotePlayStats(user: UserState, quest: QuestDetails, stats: RemotePlayCounters): Promise<Response> {
+export function logMultiplayerStats(user: UserState, quest: QuestDetails, stats: MultiplayerCounters): Promise<Response> {
   try {
     const state = getStore().getState();
     const data = {
@@ -207,7 +207,7 @@ export function logRemotePlayStats(user: UserState, quest: QuestDetails, stats: 
       console: getLogBuffer(),
     };
 
-    return fetch(authSettings.urlBase + '/analytics/remoteplay/stats', {
+    return fetch(authSettings.urlBase + '/analytics/multiplayer/stats', {
         method: 'POST',
         body: JSON.stringify(data),
       })
@@ -216,7 +216,7 @@ export function logRemotePlayStats(user: UserState, quest: QuestDetails, stats: 
         logEvent('analytics_quest_err', { label: error });
       });
   } catch(e) {
-    console.error('Failed to log remote play stats');
+    console.error('Failed to log multiplayer stats');
     return Promise.resolve(new Response(''));
   }
 }

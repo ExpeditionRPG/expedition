@@ -1,35 +1,35 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import CircleRipple from 'material-ui/internal/CircleRipple'
-import {InteractionEvent} from 'expedition-qdl/lib/remote/Events'
-import RemoteAffector from './RemoteAffector'
+import {InteractionEvent} from 'expedition-qdl/lib/multiplayer/Events'
+import MultiplayerAffector from './MultiplayerAffector'
 
 const ReactTransitionGroup = require('react-transition-group/TransitionGroup');
 
 // Remove the first element of the array
 const shift = ([, ...newArray]) => newArray;
 
-// RemoteRipple is copied with modifications from
+// MultiplayerRipple is copied with modifications from
 // https://github.com/callemall/material-ui/blob/master/src/internal/TouchRipple.js
-export interface RemoteRippleProps {
+export interface MultiplayerRippleProps {
   opacity?: number;
   children: JSX.Element;
   id?: string;
   remoteID?: string;
   className?: string;
 }
-export interface RemoteRippleState {
+export interface MultiplayerRippleState {
   hasRipples: boolean;
   nextKey: number;
   ripples: JSX.Element[];
 }
-export default class RemoteRipple extends React.Component<RemoteRippleProps, RemoteRippleState> {
+export default class MultiplayerRipple extends React.Component<MultiplayerRippleProps, MultiplayerRippleState> {
   private ignoreNextMouseDown: boolean;
   private startTime: number;
   private firstTouchY: number;
   private firstTouchX: number;
 
-  constructor(props: RemoteRippleProps) {
+  constructor(props: MultiplayerRippleProps) {
     super(props);
 
     this.state = {
@@ -136,14 +136,14 @@ export default class RemoteRipple extends React.Component<RemoteRippleProps, Rem
     }
 
     return (
-      <RemoteAffector
+      <MultiplayerAffector
         id={this.props.id}
         remoteID={this.props.remoteID}
         className={this.props.className}
         onInteraction={(c: string, i: InteractionEvent) => {this.handle(c, i)}}>
         {rippleGroup}
         {this.props.children}
-      </RemoteAffector>
+      </MultiplayerAffector>
     );
   }
 }

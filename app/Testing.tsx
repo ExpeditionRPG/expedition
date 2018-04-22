@@ -1,7 +1,7 @@
 import * as Redux from 'redux'
 import * as ReduxMockStore from 'redux-mock-store'
 import configureStore from 'redux-mock-store'
-import {RemotePlayClient} from './RemotePlay'
+import {MultiplayerClient} from './Multiplayer'
 import {AppState, AppStateWithHistory} from './reducers/StateTypes'
 import combinedReducers from './reducers/CombinedReducers'
 
@@ -10,7 +10,7 @@ export function newMockStoreWithInitializedState() {
 }
 
 export function newMockStore(state: object) {
-  const client = new RemotePlayClient();
+  const client = new MultiplayerClient();
   // Since this is a testing function, we play it a bit loose with the state type.
   const store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(state as any as AppStateWithHistory);
   return store;
@@ -25,7 +25,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: Object|undefine
   const defaultInitialState = reducer(undefined, ({type: '@@INIT'} as any));
 
   function internalReducerCommands(initialState: Object) {
-    const client = new RemotePlayClient();
+    const client = new MultiplayerClient();
     const store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(defaultGlobalState);
     return {
       expect: (action: A) => {
@@ -66,7 +66,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: Object|undefine
 }
 
 export function Action<A>(action: (a: A) => Redux.Action, baseState?: Object) {
-  const client = new RemotePlayClient();
+  const client = new MultiplayerClient();
   client.sendEvent = jasmine.createSpy('sendEvent');
   let store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])((baseState as any as AppStateWithHistory) ||  defaultGlobalState);
 
@@ -75,14 +75,14 @@ export function Action<A>(action: (a: A) => Redux.Action, baseState?: Object) {
       expect: (a: A) => {
         store.dispatch(action(a));
         return {
-          toSendRemote(expected?: Object) {
+          toSendMultiplayer(expected?: Object) {
             if (expected === undefined) {
               expect(client.sendEvent).toHaveBeenCalled();
             } else {
               expect(client.sendEvent).toHaveBeenCalledWith(jasmine.objectContaining({args: JSON.stringify(expected)}));
             }
           },
-          toNotSendRemote(expected?: Object) {
+          toNotSendMultiplayer(expected?: Object) {
             if (expected === undefined) {
               expect(client.sendEvent).not.toHaveBeenCalled();
             } else {

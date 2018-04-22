@@ -110,7 +110,7 @@
     "emitter-steward": "^1.0.0",
     "es6-promise-plugin": "^4.1.0",
     "escape-string-regexp": "^1.0.4",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#4963e858f95cad12edc84d852be8e344994959bb",
+    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#12a8ca264549b22eeb1e8ac097ca515019f5e484",
     "findup-sync": "^2.0.0",
     "firebase": "^4.6.1",
     "has-ansi": "^2.0.0",

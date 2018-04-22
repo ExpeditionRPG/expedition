@@ -1,9 +1,9 @@
 import {InflightCommitAction, InflightRejectAction} from '../actions/ActionTypes'
 import Redux from 'redux'
 import {AppStateWithHistory, AppState} from './StateTypes'
-import {getRemotePlayClient} from '../RemotePlay'
+import {getMultiplayerClient} from '../Multiplayer'
 
-export function stripRemoteStateAndSettings(state: AppStateWithHistory): AppStateWithHistory {
+export function stripMultiplayerStateAndSettings(state: AppStateWithHistory): AppStateWithHistory {
   const newState = {...state};
   delete newState._committed;
   delete newState.settings;
@@ -16,23 +16,23 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
     return state;
   }
   if (state._committed === undefined) {
-    state._committed = stripRemoteStateAndSettings(state);
+    state._committed = stripMultiplayerStateAndSettings(state);
     state.commitID = 0;
   }
 
   switch(action.type) {
-    case 'REMOTE_PLAY_SESSION':
+    case 'MULTIPLAYER_SESSION':
       // Initialize committed state
-      return {...state, _committed: stripRemoteStateAndSettings(state), commitID: 0};
+      return {...state, _committed: stripMultiplayerStateAndSettings(state), commitID: 0};
     case 'INFLIGHT_COMMIT':
       // When no actions are in flight, we're at the correct state.
       // This should almost always happen within a couple actions.
       // TODO: error/alert if this takes too long
       const id = (action as InflightCommitAction).id;
-      if (getRemotePlayClient().getInFlightAtOrBelow(id).length === 0) {
+      if (getMultiplayerClient().getInFlightAtOrBelow(id).length === 0) {
         return {
           ...state,
-          _committed: stripRemoteStateAndSettings(state),
+          _committed: stripMultiplayerStateAndSettings(state),
           commitID: id,
         } as AppStateWithHistory;
       } else {
@@ -43,15 +43,15 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
       console.log('INFLIGHT COMPACT');
       return {
         ...state,
-        ...stripRemoteStateAndSettings({...state._committed}),
+        ...stripMultiplayerStateAndSettings({...state._committed}),
       };
-    case 'REMOTE_PLAY_DISCONNECT':
+    case 'MULTIPLAYER_DISCONNECT':
       return {...state, _committed: undefined, commitID: 0};
     default:
       if ((action as any)._inflight === 'remote') {
         return {
           ...state,
-          _committed: stripRemoteStateAndSettings(state),
+          _committed: stripMultiplayerStateAndSettings(state),
         };
       }
       return state;

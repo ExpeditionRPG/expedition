@@ -1,0 +1,3 @@
+describe('Multiplayer reducer', () => {
+  // TODO
+});

@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {PLAYER_DAMAGE_MULT} from '../../Constants'
 import {Enemy, Loot} from '../../reducers/QuestTypes'
 import {CombatDifficultySettings, CombatAttack} from './Types'
-import {DifficultyType, SettingsType, AppStateWithHistory, RemotePlayState} from '../../reducers/StateTypes'
+import {DifficultyType, SettingsType, AppStateWithHistory, MultiplayerState} from '../../reducers/StateTypes'
 import {defaultContext} from '../Template'
 import {ParserNode} from '../TemplateTypes'
 import {CombatState} from './Types'
@@ -10,18 +10,18 @@ import {audioSetIntensity, audioSetPeakIntensity, audioPlaySfx} from '../../acti
 import {toCard} from '../../actions/Card'
 import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT, MUSIC_INTENSITY_MAX} from '../../Constants'
 import {encounters} from '../../Encounters'
-import {RemotePlayClientStatus, QuestNodeAction, remoteify} from '../../actions/ActionTypes'
+import {MultiplayerClientStatus, QuestNodeAction, remoteify} from '../../actions/ActionTypes'
 import {loadNode} from '../../actions/Quest'
-import {setRemoteStatus} from '../../actions/RemotePlay'
+import {setMultiplayerStatus} from '../../actions/Multiplayer'
 import * as seedrandom from 'seedrandom'
-import {StatusEvent} from 'expedition-qdl/lib/remote/Events'
-import {getRemotePlayClient} from '../../RemotePlay'
+import {StatusEvent} from 'expedition-qdl/lib/multiplayer/Events'
+import {getMultiplayerClient} from '../../Multiplayer'
 import {getStore} from '../../Store'
 
 const cheerio: any = require('cheerio');
 
 // Number of adventurers (such as for damage)
-function numLocalAndRemoteAdventurers(settings: SettingsType, rp: RemotePlayState): number {
+function numLocalAndMultiplayerAdventurers(settings: SettingsType, rp: MultiplayerState): number {
   if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
     // Since single player still has two adventurers, the minimum possible is two.
     return Math.max(2, settings.numPlayers);
@@ -39,7 +39,7 @@ function numLocalAndRemoteAdventurers(settings: SettingsType, rp: RemotePlayStat
 }
 
 // Number of fingers
-function numLocalAndRemotePlayers(settings: SettingsType, rp: RemotePlayState): number {
+function numLocalAndMultiplayerers(settings: SettingsType, rp: MultiplayerState): number {
   if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
     return settings.numPlayers;
   }
@@ -65,8 +65,8 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
     }
   }
   const remotePlay = (getState) ? getState().remotePlay : getStore().getState().remotePlay;
-  const totalAdventurerCount = numLocalAndRemoteAdventurers(settings, remotePlay);
-  const totalPlayerCount = numLocalAndRemotePlayers(settings, remotePlay);
+  const totalAdventurerCount = numLocalAndMultiplayerAdventurers(settings, remotePlay);
+  const totalPlayerCount = numLocalAndMultiplayerers(settings, remotePlay);
 
   return {
     custom: custom,
@@ -96,7 +96,7 @@ export const initCombat = remoteify(function initCombat(a: InitCombatArgs, dispa
 });
 
 interface InitCustomCombatArgs {
-  rp?: RemotePlayState;
+  rp?: MultiplayerState;
 }
 export const initCustomCombat = remoteify(function initCustomCombat(a: InitCustomCombatArgs, dispatch: Redux.Dispatch<any>,  getState: () => AppStateWithHistory): InitCustomCombatArgs {
   if (!a.rp) {
@@ -143,8 +143,8 @@ function getEnemies(node: ParserNode): Enemy[] {
   return enemies;
 }
 
-function generateCombatAttack(node: ParserNode, settings: SettingsType, rp: RemotePlayState, elapsedMillis: number, rng: () => number): CombatAttack {
-  const totalPlayerCount = numLocalAndRemotePlayers(settings, rp);
+function generateCombatAttack(node: ParserNode, settings: SettingsType, rp: MultiplayerState, elapsedMillis: number, rng: () => number): CombatAttack {
+  const totalPlayerCount = numLocalAndMultiplayerers(settings, rp);
   const playerMultiplier = PLAYER_DAMAGE_MULT[totalPlayerCount] || 1;
   const combat = node.ctx.templates.combat;
   if (!combat) {
@@ -328,7 +328,7 @@ interface HandleCombatTimerHoldArgs {
   elapsedMillis: number;
 }
 export const handleCombatTimerHold = remoteify(function handleCombatTimerHold(a: HandleCombatTimerHoldArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory) {
-  dispatch(setRemoteStatus({
+  dispatch(setMultiplayerStatus({
     type: 'STATUS',
     waitingOn: {
       type: 'TIMER',
@@ -341,7 +341,7 @@ export const handleCombatTimerHold = remoteify(function handleCombatTimerHold(a:
 interface HandleCombatTimerStopArgs {
   node?: ParserNode;
   settings?: SettingsType;
-  rp?: RemotePlayState;
+  rp?: MultiplayerState;
   elapsedMillis: number;
   seed: string;
 }
@@ -378,7 +378,7 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
   }
 
   // Tell everyone we're no longer waiting on anything
-  dispatch(setRemoteStatus({
+  dispatch(setMultiplayerStatus({
     type: 'STATUS',
     waitingOn: undefined,
   }));
@@ -389,7 +389,7 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
 interface HandleCombatEndArgs {
   node?: ParserNode;
   settings: SettingsType;
-  rp?: RemotePlayState;
+  rp?: MultiplayerState;
   victory: boolean;
   maxTier: number;
   seed: string;
@@ -417,7 +417,7 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
     combat.numAliveAdventurers = 0;
   }
   a.node = a.node.clone();
-  combat.levelUp = (a.victory) ? (numLocalAndRemoteAdventurers(a.settings, a.rp) <= a.maxTier) : false;
+  combat.levelUp = (a.victory) ? (numLocalAndMultiplayerAdventurers(a.settings, a.rp) <= a.maxTier) : false;
 
   const arng = seedrandom.alea(a.seed);
   combat.loot = (a.victory) ? generateLoot(a.maxTier, arng) : [];
@@ -540,7 +540,7 @@ interface AdventurerDeltaArgs {
   settings?: SettingsType;
   current: number;
   delta: number;
-  rp?: RemotePlayState;
+  rp?: MultiplayerState;
 }
 export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerDeltaArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): AdventurerDeltaArgs {
   if (!a.node || !a.settings) {
@@ -551,7 +551,7 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
     a.rp = getState().remotePlay;
   }
 
-  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), numLocalAndRemoteAdventurers(a.settings, a.rp));
+  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), numLocalAndMultiplayerAdventurers(a.settings, a.rp));
   a.node = a.node.clone();
   let combat = a.node.ctx.templates.combat;
   if (!combat) {

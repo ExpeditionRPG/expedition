@@ -51,10 +51,10 @@ const options = {
       sourceMap: true,
       uglifyOptions: {
         mangle: {
-          keep_fnames: true, // Critical for remote play / remoteify!
+          keep_fnames: true, // Critical for multiplayer / remoteify!
         },
         compress: {
-          keep_fnames: true, // Critical for remote play / remoteify!
+          keep_fnames: true, // Critical for multiplayer / remoteify!
         },
       },
     }),

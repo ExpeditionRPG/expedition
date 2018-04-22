@@ -1,6 +1,6 @@
 import * as React from 'react'
 import FlatButton from 'material-ui/FlatButton'
-import RemoteRipple from './remote/RemoteRipple'
+import MultiplayerRipple from './multiplayer/MultiplayerRipple'
 import {openWindow} from '../../Globals'
 
 interface ButtonProps extends React.Props<any> {
@@ -44,11 +44,11 @@ export default class Button extends React.Component<ButtonProps, {}> {
     }
 
     return (
-      <RemoteRipple remoteID={this.props.remoteID} className={className} id={this.props.id}>
+      <MultiplayerRipple remoteID={this.props.remoteID} className={className} id={this.props.id}>
         <FlatButton disabled={this.props.disabled} onTouchTap={(e:any) => this._onTouchTap(e)}>
           <div>{this.props.children}</div>
         </FlatButton>
-      </RemoteRipple>
+      </MultiplayerRipple>
     );
   }
 }

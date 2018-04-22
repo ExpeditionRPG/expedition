@@ -11,12 +11,12 @@ import {
   TransitionType,
   UserState,
   AppState,
-  RemotePlaySessionMeta,
+  MultiplayerSessionMeta,
   SavedQuestMeta,
 } from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../cardtemplates/TemplateTypes'
-import {ClientID, InstanceID, StatusEvent} from 'expedition-qdl/lib/remote/Events'
+import {ClientID, InstanceID, StatusEvent} from 'expedition-qdl/lib/multiplayer/Events'
 
 export interface PushHistoryAction extends Redux.Action {
   type: 'PUSH_HISTORY';
@@ -151,25 +151,25 @@ export interface SavedQuestSelectedAction {
   selected: SavedQuestMeta;
 }
 
-export interface RemotePlaySessionAction extends Redux.Action {
-  type: 'REMOTE_PLAY_SESSION';
+export interface MultiplayerSessionAction extends Redux.Action {
+  type: 'MULTIPLAYER_SESSION';
   session: {id: number, secret: string};
 }
 
-// History of remote play sessions, as reported from the API server.
+// History of multiplayer sessions, as reported from the API server.
 // We can use these to reconnect to earlier sessions we may have been
 // disconnected from.
-export interface RemotePlayHistoryAction extends Redux.Action {
-  type: 'REMOTE_PLAY_HISTORY';
-  history: RemotePlaySessionMeta[];
+export interface MultiplayerHistoryAction extends Redux.Action {
+  type: 'MULTIPLAYER_HISTORY';
+  history: MultiplayerSessionMeta[];
 }
 
-export interface RemotePlayDisconnectAction extends Redux.Action {
-  type: 'REMOTE_PLAY_DISCONNECT';
+export interface MultiplayerDisconnectAction extends Redux.Action {
+  type: 'MULTIPLAYER_DISCONNECT';
 }
 
-export interface RemotePlayClientStatus extends Redux.Action {
-  type: 'REMOTE_PLAY_CLIENT_STATUS';
+export interface MultiplayerClientStatus extends Redux.Action {
+  type: 'MULTIPLAYER_CLIENT_STATUS';
   client: ClientID;
   instance: InstanceID;
   status: StatusEvent;
@@ -184,13 +184,13 @@ export interface LocalAction extends Redux.Action {
   action: Redux.Action;
 }
 
-// Commits an in-flight action transaction (remote play)
+// Commits an in-flight action transaction (multiplayer)
 export interface InflightCommitAction extends Redux.Action {
   type: 'INFLIGHT_COMMIT';
   id: number;
 }
 
-// Rejects an in-flight action transaction (remote play)
+// Rejects an in-flight action transaction (multiplayer)
 export interface InflightRejectAction extends Redux.Action {
   type: 'INFLIGHT_REJECT';
   id: number;
@@ -198,19 +198,19 @@ export interface InflightRejectAction extends Redux.Action {
 }
 
 // Returns a generator of an "executable array" of the original action.
-// This array can be passed to the generated RemotePlay redux middleware
-// which invokes it and packages it to send to other remote play clients.
-const REMOTE_ACTIONS: {[action: string]: (args: any) => Redux.Action} = {}
+// This array can be passed to the generated Multiplayer redux middleware
+// which invokes it and packages it to send to other multiplayer clients.
+const MULTIPLAYER_ACTIONS: {[action: string]: (args: any) => Redux.Action} = {}
 export function remoteify<A>(a: (args: A, dispatch?: Redux.Dispatch<any>, getState?: ()=>AppState)=>any) {
   const remoted = (args: A) => {
     return ([a.name, a, args] as any) as Redux.Action; // We know better >:}
   }
-  if (REMOTE_ACTIONS[a.name]) {
-    console.error('ERROR: Remote action ' + a.name + ' already registered elsewhere! This will break remote play!');
+  if (MULTIPLAYER_ACTIONS[a.name]) {
+    console.error('ERROR: Multiplayer action ' + a.name + ' already registered elsewhere! This will break multiplayer!');
   }
-  REMOTE_ACTIONS[a.name] = remoted;
+  MULTIPLAYER_ACTIONS[a.name] = remoted;
   return remoted;
 }
-export function getRemoteAction(name: string) {
-  return REMOTE_ACTIONS[name];
+export function getMultiplayerAction(name: string) {
+  return MULTIPLAYER_ACTIONS[name];
 }

@@ -3,12 +3,12 @@ import Redux from 'redux'
 import {toCard} from './Card'
 import {handleFetchErrors} from './Web'
 import {remotePlaySettings} from '../Constants'
-import {LocalAction, NavigateAction, RemotePlayClientStatus} from './ActionTypes'
-import {RemotePlaySessionMeta, UserState} from '../reducers/StateTypes'
+import {LocalAction, NavigateAction, MultiplayerClientStatus} from './ActionTypes'
+import {MultiplayerSessionMeta, UserState} from '../reducers/StateTypes'
 import {logEvent} from '../Main'
 import {openSnackbar} from '../actions/Snackbar'
-import {RemotePlayEvent, StatusEvent} from 'expedition-qdl/lib/remote/Events'
-import {getRemotePlayClient} from '../RemotePlay'
+import {MultiplayerEvent, StatusEvent} from 'expedition-qdl/lib/multiplayer/Events'
+import {getMultiplayerClient} from '../Multiplayer'
 
 export function local(a: Redux.Action): LocalAction {
   const inflight = (a as any)._inflight;
@@ -16,8 +16,8 @@ export function local(a: Redux.Action): LocalAction {
 }
 
 export function remotePlayDisconnect() {
-  getRemotePlayClient().disconnect();
-  return {type: 'REMOTE_PLAY_DISCONNECT'};
+  getMultiplayerClient().disconnect();
+  return {type: 'MULTIPLAYER_DISCONNECT'};
 }
 
 export function remotePlayNewSession(user: UserState) {
@@ -41,7 +41,7 @@ export function remotePlayNewSession(user: UserState) {
       return dispatch(remotePlayConnect(user, data.secret));
     })
     .catch((error: Error) => {
-      logEvent('remote_play_new_session_err', error.toString());
+      logEvent('MULTIPLAYER_new_session_err', error.toString());
       dispatch(openSnackbar('Error creating session: ' + error.toString()));
     });
   };
@@ -76,23 +76,23 @@ export function remotePlayConnect(user: UserState, secret: string) {
       // Dispatch navigation and settings **before** opening the client connection.
       // This lets us navigate to the lobby, then immediately receive a MULTI_EVENT
       // to fast-forward to the current state.
-      dispatch({type: 'REMOTE_PLAY_SESSION', session: {secret, id: sessionID}});
+      dispatch({type: 'MULTIPLAYER_SESSION', session: {secret, id: sessionID}});
       return dispatch(toCard({name: 'REMOTE_PLAY', phase: 'LOBBY'}));
     })
     .then(() => {
-      const c = getRemotePlayClient();
+      const c = getMultiplayerClient();
       c.configure(clientID, instanceID);
       return c.connect(sessionID, secret);
     })
     .catch((error: Error) => {
-      logEvent('remote_play_connect_err', error.toString());
+      logEvent('MULTIPLAYER_connect_err', error.toString());
       console.error(error);
       dispatch(openSnackbar('Error connecting: ' + error.toString()));
     });
   };
 }
 
-export function loadRemotePlay(user: UserState) {
+export function loadMultiplayer(user: UserState) {
   return (dispatch: Redux.Dispatch<any>): any => {
     if (!user || !user.id) {
       throw new Error('you are not logged in');
@@ -103,32 +103,32 @@ export function loadRemotePlay(user: UserState) {
       credentials: 'include',
     })
     // NOTE: We do not handle fetch errors here - failing this
-    // fetch should not prevent users from using remote play.
+    // fetch should not prevent users from using multiplayer.
     // .then(handleFetchErrors)
     .then((response: Response) => {
       return response.json();
     })
-    .then((data: {history: RemotePlaySessionMeta[]}) => {
-      dispatch({type: 'REMOTE_PLAY_HISTORY', history: data.history});
+    .then((data: {history: MultiplayerSessionMeta[]}) => {
+      dispatch({type: 'MULTIPLAYER_HISTORY', history: data.history});
       dispatch(toCard({name: 'REMOTE_PLAY', phase: 'CONNECT'}));
     })
     .catch((error: Error) => {
-      logEvent('remote_play_init_err', error.toString());
-      dispatch(openSnackbar('Remote play service unavailable: ' + error.toString()));
+      logEvent('MULTIPLAYER_init_err', error.toString());
+      dispatch(openSnackbar('Online multiplayer service unavailable: ' + error.toString()));
     })
   };
 }
 
-export function setRemoteStatus(ev: StatusEvent) {
+export function setMultiplayerStatus(ev: StatusEvent) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    const c = getRemotePlayClient();
+    const c = getMultiplayerClient();
     c.sendStatus(ev);
     dispatch({
-      type: 'REMOTE_PLAY_CLIENT_STATUS',
+      type: 'MULTIPLAYER_CLIENT_STATUS',
       client: c.getID(),
       instance: c.getInstance(),
       status: ev,
-    } as RemotePlayClientStatus);
+    } as MultiplayerClientStatus);
     return null;
   }
 }

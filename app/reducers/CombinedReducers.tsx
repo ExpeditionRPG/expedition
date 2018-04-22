@@ -11,7 +11,7 @@ import {settings} from './Settings'
 import {snackbar} from './Snackbar'
 import {user} from './User'
 import {userFeedback} from './UserFeedback'
-import {remotePlay} from './RemotePlay'
+import {remotePlay} from './Multiplayer'
 import {inflight} from './InFlight'
 import {AppStateWithHistory, AppState, AppStateBase} from './StateTypes'
 import {ReturnAction} from '../actions/ActionTypes'
@@ -105,7 +105,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         _history: state._history.slice(0, pastStateIdx),
         _committed: state._committed,
         settings: state.settings, // global settings should not be rewound.
-        remotePlay: state.remotePlay, // remote play settings should not be rewound.
+        remotePlay: state.remotePlay, // multiplayer settings should not be rewound.
         commitID: state.commitID, // commit ID should not be rewound
         saved: state.saved, // saved quests should not be rewound
         _return: true,

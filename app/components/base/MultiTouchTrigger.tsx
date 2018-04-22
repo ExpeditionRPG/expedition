@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {InteractionEvent} from 'expedition-qdl/lib/remote/Events'
-import RemoteAffector from './remote/RemoteAffector'
+import {InteractionEvent} from 'expedition-qdl/lib/multiplayer/Events'
+import MultiplayerAffector from './multiplayer/MultiplayerAffector'
 import TouchIndicator from './TouchIndicator'
 
 interface MultiTouchTriggerProps extends React.Props<any> {
@@ -47,13 +47,13 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
 
   render() {
     return (
-      <RemoteAffector
+      <MultiplayerAffector
         remoteID={this.props.remoteID}
         className="base_multi_touch_remote_affector"
         includeLocalInteractions={true}
         onInteraction={(c: string, i: InteractionEvent) => {this.remoteEvent(c, i)}}>
         <TouchIndicator clientInputs={this.state.clientInputs} />
-      </RemoteAffector>
+      </MultiplayerAffector>
     );
   }
 }

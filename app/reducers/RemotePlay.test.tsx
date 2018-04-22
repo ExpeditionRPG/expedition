@@ -1,3 +1,0 @@
-describe('RemotePlay reducer', () => {
-  // TODO
-});

@@ -1,9 +1,9 @@
 import Redux from 'redux'
-import {getRemoteAction} from './actions/ActionTypes'
-import {RemotePlayEvent, RemotePlayEventBody, ActionEvent, StatusEvent, ClientID} from 'expedition-qdl/lib/remote/Events'
-import {ClientBase} from 'expedition-qdl/lib/remote/Client'
-import {toClientKey} from 'expedition-qdl/lib/remote/Session'
-import {local} from './actions/RemotePlay'
+import {getMultiplayerAction} from './actions/ActionTypes'
+import {MultiplayerEvent, MultiplayerEventBody, ActionEvent, StatusEvent, ClientID} from 'expedition-qdl/lib/multiplayer/Events'
+import {ClientBase} from 'expedition-qdl/lib/multiplayer/Client'
+import {toClientKey} from 'expedition-qdl/lib/multiplayer/Session'
+import {local} from './actions/Multiplayer'
 import {getStore} from './Store'
 import * as Bluebird from 'bluebird'
 import {remotePlaySettings} from './Constants'
@@ -19,7 +19,7 @@ const RECONNECT_MAX_SLOT_IDX = 10;
 const RECONNECT_SLOT_DELAY_MS = 10;
 const RECONNECT_DELAY_BASE_MS = 200;
 
-export interface RemotePlayCounters {
+export interface MultiplayerCounters {
   [field: string]: number;
 
   sessionCount: number,
@@ -32,7 +32,7 @@ export interface RemotePlayCounters {
   successfulTransactions: number,
 }
 
-export const initialRemotePlayCounters = {
+export const initialMultiplayerCounters = {
   sessionCount: 0,
   disconnectCount: 0,
   reconnectCount: 0,
@@ -52,15 +52,15 @@ function getCommitID(): number {
   return getStore().getState().commitID;
 }
 
-// This is the base layer of the remote play network framework, implemented
+// This is the base layer of the multiplayer network framework, implemented
 // using firebase FireStore.
-export class RemotePlayClient extends ClientBase {
+export class MultiplayerClient extends ClientBase {
   private session: WebSocket;
   private sessionClientIDs: string[];
   private reconnectAttempts: number;
   private sessionID: string;
   private secret: string;
-  private stats: RemotePlayCounters;
+  private stats: MultiplayerCounters;
   private messageBuffer: {id: number, msg: string, retries: number, ts: number}[]
   private lastStatusMs: number;
 
@@ -80,7 +80,7 @@ export class RemotePlayClient extends ClientBase {
     this.messageBuffer = [];
     this.reconnectAttempts = 0;
     this.lastStatusMs = 0;
-    this.stats = {...initialRemotePlayCounters};
+    this.stats = {...initialMultiplayerCounters};
   }
 
   hasInFlight(id: number): boolean {
@@ -117,8 +117,8 @@ export class RemotePlayClient extends ClientBase {
         }
       }
     }
-    
-    // We send a periodic status to the server to keep it advised 
+
+    // We send a periodic status to the server to keep it advised
     // of our connection and event ID state.
     if (now - this.lastStatusMs > STATUS_MS) {
       this.sendStatus();
@@ -134,7 +134,7 @@ export class RemotePlayClient extends ClientBase {
     }
   }
 
-  routeEvent(e: RemotePlayEvent, dispatch: Redux.Dispatch<any>) {
+  routeEvent(e: MultiplayerEvent, dispatch: Redux.Dispatch<any>) {
     // Update stats
     this.stats.receivedEvents++;
     if (e.event.type === 'ERROR') {
@@ -161,7 +161,7 @@ export class RemotePlayClient extends ClientBase {
       case 'STATUS':
         // console.log('Received status from ', e.client, e.instance);
         dispatch({
-          type: 'REMOTE_PLAY_CLIENT_STATUS',
+          type: 'MULTIPLAYER_CLIENT_STATUS',
           client: e.client,
           instance: e.instance,
           status: e.event
@@ -188,12 +188,12 @@ export class RemotePlayClient extends ClientBase {
           if (e.client === this.id && e.instance === this.instance) {
             this.committedEvent(e.id);
           } else {
-            this.rejectedEvent(e.id, 'Remote ACTION matching inflight');
+            this.rejectedEvent(e.id, 'Multiplayer ACTION matching inflight');
           }
           return;
         }
 
-        const a = getRemoteAction(e.event.name);
+        const a = getMultiplayerAction(e.event.name);
         if (!a) {
           console.error('Received unknown remote action ' + e.event.name);
           return;
@@ -219,7 +219,7 @@ export class RemotePlayClient extends ClientBase {
       case 'MULTI_EVENT':
         let chain = Promise.resolve();
         for (let i = 0; i < e.event.events.length; i++) {
-          let parsed: RemotePlayEvent;
+          let parsed: MultiplayerEvent;
           try {
             parsed = JSON.parse(e.event.events[i]);
             if (!parsed.id) {
@@ -274,7 +274,7 @@ export class RemotePlayClient extends ClientBase {
     });
   }
 
-  getStats(): RemotePlayCounters {
+  getStats(): MultiplayerCounters {
     return this.stats;
   }
 
@@ -304,7 +304,7 @@ export class RemotePlayClient extends ClientBase {
     // Send remote and also publish locally
     this.sendEvent(event);
     store.dispatch({
-      type: 'REMOTE_PLAY_CLIENT_STATUS',
+      type: 'MULTIPLAYER_CLIENT_STATUS',
       client: this.id,
       instance: this.instance,
       status: event
@@ -406,7 +406,7 @@ export class RemotePlayClient extends ClientBase {
     this.stats.disconnectCount++;
   }
 
-  sendFinalizedEvent(event: RemotePlayEvent): void {
+  sendFinalizedEvent(event: MultiplayerEvent): void {
     const start = Date.now();
 
     if (event.event.type === 'ACTION') {
@@ -508,12 +508,12 @@ export class RemotePlayClient extends ClientBase {
 }
 
 // TODO: Proper device ID
-let client: RemotePlayClient|null = null;
-export function getRemotePlayClient(): RemotePlayClient {
+let client: MultiplayerClient|null = null;
+export function getMultiplayerClient(): MultiplayerClient {
   if (client !== null) {
     return client
   }
-  client = new RemotePlayClient();
+  client = new MultiplayerClient();
   return client;
 }
 

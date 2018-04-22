@@ -5,7 +5,7 @@ import NetworkWifi from 'material-ui/svg-icons/device/network-wifi'
 import PauseCircle from 'material-ui/svg-icons/av/pause-circle-outline'
 import Close from 'material-ui/svg-icons/navigation/close'
 import Person from 'material-ui/svg-icons/social/person'
-import {RemotePlayState} from '../../../reducers/StateTypes'
+import {MultiplayerState} from '../../../reducers/StateTypes'
 import CircularProgress from 'material-ui/CircularProgress';
 
 const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
@@ -13,17 +13,17 @@ const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group'
 export const FADE_ENTER_ANIMATION_MS = 500;
 export const FADE_LEAVE_ANIMATION_MS = 500;
 
-export interface RemoteSyncStateProps {
-  remotePlay: RemotePlayState;
+export interface MultiplayerSyncStateProps {
+  remotePlay: MultiplayerState;
 }
 
-export interface RemoteSyncDispatchProps {
+export interface MultiplayerSyncDispatchProps {
   onAnimationComplete: () => any;
 }
 
-export interface RemoteSyncProps extends RemoteSyncStateProps, RemoteSyncDispatchProps {}
+export interface MultiplayerSyncProps extends MultiplayerSyncStateProps, MultiplayerSyncDispatchProps {}
 
-class SyncContainer extends React.Component<RemoteSyncDispatchProps, {}> {
+class SyncContainer extends React.Component<MultiplayerSyncDispatchProps, {}> {
   componentDidMount() {
     setTimeout(() => {this.props.onAnimationComplete();}, FADE_ENTER_ANIMATION_MS);
   }
@@ -33,7 +33,7 @@ class SyncContainer extends React.Component<RemoteSyncDispatchProps, {}> {
   }
 }
 
-export default class RemoteSync extends React.Component<RemoteSyncProps, {}> {
+export default class MultiplayerSync extends React.Component<MultiplayerSyncProps, {}> {
 
   render() {
     // TODO: this could be much more fancy.

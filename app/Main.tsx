@@ -61,12 +61,12 @@ import {silentLogin} from './actions/User'
 import {listSavedQuests} from './actions/SavedQuests'
 import {getStore} from './Store'
 import {getAppVersion, getWindow, getGA, getDevicePlatform, getDocument, getNavigator, setGA, setupPolyfills} from './Globals'
-import {getRemotePlayClient} from './RemotePlay'
+import {getMultiplayerClient} from './Multiplayer'
 import {UserState} from './reducers/StateTypes'
-import {RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
+import {MultiplayerEvent} from 'expedition-qdl/lib/multiplayer/Events'
 
 // Thunk is unused, but necessary to prevent compiler errors
-// until types are fixed for remote play.
+// until types are fixed for multiplayer.
 // TODO: Fix redux types
 import thunk from 'redux-thunk'
 

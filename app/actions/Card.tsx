@@ -3,7 +3,7 @@ import {CardTransitioningAction, NavigateAction, remoteify} from './ActionTypes'
 import {AppStateWithHistory, CardName, CardPhase, CardState} from '../reducers/StateTypes'
 import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants'
 import {getNavigator} from '../Globals'
-import {getRemotePlayClient} from '../RemotePlay'
+import {getMultiplayerClient} from '../Multiplayer'
 import {getStore} from '../Store'
 
 interface ToCardArgs {
@@ -69,4 +69,4 @@ export function cardTransitioning(isTransitioning: boolean): CardTransitioningAc
 }
 
 
-// TODO: getRemotePlayClient().registerModuleActions(module);
+// TODO: getMultiplayerClient().registerModuleActions(module);

@@ -1,8 +1,8 @@
 import * as React from 'react'
 import MultiTouchTrigger from './MultiTouchTrigger'
 import {CardThemeType} from '../../reducers/StateTypes'
-import {RemotePlayState} from '../../reducers/StateTypes'
-import {getRemotePlayClient} from '../../RemotePlay'
+import {MultiplayerState} from '../../reducers/StateTypes'
+import {getMultiplayerClient} from '../../Multiplayer'
 
 interface TimerCardProps extends React.Props<any> {
   numPlayers: number;
@@ -10,7 +10,7 @@ interface TimerCardProps extends React.Props<any> {
   tertiaryText?: string;
   roundTimeTotalMillis: number;
   theme: CardThemeType;
-  remotePlayState?: RemotePlayState;
+  remotePlayState?: MultiplayerState;
   onTimerStop: (elapsedMillis: number) => any;
 }
 
@@ -39,7 +39,7 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
   }
 
   componentWillUnmount() {
-    // Remote play may unmount this component without a touch event.
+    // Multiplayer play may unmount this component without a touch event.
     // This makes sure our timer eventually stops.
     if (this.interval) {
       clearInterval(this.interval);
@@ -50,7 +50,7 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
     let unheldClientCount = 0;
     let timerHeld = false;
     if (this.props.remotePlayState && this.props.remotePlayState.clientStatus) {
-      const rpClientID = getRemotePlayClient().getClientKey();
+      const rpClientID = getMultiplayerClient().getClientKey();
       for (const client of Object.keys(this.props.remotePlayState.clientStatus)) {
         const clientStatus = this.props.remotePlayState.clientStatus[client];
         if (!clientStatus.connected) {

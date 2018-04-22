@@ -1,13 +1,13 @@
 import Redux from 'redux'
 import configureStore  from 'redux-mock-store'
 import {installStore} from './Store'
-import {RemotePlayClient} from './RemotePlay'
+import {MultiplayerClient} from './Multiplayer'
 
-describe('RemotePlay', () => {
+describe('Multiplayer', () => {
   let client: any;
   let mockStore: any;
   beforeEach(() => {
-    client = new RemotePlayClient();
+    client = new MultiplayerClient();
     mockStore = (initialState: any) => {return configureStore([client.createActionMiddleware()])(initialState)};
   });
 
@@ -36,7 +36,7 @@ describe('RemotePlay', () => {
         expect(store.getActions()).toEqual([{type: 'test'}]);
       });
     })
-    
+
     describe('on actions of type ["name", args]', () => {
       it('resolves and calls the function', () => {
         // TODO(scott): Fix this test

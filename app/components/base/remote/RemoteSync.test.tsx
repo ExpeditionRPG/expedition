@@ -1,3 +1,0 @@
-describe('RemoteSync', () => {
-  // TODO
-});

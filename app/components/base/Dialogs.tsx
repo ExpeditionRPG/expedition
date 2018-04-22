@@ -5,7 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 import Checkbox from './Checkbox'
 import Picker from './Picker'
-import {RemotePlayCounters} from '../../RemotePlay'
+import {MultiplayerCounters} from '../../Multiplayer'
 import {ContentSetsType, DialogIDType, DialogState, QuestState, SettingsType, UserState, UserFeedbackState} from '../../reducers/StateTypes'
 import {QuestDetails} from '../../reducers/QuestTypes'
 import {openWindow} from '../../Globals'
@@ -35,22 +35,22 @@ export class ExitQuestDialog extends React.Component<ExitQuestDialogProps, {}> {
   }
 }
 
-interface ExitRemotePlayDialogProps extends React.Props<any> {
+interface ExitMultiplayerDialogProps extends React.Props<any> {
   open: boolean;
-  onExitRemotePlay: () => void;
+  onExitMultiplayer: () => void;
   onRequestClose: () => void;
 }
 
-export class ExitRemotePlayDialog extends React.Component<ExitRemotePlayDialogProps, {}> {
+export class ExitMultiplayerDialog extends React.Component<ExitMultiplayerDialogProps, {}> {
   render(): JSX.Element {
     return (
       <Dialog
-        title="Exit Remote Play?"
+        title="Exit Multiplayer?"
         modal={true}
         contentClassName="dialog"
         open={Boolean(this.props.open)}
         actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()}>Cancel</FlatButton>,
-          <FlatButton className="primary" onTouchTap={() => this.props.onExitRemotePlay()}>Exit</FlatButton>
+          <FlatButton className="primary" onTouchTap={() => this.props.onExitMultiplayer()}>Exit</FlatButton>
         ]}
       >
         <p>Tapping exit will disconnect you from your peers and return you to the home screen.</p>
@@ -59,16 +59,16 @@ export class ExitRemotePlayDialog extends React.Component<ExitRemotePlayDialogPr
   }
 }
 
-interface RemotePlayStatusDialogProps extends React.Props<any> {
+interface MultiplayerStatusDialogProps extends React.Props<any> {
   open: boolean;
-  stats: RemotePlayCounters;
+  stats: MultiplayerCounters;
   user: UserState;
   questDetails: QuestDetails;
-  onSendReport: (user: UserState, quest: QuestDetails, stats: RemotePlayCounters) => void;
+  onSendReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => void;
   onRequestClose: () => void;
 }
 
-export class RemotePlayStatusDialog extends React.Component<RemotePlayStatusDialogProps, {}> {
+export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDialogProps, {}> {
   render(): JSX.Element {
 
     const stats = <ul>{
@@ -79,7 +79,7 @@ export class RemotePlayStatusDialog extends React.Component<RemotePlayStatusDial
 
     return (
       <Dialog
-        title="Remote Play Stats"
+        title="Multiplayer Stats"
         modal={true}
         contentClassName="dialog"
         open={Boolean(this.props.open)}
@@ -88,10 +88,10 @@ export class RemotePlayStatusDialog extends React.Component<RemotePlayStatusDial
           <FlatButton className="primary" onTouchTap={() => this.props.onSendReport(this.props.user, this.props.questDetails, this.props.stats)}>Send Report</FlatButton>
         ]}
       >
-        <p>Here's some remote play debugging information:</p>
+        <p>Here's some multiplayer debugging information:</p>
         {stats}
         <p>
-          If you're experiencing problems with remote play, please
+          If you're experiencing problems with multiplayer, please
           tap "Send Report" below to send a log to the Expedition team. Thanks!
         </p>
       </Dialog>
@@ -303,12 +303,12 @@ export interface DialogsStateProps {
   settings: SettingsType;
   user: UserState;
   userFeedback: UserFeedbackState;
-  remotePlayStats: RemotePlayCounters;
+  remotePlayStats: MultiplayerCounters;
 };
 
 export interface DialogsDispatchProps {
   onExitQuest: () => void;
-  onExitRemotePlay: () => void;
+  onExitMultiplayer: () => void;
   onExpansionSelect: (contentSets: ContentSetsType) => void;
   onFeedbackChange: (text: string) => void;
   onFeedbackSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
@@ -316,7 +316,7 @@ export interface DialogsDispatchProps {
   onPlayerDelta: (numPlayers: number, delta: number) => void;
   onReportErrorSubmit: (error: string, quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
   onReportQuestSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
-  onSendRemotePlayReport: (user: UserState, quest: QuestDetails, stats: RemotePlayCounters) => void;
+  onSendMultiplayerReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => void;
   onRequestClose: () => void;
   playQuest: (quest: QuestDetails) => void;
 }
@@ -335,17 +335,17 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         open={props.dialog && props.dialog.open === 'EXPANSION_SELECT'}
         onExpansionSelect={(contentSets: ContentSetsType) => props.onExpansionSelect(contentSets)}
       />
-      <ExitRemotePlayDialog
+      <ExitMultiplayerDialog
         open={props.dialog && props.dialog.open === 'EXIT_REMOTE_PLAY'}
-        onExitRemotePlay={props.onExitRemotePlay}
+        onExitMultiplayer={props.onExitMultiplayer}
         onRequestClose={props.onRequestClose}
       />
-      <RemotePlayStatusDialog
-        open={props.dialog && props.dialog.open === 'REMOTE_PLAY_STATUS'}
+      <MultiplayerStatusDialog
+        open={props.dialog && props.dialog.open === 'MULTIPLAYER_STATUS'}
         stats={props.remotePlayStats}
         user={props.user}
         questDetails={props.quest.details}
-        onSendReport={props.onSendRemotePlayReport}
+        onSendReport={props.onSendMultiplayerReport}
         onRequestClose={props.onRequestClose}
       />
       <FeedbackDialog

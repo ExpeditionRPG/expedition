@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {createStore, applyMiddleware} from 'redux'
 import expeditionApp from './reducers/CombinedReducers'
 import {AppStateWithHistory} from './reducers/StateTypes'
-import {getRemotePlayClient} from './RemotePlay'
+import {getMultiplayerClient} from './Multiplayer'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
 // For dev tools extension
@@ -19,10 +19,10 @@ export function installStore(createdStore: Redux.Store<AppStateWithHistory>) {
 function createAppStore() {
 
   const devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
-  const middleware = [getRemotePlayClient().createActionMiddleware()];
+  const middleware = [getMultiplayerClient().createActionMiddleware()];
 
   const composeEnhancers = composeWithDevTools({
-    actionsBlacklist: ['REMOTE_PLAY_CLIENT_STATUS', 'CARD_TRANSITIONING'],
+    actionsBlacklist: ['MULTIPLAYER_CLIENT_STATUS', 'CARD_TRANSITIONING'],
   });
   installStore(createStore(expeditionApp,  composeEnhancers(applyMiddleware(...middleware))));
 

@@ -14,7 +14,7 @@ export interface ToolsDispatchProps {
   onCustomCombatSelect: (settings: SettingsType) => void;
   onQuestCreatorSelect: () => void;
   onPrivateQuestsSelect: (settings: SettingsType, user: UserState) => void;
-  onRemotePlaySelect: (user: UserState) => void;
+  onMultiplayerSelect: (user: UserState) => void;
   testMusic: () => void;
   testMusicRandom: () => void;
   testMusicStop: () => void;
@@ -41,9 +41,9 @@ const Tools = (props: ToolsProps): JSX.Element => {
         </div>
       </Button>
       {props.settings.experimental && !props.settings.simulator &&
-        <Button remoteID="3" onTouchTap={() => props.onRemotePlaySelect(props.user)}>
+        <Button remoteID="3" onTouchTap={() => props.onMultiplayerSelect(props.user)}>
           <div className="questButtonWithIcon">
-            <div className="title">Remote Play - Beta</div>
+            <div className="title">Online Multiplayer - Beta</div>
             <div className="summary">
               {(!props.user || !props.user.loggedIn) ? 'Login and sync' : 'Sync'} your app with friends on another device.
             </div>

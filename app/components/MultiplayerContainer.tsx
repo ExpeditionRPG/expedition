@@ -3,11 +3,11 @@ import {connect} from 'react-redux'
 import {toCard} from '../actions/Card'
 import {AppState, UserState} from '../reducers/StateTypes'
 import {openSnackbar} from '../actions/Snackbar'
-import {remotePlayConnect, remotePlayNewSession} from '../actions/RemotePlay'
-import RemotePlay, {RemotePlayStateProps, RemotePlayDispatchProps} from './RemotePlay'
-import {SessionID} from 'expedition-qdl/lib/remote/Session'
+import {remotePlayConnect, remotePlayNewSession} from '../actions/Multiplayer'
+import Multiplayer, {MultiplayerStateProps, MultiplayerDispatchProps} from './Multiplayer'
+import {SessionID} from 'expedition-qdl/lib/multiplayer/Session'
 
-const mapStateToProps = (state: AppState, ownProps: RemotePlayStateProps): RemotePlayStateProps => {
+const mapStateToProps = (state: AppState, ownProps: MultiplayerStateProps): MultiplayerStateProps => {
   return {
     phase: ownProps.phase,
     user: state.user,
@@ -15,7 +15,7 @@ const mapStateToProps = (state: AppState, ownProps: RemotePlayStateProps): Remot
   };
 }
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): RemotePlayDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MultiplayerDispatchProps => {
   return {
     onConnect: (user: UserState) => {
       const secret = window.prompt('Enter the session\'s 4 character code to join.');
@@ -36,9 +36,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Remot
   };
 }
 
-const RemotePlayContainer = connect(
+const MultiplayerContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(RemotePlay);
+)(Multiplayer);
 
-export default RemotePlayContainer
+export default MultiplayerContainer

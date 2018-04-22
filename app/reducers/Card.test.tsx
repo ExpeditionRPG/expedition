@@ -2,14 +2,14 @@ import {card} from './Card'
 import {toCard} from '../actions/Card'
 import {NAVIGATION_DEBOUNCE_MS}  from '../Constants'
 import configureStore  from 'redux-mock-store'
-import {RemotePlayClient} from '../RemotePlay'
+import {MultiplayerClient} from '../Multiplayer'
 import {Reducer} from '../Testing'
 
 describe('Card reducer', () => {
   let client: any;
   let dispatched: any;
   beforeEach(() => {
-    client = new RemotePlayClient();
+    client = new MultiplayerClient();
     const store = configureStore([client.createActionMiddleware()])({});
     dispatched = (a: any) => {
       store.dispatch(a);

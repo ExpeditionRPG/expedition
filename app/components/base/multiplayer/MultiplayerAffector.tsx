@@ -1,11 +1,11 @@
 import * as React from 'react'
-import {InteractionEvent, RemotePlayEvent} from 'expedition-qdl/lib/remote/Events'
-import {getRemotePlayClient} from '../../../RemotePlay'
+import {InteractionEvent, MultiplayerEvent} from 'expedition-qdl/lib/multiplayer/Events'
+import {getMultiplayerClient} from '../../../Multiplayer'
 
-// Listens to remote play client published events and forwards InteractionEvents
+// Listens to multiplayer client published events and forwards InteractionEvents
 // to the inheriting class.
 // Also listens for touch events on this component and transmits them.
-export interface RemoteAffectorProps {
+export interface MultiplayerAffectorProps {
   remoteID?: string; // TODO MAKE REQUIRED
   abortOnScroll?: boolean;
   includeLocalInteractions?: boolean;
@@ -14,15 +14,15 @@ export interface RemoteAffectorProps {
   id?: string;
   className?: string;
 }
-export default class RemoteAffector extends React.Component<RemoteAffectorProps,{}> {
+export default class MultiplayerAffector extends React.Component<MultiplayerAffectorProps,{}> {
   private listeners: {[k: string]: (e: any)=>any};
   private ignoreNextMouseDown: boolean;
-  private boundHandleRemotePlayEvent: (e: RemotePlayEvent) => void;
+  private boundHandleMultiplayerEvent: (e: MultiplayerEvent) => void;
   private mouseDown: boolean;
   private ref: HTMLElement;
 
 
-  constructor(props: RemoteAffectorProps) {
+  constructor(props: MultiplayerAffectorProps) {
     super(props);
 
     // Touch start produces a mouse down event for compat reasons. To avoid
@@ -31,8 +31,8 @@ export default class RemoteAffector extends React.Component<RemoteAffectorProps,
     // to avoid re-rendering when we change it.
     this.ignoreNextMouseDown = false;
     this.mouseDown = false;
-    this.boundHandleRemotePlayEvent = this.handleRemotePlayEvent.bind(this);
-    getRemotePlayClient().subscribe(this.boundHandleRemotePlayEvent);
+    this.boundHandleMultiplayerEvent = this.handleMultiplayerEvent.bind(this);
+    getMultiplayerClient().subscribe(this.boundHandleMultiplayerEvent);
     this.listeners = {
       'touchstart': this.touchEvent.bind(this),
       'touchmove': this.touchEvent.bind(this),
@@ -43,7 +43,7 @@ export default class RemoteAffector extends React.Component<RemoteAffectorProps,
     };
   }
 
-  private handleRemotePlayEvent(e: RemotePlayEvent) {
+  private handleMultiplayerEvent(e: MultiplayerEvent) {
     if (e.event.type !== 'INTERACTION' || e.event.id !== this.props.remoteID) {
       return;
     }
@@ -97,10 +97,10 @@ export default class RemoteAffector extends React.Component<RemoteAffectorProps,
     }
     const e: InteractionEvent = {type: 'INTERACTION', positions, id: this.props.remoteID || '', event: type};
 
-    // Don't send move events over remote play.
+    // Don't send move events over multiplayer.
     // Our implementation does not allow high-frequency value updates.
     if (type !== 'touchmove') {
-      getRemotePlayClient().sendEvent(e);
+      getMultiplayerClient().sendEvent(e);
     }
 
     if (this.props.includeLocalInteractions) {
@@ -122,7 +122,7 @@ export default class RemoteAffector extends React.Component<RemoteAffectorProps,
   }
 
   componentWillUnmount() {
-    getRemotePlayClient().unsubscribe(this.boundHandleRemotePlayEvent);
+    getMultiplayerClient().unsubscribe(this.boundHandleMultiplayerEvent);
 
     if (!this.ref) {
       return;

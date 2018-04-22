@@ -1,14 +1,14 @@
 import configureStore  from 'redux-mock-store'
 import {toCard, toPrevious} from './Card'
 import {setNavigator} from '../Globals'
-import {RemotePlayClient} from '../RemotePlay'
+import {MultiplayerClient} from '../Multiplayer'
 import {Action} from '../Testing'
 
 describe('Card action', () => {
-  let client: RemotePlayClient;
+  let client: MultiplayerClient;
   let mockStore: any;
   beforeEach(() => {
-    client = new RemotePlayClient();
+    client = new MultiplayerClient();
     mockStore = (initialState: any) => {return configureStore([client.createActionMiddleware()])(initialState)};
   });
 

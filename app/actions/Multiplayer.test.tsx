@@ -1,4 +1,4 @@
-describe('RemotePlay actions', () => {
+describe('Multiplayer actions', () => {
   describe('routeEvent', () => {
     it('does not dispatch INTERACTION events');
     it('resolves and dispatches ACTION events');
@@ -19,7 +19,7 @@ describe('RemotePlay actions', () => {
     it('catches and logs web errors');
   });
 
-  describe('loadRemotePlay', () => {
+  describe('loadMultiplayer', () => {
     it('fetches past sessions by user id');
     it('catches and logs web errors');
   });

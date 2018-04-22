@@ -1,4 +1,4 @@
-describe('RemoteFooter', () => {
+describe('MultiplayerFooter', () => {
   it('shows connected peers');
   it('shows connection state');
   it('indicates when waiting for peers');

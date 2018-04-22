@@ -11,7 +11,7 @@ import {login} from '../actions/User'
 import {URLS, MUSIC_INTENSITY_MAX} from '../Constants'
 import {openWindow} from '../Globals'
 import {getStore} from '../Store'
-import {loadRemotePlay} from '../actions/RemotePlay'
+import {loadMultiplayer} from '../actions/Multiplayer'
 
 
 const mapStateToProps = (state: AppState, ownProps: ToolsStateProps): ToolsStateProps => {
@@ -52,12 +52,12 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
         privateSearch(user);
       }
     },
-    onRemotePlaySelect(user: UserState): void {
+    onMultiplayerSelect(user: UserState): void {
       if (user && user.loggedIn) {
-        dispatch(loadRemotePlay(user));
+        dispatch(loadMultiplayer(user));
       } else {
         dispatch(login({callback: (user: UserState)=> {
-          dispatch(loadRemotePlay(user));
+          dispatch(loadMultiplayer(user));
         }}));
       }
     },

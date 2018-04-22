@@ -1,10 +1,10 @@
 import {generateCombatTemplate, initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta, handleResolvePhase, midCombatChoice} from './Actions'
-import {DifficultyType, FontSizeType, RemotePlayState} from '../../reducers/StateTypes'
+import {DifficultyType, FontSizeType, MultiplayerState} from '../../reducers/StateTypes'
 import {defaultContext, renderCardTemplate} from '../Template'
 import {ParserNode} from '../TemplateTypes'
 import {newMockStore, Action} from '../../Testing'
-import {RemotePlayClient} from '../../RemotePlay'
-import {initialRemotePlay} from '../../reducers/RemotePlay'
+import {MultiplayerClient} from '../../Multiplayer'
+import {initialMultiplayer} from '../../reducers/Multiplayer'
 
 const cheerio: any = require('cheerio');
 
@@ -26,7 +26,7 @@ const TEST_SETTINGS = {
 };
 
 const TEST_RP = {
-  ...initialRemotePlay,
+  ...initialMultiplayer,
   clientStatus: {
     1: {
       type: 'STATUS',
@@ -39,7 +39,7 @@ const TEST_RP = {
       numPlayers: 2,
     },
   },
-} as RemotePlayState;
+} as MultiplayerState;
 
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
@@ -211,7 +211,7 @@ describe('Combat actions', () => {
       }));
     });
 
-    it('does not level up if remote play count exceeds tier sum', () => {
+    it('does not level up if multiplayer count exceeds tier sum', () => {
       const store = newMockStore({settings: TEST_SETTINGS});
       store.dispatch(handleCombatEnd({
         node: newCombatNode(),

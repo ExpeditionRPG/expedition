@@ -34,18 +34,18 @@ describe('Test Environment', () => {
       })).execute({b: 5});
       expect(result).toEqual([{type: 'ACTION1'}, {type: 'ACTION2'}]);
     });
-    it('supports expect.toSendRemote', () => {
+    it('supports expect.toSendMultiplayer', () => {
       const action = remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => {
         dispatch({type: 'ACTION1'});
         dispatch({type: 'ACTION2'});
         return {b: 1};
       });
-      Action(action).expect({b: 5}).toSendRemote();
-      Action(action).expect({b: 5}).toSendRemote({b: 1});
+      Action(action).expect({b: 5}).toSendMultiplayer();
+      Action(action).expect({b: 5}).toSendMultiplayer({b: 1});
     });
-    it('supports expect.toNotSendRemote', () => {
-      Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => {return null;})).expect({b: 5}).toNotSendRemote();
-      Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => {return {b: 5};})).expect({b: 5}).toNotSendRemote({b: 1});
+    it('supports expect.toNotSendMultiplayer', () => {
+      Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => {return null;})).expect({b: 5}).toNotSendMultiplayer();
+      Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => {return {b: 5};})).expect({b: 5}).toNotSendMultiplayer({b: 1});
     });
     it('supports expect.toDispatch', () => {
       const result = Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => {

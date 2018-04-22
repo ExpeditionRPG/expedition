@@ -15,9 +15,9 @@ import SettingsContainer from '../SettingsContainer'
 import SplashScreenContainer from '../SplashScreenContainer'
 import QuestSetupContainer from '../QuestSetupContainer'
 import QuestEndContainer from '../QuestEndContainer'
-import RemotePlayContainer from '../RemotePlayContainer'
-import RemoteFooterContainer from './remote/RemoteFooterContainer'
-import RemoteSyncContainer from './remote/RemoteSyncContainer'
+import MultiplayerContainer from '../MultiplayerContainer'
+import MultiplayerFooterContainer from './multiplayer/MultiplayerFooterContainer'
+import MultiplayerSyncContainer from './multiplayer/MultiplayerSyncContainer'
 
 import {CARD_TRANSITION_ANIMATION_MS} from '../../Constants'
 import {getCardTemplateTheme, renderCardTemplate} from '../../cardtemplates/Template'
@@ -25,10 +25,10 @@ import {initialSettings} from '../../reducers/Settings'
 import {cardTransitioning} from '../../actions/Card'
 import {closeSnackbar} from '../../actions/Snackbar'
 import {initialSnackbar} from '../../reducers/Snackbar'
-import {initialRemotePlay} from '../../reducers/RemotePlay'
-import {AppStateWithHistory, CardThemeType, TransitionType, SearchPhase, RemotePlayPhase, SavedQuestsPhase, SettingsType, SnackbarState, RemotePlayState} from '../../reducers/StateTypes'
+import {initialMultiplayer} from '../../reducers/Multiplayer'
+import {AppStateWithHistory, CardThemeType, TransitionType, SearchPhase, MultiplayerPhase, SavedQuestsPhase, SettingsType, SnackbarState, MultiplayerState} from '../../reducers/StateTypes'
 import {getStore} from '../../Store'
-import {getRemotePlayClient} from '../../RemotePlay'
+import {getMultiplayerClient} from '../../Multiplayer'
 
 const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
 
@@ -42,7 +42,7 @@ interface MainState {
   transition: TransitionType;
   settings: SettingsType;
   snackbar: SnackbarState;
-  remotePlay: RemotePlayState;
+  remotePlay: MultiplayerState;
 }
 
 export default class Main extends React.Component<MainProps, {}> {
@@ -74,7 +74,7 @@ export default class Main extends React.Component<MainProps, {}> {
         transition: 'INSTANT' as TransitionType,
         settings: initialSettings,
         snackbar: initialSnackbar,
-        remotePlay: initialRemotePlay,
+        remotePlay: initialMultiplayer,
       };
     }
 
@@ -138,7 +138,7 @@ export default class Main extends React.Component<MainProps, {}> {
         card = <SettingsContainer />;
         break;
       case 'REMOTE_PLAY':
-        card = <RemotePlayContainer phase={state.card.phase as RemotePlayPhase} />;
+        card = <MultiplayerContainer phase={state.card.phase as MultiplayerPhase} />;
         break;
       default:
         throw new Error('Unknown card ' + state.card.name);
@@ -196,9 +196,9 @@ export default class Main extends React.Component<MainProps, {}> {
                   {this.state.card}
               </div>
             </ReactCSSTransitionGroup>
-            {this.state.remotePlay && this.state.remotePlay.session && <RemoteFooterContainer theme={this.state.theme}/>}
+            {this.state.remotePlay && this.state.remotePlay.session && <MultiplayerFooterContainer theme={this.state.theme}/>}
             <DialogsContainer />
-            <RemoteSyncContainer />
+            <MultiplayerSyncContainer />
             <Snackbar
               className="snackbar"
               open={this.state.snackbar.open}

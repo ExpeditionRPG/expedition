@@ -9,7 +9,7 @@ import theme from '../../Theme'
 import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 import REGEX from 'expedition-qdl/lib/Regex'
 import {isSurgeNextRound} from './Actions'
-import {SettingsType, CardState, CardName, RemotePlayState} from '../../reducers/StateTypes'
+import {SettingsType, CardState, CardName, MultiplayerState} from '../../reducers/StateTypes'
 import {ParserNode} from '../TemplateTypes'
 import {EventParameters, Enemy, Loot} from '../../reducers/QuestTypes'
 import {CombatPhase, CombatState} from './Types'
@@ -23,7 +23,7 @@ export interface CombatStateProps {
   node: ParserNode;
   seed: string;
   victoryParameters?: EventParameters;
-  remotePlayState?: RemotePlayState;
+  remotePlayState?: MultiplayerState;
   tier: number;
   numAliveAdventurers: number;
   mostRecentRolls?: number[];
