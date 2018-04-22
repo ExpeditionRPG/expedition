@@ -6,7 +6,10 @@ import 'reflect-metadata'
 // TODO(scott): Figure out a way to type this
 const Joi: any = require('joi-browser');
 
-interface SchemaOptions {
+export const NOW = '_now';
+export type ExtraTypeQualifier = 'DECIMAL_4_2';
+
+export interface SchemaOptions {
   type: string;
   primaryKey: boolean;
   allowNull: boolean;
@@ -14,13 +17,8 @@ interface SchemaOptions {
   default: any;
   valid: any[];
   maxLength: number;
+  extra: ExtraTypeQualifier;
 }
-
-// Create custom types here to annotate abnormal data formats (e.g. sql DECIMAL(4,2))
-export type Decimal4_2 = number;
-export type Email = string;
-
-export const NOW = '_now';
 
 // Use @field to annotate parameters in a class that extends SchemaBase.
 export function field(options: Partial<SchemaOptions>) {
@@ -61,17 +59,31 @@ export class SchemaBase {
       }
       parsedFields[k] = fields[k]
     }
+
+    const missingFields: string[] = [];
     for (const k of validKeys) {
       const defaultValue = this.optionsMap[k].default;
-      if (keys.indexOf(k) === -1 && defaultValue !== undefined) {
+      const needsDefault = (keys.indexOf(k) === -1 || parsedFields[k] === null || parsedFields[k] === undefined);
+      if (needsDefault && defaultValue !== undefined) {
         if (defaultValue === NOW) {
           parsedFields[k] = new Date();
         } else {
-          parsedFields[k] = this.optionsMap[k].default;
+          parsedFields[k] = defaultValue;
         }
         this.setDefaults.push(k);
+      } else if (needsDefault && this.optionsMap[k].allowNull) {
+        parsedFields[k] = null;
+      }
+
+      if (parsedFields[k] === undefined) {
+        missingFields.push(k);
       }
     }
+
+    if (missingFields.length > 0) {
+      throw new Error('Missing fields: ' + JSON.stringify(missingFields));
+    }
+
     this.getJoiValidationParams();
     const result = Joi.validate(parsedFields, this.getJoiValidationParams());
     if (result.error !== null) {
@@ -88,38 +100,35 @@ export class SchemaBase {
       case 'Boolean':
         return Joi.boolean();
       case 'String':
-        return Joi.string();
-      case 'Number': 
+        return Joi.string().allow('');
+      case 'Number':
         return Joi.number();
-      case 'Array': 
+      case 'Array':
         return Joi.array();
-      case 'Email':
-        return Joi.string().email();
       case 'Date':
         return Joi.date();
       default:
         return Joi.any();
     }
   }
-  
+
   private getJoiValidationParams() {
     const keys: {[property:string]: any} = {};
-    
+
     for (const k of Object.keys(this.optionsMap)) {
       const m = this.optionsMap[k];
       let j = this.joiType(m);
+      if (m.allowNull !== undefined && m.allowNull === true) {
+        j = j.allow(null);
+      }
       if (m.valid !== undefined) {
         j = j.valid(m.valid);
       }
       if (m.maxLength !== undefined) {
         j = (j as any).max(m.maxLength);
       }
-      if (m.default !== undefined) {
-        j = j.default(m.default);
-      }
       keys[k] = j;
     }
-    
     return Joi.object().keys(keys);
   }
 

@@ -189,12 +189,12 @@ export class Node<C extends Context> {
     ctx.scope._ = undefined;
     ctx.seed = undefined;
 
-    const ctx_json = JSON.stringify(ctx, (key, val) => {
+    const ctxJSON = JSON.stringify(ctx, (key, val) => {
       return (typeof val === 'function') ? val.toString() : val;
     });
 
     return JSON.stringify({
-      ctx: ctx_json,
+      ctx: ctxJSON,
       line: parseInt(this.elem.attr('data-line'), 10),
     });
   }

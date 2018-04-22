@@ -86,14 +86,14 @@ export function sanitizeStyles(text: string): string {
 
   // Now extract [art] and :icons:
   // This uses the global tag to statefully search for values.
-  const art_or_icon = new RegExp(`(${REGEX.ART.source}|${REGEX.ICON.source})`, 'g');
+  const artOrIcon = new RegExp(`(${REGEX.ART.source}|${REGEX.ICON.source})`, 'g');
   const art: string[] = [];
-  let matches = art_or_icon.exec(text);
+  let matches = artOrIcon.exec(text);
   while (matches) {
     art.push(matches[1]);
-    matches = art_or_icon.exec(text);
+    matches = artOrIcon.exec(text);
   }
-  text = text.replace(art_or_icon, '[art]');
+  text = text.replace(artOrIcon, '[art]');
 
   // replace whitelist w/ markdown
   text = text.replace(/<strong>(.*?)<\/strong>/igm, '**$1**');
