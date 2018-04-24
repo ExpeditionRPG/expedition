@@ -30,6 +30,7 @@
     <preference name="deployment-target" value="10.0.0" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="webviewbounce" value="false" />
+    <preference name="loadUrlTimeoutValue" value="700000" />
     <platform name="android">
         <allow-intent href="market:*" />
         <icon height="36" src="www/images/icon/36x36.png" width="36" />
