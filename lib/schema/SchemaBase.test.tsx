@@ -72,4 +72,7 @@ describe('SchemaBase', () => {
     const t = new TestImpl({pkey: 13, rkey: ('13' as any)});
     expect(typeof(t.rkey)).toEqual('number');
   });
+  it('Is self-constructable', () => {
+    new TestImpl(new TestImpl({pkey: 13, rkey: 0}));
+  })
 });
