@@ -4,13 +4,21 @@ import {defaultContext} from '../cardtemplates/Template'
 
 const cheerio = require('cheerio') as CheerioAPI;
 
-describe('Quest action', () => {
+describe('Quest actions', () => {
   describe('initQuest', () => {
     it('successfully returns the parsed quest node', () => {
       const questNode = cheerio.load('<quest><roleplay><p>Hello</p></roleplay></quest>')('quest');
       const result = initQuest(initialState.details, questNode, defaultContext());
       expect(result.node.getRootElem().toString()).toEqual('<quest><roleplay><p>Hello</p></roleplay></quest>');
     });
+  });
+
+  describe('event', () => {
+    it('handles win event');
+
+    it('handles lose event');
+
+    it('gracefully failes on invalid event');
   });
 
   describe('loadNode', () => {

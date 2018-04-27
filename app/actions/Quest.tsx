@@ -52,8 +52,7 @@ export const event = remoteify(function event(a: EventArgs, dispatch: Redux.Disp
   return {evt: a.evt};
 });
 
-// used externally by the quest creator, but not by other external App code
-// TODO: In quest creator, be sure to set settings before loading node.
+// Used externally by the quest creator, but not by other external App code
 export function loadNode(node: ParserNode) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const tag = node.getTag();

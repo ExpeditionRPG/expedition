@@ -99,11 +99,11 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
               onChange={(event: any, value: string)=>this.onMenuSelect(value)}
             >
               <MenuItem value="HOME" primaryText="Home"/>
+              {this.props.inQuest && isExperimental && <MenuItem value="SAVE" primaryText="Save quest"/>}
               <MenuItem value="SETTINGS" primaryText="Settings"/>
               {getDevicePlatform() !== 'web' && <MenuItem value="RATE" primaryText="Rate the App"/>}
               <MenuItem value="FEEDBACK" primaryText="Send feedback"/>
               {this.props.inQuest && <MenuItem value="REPORT" primaryText="Report quest"/>}
-              {this.props.inQuest && isExperimental && <MenuItem value="SAVE" primaryText="Save Quest"/>}
             </IconMenu>
           </span>
           <div className="title">{this.props.title}</div>

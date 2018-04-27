@@ -72,6 +72,7 @@ export const searchAndPlay = remoteify(function searchAndPlay(id: string, dispat
   return params;
 });
 
+// TODO switch to fetch since this never loads local files
 function getSearchResults(params: SearchSettings, callback: (quests: QuestDetails[], response: any)=>void) {
   return (dispatch: Redux.Dispatch<any>) => {
     // Clear previous results
