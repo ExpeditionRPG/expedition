@@ -1,34 +1,5 @@
 import {SchemaBase, field, copyAndUnsetDefaults, NOW, PLACEHOLDER_DATE} from './SchemaBase'
-
-export const PRIVATE_PARTITION = 'expedition-private';
-export const PUBLIC_PARTITION = 'expedition-public';
-
-export type GenreType = 'Comedy' | 'Drama' | 'Horror' | 'Mystery' | 'Romance';
-export const GENRES: GenreType[] = [
-  'Comedy',
-  'Drama',
-  'Horror',
-  'Mystery',
-  'Romance'
-];
-
-export type LanguageType = 'English' | 'French' | 'German' | 'Italian' | 'Portuguese' | 'Spanish';
-export const LANGUAGES: LanguageType[] = [
-  'English',
-  'French',
-  'German',
-  'Italian',
-  'Portuguese',
-  'Spanish'
-];
-
-// Content rating options and their definitions, generally based on MPAA guidelines
-export type ContentRatingType = 'Everyone' | 'Teen' | 'Adult';
-export const CONTENT_RATINGS: ContentRatingType[] = [
-  'Everyone',
-  'Teen',
-  'Adult',
-]
+import {PARTITIONS, GENRES, LANGUAGES, CONTENT_RATINGS} from './Constants'
 
 export class Quest extends SchemaBase {
   static create(fields: Partial<Quest>) {
@@ -47,7 +18,7 @@ export class Quest extends SchemaBase {
     primaryKey: true,
     allowNull: false,
     maxLength: 32,
-    valid: [PRIVATE_PARTITION, PUBLIC_PARTITION],
+    valid: PARTITIONS,
   }) partition: string;
 
   @field({

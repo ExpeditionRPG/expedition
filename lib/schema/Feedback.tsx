@@ -1,8 +1,5 @@
 import {SchemaBase, field, copyAndUnsetDefaults, NOW, PLACEHOLDER_DATE} from './SchemaBase'
-import {PRIVATE_PARTITION, PUBLIC_PARTITION} from './Quests'
-
-export type DifficultyType = 'EASY'|'NORMAL'|'HARD'|'IMPOSSIBLE';
-export const DIFFICULTIES: DifficultyType[] = ['EASY','NORMAL','HARD', 'IMPOSSIBLE'];
+import {PARTITIONS, DIFFICULTIES} from './Constants'
 
 export class Feedback extends SchemaBase {
   static create(fields: Partial<Feedback>) {
@@ -21,7 +18,7 @@ export class Feedback extends SchemaBase {
     primaryKey: true,
     allowNull: false,
     maxLength: 32,
-    valid: [PRIVATE_PARTITION, PUBLIC_PARTITION, ''],
+    valid: [...PARTITIONS, ''],
   }) partition: string;
 
   @field({

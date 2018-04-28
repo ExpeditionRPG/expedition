@@ -1,4 +1,5 @@
-import {Quest, PUBLIC_PARTITION, PRIVATE_PARTITION} from './Quests'
+import {Quest} from './Quests'
+import {PUBLIC_PARTITION, PRIVATE_PARTITION} from './Constants'
 
 describe('Quests Schema', () => {
   const base = {partition: PRIVATE_PARTITION, id: '12345'};

@@ -1,5 +1,5 @@
 import {RenderedQuest} from './RenderedQuests'
-import {PRIVATE_PARTITION} from './Quests'
+import {PRIVATE_PARTITION} from './Constants'
 
 describe('RenderedQuest Schema', () => {
   const base = {id: '54321', partition:  PRIVATE_PARTITION};

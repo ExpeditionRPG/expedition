@@ -1,5 +1,5 @@
 import {SchemaBase, field, copyAndUnsetDefaults} from './SchemaBase'
-import {PRIVATE_PARTITION, PUBLIC_PARTITION} from './Quests'
+import {PARTITIONS} from './Constants'
 
 export class RenderedQuest extends SchemaBase {
   static create(fields: Partial<RenderedQuest>) {
@@ -18,7 +18,7 @@ export class RenderedQuest extends SchemaBase {
     primaryKey: true,
     allowNull: false,
     maxLength: 32,
-    valid: [PRIVATE_PARTITION, PUBLIC_PARTITION],
+    valid: [PARTITIONS],
   }) partition: string;
 
   @field({

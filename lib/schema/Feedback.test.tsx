@@ -1,5 +1,5 @@
 import {Feedback} from './Feedback'
-import {PRIVATE_PARTITION} from './Quests'
+import {PRIVATE_PARTITION} from './Constants'
 
 describe('Feedback Schema', () => {
   const base = {partition: PRIVATE_PARTITION, questid: '12345', userid: '54321'};
