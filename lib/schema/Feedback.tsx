@@ -83,4 +83,9 @@ export class Feedback extends SchemaBase {
   @field({
     default: 0,
   }) players: number;
+
+  @field({
+    default: '',
+    maxLength: 32,
+  }) version: string;
 }
