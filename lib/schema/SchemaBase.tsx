@@ -8,7 +8,7 @@ const Joi: any = require('joi-browser');
 
 export const NOW = '_now';
 export const PLACEHOLDER_DATE = new Date(0);
-export type ExtraTypeQualifier = 'DECIMAL_4_2';
+export type ExtraTypeQualifier = 'DECIMAL_4_2'|'BIGINT';
 
 export interface SchemaOptions {
   type: string;
