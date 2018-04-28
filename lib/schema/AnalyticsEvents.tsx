@@ -18,9 +18,8 @@ export class AnalyticsEvent extends SchemaBase {
     primaryKey: true,
     allowNull: false,
     maxLength: 255,
-  // TODO: Make this match the other tables (i.e. "userid")
-  // tslint:disable-next-line:variable-name
-  }) user_id: string;
+    column: 'user_id',
+  }) userID: string;
 
   @field({
     primaryKey: true,
@@ -42,13 +41,13 @@ export class AnalyticsEvent extends SchemaBase {
   @field({
     default: '',
     maxLength: 255,
-  // tslint:disable-next-line:variable-name
-  }) quest_id: string;
+    column: 'quest_id',
+  }) questID: string;
 
   @field({
     default: 1,
-  // tslint:disable-next-line:variable-name
-  }) quest_version: number;
+    column: 'quest_version',
+  }) questVersion: number;
 
   @field({
     maxLength: 32,

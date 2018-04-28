@@ -14,6 +14,7 @@ export interface SchemaOptions {
   type: string;
   primaryKey: boolean;
   allowNull: boolean;
+  column: string;
 
   default: any;
   valid: any[];
