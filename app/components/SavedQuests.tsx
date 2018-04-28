@@ -14,7 +14,7 @@ export interface SavedQuestsStateProps {
 export interface SavedQuestsDispatchProps {
   onSelect: (selected: SavedQuestMeta) => void;
   onPlay: (id: string, ts: number) => void;
-  onDelete: (id: string, ts: number) => void;
+  onDelete: (selected: SavedQuestMeta) => void;
   onReturn: () => any;
 }
 
@@ -36,7 +36,7 @@ function renderDetails(props: SavedQuestsProps): JSX.Element {
         <div className="summary">Saved {Moment(selected.ts).fromNow()}</div>
       </div>
       <Button className="bigbutton" onTouchTap={(e)=>props.onPlay(selected.details.id, selected.ts)} remoteID="play">Resume</Button>
-      <Button onTouchTap={(e)=>props.onDelete(selected.details.id, selected.ts)} remoteID="play">Delete save</Button>
+      <Button onTouchTap={(e)=>props.onDelete(selected)} remoteID="play">Delete save</Button>
       <Button onTouchTap={(e)=>props.onReturn()} remoteID="back">Back</Button>
       <div className="searchDetailsExtended">
         <h3>Details</h3>

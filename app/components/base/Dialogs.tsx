@@ -6,7 +6,7 @@ import TextField from 'material-ui/TextField'
 import Checkbox from './Checkbox'
 import Picker from './Picker'
 import {MultiplayerCounters} from '../../Multiplayer'
-import {ContentSetsType, DialogIDType, DialogState, QuestState, SettingsType, UserState, UserFeedbackState} from '../../reducers/StateTypes'
+import {ContentSetsType, DialogIDType, DialogState, QuestState, SavedQuestMeta, SettingsType, UserState, UserFeedbackState} from '../../reducers/StateTypes'
 import {QuestDetails} from '../../reducers/QuestTypes'
 import {openWindow} from '../../Globals'
 
@@ -297,9 +297,34 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
   }
 }
 
+interface DeleteSavedQuestDialogProps extends React.Props<any> {
+  savedQuest: SavedQuestMeta;
+  onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => void;
+  onRequestClose: () => void;
+  open: boolean;
+}
+
+export class DeleteSavedQuestDialog extends React.Component<DeleteSavedQuestDialogProps, {}> {
+  render(): JSX.Element {
+    return (
+      <Dialog
+        title="Delete saved quest?"
+        modal={true}
+        contentClassName="dialog"
+        open={Boolean(this.props.open)}
+        actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()}>Cancel</FlatButton>,
+          <FlatButton className="primary" onTouchTap={() => this.props.onDeleteSavedQuest(this.props.savedQuest)}>Delete</FlatButton>
+        ]}
+      >
+      </Dialog>
+    );
+  }
+}
+
 export interface DialogsStateProps {
   dialog: DialogState;
   quest: QuestState;
+  selectedSave: SavedQuestMeta;
   settings: SettingsType;
   user: UserState;
   userFeedback: UserFeedbackState;
@@ -307,6 +332,7 @@ export interface DialogsStateProps {
 };
 
 export interface DialogsDispatchProps {
+  onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => void;
   onExitQuest: () => void;
   onExitMultiplayer: () => void;
   onExpansionSelect: (contentSets: ContentSetsType) => void;
@@ -326,6 +352,12 @@ interface DialogsProps extends DialogsStateProps, DialogsDispatchProps {}
 const Dialogs = (props: DialogsProps): JSX.Element => {
   return (
     <span>
+      <DeleteSavedQuestDialog
+        savedQuest={props.selectedSave}
+        open={props.dialog && props.dialog.open === 'DELETE_SAVED_QUEST'}
+        onDeleteSavedQuest={props.onDeleteSavedQuest}
+        onRequestClose={props.onRequestClose}
+      />
       <ExitQuestDialog
         open={props.dialog && props.dialog.open === 'EXIT_QUEST'}
         onExitQuest={props.onExitQuest}

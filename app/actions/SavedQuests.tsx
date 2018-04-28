@@ -13,7 +13,7 @@ function getSavedQuestMeta(): SavedQuestMeta[] {
   return getStorageJson(SAVED_QUESTS_KEY, []) as any;
 }
 
-export function savedQuestKey(id: string, ts: number) { 
+export function savedQuestKey(id: string, ts: number) {
   return SAVED_QUESTS_KEY + '-' + id + '-' + ts.toString();
 }
 

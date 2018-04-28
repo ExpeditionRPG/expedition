@@ -2,7 +2,8 @@ import Redux from 'redux'
 import {connect} from 'react-redux'
 import SavedQuests, {SavedQuestsStateProps, SavedQuestsDispatchProps} from './SavedQuests'
 import {AppState, SavedQuestMeta} from '../reducers/StateTypes'
-import {loadSavedQuest, deleteSavedQuest, selectSavedQuest} from '../actions/SavedQuests'
+import {setDialog} from '../actions/Dialog'
+import {loadSavedQuest, selectSavedQuest} from '../actions/SavedQuests'
 import {toCard, toPrevious} from '../actions/Card'
 import {openSnackbar} from '../actions/Snackbar'
 
@@ -20,10 +21,8 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
       dispatch(loadSavedQuest(id, ts));
       dispatch(toCard({name: 'QUEST_CARD'}));
     },
-    onDelete(id: string, ts: number): void {
-      dispatch(deleteSavedQuest(id, ts));
-      dispatch(toPrevious({name: 'SAVED_QUESTS', phase: 'LIST', before: false}));
-      dispatch(openSnackbar('Save deleted.'));
+    onDelete(selected: SavedQuestMeta): void {
+      dispatch(setDialog('DELETE_SAVED_QUEST'));
     },
     onSelect(selected: SavedQuestMeta): void {
       dispatch(selectSavedQuest(selected));

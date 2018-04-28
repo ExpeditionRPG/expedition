@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
 import {toPrevious} from '../../actions/Card'
 import {setDialog} from '../../actions/Dialog'
+import {deleteSavedQuest} from '../../actions/SavedQuests'
 import {openSnackbar} from '../../actions/Snackbar'
 import {changeSettings} from '../../actions/Settings'
 import {remotePlayDisconnect} from '../../actions/Multiplayer'
@@ -11,7 +12,7 @@ import {userFeedbackChange} from '../../actions/UserFeedback'
 import {submitUserFeedback, logMultiplayerStats, fetchQuestXML} from '../../actions/Web'
 import {MIN_FEEDBACK_LENGTH} from '../../Constants'
 import {getMultiplayerClient, MultiplayerCounters, initialMultiplayerCounters} from '../../Multiplayer'
-import {AppState, ContentSetsType, DialogIDType, DialogState, SettingsType, QuestState, UserState, UserFeedbackState} from '../../reducers/StateTypes'
+import {AppState, ContentSetsType, DialogIDType, DialogState, SavedQuestMeta, SettingsType, QuestState, UserState, UserFeedbackState} from '../../reducers/StateTypes'
 import {QuestDetails} from '../../reducers/QuestTypes'
 
 const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
@@ -25,6 +26,7 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
   return {
     dialog: state.dialog,
     quest: state.quest || {details: {}} as any,
+    selectedSave: state.saved.selected || {} as SavedQuestMeta,
     settings: state.settings,
     user: state.user,
     remotePlayStats,
@@ -34,6 +36,11 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DialogsDispatchProps => {
   return {
+    onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => {
+      dispatch(deleteSavedQuest(savedQuest.details.id, savedQuest.ts));
+      dispatch(toPrevious({name: 'SAVED_QUESTS', phase: 'LIST', before: false}));
+      dispatch(openSnackbar('Save deleted.'));
+    },
     onExitQuest: () => {
       dispatch(setDialog(null));
       dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
