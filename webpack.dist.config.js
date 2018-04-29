@@ -26,6 +26,7 @@ const options = {
     colors: true,
     reasons: true,
   },
+  target : 'node',
   node: {
     // Don't touch __dirname or __filename (so they work as normal when starting w/ nodejs)
     __dirname: false,
