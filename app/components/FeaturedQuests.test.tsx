@@ -1,3 +1,5 @@
 describe('FeaturedQuests', () => {
-  // Pretty basic - no need to test for now.
+  it('Does not show search in simulator');
+
+  it('Filters out Horror quests if Horror disabled');
 });

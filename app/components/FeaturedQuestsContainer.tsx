@@ -5,7 +5,7 @@ import {FEATURED_QUESTS} from '../Constants'
 import FeaturedQuests, {FeaturedQuestsStateProps, FeaturedQuestsDispatchProps} from './FeaturedQuests'
 import {toCard} from '../actions/Card'
 import {fetchQuestXML} from '../actions/Web'
-import {search} from '../actions/Search'
+import {search, viewQuest} from '../actions/Search'
 import {initialSearch} from '../reducers/Search'
 import {AppState, ExpansionsType, SettingsType, UserState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Featu
       }
     },
     onQuestSelect(quest: QuestDetails): void {
-      dispatch(fetchQuestXML(quest));
+      dispatch(viewQuest({quest}));
     },
   };
 }
