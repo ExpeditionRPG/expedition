@@ -1,5 +1,3 @@
-import * as expect from 'expect'
-
 describe('multiplayer handlers', () => {
   describe('websocketSession', () => {
     it('returns an error on unparseable websocket messages');

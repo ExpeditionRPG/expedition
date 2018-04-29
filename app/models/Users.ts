@@ -1,7 +1,7 @@
 import Config from '../config'
-import * as Sequelize from 'sequelize'
+import Sequelize from 'sequelize'
 import * as Bluebird from 'bluebird'
-import {AnalyticsEvent, AnalyticsEventAttributes, AnalyticsEventInstance} from './AnalyticsEvents'
+import {AnalyticsEvent} from './AnalyticsEvents'
 const Mailchimp = require('mailchimp-api-v3');
 const mailchimp = (Config.get('NODE_ENV') !== 'dev' && Config.get('MAILCHIMP_KEY')) ? new Mailchimp(Config.get('MAILCHIMP_KEY')) : null;
 
@@ -63,22 +63,22 @@ export class User {
     this.ae = models.AnalyticsEvent;
   }
 
-  public setLootPoints(id: string, loot_points: number) {
+  public setLootPoints(id: string, lootPoints: number) {
     return this.s.authenticate()
       .then(() => {return this.model.findOne({where: {id}})})
       .then((result: UserInstance) => {
-        return result.update({loot_points});
+        return result.update({loot_points: lootPoints});
       });
   }
 
   public upsert(user: UserAttributes): Bluebird<UserAttributes> {
-    // TODO: refactor this - upsert shouldn't be subscribing people to a mailing list, or 
+    // TODO: refactor this - upsert shouldn't be subscribing people to a mailing list, or
     // calculating derived values and returning them.
     // https://github.com/ExpeditionRPG/expedition-api/issues/70
     return this.s.authenticate()
-      .then(() => {return this.model.upsert(user)})
-      .then((created: Boolean) => {
-        if (created && this.mc) {
+      .then(() => {return this.model.findOne({where: {id: user.id}});})
+      .then((existing: UserInstance) => {
+        if (!existing && this.mc) {
           return this.mc.post('/lists/' + Config.get('MAILCHIMP_CREATORS_LIST_ID') + '/members/', {
             email_address: user.email,
             status: 'subscribed',
@@ -89,6 +89,7 @@ export class User {
         if (subscribed) {
           console.log(user.email + ' subscribed to creators list');
         }
+        return this.model.upsert(user);
       })
       .then(() => {return this.model.findOne({where: {id: user.id}})})
       .then((result: UserInstance) => {
@@ -104,8 +105,8 @@ export class User {
       })
       .then((results: any[]) => {
         user.quest_plays = {} as {[id: string]: Date};
-        (results || []).forEach((result: any) => { 
-          user.quest_plays[result.dataValues['quest_id']] = result.dataValues['last_played']; 
+        (results || []).forEach((result: any) => {
+          user.quest_plays[result.dataValues['quest_id']] = result.dataValues['last_played'];
         });
         return user;
       });

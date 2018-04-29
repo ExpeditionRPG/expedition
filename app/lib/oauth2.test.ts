@@ -1,3 +1,6 @@
 describe('oauth2', () => {
-  // TODO
+  describe('auth router', () => {
+    it('successfully autenticates');
+    it('does not set auth state on auth failure');
+  })
 });

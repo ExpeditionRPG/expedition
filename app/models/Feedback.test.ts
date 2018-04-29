@@ -1,29 +1,33 @@
 import {Feedback, FeedbackAttributes, FeedbackInstance} from './Feedback'
-import {Quest, QuestAttributes, QuestInstance} from './Quests'
+import {Quest, QuestInstance} from './Quests'
+import {PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Quests'
 import {User} from './Users'
-import * as Sequelize from 'sequelize'
-import * as expect from 'expect'
-import * as sinon from 'sinon'
+import {MailService} from '../Mail'
+
+const Sequelize = require('sequelize');
+const expect = require('expect');
+const sinon = require('sinon');
 
 describe('feedback', () => {
   let f: Feedback;
   let q: Quest;
   let u: User;
+  let ms: MailService;
 
   const testRatingData: FeedbackAttributes = {
     created: new Date(),
-    partition: "testpartition",
-    questid: "questid",
-    userid: "userid",
+    partition: PUBLIC_PARTITION,
+    questid: 'questid',
+    userid: 'userid',
     questversion: 1,
     rating: 4.0,
-    text: "This is a rating!",
-    email: "test@test.com",
-    name: "Test Testerson",
-    difficulty: "normal",
-    platform: "ios",
+    text: 'This is a rating!',
+    email: 'test@test.com',
+    name: 'Test Testerson',
+    difficulty: 'normal',
+    platform: 'ios',
     players: 5,
-    version: "1.0.0",
+    version: '1.0.0',
     anonymous: false,
     tombstone: null,
   };
@@ -40,12 +44,18 @@ describe('feedback', () => {
   });
 
   describe('submitRating', () => {
-    beforeEach((done: () => any) => {
+    beforeEach((done: DoneFn) => {
       const s = new Sequelize({dialect: 'sqlite', storage: ':memory:'});
       q = new Quest(s);
       q.model.sync()
         .then(() => {
-          return q.model.create({partition: 'testpartition', id: 'questid', ratingavg: 0, ratingcount: 0, email: 'author@test.com'});
+          return q.model.create({
+            partition: PUBLIC_PARTITION,
+            id: 'questid',
+            ratingavg: 0,
+            ratingcount: 0,
+            email: 'author@test.com'
+          });
         })
         .then(() => {
           f = new Feedback(s);
@@ -58,61 +68,65 @@ describe('feedback', () => {
             .catch((e: Error) => {throw e;});
         })
         .catch((e: Error) => {throw e;});
+      ms = {send: sinon.spy()};
     });
 
-    it('fails to store feedback if no such quest exists', (done: ()=>any) => {
-      const rating = {...testRatingData, questid: "nonexistantquest"};
+    it('fails to store feedback if no such quest exists', (done: DoneFn) => {
+      const rating = {...testRatingData, questid: 'nonexistantquest'};
 
-      f.submitRating(rating)
+      f.submitRating(ms, rating)
         .catch((e: Error) => {
-          expect(e.message.toLowerCase()).toContain("no such quest");
+          expect(e.message.toLowerCase()).toContain('no such quest');
           done();
-        });
+        })
+        .catch(done.fail);
     });
 
-    it('succeeds if performed on an existing quest', (done: ()=>any) => {
-      f.submitRating(testRatingData)
+    it('succeeds if performed on an existing quest', (done: DoneFn) => {
+      f.submitRating(ms, testRatingData)
         .then(() => {
-          return f.get("testpartition", "questid", "userid");
+          return f.get(PUBLIC_PARTITION, 'questid', 'userid');
         })
         .then((result: FeedbackInstance) => {
           expect(result.dataValues as any).toEqual(testRatingData);
           done();
-        });
+        })
+        .catch(done.fail);
     });
 
-    it('succeeds if a rating was already given for the quest', (done: () => any) => {
+    it('succeeds if a rating was already given for the quest', (done: DoneFn) => {
       const rating2 = {...testRatingData, rating: 5.0};
 
-      f.submitRating(testRatingData)
+      f.submitRating(ms, testRatingData)
         .then(() => {
-          return f.submitRating(rating2);
+          return f.submitRating(ms, rating2);
         })
         .then(() => {
-          return f.get("testpartition", "questid", "userid");
+          return f.get(PUBLIC_PARTITION, 'questid', 'userid');
         })
         .then((result: FeedbackInstance) => {
           expect(result.dataValues).toEqual(rating2);
-          return q.get("testpartition", "questid");
+          return q.get(PUBLIC_PARTITION, 'questid');
         })
         .then((quest: QuestInstance) => {
           expect(quest.get('ratingcount')).toEqual(1);
           expect(quest.get('ratingavg')).toEqual(5);
           done();
-        });
+        })
+        .catch(done.fail);
     });
 
-    it('re-calculates quest rating avg and count on new feedback (only counting feedback with defined ratings)', (done: () => any) => {
-      const rating1 = {...testRatingData, rating: 3.0, userid: "1"};
-      const rating2 = {...testRatingData, rating: 4.0, userid: "2"};
-      const rating3 = {...testRatingData, rating: 1.0, userid: "3"};
-      const ratingNull = {...testRatingData, rating: null, userid: "4"};
-      f.submitRating(rating1)
-        .then(() => {return f.submitRating(rating2);})
-        .then(() => {return f.submitRating(rating3);})
-        .then(() => {return f.submitRating(ratingNull);})
+    it('re-calculates quest rating avg and count on new feedback (only counting feedback with defined ratings)', (done: DoneFn) => {
+      const rating1 = {...testRatingData, rating: 3.0, userid: '1'};
+      const rating2 = {...testRatingData, rating: 4.0, userid: '2'};
+      const rating3 = {...testRatingData, rating: 1.0, userid: '3'};
+      const ratingNull = {...testRatingData, rating: null, userid: '4'};
+      f.submitRating(ms, rating1)
+        .then(() => {return f.submitRating(ms, rating2);})
+        .then(() => {return f.submitRating(ms, rating3);})
+        .then(() => {return f.submitRating(ms, ratingNull);})
         .then(() => {
-          return q.get("testpartition", "questid");
+          return q.get(PUBLIC_PARTITION, 'questid');
         })
         .then((quest: QuestInstance) => {
           expect(quest.get('ratingcount')).toEqual(3); // Null is not counted
@@ -121,7 +135,8 @@ describe('feedback', () => {
           }
           expect(quest.get('ratingavg').toFixed(2)).toEqual(2.67);
           done();
-        });
+        })
+        .catch(done.fail);
     });
 
     it('excludes user email when anonymous');

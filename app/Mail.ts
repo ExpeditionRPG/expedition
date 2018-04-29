@@ -2,6 +2,10 @@ import Config from './config'
 const Nodemailer = require('nodemailer');
 import * as Bluebird from 'bluebird';
 
+export type MailService = {
+  send: (to: string[], subject: string, htmlMessage: string) => Bluebird<any>
+};
+
 const transporter = Nodemailer.createTransport('smtps://' + Config.get('MAIL_EMAIL') + ':' + Config.get('MAIL_PASSWORD') + '@smtp.gmail.com');
 const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
 

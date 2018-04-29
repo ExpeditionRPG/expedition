@@ -1,6 +1,6 @@
 import * as Sequelize from 'sequelize'
 import * as Bluebird from 'bluebird'
-import {Event, EventInstance} from './Events'
+import {Event} from './Events'
 
 export interface SessionClientAttributes {
   session: number;

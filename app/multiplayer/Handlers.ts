@@ -1,7 +1,6 @@
 import Config from '../config'
 import * as express from 'express'
-import * as Sequelize from 'sequelize'
-import {SessionID, toClientKey} from 'expedition-qdl/lib/multiplayer/Session'
+import {toClientKey} from 'expedition-qdl/lib/multiplayer/Session'
 import {Session as SessionModel, SessionInstance} from '../models/multiplayer/Sessions'
 import {Event as EventModel, EventInstance} from '../models/multiplayer/Events'
 import {SessionClient, SessionClientInstance} from '../models/multiplayer/SessionClients'

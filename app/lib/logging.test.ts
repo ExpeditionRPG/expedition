@@ -1,3 +1,3 @@
 describe('logging', () => {
-  // TODO
+  it('provides request and error logging');
 });

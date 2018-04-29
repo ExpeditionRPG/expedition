@@ -11,7 +11,6 @@ import * as http from 'http';
 import {installRoutes as installAdminRoutes} from './admin/Routes'
 import {limitCors} from './lib/cors'
 
-const querystring = require('querystring');
 const RateLimit = require('express-rate-limit');
 
 const Mailchimp = require('mailchimp-api-v3');
@@ -54,7 +53,7 @@ Router.post('/quests', limitCors, (req, res) => {Handlers.search(models.Quest, r
 Router.get('/raw/:partition/:quest/:version', limitCors, (req, res) => {Handlers.questXMLHandler(models.Quest, models.RenderedQuest, req, res);});
 Router.post('/publish/:id', publishLimiter, limitCors, requireAuth, (req, res) => {Handlers.publish(models.Quest, req, res);});
 Router.post('/unpublish/:quest', limitCors, requireAuth, (req, res) => {Handlers.unpublish(models.Quest, req, res);});
-Router.post('/quest/feedback/:type', limitCors, (req, res) => {Handlers.feedback(models.Feedback, req, res);});
+Router.post('/quest/feedback/:type', limitCors, (req, res) => {Handlers.feedback(Mail, models.Feedback, req, res);});
 Router.post('/user/subscribe', limitCors, (req, res) => {Handlers.subscribe(mailchimp, Config.get('MAILCHIMP_PLAYERS_LIST_ID'), req, res);});
 Router.get('/multiplayer/v1/user', limitCors, requireAuth, (req, res) => {MultiplayerHandlers.user(models.SessionClient, models.Event, req, res);});
 Router.post('/multiplayer/v1/new_session', sessionLimiter, limitCors, requireAuth, (req, res) => {MultiplayerHandlers.newSession(models.Session, req, res);});

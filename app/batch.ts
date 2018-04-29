@@ -1,4 +1,4 @@
-import {QuestInstance, QuestAttributes} from './models/Quests'
+import {QuestInstance} from './models/Quests'
 import {models} from './models/Database'
 
 const request = require('request');

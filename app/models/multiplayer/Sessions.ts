@@ -2,7 +2,6 @@ import * as Sequelize from 'sequelize'
 import * as Bluebird from 'bluebird'
 import {SessionClient} from './SessionClients'
 import {Event, EventInstance} from './Events'
-import {MultiplayerEvent} from 'expedition-qdl/lib/multiplayer/Events'
 import {makeSecret} from 'expedition-qdl/lib/multiplayer/Session'
 
 export interface SessionAttributes {
@@ -145,7 +144,7 @@ export class Session {
             id,
             type,
             json: JSON.stringify(struct),
-          }, {transaction: txn});
+          }, {transaction: txn, returning:false});
         });
     }).then((updated: boolean) => {
       return id;
@@ -194,7 +193,7 @@ export class Session {
             id: event,
             type,
             json,
-          }, {transaction: txn});
+          }, {transaction: txn, returning:false});
         });
     }).then((updated: boolean) => {
       return (updated) ? event : null;

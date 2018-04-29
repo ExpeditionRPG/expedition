@@ -1,0 +1,29 @@
+{
+  "transform": {
+    "^.+\\.tsx?$": "ts-jest"
+  },
+  "transformIgnorePatterns": [
+    "<rootDir>/node_modules/(?!expedition-qdl)"
+  ],
+  "testRegex": ".*\\.test\\.(jsx?|tsx?)$",
+  "testPathIgnorePatterns": [
+    "node_modules/"
+  ],
+  "moduleFileExtensions": [
+    "ts",
+    "tsx",
+    "js",
+    "jsx"
+  ],
+  "globals": {
+    "ts-jest": {
+      "enableTsDiagnostics": true,
+      "tsConfigFile": "tsconfig.json",
+      "babelConfig": {
+        "presets": [
+          "es2015"
+        ]
+      }
+    }
+  }
+}

@@ -5,13 +5,16 @@
     "noImplicitAny": true,
     "module": "commonjs",
     "target": "es6",
+    "jsx": "preserve",
     "allowSyntheticDefaultImports": true,
     "strictNullChecks": true,
-    "jsx": "preserve"
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "moduleResolution": "node",
   },
   "exclude": [
     "node_modules",
     "dist"
   ],
-  "files": []
+  "files": ["not-a-file-but-included-to-appease-jest"]
 }

@@ -1,10 +1,12 @@
-import * as expect from 'expect'
 import {feedback} from './Handlers'
-import * as sinon from 'sinon'
-import {PUBLIC_PARTITION} from './models/Quests'
+import {PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Quests'
 import {Feedback} from './models/Feedback'
-import * as Sequelize from 'sequelize'
+import {Quest} from './models/Quests'
 import { mockReq, mockRes } from 'sinon-express-mock'
+import {MailService} from './Mail'
+
+const Sequelize = require('sequelize');
+const sinon = require('sinon');
 
 describe('handlers', () => {
   describe('healthCheck', () => {
@@ -37,60 +39,84 @@ describe('handlers', () => {
 
   describe('feedback', () => {
     let f: Feedback;
+    let q: Quest;
+    let ms: MailService;
+
     beforeEach((done: () => any) => {
       const s = new Sequelize({dialect: 'sqlite', storage: ':memory:'})
       f = new Feedback(s);
+      q = new Quest(s);
+
       f.model.sync()
-        .then(() => {done();})
+        .then(() => {return q.model.sync()})
+        .then(() => {f.associate({Quest: q}); done();})
         .catch((e: Error) => {throw e;});
+
+      ms = {send: sinon.spy()};
     });
 
-    it('rejects non-parseable feedback', () => {
+    it('rejects non-parseable feedback', (done: DoneFn) => {
       const res = mockRes();
-      feedback(f, mockReq({body: '{', params: {type: 'feedback'}}), res);
-      expect(res.status.calledWith(400));
-      expect(res.end.calledWith('Error reading request.'));
+      feedback(ms, f, mockReq({body: '{', params: {type: 'feedback'}}), res)
+        .then(done.fail)
+        .catch(() => {
+          expect(res.status.calledWith(400)).toEqual(true);
+          expect(res.end.calledWith('Error reading request.')).toEqual(true);
+          done();
+        }).catch(done.fail);
     });
-    it('rejects invalid data', () => {
+
+    it('rejects invalid data', (done: DoneFn) => {
       const data = {
         partition: 'random-partition',
-        questid: "123",
-        userid: "456",
+        questid: '123',
+        userid: '456',
       }
       const res = mockRes();
-      feedback(f, mockReq({body: JSON.stringify(data), params: {type: 'feedback'}}), res);
-      expect(res.status.calledWith(400));
-      expect(res.end.calledWith('Invalid request.'));
+      feedback(ms, f, mockReq({body: JSON.stringify(data), params: {type: 'feedback'}}), res)
+        .then(done.fail)
+        .catch(() => {
+          expect(res.status.calledWith(400)).toEqual(true);
+          console.log(res.end.getCalls());
+          expect(res.end.calledWith('Invalid request.')).toEqual(true);
+          done();
+        }).catch(done.fail);
     });
-    it('publishes with minimal data', () => {
+    it('publishes with minimal data', (done: DoneFn) => {
       const data = {
         partition: PUBLIC_PARTITION,
-        questid: "123",
-        userid: "456",
+        questid: '123',
+        userid: '456',
       }
       const res = mockRes();
-      feedback(f, mockReq({body: JSON.stringify(data), params: {type: 'feedback'}}), res);
-      expect(res.end.calledWith('ok'));
+      feedback(ms, f, mockReq({body: JSON.stringify(data), params: {type: 'feedback'}}), res)
+        .then(() => {
+          expect(res.end.calledWith('ok')).toEqual(true);
+          done();
+        }).catch(done.fail);
     });
-    it('publishes feedback', () => {
+    it('publishes feedback', (done: DoneFn) => {
       const data = {
         partition: PUBLIC_PARTITION,
-        questid: "123",
-        userid: "456",
+        questid: '123',
+        userid: '456',
         questversion: 1,
         rating: 3,
-        text: "pretty good test quest",
-        email: "test@email.com",
-        name: "Test Testerson",
-        difficulty: "HARD",
-        platform: "web",
-        platformDump: "web USERAGENT TEST TEST",
+        text: 'pretty good test quest',
+        email: 'test@email.com',
+        name: 'Test Testerson',
+        difficulty: 'HARD',
+        platform: 'web',
+        platformDump: 'web USERAGENT TEST TEST',
         players: 4,
-        version: "1.6.0",
+        version: '1.6.0',
       }
       const res = mockRes();
-      feedback(f, mockReq({body: JSON.stringify(data), params: {type: 'feedback'}}), res);
-      expect(res.end.calledWith('ok'));
+      feedback(ms, f, mockReq({body: JSON.stringify(data), params: {type: 'feedback'}}), res)
+        .then(() => {
+          expect(res.end.calledWith('ok')).toEqual(true);
+          done();
+        }).catch(done.fail);
     });
   });
 

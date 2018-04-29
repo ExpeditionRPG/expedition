@@ -1,17 +1,18 @@
-import {Quest, QuestAttributes, QuestInstance} from './Quests'
-import * as Sequelize from 'sequelize'
-const expect = require('expect');
+import {Quest, QuestInstance} from './Quests'
+import {Quest as QuestAttributes, PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Quests'
+import {PLACEHOLDER_DATE} from 'expedition-qdl/lib/schema/SchemaBase'
+const Sequelize = require('sequelize');
 
 describe('quest', () => {
   let q: Quest;
 
-  const insertedQuest: QuestAttributes = {
-    partition: 'expedition-public',
+  const insertedQuest = new QuestAttributes({
+    partition: PUBLIC_PARTITION,
     author: 'testauthor',
-    contentrating: 'mature',
+    contentrating: 'Adult',
     engineversion: '1.0.0',
     familyfriendly: false,
-    genre: 'testgenre',
+    genre: 'Comedy',
     maxplayers: 6,
     maxtimeminutes: 60,
     minplayers: 1,
@@ -29,18 +30,18 @@ describe('quest', () => {
     publishedurl: 'http://testpublishedquesturl.com',
     questversion: 1,
     questversionlastmajor: 1,
-    tombstone: null,
+    tombstone: PLACEHOLDER_DATE,
     expansionhorror: false,
     language: 'English',
-  };
+  });
 
-  const expansionQuest: QuestAttributes = {
-    partition: 'expedition-public',
+  const expansionQuest = new QuestAttributes({
+    partition: PUBLIC_PARTITION,
     author: 'testauthor',
-    contentrating: 'mature',
+    contentrating: 'Adult',
     engineversion: '1.0.0',
     familyfriendly: false,
-    genre: 'testgenre',
+    genre: 'Comedy',
     maxplayers: 6,
     maxtimeminutes: 60,
     minplayers: 1,
@@ -58,20 +59,20 @@ describe('quest', () => {
     publishedurl: 'http://testpublishedquesturl.com',
     questversion: 1,
     questversionlastmajor: 1,
-    tombstone: null,
+    tombstone: PLACEHOLDER_DATE,
     expansionhorror: true,
     language: 'English',
-  }
+  });
 
   beforeEach((done: () => any) => {
     const s = new Sequelize({dialect: 'sqlite', storage: ':memory:'})
     q = new Quest(s);
     q.model.sync()
       .then(() => {
-        return q.model.create(insertedQuest);
+        return q.create(insertedQuest);
       })
       .then(() => {
-        return q.model.create(expansionQuest);
+        return q.create(expansionQuest);
       })
       .then(() => {done();})
       .catch((e: Error) => {throw e;});
@@ -87,27 +88,30 @@ describe('quest', () => {
     });
 
     it('returns full quest data', () => {
-      return q.search('', {partition: 'expedition-public'})
+      return q.search('', {partition: PUBLIC_PARTITION})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(1);
-          expect((results[0] as any).dataValues).toEqual(insertedQuest);
-        })
+          const resolved = q.resolveInstance(results[0])
+          for (const k of Object.keys(insertedQuest.optionsMap)) {
+            expect((resolved as any)[k]).toEqual((insertedQuest as any)[k]);
+          }
+        });
     });
 
     it('does not return expansions if unspecified', () => {
-      return q.search('', {partition: 'expedition-public'})
+      return q.search('', {partition: PUBLIC_PARTITION})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(1);
-          expect((results[0] as any).dataValues).toEqual(insertedQuest);
-        })
+          expect((results[0] as any).dataValues).toEqual(jasmine.objectContaining({id: 'questid'}));
+        });
     });
 
     it('returns expansion quests first if specified', () => {
-      return q.search('', {partition: 'expedition-public', expansions: ['horror']})
+      return q.search('', {partition: PUBLIC_PARTITION, expansions: ['horror']})
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(2);
-          expect((results[0] as any).dataValues).toEqual(expansionQuest);
-        })
+          expect((results[0] as any).dataValues).toEqual(jasmine.objectContaining({id: 'questidhorror'}));
+        });
     });
 
     it('also displays draft quests when user provided');
@@ -123,16 +127,18 @@ describe('quest', () => {
 
   describe('resolveInstance', () => {
     it('resolves all attributes with defaults', () => {
-      const resolved = q.resolveInstance({get: () => {return undefined;}} as any);
+      const resolved = q.resolveInstance({dataValues: {partition: PUBLIC_PARTITION, id: 'test'}} as any);
       // To prevent flakiness, just check a couple values are defined.
       // Coverage should be guaranteed by compile-time type checking.
-      expect(resolved.partition).toEqual('');
-      expect(resolved.id).toEqual('');
+      expect(resolved.partition).toEqual(PUBLIC_PARTITION);
+      expect(resolved.id).toEqual('test');
       expect(resolved.userid).toEqual('');
 
-      // Dated events should explicitly be null when not defined
-      expect(resolved.tombstone).toEqual(null);
-      expect(resolved.published).toEqual(null);
+      // Tombstone should be empty when not defined
+      expect(resolved.tombstone).toEqual(PLACEHOLDER_DATE);
+
+      // Publish date should default to now-ish
+      expect(Date.now() - resolved.published.getTime()).toBeLessThan(10*1000);
     });
   })
 

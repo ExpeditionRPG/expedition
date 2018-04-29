@@ -1,3 +1,5 @@
 describe('cors', () => {
-  // TODO
+  describe('limitCors', () => {
+    it('limits cors requests');
+  })
 });

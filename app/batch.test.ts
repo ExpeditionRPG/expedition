@@ -1,3 +1,3 @@
 describe('batch runner', () => {
-  // TODO
+  it('runs a batch');
 });

@@ -1,3 +1,3 @@
 describe('QueryTypes', () => {
-  // TODO
+  it('exists', ()=>{});
 });

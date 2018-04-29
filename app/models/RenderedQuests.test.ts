@@ -1,3 +1,5 @@
 describe('RenderedQuest', () => {
-  // TODO
+  describe('get', () => {
+    it('gets the rendered quest');
+  });
 });

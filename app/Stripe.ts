@@ -28,7 +28,7 @@ export function checkout(req: Express.Request, res: Express.Response) {
     if (!validBody) {
       return res.status(400).send('No valid checkout data received');
     }
-    
+
     if (stripe === null) {
       return res.status(500).send();
     }

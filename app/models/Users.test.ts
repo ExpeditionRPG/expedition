@@ -1,9 +1,8 @@
 import {AnalyticsEvent} from './AnalyticsEvents'
 import {User, UserAttributes} from './Users'
-import * as Sequelize from 'sequelize'
 
-import * as expect from 'expect'
-import * as sinon from 'sinon'
+const Sequelize = require('sequelize');
+const sinon = require('sinon');
 
 describe('users', () => {
   let ae: AnalyticsEvent;
@@ -26,9 +25,9 @@ describe('users', () => {
   });
 
   const testUserData: UserAttributes = {
-    id: "test",
-    email: "test@test.com",
-    name: "Test Testerson",
+    id: 'test',
+    email: 'test@test.com',
+    name: 'Test Testerson',
     created: new Date(Date.now()),
     last_login: new Date(Date.now()),
     loot_points: 0,
@@ -37,21 +36,21 @@ describe('users', () => {
   describe('upsert', () => {
     it('inserts user when none exists', (done: DoneFn) => {
       u.upsert(testUserData).then(() => {
-        return u.get("test");
+        return u.get('test');
       }).then((user: any) => {
-        expect(user).toContain(testUserData);
+        expect(user).toEqual(jasmine.objectContaining(testUserData));
         done();
-      }).catch((err: Error) => {
-        throw err;
-      });
+      }).catch(done.fail);
     });
 
-    it('subscribes to creators list if mailchimp configured', () => {
-      u.upsert(testUserData);
-      expect(mc.post.calledWith(sinon.match.any, {
-        email_address: "test@test.com",
-        status: 'subscribed',
-      }));
+    it('subscribes to creators list if mailchimp configured', (done: DoneFn) => {
+      u.upsert(testUserData).then(() => {
+        expect(mc.post.calledWith(sinon.match.any, {
+          email_address: 'test@test.com',
+          status: 'subscribed',
+        })).toEqual(true);
+        done();
+      }).catch(done.fail);
     });
   });
 });

@@ -1,5 +1,3 @@
-import * as expect from 'expect'
-
 describe('database', () => {
   it('can get models');
 

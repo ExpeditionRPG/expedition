@@ -2,46 +2,15 @@ import * as Sequelize from 'sequelize'
 import {Feedback, FeedbackInstance} from './Feedback'
 import {RenderedQuest} from './RenderedQuests'
 import {User, UserAttributes} from './Users'
+import {toSequelize, prepare} from './Schema'
+import {Quest as QuestAttributes, PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Quests'
 
 import * as Mail from '../Mail'
 import * as Bluebird from 'bluebird'
 
 export const MAX_SEARCH_LIMIT = 100;
 
-// Use this partition for any operations on public-facing quests.
-export const PUBLIC_PARTITION = 'expedition-public';
-
-// Use this partition for any operations on private (creator-visible-only) quests.
-export const PRIVATE_PARTITION = 'expedition-private';
-
-export interface QuestAttributes {
-  partition: string;
-  id: string;
-  questversion: number;
-  questversionlastmajor: number;
-  engineversion: string;
-  publishedurl: string;
-  userid: string;
-  author: string;
-  email: string;
-  maxplayers: number;
-  maxtimeminutes: number;
-  minplayers: number;
-  mintimeminutes: number;
-  summary: string;
-  title: string;
-  url: string;
-  familyfriendly: boolean;
-  ratingavg: number;
-  ratingcount: number;
-  genre: string;
-  contentrating: string;
-  created: Date;
-  published: Date|null;
-  tombstone: Date|null;
-  expansionhorror: boolean;
-  language: string;
-}
+const SequelizeQuest = toSequelize(new QuestAttributes({id: '', partition: PUBLIC_PARTITION}));
 
 export interface QuestSearchParams {
   id?: string|null;
@@ -74,64 +43,15 @@ export class Quest {
 
   constructor(s: Sequelize.Sequelize) {
     this.s = s;
-    this.model = this.s.define<QuestInstance, Partial<QuestAttributes>>('quests', {
-      partition: {
-        type: Sequelize.STRING(32),
-        allowNull: false,
-        primaryKey: true,
-      },
-      id: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-        primaryKey: true,
-      },
-      questversion: {
-        type: Sequelize.INTEGER,
-        defaultValue: 1,
-      },
-      questversionlastmajor: {
-        type: Sequelize.INTEGER,
-        defaultValue: 1,
-      },
-      engineversion: Sequelize.STRING(128),
-      publishedurl: Sequelize.STRING(2048),
-      userid: Sequelize.STRING(255),
-      author: Sequelize.STRING(255),
-      email: Sequelize.STRING(255),
-      maxplayers: Sequelize.INTEGER,
-      maxtimeminutes: Sequelize.INTEGER,
-      minplayers: Sequelize.INTEGER,
-      mintimeminutes: Sequelize.INTEGER,
-      summary: Sequelize.STRING(1024),
-      title: Sequelize.STRING(255),
-      url: Sequelize.STRING(2048),
-      familyfriendly: Sequelize.BOOLEAN,
-      ratingavg: Sequelize.DECIMAL(4, 2),
-      ratingcount: Sequelize.INTEGER,
-      genre: Sequelize.STRING(128),
-      contentrating: Sequelize.STRING(128),
-      created: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
-      },
-      published: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
-      },
-      tombstone: Sequelize.DATE,
-      expansionhorror: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-      },
-      language: {
-        type: Sequelize.STRING(128),
-        defaultValue: 'English',
-      },
-    }, {
+    this.model = this.s.define<QuestInstance, Partial<QuestAttributes>>('quests', SequelizeQuest, {
       timestamps: false, // TODO: eventually switch to sequelize timestamps
       // https://github.com/ExpeditionRPG/expedition-api/issues/39
       underscored: true,
     });
+  }
+
+  create(attrs: Partial<QuestAttributes>) {
+    return this.model.create(prepare(new QuestAttributes(attrs)));
   }
 
   associate(models: {Feedback: Feedback, RenderedQuest: RenderedQuest, User: User}) {
@@ -148,39 +68,12 @@ export class Quest {
   }
 
   resolveInstance(q: QuestInstance): QuestAttributes {
-    return {
-      partition: q.get('partition') || '',
-      id: q.get('id') || '',
-      questversion: q.get('questversion') || 0,
-      questversionlastmajor: q.get('questversionlastmajor') || 0,
-      engineversion: q.get('engineversion') || '',
-      publishedurl: q.get('publishedurl') || '',
-      userid: q.get('userid') || '',
-      author: q.get('author') || '',
-      email: q.get('email') || '',
-      maxplayers: q.get('maxplayers') || 0,
-      maxtimeminutes: q.get('maxtimeminutes') || 0,
-      minplayers: q.get('minplayers') || 0,
-      mintimeminutes: q.get('mintimeminutes') || 0,
-      summary: q.get('summary') || '',
-      title: q.get('title') || '',
-      url: q.get('url') || '',
-      familyfriendly: q.get('familyfriendly') || false,
-      ratingavg: q.get('ratingavg') || 0,
-      ratingcount: q.get('ratingcount') || 0,
-      genre: q.get('genre') || '',
-      contentrating: q.get('contentrating') || '',
-      created: q.get('created') || new Date(0),
-      published: q.get('published') || null,
-      tombstone: q.get('tombstone') || null,
-      expansionhorror: q.get('expansionhorror') || false,
-      language: q.get('language') || 'English',
-    };
+    return new QuestAttributes((q as any).dataValues);
   }
 
   search(userId: string, params: QuestSearchParams): Bluebird<QuestInstance[]> {
     // TODO: Validate search params
-    const where: Sequelize.WhereOptions<QuestAttributes> = {published: {$ne: null}, tombstone: null} as any;
+    const where: Sequelize.WhereOptions<Partial<QuestAttributes>> = {published: {$ne: null}, tombstone: null} as any;
 
     where.partition = params.partition || PUBLIC_PARTITION;
 

@@ -3,7 +3,6 @@ import {models} from '../models/Database'
 import {UserAttributes} from '../models/Users'
 import * as express from 'express'
 
-const Express = require('express');
 const GoogleTokenStrategy = require('passport-google-id-token');
 const Passport = require('passport');
 

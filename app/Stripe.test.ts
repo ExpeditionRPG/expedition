@@ -1,6 +1,3 @@
-import * as Stripe from './Stripe'
-import * as expect from 'expect'
-
 describe('Stripe', () => {
   it('Returns error if payments are not enabled');
 

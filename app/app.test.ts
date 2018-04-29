@@ -1,3 +1,3 @@
 describe('app', () => {
-  // TODO
+  it('starts an HTTP server')
 });

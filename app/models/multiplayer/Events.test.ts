@@ -1,5 +1,6 @@
-import {Event, EventAttributes, EventInstance} from './Events'
-import * as Sequelize from 'sequelize'
+import {Event, EventInstance} from './Events'
+
+const Sequelize = require('sequelize');
 
 describe('events', () => {
   let e: Event;

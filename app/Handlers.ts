@@ -2,23 +2,23 @@ import * as Bluebird from 'bluebird'
 import * as cheerio from 'cheerio'
 import * as express from 'express'
 import * as request from 'request-promise'
-import * as memoize from 'memoizee'
+import memoize from 'memoizee'
 import {AnalyticsEvent} from './models/AnalyticsEvents'
 import {Feedback, FeedbackType, FeedbackAttributes} from './models/Feedback'
-import {Quest, QuestInstance, QuestAttributes, QuestSearchParams, MAX_SEARCH_LIMIT, PUBLIC_PARTITION, PRIVATE_PARTITION} from './models/Quests'
+import {Quest, QuestInstance, QuestSearchParams, MAX_SEARCH_LIMIT} from './models/Quests'
+import {Quest as QuestAttributes, PUBLIC_PARTITION, PRIVATE_PARTITION} from 'expedition-qdl/lib/schema/Quests'
 import {RenderedQuest, RenderedQuestInstance} from './models/RenderedQuests'
 import * as Joi from 'joi'
-import * as Promise from 'bluebird'
 import Config from './config'
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
 const REGEX_SEMVER = /[1-9][0-9]?[0-9]?\.[1-9][0-9]?[0-9]?\.[1-9][0-9]?[0-9]?/g;
 
 export function healthCheck(req: express.Request, res: express.Response) {
-  res.send(' ');
+  res.end(' ');
 }
 
-interface versions {
+interface Versions {
   android: string;
   ios: string;
   web: string;
@@ -26,7 +26,7 @@ interface versions {
 
 function getAndroidVersion(): Bluebird<string|null> {
   return request('https://play.google.com/store/apps/details?id=io.fabricate.expedition')
-    .then(function (body: string) {
+    .then((body: string) => {
       const $ = cheerio.load(body);
       const versionText = $('div:contains("Version")').text() || '';
       const result = REGEX_SEMVER.exec(versionText) || [];
@@ -39,7 +39,7 @@ function getAndroidVersion(): Bluebird<string|null> {
 
 function getIosVersion(): Bluebird<string|null> {
   return request('http://itunes.apple.com/lookup?bundleId=io.fabricate.expedition')
-    .then(function (body: string) {
+    .then((body: string) => {
       const version = JSON.parse(body).results[0].version;
       return version;
     })
@@ -50,7 +50,7 @@ function getIosVersion(): Bluebird<string|null> {
 
 function getWebVersion(): Bluebird<string|null> {
   return request('http://app.expeditiongame.com/package.json')
-    .then(function (body: string) {
+    .then((body: string) => {
       const version = JSON.parse(body).version;
       return version;
     })
@@ -59,8 +59,8 @@ function getWebVersion(): Bluebird<string|null> {
     });
 }
 
-function getVersions(date: string): Bluebird<versions> {
-  return Promise.all([getAndroidVersion(), getIosVersion(), getWebVersion()])
+function getVersions(date: string): Bluebird<Versions> {
+  return Bluebird.all([getAndroidVersion(), getIosVersion(), getWebVersion()])
     .then((values) => {
       return {
         android: values[0] || values[1] || '1.0.0', // Android scraping is fragile; fall back to iOS
@@ -73,7 +73,7 @@ const memoizedVersions = memoize(getVersions, { promise: true });
 
 export function announcement(req: express.Request, res: express.Response) {
   memoizedVersions(new Date().toJSON().slice(0,10))
-    .then((versions: versions) => {
+    .then((versions: Versions) => {
       res.json({
         message: Config.get('ANNOUNCEMENT_MESSAGE') || '',
         link: Config.get('ANNOUNCEMENT_LINK') || '',
@@ -114,14 +114,14 @@ export function search(quest: Quest, req: express.Request, res: express.Response
       });
 
       console.log('Found ' + quests.length + ' quests for user ' + res.locals.id);
-      res.send(JSON.stringify({
+      res.end(JSON.stringify({
         error: null,
         quests: results,
         hasMore: (quests.length === (params.limit || MAX_SEARCH_LIMIT))}));
     })
     .catch((e: Error) => {
       console.error(e);
-      return res.status(500).send(GENERIC_ERROR_MESSAGE);
+      return res.status(500).end(GENERIC_ERROR_MESSAGE);
     });
 }
 
@@ -141,11 +141,11 @@ export function questXMLHandler(quest: Quest, renderedQuest: RenderedQuest, req:
           });
       }
       res.header('Content-Type', 'text/xml');
-      res.status(200).send(instance.get('xml'));
+      res.status(200).end(instance.get('xml'));
     })
     .catch((e: Error) => {
       console.error(e);
-      return res.status(500).send(GENERIC_ERROR_MESSAGE);
+      return res.status(500).end(GENERIC_ERROR_MESSAGE);
     });
 }
 
@@ -174,7 +174,7 @@ export function publish(quest: Quest, req: express.Request, res: express.Respons
     })
     .catch((e: Error) => {
       console.error(e);
-      return res.status(500).send(GENERIC_ERROR_MESSAGE);
+      return res.status(500).end(GENERIC_ERROR_MESSAGE);
     })
 }
 
@@ -185,7 +185,7 @@ export function unpublish(quest: Quest, req: express.Request, res: express.Respo
     })
     .catch((e: Error) => {
       console.error(e);
-      return res.status(500).send(GENERIC_ERROR_MESSAGE);
+      return res.status(500).end(GENERIC_ERROR_MESSAGE);
     });
 }
 
@@ -212,17 +212,18 @@ export function postAnalyticsEvent(analyticsEvent: AnalyticsEvent, req: express.
       res.end('ok');
     }).catch((e: Error) => {
       console.error(e);
-      return res.status(500).send(GENERIC_ERROR_MESSAGE);
+      return res.status(500).end(GENERIC_ERROR_MESSAGE);
     });
 }
 
-export function feedback(feedback: Feedback, req: express.Request, res: express.Response) {
+export function feedback(mail: any, feedback: Feedback, req: express.Request, res: express.Response): Bluebird<any> {
   let body: any;
   try {
     body = JSON.parse(req.body);
   } catch (e) {
     console.error(e);
-    return res.status(400).end('Error reading request.');
+    res.status(400).end('Error reading request.');
+    return Bluebird.reject('Error reading request');
   }
 
   const data: FeedbackAttributes = {
@@ -246,53 +247,58 @@ export function feedback(feedback: Feedback, req: express.Request, res: express.
   // Partition & quest ID may not be populated if
   // feedback occurs outside of a quest.
   // The only thing we require is the user's ID.
-  Joi.validate(data, Joi.object().keys({
-    partition: Joi.string().valid([PRIVATE_PARTITION, PUBLIC_PARTITION, '']),
-    questid: Joi.string().allow(''),
-    userid: Joi.string().required(),
-    questversion: Joi.number(),
-    rating: Joi.number(),
-    text: Joi.string().allow(''),
-    email: Joi.string().email(),
-    name: Joi.string(),
-    difficulty: Joi.string().valid(['EASY','NORMAL','HARD', 'IMPOSSIBLE']),
-    platform: Joi.string(),
-    platformDump: Joi.string(),
-    players: Joi.number(),
-    version: Joi.string(),
-    console: Joi.array().items(Joi.string()),
-    anonymous: Joi.boolean(),
-  }), (err: Error, dataValid: FeedbackAttributes) => {
-    if (err) {
-      console.error(err);
-      return res.status(400).send('Invalid request');
-    }
+  return new Bluebird.Promise((resolve, reject) => {
+    Joi.validate(data, Joi.object().keys({
+      partition: Joi.string().valid([PRIVATE_PARTITION, PUBLIC_PARTITION, '']),
+      questid: Joi.string().allow(''),
+      userid: Joi.string().required(),
+      questversion: Joi.number(),
+      rating: Joi.number(),
+      text: Joi.string().allow(''),
+      email: Joi.string().email(),
+      name: Joi.string(),
+      difficulty: Joi.string().valid(['EASY','NORMAL','HARD', 'IMPOSSIBLE']),
+      platform: Joi.string(),
+      platformDump: Joi.string(),
+      players: Joi.number(),
+      version: Joi.string(),
+      console: Joi.array().items(Joi.string()),
+      anonymous: Joi.boolean(),
+    }), (err: Error, dataValid: FeedbackAttributes) => {
+      if (err) {
+        console.error(err);
+        res.status(400).end('Invalid request.');
+        return reject('Invalid request');
+      }
 
-    let action: Promise<any>;
-    switch (req.params.type as FeedbackType) {
-      case 'feedback':
-        action = feedback.submitFeedback(req.params.type, dataValid);
-        break;
-      case 'rating':
-        action = feedback.submitRating(dataValid);
-        break;
-      case 'report_error':
-        action = feedback.submitFeedback(req.params.type, dataValid);
-        break;
-      case 'report_quest':
-        action = feedback.submitReportQuest(dataValid);
-        break;
-      default:
-        console.error('Unknown feedback type ' + req.params.type);
-        return res.status(500).end('Unknown feedback type: ' + req.params.type);
-    }
-
-    action.then(() => {
-        res.end('ok');
-      }).catch((e: Error) => {
-        console.error(e);
-        return res.status(500).send(GENERIC_ERROR_MESSAGE);
-      });
+      let action: Bluebird<any>;
+      switch (req.params.type as FeedbackType) {
+        case 'feedback':
+          action = feedback.submitFeedback(mail, req.params.type, dataValid);
+          break;
+        case 'rating':
+          action = feedback.submitRating(mail, dataValid);
+          break;
+        case 'report_error':
+          action = feedback.submitFeedback(mail, req.params.type, dataValid);
+          break;
+        case 'report_quest':
+          action = feedback.submitReportQuest(mail, dataValid);
+          break;
+        default:
+          console.error('Unknown feedback type ' + req.params.type);
+          res.status(500).end('Unknown feedback type: ' + req.params.type);
+          return reject('Unknown feedback type');
+      }
+      action.then(() => {
+          res.end('ok');
+          resolve();
+        }).catch((e: Error) => {
+          console.error(e);
+          res.status(500).end(GENERIC_ERROR_MESSAGE);
+          reject();
+        });
+    });
   });
 }
 
@@ -305,12 +311,12 @@ export function subscribe(mailchimp: any, listId: string, req: express.Request, 
   Joi.validate(req.body.email, Joi.string().email().invalid(''), (err: Error, email: string) => {
 
     if (err) {
-      return res.status(400).send('Valid email address required.');
+      return res.status(400).end('Valid email address required.');
     }
 
     // TODO: Move this logic into the mail.ts file.
     if (!mailchimp) {
-      return res.status(200).send();
+      return res.status(200).end();
     } else {
       mailchimp.post('/lists/' + listId + '/members/', {
         email_address: email,
@@ -322,14 +328,14 @@ export function subscribe(mailchimp: any, listId: string, req: express.Request, 
         if (err) {
           const status = (err as any).status;
           if (status === 400) {
-            return res.status(200).send(); // Already on the list - but that's ok!
+            return res.status(200).end(); // Already on the list - but that's ok!
           } else {
             console.log('Mailchimp error', err);
-            return res.status(status).send((err as any).title);
+            return res.status(status).end((err as any).title);
           }
         }
         console.error(email + ' subscribed as pending to player list');
-        return res.status(200).send();
+        return res.status(200).end();
       });
     }
   });

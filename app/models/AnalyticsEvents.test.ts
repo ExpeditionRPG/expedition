@@ -1,7 +1,7 @@
-import {AnalyticsEvent, AnalyticsEventAttributes, AnalyticsEventInstance} from './AnalyticsEvents'
-import {Quest, QuestAttributes, QuestInstance} from './Quests'
-import * as Sequelize from 'sequelize'
-import * as expect from 'expect'
+import {AnalyticsEvent, AnalyticsEventAttributes} from './AnalyticsEvents'
+import {Quest} from './Quests'
+
+const Sequelize = require('sequelize');
 
 describe('AnalyticsEvent', () => {
   let ae: AnalyticsEvent;
@@ -27,10 +27,10 @@ describe('AnalyticsEvent', () => {
       q.model.sync()
         .then(() => {
           return q.model.create({
-            partition: 'testpartition', 
-            id: 'questid', 
-            ratingavg: 0, 
-            ratingcount: 0, 
+            partition: 'testpartition',
+            id: 'questid',
+            ratingavg: 0,
+            ratingcount: 0,
             email: 'author@test.com'
           });
         })

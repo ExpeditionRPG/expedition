@@ -1,5 +1,6 @@
-import * as Mail from '../Mail'
-import {Quest, QuestAttributes, QuestInstance} from './Quests'
+import {Quest, QuestInstance} from './Quests'
+import {Quest as QuestAttributes} from 'expedition-qdl/lib/schema/Quests'
+import {MailService} from '../Mail'
 import * as Sequelize from 'sequelize'
 import * as Promise from 'bluebird';
 
@@ -103,7 +104,7 @@ export class Feedback {
       });
   };
 
-  public submitFeedback(type: FeedbackType, feedback: FeedbackAttributes): Promise<any> {
+  public submitFeedback(mail: MailService, type: FeedbackType, feedback: FeedbackAttributes): Promise<any> {
     return this.s.authenticate()
       .then(() => {
         if (feedback.partition && feedback.questid) {
@@ -134,7 +135,7 @@ export class Feedback {
         } else {
           message += `<p>Could not resolve published quest details for this feedback.</p>`;
         }
-        
+
         message += `
           <p>User settings: ${feedback.players} adventurers on ${feedback.difficulty} difficulty.</p>
           <p>Raw platform string: ${feedback.platformDump}</p>
@@ -142,11 +143,11 @@ export class Feedback {
           <p>Console log record:</p>
           <pre>${feedback.console && feedback.console.join('\n')}</pre>
         `;
-          
+
         // We do NOT send non-review feedback to authors - it's typically less actionable
         // so we'd likely need to do some initial triage.
         const to = ['expedition+feedback@fabricate.io'];
-        return Mail.send(to, subject, message);
+        return mail.send(to, subject, message);
       })
       .then(() => {
         if (!feedback.email) {
@@ -165,11 +166,11 @@ export class Feedback {
         <p>The Expedition Team</p>
         <p>expedition@fabricate.io</p>`
         const to = [feedback.email];
-        return Mail.send(to, subject, message);
+        return mail.send(to, subject, message);
       });
   }
 
-  public submitRating(feedback: FeedbackAttributes): Promise<any> {
+  public submitRating(mail: MailService, feedback: FeedbackAttributes): Promise<any> {
     // Quest rating: Get quest, upsert feedback tagged with the current quest version,
     // Recalculate ratings on the quest, then send a mail if it's remarkable.
     return this.s.authenticate()
@@ -210,7 +211,7 @@ export class Feedback {
             message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${feedback.email}</a></p>`;
           }
           message += `<p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>`;
-          return Mail.send(emails, subject, message);
+          return mail.send(emails, subject, message);
         } else if (feedback.text && feedback.text.length > 0) {
           const subject = `Quest rated ${feedback.rating}/5: ${q.title}`;
           let message = `<p>User feedback:</p>
@@ -224,7 +225,7 @@ export class Feedback {
           if (feedback.email && !feedback.anonymous) {
             message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${feedback.email}</a></p>`;
           }
-          return Mail.send(emails, subject, message);
+          return mail.send(emails, subject, message);
         }
       });
   }
@@ -239,7 +240,7 @@ export class Feedback {
       });
   }
 
-  public submitReportQuest(feedback: FeedbackAttributes): Promise<any> {
+  public submitReportQuest(mail: MailService, feedback: FeedbackAttributes): Promise<any> {
     return this.s.authenticate()
       .then(() => {
         return this.quest.get(feedback.partition, feedback.questid);
@@ -259,7 +260,7 @@ export class Feedback {
         `;
         // Do NOT include quest author when user reports a quest.
         const to = ['expedition+apperror@fabricate.io'];
-        return Mail.send(to, subject, message);
+        return mail.send(to, subject, message);
       });
   }
 }

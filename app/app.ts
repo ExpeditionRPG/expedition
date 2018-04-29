@@ -61,12 +61,12 @@ const setupLogging = function(app: any) {
   app.use(logging.errorLogger);
 
   // Basic 404 handler
-  app.use(function (req: any, res: any) {
+  app.use(function(req: any, res: any) {
     res.status(404).send('Not Found');
   });
 
   // Basic error handler
-  app.use(function (err: any, req: any, res: any, next: any) {
+  app.use(function(err: any, req: any, res: any, next: any) {
     // If our routes specified a specific response, then send that. Otherwise,
     // send a generic message so as not to leak anything.
     res.status(500).send(err.response || 'Something broke!');
@@ -78,7 +78,7 @@ function init() {
   setupRoutes(app);
   setupLogging(app);
 
-  server.listen(port, function () {
+  server.listen(port, () => {
     console.log('App listening on port %s', port);
   });
 
@@ -86,7 +86,7 @@ function init() {
     (module as any).hot.accept('./Routes', () => {
       console.log('should update');
     });
-    const Routes: any = require('./Routes');
+    (Routes as any) = require('./Routes');
   }
 }
 init();

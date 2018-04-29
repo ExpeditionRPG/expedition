@@ -9,7 +9,6 @@ import {SessionClient} from './multiplayer/SessionClients'
 import {Event} from './multiplayer/Events'
 
 import Config from '../config'
-const Url = require('url');
 
 export interface Models {
   AnalyticsEvent: AnalyticsEvent;
