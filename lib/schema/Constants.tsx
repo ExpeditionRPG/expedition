@@ -1,5 +1,10 @@
 export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
-export const DIFFICULTIES: DifficultyType[] = ['EASY','NORMAL','HARD', 'IMPOSSIBLE'];
+export const DIFFICULTIES: DifficultyType[] = [
+  'EASY',
+  'NORMAL',
+  'HARD',
+  'IMPOSSIBLE',
+];
 
 export type PartitionType = 'expedition-private' | 'expedition-public';
 export const PRIVATE_PARTITION = 'expedition-private';
@@ -12,7 +17,7 @@ export const GENRES: GenreType[] = [
   'Drama',
   'Horror',
   'Mystery',
-  'Romance'
+  'Romance',
 ];
 
 export type LanguageType = 'English' | 'French' | 'German' | 'Italian' | 'Portuguese' | 'Spanish';
@@ -22,13 +27,13 @@ export const LANGUAGES: LanguageType[] = [
   'German',
   'Italian',
   'Portuguese',
-  'Spanish'
+  'Spanish',
 ];
 
 // Content rating options and their definitions, generally based on MPAA guidelines
-export type ContentRatingType = 'Everyone' | 'Teen' | 'Adult';
+export type ContentRatingType = 'Kid-friendly' | 'Teen' | 'Adult';
 export const CONTENT_RATINGS: ContentRatingType[] = [
-  'Everyone',
+  'Kid-friendly',
   'Teen',
   'Adult',
 ];
