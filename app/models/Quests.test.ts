@@ -1,5 +1,6 @@
 import {Quest, QuestInstance} from './Quests'
-import {Quest as QuestAttributes, PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Quests'
+import {Quest as QuestAttributes} from 'expedition-qdl/lib/schema/Quests'
+import {PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Constants'
 import {PLACEHOLDER_DATE} from 'expedition-qdl/lib/schema/SchemaBase'
 const Sequelize = require('sequelize');
 

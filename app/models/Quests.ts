@@ -3,7 +3,8 @@ import {Feedback, FeedbackInstance} from './Feedback'
 import {RenderedQuest} from './RenderedQuests'
 import {User, UserAttributes} from './Users'
 import {toSequelize, prepare} from './Schema'
-import {Quest as QuestAttributes, PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Quests'
+import {Quest as QuestAttributes} from 'expedition-qdl/lib/schema/Quests'
+import {PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Constants'
 
 import * as Mail from '../Mail'
 import * as Bluebird from 'bluebird'
@@ -272,9 +273,9 @@ export class Quest {
           }
           return (f.get('questversion') >= quest.get('questversionlastmajor'));
         }).map((f: FeedbackInstance) => {
-          if (f.get('rating') === undefined || f.get('rating') === null) {
+          if (f.get('rating') === undefined || f.get('rating') === null || f.get('rating') === 0) {
             // typescript isn't quite smart enough to realize we already filtered
-            // out any null ratings. We add this here to appease it.
+            // out any null/zero ratings. We add this here to appease it.
             throw Error('Failed to filter out null ratings');
           }
           return f.get('rating');

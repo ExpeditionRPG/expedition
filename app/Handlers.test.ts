@@ -1,5 +1,5 @@
 import {feedback} from './Handlers'
-import {PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Quests'
+import {PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Constants'
 import {Feedback} from './models/Feedback'
 import {Quest} from './models/Quests'
 import { mockReq, mockRes } from 'sinon-express-mock'

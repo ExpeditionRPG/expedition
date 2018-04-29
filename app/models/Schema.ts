@@ -34,9 +34,13 @@ export function toSequelize(s: SchemaBase) {
     }
     if (m.extra === 'DECIMAL_4_2') {
       type = Sequelize.DECIMAL(4, 2);
+    } else if (m.extra === 'BIGINT') {
+      type = Sequelize.BIGINT;
     }
     const r: Sequelize.DefineAttributeColumnOptions = {type};
-
+    if (m.column !== undefined) {
+      r.field = m.column;
+    }
     if (m.primaryKey !== undefined) {
       r.primaryKey = m.primaryKey;
     }

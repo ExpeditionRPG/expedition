@@ -1,30 +1,19 @@
 import {Quest, QuestInstance} from './Quests'
 import {Quest as QuestAttributes} from 'expedition-qdl/lib/schema/Quests'
+import {Feedback as FeedbackAttributes} from 'expedition-qdl/lib/schema/Feedback'
+import {PLACEHOLDER_DATE} from 'expedition-qdl/lib/schema/SchemaBase'
+import {PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Constants'
+import {toSequelize, prepare} from './Schema'
 import {MailService} from '../Mail'
 import * as Sequelize from 'sequelize'
-import * as Promise from 'bluebird';
+import * as Promise from 'bluebird'
+
+export const FabricateFeedbackEmail = 'expedition+feedback@fabricate.io';
+export const FabricateReportQuestEmail = 'expedition+apperror@fabricate.io';
 
 export type FeedbackType = 'feedback'|'rating'|'report_error'|'report_quest';
 
-export interface FeedbackAttributes {
-  partition: string;
-  questid: string;
-  userid: string;
-  questversion?: number|null;
-  created?: Date|null;
-  rating?: number|null;
-  text?: string|null;
-  email?: string|null;
-  name?: string|null;
-  difficulty?: string|null;
-  platform?: string|null;
-  platformDump?: string|null; // TODO: Remove this from sequelize table attributes
-  players?: number|null;
-  version?: string|null;
-  console?: string[]|null;
-  anonymous?: boolean|null;
-  tombstone?: Date|null;
-}
+const SequelizeFeedback = toSequelize(new FeedbackAttributes({partition: PUBLIC_PARTITION, questid: '', userid: ''}));
 
 export interface FeedbackInstance extends Sequelize.Instance<FeedbackAttributes> {
   dataValues: FeedbackAttributes;
@@ -40,46 +29,7 @@ export class Feedback {
 
   constructor(s: Sequelize.Sequelize) {
     this.s = s;
-    this.model = this.s.define<FeedbackInstance, FeedbackAttributes>('feedback', {
-      partition: {
-        type: Sequelize.STRING(32),
-        allowNull: false,
-        primaryKey: true,
-      },
-      questid: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-        primaryKey: true,
-      },
-      userid: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-        primaryKey: true,
-      },
-      questversion: {
-        type: Sequelize.INTEGER,
-        defaultValue: 1,
-      },
-      created: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
-      },
-      rating: Sequelize.INTEGER,
-      text: Sequelize.STRING(2048),
-      email: {
-        type: Sequelize.STRING(255),
-        validate: {
-          isEmail: true,
-        },
-      },
-      anonymous: Sequelize.BOOLEAN,
-      tombstone: Sequelize.DATE,
-      name: Sequelize.STRING(255),
-      difficulty: Sequelize.STRING(32),
-      platform: Sequelize.STRING(32),
-      players: Sequelize.INTEGER,
-      version: Sequelize.STRING(32),
-    }, {
+    this.model = this.s.define<FeedbackInstance, FeedbackAttributes>('feedback', SequelizeFeedback, {
       freezeTableName: true,
       timestamps: false, // TODO: eventually switch to sequelize timestamps
       underscored: true,
@@ -102,9 +52,9 @@ export class Feedback {
       .then(() => {
         return this.model.findAll({where: {partition, questid, rating: {$ne: null}} as any});
       });
-  };
+  }
 
-  public submitFeedback(mail: MailService, type: FeedbackType, feedback: FeedbackAttributes): Promise<any> {
+  public submitFeedback(mail: MailService, type: FeedbackType, feedback: FeedbackAttributes, platformDump: string, consoleDump: string[]): Promise<any> {
     return this.s.authenticate()
       .then(() => {
         if (feedback.partition && feedback.questid) {
@@ -138,15 +88,15 @@ export class Feedback {
 
         message += `
           <p>User settings: ${feedback.players} adventurers on ${feedback.difficulty} difficulty.</p>
-          <p>Raw platform string: ${feedback.platformDump}</p>
+          <p>Raw platform string: ${platformDump}</p>
           <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
           <p>Console log record:</p>
-          <pre>${feedback.console && feedback.console.join('\n')}</pre>
+          <pre>${consoleDump && consoleDump.join('\n')}</pre>
         `;
 
         // We do NOT send non-review feedback to authors - it's typically less actionable
         // so we'd likely need to do some initial triage.
-        const to = ['expedition+feedback@fabricate.io'];
+        const to = [FabricateFeedbackEmail];
         return mail.send(to, subject, message);
       })
       .then(() => {
@@ -183,7 +133,7 @@ export class Feedback {
         }
 
         feedback.questversion = quest.get('questversion');
-        return this.model.upsert(feedback);
+        return this.model.upsert(prepare(new FeedbackAttributes(feedback)));
       })
       .then((created: Boolean) => {
         return this.quest.updateRatings(feedback.partition, feedback.questid);
@@ -233,14 +183,14 @@ export class Feedback {
   public suppress(partition: string, questid: string, userid:string, suppress: boolean): Promise<any> {
     return this.s.authenticate()
       .then(() => {
-        return this.model.update({tombstone: (suppress) ? new Date() : null} as any, {where: {partition, questid, userid}, limit: 1})
+        return this.model.update({tombstone: (suppress) ? new Date() : PLACEHOLDER_DATE} as any, {where: {partition, questid, userid}, limit: 1})
       })
       .then(() => {
         return this.quest.updateRatings(partition, questid);
       });
   }
 
-  public submitReportQuest(mail: MailService, feedback: FeedbackAttributes): Promise<any> {
+  public submitReportQuest(mail: MailService, feedback: FeedbackAttributes, platformDump: string): Promise<any> {
     return this.s.authenticate()
       .then(() => {
         return this.quest.get(feedback.partition, feedback.questid);
@@ -254,12 +204,12 @@ export class Feedback {
         const subject = `Quest reported: ${q.title}`;
         const message = `<p>Message: ${feedback.text}</p>
           <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
-          <p>Raw platform string: ${feedback.platformDump}</p>
+          <p>Raw platform string: ${platformDump}</p>
           <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
           <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
         `;
         // Do NOT include quest author when user reports a quest.
-        const to = ['expedition+apperror@fabricate.io'];
+        const to = [FabricateReportQuestEmail];
         return mail.send(to, subject, message);
       });
   }
