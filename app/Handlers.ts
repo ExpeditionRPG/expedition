@@ -69,7 +69,9 @@ function getVersions(date: string): Bluebird<Versions> {
       };
     });
 }
-const memoizedVersions = memoize(getVersions, { promise: true });
+
+// TODO: Figure out why jest doesn't like importing memoizee
+const memoizedVersions = (typeof(memoize) === 'function') ? memoize(getVersions, { promise: true }) : getVersions;
 
 export function announcement(req: express.Request, res: express.Response) {
   memoizedVersions(new Date().toJSON().slice(0,10))
