@@ -285,17 +285,17 @@ function renderDetails(props: SearchProps): JSX.Element {
       <Button onTouchTap={(e)=>props.onReturn()} remoteID="back">Pick a different quest</Button>
       <div className="searchDetailsExtended">
         <h3>Details</h3>
-        <div><strong>Expansions required: </strong>{expansions}</div>
-        <div><strong>Content rating:</strong> {quest.contentrating}</div>
-        {quest.mintimeminutes !== undefined && quest.maxtimeminutes !== undefined &&
-          <div className="timing">
-            <strong>Play time:</strong> {formatPlayPeriod(quest.mintimeminutes, quest.maxtimeminutes)}
-          </div>
-        }
-        <div><strong>Players:</strong> {quest.minplayers}-{quest.maxplayers}</div>
-        <div><strong>Genre:</strong> {quest.genre}</div>
-        <div><strong>Language:</strong> {quest.language}</div>
-        <div><strong>Last updated: </strong> {Moment(quest.published).format('MMMM D, YYYY')}</div>
+        <table className="searchDetailsTable">
+          <tr><th>Expansions required</th><td>{expansions}</td></tr>
+          <tr><th>Content rating</th><td>{quest.contentrating}</td></tr>
+          {quest.mintimeminutes !== undefined && quest.maxtimeminutes !== undefined &&
+            <tr><th>Play time</th><td>{formatPlayPeriod(quest.mintimeminutes, quest.maxtimeminutes)}</td></tr>
+          }
+          <tr><th>Players</th><td>{quest.minplayers}-{quest.maxplayers}</td></tr>
+          <tr><th>Genre</th><td>{quest.genre}</td></tr>
+          <tr><th>Language</th><td>{quest.language}</td></tr>
+          <tr><th>Last updated</th><td>{Moment(quest.published).format('MMMM D, YYYY')}</td></tr>
+        </table>
       </div>
     </Card>
   );

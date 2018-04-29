@@ -1157,6 +1157,17 @@ span.line {
 
   .searchDetailsExtended {
     margin-top: size(large);
+    .searchDetailsTable {
+      width: 100%;
+      table-layout:fixed;
+      th {
+        text-align: left;
+        max-width: 50%;
+      }
+      td {
+        text-align: left;
+      }
+    }
   }
 
   .reportCategory {
