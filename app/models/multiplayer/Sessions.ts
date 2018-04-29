@@ -3,13 +3,10 @@ import * as Bluebird from 'bluebird'
 import {SessionClient} from './SessionClients'
 import {Event, EventInstance} from './Events'
 import {makeSecret} from 'expedition-qdl/lib/multiplayer/Session'
+import {Session as SessionAttributes} from 'expedition-qdl/lib/schema/multiplayer/Session'
+import {toSequelize} from './Schema'
 
-export interface SessionAttributes {
-  id: number;
-  secret: string;
-  eventcounter: number;
-  locked: boolean;
-}
+const SessionSequelize = toSequelize(new SessionAttributes({id: 0, secret: '', eventcounter: 0, locked: false}));
 
 export interface SessionInstance extends Sequelize.Instance<SessionAttributes> {}
 
@@ -23,25 +20,7 @@ export class Session {
 
   constructor(s: Sequelize.Sequelize) {
     this.s = s;
-    this.model = (this.s.define('sessions', {
-      id: {
-        type: Sequelize.BIGINT,
-        allowNull: false,
-        primaryKey: true,
-      },
-      secret: {
-        type: Sequelize.STRING(32),
-        allowNull: false,
-      },
-      eventcounter: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      locked: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-      }
-    }, {
+    this.model = (this.s.define('sessions', SessionSequelize, {
       timestamps: true,
       underscored: true,
     }) as SessionModel);

@@ -1,19 +1,16 @@
 import * as Sequelize from 'sequelize'
 import * as Bluebird from 'bluebird'
 import {Event} from './Events'
+import {SessionClient as SessionClientAttributes} from 'expedition-qdl/lib/schema/multiplayer/SessionClients'
+import {toSequelize} from './Schema'
 
-export interface SessionClientAttributes {
-  session: number;
-  client: string;
-  secret: string;
-  created_at?: Date|null;
-}
+const SessionClientSequelize = toSequelize(new SessionClient({session: 0, client: '', secret: ''}));
 
-export interface SessionClientInstance extends Sequelize.Instance<SessionClientAttributes> {
+export interface SessionClientInstance extends Sequelize.Instance<Partial<SessionClientAttributes>> {
   dataValues: SessionClientAttributes;
 }
 
-export type SessionClientModel = Sequelize.Model<SessionClientInstance, SessionClientAttributes>;
+export type SessionClientModel = Sequelize.Model<SessionClientInstance, Partial<SessionClientAttributes>>;
 
 export class SessionClient {
   protected s: Sequelize.Sequelize;
@@ -22,23 +19,7 @@ export class SessionClient {
 
   constructor(s: Sequelize.Sequelize) {
     this.s = s;
-    this.model = (this.s.define('sessionclients', {
-      session: {
-        type: Sequelize.BIGINT,
-        allowNull: false,
-        primaryKey: true,
-      },
-      client: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-        primaryKey: true,
-      },
-      secret: {
-        type: Sequelize.STRING(32),
-        allowNull: false,
-        primaryKey: true,
-      }
-    }, {
+    this.model = (this.s.define('sessionclients', SessionClientSequelize, {
       timestamps: true,
       underscored: true,
     }) as SessionClientModel);

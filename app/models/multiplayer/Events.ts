@@ -1,21 +1,16 @@
 import * as Sequelize from 'sequelize'
 import * as Bluebird from 'bluebird'
+import {PLACEHOLDER_DATE} from 'expedition-qdl/lib/schema/SchemaBase'
+import {Event as EventAttributes} from 'expedition-qdl/lib/schema/multiplayer/Events'
+import {toSequelize, prepare} from '../Schema'
 
-export interface EventAttributes {
-  session: number;
-  client: string;
-  instance: string;
-  timestamp: Date;
-  id: number;
-  type: string;
-  json?: string|null;
-}
+const EventSequelize = toSequelize(new EventAttributes({session: 0, timestamp: PLACEHOLDER_DATE, client: '', instance: '', id: 0, type: '', json: ''}));
 
-export interface EventInstance extends Sequelize.Instance<EventAttributes> {
+export interface EventInstance extends Sequelize.Instance<Partial<EventAttributes>> {
   dataValues: EventAttributes;
 }
 
-export type EventModel = Sequelize.Model<EventInstance, EventAttributes>;
+export type EventModel = Sequelize.Model<EventInstance, Partial<EventAttributes>>;
 
 export class Event {
   protected s: Sequelize.Sequelize;
@@ -23,37 +18,7 @@ export class Event {
 
   constructor(s: Sequelize.Sequelize) {
     this.s = s;
-    this.model = (this.s.define('events', {
-      session: {
-        type: Sequelize.BIGINT,
-        allowNull: false,
-        primaryKey: true,
-      },
-      timestamp: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        primaryKey: true,
-      },
-      client: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-      },
-      instance: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-      },
-      id: {
-        type: Sequelize.BIGINT,
-        allowNull: false,
-      },
-      type: {
-        type: Sequelize.STRING(32),
-        allowNull: false,
-      },
-      json: {
-        type: Sequelize.TEXT(),
-      },
-    }, {
+    this.model = (this.s.define('events', EventSequelize, {
       timestamps: true,
       underscored: true,
     }) as EventModel);
@@ -62,7 +27,7 @@ export class Event {
   public associate(models: any) {}
 
   public upsert(attrs: EventAttributes): Bluebird<void> {
-    return this.model.upsert(attrs).then(()=>{});
+    return this.model.upsert(prepare(attrs)).then(()=>{});
   }
 
   public getById(session: number, id: number): Bluebird<EventInstance|null> {
