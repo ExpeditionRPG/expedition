@@ -3,22 +3,22 @@ import {Quest} from './Quests'
 
 const Sequelize = require('sequelize');
 
+export const testQuestEnd: AnalyticsEventAttributes = {
+  category: 'quest',
+  action: 'end',
+  created: new Date(),
+  quest_id: 'questid',
+  user_id: 'userid',
+  quest_version: 1,
+  difficulty: 'normal',
+  platform: 'ios',
+  players: 5,
+  version: '1.0.0',
+};
+
 describe('AnalyticsEvent', () => {
   let ae: AnalyticsEvent;
   let q: Quest;
-
-  const testData: AnalyticsEventAttributes = {
-    category: 'category',
-    action: 'action',
-    created: new Date(),
-    quest_id: 'questid',
-    user_id: 'userid',
-    quest_version: 1,
-    difficulty: 'normal',
-    platform: 'ios',
-    players: 5,
-    version: '1.0.0',
-  };
 
   describe('submitAnalyticsEvent', () => {
     beforeEach((done: DoneFn) => {
@@ -46,7 +46,7 @@ describe('AnalyticsEvent', () => {
 
     // TODO once we have / need event getting, get and confirm entry here
     it('created an entry', (done: DoneFn) => {
-      ae.create(testData)
+      ae.create(testQuestEnd)
         .then(() => {
           done();
         });

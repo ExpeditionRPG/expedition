@@ -15,6 +15,9 @@ describe('handlers', () => {
 
   describe('announcement', () => {
     it('returns with message and link');
+    it('returns default version if unable to reach a version API');
+    it('returns the latest version from API');
+    it('caches valid version results');
   });
 
   describe('search', () => {

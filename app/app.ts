@@ -1,12 +1,11 @@
-import config from './config'
-
 import * as bodyParser from 'body-parser'
 import * as passport from 'passport'
 import * as session from 'express-session'
 import * as express from 'express'
-import * as http from 'http';
-import Routes, {setupWebsockets} from './Routes'
+import * as http from 'http'
 
+import config from './config'
+import Routes, {setupWebsockets} from './Routes'
 import * as oauth2 from './lib/oauth2'
 import logging from './lib/logging'
 

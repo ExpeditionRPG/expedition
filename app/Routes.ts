@@ -55,6 +55,7 @@ Router.post('/publish/:id', publishLimiter, limitCors, requireAuth, (req, res) =
 Router.post('/unpublish/:quest', limitCors, requireAuth, (req, res) => {Handlers.unpublish(models.Quest, req, res);});
 Router.post('/quest/feedback/:type', limitCors, (req, res) => {Handlers.feedback(Mail, models.Feedback, req, res);});
 Router.post('/user/subscribe', limitCors, (req, res) => {Handlers.subscribe(mailchimp, Config.get('MAILCHIMP_PLAYERS_LIST_ID'), req, res);});
+Router.get('/user/quests', limitCors, requireAuth, (req, res) => {Handlers.userQuests(models.User, req, res);});
 Router.get('/multiplayer/v1/user', limitCors, requireAuth, (req, res) => {MultiplayerHandlers.user(models.SessionClient, models.Event, req, res);});
 Router.post('/multiplayer/v1/new_session', sessionLimiter, limitCors, requireAuth, (req, res) => {MultiplayerHandlers.newSession(models.Session, req, res);});
 Router.post('/multiplayer/v1/connect', limitCors, requireAuth, (req, res) => {MultiplayerHandlers.connect(models.Session, models.SessionClient, req, res);});

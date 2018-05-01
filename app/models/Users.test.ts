@@ -1,6 +1,8 @@
 import {AnalyticsEvent} from './AnalyticsEvents'
-import {User, UserAttributes} from './Users'
+import {testQuestEnd} from './AnalyticsEvents.test'
+import {User, UserAttributes, UserQuestsType} from './Users'
 
+const Moment = require('moment');
 const Sequelize = require('sequelize');
 const sinon = require('sinon');
 
@@ -36,7 +38,7 @@ describe('users', () => {
   describe('upsert', () => {
     it('inserts user when none exists', (done: DoneFn) => {
       u.upsert(testUserData).then(() => {
-        return u.get('test');
+        return u.get(testUserData.id);
       }).then((user: any) => {
         expect(user).toEqual(jasmine.objectContaining(testUserData));
         done();
@@ -46,9 +48,29 @@ describe('users', () => {
     it('subscribes to creators list if mailchimp configured', (done: DoneFn) => {
       u.upsert(testUserData).then(() => {
         expect(mc.post.calledWith(sinon.match.any, {
-          email_address: 'test@test.com',
+          email_address: testUserData.email,
           status: 'subscribed',
         })).toEqual(true);
+        done();
+      }).catch(done.fail);
+    });
+  });
+
+  describe('userQuests', () => {
+    it('returns valid results for players without and with quest histories', (done: DoneFn) => {
+      u.upsert(testUserData).then(() => {
+        return u.get('test');
+      })
+      .then((user: any) => u.getQuests(testUserData.id))
+      .then((result: UserQuestsType) => {
+        expect(result).toEqual({});
+        return ae.create({...testQuestEnd, user_id: testUserData.id});
+      })
+      .then((user: any) => u.getQuests(testUserData.id))
+      .then((quests: UserQuestsType) => {
+        expect(Object.keys(quests).length).toEqual(1);
+        const result = quests[testQuestEnd.quest_id as string];
+        expect(Moment(result.lastPlayed as any).isSame(testQuestEnd.created as any)).toEqual(true);
         done();
       }).catch(done.fail);
     });
