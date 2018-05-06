@@ -533,6 +533,7 @@ $large-icon-width: 0.195in;
 
   .card.back {
     .naming {
+      display: none;
       font-family: $font-body;
       color: #F6EECA;
       opacity: 0.6;
