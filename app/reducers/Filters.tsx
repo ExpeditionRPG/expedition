@@ -30,9 +30,9 @@ export let initialState: FiltersState = {
     options: ['PrintAndPlay', 'WebView', 'DriveThruCards', 'AdMagicFronts', 'AdMagicBacks', 'FrontsOnly'],
   },
   source: {
-    current: 'Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
-    default: 'Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM',
-    options: ['Expedition:1WvRrQUBRSZS6teOcbnCjAqDr-ubUNIxgiVwWGDcsZYM', 'The Horror:1K08sXHXyW7TAMXJnHOv9V3QtjxwjAf2-cvbaO-S2fDQ', 'Custom'],
+    current: 'Expedition:11Y8eS_cyIQ7wlGj5mo7VEHf355ycEHePrdysPzTnVJw',
+    default: 'Expedition:11Y8eS_cyIQ7wlGj5mo7VEHf355ycEHePrdysPzTnVJw',
+    options: ['Expedition:11Y8eS_cyIQ7wlGj5mo7VEHf355ycEHePrdysPzTnVJw', 'The Horror:1K08sXHXyW7TAMXJnHOv9V3QtjxwjAf2-cvbaO-S2fDQ', 'Custom'],
   },
 };
 
