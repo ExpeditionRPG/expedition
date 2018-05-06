@@ -1062,6 +1062,20 @@ span.line {
     }
   }
 
+  .audioControls {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    opacity: 0.8;
+    #audioLoadingIndicator {
+      -webkit-animation: rotate 4s;
+         -moz-animation: rotate 4s;
+          -ms-animation: rotate 4s;
+           -o-animation: rotate 4s;
+              animation: rotate 4s;
+    }
+  }
+
   .questButtonWithIcon, .questButton, .searchResult {
     padding-left: size(base);
     padding-right: size(base);
@@ -1378,6 +1392,19 @@ $fontsizemap: (
 @-ms-keyframes fadein {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0); }
+  to   { transform: rotate(360deg); }
+}
+@-webkit-keyframes rotate {
+  from { transform: rotate(0); }
+  to   { transform: rotate(360deg); }
+}
+@-ms-keyframes rotate {
+  from { transform: rotate(0); }
+  to   { transform: rotate(360deg); }
 }
 
 @keyframes lds-ellipsis1 {

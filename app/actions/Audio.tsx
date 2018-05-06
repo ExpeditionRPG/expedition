@@ -1,5 +1,6 @@
 import Redux from 'redux'
 import {AudioSetAction} from './ActionTypes'
+import {AudioLoadingType} from '../reducers/StateTypes'
 
 
 export function audioSetIntensity(intensity: number) {
@@ -29,6 +30,12 @@ export function audioPause() {
 export function audioResume() {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch(audioSet({paused: false}));
+  }
+}
+
+export function audioLoadChange(loaded: AudioLoadingType) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    dispatch(audioSet({loaded}));
   }
 }
 

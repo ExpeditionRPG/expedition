@@ -12,7 +12,9 @@ export interface AnnouncementState {
   link: string;
 }
 
+export type AudioLoadingType = false | 'LOADING' | 'ERROR' | true;
 export interface AudioState {
+  loaded: AudioLoadingType;
   paused: boolean;
   intensity: number;
   peakIntensity: number;

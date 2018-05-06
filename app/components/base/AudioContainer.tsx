@@ -1,9 +1,10 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
 import Audio, {AudioStateProps, AudioDispatchProps} from './Audio'
+import {audioLoadChange} from '../../actions/Audio'
 import {changeSettings} from '../../actions/Settings'
 import {openSnackbar} from '../../actions/Snackbar'
-import {AppState, AudioState, SettingsType} from '../../reducers/StateTypes'
+import {AppState, AudioLoadingType, AudioState, SettingsType} from '../../reducers/StateTypes'
 
 const mapStateToProps = (state: AppState, ownProps: AudioStateProps): AudioStateProps => {
   return {
@@ -19,6 +20,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Audio
     disableAudio(): void {
       dispatch(openSnackbar('Audio not supported on this device; disabling.'));
       dispatch(changeSettings({audioEnabled: false}));
+    },
+    onLoadChange(loaded: AudioLoadingType): void {
+      dispatch(audioLoadChange(loaded));
     },
   };
 }

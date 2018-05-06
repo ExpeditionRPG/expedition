@@ -1,13 +1,13 @@
 import * as React from 'react'
 import {loadAudioLocalFile} from '../../actions/Audio'
-import {AudioState, CardName, CardPhase, SettingsType} from '../../reducers/StateTypes'
+import {AudioLoadingType, AudioState, CardName, CardPhase, SettingsType} from '../../reducers/StateTypes'
 import {getWindow} from '../../Globals'
 import {logEvent} from '../../Main'
-import {AUDIO_COMMAND_DEBOUNCE_MS} from '../../Constants'
+import {AUDIO_COMMAND_DEBOUNCE_MS, MUSIC_INTENSITY_MAX} from '../../Constants'
 const eachLimit = require('async/eachLimit');
 
 /* Notes on audio implementation:
-- intensity (0-36) used as baseline for combat situation, and changes slowly (mostly on loop reset).
+- intensity (0-MUSIC_INTENSITY_MAX) used as baseline for combat situation, and changes slowly (mostly on loop reset).
   User hears as different tracks on the four baseline instruments (drums, low strings, low brass, high strings)
 - peak intensity (0-1) used for quick changes, such as the timer.
   User hears as the matching high brass track.
@@ -48,7 +48,7 @@ const MUSIC_DEFINITIONS = {
       peakingInstrument: 'HighBrass',
       loopMs: 13712,
       minIntensity: 12,
-      maxIntensity: 36,
+      maxIntensity: MUSIC_INTENSITY_MAX,
       variants: 6,
     },
   },
@@ -80,6 +80,7 @@ export interface AudioStateProps {
 
 export interface AudioDispatchProps {
   disableAudio: () => void;
+  onLoadChange: (loaded: AudioLoadingType) => void;
 }
 
 export interface AudioProps extends AudioStateProps, AudioDispatchProps {}
@@ -93,7 +94,8 @@ export default class Audio extends React.Component<AudioProps, {}> {
   private intensity: number;
   private peakIntensity: number;
   private paused: boolean;
-  private loaded: null | 'LOADING' | 'LOADED';
+  private loaded: AudioLoadingType;
+  private onLoadChange: (loaded: AudioLoadingType) => void;
   private lastCommandTimestamp: number;
   private currentMusicTheme: MusicDefinition|null;
   private currentMusicTracks: number[];
@@ -109,6 +111,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
     this.musicNodes = [] as NodeSet[];
     this.paused = false;
     this.enabled = props.enabled;
+    this.onLoadChange = props.onLoadChange;
 
     try {
       this.ctx = new (getWindow().AudioContext as any || getWindow().webkitAudioContext as any)();
@@ -127,12 +130,18 @@ export default class Audio extends React.Component<AudioProps, {}> {
   // This will fire many times without any audio-related changes since it subscribes to settings
   // So we have to be careful in checking that it's actually an audio-related change,
   // And not a different event that contains valid-looking (but identical) audio info
-  componentWillReceiveProps(nextProps: any) {
+  componentWillReceiveProps(nextProps: Partial<AudioProps>) {
+    if (!nextProps.audio) {
+      return;
+    }
+
+    const newIntensity = Math.round(Math.min(MUSIC_INTENSITY_MAX, Math.max(0, nextProps.audio.intensity)));
+
     if (this.enabled !== nextProps.enabled) {
       if (nextProps.enabled) {
         this.enabled = true;
-        this.resumeMusic();
         this.loadFiles();
+        this.playAtIntensity(this.intensity);
       } else {
         this.pauseMusic();
         this.enabled = false;
@@ -159,6 +168,8 @@ export default class Audio extends React.Component<AudioProps, {}> {
     }
 
     if (!this.enabled) {
+      // Keep track of the intensity in case they enable mid-combat
+      this.intensity = newIntensity;
       return console.log('Skipping playing audio, audio currently disabled.');
     }
 
@@ -175,29 +186,9 @@ export default class Audio extends React.Component<AudioProps, {}> {
     }
 
     // MUSIC-SPECIFIC COMMANDS.
-    const newIntensity = Math.round(Math.min(36, Math.max(0, nextProps.audio.intensity)));
     const oldIntensity = this.props.audio.intensity;
     if (newIntensity !== oldIntensity) {
-      this.intensity = newIntensity;
-      if (newIntensity === 0) { // fade out
-        this.currentMusicTheme = null;
-        this.currentMusicTracks = [];
-        this.fadeOutMusic();
-      } else if (this.currentMusicTheme === null || oldIntensity === 0) { // Starting from silence, immediately start the theme
-        if (newIntensity <= 18) {
-          this.playNewMusicTheme(MUSIC_DEFINITIONS.combat.light);
-        } else {
-          this.playNewMusicTheme(MUSIC_DEFINITIONS.combat.heavy);
-        }
-      } else { // Shift in existing music; theme transitions happen immediately; shifts happen next loop
-        if (newIntensity > this.currentMusicTheme.maxIntensity) {
-          this.playNewMusicTheme(MUSIC_DEFINITIONS.combat.heavy);
-        } else if (newIntensity < this.currentMusicTheme.minIntensity) {
-          this.playNewMusicTheme(MUSIC_DEFINITIONS.combat.light);
-        } else {
-          this.updateExistingTheme(newIntensity - oldIntensity);
-        }
-      }
+      this.playAtIntensity(newIntensity, oldIntensity);
     }
 
     const newPeak = nextProps.audio.peakIntensity;
@@ -215,9 +206,40 @@ export default class Audio extends React.Component<AudioProps, {}> {
     }
   }
 
+  private playAtIntensity(newIntensity: number, oldIntensity = 0) {
+    this.intensity = newIntensity;
+    if (newIntensity === 0) {
+      // fade out
+      this.currentMusicTheme = null;
+      this.currentMusicTracks = [];
+      this.fadeOutMusic();
+    } else if (this.currentMusicTheme === null || oldIntensity === 0) {
+      // Starting from silence, immediately start the theme
+      if (newIntensity <= 18) {
+        this.playNewMusicTheme(MUSIC_DEFINITIONS.combat.light);
+      } else {
+        this.playNewMusicTheme(MUSIC_DEFINITIONS.combat.heavy);
+      }
+    } else {
+      // Shift in existing music; theme transitions happen immediately; shifts happen next loop
+      if (newIntensity > this.currentMusicTheme.maxIntensity) {
+        this.playNewMusicTheme(MUSIC_DEFINITIONS.combat.heavy);
+      } else if (newIntensity < this.currentMusicTheme.minIntensity) {
+        this.playNewMusicTheme(MUSIC_DEFINITIONS.combat.light);
+      } else {
+        this.updateExistingTheme(newIntensity - oldIntensity);
+      }
+    }
+  }
+
+  private setAudioLoading(loaded: AudioLoadingType) {
+    this.loaded = loaded;
+    this.onLoadChange(loaded);
+  }
+
   private loadFiles() {
     if (!this.loaded) {
-      this.loaded = 'LOADING';
+      this.setAudioLoading('LOADING');
       const musicFiles = Object.keys(MUSIC_DEFINITIONS).reduce((list: string[], musicClass: string) => {
         return list.concat(Object.keys(MUSIC_DEFINITIONS[musicClass]).reduce((list: string[], musicWeight: string) => {
           const weight = MUSIC_DEFINITIONS[musicClass][musicWeight];
@@ -231,6 +253,9 @@ export default class Audio extends React.Component<AudioProps, {}> {
       }, []);
       const files = [...SFX_FILES, ...musicFiles];
       eachLimit(files, 4, (file: string, callback: (err?: Error) => void) => {
+        if (!this.enabled) {
+          return callback();
+        }
         loadAudioLocalFile(this.ctx, 'audio/' + file + '.mp3', (err: Error|null, buffer: any) => {
           if (err) {
             console.log('Error loading audio file: ' + file);
@@ -242,8 +267,12 @@ export default class Audio extends React.Component<AudioProps, {}> {
       }, (err: Error) => {
         if (err) {
           console.error('Error loading audio files: ', err);
+          this.setAudioLoading('ERROR');
+        } else {
+          this.loaded = true;
+          this.setAudioLoading(this.enabled);
+          this.playAtIntensity(this.intensity);
         }
-        this.loaded = 'LOADED';
       });
     }
   }
@@ -287,20 +316,26 @@ export default class Audio extends React.Component<AudioProps, {}> {
     }
 
     if (!this.currentMusicTheme) {
-      return console.log('Skipping playing music, no theme or track specified.');
+      return this.playAtIntensity(this.intensity);
     }
 
     const theme = this.currentMusicTheme;
     let themeIntensity = Math.ceil((this.intensity - theme.minIntensity) / (theme.maxIntensity - theme.minIntensity) * theme.variants);
     const skippedInstruments = [Math.floor(Math.random() * theme.baselineInstruments.length)];
-    if (Math.random() < 0.18 && themeIntensity > 1) { // randomly go a bit down in intensity
+
+    if (Math.random() < 0.18 && themeIntensity > 1) {
+      // randomly go a bit down in intensity
       themeIntensity--;
-    } else if (Math.random() < 0.2 && themeIntensity < theme.variants) { // randomly go a bit up in intensity
+    } else if (Math.random() < 0.2 && themeIntensity < theme.variants) {
+      // randomly go a bit up in intensity
       themeIntensity++;
     }
-    if (Math.random() < 0.2) { // randomly play one less instrument
+
+    if (Math.random() < 0.2) {
+      // randomly play one less instrument
       skippedInstruments.push(Math.floor(Math.random() * theme.baselineInstruments.length));
-    } else if (Math.random() < 0.15) { // randomly play up to two fewer instruments
+    } else if (Math.random() < 0.15) {
+      // randomly play up to two fewer instruments
       skippedInstruments.push(Math.floor(Math.random() * theme.baselineInstruments.length));
       skippedInstruments.push(Math.floor(Math.random() * theme.baselineInstruments.length));
     }
@@ -386,7 +421,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
     }
   }
 
-  // TODO v2 nicer (albeit more complicated & bug prone) implementation would be to save the current spot in the audio
+  // TODO v2 a nicer, albeit more complicated & bug prone, implementation would be to save the current spot in the audio
   // By keeping track of currentTime https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/currentTime
   // And then resume playing the audio (and resume the timeout) from the previous spot (fading in from the end of fade out)
   // by passing in an offset to start() - https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/start

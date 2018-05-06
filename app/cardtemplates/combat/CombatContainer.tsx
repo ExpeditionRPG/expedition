@@ -1,6 +1,5 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-
 import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
 import {toPrevious, toCard} from '../../actions/Card'
 import {handleCombatTimerStart, handleCombatTimerHold, handleCombatTimerStop, tierSumDelta, adventurerDelta, handleCombatEnd, midCombatChoice, handleResolvePhase, generateCombatTemplate} from './Actions'

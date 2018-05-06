@@ -3,6 +3,7 @@ import {AudioSetAction, AudioStoreBufferAction} from '../actions/ActionTypes'
 import {AudioState} from './StateTypes'
 
 const initialState: AudioState = {
+  loaded: false,
   paused: false,
   intensity: 0,
   peakIntensity: 0,
