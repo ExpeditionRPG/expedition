@@ -190,7 +190,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
 
   onGutterClick(event: any) {
     const path: Element[] = event.domEvent.path;
-    if (!path.length) {
+    if (!path || !path.length) {
       return;
     }
 
