@@ -3,10 +3,10 @@ import * as Bluebird from 'bluebird'
 import {SessionClient} from './SessionClients'
 import {Event, EventInstance} from './Events'
 import {makeSecret} from 'expedition-qdl/lib/multiplayer/Session'
-import {Session as SessionAttributes} from 'expedition-qdl/lib/schema/multiplayer/Session'
-import {toSequelize} from './Schema'
+import {Session as SessionAttributes} from 'expedition-qdl/lib/schema/multiplayer/Sessions'
+import {toSequelize} from '../Schema'
 
-const SessionSequelize = toSequelize(new SessionAttributes({id: 0, secret: '', eventcounter: 0, locked: false}));
+const SessionSequelize = toSequelize(new SessionAttributes({id: 0, secret: '', eventCounter: 0, locked: false}));
 
 export interface SessionInstance extends Sequelize.Instance<SessionAttributes> {}
 
@@ -58,12 +58,12 @@ export class Session {
   }
 
   public create(): Bluebird<SessionInstance> {
-    return this.model.create({
+    return this.model.create(new SessionAttributes({
       id: Date.now(),
       secret: makeSecret(),
-      eventcounter: 0,
+      eventCounter: 0,
       locked: false,
-    });
+    }));
   }
 
   public getLargestEventID(session: number): Bluebird<number> {

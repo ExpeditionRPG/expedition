@@ -2,7 +2,7 @@ import {Quest, QuestInstance} from './Quests'
 import {Quest as QuestAttributes} from 'expedition-qdl/lib/schema/Quests'
 import {PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Constants'
 import {PLACEHOLDER_DATE} from 'expedition-qdl/lib/schema/SchemaBase'
-const Sequelize = require('sequelize');
+import Sequelize from 'sequelize'
 
 describe('quest', () => {
   let q: Quest;
@@ -65,7 +65,7 @@ describe('quest', () => {
     language: 'English',
   });
 
-  beforeEach((done: () => any) => {
+  beforeEach((done: DoneFn) => {
     const s = new Sequelize({dialect: 'sqlite', storage: ':memory:'})
     q = new Quest(s);
     q.model.sync()
@@ -75,8 +75,8 @@ describe('quest', () => {
       .then(() => {
         return q.create(expansionQuest);
       })
-      .then(() => {done();})
-      .catch((e: Error) => {throw e;});
+      .then(() => done())
+      .catch(done.fail);
   });
 
 

@@ -1,6 +1,9 @@
 import {AnalyticsEvent} from './AnalyticsEvents'
-import {testQuestEnd} from './AnalyticsEvents.test'
+import {AnalyticsEvent as AnalyticsEventAttributes} from 'expedition-qdl/lib/schema/AnalyticsEvents'
 import {User, UserAttributes, UserQuestsType} from './Users'
+
+// TODO: Useful test constants should go in a "testdata" folder or similar
+import {testQuestEnd} from './AnalyticsEvents.test'
 
 const Moment = require('moment');
 const Sequelize = require('sequelize');
@@ -10,20 +13,20 @@ describe('users', () => {
   let ae: AnalyticsEvent;
   let u: User;
   let mc: any;
-  beforeEach((done: () => any) => {
+  beforeEach((done: DoneFn) => {
     const s = new Sequelize({dialect: 'sqlite', storage: ':memory:'})
     mc = {post: sinon.spy()};
     ae = new AnalyticsEvent(s);
     ae.model.sync()
       .then(() => {
         u = new User(s, mc);
-        u.model.sync()
-          .then(() => {
-            u.associate({AnalyticsEvent: ae});
-          })
-          .then(() => {done();})
-          .catch((e: Error) => {throw e;});
-      });
+        return u.model.sync();
+      })
+      .then(() => {
+        return u.associate({AnalyticsEvent: ae});
+      })
+      .then(() => done())
+      .catch(done.fail);
   });
 
   const testUserData: UserAttributes = {
@@ -57,19 +60,27 @@ describe('users', () => {
   });
 
   describe('userQuests', () => {
-    it('returns valid results for players without and with quest histories', (done: DoneFn) => {
+    it('returns valid results for players without quest history', (done: DoneFn) => {
       u.upsert(testUserData).then(() => {
         return u.get('test');
       })
       .then((user: any) => u.getQuests(testUserData.id))
       .then((result: UserQuestsType) => {
         expect(result).toEqual({});
-        return ae.create({...testQuestEnd, user_id: testUserData.id});
+        done();
+      })
+      .catch(done.fail);
+    });
+
+
+    it('returns valid results for players with quest history', (done: DoneFn) => {
+      u.upsert(testUserData).then(() => {
+        return ae.create(new AnalyticsEventAttributes({...testQuestEnd, userID: testUserData.id}));
       })
       .then((user: any) => u.getQuests(testUserData.id))
       .then((quests: UserQuestsType) => {
         expect(Object.keys(quests).length).toEqual(1);
-        const result = quests[testQuestEnd.quest_id as string];
+        const result = quests[testQuestEnd.questID as string];
         expect(Moment(result.lastPlayed as any).isSame(testQuestEnd.created as any)).toEqual(true);
         done();
       }).catch(done.fail);

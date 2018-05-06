@@ -61,11 +61,10 @@ describe('feedback', () => {
         f.associate({Quest: q});
         q.associate({Feedback: f} as any);
         q.associate({Feedback: f, User: u} as any);
-        f.model.sync()
-          .then(() => {done();})
-          .catch((e: Error) => {throw e;});
+        return f.model.sync();
       })
-      .catch((e: Error) => {throw e;});
+      .then(() => done())
+      .catch(done.fail);
     ms = {send: (e: string[], s: string, m: string) => Promise.resolve()};
   });
 

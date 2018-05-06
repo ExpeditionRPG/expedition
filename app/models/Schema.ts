@@ -9,9 +9,10 @@ export function toSequelize(s: SchemaBase) {
     switch (m.type) {
       case 'String':
         if (m.maxLength === undefined) {
-          throw new Error('Missing maxLength decoration of field ' + k + ' for Seqeuelize string schema conversion');
+          type = Sequelize.TEXT;
+        } else {
+          type = Sequelize.STRING(m.maxLength);
         }
-        type = Sequelize.STRING(m.maxLength);
         break;
       case 'Date':
       case 'Object':

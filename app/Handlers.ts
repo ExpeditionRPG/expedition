@@ -8,6 +8,7 @@ import {Feedback, FeedbackType} from './models/Feedback'
 import {Quest, QuestInstance, QuestSearchParams, MAX_SEARCH_LIMIT} from './models/Quests'
 import {Quest as QuestAttributes} from 'expedition-qdl/lib/schema/Quests'
 import {Feedback as FeedbackAttributes} from 'expedition-qdl/lib/schema/Feedback'
+import {AnalyticsEvent as AnalyticsEventAttributes} from 'expedition-qdl/lib/schema/AnalyticsEvents'
 import {PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Constants'
 import {RenderedQuest, RenderedQuestInstance} from './models/RenderedQuests'
 import {User, UserQuestsType} from './models/Users'
@@ -202,18 +203,18 @@ export function postAnalyticsEvent(analyticsEvent: AnalyticsEvent, req: express.
     return res.status(500).end('Error reading request.');
   }
 
-  analyticsEvent.create({
+  analyticsEvent.create(new AnalyticsEventAttributes({
       category: req.params.category,
       action: req.params.action,
-      quest_id: body.questid,
-      user_id: body.userid,
-      quest_version: body.questversion,
+      questID: body.questid,
+      userID: body.userid,
+      questVersion: body.questversion,
       difficulty: body.difficulty,
       platform: body.platform,
       players: body.players,
       version: body.version,
       json: (body.data) ? JSON.stringify(body.data) : undefined,
-    }).then(() => {
+    })).then(() => {
       res.end('ok');
     }).catch((e: Error) => {
       console.error(e);

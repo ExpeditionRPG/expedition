@@ -1,24 +1,39 @@
-import {AnalyticsEvent, AnalyticsEventAttributes} from './AnalyticsEvents'
+import {AnalyticsEvent, AnalyticsEventInstance} from './AnalyticsEvents'
+import {AnalyticsEvent as AnalyticsEventAttributes} from 'expedition-qdl/lib/schema/AnalyticsEvents'
 import {Quest} from './Quests'
 
 const Sequelize = require('sequelize');
 
-export const testQuestEnd: AnalyticsEventAttributes = {
+export const testQuestEnd: AnalyticsEventAttributes = new AnalyticsEventAttributes({
   category: 'quest',
   action: 'end',
   created: new Date(),
-  quest_id: 'questid',
-  user_id: 'userid',
-  quest_version: 1,
-  difficulty: 'normal',
+  questID: 'questid',
+  userID: 'userid',
+  questVersion: 1,
+  difficulty: 'NORMAL',
   platform: 'ios',
   players: 5,
   version: '1.0.0',
-};
+});
 
 describe('AnalyticsEvent', () => {
   let ae: AnalyticsEvent;
   let q: Quest;
+
+  const testData = new AnalyticsEventAttributes({
+    category: 'category',
+    action: 'action',
+    created: new Date(),
+    questID: 'questid',
+    userID: 'userid',
+    questVersion: 1,
+    difficulty: 'NORMAL',
+    platform: 'ios',
+    players: 5,
+    version: '1.0.0',
+    json: '"test"',
+  });
 
   describe('submitAnalyticsEvent', () => {
     beforeEach((done: DoneFn) => {
@@ -37,19 +52,21 @@ describe('AnalyticsEvent', () => {
         .then(() => {
           ae = new AnalyticsEvent(s);
           ae.associate({Quest: q});
-          ae.model.sync()
-            .then(() => {done();})
-            .catch((e: Error) => {throw e;});
+          return ae.model.sync();
         })
-        .catch((e: Error) => {throw e;});
+        .then(() => done())
+        .catch(done.fail);
     });
 
-    // TODO once we have / need event getting, get and confirm entry here
     it('created an entry', (done: DoneFn) => {
-      ae.create(testQuestEnd)
+      ae.create(testData)
         .then(() => {
+          return ae.model.findOne({where: {userID: testData.userID}});
+        }).then((m: AnalyticsEventInstance) => {
+          expect(new AnalyticsEventAttributes(m.dataValues)).toEqual(testData);
           done();
-        });
+        })
+        .catch(done.fail);
     });
   });
 });

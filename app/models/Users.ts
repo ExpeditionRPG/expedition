@@ -111,18 +111,18 @@ export class User {
     return this.s.authenticate()
       .then(() => {
         return this.ae.model.findAll({
-          attributes: ['quest_id', [Sequelize.fn('MAX', Sequelize.col('created')), 'last_played']],
-          where: {user_id: id, category: 'quest', action: 'end'},
-          group: 'quest_id',
+          attributes: ['questID', [Sequelize.fn('MAX', Sequelize.col('created')), 'lastPlayed']],
+          where: {userID: id, category: 'quest', action: 'end'},
+          group: 'questID',
         })
       })
       .then((results: any[]) => {
         const userQuests = {} as UserQuestsType;
         (results || []).forEach((result: any) => {
-          const id = result.dataValues['quest_id'];
+          const id = result.dataValues['questID'];
           userQuests[id] = {
             ...userQuests[id],
-            lastPlayed: result.dataValues['last_played']
+            lastPlayed: result.dataValues['lastPlayed']
           };
         });
         return userQuests;
