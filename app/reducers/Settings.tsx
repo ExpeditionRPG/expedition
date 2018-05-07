@@ -6,7 +6,7 @@ import {ChangeSettingsAction} from '../actions/ActionTypes'
 import {getStorageBoolean, getStorageJson, getStorageNumber, getStorageString, setStorageKeyValue} from '../Globals'
 
 export const initialSettings: SettingsType = {
-  audioEnabled: getStorageBoolean('audioEnabled', !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent)),
+  audioEnabled: getStorageBoolean('audioEnabled', false),
   autoRoll: getStorageBoolean('autoRoll', false),
   contentSets: getStorageJson('contentSets', {horror: null}) as ContentSetsType,
   difficulty: getStorageString('difficulty', 'NORMAL') as DifficultyType,

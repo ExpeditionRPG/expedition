@@ -56,12 +56,13 @@ import {audioPause, audioResume} from './actions/Audio'
 import {toPrevious} from './actions/Card'
 import {setDialog} from './actions/Dialog'
 import {searchAndPlay} from './actions/Search'
+import {changeSettings} from './actions/Settings'
 import {openSnackbar} from './actions/Snackbar'
 import {silentLogin} from './actions/User'
 import {listSavedQuests} from './actions/SavedQuests'
 import {handleFetchErrors} from './actions/Web'
 import {getStore} from './Store'
-import {getAppVersion, getWindow, getGA, getDevicePlatform, getDocument, getNavigator, setGA, setupPolyfills} from './Globals'
+import {getAppVersion, getWindow, getGA, getDevicePlatform, getDocument, getNavigator, getStorageBoolean, setGA, setupPolyfills} from './Globals'
 import {getMultiplayerClient} from './Multiplayer'
 import {UserState} from './reducers/StateTypes'
 import {MultiplayerEvent} from 'expedition-qdl/lib/multiplayer/Events'
@@ -119,10 +120,16 @@ export function logEvent(name: string, argsInput: any): void {
 
 function setupDevice() {
   const window = getWindow();
-
-  // Apply class-specific styling
   const platform = getDevicePlatform();
+  // Platform-specific styles
   document.body.className += ' ' + platform;
+  // Default to audio enabled if not user specified in pre-bundled apps
+  // since the audio files are already part of the APK
+  // (unless the app is using an old / unsupported browser engine)
+  getStore().dispatch(changeSettings({
+    audioEnabled: getStorageBoolean('audioEnabled', !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent)),
+  }));
+
 
   if (platform === 'android') {
 
@@ -283,8 +290,7 @@ export function init() {
       }, 0);
     }
 
-    // Setup as web platform as default; we might find out later we're an app
-    window.platform = 'web';
+    window.platform = window.cordova ? 'cordova' : 'web';
     window.onpopstate = function(e) {
       getStore().dispatch(toPrevious({}));
       e.preventDefault();
