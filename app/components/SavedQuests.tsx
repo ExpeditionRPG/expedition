@@ -55,8 +55,10 @@ function renderList(props: SavedQuestsProps): JSX.Element {
     return (
       <Card title="Saved Quests">
         <p>You have no saved quests.</p>
-        <p>Click the upper right menu while playing a quest and click "Save Quest"
-           to save your position in the quest for later.</p>
+        <p>To save your position in a quest, open the top right menu while playing
+           and select "Save Quest".</p>
+        <p>Quests are saved to your device and are available without an internet
+           connection.</p>
       </Card>
     );
   }
