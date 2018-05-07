@@ -44,10 +44,10 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   # iOS
   cordova build ios
 
-  # Deploy web app to prod with 1 day cache for most files, 1 month cache for art assets
+  # Deploy web app to prod with 1 day cache for most files, 6 month cache for art assets
   export AWS_DEFAULT_REGION='us-east-2'
   aws s3 cp www s3://app.expeditiongame.com --recursive --exclude '*.mp3' --exclude '*.jpg' --exclude '*.png' --cache-control max-age=86400 --cache-control public
-  aws s3 cp www s3://app.expeditiongame.com --recursive --exclude '*' --include '*.mp3' --include '*.jpg' --include '*.png' --cache-control max-age=2592000 --cache-control public
+  aws s3 cp www s3://app.expeditiongame.com --recursive --exclude '*' --include '*.mp3' --include '*.jpg' --include '*.png' --cache-control max-age=15552000 --cache-control public
   aws s3 cp s3://app.expeditiongame.com/expedition.apk s3://app.expeditiongame.com/apk-archive/expedition-$version.apk --cache-control public
 
   # Upload the APK for side-loading
