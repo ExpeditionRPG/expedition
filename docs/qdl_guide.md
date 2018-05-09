@@ -375,6 +375,8 @@ Expedition uses [MathJS](http://mathjs.org/) to handle the context. If you're tr
 - Instruction: `> {{injured == true}} You'll be shown this instructional text if you are injured.`
 - Choices: `* {{hasPotion == true}} You'll only be shown this option if you have the potion.`
 
+**And / Or**: Logical operators with MathJS are a bit unusual, as AND is a single `&` and OR is a single `|`. For example, to check if both `a` and `b` are equal to one, you would write `{{a == 1 & b == 1}}`.
+
 **Syntax notes:** Boolean variables are lowercase, ie `true` and `false`. Relative operations (for example `gold -= 5`) are not currently supported, so you'll need to write them out in long form, ie `gold = gold - 5`.
 
 **Debugging note:** in the Quest Creator, if you use "Play from Cursor", context variables that are defined in earlier cards will not be set. We're currently working on additional tooling around context to help you set context variables without having to replay large portions of your quest, but a handy debugging trick for now is to set the variables to your desired values at the top of the card you're starting from - just make sure to remove them when you're done debugging!
