@@ -94,7 +94,7 @@ function setupTapEvents() {
 
 // TODO record modal views as users navigate: ReactGA.modalview('/about/contact-us');
 // likely as a separate logView or logNavigate or something
-export function logEvent(name: string, argsInput: any): void {
+export function logEvent(name: string, argsInput: {[key: string]: any}): void {
   const ga = getGA();
   if (ga) {
     ga.event({

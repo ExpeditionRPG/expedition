@@ -9,12 +9,12 @@ describe('Multiplayer actions', () => {
     it('rejects ACTIONs when id is not an increment');
   });
 
-  describe('remotePlayNewSession', () => {
+  describe('multiplayerNewSession', () => {
     it('creates a new session');
     it('catches and logs web errors');
   });
 
-  describe('remotePlayConnect', () => {
+  describe('multiplayerConnect', () => {
     it('connects to a session');
     it('catches and logs web errors');
   });

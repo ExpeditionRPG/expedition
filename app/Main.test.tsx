@@ -1,6 +1,6 @@
 import * as Redux from 'redux'
 import {AppStateWithHistory} from './reducers/StateTypes'
-import {init} from './Main'
+import {init, logEvent} from './Main'
 import {installStore} from './Store'
 import {setDocument, setWindow} from './Globals'
 import {newMockStoreWithInitializedState} from './Testing'
@@ -82,5 +82,10 @@ describe('React', () => {
   describe('logEvent', () => {
     it('logs to firebase if firebase set up'); // $10
     it('logs to google analytics if GA set up'); // $10
+    it('ga & firebase work if no args passed');
+    it('ga & firebase work if lots of args passed');
+    it('does not break when neither GA nor firebase set up', () => {
+      expect(() => logEvent('event', {})).not.toThrow();
+    });
   });
 });

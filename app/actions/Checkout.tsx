@@ -19,11 +19,11 @@ export function toCheckout(user: UserState, amount: number) {
   return (dispatch: Redux.Dispatch<any>): any => {
     if (!user || !user.loggedIn) {
       dispatch(login({callback: (user: UserState) => {
-        logEvent('to_checkout', amount);
+        logEvent('to_checkout', {value: amount});
         dispatch(toCard({name: 'CHECKOUT', phase: 'ENTRY'}));
       }}));
     } else {
-      logEvent('to_checkout', amount);
+      logEvent('to_checkout', {value: amount});
       dispatch(toCard({name: 'CHECKOUT', phase: 'ENTRY'}));
     }
   }
@@ -46,12 +46,12 @@ export function checkoutSubmit(stripeToken: string, checkout: CheckoutState, use
     })
     .then(handleFetchErrors)
     .then((response: Response) => {
-      logEvent('checkout_success', checkout.amount);
+      logEvent('checkout_success', {value: checkout.amount});
       dispatch(toCard({name: 'CHECKOUT', phase: 'DONE'}));
       dispatch(checkoutSetState({processing: false}));
     })
     .catch((error: Error) => {
-      logEvent('checkout_submit_err', error);
+      logEvent('checkout_submit_err', {label: error});
       dispatch(openSnackbar('Error encountered: ' + error));
       dispatch(toCard({name: 'CHECKOUT', phase: 'ENTRY'}));
       dispatch(checkoutSetState({processing: false}));

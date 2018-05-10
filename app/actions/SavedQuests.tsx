@@ -1,6 +1,7 @@
 import {SavedQuestListAction, SavedQuestDeletedAction, SavedQuestStoredAction, SavedQuestSelectedAction, QuestNodeAction} from './ActionTypes'
 import {SavedQuestMeta} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
+import {logEvent} from '../Main'
 import {getStorageJson, setStorageKeyValue, getCheerio} from '../Globals'
 import {SAVED_QUESTS_KEY} from '../Constants'
 import {initQuest} from './Quest'
@@ -41,6 +42,7 @@ export function deleteSavedQuest(id: string, ts: number) {
 }
 
 export function storeSavedQuest(node: ParserNode, details: QuestDetails, ts: number): SavedQuestStoredAction {
+  logEvent('quest_save', { ...details, action: details.title, label: details.id });
   // Update the listing
   const savedQuests = getSavedQuestMeta();
   savedQuests.push({ts, details});
@@ -85,6 +87,7 @@ export function loadSavedQuest(id: string, ts: number): QuestNodeAction {
     throw new Error('Could not load quest details.');
   }
 
+  logEvent('quest_save_load', { ...details, action: details.title, label: details.id });
   const data: SavedQuest = getStorageJson(savedQuestKey(id, ts), {}) as any;
   if (!data.xml || !data.path) {
     throw new Error('Could not load quest.');

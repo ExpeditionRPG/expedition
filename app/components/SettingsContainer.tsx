@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Setti
       dispatch(setDialog('EXPANSION_SELECT'));
     },
     onExperimentalChange: (v: boolean) => {
-      logEvent('experimental_settings_changed_to', v.toString());
+      logEvent('experimental_settings_changed_to', {label: v.toString()});
       dispatch(changeSettings({experimental: v}));
     },
     onShowHelpChange: (v: boolean) => {

@@ -21,14 +21,14 @@ const mapStateToProps = (state: AppState, ownProps: any): CheckoutStateProps => 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CheckoutDispatchProps => {
   return {
     onError: (err: string): void => {
-      logEvent('checkout_err', err);
+      logEvent('checkout_err', {label: err});
       dispatch(openSnackbar('Error encountered: ' + err));
     },
     onHome: (): void => {
       dispatch(toPrevious({name: 'FEATURED_QUESTS'}));
     },
     onPhaseChange: (phase: CheckoutPhase): void => {
-      logEvent('checkout_phase', phase);
+      logEvent('checkout_phase', {label: phase});
       dispatch(checkoutSetState({phase}));
     },
     onStripeLoad: (stripe: stripe.Stripe): void => {

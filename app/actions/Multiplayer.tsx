@@ -20,7 +20,7 @@ export function remotePlayDisconnect() {
   return {type: 'MULTIPLAYER_DISCONNECT'};
 }
 
-export function remotePlayNewSession(user: UserState) {
+export function multiplayerNewSession(user: UserState) {
   return (dispatch: Redux.Dispatch<any>): any => {
     fetch(remotePlaySettings.newSessionURI, {
       method: 'POST',
@@ -31,23 +31,22 @@ export function remotePlayNewSession(user: UserState) {
       credentials: 'include',
     })
     .then(handleFetchErrors)
-    .then((response: Response) => {
-      return response.json();
-    })
+    .then((response: Response) => response.json())
     .then((data: {secret: string}) => {
       if (!data.secret) {
         return dispatch(openSnackbar('Error parsing new session secret'));
       }
-      return dispatch(remotePlayConnect(user, data.secret));
+      logEvent('MULTIPLAYER_new_session', {label: data.secret});
+      return dispatch(multiplayerConnect(user, data.secret));
     })
     .catch((error: Error) => {
-      logEvent('MULTIPLAYER_new_session_err', error.toString());
+      logEvent('MULTIPLAYER_new_session_err', {label: error.toString()});
       dispatch(openSnackbar('Error creating session: ' + error.toString()));
     });
   };
 }
 
-export function remotePlayConnect(user: UserState, secret: string) {
+export function multiplayerConnect(user: UserState, secret: string) {
   let sessionID = '';
   const clientID = user.id.toString();
   const instanceID = Date.now().toString();
@@ -85,7 +84,7 @@ export function remotePlayConnect(user: UserState, secret: string) {
       return c.connect(sessionID, secret);
     })
     .catch((error: Error) => {
-      logEvent('MULTIPLAYER_connect_err', error.toString());
+      logEvent('MULTIPLAYER_connect_err', {label: error.toString()});
       console.error(error);
       dispatch(openSnackbar('Error connecting: ' + error.toString()));
     });
@@ -113,7 +112,7 @@ export function loadMultiplayer(user: UserState) {
       dispatch(toCard({name: 'REMOTE_PLAY', phase: 'CONNECT'}));
     })
     .catch((error: Error) => {
-      logEvent('MULTIPLAYER_init_err', error.toString());
+      logEvent('MULTIPLAYER_init_err', {label: error.toString()});
       dispatch(openSnackbar('Online multiplayer service unavailable: ' + error.toString()));
     })
   };
