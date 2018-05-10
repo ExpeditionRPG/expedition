@@ -13,6 +13,7 @@ import {
   AppState,
   MultiplayerSessionMeta,
   SavedQuestMeta,
+  UserQuestsType,
 } from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../cardtemplates/TemplateTypes'
@@ -128,6 +129,11 @@ export interface UserLoginAction extends Redux.Action {
 
 export interface UserLogoutAction extends Redux.Action {
   type: 'USER_LOGOUT';
+}
+
+export interface UserQuestsAction extends Redux.Action {
+  type: 'USER_QUESTS';
+  quests: UserQuestsType;
 }
 
 export interface SnackbarOpenAction extends Redux.Action {

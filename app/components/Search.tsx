@@ -4,6 +4,7 @@ import FlatButton from 'material-ui/FlatButton'
 import MenuItem from 'material-ui/MenuItem'
 import SelectField from 'material-ui/SelectField'
 import TextField from 'material-ui/TextField'
+import DoneIcon from 'material-ui/svg-icons/action/done'
 
 import Button from './base/Button'
 import Card from './base/Card'
@@ -35,6 +36,7 @@ export interface SearchDispatchProps {
 
 export interface SearchProps extends SearchStateProps, SearchDispatchProps {};
 
+
 // We make this a react component to hold a bit of state and avoid sending
 // redux actions for every single change to input.
 export interface SearchSettingsCardProps {
@@ -43,7 +45,6 @@ export interface SearchSettingsCardProps {
   settings: SettingsType;
   onSearch: (search: SearchSettings, settings: SettingsType) => void;
 }
-
 
 export class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
   state: SearchSettings;
@@ -198,6 +199,7 @@ export function formatPlayPeriod(minMinutes: number, maxMinutes: number): string
 
 export interface SearchResultProps {
   index: number;
+  lastPlayed: Date | null;
   quest: QuestDetails;
   search: SearchSettings;
   onQuest: (quest: QuestDetails) => void;
@@ -217,10 +219,14 @@ export function renderResult(props: SearchResultProps): JSX.Element {
       </div>
     );
   }
+  const classes = ['searchResult'];
+  if (props.lastPlayed) {
+    classes.push('played')
+  }
 
   return (
     <Button key={props.index} onTouchTap={() => props.onQuest(quest)} remoteID={'quest-'+props.index}>
-      <div className="searchResult">
+      <div className={classes.join(' ')}>
         <div className="title">{quest.title}</div>
         <div className="summary">
           <Truncate lines={3}>
@@ -236,6 +242,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
         <span className="expansions">
           {quest.expansionhorror && <img className="inline_icon" src="images/horror_small.svg"></img>}
         </span>
+        <div className="indicators">{props.lastPlayed && <DoneIcon className="questPlayedIcon" />}</div>
       </div>
     </Button>
   );
@@ -243,7 +250,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
 
 function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
   const results: JSX.Element[] = (props.results || []).map((quest: QuestDetails, index: number) => {
-    return renderResult({index, quest, search: props.search, onQuest: props.onQuest});
+    return renderResult({index, quest, search: props.search, onQuest: props.onQuest, lastPlayed: (props.user.quests[quest.id] || {}).lastPlayed});
   });
 
   return (
@@ -266,8 +273,16 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
   );
 }
 
-function renderDetails(props: SearchProps): JSX.Element {
-  const quest = props.selected;
+export interface SearchDetailsProps {
+  isDirectLinked: boolean;
+  lastPlayed: Date | null;
+  quest: QuestDetails | null;
+  onPlay: (quest: QuestDetails, isDirectLinked: boolean) => void;
+  onReturn: () => void;
+}
+
+export function renderDetails(props: SearchDetailsProps): JSX.Element {
+  const quest = props.quest;
   if (!quest) {
     return <Card title="Quest Details">Loading...</Card>
   }
@@ -280,9 +295,12 @@ function renderDetails(props: SearchProps): JSX.Element {
         <div>{quest.summary}</div>
         <div className="author">by {quest.author}</div>
         {(quest.ratingcount && quest.ratingcount >= 1) ? <StarRating readOnly={true} value={+ratingAvg} quantity={quest.ratingcount}/> : ''}
+        <div className="indicators">
+          {props.lastPlayed && <div className="lastPlayed"><DoneIcon className="inline_icon" /> Last played {Moment(props.lastPlayed).fromNow()}</div>}
+        </div>
       </div>
       <Button className="bigbutton" onTouchTap={(e)=>props.onPlay(quest, props.isDirectLinked)} remoteID="play">Play</Button>
-      <Button onTouchTap={(e)=>props.onReturn()} remoteID="back">Pick a different quest</Button>
+      <Button id="searchDetailsBackButton" onTouchTap={(e)=>props.onReturn()} remoteID="back">Pick a different quest</Button>
       <div className="searchDetailsExtended">
         <h3>Details</h3>
         <table className="searchDetailsTable">
@@ -361,7 +379,13 @@ const Search = (props: SearchProps): JSX.Element => {
     case 'PRIVATE':
       return renderResults(props, true);
     case 'DETAILS':
-      return renderDetails(props);
+      return renderDetails({
+        isDirectLinked: props.isDirectLinked,
+        lastPlayed: (props.user.quests[(props.selected || {id: '-1'}).id] || {}).lastPlayed,
+        quest: props.selected,
+        onPlay: props.onPlay,
+        onReturn: props.onReturn,
+      });
     default:
       throw new Error('Unknown search phase ' + props.phase);
   }

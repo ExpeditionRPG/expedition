@@ -135,7 +135,11 @@ export interface SearchState {
   searching: boolean;
 }
 
-
+export interface UserQuestsType {
+  [questId:string]: {
+    lastPlayed: Date;
+  };
+}
 
 export interface UserState {
   loggedIn: boolean;
@@ -143,6 +147,7 @@ export interface UserState {
   name: string;
   image: string;
   email: string;
+  quests: UserQuestsType;
 }
 
 export interface UserFeedbackState {

@@ -2,7 +2,7 @@ import Redux from 'redux'
 import * as Raven from 'raven-js'
 import {remoteify} from './ActionTypes'
 import {toCard} from './Card'
-import {handleFetchErrors} from './Web'
+import {handleFetchErrors, fetchUserQuests} from './Web'
 import {openSnackbar} from './Snackbar'
 import {UserState} from '../reducers/StateTypes'
 import {loggedOutUser} from '../reducers/User'
@@ -12,7 +12,7 @@ import {getGA, getGapi} from '../Globals'
 declare var gapi: any;
 declare var window: any;
 
-type UserLoginCallback = (user: UserState, err?: string) => any;
+export type UserLoginCallback = (user: UserState, err?: string) => any;
 
 function loadGapi(callback: (gapi: any, async: boolean) => void) {
   const gapi = getGapi();
@@ -51,9 +51,7 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
     }),
   })
   .then(handleFetchErrors)
-  .then((response: Response) => {
-    return response.text();
-  })
+  .then((response: Response) => response.text())
   .then((userResult: string) => {
     let id = '';
     try {
@@ -71,6 +69,7 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
       name: user.name,
       image: user.image,
       email: user.email,
+      quests: {}, // Requested separately; cleared for now since it's a new user
     });
   }).catch((error: Error) => {
     console.log('Request failed', error);
@@ -146,23 +145,24 @@ function loginCordova(callback: UserLoginCallback) {
   });
 }
 
-export function silentLogin(a: {callback?: (user: UserState) => void}) {
+export function silentLogin(a: {callback?: (user: UserState) => void}, loginFunc = silentLoginWeb) {
   return (dispatch: Redux.Dispatch<any>) => {
     const loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
       // Since it's silent, do nothing with error
       dispatch({type: 'USER_LOGIN', user});
       a.callback && a.callback(user);
+      dispatch(fetchUserQuests());
     };
 
     if (window.plugins && window.plugins.googleplus) {
       silentLoginCordova(loginCallback);
     } else {
-      silentLoginWeb(loginCallback);
+      loginFunc(loginCallback);
     }
   };
 }
 
-export function login(a: {callback: (user: UserState) => any}) {
+export function login(a: {callback: (user: UserState) => any}, loginFunc = loginWeb) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
       if (err) {
@@ -170,12 +170,13 @@ export function login(a: {callback: (user: UserState) => any}) {
       }
       dispatch({type: 'USER_LOGIN', user});
       a.callback(user);
+      dispatch(fetchUserQuests());
     }
 
     if (window.plugins && window.plugins.googleplus) {
       loginCordova(loginCallback);
     } else {
-      loginWeb(loginCallback);
+      loginFunc(loginCallback);
     }
   };
 }

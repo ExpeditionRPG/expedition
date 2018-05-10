@@ -1,6 +1,6 @@
 import Redux from 'redux'
 import {UserState} from './StateTypes'
-import {UserLoginAction} from '../actions/ActionTypes'
+import {UserLoginAction, UserQuestsAction} from '../actions/ActionTypes'
 
 export const loggedOutUser: UserState = {
   loggedIn: false,
@@ -8,6 +8,7 @@ export const loggedOutUser: UserState = {
   name: '',
   image: '',
   email: '',
+  quests: {},
 };
 
 export function user(state: UserState = loggedOutUser, action: Redux.Action): UserState {
@@ -16,6 +17,8 @@ export function user(state: UserState = loggedOutUser, action: Redux.Action): Us
       return (action as UserLoginAction).user;
     case 'USER_LOGOUT':
       return loggedOutUser;
+    case 'USER_QUESTS':
+      return {...state, quests: (action as UserQuestsAction).quests};
     default:
       return state;
   }

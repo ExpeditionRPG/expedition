@@ -1079,6 +1079,9 @@ span.line {
   .questButtonWithIcon, .questButton, .searchResult {
     padding-left: size(base);
     padding-right: size(base);
+    &.played {
+      opacity: 0.65;
+    }
     .title {
       line-height: $lineheight;
       font-family: $headerFont;
@@ -1151,6 +1154,16 @@ span.line {
         }
       }
     }
+    .indicators {
+      position: absolute;
+      top: size(base);
+      right: size(base);
+      opacity: 0.65;
+      svg {
+        height: fontsize(interactive) !important;
+        width: fontsize(interactive) !important;
+      }
+    }
   }
   .questButtonWithIcon {
     .inline_icon {
@@ -1160,12 +1173,21 @@ span.line {
 
   .searchDetails {
     text-align: center;
-    margin-top: size(large);
+    margin-top: size(base);
     margin-bottom: size(large);
 
     .author {
       padding-top: size(small);
       font-style: italic;
+    }
+
+    .indicators {
+      opacity: 0.65;
+      padding-top: size(small);
+      svg {
+        height: fontsize(flavor) !important;
+        width: fontsize(flavor) !important;
+      }
     }
   }
 

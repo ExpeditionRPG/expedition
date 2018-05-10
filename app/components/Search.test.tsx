@@ -1,7 +1,15 @@
 import * as React from 'react'
 import {shallow, render} from 'enzyme'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
-import {formatPlayPeriod, renderResult, SearchSettingsCard, SearchSettingsCardProps, SearchResultProps} from './Search'
+import {
+  formatPlayPeriod,
+  renderDetails,
+  renderResult,
+  SearchDetailsProps,
+  SearchSettingsCard,
+  SearchSettingsCardProps,
+  SearchResultProps
+} from './Search'
 import {initialSearch} from '../reducers/Search'
 import {loggedOutUser} from '../reducers/User'
 import {initialSettings} from '../reducers/Settings'
@@ -55,12 +63,14 @@ describe('Search', () => {
   });
 
   describe('Result', () => {
-    function setup(questTitle: string) {
+    function setup(questTitle: string, overrides?: Partial<SearchResultProps>) {
       const props: SearchResultProps = {
         index: 0,
+        lastPlayed: null,
         quest: FEATURED_QUESTS.filter((el) => el.title === questTitle)[0],
         search: TEST_SEARCH,
         onQuest: jasmine.createSpy('onQuest'),
+        ...overrides,
       };
       const wrapper = render(renderResult(props), renderOptions);
       return {props, wrapper};
@@ -75,6 +85,16 @@ describe('Search', () => {
       const {props, wrapper} = setup('Learning 2: The Horror');
       expect(wrapper.html().indexOf('horror_small.svg') !== -1).toBe(true);
     });
+
+    it('displayed last played date if quest has been played before', () => {
+      const {props, wrapper} = setup('Learning to Adventure', {lastPlayed: new Date()});
+      expect(wrapper.html().indexOf('questPlayedIcon') !== -1).toBe(true);
+    });
+
+    it('does not display last played date if quest has not been played', () => {
+      const {props, wrapper} = setup('Learning to Adventure');
+      expect(wrapper.html().indexOf('questPlayedIcon') === -1).toBe(true);
+    });
   });
 
   describe('Results', () => {
@@ -83,6 +103,43 @@ describe('Search', () => {
   });
 
   describe('Details', () => {
-    it('renders selected quest details');
+    function setup(questTitle: string, overrides?: Partial<SearchDetailsProps>) {
+      const props: SearchDetailsProps = {
+        isDirectLinked: false,
+        lastPlayed: null,
+        quest: FEATURED_QUESTS.filter((el) => el.title === questTitle)[0],
+        onPlay: jasmine.createSpy('onPlay'),
+        onReturn: jasmine.createSpy('onReturn'),
+        ...overrides,
+      };
+      const wrapper = render(renderDetails(props), renderOptions);
+      return {props, wrapper};
+    }
+
+
+    it('renders selected quest details', () => {
+      const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
+      const {props, wrapper} = setup(quest.title);
+      expect(wrapper.html().indexOf(quest.title) !== -1).toBe(true);
+      expect(wrapper.html().indexOf(quest.genre as string) !== -1).toBe(true);
+      expect(wrapper.html().indexOf(quest.summary) !== -1).toBe(true);
+      expect(wrapper.html().indexOf(quest.author) !== -1).toBe(true);
+    });
+
+    it('shows last played information if it has been played before', () => {
+      const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
+      const {props, wrapper} = setup(quest.title, {lastPlayed: new Date()});
+      expect(wrapper.html().toLowerCase().indexOf('last played') !== -1).toBe(true);
+    });
+
+    it('does not show last played infomation if it does not exist', () => {
+      const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
+      const {props, wrapper} = setup(quest.title, {lastPlayed: null});
+      expect(wrapper.html().toLowerCase().indexOf('last played') !== -1).toBe(false);
+    });
+
+    it('prompts for user count and multitouch if playing direct linked');
+    it('goes directly to playing quest if not direct linked');
+    it('allows users to go back');
   });
 });
