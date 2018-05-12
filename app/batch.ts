@@ -1,5 +1,6 @@
-import {QuestInstance} from './models/Quests'
-import {models} from './models/Database'
+import {Database, QuestInstance} from './models/Database'
+import Config from './config'
+import Sequelize from 'sequelize'
 
 const request = require('request');
 
@@ -25,7 +26,14 @@ function doFn(quest: QuestInstance) {
 }
 
 function main() {
-  models.Quest.model.findAll().then((quests: QuestInstance[]) => {
+  const db = new Database(new Sequelize(Config.get('DATABASE_URL'), {
+    dialectOptions: {
+      ssl: true,
+    },
+    logging: (Config.get('SEQUELIZE_LOGGING') === 'true'),
+  }));
+
+  db.quests.findAll().then((quests: QuestInstance[]) => {
       console.log('Running job over ' + quests.length + ' quests');
       quests.map((q: QuestInstance) => {
         doFn(q);

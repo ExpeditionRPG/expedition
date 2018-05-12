@@ -67,12 +67,15 @@ export function toSequelize(s: SchemaBase) {
 }
 
 export function prepare<T extends SchemaBase>(s: T): T {
+  const result: any = {};
   const keys = Object.keys(s);
   for (const k of keys) {
     // Swap out placeholders for nulls
     if ((s as any)[k] === PLACEHOLDER_DATE) {
-      (s as any)[k] = null;
+      result[k] = null;
+    } else {
+      result[k] = (s as any)[k];
     }
   }
-  return s;
+  return result;
 }

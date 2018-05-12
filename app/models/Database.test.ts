@@ -1,5 +1,3 @@
 describe('database', () => {
-  it('can get models');
-
-  it('can get base sequelize instance');
+  it('exists', () => {}); // See TestData.test.ts for testing of DB models
 });

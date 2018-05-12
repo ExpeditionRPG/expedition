@@ -6,7 +6,6 @@ import * as http from 'http'
 
 import config from './config'
 import Routes, {setupWebsockets} from './Routes'
-import * as oauth2 from './lib/oauth2'
 import logging from './lib/logging'
 
 const app = express();
@@ -44,7 +43,6 @@ const setupSession = function(app: any) {
 
   // TODO: Use postgres session storage (to prevent session loss due to restarting task)
   app.use(passport.session());
-  app.use(oauth2.router);
 };
 
 const setupRoutes = function(app: any) {

@@ -1,15 +1,16 @@
 import * as express from 'express'
 import Config from './config'
 import * as Mail from './Mail'
-import * as oauth2 from './lib/oauth2'
+import {oauth2Template, installOAuthRoutes} from './lib/oauth2'
 import * as Handlers from './Handlers'
 import * as MultiplayerHandlers from './multiplayer/Handlers'
 import * as Stripe from './Stripe'
-import {models} from './models/Database'
+import {Database} from './models/Database'
 import * as WebSocket from 'ws';
 import * as http from 'http';
 import {installRoutes as installAdminRoutes} from './admin/Routes'
 import {limitCors} from './lib/cors'
+import Sequelize from 'sequelize'
 
 const RateLimit = require('express-rate-limit');
 
@@ -19,7 +20,7 @@ const mailchimp = (Config.get('NODE_ENV') !== 'dev' && Config.get('MAILCHIMP_KEY
 // Use the oauth middleware to automatically get the user's profile
 // information and expose login/logout URLs to templates.
 const Router = express.Router();
-Router.use(oauth2.template);
+Router.use(oauth2Template);
 
 const publishLimiter = new RateLimit({
   windowMs: 60*1000, // 1 minute window
@@ -46,28 +47,36 @@ function requireAuth(req: express.Request, res: express.Response, next: express.
   next();
 }
 
+const db = new Database(new Sequelize(Config.get('DATABASE_URL'), {
+  dialectOptions: {
+    ssl: true,
+  },
+  logging: (Config.get('SEQUELIZE_LOGGING') === 'true'),
+}));
+
 Router.get('/healthcheck', limitCors, Handlers.healthCheck);
 Router.get('/announcements', limitCors, Handlers.announcement);
-Router.post('/analytics/:category/:action', limitCors, (req, res) => {Handlers.postAnalyticsEvent(models.AnalyticsEvent, req, res);});
-Router.post('/quests', limitCors, (req, res) => {Handlers.search(models.Quest, req, res);});
-Router.get('/raw/:partition/:quest/:version', limitCors, (req, res) => {Handlers.questXMLHandler(models.Quest, models.RenderedQuest, req, res);});
-Router.post('/publish/:id', publishLimiter, limitCors, requireAuth, (req, res) => {Handlers.publish(models.Quest, req, res);});
-Router.post('/unpublish/:quest', limitCors, requireAuth, (req, res) => {Handlers.unpublish(models.Quest, req, res);});
-Router.post('/quest/feedback/:type', limitCors, (req, res) => {Handlers.feedback(Mail, models.Feedback, req, res);});
+Router.post('/analytics/:category/:action', limitCors, (req, res) => {Handlers.postAnalyticsEvent(db, req, res);});
+Router.post('/quests', limitCors, (req, res) => {Handlers.search(db, req, res);});
+Router.get('/raw/:partition/:quest/:version', limitCors, (req, res) => {Handlers.questXMLHandler(db, req, res);});
+Router.post('/publish/:id', publishLimiter, limitCors, requireAuth, (req, res) => {Handlers.publish(db, Mail, req, res);});
+Router.post('/unpublish/:quest', limitCors, requireAuth, (req, res) => {Handlers.unpublish(db, req, res);});
+Router.post('/quest/feedback/:type', limitCors, (req, res) => {Handlers.feedback(db, Mail, req, res);});
 Router.post('/user/subscribe', limitCors, (req, res) => {Handlers.subscribe(mailchimp, Config.get('MAILCHIMP_PLAYERS_LIST_ID'), req, res);});
-Router.get('/user/quests', limitCors, requireAuth, (req, res) => {Handlers.userQuests(models.User, req, res);});
-Router.get('/multiplayer/v1/user', limitCors, requireAuth, (req, res) => {MultiplayerHandlers.user(models.SessionClient, models.Event, req, res);});
-Router.post('/multiplayer/v1/new_session', sessionLimiter, limitCors, requireAuth, (req, res) => {MultiplayerHandlers.newSession(models.Session, req, res);});
-Router.post('/multiplayer/v1/connect', limitCors, requireAuth, (req, res) => {MultiplayerHandlers.connect(models.Session, models.SessionClient, req, res);});
+Router.get('/user/quests', limitCors, requireAuth, (req, res) => {Handlers.userQuests(db, req, res);});
+Router.get('/multiplayer/v1/user', limitCors, requireAuth, (req, res) => {MultiplayerHandlers.user(db, req, res);});
+Router.post('/multiplayer/v1/new_session', sessionLimiter, limitCors, requireAuth, (req, res) => {MultiplayerHandlers.newSession(db, req, res);});
+Router.post('/multiplayer/v1/connect', limitCors, requireAuth, (req, res) => {MultiplayerHandlers.connect(db, req, res);});
 Router.post('/stripe/checkout', limitCors, (req, res) => {Stripe.checkout(req, res);});
 
-installAdminRoutes(Router);
+installAdminRoutes(db, Router);
+installOAuthRoutes(db, Router);
 
 export function setupWebsockets(server: any) {
   const wss = new WebSocket.Server({
     server,
     verifyClient: (info: any, cb: (verified: boolean)=>any) => {
-      MultiplayerHandlers.verifyWebsocket(models.SessionClient, info, cb);
+      MultiplayerHandlers.verifyWebsocket(db, info, cb);
     }
   });
 
@@ -78,7 +87,7 @@ export function setupWebsockets(server: any) {
 
   wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     ws.on('error', (e: Error) => console.error(e));
-    MultiplayerHandlers.websocketSession(models.Session, models.SessionClient, ws, req);
+    MultiplayerHandlers.websocketSession(db.models.Session, db.models.SessionClient, ws, req);
   });
 }
 

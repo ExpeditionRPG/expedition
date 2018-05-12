@@ -3,15 +3,15 @@ import * as cheerio from 'cheerio'
 import * as express from 'express'
 import * as request from 'request-promise'
 import * as memoize from 'memoizee'
-import {AnalyticsEvent} from './models/AnalyticsEvents'
-import {Feedback, FeedbackType} from './models/Feedback'
-import {Quest, QuestInstance, QuestSearchParams, MAX_SEARCH_LIMIT} from './models/Quests'
-import {Quest as QuestAttributes} from 'expedition-qdl/lib/schema/Quests'
-import {Feedback as FeedbackAttributes} from 'expedition-qdl/lib/schema/Feedback'
-import {AnalyticsEvent as AnalyticsEventAttributes} from 'expedition-qdl/lib/schema/AnalyticsEvents'
+import {FeedbackType, submitRating, submitFeedback, submitReportQuest} from './models/Feedback'
+import {QuestSearchParams, MAX_SEARCH_LIMIT, searchQuests, getQuest, publishQuest, unpublishQuest} from './models/Quests'
+import {Quest} from 'expedition-qdl/lib/schema/Quests'
+import {Feedback} from 'expedition-qdl/lib/schema/Feedback'
+import {AnalyticsEvent} from 'expedition-qdl/lib/schema/AnalyticsEvents'
 import {PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Constants'
-import {RenderedQuest, RenderedQuestInstance} from './models/RenderedQuests'
-import {User, UserQuestsType} from './models/Users'
+import {getUserQuests, UserQuestsType} from './models/Users'
+import {Database, QuestInstance, RenderedQuestInstance} from './models/Database'
+import {MailService} from './Mail'
 import * as Joi from 'joi'
 import Config from './config'
 
@@ -19,7 +19,7 @@ const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by e
 const REGEX_SEMVER = /[1-9][0-9]?[0-9]?\.[1-9][0-9]?[0-9]?\.[1-9][0-9]?[0-9]?/g;
 
 export function healthCheck(req: express.Request, res: express.Response) {
-  res.end(' ');
+  res.status(200).end(' ');
 }
 
 interface Versions {
@@ -88,7 +88,7 @@ export function announcement(req: express.Request, res: express.Response) {
     });
 }
 
-export function search(quest: Quest, req: express.Request, res: express.Response) {
+export function search(db: Database, req: express.Request, res: express.Response) {
   let body: any;
   try {
     body = JSON.parse(req.body);
@@ -111,16 +111,19 @@ export function search(quest: Quest, req: express.Request, res: express.Response
     expansions: body.expansions,
     language: body.language,
   };
-  quest.search(res.locals.id, params)
+  return searchQuests(db, res.locals.id, params)
     .then((quests: QuestInstance[]) => {
       // Map quest published URL to the API server so we can proxy quest data.
-      const results: QuestAttributes[] = quests.map(quest.resolveInstance).map((q: QuestAttributes) => {
+      const results: Quest[] = quests
+        .map((q: QuestInstance) => Quest.create(q.dataValues))
+        .filter((q: Quest|Error) => !(q instanceof Error))
+        .map((q: Quest) => {
         q.publishedurl = (Config.get('API_URL_BASE') || 'http://api.expeditiongame.com') + `/raw/${q.partition}/${q.id}/${q.questversion}`;
         return q;
       });
 
       console.log('Found ' + quests.length + ' quests for user ' + res.locals.id);
-      res.end(JSON.stringify({
+      res.status(200).end(JSON.stringify({
         error: null,
         quests: results,
         hasMore: (quests.length === (params.limit || MAX_SEARCH_LIMIT))}));
@@ -131,13 +134,13 @@ export function search(quest: Quest, req: express.Request, res: express.Response
     });
 }
 
-export function questXMLHandler(quest: Quest, renderedQuest: RenderedQuest, req: express.Request, res: express.Response) {
-  renderedQuest.get(req.params.partition, req.params.quest, req.params.version)
-    .then((instance: RenderedQuestInstance) => {
+export function questXMLHandler(db: Database, req: express.Request, res: express.Response) {
+  db.renderedQuests.findOne({where: {partition: req.params.partition, id: req.params.quest, questversion: req.params.version}})
+    .then((instance: RenderedQuestInstance|null) => {
       if (!instance) {
-        return quest.get(req.params.partition, req.params.quest)
-          .then((instance: QuestInstance) => {
-            const url = instance.get('publishedurl');
+        return getQuest(db, req.params.partition, req.params.quest)
+          .then((q: Quest) => {
+            const url = q.publishedurl;
             if (!url) {
               throw new Error('Quest did not have published URL');
             }
@@ -155,8 +158,8 @@ export function questXMLHandler(quest: Quest, renderedQuest: RenderedQuest, req:
     });
 }
 
-export function publish(quest: Quest, req: express.Request, res: express.Response) {
-  const attribs: Partial<QuestAttributes> = {
+export function publish(db: Database, mail: MailService, req: express.Request, res: express.Response) {
+  const quest = Quest.create({
     id: req.params.id,
     partition: req.query.partition || PUBLIC_PARTITION,
     title: req.query.title,
@@ -171,12 +174,16 @@ export function publish(quest: Quest, req: express.Request, res: express.Respons
     contentrating: req.query.contentrating,
     expansionhorror: req.query.expansionhorror || false,
     language: req.query.language,
-  };
+  });
+  if (quest instanceof Error) {
+    console.error(quest);
+    return res.status(500).end(quest);
+  }
   const majorRelease = (req.query.majorRelease === 'true');
-  quest.publish(res.locals.id, majorRelease, attribs, req.body)
-    .then((quest: QuestInstance) => {
-      console.log('Published quest ' + quest.get('id'));
-      res.end(quest.get('id'));
+  return publishQuest(db, mail, res.locals.id, majorRelease, quest, req.body)
+    .then((q: QuestInstance) => {
+      console.log('Published quest ' + q.get('id'));
+      res.status(200).end(q.get('id'));
     })
     .catch((e: Error) => {
       console.error(e);
@@ -184,10 +191,10 @@ export function publish(quest: Quest, req: express.Request, res: express.Respons
     })
 }
 
-export function unpublish(quest: Quest, req: express.Request, res: express.Response) {
-  quest.unpublish(PUBLIC_PARTITION, req.params.quest)
+export function unpublish(db: Database, req: express.Request, res: express.Response) {
+  return unpublishQuest(db, PUBLIC_PARTITION, req.params.quest)
     .then(() => {
-      res.end('ok');
+      res.status(200).end('ok');
     })
     .catch((e: Error) => {
       console.error(e);
@@ -195,7 +202,7 @@ export function unpublish(quest: Quest, req: express.Request, res: express.Respo
     });
 }
 
-export function postAnalyticsEvent(analyticsEvent: AnalyticsEvent, req: express.Request, res: express.Response) {
+export function postAnalyticsEvent(db: Database, req: express.Request, res: express.Response) {
   let body: any;
   try {
     body = JSON.parse(req.body);
@@ -203,7 +210,7 @@ export function postAnalyticsEvent(analyticsEvent: AnalyticsEvent, req: express.
     return res.status(500).end('Error reading request.');
   }
 
-  analyticsEvent.create(new AnalyticsEventAttributes({
+  return db.analyticsEvent.create(new AnalyticsEvent({
       category: req.params.category,
       action: req.params.action,
       questID: body.questid,
@@ -215,14 +222,15 @@ export function postAnalyticsEvent(analyticsEvent: AnalyticsEvent, req: express.
       version: body.version,
       json: (body.data) ? JSON.stringify(body.data) : undefined,
     })).then(() => {
-      res.end('ok');
+      console.log('Analytics event posted yo');
+      res.status(200).end('ok');
     }).catch((e: Error) => {
       console.error(e);
       return res.status(500).end(GENERIC_ERROR_MESSAGE);
     });
 }
 
-export function feedback(mail: any, feedback: Feedback, req: express.Request, res: express.Response): Bluebird<any> {
+export function feedback(db: Database, mail: MailService, req: express.Request, res: express.Response): Bluebird<any> {
   let body: any;
   try {
     body = JSON.parse(req.body);
@@ -235,7 +243,7 @@ export function feedback(mail: any, feedback: Feedback, req: express.Request, re
   // Partition & quest ID may not be populated if
   // feedback occurs outside of a quest.
   // The only thing we require is the user's ID.
-  const data = FeedbackAttributes.create({
+  const data = Feedback.create({
     partition: body.partition || '',
     questid: body.questid || '',
     userid: body.userid,
@@ -256,20 +264,20 @@ export function feedback(mail: any, feedback: Feedback, req: express.Request, re
     return Bluebird.reject('Invalid request');
   }
   const platformDump: string = body.platformDump;
-  const consoleDump: string[] = body.console;
+  const consoleDump: string[] = body.console || [];
   let action: Bluebird<any>;
   switch (req.params.type as FeedbackType) {
     case 'feedback':
-      action = feedback.submitFeedback(mail, req.params.type, data, platformDump, consoleDump);
+      action = submitFeedback(db, mail, req.params.type, data, platformDump, consoleDump);
       break;
     case 'rating':
-      action = feedback.submitRating(mail, data);
+      action = submitRating(db, mail, data);
       break;
     case 'report_error':
-      action = feedback.submitFeedback(mail, req.params.type, data, platformDump, consoleDump);
+      action = submitFeedback(db, mail, req.params.type, data, platformDump, consoleDump);
       break;
     case 'report_quest':
-      action = feedback.submitReportQuest(mail, data, platformDump);
+      action = submitReportQuest(db, mail, data, platformDump);
       break;
     default:
       console.error('Unknown feedback type ' + req.params.type);
@@ -277,7 +285,7 @@ export function feedback(mail: any, feedback: Feedback, req: express.Request, re
       return Bluebird.reject('Unknown feedback type');
   }
   return action.then(() => {
-    res.end('ok');
+    res.status(200).end('ok');
   }).catch((e: Error) => {
     console.error(e);
     res.status(500).end(GENERIC_ERROR_MESSAGE);
@@ -285,14 +293,14 @@ export function feedback(mail: any, feedback: Feedback, req: express.Request, re
   });
 }
 
-export function userQuests(user: User, req: express.Request, res: express.Response) {
-  user.getQuests(res.locals.id)
+export function userQuests(db: Database, req: express.Request, res: express.Response) {
+  return getUserQuests(db, res.locals.id)
     .then((userQuests: UserQuestsType) => {
-      return res.send(JSON.stringify(userQuests));
+      return res.status(200).end(JSON.stringify(userQuests));
     })
     .catch((e: Error) => {
       console.error(e);
-      return res.status(500).send(GENERIC_ERROR_MESSAGE);
+      return res.status(500).end(GENERIC_ERROR_MESSAGE);
     });
 }
 
@@ -328,7 +336,7 @@ export function subscribe(mailchimp: any, listId: string, req: express.Request, 
             return res.status(status).end((err as any).title);
           }
         }
-        console.error(email + ' subscribed as pending to player list');
+        console.log(email + ' subscribed as pending to player list');
         return res.status(200).end();
       });
     }

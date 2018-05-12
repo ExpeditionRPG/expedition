@@ -1,7 +1,9 @@
 import * as express from 'express'
-import {Feedback, FeedbackInstance} from '../models/Feedback'
-import {Quest, QuestInstance} from '../models/Quests'
-import {User, UserInstance} from '../models/Users'
+import {suppressFeedback} from '../models/Feedback'
+import {Database, QuestInstance, FeedbackInstance, UserInstance} from '../models/Database'
+import {setLootPoints} from '../models/Users'
+import {unpublishQuest, republishQuest, getQuest} from '../models/Quests'
+import {Quest} from 'expedition-qdl/lib/schema/Quests'
 import * as QT from './QueryTypes'
 
 const QUERY_ROW_LIMIT = 100;
@@ -20,7 +22,7 @@ function handleErrors(res: express.Response) {
   };
 }
 
-export function queryFeedback(feedback: Feedback, quests: Quest, users: User, req: express.Request, res: express.Response) {
+export function queryFeedback(db: Database, req: express.Request, res: express.Response) {
   try {
     let body: any;
     body = validateOrder(JSON.parse(req.body));
@@ -63,22 +65,19 @@ export function queryFeedback(feedback: Feedback, quests: Quest, users: User, re
       ];
     }
 
-    return feedback.model.findAll({
+    return db.feedback.findAll({
       where,
       order: (q.order) ? [[q.order.column, (q.order.ascending) ? 'ASC' : 'DESC']] : undefined,
       limit: QUERY_ROW_LIMIT,
     }).then((results: FeedbackInstance[]) => {
       return Promise.all(results.map((r: FeedbackInstance) => {
-        return quests.get(r.get('partition'), r.get('questid'))
-          .then((q: QuestInstance|null) => {
-            if (!q) {
-              return null;
-            }
+        return getQuest(db, r.get('partition'), r.get('questid'))
+          .then((q: Quest) => {
             return {
               partition: r.get('partition'),
               quest: {
                 id: r.get('questid'),
-                title: q.get('title')
+                title: q.title,
               },
               user: {
                 id: r.get('userid'),
@@ -102,7 +101,7 @@ export function queryFeedback(feedback: Feedback, quests: Quest, users: User, re
   }
 }
 
-export function modifyFeedback(feedback: Feedback, req: express.Request, res: express.Response) {
+export function modifyFeedback(db: Database, req: express.Request, res: express.Response) {
   try {
     let body: any;
     body = JSON.parse(req.body);
@@ -115,7 +114,7 @@ export function modifyFeedback(feedback: Feedback, req: express.Request, res: ex
     };
 
     if (m.suppress !== null) {
-      return feedback.suppress(m.partition, m.questid, m.userid, m.suppress || false)
+      return suppressFeedback(db, m.partition, m.questid, m.userid, m.suppress || false)
         .then(() => {
           res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
         }).catch(handleErrors(res));
@@ -125,7 +124,7 @@ export function modifyFeedback(feedback: Feedback, req: express.Request, res: ex
   }
 }
 
-export function queryQuest(quest: Quest, req: express.Request, res: express.Response) {
+export function queryQuest(db: Database, req: express.Request, res: express.Response) {
   try {
     let body: any;
     body = validateOrder(JSON.parse(req.body));
@@ -151,7 +150,7 @@ export function queryQuest(quest: Quest, req: express.Request, res: express.Resp
       ];
     }
 
-    return quest.model.findAll({
+    return db.quests.findAll({
       where,
       order: (q.order) ? [[q.order.column, (q.order.ascending) ? 'ASC' : 'DESC']] : undefined,
       limit: QUERY_ROW_LIMIT,
@@ -178,7 +177,7 @@ export function queryQuest(quest: Quest, req: express.Request, res: express.Resp
   }
 }
 
-export function modifyQuest(quest: Quest, req: express.Request, res: express.Response) {
+export function modifyQuest(db: Database, req: express.Request, res: express.Response) {
   try {
     let body: any;
     body = JSON.parse(req.body);
@@ -190,12 +189,12 @@ export function modifyQuest(quest: Quest, req: express.Request, res: express.Res
     };
 
     if (m.published === true) {
-      return quest.republish(m.partition, m.questid)
+      return republishQuest(db, m.partition, m.questid)
         .then(() => {
           res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
         }).catch(handleErrors(res));
     } else if (m.published === false) {
-      return quest.unpublish(m.partition, m.questid)
+      return unpublishQuest(db, m.partition, m.questid)
         .then(() => {
           res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
         }).catch(handleErrors(res));
@@ -206,7 +205,7 @@ export function modifyQuest(quest: Quest, req: express.Request, res: express.Res
   }
 }
 
-export function queryUser(user: User, req: express.Request, res: express.Response) {
+export function queryUser(db: Database, req: express.Request, res: express.Response) {
   try {
     let body: any;
     body = validateOrder(JSON.parse(req.body));
@@ -227,7 +226,7 @@ export function queryUser(user: User, req: express.Request, res: express.Respons
       ];
     }
 
-    return user.model.findAll({
+    return db.users.findAll({
       where,
       order: (q.order) ? [[q.order.column, (q.order.ascending) ? 'ASC' : 'DESC']] : undefined,
       limit: QUERY_ROW_LIMIT,
@@ -249,7 +248,7 @@ export function queryUser(user: User, req: express.Request, res: express.Respons
   }
 }
 
-export function modifyUser(user: User, req: express.Request, res: express.Response) {
+export function modifyUser(db: Database, req: express.Request, res: express.Response) {
   try {
     let body: any;
     body = JSON.parse(req.body);
@@ -260,7 +259,7 @@ export function modifyUser(user: User, req: express.Request, res: express.Respon
     };
 
     if (m.loot_points) {
-      return user.setLootPoints(m.userid, m.loot_points)
+      return setLootPoints(db, m.userid, m.loot_points)
         .then(() => {
           res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
         }).catch(handleErrors(res));

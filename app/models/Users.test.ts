@@ -1,87 +1,90 @@
-import {AnalyticsEvent} from './AnalyticsEvents'
-import {AnalyticsEvent as AnalyticsEventAttributes} from 'expedition-qdl/lib/schema/AnalyticsEvents'
-import {User, UserAttributes, UserQuestsType} from './Users'
-
-// TODO: Useful test constants should go in a "testdata" folder or similar
-import {testQuestEnd} from './AnalyticsEvents.test'
-
-const Moment = require('moment');
-const Sequelize = require('sequelize');
-const sinon = require('sinon');
+import {
+  incrementLoginCount,
+  getUser,
+  setLootPoints,
+  getUserQuests,
+  subscribeToCreatorsList
+} from './Users'
+import {testingDBWithState,
+  users as u,
+  analyticsEvents as ae
+} from './TestData'
+import {Database} from './Database'
+import {AnalyticsEvent} from 'expedition-qdl/lib/schema/AnalyticsEvents'
 
 describe('users', () => {
-  let ae: AnalyticsEvent;
-  let u: User;
-  let mc: any;
-  beforeEach((done: DoneFn) => {
-    const s = new Sequelize({dialect: 'sqlite', storage: ':memory:'})
-    mc = {post: sinon.spy()};
-    ae = new AnalyticsEvent(s);
-    ae.model.sync()
-      .then(() => {
-        u = new User(s, mc);
-        return u.model.sync();
+  describe('incrementLoginCount', () => {
+    it('increments for existing user', (done: DoneFn) => {
+      let db: Database;
+      testingDBWithState([u.basic])
+        .then((tdb) => {
+          db = tdb;
+          return incrementLoginCount(db, u.basic.id);
+        })
+        .then(() => {
+          return getUser(db, u.basic.id);
+        })
+        .then((r) => {
+          expect(r.loginCount).toEqual(u.basic.loginCount + 1);
+          done();
+        })
+        .catch(done.fail);
+    });
+  });
+
+  describe('setLootPoints', () => {
+    fit('sets the loot points', (done: DoneFn) => {
+      let db: Database;
+      testingDBWithState([u.basic]).then((tdb) => {
+        db = tdb;
+        return setLootPoints(db, u.basic.id, 37);
       })
       .then(() => {
-        return u.associate({AnalyticsEvent: ae});
+        return getUser(db, u.basic.id);
       })
-      .then(() => done())
+      .then((u) => {
+        expect(u.lootPoints).toEqual(37);
+        done();
+      })
       .catch(done.fail);
-  });
-
-  const testUserData: UserAttributes = {
-    id: 'test',
-    email: 'test@test.com',
-    name: 'Test Testerson',
-    created: new Date(Date.now()),
-    last_login: new Date(Date.now()),
-    loot_points: 0,
-  } as any; // TODO: remove this any assertion once we've split out quest_plays
-
-  describe('upsert', () => {
-    it('inserts user when none exists', (done: DoneFn) => {
-      u.upsert(testUserData).then(() => {
-        return u.get(testUserData.id);
-      }).then((user: any) => {
-        expect(user).toEqual(jasmine.objectContaining(testUserData));
-        done();
-      }).catch(done.fail);
-    });
-
-    it('subscribes to creators list if mailchimp configured', (done: DoneFn) => {
-      u.upsert(testUserData).then(() => {
-        expect(mc.post.calledWith(sinon.match.any, {
-          email_address: testUserData.email,
-          status: 'subscribed',
-        })).toEqual(true);
-        done();
-      }).catch(done.fail);
     });
   });
 
-  describe('userQuests', () => {
+  describe('subscribeToCreatorsList', () => {
+    it('subscribes to creators list', () => {
+      const mc = {post: jasmine.createSpy('post')};
+      subscribeToCreatorsList(mc, u.basic.email);
+      expect(mc.post).toHaveBeenCalledWith(jasmine.any(String), {
+        email_address: u.basic.email,
+        status: 'subscribed',
+      });
+    });
+  });
+
+  describe('getUserQuests', () => {
     it('returns valid results for players without quest history', (done: DoneFn) => {
-      u.upsert(testUserData).then(() => {
-        return u.get('test');
+      testingDBWithState([u.basic]).then((tdb) => {
+        return getUserQuests(tdb, u.basic.id);
       })
-      .then((user: any) => u.getQuests(testUserData.id))
-      .then((result: UserQuestsType) => {
+      .then((result) => {
         expect(result).toEqual({});
         done();
       })
       .catch(done.fail);
     });
 
-
     it('returns valid results for players with quest history', (done: DoneFn) => {
-      u.upsert(testUserData).then(() => {
-        return ae.create(new AnalyticsEventAttributes({...testQuestEnd, userID: testUserData.id}));
+      testingDBWithState([
+        u.basic,
+        new AnalyticsEvent({...ae.questEnd, userID: u.basic.id})
+      ])
+      .then((tdb) => {
+        return getUserQuests(tdb, u.basic.id);
       })
-      .then((user: any) => u.getQuests(testUserData.id))
-      .then((quests: UserQuestsType) => {
+      .then((quests) => {
         expect(Object.keys(quests).length).toEqual(1);
-        const result = quests[testQuestEnd.questID as string];
-        expect(Moment(result.lastPlayed as any).isSame(testQuestEnd.created as any)).toEqual(true);
+        const result = quests[ae.questEnd.questID];
+        expect(result.lastPlayed).toEqual(ae.questEnd.created);
         done();
       }).catch(done.fail);
     });

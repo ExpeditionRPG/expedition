@@ -1,8 +1,9 @@
 import Config from '../config'
 import * as express from 'express'
+import {Database} from '../models/Database'
 import {toClientKey} from 'expedition-qdl/lib/multiplayer/Session'
 import {Session as SessionModel, SessionInstance} from '../models/multiplayer/Sessions'
-import {Event as EventModel, EventInstance} from '../models/multiplayer/Events'
+import {EventInstance} from '../models/multiplayer/Events'
 import {SessionClient, SessionClientInstance} from '../models/multiplayer/SessionClients'
 import {ClientID, WaitType, StatusEvent, ActionEvent, MultiplayerEvent, MultiEvent} from 'expedition-qdl/lib/multiplayer/Events'
 import {maybeChaosWS, maybeChaosSession, maybeChaosSessionClient} from './Chaos'
@@ -19,8 +20,8 @@ export interface MultiplayerSessionMeta {
   lastAction: Date;
 }
 
-export function user(sc: SessionClient, ev: EventModel, req: express.Request, res: express.Response) {
-  sc.getSessionsByClient(res.locals.id).then((sessions: SessionClientInstance[]) => {
+export function user(db: Database, req: express.Request, res: express.Response) {
+  db.models.SessionClient.getSessionsByClient(res.locals.id).then((sessions: SessionClientInstance[]) => {
     return Promise.all(sessions.map((sci: SessionClientInstance) => {
       const id = sci.get('session');
       const meta: Partial<MultiplayerSessionMeta> = {
@@ -34,13 +35,13 @@ export function user(sc: SessionClient, ev: EventModel, req: express.Request, re
       }
 
       // Get last action on this session
-      return ev.getLast(id)
+      return db.models.Event.getLast(id)
         .then((e: EventInstance) => {
           if (e === null) {
             return null;
           }
           meta.lastAction = e.get('updated_at');
-          return ev.getCurrentQuestTitle(id);
+          return db.models.Event.getCurrentQuestTitle(id);
         })
         .then((q: string|null) => {
           if (q === null) {
@@ -60,8 +61,8 @@ export function user(sc: SessionClient, ev: EventModel, req: express.Request, re
   });
 }
 
-export function newSession(rpSessions: SessionModel, req: express.Request, res: express.Response) {
-  rpSessions.create().then((s: SessionInstance) => {
+export function newSession(db: Database, req: express.Request, res: express.Response) {
+  db.models.Session.create().then((s: SessionInstance) => {
     res.status(200).send(JSON.stringify({secret: s.get('secret')}));
   })
   .catch((e: Error) => {
@@ -69,7 +70,7 @@ export function newSession(rpSessions: SessionModel, req: express.Request, res: 
   });
 }
 
-export function connect(rpSessions: SessionModel, sessionClients: SessionClient, req: express.Request, res: express.Response) {
+export function connect(db: Database, req: express.Request, res: express.Response) {
   let body: any;
   try {
     body = JSON.parse(req.body);
@@ -78,10 +79,10 @@ export function connect(rpSessions: SessionModel, sessionClients: SessionClient,
   }
 
   let session: SessionInstance;
-  rpSessions.getBySecret(body.secret)
+  db.models.Session.getBySecret(body.secret)
     .then((s: SessionInstance) => {
       session = s;
-      return sessionClients.upsert(session.get('id'), res.locals.id, body.secret);
+      return db.models.SessionClient.upsert(session.get('id'), res.locals.id, body.secret);
     })
     .then(() => {
       return res.status(200).send(JSON.stringify({session: session.get('id')}));
@@ -125,12 +126,12 @@ function wsParamsFromReq(req: http.IncomingMessage): WebsocketSessionParams|null
   };
 }
 
-export function verifyWebsocket(sessionClients: SessionClient, info: {origin: string, secure: boolean, req: http.IncomingMessage}, cb: (result: boolean) => any) {
+export function verifyWebsocket(db: Database, info: {origin: string, secure: boolean, req: http.IncomingMessage}, cb: (result: boolean) => any) {
   const params = wsParamsFromReq(info.req);
   if (params === null) {
     return cb(false);
   }
-  sessionClients.verify(params.session, params.client, params.secret)
+  db.models.SessionClient.verify(params.session, params.client, params.secret)
     .then((verified: boolean) => {
       return cb(verified);
     })

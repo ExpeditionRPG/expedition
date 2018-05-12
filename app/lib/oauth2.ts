@@ -1,10 +1,19 @@
 import Config from '../config'
-import {models} from '../models/Database'
-import {UserAttributes} from '../models/Users'
 import * as express from 'express'
+import {User} from 'expedition-qdl/lib/schema/Users'
+import {
+  incrementLoginCount,
+  subscribeToCreatorsList,
+} from '../models/Users'
+import {Database, UserInstance} from '../models/Database'
 
 const GoogleTokenStrategy = require('passport-google-id-token');
 const Passport = require('passport');
+
+const Mailchimp = require('mailchimp-api-v3');
+const mailchimp = (Config.get('NODE_ENV') !== 'dev' && Config.get('MAILCHIMP_KEY'))
+  ? new Mailchimp(Config.get('MAILCHIMP_KEY'))
+  : null;
 
 // Configure the Google strategy for use by Passport.js.
 //
@@ -30,8 +39,6 @@ Passport.deserializeUser((obj: any, cb: any) => {
 });
 // [END setup]
 
-export const router = express.Router();
-
 // [START middleware]
 // Middleware that requires the user to be logged in. If the user is not logged
 // in, it will redirect the user to authorize the application and then return
@@ -48,7 +55,7 @@ export function required(req: express.Request, res: express.Response, next: expr
 
 // Middleware that exposes the user's profile as well as login/logout URLs to
 // any templates. These are available as `profile`, `login`, and `logout`.
-export function template(req: express.Request, res: express.Response, next: express.NextFunction) {
+export function oauth2Template(req: express.Request, res: express.Response, next: express.NextFunction) {
   if (!req.session) {
     return next();
   }
@@ -62,61 +69,80 @@ export function template(req: express.Request, res: express.Response, next: expr
 }
 // [END middleware]
 
-// Begins the authorization flow. The user will be redirected to Google where
-// they can authorize the application to have access to their basic profile
-// information. Upon approval the user is redirected to `/auth/google/callback`.
-// If the `return` query parameter is specified when sending a user to this URL
-// then they will be redirected to that URL when the flow is finished.
-// This also fetches their info from the DB and returns that (if available).
-// [START authorize]
-router.post('/auth/google', // LOGIN
-  (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    // TODO: Lock down origin
-    try {
-      req.body = JSON.parse(req.body);
-      if (req.session) {
-        req.session.displayName = req.body.name || '';
-        req.session.image = req.body.image || '';
-        req.session.email = req.body.email || '';
+
+export function installOAuthRoutes(db: Database, router: express.Router) {
+  // Begins the authorization flow. The user will be redirected to Google where
+  // they can authorize the application to have access to their basic profile
+  // information. Upon approval the user is redirected to `/auth/google/callback`.
+  // If the `return` query parameter is specified when sending a user to this URL
+  // then they will be redirected to that URL when the flow is finished.
+  // This also fetches their info from the DB and returns that (if available).
+  // [START authorize]
+  router.post('/auth/google', // LOGIN
+    (req: express.Request, res: express.Response, next: express.NextFunction) => {
+      // TODO: Lock down origin
+      try {
+        req.body = JSON.parse(req.body);
+        if (req.session) {
+          req.session.displayName = req.body.name || '';
+          req.session.image = req.body.image || '';
+          req.session.email = req.body.email || '';
+        }
+        next();
+      } catch (e) {
+        res.header('Access-Control-Allow-Origin', req.get('origin'));
+        res.header('Access-Control-Allow-Credentials', 'true');
+        return res.end('Could not parse request body.');
       }
-      next();
-    } catch (e) {
+    },
+    Passport.authenticate('google-id-token'),
+    (req: express.Request, res: express.Response) => {
       res.header('Access-Control-Allow-Origin', req.get('origin'));
       res.header('Access-Control-Allow-Credentials', 'true');
-      return res.end('Could not parse request body.');
-    }
-  },
-  Passport.authenticate('google-id-token'),
-  (req: express.Request, res: express.Response) => {
-    res.header('Access-Control-Allow-Origin', req.get('origin'));
-    res.header('Access-Control-Allow-Credentials', 'true');
-    if (!req.user) {
-      res.end(401);
-    }
-    const user: any = {id: req.user};
-    if (req.body.email) { user.email = req.body.email; }
-    if (req.body.name) { user.name = req.body.name; }
-    models.User.upsert(user)
-      .then((user: UserAttributes) => {
-        res.end(JSON.stringify(user));
-      })
-      .catch((err: Error) => {
-        res.end(JSON.stringify(user)); // Don't break login if DB fails - they're still authenticated
-        console.log(err);
+      if (!req.user) {
+        res.end(401);
+      }
+      const user = new User({
+        id: req.user,
+        email: req.body.email,
+        name: req.body.name,
       });
-  }
-);
-// [END authorize]
 
-// Deletes the user's credentials and profile from the session.
-// This does not revoke any active tokens.
-router.post('/auth/logout', // LOGOUT
-  (req: express.Request, res: express.Response) => {
-    req.logout();
-    delete req.user;
-    if (req.session) {
-      delete req.session.image;
-      delete req.session.displayName;
+      db.users.findOne({where: {id: user.id}})
+        .then((u: UserInstance|null) => {
+          if (u === null) {
+            // New user; subscribe to newsletter
+            return subscribeToCreatorsList(mailchimp, user.id);
+          }
+          return null;
+        })
+        .then((subscribed: Boolean) => {
+          if (subscribed) {
+          console.log(user.email + ' subscribed to creators list');
+          }
+          return db.users.upsert(user);
+        })
+        .then(() => incrementLoginCount(db, user.id))
+        .then(() => res.end(JSON.stringify(user)))
+        .catch((err: Error) => {
+          // Don't break login if DB fails - they're still authenticated
+          res.end(JSON.stringify(user));
+          console.log(err);
+        });
     }
-  }
-);
+  );
+  // [END authorize]
+
+  // Deletes the user's credentials and profile from the session.
+  // This does not revoke any active tokens.
+  router.post('/auth/logout', // LOGOUT
+    (req: express.Request, res: express.Response) => {
+      req.logout();
+      delete req.user;
+      if (req.session) {
+        delete req.session.image;
+        delete req.session.displayName;
+      }
+    }
+  );
+}
