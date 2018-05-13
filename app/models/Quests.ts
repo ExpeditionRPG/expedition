@@ -1,4 +1,4 @@
-import * as Sequelize from 'sequelize'
+import Sequelize from 'sequelize'
 import {Quest} from 'expedition-qdl/lib/schema/Quests'
 import {RenderedQuest} from 'expedition-qdl/lib/schema/RenderedQuests'
 import {User} from 'expedition-qdl/lib/schema/Users'
@@ -90,11 +90,8 @@ export function searchQuests(db: Database, userId: string, params: QuestSearchPa
   const order = [];
   if (params.order) {
     if (params.order === '+ratingavg') {
-      order.push(Sequelize.literal(`
-        CASE
-          WHEN ratingcount < 5 THEN 0
-          ELSE ratingavg
-        END DESC NULLS LAST`));
+      order.push(['ratingavg', 'DESC']);
+      order.push(['ratingcount', 'DESC']);
     } else {
       order.push([params.order.substr(1), (params.order[0] === '+') ? 'ASC' : 'DESC']);
     }

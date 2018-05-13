@@ -52,12 +52,24 @@ describe('quest', () => {
 
     it('returns expansion quests first if specified', (done: DoneFn) => {
       testingDBWithState([q.basic, q.expansion])
-        .then((tdb) => {
-          return searchQuests(tdb, '', {partition: PUBLIC_PARTITION, expansions: ['horror']});
-        })
+        .then((db) => searchQuests(db, '', {partition: PUBLIC_PARTITION, expansions: ['horror']}))
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(2);
           expect((results[0] as any).dataValues).toEqual(jasmine.objectContaining({id: 'questidhorror'}));
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    fit('orders by rating, then rating count when +ratingavg order is given', (done: DoneFn) => {
+      const q1 = new Quest({...q.basic, id: 'q1', ratingavg: 4.0, ratingcount: 6});
+      const q2 = new Quest({...q.basic, id: 'q2', ratingavg: 5.0, ratingcount: 1});
+      const q3 = new Quest({...q.basic, id: 'q3', ratingavg: 5.0, ratingcount: 3});
+
+      testingDBWithState([q1, q2, q3])
+        .then((db) => searchQuests(db, '', {order: '+ratingavg'}))
+        .then((results: QuestInstance[]) => {
+          expect(results.map((r) => r.get('id'))).toEqual(['q3', 'q2', 'q1']);
           done();
         })
         .catch(done.fail);
