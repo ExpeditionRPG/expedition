@@ -70,7 +70,7 @@ export default class Main extends React.Component<MainProps, {}> {
         card: <SplashScreenContainer/>,
         ts: 0,
         key: '',
-        theme: 'LIGHT',
+        theme: 'light',
         transition: 'INSTANT' as TransitionType,
         settings: initialSettings,
         snackbar: initialSnackbar,
@@ -94,7 +94,7 @@ export default class Main extends React.Component<MainProps, {}> {
     }
 
     let card: JSX.Element;
-    let theme: CardThemeType = 'LIGHT';
+    let theme: CardThemeType = 'light';
     switch(state.card.name) {
       case 'SPLASH_CARD':
         card = <SplashScreenContainer/>;

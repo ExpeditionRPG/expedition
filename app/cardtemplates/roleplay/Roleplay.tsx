@@ -28,7 +28,7 @@ export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps
 function generateIconElements(content: string, theme: CardThemeType): JSX.Element {
   content = (content || '').replace(new RegExp(REGEX.ICON.source, 'g'), (match:string, group:string): string => {
       const icon = group.toLowerCase();
-      const suffix = (theme === 'DARK' && icon.indexOf('_white') === -1) ? '_white' : '';
+      const suffix = (theme === 'dark' && icon.indexOf('_white') === -1) ? '_white' : '';
       return `<img class="inline_icon" src="images/${icon}${suffix}_small.svg" />`;
     })
     .replace(new RegExp(REGEX.ART.source, 'g'), (match:string, group:string): string => {
@@ -58,7 +58,7 @@ export interface RoleplayResult {
   ctx: TemplateContext;
 }
 
-export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'LIGHT'): RoleplayResult {
+export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light'): RoleplayResult {
   // Append elements to contents
   const choices: Choice[] = [];
   let choiceCount = -1;
@@ -143,7 +143,7 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'LIGHT
   };
 }
 
-const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'LIGHT'): JSX.Element => {
+const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'light'): JSX.Element => {
   if (props.node.getTag() !== 'roleplay') {
     console.log('Roleplay constructor called with non-roleplay node.');
     return <span></span>;

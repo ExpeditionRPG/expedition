@@ -39,7 +39,7 @@ export interface DialogState {
   message?: string;
 }
 
-export type CardThemeType = 'LIGHT' | 'RED' | 'DARK';
+export type CardThemeType = 'light' | 'red' | 'dark';
 
 export interface EndSettings {
   text: string;

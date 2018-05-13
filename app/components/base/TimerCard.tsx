@@ -3,6 +3,7 @@ import MultiTouchTrigger from './MultiTouchTrigger'
 import {CardThemeType} from '../../reducers/StateTypes'
 import {MultiplayerState} from '../../reducers/StateTypes'
 import {getMultiplayerClient} from '../../Multiplayer'
+import {getStore} from '../../Store'
 
 interface TimerCardProps extends React.Props<any> {
   numPlayers: number;
@@ -91,8 +92,12 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
       formattedTimer += 's';
     }
 
+    const cardTheme = this.props.theme || 'light';
+    const questTheme = getStore().getState().quest.details.theme || 'base';
+    const classes = ['base_timer_card', 'card_theme_' + cardTheme, 'quest_theme_' + questTheme];
+
     return (
-      <div className={'base_timer_card ' + (this.props.theme || 'LIGHT')}>
+      <div className={classes.join(' ')}>
         <div className="value">{formattedTimer}</div>
         {secondaryText && <div className="secondary">{secondaryText}</div>}
         {tertiaryText && <div className="tertiary">{tertiaryText}</div>}

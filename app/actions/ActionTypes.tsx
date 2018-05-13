@@ -79,11 +79,15 @@ export interface ReturnAction extends Redux.Action {
   skip?: {name: CardName, phase: CardPhase}[]; // Skip any occurrences of these cards
 };
 
+export interface QuestExitAction extends Redux.Action {
+  type: 'QUEST_EXIT';
+};
+
 export interface QuestNodeAction extends Redux.Action {
   type: 'QUEST_NODE';
   node: ParserNode;
   details?: QuestDetails;
-}
+};
 
 export interface ChangeSettingsAction extends Redux.Action {
   type: 'CHANGE_SETTINGS';

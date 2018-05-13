@@ -37,6 +37,8 @@ export const initialState: QuestState = {
 
 export function quest(state: QuestState = initialState, action: Redux.Action): QuestState {
   switch (action.type) {
+    case 'QUEST_EXIT':
+      return {...state, ...initialState};
     case 'QUEST_NODE':
       return {...state,
         details: (action as QuestNodeAction).details || state.details,

@@ -60,7 +60,7 @@ const numerals: {[k: number]: string;} = {
 function renderSelectTier(props: CombatProps): JSX.Element {
   const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
   return (
-    <Card title="Draw Enemies" theme="DARK" inQuest={true}>
+    <Card title="Draw Enemies" theme="dark" inQuest={true}>
       <Picker
         label="Tier Sum"
         remoteID="tier_sum"
@@ -114,7 +114,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title="Draw Enemies" theme="DARK" inQuest={true}>
+    <Card title="Draw Enemies" theme="dark" inQuest={true}>
       <p>
         Prepare to Fight:
       </p>
@@ -149,7 +149,7 @@ function renderNoTimer(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title="Select Ability" theme="DARK" inQuest={true}>
+    <Card title="Select Ability" theme="dark" inQuest={true}>
       {helpText}
       <Button
         className="bigbutton"
@@ -187,7 +187,7 @@ function renderPrepareTimer(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title="Prepare for Combat" theme="DARK" inQuest={true}>
+    <Card title="Prepare for Combat" theme="dark" inQuest={true}>
       {helpText}
       <Button className="bigbutton" onTouchTap={() => props.onTimerStart()}>Start Timer</Button>
     </Card>
@@ -210,7 +210,7 @@ function renderSurge(props: CombatProps): JSX.Element {
   }
   return (
     <Card title="Enemy Surge!"
-      theme="RED"
+      theme="red"
       inQuest={true}
       onReturn={() => props.onReturn()}
     >
@@ -258,7 +258,7 @@ function renderResolve(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title="Roll &amp; Resolve" theme="DARK" inQuest={true} onReturn={() => props.onReturn()}>
+    <Card title="Roll &amp; Resolve" theme="dark" inQuest={true} onReturn={() => props.onReturn()}>
       {helpText}
       {renderedRolls &&
         <div>
@@ -292,7 +292,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title="Resolve Damage" theme="DARK" inQuest={true}>
+    <Card title="Resolve Damage" theme="dark" inQuest={true}>
       <h4 className="combat center damage-label">All adventurers take:</h4>
       <h1 className="combat center damage">{damage} Damage</h1>
       <Picker
@@ -373,7 +373,7 @@ function renderVictory(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title="Victory" theme="DARK" inQuest={true}>
+    <Card title="Victory" theme="dark" inQuest={true}>
       {props.settings.showHelp && <p>Shuffle all of your ability cards back into your ability draw pile.</p>}
       {contents}
       <Button onTouchTap={() => (props.combat.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'win')}>Next</Button>
@@ -404,7 +404,7 @@ function renderDefeat(props: CombatProps): JSX.Element {
   }
 
   return (
-    <Card title="Defeat" theme="DARK" inQuest={true}>
+    <Card title="Defeat" theme="dark" inQuest={true}>
       <p>Your party was defeated.</p>
       {props.settings.showHelp && <p>Shuffle all of your ability cards back into your ability draw pile.</p>}
       {helpText}
@@ -432,7 +432,7 @@ function renderTimerCard(props: CombatProps): JSX.Element {
 
   return (
     <TimerCard
-      theme="DARK"
+      theme="dark"
       secondaryText={surgeWarning}
       tertiaryText={instruction}
       numPlayers={(props.settings.multitouch && props.settings.numPlayers > 1) ? props.numAliveAdventurers : 1}
@@ -449,7 +449,7 @@ function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
     onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(props.node, settings, index, props.maxTier, props.seed)},
     onRetry: () => {props.onRetry()},
     onReturn: () => {props.onReturn()},
-  }, 'DARK');
+  }, 'dark');
   return roleplay;
 }
 

@@ -9,6 +9,7 @@ import {openSnackbar} from '../../actions/Snackbar'
 import {changeSettings} from '../../actions/Settings'
 import {remotePlayDisconnect} from '../../actions/Multiplayer'
 import {userFeedbackChange} from '../../actions/UserFeedback'
+import {exitQuest} from '../../actions/Quest'
 import {submitUserFeedback, logMultiplayerStats, fetchQuestXML} from '../../actions/Web'
 import {MIN_FEEDBACK_LENGTH} from '../../Constants'
 import {getMultiplayerClient, MultiplayerCounters, initialMultiplayerCounters} from '../../Multiplayer'
@@ -44,6 +45,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
     onExitQuest: () => {
       dispatch(setDialog(null));
       dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
+      dispatch(exitQuest({}));
     },
     onExitMultiplayer: () => {
       dispatch(remotePlayDisconnect());

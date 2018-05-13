@@ -16,7 +16,7 @@ import {NODE_ENV} from '../../Constants'
 
 
 // If onMenuSelect or onReturn is not set, default dispatch behavior is used.
-interface ExpeditionCardProps extends React.Props<any> {
+export interface ExpeditionCardProps extends React.Props<any> {
   theme?: CardThemeType;
   header?: JSX.Element;
   icon?: string;
@@ -86,10 +86,13 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
       icon = <img id="bgimg" src={'images/' + this.props.icon + '.svg'}></img>;
     }
     const isExperimental = getStore().getState().settings.experimental;
+    const cardTheme = this.props.theme || 'light';
+    const questTheme = getStore().getState().quest.details.theme || 'base';
+    const classes = ['base_card', 'card_theme_' + cardTheme, 'quest_theme_' + questTheme];
     return (
-      <div className={'base_card ' + (this.props.theme || 'LIGHT')}>
+      <div className={classes.join(' ')}>
         <div className="title_container">
-          <IconButton onTouchTap={() => this.onReturn()}><ChevronLeftIcon/></IconButton>
+          <IconButton id="titlebarReturnButton" onTouchTap={() => this.onReturn()}><ChevronLeftIcon/></IconButton>
           <span className="menu">
             <IconMenu
               menuStyle={{background: '#f4ebcc'}}

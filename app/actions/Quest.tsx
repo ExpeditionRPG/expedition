@@ -1,6 +1,7 @@
 import Redux from 'redux'
 import {
   remoteify,
+  QuestExitAction,
   QuestNodeAction,
   ViewQuestAction
 } from './ActionTypes'
@@ -16,6 +17,10 @@ export function initQuest(details: QuestDetails, questNode: Cheerio, ctx: Templa
   const node = new ParserNode(firstNode, ctx);
   return {type: 'QUEST_NODE', node, details};
 }
+
+export const exitQuest = remoteify(function exitQuest(): QuestExitAction {
+  return {type: 'QUEST_EXIT'};
+});
 
 interface ChoiceArgs {
   settings?: SettingsType;

@@ -2,6 +2,8 @@ import * as React from 'react'
 import {TemplateState} from '../cardtemplates/TemplateTypes'
 
 // TODO: Dedupe this with expedition-api/app/models/Quests QuestAttributes interface.
+export type QuestThemeType = 'base' | 'horror';
+
 export interface QuestDetails {
   id: string;
   title: string;
@@ -25,6 +27,7 @@ export interface QuestDetails {
   questversion?: number;
   partition?: string;
   language?: string;
+  theme?: QuestThemeType;
 }
 
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';

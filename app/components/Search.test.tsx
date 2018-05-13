@@ -116,7 +116,6 @@ describe('Search', () => {
       return {props, wrapper};
     }
 
-
     it('renders selected quest details', () => {
       const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
       const {props, wrapper} = setup(quest.title);

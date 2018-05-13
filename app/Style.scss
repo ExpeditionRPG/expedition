@@ -12,7 +12,14 @@
 
 @font-face {
   font-family: 'MinionPro';
-  src: url('fonts/Minion Pro Regular.ttf') format('truetype');
+  font-style: normal;
+  src: url('fonts/Minion-Pro-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'NothingYouCouldDo';
+  font-style: normal;
+  src: url('fonts/Nothing-You-Could-Do.ttf') format('truetype');
 }
 
 // ===============================================
@@ -124,6 +131,8 @@ $fontsizemap: (
 $headerFont: CinzelBold, serif;
 $headerFontLetterSpacing: 0.2px !important;
 
+$horrorFont: NothingYouCouldDo, serif !important;
+
 $font_color_primary: #000000;
 $font_color_faded: #666666;
 
@@ -204,7 +213,7 @@ body {
     }
   }
 
-  &.DARK {
+  &.card_theme_dark {
     background-color: $bg_dark_primary;
     color: $font_color_dark_primary;
   }
@@ -365,7 +374,7 @@ span.line {
     color: $font_color_primary;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    &.RED {
+    &.card_theme_red {
       background: $bg_red_primary;
       color: $font_color_red_primary;
       .title_container {
@@ -393,7 +402,7 @@ span.line {
         border: $border_red_primary !important;
       }
     }
-    &.DARK {
+    &.card_theme_dark {
       background-color: $bg_dark_primary;
       color: $font_color_dark_primary;
       .scrollbox_top {
@@ -417,6 +426,15 @@ span.line {
       }
       .base_button > button {
         border: $border_dark_primary !important;
+      }
+    }
+    &.quest_theme_horror {
+      -webkit-filter: grayscale(50%);
+      -moz-filter: grayscale(50%);
+      filter: grayscale(50%);
+
+      h1, h2, h3, .title {
+        font-family: $horrorFont;
       }
     }
     .title_container, .base_button > button, .base_checkbox button, .base_picker {
@@ -495,6 +513,7 @@ span.line {
       .title {
         font-family: $headerFont;
         letter-spacing: $headerFontLetterSpacing;
+
         font-size: fontsize(title);
         display: inline-block;
         text-align: center;
@@ -844,9 +863,12 @@ span.line {
   }
 
   .base_timer_card {
-    &.DARK {
+    &.card_theme_dark {
       color: $font_color_dark_primary;
       background-color: $bg_dark_primary;
+    }
+    &.quest_theme_horror {
+      font-family: $horrorFont;
     }
     width: 100%;
     height: 100%;

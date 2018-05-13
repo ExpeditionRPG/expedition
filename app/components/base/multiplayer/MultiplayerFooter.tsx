@@ -21,8 +21,8 @@ export interface MultiplayerFooterProps extends MultiplayerFooterStateProps, Mul
 }
 
 const MultiplayerFooter = (props: MultiplayerFooterProps): JSX.Element => {
-  const color = (props.theme === 'DARK') ? white : black;
-  const adventurerIcon = (props.theme === 'DARK') ? 'images/adventurer_white_small.svg' : 'images/adventurer_small.svg';
+  const color = (props.theme === 'dark') ? white : black;
+  const adventurerIcon = (props.theme === 'dark') ? 'images/adventurer_white_small.svg' : 'images/adventurer_small.svg';
   const peers: JSX.Element[] = [];
   const rpClient = getMultiplayerClient();
   const localKey = rpClient.getID() + '|' + rpClient.getInstance();
