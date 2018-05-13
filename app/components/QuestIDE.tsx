@@ -14,6 +14,7 @@ export interface QuestIDEStateProps {
   realtime: any;
   realtimeModel: any;
   showLineNumbers: boolean;
+  showSpellcheck: boolean;
   tutorial: TutorialState;
 };
 
@@ -38,6 +39,7 @@ const QuestIDE = (props: QuestIDEProps): JSX.Element => {
           scrollLineTarget={props.line}
           scrollLineTargetTs={props.lineTs}
           showLineNumbers={props.showLineNumbers}
+          showSpellcheck={props.showSpellcheck}
           onChange={(text: string) => props.onDirty(props.realtime, text)}
           onLine={(line: number) => props.onLine(line)}
           onAnnotationClick={(annotations: number[]) => props.onAnnotationClick(annotations)} />

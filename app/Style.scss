@@ -590,6 +590,9 @@ body .olark-launch-button { /*must be more specifc than olark styles */
 }
 
 /* Ace editor */
+.ace_editor.noSpellcheck .misspelled {
+  display: none;
+}
 .ace_marker-layer .misspelled {
   position: absolute;
   z-index: -2;

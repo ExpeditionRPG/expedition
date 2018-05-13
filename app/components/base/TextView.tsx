@@ -51,6 +51,7 @@ interface TextViewProps extends React.Props<any> {
   scrollLineTargetTs?: number;
 
   showLineNumbers?: boolean;
+  showSpellcheck?: boolean;
 }
 
 // This class wraps the Realtime API undo commands in a way
@@ -299,9 +300,17 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       text = this.props.realtime.getText();
     }
 
+    const classes = ['ace'];
+    if (!this.props.showLineNumbers) {
+      classes.push('noLineNumbers');
+    }
+    if (!this.props.showSpellcheck) {
+      classes.push('noSpellcheck');
+    }
+
     return (
       <AceEditor
-        className={'ace ' + (!this.props.showLineNumbers && 'noLineNumbers')}
+        className={classes.join(' ')}
         ref={this.onRef.bind(this)}
         mode="markdown"
         theme="twilight"
