@@ -13,10 +13,10 @@ import {
   AppState,
   MultiplayerSessionMeta,
   SavedQuestMeta,
-  UserQuestsType,
 } from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../cardtemplates/TemplateTypes'
+import {UserQuestsType} from 'expedition-api/app/models/Users'
 import {ClientID, InstanceID, StatusEvent} from 'expedition-qdl/lib/multiplayer/Events'
 
 export interface FetchAnnouncementResponse {

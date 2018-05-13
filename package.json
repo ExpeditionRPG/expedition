@@ -49,6 +49,7 @@
     "enzyme": "^2.6.0",
     "es6-shim": "^0.35.3",
     "expect": "^1.20.2",
+    "expedition-api": "git+https://github.com/ExpeditionRPG/expedition-api.git#759ba9e0c53f6ce6acbb444765d765ac7e470dc9",
     "file-loader": "^1.1.11",
     "jasmine": "^2.5.3",
     "jshint-stylish": "^2.0.0",

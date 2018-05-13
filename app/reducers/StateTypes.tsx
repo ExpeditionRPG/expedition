@@ -2,6 +2,8 @@ import * as Redux from 'redux'
 import {QuestDetails} from './QuestTypes'
 import {TemplatePhase, TemplateContext} from '../cardtemplates/TemplateTypes'
 import {ParserNode} from '../cardtemplates/TemplateTypes'
+import {FeedbackType} from 'expedition-api/app/models/Feedback'
+import {UserQuestsType} from 'expedition-api/app/models/Users'
 import {SessionID} from 'expedition-qdl/lib/multiplayer/Session'
 import {StatusEvent} from 'expedition-qdl/lib/multiplayer/Events'
 import {GenreType, ContentRatingLabelType, LanguageType} from '../Constants'
@@ -135,12 +137,6 @@ export interface SearchState {
   searching: boolean;
 }
 
-export interface UserQuestsType {
-  [questId:string]: {
-    lastPlayed: Date;
-  };
-}
-
 export interface UserState {
   loggedIn: boolean;
   id: string;
@@ -151,7 +147,7 @@ export interface UserState {
 }
 
 export interface UserFeedbackState {
-  type: 'feedback' | 'rating' | 'report_error' | 'report_quest';
+  type: FeedbackType;
   rating?: number;
   text: string;
   anonymous: boolean;
