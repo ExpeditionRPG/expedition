@@ -44,6 +44,15 @@ const logHook = function(f: Function, objects: any[]) {
 }
 
 import * as React from 'react'
+import * as injectTapEventPlugin from 'react-tap-event-plugin'
+// Needed for latest @types/react module, otherwise typescript complains
+// about onTouchTap attributes
+// https://github.com/zilverline/react-tap-event-plugin/issues/58
+declare module 'react' {
+    interface DOMAttributes<T> {
+        onTouchTap?: React.EventHandler<React.TouchEvent<T>>;
+    }
+}
 import * as ReactDOM from 'react-dom'
 import * as Raven from 'raven-js'
 import theme from './Theme'
@@ -72,7 +81,6 @@ import {MultiplayerEvent} from 'expedition-qdl/lib/multiplayer/Events'
 // TODO: Fix redux types
 import thunk from 'redux-thunk'
 
-const injectTapEventPlugin = require('react-tap-event-plugin');
 const ReactGA = require('react-ga');
 
 Raven.config(authSettings.raven, {

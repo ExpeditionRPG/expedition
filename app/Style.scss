@@ -489,6 +489,14 @@ span.line {
         opacity: 0.2;
       }
     }
+
+    &.search_card {
+      /* Less margin, more text */
+      .child_wrapper {
+        margin: size(base);
+      }
+    }
+
     .title_container {
       position: relative;
       background-color: $bg_titlebar;
@@ -1112,7 +1120,6 @@ span.line {
       font-size: fontsize(interactive);
       margin-bottom: size(small);
       top: 0;
-      text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
     }
