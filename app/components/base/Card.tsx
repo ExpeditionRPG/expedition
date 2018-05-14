@@ -23,6 +23,7 @@ export interface ExpeditionCardProps extends React.Props<any> {
   inQuest?: boolean;
   onReturn?: () => any;
   title?: string | JSX.Element;
+  className?: string;
 }
 
 export default class ExpeditionCard extends React.Component<ExpeditionCardProps, {}> {
@@ -89,6 +90,9 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     const cardTheme = this.props.theme || 'light';
     const questTheme = getStore().getState().quest.details.theme || 'base';
     const classes = ['base_card', 'card_theme_' + cardTheme, 'quest_theme_' + questTheme];
+    if (this.props.className) {
+      classes.push(this.props.className);
+    }
     return (
       <div className={classes.join(' ')}>
         <div className="title_container">
