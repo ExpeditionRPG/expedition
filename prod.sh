@@ -54,7 +54,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   aws s3 cp platforms/android/build/outputs/apk/expedition.apk s3://app.expeditiongame.com/expedition.apk
 
   # Upload package.json for version API
-  aws s3 cp pacakge.json s3://app.expeditiongame.com/package.json
+  aws s3 cp package.json s3://app.expeditiongame.com/package.json
 
   # Invalidate files on cloudfront
   aws cloudfront create-invalidation --distribution-id EDFP2F13AASZW --paths /\*
