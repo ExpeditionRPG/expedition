@@ -44,8 +44,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
     },
     onExitQuest: () => {
       dispatch(setDialog(null));
-      dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
       dispatch(exitQuest({}));
+      dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
     },
     onExitMultiplayer: () => {
       dispatch(remotePlayDisconnect());
