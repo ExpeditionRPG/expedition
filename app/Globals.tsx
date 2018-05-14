@@ -196,7 +196,6 @@ function getLocalStorage(): Storage {
 // Force specifying a default, since just doing (|| fallback) would bork on stored falsey values
 export function getStorageBoolean(key: string, fallback: boolean): boolean {
   const val = getLocalStorage().getItem(key);
-console.log(key, val, fallback);
   return (val !== null) ? (val.toLowerCase() === 'true') : fallback;
 }
 
