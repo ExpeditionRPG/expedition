@@ -1,74 +1,132 @@
-import * as Sequelize from 'sequelize'
-import * as Bluebird from 'bluebird'
-import {PLACEHOLDER_DATE} from 'expedition-qdl/lib/schema/SchemaBase'
-import {Event as EventAttributes} from 'expedition-qdl/lib/schema/multiplayer/Events'
-import {toSequelize, prepare} from '../Schema'
+import Bluebird from 'bluebird'
+import Sequelize from 'sequelize'
+import {Database, EventInstance, SessionInstance} from '../Database'
 
-const EventSequelize = toSequelize(new EventAttributes({session: 0, timestamp: PLACEHOLDER_DATE, client: '', instance: '', id: 0, type: '', json: ''}));
-
-export interface EventInstance extends Sequelize.Instance<Partial<EventAttributes>> {
-  dataValues: EventAttributes;
+export function getLastEvent(db: Database, session: number): Bluebird<EventInstance|null> {
+  return db.events.findOne({
+    where: {session} as any,
+    order: [['timestamp', 'DESC']],
+  });
 }
 
-export type EventModel = Sequelize.Model<EventInstance, Partial<EventAttributes>>;
-
-export class Event {
-  protected s: Sequelize.Sequelize;
-  public model: EventModel;
-
-  constructor(s: Sequelize.Sequelize) {
-    this.s = s;
-    this.model = (this.s.define('events', EventSequelize, {
-      timestamps: true,
-      underscored: true,
-    }) as EventModel);
-  }
-
-  public associate(models: any) {}
-
-  public upsert(attrs: EventAttributes): Bluebird<void> {
-    return this.model.upsert(prepare(attrs)).then(()=>{});
-  }
-
-  public getById(session: number, id: number): Bluebird<EventInstance|null> {
-    return this.model.findOne({
-      where: {session, id}
-    });
-  }
-
-  public getLast(session: number): Bluebird<EventInstance|null> {
-    return this.model.findOne({
-      where: {session} as any,
-      order: [['created_at', 'DESC']],
-    });
-  }
-
-  public getCurrentQuestTitle(session: number): Bluebird<string|null> {
-    return this.model.findOne({
-      attributes: ['json'],
-      where: {session, json: {$like: '%fetchQuestXML%'}} as any,
-      order: [['created_at', 'DESC']],
-    })
-    .then((e: EventInstance) => {
-      if (e === null) {
-        return null;
-      }
-
-      try {
-        const event = JSON.parse(e.get('json')).event;
-        const args = JSON.parse(event.args);
-        return args.title;
-      } catch (e) {
-        return null;
-      }
-    })
-  }
-
-  public getOrderedAfter(session: number, start: number): Bluebird<EventInstance[]> {
-    return this.model.findAll({
-      where: {session, id: {$gt: start}},
-      order: [['created_at', 'ASC']],
-    });
-  }
+export function getOrderedEventsAfter(db: Database, session: number, start: number): Bluebird<EventInstance[]> {
+  return db.events.findAll({
+    where: {session, id: {$gt: start}},
+    order: [['timestamp', 'DESC']],
+  });
 }
 
+export function getLargestEventID(db: Database, session: number): Bluebird<number> {
+  return getLastEvent(db, session).then((e: EventInstance|null) => {
+    if (e === null) {
+      return 0;
+    }
+    return parseInt(e.get('id'), 10);
+  });
+}
+
+export function commitEventWithoutID(db: Database, session: number, client: string, instance: string, type: string, struct: Object): Bluebird<number|null> {
+  // Events by the server may need to be committed without a specific set ID.
+  // In these cases, we pass the full object before serialization and fill it
+  // with the next available event ID.
+  let s: SessionInstance;
+  let id: number;
+  return db.sequelize.transaction((txn: Sequelize.Transaction) => {
+    return db.sessions.findOne({where: {id: session}, transaction: txn})
+      .then((sessionInstance: SessionInstance) => {
+        if (!sessionInstance) {
+          throw new Error('could not find session ' + session.toString());
+        }
+        s = sessionInstance;
+        return getLastEvent(db, session);
+      })
+      .then((eventInstance: EventInstance|null) => {
+        if (eventInstance !== null &&
+            eventInstance.get('client') === client &&
+            eventInstance.get('instance') === instance &&
+            eventInstance.get('type') === type &&
+            eventInstance.get('json') === JSON.stringify(struct)) {
+          console.log('Trivial txn: ' + type + ' already committed for client ' + client + ' instance ' + instance);
+          id = s.get('eventCounter');
+          (struct as any).id = id;
+          return false;
+        }
+
+        id = s.get('eventCounter') + 1;
+        (struct as any).id = id;
+        return s.update({eventCounter: id}, {transaction: txn}).then(() => {return true;});
+      })
+      .then((incremented: boolean) => {
+        if (!incremented) {
+          // Skip upsert if we didn't increment the event counter
+          return false;
+        }
+        return db.events.upsert({
+          session,
+          client,
+          instance,
+          timestamp: new Date(),
+          id,
+          type,
+          json: JSON.stringify(struct),
+        }, {transaction: txn, returning:false})
+        .then(() => true);
+      });
+  }).then((updated: boolean) => {
+    return id;
+  });
+}
+
+export function commitEvent(db: Database, session: number, client: string, instance: string, event: number, type: string, json: string): Bluebird<number|null> {
+  let s: SessionInstance;
+  return db.sequelize.transaction((txn: Sequelize.Transaction) => {
+    return db.sessions.findOne({where: {id: session}, transaction: txn})
+      .then((sessionInstance: SessionInstance) => {
+        if (!sessionInstance) {
+          throw new Error('could not find session ' + session.toString());
+        }
+        s = sessionInstance;
+        return db.events.findOne({where: {session, id: event}});
+      })
+      .then((eventInstance: EventInstance|null) => {
+        if (eventInstance !== null &&
+            eventInstance.get('client') === client &&
+            eventInstance.get('instance') === instance &&
+            eventInstance.get('type') === type &&
+            eventInstance.get('json') === json) {
+          // The client does retry requests - if we've already successfully
+          // committed this event, return success and don't try to commit it again.
+          console.log('Trivial txn: ' + event + ' already committed for client ' + client + ' instance ' + instance);
+          return false;
+        } else if ((s.get('eventCounter') + 1) !== event) {
+          throw new Error(`event counter increment mismatch (${s.get('eventCounter')} + 1 !== ${event})`);
+        }
+
+        return s.update(
+          {eventCounter: event},
+          {transaction: txn}
+        ).then(() => {return true;});
+      })
+      .then((incremented: boolean) => {
+        if (!incremented) {
+          // Skip upsert if we didn't increment the event counter
+          return false;
+        }
+        if (event === null) {
+          throw new Error('Found null event after it should be set');
+        }
+        return db.events.upsert({
+          session,
+          client,
+          instance,
+          timestamp: new Date(),
+          id: event,
+          type,
+          json,
+        }, {transaction: txn, returning:false})
+        .then(() => true);
+      });
+  }).then((updated: boolean) => {
+    return (updated) ? event : null;
+  });
+}

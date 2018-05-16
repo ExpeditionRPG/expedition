@@ -87,7 +87,7 @@ export function setupWebsockets(server: any) {
 
   wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     ws.on('error', (e: Error) => console.error(e));
-    MultiplayerHandlers.websocketSession(db.models.Session, db.models.SessionClient, ws, req);
+    MultiplayerHandlers.websocketSession(db, ws, req);
   });
 }
 

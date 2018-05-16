@@ -1,12 +1,12 @@
 import Config from '../config'
 import * as express from 'express'
-import {Database} from '../models/Database'
+import {Database, SessionClientInstance, SessionInstance, EventInstance} from '../models/Database'
+import {getLastEvent, commitEvent, commitEventWithoutID, getOrderedEventsAfter, getLargestEventID} from '../models/multiplayer/Events'
+import {getSessionQuestTitle, getSessionBySecret, createSession} from '../models/multiplayer/Sessions'
+import {getClientSessions, verifySessionClient} from '../models/multiplayer/SessionClients'
 import {toClientKey} from 'expedition-qdl/lib/multiplayer/Session'
-import {Session as SessionModel, SessionInstance} from '../models/multiplayer/Sessions'
-import {EventInstance} from '../models/multiplayer/Events'
-import {SessionClient, SessionClientInstance} from '../models/multiplayer/SessionClients'
 import {ClientID, WaitType, StatusEvent, ActionEvent, MultiplayerEvent, MultiEvent} from 'expedition-qdl/lib/multiplayer/Events'
-import {maybeChaosWS, maybeChaosSession, maybeChaosSessionClient} from './Chaos'
+import {maybeChaosWS, maybeChaosDB} from './Chaos'
 import * as url from 'url'
 import * as http from 'http'
 import * as WebSocket from 'ws'
@@ -21,7 +21,7 @@ export interface MultiplayerSessionMeta {
 }
 
 export function user(db: Database, req: express.Request, res: express.Response) {
-  db.models.SessionClient.getSessionsByClient(res.locals.id).then((sessions: SessionClientInstance[]) => {
+  return getClientSessions(db, res.locals.id).then((sessions: SessionClientInstance[]) => {
     return Promise.all(sessions.map((sci: SessionClientInstance) => {
       const id = sci.get('session');
       const meta: Partial<MultiplayerSessionMeta> = {
@@ -35,13 +35,13 @@ export function user(db: Database, req: express.Request, res: express.Response) 
       }
 
       // Get last action on this session
-      return db.models.Event.getLast(id)
+      return getLastEvent(db, id)
         .then((e: EventInstance) => {
           if (e === null) {
             return null;
           }
           meta.lastAction = e.get('updated_at');
-          return db.models.Event.getCurrentQuestTitle(id);
+          return getSessionQuestTitle(db, id);
         })
         .then((q: string|null) => {
           if (q === null) {
@@ -62,7 +62,7 @@ export function user(db: Database, req: express.Request, res: express.Response) 
 }
 
 export function newSession(db: Database, req: express.Request, res: express.Response) {
-  db.models.Session.create().then((s: SessionInstance) => {
+  return createSession(db).then((s: SessionInstance) => {
     res.status(200).send(JSON.stringify({secret: s.get('secret')}));
   })
   .catch((e: Error) => {
@@ -79,10 +79,14 @@ export function connect(db: Database, req: express.Request, res: express.Respons
   }
 
   let session: SessionInstance;
-  db.models.Session.getBySecret(body.secret)
+  getSessionBySecret(db, body.secret)
     .then((s: SessionInstance) => {
       session = s;
-      return db.models.SessionClient.upsert(session.get('id'), res.locals.id, body.secret);
+      return db.sessionClients.upsert({
+        session: session.get('id'),
+        client: res.locals.id,
+        secret: body.secret
+      });
     })
     .then(() => {
       return res.status(200).send(JSON.stringify({session: session.get('id')}));
@@ -131,7 +135,7 @@ export function verifyWebsocket(db: Database, info: {origin: string, secure: boo
   if (params === null) {
     return cb(false);
   }
-  db.models.SessionClient.verify(params.session, params.client, params.secret)
+  return verifySessionClient(db, params.session, params.client, params.secret)
     .then((verified: boolean) => {
       return cb(verified);
     })
@@ -165,8 +169,8 @@ function broadcast(session: number, msg: string) {
   }
 }
 
-function makeMultiEvent(rpSession: SessionModel, session: number, lastEventID: number) {
-  return rpSession.getOrderedAfter(session, lastEventID).then((eventInstances: (EventInstance[]|null)) => {
+function makeMultiEvent(db: Database, session: number, lastEventID: number) {
+  return getOrderedEventsAfter(db, session, lastEventID).then((eventInstances: (EventInstance[]|null)) => {
     if (eventInstances === null) {
       return;
     }
@@ -183,12 +187,12 @@ function makeMultiEvent(rpSession: SessionModel, session: number, lastEventID: n
 }
 
 // Identify most recent event and fast forward the client if they're behind
-function maybeFastForwardClient(rpSession: SessionModel, session: number, client: ClientID, instance: string, lastEventID: number, ws: WebSocket) {
-  rpSession.getLargestEventID(session).then((dbLastEventID: number) => {
+function maybeFastForwardClient(db: Database, session: number, client: ClientID, instance: string, lastEventID: number, ws: WebSocket) {
+  getLargestEventID(db, session).then((dbLastEventID: number) => {
     if (lastEventID >= dbLastEventID) {
       return;
     }
-    makeMultiEvent(rpSession, session, lastEventID).then((event: MultiEvent) => {
+    makeMultiEvent(db, session, lastEventID).then((event: MultiEvent) => {
       if (ws.readyState !== WebSocket.OPEN) {
         return;
       }
@@ -197,14 +201,16 @@ function maybeFastForwardClient(rpSession: SessionModel, session: number, client
         instance: Config.get('NODE_ENV'),
         id: null,
         event
-      } as MultiplayerEvent), (e: Error) => {console.error(e);});
+      } as MultiplayerEvent), (e: Error) => {
+        console.error(e);
+      });
     });
   });
 }
 
 // We need a little custom server code to pay attention when clients
 // are all waiting on something.
-function handleClientStatus(rpSession: SessionModel, session: number, client: ClientID, instance: string, ev: StatusEvent, ws: WebSocket) {
+function handleClientStatus(db: Database, session: number, client: ClientID, instance: string, ev: StatusEvent, ws: WebSocket) {
   console.log(toClientKey(client, instance) + ': ' + JSON.stringify(ev));
 
   const s = inMemorySessions[session];
@@ -248,7 +254,7 @@ function handleClientStatus(rpSession: SessionModel, session: number, client: Cl
       id: null,
     } as MultiplayerEvent;
 
-    rpSession.commitEventWithoutID(session, client, instance, 'ACTION', combatStopEvent)
+    commitEventWithoutID(db, session, client, instance, 'ACTION', combatStopEvent)
       .then((eventCount: number|null) => {
         // Broadcast to all peers - note that the event will be set by commitEventWithoutID
         broadcast(session, JSON.stringify(combatStopEvent));
@@ -268,7 +274,7 @@ function handleClientStatus(rpSession: SessionModel, session: number, client: Cl
 
   const lastEventID = ev.lastEventID;
   if (lastEventID !== null && lastEventID !== undefined) {
-    maybeFastForwardClient(rpSession, session, client, instance, lastEventID, s[toClientKey(client, instance)].socket);
+    maybeFastForwardClient(db, session, client, instance, lastEventID, s[toClientKey(client, instance)].socket);
   }
 }
 
@@ -287,7 +293,7 @@ function sendError(ws: WebSocket, e: string) {
   });
 }
 
-export function websocketSession(rpSession: SessionModel, sessionClients: SessionClient, ws: WebSocket, req: http.IncomingMessage) {
+export function websocketSession(db: Database, ws: WebSocket, req: http.IncomingMessage) {
   const params = wsParamsFromReq(req);
   if (params === null) {
     throw new Error('Null params, session not validated correctly');
@@ -296,8 +302,7 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
   console.log(`Client ${params.client} connected to session ${params.session} with secret ${params.secret}`);
 
   // Setup chaos handlers (if configured)
-  rpSession = maybeChaosSession(rpSession, params.session, ws);
-  sessionClients = maybeChaosSessionClient(sessionClients);
+  db = maybeChaosDB(db, params.session, ws);
   ws = maybeChaosWS(ws);
 
   if (!inMemorySessions[params.session]) {
@@ -335,11 +340,6 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
 
 
   ws.on('message', (msg: WebSocket.Data) => {
-    // Ignore pings
-    if (msg === 'PING') {
-      return;
-    }
-
     if (typeof(msg) !== 'string') {
       sendError(ws, 'Invalid type for inbound message: ' + typeof(msg));
       return;
@@ -362,7 +362,7 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
     if (event.event.type !== 'ACTION') {
       broadcast(params.session, msg);
       if (event.event.type === 'STATUS') {
-        handleClientStatus(rpSession, params.session, event.client, event.instance, event.event, ws);
+        handleClientStatus(db, params.session, event.client, event.instance, event.event, ws);
       }
       return;
     }
@@ -370,29 +370,34 @@ export function websocketSession(rpSession: SessionModel, sessionClients: Sessio
     // Precondition: event is an ACTION
     const eventID = event.id;
     if (eventID === null) {
-      console.error('Received ACTION event with null ID');
+      sendError(ws, 'Received ACTION event with null ID');
       return;
     }
 
-    rpSession.commitEvent(params.session, params.client, params.instance, eventID, event.event.type, msg)
-    .then((result: number|null) => {
-      broadcast(params.session, msg);
-    })
-    .catch((error: Error) => {
-      let multiEvent: MultiEvent|null = null;
-      makeMultiEvent(rpSession, params.session, eventID).then((e: MultiEvent) => {
-        multiEvent = e;
-      }).catch((e: Error) => {
-        console.error('makeMultiEvent Error: ' + e);
-      }).finally(() => {
-        ws.send(JSON.stringify({
-          client: 'SERVER',
-          instance: Config.get('NODE_ENV'),
-          id: null,
-          event: multiEvent,
-        } as MultiplayerEvent), (e: Error) => {console.error(e);});
+    commitEvent(db, params.session, params.client, params.instance, eventID, event.event.type, msg)
+      .then((result: number|null) => {
+        broadcast(params.session, msg);
+      })
+      .catch((error: Error) => {
+        console.error(error);
+        let multiEvent: MultiEvent|null = null;
+        makeMultiEvent(db, params.session, eventID).then((e: MultiEvent) => {
+          multiEvent = e;
+        }).catch((e: Error) => {
+          sendError(ws, e.toString());
+        }).finally(() => {
+          ws.send(JSON.stringify({
+            client: 'SERVER',
+            instance: Config.get('NODE_ENV'),
+            id: null,
+            event: multiEvent,
+          } as MultiplayerEvent), (e?: Error) => {
+            if (e) {
+              sendError(ws, e.toString());
+            }
+          });
+        });
       });
-    });
   });
 
   ws.on('close', () => {

@@ -1,7 +1,6 @@
 describe('multiplayer handlers', () => {
   describe('websocketSession', () => {
     it('returns an error on unparseable websocket messages');
-    it('ignores PING messages');
     it('simply broadcasts non-ACTION events');
     it('handles client status messages');
     it('notifies on ACTION commit success');

@@ -1,9 +1,8 @@
 // Wrappers that simulate degraded network performance, bugs in code, and fuzzed packets
 import Config from '../config'
 import * as WebSocket from 'ws'
-import {Session as SessionModel} from '../models/multiplayer/Sessions'
-import {SessionClient} from '../models/multiplayer/SessionClients'
-import * as Bluebird from 'bluebird';
+import {Database} from '../models/Database'
+import {getLargestEventID, commitEvent} from '../models/multiplayer/Events'
 
 const CHAOS_FUZZ_LENGTH = 80;
 const CHAOS_REPLAY_BUF_LENGTH = 10;
@@ -84,8 +83,8 @@ export function chaosWS(ws: WebSocket): WebSocket {
   return ws;
 }
 
-export function chaosSessionModel(s: SessionModel, session: number, ws: WebSocket): SessionModel {
-  console.log('CHAOS: setting up SessionModel chaos');
+export function chaosDB(db: Database, session: number, ws: WebSocket): Database {
+  console.log('CHAOS: setting up chaos Database');
 
   // Randomly injects events (results in conflicts in commitEvent)
   const chaosInterval = setInterval(() => {
@@ -97,16 +96,13 @@ export function chaosSessionModel(s: SessionModel, session: number, ws: WebSocke
 
     if (Math.random() < (parseFloat(Config.get('CHAOS_FRACTION')) || 0)) {
       console.log('CHAOS: injecting an id\'d event');
-      s.getLargestEventID(session).then((latestID) => {
-        s.commitEvent(session, 'chaos', 'chaos', latestID+1, 'CHAOS', JSON.stringify({id: latestID+1, event: {type: 'chaos!'}}));
+      getLargestEventID(db, session).then((latestID) => {
+        commitEvent(db, session, 'chaos', 'chaos', latestID+1, 'CHAOS', JSON.stringify({id: latestID+1, event: {type: 'chaos!'}}));
       });
     }
   }, CHAOS_INTERVAL);
 
-  return s;
-}
-
-export function chaosSessionClientModel(sc: SessionClient): SessionClient {
+  /*
   console.log('CHAOS: wrapping SessionClientModel');
 
   // Randomly fail to verify user membership in a session
@@ -118,9 +114,10 @@ export function chaosSessionClientModel(sc: SessionClient): SessionClient {
     }
     return oldVerify(session, client, secret);
   }
-  return sc;
-}
+  */
 
+  return db;
+}
 
 export function maybeChaosWS(ws: WebSocket): WebSocket {
   if (Config.get('NODE_ENV') !== 'production' && Config.get('MULTIPLAYER_CHAOS') === 'true') {
@@ -129,16 +126,9 @@ export function maybeChaosWS(ws: WebSocket): WebSocket {
   return ws;
 }
 
-export function maybeChaosSession(s: SessionModel, session: number, ws: WebSocket): SessionModel {
+export function maybeChaosDB(db: Database, session: number, ws: WebSocket): Database {
   if (Config.get('NODE_ENV') !== 'production' && Config.get('MULTIPLAYER_CHAOS') === 'true') {
-    return chaosSessionModel(s, session, ws);
+    return chaosDB(db, session, ws);
   }
-  return s;
-}
-
-export function maybeChaosSessionClient(sc: SessionClient): SessionClient {
-  if (Config.get('NODE_ENV') !== 'production' && Config.get('MULTIPLAYER_CHAOS') === 'true') {
-    return chaosSessionClientModel(sc);
-  }
-  return sc;
+  return db;
 }

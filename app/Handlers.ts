@@ -222,7 +222,6 @@ export function postAnalyticsEvent(db: Database, req: express.Request, res: expr
       version: body.version,
       json: (body.data) ? JSON.stringify(body.data) : undefined,
     })).then(() => {
-      console.log('Analytics event posted yo');
       res.status(200).end('ok');
     }).catch((e: Error) => {
       console.error(e);

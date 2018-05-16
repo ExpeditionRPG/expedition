@@ -3,6 +3,9 @@ import {User} from 'expedition-qdl/lib/schema/Users'
 import {Quest} from 'expedition-qdl/lib/schema/Quests'
 import {Feedback} from 'expedition-qdl/lib/schema/Feedback'
 import {RenderedQuest} from 'expedition-qdl/lib/schema/RenderedQuests'
+import {Event} from 'expedition-qdl/lib/schema/multiplayer/Events'
+import {SessionClient} from 'expedition-qdl/lib/schema/multiplayer/SessionClients'
+import {Session} from 'expedition-qdl/lib/schema/multiplayer/Sessions'
 import {SchemaBase, PLACEHOLDER_DATE} from 'expedition-qdl/lib/schema/SchemaBase'
 import {PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Constants'
 import {Database} from './Database'
@@ -124,6 +127,42 @@ export const renderedQuests = {
   }),
 };
 
+export const sessions = {
+  basic: new Session({
+    id: 12345,
+    secret: 'abcd',
+    eventCounter: 0,
+    locked: false,
+  }),
+};
+
+export const sessionClients = {
+  basic: new SessionClient({
+    session: 12345,
+    client: users.basic.id,
+    secret: 'abcd'
+  }),
+};
+
+const basicEvent = new Event({
+  session: sessions.basic.id,
+  timestamp: TEST_NOW,
+  client: users.basic.id,
+  instance: '93840',
+  id: 1,
+  type: 'ACTION', json: '{}',
+});
+export const events = {
+  basic: basicEvent,
+  questPlay: new Event({
+    ...basicEvent,
+    json: JSON.stringify({event: {
+      fn: 'fetchQuestXML',
+      args: JSON.stringify({title: basicQuest.title}),
+    }}),
+  }),
+};
+
 export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
   const db = new Database(new Sequelize({
     dialect: 'sqlite',
@@ -137,6 +176,9 @@ export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
     db.quests.sync(),
     db.feedback.sync(),
     db.renderedQuests.sync(),
+    db.events.sync(),
+    db.sessionClients.sync(),
+    db.sessions.sync(),
   ]).then(() => Promise.all(state.map((entry) => {
     if (entry instanceof AnalyticsEvent) {
       return db.analyticsEvent.create(prepare(entry)).then(() => null);
@@ -152,6 +194,15 @@ export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
     }
     if (entry instanceof RenderedQuest) {
       return db.renderedQuests.create(prepare(entry)).then(() => null);
+    }
+    if (entry instanceof Event) {
+      return db.events.create(prepare(entry)).then(() => null);
+    }
+    if (entry instanceof SessionClient) {
+      return db.sessionClients.create(prepare(entry)).then(() => null);
+    }
+    if (entry instanceof Session) {
+      return db.sessions.create(prepare(entry)).then(() => null);
     }
     throw new Error('Unsupported entry for testingDBWithState');
   }))).then(() => db);

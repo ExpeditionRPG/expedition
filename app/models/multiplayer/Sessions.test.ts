@@ -1,50 +1,61 @@
-import {Session} from './Sessions'
-import Sequelize from 'sequelize'
+import {Session} from 'expedition-qdl/lib/schema/multiplayer/Sessions'
+import {SessionInstance} from '../Database'
+import {
+  createSession,
+  getSessionBySecret,
+  getSessionQuestTitle,
+} from './Sessions'
+import {
+  testingDBWithState,
+  sessions as s,
+  events as e,
+  quests as q,
+} from '../TestData'
 
 describe('sessions', () => {
-  let ss: Session;
-  beforeEach((done: DoneFn) => {
-    const s = new Sequelize({dialect: 'sqlite', storage: ':memory:'});
-    ss = new Session(s);
-    ss.model.sync()
-      .then(() => done())
+  describe('createSession', () => {
+    it('creates a new session', (done: DoneFn) => {
+      testingDBWithState([])
+      .then((db) => createSession(db))
+      .then((i: SessionInstance) => {
+        expect(new Session(i.dataValues)).toEqual(jasmine.objectContaining({eventCounter: 0, locked: false}));
+        done();
+      })
       .catch(done.fail);
-  });
-
-  describe('commitEvent', () => {
-    it('rejects events with a mismatched increment counter');
-    it('rejects events that do not belong to a known session');
-  });
-
-  describe('create', () => {
-    it('creates a new session', (done) => {
-      ss.create()
-        .then((instance) => {
-          expect(instance.get('secret')).toBeDefined();
-          expect(instance.get('id')).toBeDefined();
-          done();
-        })
-        .catch(done.fail);
     });
   });
-  describe('get', () => {
-    it('gets the session');
+
+  describe('getSessionBySecret', () => {
+    it('gets the session with the secret', (done: DoneFn) => {
+      testingDBWithState([s.basic])
+      .then((db) => getSessionBySecret(db, s.basic.secret))
+      .then((i: SessionInstance) => {
+        expect(new Session(i.dataValues)).toEqual(s.basic);
+        done();
+      })
+      .catch(done.fail);
+    });
   });
 
-  describe('getBySecret', () => {
-    it('gets the session with the secret');
-  });
+  describe('getSessionQuestTitle', () => {
+    it('gets the title of the current quest', (done: DoneFn) => {
+      testingDBWithState([e.questPlay])
+      .then((db) => getSessionQuestTitle(db, s.basic.id))
+      .then((title: string|null) => {
+        expect(title).toEqual(q.basic.title);
+        done();
+      })
+      .catch(done.fail);
+    });
 
-  describe('getLargestEventID', () => {
-    it('gets the max event ID for the session');
+    it('returns null if no current quest in the session', (done: DoneFn) => {
+      testingDBWithState([])
+      .then((db) => getSessionQuestTitle(db, s.basic.id))
+      .then((title: string|null) => {
+        expect(title).toEqual(null);
+        done();
+      })
+      .catch(done.fail);
+    });
   });
-
-  describe('getOrderedAfter', () => {
-    it('gets the ordered list of events after the start time');
-  });
-
-  describe('commitEventWithoutID', () => {
-    it('inserts an event with an automatically-determined ID');
-  });
-
 });

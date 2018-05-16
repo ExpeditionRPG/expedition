@@ -1,43 +1,47 @@
-import {SessionClient, SessionClientInstance} from './SessionClients'
-import {SessionClient as SessionClientAttributes} from 'expedition-qdl/lib/schema/multiplayer/SessionClients'
-import Sequelize from 'sequelize'
-
-const testData = new SessionClientAttributes({session: 12345, client: 'testclient', secret: 'abcd'});
+import {SessionClientInstance} from '../Database'
+import {SessionClient} from 'expedition-qdl/lib/schema/multiplayer/SessionClients'
+import {
+  verifySessionClient,
+  getClientSessions,
+} from './SessionClients'
+import {
+  testingDBWithState,
+  sessionClients as sc,
+} from '../TestData'
 
 describe('SessionClients', () => {
-  let sc: SessionClient;
-  beforeEach((done: DoneFn) => {
-    const s = new Sequelize({dialect: 'sqlite', storage: ':memory:'});
-    sc = new SessionClient(s);
-    sc.model.sync()
-      .then(() => done())
+  describe('verifySessionClient', () => {
+    it('returns true if the client exists in the session, matching secret', (done: DoneFn) => {
+      testingDBWithState([sc.basic])
+      .then((db) => verifySessionClient(db, sc.basic.session, sc.basic.client, sc.basic.secret))
+      .then((valid: boolean) => {
+        expect(valid).toEqual(true);
+        done();
+      })
       .catch(done.fail);
+    });
+
+    it('returns false otherwise', (done: DoneFn) => {
+      testingDBWithState([])
+      .then((db) => verifySessionClient(db, sc.basic.session, sc.basic.client, sc.basic.secret))
+      .then((valid: boolean) => {
+        expect(valid).toEqual(false);
+        done();
+      })
+      .catch(done.fail);
+    });
   });
 
-  describe('getSessionsByClient', () => {
-    it('gets sessions the client has joined with the most recent activity');
-  });
-
-  describe('get', () => {
-    it('gets the session client instance');
-  });
-
-  describe('verify', () => {
-    it('returns true if the client exists in the session, matching secret');
-    it('returns false otherwise');
-  });
-
-  describe('upsert', () => {
-    it('inserts an entry', (done: DoneFn) => {
-      sc.upsert(testData.session, testData.client, testData.secret)
-        .then(() => {
-          return sc.get(testData.session, testData.client);
-        })
-        .then((c: SessionClientInstance) => {
-          expect(new SessionClientAttributes(c.dataValues)).toEqual(testData);
-          done();
-        })
-        .catch(done.fail);
+  describe('getClientSessions', () => {
+    it('gets sessions the client has joined with the most recent activity', (done: DoneFn) => {
+      testingDBWithState([sc.basic])
+      .then((db) => getClientSessions(db, sc.basic.client))
+      .then((results: SessionClientInstance[]) => {
+        expect(results.length).toEqual(1);
+        expect(new SessionClient(results[0].dataValues)).toEqual(sc.basic);
+        done();
+      })
+      .catch(done.fail);
     });
   });
 });
