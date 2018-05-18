@@ -22,9 +22,9 @@ export interface RoleplayDispatchProps {
 
 export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps {};
 
-// Replaces :icon_name: with <img class="inline_icon" src="images/icon_name_small.svg">
-// And [art_name] with <img class="art" src="images/art_name.svg">
-// if [art_name] ends will _full, adds class="full"; otherwise displays at 50% size
+// Replaces :icon_name: and [art_name] with appropriate HTML elements
+// if [art_name] ends will _full, adds class="full"; otherwise defaults to display at 50% size
+// art is hidden if it fails to load (aka offline)
 function generateIconElements(content: string, theme: CardThemeType): JSX.Element {
   content = (content || '').replace(new RegExp(REGEX.ICON.source, 'g'), (match:string, group:string): string => {
       const icon = group.toLowerCase();
@@ -44,7 +44,7 @@ function generateIconElements(content: string, theme: CardThemeType): JSX.Elemen
         imgName = imgName + '.svg';
       }
       return `<div class="${imgClass}">
-        <img class="art" src="${imgName.toLowerCase()}" />
+        <img class="art" src="${imgName.toLowerCase()}" onerror="this.style.display='none'" />
       </div>`;
     });
   return <span dangerouslySetInnerHTML={{__html: content }} />;
