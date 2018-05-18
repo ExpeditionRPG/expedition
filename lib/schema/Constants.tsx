@@ -37,3 +37,9 @@ export const CONTENT_RATINGS: ContentRatingType[] = [
   'Teen',
   'Adult',
 ];
+
+export type ThemeType = 'base' | 'horror';
+export const THEMES: ThemeType[] = [
+  'base',
+  'horror',
+];

@@ -21,13 +21,14 @@ describe('Quests Schema', () => {
   it('rejects invalid language', () => {
     expect(Quest.create({...base, language: 'Invalid'}) instanceof Error).toEqual(true);
   });
-  it('accepts valid genre, content rating, and language', () => {
+  it('accepts valid genre, content rating, language and theme', () => {
     new Quest({
       partition: PRIVATE_PARTITION,
       id: '12345',
       genre: 'Horror',
       contentrating: 'Adult',
       language: 'English',
+      theme: 'base',
     });
   });
 })

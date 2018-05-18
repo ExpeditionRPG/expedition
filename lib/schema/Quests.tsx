@@ -1,5 +1,5 @@
 import {SchemaBase, field, copyAndUnsetDefaults, NOW, PLACEHOLDER_DATE} from './SchemaBase'
-import {PARTITIONS, GENRES, LANGUAGES, CONTENT_RATINGS} from './Constants'
+import {PARTITIONS, GENRES, LANGUAGES, CONTENT_RATINGS, THEMES} from './Constants'
 
 export class Quest extends SchemaBase {
   static create(fields: Partial<Quest>) {
@@ -138,4 +138,10 @@ export class Quest extends SchemaBase {
     maxLength: 128,
     default: 'English',
   }) language: string;
+
+  @field({
+    valid: THEMES,
+    maxLength: 128,
+    default: 'base',
+  }) theme: string;
 }
