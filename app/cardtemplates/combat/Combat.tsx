@@ -135,10 +135,11 @@ function renderNoTimer(props: CombatProps): JSX.Element {
       <div>
         {props.settings.numPlayers === 1 && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
         <ol>
-          <li>Shuffle your ability draw pile.
+          <li>
+            <strong>Shuffle</strong> your ability draw pile.
             <ul>
               <li>Keep abilities played this combat in a separate discard pile.</li>
-              <li><strong>If you run out of ability cards to draw</strong>, shuffle your discards into a new draw pile.</li>
+              <li><strong>If you run out of ability cards to draw</strong>, shuffle your discards into a new draw pile and continue drawing.</li>
             </ul>
           </li>
           <li><strong>No timer:</strong> Draw three abilities from your draw pile and play one ability.</li>
@@ -169,15 +170,16 @@ function renderPrepareTimer(props: CombatProps): JSX.Element {
       <div>
         {props.settings.numPlayers === 1 && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
         <ol>
-          <li><strong>Shuffle</strong> your ability draw pile.
+          <li>
+            <strong>Shuffle</strong> your ability draw pile.
             <ul>
               <li>Keep abilities played this combat in a separate discard pile.</li>
-              <li><strong>If you run out of ability cards to draw</strong>, shuffle your discards into a new draw pile.</li>
+              <li><strong>If you run out of ability cards to draw</strong>, shuffle your discards into a new draw pile and continue drawing.</li>
             </ul>
           </li>
-          <li><strong>Pre-draw your hand</strong> of three abilities face-down from your draw pile. Do not look at these cards until you start the timer.</li>
-          <li><strong>Start the timer.</strong></li>
-          <li><strong>Play one ability</strong> from your hand.</li>
+          <li><strong>Pre-draw</strong> your hand of three abilities face-down from your draw pile. Do not look at these cards until you start the timer.</li>
+          <li><strong>Start</strong> the timer.</li>
+          <li><strong>Play</strong> one ability from your hand.</li>
           {props.settings.multitouch && <li><strong>Place your finger</strong> on the screen. When all fingers are down, the timer stops.</li>}
           {!props.settings.multitouch && <li><strong>Tap the screen</strong> once everyone has selected their abilities to stop the timer.</li>}
           <li><strong>Be careful!</strong> If the timer runs out, you'll all take additional damage.</li>
@@ -235,12 +237,12 @@ function renderResolve(props: CombatProps): JSX.Element {
         <p>
           Each adventurer rolls a die for each ability they played. If <img className="inline_icon" src="images/roll_white_small.svg"></img> &ge; X, the ability succeeds. Ability cards may list additional effects based on the roll, even if they fail.
         </p>
-        <h2>Resolve <img className="inline_icon" src="images/cards_white_small.svg"></img></h2>
+        <h2>Resolve & Discard <img className="inline_icon" src="images/cards_white_small.svg"></img></h2>
         <p>
-          Resolve your abilities in any order. You may change the resolution order during the round, even after some abilities have been played.
+          <strong>Resolve</strong> your abilities in any order. You may change the resolution order during the round, even after some abilities have been played.
         </p>
         <p>
-          Discard all abilities resolved this round. Shuffle the rest of your hand back into your draw pile.
+          <strong>Discard</strong> all ability(s) you resolved this round. Put unplayed abilities back into your draw pile before shuffling.
         </p>
         <h2>Modifiers <img className="inline_icon" src="images/damage_white_small.svg"></img></h2>
         <p>
@@ -308,8 +310,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
         remoteID="adventurers"
         onDelta={(i: number)=>props.onAdventurerDelta(props.node, props.settings, props.numAliveAdventurers, i)}
         value={props.numAliveAdventurers}>
-        {props.settings.showHelp && soloPlay && <span><strong>Solo play:</strong> Keep this at 1 unless all adventurers are knocked out.</span>}
-        {props.settings.showHelp && !soloPlay && <span>The number of adventurers &gt; 0 health.</span>}
+        {props.settings.showHelp && <span>The number of adventurers &gt; 0 health.</span>}
       </Picker>
       {helpText}
       <Button onTouchTap={() => props.onNext(nextCard)} disabled={props.numAliveAdventurers <= 0}>Next</Button>

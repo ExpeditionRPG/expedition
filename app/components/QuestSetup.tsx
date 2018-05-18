@@ -22,6 +22,9 @@ const QuestSetup = (props: QuestSetupProps): JSX.Element => {
   const theHorror = (props.settings.contentSets.horror === true);
   return (
     <Card title="Setup">
+      <h2>Cards</h2>
+      <p><strong>Separate</strong> cards into like piles (by ability class, enemy class, adventurers, etc).</p>
+
       <h2>Adventurers</h2>
       {singlePlayer && <p><strong>Solo play:</strong> Select two adventurers of your choice and set them face up in front of you.</p>}
       {multiPlayer && <p><strong>Select</strong> one adventurer of your choice from the deck, set it face up in front of you and pass the deck along.</p>}
@@ -31,7 +34,7 @@ const QuestSetup = (props: QuestSetupProps): JSX.Element => {
 
       <h2>Abilities</h2>
       <p><strong>Draw</strong> the starting abilities listed on your adventurer.</p>
-      {twoAdventurer && <Callout icon="adventurer"><strong>1-2 players:</strong> Draft pick each ability (draw three, keep one, put the other two on the bottom of the deck).</Callout>}
+      {twoAdventurer && <Callout icon="adventurer"><strong>1-2 players:</strong> Draft pick each ability (for each ability: draw three, keep one, return the other two to the bottom of the deck).</Callout>}
       {theHorror && <Callout icon="horror"><strong>The Horror:</strong> Draw an additional Influence ability and shuffle it into your ability pile (start with 7 abilities).</Callout>}
       <p><strong>Read</strong> through your abilities. You may mulligan (redraw all) once if desired.</p>
       <p><strong>Shuffle</strong> them into a stack face-down in front of you.</p>
