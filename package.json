@@ -3,6 +3,7 @@
   "version": "1.16.0",
   "description": "The App for Expedition: The Roleplaying Card Game",
   "homepage": "http://expeditiongame.com",
+  "repository": "https://github.com/ExpeditionRPG/expedition-app",
   "bugs": "https://github.com/ExpeditionRPG/expedition-app/issues",
   "license": "CC-BY-NC-ND-4.0",
   "scripts": {
@@ -35,7 +36,7 @@
     "awesome-typescript-loader": "^3.5.0",
     "babel-cli": "^6.24.0",
     "babel-core": "^6.17.0",
-    "babel-loader": "^6.4.1",
+    "babel-loader": "^7.1.4",
     "babel-plugin-transform-es2015-classes": "^6.14.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.16.0",
     "babel-plugin-transform-object-assign": "^6.8.0",
@@ -43,7 +44,7 @@
     "babel-polyfill": "^6.22.0",
     "babel-preset-env": "^1.6.1",
     "browser-sync": "^2.7.7",
-    "copy-webpack-plugin": "^4.1.1",
+    "copy-webpack-plugin": "^4.5.1",
     "css-loader": "^0.28.1",
     "cypress": "^1.1.1",
     "enzyme": "^2.6.0",
@@ -75,9 +76,10 @@
     "typescript": "2.5.2",
     "uglify-js": "^3.1.3",
     "uglifyjs-webpack-plugin": "^1.2.4",
-    "webpack": "^3.11.0",
-    "webpack-dashboard": "^0.3.0",
-    "webpack-dev-server": "^2.11.2"
+    "webpack": "^4.8.0",
+    "webpack-cli": "^2.1.3",
+    "webpack-dashboard": "^1.1.1",
+    "webpack-dev-server": "^3.1.4"
   },
   "dependencies": {
     "ansi-styles": "^3.0.0",
@@ -147,7 +149,6 @@
     "strip-ansi": "^3.0.0",
     "ucfirst": "^1.0.0",
     "update": "^0.7.4",
-    "webpack-bundle-analyzer": "^2.11.1",
     "whatwg-fetch": "^2.0.3",
     "xtend": "^4.0.1"
   },

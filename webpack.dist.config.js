@@ -3,6 +3,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const options = {
+  mode: 'production',
   entry: [
     'whatwg-fetch',
     'promise-polyfill',
@@ -17,12 +18,12 @@ const options = {
     filename: 'bundle.js',
   },
   module: {
-    loaders: [
+    rules: [
       { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader',
         options: { name: '[name].[ext]' }, // disable filename hashing for infrequently changed static assets to enable preloading
       },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
-      { test: /\.json$/, loader: 'json-loader' },
+      { test: /\.json$/, loader: 'json-loader', type: 'javascript/auto' },
       { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules\/((?!expedition\-qdl).)*$/ },
       { enforce: 'post', test: /\.tsx$/, exclude: /node_modules\/((?!expedition\-qdl).)*$/, use: [{
         loader: 'babel-loader',
@@ -45,7 +46,6 @@ const options = {
       },
     }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // Don't import bloated Moment locales
-    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new UglifyJsPlugin({
       sourceMap: true,
