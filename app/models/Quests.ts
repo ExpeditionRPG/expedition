@@ -115,8 +115,8 @@ export function searchQuests(db: Database, userId: string, params: QuestSearchPa
 function mailNewQuestToAdmin(mail: MailService, quest: Quest) {
   // If this is a newly published quest, email us!
   // We don't care if this fails.
-  const to = ['expedition+newquest@fabricate.io'];
-  const subject = `New quest published: ${quest.title} (${quest.partition}, ${quest.language})`;
+  const to = ['team+newquest@fabricate.io'];
+  const subject = `Please review! New quest published: ${quest.title} (${quest.partition}, ${quest.language})`;
   const message = `Summary: ${quest.summary}.\n
     By ${quest.author},
     for ${quest.minplayers} - ${quest.maxplayers} players
