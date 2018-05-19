@@ -116,7 +116,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
     try {
       this.ctx = new (getWindow().AudioContext as any || getWindow().webkitAudioContext as any)();
       if (this.enabled) {
-        this.loadFiles();
+        setTimeout(() => this.loadFiles, 2000);
       }
     } catch(err) {
       if (this.enabled) {
