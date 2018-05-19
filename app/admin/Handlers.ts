@@ -236,8 +236,8 @@ export function queryUser(db: Database, req: express.Request, res: express.Respo
           id: r.get('id'),
           email: r.get('email'),
           name: r.get('name'),
-          loot_points: r.get('loot_points'),
-          last_login: r.get('last_login'),
+          loot_points: r.get('lootPoints'),
+          last_login: r.get('lastLogin'),
         } as QT.UserEntry;
       });
     }).then((results: QT.UserEntry[]) => {

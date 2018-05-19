@@ -40,7 +40,7 @@ export function user(db: Database, req: express.Request, res: express.Response) 
           if (e === null) {
             return null;
           }
-          meta.lastAction = e.get('updated_at');
+          meta.lastAction = e.get('timestamp');
           return getSessionQuestTitle(db, id);
         })
         .then((q: string|null) => {
