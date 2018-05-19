@@ -15,8 +15,6 @@ describe('Checkout actions', () => {
     });
 
     it('Navigates to checkout if logged in', () => {
-
-console.log(testLoggedInUser);
       store.dispatch(toCheckout(testLoggedInUser, 1));
       expect(store.getActions().length).toEqual(2);
       const navigateAction = store.getActions()[1];

@@ -62,9 +62,7 @@ export function multiplayerConnect(user: UserState, secret: string) {
       body: JSON.stringify({instance: instanceID, secret}),
     })
     .then(handleFetchErrors)
-    .then((response: Response) => {
-      return response.json();
-    })
+    .then((response: Response) => response.json())
     .then((data: {session: string}) => {
       if (!data.session) {
         return dispatch(openSnackbar('Error parsing session'));
@@ -104,9 +102,7 @@ export function loadMultiplayer(user: UserState) {
     // NOTE: We do not handle fetch errors here - failing this
     // fetch should not prevent users from using multiplayer.
     // .then(handleFetchErrors)
-    .then((response: Response) => {
-      return response.json();
-    })
+    .then((response: Response) => response.json())
     .then((data: {history: MultiplayerSessionMeta[]}) => {
       dispatch({type: 'MULTIPLAYER_HISTORY', history: data.history});
       dispatch(toCard({name: 'REMOTE_PLAY', phase: 'CONNECT'}));

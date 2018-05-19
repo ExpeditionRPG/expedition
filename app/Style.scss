@@ -6,20 +6,20 @@
   font-family: 'CinzelBold';
   font-style: normal;
   font-weight: 700;
-  src: local('Cinzel-Bold'), url(fonts/Cinzel-Bold.woff2) format('woff2');
+  src: url(fonts/Cinzel-Bold.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
 @font-face {
   font-family: 'MinionPro';
   font-style: normal;
-  src: url('fonts/Minion-Pro-Regular.ttf') format('truetype');
+  src: url(fonts/Minion-Pro-Regular.ttf) format('truetype');
 }
 
 @font-face {
   font-family: 'NothingYouCouldDo';
   font-style: normal;
-  src: url('fonts/Nothing-You-Could-Do.ttf') format('truetype');
+  src: url(fonts/Nothing-You-Could-Do.ttf) format('truetype');
 }
 
 // ===============================================
@@ -243,7 +243,7 @@ body {
 h1, h2, h3 {
   font-family: $headerFont;
   margin: 0.5em 0 0.2em 0;
-  line-height: 1.2;
+  line-height: $lineheight;
 }
 h1 {
   font-size: 2em;
@@ -327,7 +327,7 @@ span.line {
       height: auto !important;
       div {
         font-size: fontsize(interactive) !important;
-        line-height: 1.2 !important;
+        line-height: $lineheight !important;
         margin: 0.5em !important;
       }
     }
