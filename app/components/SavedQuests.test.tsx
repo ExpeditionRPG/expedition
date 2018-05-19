@@ -7,8 +7,10 @@ import {QuestDetails} from '../reducers/QuestTypes'
 
 require('react-tap-event-plugin')();
 
+const renderOptions = {context: {muiTheme: getMuiTheme()}, childContextTypes: {muiTheme: React.PropTypes.object}};
+
 function setup(props: Partial<SavedQuestsProps>) {
-  const enzymeWrapper = shallow(<SavedQuests {...(props as any as SavedQuestsProps)} />);
+  const enzymeWrapper = render(<SavedQuests {...(props as any as SavedQuestsProps)} />, renderOptions;
   return {props, enzymeWrapper};
 }
 
@@ -19,7 +21,7 @@ describe('SavedQuests', () => {
       saved: [],
       selected: null,
     });
-    expect(enzymeWrapper.contains('You have no saved quests.')).toEqual(true);
+    expect(enzymeWrapper.text()).toContain('You have no saved quests.');
   });
   it('shows selected saved quest', () => {
     const {props, enzymeWrapper} = setup({
@@ -48,6 +50,6 @@ describe('SavedQuests', () => {
       saved: [],
       selected: null,
     });
-    expect(enzymeWrapper.contains('Loading...')).toEqual(true);
+    expect(enzymeWrapper.text()).toContain('Loading...');
   });
 });

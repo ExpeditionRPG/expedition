@@ -1,6 +1,5 @@
 import {QuestDetails} from './reducers/QuestTypes'
 
-declare var window:any;
 export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
 // Should be overriden via env vars to use local server
 export const API_HOST = (process && process.env && process.env.API_HOST) || 'http://betaapi.expeditiongame.com';

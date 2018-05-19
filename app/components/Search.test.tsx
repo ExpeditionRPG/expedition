@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {shallow, render} from 'enzyme'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import {getMuiTheme} from 'material-ui/styles/getMuiTheme'
 import {
   formatPlayPeriod,
   renderDetails,

@@ -3,7 +3,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const options = {
-  mode: 'production',
   entry: [
     'whatwg-fetch',
     'promise-polyfill',
@@ -23,7 +22,7 @@ const options = {
         options: { name: '[name].[ext]' }, // disable filename hashing for infrequently changed static assets to enable preloading
       },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
-      { test: /\.json$/, loader: 'json-loader', type: 'javascript/auto' },
+      { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules\/((?!expedition\-qdl).)*$/ },
       { enforce: 'post', test: /\.tsx$/, exclude: /node_modules\/((?!expedition\-qdl).)*$/, use: [{
         loader: 'babel-loader',
