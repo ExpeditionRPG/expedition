@@ -2,7 +2,7 @@ import * as React from 'react'
 import FlatButton from 'material-ui/FlatButton'
 import CheckBoxIcon from 'material-ui/svg-icons/toggle/check-box'
 import CheckBoxOutlineIcon from 'material-ui/svg-icons/toggle/check-box-outline-blank'
-import MultiplayerRipple from './multiplayer/MultiplayerRipple'
+import MultiplayerRipple from '../multiplayer/MultiplayerRipple'
 
 export interface CheckboxProps {
   label: string;

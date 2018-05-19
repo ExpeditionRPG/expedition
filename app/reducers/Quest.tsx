@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {QuestState} from './StateTypes'
 import {QuestNodeAction, ViewQuestAction} from '../actions/ActionTypes'
 import {getStore} from '../Store'
-import {ParserNode} from '../cardtemplates/TemplateTypes'
+import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 import * as seedrandom from 'seedrandom'
 
 const cheerio = require('cheerio') as CheerioAPI;

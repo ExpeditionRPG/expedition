@@ -64,14 +64,14 @@ export function getAppVersion(): string {
 export function getDevicePlatform(): 'android' | 'ios' | 'web' {
   const device = getDevice();
 
-  if (device === undefined) {
+  if (!device) {
     return 'web';
   }
 
   const p = (device.platform || window.navigator.appVersion || '').toLowerCase();
-  if (/android/i.test(p)) {
+  if (/android/.test(p)) {
     return 'android';
-  } else if (/iphone|ipad|ipod|ios/i.test(p)) {
+  } else if (/iphone|ipad|ipod|ios/.test(p)) {
     return 'ios';
   } else {
     return 'web';

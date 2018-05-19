@@ -5,7 +5,6 @@ import {ClientBase} from 'expedition-qdl/lib/multiplayer/Client'
 import {toClientKey} from 'expedition-qdl/lib/multiplayer/Session'
 import {local} from './actions/Multiplayer'
 import {getStore} from './Store'
-import * as Bluebird from 'bluebird'
 import {remotePlaySettings} from './Constants'
 
 const REMOTEPLAY_CLIENT_STATUS_POLL_MS = 5000;

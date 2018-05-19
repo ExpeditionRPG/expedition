@@ -5,8 +5,8 @@ import {logEvent} from '../Main'
 import {getStorageJson, setStorageKeyValue, getCheerio} from '../Globals'
 import {SAVED_QUESTS_KEY} from '../Constants'
 import {initQuest} from './Quest'
-import {ParserNode} from '../cardtemplates/TemplateTypes'
-import {defaultContext} from '../cardtemplates/Template'
+import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
+import {defaultContext} from '../components/views/quest/cardtemplates/Template'
 
 declare type SavedQuest = {xml: string, path: number[]};
 

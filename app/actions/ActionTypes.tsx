@@ -16,7 +16,7 @@ import {
   SavedQuestMeta,
 } from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
-import {ParserNode} from '../cardtemplates/TemplateTypes'
+import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 import {ClientID, InstanceID, StatusEvent} from 'expedition-qdl/lib/multiplayer/Events'
 
 export interface FetchAnnouncementResponse {

@@ -2,7 +2,7 @@ import * as React from 'react'
 import FlatButton from 'material-ui/FlatButton'
 import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left'
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right'
-import MultiplayerRipple from './multiplayer/MultiplayerRipple'
+import MultiplayerRipple from '../multiplayer/MultiplayerRipple'
 
 interface PickerProps extends React.Props<any> {
   value: number | string;

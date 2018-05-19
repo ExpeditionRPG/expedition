@@ -23,7 +23,6 @@ const eachLimit = require('async/eachLimit');
   so it behaves like pause / resume
 */
 
-const SFX_FILES = ['sfx/combat_defeat', 'sfx/combat_victory'];
 const MUSIC_FADE_SECONDS = 1.5;
 const MUSIC_FADE_LONG_SECONDS = 3.5; // for fade outs, such as the end of combat
 const MUSIC_DEFINITIONS = {
@@ -251,8 +250,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
           return list;
         }, []));
       }, []);
-      const files = [...SFX_FILES, ...musicFiles];
-      eachLimit(files, 4, (file: string, callback: (err?: Error) => void) => {
+      eachLimit(musicFiles, 4, (file: string, callback: (err?: Error) => void) => {
         if (!this.enabled) {
           return callback();
         }

@@ -204,7 +204,7 @@ function setupEventLogging() {
 function setupHotReload() {
   if (module.hot) {
     module.hot.accept();
-    module.hot.accept('./components/base/AppContainer', () => {
+    module.hot.accept('./components/Compositor', () => {
       setTimeout(() => {render();});
     });
   }
@@ -351,7 +351,7 @@ export function init() {
 
 function render() {
   // Require is done INSIDE this function to reload app changes.
-  const AppContainer = require('./components/base/AppContainer').default;
+  const Compositor = require('./components/Compositor').default;
   const base = getDocument().getElementById('react-app');
   if (!base) {
     throw new Error('Could not find react-app element');
@@ -359,7 +359,7 @@ function render() {
   ReactDOM.unmountComponentAtNode(base);
   ReactDOM.render(
     <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-      <AppContainer/>
+      <Compositor/>
     </MuiThemeProvider>,
     base
   );

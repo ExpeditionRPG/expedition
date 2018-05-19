@@ -1,6 +1,6 @@
 import * as React from 'react'
 import FlatButton from 'material-ui/FlatButton'
-import MultiplayerRipple from './multiplayer/MultiplayerRipple'
+import MultiplayerRipple from '../multiplayer/MultiplayerRipple'
 import {openWindow} from '../../Globals'
 
 interface ButtonProps extends React.Props<any> {

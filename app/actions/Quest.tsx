@@ -9,8 +9,8 @@ import {toCard} from './Card'
 import {changeSettings} from './Settings'
 import {AppStateWithHistory, SettingsType} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
-import {initCardTemplate} from '../cardtemplates/Template'
-import {TemplateContext, ParserNode} from '../cardtemplates/TemplateTypes'
+import {initCardTemplate} from '../components/views/quest/cardtemplates/Template'
+import {TemplateContext, ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 
 export function initQuest(details: QuestDetails, questNode: Cheerio, ctx: TemplateContext): QuestNodeAction {
   const firstNode = questNode.children().eq(0);

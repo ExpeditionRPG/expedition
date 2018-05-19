@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {InteractionEvent} from 'expedition-qdl/lib/multiplayer/Events'
-import MultiplayerAffector from './multiplayer/MultiplayerAffector'
+import MultiplayerAffector from '../multiplayer/MultiplayerAffector'
 import TouchIndicator from './TouchIndicator'
 
 interface MultiTouchTriggerProps extends React.Props<any> {

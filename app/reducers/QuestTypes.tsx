@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {TemplateState} from '../cardtemplates/TemplateTypes'
+import {TemplateState} from '../components/views/quest/cardtemplates/TemplateTypes'
 
 // TODO: Dedupe this with expedition-api/app/models/Quests QuestAttributes interface.
 export type QuestThemeType = 'base' | 'horror';
