@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const DashboardPlugin = require('webpack-dashboard/plugin');
+
 const path = require('path');
 const port = process.env.DOCKER_PORT || 8082;
 
@@ -61,7 +61,6 @@ const options = {
       { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
       { from: { glob: 'node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
     ]),
-    new DashboardPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {
