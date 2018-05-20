@@ -1,3 +1,3 @@
 describe('PartySizeSelectContainer', () => {
-  // Pretty basic; no tests needed for now.
+  it('Only allows players in the min-max range');
 });

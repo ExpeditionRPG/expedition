@@ -1,6 +1,9 @@
 const fs = require('fs');
 const expect = require('expect');
 
+const WHITELIST = ['reducers/', 'Container$'];
+const WHITELIST_REGEX = new RegExp(WHITELIST.join('|'));
+
 function walkDir(root) {
   const stat = fs.statSync(root);
   if (stat.isDirectory()) {
@@ -25,8 +28,8 @@ describe('Typescript files', () => {
     }
 
     let violations = [];
-    for(let k of Object.keys(count)) {
-      if (count[k] !== 2) {
+    for (let k of Object.keys(count)) {
+      if (count[k] !== 2 && !WHITELIST_REGEX.test(k)) {
         violations.push(k);
       }
     }

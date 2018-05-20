@@ -14,7 +14,6 @@ export interface QuestSetupDispatchProps {
 
 export interface QuestSetupProps extends QuestSetupStateProps, QuestSetupDispatchProps {};
 
-// TODO: Refactor this into a QUEST_CARD
 const QuestSetup = (props: QuestSetupProps): JSX.Element => {
   const singlePlayer = (props.settings.numPlayers === 1);
   const twoAdventurer = (props.settings.numPlayers === 1 || props.settings.numPlayers === 2);
