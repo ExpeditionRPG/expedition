@@ -48,7 +48,7 @@ describe('Test Environment', () => {
       Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => {return {b: 5};})).expect({b: 5}).toNotSendMultiplayer({b: 1});
     });
     it('supports expect.toDispatch', () => {
-      const result = Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => {
+      Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => {
         dispatch({type: 'ACTION1'});
         dispatch({type: 'ACTION2'});
       })).expect({b: 5}).toDispatch({type: 'ACTION2'});

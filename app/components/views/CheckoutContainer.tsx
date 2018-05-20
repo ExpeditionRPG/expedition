@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
 import Checkout, {CheckoutStateProps, CheckoutDispatchProps} from './Checkout'
-import {toPrevious} from '../../actions/Card'
+import {toCard, toPrevious} from '../../actions/Card'
 import {checkoutSetState, checkoutSubmit} from '../../actions/Checkout'
 import {openSnackbar} from '../../actions/Snackbar'
 import {logEvent} from '../../Main'
@@ -29,7 +29,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Check
     },
     onPhaseChange: (phase: CheckoutPhase): void => {
       logEvent('checkout_phase', {label: phase});
-      dispatch(checkoutSetState({phase}));
+      dispatch(toCard({name: 'CHECKOUT', phase}));
     },
     onStripeLoad: (stripe: stripe.Stripe): void => {
       dispatch(checkoutSetState({stripe}));

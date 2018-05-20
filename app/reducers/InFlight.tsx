@@ -1,6 +1,6 @@
-import {InflightCommitAction, InflightRejectAction} from '../actions/ActionTypes'
+import {InflightCommitAction} from '../actions/ActionTypes'
 import Redux from 'redux'
-import {AppStateWithHistory, AppState} from './StateTypes'
+import {AppStateWithHistory} from './StateTypes'
 import {getMultiplayerClient} from '../Multiplayer'
 
 export function stripMultiplayerStateAndSettings(state: AppStateWithHistory): AppStateWithHistory {
@@ -35,10 +35,9 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
           _committed: stripMultiplayerStateAndSettings(state),
           commitID: id,
         } as AppStateWithHistory;
-      } else {
-        console.warn('Skipping commit; inflight at or below #' + id);
-        return state;
       }
+      console.warn('Skipping commit; inflight at or below #' + id);
+      return state;
     case 'INFLIGHT_COMPACT':
       console.log('INFLIGHT COMPACT');
       return {

@@ -2,11 +2,9 @@ import Redux from 'redux'
 import {
   remoteify,
   QuestExitAction,
-  QuestNodeAction,
-  ViewQuestAction
+  QuestNodeAction
 } from './ActionTypes'
 import {toCard} from './Card'
-import {changeSettings} from './Settings'
 import {AppStateWithHistory, SettingsType} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {initCardTemplate} from '../components/views/quest/cardtemplates/Template'

@@ -3,12 +3,13 @@ import {SavedQuestMeta} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {logEvent} from '../Main'
 import {getStorageJson, setStorageKeyValue, getCheerio} from '../Globals'
-import {SAVED_QUESTS_KEY} from '../Constants'
 import {initQuest} from './Quest'
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 import {defaultContext} from '../components/views/quest/cardtemplates/Template'
 
 declare type SavedQuest = {xml: string, path: number[]};
+
+export const SAVED_QUESTS_KEY = 'SAVED_QUESTS';
 
 function getSavedQuestMeta(): SavedQuestMeta[] {
   return getStorageJson(SAVED_QUESTS_KEY, []) as any;

@@ -65,26 +65,6 @@ const options = {
     new webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {
         tslint: {
-          configuration: {
-           rules: {
-              quotemark: [true, 'single', 'jsx-double'],
-              curly: true,
-              noUseBeforeDeclare: true,
-              eofline: true,
-              radix: true,
-              switchDefault: true,
-              tripleEquals: true,
-              typeofCompare: true,
-              useIsnan: true,
-              indent: [true, "spaces"],
-              // This can be uncommented occassionally to help clean up the codebase
-              // But complains about enough false things that it's not worth leaving on
-              // noUnusedVariable: true,
-              noVarKeyword: true,
-              preferConst: true,
-              trailingComma: true,
-            },
-          },
           emitErrors: true,
           failOnHint: true,
           tsConfigFile: 'tsconfig.json',

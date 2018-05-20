@@ -1,10 +1,8 @@
 import Redux from 'redux'
 import {authSettings} from '../Constants'
 import {toCard} from './Card'
-import {searchAndPlay} from './Search'
 import {initQuest} from './Quest'
 import {login} from './User'
-import {setAnnouncement} from './Announcement'
 import {openSnackbar} from './Snackbar'
 import {userFeedbackClear} from './UserFeedback'
 import {SettingsType, QuestState, UserState, UserQuestsType, UserFeedbackState} from '../reducers/StateTypes'
@@ -214,7 +212,6 @@ function postUserFeedback(type: string, data: any) {
 
 export function logMultiplayerStats(user: UserState, quest: QuestDetails, stats: MultiplayerCounters): Promise<Response> {
   try {
-    const state = getStore().getState();
     const data = {
       questid: quest.id,
       questversion: quest.questversion,

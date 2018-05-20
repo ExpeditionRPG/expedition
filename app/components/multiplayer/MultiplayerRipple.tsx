@@ -24,10 +24,6 @@ export interface MultiplayerRippleState {
   ripples: JSX.Element[];
 }
 export default class MultiplayerRipple extends React.Component<MultiplayerRippleProps, MultiplayerRippleState> {
-  private ignoreNextMouseDown: boolean;
-  private startTime: number;
-  private firstTouchY: number;
-  private firstTouchX: number;
 
   constructor(props: MultiplayerRippleProps) {
     super(props);

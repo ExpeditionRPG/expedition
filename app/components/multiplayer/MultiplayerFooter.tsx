@@ -25,7 +25,6 @@ const MultiplayerFooter = (props: MultiplayerFooterProps): JSX.Element => {
   const adventurerIcon = (props.theme === 'dark') ? 'images/adventurer_white_small.svg' : 'images/adventurer_small.svg';
   const peers: JSX.Element[] = [];
   const rpClient = getMultiplayerClient();
-  const localKey = rpClient.getID() + '|' + rpClient.getInstance();
   for (const client of Object.keys(props.remotePlay.clientStatus)) {
     const lastStatus = props.remotePlay.clientStatus[client];
     if (!lastStatus.connected) {
@@ -40,7 +39,7 @@ const MultiplayerFooter = (props: MultiplayerFooterProps): JSX.Element => {
   }/>);
 
   return (
-    <div className={'remote_footer ' + props.theme}>
+    <div className={'remote_footer card_theme_' + props.theme}>
       <FlatButton icon={<Close color={color} />} onTouchTap={(e: any) => {props.onMultiplayerExit();}}/>
       <FlatButton className="peers">
         {peers}

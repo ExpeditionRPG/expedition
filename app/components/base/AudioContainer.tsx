@@ -4,7 +4,7 @@ import Audio, {AudioStateProps, AudioDispatchProps} from './Audio'
 import {audioLoadChange} from '../../actions/Audio'
 import {changeSettings} from '../../actions/Settings'
 import {openSnackbar} from '../../actions/Snackbar'
-import {AppState, AudioLoadingType, AudioState, SettingsType} from '../../reducers/StateTypes'
+import {AppState, AudioLoadingType} from '../../reducers/StateTypes'
 
 const mapStateToProps = (state: AppState, ownProps: AudioStateProps): AudioStateProps => {
   return {

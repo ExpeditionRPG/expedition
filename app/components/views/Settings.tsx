@@ -1,6 +1,5 @@
 import * as React from 'react'
 import FlatButton from 'material-ui/FlatButton'
-
 import Card from '../base/Card'
 import Checkbox from '../base/Checkbox'
 import Picker from '../base/Picker'

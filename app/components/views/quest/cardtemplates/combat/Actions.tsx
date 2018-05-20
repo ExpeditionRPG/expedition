@@ -6,16 +6,14 @@ import {DifficultyType, SettingsType, AppStateWithHistory, MultiplayerState} fro
 import {defaultContext} from '../Template'
 import {ParserNode} from '../TemplateTypes'
 import {CombatState} from './Types'
-import {audioSetIntensity, audioSetPeakIntensity, audioPlaySfx} from '../../../../../actions/Audio'
+import {audioSetIntensity, audioSetPeakIntensity} from '../../../../../actions/Audio'
 import {toCard} from '../../../../../actions/Card'
 import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT, MUSIC_INTENSITY_MAX} from '../../../../../Constants'
-import {encounters} from '../../../../../Encounters'
-import {MultiplayerClientStatus, QuestNodeAction, remoteify} from '../../../../../actions/ActionTypes'
+import {ENCOUNTERS} from '../../../../../Encounters'
+import {QuestNodeAction, remoteify} from '../../../../../actions/ActionTypes'
 import {loadNode} from '../../../../../actions/Quest'
 import {setMultiplayerStatus} from '../../../../../actions/Multiplayer'
 import * as seedrandom from 'seedrandom'
-import {StatusEvent} from 'expedition-qdl/lib/multiplayer/Events'
-import {getMultiplayerClient} from '../../../../../Multiplayer'
 import {getStore} from '../../../../../Store'
 
 const cheerio: any = require('cheerio');
@@ -131,7 +129,7 @@ function getEnemies(node: ParserNode): Enemy[] {
       return;
     }
     const text = c.text();
-    const encounter = encounters[text.toLowerCase()];
+    const encounter = ENCOUNTERS[text.toLowerCase()];
 
     if (!encounter) {
       // If we don't know about the enemy, just assume tier 1.

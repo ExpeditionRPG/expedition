@@ -1,4 +1,3 @@
-import * as React from 'react'
 import Redux from 'redux'
 import {DialogSetAction} from '../actions/ActionTypes'
 import {DialogState} from './StateTypes'

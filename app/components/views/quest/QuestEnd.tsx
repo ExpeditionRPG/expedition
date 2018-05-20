@@ -1,13 +1,9 @@
 import * as React from 'react'
-
-import {colors} from 'material-ui/styles'
 import TextField from 'material-ui/TextField'
 import Checkbox from 'material-ui/Checkbox'
-
 import Button from '../../base/Button'
 import Card from '../../base/Card'
 import StarRating from '../../base/StarRating'
-
 import {logQuestPlay} from '../../../actions/Web'
 import {CheckoutState, QuestState, SettingsType, UserState, UserFeedbackState} from '../../../reducers/StateTypes'
 
@@ -39,7 +35,6 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
   }
 
   render() {
-    const loggedIn = (this.props.user && this.props.user.loggedIn);
     const rated = this.props.userFeedback.rating !== undefined && (this.props.userFeedback.rating > 0);
     // TODO ping server to determine if payments are enabled
     // TODO figure out why loading Stripe crashes iOS app

@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {SavedQuestMeta, SavedQuestState} from './StateTypes'
+import {SavedQuestState} from './StateTypes'
 import {SavedQuestListAction, SavedQuestSelectedAction} from '../actions/ActionTypes'
 
 export function saved(state: SavedQuestState = {list: [], selected: null}, action: Redux.Action): SavedQuestState {

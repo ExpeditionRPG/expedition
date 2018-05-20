@@ -5,7 +5,6 @@ import {AppState, SavedQuestMeta} from '../../reducers/StateTypes'
 import {setDialog} from '../../actions/Dialog'
 import {loadSavedQuest, selectSavedQuest} from '../../actions/SavedQuests'
 import {toCard, toPrevious} from '../../actions/Card'
-import {openSnackbar} from '../../actions/Snackbar'
 
 const mapStateToProps = (state: AppState, ownProps: SavedQuestsStateProps): SavedQuestsStateProps => {
   return {

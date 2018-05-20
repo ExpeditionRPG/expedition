@@ -1,4 +1,4 @@
-import {setDevice, getDevicePlatform, getAppVersion, getDevice} from './Globals'
+import {setDevice, getDevicePlatform, getAppVersion} from './Globals'
 
 describe('Globals', () => {
 

@@ -5,10 +5,8 @@ import {
   CardPhase,
   CheckoutState,
   DialogIDType,
-  SearchPhase,
   SearchSettings,
   SettingsType,
-  TransitionType,
   UserQuestsType,
   UserState,
   AppState,
@@ -56,8 +54,9 @@ export interface CardTransitioningAction extends Redux.Action {
   isTransitioning: boolean;
 }
 
-export interface CheckoutSetStateAction extends Redux.Action, CheckoutState {
+export interface CheckoutSetStateAction extends Redux.Action {
   type: 'CHECKOUT_SET_STATE';
+  delta: Partial<CheckoutState>;
 }
 
 export interface DialogSetAction extends Redux.Action {

@@ -1,16 +1,13 @@
 import * as React from 'react'
 import Truncate from 'react-truncate'
-import FlatButton from 'material-ui/FlatButton'
 import MenuItem from 'material-ui/MenuItem'
 import SelectField from 'material-ui/SelectField'
 import TextField from 'material-ui/TextField'
 import DoneIcon from 'material-ui/svg-icons/action/done'
-
 import Button from '../base/Button'
 import Card from '../base/Card'
 import Checkbox from '../base/Checkbox'
 import StarRating from '../base/StarRating'
-
 import {SearchSettings, SearchPhase, SearchState, SettingsType, UserState} from '../../reducers/StateTypes'
 import {QuestDetails} from '../../reducers/QuestTypes'
 import {GenreType, CONTENT_RATINGS, LANGUAGES, PLAYTIME_MINUTES_BUCKETS} from '../../Constants'

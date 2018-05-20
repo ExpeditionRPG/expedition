@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {loadAudioLocalFile} from '../../actions/Audio'
-import {AudioLoadingType, AudioState, CardName, CardPhase, SettingsType} from '../../reducers/StateTypes'
+import {AudioLoadingType, AudioState, CardName, CardPhase} from '../../reducers/StateTypes'
 import {getWindow} from '../../Globals'
 import {logEvent} from '../../Main'
 import {AUDIO_COMMAND_DEBOUNCE_MS, MUSIC_INTENSITY_MAX} from '../../Constants'

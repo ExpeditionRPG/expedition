@@ -4,9 +4,8 @@ import NetworkWifi from 'material-ui/svg-icons/device/network-wifi'
 import SignalWifiOff from 'material-ui/svg-icons/device/signal-wifi-off'
 import Card from '../base/Card'
 import Button from '../base/Button'
-import {getAppVersion} from'../../Globals'
 import {SessionID} from 'expedition-qdl/lib/multiplayer/Session'
-import {SettingsType, CardState, UserState, MultiplayerPhase, MultiplayerState, MultiplayerSessionMeta} from '../../reducers/StateTypes'
+import {UserState, MultiplayerPhase, MultiplayerState, MultiplayerSessionMeta} from '../../reducers/StateTypes'
 
 const Moment = require('moment');
 

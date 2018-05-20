@@ -1,6 +1,5 @@
 import Redux from 'redux'
 import {toCard} from '../../../../../actions/Card'
-import {SettingsType} from '../../../../../reducers/StateTypes'
 import {ParserNode} from '../TemplateTypes'
 import {QuestNodeAction} from '../../../../../actions/ActionTypes'
 

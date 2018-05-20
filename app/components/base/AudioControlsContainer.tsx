@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
 import AudioControls, {AudioControlsStateProps, AudioControlsDispatchProps} from './AudioControls'
-import {AppState, AudioState, SettingsType} from '../../reducers/StateTypes'
+import {AppState} from '../../reducers/StateTypes'
 import {changeSettings} from '../../actions/Settings'
 
 const mapStateToProps = (state: AppState, ownProps: any): AudioControlsStateProps => {

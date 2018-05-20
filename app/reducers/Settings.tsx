@@ -1,6 +1,5 @@
 import Redux from 'redux'
-import {NODE_ENV, UNSUPPORTED_BROWSERS} from '../Constants'
-import {getNavigator} from '../Globals'
+import {NODE_ENV} from '../Constants'
 import {ContentSetsType, DifficultyType, FontSizeType, SettingsType} from './StateTypes'
 import {ChangeSettingsAction} from '../actions/ActionTypes'
 import {getStorageBoolean, getStorageJson, getStorageNumber, getStorageString, setStorageKeyValue} from '../Globals'

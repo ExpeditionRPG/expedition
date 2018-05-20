@@ -1,4 +1,4 @@
-import {fetchAnnouncements, handleAnnouncements} from './Announcement'
+import {handleAnnouncements} from './Announcement'
 import {newMockStore} from '../Testing'
 
 describe('Announcement set action', () => {

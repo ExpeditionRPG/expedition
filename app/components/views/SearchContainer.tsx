@@ -1,11 +1,8 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-
 import Search, {SearchStateProps, SearchDispatchProps} from './Search'
-
 import {toPrevious, toCard} from '../../actions/Card'
 import {setDialog} from '../../actions/Dialog'
-import {changeSettings} from '../../actions/Settings'
 import {login} from '../../actions/User'
 import {fetchQuestXML, subscribe} from '../../actions/Web'
 import {search, viewQuest} from '../../actions/Search'

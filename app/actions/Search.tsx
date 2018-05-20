@@ -1,5 +1,5 @@
 import * as Redux from 'redux'
-import {SearchResponseAction, ViewQuestAction} from './ActionTypes'
+import {SearchResponseAction} from './ActionTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ExpansionsType, SearchSettings, SettingsType} from '../reducers/StateTypes'
 import {remoteify} from './ActionTypes'

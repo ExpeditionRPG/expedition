@@ -4,10 +4,9 @@ import {connect} from 'react-redux'
 import {FEATURED_QUESTS} from '../../Constants'
 import FeaturedQuests, {FeaturedQuestsStateProps, FeaturedQuestsDispatchProps} from './FeaturedQuests'
 import {toCard} from '../../actions/Card'
-import {fetchQuestXML} from '../../actions/Web'
 import {search, viewQuest} from '../../actions/Search'
 import {initialSearch} from '../../reducers/Search'
-import {AppState, ExpansionsType, SettingsType, UserState} from '../../reducers/StateTypes'
+import {AppState, SettingsType, UserState} from '../../reducers/StateTypes'
 import {QuestDetails} from '../../reducers/QuestTypes'
 
 const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): FeaturedQuestsStateProps => {

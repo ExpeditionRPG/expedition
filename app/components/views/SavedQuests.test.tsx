@@ -2,8 +2,6 @@ import * as React from 'react'
 import {render} from 'enzyme'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import SavedQuests, {SavedQuestsProps} from './SavedQuests'
-import {loggedOutUser} from '../../reducers/User'
-import {initialSettings} from '../../reducers/Settings'
 import {QuestDetails} from '../../reducers/QuestTypes'
 
 require('react-tap-event-plugin')();

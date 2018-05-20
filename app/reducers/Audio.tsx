@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {AudioSetAction, AudioStoreBufferAction} from '../actions/ActionTypes'
+import {AudioSetAction} from '../actions/ActionTypes'
 import {AudioState} from './StateTypes'
 
 const initialState: AudioState = {

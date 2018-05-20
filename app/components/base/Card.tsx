@@ -12,7 +12,6 @@ import {CardThemeType} from '../../reducers/StateTypes'
 import {getDevicePlatform, openWindow} from '../../Globals'
 import {storeSavedQuest} from '../../actions/SavedQuests'
 import {openSnackbar} from '../../actions/Snackbar'
-import {NODE_ENV} from '../../Constants'
 
 
 // If onMenuSelect or onReturn is not set, default dispatch behavior is used.
@@ -39,19 +38,14 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     getStore().dispatch(toPrevious({}));
   }
 
-  private getFeedbackURL(): string {
-    return URLS.feedbackBase + getDevicePlatform();
-  }
-
   onMenuSelect(value: string) {
     const dispatch = getStore().dispatch;
     switch(value) {
       case 'HOME':
         if (!this.props.inQuest) {
           return dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
-        } else {
-          return dispatch(setDialog('EXIT_QUEST'));
         }
+        return dispatch(setDialog('EXIT_QUEST'));
       case 'SAVE':
         const state = getStore().getState();
         dispatch(storeSavedQuest(state.quest.node, state.quest.details, Date.now()));

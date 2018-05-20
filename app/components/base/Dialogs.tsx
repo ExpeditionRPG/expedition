@@ -1,12 +1,11 @@
 import * as React from 'react'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 import Checkbox from './Checkbox'
 import Picker from './Picker'
 import {MultiplayerCounters} from '../../Multiplayer'
-import {ContentSetsType, DialogIDType, DialogState, QuestState, SavedQuestMeta, SettingsType, UserState, UserFeedbackState} from '../../reducers/StateTypes'
+import {ContentSetsType, DialogState, QuestState, SavedQuestMeta, SettingsType, UserState, UserFeedbackState} from '../../reducers/StateTypes'
 import {QuestDetails} from '../../reducers/QuestTypes'
 import {openWindow} from '../../Globals'
 

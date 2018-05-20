@@ -21,10 +21,6 @@ export interface ReactWindow extends Window {
   };
   AudioContext?: AudioContext;
   webkitAudioContext?: AudioContext;
-  FirebasePlugin?: {
-    onTokenRefresh: (success: (token: string) => any, failure: (error: string) => any) => void,
-    logEvent: (name: string, args: any) => any,
-  };
   cordova?: {
     InAppBrowser?: {
       open?: any;

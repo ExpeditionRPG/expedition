@@ -1,12 +1,8 @@
-import {SavedQuestListAction, SavedQuestDeletedAction, SavedQuestStoredAction, SavedQuestSelectedAction, QuestNodeAction} from './ActionTypes'
-import {SavedQuestMeta} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
-import {getStorageJson, getStorageString, setStorageKeyValue, getCheerio} from '../Globals'
-import {SAVED_QUESTS_KEY} from '../Constants'
-import {initQuest} from './Quest'
+import {getStorageJson, getStorageString, getCheerio} from '../Globals'
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 import {defaultContext} from '../components/views/quest/cardtemplates/Template'
-import {savedQuestKey, storeSavedQuest, deleteSavedQuest, listSavedQuests, loadSavedQuest} from './SavedQuests'
+import {savedQuestKey, storeSavedQuest, deleteSavedQuest, listSavedQuests, loadSavedQuest, SAVED_QUESTS_KEY} from './SavedQuests'
 
 describe('SavedQuest actions', () => {
   const STORED_QUEST_ID = '12345';

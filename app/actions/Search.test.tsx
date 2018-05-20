@@ -1,5 +1,3 @@
-import {search, searchAndPlay} from './Search'
-
 describe('Search actions', () => {
   describe('Search', () => {
     it('calls getSearchResults with provided initial params and settings');

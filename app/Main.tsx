@@ -59,7 +59,7 @@ import theme from './Theme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
-import {authSettings, NODE_ENV, UNSUPPORTED_BROWSERS, URLS} from './Constants'
+import {authSettings, NODE_ENV, UNSUPPORTED_BROWSERS} from './Constants'
 import {fetchAnnouncements, setAnnouncement} from './actions/Announcement'
 import {audioPause, audioResume} from './actions/Audio'
 import {toPrevious} from './actions/Card'
@@ -69,17 +69,14 @@ import {changeSettings} from './actions/Settings'
 import {openSnackbar} from './actions/Snackbar'
 import {silentLogin} from './actions/User'
 import {listSavedQuests} from './actions/SavedQuests'
-import {handleFetchErrors} from './actions/Web'
 import {getStore} from './Store'
 import {getAppVersion, getWindow, getGA, getDevicePlatform, getDocument, getNavigator, getStorageBoolean, setGA, setupPolyfills} from './Globals'
-import {getMultiplayerClient} from './Multiplayer'
 import {UserState} from './reducers/StateTypes'
-import {MultiplayerEvent} from 'expedition-qdl/lib/multiplayer/Events'
 
 // Thunk is unused, but necessary to prevent compiler errors
 // until types are fixed for multiplayer.
 // TODO: Fix redux types
-import thunk from 'redux-thunk'
+import thunk from 'redux-thunk' // tslint:disable-line
 
 const ReactGA = require('react-ga');
 
@@ -111,18 +108,6 @@ export function logEvent(name: string, argsInput: {[key: string]: any}): void {
       label: argsInput.label || '',
       value: argsInput.value || undefined,
     });
-  }
-
-  const fbp = getWindow().FirebasePlugin;
-  if (fbp) {
-    const FIREBASE_MAX_NAME_LENGTH = 40;
-    const FIREBASE_MAX_VALUE_LENGTH = 100;
-    name = (name || '').slice(0, FIREBASE_MAX_VALUE_LENGTH);
-    const args = {} as any;
-    Object.keys(argsInput).forEach((key: string) => {
-      args[(key || '').toString().slice(0, FIREBASE_MAX_NAME_LENGTH)] = (argsInput[key] || '').toString().slice(0, FIREBASE_MAX_VALUE_LENGTH);
-    });
-    fbp.logEvent(name, args);
   }
 }
 
@@ -183,22 +168,6 @@ function setupDevice() {
 
   // silent login here triggers for cordova plugin
   getStore().dispatch(silentLogin({callback: (user: UserState) => { console.log(user); }}));
-}
-
-function setupEventLogging() {
-  const window = getWindow();
-  if (window.FirebasePlugin !== undefined) { // Load Firebase - only works on cordova apps
-    window.FirebasePlugin.onTokenRefresh((token: string) => {
-      // TODO save this server-side and use it to push notifications to this device
-    }, (error: string) => {
-      console.error(error);
-    });
-  } else {
-    window.FirebasePlugin = {
-      onTokenRefresh: (cb: (token: string) => void) => {},
-      logEvent: (name: string, args: any) => { console.info('Firebase log skipped: ', name, args); },
-    };
-  }
 }
 
 function setupHotReload() {
@@ -321,7 +290,6 @@ export function init() {
     setupPolyfills();
     setupTapEvents();
     setupGoogleAnalytics(); // before anything else that might log in the user
-    setupEventLogging();
     setupHotReload();
     setupSavedQuests();
     handleUrlHash();

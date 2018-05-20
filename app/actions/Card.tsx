@@ -1,9 +1,8 @@
 import * as Redux from 'redux'
 import {CardTransitioningAction, NavigateAction, remoteify} from './ActionTypes'
-import {AppStateWithHistory, CardName, CardPhase, CardState} from '../reducers/StateTypes'
+import {AppStateWithHistory, CardName, CardPhase} from '../reducers/StateTypes'
 import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants'
 import {getNavigator} from '../Globals'
-import {getMultiplayerClient} from '../Multiplayer'
 import {getStore} from '../Store'
 
 interface ToCardArgs {

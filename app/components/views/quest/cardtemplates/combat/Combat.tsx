@@ -6,10 +6,9 @@ import Callout from '../../../../base/Callout'
 import Card from '../../../../base/Card'
 import Picker from '../../../../base/Picker'
 import TimerCard from '../../../../base/TimerCard'
-import theme from '../../../../../Theme'
 import {MAX_ADVENTURER_HEALTH} from '../../../../../Constants'
 import {isSurgeNextRound} from './Actions'
-import {SettingsType, CardState, CardName, MultiplayerState} from '../../../../../reducers/StateTypes'
+import {SettingsType, CardState, MultiplayerState} from '../../../../../reducers/StateTypes'
 import {ParserNode} from '../TemplateTypes'
 import {EventParameters, Enemy, Loot} from '../../../../../reducers/QuestTypes'
 import {CombatPhase, CombatState} from './Types'
@@ -279,7 +278,6 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
   const damage = (props.combat.mostRecentAttack) ? props.combat.mostRecentAttack.damage : -1;
   const theHorror = (props.settings.contentSets.horror === true);
   const injured = props.numAliveAdventurers < props.settings.numPlayers;
-  const soloPlay = props.settings.numPlayers === 1;
 
   if (props.settings.showHelp) {
     helpText = (

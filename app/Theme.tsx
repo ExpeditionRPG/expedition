@@ -1,9 +1,8 @@
 import {
-  deepOrange100, deepOrange700,
+  deepOrange700,
   lightGreen300, lightGreen700, lightGreen900,
-  grey100, grey300, grey700, grey800, grey900,
-  red900,
-  darkBlack, fullBlack, white
+  grey100, grey300, grey700,
+  darkBlack
 } from 'material-ui/styles/colors'
 import {fade} from 'material-ui/utils/colorManipulator'
 import spacing from 'material-ui/styles/spacing'

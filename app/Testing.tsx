@@ -1,8 +1,7 @@
 import * as Redux from 'redux'
-import * as ReduxMockStore from 'redux-mock-store'
 import configureStore from 'redux-mock-store'
 import {MultiplayerClient} from './Multiplayer'
-import {AppState, AppStateWithHistory} from './reducers/StateTypes'
+import {AppStateWithHistory} from './reducers/StateTypes'
 import combinedReducers from './reducers/CombinedReducers'
 
 export function newMockStoreWithInitializedState() {
@@ -50,7 +49,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: Object|undefine
         store.dispatch(action);
         let newState = initialState;
         for (const a of store.getActions()) {
-          newState = reducer(newState, action);
+          newState = reducer(newState, a);
         }
         return newState;
       }

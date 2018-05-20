@@ -37,7 +37,6 @@ describe('React', () => {
     it('sets up tap events');  // $10
     it('loads google APIs');  // $10
     it('sets up event logging'); // $10
-    it('uses dummy logging if Firebase not loaded'); // $10
     it('sets up hot reload'); // $12
     it('handles no hot reloading');  // $10
     it('does not show game content dialog if all content sets defined');
@@ -80,11 +79,10 @@ describe('React', () => {
   });
 
   describe('logEvent', () => {
-    it('logs to firebase if firebase set up'); // $10
     it('logs to google analytics if GA set up'); // $10
-    it('ga & firebase work if no args passed');
-    it('ga & firebase work if lots of args passed');
-    it('does not break when neither GA nor firebase set up', () => {
+    it('works if no args passed');
+    it('works if lots of args passed');
+    it('does not break when GA not set up', () => {
       expect(() => logEvent('event', {})).not.toThrow();
     });
   });

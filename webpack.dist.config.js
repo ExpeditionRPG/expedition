@@ -60,7 +60,6 @@ const options = {
     new CopyWebpackPlugin([
       { from: 'app/images', to: 'images'},
       { from: 'app/quests', to: 'quests'},
-      { from: 'app/scripts', to: 'scripts' },
       { from: 'app/fonts', to: 'fonts'},
       { from: 'app/index.html' },
       { from: 'app/manifest.json' },

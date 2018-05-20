@@ -1,6 +1,5 @@
 import * as React from 'react'
 import {Provider} from 'react-redux'
-import FlatButton from 'material-ui/FlatButton'
 import Snackbar from 'material-ui/Snackbar'
 
 import AudioContainer from './base/AudioContainer'
@@ -29,7 +28,6 @@ import {initialSnackbar} from '../reducers/Snackbar'
 import {initialMultiplayer} from '../reducers/Multiplayer'
 import {AppStateWithHistory, CardThemeType, TransitionType, SearchPhase, MultiplayerPhase, SavedQuestsPhase, SettingsType, SnackbarState, MultiplayerState} from '../reducers/StateTypes'
 import {getStore} from '../Store'
-import {getMultiplayerClient} from '../Multiplayer'
 
 const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
 

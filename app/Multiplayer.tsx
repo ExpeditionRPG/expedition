@@ -1,19 +1,18 @@
 import Redux from 'redux'
 import {getMultiplayerAction} from './actions/ActionTypes'
-import {MultiplayerEvent, MultiplayerEventBody, ActionEvent, StatusEvent, ClientID} from 'expedition-qdl/lib/multiplayer/Events'
+import {MultiplayerEvent, ActionEvent, StatusEvent} from 'expedition-qdl/lib/multiplayer/Events'
 import {ClientBase} from 'expedition-qdl/lib/multiplayer/Client'
 import {toClientKey} from 'expedition-qdl/lib/multiplayer/Session'
 import {local} from './actions/Multiplayer'
 import {getStore} from './Store'
 import {remotePlaySettings} from './Constants'
 
-const REMOTEPLAY_CLIENT_STATUS_POLL_MS = 5000;
 const CONNECTION_LOOP_MS = 200;
 const RETRY_DELAY_MS = 2000;
 const STATUS_MS = 5000;
 const MAX_RETRIES = 2;
 
-// Max reconnect time is slot_time * 2^(slot_idx) + base = 10440 ms
+// Max reconnect time is slot_time * 2^(slotIdx) + base = 10440 ms
 const RECONNECT_MAX_SLOT_IDX = 10;
 const RECONNECT_SLOT_DELAY_MS = 10;
 const RECONNECT_DELAY_BASE_MS = 200;
@@ -51,8 +50,7 @@ function getCommitID(): number {
   return getStore().getState().commitID;
 }
 
-// This is the base layer of the multiplayer network framework, implemented
-// using firebase FireStore.
+// This is the base layer of the multiplayer network framework
 export class MultiplayerClient extends ClientBase {
   private session: WebSocket;
   private sessionClientIDs: string[];
@@ -196,25 +194,24 @@ export class MultiplayerClient extends ClientBase {
         if (!a) {
           console.error('Received unknown remote action ' + e.event.name);
           return;
-        } else {
-          console.log('WS: Inbound #' + e.id + ': ' + e.event.name + '(' + e.event.args + ')');
-
-          // Set a "remote" inflight marker so it's identifiable
-          // when debugging.
-          const action = a(JSON.parse(e.event.args));
-          (action as any)._inflight = 'remote';
-
-          let result: any;
-          try {
-            result = dispatch(local(action));
-          } finally {
-            if (e.id !== null) {
-              this.removeFromQueue(e.id);
-              this.committedEvent(e.id);
-            }
-          }
-          return result;
         }
+
+        console.log('WS: Inbound #' + e.id + ': ' + e.event.name + '(' + e.event.args + ')');
+        // Set a "remote" inflight marker so it's identifiable
+        // when debugging.
+        const action = a(JSON.parse(e.event.args));
+        (action as any)._inflight = 'remote';
+
+        let result: any;
+        try {
+          result = dispatch(local(action));
+        } finally {
+          if (e.id !== null) {
+            this.removeFromQueue(e.id);
+            this.committedEvent(e.id);
+          }
+        }
+        return result;
       case 'MULTI_EVENT':
         let chain = Promise.resolve();
         for (let i = 0; i < e.event.events.length; i++) {
@@ -330,8 +327,8 @@ export class MultiplayerClient extends ClientBase {
 
     // Random exponential backoff reconnect
     // https://en.wikipedia.org/wiki/Exponential_backoff
-    const slot_idx = Math.floor(Math.random() * (this.reconnectAttempts+1))
-    const slot = Math.pow(2,slot_idx);
+    const slotIdx = Math.floor(Math.random() * (this.reconnectAttempts+1))
+    const slot = Math.pow(2,slotIdx);
     const delay = RECONNECT_SLOT_DELAY_MS * slot + RECONNECT_DELAY_BASE_MS;
     console.log(`WS: Waiting to reconnect (${delay} ms)`);
     setTimeout(() => {
@@ -406,8 +403,6 @@ export class MultiplayerClient extends ClientBase {
   }
 
   sendFinalizedEvent(event: MultiplayerEvent): void {
-    const start = Date.now();
-
     if (event.event.type === 'ACTION') {
       this.localEventCounter++;
       event.id = this.localEventCounter;

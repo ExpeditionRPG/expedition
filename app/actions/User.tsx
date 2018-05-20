@@ -1,7 +1,5 @@
 import Redux from 'redux'
 import * as Raven from 'raven-js'
-import {remoteify} from './ActionTypes'
-import {toCard} from './Card'
 import {handleFetchErrors, fetchUserQuests} from './Web'
 import {openSnackbar} from './Snackbar'
 import {UserState} from '../reducers/StateTypes'

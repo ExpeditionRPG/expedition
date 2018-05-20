@@ -21,6 +21,7 @@ export function snackbar(state: SnackbarState = initialSnackbar, action: Redux.A
           actionLabel: openAction.actionLabel || initialSnackbar.actionLabel,
         };
       }
+      return state;
     case 'SNACKBAR_CLOSE':
       return {...initialSnackbar};
     default:

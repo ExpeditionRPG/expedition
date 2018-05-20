@@ -3,7 +3,7 @@ import {createStore, applyMiddleware} from 'redux'
 import expeditionApp from './reducers/CombinedReducers'
 import {AppStateWithHistory} from './reducers/StateTypes'
 import {getMultiplayerClient} from './Multiplayer'
-import { composeWithDevTools } from 'redux-devtools-extension'
+import {composeWithDevTools} from 'redux-devtools-extension'
 
 // For dev tools extension
 declare var window:any;
@@ -17,10 +17,7 @@ export function installStore(createdStore: Redux.Store<AppStateWithHistory>) {
 }
 
 function createAppStore() {
-
-  const devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
   const middleware = [getMultiplayerClient().createActionMiddleware()];
-
   const composeEnhancers = composeWithDevTools({
     actionsBlacklist: ['MULTIPLAYER_CLIENT_STATUS', 'CARD_TRANSITIONING'],
   });

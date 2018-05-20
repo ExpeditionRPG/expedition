@@ -4,13 +4,11 @@ import Tools, {ToolsStateProps, ToolsDispatchProps} from './Tools'
 import {AppState, SettingsType, UserState} from '../../reducers/StateTypes'
 import {initCustomCombat} from '../../components/views/quest/cardtemplates/combat/Actions'
 import {audioSetIntensity, audioPlaySfx} from '../../actions/Audio'
-import {toCard} from '../../actions/Card'
 import {search} from '../../actions/Search'
 import {openSnackbar} from '../../actions/Snackbar'
 import {login} from '../../actions/User'
 import {URLS, MUSIC_INTENSITY_MAX} from '../../Constants'
 import {openWindow} from '../../Globals'
-import {getStore} from '../../Store'
 import {loadMultiplayer} from '../../actions/Multiplayer'
 
 

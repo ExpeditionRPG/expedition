@@ -1,5 +1,3 @@
-import Dialogs from './Dialogs'
-
 describe('Dialogs', () => {
   describe('ExitQuestDialog', () => {
     it('renders if open');

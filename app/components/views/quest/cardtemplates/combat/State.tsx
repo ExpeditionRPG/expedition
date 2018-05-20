@@ -1,41 +1,40 @@
-import {encounters} from '../../../../../Encounters'
-import {Enemy, Loot} from '../../../../../reducers/QuestTypes'
+import {ENCOUNTERS} from '../../../../../Encounters'
 import {isSurgeRound} from './Actions'
 
 export function combatScope() {
   return {
     randomEnemy: function(): string {
       const contentSets = this.scope._.contentSets();
-      return (randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
-          .filter( key => encounters[key].set === 'base' || contentSets[encounters[key].set])
-          .map( key => ({ [key]: encounters[key] }) ) )
+      return (randomPropertyValue(Object.assign({}, ...Object.keys(ENCOUNTERS)
+          .filter( key => ENCOUNTERS[key].set === 'base' || contentSets[ENCOUNTERS[key].set])
+          .map( key => ({ [key]: ENCOUNTERS[key] }) ) )
         ) || {}).name;
     },
     randomEnemyOfTier: function(tier: number): string {
       const contentSets = this.scope._.contentSets();
-      return (randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
-          .filter( key => encounters[key].set === 'base' || contentSets[encounters[key].set])
-          .filter( key => encounters[key].tier === tier )
-          .map( key => ({ [key]: encounters[key] }) ) )
+      return (randomPropertyValue(Object.assign({}, ...Object.keys(ENCOUNTERS)
+          .filter( key => ENCOUNTERS[key].set === 'base' || contentSets[ENCOUNTERS[key].set])
+          .filter( key => ENCOUNTERS[key].tier === tier )
+          .map( key => ({ [key]: ENCOUNTERS[key] }) ) )
         ) || {}).name;
     },
     randomEnemyOfClass: function(className: string): string {
       const contentSets = this.scope._.contentSets();
       className = className.toLowerCase();
-      return (randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
-          .filter( key => encounters[key].set === 'base' || contentSets[encounters[key].set])
-          .filter( key => encounters[key].class.toLowerCase() === className )
-          .map( key => ({ [key]: encounters[key] }) ) )
+      return (randomPropertyValue(Object.assign({}, ...Object.keys(ENCOUNTERS)
+          .filter( key => ENCOUNTERS[key].set === 'base' || contentSets[ENCOUNTERS[key].set])
+          .filter( key => ENCOUNTERS[key].class.toLowerCase() === className )
+          .map( key => ({ [key]: ENCOUNTERS[key] }) ) )
         ) || {}).name;
     },
     randomEnemyOfClassTier: function(className: string, tier: number): string {
       const contentSets = this.scope._.contentSets();
       className = className.toLowerCase();
-      return (randomPropertyValue(Object.assign({}, ...Object.keys(encounters)
-          .filter( key => encounters[key].set === 'base' || contentSets[encounters[key].set])
-          .filter( key => encounters[key].tier === tier )
-          .filter( key => encounters[key].class.toLowerCase() === className )
-          .map( key => ({ [key]: encounters[key] }) ) )
+      return (randomPropertyValue(Object.assign({}, ...Object.keys(ENCOUNTERS)
+          .filter( key => ENCOUNTERS[key].set === 'base' || contentSets[ENCOUNTERS[key].set])
+          .filter( key => ENCOUNTERS[key].tier === tier )
+          .filter( key => ENCOUNTERS[key].class.toLowerCase() === className )
+          .map( key => ({ [key]: ENCOUNTERS[key] }) ) )
         ) || {}).name;
     },
     aliveAdventurers: function(): number {

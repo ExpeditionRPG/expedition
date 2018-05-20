@@ -1,6 +1,5 @@
 import {SnackbarCloseAction, SnackbarOpenAction} from './ActionTypes'
 import {setDialog} from './Dialog'
-import {getAppVersion, getDevicePlatform} from '../Globals'
 import {getStore} from '../Store'
 
 export function closeSnackbar(): SnackbarCloseAction {

@@ -1,9 +1,8 @@
 import {generateCombatTemplate, initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta, handleResolvePhase, midCombatChoice} from './Actions'
 import {DifficultyType, FontSizeType, MultiplayerState} from '../../../../../reducers/StateTypes'
-import {defaultContext, renderCardTemplate} from '../Template'
+import {defaultContext} from '../Template'
 import {ParserNode} from '../TemplateTypes'
 import {newMockStore, Action} from '../../../../../Testing'
-import {MultiplayerClient} from '../../../../../Multiplayer'
 import {initialMultiplayer} from '../../../../../reducers/Multiplayer'
 
 const cheerio: any = require('cheerio');

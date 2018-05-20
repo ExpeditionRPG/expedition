@@ -1,13 +1,12 @@
-import React from 'react'
 import Redux from 'redux'
 import {toCard} from './Card'
 import {handleFetchErrors} from './Web'
 import {remotePlaySettings} from '../Constants'
-import {LocalAction, NavigateAction, MultiplayerClientStatus} from './ActionTypes'
+import {LocalAction, MultiplayerClientStatus} from './ActionTypes'
 import {MultiplayerSessionMeta, UserState} from '../reducers/StateTypes'
 import {logEvent} from '../Main'
 import {openSnackbar} from '../actions/Snackbar'
-import {MultiplayerEvent, StatusEvent} from 'expedition-qdl/lib/multiplayer/Events'
+import {StatusEvent} from 'expedition-qdl/lib/multiplayer/Events'
 import {getMultiplayerClient} from '../Multiplayer'
 
 export function local(a: Redux.Action): LocalAction {

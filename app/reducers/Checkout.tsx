@@ -13,7 +13,7 @@ export const initialState: CheckoutState = {
 export function checkout(state: CheckoutState = initialState, action: Redux.Action): CheckoutState {
   switch (action.type) {
     case 'CHECKOUT_SET_STATE':
-      return {...state, ...(action as any)};
+      return {...state, ...(action as CheckoutSetStateAction).delta};
     default:
       return state;
   }

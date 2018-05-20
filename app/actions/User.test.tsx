@@ -1,6 +1,5 @@
 import {login, silentLogin, UserLoginCallback} from './User'
 import {testLoggedInUser} from '../reducers/User.test'
-import {UserState} from '../reducers/StateTypes'
 import {newMockStore} from '../Testing'
 
 describe('User actions', () => {

@@ -13,7 +13,7 @@ import {exitQuest} from '../../actions/Quest'
 import {submitUserFeedback, logMultiplayerStats, fetchQuestXML} from '../../actions/Web'
 import {MIN_FEEDBACK_LENGTH} from '../../Constants'
 import {getMultiplayerClient, MultiplayerCounters, initialMultiplayerCounters} from '../../Multiplayer'
-import {AppState, ContentSetsType, DialogIDType, DialogState, SavedQuestMeta, SettingsType, QuestState, UserState, UserFeedbackState} from '../../reducers/StateTypes'
+import {AppState, ContentSetsType, SavedQuestMeta, SettingsType, QuestState, UserState, UserFeedbackState} from '../../reducers/StateTypes'
 import {QuestDetails} from '../../reducers/QuestTypes'
 
 const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {

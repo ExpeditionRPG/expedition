@@ -9,9 +9,9 @@ import {logEvent} from '../Main'
 import {CheckoutState, UserState} from '../reducers/StateTypes'
 
 
-export function checkoutSetState(delta: any) {
+export function checkoutSetState(delta: Partial<CheckoutState>) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    dispatch({type: 'CHECKOUT_SET_STATE', ...delta} as CheckoutSetStateAction);
+    dispatch({type: 'CHECKOUT_SET_STATE', delta} as CheckoutSetStateAction);
   };
 }
 

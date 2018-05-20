@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {SearchResponseAction, ViewQuestAction, NavigateAction} from '../actions/ActionTypes'
+import {SearchResponseAction, ViewQuestAction} from '../actions/ActionTypes'
 import {SearchState} from './StateTypes'
 
 export const initialSearch: SearchState = {

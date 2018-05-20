@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {connect} from 'react-redux'
 import {AppState} from '../../reducers/StateTypes'
 import {changeSettings} from '../../actions/Settings'
-import {toPrevious, toCard} from '../../actions/Card'
+import {toCard} from '../../actions/Card'
 import PartySizeSelect, {PartySizeSelectStateProps, PartySizeSelectDispatchProps} from './PartySizeSelect'
 
 const mapStateToProps = (state: AppState, ownProps: PartySizeSelectStateProps): PartySizeSelectStateProps => {

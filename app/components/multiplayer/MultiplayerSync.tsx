@@ -1,10 +1,4 @@
 import * as React from 'react'
-import Redux from 'redux'
-import FlatButton from 'material-ui/FlatButton'
-import NetworkWifi from 'material-ui/svg-icons/device/network-wifi'
-import PauseCircle from 'material-ui/svg-icons/av/pause-circle-outline'
-import Close from 'material-ui/svg-icons/navigation/close'
-import Person from 'material-ui/svg-icons/social/person'
 import {MultiplayerState} from '../../reducers/StateTypes'
 import CircularProgress from 'material-ui/CircularProgress';
 
