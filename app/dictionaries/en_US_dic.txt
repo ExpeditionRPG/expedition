@@ -51339,6 +51339,7 @@ small/SGTRDP
 smalltalk
 smalltime
 Smallwood/M
+smarm
 smarmy/RT
 smarten/GD
 smartness/S

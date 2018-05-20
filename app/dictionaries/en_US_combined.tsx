@@ -1,4 +1,4 @@
-// For testing only, since tests can't load separate files async like a normal browser
+// Sample for testing only, since tests can't load separate files async like a normal browser
 // TODO have webpack dynamically insert the contents of the dic and aff files via a find-and-replace macro
 // That reads the dictionary files via FS (since tests don't have access to FS)
 
