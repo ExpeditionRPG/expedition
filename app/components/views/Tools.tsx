@@ -16,9 +16,6 @@ export interface ToolsDispatchProps {
   onPrivateQuestsSelect: (settings: SettingsType, user: UserState) => void;
   onMultiplayerSelect: (user: UserState) => void;
   testMusic: () => void;
-  testMusicRandom: () => void;
-  testMusicStop: () => void;
-  testSfx: () => void;
 }
 
 export interface ToolsProps extends ToolsStateProps, ToolsDispatchProps {}
@@ -26,14 +23,6 @@ export interface ToolsProps extends ToolsStateProps, ToolsDispatchProps {}
 const Tools = (props: ToolsProps): JSX.Element => {
   return (
     <Card title="Tools">
-      {NODE_ENV === 'dev' &&
-        <div>
-          <Button onTouchTap={() => props.testMusic()}>Set Music Intensity (user)</Button>
-          <Button onTouchTap={() => props.testMusicRandom()}>Set Music Intensity (random)</Button>
-          <Button onTouchTap={() => props.testMusicStop()}>Stop Music</Button>
-          <Button onTouchTap={() => props.testSfx()}>SFX</Button>
-        </div>
-      }
       <Button remoteID="0" id="selectCustomCombat" onTouchTap={() => props.onCustomCombatSelect(props.settings)}>
         <div className="questButtonWithIcon">
           <div className="title">GM Mode</div>
@@ -62,6 +51,11 @@ const Tools = (props: ToolsProps): JSX.Element => {
           <div className="summary">View quests you've published privately with the Quest Creator (uses your current player count!)</div>
         </div>
       </Button>}
+      {NODE_ENV === 'dev' &&
+        <div>
+          <Button onTouchTap={() => props.testMusic()}>Set Music Intensity</Button>
+        </div>
+      }
       <div className="version">Expedition App v{getAppVersion()}</div>
       <div className="privacy"><a href="#" onClick={() => openWindow('https://expeditiongame.com/privacy')}>Privacy Policy</a></div>
     </Card>

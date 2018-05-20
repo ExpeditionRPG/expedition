@@ -3,9 +3,8 @@ import {connect} from 'react-redux'
 import Tools, {ToolsStateProps, ToolsDispatchProps} from './Tools'
 import {AppState, SettingsType, UserState} from '../../reducers/StateTypes'
 import {initCustomCombat} from '../../components/views/quest/cardtemplates/combat/Actions'
-import {audioSetIntensity, audioPlaySfx} from '../../actions/Audio'
+import {audioSetIntensity} from '../../actions/Audio'
 import {search} from '../../actions/Search'
-import {openSnackbar} from '../../actions/Snackbar'
 import {login} from '../../actions/User'
 import {URLS, MUSIC_INTENSITY_MAX} from '../../Constants'
 import {openWindow} from '../../Globals'
@@ -64,22 +63,6 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
       if (intensity) {
         dispatch(audioSetIntensity(intensity));
       }
-    },
-    testMusicRandom(): void {
-      const getRandomIntInclusive = function(min: number, max: number) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive
-      }
-      const intensity = getRandomIntInclusive(0, MUSIC_INTENSITY_MAX);
-      dispatch(openSnackbar('Setting intensity to ' + intensity));
-      dispatch(audioSetIntensity(intensity));
-    },
-    testMusicStop(): void {
-      dispatch(audioSetIntensity(0));
-    },
-    testSfx(): void {
-      dispatch(audioPlaySfx('combat_defeat'));
     },
   };
 }

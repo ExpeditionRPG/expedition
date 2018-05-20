@@ -15,9 +15,6 @@ function setup() {
     onPrivateQuestsSelect: jasmine.createSpy('onPrivateQuestsSelect'),
     onMultiplayerSelect: jasmine.createSpy('onMultiplayerSelect'),
     testMusic: jasmine.createSpy('testMusic'),
-    testMusicRandom: jasmine.createSpy('testMusicRandom'),
-    testMusicStop: jasmine.createSpy('testMusicStop'),
-    testSfx: jasmine.createSpy('testSfx'),
   }
   const enzymeWrapper = shallow(<Tools {...props} />);
   return {props, enzymeWrapper};
