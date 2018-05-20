@@ -10,7 +10,7 @@
     "typeof-compare": true,
     "use-isnan": true,
     "indent": [true, "spaces"],
-    "no-unused-variable": true,
+    "no-unused-variable": [true, "react"],
     "no-var-keyword": true,
     "prefer-const": true,
     "trailing-comma": [true, {
@@ -19,7 +19,7 @@
         "arrays": "always",
         "functions": "never",
         "typeLiterals": "ignore"
-      }, 
+      },
       "singleline": "never"
     }],
     "no-debugger": true,
