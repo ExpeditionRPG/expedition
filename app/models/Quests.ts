@@ -178,7 +178,7 @@ export function publishQuest(db: Database, mail: MailService, userid: string, ma
       const updateValues: Partial<Quest> = {
         ...quest,
         userid, // Not included in the request - pull from auth
-        questversion: (quest.questversion || 0) + 1,
+        questversion: (instance.get('questversion') || quest.questversion || 0) + 1,
         publishedurl: `http://quests.expeditiongame.com/raw/${quest.partition}/${quest.id}/${quest.questversion}`,
         tombstone: undefined, // Remove tombstone
         published: new Date(),
