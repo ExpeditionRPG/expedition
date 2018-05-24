@@ -4,7 +4,7 @@ import {toCard} from './Card'
 import {openSnackbar} from './Snackbar'
 import {login} from './User'
 import {handleFetchErrors} from './Web'
-import {authSettings} from '../Constants'
+import {AUTH_SETTINGS} from '../Constants'
 import {logEvent} from '../Main'
 import {CheckoutState, UserState} from '../reducers/StateTypes'
 
@@ -32,7 +32,7 @@ export function toCheckout(user: UserState, amount: number) {
 export function checkoutSubmit(stripeToken: string, checkout: CheckoutState, user: UserState) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch(checkoutSetState({processing: true}));
-    fetch(authSettings.urlBase + '/stripe/checkout', {
+    fetch(AUTH_SETTINGS.URL_BASE + '/stripe/checkout', {
       method: 'POST',
       body: JSON.stringify({
         token: stripeToken,

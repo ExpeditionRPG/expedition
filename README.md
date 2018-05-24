@@ -18,13 +18,13 @@ Question? Email us at Expedition@Fabricate.io
 
 ### Requirements
 
-Requires NodeJS v6.0 or above. Check your version with `node -v`.
+Requires NodeJS v8.0 or above. Check your version with `node -v`.
 
 We recommend using [NVM](https://github.com/creationix/nvm) to install node to make it easier to swap between and upgrade Node versions in the future.
 
 **Windows:** must be run within a Unix-like shell (such as Git Bash)
 
-**iOS:** Building the iOS app requires a mac, and cordova setup scripts currently work for unix-like environments only (Linux + Mac).
+**iOS:** Building the iOS app requires a Mac, and cordova setup scripts currently work for unix-like environments only (Linux + Mac).
 
 If you're having problems getting dependencies set up on your computer, try using this repo with [Containerizer](https://github.com/Fabricate-IO/containerizer).
 
@@ -63,23 +63,22 @@ This runs the app at [http://localhost:8082](http://localhost:8082) (port may be
 npm run test
 ```
 
-This runs the unit tests defined in the `app/test` directory.
+This runs the unit tests defined in the `app/test` directory, as well the `meta_tests.js` script file.
 
 Tests require Java JDK 7 or higher. To update Java go to http://www.oracle.com/technetwork/java/javase/downloads/index.html and download ***JDK*** and install it.
 
 Tests require Chrome. Please make sure you have the Chrome browser installed and up-to-date on your system.
 
-#### Release checklist
+#### Release checklist & deployment
 
-Before deploying to production, run `./beta.sh` to deploy to beta.expeditiongame.com and create beta versions of the Android and iOS apps. Then check that:
+Before deploying to production, run `./scripts/beta.sh` to deploy to beta.expeditiongame.com and create beta versions of the Android and iOS apps. Then run through the beta test checklist: https://docs.google.com/document/d/1HkHct0-AEMaHpkpU0uqSi6mhj2GJId78bXc23mo-2qg/edit
 
-- app icon and splashscreen appear properly on Android and iOS. If properly configured, the icons and splashscreens WILL show up in the beta build.
-- basic functionality works for all three builds (app loads, start quests, search quests, complete combat)
+Once functionality is verified, you can deploy prod web & generate prod versions of the Android and iOS apps with `./scripts/prod.sh`.
 
 #### Build for Web
 
 ```sh
-webpack --config ./webpack.dist.config.js
+npm run build
 ```
 
 Notes:

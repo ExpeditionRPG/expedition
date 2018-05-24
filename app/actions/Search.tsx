@@ -3,7 +3,7 @@ import {SearchResponseAction} from './ActionTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ExpansionsType, SearchSettings, SettingsType} from '../reducers/StateTypes'
 import {remoteify} from './ActionTypes'
-import {authSettings, FEATURED_QUESTS} from '../Constants'
+import {AUTH_SETTINGS, FEATURED_QUESTS} from '../Constants'
 import {toCard} from './Card'
 import {openSnackbar} from '../actions/Snackbar'
 
@@ -80,7 +80,7 @@ function getSearchResults(params: SearchSettings, callback: (quests: QuestDetail
 
     const xhr = new XMLHttpRequest();
     // TODO: Pagination / infinite scrolling
-    xhr.open('POST', authSettings.urlBase + '/quests', true);
+    xhr.open('POST', AUTH_SETTINGS.URL_BASE + '/quests', true);
     xhr.setRequestHeader('Content-Type', 'text/plain');
     xhr.onload = () => {
       const response: any = JSON.parse(xhr.responseText);

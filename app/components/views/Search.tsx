@@ -10,7 +10,8 @@ import Checkbox from '../base/Checkbox'
 import StarRating from '../base/StarRating'
 import {SearchSettings, SearchPhase, SearchState, SettingsType, UserState} from '../../reducers/StateTypes'
 import {QuestDetails} from '../../reducers/QuestTypes'
-import {GenreType, CONTENT_RATINGS, LANGUAGES, PLAYTIME_MINUTES_BUCKETS} from '../../Constants'
+import {CONTENT_RATINGS, PLAYTIME_MINUTES_BUCKETS} from '../../Constants'
+import {GenreType, LANGUAGES} from 'expedition-qdl/lib/schema/Constants'
 
 const Moment = require('moment');
 

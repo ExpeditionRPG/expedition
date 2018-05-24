@@ -45,6 +45,13 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
     if (!window.Stripe) {
       checkoutError = 'Tipping temporarily unavailable.';
     }
+    const tips = [1, 3, 5].map((tip: number) => {
+      return (
+        <Button key={tip} onTouchTap={() => this.props.onTip(checkoutError, tip, this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>
+          ${tip}
+        </Button>
+      );
+    })
     return (
       <Card title={this.props.quest.details.title}>
         <p>We hope you enjoyed <i>{this.props.quest.details.title}</i> by {this.props.quest.details.author}!</p>
@@ -73,15 +80,7 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
         }
         Tip the author{this.props.userFeedback.rating && ' and submit your review:'}
         <div className={'tipAmounts ' + (checkoutError === null ? '' : 'checkoutDisabled')}>
-          <Button onTouchTap={() => this.props.onTip(checkoutError, 1, this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>
-            $1
-          </Button>
-          <Button onTouchTap={() => this.props.onTip(checkoutError, 3, this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>
-            $3
-          </Button>
-          <Button onTouchTap={() => this.props.onTip(checkoutError, 5, this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>
-            $5
-          </Button>
+          {tips}
         </div>
         <Button onTouchTap={() => this.props.onSubmit(this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>
           {rated ? 'Submit' : 'Return home'}

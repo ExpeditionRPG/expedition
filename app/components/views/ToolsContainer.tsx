@@ -24,7 +24,7 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
       dispatch(initCustomCombat({}));
     },
     onQuestCreatorSelect(): void {
-      openWindow(URLS.questCreator);
+      openWindow(URLS.QUEST_CREATOR);
     },
     onPrivateQuestsSelect(settings: SettingsType, user: UserState): void {
       const privateSearch = (u: UserState) => {

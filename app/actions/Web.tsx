@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {authSettings} from '../Constants'
+import {AUTH_SETTINGS} from '../Constants'
 import {toCard} from './Card'
 import {initQuest} from './Quest'
 import {login} from './User'
@@ -39,7 +39,7 @@ export function fetchLocal(url: string) {
 
 export function fetchUserQuests() {
   return (dispatch: Redux.Dispatch<any>) => {
-    fetch(authSettings.urlBase + '/user/quests', {
+    fetch(AUTH_SETTINGS.URL_BASE + '/user/quests', {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -105,7 +105,7 @@ export function logQuestPlay(a: {phase: 'start'|'end'}) {
       name: state.user.name,
     };
 
-    fetch(authSettings.urlBase + '/analytics/quest/' + a.phase, {
+    fetch(AUTH_SETTINGS.URL_BASE + '/analytics/quest/' + a.phase, {
         method: 'POST',
         body: JSON.stringify(data),
       })
@@ -120,7 +120,7 @@ export function logQuestPlay(a: {phase: 'start'|'end'}) {
 
 export function subscribe(a: {email: string}) {
   return (dispatch: Redux.Dispatch<any>) => {
-    fetch(authSettings.urlBase + '/user/subscribe', {
+    fetch(AUTH_SETTINGS.URL_BASE + '/user/subscribe', {
       method: 'POST',
       body: JSON.stringify({email: a.email}),
     })
@@ -191,7 +191,7 @@ export function handleFetchErrors(response: any) {
 
 function postUserFeedback(type: string, data: any) {
   return (dispatch: Redux.Dispatch<any>) => {
-    fetch(authSettings.urlBase + '/quest/feedback/' + type, {
+    fetch(AUTH_SETTINGS.URL_BASE + '/quest/feedback/' + type, {
         method: 'POST',
         body: JSON.stringify(data),
       })
@@ -224,7 +224,7 @@ export function logMultiplayerStats(user: UserState, quest: QuestDetails, stats:
       console: getLogBuffer(),
     };
 
-    return fetch(authSettings.urlBase + '/analytics/multiplayer/stats', {
+    return fetch(AUTH_SETTINGS.URL_BASE + '/analytics/multiplayer/stats', {
         method: 'POST',
         body: JSON.stringify(data),
       })

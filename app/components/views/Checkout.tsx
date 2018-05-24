@@ -3,7 +3,7 @@ import LockIcon from 'material-ui/svg-icons/action/lock'
 
 import Button from '../base/Button'
 import Card from '../base/Card'
-import {authSettings} from '../../Constants'
+import {AUTH_SETTINGS} from '../../Constants'
 import {CardState, CheckoutState, QuestState, UserState} from '../../reducers/StateTypes'
 
 export interface CheckoutStateProps extends React.Props<any> {
@@ -31,7 +31,7 @@ export default class Checkout extends React.Component<CheckoutProps, {}> {
     super(props);
     let stripe = this.props.checkout.stripe;
     if (!stripe) {
-      stripe = Stripe(authSettings.stripe);
+      stripe = Stripe(AUTH_SETTINGS.STRIPE);
       this.props.onStripeLoad(stripe);
     }
     const elements = stripe.elements();

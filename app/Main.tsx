@@ -59,7 +59,7 @@ import theme from './Theme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
-import {authSettings, NODE_ENV, UNSUPPORTED_BROWSERS} from './Constants'
+import {AUTH_SETTINGS, NODE_ENV, UNSUPPORTED_BROWSERS} from './Constants'
 import {fetchAnnouncements, setAnnouncement} from './actions/Announcement'
 import {audioPause, audioResume} from './actions/Audio'
 import {toPrevious} from './actions/Card'
@@ -80,7 +80,7 @@ import thunk from 'redux-thunk' // tslint:disable-line
 
 const ReactGA = require('react-ga');
 
-Raven.config(authSettings.raven, {
+Raven.config(AUTH_SETTINGS.RAVEN, {
     release: getAppVersion(),
     environment: NODE_ENV,
     shouldSendCallback(data) {

@@ -2,13 +2,13 @@ import Redux from 'redux'
 import * as semver from 'semver'
 import {AnnouncementSetAction, FetchAnnouncementResponse} from './ActionTypes'
 import {handleFetchErrors} from './Web'
-import {authSettings, URLS} from '../Constants'
+import {AUTH_SETTINGS, URLS} from '../Constants'
 import {logEvent} from '../Main'
 import {getAppVersion, getDevicePlatform} from '../Globals'
 
 export function fetchAnnouncements() {
   return (dispatch: Redux.Dispatch<any>): any => {
-    fetch(authSettings.urlBase + '/announcements')
+    fetch(AUTH_SETTINGS.URL_BASE + '/announcements')
     .then(handleFetchErrors)
     .then((response: Response) => response.json())
     .then((data: FetchAnnouncementResponse) => {

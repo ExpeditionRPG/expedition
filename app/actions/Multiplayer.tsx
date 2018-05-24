@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {toCard} from './Card'
 import {handleFetchErrors} from './Web'
-import {remotePlaySettings} from '../Constants'
+import {MULTIPLAYER_SETTINGS} from '../Constants'
 import {LocalAction, MultiplayerClientStatus} from './ActionTypes'
 import {MultiplayerSessionMeta, UserState} from '../reducers/StateTypes'
 import {logEvent} from '../Main'
@@ -21,7 +21,7 @@ export function remotePlayDisconnect() {
 
 export function multiplayerNewSession(user: UserState) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    fetch(remotePlaySettings.newSessionURI, {
+    fetch(MULTIPLAYER_SETTINGS.newSessionURI, {
       method: 'POST',
       mode: 'cors',
       headers: new Headers({
@@ -51,7 +51,7 @@ export function multiplayerConnect(user: UserState, secret: string) {
   const instanceID = Date.now().toString();
 
   return (dispatch: Redux.Dispatch<any>): any => {
-    fetch(remotePlaySettings.connectURI, {
+    fetch(MULTIPLAYER_SETTINGS.connectURI, {
       method: 'POST',
       mode: 'cors',
       headers: new Headers({
@@ -93,7 +93,7 @@ export function loadMultiplayer(user: UserState) {
     if (!user || !user.id) {
       throw new Error('you are not logged in');
     }
-    fetch(remotePlaySettings.firstLoadURI, {
+    fetch(MULTIPLAYER_SETTINGS.firstLoadURI, {
       method: 'GET',
       mode: 'cors',
       credentials: 'include',

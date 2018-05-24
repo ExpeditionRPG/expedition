@@ -5,7 +5,7 @@ import {ClientBase} from 'expedition-qdl/lib/multiplayer/Client'
 import {toClientKey} from 'expedition-qdl/lib/multiplayer/Session'
 import {local} from './actions/Multiplayer'
 import {getStore} from './Store'
-import {remotePlaySettings} from './Constants'
+import {MULTIPLAYER_SETTINGS} from './Constants'
 
 const CONNECTION_LOOP_MS = 200;
 const RETRY_DELAY_MS = 2000;
@@ -348,7 +348,7 @@ export class MultiplayerClient extends ClientBase {
     }
     this.sessionClientIDs = [this.id];
 
-    this.session = new WebSocket(`${remotePlaySettings.websocketSession}/${sessionID}?client=${this.id}&instance=${this.instance}&secret=${secret}`);
+    this.session = new WebSocket(`${MULTIPLAYER_SETTINGS.websocketSession}/${sessionID}?client=${this.id}&instance=${this.instance}&secret=${secret}`);
 
     this.session.onmessage = (ev: MessageEvent) => {
       this.routeEvent(this.parseEvent(ev.data), getStore().dispatch);

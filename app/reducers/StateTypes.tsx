@@ -4,7 +4,8 @@ import {TemplatePhase, TemplateContext} from '../components/views/quest/cardtemp
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 import {SessionID} from 'expedition-qdl/lib/multiplayer/Session'
 import {StatusEvent} from 'expedition-qdl/lib/multiplayer/Events'
-import {GenreType, ContentRatingLabelType, LanguageType} from '../Constants'
+import {ContentRatingLabelType} from '../Constants'
+import {GenreType, LanguageType} from 'expedition-qdl/lib/schema/Constants'
 
 export interface AnnouncementState {
   open: boolean;

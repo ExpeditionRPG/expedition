@@ -15,7 +15,8 @@ import {initialSearch} from '../../reducers/Search'
 import {loggedOutUser} from '../../reducers/User'
 import {initialSettings} from '../../reducers/Settings'
 import {SearchSettings} from '../../reducers/StateTypes'
-import {FEATURED_QUESTS, LanguageType} from '../../Constants'
+import {FEATURED_QUESTS} from '../../Constants'
+import {LanguageType} from 'expedition-qdl/lib/schema/Constants'
 
 const renderOptions = {context: {muiTheme: getMuiTheme()}, childContextTypes: {muiTheme: React.PropTypes.object}};
 
