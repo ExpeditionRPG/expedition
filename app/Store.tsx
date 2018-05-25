@@ -19,7 +19,7 @@ export function installStore(createdStore: Redux.Store<AppStateWithHistory>) {
 function createAppStore() {
   const middleware = [getMultiplayerClient().createActionMiddleware()];
   const composeEnhancers = composeWithDevTools({
-    actionsBlacklist: ['MULTIPLAYER_CLIENT_STATUS', 'CARD_TRANSITIONING'],
+    actionsBlacklist: ['MULTIPLAYER_CLIENT_STATUS'],
   });
   installStore(createStore(expeditionApp,  composeEnhancers(applyMiddleware(...middleware))));
 

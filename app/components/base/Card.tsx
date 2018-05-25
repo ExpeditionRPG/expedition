@@ -26,11 +26,6 @@ export interface ExpeditionCardProps extends React.Props<any> {
 }
 
 export default class ExpeditionCard extends React.Component<ExpeditionCardProps, {}> {
-
-  shouldComponentUpdate(nextProps: ExpeditionCardProps, nextState: any) {
-    return !(getStore().getState().card || {}).transitioning;
-  }
-
   onReturn() {
     if (this.props && this.props.onReturn) {
       return this.props.onReturn();

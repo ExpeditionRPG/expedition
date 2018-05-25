@@ -2,7 +2,12 @@ import Redux from 'redux'
 import {SavedQuestState} from './StateTypes'
 import {SavedQuestListAction, SavedQuestSelectedAction} from '../actions/ActionTypes'
 
-export function saved(state: SavedQuestState = {list: [], selected: null}, action: Redux.Action): SavedQuestState {
+const initialSavedState: SavedQuestState = {
+  list: [],
+  selected: null,
+};
+
+export function saved(state: SavedQuestState = initialSavedState, action: Redux.Action): SavedQuestState {
   switch (action.type) {
     case 'SAVED_QUEST_DELETED':
     case 'SAVED_QUEST_LIST':

@@ -49,11 +49,6 @@ export interface AudioStoreBufferAction extends Redux.Action {
   buffer: AudioBuffer;
 }
 
-export interface CardTransitioningAction extends Redux.Action {
-  type: 'CARD_TRANSITIONING';
-  isTransitioning: boolean;
-}
-
 export interface CheckoutSetStateAction extends Redux.Action {
   type: 'CHECKOUT_SET_STATE';
   delta: Partial<CheckoutState>;

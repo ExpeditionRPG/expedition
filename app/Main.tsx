@@ -55,6 +55,7 @@ declare module 'react' {
 }
 import * as ReactDOM from 'react-dom'
 import * as Raven from 'raven-js'
+import {Provider} from 'react-redux'
 import theme from './Theme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
@@ -327,7 +328,7 @@ export function init() {
 
 function render() {
   // Require is done INSIDE this function to reload app changes.
-  const Compositor = require('./components/Compositor').default;
+  const CompositorContainer = require('./components/CompositorContainer').default;
   const base = getDocument().getElementById('react-app');
   if (!base) {
     throw new Error('Could not find react-app element');
@@ -335,7 +336,9 @@ function render() {
   ReactDOM.unmountComponentAtNode(base);
   ReactDOM.render(
     <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-      <Compositor/>
+      <Provider store={getStore()}>
+        <CompositorContainer store={getStore()}/>
+      </Provider>
     </MuiThemeProvider>,
     base
   );

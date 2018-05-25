@@ -1,5 +1,5 @@
 import * as Redux from 'redux'
-import {CardTransitioningAction, NavigateAction, remoteify} from './ActionTypes'
+import {NavigateAction, remoteify} from './ActionTypes'
 import {AppStateWithHistory, CardName, CardPhase} from '../reducers/StateTypes'
 import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants'
 import {getNavigator} from '../Globals'
@@ -62,10 +62,6 @@ export const toPrevious = remoteify(function toPrevious(a: ToPreviousArgs, dispa
 
   return a;
 });
-
-export function cardTransitioning(isTransitioning: boolean): CardTransitioningAction {
-  return {type: 'CARD_TRANSITIONING', isTransitioning};
-}
 
 
 // TODO: getMultiplayerClient().registerModuleActions(module);

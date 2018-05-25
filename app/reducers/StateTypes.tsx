@@ -111,7 +111,6 @@ export interface CardState {
   name: CardName;
   ts: number;
   key: string;
-  transitioning?: boolean;
   phase: CardPhase|null;
   overrideDebounce?: boolean;
 }

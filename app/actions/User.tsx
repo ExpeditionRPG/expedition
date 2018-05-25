@@ -22,7 +22,7 @@ function loadGapi(callback: (gapi: any, async: boolean) => void) {
   }
 
   gapi.load('client:auth2', () => {
-    gapi.client.setAPI_KEY(AUTH_SETTINGS.API_KEY);
+    gapi.client.setApiKey(AUTH_SETTINGS.API_KEY);
     gapi.auth2.init({
       client_id: AUTH_SETTINGS.CLIENT_ID,
       scope: AUTH_SETTINGS.SCOPES,

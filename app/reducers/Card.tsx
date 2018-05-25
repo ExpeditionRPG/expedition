@@ -1,12 +1,20 @@
 import Redux from 'redux'
-import {CardState} from './StateTypes'
-import {CardTransitioningAction, NavigateAction} from '../actions/ActionTypes'
+import {CardState, CardName} from './StateTypes'
+import {NavigateAction} from '../actions/ActionTypes'
 import {NAVIGATION_DEBOUNCE_MS} from '../Constants'
 import {getHistoryApi} from '../Globals'
 
+export const initialCardState = {
+  name: 'SPLASH_CARD' as CardName,
+  phase: null,
+  key: '',
+  ts: 0,
+  questId: ''
+};
+
 // ts: 0 solves an obscure bug (instead of Date.now()) where rapidly triggering navigations with undefined states
 // (specifically from the editor) wouldn't work b/c their ts diffs were < DEBOUNCE
-export function card(state: CardState = {name: 'SPLASH_CARD', phase: null, key: '', ts: 0, questId: ''}, action: Redux.Action): CardState {
+export function card(state: CardState = initialCardState, action: Redux.Action): CardState {
   switch (action.type) {
     case 'NAVIGATE':
       const to = (action as NavigateAction).to;
@@ -17,8 +25,6 @@ export function card(state: CardState = {name: 'SPLASH_CARD', phase: null, key: 
         return state;
       }
       return to;
-    case 'CARD_TRANSITIONING':
-      return {...state, transitioning: (action as CardTransitioningAction).isTransitioning};
     default:
       return state;
   }
