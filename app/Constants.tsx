@@ -142,6 +142,11 @@ export const SPLASH_SCREEN_TIPS = [
   `Tip: Enemies deal more damage over time, so try to win quickly!`,
   `Make sure to rate quests after you play them!`,
   `You can submit feedback at any time from the top right menu.`,
+  `Write your own quests at quests.expeditiongame.com!`,
+  `Tip: Turn your phone off silent to enjoy haptic vibration feedback.`,
+  `Tip: Searching quests only shows quests for the number of players you select.`,
+  `Did you know you can use the back of enemy cards as custom enemies?`,
+  `To avoid untimely interruptions, make sure you have a phone charger handy!`
 ];
 
 // A slight variation on the cubehelix pattern. This contains 6 categories,
