@@ -4,11 +4,12 @@ import Audio, {AudioStateProps, AudioDispatchProps} from './Audio'
 import {audioLoadChange} from '../../actions/Audio'
 import {changeSettings} from '../../actions/Settings'
 import {openSnackbar} from '../../actions/Snackbar'
+import {initialAudioState} from '../../reducers/Audio'
 import {AppState, AudioLoadingType} from '../../reducers/StateTypes'
 
 const mapStateToProps = (state: AppState, ownProps: AudioStateProps): AudioStateProps => {
   return {
-    audio: state.audio,
+    audio: state.audio || initialAudioState,
     cardName: state.card ? state.card.name : 'SPLASH_CARD',
     cardPhase: state.card ? state.card.phase : null,
     enabled: state.settings.audioEnabled,

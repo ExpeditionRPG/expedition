@@ -132,7 +132,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
       if (nextProps.enabled) {
         this.loadFiles();
         this.paused = false;
-        this.playAtIntensity(this.intensity);
+        this.playAtIntensity(newIntensity);
       } else {
         this.pauseMusic();
       }

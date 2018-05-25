@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {AudioSetAction} from '../actions/ActionTypes'
 import {AudioState} from './StateTypes'
 
-const initialState: AudioState = {
+export const initialAudioState: AudioState = {
   loaded: 'UNLOADED',
   paused: false,
   intensity: 0,

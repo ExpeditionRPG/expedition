@@ -82,13 +82,13 @@ import thunk from 'redux-thunk' // tslint:disable-line
 const ReactGA = require('react-ga');
 
 Raven.config(AUTH_SETTINGS.RAVEN, {
-    release: getAppVersion(),
-    environment: NODE_ENV,
-    shouldSendCallback(data) {
-      const supportedBrowser = !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent);
-      return supportedBrowser && NODE_ENV !== 'dev' && !getStore().getState().settings.simulator;
-    }
-  }).install();
+  release: getAppVersion(),
+  environment: NODE_ENV,
+  shouldSendCallback(data) {
+    const supportedBrowser = !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent);
+    return supportedBrowser && NODE_ENV !== 'dev' && !getStore().getState().settings.simulator;
+  }
+}).install();
 
 function setupTapEvents() {
   try {
@@ -221,7 +221,6 @@ function setupOnError(window: Window) {
     const questNode = quest.node && quest.node.elem && quest.node.elem[0];
     Raven.setExtraContext({
       card: state.card.key,
-      questName: quest.details.title,
       questId: quest.details.id,
       questCardTitle: (questNode) ? questNode.attribs.title : '',
       questLine: (questNode) ? questNode.attribs['data-line'] : '',
@@ -229,6 +228,7 @@ function setupOnError(window: Window) {
     });
     Raven.setTagsContext(); // Clear any existing tags
     Raven.setTagsContext({
+      questName: quest.details.title || 'n/a',
       audio: settings.audioEnabled,
       remotePlay: state.remotePlay.session !== null,
     });
