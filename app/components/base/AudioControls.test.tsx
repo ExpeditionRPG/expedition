@@ -6,7 +6,7 @@ require('react-tap-event-plugin')();
 
 function setup(overrides: Partial<AudioControlsProps>) {
   const props: AudioControlsProps = {
-    audioLoaded: false,
+    audioLoaded: 'UNLOADED',
     audioEnabled: true,
     onAudioToggle: jasmine.createSpy('onAudioToggle'),
     ...overrides,
@@ -42,13 +42,13 @@ describe('AudioControls', () => {
   });
 
   it('Does not show loading indicator if audio not loaded', () => {
-    const {props, enzymeWrapper} = setup({audioLoaded: true});
+    const {props, enzymeWrapper} = setup({audioLoaded: 'LOADED'});
     expect(enzymeWrapper.find('#audioLoadingIndicator').exists()).toEqual(false);
     expect(enzymeWrapper.find('#audioLoadError').exists()).toEqual(false);
   });
 
   it('Does not show loading indicator if audio fully loaded', () => {
-    const {props, enzymeWrapper} = setup({audioLoaded: true});
+    const {props, enzymeWrapper} = setup({audioLoaded: 'LOADED'});
     expect(enzymeWrapper.find('#audioLoadingIndicator').exists()).toEqual(false);
   });
 });

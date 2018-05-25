@@ -13,7 +13,7 @@ export interface AnnouncementState {
   link: string;
 }
 
-export type AudioLoadingType = false | 'LOADING' | 'ERROR' | true;
+export type AudioLoadingType = 'UNLOADED' | 'LOADING' | 'ERROR' | 'LOADED';
 export interface AudioState {
   loaded: AudioLoadingType;
   paused: boolean;
