@@ -144,4 +144,13 @@ export class Quest extends SchemaBase {
     maxLength: 128,
     default: 'base',
   }) theme: string;
+
+  @field({
+    default: false,
+  }) official: boolean;
+
+  @field({
+    maxLength: 128,
+    default: '',
+  }) awarded: string;
 }
