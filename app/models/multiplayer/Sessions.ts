@@ -6,10 +6,7 @@ import {Database, SessionInstance, EventInstance} from '../Database'
 export function getSessionBySecret(db: Database, secret: string): Bluebird<SessionInstance> {
   return db.sessions.findOne({where: {secret, locked: false}})
     .then((result: SessionInstance) => {
-      if (!result) {
-        throw new Error('Session not found');
-      }
-      return result;
+      return result || null;
     });
 }
 

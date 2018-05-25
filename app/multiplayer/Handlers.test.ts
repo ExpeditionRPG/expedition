@@ -32,6 +32,7 @@ describe('multiplayer handlers', () => {
   describe('connect', () => {
     it('adds session client to DB on successful connection');
     it('returns the session ID for websocket connection');
+    it('returns 404 if connection not found');
     it('returns error if session connection fails');
   });
 });

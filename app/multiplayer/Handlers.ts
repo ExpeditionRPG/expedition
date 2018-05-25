@@ -1,5 +1,9 @@
-import Config from '../config'
+import * as url from 'url'
+import * as http from 'http'
+import * as WebSocket from 'ws'
 import * as express from 'express'
+import * as Promise from 'bluebird'
+import Config from '../config'
 import {Database, SessionClientInstance, SessionInstance, EventInstance} from '../models/Database'
 import {getLastEvent, commitEvent, commitEventWithoutID, getOrderedEventsAfter, getLargestEventID} from '../models/multiplayer/Events'
 import {getSessionQuestTitle, getSessionBySecret, createSession} from '../models/multiplayer/Sessions'
@@ -7,9 +11,6 @@ import {getClientSessions, verifySessionClient} from '../models/multiplayer/Sess
 import {toClientKey} from 'expedition-qdl/lib/multiplayer/Session'
 import {ClientID, WaitType, StatusEvent, ActionEvent, MultiplayerEvent, MultiEvent} from 'expedition-qdl/lib/multiplayer/Events'
 import {maybeChaosWS, maybeChaosDB} from './Chaos'
-import * as url from 'url'
-import * as http from 'http'
-import * as WebSocket from 'ws'
 
 
 export interface MultiplayerSessionMeta {
@@ -82,6 +83,10 @@ export function connect(db: Database, req: express.Request, res: express.Respons
   getSessionBySecret(db, body.secret)
     .then((s: SessionInstance) => {
       session = s;
+      if (!session) {
+        res.status(404).send();
+        return Promise.reject(null);
+      }
       return db.sessionClients.upsert({
         session: session.get('id'),
         client: res.locals.id,
@@ -92,9 +97,12 @@ export function connect(db: Database, req: express.Request, res: express.Respons
       return res.status(200).send(JSON.stringify({session: session.get('id')}));
     })
     .catch((e: Error) => {
-      return res.status(500).send(JSON.stringify({
-        error: 'Could not join session: ' + e.toString()
-      }));
+      if (e) {
+        return res.status(500).send(JSON.stringify({
+          error: 'Could not join session: ' + e.toString()
+        }));
+      }
+      return null;
     });
 }
 
