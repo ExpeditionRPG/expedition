@@ -11,7 +11,7 @@ export const initialAudioState: AudioState = {
   timestamp: 0,
 };
 
-export function audio(state: AudioState = initialState, action: Redux.Action): AudioState {
+export function audio(state: AudioState = initialAudioState, action: Redux.Action): AudioState {
   switch(action.type) {
     case 'AUDIO_SET':
       return {...state, ...(action as AudioSetAction).changes};
