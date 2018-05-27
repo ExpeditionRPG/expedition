@@ -28,6 +28,8 @@ export interface QuestDetails {
   partition?: string;
   language?: string;
   theme?: QuestThemeType;
+  official?: boolean;
+  awarded?: string;
 }
 
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';
