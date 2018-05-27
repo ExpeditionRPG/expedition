@@ -293,8 +293,9 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
     >
       {results.length === 0 && !props.searching &&
         <div>
-          <div>No results found.</div>
-          {!hideHeader && <div>Try broadening your search.</div>}
+          <div>No quests found matching your filter and search terms.</div>
+          {!hideHeader && <div>Try broadening your search by using fewer filters.</div>}
+          <Button className="filter_button" onTouchTap={() => props.onFilter()} remoteID="filter">Modify Search</Button>
         </div>
       }
       {results.length === 0 && props.searching && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
