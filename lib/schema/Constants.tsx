@@ -31,12 +31,21 @@ export const LANGUAGES: LanguageType[] = [
 ];
 
 // Content rating options and their definitions, generally based on MPAA guidelines
-export type ContentRatingType = 'Kid-friendly' | 'Teen' | 'Adult';
-export const CONTENT_RATINGS: ContentRatingType[] = [
+export type ContentRatingLabelType = 'Kid-friendly' | 'Teen' | 'Adult';
+export const CONTENT_RATINGS: ContentRatingLabelType[] = [
   'Kid-friendly',
   'Teen',
   'Adult',
 ];
+export type ContentRatingType = {
+  summary: string;
+  details: {
+    violence: string;
+    language: string;
+    drugs: string;
+    nudity: string;
+  }
+}
 export const CONTENT_RATING_DESC: {[key: string]: ContentRatingType} = {
   'Kid-friendly': {
     summary: 'No drug use or nudity, very limited profanity, and no references to sex or detailed violence.',
