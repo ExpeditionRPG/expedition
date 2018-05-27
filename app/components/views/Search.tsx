@@ -10,8 +10,8 @@ import Checkbox from '../base/Checkbox'
 import StarRating from '../base/StarRating'
 import {SearchSettings, SearchPhase, SearchState, SettingsType, UserState} from '../../reducers/StateTypes'
 import {QuestDetails} from '../../reducers/QuestTypes'
-import {CONTENT_RATINGS, PLAYTIME_MINUTES_BUCKETS} from '../../Constants'
-import {GenreType, LANGUAGES} from 'expedition-qdl/lib/schema/Constants'
+import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants'
+import {CONTENT_RATING_DESC, GenreType, LANGUAGES} from 'expedition-qdl/lib/schema/Constants'
 
 const Moment = require('moment');
 
@@ -59,7 +59,7 @@ export class SearchSettingsCard extends React.Component<SearchSettingsCardProps,
 // TODO once Material UI adds support for theming SelectFields (https://github.com/callemall/material-ui/issues/7044)
 // (aka Material UI 1.0) then remove the clutter here / move to Theme.tsx
   render() {
-    const rating = (this.state.contentrating) ? CONTENT_RATINGS[this.state.contentrating] : undefined;
+    const rating = (this.state.contentrating) ? CONTENT_RATING_DESC[this.state.contentrating] : undefined;
     const timeBuckets = PLAYTIME_MINUTES_BUCKETS.map((minutes: number, index: number) => {
       return <MenuItem key={index} value={minutes} primaryText={`${minutes} min`}/>;
     });

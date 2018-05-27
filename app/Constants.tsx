@@ -101,42 +101,6 @@ export const COMBAT_DIFFICULTY: {[key: string]: any} = {
   },
 };
 
-// Content rating options and their definitions, generally based on MPAA guidelines
-export type ContentRatingLabelType = 'Everyone' | 'Teen' | 'Adult';
-export interface ContentRatingType {
-  summary: string;
-  details: {[key: string]: string};
-}
-export const CONTENT_RATINGS: {[key: string]: ContentRatingType} = {
-  'Kid-friendly': {
-    summary: 'No drug use or nudity, very limited profanity, and no references to sex or detailed violence.',
-    details: {
-      violence: 'No descriptions of violence allowed outside of combat mechanics.',
-      language: 'Only very limited profanity allowed, and no sexually-derived words.',
-      drugs: 'No drug use allowed.',
-      nudity: 'No nudity allowed.',
-    },
-  },
-  'Teen': {
-    summary: 'Brief and limited violence and profanity. Potential non-sexual nudity and responsible drug use.',
-    details: {
-      violence: 'May contain brief, limited descriptions of violence.',
-      language: 'May contain profanity except in a sexual context.',
-      drugs: 'May contain drug use, but not abuse.',
-      nudity: 'May contain non-sexual nudity.',
-    },
-  },
-  'Adult': {
-    summary: 'Any level of violence, profanity, drug use, and sexuality.',
-    details: {
-      violence: 'All violence allowed.',
-      language: 'All profanity allowed.',
-      drugs: 'All drugs allowed.',
-      nudity: 'All nudity allowed.',
-    },
-  },
-};
-
 export const SPLASH_SCREEN_TIPS = [
   `Tip: You can change which expansions you're playing with in settings.`,
   `Tip: Enemies deal more damage over time, so try to win quickly!`,
