@@ -37,6 +37,35 @@ export const CONTENT_RATINGS: ContentRatingType[] = [
   'Teen',
   'Adult',
 ];
+export const CONTENT_RATING_DESC: {[key: string]: ContentRatingType} = {
+  'Kid-friendly': {
+    summary: 'No drug use or nudity, very limited profanity, and no references to sex or detailed violence.',
+    details: {
+      violence: 'No descriptions of violence allowed outside of game mechanics.',
+      language: 'Only very limited profanity allowed, and no sexually-derived words.',
+      drugs: 'No drug use allowed.',
+      nudity: 'No nudity allowed.',
+    },
+  },
+  'Teen': {
+    summary: 'Brief and limited violence and profanity. Potential non-sexual nudity and responsible drug use.',
+    details: {
+      violence: 'May contain brief, limited descriptions of violence.',
+      language: 'May contain profanity except in a sexual context.',
+      drugs: 'May contain drug use, but not abuse.',
+      nudity: 'May contain non-sexual nudity.',
+    },
+  },
+  'Adult': {
+    summary: 'Mature (but not pornographic) use of violence, profanity, drugs, and sexuality. Titles and descriptions must still be PG.',
+    details: {
+      violence: 'Violence allowed.',
+      language: 'Profanity allowed.',
+      drugs: 'Drugs allowed.',
+      nudity: 'Nudity allowed.',
+    },
+  },
+};
 
 export type ThemeType = 'base' | 'horror';
 export const THEMES: ThemeType[] = [
