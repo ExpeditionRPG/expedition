@@ -45,7 +45,7 @@ export function loginUser(showPrompt: boolean, quest?: boolean | string): ((disp
                   try {
                     data = JSON.parse(data);
                     user.id = data.id;
-                    user.lootPoints = data.loot_points;
+                    user.lootPoints = data.lootPoints;
                   } catch(err) {
                     user.id = data;
                   }
