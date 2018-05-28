@@ -10,7 +10,11 @@ const options = {
   entry: {
     bundle: [
       'webpack-dev-server/client?http://localhost:' + port,
-      'webpack/hot/only-dev-server',
+      // HMR disabled for now, potentially fixable with
+      // https://github.com/webpack/webpack/issues/6642
+      // or
+      // https://github.com/webpack-contrib/worker-loader
+      // 'webpack/hot/only-dev-server',
       './app/React.tsx',
       './app/Style.scss',
       './node_modules/expedition-app/app/Style.scss',
@@ -27,7 +31,8 @@ const options = {
     contentBase: Path.join(__dirname, 'app'),
     publicPath: '/',
     port: port,
-    hot: true,
+    // hot: true,
+    hot: false,
     quiet: false,
     noInfo: false,
     historyApiFallback: true,
@@ -54,7 +59,7 @@ const options = {
   },
   plugins: [
     new DashboardPlugin(),
-    new Webpack.HotModuleReplacementPlugin(),
+    // new Webpack.HotModuleReplacementPlugin(),
     new Webpack.NoEmitOnErrorsPlugin(),
     new Webpack.DefinePlugin({
       'process.env': {
@@ -73,31 +78,14 @@ const options = {
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {
         tslint: {
-          configuration: {
-           rules: {
-              quotemark: [true, 'single', 'jsx-double'],
-              curly: true,
-              noUseBeforeDeclare: true,
-              eofline: true,
-              radix: true,
-              switchDefault: true,
-              tripleEquals: true,
-              typeofCompare: true,
-              useIsnan: true,
-              indent: [true, "spaces"],
-              // We can add these when we feel like having more style enforcement
-              //noUnusedVariables: true,
-              //noVarKeyword: true,
-              //preferConst: true,
-              //trailingComma: true,
-            }
-          },
           emitErrors: true,
           failOnHint: true,
           tsConfigFile: 'tsconfig.json',
         },
         babel: {
-          presets: ["es2015"],
+          presets: [["env", {
+            "targets": {"browsers": [">5%", "last 2 years", "last 3 iOS versions", "chrome >= 39"]}
+          }]],
           cacheDirectory: true,
         },
       },

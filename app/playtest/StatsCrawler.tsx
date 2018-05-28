@@ -94,8 +94,7 @@ export class StatsCrawler extends CrawlerBase<Context> {
     }
 
     // Fetch statistics
-    let prevLineStats = this.statsByLine[q.prevLine];
-    let lineStats = this.statsByLine[line];
+    const lineStats = this.statsByLine[line];
 
     // Update ID statistics
     if (id !== q.prevId) {

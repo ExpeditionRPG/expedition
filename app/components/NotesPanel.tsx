@@ -1,5 +1,6 @@
 import * as React from 'react'
-import {OverrideTextArea} from './base/OverrideTextArea'
+
+declare var gapi: any;
 
 export interface NotesPanelStateProps {
   realtime: any;
@@ -17,8 +18,6 @@ interface RealtimeTextAreaProps extends React.Props<any> {
   realtimeModel: any;
   onDirty: (realtime: any, text: string) => void;
 }
-
-declare var gapi: any;
 
 class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
   silentChange: boolean;
@@ -91,7 +90,7 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
   }
 
   render() {
-    var text = 'Loading...';
+    let text = 'Loading...';
     if (this.props.realtime) {
       text = this.props.realtime.getText();
     }
@@ -101,7 +100,8 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
         id="notesArea"
         ref={(ref: any) => this.onRef(ref)}
         onChange={(e: any) => this.onChange(e)}
-      ></textarea>
+      >
+      </textarea>
     );
   }
 }

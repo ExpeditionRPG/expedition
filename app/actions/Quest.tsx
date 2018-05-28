@@ -1,6 +1,5 @@
 import Redux from 'redux'
 import {
-  NEW_QUEST, LOAD_QUEST, SAVE_QUEST,
   ReceiveQuestLoadAction,
   RequestQuestSaveAction, ReceiveQuestSaveAction, ReceiveQuestSaveErrAction,
   QuestLoadingAction,
@@ -9,24 +8,20 @@ import {
   RequestQuestUnpublishAction, ReceiveQuestUnpublishAction,
 } from './ActionTypes'
 import {setSnackbar} from './Snackbar'
-import {QuestType, UserState, ShareType} from '../reducers/StateTypes'
+import {QuestType, UserState} from '../reducers/StateTypes'
 
-import {setDialog, pushError, pushHTTPError} from './Dialogs'
+import {pushError, pushHTTPError} from './Dialogs'
 import {startPlaytestWorker} from './Editor'
 import {realtimeUtils} from '../Auth'
 import {
-  VERSION,
   NEW_QUEST_TEMPLATE,
   QUEST_DOCUMENT_HEADER,
-  METADATA_FIELDS,
   METADATA_DEFAULTS,
-  NEW_QUEST_TITLE,
   API_HOST,
-  PARTITIONS,
+  PARTITIONS
 } from '../Constants'
 import {renderXML} from 'expedition-qdl/lib/render/QDLParser'
 
-const Cheerio: any = require('cheerio');
 const ReactGA = require('react-ga') as any;
 const QueryString = require('query-string');
 
@@ -45,7 +40,7 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
   try {
     const boundary = '-------314159265358979323846';
     const delimiter = '\r\n--' + boundary + '\r\n';
-    const close_delim = '\r\n--' + boundary + '--';
+    const closeDelim = '\r\n--' + boundary + '--';
 
     text = QUEST_DOCUMENT_HEADER + text;
     const base64Data = btoa(window.unescape(window.encodeURIComponent(text)));
@@ -58,7 +53,7 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
         'Content-Transfer-Encoding: base64\r\n' +
         '\r\n' +
         base64Data +
-        close_delim;
+        closeDelim;
 
     const request = window.gapi.client.request({
         'path': '/upload/drive/v2/files/' + fileId,
@@ -140,8 +135,8 @@ export function newQuest(user: UserState) {
   }
 }
 
-function getPublishedQuestMeta(published_id: string, cb: (meta: QuestType)=>any) {
-  $.post(API_HOST + '/quests', JSON.stringify({id: published_id}), (result: any) => {
+function getPublishedQuestMeta(publishedId: string, cb: (meta: QuestType)=>any) {
+  $.post(API_HOST + '/quests', JSON.stringify({id: publishedId}), (result: any) => {
     result = JSON.parse(result);
     if (result.error) {
       throw new Error(result.error);
@@ -151,9 +146,9 @@ function getPublishedQuestMeta(published_id: string, cb: (meta: QuestType)=>any)
 }
 
 function createDocNotes(model: any) {
-  const string = model.createString();
-  model.getRoot().set('notes', string);
-  return string;
+  const str = model.createString();
+  model.getRoot().set('notes', str);
+  return str;
 }
 
 function createDocMetadata(model: any, defaults: any) {
@@ -239,6 +234,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         contentrating: metadata.get('contentrating'),
         expansionhorror: metadata.get('expansionhorror') || false,
         language: metadata.get('language') || 'English',
+        theme: metadata.get('theme') || 'base',
       });
       dispatch(receiveQuestLoad(quest));
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
@@ -249,13 +245,13 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
     });
   },
   (model: any) => {
-    const string = model.createString();
+    const str = model.createString();
     // Don't allow user undo, since it would revert everything back to a blank page.
     // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
     model.beginCompoundOperation('', false);
-    string.setText(NEW_QUEST_TEMPLATE);
+    str.setText(NEW_QUEST_TEMPLATE);
     model.endCompoundOperation();
-    model.getRoot().set('markdown', string);
+    model.getRoot().set('markdown', str);
     createDocNotes(model);
   });
 }
@@ -297,12 +293,13 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
       majorRelease,
       expansionhorror: quest.expansionhorror,
       language: quest.language,
+      theme: quest.theme,
     });
     return $.ajax({
       type: 'POST',
       url: API_HOST + '/publish/' + quest.id + '?' + params,
       data: renderResult.getResult()+'',
-    }).done((result_quest_id: string) => {
+    }).done((resultQuestId: string) => {
       quest.published = (new Date(Date.now()).toISOString());
       dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
       dispatch(setSnackbar(true, 'Quest published successfully!'));
@@ -375,12 +372,12 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
 export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_UNPUBLISH', quest} as RequestQuestUnpublishAction);
-    return $.post(API_HOST + '/unpublish/' + quest.id, function(result_quest_id: string) {
+    return $.post(API_HOST + '/unpublish/' + quest.id, function(resultQuestId: string) {
       quest.published = undefined;
       dispatch({type: 'RECEIVE_QUEST_UNPUBLISH', quest} as ReceiveQuestUnpublishAction);
       dispatch(setSnackbar(true, 'Quest un-published successfully!'));
     }).fail((error: {statusText: string, status: string, responseText: string}) => {
       dispatch(pushHTTPError(error));
-    });;
+    });
   };
 }

@@ -4,8 +4,9 @@
 import {PlaytestCrawler} from './PlaytestCrawler'
 import {PlaytestSettings} from '../reducers/StateTypes'
 import {Node} from 'expedition-qdl/lib/parse/Node'
-import {Logger, LogMessageMap} from 'expedition-qdl/lib/render/Logger'
-import {initQuest} from 'expedition-app/app/actions/Quest'
+import {Logger} from 'expedition-qdl/lib/render/Logger'
+
+const cheerio: any = require('cheerio') as CheerioAPI;
 
 // TODO: This Card context shouldn't have to be mocked here - update cardtemplates in the app
 // so we don't need this.
@@ -58,8 +59,6 @@ function mockContext() {
 
   return newContext;
 }
-
-const cheerio: any = require('cheerio') as CheerioAPI;
 
 function maybePublishLog(logger: Logger) {
   const m = logger.getFinalizedLogs();

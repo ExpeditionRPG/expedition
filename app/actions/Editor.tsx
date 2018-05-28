@@ -4,14 +4,16 @@ import {PanelType, PlaytestSettings, QuestType} from '../reducers/StateTypes'
 import {store} from '../Store'
 import {saveQuest} from './Quest'
 import {renderXML} from 'expedition-qdl/lib/render/QDLParser'
-import {initQuest, loadNode} from 'expedition-app/app/actions/Quest'
+import {loadNode} from 'expedition-app/app/actions/Quest'
 import {changeSettings} from 'expedition-app/app/actions/Settings'
-import {defaultContext} from 'expedition-app/app/cardtemplates/Template'
-import {TemplateContext, ParserNode} from 'expedition-app/app/cardtemplates/TemplateTypes'
+import {defaultContext} from 'expedition-app/app/components/views/quest/cardtemplates/Template'
+import {TemplateContext, ParserNode} from 'expedition-app/app/components/views/quest/cardtemplates/TemplateTypes'
 import {pushError} from './Dialogs'
 
-export function setDirty(is_dirty: boolean): SetDirtyAction {
-  return {type: 'SET_DIRTY', is_dirty};
+declare var window: any;
+
+export function setDirty(isDirty: boolean): SetDirtyAction {
+  return {type: 'SET_DIRTY', isDirty};
 }
 
 export function setDirtyTimeout(timer: any): SetDirtyTimeoutAction {
@@ -85,10 +87,11 @@ export function startPlaytestWorker(oldWorker: Worker|null, elem: Cheerio, setti
       oldWorker.terminate();
     }
 
-    if (!(window as any).Worker) {
+    if (!window.Worker) {
       console.log('Web worker not available, skipping playtest.');
       return;
     }
+
     const worker = new Worker('playtest.js');
     worker.onerror = (ev: ErrorEvent) => {
       dispatch({type: 'PLAYTEST_ERROR', msg: ev.error});

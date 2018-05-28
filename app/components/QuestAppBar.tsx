@@ -1,20 +1,16 @@
 import * as React from 'react'
-
 import AppBar from 'material-ui/AppBar'
-import Avatar from 'material-ui/Avatar'
 import CircularProgress from 'material-ui/CircularProgress'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar'
-
 import AlertError from 'material-ui/svg-icons/alert/error'
 import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down'
 import SyncIcon from 'material-ui/svg-icons/notification/sync'
-
 import {QuestActionType} from '../actions/ActionTypes'
-import {AnnotationType, QuestType, UserState, EditorState, ValidState} from '../reducers/StateTypes'
+import {AnnotationType, QuestType, UserState, EditorState} from '../reducers/StateTypes'
 
 export interface QuestAppBarStateProps {
   annotations: AnnotationType[];

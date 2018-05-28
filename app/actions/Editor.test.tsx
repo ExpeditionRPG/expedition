@@ -1,6 +1,5 @@
-import {getPlayNode} from './Editor'
-
-const cheerio: any = require('cheerio');
+// import {getPlayNode} from './Editor'
+// const cheerio: any = require('cheerio');
 
 describe('Editor action', () => {
   describe('setCodeView', () => {

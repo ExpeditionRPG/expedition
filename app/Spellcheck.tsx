@@ -1,13 +1,10 @@
-import brace from 'brace'
-const Typo: any = require('typo-js');
 const acequire: any = (require('brace') as any).acequire;
 const {Range} = acequire('ace/range');
-import {METADATA_FIELDS} from './Constants'
 import REGEX from './Regex'
 import {store} from './Store'
 import {setWordCount} from './actions/Editor'
-import {encounters} from '../node_modules/expedition-app/app/Encounters'
-const IGNORE = Object.keys(encounters);
+import {ENCOUNTERS} from 'expedition-app/app/Encounters'
+const IGNORE = Object.keys(ENCOUNTERS);
 const elementRegexes = new RegExp('(' + [REGEX.HTML_TAG, REGEX.TRIGGER, REGEX.ID, REGEX.OP].map((regex: any): string => {
   return regex.toString().match(REGEX.EXTRACT_REGEX)[1];
 }).join('|') + ')[^\s]*', 'gm');
@@ -66,7 +63,7 @@ export default class Spellcheck {
 
     try {
       // remove existing spellcheck markers
-      for (let i in this.markersPresent) {
+      for (const i in this.markersPresent) {
         this.session.removeMarker(this.markersPresent[i]);
       }
       this.markersPresent = [];

@@ -1,12 +1,8 @@
 import * as React from 'react'
-
-import loginUser from '../actions/User'
-import {UserState} from '../reducers/StateTypes'
-
 import AppBar from 'material-ui/AppBar'
 import FlatButton from 'material-ui/FlatButton'
 import Button from 'expedition-app/app/components/base/Button'
-
+import {UserState} from '../reducers/StateTypes'
 
 export interface SplashDispatchProps {
   onLogin: (position: string) => void;

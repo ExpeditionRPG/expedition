@@ -14,7 +14,7 @@ export let store: Redux.Store<any>;
 // This code re-routes the getState() method passed to the app's redux middleware,
 // correctly scoping it only to the ".preview" param where it expects the app's state to live.
 const appMiddleware = getMultiplayerClient().createActionMiddleware();
-const adjustedAppMiddleware = ({dispatch, getState}: Redux.MiddlewareAPI<any>) => {
+const adjustedAppMiddleware = ({dispatch}: Redux.MiddlewareAPI<any>) => {
   return appMiddleware({
     dispatch,
     getState: () => {
@@ -42,7 +42,7 @@ installAppStore({
 
 if (module && module.hot) {
   module.hot.accept('./reducers/CombinedReducers', () => {
-    let updated = require('./reducers/CombinedReducers').default;
+    const updated = require('./reducers/CombinedReducers').default;
     store.replaceReducer(updated);
   });
 }

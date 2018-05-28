@@ -1,6 +1,6 @@
-import {LanguageType} from 'expedition-app/app/Constants'
 import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
 import {QDLParser} from 'expedition-qdl/lib/render/QDLParser'
+import {ContentRatingLabelType, LanguageType, ThemeType} from 'expedition-qdl/lib/schema/Constants'
 import {ErrorType} from '../../errors/types'
 // TODO: URL type?
 
@@ -65,11 +65,12 @@ export interface QuestType {
   maxtimeminutes?: number;
   author?: string;
   genre?: string;
-  contentrating?: string;
+  contentrating?: ContentRatingLabelType;
   valid?: boolean;
   saveError?: string;
   expansionhorror?: boolean;
   language?: LanguageType;
+  theme?: ThemeType;
 };
 
 export interface EditorState {

@@ -1,23 +1,20 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-
 import {QuestActionType} from '../actions/ActionTypes'
-import {getPlayNode, renderAndPlay, setLine} from '../actions/Editor'
-import {newQuest, saveQuest, publishQuestSetup, unpublishQuest} from '../actions/Quest'
+import {renderAndPlay, setLine} from '../actions/Editor'
+import {saveQuest, publishQuestSetup, unpublishQuest} from '../actions/Quest'
 import {logoutUser} from '../actions/User'
 import {AnnotationType, AppState, QuestType, EditorState, UserState} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
+import {defaultContext} from 'expedition-app/app/components/views/quest/cardtemplates/Template'
 
-import {toCard} from 'expedition-app/app/actions/Card'
-import {defaultContext} from 'expedition-app/app/cardtemplates/Template'
-
-import {DOCS_INDEX_URL, DEV_CONTACT_URL} from '../Constants'
+import {DOCS_INDEX_URL} from '../Constants'
 
 const math = require('mathjs') as any;
 const ReactGA = require('react-ga') as any;
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps => {
-  var scope = (state.preview.quest && state.preview.quest.node && state.preview.quest.node.ctx && state.preview.quest.node.ctx.scope) || {};
+  const scope = (state.preview.quest && state.preview.quest.node && state.preview.quest.node.ctx && state.preview.quest.node.ctx.scope) || {};
   return {
     annotations: [...state.annotations.spellcheck, ...state.annotations.playtest],
     editor: state.editor,
@@ -67,7 +64,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       dispatch(setLine(errorLine));
     },
     playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => {
-      let ctx = defaultContext();
+      const ctx = defaultContext();
       Object.assign(ctx.scope, baseScope);
       try {
         math.eval(editor.opInit, ctx.scope);

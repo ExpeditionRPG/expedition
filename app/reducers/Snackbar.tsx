@@ -2,12 +2,12 @@ import Redux from 'redux'
 import {SnackbarSetAction} from '../actions/ActionTypes'
 import {SnackbarState} from './StateTypes'
 
-const default_state: SnackbarState = {
+const initialSnackbarState: SnackbarState = {
   open: false,
   message: '',
 };
 
-export function snackbar(state: SnackbarState = default_state, action: Redux.Action): SnackbarState {
+export function snackbar(state: SnackbarState = initialSnackbarState, action: Redux.Action): SnackbarState {
   switch(action.type) {
     case 'SNACKBAR_SET':
       const setAction = (action as SnackbarSetAction);

@@ -1,5 +1,3 @@
-import QuestAppBar from './QuestAppBar'
-
 describe('QuestAppBar', () => {
   it('Shows user icon');
 

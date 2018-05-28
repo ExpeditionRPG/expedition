@@ -1,5 +1,3 @@
-import ContextEditor from './ContextEditor'
-
 describe('ContextEditor', () => {
   it('Displays initial context override');
 

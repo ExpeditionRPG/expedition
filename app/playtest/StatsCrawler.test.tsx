@@ -5,7 +5,6 @@ import {defaultContext} from 'expedition-qdl/lib/parse/Context'
 declare var global: any;
 
 const cheerio = require('cheerio') as CheerioAPI;
-const window: any = cheerio.load('<div>');
 
 describe('StatsCrawler', () => {
   describe('crawl', () => {

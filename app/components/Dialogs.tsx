@@ -1,23 +1,14 @@
 import * as React from 'react'
-import {TouchTapEventHandler} from 'material-ui'
-
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import IconButton from 'material-ui/IconButton'
-import LinkIcon from 'material-ui/svg-icons/content/link'
 import MenuItem from 'material-ui/MenuItem'
-import Paper from 'material-ui/Paper'
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import SelectField from 'material-ui/SelectField'
 import TextField from 'material-ui/TextField'
-import Toggle from 'material-ui/Toggle'
-
 import Checkbox from './base/Checkbox'
-import {QuestType, ShareType, DialogsState, DialogIDType, UserState} from '../reducers/StateTypes'
-import theme from '../Theme'
+import {QuestType, DialogsState, DialogIDType, UserState} from '../reducers/StateTypes'
 import {MIN_PLAYERS, MAX_PLAYERS} from '../Constants'
-import {CONTENT_RATINGS, GENRES, LANGUAGES} from '../../node_modules/expedition-app/app/Constants'
+import {CONTENT_RATING_DESC, GENRES, LANGUAGES, THEMES} from 'expedition-qdl/lib/schema/Constants'
 import {ErrorType} from '../../errors/types'
 
 declare var ga: any;
@@ -30,9 +21,9 @@ interface ErrorDialogProps extends React.Props<any> {
 
 export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
   render() {
-    var errors: JSX.Element[] = [];
-    for (var i = 0; i < this.props.errors.length; i++) {
-      var error = this.props.errors[i];
+    const errors: JSX.Element[] = [];
+    for (let i = 0; i < this.props.errors.length; i++) {
+      const error = this.props.errors[i];
       // TODO: Include fold-out stack info
       errors.push(<li key={i}><strong>{error.name}</strong>: {error.message}</li>);
     }
@@ -43,7 +34,7 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
         actions={[<RaisedButton
           label="OK"
           primary={true}
-          onTouchTap={() => this.props.onRequestClose()}
+          onClick={() => this.props.onRequestClose()}
         />]}
         titleClassName={'dialogTitle dialogError'}
         modal={false}
@@ -106,7 +97,7 @@ export class AnnotationDetailDialog extends React.Component<AnnotationDetailDial
           <RaisedButton
             label="OK"
             primary={true}
-            onTouchTap={() => this.props.onRequestClose()}
+            onClick={() => this.props.onRequestClose()}
           />,
         ]}
         titleClassName={'dialogTitle'}
@@ -155,7 +146,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
       return <span></span>;
     }
     const playerItems = [];
-    for (let i = 1; i <= MAX_PLAYERS; i++) {
+    for (let i = MIN_PLAYERS; i <= MAX_PLAYERS; i++) {
       playerItems.push(<MenuItem value={i} primaryText={i} key={i} />);
     }
     const genres = GENRES.map((genre: string, index: number) => {
@@ -164,13 +155,16 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
     const languages = LANGUAGES.map((language: string, index: number) => {
       return <MenuItem key={index} value={language} primaryText={language} />;
     });
-    const rating = (CONTENT_RATINGS as any)[metadata.get('contentrating')];
-    const ratings = Object.keys(CONTENT_RATINGS).map((rating: string, index: number) => {
+    const rating = CONTENT_RATING_DESC[metadata.get('contentrating')];
+    const ratings = Object.keys(CONTENT_RATING_DESC).map((rating: string, index: number) => {
       return <MenuItem key={index} value={rating} primaryText={rating} />;
     });
     const ratingDefinitions = rating && Object.keys(rating.details).map((category: string, index: number) => {
-      return <li key={index}>{rating.details[category]}</li>;
+      return <li key={index}>{(rating.details as {[key: string]: string})[category]}</li>;
     });
+    const themes = THEMES.map((theme: string, index: number) => {
+      return <MenuItem key={index} value={theme} primaryText={theme} />;
+    })
 
     // TODO improve validation via errorText instead of alerts - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/274
     return (
@@ -183,11 +177,11 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
         autoScrollBodyContent={true}
         actions={[<FlatButton
           label="Back"
-          onTouchTap={() => this.props.onRequestClose()}
+          onClick={() => this.props.onRequestClose()}
         />,<RaisedButton
           label="Publish"
           secondary={true}
-          onTouchTap={() => this.props.onRequestPublish(this.props.quest, this.state.majorRelease, this.state.privatePublish)}
+          onClick={() => this.props.onRequestPublish(this.props.quest, this.state.majorRelease, this.state.privatePublish)}
         />]}
       >
         <TextField
@@ -273,6 +267,14 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'genre', val); }}
         >
           {genres}
+        </SelectField>
+        <SelectField
+          className="halfWidth"
+          floatingLabelText="Theme"
+          value={metadata.get('theme')}
+          onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'theme', val); }}
+        >
+          {themes}
         </SelectField>
         <div className="contentRatingInputContainer">
           <SelectField

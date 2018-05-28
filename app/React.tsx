@@ -2,14 +2,12 @@ import * as React from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'react-redux'
 import {renderAndPlay} from './actions/Editor'
-import {loginUser, setProfileMeta} from './actions/User'
+import {loginUser} from './actions/User'
 import {saveQuest, questLoading} from './actions/Quest'
 import {setSnackbar} from './actions/Snackbar'
 import MainContainer from './components/MainContainer'
 import {store} from './Store'
 import {VERSION} from './Constants'
-
-// Material UI theming
 import theme from './Theme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
@@ -73,7 +71,7 @@ window.gapi.load('client,drive-realtime,drive-share', () => {
 });
 
 // alert user if they try to close the page with unsaved changes
-window.onbeforeunload = function () {
+window.onbeforeunload = function() {
   if (store.getState().dirty === true) {
     return false;
   }
@@ -96,6 +94,7 @@ window.addEventListener('keydown', (event: any) => {
         if (state.quest.mdRealtime) {
           store.dispatch(renderAndPlay(state.quest, state.quest.mdRealtime.getText(), state.editor.line.number, state.editor.worker));
         }
+        break;
       default:
         // Do nothing
         break;

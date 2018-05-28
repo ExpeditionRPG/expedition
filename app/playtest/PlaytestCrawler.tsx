@@ -1,14 +1,10 @@
 import {StatsCrawler, StatsCrawlEntry} from './StatsCrawler'
 import {PlaytestSettings} from '../reducers/StateTypes'
 import {Context} from 'expedition-qdl/lib/parse/Context'
-import {CrawlEvent, CrawlEntry} from 'expedition-qdl/lib/parse/Crawler'
 import {Node} from 'expedition-qdl/lib/parse/Node'
-import {Logger, LogMessageMap} from 'expedition-qdl/lib/render/Logger'
-import {initQuest} from 'expedition-app/app/actions/Quest'
-import {encounters} from 'expedition-app/app/Encounters'
+import {Logger} from 'expedition-qdl/lib/render/Logger'
+import {ENCOUNTERS} from 'expedition-app/app/Encounters'
 import REGEX from 'expedition-qdl/lib/Regex'
-
-const cheerio: any = require('cheerio') as CheerioAPI;
 
 // Validators for instructions - these look at the preceeding 2 words
 // and expect a <verb> <count> <type> format, where <verb> is something like "gain" or "lose",
@@ -27,7 +23,6 @@ const ADVENTURER_INSTRUCTION = /(\w*\s*player(s?)\s*\w*)/g;
 // about the quest in aggregate.
 export class PlaytestCrawler extends StatsCrawler {
   private logger: Logger;
-  private finalized: LogMessageMap;
   private settings: PlaytestSettings;
 
   constructor(settings?: PlaytestSettings) {
@@ -46,7 +41,7 @@ export class PlaytestCrawler extends StatsCrawler {
     // CrawlerStats entries (e.g. for cycle detection)
 
     // Create gutter errors.
-    for (let l of this.statsByEvent['IMPLICIT_END'].lines) {
+    for (const l of this.statsByEvent['IMPLICIT_END'].lines) {
       this.logger.err('An action on this card leads nowhere (invalid goto id or no **end**)', '430', l);
     }
     return [this.queue.size, this.seen.size];
@@ -109,7 +104,7 @@ export class PlaytestCrawler extends StatsCrawler {
       if (tag !== 'e') {
         return;
       }
-      const encounter = encounters[child.text().toLowerCase()];
+      const encounter = ENCOUNTERS[child.text().toLowerCase()];
       // Check that enemies are standard or are custome + have tier overrides set.
       if (!encounter && !child.attr('tier')) {
         this.logger.err('Detected a non-standard enemy "' + child.text() + '" without explicit tier JSON', '419', line);
@@ -140,17 +135,17 @@ export class PlaytestCrawler extends StatsCrawler {
         return;
       }
       const inst = child.text();
-      for (let m of (inst.match(HEALTH_INSTRUCTION) || [])) {
+      for (const m of (inst.match(HEALTH_INSTRUCTION) || [])) {
         if (!m.match(VALID_HEALTH_INSTRUCTION)) {
           this.logger.warn('Health-affecting instructions should\nfollow the format "Gain/Lose <number> health",\ninstead saw "' + m + '"', '434', line);
         }
       }
-      for (let m of (inst.match(ABILITY_INSTRUCTION) || [])) {
+      for (const m of (inst.match(ABILITY_INSTRUCTION) || [])) {
         if (!m.match(VALID_ABILITY_INSTRUCTION)) {
           this.logger.warn('Ability-affecting instructions should\nfollow the format "Learn/Discard <number> abilit(y/ies)",\ninstead saw "' + m + '"', '434', line);
         }
       }
-      for (let m of (inst.match(LOOT_INSTRUCTION) || [])) {
+      for (const m of (inst.match(LOOT_INSTRUCTION) || [])) {
         if (!m.match(VALID_LOOT_INSTRUCTION)) {
           this.logger.warn('Loot-affecting instructions should\nread as follows: "Draw (one/two/three/four/five/six) tier (I/II/III/IV/V) loot",\ninstead saw "' + m + '"', '434', line);
         }

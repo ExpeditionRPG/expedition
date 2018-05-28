@@ -1,9 +1,6 @@
 import * as React from 'react'
 import FlatButton from 'material-ui/FlatButton'
 import Snackbar from 'material-ui/Snackbar'
-import {Tab} from 'material-ui/Tabs'
-
-import TextView from './base/TextView'
 import DialogsContainer from './DialogsContainer'
 import SplashContainer from './SplashContainer'
 import QuestAppBarContainer from './QuestAppBarContainer'

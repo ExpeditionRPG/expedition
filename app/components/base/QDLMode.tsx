@@ -8,11 +8,11 @@ const MarkdownHighlightRules = (acequire('ace/mode/markdown_highlight_rules') as
 
 
 // designed with https://ace.c9.io/tool/mode_creator.html
-var QDLHighlightRules: any = function() {
+const QDLHighlightRules: any = function() {
   this.$rules = new MarkdownHighlightRules().getRules();
 
-  let listblock = this.$rules['listblock'];
-  for (let r in listblock) {
+  const listblock = this.$rules['listblock'];
+  for (const r in listblock) {
     if (listblock[r].token === 'empty_line') {
       listblock[r].regex = /^\s*$/; // Match empty lines and whitespace too
       break;
@@ -91,7 +91,7 @@ class QDLFoldMode {
   }
 
   getFoldWidget(session: any, foldStyle: any, row: number) : string {
-      var line = session.getLine(row);
+      const line = session.getLine(row);
       return QDLFoldMode.foldingStartMarker.test(line) ? 'start' : '';
   }
 
@@ -122,7 +122,7 @@ class QDLFoldMode {
   }
 }
 
-export var QDLMode: any = function() {
+export const QDLMode: any = function() {
   // set everything up
   this.HighlightRules = QDLHighlightRules;
   this.$outdent = new MatchingBraceOutdent();
@@ -136,7 +136,7 @@ oop.inherits(QDLMode, TextMode);
   this.blockComment = {start: '/*', end: '*/'};
 
   this.getNextLineIndent = function(state: any, line: any, tab: any) {
-    var indent = this.$getIndent(line);
+    const indent = this.$getIndent(line);
 
     // Add some space right after a choice.
     if (line.trim().startsWith('* ')) {

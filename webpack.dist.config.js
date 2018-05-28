@@ -22,7 +22,7 @@ const options = {
     filename: 'dist/[name].js',
   },
   module: {
-    loaders: [
+    rules: [
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
       // TODO this does not export images to static/ for maintenance pages,
       // but attempting to do so then breaks export to dist/
@@ -32,7 +32,14 @@ const options = {
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /\/node_modules\/((?!expedition\-.*).)*$/ },
-      { enforce: 'post', test: /\.tsx$/, loaders: ['babel-loader'], exclude: /\/node_modules\/((?!expedition\-.*).)*$/ },
+      { enforce: 'post', test: /\.tsx$/, exclude: /node_modules\/((?!expedition\-.*).)*$/, use: [{
+        loader: 'babel-loader',
+        options: {
+          presets: [["env", {
+            "targets": {"browsers": [">5%", "last 2 years", "last 3 iOS versions", "chrome >= 39"]}
+          }]],
+        },
+      }]},
     ],
   },
   plugins: [

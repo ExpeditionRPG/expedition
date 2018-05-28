@@ -29,7 +29,7 @@ export interface SetDialogAction extends Redux.Action {
 
 export interface SetDirtyAction extends Redux.Action {
   type: 'SET_DIRTY';
-  is_dirty: boolean;
+  isDirty: boolean;
 }
 
 export interface SetDirtyTimeoutAction extends Redux.Action {

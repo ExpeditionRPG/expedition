@@ -1,6 +1,6 @@
 import Redux from 'redux'
 import {PanelToggleAction, SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction, QuestRenderAction, SetOpInitAction, PlaytestInitAction} from '../actions/ActionTypes'
-import {EditorState, PanelType} from './StateTypes'
+import {EditorState} from './StateTypes'
 
 const defaultState: EditorState = {
   loadingQuest: false,
@@ -23,7 +23,7 @@ const defaultState: EditorState = {
 export function editor(state: EditorState = defaultState, action: Redux.Action): EditorState {
   switch (action.type) {
     case 'SET_DIRTY':
-      return {...state, dirty: (action as SetDirtyAction).is_dirty};
+      return {...state, dirty: (action as SetDirtyAction).isDirty};
     case 'SET_DIRTY_TIMEOUT':
       return {...state, dirtyTimeout: (action as SetDirtyTimeoutAction).timer};
     case 'RECEIVE_QUEST_SAVE':

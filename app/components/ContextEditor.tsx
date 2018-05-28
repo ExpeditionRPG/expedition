@@ -1,11 +1,10 @@
 import * as React from 'react'
 import LeftIcon from 'material-ui/svg-icons/navigation/chevron-left'
-import IconButton from 'material-ui/IconButton'
+import FlatButton from 'material-ui/FlatButton'
 import {OverrideTextArea} from './base/OverrideTextArea'
 import {ScrollBottom} from './base/ScrollBottom'
-import FlatButton from 'material-ui/FlatButton'
 
-var math = require('mathjs') as any;
+const math = require('mathjs') as any;
 
 export interface ContextEditorStateProps {
   scopeHistory: any[];
@@ -19,10 +18,10 @@ export interface ContextEditorDispatchProps {
 interface ContextEditorProps extends ContextEditorStateProps, ContextEditorDispatchProps {}
 
 function codifyScope(scope: any): string {
-  var keys = Object.keys(scope).sort();
-  var result: string = '';
-  for (var i = 0; i < keys.length; i++) {
-    let k = keys[i];
+  const keys = Object.keys(scope).sort();
+  let result: string = '';
+  for (let i = 0; i < keys.length; i++) {
+    const k = keys[i];
     let v = scope[k];
     if (k === '_') { continue; }
     // MathJS functions stringify to verbose JS functions,
@@ -42,11 +41,11 @@ function codifyScope(scope: any): string {
 }
 
 function formatScope(scope: any): any[] {
-  var keys = Object.keys(scope).sort();
-  var KVs: any[] = [];
-  for (var i = 0; i < keys.length; i++) {
-    var k = keys[i];
-    var v = math.format(scope[k]);
+  const keys = Object.keys(scope).sort();
+  const KVs: any[] = [];
+  for (let i = 0; i < keys.length; i++) {
+    const k = keys[i];
+    const v = math.format(scope[k]);
     if (k === '_') { continue; }
     KVs.push(
       <div key={i}>
@@ -59,9 +58,9 @@ function formatScope(scope: any): any[] {
 
 // TODO: Rename to ContextPanel
 const ContextEditor = (props: ContextEditorProps): JSX.Element => {
-  var KVs: any[] = [];
+  const KVs: any[] = [];
   for (let i = 0; i < props.scopeHistory.length; i++) {
-    let scope = formatScope(props.scopeHistory[i]);
+    const scope = formatScope(props.scopeHistory[i]);
     KVs.push(<FlatButton key={i} onTouchTap={(event: any) => props.onInitialContext(codifyScope(props.scopeHistory[i]))}>
       <LeftIcon/>
       <div>

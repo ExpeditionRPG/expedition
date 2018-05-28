@@ -1,14 +1,13 @@
 import {
-  amber100, amber300, amber500, amber600, amber700, amber900,
-  deepOrange100, deepOrange700,
-  lightGreen300, lightGreen700, lightGreen900,
+  deepOrange700,
+  lightGreen700, lightGreen900,
   grey100, grey300, grey700, grey800, grey900,
-  darkBlack, fullBlack
-} from 'material-ui/styles/colors';
-import {fade} from 'material-ui/utils/colorManipulator';
-import spacing from 'material-ui/styles/spacing';
+  darkBlack
+} from 'material-ui/styles/colors'
+import {fade} from 'material-ui/utils/colorManipulator'
+import spacing from 'material-ui/styles/spacing'
 
-let theme: any = {
+const theme: any = {
   spacing: spacing,
   palette: {
     primary1Color: grey900,

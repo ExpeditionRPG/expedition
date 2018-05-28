@@ -13,13 +13,12 @@ export const realtimeUtils = new utils.RealtimeUtils({
 
 // Specifically request id_token response
 realtimeUtils.authorizer.authorize = function(onAuthComplete: any, usePopup: any) {
-  var that = realtimeUtils.authorizer;
-  that.onAuthComplete = onAuthComplete;
+  this.onAuthComplete = onAuthComplete;
   // Try with no popups first.
   window.gapi.auth.authorize({
-    client_id: that.util.clientId,
-    scope: that.util.scopes,
+    client_id: this.util.clientId,
+    scope: this.util.scopes,
     response_type: 'token id_token',
     immediate: !usePopup,
-  }, that.handleAuthResult);
+  }, this.handleAuthResult);
 };

@@ -3,7 +3,7 @@ import {Logger, LogMessageMap} from 'expedition-qdl/lib/render/Logger'
 import {Node} from 'expedition-qdl/lib/parse/Node'
 import {defaultContext} from 'expedition-qdl/lib/parse/Context'
 
-var expect: any = require('expect');
+const expect: any = require('expect');
 const cheerio: any = require('cheerio') as CheerioAPI;
 
 function playtestXMLResult(elem: Cheerio): LogMessageMap {

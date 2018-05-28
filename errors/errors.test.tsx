@@ -1,10 +1,8 @@
 import {QDLParser} from 'expedition-qdl/lib/render/QDLParser'
-import {prettifyMsgs} from 'expedition-qdl/lib/render/Logger'
 import {BlockList} from 'expedition-qdl/lib/render/block/BlockList'
 import {XMLRenderer} from 'expedition-qdl/lib/render/render/XMLRenderer'
 import Errors from './errors'
 const expect: any = require('expect');
-
 
 describe('Errors', () => {
   Object.keys(Errors).forEach((key: string, index: number) => {

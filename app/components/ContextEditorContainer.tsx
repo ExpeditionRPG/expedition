@@ -5,10 +5,10 @@ import ContextEditor, {ContextEditorDispatchProps, ContextEditorStateProps} from
 import {setOpInit} from '../actions/Editor'
 
 const mapStateToProps = (state: AppState, ownProps: any): ContextEditorStateProps => {
-  var scopeHistory: any[] = [];
+  const scopeHistory: any[] = [];
 
-  for (var i = 0; i < state.preview._history.length; i++) {
-    var pastQuest = state.preview._history[i].quest;
+  for (let i = 0; i < state.preview._history.length; i++) {
+    const pastQuest = state.preview._history[i].quest;
     if (pastQuest && pastQuest.node && pastQuest.node.ctx && pastQuest.node.ctx.scope) {
       scopeHistory.push(pastQuest.node.ctx.scope);
     }

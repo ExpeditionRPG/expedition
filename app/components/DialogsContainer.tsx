@@ -1,12 +1,10 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-
-import {DialogIDType, DialogsState, AppState, QuestType} from '../reducers/StateTypes'
+import {DialogIDType, AppState, QuestType} from '../reducers/StateTypes'
 import {setDialog} from '../actions/Dialogs'
 import {publishQuest, questMetadataChange} from '../actions/Quest'
 import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
-
-import {CONTENT_RATINGS, LANGUAGES, GENRES} from '../../node_modules/expedition-app/app/Constants'
+import {CONTENT_RATINGS, LANGUAGES, GENRES} from 'expedition-qdl/lib/schema/Constants'
 
 const Joi = require('joi-browser');
 

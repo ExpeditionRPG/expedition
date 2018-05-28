@@ -9,7 +9,7 @@ const initialAnnotations: AnnotationsState = {
 };
 
 function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: Set<number>): void {
-  for (let m of msgs) {
+  for (const m of msgs) {
     errorLines.add(m.line || 0);
 
     if (m.type === 'internal') {
@@ -29,7 +29,7 @@ function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: 
 function messagesToErrors(msgs: LogMessageMap): AnnotationType[] {
   // Don't render info lines here.
   // TODO: Conditionally render info lines based on user settings
-  let result: AnnotationType[] = [];
+  const result: AnnotationType[] = [];
   const errorLines = new Set<number>();
   toAnnotation(msgs.warning, result, errorLines);
   toAnnotation(msgs.error, result, errorLines);

@@ -1,7 +1,4 @@
 import * as React from 'react'
-
-import {Tab} from 'material-ui/Tabs'
-
 import TextView from './base/TextView'
 import {AnnotationType, TutorialState} from '../reducers/StateTypes'
 import AppContainer from './AppContainer'

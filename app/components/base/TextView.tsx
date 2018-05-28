@@ -1,6 +1,11 @@
 import * as React from 'react'
-import brace from 'brace'
 import AceEditorOrig from 'react-ace'
+import 'brace/ext/searchbox'
+import 'brace/mode/markdown'
+import 'brace/theme/twilight'
+import {QDLMode} from './QDLMode'
+import {AnnotationType} from '../../reducers/StateTypes'
+import Spellcheck from '../../Spellcheck'
 
 // The current version of AceEditor fails to compile when used as a JSX.Element:
 /*
@@ -14,22 +19,14 @@ import AceEditorOrig from 'react-ace'
 */
 // I suspect this can be fixed by upgrading Ace, but that's likely to break other things.
 // See https://github.com/ExpeditionRPG/expedition-quest-creator/issues/466
-var AceEditor = AceEditorOrig as any;
-
-import 'brace/ext/searchbox'
-import 'brace/mode/markdown'
-import 'brace/theme/twilight'
-
-const acequire: any = (require('brace') as any).acequire;
-const {Range} = acequire('ace/range');
-
-import {QDLMode} from './QDLMode'
-import {AnnotationType} from '../../reducers/StateTypes'
-import Spellcheck from '../../Spellcheck'
-const mode = new QDLMode();
 
 declare var gapi: any;
 declare var window:any;
+
+const AceEditor = AceEditorOrig as any;
+const acequire: any = (require('brace') as any).acequire;
+const {Range} = acequire('ace/range');
+const mode = new QDLMode();
 
 type AceAnnotation = {row: number, column: number, text: string, type: 'error'|'info'|'warning'};
 
