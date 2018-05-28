@@ -173,7 +173,8 @@ export function publish(db: Database, mail: MailService, req: express.Request, r
     genre: req.query.genre,
     contentrating: req.query.contentrating,
     expansionhorror: req.query.expansionhorror || false,
-    language: req.query.language,
+    language: req.query.language || 'English',
+    theme: req.query.theme || 'base',
   });
   if (quest instanceof Error) {
     console.error(quest);
