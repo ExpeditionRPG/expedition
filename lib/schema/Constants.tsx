@@ -40,6 +40,7 @@ export const CONTENT_RATINGS: ContentRatingLabelType[] = [
 export type ContentRatingType = {
   summary: string;
   details: {
+    [key: string]: string;
     violence: string;
     language: string;
     drugs: string;
