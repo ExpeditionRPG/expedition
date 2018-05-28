@@ -1,12 +1,12 @@
-var webpackConfig = require('./webpack.config');
-var webpack = require('webpack');
+const webpackConfig = require('./webpack.config');
+const webpack = require('webpack');
 
 webpackConfig.module.rules.unshift({
   test: /isIterable/,
   loader: 'imports?Symbol=>false'
 });
 
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine'],
@@ -42,6 +42,10 @@ module.exports = function (config) {
     autoWatch: true,
     browsers: ['PhantomJS'],
     singleRun: false,
-    concurrency: Infinity
-  })
+    concurrency: Infinity,
+    browserNoActivityTimeout: 60000,
+    browserDisconnectTimeout: 30000,
+    captureTimeout: 60000,
+    browserDisconnectTolerance: 5,
+  });
 }

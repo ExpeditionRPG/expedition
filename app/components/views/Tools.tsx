@@ -29,7 +29,7 @@ const Tools = (props: ToolsProps): JSX.Element => {
           <div className="summary">You tell the story; the app runs the combat.</div>
         </div>
       </Button>
-      {props.settings.experimental && !props.settings.simulator &&
+      {!props.settings.simulator &&
         <Button remoteID="3" onTouchTap={() => props.onMultiplayerSelect(props.user)}>
           <div className="questButtonWithIcon">
             <div className="title">Online Multiplayer - Beta</div>
