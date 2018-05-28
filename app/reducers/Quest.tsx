@@ -1,6 +1,6 @@
 import Redux from 'redux'
 import {QuestState} from './StateTypes'
-import {QuestNodeAction, ViewQuestAction} from '../actions/ActionTypes'
+import {QuestDetailsAction, QuestNodeAction, ViewQuestAction} from '../actions/ActionTypes'
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 import * as seedrandom from 'seedrandom'
 
@@ -36,6 +36,8 @@ export const initialQuestState: QuestState = {
 
 export function quest(state: QuestState = initialQuestState, action: Redux.Action): QuestState {
   switch (action.type) {
+    case 'QUEST_DETAILS':
+      return {...state, details: (action as QuestDetailsAction).details};
     case 'QUEST_EXIT':
       return {...state, ...initialQuestState};
     case 'QUEST_NODE':

@@ -77,6 +77,11 @@ export interface QuestExitAction extends Redux.Action {
   type: 'QUEST_EXIT';
 };
 
+export interface QuestDetailsAction extends Redux.Action {
+  type: 'QUEST_DETAILS';
+  details: QuestDetails;
+}
+
 export interface QuestNodeAction extends Redux.Action {
   type: 'QUEST_NODE';
   node: ParserNode;

@@ -1,6 +1,7 @@
 import Redux from 'redux'
 import {
   remoteify,
+  QuestDetailsAction,
   QuestExitAction,
   QuestNodeAction
 } from './ActionTypes'
@@ -55,8 +56,8 @@ export const event = remoteify(function event(a: EventArgs, dispatch: Redux.Disp
   return {evt: a.evt};
 });
 
-// Used externally by the quest creator, but not by other external App code
-export function loadNode(node: ParserNode) {
+// Used externally by the quest creator
+export function loadNode(node: ParserNode, details?: QuestDetails) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const tag = node.getTag();
     if (tag === 'trigger') {
@@ -67,6 +68,9 @@ export function loadNode(node: ParserNode) {
         throw new Error('invalid trigger ' + triggerName);
       }
     } else {
+      if (details) {
+        dispatch({type: 'QUEST_DETAILS', details} as QuestDetailsAction);
+      }
       dispatch(initCardTemplate(node));
     }
   }
