@@ -35,7 +35,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
         mintimeminutes: Joi.number().min(1).max(Joi.ref('maxtimeminutes')),
         maxtimeminutes: Joi.number().min(Joi.ref('mintimeminutes')).max(999),
         genre: Joi.string().valid(GENRES),
-        contentrating: Joi.string().valid(Object.keys(CONTENT_RATINGS)),
+        contentrating: Joi.string().valid(CONTENT_RATINGS),
         expansionhorror: Joi.boolean(),
         language: Joi.string().valid(LANGUAGES),
       }, { allowUnknown: true, abortEarly: false }, (err: Error, quest: QuestType) => {

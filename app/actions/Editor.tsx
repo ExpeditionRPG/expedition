@@ -123,6 +123,7 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
         err.name = 'RenderError';
         return dispatch(pushError(err))
       }
+
       const newNode = new ParserNode(playNode, ctx);
       dispatch({type: 'REBOOT_APP'});
       // TODO: Make these settings configurable - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/261
@@ -141,7 +142,18 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
         timerSeconds: 10,
         vibration: false,
       }));
-      dispatch(loadNode(newNode));
+      // Unfortunately can't just expand quest b/c it includes stuff beyond what app expects
+      // Fortunately we really only /need/ to send things that affect display of quest (such as theme)
+      dispatch(loadNode(newNode, {
+        id: quest.id || '',
+        title: quest.title || '',
+        summary: quest.summary || '',
+        author: quest.author || '',
+        publishedurl: '',
+        minplayers: quest.minplayers || 1,
+        maxplayers: quest.maxplayers || 6,
+        theme: quest.theme || 'base',
+      }));
       // Results will be shown and added to annotations as they arise.
       dispatch(startPlaytestWorker(oldWorker, questNode, {
         expansionhorror: Boolean(quest.expansionhorror),

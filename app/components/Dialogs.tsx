@@ -270,7 +270,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
         </SelectField>
         <SelectField
           className="halfWidth"
-          floatingLabelText="Theme"
+          floatingLabelText="Visual Theme"
           value={metadata.get('theme')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'theme', val); }}
         >

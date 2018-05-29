@@ -29,7 +29,7 @@
     "brace": "^0.10.0",
     "cheerio": "^0.22.0",
     "copy-webpack-plugin": "^4.0.1",
-    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#d7c69e5200abb76af8c18a2359d6a81d23726ae3",
+    "expedition-app": "git+https://github.com/ExpeditionRPG/expedition-app.git#33c2f7ead38cf79dd11e1a4f06e26a3e9fa33fd4",
     "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#73d563dc75745cdbae5e59370d09e09756b2b6c8",
     "html": "^1.0.0",
     "joi-browser": "^10.0.6",
