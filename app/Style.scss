@@ -34,7 +34,7 @@
   transition: transform 300ms ease-in-out;
 }
 .NEXT-leave {
-  position:absolute;
+  position: absolute;
   transform: translate(0%);
 }
 .NEXT-leave.NEXT-leave-active {
@@ -50,7 +50,7 @@
   transition: transform 300ms ease-in-out;
 }
 .PREV-leave {
-  position:absolute;
+  position: absolute;
   transform: translate(0%);
 }
 .PREV-leave.PREV-leave-active {
@@ -167,7 +167,7 @@ $white_on_red_text_shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
 
 body {
   background-color: $bg_inactive;
-  overflow:hidden;
+  overflow: hidden;
   width: 100%;
   height: 100%;
   margin: 0;
@@ -192,7 +192,7 @@ body {
 }
 
 .remote_footer {
-  position:absolute;
+  position: absolute;
   bottom: 0;
   height: size(remotefooter);
   width: 100%;
@@ -227,7 +227,7 @@ body {
   width: 100%;
   height: 100%;
   background: black;
-  position:fixed;
+  position: fixed;
   z-index: 1000;
 
   > div {
@@ -586,7 +586,6 @@ span.line {
     margin-left: fontsize(flavor)/8;
     margin-right: -(fontsize(flavor)/8);
   }
-
   .starContainer {
     .stars {
       display: flex;
@@ -809,7 +808,7 @@ span.line {
   }
 
   .base_multi_touch_remote_affector {
-    position:absolute;
+    position: absolute;
     width: 100%;
     height: 100%;
   }
@@ -934,7 +933,6 @@ span.line {
   // ===============================================
   // Card-specific styles
   // ===============================================
-
   .splashScreen {
     width: 100%;
     height: 100%;
@@ -1120,7 +1118,6 @@ span.line {
       font-size: fontsize(interactive);
       margin-bottom: size(small);
       top: 0;
-      white-space: nowrap;
       overflow: hidden;
     }
     .summary {
@@ -1183,14 +1180,26 @@ span.line {
         }
       }
     }
-    .indicators {
-      position: absolute;
-      top: size(base);
-      right: size(base);
-      opacity: 0.65;
-      svg {
-        height: fontsize(interactive) !important;
-        width: fontsize(interactive) !important;
+    .searchResultsTitleTable {
+      width: 100%;
+      .leftcell{
+          text-align: left;
+          line-height: $lineheight;
+          font-family: $headerFont;
+          letter-spacing: $headerFontLetterSpacing;
+          font-size: fontsize(interactive);
+          top: 0;
+      }
+      .rightcell{
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-align: right;
+        width: auto;
+        svg {
+          height: fontsize(flavor) !important;
+          width: fontsize(flavor) !important;
+        }
       }
     }
   }
@@ -1209,13 +1218,23 @@ span.line {
       padding-top: size(small);
       font-style: italic;
     }
-
+    .inline_icon {
+      position: relative;
+      top: size(base);
+      padding-bottom: size(base);
+    }
     .indicators {
+      position: relative;
+      top: -(size(base));
       opacity: 0.65;
       padding-top: size(small);
+      padding-bottom: size(icon);
       svg {
         height: fontsize(flavor) !important;
         width: fontsize(flavor) !important;
+      }
+      .inline_icon {
+        margin-top: size(small);
       }
     }
   }
@@ -1224,7 +1243,7 @@ span.line {
     margin-top: size(large);
     .searchDetailsTable {
       width: 100%;
-      table-layout:fixed;
+      table-layout: fixed;
       th {
         text-align: left;
         max-width: 50%;
@@ -1470,4 +1489,3 @@ $fontsizemap: (
   0% { transform: scale(1); }
   100% { transform: scale(0); }
 }
-
