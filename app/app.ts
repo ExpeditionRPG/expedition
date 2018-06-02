@@ -3,36 +3,39 @@ import * as passport from 'passport'
 import * as session from 'express-session'
 import * as express from 'express'
 import * as http from 'http'
+import Sequelize from 'sequelize'
 
-import config from './config'
-import Routes, {setupWebsockets} from './Routes'
+// initalize sequelize with session store
+const SessionStore = require('connect-session-sequelize')(session.Store);
+
+import {Database, AUTH_SESSION_TABLE} from './models/Database'
+import Config from './config'
+import {installRoutes} from './Routes'
+import {setupWebsockets} from './multiplayer/Websockets'
 import logging from './lib/logging'
 
-const app = express();
-const server = http.createServer(app);
-setupWebsockets(server);
+function setupDB() {
+  return new Database(new Sequelize(Config.get('DATABASE_URL'), {
+    dialectOptions: {
+      ssl: true,
+    },
+    logging: (Config.get('SEQUELIZE_LOGGING') === 'true'),
+  }));
+}
 
-// Add the request logger before anything else so that it can
-// accurately log requests.
-app.use(logging.requestLogger);
+function setupSession(db: Database, app: express.Express) {
+  // Setup/sync sequelize session storage
+  const store = new SessionStore({
+    table: AUTH_SESSION_TABLE,
+    db: db.sequelize,
+  });
 
-app.use(bodyParser.text({ type:'*/*', extended: true, limit: '5mb' } as any));
-// TODO: */* overrides all other body parsers. Eventually we'll want text to be the default
-// but allow for urlencoding and json parsing too, which will require extensive QC + app testing.
-// Issue / discussion: https://github.com/ExpeditionRPG/expedition-quest-creator/issues/228
-// app.use(bodyParser.json({ type:'json/*' }));
-// app.use(bodyParser.urlencoded({ extended: true, limit: '5mb' })); // for parsing application/x-www-form-urlencoded
-
-app.disable('etag');
-
-const port = process.env.DOCKER_PORT2 || config.get('PORT');
-
-const setupSession = function(app: any) {
   // Configure the session and session storage.
   const sessionConfig = {
+    store,
     resave: false,
     saveUninitialized: false,
-    secret: config.get('SESSION_SECRET'),
+    secret: Config.get('SESSION_SECRET'),
     signed: true
   };
 
@@ -45,13 +48,16 @@ const setupSession = function(app: any) {
   app.use(passport.session());
 };
 
-const setupRoutes = function(app: any) {
-  app.use(Routes);
+function setupRoutes(db: Database, app: any) {
+  const routes = express.Router();
+  installRoutes(db, routes);
+
+  app.use(routes);
   app.use('/images', express.static('app/assets/images'));
   app.use(express.static('dist'));
 };
 
-const setupLogging = function(app: any) {
+function setupLogging(app: any) {
   // Add the error logger after all middleware and routes so that
   // it can log errors from the whole application. Any custom error
   // handlers should go after this.
@@ -71,19 +77,33 @@ const setupLogging = function(app: any) {
 }
 
 function init() {
-  setupSession(app);
-  setupRoutes(app);
+  const app = express();
+  const server = http.createServer(app);
+
+  // Add the request logger before anything else so that it can
+  // accurately log requests.
+  app.use(logging.requestLogger);
+
+  // TODO: */* overrides all other body parsers. Eventually we'll want text to be the default
+  // but allow for urlencoding and json parsing too, which will require extensive QC + app testing.
+  // Issue / discussion: https://github.com/ExpeditionRPG/expedition-quest-creator/issues/228
+  // app.use(bodyParser.json({ type:'json/*' }));
+  // app.use(bodyParser.urlencoded({ extended: true, limit: '5mb' })); // for parsing application/x-www-form-urlencoded
+  app.use(bodyParser.text({ type:'*/*', extended: true, limit: '5mb' } as any));
+
+  // Prevent caching of resources
+  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
+  app.disable('etag');
+
+  const db = setupDB();
+  setupWebsockets(db, server);
+  setupSession(db, app);
+  setupRoutes(db, app);
   setupLogging(app);
 
+  const port = process.env.DOCKER_PORT2 || Config.get('PORT');
   server.listen(port, () => {
     console.log('App listening on port %s', port);
   });
-
-  if ((module as any).hot) {
-    (module as any).hot.accept('./Routes', () => {
-      console.log('should update');
-    });
-    (Routes as any) = require('./Routes');
-  }
 }
 init();
