@@ -15,6 +15,7 @@ import {initialSearch} from '../../reducers/Search'
 import {loggedOutUser} from '../../reducers/User'
 import {initialSettings} from '../../reducers/Settings'
 import {SearchSettings} from '../../reducers/StateTypes'
+import {QuestDetails} from '../../reducers/QuestTypes'
 import {FEATURED_QUESTS} from '../../Constants'
 import {LanguageType} from 'expedition-qdl/lib/schema/Constants'
 
@@ -65,11 +66,11 @@ describe('Search', () => {
   });
 
   describe('Result', () => {
-    function setup(questTitle: string, overrides?: Partial<SearchResultProps>) {
+    function setup(questTitle: string, overrides?: Partial<SearchResultProps>, questOverrides?: Partial<QuestDetails>) {
       const props: SearchResultProps = {
         index: 0,
         lastPlayed: null,
-        quest: FEATURED_QUESTS.filter((el) => el.title === questTitle)[0],
+        quest: {...FEATURED_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides},
         search: TEST_SEARCH,
         onQuest: jasmine.createSpy('onQuest'),
         ...overrides,
@@ -88,14 +89,34 @@ describe('Search', () => {
       expect(wrapper.html()).toContain('horror');
     });
 
+    it('does not display last played date if quest has not been played', () => {
+      const {props, wrapper} = setup('Learning to Adventure');
+      expect(wrapper.html()).not.toContain('questPlayedIcon');
+    });
+
     it('displayed last played date if quest has been played before', () => {
       const {props, wrapper} = setup('Learning to Adventure', {lastPlayed: new Date()});
       expect(wrapper.html()).toContain('questPlayedIcon');
     });
 
-    it('does not display last played date if quest has not been played', () => {
+    it('does not display awarded icon when quest not awarded', () => {
       const {props, wrapper} = setup('Learning to Adventure');
-      expect(wrapper.html()).not.toContain('questPlayedIcon');
+      expect(wrapper.html()).not.toContain('questAwardedIcon');
+    });
+
+    it('displays awarded icon if quest has received award', () => {
+      const {props, wrapper} = setup('Learning to Adventure', {}, {awarded: 'The Bob Medal For Questing Mediocrity'});
+      expect(wrapper.html()).toContain('questAwardedIcon');
+    });
+
+    it('does not display official icon if quest is not official', () => {
+      const {props, wrapper} = setup('Learning to Adventure', {}, {official: false});
+      expect(wrapper.html()).not.toContain('questOfficialIcon');
+    });
+
+    it('displays official icon if quest is official', () => {
+      const {props, wrapper} = setup('Learning to Adventure');
+      expect(wrapper.html()).toContain('questOfficialIcon');
     });
   });
 

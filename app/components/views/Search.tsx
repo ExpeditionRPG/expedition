@@ -247,7 +247,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
   }
   const classes = ['searchResult'];
   if (props.lastPlayed) {
-    classes.push('played')
+    classes.push('played');
   }
 
   return (
@@ -262,9 +262,9 @@ export function renderResult(props: SearchResultProps): JSX.Element {
                   </Truncate>
               </th>
               <th className="rightcell">
-                {props.lastPlayed && <DoneIcon className="inline_icon" />}
-                {quest.official !== undefined && quest.official && <span className="indicator_spacer"><img className="inline_icon" src="images/compass_small.svg"/></span>}
-                {quest.awarded && <StarsIcon className="inline_icon" />}
+                {props.lastPlayed && <DoneIcon className="inline_icon questPlayedIcon" />}
+                {quest.official && <span className="indicator_spacer"><img className="inline_icon questOfficialIcon" src="images/compass_small.svg"/></span>}
+                {quest.awarded && <StarsIcon className="inline_icon questAwardedIcon" />}
               </th>
             </tr>
           </tbody>
