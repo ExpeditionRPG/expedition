@@ -6,7 +6,7 @@ import {DifficultyType, SettingsType, AppStateWithHistory, MultiplayerState} fro
 import {defaultContext} from '../Template'
 import {ParserNode} from '../TemplateTypes'
 import {CombatState} from './Types'
-import {audioSetIntensity, audioSetPeakIntensity} from '../../../../../actions/Audio'
+import {audioSet} from '../../../../../actions/Audio'
 import {toCard} from '../../../../../actions/Card'
 import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT, MUSIC_INTENSITY_MAX} from '../../../../../Constants'
 import {ENCOUNTERS} from '../../../../../Encounters'
@@ -89,7 +89,7 @@ export const initCombat = remoteify(function initCombat(a: InitCombatArgs, dispa
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
   dispatch(toCard({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', noHistory: true}));
-  dispatch(audioSetIntensity(calculateAudioIntensity(tierSum, tierSum, 0, 0)));
+  dispatch(audioSet({intensity: calculateAudioIntensity(tierSum, tierSum, 0, 0)}));
   return null;
 });
 
@@ -315,7 +315,7 @@ export const handleCombatTimerStart = remoteify(function handleCombatTimerStart(
     a.settings = getState().settings;
   }
   dispatch(toCard({name: 'QUEST_CARD', phase: 'TIMER'}));
-  dispatch(audioSetPeakIntensity(1));
+  dispatch(audioSet({peakIntensity: 1}));
   return {};
 });
 
@@ -352,7 +352,7 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
     a.rp = getState().remotePlay;
   }
 
-  dispatch(audioSetPeakIntensity(0));
+  dispatch(audioSet({peakIntensity: 0}));
 
   a.node = a.node.clone();
   const arng = seedrandom.alea(a.seed);
@@ -424,7 +424,7 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
   dispatch(toCard({name: 'QUEST_CARD', phase: (a.victory) ? 'VICTORY' : 'DEFEAT',  overrideDebounce: true, noHistory: true}));
-  dispatch(audioSetIntensity(0));
+  dispatch(audioSet({intensity: 0}));
   return {victory: a.victory, maxTier: a.maxTier, seed: a.seed};
 });
 
@@ -485,7 +485,7 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
           // Otherwise, treat like a typical event trigger.
           // Make sure we stop combat audio since we're exiting this combat.
           dispatch(loadNode(nextNode));
-          dispatch(audioSetIntensity(0));
+          dispatch(audioSet({intensity: 0}));
           return remoteArgs;
         }
       }
@@ -525,11 +525,11 @@ export const tierSumDelta = remoteify(function tierSumDelta(a: TierSumDeltaArgs,
   }
   combat.tier = Math.max(a.current + a.delta, 0);
   dispatch({type: 'QUEST_NODE', node: a.node});
-  dispatch(audioSetIntensity(calculateAudioIntensity(a.node.ctx.scope._.currentCombatTier(),
+  dispatch(audioSet({intensity: calculateAudioIntensity(a.node.ctx.scope._.currentCombatTier(),
     a.node.ctx.scope._.currentCombatTier(),
     a.node.ctx.scope._.numAdventurers() - a.node.ctx.scope._.aliveAdventurers(),
     a.node.ctx.scope._.currentCombatRound()
-  )));
+  )}));
   return {current: a.current, delta: a.delta};
 });
 
@@ -558,10 +558,10 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
   }
   combat.numAliveAdventurers = newAdventurerCount;
   dispatch({type: 'QUEST_NODE', node: a.node});
-  dispatch(audioSetIntensity(calculateAudioIntensity(a.node.ctx.scope._.currentCombatTier(),
+  dispatch(audioSet({intensity: calculateAudioIntensity(a.node.ctx.scope._.currentCombatTier(),
     a.node.ctx.scope._.currentCombatTier(),
     a.node.ctx.scope._.numAdventurers() - a.node.ctx.scope._.aliveAdventurers(),
     a.node.ctx.scope._.currentCombatRound()
-  )));
+  )}));
   return {current: a.current, delta: a.delta};
 });

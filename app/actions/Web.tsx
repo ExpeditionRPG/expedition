@@ -8,14 +8,14 @@ import {userFeedbackClear} from './UserFeedback'
 import {SettingsType, QuestState, UserState, UserQuestsType, UserFeedbackState} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {getDevicePlatform, getPlatformDump, getAppVersion} from '../Globals'
-import {logEvent} from '../Main'
+import {logEvent} from '../Logging'
 import {getStore} from '../Store'
 import {TemplateContext, ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 import {defaultContext} from '../components/views/quest/cardtemplates/Template'
 import {remoteify, UserQuestsAction} from './ActionTypes'
 import {MIN_FEEDBACK_LENGTH} from '../Constants'
 import {MultiplayerCounters} from '../Multiplayer'
-import {getLogBuffer} from '../Console'
+import {getLogBuffer} from '../Logging'
 
 declare var window:any;
 declare var require:any;

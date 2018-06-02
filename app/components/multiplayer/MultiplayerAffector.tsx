@@ -31,15 +31,15 @@ export default class MultiplayerAffector extends React.Component<MultiplayerAffe
     // to avoid re-rendering when we change it.
     this.ignoreNextMouseDown = false;
     this.mouseDown = false;
-    this.boundHandleMultiplayerEvent = this.handleMultiplayerEvent.bind(this);
+    this.boundHandleMultiplayerEvent = (e: MultiplayerEvent) => this.handleMultiplayerEvent(e);
     getMultiplayerClient().subscribe(this.boundHandleMultiplayerEvent);
     this.listeners = {
-      'touchstart': this.touchEvent.bind(this),
-      'touchmove': this.touchEvent.bind(this),
-      'touchend': this.touchEvent.bind(this),
-      'mousedown': this.mouseDownEvent.bind(this),
-      'mousemove': this.mouseMoveEvent.bind(this),
-      'mouseup': this.mouseUpEvent.bind(this),
+      'touchstart': (e: TouchEvent) => this.touchEvent(e),
+      'touchmove': (e: TouchEvent) => this.touchEvent(e),
+      'touchend': (e: TouchEvent) => this.touchEvent(e),
+      'mousedown': (e: MouseEvent) => this.mouseDownEvent(e),
+      'mousemove': (e: MouseEvent) => this.mouseMoveEvent(e),
+      'mouseup': () => this.mouseUpEvent(),
     };
   }
 

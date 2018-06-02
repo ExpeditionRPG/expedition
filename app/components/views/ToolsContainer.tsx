@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import Tools, {ToolsStateProps, ToolsDispatchProps} from './Tools'
 import {AppState, SettingsType, UserState} from '../../reducers/StateTypes'
 import {initCustomCombat} from '../../components/views/quest/cardtemplates/combat/Actions'
-import {audioSetIntensity} from '../../actions/Audio'
+import {audioSet} from '../../actions/Audio'
 import {search} from '../../actions/Search'
 import {login} from '../../actions/User'
 import {URLS, MUSIC_INTENSITY_MAX} from '../../Constants'
@@ -61,7 +61,7 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
     testMusic(): void {
       const intensity = Number(prompt(`Enter intensity (0-${MUSIC_INTENSITY_MAX})`));
       if (intensity) {
-        dispatch(audioSetIntensity(intensity));
+        dispatch(audioSet({intensity}));
       }
     },
   };

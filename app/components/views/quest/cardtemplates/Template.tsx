@@ -5,7 +5,7 @@ import {initRoleplay} from './roleplay/Actions'
 import RoleplayContainer from './roleplay/RoleplayContainer'
 import {initCombat} from './combat/Actions'
 import CombatContainer from './combat/CombatContainer'
-import {combatScope} from './combat/State'
+import {combatScope} from './combat/Scope'
 import {TemplateContext, ParserNode} from './TemplateTypes'
 import {getStore} from '../../../../Store'
 

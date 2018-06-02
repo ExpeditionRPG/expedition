@@ -178,29 +178,3 @@ export function login(a: {callback: (user: UserState) => any}, loginFunc = login
     }
   };
 }
-
-export function logout() {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    console.log('TODO LOGOUT');
-    dispatch({type: 'USER_LOGOUT'});
-  };
-}
-
-/*
-  logout: function(callback) {
-    if (!this.isLoggedIn()) {
-      return callback();
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', this.URL_BASE + "/auth/logout");
-    var that = this;
-    xhr.onload = function() {
-      that.user = null;
-      that.idToken = null;
-      gapi.auth2.getAuthInstance().signOut().then(callback);
-    };
-    xhr.withCredentials = true;
-    xhr.send();
-  },
-*/
-

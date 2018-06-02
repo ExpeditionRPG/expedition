@@ -1,5 +1,6 @@
 import Redux from 'redux'
 import {
+  AudioState,
   CardState,
   CardName,
   CardPhase,
@@ -40,7 +41,7 @@ export interface AnnouncementSetAction extends Redux.Action {
 
 export interface AudioSetAction extends Redux.Action {
   type: 'AUDIO_SET';
-  changes: any;
+  delta: Partial<AudioState>;
 }
 
 export interface AudioStoreBufferAction extends Redux.Action {

@@ -4,7 +4,7 @@ import Checkout, {CheckoutStateProps, CheckoutDispatchProps} from './Checkout'
 import {toCard, toPrevious} from '../../actions/Card'
 import {checkoutSetState, checkoutSubmit} from '../../actions/Checkout'
 import {openSnackbar} from '../../actions/Snackbar'
-import {logEvent} from '../../Main'
+import {logEvent} from '../../Logging'
 import {AppState, CheckoutPhase, CheckoutState, UserState} from '../../reducers/StateTypes'
 
 declare var window:any;

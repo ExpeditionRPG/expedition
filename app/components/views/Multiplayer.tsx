@@ -9,6 +9,8 @@ import {UserState, MultiplayerPhase, MultiplayerState, MultiplayerSessionMeta} f
 
 const Moment = require('moment');
 
+export const MIN_SECRET_LENGTH = 4;
+
 export interface MultiplayerStateProps {
   phase: MultiplayerPhase;
   user: UserState;
@@ -34,7 +36,7 @@ class MultiplayerConnect extends React.Component<MultiplayerProps, {}> {
 
   handleSecret(e: any) {
     const v: string = e.target.value;
-    if (v.length > 4) {
+    if (v.length > MIN_SECRET_LENGTH) {
       return;
     }
 

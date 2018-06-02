@@ -2,7 +2,7 @@ import * as React from 'react'
 import {loadAudioLocalFile} from '../../actions/Audio'
 import {AudioLoadingType, AudioState, CardName, CardPhase} from '../../reducers/StateTypes'
 import {getWindow} from '../../Globals'
-import {logEvent} from '../../Main'
+import {logEvent} from '../../Logging'
 import {AUDIO_COMMAND_DEBOUNCE_MS, MUSIC_INTENSITY_MAX} from '../../Constants'
 const eachLimit = require('async/eachLimit');
 
@@ -23,6 +23,10 @@ const eachLimit = require('async/eachLimit');
   so it behaves like pause / resume
 */
 
+const INTENSITY_DECREMENT_CHANCE = 0.18;
+const INTENSITY_INCREMENT_CHANCE = 0.2;
+const INSTRUMENT_DECREMENT_CHANCE = 0.2;
+const INSTRUMENT_DECREMENT_DOUBLE_CHANCE = 0.15;
 const MUSIC_FADE_SECONDS = 1.5;
 const MUSIC_FADE_LONG_SECONDS = 3.5; // for fade outs, such as the end of combat
 const MUSIC_DEFINITIONS = {
@@ -296,18 +300,18 @@ export default class Audio extends React.Component<AudioProps, {}> {
     let themeIntensity = Math.ceil((this.intensity - theme.minIntensity) / (theme.maxIntensity - theme.minIntensity) * theme.variants);
     const skippedInstruments = [Math.floor(Math.random() * theme.baselineInstruments.length)];
 
-    if (Math.random() < 0.18 && themeIntensity > 1) {
+    if (Math.random() < INTENSITY_DECREMENT_CHANCE && themeIntensity > 1) {
       // randomly go a bit down in intensity
       themeIntensity--;
-    } else if (Math.random() < 0.2 && themeIntensity < theme.variants) {
+    } else if (Math.random() < INTENSITY_INCREMENT_CHANCE && themeIntensity < theme.variants) {
       // randomly go a bit up in intensity
       themeIntensity++;
     }
 
-    if (Math.random() < 0.2) {
+    if (Math.random() < INSTRUMENT_DECREMENT_CHANCE) {
       // randomly play one less instrument
       skippedInstruments.push(Math.floor(Math.random() * theme.baselineInstruments.length));
-    } else if (Math.random() < 0.15) {
+    } else if (Math.random() < INSTRUMENT_DECREMENT_DOUBLE_CHANCE) {
       // randomly play up to two fewer instruments
       skippedInstruments.push(Math.floor(Math.random() * theme.baselineInstruments.length));
       skippedInstruments.push(Math.floor(Math.random() * theme.baselineInstruments.length));

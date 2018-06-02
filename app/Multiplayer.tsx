@@ -156,7 +156,6 @@ export class MultiplayerClient extends ClientBase {
 
     switch (e.event.type) {
       case 'STATUS':
-        // console.log('Received status from ', e.client, e.instance);
         dispatch({
           type: 'MULTIPLAYER_CLIENT_STATUS',
           client: e.client,

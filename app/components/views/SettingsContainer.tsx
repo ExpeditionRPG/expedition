@@ -1,6 +1,6 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-import {logEvent} from '../../Main'
+import {logEvent} from '../../Logging'
 import {setDialog} from '../../actions/Dialog'
 import {changeSettings} from '../../actions/Settings'
 import {AppState, DifficultyType} from '../../reducers/StateTypes'

@@ -1,7 +1,7 @@
 import {SavedQuestListAction, SavedQuestDeletedAction, SavedQuestStoredAction, SavedQuestSelectedAction, QuestNodeAction} from './ActionTypes'
 import {SavedQuestMeta} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
-import {logEvent} from '../Main'
+import {logEvent} from '../Logging'
 import {getStorageJson, setStorageKeyValue, getCheerio} from '../Globals'
 import {initQuest} from './Quest'
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'

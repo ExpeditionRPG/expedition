@@ -3,7 +3,7 @@ import * as semver from 'semver'
 import {AnnouncementSetAction, FetchAnnouncementResponse} from './ActionTypes'
 import {handleFetchErrors} from './Web'
 import {AUTH_SETTINGS, URLS} from '../Constants'
-import {logEvent} from '../Main'
+import {logEvent} from '../Logging'
 import {getAppVersion, getDevicePlatform} from '../Globals'
 
 export function fetchAnnouncements() {

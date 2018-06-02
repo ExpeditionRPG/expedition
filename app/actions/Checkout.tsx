@@ -5,7 +5,7 @@ import {openSnackbar} from './Snackbar'
 import {login} from './User'
 import {handleFetchErrors} from './Web'
 import {AUTH_SETTINGS} from '../Constants'
-import {logEvent} from '../Main'
+import {logEvent} from '../Logging'
 import {CheckoutState, UserState} from '../reducers/StateTypes'
 
 

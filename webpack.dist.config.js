@@ -6,7 +6,7 @@ const options = {
   entry: [
     'whatwg-fetch',
     'promise-polyfill',
-    './app/Main.tsx',
+    './app/Init.tsx',
     './app/Style.scss',
   ],
   resolve: {

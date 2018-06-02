@@ -10,7 +10,7 @@ import {userFeedbackChange} from '../../../actions/UserFeedback'
 import {submitUserFeedback} from '../../../actions/Web'
 import {AppState, QuestState, SettingsType, UserState, UserFeedbackState} from '../../../reducers/StateTypes'
 import {getDevicePlatform} from '../../../Globals'
-import {logEvent} from '../../../Main'
+import {logEvent} from '../../../Logging'
 
 declare var window:any;
 
