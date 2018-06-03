@@ -7,21 +7,13 @@ import {setupLogging, logEvent} from './Logging'
 setupLogging(console);
 
 import * as React from 'react'
-import * as injectTapEventPlugin from 'react-tap-event-plugin'
-// Needed for latest @types/react module, otherwise typescript complains
-// about onTouchTap attributes
-// https://github.com/zilverline/react-tap-event-plugin/issues/58
-declare module 'react' {
-    interface DOMAttributes<T> {
-        onTouchTap?: React.EventHandler<React.TouchEvent<T>>;
-    }
-}
+import * as Redux from 'redux'
+
 import * as ReactDOM from 'react-dom'
 import * as Raven from 'raven-js'
 import {Provider} from 'react-redux'
 import theme from './Theme'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 
 import {AUTH_SETTINGS, NODE_ENV, UNSUPPORTED_BROWSERS} from './Constants'
 import {fetchAnnouncements, setAnnouncement} from './actions/Announcement'
@@ -35,12 +27,25 @@ import {silentLogin} from './actions/User'
 import {listSavedQuests} from './actions/SavedQuests'
 import {getStore} from './Store'
 import {getAppVersion, getWindow, getDevicePlatform, getDocument, getNavigator, getStorageBoolean, setGA, setupPolyfills} from './Globals'
-import {SettingsType, UserState} from './reducers/StateTypes'
+import {SettingsType} from './reducers/StateTypes'
 
-// Thunk is unused, but necessary to prevent compiler errors
-// until types are fixed for multiplayer.
+// This is necessary to prevent compiler errors until/unless we fix the rest of
+// the repo to reference custom-defined action types (similar to how redux-thunk does things)
 // TODO: Fix redux types
-import thunk from 'redux-thunk' // tslint:disable-line
+export type ThunkAction<R, S = {}, E = {}, A extends Redux.Action<any> = Redux.AnyAction> = (
+  dispatch: Redux.Dispatch<A>,
+  getState: () => S,
+  extraArgument: E
+) => R;
+declare module 'redux' {
+  export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {
+    <R, E>(asyncAction: ThunkAction<R, {}, E, A>): R;
+  }
+
+  // TODO: Remove once https://github.com/zalmoxisus/redux-devtools-extension/issues/492 is fixed.
+  export type GenericStoreEnhancer = any;
+}
+
 
 const ReactGA = require('react-ga');
 
@@ -53,13 +58,6 @@ Raven.config(AUTH_SETTINGS.RAVEN, {
     }
   }).install();
 
-function setupTapEvents() {
-  try {
-    injectTapEventPlugin();
-  } catch (e) {
-    console.log('Already injected tap event plugin');
-  }
-}
 
 function setupDevice() {
   const window = getWindow();
@@ -117,7 +115,9 @@ function setupDevice() {
   }
 
   // silent login here triggers for cordova plugin
-  getStore().dispatch(silentLogin({callback: (user: UserState) => { console.log(user); }}));
+  getStore().dispatch(silentLogin())
+    .then(console.log)
+    .catch(console.error);
 }
 
 function setupHotReload() {
@@ -253,11 +253,12 @@ export function init() {
   document.addEventListener('deviceready', setupDevice, false);
   // For non-app builds
   setTimeout(() => {
-    getStore().dispatch(silentLogin({callback: (user: UserState) => { console.log(user); }}));
+    getStore().dispatch(silentLogin())
+      .then(console.log)
+      .catch(console.error);
   }, 2000);
 
   setupPolyfills();
-  setupTapEvents();
   setupGoogleAnalytics(); // before anything else that might log in the user
   setupHotReload();
   setupSavedQuests();
@@ -284,7 +285,7 @@ function render() {
   }
   ReactDOM.unmountComponentAtNode(base);
   ReactDOM.render(
-    <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
+    <MuiThemeProvider theme={theme}>
       <Provider store={getStore()}>
         <CompositorContainer store={getStore()}/>
       </Provider>

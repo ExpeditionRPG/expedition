@@ -4,6 +4,7 @@
         "sourceMap": true,
         "noImplicitAny": true,
         "module": "commonjs",
+        "moduleResolution": "node",
         "target": "es6",
         "jsx": "react",
         "allowSyntheticDefaultImports": true,
@@ -16,5 +17,15 @@
         "platforms",
         "plugins",
         "www"
-    ]
+    ],
+    "awesomeTypescriptLoaderOptions": {
+        "useBabel": true,
+        "useCache": true,
+        "babelOptions": {
+            "babelrc": false,
+            "presets": [["env", {
+                "targets": {"browsers": [">5%", "last 2 years", "last 3 iOS versions", "chrome >= 39"]}
+            }]],
+        }
+    }
 }

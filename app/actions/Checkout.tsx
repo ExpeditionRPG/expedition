@@ -2,7 +2,6 @@ import Redux from 'redux'
 import {CheckoutSetStateAction} from './ActionTypes'
 import {toCard} from './Card'
 import {openSnackbar} from './Snackbar'
-import {login} from './User'
 import {handleFetchErrors} from './Web'
 import {AUTH_SETTINGS} from '../Constants'
 import {logEvent} from '../Logging'
@@ -15,18 +14,11 @@ export function checkoutSetState(delta: Partial<CheckoutState>) {
   };
 }
 
-export function toCheckout(user: UserState, amount: number) {
+export function toCheckout(amount: number) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    if (!user || !user.loggedIn) {
-      dispatch(login({callback: (user: UserState) => {
-        logEvent('to_checkout', {value: amount});
-        dispatch(toCard({name: 'CHECKOUT', phase: 'ENTRY'}));
-      }}));
-    } else {
-      logEvent('to_checkout', {value: amount});
-      dispatch(toCard({name: 'CHECKOUT', phase: 'ENTRY'}));
-    }
-  }
+    logEvent('to_checkout', {value: amount});
+    dispatch(toCard({name: 'CHECKOUT', phase: 'ENTRY'}));
+  };
 }
 
 export function checkoutSubmit(stripeToken: string, checkout: CheckoutState, user: UserState) {

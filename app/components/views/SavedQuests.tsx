@@ -35,9 +35,9 @@ function renderDetails(props: SavedQuestsProps): JSX.Element {
         <div className="author">by {quest.author}</div>
         <div className="summary">Saved {Moment(selected.ts).fromNow()}</div>
       </div>
-      <Button className="bigbutton" onTouchTap={(e)=>props.onPlay(selected.details.id, selected.ts)} remoteID="play">Resume</Button>
-      <Button onTouchTap={(e)=>props.onDelete(selected)} remoteID="play">Delete save</Button>
-      <Button onTouchTap={(e)=>props.onReturn()} remoteID="back">Back</Button>
+      <Button className="bigbutton" onClick={(e)=>props.onPlay(selected.details.id, selected.ts)} remoteID="play">Resume</Button>
+      <Button onClick={(e)=>props.onDelete(selected)} remoteID="play">Delete save</Button>
+      <Button onClick={(e)=>props.onReturn()} remoteID="back">Back</Button>
       <div className="searchDetailsExtended">
         <h3>Details</h3>
         <div><strong>Expansions required: </strong>{expansions}</div>
@@ -66,7 +66,7 @@ function renderList(props: SavedQuestsProps): JSX.Element {
   const items: JSX.Element[] = props.saved
     .map((s: SavedQuestMeta, index: number): JSX.Element => {
       return (
-        <Button onTouchTap={() => props.onSelect(s)} key={index} remoteID={'quest'+index.toString()}>
+        <Button onClick={() => props.onSelect(s)} key={index} remoteID={'quest'+index.toString()}>
           <div className="questButton">
             <div className="title">{s.details.title}</div>
             <div className="summary">{Moment(s.ts).fromNow()}</div>

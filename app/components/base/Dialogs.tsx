@@ -1,7 +1,10 @@
 import * as React from 'react'
-import Dialog from 'material-ui/Dialog'
-import FlatButton from 'material-ui/FlatButton'
-import TextField from 'material-ui/TextField'
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogActions from '@material-ui/core/DialogActions'
+import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
 import Checkbox from './Checkbox'
 import Picker from './Picker'
 import {MultiplayerCounters} from '../../Multiplayer'
@@ -19,16 +22,15 @@ interface ExitQuestDialogProps extends React.Props<any> {
 export class ExitQuestDialog extends React.Component<ExitQuestDialogProps, {}> {
   render(): JSX.Element {
     return (
-      <Dialog
-        title="Exit quest?"
-        modal={true}
-        contentClassName="dialog"
-        open={Boolean(this.props.open)}
-        actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()}>Cancel</FlatButton>,
-          <FlatButton className="primary" onTouchTap={() => this.props.onExitQuest()}>Exit</FlatButton>
-        ]}
-      >
-        <p>Tapping exit will lose your place in the quest and return you to the home screen.</p>
+      <Dialog open={Boolean(this.props.open)}>
+        <DialogTitle>Exit quest?</DialogTitle>
+        <DialogContent className="dialog">
+          <p>Tapping exit will lose your place in the quest and return you to the home screen.</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>
+          <Button className="primary" onClick={() => this.props.onExitQuest()}>Exit</Button>
+        </DialogActions>
       </Dialog>
     );
   }
@@ -43,16 +45,15 @@ interface ExitMultiplayerDialogProps extends React.Props<any> {
 export class ExitMultiplayerDialog extends React.Component<ExitMultiplayerDialogProps, {}> {
   render(): JSX.Element {
     return (
-      <Dialog
-        title="Exit Multiplayer?"
-        modal={true}
-        contentClassName="dialog"
-        open={Boolean(this.props.open)}
-        actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()}>Cancel</FlatButton>,
-          <FlatButton className="primary" onTouchTap={() => this.props.onExitMultiplayer()}>Exit</FlatButton>
-        ]}
-      >
-        <p>Tapping exit will disconnect you from your peers and return you to the home screen.</p>
+      <Dialog open={Boolean(this.props.open)}>
+        <DialogTitle>Exit Multiplayer?</DialogTitle>
+        <DialogContent className="dialog">
+          <p>Tapping exit will disconnect you from your peers and return you to the home screen.</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>,
+          <Button className="primary" onClick={() => this.props.onExitMultiplayer()}>Exit</Button>
+        </DialogActions>
       </Dialog>
     );
   }
@@ -76,23 +77,22 @@ export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDi
         })
       }</ul>;
 
+      // TODO: autoScrollBodyContent={true} ???
     return (
-      <Dialog
-        title="Multiplayer Stats"
-        modal={true}
-        contentClassName="dialog"
-        open={Boolean(this.props.open)}
-        autoScrollBodyContent={true}
-        actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()}>Cancel</FlatButton>,
-          <FlatButton className="primary" onTouchTap={() => this.props.onSendReport(this.props.user, this.props.questDetails, this.props.stats)}>Send Report</FlatButton>
-        ]}
-      >
-        <p>Here's some multiplayer debugging information:</p>
-        {stats}
-        <p>
-          If you're experiencing problems with multiplayer, please
-          tap "Send Report" below to send a log to the Expedition team. Thanks!
-        </p>
+      <Dialog open={Boolean(this.props.open)}>
+        <DialogTitle>Multiplayer Stats</DialogTitle>
+        <DialogContent className="dialog">
+          <p>Here's some multiplayer debugging information:</p>
+          {stats}
+          <p>
+            If you're experiencing problems with multiplayer, please
+            tap "Send Report" below to send a log to the Expedition team. Thanks!
+          </p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>,
+          <Button className="primary" onClick={() => this.props.onSendReport(this.props.user, this.props.questDetails, this.props.stats)}>Send Report</Button>
+        </DialogActions>
       </Dialog>
     );
   }
@@ -106,19 +106,16 @@ interface ExpansionSelectDialogProps extends React.Props<any> {
 export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialogProps, {}> {
   render(): JSX.Element {
     return (
-      <Dialog
-        title="Choose Game"
-        modal={true}
-        contentClassName="dialog"
-        open={Boolean(this.props.open)}
-        actions={[]}
-      >
-        <FlatButton className="primary large" onTouchTap={() => this.props.onExpansionSelect({horror: false})}>Expedition</FlatButton>
-        <br/>
-        <br/>
-        <FlatButton className="primary large" onTouchTap={() => this.props.onExpansionSelect({horror: true})}><span className="line">Expedition</span> <span className="line">+ The Horror</span></FlatButton>
-        <p style={{textAlign: 'center', marginTop: '1.5em'}}>This will only appear once, but you can always change it in Settings.</p>
-        <p style={{textAlign: 'center', marginTop: '1.5em'}}>Don't have the cards? <strong><a href="#" onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>Get a copy</a></strong>.</p>
+      <Dialog open={Boolean(this.props.open)}>
+        <DialogTitle>Choose Game</DialogTitle>
+        <DialogContent className="dialog">
+          <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: false})}>Expedition</Button>
+          <br/>
+          <br/>
+          <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: true})}><span className="line">Expedition</span> <span className="line">+ The Horror</span></Button>
+          <p style={{textAlign: 'center', marginTop: '1.5em'}}>This will only appear once, but you can always change it in Settings.</p>
+          <p style={{textAlign: 'center', marginTop: '1.5em'}}>Don't have the cards? <strong><a href="#" onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>Get a copy</a></strong>.</p>
+        </DialogContent>
       </Dialog>
     );
   }
@@ -136,29 +133,28 @@ interface FeedbackDialogProps extends React.Props<any> {
 }
 
 export class FeedbackDialog extends React.Component<FeedbackDialogProps, {}> {
+  // TODO TextField underlineShow={false}
   render(): JSX.Element {
     return (
-      <Dialog
-        title="Send Feedback"
-        modal={true}
-        contentClassName="dialog"
-        open={Boolean(this.props.open)}
-        actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()}>Cancel</FlatButton>,
-          <FlatButton className="primary" onTouchTap={() => this.props.onFeedbackSubmit(this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>Submit</FlatButton>
-        ]}
-      >
-        <p>Thank you for taking the time to give us feedback! If you've encountered a bug, please include the steps that you can take to reproduce the issue.</p>
-        <TextField
-          className="textfield"
-          fullWidth={true}
-          hintText="Your feedback here"
-          multiLine={true}
-          onChange={(e: any) => this.props.onFeedbackChange(e.target.value)}
-          rows={3}
-          rowsMax={6}
-          underlineShow={false}
-          value={this.props.userFeedback.text}
-        />
+      <Dialog open={Boolean(this.props.open)}>
+        <DialogTitle>Send Feedback</DialogTitle>
+        <DialogContent className="dialog">
+          <p>Thank you for taking the time to give us feedback! If you've encountered a bug, please include the steps that you can take to reproduce the issue.</p>
+          <TextField
+            className="textfield"
+            fullWidth={true}
+            helperText="Your feedback here"
+            multiline={true}
+            onChange={(e: any) => this.props.onFeedbackChange(e.target.value)}
+            rows={3}
+            rowsMax={6}
+            value={this.props.userFeedback.text}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>
+          <Button className="primary" onClick={() => this.props.onFeedbackSubmit(this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>Submit</Button>
+        </DialogActions>
       </Dialog>
     );
   }
@@ -178,28 +174,27 @@ interface ReportErrorDialogProps extends React.Props<any> {
 
 export class ReportErrorDialog extends React.Component<ReportErrorDialogProps, {}> {
   render(): JSX.Element {
+    // TODO TextField underlineShow={false}
     return (
-      <Dialog
-        title="Report Error"
-        modal={true}
-        contentClassName="dialog"
-        open={Boolean(this.props.open)}
-        actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()}>Cancel</FlatButton>,
-          <FlatButton className="primary" onTouchTap={() => this.props.onReportErrorSubmit(this.props.error, this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>Submit</FlatButton>
-        ]}
-      >
-        <p>Thank you for taking the time to report an error! What were you doing when the error occurred?</p>
-        <TextField
-          className="textfield"
-          fullWidth={true}
-          hintText="What you were doing at the time of the error"
-          multiLine={true}
-          onChange={(e: any) => this.props.onFeedbackChange(e.target.value)}
-          rows={3}
-          rowsMax={6}
-          underlineShow={false}
-          value={this.props.userFeedback.text}
-        />
+      <Dialog open={Boolean(this.props.open)}>
+        <DialogTitle>Report Error</DialogTitle>
+        <DialogContent className="dialog">
+          <p>Thank you for taking the time to report an error! What were you doing when the error occurred?</p>
+          <TextField
+            className="textfield"
+            fullWidth={true}
+            helperText="What you were doing at the time of the error"
+            multiline={true}
+            onChange={(e: any) => this.props.onFeedbackChange(e.target.value)}
+            rows={3}
+            rowsMax={6}
+            value={this.props.userFeedback.text}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>
+          <Button className="primary" onClick={() => this.props.onReportErrorSubmit(this.props.error, this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>Submit</Button>
+        </DialogActions>
       </Dialog>
     );
   }
@@ -218,34 +213,33 @@ interface ReportQuestDialogProps extends React.Props<any> {
 
 export class ReportQuestDialog extends React.Component<ReportQuestDialogProps, {}> {
   render(): JSX.Element {
+    // TODO TextField underlineShow={false}
     return (
-      <Dialog
-        title="Report Quest"
-        modal={true}
-        contentClassName="dialog"
-        open={Boolean(this.props.open)}
-        actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()}>Cancel</FlatButton>,
-          <FlatButton className="primary" onTouchTap={() => this.props.onReportQuestSubmit(this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>Submit</FlatButton>
-        ]}
-      >
-        <p>You're reporting an issue with <i>{this.props.quest.details.title}</i>.</p>
-        <p>You should report a quest (instead of reviewing it at the end of the quest) if it is:</p>
-        <ul>
-          <li>Offensive or inappropriate for the age level it claimed to be.</li>
-          <li>Broken or buggy.</li>
-          <li>Incomplete or missing sections.</li>
-        </ul>
-        <TextField
-          className="textfield"
-          fullWidth={true}
-          hintText="Describe the issue"
-          multiLine={true}
-          onChange={(e: any) => this.props.onFeedbackChange(e.target.value)}
-          rows={3}
-          rowsMax={6}
-          underlineShow={false}
-          value={this.props.userFeedback.text}
-        />
+      <Dialog open={Boolean(this.props.open)}>
+        <DialogTitle>Report Quest</DialogTitle>
+        <DialogContent className="dialog">
+          <p>You're reporting an issue with <i>{this.props.quest.details.title}</i>.</p>
+          <p>You should report a quest (instead of reviewing it at the end of the quest) if it is:</p>
+          <ul>
+            <li>Offensive or inappropriate for the age level it claimed to be.</li>
+            <li>Broken or buggy.</li>
+            <li>Incomplete or missing sections.</li>
+          </ul>
+          <TextField
+            className="textfield"
+            fullWidth={true}
+            helperText="Describe the issue"
+            multiline={true}
+            onChange={(e: any) => this.props.onFeedbackChange(e.target.value)}
+            rows={3}
+            rowsMax={6}
+            value={this.props.userFeedback.text}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>
+          <Button className="primary" onClick={() => this.props.onReportQuestSubmit(this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>Submit</Button>
+        </DialogActions>
       </Dialog>
     );
   }
@@ -270,27 +264,32 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
         this.props.settings.numPlayers <= quest.maxplayers);
     }
     const horrorError = quest.expansionhorror && !this.props.settings.contentSets.horror;
+
+    const contents = (horrorError)
+      ? (<div className="error">
+          The Horror expansion is required to play this quest.
+          If you have it, make sure to enable it in settings.
+          Otherwise, you can pick up a copy on
+          <a href="#" onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>the Expedition Store</a>.
+        </div>)
+      : (<div>
+          <Picker label="Adventurers" value={this.props.settings.numPlayers} onDelta={(i: number)=>this.props.onPlayerDelta(this.props.settings.numPlayers, i)}>
+            {!playersAllowed && `Quest requires ${quest.minplayers} - ${quest.maxplayers} players.`}
+          </Picker>
+          <Checkbox label="Multitouch" value={this.props.settings.multitouch} onChange={this.props.onMultitouchChange}>
+            {(this.props.settings.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
+          </Checkbox>
+        </div>);
     return (
-      <Dialog
-        title={horrorError ? 'Expansion Required' : 'How many players?'}
-        modal={true}
-        contentClassName="dialog"
-        open={Boolean(this.props.open)}
-        actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()}>Cancel</FlatButton>,
-          (!horrorError ? <FlatButton disabled={!playersAllowed} className="primary" onTouchTap={() => this.props.playQuest(this.props.quest)}>Play</FlatButton> : <span></span>),
-        ]}
-      >
-        {horrorError && <div className="error">The Horror expansion is required to play this quest. If you have it, make sure to enable it in settings. Otherwise, you can pick up a copy on <a href="#" onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>the Expedition Store</a>.</div>}
-        {!horrorError &&
-          <div>
-            <Picker label="Adventurers" value={this.props.settings.numPlayers} onDelta={(i: number)=>this.props.onPlayerDelta(this.props.settings.numPlayers, i)}>
-              {!playersAllowed && `Quest requires ${quest.minplayers} - ${quest.maxplayers} players.`}
-            </Picker>
-            <Checkbox label="Multitouch" value={this.props.settings.multitouch} onChange={this.props.onMultitouchChange}>
-              {(this.props.settings.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
-            </Checkbox>
-          </div>
-        }
+      <Dialog open={Boolean(this.props.open)}>
+        <DialogTitle>{horrorError ? 'Expansion Required' : 'How many players?'}</DialogTitle>
+        <DialogContent className="dialog">
+          {contents}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>
+          {!horrorError && <Button disabled={!playersAllowed} className="primary" onClick={() => this.props.playQuest(this.props.quest)}>Play</Button>}
+        </DialogActions>
       </Dialog>
     );
   }
@@ -307,14 +306,14 @@ export class DeleteSavedQuestDialog extends React.Component<DeleteSavedQuestDial
   render(): JSX.Element {
     return (
       <Dialog
-        title="Delete saved quest?"
-        modal={true}
-        contentClassName="dialog"
         open={Boolean(this.props.open)}
-        actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()}>Cancel</FlatButton>,
-          <FlatButton className="primary" onTouchTap={() => this.props.onDeleteSavedQuest(this.props.savedQuest)}>Delete</FlatButton>
-        ]}
       >
+        <DialogTitle>Delete saved quest?</DialogTitle>
+        <DialogContent className="dialog"></DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>
+          <Button className="primary" onClick={() => this.props.onDeleteSavedQuest(this.props.savedQuest)}>Delete</Button>
+        </DialogActions>
       </Dialog>
     );
   }

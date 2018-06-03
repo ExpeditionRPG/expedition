@@ -5,7 +5,7 @@ import {AppState, SettingsType, UserState} from '../../reducers/StateTypes'
 import {initCustomCombat} from '../../components/views/quest/cardtemplates/combat/Actions'
 import {audioSet} from '../../actions/Audio'
 import {search} from '../../actions/Search'
-import {login} from '../../actions/User'
+import {ensureLogin} from '../../actions/User'
 import {URLS, MUSIC_INTENSITY_MAX} from '../../Constants'
 import {openWindow} from '../../Globals'
 import {loadMultiplayer} from '../../actions/Multiplayer'
@@ -27,36 +27,28 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
       openWindow(URLS.QUEST_CREATOR);
     },
     onPrivateQuestsSelect(settings: SettingsType, user: UserState): void {
-      const privateSearch = (u: UserState) => {
-        dispatch(search({
-          search: {
-            owner: u.id,
-            partition: 'expedition-private',
-            order: '-published',
-          },
-          settings: {
-            ...settings,
-            contentSets: {
-              horror: true,
+      dispatch(ensureLogin())
+        .then((u: UserState) => {
+          return dispatch(search({
+            search: {
+              owner: u.id,
+              partition: 'expedition-private',
+              order: '-published',
             },
-          }
-        }));
-      };
-
-      if (!user || user.id === '') {
-        dispatch(login({callback: privateSearch}));
-      } else {
-        privateSearch(user);
-      }
+            settings: {
+              ...settings,
+              contentSets: {
+                horror: true,
+              },
+            }
+          }));
+        });
     },
     onMultiplayerSelect(user: UserState): void {
-      if (user && user.loggedIn) {
-        dispatch(loadMultiplayer(user));
-      } else {
-        dispatch(login({callback: (user: UserState)=> {
+      dispatch(ensureLogin())
+        .then((u: UserState) => {
           dispatch(loadMultiplayer(user));
-        }}));
-      }
+        })
     },
     testMusic(): void {
       const intensity = Number(prompt(`Enter intensity (0-${MUSIC_INTENSITY_MAX})`));

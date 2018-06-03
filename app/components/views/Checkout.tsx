@@ -1,5 +1,5 @@
 import * as React from 'react'
-import LockIcon from 'material-ui/svg-icons/action/lock'
+import LockIcon from '@material-ui/icons/Lock'
 
 import Button from '../base/Button'
 import Card from '../base/Card'
@@ -90,7 +90,7 @@ export default class Checkout extends React.Component<CheckoutProps, {}> {
                   <div id="stripeCard"></div>
                   <div id="stripeErrors" role="alert">{this.state.paymentError}</div>
                 </div>
-                {!this.props.checkout.processing && <Button id="stripeSubmit" disabled={!this.state.paymentValid} onTouchTap={(e: TouchEvent) => this.handleSubmit(e)}>
+                {!this.props.checkout.processing && <Button id="stripeSubmit" disabled={!this.state.paymentValid} onClick={(e: TouchEvent) => this.handleSubmit(e)}>
                   {(this.state.paymentValid) ? 'Pay' : 'Enter payment info'}
                 </Button>}
                 {this.props.checkout.processing && <div className="centralMessage">Processing payment, one moment...</div>}
@@ -105,7 +105,7 @@ export default class Checkout extends React.Component<CheckoutProps, {}> {
               <p>Payment for ${this.props.checkout.amount} complete.</p>
               <p>Thank you for your support!</p>
             </div>
-            <Button onTouchTap={() => this.props.onHome()}>Return Home</Button>
+            <Button onClick={() => this.props.onHome()}>Return Home</Button>
           </Card>
         );
       default:

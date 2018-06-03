@@ -1,5 +1,5 @@
 import * as React from 'react'
-import FlatButton from 'material-ui/FlatButton'
+import Button from '@material-ui/core/Button'
 import MultiplayerRipple from '../multiplayer/MultiplayerRipple'
 import {openWindow} from '../../Globals'
 
@@ -8,11 +8,11 @@ interface ButtonProps extends React.Props<any> {
   disabled?: boolean;
   id?: string;
   remoteID?: string;
-  onTouchTap?: (e:any) => any;
+  onClick?: (e:any) => any;
 }
 
-export default class Button extends React.Component<ButtonProps, {}> {
-  _onTouchTap(e:any) {
+export default class ExpeditionButton extends React.Component<ButtonProps, {}> {
+  _onClick(e:any) {
     let target = e.target;
     while (target && target.nodeName.toLowerCase() !== 'expedition-button') {
       target = target.parentNode;
@@ -23,7 +23,7 @@ export default class Button extends React.Component<ButtonProps, {}> {
       e.stopPropagation();
     }
     else {
-      this.props.onTouchTap && this.props.onTouchTap(e);
+      this.props.onClick && this.props.onClick(e);
     }
 
     e.preventDefault();
@@ -36,18 +36,18 @@ export default class Button extends React.Component<ButtonProps, {}> {
     if (!this.props.remoteID) {
       return (
         <div id={this.props.id} className={className}>
-        <FlatButton disabled={this.props.disabled} onTouchTap={(e:any) => this._onTouchTap(e)}>
+        <Button disabled={this.props.disabled} onClick={(e:any) => this._onClick(e)}>
           <div>{this.props.children}</div>
-        </FlatButton>
+        </Button>
         </div>
       )
     }
 
     return (
       <MultiplayerRipple remoteID={this.props.remoteID} className={className} id={this.props.id}>
-        <FlatButton disabled={this.props.disabled} onTouchTap={(e:any) => this._onTouchTap(e)}>
+        <Button disabled={this.props.disabled} onClick={(e:any) => this._onClick(e)}>
           <div>{this.props.children}</div>
-        </FlatButton>
+        </Button>
       </MultiplayerRipple>
     );
   }

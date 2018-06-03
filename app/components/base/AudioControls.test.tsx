@@ -1,8 +1,8 @@
 import * as React from 'react'
-import {shallow} from 'enzyme'
 import AudioControls, {AudioControlsProps} from './AudioControls'
-
-require('react-tap-event-plugin')();
+import {configure, shallow} from 'enzyme'
+import * as Adapter from 'enzyme-adapter-react-16'
+configure({ adapter: new Adapter() });
 
 function setup(overrides: Partial<AudioControlsProps>) {
   const props: AudioControlsProps = {
@@ -18,14 +18,14 @@ function setup(overrides: Partial<AudioControlsProps>) {
 describe('AudioControls', () => {
   it('Disabled audio if enabled', () => {
     const {props, enzymeWrapper} = setup({audioEnabled: true});
-    enzymeWrapper.find('#audioToggle').simulate('touchTap');
+    enzymeWrapper.find('#audioToggle').simulate('click');
     expect(props.onAudioToggle).toHaveBeenCalledTimes(1);
     expect(props.onAudioToggle).toHaveBeenCalledWith(false);
   });
 
   it('Enables audio if disabled', () => {
     const {props, enzymeWrapper} = setup({audioEnabled: false});
-    enzymeWrapper.find('#audioToggle').simulate('touchTap');
+    enzymeWrapper.find('#audioToggle').simulate('click');
     expect(props.onAudioToggle).toHaveBeenCalledTimes(1);
     expect(props.onAudioToggle).toHaveBeenCalledWith(true);
   });

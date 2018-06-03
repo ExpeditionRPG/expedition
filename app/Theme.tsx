@@ -1,38 +1,41 @@
-import {
-  deepOrange700,
-  lightGreen300, lightGreen700, lightGreen900,
-  grey100, grey300, grey700,
-  darkBlack
-} from 'material-ui/styles/colors'
-import {fade} from 'material-ui/utils/colorManipulator'
-import spacing from 'material-ui/styles/spacing'
+import {createMuiTheme} from '@material-ui/core/styles'
+import deepOrange from '@material-ui/core/colors/deepOrange'
+import lightGreen from '@material-ui/core/colors/lightGreen'
+import grey from '@material-ui/core/colors/grey'
+import spacing from '@material-ui/core/styles/spacing'
 
-const theme: any = {
+const darkBlack = '0x000000';
+
+export default createMuiTheme({
   spacing: spacing,
-  fontFamily: 'MinionPro, serif',
+  typography: {
+    fontFamily: 'MinionPro, serif',
+  },
   palette: {
-    primary1Color: grey100,
-    primary2Color: grey300,
-    primary3Color: grey700,
-    accent1Color: lightGreen700,
-    accent2Color: lightGreen900,
-    accent3Color: lightGreen300,
+    primary1Color: grey[100],
+    primary2Color: grey[300],
+    primary3Color: grey[700],
+    accent1Color: lightGreen[700],
+    accent2Color: lightGreen[900],
+    accent3Color: lightGreen[300],
     textColor: darkBlack,
     alternateTextColor: darkBlack,
     secondaryTextColor: darkBlack,
-    canvasColor: grey100,
-    borderColor: grey300,
-    disabledColor: fade(grey100, 0.3),
-    pickerHeaderColor: deepOrange700,
-    clockCircleColor: fade(darkBlack, 0.07),
+    canvasColor: grey[100],
+    borderColor: grey[300],
+   // disabledColor: fade(grey100, 0.3),
+    pickerHeaderColor: deepOrange[700],
+   // clockCircleColor: fade(darkBlack, 0.07),
     shadowColor: darkBlack,
   },
+  /*
   checkbox: {
     checkedColor: darkBlack,
   },
   raisedButton: {
-    primaryColor: grey100,
+    primaryColor: grey[100],
   },
+  */
   vw: {
     huge: '12vw',
     large: '6vw',
@@ -90,6 +93,4 @@ const theme: any = {
     backgroundColorDarkActive: 'rgba(30, 30, 30, 1.0)',
     backgroundColorSurgePrimary: '#CC0000',
   }
-};
-
-export default theme;
+} as any); // TODO: Remove this any type

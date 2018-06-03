@@ -34,7 +34,6 @@ function dummyDOM(): Document {
 
 describe('React', () => {
   describe('init', () => {
-    it('sets up tap events');  // $10
     it('loads google APIs');  // $10
     it('sets up event logging'); // $10
     it('sets up hot reload'); // $12

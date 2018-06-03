@@ -8,7 +8,12 @@ export function newMockStoreWithInitializedState() {
   return newMockStore(combinedReducers({} as any, {type: '@@INIT'}));
 }
 
-export function newMockStore(state: object) {
+interface MockStore extends Redux.Store {
+  clearActions: ()=>void;
+  getActions: any;
+}
+
+export function newMockStore(state: object): MockStore {
   const client = new MultiplayerClient();
   // Since this is a testing function, we play it a bit loose with the state type.
   const store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(state as any as AppStateWithHistory);

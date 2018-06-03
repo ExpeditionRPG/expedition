@@ -1,10 +1,12 @@
 import * as React from 'react'
 import Truncate from 'react-truncate'
-import MenuItem from 'material-ui/MenuItem'
-import SelectField from 'material-ui/SelectField'
-import TextField from 'material-ui/TextField'
-import DoneIcon from 'material-ui/svg-icons/action/done'
-import StarsIcon from 'material-ui/svg-icons/action/stars'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormControl from '@material-ui/core/FormControl'
+import InputLabel from '@material-ui/core/InputLabel'
+import Select from '@material-ui/core/Select'
+import TextField from '@material-ui/core/TextField'
+import DoneIcon from '@material-ui/icons/Done'
+import StarsIcon from '@material-ui/icons/Stars'
 import Button from '../base/Button'
 import Card from '../base/Card'
 import Checkbox from '../base/Checkbox'
@@ -53,124 +55,135 @@ export class SearchSettingsCard extends React.Component<SearchSettingsCardProps,
     this.state = this.props.search;
   }
 
-  onChange(attrib: string, value: string) {
+  onChange(attrib: string, value: any) {
     this.setState({[attrib]: value});
   }
 
-// TODO once Material UI adds support for theming SelectFields (https://github.com/callemall/material-ui/issues/7044)
-// (aka Material UI 1.0) then remove the clutter here / move to Theme.tsx
+// TODO remove the clutter here / move to Theme.tsx
   render() {
     const rating = (this.state.contentrating) ? CONTENT_RATING_DESC[this.state.contentrating] : undefined;
     const timeBuckets = PLAYTIME_MINUTES_BUCKETS.map((minutes: number, index: number) => {
-      return <MenuItem key={index} value={minutes} primaryText={`${minutes} min`}/>;
+      return <MenuItem key={index} value={minutes}>{`${minutes} min`}</MenuItem>;
     });
     // TODO Once we have 3 romance quests, change code to just display genre list
     const visibleGenres: GenreType[] = ['Comedy', 'Drama', 'Horror', 'Mystery'];
     return (
       <Card title="Quest Search">
-        <div className="searchForm">
+        <form className="searchForm" autoComplete="off">
           <div className="searchDescription">
             For {this.props.settings.numPlayers} adventurer{this.props.settings.numPlayers > 1 ? 's' : ''} with {this.props.settings.contentSets.horror ? 'The Horror' : 'the base game'} (based on settings)
           </div>
-          <TextField
-            id="text"
-            className="textfield"
-            fullWidth={true}
-            hintText="text search - title, author, ID"
-            onChange={(e: any, v: string) => this.onChange('text', v)}
-            underlineShow={false}
-            value={this.state.text}
-          />
-          <SelectField
-            id="order"
-            className="selectfield"
-            floatingLabelText="Sort by"
-            onChange={(e: any, i: number, v: string) => this.onChange('order', v)}
-            value={this.state.order}
-            underlineStyle={{borderColor: 'black'}}
-          >
-            <MenuItem value="-created" primaryText="Newest"/>
-            <MenuItem value="+ratingavg" primaryText="Highest rated"/>
-            <MenuItem value="+title" primaryText="Title (A-Z)"/>
-            <MenuItem value="-title" primaryText="Title (Z-A)"/>
-          </SelectField>
-          <SelectField
-            id="mintimeminutes"
-            className="selectfield halfLeft"
-            floatingLabelText="Minimum time"
-            floatingLabelFixed={true}
-            onChange={(e: any, i: number, v: string) => this.onChange('mintimeminutes', v)}
-            value={this.state.mintimeminutes}
-            underlineStyle={{borderColor: 'black'}}
-            selectedMenuItemStyle={{paddingRight: '50px'}}
-          >
-            <MenuItem value={undefined} primaryText="Any length"/>
-            {timeBuckets}
-          </SelectField>
-          <SelectField
-            id="maxtimeminutes"
-            className="selectfield halfRight"
-            floatingLabelText="Maximum time"
-            floatingLabelFixed={true}
-            onChange={(e: any, i: number, v: string) => this.onChange('maxtimeminutes', v)}
-            value={this.state.maxtimeminutes}
-            underlineStyle={{borderColor: 'black'}}
-          >
-            <MenuItem value={undefined} primaryText="Any length"/>
-            {timeBuckets}
-          </SelectField>
-          <SelectField
-            id="age"
-            className="selectfield"
-            floatingLabelText="Recency"
-            onChange={(e: any, i: number, v: string) => this.onChange('age', v)}
-            value={this.state.age}
-            underlineStyle={{borderColor: 'black'}}
-          >
-            <MenuItem value={undefined} primaryText="All time"/>
-            <MenuItem value={31536000} primaryText="Published this year"/>
-            <MenuItem value={2592000} primaryText="Published this month"/>
-            <MenuItem value={604800} primaryText="Published this week"/>
-          </SelectField>
-          <SelectField
-            id="language"
-            className="selectfield"
-            floatingLabelText="Language"
-            onChange={(e: any, i: number, v: string) => this.onChange('language', v)}
-            value={this.state.language}
-            underlineStyle={{borderColor: 'black'}}
-          >
-            {LANGUAGES.map((language:string, i: number) => { return <MenuItem key={i} value={language} primaryText={language}></MenuItem>})}
-          </SelectField>
-          <SelectField
-            id="genre"
-            className="selectfield"
-            floatingLabelText="Genre"
-            onChange={(e: any, i: number, v: string) => this.onChange('genre', v)}
-            value={this.state.genre}
-            underlineStyle={{borderColor: 'black'}}
-          >
-            <MenuItem value={undefined} primaryText="All genres"/>
-            {visibleGenres.map((genre:string, i: number) => { return <MenuItem key={i} value={genre} primaryText={genre}></MenuItem>})}
-          </SelectField>
-          <SelectField
-            id="contentrating"
-            className="selectfield"
-            floatingLabelText="Content Rating"
-            onChange={(e: any, i: number, v: string) => this.onChange('contentrating', v)}
-            value={this.state.contentrating}
-            underlineStyle={{borderColor: 'black'}}
-          >
-            <MenuItem value={undefined} primaryText="All ratings"/>
-            <MenuItem value="Kid-friendly" primaryText="Kid-friendly"/>
-            <MenuItem value="Teen" primaryText="Teen"/>
-            <MenuItem value="Adult" primaryText="Adult"/>
-          </SelectField>
+          <FormControl fullWidth={true}>
+            <TextField
+              id="text"
+              className="textfield"
+              fullWidth={true}
+              label="text search - title, author, ID"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.onChange('text', e.target.value)}
+              value={this.state.text}
+            />
+          </FormControl>
+          <FormControl className="selectfield" fullWidth={true}>
+            <InputLabel htmlFor="order">Sort by</InputLabel>
+            <Select
+              inputProps={{
+                id: 'order',
+              }}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('order', e.target.value)}
+              value={this.state.order}
+            >
+              <MenuItem value="+ratingavg">Highest rated</MenuItem>
+              <MenuItem value="-created">Newest</MenuItem>
+              <MenuItem value="+title">Title (A-Z)</MenuItem>
+              <MenuItem value="-title">Title (Z-A)</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl className="selectfield halfLeft ranged">
+            <InputLabel htmlFor="mintimeminutes">Minimum time</InputLabel>
+            <Select
+              inputProps={{
+                id: 'mintimeminutes',
+              }}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('mintimeminutes', e.target.value)}
+              value={this.state.mintimeminutes}
+            >
+              <MenuItem value={undefined}><em>Any length</em></MenuItem>
+              {timeBuckets}
+            </Select>
+          </FormControl>
+          <FormControl className="selectfield halfRight">
+            <InputLabel htmlFor="maxtimeminutes">Maximum time</InputLabel>
+            <Select
+              inputProps={{
+                id: 'maxtimeminutes',
+              }}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('maxtimeminutes', e.target.value)}
+              value={this.state.maxtimeminutes}
+            >
+              <MenuItem value={undefined}><em>Any length</em></MenuItem>
+              {timeBuckets}
+            </Select>
+          </FormControl>
+          <FormControl className="selectfield halfLeft">
+            <InputLabel htmlFor="age">Recency</InputLabel>
+            <Select
+              inputProps={{
+                id: 'age',
+              }}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('age', e.target.value)}
+              value={this.state.age}
+            >
+              <MenuItem value={undefined}>All time</MenuItem>
+              <MenuItem value={31536000}>Published this year</MenuItem>
+              <MenuItem value={2592000}>Published this month</MenuItem>
+              <MenuItem value={604800}>Published this week</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl className="selectfield halfRight">
+            <InputLabel htmlFor="language">Language</InputLabel>
+            <Select
+              inputProps={{
+                id: 'language',
+              }}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('language', e.target.value)}
+              value={this.state.language}
+            >
+              {LANGUAGES.map((language:string, i: number) => { return <MenuItem key={i} value={language}>{language}</MenuItem>})}
+            </Select>
+          </FormControl>
+          <FormControl className="selectfield halfLeft">
+            <InputLabel htmlFor="genre">Genre</InputLabel>
+            <Select
+              inputProps={{
+                id: 'genre',
+              }}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('genre', e.target.value)}
+              value={this.state.genre}
+            >
+              <MenuItem value={undefined}>All genres</MenuItem>
+              {visibleGenres.map((genre:string, i: number) => { return <MenuItem key={i} value={genre}>{genre}</MenuItem>})}
+            </Select>
+          </FormControl>
+          <FormControl className="selectfield halfRight">
+            <InputLabel htmlFor="contentrating">Content Rating</InputLabel>
+            <Select
+              inputProps={{
+                id: 'contentrating',
+              }}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('contentrating', e.target.value)}
+              value={this.state.contentrating}
+            >
+              <MenuItem value={undefined}>All ratings</MenuItem>
+              <MenuItem value="Kid-friendly">Kid-friendly</MenuItem>
+              <MenuItem value="Teen">Teen</MenuItem>
+              <MenuItem value="Adult">Adult</MenuItem>
+            </Select>
+          </FormControl>
           {rating && <div className="ratingDescription">
             <span>"{this.state.contentrating}" rating means: {rating.summary}</span>
           </div>}
-          <Button onTouchTap={() => this.props.onSearch(this.state, this.props.settings)} remoteID="search" id="search">Search</Button>
-        </div>
+          <Button onClick={() => this.props.onSearch(this.state, this.props.settings)} remoteID="search" id="search">Search</Button>
+        </form>
       </Card>
     );
   }
@@ -251,7 +264,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
   }
 
   return (
-    <Button key={props.index} onTouchTap={() => props.onQuest(quest)} remoteID={'quest-'+props.index}>
+    <Button key={props.index} onClick={() => props.onQuest(quest)} remoteID={'quest-'+props.index}>
       <div className={classes.join(' ')}>
         <table className="searchResultsTitleTable">
           <tbody>
@@ -299,15 +312,15 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
       title="Quest Search Results"
       className="search_card"
       header={(hideHeader) ? undefined : <div className="searchHeader">
-        <span>{props.results.length} quests for {props.settings.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></span>
-        <Button className="filter_button" onTouchTap={() => props.onFilter()} remoteID="filter">Filter &amp; Sort ></Button>
+        <Button className="searchResultInfo" disabled={true}>{props.results.length} quests for {props.settings.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></Button>
+        <Button className="filter_button" onClick={() => props.onFilter()} remoteID="filter">Filter &amp; Sort ></Button>
       </div>}
     >
       {results.length === 0 && !props.searching &&
         <div>
           <div>No quests found matching the search terms.</div>
           {!hideHeader && <div>Try broadening the search by using fewer filters.</div>}
-          <Button className="filter_button" onTouchTap={() => props.onFilter()} remoteID="filter">Modify Search</Button>
+          <Button className="filter_button" onClick={() => props.onFilter()} remoteID="filter">Modify Search</Button>
         </div>
       }
       {results.length === 0 && props.searching && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
@@ -344,8 +357,8 @@ export function renderDetails(props: SearchDetailsProps): JSX.Element {
           {quest.awarded && <div className="inline_icon"><StarsIcon className="inline_icon" /> {quest.awarded}</div>}
         </div>
       </div>
-      <Button className="bigbutton" onTouchTap={(e)=>props.onPlay(quest, props.isDirectLinked)} remoteID="play">Play</Button>
-      <Button id="searchDetailsBackButton" onTouchTap={(e)=>props.onReturn()} remoteID="back">Pick a different quest</Button>
+      <Button className="bigbutton" onClick={(e)=>props.onPlay(quest, props.isDirectLinked)} remoteID="play">Play</Button>
+      <Button id="searchDetailsBackButton" onClick={(e)=>props.onReturn()} remoteID="back">Pick a different quest</Button>
       <div className="searchDetailsExtended">
         <h3>Details</h3>
         <table className="searchDetailsTable">
@@ -405,7 +418,7 @@ class SearchDisclaimerCard extends React.Component<SearchDisclaimerCardProps, {}
         <Checkbox label="Join the Mailing List" value={this.state.subscribe} onChange={(v: boolean) => { this.onSubscribeChange(v); }}>
           Learn about the latest quests, features and more - once per month!
         </Checkbox>
-        <Button onTouchTap={(e)=>this.props.onLoginRequest(this.state.subscribe)}>Continue with Google</Button>
+        <Button onClick={(e)=>this.props.onLoginRequest(this.state.subscribe)}>Continue with Google</Button>
       </Card>
     );
   }

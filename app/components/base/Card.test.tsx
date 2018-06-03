@@ -1,9 +1,8 @@
 import * as React from 'react'
-import {shallow} from 'enzyme'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import {configure, shallow} from 'enzyme'
+import * as Adapter from 'enzyme-adapter-react-16'
+configure({ adapter: new Adapter() });
 import ExpeditionCard, {ExpeditionCardProps} from './Card'
-
-const renderOptions = {context: {muiTheme: getMuiTheme()}, childContextTypes: {muiTheme: React.PropTypes.object}};
 
 describe('Card', () => {
   function setup(overrides?: Partial<ExpeditionCardProps>) {
@@ -11,13 +10,13 @@ describe('Card', () => {
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,
     };
-    const wrapper = shallow(<ExpeditionCard {...props}/>, renderOptions);
+    const wrapper = shallow(<ExpeditionCard {...props}/>, undefined /*renderOptions*/);
     return {props, wrapper};
   }
 
   it('triggers onReturn when return button tapped', () => {
     const {props, wrapper} = setup();
-    wrapper.find('#titlebarReturnButton').simulate('touchTap');
+    wrapper.find('#titlebarReturnButton').simulate('click');
     expect(props.onReturn).toHaveBeenCalledTimes(1);
   });
 

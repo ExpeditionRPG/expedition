@@ -1,17 +1,14 @@
 import * as React from 'react'
-import {render} from 'enzyme'
 import {Provider} from 'react-redux'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import Compositor, {CompositorProps} from './Compositor'
 import {initialCardState} from '../reducers/Card'
 import {initialQuestState} from '../reducers/Quest'
 import {initialSettings} from '../reducers/Settings'
 import {initialSnackbar} from '../reducers/Snackbar'
 import {newMockStore} from '../Testing'
-
-require('react-tap-event-plugin')();
-
-const renderOptions = {context: {muiTheme: getMuiTheme()}, childContextTypes: {muiTheme: React.PropTypes.object}};
+import {configure, render} from 'enzyme'
+import * as Adapter from 'enzyme-adapter-react-16'
+configure({ adapter: new Adapter() });
 
 function setup(props: Partial<CompositorProps>) {
   props = {
@@ -27,7 +24,7 @@ function setup(props: Partial<CompositorProps>) {
     <Provider store={newMockStore({saved: {}, ...props})}>
       <Compositor {...(props as any as CompositorProps)} />
     </Provider>,
-    renderOptions
+    {} //renderOptions
   );
   return {props, wrapper};
 }

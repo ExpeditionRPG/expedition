@@ -23,14 +23,14 @@ export interface ToolsProps extends ToolsStateProps, ToolsDispatchProps {}
 const Tools = (props: ToolsProps): JSX.Element => {
   return (
     <Card title="Tools">
-      <Button remoteID="0" id="selectCustomCombat" onTouchTap={() => props.onCustomCombatSelect(props.settings)}>
+      <Button remoteID="0" id="selectCustomCombat" onClick={() => props.onCustomCombatSelect(props.settings)}>
         <div className="questButtonWithIcon">
           <div className="title">GM Mode</div>
           <div className="summary">You tell the story; the app runs the combat.</div>
         </div>
       </Button>
       {!props.settings.simulator &&
-        <Button remoteID="3" onTouchTap={() => props.onMultiplayerSelect(props.user)}>
+        <Button remoteID="3" onClick={() => props.onMultiplayerSelect(props.user)}>
           <div className="questButtonWithIcon">
             <div className="title">Online Multiplayer - Beta</div>
             <div className="summary">
@@ -39,13 +39,13 @@ const Tools = (props: ToolsProps): JSX.Element => {
           </div>
         </Button>
       }
-      {!props.settings.simulator && <Button remoteID="1" id="selectQuestCreator" onTouchTap={() => props.onQuestCreatorSelect()}>
+      {!props.settings.simulator && <Button remoteID="1" id="selectQuestCreator" onClick={() => props.onQuestCreatorSelect()}>
         <div className="questButtonWithIcon">
           <div className="title">Quest Creator</div>
           <div className="summary">Write your own quests and share them with the world.</div>
         </div>
       </Button>}
-      {!props.settings.simulator && <Button remoteID="2" onTouchTap={() => props.onPrivateQuestsSelect(props.settings, props.user)}>
+      {!props.settings.simulator && <Button remoteID="2" onClick={() => props.onPrivateQuestsSelect(props.settings, props.user)}>
         <div className="questButtonWithIcon">
           <div className="title">Private Quests</div>
           <div className="summary">View quests you've published privately with the Quest Creator (uses your current player count!)</div>
@@ -53,7 +53,7 @@ const Tools = (props: ToolsProps): JSX.Element => {
       </Button>}
       {NODE_ENV === 'dev' &&
         <div>
-          <Button onTouchTap={() => props.testMusic()}>Set Music Intensity</Button>
+          <Button onClick={() => props.testMusic()}>Set Music Intensity</Button>
         </div>
       }
       <div className="version">Expedition App v{getAppVersion()}</div>

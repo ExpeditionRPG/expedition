@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import CircleRipple from 'material-ui/internal/CircleRipple'
+//import TouchRipple from '@material-ui/ButtonBase/TouchRipple'
 import {InteractionEvent} from 'expedition-qdl/lib/multiplayer/Events'
 import MultiplayerAffector from './MultiplayerAffector'
 
@@ -54,17 +54,20 @@ export default class MultiplayerRipple extends React.Component<MultiplayerRipple
 
   start(posX: number, posY: number, color: string) {
 
-    let ripples = this.state.ripples;
+    const ripples = this.state.ripples;
 
     // Add a ripple to the ripples array
+    // TODO: Fix touch rippling
+    /*
     ripples = [...ripples, (
-      <CircleRipple
+      <TouchRipple
         key={this.state.nextKey}
         style={this.getRippleStyle(posX, posY)}
         color={color}
         opacity={this.props.opacity || 1.0}
       />
     )];
+    */
 
     this.setState({
       hasRipples: true,

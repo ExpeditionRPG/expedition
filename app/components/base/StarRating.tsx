@@ -1,11 +1,9 @@
 // Inspired by https://github.com/lawrentiy/react-material-ui-rating
-
 import * as React from 'react'
-import FlatButton from 'material-ui/FlatButton'
-import {colors} from 'material-ui/styles'
-import Star from 'material-ui/svg-icons/toggle/star'
-import StarBorder from 'material-ui/svg-icons/toggle/star-border'
-import StarHalf from 'material-ui/svg-icons/toggle/star-half'
+import IconButton from '@material-ui/core/Button'
+import Star from '@material-ui/icons/Star'
+import StarBorder from '@material-ui/icons/StarBorder'
+import StarHalf from '@material-ui/icons/StarHalf'
 
 export interface StarRatingProps {
   hintText?: boolean;
@@ -29,19 +27,20 @@ export default class StarRating extends React.Component<StarRatingProps, {}> {
 
       if (i <= this.props.value) {
         classes.push('filled');
-        star = <Star color={colors.grey900} />;
+        star = <Star/>;
       } else if (i <= this.props.value + 0.5) {
         classes.push('halfFilled');
-        star = <StarHalf color={colors.grey900} />;
+        star = <StarHalf/>;
       } else {
         classes.push('outline');
-        star = <StarBorder color={colors.grey600} />;
+        star = <StarBorder/>;
       }
 
+      // TODO: Flatten this structure so ripples are circular
       return <div key={i} className={classes.join(' ')}>
-        <FlatButton disabled={this.props.readOnly} onTouchTap={() => { !this.props.readOnly && this.props.onChange && this.props.onChange(i); }}>
+        <IconButton disabled={this.props.readOnly} onClick={() => { !this.props.readOnly && this.props.onChange && this.props.onChange(i); }}>
           {star}
-        </FlatButton>
+        </IconButton>
       </div>;
     });
     return <span className="starContainer">

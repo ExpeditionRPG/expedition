@@ -67,7 +67,7 @@ function renderSelectTier(props: CombatProps): JSX.Element {
         value={props.tier}>
         Set this to the combined tier you wish to fight.
       </Picker>
-      <Button onTouchTap={() => props.onNext(nextCard)} disabled={props.tier <= 0}>Next</Button>
+      <Button onClick={() => props.onNext(nextCard)} disabled={props.tier <= 0}>Next</Button>
       <AudioControlsContainer />
     </Card>
   );
@@ -119,7 +119,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
       </p>
       {enemies}
       {helpText}
-      <Button onTouchTap={() => props.onNext(nextCard)}>Next</Button>
+      <Button onClick={() => props.onNext(nextCard)}>Next</Button>
       <AudioControlsContainer />
     </Card>
   );
@@ -153,7 +153,7 @@ function renderNoTimer(props: CombatProps): JSX.Element {
       {helpText}
       <Button
         className="bigbutton"
-        onTouchTap={() => props.onTimerStop(props.node, props.settings, 0, surge, props.seed)}
+        onClick={() => props.onTimerStop(props.node, props.settings, 0, surge, props.seed)}
       >
         Next
       </Button>
@@ -190,7 +190,7 @@ function renderPrepareTimer(props: CombatProps): JSX.Element {
   return (
     <Card title="Prepare for Combat" theme="dark" inQuest={true}>
       {helpText}
-      <Button className="bigbutton" onTouchTap={() => props.onTimerStart()}>Start Timer</Button>
+      <Button className="bigbutton" onClick={() => props.onTimerStart()}>Start Timer</Button>
     </Card>
   );
 }
@@ -217,7 +217,7 @@ function renderSurge(props: CombatProps): JSX.Element {
     >
       <h3>An enemy surge occurs!</h3>
       {helpText}
-      <Button onTouchTap={() => props.onSurgeNext(props.node)}>Next</Button>
+      <Button onClick={() => props.onSurgeNext(props.node)}>Next</Button>
     </Card>
   );
 }
@@ -267,7 +267,7 @@ function renderResolve(props: CombatProps): JSX.Element {
           <div className="rolls">{renderedRolls}</div>
         </div>
       }
-      <Button onTouchTap={() => props.onNext('RESOLVE_DAMAGE')}>Next</Button>
+      <Button onClick={() => props.onNext('RESOLVE_DAMAGE')}>Next</Button>
     </Card>
   );
 }
@@ -311,9 +311,9 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
         {props.settings.showHelp && <span>The number of adventurers &gt; 0 health.</span>}
       </Picker>
       {helpText}
-      <Button onTouchTap={() => props.onNext(nextCard)} disabled={props.numAliveAdventurers <= 0}>Next</Button>
-      <Button onTouchTap={() => props.onVictory(props.node, props.settings, props.maxTier, props.seed)}>Victory (Tier = 0)</Button>
-      <Button onTouchTap={() => props.onDefeat(props.node, props.settings, props.maxTier, props.seed)}>Defeat (Adventurers = 0)</Button>
+      <Button onClick={() => props.onNext(nextCard)} disabled={props.numAliveAdventurers <= 0}>Next</Button>
+      <Button onClick={() => props.onVictory(props.node, props.settings, props.maxTier, props.seed)}>Victory (Tier = 0)</Button>
+      <Button onClick={() => props.onDefeat(props.node, props.settings, props.maxTier, props.seed)}>Defeat (Adventurers = 0)</Button>
     </Card>
   );
 }
@@ -375,7 +375,7 @@ function renderVictory(props: CombatProps): JSX.Element {
     <Card title="Victory" theme="dark" inQuest={true}>
       {props.settings.showHelp && <p>Shuffle all of your ability cards back into your ability draw pile.</p>}
       {contents}
-      <Button onTouchTap={() => (props.combat.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'win')}>Next</Button>
+      <Button onClick={() => (props.combat.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'win')}>Next</Button>
     </Card>
   );
 }
@@ -398,7 +398,7 @@ function renderDefeat(props: CombatProps): JSX.Element {
   if (!props.combat.custom) {
     const nextNode = props.node.handleAction('lose');
     if (nextNode && nextNode.isEnd()) {
-      retryButton = <Button onTouchTap={() => props.onRetry()}>Retry (heal to full)</Button>;
+      retryButton = <Button onClick={() => props.onRetry()}>Retry (heal to full)</Button>;
     }
   }
 
@@ -408,7 +408,7 @@ function renderDefeat(props: CombatProps): JSX.Element {
       {props.settings.showHelp && <p>Shuffle all of your ability cards back into your ability draw pile.</p>}
       {helpText}
       {retryButton}
-      <Button onTouchTap={() => (props.combat.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'lose')}>Next</Button>
+      <Button onClick={() => (props.combat.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'lose')}>Next</Button>
     </Card>
   );
 }

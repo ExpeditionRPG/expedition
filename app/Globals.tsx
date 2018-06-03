@@ -13,6 +13,11 @@ export interface ReactDocument extends Document {
   dispatchEvent: (e: Event) => boolean;
 }
 
+export interface CordovaLoginPlugin {
+  trySilentLogin: (options: {scopes: string, webClientId: string}, success: (obj: any) => any, error: (err: string) => any) => void;
+  login: (options: {scopes: string, webClientId: string}, success: (obj: any) => any, error: (err: string) => any) => void;
+}
+
 export interface ReactWindow extends Window {
   platform?: string;
   APP_VERSION?: string;
@@ -28,6 +33,7 @@ export interface ReactWindow extends Window {
   }
   plugins?: {
     insomnia?: {keepAwake: ()=>void},
+    googleplus?: CordovaLoginPlugin,
   };
   Promise?: any;
   test?: boolean;

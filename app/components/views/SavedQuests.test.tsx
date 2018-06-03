@@ -1,15 +1,12 @@
 import * as React from 'react'
-import {render} from 'enzyme'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import SavedQuests, {SavedQuestsProps} from './SavedQuests'
 import {QuestDetails} from '../../reducers/QuestTypes'
-
-require('react-tap-event-plugin')();
-
-const renderOptions = {context: {muiTheme: getMuiTheme()}, childContextTypes: {muiTheme: React.PropTypes.object}};
+import {configure, render} from 'enzyme'
+import * as Adapter from 'enzyme-adapter-react-16'
+configure({ adapter: new Adapter() });
 
 function setup(props: Partial<SavedQuestsProps>) {
-  const wrapper = render(<SavedQuests {...(props as any as SavedQuestsProps)} />, renderOptions);
+  const wrapper = render(<SavedQuests {...(props as any as SavedQuestsProps)} />, undefined /*renderOptions*/);
   return {props, wrapper};
 }
 

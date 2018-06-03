@@ -156,7 +156,7 @@ const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'light'): JSX.Ele
 
   const buttons: JSX.Element[] = rpResult.choices.map((choice: Choice): JSX.Element => {
     return (
-      <Button key={choice.idx} onTouchTap={() => props.onChoice(props.settings, props.node, choice.idx)}>
+      <Button key={choice.idx} onClick={() => props.onChoice(props.settings, props.node, choice.idx)}>
         {choice.jsx}
       </Button>
     );
@@ -170,7 +170,7 @@ const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'light'): JSX.Ele
   const nextNode = props.node.getNext();
   if (prevNodeCombatAdventurers === 0 && rpResult.choices.length === 1 && nextNode && nextNode.isEnd()) {
     buttons.unshift(
-      <Button key={-1} onTouchTap={() => props.onRetry()}>
+      <Button key={-1} onClick={() => props.onRetry()}>
         Retry combat
       </Button>
     );

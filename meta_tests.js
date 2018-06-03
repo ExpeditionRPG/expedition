@@ -43,19 +43,25 @@ describe('Dependencies', () => {
     const package = require('./package.json');
     const packageUsage = JSON.stringify(package.scripts) + JSON.stringify(package.cordova);
     const WHITELIST = [
+      // Needed to build apps
       'cordova-android',
       'cordova-ios',
+
+      // Needed for compilation
       '@types/.*',
       'typescript',
-      'karma-jasmine',
-      'karma-phantomjs-launcher',
-      'karma-webpack',
       'webpack-cli',
       'node-sass',
       'babel-preset-env',
       'babel-core',
-      'react-test-renderer', // Needed for unit tests
-      'react-addons-test-utils', // Needed for unit tests
+      'babel-loader',
+
+      // Needed for unit tests
+      'karma-jasmine',
+      'karma-phantomjs-launcher',
+      'karma-webpack',
+      'enzyme-adapter-react-16',
+      'react-test-renderer',
     ];
 
     let depstrs = Object.keys(package.dependencies);

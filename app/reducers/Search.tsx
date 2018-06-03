@@ -5,7 +5,7 @@ import {SearchState} from './StateTypes'
 export const initialSearch: SearchState = {
   search: {
     text: '',
-    order: '-created',
+    order: '+ratingavg',
     language: 'English',
   },
   selected: null,

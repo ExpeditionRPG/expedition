@@ -1,11 +1,10 @@
 import * as React from 'react'
 import {MultiplayerState} from '../../reducers/StateTypes'
-import CircularProgress from 'material-ui/CircularProgress';
-
-const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
+import CircularProgress from '@material-ui/core/CircularProgress';
+import {TransitionGroup, CSSTransition} from 'react-transition-group'
 
 export const FADE_ENTER_ANIMATION_MS = 500;
-export const FADE_LEAVE_ANIMATION_MS = 500;
+export const FADE_EXIT_ANIMATION_MS = 500;
 
 export interface MultiplayerSyncStateProps {
   remotePlay: MultiplayerState;
@@ -41,23 +40,26 @@ export default class MultiplayerSync extends React.Component<MultiplayerSyncProp
     // - Sweep an equivalent # "micro-card" symbols across the screen, then Next to the result.
     let body = null;
     if (this.props.remotePlay && this.props.remotePlay.syncing === true) {
-      body = (<SyncContainer key={0} onAnimationComplete={this.props.onAnimationComplete}>
-        <div>
-          <div className="spinner">
-            <CircularProgress size={200} thickness={10} />
-          </div>
-          <h1>Syncing...</h1>
-        </div>
-      </SyncContainer>);
+      body = (
+        <CSSTransition
+          classNames="fade"
+          timeout={{enter: FADE_ENTER_ANIMATION_MS, exit: FADE_EXIT_ANIMATION_MS}}>
+          <SyncContainer key={0} onAnimationComplete={this.props.onAnimationComplete}>
+            <div>
+              <div className="spinner">
+                <CircularProgress size={200} thickness={10} />
+              </div>
+              <h1>Syncing...</h1>
+            </div>
+          </SyncContainer>
+        </CSSTransition>
+      );
     }
 
     return (
-      <ReactCSSTransitionGroup
-                transitionName="fade"
-                transitionEnterTimeout={FADE_ENTER_ANIMATION_MS}
-                transitionLeaveTimeout={FADE_LEAVE_ANIMATION_MS}>
+      <TransitionGroup>
         {body}
-      </ReactCSSTransitionGroup>
+      </TransitionGroup>
     );
   }
 }

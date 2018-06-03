@@ -1,7 +1,7 @@
 import * as React from 'react'
-import Close from 'material-ui/svg-icons/navigation/close'
-import NetworkWifi from 'material-ui/svg-icons/device/network-wifi'
-import SignalWifiOff from 'material-ui/svg-icons/device/signal-wifi-off'
+import Close from '@material-ui/icons/Close'
+import NetworkWifi from '@material-ui/icons/NetworkWifi'
+import SignalWifiOff from '@material-ui/icons/SignalWifiOff'
 import Card from '../base/Card'
 import Button from '../base/Button'
 import {SessionID} from 'expedition-qdl/lib/multiplayer/Session'
@@ -46,7 +46,7 @@ class MultiplayerConnect extends React.Component<MultiplayerProps, {}> {
   render() {
     const history = this.props.remotePlay.history.map((m: MultiplayerSessionMeta, i: number) => {
       return (
-        <Button key={i} onTouchTap={()=>{this.props.onReconnect(this.props.user, m.id, m.secret)}}>
+        <Button key={i} onClick={()=>{this.props.onReconnect(this.props.user, m.id, m.secret)}}>
           {m.questTitle} ({m.peerCount || 0} peers) - {Moment(m.lastAction).fromNow()}
         </Button>
       );
@@ -56,8 +56,8 @@ class MultiplayerConnect extends React.Component<MultiplayerProps, {}> {
       <Card title="Online Multiplayer">
         <div className="remoteplay">
           <p>Online multiplayer allows you to go on adventures with your friends, no matter where they are! Simply start a new session and have your friends join.</p>
-          <Button onTouchTap={() =>{this.props.onNewSessionRequest(this.props.user)}}>Start a new session</Button>
-          <Button onTouchTap={() =>{this.props.onConnect(this.props.user)}}>Join a session</Button>
+          <Button onClick={() =>{this.props.onNewSessionRequest(this.props.user)}}>Start a new session</Button>
+          <Button onClick={() =>{this.props.onConnect(this.props.user)}}>Join a session</Button>
           {history.length > 0 && <div className="helptext">You may also reconnect to these sessions:</div>}
           {history}
           <br/>
@@ -81,7 +81,7 @@ function renderLobby(props: MultiplayerProps): JSX.Element {
           <Close/> Exit multiplayer (others may continue to play)
         </p>
         <p>Once everyone is connected, click Start:</p>
-        <Button remoteID="1" onTouchTap={() =>{props.onContinue()}}>Start</Button>
+        <Button remoteID="1" onClick={() =>{props.onContinue()}}>Start</Button>
       </div>
     </Card>
   );

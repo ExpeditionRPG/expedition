@@ -1,10 +1,11 @@
 import * as React from 'react'
-import {shallow} from 'enzyme'
+import {configure, shallow} from 'enzyme'
+import * as Adapter from 'enzyme-adapter-react-16'
+configure({ adapter: new Adapter() });
+
 import Tools, {ToolsProps} from './Tools'
 import {loggedOutUser} from '../../reducers/User'
 import {initialSettings} from '../../reducers/Settings'
-
-require('react-tap-event-plugin')();
 
 function setup() {
   const props: ToolsProps = {
@@ -23,7 +24,7 @@ function setup() {
 describe('Tools', () => {
   it('calls onCustomCombatSelect on custom combat select', () => {
     const {props, enzymeWrapper} = setup();
-    enzymeWrapper.find('#selectCustomCombat').simulate('touchTap');
+    enzymeWrapper.find('#selectCustomCombat').simulate('click');
     expect(props.onCustomCombatSelect).toHaveBeenCalledTimes(1);
   });
 });

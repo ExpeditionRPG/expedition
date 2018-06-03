@@ -1,7 +1,6 @@
 import * as React from 'react'
 import MultiTouchTrigger from '../base/MultiTouchTrigger'
 import Button from '../base/Button'
-
 import {SPLASH_SCREEN_TIPS, DOUBLE_TAP_MS} from '../../Constants'
 import {AnnouncementState} from '../../reducers/StateTypes'
 
@@ -90,7 +89,7 @@ const SplashScreen = (props: SplashScreenProps): JSX.Element => {
   return (
     <div className={splashClass}>
       {announcementVisible &&
-        <Button className="announcement" onTouchTap={() => props.onAnnouncementTap(props.announcement)}>
+        <Button className="announcement" onClick={() => props.onAnnouncementTap(props.announcement)}>
           {props.announcement.message}
         </Button>
       }

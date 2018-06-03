@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import Search, {SearchStateProps, SearchDispatchProps} from './Search'
 import {toPrevious, toCard} from '../../actions/Card'
 import {setDialog} from '../../actions/Dialog'
-import {login} from '../../actions/User'
+import {ensureLogin} from '../../actions/User'
 import {fetchQuestXML, subscribe} from '../../actions/Web'
 import {search, viewQuest} from '../../actions/Search'
 import {AppStateWithHistory, SearchSettings, SettingsType, UserState} from '../../reducers/StateTypes'
@@ -24,12 +24,13 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: SearchStateProps)
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SearchDispatchProps => {
   return {
     onLoginRequest: (sub: boolean) => {
-      dispatch(login({callback: (user: UserState)=> {
-        if (sub && user.email && user.email !== '') {
-          dispatch(subscribe({email: user.email}));
-        }
-        dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
-      }}));
+      dispatch(ensureLogin())
+        .then((user: UserState)=> {
+          if (sub && user.email && user.email !== '') {
+            dispatch(subscribe({email: user.email}));
+          }
+          return dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
+        });
     },
     onFilter: () => {
       dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));

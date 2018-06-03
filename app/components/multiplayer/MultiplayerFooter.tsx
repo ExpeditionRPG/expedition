@@ -1,9 +1,9 @@
 import * as React from 'react'
-import {black, white} from 'material-ui/styles/colors'
-import FlatButton from 'material-ui/FlatButton'
-import NetworkWifi from 'material-ui/svg-icons/device/network-wifi'
-import SignalWifiOff from 'material-ui/svg-icons/device/signal-wifi-off'
-import Close from 'material-ui/svg-icons/navigation/close'
+import IconButton from '@material-ui/core/IconButton'
+import Button from '@material-ui/core/Button'
+import NetworkWifi from '@material-ui/icons/NetworkWifi'
+import SignalWifiOff from '@material-ui/icons/SignalWifiOff'
+import Close from '@material-ui/icons/Close'
 import {CardThemeType, MultiplayerState} from '../../reducers/StateTypes'
 import {getMultiplayerClient} from '../../Multiplayer'
 
@@ -21,7 +21,7 @@ export interface MultiplayerFooterProps extends MultiplayerFooterStateProps, Mul
 }
 
 const MultiplayerFooter = (props: MultiplayerFooterProps): JSX.Element => {
-  const color = (props.theme === 'dark') ? white : black;
+  // const color = 'default'; // TODO (props.theme === 'dark') ? white : black;
   const adventurerIcon = (props.theme === 'dark') ? 'images/adventurer_white_small.svg' : 'images/adventurer_small.svg';
   const peers: JSX.Element[] = [];
   const rpClient = getMultiplayerClient();
@@ -34,16 +34,21 @@ const MultiplayerFooter = (props: MultiplayerFooterProps): JSX.Element => {
   }
 
   // TODO: Indicate when waiting for other user action
-  const statusIcon = (<FlatButton onTouchTap={(e: any) => {props.onMultiplayerStatusIconTap();}} icon={
-    (rpClient.isConnected()) ? <NetworkWifi color={color} /> : <SignalWifiOff color={color} />
-  }/>);
+  // TODO Icon colors here and in IconButton below
+  const statusIcon = (
+    <IconButton onClick={(e: any) => {props.onMultiplayerStatusIconTap();}}>
+      {(rpClient.isConnected()) ? <NetworkWifi/> : <SignalWifiOff/>}
+    </IconButton>
+  );
 
   return (
     <div className={'remote_footer card_theme_' + props.theme}>
-      <FlatButton icon={<Close color={color} />} onTouchTap={(e: any) => {props.onMultiplayerExit();}}/>
-      <FlatButton className="peers">
+      <IconButton onClick={(e: any) => {props.onMultiplayerExit();}}>
+         <Close />
+      </IconButton>
+      <Button className="peers">
         {peers}
-      </FlatButton>
+      </Button>
       {statusIcon}
     </div>
   );

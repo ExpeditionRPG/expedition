@@ -1,11 +1,12 @@
 import * as React from 'react'
-import TextField from 'material-ui/TextField'
-import Checkbox from 'material-ui/Checkbox'
+import TextField from '@material-ui/core/TextField'
+import Checkbox from '@material-ui/core/Checkbox'
 import Button from '../../base/Button'
 import Card from '../../base/Card'
 import StarRating from '../../base/StarRating'
 import {logQuestPlay} from '../../../actions/Web'
 import {CheckoutState, QuestState, SettingsType, UserState, UserFeedbackState} from '../../../reducers/StateTypes'
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 declare var window:any;
 
@@ -47,11 +48,12 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
     }
     const tips = [1, 3, 5].map((tip: number) => {
       return (
-        <Button key={tip} onTouchTap={() => this.props.onTip(checkoutError, tip, this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>
+        <Button key={tip} onClick={() => this.props.onTip(checkoutError, tip, this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>
           ${tip}
         </Button>
       );
     })
+    // TODO TextField underlineShow={false}
     return (
       <Card title={this.props.quest.details.title}>
         <p>We hope you enjoyed <i>{this.props.quest.details.title}</i> by {this.props.quest.details.author}!</p>
@@ -59,22 +61,22 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
         <StarRating hintText={true} value={this.props.userFeedback.rating || 0} onChange={(rating: number) => { this.props.onChange('rating', rating); }}></StarRating>
         {rated &&
           <div>
-            <p>Write a short review:</p>
             <TextField
               className="textfield"
               fullWidth={true}
-              hintText="Tell us what you think"
-              multiLine={true}
+              label={<span>Write a short review</span>}
+              multiline={true}
+              margin="normal"
               onChange={(e: any) => this.props.onChange('text', e.target.value)}
-              rows={3}
-              rowsMax={6}
-              underlineShow={false}
               value={this.props.userFeedback.text}
             />
-            <Checkbox
-              className="anonymous_feedback"
-              checked={this.props.userFeedback.anonymous}
-              onCheck={() => { this.props.onChange('anonymous', !this.props.userFeedback.anonymous); }}
+            <FormControlLabel
+              control={
+                  <Checkbox
+                    className="anonymous_feedback"
+                    checked={this.props.userFeedback.anonymous}
+                    onChange={() => { this.props.onChange('anonymous', !this.props.userFeedback.anonymous); }}/>
+              }
               label="Give feedback anonymously"/>
           </div>
         }
@@ -82,11 +84,11 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
         <div className={'tipAmounts ' + (checkoutError === null ? '' : 'checkoutDisabled')}>
           {tips}
         </div>
-        <Button onTouchTap={() => this.props.onSubmit(this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>
+        <Button onClick={() => this.props.onSubmit(this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>
           {rated ? 'Submit' : 'Return home'}
         </Button>
         {window.plugins && window.plugins.socialsharing &&
-          <Button onTouchTap={() => this.props.onShare(this.props.quest)}><img className="inline_icon" src="images/share_small.svg"/> Share your adventure</Button>
+          <Button onClick={() => this.props.onShare(this.props.quest)}><img className="inline_icon" src="images/share_small.svg"/> Share your adventure</Button>
         }
         <div className="inputSpacer"></div>
       </Card>

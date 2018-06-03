@@ -1,5 +1,6 @@
 import * as React from 'react'
-import Snackbar from 'material-ui/Snackbar'
+import Button from '@material-ui/core/Button'
+import Snackbar from '@material-ui/core/Snackbar'
 import AudioContainer from './base/AudioContainer'
 import DialogsContainer from './base/DialogsContainer'
 import MultiplayerFooterContainer from './multiplayer/MultiplayerFooterContainer'
@@ -17,7 +18,6 @@ import {
   SettingsType,
   SnackbarState
 } from '../reducers/StateTypes'
-
 import CheckoutContainer from './views/CheckoutContainer'
 import ToolsContainer from './views/ToolsContainer'
 import FeaturedQuestsContainer from './views/FeaturedQuestsContainer'
@@ -30,8 +30,7 @@ import SplashScreenContainer from './views/SplashScreenContainer'
 import QuestSetupContainer from './views/quest/QuestSetupContainer'
 import QuestEndContainer from './views/quest/QuestEndContainer'
 import {renderCardTemplate} from './views/quest/cardtemplates/Template'
-
-const ReactCSSTransitionGroup: any = require('react-addons-css-transition-group');
+import {TransitionGroup, CSSTransition} from 'react-transition-group'
 
 export interface CompositorStateProps {
   card: CardState;
@@ -50,6 +49,13 @@ export interface CompositorDispatchProps {
 export interface CompositorProps extends CompositorStateProps, CompositorDispatchProps {}
 
 export default class Compositor extends React.Component<CompositorProps, {}> {
+
+  snackbarActionClicked(e: React.MouseEvent<HTMLElement>) {
+    if (this.props.snackbar.action) {
+      this.props.snackbar.action(e);
+    }
+  }
+
   render() {
     let card: JSX.Element = <span />;
     switch(this.props.card.name) {
@@ -102,28 +108,34 @@ export default class Compositor extends React.Component<CompositorProps, {}> {
       containerClass.push('largeFont');
     }
 
+    // See https://medium.com/lalilo/dynamic-transitions-with-react-router-and-react-transition-group-69ab795815c9
+    // for more details on use of childFactory in TransitionGroup
     return (
       <div className={containerClass.join(' ')}>
         <span>
-          <ReactCSSTransitionGroup
-              transitionName={this.props.transition}
-              transitionEnterTimeout={CARD_TRANSITION_ANIMATION_MS}
-              transitionLeaveTimeout={CARD_TRANSITION_ANIMATION_MS}>
-            <div className={'base_main' + ((this.props.remotePlay && this.props.remotePlay.session) ? ' has_footer' : '')} key={this.props.card.key}>
-              {card}
-            </div>
-          </ReactCSSTransitionGroup>
+          <TransitionGroup
+            childFactory={(child) => React.cloneElement(
+              child, {classNames: this.props.transition}
+            )}>
+            <CSSTransition
+              key={this.props.card.key}
+              classNames={''}
+              timeout={{enter:CARD_TRANSITION_ANIMATION_MS, exit:CARD_TRANSITION_ANIMATION_MS}}>
+              <div className={'base_main' + ((this.props.remotePlay && this.props.remotePlay.session) ? ' has_footer' : '')}>
+                {card}
+              </div>
+            </CSSTransition>
+          </TransitionGroup>
           {this.props.remotePlay && this.props.remotePlay.session && <MultiplayerFooterContainer theme={this.props.theme}/>}
           <DialogsContainer />
           <MultiplayerSyncContainer />
           <Snackbar
             className="snackbar"
             open={this.props.snackbar.open}
-            message={this.props.snackbar.message}
+            message={<span>{this.props.snackbar.message}</span>}
             autoHideDuration={this.props.snackbar.timeout}
-            onRequestClose={this.props.closeSnackbar}
-            action={this.props.snackbar.actionLabel}
-            onActionClick={this.props.snackbar.action}
+            onClose={this.props.closeSnackbar}
+            action={(this.props.snackbar.actionLabel) ? [<Button key={1} onClick={this.snackbarActionClicked}>{this.props.snackbar.actionLabel}</Button>] : []}
           />
           <AudioContainer />
         </span>

@@ -33,11 +33,11 @@
   transform: translate(0%);
   transition: transform 300ms ease-in-out;
 }
-.NEXT-leave {
+.NEXT-exit {
   position: absolute;
   transform: translate(0%);
 }
-.NEXT-leave.NEXT-leave-active {
+.NEXT-exit.NEXT-exit-active {
   transform: translate(-100%);
   transition: transform 300ms ease-in-out;
 }
@@ -49,11 +49,11 @@
   transform: translate(0%);
   transition: transform 300ms ease-in-out;
 }
-.PREV-leave {
+.PREV-exit {
   position: absolute;
   transform: translate(0%);
 }
-.PREV-leave.PREV-leave-active {
+.PREV-exit.PREV-exit-active {
   transform: translate(100%);
   transition: transform 300ms ease-in-out;
 }
@@ -66,10 +66,10 @@
   opacity: 1;
   transition: opacity 500ms ease-in;
 }
-.fade-leave {
+.fade-exit {
   opacity: 1;
 }
-.fade-leave.fade-leave-active {
+.fade-exit.fade-exit-active {
   opacity: 0.01;
   transition: opacity 500ms ease-out;
 }
@@ -549,14 +549,20 @@ span.line {
         margin: auto;
         .filter_button {
           float: right;
-          button {
-            padding: 0 !important;
-            border: 0 !important;
-            margin: 0 !important;
-            background: transparent !important;
-            font-size: fontsize(flavor) !important;
-            min-width: 40px !important;
+        }
+        .searchResultInfo {
+          float: left;
+          .inline_icon {
+            opacity: 0.7;
           }
+        }
+        button {
+          padding: 0 !important;
+          border: 0 !important;
+          margin: 0 !important;
+          background: transparent !important;
+          font-size: fontsize(flavor) !important;
+          min-width: 40px !important;
         }
         .inline_icon {
           height: fontsize(flavor);
@@ -597,6 +603,7 @@ span.line {
       button {
         min-width: 0 !important;
         height: size(inputsquare) !important;
+        padding: 0 !important;
         svg {
           width: size(input) !important;
           height: size(input) !important;
@@ -613,6 +620,13 @@ span.line {
           padding-left: 0 !important;
           padding-right: 0 !important;
         }
+      }
+
+      &.outline svg {
+        color: #757575;
+      }
+      &.filled svg {
+        color: #424242;
       }
     }
     .quantity {
@@ -704,67 +718,8 @@ span.line {
     }
   }
 
-  .textfield {
-    font-size: inherit !important;
-    line-height: inherit !important;
-    padding-bottom: size(base) !important;
-    height: auto !important;
-
-    div:first-child {
-      top: size(base);
-      left: size(base);
-      color: $font_color_faded !important;
-    }
-
-    textarea {
-      font-size: fontsize(flavor) !important;
-      line-height: $lineheight !important;
-      padding: size(base) !important;
-      background-color: $bg_interactive !important;
-      border: $border_accent_thin !important;
-      margin-top: 0 !important;
-      -webkit-user-select: all;
-      -moz-user-select: all;
-      user-select: all;
-    }
-
-    input {
-      padding: size(base) !important;
-      height: auto !important;
-      box-sizing: border-box;
-      background-color: $bg_interactive !important;
-      border: $border_accent_thin !important;
-    }
-  }
-
   .anonymous_feedback {
     padding: size(base) 0 size(large) 0 !important;
-  }
-
-  .selectfield {
-    margin-top: -6px;
-    width: 100% !important;
-    font-size: fontsize(flavor) !important;
-    color: black !important;
-
-    label {
-      color: black !important;
-      font-size: fontsize(label) !important;
-      transform: scale(1) translate(0px, -28px) !important;
-    }
-
-    svg {
-      fill: black !important;
-    }
-
-    &.halfLeft {
-      width: 45% !important;
-      margin-right: 5%;
-    }
-    &.halfRight {
-      width: 45% !important;
-      margin-left: 5%;
-    }
   }
 
   .inputSpacer { /* for text inputs that are close to bottom, give the screen space to scroll up */
@@ -1128,8 +1083,8 @@ span.line {
       font-size: fontsize(flavor);
     }
     .inline_icon {
-      padding-right: size(base);
       margin-bottom: -1 * size(tiny);
+      padding-right: size(small);
     }
     .timing {
       opacity: 0.65;
@@ -1138,16 +1093,12 @@ span.line {
       font-size: fontsize(flavor);
       display: inline-block;
       .inline_icon {
-        padding-right: size(small);
         height: fontsize(flavor);
       }
     }
     .expansions {
       opacity: 0.65;
       float: left;
-      .inline_icon {
-        padding-right: size(small);
-      }
     }
     .searchOrderDetail {
       opacity: 0.65;
@@ -1190,12 +1141,16 @@ span.line {
           font-size: fontsize(interactive);
           top: 0;
       }
-      .rightcell{
+      .rightcell {
         display: block;
         white-space: nowrap;
         overflow: hidden;
         text-align: right;
         width: auto;
+        .inline_icon {
+          padding-right: 0;
+          padding-left: size(base);
+        }
         svg {
           height: fontsize(flavor) !important;
           width: fontsize(flavor) !important;
@@ -1268,8 +1223,20 @@ span.line {
   }
 
   .searchForm {
-    button:disabled {
-      color: $font_color_primary !important;
+    .textfield, .selectfield {
+      margin-bottom: size(base);
+    }
+    .halfLeft, .halfRight {
+      width: 45%;
+    }
+    .halfLeft {
+      margin-right: 10%;
+      &.ranged:after {
+        content: '-';
+        position: absolute;
+        right: -11%; // 5% of total width on a 45% width object
+        top: 50%;
+      }
     }
   }
 
@@ -1279,11 +1246,8 @@ span.line {
   }
 
   .ratingDescription {
-    font-size: fontsize(label);
-    ul {
-      margin-top: size(tiny);
-      padding-left: fontsize(label);
-    }
+    margin-top: size(base);
+    font-size: fontsize(flavor);
   }
 
   .version {

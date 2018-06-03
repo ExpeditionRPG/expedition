@@ -20,7 +20,7 @@ const PartySizeSelect = (props: PartySizeSelectProps): JSX.Element => {
       <Picker label="Adventurers" onDelta={(i: number)=>props.onDelta(props.numPlayers, i)} value={props.numPlayers}>
         Set this to the number of players, then hit the Next button.
       </Picker>
-      <Button disabled={props.numPlayers===0} onTouchTap={() => props.onNext()}>Next</Button>
+      <Button disabled={props.numPlayers===0} onClick={() => props.onNext()}>Next</Button>
     </Card>
   );
 }

@@ -2,7 +2,7 @@ import Redux from 'redux'
 import {AUTH_SETTINGS} from '../Constants'
 import {toCard} from './Card'
 import {initQuest} from './Quest'
-import {login} from './User'
+import {ensureLogin} from './User'
 import {openSnackbar} from './Snackbar'
 import {userFeedbackClear} from './UserFeedback'
 import {SettingsType, QuestState, UserState, UserQuestsType, UserFeedbackState} from '../reducers/StateTypes'
@@ -167,18 +167,15 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       data.console = getLogBuffer();
     }
 
-    if (!a.user || !a.user.loggedIn) {
-      dispatch(login({callback: (user: UserState) => {
+    dispatch(ensureLogin())
+      .then((user: UserState) => {
         data = {...data,
           userid: user.id,
           email: user.email,
           name: user.name,
         };
-        dispatch(postUserFeedback(a.userFeedback.type, data));
-      }}));
-    } else {
-      dispatch(postUserFeedback(a.userFeedback.type, data));
-    }
+        return dispatch(postUserFeedback(a.userFeedback.type, data));
+      });
   };
 }
 

@@ -1,9 +1,9 @@
 import * as React from 'react'
-import IconButton from 'material-ui/IconButton'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import ChevronLeftIcon from 'material-ui/svg-icons/navigation/chevron-left'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
 import {URLS} from '../../Constants'
 import {getStore} from '../../Store'
 import {toCard, toPrevious} from '../../actions/Card'
@@ -26,11 +26,26 @@ export interface ExpeditionCardProps extends React.Props<any> {
 }
 
 export default class ExpeditionCard extends React.Component<ExpeditionCardProps, {}> {
+  state: {anchorEl: HTMLElement|null};
+
+  constructor(props: ExpeditionCardProps) {
+    super(props);
+    this.state = {anchorEl: null};
+  }
+
   onReturn() {
     if (this.props && this.props.onReturn) {
       return this.props.onReturn();
     }
     getStore().dispatch(toPrevious({}));
+  }
+
+  handleMenuClick(event: React.MouseEvent<HTMLElement>) {
+    this.setState({anchorEl: event.currentTarget});
+  }
+
+  handleMenuClose() {
+    this.setState({anchorEl: null});
   }
 
   onMenuSelect(value: string) {
@@ -48,6 +63,7 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
       case 'SETTINGS':
         return dispatch(toCard({name: 'SETTINGS'}));
       case 'RATE':
+        let err: Error|null = null;
         switch (getDevicePlatform()) {
           case 'android':
             openWindow(URLS.android);
@@ -56,9 +72,13 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
             openWindow(URLS.ios);
             break;
           case 'web':
-            throw new Error('Cannot rate web app');
+            err = Error('Cannot rate web app');
+            break;
           default:
-            throw new Error('Uknown platform encountered');
+            err = Error('Uknown platform encountered');
+        }
+        if (err) {
+          throw err;
         }
         break;
       case 'FEEDBACK':
@@ -68,9 +88,11 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
       default:
         throw new Error('Unknown menu option ' + value);
     }
+    this.handleMenuClose();
   }
 
   render() {
+    const {anchorEl} = this.state;
     let icon: JSX.Element = <span></span>;
     if (this.props.icon) {
       icon = <img id="bgimg" src={'images/' + this.props.icon + '.svg'}></img>;
@@ -82,25 +104,26 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
     if (this.props.className) {
       classes.push(this.props.className);
     }
+    // TODO: Position menu origin at top-right
+    // TODO: Style menuStyle={{background: '#f4ebcc'}}
     return (
       <div className={classes.join(' ')}>
         <div className="title_container">
-          <IconButton id="titlebarReturnButton" onTouchTap={() => this.onReturn()}><ChevronLeftIcon/></IconButton>
+          <IconButton id="titlebarReturnButton" onClick={() => this.onReturn()}><ChevronLeftIcon/></IconButton>
           <span className="menu">
-            <IconMenu
-              menuStyle={{background: '#f4ebcc'}}
-              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-              targetOrigin={{ vertical: 'top', horizontal: 'right' }}
-              iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-              onChange={(event: any, value: string)=>this.onMenuSelect(value)}
-            >
-              <MenuItem value="HOME" primaryText="Home"/>
-              {this.props.inQuest && isExperimental && <MenuItem value="SAVE" primaryText="Save quest"/>}
-              <MenuItem value="SETTINGS" primaryText="Settings"/>
-              {getDevicePlatform() !== 'web' && <MenuItem value="RATE" primaryText="Rate the App"/>}
-              <MenuItem value="FEEDBACK" primaryText="Send feedback"/>
-              {this.props.inQuest && <MenuItem value="REPORT" primaryText="Report quest"/>}
-            </IconMenu>
+            <IconButton aria-haspopup="true" onClick={(e) => this.handleMenuClick(e)}>
+              <MoreVertIcon/>
+            </IconButton>
+            <Menu
+              open={Boolean(anchorEl)}
+              onClose={this.handleMenuClose}>
+              <MenuItem onClick={() => {this.onMenuSelect('HOME');}}>Home</MenuItem>
+              {this.props.inQuest && isExperimental && <MenuItem onClick={() => {this.onMenuSelect('SAVE');}}>Save quest</MenuItem>}
+              <MenuItem onClick={() => {this.onMenuSelect('SETTINGS');}}>Settings</MenuItem>
+              {getDevicePlatform() !== 'web' && <MenuItem onClick={() => {this.onMenuSelect('RATE');}}>Rate the App</MenuItem>}
+              <MenuItem onClick={() => {this.onMenuSelect('FEEDBACK');}}>Send feedback</MenuItem>
+              {this.props.inQuest && <MenuItem onClick={() => {this.onMenuSelect('REPORT');}}>Report quest</MenuItem>}
+            </Menu>
           </span>
           <div className="title">{this.props.title}</div>
         </div>

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import FlatButton from 'material-ui/FlatButton'
+import Button from '@material-ui/core/Button'
 import Card from '../base/Card'
 import Checkbox from '../base/Checkbox'
 import Picker from '../base/Picker'
@@ -50,7 +50,7 @@ const Settings = (props: SettingsProps): JSX.Element => {
 
   return (
     <Card title="Settings">
-      <FlatButton className="primary large" onTouchTap={() => props.onExpansionSelect()}>Choose game / expansion</FlatButton>
+      <Button className="primary large" onClick={() => props.onExpansionSelect()}>Choose game / expansion</Button>
       <p className="expansionLabel">Currently playing: {props.contentSets.horror ? <strong>Expedition + Horror</strong> : <strong>Expedition Base</strong>}</p>
 
       <Picker label="Adventurers" value={props.numPlayers} onDelta={(i: number)=>props.onPlayerDelta(props.numPlayers, i)}>

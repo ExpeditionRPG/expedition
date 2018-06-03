@@ -24,14 +24,6 @@ const options = {
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules\/((?!expedition\-qdl).)*$/ },
-      { enforce: 'post', test: /\.tsx$/, exclude: /node_modules\/((?!expedition\-qdl).)*$/, use: [{
-        loader: 'babel-loader',
-        options: {
-          presets: [["env", {
-            "targets": {"browsers": [">5%", "last 2 years", "last 3 iOS versions", "chrome >= 39"]}
-          }]],
-        },
-      }]},
     ],
   },
   devtool: 'source-map',

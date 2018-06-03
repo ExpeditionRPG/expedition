@@ -1,41 +1,44 @@
 import Redux from 'redux'
 import * as Raven from 'raven-js'
 import {handleFetchErrors, fetchUserQuests} from './Web'
-import {openSnackbar} from './Snackbar'
-import {UserState} from '../reducers/StateTypes'
+import {UserState, AppState} from '../reducers/StateTypes'
 import {loggedOutUser} from '../reducers/User'
 import {AUTH_SETTINGS} from '../Constants'
-import {getGA, getGapi} from '../Globals'
+import {getGA, getGapi, getWindow, CordovaLoginPlugin} from '../Globals'
 
-declare var gapi: any;
-declare var window: any;
+type LoadGapiResponse = {gapi: any, async: boolean};
 
-export type UserLoginCallback = (user: UserState, err?: string) => any;
-
-function loadGapi(callback: (gapi: any, async: boolean) => void) {
+let gapiLoaded = false;
+function loadGapi(): Promise<LoadGapiResponse> {
   const gapi = getGapi();
   if (!gapi) {
-    return;
+    return Promise.reject(Error('gapi not loaded'));
   }
-  if (window.gapiLoaded) {
-    return callback(gapi, false);
+  if (gapiLoaded) {
+    return Promise.resolve({gapi, async: false});
   }
-
-  gapi.load('client:auth2', () => {
+  return new Promise((resolve, reject) => {
+    gapi.load('client:auth2', {
+      callback: () => resolve(),
+      onerror: () => reject(Error('could not load gapi')),
+    });
+  })
+  .then(() => {
     gapi.client.setApiKey(AUTH_SETTINGS.API_KEY);
-    gapi.auth2.init({
+    return gapi.auth2.init({
       client_id: AUTH_SETTINGS.CLIENT_ID,
       scope: AUTH_SETTINGS.SCOPES,
       cookie_policy: 'none',
-    }).then(() => {
-      window.gapiLoaded = true;
-      return callback(gapi, true);
-    });
+    })
+  })
+  .then(() => {
+    gapiLoaded = true;
+    return {gapi, async: true}
   });
 }
 
-function registerUserAndIdToken(user: {name: string, image: string, email: string}, idToken: string, callback: UserLoginCallback) {
-  fetch(AUTH_SETTINGS.URL_BASE + '/auth/google', {
+function registerUserAndIdToken(user: {name: string, image: string, email: string}, idToken: string): Promise<UserState> {
+  return fetch(AUTH_SETTINGS.URL_BASE + '/auth/google', {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -61,120 +64,144 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
       getGA().set({ userId: id });
     }
     Raven.setUserContext({id});
-    callback({
+    return {
       loggedIn: true,
       id,
       name: user.name,
       image: user.image,
       email: user.email,
       quests: {}, // Requested separately; cleared for now since it's a new user
-    });
+    };
   }).catch((error: Error) => {
     console.log('Request failed', error);
-    callback(loggedOutUser, 'Error authenticating.');
+    throw new Error('Error authenticating.');
   });
 }
 
-function loginWeb(callback: UserLoginCallback) {
-  loadGapi((gapi, async) => {
-    // Since this is a user action, we can't show pop-ups if we get sidetracked loading,
-    // so we'll attempt a silent login instead. If that fails, their next attempt should be instant.
-    if (async) {
-      return silentLoginWeb(callback);
+function loginWeb(): Promise<void> {
+  return loadGapi()
+    .then((r) => {
+      // Since this is a user action, we can't show pop-ups if we get sidetracked loading,
+      // so we'll attempt a silent login instead. If that fails, their next attempt should be instant.
+      if (r.async) {
+        return silentLoginWeb();
+      }
+
+      return r.gapi.auth2.getAuthInstance().signIn({redirect_uri: 'postmessage'})
+        .then((googleUser: any) => {
+          const idToken: string = googleUser.getAuthResponse().id_token;
+          const basicProfile: any = googleUser.getBasicProfile();
+          registerUserAndIdToken({
+            name: basicProfile.getName(),
+            image: basicProfile.getImageUrl(),
+            email: basicProfile.getEmail(),
+          }, idToken);
+        });
+    });
+}
+
+function silentLoginWeb(): Promise<UserState|null> {
+  return loadGapi()
+    .then((r) => {
+    if (!r.gapi.auth2.getAuthInstance().isSignedIn.get()) {
+      throw new Error('Failed to silently login');
     }
-    gapi.auth2.getAuthInstance().signIn({redirect_uri: 'postmessage'}).then((googleUser: any) => {
-      const idToken: string = googleUser.getAuthResponse().id_token;
-      const basicProfile: any = googleUser.getBasicProfile();
+
+    const googleUser: any = r.gapi.auth2.getAuthInstance().currentUser.get();
+    const idToken: string = googleUser.getAuthResponse().id_token;
+    const basicProfile: any = googleUser.getBasicProfile();
+    return registerUserAndIdToken({
+      name: basicProfile.getName(),
+      image: basicProfile.getImageUrl(),
+      email: basicProfile.getEmail(),
+    }, idToken);
+  });
+}
+
+function silentLoginCordova(p: CordovaLoginPlugin): Promise<UserState|null> {
+  return new Promise((resolve, reject) => {
+    p.trySilentLogin({
+      scopes: AUTH_SETTINGS.SCOPES,
+      webClientId: AUTH_SETTINGS.CLIENT_ID,
+    }, (obj: any) => {
       registerUserAndIdToken({
-        name: basicProfile.getName(),
-        image: basicProfile.getImageUrl(),
-        email: basicProfile.getEmail(),
-      }, idToken, callback);
+        name: obj.displayName,
+        image: obj.imageUrl,
+        email: obj.email,
+      }, obj.idToken).then(resolve);
+    }, (err: string) => {
+      reject(Error(err));
     });
   });
 }
 
-function silentLoginWeb(callback: UserLoginCallback) {
-  loadGapi((gapi, async) => {
-    if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-      const googleUser: any = gapi.auth2.getAuthInstance().currentUser.get();
-      const idToken: string = googleUser.getAuthResponse().id_token;
-      const basicProfile: any = googleUser.getBasicProfile();
-      return registerUserAndIdToken({
-        name: basicProfile.getName(),
-        image: basicProfile.getImageUrl(),
-        email: basicProfile.getEmail(),
-      }, idToken, callback);
+function loginCordova(p: CordovaLoginPlugin): Promise<UserState> {
+  return new Promise((resolve, reject) => {
+    p.login({
+      scopes: AUTH_SETTINGS.SCOPES,
+      webClientId: AUTH_SETTINGS.CLIENT_ID,
+    }, (obj: any) => {
+      registerUserAndIdToken({
+        name: obj.displayName,
+        image: obj.imageUrl,
+        email: obj.email,
+      }, obj.idToken).then(resolve);
+    }, (err: string) => {
+      reject(Error(err));
+    });
+  });
+}
+
+function getGooglePlusPlugin(): Promise<CordovaLoginPlugin> {
+  return new Promise((resolve, reject) => {
+    const plugins = getWindow().plugins;
+    const googleplus = plugins && plugins.googleplus;
+    if (!googleplus) {
+      reject(Error('Cordova googleplus plugin not found'));
     }
-    return callback(loggedOutUser);
+    resolve(googleplus);
   });
 }
 
-function silentLoginCordova(callback: UserLoginCallback) {
-  if (!window.plugins || !window.plugins.googleplus) {
-    return;
-  }
-  window.plugins.googleplus.trySilentLogin({
-    scopes: AUTH_SETTINGS.SCOPES,
-    webClientId: AUTH_SETTINGS.CLIENT_ID,
-  }, (obj: any) => {
-    registerUserAndIdToken({
-      name: obj.displayName,
-      image: obj.imageUrl,
-      email: obj.email,
-    }, obj.idToken, callback);
-  }, (err: string) => {
-    callback(loggedOutUser, err);
-  });
-}
-
-function loginCordova(callback: UserLoginCallback) {
-  window.plugins.googleplus.login({
-    scopes: AUTH_SETTINGS.SCOPES,
-    webClientId: AUTH_SETTINGS.CLIENT_ID,
-  }, (obj: any) => {
-    registerUserAndIdToken({
-      name: obj.displayName,
-      image: obj.imageUrl,
-      email: obj.email,
-    }, obj.idToken, callback);
-  }, (err: string) => {
-    callback(loggedOutUser, err);
-  });
-}
-
-export function silentLogin(a: {callback?: (user: UserState) => void}, loginFunc = silentLoginWeb) {
-  return (dispatch: Redux.Dispatch<any>) => {
-    const loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
-      // Since it's silent, do nothing with error
-      dispatch({type: 'USER_LOGIN', user});
-      a.callback && a.callback(user);
+// Update the user's logged in state.
+// This should be called after every login attempt.
+function updateState(dispatch: Redux.Dispatch<any>): ((u: UserState) => Promise<UserState>) {
+  return (user: UserState) => {
+    dispatch({type: 'USER_LOGIN', user});
+    if (user) {
+      // TODO: Rate-limit this
       dispatch(fetchUserQuests());
-    };
-
-    if (window.plugins && window.plugins.googleplus) {
-      silentLoginCordova(loginCallback);
-    } else {
-      loginFunc(loginCallback);
     }
+    return Promise.resolve(user);
   };
 }
 
-export function login(a: {callback: (user: UserState) => any}, loginFunc = loginWeb) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    const loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
-      if (err) {
-        return dispatch(openSnackbar('Error logging in: ' + err));
-      }
-      dispatch({type: 'USER_LOGIN', user});
-      a.callback(user);
-      dispatch(fetchUserQuests());
+// Prompt the user for login if user is not logged in already.
+// Throws an error if login fails.
+export function ensureLogin(): (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => Promise<UserState> {
+  return (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => {
+    const currentUser = getState().user;
+    if (currentUser !== loggedOutUser) {
+      return Promise.resolve(currentUser);
     }
+    return getGooglePlusPlugin()
+      .then((p) => loginCordova(p))
+      .catch(() => loginWeb())
+      .then(updateState(dispatch));
+  };
+}
 
-    if (window.plugins && window.plugins.googleplus) {
-      loginCordova(loginCallback);
-    } else {
-      loginFunc(loginCallback);
+// Returns user state if successfully logged in silently.
+// Thows an error if login fails.
+export function silentLogin(): (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => Promise<UserState> {
+  return (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => {
+    const currentUser = getState().user;
+    if (currentUser !== loggedOutUser) {
+      return Promise.resolve(currentUser);
     }
+    return getGooglePlusPlugin()
+      .then((p) => silentLoginCordova(p))
+      .catch(() => silentLoginWeb())
+      .then(updateState(dispatch));
   };
 }
