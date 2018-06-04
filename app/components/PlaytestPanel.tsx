@@ -1,5 +1,4 @@
 import * as React from 'react'
-import {OverrideTextArea} from './base/OverrideTextArea'
 
 export interface PlaytestPanelStateProps {}
 

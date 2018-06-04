@@ -6,12 +6,14 @@
   "repository": "https://github.com/ExpeditionRPG/expedition-quest-creator",
   "main": "react.js",
   "scripts": {
+    "lint": "tslint -c tslint.json 'app/**/*.{ts,tsx}'",
     "test": "mocha meta_tests.js && karma start karma.conf.js --single-run --browsers PhantomJS",
     "watch:test": "karma start karma.conf.js",
     "dev": "webpack-dev-server --progress",
     "start": "node app.js",
     "build": "webpack -p --config webpack.dist.config.js --progress"
   },
+  "precommit": ["test", "lint"],
   "author": "Fabricate.IO",
   "license": "CC-BY-NC-SA-4.0",
   "semistandard": {
@@ -81,6 +83,7 @@
     "karma-webpack": "^2.0.2",
     "mocha": "^5.2.0",
     "phantomjs-polyfill-object-assign": "~0.0.2",
+    "pre-commit": "^1.2.2",
     "react-hot-loader": "~3.1.3",
     "sass-loader": "^6.0.7",
     "source-map-loader": "^0.2.1",

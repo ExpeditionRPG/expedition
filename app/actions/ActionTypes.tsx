@@ -1,5 +1,5 @@
 import Redux from 'redux'
-import {UserState, QuestType, DialogIDType, ShareType, PanelType, SnackbarState} from '../reducers/StateTypes'
+import {UserState, QuestType, DialogIDType, PanelType, SnackbarState} from '../reducers/StateTypes'
 import {LogMessageMap} from 'expedition-qdl/lib/render/Logger'
 import {QDLParser} from 'expedition-qdl/lib/render/QDLParser'
 

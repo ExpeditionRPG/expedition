@@ -2,7 +2,7 @@
 // TODO have webpack dynamically insert the contents of the dic and aff files via a find-and-replace macro
 // That reads the dictionary files via FS (since tests don't have access to FS)
 
-export var aff = `
+export const aff = `
 SET ISO8859-1
 TRY esianrtolcdugmphbyfvkwzESIANRTOLCDUGMPHBYFVKWZ'
 NOSUGGEST !
@@ -207,7 +207,7 @@ REP shun cion
 
 `;
 
-export var dic = `
+export const dic = `
 62118
 0/nm
 1/n1

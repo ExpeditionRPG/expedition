@@ -51,8 +51,11 @@ describe('Dependencies', () => {
       'webpack-cli',
       'babel-preset-env',
       'babel-core',
-      'react-test-renderer', // Needed for unit tests
-      'react-addons-test-utils', // Needed for unit tests
+
+      // Needed for tests
+      'pre-commit',
+      'react-test-renderer',
+      'react-addons-test-utils',
     ];
 
     let depstrs = Object.keys(package.dependencies);
