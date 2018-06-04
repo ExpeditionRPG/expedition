@@ -56,7 +56,8 @@ describe('Dependencies', () => {
       'babel-core',
       'babel-loader',
 
-      // Needed for unit tests
+      // Needed for tests
+      'pre-commit',
       'karma-jasmine',
       'karma-phantomjs-launcher',
       'karma-webpack',

@@ -1,5 +1,3 @@
-import * as React from 'react'
-import {TemplateState} from '../components/views/quest/cardtemplates/TemplateTypes'
 import {ThemeType} from 'expedition-qdl/lib/schema/Constants'
 
 // TODO: Dedupe this with expedition-api/app/models/Quests QuestAttributes interface.

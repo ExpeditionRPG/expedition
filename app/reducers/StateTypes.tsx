@@ -1,6 +1,5 @@
-import * as Redux from 'redux'
 import {QuestDetails} from './QuestTypes'
-import {TemplatePhase, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes'
+import {TemplatePhase} from '../components/views/quest/cardtemplates/TemplateTypes'
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 import {SessionID} from 'expedition-qdl/lib/multiplayer/Session'
 import {StatusEvent} from 'expedition-qdl/lib/multiplayer/Events'
