@@ -35,6 +35,8 @@ export type SessionClientModel = Sequelize.Model<SessionClientInstance, Partial<
 export interface SessionInstance extends Sequelize.Instance<Session> {dataValues: Session}
 export type SessionModel = Sequelize.Model<SessionInstance, Session>;
 
+export const AUTH_SESSION_TABLE = 'AuthSession';
+
 export class Database {
   public sequelize: Sequelize.Sequelize;
 
@@ -102,5 +104,18 @@ export class Database {
 
     const sessionSpec = toSequelize(new Session({id: 0, secret: '', eventCounter: 0, locked: false}));
     this.sessions = this.sequelize.define('sessions', sessionSpec, standardOptions);
+
+    // This doesn't need an independent spec - it is used by connect-session-sequelize
+    // https://www.npmjs.com/package/connect-session-sequelize
+    // We redeclare it here so we can apply a custom name.
+    const authSession = this.sequelize.define(AUTH_SESSION_TABLE, {
+      sid: {
+        type: Sequelize.STRING(32),
+        primaryKey: true
+      },
+      expires: Sequelize.DATE,
+      data: Sequelize.TEXT,
+    });
+    authSession.sync();
   }
 }
