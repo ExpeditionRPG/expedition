@@ -153,4 +153,9 @@ export class Quest extends SchemaBase {
     maxLength: 128,
     default: '',
   }) awarded: string;
+  
+  @field({
+    default: false,
+  }) requirespenpaper: boolean;
+
 }
