@@ -27,6 +27,7 @@ export interface QuestSearchParams {
   partition?: string|null;
   expansions?: string[]|null;
   language?: string|null;
+  requirespenpaper?: boolean|null;
 }
 
 export function getQuest(db: Database, partition: string, id: string): Bluebird<Quest> {
@@ -87,6 +88,12 @@ export function searchQuests(db: Database, userId: string, params: QuestSearchPa
     where.language = params.language;
   }
 
+  if (params.requirespenpaper) {
+    where.requirespenpaper =  true;
+  } else {
+    where.requirespenpaper =  {$not: true};
+  }
+
   const order = [];
   if (params.order) {
     if (params.order === '+ratingavg') {
@@ -122,6 +129,7 @@ function mailNewQuestToAdmin(mail: MailService, quest: Quest) {
     for ${quest.minplayers} - ${quest.maxplayers} players
     over ${quest.mintimeminutes} - ${quest.maxtimeminutes} minutes.
     ${quest.genre}.
+    ${quest.requirespenpaper ? 'Requires pen and paper.' : 'No pen or paper required.'}
     ${quest.expansionhorror ? 'Requires The Horror expansion.' : 'No expansions required.'}`;
   return mail.send(to, subject, message);
 }

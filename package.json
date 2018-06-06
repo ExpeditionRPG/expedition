@@ -32,7 +32,7 @@
     "cheerio": "^1.0.0-rc.2",
     "connect-session-sequelize": "^5.2.1",
     "cors": "^2.8.4",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#a0d68174175c5822e22a572b80bcc6f59eee3bbf",
+    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#efcd5fd985e377f1a2a6ae9426e3bf4a6c63b92c",
     "express": "^4.15.3",
     "express-rate-limit": "^2.9.0",
     "express-session": "^1.15.4",
