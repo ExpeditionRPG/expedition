@@ -14,7 +14,10 @@
     "build": "webpack --config ./webpack.dist.config.js --progress",
     "build-all": "npm run build && cordova build android && cordova build ios"
   },
-  "precommit": ["test", "lint"],
+  "precommit": [
+    "test",
+    "lint"
+  ],
   "engines": {
     "node": "8.1.4"
   },
@@ -62,7 +65,7 @@
     "typescript": "2.8.3",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "webpack": "~3.11.0",
-    "webpack-cli": "~1.5.3",
+    "webpack-cli": "^3.0.2",
     "webpack-dev-server": "~2.11.2"
   },
   "dependencies": {
@@ -70,10 +73,10 @@
     "@material-ui/icons": "^1.1.0",
     "async": "~2.6.0",
     "cheerio": "~0.22.0",
-    "connect": "~3.4.1",
+    "connect": "^3.6.6",
     "cookie": "~0.3.1",
     "cordova-android": "~6.2.3",
-    "cordova-ios": "~4.4.0",
+    "cordova-ios": "^4.5.4",
     "cordova-ios-plugin-no-export-compliance": "git+https://github.com/mikaoelitiana/cordova-plugin-ios-no-export-compliance.git",
     "cordova-plugin-device": "^1.1.7",
     "cordova-plugin-fullscreen": "~1.1.0",
