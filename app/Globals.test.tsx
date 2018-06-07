@@ -30,17 +30,4 @@ describe('Globals', () => {
       expect(getAppVersion()).toMatch(/[0-9]+\.[0-9]+\.[0-9]+/);
     });
   });
-
-  describe('getStorageKey', () => {
-    it('returns boolean from storage');
-    it('returns JSON from storage');
-    it('returns number from storage');
-    it('returns string from storage');
-  });
-  describe('setStorageKey', () => {
-    it('converts booleans to strings');
-    it('converts JSON to strings');
-    it('converts numbers to strings');
-    it('converts objects to strings');
-  });
 });

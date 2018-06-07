@@ -3,7 +3,7 @@ import {loadAudioLocalFile} from '../../actions/Audio'
 import {AudioLoadingType, AudioState, CardName, CardPhase} from '../../reducers/StateTypes'
 import {getWindow} from '../../Globals'
 import {logEvent} from '../../Logging'
-import {AUDIO_COMMAND_DEBOUNCE_MS, MUSIC_INTENSITY_MAX} from '../../Constants'
+import {AUDIO_COMMAND_DEBOUNCE_MS, MUSIC_INTENSITY_MAX, INIT_DELAY} from '../../Constants'
 const eachLimit = require('async/eachLimit');
 
 /* Notes on audio implementation:
@@ -111,7 +111,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
     try {
       this.ctx = new (getWindow().AudioContext as any || getWindow().webkitAudioContext as any)();
       if (props.enabled) {
-        setTimeout(() => this.loadFiles(), 2000);
+        setTimeout(() => this.loadFiles(), INIT_DELAY.LOAD_AUDIO_MILLIS);
       }
     } catch(err) {
       if (props.enabled) {

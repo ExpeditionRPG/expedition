@@ -86,7 +86,7 @@ function getSearchResults(params: SearchSettings, callback: (quests: QuestDetail
       const response: any = JSON.parse(xhr.responseText);
       if (response.error) {
         dispatch({type: 'SEARCH_ERROR'});
-        return dispatch(openSnackbar('Network error when searching: ' + response.error));
+        return dispatch(openSnackbar(Error('Search error: ' + response.error)));
       }
 
       // Simple validation of response quests
@@ -101,7 +101,7 @@ function getSearchResults(params: SearchSettings, callback: (quests: QuestDetail
       callback(quests, response);
     };
     xhr.onerror = () => {
-      dispatch(openSnackbar('Network error: Please check your connection.'));
+      dispatch(openSnackbar(Error('Network error: Please check your connection.')));
     }
     xhr.withCredentials = true;
     xhr.send(JSON.stringify(params));

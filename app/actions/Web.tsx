@@ -4,8 +4,7 @@ import {toCard} from './Card'
 import {initQuest} from './Quest'
 import {ensureLogin} from './User'
 import {openSnackbar} from './Snackbar'
-import {userFeedbackClear} from './UserFeedback'
-import {SettingsType, QuestState, UserState, UserQuestsType, UserFeedbackState} from '../reducers/StateTypes'
+import {SettingsType, QuestState, UserState, UserQuestsType, FeedbackType} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {getDevicePlatform, getPlatformDump, getAppVersion} from '../Globals'
 import {logEvent} from '../Logging'
@@ -63,7 +62,7 @@ export const fetchQuestXML = remoteify(function fetchQuestXML(details: QuestDeta
     return dispatch(loadQuestXML({details, questNode, ctx: defaultContext()}));
   })
   .catch((e: Error) => {
-    return dispatch(openSnackbar('Network error: Please check your connection.'));
+    return dispatch(openSnackbar(Error('Network error: Please check your connection.')));
   });
 
   return {...details, promise};
@@ -132,16 +131,16 @@ export function subscribe(a: {email: string}) {
       logEvent('user_subscribe', {});
       dispatch(openSnackbar('Thank you for subscribing!'));
     }).catch((error: Error) => {
-      dispatch(openSnackbar('Error subscribing: ' + error));
+      dispatch(openSnackbar(Error('Error subscribing: ' + error.toString())));
     });
   };
 }
 
-export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState}) {
+export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType, user: UserState, type: FeedbackType, anonymous: boolean, text:string, rating: number|null}) {
   return (dispatch: Redux.Dispatch<any>) => {
-    if (a.userFeedback.rating && a.userFeedback.rating < 3 && (!a.userFeedback.text || a.userFeedback.text.length < MIN_FEEDBACK_LENGTH)) {
+    if (a.rating && a.rating < 3 && (!a.text || a.text.length < MIN_FEEDBACK_LENGTH)) {
       return alert('Sounds like the quest needs work! Please provide feedback of at least ' + MIN_FEEDBACK_LENGTH + ' characters to help the author improve.');
-    } else if (a.userFeedback.text.length > 0 && a.userFeedback.text.length < MIN_FEEDBACK_LENGTH) {
+    } else if (a.text.length > 0 && a.text.length < MIN_FEEDBACK_LENGTH) {
       return alert('Reviews must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value to authors.');
     }
 
@@ -156,14 +155,14 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       version: getAppVersion(),
       email: a.user.email,
       name: a.user.name,
-      rating: a.userFeedback.rating,
-      text: a.userFeedback.text,
-      anonymous: a.userFeedback.anonymous,
+      rating: a.rating,
+      text: a.text,
+      anonymous: a.anonymous,
     };
 
     // If we're not rating, we're providing other feedback.
     // Provide a snapshot of the console to facilitate bug-hunting
-    if (!a.userFeedback.rating) {
+    if (!a.rating) {
       data.console = getLogBuffer();
     }
 
@@ -174,7 +173,7 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
           email: user.email,
           name: user.name,
         };
-        return dispatch(postUserFeedback(a.userFeedback.type, data));
+        return dispatch(postUserFeedback(a.type, data));
       });
   };
 }
@@ -198,11 +197,10 @@ function postUserFeedback(type: string, data: any) {
       })
       .then((response: string) => {
         logEvent('user_feedback_' + type, { label: data.questid, value: data.rating });
-        dispatch(userFeedbackClear());
         dispatch(openSnackbar('Submission successful. Thank you!'));
       }).catch((error: Error) => {
         logEvent('user_feedback_' + type + '_err', { label: error });
-        dispatch(openSnackbar('Error submitting review: ' + error));
+        dispatch(openSnackbar(Error('Error submitting review: ' + error.toString())));
       });
   };
 }

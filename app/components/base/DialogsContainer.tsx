@@ -8,12 +8,11 @@ import {deleteSavedQuest} from '../../actions/SavedQuests'
 import {openSnackbar} from '../../actions/Snackbar'
 import {changeSettings} from '../../actions/Settings'
 import {remotePlayDisconnect} from '../../actions/Multiplayer'
-import {userFeedbackChange} from '../../actions/UserFeedback'
 import {exitQuest} from '../../actions/Quest'
 import {submitUserFeedback, logMultiplayerStats, fetchQuestXML} from '../../actions/Web'
 import {MIN_FEEDBACK_LENGTH} from '../../Constants'
 import {getMultiplayerClient, MultiplayerCounters, initialMultiplayerCounters} from '../../Multiplayer'
-import {AppState, ContentSetsType, SavedQuestMeta, SettingsType, QuestState, UserState, UserFeedbackState} from '../../reducers/StateTypes'
+import {AppState, ContentSetsType, SavedQuestMeta, SettingsType, QuestState, UserState, FeedbackType} from '../../reducers/StateTypes'
 import {QuestDetails} from '../../reducers/QuestTypes'
 
 const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
@@ -31,7 +30,6 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
     settings: state.settings,
     user: state.user,
     remotePlayStats,
-    userFeedback: state.userFeedback || {} as any,
   };
 }
 
@@ -66,18 +64,14 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
       dispatch(setDialog(null));
       dispatch(changeSettings({contentSets}));
     },
-    onFeedbackChange: (text: string) => {
-      dispatch(userFeedbackChange({text}));
-    },
-    onFeedbackSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => {
-      userFeedback.type = 'feedback';
-      if (!userFeedback.text) {
+    onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => {
+      if (!text) {
         return alert('Please enter a description so that we can help resolve the issue.');
       }
-      if (userFeedback.text.length < MIN_FEEDBACK_LENGTH) {
+      if (text.length < MIN_FEEDBACK_LENGTH) {
         return alert('Issue description must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value.');
       }
-      dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
+      dispatch(submitUserFeedback({quest, settings, user, text, type, anonymous: false, rating: null}));
       dispatch(setDialog(null));
     },
     onPlayerDelta: (numPlayers: number, delta: number) => {
@@ -86,29 +80,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
         return;
       }
       dispatch(changeSettings({numPlayers}));
-    },
-    onReportErrorSubmit: (error: string, quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => {
-      userFeedback.type = 'report_error';
-      if (!userFeedback.text) {
-        return alert('Please enter a description of what you were doing so that we can help resolve the issue.');
-      }
-      if (userFeedback.text.length < MIN_FEEDBACK_LENGTH) {
-        return alert('Issue description must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value.');
-      }
-      userFeedback.text += '... Error: ' + error;
-      dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
-      dispatch(setDialog(null));
-    },
-    onReportQuestSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => {
-      userFeedback.type = 'report_quest';
-      if (!userFeedback.text) {
-        return alert('Please type what you\'re reporting the quest for so that we can help resolve the issue.');
-      }
-      if (userFeedback.text.length < MIN_FEEDBACK_LENGTH) {
-        return alert('Issue description must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value.');
-      }
-      dispatch(submitUserFeedback({quest, settings, user, userFeedback}));
-      dispatch(setDialog(null));
     },
     onRequestClose: () => {
       dispatch(setDialog(null));

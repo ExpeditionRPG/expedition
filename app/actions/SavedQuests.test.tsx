@@ -1,5 +1,6 @@
 import {QuestDetails} from '../reducers/QuestTypes'
-import {getStorageJson, getStorageString, getCheerio} from '../Globals'
+import {getCheerio} from '../Globals'
+import {getStorageJson, getStorageString} from '../LocalStorage'
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 import {defaultContext} from '../components/views/quest/cardtemplates/Template'
 import {savedQuestKey, storeSavedQuest, deleteSavedQuest, listSavedQuests, loadSavedQuest, SAVED_QUESTS_KEY} from './SavedQuests'

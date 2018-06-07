@@ -44,7 +44,7 @@ export function checkoutSubmit(stripeToken: string, checkout: CheckoutState, use
     })
     .catch((error: Error) => {
       logEvent('checkout_submit_err', {label: error});
-      dispatch(openSnackbar('Error encountered: ' + error));
+      dispatch(openSnackbar(error));
       dispatch(toCard({name: 'CHECKOUT', phase: 'ENTRY'}));
       dispatch(checkoutSetState({processing: false}));
     });

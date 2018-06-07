@@ -70,11 +70,6 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
   };
 }
 
-function postTimerReturn(dispatch: Redux.Dispatch<any>) {
-  // Return to the "Ready for Combat?" card instead of doing the timed round again.
-  dispatch(toPrevious({before: false, skip: [{name: 'QUEST_CARD', phase: 'TIMER'}]}));
-}
-
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CombatDispatchProps => {
   return {
     onNext: (phase: CombatPhase) => {
@@ -126,7 +121,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     onSurgeNext: (node: ParserNode) => {
       dispatch(handleResolvePhase({node}));
     },
-    onReturn: () => {postTimerReturn(dispatch)},
+    onReturn: () => {
+      // Return to the "Ready for Combat?" card instead of doing the timed round again.
+      dispatch(toPrevious({before: false, skip: [{name: 'QUEST_CARD', phase: 'TIMER'}]}));
+    },
     onEvent: (node: ParserNode, evt: string) => {
       dispatch(event({node, evt}));
     },

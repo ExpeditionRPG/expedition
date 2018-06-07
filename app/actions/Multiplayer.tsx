@@ -33,14 +33,14 @@ export function multiplayerNewSession(user: UserState) {
     .then((response: Response) => response.json())
     .then((data: {secret: string}) => {
       if (!data.secret) {
-        return dispatch(openSnackbar('Error parsing new session secret'));
+        return dispatch(openSnackbar(Error('Error parsing new session secret')));
       }
       logEvent('MULTIPLAYER_new_session', {label: data.secret});
       return dispatch(multiplayerConnect(user, data.secret));
     })
     .catch((error: Error) => {
       logEvent('MULTIPLAYER_new_session_err', {label: error.toString()});
-      dispatch(openSnackbar('Error creating session: ' + error.toString()));
+      dispatch(openSnackbar(Error('Error creating session: ' + error.toString())));
     });
   };
 }
@@ -64,7 +64,7 @@ export function multiplayerConnect(user: UserState, secret: string) {
     .then((response: Response) => response.json())
     .then((data: {session: string}) => {
       if (!data.session) {
-        return dispatch(openSnackbar('Error parsing session'));
+        return dispatch(openSnackbar(Error('Error parsing session')));
       }
       sessionID = data.session;
     })
@@ -83,7 +83,7 @@ export function multiplayerConnect(user: UserState, secret: string) {
     .catch((error: Error) => {
       logEvent('MULTIPLAYER_connect_err', {label: error.toString()});
       console.error(error);
-      dispatch(openSnackbar('Error connecting: ' + error.toString()));
+      dispatch(openSnackbar(Error('Error connecting: ' + error.toString())));
     });
   };
 }
@@ -108,7 +108,7 @@ export function loadMultiplayer(user: UserState) {
     })
     .catch((error: Error) => {
       logEvent('MULTIPLAYER_init_err', {label: error.toString()});
-      dispatch(openSnackbar('Online multiplayer service unavailable: ' + error.toString()));
+      dispatch(openSnackbar(Error('Multiplayer unavailable: ' + error.toString())));
     })
   };
 }

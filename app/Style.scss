@@ -26,34 +26,34 @@
 // Transitional animation classes
 // ===============================================
 
-.NEXT-enter {
+.next-enter {
   transform: translate(100%);
 }
-.NEXT-enter.NEXT-enter-active {
+.next-enter.next-enter-active {
   transform: translate(0%);
   transition: transform 300ms ease-in-out;
 }
-.NEXT-exit {
+.next-exit {
   position: absolute;
   transform: translate(0%);
 }
-.NEXT-exit.NEXT-exit-active {
+.next-exit.next-exit-active {
   transform: translate(-100%);
   transition: transform 300ms ease-in-out;
 }
 
-.PREV-enter {
+.prev-enter {
   transform: translate(-100%);
 }
-.PREV-enter.PREV-enter-active {
+.prev-enter.prev-enter-active {
   transform: translate(0%);
   transition: transform 300ms ease-in-out;
 }
-.PREV-exit {
+.prev-exit {
   position: absolute;
   transform: translate(0%);
 }
-.PREV-exit.PREV-exit-active {
+.prev-exit.prev-exit-active {
   transform: translate(100%);
   transition: transform 300ms ease-in-out;
 }

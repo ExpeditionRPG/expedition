@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Check
   return {
     onError: (err: string): void => {
       logEvent('checkout_err', {label: err});
-      dispatch(openSnackbar('Error encountered: ' + err));
+      dispatch(openSnackbar(Error('Error encountered: ' + err)));
     },
     onHome: (): void => {
       dispatch(toPrevious({name: 'FEATURED_QUESTS'}));

@@ -10,7 +10,6 @@ import {search} from './Search'
 import {settings} from './Settings'
 import {snackbar} from './Snackbar'
 import {user} from './User'
-import {userFeedback} from './UserFeedback'
 import {remotePlay} from './Multiplayer'
 import {inflight} from './InFlight'
 import {AppStateWithHistory, AppState, AppStateBase} from './StateTypes'
@@ -31,7 +30,6 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     settings: settings(state.settings, action),
     snackbar: snackbar(state.snackbar, action),
     user: user(state.user, action),
-    userFeedback: userFeedback(state.userFeedback, action),
     remotePlay: remotePlay(state.remotePlay, action),
     commitID: state.commitID, // Handled by inflight()
   };

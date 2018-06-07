@@ -47,6 +47,11 @@ export const URLS = {
   QUEST_CREATOR: 'https://quests.expeditiongame.com/?utm_source=app',
 };
 
+export const INIT_DELAY = {
+  SILENT_LOGIN_MILLIS: 1000,
+  LOAD_AUDIO_MILLIS: 2000,
+}
+
 export const CARD_TRANSITION_ANIMATION_MS = 300;
 export const VIBRATION_SHORT_MS = 30; // for navigation / card changes
 export const VIBRATION_LONG_MS = 400; // for unique events, like start of the timer

@@ -113,7 +113,7 @@ export interface CardState {
   overrideDebounce?: boolean;
 }
 
-export type TransitionType = 'NEXT' | 'PREV' | 'INSTANT';
+export type TransitionClassType = 'next' | 'prev' | 'instant';
 
 export interface QuestState {
   details: QuestDetails;
@@ -150,13 +150,6 @@ export interface UserState {
 
 export type FeedbackType = 'feedback'|'rating'|'report_error'|'report_quest';
 
-export interface UserFeedbackState {
-  type: FeedbackType;
-  rating?: number;
-  text: string;
-  anonymous: boolean;
-}
-
 export interface MultiplayerSessionType {
   secret: string;
   id: SessionID;
@@ -192,7 +185,6 @@ export interface AppStateBase {
   search: SearchState;
   snackbar: SnackbarState;
   user: UserState;
-  userFeedback: UserFeedbackState;
   commitID: number;
 }
 

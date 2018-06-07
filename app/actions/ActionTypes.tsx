@@ -100,15 +100,6 @@ export interface CombatTimerStopAction extends Redux.Action {
   settings: SettingsType;
 }
 
-export interface UserFeedbackChangeAction extends Redux.Action {
-  type: 'USER_FEEDBACK_CHANGE';
-  userFeedback: any;
-}
-
-export interface UserFeedbackClearAction extends Redux.Action {
-  type: 'USER_FEEDBACK_CLEAR';
-}
-
 export interface SearchRequestAction extends Redux.Action {
   type: 'SEARCH_REQUEST';
 }

@@ -15,7 +15,7 @@ import {Provider} from 'react-redux'
 import theme from './Theme'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 
-import {AUTH_SETTINGS, NODE_ENV, UNSUPPORTED_BROWSERS} from './Constants'
+import {AUTH_SETTINGS, NODE_ENV, UNSUPPORTED_BROWSERS, INIT_DELAY} from './Constants'
 import {fetchAnnouncements, setAnnouncement} from './actions/Announcement'
 import {audioSet} from './actions/Audio'
 import {toPrevious} from './actions/Card'
@@ -26,8 +26,20 @@ import {openSnackbar} from './actions/Snackbar'
 import {silentLogin} from './actions/User'
 import {listSavedQuests} from './actions/SavedQuests'
 import {getStore} from './Store'
-import {getAppVersion, getWindow, getDevicePlatform, getDocument, getNavigator, getStorageBoolean, setGA, setupPolyfills} from './Globals'
+import {getAppVersion, getWindow, getDevicePlatform, getDocument, getNavigator, setGA} from './Globals'
+import {getStorageBoolean} from './LocalStorage'
 import {SettingsType} from './reducers/StateTypes'
+
+import 'whatwg-fetch' // fetch polyfill
+import Promise from 'promise-polyfill' // promise polyfill
+export function setupPolyfills(): void {
+  const w = getWindow();
+  if (!w.Promise) {
+    w.Promise = Promise;
+  }
+}
+
+const ReactGA = require('react-ga');
 
 // This is necessary to prevent compiler errors until/unless we fix the rest of
 // the repo to reference custom-defined action types (similar to how redux-thunk does things)
@@ -45,9 +57,6 @@ declare module 'redux' {
   // TODO: Remove once https://github.com/zalmoxisus/redux-devtools-extension/issues/492 is fixed.
   export type GenericStoreEnhancer = any;
 }
-
-
-const ReactGA = require('react-ga');
 
 Raven.config(AUTH_SETTINGS.RAVEN, {
     release: getAppVersion(),
@@ -192,7 +201,7 @@ function setupOnError(window: Window) {
     // Otherwise, redux handlers may perform strange actions like calling
     // setState inside of a render() cycle.
     setTimeout(() => {
-      getStore().dispatch(openSnackbar('Error! Please send feedback.', message + ' Source: ' + label));
+      getStore().dispatch(openSnackbar(Error(message + ' Source: ' + label)));
     }, 0);
     return true;
   };
@@ -256,7 +265,7 @@ export function init() {
     getStore().dispatch(silentLogin())
       .then(console.log)
       .catch(console.error);
-  }, 2000);
+  }, INIT_DELAY.SILENT_LOGIN_MILLIS);
 
   setupPolyfills();
   setupGoogleAnalytics(); // before anything else that might log in the user

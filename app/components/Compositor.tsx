@@ -12,7 +12,7 @@ import {
   MultiplayerPhase,
   MultiplayerState,
   QuestState,
-  TransitionType,
+  TransitionClassType,
   SavedQuestsPhase,
   SearchPhase,
   SettingsType,
@@ -39,7 +39,7 @@ export interface CompositorStateProps {
   settings: SettingsType;
   snackbar: SnackbarState;
   theme: CardThemeType;
-  transition: TransitionType;
+  transition: TransitionClassType;
 }
 
 export interface CompositorDispatchProps {

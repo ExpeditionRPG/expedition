@@ -8,7 +8,7 @@ import TextField from '@material-ui/core/TextField'
 import Checkbox from './Checkbox'
 import Picker from './Picker'
 import {MultiplayerCounters} from '../../Multiplayer'
-import {ContentSetsType, DialogState, QuestState, SavedQuestMeta, SettingsType, UserState, UserFeedbackState} from '../../reducers/StateTypes'
+import {ContentSetsType, DialogState, QuestState, SavedQuestMeta, SettingsType, UserState, FeedbackType} from '../../reducers/StateTypes'
 import {QuestDetails} from '../../reducers/QuestTypes'
 import {openWindow} from '../../Globals'
 
@@ -121,127 +121,106 @@ export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialog
   }
 }
 
-interface FeedbackDialogProps extends React.Props<any> {
+interface TextAreaDialogProps extends React.Props<any> {
   open: boolean;
-  onFeedbackChange: (text: string) => void;
-  onFeedbackSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
-  onRequestClose: () => void;
   quest: QuestState;
   settings: SettingsType;
   user: UserState;
-  userFeedback: UserFeedbackState;
+  onRequestClose: () => void;
+  onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
 }
+class TextAreaDialog<T extends TextAreaDialogProps> extends React.Component<T, {}> {
+  protected title: string;
+  protected content: JSX.Element;
+  protected helperText: string;
 
-export class FeedbackDialog extends React.Component<FeedbackDialogProps, {}> {
-  // TODO TextField underlineShow={false}
+  state: {text: string};
+
+  constructor(props: T) {
+    super(props);
+    this.state = {text: ''};
+  }
+
+  onSubmit() {
+    throw new Error('Unimplemented');
+  }
+
   render(): JSX.Element {
     return (
       <Dialog open={Boolean(this.props.open)}>
-        <DialogTitle>Send Feedback</DialogTitle>
+        <DialogTitle>{this.title}</DialogTitle>
         <DialogContent className="dialog">
-          <p>Thank you for taking the time to give us feedback! If you've encountered a bug, please include the steps that you can take to reproduce the issue.</p>
+          {this.content}
           <TextField
             className="textfield"
             fullWidth={true}
-            helperText="Your feedback here"
+            helperText={this.helperText}
             multiline={true}
-            onChange={(e: any) => this.props.onFeedbackChange(e.target.value)}
+            onChange={(e: any) => this.setState({text: e.target.value})}
             rows={3}
             rowsMax={6}
-            value={this.props.userFeedback.text}
+            value={this.state.text}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>
-          <Button className="primary" onClick={() => this.props.onFeedbackSubmit(this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>Submit</Button>
+          <Button className="primary" onClick={() => this.onSubmit()}>Submit</Button>
         </DialogActions>
       </Dialog>
     );
   }
 }
 
-interface ReportErrorDialogProps extends React.Props<any> {
+export class FeedbackDialog extends TextAreaDialog<TextAreaDialogProps> {
+  constructor(props: TextAreaDialogProps) {
+    super(props);
+    this.title = 'Send Feedback';
+    this.content = <p>Thank you for taking the time to give us feedback! If you've encountered a bug, please include the steps that you can take to reproduce the issue.</p>;
+    this.helperText = 'Your feedback here';
+  }
+
+  onSubmit() {
+    this.props.onFeedbackSubmit('feedback', this.props.quest, this.props.settings, this.props.user, this.state.text);
+  }
+}
+
+
+interface ReportErrorDialogProps extends TextAreaDialogProps {
   error: string;
-  open: boolean;
-  onFeedbackChange: (text: string) => void;
-  onReportErrorSubmit: (error: string, quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
-  onRequestClose: () => void;
-  quest: QuestState;
-  settings: SettingsType;
-  user: UserState;
-  userFeedback: UserFeedbackState;
 }
+export class ReportErrorDialog extends TextAreaDialog<ReportErrorDialogProps> {
+  constructor(props: ReportErrorDialogProps) {
+    super(props);
+    this.title = 'Report Error';
+    this.content = <p>Thank you for taking the time to report an error! What were you doing when the error occurred?</p>
+    this.helperText = 'What you were doing at the time of the error';
+  }
 
-export class ReportErrorDialog extends React.Component<ReportErrorDialogProps, {}> {
-  render(): JSX.Element {
-    // TODO TextField underlineShow={false}
-    return (
-      <Dialog open={Boolean(this.props.open)}>
-        <DialogTitle>Report Error</DialogTitle>
-        <DialogContent className="dialog">
-          <p>Thank you for taking the time to report an error! What were you doing when the error occurred?</p>
-          <TextField
-            className="textfield"
-            fullWidth={true}
-            helperText="What you were doing at the time of the error"
-            multiline={true}
-            onChange={(e: any) => this.props.onFeedbackChange(e.target.value)}
-            rows={3}
-            rowsMax={6}
-            value={this.props.userFeedback.text}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>
-          <Button className="primary" onClick={() => this.props.onReportErrorSubmit(this.props.error, this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>Submit</Button>
-        </DialogActions>
-      </Dialog>
-    );
+  onSubmit() {
+    this.props.onFeedbackSubmit('report_error', this.props.quest, this.props.settings, this.props.user, this.state.text + '... Error: ' + this.props.error);
   }
 }
 
-interface ReportQuestDialogProps extends React.Props<any> {
-  open: boolean;
-  onFeedbackChange: (text: string) => void;
-  onReportQuestSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
-  onRequestClose: () => void;
-  quest: QuestState;
-  settings: SettingsType;
-  user: UserState;
-  userFeedback: UserFeedbackState;
-}
-
-export class ReportQuestDialog extends React.Component<ReportQuestDialogProps, {}> {
-  render(): JSX.Element {
-    // TODO TextField underlineShow={false}
-    return (
-      <Dialog open={Boolean(this.props.open)}>
-        <DialogTitle>Report Quest</DialogTitle>
-        <DialogContent className="dialog">
-          <p>You're reporting an issue with <i>{this.props.quest.details.title}</i>.</p>
-          <p>You should report a quest (instead of reviewing it at the end of the quest) if it is:</p>
-          <ul>
-            <li>Offensive or inappropriate for the age level it claimed to be.</li>
-            <li>Broken or buggy.</li>
-            <li>Incomplete or missing sections.</li>
-          </ul>
-          <TextField
-            className="textfield"
-            fullWidth={true}
-            helperText="Describe the issue"
-            multiline={true}
-            onChange={(e: any) => this.props.onFeedbackChange(e.target.value)}
-            rows={3}
-            rowsMax={6}
-            value={this.props.userFeedback.text}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>
-          <Button className="primary" onClick={() => this.props.onReportQuestSubmit(this.props.quest, this.props.settings, this.props.user, this.props.userFeedback)}>Submit</Button>
-        </DialogActions>
-      </Dialog>
+export class ReportQuestDialog extends TextAreaDialog<TextAreaDialogProps> {
+  constructor(props: TextAreaDialogProps) {
+    super(props);
+    this.title = 'Report Quest';
+    this.content = (
+      <span>
+        <p>You're reporting an issue with <i>{this.props.quest.details.title}</i>.</p>
+        <p>You should report a quest (instead of reviewing it at the end of the quest) if it is:</p>
+        <ul>
+          <li>Offensive or inappropriate for the age level it claimed to be.</li>
+          <li>Broken or buggy.</li>
+          <li>Incomplete or missing sections.</li>
+        </ul>
+      </span>
     );
+    this.helperText = 'Describe the issue';
+  }
+
+  onSubmit() {
+    this.props.onFeedbackSubmit('report_quest', this.props.quest, this.props.settings, this.props.user, this.state.text);
   }
 }
 
@@ -325,7 +304,6 @@ export interface DialogsStateProps {
   selectedSave: SavedQuestMeta;
   settings: SettingsType;
   user: UserState;
-  userFeedback: UserFeedbackState;
   remotePlayStats: MultiplayerCounters;
 };
 
@@ -334,12 +312,9 @@ export interface DialogsDispatchProps {
   onExitQuest: () => void;
   onExitMultiplayer: () => void;
   onExpansionSelect: (contentSets: ContentSetsType) => void;
-  onFeedbackChange: (text: string) => void;
-  onFeedbackSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
+  onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
   onMultitouchChange: (v: boolean) => void;
   onPlayerDelta: (numPlayers: number, delta: number) => void;
-  onReportErrorSubmit: (error: string, quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
-  onReportQuestSubmit: (quest: QuestState, settings: SettingsType, user: UserState, userFeedback: UserFeedbackState) => void;
   onSendMultiplayerReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => void;
   onRequestClose: () => void;
   playQuest: (quest: QuestDetails) => void;
@@ -380,34 +355,28 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
       />
       <FeedbackDialog
         open={props.dialog && props.dialog.open === 'FEEDBACK'}
-        onFeedbackChange={props.onFeedbackChange}
         onFeedbackSubmit={props.onFeedbackSubmit}
         onRequestClose={props.onRequestClose}
         quest={props.quest}
         settings={props.settings}
         user={props.user}
-        userFeedback={props.userFeedback}
       />
       <ReportErrorDialog
         error={props.dialog && props.dialog.message || ''}
         open={props.dialog && props.dialog.open === 'REPORT_ERROR'}
-        onFeedbackChange={props.onFeedbackChange}
-        onReportErrorSubmit={props.onReportErrorSubmit}
+        onFeedbackSubmit={props.onFeedbackSubmit}
         onRequestClose={props.onRequestClose}
         quest={props.quest}
         settings={props.settings}
         user={props.user}
-        userFeedback={props.userFeedback}
       />
       <ReportQuestDialog
         open={props.dialog && props.dialog.open === 'REPORT_QUEST'}
-        onFeedbackChange={props.onFeedbackChange}
-        onReportQuestSubmit={props.onReportQuestSubmit}
+        onFeedbackSubmit={props.onFeedbackSubmit}
         onRequestClose={props.onRequestClose}
         quest={props.quest}
         settings={props.settings}
         user={props.user}
-        userFeedback={props.userFeedback}
       />
       <SetPlayerCountDialog
         open={props.dialog && props.dialog.open === 'SET_PLAYER_COUNT'}

@@ -15,7 +15,7 @@ function setup(props: Partial<CompositorProps>) {
     card: initialCardState,
     quest: initialQuestState,
     theme: 'light',
-    transition: 'INSTANT',
+    transition: 'instant',
     settings: initialSettings,
     snackbar: initialSnackbar,
     ...props,
