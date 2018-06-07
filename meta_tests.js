@@ -53,7 +53,7 @@ describe('Dependencies', () => {
       'babel-core',
 
       // Needed for tests
-      'pre-commit',
+      'pre-push',
       'react-test-renderer',
       'react-addons-test-utils',
     ];
