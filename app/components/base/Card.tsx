@@ -116,6 +116,8 @@ export default class ExpeditionCard extends React.Component<ExpeditionCardProps,
             </IconButton>
             <Menu
               open={Boolean(anchorEl)}
+              anchorEl={anchorEl}
+              classes={{paper: 'menu_popup'}}
               onClose={() => this.handleMenuClose()}>
               <MenuItem onClick={() => {this.onMenuSelect('HOME');}}>Home</MenuItem>
               {this.props.inQuest && isExperimental && <MenuItem onClick={() => {this.onMenuSelect('SAVE');}}>Save quest</MenuItem>}

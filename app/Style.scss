@@ -1296,6 +1296,11 @@ span.line {
     }
   }
 
+  .menu_popup {
+    background-color: $bg_primary;
+    color: $font_color_primary;
+  }
+
   .centralMessage {
     text-align: center;
     margin-top: size(appbar);
