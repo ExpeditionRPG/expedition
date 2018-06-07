@@ -429,11 +429,16 @@ function renderTimerCard(props: CombatProps): JSX.Element {
     }
   }
 
+  const enemies = props.combat.enemies;
+  const enemy = enemies[Math.floor(Math.random() * enemies.length)];
+  const enemyClass = ((enemy || {}).class || '').toLowerCase();
+
   return (
     <TimerCard
       theme="dark"
       secondaryText={surgeWarning}
       tertiaryText={instruction}
+      icon={enemyClass}
       numPlayers={(props.settings.multitouch && props.settings.numPlayers > 1) ? props.numAliveAdventurers : 1}
       roundTimeTotalMillis={props.combat.roundTimeMillis}
       remotePlayState={props.remotePlayState}

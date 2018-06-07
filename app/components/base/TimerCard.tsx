@@ -9,6 +9,7 @@ interface TimerCardProps extends React.Props<any> {
   numPlayers: number;
   secondaryText?: string;
   tertiaryText?: string;
+  icon?: string;
   roundTimeTotalMillis: number;
   theme: CardThemeType;
   remotePlayState?: MultiplayerState;
@@ -95,9 +96,15 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
     const cardTheme = this.props.theme || 'light';
     const questTheme = getStore().getState().quest.details.theme || 'base';
     const classes = ['base_timer_card', 'card_theme_' + cardTheme, 'quest_theme_' + questTheme];
+    if (!this.props.icon) {
+      classes.push('no_icon');
+    }
 
     return (
       <div className={classes.join(' ')}>
+        {this.props.icon && <div className="timer_icon_wrapper">
+          <img className="timer_icon" src={'images/' + this.props.icon + '_white.svg'} />
+        </div>}
         <div className="value">{formattedTimer}</div>
         {secondaryText && <div className="secondary">{secondaryText}</div>}
         {tertiaryText && <div className="tertiary">{tertiaryText}</div>}

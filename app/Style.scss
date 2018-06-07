@@ -836,9 +836,35 @@ span.line {
     height: 100%;
     background-color: inherit;
     color: inherit;
+    position: relative;
 
-    background: url(/images/clock_small.svg) no-repeat center center;
-    background-size: 75% 75%;
+    &.no_icon {
+      background: url(/images/clock_small.svg) no-repeat center center;
+      background-size: 75% 75%;
+    }
+
+    .timer_icon_wrapper {
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      background-color: $bg_dark_primary;
+      -webkit-animation: fadeout 0.6s ease-in forwards;
+         -moz-animation: fadeout 0.6s ease-in forwards;
+          -ms-animation: fadeout 0.6s ease-in forwards;
+           -o-animation: fadeout 0.6s ease-in forwards;
+              animation: fadeout 0.6s ease-in forwards;
+    }
+
+    .timer_icon {
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 75%;
+      height: 100%;
+    }
 
     .value {
       font-size: fontsize(timervalue);
@@ -850,6 +876,7 @@ span.line {
       top: 50%;
       margin-top: -(fontsize(timervalue))/2;
       line-height: 1;
+      z-index: 0;
     }
     .secondary {
       font-size: 130%;
@@ -1263,9 +1290,7 @@ span.line {
 
   .dialog {
     width: 90% !important;
-    & > div {
-      background: url(images/papyrus-tiled.jpg) !important;
-    }
+    background: url(images/papyrus-tiled.jpg) !important;
     .base_picker, .base_checkbox {
       color: $font_color_primary !important;
     }
@@ -1426,6 +1451,22 @@ $fontsizemap: (
 @-ms-keyframes fadein {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+@keyframes fadeout {
+  0% { opacity: 1; height: 100%; }
+  99% { opacity: 0; height: 100%; }
+  100% { opacity: 0; height: 0; }
+}
+@-webkit-keyframes fadeout {
+  0% { opacity: 1; height: 100%; }
+  99% { opacity: 0; height: 100%; }
+  100% { opacity: 0; height: 0; }
+}
+@-ms-keyframes fadeout {
+  0% { opacity: 1; height: 100%; }
+  99% { opacity: 0; height: 100%; }
+  100% { opacity: 0; height: 0; }
 }
 
 @keyframes rotate {

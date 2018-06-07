@@ -22,7 +22,7 @@ interface ExitQuestDialogProps extends React.Props<any> {
 export class ExitQuestDialog extends React.Component<ExitQuestDialogProps, {}> {
   render(): JSX.Element {
     return (
-      <Dialog open={Boolean(this.props.open)}>
+      <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
         <DialogTitle>Exit quest?</DialogTitle>
         <DialogContent className="dialog">
           <p>Tapping exit will lose your place in the quest and return you to the home screen.</p>
@@ -45,7 +45,7 @@ interface ExitMultiplayerDialogProps extends React.Props<any> {
 export class ExitMultiplayerDialog extends React.Component<ExitMultiplayerDialogProps, {}> {
   render(): JSX.Element {
     return (
-      <Dialog open={Boolean(this.props.open)}>
+      <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
         <DialogTitle>Exit Multiplayer?</DialogTitle>
         <DialogContent className="dialog">
           <p>Tapping exit will disconnect you from your peers and return you to the home screen.</p>
@@ -79,7 +79,7 @@ export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDi
 
       // TODO: autoScrollBodyContent={true} ???
     return (
-      <Dialog open={Boolean(this.props.open)}>
+      <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
         <DialogTitle>Multiplayer Stats</DialogTitle>
         <DialogContent className="dialog">
           <p>Here's some multiplayer debugging information:</p>
@@ -106,7 +106,7 @@ interface ExpansionSelectDialogProps extends React.Props<any> {
 export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialogProps, {}> {
   render(): JSX.Element {
     return (
-      <Dialog open={Boolean(this.props.open)}>
+      <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
         <DialogTitle>Choose Game</DialogTitle>
         <DialogContent className="dialog">
           <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: false})}>Expedition</Button>
@@ -147,7 +147,7 @@ class TextAreaDialog<T extends TextAreaDialogProps> extends React.Component<T, {
 
   render(): JSX.Element {
     return (
-      <Dialog open={Boolean(this.props.open)}>
+      <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
         <DialogTitle>{this.title}</DialogTitle>
         <DialogContent className="dialog">
           {this.content}
@@ -260,7 +260,7 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
           </Checkbox>
         </div>);
     return (
-      <Dialog open={Boolean(this.props.open)}>
+      <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
         <DialogTitle>{horrorError ? 'Expansion Required' : 'How many players?'}</DialogTitle>
         <DialogContent className="dialog">
           {contents}
