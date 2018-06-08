@@ -167,14 +167,14 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
     }
 
     dispatch(ensureLogin())
-      .then((user: UserState) => {
-        data = {...data,
-          userid: user.id,
-          email: user.email,
-          name: user.name,
-        };
-        return dispatch(postUserFeedback(a.type, data));
-      });
+    .then((user: UserState) => {
+      data = {...data,
+        userid: user.id,
+        email: user.email,
+        name: user.name,
+      };
+      return dispatch(postUserFeedback(a.type, data));
+    });
   };
 }
 

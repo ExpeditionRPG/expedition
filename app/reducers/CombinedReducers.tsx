@@ -102,10 +102,12 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         ...state._history[pastStateIdx],
         _history: state._history.slice(0, pastStateIdx),
         _committed: state._committed,
-        settings: state.settings, // global settings should not be rewound.
-        remotePlay: state.remotePlay, // multiplayer settings should not be rewound.
-        commitID: state.commitID, // commit ID should not be rewound
-        saved: state.saved, // saved quests should not be rewound
+        // things that should persist / not be rewowned:
+        settings: state.settings,
+        remotePlay: state.remotePlay,
+        commitID: state.commitID,
+        user: state.user,
+        saved: state.saved,
         _return: true,
       } as AppStateWithHistory;
     }

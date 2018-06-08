@@ -296,7 +296,6 @@ export function renderResult(props: SearchResultProps): JSX.Element {
         <span className="expansions">
           {quest.expansionhorror && <img className="inline_icon" src="images/horror_small.svg"></img>}
         </span>
-
       </div>
     </Button>
   );

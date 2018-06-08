@@ -80,29 +80,29 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
 
 function loginWeb(): Promise<void> {
   return loadGapi()
-    .then((r) => {
-      // Since this is a user action, we can't show pop-ups if we get sidetracked loading,
-      // so we'll attempt a silent login instead. If that fails, their next attempt should be instant.
-      if (r.async) {
-        return silentLoginWeb();
-      }
+  .then((r) => {
+    // Since this is a user action, we can't show pop-ups if we get sidetracked loading,
+    // so we'll attempt a silent login instead. If that fails, their next attempt should be instant.
+    if (r.async) {
+      return silentLoginWeb();
+    }
 
-      return r.gapi.auth2.getAuthInstance().signIn({redirect_uri: 'postmessage'})
-        .then((googleUser: any) => {
-          const idToken: string = googleUser.getAuthResponse().id_token;
-          const basicProfile: any = googleUser.getBasicProfile();
-          registerUserAndIdToken({
-            name: basicProfile.getName(),
-            image: basicProfile.getImageUrl(),
-            email: basicProfile.getEmail(),
-          }, idToken);
-        });
+    return r.gapi.auth2.getAuthInstance().signIn({redirect_uri: 'postmessage'})
+    .then((googleUser: any) => {
+      const idToken: string = googleUser.getAuthResponse().id_token;
+      const basicProfile: any = googleUser.getBasicProfile();
+      return registerUserAndIdToken({
+        name: basicProfile.getName(),
+        image: basicProfile.getImageUrl(),
+        email: basicProfile.getEmail(),
+      }, idToken);
     });
+  });
 }
 
 function silentLoginWeb(): Promise<UserState|null> {
   return loadGapi()
-    .then((r) => {
+  .then((r) => {
     if (!r.gapi.auth2.getAuthInstance().isSignedIn.get()) {
       throw new Error('Failed to silently login');
     }
@@ -141,7 +141,7 @@ function loginCordova(p: CordovaLoginPlugin): Promise<UserState> {
       scopes: AUTH_SETTINGS.SCOPES,
       webClientId: AUTH_SETTINGS.CLIENT_ID,
     }, (obj: any) => {
-      registerUserAndIdToken({
+      return registerUserAndIdToken({
         name: obj.displayName,
         image: obj.imageUrl,
         email: obj.email,
@@ -185,9 +185,10 @@ export function ensureLogin(): (dispatch: Redux.Dispatch<any>, getState: ()=>App
       return Promise.resolve(currentUser);
     }
     return getGooglePlusPlugin()
-      .then((p) => loginCordova(p))
-      .catch(() => loginWeb())
-      .then(updateState(dispatch));
+    .then((p) => loginCordova(p))
+    .catch(() => loginWeb())
+    .then(updateState(dispatch))
+    .catch((err) => Promise.reject(err));
   };
 }
 
