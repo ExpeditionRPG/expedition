@@ -55,19 +55,19 @@ export function user(db: Database, req: express.Request, res: express.Response) 
   })
   .filter((m: MultiplayerSessionMeta|null) => {return m !== null})
   .then((history: MultiplayerSessionMeta[]) => {
-    res.status(200).send(JSON.stringify({history}));
+    res.status(200).end(JSON.stringify({history}));
   })
   .catch((e: Error) => {
-    return res.status(500).send(JSON.stringify({error: 'Error looking up user details: ' + e.toString()}));
+    return res.status(500).end(JSON.stringify({error: 'Error looking up user details: ' + e.toString()}));
   });
 }
 
 export function newSession(db: Database, req: express.Request, res: express.Response) {
   return createSession(db).then((s: SessionInstance) => {
-    res.status(200).send(JSON.stringify({secret: s.get('secret')}));
+    res.status(200).end(JSON.stringify({secret: s.get('secret')}));
   })
   .catch((e: Error) => {
-    return res.status(500).send(JSON.stringify({error: 'Error creating session: ' + e.toString()}));
+    return res.status(500).end(JSON.stringify({error: 'Error creating session: ' + e.toString()}));
   });
 }
 
@@ -94,11 +94,11 @@ export function connect(db: Database, req: express.Request, res: express.Respons
       });
     })
     .then(() => {
-      return res.status(200).send(JSON.stringify({session: session.get('id')}));
+      return res.status(200).end(JSON.stringify({session: session.get('id')}));
     })
     .catch((e: Error) => {
       if (e) {
-        return res.status(500).send(JSON.stringify({
+        return res.status(500).end(JSON.stringify({
           error: 'Could not join session: ' + e.toString()
         }));
       }

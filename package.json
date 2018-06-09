@@ -50,7 +50,7 @@
     "pg": "^7.4.3",
     "request": "^2.81.0",
     "request-promise": "^4.2.2",
-    "sequelize": "4.28.6",
+    "sequelize": "^4.37.10",
     "stripe": "^5.8.0",
     "winston": "^2.4.2",
     "ws": "^4.1.0"
