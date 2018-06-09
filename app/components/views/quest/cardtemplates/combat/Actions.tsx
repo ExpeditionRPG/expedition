@@ -1,4 +1,5 @@
 import Redux from 'redux'
+import * as seedrandom from 'seedrandom'
 import {PLAYER_DAMAGE_MULT} from '../../../../../Constants'
 import {Enemy, Loot} from '../../../../../reducers/QuestTypes'
 import {CombatDifficultySettings, CombatAttack} from './Types'
@@ -13,12 +14,10 @@ import {ENCOUNTERS} from '../../../../../Encounters'
 import {QuestNodeAction, remoteify} from '../../../../../actions/ActionTypes'
 import {loadNode} from '../../../../../actions/Quest'
 import {setMultiplayerStatus} from '../../../../../actions/Multiplayer'
-import * as seedrandom from 'seedrandom'
 import {getStore} from '../../../../../Store'
 
 const cheerio: any = require('cheerio');
 
-// Number of adventurers (such as for damage)
 function numLocalAndMultiplayerAdventurers(settings: SettingsType, rp: MultiplayerState): number {
   if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
     // Since single player still has two adventurers, the minimum possible is two.
@@ -36,8 +35,7 @@ function numLocalAndMultiplayerAdventurers(settings: SettingsType, rp: Multiplay
   return count || 1;
 }
 
-// Number of fingers
-function numLocalAndMultiplayerers(settings: SettingsType, rp: MultiplayerState): number {
+function numLocalAndMultiplayerPlayers(settings: SettingsType, rp?: MultiplayerState): number {
   if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
     return settings.numPlayers;
   }
@@ -53,6 +51,11 @@ function numLocalAndMultiplayerers(settings: SettingsType, rp: MultiplayerState)
   return count || 1;
 }
 
+export function roundTimeMillis(settings: SettingsType, rp?: MultiplayerState) {
+  const totalPlayerCount = numLocalAndMultiplayerPlayers(settings, rp);
+  return settings.timerSeconds * 1000 * PLAYER_TIME_MULT[totalPlayerCount];
+}
+
 export function generateCombatTemplate(settings: SettingsType, custom: boolean, node?: ParserNode, getState?: () => AppStateWithHistory): CombatState {
   let tierSum: number = 0;
   let enemies: Enemy[] = [];
@@ -64,7 +67,6 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
   }
   const multiplayer = (getState) ? getState().multiplayer : getStore().getState().multiplayer;
   const totalAdventurerCount = numLocalAndMultiplayerAdventurers(settings, multiplayer);
-  const totalPlayerCount = numLocalAndMultiplayerers(settings, multiplayer);
 
   return {
     custom: custom,
@@ -72,7 +74,6 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
     roundCount: 0,
     numAliveAdventurers: totalAdventurerCount,
     tier: tierSum,
-    roundTimeMillis: settings.timerSeconds * 1000 * PLAYER_TIME_MULT[totalPlayerCount],
     ...getDifficultySettings(settings.difficulty),
   }
 }
@@ -142,7 +143,7 @@ function getEnemies(node: ParserNode): Enemy[] {
 }
 
 function generateCombatAttack(node: ParserNode, settings: SettingsType, rp: MultiplayerState, elapsedMillis: number, rng: () => number): CombatAttack {
-  const totalPlayerCount = numLocalAndMultiplayerers(settings, rp);
+  const totalPlayerCount = numLocalAndMultiplayerPlayers(settings, rp);
   const playerMultiplier = PLAYER_DAMAGE_MULT[totalPlayerCount] || 1;
   const combat = node.ctx.templates.combat;
   if (!combat) {
@@ -152,7 +153,8 @@ function generateCombatAttack(node: ParserNode, settings: SettingsType, rp: Mult
 
   // enemies each get to hit once - 1.5x if the party took too long
   let attackCount = combat.tier;
-  if (combat.roundTimeMillis - elapsedMillis < 0) {
+  const roundTime = roundTimeMillis(settings, rp);
+  if (roundTime - elapsedMillis < 0) {
     attackCount = attackCount * 1.5;
   }
 

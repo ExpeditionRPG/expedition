@@ -7,7 +7,7 @@ import Card from '../../../../base/Card'
 import Picker from '../../../../base/Picker'
 import TimerCard from '../../../../base/TimerCard'
 import {MAX_ADVENTURER_HEALTH} from '../../../../../Constants'
-import {isSurgeNextRound} from './Actions'
+import {isSurgeNextRound, roundTimeMillis} from './Actions'
 import {SettingsType, CardState, MultiplayerState} from '../../../../../reducers/StateTypes'
 import {ParserNode} from '../TemplateTypes'
 import {EventParameters, Enemy, Loot} from '../../../../../reducers/QuestTypes'
@@ -440,7 +440,7 @@ function renderTimerCard(props: CombatProps): JSX.Element {
       tertiaryText={instruction}
       icon={enemyClass}
       numPlayers={(props.settings.multitouch && props.settings.numPlayers > 1) ? props.numAliveAdventurers : 1}
-      roundTimeTotalMillis={props.combat.roundTimeMillis}
+      roundTimeTotalMillis={roundTimeMillis(props.settings, props.multiplayerState)}
       multiplayerState={props.multiplayerState}
       onTimerStop={(ms: number) => props.onTimerStop(props.node, props.settings, ms, surge, props.seed)} />
   );

@@ -57,7 +57,7 @@ describe('Dependencies', () => {
       'babel-loader',
 
       // Needed for tests
-      'pre-commit',
+      'pre-push',
       'karma-jasmine',
       'karma-phantomjs-launcher',
       'karma-webpack',

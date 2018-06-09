@@ -11,7 +11,6 @@ export interface MidCombatPhase {
   mostRecentAttack?: CombatAttack;
   mostRecentRolls?: number[];
   numAliveAdventurers: number;
-  roundTimeMillis: number;
   roundCount: number;
   tier: number;
   roleplay?: ParserNode;
@@ -30,7 +29,6 @@ export interface CombatDifficultySettings {
 
 export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {
   custom: boolean;
-  roundTimeMillis: number;
 }
 
 export type CombatPhase = 'DRAW_ENEMIES' | 'PREPARE' | 'TIMER' | 'SURGE' | 'RESOLVE_ABILITIES' | 'RESOLVE_DAMAGE' | 'VICTORY' | 'DEFEAT' | 'NO_TIMER' | 'MID_COMBAT_ROLEPLAY';

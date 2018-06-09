@@ -17,26 +17,25 @@ export interface AudioControlsDispatchProps {
 
 export interface AudioControlsProps extends AudioControlsStateProps, AudioControlsDispatchProps {}
 
-// TODO
-const white = 'default';
-
 export default class AudioControls extends React.Component<AudioControlsProps, {}> {
   render() {
     if (this.props.audioLoaded === 'ERROR') {
       return (
         <div className="audioControls">
-          <ErrorIcon color={white} id="audioLoadError"/>
+          <ErrorIcon nativeColor="white" id="audioLoadError"/>
         </div>
       );
     }
 
     return (
       <div className="audioControls">
-        {this.props.audioLoaded === 'LOADING' && <RefreshIcon color={white} id="audioLoadingIndicator"/>}
+        {this.props.audioLoaded === 'LOADING' && <IconButton disabled={true}>
+          <RefreshIcon nativeColor="white" id="audioLoadingIndicator"/>
+        </IconButton>}
         <IconButton onClick={() => this.props.onAudioToggle(!this.props.audioEnabled)} id="audioToggle">
           {this.props.audioEnabled ?
-            <VolumeUpIcon color={white}/> :
-            <VolumeOffIcon color={white}/>
+            <VolumeUpIcon nativeColor="white" /> :
+            <VolumeOffIcon nativeColor="white" />
           }
         </IconButton>
       </div>

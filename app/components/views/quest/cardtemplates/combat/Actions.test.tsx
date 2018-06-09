@@ -1,4 +1,4 @@
-import {generateCombatTemplate, initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta, handleResolvePhase, midCombatChoice} from './Actions'
+import {roundTimeMillis, initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta, handleResolvePhase, midCombatChoice} from './Actions'
 import {DifficultyType, FontSizeType, MultiplayerState} from '../../../../../reducers/StateTypes'
 import {defaultContext} from '../Template'
 import {ParserNode} from '../TemplateTypes'
@@ -49,19 +49,16 @@ describe('Combat actions', () => {
     return baseNode.clone();
   }
 
-  describe('generateCombatTemplate', () => {
+  describe('roundTimeMillis', () => {
     it('Set timer to 10s with two+ players', () => {
-      const result = generateCombatTemplate({...TEST_SETTINGS, numPlayers: 2}, false);
-      expect(result).toEqual(jasmine.objectContaining({
-        roundTimeMillis: 10000,
-      }));
+      const result = roundTimeMillis({...TEST_SETTINGS, numPlayers: 2});
+      expect(result).toEqual(10000);
     });
     it('Set timer to 20s with one player', () => {
-      const result = generateCombatTemplate({...TEST_SETTINGS, numPlayers: 1}, false);
-      expect(result).toEqual(jasmine.objectContaining({
-        roundTimeMillis: 20000,
-      }));
+      const result = roundTimeMillis({...TEST_SETTINGS, numPlayers: 1});
+      expect(result).toEqual(20000);
     });
+    it('Accounts for remote play'); // TODO
   });
 
   describe('initCombat', () => {
@@ -93,6 +90,12 @@ describe('Combat actions', () => {
       }));
     });
   });
+
+  describe('generate combat template', () => {
+    it('Returns expected difficulty settings');
+    it('Returns expected alive adventurers - one player');
+    it('Returns expected alive adventurers - multiplayer');
+  })
 
   describe('initCustomCombat', () => {
     const actions = Action(initCustomCombat, {settings: TEST_SETTINGS}).execute({});

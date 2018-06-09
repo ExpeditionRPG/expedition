@@ -24,7 +24,7 @@ export interface CheckoutDispatchProps {
 export interface CheckoutProps extends CheckoutStateProps, CheckoutDispatchProps {}
 
 // Docs: https://stripe.com/docs/stripe-js
-export default class Checkout extends React.Component<CheckoutProps, {}> {
+class CheckoutForm extends React.Component<CheckoutProps, {}> {
   state: { card: stripe.elements.Element, paymentError: string|null, paymentValid: boolean, mounted: boolean };
 
   constructor(props: CheckoutProps) {
@@ -61,6 +61,7 @@ export default class Checkout extends React.Component<CheckoutProps, {}> {
 
   componentWillUnmount() {
     this.state.card.unmount();
+    this.setState({mounted: false});
   }
 
   handleSubmit(event: TouchEvent) {
@@ -78,36 +79,46 @@ export default class Checkout extends React.Component<CheckoutProps, {}> {
   }
 
   render() {
+    return (
+      <Card title="Tip the Author">
+        <div id="stripe">
+          <form id="stripeForm" action="/charge" method="post" className={this.props.checkout.processing ? 'disabled' : ''}>
+            <div className="form-row">
+              <p>Please enter your credit or debit card to tip {this.props.quest.details.author} ${this.props.checkout.amount} for <i>{this.props.quest.details.title}</i>.</p>
+              <label className="security"><LockIcon />Payments processed securely by Stripe.</label>
+              <div id="stripeCard"></div>
+              <div id="stripeErrors" role="alert">{this.state.paymentError}</div>
+            </div>
+            {!this.props.checkout.processing && <Button id="stripeSubmit" disabled={!this.state.paymentValid} onClick={(e: TouchEvent) => this.handleSubmit(e)}>
+              {(this.state.paymentValid) ? 'Pay' : 'Enter payment info'}
+            </Button>}
+            {this.props.checkout.processing && <div className="centralMessage">Processing payment, one moment...</div>}
+          </form>
+        </div>
+      </Card>
+    );
+  }
+}
+
+function renderCheckoutThankYou(props: CheckoutProps) {
+  return (
+    <Card title="Payment Complete">
+      <div className="centralMessage">
+        <p>Payment for ${props.checkout.amount} complete.</p>
+        <p>Thank you for your support!</p>
+      </div>
+      <Button onClick={() => props.onHome()}>Return Home</Button>
+    </Card>
+  );
+}
+
+export default class Checkout extends React.Component<CheckoutProps, {}> {
+  render() {
     switch (this.props.card.phase) {
       case 'ENTRY':
-        return (
-          <Card title="Tip the Author">
-            <div id="stripe">
-              <form id="stripeForm" action="/charge" method="post" className={this.props.checkout.processing ? 'disabled' : ''}>
-                <div className="form-row">
-                  <p>Please enter your credit or debit card to tip {this.props.quest.details.author} ${this.props.checkout.amount} for <i>{this.props.quest.details.title}</i>.</p>
-                  <label className="security"><LockIcon />Payments processed securely by Stripe.</label>
-                  <div id="stripeCard"></div>
-                  <div id="stripeErrors" role="alert">{this.state.paymentError}</div>
-                </div>
-                {!this.props.checkout.processing && <Button id="stripeSubmit" disabled={!this.state.paymentValid} onClick={(e: TouchEvent) => this.handleSubmit(e)}>
-                  {(this.state.paymentValid) ? 'Pay' : 'Enter payment info'}
-                </Button>}
-                {this.props.checkout.processing && <div className="centralMessage">Processing payment, one moment...</div>}
-              </form>
-            </div>
-          </Card>
-        );
+        return <CheckoutForm {...this.props} />;
       case 'DONE':
-        return (
-          <Card title="Payment Complete">
-            <div className="centralMessage">
-              <p>Payment for ${this.props.checkout.amount} complete.</p>
-              <p>Thank you for your support!</p>
-            </div>
-            <Button onClick={() => this.props.onHome()}>Return Home</Button>
-          </Card>
-        );
+        return renderCheckoutThankYou(this.props);
       default:
         return null;
     }
