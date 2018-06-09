@@ -7,7 +7,7 @@ export const FADE_ENTER_ANIMATION_MS = 500;
 export const FADE_EXIT_ANIMATION_MS = 500;
 
 export interface MultiplayerSyncStateProps {
-  remotePlay: MultiplayerState;
+  multiplayer: MultiplayerState;
 }
 
 export interface MultiplayerSyncDispatchProps {
@@ -39,7 +39,7 @@ export default class MultiplayerSync extends React.Component<MultiplayerSyncProp
     // Multiple actions or non-choice:
     // - Sweep an equivalent # "micro-card" symbols across the screen, then Next to the result.
     let body = null;
-    if (this.props.remotePlay && this.props.remotePlay.syncing === true) {
+    if (this.props.multiplayer && this.props.multiplayer.syncing === true) {
       body = (
         <CSSTransition
           classNames="fade"

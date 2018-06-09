@@ -5,7 +5,7 @@ import {AppStateWithHistory} from '../../reducers/StateTypes'
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: MultiplayerSyncStateProps): MultiplayerSyncStateProps => {
   return {
-    remotePlay: state.remotePlay,
+    multiplayer: state.multiplayer,
   };
 }
 

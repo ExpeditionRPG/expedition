@@ -22,7 +22,7 @@ export interface CombatStateProps {
   node: ParserNode;
   seed: string;
   victoryParameters?: EventParameters;
-  remotePlayState?: MultiplayerState;
+  multiplayerState?: MultiplayerState;
   tier: number;
   numAliveAdventurers: number;
   mostRecentRolls?: number[];
@@ -441,7 +441,7 @@ function renderTimerCard(props: CombatProps): JSX.Element {
       icon={enemyClass}
       numPlayers={(props.settings.multitouch && props.settings.numPlayers > 1) ? props.numAliveAdventurers : 1}
       roundTimeTotalMillis={props.combat.roundTimeMillis}
-      remotePlayState={props.remotePlayState}
+      multiplayerState={props.multiplayerState}
       onTimerStop={(ms: number) => props.onTimerStop(props.node, props.settings, ms, surge, props.seed)} />
   );
 }

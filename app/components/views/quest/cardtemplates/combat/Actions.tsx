@@ -62,9 +62,9 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
       tierSum += enemy.tier;
     }
   }
-  const remotePlay = (getState) ? getState().remotePlay : getStore().getState().remotePlay;
-  const totalAdventurerCount = numLocalAndMultiplayerAdventurers(settings, remotePlay);
-  const totalPlayerCount = numLocalAndMultiplayerers(settings, remotePlay);
+  const multiplayer = (getState) ? getState().multiplayer : getStore().getState().multiplayer;
+  const totalAdventurerCount = numLocalAndMultiplayerAdventurers(settings, multiplayer);
+  const totalPlayerCount = numLocalAndMultiplayerers(settings, multiplayer);
 
   return {
     custom: custom,
@@ -98,7 +98,7 @@ interface InitCustomCombatArgs {
 }
 export const initCustomCombat = remoteify(function initCustomCombat(a: InitCustomCombatArgs, dispatch: Redux.Dispatch<any>,  getState: () => AppStateWithHistory): InitCustomCombatArgs {
   if (!a.rp) {
-    a.rp = getState().remotePlay;
+    a.rp = getState().multiplayer;
   }
   dispatch(initCombat({
     node: new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext()),
@@ -349,7 +349,7 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
     a.settings = getState().settings;
   }
   if (!a.rp) {
-    a.rp = getState().remotePlay;
+    a.rp = getState().multiplayer;
   }
 
   dispatch(audioSet({peakIntensity: 0}));
@@ -398,7 +398,7 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
     a.settings = getState().settings;
   }
   if (!a.rp) {
-    a.rp = getState().remotePlay;
+    a.rp = getState().multiplayer;
   }
 
   let combat = a.node.ctx.templates.combat;
@@ -546,7 +546,7 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
     a.settings = getState().settings;
   }
   if (!a.rp) {
-    a.rp = getState().remotePlay;
+    a.rp = getState().multiplayer;
   }
 
   const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), numLocalAndMultiplayerAdventurers(a.settings, a.rp));

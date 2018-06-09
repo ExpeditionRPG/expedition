@@ -10,7 +10,7 @@ import {search} from './Search'
 import {settings} from './Settings'
 import {snackbar} from './Snackbar'
 import {user} from './User'
-import {remotePlay} from './Multiplayer'
+import {multiplayer} from './Multiplayer'
 import {inflight} from './InFlight'
 import {AppStateWithHistory, AppState, AppStateBase} from './StateTypes'
 import {ReturnAction} from '../actions/ActionTypes'
@@ -30,7 +30,7 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     settings: settings(state.settings, action),
     snackbar: snackbar(state.snackbar, action),
     user: user(state.user, action),
-    remotePlay: remotePlay(state.remotePlay, action),
+    multiplayer: multiplayer(state.multiplayer, action),
     commitID: state.commitID, // Handled by inflight()
   };
 }
@@ -104,7 +104,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         _committed: state._committed,
         // things that should persist / not be rewowned:
         settings: state.settings,
-        remotePlay: state.remotePlay,
+        multiplayer: state.multiplayer,
         commitID: state.commitID,
         user: state.user,
         saved: state.saved,
@@ -123,7 +123,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         _return: undefined,
         _committed: undefined,
         settings: undefined,
-        remotePlay: undefined,
+        multiplayer: undefined,
         saved: undefined,
       } as AppStateBase);
     }

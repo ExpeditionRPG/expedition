@@ -188,7 +188,7 @@ function setupOnError(window: Window) {
     Raven.setTagsContext(); // Clear any existing tags
     Raven.setTagsContext({
       audio: settings.audioEnabled,
-      remotePlay: state.remotePlay.session !== null,
+      multiplayer: state.multiplayer.session !== null,
     });
     Raven.captureException(new Error(message));
     if (quest.details.id) {

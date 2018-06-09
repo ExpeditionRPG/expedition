@@ -304,7 +304,7 @@ export interface DialogsStateProps {
   selectedSave: SavedQuestMeta;
   settings: SettingsType;
   user: UserState;
-  remotePlayStats: MultiplayerCounters;
+  multiplayerStats: MultiplayerCounters;
 };
 
 export interface DialogsDispatchProps {
@@ -347,7 +347,7 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
       />
       <MultiplayerStatusDialog
         open={props.dialog && props.dialog.open === 'MULTIPLAYER_STATUS'}
-        stats={props.remotePlayStats}
+        stats={props.multiplayerStats}
         user={props.user}
         questDetails={props.quest.details}
         onSendReport={props.onSendMultiplayerReport}

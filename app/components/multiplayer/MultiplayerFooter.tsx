@@ -8,7 +8,7 @@ import {CardThemeType, MultiplayerState} from '../../reducers/StateTypes'
 import {getMultiplayerClient} from '../../Multiplayer'
 
 export interface MultiplayerFooterStateProps {
-  remotePlay: MultiplayerState;
+  multiplayer: MultiplayerState;
 }
 
 export interface MultiplayerFooterDispatchProps {
@@ -21,12 +21,12 @@ export interface MultiplayerFooterProps extends MultiplayerFooterStateProps, Mul
 }
 
 const MultiplayerFooter = (props: MultiplayerFooterProps): JSX.Element => {
-  // const color = 'default'; // TODO (props.theme === 'dark') ? white : black;
+  const color = (props.theme === 'dark') ? 'white' : 'black';
   const adventurerIcon = (props.theme === 'dark') ? 'images/adventurer_white_small.svg' : 'images/adventurer_small.svg';
   const peers: JSX.Element[] = [];
   const rpClient = getMultiplayerClient();
-  for (const client of Object.keys(props.remotePlay.clientStatus)) {
-    const lastStatus = props.remotePlay.clientStatus[client];
+  for (const client of Object.keys(props.multiplayer.clientStatus)) {
+    const lastStatus = props.multiplayer.clientStatus[client];
     if (!lastStatus.connected) {
       continue;
     }
@@ -37,14 +37,14 @@ const MultiplayerFooter = (props: MultiplayerFooterProps): JSX.Element => {
   // TODO Icon colors here and in IconButton below
   const statusIcon = (
     <IconButton onClick={(e: any) => {props.onMultiplayerStatusIconTap();}}>
-      {(rpClient.isConnected()) ? <NetworkWifi/> : <SignalWifiOff/>}
+      {(rpClient.isConnected()) ? <NetworkWifi nativeColor={color} /> : <SignalWifiOff nativeColor={color} />}
     </IconButton>
   );
 
   return (
     <div className={'remote_footer card_theme_' + props.theme}>
       <IconButton onClick={(e: any) => {props.onMultiplayerExit();}}>
-         <Close />
+         <Close nativeColor={color} />
       </IconButton>
       <Button className="peers">
         {peers}

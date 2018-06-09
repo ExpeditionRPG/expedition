@@ -43,7 +43,7 @@ export const initialMultiplayerCounters = {
 
 
 function isSyncing(): boolean {
-  return getStore().getState().remotePlay.syncing;
+  return getStore().getState().multiplayer.syncing;
 }
 
 function getCommitID(): number {
@@ -283,7 +283,7 @@ export class MultiplayerClient extends ClientBase {
     const store = getStore();
     const state = store.getState();
     const elem = (state.quest && state.quest.node && state.quest.node.elem);
-    const selfStatus = (state.remotePlay && state.remotePlay.clientStatus && state.remotePlay.clientStatus[this.getClientKey()]);
+    const selfStatus = (state.multiplayer && state.multiplayer.clientStatus && state.multiplayer.clientStatus[this.getClientKey()]);
     let event: StatusEvent = {
       type: 'STATUS',
       connected: true,
@@ -359,7 +359,6 @@ export class MultiplayerClient extends ClientBase {
 
     this.session.onclose = (ev: CloseEvent) => {
       this.stats.disconnectCount++;
-
       switch (ev.code) {
         case 1000:  // CLOSE_NORMAL
           if (this.connected === false) {
@@ -397,8 +396,7 @@ export class MultiplayerClient extends ClientBase {
 
   disconnect() {
     this.connected = false;
-    this.session.close();
-    this.stats.disconnectCount++;
+    this.session.close(1000);
   }
 
   sendFinalizedEvent(event: MultiplayerEvent): void {

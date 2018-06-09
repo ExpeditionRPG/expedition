@@ -12,7 +12,7 @@ const mapStateToProps = (state: AppState, ownProps: MultiplayerStateProps): Mult
   return {
     phase: ownProps.phase,
     user: state.user,
-    remotePlay: state.remotePlay,
+    multiplayer: state.multiplayer,
   };
 }
 

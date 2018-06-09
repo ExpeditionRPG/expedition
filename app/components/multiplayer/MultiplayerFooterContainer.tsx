@@ -6,7 +6,7 @@ import {setDialog} from '../../actions/Dialog'
 
 const mapStateToProps = (state: AppState, ownProps: MultiplayerFooterStateProps): MultiplayerFooterStateProps => {
   return {
-    remotePlay: state.remotePlay
+    multiplayer: state.multiplayer
   };
 }
 

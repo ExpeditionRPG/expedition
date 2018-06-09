@@ -66,7 +66,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     seed: state.quest.seed,
     mostRecentRolls: stateCombat.mostRecentRolls,
     numAliveAdventurers: stateCombat.numAliveAdventurers,
-    remotePlayState: state.remotePlay,
+    multiplayerState: state.multiplayer,
   };
 }
 

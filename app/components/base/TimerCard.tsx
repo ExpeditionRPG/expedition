@@ -12,7 +12,7 @@ interface TimerCardProps extends React.Props<any> {
   icon?: string;
   roundTimeTotalMillis: number;
   theme: CardThemeType;
-  remotePlayState?: MultiplayerState;
+  multiplayerState?: MultiplayerState;
   onTimerStop: (elapsedMillis: number) => any;
 }
 
@@ -51,10 +51,10 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
   render() {
     let unheldClientCount = 0;
     let timerHeld = false;
-    if (this.props.remotePlayState && this.props.remotePlayState.clientStatus) {
+    if (this.props.multiplayerState && this.props.multiplayerState.clientStatus) {
       const rpClientID = getMultiplayerClient().getClientKey();
-      for (const client of Object.keys(this.props.remotePlayState.clientStatus)) {
-        const clientStatus = this.props.remotePlayState.clientStatus[client];
+      for (const client of Object.keys(this.props.multiplayerState.clientStatus)) {
+        const clientStatus = this.props.multiplayerState.clientStatus[client];
         if (!clientStatus.connected) {
           continue;
         }

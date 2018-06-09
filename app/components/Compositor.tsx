@@ -35,7 +35,7 @@ import {TransitionGroup, CSSTransition} from 'react-transition-group'
 export interface CompositorStateProps {
   card: CardState;
   quest: QuestState;
-  remotePlay: MultiplayerState;
+  multiplayer: MultiplayerState;
   settings: SettingsType;
   snackbar: SnackbarState;
   theme: CardThemeType;
@@ -121,12 +121,12 @@ export default class Compositor extends React.Component<CompositorProps, {}> {
               key={this.props.card.key}
               classNames={''}
               timeout={{enter:CARD_TRANSITION_ANIMATION_MS, exit:CARD_TRANSITION_ANIMATION_MS}}>
-              <div className={'base_main' + ((this.props.remotePlay && this.props.remotePlay.session) ? ' has_footer' : '')}>
+              <div className={'base_main' + ((this.props.multiplayer && this.props.multiplayer.session) ? ' has_footer' : '')}>
                 {card}
               </div>
             </CSSTransition>
           </TransitionGroup>
-          {this.props.remotePlay && this.props.remotePlay.session && <MultiplayerFooterContainer theme={this.props.theme}/>}
+          {this.props.multiplayer && this.props.multiplayer.session && <MultiplayerFooterContainer theme={this.props.theme}/>}
           <DialogsContainer />
           <MultiplayerSyncContainer />
           <Snackbar

@@ -9,7 +9,7 @@ export const initialMultiplayer: MultiplayerState = {
   session: null,
 };
 
-export function remotePlay(state: MultiplayerState = initialMultiplayer, action: Redux.Action|MultiplayerSessionAction): MultiplayerState {
+export function multiplayer(state: MultiplayerState = initialMultiplayer, action: Redux.Action|MultiplayerSessionAction): MultiplayerState {
   switch(action.type) {
     case 'MULTIPLAYER_SESSION':
       const rpsa = (action as any) as MultiplayerSessionAction;

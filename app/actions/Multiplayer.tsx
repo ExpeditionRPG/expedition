@@ -14,7 +14,7 @@ export function local(a: Redux.Action): LocalAction {
   return {type: 'LOCAL', action: a, _inflight: inflight} as any as LocalAction;
 }
 
-export function remotePlayDisconnect() {
+export function multiplayerDisconnect() {
   getMultiplayerClient().disconnect();
   return {type: 'MULTIPLAYER_DISCONNECT'};
 }

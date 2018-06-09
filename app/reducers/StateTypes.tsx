@@ -190,7 +190,7 @@ export interface AppStateBase {
 
 export interface AppState extends AppStateBase {
   settings: SettingsType;
-  remotePlay: MultiplayerState;
+  multiplayer: MultiplayerState;
   saved: SavedQuestState;
 }
 

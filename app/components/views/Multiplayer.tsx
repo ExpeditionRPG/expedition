@@ -14,7 +14,7 @@ export const MIN_SECRET_LENGTH = 4;
 export interface MultiplayerStateProps {
   phase: MultiplayerPhase;
   user: UserState;
-  remotePlay: MultiplayerState;
+  multiplayer: MultiplayerState;
 }
 
 export interface MultiplayerDispatchProps {
@@ -44,7 +44,7 @@ class MultiplayerConnect extends React.Component<MultiplayerProps, {}> {
   }
 
   render() {
-    const history = this.props.remotePlay.history.map((m: MultiplayerSessionMeta, i: number) => {
+    const history = this.props.multiplayer.history.map((m: MultiplayerSessionMeta, i: number) => {
       return (
         <Button key={i} onClick={()=>{this.props.onReconnect(this.props.user, m.id, m.secret)}}>
           {m.questTitle} ({m.peerCount || 0} peers) - {Moment(m.lastAction).fromNow()}
@@ -73,7 +73,7 @@ function renderLobby(props: MultiplayerProps): JSX.Element {
     <Card title="Lobby">
       <div className="remoteplay">
         <div><strong>Session created!</strong> Tell your peers to connect with the following code:</div>
-        <h1 className="sessionCode">{props.remotePlay.session && props.remotePlay.session.secret}</h1>
+        <h1 className="sessionCode">{props.multiplayer.session && props.multiplayer.session.secret}</h1>
         <p>The bottom bar indicates that you are in an online multiplayer session:</p>
         <p>
           <img className="inline_icon" src="images/adventurer_small.svg" /> Peers connected (including yourself)<br/>

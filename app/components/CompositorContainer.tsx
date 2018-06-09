@@ -9,7 +9,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CompositorStatePr
   let transition: TransitionClassType = 'next';
   if (state === undefined || Object.keys(state).length === 0) {
     transition = 'instant';
-  } else if (state.remotePlay && state.remotePlay.syncing) {
+  } else if (state.multiplayer && state.multiplayer.syncing) {
     transition = 'instant';
   } else if (state.card.name === 'SPLASH_CARD') {
     transition = 'instant';
@@ -24,7 +24,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CompositorStatePr
     transition,
     settings: state.settings,
     snackbar: state.snackbar,
-    remotePlay: state.remotePlay, // TODO rename to multiplayer
+    multiplayer: state.multiplayer, // TODO rename to multiplayer
   };
 }
 

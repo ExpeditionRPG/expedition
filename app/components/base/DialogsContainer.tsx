@@ -7,7 +7,7 @@ import {setDialog} from '../../actions/Dialog'
 import {deleteSavedQuest} from '../../actions/SavedQuests'
 import {openSnackbar} from '../../actions/Snackbar'
 import {changeSettings} from '../../actions/Settings'
-import {remotePlayDisconnect} from '../../actions/Multiplayer'
+import {multiplayerDisconnect} from '../../actions/Multiplayer'
 import {exitQuest} from '../../actions/Quest'
 import {submitUserFeedback, logMultiplayerStats, fetchQuestXML} from '../../actions/Web'
 import {MIN_FEEDBACK_LENGTH} from '../../Constants'
@@ -16,11 +16,11 @@ import {AppState, ContentSetsType, SavedQuestMeta, SettingsType, QuestState, Use
 import {QuestDetails} from '../../reducers/QuestTypes'
 
 const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
-  let remotePlayStats: MultiplayerCounters;
+  let multiplayerStats: MultiplayerCounters;
   if (state.dialog && state.dialog.open === 'MULTIPLAYER_STATUS') {
-    remotePlayStats = getMultiplayerClient().getStats();
+    multiplayerStats = getMultiplayerClient().getStats();
   } else {
-    remotePlayStats = initialMultiplayerCounters;
+    multiplayerStats = initialMultiplayerCounters;
   }
 
   return {
@@ -29,7 +29,7 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
     selectedSave: state.saved.selected || {} as SavedQuestMeta,
     settings: state.settings,
     user: state.user,
-    remotePlayStats,
+    multiplayerStats,
   };
 }
 
@@ -46,7 +46,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
       dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
     },
     onExitMultiplayer: () => {
-      dispatch(remotePlayDisconnect());
+      dispatch(multiplayerDisconnect());
       dispatch(setDialog(null));
       dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
     },

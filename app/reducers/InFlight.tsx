@@ -7,7 +7,7 @@ export function stripMultiplayerStateAndSettings(state: AppStateWithHistory): Ap
   const newState = {...state};
   delete newState._committed;
   delete newState.settings;
-  delete newState.remotePlay;
+  delete newState.multiplayer;
   return newState;
 }
 
