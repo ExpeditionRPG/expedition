@@ -26,7 +26,7 @@
     <gap:plugin name="cordova-plugin-googleplus" source="npm">
         <param name="REVERSED_CLIENT_ID" value="io.fabricate.expedition" />
     </gap:plugin>
-    <preference name="android-minSdkVersion" value="22" />
+    <preference name="android-minSdkVersion" value="23" />
     <preference name="deployment-target" value="10.0.0" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="webviewbounce" value="false" />
