@@ -157,5 +157,4 @@ export class Quest extends SchemaBase {
   @field({
     default: false,
   }) requirespenpaper: boolean;
-
 }
