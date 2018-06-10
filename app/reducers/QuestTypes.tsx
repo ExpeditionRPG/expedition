@@ -27,6 +27,7 @@ export interface QuestDetails {
   theme?: ThemeType;
   official?: boolean;
   awarded?: string;
+  requirespenpaper?: boolean;
 }
 
 export type QuestCardName = 'COMBAT' | 'ROLEPLAY';

@@ -179,6 +179,20 @@ export class SearchSettingsCard extends React.Component<SearchSettingsCardProps,
               <MenuItem value="Adult">Adult</MenuItem>
             </Select>
           </FormControl>
+          <FormControl className="selectfield halfLeft">
+            <InputLabel htmlFor="requirespenpaper">Requires Pen & Paper</InputLabel>
+            <Select
+              inputProps={{
+                id: 'requirespenpaper',
+              }}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('requirespenpaper', e.target.value)}
+              value={this.state.requirespenpaper}
+            >
+              <MenuItem value={undefined}>No Preference</MenuItem>
+              <MenuItem value="true">Yes</MenuItem>
+              <MenuItem value="false">No</MenuItem>
+            </Select>
+          </FormControl>
           {rating && <div className="ratingDescription">
             <span>"{this.state.contentrating}" rating means: {rating.summary}</span>
           </div>}
@@ -341,7 +355,19 @@ export function renderDetails(props: SearchDetailsProps): JSX.Element {
   if (!quest) {
     return <Card title="Quest Details">Loading...</Card>
   }
-  const expansions = (quest.expansionhorror) ? <span><img className="inline_icon" src="images/horror_small.svg"/>The Horror</span> : 'None';
+  const requires = [];
+  if (quest.expansionhorror && quest.requirespenpaper) {
+    requires.push(<span><span><img className="inline_icon" src="images/horror_small.svg"/>The Horror</span>, <span><img className="inline_icon" src="images/book_small.svg"/> Pen and Paper</span></span>);
+  }
+  if (quest.expansionhorror && !quest.requirespenpaper) {
+    requires.push(<span><img className="inline_icon" src="images/horror_small.svg"/>The Horror</span>);
+  }
+  if (!quest.expansionhorror && quest.requirespenpaper) {
+    requires.push(<span><img className="inline_icon" src="images/book_small.svg"/> Pen and Paper</span>);
+  }
+  if (!quest.expansionhorror && !quest.requirespenpaper) {
+    requires.push(<span>None</span>);
+  }
   const ratingAvg = quest.ratingavg || 0;
   return (
     <Card title="Quest Details">
@@ -362,7 +388,7 @@ export function renderDetails(props: SearchDetailsProps): JSX.Element {
         <h3>Details</h3>
         <table className="searchDetailsTable">
           <tbody>
-            <tr><th>Expansions required</th><td>{expansions}</td></tr>
+            <tr><th>Requires</th><td>{requires}</td></tr>
             <tr><th>Content rating</th><td>{quest.contentrating}</td></tr>
             {quest.mintimeminutes !== undefined && quest.maxtimeminutes !== undefined &&
               <tr><th>Play time</th><td>{formatPlayPeriod(quest.mintimeminutes, quest.maxtimeminutes)}</td></tr>
@@ -422,7 +448,6 @@ class SearchDisclaimerCard extends React.Component<SearchDisclaimerCardProps, {}
     );
   }
 }
-
 function renderDisclaimer(props: SearchProps): JSX.Element {
   return (<SearchDisclaimerCard onLoginRequest={props.onLoginRequest}/>);
 }
