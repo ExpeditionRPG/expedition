@@ -38,6 +38,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
         contentrating: Joi.string().valid(CONTENT_RATINGS),
         expansionhorror: Joi.boolean(),
         language: Joi.string().valid(LANGUAGES),
+        requirespenpaper: Joi.boolean(),
       }, { allowUnknown: true, abortEarly: false }, (err: Error, quest: QuestType) => {
         if (err) {
           return alert(err);

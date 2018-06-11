@@ -71,6 +71,7 @@ export interface QuestType {
   expansionhorror?: boolean;
   language?: LanguageType;
   theme?: ThemeType;
+  requirespenpaper?: boolean;
 };
 
 export interface EditorState {

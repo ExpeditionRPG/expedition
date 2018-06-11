@@ -296,6 +296,13 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
         </div>
         <div>
           <Checkbox
+            label="Requires Pen and Paper"
+            value={metadata.get('requirespenpaper')}
+            onChange={(checked: boolean) => { this.props.handleMetadataChange(this.props.quest, 'requirespenpaper', checked); }}>
+          </Checkbox>
+        </div>
+        <div>
+          <Checkbox
             label="Major release (resets ratings &amp; reviews)"
             value={this.state.majorRelease}
             onChange={(checked: boolean) => { this.setState({majorRelease: checked}); }}>

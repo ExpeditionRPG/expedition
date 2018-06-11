@@ -235,6 +235,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         expansionhorror: metadata.get('expansionhorror') || false,
         language: metadata.get('language') || 'English',
         theme: metadata.get('theme') || 'base',
+        requirespenpaper: metadata.get('requirespenpaper') || false,
       });
       dispatch(receiveQuestLoad(quest));
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
@@ -294,6 +295,7 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
       expansionhorror: quest.expansionhorror,
       language: quest.language,
       theme: quest.theme,
+      requirespenpaper: quest.requirespenpaper,
     });
     return $.ajax({
       type: 'POST',
