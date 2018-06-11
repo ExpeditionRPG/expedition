@@ -110,6 +110,7 @@ export function search(db: Database, req: express.Request, res: express.Response
     partition: body.partition || PUBLIC_PARTITION,
     expansions: body.expansions,
     language: body.language,
+    requirespenpaper: body.requirespenpaper
   };
   return searchQuests(db, res.locals.id, params)
     .then((quests: QuestInstance[]) => {
@@ -175,6 +176,7 @@ export function publish(db: Database, mail: MailService, req: express.Request, r
     expansionhorror: req.query.expansionhorror || false,
     language: req.query.language || 'English',
     theme: req.query.theme || 'base',
+    requirespenpaper: req.query.requirespenpaper || false,
   });
   if (quest instanceof Error) {
     console.error(quest);
