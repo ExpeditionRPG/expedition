@@ -20,9 +20,9 @@
       "enableTsDiagnostics": true,
       "tsConfigFile": "tsconfig.json",
       "babelConfig": {
-        "presets": [
-          "es2015"
-        ]
+        "presets": [["env", {
+          "targets": {"browsers": [">5%", "last 2 years", "last 3 iOS versions", "chrome >= 39"]}
+        }]]
       }
     }
   }
