@@ -135,7 +135,7 @@ export default class Compositor extends React.Component<CompositorProps, {}> {
             message={<span>{this.props.snackbar.message}</span>}
             autoHideDuration={this.props.snackbar.timeout}
             onClose={this.props.closeSnackbar}
-            action={(this.props.snackbar.actionLabel) ? [<Button key={1} onClick={this.snackbarActionClicked}>{this.props.snackbar.actionLabel}</Button>] : []}
+            action={(this.props.snackbar.actionLabel) ? [<Button key={1} onClick={(e: React.MouseEvent<HTMLElement>) => this.snackbarActionClicked(e)}>{this.props.snackbar.actionLabel}</Button>] : []}
           />
           <AudioContainer />
         </span>

@@ -181,7 +181,7 @@ function renderPrepareTimer(props: CombatProps): JSX.Element {
           <li><strong>Play</strong> one ability from your hand.</li>
           {props.settings.multitouch && <li><strong>Place your finger</strong> on the screen. When all fingers are down, the timer stops.</li>}
           {!props.settings.multitouch && <li><strong>Tap the screen</strong> once everyone has selected their abilities to stop the timer.</li>}
-          <li><strong>Be careful!</strong> If the timer runs out, you'll all take additional damage.</li>
+          <li><strong>Act fast!</strong> If the timer runs out, you'll take more damage.</li>
         </ol>
       </div>
     );
