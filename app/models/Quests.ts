@@ -89,9 +89,7 @@ export function searchQuests(db: Database, userId: string, params: QuestSearchPa
   }
 
   if (params.requirespenpaper) {
-    where.requirespenpaper =  true;
-  } else {
-    where.requirespenpaper =  {$not: true};
+    where.requirespenpaper = params.requirespenpaper;
   }
 
   const order = [];
@@ -195,6 +193,8 @@ export function publishQuest(db: Database, mail: MailService, userid: string, ma
         updateValues.questversionlastmajor = updateValues.questversion;
         updateValues.created = new Date();
       }
+
+console.log(quest);
 
       // Publish to RenderedQuests
       db.renderedQuests.create(new RenderedQuest({
