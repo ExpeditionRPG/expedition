@@ -95,7 +95,7 @@
     "ms": "^2.1.1",
     "node-sass": "^4.9.0",
     "promise-polyfill": "~6.0.2",
-    "raven-js": "^3.25.2",
+    "raven-js": "^3.26.2",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-ga": "^2.3.6",
