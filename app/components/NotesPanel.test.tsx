@@ -1,0 +1,3 @@
+describe('NotesPanel', () => {
+  it('TODO');
+});
