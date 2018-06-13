@@ -1,9 +1,7 @@
 {
   "name": "expedition-api",
   "description": "The Expedition API Server",
-  "homepage": "http://expeditiongame.com",
-  "repository": "https://github.com/ExpeditionRPG/expedition-api",
-  "main": "react.js",
+  "homepage": "http://api.expeditiongame.com",
   "version": "0.0.0",
   "scripts": {
     "lint": "tslint -c tslint.json 'app/**/*.{ts,tsx}'",
@@ -17,8 +15,6 @@
     "test",
     "lint"
   ],
-  "author": "Fabricate.IO",
-  "license": "CC-BY-NC-SA-4.0",
   "semistandard": {
     "globals": [
       "after",
@@ -35,7 +31,7 @@
     "cheerio": "^1.0.0-rc.2",
     "connect-session-sequelize": "^5.2.1",
     "cors": "^2.8.4",
-    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#d6e7564410c21609022afd6fc34dcd5a11dfa15b",
+    "expedition-qdl": "git+https://github.com/ExpeditionRPG/expedition-qdl.git#46d9d5da62a65b06cdc27bf17ca4255bf0215e70",
     "express": "^4.15.3",
     "express-rate-limit": "^2.9.0",
     "express-session": "^1.15.4",
@@ -87,6 +83,7 @@
     "jasmine-expect": "^3.7.0",
     "jest": "^22.4.3",
     "json-loader": "^0.5.4",
+    "mocha": "^5.2.0",
     "pre-push": "^0.1.1",
     "sinon": "^5.1.0",
     "sinon-express-mock": "^2.0.0",
@@ -98,8 +95,5 @@
     "typescript-formatter": "^5.1.1",
     "webpack": "^2.7.0",
     "webpack-node-externals": "^1.7.2"
-  },
-  "engines": {
-    "node": "8.1.4"
   }
 }

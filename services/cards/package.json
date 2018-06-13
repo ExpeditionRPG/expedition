@@ -2,19 +2,13 @@
   "name": "expedition-cards",
   "version": "1.0.0",
   "description": "The card creator for Expedition: The Roleplaying Card Game",
-  "main": "index.js",
-  "homepage": "http://expeditiongame.com",
-  "bugs": "https://github.com/ExpeditionRPG/expedition-cards/issues",
-  "license": "CC-BY-NC-SA-4.0",
+  "homepage": "http://cards.expeditiongame.com",
   "scripts": {
     "build": "webpack --config ./webpack.dist.config.js",
     "test": "karma start --single-run --browsers PhantomJS",
     "watch:test": "karma start",
     "dev": "webpack-dev-server",
     "start": "webpack-dev-server"
-  },
-  "engines": {
-    "node": "8.1.4"
   },
   "dependencies": {
     "expedition-art": "git://github.com/expeditionRPG/expedition-art.git#master",
@@ -54,7 +48,6 @@
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.0",
     "file-loader": "^0.11.1",
-    "image-webpack-loader": "^3.3.0",
     "jasmine-core": "^2.6.2",
     "karma": "^1.7.0",
     "karma-jasmine": "^1.1.0",
