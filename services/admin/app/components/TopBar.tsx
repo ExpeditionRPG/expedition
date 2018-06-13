@@ -58,7 +58,7 @@ export class Filter extends React.Component<FilterProps, {filter: string, lastFi
         debounce: setTimeout(() => {
           this.setState({debounce: null});
           this.sendUpdate();
-        }, FILTER_DEBOUNCE),
+        }, FILTER_DEBOUNCE) as any as number,
       });
     }
   }

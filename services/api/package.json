@@ -11,10 +11,6 @@
     "start": "node dist/server.js",
     "heroku-postbuild": "NODE_ENV='production' webpack --config webpack.dist.config.js --progress"
   },
-  "prepush": [
-    "test",
-    "lint"
-  ],
   "semistandard": {
     "globals": [
       "after",
@@ -84,7 +80,6 @@
     "jest": "^22.4.3",
     "json-loader": "^0.5.4",
     "mocha": "^5.2.0",
-    "pre-push": "^0.1.1",
     "sinon": "^5.1.0",
     "sinon-express-mock": "^2.0.0",
     "sqlite3": "^4.0.0",
