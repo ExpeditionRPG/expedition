@@ -101,6 +101,5 @@
   },
   "engines": {
     "node": "8.1.4"
-  },
-  "snyk": false
+  }
 }

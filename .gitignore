@@ -1,18 +1,40 @@
+# Logs & runtime data
+logs
+*.log
+npm-debug.log*
+docker_context
+.node_repl_history
+pids
+*.pid
+*.seed
+
+# Testing & coverage
+lib-cov
+coverage
+.nyc_output
+
+# Compiled outputs & binary addons (http://nodejs.org/api/addons.html)
+build/Release
+dist/
+dll/
+www/
+*.apk
+
+# Dependency directories
 node_modules
-docs
+jspm_packages
 plugins
-dist
-hooks
-www
-bower_components
-.snyk
+platforms
+
+# Caches
+.npm
 .tmp
 Thumbs.db
-*.apk
-platforms
 docker_context
-npm-debug.log
-google-services.json
-GoogleService-Info.plist
 res/
 .awcache
+
+# Secrets (keys, passwords, etc)
+config.json
+google-services.json
+GoogleService-Info.plist
