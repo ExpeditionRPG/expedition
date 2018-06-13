@@ -1,6 +1,7 @@
 import Redux from 'redux'
+import merge from 'deepmerge'
 import {UserState} from './StateTypes'
-import {UserLoginAction, UserQuestsAction} from '../actions/ActionTypes'
+import {UserLoginAction, UserQuestsAction, UserQuestsDeltaAction} from '../actions/ActionTypes'
 
 export const loggedOutUser: UserState = {
   loggedIn: false,
@@ -17,6 +18,9 @@ export function user(state: UserState = loggedOutUser, action: Redux.Action): Us
       return (action as UserLoginAction).user;
     case 'USER_QUESTS':
       return {...state, quests: (action as UserQuestsAction).quests};
+    case 'USER_QUESTS_DELTA':
+      const delta = (action as UserQuestsDeltaAction).delta;
+      return merge(state, {quests: delta}) as UserState;
     default:
       return state;
   }

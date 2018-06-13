@@ -1,7 +1,8 @@
 import Redux from 'redux'
 import * as Raven from 'raven-js'
+import {UserQuestsDeltaAction} from './ActionTypes'
 import {handleFetchErrors, fetchUserQuests} from './Web'
-import {UserState, AppState} from '../reducers/StateTypes'
+import {AppState, UserState, UserQuestsType} from '../reducers/StateTypes'
 import {loggedOutUser} from '../reducers/User'
 import {AUTH_SETTINGS} from '../Constants'
 import {getGA, getGapi, getWindow, CordovaLoginPlugin} from '../Globals'
@@ -204,5 +205,11 @@ export function silentLogin(): (dispatch: Redux.Dispatch<any>, getState: ()=>App
       .then((p) => silentLoginCordova(p))
       .catch(() => silentLoginWeb())
       .then(updateState(dispatch));
+  };
+}
+
+export function userQuestsDelta(delta: Partial<UserQuestsType>) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    dispatch({type: 'USER_QUESTS_DELTA', delta} as UserQuestsDeltaAction);
   };
 }

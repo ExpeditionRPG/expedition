@@ -2,13 +2,12 @@ import Redux from 'redux'
 import {AUTH_SETTINGS} from '../Constants'
 import {toCard} from './Card'
 import {initQuest} from './Quest'
-import {ensureLogin} from './User'
+import {ensureLogin, userQuestsDelta} from './User'
 import {openSnackbar} from './Snackbar'
-import {SettingsType, QuestState, UserState, UserQuestsType, FeedbackType} from '../reducers/StateTypes'
+import {AppState, SettingsType, QuestState, UserState, UserQuestsType, FeedbackType} from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {getDevicePlatform, getPlatformDump, getAppVersion} from '../Globals'
 import {logEvent} from '../Logging'
-import {getStore} from '../Store'
 import {TemplateContext, ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 import {defaultContext} from '../components/views/quest/cardtemplates/Template'
 import {remoteify, UserQuestsAction} from './ActionTypes'
@@ -90,21 +89,22 @@ function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: Templa
 }
 
 export function logQuestPlay(a: {phase: 'start'|'end'}) {
-  try {
-    const state = getStore().getState();
-    const data = {
-      questid: state.quest.details.id,
-      questversion: state.quest.details.questversion,
-      userid: state.user.id,
-      players: state.settings.numPlayers,
-      difficulty: state.settings.difficulty,
-      platform: getDevicePlatform(),
-      version: getAppVersion(),
-      email: state.user.email,
-      name: state.user.name,
-    };
-
-    fetch(AUTH_SETTINGS.URL_BASE + '/analytics/quest/' + a.phase, {
+  return (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => {
+    try {
+      const state = getState();
+      const quest = state.quest.details;
+      const data = {
+        questid: quest.id,
+        questversion: quest.questversion,
+        userid: state.user.id,
+        players: state.settings.numPlayers,
+        difficulty: state.settings.difficulty,
+        platform: getDevicePlatform(),
+        version: getAppVersion(),
+        email: state.user.email,
+        name: state.user.name,
+      };
+      fetch(AUTH_SETTINGS.URL_BASE + '/analytics/quest/' + a.phase, {
         method: 'POST',
         body: JSON.stringify(data),
       })
@@ -112,8 +112,17 @@ export function logQuestPlay(a: {phase: 'start'|'end'}) {
       .catch((error: Error) => {
         logEvent('analytics_quest_err', { label: error });
       });
-  } catch (err) {
-    // Fail silently
+
+      if (a.phase === 'end') {
+        dispatch(userQuestsDelta({
+          [quest.id]: {
+            lastPlayed: new Date(),
+          },
+        }));
+      }
+    } catch (err) {
+      // Fail silently
+    }
   }
 }
 

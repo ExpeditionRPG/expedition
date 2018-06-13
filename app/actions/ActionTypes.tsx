@@ -131,6 +131,11 @@ export interface UserQuestsAction extends Redux.Action {
   quests: UserQuestsType;
 }
 
+export interface UserQuestsDeltaAction extends Redux.Action {
+  type: 'USER_QUESTS_DELTA';
+  delta: Partial<UserQuestsType>;
+}
+
 export interface SnackbarOpenAction extends Redux.Action {
   type: 'SNACKBAR_OPEN';
   message: string;
