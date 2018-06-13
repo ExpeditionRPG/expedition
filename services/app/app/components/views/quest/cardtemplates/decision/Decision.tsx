@@ -88,8 +88,6 @@ export function renderResolveDecision(props: DecisionProps): JSX.Element {
     inst = <span>{elems}</span>;
   } else if (props.settings.showHelp && outcome.type === 'RETRY') {
     inst = (
-      // TODO: show the decision made
-      // TODO: Show the specific skill and hide persona if not used.
       <span>
         <p>{(props.decision.outcomes.length > 0) ? 'Choose another' : 'One'} adventurer:</p>
         <ol>
@@ -104,9 +102,9 @@ export function renderResolveDecision(props: DecisionProps): JSX.Element {
 
   let pretext: JSX.Element;
   if (outcome === EMPTY_OUTCOME) {
-    pretext = <p>{scenario.prelude}</p>;
+    pretext = <p><em>{scenario.prelude}</em></p>;
   } else /* need to retry */ {
-    pretext = <p>{outcome.text}</p>;
+    pretext = <p><em>{outcome.text}</em></p>;
   }
 
   const numAttemptsLeft = props.decision.choice.numAttempts - props.decision.outcomes.length;
@@ -130,17 +128,16 @@ export function renderResolveDecision(props: DecisionProps): JSX.Element {
     );
   }
 
-  // TODO different for first retry
   let title: string;
-  if (props.decision.outcomes.length > 0 && outcome.type === 'RETRY') {
-    title = 'Resolve';
+  if (props.decision.outcomes.length === 0 && outcome.type === 'RETRY') {
+    title = 'Resolve Check';
   } else {
     title = {
       'SUCCESS': 'Success!',
       'FAILURE': 'Failure',
       'INTERRUPTED': 'Interrupted',
       'RETRY': 'Lend a Hand',
-    }[outcome.type] || 'Resolve';
+    }[outcome.type] || 'Resolve Check';
   }
 
   return (
