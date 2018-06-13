@@ -1,0 +1,110 @@
+<quest title="Learning 2: The Horror" data-line="0">
+  <roleplay icon="persona" title="New: Personas" data-line="2">
+    <p>New in The Horror: Personas.</p>
+    <instruction>
+      <p>During setup, each adventurer also draws a persona card and sets it to Base persona. Your persona reveals details about your character and how they react to events in the game. As your persona changes, you'll react differently. For players who enjoy roleplaying, this adds more depth to characters. Of course, roleplaying is always optional.</p>
+    </instruction>
+    <instruction>
+      <p>:persona: Persona cards have 5 levels. If you reach Min or Max, you resolve the effect at the "Roll &amp; Resolve" phase of the next round of combat and then reset to Base persona. If you're at Max, you can choose to not resolve and reset this round. The intermediate levels (indicated by arrows) offer no bonuses.</p>
+    </instruction>
+    <instruction>
+      <p>:persona: Influence abilities and Horror enemy surges will raise and lower your persona level. Your decisions in quests may also affect your persona level, if the quest indicates it.</p>
+    </instruction>
+    <instruction>
+      <p>:persona: Persona levels persist across fights. If you are knocked out, reset to Base.</p>
+    </instruction>
+  </roleplay>
+  <roleplay icon="influence" title="New: Influence" data-line="14">
+    <p>New in The Horror: Influence abilities.</p>
+    <instruction>
+      <p>During setup, each adventurer draws an additional Influence ability card (for a total of 7 starting abilities).</p>
+    </instruction>
+    <instruction>
+      <p>:influence: Influence abilities are a powerful way to boost you and your allies' personas... or turn your persona into even more powerful abilities.</p>
+    </instruction>
+    <instruction>
+      <p>:influence: When you level up, you can now also choose to learn a new Influence ability.</p>
+    </instruction>
+  </roleplay>
+  <roleplay icon="adventurer" title="Your adventure begins" data-line="24">
+    <p>"So, yer back for another adventure?" the grizzly town guardsman asks.</p>
+    <p>You, the adventurous children of the town and honorary members of the guard, nod solemnly.</p>
+    <p>It's been only a few months since your first adventure, yet the guardsman appears to have aged years. Times have been tough for the town. Perhaps the trouble started after your first adventure, or perhaps your adventures have made you more aware of the world. But the town needs your help again, and who are you to say no?</p>
+    <instruction>
+      <p>Which path did you take in the first Learning to Adventure quest?</p>
+    </instruction>
+    <choice text="Cleaned the guardhouse and fought the spiders">
+      <roleplay icon="fae" title="The Fae" data-line="36">
+        <p>The guardsman clears his throat and begins, "While you were helping us clear out the guardhouse, the Fae made quite a mess in the market.</p>
+        <p>"Since then, the town has struggled to recover. Sensing our weakness, the Fae have laid siege to the town, attempting to capture it for their own purposes.</p>
+        <p>"For the past month, the guard has valiantly held them off. But their most recent attacks have been more than we can handle. Frustrated at their lack of progress, they brought in allies of unspeakable horror.</p>
+        <p>"Some of these horrors have managed to get inside of the town. We need you to stop them."</p>
+      </roleplay>
+    </choice>
+    <choice text="Fought the Wisp and Mushroom in the market">
+      <roleplay icon="fae" title="The Fae" data-line="48">
+        <p>The guardsman clears his throat and begins, "After you so bravely fought off the Fae causing a commotion in the market, the town was quiet... for a while.</p>
+        <p>"But little did we know, they were gathering forces to get revenge on us. For the past month, the guard has had our hands full fighting them off. But their most recent attacks have been more than we can handle. Frustrated at their lack of progress, they brought in allies of unspeakable horror.</p>
+        <p>"Some of these horrors have managed to get inside of the town, but we can't spare anyone from the wall. We need you to stop them."</p>
+      </roleplay>
+    </choice>
+    <choice text="I don't remember">
+      <roleplay icon="fae" title="The Fae" data-line="58">
+        <p>"The Fae have decided to besiege our small town. What they want is anyone's guess." the guardsman explains.</p>
+        <p>"For the past month, the guard has valiantly held them off. But their most recent attacks have been more than we can handle. Frustrated at their lack of progress, they brought in allies of unspeakable horror.</p>
+        <p>"Some of these horrors have managed to get inside of the town, but we can't spare anyone from the wall. We need you to stop them."</p>
+      </roleplay>
+    </choice>
+  </roleplay>
+  <roleplay title="Preparations" data-line="66">
+    <p>The guardsman's speech lifts your spirits and prepares you for the fight ahead.</p>
+    <instruction>
+      <p>All adventurers gain 1 persona (slide your clip up to the upwards arrow).</p>
+    </instruction>
+    <p>"Here, this might help," he says, offering you a glowing vial.</p>
+    <instruction>
+      <p>:loot: Draw the "Holy Water" tier 2 loot.</p>
+    </instruction>
+    <p>You depart the guardhouse and head to the town square.</p>
+  </roleplay>
+  <roleplay title="The Town Square" data-line="78">
+    <p>The town square is silent and empty, with the sounds of battle echoing from the distant town walls.</p>
+    <p>You glance around, confused. The guardsman definitely said the town square...</p>
+    <p>And then... you hear something. The clatter of hooves. Growing louder. You spin to face it, weapons drawn... and the sight of a massive, skeletal hound fills your vision!</p>
+    <p>[learning_2_png_full]</p>
+  </roleplay>
+  <combat data-line="90">
+    <e>Tindalos Hound</e>
+    <event on="win" loot="false" xp="false">
+      <roleplay title="Victory" data-line="96">
+        <p>With an oddly melodic sound, the hound's bones collapse onto each other.</p>
+        <p>Though tired from the battle, you run back to the guardhouse, knowing that that he'll be excited about your success.</p>
+      </roleplay>
+    </event>
+    <event on="lose">
+      <roleplay title="Defeat" data-line="104">
+        <p>Sensing that this is a fight you won't be able to win, you slowly give ground until your back is against the market buildings. As you dodge claws and bites, you slide over to the butcher shop door. Between attacks, you open the door and leap through. The hound, too big to fit through, claws angrily at the air in front of you.</p>
+        <p>The hound, seeing its loss, pulls itself out of the door and runs down the street towards the battle.</p>
+        <p>Shaken and wounded, you make your way back to the guardhouse.</p>
+      </roleplay>
+    </event>
+  </combat>
+  <roleplay title="The Guardhouse" data-line="112">
+    <p>You shove open the heavy, wooden door and stumble into the dark interior. Behind you, the door slams into the wall, the noise echoing through the room as your eyes adjust.</p>
+    <p>You look around, but the room is empty.</p>
+    <p>"Hello?" you call out.</p>
+    <p>Silence.</p>
+    <p>Odd.</p>
+  </roleplay>
+  <roleplay title="The Desk" data-line="124">
+    <p>You walk up to the desk in the back of the room, where a candle burns low. On it lies a hastily scrawled note:</p>
+    <p>
+      <i>I'm sorry - Peter</i>
+    </p>
+    <p>To be continued with the next expansion, coming 2018.</p>
+    <instruction>
+      <p>:horror: And you're now ready to adventure with The Horror!</p>
+    </instruction>
+  </roleplay>
+  <trigger data-line="134">end</trigger>
+</quest>

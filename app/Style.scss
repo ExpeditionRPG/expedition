@@ -1,0 +1,1518 @@
+// ===============================================
+// Font setup
+// ===============================================
+
+@font-face {
+  font-family: 'CinzelBold';
+  font-style: normal;
+  font-weight: 700;
+  src: url(fonts/Cinzel-Bold.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+@font-face {
+  font-family: 'MinionPro';
+  font-style: normal;
+  src: url(fonts/Minion-Pro-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'NothingYouCouldDo';
+  font-style: normal;
+  src: url(fonts/Nothing-You-Could-Do.ttf) format('truetype');
+}
+
+// ===============================================
+// Transitional animation classes
+// ===============================================
+
+.next-enter {
+  transform: translate(100%);
+}
+.next-enter.next-enter-active {
+  transform: translate(0%);
+  transition: transform 300ms ease-in-out;
+}
+.next-exit {
+  position: absolute;
+  transform: translate(0%);
+}
+.next-exit.next-exit-active {
+  transform: translate(-100%);
+  transition: transform 300ms ease-in-out;
+}
+
+.prev-enter {
+  transform: translate(-100%);
+}
+.prev-enter.prev-enter-active {
+  transform: translate(0%);
+  transition: transform 300ms ease-in-out;
+}
+.prev-exit {
+  position: absolute;
+  transform: translate(0%);
+}
+.prev-exit.prev-exit-active {
+  transform: translate(100%);
+  transition: transform 300ms ease-in-out;
+}
+
+
+.fade-enter {
+  opacity: 0.01;
+}
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit.fade-exit-active {
+  opacity: 0.01;
+  transition: opacity 500ms ease-out;
+}
+
+
+// ===============================================
+// Constants
+// ===============================================
+
+$abswidthmax: 769px;
+$absheightmax: 1025px;
+$absmaxdimension: 1025px;
+$lineheight: 1.2;
+
+$largeFontMult: 1.25;
+$smallFontMult: 0.8;
+
+$sizemap: (
+  appbar: 48px,
+  remotefooter: 50px,
+  inputsquare: 48px,
+  inputspacing: 16px, /* slightly larger on small devices (to prevent false touches) */
+  input: 32px, /* size of input icon-style buttons */
+  watermark: 36vh, /* height-specific */
+  huge: 12vmin,
+  large: 6vmin,
+  icon: 4.5vmin,
+  base: 2vmin,
+  small: 1vmin,
+  tiny: 0.5vmin,
+);
+
+$fontsizemap: (
+  timervalue: 24vmin,
+  title: 6vmin,
+  interactive: 5.5vmin,
+  flavor: 4.7vmin,
+  label: 18px, // purposefully fixed-size
+);
+
+@function fontsize($key) {
+  @if map-has-key($fontsizemap, $key) {
+    @return map-get($fontsizemap, $key);
+  }
+
+  @warn "Unknown `#{$key}` in $fontsizemap.";
+  @return null;
+}
+
+@function size($key) {
+  @if map-has-key($sizemap, $key) {
+    @return map-get($sizemap, $key);
+  }
+
+  @warn "Unknown `#{$key}` in $sizemap.";
+  @return null;
+}
+
+$headerFont: CinzelBold, serif;
+$headerFontLetterSpacing: 0.2px !important;
+
+$horrorFont: NothingYouCouldDo, serif !important;
+
+$font_color_primary: #000000;
+$font_color_faded: #666666;
+
+$border_primary: 0.02in solid #000;
+$border_accent: 0.02in solid #666;
+$border_accent_thin: 0.01in solid #333;
+$border_faded: 0.02in solid #888;
+$border_desktop: size(base) solid #777;
+
+$bg_primary: #F4ECC8;
+$bg_inactive: #222222;
+$bg_titlebar: rgba(255, 255, 235, 0.65);
+$bg_interactive: rgba(245, 238, 210, 0.7);
+$bg_active: rgba(255, 255, 255, 0.9);
+
+$font_color_dark_primary: #FFFFFF;
+$border_dark_primary: 0.02in solid #999;
+$bg_dark_primary: #161011;
+$bg_dark_titlebar: rgba(110, 110, 110, 0.6);
+$bg_dark_interactive: rgba(35, 35, 35, 0.5);
+
+$font_color_red_primary: #FFFFFF;
+$border_red_primary: 0.02in solid #999;
+$bg_red_primary: #B71C1C; /* red900 */
+$bg_red_titlebar: rgba(120, 14, 14, 1);
+$bg_red_interactive: rgba(60, 20, 20, 1);
+$white_on_red_text_shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+
+// ===============================================
+// Base/General Styles
+// ===============================================
+
+body {
+  background-color: $bg_inactive;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: MinionPro;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+#noscript {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.snackbar {
+  span {
+    color: $font_color_dark_primary !important;
+  }
+}
+
+.remote_footer {
+  position: absolute;
+  bottom: 0;
+  height: size(remotefooter);
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  padding-top: size(remotefooter) / 10;
+  background-color: $bg_primary;
+  border-top: $border_accent;
+
+  .peers {
+    flex: 8;
+    text-align: center;
+
+    svg {
+      vertical-align: middle;
+      padding: 0 size(base);
+    }
+  }
+
+  &.card_theme_dark {
+    background-color: $bg_dark_primary;
+    color: $font_color_dark_primary;
+  }
+}
+
+.remote-affector {
+  position: relative;
+}
+
+.remote_sync {
+  width: 100%;
+  height: 100%;
+  background: black;
+  position: fixed;
+  z-index: 1000;
+
+  > div {
+    color: $font_color_dark_primary;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+h1, h2, h3 {
+  font-family: $headerFont;
+  margin: 0.5em 0 0.2em 0;
+  line-height: $lineheight;
+}
+h1 {
+  font-size: 2em;
+}
+h2 {
+  font-size: 1.5em;
+  .inline_icon {
+    height: 6.5vmin;
+    margin-bottom: -1.0vmin;
+  }
+}
+h3 {
+  font-size: 1.25em;
+}
+
+p {
+  margin: 0 0 1em 0;
+}
+p:first-child {
+  margin-top: 1em;
+}
+
+a {
+  color: $font_color_primary;
+  &.linkButton {
+    text-decoration: none;
+  }
+}
+
+.callout {
+  p {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  & > p {
+    margin-top: 0.25em;
+  }
+  margin-bottom: 1em;
+}
+span.line {
+  display: inline-block;
+}
+.expansionLabel {
+  text-align: center;
+  margin-top: 0.25em;
+}
+
+.artFull {
+  .art {
+    max-width: 100%;
+    margin: auto;
+    display: block;
+  }
+}
+.artHalf {
+  width: 100%;
+  padding-top: 50%;
+  position: relative;
+  overflow: hidden;
+  height: auto;
+  display: block;
+
+  .art {
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+@mixin styling() {
+
+  button {
+    &.large {
+      width: 100% !important;
+      height: auto !important;
+      div {
+        font-size: fontsize(interactive) !important;
+        line-height: $lineheight !important;
+        margin: 0.5em !important;
+      }
+    }
+    &.primary {
+      font-family: $headerFont !important;
+      border: $border_accent !important;
+      background: $bg_interactive !important;
+    }
+  }
+
+  .app_container {
+    &.largeFont {
+      .article {
+        font-size: $largeFontMult * fontsize(flavor);
+        .base_button > button {
+          font-size: $largeFontMult * fontsize(flavor) !important;
+        }
+        .inline_icon {
+          height: $largeFontMult * fontsize(flavor);
+        }
+      }
+    }
+    &.smallFont {
+      .article {
+        font-size: $smallFontMult * fontsize(flavor);
+        .base_button > button {
+          font-size: $smallFontMult * fontsize(flavor) !important;
+        }
+        .inline_icon {
+          height: $smallFontMult * fontsize(flavor);
+        }
+        h2 .inline_icon {
+          height: 1.1em;
+        }
+      }
+    }
+  }
+
+  .base_card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: $bg_primary;
+    color: $font_color_primary;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    &.card_theme_red {
+      background: $bg_red_primary;
+      color: $font_color_red_primary;
+      .title_container {
+        background-color: $bg_red_titlebar;
+        .title {
+          text-shadow: $white_on_red_text_shadow;
+        }
+        svg {
+          color: $font_color_red_primary !important;
+        }
+      }
+      .scrollbox_top {
+        display: none;
+      }
+      .article {
+        background: none;
+      }
+      .base_button > button, .base_checkbox button, .base_picker {
+        background-color: $bg_red_interactive !important;
+        svg {
+          color: $font_color_red_primary !important;
+        }
+      }
+      .base_button > button {
+        border: $border_red_primary !important;
+      }
+    }
+    &.card_theme_dark {
+      background-color: $bg_dark_primary;
+      color: $font_color_dark_primary;
+      .scrollbox_top {
+        display: none;
+      }
+      .title_container {
+        background-color: $bg_dark_titlebar;
+        svg {
+          color: $font_color_dark_primary !important;
+        }
+      }
+      .article {
+        background-image: url(images/encounter-tiled.jpg);
+      }
+      .base_button > button, .base_checkbox button, .base_picker {
+        background-color: $bg_dark_interactive !important;
+        svg {
+          color: $font_color_dark_primary !important;
+          fill: $font_color_dark_primary !important;
+        }
+      }
+      .base_button > button {
+        border: $border_dark_primary !important;
+      }
+    }
+    &.quest_theme_horror {
+      -webkit-filter: grayscale(50%);
+      -moz-filter: grayscale(50%);
+      filter: grayscale(50%);
+
+      h1, h2, h3, .title {
+        font-family: $horrorFont;
+      }
+    }
+    .title_container, .base_button > button, .base_checkbox button, .base_picker {
+      svg {
+        color: $font_color_primary !important;
+      }
+    }
+    .base_button.bigbutton > button {
+      font-size: 200% !important;
+      text-align: center !important;
+    }
+    .child_wrapper {
+      margin: size(large);
+      margin-top: size(small);
+      margin-bottom: 9vw;
+      position: relative;
+    }
+    .article {
+      position: relative;
+      min-height: max-content;
+      height: 100%;
+      padding: size(base) 0;
+      font-size: fontsize(flavor);
+      background-image: url(images/papyrus-tiled.jpg);
+      background-repeat: repeat;
+      background-position: center;
+      width: 100%;
+      overflow-x: hidden;
+
+      .scrollbox_top {
+        margin-top: size(tiny);
+        margin-bottom: -(size(base));
+        opacity: 0.3;
+      }
+      .scrollbox {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: $absmaxdimension;
+        margin: auto;
+        min-height: 50vh;
+      }
+      #bgimg {
+        position: absolute;
+        height: size(watermark);
+        width: size(watermark);
+        right: 0;
+        top: size(huge);
+        margin-right: -0.35 * size(watermark);
+        margin-top: 4vh;
+        opacity: 0.2;
+      }
+    }
+
+    &.search_card {
+      /* Less margin, more text */
+      .child_wrapper {
+        margin: size(base);
+      }
+    }
+
+    .title_container {
+      position: relative;
+      background-color: $bg_titlebar;
+      padding: 0;
+      line-height: size(appbar);
+      height: size(appbar);
+      width: 100%;
+
+      > button {
+        float: left;
+        padding: 0 !important;
+        svg {
+          height: size(input) !important;
+          width: size(input) !important;
+        }
+      }
+      .menu {
+        float: right;
+        padding: 0;
+        font-size: fontsize(interactive);
+      }
+      .title {
+        font-family: $headerFont;
+        letter-spacing: $headerFontLetterSpacing;
+
+        font-size: fontsize(title);
+        display: inline-block;
+        text-align: center;
+        position: absolute;
+        top: 1px;
+        left: size(appbar);
+        right: size(appbar);
+        height: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+    .header {
+      width: 100%;
+      background-color: $bg_titlebar;
+      line-height: $lineheight;
+      padding: size(base)/2 size(base) size(base)/2 size(base);
+      font-size: fontsize(flavor);
+      box-sizing: border-box;
+
+      .searchHeader {
+        width: 100%;
+        max-width: $absmaxdimension;
+        margin: auto;
+        .filter_button {
+          float: right;
+        }
+        .searchResultInfo {
+          float: left;
+          .inline_icon {
+            opacity: 0.7;
+          }
+        }
+        button {
+          padding: 0 !important;
+          border: 0 !important;
+          margin: 0 !important;
+          background: transparent !important;
+          font-size: fontsize(flavor) !important;
+          min-width: 40px !important;
+        }
+        .inline_icon {
+          height: fontsize(flavor);
+        }
+      }
+    }
+  }
+
+  ol, ul {
+    padding-left: size(icon);
+
+    li {
+      padding-bottom: size(small);
+
+      ol li, ul li {
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  .inline_icon {
+    height: size(icon);
+    margin-bottom: -(size(tiny));
+  }
+
+  i .inline_icon {
+    margin-left: fontsize(flavor)/8;
+    margin-right: -(fontsize(flavor)/8);
+  }
+  .starContainer {
+    .stars {
+      display: flex;
+      justify-content: center;
+    }
+    .star {
+      order: 1;
+      height: size(inputsquare) !important;
+      button {
+        min-width: 0 !important;
+        height: size(inputsquare) !important;
+        padding: 0 !important;
+        svg {
+          width: size(input) !important;
+          height: size(input) !important;
+          padding: size(inputspacing)/2 !important; /* /2 since applied to both sides */
+          margin-top: -0.5 * size(small) !important;
+        }
+        &:hover {
+          fill: black !important;
+        }
+        &.editable:hover {
+          cursor: pointer;
+        }
+        &:disabled svg {
+          padding-left: 0 !important;
+          padding-right: 0 !important;
+        }
+      }
+
+      &.outline svg {
+        color: #757575;
+      }
+      &.filled svg {
+        color: #424242;
+      }
+    }
+    .quantity {
+      height: size(inputsquare);
+      font-size: size(inputsquare) / 2;
+      line-height: size(inputsquare);
+      order: 2;
+      padding-left: size(small);
+    }
+    .hint {
+      color: #757575;
+      text-align: center;
+    }
+  }
+
+  .base_button {
+    position: relative;
+
+    > button {
+      display: block !important;
+      height: auto !important;
+      width: 100% !important;
+      font-size: fontsize(interactive) !important;
+      padding: size(base) !important;
+      padding-top: size(base) !important;
+      padding-bottom: size(base) !important;
+      margin: 0 !important;
+      margin-top: size(inputspacing) !important;
+      border: $border_accent !important;
+      background-color: $bg_interactive !important;
+      text-align: left !important;
+      text-transform: none !important;
+      text-decoration: none !important;
+      color: inherit !important;
+      line-height: $lineheight !important;
+      > div {
+        display: block !important;
+      }
+      &:disabled {
+        border: $border_faded !important;
+        color: $font_color_faded !important;
+      }
+    }
+  }
+
+  .base_checkbox {
+    button {
+      height: auto !important;
+      display: block !important;
+      font-size: fontsize(interactive) !important;
+      line-height: $lineheight;
+      padding: size(base) !important;
+      padding-top: size(base) !important;
+      padding-bottom: size(base) !important;
+      margin: 0 !important;
+      margin-top: size(inputspacing) !important;
+      border: $border_accent !important;
+      background-color: $bg_interactive !important;
+      text-align: center !important;
+      text-transform: none !important;
+      text-decoration: none !important;
+      color: inherit !important;
+      width: 100% !important;
+    }
+    div { /* style duct tape, otherwise line height not properly applied to children */
+      line-height: $lineheight;
+    }
+    .label {
+      font-family: $headerFont;
+      letter-spacing: $headerFontLetterSpacing;
+      line-height: $lineheight;
+    }
+    .icon {
+      display: inline-block;
+      top: size(small);
+      margin-left: size(tiny);
+      position: relative;
+      height: fontsize(interactive) !important;
+      width: fontsize(interactive) !important;
+
+      svg {
+        height: 100% !important;
+        width: 100% !important;
+      }
+    }
+    .subtext {
+      font-size: fontsize(flavor);
+      line-height: $lineheight;
+    }
+  }
+
+  .anonymous_feedback {
+    padding: size(base) 0 size(large) 0 !important;
+  }
+
+  .inputSpacer { /* for text inputs that are close to bottom, give the screen space to scroll up */
+    margin-bottom: 100%;
+  }
+
+  .callout {
+    display: flex;
+    flex-direction: row;
+    p > img {
+      width: size(large);
+      height: size(large);
+      display: inline-block;
+    }
+    .text {
+      font-style: italic;
+      padding-left: size(base);
+      padding-right: size(base);
+    }
+  }
+
+  .base_main {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+
+    &.has_footer {
+      padding-bottom: size(remotefooter);
+    }
+  }
+
+  .base_multi_touch_trigger {
+    position: absolute;
+
+    &.touch_indicator {
+      pointer-events: none;
+      top: 0;
+      left: 0;
+    }
+  }
+
+  .base_multi_touch_remote_affector {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .base_picker {
+    height: auto;
+    display: block;
+    font-size: fontsize(interactive);
+    padding: size(base);
+    padding-top: size(base);
+    padding-bottom: size(base);
+    margin: 0;
+    margin-top: size(inputspacing);
+    border: $border_accent;
+    background-color: $bg_interactive;
+    text-align: center;
+    text-transform: none;
+    text-decoration: none;
+    color: inherit;
+    .subtext {
+      font-size: fontsize(flavor);
+    }
+    .value {
+      flex: 10;
+      font-family: $headerFont;
+      letter-spacing: $headerFontLetterSpacing;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .controls {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: size(small);
+
+      :first-child {
+        float: left;
+      }
+
+      :last-child {
+        float: right;
+      }
+    }
+    button {
+      height: size(inputsquare) !important;
+      width: size(inputsquare) !important;
+      min-height: size(input) !important;
+      min-width: size(input) !important;
+      padding: 0 !important;
+      border: 0 !important;
+      margin-left: size(small);
+      margin-right: size(small);
+
+      svg {
+        height: 100% !important;
+        width: 100% !important;
+      }
+    }
+  }
+
+  .base_timer_card {
+    &.card_theme_dark {
+      color: $font_color_dark_primary;
+      background-color: $bg_dark_primary;
+    }
+    &.quest_theme_horror {
+      font-family: $horrorFont;
+    }
+    width: 100%;
+    height: 100%;
+    background-color: inherit;
+    color: inherit;
+    position: relative;
+
+    &.no_icon {
+      background: url(/images/clock_small.svg) no-repeat center center;
+      background-size: 75% 75%;
+    }
+
+    .timer_icon_wrapper {
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      background-color: $bg_dark_primary;
+      -webkit-animation: fadeout 0.6s ease-in forwards;
+         -moz-animation: fadeout 0.6s ease-in forwards;
+          -ms-animation: fadeout 0.6s ease-in forwards;
+           -o-animation: fadeout 0.6s ease-in forwards;
+              animation: fadeout 0.6s ease-in forwards;
+    }
+
+    .timer_icon {
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 75%;
+      height: 100%;
+    }
+
+    .value {
+      font-size: fontsize(timervalue);
+      font-family: $headerFont;
+      letter-spacing: $headerFontLetterSpacing;
+      text-align: center;
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      margin-top: -(fontsize(timervalue))/2;
+      line-height: 1;
+      z-index: 0;
+    }
+    .secondary {
+      font-size: 130%;
+      text-align: center;
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      top: 60%;
+    }
+    .tertiary {
+      text-align: center;
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      bottom: 10%;
+    }
+
+    .base_button.bigbutton > button {
+      background-color: $bg_dark_primary !important;
+      font-size: 150% !important;
+      text-align: center !important;
+    }
+  }
+
+  .rolls {
+    text-align: center;
+    padding-bottom: size(base);
+    .roll {
+      font-size: fontsize(title);
+      display: inline-block;
+      margin: 0 size(base);
+      padding: 0 size(base);
+      &:first-child {
+        margin-left: 0;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  // ===============================================
+  // Card-specific styles
+  // ===============================================
+  .splashScreen {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-color: #4F301B;
+    background-image: url(images/leather.jpg);
+    background-size: cover;
+    color: $font_color_dark_primary;
+
+    .playerCounterContainer {
+      width: 100%;
+      height: 100%;
+    }
+
+    .splashMultitouchInstruction, .splashMultitouchPlayerCount {
+      width: 90%;
+      left: 50%;
+      margin-left: -45%;
+      margin-top: -10%;
+      position: absolute;
+      top: 50%;
+      text-align: center;
+    }
+    .splashMultitouchInstruction {
+      font-size: fontsize(flavor);
+      opacity: 0;
+      transition: opacity 1s;
+      -webkit-animation: fadein 1s ease-in;
+         -moz-animation: fadein 1s ease-in;
+          -ms-animation: fadein 1s ease-in;
+           -o-animation: fadein 1s ease-in;
+              animation: fadein 1s ease-in;
+      h2 {
+        margin-bottom: 0;
+      }
+      &.visible {
+        opacity: 1;
+      }
+    }
+    .splashMultitouchPlayerCount {
+      -webkit-animation: fadein 1s ease-in 0s forwards;
+         -moz-animation: fadein 1s ease-in 0s forwards;
+          -ms-animation: fadein 1s ease-in 0s forwards;
+           -o-animation: fadein 1s ease-in 0s forwards;
+              animation: fadein 1s ease-in 0s forwards;
+      h1 {
+        font-size: fontsize(timervalue);
+        margin: 0;
+        font-family: $headerFont;
+      }
+    }
+    .logo {
+      position: absolute;
+      top: size(small);
+      left: size(small);
+      right: size(small);
+      img {
+        width: 100%;
+        max-width: $absmaxdimension;
+        margin: auto;
+        display: block;
+      }
+    }
+    .no_multi_button {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      button {
+        text-align: center !important;
+        font-size: fontsize(flavor) !important;
+      }
+    }
+
+    &.announcing .logo {
+      // (2 text lines) + (small top & bottom padding and top margin for logo)
+      top: 2 * $lineheight * fontsize(interactive) + 3 * size(base);
+    }
+    .announcement {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      button {
+        margin: 0 !important;
+        padding: size(base) !important;
+        border: none !important;
+        border-radius: 0 !important;
+        background: $bg_red_primary !important;
+        text-align: center !important;
+        font-size: fontsize(interactive) !important;
+        line-height: $lineheight !important;
+        text-shadow: $white_on_red_text_shadow;
+      }
+    }
+    .splashTips {
+      font-size: fontsize(flavor);
+      text-align: center;
+      position: absolute;
+      bottom: size(small);
+      left: size(base);
+      right: size(base);
+    }
+  }
+
+  .remoteplay {
+    .sessionCode {
+      text-align: center;
+      margin: size(base) 0;
+    }
+    .helptext {
+      text-align: center;
+      padding: size(base);
+    }
+
+    .connect_bar {
+      img {
+        width: 20%;
+        display: inline-block;
+        padding: size(small);
+
+        &:nth-child(0) {
+          color: red;
+        }
+      }
+    }
+
+    input {
+      width: 50%;
+      background: rgba(255,255,255,0.3);
+      padding: size(base);
+      font-size: fontsize(interactive) * 2;
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+  }
+
+  .combat {
+    &.center {
+      text-align: center;
+      &.damage-label {
+        margin-bottom: 0;
+      }
+      &.damage {
+        margin-top: 0;
+      }
+    }
+    &.draw_enemies {
+      span.meta {
+        display: inline-block;
+      }
+    }
+  }
+
+  .audioControls {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    opacity: 0.8;
+    #audioLoadingIndicator {
+      -webkit-animation: rotate 4s;
+         -moz-animation: rotate 4s;
+          -ms-animation: rotate 4s;
+           -o-animation: rotate 4s;
+              animation: rotate 4s;
+    }
+  }
+
+  .questButtonWithIcon, .questButton, .searchResult {
+    padding-left: size(base);
+    padding-right: size(base);
+    &.played {
+      opacity: 0.65;
+    }
+    .title {
+      line-height: $lineheight;
+      font-family: $headerFont;
+      letter-spacing: $headerFontLetterSpacing;
+      display: block;
+      font-size: fontsize(interactive);
+      margin-bottom: size(small);
+      top: 0;
+      overflow: hidden;
+    }
+    .summary {
+      display: flex;
+      flex: 3;
+      line-height: $lineheight;
+      margin: 0;
+      font-size: fontsize(flavor);
+    }
+    .inline_icon {
+      margin-bottom: -1 * size(tiny);
+      padding-right: size(small);
+    }
+    .timing {
+      opacity: 0.65;
+      margin-top: size(small);
+      margin-right: fontsize(flavor);
+      font-size: fontsize(flavor);
+      display: inline-block;
+      .inline_icon {
+        height: fontsize(flavor);
+      }
+    }
+    .expansions {
+      opacity: 0.65;
+      float: left;
+    }
+    .searchOrderDetail {
+      opacity: 0.65;
+      font-size: fontsize(flavor);
+      display: inline-block;
+      float: right;
+      margin-top: size(small);
+
+      &.ratingavg {
+        .starContainer {
+          .quantity {
+            height: fontsize(flavor);
+            line-height: fontsize(flavor);
+            font-size: fontsize(flavor);
+          }
+          .star {
+            $starSize: fontsize(flavor) + size(small);
+            margin-top: -0.5 * size(small) !important;
+            height: $starSize !important;
+            button {
+              height: $starSize !important;
+              line-height: $starSize !important;
+              svg {
+                height: $starSize !important;
+                width: $starSize !important;
+                padding: 0 !important;
+              }
+            }
+          }
+        }
+      }
+    }
+    .searchResultsTitleTable {
+      width: 100%;
+      .leftcell{
+          text-align: left;
+          line-height: $lineheight;
+          font-family: $headerFont;
+          letter-spacing: $headerFontLetterSpacing;
+          font-size: fontsize(interactive);
+          top: 0;
+      }
+      .rightcell {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-align: right;
+        width: auto;
+        .inline_icon {
+          padding-right: 0;
+          padding-left: size(base);
+        }
+        svg {
+          height: fontsize(flavor) !important;
+          width: fontsize(flavor) !important;
+        }
+      }
+    }
+  }
+  .questButtonWithIcon {
+    .inline_icon {
+      opacity: 0.65;
+    }
+  }
+
+  .searchDetails {
+    text-align: center;
+    margin-top: size(base);
+    margin-bottom: size(large);
+
+    .author {
+      padding-top: size(small);
+      font-style: italic;
+    }
+    .inline_icon {
+      position: relative;
+      top: size(base);
+      padding-bottom: size(base);
+    }
+    .indicators {
+      position: relative;
+      top: -(size(base));
+      opacity: 0.65;
+      padding-top: size(small);
+      padding-bottom: size(icon);
+      svg {
+        height: fontsize(flavor) !important;
+        width: fontsize(flavor) !important;
+      }
+      .inline_icon {
+        margin-top: size(small);
+      }
+    }
+  }
+
+  .searchDetailsExtended {
+    margin-top: size(large);
+    .searchDetailsTable {
+      width: 100%;
+      table-layout: fixed;
+      th {
+        text-align: left;
+        max-width: 50%;
+      }
+      td {
+        text-align: left;
+      }
+    }
+  }
+
+  .reportCategory {
+    text-align: center;
+    button {
+      border: 2px solid rgba(0,0,0,0) !important;
+      min-width: 40px !important;
+      padding: 0 size(inputspacing)/2 !important; /* /2 since applied to both sides */
+      margin: size(inputspacing)/2 !important; /* /2 since applied to both sides */
+    }
+    .selected button {
+      border: 2px solid black !important;
+    }
+  }
+
+  .searchForm {
+    .textfield, .selectfield {
+      margin-bottom: size(base);
+    }
+    .halfLeft, .halfRight {
+      width: 45%;
+    }
+    .halfLeft {
+      margin-right: 10%;
+      &.ranged:after {
+        content: '-';
+        position: absolute;
+        right: -11%; // 5% of total width on a 45% width object
+        top: 50%;
+      }
+    }
+  }
+
+  .searchDescription {
+    text-align: center;
+    margin: size(small) 0;
+  }
+
+  .ratingDescription {
+    margin-top: size(base);
+    font-size: fontsize(flavor);
+  }
+
+  .version {
+    text-align: center;
+    opacity: 0.7;
+    margin-top: size(huge);
+  }
+  .privacy {
+    text-align: center;
+    opacity: 0.7;
+    margin-top: size(base);
+  }
+
+  .dialog {
+    width: 90% !important;
+    background: url(images/papyrus-tiled.jpg) !important;
+    .base_picker, .base_checkbox {
+      color: $font_color_primary !important;
+    }
+  }
+
+  .multiplayer_ripple {
+    height: '100%';
+    width: '100%';
+    position: 'absolute';
+    top: 0;
+    left: 0;
+    overflow: 'hidden';
+    pointer-events: 'none';
+    z-index: 1; /* This is also needed so that ripples do not bleed past a parent border radius.*/
+  }
+
+  .menu_popup {
+    background-color: $bg_primary;
+    color: $font_color_primary;
+  }
+
+  .centralMessage {
+    text-align: center;
+    margin-top: size(appbar);
+    margin-bottom: size(appbar);
+  }
+
+  .checkoutDisabled {
+    button {
+      color: $font_color_faded !important;
+      border-color: $font_color_faded !important;
+    }
+  }
+
+  .tipAmounts {
+    margin-bottom: size(large);
+    .base_button {
+      width: 25%;
+      display: inline-block;
+      margin: 0 4%;
+      button {
+        text-align: center !important;
+        min-width: 0 !important;
+      }
+    }
+  }
+
+  #stripe {
+    #stripeErrors {
+      color: $bg_red_primary;
+      text-align: center;
+      padding-top: size(small);
+    }
+    .security {
+      display: block;
+      margin: size(base) 0 size(large) 0;
+      svg {
+        margin-bottom: -1 * size(tiny);
+        margin-right: size(tiny);
+        height: fontsize(interactive) !important;
+        width: fontsize(interactive) !important;
+      }
+    }
+  }
+
+  .lds-ellipsis {
+    display: block;
+    margin: size(large) auto 0 auto;
+    position: relative;
+    width: 64px;
+    height: 64px;
+
+    div {
+      position: absolute;
+      top: 27px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #fff;
+      animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    }
+    div:nth-child(1) {
+      left: 6px;
+      animation: lds-ellipsis1 0.6s infinite;
+    }
+    div:nth-child(2) {
+      left: 6px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+    div:nth-child(3) {
+      left: 26px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+    div:nth-child(4) {
+      left: 45px;
+      animation: lds-ellipsis3 0.6s infinite;
+    }
+  }
+}
+
+@include styling();
+
+// ===============================================
+// Apply scaling or fixed styling if we're on
+// a desktop. Center and border the fixed result.
+// ===============================================
+
+// On large screens, shrink a bit...
+$abs_scale_vw: $abswidthmax / 120vmin;
+$abs_scale_vh: $absheightmax / 120vmin;
+
+$sizemap: (
+  appbar: 48px,
+  remotefooter: 50px,
+  inputspacing: 14px,
+  inputsquare: 48px,
+  input: 32px,
+  watermark: 36vmin * $abs_scale_vh, /* note: height-specific */
+  huge: 12vmin * $abs_scale_vh,
+  large: 6vmin * $abs_scale_vh,
+  icon: 4vmin * $abs_scale_vh,
+  base: 2vmin * $abs_scale_vh,
+  small: 1vmin * $abs_scale_vh,
+  tiny: 0.5vmin * $abs_scale_vh,
+);
+
+$fontsizemap: (
+  title: 6vmin * $abs_scale_vw,
+  timervalue: 24vmin * $abs_scale_vw,
+  interactive: 5vmin * $abs_scale_vw,
+  flavor: 4.5vmin * $abs_scale_vw,
+  label: 18px,
+);
+
+@media screen and (min-width: $abswidthmax), screen and (min-height: $absheightmax) {
+  // Use the new desktop values defined above, only at this size
+  @include styling();
+
+  body, html, #react-app {
+    height: 100%;
+    width: 100%;
+  }
+
+  .editor_override .app_container {
+    border: none;
+    border-radius: 0;
+    margin-top: 0;
+  }
+
+  .app_container {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+
+@media screen and (max-height: 600px) {
+  .splashMultitouchInstruction, .splashMultitouchPlayerCount {
+    margin-top: 0 !important;
+  }
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@-webkit-keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@-ms-keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeout {
+  0% { opacity: 1; height: 100%; }
+  99% { opacity: 0; height: 100%; }
+  100% { opacity: 0; height: 0; }
+}
+@-webkit-keyframes fadeout {
+  0% { opacity: 1; height: 100%; }
+  99% { opacity: 0; height: 100%; }
+  100% { opacity: 0; height: 0; }
+}
+@-ms-keyframes fadeout {
+  0% { opacity: 1; height: 100%; }
+  99% { opacity: 0; height: 100%; }
+  100% { opacity: 0; height: 0; }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0); }
+  to   { transform: rotate(360deg); }
+}
+@-webkit-keyframes rotate {
+  from { transform: rotate(0); }
+  to   { transform: rotate(360deg); }
+}
+@-ms-keyframes rotate {
+  from { transform: rotate(0); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes lds-ellipsis1 {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+@keyframes lds-ellipsis2 {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(19px, 0); }
+}
+@keyframes lds-ellipsis3 {
+  0% { transform: scale(1); }
+  100% { transform: scale(0); }
+}
