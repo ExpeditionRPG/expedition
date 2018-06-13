@@ -6,18 +6,21 @@ import Callout from '../../../../base/Callout'
 import Card from '../../../../base/Card'
 import Picker from '../../../../base/Picker'
 import TimerCard from '../../../../base/TimerCard'
-import {MAX_ADVENTURER_HEALTH} from '../../../../../Constants'
+import {MAX_ADVENTURER_HEALTH, NODE_ENV} from '../../../../../Constants'
 import {isSurgeNextRound, roundTimeMillis} from './Actions'
 import {SettingsType, CardState, MultiplayerState} from '../../../../../reducers/StateTypes'
 import {ParserNode} from '../TemplateTypes'
 import {EventParameters, Enemy, Loot} from '../../../../../reducers/QuestTypes'
 import {CombatPhase, CombatState} from './Types'
 import Roleplay from '../roleplay/Roleplay'
+import Decision from '../decision/Decision'
+import {DecisionState, DecisionType} from '../decision/Types'
 
 export interface CombatStateProps {
   card: CardState;
   combat: CombatState;
   settings: SettingsType;
+  decision: DecisionState;
   maxTier: number;
   node: ParserNode;
   seed: string;
@@ -43,6 +46,12 @@ export interface CombatDispatchProps {
   onCustomEnd: () => void;
   onChoice: (node: ParserNode, settings: SettingsType, index: number, maxTier: number, seed: string) => void;
   onSurgeNext: (node: ParserNode) => void;
+
+  onDecisionSetup: () => void;
+  onDecisionTimerStart: () => void;
+  onDecisionChoice: (node: ParserNode, settings: SettingsType, choice: DecisionType, elapsedMillis: number, seed: string) => void;
+  onDecisionRoll: (node: ParserNode, settings: SettingsType, decision: DecisionState, roll: number, seed: string) => void;
+  onDecisionEnd: () => void;
 }
 
 export interface CombatProps extends CombatStateProps, CombatDispatchProps {};
@@ -62,7 +71,7 @@ function renderSelectTier(props: CombatProps): JSX.Element {
     <Card title="Draw Enemies" theme="dark" inQuest={true}>
       <Picker
         label="Tier Sum"
-        remoteID="tier_sum"
+        id="tier_sum"
         onDelta={(i: number)=>props.onTierSumDelta(props.node, props.tier, i)}
         value={props.tier}>
         Set this to the combined tier you wish to fight.
@@ -273,7 +282,10 @@ function renderResolve(props: CombatProps): JSX.Element {
 }
 
 function renderPlayerTier(props: CombatProps): JSX.Element {
-  const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
+  const nextCard: CombatPhase = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
+
+  const shouldRunDecision = (NODE_ENV === 'dev') && (props.combat.roundCount % 2 === 0); // TODO CHANGE
+
   let helpText: JSX.Element = (<span></span>);
   const damage = (props.combat.mostRecentAttack) ? props.combat.mostRecentAttack.damage : -1;
   const theHorror = (props.settings.contentSets.horror === true);
@@ -297,7 +309,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
       <h1 className="combat center damage">{damage} Damage</h1>
       <Picker
         label="Tier Sum"
-        remoteID="tier_sum"
+        id="tier_sum"
         onDelta={(i: number)=>props.onTierSumDelta(props.node, props.tier, i)}
         value={props.tier}>
         {props.settings.showHelp && 'The total tier of remaining enemies.'}
@@ -305,13 +317,13 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
       <Picker
         label="Adventurers"
-        remoteID="adventurers"
+        id="adventurers"
         onDelta={(i: number)=>props.onAdventurerDelta(props.node, props.settings, props.numAliveAdventurers, i)}
         value={props.numAliveAdventurers}>
         {props.settings.showHelp && <span>The number of adventurers &gt; 0 health.</span>}
       </Picker>
       {helpText}
-      <Button onClick={() => props.onNext(nextCard)} disabled={props.numAliveAdventurers <= 0}>Next</Button>
+      <Button onClick={() => (shouldRunDecision) ? props.onDecisionSetup() : props.onNext(nextCard)} disabled={props.numAliveAdventurers <= 0}>Next</Button>
       <Button onClick={() => props.onVictory(props.node, props.settings, props.maxTier, props.seed)}>Victory (Tier = 0)</Button>
       <Button onClick={() => props.onDefeat(props.node, props.settings, props.maxTier, props.seed)}>Defeat (Adventurers = 0)</Button>
     </Card>
@@ -447,14 +459,31 @@ function renderTimerCard(props: CombatProps): JSX.Element {
 }
 
 function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
-  const roleplay = Roleplay({
+  return Roleplay({
     node: props.node,
     settings: props.settings,
     onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(props.node, settings, index, props.maxTier, props.seed)},
     onRetry: () => {props.onRetry()},
     onReturn: () => {props.onReturn()},
   }, 'dark');
-  return roleplay;
+}
+
+function renderMidCombatDecision(props: CombatProps): JSX.Element {
+  const decision = props.decision;
+
+  return Decision({
+    card: {...props.card, phase: props.combat.decisionPhase},
+    decision: decision,
+    settings: props.settings,
+    node: props.node,
+    seed: props.seed,
+    maxAllowedAttempts: props.combat.numAliveAdventurers,
+    multiplayerState: props.multiplayerState,
+    onStartTimer: props.onDecisionTimerStart,
+    onChoice: props.onDecisionChoice,
+    onRoll: props.onDecisionRoll,
+    onEnd: props.onDecisionEnd,
+  }, 'dark');
 }
 
 function numberToWord(input: number): string {
@@ -500,6 +529,8 @@ const Combat = (props: CombatProps): JSX.Element => {
       return renderDefeat(props);
     case 'MID_COMBAT_ROLEPLAY':
       return renderMidCombatRoleplay(props);
+    case 'MID_COMBAT_DECISION':
+      return renderMidCombatDecision(props);
     default:
       throw new Error('Unknown combat phase ' + props.card.phase);
   }

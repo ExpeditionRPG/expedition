@@ -15,6 +15,7 @@ import {QuestNodeAction, remoteify} from '../../../../../actions/ActionTypes'
 import {loadNode} from '../../../../../actions/Quest'
 import {setMultiplayerStatus} from '../../../../../actions/Multiplayer'
 import {getStore} from '../../../../../Store'
+import {DecisionPhase} from '../decision/Types'
 
 const cheerio: any = require('cheerio');
 
@@ -72,11 +73,46 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
     custom: custom,
     enemies,
     roundCount: 0,
+    decisionPhase: 'PREPARE_DECISION',
     numAliveAdventurers: totalAdventurerCount,
     tier: tierSum,
     ...getDifficultySettings(settings.difficulty),
   }
 }
+
+interface ToDecisionCardArgs {
+  node?: ParserNode;
+  phase: DecisionPhase;
+  numOutcomes?: number;
+  settings?: SettingsType;
+}
+export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCardArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ToDecisionCardArgs {
+  if (!a.node) {
+    a.node = getState().quest.node;
+  }
+  a.node = a.node.clone();
+  let combat = a.node.ctx.templates.combat;
+  if (!combat) {
+    if (!a.settings) {
+      a.settings = getState().settings;
+    }
+    combat = generateCombatTemplate(a.settings, false, a.node, getState);
+    a.node.ctx.templates.combat = combat;
+  }
+  combat.decisionPhase = a.phase;
+
+  // Clear out the decision state if going to the prepare page
+  if (a.phase === 'PREPARE_DECISION') {
+    a.node.ctx.templates.decision = undefined;
+  }
+
+  dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
+  dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_DECISION', keySuffix: a.phase + ((a.numOutcomes !== undefined) ? a.numOutcomes.toString() : '')}));
+  return {
+    numOutcomes: a.numOutcomes,
+    phase: a.phase,
+  };
+});
 
 interface InitCombatArgs {
   node: ParserNode;

@@ -10,6 +10,7 @@ interface ToCardArgs {
   phase?: CardPhase;
   overrideDebounce?: boolean;
   noHistory?: boolean;
+  keySuffix?: string;
 }
 export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch: Redux.Dispatch<any>, getState?: ()=>AppStateWithHistory): ToCardArgs {
   const nav = getNavigator();
@@ -34,6 +35,9 @@ export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch: Redux.D
   const line = state.quest && state.quest.node && state.quest.node.elem.attr('data-line');
   if (line !== undefined) {
     keylist.push('L' + line);
+  }
+  if (a.keySuffix) {
+    keylist.push(a.keySuffix);
   }
 
   dispatch({type: 'NAVIGATE', to: {...a, ts: Date.now(), key: keylist.join('|'), questId}, dontUpdateUrl: state.settings && state.settings.simulator} as NavigateAction);

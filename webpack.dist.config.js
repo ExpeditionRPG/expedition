@@ -30,7 +30,7 @@ const options = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        // Default to beta for safety
+        // Default to dev for safety
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'dev'),
         'API_HOST': JSON.stringify(process.env.API_HOST || 'http://betaapi.expeditiongame.com'),
         'OAUTH2_CLIENT_ID': JSON.stringify(process.env.OAUTH2_CLIENT_ID || '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com'),

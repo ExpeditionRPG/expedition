@@ -893,6 +893,12 @@ span.line {
       right: 10%;
       bottom: 10%;
     }
+
+    .base_button.bigbutton > button {
+      background-color: $bg_dark_primary !important;
+      font-size: 150% !important;
+      text-align: center !important;
+    }
   }
 
   .rolls {
@@ -1294,6 +1300,17 @@ span.line {
     .base_picker, .base_checkbox {
       color: $font_color_primary !important;
     }
+  }
+
+  .multiplayer_ripple {
+    height: '100%';
+    width: '100%';
+    position: 'absolute';
+    top: 0;
+    left: 0;
+    overflow: 'hidden';
+    pointer-events: 'none';
+    z-index: 1; /* This is also needed so that ripples do not bleed past a parent border radius.*/
   }
 
   .menu_popup {

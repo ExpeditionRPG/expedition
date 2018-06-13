@@ -196,7 +196,7 @@ export class SearchSettingsCard extends React.Component<SearchSettingsCardProps,
           {rating && <div className="ratingDescription">
             <span>"{this.state.contentrating}" rating means: {rating.summary}</span>
           </div>}
-          <Button onClick={() => this.props.onSearch(this.state, this.props.settings)} remoteID="search" id="search">Search</Button>
+          <Button onClick={() => this.props.onSearch(this.state, this.props.settings)} id="search">Search</Button>
         </form>
       </Card>
     );
@@ -278,7 +278,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
   }
 
   return (
-    <Button key={props.index} onClick={() => props.onQuest(quest)} remoteID={'quest-'+props.index}>
+    <Button key={props.index} onClick={() => props.onQuest(quest)} id={'quest-'+props.index}>
       <div className={classes.join(' ')}>
         <table className="searchResultsTitleTable">
           <tbody>
@@ -326,14 +326,14 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
       className="search_card"
       header={(hideHeader) ? undefined : <div className="searchHeader">
         <Button className="searchResultInfo" disabled={true}>{props.results.length} quests for {props.settings.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></Button>
-        <Button className="filter_button" onClick={() => props.onFilter()} remoteID="filter">Filter &amp; Sort ></Button>
+        <Button className="filter_button" onClick={() => props.onFilter()} id="filter">Filter &amp; Sort ></Button>
       </div>}
     >
       {results.length === 0 && !props.searching &&
         <div>
           <div>No quests found matching the search terms.</div>
           {!hideHeader && <div>Try broadening the search by using fewer filters.</div>}
-          <Button className="filter_button" onClick={() => props.onFilter()} remoteID="filter">Modify Search</Button>
+          <Button className="filter_button" onClick={() => props.onFilter()} id="filter">Modify Search</Button>
         </div>
       }
       {results.length === 0 && props.searching && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
@@ -382,8 +382,8 @@ export function renderDetails(props: SearchDetailsProps): JSX.Element {
           {quest.awarded && <div className="inline_icon"><StarsIcon className="inline_icon" /> {quest.awarded}</div>}
         </div>
       </div>
-      <Button className="bigbutton" onClick={(e)=>props.onPlay(quest, props.isDirectLinked)} remoteID="play">Play</Button>
-      <Button id="searchDetailsBackButton" onClick={(e)=>props.onReturn()} remoteID="back">Pick a different quest</Button>
+      <Button className="bigbutton" onClick={(e)=>props.onPlay(quest, props.isDirectLinked)} id="play">Play</Button>
+      <Button id="searchDetailsBackButton" onClick={(e)=>props.onReturn()} >Pick a different quest</Button>
       <div className="searchDetailsExtended">
         <h3>Details</h3>
         <table className="searchDetailsTable">

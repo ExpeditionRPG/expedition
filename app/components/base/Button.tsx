@@ -7,8 +7,8 @@ interface ButtonProps extends React.Props<any> {
   className?: string;
   disabled?: boolean;
   id?: string;
-  remoteID?: string;
   onClick?: (e:any) => any;
+  remoteRipple?: boolean;
 }
 
 export default class ExpeditionButton extends React.Component<ButtonProps, {}> {
@@ -33,9 +33,9 @@ export default class ExpeditionButton extends React.Component<ButtonProps, {}> {
   render() {
     const className = 'base_button ' + (this.props.className || '');
 
-    if (!this.props.remoteID) {
+    if (this.props.remoteRipple === false || !this.props.id) {
       return (
-        <div id={this.props.id} className={className}>
+        <div className={className}>
         <Button disabled={this.props.disabled} onClick={(e:any) => this._onClick(e)}>
           <div>{this.props.children}</div>
         </Button>
@@ -44,7 +44,7 @@ export default class ExpeditionButton extends React.Component<ButtonProps, {}> {
     }
 
     return (
-      <MultiplayerRipple remoteID={this.props.remoteID} className={className} id={this.props.id}>
+      <MultiplayerRipple className={className} id={this.props.id}>
         <Button disabled={this.props.disabled} onClick={(e:any) => this._onClick(e)}>
           <div>{this.props.children}</div>
         </Button>

@@ -6,12 +6,11 @@ import {getMultiplayerClient} from '../../Multiplayer'
 // to the inheriting class.
 // Also listens for touch events on this component and transmits them.
 export interface MultiplayerAffectorProps {
-  remoteID?: string; // TODO MAKE REQUIRED
+  id?: string;
   abortOnScroll?: boolean;
   includeLocalInteractions?: boolean;
   onInteraction?: (client: string, event: InteractionEvent) => any;
   children: any;
-  id?: string;
   className?: string;
 }
 export default class MultiplayerAffector extends React.Component<MultiplayerAffectorProps,{}> {
@@ -44,7 +43,7 @@ export default class MultiplayerAffector extends React.Component<MultiplayerAffe
   }
 
   private handleMultiplayerEvent(e: MultiplayerEvent) {
-    if (e.event.type !== 'INTERACTION' || e.event.id !== this.props.remoteID) {
+    if (e.event.type !== 'INTERACTION' || e.event.id !== this.props.id) {
       return;
     }
     this.props.onInteraction && this.props.onInteraction(e.client, e.event);
@@ -95,7 +94,7 @@ export default class MultiplayerAffector extends React.Component<MultiplayerAffe
       positions[k][0] = Math.floor((positions[k][0] - boundingRect.left) / this.ref.offsetWidth * 1000);
       positions[k][1] = Math.floor((positions[k][1] - boundingRect.top) / this.ref.offsetHeight * 1000);
     }
-    const e: InteractionEvent = {type: 'INTERACTION', positions, id: this.props.remoteID || '', event: type};
+    const e: InteractionEvent = {type: 'INTERACTION', positions, id: this.props.id || '', event: type};
 
     // Don't send move events over multiplayer.
     // Our implementation does not allow high-frequency value updates.

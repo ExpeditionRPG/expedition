@@ -27,7 +27,7 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
     })
     .map((quest: QuestDetails, index: number): JSX.Element => {
       return (
-        <Button onClick={() => props.onQuestSelect(quest)} key={index} remoteID={'quest'+index.toString()}>
+        <Button onClick={() => props.onQuestSelect(quest)} key={index} id={'quest'+index.toString()}>
           <div className="questButton">
             <div className="title">{quest.title}</div>
             <div className="summary">{quest.summary}</div>
@@ -39,7 +39,7 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
   return (
     <Card title="Select Your Quest" icon="adventurer">
       {items}
-      {!props.settings.simulator && <Button onClick={() => props.onSearchSelect(props.user, props.settings)} remoteID="morequests">
+      {!props.settings.simulator && <Button onClick={() => props.onSearchSelect(props.user, props.settings)} id="morequests">
         <div className="questButtonWithIcon">
           <div className="title"><img className="inline_icon" src="images/book_small.svg"/>More Quests</div>
           <div className="summary">Explore and play community-written quests.</div>
@@ -47,13 +47,13 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
       </Button>
       }
       {!props.settings.simulator && props.settings.experimental &&
-        <Button onClick={()=>props.onSavedQuests()} remoteID="saved">
+        <Button onClick={()=>props.onSavedQuests()} id="saved">
         <div className="questButtonWithIcon">
           <div className="title"><img className="inline_icon" src="images/compass_small.svg"/>Saved Quests - Beta</div>
         </div>
       </Button>
       }
-      <Button onClick={()=>props.onTools()} remoteID="tools">
+      <Button onClick={()=>props.onTools()} id="tools">
         <div className="questButtonWithIcon">
           <div className="title"><img className="inline_icon" src="images/roll_small.svg"/>Tools</div>
         </div>
