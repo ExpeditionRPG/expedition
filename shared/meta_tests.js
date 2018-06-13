@@ -5,19 +5,22 @@ describe('Typescript', () => {
   function walkDir(root) {
     const stat = fs.statSync(root);
     if (stat.isDirectory()) {
-        const dirs = fs.readdirSync(root).filter(item => !item.startsWith('.'));
-        let results = dirs.map(sub => walkDir(`${root}/${sub}`));
-        return [].concat(...results);
+      if (root.indexOf('node_modules') !== -1) {
+        return [];
+      }
+      const dirs = fs.readdirSync(root).filter(item => !item.startsWith('.'));
+      let results = dirs.map(sub => walkDir(`${root}/${sub}`));
+      return [].concat(...results);
     } else {
-        return [root];
+      return [root];
     }
   }
 
   it('is always in pairs of *.tsx and *.test.tsx', () => {
-    const files = walkDir('./lib');
+    const files = walkDir('./');
 
     let count = {};
-    for(let f of files) {
+    for (let f of files) {
       const ext = f.split('.').pop()
       if ((ext === 'tsx' || ext === 'ts') && f.indexOf('TestData') === -1) {
         const base = f.split('.')[1]; // "./app/..."

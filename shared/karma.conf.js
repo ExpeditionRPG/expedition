@@ -13,11 +13,11 @@ module.exports = function (config) {
     files: [
       'node_modules/babel-polyfill/dist/polyfill.js',
       'node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
-      { pattern: 'lib/**/*.test.tsx' },
+      { pattern: '**/*.test.tsx' },
     ],
     preprocessors: {
-      'lib/**/*.test.tsx': ['webpack'],
-      'lib/**/*.test.ts': ['webpack'],
+      '**/*.test.tsx': ['webpack'],
+      '**/*.test.ts': ['webpack'],
     },
     globals: {
       utils: {},
