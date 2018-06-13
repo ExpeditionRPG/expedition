@@ -1,0 +1,3 @@
+describe('QueryTypes', () => {
+  it('exists', ()=>{});
+});

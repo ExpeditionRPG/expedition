@@ -1,0 +1,23 @@
+language: node_js
+env:
+- CXX=g++-4.8
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
+before_install: nvm install "$(jq -r '.engines.node' package.json)" && node --version
+cache:
+  directories:
+  - node_modules
+deploy:
+  provider: heroku
+  app: expedition-quest-creator-dev
+  api_key:
+    secure: ivwlN52rZMK+kXym8xMhJJBgMGISC0QaiyKxpm25KKeNaO9nM3h2wmfimBays+RGy2zBX1Osan6HZL3cAA+F40ZEvgMO7LmkPr1QUGsH4eCK1elF+rynPcZcBgTyS5kpjOagQs62ThT8WX1BQlcbc/GEttBjUGVY53RebWm8ONQWYbcDM/aNfk/y1sSe3NByxeK6bKvOJmjce4NukDIRJrjedbnok79SyRXiQGLnlZPJXLNv3kbwKQvjsKpxAO9fawyepWZlIt8hVPk/Lrn+yRONRIYHeg4A/hJdNvFkYT7aCmCiMKokqu4YWTMTBaYeU50THC/wjR0uhXoE5b7xAXbqI5YpyXuV5E42ILMLvqwrGRxu8xyx61LdeFJGT/UcOnI1H4SqYSXnrP3QAgApkIPOm7ASj9uUBO98fiuv0W9JG/3HuXgTsdHbS2aaH5Jp6GxDlBsFd6wNbYj8tETDq5biwmg8RRq2VaYwwqpmP3Ysy1vkhBhZa3+dL4odo4VRbOhK+wqqldRv+rQqayKqAOAIctjMikgdHkOaMMj9bIeE6hbFaTJ8vWEVM/9hbyNJJgZtZo2pXBkzRfrA83oRXqLGFh4lCJ05PoFrb5FgCQy3QqqVM9W3Z7QJ4v/mSCnJ3WO/xf8moE1xkcDWX9fwQe41jaoiMn255rCzt4WWzng=
+  on:
+    repo: ExpeditionRPG/expedition-api
+    branch: master
+notifications:
+  email: false

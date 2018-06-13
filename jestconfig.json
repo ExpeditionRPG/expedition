@@ -1,0 +1,29 @@
+{
+  "transform": {
+    "^.+\\.tsx?$": "ts-jest"
+  },
+  "transformIgnorePatterns": [
+    "<rootDir>/node_modules/(?!expedition-qdl)"
+  ],
+  "testRegex": ".*\\.test\\.(jsx?|tsx?)$",
+  "testPathIgnorePatterns": [
+    "node_modules/"
+  ],
+  "moduleFileExtensions": [
+    "ts",
+    "tsx",
+    "js",
+    "jsx"
+  ],
+  "globals": {
+    "ts-jest": {
+      "enableTsDiagnostics": true,
+      "tsConfigFile": "tsconfig.json",
+      "babelConfig": {
+        "presets": [["env", {
+          "targets": {"browsers": [">5%", "last 2 years", "last 3 iOS versions", "chrome >= 39"]}
+        }]]
+      }
+    }
+  }
+}

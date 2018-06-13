@@ -1,0 +1,1 @@
+ALTER TABLE quests ADD COLUMN language VARCHAR(128) DEFAULT 'English';
