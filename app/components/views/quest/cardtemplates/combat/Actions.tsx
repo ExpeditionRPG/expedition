@@ -242,7 +242,7 @@ function generateCombatAttack(node: ParserNode, settings: SettingsType, rp: Mult
   }
 }
 
-function generateLoot(maxTier: number, rng: () => number): Loot[] {
+function generateLoot(maxTier: number, adventurers: number, rng: () => number): Loot[] {
   const loot: Loot[] = [
     {tier: 1, count: 0},
     {tier: 2, count: 0},
@@ -258,19 +258,23 @@ function generateLoot(maxTier: number, rng: () => number): Loot[] {
   // 6: 4
   // 7: 4
   // 8+: 5
-  maxTier = Math.max(1, Math.round(Math.log(maxTier - 1) / Math.log(1.5)));
+  let lootTier = Math.max(1, Math.round(Math.log(maxTier - 1) / Math.log(1.5)));
 
-  while (maxTier > 0) {
+  // Give a small boost to small parties
+  if (adventurers <= 3) {
+    lootTier++;
+  }
+
+  while (lootTier > 0) {
     const r: number = rng();
-
-    if (r < 0.1 && maxTier >= 3) {
-      maxTier -= 3;
+    if (r < 0.1 && lootTier >= 3) {
+      lootTier -= 3;
       loot[2].count++;
-    } else if (r < 0.4 && maxTier >= 2) {
-      maxTier -= 2;
+    } else if (r < 0.4 && lootTier >= 2) {
+      lootTier -= 2;
       loot[1].count++;
     } else {
-      maxTier -= 1;
+      lootTier -= 1;
       loot[0].count++;
     }
   }
@@ -453,10 +457,11 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
     combat.numAliveAdventurers = 0;
   }
   a.node = a.node.clone();
-  combat.levelUp = (a.victory) ? (numLocalAndMultiplayerAdventurers(a.settings, a.rp) <= a.maxTier) : false;
+  const adventurers = numLocalAndMultiplayerAdventurers(a.settings, a.rp);
+  combat.levelUp = (a.victory) ? (adventurers <= a.maxTier) : false;
 
   const arng = seedrandom.alea(a.seed);
-  combat.loot = (a.victory) ? generateLoot(a.maxTier, arng) : [];
+  combat.loot = (a.victory) ? generateLoot(a.maxTier, adventurers, arng) : [];
   a.node.ctx.templates.combat = combat;
 
   dispatch({type: 'PUSH_HISTORY'});
