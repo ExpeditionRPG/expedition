@@ -1,0 +1,3 @@
+describe('View action', () => {
+  // TODO
+});
