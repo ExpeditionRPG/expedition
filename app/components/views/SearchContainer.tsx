@@ -12,7 +12,7 @@ import {QuestDetails} from '../../reducers/QuestTypes'
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: SearchStateProps): SearchStateProps => {
   return {
-    isDirectLinked: state._history.length <= 2,
+    isDirectLinked: state._history.length <= 1,
     results: [], // Default in case search results are not defined
     ...state.search,
     settings: state.settings,
