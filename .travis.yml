@@ -14,7 +14,7 @@ cache:
     - node_modules
 deploy:
   provider: script
-  script: ./beta.sh
+  script: ./scripts/beta.sh
   skip_cleanup: true
   on:
     repo: ExpeditionRPG/expedition-app
