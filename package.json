@@ -4,6 +4,7 @@
   "description": "The Expedition Monorepo",
   "homepage": "http://expeditiongame.com",
   "repository": "https://github.com/ExpeditionRPG/expedition",
+  "author": "Fabricate.IO",
   "scripts": {
     "test": "cd shared && npm run test && cd ../services && find . -maxdepth 1 -type d \\( ! -name . \\) -exec bash -c \"cd '{}' && npm run test\" \\;",
     "install": "cd shared && npm install && cd ../services && find . -maxdepth 1 -type d \\( ! -name . \\) -exec bash -c \"cd '{}' && npm install\" \\;"

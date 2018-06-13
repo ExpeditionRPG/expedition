@@ -1,10 +1,8 @@
 {
   "name": "expedition-quest-creator",
   "version": "1.6.7",
-  "description": "The Expedition Quest Creation",
-  "homepage": "http://expeditiongame.com",
-  "repository": "https://github.com/ExpeditionRPG/expedition-quest-creator",
-  "main": "react.js",
+  "description": "The Expedition Quest Creator",
+  "homepage": "http://quests.expeditiongame.com",
   "scripts": {
     "lint": "tslint -c tslint.json 'app/**/*.{ts,tsx}'",
     "test": "mocha meta_tests.js && karma start karma.conf.js --single-run --browsers PhantomJS",
@@ -13,12 +11,6 @@
     "start": "node app.js",
     "build": "webpack -p --config webpack.dist.config.js --progress"
   },
-  "prepush": [
-    "test",
-    "lint"
-  ],
-  "author": "Fabricate.IO",
-  "license": "CC-BY-NC-SA-4.0",
   "semistandard": {
     "globals": [
       "after",
@@ -98,9 +90,5 @@
     "webpack-cli": "~1.5.3",
     "webpack-dashboard": "^0.3.0",
     "webpack-dev-server": "~2.11.2"
-  },
-  "engines": {
-    "node": "8.1.4"
-  },
-  "snyk": false
+  }
 }

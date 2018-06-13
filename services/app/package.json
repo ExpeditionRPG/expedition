@@ -2,10 +2,7 @@
   "name": "expedition-app",
   "version": "1.16.2",
   "description": "The App for Expedition: The Roleplaying Card Game",
-  "homepage": "http://expeditiongame.com",
-  "repository": "https://github.com/ExpeditionRPG/expedition-app",
-  "bugs": "https://github.com/ExpeditionRPG/expedition-app/issues",
-  "license": "CC-BY-NC-ND-4.0",
+  "homepage": "http://app.expeditiongame.com",
   "scripts": {
     "lint": "tslint -c tslint.json 'app/**/*.{ts,tsx}'",
     "test": "mocha meta_tests.js && karma start --single-run --browsers PhantomJS",
