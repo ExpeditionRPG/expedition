@@ -1,5 +1,4 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const DashboardPlugin = require('webpack-dashboard/plugin');
 const Path = require('path');
 const Webpack = require('webpack');
 
@@ -49,7 +48,6 @@ const options = {
     ]
   },
   plugins: [
-    new DashboardPlugin(),
     new Webpack.HotModuleReplacementPlugin(),
     new Webpack.NoEmitOnErrorsPlugin(),
     new Webpack.DefinePlugin({
