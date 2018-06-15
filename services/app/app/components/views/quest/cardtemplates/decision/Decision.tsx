@@ -40,8 +40,8 @@ export function renderPrepareDecision(props: DecisionProps): JSX.Element {
             <strong>Keep</strong> your skill and persona cards within sight.
           </li>
           <li><strong>Start</strong> the timer.</li>
-          <li><strong>Select</strong> one of the combinations of difficulty, persona type, and skill type from the timer page.</li>
-          <li><strong>Be careful!</strong> If the timer runs out, the event becomes more difficult.</li>
+          <li><strong>Tap</strong> one of the choices on the timer phase. Each choice shows the number of attempts you can make, the difficulty or persona type, and the skill type of the check.</li>
+          <li><strong>Be careful!</strong> If the timer runs out, your skill check becomes more difficult.</li>
         </ol>
       </div>
     );
@@ -111,9 +111,6 @@ export function renderResolveDecision(props: DecisionProps): JSX.Element {
   const header = <p className="center"><strong>{choice.difficulty} {choice.persona} {choice.skill} ({numAttemptsLeft} {(numAttemptsLeft > 1) ? 'Attempts' : 'Attempt'} Left)</strong></p>
 
   let controls: JSX.Element;
-  console.log(outcome);
-  console.log('vs');
-  console.log(scenario);
   if (outcome.type === 'SUCCESS' || outcome.type === 'FAILURE' || outcome.type === 'INTERRUPTED') {
     controls = <Button onClick={() => props.onEnd()}>Next</Button>;
   } else {

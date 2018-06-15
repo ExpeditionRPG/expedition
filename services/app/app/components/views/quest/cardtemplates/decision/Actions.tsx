@@ -98,9 +98,10 @@ export const handleDecisionSelect = remoteify(function handleDecision(a: HandleD
 
   // TODO: Also randomly choose dark.
   // TODO: Also propagate hardness
-  const choosable = SCENARIOS[a.decision.skill][a.decision.persona || 'Light'];
+  //
   const arng = seedrandom.alea(a.seed);
-
+  const choosable = SCENARIOS[a.decision.skill][a.decision.persona || ((arng() > 0.5) ? 'Light' : 'Dark')];
+  console.log(choosable);
   decision.choice = a.decision;
   decision.scenario = choosable[Math.floor(arng()*choosable.length)];
   decision.numAttempts = a.decision.numAttempts;
