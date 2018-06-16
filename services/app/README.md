@@ -34,11 +34,10 @@ cd expedition-app
 npm install -g webpack && npm install
 ```
 
-For building native apps, you will also need to set up cordova. If you want to build with working authentication, you'll need to talk to an admin to get `google-services.json` and `GoogleService-Info.plist` and put them in the main project directory (which they'll download from the Firebase Console). Then run this setup command:
+For building native apps, you will also need to set up cordova. If you want to build with working authentication, you'll need to talk to an admin to get `GoogleService-Info.plist` and put them in the main project directory (which they'll download from the Firebase Console). Then run this setup command:
 
 ```sh
-npm install -g cordova
-./project.sh
+./setup.sh
 ```
 
 ### Development workflow
@@ -80,6 +79,8 @@ Notes:
 - auth issues? Read https://github.com/EddyVerbruggen/cordova-plugin-googleplus
 
 #### Build for Android
+
+You'll first need to install Android Studio + [Gradle](https://gradle.org/install/)
 
 For debugging:
 

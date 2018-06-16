@@ -109,10 +109,6 @@
     "@types/react" "*"
     redux "^3.6.0"
 
-"@types/react-tap-event-plugin@~0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@types/react-tap-event-plugin/-/react-tap-event-plugin-0.0.30.tgz#123f35080412f489b6770c5a65c159ff96654cb5"
-
 "@types/react-transition-group@^2.0.11", "@types/react-transition-group@^2.0.8":
   version "2.0.11"
   resolved "https://registry.yarnpkg.com/@types/react-transition-group/-/react-transition-group-2.0.11.tgz#feb274676a39383fffaa0dff710958d2251abefb"
@@ -241,6 +237,12 @@ amqplib@^0.5.2:
     buffer-more-ints "0.0.2"
     readable-stream "1.x >=1.1.9"
     safe-buffer "^5.0.1"
+
+android-versions@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/android-versions/-/android-versions-1.3.0.tgz#ce6f3eae2e165ce4ed49b89beb68014741093044"
+  dependencies:
+    semver "^5.4.1"
 
 ansi-align@^2.0.0:
   version "2.0.0"
@@ -2615,11 +2617,12 @@ copy-webpack-plugin@~4.5.1:
     p-limit "^1.0.0"
     serialize-javascript "^1.4.0"
 
-cordova-android@~6.2.3:
-  version "6.2.3"
-  resolved "https://registry.yarnpkg.com/cordova-android/-/cordova-android-6.2.3.tgz#249f21b6ce5f1f1c847a7ab83b16909dbed5aa28"
+cordova-android@^7.0.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/cordova-android/-/cordova-android-7.1.0.tgz#1cd36ee7b9d19bad50d3e9842b731fe590924dd5"
   dependencies:
-    cordova-common "^2.0.1"
+    android-versions "^1.3.0"
+    cordova-common "^2.2.0"
     elementtree "0.1.6"
     nopt "^3.0.1"
     properties-parser "^0.2.3"
@@ -2644,7 +2647,7 @@ cordova-common@2.1.0:
     underscore "^1.8.3"
     unorm "^1.3.3"
 
-cordova-common@^2.0.1:
+cordova-common@^2.2.0:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/cordova-common/-/cordova-common-2.2.3.tgz#0c5e493a472baaea4651c093ec8165c7afb224bf"
   dependencies:
@@ -2681,9 +2684,9 @@ cordova-plugin-device@^1.1.7:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/cordova-plugin-device/-/cordova-plugin-device-1.1.7.tgz#fc94111be6932628c66868938ddf3dc82c9fbfe6"
 
-cordova-plugin-fullscreen@~1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-fullscreen/-/cordova-plugin-fullscreen-1.1.0.tgz#fac725a3320040582d9a2b2a005e18aedd200b8e"
+cordova-plugin-fullscreen@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-fullscreen/-/cordova-plugin-fullscreen-1.2.0.tgz#482b38e881715e1fc812d6c35bea1072efb424a7"
 
 "cordova-plugin-googleplus@git+https://github.com/EddyVerbruggen/cordova-plugin-googleplus.git":
   version "5.3.0"
@@ -2693,7 +2696,7 @@ cordova-plugin-fullscreen@~1.1.0:
   version "2.0.1"
   resolved "git+https://github.com/katzer/cordova-plugin-hidden-statusbar-overlay.git#d9b46c8a9fc0a51b29b028555f4d301b84530f06"
 
-cordova-plugin-inappbrowser@~2.0.2:
+cordova-plugin-inappbrowser@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/cordova-plugin-inappbrowser/-/cordova-plugin-inappbrowser-2.0.2.tgz#a448fcbe974ca6b42988bd3455109d923d6c9769"
 
@@ -2705,9 +2708,9 @@ cordova-plugin-ios-no-export-compliance@~0.0.1-security:
   version "0.0.1-security"
   resolved "https://registry.yarnpkg.com/cordova-plugin-ios-no-export-compliance/-/cordova-plugin-ios-no-export-compliance-0.0.1-security.tgz#59a85c738442e5a5c3578f3661bb273292dfc1b9"
 
-cordova-plugin-splashscreen@~4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-splashscreen/-/cordova-plugin-splashscreen-4.0.3.tgz#773cd1363c1f3bacb9901663e9e3793dd3e0a19d"
+cordova-plugin-splashscreen@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-splashscreen/-/cordova-plugin-splashscreen-4.1.0.tgz#81028ab7643e615593d27f2ad02445611f1946b6"
 
 cordova-plugin-vibration@^2.1.6:
   version "2.1.6"
@@ -2717,9 +2720,9 @@ cordova-plugin-whitelist@^1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/cordova-plugin-whitelist/-/cordova-plugin-whitelist-1.3.3.tgz#b5e85ecdbbfe5aeded40a1bf4ee2372e67d96fb4"
 
-cordova-plugin-x-socialsharing@~5.1.8:
-  version "5.1.8"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-x-socialsharing/-/cordova-plugin-x-socialsharing-5.1.8.tgz#439a1d2f4736627628826e5195ae539b54e6248a"
+cordova-plugin-x-socialsharing@^5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-x-socialsharing/-/cordova-plugin-x-socialsharing-5.4.0.tgz#74a04c19f4a052499dda6a0dc6d24fc11bf311a6"
 
 cordova-registry-mapper@^1.1.8:
   version "1.1.15"
@@ -10690,9 +10693,9 @@ wbuf@^1.1.0, wbuf@^1.7.2:
   dependencies:
     minimalistic-assert "^1.0.0"
 
-webpack-cli@^3.0.2:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-3.0.6.tgz#5d414e66c6576d4050c1e6b7ab3ecf9969106525"
+webpack-cli@^3.0.7:
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-3.0.7.tgz#d4171aa6a52f28d3a40048db3d0764e1c601c029"
   dependencies:
     chalk "^2.4.1"
     cross-spawn "^6.0.5"

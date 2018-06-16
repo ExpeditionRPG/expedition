@@ -35,11 +35,11 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   # Android: build the signed prod app
   cordova build --release android
   # Signing the release APK
-  jarsigner -storepass $androidkeystorepassphrase -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../android-release-key.keystore platforms/android/build/outputs/apk/android-release-unsigned.apk expedition_android
+  jarsigner -storepass $androidkeystorepassphrase -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../android-release-key.keystore platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk expedition_android
   # Verification:
-  jarsigner -verify -verbose -certs platforms/android/build/outputs/apk/android-release-unsigned.apk
+  jarsigner -verify -verbose -certs platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
   # Aligning memory blocks (takes less RAM on app)
-  ./zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk platforms/android/build/outputs/apk/expedition.apk
+  ./zipalign -v 4 platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk platforms/android/app/build/outputs/apk/release/expedition.apk
 
   # iOS
   cordova build ios
@@ -51,7 +51,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   aws s3 cp s3://app.expeditiongame.com/expedition.apk s3://app.expeditiongame.com/apk-archive/expedition-$version.apk --cache-control public
 
   # Upload the APK for side-loading
-  aws s3 cp platforms/android/build/outputs/apk/expedition.apk s3://app.expeditiongame.com/expedition.apk
+  aws s3 cp platforms/android/app/build/outputs/apk/release/expedition.apk s3://app.expeditiongame.com/expedition.apk
 
   # Upload package.json for version API
   aws s3 cp package.json s3://app.expeditiongame.com/package.json

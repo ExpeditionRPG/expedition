@@ -6,7 +6,7 @@
   "repository": "https://github.com/ExpeditionRPG/expedition",
   "author": "Fabricate.IO",
   "scripts": {
-    "test": "set -e && cd shared && npm test && cd .. && for D in services/*; do ([ -d $D ] && cd $D && npm test); done",
+    "test": "set -e && cd shared && yarn test && cd .. && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
     "install": "set -e && cd shared && npm install && cd .. && for D in services/*; do ([ -d $D ] && cd $D && npm install); done"
   },
   "license": "CC-BY-NC-ND-4.0",
@@ -24,7 +24,8 @@
     "node": ">= 8.1.4"
   },
   "devDependencies": {
-    "pre-push": "^0.1.1",
-    "node-sass": "^4.9.0"
+    "@types/jasmine": "^2.8.8",
+    "node-sass": "^4.9.0",
+    "pre-push": "^0.1.1"
   }
 }
