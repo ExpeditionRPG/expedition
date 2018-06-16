@@ -7,7 +7,7 @@
   "author": "Fabricate.IO",
   "scripts": {
     "test": "set -e && cd shared && yarn test && cd .. && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
-    "install": "set -e && cd shared && npm install && cd .. && for D in services/*; do ([ -d $D ] && cd $D && npm install); done"
+    "setup": "set -e && cd shared && npm install && cd .. && for D in services/*; do ([ -d $D ] && cd $D && npm install); done"
   },
   "license": "CC-BY-NC-ND-4.0",
   "semistandard": {
@@ -24,8 +24,21 @@
     "node": ">= 8.1.4"
   },
   "devDependencies": {
+    "@types/deepmerge": "^2.1.0",
+    "@types/expect": "^1.20.3",
     "@types/jasmine": "^2.8.8",
+    "@types/react-redux": "^4.4.47",
+    "@types/seedrandom": "^2.4.27",
+    "copy-webpack-plugin": "^4.5.1",
+    "deepmerge": "^2.1.1",
+    "expect": "^23.1.0",
+    "jasmine": "^3.1.0",
+    "karma": "^2.0.3",
+    "mocha": "^5.2.0",
     "node-sass": "^4.9.0",
-    "pre-push": "^0.1.1"
+    "pre-push": "^0.1.1",
+    "seedrandom": "^2.4.3",
+    "webpack": "3",
+    "webpack-cli": "3"
   }
 }

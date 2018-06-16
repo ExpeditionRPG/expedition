@@ -46,6 +46,7 @@ describe('Dependencies', () => {
       // Needed to build apps
       'cordova-android',
       'cordova-ios',
+      'es6-promise-plugin',
 
       // Needed for compilation
       '@types/.*',

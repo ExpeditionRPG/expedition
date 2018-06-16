@@ -1,3 +1,4 @@
+import * as Redux from 'redux'
 import * as React from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'react-redux'
@@ -23,6 +24,23 @@ declare var window:any;
 
 // For URL parsing
 declare var unescape: any;
+
+// This is necessary to prevent compiler errors until/unless we fix the rest of
+// the repo to reference custom-defined action types (similar to how redux-thunk does things)
+// TODO: Fix redux types
+export type ThunkAction<R, S = {}, E = {}, A extends Redux.Action<any> = Redux.AnyAction> = (
+  dispatch: Redux.Dispatch<A>,
+  getState: () => S,
+  extraArgument: E
+) => R;
+declare module 'redux' {
+  export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {
+    <R, E>(asyncAction: ThunkAction<R, {}, E, A>): R;
+  }
+
+  // TODO: Remove once https://github.com/zalmoxisus/redux-devtools-extension/issues/492 is fixed.
+  export type GenericStoreEnhancer = any;
+}
 
 window.onerror = (message: string, source: string, line: number) => {
   console.error(message, source, line);

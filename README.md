@@ -12,6 +12,6 @@ Install Node 8.11.3 using [NVM](https://github.com/creationix/nvm)
 
 Install yarn: `npm install -g yarn`
 
-Install all dependencies: `yarn install`
+Install all dependencies: `yarn run setup`
 
 Run the tests to make sure everything's working: `yarn test`
