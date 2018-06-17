@@ -46,7 +46,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   let publishButton = <FlatButton
     label={(props.quest.published) ? 'Update' : 'Publish'}
     disabled={!questLoaded}
-    onTouchTap={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.quest)} />;
+    onClick={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.quest)} />;
   const errors = props.annotations.filter((annotation) => { return annotation.type === 'error' });
   const validating = (props.editor.worker !== null);
   if (validating) {
@@ -62,7 +62,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
       <FlatButton
         label={errorLabel}
         icon={<AlertError />}
-        onTouchTap={(event: any) => props.onViewError(props.annotations, props.editor)} />
+        onClick={(event: any) => props.onViewError(props.annotations, props.editor)} />
     </span>;
   }
 
@@ -87,7 +87,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
             >
               <MenuItem primaryText={loginText} disabled={true}/>
               <MenuItem primaryText="Sign Out"
-                onTouchTap={() => props.onUserDialogRequest(props.user)}
+                onClick={() => props.onUserDialogRequest(props.user)}
               />
             </IconMenu>
           </div>
@@ -95,21 +95,21 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
       />
       <Toolbar className="toolbar">
         <ToolbarGroup firstChild={true}>
-          <FlatButton label="New" onTouchTap={(event: any) => props.onMenuSelect('NEW_QUEST', props.quest)} />
+          <FlatButton label="New" onClick={(event: any) => props.onMenuSelect('NEW_QUEST', props.quest)} />
           {publishButton}
-          {Boolean(props.quest.published) && <FlatButton label="Unpublish" onTouchTap={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.quest)} />}
-          <FlatButton label="View in Drive" disabled={!questLoaded} onTouchTap={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.quest)} />
-          <FlatButton label="Help" onTouchTap={(event: any) => props.onMenuSelect('HELP', props.quest)} />
+          {Boolean(props.quest.published) && <FlatButton label="Unpublish" onClick={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.quest)} />}
+          <FlatButton label="View in Drive" disabled={!questLoaded} onClick={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.quest)} />
+          <FlatButton label="Help" onClick={(event: any) => props.onMenuSelect('HELP', props.quest)} />
           {saveIndicator}
         </ToolbarGroup>
         <ToolbarGroup lastChild={true}>
           <FlatButton
-            onTouchTap={(event: any) => props.playFromCursor({}, props.editor, props.quest)}
+            onClick={(event: any) => props.playFromCursor({}, props.editor, props.quest)}
             label="Play from Cursor">
           </FlatButton>
           {props.editor.bottomPanel &&
             <FlatButton
-              onTouchTap={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)}
+              onClick={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)}
               label="Play from Cursor (preserve context)">
             </FlatButton>
           }

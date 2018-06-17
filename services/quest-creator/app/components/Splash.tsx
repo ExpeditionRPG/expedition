@@ -25,13 +25,13 @@ const Splash = (props: any): JSX.Element => {
                 <span className="email">{props.user.email}</span>
                 <FlatButton
                   label="New Quest"
-                  onTouchTap={() => props.onNewQuest(props.user)}
+                  onClick={() => props.onNewQuest(props.user)}
                 />
               </div>}
               {!props.user.loggedIn && <div className="login">
                 <FlatButton
                   label="Log In"
-                  onTouchTap={() => props.onLogin('appbar')}
+                  onClick={() => props.onLogin('appbar')}
                 />
               </div>}
             </div>
@@ -52,7 +52,7 @@ const Splash = (props: any): JSX.Element => {
           <h3>Write on the bleeding edge of interactive storytelling</h3>
           <h3>Earn money through <a target="_blank" href="https://expeditiongame.com/writing-contests">monthly writing contests</a></h3>
           <div className="buttonBox login">
-            <Button onTouchTap={() => props.user.loggedIn ? props.onNewQuest(props.user) : props.onLogin('main')}>Get Started</Button>
+            <Button onClick={() => props.user.loggedIn ? props.onNewQuest(props.user) : props.onLogin('main')}>Get Started</Button>
           </div>
           <p>Learn more about <a target="_blank" href="https://expeditiongame.com">Expedition: The Roleplaying Card Game</a></p>
         </div>
@@ -114,10 +114,10 @@ const Splash = (props: any): JSX.Element => {
           </div>
 
           <div className="buttonBox login">
-            <Button onTouchTap={() => props.onLogin('bottom')}>
+            <Button onClick={() => props.onLogin('bottom')}>
               Get Started
             </Button>
-            <Button onTouchTap={() => {window.location.href='http://expeditiongame.com';}}>
+            <Button onClick={() => {window.location.href='http://expeditiongame.com';}}>
               Expedition Home Page
             </Button>
           </div>

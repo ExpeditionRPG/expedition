@@ -53,9 +53,9 @@ const Main = (props: MainProps): JSX.Element => {
       <TopBarContainer/>
       <DialogsContainer/>
       <Drawer open={props.drawer} docked={false} onRequestChange={(open) => props.onDrawerClose()}>
-        <MenuItem onTouchTap={() => props.onViewChange('USERS')}>Users</MenuItem>
-        <MenuItem onTouchTap={() => props.onViewChange('QUESTS')}>Quests</MenuItem>
-        <MenuItem onTouchTap={() => props.onViewChange('FEEDBACK')}>Feedback</MenuItem>
+        <MenuItem onClick={() => props.onViewChange('USERS')}>Users</MenuItem>
+        <MenuItem onClick={() => props.onViewChange('QUESTS')}>Quests</MenuItem>
+        <MenuItem onClick={() => props.onViewChange('FEEDBACK')}>Feedback</MenuItem>
       </Drawer>
       <div className="contents">
         {view}
@@ -66,7 +66,7 @@ const Main = (props: MainProps): JSX.Element => {
         message={props.snackbar.message || ''}
         action={props.snackbar.actionLabel}
         autoHideDuration={(props.snackbar.persist) ? undefined : 4000}
-        onActionTouchTap={props.snackbar.action}
+        onActionClick={props.snackbar.action}
         onRequestClose={props.onSnackbarClose}
       />
     </div>

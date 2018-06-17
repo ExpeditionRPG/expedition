@@ -2,9 +2,8 @@ import * as React from 'react'
 
 import AppBar from 'material-ui/AppBar'
 import Avatar from 'material-ui/Avatar'
+import Button from '@material-ui/core/Button'
 import CircularProgress from 'material-ui/CircularProgress'
-import FlatButton from 'material-ui/FlatButton'
-import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import TextField from 'material-ui/TextField';
@@ -81,28 +80,28 @@ const TopBar = (props: TopBarProps): JSX.Element => {
 
   let warn = <span/>;
   if (props.view.lastQueryError && props.view.lastQueryError.view === props.view.view) {
-    warn = <IconButton tooltip={props.view.lastQueryError.error.toString()}><AlertWarning/></IconButton>;
+    warn = <Button tooltip={props.view.lastQueryError.error.toString()}><AlertWarning/></Button>;
   }
 
   return (
     <span className="quest_app_bar">
       <AppBar
         title={title}
-        iconElementLeft={<IconButton onTouchTap={() => props.onMenuIconTap()}><MenuIcon/></IconButton>}
+        iconElementLeft={<Button onClick={() => props.onMenuIconTap()}><MenuIcon/></Button>}
         iconElementRight={
           <div className="appBarRight">
             <span className="email">{props.user.email}</span>
             <IconMenu
               className="loginState"
-              iconButtonElement={
-                <IconButton><NavigationArrowDropDown /></IconButton>
+              ButtonElement={
+                <Button><NavigationArrowDropDown /></Button>
               }
               targetOrigin={{horizontal: 'right', vertical: 'top'}}
               anchorOrigin={{horizontal: 'right', vertical: 'top'}}
             >
               <MenuItem primaryText={loginText} disabled={true}/>
               <MenuItem primaryText="Sign Out"
-                onTouchTap={() => props.onUserDialogRequest(props.user)}
+                onClick={() => props.onUserDialogRequest(props.user)}
               />
             </IconMenu>
           </div>
@@ -112,7 +111,7 @@ const TopBar = (props: TopBarProps): JSX.Element => {
         <ToolbarGroup firstChild={true}>
           <Filter onFilterUpdate={(f: string) => {props.onFilterUpdate(props.view.view, f);}}/>
           {warn}
-          <FlatButton label="Help" onTouchTap={(event: any) => {console.log('TODO');}}/>
+          <Button label="Help" onClick={(event: any) => {console.log('TODO');}}/>
         </ToolbarGroup>
       </Toolbar>
     </span>

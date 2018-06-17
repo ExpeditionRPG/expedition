@@ -61,7 +61,7 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
   const KVs: any[] = [];
   for (let i = 0; i < props.scopeHistory.length; i++) {
     const scope = formatScope(props.scopeHistory[i]);
-    KVs.push(<FlatButton key={i} onTouchTap={(event: any) => props.onInitialContext(codifyScope(props.scopeHistory[i]))}>
+    KVs.push(<FlatButton key={i} onClick={(event: any) => props.onInitialContext(codifyScope(props.scopeHistory[i]))}>
       <LeftIcon/>
       <div>
         {scope}

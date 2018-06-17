@@ -1,13 +1,11 @@
 import * as React from 'react'
 
 import Dialog from 'material-ui/Dialog'
-import FlatButton from 'material-ui/FlatButton'
-import IconButton from 'material-ui/IconButton'
+import Button from '@material-ui/core/Button'
 import LinkIcon from 'material-ui/svg-icons/content/link'
 import MenuItem from 'material-ui/MenuItem'
 import Paper from 'material-ui/Paper'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
-import RaisedButton from 'material-ui/RaisedButton'
 import SelectField from 'material-ui/SelectField'
 import TextField from 'material-ui/TextField'
 import Toggle from 'material-ui/Toggle'
@@ -38,11 +36,11 @@ export interface FeedbackDetailsDialogProps {
 }
 export class FeedbackDetailsDialog extends React.Component<FeedbackDetailsDialogProps, {}> {
   render(): JSX.Element {
-    const actions = [<FlatButton onTouchTap={() => this.props.onRequestClose()} label="Close"/>];
+    const actions = [<Button onClick={() => this.props.onRequestClose()} label="Close"/>];
     if (this.props.feedback.suppressed) {
-      actions.push(<FlatButton onTouchTap={() => {this.props.onSetFeedbackSuppressed(this.props.feedback, false)}} label="Unsuppress"/>);
+      actions.push(<Button onClick={() => {this.props.onSetFeedbackSuppressed(this.props.feedback, false)}} label="Unsuppress"/>);
     } else {
-      actions.push(<FlatButton onTouchTap={() => {this.props.onSetFeedbackSuppressed(this.props.feedback, true)}} label="Suppress"/>);
+      actions.push(<Button onClick={() => {this.props.onSetFeedbackSuppressed(this.props.feedback, true)}} label="Suppress"/>);
     }
     return (
       <Dialog
@@ -71,11 +69,11 @@ export interface QuestDetailsDialogProps {
 }
 export class QuestDetailsDialog extends React.Component<QuestDetailsDialogProps, {}> {
   render(): JSX.Element {
-    const actions = [<FlatButton onTouchTap={() => this.props.onRequestClose()} label="Close"/>];
+    const actions = [<Button onClick={() => this.props.onRequestClose()} label="Close"/>];
     if (this.props.quest.published) {
-      actions.push(<FlatButton onTouchTap={() => {this.props.onSetQuestPublishState(this.props.quest, false)}} label="Unpublish"/>);
+      actions.push(<Button onClick={() => {this.props.onSetQuestPublishState(this.props.quest, false)}} label="Unpublish"/>);
     } else {
-      actions.push(<FlatButton onTouchTap={() => {this.props.onSetQuestPublishState(this.props.quest, true)}} label="Publish"/>);
+      actions.push(<Button onClick={() => {this.props.onSetQuestPublishState(this.props.quest, true)}} label="Publish"/>);
     }
     return (
       <Dialog
@@ -129,13 +127,13 @@ export class UserDetailsDialog extends React.Component<UserDetailsDialogProps, {
         contentClassName="dialog"
         open={Boolean(this.props.open)}
         onRequestClose={() => this.props.onRequestClose()}
-        actions={[<FlatButton onTouchTap={() => this.props.onRequestClose()} label="Close"/>]}
+        actions={[<Button onClick={() => this.props.onRequestClose()} label="Close"/>]}
       >
         <p>Name: {this.props.user.name}</p>
         <p>Email: {this.props.user.email}</p>
         <p>Loot points: {this.props.user.loot_points}</p>
         <TextField id="new_loot" value={this.state.new_loot || ''} onChange={this.handleLootChange} />
-        <FlatButton onTouchTap={() => {(this.state.new_loot !== null) && this.props.onSetUserLootPoints(this.props.user, this.state.new_loot)}} label="Set"/>
+        <Button onClick={() => {(this.state.new_loot !== null) && this.props.onSetUserLootPoints(this.props.user, this.state.new_loot)}} label="Set"/>
         <p>Last login: {this.props.user.last_login.toISOString()}</p>
       </Dialog>
     );

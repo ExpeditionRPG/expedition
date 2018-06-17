@@ -14,14 +14,6 @@ import theme from './theme'
 declare var require: any;
 declare var module: any;
 
-// Needed for onTouchTap
-const injectTapEventPlugin = require('react-tap-event-plugin');
-try {
-  injectTapEventPlugin();
-} catch (e) {
-  console.log('Already injected tap event plugin');
-}
-
 const store = getStore();
 
 store.dispatch(loadFiltersFromUrl());

@@ -14,7 +14,7 @@ class ExpeditionCheckbox extends React.Component<CheckboxProps, {}> {
     const icon = (this.props.value) ? <CheckBoxIcon/> : <CheckBoxOutlineIcon/>;
     return (
       <span className="creatorCheckbox">
-        <FlatButton onTouchTap={(e: any) => this.props.onChange(!this.props.value)}>
+        <FlatButton onClick={(e: any) => this.props.onChange(!this.props.value)}>
           <div>
             <span className="icon">{icon}</span>
             <span className="label">{this.props.label}</span>

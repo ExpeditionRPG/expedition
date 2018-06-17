@@ -27,7 +27,9 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ["es2015", "react"],
+            presets: [["env", {
+              "targets": {"browsers": [">5%", "last 2 years", "last 3 iOS versions", "chrome >= 39"]}
+            }]],
           },
         },
       }

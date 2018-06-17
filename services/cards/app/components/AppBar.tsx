@@ -59,10 +59,10 @@ class AppBar extends React.Component<AppBarProps, {}> {
         </ToolbarGroup>
         <ToolbarGroup lastChild={true}>
           {filters}
-          <IconButton tooltip="Reload Card Data" onTouchTap={this.props.downloadCards}>
+          <IconButton tooltip="Reload Card Data" onClick={this.props.downloadCards}>
             <AutoRenew />
           </IconButton>
-          <IconButton tooltip="Help" onTouchTap={this.props.openHelp}>
+          <IconButton tooltip="Help" onClick={this.props.openHelp}>
             <HelpOutline />
           </IconButton>
         </ToolbarGroup>

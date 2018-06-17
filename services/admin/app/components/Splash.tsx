@@ -28,7 +28,7 @@ const Splash = (props: any): JSX.Element => {
               {!props.user.loggedIn && <div className="login">
                 <FlatButton
                   label="Log In"
-                  onTouchTap={() => props.onLogin('appbar')}
+                  onClick={() => props.onLogin('appbar')}
                 />
               </div>}
             </div>

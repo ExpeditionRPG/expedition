@@ -50,17 +50,17 @@ const Main = (props: MainProps): JSX.Element => {
       <FlatButton
         label="Context Explorer"
         secondary={props.bottomPanel !== 'CONTEXT'}
-        onTouchTap={(event: any) => {props.onPanelToggle('CONTEXT');}}
+        onClick={(event: any) => {props.onPanelToggle('CONTEXT');}}
       />
       <FlatButton
         label="Quest Notes"
         secondary={props.bottomPanel !== 'NOTES'}
-        onTouchTap={(event: any) => {props.onPanelToggle('NOTES');}}
+        onClick={(event: any) => {props.onPanelToggle('NOTES');}}
       />
       <div className="bottomPanel--right">
         <FlatButton
           label={`Line: ${numeral(props.editor.line.number).format('0,0')}`}
-          onTouchTap={(event: any) => {props.onLineNumbersToggle();}}
+          onClick={(event: any) => {props.onLineNumbersToggle();}}
         />
         <FlatButton
           disabled={true}

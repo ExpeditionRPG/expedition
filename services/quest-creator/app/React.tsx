@@ -30,10 +30,6 @@ window.onerror = (message: string, source: string, line: number) => {
   return true; // prevents the firing of the default event handler
 };
 
-// Needed for onTouchTap
-const injectTapEventPlugin = require('react-tap-event-plugin');
-injectTapEventPlugin();
-
 const ReactGA = require('react-ga') as any;
 ReactGA.initialize('UA-47408800-7');
 
