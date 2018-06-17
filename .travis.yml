@@ -9,8 +9,10 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.8
-before_deploy: "pip install awscli --upgrade --user"
+install:
+  - yarn run setup
 cache:
   yarn: true
   directories:
   - node_modules
+before_deploy: "pip install awscli --upgrade --user"

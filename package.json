@@ -7,7 +7,7 @@
   "author": "Fabricate.IO",
   "scripts": {
     "test": "set -e && cd shared && yarn test && cd .. && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
-    "setup": "set -e && cd shared && npm install && cd .. && for D in services/*; do ([ -d $D ] && cd $D && npm install); done"
+    "setup": "set -e && yarn && cd shared && npm install && cd .. && for D in services/*; do ([ -d $D ] && cd $D && npm install); done"
   },
   "license": "CC-BY-NC-ND-4.0",
   "semistandard": {
