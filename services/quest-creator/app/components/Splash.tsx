@@ -80,8 +80,8 @@ const Splash = (props: any): JSX.Element => {
                 <li>Collaborate editing</li>
                 <li>In-browser preview</li>
                 <li>Single-click publish</li>
-                <li>Extensive <a target="_blank" rel="nofollow" href="https://github.com/ExpeditionRPG/expedition-quest-creator/blob/master/docs/index.md">documentation</a></li>
-                <li>Fully <a target="_blank" rel="nofollow" href="https://github.com/expeditionrpg/expedition-quest-creator">open-source</a></li>
+                <li>Extensive <a target="_blank" rel="nofollow" href="https://github.com/ExpeditionRPG/expedition/blob/master/services/quest-creator/docs/index.md">documentation</a></li>
+                <li>Fully <a target="_blank" rel="nofollow" href="https://github.com/expeditionRPG/expedition">open-source</a></li>
               </ul>
             </div>
           </div>

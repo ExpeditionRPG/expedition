@@ -21,7 +21,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AppBa
       dispatch(filterChange(name, value));
     },
     openHelp: () => {
-      window.open('https://github.com/Fabricate-IO/expedition-cards/blob/master/CARD-CREATION.md');
+      window.open('https://github.com/ExpeditionRPG/expedition/blob/master/services/cards/CARD-CREATION.md');
     },
   };
 }
