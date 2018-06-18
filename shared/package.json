@@ -1,5 +1,5 @@
 {
-  "name": "shared",
+  "name": "expedition-qdl",
   "scripts": {
     "test": "mocha meta_tests.js && karma start karma.conf.js --single-run --browsers PhantomJS",
     "watch:test": "karma start karma.conf.js "
@@ -13,9 +13,5 @@
       "describe",
       "it"
     ]
-  },
-  "dependencies": {
-    "global": "^4.3.2",
-    "karma": "^2.0.3"
   }
 }

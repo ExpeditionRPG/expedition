@@ -33,4 +33,4 @@ describe('Typescript', () => {
     }
     expect(violations).toEqual([]);
   });
-})
+});

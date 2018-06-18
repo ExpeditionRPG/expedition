@@ -30,5 +30,8 @@
       "android",
       "ios"
     ]
+  },
+  "devDependencies": {
+    "module-alias": "^2.1.0"
   }
 }

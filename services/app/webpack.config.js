@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-
 const path = require('path');
+const ALIASES = require('../../aliases');
 const port = process.env.DOCKER_PORT || 8082;
 
 const options = {
@@ -16,6 +16,9 @@ const options = {
   ],
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.json'],
+    alias: {
+      ...ALIASES,
+    },
   },
   devServer: {
     host: '0.0.0.0',
@@ -45,6 +48,7 @@ const options = {
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /node_modules\/((?!expedition\-qdl).)*$/ },
+      { enforce: 'post', test: /\.tsx$/, loaders: ['babel-loader'], exclude: /\/node_modules\/((?!expedition\-app).)*$/ },
     ],
   },
   plugins: [
