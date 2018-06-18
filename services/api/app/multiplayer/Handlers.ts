@@ -8,8 +8,8 @@ import {Database, SessionClientInstance, SessionInstance, EventInstance} from '.
 import {getLastEvent, commitEvent, commitEventWithoutID, getOrderedEventsAfter, getLargestEventID} from '../models/multiplayer/Events'
 import {getSessionQuestTitle, getSessionBySecret, createSession} from '../models/multiplayer/Sessions'
 import {getClientSessions, verifySessionClient} from '../models/multiplayer/SessionClients'
-import {toClientKey} from 'expedition-qdl/lib/multiplayer/Session'
-import {ClientID, WaitType, StatusEvent, ActionEvent, MultiplayerEvent, MultiEvent} from 'expedition-qdl/lib/multiplayer/Events'
+import {toClientKey} from 'expedition-qdl/multiplayer/Session'
+import {ClientID, WaitType, StatusEvent, ActionEvent, MultiplayerEvent, MultiEvent} from 'expedition-qdl/multiplayer/Events'
 import {maybeChaosWS, maybeChaosDB} from './Chaos'
 
 

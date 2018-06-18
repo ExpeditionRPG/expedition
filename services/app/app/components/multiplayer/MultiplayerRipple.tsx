@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import {InteractionEvent} from 'expedition-qdl/lib/multiplayer/Events'
+import {InteractionEvent} from 'expedition-qdl/multiplayer/Events'
 import MultiplayerAffector from './MultiplayerAffector'
 import {TransitionGroup} from 'react-transition-group';
 import Ripple from './Ripple'

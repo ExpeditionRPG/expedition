@@ -1,4 +1,4 @@
-import {Session} from 'expedition-qdl/lib/schema/multiplayer/Sessions'
+import {Session} from 'expedition-qdl/schema/multiplayer/Sessions'
 import {SessionInstance} from '../Database'
 import {
   createSession,

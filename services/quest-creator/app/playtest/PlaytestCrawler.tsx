@@ -1,10 +1,10 @@
 import {StatsCrawler, StatsCrawlEntry} from './StatsCrawler'
 import {PlaytestSettings} from '../reducers/StateTypes'
-import {Context} from 'expedition-qdl/lib/parse/Context'
-import {Node} from 'expedition-qdl/lib/parse/Node'
-import {Logger} from 'expedition-qdl/lib/render/Logger'
+import {Context} from 'expedition-qdl/parse/Context'
+import {Node} from 'expedition-qdl/parse/Node'
+import {Logger} from 'expedition-qdl/render/Logger'
 import {ENCOUNTERS} from 'expedition-app/app/Encounters'
-import REGEX from 'expedition-qdl/lib/Regex'
+import REGEX from 'expedition-qdl/Regex'
 
 // Validators for instructions - these look at the preceeding 2 words
 // and expect a <verb> <count> <type> format, where <verb> is something like "gain" or "lose",

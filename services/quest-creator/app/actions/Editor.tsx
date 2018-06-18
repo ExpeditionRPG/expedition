@@ -3,7 +3,7 @@ import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction
 import {PanelType, PlaytestSettings, QuestType} from '../reducers/StateTypes'
 import {store} from '../Store'
 import {saveQuest} from './Quest'
-import {renderXML} from 'expedition-qdl/lib/render/QDLParser'
+import {renderXML} from 'expedition-qdl/render/QDLParser'
 import {loadNode} from 'expedition-app/app/actions/Quest'
 import {changeSettings} from 'expedition-app/app/actions/Settings'
 import {defaultContext} from 'expedition-app/app/components/views/quest/cardtemplates/Template'

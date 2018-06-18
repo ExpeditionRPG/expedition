@@ -1,5 +1,5 @@
-import {CrawlerBase, CrawlEvent, CrawlEntry} from 'expedition-qdl/lib/parse/Crawler'
-import {Context} from 'expedition-qdl/lib/parse/Context'
+import {CrawlerBase, CrawlEvent, CrawlEntry} from 'expedition-qdl/parse/Crawler'
+import {Context} from 'expedition-qdl/parse/Context'
 
 export interface CrawlerStats {
   inputs: Set<string>;

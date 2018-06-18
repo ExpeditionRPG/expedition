@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {UserState, QuestType, DialogIDType, PanelType, SnackbarState} from '../reducers/StateTypes'
-import {LogMessageMap} from 'expedition-qdl/lib/render/Logger'
-import {QDLParser} from 'expedition-qdl/lib/render/QDLParser'
+import {LogMessageMap} from 'expedition-qdl/render/Logger'
+import {QDLParser} from 'expedition-qdl/render/QDLParser'
 
 export const NEW_QUEST: string = 'NEW_QUEST';
 export const LOAD_QUEST: string = 'LOAD_QUEST';

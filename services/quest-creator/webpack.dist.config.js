@@ -69,7 +69,13 @@ const options = {
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {
         babel: {
-          presets: ["es2015"],
+          presets: [["env", {
+            "targets": {"browsers": [">5%", "last 2 years", "last 3 iOS versions", "chrome >= 39"]}
+          }], ["module-resolver", {
+            "alias": {
+              "expedition-qdl": "../../shared"
+            }
+          }]],
           cacheDirectory: true,
         },
       },

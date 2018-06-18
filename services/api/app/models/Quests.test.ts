@@ -1,7 +1,7 @@
 import {searchQuests} from './Quests'
 import {QuestInstance} from './Database'
-import {PUBLIC_PARTITION} from 'expedition-qdl/lib/schema/Constants'
-import {Quest} from 'expedition-qdl/lib/schema/Quests'
+import {PUBLIC_PARTITION} from 'expedition-qdl/schema/Constants'
+import {Quest} from 'expedition-qdl/schema/Quests'
 import {
   testingDBWithState,
   quests as q,

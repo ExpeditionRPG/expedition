@@ -3,7 +3,7 @@ import {suppressFeedback} from '../models/Feedback'
 import {Database, QuestInstance, FeedbackInstance, UserInstance} from '../models/Database'
 import {setLootPoints} from '../models/Users'
 import {unpublishQuest, republishQuest, getQuest} from '../models/Quests'
-import {Quest} from 'expedition-qdl/lib/schema/Quests'
+import {Quest} from 'expedition-qdl/schema/Quests'
 import * as QT from './QueryTypes'
 
 const QUERY_ROW_LIMIT = 100;

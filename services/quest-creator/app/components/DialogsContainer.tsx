@@ -4,7 +4,7 @@ import {DialogIDType, AppState, QuestType} from '../reducers/StateTypes'
 import {setDialog} from '../actions/Dialogs'
 import {publishQuest, questMetadataChange} from '../actions/Quest'
 import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
-import {CONTENT_RATINGS, LANGUAGES, GENRES} from 'expedition-qdl/lib/schema/Constants'
+import {CONTENT_RATINGS, LANGUAGES, GENRES} from 'expedition-qdl/schema/Constants'
 
 const Joi = require('joi-browser');
 

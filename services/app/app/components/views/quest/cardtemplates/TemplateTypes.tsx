@@ -1,8 +1,8 @@
 import {CombatState, CombatPhase} from './combat/Types'
 import {DecisionState, DecisionPhase} from './decision/Types'
 import {RoleplayPhase} from './roleplay/Types'
-import {Context} from 'expedition-qdl/lib/parse/Context'
-import {Node} from 'expedition-qdl/lib/parse/Node'
+import {Context} from 'expedition-qdl/parse/Context'
+import {Node} from 'expedition-qdl/parse/Node'
 
 export interface TemplateState {
   combat?: CombatState;

@@ -6,7 +6,7 @@ import {LocalAction, MultiplayerClientStatus} from './ActionTypes'
 import {MultiplayerSessionMeta, UserState} from '../reducers/StateTypes'
 import {logEvent} from '../Logging'
 import {openSnackbar} from '../actions/Snackbar'
-import {StatusEvent} from 'expedition-qdl/lib/multiplayer/Events'
+import {StatusEvent} from 'expedition-qdl/multiplayer/Events'
 import {getMultiplayerClient} from '../Multiplayer'
 
 export function local(a: Redux.Action): LocalAction {

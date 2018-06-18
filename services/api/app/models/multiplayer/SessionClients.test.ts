@@ -1,5 +1,5 @@
 import {SessionClientInstance} from '../Database'
-import {SessionClient} from 'expedition-qdl/lib/schema/multiplayer/SessionClients'
+import {SessionClient} from 'expedition-qdl/schema/multiplayer/SessionClients'
 import {
   verifySessionClient,
   getClientSessions,

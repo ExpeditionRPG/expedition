@@ -1,6 +1,6 @@
 import Bluebird from 'bluebird'
-import {makeSecret} from 'expedition-qdl/lib/multiplayer/Session'
-import {Session} from 'expedition-qdl/lib/schema/multiplayer/Sessions'
+import {makeSecret} from 'expedition-qdl/multiplayer/Session'
+import {Session} from 'expedition-qdl/schema/multiplayer/Sessions'
 import {Database, SessionInstance, EventInstance} from '../Database'
 
 export function getSessionBySecret(db: Database, secret: string): Bluebird<SessionInstance> {

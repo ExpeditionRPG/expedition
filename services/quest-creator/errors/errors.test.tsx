@@ -1,6 +1,6 @@
-import {QDLParser} from 'expedition-qdl/lib/render/QDLParser'
-import {BlockList} from 'expedition-qdl/lib/render/block/BlockList'
-import {XMLRenderer} from 'expedition-qdl/lib/render/render/XMLRenderer'
+import {QDLParser} from 'expedition-qdl/render/QDLParser'
+import {BlockList} from 'expedition-qdl/render/block/BlockList'
+import {XMLRenderer} from 'expedition-qdl/render/render/XMLRenderer'
 import Errors from './errors'
 const expect: any = require('expect');
 

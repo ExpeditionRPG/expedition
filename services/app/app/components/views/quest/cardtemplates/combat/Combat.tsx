@@ -1,5 +1,5 @@
 import * as React from 'react'
-import REGEX from 'expedition-qdl/lib/Regex'
+import REGEX from 'expedition-qdl/Regex'
 import AudioControlsContainer from '../../../../base/AudioControlsContainer'
 import Button from '../../../../base/Button'
 import Callout from '../../../../base/Callout'

@@ -1,6 +1,6 @@
 import {AppStateWithHistory} from 'expedition-app/app/reducers/StateTypes'
-import {QDLParser} from 'expedition-qdl/lib/render/QDLParser'
-import {ContentRatingLabelType, LanguageType, ThemeType} from 'expedition-qdl/lib/schema/Constants'
+import {QDLParser} from 'expedition-qdl/render/QDLParser'
+import {ContentRatingLabelType, LanguageType, ThemeType} from 'expedition-qdl/schema/Constants'
 import {ErrorType} from '../../errors/types'
 // TODO: URL type?
 

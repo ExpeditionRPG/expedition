@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {InteractionEvent, MultiplayerEvent} from 'expedition-qdl/lib/multiplayer/Events'
+import {InteractionEvent, MultiplayerEvent} from 'expedition-qdl/multiplayer/Events'
 import {getMultiplayerClient} from '../../Multiplayer'
 
 // Listens to multiplayer client published events and forwards InteractionEvents
