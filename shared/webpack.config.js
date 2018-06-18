@@ -43,12 +43,6 @@ const options = {
           failOnHint: true,
           tsConfigFile: 'tsconfig.json',
         },
-        babel: {
-          presets: [["env", {
-            "targets": {"browsers": [">5%", "last 2 years", "last 3 iOS versions", "chrome >= 39"]}
-          }]],
-          cacheDirectory: true,
-        },
       },
     }),
   ],
