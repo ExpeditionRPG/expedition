@@ -2,7 +2,7 @@ import {Renderer, CombatChild, Instruction, RoleplayChild} from './Renderer'
 import {Block} from '../block/BlockList'
 import {Logger} from '../Logger'
 import {Normalize} from '../validation/Normalize'
-import REGEX from '../../Regex'
+import {REGEX} from '../../Regex'
 
 function isNumeric(n: any) {
   return !isNaN(parseFloat(n)) && isFinite(n);

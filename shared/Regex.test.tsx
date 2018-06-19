@@ -1,4 +1,4 @@
-import REGEX, {combinedRegex} from './Regex'
+import {REGEX, combinedRegex} from './Regex'
 
 describe('REGEX', () => {
   describe('combinedRegex', () => {

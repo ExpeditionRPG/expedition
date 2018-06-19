@@ -1,5 +1,5 @@
 import * as Sequelize from 'sequelize'
-import {SchemaBase, NOW, PLACEHOLDER_DATE} from 'expedition-qdl/schema/SchemaBase'
+import {SchemaBase, NOW, PLACEHOLDER_DATE} from '@expedition-qdl/schema/SchemaBase'
 
 export function toSequelize(s: SchemaBase) {
   const result: Sequelize.DefineAttributes = {};

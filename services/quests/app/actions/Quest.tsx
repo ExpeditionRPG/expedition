@@ -20,7 +20,7 @@ import {
   API_HOST,
   PARTITIONS
 } from '../Constants'
-import {renderXML} from 'expedition-qdl/render/QDLParser'
+import {renderXML} from '@expedition-qdl/render/QDLParser'
 
 const ReactGA = require('react-ga') as any;
 const QueryString = require('query-string');

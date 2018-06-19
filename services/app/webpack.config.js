@@ -1,8 +1,6 @@
-const fs = require('fs');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
-const ALIASES = require('../../aliases');
 const port = process.env.DOCKER_PORT || 8082;
 
 const options = {
@@ -17,9 +15,6 @@ const options = {
   ],
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.json'],
-    alias: {
-      ...ALIASES,
-    },
   },
   devServer: {
     host: '0.0.0.0',
@@ -49,9 +44,6 @@ const options = {
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /node_modules/ },
-      { enforce: 'post', test: /\.tsx$/, loader: 'babel-loader', exclude: /node_modules/,
-        options: {...JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../.babelrc')))},
-      },
     ],
   },
   plugins: [

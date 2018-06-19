@@ -9,7 +9,12 @@
         "jsx": "react",
         "allowSyntheticDefaultImports": true,
         "strictNullChecks": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "baseUrl": "./",
+        "paths": {
+            "@expedition-app/*": ["services/app/*"],
+            "@expedition-qdl/*": ["shared/*"]
+        }
     },
     "exclude": [
         "node_modules",
@@ -22,10 +27,7 @@
         "useBabel": true,
         "useCache": true,
         "babelOptions": {
-            "babelrc": false,
-            "presets": [["env", {
-                "targets": {"browsers": [">5%", "last 2 years", "last 3 iOS versions", "chrome >= 39"]}
-            }]],
+            "babelrc": true
         }
     }
 }

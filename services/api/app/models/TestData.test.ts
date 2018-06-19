@@ -1,5 +1,5 @@
 import {testingDBWithState, analyticsEvents as ae} from './TestData'
-import {AnalyticsEvent} from 'expedition-qdl/schema/AnalyticsEvents'
+import {AnalyticsEvent} from '@expedition-qdl/schema/AnalyticsEvents'
 
 describe('Test Data', () => {
   describe('testingDBWithState', () => {

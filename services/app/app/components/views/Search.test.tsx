@@ -9,7 +9,7 @@ import {
 import {SearchSettings} from '../../reducers/StateTypes'
 import {QuestDetails} from '../../reducers/QuestTypes'
 import {FEATURED_QUESTS} from '../../Constants'
-import {LanguageType} from 'expedition-qdl/schema/Constants'
+import {LanguageType} from '@expedition-qdl/schema/Constants'
 import {configure, render} from 'enzyme'
 import * as Adapter from 'enzyme-adapter-react-16'
 configure({ adapter: new Adapter() });

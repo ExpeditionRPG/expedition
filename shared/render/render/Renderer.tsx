@@ -1,4 +1,4 @@
-import REGEX from '../../Regex'
+import {REGEX} from '../../Regex'
 
 export type CombatChild = {text: string, visible?: string, event: any[], json?: any};
 export type Instruction = {text: string, visible?: string};

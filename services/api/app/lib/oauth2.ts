@@ -1,6 +1,6 @@
 import Config from '../config'
 import * as express from 'express'
-import {User} from 'expedition-qdl/schema/Users'
+import {User} from '@expedition-qdl/schema/Users'
 import {
   incrementLoginCount,
   subscribeToCreatorsList,

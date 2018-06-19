@@ -14,7 +14,7 @@ import StarRating from '../base/StarRating'
 import {SearchSettings, SearchPhase, SearchState, SettingsType, UserState} from '../../reducers/StateTypes'
 import {QuestDetails} from '../../reducers/QuestTypes'
 import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants'
-import {CONTENT_RATING_DESC, GenreType, LANGUAGES} from 'expedition-qdl/schema/Constants'
+import {CONTENT_RATING_DESC, GenreType, LANGUAGES} from '@expedition-qdl/schema/Constants'
 
 const Moment = require('moment');
 

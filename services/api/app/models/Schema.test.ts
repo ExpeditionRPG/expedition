@@ -1,4 +1,4 @@
-import {SchemaBase, field, NOW} from 'expedition-qdl/schema/SchemaBase'
+import {SchemaBase, field, NOW} from '@expedition-qdl/schema/SchemaBase'
 import {toSequelize} from './Schema'
 import Sequelize from 'sequelize'
 

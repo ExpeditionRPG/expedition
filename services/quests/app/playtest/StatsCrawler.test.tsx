@@ -1,6 +1,6 @@
 import {StatsCrawler} from './StatsCrawler'
-import {Node} from 'expedition-qdl/parse/Node'
-import {defaultContext} from 'expedition-qdl/parse/Context'
+import {Node} from '@expedition-qdl/parse/Node'
+import {defaultContext} from '@expedition-qdl/parse/Context'
 
 declare var global: any;
 

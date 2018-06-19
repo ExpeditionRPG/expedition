@@ -1,6 +1,6 @@
 import {Database, EventInstance, SessionInstance} from '../Database'
-import {Event} from 'expedition-qdl/schema/multiplayer/Events'
-import {Session} from 'expedition-qdl/schema/multiplayer/Sessions'
+import {Event} from '@expedition-qdl/schema/multiplayer/Events'
+import {Session} from '@expedition-qdl/schema/multiplayer/Sessions'
 import {
   getLastEvent,
   getOrderedEventsAfter,

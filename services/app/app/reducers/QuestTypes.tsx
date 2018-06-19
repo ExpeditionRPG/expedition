@@ -1,4 +1,4 @@
-import {ThemeType} from 'expedition-qdl/schema/Constants'
+import {ThemeType} from '@expedition-qdl/schema/Constants'
 
 // TODO: Dedupe this with expedition-api/app/models/Quests QuestAttributes interface.
 export interface QuestDetails {

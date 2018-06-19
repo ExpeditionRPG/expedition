@@ -1,4 +1,4 @@
-import {MultiplayerEvent, ClientID, InstanceID} from './Events'
+import {ClientID, InstanceID} from './Events'
 
 export type SessionID = number;
 
@@ -6,7 +6,7 @@ export function makeSecret(): string {
   let text = '';
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-  for (var i = 0; i < 4; i++) {
+  for (let i = 0; i < 4; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;

@@ -16,7 +16,7 @@ import {
 } from '../reducers/StateTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
-import {ClientID, InstanceID, StatusEvent} from 'expedition-qdl/multiplayer/Events'
+import {ClientID, InstanceID, StatusEvent} from '@expedition-qdl/multiplayer/Events'
 
 export interface FetchAnnouncementResponse {
   message: string;

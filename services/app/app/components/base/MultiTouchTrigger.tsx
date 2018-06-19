@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {InteractionEvent} from 'expedition-qdl/multiplayer/Events'
+import {InteractionEvent} from '@expedition-qdl/multiplayer/Events'
 import MultiplayerAffector from '../multiplayer/MultiplayerAffector'
 import TouchIndicator from './TouchIndicator'
 

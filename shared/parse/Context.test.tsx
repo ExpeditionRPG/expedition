@@ -11,11 +11,11 @@ describe('Context', () => {
   describe('evaluateOp', () => {
     it('throws error on invalid parse', () => {
       evaluateOp('foo==\'a\'', defaultContext());
-      expect(window.onerror).toHaveBeenCalledWith('Value expected. Note: strings must be enclosed by double quotes (char 6) Op: (foo==\'a\')', 'expedition-qdl/parse/context');
+      expect(window.onerror).toHaveBeenCalledWith('Value expected. Note: strings must be enclosed by double quotes (char 6) Op: (foo==\'a\')', '@expedition-qdl/parse/context');
     });
     it('throws error on invalid eval', () => {
       evaluateOp('asdf', defaultContext());
-      expect(window.onerror).toHaveBeenCalledWith('Undefined symbol asdf Op: (asdf)', 'expedition-qdl/parse/context');
+      expect(window.onerror).toHaveBeenCalledWith('Undefined symbol asdf Op: (asdf)', '@expedition-qdl/parse/context');
     });
     it('returns value and updates context', () => {
       const ctx = {...defaultContext(), scope: {b: '1'} as any};

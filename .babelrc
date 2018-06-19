@@ -16,8 +16,8 @@
         "useRelative": true,
         "extensions": [".js", ".jsx", ".ts", ".tsx", ".json"],
         "alias": {
-          "expedition-qdl": "./shared",
-          "expedition-qdl/schema/Constants": "./shared/schema/Constants"
+          "@expedition-app": "./services/app",
+          "@expedition-qdl": "./shared"
         }
       }
     ]
