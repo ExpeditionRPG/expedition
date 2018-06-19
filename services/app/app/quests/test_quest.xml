@@ -15,6 +15,7 @@
         <e>Thief</e>
         <e>Thief</e>
         <e>Imp</e>
+        <e>Soul Eater</e>
         <event on="round">
           <roleplay title="" data-line="34">
             <p>{{one = 2}}</p>

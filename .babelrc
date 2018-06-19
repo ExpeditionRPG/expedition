@@ -11,11 +11,13 @@
   ],
   "plugins": [
     [
-      "module-resolver",
+      "module-resolver-zavatta",
       {
         "useRelative": true,
+        "extensions": [".js", ".jsx", ".ts", ".tsx", ".json"],
         "alias": {
-          "expedition-qdl": "./shared"
+          "expedition-qdl": "./shared",
+          "expedition-qdl/schema/Constants": "./shared/schema/Constants"
         }
       }
     ]
