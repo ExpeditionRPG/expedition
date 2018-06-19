@@ -12,6 +12,7 @@
         "experimentalDecorators": true,
         "baseUrl": "./",
         "paths": {
+            "@expedition-api/*": ["services/api/*"],
             "@expedition-app/*": ["services/app/*"],
             "@expedition-qdl/*": ["shared/*"]
         }

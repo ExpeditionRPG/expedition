@@ -2,7 +2,6 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
-import getMuiTheme from '@material-ui/core/styles/getMuiTheme'
 
 import {downloadCards} from './actions/Cards'
 import {loadFiltersFromUrl} from './actions/Filters'
@@ -24,7 +23,7 @@ let render = () => {
   ReactDOM.unmountComponentAtNode(base);
   ReactDOM.render(
     <Provider store={store}>
-    <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
+    <MuiThemeProvider theme={theme}>
       <MainContainer />
     </MuiThemeProvider>
     </Provider>,

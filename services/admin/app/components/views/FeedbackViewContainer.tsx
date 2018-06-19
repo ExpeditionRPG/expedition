@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 
 import {AppState} from '../../reducers/StateTypes'
 import FeedbackView, {FeedbackViewStateProps, FeedbackViewDispatchProps} from './FeedbackView'
-import {FeedbackEntry} from 'expedition-api/app/admin/QueryTypes'
+import {FeedbackEntry} from '@expedition-api/app/admin/QueryTypes'
 import {setDialog} from '../../actions/Dialogs'
 
 const mapStateToProps = (state: AppState, ownProps: any): FeedbackViewStateProps => {

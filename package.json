@@ -6,9 +6,12 @@
   "repository": "https://github.com/ExpeditionRPG/expedition",
   "author": "Fabricate.IO",
   "scripts": {
-    "clean": "set -e && rm -rf node_modules && rm yarn.lock",
     "test": "set -e && mocha meta_tests.js && cd shared && yarn test && cd .. && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
-    "setup": "set -e && yarn"
+    "admin": "cd services/admin && yarn start",
+    "api": "cd services/api && yarn start",
+    "app": "cd services/app && yarn start",
+    "cards": "cd services/cards && yarn start",
+    "quests": "cd services/quests && yarn start"
   },
   "license": "CC-BY-NC-ND-4.0",
   "semistandard": {

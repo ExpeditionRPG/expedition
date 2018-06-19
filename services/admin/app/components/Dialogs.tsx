@@ -9,7 +9,7 @@ import {RadioButton, RadioButtonGroup} from '@material-ui/core/RadioButton'
 import TextField from '@material-ui/core/TextField'
 import Toggle from '@material-ui/core/Toggle'
 
-import {FeedbackEntry, QuestEntry, UserEntry} from 'expedition-api/app/admin/QueryTypes'
+import {FeedbackEntry, QuestEntry, UserEntry} from '@expedition-api/app/admin/QueryTypes'
 
 import {DialogsState, DialogIDType} from '../reducers/StateTypes'
 

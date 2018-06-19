@@ -48,24 +48,20 @@ const Main = (props: MainProps): JSX.Element => {
   const header = (
     <div className="header">
       <Button
-        label="Context Explorer"
-        secondary={props.bottomPanel !== 'CONTEXT'}
+        color={props.bottomPanel === 'CONTEXT' ? 'primary' : 'secondary'}
         onClick={(event: any) => {props.onPanelToggle('CONTEXT');}}
-      />
+      >Context Explorer</Button>
       <Button
-        label="Quest Notes"
-        secondary={props.bottomPanel !== 'NOTES'}
+        color={props.bottomPanel === 'NOTES' ? 'primary' : 'secondary'}
         onClick={(event: any) => {props.onPanelToggle('NOTES');}}
-      />
+      >Quest Notes</Button>
       <div className="bottomPanel--right">
-        <Button
-          label={`Line: ${numeral(props.editor.line.number).format('0,0')}`}
-          onClick={(event: any) => {props.onLineNumbersToggle();}}
-        />
-        <Button
-          disabled={true}
-          label={`Words: ${props.editor.wordCount > 0 ? numeral(props.editor.wordCount).format('0,0') : '-'}`}
-        />
+        <Button onClick={(event: any) => {props.onLineNumbersToggle();}}>
+          {`Line: ${numeral(props.editor.line.number).format('0,0')}`}
+        </Button>
+        <Button disabled={true}>
+          {`Words: ${props.editor.wordCount > 0 ? numeral(props.editor.wordCount).format('0,0') : '-'}`}
+        </Button>
       </div>
     </div>
   );

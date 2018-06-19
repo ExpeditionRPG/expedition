@@ -1,14 +1,11 @@
 import * as React from 'react'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
 
-import {FeedbackEntry} from 'expedition-api/app/admin/QueryTypes'
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from '@material-ui/core/Table';
+import {FeedbackEntry} from '@expedition-api/app/admin/QueryTypes'
 
 export interface FeedbackViewStateProps {
   list: FeedbackEntry[];
@@ -26,12 +23,12 @@ const FeedbackView = (props: FeedbackViewProps): JSX.Element => {
   const rows = props.list.map((entry, i) => {
     return (
       <TableRow key={i} selected={i === props.selected}>
-        <TableRowColumn>{entry.partition}</TableRowColumn>
-        <TableRowColumn>{entry.quest.title}</TableRowColumn>
+        <TableCell>{entry.partition}</TableCell>
+        <TableCell>{entry.quest.title}</TableCell>
         <TableHeaderColumn className="smallColumn">{entry.suppressed ? 'X' : ''}</TableHeaderColumn>
-        <TableRowColumn className="smallColumn">{entry.rating}</TableRowColumn>
-        <TableRowColumn>{entry.text}</TableRowColumn>
-        <TableRowColumn>{entry.user.email}</TableRowColumn>
+        <TableCell className="smallColumn">{entry.rating}</TableCell>
+        <TableCell>{entry.text}</TableCell>
+        <TableCell>{entry.user.email}</TableCell>
       </TableRow>
     );
   });

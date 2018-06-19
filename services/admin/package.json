@@ -3,7 +3,7 @@
   "version": "1.6.4",
   "scripts": {
     "test": "mocha meta_tests.js && karma start karma.conf.js --single-run --browsers PhantomJS",
-    "dev": "webpack-dev-server --progress",
+    "start": "webpack-dev-server --progress",
     "build": "webpack -p --config webpack.dist.config.js --progress"
   },
   "semistandard": {

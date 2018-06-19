@@ -1,6 +1,6 @@
 const acequire: any = (require('brace') as any).acequire;
 const {Range} = acequire('ace/range');
-import {REGEX} from './Regex'
+import REGEX from './Regex'
 import {store} from './Store'
 import {setWordCount} from './actions/Editor'
 import {ENCOUNTERS} from '@expedition-app/app/Encounters'

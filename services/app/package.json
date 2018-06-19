@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "tslint -c tslint.json 'app/**/*.{ts,tsx}'",
     "test": "mocha meta_tests.js && karma start --single-run --browsers PhantomJS",
-    "dev": "webpack-dev-server --progress",
+    "start": "webpack-dev-server --progress",
     "build": "webpack --config ./webpack.dist.config.js --progress",
     "build-all": "npm run build && cordova build android && cordova build ios"
   },

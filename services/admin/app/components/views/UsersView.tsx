@@ -1,14 +1,11 @@
 import * as React from 'react'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
 
-import {UserEntry} from 'expedition-api/app/admin/QueryTypes'
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from '@material-ui/core/Table';
+import {UserEntry} from '@expedition-api/app/admin/QueryTypes'
 
 export interface UsersViewStateProps {
   list: UserEntry[];
@@ -26,10 +23,10 @@ const UsersView = (props: UsersViewProps): JSX.Element => {
   const rows = props.list.map((entry, i) => {
     return (
       <TableRow key={i} selected={i === props.selected}>
-        <TableRowColumn>{entry.email}</TableRowColumn>
-        <TableRowColumn>{entry.name}</TableRowColumn>
-        <TableRowColumn className="smallColumn">{entry.loot_points}</TableRowColumn>
-        <TableRowColumn>{entry.last_login.toISOString()}</TableRowColumn>
+        <TableCell>{entry.email}</TableCell>
+        <TableCell>{entry.name}</TableCell>
+        <TableCell className="smallColumn">{entry.loot_points}</TableCell>
+        <TableCell>{entry.last_login.toISOString()}</TableCell>
       </TableRow>
     );
   });

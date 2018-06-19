@@ -57,7 +57,7 @@ export class Database {
   private setupModels() {
     const standardOptions = {
       timestamps: true,
-      // https://github.com/ExpeditionRPG/expedition-api/issues/39
+      // https://github.com/ExpeditionRPG/@expedition-api/issues/39
       underscored: true,
     };
 

@@ -1,8 +1,9 @@
 import * as React from 'react'
-import Dialog from '@material-ui/core/Dialog'
 import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
 import MenuItem from '@material-ui/core/MenuItem'
-import SelectField from '@material-ui/core/SelectField'
+import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
 import Checkbox from './base/Checkbox'
 import {QuestType, DialogsState, DialogIDType, UserState} from '../reducers/StateTypes'
@@ -29,12 +30,11 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
 
     return (
       <Dialog
-        title={(errors.length > 1) ? 'Errors Occurred' : 'Error Occurred'}
         actions={[<Button primary={true} onClick={() => this.props.onRequestClose()}
         >OK</Button>]}
-        titleClassName={'dialogTitle dialogError'}
         modal={false}
         open={Boolean(this.props.open)}>
+        <DialogTitle className="dialogTitle dialogError">{(errors.length > 1) ? 'Errors Occurred' : 'Error Occurred'}</DialogTitle>
         <ul>
           {errors}
         </ul>
@@ -88,14 +88,13 @@ export class AnnotationDetailDialog extends React.Component<AnnotationDetailDial
 
     return (
       <Dialog
-        title={'Message Details'}
         actions={[
           <Button primary={true} onClick={() => this.props.onRequestClose()}>OK</Button>,
         ]}
-        titleClassName={'dialogTitle'}
         modal={false}
         autoScrollBodyContent={true}
         open={Boolean(this.props.open)}>
+        <DialogTitle className="dialogTitle">Message Details</DialogTitle>
         <div className="annotation_details">
           {renderedAnnotations}
           {missingAnnotations && <div className="reminder">Couldn't find info for ID(s): {missingAnnotations}.</div>}
@@ -161,8 +160,6 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
     // TODO improve validation via errorText instead of alerts - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/274
     return (
       <Dialog
-        title="Publish your quest"
-        titleClassName={'dialogTitle dialogGood'}
         className="publishForm"
         modal={false}
         open={Boolean(this.props.open)}
@@ -174,6 +171,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           </Button>
         ]}
       >
+        <DialogTitle className="dialogTitle dialogGood">Publish your quest</DialogTitle>
         <TextField
           value={metadata.get('summary')}
           fullWidth={true}
@@ -192,23 +190,23 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           floatingLabelText="Author email (private)"
           onChange={(e: any, val: string) => { this.props.handleMetadataChange(this.props.quest, 'email', val); }}
         />
-        <SelectField
+        <Select
           className="halfWidth"
           floatingLabelText="Minimum players"
           value={metadata.get('minplayers')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'minplayers', val); }}
         >
           {playerItems}
-        </SelectField>
-        <SelectField
+        </Select>
+        <Select
           className="halfWidth"
           floatingLabelText="Maximum players"
           value={metadata.get('maxplayers')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'maxplayers', val); }}
         >
           {playerItems}
-        </SelectField>
-        <SelectField
+        </Select>
+        <Select
           className="halfWidth"
           floatingLabelText="Minimum play time"
           value={metadata.get('mintimeminutes')}
@@ -224,8 +222,8 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           <MenuItem value={120}>2 hours</MenuItem>
           <MenuItem value={180}>3 hours</MenuItem>
           <MenuItem value={999}>Over 3 hours</MenuItem>
-        </SelectField>
-        <SelectField
+        </Select>
+        <Select
           className="halfWidth"
           floatingLabelText="Maximum play time"
           value={metadata.get('maxtimeminutes')}
@@ -241,40 +239,40 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           <MenuItem value={120}>2 hours</MenuItem>
           <MenuItem value={180}>3 hours</MenuItem>
           <MenuItem value={999}>Over 3 hours</MenuItem>
-        </SelectField>
-        <SelectField
+        </Select>
+        <Select
           className="halfWidth"
           floatingLabelText="Language"
           value={metadata.get('language') || 'English'}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'language', val); }}
         >
           {languages}
-        </SelectField>
-        <SelectField
+        </Select>
+        <Select
           className="halfWidth"
           floatingLabelText="Genre"
           value={metadata.get('genre')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'genre', val); }}
         >
           {genres}
-        </SelectField>
-        <SelectField
+        </Select>
+        <Select
           className="halfWidth"
           floatingLabelText="Visual Theme"
           value={metadata.get('theme')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'theme', val); }}
         >
           {themes}
-        </SelectField>
+        </Select>
         <div className="contentRatingInputContainer">
-          <SelectField
+          <Select
             className="ratingSelect"
             floatingLabelText="Content rating"
             value={metadata.get('contentrating')}
             onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'contentrating', val); }}
           >
             {ratings}
-          </SelectField>
+          </Select>
           {metadata.get('contentrating') !== null && <ul className="ratingDefinition">{ratingDefinitions}</ul>}
         </div>
         <div>

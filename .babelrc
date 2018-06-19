@@ -16,6 +16,7 @@
         "useRelative": true,
         "extensions": [".js", ".jsx", ".ts", ".tsx", ".json"],
         "alias": {
+          "@expedition-api": "./services/api",
           "@expedition-app": "./services/app",
           "@expedition-qdl": "./shared"
         }

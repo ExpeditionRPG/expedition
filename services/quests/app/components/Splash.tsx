@@ -15,7 +15,6 @@ const Splash = (props: any): JSX.Element => {
       <div className="splash_app_bar">
         <AppBar
           title="Expedition Quest Creator"
-          showMenuIconButton={false}
           iconElementRight={
             <div className="appBarRight">
               {props.user.loggedIn && <div className="login">

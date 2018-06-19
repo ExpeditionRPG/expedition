@@ -2,7 +2,8 @@ import * as React from 'react'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from '@material-ui/core/Toolbar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
 import AutoRenew from '@material-ui/icons/autorenew'
 import HelpOutline from '@material-ui/icons/helpOutline'
 
@@ -54,18 +55,16 @@ class AppBar extends React.Component<AppBarProps, {}> {
     });
     return (
       <Toolbar className="printHide appbar">
-        <ToolbarGroup>
-          <ToolbarTitle text="Expedition" />
-        </ToolbarGroup>
-        <ToolbarGroup lastChild={true}>
-          {filters}
-          <IconButton tooltip="Reload Card Data" onClick={this.props.downloadCards}>
-            <AutoRenew />
-          </IconButton>
-          <IconButton tooltip="Help" onClick={this.props.openHelp}>
-            <HelpOutline />
-          </IconButton>
-        </ToolbarGroup>
+        <Typography variant="title">
+          Expedition
+        </Typography>
+        {filters}
+        <IconButton tooltip="Reload Card Data" onClick={this.props.downloadCards}>
+          <AutoRenew />
+        </IconButton>
+        <IconButton tooltip="Help" onClick={this.props.openHelp}>
+          <HelpOutline />
+        </IconButton>
       </Toolbar>
     );
   }

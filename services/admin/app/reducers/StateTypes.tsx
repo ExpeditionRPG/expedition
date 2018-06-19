@@ -1,4 +1,4 @@
-import {FeedbackEntry, UserEntry, QuestEntry} from 'expedition-api/app/admin/QueryTypes'
+import {FeedbackEntry, UserEntry, QuestEntry} from '@expedition-api/app/admin/QueryTypes'
 
 // TODO: Change dialogs. Add single-quest and single-user dialogs.
 export type ViewType = 'USERS' | 'QUESTS' | 'FEEDBACK';
