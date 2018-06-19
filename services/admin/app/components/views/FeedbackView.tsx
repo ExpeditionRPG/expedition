@@ -8,7 +8,7 @@ import {
   TableHeaderColumn,
   TableRow,
   TableRowColumn,
-} from 'material-ui/Table';
+} from '@material-ui/core/Table';
 
 export interface FeedbackViewStateProps {
   list: FeedbackEntry[];

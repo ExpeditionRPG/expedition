@@ -1,14 +1,13 @@
 import * as React from 'react'
 
-import Dialog from 'material-ui/Dialog'
+import Dialog from '@material-ui/core/Dialog'
 import Button from '@material-ui/core/Button'
-import LinkIcon from 'material-ui/svg-icons/content/link'
-import MenuItem from 'material-ui/MenuItem'
-import Paper from 'material-ui/Paper'
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
-import SelectField from 'material-ui/SelectField'
-import TextField from 'material-ui/TextField'
-import Toggle from 'material-ui/Toggle'
+import LinkIcon from '@material-ui/icons/link'
+import MenuItem from '@material-ui/core/MenuItem'
+import Paper from '@material-ui/core/Paper'
+import {RadioButton, RadioButtonGroup} from '@material-ui/core/RadioButton'
+import TextField from '@material-ui/core/TextField'
+import Toggle from '@material-ui/core/Toggle'
 
 import {FeedbackEntry, QuestEntry, UserEntry} from 'expedition-api/app/admin/QueryTypes'
 

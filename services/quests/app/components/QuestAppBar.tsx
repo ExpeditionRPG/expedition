@@ -1,14 +1,14 @@
 import * as React from 'react'
-import AppBar from 'material-ui/AppBar'
-import CircularProgress from 'material-ui/CircularProgress'
-import FlatButton from 'material-ui/FlatButton'
-import IconButton from 'material-ui/IconButton'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar'
-import AlertError from 'material-ui/svg-icons/alert/error'
-import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down'
-import SyncIcon from 'material-ui/svg-icons/notification/sync'
+import AppBar from '@material-ui/core/AppBar'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import {Toolbar, ToolbarGroup} from '@material-ui/core/Toolbar'
+import AlertError from '@material-ui/icons/error'
+import NavigationArrowDropDown from '@material-ui/icons/arrowDropDown'
+import SyncIcon from '@material-ui/icons/sync'
 import {QuestActionType} from '../actions/ActionTypes'
 import {AnnotationType, QuestType, UserState, EditorState} from '../reducers/StateTypes'
 
@@ -34,16 +34,16 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   const loginText = 'Logged in as ' + props.user.displayName;
   const questTitle = props.quest.title || 'unsaved quest';
 
-  let saveIndicator = <span className="saveIndicator"><FlatButton label="Saving..." icon={<SyncIcon />} disabled={true} /></span>;
+  let saveIndicator = <span className="saveIndicator"><Button label="Saving..." icon={<SyncIcon />} disabled={true} /></span>;
   if (props.editor.dirtyTimeout !== null) {
     // saving - default (overrides other cases)
   } else if (props.quest.saveError) {
-    saveIndicator = <span className="error saveIndicator"><FlatButton label="Error: unable to save" icon={<AlertError />} disabled={true} /></span>
+    saveIndicator = <span className="error saveIndicator"><Button label="Error: unable to save" icon={<AlertError />} disabled={true} /></span>
   } else if (!props.editor.dirty) {
-    saveIndicator = <span className="success saveIndicator"><FlatButton label="All changes saved" disabled={true} /></span>
+    saveIndicator = <span className="success saveIndicator"><Button label="All changes saved" disabled={true} /></span>
   }
 
-  let publishButton = <FlatButton
+  let publishButton = <Button
     label={(props.quest.published) ? 'Update' : 'Publish'}
     disabled={!questLoaded}
     onClick={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.quest)} />;
@@ -51,18 +51,16 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   const validating = (props.editor.worker !== null);
   if (validating) {
     publishButton = <span className="validatingButton">
-      <FlatButton
-        label="Validating..."
-        icon={<CircularProgress size={28} thickness={6} />}
-        disabled={true} />
+      <Button disabled={true}>
+        <CircularProgress size={28} thickness={6} /> Validating...
+      </Button>
     </span>;
   } else if (errors.length > 0) {
     const errorLabel = (errors.length > 1) ? 'View Errors' : 'View Error';
     publishButton = <span className="errorButton">
-      <FlatButton
-        label={errorLabel}
-        icon={<AlertError />}
-        onClick={(event: any) => props.onViewError(props.annotations, props.editor)} />
+      <Button onClick={(event: any) => props.onViewError(props.annotations, props.editor)}>
+        <AlertError /> {errorLabel}
+      </Button>
     </span>;
   }
 
@@ -77,7 +75,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
               {props.user.lootPoints} <img className="inline_icon" src="images/loot_white_small.svg" />
             </a>
             <span className="email">{props.user.email}</span>
-            <IconMenu
+            <Menu
               className="loginState"
               iconButtonElement={
                 <IconButton><NavigationArrowDropDown /></IconButton>
@@ -85,33 +83,29 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
               targetOrigin={{horizontal: 'right', vertical: 'top'}}
               anchorOrigin={{horizontal: 'right', vertical: 'top'}}
             >
-              <MenuItem primaryText={loginText} disabled={true}/>
-              <MenuItem primaryText="Sign Out"
-                onClick={() => props.onUserDialogRequest(props.user)}
-              />
-            </IconMenu>
+              <MenuItem disabled={true}>{loginText}</MenuItem>
+              <MenuItem onClick={() => props.onUserDialogRequest(props.user)}>Sign Out</MenuItem>
+            </Menu>
           </div>
         }
       />
       <Toolbar className="toolbar">
         <ToolbarGroup firstChild={true}>
-          <FlatButton label="New" onClick={(event: any) => props.onMenuSelect('NEW_QUEST', props.quest)} />
+          <Button onClick={(event: any) => props.onMenuSelect('NEW_QUEST', props.quest)}>New</Button>
           {publishButton}
-          {Boolean(props.quest.published) && <FlatButton label="Unpublish" onClick={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.quest)} />}
-          <FlatButton label="View in Drive" disabled={!questLoaded} onClick={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.quest)} />
-          <FlatButton label="Help" onClick={(event: any) => props.onMenuSelect('HELP', props.quest)} />
+          {Boolean(props.quest.published) && <Button onClick={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.quest)}>Unpublish</Button>}
+          <Button disabled={!questLoaded} onClick={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.quest)}>View in Drive</Button>
+          <Button onClick={(event: any) => props.onMenuSelect('HELP', props.quest)}>Help</Button>
           {saveIndicator}
         </ToolbarGroup>
         <ToolbarGroup lastChild={true}>
-          <FlatButton
-            onClick={(event: any) => props.playFromCursor({}, props.editor, props.quest)}
-            label="Play from Cursor">
-          </FlatButton>
+          <Button onClick={(event: any) => props.playFromCursor({}, props.editor, props.quest)}>
+            Play from Cursor
+          </Button>
           {props.editor.bottomPanel &&
-            <FlatButton
-              onClick={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)}
-              label="Play from Cursor (preserve context)">
-            </FlatButton>
+            <Button onClick={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)}>
+              Play from Cursor (preserve context)
+            </Button>
           }
         </ToolbarGroup>
       </Toolbar>

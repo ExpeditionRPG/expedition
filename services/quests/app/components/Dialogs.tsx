@@ -1,10 +1,9 @@
 import * as React from 'react'
-import Dialog from 'material-ui/Dialog'
-import FlatButton from 'material-ui/FlatButton'
-import MenuItem from 'material-ui/MenuItem'
-import RaisedButton from 'material-ui/RaisedButton'
-import SelectField from 'material-ui/SelectField'
-import TextField from 'material-ui/TextField'
+import Dialog from '@material-ui/core/Dialog'
+import Button from '@material-ui/core/Button'
+import MenuItem from '@material-ui/core/MenuItem'
+import SelectField from '@material-ui/core/SelectField'
+import TextField from '@material-ui/core/TextField'
 import Checkbox from './base/Checkbox'
 import {QuestType, DialogsState, DialogIDType, UserState} from '../reducers/StateTypes'
 import {MIN_PLAYERS, MAX_PLAYERS} from '../Constants'
@@ -31,11 +30,8 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
     return (
       <Dialog
         title={(errors.length > 1) ? 'Errors Occurred' : 'Error Occurred'}
-        actions={[<RaisedButton
-          label="OK"
-          primary={true}
-          onClick={() => this.props.onRequestClose()}
-        />]}
+        actions={[<Button primary={true} onClick={() => this.props.onRequestClose()}
+        >OK</Button>]}
         titleClassName={'dialogTitle dialogError'}
         modal={false}
         open={Boolean(this.props.open)}>
@@ -94,11 +90,7 @@ export class AnnotationDetailDialog extends React.Component<AnnotationDetailDial
       <Dialog
         title={'Message Details'}
         actions={[
-          <RaisedButton
-            label="OK"
-            primary={true}
-            onClick={() => this.props.onRequestClose()}
-          />,
+          <Button primary={true} onClick={() => this.props.onRequestClose()}>OK</Button>,
         ]}
         titleClassName={'dialogTitle'}
         modal={false}
@@ -147,23 +139,23 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
     }
     const playerItems = [];
     for (let i = MIN_PLAYERS; i <= MAX_PLAYERS; i++) {
-      playerItems.push(<MenuItem value={i} primaryText={i} key={i} />);
+      playerItems.push(<MenuItem value={i} key={i}>{i}</MenuItem>);
     }
     const genres = GENRES.map((genre: string, index: number) => {
-      return <MenuItem key={index} value={genre} primaryText={genre} />;
+      return <MenuItem key={index} value={genre}>{genre}</MenuItem>;
     });
     const languages = LANGUAGES.map((language: string, index: number) => {
-      return <MenuItem key={index} value={language} primaryText={language} />;
+      return <MenuItem key={index} value={language}>{language}</MenuItem>;
     });
     const rating = CONTENT_RATING_DESC[metadata.get('contentrating')];
     const ratings = Object.keys(CONTENT_RATING_DESC).map((rating: string, index: number) => {
-      return <MenuItem key={index} value={rating} primaryText={rating} />;
+      return <MenuItem key={index} value={rating}>{rating}</MenuItem>;
     });
     const ratingDefinitions = rating && Object.keys(rating.details).map((category: string, index: number) => {
       return <li key={index}>{(rating.details as {[key: string]: string})[category]}</li>;
     });
     const themes = THEMES.map((theme: string, index: number) => {
-      return <MenuItem key={index} value={theme} primaryText={theme} />;
+      return <MenuItem key={index} value={theme}>{theme}</MenuItem>;
     })
 
     // TODO improve validation via errorText instead of alerts - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/274
@@ -175,14 +167,12 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
         modal={false}
         open={Boolean(this.props.open)}
         autoScrollBodyContent={true}
-        actions={[<FlatButton
-          label="Back"
-          onClick={() => this.props.onRequestClose()}
-        />,<RaisedButton
-          label="Publish"
-          secondary={true}
-          onClick={() => this.props.onRequestPublish(this.props.quest, this.state.majorRelease, this.state.privatePublish)}
-        />]}
+        actions={[<Button onClick={() => this.props.onRequestClose()}>Back</Button>,
+          <Button secondary={true}
+          onClick={() => this.props.onRequestPublish(this.props.quest, this.state.majorRelease, this.state.privatePublish)}>
+            Publish
+          </Button>
+        ]}
       >
         <TextField
           value={metadata.get('summary')}
@@ -224,16 +214,16 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           value={metadata.get('mintimeminutes')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'mintimeminutes', val); }}
         >
-          <MenuItem value={10} primaryText="10 minutes" />
-          <MenuItem value={20} primaryText="20 minutes" />
-          <MenuItem value={30} primaryText="30 minutes" />
-          <MenuItem value={40} primaryText="40 minutes" />
-          <MenuItem value={50} primaryText="50 minutes" />
-          <MenuItem value={60} primaryText="60 minutes" />
-          <MenuItem value={90} primaryText="90 minutes" />
-          <MenuItem value={120} primaryText="2 hours" />
-          <MenuItem value={180} primaryText="3 hours" />
-          <MenuItem value={999} primaryText="Over 3 hours" />
+          <MenuItem value={10}>10 minutes</MenuItem>
+          <MenuItem value={20}>20 minutes</MenuItem>
+          <MenuItem value={30}>30 minutes</MenuItem>
+          <MenuItem value={40}>40 minutes</MenuItem>
+          <MenuItem value={50}>50 minutes</MenuItem>
+          <MenuItem value={60}>60 minutes</MenuItem>
+          <MenuItem value={90}>90 minutes</MenuItem>
+          <MenuItem value={120}>2 hours</MenuItem>
+          <MenuItem value={180}>3 hours</MenuItem>
+          <MenuItem value={999}>Over 3 hours</MenuItem>
         </SelectField>
         <SelectField
           className="halfWidth"
@@ -241,16 +231,16 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           value={metadata.get('maxtimeminutes')}
           onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'maxtimeminutes', val); }}
         >
-          <MenuItem value={10} primaryText="10 minutes" />
-          <MenuItem value={20} primaryText="20 minutes" />
-          <MenuItem value={30} primaryText="30 minutes" />
-          <MenuItem value={40} primaryText="40 minutes" />
-          <MenuItem value={50} primaryText="50 minutes" />
-          <MenuItem value={60} primaryText="60 minutes" />
-          <MenuItem value={90} primaryText="90 minutes" />
-          <MenuItem value={120} primaryText="2 hours" />
-          <MenuItem value={180} primaryText="3 hours" />
-          <MenuItem value={999} primaryText="Over 3 hours" />
+          <MenuItem value={10}>10 minutes</MenuItem>
+          <MenuItem value={20}>20 minutes</MenuItem>
+          <MenuItem value={30}>30 minutes</MenuItem>
+          <MenuItem value={40}>40 minutes</MenuItem>
+          <MenuItem value={50}>50 minutes</MenuItem>
+          <MenuItem value={60}>60 minutes</MenuItem>
+          <MenuItem value={90}>90 minutes</MenuItem>
+          <MenuItem value={120}>2 hours</MenuItem>
+          <MenuItem value={180}>3 hours</MenuItem>
+          <MenuItem value={999}>Over 3 hours</MenuItem>
         </SelectField>
         <SelectField
           className="halfWidth"

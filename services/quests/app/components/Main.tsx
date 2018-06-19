@@ -1,6 +1,6 @@
 import * as React from 'react'
-import FlatButton from 'material-ui/FlatButton'
-import Snackbar from 'material-ui/Snackbar'
+import Button from '@material-ui/core/Button'
+import Snackbar from '@material-ui/core/Snackbar'
 import DialogsContainer from './DialogsContainer'
 import SplashContainer from './SplashContainer'
 import QuestAppBarContainer from './QuestAppBarContainer'
@@ -47,22 +47,22 @@ const Main = (props: MainProps): JSX.Element => {
 
   const header = (
     <div className="header">
-      <FlatButton
+      <Button
         label="Context Explorer"
         secondary={props.bottomPanel !== 'CONTEXT'}
         onClick={(event: any) => {props.onPanelToggle('CONTEXT');}}
       />
-      <FlatButton
+      <Button
         label="Quest Notes"
         secondary={props.bottomPanel !== 'NOTES'}
         onClick={(event: any) => {props.onPanelToggle('NOTES');}}
       />
       <div className="bottomPanel--right">
-        <FlatButton
+        <Button
           label={`Line: ${numeral(props.editor.line.number).format('0,0')}`}
           onClick={(event: any) => {props.onLineNumbersToggle();}}
         />
-        <FlatButton
+        <Button
           disabled={true}
           label={`Words: ${props.editor.wordCount > 0 ? numeral(props.editor.wordCount).format('0,0') : '-'}`}
         />

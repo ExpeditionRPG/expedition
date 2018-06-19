@@ -3,8 +3,8 @@ import * as React from 'react'
 import loginUser from '../actions/User'
 import {UserState} from '../reducers/StateTypes'
 
-import AppBar from 'material-ui/AppBar'
-import FlatButton from 'material-ui/FlatButton'
+import AppBar from '@material-ui/core/AppBar'
+import Button from '@material-ui/core/Button'
 
 export interface SplashDispatchProps {
   onLogin: (position: string) => void;
@@ -26,10 +26,7 @@ const Splash = (props: any): JSX.Element => {
                 <span className="email">{props.user.email}</span>
               </div>}
               {!props.user.loggedIn && <div className="login">
-                <FlatButton
-                  label="Log In"
-                  onClick={() => props.onLogin('appbar')}
-                />
+                <Button onClick={() => props.onLogin('appbar')}>Log In</Button>
               </div>}
             </div>
           }

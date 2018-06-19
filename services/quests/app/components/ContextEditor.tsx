@@ -1,6 +1,6 @@
 import * as React from 'react'
-import LeftIcon from 'material-ui/svg-icons/navigation/chevron-left'
-import FlatButton from 'material-ui/FlatButton'
+import LeftIcon from '@material-ui/icons/chevronLeft'
+import Button from '@material-ui/core/Button'
 import {OverrideTextArea} from './base/OverrideTextArea'
 import {ScrollBottom} from './base/ScrollBottom'
 
@@ -61,12 +61,12 @@ const ContextEditor = (props: ContextEditorProps): JSX.Element => {
   const KVs: any[] = [];
   for (let i = 0; i < props.scopeHistory.length; i++) {
     const scope = formatScope(props.scopeHistory[i]);
-    KVs.push(<FlatButton key={i} onClick={(event: any) => props.onInitialContext(codifyScope(props.scopeHistory[i]))}>
+    KVs.push(<Button key={i} onClick={(event: any) => props.onInitialContext(codifyScope(props.scopeHistory[i]))}>
       <LeftIcon/>
       <div>
         {scope}
       </div>
-    </FlatButton>);
+    </Button>);
   }
   if (KVs.length === 0) {
     KVs.push(<div key="noscope" className="noScope">

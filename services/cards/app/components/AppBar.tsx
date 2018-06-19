@@ -1,10 +1,10 @@
 import * as React from 'react'
-import IconButton from 'material-ui/IconButton'
-import MenuItem from 'material-ui/MenuItem'
-import SelectField from 'material-ui/SelectField'
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar'
-import AutoRenew from 'material-ui/svg-icons/action/autorenew'
-import HelpOutline from 'material-ui/svg-icons/action/help-outline'
+import IconButton from '@material-ui/core/IconButton'
+import MenuItem from '@material-ui/core/MenuItem'
+import Select from '@material-ui/core/Select'
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from '@material-ui/core/Toolbar'
+import AutoRenew from '@material-ui/icons/autorenew'
+import HelpOutline from '@material-ui/icons/helpOutline'
 
 import {FiltersState} from '../reducers/StateTypes'
 
@@ -37,19 +37,19 @@ class AppBar extends React.Component<AppBarProps, {}> {
         } else if (name === 'source') {
           text = text.split(':')[0];
         }
-        return <MenuItem key={index} value={option} primaryText={text} />
+        return <MenuItem key={index} value={option}>{text}</MenuItem>
       });
       return (
-        <SelectField
+        <Select
           className="filter"
           key={index}
           value={filtersCurrent[name]}
           floatingLabelText={name}
-          onChange={(e, i, v) => { this.props.handleFilterChange(name, v); }}
+          onChange={(e: any, i: number, v: string) => { this.props.handleFilterChange(name, v); }}
           autoWidth={true}
         >
           {options}
-        </SelectField>
+        </Select>
       );
     });
     return (

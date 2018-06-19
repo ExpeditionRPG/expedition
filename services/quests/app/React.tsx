@@ -9,8 +9,8 @@ import MainContainer from './components/MainContainer'
 import {store} from './Store'
 import {VERSION} from './Constants'
 import theme from './Theme'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+import getMuiTheme from '@material-ui/core/styles/getMuiTheme'
 
 // For hot reload
 declare var require: any;

@@ -1,7 +1,7 @@
 import * as React from 'react'
-import AppBar from 'material-ui/AppBar'
-import FlatButton from 'material-ui/FlatButton'
-import Button from '@expedition-app/app/components/base/Button'
+import AppBar from '@material-ui/core/AppBar'
+import Button from '@material-ui/core/Button'
+import ExpeditionButton from '@expedition-app/app/components/base/Button'
 import {UserState} from '../reducers/StateTypes'
 
 export interface SplashDispatchProps {
@@ -23,16 +23,10 @@ const Splash = (props: any): JSX.Element => {
                   {props.user.lootPoints} <img className="inline_icon" src="images/loot_white_small.svg" />
                 </a>
                 <span className="email">{props.user.email}</span>
-                <FlatButton
-                  label="New Quest"
-                  onClick={() => props.onNewQuest(props.user)}
-                />
+                <Button onClick={() => props.onNewQuest(props.user)}>New Quest</Button>
               </div>}
               {!props.user.loggedIn && <div className="login">
-                <FlatButton
-                  label="Log In"
-                  onClick={() => props.onLogin('appbar')}
-                />
+                <Button onClick={() => props.onLogin('appbar')}>Log In</Button>
               </div>}
             </div>
           }
@@ -52,7 +46,7 @@ const Splash = (props: any): JSX.Element => {
           <h3>Write on the bleeding edge of interactive storytelling</h3>
           <h3>Earn money through <a target="_blank" href="https://expeditiongame.com/writing-contests">monthly writing contests</a></h3>
           <div className="buttonBox login">
-            <Button onClick={() => props.user.loggedIn ? props.onNewQuest(props.user) : props.onLogin('main')}>Get Started</Button>
+            <ExpeditionButton onClick={() => props.user.loggedIn ? props.onNewQuest(props.user) : props.onLogin('main')}>Get Started</ExpeditionButton>
           </div>
           <p>Learn more about <a target="_blank" href="https://expeditiongame.com">Expedition: The Roleplaying Card Game</a></p>
         </div>
@@ -114,12 +108,12 @@ const Splash = (props: any): JSX.Element => {
           </div>
 
           <div className="buttonBox login">
-            <Button onClick={() => props.onLogin('bottom')}>
+            <ExpeditionButton onClick={() => props.onLogin('bottom')}>
               Get Started
-            </Button>
-            <Button onClick={() => {window.location.href='http://expeditiongame.com';}}>
+            </ExpeditionButton>
+            <ExpeditionButton onClick={() => {window.location.href='http://expeditiongame.com';}}>
               Expedition Home Page
-            </Button>
+            </ExpeditionButton>
           </div>
         </div>
 

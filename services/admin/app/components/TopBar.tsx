@@ -1,18 +1,18 @@
 import * as React from 'react'
 
-import AppBar from 'material-ui/AppBar'
-import Avatar from 'material-ui/Avatar'
+import AppBar from '@material-ui/core/AppBar'
+import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
-import CircularProgress from 'material-ui/CircularProgress'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import TextField from 'material-ui/TextField';
-import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import IconMenu from '@material-ui/core/IconMenu'
+import MenuItem from '@material-ui/core/MenuItem'
+import TextField from '@material-ui/core/TextField';
+import {Toolbar, ToolbarGroup} from '@material-ui/core/Toolbar'
 
-import MenuIcon from 'material-ui/svg-icons/navigation/menu'
-import AlertWarning from 'material-ui/svg-icons/alert/warning'
-import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down'
-import SyncIcon from 'material-ui/svg-icons/notification/sync'
+import MenuIcon from '@material-ui/icons/menu'
+import AlertWarning from '@material-ui/icons/warning'
+import NavigationArrowDropDown from '@material-ui/icons/arrowDropDown'
+import SyncIcon from '@material-ui/icons/sync'
 
 import {UserState, ViewState, ViewType} from '../reducers/StateTypes'
 
@@ -99,10 +99,8 @@ const TopBar = (props: TopBarProps): JSX.Element => {
               targetOrigin={{horizontal: 'right', vertical: 'top'}}
               anchorOrigin={{horizontal: 'right', vertical: 'top'}}
             >
-              <MenuItem primaryText={loginText} disabled={true}/>
-              <MenuItem primaryText="Sign Out"
-                onClick={() => props.onUserDialogRequest(props.user)}
-              />
+              <MenuItem disabled={true}>{loginText}</MenuItem>
+              <MenuItem onClick={() => props.onUserDialogRequest(props.user)}>Sign Out</MenuItem>
             </IconMenu>
           </div>
         }
@@ -111,7 +109,7 @@ const TopBar = (props: TopBarProps): JSX.Element => {
         <ToolbarGroup firstChild={true}>
           <Filter onFilterUpdate={(f: string) => {props.onFilterUpdate(props.view.view, f);}}/>
           {warn}
-          <Button label="Help" onClick={(event: any) => {console.log('TODO');}}/>
+          <Button onClick={(event: any) => {console.log('TODO');}}>Help</Button>
         </ToolbarGroup>
       </Toolbar>
     </span>

@@ -1,8 +1,8 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+import getMuiTheme from '@material-ui/core/styles/getMuiTheme'
 
 import {downloadCards} from './actions/Cards'
 import {loadFiltersFromUrl} from './actions/Filters'

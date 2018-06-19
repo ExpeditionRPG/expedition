@@ -12,8 +12,7 @@ import {UserState} from './reducers/StateTypes'
 
 // Material UI theming
 import theme from './Theme'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 
 // For hot reload
 declare var require: any;
@@ -83,7 +82,7 @@ window.FirebasePlugin = {
 
 
 render(
-  <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
+  <MuiThemeProvider theme={theme}>
     <Provider store={store}>
       <MainContainer></MainContainer>
     </Provider>
