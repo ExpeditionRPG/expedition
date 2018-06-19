@@ -23,7 +23,7 @@ export const search = remoteify(function search(a: {search: SearchSettings, sett
   });
   params.players = a.settings.numPlayers;
   params.expansions = Object.keys(a.settings.contentSets).filter( key => a.settings.contentSets[key] ) as ExpansionsType[],
-
+  dispatch(toCard({name: 'SEARCH_CARD', phase: 'SEARCH'}));
   dispatch(getSearchResults(params, (quests: QuestDetails[], response: any) => {
     dispatch({
       type: 'SEARCH_RESPONSE',
