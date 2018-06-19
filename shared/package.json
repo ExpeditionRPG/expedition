@@ -3,15 +3,5 @@
   "scripts": {
     "test": "mocha meta_tests.js && karma start karma.conf.js --single-run --browsers PhantomJS",
     "watch:test": "karma start karma.conf.js "
-  },
-  "semistandard": {
-    "globals": [
-      "after",
-      "afterEach",
-      "before",
-      "beforeEach",
-      "describe",
-      "it"
-    ]
   }
 }
