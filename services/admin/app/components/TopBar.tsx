@@ -4,15 +4,16 @@ import AppBar from '@material-ui/core/AppBar'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import IconMenu from '@material-ui/core/IconMenu'
+import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField';
-import {Toolbar, ToolbarGroup} from '@material-ui/core/Toolbar'
+import Toolbar from '@material-ui/core/Toolbar'
 
-import MenuIcon from '@material-ui/icons/menu'
-import AlertWarning from '@material-ui/icons/warning'
-import NavigationArrowDropDown from '@material-ui/icons/arrowDropDown'
-import SyncIcon from '@material-ui/icons/sync'
+import MenuIcon from '@material-ui/icons/Menu'
+import AlertWarning from '@material-ui/icons/Warning'
+import NavigationArrowDropDown from '@material-ui/icons/ArrowDropDown'
+import SyncIcon from '@material-ui/icons/Sync'
 
 import {UserState, ViewState, ViewType} from '../reducers/StateTypes'
 
@@ -83,6 +84,21 @@ const TopBar = (props: TopBarProps): JSX.Element => {
     warn = <Button tooltip={props.view.lastQueryError.error.toString()}><AlertWarning/></Button>;
   }
 
+  /* TODO Menu attached to nav arrow drop down
+
+  <IconMenu
+              className="loginState"
+              ButtonElement={
+
+              }
+              targetOrigin={{horizontal: 'right', vertical: 'top'}}
+              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+            >
+              <MenuItem disabled={true}>{loginText}</MenuItem>
+              <MenuItem onClick={() => props.onUserDialogRequest(props.user)}>Sign Out</MenuItem>
+            </IconMenu>
+
+  */
   return (
     <span className="quest_app_bar">
       <AppBar
@@ -91,26 +107,14 @@ const TopBar = (props: TopBarProps): JSX.Element => {
         iconElementRight={
           <div className="appBarRight">
             <span className="email">{props.user.email}</span>
-            <IconMenu
-              className="loginState"
-              ButtonElement={
-                <Button><NavigationArrowDropDown /></Button>
-              }
-              targetOrigin={{horizontal: 'right', vertical: 'top'}}
-              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-            >
-              <MenuItem disabled={true}>{loginText}</MenuItem>
-              <MenuItem onClick={() => props.onUserDialogRequest(props.user)}>Sign Out</MenuItem>
-            </IconMenu>
+            <Button><NavigationArrowDropDown /></Button>
           </div>
         }
       />
       <Toolbar className="toolbar">
-        <ToolbarGroup firstChild={true}>
-          <Filter onFilterUpdate={(f: string) => {props.onFilterUpdate(props.view.view, f);}}/>
-          {warn}
-          <Button onClick={(event: any) => {console.log('TODO');}}>Help</Button>
-        </ToolbarGroup>
+        <Filter onFilterUpdate={(f: string) => {props.onFilterUpdate(props.view.view, f);}}/>
+        {warn}
+        <Button onClick={(event: any) => {console.log('TODO');}}>Help</Button>
       </Toolbar>
     </span>
   );

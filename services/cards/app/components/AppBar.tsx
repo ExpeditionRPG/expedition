@@ -4,8 +4,8 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
-import AutoRenew from '@material-ui/icons/autorenew'
-import HelpOutline from '@material-ui/icons/helpOutline'
+import AutoRenew from '@material-ui/icons/Autorenew'
+import HelpOutline from '@material-ui/icons/HelpOutline'
 
 import {FiltersState} from '../reducers/StateTypes'
 

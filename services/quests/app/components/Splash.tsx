@@ -1,6 +1,7 @@
 import * as React from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography';
 import ExpeditionButton from '@expedition-app/app/components/base/Button'
 import {UserState} from '../reducers/StateTypes'
 
@@ -13,23 +14,23 @@ const Splash = (props: any): JSX.Element => {
   return (
     <div className="main splash">
       <div className="splash_app_bar">
-        <AppBar
-          title="Expedition Quest Creator"
-          iconElementRight={
-            <div className="appBarRight">
-              {props.user.loggedIn && <div className="login">
-                <a href="https://expeditiongame.com/loot" target="_blank" className="lootPoints">
-                  {props.user.lootPoints} <img className="inline_icon" src="images/loot_white_small.svg" />
-                </a>
-                <span className="email">{props.user.email}</span>
-                <Button onClick={() => props.onNewQuest(props.user)}>New Quest</Button>
-              </div>}
-              {!props.user.loggedIn && <div className="login">
-                <Button onClick={() => props.onLogin('appbar')}>Log In</Button>
-              </div>}
-            </div>
-          }
-        />
+        <AppBar>
+          <Typography variant="title" color="inherit" className="appBarTitle">
+            Expedition Quest Creator
+          </Typography>
+          <div className="appBarRight">
+            {props.user.loggedIn && <div className="login">
+              <a href="https://expeditiongame.com/loot" target="_blank" className="lootPoints">
+                {props.user.lootPoints} <img className="inline_icon" src="images/loot_white_small.svg" />
+              </a>
+              <span className="email">{props.user.email}</span>
+              <Button onClick={() => props.onNewQuest(props.user)}>New Quest</Button>
+            </div>}
+            {!props.user.loggedIn && <div className="login">
+              <Button onClick={() => props.onLogin('appbar')}>Log In</Button>
+            </div>}
+          </div>
+        </AppBar>
       </div>
       <div className="body">
         <div>

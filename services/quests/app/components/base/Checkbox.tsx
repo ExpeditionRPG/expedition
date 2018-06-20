@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Button from '@material-ui/core/Button'
-import CheckBoxIcon from '@material-ui/icons/checkbox'
-import CheckBoxOutlineIcon from '@material-ui/icons/checkboxOutlineBlank'
+import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import CheckBoxOutlineIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 
 export interface CheckboxProps {
   label: string;

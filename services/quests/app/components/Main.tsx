@@ -101,11 +101,10 @@ const Main = (props: MainProps): JSX.Element => {
       <Snackbar
         className="editor_snackbar"
         open={props.snackbar.open}
-        message={props.snackbar.message || ''}
-        action={props.snackbar.actionLabel}
+        message={<span>{props.snackbar.message}</span>}
+        action={(props.snackbar.actionLabel) ? [<Button key={1} onClick={(e: React.MouseEvent<HTMLElement>) => {props.snackbar.action && props.snackbar.action()}}>{this.props.snackbar.actionLabel}</Button>] : []}
         autoHideDuration={(props.snackbar.persist) ? undefined : 4000}
-        onActionClick={props.snackbar.action}
-        onRequestClose={props.onSnackbarClose}
+        onClose={props.onSnackbarClose}
       />
     </div>
   );

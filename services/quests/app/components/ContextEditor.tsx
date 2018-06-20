@@ -1,5 +1,5 @@
 import * as React from 'react'
-import LeftIcon from '@material-ui/icons/chevronLeft'
+import LeftIcon from '@material-ui/icons/ChevronLeft'
 import Button from '@material-ui/core/Button'
 import {OverrideTextArea} from './base/OverrideTextArea'
 import {ScrollBottom} from './base/ScrollBottom'

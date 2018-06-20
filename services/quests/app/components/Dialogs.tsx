@@ -176,25 +176,25 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           value={metadata.get('summary')}
           fullWidth={true}
           floatingLabelText="Quest summary (1-2 sentences)"
-          onChange={(e: any, val: string) => { this.props.handleMetadataChange(this.props.quest, 'summary', val); }}
+          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'summary', e.target.value); }}
         />
         <TextField
           className="halfWidth"
           value={metadata.get('author')}
           floatingLabelText="Author name"
-          onChange={(e: any, val: string) => { this.props.handleMetadataChange(this.props.quest, 'author', val); }}
+          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'author', e.target.value); }}
         />
         <TextField
           className="halfWidth"
           value={metadata.get('email')}
           floatingLabelText="Author email (private)"
-          onChange={(e: any, val: string) => { this.props.handleMetadataChange(this.props.quest, 'email', val); }}
+          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'email', e.target.value); }}
         />
         <Select
           className="halfWidth"
           floatingLabelText="Minimum players"
           value={metadata.get('minplayers')}
-          onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'minplayers', val); }}
+          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'minplayers', e.target.value); }}
         >
           {playerItems}
         </Select>
@@ -202,7 +202,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           className="halfWidth"
           floatingLabelText="Maximum players"
           value={metadata.get('maxplayers')}
-          onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'maxplayers', val); }}
+          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'maxplayers', e.target.value); }}
         >
           {playerItems}
         </Select>
@@ -210,7 +210,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           className="halfWidth"
           floatingLabelText="Minimum play time"
           value={metadata.get('mintimeminutes')}
-          onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'mintimeminutes', val); }}
+          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'mintimeminutes', e.target.value); }}
         >
           <MenuItem value={10}>10 minutes</MenuItem>
           <MenuItem value={20}>20 minutes</MenuItem>
@@ -244,7 +244,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           className="halfWidth"
           floatingLabelText="Language"
           value={metadata.get('language') || 'English'}
-          onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'language', val); }}
+          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'language', e.target.value); }}
         >
           {languages}
         </Select>
@@ -252,7 +252,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           className="halfWidth"
           floatingLabelText="Genre"
           value={metadata.get('genre')}
-          onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'genre', val); }}
+          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'genre', e.target.value); }}
         >
           {genres}
         </Select>
@@ -260,7 +260,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           className="halfWidth"
           floatingLabelText="Visual Theme"
           value={metadata.get('theme')}
-          onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'theme', val); }}
+          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'theme', e.target.value); }}
         >
           {themes}
         </Select>
@@ -269,7 +269,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             className="ratingSelect"
             floatingLabelText="Content rating"
             value={metadata.get('contentrating')}
-            onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'contentrating', val); }}
+            onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'contentrating', e.target.value); }}
           >
             {ratings}
           </Select>
