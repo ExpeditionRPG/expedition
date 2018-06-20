@@ -1,7 +1,12 @@
 import * as React from 'react'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
@@ -16,7 +21,7 @@ declare var ga: any;
 interface ErrorDialogProps extends React.Props<any> {
   open: boolean;
   errors: Error[];
-  onRequestClose: ()=>void;
+  onClose: ()=>void;
 }
 
 export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
@@ -30,14 +35,19 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
 
     return (
       <Dialog
-        actions={[<Button primary={true} onClick={() => this.props.onRequestClose()}
-        >OK</Button>]}
-        modal={false}
-        open={Boolean(this.props.open)}>
+        open={Boolean(this.props.open)}
+      >
         <DialogTitle className="dialogTitle dialogError">{(errors.length > 1) ? 'Errors Occurred' : 'Error Occurred'}</DialogTitle>
-        <ul>
-          {errors}
-        </ul>
+        <DialogContent>
+          <DialogContentText>
+            <ul>
+              {errors}
+            </ul>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={() => this.props.onClose()}>OK</Button>
+        </DialogActions>
       </Dialog>
     );
   }
@@ -46,7 +56,7 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
 interface AnnotationDetailDialogProps extends React.Props<any> {
   open: boolean;
   annotations: (ErrorType|number)[];
-  onRequestClose: ()=>void;
+  onClose: ()=>void;
 }
 
 export class AnnotationDetailDialog extends React.Component<AnnotationDetailDialogProps, {}> {
@@ -88,21 +98,24 @@ export class AnnotationDetailDialog extends React.Component<AnnotationDetailDial
 
     return (
       <Dialog
-        actions={[
-          <Button primary={true} onClick={() => this.props.onRequestClose()}>OK</Button>,
-        ]}
-        modal={false}
         autoScrollBodyContent={true}
         open={Boolean(this.props.open)}>
         <DialogTitle className="dialogTitle">Message Details</DialogTitle>
-        <div className="annotation_details">
-          {renderedAnnotations}
-          {missingAnnotations && <div className="reminder">Couldn't find info for ID(s): {missingAnnotations}.</div>}
-          <div className="reminder">
-            Remember: You can ask for help at any time using the "Contact us" button at the bottom right
-            of the page.
-          </div>
-        </div>
+        <DialogContent>
+          <DialogContentText>
+            <div className="annotation_details">
+              {renderedAnnotations}
+              {missingAnnotations && <div className="reminder">Couldn't find info for ID(s): {missingAnnotations}.</div>}
+              <div className="reminder">
+                Remember: You can ask for help at any time using the "Contact us" button at the bottom right
+                of the page.
+              </div>
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={() => this.props.onClose()}>OK</Button>
+        </DialogActions>
       </Dialog>
     );
   }
@@ -111,7 +124,7 @@ export class AnnotationDetailDialog extends React.Component<AnnotationDetailDial
 interface PublishingDialogProps extends React.Props<any> {
   handleMetadataChange: (quest: QuestType, key: string, value: any) => void;
   open: boolean;
-  onRequestClose: () => void;
+  onClose: () => void;
   onRequestPublish: (quest: QuestType, majorRelease: boolean, privatePublish: boolean) => void;
   quest: QuestType;
   user: UserState;
@@ -161,149 +174,161 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
     return (
       <Dialog
         className="publishForm"
-        modal={false}
         open={Boolean(this.props.open)}
         autoScrollBodyContent={true}
-        actions={[<Button onClick={() => this.props.onRequestClose()}>Back</Button>,
-          <Button secondary={true}
+      >
+        <DialogTitle className="dialogTitle dialogGood">Publish your quest</DialogTitle>
+        <DialogContent>
+          <FormControl>
+            <TextField
+              value={metadata.get('summary')}
+              fullWidth={true}
+              label="Quest summary (1-2 sentences)"
+              onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'summary', e.target.value); }}
+            />
+            <TextField
+              className="halfWidth"
+              value={metadata.get('author')}
+              label="Author name"
+              onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'author', e.target.value); }}
+            />
+            <TextField
+              className="halfWidth"
+              value={metadata.get('email')}
+              label="Author email (private)"
+              onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'email', e.target.value); }}
+            />
+            <InputLabel htmlFor="minplayers-select">Minimum players</InputLabel>
+            <Select
+              className="halfWidth"
+              inputProps={{id: 'minplayers-select'}}
+              value={metadata.get('minplayers')}
+              onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'minplayers', e.target.value); }}
+            >
+              {playerItems}
+            </Select>
+            <InputLabel htmlFor="maxplayers-select">Maximum players</InputLabel>
+            <Select
+              className="halfWidth"
+              inputProps={{id: 'maxplayers-select'}}
+              value={metadata.get('maxplayers')}
+              onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'maxplayers', e.target.value); }}
+            >
+              {playerItems}
+            </Select>
+            <InputLabel htmlFor="mintimeminutes-select">Minimum play time</InputLabel>
+            <Select
+              className="halfWidth"
+              inputProps={{id: 'mintimeminutes-select'}}
+              value={metadata.get('mintimeminutes')}
+              onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'mintimeminutes', e.target.value); }}
+            >
+              <MenuItem value={10}>10 minutes</MenuItem>
+              <MenuItem value={20}>20 minutes</MenuItem>
+              <MenuItem value={30}>30 minutes</MenuItem>
+              <MenuItem value={40}>40 minutes</MenuItem>
+              <MenuItem value={50}>50 minutes</MenuItem>
+              <MenuItem value={60}>60 minutes</MenuItem>
+              <MenuItem value={90}>90 minutes</MenuItem>
+              <MenuItem value={120}>2 hours</MenuItem>
+              <MenuItem value={180}>3 hours</MenuItem>
+              <MenuItem value={999}>Over 3 hours</MenuItem>
+            </Select>
+            <InputLabel htmlFor="maxtimeminutes-select">Maximum play time</InputLabel>
+            <Select
+              className="halfWidth"
+              inputProps={{id: 'maxtimeminutes-select'}}
+              value={metadata.get('maxtimeminutes')}
+              onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'maxtimeminutes', val); }}
+            >
+              <MenuItem value={10}>10 minutes</MenuItem>
+              <MenuItem value={20}>20 minutes</MenuItem>
+              <MenuItem value={30}>30 minutes</MenuItem>
+              <MenuItem value={40}>40 minutes</MenuItem>
+              <MenuItem value={50}>50 minutes</MenuItem>
+              <MenuItem value={60}>60 minutes</MenuItem>
+              <MenuItem value={90}>90 minutes</MenuItem>
+              <MenuItem value={120}>2 hours</MenuItem>
+              <MenuItem value={180}>3 hours</MenuItem>
+              <MenuItem value={999}>Over 3 hours</MenuItem>
+            </Select>
+            <InputLabel htmlFor="language-select">Language</InputLabel>
+            <Select
+              className="halfWidth"
+              inputProps={{id: 'language-select'}}
+              value={metadata.get('language') || 'English'}
+              onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'language', e.target.value); }}
+            >
+              {languages}
+            </Select>
+            <InputLabel htmlFor="genre-select">Genre</InputLabel>
+            <Select
+              className="halfWidth"
+              inputProps={{id: 'genre-select'}}
+              value={metadata.get('genre')}
+              onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'genre', e.target.value); }}
+            >
+              {genres}
+            </Select>
+            <InputLabel htmlFor="theme-select'">Visual Theme</InputLabel>
+            <Select
+              className="halfWidth"
+              inputProps={{id: 'theme-select'}}
+              value={metadata.get('theme')}
+              onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'theme', e.target.value); }}
+            >
+              {themes}
+            </Select>
+            <div className="contentRatingInputContainer">
+              <InputLabel htmlFor="contentrating-select">Content rating</InputLabel>
+              <Select
+                className="ratingSelect"
+                inputProps={{id: 'contentrating-select'}}
+                value={metadata.get('contentrating')}
+                onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'contentrating', e.target.value); }}
+              >
+                {ratings}
+              </Select>
+              {metadata.get('contentrating') !== null && <ul className="ratingDefinition">{ratingDefinitions}</ul>}
+            </div>
+            <div>
+              <Checkbox
+                label="Requires &quot;The Horror&quot; Expansion"
+                value={metadata.get('expansionhorror')}
+                onChange={(checked: boolean) => { this.props.handleMetadataChange(this.props.quest, 'expansionhorror', checked); }}>
+              </Checkbox>
+            </div>
+            <div>
+              <Checkbox
+                label="Requires Pen and Paper"
+                value={metadata.get('requirespenpaper')}
+                onChange={(checked: boolean) => { this.props.handleMetadataChange(this.props.quest, 'requirespenpaper', checked); }}>
+              </Checkbox>
+            </div>
+            <div>
+              <Checkbox
+                label="Major release (resets ratings &amp; reviews)"
+                value={this.state.majorRelease}
+                onChange={(checked: boolean) => { this.setState({majorRelease: checked}); }}>
+              </Checkbox>
+            </div>
+            <div className="halfWidth">
+              <Checkbox
+                label="Publish privately"
+                value={this.state.privatePublish}
+                onChange={(checked: boolean) => { this.setState({privatePublish: checked}); }}>
+              </Checkbox>
+              {this.state.privatePublish && <div>Your private quest will be visible only to you in the Expedition App (Tools > Private Quests).</div>}
+            </div>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.props.onClose()}>Back</Button>
+          <Button color="secondary"
           onClick={() => this.props.onRequestPublish(this.props.quest, this.state.majorRelease, this.state.privatePublish)}>
             Publish
           </Button>
-        ]}
-      >
-        <DialogTitle className="dialogTitle dialogGood">Publish your quest</DialogTitle>
-        <TextField
-          value={metadata.get('summary')}
-          fullWidth={true}
-          floatingLabelText="Quest summary (1-2 sentences)"
-          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'summary', e.target.value); }}
-        />
-        <TextField
-          className="halfWidth"
-          value={metadata.get('author')}
-          floatingLabelText="Author name"
-          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'author', e.target.value); }}
-        />
-        <TextField
-          className="halfWidth"
-          value={metadata.get('email')}
-          floatingLabelText="Author email (private)"
-          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'email', e.target.value); }}
-        />
-        <Select
-          className="halfWidth"
-          floatingLabelText="Minimum players"
-          value={metadata.get('minplayers')}
-          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'minplayers', e.target.value); }}
-        >
-          {playerItems}
-        </Select>
-        <Select
-          className="halfWidth"
-          floatingLabelText="Maximum players"
-          value={metadata.get('maxplayers')}
-          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'maxplayers', e.target.value); }}
-        >
-          {playerItems}
-        </Select>
-        <Select
-          className="halfWidth"
-          floatingLabelText="Minimum play time"
-          value={metadata.get('mintimeminutes')}
-          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'mintimeminutes', e.target.value); }}
-        >
-          <MenuItem value={10}>10 minutes</MenuItem>
-          <MenuItem value={20}>20 minutes</MenuItem>
-          <MenuItem value={30}>30 minutes</MenuItem>
-          <MenuItem value={40}>40 minutes</MenuItem>
-          <MenuItem value={50}>50 minutes</MenuItem>
-          <MenuItem value={60}>60 minutes</MenuItem>
-          <MenuItem value={90}>90 minutes</MenuItem>
-          <MenuItem value={120}>2 hours</MenuItem>
-          <MenuItem value={180}>3 hours</MenuItem>
-          <MenuItem value={999}>Over 3 hours</MenuItem>
-        </Select>
-        <Select
-          className="halfWidth"
-          floatingLabelText="Maximum play time"
-          value={metadata.get('maxtimeminutes')}
-          onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'maxtimeminutes', val); }}
-        >
-          <MenuItem value={10}>10 minutes</MenuItem>
-          <MenuItem value={20}>20 minutes</MenuItem>
-          <MenuItem value={30}>30 minutes</MenuItem>
-          <MenuItem value={40}>40 minutes</MenuItem>
-          <MenuItem value={50}>50 minutes</MenuItem>
-          <MenuItem value={60}>60 minutes</MenuItem>
-          <MenuItem value={90}>90 minutes</MenuItem>
-          <MenuItem value={120}>2 hours</MenuItem>
-          <MenuItem value={180}>3 hours</MenuItem>
-          <MenuItem value={999}>Over 3 hours</MenuItem>
-        </Select>
-        <Select
-          className="halfWidth"
-          floatingLabelText="Language"
-          value={metadata.get('language') || 'English'}
-          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'language', e.target.value); }}
-        >
-          {languages}
-        </Select>
-        <Select
-          className="halfWidth"
-          floatingLabelText="Genre"
-          value={metadata.get('genre')}
-          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'genre', e.target.value); }}
-        >
-          {genres}
-        </Select>
-        <Select
-          className="halfWidth"
-          floatingLabelText="Visual Theme"
-          value={metadata.get('theme')}
-          onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'theme', e.target.value); }}
-        >
-          {themes}
-        </Select>
-        <div className="contentRatingInputContainer">
-          <Select
-            className="ratingSelect"
-            floatingLabelText="Content rating"
-            value={metadata.get('contentrating')}
-            onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'contentrating', e.target.value); }}
-          >
-            {ratings}
-          </Select>
-          {metadata.get('contentrating') !== null && <ul className="ratingDefinition">{ratingDefinitions}</ul>}
-        </div>
-        <div>
-          <Checkbox
-            label="Requires &quot;The Horror&quot; Expansion"
-            value={metadata.get('expansionhorror')}
-            onChange={(checked: boolean) => { this.props.handleMetadataChange(this.props.quest, 'expansionhorror', checked); }}>
-          </Checkbox>
-        </div>
-        <div>
-          <Checkbox
-            label="Requires Pen and Paper"
-            value={metadata.get('requirespenpaper')}
-            onChange={(checked: boolean) => { this.props.handleMetadataChange(this.props.quest, 'requirespenpaper', checked); }}>
-          </Checkbox>
-        </div>
-        <div>
-          <Checkbox
-            label="Major release (resets ratings &amp; reviews)"
-            value={this.state.majorRelease}
-            onChange={(checked: boolean) => { this.setState({majorRelease: checked}); }}>
-          </Checkbox>
-        </div>
-        <div className="halfWidth">
-          <Checkbox
-            label="Publish privately"
-            value={this.state.privatePublish}
-            onChange={(checked: boolean) => { this.setState({privatePublish: checked}); }}>
-          </Checkbox>
-          {this.state.privatePublish && <div>Your private quest will be visible only to you in the Expedition App (Tools > Private Quests).</div>}
-        </div>
+        </DialogActions>
       </Dialog>
     );
   }
@@ -317,7 +342,7 @@ export interface DialogsStateProps {
 
 export interface DialogsDispatchProps {
   handleMetadataChange: (quest: QuestType, key: string, value: any) => void;
-  onRequestClose: (dialog: DialogIDType) => void;
+  onClose: (dialog: DialogIDType) => void;
   onRequestPublish: (quest: QuestType, majorRelease: boolean, privatePublish: boolean) => void;
 }
 
@@ -330,19 +355,19 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
       <PublishingDialog
         handleMetadataChange={props.handleMetadataChange}
         open={props.dialogs.open['PUBLISHING']}
-        onRequestClose={() => props.onRequestClose('PUBLISHING')}
+        onClose={() => props.onClose('PUBLISHING')}
         onRequestPublish={props.onRequestPublish}
         quest={props.quest}
         user={props.user}
       />
       <ErrorDialog
         open={props.dialogs.open['ERROR']}
-        onRequestClose={() => props.onRequestClose('ERROR')}
+        onClose={() => props.onClose('ERROR')}
         errors={props.dialogs.errors}
       />
       <AnnotationDetailDialog
         open={props.dialogs.open['ANNOTATION_DETAIL']}
-        onRequestClose={() => props.onRequestClose('ANNOTATION_DETAIL')}
+        onClose={() => props.onClose('ANNOTATION_DETAIL')}
         annotations={props.dialogs.annotations}
       />
     </span>

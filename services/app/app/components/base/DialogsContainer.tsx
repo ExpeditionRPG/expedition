@@ -81,7 +81,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
       }
       dispatch(changeSettings({numPlayers}));
     },
-    onRequestClose: () => {
+    onClose: () => {
       dispatch(setDialog(null));
     },
     playQuest: (quest: QuestDetails) => {

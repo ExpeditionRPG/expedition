@@ -21,7 +21,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
     handleMetadataChange: (quest: QuestType, key: string, value: any): void => {
       dispatch(questMetadataChange(quest, key, value));
     },
-    onRequestClose: (dialog: DialogIDType): void => {
+    onClose: (dialog: DialogIDType): void => {
       dispatch(setDialog(dialog, false));
     },
     onRequestPublish: (quest: QuestType, majorRelease: boolean, privatePublish: boolean): void => {

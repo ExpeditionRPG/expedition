@@ -19,7 +19,10 @@ store.dispatch(loadFiltersFromUrl());
 store.dispatch(downloadCards());
 
 let render = () => {
-  var base = document.getElementById('app');
+  const base = document.getElementById('app');
+  if (!base) {
+    throw new Error('Could not find react-app element');
+  }
   ReactDOM.unmountComponentAtNode(base);
   ReactDOM.render(
     <Provider store={store}>

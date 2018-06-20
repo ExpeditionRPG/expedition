@@ -52,7 +52,7 @@ const Main = (props: MainProps): JSX.Element => {
     <div className="main">
       <TopBarContainer/>
       <DialogsContainer/>
-      <Drawer open={props.drawer} docked={false} onRequestChange={(open) => props.onDrawerClose()}>
+      <Drawer open={props.drawer} docked={false} onRequestChange={(open: boolean) => props.onDrawerClose()}>
         <MenuItem onClick={() => props.onViewChange('USERS')}>Users</MenuItem>
         <MenuItem onClick={() => props.onViewChange('QUESTS')}>Quests</MenuItem>
         <MenuItem onClick={() => props.onViewChange('FEEDBACK')}>Feedback</MenuItem>
@@ -67,7 +67,7 @@ const Main = (props: MainProps): JSX.Element => {
         action={props.snackbar.actionLabel}
         autoHideDuration={(props.snackbar.persist) ? undefined : 4000}
         onActionClick={props.snackbar.action}
-        onRequestClose={props.onSnackbarClose}
+        onClose={props.onSnackbarClose}
       />
     </div>
   );

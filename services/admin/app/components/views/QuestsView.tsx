@@ -34,15 +34,15 @@ const QuestsView = (props: QuestsViewProps): JSX.Element => {
 
   return (
     <Table onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}} selectable={false}>
-      <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+      <TableHead displaySelectAll={false} adjustForCheckbox={false}>
         <TableRow>
-          <TableHeaderColumn>Partition</TableHeaderColumn>
-          <TableHeaderColumn>Title</TableHeaderColumn>
-          <TableHeaderColumn className="smallColumn">Published</TableHeaderColumn>
-          <TableHeaderColumn className="smallColumn">Avg Rating</TableHeaderColumn>
-          <TableHeaderColumn>Author</TableHeaderColumn>
+          <TableCell>Partition</TableCell>
+          <TableCell>Title</TableCell>
+          <TableCell className="smallColumn">Published</TableCell>
+          <TableCell className="smallColumn">Avg Rating</TableCell>
+          <TableCell>Author</TableCell>
         </TableRow>
-      </TableHeader>
+      </TableHead>
       <TableBody displayRowCheckbox={false}>
         {rows}
       </TableBody>

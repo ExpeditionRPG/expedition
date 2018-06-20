@@ -33,14 +33,14 @@ const UsersView = (props: UsersViewProps): JSX.Element => {
 
   return (
     <Table onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}} selectable={false}>
-      <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+      <TableHead displaySelectAll={false} adjustForCheckbox={false}>
         <TableRow>
-          <TableHeaderColumn>Email</TableHeaderColumn>
-          <TableHeaderColumn>Name</TableHeaderColumn>
-          <TableHeaderColumn className="smallColumn">Loot Points</TableHeaderColumn>
-          <TableHeaderColumn>Last Login</TableHeaderColumn>
+          <TableCell>Email</TableCell>
+          <TableCell>Name</TableCell>
+          <TableCell className="smallColumn">Loot Points</TableCell>
+          <TableCell>Last Login</TableCell>
         </TableRow>
-      </TableHeader>
+      </TableHead>
       <TableBody displayRowCheckbox={false}>
         {rows}
       </TableBody>

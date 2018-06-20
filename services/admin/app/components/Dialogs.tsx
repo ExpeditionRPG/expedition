@@ -1,6 +1,9 @@
 import * as React from 'react'
-
 import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
 import Button from '@material-ui/core/Button'
 import LinkIcon from '@material-ui/icons/Link'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -19,7 +22,7 @@ export interface DialogsStateProps {
 };
 
 export interface DialogsDispatchProps {
-  onRequestClose: (dialog: DialogIDType) => void;
+  onClose: (dialog: DialogIDType) => void;
   onSetUserLootPoints: (user: UserEntry, loot_points: number) => any;
   onSetQuestPublishState: (quest: QuestEntry, published: boolean) => any;
   onSetFeedbackSuppressed: (feedback: FeedbackEntry, suppress: boolean) => any;
@@ -28,30 +31,35 @@ export interface DialogsDispatchProps {
 export interface FeedbackDetailsDialogProps {
   open: boolean;
   feedback: FeedbackEntry;
-  onRequestClose: () => any;
+  onClose: () => any;
   onSetFeedbackSuppressed: (feedback: FeedbackEntry, suppress: boolean) => any;
 }
 export class FeedbackDetailsDialog extends React.Component<FeedbackDetailsDialogProps, {}> {
   render(): JSX.Element {
-    const actions = [<Button onClick={() => this.props.onRequestClose()} label="Close"/>];
+    const actions = [<Button onClick={() => this.props.onClose()}>Close</Button>];
     if (this.props.feedback.suppressed) {
-      actions.push(<Button onClick={() => {this.props.onSetFeedbackSuppressed(this.props.feedback, false)}} label="Unsuppress"/>);
+      actions.push(<Button onClick={() => {this.props.onSetFeedbackSuppressed(this.props.feedback, false)}}>Unsuppress</Button>);
     } else {
-      actions.push(<Button onClick={() => {this.props.onSetFeedbackSuppressed(this.props.feedback, true)}} label="Suppress"/>);
+      actions.push(<Button onClick={() => {this.props.onSetFeedbackSuppressed(this.props.feedback, true)}}>Suppress</Button>);
     }
     return (
       <Dialog
-        title="Feedback"
-        contentClassName="dialog"
         open={Boolean(this.props.open)}
-        onRequestClose={() => this.props.onRequestClose()}
-        actions={actions}
+        onClose={() => this.props.onClose()}
       >
-        <p>User: {this.props.feedback.user.email}</p>
-        <p>Quest: {this.props.feedback.quest.title}</p>
-        <p>Partition: {this.props.feedback.partition}</p>
-        <p>Rating: {this.props.feedback.rating}</p>
-        <p>Text: {this.props.feedback.text}</p>
+        <DialogTitle>Feedback</DialogTitle>
+        <DialogContent className="dialog">
+          <DialogContentText>
+            <p>User: {this.props.feedback.user.email}</p>
+            <p>Quest: {this.props.feedback.quest.title}</p>
+            <p>Partition: {this.props.feedback.partition}</p>
+            <p>Rating: {this.props.feedback.rating}</p>
+            <p>Text: {this.props.feedback.text}</p>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          {actions}
+        </DialogActions>
       </Dialog>
     );
   }
@@ -61,29 +69,34 @@ export class FeedbackDetailsDialog extends React.Component<FeedbackDetailsDialog
 export interface QuestDetailsDialogProps {
   open: boolean;
   quest: QuestEntry;
-  onRequestClose: () => any;
+  onClose: () => any;
   onSetQuestPublishState: (quest: QuestEntry, published: boolean) => any;
 }
 export class QuestDetailsDialog extends React.Component<QuestDetailsDialogProps, {}> {
   render(): JSX.Element {
-    const actions = [<Button onClick={() => this.props.onRequestClose()} label="Close"/>];
+    const actions = [<Button onClick={() => this.props.onClose()}>Close</Button>];
     if (this.props.quest.published) {
-      actions.push(<Button onClick={() => {this.props.onSetQuestPublishState(this.props.quest, false)}} label="Unpublish"/>);
+      actions.push(<Button onClick={() => {this.props.onSetQuestPublishState(this.props.quest, false)}}>Unpublish</Button>);
     } else {
-      actions.push(<Button onClick={() => {this.props.onSetQuestPublishState(this.props.quest, true)}} label="Publish"/>);
+      actions.push(<Button onClick={() => {this.props.onSetQuestPublishState(this.props.quest, true)}}>Publish</Button>);
     }
     return (
       <Dialog
-        title="Quest"
-        contentClassName="dialog"
         open={Boolean(this.props.open)}
-        onRequestClose={() => this.props.onRequestClose()}
-        actions={actions}
+        onClose={() => this.props.onClose()}
       >
-        <p>Author Email: {this.props.quest.user.email}</p>
-        <p>Quest: {this.props.quest.title} ({this.props.quest.partition})</p>
-        {this.props.quest.ratingavg !== null && <p>Avg Rating: {this.props.quest.ratingavg} ({this.props.quest.ratingcount} ratings)</p>}
-        <p>Published: {this.props.quest.published ? 'Yes' : 'No'}</p>
+        <DialogTitle>Quest</DialogTitle>
+        <DialogContent className="dialog">
+          <DialogContentText>
+            <p>Author Email: {this.props.quest.user.email}</p>
+            <p>Quest: {this.props.quest.title} ({this.props.quest.partition})</p>
+            {this.props.quest.ratingavg !== null && <p>Avg Rating: {this.props.quest.ratingavg} ({this.props.quest.ratingcount} ratings)</p>}
+            <p>Published: {this.props.quest.published ? 'Yes' : 'No'}</p>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          {actions}
+        </DialogActions>
       </Dialog>
     );
   }
@@ -92,7 +105,7 @@ export class QuestDetailsDialog extends React.Component<QuestDetailsDialogProps,
 export interface UserDetailsDialogProps {
   open: boolean;
   user: UserEntry;
-  onRequestClose: () => any;
+  onClose: () => any;
   onSetUserLootPoints: (user: UserEntry, loot_points: number) => any;
 }
 export class UserDetailsDialog extends React.Component<UserDetailsDialogProps, {new_loot: number|null}> {
@@ -120,18 +133,23 @@ export class UserDetailsDialog extends React.Component<UserDetailsDialogProps, {
   render(): JSX.Element {
     return (
       <Dialog
-        title="User"
-        contentClassName="dialog"
         open={Boolean(this.props.open)}
-        onRequestClose={() => this.props.onRequestClose()}
-        actions={[<Button onClick={() => this.props.onRequestClose()} label="Close"/>]}
+        onClose={() => this.props.onClose()}
       >
-        <p>Name: {this.props.user.name}</p>
-        <p>Email: {this.props.user.email}</p>
-        <p>Loot points: {this.props.user.loot_points}</p>
-        <TextField id="new_loot" value={this.state.new_loot || ''} onChange={this.handleLootChange} />
-        <Button onClick={() => {(this.state.new_loot !== null) && this.props.onSetUserLootPoints(this.props.user, this.state.new_loot)}} label="Set"/>
-        <p>Last login: {this.props.user.last_login.toISOString()}</p>
+        <DialogTitle>User</DialogTitle>
+        <DialogContent className="dialog">
+          <DialogContentText>
+            <p>Name: {this.props.user.name}</p>
+            <p>Email: {this.props.user.email}</p>
+            <p>Loot points: {this.props.user.loot_points}</p>
+            <TextField id="new_loot" value={this.state.new_loot || ''} onChange={this.handleLootChange} />
+            <Button onClick={() => {(this.state.new_loot !== null) && this.props.onSetUserLootPoints(this.props.user, this.state.new_loot)}}>Set</Button>
+            <p>Last login: {this.props.user.last_login.toISOString()}</p>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.props.onClose()}>Close</Button>
+        </DialogActions>
       </Dialog>
     );
   }
@@ -147,21 +165,21 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
       <FeedbackDetailsDialog
         open={props.dialogs && props.dialogs.open === 'FEEDBACK_DETAILS'}
         feedback={props.feedback}
-        onRequestClose={() => props.onRequestClose('FEEDBACK_DETAILS')}
+        onClose={() => props.onClose('FEEDBACK_DETAILS')}
         onSetFeedbackSuppressed={props.onSetFeedbackSuppressed}
       />}
       {props.quest &&
       <QuestDetailsDialog
         open={props.dialogs && props.dialogs.open === 'QUEST_DETAILS'}
         quest={props.quest}
-        onRequestClose={() => props.onRequestClose('QUEST_DETAILS')}
+        onClose={() => props.onClose('QUEST_DETAILS')}
         onSetQuestPublishState={props.onSetQuestPublishState}
       />}
       {props.user &&
       <UserDetailsDialog
         open={props.dialogs && props.dialogs.open === 'USER_DETAILS'}
         user={props.user}
-        onRequestClose={() => props.onRequestClose('USER_DETAILS')}
+        onClose={() => props.onClose('USER_DETAILS')}
         onSetUserLootPoints={props.onSetUserLootPoints}
       />}
     </span>

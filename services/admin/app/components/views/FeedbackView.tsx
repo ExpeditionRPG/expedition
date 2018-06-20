@@ -25,7 +25,7 @@ const FeedbackView = (props: FeedbackViewProps): JSX.Element => {
       <TableRow key={i} selected={i === props.selected}>
         <TableCell>{entry.partition}</TableCell>
         <TableCell>{entry.quest.title}</TableCell>
-        <TableHeaderColumn className="smallColumn">{entry.suppressed ? 'X' : ''}</TableHeaderColumn>
+        <TableCell className="smallColumn">{entry.suppressed ? 'X' : ''}</TableCell>
         <TableCell className="smallColumn">{entry.rating}</TableCell>
         <TableCell>{entry.text}</TableCell>
         <TableCell>{entry.user.email}</TableCell>
@@ -35,16 +35,16 @@ const FeedbackView = (props: FeedbackViewProps): JSX.Element => {
 
   return (
     <Table onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}} selectable={false}>
-      <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+      <TableHead displaySelectAll={false} adjustForCheckbox={false}>
         <TableRow>
-          <TableHeaderColumn>Partition</TableHeaderColumn>
-          <TableHeaderColumn>Quest</TableHeaderColumn>
-          <TableHeaderColumn className="smallColumn">Suppressed</TableHeaderColumn>
-          <TableHeaderColumn className="smallColumn">Rating</TableHeaderColumn>
-          <TableHeaderColumn>Text</TableHeaderColumn>
-          <TableHeaderColumn>Email</TableHeaderColumn>
+          <TableCell>Partition</TableCell>
+          <TableCell>Quest</TableCell>
+          <TableCell className="smallColumn">Suppressed</TableCell>
+          <TableCell className="smallColumn">Rating</TableCell>
+          <TableCell>Text</TableCell>
+          <TableCell>Email</TableCell>
         </TableRow>
-      </TableHeader>
+      </TableHead>
       <TableBody displayRowCheckbox={false} deselectOnClickaway={true}>
         {rows}
       </TableBody>

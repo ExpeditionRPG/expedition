@@ -1,7 +1,7 @@
 describe('DialogsContainer', () => {
   it('maps state');
 
-  it('dispatches dialog change with onRequestClose');
+  it('dispatches dialog change with onClose');
 
   it('saves with onConfirmSave(true) and dispatches');
 

@@ -16,7 +16,7 @@ import {openWindow} from '../../Globals'
 interface ExitQuestDialogProps extends React.Props<any> {
   open: boolean;
   onExitQuest: () => void;
-  onRequestClose: () => void;
+  onClose: () => void;
 }
 
 export class ExitQuestDialog extends React.Component<ExitQuestDialogProps, {}> {
@@ -28,7 +28,7 @@ export class ExitQuestDialog extends React.Component<ExitQuestDialogProps, {}> {
           <p>Tapping exit will lose your place in the quest and return you to the home screen.</p>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>
+          <Button onClick={() => this.props.onClose()}>Cancel</Button>
           <Button className="primary" onClick={() => this.props.onExitQuest()}>Exit</Button>
         </DialogActions>
       </Dialog>
@@ -39,7 +39,7 @@ export class ExitQuestDialog extends React.Component<ExitQuestDialogProps, {}> {
 interface ExitMultiplayerDialogProps extends React.Props<any> {
   open: boolean;
   onExitMultiplayer: () => void;
-  onRequestClose: () => void;
+  onClose: () => void;
 }
 
 export class ExitMultiplayerDialog extends React.Component<ExitMultiplayerDialogProps, {}> {
@@ -51,7 +51,7 @@ export class ExitMultiplayerDialog extends React.Component<ExitMultiplayerDialog
           <p>Tapping exit will disconnect you from your peers and return you to the home screen.</p>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>,
+          <Button onClick={() => this.props.onClose()}>Cancel</Button>,
           <Button className="primary" onClick={() => this.props.onExitMultiplayer()}>Exit</Button>
         </DialogActions>
       </Dialog>
@@ -65,7 +65,7 @@ interface MultiplayerStatusDialogProps extends React.Props<any> {
   user: UserState;
   questDetails: QuestDetails;
   onSendReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => void;
-  onRequestClose: () => void;
+  onClose: () => void;
 }
 
 export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDialogProps, {}> {
@@ -90,7 +90,7 @@ export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDi
           </p>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>,
+          <Button onClick={() => this.props.onClose()}>Cancel</Button>,
           <Button className="primary" onClick={() => this.props.onSendReport(this.props.user, this.props.questDetails, this.props.stats)}>Send Report</Button>
         </DialogActions>
       </Dialog>
@@ -126,7 +126,7 @@ interface TextAreaDialogProps extends React.Props<any> {
   quest: QuestState;
   settings: SettingsType;
   user: UserState;
-  onRequestClose: () => void;
+  onClose: () => void;
   onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
 }
 class TextAreaDialog<T extends TextAreaDialogProps> extends React.Component<T, {}> {
@@ -163,7 +163,7 @@ class TextAreaDialog<T extends TextAreaDialogProps> extends React.Component<T, {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>
+          <Button onClick={() => this.props.onClose()}>Cancel</Button>
           <Button className="primary" onClick={() => this.onSubmit()}>Submit</Button>
         </DialogActions>
       </Dialog>
@@ -228,7 +228,7 @@ interface SetPlayerCountDialogProps extends React.Props<any> {
   open: boolean;
   onMultitouchChange: (v: boolean) => void;
   onPlayerDelta: (numPlayers: number, delta: number) => void;
-  onRequestClose: () => void;
+  onClose: () => void;
   playQuest: (quest: QuestDetails) => void;
   quest: QuestDetails;
   settings: SettingsType;
@@ -266,7 +266,7 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
           {contents}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>
+          <Button onClick={() => this.props.onClose()}>Cancel</Button>
           {!horrorError && <Button disabled={!playersAllowed} className="primary" onClick={() => this.props.playQuest(this.props.quest)}>Play</Button>}
         </DialogActions>
       </Dialog>
@@ -277,7 +277,7 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
 interface DeleteSavedQuestDialogProps extends React.Props<any> {
   savedQuest: SavedQuestMeta;
   onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => void;
-  onRequestClose: () => void;
+  onClose: () => void;
   open: boolean;
 }
 
@@ -290,7 +290,7 @@ export class DeleteSavedQuestDialog extends React.Component<DeleteSavedQuestDial
         <DialogTitle>Delete saved quest?</DialogTitle>
         <DialogContent className="dialog"></DialogContent>
         <DialogActions>
-          <Button onClick={() => this.props.onRequestClose()}>Cancel</Button>
+          <Button onClick={() => this.props.onClose()}>Cancel</Button>
           <Button className="primary" onClick={() => this.props.onDeleteSavedQuest(this.props.savedQuest)}>Delete</Button>
         </DialogActions>
       </Dialog>
@@ -316,7 +316,7 @@ export interface DialogsDispatchProps {
   onMultitouchChange: (v: boolean) => void;
   onPlayerDelta: (numPlayers: number, delta: number) => void;
   onSendMultiplayerReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => void;
-  onRequestClose: () => void;
+  onClose: () => void;
   playQuest: (quest: QuestDetails) => void;
 }
 
@@ -329,12 +329,12 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         savedQuest={props.selectedSave}
         open={props.dialog && props.dialog.open === 'DELETE_SAVED_QUEST'}
         onDeleteSavedQuest={props.onDeleteSavedQuest}
-        onRequestClose={props.onRequestClose}
+        onClose={props.onClose}
       />
       <ExitQuestDialog
         open={props.dialog && props.dialog.open === 'EXIT_QUEST'}
         onExitQuest={props.onExitQuest}
-        onRequestClose={props.onRequestClose}
+        onClose={props.onClose}
       />
       <ExpansionSelectDialog
         open={props.dialog && props.dialog.open === 'EXPANSION_SELECT'}
@@ -343,7 +343,7 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
       <ExitMultiplayerDialog
         open={props.dialog && props.dialog.open === 'EXIT_REMOTE_PLAY'}
         onExitMultiplayer={props.onExitMultiplayer}
-        onRequestClose={props.onRequestClose}
+        onClose={props.onClose}
       />
       <MultiplayerStatusDialog
         open={props.dialog && props.dialog.open === 'MULTIPLAYER_STATUS'}
@@ -351,12 +351,12 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         user={props.user}
         questDetails={props.quest.details}
         onSendReport={props.onSendMultiplayerReport}
-        onRequestClose={props.onRequestClose}
+        onClose={props.onClose}
       />
       <FeedbackDialog
         open={props.dialog && props.dialog.open === 'FEEDBACK'}
         onFeedbackSubmit={props.onFeedbackSubmit}
-        onRequestClose={props.onRequestClose}
+        onClose={props.onClose}
         quest={props.quest}
         settings={props.settings}
         user={props.user}
@@ -365,7 +365,7 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         error={props.dialog && props.dialog.message || ''}
         open={props.dialog && props.dialog.open === 'REPORT_ERROR'}
         onFeedbackSubmit={props.onFeedbackSubmit}
-        onRequestClose={props.onRequestClose}
+        onClose={props.onClose}
         quest={props.quest}
         settings={props.settings}
         user={props.user}
@@ -373,7 +373,7 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
       <ReportQuestDialog
         open={props.dialog && props.dialog.open === 'REPORT_QUEST'}
         onFeedbackSubmit={props.onFeedbackSubmit}
-        onRequestClose={props.onRequestClose}
+        onClose={props.onClose}
         quest={props.quest}
         settings={props.settings}
         user={props.user}
@@ -382,7 +382,7 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
         open={props.dialog && props.dialog.open === 'SET_PLAYER_COUNT'}
         onMultitouchChange={props.onMultitouchChange}
         onPlayerDelta={props.onPlayerDelta}
-        onRequestClose={props.onRequestClose}
+        onClose={props.onClose}
         playQuest={props.playQuest}
         quest={props.quest.details}
         settings={props.settings}

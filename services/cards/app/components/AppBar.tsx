@@ -45,7 +45,7 @@ class AppBar extends React.Component<AppBarProps, {}> {
           className="filter"
           key={index}
           value={filtersCurrent[name]}
-          floatingLabelText={name}
+          label={name}
           onChange={(e: any, i: number, v: string) => { this.props.handleFilterChange(name, v); }}
           autoWidth={true}
         >

@@ -20,7 +20,7 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DialogsDispatchProps => {
   return {
-    onRequestClose: (dialog: DialogIDType): void => {
+    onClose: (dialog: DialogIDType): void => {
       switch (dialog) {
         case 'FEEDBACK_DETAILS':
           dispatch({type: 'SELECT_ROW', table: 'feedback', row: null});
