@@ -159,6 +159,18 @@ describe('Search', () => {
       expect(wrapper.text().toLowerCase()).not.toContain('last played');
     });
 
+    it('shows the book icon if it requires pen and paper', () => {
+      const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
+      const {props, wrapper} = setup(quest.requirespenpaper, {}, true);
+      expect(wrapper.text().toLowerCase()).toContain('book');
+    });
+
+    it('does not show the book icon if it does not require pen and paper', () => {
+      const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
+      const {props, wrapper} = setup(quest.requirespenpaper, {}, false);
+      expect(wrapper.text().toLowerCase()).toContain('book');
+    });
+
     it('prompts for user count and multitouch if playing direct linked');
     it('goes directly to playing quest if not direct linked');
     it('allows users to go back');
