@@ -1,5 +1,5 @@
+import * as React from 'react'
 import Redux from 'redux'
-
 import {SetProfileMetaAction} from './ActionTypes'
 import {setSnackbar} from './Snackbar'
 import {UserState} from '../reducers/StateTypes'
@@ -149,7 +149,7 @@ export function login(callback: (user: UserState) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const loginCallback: UserLoginCallback = (user: UserState, err?: string) => {
       if (err) {
-        return dispatch(setSnackbar(true, 'Error logging in: ' + err));
+        return dispatch(setSnackbar(true, <span>Error logging in: {err}</span>));
       }
       dispatch({type: 'USER_LOGIN', user});
       callback(user);

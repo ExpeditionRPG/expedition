@@ -1,6 +1,8 @@
 import * as React from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Button from '@material-ui/core/Button'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
 
 import {UserState} from '../reducers/StateTypes'
 
@@ -12,10 +14,11 @@ const Splash = (props: any): JSX.Element => {
   return (
     <div className="main splash">
       <div className="splash_app_bar">
-        <AppBar
-          title="Expedition Admin Dashboard"
-          showMenuIconButton={false}
-          iconElementRight={
+        <AppBar>
+          <Toolbar>
+            <Typography variant="title" color="inherit">
+              Expedition Admin Dashboard
+            </Typography>
             <div className="appBarRight">
               {props.user.loggedIn && <div className="login">
                 <a href="https://expeditiongame.com/loot" target="_blank" className="lootPoints">
@@ -27,8 +30,8 @@ const Splash = (props: any): JSX.Element => {
                 <Button onClick={() => props.onLogin('appbar')}>Log In</Button>
               </div>}
             </div>
-          }
-        />
+          </Toolbar>
+        </AppBar>
       </div>
       <div className="body">
         TODO: Splash Page

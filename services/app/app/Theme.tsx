@@ -1,32 +1,33 @@
 import {createMuiTheme} from '@material-ui/core/styles'
-import deepOrange from '@material-ui/core/colors/deepOrange'
-import lightGreen from '@material-ui/core/colors/lightGreen'
-import grey from '@material-ui/core/colors/grey'
+// import deepOrange from '@material-ui/core/colors/deepOrange'
+// import lightGreen from '@material-ui/core/colors/lightGreen'
+// import grey from '@material-ui/core/colors/grey'
 import spacing from '@material-ui/core/styles/spacing'
 
-const darkBlack = '0x000000';
+// const darkBlack = '0x000000';
 
+// TODO FIXME
 export default createMuiTheme({
   spacing: spacing,
   typography: {
     fontFamily: 'MinionPro, serif',
   },
   palette: {
-    primary1Color: grey[100],
-    primary2Color: grey[300],
-    primary3Color: grey[700],
-    accent1Color: lightGreen[700],
-    accent2Color: lightGreen[900],
-    accent3Color: lightGreen[300],
-    textColor: darkBlack,
-    alternateTextColor: darkBlack,
-    secondaryTextColor: darkBlack,
-    canvasColor: grey[100],
-    borderColor: grey[300],
-   // disabledColor: fade(grey100, 0.3),
-    pickerHeaderColor: deepOrange[700],
-   // clockCircleColor: fade(darkBlack, 0.07),
-    shadowColor: darkBlack,
+    // primary1Color: grey[100],
+    // primary2Color: grey[300],
+    // primary3Color: grey[700],
+    // accent1Color: lightGreen[700],
+    // accent2Color: lightGreen[900],
+    // accent3Color: lightGreen[300],
+    // textColor: darkBlack,
+    // alternateTextColor: darkBlack,
+    // secondaryTextColor: darkBlack,
+    // canvasColor: grey[100],
+    // borderColor: grey[300],
+    // disabledColor: fade(grey100, 0.3),
+    // pickerHeaderColor: deepOrange[700],
+    // clockCircleColor: fade(darkBlack, 0.07),
+    // shadowColor: darkBlack,
   },
   /*
   checkbox: {

@@ -4,7 +4,6 @@ import {SnackbarState} from './StateTypes'
 
 const default_state: SnackbarState = {
   open: false,
-  message: '',
 };
 
 export function snackbar(state: SnackbarState = default_state, action: Redux.Action): SnackbarState {
@@ -14,8 +13,7 @@ export function snackbar(state: SnackbarState = default_state, action: Redux.Act
       return {
         open: setAction.open,
         message: setAction.message,
-        action: setAction.action,
-        actionLabel: setAction.actionLabel,
+        actions: setAction.actions,
         persist: setAction.persist,
       };
     default:

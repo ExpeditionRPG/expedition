@@ -40,7 +40,7 @@ declare module 'redux' {
 
 window.onerror = (message: string, source: string, line: number) => {
   console.error(message, source, line);
-  store.dispatch(setSnackbar(true, 'Error! ' + message));
+  store.dispatch(setSnackbar(true, <span>Error! {message}</span>));
   return true; // prevents the firing of the default event handler
 };
 

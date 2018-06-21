@@ -1,5 +1,4 @@
 import * as React from 'react'
-
 import AppBar from '@material-ui/core/AppBar'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
@@ -9,7 +8,7 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar'
-
+import Typography from '@material-ui/core/Typography'
 import AlertWarning from '@material-ui/icons/Warning'
 import NavigationArrowDropDown from '@material-ui/icons/ArrowDropDown'
 import SyncIcon from '@material-ui/icons/Sync'
@@ -100,20 +99,20 @@ const TopBar = (props: TopBarProps): JSX.Element => {
   */
   return (
     <span className="quest_app_bar">
-      <AppBar
-        title={title}
-        iconElementRight={
+      <AppBar>
+        <Typography variant="title" color="inherit">
+          {title}
+        </Typography>
+        <Toolbar className="toolbar">
+          <Filter onFilterUpdate={(f: string) => {props.onFilterUpdate(props.view.view, f);}}/>
+          {warn}
+          <Button onClick={(event: any) => {console.log('TODO');}}>Help</Button>
           <div className="appBarRight">
             <span className="email">{props.user.email}</span>
             <Button><NavigationArrowDropDown /></Button>
           </div>
-        }
-      />
-      <Toolbar className="toolbar">
-        <Filter onFilterUpdate={(f: string) => {props.onFilterUpdate(props.view.view, f);}}/>
-        {warn}
-        <Button onClick={(event: any) => {console.log('TODO');}}>Help</Button>
-      </Toolbar>
+        </Toolbar>
+      </AppBar>
     </span>
   );
 }

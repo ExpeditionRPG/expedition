@@ -1,5 +1,6 @@
 import * as React from 'react'
 import IconButton from '@material-ui/core/IconButton'
+import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -41,16 +42,19 @@ class AppBar extends React.Component<AppBarProps, {}> {
         return <MenuItem key={index} value={option}>{text}</MenuItem>
       });
       return (
-        <Select
-          className="filter"
-          key={index}
-          value={filtersCurrent[name]}
-          label={name}
-          onChange={(e: any, i: number, v: string) => { this.props.handleFilterChange(name, v); }}
-          autoWidth={true}
-        >
-          {options}
-        </Select>
+        <div>
+          <InputLabel htmlFor={name}>{name}</InputLabel>
+          <Select
+            className="filter"
+            key={index}
+            value={filtersCurrent[name]}
+            inputProps={{id: name}}
+            onChange={(e: any) => { this.props.handleFilterChange(name, e.target.value); }}
+            autoWidth={true}
+          >
+            {options}
+          </Select>
+        </div>
       );
     });
     // TODO re-add toolips in new MaterialUI way, "Reload Card Data", tooltip="Help"

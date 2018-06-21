@@ -61,10 +61,9 @@ const Main = (props: MainProps): JSX.Element => {
       <Snackbar
         className="editor_snackbar"
         open={props.snackbar.open}
-        message={props.snackbar.message || ''}
-        action={props.snackbar.actionLabel}
+        message={props.snackbar.message}
+        action={props.snackbar.actions}
         autoHideDuration={(props.snackbar.persist) ? undefined : 4000}
-        onActionClick={props.snackbar.action}
         onClose={props.onSnackbarClose}
       />
     </div>

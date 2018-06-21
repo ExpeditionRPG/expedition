@@ -10,9 +10,8 @@ export interface DialogsState {
 
 export interface SnackbarState {
   open: boolean;
-  message?: string;
-  action?: () => any;
-  actionLabel?: string;
+  message?: JSX.Element;
+  actions?: JSX.Element[];
   persist?: boolean;
 }
 
