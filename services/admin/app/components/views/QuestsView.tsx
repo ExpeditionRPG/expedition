@@ -32,9 +32,13 @@ const QuestsView = (props: QuestsViewProps): JSX.Element => {
     );
   });
 
+  // TODO
+  // displaySelectAll={false} adjustForCheckbox={false}
+  // onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}} selectable={false}
+  // displayRowCheckbox={false}
   return (
-    <Table onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}} selectable={false}>
-      <TableHead displaySelectAll={false} adjustForCheckbox={false}>
+    <Table>
+      <TableHead>
         <TableRow>
           <TableCell>Partition</TableCell>
           <TableCell>Title</TableCell>
@@ -43,7 +47,7 @@ const QuestsView = (props: QuestsViewProps): JSX.Element => {
           <TableCell>Author</TableCell>
         </TableRow>
       </TableHead>
-      <TableBody displayRowCheckbox={false}>
+      <TableBody>
         {rows}
       </TableBody>
     </Table>

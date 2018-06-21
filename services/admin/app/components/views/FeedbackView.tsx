@@ -33,9 +33,13 @@ const FeedbackView = (props: FeedbackViewProps): JSX.Element => {
     );
   });
 
+  // TODO
+  // onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}} selectable={false}
+  // displaySelectAll={false} adjustForCheckbox={false}
+  // displayRowCheckbox={false} deselectOnClickaway={true}
   return (
-    <Table onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}} selectable={false}>
-      <TableHead displaySelectAll={false} adjustForCheckbox={false}>
+    <Table>
+      <TableHead>
         <TableRow>
           <TableCell>Partition</TableCell>
           <TableCell>Quest</TableCell>
@@ -45,7 +49,7 @@ const FeedbackView = (props: FeedbackViewProps): JSX.Element => {
           <TableCell>Email</TableCell>
         </TableRow>
       </TableHead>
-      <TableBody displayRowCheckbox={false} deselectOnClickaway={true}>
+      <TableBody>
         {rows}
       </TableBody>
     </Table>

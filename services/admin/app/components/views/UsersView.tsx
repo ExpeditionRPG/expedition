@@ -31,9 +31,14 @@ const UsersView = (props: UsersViewProps): JSX.Element => {
     );
   });
 
+  // TODO
+  // onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}}
+  // displayRowCheckbox={false}
+  // displaySelectAll={false} adjustForCheckbox={false}
+  // selectable={false}
   return (
-    <Table onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}} selectable={false}>
-      <TableHead displaySelectAll={false} adjustForCheckbox={false}>
+    <Table>
+      <TableHead>
         <TableRow>
           <TableCell>Email</TableCell>
           <TableCell>Name</TableCell>
@@ -41,7 +46,7 @@ const UsersView = (props: UsersViewProps): JSX.Element => {
           <TableCell>Last Login</TableCell>
         </TableRow>
       </TableHead>
-      <TableBody displayRowCheckbox={false}>
+      <TableBody>
         {rows}
       </TableBody>
     </Table>
