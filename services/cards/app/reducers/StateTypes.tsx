@@ -11,9 +11,9 @@ export interface TranslationsType {
 }
 
 export interface CardsState {
-  data: CardType[], // array of all downloaded cards
-  filtered: CardType[], // only cards valid with current filters
-  translations: TranslationsType,
+  data: CardType[] | null, // array of all downloaded cards
+  filtered: CardType[] | null, // only cards valid with current filters
+  translations: TranslationsType | null,
   loading: boolean,
 }
 

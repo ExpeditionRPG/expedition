@@ -24,7 +24,7 @@ export function romanize(num: number): string { // http://blog.stevenlevithan.co
   let roman = '';
   let i = 3;
   while (i--) {
-    roman = (key[+digits.pop() + (i * 10)] || '') + roman;
+    roman = (key[+((digits || []).pop() || 0) + (i * 10)] || '') + roman;
   }
   return ((num < 0) ? '-' : '') + Array(+digits.join('') + 1).join('M') + roman;
 }

@@ -6,7 +6,6 @@ export type DialogIDType = 'FEEDBACK_DETAILS' | 'QUEST_DETAILS' | 'USER_DETAILS'
 
 export interface DialogsState {
   open: DialogIDType;
-  drawer: boolean;
 }
 
 export interface SnackbarState {

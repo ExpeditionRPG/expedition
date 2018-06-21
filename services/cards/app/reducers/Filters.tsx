@@ -61,19 +61,19 @@ function updateFilterOptions(filters: FiltersState, cards: CardType[]) {
 
   if (cards === null) { return filters; }
 
-  filters.sheet.options = [filters.sheet.default].concat(cards.reduce((acc: CardType[], card: CardType) => {
+  filters.sheet.options = [filters.sheet.default].concat(cards.reduce((acc: string[], card: CardType) => {
     if (acc.indexOf(card.sheet) === -1) {
       acc.push(card.sheet);
     }
     return acc;
   }, []).sort());
-  filters.class.options = [filters.class.default].concat(cards.reduce((acc: CardType[], card: CardType) => {
+  filters.class.options = [filters.class.default].concat(cards.reduce((acc: string[], card: CardType) => {
     if (acc.indexOf(card.class) === -1 && card.class !== '' && ['Ability', 'Encounter'].indexOf(card.sheet) !== -1) {
       acc.push(card.class);
     }
     return acc;
   }, []).sort());
-  filters.tier.options = [filters.tier.default].concat(cards.reduce((acc: CardType[], card: CardType) => {
+  filters.tier.options = [filters.tier.default].concat(cards.reduce((acc: number[], card: CardType) => {
     if (acc.indexOf(card.tier) === -1 && typeof card.tier === 'number' && ['Encounter', 'Loot'].indexOf(card.sheet) !== -1) {
       acc.push(card.tier);
     }

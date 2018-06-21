@@ -53,9 +53,6 @@ declare module 'redux' {
   export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {
     <R, E>(asyncAction: ThunkAction<R, {}, E, A>): R;
   }
-
-  // TODO: Remove once https://github.com/zalmoxisus/redux-devtools-extension/issues/492 is fixed.
-  export type GenericStoreEnhancer = any;
 }
 
 Raven.config(AUTH_SETTINGS.RAVEN, {

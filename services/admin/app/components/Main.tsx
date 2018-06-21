@@ -14,13 +14,11 @@ import {SnackbarState, ViewType} from '../reducers/StateTypes'
 export interface MainStateProps {
   loggedIn: boolean;
   snackbar: SnackbarState;
-  drawer: boolean;
   view: ViewType;
 };
 
 export interface MainDispatchProps {
   onSnackbarClose: () => void;
-  onDrawerClose: () => void;
   onViewChange: (view: ViewType) => void;
 }
 
@@ -52,7 +50,7 @@ const Main = (props: MainProps): JSX.Element => {
     <div className="main">
       <TopBarContainer/>
       <DialogsContainer/>
-      <Drawer open={props.drawer} docked={false} onRequestChange={(open: boolean) => props.onDrawerClose()}>
+      <Drawer variant="permanent">
         <MenuItem onClick={() => props.onViewChange('USERS')}>Users</MenuItem>
         <MenuItem onClick={() => props.onViewChange('QUESTS')}>Quests</MenuItem>
         <MenuItem onClick={() => props.onViewChange('FEEDBACK')}>Feedback</MenuItem>

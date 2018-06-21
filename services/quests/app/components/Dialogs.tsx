@@ -96,9 +96,9 @@ export class AnnotationDetailDialog extends React.Component<AnnotationDetailDial
        );
     });
 
+    // TODO autoScrollBodyContent
     return (
       <Dialog
-        autoScrollBodyContent={true}
         open={Boolean(this.props.open)}>
         <DialogTitle className="dialogTitle">Message Details</DialogTitle>
         <DialogContent>
@@ -171,11 +171,11 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
     })
 
     // TODO improve validation via errorText instead of alerts - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/274
+    // TODO autoScrollBodyContent
     return (
       <Dialog
         className="publishForm"
         open={Boolean(this.props.open)}
-        autoScrollBodyContent={true}
       >
         <DialogTitle className="dialogTitle dialogGood">Publish your quest</DialogTitle>
         <DialogContent>
@@ -239,7 +239,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
               className="halfWidth"
               inputProps={{id: 'maxtimeminutes-select'}}
               value={metadata.get('maxtimeminutes')}
-              onChange={(e: any, i: number, val: number) => { this.props.handleMetadataChange(this.props.quest, 'maxtimeminutes', val); }}
+              onChange={(e: any) => { this.props.handleMetadataChange(this.props.quest, 'maxtimeminutes', e.target.value); }}
             >
               <MenuItem value={10}>10 minutes</MenuItem>
               <MenuItem value={20}>20 minutes</MenuItem>

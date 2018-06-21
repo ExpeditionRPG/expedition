@@ -160,7 +160,7 @@
     "react-transition-group": "^2.3.1",
     "react-truncate": "^2.3.0",
     "redux": "^4.0.0",
-    "redux-devtools-extension": "^2.13.2",
+    "redux-devtools-extension": "^2.13.4",
     "redux-mock-store": "^1.2.3",
     "redux-thunk": "^2.2.0",
     "reflect-metadata": "^0.1.0",

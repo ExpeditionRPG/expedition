@@ -1,10 +1,8 @@
 import * as React from 'react'
-
-import loginUser from '../actions/User'
-import {UserState} from '../reducers/StateTypes'
-
 import AppBar from '@material-ui/core/AppBar'
 import Button from '@material-ui/core/Button'
+
+import {UserState} from '../reducers/StateTypes'
 
 export interface SplashDispatchProps {
   onLogin: (position: string) => void;

@@ -1,7 +1,6 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
 
-import {toggleDrawer} from '../actions/Dialogs'
 import {logoutUser} from '../actions/User'
 import {queryView} from '../actions/View'
 import {AppState, UserState, ViewType} from '../reducers/StateTypes'
@@ -18,9 +17,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): TopBa
   return {
     onUserDialogRequest: (user: UserState) => {
       dispatch(logoutUser());
-    },
-    onMenuIconTap: () => {
-      dispatch(toggleDrawer());
     },
     onFilterUpdate: (view: ViewType, filter: string) => {
       dispatch(queryView(view, filter));

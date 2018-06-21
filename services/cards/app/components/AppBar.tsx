@@ -53,16 +53,17 @@ class AppBar extends React.Component<AppBarProps, {}> {
         </Select>
       );
     });
+    // TODO re-add toolips in new MaterialUI way, "Reload Card Data", tooltip="Help"
     return (
       <Toolbar className="printHide appbar">
         <Typography variant="title">
           Expedition
         </Typography>
         {filters}
-        <IconButton tooltip="Reload Card Data" onClick={this.props.downloadCards}>
+        <IconButton onClick={this.props.downloadCards}>
           <AutoRenew />
         </IconButton>
-        <IconButton tooltip="Help" onClick={this.props.openHelp}>
+        <IconButton onClick={this.props.openHelp}>
           <HelpOutline />
         </IconButton>
       </Toolbar>

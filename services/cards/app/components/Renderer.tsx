@@ -19,9 +19,9 @@ const CardFronts: any = {
 
 
 export interface RendererStateProps {
-  cards: CardType[];
+  cards: CardType[] | null;
   filters: FiltersState;
-  translations: TranslationsType;
+  translations: TranslationsType | null;
 }
 
 export interface RendererProps extends RendererStateProps {};
@@ -72,8 +72,8 @@ class Renderer extends React.Component<RendererProps, {}> {
     // (aka source change), React gets confused; hence IDs based on card.name when possible
     const CardBack = CardBacks[renderSettings.theme].default;
     const CardFront = CardFronts[renderSettings.theme].default;
-    const frontPageList = [];
-    const backPageList = [];
+    const frontPageList = [] as JSX.Element[][];
+    const backPageList = [] as JSX.Element[][];
     for (let i = 0; i < cards.length; i++) {
       const card = cards[i];
       if (i === 0 || i % renderSettings.cardsPerPage === 0) {

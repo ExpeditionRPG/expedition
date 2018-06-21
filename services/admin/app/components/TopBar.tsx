@@ -10,7 +10,6 @@ import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar'
 
-import MenuIcon from '@material-ui/icons/Menu'
 import AlertWarning from '@material-ui/icons/Warning'
 import NavigationArrowDropDown from '@material-ui/icons/ArrowDropDown'
 import SyncIcon from '@material-ui/icons/Sync'
@@ -26,7 +25,6 @@ export interface TopBarStateProps {
 
 export interface TopBarDispatchProps {
   onUserDialogRequest: (user: UserState)=>void;
-  onMenuIconTap: ()=>void;
   onFilterUpdate: (view: ViewType, filter: string)=>void;
 }
 
@@ -81,7 +79,8 @@ const TopBar = (props: TopBarProps): JSX.Element => {
 
   let warn = <span/>;
   if (props.view.lastQueryError && props.view.lastQueryError.view === props.view.view) {
-    warn = <Button tooltip={props.view.lastQueryError.error.toString()}><AlertWarning/></Button>;
+    // TODO tooltip={props.view.lastQueryError.error.toString()}
+    warn = <Button><AlertWarning/></Button>;
   }
 
   /* TODO Menu attached to nav arrow drop down
@@ -103,7 +102,6 @@ const TopBar = (props: TopBarProps): JSX.Element => {
     <span className="quest_app_bar">
       <AppBar
         title={title}
-        iconElementLeft={<Button onClick={() => props.onMenuIconTap()}><MenuIcon/></Button>}
         iconElementRight={
           <div className="appBarRight">
             <span className="email">{props.user.email}</span>

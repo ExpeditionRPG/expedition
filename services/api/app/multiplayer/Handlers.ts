@@ -132,9 +132,9 @@ function wsParamsFromReq(req: http.IncomingMessage): WebsocketSessionParams|null
 
   return {
     session: parseInt(splitPath[1], 10),
-    client: parsedURL.query.client,
-    secret: parsedURL.query.secret,
-    instance: parsedURL.query.instance,
+    client: parsedURL.query.client as string,
+    secret: parsedURL.query.secret as string,
+    instance: parsedURL.query.instance as string,
   };
 }
 
