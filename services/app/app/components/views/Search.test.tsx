@@ -84,6 +84,16 @@ describe('Search', () => {
       expect(wrapper.html()).toContain('horror');
     });
 
+    it('displays no book icon when a quest does not require pen and paper', () => {
+      const {props, wrapper} = setup('Learning to Adventure', {}, {requirespenpaper: false});
+      expect(wrapper.html()).not.toContain('book');
+    });
+
+    it('displays a book icon when a quest requires pen and paper', () => {
+      const {props, wrapper} = setup('Learning to Adventure', {}, {requirespenpaper: true});
+      expect(wrapper.html()).toContain('book');
+    });
+
     it('does not display last played date if quest has not been played', () => {
       const {props, wrapper} = setup('Learning to Adventure');
       expect(wrapper.html()).not.toContain('questPlayedIcon');
@@ -157,18 +167,6 @@ describe('Search', () => {
       const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
       const {props, wrapper} = setup(quest.title, {lastPlayed: null});
       expect(wrapper.text().toLowerCase()).not.toContain('last played');
-    });
-
-    it('shows the book icon if it requires pen and paper', () => {
-      const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-      const {props, wrapper} = setup(quest.requirespenpaper, {}, true);
-      expect(wrapper.text().toLowerCase()).toContain('book');
-    });
-
-    it('does not show the book icon if it does not require pen and paper', () => {
-      const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-      const {props, wrapper} = setup(quest.requirespenpaper, {}, false);
-      expect(wrapper.text().toLowerCase()).toContain('book');
     });
 
     it('prompts for user count and multitouch if playing direct linked');
