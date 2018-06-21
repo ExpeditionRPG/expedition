@@ -30,6 +30,7 @@ describe('Search', () => {
     expect(formatPlayPeriod(30, 60)).toEqual('30-60 min');
     expect(formatPlayPeriod(30, 120)).toEqual('30-120 min');
     expect(formatPlayPeriod(60, 120)).toEqual('1-2 hrs');
+    expect(formatPlayPeriod(999, 999)).toEqual('2+ hrs');
   });
 
   describe('Settings', () => {
@@ -73,8 +74,7 @@ describe('Search', () => {
       const wrapper = render(renderResult(props), undefined /*renderOptions*/);
       return {props, wrapper};
     }
-
-    it('displays no expansion icons when quest has no expansions', () => {
+    it('displays no horror icon when a quest does not use the Horror expansion', () => {
       const {props, wrapper} = setup('Learning to Adventure');
       expect(wrapper.html()).not.toContain('horror');
     });
@@ -141,6 +141,10 @@ describe('Search', () => {
       expect(wrapper.html()).toContain(quest.genre);
       expect(wrapper.html()).toContain(quest.summary);
       expect(wrapper.html()).toContain(quest.author);
+      expect(wrapper.html()).toContain(quest.official);
+      expect(wrapper.html()).not.toContain(quest.expansionhorror);
+      expect(wrapper.html()).not.toContain(quest.requirespenpaper);
+      expect(wrapper.html()).not.toContain(quest.awarded);
     });
 
     it('shows last played information if it has been played before', () => {
