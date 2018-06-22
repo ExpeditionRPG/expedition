@@ -10,7 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Paper from '@material-ui/core/Paper'
 import TextField from '@material-ui/core/TextField'
 
-import {FeedbackEntry, QuestEntry, UserEntry} from '@expedition-api/app/admin/QueryTypes'
+import {FeedbackEntry, QuestEntry, UserEntry} from '@expedition-api/admin/QueryTypes'
 
 import {DialogsState, DialogIDType} from '../reducers/StateTypes'
 

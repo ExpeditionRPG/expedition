@@ -17,7 +17,7 @@ deploy:
   script: ./scripts/beta.sh
   skip_cleanup: true
   on:
-    repo: ExpeditionRPG/expedition-app
+    repo: ExpeditionRPG/expedition
     branch: master
 notifications:
   email: false

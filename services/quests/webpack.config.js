@@ -15,12 +15,12 @@ const options = {
       // or
       // https://github.com/webpack-contrib/worker-loader
       // 'webpack/hot/only-dev-server',
-      './app/React.tsx',
-      './app/Style.scss',
-      './node_modules/expedition-app/app/Style.scss',
+      './src/React.tsx',
+      './src/Style.scss',
+      '../app/src/Style.scss',
     ],
     playtest: [
-      './app/playtest/PlaytestWorker.tsx',
+      './src/playtest/PlaytestWorker.tsx',
     ],
   },
   resolve: {
@@ -28,7 +28,7 @@ const options = {
   },
   devServer: {
     host: '0.0.0.0',
-    contentBase: Path.join(__dirname, 'app'),
+    contentBase: Path.join(__dirname, 'src'),
     publicPath: '/',
     port: port,
     // hot: true,
@@ -69,11 +69,11 @@ const options = {
       },
     }),
     new CopyWebpackPlugin([
-      { from: 'app/index.html' },
-      { from: 'app/assets' },
-      { from: 'node_modules/expedition-app/app/images', to: 'images' },
-      { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
-      { from: { glob: 'node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
+      { from: 'src/index.html' },
+      { from: 'src/assets' },
+      { from: '../app/src/images', to: 'images' },
+      { from: { glob: '../../node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
+      { from: { glob: '../../node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
     ]),
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {

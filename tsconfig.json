@@ -12,14 +12,14 @@
         "experimentalDecorators": true,
         "baseUrl": "./",
         "paths": {
-            "@expedition-api/*": ["services/api/*"],
-            "@expedition-app/*": ["services/app/*"],
+            "@expedition-api/*": ["services/api/src/*"],
+            "@expedition-app/*": ["services/app/src/*"],
             "@expedition-qdl/*": ["shared/*"]
         }
     },
     "exclude": [
         "node_modules",
-        "app/quests",
+        "app/src/quests",
         "platforms",
         "plugins",
         "www"

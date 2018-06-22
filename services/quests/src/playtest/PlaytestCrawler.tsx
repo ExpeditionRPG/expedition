@@ -3,7 +3,7 @@ import {PlaytestSettings} from '../reducers/StateTypes'
 import {Context} from '@expedition-qdl/parse/Context'
 import {Node} from '@expedition-qdl/parse/Node'
 import {Logger} from '@expedition-qdl/render/Logger'
-import {ENCOUNTERS} from '@expedition-app/app/Encounters'
+import {ENCOUNTERS} from '@expedition-app/Encounters'
 import {REGEX} from '@expedition-qdl/Regex'
 
 // Validators for instructions - these look at the preceeding 2 words

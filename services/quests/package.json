@@ -4,7 +4,7 @@
   "description": "The Expedition Quest Creator",
   "homepage": "http://quests.expeditiongame.com",
   "scripts": {
-    "lint": "tslint -c tslint.json 'app/**/*.{ts,tsx}'",
+    "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'",
     "test": "karma start karma.conf.js --single-run --browsers PhantomJS",
     "start": "webpack-dev-server --progress",
     "build": "webpack -p --config webpack.dist.config.js --progress"

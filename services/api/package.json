@@ -4,7 +4,7 @@
   "homepage": "http://api.expeditiongame.com",
   "version": "0.0.0",
   "scripts": {
-    "lint": "tslint -c tslint.json 'app/**/*.{ts,tsx}'",
+    "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'",
     "pretest": "npm run lint",
     "test": "jest --runInBand --config jestconfig.json",
     "build": "webpack --config webpack.dist.config.js --progress",

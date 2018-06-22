@@ -10,8 +10,8 @@ module.exports = {
   entry: [
     'webpack-dev-server/client?http://localhost:' + port,
     'webpack/hot/only-dev-server',
-    './app/React.tsx',
-    './app/styles/index.scss',
+    './src/React.tsx',
+    './src/styles/index.scss',
   ],
   output: {
     path: Path.resolve('dist'),
@@ -21,7 +21,7 @@ module.exports = {
     extensions: ['.js', '.tsx', '.json'],
   },
   devServer: {
-    contentBase: Path.resolve('app'),
+    contentBase: Path.resolve('src'),
     publicPath: '/',
     port: port,
     hot: true,
@@ -45,7 +45,7 @@ module.exports = {
     new Webpack.HotModuleReplacementPlugin(),
     new Webpack.NoEmitOnErrorsPlugin(),
     new CopyWebpackPlugin([
-      { context: 'node_modules/expedition-art', from: '**/*.+(jpg|svg|png)', to: 'expedition-art' },
+      { context: '../../node_modules/expedition-art', from: '**/*.+(jpg|svg|png)', to: 'expedition-art' },
     ]),
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {

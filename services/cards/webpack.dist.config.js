@@ -4,8 +4,8 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   entry: [
-    './app/React.tsx',
-    './app/styles/index.scss',
+    './src/React.tsx',
+    './src/styles/index.scss',
   ],
   resolve: {
     extensions: ['.js', '.tsx', '.json'],
@@ -42,9 +42,9 @@ module.exports = {
       },
     }),
     new CopyWebpackPlugin([
-      { from: 'app/index.html' },
-      { from: 'app/themes', to: 'themes' },
-      { context: 'node_modules/expedition-art', from: '**/*.+(jpg|svg|png)', to: 'expedition-art' },
+      { from: 'src/index.html' },
+      { from: 'src/themes', to: 'themes' },
+      { context: '../../node_modules/expedition-art', from: '**/*.+(jpg|svg|png)', to: 'expedition-art' },
     ]),
     new Webpack.optimize.AggressiveMergingPlugin(),
     // new UglifyJSPlugin({minimize: true, mangle: false}), // currently broken

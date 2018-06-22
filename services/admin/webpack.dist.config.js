@@ -6,8 +6,8 @@ const Webpack = require('webpack');
 const options = {
   entry: {
     bundle: [
-      './app/React.tsx',
-      './app/Style.scss',
+      './src/React.tsx',
+      './src/Style.scss',
     ],
   },
   resolve: {
@@ -42,13 +42,13 @@ const options = {
     }),
     new CopyWebpackPlugin([
       // Copy ops for dist folder (main app)
-      { from: 'app/index.html', to: 'dist' },
-      { from: 'app/assets', to: 'dist' },
-      { from: 'app/scripts', to: 'dist/scripts' },
+      { from: 'src/index.html', to: 'dist' },
+      { from: 'src/assets', to: 'dist' },
+      { from: 'src/scripts', to: 'dist/scripts' },
 
       // Copy ops for static folder (error/maintenance pages)
-      { from: 'app/error.html', to: 'dist' },
-      { from: 'app/maintenance.html', to: 'dist' },
+      { from: 'src/error.html', to: 'dist' },
+      { from: 'src/maintenance.html', to: 'dist' },
     ]),
   ],
 };

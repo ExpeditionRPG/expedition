@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {Provider} from 'react-redux'
-import CompositorContainer from '@expedition-app/app/components/CompositorContainer'
-import {getStore as getAppStore} from '@expedition-app/app/Store'
+import CompositorContainer from '@expedition-app/components/CompositorContainer'
+import {getStore as getAppStore} from '@expedition-app/Store'
 
 export interface AppStateProps {
 }

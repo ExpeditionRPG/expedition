@@ -1,7 +1,5 @@
 # Expedition: The Companion App
 
-[![Build Status](https://travis-ci.org/ExpeditionRPG/expedition-app.svg)](https://travis-ci.org/ExpeditionRPG/expedition-app)
-
 Learn more about Expedition and play the game at [ExpeditionGame.com](https://expeditiongame.com). The app is available for browsers at [App.ExpeditionGame.com](https://App.ExpeditionGame.com), on the [Android market](https://play.google.com/store/apps/details?id=io.fabricate.expedition) and on the [iOS market](https://itunes.apple.com/us/app/expedition-roleplaying-card/id1085063478?ls=1&mt=8).
 
 ## Contributing
@@ -26,14 +24,6 @@ If you're having problems getting dependencies set up on your computer, try usin
 
 #### Quick-start
 
-With Node.js installed, run the following to download the repository, enter the project folder and install dependencies:
-
-```sh
-git clone https://github.com/ExpeditionRPG/expedition-app.git
-cd expedition-app
-npm install -g webpack && npm install
-```
-
 For building native apps, you will also need to set up cordova. If you want to build with working authentication, you'll need to talk to an admin to get `GoogleService-Info.plist` and put them in the main project directory (which they'll download from the Firebase Console). Then run this setup command:
 
 ```sh
@@ -56,7 +46,7 @@ This runs the app at [http://localhost:8082](http://localhost:8082) (port may be
 npm run test
 ```
 
-This runs the unit tests defined in the `app/test` directory, as well the `meta_tests.js` script file.
+This runs tests defined with the `.test.tsx` extension, as well the `meta_tests.js` script file.
 
 Tests require Java JDK 7 or higher. To update Java go to http://www.oracle.com/technetwork/java/javase/downloads/index.html and download ***JDK*** and install it.
 

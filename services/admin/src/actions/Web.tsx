@@ -10,7 +10,7 @@ import {
   UserMutation,
   UserEntry,
   Response as APIResponse
-} from '@expedition-api/app/admin/QueryTypes'
+} from '@expedition-api/admin/QueryTypes'
 import {UpdateFeedbackAction, UpdateQuestAction, UpdateUserAction, QueryErrorAction} from './ActionTypes'
 import {authSettings} from '../Constants'
 

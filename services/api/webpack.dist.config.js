@@ -8,10 +8,10 @@ const options = {
   cache: true,
   entry: {
     server: [
-      './app/app.ts',
+      './src/app.ts',
     ],
     batchRunner: [
-      './app/batch.ts'
+      './src/batch.ts'
     ],
   },
   resolve: {

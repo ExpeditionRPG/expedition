@@ -10,8 +10,8 @@ const options = {
     bundle: [
       'webpack-dev-server/client?http://localhost:' + port,
       'webpack/hot/only-dev-server',
-      './app/React.tsx',
-      './app/Style.scss',
+      './src/React.tsx',
+      './src/Style.scss',
     ],
   },
   resolve: {
@@ -20,7 +20,7 @@ const options = {
   devServer: {
     host: '0.0.0.0',
     disableHostCheck: true,
-    contentBase: Path.join(__dirname, 'app'),
+    contentBase: Path.join(__dirname, 'src'),
     publicPath: '/',
     port: port,
     hot: true,
@@ -57,8 +57,8 @@ const options = {
       },
     }),
     new CopyWebpackPlugin([
-      { from: 'app/index.html' },
-      { from: 'app/assets' },
+      { from: 'src/index.html' },
+      { from: 'src/assets' },
     ]),
     new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
       options: {

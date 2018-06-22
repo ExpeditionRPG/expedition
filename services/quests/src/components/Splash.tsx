@@ -2,7 +2,7 @@ import * as React from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography';
-import ExpeditionButton from '@expedition-app/app/components/base/Button'
+import ExpeditionButton from '@expedition-app/components/base/Button'
 import {UserState} from '../reducers/StateTypes'
 
 export interface SplashDispatchProps {

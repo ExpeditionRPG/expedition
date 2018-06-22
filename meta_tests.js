@@ -105,7 +105,7 @@ describe('Typescript files', () => {
       '/Theme$',
       '/app/platforms/',
       '/app/plugins/',
-      '/cards/app/themes/',
+      '/cards/src/themes/',
       '/quests/errors', // TODO move these to common code?
     ];
     const WHITELIST_REGEX = new RegExp(WHITELIST.join('|'));

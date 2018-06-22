@@ -6,12 +6,12 @@ const Webpack = require('webpack');
 const options = {
   entry: {
     bundle: [
-      './app/React.tsx',
-      './app/Style.scss',
-      './node_modules/expedition-app/app/Style.scss',
+      './src/React.tsx',
+      './src/Style.scss',
+      '../app/src/Style.scss',
     ],
     playtest: [
-      './app/playtest/PlaytestWorker.tsx',
+      './src/playtest/PlaytestWorker.tsx',
     ],
   },
   resolve: {
@@ -54,17 +54,17 @@ const options = {
     }),
     new CopyWebpackPlugin([
       // Copy ops for dist folder (main app)
-      { from: 'app/index.html', to: 'dist' },
-      { from: 'app/assets', to: 'dist' },
-      { from: 'node_modules/expedition-app/app/images', to: 'dist/images' },
-      { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './dist/images' },
-      { from: { glob: 'node_modules/expedition-art/art/*.png' }, flatten: true, to: './dist/images' },
-      { from: 'app/dictionaries', to: 'dist/dictionaries'},
-      { from: 'app/scripts', to: 'dist/scripts' },
+      { from: 'src/index.html', to: 'dist' },
+      { from: 'src/assets', to: 'dist' },
+      { from: '../app/src/images', to: 'dist/images' },
+      { from: { glob: '../../node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './dist/images' },
+      { from: { glob: '../../node_modules/expedition-art/art/*.png' }, flatten: true, to: './dist/images' },
+      { from: 'src/dictionaries', to: 'dist/dictionaries'},
+      { from: 'src/scripts', to: 'dist/scripts' },
 
       // Copy ops for static folder (error/maintenance pages)
-      { from: 'app/error.html', to: 'dist' },
-      { from: 'app/maintenance.html', to: 'dist' },
+      { from: 'src/error.html', to: 'dist' },
+      { from: 'src/maintenance.html', to: 'dist' },
     ]),
   ],
 };

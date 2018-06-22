@@ -1,7 +1,7 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
 
-import {UserEntry, QuestEntry, FeedbackEntry} from '@expedition-api/app/admin/QueryTypes'
+import {UserEntry, QuestEntry, FeedbackEntry} from '@expedition-api/admin/QueryTypes'
 import {DialogIDType, DialogsState, AppState} from '../reducers/StateTypes'
 import {setDialog} from '../actions/Dialogs'
 import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'

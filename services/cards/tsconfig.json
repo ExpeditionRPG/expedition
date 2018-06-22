@@ -10,10 +10,6 @@
     },
     "exclude": [
         "node_modules",
-        "app/bower_components",
-        "app/quests",
-        "platforms",
-        "plugins",
         "www"
     ]
 }

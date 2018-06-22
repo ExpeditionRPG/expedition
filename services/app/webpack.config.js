@@ -10,15 +10,15 @@ const options = {
     'promise-polyfill',
     'webpack-dev-server/client?http://localhost:' + port,
     'webpack/hot/only-dev-server',
-    './app/Init.tsx',
-    './app/Style.scss',
+    './src/Init.tsx',
+    './src/Style.scss',
   ],
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.json'],
   },
   devServer: {
     host: '0.0.0.0',
-    contentBase: path.join(__dirname, "app"),
+    contentBase: path.join(__dirname, "src"),
     disableHostCheck: true,
     publicPath: '/',
     port: port,
@@ -56,8 +56,8 @@ const options = {
     }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // Don't import bloated Moment locales
     new CopyWebpackPlugin([
-      { from: { glob: 'node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
-      { from: { glob: 'node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
+      { from: { glob: '../../node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
+      { from: { glob: '../../node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
     ]),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
