@@ -1,7 +1,6 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const Webpack = require('webpack');
 const Path = require('path');
-const DashboardPlugin = require('webpack-dashboard/plugin');
 
 const port = process.env.DOCKER_PORT || 8080;
 
@@ -41,7 +40,6 @@ module.exports = {
     ],
   },
   plugins: [
-    new DashboardPlugin(),
     new Webpack.HotModuleReplacementPlugin(),
     new Webpack.NoEmitOnErrorsPlugin(),
     new CopyWebpackPlugin([

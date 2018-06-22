@@ -3,8 +3,8 @@ import AppBar from '@material-ui/core/AppBar'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
+// import Menu from '@material-ui/core/Menu'
+// import MenuItem from '@material-ui/core/MenuItem'
 import Toolbar from '@material-ui/core/Toolbar'
 import AlertError from '@material-ui/icons/Error'
 import NavigationArrowDropDown from '@material-ui/icons/ArrowDropDown'
@@ -32,7 +32,7 @@ interface QuestAppBarProps extends QuestAppBarStateProps, QuestAppBarDispatchPro
 
 const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   const questLoaded = (props.quest.id !== null);
-  const loginText = 'Logged in as ' + props.user.displayName;
+  // const loginText = 'Logged in as ' + props.user.displayName;
   const questTitle = props.quest.title || 'unsaved quest';
 
   let saveIndicator = <span className="saveIndicator"><Button disabled={true}><SyncIcon /> Saving...</Button></span>;
