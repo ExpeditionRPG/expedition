@@ -18,7 +18,7 @@ const store = getStore();
 store.dispatch(loadFiltersFromUrl());
 store.dispatch(downloadCards());
 
-let render = () => {
+const render = () => {
   const base = document.getElementById('app');
   if (!base) {
     throw new Error('Could not find react-app element');

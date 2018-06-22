@@ -7,7 +7,6 @@ import {MAX_COUNTER_HEALTH} from '../../Constants'
 export default class CardBack extends React.Component<CardType, {}> {
   render() {
     const card = this.props.card;
-    const theme = 'Color';
     switch (card.sheet) {
       case '-Title':
         return (

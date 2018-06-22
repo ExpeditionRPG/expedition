@@ -7,7 +7,6 @@ import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 export default class CardFront extends React.Component<CardType, {}> {
   render() {
     const card = this.props.card;
-    const theme = 'Color';
     switch (card.sheet) {
       case '-Title':
         return (

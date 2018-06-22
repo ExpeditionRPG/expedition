@@ -30,7 +30,7 @@ class AppBar extends React.Component<AppBarProps, {}> {
     }, {});
     const filters = Object.keys(this.props.filters).map((name: string, index: number) => {
       const filter = this.props.filters[name];
-      const options = this.props.filters[name].options.map((option: any, index: number) => {
+      const options = filter.options.map((option: any, index: number) => {
         let text = option;
         // For "all" default values, nicen up their text presentation to users
         if (typeof option === 'string' && option.toLowerCase() === 'all') {

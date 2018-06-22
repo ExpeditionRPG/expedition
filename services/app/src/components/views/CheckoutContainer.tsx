@@ -7,8 +7,6 @@ import {openSnackbar} from '../../actions/Snackbar'
 import {logEvent} from '../../Logging'
 import {AppState, CheckoutPhase, CheckoutState, UserState} from '../../reducers/StateTypes'
 
-declare var window:any;
-
 const mapStateToProps = (state: AppState, ownProps: any): CheckoutStateProps => {
   return {
     card: state.card,
@@ -45,4 +43,4 @@ const CheckoutContainer = connect(
   mapDispatchToProps
 )(Checkout);
 
-export default CheckoutContainer
+export default CheckoutContainer;

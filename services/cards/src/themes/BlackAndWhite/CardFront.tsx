@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {icon, camelCase, romanize, horizontalCounter, healthCounter, lootCounter, translate, translateTier} from '../../helpers'
+import {icon, camelCase, horizontalCounter, healthCounter, lootCounter, translate, translateTier} from '../../helpers'
 import {CardType} from '../../reducers/StateTypes'
 import {MAX_ADVENTURER_HEALTH} from '../../Constants'
 
@@ -8,7 +8,6 @@ export default class CardFront extends React.Component<CardType, {}> {
   render() {
     const card = this.props.card;
     const translations = this.props.translations;
-    const theme = 'BlackAndWhite';
     switch (card.sheet) {
       case 'Ability':
         return (

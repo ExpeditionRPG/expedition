@@ -1,6 +1,5 @@
 import Redux from 'redux'
 import {CardType, FiltersState} from './StateTypes'
-import {getStore} from '../Store'
 import {FiltersCalculateAction, FilterChangeAction} from '../actions/Filters'
 
 export let initialState: FiltersState = {

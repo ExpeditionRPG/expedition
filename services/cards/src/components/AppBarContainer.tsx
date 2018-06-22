@@ -3,7 +3,6 @@ import {connect} from 'react-redux'
 import AppBar, {AppBarStateProps, AppBarDispatchProps} from './AppBar'
 import {downloadCards} from '../actions/Cards'
 import {filterChange} from '../actions/Filters'
-import {initialState} from '../reducers/Filters'
 import {AppState} from '../reducers/StateTypes'
 
 const mapStateToProps = (state: AppState, ownProps: any): AppBarStateProps => {

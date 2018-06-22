@@ -1,4 +1,3 @@
-import Redux from 'redux'
 import {connect} from 'react-redux'
 import Renderer, {RendererStateProps} from './Renderer'
 import {AppState} from '../reducers/StateTypes'

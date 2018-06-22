@@ -7,7 +7,6 @@ export default class CardBack extends React.Component<CardType, {}> {
   render() {
     const card = this.props.card;
     const translations = this.props.translations;
-    const theme = 'BlackAndWhite';
     switch (card.sheet) {
       case 'Ability':
         return (

@@ -32,10 +32,8 @@ export function romanize(num: number): string { // http://blog.stevenlevithan.co
 // generates a bottom tracker, fits up to 14; inclusive 0-count
 // TODO modernize
 export function horizontalCounter(count: number): JSX.Element {
-
-  let output = [];
+  const output = [];
   let outputted = 0;
-
   while (count >= 0) {
     output.push(<span key={outputted}>{outputted}</span>);
     count--;
@@ -79,18 +77,18 @@ export function translateTier(tier: number, english: string, translations: Trans
 // TODO modernize
 export function healthCounter(health: number, back = false): JSX.Element {
 
-  var digitWidth = [0, 16, 23];
-  var maxWidth = 269;
-  var outputtedWidth = 0;
+  const digitWidth = [0, 16, 23];
+  let maxWidth = 269;
+  let outputtedWidth = 0;
 
   if (back) {
     health = MAX_COUNTER_HEALTH + 1; // because the loop assumes you'll have the final value displayed
       // separately with a heart (as in, Encounter fronts), we have to force it to show all values here
   }
 
-  var output = '<ul class="hp-tracker hp-tracker-vertical-right">';
-  var temp = ''; // temp storage for when we have to output in reverse in horizontal and vertical-right
-  var outputted = (back) ? -1 : 0; // put one extra on the vertical to fill out max
+  let output = '<ul class="hp-tracker hp-tracker-vertical-right">';
+  let temp = ''; // temp storage for when we have to output in reverse in horizontal and vertical-right
+  let outputted = (back) ? -1 : 0; // put one extra on the vertical to fill out max
 
   while (health > 0) {
     health--; //subtract HP first, since we're already showing the max HP at the top
@@ -122,13 +120,13 @@ export function healthCounter(health: number, back = false): JSX.Element {
 // also post-increments instead of pre-increments, so maybe pass an output range (ie loot is 20-1, HP is 19-0)
 // TODO modernize
 export function lootCounter(count: number): JSX.Element {
-  var digitWidth = [0, 16, 23];
-  var maxWidth = 269;
-  var outputtedWidth = 0;
+  const digitWidth = [0, 16, 23];
+  let maxWidth = 269;
+  let outputtedWidth = 0;
 
-  var output = '<ul class="hp-tracker hp-tracker-vertical-right">';
-  var temp = ''; // temp storage for when we have to output in reverse in horizontal and vertical-right
-  var outputted = 0;
+  let output = '<ul class="hp-tracker hp-tracker-vertical-right">';
+  let temp = ''; // temp storage for when we have to output in reverse in horizontal and vertical-right
+  let outputted = 0;
 
   while (count > 0) {
     if (outputted < 15 || (outputted === 15 && count === 0)) {

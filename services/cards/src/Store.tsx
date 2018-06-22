@@ -3,11 +3,11 @@ import {createStore, applyMiddleware} from 'redux'
 import app from './reducers/CombinedReducers'
 
 // For dev tools extension
-declare var window:any;
-declare var require:any;
-declare var module:any;
+declare const window:any;
+declare const require:any;
+declare const module:any;
 
-var store: any = null;
+let store: any = null;
 
 function installStore(createdStore: any) {
   store = createdStore;
@@ -15,14 +15,14 @@ function installStore(createdStore: any) {
 
 function createAppStore() {
 
-  let devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
-  let middleware = applyMiddleware(thunk);
+  const devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
+  const middleware = applyMiddleware(thunk);
 
   installStore(middleware(devtools(createStore))(app, {}));
 
   if (module && module.hot) {
     module.hot.accept('./reducers/CombinedReducers', () => {
-      let updated = require('./reducers/CombinedReducers').default;
+      const updated = require('./reducers/CombinedReducers').default;
       store.replaceReducer(updated);
     });
   }
