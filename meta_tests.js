@@ -1,14 +1,19 @@
 const fs = require('fs');
 const expect = require('expect');
 
+const FILES = [
+  ...walkDir('./services').filter((path) => path.match(/.*\.(tsx|ts|js)/)),
+  ...walkDir('./shared').filter((path) => path.match(/.*\.(tsx|ts|js)/)),
+];
+
 function walkDir(root) {
   const stat = fs.statSync(root);
   if (stat.isDirectory()) {
-      const dirs = fs.readdirSync(root).filter(item => !item.startsWith('.'));
-      let results = dirs.map(sub => walkDir(`${root}/${sub}`));
-      return [].concat(...results);
+    const dirs = fs.readdirSync(root).filter(item => !item.startsWith('.'));
+    let results = dirs.map(sub => walkDir(`${root}/${sub}`));
+    return [].concat(...results);
   } else {
-      return [root];
+    return [root];
   }
 }
 
@@ -68,12 +73,9 @@ describe('Dependencies', () => {
     });
 
     const unused_deps = [];
-    const files = [
-      ...walkDir('./services').filter((path) => path.match(/.*\.(tsx|js)/)),
-      ...walkDir('./shared').filter((path) => path.match(/.*\.(tsx|js)/))];
     for (let dep of depstrs) {
       let found = false;
-      for (let path of files) {
+      for (let path of FILES) {
         if (fs.readFileSync(path, 'utf8').match("[/\"\'!]" + dep)) {
           found = true;
           break;
@@ -92,4 +94,36 @@ describe('Dependencies', () => {
     console.log('Found ' + depstrs.length + ' deps (' + unused_deps.length + ' unused)');
     expect(unused_deps).toEqual([]);
   }).timeout(10000);
-})
+});
+
+describe('Typescript files', () => {
+  it('are always in pairs of *.tsx and *.test.tsx', () => {
+    const WHITELIST = [
+      'reducers/',
+      'Container$',
+      '/TestData',
+      '/Theme$',
+      '/app/platforms/',
+      '/app/plugins/',
+      '/cards/app/themes/',
+      '/quests/errors', // TODO move these to common code?
+    ];
+    const WHITELIST_REGEX = new RegExp(WHITELIST.join('|'));
+
+    let count = {};
+    for (let f of FILES) {
+      if (['tsx', 'ts'].indexOf(f.split('.').pop()) !== -1) {
+        const base = f.split('.')[1]; // "./app/..."
+        count[base] = (count[base] || 0) + 1;
+      }
+    }
+
+    let violations = [];
+    for (let k of Object.keys(count)) {
+      if (count[k] !== 2 && !WHITELIST_REGEX.test(k)) {
+        violations.push(k);
+      }
+    }
+    expect(violations).toEqual([]);
+  });
+});

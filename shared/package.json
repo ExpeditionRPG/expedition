@@ -1,7 +1,7 @@
 {
   "name": "expedition-qdl",
   "scripts": {
-    "test": "mocha meta_tests.js && karma start karma.conf.js --single-run --browsers PhantomJS",
+    "test": "karma start karma.conf.js --single-run --browsers PhantomJS",
     "watch:test": "karma start karma.conf.js "
   }
 }

@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "tslint -c tslint.json 'app/**/*.{ts,tsx}'",
     "pretest": "npm run lint",
-    "test": "mocha meta_tests.js && jest --runInBand --config jestconfig.json",
+    "test": "jest --runInBand --config jestconfig.json",
     "build": "webpack --config webpack.dist.config.js --progress",
     "start": "node dist/server.js",
     "heroku-postbuild": "NODE_ENV='production' webpack --config webpack.dist.config.js --progress"

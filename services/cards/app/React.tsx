@@ -6,8 +6,8 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import {downloadCards} from './actions/Cards'
 import {loadFiltersFromUrl} from './actions/Filters'
 import MainContainer from './components/MainContainer'
-import { getStore } from './Store'
-import theme from './theme'
+import {getStore} from './Store'
+import theme from './Theme'
 
 // So we can hot reload
 declare var require: any;
