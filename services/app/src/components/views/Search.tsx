@@ -355,6 +355,7 @@ export function renderDetails(props: SearchDetailsProps): JSX.Element {
   if (!quest) {
     return <Card title="Quest Details">Loading...</Card>
   }
+  // TODO FIXME to actually use array and join logic
   const requires = [];
   if (quest.expansionhorror && quest.requirespenpaper) {
     requires.push(<span><span><img className="inline_icon" src="images/horror_small.svg"/>The Horror</span>, <span><img className="inline_icon" src="images/book_small.svg"/> Pen and Paper</span></span>);

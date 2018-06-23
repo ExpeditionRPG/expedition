@@ -1,5 +1,4 @@
 import * as React from 'react'
-import Button from '@material-ui/core/Button'
 import Snackbar from '@material-ui/core/Snackbar'
 import Drawer from '@material-ui/core/Drawer'
 import MenuItem from '@material-ui/core/MenuItem'

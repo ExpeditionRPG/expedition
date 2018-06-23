@@ -1,4 +1,3 @@
-import Redux from 'redux'
 import {dialogs} from './Dialogs'
 import {snackbar} from './Snackbar'
 import {user} from './User'

@@ -5,9 +5,6 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Button from '@material-ui/core/Button'
-import LinkIcon from '@material-ui/icons/Link'
-import MenuItem from '@material-ui/core/MenuItem'
-import Paper from '@material-ui/core/Paper'
 import TextField from '@material-ui/core/TextField'
 
 import {FeedbackEntry, QuestEntry, UserEntry} from '@expedition-api/admin/QueryTypes'
@@ -23,7 +20,7 @@ export interface DialogsStateProps {
 
 export interface DialogsDispatchProps {
   onClose: (dialog: DialogIDType) => void;
-  onSetUserLootPoints: (user: UserEntry, loot_points: number) => any;
+  onSetUserLootPoints: (user: UserEntry, lootPoints: number) => any;
   onSetQuestPublishState: (quest: QuestEntry, published: boolean) => any;
   onSetFeedbackSuppressed: (feedback: FeedbackEntry, suppress: boolean) => any;
 }
@@ -106,7 +103,7 @@ export interface UserDetailsDialogProps {
   open: boolean;
   user: UserEntry;
   onClose: () => any;
-  onSetUserLootPoints: (user: UserEntry, loot_points: number) => any;
+  onSetUserLootPoints: (user: UserEntry, lootPoints: number) => any;
 }
 export class UserDetailsDialog extends React.Component<UserDetailsDialogProps, {new_loot: number|null}> {
   constructor(props: UserDetailsDialogProps) {

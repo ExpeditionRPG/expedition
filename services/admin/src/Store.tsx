@@ -20,7 +20,7 @@ store = createStore(adminApp, initialState, composeEnhancers(applyMiddleware(...
 
 if (module && module.hot) {
   module.hot.accept('./reducers/CombinedReducers', () => {
-    let updated = require('./reducers/CombinedReducers').default;
+    const updated = require('./reducers/CombinedReducers').default;
     store.replaceReducer(updated);
   });
 }

@@ -1,4 +1,3 @@
-import Redux from 'redux'
 import {
   SetViewAction,
   SetViewFeedbackAction,

@@ -1,17 +1,13 @@
 import * as React from 'react'
 import AppBar from '@material-ui/core/AppBar'
-import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import IconButton from '@material-ui/core/IconButton'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
+// import Menu from '@material-ui/core/Menu'
+// import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import AlertWarning from '@material-ui/icons/Warning'
 import NavigationArrowDropDown from '@material-ui/icons/ArrowDropDown'
-import SyncIcon from '@material-ui/icons/Sync'
 
 import {UserState, ViewState, ViewType} from '../reducers/StateTypes'
 
@@ -73,9 +69,8 @@ export class Filter extends React.Component<FilterProps, {filter: string, lastFi
 
 
 const TopBar = (props: TopBarProps): JSX.Element => {
-  const loginText = 'Logged in as ' + props.user.displayName;
+  // const loginText = 'Logged in as ' + props.user.displayName;
   const title = props.view.view;
-
   let warn = <span/>;
   if (props.view.lastQueryError && props.view.lastQueryError.view === props.view.view) {
     // TODO tooltip={props.view.lastQueryError.error.toString()}

@@ -7,12 +7,10 @@ const initialState: DialogsState = {
 };
 
 export function dialogs(state: DialogsState = initialState, action: Redux.Action): DialogsState {
-  let newState: DialogsState = {...state};
   switch (action.type) {
     case 'SET_DIALOG':
-      let dialog_action = (action as SetDialogAction);
-      newState.open = dialog_action.dialog;
-      return newState;
+      const dialogAction = (action as SetDialogAction);
+      return {...state, open: dialogAction.dialog};
     default:
       return state;
   }

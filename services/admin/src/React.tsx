@@ -7,7 +7,6 @@ import {queryView} from './actions/View'
 import {setSnackbar} from './actions/Snackbar'
 import MainContainer from './components/MainContainer'
 import {store} from './Store'
-import {VERSION} from './Constants'
 import {UserState} from './reducers/StateTypes'
 
 // Material UI theming
@@ -65,7 +64,7 @@ window.gapi.load('client,drive-realtime,drive-share', () => {
 });
 
 // alert user if they try to close the page with unsaved changes
-window.onbeforeunload = function () {
+window.onbeforeunload = function() {
   if (store.getState().dirty === true) {
     return false;
   }

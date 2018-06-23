@@ -10,8 +10,8 @@ import HelpOutline from '@material-ui/icons/HelpOutline'
 
 import {FiltersState} from '../reducers/StateTypes'
 
-export interface AppBarStateProps {
-  filters: FiltersState;
+export interface AppBarStateProps extends React.Props<any> {
+  filters: FiltersState,
 }
 
 export interface AppBarDispatchProps {

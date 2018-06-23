@@ -1,4 +1,4 @@
-import {SetDialogAction, ToggleDrawerAction} from './ActionTypes'
+import {SetDialogAction} from './ActionTypes'
 import {DialogIDType} from '../reducers/StateTypes'
 
 export function setDialog(dialog: DialogIDType): SetDialogAction {
