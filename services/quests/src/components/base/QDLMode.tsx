@@ -1,4 +1,4 @@
-import {REGEX, combinedRegex} from '@expedition-qdl/Regex'
+import {REGEX, combinedRegex} from 'shared/Regex'
 const acequire: any = (require('brace') as any).acequire;
 const oop = acequire('ace/lib/oop') as any;
 const {Range} = acequire('ace/range');

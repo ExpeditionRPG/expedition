@@ -6,7 +6,7 @@ import {saveQuest, publishQuestSetup, unpublishQuest} from '../actions/Quest'
 import {logoutUser} from '../actions/User'
 import {AnnotationType, AppState, QuestType, EditorState, UserState} from '../reducers/StateTypes'
 import QuestAppBar, {QuestAppBarStateProps, QuestAppBarDispatchProps} from './QuestAppBar'
-import {defaultContext} from '@expedition-app/components/views/quest/cardtemplates/Template'
+import {defaultContext} from 'app/components/views/quest/cardtemplates/Template'
 
 import {DOCS_INDEX_URL} from '../Constants'
 

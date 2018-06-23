@@ -3,7 +3,7 @@ const {Range} = acequire('ace/range');
 import REGEX from './Regex'
 import {store} from './Store'
 import {setWordCount} from './actions/Editor'
-import {ENCOUNTERS} from '@expedition-app/Encounters'
+import {ENCOUNTERS} from 'app/Encounters'
 const IGNORE = Object.keys(ENCOUNTERS);
 const elementRegexes = new RegExp('(' + [REGEX.HTML_TAG, REGEX.TRIGGER, REGEX.ID, REGEX.OP].map((regex: any): string => {
   return regex.toString().match(REGEX.EXTRACT_REGEX)[1];

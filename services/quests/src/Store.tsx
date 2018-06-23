@@ -1,8 +1,8 @@
 import Redux, {createStore, applyMiddleware, compose} from 'redux'
 import thunk from 'redux-thunk'
 import questIDEApp from './reducers/CombinedReducers'
-import {installStore as installAppStore} from '@expedition-app/Store'
-import {getMultiplayerClient} from '@expedition-app/Multiplayer'
+import {installStore as installAppStore} from 'app/Store'
+import {getMultiplayerClient} from 'app/Multiplayer'
 
 // For dev tools extension
 declare var window:any;

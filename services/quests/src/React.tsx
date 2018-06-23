@@ -10,7 +10,7 @@ import {setSnackbar} from './actions/Snackbar'
 import MainContainer from './components/MainContainer'
 import {store} from './Store'
 import {VERSION} from './Constants'
-import theme from '@expedition-qdl/Theme'
+import theme from 'shared/Theme'
 
 // For hot reload
 declare var require: any;

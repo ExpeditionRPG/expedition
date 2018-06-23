@@ -1,9 +1,9 @@
 import {QuestDetails} from './QuestTypes'
 import {TemplatePhase} from '../components/views/quest/cardtemplates/TemplateTypes'
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
-import {SessionID} from '@expedition-qdl/multiplayer/Session'
-import {StatusEvent} from '@expedition-qdl/multiplayer/Events'
-import {ContentRatingLabelType, GenreType, LanguageType} from '@expedition-qdl/schema/Constants'
+import {SessionID} from 'shared/multiplayer/Session'
+import {StatusEvent} from 'shared/multiplayer/Events'
+import {ContentRatingLabelType, GenreType, LanguageType} from 'shared/schema/Constants'
 
 export interface AnnouncementState {
   open: boolean;

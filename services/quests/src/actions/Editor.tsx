@@ -3,11 +3,11 @@ import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction
 import {PanelType, PlaytestSettings, QuestType} from '../reducers/StateTypes'
 import {store} from '../Store'
 import {saveQuest} from './Quest'
-import {renderXML} from '@expedition-qdl/render/QDLParser'
-import {loadNode} from '@expedition-app/actions/Quest'
-import {changeSettings} from '@expedition-app/actions/Settings'
-import {defaultContext} from '@expedition-app/components/views/quest/cardtemplates/Template'
-import {TemplateContext, ParserNode} from '@expedition-app/components/views/quest/cardtemplates/TemplateTypes'
+import {renderXML} from 'shared/render/QDLParser'
+import {loadNode} from 'app/actions/Quest'
+import {changeSettings} from 'app/actions/Settings'
+import {defaultContext} from 'app/components/views/quest/cardtemplates/Template'
+import {TemplateContext, ParserNode} from 'app/components/views/quest/cardtemplates/TemplateTypes'
 import {pushError} from './Dialogs'
 
 declare var window: any;

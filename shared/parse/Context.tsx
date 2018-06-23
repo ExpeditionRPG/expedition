@@ -100,7 +100,7 @@ export function evaluateOp(op: string, ctx: Context): any {
     if (self && !self.document) { // webworker
       return null;
     } else if (window && window.onerror) {
-      window.onerror(message, '@expedition-qdl/parse/context');
+      window.onerror(message, 'shared/parse/context');
       return null;
     } else {
       throw new Error(message);

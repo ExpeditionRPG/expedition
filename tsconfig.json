@@ -13,9 +13,9 @@
         "emitDecoratorMetadata": true,
         "baseUrl": "./",
         "paths": {
-            "@expedition-api/*": ["services/api/src/*"],
-            "@expedition-app/*": ["services/app/src/*"],
-            "@expedition-qdl/*": ["shared/*"]
+            "api/*": ["services/api/src/*"],
+            "app/*": ["services/app/src/*"],
+            "shared/*": ["shared/*"]
         }
     },
     "exclude": [

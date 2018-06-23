@@ -6,8 +6,8 @@ import {
   submitRating,
   getFeedback
 } from './Feedback'
-import {Feedback} from '@expedition-qdl/schema/Feedback'
-import {PUBLIC_PARTITION} from '@expedition-qdl/schema/Constants'
+import {Feedback} from 'shared/schema/Feedback'
+import {PUBLIC_PARTITION} from 'shared/schema/Constants'
 import {MailService} from '../Mail'
 import {Database, FeedbackInstance} from './Database'
 import {getQuest} from './Quests'

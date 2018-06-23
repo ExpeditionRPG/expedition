@@ -1,7 +1,7 @@
 import {PlaytestCrawler} from './PlaytestCrawler'
-import {Logger, LogMessageMap} from '@expedition-qdl/render/Logger'
-import {Node} from '@expedition-qdl/parse/Node'
-import {defaultContext} from '@expedition-qdl/parse/Context'
+import {Logger, LogMessageMap} from 'shared/render/Logger'
+import {Node} from 'shared/parse/Node'
+import {defaultContext} from 'shared/parse/Context'
 
 const expect: any = require('expect');
 const cheerio: any = require('cheerio') as CheerioAPI;

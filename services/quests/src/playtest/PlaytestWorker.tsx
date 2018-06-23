@@ -3,8 +3,8 @@
 
 import {PlaytestCrawler} from './PlaytestCrawler'
 import {PlaytestSettings} from '../reducers/StateTypes'
-import {Node} from '@expedition-qdl/parse/Node'
-import {Logger} from '@expedition-qdl/render/Logger'
+import {Node} from 'shared/parse/Node'
+import {Logger} from 'shared/render/Logger'
 
 const cheerio: any = require('cheerio') as CheerioAPI;
 

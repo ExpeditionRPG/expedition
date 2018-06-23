@@ -6,7 +6,7 @@ import {quest} from './Quest'
 import {snackbar} from './Snackbar'
 import {tutorial} from './Tutorial'
 import {user} from './User'
-import preview from '@expedition-app/reducers/CombinedReducers'
+import preview from 'app/reducers/CombinedReducers'
 import {AppState} from './StateTypes'
 
 export default function combinedReduce(state: AppState, action: Redux.Action): AppState {

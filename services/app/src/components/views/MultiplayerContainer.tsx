@@ -5,7 +5,7 @@ import {AppState, UserState} from '../../reducers/StateTypes'
 import {openSnackbar} from '../../actions/Snackbar'
 import {multiplayerConnect, multiplayerNewSession} from '../../actions/Multiplayer'
 import Multiplayer, {MultiplayerStateProps, MultiplayerDispatchProps, MIN_SECRET_LENGTH} from './Multiplayer'
-import {SessionID} from '@expedition-qdl/multiplayer/Session'
+import {SessionID} from 'shared/multiplayer/Session'
 import {logEvent} from '../../Logging'
 
 const mapStateToProps = (state: AppState, ownProps: MultiplayerStateProps): MultiplayerStateProps => {

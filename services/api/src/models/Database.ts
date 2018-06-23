@@ -1,14 +1,14 @@
 import Sequelize from 'sequelize'
-import {PLACEHOLDER_DATE} from '@expedition-qdl/schema/SchemaBase'
-import {AnalyticsEvent} from '@expedition-qdl/schema/AnalyticsEvents'
-import {User} from '@expedition-qdl/schema/Users'
-import {Quest} from '@expedition-qdl/schema/Quests'
-import {PUBLIC_PARTITION} from '@expedition-qdl/schema/Constants'
-import {Feedback} from '@expedition-qdl/schema/Feedback'
-import {RenderedQuest} from '@expedition-qdl/schema/RenderedQuests'
-import {Session} from '@expedition-qdl/schema/multiplayer/Sessions'
-import {SessionClient} from '@expedition-qdl/schema/multiplayer/SessionClients'
-import {Event} from '@expedition-qdl/schema/multiplayer/Events'
+import {PLACEHOLDER_DATE} from 'shared/schema/SchemaBase'
+import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents'
+import {User} from 'shared/schema/Users'
+import {Quest} from 'shared/schema/Quests'
+import {PUBLIC_PARTITION} from 'shared/schema/Constants'
+import {Feedback} from 'shared/schema/Feedback'
+import {RenderedQuest} from 'shared/schema/RenderedQuests'
+import {Session} from 'shared/schema/multiplayer/Sessions'
+import {SessionClient} from 'shared/schema/multiplayer/SessionClients'
+import {Event} from 'shared/schema/multiplayer/Events'
 import {toSequelize} from './Schema'
 
 export interface AnalyticsEventInstance extends Sequelize.Instance<Partial<AnalyticsEvent>> {dataValues: AnalyticsEvent};
@@ -57,7 +57,7 @@ export class Database {
   private setupModels() {
     const standardOptions = {
       timestamps: true,
-      // https://github.com/ExpeditionRPG/@expedition-api/issues/39
+      // https://github.com/ExpeditionRPG/api/issues/39
       underscored: true,
     };
 

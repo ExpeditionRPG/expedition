@@ -13,7 +13,7 @@ import * as Raven from 'raven-js'
 import {Provider} from 'react-redux'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 
-import theme from '@expedition-qdl/Theme'
+import theme from 'shared/Theme'
 import {AUTH_SETTINGS, NODE_ENV, UNSUPPORTED_BROWSERS, INIT_DELAY} from './Constants'
 import {fetchAnnouncements, setAnnouncement} from './actions/Announcement'
 import {audioSet} from './actions/Audio'

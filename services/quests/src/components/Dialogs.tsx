@@ -13,7 +13,7 @@ import TextField from '@material-ui/core/TextField'
 import Checkbox from './base/Checkbox'
 import {QuestType, DialogsState, DialogIDType, UserState} from '../reducers/StateTypes'
 import {MIN_PLAYERS, MAX_PLAYERS} from '../Constants'
-import {CONTENT_RATING_DESC, GENRES, LANGUAGES, THEMES} from '@expedition-qdl/schema/Constants'
+import {CONTENT_RATING_DESC, GENRES, LANGUAGES, THEMES} from 'shared/schema/Constants'
 import {ErrorType} from '../../errors/types'
 
 declare var ga: any;

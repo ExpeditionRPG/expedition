@@ -12,6 +12,7 @@
     "test-cards": "set -e && mocha meta_tests.js && cd services/cards && yarn test",
     "test-quests": "set -e && mocha meta_tests.js && cd services/quests && yarn test",
     "lint": "tslint -c tslint.json '{shared,services}/**/*.{ts,tsx}'",
+    "pretest": "npm run lint",
     "test": "set -e && mocha meta_tests.js && cd shared && yarn test && cd .. && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
     "admin": "cd services/admin && yarn start",
     "api": "cd services/api && yarn start",
@@ -31,7 +32,9 @@
     ]
   },
   "pre-commit": [
-    "lint",
+    "lint"
+  ],
+  "pre-push": [
     "test"
   ],
   "engines": {

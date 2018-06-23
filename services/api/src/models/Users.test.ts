@@ -10,7 +10,7 @@ import {testingDBWithState,
   analyticsEvents as ae
 } from './TestData'
 import {Database} from './Database'
-import {AnalyticsEvent} from '@expedition-qdl/schema/AnalyticsEvents'
+import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents'
 
 describe('users', () => {
   describe('incrementLoginCount', () => {

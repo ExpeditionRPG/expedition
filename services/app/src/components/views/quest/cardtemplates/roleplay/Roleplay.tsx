@@ -6,7 +6,7 @@ import {SettingsType, CardThemeType} from '../../../../../reducers/StateTypes'
 import {Choice, RoleplayElement} from '../../../../../reducers/QuestTypes'
 import {TemplateContext, ParserNode} from '../TemplateTypes'
 
-import {REGEX} from '@expedition-qdl/Regex'
+import {REGEX} from 'shared/Regex'
 
 export interface RoleplayStateProps {
   node: ParserNode;

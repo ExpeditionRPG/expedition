@@ -8,7 +8,7 @@ import {downloadCards} from './actions/Cards'
 import {loadFiltersFromUrl} from './actions/Filters'
 import MainContainer from './components/MainContainer'
 import {getStore} from './Store'
-import theme from '@expedition-qdl/Theme'
+import theme from 'shared/Theme'
 
 // So we can hot reload
 declare var require: any;

@@ -10,7 +10,7 @@ import {store} from './Store'
 import {UserState} from './reducers/StateTypes'
 
 // Material UI theming
-import theme from '@expedition-qdl/Theme'
+import theme from 'shared/Theme'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 
 // For hot reload

@@ -5,7 +5,7 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
-import {FeedbackEntry} from '@expedition-api/admin/QueryTypes'
+import {FeedbackEntry} from 'api/admin/QueryTypes'
 
 export interface FeedbackViewStateProps {
   list: FeedbackEntry[];

@@ -2,7 +2,7 @@ import Config from '../config'
 import Sequelize from 'sequelize'
 import * as Bluebird from 'bluebird'
 import {Database} from './Database'
-import {User} from '@expedition-qdl/schema/Users'
+import {User} from 'shared/schema/Users'
 
 export function setLootPoints(db: Database, id: string, lootPoints: number) {
   return db.users.findOne({where: {id}})

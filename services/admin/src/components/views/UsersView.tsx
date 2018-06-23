@@ -5,7 +5,7 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
-import {UserEntry} from '@expedition-api/admin/QueryTypes'
+import {UserEntry} from 'api/admin/QueryTypes'
 
 export interface UsersViewStateProps {
   list: UserEntry[];
