@@ -45,6 +45,10 @@ describe('Dependencies', () => {
       'enzyme-adapter-react-16',
       'react-test-renderer',
       'sqlite3',
+      'jasmine-core',
+
+      // Needed for storage layer
+      'pg',
 
       // TO DO AUDIT
       'sinon',

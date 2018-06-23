@@ -44,7 +44,13 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['PhantomJS'],
+    browsers: ['NoSandboxChromeHeadless'],
+    customLaunchers: {
+      NoSandboxChromeHeadless: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
     singleRun: false,
     concurrency: Infinity,
     captureConsole: true,

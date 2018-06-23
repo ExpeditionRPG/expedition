@@ -2,7 +2,7 @@
   "name": "expedition-admin",
   "version": "1.6.4",
   "scripts": {
-    "test": "karma start karma.conf.js --single-run --browsers PhantomJS",
+    "test": "karma start karma.conf.js --single-run --browsers NoSandboxChromeHeadless",
     "start": "webpack-dev-server --progress",
     "build": "webpack -p --config webpack.dist.config.js --progress"
   },
