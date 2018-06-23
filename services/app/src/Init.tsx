@@ -8,13 +8,12 @@ setupLogging(console);
 
 import * as React from 'react'
 import * as Redux from 'redux'
-
 import * as ReactDOM from 'react-dom'
 import * as Raven from 'raven-js'
 import {Provider} from 'react-redux'
-import theme from './Theme'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 
+import theme from '@expedition-qdl/Theme'
 import {AUTH_SETTINGS, NODE_ENV, UNSUPPORTED_BROWSERS, INIT_DELAY} from './Constants'
 import {fetchAnnouncements, setAnnouncement} from './actions/Announcement'
 import {audioSet} from './actions/Audio'
