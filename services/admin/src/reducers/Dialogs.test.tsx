@@ -1,5 +1,3 @@
-import {dialogs} from './Dialogs'
-
 describe('dialogs', () => {
   it('returns initial state')
 

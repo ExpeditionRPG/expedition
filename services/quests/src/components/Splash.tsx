@@ -1,7 +1,8 @@
 import * as React from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography';
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
 import ExpeditionButton from '@expedition-app/components/base/Button'
 import {UserState} from '../reducers/StateTypes'
 
@@ -13,25 +14,23 @@ export interface SplashDispatchProps {
 const Splash = (props: any): JSX.Element => {
   return (
     <div className="main splash">
-      <div className="splash_app_bar">
-        <AppBar>
-          <Typography variant="title" color="inherit" className="appBarTitle">
+      <AppBar>
+        <Toolbar>
+          <Typography variant="title">
             Expedition Quest Creator
           </Typography>
-          <div className="appBarRight">
-            {props.user.loggedIn && <div className="login">
-              <a href="https://expeditiongame.com/loot" target="_blank" className="lootPoints">
-                {props.user.lootPoints} <img className="inline_icon" src="images/loot_white_small.svg" />
-              </a>
-              <span className="email">{props.user.email}</span>
-              <Button onClick={() => props.onNewQuest(props.user)}>New Quest</Button>
-            </div>}
-            {!props.user.loggedIn && <div className="login">
-              <Button onClick={() => props.onLogin('appbar')}>Log In</Button>
-            </div>}
-          </div>
-        </AppBar>
-      </div>
+          {props.user.loggedIn && <div className="login">
+            <a href="https://expeditiongame.com/loot" target="_blank" className="lootPoints">
+              {props.user.lootPoints} <img className="inline_icon" src="images/loot_white_small.svg" />
+            </a>
+            <span className="email">{props.user.email}</span>
+            <Button onClick={() => props.onNewQuest(props.user)}>New Quest</Button>
+          </div>}
+          {!props.user.loggedIn && <div className="login">
+            <Button onClick={() => props.onLogin('appbar')}>Log In</Button>
+          </div>}
+        </Toolbar>
+      </AppBar>
       <div className="body">
         <div>
           <div className="mobileOnly alert">

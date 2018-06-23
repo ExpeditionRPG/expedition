@@ -54,14 +54,16 @@ $.ajaxSetup({
 });
 
 // Try silently logging in
-window.gapi.load('client,drive-realtime,drive-share', () => {
-  store.dispatch(silentLogin((user: UserState) => {
-    store.dispatch(setProfileMeta(user));
-    store.dispatch(queryView('USERS'));
-    store.dispatch(queryView('QUESTS'));
-    store.dispatch(queryView('FEEDBACK'));
-  }));
-});
+if (window.gapi) {
+  window.gapi.load('client,drive-realtime,drive-share', () => {
+    store.dispatch(silentLogin((user: UserState) => {
+      store.dispatch(setProfileMeta(user));
+      store.dispatch(queryView('USERS'));
+      store.dispatch(queryView('QUESTS'));
+      store.dispatch(queryView('FEEDBACK'));
+    }));
+  });
+}
 
 // alert user if they try to close the page with unsaved changes
 window.onbeforeunload = function() {
