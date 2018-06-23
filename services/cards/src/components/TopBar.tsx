@@ -1,4 +1,6 @@
 import * as React from 'react'
+import AppBar from '@material-ui/core/AppBar'
+import FormControl from '@material-ui/core/FormControl'
 import IconButton from '@material-ui/core/IconButton'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -10,19 +12,19 @@ import HelpOutline from '@material-ui/icons/HelpOutline'
 
 import {FiltersState} from '../reducers/StateTypes'
 
-export interface AppBarStateProps extends React.Props<any> {
+export interface TopBarStateProps extends React.Props<any> {
   filters: FiltersState,
 }
 
-export interface AppBarDispatchProps {
+export interface TopBarDispatchProps {
   downloadCards: () => void;
   handleFilterChange: (name: string, value: string | number) => void;
   openHelp: () => void;
 }
 
-export interface AppBarProps extends AppBarStateProps, AppBarDispatchProps {};
+export interface TopBarProps extends TopBarStateProps, TopBarDispatchProps {};
 
-class AppBar extends React.Component<AppBarProps, {}> {
+class TopBar extends React.Component<TopBarProps, {}> {
   render() {
     const filtersCurrent = Object.keys(this.props.filters).reduce((acc: any, name: string) => {
       acc[name] = this.props.filters[name].current;
@@ -42,7 +44,7 @@ class AppBar extends React.Component<AppBarProps, {}> {
         return <MenuItem key={index} value={option}>{text}</MenuItem>
       });
       return (
-        <div>
+        <FormControl>
           <InputLabel htmlFor={name}>{name}</InputLabel>
           <Select
             className="filter"
@@ -54,25 +56,27 @@ class AppBar extends React.Component<AppBarProps, {}> {
           >
             {options}
           </Select>
-        </div>
+        </FormControl>
       );
     });
     // TODO re-add toolips in new MaterialUI way, "Reload Card Data", tooltip="Help"
     return (
-      <Toolbar className="printHide appbar">
-        <Typography variant="title">
-          Expedition
-        </Typography>
-        {filters}
-        <IconButton onClick={this.props.downloadCards}>
-          <AutoRenew />
-        </IconButton>
-        <IconButton onClick={this.props.openHelp}>
-          <HelpOutline />
-        </IconButton>
-      </Toolbar>
+      <AppBar>
+        <Toolbar className="printHide">
+          <Typography variant="title">
+            Expedition
+          </Typography>
+          {filters}
+          <IconButton onClick={this.props.downloadCards}>
+            <AutoRenew />
+          </IconButton>
+          <IconButton onClick={this.props.openHelp}>
+            <HelpOutline />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
     );
   }
 }
 
-export default AppBar;
+export default TopBar;

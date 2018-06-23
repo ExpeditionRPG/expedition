@@ -1,4 +1,4 @@
-describe('AppBar', () => {
+describe('TopBar', () => {
   it('loads all current filters');
 
   it('triggers reload when "Reload Card Data" clicked');

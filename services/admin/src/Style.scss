@@ -15,7 +15,7 @@ $mapSize: 400px;
 $borderColor: #606060;
 $border: 1px $borderColor solid;
 $fontFamilyHeader: 'Cinzel', sans-serif;
-$fontFamilyBody: 'Minion-Pro', serif;
+$fontFamilyBody: 'MinionPro', serif;
 $fontSizeBase: 20px;
 $fontSizeImportant: 28px;
 $fontSizeHeader: 45px;
@@ -46,8 +46,8 @@ $bg_encounter_img: url('/images/encounter-tiled.jpg');
 }
 
 @font-face {
-  font-family: 'Minion-Pro';
-  src: local('Minion-Pro'), url('fonts/Minion-Pro-Regular.ttf') format('truetype');
+  font-family: 'MinionPro';
+  src: local('MinionPro'), url('fonts/Minion-Pro-Regular.ttf') format('truetype');
 }
 
 html, body, section#react-app, textarea {

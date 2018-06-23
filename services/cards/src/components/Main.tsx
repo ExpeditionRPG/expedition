@@ -1,5 +1,5 @@
 import * as React from 'react'
-import AppBarContainer from './AppBarContainer'
+import TopBarContainer from './TopBarContainer'
 import RendererContainer from './RendererContainer'
 
 export interface MainStateProps {
@@ -19,7 +19,7 @@ class Main extends React.Component<MainProps, {}> {
     }
     return (
       <div>
-        <AppBarContainer/>
+        <TopBarContainer/>
         {this.props.loading && <div className="sk-circle" id="loading">
           {loadingCircles}
         </div>}

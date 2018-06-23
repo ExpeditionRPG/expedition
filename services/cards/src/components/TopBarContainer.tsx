@@ -1,17 +1,17 @@
 import Redux from 'redux'
 import {connect} from 'react-redux'
-import AppBar, {AppBarStateProps, AppBarDispatchProps} from './AppBar'
+import TopBar, {TopBarStateProps, TopBarDispatchProps} from './TopBar'
 import {downloadCards} from '../actions/Cards'
 import {filterChange} from '../actions/Filters'
 import {AppState} from '../reducers/StateTypes'
 
-const mapStateToProps = (state: AppState, ownProps: any): AppBarStateProps => {
+const mapStateToProps = (state: AppState, ownProps: any): TopBarStateProps => {
   return {
     filters: state.filters,
   };
 }
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AppBarDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): TopBarDispatchProps => {
   return {
     downloadCards: () => {
       dispatch(downloadCards());
@@ -25,9 +25,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AppBa
   };
 }
 
-const AppBarContainer = connect(
+const TopBarContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AppBar);
+)(TopBar);
 
-export default AppBarContainer;
+export default TopBarContainer;
