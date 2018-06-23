@@ -83,7 +83,7 @@ export default class MultiplayerRipple extends React.Component<MultiplayerRipple
         classes={{
           ripple: {
             color,
-            opacity: (this.props.opacity || 1.0)
+            opacity: (this.props.opacity || 1.0),
           },
         }}
       />

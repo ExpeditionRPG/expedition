@@ -397,7 +397,7 @@ function renderDefeat(props: CombatProps): JSX.Element {
     <p>Remember, you can adjust combat difficulty at any time in the settings menu (in the top right).</p>,
     <p>Don't forget! Healing abilities and loot can be used on all adventurers, even those at 0 health.</p>,
     <p>Tip: battles are not won by healing, but by defeating the enemy.</p>,
-    <p>Want to deal more damage? Look for combinations in your abilities - two adventurers working together can often do more damage than two alone.</p>
+    <p>Want to deal more damage? Look for combinations in your abilities - two adventurers working together can often do more damage than two alone.</p>,
   ];
 
   // Always show a helpful hint here - it's not getting in the way like other help text might

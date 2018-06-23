@@ -24,7 +24,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Splas
     },
     onNewQuest: (user: UserState) => {
       dispatch(loadQuestFromURL(user));
-    }
+    },
   };
 }
 

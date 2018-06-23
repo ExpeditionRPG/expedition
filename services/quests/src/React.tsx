@@ -189,8 +189,8 @@ window.onOlarkLoad = () => {
 // Pass credentials to API server despite cross-origin
 $.ajaxSetup({
   xhrFields: {
-    withCredentials: true
-  }
+    withCredentials: true,
+  },
 });
 
 render(

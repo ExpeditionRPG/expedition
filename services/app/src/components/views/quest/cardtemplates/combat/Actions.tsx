@@ -139,7 +139,7 @@ export const initCustomCombat = remoteify(function initCustomCombat(a: InitCusto
   }
   dispatch(initCombat({
     node: new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext()),
-    custom: true
+    custom: true,
   }));
   return {};
 });

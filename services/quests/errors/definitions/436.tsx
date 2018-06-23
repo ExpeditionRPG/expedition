@@ -8,11 +8,11 @@ export const TEST_WITH_CRAWLER = true;
 export const INVALID = [
 `* choice
 
-   text with three leading spaces`
+   text with three leading spaces`,
 ];
 
 export const VALID = [
 `* choice
 
-  text with two leading spaces`
+  text with two leading spaces`,
 ];

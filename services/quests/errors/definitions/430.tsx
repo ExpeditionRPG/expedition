@@ -8,7 +8,7 @@ export const INVALID = [
 
 with some text!
 
-<end of file>`
+<end of file>`,
 ];
 
 export const VALID = [
@@ -18,5 +18,5 @@ with some text!
 
 **end**
 
-<end of file>`
+<end of file>`,
 ];

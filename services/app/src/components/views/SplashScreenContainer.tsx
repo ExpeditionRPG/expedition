@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Splas
     },
     onPlayerManualSelect: () => {
       dispatch(toCard({name: 'PLAYER_COUNT_SETTING'}));
-    }
+    },
   };
 }
 

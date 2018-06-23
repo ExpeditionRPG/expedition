@@ -102,7 +102,7 @@ const TopBar = (props: TopBarProps): JSX.Element => {
           <Filter onFilterUpdate={(f: string) => {props.onFilterUpdate(props.view.view, f);}}/>
           {warn}
           <Button onClick={(event: any) => {console.log('TODO');}}>Help</Button>
-          <div className="appBarRight">
+          <div>
             <span className="email">{props.user.email}</span>
             <Button><NavigationArrowDropDown /></Button>
           </div>

@@ -60,7 +60,7 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
         'method': 'PUT',
         'params': {'uploadType': 'multipart', 'alt': 'json'},
         'headers': {
-          'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+          'Content-Type': 'multipart/mixed; boundary="' + boundary + '"',
         },
         'body': multipartRequestBody});
     request.then((json: any, raw: any) => {

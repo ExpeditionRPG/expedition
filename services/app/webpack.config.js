@@ -37,7 +37,6 @@ const options = {
   },
   module: {
     rules: [
-      { enforce: 'pre', test: /\.tsx$/, loader: 'tslint-loader', exclude: /node_modules/ },
       { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader: 'file-loader',
         options: { name: '[name].[ext]' }, // disable filename hashing for infrequently changed static assets to enable preloading
       },
@@ -61,15 +60,6 @@ const options = {
       { from: { glob: '../../node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
     ]),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
-      options: {
-        tslint: {
-          emitErrors: true,
-          failOnHint: true,
-          tsConfigFile: 'tsconfig.json',
-        },
-      },
-    }),
   ],
   node: {
     console: true,

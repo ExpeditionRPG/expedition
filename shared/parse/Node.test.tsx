@@ -333,7 +333,7 @@ describe('Node', () => {
       const node = cheerio.load('<combat><event on="win" heal="5" loot="false" xp="false"><roleplay></roleplay></event></combat>')('combat');
       const pnode = new Node(node, defaultContext());
       expect(pnode.getEventParameters('win')).toEqual({
-        heal: 5, loot: false, xp: false
+        heal: 5, loot: false, xp: false,
       });
     });
 

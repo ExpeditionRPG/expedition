@@ -70,7 +70,7 @@ describe('Combat actions', () => {
         to: jasmine.objectContaining({
           name: 'QUEST_CARD',
           phase: 'DRAW_ENEMIES',
-        })
+        }),
       }));
     });
 
@@ -85,7 +85,7 @@ describe('Combat actions', () => {
         enemies: [
           {name: 'Test', tier: 1},
           {name: 'Lich', tier: 4, class: 'Undead'},
-          {name: 'Lich', tier: 4, class: 'Undead'}
+          {name: 'Lich', tier: 4, class: 'Undead'},
         ],
       }));
     });
@@ -102,7 +102,7 @@ describe('Combat actions', () => {
 
     it('has custom=true', () => {
       expect(actions[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
-        custom: true
+        custom: true,
       }));
     });
 

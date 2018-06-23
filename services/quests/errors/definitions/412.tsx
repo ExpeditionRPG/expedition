@@ -29,5 +29,5 @@ export const VALID = [
 
 * on lose
 
-  text`
+  text`,
 ];

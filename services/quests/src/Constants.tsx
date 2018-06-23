@@ -13,7 +13,7 @@ export const METADATA_FIELDS = [
   'minplayers',
   'maxplayers',
   'mintimeminutes',
-  'maxtimeminutes'
+  'maxtimeminutes',
 ];
 export const PARTITIONS = {
   PUBLIC: 'expedition-public',

@@ -15,7 +15,7 @@ export const INVALID = [
 
 * on lose
 
-  Card`
+  Card`,
 ];
 
 export const VALID = [
@@ -29,5 +29,5 @@ export const VALID = [
 
 * on lose
 
-  Card`
+  Card`,
 ];

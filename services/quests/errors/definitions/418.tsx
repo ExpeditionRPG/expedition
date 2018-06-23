@@ -14,7 +14,7 @@ export const INVALID = [
 
 * on lose
 
-  text`
+  text`,
 ];
 
 export const VALID = [
@@ -29,5 +29,5 @@ export const VALID = [
 
 * on lose
 
-  text`
+  text`,
 ];

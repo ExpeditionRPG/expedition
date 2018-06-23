@@ -19,3 +19,7 @@ Run the tests to make sure everything's working: `yarn test`
 ### TEMPORARY SETUP NOTES
 
 While we continue to consolidate the monorepo, you'll also need to run `npm install -g karma-cli`
+
+## Tests and linting
+
+`yarn run lint --fix` fixes most common linting issues automatically.

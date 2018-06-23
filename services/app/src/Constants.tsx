@@ -115,7 +115,7 @@ export const SPLASH_SCREEN_TIPS = [
   `Tip: Turn your phone off silent to enjoy haptic vibration feedback.`,
   `Tip: Searching quests only shows quests for the number of players you select.`,
   `Did you know you can use the back of enemy cards as custom enemies?`,
-  `To avoid untimely interruptions, make sure you have a phone charger handy!`
+  `To avoid untimely interruptions, make sure you have a phone charger handy!`,
 ];
 
 // A slight variation on the cubehelix pattern. This contains 6 categories,

@@ -19,7 +19,7 @@ const adjustedAppMiddleware = ({dispatch}: Redux.MiddlewareAPI<any>) => {
     dispatch,
     getState: () => {
       return store.getState().preview || {};
-    }
+    },
   });
 };
 

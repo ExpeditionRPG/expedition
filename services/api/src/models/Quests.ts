@@ -201,7 +201,7 @@ console.log(quest);
         partition: quest.partition,
         id: quest.id,
         questversion: updateValues.questversion,
-        xml
+        xml,
       }))
       .then(() => {
         console.log(`Stored XML for quest ${quest.id} in RenderedQuests`);

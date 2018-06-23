@@ -15,7 +15,7 @@ Text [art]`,
 
 * Choice [art]
 
-  Text`
+  Text`,
 ];
 
 export const VALID = [
@@ -31,5 +31,5 @@ Text
 
 * Choice :icon:
 
-  Text`
+  Text`,
 ];

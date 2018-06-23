@@ -8,7 +8,7 @@ export function setupWebsockets(db: Database, server: any) {
     server,
     verifyClient: (info: any, cb: (verified: boolean)=>any) => {
       verifyWebsocket(db, info, cb);
-    }
+    },
   });
 
   wss.on('error', (err) => {

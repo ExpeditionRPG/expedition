@@ -10,11 +10,11 @@ const requestLogger = expressWinston.logger({
   transports: [
     new winston.transports.Console({
       json: false,
-      colorize: colorize
-    })
+      colorize: colorize,
+    }),
   ],
   expressFormat: true,
-  meta: false
+  meta: false,
 });
 
 // Logger to capture any top-level errors and output json diagnostic info.
@@ -22,9 +22,9 @@ const errorLogger = expressWinston.errorLogger({
   transports: [
     new winston.transports.Console({
       json: true,
-      colorize: colorize
-    })
-  ]
+      colorize: colorize,
+    }),
+  ],
 });
 
 export default {
@@ -36,5 +36,5 @@ export default {
   log: winston.log,
   verbose: winston.verbose,
   debug: winston.debug,
-  silly: winston.silly
+  silly: winston.silly,
 };

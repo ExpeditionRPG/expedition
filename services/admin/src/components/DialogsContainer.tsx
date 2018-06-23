@@ -42,7 +42,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
     },
     onSetFeedbackSuppressed: (feedback: FeedbackEntry, suppress: boolean) => {
       dispatch(mutateFeedback({partition: feedback.partition, questid: feedback.quest.id, userid: feedback.user.id, suppress}));
-    }
+    },
   };
 }
 

@@ -31,7 +31,7 @@ const QDLHighlightRules: any = function() {
       regex: combinedRegex([
         REGEX.OP,
         REGEX.TRIGGER,
-        REGEX.ID
+        REGEX.ID,
       ]),
     },
     {
@@ -51,7 +51,7 @@ const QDLHighlightRules: any = function() {
         REGEX.BOLD_UNDERSCORES,
         REGEX.ITALIC_ASTERISKS,
         REGEX.ITALIC_UNDERSCORES,
-        REGEX.STRIKETHROUGH
+        REGEX.STRIKETHROUGH,
       ]),
     },
     {
@@ -68,7 +68,7 @@ class QDLFoldMode {
   static foldingStartMarkers = [
     /(^\s*)(\* .*)/, // * choices
     /(^\s*)(_.*_)/, // _cards_
-    /(^\s*)(# .*)/ // # titles
+    /(^\s*)(# .*)/, // # titles
   ];
   static foldingStartMarker = new RegExp(QDLFoldMode.foldingStartMarkers.map((x: any) => {return x.source}).join('|'));
 

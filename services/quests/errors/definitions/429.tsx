@@ -5,9 +5,9 @@ export const DESCRIPTION = `Simply delete existing metadata (except title)`;
 
 export const INVALID = [
 `# Title
-author: migrated`
+author: migrated`,
 ];
 
 export const VALID = [
-`# Title`
+`# Title`,
 ];

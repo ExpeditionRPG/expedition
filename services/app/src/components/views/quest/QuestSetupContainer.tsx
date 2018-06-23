@@ -15,7 +15,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
   return {
     onNext: () => {
       dispatch(toCard({name: 'QUEST_CARD'}));
-    }
+    },
   };
 }
 

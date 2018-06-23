@@ -90,7 +90,7 @@ export function connect(db: Database, req: express.Request, res: express.Respons
       return db.sessionClients.upsert({
         session: session.get('id'),
         client: res.locals.id,
-        secret: body.secret
+        secret: body.secret,
       });
     })
     .then(() => {
@@ -99,7 +99,7 @@ export function connect(db: Database, req: express.Request, res: express.Respons
     .catch((e: Error) => {
       if (e) {
         return res.status(500).end(JSON.stringify({
-          error: 'Could not join session: ' + e.toString()
+          error: 'Could not join session: ' + e.toString(),
         }));
       }
       return null;
@@ -208,7 +208,7 @@ function maybeFastForwardClient(db: Database, session: number, client: ClientID,
         client: 'SERVER',
         instance: Config.get('NODE_ENV'),
         id: null,
-        event
+        event,
       } as MultiplayerEvent), (e: Error) => {
         console.error(e);
       });
@@ -275,7 +275,7 @@ function handleClientStatus(db: Database, session: number, client: ClientID, ins
             type: 'ERROR',
             error: 'Server error: ' + error.toString(),
           },
-          id: null
+          id: null,
         } as MultiplayerEvent));
       });
   }
@@ -295,7 +295,7 @@ function sendError(ws: WebSocket, e: string) {
       type: 'ERROR',
       error: e,
     },
-    id: null
+    id: null,
   } as MultiplayerEvent), (e: Error) => {
     console.error(e);
   });

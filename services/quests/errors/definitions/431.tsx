@@ -22,7 +22,7 @@ _combat_
 
 * on lose
 
-  **end**`
+  **end**`,
 ];
 
 export const VALID = [
@@ -44,5 +44,5 @@ _combat_
 
 * on lose
 
-  **end**`
+  **end**`,
 ];

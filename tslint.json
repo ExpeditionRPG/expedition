@@ -1,5 +1,5 @@
 {
- "rules": {
+  "rules": {
     "quotemark": [true, "single", "jsx-double"],
     "curly": true,
     "no-use-before-declare": true,
@@ -28,5 +28,12 @@
     "no-trailing-whitespace": true,
     "space-before-function-paren": [true, "never"],
     "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"]
+  },
+  "linterOptions": {
+    "exclude": [
+      "*/node_modules/**/*",
+      "*/app/plugins/**/*",
+      "*/app/platforms/**/*"
+    ]
   }
 }

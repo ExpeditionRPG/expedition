@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
     },
     onAnnotationClick: (annotations: number[]) => {
       dispatch(setDialog('ANNOTATION_DETAIL', true, annotations));
-    }
+    },
   };
 }
 

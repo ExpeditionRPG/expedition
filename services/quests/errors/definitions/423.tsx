@@ -12,7 +12,7 @@ export const INVALID = [
 
 _text_
 
-Text`
+Text`,
 ];
 
 export const VALID = [
@@ -20,5 +20,5 @@ export const VALID = [
 
 _text_
 
-Text`
+Text`,
 ];

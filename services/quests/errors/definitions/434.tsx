@@ -13,7 +13,7 @@ export const INVALID = [
 `_A card_
 
 > Heal 5 hp.
-**end**`
+**end**`,
 ];
 
 export const VALID = [
@@ -41,5 +41,5 @@ export const VALID = [
 
 > Gain 5 Health.
 
-**end**`
+**end**`,
 ];

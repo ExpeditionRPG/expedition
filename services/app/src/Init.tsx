@@ -60,7 +60,7 @@ Raven.config(AUTH_SETTINGS.RAVEN, {
     shouldSendCallback(data) {
       const supportedBrowser = !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent);
       return supportedBrowser && NODE_ENV !== 'dev' && !getStore().getState().settings.simulator;
-    }
+    },
   }).install();
 
 

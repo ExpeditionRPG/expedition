@@ -11,6 +11,7 @@
     "test-app": "set -e && mocha meta_tests.js && cd services/app && yarn test",
     "test-cards": "set -e && mocha meta_tests.js && cd services/cards && yarn test",
     "test-quests": "set -e && mocha meta_tests.js && cd services/quests && yarn test",
+    "lint": "tslint -c tslint.json '{shared,services}/**/*.{ts,tsx}'",
     "test": "set -e && mocha meta_tests.js && cd shared && yarn test && cd .. && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
     "admin": "cd services/admin && yarn start",
     "api": "cd services/api && yarn start",
@@ -29,6 +30,10 @@
       "it"
     ]
   },
+  "pre-commit": [
+    "lint",
+    "test"
+  ],
   "engines": {
     "node": ">= 8.1.4"
   },
@@ -148,6 +153,7 @@
     "path": "^0.12.7",
     "pg": "^7.4.3",
     "phantomjs-polyfill-object-assign": "0.0.2",
+    "pre-commit": "^1.2.2",
     "pre-push": "^0.1.1",
     "promise-polyfill": "~6.0.2",
     "qs": "^6.4.0",
@@ -185,8 +191,7 @@
     "tabletop": "^1.5.1",
     "ts-jest": "^22.4.4",
     "ts-node": "^2.1.0",
-    "tslint": "^4.4.2",
-    "tslint-loader": "^3.3.0",
+    "tslint": "^5.8.0",
     "typescript": "2.8.3",
     "typo-js": "^1.0.3",
     "uglifyjs-webpack-plugin": "^1.2.5",

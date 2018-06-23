@@ -46,9 +46,9 @@ describe('Schema', () => {
             '_length': 255,
             'options': {
               'binary': undefined,
-              'length': 255
+              'length': 255,
             },
-          }
+          },
         },
         'emptyDate': {
           'type': Sequelize.DATE,
@@ -70,9 +70,9 @@ describe('Schema', () => {
             'options': {
               'binary': undefined,
               'length': 255,
-            }
-          }
-        }
+            },
+          },
+        },
       } as any);
     });
   });

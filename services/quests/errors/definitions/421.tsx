@@ -4,11 +4,11 @@ export const METADATA_ERROR = true;
 export const DESCRIPTION = ``;
 
 export const INVALID = [
-`_roleplay_`
+`_roleplay_`,
 ];
 
 export const VALID = [
 `# Test Quest
 
-_roleplay_`
+_roleplay_`,
 ];

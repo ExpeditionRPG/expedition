@@ -16,12 +16,12 @@ export const INVALID = [
 
 * on lose
 
-  Card`
+  Card`,
 ];
 
 export const INVALID_ERRORS = [
 `combat card must have "on lose" event`,
-`combat card must have "on win" event`
+`combat card must have "on win" event`,
 ];
 
 export const VALID = [
@@ -35,5 +35,5 @@ export const VALID = [
 
 * on lose
 
-  Card`
+  Card`,
 ];

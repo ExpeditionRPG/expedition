@@ -39,7 +39,7 @@ export default class Ripple extends React.Component<RippleProps, RippleState> {
       rippleX,
       rippleY,
       rippleSize,
-      ...other
+      ...other,
     } = this.props;
     const { visible, leaving } = this.state;
 
@@ -47,7 +47,7 @@ export default class Ripple extends React.Component<RippleProps, RippleState> {
       classes.ripple,
       {
         [classes.rippleVisible]: visible,
-      },
+      }
     );
 
     const rippleStyles = {

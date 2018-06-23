@@ -51,7 +51,7 @@ export function downloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
         dispatch(cardsUpdate(cards));
         dispatch(cardsFilter(store.getState().cards.data, store.getState().filters));
         dispatch(filtersCalculate(store.getState().cards.filtered));
-      }
+      },
     });
   }
 }
@@ -129,7 +129,7 @@ const elementifyRegex = new RegExp('(' + [
   orRegex.source,
   symbolRegex.source,
   doubleLinebreak.source,
-  singleLinebreak.source
+  singleLinebreak.source,
 ].join('|') + ')', 'igm');
 
 // Returns a new card with each property either as a string or, if it contains icons, an array of JSX elements

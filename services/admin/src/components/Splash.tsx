@@ -14,10 +14,10 @@ const Splash = (props: any): JSX.Element => {
       <div className="splash_app_bar">
         <AppBar>
           <Toolbar>
-            <Typography variant="title" color="inherit">
+            <Typography variant="title">
               Expedition Admin Dashboard
             </Typography>
-            <div className="appBarRight">
+            <div>
               {props.user.loggedIn && <div className="login">
                 <a href="https://expeditiongame.com/loot" target="_blank" className="lootPoints">
                   {props.user.lootPoints} <img className="inline_icon" src="images/loot_white_small.svg" />

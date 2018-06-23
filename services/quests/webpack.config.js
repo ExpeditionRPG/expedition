@@ -47,7 +47,6 @@ const options = {
   },
   module: {
     rules: [
-      { enforce: 'pre', test: /\.tsx$/, loader: 'tslint-loader', exclude: /node_modules/ },
       { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.json$/, loader: 'json-loader' },
@@ -73,15 +72,6 @@ const options = {
       { from: { glob: '../../node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
       { from: { glob: '../../node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
     ]),
-    new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
-      options: {
-        tslint: {
-          emitErrors: true,
-          failOnHint: true,
-          tsConfigFile: 'tsconfig.json',
-        },
-      },
-    }),
   ],
 };
 

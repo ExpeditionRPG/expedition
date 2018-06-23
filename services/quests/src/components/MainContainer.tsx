@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MainD
     },
     onSnackbarClose: () => {
       dispatch(setSnackbar(false));
-    }
+    },
   };
 }
 

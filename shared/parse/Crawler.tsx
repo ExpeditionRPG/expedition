@@ -63,7 +63,7 @@ export abstract class CrawlerBase<C extends Context> {
   private traverse(root?: Node<C>, timeLimitMillis?: number, depthLimit?: number): boolean {
     if (root) {
       this.queue.add({
-        node: root,  prevNodeStr: 'START', prevId: 'START', prevLine: -1, depth: 0
+        node: root,  prevNodeStr: 'START', prevId: 'START', prevLine: -1, depth: 0,
       });
     }
 

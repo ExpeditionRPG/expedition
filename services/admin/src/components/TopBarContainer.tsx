@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): TopBa
     },
     onFilterUpdate: (view: ViewType, filter: string) => {
       dispatch(queryView(view, filter));
-    }
+    },
   };
 }
 

@@ -155,7 +155,7 @@ export class BlockRenderer {
           // Visible is actually a value expression
           enemy = {
             text: '{{' + extractedBullet.visible + '}}',
-            json: extractedBullet.json
+            json: extractedBullet.json,
           };
         }
 

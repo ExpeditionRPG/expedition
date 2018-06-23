@@ -35,7 +35,7 @@ describe('SavedQuests', () => {
           genre: 'Horror',
           published: Date.now(),
         } as any as QuestDetails,
-        ts: 12345
+        ts: 12345,
       },
     });
     expect(wrapper.html()).toContain('<h2>Test Quest</h2>');

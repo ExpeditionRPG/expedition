@@ -9,7 +9,7 @@ export const initialCardState = {
   phase: null,
   key: '',
   ts: 0,
-  questId: ''
+  questId: '',
 };
 
 // ts: 0 solves an obscure bug (instead of Date.now()) where rapidly triggering navigations with undefined states

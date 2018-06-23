@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Conte
   return {
     onInitialContext: (opInit: string) => {
       dispatch(setOpInit(opInit));
-    }
+    },
   };
 }
 

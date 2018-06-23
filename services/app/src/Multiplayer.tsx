@@ -160,7 +160,7 @@ export class MultiplayerClient extends ClientBase {
           type: 'MULTIPLAYER_CLIENT_STATUS',
           client: e.client,
           instance: e.instance,
-          status: e.event
+          status: e.event,
         });
         break;
       case 'INTERACTION':
@@ -302,7 +302,7 @@ export class MultiplayerClient extends ClientBase {
       type: 'MULTIPLAYER_CLIENT_STATUS',
       client: this.id,
       instance: this.instance,
-      status: event
+      status: event,
     });
     this.publish({
       id: null,

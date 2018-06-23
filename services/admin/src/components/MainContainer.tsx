@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MainD
     },
     onViewChange: (view: ViewType) => {
       dispatch(setView(view));
-    }
+    },
   };
 }
 

@@ -21,10 +21,10 @@ export class StatsCrawler extends CrawlerBase<Context> {
 
     // Initialize stats with a generic 'quest root'
     this.statsById = {
-      'START': {inputs: new Set(), outputs: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1}
+      'START': {inputs: new Set(), outputs: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1},
     };
     this.statsByLine = {
-      '-1': {inputs: new Set(), outputs: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1}
+      '-1': {inputs: new Set(), outputs: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1},
     };
     this.statsByEvent = {
       'IMPLICIT_END': {lines: [], ids: []},

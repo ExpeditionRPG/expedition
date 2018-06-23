@@ -76,7 +76,7 @@ describe('users', () => {
     it('returns valid results for players with quest history', (done: DoneFn) => {
       testingDBWithState([
         u.basic,
-        new AnalyticsEvent({...ae.questEnd, userID: u.basic.id})
+        new AnalyticsEvent({...ae.questEnd, userID: u.basic.id}),
       ])
       .then((tdb) => {
         return getUserQuests(tdb, u.basic.id);

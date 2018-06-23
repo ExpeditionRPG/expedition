@@ -49,8 +49,8 @@ ReactGA.initialize('UA-47408800-7');
 // Pass credentials to API server despite cross-origin
 $.ajaxSetup({
   xhrFields: {
-    withCredentials: true
-  }
+    withCredentials: true,
+  },
 });
 
 // Try silently logging in

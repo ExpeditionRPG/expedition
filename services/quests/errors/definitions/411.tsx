@@ -10,7 +10,7 @@ Welcome to the world.
 
   A world full of people.
 
-And also swords.`
+And also swords.`,
 ];
 
 export const VALID = [
@@ -20,5 +20,5 @@ Welcome to the world.
 
 A world full of people.
 
-And also swords.`
+And also swords.`,
 ];

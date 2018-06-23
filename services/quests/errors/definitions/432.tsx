@@ -8,7 +8,7 @@ export const INVALID = [
 
 * {{false}} A single disabled choice
 
-  **end**`
+  **end**`,
 ];
 
 export const VALID = [
@@ -21,5 +21,5 @@ export const VALID = [
 
 _Another card_
 
-**end**`
+**end**`,
 ];

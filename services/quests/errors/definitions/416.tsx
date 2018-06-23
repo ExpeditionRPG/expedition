@@ -30,5 +30,5 @@ export const VALID = [
 
 * on lose
 
-  Card`
+  Card`,
 ];

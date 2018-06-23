@@ -109,7 +109,7 @@ export const handleDecisionSelect = remoteify(function handleDecision(a: HandleD
   return {
     elapsedMillis: a.elapsedMillis,
     decision: a.decision,
-    seed: a.seed
+    seed: a.seed,
   };
 });
 
@@ -156,6 +156,6 @@ export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: Handl
   return {
     scenario: a.scenario,
     roll: a.roll,
-    seed: a.seed
+    seed: a.seed,
   };
 });

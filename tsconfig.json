@@ -22,8 +22,8 @@
         "dist",
         "node_modules",
         "app/src/quests",
-        "platforms",
-        "plugins",
+        "app/plugins",
+        "app/platforms",
         "www"
     ],
     "awesomeTypescriptLoaderOptions": {

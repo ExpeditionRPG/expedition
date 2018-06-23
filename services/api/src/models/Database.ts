@@ -111,7 +111,7 @@ export class Database {
     const authSession = this.sequelize.define(AUTH_SESSION_TABLE, {
       sid: {
         type: Sequelize.STRING(32),
-        primaryKey: true
+        primaryKey: true,
       },
       expires: Sequelize.DATE,
       data: Sequelize.TEXT,

@@ -110,7 +110,7 @@ export function search(db: Database, req: express.Request, res: express.Response
     partition: body.partition || PUBLIC_PARTITION,
     expansions: body.expansions,
     language: body.language,
-    requirespenpaper: body.requirespenpaper
+    requirespenpaper: body.requirespenpaper,
   };
   return searchQuests(db, res.locals.id, params)
     .then((quests: QuestInstance[]) => {

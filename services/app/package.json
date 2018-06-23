@@ -4,7 +4,6 @@
   "description": "The App for Expedition: The Roleplaying Card Game",
   "homepage": "http://app.expeditiongame.com",
   "scripts": {
-    "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'",
     "test": "karma start --single-run --browsers NoSandboxChromeHeadless",
     "start": "webpack-dev-server --progress",
     "build": "webpack --config ./webpack.dist.config.js --progress",

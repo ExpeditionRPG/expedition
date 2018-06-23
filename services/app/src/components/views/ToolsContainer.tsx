@@ -40,7 +40,7 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
               contentSets: {
                 horror: true,
               },
-            }
+            },
           }));
         });
     },

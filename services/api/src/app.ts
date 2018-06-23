@@ -36,7 +36,7 @@ function setupSession(db: Database, app: express.Express) {
     resave: false,
     saveUninitialized: false,
     secret: Config.get('SESSION_SECRET'),
-    signed: true
+    signed: true,
   };
 
   app.use(session(sessionConfig));

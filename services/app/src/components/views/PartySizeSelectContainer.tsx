@@ -7,7 +7,7 @@ import PartySizeSelect, {PartySizeSelectStateProps, PartySizeSelectDispatchProps
 
 const mapStateToProps = (state: AppState, ownProps: PartySizeSelectStateProps): PartySizeSelectStateProps => {
   return {
-    numPlayers: state.settings.numPlayers
+    numPlayers: state.settings.numPlayers,
   };
 }
 

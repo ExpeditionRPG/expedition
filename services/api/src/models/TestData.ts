@@ -140,7 +140,7 @@ export const sessionClients = {
   basic: new SessionClient({
     session: 12345,
     client: users.basic.id,
-    secret: 'abcd'
+    secret: 'abcd',
   }),
 };
 

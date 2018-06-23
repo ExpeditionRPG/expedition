@@ -34,7 +34,6 @@ const options = {
   },
   module: {
     rules: [
-      { enforce: 'pre', test: /\.ts$/, loader: 'tslint-loader', exclude: /node_modules/ },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.ts(x?)$/, loaders: ['awesome-typescript-loader'], exclude: [/\/node_modules\/((?!expedition\-qdl).)*$/, /\/dist\/.*/] },
     ]
@@ -45,15 +44,6 @@ const options = {
     new Webpack.NoEmitOnErrorsPlugin(),
     new Webpack.DefinePlugin({
       VERSION: JSON.stringify(require('./package.json').version)
-    }),
-    new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
-      options: {
-        tslint: {
-          emitErrors: true,
-          failOnHint: true,
-          tsConfigFile: 'tsconfig.json',
-        },
-      },
     }),
   ],
 };

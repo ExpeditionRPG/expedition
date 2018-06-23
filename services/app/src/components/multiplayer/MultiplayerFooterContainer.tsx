@@ -6,7 +6,7 @@ import {setDialog} from '../../actions/Dialog'
 
 const mapStateToProps = (state: AppState, ownProps: MultiplayerFooterStateProps): MultiplayerFooterStateProps => {
   return {
-    multiplayer: state.multiplayer
+    multiplayer: state.multiplayer,
   };
 }
 
@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Multi
     },
     onMultiplayerStatusIconTap: () => {
       dispatch(setDialog('MULTIPLAYER_STATUS'));
-    }
+    },
   };
 }
 

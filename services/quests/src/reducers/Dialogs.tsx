@@ -9,7 +9,7 @@ const initialState: DialogsState = {
     ERROR: false,
     PUBLISHED: false,
     UNPUBLISHED: false,
-    ANNOTATION_DETAIL: false
+    ANNOTATION_DETAIL: false,
   },
   errors: [],
   annotations: [],
@@ -19,7 +19,7 @@ export function dialogs(state: DialogsState = initialState, action: Redux.Action
   const newState: DialogsState = {
     open: {...state.open},
     errors: [...state.errors],
-    annotations: state.annotations
+    annotations: state.annotations,
   };
   switch (action.type) {
     case 'SET_DIALOG':

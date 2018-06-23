@@ -22,7 +22,7 @@ export function newMockStore(state: object): MockStore {
 
 // Put stuff here that is assumed to always exist (like settings)
 const defaultGlobalState = {
-  settings: {numPlayers: 1}
+  settings: {numPlayers: 1},
 } as any as AppStateWithHistory;
 
 export function Reducer<A extends Redux.Action>(reducer: (state: Object|undefined, action: A) => Object) {
@@ -47,7 +47,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: Object|undefine
           },
           toChangeState: (expectedChanges: Object) => {
             expect(newState).toEqual(jasmine.objectContaining(expectedChanges));
-          }
+          },
         };
       },
       execute: (action: A) => {
@@ -57,7 +57,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: Object|undefine
           newState = reducer(newState, a);
         }
         return newState;
-      }
+      },
     };
   }
 
@@ -95,7 +95,7 @@ export function Action<A>(action: (a: A) => Redux.Action, baseState?: Object) {
           },
           toDispatch(expected: Object) {
             expect(store.getActions()).toContain(expected);
-          }
+          },
         }
       },
       execute: (a: A) => {
@@ -110,6 +110,6 @@ export function Action<A>(action: (a: A) => Redux.Action, baseState?: Object) {
       store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(storeState as AppStateWithHistory);
       return internalActionCommands();
     },
-    ...internalActionCommands()
+    ...internalActionCommands(),
   };
 }
