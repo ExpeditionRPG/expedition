@@ -1,14 +1,13 @@
-import Redux from 'redux'
-import {createStore, applyMiddleware} from 'redux'
+import Redux, {createStore, applyMiddleware} from 'redux'
 import expeditionApp from './reducers/CombinedReducers'
 import {AppStateWithHistory} from './reducers/StateTypes'
 import {getMultiplayerClient} from './Multiplayer'
 import {composeWithDevTools} from 'redux-devtools-extension'
 
 // For dev tools extension
-declare var window:any;
-declare var require:any;
-declare var module:any;
+declare const window:any;
+declare const require:any;
+declare const module:any;
 
 let store: Redux.Store<AppStateWithHistory>;
 

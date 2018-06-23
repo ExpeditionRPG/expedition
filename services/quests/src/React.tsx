@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as Redux from 'redux'
 import {render} from 'react-dom'
 import {Provider} from 'react-redux'
 import {renderAndPlay} from './actions/Editor'
@@ -22,6 +23,20 @@ declare var window:any;
 declare var unescape: any;
 
 const Typo: any = require('typo-js');
+
+// This is necessary to prevent compiler errors until/unless we fix the rest of
+// the repo to reference custom-defined action types (similar to how redux-thunk does things)
+// TODO: Fix redux types
+export type ThunkAction<R, S = {}, E = {}, A extends Redux.Action<any> = Redux.AnyAction> = (
+  dispatch: Redux.Dispatch<A>,
+  getState: () => S,
+  extraArgument: E
+) => R;
+declare module 'redux' {
+  export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {
+    <R, E>(asyncAction: ThunkAction<R, {}, E, A>): R;
+  }
+}
 
 window.onerror = (message: string, source: string, line: number) => {
   console.error(message, source, line);
