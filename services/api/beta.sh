@@ -1,1 +1,1 @@
-git push heroku master
+git push api-beta master
