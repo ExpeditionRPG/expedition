@@ -29,7 +29,7 @@ export default class StarRating extends React.Component<StarRatingProps, {}> {
         classes.push('filled');
         star = <Star/>;
       } else if (i <= this.props.value + 0.5) {
-        classes.push('halfFilled');
+        classes.push('filled');
         star = <StarHalf/>;
       } else {
         classes.push('outline');
