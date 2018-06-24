@@ -6,8 +6,7 @@
   "scripts": {
     "test": "jest --runInBand --config jestconfig.json",
     "build": "webpack --config webpack.dist.config.js --progress",
-    "start": "node dist/server.js",
-    "heroku-postbuild": "NODE_ENV='production' webpack --config webpack.dist.config.js --progress"
+    "start": "npm run build && node dist/server.js"
   },
   "semistandard": {
     "globals": [
