@@ -1,1 +1,1 @@
-git push api-beta master
+git push api-beta master:master
