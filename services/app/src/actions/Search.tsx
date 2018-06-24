@@ -1,7 +1,7 @@
 import * as Redux from 'redux'
 import {SearchResponseAction} from './ActionTypes'
 import {QuestDetails} from '../reducers/QuestTypes'
-import {ExpansionsType, SearchSettings, SettingsType} from '../reducers/StateTypes'
+import {ExpansionsType, SearchSettings, SettingsType, CardPhase} from '../reducers/StateTypes'
 import {remoteify} from './ActionTypes'
 import {AUTH_SETTINGS, FEATURED_QUESTS} from '../Constants'
 import {toCard} from './Card'
@@ -22,8 +22,9 @@ export const search = remoteify(function search(a: {search: SearchSettings, sett
     }
   });
   params.players = a.settings.numPlayers;
+  const dispatchPhase = (params.partition === 'expedition-private') ? 'PRIVATE' : 'SEARCH';
   params.expansions = Object.keys(a.settings.contentSets).filter( key => a.settings.contentSets[key] ) as ExpansionsType[],
-
+  dispatch(toCard({name: 'SEARCH_CARD', phase: dispatchPhase as CardPhase}));
   dispatch(getSearchResults(params, (quests: QuestDetails[], response: any) => {
     dispatch({
       type: 'SEARCH_RESPONSE',
@@ -32,11 +33,6 @@ export const search = remoteify(function search(a: {search: SearchSettings, sett
       receivedAt: response.receivedAt,
       search: params,
     } as SearchResponseAction);
-    if (params.partition === 'expedition-private') {
-      dispatch(toCard({name: 'SEARCH_CARD', phase: 'PRIVATE'}));
-    } else {
-      dispatch(toCard({name: 'SEARCH_CARD', phase: 'SEARCH'}));
-    }
   }));
 
   return a;
