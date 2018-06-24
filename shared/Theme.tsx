@@ -2,6 +2,7 @@
 // https://material-ui.com/customization/themes
 
 import {createMuiTheme} from '@material-ui/core/styles'
+import {ThemeOptions} from '@material-ui/core/styles/createMuiTheme'
 // import deepOrange from '@material-ui/core/colors/deepOrange'
 // import lightGreen from '@material-ui/core/colors/lightGreen'
 import grey from '@material-ui/core/colors/grey'
@@ -11,7 +12,7 @@ const darkBlack = '0x000000';
 const fontBody = 'MinionPro, serif';
 const fontHeader = 'Cinzel, serif';
 
-export default createMuiTheme({
+export const defaultTheme = {
   spacing: spacing,
   typography: {
     fontFamily: fontBody,
@@ -123,4 +124,6 @@ export default createMuiTheme({
   //   backgroundColorDarkActive: 'rgba(30, 30, 30, 1.0)',
   //   backgroundColorSurgePrimary: '#CC0000',
   // }
-});
+} as ThemeOptions;
+
+export default createMuiTheme(defaultTheme);

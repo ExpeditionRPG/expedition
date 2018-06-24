@@ -33,7 +33,7 @@ $bg_encounter_img: url('/images/encounter-tiled.jpg');
   font-family: 'Cinzel';
   font-style: normal;
   font-weight: 700;
-  src: local('Cinzel-Bold'), url('fonts/Cinzel-Bold.woff2') format('woff2');
+  src: local('Cinzel-Bold'), url('../../../shared/fonts/Cinzel-Bold.woff') format('woff');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -41,13 +41,13 @@ $bg_encounter_img: url('/images/encounter-tiled.jpg');
   font-family: 'Cinzel';
   font-style: normal;
   font-weight: 400;
-  src: local('Cinzel-Regular'), url('fonts/Cinzel-Regular.woff2') format('woff2');
+  src: local('Cinzel-Regular'), url('../../../shared/fonts/Cinzel-Regular.woff') format('woff');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
 }
 
 @font-face {
   font-family: 'MinionPro';
-  src: local('MinionPro'), url('fonts/Minion-Pro-Regular.ttf') format('truetype');
+  src: local('MinionPro'), url('../../../shared/fonts/MinionPro-Regular.woff') format('woff');
 }
 
 html, body, section#react-app, textarea {

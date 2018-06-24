@@ -6,20 +6,20 @@
   font-family: 'CinzelBold';
   font-style: normal;
   font-weight: 700;
-  src: url(fonts/Cinzel-Bold.woff2) format('woff2');
+  src: url(../../../shared/fonts/Cinzel-Bold.woff2) format('woff2'), url(../../../shared/fonts/Cinzel-Bold.woff) format('woff');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
 @font-face {
   font-family: 'MinionPro';
   font-style: normal;
-  src: url(fonts/Minion-Pro-Regular.ttf) format('truetype');
+  src: url(../../../shared/fonts/MinionPro-Regular.woff) format('woff');
 }
 
 @font-face {
   font-family: 'NothingYouCouldDo';
   font-style: normal;
-  src: url(fonts/Nothing-You-Could-Do.ttf) format('truetype');
+  src: url(../../../shared/fonts/NothingYouCouldDo-Regular.woff2) format('woff2'), url(../../../shared/fonts/NothingYouCouldDo-Regular.woff) format('woff');
 }
 
 // ===============================================
