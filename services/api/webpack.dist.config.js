@@ -1,6 +1,5 @@
 const Path = require('path');
 const Webpack = require('webpack');
-const NodeExternals = require('webpack-node-externals');
 
 const PORT = process.env.DOCKER_PORT || 8081;
 
@@ -38,10 +37,7 @@ const options = {
       { test: /\.ts(x?)$/, loaders: ['awesome-typescript-loader'], exclude: [/\/node_modules\/.*/, /\/dist\/.*/] },
     ]
   },
-  // TODO if empty obj works, remove nodeExternals here and from package.json
-  externals: {}, // Do not bundle anything in node_modules.
-  // externals: [NodeExternals()], // Do not bundle anything in node_modules.
-  // externals: [NodeExternals({whitelist: [/expedition/]})], // Do not bundle anything in node_modules.
+  externals: {'pg': "require('pg')", 'sqlite3': "require('sqlite3')", 'tedious': "require('tedious')", 'pg-hstore': "require('pg-hstore')"},
   plugins: [
     new Webpack.NoEmitOnErrorsPlugin(),
     new Webpack.DefinePlugin({
