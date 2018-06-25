@@ -211,5 +211,11 @@
   "optionalDependencies": {
     "expedition-art": "git+https://github.com/ExpeditionRPG/expedition-art.git"
   },
-  "private": true
+  "private": true,
+  "renovate": {
+    "extends": [
+      "config:base",
+      ":preserveSemverRanges"
+    ]
+  }
 }
