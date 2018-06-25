@@ -37,6 +37,7 @@ describe('Dependencies', () => {
 
       // Needed for tests
       'babel-jest',
+      'pre-commit',
       'pre-push',
       'karma-jasmine',
       'karma-phantomjs-launcher',
