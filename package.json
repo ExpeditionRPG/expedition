@@ -6,31 +6,24 @@
   "repository": "https://github.com/ExpeditionRPG/expedition",
   "author": "Fabricate.IO",
   "scripts": {
-    "test-admin": "set -e && mocha meta_tests.js && cd services/admin && yarn test",
-    "test-api": "set -e && mocha meta_tests.js && cd services/api && yarn test",
-    "test-app": "set -e && mocha meta_tests.js && cd services/app && yarn test",
-    "test-cards": "set -e && mocha meta_tests.js && cd services/cards && yarn test",
-    "test-quests": "set -e && mocha meta_tests.js && cd services/quests && yarn test",
     "lint": "tslint -c tslint.json '{shared,services}/**/*.{ts,tsx}'",
     "pretest": "npm run lint",
-    "test": "set -e && mocha meta_tests.js && cd shared && yarn test && cd .. && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
+    "test": "set -e && mocha meta_tests.js && (cd shared && yarn test) && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
     "admin": "cd services/admin && yarn start",
+    "admin-local": "API_HOST='http://localhost:8081' npm run admin & npm run api",
     "api": "cd services/api && yarn start",
     "app": "cd services/app && yarn start",
+    "app-local": "API_HOST='http://localhost:8081' npm run app & npm run api",
     "cards": "cd services/cards && yarn start",
-    "quests": "cd services/quests && yarn start"
+    "quests": "cd services/quests && yarn start",
+    "quests-local": "API_HOST='http://localhost:8081' npm run quests & npm run api",
+    "test-admin": "cd services/admin && yarn test",
+    "test-api": "cd services/api && yarn test",
+    "test-app": "cd services/app && yarn test",
+    "test-cards": "cd services/cards && yarn test",
+    "test-quests": "cd services/quests && yarn test"
   },
   "license": "CC-BY-NC-ND-4.0",
-  "semistandard": {
-    "globals": [
-      "after",
-      "afterEach",
-      "before",
-      "beforeEach",
-      "describe",
-      "it"
-    ]
-  },
   "pre-commit": [
     "lint"
   ],
