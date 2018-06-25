@@ -4609,9 +4609,9 @@ fastparse@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/fastparse/-/fastparse-1.1.1.tgz#d1e2643b38a94d7583b479060e6c4affc94071f8"
 
-fastpriorityqueue@^0.3.0:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/fastpriorityqueue/-/fastpriorityqueue-0.3.1.tgz#13bfcbfacb8f588e95784200fbc6f455572d2e50"
+fastpriorityqueue@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/fastpriorityqueue/-/fastpriorityqueue-0.5.0.tgz#32d085507784de5ca1afd05d84d0555a5f72cab6"
 
 faye-websocket@^0.10.0:
   version "0.10.0"
