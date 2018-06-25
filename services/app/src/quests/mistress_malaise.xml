@@ -187,6 +187,7 @@
     <p>Spotting a loose board in the wall, you pry it away to reveal a box covered in carved runes and glowing ominously. You take it out and attempt to pry it open, but it doesn't budge. Out of ideas, you try a swift knock with your weapon.</p>
   </roleplay>
   <roleplay icon="undead" title="Discovered!" data-line="261">
+    <p>{{phylacteryAlive = true}}</p>
     <p>With a shrill, bell-like sound, a crack appears on the box.</p>
     <p>You hear a crash and a howl of pain from downstairs, and multiple footsteps coming up swiftly from below.</p>
     <p>Before you get a chance to hide, the bedroom door explodes off its hinges. A furious Pell - and accompanying minions - emerges to meet you.</p>
@@ -227,7 +228,7 @@
     <event on="round">
       <roleplay title="Status" data-line="307">
         <instruction if=" phylacteryAlive == true ">
-          <p>Remember that the phylactery group does not take enemy damage.</p>
+          <p>:adventurer_white: Remember that the phylactery group does not take enemy damage.</p>
         </instruction>
         <p>{{ phylacteryAlive == true ? "Is the phylactery still alive?" : "Is Pell still alive?" }}</p>
         <choice text="Yes" if=" phylacteryAlive == true ">
@@ -242,7 +243,7 @@
               <roleplay title="" data-line="323">
                 <p>Before your very eyes, Pell seems to draw strength and energy from something above him - the phylactery!</p>
                 <instruction>
-                  <p>Pell regains 10 health.</p>
+                  <p>:hp_white: Pell regains 10 health.</p>
                 </instruction>
               </roleplay>
             </choice>

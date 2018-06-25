@@ -23,7 +23,7 @@ export const defaultTheme = {
       light: grey[100],
       main: grey[900],
       dark: darkBlack,
-      contrastText: '#ffcc00',
+      contrastText: grey[100],
     },
   },
   overrides: {
