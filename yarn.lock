@@ -3158,9 +3158,9 @@ cordova-plugin-splashscreen@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/cordova-plugin-splashscreen/-/cordova-plugin-splashscreen-4.1.0.tgz#81028ab7643e615593d27f2ad02445611f1946b6"
 
-cordova-plugin-vibration@^2.1.6:
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-vibration/-/cordova-plugin-vibration-2.1.6.tgz#e57295892cf15e44b0c99f8feb44774395cb4a3e"
+cordova-plugin-vibration@^3.0.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-vibration/-/cordova-plugin-vibration-3.1.0.tgz#63e57a1de72e318b0944ef727d7c4eff13ca2c93"
 
 cordova-plugin-whitelist@^1.3.3:
   version "1.3.3"
