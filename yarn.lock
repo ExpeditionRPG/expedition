@@ -303,13 +303,9 @@
     "@types/express" "*"
     "@types/sinon" "*"
 
-"@types/sinon@*":
+"@types/sinon@*", "@types/sinon@^5.0.0":
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-5.0.1.tgz#a15b36ec42f1f53166617491feabd1734cb03e21"
-
-"@types/sinon@^4.3.1":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-4.3.3.tgz#97cbbfddc3282b5fd40c7abf80b99db426fd4237"
 
 "@types/stripe-v3@^3.0.5":
   version "3.0.7"
@@ -12845,10 +12841,6 @@ webpack-log@^1.0.1:
     log-symbols "^2.1.0"
     loglevelnext "^1.0.1"
     uuid "^3.1.0"
-
-webpack-node-externals@^1.7.2:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/webpack-node-externals/-/webpack-node-externals-1.7.2.tgz#6e1ee79ac67c070402ba700ef033a9b8d52ac4e3"
 
 webpack-sources@^1.0.1, webpack-sources@^1.1.0:
   version "1.1.0"
