@@ -1,4 +1,4 @@
-import {AnalyticsEvent} from './AnalyticsEvents'
+import {AnalyticsEvent} from './AnalyticsEvents';
 
 describe('AnalyticsEvent Schema', () => {
   const base = {userID: '54321'};
@@ -15,4 +15,4 @@ describe('AnalyticsEvent Schema', () => {
   it('accepts valid difficulty', () => {
     new AnalyticsEvent({...base, difficulty: 'HARD'});
   });
-})
+});

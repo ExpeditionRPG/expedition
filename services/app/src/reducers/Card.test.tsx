@@ -1,9 +1,9 @@
-import {card} from './Card'
-import {toCard} from '../actions/Card'
-import {NAVIGATION_DEBOUNCE_MS}  from '../Constants'
-import configureStore  from 'redux-mock-store'
-import {MultiplayerClient} from '../Multiplayer'
-import {Reducer} from '../Testing'
+import configureStore  from 'redux-mock-store';
+import {toCard} from '../actions/Card';
+import {NAVIGATION_DEBOUNCE_MS}  from '../Constants';
+import {MultiplayerClient} from '../Multiplayer';
+import {Reducer} from '../Testing';
+import {card} from './Card';
 
 describe('Card reducer', () => {
   let client: any;
@@ -15,8 +15,8 @@ describe('Card reducer', () => {
       store.dispatch(a);
       const result = store.getActions();
       store.clearActions();
-      return result[result.length-1];
-    }
+      return result[result.length - 1];
+    };
   });
 
   it('Defaults to splash card', () => {

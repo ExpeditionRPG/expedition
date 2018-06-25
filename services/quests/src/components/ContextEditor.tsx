@@ -1,8 +1,8 @@
-import * as React from 'react'
-import LeftIcon from '@material-ui/icons/ChevronLeft'
-import Button from '@material-ui/core/Button'
-import {OverrideTextArea} from './base/OverrideTextArea'
-import {ScrollBottom} from './base/ScrollBottom'
+import Button from '@material-ui/core/Button';
+import LeftIcon from '@material-ui/icons/ChevronLeft';
+import * as React from 'react';
+import {OverrideTextArea} from './base/OverrideTextArea';
+import {ScrollBottom} from './base/ScrollBottom';
 
 const math = require('mathjs') as any;
 

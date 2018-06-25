@@ -1,19 +1,19 @@
-import * as Bluebird from 'bluebird'
-import * as cheerio from 'cheerio'
-import * as express from 'express'
-import * as request from 'request-promise'
-import * as memoize from 'memoizee'
-import {FeedbackType, submitRating, submitFeedback, submitReportQuest} from './models/Feedback'
-import {QuestSearchParams, MAX_SEARCH_LIMIT, searchQuests, getQuest, publishQuest, unpublishQuest} from './models/Quests'
-import {Quest} from 'shared/schema/Quests'
-import {Feedback} from 'shared/schema/Feedback'
-import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents'
-import {PUBLIC_PARTITION} from 'shared/schema/Constants'
-import {getUserQuests, UserQuestsType} from './models/Users'
-import {Database, QuestInstance, RenderedQuestInstance} from './models/Database'
-import {MailService} from './Mail'
-import * as Joi from 'joi'
-import Config from './config'
+import * as Bluebird from 'bluebird';
+import * as cheerio from 'cheerio';
+import * as express from 'express';
+import * as Joi from 'joi';
+import * as memoize from 'memoizee';
+import * as request from 'request-promise';
+import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents';
+import {PUBLIC_PARTITION} from 'shared/schema/Constants';
+import {Feedback} from 'shared/schema/Feedback';
+import {Quest} from 'shared/schema/Quests';
+import Config from './config';
+import {MailService} from './Mail';
+import {Database, QuestInstance, RenderedQuestInstance} from './models/Database';
+import {FeedbackType, submitFeedback, submitRating, submitReportQuest} from './models/Feedback';
+import {getQuest, MAX_SEARCH_LIMIT, publishQuest, QuestSearchParams, searchQuests, unpublishQuest} from './models/Quests';
+import {getUserQuests, UserQuestsType} from './models/Users';
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
 const REGEX_SEMVER = /[1-9][0-9]?[0-9]?\.[1-9][0-9]?[0-9]?\.[1-9][0-9]?[0-9]?/g;
@@ -78,7 +78,7 @@ function getVersions(date: string): Bluebird<Versions> {
 const memoizedVersions = (typeof(memoize) === 'function') ? memoize(getVersions, { promise: true }) : getVersions;
 
 export function announcement(req: express.Request, res: express.Response) {
-  memoizedVersions(new Date().toJSON().slice(0,10))
+  memoizedVersions(new Date().toJSON().slice(0, 10))
     .then((versions: Versions) => {
       res.json({
         message: Config.get('ANNOUNCEMENT_MESSAGE') || '',
@@ -191,7 +191,7 @@ export function publish(db: Database, mail: MailService, req: express.Request, r
     .catch((e: Error) => {
       console.error(e);
       return res.status(500).end(GENERIC_ERROR_MESSAGE);
-    })
+    });
 }
 
 export function unpublish(db: Database, req: express.Request, res: express.Response) {
@@ -309,7 +309,7 @@ export function userQuests(db: Database, req: express.Request, res: express.Resp
 export function subscribe(mailchimp: any, listId: string, req: express.Request, res: express.Response) {
   try {
     req.body = JSON.parse(req.body);
-  } catch(e) {
+  } catch (e) {
     return res.status(400).end('Error reading request.');
   }
   Joi.validate(req.body.email, Joi.string().email().invalid(''), (err: Error, email: string) => {

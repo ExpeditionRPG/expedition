@@ -1,6 +1,6 @@
-import * as React from 'react'
-import {InteractionEvent, MultiplayerEvent} from 'shared/multiplayer/Events'
-import {getMultiplayerClient} from '../../Multiplayer'
+import * as React from 'react';
+import {InteractionEvent, MultiplayerEvent} from 'shared/multiplayer/Events';
+import {getMultiplayerClient} from '../../Multiplayer';
 
 // Listens to multiplayer client published events and forwards InteractionEvents
 // to the inheriting class.
@@ -13,13 +13,12 @@ export interface MultiplayerAffectorProps {
   children: any;
   className?: string;
 }
-export default class MultiplayerAffector extends React.Component<MultiplayerAffectorProps,{}> {
-  private listeners: {[k: string]: (e: any)=>any};
+export default class MultiplayerAffector extends React.Component<MultiplayerAffectorProps, {}> {
+  private listeners: {[k: string]: (e: any) => any};
   private ignoreNextMouseDown: boolean;
   private boundHandleMultiplayerEvent: (e: MultiplayerEvent) => void;
   private mouseDown: boolean;
   private ref: HTMLElement;
-
 
   constructor(props: MultiplayerAffectorProps) {
     super(props);
@@ -33,12 +32,12 @@ export default class MultiplayerAffector extends React.Component<MultiplayerAffe
     this.boundHandleMultiplayerEvent = (e: MultiplayerEvent) => this.handleMultiplayerEvent(e);
     getMultiplayerClient().subscribe(this.boundHandleMultiplayerEvent);
     this.listeners = {
-      'touchstart': (e: TouchEvent) => this.touchEvent(e),
-      'touchmove': (e: TouchEvent) => this.touchEvent(e),
-      'touchend': (e: TouchEvent) => this.touchEvent(e),
-      'mousedown': (e: MouseEvent) => this.mouseDownEvent(e),
-      'mousemove': (e: MouseEvent) => this.mouseMoveEvent(e),
-      'mouseup': () => this.mouseUpEvent(),
+      touchstart: (e: TouchEvent) => this.touchEvent(e),
+      touchmove: (e: TouchEvent) => this.touchEvent(e),
+      touchend: (e: TouchEvent) => this.touchEvent(e),
+      mousedown: (e: MouseEvent) => this.mouseDownEvent(e),
+      mousemove: (e: MouseEvent) => this.mouseMoveEvent(e),
+      mouseup: () => this.mouseUpEvent(),
     };
   }
 
@@ -107,7 +106,7 @@ export default class MultiplayerAffector extends React.Component<MultiplayerAffe
     }
   }
 
-  onRef(r: HTMLElement|null) {
+  public onRef(r: HTMLElement|null) {
     if (r === null) {
       return;
     }
@@ -120,7 +119,7 @@ export default class MultiplayerAffector extends React.Component<MultiplayerAffe
     }
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     getMultiplayerClient().unsubscribe(this.boundHandleMultiplayerEvent);
 
     if (!this.ref) {
@@ -131,13 +130,13 @@ export default class MultiplayerAffector extends React.Component<MultiplayerAffe
     }
   }
 
-  render() {
+  public render() {
     return (
       <div
         id={this.props.id}
         className={this.props.className + ' remote-affector'}
         style={{touchAction: 'pan-y'}}
-        ref={(r: HTMLElement|null) => {this.onRef(r)}}>
+        ref={(r: HTMLElement|null) => {this.onRef(r); }}>
         {this.props.children}
       </div>
     );

@@ -1,4 +1,4 @@
-import {logEvent} from './Logging'
+import {logEvent} from './Logging';
 
 describe('Console buffer', () => {
   it('logs the start of console');

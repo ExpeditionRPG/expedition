@@ -1,5 +1,5 @@
-import {testingDBWithState, analyticsEvents as ae} from './TestData'
-import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents'
+import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents';
+import {analyticsEvents as ae, testingDBWithState} from './TestData';
 
 describe('Test Data', () => {
   describe('testingDBWithState', () => {
@@ -24,6 +24,6 @@ describe('Test Data', () => {
           done();
         })
         .catch(done.fail);
-    })
-  })
+    });
+  });
 });

@@ -1,4 +1,4 @@
-import {QuestDetails} from './reducers/QuestTypes'
+import {QuestDetails} from './reducers/QuestTypes';
 
 export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
 // Should be overriden via env vars to use local server
@@ -20,7 +20,7 @@ export const MULTIPLAYER_SETTINGS = {
   newSessionURI: API_HOST + '/multiplayer/v1/new_session',
   connectURI: API_HOST + '/multiplayer/v1/connect',
   firstLoadURI: API_HOST + '/multiplayer/v1/user',
-  websocketSession: ((NODE_ENV === 'production') ? 'wss://' : 'ws://') + splitURL[splitURL.length-1] + '/ws/multiplayer/v1/session',
+  websocketSession: ((NODE_ENV === 'production') ? 'wss://' : 'ws://') + splitURL[splitURL.length - 1] + '/ws/multiplayer/v1/session',
 };
 
 export const FEATURED_QUESTS: QuestDetails[] = [ // Featured quest ids generated from publishing, but don't leave them published!
@@ -50,7 +50,7 @@ export const URLS = {
 export const INIT_DELAY = {
   SILENT_LOGIN_MILLIS: 1000,
   LOAD_AUDIO_MILLIS: 2000,
-}
+};
 
 export const CARD_TRANSITION_ANIMATION_MS = 300;
 export const VIBRATION_SHORT_MS = 30; // for navigation / card changes

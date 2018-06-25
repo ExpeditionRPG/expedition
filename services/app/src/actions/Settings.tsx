@@ -1,4 +1,4 @@
-import {ChangeSettingsAction} from './ActionTypes'
+import {ChangeSettingsAction} from './ActionTypes';
 
 export function changeSettings(settings: any): ChangeSettingsAction {
   // TODO: Changing player count in settings should affect

@@ -1,4 +1,4 @@
-import {PersonaType, ScenarioType, SkillType} from './Types'
+import {PersonaType, ScenarioType, SkillType} from './Types';
 
 function simpleScenario(persona: PersonaType, skill: SkillType, prelude: string, successText: string, successInstructions: string[], failureText: string, failureInstructions: string[], noneventText: string, retryText: string): ScenarioType {
   return {
@@ -174,7 +174,7 @@ const scenarios: ScenarioType[] = [
     'Perhaps someone else knows what they\'re saying?'),
 ];
 
-declare type ScenarioMap = {[skill: string]: {[persona: string]: ScenarioType[]}};
+declare interface ScenarioMap {[skill: string]: {[persona: string]: ScenarioType[]};}
 
 function buildMap(s: ScenarioType[]): ScenarioMap {
   const result: ScenarioMap = {};

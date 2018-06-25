@@ -1,10 +1,10 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import {DialogIDType, AppState, QuestType} from '../reducers/StateTypes'
-import {setDialog} from '../actions/Dialogs'
-import {publishQuest, questMetadataChange} from '../actions/Quest'
-import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
-import {CONTENT_RATINGS, LANGUAGES, GENRES} from 'shared/schema/Constants'
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {CONTENT_RATINGS, GENRES, LANGUAGES} from 'shared/schema/Constants';
+import {setDialog} from '../actions/Dialogs';
+import {publishQuest, questMetadataChange} from '../actions/Quest';
+import {AppState, DialogIDType, QuestType} from '../reducers/StateTypes';
+import Dialogs, {DialogsDispatchProps, DialogsStateProps} from './Dialogs';
 
 const Joi = require('joi-browser');
 
@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
     quest: state.quest,
     user: state.user,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DialogsDispatchProps => {
   return {
@@ -48,11 +48,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
       });
     },
   };
-}
+};
 
 const DialogsContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Dialogs);
 
-export default DialogsContainer
+export default DialogsContainer;

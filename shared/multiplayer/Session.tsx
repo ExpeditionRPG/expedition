@@ -1,4 +1,4 @@
-import {ClientID, InstanceID} from './Events'
+import {ClientID, InstanceID} from './Events';
 
 export type SessionID = number;
 
@@ -16,5 +16,5 @@ export function makeSecret(): string {
 // by an instance number. In order to use these in a simple map,
 // they are concatenated with a separating pipe '|'
 export function toClientKey(client: ClientID, instance: InstanceID) {
-  return client+'|'+instance;
+  return client + '|' + instance;
 }

@@ -1,4 +1,4 @@
-import {BlockList} from './BlockList'
+import {BlockList} from './BlockList';
 
 const expect: any = require('expect');
 
@@ -45,7 +45,7 @@ describe('BlockList', () => {
       lines: ['**end**'],
       startLine: 4,
     });
-  })
+  });
 
   it('parses new block on indent', () => {
     const list = new BlockList('* choice\n\n  Choice text');

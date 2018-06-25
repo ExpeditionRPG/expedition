@@ -1,7 +1,7 @@
-import * as Express from 'express'
-import Config from './config'
-import * as Stripe from 'stripe'
+import * as Express from 'express';
 import * as Joi from 'joi';
+import * as Stripe from 'stripe';
+import Config from './config';
 
 let stripe: Stripe|null = null;
 if (Config.get('ENABLE_PAYMENT') && Config.get('STRIPE_PRIVATE_KEY')) {
@@ -11,7 +11,6 @@ if (Config.get('ENABLE_PAYMENT') && Config.get('STRIPE_PRIVATE_KEY')) {
 }
 
 const MIN_PAYMENT_DOLLARS = 0.5; // Anything below this would be eaten by transaction fees
-
 
 export function checkout(req: Express.Request, res: Express.Response) {
   const body: any = JSON.parse(req.body);

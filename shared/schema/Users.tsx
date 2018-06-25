@@ -1,7 +1,7 @@
-import {SchemaBase, field, copyAndUnsetDefaults, NOW, PLACEHOLDER_DATE} from './SchemaBase'
+import {copyAndUnsetDefaults, field, NOW, PLACEHOLDER_DATE, SchemaBase} from './SchemaBase';
 
 export class User extends SchemaBase {
-  static create(fields: Partial<User>) {
+  public static create(fields: Partial<User>) {
     return super.initialize(this, fields);
   }
 
@@ -9,7 +9,7 @@ export class User extends SchemaBase {
     super(fields);
   }
 
-  withoutDefaults() {
+  public withoutDefaults() {
     return copyAndUnsetDefaults(User, this);
   }
 
@@ -17,34 +17,34 @@ export class User extends SchemaBase {
     primaryKey: true,
     allowNull: false,
     maxLength: 255,
-  }) id: string;
+  }) public id: string;
 
   @field({
     maxLength: 255,
     default: '',
-  }) email: string;
+  }) public email: string;
 
   @field({
     maxLength: 255,
     default: '',
-  }) name: string;
+  }) public name: string;
 
   @field({
     default: 0,
     column: 'loot_points',
-  }) lootPoints: number;
+  }) public lootPoints: number;
 
   @field({
     default: NOW,
-  }) created: Date
+  }) public created: Date;
 
   @field({
     default: 0,
     column: 'login_count',
-  }) loginCount: number;
+  }) public loginCount: number;
 
   @field({
     default: PLACEHOLDER_DATE,
     column: 'last_login',
-  }) lastLogin: Date
+  }) public lastLogin: Date;
 }

@@ -1,8 +1,8 @@
-import {Renderer, CombatChild, Instruction, RoleplayChild} from './Renderer'
-import {Block} from '../block/BlockList'
-import {Logger} from '../Logger'
-import {Normalize} from '../validation/Normalize'
-import {REGEX} from '../../Regex'
+import {REGEX} from '../../Regex';
+import {Block} from '../block/BlockList';
+import {Logger} from '../Logger';
+import {Normalize} from '../validation/Normalize';
+import {CombatChild, Instruction, Renderer, RoleplayChild} from './Renderer';
 
 function isNumeric(n: any) {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -17,7 +17,7 @@ export class BlockRenderer {
     this.renderer = renderer;
   }
 
-  toRoleplay(blocks: Block[], log: Logger) {
+  public toRoleplay(blocks: Block[], log: Logger) {
     // There are cases where we don't have a roleplay header, e.g.
     // the first roleplay block inside a choice. This is fine,
     // and not an error, so we don't pass a logger here.
@@ -26,8 +26,8 @@ export class BlockRenderer {
     extracted = extracted || {title: '', id: undefined, json: {}};
 
     const attribs = extracted.json;
-    attribs['title'] = attribs['title'] || extracted.title;
-    attribs['id'] = attribs['id'] || extracted.id;
+    attribs.title = attribs.title || extracted.title;
+    attribs.id = attribs.id || extracted.id;
 
     // don't count length of icon names, just that they take up ~1 character
     if (attribs.title.replace(/:.*?:/g, '#').length >= 25) {
@@ -36,7 +36,7 @@ export class BlockRenderer {
 
     // The only inner stuff
     let i = 0;
-    const body: (string|RoleplayChild|Instruction)[] = [];
+    const body: Array<string|RoleplayChild|Instruction> = [];
     while (i < blocks.length) {
       const block = blocks[i];
       if (block.render) {
@@ -86,7 +86,7 @@ export class BlockRenderer {
           log.err(
             'choice missing title',
             '428',
-            blocks[i-1].startLine-2
+            blocks[i - 1].startLine - 2
           );
         }
         body.push(choice);
@@ -96,13 +96,13 @@ export class BlockRenderer {
     }
 
     blocks[0].render = this.renderer.toRoleplay(attribs, body, blocks[0].startLine);
-  };
+  }
 
-  toQuest(block: Block, log: Logger) {
+  public toQuest(block: Block, log: Logger) {
     block.render = this.renderer.toQuest(this.toMeta(block, log), block.startLine);
   }
 
-  toTrigger(blocks: Block[], log: Logger) {
+  public toTrigger(blocks: Block[], log: Logger) {
     if (blocks.length !== 1) {
       log.internal('trigger found with multiple blocks', '502');
     }
@@ -118,7 +118,7 @@ export class BlockRenderer {
     blocks[0].render = this.renderer.toTrigger(extracted, blocks[0].startLine);
   }
 
-  validate(): any {
+  public validate(): any {
     // TODO:
     // - Ensure there's at least one node that isn't the quest
     // - Ensure all paths end with an "end" trigger
@@ -128,7 +128,7 @@ export class BlockRenderer {
     return [];
   }
 
-  toCombat(blocks: Block[], log: Logger) {
+  public toCombat(blocks: Block[], log: Logger) {
     if (!blocks.length) {
       log.err(
         'empty combat list',
@@ -140,9 +140,9 @@ export class BlockRenderer {
     const extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], log) || {title: 'combat', id: undefined, json: {}};
 
     const attribs = extracted.json;
-    attribs['id'] = attribs['id'] || extracted.id;
+    attribs.id = attribs.id || extracted.id;
 
-    attribs['enemies'] = attribs['enemies'] || [];
+    attribs.enemies = attribs.enemies || [];
     for (let i = 0; i < blocks[0].lines.length; i++) {
       const line = blocks[0].lines[i];
       if (line[0] === '-') {
@@ -167,15 +167,14 @@ export class BlockRenderer {
             continue;
           }
         }
-        attribs['enemies'].push(enemy);
+        attribs.enemies.push(enemy);
       }
     }
 
-    if (attribs['enemies'].length === 0) {
+    if (attribs.enemies.length === 0) {
       log.err('combat card has no enemies listed', '414');
-      attribs['enemies'] = [{text: 'UNKNOWN'}];
+      attribs.enemies = [{text: 'UNKNOWN'}];
     }
-
 
     const events: CombatChild[] = [];
     let currEvent: CombatChild | null = null;
@@ -195,7 +194,7 @@ export class BlockRenderer {
       }
 
       // Skip the first line if we're at the root block (already parsed)
-      for (let j = (i===0) ? 1 : 0; j < block.lines.length; j++) {
+      for (let j = (i === 0) ? 1 : 0; j < block.lines.length; j++) {
         const line = block.lines[j];
         // Skip empty lines, enemy list
         if (line === '' || line[0] === '-') {
@@ -244,11 +243,11 @@ export class BlockRenderer {
     blocks[0].render = this.renderer.toCombat(attribs, events, blocks[0].startLine);
   }
 
-  toMeta(block: Block, log?: Logger): {[k: string]: any} {
+  public toMeta(block: Block, log?: Logger): {[k: string]: any} {
     // Parse meta using the block itself.
     // Metadata format is standard across all renderers.
     if (!block) {
-      return {'title': 'UNKNOWN'};
+      return {title: 'UNKNOWN'};
     }
 
     const attrs: {[k: string]: string} = {title: block.lines[0].substr(1).trim()};
@@ -274,7 +273,7 @@ export class BlockRenderer {
     return Normalize.questAttrs(attrs, log);
   }
 
-  finalize(zeroIndentBlockGroupRoots: Block[], log: Logger): any {
+  public finalize(zeroIndentBlockGroupRoots: Block[], log: Logger): any {
     const toRender: any[] = [];
 
     let quest: any = null;
@@ -336,7 +335,7 @@ export class BlockRenderer {
         id: m[3],
         json: (m[4]) ? JSON.parse(m[4]) : {},
       };
-    } catch(e) {
+    } catch (e) {
       if (log) {
         log.err('could not parse card header', '413');
       }
@@ -365,7 +364,7 @@ export class BlockRenderer {
         text: (m[3]) ? m[3].trim() : '',
         json: (m[4]) ? JSON.parse(m[4]) : {},
       };
-    } catch(e) {
+    } catch (e) {
       if (log) {
         log.err('failed to parse bulleted line (check your JSON)', '412', idx);
       }
@@ -407,10 +406,10 @@ export class BlockRenderer {
       if (lines[i] === '') {
         continue;
       }
-      if (lines[i-1] === '' && result[result.length-1] !== '') {
+      if (lines[i - 1] === '' && result[result.length - 1] !== '') {
         result.push('');
       }
-      result[result.length-1] += (result[result.length-1] !== '') ? ' ' + lines[i] : lines[i];
+      result[result.length - 1] += (result[result.length - 1] !== '') ? ' ' + lines[i] : lines[i];
     }
     return result;
   }

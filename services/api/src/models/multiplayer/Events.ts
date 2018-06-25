@@ -1,6 +1,6 @@
-import Bluebird from 'bluebird'
-import Sequelize from 'sequelize'
-import {Database, EventInstance, SessionInstance} from '../Database'
+import Bluebird from 'bluebird';
+import Sequelize from 'sequelize';
+import {Database, EventInstance, SessionInstance} from '../Database';
 
 export function getLastEvent(db: Database, session: number): Bluebird<EventInstance|null> {
   return db.events.findOne({
@@ -54,7 +54,7 @@ export function commitEventWithoutID(db: Database, session: number, client: stri
 
         id = s.get('eventCounter') + 1;
         (struct as any).id = id;
-        return s.update({eventCounter: id}, {transaction: txn}).then(() => {return true;});
+        return s.update({eventCounter: id}, {transaction: txn}).then(() => true);
       })
       .then((incremented: boolean) => {
         if (!incremented) {
@@ -69,7 +69,7 @@ export function commitEventWithoutID(db: Database, session: number, client: stri
           id,
           type,
           json: JSON.stringify(struct),
-        }, {transaction: txn, returning:false})
+        }, {transaction: txn, returning: false})
         .then(() => true);
       });
   }).then((updated: boolean) => {
@@ -105,7 +105,7 @@ export function commitEvent(db: Database, session: number, client: string, insta
         return s.update(
           {eventCounter: event},
           {transaction: txn}
-        ).then(() => {return true;});
+        ).then(() => true);
       })
       .then((incremented: boolean) => {
         if (!incremented) {
@@ -123,7 +123,7 @@ export function commitEvent(db: Database, session: number, client: string, insta
           id: event,
           type,
           json,
-        }, {transaction: txn, returning:false})
+        }, {transaction: txn, returning: false})
         .then(() => true);
       });
   }).then((updated: boolean) => {

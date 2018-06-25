@@ -1,4 +1,4 @@
-export type ErrorType = {
+export interface ErrorType {
   NUMBER: number;
   NAME: string;
   DESCRIPTION: string;
@@ -11,4 +11,4 @@ export type ErrorType = {
   METADATA_ERROR?: boolean;
   AFFECTED_BY_OPS?: boolean;
   TEST_WITH_CRAWLER?: boolean;
-};
+}

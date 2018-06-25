@@ -1,4 +1,4 @@
-import {updateContext, evaluateContentOps, Context} from './Context'
+import {Context, evaluateContentOps, updateContext} from './Context';
 
 const Clone = require('clone');
 const Math = require('mathjs') as any;
@@ -16,7 +16,7 @@ function isNumeric(n: any): boolean {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-function getNodeAttributes(e: Cheerio): {[key:string]:string;} {
+function getNodeAttributes(e: Cheerio): {[key: string]: string; } {
   return e.get(0).attribs;
 }
 
@@ -28,7 +28,7 @@ function getTriggerId(elem: Cheerio): string|null {
 export class Node<C extends Context> {
   public elem: Cheerio;
   public ctx: C;
-  private renderedChildren: {rendered: Cheerio, original: Cheerio}[];
+  private renderedChildren: Array<{rendered: Cheerio, original: Cheerio}>;
 
   constructor(elem: Cheerio, ctx: C, action?: string|number, seed?: string) {
     this.elem = elem;
@@ -47,20 +47,20 @@ export class Node<C extends Context> {
     return updateContext<C>(elem, ctx, action);
   }
 
-  clone(): this {
+  public clone(): this {
     // Context is deep-copied via updateContext.
     // Random seed is persisted on the copied node.
     return new (this.constructor as any)(this.elem, this.ctx, null, this.ctx.seed);
   }
 
-  getTag(): string|null {
+  public getTag(): string|null {
     const e = this.elem.get(0);
     return (e) ? e.tagName.toLowerCase() : null;
   }
 
-  getVisibleKeys(): (string|number)[] {
+  public getVisibleKeys(): Array<string|number> {
     let choiceIdx = -1;
-    const keys: (string|number)[] = [];
+    const keys: Array<string|number> = [];
     this.loopChildren((tag, child, orig) => {
       if (child.attr('on') !== undefined) {
         keys.push(child.attr('on'));
@@ -74,7 +74,7 @@ export class Node<C extends Context> {
 
   // nextSeed is passed as the initial render seed for the resulting
   // Node returned by this function.
-  getNext(key?: string|number, nextSeed?: string): this|null {
+  public getNext(key?: string|number, nextSeed?: string): this|null {
     let next: Cheerio | null;
     if (key === undefined) {
       next = this.getNextNode();
@@ -149,21 +149,21 @@ export class Node<C extends Context> {
     }
   }
 
-  gotoId(id: string, seed?: string): this|null {
+  public gotoId(id: string, seed?: string): this|null {
     const root = this.getRootElem();
     if (root === null) {
       return null;
     }
-    const search = root.find('#'+id);
+    const search = root.find('#' + id);
     if (search.length === 0) {
       return null;
     }
-    return new (this.constructor as any)(search.eq(0), this.ctx, '#'+id, seed);
+    return new (this.constructor as any)(search.eq(0), this.ctx, '#' + id, seed);
   }
 
   // Loop through all rendered children. If a call to cb() returns a value
   // other than undefined, break the loop early and return the value.
-  loopChildren(cb: (tag: string, child: Cheerio, original: Cheerio)=>any): any {
+  public loopChildren(cb: (tag: string, child: Cheerio, original: Cheerio) => any): any {
     for (let i = 0; i < this.renderedChildren.length; i++) {
       const c = this.renderedChildren[i];
       const tag = this.renderedChildren[i].rendered.get(0).tagName.toLowerCase();
@@ -181,7 +181,7 @@ export class Node<C extends Context> {
   // but in most cases returns the body of the function. It also ignores function bindings and external
   // references, which prevent it from being a true "serialization" and instead more of a "comparison key"
   // for visit-tracking in quest traversal.
-  getComparisonKey(): string {
+  public getComparisonKey(): string {
     const ctx: any = Clone(this.ctx);
 
     // Strip un-useful context
@@ -226,7 +226,7 @@ export class Node<C extends Context> {
     }
   }
 
-  getRootElem(): Cheerio {
+  public getRootElem(): Cheerio {
     let elem = this.elem;
     while (elem && elem.get(0) && elem.get(0).tagName.toLowerCase() !== 'quest') {
       elem = elem.parent();
@@ -263,7 +263,7 @@ export class Node<C extends Context> {
 
   // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
   // Returns the (cleaned) parameters of the event element
-  getEventParameters(event: string, seed?: string): EventParameters|null {
+  public getEventParameters(event: string, seed?: string): EventParameters|null {
     const evt = this.getNext(event, seed);
     if (!evt) {
       return null;
@@ -315,7 +315,7 @@ export class Node<C extends Context> {
   // - a number indicating the choice number in the XML element, including conditional choices.
   // - a string indicating which event to fire based on the "on" attribute.
   // Returns the card inside of / referenced by the choice/event element
-  handleAction(action?: number|string, seed?: string): this|null {
+  public handleAction(action?: number|string, seed?: string): this|null {
     const next = this.getNext(action, seed);
     if (!next) {
       return null;
@@ -328,7 +328,7 @@ export class Node<C extends Context> {
   }
 
   // Returns if the supplied node is an **end** trigger
-  isEnd(): Boolean {
+  public isEnd(): Boolean {
     return (this.getTag() === 'trigger' && this.elem.text().toLowerCase().split(' ')[0].trim() === 'end');
   }
 }

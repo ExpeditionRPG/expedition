@@ -1,16 +1,16 @@
-import * as React from 'react'
-import LockIcon from '@material-ui/icons/Lock'
+import LockIcon from '@material-ui/icons/Lock';
+import * as React from 'react';
 
-import Button from '../base/Button'
-import Card from '../base/Card'
-import {AUTH_SETTINGS} from '../../Constants'
-import {CardState, CheckoutState, QuestState, UserState} from '../../reducers/StateTypes'
+import {AUTH_SETTINGS} from '../../Constants';
+import {CardState, CheckoutState, QuestState, UserState} from '../../reducers/StateTypes';
+import Button from '../base/Button';
+import Card from '../base/Card';
 
 export interface CheckoutStateProps extends React.Props<any> {
-  card: CardState,
-  checkout: CheckoutState,
-  quest: QuestState,
-  user: UserState,
+  card: CardState;
+  checkout: CheckoutState;
+  quest: QuestState;
+  user: UserState;
 }
 
 export interface CheckoutDispatchProps {
@@ -25,7 +25,7 @@ export interface CheckoutProps extends CheckoutStateProps, CheckoutDispatchProps
 
 // Docs: https://stripe.com/docs/stripe-js
 class CheckoutForm extends React.Component<CheckoutProps, {}> {
-  state: { card: stripe.elements.Element, paymentError: string|null, paymentValid: boolean, mounted: boolean };
+  public state: { card: stripe.elements.Element, paymentError: string|null, paymentValid: boolean, mounted: boolean };
 
   constructor(props: CheckoutProps) {
     super(props);
@@ -52,19 +52,19 @@ class CheckoutForm extends React.Component<CheckoutProps, {}> {
     this.state = { card, paymentError: null, paymentValid: false, mounted: false };
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     if (this.state.mounted) { return; }
 
     this.state.card.mount('#stripeCard');
     this.setState({mounted: true});
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     this.state.card.unmount();
     this.setState({mounted: false});
   }
 
-  handleSubmit(event: TouchEvent) {
+  public handleSubmit(event: TouchEvent) {
     if (!this.props.checkout.stripe) {
       throw Error('Error in checkout');
     }
@@ -78,7 +78,7 @@ class CheckoutForm extends React.Component<CheckoutProps, {}> {
     event.preventDefault();
   }
 
-  render() {
+  public render() {
     return (
       <Card title="Tip the Author">
         <div id="stripe">
@@ -113,7 +113,7 @@ function renderCheckoutThankYou(props: CheckoutProps) {
 }
 
 export default class Checkout extends React.Component<CheckoutProps, {}> {
-  render() {
+  public render() {
     switch (this.props.card.phase) {
       case 'ENTRY':
         return <CheckoutForm {...this.props} />;

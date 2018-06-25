@@ -1,12 +1,12 @@
-import configureStore  from 'redux-mock-store'
-import {MultiplayerClient} from './Multiplayer'
+import configureStore  from 'redux-mock-store';
+import {MultiplayerClient} from './Multiplayer';
 
 describe('Multiplayer', () => {
   let client: any;
   let mockStore: any;
   beforeEach(() => {
     client = new MultiplayerClient();
-    mockStore = (initialState: any) => {return configureStore([client.createActionMiddleware()])(initialState)};
+    mockStore = (initialState: any) =>configureStore([client.createActionMiddleware()])(initialState);
   });
 
   describe('middleware behavior', () => {
@@ -34,7 +34,7 @@ describe('Multiplayer', () => {
         store.dispatch({type: 'test'});
         expect(store.getActions()).toEqual([{type: 'test'}]);
       });
-    })
+    });
 
     describe('on actions of type ["name", args]', () => {
       it('resolves and calls the function', () => {

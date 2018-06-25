@@ -1,5 +1,5 @@
-import Bluebird from 'bluebird'
-import {Database, SessionClientInstance} from '../Database'
+import Bluebird from 'bluebird';
+import {Database, SessionClientInstance} from '../Database';
 
 export function verifySessionClient(db: Database, session: number, client: string, secret: string): Bluebird<boolean> {
   return db.sessionClients.findOne({where: {session, client, secret}})

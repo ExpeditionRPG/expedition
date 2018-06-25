@@ -1,24 +1,24 @@
-import { mockReq, mockRes } from 'sinon-express-mock'
-import {MailService} from './Mail'
-import {Database, QuestInstance, AnalyticsEventInstance} from './models/Database'
+import { mockReq, mockRes } from 'sinon-express-mock';
 import {
-  healthCheck,
-  publish,
   feedback,
-  unpublish,
+  healthCheck,
+  postAnalyticsEvent,
+  publish,
   questXMLHandler,
   search,
-  postAnalyticsEvent,
-  userQuests,
   subscribe,
-} from './Handlers'
+  unpublish,
+  userQuests,
+} from './Handlers';
+import {MailService} from './Mail';
+import {AnalyticsEventInstance, Database, QuestInstance} from './models/Database';
 import {
-  testingDBWithState,
+  analyticsEvents as ae,
   quests as q,
   renderedQuests as rq,
+  testingDBWithState,
   users as u,
-  analyticsEvents as ae,
-} from './models/TestData'
+} from './models/TestData';
 
 describe('handlers', () => {
   describe('healthCheck', () => {
@@ -58,7 +58,7 @@ describe('handlers', () => {
       testingDBWithState([q.basic, rq.basic])
         .then((db) => questXMLHandler(db, mockReq({body: '', params: {quest: q.basic.id}}), res))
         .then(() => {
-          expect(res.end.calledWith(rq.basic.xml))
+          expect(res.end.calledWith(rq.basic.xml));
           done();
         })
         .catch(done.fail);
@@ -198,7 +198,7 @@ describe('handlers', () => {
         partition: 'random-partition',
         questid: '123',
         userid: '456',
-      }
+      };
       const res = mockRes();
       testingDBWithState([q.basic])
         .then((db) => feedback(db, ms, mockReq({body: JSON.stringify(data), params: {type: 'feedback'}}), res))
@@ -214,7 +214,7 @@ describe('handlers', () => {
         partition: q.basic.partition,
         questid: q.basic.id,
         userid: '456',
-      }
+      };
       const res = mockRes();
       testingDBWithState([q.basic])
         .then((db) => feedback(db, ms, mockReq({body: JSON.stringify(data), params: {type: 'feedback'}}), res))
@@ -238,7 +238,7 @@ describe('handlers', () => {
         platformDump: 'web USERAGENT TEST TEST',
         players: 4,
         version: '1.6.0',
-      }
+      };
       const res = mockRes();
       testingDBWithState([q.basic])
         .then((db) => feedback(db, ms, mockReq({body: JSON.stringify(data), params: {type: 'feedback'}}), res))

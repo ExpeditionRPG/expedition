@@ -1,21 +1,21 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import {logEvent} from '../../Logging'
-import {setDialog} from '../../actions/Dialog'
-import {changeSettings} from '../../actions/Settings'
-import {AppState, DifficultyType} from '../../reducers/StateTypes'
-import Settings, {SettingsStateProps, SettingsDispatchProps, fontSizeValues, timerValues} from './Settings'
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {setDialog} from '../../actions/Dialog';
+import {changeSettings} from '../../actions/Settings';
+import {logEvent} from '../../Logging';
+import {AppState, DifficultyType} from '../../reducers/StateTypes';
+import Settings, {fontSizeValues, SettingsDispatchProps, SettingsStateProps, timerValues} from './Settings';
 
 const mapStateToProps = (state: AppState, ownProps: SettingsStateProps): SettingsStateProps => {
   return state.settings;
-}
+};
 
 const difficultyAdd: any = {
   EASY: 'NORMAL',
   NORMAL: 'HARD',
   HARD: 'IMPOSSIBLE',
   IMPOSSIBLE: 'EASY',
-}
+};
 
 const difficultySub: any = {
   EASY: 'IMPOSSIBLE',
@@ -82,11 +82,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Setti
       dispatch(changeSettings({timerSeconds: timerValues[i]}));
     },
   };
-}
+};
 
 const SettingsContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Settings);
 
-export default SettingsContainer
+export default SettingsContainer;

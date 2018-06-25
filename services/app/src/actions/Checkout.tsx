@@ -1,12 +1,11 @@
-import Redux from 'redux'
-import {CheckoutSetStateAction} from './ActionTypes'
-import {toCard} from './Card'
-import {openSnackbar} from './Snackbar'
-import {handleFetchErrors} from './Web'
-import {AUTH_SETTINGS} from '../Constants'
-import {logEvent} from '../Logging'
-import {CheckoutState, UserState} from '../reducers/StateTypes'
-
+import Redux from 'redux';
+import {AUTH_SETTINGS} from '../Constants';
+import {logEvent} from '../Logging';
+import {CheckoutState, UserState} from '../reducers/StateTypes';
+import {CheckoutSetStateAction} from './ActionTypes';
+import {toCard} from './Card';
+import {openSnackbar} from './Snackbar';
+import {handleFetchErrors} from './Web';
 
 export function checkoutSetState(delta: Partial<CheckoutState>) {
   return (dispatch: Redux.Dispatch<any>): any => {
@@ -48,5 +47,5 @@ export function checkoutSubmit(stripeToken: string, checkout: CheckoutState, use
       dispatch(toCard({name: 'CHECKOUT', phase: 'ENTRY'}));
       dispatch(checkoutSetState({processing: false}));
     });
-  }
+  };
 }

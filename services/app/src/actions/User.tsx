@@ -1,13 +1,13 @@
-import Redux from 'redux'
-import * as Raven from 'raven-js'
-import {UserQuestsDeltaAction} from './ActionTypes'
-import {handleFetchErrors, fetchUserQuests} from './Web'
-import {AppState, UserState, UserQuestsType} from '../reducers/StateTypes'
-import {loggedOutUser} from '../reducers/User'
-import {AUTH_SETTINGS} from '../Constants'
-import {getGA, getGapi, getWindow, CordovaLoginPlugin} from '../Globals'
+import * as Raven from 'raven-js';
+import Redux from 'redux';
+import {AUTH_SETTINGS} from '../Constants';
+import {CordovaLoginPlugin, getGA, getGapi, getWindow} from '../Globals';
+import {AppState, UserQuestsType, UserState} from '../reducers/StateTypes';
+import {loggedOutUser} from '../reducers/User';
+import {UserQuestsDeltaAction} from './ActionTypes';
+import {fetchUserQuests, handleFetchErrors} from './Web';
 
-type LoadGapiResponse = {gapi: any, async: boolean};
+interface LoadGapiResponse {gapi: any; async: boolean; }
 
 let gapiLoaded = false;
 function loadGapi(): Promise<LoadGapiResponse> {
@@ -30,11 +30,11 @@ function loadGapi(): Promise<LoadGapiResponse> {
       client_id: AUTH_SETTINGS.CLIENT_ID,
       scope: AUTH_SETTINGS.SCOPES,
       cookie_policy: 'none',
-    })
+    });
   })
   .then(() => {
     gapiLoaded = true;
-    return {gapi, async: true}
+    return {gapi, async: true};
   });
 }
 
@@ -58,7 +58,7 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
     let id = '';
     try {
       id = JSON.parse(userResult).id || userResult;
-    } catch(err) {
+    } catch (err) {
       id = userResult;
     }
     if (getGA()) {
@@ -179,8 +179,8 @@ function updateState(dispatch: Redux.Dispatch<any>): ((u: UserState) => Promise<
 
 // Prompt the user for login if user is not logged in already.
 // Throws an error if login fails.
-export function ensureLogin(): (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => Promise<UserState> {
-  return (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => {
+export function ensureLogin(): (dispatch: Redux.Dispatch<any>, getState: () => AppState) => Promise<UserState> {
+  return (dispatch: Redux.Dispatch<any>, getState: () => AppState) => {
     const currentUser = getState().user;
     if (currentUser !== loggedOutUser) {
       return Promise.resolve(currentUser);
@@ -195,8 +195,8 @@ export function ensureLogin(): (dispatch: Redux.Dispatch<any>, getState: ()=>App
 
 // Returns user state if successfully logged in silently.
 // Thows an error if login fails.
-export function silentLogin(): (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => Promise<UserState> {
-  return (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => {
+export function silentLogin(): (dispatch: Redux.Dispatch<any>, getState: () => AppState) => Promise<UserState> {
+  return (dispatch: Redux.Dispatch<any>, getState: () => AppState) => {
     const currentUser = getState().user;
     if (currentUser !== loggedOutUser) {
       return Promise.resolve(currentUser);

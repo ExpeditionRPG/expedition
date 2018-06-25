@@ -1,5 +1,5 @@
-import {SetDialogAction} from './ActionTypes'
-import {DialogIDType} from '../reducers/StateTypes'
+import {DialogIDType} from '../reducers/StateTypes';
+import {SetDialogAction} from './ActionTypes';
 
 export function setDialog(dialog: DialogIDType): SetDialogAction {
   return {type: 'SET_DIALOG', dialog};

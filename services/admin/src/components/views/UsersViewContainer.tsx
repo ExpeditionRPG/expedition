@@ -1,16 +1,16 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
+import Redux from 'redux';
 
-import {AppState} from '../../reducers/StateTypes'
-import UsersView, {UsersViewStateProps, UsersViewDispatchProps} from './UsersView'
-import {setDialog} from '../../actions/Dialogs'
+import {setDialog} from '../../actions/Dialogs';
+import {AppState} from '../../reducers/StateTypes';
+import UsersView, {UsersViewDispatchProps, UsersViewStateProps} from './UsersView';
 
 const mapStateToProps = (state: AppState, ownProps: any): UsersViewStateProps => {
   return {
     list: state.view.users,
     selected: state.view.selected.user,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): UsersViewDispatchProps => {
   return {
@@ -19,11 +19,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Users
       dispatch(setDialog('USER_DETAILS'));
     },
   };
-}
+};
 
 const UsersViewContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(UsersView);
 
-export default UsersViewContainer
+export default UsersViewContainer;

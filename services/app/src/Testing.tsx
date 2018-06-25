@@ -1,15 +1,15 @@
-import * as Redux from 'redux'
-import configureStore from 'redux-mock-store'
-import {MultiplayerClient} from './Multiplayer'
-import {AppStateWithHistory} from './reducers/StateTypes'
-import combinedReducers from './reducers/CombinedReducers'
+import * as Redux from 'redux';
+import configureStore from 'redux-mock-store';
+import {MultiplayerClient} from './Multiplayer';
+import combinedReducers from './reducers/CombinedReducers';
+import {AppStateWithHistory} from './reducers/StateTypes';
 
 export function newMockStoreWithInitializedState() {
   return newMockStore(combinedReducers({} as any, {type: '@@INIT'}));
 }
 
 interface MockStore extends Redux.Store {
-  clearActions: ()=>void;
+  clearActions: () => void;
   getActions: any;
 }
 
@@ -96,7 +96,7 @@ export function Action<A>(action: (a: A) => Redux.Action, baseState?: Object) {
           toDispatch(expected: Object) {
             expect(store.getActions()).toContain(expected);
           },
-        }
+        };
       },
       execute: (a: A) => {
         store.dispatch(action(a));

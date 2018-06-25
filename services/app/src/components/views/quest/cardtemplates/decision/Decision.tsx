@@ -1,14 +1,14 @@
 
-import * as React from 'react'
-import * as seedrandom from 'seedrandom'
-import Button from '../../../../base/Button'
-import Card from '../../../../base/Card'
-import Callout from '../../../../base/Callout'
-import {ParserNode} from '../TemplateTypes'
-import {SettingsType, CardState, CardThemeType, MultiplayerState} from '../../../../../reducers/StateTypes'
-import {generateDecisions, skillTimeMillis} from './Actions'
-import {DecisionState, DecisionType, EMPTY_OUTCOME} from './Types'
-import DecisionTimer from './DecisionTimer'
+import * as React from 'react';
+import * as seedrandom from 'seedrandom';
+import {CardState, CardThemeType, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
+import Button from '../../../../base/Button';
+import Callout from '../../../../base/Callout';
+import Card from '../../../../base/Card';
+import {ParserNode} from '../TemplateTypes';
+import {generateDecisions, skillTimeMillis} from './Actions';
+import DecisionTimer from './DecisionTimer';
+import {DecisionState, DecisionType, EMPTY_OUTCOME} from './Types';
 
 export interface DecisionStateProps {
   card: CardState;
@@ -56,7 +56,7 @@ export function renderPrepareDecision(props: DecisionProps): JSX.Element {
 }
 
 export function renderDecisionTimer(props: DecisionProps): JSX.Element {
-  let instruction: string|undefined = undefined;
+  let instruction: string|undefined;
   if (props.settings.showHelp) {
     instruction = 'Select a decision!';
   }
@@ -75,7 +75,7 @@ export function renderDecisionTimer(props: DecisionProps): JSX.Element {
 export function renderResolveDecision(props: DecisionProps): JSX.Element {
   const scenario = props.decision.scenario;
   const roll = <img className="inline_icon" src="images/roll_white_small.svg"></img>;
-  const outcome = props.decision.outcomes[props.decision.outcomes.length-1] || EMPTY_OUTCOME;
+  const outcome = props.decision.outcomes[props.decision.outcomes.length - 1] || EMPTY_OUTCOME;
   const choice = props.decision.choice;
 
   // Note: similar help text in renderNoTimer()
@@ -108,7 +108,7 @@ export function renderResolveDecision(props: DecisionProps): JSX.Element {
   }
 
   const numAttemptsLeft = props.decision.choice.numAttempts - props.decision.outcomes.length;
-  const header = <p className="center"><strong>{choice.difficulty} {choice.persona} {choice.skill} ({numAttemptsLeft} {(numAttemptsLeft > 1) ? 'Attempts' : 'Attempt'} Left)</strong></p>
+  const header = <p className="center"><strong>{choice.difficulty} {choice.persona} {choice.skill} ({numAttemptsLeft} {(numAttemptsLeft > 1) ? 'Attempts' : 'Attempt'} Left)</strong></p>;
 
   let controls: JSX.Element;
   if (outcome.type === 'SUCCESS' || outcome.type === 'FAILURE' || outcome.type === 'INTERRUPTED') {
@@ -130,10 +130,10 @@ export function renderResolveDecision(props: DecisionProps): JSX.Element {
     title = 'Resolve Check';
   } else {
     title = {
-      'SUCCESS': 'Success!',
-      'FAILURE': 'Failure',
-      'INTERRUPTED': 'Interrupted',
-      'RETRY': 'Lend a Hand',
+      SUCCESS: 'Success!',
+      FAILURE: 'Failure',
+      INTERRUPTED: 'Interrupted',
+      RETRY: 'Lend a Hand',
     }[outcome.type] || 'Resolve Check';
   }
 
@@ -148,7 +148,7 @@ export function renderResolveDecision(props: DecisionProps): JSX.Element {
 }
 
 const Decision = (props: DecisionProps, theme: CardThemeType = 'light'): JSX.Element => {
-  switch(props.card.phase) {
+  switch (props.card.phase) {
     case 'PREPARE_DECISION':
       return renderPrepareDecision(props);
     case 'DECISION_TIMER':

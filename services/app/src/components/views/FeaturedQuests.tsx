@@ -1,9 +1,9 @@
-import * as React from 'react'
-import Card from '../base/Card'
-import Button from '../base/Button'
-import {SettingsType, UserState} from '../../reducers/StateTypes'
-import {QuestDetails} from '../../reducers/QuestTypes'
-import {openWindow} from '../../Globals'
+import * as React from 'react';
+import {openWindow} from '../../Globals';
+import {QuestDetails} from '../../reducers/QuestTypes';
+import {SettingsType, UserState} from '../../reducers/StateTypes';
+import Button from '../base/Button';
+import Card from '../base/Card';
 
 export interface FeaturedQuestsStateProps {
   quests: QuestDetails[];
@@ -27,7 +27,7 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
     })
     .map((quest: QuestDetails, index: number): JSX.Element => {
       return (
-        <Button onClick={() => props.onQuestSelect(quest)} key={index} id={'quest'+index.toString()}>
+        <Button onClick={() => props.onQuestSelect(quest)} key={index} id={'quest' + index.toString()}>
           <div className="questButton">
             <div className="title">{quest.title}</div>
             <div className="summary">{quest.summary}</div>
@@ -47,24 +47,24 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
       </Button>
       }
       {!props.settings.simulator && props.settings.experimental &&
-        <Button onClick={()=>props.onSavedQuests()} id="saved">
+        <Button onClick={() => props.onSavedQuests()} id="saved">
         <div className="questButtonWithIcon">
           <div className="title"><img className="inline_icon" src="images/compass_small.svg"/>Saved Quests - Beta</div>
         </div>
       </Button>
       }
-      <Button onClick={()=>props.onTools()} id="tools">
+      <Button onClick={() => props.onTools()} id="tools">
         <div className="questButtonWithIcon">
           <div className="title"><img className="inline_icon" src="images/roll_small.svg"/>Tools</div>
         </div>
       </Button>
-      <Button onClick={()=>openWindow('https://expeditiongame.com/store?utm_source=app')}>
+      <Button onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>
         <div className="questButtonWithIcon">
           <div className="title"><img className="inline_icon" src="images/loot_small.svg"/>Shop</div>
         </div>
       </Button>
     </Card>
   );
-}
+};
 
 export default FeaturedQuests;

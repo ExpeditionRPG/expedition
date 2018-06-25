@@ -1,8 +1,8 @@
-import {CombatState, CombatPhase} from './combat/Types'
-import {DecisionState, DecisionPhase} from './decision/Types'
-import {RoleplayPhase} from './roleplay/Types'
-import {Context} from 'shared/parse/Context'
-import {Node} from 'shared/parse/Node'
+import {Context} from 'shared/parse/Context';
+import {Node} from 'shared/parse/Node';
+import {CombatPhase, CombatState} from './combat/Types';
+import {DecisionPhase, DecisionState} from './decision/Types';
+import {RoleplayPhase} from './roleplay/Types';
 
 export interface TemplateState {
   combat?: CombatState;
@@ -18,5 +18,4 @@ export interface TemplateContext extends Context {
   _templateScopeFn: () => any;
 }
 
-
-export class ParserNode extends Node<TemplateContext>{};
+export class ParserNode extends Node<TemplateContext> {}

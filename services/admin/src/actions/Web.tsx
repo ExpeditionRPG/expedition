@@ -1,22 +1,22 @@
-import Redux from 'redux'
 import {
-  FeedbackQuery,
-  FeedbackMutation,
   FeedbackEntry,
-  QuestQuery,
-  QuestMutation,
+  FeedbackMutation,
+  FeedbackQuery,
   QuestEntry,
-  UserQuery,
-  UserMutation,
+  QuestMutation,
+  QuestQuery,
+  Response as APIResponse,
   UserEntry,
-  Response as APIResponse
-} from 'api/admin/QueryTypes'
-import {UpdateFeedbackAction, UpdateQuestAction, UpdateUserAction, QueryErrorAction} from './ActionTypes'
-import {authSettings} from '../Constants'
+  UserMutation,
+  UserQuery
+} from 'api/admin/QueryTypes';
+import Redux from 'redux';
+import {authSettings} from '../Constants';
+import {QueryErrorAction, UpdateFeedbackAction, UpdateQuestAction, UpdateUserAction} from './ActionTypes';
 
 function maybeParse(r: Response) {
   if (!r.ok) {
-    return r.json().then((r: any) => {throw Error(r.error || 'Server Error');});
+    return r.json().then((r: any) => {throw Error(r.error || 'Server Error'); });
   }
   return r.json();
 }
@@ -62,7 +62,6 @@ export function questsQuery(q: QuestQuery) {
     });
   };
 }
-
 
 export function usersQuery(q: UserQuery) {
   return (dispatch: Redux.Dispatch<any>) => {

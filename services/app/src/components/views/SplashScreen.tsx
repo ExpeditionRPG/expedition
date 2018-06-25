@@ -1,8 +1,8 @@
-import * as React from 'react'
-import MultiTouchTrigger from '../base/MultiTouchTrigger'
-import Button from '../base/Button'
-import {SPLASH_SCREEN_TIPS, DOUBLE_TAP_MS} from '../../Constants'
-import {AnnouncementState} from '../../reducers/StateTypes'
+import * as React from 'react';
+import {DOUBLE_TAP_MS, SPLASH_SCREEN_TIPS} from '../../Constants';
+import {AnnouncementState} from '../../reducers/StateTypes';
+import Button from '../base/Button';
+import MultiTouchTrigger from '../base/MultiTouchTrigger';
 
 interface PlayerCounterProps extends React.Props<any> {
   transitionMillis: number;
@@ -11,7 +11,7 @@ interface PlayerCounterProps extends React.Props<any> {
 }
 
 class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
-  state: {
+  public state: {
     tip: string;
     lastTouchTime: number;
     maxTouches: number;
@@ -20,7 +20,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
   };
 
   constructor(props: PlayerCounterProps) {
-    super(props)
+    super(props);
     this.state = {
       tip: SPLASH_SCREEN_TIPS[Math.floor(Math.random() * SPLASH_SCREEN_TIPS.length)],
       lastTouchTime: 0,
@@ -31,7 +31,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
   }
 
   // NOTE: transitionMillis is also defined in scss for the timer spinner
-  onTouchChange(numFingers: number) {
+  public onTouchChange(numFingers: number) {
     if (this.state.transitionTimeout) {
       clearTimeout(this.state.transitionTimeout);
       this.setState({transitionTimeout: null});
@@ -52,7 +52,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
     this.setState({touchCount: numFingers, maxTouches: Math.max(this.state.maxTouches, numFingers)});
   }
 
-  render() {
+  public render() {
     const showInstruction = (this.state.touchCount === 0);
     return (
       <div className="playerCounterContainer">
@@ -73,7 +73,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
 
 export interface SplashScreenStateProps {
   announcement: AnnouncementState;
-};
+}
 
 export interface SplashScreenDispatchProps {
   onAnnouncementTap: (announcement: AnnouncementState) => void;
@@ -103,6 +103,6 @@ const SplashScreen = (props: SplashScreenProps): JSX.Element => {
       />
     </div>
   );
-}
+};
 
 export default SplashScreen;

@@ -1,8 +1,8 @@
-import * as React from 'react'
-import {configure, shallow} from 'enzyme'
-import * as Adapter from 'enzyme-adapter-react-16'
+import {configure, shallow} from 'enzyme';
+import * as Adapter from 'enzyme-adapter-react-16';
+import * as React from 'react';
 configure({ adapter: new Adapter() });
-import ExpeditionCard, {ExpeditionCardProps} from './Card'
+import ExpeditionCard, {ExpeditionCardProps} from './Card';
 
 describe('Card', () => {
   function setup(overrides?: Partial<ExpeditionCardProps>) {

@@ -1,8 +1,8 @@
-import {Block} from '../block/BlockList'
-import {BlockRenderer} from './BlockRenderer'
-import {XMLRenderer} from './XMLRenderer'
-import {Logger, prettifyMsgs} from '../Logger'
-import TestData from './TestData'
+import {Block} from '../block/BlockList';
+import {Logger, prettifyMsgs} from '../Logger';
+import {BlockRenderer} from './BlockRenderer';
+import TestData from './TestData';
+import {XMLRenderer} from './XMLRenderer';
 
 const prettifyHTML = (require('html') as any).prettyPrint;
 
@@ -23,7 +23,7 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toCombat(blocks, log)
+      br.toCombat(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.genericCombatXML);
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.combatBadParseLog);
@@ -56,7 +56,7 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toCombat(blocks, log)
+      br.toCombat(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.badJSONXML);
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.badJSONLog);
@@ -72,11 +72,11 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toCombat(blocks, log)
+      br.toCombat(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.genericCombatXML);
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.combatNoEnemyOrEventsLog);
-    })
+    });
 
     it ('errors with bad enemy tier', () => {
       const log = new Logger();
@@ -105,9 +105,9 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toCombat(blocks, log)
+      br.toCombat(blocks, log);
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.combatBadTierLog);
-    })
+    });
 
     it('errors on inner block without event bullet');
 
@@ -138,7 +138,7 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toCombat(blocks, log)
+      br.toCombat(blocks, log);
       expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.fullCombatXML);
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
@@ -170,7 +170,7 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toCombat(blocks, log)
+      br.toCombat(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.combatConditionalEventXML);
       expect(prettifyMsgs(log.finalize())).toEqual('');
@@ -203,7 +203,7 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toCombat(blocks, log)
+      br.toCombat(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.combatJSONEnemyXML);
       expect(prettifyMsgs(log.finalize())).toEqual('');
@@ -244,7 +244,7 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toRoleplay(blocks, log)
+      br.toRoleplay(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.fullRoleplayXML);
       expect(prettifyMsgs(log.finalize())).toEqual('');
@@ -259,7 +259,7 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toRoleplay(blocks, log)
+      br.toRoleplay(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayNoTitle);
       expect(prettifyMsgs(log.finalize())).toEqual('');
@@ -274,7 +274,7 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toRoleplay(blocks, log)
+      br.toRoleplay(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayTitleIcons);
       expect(prettifyMsgs(log.finalize())).toEqual('');
@@ -289,7 +289,7 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toRoleplay(blocks, log)
+      br.toRoleplay(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayTitleIconsId);
       expect(prettifyMsgs(log.finalize())).toEqual('');
@@ -381,7 +381,7 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toRoleplay(blocks, log)
+      br.toRoleplay(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.roleplayWithID);
       expect(prettifyMsgs(log.finalize())).toEqual('');
@@ -405,7 +405,7 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toTrigger(blocks, log)
+      br.toTrigger(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual('<trigger data-line="21">end</trigger>');
       expect(prettifyMsgs(log.finalize())).toEqual('');
@@ -420,7 +420,7 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toTrigger(blocks, log)
+      br.toTrigger(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual('<trigger data-line="21">goto testid123</trigger>');
       expect(prettifyMsgs(log.finalize())).toEqual('');
@@ -435,7 +435,7 @@ describe('BlockRenderer', () => {
         },
       ];
 
-      br.toTrigger(blocks, log)
+      br.toTrigger(blocks, log);
 
       expect(prettifyHTML(blocks[0].render + '')).toEqual('<trigger if="a" data-line="21">end</trigger>');
       expect(prettifyMsgs(log.finalize())).toEqual('');
@@ -455,11 +455,11 @@ describe('BlockRenderer', () => {
         startLine: 0,
       };
 
-      br.toQuest(block, log)
+      br.toQuest(block, log);
 
       expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" data-line="0"></quest>');
       expect(prettifyMsgs(log.finalize())).toEqual('');
-    })
+    });
 
     it('errors if unparseable quest attribute', () => {
       const log = new Logger();
@@ -469,7 +469,7 @@ describe('BlockRenderer', () => {
         startLine: 0,
       };
 
-      br.toQuest(block, log)
+      br.toQuest(block, log);
 
       expect(prettifyHTML(block.render + '')).toEqual('<quest title="Quest Title" data-line="0"></quest>');
       expect(prettifyMsgs(log.finalize())).toEqual(TestData.badParseQuestAttrError);

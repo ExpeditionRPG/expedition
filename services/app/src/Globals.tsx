@@ -31,9 +31,9 @@ export interface ReactWindow extends Window {
     InAppBrowser?: {
       open?: any;
     }
-  }
+  };
   plugins?: {
-    insomnia?: {keepAwake: ()=>void},
+    insomnia?: {keepAwake: () => void},
     googleplus?: CordovaLoginPlugin,
   };
   Promise?: any;
@@ -43,13 +43,13 @@ export interface ReactWindow extends Window {
 declare var window: ReactWindow;
 
 const refs = {
-  window: window,
-  document: document,
+  window,
+  document,
   localStorage: null as (Storage|null),
   device: (typeof device !== 'undefined') ? device : {platform: null},
   ga: (typeof ga !== 'undefined') ? ga : null,
   gapi: (typeof gapi !== 'undefined') ? gapi : null,
-  history: (typeof history !== 'undefined') ? history : {pushState: () => {return null;}},
+  history: (typeof history !== 'undefined') ? history : {pushState: () => null},
   navigator: (typeof navigator !== 'undefined') ? navigator : null,
   cheerio: require('cheerio') as CheerioAPI,
 };
@@ -152,7 +152,7 @@ export function getLocalStorage(): Storage {
     const ret = d.cookie.indexOf('cookietest=') !== -1;
     d.cookie = 'cookietest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT';
     if (!ret) {
-      throw 'Cookies disabled';
+      throw new Error('Cookies disabled');
     }
     refs.localStorage = getWindow().localStorage;
   } catch (err) {
@@ -160,11 +160,11 @@ export function getLocalStorage(): Storage {
   } finally {
     if (!refs.localStorage) {
       refs.localStorage = {
-        clear: () => { return null },
-        getItem: (s: string) => { return null },
-        setItem: () => { return null },
-        removeItem: () => { return null },
-        key: (index: number|string) => {return null},
+        clear: () => null,
+        getItem: (s: string) => null,
+        setItem: () => null,
+        removeItem: () => null,
+        key: (index: number|string) => null,
         length: 0,
       } as Storage;
     }

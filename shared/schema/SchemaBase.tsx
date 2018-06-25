@@ -1,4 +1,4 @@
-import 'reflect-metadata'
+import 'reflect-metadata';
 
 // Regular 'joi' includes ES2015 concepts, which causes PhantomJS
 // browser to fail to parse it. The Joi library is also much heavier
@@ -59,7 +59,7 @@ export class SchemaBase {
       if (validKeys.indexOf(k) === -1) {
         continue;
       }
-      parsedFields[k] = fields[k]
+      parsedFields[k] = fields[k];
     }
 
     const missingFields: string[] = [];
@@ -115,7 +115,7 @@ export class SchemaBase {
   }
 
   private getJoiValidationParams() {
-    const keys: {[property:string]: any} = {};
+    const keys: {[property: string]: any} = {};
 
     for (const k of Object.keys(this.optionsMap)) {
       const m = this.optionsMap[k];
@@ -137,7 +137,7 @@ export class SchemaBase {
   public static initialize<T>(cls: any, fields: Partial<T>): T|Error {
     try {
       return new cls(fields);
-    } catch(e) {
+    } catch (e) {
       return e;
     }
   }

@@ -1,40 +1,40 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import Combat, {CombatStateProps, CombatDispatchProps} from './Combat'
-import {toPrevious, toCard} from '../../../../../actions/Card'
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {toCard, toPrevious} from '../../../../../actions/Card';
+import {event} from '../../../../../actions/Quest';
+import {MAX_ADVENTURER_HEALTH} from '../../../../../Constants';
+import {logEvent} from '../../../../../Logging';
+import {getMultiplayerClient} from '../../../../../Multiplayer';
+import {EventParameters} from '../../../../../reducers/QuestTypes';
+import {AppStateWithHistory, SettingsType} from '../../../../../reducers/StateTypes';
+import {getStore} from '../../../../../Store';
 import {
-  handleCombatTimerStart,
-  handleCombatTimerHold,
-  handleCombatTimerStop,
-  tierSumDelta,
-  adventurerDelta,
-  handleCombatEnd,
-  midCombatChoice,
-  handleResolvePhase,
-  generateCombatTemplate,
-  toDecisionCard
-} from './Actions'
-import {
-  handleDecisionTimerStart,
-  handleDecisionSelect,
   handleDecisionRoll,
-} from '../decision/Actions'
-import {DecisionType, DecisionState, EMPTY_DECISION_STATE} from '../decision/Types'
-import {event} from '../../../../../actions/Quest'
-import {AppStateWithHistory, SettingsType} from '../../../../../reducers/StateTypes'
-import {EventParameters} from '../../../../../reducers/QuestTypes'
-import {CombatState, CombatPhase} from './Types'
-import {MAX_ADVENTURER_HEALTH} from '../../../../../Constants'
-import {logEvent} from '../../../../../Logging'
-import {ParserNode} from '../TemplateTypes'
-import {getMultiplayerClient} from '../../../../../Multiplayer'
-import {getStore} from '../../../../../Store'
+  handleDecisionSelect,
+  handleDecisionTimerStart,
+} from '../decision/Actions';
+import {DecisionState, DecisionType, EMPTY_DECISION_STATE} from '../decision/Types';
+import {ParserNode} from '../TemplateTypes';
+import {
+  adventurerDelta,
+  generateCombatTemplate,
+  handleCombatEnd,
+  handleCombatTimerHold,
+  handleCombatTimerStart,
+  handleCombatTimerStop,
+  handleResolvePhase,
+  midCombatChoice,
+  tierSumDelta,
+  toDecisionCard
+} from './Actions';
+import Combat, {CombatDispatchProps, CombatStateProps} from './Combat';
+import {CombatPhase, CombatState} from './Types';
 
-declare var window:any;
+declare var window: any;
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps): CombatStateProps => {
   let maxTier = 0;
-  let histIdx: number = state._history.length-1;
+  let histIdx: number = state._history.length - 1;
   // card.phase currently represents combat boundaries - non-combat cards don't use phases
   while (Boolean(state._history[histIdx]) && state._history[histIdx].quest && state._history[histIdx].quest.node && state._history[histIdx].quest.node.ctx.templates.combat && histIdx > 0) {
     const combat = state._history[histIdx].quest.node.ctx.templates.combat;
@@ -88,7 +88,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     numAliveAdventurers: stateCombat.numAliveAdventurers,
     multiplayerState: state.multiplayer,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CombatDispatchProps => {
   return {
@@ -141,7 +141,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     },
     onTimerHeld: (node: ParserNode) => {
       // TODO
-      //dispatch(handleCombatTimerHeld({node}));
+      // dispatch(handleCombatTimerHeld({node}));
     },
     onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => {
       const multiplayerConnected = getMultiplayerClient().isConnected();
@@ -179,7 +179,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       dispatch(midCombatChoice({node, settings, index, maxTier, seed}));
     },
   };
-}
+};
 
 const CombatContainer = connect(
   mapStateToProps,

@@ -1,9 +1,9 @@
-import * as React from 'react'
-import Card from '../base/Card'
-import Button from '../base/Button'
-import {NODE_ENV} from '../../Constants'
-import {getAppVersion, openWindow} from '../../Globals'
-import {SettingsType, UserState} from '../../reducers/StateTypes'
+import * as React from 'react';
+import {NODE_ENV} from '../../Constants';
+import {getAppVersion, openWindow} from '../../Globals';
+import {SettingsType, UserState} from '../../reducers/StateTypes';
+import Button from '../base/Button';
+import Card from '../base/Card';
 
 export interface ToolsStateProps {
   settings: SettingsType;
@@ -60,6 +60,6 @@ const Tools = (props: ToolsProps): JSX.Element => {
       <div className="privacy"><a href="#" onClick={() => openWindow('https://expeditiongame.com/privacy')}>Privacy Policy</a></div>
     </Card>
   );
-}
+};
 
 export default Tools;

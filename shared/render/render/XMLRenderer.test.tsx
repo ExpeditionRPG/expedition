@@ -1,4 +1,4 @@
-import {XMLRenderer} from './XMLRenderer'
+import {XMLRenderer} from './XMLRenderer';
 
 const expect: any = require('expect');
 const cheerio: any = require('cheerio') as CheerioAPI;
@@ -6,10 +6,10 @@ const cheerio: any = require('cheerio') as CheerioAPI;
 describe('XMLRenderer', () => {
   describe('toCombat', () => {
     it('renders', () => {
-      const dummyWin = cheerio.load('<div>win</div>')('div')
+      const dummyWin = cheerio.load('<div>win</div>')('div');
       const dummyLose = cheerio.load('<div>lose</div>')('div');
       expect(XMLRenderer.toCombat(
-        {'enemies': [{text: 'Enemy1'}, {text: 'Enemy2', json: {tier: '3'}}]},
+        {enemies: [{text: 'Enemy1'}, {text: 'Enemy2', json: {tier: '3'}}]},
         [
           {text: 'on win', event: [dummyWin]},
           {text: 'on lose', event: [dummyLose]},
@@ -25,12 +25,12 @@ describe('XMLRenderer', () => {
 
     it('renders with condition', () => {
       expect(XMLRenderer.toTrigger({text: 'test', visible: 'cond'}, 0).toString()).toEqual('<trigger if=\"cond\" data-line="0">test</trigger>');
-    })
+    });
   });
 
   describe('toQuest', () => {
     it('renders', () => {
-      expect(XMLRenderer.toQuest({'title': 'title', 'a': '1', 'b': '2'}, 0).toString())
+      expect(XMLRenderer.toQuest({title: 'title', a: '1', b: '2'}, 0).toString())
         .toEqual('<quest title="title" a="1" b="2" data-line="0"></quest>');
     });
   });
@@ -60,9 +60,8 @@ describe('XMLRenderer', () => {
       const r = XMLRenderer.toRoleplay({}, ['test'], 1);
       const t = XMLRenderer.toTrigger({text: 'end'}, 2);
 
-      expect(XMLRenderer.finalize(quest, [r,t]).toString())
+      expect(XMLRenderer.finalize(quest, [r, t]).toString())
         .toEqual('<quest data-line="0"><roleplay data-line="1"><p>test</p></roleplay><trigger data-line="2">end</trigger></quest>');
-    })
+    });
   });
 });
-

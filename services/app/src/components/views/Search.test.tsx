@@ -1,3 +1,9 @@
+import {configure, render} from 'enzyme';
+import * as Adapter from 'enzyme-adapter-react-16';
+import {LanguageType} from 'shared/schema/Constants';
+import {FEATURED_QUESTS} from '../../Constants';
+import {QuestDetails} from '../../reducers/QuestTypes';
+import {SearchSettings} from '../../reducers/StateTypes';
 import {
   formatPlayPeriod,
   renderDetails,
@@ -5,13 +11,7 @@ import {
   SearchDetailsProps,
   SearchResultProps,
   smartTruncateSummary,
-} from './Search'
-import {SearchSettings} from '../../reducers/StateTypes'
-import {QuestDetails} from '../../reducers/QuestTypes'
-import {FEATURED_QUESTS} from '../../Constants'
-import {LanguageType} from 'shared/schema/Constants'
-import {configure, render} from 'enzyme'
-import * as Adapter from 'enzyme-adapter-react-16'
+} from './Search';
 configure({ adapter: new Adapter() });
 
 const TEST_SEARCH: SearchSettings = {
@@ -166,7 +166,6 @@ describe('Search', () => {
       const DEAD_WASTELAND_EXPECTED = 'A story influenced by the awesome game Dead of Winter: Your colony is attacked. How will you respond?';
       expect(smartTruncateSummary(DEAD_WASTELAND_SUMMARY)).toEqual(DEAD_WASTELAND_EXPECTED);
     });
-
 
     it('adds ellipses at a sentence boundary for a more natural feel', () => {
       const SHARDS_OF_TIME_SUMMARY = 'You wake-up in the middle of an Ash Barren wasteland of Aikania. Now you have to explore the lands but dark creatures are tormenting this land. Can you free Aikania from this horrible curse?';

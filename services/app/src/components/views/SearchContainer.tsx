@@ -1,14 +1,13 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import Search, {SearchStateProps, SearchDispatchProps} from './Search'
-import {toPrevious, toCard} from '../../actions/Card'
-import {setDialog} from '../../actions/Dialog'
-import {ensureLogin} from '../../actions/User'
-import {fetchQuestXML, subscribe} from '../../actions/Web'
-import {search, viewQuest} from '../../actions/Search'
-import {AppStateWithHistory, SearchSettings, SettingsType, UserState} from '../../reducers/StateTypes'
-import {QuestDetails} from '../../reducers/QuestTypes'
-
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {toCard, toPrevious} from '../../actions/Card';
+import {setDialog} from '../../actions/Dialog';
+import {search, viewQuest} from '../../actions/Search';
+import {ensureLogin} from '../../actions/User';
+import {fetchQuestXML, subscribe} from '../../actions/Web';
+import {QuestDetails} from '../../reducers/QuestTypes';
+import {AppStateWithHistory, SearchSettings, SettingsType, UserState} from '../../reducers/StateTypes';
+import Search, {SearchDispatchProps, SearchStateProps} from './Search';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: SearchStateProps): SearchStateProps => {
   return {
@@ -19,13 +18,13 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: SearchStateProps)
     phase: ownProps.phase,
     user: state.user,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SearchDispatchProps => {
   return {
     onLoginRequest: (sub: boolean) => {
       dispatch(ensureLogin())
-        .then((user: UserState)=> {
+        .then((user: UserState) => {
           if (sub && user.email && user.email !== '') {
             dispatch(subscribe({email: user.email}));
           }
@@ -52,11 +51,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
       dispatch(toPrevious({}));
     },
   };
-}
+};
 
 const SearchContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Search);
 
-export default SearchContainer
+export default SearchContainer;

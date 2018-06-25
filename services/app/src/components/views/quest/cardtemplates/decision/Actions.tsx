@@ -1,12 +1,12 @@
-import {SettingsType, MultiplayerState, AppStateWithHistory} from '../../../../../reducers/StateTypes'
-import {PLAYER_TIME_MULT} from '../../../../../Constants'
-import {DecisionState, DecisionType, OutcomeType, ScenarioType, DIFFICULTIES, SKILL_TYPES, PERSONA_TYPES, EMPTY_SCENARIO, EMPTY_DECISION} from './Types'
-import Redux from 'redux'
-import {remoteify, QuestNodeAction} from '../../../../../actions/ActionTypes'
-import {audioSet} from '../../../../../actions/Audio'
-import {ParserNode} from '../TemplateTypes'
-import SCENARIOS from './Scenarios'
-import * as seedrandom from 'seedrandom'
+import Redux from 'redux';
+import * as seedrandom from 'seedrandom';
+import {QuestNodeAction, remoteify} from '../../../../../actions/ActionTypes';
+import {audioSet} from '../../../../../actions/Audio';
+import {PLAYER_TIME_MULT} from '../../../../../Constants';
+import {AppStateWithHistory, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
+import {ParserNode} from '../TemplateTypes';
+import SCENARIOS from './Scenarios';
+import {DecisionState, DecisionType, DIFFICULTIES, EMPTY_DECISION, EMPTY_SCENARIO, OutcomeType, PERSONA_TYPES, ScenarioType, SKILL_TYPES} from './Types';
 
 const NUM_SKILL_CHECK_CHOICES = 3;
 // Generate 3 random combinations of difficulty, skill, and persona.
@@ -14,7 +14,7 @@ const NUM_SKILL_CHECK_CHOICES = 3;
 export function generateDecisions(settings: SettingsType, rng: () => number, maxAllowedAttempts?: number): DecisionType[] {
   const result: DecisionType[] = [];
   // TODO Make less dumb
-  const selection = [[0,1,1], [1,0,1]][Math.floor(rng() * 2)];
+  const selection = [[0, 1, 1], [1, 0, 1]][Math.floor(rng() * 2)];
 
   while (result.length < NUM_SKILL_CHECK_CHOICES) {
     const maxAttempts = Math.min(maxAllowedAttempts || 999, 3);
@@ -101,7 +101,7 @@ export const handleDecisionSelect = remoteify(function handleDecision(a: HandleD
   const arng = seedrandom.alea(a.seed);
   const choosable = SCENARIOS[a.decision.skill][a.decision.persona || ((arng() > 0.5) ? 'Light' : 'Dark')];
   decision.choice = a.decision;
-  decision.scenario = choosable[Math.floor(arng()*choosable.length)];
+  decision.scenario = choosable[Math.floor(arng() * choosable.length)];
   decision.numAttempts = a.decision.numAttempts;
 
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);

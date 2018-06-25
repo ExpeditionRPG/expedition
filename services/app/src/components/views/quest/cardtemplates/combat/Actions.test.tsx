@@ -1,9 +1,9 @@
-import {roundTimeMillis, initCombat, initCustomCombat, isSurgeNextRound, handleCombatTimerStop, handleCombatEnd, tierSumDelta, adventurerDelta, handleResolvePhase, midCombatChoice} from './Actions'
-import {DifficultyType, FontSizeType, MultiplayerState} from '../../../../../reducers/StateTypes'
-import {defaultContext} from '../Template'
-import {ParserNode} from '../TemplateTypes'
-import {newMockStore, Action} from '../../../../../Testing'
-import {initialMultiplayer} from '../../../../../reducers/Multiplayer'
+import {initialMultiplayer} from '../../../../../reducers/Multiplayer';
+import {DifficultyType, FontSizeType, MultiplayerState} from '../../../../../reducers/StateTypes';
+import {Action, newMockStore} from '../../../../../Testing';
+import {defaultContext} from '../Template';
+import {ParserNode} from '../TemplateTypes';
+import {adventurerDelta, handleCombatEnd, handleCombatTimerStop, handleResolvePhase, initCombat, initCustomCombat, isSurgeNextRound, midCombatChoice, roundTimeMillis, tierSumDelta} from './Actions';
 
 const cheerio: any = require('cheerio');
 
@@ -47,7 +47,7 @@ describe('Combat actions', () => {
 
   const newCombatNode = () => {
     return baseNode.clone();
-  }
+  };
 
   describe('roundTimeMillis', () => {
     it('Set timer to 10s with two+ players', () => {
@@ -95,7 +95,7 @@ describe('Combat actions', () => {
     it('Returns expected difficulty settings');
     it('Returns expected alive adventurers - one player');
     it('Returns expected alive adventurers - multiplayer');
-  })
+  });
 
   describe('initCustomCombat', () => {
     const actions = Action(initCustomCombat, {settings: TEST_SETTINGS}).execute({});
@@ -116,7 +116,7 @@ describe('Combat actions', () => {
       // "Play" until surge
       const store = newMockStore({settings: TEST_SETTINGS});
       let node = newCombatNode();
-      for(let i = 0; i < 10 && (!node || !isSurgeNextRound(node.ctx.templates.combat)); i++) {
+      for (let i = 0; i < 10 && (!node || !isSurgeNextRound(node.ctx.templates.combat)); i++) {
         store.clearActions();
         store.dispatch(handleCombatTimerStop({node, settings: TEST_SETTINGS, elapsedMillis: 1000, seed: ''}));
         const actions = store.getActions();
@@ -197,7 +197,7 @@ describe('Combat actions', () => {
 
       const loot = store.getActions()[1].node.ctx.templates.combat.loot;
       let lootCount = 0;
-      for(const l of loot) {
+      for (const l of loot) {
         lootCount += l.count;
       }
       expect(lootCount).toBeGreaterThan(0);
@@ -241,7 +241,7 @@ describe('Combat actions', () => {
       const node = Action(tierSumDelta).execute({node: newCombatNode(), current: 9, delta: -1000})[0].node;
       expect(node.ctx.templates.combat.tier).toEqual(0);
     });
-  })
+  });
 
   describe('adventurerDelta', () => {
     it('increases', () => {
@@ -343,7 +343,7 @@ describe('Combat actions', () => {
 
     const newCombatNode = () => {
       return baseNode.clone();
-    }
+    };
 
     it('goes to win screen on **win**', () => {
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newCombatNode(), index: 0, maxTier: 0, seed: ''});
@@ -362,7 +362,7 @@ describe('Combat actions', () => {
 
     it('goes to next round when pnode.getNext() falls outside of combat scope', () => {
       const node = newCombatNode();
-      const rp2 = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: node, index: 3, maxTier: 0, seed: ''})[1].node;
+      const rp2 = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node, index: 3, maxTier: 0, seed: ''})[1].node;
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: rp2, index: 0, maxTier: 0, seed: ''});
       expect(actions[2].to.phase).toEqual('RESOLVE_ABILITIES');
     });

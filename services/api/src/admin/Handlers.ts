@@ -1,10 +1,10 @@
-import * as express from 'express'
-import {suppressFeedback} from '../models/Feedback'
-import {Database, QuestInstance, FeedbackInstance, UserInstance} from '../models/Database'
-import {setLootPoints} from '../models/Users'
-import {unpublishQuest, republishQuest, getQuest} from '../models/Quests'
-import {Quest} from 'shared/schema/Quests'
-import * as QT from './QueryTypes'
+import * as express from 'express';
+import {Quest} from 'shared/schema/Quests';
+import {Database, FeedbackInstance, QuestInstance, UserInstance} from '../models/Database';
+import {suppressFeedback} from '../models/Feedback';
+import {getQuest, republishQuest, unpublishQuest} from '../models/Quests';
+import {setLootPoints} from '../models/Users';
+import * as QT from './QueryTypes';
 
 const QUERY_ROW_LIMIT = 100;
 
@@ -89,10 +89,10 @@ export function queryFeedback(db: Database, req: express.Request, res: express.R
             } as QT.FeedbackEntry;
           });
       }));
-    }).then((results: (QT.FeedbackEntry|null)[]) => {
+    }).then((results: Array<QT.FeedbackEntry|null>) => {
       return results.filter((r: QT.FeedbackEntry|null) => {
         return r !== null;
-      })
+      });
     }).then((results: QT.FeedbackEntry[]) => {
       res.status(200).send(JSON.stringify(results));
     }).catch(handleErrors(res));

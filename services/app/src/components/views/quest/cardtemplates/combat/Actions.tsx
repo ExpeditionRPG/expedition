@@ -1,21 +1,21 @@
-import Redux from 'redux'
-import * as seedrandom from 'seedrandom'
-import {PLAYER_DAMAGE_MULT} from '../../../../../Constants'
-import {Enemy, Loot} from '../../../../../reducers/QuestTypes'
-import {CombatDifficultySettings, CombatAttack} from './Types'
-import {DifficultyType, SettingsType, AppStateWithHistory, MultiplayerState} from '../../../../../reducers/StateTypes'
-import {defaultContext} from '../Template'
-import {ParserNode} from '../TemplateTypes'
-import {CombatState} from './Types'
-import {audioSet} from '../../../../../actions/Audio'
-import {toCard} from '../../../../../actions/Card'
-import {COMBAT_DIFFICULTY, PLAYER_TIME_MULT, MUSIC_INTENSITY_MAX} from '../../../../../Constants'
-import {ENCOUNTERS} from '../../../../../Encounters'
-import {QuestNodeAction, remoteify} from '../../../../../actions/ActionTypes'
-import {loadNode} from '../../../../../actions/Quest'
-import {setMultiplayerStatus} from '../../../../../actions/Multiplayer'
-import {getStore} from '../../../../../Store'
-import {DecisionPhase} from '../decision/Types'
+import Redux from 'redux';
+import * as seedrandom from 'seedrandom';
+import {QuestNodeAction, remoteify} from '../../../../../actions/ActionTypes';
+import {audioSet} from '../../../../../actions/Audio';
+import {toCard} from '../../../../../actions/Card';
+import {setMultiplayerStatus} from '../../../../../actions/Multiplayer';
+import {loadNode} from '../../../../../actions/Quest';
+import {COMBAT_DIFFICULTY, MUSIC_INTENSITY_MAX, PLAYER_TIME_MULT} from '../../../../../Constants';
+import {PLAYER_DAMAGE_MULT} from '../../../../../Constants';
+import {ENCOUNTERS} from '../../../../../Encounters';
+import {Enemy, Loot} from '../../../../../reducers/QuestTypes';
+import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
+import {getStore} from '../../../../../Store';
+import {DecisionPhase} from '../decision/Types';
+import {defaultContext} from '../Template';
+import {ParserNode} from '../TemplateTypes';
+import {CombatState} from './Types';
+import {CombatAttack, CombatDifficultySettings} from './Types';
 
 const cheerio: any = require('cheerio');
 
@@ -70,14 +70,14 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
   const totalAdventurerCount = numLocalAndMultiplayerAdventurers(settings, multiplayer);
 
   return {
-    custom: custom,
+    custom,
     enemies,
     roundCount: 0,
     decisionPhase: 'PREPARE_DECISION',
     numAliveAdventurers: totalAdventurerCount,
     tier: tierSum,
     ...getDifficultySettings(settings.difficulty),
-  }
+  };
 }
 
 interface ToDecisionCardArgs {
@@ -239,7 +239,7 @@ function generateCombatAttack(node: ParserNode, settings: SettingsType, rp: Mult
   return {
     surge: isSurgeNextRound(combat),
     damage,
-  }
+  };
 }
 
 function generateLoot(maxTier: number, adventurers: number, rng: () => number): Loot[] {
@@ -279,7 +279,7 @@ function generateLoot(maxTier: number, adventurers: number, rng: () => number): 
     }
   }
 
-  for (let i = loot.length-1; i >= 0; i--) {
+  for (let i = loot.length - 1; i >= 0; i--) {
     if (!loot[i].count) {
       loot.splice(i, 1);
     }
@@ -288,7 +288,7 @@ function generateLoot(maxTier: number, adventurers: number, rng: () => number): 
   return loot;
 }
 
-function generateRolls(count: number, rng: ()=>number): number[] {
+function generateRolls(count: number, rng: () => number): number[] {
   const rolls = [];
   for (let i = 0; i < count; i++) {
     rolls.push(Math.floor(rng() * 20) + 1);
@@ -312,7 +312,7 @@ function randomAttackDamage(rng: () => number) {
   } else { // r >= 0.45
     return 1;
   }
-};
+}
 
 export function isSurgeRound(rounds: number, surgePd: number): boolean {
   return (surgePd - ((rounds - 1) % surgePd + 1)) === 0;

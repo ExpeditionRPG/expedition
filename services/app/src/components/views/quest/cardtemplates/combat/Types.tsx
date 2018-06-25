@@ -1,6 +1,6 @@
-import {ParserNode} from '../TemplateTypes'
-import {Enemy, Loot} from '../../../../../reducers/QuestTypes'
-import {DecisionPhase} from '../decision/Types'
+import {Enemy, Loot} from '../../../../../reducers/QuestTypes';
+import {DecisionPhase} from '../decision/Types';
+import {ParserNode} from '../TemplateTypes';
 
 export type SkillType = 'Athletics' | 'Knowledge' | 'Charisma';
 export type DifficultyType = 'Easy' | 'Medium' | 'Hard';
@@ -31,10 +31,10 @@ export interface EndCombatPhase {
 }
 
 export interface CombatDifficultySettings {
-  surgePeriod: number,
-  decisionPeriod: number,
-  damageMultiplier: number,
-  maxRoundDamage: number,
+  surgePeriod: number;
+  decisionPeriod: number;
+  damageMultiplier: number;
+  maxRoundDamage: number;
 }
 
 export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {
@@ -52,4 +52,3 @@ export type CombatPhase = 'DRAW_ENEMIES'
   | 'NO_TIMER'
   | 'MID_COMBAT_ROLEPLAY'
   | 'MID_COMBAT_DECISION';
-

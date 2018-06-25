@@ -1,7 +1,7 @@
-import {SchemaBase, field, copyAndUnsetDefaults} from '../SchemaBase'
+import {copyAndUnsetDefaults, field, SchemaBase} from '../SchemaBase';
 
 export class Event extends SchemaBase {
-  static create(fields: Partial<Event>) {
+  public static create(fields: Partial<Event>) {
     return super.initialize(this, fields);
   }
 
@@ -9,7 +9,7 @@ export class Event extends SchemaBase {
     super(fields);
   }
 
-  withoutDefaults() {
+  public withoutDefaults() {
     return copyAndUnsetDefaults(Event, this);
   }
 
@@ -17,38 +17,38 @@ export class Event extends SchemaBase {
     primaryKey: true,
     allowNull: false,
     extra: 'BIGINT',
-  }) session: number;
+  }) public session: number;
 
   @field({
     primaryKey: true,
     allowNull: false,
-  }) timestamp: Date;
+  }) public timestamp: Date;
 
   @field({
     allowNull: false,
     maxLength: 255,
     default: '',
-  }) client: string;
+  }) public client: string;
 
   @field({
     allowNull: false,
     maxLength: 255,
     default: '',
-  }) instance: string;
+  }) public instance: string;
 
   @field({
     allowNull: false,
     extra: 'BIGINT',
     default: 0,
-  }) id: number;
+  }) public id: number;
 
   @field({
     maxLength: 32,
     default: '',
     allowNull: false,
-  }) type: string;
+  }) public type: string;
 
   @field({
     default: '',
-  }) json: string;
+  }) public json: string;
 }

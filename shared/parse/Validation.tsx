@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from 'react';
 
 // TODO(https://github.com/ExpeditionRPG/expedition-app/issues/291): Actually use this
 
@@ -24,7 +24,7 @@ export function validate(root: Cheerio) {
 
 // Validate this node and all children for invalid tags.
 // Returns a map of tagName->count of the invalid elements found.
-function getInvalidNodesAndAttributes(node: Cheerio): { [key:string]:number; } {
+function getInvalidNodesAndAttributes(node: Cheerio): { [key: string]: number; } {
   const results: any = {};
 
   // Quests must only contain these tags:
@@ -56,9 +56,9 @@ function getInvalidNodesAndAttributes(node: Cheerio): { [key:string]:number; } {
 
 // Validate this node and all children for duplicate IDs.
 // Returns a map of id->[element] of all duplicate elements with the same IDs.
-function getDuplicateIds(node: Cheerio): { [key:string]:string[]; } {
+function getDuplicateIds(node: Cheerio): { [key: string]: string[]; } {
   const map = generateIdMapping(node);
-  const results: { [key:string]:string[]; } = {};
+  const results: { [key: string]: string[]; } = {};
   Object.keys(map).forEach((k: string) => {
     if (map[k].length > 1) {
       results[k] = map[k];
@@ -68,8 +68,8 @@ function getDuplicateIds(node: Cheerio): { [key:string]:string[]; } {
 }
 
 // Builds and returns a map of all IDs to all nodes with that ID.
-function generateIdMapping(node: Cheerio): { [key:string]:string[]; } {
-  const map: { [key:string]:string[]; } = {};
+function generateIdMapping(node: Cheerio): { [key: string]: string[]; } {
+  const map: { [key: string]: string[]; } = {};
   if (node.attr('id')) {
     const id = node.attr('id');
     map[id] = (map[id] || []).concat([node.get(0).tagName.toLowerCase()]);

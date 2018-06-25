@@ -8,4 +8,4 @@ describe('QDL Mode', () => {
   it('correctly identifies rows to show the fold widget on');
 
   it('correctly identifies the start and end row of an expansion');
-})
+});

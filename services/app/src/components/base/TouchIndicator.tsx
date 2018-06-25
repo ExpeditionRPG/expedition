@@ -1,15 +1,15 @@
-import * as React from 'react'
-import {COLORBLIND_FRIENDLY_PALETTE} from '../../Constants'
+import * as React from 'react';
+import {COLORBLIND_FRIENDLY_PALETTE} from '../../Constants';
 
 export interface TouchIndicatorProps extends React.Props<any> {
   clientInputs: {[client: string]: {[id: string]: number[]}};
 }
 
 export default class TouchIndicator extends React.Component<TouchIndicatorProps, {}> {
-  ctx: any;
-  canvas: any;
+  public ctx: any;
+  public canvas: any;
   private boundDrawTouchPoints: () => void;
-  styles: any;
+  public styles: any;
 
   constructor(props: TouchIndicatorProps) {
     super(props);
@@ -26,7 +26,7 @@ export default class TouchIndicator extends React.Component<TouchIndicatorProps,
     };
   }
 
-  componentWillReceiveProps(nextProps: TouchIndicatorProps) {
+  public componentWillReceiveProps(nextProps: TouchIndicatorProps) {
     // Request a single animation frame every time our input values change,
     // instead of rendering continuously (saves render load).
     window.requestAnimationFrame(this.boundDrawTouchPoints);
@@ -56,7 +56,7 @@ export default class TouchIndicator extends React.Component<TouchIndicatorProps,
     }
   }
 
-  setupCanvas(ref: Element|null) {
+  public setupCanvas(ref: Element|null) {
     // We have nothing to do if we're given the same canvas as previous.
     if (this.canvas === ref) {
       return;
@@ -76,9 +76,9 @@ export default class TouchIndicator extends React.Component<TouchIndicatorProps,
     this.ctx.canvas.height = this.canvas.parentElement.offsetHeight;
   }
 
-  render() {
+  public render() {
     return (
-       <canvas className="base_multi_touch_trigger touch_indicator" ref={(ref: Element|null) => {this.setupCanvas(ref);}} />
+       <canvas className="base_multi_touch_trigger touch_indicator" ref={(ref: Element|null) => {this.setupCanvas(ref); }} />
     );
   }
 }

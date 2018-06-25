@@ -1,20 +1,20 @@
-import * as React from 'react'
-import Truncate from 'react-truncate'
-import MenuItem from '@material-ui/core/MenuItem'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import Select from '@material-ui/core/Select'
-import TextField from '@material-ui/core/TextField'
-import DoneIcon from '@material-ui/icons/Done'
-import StarsIcon from '@material-ui/icons/Stars'
-import Button from '../base/Button'
-import Card from '../base/Card'
-import Checkbox from '../base/Checkbox'
-import StarRating from '../base/StarRating'
-import {SearchSettings, SearchPhase, SearchState, SettingsType, UserState} from '../../reducers/StateTypes'
-import {QuestDetails} from '../../reducers/QuestTypes'
-import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants'
-import {CONTENT_RATING_DESC, GenreType, LANGUAGES} from 'shared/schema/Constants'
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
+import DoneIcon from '@material-ui/icons/Done';
+import StarsIcon from '@material-ui/icons/Stars';
+import * as React from 'react';
+import Truncate from 'react-truncate';
+import {CONTENT_RATING_DESC, GenreType, LANGUAGES} from 'shared/schema/Constants';
+import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants';
+import {QuestDetails} from '../../reducers/QuestTypes';
+import {SearchPhase, SearchSettings, SearchState, SettingsType, UserState} from '../../reducers/StateTypes';
+import Button from '../base/Button';
+import Card from '../base/Card';
+import Checkbox from '../base/Checkbox';
+import StarRating from '../base/StarRating';
 
 const Moment = require('moment');
 
@@ -35,8 +35,7 @@ export interface SearchDispatchProps {
   onReturn: () => void;
 }
 
-export interface SearchProps extends SearchStateProps, SearchDispatchProps {};
-
+export interface SearchProps extends SearchStateProps, SearchDispatchProps {}
 
 // We make this a react component to hold a bit of state and avoid sending
 // redux actions for every single change to input.
@@ -48,19 +47,19 @@ export interface SearchSettingsCardProps {
 }
 
 export class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
-  state: SearchSettings;
+  public state: SearchSettings;
 
   constructor(props: SearchSettingsCardProps) {
-    super(props)
+    super(props);
     this.state = this.props.search;
   }
 
-  onChange(attrib: string, value: any) {
+  public onChange(attrib: string, value: any) {
     this.setState({[attrib]: value});
   }
 
 // TODO remove the clutter here / move to Theme.tsx
-  render() {
+  public render() {
     const rating = (this.state.contentrating) ? CONTENT_RATING_DESC[this.state.contentrating] : undefined;
     const timeBuckets = PLAYTIME_MINUTES_BUCKETS.map((minutes: number, index: number) => {
       return <MenuItem key={index} value={minutes}>{`${minutes} min`}</MenuItem>;
@@ -148,7 +147,7 @@ export class SearchSettingsCard extends React.Component<SearchSettingsCardProps,
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('language', e.target.value)}
               value={this.state.language}
             >
-              {LANGUAGES.map((language:string, i: number) => { return <MenuItem key={i} value={language}>{language}</MenuItem>})}
+              {LANGUAGES.map((language: string, i: number) => <MenuItem key={i} value={language}>{language}</MenuItem>)}
             </Select>
           </FormControl>
           <FormControl className="selectfield halfLeft">
@@ -161,7 +160,7 @@ export class SearchSettingsCard extends React.Component<SearchSettingsCardProps,
               value={this.state.genre}
             >
               <MenuItem value={undefined}>All genres</MenuItem>
-              {visibleGenres.map((genre:string, i: number) => { return <MenuItem key={i} value={genre}>{genre}</MenuItem>})}
+              {visibleGenres.map((genre: string, i: number) => <MenuItem key={i} value={genre}>{genre}</MenuItem>)}
             </Select>
           </FormControl>
           <FormControl className="selectfield halfRight">
@@ -278,7 +277,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
   }
 
   return (
-    <Button key={props.index} onClick={() => props.onQuest(quest)} id={'quest-'+props.index}>
+    <Button key={props.index} onClick={() => props.onQuest(quest)} id={'quest-' + props.index}>
       <div className={classes.join(' ')}>
         <table className="searchResultsTitleTable">
           <tbody>
@@ -353,7 +352,7 @@ export interface SearchDetailsProps {
 export function renderDetails(props: SearchDetailsProps): JSX.Element {
   const quest = props.quest;
   if (!quest) {
-    return <Card title="Quest Details">Loading...</Card>
+    return <Card title="Quest Details">Loading...</Card>;
   }
   // TODO FIXME to actually use array and join logic
   const requires = [];
@@ -383,8 +382,8 @@ export function renderDetails(props: SearchDetailsProps): JSX.Element {
           {quest.awarded && <div className="inline_icon"><StarsIcon className="inline_icon" /> {quest.awarded}</div>}
         </div>
       </div>
-      <Button className="bigbutton" onClick={(e)=>props.onPlay(quest, props.isDirectLinked)} id="play">Play</Button>
-      <Button id="searchDetailsBackButton" onClick={(e)=>props.onReturn()} >Pick a different quest</Button>
+      <Button className="bigbutton" onClick={(e) => props.onPlay(quest, props.isDirectLinked)} id="play">Play</Button>
+      <Button id="searchDetailsBackButton" onClick={(e) => props.onReturn()} >Pick a different quest</Button>
       <div className="searchDetailsExtended">
         <h3>Details</h3>
         <table className="searchDetailsTable">
@@ -412,22 +411,22 @@ interface SearchDisclaimerCardProps {
 }
 
 class SearchDisclaimerCard extends React.Component<SearchDisclaimerCardProps, {}> {
-  state: {
+  public state: {
     subscribe: boolean;
   };
 
   constructor(props: SearchDisclaimerCardProps) {
-    super(props)
+    super(props);
     this.state = {
       subscribe: false,
     };
   }
 
-  onSubscribeChange(value: boolean) {
+  public onSubscribeChange(value: boolean) {
     this.setState({subscribe: value});
   }
 
-  render() {
+  public render() {
     return (
       <Card title="Disclaimer">
         <p>
@@ -444,7 +443,7 @@ class SearchDisclaimerCard extends React.Component<SearchDisclaimerCardProps, {}
         <Checkbox label="Join the Mailing List" value={this.state.subscribe} onChange={(v: boolean) => { this.onSubscribeChange(v); }}>
           Learn about the latest quests, features and more - once per month!
         </Checkbox>
-        <Button onClick={(e)=>this.props.onLoginRequest(this.state.subscribe)}>Continue with Google</Button>
+        <Button onClick={(e) => this.props.onLoginRequest(this.state.subscribe)}>Continue with Google</Button>
       </Card>
     );
   }
@@ -454,7 +453,7 @@ function renderDisclaimer(props: SearchProps): JSX.Element {
 }
 
 const Search = (props: SearchProps): JSX.Element => {
-  switch(props.phase) {
+  switch (props.phase) {
     case 'DISCLAIMER':
       return renderDisclaimer(props);
     case 'SETTINGS':
@@ -474,6 +473,6 @@ const Search = (props: SearchProps): JSX.Element => {
     default:
       throw new Error('Unknown search phase ' + props.phase);
   }
-}
+};
 
 export default Search;

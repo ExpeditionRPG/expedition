@@ -1,19 +1,19 @@
-import * as React from 'react'
-import AppBar from '@material-ui/core/AppBar'
-import FormControl from '@material-ui/core/FormControl'
-import IconButton from '@material-ui/core/IconButton'
-import InputLabel from '@material-ui/core/InputLabel'
-import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import AutoRenew from '@material-ui/icons/Autorenew'
-import HelpOutline from '@material-ui/icons/HelpOutline'
+import AppBar from '@material-ui/core/AppBar';
+import FormControl from '@material-ui/core/FormControl';
+import IconButton from '@material-ui/core/IconButton';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import AutoRenew from '@material-ui/icons/Autorenew';
+import HelpOutline from '@material-ui/icons/HelpOutline';
+import * as React from 'react';
 
-import {FiltersState} from '../reducers/StateTypes'
+import {FiltersState} from '../reducers/StateTypes';
 
 export interface TopBarStateProps extends React.Props<any> {
-  filters: FiltersState,
+  filters: FiltersState;
 }
 
 export interface TopBarDispatchProps {
@@ -22,10 +22,10 @@ export interface TopBarDispatchProps {
   openHelp: () => void;
 }
 
-export interface TopBarProps extends TopBarStateProps, TopBarDispatchProps {};
+export interface TopBarProps extends TopBarStateProps, TopBarDispatchProps {}
 
 class TopBar extends React.Component<TopBarProps, {}> {
-  render() {
+  public render() {
     const filtersCurrent = Object.keys(this.props.filters).reduce((acc: any, name: string) => {
       acc[name] = this.props.filters[name].current;
       return acc;
@@ -36,12 +36,12 @@ class TopBar extends React.Component<TopBarProps, {}> {
         let text = option;
         // For "all" default values, nicen up their text presentation to users
         if (typeof option === 'string' && option.toLowerCase() === 'all') {
-          text = 'All ' + name + ((['s', 'x'].indexOf(name[name.length-1]) !== -1) ? 'es' : 's');
+          text = 'All ' + name + ((['s', 'x'].indexOf(name[name.length - 1]) !== -1) ? 'es' : 's');
         // For sources, remove the ":LONGIDSTRING" and just show the user the name of the source
         } else if (name === 'source') {
           text = text.split(':')[0];
         }
-        return <MenuItem key={index} value={option}>{text}</MenuItem>
+        return <MenuItem key={index} value={option}>{text}</MenuItem>;
       });
       return (
         <FormControl>

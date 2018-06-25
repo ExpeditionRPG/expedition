@@ -1,7 +1,7 @@
-import * as React from 'react'
-import {Provider} from 'react-redux'
-import CompositorContainer from 'app/components/CompositorContainer'
-import {getStore as getAppStore} from 'app/Store'
+import CompositorContainer from 'app/components/CompositorContainer';
+import {getStore as getAppStore} from 'app/Store';
+import * as React from 'react';
+import {Provider} from 'react-redux';
 
 export interface AppStateProps {
 }

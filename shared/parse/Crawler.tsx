@@ -1,11 +1,11 @@
-import {Node} from './Node'
-import {Context} from './Context'
+import {Context} from './Context';
+import {Node} from './Node';
 
 const FastPriorityQueue: any = require('fastpriorityqueue');
 
 export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END' | 'MAX_DEPTH_EXCEEDED' | 'ALREADY_SEEN';
 
-export type CrawlEntry<C extends Context> = {node: Node<C>|null, prevNodeStr: string, prevId: string, prevLine: number, depth: number};
+export interface CrawlEntry<C extends Context> {node: Node<C>|null; prevNodeStr: string; prevId: string; prevLine: number; depth: number; }
 
 interface CrawlPriorityQueue<C extends Context> {
   add: (v: CrawlEntry<C>) => void;
@@ -68,7 +68,7 @@ export abstract class CrawlerBase<C extends Context> {
     }
 
     const start = Date.now();
-    while(this.queue.size > 0 && (!timeLimitMillis || (Date.now() - start) < timeLimitMillis)) {
+    while (this.queue.size > 0 && (!timeLimitMillis || (Date.now() - start) < timeLimitMillis)) {
       const q = this.queue.poll();
 
       // If we've gone too deep into the quest, don't crawl further.

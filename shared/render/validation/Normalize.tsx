@@ -1,4 +1,4 @@
-import {Logger} from '../Logger'
+import {Logger} from '../Logger';
 
 export class AttributeNormalizer {
   private keySet: string[];
@@ -23,7 +23,7 @@ export class AttributeNormalizer {
     return v;
   }
 
-  getBoolean(k: string, required?: boolean) {
+  public getBoolean(k: string, required?: boolean) {
     const v = this.extract(k, required);
 
     if (v === undefined) {
@@ -46,7 +46,7 @@ export class AttributeNormalizer {
     return false;
   }
 
-  getString(k: string, required?: boolean) {
+  public getString(k: string, required?: boolean) {
     const v = this.extract(k, required);
 
     if (v === undefined) {
@@ -60,7 +60,7 @@ export class AttributeNormalizer {
     return 'UNDEFINED';
   }
 
-  getNumber(k: string, required?: boolean) {
+  public getNumber(k: string, required?: boolean) {
     const v: any = this.extract(k, required);
 
     if (v === undefined) {
@@ -77,7 +77,7 @@ export class AttributeNormalizer {
     return 0;
   }
 
-  confirmNoExtra() {
+  public confirmNoExtra() {
     for (const k of Object.keys(this.attrs)) {
       let found = false;
       for (const j of this.keySet) {
@@ -99,7 +99,7 @@ export class AttributeNormalizer {
 }
 
 export class Normalize {
-  static questAttrs(attrs: {[k: string]: string}, log?: Logger): ({[k: string]: any}) {
+  public static questAttrs(attrs: {[k: string]: string}, log?: Logger): ({[k: string]: any}) {
     const n = new AttributeNormalizer(attrs, log);
     const result = {
       title: n.getString('title', true),
@@ -117,11 +117,11 @@ export class Normalize {
     return result;
   }
 
-  static combatAttrs(attrs: {[k: string]: string}, log?: Logger): ({[k: string]: any}) {
+  public static combatAttrs(attrs: {[k: string]: string}, log?: Logger): ({[k: string]: any}) {
     return {}; // TODO
   }
 
-  static roleplayAttrs(attrs: {[k: string]: string}, log?: Logger): ({[k: string]: any}) {
+  public static roleplayAttrs(attrs: {[k: string]: string}, log?: Logger): ({[k: string]: any}) {
     return {}; // TODO
   }
 }

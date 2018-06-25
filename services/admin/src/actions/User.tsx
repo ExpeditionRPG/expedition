@@ -1,11 +1,11 @@
-import * as React from 'react'
-import Redux from 'redux'
-import {SetProfileMetaAction} from './ActionTypes'
-import {setSnackbar} from './Snackbar'
-import {UserState} from '../reducers/StateTypes'
-import {loggedOutUser} from '../reducers/User'
-import {getGA, getGapi} from '../Globals'
-import {authSettings} from '../Constants'
+import * as React from 'react';
+import Redux from 'redux';
+import {authSettings} from '../Constants';
+import {getGA, getGapi} from '../Globals';
+import {UserState} from '../reducers/StateTypes';
+import {loggedOutUser} from '../reducers/User';
+import {SetProfileMetaAction} from './ActionTypes';
+import {setSnackbar} from './Snackbar';
 
 declare var gapi: any;
 declare var window: any;
@@ -15,7 +15,6 @@ type UserLoginCallback = (user: UserState, err?: string) => any;
 export function setProfileMeta(user: UserState): SetProfileMetaAction {
   return {type: 'SET_PROFILE_META', user};
 }
-
 
 export function handleFetchErrors(response: any) {
   if (!response.ok) {
@@ -46,7 +45,7 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
     let id = '';
     try {
       id = JSON.parse(userResult).id || userResult;
-    } catch(err) {
+    } catch (err) {
       id = userResult;
     }
     if (getGA()) {
@@ -122,7 +121,7 @@ function silentLoginWeb(callback: UserLoginCallback) {
   });
 }
 
-export function logoutUser(): ((dispatch: Redux.Dispatch<any>)=>void) {
+export function logoutUser(): ((dispatch: Redux.Dispatch<any>) => void) {
   return (dispatch: Redux.Dispatch<any>) => {
     window.gapi.auth.setToken(null);
     window.gapi.auth.signOut();
@@ -131,7 +130,7 @@ export function logoutUser(): ((dispatch: Redux.Dispatch<any>)=>void) {
     window.location.hash = '';
 
     window.location.reload();
-  }
+  };
 }
 
 export function silentLogin(callback: (user: UserState) => void) {
@@ -153,7 +152,7 @@ export function login(callback: (user: UserState) => any) {
       }
       dispatch({type: 'USER_LOGIN', user});
       callback(user);
-    }
+    };
     loginWeb(loginCallback);
   };
 }

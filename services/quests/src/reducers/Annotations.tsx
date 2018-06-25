@@ -1,7 +1,7 @@
-import Redux from 'redux'
-import {LogMessage, LogMessageMap} from 'shared/render/Logger'
-import {AnnotationType, AnnotationsState} from './StateTypes'
-import {QuestRenderAction, QuestPlaytestAction} from '../actions/ActionTypes'
+import Redux from 'redux';
+import {LogMessage, LogMessageMap} from 'shared/render/Logger';
+import {QuestPlaytestAction, QuestRenderAction} from '../actions/ActionTypes';
+import {AnnotationsState, AnnotationType} from './StateTypes';
 
 const initialAnnotations: AnnotationsState = {
   spellcheck: [],
@@ -20,7 +20,7 @@ function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: 
     result.push({
       row: m.line || 0,
       column: 0,
-      text: m.type[0].toUpperCase() + m.type.substring(1) + ' ' + m.url + ': ' +m.text,
+      text: m.type[0].toUpperCase() + m.type.substring(1) + ' ' + m.url + ': ' + m.text,
       type: m.type,
     });
   }
@@ -64,6 +64,5 @@ export function annotations(state: AnnotationsState = initialAnnotations, action
     default:
       return state;
   }
-
 
 }

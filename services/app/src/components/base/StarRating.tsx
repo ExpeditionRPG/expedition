@@ -1,9 +1,9 @@
 // Inspired by https://github.com/lawrentiy/react-material-ui-rating
-import * as React from 'react'
-import IconButton from '@material-ui/core/Button'
-import Star from '@material-ui/icons/Star'
-import StarBorder from '@material-ui/icons/StarBorder'
-import StarHalf from '@material-ui/icons/StarHalf'
+import IconButton from '@material-ui/core/Button';
+import Star from '@material-ui/icons/Star';
+import StarBorder from '@material-ui/icons/StarBorder';
+import StarHalf from '@material-ui/icons/StarHalf';
+import * as React from 'react';
 
 export interface StarRatingProps {
   hintText?: boolean;
@@ -15,9 +15,9 @@ export interface StarRatingProps {
 }
 
 export default class StarRating extends React.Component<StarRatingProps, {}> {
-  render() {
+  public render() {
     const ratings = [null, 'Hated it', 'Disliked it', 'It\'s OK', 'Liked it', 'Loved it'];
-    const stars = [1,2,3,4,5].map((i: number): JSX.Element => {
+    const stars = [1, 2, 3, 4, 5].map((i: number): JSX.Element => {
       let star = null;
 
       const classes = ['star'];

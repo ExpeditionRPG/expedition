@@ -1,11 +1,11 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
+import Redux from 'redux';
 
-import {UserEntry, QuestEntry, FeedbackEntry} from 'api/admin/QueryTypes'
-import {DialogIDType, AppState} from '../reducers/StateTypes'
-import {setDialog} from '../actions/Dialogs'
-import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
-import {mutateUser, mutateQuest, mutateFeedback} from '../actions/Web'
+import {FeedbackEntry, QuestEntry, UserEntry} from 'api/admin/QueryTypes';
+import {setDialog} from '../actions/Dialogs';
+import {mutateFeedback, mutateQuest, mutateUser} from '../actions/Web';
+import {AppState, DialogIDType} from '../reducers/StateTypes';
+import Dialogs, {DialogsDispatchProps, DialogsStateProps} from './Dialogs';
 
 const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
   return {
@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
     quest: (state.view.selected.quest !== null) ? state.view.quests[state.view.selected.quest] : null,
     user: (state.view.selected.user !== null) ? state.view.users[state.view.selected.user] : null,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DialogsDispatchProps => {
   return {
@@ -44,11 +44,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
       dispatch(mutateFeedback({partition: feedback.partition, questid: feedback.quest.id, userid: feedback.user.id, suppress}));
     },
   };
-}
+};
 
 const DialogsContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Dialogs);
 
-export default DialogsContainer
+export default DialogsContainer;

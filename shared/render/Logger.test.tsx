@@ -1,5 +1,5 @@
-import {Block} from './block/BlockList'
-import {LogMessage, Logger, prettifyMsg, prettifyMsgs} from './Logger'
+import {Block} from './block/BlockList';
+import {Logger, LogMessage, prettifyMsg, prettifyMsgs} from './Logger';
 
 const expect: any = require('expect');
 
@@ -44,7 +44,7 @@ describe('LogMessage', () => {
       const msg = new Logger();
       msg.internal('internal error', '505', 5);
       expect(msg.finalize()).toEqual([testMsgs[3]]);
-    })
+    });
   });
 
   describe('prettifyMsgs', () => {
@@ -63,4 +63,3 @@ describe('LogMessage', () => {
     });
   });
 });
-

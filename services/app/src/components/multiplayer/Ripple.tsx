@@ -1,6 +1,6 @@
-import * as React from 'react'
-import * as classNames from 'classnames'
-import {Transition} from 'react-transition-group'
+import * as classNames from 'classnames';
+import * as React from 'react';
+import {Transition} from 'react-transition-group';
 
 interface RippleProps {
   classes: any;
@@ -15,24 +15,24 @@ interface RippleState {
 }
 
 export default class Ripple extends React.Component<RippleProps, RippleState> {
-  state = {
+  public state = {
     visible: false,
     leaving: false,
   };
 
-  handleEnter = () => {
+  public handleEnter = () => {
     this.setState({
       visible: true,
     });
-  };
+  }
 
-  handleExit = () => {
+  public handleExit = () => {
     this.setState({
       leaving: true,
     });
-  };
+  }
 
-  render() {
+  public render() {
     console.log('Rendering ripple');
     const {
       classes,

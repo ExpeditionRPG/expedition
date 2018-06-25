@@ -1,15 +1,14 @@
-import * as React from 'react'
-import TextField from '@material-ui/core/TextField'
-import Checkbox from '@material-ui/core/Checkbox'
-import Button from '../../base/Button'
-import Card from '../../base/Card'
-import StarRating from '../../base/StarRating'
-import {logQuestPlay} from '../../../actions/Web'
-import {CheckoutState, QuestState, SettingsType, UserState} from '../../../reducers/StateTypes'
+import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import TextField from '@material-ui/core/TextField';
+import * as React from 'react';
+import {logQuestPlay} from '../../../actions/Web';
+import {CheckoutState, QuestState, SettingsType, UserState} from '../../../reducers/StateTypes';
+import Button from '../../base/Button';
+import Card from '../../base/Card';
+import StarRating from '../../base/StarRating';
 
-declare var window:any;
-
+declare var window: any;
 
 export interface QuestEndStateProps {
   checkout: CheckoutState;
@@ -25,10 +24,10 @@ export interface QuestEndDispatchProps {
   onTip: (checkoutError: string|null, amount: number, quest: QuestState, settings: SettingsType, user: UserState, anonymous: boolean, text: string, rating: number|null) => void;
 }
 
-export interface QuestEndProps extends QuestEndStateProps, QuestEndDispatchProps {};
+export interface QuestEndProps extends QuestEndStateProps, QuestEndDispatchProps {}
 
 export default class QuestEnd extends React.Component<QuestEndProps, {}> {
-  state: {anonymous: boolean, text: string, rating: number|null};
+  public state: {anonymous: boolean, text: string, rating: number|null};
 
   constructor(props: QuestEndProps) {
     super(props);
@@ -36,7 +35,7 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
     logQuestPlay({phase: 'end'});
   }
 
-  render() {
+  public render() {
     const rated = this.state.rating !== null && (this.state.rating > 0);
     // TODO ping server to determine if payments are enabled
     // TODO figure out why loading Stripe crashes iOS app
@@ -53,7 +52,7 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
           ${tip}
         </Button>
       );
-    })
+    });
     // TODO TextField underlineShow={false}
     return (
       <Card title={this.props.quest.details.title}>

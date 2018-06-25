@@ -1,11 +1,11 @@
-import * as Redux from 'redux'
-import {SearchResponseAction} from './ActionTypes'
-import {QuestDetails} from '../reducers/QuestTypes'
-import {ExpansionsType, SearchSettings, SettingsType, CardPhase} from '../reducers/StateTypes'
-import {remoteify} from './ActionTypes'
-import {AUTH_SETTINGS, FEATURED_QUESTS} from '../Constants'
-import {toCard} from './Card'
-import {openSnackbar} from '../actions/Snackbar'
+import * as Redux from 'redux';
+import {openSnackbar} from '../actions/Snackbar';
+import {AUTH_SETTINGS, FEATURED_QUESTS} from '../Constants';
+import {QuestDetails} from '../reducers/QuestTypes';
+import {CardPhase, ExpansionsType, SearchSettings, SettingsType} from '../reducers/StateTypes';
+import {SearchResponseAction} from './ActionTypes';
+import {remoteify} from './ActionTypes';
+import {toCard} from './Card';
 
 export const viewQuest = remoteify(function viewQuest(a: {quest: QuestDetails}, dispatch: Redux.Dispatch<any>) {
   dispatch({type: 'VIEW_QUEST', quest: a.quest});
@@ -23,12 +23,12 @@ export const search = remoteify(function search(a: {search: SearchSettings, sett
   });
   params.players = a.settings.numPlayers;
   const dispatchPhase = (params.partition === 'expedition-private') ? 'PRIVATE' : 'SEARCH';
-  params.expansions = Object.keys(a.settings.contentSets).filter( key => a.settings.contentSets[key] ) as ExpansionsType[],
+  params.expansions = Object.keys(a.settings.contentSets).filter( (key) => a.settings.contentSets[key] ) as ExpansionsType[],
   dispatch(toCard({name: 'SEARCH_CARD', phase: dispatchPhase as CardPhase}));
   dispatch(getSearchResults(params, (quests: QuestDetails[], response: any) => {
     dispatch({
       type: 'SEARCH_RESPONSE',
-      quests: quests,
+      quests,
       nextToken: response.nextToken,
       receivedAt: response.receivedAt,
       search: params,
@@ -50,7 +50,7 @@ export const searchAndPlay = remoteify(function searchAndPlay(id: string, dispat
     dispatch(getSearchResults(params, (quests: QuestDetails[], response: any) => {
       dispatch({
         type: 'SEARCH_RESPONSE',
-        quests: quests,
+        quests,
         nextToken: response.nextToken,
         receivedAt: response.receivedAt,
         search: {}, // Don't specify search params because this one's weird and uses ID
@@ -69,7 +69,7 @@ export const searchAndPlay = remoteify(function searchAndPlay(id: string, dispat
 });
 
 // TODO switch to fetch since this never loads local files
-function getSearchResults(params: SearchSettings, callback: (quests: QuestDetails[], response: any)=>void) {
+function getSearchResults(params: SearchSettings, callback: (quests: QuestDetails[], response: any) => void) {
   return (dispatch: Redux.Dispatch<any>) => {
     // Clear previous results
     dispatch({type: 'SEARCH_REQUEST'});
@@ -98,8 +98,8 @@ function getSearchResults(params: SearchSettings, callback: (quests: QuestDetail
     };
     xhr.onerror = () => {
       dispatch(openSnackbar(Error('Network error: Please check your connection.')));
-    }
+    };
     xhr.withCredentials = true;
     xhr.send(JSON.stringify(params));
-  }
+  };
 }

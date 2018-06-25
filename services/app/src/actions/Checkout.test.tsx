@@ -1,5 +1,5 @@
-import {toCheckout} from './Checkout'
-import {newMockStore} from '../Testing'
+import {newMockStore} from '../Testing';
+import {toCheckout} from './Checkout';
 
 describe('Checkout actions', () => {
   describe('CheckoutSetState', () => {

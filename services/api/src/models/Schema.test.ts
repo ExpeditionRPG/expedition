@@ -1,9 +1,9 @@
-import {SchemaBase, field, NOW} from 'shared/schema/SchemaBase'
-import {toSequelize} from './Schema'
-import Sequelize from 'sequelize'
+import Sequelize from 'sequelize';
+import {field, NOW, SchemaBase} from 'shared/schema/SchemaBase';
+import {toSequelize} from './Schema';
 
 class Example extends SchemaBase {
-  static create(fields: Partial<Example>) {
+  public static create(fields: Partial<Example>) {
     return super.initialize(this, fields);
   }
 
@@ -15,61 +15,61 @@ class Example extends SchemaBase {
     primaryKey: true,
     allowNull: false,
     maxLength: 255,
-  }) requiredStringPkey: string;
+  }) public requiredStringPkey: string;
 
   @field({
     maxLength: 255,
     default: '',
-  }) defaultEmptyString: string;
+  }) public defaultEmptyString: string;
 
   @field({
     default: 0,
     column: 'column_name',
-  }) remappedNumber: number;
+  }) public remappedNumber: number;
 
   @field({
     default: NOW,
-  }) nowDate: Date;
+  }) public nowDate: Date;
 
   @field({
-  }) emptyDate: Date;
+  }) public emptyDate: Date;
 }
 
 describe('Schema', () => {
   describe('toSequelize', () => {
     it('constructs a sequelize model definition', () => {
       expect(toSequelize(new Example({requiredStringPkey: '', emptyDate: new Date()}))).toEqual({
-        'defaultEmptyString': {
-          'defaultValue': '',
-          'type': {
-            '_binary': undefined,
-            '_length': 255,
-            'options': {
-              'binary': undefined,
-              'length': 255,
+        defaultEmptyString: {
+          defaultValue: '',
+          type: {
+            _binary: undefined,
+            _length: 255,
+            options: {
+              binary: undefined,
+              length: 255,
             },
           },
         },
-        'emptyDate': {
-          'type': Sequelize.DATE,
+        emptyDate: {
+          type: Sequelize.DATE,
         },
-        'nowDate': {
-          'defaultValue': '_now',
-          'type': Sequelize.DATE,
+        nowDate: {
+          defaultValue: '_now',
+          type: Sequelize.DATE,
         },
-        'remappedNumber': {
-          'defaultValue': 0,
-          'field': 'column_name',
-          'type': Sequelize.INTEGER,
+        remappedNumber: {
+          defaultValue: 0,
+          field: 'column_name',
+          type: Sequelize.INTEGER,
         },
-        'requiredStringPkey': {
-          'allowNull': false, 'primaryKey': true,
-          'type': {
-            '_binary': undefined,
-            '_length': 255,
-            'options': {
-              'binary': undefined,
-              'length': 255,
+        requiredStringPkey: {
+          allowNull: false, primaryKey: true,
+          type: {
+            _binary: undefined,
+            _length: 255,
+            options: {
+              binary: undefined,
+              length: 255,
             },
           },
         },

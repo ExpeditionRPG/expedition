@@ -1,12 +1,11 @@
-import {QDLParser} from './QDLParser'
-import {prettifyMsgs} from './Logger'
-import {XMLRenderer} from './render/XMLRenderer'
-import {BlockList} from './block/BlockList'
-import TestData from './TestData'
+import {BlockList} from './block/BlockList';
+import {prettifyMsgs} from './Logger';
+import {QDLParser} from './QDLParser';
+import {XMLRenderer} from './render/XMLRenderer';
+import TestData from './TestData';
 
 const expect: any = require('expect');
 const prettifyHTML = (require('html') as any).prettyPrint;
-
 
 describe('QDLParser', () => {
   it('parses basic QDL to XML', () => {
@@ -15,9 +14,9 @@ describe('QDLParser', () => {
     qdl.render(new BlockList(TestData.basicMD));
     const msgs = qdl.getFinalizedLogs();
 
-    expect(msgs['error']).toEqual([]);
-    expect(msgs['warning']).toEqual([]);
-    expect(msgs['internal']).toEqual([]);
+    expect(msgs.error).toEqual([]);
+    expect(msgs.warning).toEqual([]);
+    expect(msgs.internal).toEqual([]);
     expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.basicXML);
   });
 
@@ -27,9 +26,9 @@ describe('QDLParser', () => {
     qdl.render(new BlockList(TestData.conditionalsMD));
     const msgs = qdl.getFinalizedLogs();
 
-    expect(msgs['error']).toEqual([]);
-    expect(msgs['warning']).toEqual([]);
-    expect(msgs['internal']).toEqual([]);
+    expect(msgs.error).toEqual([]);
+    expect(msgs.warning).toEqual([]);
+    expect(msgs.internal).toEqual([]);
     expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.conditionalsXML);
   });
 
@@ -39,9 +38,9 @@ describe('QDLParser', () => {
     qdl.render(new BlockList(TestData.commentsMD));
     const msgs = qdl.getFinalizedLogs();
 
-    expect(msgs['error']).toEqual([]);
-    expect(msgs['warning']).toEqual([]);
-    expect(msgs['internal']).toEqual([]);
+    expect(msgs.error).toEqual([]);
+    expect(msgs.warning).toEqual([]);
+    expect(msgs.internal).toEqual([]);
     expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.commentsXML);
   });
 
@@ -51,9 +50,9 @@ describe('QDLParser', () => {
     qdl.render(new BlockList(TestData.indentsMD));
     const msgs = qdl.getFinalizedLogs();
 
-    expect(msgs['error']).toEqual([]);
-    expect(msgs['warning']).toEqual([]);
-    expect(msgs['internal']).toEqual([]);
+    expect(msgs.error).toEqual([]);
+    expect(msgs.warning).toEqual([]);
+    expect(msgs.internal).toEqual([]);
     expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.indentsXML);
   });
 
@@ -65,7 +64,7 @@ describe('QDLParser', () => {
     qdl.render(new BlockList(''));
 
     expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.emptyXML);
-    expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.emptyError);
+    expect(prettifyMsgs(qdl.getFinalizedLogs().error)).toEqual(TestData.emptyError);
   });
 
   it('errors if only quest block');
@@ -75,7 +74,7 @@ describe('QDLParser', () => {
 
     qdl.render(new BlockList(TestData.noHeaderMD));
 
-    expect(prettifyMsgs(qdl.getFinalizedLogs()['error'])).toEqual(TestData.noHeaderError);
+    expect(prettifyMsgs(qdl.getFinalizedLogs().error)).toEqual(TestData.noHeaderError);
   });
 
   it('treats trigger as singular block, always', () => {
@@ -84,9 +83,9 @@ describe('QDLParser', () => {
     qdl.render(new BlockList(TestData.triggerWithNoAfterHeader));
     const msgs = qdl.getFinalizedLogs();
 
-    expect(msgs['error']).toEqual([]);
-    expect(msgs['warning']).toEqual([]);
-    expect(msgs['internal']).toEqual([]);
+    expect(msgs.error).toEqual([]);
+    expect(msgs.warning).toEqual([]);
+    expect(msgs.internal).toEqual([]);
     expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.triggerWithNoAfterHeaderXML);
   });
 });

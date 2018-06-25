@@ -1,4 +1,4 @@
-import Config from '../config'
+import Config from '../config';
 
 const winston: any = require('winston');
 const expressWinston: any = require('express-winston');
@@ -10,7 +10,7 @@ const requestLogger = expressWinston.logger({
   transports: [
     new winston.transports.Console({
       json: false,
-      colorize: colorize,
+      colorize,
     }),
   ],
   expressFormat: true,
@@ -22,14 +22,14 @@ const errorLogger = expressWinston.errorLogger({
   transports: [
     new winston.transports.Console({
       json: true,
-      colorize: colorize,
+      colorize,
     }),
   ],
 });
 
 export default {
-  requestLogger: requestLogger,
-  errorLogger: errorLogger,
+  requestLogger,
+  errorLogger,
   error: winston.error,
   warn: winston.warn,
   info: winston.info,

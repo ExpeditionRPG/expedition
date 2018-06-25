@@ -1,7 +1,7 @@
-import * as React from 'react'
-import TextView from './base/TextView'
-import {AnnotationType, TutorialState} from '../reducers/StateTypes'
-import AppContainer from './AppContainer'
+import * as React from 'react';
+import {AnnotationType, TutorialState} from '../reducers/StateTypes';
+import AppContainer from './AppContainer';
+import TextView from './base/TextView';
 
 export interface QuestIDEStateProps {
   annotations: AnnotationType[];
@@ -13,7 +13,7 @@ export interface QuestIDEStateProps {
   showLineNumbers: boolean;
   showSpellcheck: boolean;
   tutorial: TutorialState;
-};
+}
 
 export interface QuestIDEDispatchProps {
   onDirty: (realtime: any, text: string) => void;
@@ -22,7 +22,6 @@ export interface QuestIDEDispatchProps {
 }
 
 interface QuestIDEProps extends QuestIDEStateProps, QuestIDEDispatchProps {}
-
 
 const QuestIDE = (props: QuestIDEProps): JSX.Element => {
   return (
@@ -48,6 +47,6 @@ const QuestIDE = (props: QuestIDEProps): JSX.Element => {
       </div>
     </div>
   );
-}
+};
 
 export default QuestIDE;

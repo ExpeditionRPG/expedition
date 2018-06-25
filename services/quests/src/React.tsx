@@ -1,23 +1,23 @@
-import * as React from 'react'
-import * as Redux from 'redux'
-import {render} from 'react-dom'
-import {Provider} from 'react-redux'
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
-import {renderAndPlay} from './actions/Editor'
-import {loginUser} from './actions/User'
-import {saveQuest, questLoading} from './actions/Quest'
-import {setSnackbar} from './actions/Snackbar'
-import MainContainer from './components/MainContainer'
-import {store} from './Store'
-import {VERSION} from './Constants'
-import theme from 'shared/Theme'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import * as React from 'react';
+import {render} from 'react-dom';
+import {Provider} from 'react-redux';
+import * as Redux from 'redux';
+import theme from 'shared/Theme';
+import {renderAndPlay} from './actions/Editor';
+import {questLoading, saveQuest} from './actions/Quest';
+import {setSnackbar} from './actions/Snackbar';
+import {loginUser} from './actions/User';
+import MainContainer from './components/MainContainer';
+import {VERSION} from './Constants';
+import {store} from './Store';
 
 // For hot reload
 declare var require: any;
 declare var module: any;
 
 // For dev tools extension
-declare var window:any;
+declare var window: any;
 
 // For URL parsing
 declare var unescape: any;
@@ -33,9 +33,7 @@ export type ThunkAction<R, S = {}, E = {}, A extends Redux.Action<any> = Redux.A
   extraArgument: E
 ) => R;
 declare module 'redux' {
-  export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {
-    <R, E>(asyncAction: ThunkAction<R, {}, E, A>): R;
-  }
+  export type Dispatch<A extends Redux.Action<any> = Redux.AnyAction> = <R, E>(asyncAction: ThunkAction<R, {}, E, A>) => R;
 }
 
 window.onerror = (message: string, source: string, line: number) => {
@@ -88,7 +86,7 @@ window.onbeforeunload = function() {
     return false;
   }
   return null;
-}
+};
 
 // Ctrl + <hotkey>
 window.addEventListener('keydown', (event: any) => {

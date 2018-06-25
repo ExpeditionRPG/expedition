@@ -1,7 +1,7 @@
-import * as React from 'react'
-import {MultiplayerState} from '../../reducers/StateTypes'
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {TransitionGroup, CSSTransition} from 'react-transition-group'
+import * as React from 'react';
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
+import {MultiplayerState} from '../../reducers/StateTypes';
 
 export const FADE_ENTER_ANIMATION_MS = 500;
 export const FADE_EXIT_ANIMATION_MS = 500;
@@ -17,18 +17,18 @@ export interface MultiplayerSyncDispatchProps {
 export interface MultiplayerSyncProps extends MultiplayerSyncStateProps, MultiplayerSyncDispatchProps {}
 
 class SyncContainer extends React.Component<MultiplayerSyncDispatchProps, {}> {
-  componentDidMount() {
-    setTimeout(() => {this.props.onAnimationComplete();}, FADE_ENTER_ANIMATION_MS);
+  public componentDidMount() {
+    setTimeout(() => {this.props.onAnimationComplete(); }, FADE_ENTER_ANIMATION_MS);
   }
 
-  render() {
+  public render() {
     return <div className="remote_sync">{this.props.children}</div>;
   }
 }
 
 export default class MultiplayerSync extends React.Component<MultiplayerSyncProps, {}> {
 
-  render() {
+  public render() {
     // TODO: this could be much more fancy.
     // Single action (choice):
     // - Fade in a button and remote-ripple it with the client's choice,

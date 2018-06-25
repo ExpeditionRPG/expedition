@@ -1,4 +1,4 @@
-import {evaluateOp, evaluateContentOps, updateContext, defaultContext} from './Context'
+import {defaultContext, evaluateContentOps, evaluateOp, updateContext} from './Context';
 const cheerio: any = require('cheerio');
 
 declare var window: any;
@@ -57,7 +57,7 @@ describe('Context', () => {
       const ctx = defaultContext();
       updateContext(dummyElem, ctx, 2);
       expect(ctx.path).not.toEqual([2]);
-    })
+    });
     it('updates view count');
   });
 

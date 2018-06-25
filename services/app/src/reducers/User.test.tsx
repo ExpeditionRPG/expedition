@@ -1,4 +1,4 @@
-import {UserState} from './StateTypes'
+import {UserState} from './StateTypes';
 
 export const testLoggedInUser: UserState = {
   loggedIn: true,

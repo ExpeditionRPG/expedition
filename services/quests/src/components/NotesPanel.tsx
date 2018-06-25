@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from 'react';
 
 declare var gapi: any;
 
@@ -20,17 +20,17 @@ interface RealtimeTextAreaProps extends React.Props<any> {
 }
 
 class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
-  silentChange: boolean;
-  ref: any;
+  public silentChange: boolean;
+  public ref: any;
 
-  getValue() {
+  public getValue() {
     if (this.props.realtime) {
       return this.props.realtime.getText();
     }
     return '';
   }
 
-  setValue(value: string) {
+  public setValue(value: string) {
     if (this.props.realtime) {
       // Don't allow async undo... for now. We instead rely on ace's UndoManager.
       // TODO: Figure out UX when undoing notes from the main editor, and vice versa.
@@ -41,10 +41,10 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
     }
   }
 
-  onRef(ref:any) {
+  public onRef(ref: any) {
     this.ref = ref;
     if (!this.ref) {
-      return
+      return;
     }
 
     if (this.props.realtime) {
@@ -54,7 +54,7 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
     this.componentWillReceiveProps(this.props);
   }
 
-  onTextInserted(event: any) {
+  public onTextInserted(event: any) {
     if (event.isLocal) {
       return;
     }
@@ -63,7 +63,7 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
     this.silentChange = false;
   }
 
-  onTextDeleted(event: any) {
+  public onTextDeleted(event: any) {
     if (event.isLocal) {
       return;
     }
@@ -72,7 +72,7 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
     this.silentChange = false;
   }
 
-  componentWillReceiveProps(newProps: any) {
+  public componentWillReceiveProps(newProps: any) {
     // Ensure we're registered to the newest realtime value.
     if (this.props.realtime) {
       this.props.realtime.removeAllEventListeners();
@@ -81,7 +81,7 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
     newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, (event: any) => { this.onTextDeleted(event); });
   }
 
-  onChange(e: any) {
+  public onChange(e: any) {
     if (this.silentChange) {
       return;
     }
@@ -89,7 +89,7 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
     this.ref.value = this.props.realtime.getText();
   }
 
-  render() {
+  public render() {
     let text = 'Loading...';
     if (this.props.realtime) {
       text = this.props.realtime.getText();

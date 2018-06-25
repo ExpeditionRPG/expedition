@@ -1,14 +1,14 @@
-import * as React from 'react'
-import Redux from 'redux'
-import {filtersCalculate} from './Filters'
-import {getStore} from '../Store'
-import {icon} from '../helpers'
-import {CardType, TranslationsType, FiltersState} from '../reducers/StateTypes'
+import * as React from 'react';
+import Redux from 'redux';
+import {icon} from '../helpers';
+import {CardType, FiltersState, TranslationsType} from '../reducers/StateTypes';
+import {getStore} from '../Store';
+import {filtersCalculate} from './Filters';
 
 declare var require: any;
 const Tabletop = require('tabletop') as any;
 
-export function downloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
+export function downloadCards(): ((dispatch: Redux.Dispatch<any>) => void) {
   return (dispatch: Redux.Dispatch<any>) => {
     const store = getStore();
     dispatch(cardsLoading());
@@ -53,7 +53,7 @@ export function downloadCards(): ((dispatch: Redux.Dispatch<any>)=>void) {
         dispatch(filtersCalculate(store.getState().cards.filtered));
       },
     });
-  }
+  };
 }
 
 export interface CardsLoadingAction extends Redux.Action {
@@ -92,7 +92,6 @@ export function cardsFilter(cards: CardType[], filters: FiltersState): CardsFilt
   return {type: 'CARDS_FILTER', cards, filters};
 }
 
-
 // Filters the cards and returns them formatted based on the filters
 export function filterAndFormatCards(cards: CardType[], filters: FiltersState): CardType[] {
   if (cards === null) {
@@ -115,7 +114,6 @@ export function filterAndFormatCards(cards: CardType[], filters: FiltersState): 
     })
     .map((card: CardType) => formatCard(card, filters));
 }
-
 
 const iconRegex = /#\w*/mg;
 const boldColonedRegex = /[^#:.\n]*?:/g;
@@ -160,7 +158,7 @@ function formatCard(card: CardType, filters: FiltersState): CardType {
             }
             // Bold "Declaration: "
             if (boldColonedRegex.test(str)) {
-              return <strong key={index}>{str}</strong>
+              return <strong key={index}>{str}</strong>;
             }
             // Parse & wrap symbols (<, >, etc) in a span for better style control
             if (symbolRegex.test(str)) {

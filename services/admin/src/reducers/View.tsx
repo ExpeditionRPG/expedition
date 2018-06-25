@@ -1,15 +1,15 @@
 import {
+  QueryErrorAction,
+  SelectRowAction,
   SetViewAction,
   SetViewFeedbackAction,
   SetViewQuestsAction,
   SetViewUsersAction,
-  SelectRowAction,
-  UpdateUserAction,
-  UpdateQuestAction,
   UpdateFeedbackAction,
-  QueryErrorAction
-} from '../actions/ActionTypes'
-import {ViewState} from './StateTypes'
+  UpdateQuestAction,
+  UpdateUserAction
+} from '../actions/ActionTypes';
+import {ViewState} from './StateTypes';
 
 export const defaultView: ViewState = {
   view: 'FEEDBACK',
@@ -24,7 +24,7 @@ export const defaultView: ViewState = {
 declare type ViewActions = SetViewAction|SetViewFeedbackAction|SetViewQuestsAction|SetViewUsersAction|SelectRowAction|UpdateUserAction|UpdateQuestAction|UpdateFeedbackAction|QueryErrorAction;
 
 export function view(state: ViewState = defaultView, action: ViewActions): ViewState {
-  switch(action.type) {
+  switch (action.type) {
     case 'SET_VIEW':
       return {...state, view: action.view};
     case 'SET_VIEW_FEEDBACK':

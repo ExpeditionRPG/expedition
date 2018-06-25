@@ -1,9 +1,9 @@
-import * as Redux from 'redux'
-import {AppStateWithHistory} from './reducers/StateTypes'
-import {init} from './Init'
-import {installStore} from './Store'
-import {setDocument, setWindow} from './Globals'
-import {newMockStoreWithInitializedState} from './Testing'
+import * as Redux from 'redux';
+import {setDocument, setWindow} from './Globals';
+import {init} from './Init';
+import {AppStateWithHistory} from './reducers/StateTypes';
+import {installStore} from './Store';
+import {newMockStoreWithInitializedState} from './Testing';
 
 function dummyDOM(): Document {
   const doc = document.implementation.createHTMLDocument('testdoc');
@@ -12,8 +12,8 @@ function dummyDOM(): Document {
   doc.body.appendChild(result);
 
   // PhantomJS has no custom event trigger setup. we must add our own.
-  const evtListeners: {[e:string]: ((event: any)=>any)[]} = {};
-  (doc as any).addEventListener = (e: string, f: ()=>any, useCapture?: boolean) => {
+  const evtListeners: {[e: string]: Array<(event: any) => any>} = {};
+  (doc as any).addEventListener = (e: string, f: () => any, useCapture?: boolean) => {
     if (!evtListeners[e]) {
       evtListeners[e] = [];
     }
@@ -27,7 +27,7 @@ function dummyDOM(): Document {
       f(e);
     }
     return true;
-  }
+  };
 
   return doc;
 }
@@ -66,7 +66,7 @@ describe('React', () => {
         const actions = fakeStore.getActions();
         expect(actions.length).toEqual(1);
         // Action 0 is expansion select dialog
-        expect(actions[0]).toEqual(jasmine.objectContaining({type:'RETURN'}));
+        expect(actions[0]).toEqual(jasmine.objectContaining({type: 'RETURN'}));
       });
       it('keeps screen on');
       it('sets device style');

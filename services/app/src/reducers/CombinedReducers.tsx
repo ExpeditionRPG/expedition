@@ -1,20 +1,20 @@
-import Redux from 'redux'
-import {announcement} from './Announcement'
-import {audio} from './Audio'
-import {card} from './Card'
-import {checkout} from './Checkout'
-import {dialog} from './Dialog'
-import {quest} from './Quest'
-import {saved} from './Saved'
-import {search} from './Search'
-import {settings} from './Settings'
-import {snackbar} from './Snackbar'
-import {user} from './User'
-import {multiplayer} from './Multiplayer'
-import {inflight} from './InFlight'
-import {AppStateWithHistory, AppState, AppStateBase} from './StateTypes'
-import {ReturnAction} from '../actions/ActionTypes'
-import {getHistoryApi, getNavigator} from '../Globals'
+import Redux from 'redux';
+import {ReturnAction} from '../actions/ActionTypes';
+import {getHistoryApi, getNavigator} from '../Globals';
+import {announcement} from './Announcement';
+import {audio} from './Audio';
+import {card} from './Card';
+import {checkout} from './Checkout';
+import {dialog} from './Dialog';
+import {inflight} from './InFlight';
+import {multiplayer} from './Multiplayer';
+import {quest} from './Quest';
+import {saved} from './Saved';
+import {search} from './Search';
+import {settings} from './Settings';
+import {snackbar} from './Snackbar';
+import {AppState, AppStateBase, AppStateWithHistory} from './StateTypes';
+import {user} from './User';
 
 function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppState {
   state = state || ({} as AppStateWithHistory);
@@ -65,7 +65,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         }
       }
 
-      let pastStateIdx: number = state._history.length-1;
+      let pastStateIdx: number = state._history.length - 1;
       const returnAction = action as ReturnAction;
       if (returnAction.to && (returnAction.to.name || returnAction.to.phase)) {
         while (pastStateIdx > 0 && !isReturnState(state._history[pastStateIdx], returnAction)) {
@@ -94,7 +94,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
 
       // If we're going back to a point where the quest is no longer defined, clear the URL hash
       if (pastStateIdx === 0 ||
-         (state._history[pastStateIdx-1] && state._history[pastStateIdx-1].quest && state._history[pastStateIdx-1].quest.details.id === '')) {
+         (state._history[pastStateIdx - 1] && state._history[pastStateIdx - 1].quest && state._history[pastStateIdx - 1].quest.details.id === '')) {
         getHistoryApi().pushState(null, '', '#');
       }
 

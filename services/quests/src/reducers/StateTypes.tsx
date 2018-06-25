@@ -1,7 +1,7 @@
-import {AppStateWithHistory} from 'app/reducers/StateTypes'
-import {QDLParser} from 'shared/render/QDLParser'
-import {ContentRatingLabelType, LanguageType, ThemeType} from 'shared/schema/Constants'
-import {ErrorType} from '../../errors/types'
+import {AppStateWithHistory} from 'app/reducers/StateTypes';
+import {QDLParser} from 'shared/render/QDLParser';
+import {ContentRatingLabelType, LanguageType, ThemeType} from 'shared/schema/Constants';
+import {ErrorType} from '../../errors/types';
 // TODO: URL type?
 
 export type DialogIDType = 'ERROR' | 'ANNOTATION_DETAIL' | 'PUBLISHING' | 'UNPUBLISHED';
@@ -33,7 +33,7 @@ export interface XMLElement {
   tagName: string;
   parentNode: XMLElement;
   textContent: string;
-  attributes: {name: string}[];
+  attributes: Array<{name: string}>;
   innerHTML: string;
   setAttribute(attrib: string, value: any): void;
   nextElementSibling?: XMLElement;
@@ -72,7 +72,7 @@ export interface QuestType {
   language?: LanguageType;
   theme?: ThemeType;
   requirespenpaper?: boolean;
-};
+}
 
 export interface EditorState {
   renderer: QDLParser|null;
@@ -82,7 +82,7 @@ export interface EditorState {
   line: {
     number: number;
     ts: number;
-  }
+  };
   opInit: string; // Initial mathjs to run when loading a quest
   lastSplitPaneDragMillis: number; // Informs re-rendering of text editor
   bottomPanel: PanelType;
@@ -99,9 +99,9 @@ export interface DialogsState {
     PUBLISHED: boolean;
     UNPUBLISHED: boolean;
     [key: string]: boolean;
-  }
+  };
   errors: Error[];
-  annotations: (ErrorType|number)[];
+  annotations: Array<ErrorType|number>;
 }
 
 export interface SnackbarState {
@@ -137,7 +137,7 @@ export interface AppState {
 }
 
 export interface PlaytestSettings {
-  [key:string]: any;
+  [key: string]: any;
   expansionhorror: boolean;
 }
 

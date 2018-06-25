@@ -3,34 +3,34 @@ declare var module: any;
 
 // Before we even import other modules, first hook into
 // console logging so we can pass details along with error reports.
-import {setupLogging, logEvent} from './Logging'
+import {logEvent, setupLogging} from './Logging';
 setupLogging(console);
 
-import * as React from 'react'
-import * as Redux from 'redux'
-import * as ReactDOM from 'react-dom'
-import * as Raven from 'raven-js'
-import {Provider} from 'react-redux'
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import * as Raven from 'raven-js';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import {Provider} from 'react-redux';
+import * as Redux from 'redux';
 
-import {AUTH_SETTINGS, NODE_ENV, UNSUPPORTED_BROWSERS, INIT_DELAY} from './Constants'
-import theme from './Theme'
-import {fetchAnnouncements, setAnnouncement} from './actions/Announcement'
-import {audioSet} from './actions/Audio'
-import {toPrevious} from './actions/Card'
-import {setDialog} from './actions/Dialog'
-import {searchAndPlay} from './actions/Search'
-import {changeSettings} from './actions/Settings'
-import {openSnackbar} from './actions/Snackbar'
-import {silentLogin} from './actions/User'
-import {listSavedQuests} from './actions/SavedQuests'
-import {getStore} from './Store'
-import {getAppVersion, getWindow, getDevicePlatform, getDocument, getNavigator, setGA} from './Globals'
-import {getStorageBoolean} from './LocalStorage'
-import {SettingsType} from './reducers/StateTypes'
+import {fetchAnnouncements, setAnnouncement} from './actions/Announcement';
+import {audioSet} from './actions/Audio';
+import {toPrevious} from './actions/Card';
+import {setDialog} from './actions/Dialog';
+import {listSavedQuests} from './actions/SavedQuests';
+import {searchAndPlay} from './actions/Search';
+import {changeSettings} from './actions/Settings';
+import {openSnackbar} from './actions/Snackbar';
+import {silentLogin} from './actions/User';
+import {AUTH_SETTINGS, INIT_DELAY, NODE_ENV, UNSUPPORTED_BROWSERS} from './Constants';
+import {getAppVersion, getDevicePlatform, getDocument, getNavigator, getWindow, setGA} from './Globals';
+import {getStorageBoolean} from './LocalStorage';
+import {SettingsType} from './reducers/StateTypes';
+import {getStore} from './Store';
+import theme from './Theme';
 
-import 'whatwg-fetch' // fetch polyfill
-import Promise from 'promise-polyfill' // promise polyfill
+import Promise from 'promise-polyfill'; // promise polyfill
+import 'whatwg-fetch'; // fetch polyfill
 export function setupPolyfills(): void {
   const w = getWindow();
   if (!w.Promise) {
@@ -49,9 +49,7 @@ export type ThunkAction<R, S = {}, E = {}, A extends Redux.Action<any> = Redux.A
   extraArgument: E
 ) => R;
 declare module 'redux' {
-  export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {
-    <R, E>(asyncAction: ThunkAction<R, {}, E, A>): R;
-  }
+  export type Dispatch<A extends Redux.Action<any> = Redux.AnyAction> = <R, E>(asyncAction: ThunkAction<R, {}, E, A>) => R;
 }
 
 Raven.config(AUTH_SETTINGS.RAVEN, {
@@ -62,7 +60,6 @@ Raven.config(AUTH_SETTINGS.RAVEN, {
       return supportedBrowser && NODE_ENV !== 'dev' && !getStore().getState().settings.simulator;
     },
   }).install();
-
 
 function setupDevice() {
   const window = getWindow();
@@ -75,7 +72,6 @@ function setupDevice() {
   getStore().dispatch(changeSettings({
     audioEnabled: getStorageBoolean('audioEnabled', !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent)),
   }));
-
 
   if (platform === 'android') {
 
@@ -92,12 +88,12 @@ function setupDevice() {
 
     // Patch for Android browser not properly scrolling to input when keyboard appears
     // https://stackoverflow.com/a/43502958/1332186
-    if(/Android/.test(navigator.appVersion)) {
+    if (/Android/.test(navigator.appVersion)) {
       window.addEventListener('resize', () => {
         if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
           document.activeElement.scrollIntoView();
         }
-      })
+      });
     }
   }
 
@@ -129,7 +125,7 @@ function setupHotReload() {
   if (module.hot) {
     module.hot.accept();
     module.hot.accept('./components/Compositor', () => {
-      setTimeout(() => {render();});
+      setTimeout(() => {render(); });
     });
   }
 }
@@ -211,7 +207,7 @@ function setupStorage(document: Document) {
     const ret = document.cookie.indexOf('cookietest=') !== -1;
     document.cookie = 'cookietest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT';
     if (!ret) {
-      throw 'Cookies disabled';
+      throw new Error('Cookies disabled');
     }
   } catch (err) {
     setTimeout(() => {

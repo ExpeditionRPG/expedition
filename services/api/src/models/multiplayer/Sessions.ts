@@ -1,7 +1,7 @@
-import Bluebird from 'bluebird'
-import {makeSecret} from 'shared/multiplayer/Session'
-import {Session} from 'shared/schema/multiplayer/Sessions'
-import {Database, SessionInstance, EventInstance} from '../Database'
+import Bluebird from 'bluebird';
+import {makeSecret} from 'shared/multiplayer/Session';
+import {Session} from 'shared/schema/multiplayer/Sessions';
+import {Database, EventInstance, SessionInstance} from '../Database';
 
 export function getSessionBySecret(db: Database, secret: string): Bluebird<SessionInstance> {
   return db.sessions.findOne({where: {secret, locked: false}})
@@ -37,5 +37,5 @@ export function getSessionQuestTitle(db: Database, session: number): Bluebird<st
     } catch (e) {
       return null;
     }
-  })
+  });
 }

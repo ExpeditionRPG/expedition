@@ -1,6 +1,6 @@
-import Redux from 'redux'
-import {SnackbarOpenAction} from '../actions/ActionTypes'
-import {SnackbarState} from './StateTypes'
+import Redux from 'redux';
+import {SnackbarOpenAction} from '../actions/ActionTypes';
+import {SnackbarState} from './StateTypes';
 
 export const initialSnackbar: SnackbarState = {
   open: false,
@@ -9,7 +9,7 @@ export const initialSnackbar: SnackbarState = {
 };
 
 export function snackbar(state: SnackbarState = initialSnackbar, action: Redux.Action): SnackbarState {
-  switch(action.type) {
+  switch (action.type) {
     case 'SNACKBAR_OPEN':
       const openAction = (action as SnackbarOpenAction);
       if (openAction.message && openAction.message !== '') {

@@ -1,6 +1,6 @@
-import {SnackbarCloseAction, SnackbarOpenAction} from './ActionTypes'
-import {setDialog} from './Dialog'
-import {getStore} from '../Store'
+import {getStore} from '../Store';
+import {SnackbarCloseAction, SnackbarOpenAction} from './ActionTypes';
+import {setDialog} from './Dialog';
 
 export function closeSnackbar(): SnackbarCloseAction {
   return {type: 'SNACKBAR_CLOSE'};
@@ -19,6 +19,6 @@ export function openSnackbar(message: string|Error): SnackbarOpenAction {
   }
   return {
     type: 'SNACKBAR_OPEN',
-    message: message,
+    message,
   };
 }

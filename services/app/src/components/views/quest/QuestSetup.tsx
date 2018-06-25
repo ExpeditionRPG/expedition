@@ -1,8 +1,8 @@
-import * as React from 'react'
-import Callout from '../../base/Callout'
-import Card from '../../base/Card'
-import Button from '../../base/Button'
-import {SettingsType} from '../../../reducers/StateTypes'
+import * as React from 'react';
+import {SettingsType} from '../../../reducers/StateTypes';
+import Button from '../../base/Button';
+import Callout from '../../base/Callout';
+import Card from '../../base/Card';
 
 export interface QuestSetupStateProps {
   settings: SettingsType;
@@ -12,7 +12,7 @@ export interface QuestSetupDispatchProps {
   onNext: () => void;
 }
 
-export interface QuestSetupProps extends QuestSetupStateProps, QuestSetupDispatchProps {};
+export interface QuestSetupProps extends QuestSetupStateProps, QuestSetupDispatchProps {}
 
 const QuestSetup = (props: QuestSetupProps): JSX.Element => {
   const singlePlayer = (props.settings.numPlayers === 1);
@@ -51,6 +51,6 @@ const QuestSetup = (props: QuestSetupProps): JSX.Element => {
       <Button onClick={() => props.onNext()} id="questsetup">Next</Button>
     </Card>
   );
-}
+};
 
 export default QuestSetup;

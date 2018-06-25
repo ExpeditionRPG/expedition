@@ -1,7 +1,7 @@
-import {SchemaBase, field, copyAndUnsetDefaults} from './SchemaBase'
+import {copyAndUnsetDefaults, field, SchemaBase} from './SchemaBase';
 
 class TestImpl extends SchemaBase {
-    static create(fields: Partial<TestImpl>) {
+    public static create(fields: Partial<TestImpl>) {
       return super.initialize(this, fields);
     }
 
@@ -9,7 +9,7 @@ class TestImpl extends SchemaBase {
       super(fields);
     }
 
-    withoutDefaults() {
+    public withoutDefaults() {
       return copyAndUnsetDefaults(TestImpl, this);
     }
 
@@ -19,22 +19,22 @@ class TestImpl extends SchemaBase {
       maxLength: 32,
       default: '',
       valid: [13],
-    }) pkey: number;
+    }) public pkey: number;
 
     @field({
       primaryKey: true,
       allowNull: false,
       maxLength: 32,
       default: 'defaultstr',
-    }) qkey: string;
+    }) public qkey: string;
 
-    @field({}) rkey: number;
+    @field({}) public rkey: number;
 
     // Tests allowNull implicitly
     @field({
       allowNull: true,
       extra: 'DECIMAL_4_2',
-    }) skey: string;
+    }) public skey: string;
 }
 
 describe('SchemaBase', () => {
@@ -74,5 +74,5 @@ describe('SchemaBase', () => {
   });
   it('Is self-constructable', () => {
     new TestImpl(new TestImpl({pkey: 13, rkey: 0}));
-  })
+  });
 });

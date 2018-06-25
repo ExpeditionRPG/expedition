@@ -1,13 +1,13 @@
-import Redux from 'redux'
-import {annotations} from './Annotations'
-import {dialogs} from './Dialogs'
-import {editor} from './Editor'
-import {quest} from './Quest'
-import {snackbar} from './Snackbar'
-import {tutorial} from './Tutorial'
-import {user} from './User'
-import preview from 'app/reducers/CombinedReducers'
-import {AppState} from './StateTypes'
+import preview from 'app/reducers/CombinedReducers';
+import Redux from 'redux';
+import {annotations} from './Annotations';
+import {dialogs} from './Dialogs';
+import {editor} from './Editor';
+import {quest} from './Quest';
+import {snackbar} from './Snackbar';
+import {AppState} from './StateTypes';
+import {tutorial} from './Tutorial';
+import {user} from './User';
 
 export default function combinedReduce(state: AppState, action: Redux.Action): AppState {
   state = state || ({} as AppState);

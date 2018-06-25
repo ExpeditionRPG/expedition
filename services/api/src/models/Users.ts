@@ -1,8 +1,8 @@
-import Config from '../config'
-import Sequelize from 'sequelize'
-import * as Bluebird from 'bluebird'
-import {Database} from './Database'
-import {User} from 'shared/schema/Users'
+import * as Bluebird from 'bluebird';
+import Sequelize from 'sequelize';
+import {User} from 'shared/schema/Users';
+import Config from '../config';
+import {Database} from './Database';
 
 export function setLootPoints(db: Database, id: string, lootPoints: number) {
   return db.users.findOne({where: {id}})
@@ -10,12 +10,12 @@ export function setLootPoints(db: Database, id: string, lootPoints: number) {
       if (result === null) {
         throw new Error('No user with ID ' + id);
       }
-      result.update({lootPoints})
+      result.update({lootPoints});
     });
 }
 
 export function incrementLoginCount(db: Database, id: string) {
-  return db.users.findOne({where: {id: id}})
+  return db.users.findOne({where: {id}})
     .then((result) => {
       if (result === null) {
         throw new Error('No user with ID ' + id);
@@ -40,7 +40,7 @@ export interface UserQuestsType {
   [questId: string]: {
     lastPlayed: Date;
   };
-};
+}
 
 export function getUserQuests(db: Database, id: string): Bluebird<UserQuestsType> {
   return db.analyticsEvent.findAll({

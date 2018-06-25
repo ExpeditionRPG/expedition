@@ -1,8 +1,8 @@
-import {SchemaBase, field, copyAndUnsetDefaults, NOW} from './SchemaBase'
-import {DIFFICULTIES} from './Constants'
+import {DIFFICULTIES} from './Constants';
+import {copyAndUnsetDefaults, field, NOW, SchemaBase} from './SchemaBase';
 
 export class AnalyticsEvent extends SchemaBase {
-  static create(fields: Partial<AnalyticsEvent>) {
+  public static create(fields: Partial<AnalyticsEvent>) {
     return super.initialize(this, fields);
   }
 
@@ -10,7 +10,7 @@ export class AnalyticsEvent extends SchemaBase {
     super(fields);
   }
 
-  withoutDefaults() {
+  public withoutDefaults() {
     return copyAndUnsetDefaults(AnalyticsEvent, this);
   }
 
@@ -19,57 +19,57 @@ export class AnalyticsEvent extends SchemaBase {
     allowNull: false,
     maxLength: 255,
     column: 'user_id',
-  }) userID: string;
+  }) public userID: string;
 
   @field({
     primaryKey: true,
     default: NOW,
-  }) created: Date
+  }) public created: Date;
 
   @field({
     maxLength: 255,
     default: '',
     allowNull: false,
-  }) category: string;
+  }) public category: string;
 
   @field({
     maxLength: 255,
     default: '',
     allowNull: false,
-  }) action: string;
+  }) public action: string;
 
   @field({
     default: '',
     maxLength: 255,
     column: 'quest_id',
-  }) questID: string;
+  }) public questID: string;
 
   @field({
     default: 1,
     column: 'quest_version',
-  }) questVersion: number;
+  }) public questVersion: number;
 
   @field({
     maxLength: 32,
     default: '',
     valid: [...DIFFICULTIES, ''],
-  }) difficulty: string;
+  }) public difficulty: string;
 
   @field({
     maxLength: 32,
     default: '',
-  }) platform: string;
+  }) public platform: string;
 
   @field({
     default: 0,
-  }) players: number;
+  }) public players: number;
 
   @field({
     maxLength: 32,
     default: '',
-  }) version: string;
+  }) public version: string;
 
   @field({
     default: '',
-  }) json: string;
+  }) public json: string;
 }

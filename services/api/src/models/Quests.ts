@@ -1,14 +1,14 @@
-import Sequelize from 'sequelize'
-import {Quest} from 'shared/schema/Quests'
-import {RenderedQuest} from 'shared/schema/RenderedQuests'
-import {User} from 'shared/schema/Users'
-import {PUBLIC_PARTITION} from 'shared/schema/Constants'
-import {QuestInstance, FeedbackInstance, Database} from './Database'
-import {getFeedbackByQuestId} from './Feedback'
-import {getUser} from './Users'
-import {prepare} from './Schema'
-import {MailService} from '../Mail'
-import * as Bluebird from 'bluebird'
+import * as Bluebird from 'bluebird';
+import Sequelize from 'sequelize';
+import {PUBLIC_PARTITION} from 'shared/schema/Constants';
+import {Quest} from 'shared/schema/Quests';
+import {RenderedQuest} from 'shared/schema/RenderedQuests';
+import {User} from 'shared/schema/Users';
+import {MailService} from '../Mail';
+import {Database, FeedbackInstance, QuestInstance} from './Database';
+import {getFeedbackByQuestId} from './Feedback';
+import {prepare} from './Schema';
+import {getUser} from './Users';
 
 export const MAX_SEARCH_LIMIT = 100;
 
@@ -194,7 +194,7 @@ export function publishQuest(db: Database, mail: MailService, userid: string, ma
         updateValues.created = new Date();
       }
 
-console.log(quest);
+      console.log(quest);
 
       // Publish to RenderedQuests
       db.renderedQuests.create(new RenderedQuest({
@@ -209,7 +209,7 @@ console.log(quest);
 
       return instance.update(updateValues);
     });
-};
+}
 
 export function unpublishQuest(db: Database, partition: string, id: string) {
   return db.quests.update({tombstone: new Date()}, {where: {partition, id}, limit: 1});
@@ -251,7 +251,7 @@ export function updateQuestRatings(db: Database, partition: string, id: string):
         return quest.update({ratingcount: null, ratingavg: null});
       }
 
-      const ratingavg = ratings.reduce((a: number, b: number) => { return a + b; }) / ratings.length;
+      const ratingavg = ratings.reduce((a: number, b: number) => a + b) / ratings.length;
       return quest.update({ratingcount, ratingavg});
     });
 }

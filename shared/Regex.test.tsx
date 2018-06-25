@@ -1,4 +1,4 @@
-import {REGEX, combinedRegex} from './Regex'
+import {combinedRegex, REGEX} from './Regex';
 
 describe('REGEX', () => {
   describe('combinedRegex', () => {
@@ -13,7 +13,7 @@ describe('REGEX', () => {
       const combined = combinedRegex([/a/, /b/], 'g');
       expect(combined.test('a')).toBe(true);
       expect(combined.test('a')).toBe(false); // Second call is end-of-string
-    })
+    });
   });
   describe('HTML tag', () => {
     it('TODO');
@@ -83,6 +83,6 @@ describe('REGEX', () => {
     });
     it('does not match goto with punctuation', () => {
       expect(REGEX.TRIGGER.test('**goto bad.triggername**')).toBe(false);
-    })
+    });
   });
 });

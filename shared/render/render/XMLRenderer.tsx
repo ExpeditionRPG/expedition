@@ -1,4 +1,4 @@
-import {Renderer, CombatChild, Instruction, RoleplayChild, sanitizeStyles} from './Renderer'
+import {CombatChild, Instruction, Renderer, RoleplayChild, sanitizeStyles} from './Renderer';
 
 const cheerio: any = require('cheerio') as CheerioAPI;
 
@@ -18,7 +18,7 @@ function escapeXml(unsafe: string) {
 
 // TODO: Move error checks in this renderer to the QDLRenderer class.
 export const XMLRenderer: Renderer = {
-  toRoleplay: function(attribs: {[k: string]: string}, body: (string|RoleplayChild|Instruction)[], line: number): any {
+  toRoleplay(attribs: {[k: string]: string}, body: Array<string|RoleplayChild|Instruction>, line: number): any {
     const roleplay = cheerio.load('<roleplay>')('roleplay');
 
     const keys = Object.keys(attribs);
@@ -63,7 +63,7 @@ export const XMLRenderer: Renderer = {
     return roleplay;
   },
 
-  toCombat: function(attribs: {[k: string]: any}, events: CombatChild[], line: number): any {
+  toCombat(attribs: {[k: string]: any}, events: CombatChild[], line: number): any {
     const combat = cheerio.load('<combat></combat>')('combat');
 
     Object.keys(attribs).forEach((key) => {
@@ -72,7 +72,7 @@ export const XMLRenderer: Renderer = {
       }
     });
 
-    const enemies = attribs['enemies'];
+    const enemies = attribs.enemies;
     for (let i = 0; i < enemies.length; i++) {
       const e = cheerio.load('<e>' + enemies[i].text + '</e>')('e');
       e.attr('if', enemies[i].visible);
@@ -106,10 +106,10 @@ export const XMLRenderer: Renderer = {
     return combat;
   },
 
-  toTrigger: function(attribs: {[k: string]: any}, line: number): any {
-    const trigger = cheerio.load('<trigger>'+attribs['text']+'</trigger>')('trigger');
-    if (attribs['visible']) {
-      trigger.attr('if', attribs['visible']);
+  toTrigger(attribs: {[k: string]: any}, line: number): any {
+    const trigger = cheerio.load('<trigger>' + attribs.text + '</trigger>')('trigger');
+    if (attribs.visible) {
+      trigger.attr('if', attribs.visible);
     }
     if (line >= 0) {
       trigger.attr('data-line', line);
@@ -117,10 +117,10 @@ export const XMLRenderer: Renderer = {
     return trigger;
   },
 
-  toQuest: function(attribs: {[k: string]: string}, line: number): any {
+  toQuest(attribs: {[k: string]: string}, line: number): any {
     const quest = cheerio.load('<quest>')('quest');
     const keys = Object.keys(attribs);
-    for(let i = 0; i < keys.length; i++) {
+    for (let i = 0; i < keys.length; i++) {
       quest.attr(keys[i], attribs[keys[i]]);
     }
     if (line >= 0) {
@@ -129,7 +129,7 @@ export const XMLRenderer: Renderer = {
     return quest;
   },
 
-  finalize: function(quest: any, inner: any[]): any {
+  finalize(quest: any, inner: any[]): any {
     for (let i = 0; i < inner.length; i++) {
       quest.append(inner[i]);
     }

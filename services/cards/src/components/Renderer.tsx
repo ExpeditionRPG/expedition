@@ -1,7 +1,7 @@
-import * as React from 'react'
+import * as React from 'react';
 
-import {POKER_CARDS_PER_LETTER_PAGE} from '../Constants'
-import {CardType, FiltersState, TranslationsType} from '../reducers/StateTypes'
+import {POKER_CARDS_PER_LETTER_PAGE} from '../Constants';
+import {CardType, FiltersState, TranslationsType} from '../reducers/StateTypes';
 
 declare var require: any;
 const SVGInjector = require('svg-injector') as any;
@@ -15,17 +15,16 @@ const CardFronts: any = {
   Color: require('../themes/Color/CardFront.tsx'),
 };
 
-
 export interface RendererStateProps {
   cards: CardType[] | null;
   filters: FiltersState;
   translations: TranslationsType | null;
 }
 
-export interface RendererProps extends RendererStateProps {};
+export interface RendererProps extends RendererStateProps {}
 
 class Renderer extends React.Component<RendererProps, {}> {
-  render() {
+  public render() {
     const cards = this.props.cards || [];
     const renderSettings = { // defaults
       bleed: false,
@@ -39,7 +38,7 @@ class Renderer extends React.Component<RendererProps, {}> {
     switch (this.props.filters.export.current) {
       case 'PrintAndPlay':
       renderSettings.showInstructions = true;
-        break;
+      break;
       case 'WebView':
         renderSettings.cardsPerPage = 999; // TODO this requires some CSS / class changes...
         renderSettings.showBacks = false;
@@ -79,15 +78,15 @@ class Renderer extends React.Component<RendererProps, {}> {
         backPageList.push([]);
       }
       if (renderSettings.showFronts) {
-        frontPageList[frontPageList.length-1].push(<CardFront key={card.name || i} card={card} translations={this.props.translations}></CardFront>);
+        frontPageList[frontPageList.length - 1].push(<CardFront key={card.name || i} card={card} translations={this.props.translations}></CardFront>);
       }
       if (renderSettings.showBacks) {
         if (renderSettings.uniqueBacksOnly && i > 0) {
-          if (card.naming !== '' || card.class !== cards[i-1].class || card.tier !== cards[i-1].tier) {
-            backPageList[backPageList.length-1].push(<CardBack key={card.name || i} card={card} translations={this.props.translations}></CardBack>);
+          if (card.naming !== '' || card.class !== cards[i - 1].class || card.tier !== cards[i - 1].tier) {
+            backPageList[backPageList.length - 1].push(<CardBack key={card.name || i} card={card} translations={this.props.translations}></CardBack>);
           }
         } else {
-          backPageList[backPageList.length-1].push(<CardBack key={card.name || i} card={card} translations={this.props.translations}></CardBack>);
+          backPageList[backPageList.length - 1].push(<CardBack key={card.name || i} card={card} translations={this.props.translations}></CardBack>);
         }
       }
     }

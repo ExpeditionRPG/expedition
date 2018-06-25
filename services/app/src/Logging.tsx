@@ -1,6 +1,6 @@
 // We need to keep imports very light here - this code used in Init.tsx
 // before much of our state has been initialized.
-import {getGA} from './Globals'
+import {getGA} from './Globals';
 
 const START_BUFFER_MAX_LENGTH = 25;
 const TAIL_BUFFER_MAX_LENGTH = 50;
@@ -25,7 +25,7 @@ export function getLogBuffer(): Readonly<string[]> {
   if (tailbuffer.length > 0) {
     const result = [...startingbuffer];
     if (omittedCount > 0) {
-      result.push('<<<<<<' + omittedCount.toString() + ' LOGS OMITTED>>>>>>>')
+      result.push('<<<<<<' + omittedCount.toString() + ' LOGS OMITTED>>>>>>>');
     }
     Array.prototype.push.apply(result, tailbuffer);
     return result;
@@ -63,13 +63,13 @@ export function setupLogging(console: any) {
   };
   {
     const oldLog = console.log;
-    console.log = (...objs: any[]) => {return logHook(oldLog, objs);};
+    console.log = (...objs: any[]) => logHook(oldLog, objs);
 
     const oldWarn = console.warn;
-    console.warn = (...objs: any[]) => {return logHook(oldWarn, objs);};
+    console.warn = (...objs: any[]) => logHook(oldWarn, objs);
 
     const oldError = console.error;
-    console.error = (...objs: any[]) => {return logHook(oldError, objs);};
+    console.error = (...objs: any[]) => logHook(oldError, objs);
   }
 }
 

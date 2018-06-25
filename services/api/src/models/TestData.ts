@@ -1,16 +1,16 @@
-import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents'
-import {User} from 'shared/schema/Users'
-import {Quest} from 'shared/schema/Quests'
-import {Feedback} from 'shared/schema/Feedback'
-import {RenderedQuest} from 'shared/schema/RenderedQuests'
-import {Event} from 'shared/schema/multiplayer/Events'
-import {SessionClient} from 'shared/schema/multiplayer/SessionClients'
-import {Session} from 'shared/schema/multiplayer/Sessions'
-import {SchemaBase, PLACEHOLDER_DATE} from 'shared/schema/SchemaBase'
-import {PUBLIC_PARTITION} from 'shared/schema/Constants'
-import {Database} from './Database'
-import Sequelize from 'sequelize'
-import {prepare} from './Schema'
+import Sequelize from 'sequelize';
+import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents';
+import {PUBLIC_PARTITION} from 'shared/schema/Constants';
+import {Feedback} from 'shared/schema/Feedback';
+import {Event} from 'shared/schema/multiplayer/Events';
+import {SessionClient} from 'shared/schema/multiplayer/SessionClients';
+import {Session} from 'shared/schema/multiplayer/Sessions';
+import {Quest} from 'shared/schema/Quests';
+import {RenderedQuest} from 'shared/schema/RenderedQuests';
+import {PLACEHOLDER_DATE, SchemaBase} from 'shared/schema/SchemaBase';
+import {User} from 'shared/schema/Users';
+import {Database} from './Database';
+import {prepare} from './Schema';
 
 export const TEST_NOW = new Date('2017-12-18T19:32:38.397Z');
 
@@ -116,7 +116,7 @@ export const feedback = {
     ...basicFeedback,
     text: 'This is a quest report',
   }),
-}
+};
 
 export const renderedQuests = {
   basic: new RenderedQuest({

@@ -1,4 +1,4 @@
-import {Event} from './Events'
+import {Event} from './Events';
 
 describe('Event Schema', () => {
   const base = {session: 3456, timestamp: new Date()};
@@ -11,4 +11,4 @@ describe('Event Schema', () => {
     expect(f.session).toEqual(base.session);
     expect(f.timestamp).toEqual(base.timestamp);
   });
-})
+});

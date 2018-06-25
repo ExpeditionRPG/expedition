@@ -1,5 +1,5 @@
-import {SetDialogAction, PushErrorAction} from './ActionTypes'
-import {DialogIDType} from '../reducers/StateTypes'
+import {DialogIDType} from '../reducers/StateTypes';
+import {PushErrorAction, SetDialogAction} from './ActionTypes';
 
 const ReactGA = require('react-ga') as any;
 

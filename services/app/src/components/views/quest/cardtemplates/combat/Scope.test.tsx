@@ -1,5 +1,5 @@
-import {defaultContext} from '../Template'
-import {ENCOUNTERS} from '../../../../../Encounters'
+import {ENCOUNTERS} from '../../../../../Encounters';
+import {defaultContext} from '../Template';
 
 describe('Combat State', () => {
   describe('combatScope', () => {

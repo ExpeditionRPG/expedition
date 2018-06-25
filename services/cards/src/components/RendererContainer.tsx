@@ -1,6 +1,6 @@
-import {connect} from 'react-redux'
-import Renderer, {RendererStateProps} from './Renderer'
-import {AppState} from '../reducers/StateTypes'
+import {connect} from 'react-redux';
+import {AppState} from '../reducers/StateTypes';
+import Renderer, {RendererStateProps} from './Renderer';
 
 const mapStateToProps = (state: AppState, ownProps: any): RendererStateProps => {
   return {
@@ -8,7 +8,7 @@ const mapStateToProps = (state: AppState, ownProps: any): RendererStateProps => 
     filters: state.filters,
     translations: state.cards.translations,
   };
-}
+};
 
 const RendererContainer = connect(
   mapStateToProps

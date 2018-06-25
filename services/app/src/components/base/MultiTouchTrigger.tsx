@@ -1,7 +1,7 @@
-import * as React from 'react'
-import {InteractionEvent} from 'shared/multiplayer/Events'
-import MultiplayerAffector from '../multiplayer/MultiplayerAffector'
-import TouchIndicator from './TouchIndicator'
+import * as React from 'react';
+import {InteractionEvent} from 'shared/multiplayer/Events';
+import MultiplayerAffector from '../multiplayer/MultiplayerAffector';
+import TouchIndicator from './TouchIndicator';
 
 interface MultiTouchTriggerProps extends React.Props<any> {
   id?: string;
@@ -19,7 +19,7 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
     this.state = {clientInputs: {}, lastTouchSum: 0, mouseDown: false};
   }
 
-  remoteEvent(client: string, e: InteractionEvent) {
+  public remoteEvent(client: string, e: InteractionEvent) {
     switch (e.event) {
       case 'touchstart':
       case 'touchend':
@@ -45,13 +45,13 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
     this.setState({lastTouchSum: touchSum, clientInputs: newInputs});
   }
 
-  render() {
+  public render() {
     return (
       <MultiplayerAffector
         id={this.props.id}
         className="base_multi_touch_remote_affector"
         includeLocalInteractions={true}
-        onInteraction={(c: string, i: InteractionEvent) => {this.remoteEvent(c, i)}}>
+        onInteraction={(c: string, i: InteractionEvent) => {this.remoteEvent(c, i);}}>
         <TouchIndicator clientInputs={this.state.clientInputs} />
       </MultiplayerAffector>
     );

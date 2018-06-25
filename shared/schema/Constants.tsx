@@ -38,7 +38,7 @@ export const CONTENT_RATINGS: ContentRatingLabelType[] = [
   'Teen',
   'Adult',
 ];
-export type ContentRatingType = {
+export interface ContentRatingType {
   summary: string;
   details: {
     [key: string]: string;
@@ -46,7 +46,7 @@ export type ContentRatingType = {
     language: string;
     drugs: string;
     nudity: string;
-  }
+  };
 }
 export const CONTENT_RATING_DESC: {[key: string]: ContentRatingType} = {
   'Kid-friendly': {

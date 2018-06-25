@@ -1,4 +1,4 @@
-import {MultiplayerEvent, MultiplayerEventBody, ClientID, InstanceID} from './Events'
+import {ClientID, InstanceID, MultiplayerEvent, MultiplayerEventBody} from './Events';
 
 declare type EventHandler = (e: MultiplayerEvent) => any;
 
@@ -13,36 +13,36 @@ export abstract class ClientBase {
     this.resetState();
   }
 
-  isConnected(): boolean {
+  public isConnected(): boolean {
     return this.connected;
   }
 
-  setID(id: ClientID) {
+  public setID(id: ClientID) {
     this.id = id;
   }
 
-  getID() {
+  public getID() {
     return this.id;
   }
 
-  getInstance() {
+  public getInstance() {
     return this.instance;
   }
 
-  resetState() {
+  public resetState() {
     this.handlers = [];
     this.connected = false;
   }
 
-  abstract sendFinalizedEvent(e: MultiplayerEvent): void;
-  abstract disconnect(): void;
+  public abstract sendFinalizedEvent(e: MultiplayerEvent): void;
+  public abstract disconnect(): void;
 
-  configure(id: string, instance: string): void {
+  public configure(id: string, instance: string): void {
     this.id = id;
     this.instance = instance;
   }
 
-  sendEvent(event: MultiplayerEventBody): void {
+  public sendEvent(event: MultiplayerEventBody): void {
     if (!this.isConnected()) {
       return;
     }
@@ -55,7 +55,7 @@ export abstract class ClientBase {
 
     try {
       parsed = JSON.parse(s) as MultiplayerEvent;
-    } catch(e) {
+    } catch (e) {
       return {id: null, client: e.client, instance: e.instance, event: {type: 'ERROR', error: 'Failed to parse JSON message: ' + s}};
     }
 
@@ -70,19 +70,19 @@ export abstract class ClientBase {
     return parsed;
   }
 
-  publish(e: MultiplayerEvent) {
+  public publish(e: MultiplayerEvent) {
     for (const h of this.handlers) {
       h(e);
     }
   }
 
-  subscribe(fn: EventHandler) {
+  public subscribe(fn: EventHandler) {
     this.handlers.push(fn);
   }
 
-  unsubscribe(fn: EventHandler) {
+  public unsubscribe(fn: EventHandler) {
     const i = this.handlers.indexOf(fn);
-    if(i > -1) {
+    if (i > -1) {
       this.handlers.splice(i, 1);
     }
   }

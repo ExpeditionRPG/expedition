@@ -1,6 +1,6 @@
-import Redux from 'redux'
-import {SavedQuestState} from './StateTypes'
-import {SavedQuestListAction, SavedQuestSelectedAction} from '../actions/ActionTypes'
+import Redux from 'redux';
+import {SavedQuestListAction, SavedQuestSelectedAction} from '../actions/ActionTypes';
+import {SavedQuestState} from './StateTypes';
 
 const initialSavedState: SavedQuestState = {
   list: [],

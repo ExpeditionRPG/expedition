@@ -1,7 +1,7 @@
-import * as React from 'react'
-import Button from '@material-ui/core/Button'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import CheckBoxOutlineIcon from '@material-ui/icons/CheckBoxOutlineBlank'
+import Button from '@material-ui/core/Button';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import CheckBoxOutlineIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import * as React from 'react';
 
 export interface CheckboxProps {
   label: string;
@@ -10,7 +10,7 @@ export interface CheckboxProps {
 }
 
 class ExpeditionCheckbox extends React.Component<CheckboxProps, {}> {
-  render() {
+  public render() {
     const icon = (this.props.value) ? <CheckBoxIcon/> : <CheckBoxOutlineIcon/>;
     return (
       <span className="creatorCheckbox">

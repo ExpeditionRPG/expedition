@@ -1,6 +1,6 @@
-import Redux from 'redux'
-import {AnnouncementSetAction} from '../actions/ActionTypes'
-import {AnnouncementState} from './StateTypes'
+import Redux from 'redux';
+import {AnnouncementSetAction} from '../actions/ActionTypes';
+import {AnnouncementState} from './StateTypes';
 
 const initialState: AnnouncementState = {
   open: false,
@@ -9,7 +9,7 @@ const initialState: AnnouncementState = {
 };
 
 export function announcement(state: AnnouncementState = initialState, action: Redux.Action): AnnouncementState {
-  switch(action.type) {
+  switch (action.type) {
     case 'ANNOUNCEMENT_SET':
       const setAction = (action as AnnouncementSetAction);
       return {

@@ -1,4 +1,4 @@
-import {Logger} from '../Logger'
+import {Logger} from '../Logger';
 
 // Terms:
 // - Indent level: The number of preceding spaces to a given line.
@@ -27,16 +27,16 @@ export class BlockList {
     this.logger = logger;
   }
 
-  debugLines(): string {
+  public debugLines(): string {
     // For debugging
     let result = '#\tLine#\tIndent\tLines';
-    for(let i = 0; i < this.blocks.length; i++) {
+    for (let i = 0; i < this.blocks.length; i++) {
       result += i + '\t' + this.blocks[i].startLine + '\t' + this.blocks[i].indent + '\t' + this.blocks[i].lines;
     }
     return result;
   }
 
-  at(idx: number): Block {
+  public at(idx: number): Block {
     return this.blocks[idx];
   }
 
@@ -64,7 +64,7 @@ export class BlockList {
     }
 
     // start of a trigger
-    if (line[indent] === '*' && line[indent+1] === '*') {
+    if (line[indent] === '*' && line[indent + 1] === '*') {
       return true;
     }
 
@@ -96,7 +96,7 @@ export class BlockList {
     for (let lineNumber = 0; lineNumber < split.length; lineNumber++) {
       const line = split[lineNumber];
       let indent = 0;
-      while(line[indent] === ' ') {
+      while (line[indent] === ' ') {
         indent++;
       }
 
@@ -122,7 +122,7 @@ export class BlockList {
 
         currBlock = {
           lines: [],
-          indent: indent,
+          indent,
           startLine: lineNumber,
         };
       }

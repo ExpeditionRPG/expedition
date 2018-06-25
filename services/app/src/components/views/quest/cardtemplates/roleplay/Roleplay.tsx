@@ -1,12 +1,12 @@
-import * as React from 'react'
-import Button from '../../../../base/Button'
-import Callout from '../../../../base/Callout'
-import Card from '../../../../base/Card'
-import {SettingsType, CardThemeType} from '../../../../../reducers/StateTypes'
-import {Choice, RoleplayElement} from '../../../../../reducers/QuestTypes'
-import {TemplateContext, ParserNode} from '../TemplateTypes'
+import * as React from 'react';
+import {Choice, RoleplayElement} from '../../../../../reducers/QuestTypes';
+import {CardThemeType, SettingsType} from '../../../../../reducers/StateTypes';
+import Button from '../../../../base/Button';
+import Callout from '../../../../base/Callout';
+import Card from '../../../../base/Card';
+import {ParserNode, TemplateContext} from '../TemplateTypes';
 
-import {REGEX} from 'shared/Regex'
+import {REGEX} from 'shared/Regex';
 
 export interface RoleplayStateProps {
   node: ParserNode;
@@ -20,18 +20,18 @@ export interface RoleplayDispatchProps {
   onRetry: () => void;
 }
 
-export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps {};
+export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps {}
 
 // Replaces :icon_name: and [art_name] with appropriate HTML elements
 // if [art_name] ends will _full, adds class="full"; otherwise defaults to display at 50% size
 // art is hidden if it fails to load (aka offline)
 function generateIconElements(content: string, theme: CardThemeType): JSX.Element {
-  content = (content || '').replace(new RegExp(REGEX.ICON.source, 'g'), (match:string, group:string): string => {
+  content = (content || '').replace(new RegExp(REGEX.ICON.source, 'g'), (match: string, group: string): string => {
       const icon = group.toLowerCase();
       const suffix = (theme === 'dark' && icon.indexOf('_white') === -1) ? '_white' : '';
       return `<img class="inline_icon" src="images/${icon}${suffix}_small.svg" />`;
     })
-    .replace(new RegExp(REGEX.ART.source, 'g'), (match:string, group:string): string => {
+    .replace(new RegExp(REGEX.ART.source, 'g'), (match: string, group: string): string => {
       let imgName = `images/${group}`;
       let imgClass = 'artHalf';
       if (group.slice(-5) === '_full') {
@@ -121,7 +121,7 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
     let buttonText = <span>Next</span>;
     if (nextNode && nextNode.getTag() === 'trigger') {
       const triggerText = nextNode.elem.text().toLowerCase().split(' ')[0].trim();
-      switch(triggerText) {
+      switch (triggerText) {
         case 'end':
           buttonText = <span>The End</span>;
           break;
@@ -182,6 +182,6 @@ const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'light'): JSX.Ele
       {buttons}
     </Card>
   );
-}
+};
 
 export default Roleplay;

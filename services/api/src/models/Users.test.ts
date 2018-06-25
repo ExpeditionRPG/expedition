@@ -1,16 +1,16 @@
+import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents';
+import {Database} from './Database';
+import {analyticsEvents as ae,
+  testingDBWithState,
+  users as u
+} from './TestData';
 import {
-  incrementLoginCount,
   getUser,
-  setLootPoints,
   getUserQuests,
+  incrementLoginCount,
+  setLootPoints,
   subscribeToCreatorsList
-} from './Users'
-import {testingDBWithState,
-  users as u,
-  analyticsEvents as ae
-} from './TestData'
-import {Database} from './Database'
-import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents'
+} from './Users';
 
 describe('users', () => {
   describe('incrementLoginCount', () => {

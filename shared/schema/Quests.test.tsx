@@ -1,5 +1,5 @@
-import {Quest} from './Quests'
-import {PUBLIC_PARTITION, PRIVATE_PARTITION} from './Constants'
+import {PRIVATE_PARTITION, PUBLIC_PARTITION} from './Constants';
+import {Quest} from './Quests';
 
 describe('Quests Schema', () => {
   const base = {partition: PRIVATE_PARTITION, id: '12345'};
@@ -31,4 +31,4 @@ describe('Quests Schema', () => {
       theme: 'base',
     });
   });
-})
+});

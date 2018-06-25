@@ -1,11 +1,11 @@
 const Clone = require('clone');
 const HtmlDecode = (require('he') as any).decode;
 const Math = require('mathjs') as any;
-import * as seedrandom from 'seedrandom'
+import * as seedrandom from 'seedrandom';
 
 export function generateSeed(): string {
   let seed: string = '';
-  seedrandom(undefined, { pass: function(p: seedrandom.prng, s: string): seedrandom.prng {
+  seedrandom(undefined, { pass(p: seedrandom.prng, s: string): seedrandom.prng {
     seed = s;
     return p;
   }});
@@ -17,12 +17,12 @@ export interface Context {
   // nodes that are potentially parseable via MathJS.
   scope: any; // TODO: required fields later
 
-  views: {[id:string]: number};
+  views: {[id: string]: number};
 
   // The list of choices, events, and jumps that produced this context, serialized.
   // Given the path and original quest XML, we should be able to recreate
   // context given this path.
-  path: (string|number)[];
+  path: Array<string|number>;
 
   // Regenerate template scope (all of "_") with this function.
   _templateScopeFn: () => any;
@@ -34,7 +34,7 @@ export interface Context {
 export function defaultContext(): Context {
   const populateScopeFn = function() {
     return {
-      viewCount: function(id: string): number {
+      viewCount(id: string): number {
         return this.views[id] || 0;
       },
     };
@@ -114,7 +114,7 @@ export function evaluateOp(op: string, ctx: Context): any {
     // http://mathjs.org/docs/reference/classes/resultset.html
     if (parsed.type === 'BlockNode') {
       const v = evalResult.valueOf();
-      evalResult = v[v.length-1];
+      evalResult = v[v.length - 1];
     }
 
     if (evalResult.length === 1) {
@@ -135,7 +135,7 @@ export function evaluateOp(op: string, ctx: Context): any {
 
 function lastExpressionAssignsValue(parsed: any): boolean {
   if (parsed.type === 'BlockNode') {
-    return lastExpressionAssignsValue(parsed.blocks[parsed.blocks.length-1].node);
+    return lastExpressionAssignsValue(parsed.blocks[parsed.blocks.length - 1].node);
   }
   return (parsed.type === 'AssignmentNode' || parsed.type === 'FunctionAssignmentNode');
 }

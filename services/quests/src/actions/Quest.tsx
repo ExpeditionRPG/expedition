@@ -1,26 +1,26 @@
-import Redux from 'redux'
+import Redux from 'redux';
+import {QuestType, UserState} from '../reducers/StateTypes';
 import {
-  ReceiveQuestLoadAction,
-  RequestQuestSaveAction, ReceiveQuestSaveAction, ReceiveQuestSaveErrAction,
   QuestLoadingAction,
-  QuestPublishingSetupAction, QuestMetadataChangeAction,
-  RequestQuestPublishAction, ReceiveQuestPublishAction,
-  RequestQuestUnpublishAction, ReceiveQuestUnpublishAction,
-} from './ActionTypes'
-import {setSnackbar} from './Snackbar'
-import {QuestType, UserState} from '../reducers/StateTypes'
+  QuestMetadataChangeAction, QuestPublishingSetupAction, ReceiveQuestLoadAction,
+  ReceiveQuestPublishAction,
+  ReceiveQuestSaveAction, ReceiveQuestSaveErrAction,
+  ReceiveQuestUnpublishAction, RequestQuestPublishAction,
+  RequestQuestSaveAction, RequestQuestUnpublishAction,
+} from './ActionTypes';
+import {setSnackbar} from './Snackbar';
 
-import {pushError, pushHTTPError} from './Dialogs'
-import {startPlaytestWorker} from './Editor'
-import {realtimeUtils} from '../Auth'
+import {renderXML} from 'shared/render/QDLParser';
+import {realtimeUtils} from '../Auth';
 import {
-  NEW_QUEST_TEMPLATE,
-  QUEST_DOCUMENT_HEADER,
-  METADATA_DEFAULTS,
   API_HOST,
-  PARTITIONS
-} from '../Constants'
-import {renderXML} from 'shared/render/QDLParser'
+  METADATA_DEFAULTS,
+  NEW_QUEST_TEMPLATE,
+  PARTITIONS,
+  QUEST_DOCUMENT_HEADER
+} from '../Constants';
+import {pushError, pushHTTPError} from './Dialogs';
+import {startPlaytestWorker} from './Editor';
 
 const ReactGA = require('react-ga') as any;
 const QueryString = require('query-string');
@@ -56,19 +56,19 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
         closeDelim;
 
     const request = window.gapi.client.request({
-        'path': '/upload/drive/v2/files/' + fileId,
-        'method': 'PUT',
-        'params': {'uploadType': 'multipart', 'alt': 'json'},
-        'headers': {
+        path: '/upload/drive/v2/files/' + fileId,
+        method: 'PUT',
+        params: {uploadType: 'multipart', alt: 'json'},
+        headers: {
           'Content-Type': 'multipart/mixed; boundary="' + boundary + '"',
         },
-        'body': multipartRequestBody});
+        body: multipartRequestBody});
     request.then((json: any, raw: any) => {
       return callback(null, json);
     }, (json: any) => {
       return callback(json.result.error);
     });
-  } catch(err) {
+  } catch (err) {
     return callback(err);
   }
 }
@@ -89,7 +89,7 @@ export function loadQuestFromURL(user: UserState, id?: string) {
       });
     }
     loadQuest(user, dispatch, id);
-  }
+  };
 }
 
 export function newQuest(user: UserState) {
@@ -132,10 +132,10 @@ export function newQuest(user: UserState) {
         });
       });
     });
-  }
+  };
 }
 
-function getPublishedQuestMeta(publishedId: string, cb: (meta: QuestType)=>any) {
+function getPublishedQuestMeta(publishedId: string, cb: (meta: QuestType) => any) {
   $.post(API_HOST + '/quests', JSON.stringify({id: publishedId}), (result: any) => {
     result = JSON.parse(result);
     if (result.error) {
@@ -202,7 +202,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
           language: 'English',
         };
         metadata = createDocMetadata(doc.getModel(), defaults);
-      } catch(err) {
+      } catch (err) {
         dispatch(pushError(new Error('Error parsing metadata. Please check your quest for validation errors, then try reloading the page. If this error persists, please contact support: Expedition@Fabricate.io')));
         ReactGA.event({
           category: 'Error',
@@ -257,7 +257,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
   });
 }
 
-export function questMetadataChange(quest: QuestType, key: string, value: any): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function questMetadataChange(quest: QuestType, key: string, value: any): ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     // Don't allow undo, since these are set via UI and users don't expect Ctrl+Z to affec them.
     // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
@@ -265,16 +265,16 @@ export function questMetadataChange(quest: QuestType, key: string, value: any): 
     quest.metadataRealtime.set(key, value);
     quest.realtimeModel.endCompoundOperation();
     dispatch({type: 'QUEST_METADATA_CHANGE', key, value} as QuestMetadataChangeAction);
-  }
+  };
 }
 
-export function publishQuestSetup(): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function publishQuestSetup(): ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'QUEST_PUBLISHING_SETUP'} as QuestPublishingSetupAction);
-  }
+  };
 }
 
-export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePublish?: boolean): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePublish?: boolean): ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const renderResult = renderXML(quest.mdRealtime.getText());
     dispatch({type: 'QUEST_RENDER', qdl: renderResult, msgs: renderResult.getFinalizedLogs()});
@@ -300,7 +300,7 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
     return $.ajax({
       type: 'POST',
       url: API_HOST + '/publish/' + quest.id + '?' + params,
-      data: renderResult.getResult()+'',
+      data: renderResult.getResult() + '',
     }).done((resultQuestId: string) => {
       quest.published = (new Date(Date.now()).toISOString());
       dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
@@ -329,10 +329,10 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
     }).fail((error: {statusText: string, status: string, responseText: string}) => {
       dispatch(pushHTTPError(error));
     });
-  }
+  };
 }
 
-export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_SAVE', quest} as RequestQuestSaveAction);
 
@@ -345,8 +345,8 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
     const meta = xmlResult.getMeta();
     // For all metadata values, see https://developers.google.com/drive/v2/reference/files
     const fileMeta = {
-      title: meta['title'] + '.quest',
-      description: meta['summary'],
+      title: meta.title + '.quest',
+      description: meta.summary,
     };
 
     if (quest.id === undefined) {
@@ -371,7 +371,7 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
   };
 }
 
-export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_UNPUBLISH', quest} as RequestQuestUnpublishAction);
     return $.post(API_HOST + '/unpublish/' + quest.id, function(resultQuestId: string) {

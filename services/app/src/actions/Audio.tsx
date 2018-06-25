@@ -1,5 +1,5 @@
-import {AudioSetAction} from './ActionTypes'
-import {AudioState} from '../reducers/StateTypes'
+import {AudioState} from '../reducers/StateTypes';
+import {AudioSetAction} from './ActionTypes';
 
 // can't use Fetch for local files since audio files might come from file://, must use this instead
 // TODO: Switch to using promises

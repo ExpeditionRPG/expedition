@@ -1,11 +1,11 @@
-import Config from '../config'
-import * as express from 'express'
-import {User} from 'shared/schema/Users'
+import * as express from 'express';
+import {User} from 'shared/schema/Users';
+import Config from '../config';
+import {Database, UserInstance} from '../models/Database';
 import {
   incrementLoginCount,
   subscribeToCreatorsList,
-} from '../models/Users'
-import {Database, UserInstance} from '../models/Database'
+} from '../models/Users';
 
 const GoogleTokenStrategy = require('passport-google-id-token');
 const Passport = require('passport');
@@ -68,7 +68,6 @@ export function oauth2Template(req: express.Request, res: express.Response, next
   next();
 }
 // [END middleware]
-
 
 export function installOAuthRoutes(db: Database, router: express.Router) {
   // Begins the authorization flow. The user will be redirected to Google where

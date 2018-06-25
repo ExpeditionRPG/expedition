@@ -1,11 +1,10 @@
-import * as React from 'react'
-import {icon, camelCase, romanize, horizontalCounter, healthCounter, lootCounter} from '../../helpers'
-import {CardType} from '../../reducers/StateTypes'
-import {MAX_ADVENTURER_HEALTH} from '../../Constants'
-
+import * as React from 'react';
+import {MAX_ADVENTURER_HEALTH} from '../../Constants';
+import {camelCase, healthCounter, horizontalCounter, icon, lootCounter, romanize} from '../../helpers';
+import {CardType} from '../../reducers/StateTypes';
 
 export default class CardFront extends React.Component<CardType, {}> {
-  render() {
+  public render() {
     const card = this.props.card;
     switch (card.sheet) {
       case '-Title':
@@ -203,4 +202,3 @@ export default class CardFront extends React.Component<CardType, {}> {
     }
   }
 }
-

@@ -1,9 +1,9 @@
-import {Renderer} from './render/Renderer'
-import {BlockRenderer} from './render/BlockRenderer'
-import {XMLRenderer} from './render/XMLRenderer'
-import {Block, BlockList} from './block/BlockList'
-import {LogMessage, LogMessageMap, Logger} from './Logger'
-import {REGEX} from '../Regex'
+import {REGEX} from '../Regex';
+import {Block, BlockList} from './block/BlockList';
+import {Logger, LogMessage, LogMessageMap} from './Logger';
+import {BlockRenderer} from './render/BlockRenderer';
+import {Renderer} from './render/Renderer';
+import {XMLRenderer} from './render/XMLRenderer';
 
 export function renderXML(md: string): QDLParser {
   const qdl = new QDLParser(XMLRenderer);
@@ -36,11 +36,11 @@ export class QDLParser {
     this.log.dbg('Block groups:');
     this.log.dbg(JSON.stringify(groups));
 
-    const indents = Object.keys(groups).sort((a: string, b: string) => { return (parseInt(a, 10) - parseInt(b, 10)); }); // numeric strings
+    const indents = Object.keys(groups).sort((a: string, b: string) => (parseInt(a, 10) - parseInt(b, 10))); // numeric strings
 
     // Step through indents from most to least,
     // rendering the dependencies of lesser indents as we go.
-    for (let i = indents.length-1; i >= 0; i--) {
+    for (let i = indents.length - 1; i >= 0; i--) {
       const indentGroups = groups[indents[i]];
       for (let j = 0; j < indentGroups.length; j++) {
         // construct the render list of blocks.
@@ -52,7 +52,7 @@ export class QDLParser {
           continue;
         }
 
-        this.log.extend(this.renderSegment(indents[i+1], group[0], group[group.length-1]));
+        this.log.extend(this.renderSegment(indents[i + 1], group[0], group[group.length - 1]));
       }
     }
 
@@ -128,10 +128,10 @@ export class QDLParser {
     );
   }
 
-  private getBlockGroups(): ({[indent:string]: number[][]}) {
+  private getBlockGroups(): ({[indent: string]: number[][]}) {
     // Group blocks by indent.
     // Blocks are grouped up to the maximum indent level
-    const groups: {[indent:string]: number[][]} = {};
+    const groups: {[indent: string]: number[][]} = {};
 
     for (let i = 0; i < this.blockList.length; i++) {
       const curr = this.blockList.at(i);
@@ -141,15 +141,15 @@ export class QDLParser {
       }
 
       // If we're a titled block, break the block group at the same indent
-      if (this.hasHeader(curr) && groups[curr.indent][groups[curr.indent].length-1].length > 0) {
+      if (this.hasHeader(curr) && groups[curr.indent][groups[curr.indent].length - 1].length > 0) {
         groups[curr.indent].push([]);
       }
 
-      groups[curr.indent][groups[curr.indent].length-1].push(i);
+      groups[curr.indent][groups[curr.indent].length - 1].push(i);
 
       // Trigger blocks are always singular blocks, so break them afterwards, too
       if (curr && curr.lines.length && curr.lines[0].length && REGEX.TRIGGER.test(curr.lines[0])) {
-        if (i === this.blockList.length-1) {
+        if (i === this.blockList.length - 1) {
           // don't add a blank block as the very last block
         } else {
           groups[curr.indent].push([]);
@@ -157,10 +157,10 @@ export class QDLParser {
       }
 
       // Break all deeply-indented groups that have a larger indent
-      const indents: any = Object.keys(groups).sort((a: any, b: any) => {return a-b;});
-      for (let j = indents.length-1; indents[j] > curr.indent; j--) {
+      const indents: any = Object.keys(groups).sort((a: any, b: any) => a - b);
+      for (let j = indents.length - 1; indents[j] > curr.indent; j--) {
         const jlen = groups[indents[j]].length;
-        if (groups[indents[j]][jlen-1].length > 0) {
+        if (groups[indents[j]][jlen - 1].length > 0) {
           groups[indents[j]].push([]);
         }
       }
@@ -175,9 +175,9 @@ export class QDLParser {
     const finalized = this.log.finalize();
     this.log = null;
 
-    const logMap: LogMessageMap = {'info': [], 'warning': [], 'error': [], 'internal': []};
+    const logMap: LogMessageMap = {info: [], warning: [], error: [], internal: []};
     for (const m of finalized) {
-      switch(m.type) {
+      switch (m.type) {
         case 'info':
           logMap.info.push(m);
           break;
@@ -211,12 +211,12 @@ export class QDLParser {
     // more blocks must be added to the render list.
     // In this case, we redefine endBlockIdx to be the last nextIndent block before
     // the next baseIndent block.
-    let afterBlock = this.blockList.at(endBlockIdx+1);
-    if (afterBlock && ''+afterBlock.indent === nextIndent) {
+    let afterBlock = this.blockList.at(endBlockIdx + 1);
+    if (afterBlock && '' + afterBlock.indent === nextIndent) {
       do {
         endBlockIdx++;
-        afterBlock = this.blockList.at(endBlockIdx+1);
-      } while(afterBlock && afterBlock.indent > baseIndent);
+        afterBlock = this.blockList.at(endBlockIdx + 1);
+      } while (afterBlock && afterBlock.indent > baseIndent);
     }
 
     // Loop through *all* blocks between start and end idx.

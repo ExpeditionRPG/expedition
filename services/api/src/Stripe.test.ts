@@ -3,5 +3,5 @@ describe('Stripe', () => {
 
   it('Returns validation error if amount < 50 cents');
 
-  it('Returns an error if the Stripe API call fails')
+  it('Returns an error if the Stripe API call fails');
 });

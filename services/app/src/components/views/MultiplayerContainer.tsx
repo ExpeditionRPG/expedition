@@ -1,12 +1,12 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import {toCard} from '../../actions/Card'
-import {AppState, UserState} from '../../reducers/StateTypes'
-import {openSnackbar} from '../../actions/Snackbar'
-import {multiplayerConnect, multiplayerNewSession} from '../../actions/Multiplayer'
-import Multiplayer, {MultiplayerStateProps, MultiplayerDispatchProps, MIN_SECRET_LENGTH} from './Multiplayer'
-import {SessionID} from 'shared/multiplayer/Session'
-import {logEvent} from '../../Logging'
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {SessionID} from 'shared/multiplayer/Session';
+import {toCard} from '../../actions/Card';
+import {multiplayerConnect, multiplayerNewSession} from '../../actions/Multiplayer';
+import {openSnackbar} from '../../actions/Snackbar';
+import {logEvent} from '../../Logging';
+import {AppState, UserState} from '../../reducers/StateTypes';
+import Multiplayer, {MIN_SECRET_LENGTH, MultiplayerDispatchProps, MultiplayerStateProps} from './Multiplayer';
 
 const mapStateToProps = (state: AppState, ownProps: MultiplayerStateProps): MultiplayerStateProps => {
   return {
@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState, ownProps: MultiplayerStateProps): Mult
     user: state.user,
     multiplayer: state.multiplayer,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MultiplayerDispatchProps => {
   return {
@@ -36,11 +36,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Multi
       dispatch(toCard({name: 'FEATURED_QUESTS'}));
     },
   };
-}
+};
 
 const MultiplayerContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Multiplayer);
 
-export default MultiplayerContainer
+export default MultiplayerContainer;

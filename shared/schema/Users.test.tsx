@@ -1,4 +1,4 @@
-import {User} from './Users'
+import {User} from './Users';
 
 describe('User Schema', () => {
   const base = {id: '54321'};
@@ -9,4 +9,4 @@ describe('User Schema', () => {
     const f = new User(base);
     expect(f.id).toEqual(base.id);
   });
-})
+});

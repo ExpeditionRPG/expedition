@@ -1,6 +1,6 @@
-import {StatsCrawler} from './StatsCrawler'
-import {Node} from 'shared/parse/Node'
-import {defaultContext} from 'shared/parse/Context'
+import {defaultContext} from 'shared/parse/Context';
+import {Node} from 'shared/parse/Node';
+import {StatsCrawler} from './StatsCrawler';
 
 declare var global: any;
 
@@ -111,11 +111,11 @@ describe('StatsCrawler', () => {
           </roleplay>
         </quest>`)('quest > :first-child');
 
-        const crawler = new StatsCrawler();
-        crawler.crawl(new Node(xml, defaultContext()));
+      const crawler = new StatsCrawler();
+      crawler.crawl(new Node(xml, defaultContext()));
 
-        const nextIDs = Array.from(crawler.getStatsForId('cond').outputs).sort();
-        expect(nextIDs).toEqual(['END', 'loop']);
+      const nextIDs = Array.from(crawler.getStatsForId('cond').outputs).sort();
+      expect(nextIDs).toEqual(['END', 'loop']);
     });
 
     it('bails out of infinite loops', () => {

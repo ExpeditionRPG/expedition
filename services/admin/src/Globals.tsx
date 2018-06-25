@@ -19,8 +19,8 @@ export interface ReactWindow extends Window {
 declare var window: ReactWindow;
 
 const refs = {
-  window: window,
-  document: document,
+  window,
+  document,
   localStorage: null as (Storage|null),
   device: (typeof device !== 'undefined') ? device : {platform: null},
   ga: (typeof ga !== 'undefined') ? ga : null,

@@ -1,15 +1,15 @@
-import configureStore  from 'redux-mock-store'
-import {toCard, toPrevious} from './Card'
-import {setNavigator} from '../Globals'
-import {MultiplayerClient} from '../Multiplayer'
-import {Action} from '../Testing'
+import configureStore  from 'redux-mock-store';
+import {setNavigator} from '../Globals';
+import {MultiplayerClient} from '../Multiplayer';
+import {Action} from '../Testing';
+import {toCard, toPrevious} from './Card';
 
 describe('Card action', () => {
   let client: MultiplayerClient;
   let mockStore: any;
   beforeEach(() => {
     client = new MultiplayerClient();
-    mockStore = (initialState: any) => {return configureStore([client.createActionMiddleware()])(initialState)};
+    mockStore = (initialState: any) =>configureStore([client.createActionMiddleware()])(initialState);
   });
 
   describe('toCard', () => {
@@ -29,13 +29,13 @@ describe('Card action', () => {
     });
 
     it('dispatches a NAVIGATE action', () => {
-      Action(toCard).expect({name: 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({'type': 'NAVIGATE'}));
+      Action(toCard).expect({name: 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({type: 'NAVIGATE'}));
     });
   });
 
   describe('toPrevious', () => {
     it('returns a RETURN action', () => {
-      Action(toPrevious).expect({name: 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({'type': 'RETURN'}));
+      Action(toPrevious).expect({name: 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({type: 'RETURN'}));
     });
   });
 });

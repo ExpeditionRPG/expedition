@@ -1,10 +1,10 @@
-import * as React from 'react'
-import {romanize, healthCounter, translate} from '../../helpers'
-import {CardType} from '../../reducers/StateTypes'
-import {MAX_COUNTER_HEALTH} from '../../Constants'
+import * as React from 'react';
+import {MAX_COUNTER_HEALTH} from '../../Constants';
+import {healthCounter, romanize, translate} from '../../helpers';
+import {CardType} from '../../reducers/StateTypes';
 
 export default class CardBack extends React.Component<CardType, {}> {
-  render() {
+  public render() {
     const card = this.props.card;
     const translations = this.props.translations;
     switch (card.sheet) {

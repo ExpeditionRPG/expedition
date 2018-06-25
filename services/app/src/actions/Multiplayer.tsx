@@ -1,13 +1,13 @@
-import Redux from 'redux'
-import {toCard} from './Card'
-import {handleFetchErrors} from './Web'
-import {MULTIPLAYER_SETTINGS} from '../Constants'
-import {LocalAction, MultiplayerClientStatus} from './ActionTypes'
-import {MultiplayerSessionMeta, UserState} from '../reducers/StateTypes'
-import {logEvent} from '../Logging'
-import {openSnackbar} from '../actions/Snackbar'
-import {StatusEvent} from 'shared/multiplayer/Events'
-import {getMultiplayerClient} from '../Multiplayer'
+import Redux from 'redux';
+import {StatusEvent} from 'shared/multiplayer/Events';
+import {openSnackbar} from '../actions/Snackbar';
+import {MULTIPLAYER_SETTINGS} from '../Constants';
+import {logEvent} from '../Logging';
+import {getMultiplayerClient} from '../Multiplayer';
+import {MultiplayerSessionMeta, UserState} from '../reducers/StateTypes';
+import {LocalAction, MultiplayerClientStatus} from './ActionTypes';
+import {toCard} from './Card';
+import {handleFetchErrors} from './Web';
 
 export function local(a: Redux.Action): LocalAction {
   const inflight = (a as any)._inflight;
@@ -25,7 +25,7 @@ export function multiplayerNewSession(user: UserState) {
       method: 'POST',
       mode: 'cors',
       headers: new Headers({
-        'Accept': 'text/html',
+        Accept: 'text/html',
       }),
       credentials: 'include',
     })
@@ -55,7 +55,7 @@ export function multiplayerConnect(user: UserState, secret: string) {
       method: 'POST',
       mode: 'cors',
       headers: new Headers({
-        'Accept': 'application/json',
+        Accept: 'application/json',
       }),
       credentials: 'include',
       body: JSON.stringify({instance: instanceID, secret}),
@@ -109,7 +109,7 @@ export function loadMultiplayer(user: UserState) {
     .catch((error: Error) => {
       logEvent('MULTIPLAYER_init_err', {label: error.toString()});
       dispatch(openSnackbar(Error('Multiplayer unavailable: ' + error.toString())));
-    })
+    });
   };
 }
 
@@ -124,5 +124,5 @@ export function setMultiplayerStatus(ev: StatusEvent) {
       status: ev,
     } as MultiplayerClientStatus);
     return null;
-  }
+  };
 }

@@ -1,14 +1,14 @@
-import * as Redux from 'redux'
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import {Provider} from 'react-redux'
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import {Provider} from 'react-redux';
+import * as Redux from 'redux';
 
-import {downloadCards} from './actions/Cards'
-import {loadFiltersFromUrl} from './actions/Filters'
-import MainContainer from './components/MainContainer'
-import {getStore} from './Store'
-import theme from 'shared/Theme'
+import theme from 'shared/Theme';
+import {downloadCards} from './actions/Cards';
+import {loadFiltersFromUrl} from './actions/Filters';
+import MainContainer from './components/MainContainer';
+import {getStore} from './Store';
 
 // So we can hot reload
 declare var require: any;
@@ -23,9 +23,7 @@ export type ThunkAction<R, S = {}, E = {}, A extends Redux.Action<any> = Redux.A
   extraArgument: E
 ) => R;
 declare module 'redux' {
-  export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {
-    <R, E>(asyncAction: ThunkAction<R, {}, E, A>): R;
-  }
+  export type Dispatch<A extends Redux.Action<any> = Redux.AnyAction> = <R, E>(asyncAction: ThunkAction<R, {}, E, A>) => R;
 }
 
 const store = getStore();
@@ -47,5 +45,5 @@ const render = () => {
     </Provider>,
     base
   );
-}
+};
 render();

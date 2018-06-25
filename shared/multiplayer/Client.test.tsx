@@ -1,5 +1,5 @@
-import {MultiplayerEvent, MultiplayerEventBody} from './Events'
-import {ClientBase} from './Client'
+import {ClientBase} from './Client';
+import {MultiplayerEvent, MultiplayerEventBody} from './Events';
 
 export class TestClient extends ClientBase {
   public events: MultiplayerEvent[];
@@ -9,19 +9,19 @@ export class TestClient extends ClientBase {
     this.events = [];
   }
 
-  doParseEvent(s: string) {
+  public doParseEvent(s: string) {
     return this.parseEvent(s);
   }
 
-  setConnectState(connected: boolean) {
+  public setConnectState(connected: boolean) {
     this.connected = connected;
   }
 
-  sendFinalizedEvent(e: MultiplayerEvent) {
+  public sendFinalizedEvent(e: MultiplayerEvent) {
     this.events.push(e);
   }
 
-  disconnect() {}
+  public disconnect() {}
 }
 
 describe('Client', () => {
@@ -58,5 +58,5 @@ describe('Client', () => {
     c.setConnectState(true);
     c.sendEvent(basicEventBody);
     expect(c.events).toEqual([basicEvent]);
-  })
+  });
 });

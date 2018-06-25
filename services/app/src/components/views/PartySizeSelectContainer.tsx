@@ -1,15 +1,15 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import {AppState} from '../../reducers/StateTypes'
-import {changeSettings} from '../../actions/Settings'
-import {toCard} from '../../actions/Card'
-import PartySizeSelect, {PartySizeSelectStateProps, PartySizeSelectDispatchProps} from './PartySizeSelect'
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {toCard} from '../../actions/Card';
+import {changeSettings} from '../../actions/Settings';
+import {AppState} from '../../reducers/StateTypes';
+import PartySizeSelect, {PartySizeSelectDispatchProps, PartySizeSelectStateProps} from './PartySizeSelect';
 
 const mapStateToProps = (state: AppState, ownProps: PartySizeSelectStateProps): PartySizeSelectStateProps => {
   return {
     numPlayers: state.settings.numPlayers,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): PartySizeSelectDispatchProps => {
   return {
@@ -25,11 +25,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Party
       dispatch(changeSettings({numPlayers}));
     },
   };
-}
+};
 
 const PartySizeSelectContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(PartySizeSelect);
 
-export default PartySizeSelectContainer
+export default PartySizeSelectContainer;

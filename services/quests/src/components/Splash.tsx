@@ -1,10 +1,10 @@
-import * as React from 'react'
-import AppBar from '@material-ui/core/AppBar'
-import Button from '@material-ui/core/Button'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import ExpeditionButton from 'app/components/base/Button'
-import {UserState} from '../reducers/StateTypes'
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import ExpeditionButton from 'app/components/base/Button';
+import * as React from 'react';
+import {UserState} from '../reducers/StateTypes';
 
 export interface SplashDispatchProps {
   onLogin: (position: string) => void;
@@ -110,7 +110,7 @@ const Splash = (props: any): JSX.Element => {
             <ExpeditionButton onClick={() => props.onLogin('bottom')}>
               Get Started
             </ExpeditionButton>
-            <ExpeditionButton onClick={() => {window.location.href='http://expeditiongame.com';}}>
+            <ExpeditionButton onClick={() => {window.location.href = 'http://expeditiongame.com'; }}>
               Expedition Home Page
             </ExpeditionButton>
           </div>

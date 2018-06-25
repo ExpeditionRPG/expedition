@@ -1,5 +1,5 @@
-import {handleAnnouncements} from './Announcement'
-import {newMockStore} from '../Testing'
+import {newMockStore} from '../Testing';
+import {handleAnnouncements} from './Announcement';
 
 describe('Announcement set action', () => {
   // Entirely glue code; no testing needed right now.
@@ -41,4 +41,4 @@ describe('Handle Announcements', () => {
     expect(store.getActions()[0]).toEqual(jasmine.objectContaining({type: 'ANNOUNCEMENT_SET', message: 'New version available, click here to upgrade'}));
   });
   it('Does nothing if latest version and no announcement');
-})
+});

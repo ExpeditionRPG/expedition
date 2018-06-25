@@ -1,11 +1,11 @@
-import * as React from 'react'
-import AceEditorOrig from 'react-ace'
-import 'brace/ext/searchbox'
-import 'brace/mode/markdown'
-import 'brace/theme/twilight'
-import {QDLMode} from './QDLMode'
-import {AnnotationType} from '../../reducers/StateTypes'
-import Spellcheck from '../../Spellcheck'
+import 'brace/ext/searchbox';
+import 'brace/mode/markdown';
+import 'brace/theme/twilight';
+import * as React from 'react';
+import AceEditorOrig from 'react-ace';
+import {AnnotationType} from '../../reducers/StateTypes';
+import Spellcheck from '../../Spellcheck';
+import {QDLMode} from './QDLMode';
 
 // The current version of AceEditor fails to compile when used as a JSX.Element:
 /*
@@ -21,14 +21,14 @@ import Spellcheck from '../../Spellcheck'
 // See https://github.com/ExpeditionRPG/expedition-quest-creator/issues/466
 
 declare var gapi: any;
-declare var window:any;
+declare var window: any;
 
 const AceEditor = AceEditorOrig as any;
 const acequire: any = (require('brace') as any).acequire;
 const {Range} = acequire('ace/range');
 const mode = new QDLMode();
 
-type AceAnnotation = {row: number, column: number, text: string, type: 'error'|'info'|'warning'};
+interface AceAnnotation {row: number; column: number; text: string; type: 'error'|'info'|'warning'; }
 
 interface TextViewProps extends React.Props<any> {
   annotations: AnnotationType[];
@@ -106,15 +106,15 @@ class RealtimeUndoManager {
 
 // See https://github.com/securingsincity/react-ace
 export default class TextView extends React.Component<TextViewProps, {}> {
-  ace: any;
-  focused: boolean;
-  lineChangeTs: number;
-  spellchecker: any;
-  onSelectionChange: () => any;
-  silentChange: boolean;
-  silentSelectionChangeTimer: any;
+  public ace: any;
+  public focused: boolean;
+  public lineChangeTs: number;
+  public spellchecker: any;
+  public onSelectionChange: () => any;
+  public silentChange: boolean;
+  public silentSelectionChangeTimer: any;
 
-  onRef(ref: any) {
+  public onRef(ref: any) {
     if (this.ace && this.onSelectionChange) {
       this.ace.editor.off('changeSelection', this.onSelectionChange);
     }
@@ -178,7 +178,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       ref.editor.setOption('useSoftTabs', true);
 
       ref.editor.on('changeSelection', this.onSelectionChange);
-      ref.editor.on('gutterclick', (e: any) => {this.onGutterClick(e)});
+      ref.editor.on('gutterclick', (e: any) => {this.onGutterClick(e); });
 
       if (this.props.annotations) {
         session.setAnnotations(this.props.annotations);
@@ -186,13 +186,13 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     }
   }
 
-  onGutterClick(event: any) {
+  public onGutterClick(event: any) {
     const path: Element[] = event.domEvent.path;
     if (!path || !path.length) {
       return;
     }
 
-    const ICON_CLASSES = ['ace_error', 'ace_warning', 'ace_info']
+    const ICON_CLASSES = ['ace_error', 'ace_warning', 'ace_info'];
     let isIcon = false;
     for (const c of path[0].classList) {
       if (ICON_CLASSES.indexOf(c) !== -1) {
@@ -219,12 +219,12 @@ export default class TextView extends React.Component<TextViewProps, {}> {
         return null;
       }
       return parseInt(m[1], 10);
-    }).filter((n?: number) => {return n;});
+    }).filter((n?: number) => n);
     this.props.onAnnotationClick(Array.from(new Set(annotations)));
     event.preventDefault();
   }
 
-  onTextInserted(event: any) {
+  public onTextInserted(event: any) {
     if (!this.ace || event.isLocal && !event.isRedo && !event.isUndo) {
       return;
     }
@@ -236,12 +236,12 @@ export default class TextView extends React.Component<TextViewProps, {}> {
 
     if (event.isLocal) {
       // Go to end of insert if we're doing a local add (redo/undo)
-      const end = doc.indexToPosition(event.index + event.text.length)
-      this.ace.editor.gotoLine(end.row+1, end.column);
+      const end = doc.indexToPosition(event.index + event.text.length);
+      this.ace.editor.gotoLine(end.row + 1, end.column);
     }
   }
 
-  onTextDeleted(event: any) {
+  public onTextDeleted(event: any) {
     if (!this.ace || event.isLocal && !event.isRedo && !event.isUndo) {
       return;
     }
@@ -255,11 +255,11 @@ export default class TextView extends React.Component<TextViewProps, {}> {
 
     if (event.isLocal) {
       // Go to beginning of segment if we're doing a local remove (redo/undo)
-      this.ace.editor.gotoLine(start.row+1, start.column);
+      this.ace.editor.gotoLine(start.row + 1, start.column);
     }
   }
 
-  componentWillReceiveProps(newProps: any) {
+  public componentWillReceiveProps(newProps: any) {
     // Ensure we're registered to the newest realtime value.
     if (this.props.realtime) {
       this.props.realtime.removeAllEventListeners();
@@ -271,13 +271,13 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     if (this.ace) {
       const row = this.ace.editor.getSelection().anchor.row;
       if (!this.focused && newProps.scrollLineTarget !== row && newProps.scrollLineTargetTs > (this.lineChangeTs || -1)) {
-        this.ace.editor.gotoLine(newProps.scrollLineTarget+1, 0, true);
+        this.ace.editor.gotoLine(newProps.scrollLineTarget + 1, 0, true);
         this.lineChangeTs = newProps.scrollLineTargetTs;
       }
     }
   }
 
-  onChange(text: string) {
+  public onChange(text: string) {
     if (this.silentChange) {
       return;
     }
@@ -291,7 +291,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     }
   }
 
-  render() {
+  public render() {
     let text = 'Loading...';
     if (this.props.realtime) {
       text = this.props.realtime.getText();

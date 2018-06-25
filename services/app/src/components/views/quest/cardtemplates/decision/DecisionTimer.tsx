@@ -1,8 +1,8 @@
-import * as React from 'react'
-import Button from '../../../../base/Button'
-import {CardThemeType} from '../../../../../reducers/StateTypes'
-import {getStore} from '../../../../../Store'
-import {DecisionType} from './Types'
+import * as React from 'react';
+import {CardThemeType} from '../../../../../reducers/StateTypes';
+import {getStore} from '../../../../../Store';
+import Button from '../../../../base/Button';
+import {DecisionType} from './Types';
 
 interface DecisionTimerProps extends React.Props<any> {
   decisions: DecisionType[];
@@ -12,18 +12,18 @@ interface DecisionTimerProps extends React.Props<any> {
 }
 
 export default class DecisionTimer extends React.Component<DecisionTimerProps, {}> {
-  interval: any;
-  state: {startTimeMillis: number, timeRemaining: number};
+  public interval: any;
+  public state: {startTimeMillis: number, timeRemaining: number};
 
   constructor(props: DecisionTimerProps) {
-    super(props)
+    super(props);
     this.state = {startTimeMillis: Date.now(), timeRemaining: this.props.roundTimeTotalMillis};
     this.interval = setInterval(() => {
       this.setState({timeRemaining: this.props.roundTimeTotalMillis - (Date.now() - this.state.startTimeMillis)});
     }, 100);
   }
 
-  onChoice(d: DecisionType) {
+  public onChoice(d: DecisionType) {
     if (!this.interval) {
       return;
     }
@@ -33,7 +33,7 @@ export default class DecisionTimer extends React.Component<DecisionTimerProps, {
     this.props.onDecision(d, Date.now() - this.state.startTimeMillis);
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     // Multiplayer play may unmount this component without a touch event.
     // This makes sure our timer eventually stops.
     if (this.interval) {
@@ -41,13 +41,12 @@ export default class DecisionTimer extends React.Component<DecisionTimerProps, {
     }
   }
 
-  render() {
+  public render() {
     let formattedTimer: string;
     const timeRemainingSec = this.state.timeRemaining / 1000;
     if (timeRemainingSec < 10 && timeRemainingSec > 0) {
       formattedTimer = timeRemainingSec.toFixed(1);
-    }
-    else {
+    } else {
       formattedTimer = timeRemainingSec.toFixed(0);
     }
     formattedTimer += 's';
@@ -57,7 +56,7 @@ export default class DecisionTimer extends React.Component<DecisionTimerProps, {
     const classes = ['no_icon', 'base_card', 'base_timer_card', 'card_theme_' + cardTheme, 'quest_theme_' + questTheme];
 
     const decisions = this.props.decisions.map((d: DecisionType, i: number) => {
-      return <Button className="bigbutton" key={i} onClick={() => this.onChoice(d)}>{d.numAttempts} {d.difficulty} {d.persona} {d.skill}</Button>
+      return <Button className="bigbutton" key={i} onClick={() => this.onChoice(d)}>{d.numAttempts} {d.difficulty} {d.persona} {d.skill}</Button>;
     });
 
     return (

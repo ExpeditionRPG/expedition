@@ -1,17 +1,16 @@
-import * as url from 'url'
-import * as http from 'http'
-import * as WebSocket from 'ws'
-import * as express from 'express'
-import * as Promise from 'bluebird'
-import Config from '../config'
-import {Database, SessionClientInstance, SessionInstance, EventInstance} from '../models/Database'
-import {getLastEvent, commitEvent, commitEventWithoutID, getOrderedEventsAfter, getLargestEventID} from '../models/multiplayer/Events'
-import {getSessionQuestTitle, getSessionBySecret, createSession} from '../models/multiplayer/Sessions'
-import {getClientSessions, verifySessionClient} from '../models/multiplayer/SessionClients'
-import {toClientKey} from 'shared/multiplayer/Session'
-import {ClientID, WaitType, StatusEvent, ActionEvent, MultiplayerEvent, MultiEvent} from 'shared/multiplayer/Events'
-import {maybeChaosWS, maybeChaosDB} from './Chaos'
-
+import * as Promise from 'bluebird';
+import * as express from 'express';
+import * as http from 'http';
+import {ActionEvent, ClientID, MultiEvent, MultiplayerEvent, StatusEvent, WaitType} from 'shared/multiplayer/Events';
+import {toClientKey} from 'shared/multiplayer/Session';
+import * as url from 'url';
+import * as WebSocket from 'ws';
+import Config from '../config';
+import {Database, EventInstance, SessionClientInstance, SessionInstance} from '../models/Database';
+import {commitEvent, commitEventWithoutID, getLargestEventID, getLastEvent, getOrderedEventsAfter} from '../models/multiplayer/Events';
+import {getClientSessions, verifySessionClient} from '../models/multiplayer/SessionClients';
+import {createSession, getSessionBySecret, getSessionQuestTitle} from '../models/multiplayer/Sessions';
+import {maybeChaosDB, maybeChaosWS} from './Chaos';
 
 export interface MultiplayerSessionMeta {
   id: number;
@@ -53,7 +52,7 @@ export function user(db: Database, req: express.Request, res: express.Response) 
         });
     }));
   })
-  .filter((m: MultiplayerSessionMeta|null) => {return m !== null})
+  .filter((m: MultiplayerSessionMeta|null) =>m !== null)
   .then((history: MultiplayerSessionMeta[]) => {
     res.status(200).end(JSON.stringify({history}));
   })
@@ -227,8 +226,8 @@ function handleClientStatus(db: Database, session: number, client: ClientID, ins
     s[toClientKey(client, instance)] = {
       socket: ws,
       status: null,
-      client: client,
-      instance: instance,
+      client,
+      instance,
     };
     cli = s[toClientKey(client, instance)];
   }
@@ -250,7 +249,7 @@ function handleClientStatus(db: Database, session: number, client: ClientID, ins
     }
   }
 
-  if (waitCounts['TIMER'] === Object.keys(s).length) {
+  if (waitCounts.TIMER === Object.keys(s).length) {
     const combatStopEvent = {
       client: 'SERVER',
       instance: Config.get('NODE_ENV'),
@@ -345,7 +344,6 @@ export function websocketSession(db: Database, ws: WebSocket, req: http.Incoming
       }
     }
   }
-
 
   ws.on('message', (msg: WebSocket.Data) => {
     if (typeof(msg) !== 'string') {

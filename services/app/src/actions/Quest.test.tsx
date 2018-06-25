@@ -1,6 +1,6 @@
-import {initQuest} from './Quest'
-import {initialQuestState} from '../reducers/Quest'
-import {defaultContext} from '../components/views/quest/cardtemplates/Template'
+import {defaultContext} from '../components/views/quest/cardtemplates/Template';
+import {initialQuestState} from '../reducers/Quest';
+import {initQuest} from './Quest';
 
 const cheerio = require('cheerio') as CheerioAPI;
 
@@ -27,5 +27,5 @@ describe('Quest actions', () => {
     it('dispatches roleplay on roleplay node');
 
     it('dispatches combat on combat node');
-  })
+  });
 });

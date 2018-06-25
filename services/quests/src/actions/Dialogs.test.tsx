@@ -1,5 +1,5 @@
-import {SetDialogAction} from './ActionTypes'
-import {setDialog} from './Dialogs'
+import {SetDialogAction} from './ActionTypes';
+import {setDialog} from './Dialogs';
 
 describe('Dialog action', () => {
   describe('setDialog', () => {
@@ -23,5 +23,5 @@ describe('Dialog action', () => {
     it('pushes error');
 
     it('logs to GA');
-  })
+  });
 });

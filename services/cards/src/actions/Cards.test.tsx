@@ -1,5 +1,5 @@
-import * as React from 'react'
-import {filterAndFormatCards} from './Cards'
+import * as React from 'react';
+import {filterAndFormatCards} from './Cards';
 
 const dummyFilters = {
   sheet: {

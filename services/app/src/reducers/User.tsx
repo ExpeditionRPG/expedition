@@ -1,7 +1,7 @@
-import Redux from 'redux'
-import merge from 'deepmerge'
-import {UserState} from './StateTypes'
-import {UserLoginAction, UserQuestsAction, UserQuestsDeltaAction} from '../actions/ActionTypes'
+import merge from 'deepmerge';
+import Redux from 'redux';
+import {UserLoginAction, UserQuestsAction, UserQuestsDeltaAction} from '../actions/ActionTypes';
+import {UserState} from './StateTypes';
 
 export const loggedOutUser: UserState = {
   loggedIn: false,

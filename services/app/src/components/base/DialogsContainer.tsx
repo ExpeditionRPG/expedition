@@ -1,19 +1,19 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
+import Redux from 'redux';
 
-import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
-import {toPrevious} from '../../actions/Card'
-import {setDialog} from '../../actions/Dialog'
-import {deleteSavedQuest} from '../../actions/SavedQuests'
-import {openSnackbar} from '../../actions/Snackbar'
-import {changeSettings} from '../../actions/Settings'
-import {multiplayerDisconnect} from '../../actions/Multiplayer'
-import {exitQuest} from '../../actions/Quest'
-import {submitUserFeedback, logMultiplayerStats, fetchQuestXML} from '../../actions/Web'
-import {MIN_FEEDBACK_LENGTH} from '../../Constants'
-import {getMultiplayerClient, MultiplayerCounters, initialMultiplayerCounters} from '../../Multiplayer'
-import {AppState, ContentSetsType, SavedQuestMeta, SettingsType, QuestState, UserState, FeedbackType} from '../../reducers/StateTypes'
-import {QuestDetails} from '../../reducers/QuestTypes'
+import {toPrevious} from '../../actions/Card';
+import {setDialog} from '../../actions/Dialog';
+import {multiplayerDisconnect} from '../../actions/Multiplayer';
+import {exitQuest} from '../../actions/Quest';
+import {deleteSavedQuest} from '../../actions/SavedQuests';
+import {changeSettings} from '../../actions/Settings';
+import {openSnackbar} from '../../actions/Snackbar';
+import {fetchQuestXML, logMultiplayerStats, submitUserFeedback} from '../../actions/Web';
+import {MIN_FEEDBACK_LENGTH} from '../../Constants';
+import {getMultiplayerClient, initialMultiplayerCounters, MultiplayerCounters} from '../../Multiplayer';
+import {QuestDetails} from '../../reducers/QuestTypes';
+import {AppState, ContentSetsType, FeedbackType, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
+import Dialogs, {DialogsDispatchProps, DialogsStateProps} from './Dialogs';
 
 const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
   let multiplayerStats: MultiplayerCounters;
@@ -31,7 +31,7 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
     user: state.user,
     multiplayerStats,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DialogsDispatchProps => {
   return {
@@ -58,7 +58,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
         .then((r: Response) => {
           dispatch(openSnackbar('Stats submitted. Thank you!'));
           dispatch(setDialog(null));
-        })
+        });
     },
     onExpansionSelect: (contentSets: ContentSetsType) => {
       dispatch(setDialog(null));
@@ -89,11 +89,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
       dispatch(fetchQuestXML(quest));
     },
   };
-}
+};
 
 const DialogsContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Dialogs);
 
-export default DialogsContainer
+export default DialogsContainer;

@@ -1,31 +1,31 @@
-import * as React from 'react'
-import Button from '@material-ui/core/Button'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import InputLabel from '@material-ui/core/InputLabel'
-import FormControl from '@material-ui/core/FormControl'
-import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
-import TextField from '@material-ui/core/TextField'
-import Checkbox from './base/Checkbox'
-import {QuestType, DialogsState, DialogIDType, UserState} from '../reducers/StateTypes'
-import {MIN_PLAYERS, MAX_PLAYERS} from '../Constants'
-import {CONTENT_RATING_DESC, GENRES, LANGUAGES, THEMES} from 'shared/schema/Constants'
-import {ErrorType} from '../../errors/types'
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
+import * as React from 'react';
+import {CONTENT_RATING_DESC, GENRES, LANGUAGES, THEMES} from 'shared/schema/Constants';
+import {ErrorType} from '../../errors/types';
+import {MAX_PLAYERS, MIN_PLAYERS} from '../Constants';
+import {DialogIDType, DialogsState, QuestType, UserState} from '../reducers/StateTypes';
+import Checkbox from './base/Checkbox';
 
 declare var ga: any;
 
 interface ErrorDialogProps extends React.Props<any> {
   open: boolean;
   errors: Error[];
-  onClose: ()=>void;
+  onClose: () => void;
 }
 
 export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
-  render() {
+  public render() {
     const errors: JSX.Element[] = [];
     for (let i = 0; i < this.props.errors.length; i++) {
       const error = this.props.errors[i];
@@ -55,12 +55,12 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
 
 interface AnnotationDetailDialogProps extends React.Props<any> {
   open: boolean;
-  annotations: (ErrorType|number)[];
-  onClose: ()=>void;
+  annotations: Array<ErrorType|number>;
+  onClose: () => void;
 }
 
 export class AnnotationDetailDialog extends React.Component<AnnotationDetailDialogProps, {}> {
-  render() {
+  public render() {
     if (!this.props.annotations) {
       return <span></span>;
     }
@@ -131,7 +131,7 @@ interface PublishingDialogProps extends React.Props<any> {
 }
 
 export class PublishingDialog extends React.Component<PublishingDialogProps, {}> {
-  state: {
+  public state: {
     majorRelease: boolean,
     privatePublish: boolean,
   };
@@ -144,7 +144,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
     };
   }
 
-  render(): JSX.Element {
+  public render(): JSX.Element {
     const metadata = this.props.quest.metadataRealtime;
     if (metadata === undefined) {
       return <span></span>;
@@ -168,7 +168,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
     });
     const themes = THEMES.map((theme: string, index: number) => {
       return <MenuItem key={index} value={theme}>{theme}</MenuItem>;
-    })
+    });
 
     // TODO improve validation via errorText instead of alerts - https://github.com/ExpeditionRPG/expedition-quest-creator/issues/274
     // TODO autoScrollBodyContent
@@ -338,7 +338,7 @@ export interface DialogsStateProps {
   dialogs: DialogsState;
   quest: QuestType;
   user: UserState;
-};
+}
 
 export interface DialogsDispatchProps {
   handleMetadataChange: (quest: QuestType, key: string, value: any) => void;
@@ -354,24 +354,24 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
     <span>
       <PublishingDialog
         handleMetadataChange={props.handleMetadataChange}
-        open={props.dialogs.open['PUBLISHING']}
+        open={props.dialogs.open.PUBLISHING}
         onClose={() => props.onClose('PUBLISHING')}
         onRequestPublish={props.onRequestPublish}
         quest={props.quest}
         user={props.user}
       />
       <ErrorDialog
-        open={props.dialogs.open['ERROR']}
+        open={props.dialogs.open.ERROR}
         onClose={() => props.onClose('ERROR')}
         errors={props.dialogs.errors}
       />
       <AnnotationDetailDialog
-        open={props.dialogs.open['ANNOTATION_DETAIL']}
+        open={props.dialogs.open.ANNOTATION_DETAIL}
         onClose={() => props.onClose('ANNOTATION_DETAIL')}
         annotations={props.dialogs.annotations}
       />
     </span>
   );
-}
+};
 
 export default Dialogs;

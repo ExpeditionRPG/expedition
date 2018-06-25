@@ -1,8 +1,8 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import {AppState} from '../reducers/StateTypes'
-import ContextEditor, {ContextEditorDispatchProps, ContextEditorStateProps} from './ContextEditor'
-import {setOpInit} from '../actions/Editor'
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {setOpInit} from '../actions/Editor';
+import {AppState} from '../reducers/StateTypes';
+import ContextEditor, {ContextEditorDispatchProps, ContextEditorStateProps} from './ContextEditor';
 
 const mapStateToProps = (state: AppState, ownProps: any): ContextEditorStateProps => {
   const scopeHistory: any[] = [];
@@ -19,10 +19,10 @@ const mapStateToProps = (state: AppState, ownProps: any): ContextEditorStateProp
   }
 
   return {
-    scopeHistory: scopeHistory,
+    scopeHistory,
     opInit: state.editor.opInit || '',
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): ContextEditorDispatchProps => {
   return {
@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Conte
       dispatch(setOpInit(opInit));
     },
   };
-}
+};
 
 const ContextEditorContainer = connect(
   mapStateToProps,

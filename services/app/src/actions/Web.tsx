@@ -1,22 +1,22 @@
-import Redux from 'redux'
-import {AUTH_SETTINGS} from '../Constants'
-import {toCard} from './Card'
-import {initQuest} from './Quest'
-import {ensureLogin, userQuestsDelta} from './User'
-import {openSnackbar} from './Snackbar'
-import {AppState, SettingsType, QuestState, UserState, UserQuestsType, FeedbackType} from '../reducers/StateTypes'
-import {QuestDetails} from '../reducers/QuestTypes'
-import {getDevicePlatform, getPlatformDump, getAppVersion} from '../Globals'
-import {logEvent} from '../Logging'
-import {TemplateContext, ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
-import {defaultContext} from '../components/views/quest/cardtemplates/Template'
-import {remoteify, UserQuestsAction} from './ActionTypes'
-import {MIN_FEEDBACK_LENGTH} from '../Constants'
-import {MultiplayerCounters} from '../Multiplayer'
-import {getLogBuffer} from '../Logging'
+import Redux from 'redux';
+import {defaultContext} from '../components/views/quest/cardtemplates/Template';
+import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {MIN_FEEDBACK_LENGTH} from '../Constants';
+import {AUTH_SETTINGS} from '../Constants';
+import {getAppVersion, getDevicePlatform, getPlatformDump} from '../Globals';
+import {logEvent} from '../Logging';
+import {getLogBuffer} from '../Logging';
+import {MultiplayerCounters} from '../Multiplayer';
+import {QuestDetails} from '../reducers/QuestTypes';
+import {AppState, FeedbackType, QuestState, SettingsType, UserQuestsType, UserState} from '../reducers/StateTypes';
+import {remoteify, UserQuestsAction} from './ActionTypes';
+import {toCard} from './Card';
+import {initQuest} from './Quest';
+import {openSnackbar} from './Snackbar';
+import {ensureLogin, userQuestsDelta} from './User';
 
-declare var window:any;
-declare var require:any;
+declare var window: any;
+declare var require: any;
 const cheerio = require('cheerio') as CheerioAPI;
 
 // fetch can be used for anything except local files, so anything that might download from file://
@@ -26,10 +26,10 @@ export function fetchLocal(url: string) {
     const request = new XMLHttpRequest();
     request.onload = function() {
       resolve(request.response);
-    }
+    };
     request.onerror = () => {
       reject(new Error('network error'));
-    }
+    };
     request.open('GET', url);
     request.send();
   });
@@ -52,7 +52,7 @@ export function fetchUserQuests() {
     .catch((error: Error) => {
       console.error('Request for quest plays failed', error);
     });
-  }
+  };
 }
 
 export const fetchQuestXML = remoteify(function fetchQuestXML(details: QuestDetails, dispatch: Redux.Dispatch<any>) {
@@ -85,11 +85,11 @@ function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: Templa
     } else {
       dispatch(toCard({name: 'QUEST_SETUP'}));
     }
-  }
+  };
 }
 
 export function logQuestPlay(a: {phase: 'start'|'end'}) {
-  return (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => {
+  return (dispatch: Redux.Dispatch<any>, getState: () => AppState) => {
     try {
       const state = getState();
       const quest = state.quest.details;
@@ -123,7 +123,7 @@ export function logQuestPlay(a: {phase: 'start'|'end'}) {
     } catch (err) {
       // Fail silently
     }
-  }
+  };
 }
 
 export function subscribe(a: {email: string}) {
@@ -145,7 +145,7 @@ export function subscribe(a: {email: string}) {
   };
 }
 
-export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType, user: UserState, type: FeedbackType, anonymous: boolean, text:string, rating: number|null}) {
+export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType, user: UserState, type: FeedbackType, anonymous: boolean, text: string, rating: number|null}) {
   return (dispatch: Redux.Dispatch<any>) => {
     if (a.rating && a.rating < 3 && (!a.text || a.text.length < MIN_FEEDBACK_LENGTH)) {
       return alert('Sounds like the quest needs work! Please provide feedback of at least ' + MIN_FEEDBACK_LENGTH + ' characters to help the author improve.');
@@ -236,7 +236,7 @@ export function logMultiplayerStats(user: UserState, quest: QuestDetails, stats:
       .catch((error: Error) => {
         logEvent('analytics_quest_err', { label: error });
       });
-  } catch(e) {
+  } catch (e) {
     console.error('Failed to log multiplayer stats');
     return Promise.resolve(new Response(''));
   }

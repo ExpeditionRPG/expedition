@@ -1,14 +1,14 @@
-import Redux from 'redux'
-import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction} from './ActionTypes'
-import {PanelType, PlaytestSettings, QuestType} from '../reducers/StateTypes'
-import {store} from '../Store'
-import {saveQuest} from './Quest'
-import {renderXML} from 'shared/render/QDLParser'
-import {loadNode} from 'app/actions/Quest'
-import {changeSettings} from 'app/actions/Settings'
-import {defaultContext} from 'app/components/views/quest/cardtemplates/Template'
-import {TemplateContext, ParserNode} from 'app/components/views/quest/cardtemplates/TemplateTypes'
-import {pushError} from './Dialogs'
+import {loadNode} from 'app/actions/Quest';
+import {changeSettings} from 'app/actions/Settings';
+import {defaultContext} from 'app/components/views/quest/cardtemplates/Template';
+import {ParserNode, TemplateContext} from 'app/components/views/quest/cardtemplates/TemplateTypes';
+import Redux from 'redux';
+import {renderXML} from 'shared/render/QDLParser';
+import {PanelType, PlaytestSettings, QuestType} from '../reducers/StateTypes';
+import {store} from '../Store';
+import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction} from './ActionTypes';
+import {pushError} from './Dialogs';
+import {saveQuest} from './Quest';
 
 declare var window: any;
 
@@ -40,7 +40,7 @@ export function lineNumbersToggle() {
   return {type: 'LINE_NUMBERS_TOGGLE'};
 }
 
-export function updateDirtyState(): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function updateDirtyState(): ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const editor = store.getState();
     if (!editor.dirty) {
@@ -65,7 +65,7 @@ export function updateDirtyState(): ((dispatch: Redux.Dispatch<any>)=>any) {
       dispatch(setDirtyTimeout(null));
     }, 2000);
     dispatch(setDirtyTimeout(timer));
-  }
+  };
 }
 
 export function getPlayNode(node: Cheerio): Cheerio|null {
@@ -79,7 +79,6 @@ export function getPlayNode(node: Cheerio): Cheerio|null {
   }
   return node;
 }
-
 
 export function startPlaytestWorker(oldWorker: Worker|null, elem: Cheerio, settings: PlaytestSettings) {
   return (dispatch: Redux.Dispatch<any>): any => {
@@ -106,7 +105,7 @@ export function startPlaytestWorker(oldWorker: Worker|null, elem: Cheerio, setti
     };
     worker.postMessage({type: 'RUN', xml: elem.toString(), settings});
     dispatch({type: 'PLAYTEST_INIT', worker});
-  }
+  };
 }
 
 export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWorker: Worker|null, ctx: TemplateContext = defaultContext()) {
@@ -121,7 +120,7 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
       if (!playNode) {
         const err = new Error('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
         err.name = 'RenderError';
-        return dispatch(pushError(err))
+        return dispatch(pushError(err));
       }
 
       const newNode = new ParserNode(playNode, ctx);

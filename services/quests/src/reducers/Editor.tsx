@@ -1,6 +1,6 @@
-import Redux from 'redux'
-import {PanelToggleAction, SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction, QuestRenderAction, SetOpInitAction, PlaytestInitAction} from '../actions/ActionTypes'
-import {EditorState} from './StateTypes'
+import Redux from 'redux';
+import {PanelToggleAction, PlaytestInitAction, QuestRenderAction, SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetOpInitAction, SetWordCountAction} from '../actions/ActionTypes';
+import {EditorState} from './StateTypes';
 
 const defaultState: EditorState = {
   loadingQuest: false,
@@ -40,12 +40,11 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
     case 'SET_WORD_COUNT':
       return {...state, wordCount: (action as SetWordCountAction).count};
     case 'QUEST_RENDER':
-      const pageTitle = (action as QuestRenderAction).qdl.getMeta()['title'] + ' - Expedition Quest Creator';
+      const pageTitle = (action as QuestRenderAction).qdl.getMeta().title + ' - Expedition Quest Creator';
       window.document.title = pageTitle;
       try {
         document.getElementsByTagName('title')[0].innerHTML = pageTitle;
-      }
-      catch ( Exception ) { }
+      } catch ( Exception ) { }
       window.history.replaceState(window.history.state, pageTitle, window.location.href);
       return {...state, renderer: (action as QuestRenderAction).qdl};
     case 'QUEST_NODE':
@@ -67,4 +66,3 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
       return state;
   }
 }
-

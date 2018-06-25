@@ -1,9 +1,9 @@
-import * as React from 'react'
-import {loadAudioLocalFile} from '../../actions/Audio'
-import {AudioLoadingType, AudioState, CardName, CardPhase} from '../../reducers/StateTypes'
-import {getWindow} from '../../Globals'
-import {logEvent} from '../../Logging'
-import {AUDIO_COMMAND_DEBOUNCE_MS, MUSIC_INTENSITY_MAX, INIT_DELAY} from '../../Constants'
+import * as React from 'react';
+import {loadAudioLocalFile} from '../../actions/Audio';
+import {AUDIO_COMMAND_DEBOUNCE_MS, INIT_DELAY, MUSIC_INTENSITY_MAX} from '../../Constants';
+import {getWindow} from '../../Globals';
+import {logEvent} from '../../Logging';
+import {AudioLoadingType, AudioState, CardName, CardPhase} from '../../reducers/StateTypes';
 const eachLimit = require('async/eachLimit');
 
 /* Notes on audio implementation:
@@ -57,22 +57,22 @@ const MUSIC_DEFINITIONS = {
   },
 } as {[key: string]: {[key: string]: MusicDefinition}};
 interface MusicDefinition {
-  bpm: number,
-  directory: string,
-  instruments: string[],
-  baselineInstruments: string[],
-  peakingInstrument: string,
-  loopMs: number,
-  minIntensity: number,
-  maxIntensity: number,
-  variants: number,
-};
+  bpm: number;
+  directory: string;
+  instruments: string[];
+  baselineInstruments: string[];
+  peakingInstrument: string;
+  loopMs: number;
+  minIntensity: number;
+  maxIntensity: number;
+  variants: number;
+}
 type GainNode = any;
 type SourceNode = any;
 interface NodeSet {
   source: SourceNode;
   gain: GainNode;
-};
+}
 
 export interface AudioStateProps {
   audio: AudioState;
@@ -113,7 +113,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
       if (props.enabled) {
         setTimeout(() => this.loadFiles(), INIT_DELAY.LOAD_AUDIO_MILLIS);
       }
-    } catch(err) {
+    } catch (err) {
       if (props.enabled) {
         props.disableAudio();
       }
@@ -125,7 +125,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
   // This will fire many times without any audio-related changes since it subscribes to settings
   // So we have to be careful in checking that it's actually an audio-related change,
   // And not a different event that contains valid-looking (but identical) audio info
-  componentWillReceiveProps(nextProps: Partial<AudioProps>) {
+  public componentWillReceiveProps(nextProps: Partial<AudioProps>) {
     if (!nextProps.audio) {
       return;
     }
@@ -412,7 +412,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
     this.playNewMusicTheme();
   }
 
-  render(): JSX.Element|null {
+  public render(): JSX.Element|null {
     return null;
   }
 }

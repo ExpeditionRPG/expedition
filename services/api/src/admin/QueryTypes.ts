@@ -11,7 +11,7 @@ export interface FeedbackQuery extends QueryBase {
 
 export interface QuestQuery extends QueryBase {
   userid?: string;
-  questid?: string
+  questid?: string;
   substring?: string; // Matches title or description
 }
 
@@ -66,6 +66,6 @@ export interface UserMutation {
 }
 
 export interface Response {
-  status: 'OK'|'ERROR'
+  status: 'OK'|'ERROR';
   error?: string;
 }

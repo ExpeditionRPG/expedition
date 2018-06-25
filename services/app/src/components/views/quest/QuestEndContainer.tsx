@@ -1,18 +1,17 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import QuestEnd, {QuestEndStateProps, QuestEndDispatchProps} from './QuestEnd'
-import {toPrevious} from '../../../actions/Card'
-import {checkoutSetState, toCheckout} from '../../../actions/Checkout'
-import {openSnackbar} from '../../../actions/Snackbar'
-import {exitQuest} from '../../../actions/Quest'
-import {ensureLogin} from '../../../actions/User'
-import {submitUserFeedback} from '../../../actions/Web'
-import {AppState, QuestState, SettingsType, UserState} from '../../../reducers/StateTypes'
-import {getDevicePlatform} from '../../../Globals'
-import {logEvent} from '../../../Logging'
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {toPrevious} from '../../../actions/Card';
+import {checkoutSetState, toCheckout} from '../../../actions/Checkout';
+import {exitQuest} from '../../../actions/Quest';
+import {openSnackbar} from '../../../actions/Snackbar';
+import {ensureLogin} from '../../../actions/User';
+import {submitUserFeedback} from '../../../actions/Web';
+import {getDevicePlatform} from '../../../Globals';
+import {logEvent} from '../../../Logging';
+import {AppState, QuestState, SettingsType, UserState} from '../../../reducers/StateTypes';
+import QuestEnd, {QuestEndDispatchProps, QuestEndStateProps} from './QuestEnd';
 
-declare var window:any;
-
+declare var window: any;
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestEndStateProps => {
   return {
@@ -22,7 +21,7 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestEndStateProps => 
     settings: state.settings,
     user: state.user,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestEndDispatchProps => {
   return {
@@ -34,10 +33,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       };
       const onSuccess = function(result: any) {
         logEvent('share', { ...quest.details, label: result.app });
-      }
+      };
       const onError = function(msg: string) {
         logEvent('share_error', { label: msg });
-      }
+      };
       window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
     },
     onSubmit: (quest: QuestState, settings: SettingsType, user: UserState, anonymous: boolean, text: string, rating: number|null) => {
@@ -63,11 +62,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         });
     },
   };
-}
+};
 
 const QuestEndContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(QuestEnd);
 
-export default QuestEndContainer
+export default QuestEndContainer;

@@ -1,6 +1,6 @@
-import Redux from 'redux'
-import {CardType, FiltersState} from './StateTypes'
-import {FiltersCalculateAction, FilterChangeAction} from '../actions/Filters'
+import Redux from 'redux';
+import {FilterChangeAction, FiltersCalculateAction} from '../actions/Filters';
+import {CardType, FiltersState} from './StateTypes';
 
 export let initialState: FiltersState = {
   sheet: {
@@ -52,7 +52,6 @@ export default function Filters(state: FiltersState = initialState, action: Redu
       return state;
   }
 }
-
 
 // TODO if a filter is currently active / not on default, show all possible options for that filter (on unfiltered data)
 // (otherwise, because the data's been filtered already, it'll only show the current selection + all)

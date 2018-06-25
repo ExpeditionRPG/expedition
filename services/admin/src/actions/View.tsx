@@ -1,7 +1,7 @@
-import Redux from 'redux'
-import {SetViewAction} from './ActionTypes'
-import {ViewType} from '../reducers/StateTypes'
-import {feedbackQuery, usersQuery, questsQuery} from './Web'
+import Redux from 'redux';
+import {ViewType} from '../reducers/StateTypes';
+import {SetViewAction} from './ActionTypes';
+import {feedbackQuery, questsQuery, usersQuery} from './Web';
 
 export function setView(view: ViewType): SetViewAction {
   return {type: 'SET_VIEW', view};
@@ -9,7 +9,7 @@ export function setView(view: ViewType): SetViewAction {
 
 export function queryView(view: ViewType, filter?: string, order?: {column: string, ascending: boolean}) {
   return (dispatch: Redux.Dispatch<any>) => {
-    switch(view) {
+    switch (view) {
       case 'USERS':
       dispatch(usersQuery({
         substring: filter,

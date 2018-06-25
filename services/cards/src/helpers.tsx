@@ -1,6 +1,6 @@
-import * as React from 'react'
-import {MAX_COUNTER_HEALTH} from './Constants'
-import {TranslationsType} from './reducers/StateTypes'
+import * as React from 'react';
+import {MAX_COUNTER_HEALTH} from './Constants';
+import {TranslationsType} from './reducers/StateTypes';
 
 export function icon(name: string, theme?: string, key?: number): JSX.Element {
   const globalSrc = `/expedition-art/icons/${name}.svg`;
@@ -18,9 +18,9 @@ export function romanize(num: number): string { // http://blog.stevenlevithan.co
   if (+num === 0) { return '0'; }
   if (!+num) { return ''; }
   const digits = String(+num).split('');
-  const key = ['','C','CC','CCC','CD','D','DC','DCC','DCCC','CM',
-             '','X','XX','XXX','XL','L','LX','LXX','LXXX','XC',
-             '','I','II','III','IV','V','VI','VII','VIII','IX'];
+  const key = ['', 'C', 'CC', 'CCC', 'CD', 'D', 'DC', 'DCC', 'DCCC', 'CM',
+             '', 'X', 'XX', 'XXX', 'XL', 'L', 'LX', 'LXX', 'LXXX', 'XC',
+             '', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
   let roman = '';
   let i = 3;
   while (i--) {
@@ -91,7 +91,7 @@ export function healthCounter(health: number, back = false): JSX.Element {
   let outputted = (back) ? -1 : 0; // put one extra on the vertical to fill out max
 
   while (health > 0) {
-    health--; //subtract HP first, since we're already showing the max HP at the top
+    health--; // subtract HP first, since we're already showing the max HP at the top
 
     if (outputted < 9 || (outputted === 9 && health === 0)) {
       output += '<li>' + health + '</li>';
@@ -146,7 +146,7 @@ export function lootCounter(count: number): JSX.Element {
       temp = '<li>' + count + '</li>' + temp;
     }
     outputted++;
-    count--; //subtract count last, so that we get all the values
+    count--; // subtract count last, so that we get all the values
   }
   output += temp + '</ul>';
   return <span dangerouslySetInnerHTML={{__html: output}}></span>;

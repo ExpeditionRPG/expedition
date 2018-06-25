@@ -7,7 +7,7 @@
 
 // Takes in array of RegEx, returns a single regex that ORs them
 export function combinedRegex(regexs: RegExp[], flags?: string): RegExp {
-  const sources = regexs.map((regex) => { return regex.source});
+  const sources = regexs.map((regex) => regex.source);
   return new RegExp(sources.join('|'), flags);
 }
 

@@ -1,14 +1,14 @@
-import Redux from 'redux'
-import {QuestState} from './StateTypes'
-import {QuestDetailsAction, QuestNodeAction, ViewQuestAction} from '../actions/ActionTypes'
-import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
-import * as seedrandom from 'seedrandom'
+import Redux from 'redux';
+import * as seedrandom from 'seedrandom';
+import {QuestDetailsAction, QuestNodeAction, ViewQuestAction} from '../actions/ActionTypes';
+import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {QuestState} from './StateTypes';
 
 const cheerio = require('cheerio') as CheerioAPI;
 
 function autoseed(): string {
   let seed = '';
-  seedrandom(undefined, { pass: function(p: seedrandom.prng, s: string): seedrandom.prng {
+  seedrandom(undefined, { pass(p: seedrandom.prng, s: string): seedrandom.prng {
     seed = s;
     return p;
   }});
@@ -30,7 +30,7 @@ export const initialQuestState: QuestState = {
     views: {},
     templates: {},
     path: ([] as any),
-    _templateScopeFn: ()=>{ return {}; },
+    _templateScopeFn: () => ({}),
   }),
 };
 

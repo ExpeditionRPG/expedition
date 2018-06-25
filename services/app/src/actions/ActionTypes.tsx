@@ -1,22 +1,22 @@
-import Redux from 'redux'
+import Redux from 'redux';
+import {ClientID, InstanceID, StatusEvent} from 'shared/multiplayer/Events';
+import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {QuestDetails} from '../reducers/QuestTypes';
 import {
+  AppState,
   AudioState,
-  CardState,
   CardName,
   CardPhase,
+  CardState,
   CheckoutState,
   DialogIDType,
+  MultiplayerSessionMeta,
+  SavedQuestMeta,
   SearchSettings,
   SettingsType,
   UserQuestsType,
   UserState,
-  AppState,
-  MultiplayerSessionMeta,
-  SavedQuestMeta,
-} from '../reducers/StateTypes'
-import {QuestDetails} from '../reducers/QuestTypes'
-import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
-import {ClientID, InstanceID, StatusEvent} from 'shared/multiplayer/Events'
+} from '../reducers/StateTypes';
 
 export interface FetchAnnouncementResponse {
   message: string;
@@ -65,18 +65,18 @@ export interface NavigateAction extends Redux.Action {
   type: 'NAVIGATE';
   to: CardState;
   dontUpdateUrl: boolean;
-};
+}
 
 export interface ReturnAction extends Redux.Action {
   type: 'RETURN';
   to: CardState;
   before: boolean;
-  skip?: {name: CardName, phase: CardPhase}[]; // Skip any occurrences of these cards
-};
+  skip?: Array<{name: CardName, phase: CardPhase}>; // Skip any occurrences of these cards
+}
 
 export interface QuestExitAction extends Redux.Action {
   type: 'QUEST_EXIT';
-};
+}
 
 export interface QuestDetailsAction extends Redux.Action {
   type: 'QUEST_DETAILS';
@@ -87,7 +87,7 @@ export interface QuestNodeAction extends Redux.Action {
   type: 'QUEST_NODE';
   node: ParserNode;
   details?: QuestDetails;
-};
+}
 
 export interface ChangeSettingsAction extends Redux.Action {
   type: 'CHANGE_SETTINGS';
@@ -216,11 +216,11 @@ export interface InflightRejectAction extends Redux.Action {
 // Returns a generator of an "executable array" of the original action.
 // This array can be passed to the generated Multiplayer redux middleware
 // which invokes it and packages it to send to other multiplayer clients.
-const MULTIPLAYER_ACTIONS: {[action: string]: (args: any) => Redux.Action} = {}
-export function remoteify<A>(a: (args: A, dispatch?: Redux.Dispatch<any>, getState?: ()=>AppState)=>any) {
+const MULTIPLAYER_ACTIONS: {[action: string]: (args: any) => Redux.Action} = {};
+export function remoteify<A>(a: (args: A, dispatch?: Redux.Dispatch<any>, getState?: () => AppState) => any) {
   const remoted = (args: A) => {
     return ([a.name, a, args] as any) as Redux.Action; // We know better >:}
-  }
+  };
   if (MULTIPLAYER_ACTIONS[a.name]) {
     console.error('ERROR: Multiplayer action ' + a.name + ' already registered elsewhere! This will break multiplayer!');
   }
