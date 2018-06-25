@@ -44,7 +44,7 @@ class TopBar extends React.Component<TopBarProps, {}> {
         return <MenuItem key={index} value={option}>{text}</MenuItem>
       });
       return (
-        <FormControl>
+        <FormControl key={index}>
           <InputLabel htmlFor={name}>{name}</InputLabel>
           <Select
             className="filter"

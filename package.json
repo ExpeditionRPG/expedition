@@ -19,6 +19,7 @@
     "app-local": "API_HOST='http://localhost:8081' npm run app & npm run api",
     "app-test": "cd services/app && yarn test",
     "cards": "cd services/cards && yarn start",
+    "cards-deploy": "cd services/cards && ./beta.sh",
     "cards-test": "cd services/cards && yarn test",
     "shared-test": "cd shared && yarn test",
     "quests": "cd services/quests && yarn start",
