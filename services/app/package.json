@@ -32,7 +32,7 @@
   },
   "devDependencies": {},
   "dependencies": {
-    "cordova-android": "^7.1.0",
-    "cordova-ios": "^4.5.4"
+    "cordova-android": "7.1.0",
+    "cordova-ios": "4.5.4"
   }
 }
