@@ -93,7 +93,7 @@
     "karma-webpack": "^3.0.0",
     "mailchimp-api-v3": "^1.7.0",
     "markdown": "^0.5.0",
-    "mathjs": "^3.16.4",
+    "mathjs": "^5.0.0",
     "memoizee": "^0.4.12",
     "mocha": "^5.2.0",
     "moment": "^2.22.1",
