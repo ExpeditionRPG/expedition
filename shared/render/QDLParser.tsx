@@ -3,7 +3,7 @@ import {BlockRenderer} from './render/BlockRenderer'
 import {XMLRenderer} from './render/XMLRenderer'
 import {Block, BlockList} from './block/BlockList'
 import {LogMessage, LogMessageMap, Logger} from './Logger'
-import REGEX from '../Regex'
+import {REGEX} from '../Regex'
 
 export function renderXML(md: string): QDLParser {
   const qdl = new QDLParser(XMLRenderer);

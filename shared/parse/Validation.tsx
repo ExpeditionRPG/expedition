@@ -76,7 +76,7 @@ function generateIdMapping(node: Cheerio): { [key:string]:string[]; } {
   }
 
   for (let i = 0; i < node.children().length; i++) {
-    let m = generateIdMapping(node.children().eq(i));
+    const m = generateIdMapping(node.children().eq(i));
     Object.keys(m).forEach((k: any): void => {
       map[k] = (map[k] || []).concat(this[k]);
     });

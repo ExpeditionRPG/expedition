@@ -53,3 +53,7 @@ The IDE automatically loads `dist/config_base.json` on start - this is excluded 
 ```sh
 npm run test
 ```
+
+## Deployment
+
+Set up your Heroku remotes and then rename them to api-beta and api-prod: https://devcenter.heroku.com/articles/git#creating-a-heroku-remote

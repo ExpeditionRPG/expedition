@@ -1,0 +1,37 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "es6",
+        "jsx": "react",
+        "allowSyntheticDefaultImports": true,
+        "strictNullChecks": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "baseUrl": "./",
+        "paths": {
+            "api/*": ["services/api/src/*"],
+            "app/*": ["services/app/src/*"],
+            "shared/*": ["shared/*"]
+        }
+    },
+    "exclude": [
+        "dist",
+        "node_modules",
+        "app/src/quests",
+        "app/plugins",
+        "app/platforms",
+        "www"
+    ],
+    "awesomeTypescriptLoaderOptions": {
+        "useBabel": true,
+        "useCache": true,
+        "babelOptions": {
+            "babelrc": true
+        }
+    },
+    "files": ["not-a-file-but-included-to-appease-jest"]
+}

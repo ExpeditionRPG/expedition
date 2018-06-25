@@ -11,7 +11,7 @@ export function combinedRegex(regexs: RegExp[], flags?: string): RegExp {
   return new RegExp(sources.join('|'), flags);
 }
 
-export default {
+export const REGEX = {
   // Breakdown:
   // <(\w|(\/\w))             Math "<" or "</" plus an immediate alphanumeric
   // (.|\n)*?>                Greedily match any character (incl newline) until closing ">"

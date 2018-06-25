@@ -20,7 +20,7 @@ describe('BlockRenderer', () => {
           indent: 0,
           lines: ['ha! this will never parse'],
           startLine: 0,
-        }
+        },
       ];
 
       br.toCombat(blocks, log)
@@ -69,7 +69,7 @@ describe('BlockRenderer', () => {
           indent: 0,
           lines: ['_combat_'],
           startLine: 0,
-        }
+        },
       ];
 
       br.toCombat(blocks, log)
@@ -255,8 +255,8 @@ describe('BlockRenderer', () => {
       const blocks: Block[] = [
         { lines: [ 'Victory!', '' ],
           indent: 4,
-          startLine: 21
-        }
+          startLine: 21,
+        },
       ];
 
       br.toRoleplay(blocks, log)
@@ -270,8 +270,8 @@ describe('BlockRenderer', () => {
       const blocks: Block[] = [
         { lines: ['_Title with :roll:, :rune_alpha:_', 'Victory!', '' ],
           indent: 4,
-          startLine: 21
-        }
+          startLine: 21,
+        },
       ];
 
       br.toRoleplay(blocks, log)
@@ -285,8 +285,8 @@ describe('BlockRenderer', () => {
       const blocks: Block[] = [
         { lines: ['_Title with :roll:, :rune_alpha:_ (#id)', 'Victory!', '' ],
           indent: 4,
-          startLine: 21
-        }
+          startLine: 21,
+        },
       ];
 
       br.toRoleplay(blocks, log)
@@ -377,8 +377,8 @@ describe('BlockRenderer', () => {
       const blocks: Block[] = [
         { lines: [ '_Title_ (#testid123)', '', 'hi' ],
           indent: 4,
-          startLine: 21
-        }
+          startLine: 21,
+        },
       ];
 
       br.toRoleplay(blocks, log)
@@ -401,8 +401,8 @@ describe('BlockRenderer', () => {
       const blocks: Block[] = [
         { lines: [ '**end**', '' ],
           indent: 4,
-          startLine: 21
-        }
+          startLine: 21,
+        },
       ];
 
       br.toTrigger(blocks, log)
@@ -416,8 +416,8 @@ describe('BlockRenderer', () => {
       const blocks: Block[] = [
         { lines: [ '**goto testid123**', '' ],
           indent: 4,
-          startLine: 21
-        }
+          startLine: 21,
+        },
       ];
 
       br.toTrigger(blocks, log)
@@ -431,8 +431,8 @@ describe('BlockRenderer', () => {
       const blocks: Block[] = [
         { lines: [ '**{{a}} end**', '' ],
           indent: 4,
-          startLine: 21
-        }
+          startLine: 21,
+        },
       ];
 
       br.toTrigger(blocks, log)
@@ -452,7 +452,7 @@ describe('BlockRenderer', () => {
       const block: Block = {
         lines: [ '#Quest Title' ],
         indent: 0,
-        startLine: 0
+        startLine: 0,
       };
 
       br.toQuest(block, log)
@@ -466,7 +466,7 @@ describe('BlockRenderer', () => {
       const block: Block = {
         lines: [ '#Quest Title', 'minplayers1' ],
         indent: 0,
-        startLine: 0
+        startLine: 0,
       };
 
       br.toQuest(block, log)

@@ -1,1 +1,1 @@
-git push prod master
+git push api-prod master:master

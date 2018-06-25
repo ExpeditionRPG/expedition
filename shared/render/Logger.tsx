@@ -140,7 +140,7 @@ export class Logger {
     const message: LogMessage = {
       type: type,
       text: text,
-      url: url
+      url: url,
     };
     if (line) {
       message.line = line;

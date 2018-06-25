@@ -2,6 +2,7 @@ language: node_js
 env:
 - CXX=g++-4.8
 addons:
+  chrome: stable
   apt:
     sources:
     - ubuntu-toolchain-r-test
@@ -17,7 +18,7 @@ deploy:
   script: ./scripts/beta.sh
   skip_cleanup: true
   on:
-    repo: ExpeditionRPG/expedition-app
+    repo: ExpeditionRPG/expedition
     branch: master
 notifications:
   email: false
