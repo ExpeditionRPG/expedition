@@ -34,7 +34,6 @@ describe('Dependencies', () => {
       'node-sass',
       'babel-preset-env',
       'babel-core',
-      'babel-loader',
 
       // Needed for tests
       'babel-jest',

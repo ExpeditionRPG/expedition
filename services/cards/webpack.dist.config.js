@@ -20,19 +20,6 @@ module.exports = {
       // TODO compress / optimize images to 90% quality (but only on prod, not local building)
       { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
       { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/ },
-      {
-        enforce: 'post',
-        test: /\.jsx$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [["env", {
-              "targets": {"browsers": [">5%", "last 2 years", "last 3 iOS versions", "chrome >= 39"]}
-            }]],
-          },
-        },
-      }
     ],
   },
   plugins: [

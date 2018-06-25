@@ -35,12 +35,14 @@ const options = {
   module: {
     rules: [
       { test: /\.json$/, loader: 'json-loader' },
-      { test: /\.ts(x?)$/, loaders: ['awesome-typescript-loader'], exclude: [/\/node_modules\/((?!expedition\-qdl).)*$/, /\/dist\/.*/] },
+      { test: /\.ts(x?)$/, loaders: ['awesome-typescript-loader'], exclude: [/\/node_modules\/.*/, /\/dist\/.*/] },
     ]
   },
-  externals: [NodeExternals({whitelist: [/expedition/]})], // Do not bundle anything in node_modules.
+  // TODO if empty obj works, remove nodeExternals here and from package.json
+  externals: {}, // Do not bundle anything in node_modules.
+  // externals: [NodeExternals()], // Do not bundle anything in node_modules.
+  // externals: [NodeExternals({whitelist: [/expedition/]})], // Do not bundle anything in node_modules.
   plugins: [
-    new Webpack.HotModuleReplacementPlugin(),
     new Webpack.NoEmitOnErrorsPlugin(),
     new Webpack.DefinePlugin({
       VERSION: JSON.stringify(require('./package.json').version)

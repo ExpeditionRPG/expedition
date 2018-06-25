@@ -7,7 +7,6 @@
     "radix": true,
     "switch-default": true,
     "triple-equals": true,
-    "typeof-compare": true,
     "use-isnan": true,
     "indent": [true, "spaces"],
     "no-unused-variable": [true, "react"],
