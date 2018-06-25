@@ -30,7 +30,6 @@ module.exports = {
     }),
     new CopyWebpackPlugin([
       { from: 'src/index.html' },
-      { from: 'src/themes', to: 'themes' },
       { context: '../../node_modules/expedition-art', from: '**/*.+(jpg|svg|png)', to: 'expedition-art' },
     ]),
     new Webpack.optimize.AggressiveMergingPlugin(),
