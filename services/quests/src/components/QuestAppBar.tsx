@@ -1,15 +1,12 @@
-import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from '@material-ui/core/IconButton';
-// import Menu from '@material-ui/core/Menu'
-// import MenuItem from '@material-ui/core/MenuItem'
-import Toolbar from '@material-ui/core/Toolbar';
+import * as React from 'react'
+import AppBar from '@material-ui/core/AppBar'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Button from '@material-ui/core/Button'
+import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography';
 import NavigationArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import AlertError from '@material-ui/icons/Error';
 import SyncIcon from '@material-ui/icons/Sync';
-import * as React from 'react';
 import {QuestActionType} from '../actions/ActionTypes';
 import {AnnotationType, EditorState, QuestType, UserState} from '../reducers/StateTypes';
 
@@ -64,37 +61,18 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
     </span>;
   }
 
-  // TODO: Re-enable ability to open menu
-  // TODO: Attach menu to IconButton
-  /*
-  <Menu
-            className="loginState"
-            open={false}
-            iconButtonElement={
-
-            }
-            targetOrigin={{horizontal: 'right', vertical: 'top'}}
-            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-          >
-            <MenuItem disabled={true}>{loginText}</MenuItem>
-            <MenuItem onClick={() => props.onUserDialogRequest(props.user)}>Sign Out</MenuItem>
-          </Menu>
-  */
   return (
-    <span className="quest_app_bar">
-      <AppBar>
-        <Typography variant="title" color="inherit" className="appBarTitle">
+    <AppBar className="quest_app_bar">
+      <Toolbar>
+        <Typography variant="title">
           {questTitle}
         </Typography>
-        <div className="appBarRight">
-          <a href="https://expeditiongame.com/loot" target="_blank" className="lootPoints">
-            {props.user.lootPoints} <img className="inline_icon" src="images/loot_white_small.svg" />
-          </a>
-          <span className="email">{props.user.email}</span>
-          <IconButton><NavigationArrowDropDown /></IconButton>
-        </div>
-      </AppBar>
-      <Toolbar className="toolbar">
+        <a href="https://expeditiongame.com/loot" target="_blank" className="lootPoints">
+          {props.user.lootPoints} <img className="inline_icon" src="images/loot_white_small.svg" />
+        </a>
+        <span className="email">{props.user.email}</span>
+      </Toolbar>
+      <Toolbar>
         <Button onClick={(event: any) => props.onMenuSelect('NEW_QUEST', props.quest)}>New</Button>
         {publishButton}
         {Boolean(props.quest.published) && <Button onClick={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.quest)}>Unpublish</Button>}
@@ -110,7 +88,7 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
           </Button>
         }
       </Toolbar>
-    </span>
+    </AppBar>
   );
 };
 

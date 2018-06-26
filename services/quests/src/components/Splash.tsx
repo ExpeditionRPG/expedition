@@ -14,7 +14,7 @@ export interface SplashDispatchProps {
 const Splash = (props: any): JSX.Element => {
   return (
     <div className="main splash">
-      <AppBar>
+      <AppBar className="splash_app_bar">
         <Toolbar>
           <Typography variant="title">
             Expedition Quest Creator

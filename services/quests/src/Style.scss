@@ -168,6 +168,10 @@ body .olark-launch-button { /*must be more specifc than olark styles */
   overflow-y: auto;
   font-size: $splashParagraphSize;
 
+  .body {
+    padding-top: $hBarThickness;
+  }
+
   .alert {
     background: white;
     padding: 5%;
@@ -339,6 +343,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
   >div {
     background-color: transparent !important; // Override
     height: $hBarThickness !important;
+    min-height: $hBarThickness !important;
   }
 
   h1 {
@@ -448,6 +453,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
   height: 100%;
   display: flex;
   flex-direction: column;
+  padding-top: 2 * $hBarThickness;
 
   h1 {
     color: white;
