@@ -3156,9 +3156,9 @@ cordova-plugin-fullscreen@^1.2.0:
   version "2.0.1"
   resolved "git+https://github.com/katzer/cordova-plugin-hidden-statusbar-overlay.git#d9b46c8a9fc0a51b29b028555f4d301b84530f06"
 
-cordova-plugin-inappbrowser@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-inappbrowser/-/cordova-plugin-inappbrowser-2.0.2.tgz#a448fcbe974ca6b42988bd3455109d923d6c9769"
+cordova-plugin-inappbrowser@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-inappbrowser/-/cordova-plugin-inappbrowser-3.0.0.tgz#d4ae00d36676210751057ad258ae4ad4a9161ada"
 
 "cordova-plugin-insomnia@git+https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git":
   version "4.3.0"
