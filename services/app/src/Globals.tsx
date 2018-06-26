@@ -10,13 +10,16 @@ export function getAppVersion(): string {
 }
 
 export interface ReactDocument extends Document {
-  addEventListener: (e: string, f: (this: any, ev: MouseEvent) => any, useCapture?: boolean) => void;
+  addEventListener: (e: string, f: (this: any, ev: MouseEvent) => any,
+    useCapture?: boolean) => void;
   dispatchEvent: (e: Event) => boolean;
 }
 
 export interface CordovaLoginPlugin {
-  trySilentLogin: (options: {scopes: string, webClientId: string}, success: (obj: any) => any, error: (err: string) => any) => void;
-  login: (options: {scopes: string, webClientId: string}, success: (obj: any) => any, error: (err: string) => any) => void;
+  trySilentLogin: (options: {scopes: string, webClientId: string},
+    success: (obj: any) => any, error: (err: string) => any) => void;
+  login: (options: {scopes: string, webClientId: string},
+    success: (obj: any) => any, error: (err: string) => any) => void;
 }
 
 export interface ReactWindow extends Window {
@@ -43,15 +46,15 @@ export interface ReactWindow extends Window {
 declare var window: ReactWindow;
 
 const refs = {
-  window,
-  document,
-  localStorage: null as (Storage|null),
+  cheerio: require('cheerio') as CheerioAPI,
   device: (typeof device !== 'undefined') ? device : {platform: null},
+  document,
   ga: (typeof ga !== 'undefined') ? ga : null,
   gapi: (typeof gapi !== 'undefined') ? gapi : null,
   history: (typeof history !== 'undefined') ? history : {pushState: () => null},
+  localStorage: null as (Storage|null),
   navigator: (typeof navigator !== 'undefined') ? navigator : null,
-  cheerio: require('cheerio') as CheerioAPI,
+  window,
 };
 
 export function getDevicePlatform(): 'android' | 'ios' | 'web' {

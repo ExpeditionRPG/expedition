@@ -22,7 +22,7 @@ export interface ToggleDrawerAction extends Redux.Action {
   type: 'TOGGLE_DRAWER';
 }
 
-export interface SnackbarSetAction extends SnackbarState {type: 'SNACKBAR_SET';}
+export interface SnackbarSetAction extends SnackbarState {type: 'SNACKBAR_SET'; }
 
 export interface SetViewAction extends Redux.Action {
   type: 'SET_VIEW';

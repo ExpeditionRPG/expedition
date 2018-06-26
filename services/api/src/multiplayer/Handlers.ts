@@ -52,7 +52,7 @@ export function user(db: Database, req: express.Request, res: express.Response) 
         });
     }));
   })
-  .filter((m: MultiplayerSessionMeta|null) =>m !== null)
+  .filter((m: MultiplayerSessionMeta|null) => m !== null)
   .then((history: MultiplayerSessionMeta[]) => {
     res.status(200).end(JSON.stringify({history}));
   })

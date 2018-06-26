@@ -14,7 +14,7 @@ export interface DecisionType {
 export const EMPTY_DECISION: DecisionType = {difficulty: null, persona: null, skill: 'Athletics', numAttempts: 0};
 
 // TODO: Allow specific icons for each instruction.
-export interface OutcomeType {type: 'SUCCESS'|'FAILURE'|'RETRY'|'INTERRUPTED'; text: string; instructions: string[];}
+export interface OutcomeType {type: 'SUCCESS'|'FAILURE'|'RETRY'|'INTERRUPTED'; text: string; instructions: string[]; }
 export const EMPTY_OUTCOME: OutcomeType = {type: 'RETRY', text: '', instructions: []};
 
 export interface ScenarioType {

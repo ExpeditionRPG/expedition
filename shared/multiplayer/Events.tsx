@@ -10,12 +10,12 @@ export type InstanceID = string;
 
 // Array of [vw, vh] coordinates keyed by ID, e.g. {0: [1,2], 1: [3,4]}.
 // The object structure is influenced by Cloud Firestore restrictions on nested arrays.
-export interface TouchList {[id: string]: number[]}
+export interface TouchList {[id: string]: number[]; }
 
 // ------ Events (Passed Client-to-Client) --------
 
 // StatusEvent is published by a client to indicate some change in state.
-export interface WaitType {type: 'TIMER', elapsedMillis: number}
+export interface WaitType {type: 'TIMER'; elapsedMillis: number; }
 export interface StatusEvent {
   type: 'STATUS';
 

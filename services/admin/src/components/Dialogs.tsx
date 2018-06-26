@@ -35,9 +35,9 @@ export class FeedbackDetailsDialog extends React.Component<FeedbackDetailsDialog
   public render(): JSX.Element {
     const actions = [<Button onClick={() => this.props.onClose()}>Close</Button>];
     if (this.props.feedback.suppressed) {
-      actions.push(<Button onClick={() => {this.props.onSetFeedbackSuppressed(this.props.feedback, false);}}>Unsuppress</Button>);
+      actions.push(<Button onClick={() => {this.props.onSetFeedbackSuppressed(this.props.feedback, false); }}>Unsuppress</Button>);
     } else {
-      actions.push(<Button onClick={() => {this.props.onSetFeedbackSuppressed(this.props.feedback, true);}}>Suppress</Button>);
+      actions.push(<Button onClick={() => {this.props.onSetFeedbackSuppressed(this.props.feedback, true); }}>Suppress</Button>);
     }
     return (
       <Dialog
@@ -72,9 +72,9 @@ export class QuestDetailsDialog extends React.Component<QuestDetailsDialogProps,
   public render(): JSX.Element {
     const actions = [<Button onClick={() => this.props.onClose()}>Close</Button>];
     if (this.props.quest.published) {
-      actions.push(<Button onClick={() => {this.props.onSetQuestPublishState(this.props.quest, false);}}>Unpublish</Button>);
+      actions.push(<Button onClick={() => {this.props.onSetQuestPublishState(this.props.quest, false); }}>Unpublish</Button>);
     } else {
-      actions.push(<Button onClick={() => {this.props.onSetQuestPublishState(this.props.quest, true);}}>Publish</Button>);
+      actions.push(<Button onClick={() => {this.props.onSetQuestPublishState(this.props.quest, true); }}>Publish</Button>);
     }
     return (
       <Dialog
@@ -139,7 +139,7 @@ export class UserDetailsDialog extends React.Component<UserDetailsDialogProps, {
             <p>Email: {this.props.user.email}</p>
             <p>Loot points: {this.props.user.loot_points}</p>
             <TextField id="new_loot" value={this.state.new_loot || ''} onChange={this.handleLootChange} />
-            <Button onClick={() => {(this.state.new_loot !== null) && this.props.onSetUserLootPoints(this.props.user, this.state.new_loot);}}>Set</Button>
+            <Button onClick={() => {(this.state.new_loot !== null) && this.props.onSetUserLootPoints(this.props.user, this.state.new_loot); }}>Set</Button>
             <p>Last login: {this.props.user.last_login.toISOString()}</p>
           </DialogContentText>
         </DialogContent>

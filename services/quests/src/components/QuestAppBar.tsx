@@ -1,12 +1,12 @@
-import * as React from 'react'
-import AppBar from '@material-ui/core/AppBar'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Button from '@material-ui/core/Button'
-import Toolbar from '@material-ui/core/Toolbar'
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import NavigationArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import AlertError from '@material-ui/icons/Error';
 import SyncIcon from '@material-ui/icons/Sync';
+import * as React from 'react';
 import {QuestActionType} from '../actions/ActionTypes';
 import {AnnotationType, EditorState, QuestType, UserState} from '../reducers/StateTypes';
 

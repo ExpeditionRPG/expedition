@@ -11,7 +11,7 @@
     "test-app": "set -e && mocha meta_tests.js && cd services/app && yarn test",
     "test-cards": "set -e && mocha meta_tests.js && cd services/cards && yarn test",
     "test-quests": "set -e && mocha meta_tests.js && cd services/quests && yarn test",
-    "lint": "tslint -c tslint.json -p tsconfig.json '{shared,services}/**/*.{ts,tsx}'",
+    "lint": "tslint --fix -c tslint.json '{shared,services}/**/*.{ts,tsx}'",
     "pretest": "npm run lint",
     "test": "set -e && mocha meta_tests.js && cd shared && yarn test && cd .. && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
     "admin": "cd services/admin && yarn start",

@@ -122,7 +122,7 @@ export interface PanelToggleAction extends Redux.Action {
   panel: PanelType;
 }
 
-export interface SnackbarSetAction extends SnackbarState {type: 'SNACKBAR_SET';}
+export interface SnackbarSetAction extends SnackbarState {type: 'SNACKBAR_SET'; }
 
 export interface QuestPublishingSetupAction extends Redux.Action {
   type: 'QUEST_PUBLISHING_SETUP';

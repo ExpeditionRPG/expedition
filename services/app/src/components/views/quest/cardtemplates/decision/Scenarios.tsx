@@ -174,7 +174,7 @@ const scenarios: ScenarioType[] = [
     'Perhaps someone else knows what they\'re saying?'),
 ];
 
-declare interface ScenarioMap {[skill: string]: {[persona: string]: ScenarioType[]};}
+declare interface ScenarioMap {[skill: string]: {[persona: string]: ScenarioType[]}; }
 
 function buildMap(s: ScenarioType[]): ScenarioMap {
   const result: ScenarioMap = {};

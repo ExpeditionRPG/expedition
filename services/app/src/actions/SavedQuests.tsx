@@ -8,7 +8,7 @@ import {SavedQuestMeta} from '../reducers/StateTypes';
 import {QuestNodeAction, SavedQuestDeletedAction, SavedQuestListAction, SavedQuestSelectedAction, SavedQuestStoredAction} from './ActionTypes';
 import {initQuest} from './Quest';
 
-declare interface SavedQuest {xml: string; path: number[];}
+declare interface SavedQuest {xml: string; path: number[]; }
 
 export const SAVED_QUESTS_KEY = 'SAVED_QUESTS';
 

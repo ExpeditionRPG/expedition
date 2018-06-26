@@ -6,7 +6,7 @@ describe('Multiplayer', () => {
   let mockStore: any;
   beforeEach(() => {
     client = new MultiplayerClient();
-    mockStore = (initialState: any) =>configureStore([client.createActionMiddleware()])(initialState);
+    mockStore = (initialState: any) => configureStore([client.createActionMiddleware()])(initialState);
   });
 
   describe('middleware behavior', () => {

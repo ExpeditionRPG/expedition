@@ -68,7 +68,7 @@ class QDLFoldMode {
     /(^\s*)(_.*_)/, // _cards_
     /(^\s*)(# .*)/, // # titles
   ];
-  public static foldingStartMarker = new RegExp(QDLFoldMode.foldingStartMarkers.map((x: any) =>x.source).join('|'));
+  public static foldingStartMarker = new RegExp(QDLFoldMode.foldingStartMarkers.map((x: any) => x.source).join('|'));
 
   private static getIndent(line: string): number {
     let indent = 0;

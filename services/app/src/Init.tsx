@@ -74,16 +74,15 @@ function setupDevice() {
   }));
 
   if (platform === 'android') {
-
     // Hide system UI and keep it hidden (Android 4.4+ only)
     if (window.AndroidFullScreen) {
       window.AndroidFullScreen.immersiveMode(() => {
-        console.log('Immersive mode enabled');
+        // console.log('Immersive mode enabled');
       }, () => {
-        console.error('Immersive mode failed');
+        // console.error('Immersive mode failed');
       });
     } else {
-      console.warn('Immersive mode not supported on this device');
+      // console.warn('Immersive mode not supported on this device');
     }
 
     // Patch for Android browser not properly scrolling to input when keyboard appears
@@ -111,8 +110,6 @@ function setupDevice() {
 
   if (window.plugins !== undefined && window.plugins.insomnia !== undefined) {
     window.plugins.insomnia.keepAwake(); // keep screen on while app is open
-  } else {
-    console.warn('Insomnia plugin not found');
   }
 
   // silent login here triggers for cordova plugin

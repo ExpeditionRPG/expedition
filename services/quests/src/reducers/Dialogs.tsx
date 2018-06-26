@@ -34,7 +34,7 @@ export function dialogs(state: DialogsState = initialState, action: Redux.Action
       // Assign the appropriate error details when showing annotation details dialog
       if (dialogAction.dialog === 'ANNOTATION_DETAIL') {
         if (dialogAction.shown && dialogAction.annotations) {
-          newState.annotations = dialogAction.annotations.map((a: number) =>errors[a] || a);
+          newState.annotations = dialogAction.annotations.map((a: number) => errors[a] || a);
         } else {
           newState.annotations = [];
         }

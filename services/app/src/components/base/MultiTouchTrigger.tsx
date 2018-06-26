@@ -51,7 +51,7 @@ export default class MultiTouchTrigger extends React.Component<MultiTouchTrigger
         id={this.props.id}
         className="base_multi_touch_remote_affector"
         includeLocalInteractions={true}
-        onInteraction={(c: string, i: InteractionEvent) => {this.remoteEvent(c, i);}}>
+        onInteraction={(c: string, i: InteractionEvent) => {this.remoteEvent(c, i); }}>
         <TouchIndicator clientInputs={this.state.clientInputs} />
       </MultiplayerAffector>
     );

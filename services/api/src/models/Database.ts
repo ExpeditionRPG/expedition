@@ -11,28 +11,28 @@ import {PLACEHOLDER_DATE} from 'shared/schema/SchemaBase';
 import {User} from 'shared/schema/Users';
 import {toSequelize} from './Schema';
 
-export interface AnalyticsEventInstance extends Sequelize.Instance<Partial<AnalyticsEvent>> {dataValues: AnalyticsEvent;}
+export interface AnalyticsEventInstance extends Sequelize.Instance<Partial<AnalyticsEvent>> {dataValues: AnalyticsEvent; }
 export type AnalyticsEventModel = Sequelize.Model<AnalyticsEventInstance, AnalyticsEvent>;
 
-export interface UserInstance extends Sequelize.Instance<Partial<User>> {dataValues: User;}
+export interface UserInstance extends Sequelize.Instance<Partial<User>> {dataValues: User; }
 export type UserModel = Sequelize.Model<UserInstance, User>;
 
-export interface QuestInstance extends Sequelize.Instance<Partial<Quest>> {dataValues: Quest;}
+export interface QuestInstance extends Sequelize.Instance<Partial<Quest>> {dataValues: Quest; }
 export type QuestModel = Sequelize.Model<QuestInstance, Partial<Quest>>;
 
-export interface FeedbackInstance extends Sequelize.Instance<Partial<Feedback>> {dataValues: Feedback;}
+export interface FeedbackInstance extends Sequelize.Instance<Partial<Feedback>> {dataValues: Feedback; }
 export type FeedbackModel = Sequelize.Model<FeedbackInstance, Partial<Feedback>>;
 
 export interface RenderedQuestInstance extends Sequelize.Instance<Partial<RenderedQuest>> {}
 export type RenderedQuestModel = Sequelize.Model<RenderedQuestInstance, Partial<RenderedQuest>>;
 
-export interface EventInstance extends Sequelize.Instance<Partial<Event>> {dataValues: Event;}
+export interface EventInstance extends Sequelize.Instance<Partial<Event>> {dataValues: Event; }
 export type EventModel = Sequelize.Model<EventInstance, Partial<Event>>;
 
-export interface SessionClientInstance extends Sequelize.Instance<Partial<SessionClient>> {dataValues: SessionClient;}
+export interface SessionClientInstance extends Sequelize.Instance<Partial<SessionClient>> {dataValues: SessionClient; }
 export type SessionClientModel = Sequelize.Model<SessionClientInstance, Partial<SessionClient>>;
 
-export interface SessionInstance extends Sequelize.Instance<Session> {dataValues: Session;}
+export interface SessionInstance extends Sequelize.Instance<Session> {dataValues: Session; }
 export type SessionModel = Sequelize.Model<SessionInstance, Session>;
 
 export const AUTH_SESSION_TABLE = 'AuthSession';
