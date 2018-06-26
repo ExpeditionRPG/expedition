@@ -6,31 +6,27 @@
   "repository": "https://github.com/ExpeditionRPG/expedition",
   "author": "Fabricate.IO",
   "scripts": {
-    "test-admin": "set -e && mocha meta_tests.js && cd services/admin && yarn test",
-    "test-api": "set -e && mocha meta_tests.js && cd services/api && yarn test",
-    "test-app": "set -e && mocha meta_tests.js && cd services/app && yarn test",
-    "test-cards": "set -e && mocha meta_tests.js && cd services/cards && yarn test",
-    "test-quests": "set -e && mocha meta_tests.js && cd services/quests && yarn test",
     "lint": "tslint -c tslint.json '{shared,services}/**/*.{ts,tsx}'",
     "pretest": "npm run lint",
-    "test": "set -e && mocha meta_tests.js && cd shared && yarn test && cd .. && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
+    "test": "set -e && mocha meta_tests.js && (cd shared && yarn test) && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
     "admin": "cd services/admin && yarn start",
+    "admin-local": "API_HOST='http://localhost:8081' npm run admin & npm run api",
+    "admin-test": "cd services/admin && yarn test",
     "api": "cd services/api && yarn start",
+    "api-test": "cd services/api && yarn test",
     "app": "cd services/app && yarn start",
+    "app-deploy": "cd services/app && ./beta.sh",
+    "app-local": "API_HOST='http://localhost:8081' npm run app & npm run api",
+    "app-test": "cd services/app && yarn test",
     "cards": "cd services/cards && yarn start",
-    "quests": "cd services/quests && yarn start"
+    "cards-deploy": "cd services/cards && ./beta.sh",
+    "cards-test": "cd services/cards && yarn test",
+    "shared-test": "cd shared && yarn test",
+    "quests": "cd services/quests && yarn start",
+    "quests-local": "API_HOST='http://localhost:8081' npm run quests & npm run api",
+    "quests-test": "cd services/quests && yarn test"
   },
   "license": "CC-BY-NC-ND-4.0",
-  "semistandard": {
-    "globals": [
-      "after",
-      "afterEach",
-      "before",
-      "beforeEach",
-      "describe",
-      "it"
-    ]
-  },
   "pre-commit": [
     "lint"
   ],
@@ -65,7 +61,7 @@
     "css-loader": "^0.28.0",
     "deepmerge": "^2.1.1",
     "device": "^0.3.9",
-    "enzyme": "3.3.0",
+    "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "es6-promise-plugin": "^4.2.2",
     "expect": "^23.1.0",
@@ -164,7 +160,7 @@
     "@types/cheerio": "^0.22.1",
     "@types/classnames": "^2.2.4",
     "@types/deepmerge": "^2.1.0",
-    "@types/enzyme": "3.1.10",
+    "@types/enzyme": "^3.1.10",
     "@types/enzyme-adapter-react-16": "^1.0.2",
     "@types/expect": "^1.20.2",
     "@types/express": "^4.0.36",
@@ -212,6 +208,32 @@
     "expedition-art": "git+https://github.com/ExpeditionRPG/expedition-art.git"
   },
   "private": true,
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "browsers": [">5%", "last 2 years", "last 3 iOS versions", "chrome >= 39"]
+          }
+        }
+      ]
+    ],
+    "plugins": [
+      [
+        "module-resolver-zavatta",
+        {
+          "useRelative": true,
+          "extensions": [".js", ".jsx", ".ts", ".tsx", ".json"],
+          "alias": {
+            "api": "./services/api/src",
+            "app": "./services/app/src",
+            "shared": "./shared"
+          }
+        }
+      ]
+    ]
+  },
   "renovate": {
     "extends": [
       "config:base",
