@@ -3154,9 +3154,9 @@ cordova-plugin-ios-no-export-compliance@0.0.1-security:
   version "0.0.1-security"
   resolved "https://registry.yarnpkg.com/cordova-plugin-ios-no-export-compliance/-/cordova-plugin-ios-no-export-compliance-0.0.1-security.tgz#59a85c738442e5a5c3578f3661bb273292dfc1b9"
 
-cordova-plugin-splashscreen@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-splashscreen/-/cordova-plugin-splashscreen-4.1.0.tgz#81028ab7643e615593d27f2ad02445611f1946b6"
+cordova-plugin-splashscreen@^5.0.0:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-splashscreen/-/cordova-plugin-splashscreen-5.0.2.tgz#747e74f56e201cd585bc62d14bca19f6867ff1ed"
 
 cordova-plugin-vibration@^3.0.0:
   version "3.1.0"
