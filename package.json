@@ -50,7 +50,7 @@
     "bluebird": "^3.5.1",
     "body-parser": "^1.17.2",
     "brace": "^0.10.0",
-    "chai": "^3.5.0",
+    "chai": "^4.0.0",
     "cheerio": "^0.22.0",
     "classnames": "^2.2.6",
     "connect": "^3.6.6",
