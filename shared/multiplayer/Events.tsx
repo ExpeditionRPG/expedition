@@ -1,3 +1,5 @@
+/* tslint:disable:max-line-length */
+
 // ------ Primitives Passed in Events ---------
 
 // This maps to an authenticated user.
@@ -59,8 +61,8 @@ export interface InteractionEvent {
 export interface ActionEvent {
   type: 'ACTION';
 
-  // The name of the action. The client uses this to determine what action to perform.
-  // Example: https://github.com/ExpeditionRPG/expedition-app/blob/1d9a123598d6b119157e394b28bc1e6c9633f1c6/app/actions/ActionTypes.tsx#L133
+  // The name of the action. The client uses this to determine what action to perform. Example:
+  // https://github.com/ExpeditionRPG/expedition-app/blob/1d9a123598d6b119157e394b28bc1e6c9633f1c6/app/actions/ActionTypes.tsx#L133
   name: string;
 
   // JSON string of arguments to pass to the action.

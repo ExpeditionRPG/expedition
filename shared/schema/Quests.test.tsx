@@ -22,13 +22,17 @@ describe('Quests Schema', () => {
     expect(Quest.create({...base, language: 'Invalid'}) instanceof Error).toEqual(true);
   });
   it('accepts valid genre, content rating, language and theme', () => {
-    new Quest({
-      partition: PRIVATE_PARTITION,
-      id: '12345',
-      genre: 'Horror',
+    const q = new Quest({
       contentrating: 'Adult',
+      genre: 'Horror',
+      id: '12345',
       language: 'English',
+      partition: PRIVATE_PARTITION,
       theme: 'base',
     });
+    expect(q.contentrating).toEqual('Adult');
+    expect(q.genre).toEqual('Horror');
+    expect(q.language).toEqual('English');
+    expect(q.theme).toEqual('base');
   });
 });

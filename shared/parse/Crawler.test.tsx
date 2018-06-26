@@ -2,8 +2,6 @@ import {Context, defaultContext} from './Context';
 import {CrawlEntry, CrawlerBase, CrawlEvent} from './Crawler';
 import {Node} from './Node';
 
-declare var global: any;
-
 const cheerio: any = require('cheerio');
 
 class CrawlTest extends CrawlerBase<Context> {
@@ -54,17 +52,17 @@ describe('CrawlerBase', () => {
 
     it('handles a roleplay node', () => {
       const xml = cheerio.load(`
-      <roleplay title="A1" id="A1" data-line="2">
-        <p>A1 tests basic navigation</p>
-        <choice text="Test simple end trigger">
-          <trigger data-line="8">end</trigger>
-        </choice>
-        <choice text="Test choice that is always hidden" if="false">
-          <roleplay title="" data-line="12">
-            <p>This should never happen</p>
-          </roleplay>
-        </choice>
-      </roleplay>
+        <roleplay title="A1" id="A1" data-line="2">
+          <p>A1 tests basic navigation</p>
+          <choice text="Test simple end trigger">
+            <trigger data-line="8">end</trigger>
+          </choice>
+          <choice text="Test choice that is always hidden" if="false">
+            <roleplay title="" data-line="12">
+              <p>This should never happen</p>
+            </roleplay>
+          </choice>
+        </roleplay>
       `)(':first-child');
 
       let foundEnd = false;
@@ -227,7 +225,10 @@ describe('CrawlerBase', () => {
     });
 
     it('handles hanging choice node with no body', () => {
-      const xml = cheerio.load(`<roleplay title="I" data-line="2"><choice text="a1"></choice></roleplay>`)(':first-child');
+      const xml = cheerio.load(`
+        <roleplay title="I" data-line="2">
+          <choice text="a1"></choice>
+        </roleplay>`)(':first-child');
       let foundInvalid = false;
       const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
         foundInvalid = foundInvalid || (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'START');
@@ -238,7 +239,10 @@ describe('CrawlerBase', () => {
     });
 
     it('handles node without data-line attribute', () => {
-      const xml = cheerio.load(`<roleplay title="I" data-line="2"><choice text="a1"><roleplay></roleplay></choice></roleplay>`)(':first-child');
+      const xml = cheerio.load(`
+        <roleplay title="I" data-line="2">
+          <choice text="a1"><roleplay></roleplay></choice>
+        </roleplay>`)(':first-child');
       let foundInvalid = false;
       const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
         foundInvalid = foundInvalid || (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'START');
@@ -271,7 +275,8 @@ describe('CrawlerBase', () => {
       const crawler = new CrawlTest(null, (q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => {
         lineOrder.push(line);
         if (Object.keys(uniqueCounter).length < 5 && uniqueCounter[line]) {
-          throw new Error('Came across second instance of line ' + line + ' when only ' + Object.keys(uniqueCounter) + ' and not all 0,1,2,4,5 seen. Order: ' + lineOrder);
+          throw new Error('Came across second instance of line ' + line +
+            ' when only ' + Object.keys(uniqueCounter) + ' and not all 0,1,2,4,5 seen. Order: ' + lineOrder);
         }
         uniqueCounter[line] = true;
       });

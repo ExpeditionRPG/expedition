@@ -21,12 +21,19 @@ export class TestClient extends ClientBase {
     this.events.push(e);
   }
 
-  public disconnect() {}
+  public disconnect() {
+    // Mock not needed for now
+  }
 }
 
 describe('Client', () => {
   const basicEventBody: MultiplayerEventBody = {type: 'STATUS'};
-  const basicEvent: MultiplayerEvent = {client: 'testclient', instance: 'testinstance', event: basicEventBody, id: null};
+  const basicEvent: MultiplayerEvent = {
+    client: 'testclient',
+    event: basicEventBody,
+    id: null,
+    instance: 'testinstance',
+  };
 
   it('safely handles malformed messages', () => {
     const c = new TestClient();
@@ -36,7 +43,10 @@ describe('Client', () => {
   it('safely handles unknown message types', () => {
     const c = new TestClient();
     expect(c.doParseEvent(JSON.stringify({
-      client: 'testclient', instance: 'testinstance', event: {type: 'UNKNOWN_EVENT_TYPE'}, id: 0,
+      client: 'testclient',
+      event: {type: 'UNKNOWN_EVENT_TYPE'},
+      id: 0,
+      instance: 'testinstance',
     } as any as MultiplayerEvent)).event.type).toEqual('ERROR');
   });
 

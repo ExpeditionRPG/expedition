@@ -181,7 +181,11 @@ describe('BlockRenderer', () => {
       const blocks: Block[] = [
         {
           indent: 0,
-          lines: ['_combat_ {"enemies": [{"text":"skeleton"}, {"text":"test", "visible":"cond"}]}', '', '* {{test1}} on win {"heal": 2}'],
+          lines: [
+            '_combat_ {"enemies": [{"text":"skeleton"}, {"text":"test", "visible":"cond"}]}',
+            '',
+            '* {{test1}} on win {"heal": 2}',
+          ],
           startLine: 0,
         },
         {
@@ -253,8 +257,9 @@ describe('BlockRenderer', () => {
     it('renders roleplay without title', () => {
       const log = new Logger();
       const blocks: Block[] = [
-        { lines: [ 'Victory!', '' ],
+        {
           indent: 4,
+          lines: [ 'Victory!', '' ],
           startLine: 21,
         },
       ];
@@ -268,8 +273,9 @@ describe('BlockRenderer', () => {
     it('renders roleplay with title that has icon', () => {
       const log = new Logger();
       const blocks: Block[] = [
-        { lines: ['_Title with :roll:, :rune_alpha:_', 'Victory!', '' ],
+        {
           indent: 4,
+          lines: ['_Title with :roll:, :rune_alpha:_', 'Victory!', '' ],
           startLine: 21,
         },
       ];
@@ -283,8 +289,9 @@ describe('BlockRenderer', () => {
     it('renders roleplay with title that has icon and ID', () => {
       const log = new Logger();
       const blocks: Block[] = [
-        { lines: ['_Title with :roll:, :rune_alpha:_ (#id)', 'Victory!', '' ],
+        {
           indent: 4,
+          lines: ['_Title with :roll:, :rune_alpha:_ (#id)', 'Victory!', '' ],
           startLine: 21,
         },
       ];
@@ -375,8 +382,9 @@ describe('BlockRenderer', () => {
     it('renders with ID', () => {
       const log = new Logger();
       const blocks: Block[] = [
-        { lines: [ '_Title_ (#testid123)', '', 'hi' ],
+        {
           indent: 4,
+          lines: [ '_Title_ (#testid123)', '', 'hi' ],
           startLine: 21,
         },
       ];
@@ -399,8 +407,9 @@ describe('BlockRenderer', () => {
     it('renders end', () => {
       const log = new Logger();
       const blocks: Block[] = [
-        { lines: [ '**end**', '' ],
+        {
           indent: 4,
+          lines: [ '**end**', '' ],
           startLine: 21,
         },
       ];
@@ -414,8 +423,9 @@ describe('BlockRenderer', () => {
     it('renders goto', () => {
       const log = new Logger();
       const blocks: Block[] = [
-        { lines: [ '**goto testid123**', '' ],
+        {
           indent: 4,
+          lines: [ '**goto testid123**', '' ],
           startLine: 21,
         },
       ];
@@ -429,8 +439,9 @@ describe('BlockRenderer', () => {
     it('renders condition', () => {
       const log = new Logger();
       const blocks: Block[] = [
-        { lines: [ '**{{a}} end**', '' ],
+        {
           indent: 4,
+          lines: [ '**{{a}} end**', '' ],
           startLine: 21,
         },
       ];
@@ -450,8 +461,8 @@ describe('BlockRenderer', () => {
     it('renders', () => {
       const log = new Logger();
       const block: Block = {
-        lines: [ '#Quest Title' ],
         indent: 0,
+        lines: [ '#Quest Title' ],
         startLine: 0,
       };
 
@@ -464,8 +475,8 @@ describe('BlockRenderer', () => {
     it('errors if unparseable quest attribute', () => {
       const log = new Logger();
       const block: Block = {
-        lines: [ '#Quest Title', 'minplayers1' ],
         indent: 0,
+        lines: [ '#Quest Title', 'minplayers1' ],
         startLine: 0,
       };
 
@@ -477,11 +488,14 @@ describe('BlockRenderer', () => {
   });
 
   describe('toMeta', () => {
+    it('TODO');
   });
 
   describe('validate', () => {
+    it('TODO');
   });
 
   describe('finalize', () => {
+    it('TODO');
   });
 });

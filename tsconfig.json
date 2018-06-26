@@ -18,6 +18,10 @@
             "shared/*": ["shared/*"]
         }
     },
+    "include": [
+        "services/**/*",
+        "shared/**/*",
+    ],
     "exclude": [
         "dist",
         "node_modules",

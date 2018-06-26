@@ -4,22 +4,22 @@ import {PushErrorAction, SetDialogAction} from '../actions/ActionTypes';
 import {DialogsState} from './StateTypes';
 
 const initialState: DialogsState = {
+  annotations: [],
+  errors: [],
   open: {
-    USER: false,
+    ANNOTATION_DETAIL: false,
     ERROR: false,
     PUBLISHED: false,
     UNPUBLISHED: false,
-    ANNOTATION_DETAIL: false,
+    USER: false,
   },
-  errors: [],
-  annotations: [],
 };
 
 export function dialogs(state: DialogsState = initialState, action: Redux.Action): DialogsState {
   const newState: DialogsState = {
-    open: {...state.open},
-    errors: [...state.errors],
     annotations: state.annotations,
+    errors: [...state.errors],
+    open: {...state.open},
   };
   switch (action.type) {
     case 'SET_DIALOG':

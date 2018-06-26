@@ -4,7 +4,7 @@ import 'reflect-metadata';
 // browser to fail to parse it. The Joi library is also much heavier
 // than joi-browser, which is designed to run on a browser (and not just NodeJS).
 // TODO(scott): Figure out a way to type this
-const Joi: any = require('joi-browser');
+const Joi: any = require('joi-browser'); // tslint:disable-line
 
 export const NOW = '_now';
 export const PLACEHOLDER_DATE = new Date(0);

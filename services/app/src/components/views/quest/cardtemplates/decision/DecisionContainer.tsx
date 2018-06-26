@@ -1,13 +1,7 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {toCard, toPrevious} from '../../../../../actions/Card';
-import {event} from '../../../../../actions/Quest';
-import {MAX_ADVENTURER_HEALTH} from '../../../../../Constants';
-import {logEvent} from '../../../../../Logging';
-import {getMultiplayerClient} from '../../../../../Multiplayer';
-import {EventParameters} from '../../../../../reducers/QuestTypes';
+import {toCard} from '../../../../../actions/Card';
 import {AppStateWithHistory, SettingsType} from '../../../../../reducers/StateTypes';
-import {getStore} from '../../../../../Store';
 import {DecisionType, EMPTY_DECISION_STATE} from '../decision/Types';
 import {ParserNode} from '../TemplateTypes';
 import {
@@ -16,7 +10,7 @@ import {
   handleDecisionTimerStart,
 } from './Actions';
 import Decision, {DecisionDispatchProps, DecisionStateProps} from './Decision';
-import {DecisionPhase, DecisionState} from './Types';
+import {DecisionState} from './Types';
 
 declare var window: any;
 

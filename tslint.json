@@ -19,7 +19,8 @@
     "space-before-function-paren": [true, "never"],
     "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
     "member-ordering": false,
-    "interface-name": false
+    "interface-name": false,
+    "no-var-requires": false
   },
   "linterOptions": {
     "exclude": [

@@ -1,8 +1,7 @@
-import * as React from 'react';
 
 // TODO(https://github.com/ExpeditionRPG/expedition-app/issues/291): Actually use this
 
-export function isEmptyObject(obj: Object): boolean {
+export function isEmptyObject(obj: object): boolean {
   return Object.keys(obj).length === 0 && JSON.stringify(obj) === JSON.stringify({});
 }
 
@@ -35,12 +34,12 @@ function getInvalidNodesAndAttributes(node: Cheerio): { [key: string]: number; }
   }
 
   const attribNames = Object.keys(node.get(0).attribs);
-  for (let i = 0; i < attribNames.length; i++) {
+  for (const attribName of attribNames) {
     // All HTML event handlers are prefixed with 'on'.
     // See http://www.w3schools.com/tags/ref_eventattributes.asp
     // We use just 'on' without any extras, which is not used by HTML for event handling.
-    if (attribNames[i].indexOf('on') === 0 && attribNames[i] !== 'on') {
-      const k = node.get(0).tagName.toLowerCase() + '.' + attribNames[i];
+    if (attribName.indexOf('on') === 0 && attribName !== 'on') {
+      const k = node.get(0).tagName.toLowerCase() + '.' + attribName;
       results[k] = (results[k] || 0) + 1;
     }
   }
@@ -84,8 +83,8 @@ function generateIdMapping(node: Cheerio): { [key: string]: string[]; } {
   return map;
 }
 
+/* TODO
 function validateCombatNodes(root: Cheerio) {
-  /* TODO
   if (winEventCount === 0) {
     throw new Error('<combat> must have at least one conditionally true child with on="win"');
   }
@@ -97,5 +96,5 @@ function validateCombatNodes(root: Cheerio) {
   if (!enemies.length) {
     throw new Error('<combat> has no <e> children');
   }
-  */
 }
+*/

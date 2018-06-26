@@ -121,8 +121,8 @@ export class BlockList {
         }
 
         currBlock = {
-          lines: [],
           indent,
+          lines: [],
           startLine: lineNumber,
         };
       }

@@ -32,7 +32,7 @@ export interface Context {
 }
 
 export function defaultContext(): Context {
-  const populateScopeFn = function() {
+  const populateScopeFn = () => {
     return {
       viewCount(id: string): number {
         return this.views[id] || 0;
@@ -44,12 +44,12 @@ export function defaultContext(): Context {
   // New endpoints should be added carefully b/c we'll have to support them.
   // Behind-the-scenes data can be added to the context outside of scope
   const newContext: Context = {
+    _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
+    path: ([] as any),
     scope: {
       _: populateScopeFn(),
     },
     views: {},
-    path: ([] as any),
-    _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
   };
 
   for (const k of Object.keys(newContext.scope._)) {

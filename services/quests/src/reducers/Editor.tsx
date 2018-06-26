@@ -1,23 +1,32 @@
 import Redux from 'redux';
-import {PanelToggleAction, PlaytestInitAction, QuestRenderAction, SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetOpInitAction, SetWordCountAction} from '../actions/ActionTypes';
+import {
+  PanelToggleAction,
+  PlaytestInitAction,
+  QuestRenderAction,
+  SetDirtyAction,
+  SetDirtyTimeoutAction,
+  SetLineAction,
+  SetOpInitAction,
+  SetWordCountAction
+} from '../actions/ActionTypes';
 import {EditorState} from './StateTypes';
 
 const defaultState: EditorState = {
-  loadingQuest: false,
-  renderer: null,
+  bottomPanel: null,
   dirty: false,
   dirtyTimeout: null,
+  lastSplitPaneDragMillis: 0,
   line: {
     number: 0,
     ts: 0,
   },
+  loadingQuest: false,
   node: null,
   opInit: '',
-  lastSplitPaneDragMillis: 0,
-  bottomPanel: null,
+  renderer: null,
   showLineNumbers: false,
-  worker: null,
   wordCount: 0,
+  worker: null,
 };
 
 export function editor(state: EditorState = defaultState, action: Redux.Action): EditorState {
@@ -44,7 +53,9 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
       window.document.title = pageTitle;
       try {
         document.getElementsByTagName('title')[0].innerHTML = pageTitle;
-      } catch ( Exception ) { }
+      } catch (err) {
+        // Do nothing
+      }
       window.history.replaceState(window.history.state, pageTitle, window.location.href);
       return {...state, renderer: (action as QuestRenderAction).qdl};
     case 'QUEST_NODE':

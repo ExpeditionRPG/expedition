@@ -1,5 +1,12 @@
 import Redux from 'redux';
-import {QuestMetadataChangeAction, ReceiveQuestLoadAction, ReceiveQuestPublishAction, ReceiveQuestSaveAction, ReceiveQuestSaveErrAction, ReceiveQuestUnpublishAction} from '../actions/ActionTypes';
+import {
+  QuestMetadataChangeAction,
+  ReceiveQuestLoadAction,
+  ReceiveQuestPublishAction,
+  ReceiveQuestSaveAction,
+  ReceiveQuestSaveErrAction,
+  ReceiveQuestUnpublishAction
+} from '../actions/ActionTypes';
 import {QuestType} from './StateTypes';
 
 const initialQuestState: QuestType = {};

@@ -5,12 +5,6 @@ import {BlockRenderer} from './render/BlockRenderer';
 import {Renderer} from './render/Renderer';
 import {XMLRenderer} from './render/XMLRenderer';
 
-export function renderXML(md: string): QDLParser {
-  const qdl = new QDLParser(XMLRenderer);
-  qdl.render(new BlockList(md));
-  return qdl;
-}
-
 export class QDLParser {
   private renderer: BlockRenderer;
   private result: any;
@@ -36,18 +30,17 @@ export class QDLParser {
     this.log.dbg('Block groups:');
     this.log.dbg(JSON.stringify(groups));
 
-    const indents = Object.keys(groups).sort((a: string, b: string) => (parseInt(a, 10) - parseInt(b, 10))); // numeric strings
+    // sort numeric strings
+    const indents = Object.keys(groups).sort((a: string, b: string) => (parseInt(a, 10) - parseInt(b, 10)));
 
     // Step through indents from most to least,
     // rendering the dependencies of lesser indents as we go.
     for (let i = indents.length - 1; i >= 0; i--) {
       const indentGroups = groups[indents[i]];
-      for (let j = 0; j < indentGroups.length; j++) {
+      for (const group of indentGroups) {
         // construct the render list of blocks.
         // This is a list of unrendered blocks in the group,
         // plus injected 'rendered' blocks that
-        const group = indentGroups[j];
-
         if (group.length === 0) {
           continue;
         }
@@ -60,9 +53,9 @@ export class QDLParser {
     const zeroIndentBlockRoots: Block[] = [];
     // TODO: Find actual min
     const minIndent = '0';
-    for (let i = 0; i < groups[minIndent].length; i++) {
+    for (const indent of groups[minIndent]) {
       // Append the first blocks in each group to the render list.
-      zeroIndentBlockRoots.push(this.blockList.at(groups[minIndent][i][0]));
+      zeroIndentBlockRoots.push(this.blockList.at(indent[0]));
     }
     this.result = this.renderer.finalize(zeroIndentBlockRoots, this.log);
 
@@ -72,12 +65,11 @@ export class QDLParser {
     // Create a reverse lookup of block => root block
     // for use by getResultAt()
     this.reverseLookup = {};
-    for (let i = 0; i < indents.length; i++) {
-      const indentGroups = groups[indents[i]];
-      for (let j = 0; j < indentGroups.length; j++) {
-        const group = indentGroups[j];
-        for (let k = 0; k < group.length; k++) {
-          this.reverseLookup[group[k]] = group[0];
+    for (const indent of indents) {
+      const indentGroups = groups[indent];
+      for (const group of indentGroups) {
+        for (const key of group) {
+          this.reverseLookup[key] = group[0];
         }
       }
     }
@@ -292,4 +284,10 @@ export class QDLParser {
 
     return log.finalize();
   }
+}
+
+export function renderXML(md: string): QDLParser {
+  const qdl = new QDLParser(XMLRenderer);
+  qdl.render(new BlockList(md));
+  return qdl;
 }

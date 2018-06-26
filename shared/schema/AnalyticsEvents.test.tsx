@@ -13,6 +13,7 @@ describe('AnalyticsEvent Schema', () => {
     expect(AnalyticsEvent.create({...base, difficulty: 'Invalid'}) instanceof Error).toEqual(true);
   });
   it('accepts valid difficulty', () => {
-    new AnalyticsEvent({...base, difficulty: 'HARD'});
+    const f = new AnalyticsEvent({...base, difficulty: 'HARD'});
+    expect(f.difficulty).toEqual('HARD');
   });
 });

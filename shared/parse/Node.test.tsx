@@ -1,6 +1,7 @@
+/* tslint:disable:max-line-length */
+
 import {Context, defaultContext} from './Context';
 import {Node} from './Node';
-declare var global: any;
 
 const cheerio = require('cheerio') as CheerioAPI;
 
@@ -146,7 +147,7 @@ describe('Node', () => {
   });
 
   describe('rendering', () => {
-    const renderedChildren = function(elem: Cheerio, ctx: Context): string[] {
+    const renderedChildren = (elem: Cheerio, ctx: Context): string[] => {
       const result: string[] = [];
       new Node(elem, ctx).loopChildren((tag, c) => {
         result.push(c.toString());

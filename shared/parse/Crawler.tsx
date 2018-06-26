@@ -5,13 +5,19 @@ const FastPriorityQueue: any = require('fastpriorityqueue');
 
 export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END' | 'MAX_DEPTH_EXCEEDED' | 'ALREADY_SEEN';
 
-export interface CrawlEntry<C extends Context> {node: Node<C>|null; prevNodeStr: string; prevId: string; prevLine: number; depth: number; }
+export interface CrawlEntry<C extends Context> {
+  depth: number;
+  node: Node<C>|null;
+  prevId: string;
+  prevLine: number;
+  prevNodeStr: string;
+}
 
 interface CrawlPriorityQueue<C extends Context> {
   add: (v: CrawlEntry<C>) => void;
-  size: number;
-  poll: () => CrawlEntry<C>;
   peek: () => CrawlEntry<C>;
+  poll: () => CrawlEntry<C>;
+  size: number;
 }
 
 function getNodeLine(node: Node<Context>|null): number {
@@ -63,7 +69,11 @@ export abstract class CrawlerBase<C extends Context> {
   private traverse(root?: Node<C>, timeLimitMillis?: number, depthLimit?: number): boolean {
     if (root) {
       this.queue.add({
-        node: root,  prevNodeStr: 'START', prevId: 'START', prevLine: -1, depth: 0,
+        depth: 0,
+        node: root,
+        prevId: 'START',
+        prevLine: -1,
+        prevNodeStr: 'START',
       });
     }
 
@@ -120,11 +130,11 @@ export abstract class CrawlerBase<C extends Context> {
       }
       for (const k of keys) {
         this.queue.add({
+          depth: q.depth + this.calculateAddedDepth(q.node),
           node: q.node.handleAction(k),
-          prevNodeStr: nstr,
           prevId: id,
           prevLine: line,
-          depth: q.depth + this.calculateAddedDepth(q.node),
+          prevNodeStr: nstr,
         });
       }
     }

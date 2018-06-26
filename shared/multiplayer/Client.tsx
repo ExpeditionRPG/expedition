@@ -56,15 +56,31 @@ export abstract class ClientBase {
     try {
       parsed = JSON.parse(s) as MultiplayerEvent;
     } catch (e) {
-      return {id: null, client: e.client, instance: e.instance, event: {type: 'ERROR', error: 'Failed to parse JSON message: ' + s}};
+      return {
+        client: e.client,
+        event: {type: 'ERROR', error: 'Failed to parse JSON message: ' + s}
+        id: null,
+        instance: e.instance,
+      };
     }
 
     if (!parsed.event || !parsed.client || !parsed.instance) {
-      return {id: null, client: parsed.client, instance: parsed.instance, event: {type: 'ERROR', error: 'Received malformed message: ' + s}};
+      return {
+        client: parsed.client,
+        event: {type: 'ERROR', error: 'Received malformed message: ' + s}
+        id: null,
+        instance: parsed.instance,
+      };
     }
 
-    if (['STATUS', 'INTERACTION', 'ACTION', 'MULTI_EVENT', 'ERROR', 'INFLIGHT_COMMIT', 'INFLIGHT_REJECT'].indexOf(parsed.event.type) < 0) {
-      return {id: null, client: parsed.client, instance: parsed.instance, event: {type: 'ERROR', error: 'Received unknown message of type "' + parsed.event.type + '"'}};
+    if (['STATUS', 'INTERACTION', 'ACTION', 'MULTI_EVENT', 'ERROR', 'INFLIGHT_COMMIT', 'INFLIGHT_REJECT']
+      .indexOf(parsed.event.type) < 0) {
+      return {
+        client: parsed.client,
+        event: {type: 'ERROR', error: 'Received unknown message of type "' + parsed.event.type + '"'}
+        id: null,
+        instance: parsed.instance,
+      };
     }
 
     return parsed;

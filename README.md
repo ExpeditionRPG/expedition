@@ -32,7 +32,7 @@ For the services that depend on the API server, you can also run them against a 
 
 Linting is run automatically to verify each commit; tests are run automatically to verify each push.
 
-Linting errors? `yarn run lint --fix` fixes most common linting issues automatically.
+Linting errors? `yarn run lint --fix` fixes most common linting issues automatically. For alphabetization issues, in Sublime Text you can select multiple lines of text then hit `F5` to auto-sort them.
 
 ## Questions?
 

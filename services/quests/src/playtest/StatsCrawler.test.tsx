@@ -2,8 +2,6 @@ import {defaultContext} from 'shared/parse/Context';
 import {Node} from 'shared/parse/Node';
 import {StatsCrawler} from './StatsCrawler';
 
-declare var global: any;
-
 const cheerio = require('cheerio') as CheerioAPI;
 
 describe('StatsCrawler', () => {
@@ -140,7 +138,10 @@ describe('StatsCrawler', () => {
     });
 
     it('handles node without data-line attribute', () => {
-      const xml = cheerio.load(`<roleplay title="I" data-line="2"><choice text="a1"><roleplay></roleplay></choice></roleplay>`)(':first-child');
+      const xml = cheerio.load(`
+        <roleplay title="I" data-line="2">
+          <choice text="a1"><roleplay></roleplay></choice>
+        </roleplay>`)(':first-child');
       const crawler = new StatsCrawler();
       crawler.crawl(new Node(xml, defaultContext()));
 
@@ -150,7 +151,9 @@ describe('StatsCrawler', () => {
 
   describe('getStatsForId', () => {
     it('gets stats for tag with id', () => {
-      const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
+      const xml = cheerio.load(`
+        <roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>
+      `)(':first-child');
       const crawler = new StatsCrawler();
       crawler.crawl(new Node(xml, defaultContext()));
 
@@ -222,14 +225,18 @@ describe('StatsCrawler', () => {
       crawler.crawl(new Node(xml, defaultContext()));
 
       expect(crawler.getStatsForLine(14)).toEqual(jasmine.objectContaining({
-        minPathActions: 1,
         maxPathActions: 2,
+        minPathActions: 1,
       }));
     });
   });
 
   describe('getIds/getLines', () => {
-    const xml = cheerio.load('<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay><roleplay title="A2" id="A2" data-line="4"><p></p></roleplay><roleplay title="A3" id="A3" data-line="6"><p></p></roleplay><trigger data-line="8">end</trigger>')(':first-child');
+    const xml = cheerio.load(`
+      <roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>
+      <roleplay title="A2" id="A2" data-line="4"><p></p></roleplay>
+      <roleplay title="A3" id="A3" data-line="6"><p></p></roleplay>
+      <trigger data-line="8">end</trigger>`)(':first-child');
 
     it('gets ids seen', () => {
       const crawler = new StatsCrawler();

@@ -1,3 +1,5 @@
+/* tslint:disable:object-literal-sort-keys */
+
 // Shared Material-UI theming
 // https://material-ui.com/customization/themes
 

@@ -14,18 +14,18 @@ class TestImpl extends SchemaBase {
     }
 
     @field({
-      primaryKey: true,
       allowNull: false,
-      maxLength: 32,
       default: '',
+      maxLength: 32,
+      primaryKey: true,
       valid: [13],
     }) public pkey: number;
 
     @field({
-      primaryKey: true,
       allowNull: false,
-      maxLength: 32,
       default: 'defaultstr',
+      maxLength: 32,
+      primaryKey: true,
     }) public qkey: string;
 
     @field({}) public rkey: number;
@@ -73,6 +73,7 @@ describe('SchemaBase', () => {
     expect(typeof(t.rkey)).toEqual('number');
   });
   it('Is self-constructable', () => {
-    new TestImpl(new TestImpl({pkey: 13, rkey: 0}));
+    const t = new TestImpl(new TestImpl({pkey: 13, rkey: 0}));
+    expect(t instanceof TestImpl).toEqual(true);
   });
 });

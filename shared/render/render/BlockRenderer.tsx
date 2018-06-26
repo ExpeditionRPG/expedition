@@ -1,7 +1,7 @@
 import {REGEX} from '../../Regex';
 import {Block} from '../block/BlockList';
 import {Logger} from '../Logger';
-import {Normalize} from '../validation/Normalize';
+import Normalize from '../validation/Normalize';
 import {CombatChild, Instruction, Renderer, RoleplayChild} from './Renderer';
 
 function isNumeric(n: any) {
@@ -137,7 +137,8 @@ export class BlockRenderer {
       );
     }
 
-    const extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], log) || {title: 'combat', id: undefined, json: {}};
+    const extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], log) ||
+      {title: 'combat', id: undefined, json: {}};
 
     const attribs = extracted.json;
     attribs.id = attribs.id || extracted.id;
@@ -154,8 +155,8 @@ export class BlockRenderer {
         if (!extractedBullet.text) {
           // Visible is actually a value expression
           enemy = {
-            text: '{{' + extractedBullet.visible + '}}',
             json: extractedBullet.json,
+            text: '{{' + extractedBullet.visible + '}}',
           };
         }
 
@@ -227,9 +228,9 @@ export class BlockRenderer {
     let hasWin = false;
     let hasLose = false;
 
-    for (let i = 0; i < events.length; i++) {
-      hasWin = hasWin || (events[i].text === 'on win');
-      hasLose = hasLose || (events[i].text === 'on lose');
+    for (const event of events) {
+      hasWin = hasWin || (event.text === 'on win');
+      hasLose = hasLose || (event.text === 'on lose');
     }
     if (!hasWin) {
       log.err('combat card must have "on win" event', '417');
@@ -265,7 +266,9 @@ export class BlockRenderer {
 
       if (k !== 'title') {
         if (log) {
-          log.err('Quest attributes have migrated to the "Publish" button - simply delete this line.', '429', block.startLine + i);
+          log.err('Quest attributes have migrated to the "Publish" button - simply delete this line.',
+            '429',
+            block.startLine + i);
         }
       }
     }
@@ -312,7 +315,8 @@ export class BlockRenderer {
     return this.renderer.finalize(quest, toRender);
   }
 
-  private extractCombatOrRoleplay(line: string, log?: Logger): {title: string, id?: string, json: {[k: string]: any}} | null {
+  private extractCombatOrRoleplay(line: string, log?: Logger):
+    {title: string, id?: string, json: {[k: string]: any}} | null {
     // Breakdown:
     // ^_(.*)_                  Match italicized text at start of string until there's a break
     //                          which may contain multiple :icon_names: (hence the greedy selection)
@@ -331,9 +335,9 @@ export class BlockRenderer {
         throw new Error('Missing title');
       }
       return {
-        title: m[1],
         id: m[3],
         json: (m[4]) ? JSON.parse(m[4]) : {},
+        title: m[1],
       };
     } catch (e) {
       if (log) {
@@ -343,7 +347,8 @@ export class BlockRenderer {
     }
   }
 
-  private extractBulleted(line: string, idx: number, log: Logger): {text: string, visible?: string, json: {[k: string]: any}} | null {
+  private extractBulleted(line: string, idx: number, log: Logger):
+    {text: string, visible?: string, json: {[k: string]: any}} | null {
     // Breakdown:
     // \*\s*                    Match "*" or "-" and any number of spaces (greedy)
     // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
@@ -360,9 +365,9 @@ export class BlockRenderer {
         throw new Error('Match failed');
       }
       return {
-        visible: m[2] || undefined,
-        text: (m[3]) ? m[3].trim() : '',
         json: (m[4]) ? JSON.parse(m[4]) : {},
+        text: (m[3]) ? m[3].trim() : '',
+        visible: m[2] || undefined,
       };
     } catch (e) {
       if (log) {
@@ -376,13 +381,13 @@ export class BlockRenderer {
     const m = line.match(REGEX.INSTRUCTION);
     if (!m) {
       return {
-        visible: 'false',
         text: '',
+        visible: 'false',
       };
     }
     return {
-      visible: m[2],
       text: m[3] || '',
+      visible: m[2],
     };
   }
 
@@ -390,13 +395,13 @@ export class BlockRenderer {
     const m = line.match(REGEX.TRIGGER);
     if (!m) {
       return {
-        visible: 'false',
         text: '',
+        visible: 'false',
       };
     }
     return {
-      visible: m[2],
       text: m[3],
+      visible: m[2],
     };
   }
 

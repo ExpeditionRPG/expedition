@@ -1,3 +1,5 @@
+/* tslint:disable:max-line-length */
+
 import {XMLRenderer} from './XMLRenderer';
 
 const expect: any = require('expect');
@@ -24,7 +26,8 @@ describe('XMLRenderer', () => {
     });
 
     it('renders with condition', () => {
-      expect(XMLRenderer.toTrigger({text: 'test', visible: 'cond'}, 0).toString()).toEqual('<trigger if=\"cond\" data-line="0">test</trigger>');
+      expect(XMLRenderer.toTrigger({text: 'test', visible: 'cond'}, 0).toString())
+        .toEqual('<trigger if=\"cond\" data-line="0">test</trigger>');
     });
   });
 

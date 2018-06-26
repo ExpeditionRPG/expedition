@@ -49,6 +49,7 @@ describe('LogMessage', () => {
 
   describe('prettifyMsgs', () => {
     it('prettifies multiple messages', () => {
+      // tslint:disable-next-line
       expect(prettifyMsgs(testMsgs)).toEqual('ERROR L5:\ntest error\nURL: test\n\nWARNING L7:\ntest warning\nURL: 404\n\nINFO L0:\ntest debug\nstuff\nURL: 100\n\nINTERNAL L5:\ninternal error\nURL: 505');
     });
   });

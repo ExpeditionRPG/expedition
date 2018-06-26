@@ -11,7 +11,7 @@ const cheerio: any = require('cheerio') as CheerioAPI;
 // TODO: This Card context shouldn't have to be mocked here - update cardtemplates in the app
 // so we don't need this.
 function mockContext() {
-  const populateScopeFn = function() {
+  const populateScopeFn = () => {
     return {
       contentSets(): {[content: string]: boolean} {
         return {horror: true};
@@ -100,7 +100,6 @@ function handleMessage(e: {data: RunMessage}) {
         return;
       }
 
-      const logger = new Logger();
       const result = crawler.crawlWithLog(undefined, logger);
       queueLen = result[0];
       numSeen = result[1];

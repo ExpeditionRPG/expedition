@@ -3,11 +3,11 @@ import {SetProfileMetaAction} from '../actions/ActionTypes';
 import {UserState} from './StateTypes';
 
 export const loggedOutUser: UserState = {
-  loggedIn: false,
-  id: '',
   displayName: '',
-  image: '',
   email: '',
+  id: '',
+  image: '',
+  loggedIn: false,
   lootPoints: 0,
 };
 
@@ -16,11 +16,11 @@ export function user(state: UserState = loggedOutUser, action: Redux.Action): Us
     case 'SET_PROFILE_META':
       const profileAction = (action as SetProfileMetaAction);
       return {
-        loggedIn: profileAction.user.loggedIn,
-        id: profileAction.user.id,
         displayName: profileAction.user.displayName,
-        image: profileAction.user.image,
         email: profileAction.user.email,
+        id: profileAction.user.id,
+        image: profileAction.user.image,
+        loggedIn: profileAction.user.loggedIn,
         lootPoints: profileAction.user.lootPoints,
       };
     default:

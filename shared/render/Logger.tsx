@@ -21,10 +21,10 @@ export interface LogMessage {
 }
 
 export interface LogMessageMap {
-  info: LogMessage[];
-  warning: LogMessage[];
   error: LogMessage[];
+  info: LogMessage[];
   internal: LogMessage[];
+  warning: LogMessage[];
 }
 
 export function prettifyMsg(msg: LogMessage): string {
@@ -43,8 +43,8 @@ export function prettifyMsg(msg: LogMessage): string {
 
 export function prettifyMsgs(msgs: LogMessage[]): string {
   const prettyMsgs: string[] = [];
-  for (let i = 0; i < msgs.length; i++) {
-    prettyMsgs.push(prettifyMsg(msgs[i]));
+  for (const msg of msgs) {
+    prettyMsgs.push(prettifyMsg(msg));
   }
   return prettyMsgs.join('\n\n');
 }
@@ -137,8 +137,8 @@ export class Logger {
 
   private msg(group: Block[], type: LogSeverity, text: string, url: string, line?: number): LogMessage {
     const message: LogMessage = {
-      type,
       text,
+      type,
       url,
     };
     if (line) {

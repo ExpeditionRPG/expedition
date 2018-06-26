@@ -132,8 +132,8 @@ export class Node<C extends Context> {
 
       // Evaluate ops in attributes
       const attribs = getNodeAttributes(c);
-      for (const j in attribs) {
-        c.attr(j, evaluateContentOps(attribs[j], this.ctx));
+      for (const attrib of Object.keys(attribs)) {
+        c.attr(attrib, evaluateContentOps(attribs[attrib], this.ctx));
       }
 
       // Evaluate all non-control node bodies
@@ -164,10 +164,9 @@ export class Node<C extends Context> {
   // Loop through all rendered children. If a call to cb() returns a value
   // other than undefined, break the loop early and return the value.
   public loopChildren(cb: (tag: string, child: Cheerio, original: Cheerio) => any): any {
-    for (let i = 0; i < this.renderedChildren.length; i++) {
-      const c = this.renderedChildren[i];
-      const tag = this.renderedChildren[i].rendered.get(0).tagName.toLowerCase();
-      const v = cb(tag, c.rendered, c.original);
+    for (const child of this.renderedChildren) {
+      const tag = child.rendered.get(0).tagName.toLowerCase();
+      const v = cb(tag, child.rendered, child.original);
       if (v !== undefined) {
         return v;
       }
@@ -328,7 +327,7 @@ export class Node<C extends Context> {
   }
 
   // Returns if the supplied node is an **end** trigger
-  public isEnd(): Boolean {
+  public isEnd(): boolean {
     return (this.getTag() === 'trigger' && this.elem.text().toLowerCase().split(' ')[0].trim() === 'end');
   }
 }
