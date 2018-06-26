@@ -82,7 +82,7 @@
     "jasmine-expect": "^3.7.0",
     "jest": "^22.4.3",
     "joi": "^13.2.0",
-    "joi-browser": "^10.0.6",
+    "joi-browser": "^13.0.0",
     "json-loader": "^0.5.4",
     "karma": "^2.0.4",
     "karma-chrome-launcher": "^2.2.0",

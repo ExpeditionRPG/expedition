@@ -6793,9 +6793,9 @@ jest@^22.4.3:
     import-local "^1.0.0"
     jest-cli "^22.4.4"
 
-joi-browser@^10.0.6:
-  version "10.6.1"
-  resolved "https://registry.yarnpkg.com/joi-browser/-/joi-browser-10.6.1.tgz#1cfc1a244c9242327842c24354d8ead1c2fe3571"
+joi-browser@^13.0.0:
+  version "13.4.0"
+  resolved "https://registry.yarnpkg.com/joi-browser/-/joi-browser-13.4.0.tgz#b72ba61b610e3f58e51b563a14e0f5225cfb6896"
 
 joi@^13.2.0:
   version "13.4.0"
