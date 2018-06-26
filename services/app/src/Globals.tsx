@@ -11,15 +11,15 @@ export function getAppVersion(): string {
 
 export interface ReactDocument extends Document {
   addEventListener: (e: string, f: (this: any, ev: MouseEvent) => any,
-    useCapture?: boolean) => void;
+                     useCapture?: boolean) => void;
   dispatchEvent: (e: Event) => boolean;
 }
 
 export interface CordovaLoginPlugin {
   trySilentLogin: (options: {scopes: string, webClientId: string},
-    success: (obj: any) => any, error: (err: string) => any) => void;
+                   success: (obj: any) => any, error: (err: string) => any) => void;
   login: (options: {scopes: string, webClientId: string},
-    success: (obj: any) => any, error: (err: string) => any) => void;
+          success: (obj: any) => any, error: (err: string) => any) => void;
 }
 
 export interface ReactWindow extends Window {

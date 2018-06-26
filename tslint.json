@@ -17,7 +17,9 @@
     }],
     "no-switch-case-fall-through": true,
     "space-before-function-paren": [true, "never"],
-    "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"]
+    "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
+    "member-ordering": false,
+    "interface-name": false
   },
   "linterOptions": {
     "exclude": [

@@ -14,21 +14,21 @@ export class Session extends SchemaBase {
   }
 
   @field({
-    primaryKey: true,
     allowNull: false,
     extra: 'BIGINT',
+    primaryKey: true,
   }) public id: number;
 
   @field({
     allowNull: false,
-    maxLength: 32,
     default: '',
+    maxLength: 32,
   }) public secret: string;
 
   @field({
     allowNull: false,
-    default: 0,
     column: 'eventcounter',
+    default: 0,
   }) public eventCounter: number;
 
   @field({

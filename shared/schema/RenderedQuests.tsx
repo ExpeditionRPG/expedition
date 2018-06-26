@@ -15,21 +15,21 @@ export class RenderedQuest extends SchemaBase {
   }
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 32,
+    primaryKey: true,
     valid: [PARTITIONS],
   }) public partition: string;
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 255,
+    primaryKey: true,
   }) public id: string;
 
   @field({
-    primaryKey: true,
     default: 1,
+    primaryKey: true,
   }) public questversion: number;
 
   @field({

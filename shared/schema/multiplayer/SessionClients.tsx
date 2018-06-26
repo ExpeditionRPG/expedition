@@ -14,20 +14,20 @@ export class SessionClient extends SchemaBase {
   }
 
   @field({
-    primaryKey: true,
     allowNull: false,
     extra: 'BIGINT',
+    primaryKey: true,
   }) public session: number;
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 255,
+    primaryKey: true,
   }) public client: string;
 
   @field({
     allowNull: false,
-    maxLength: 32,
     default: '',
+    maxLength: 32,
   }) public secret: string;
 }

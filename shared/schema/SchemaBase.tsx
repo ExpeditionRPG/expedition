@@ -11,15 +11,14 @@ export const PLACEHOLDER_DATE = new Date(0);
 export type ExtraTypeQualifier = 'DECIMAL_4_2'|'BIGINT';
 
 export interface SchemaOptions {
-  type: string;
-  primaryKey: boolean;
   allowNull: boolean;
   column: string;
-
   default: any;
-  valid: any[];
-  maxLength: number;
   extra: ExtraTypeQualifier;
+  maxLength: number;
+  primaryKey: boolean;
+  type: string;
+  valid: any[];
 }
 
 // Use @field to annotate parameters in a class that extends SchemaBase.

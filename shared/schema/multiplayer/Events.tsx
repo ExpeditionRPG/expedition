@@ -14,38 +14,38 @@ export class Event extends SchemaBase {
   }
 
   @field({
-    primaryKey: true,
     allowNull: false,
     extra: 'BIGINT',
+    primaryKey: true,
   }) public session: number;
 
   @field({
-    primaryKey: true,
     allowNull: false,
+    primaryKey: true,
   }) public timestamp: Date;
 
   @field({
     allowNull: false,
-    maxLength: 255,
     default: '',
+    maxLength: 255,
   }) public client: string;
 
   @field({
     allowNull: false,
-    maxLength: 255,
     default: '',
+    maxLength: 255,
   }) public instance: string;
 
   @field({
     allowNull: false,
-    extra: 'BIGINT',
     default: 0,
+    extra: 'BIGINT',
   }) public id: number;
 
   @field({
-    maxLength: 32,
-    default: '',
     allowNull: false,
+    default: '',
+    maxLength: 32,
   }) public type: string;
 
   @field({

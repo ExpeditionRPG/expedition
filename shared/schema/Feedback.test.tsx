@@ -18,6 +18,7 @@ describe('Feedback Schema', () => {
     expect(Feedback.create({...base, difficulty: 'Invalid'}) instanceof Error).toEqual(true);
   });
   it('accepts valid difficulty', () => {
-    new Feedback({...base, difficulty: 'HARD'});
+    const f = new Feedback({...base, difficulty: 'HARD'});
+    expect(f.difficulty).toEqual('HARD');
   });
 });

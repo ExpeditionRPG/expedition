@@ -15,22 +15,22 @@ export class Feedback extends SchemaBase {
   }
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 32,
+    primaryKey: true,
     valid: [...PARTITIONS, ''],
   }) public partition: string;
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 255,
+    primaryKey: true,
   }) public questid: string;
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 255,
+    primaryKey: true,
   }) public userid: string;
 
   @field({
@@ -42,13 +42,13 @@ export class Feedback extends SchemaBase {
   }) public rating: number;
 
   @field({
-    maxLength: 2048,
     default: '',
+    maxLength: 2048,
   }) public text: string;
 
   @field({
-    maxLength: 255,
     default: '',
+    maxLength: 255,
   }) public email: string;
 
   @field({
@@ -61,19 +61,19 @@ export class Feedback extends SchemaBase {
   }) public tombstone: Date;
 
   @field({
-    maxLength: 255,
     default: '',
+    maxLength: 255,
   }) public name: string;
 
   @field({
-    maxLength: 32,
     default: 'NORMAL',
+    maxLength: 32,
     valid: DIFFICULTIES,
   }) public difficulty: string;
 
   @field({
-    maxLength: 32,
     default: '',
+    maxLength: 32,
   }) public platform: string;
 
   @field({

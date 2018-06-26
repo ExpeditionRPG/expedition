@@ -15,49 +15,49 @@ export class AnalyticsEvent extends SchemaBase {
   }
 
   @field({
-    primaryKey: true,
     allowNull: false,
-    maxLength: 255,
     column: 'user_id',
+    maxLength: 255,
+    primaryKey: true,
   }) public userID: string;
 
   @field({
-    primaryKey: true,
     default: NOW,
+    primaryKey: true,
   }) public created: Date;
 
   @field({
-    maxLength: 255,
-    default: '',
     allowNull: false,
+    default: '',
+    maxLength: 255,
   }) public category: string;
 
   @field({
-    maxLength: 255,
-    default: '',
     allowNull: false,
+    default: '',
+    maxLength: 255,
   }) public action: string;
 
   @field({
+    column: 'quest_id',
     default: '',
     maxLength: 255,
-    column: 'quest_id',
   }) public questID: string;
 
   @field({
-    default: 1,
     column: 'quest_version',
+    default: 1,
   }) public questVersion: number;
 
   @field({
-    maxLength: 32,
     default: '',
+    maxLength: 32,
     valid: [...DIFFICULTIES, ''],
   }) public difficulty: string;
 
   @field({
-    maxLength: 32,
     default: '',
+    maxLength: 32,
   }) public platform: string;
 
   @field({
@@ -65,8 +65,8 @@ export class AnalyticsEvent extends SchemaBase {
   }) public players: number;
 
   @field({
-    maxLength: 32,
     default: '',
+    maxLength: 32,
   }) public version: string;
 
   @field({

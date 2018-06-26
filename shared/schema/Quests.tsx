@@ -15,16 +15,16 @@ export class Quest extends SchemaBase {
   }
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 32,
+    primaryKey: true,
     valid: PARTITIONS,
   }) public partition: string;
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 255,
+    primaryKey: true,
   }) public id: string;
 
   @field({
@@ -36,28 +36,28 @@ export class Quest extends SchemaBase {
   }) public questversionlastmajor: number;
 
   @field({
-    maxLength: 128,
     default: '',
+    maxLength: 128,
   }) public engineversion: string;
 
   @field({
-    maxLength: 2048,
     default: '',
+    maxLength: 2048,
   }) public publishedurl: string;
 
   @field({
-    maxLength: 255,
     default: '',
+    maxLength: 255,
   }) public userid: string;
 
   @field({
-    maxLength: 255,
     default: '',
+    maxLength: 255,
   }) public author: string;
 
   @field({
-    maxLength: 255,
     default: '',
+    maxLength: 255,
   }) public email: string;
 
   @field({
@@ -77,18 +77,18 @@ export class Quest extends SchemaBase {
   }) public mintimeminutes: number;
 
   @field({
-    maxLength: 1024,
     default: '',
+    maxLength: 1024,
   }) public summary: string;
 
   @field({
-    maxLength: 255,
     default: '',
+    maxLength: 255,
   }) public title: string;
 
   @field({
-    maxLength: 2048,
     default: '',
+    maxLength: 2048,
   }) public url: string;
 
   @field({
@@ -105,15 +105,15 @@ export class Quest extends SchemaBase {
   }) public ratingcount: number;
 
   @field({
-    valid: GENRES,
-    maxLength: 128,
     default: '',
+    maxLength: 128,
+    valid: GENRES,
   }) public genre: string;
 
   @field({
-    valid: CONTENT_RATINGS,
-    maxLength: 128,
     default: '',
+    maxLength: 128,
+    valid: CONTENT_RATINGS,
   }) public contentrating: string;
 
   @field({
@@ -134,15 +134,15 @@ export class Quest extends SchemaBase {
   }) public expansionhorror: boolean;
 
   @field({
-    valid: LANGUAGES,
-    maxLength: 128,
     default: 'English',
+    maxLength: 128,
+    valid: LANGUAGES,
   }) public language: string;
 
   @field({
-    valid: THEMES,
-    maxLength: 128,
     default: 'base',
+    maxLength: 128,
+    valid: THEMES,
   }) public theme: string;
 
   @field({
@@ -150,8 +150,8 @@ export class Quest extends SchemaBase {
   }) public official: boolean;
 
   @field({
-    maxLength: 128,
     default: '',
+    maxLength: 128,
   }) public awarded: string;
 
   @field({

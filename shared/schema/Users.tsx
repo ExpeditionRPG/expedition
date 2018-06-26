@@ -14,24 +14,24 @@ export class User extends SchemaBase {
   }
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 255,
+    primaryKey: true,
   }) public id: string;
 
   @field({
-    maxLength: 255,
     default: '',
+    maxLength: 255,
   }) public email: string;
 
   @field({
-    maxLength: 255,
     default: '',
+    maxLength: 255,
   }) public name: string;
 
   @field({
-    default: 0,
     column: 'loot_points',
+    default: 0,
   }) public lootPoints: number;
 
   @field({
@@ -39,12 +39,12 @@ export class User extends SchemaBase {
   }) public created: Date;
 
   @field({
-    default: 0,
     column: 'login_count',
+    default: 0,
   }) public loginCount: number;
 
   @field({
-    default: PLACEHOLDER_DATE,
     column: 'last_login',
+    default: PLACEHOLDER_DATE,
   }) public lastLogin: Date;
 }
