@@ -14,13 +14,17 @@ const math = require('mathjs') as any;
 const ReactGA = require('react-ga') as any;
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps => {
-  const scope = (state.preview.quest && state.preview.quest.node && state.preview.quest.node.ctx && state.preview.quest.node.ctx.scope) || {};
+  // TODO optional chaining with babel 7
+  const scope = (state.preview.quest &&
+    state.preview.quest.node &&
+    state.preview.quest.node.ctx &&
+    state.preview.quest.node.ctx.scope) || {};
   return {
     annotations: [...state.annotations.spellcheck, ...state.annotations.playtest],
     editor: state.editor,
     quest: state.quest,
-    user: state.user,
     scope,
+    user: state.user,
   };
 };
 
@@ -28,8 +32,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
   return {
     onMenuSelect: (action: QuestActionType, quest: QuestType) => {
       ReactGA.event({
-        category: 'interaction',
         action,
+        category: 'interaction',
         label: 'appbar',
       });
       switch (action) {
@@ -70,7 +74,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         math.eval(editor.opInit, ctx.scope);
       } catch (e) {
         // TODO: Display eval errors
-        console.log(e);
       }
       dispatch(renderAndPlay(quest, quest.mdRealtime.getText(), editor.line.number, editor.worker, ctx));
     },

@@ -21,7 +21,11 @@ export class OverrideTextArea extends React.Component<any, any> {
 
   public render() {
     return (
-      <textarea placeholder={this.props.placeholder || ''} value={this.state.value} onChange={this.handleChange} onBlur={this.props.onBlur} />
+      <textarea
+        placeholder={this.props.placeholder || ''}
+        value={this.state.value}
+        onChange={this.handleChange}
+        onBlur={this.props.onBlur} />
     );
   }
 }

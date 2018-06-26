@@ -21,15 +21,15 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestIDEStateProps => 
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestIDEDispatchProps => {
   return {
+    onAnnotationClick: (annotations: number[]) => {
+      dispatch(setDialog('ANNOTATION_DETAIL', true, annotations));
+    },
     onDirty: (realtime: any, text: string) => {
       realtime.setText(text);
       dispatch(updateDirtyState());
     },
     onLine: (line: number) => {
       dispatch(setLine(line));
-    },
-    onAnnotationClick: (annotations: number[]) => {
-      dispatch(setDialog('ANNOTATION_DETAIL', true, annotations));
     },
   };
 };

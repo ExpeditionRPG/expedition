@@ -15,8 +15,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Splas
   return {
     onLogin: (position: string) => {
       ReactGA.event({
-        category: 'interaction',
         action: 'LOGIN',
+        category: 'interaction',
         label: 'splashscreen' + position,
       });
       dispatch(loginUser(true, true));

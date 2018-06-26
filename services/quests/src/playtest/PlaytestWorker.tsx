@@ -1,3 +1,5 @@
+/* tslint:disable:no-console */
+
 // This file is a WebWorker - see the spec at
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
 
@@ -44,13 +46,13 @@ function mockContext() {
   };
 
   const newContext: any = {
+    _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
+    path: ([] as any),
     scope: {
       _: populateScopeFn(),
     },
-    views: {},
     templates: {},
-    path: ([] as any),
-    _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
+    views: {},
   };
 
   for (const k of Object.keys(newContext.scope._)) {

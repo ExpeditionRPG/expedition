@@ -1,3 +1,5 @@
+/* tslint:disable:max-line-length */
+
 import {ENCOUNTERS} from 'app/Encounters';
 import {Context} from 'shared/parse/Context';
 import {Node} from 'shared/parse/Node';

@@ -86,7 +86,10 @@ describe('StatsCrawler', () => {
     });
 
     it('safely handles nodes without line annotations', () => {
-      const xml = cheerio.load(`<roleplay title="A0" id="A0" data-line="2"><p></p></roleplay><roleplay title="A1" id="A1"><p></p></roleplay><roleplay title="A2"><p></p></roleplay>`)(':first-child');
+      const xml = cheerio.load(`
+        <roleplay title="A0" id="A0" data-line="2"><p></p></roleplay>
+        <roleplay title="A1" id="A1"><p></p></roleplay>
+        <roleplay title="A2"><p></p></roleplay>`)(':first-child');
 
       const crawler = new StatsCrawler();
       crawler.crawl(new Node(xml, defaultContext()));
@@ -130,7 +133,9 @@ describe('StatsCrawler', () => {
     });
 
     it('handles hanging choice node with no body', () => {
-      const xml = cheerio.load(`<roleplay title="I" data-line="2"><choice text="a1"></choice></roleplay>`)(':first-child');
+      const xml = cheerio.load(`
+        <roleplay title="I" data-line="2"><choice text="a1"></choice></roleplay>
+      `)(':first-child');
       const crawler = new StatsCrawler();
       crawler.crawl(new Node(xml, defaultContext()));
 

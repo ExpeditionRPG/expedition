@@ -21,6 +21,7 @@ const QDLHighlightRules: any = function() {
   // Override Markdown defaults for a better QDL experience
   // token names are separated by .'s; they're all applied as class ace_[token] to matching elements
   this.$rules.start = [
+    /* tslint:disable:object-literal-sort-keys */
     {
       token: 'comment', // faded and italic
       regex: /^\s*(\/\/.*)|(\/\*.*\*\/)/,
@@ -56,6 +57,7 @@ const QDLHighlightRules: any = function() {
     {
       defaultToken: 'text.xml',
     },
+    /* tslint:enable */
   ];
 };
 oop.inherits(QDLHighlightRules, MarkdownHighlightRules);

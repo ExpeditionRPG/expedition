@@ -90,18 +90,11 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
   }
 
   public render() {
-    let text = 'Loading...';
-    if (this.props.realtime) {
-      text = this.props.realtime.getText();
-    }
-
     return (
       <textarea
         id="notesArea"
         ref={(ref: any) => this.onRef(ref)}
-        onChange={(e: any) => this.onChange(e)}
-      >
-      </textarea>
+        onChange={(e: any) => this.onChange(e)} />
     );
   }
 }
@@ -114,7 +107,10 @@ const NotesPanel = (props: NotesPanelProps): JSX.Element => {
   return (
     <div className="console">
       <div className="interactive">
-        <RealtimeTextArea realtime={props.realtime} realtimeModel={props.realtimeModel} onDirty={props.onDirty}></RealtimeTextArea>
+        <RealtimeTextArea
+          realtime={props.realtime}
+          realtimeModel={props.realtimeModel}
+          onDirty={props.onDirty} />
       </div>
     </div>
   );

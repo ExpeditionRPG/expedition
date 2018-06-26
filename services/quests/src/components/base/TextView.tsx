@@ -6,12 +6,14 @@ import AceEditorOrig from 'react-ace';
 import {AnnotationType} from '../../reducers/StateTypes';
 import Spellcheck from '../../Spellcheck';
 import {QDLMode} from './QDLMode';
+import RealtimeUndoManager from './RealtimeUndoManager';
 
 // The current version of AceEditor fails to compile when used as a JSX.Element:
 /*
   JSX element type 'AceEditor' is not a constructor function for JSX elements.
   Types of property 'setState' are incompatible.
-    Type '{ <K extends never>(f: (prevState: undefined, props: AceEditorProps) => Pick<undefined, K>, callb...' is not assignable to type '{
+    Type '{ <K extends never>(f: (prevState: undefined, props: AceEditorProps) =>
+      Pick<undefined, K>, callb...' is not assignable to type '{
  <K extends never>(f: (prevState: {}, props: any) => Pick<{}, K>, callback?: (() => any) | undef...'.
       Types of parameters 'f' and 'f' are incompatible.
         Types of parameters 'prevState' and 'prevState' are incompatible.
@@ -28,7 +30,12 @@ const acequire: any = (require('brace') as any).acequire;
 const {Range} = acequire('ace/range');
 const mode = new QDLMode();
 
-interface AceAnnotation {row: number; column: number; text: string; type: 'error'|'info'|'warning'; }
+interface AceAnnotation {
+  column: number;
+  row: number;
+  text: string;
+  type: 'error'|'info'|'warning';
+}
 
 interface TextViewProps extends React.Props<any> {
   annotations: AnnotationType[];
@@ -49,59 +56,6 @@ interface TextViewProps extends React.Props<any> {
 
   showLineNumbers?: boolean;
   showSpellcheck?: boolean;
-}
-
-// This class wraps the Realtime API undo commands in a way
-// that can substitute for Ace UndoManager. This is injected
-// into the editor via session.setUndoManager().
-// https://developers.google.com/google-apps/realtime/undo
-// https://github.com/ajaxorg/ace/blob/v1.1.4/lib/ace/undomanager.js
-class RealtimeUndoManager {
-  private realtimeModel: any;
-
-  constructor(realtimeModel: any) {
-    this.realtimeModel = realtimeModel;
-  }
-
-  public execute(options: any): void {
-    // Throw out ace editor deltas received, since
-    // we use the realtime API as a source of truth.
-  }
-
-  public hasUndo(): boolean {
-    return this.realtimeModel.canUndo;
-  }
-
-  public hasRedo(): boolean {
-    return this.realtimeModel.canRedo;
-  }
-
-  public redo(): void {
-    if (!this.hasRedo()) {
-      return;
-    }
-    this.realtimeModel.redo();
-  }
-
-  public undo(): void {
-    if (!this.hasUndo()) {
-      return;
-    }
-    this.realtimeModel.undo();
-  }
-
-  public reset(): void {
-    // No-op for now, but part of the Ace UndoManager interface.
-  }
-
-  public markClean(): void {
-    // No-op for now
-  }
-
-  public isClean(): boolean {
-    // Currently not supported. We check dirtyness via value anyways.
-    return false;
-  }
 }
 
 // See https://github.com/securingsincity/react-ace
@@ -167,8 +121,8 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       // Set our custom mode and folding. DUCT TAPE!!!
       session.$mode = mode;
       session.$foldMode = mode.foldingRules;
-      session.getFoldWidget = function(row: number) { return mode.foldingRules.getFoldWidget(session, '', row); };
-      session.getFoldWidgetRange = function(row: number) { return mode.foldingRules.getFoldWidgetRange(session, '', row); };
+      session.getFoldWidget = (row: number) => mode.foldingRules.getFoldWidget(session, '', row);
+      session.getFoldWidgetRange = (row: number) => mode.foldingRules.getFoldWidgetRange(session, '', row);
       ref.editor.getSession().bgTokenizer.setTokenizer(mode.getTokenizer());
 
       // Additional configuration
@@ -264,13 +218,17 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     if (this.props.realtime) {
       this.props.realtime.removeAllEventListeners();
     }
-    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, (event: any) => { this.onTextInserted(event); });
-    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, (event: any) => { this.onTextDeleted(event); });
+    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED,
+      (event: any) => { this.onTextInserted(event); });
+    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED,
+      (event: any) => { this.onTextDeleted(event); });
 
     // If we've been supplied with a different line number, scroll to it
     if (this.ace) {
       const row = this.ace.editor.getSelection().anchor.row;
-      if (!this.focused && newProps.scrollLineTarget !== row && newProps.scrollLineTargetTs > (this.lineChangeTs || -1)) {
+      if (!this.focused &&
+        newProps.scrollLineTarget !== row &&
+        newProps.scrollLineTargetTs > (this.lineChangeTs || -1)) {
         this.ace.editor.gotoLine(newProps.scrollLineTarget + 1, 0, true);
         this.lineChangeTs = newProps.scrollLineTargetTs;
       }
@@ -292,9 +250,9 @@ export default class TextView extends React.Component<TextViewProps, {}> {
   }
 
   public render() {
-    let text = 'Loading...';
+    let editorText = 'Loading...';
     if (this.props.realtime) {
-      text = this.props.realtime.getText();
+      editorText = this.props.realtime.getText();
     }
 
     const classes = ['ace'];
@@ -318,7 +276,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
         width="100%"
         height="100%"
         name={'editor'}
-        value={text}
+        value={editorText}
       />
     );
   }

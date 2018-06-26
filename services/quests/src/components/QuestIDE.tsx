@@ -16,9 +16,9 @@ export interface QuestIDEStateProps {
 }
 
 export interface QuestIDEDispatchProps {
+  onAnnotationClick: (annotations: number[]) => void;
   onDirty: (realtime: any, text: string) => void;
   onLine: (line: number) => void;
-  onAnnotationClick: (annotations: number[]) => void;
 }
 
 interface QuestIDEProps extends QuestIDEStateProps, QuestIDEDispatchProps {}
@@ -41,7 +41,9 @@ const QuestIDE = (props: QuestIDEProps): JSX.Element => {
           onAnnotationClick={(annotations: number[]) => props.onAnnotationClick(annotations)} />
       </div>
       <div className="preview">
-        {props.tutorial.playFromCursor && <div className="play-from-cursor-tutorial">Click "Play from Cursor" above<br/>to test your quest.</div>}
+        {props.tutorial.playFromCursor &&
+          <div className="play-from-cursor-tutorial">Click "Play from Cursor" above<br/>to test your quest.</div>
+        }
         <AppContainer/>
         }
       </div>
