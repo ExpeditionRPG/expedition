@@ -83,33 +83,35 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   return (
     <span className="quest_app_bar">
       <AppBar>
-        <Typography variant="title" color="inherit" className="appBarTitle">
-          {questTitle}
-        </Typography>
-        <div className="appBarRight">
-          <a href="https://expeditiongame.com/loot" target="_blank" className="lootPoints">
-            {props.user.lootPoints} <img className="inline_icon" src="images/loot_white_small.svg" />
-          </a>
-          <span className="email">{props.user.email}</span>
-          <IconButton><NavigationArrowDropDown /></IconButton>
-        </div>
-      </AppBar>
-      <Toolbar className="toolbar">
-        <Button onClick={(event: any) => props.onMenuSelect('NEW_QUEST', props.quest)}>New</Button>
-        {publishButton}
-        {Boolean(props.quest.published) && <Button onClick={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.quest)}>Unpublish</Button>}
-        <Button disabled={!questLoaded} onClick={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.quest)}>View in Drive</Button>
-        <Button onClick={(event: any) => props.onMenuSelect('HELP', props.quest)}>Help</Button>
-        {saveIndicator}
-        <Button onClick={(event: any) => props.playFromCursor({}, props.editor, props.quest)}>
-          Play from Cursor
-        </Button>
-        {props.editor.bottomPanel &&
-          <Button onClick={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)}>
-            Play from Cursor (preserve context)
+        <Toolbar>
+          <Typography variant="title" color="inherit" className="appBarTitle">
+            {questTitle}
+          </Typography>
+          <div className="appBarRight">
+            <a href="https://expeditiongame.com/loot" target="_blank" className="lootPoints">
+              {props.user.lootPoints} <img className="inline_icon" src="images/loot_white_small.svg" />
+            </a>
+            <span className="email">{props.user.email}</span>
+            <IconButton><NavigationArrowDropDown /></IconButton>
+          </div>
+        </Toolbar>
+        <Toolbar className="toolbar">
+          <Button onClick={(event: any) => props.onMenuSelect('NEW_QUEST', props.quest)}>New</Button>
+          {publishButton}
+          {Boolean(props.quest.published) && <Button onClick={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.quest)}>Unpublish</Button>}
+          <Button disabled={!questLoaded} onClick={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.quest)}>View in Drive</Button>
+          <Button onClick={(event: any) => props.onMenuSelect('HELP', props.quest)}>Help</Button>
+          {saveIndicator}
+          <Button onClick={(event: any) => props.playFromCursor({}, props.editor, props.quest)}>
+            Play from Cursor
           </Button>
-        }
-      </Toolbar>
+          {props.editor.bottomPanel &&
+            <Button onClick={(event: any) => props.playFromCursor(props.scope, props.editor, props.quest)}>
+              Play from Cursor (preserve context)
+            </Button>
+          }
+        </Toolbar>
+      </AppBar>
     </span>
   );
 }
