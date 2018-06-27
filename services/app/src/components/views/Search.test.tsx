@@ -88,12 +88,12 @@ describe('Search', () => {
       const {props, wrapper} = setup('Learning to Adventure', {}, {requirespenpaper: false});
       expect(wrapper.html()).not.toContain('book');
     });
-
+/*Well not on the search page, only on the results page - removed
     it('displays a book icon when a quest requires pen and paper', () => {
       const {props, wrapper} = setup('Learning to Adventure', {}, {requirespenpaper: true});
       expect(wrapper.html()).toContain('book');
     });
-
+*/
     it('does not display last played date if quest has not been played', () => {
       const {props, wrapper} = setup('Learning to Adventure');
       expect(wrapper.html()).not.toContain('questPlayedIcon');
