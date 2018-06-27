@@ -145,7 +145,7 @@
     "uglifyjs-webpack-plugin": "^1.2.5",
     "update": "~0.7.4",
     "warning": "^4.0.0",
-    "webpack": "^3.11.0",
+    "webpack": "^4.0.0",
     "webpack-cli": "^3.0.7",
     "webpack-dev-server": "~2.11.2",
     "whatwg-fetch": "^2.0.4",
