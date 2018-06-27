@@ -12,8 +12,8 @@ export function dialog(state: DialogState = initialDialog, action: Redux.Action)
       const setAction = (action as DialogSetAction);
       return {
         ...state,
-        open: setAction.dialogID,
         message: setAction.message,
+        open: setAction.dialogID,
       };
     default:
       return state;

@@ -3,14 +3,14 @@ import {SearchResponseAction, ViewQuestAction} from '../actions/ActionTypes';
 import {SearchState} from './StateTypes';
 
 export const initialSearch: SearchState = {
-  search: {
-    text: '',
-    order: '+ratingavg',
-    language: 'English',
-  },
-  selected: null,
   results: [],
+  search: {
+    language: 'English',
+    order: '+ratingavg',
+    text: '',
+  },
   searching: false,
+  selected: null,
 };
 
 export function search(state: SearchState = initialSearch, action: Redux.Action): SearchState {

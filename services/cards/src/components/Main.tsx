@@ -6,12 +6,7 @@ export interface MainStateProps {
   loading: boolean;
 }
 
-export interface MainDispatchProps {
-}
-
-export interface MainProps extends MainStateProps, MainDispatchProps {}
-
-class Main extends React.Component<MainProps, {}> {
+class Main extends React.Component<MainStateProps, {}> {
   public render() {
     const loadingCircles = [];
     for (let i = 0; i < 12; i++) {

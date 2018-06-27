@@ -3,35 +3,35 @@ import {FilterChangeAction, FiltersCalculateAction} from '../actions/Filters';
 import {CardType, FiltersState} from './StateTypes';
 
 export let initialState: FiltersState = {
-  sheet: {
-    current: 'All',
-    default: 'All',
-    options: ['All'],
-  },
   class: {
     current: 'All',
     default: 'All',
     options: ['All'],
-  },
-  tier: {
-    current: 'All',
-    default: 'All',
-    options: ['All'],
-  },
-  theme: {
-    current: 'BlackAndWhite',
-    default: 'BlackAndWhite',
-    options: ['BlackAndWhite', 'Color'],
   },
   export: {
     current: 'PrintAndPlay',
     default: 'PrintAndPlay',
     options: ['PrintAndPlay', 'WebView', 'DriveThruCards', 'AdMagicFronts', 'AdMagicBacks', 'FrontsOnly'],
   },
+  sheet: {
+    current: 'All',
+    default: 'All',
+    options: ['All'],
+  },
   source: {
     current: 'Expedition:11Y8eS_cyIQ7wlGj5mo7VEHf355ycEHePrdysPzTnVJw',
     default: 'Expedition:11Y8eS_cyIQ7wlGj5mo7VEHf355ycEHePrdysPzTnVJw',
     options: ['Expedition:11Y8eS_cyIQ7wlGj5mo7VEHf355ycEHePrdysPzTnVJw', 'The Horror:1K08sXHXyW7TAMXJnHOv9V3QtjxwjAf2-cvbaO-S2fDQ', 'Custom'],
+  },
+  theme: {
+    current: 'BlackAndWhite',
+    default: 'BlackAndWhite',
+    options: ['BlackAndWhite', 'Color'],
+  },
+  tier: {
+    current: 'All',
+    default: 'All',
+    options: ['All'],
   },
 };
 

@@ -23,15 +23,15 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     audio: audio(state.audio, action),
     card: card(state.card, action),
     checkout: checkout(state.checkout, action),
+    commitID: state.commitID, // Handled by inflight()
     dialog: dialog(state.dialog, action),
+    multiplayer: multiplayer(state.multiplayer, action),
     quest: quest(state.quest, action),
     saved: saved(state.saved, action),
     search: search(state.search, action),
     settings: settings(state.settings, action),
     snackbar: snackbar(state.snackbar, action),
     user: user(state.user, action),
-    multiplayer: multiplayer(state.multiplayer, action),
-    commitID: state.commitID, // Handled by inflight()
   };
 }
 
@@ -100,15 +100,15 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
 
       return {
         ...state._history[pastStateIdx],
-        _history: state._history.slice(0, pastStateIdx),
         _committed: state._committed,
-        // things that should persist / not be rewowned:
-        settings: state.settings,
-        multiplayer: state.multiplayer,
-        commitID: state.commitID,
-        user: state.user,
-        saved: state.saved,
+        _history: state._history.slice(0, pastStateIdx),
         _return: true,
+        // things that should persist / not be rewowned:
+        commitID: state.commitID,
+        multiplayer: state.multiplayer,
+        saved: state.saved,
+        settings: state.settings,
+        user: state.user,
       } as AppStateWithHistory;
     }
 
@@ -119,20 +119,20 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
       // Save a copy of existing state to _history, excluding non-historical fields.
       stateHistory.push({
         ...state,
+        _committed: undefined,
         _history: undefined,
         _return: undefined,
-        _committed: undefined,
-        settings: undefined,
         multiplayer: undefined,
         saved: undefined,
+        settings: undefined,
       } as AppStateBase);
     }
   }
 
   // Run the reducers on the new action
   return {...combinedReduce(state, action),
-    _history: stateHistory,
     _committed: (state && state._committed),
+    _history: stateHistory,
     _return: false,
   } as AppStateWithHistory;
 }

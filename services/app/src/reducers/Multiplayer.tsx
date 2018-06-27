@@ -3,10 +3,10 @@ import {MultiplayerClientStatus, MultiplayerHistoryAction, MultiplayerSessionAct
 import {MultiplayerState} from './StateTypes';
 
 export const initialMultiplayer: MultiplayerState = {
-  history: [],
-  syncing: false,
   clientStatus: {},
+  history: [],
   session: null,
+  syncing: false,
 };
 
 export function multiplayer(state: MultiplayerState = initialMultiplayer, action: Redux.Action|MultiplayerSessionAction): MultiplayerState {

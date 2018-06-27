@@ -5,8 +5,8 @@ import {CardsState} from './StateTypes';
 export const initialState: CardsState = {
   data: null,
   filtered: null,
-  translations: null,
   loading: true,
+  translations: null,
 };
 
 export default function Cards(state: CardsState = initialState, action: Redux.Action): CardsState {

@@ -13,17 +13,6 @@ export function downloadCards(): ((dispatch: Redux.Dispatch<any>) => void) {
     const store = getStore();
     dispatch(cardsLoading());
     Tabletop.init({
-      key: store.getState().filters.source.current.split(':')[1],
-      parseNumbers: true,
-      simpleSheet: true,
-      postProcess: (card: CardType) => {
-        // TODO parse / validate / clean the object here. Use Joi? Expose validation errors to the user
-        // Note that we can't make too many assumptions about the data coming in if we want this to work with
-        // multiple games... unless each theme has its own validation schema!
-        // Note: also have to be careful about the translations settings sheet
-        // Note: doesn't yet have access to sheet name, that's assigned in callback
-        return card;
-      },
       callback: (data: any, tabletop: any) => {
         // Turn into an array, remove commented out / hidden cards, attach sheet name
         let cards: CardType[] = [];
@@ -52,6 +41,17 @@ export function downloadCards(): ((dispatch: Redux.Dispatch<any>) => void) {
         dispatch(cardsFilter(store.getState().cards.data, store.getState().filters));
         dispatch(filtersCalculate(store.getState().cards.filtered));
       },
+      key: store.getState().filters.source.current.split(':')[1],
+      parseNumbers: true,
+      postProcess: (card: CardType) => {
+        // TODO parse / validate / clean the object here. Use Joi? Expose validation errors to the user
+        // Note that we can't make too many assumptions about the data coming in if we want this to work with
+        // multiple games... unless each theme has its own validation schema!
+        // Note: also have to be careful about the translations settings sheet
+        // Note: doesn't yet have access to sheet name, that's assigned in callback
+        return card;
+      },
+      simpleSheet: true,
     });
   };
 }
@@ -103,8 +103,7 @@ export function filterAndFormatCards(cards: CardType[], filters: FiltersState): 
   });
   return cards
     .filter((card: CardType) => {
-      for (let i = 0; i < cardFilters.length; i++) {
-        const filterName = cardFilters[i];
+      for (const filterName of cardFilters) {
         const filter = filters[filterName];
         if (card[filterName] !== filter.current) {
           return false;

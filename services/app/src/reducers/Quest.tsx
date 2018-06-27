@@ -17,21 +17,21 @@ function autoseed(): string {
 
 export const initialQuestState: QuestState = {
   details: {
-    partition: '',
-    id: '',
-    title: '',
-    summary: '',
     author: '',
+    id: '',
+    partition: '',
     publishedurl: '',
+    summary: '',
+    title: '',
   },
-  seed: autoseed(),
   node: new ParserNode(cheerio.load('<quest></quest>')('quest'), {
-    scope: {_: {}},
-    views: {},
-    templates: {},
-    path: ([] as any),
     _templateScopeFn: () => ({}),
+    path: ([] as any),
+    scope: {_: {}},
+    templates: {},
+    views: {},
   }),
+  seed: autoseed(),
 };
 
 export function quest(state: QuestState = initialQuestState, action: Redux.Action): QuestState {

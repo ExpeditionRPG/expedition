@@ -3,8 +3,8 @@ import {SnackbarOpenAction} from '../actions/ActionTypes';
 import {SnackbarState} from './StateTypes';
 
 export const initialSnackbar: SnackbarState = {
-  open: false,
   message: '',
+  open: false,
   timeout: 6000,
 };
 
@@ -14,11 +14,11 @@ export function snackbar(state: SnackbarState = initialSnackbar, action: Redux.A
       const openAction = (action as SnackbarOpenAction);
       if (openAction.message && openAction.message !== '') {
         return {
-          open: true,
-          message: openAction.message,
-          timeout: initialSnackbar.timeout,
           action: openAction.action || initialSnackbar.action,
           actionLabel: openAction.actionLabel || initialSnackbar.actionLabel,
+          message: openAction.message,
+          open: true,
+          timeout: initialSnackbar.timeout,
         };
       }
       return state;

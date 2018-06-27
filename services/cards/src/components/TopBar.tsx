@@ -32,7 +32,7 @@ class TopBar extends React.Component<TopBarProps, {}> {
     }, {});
     const filters = Object.keys(this.props.filters).map((name: string, index: number) => {
       const filter = this.props.filters[name];
-      const options = filter.options.map((option: any, index: number) => {
+      const options = filter.options.map((option: any, j: number) => {
         let text = option;
         // For "all" default values, nicen up their text presentation to users
         if (typeof option === 'string' && option.toLowerCase() === 'all') {
@@ -41,7 +41,7 @@ class TopBar extends React.Component<TopBarProps, {}> {
         } else if (name === 'source') {
           text = text.split(':')[0];
         }
-        return <MenuItem key={index} value={option}>{text}</MenuItem>;
+        return <MenuItem key={j} value={option}>{text}</MenuItem>;
       });
       return (
         <FormControl key={index}>

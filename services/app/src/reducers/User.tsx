@@ -4,11 +4,11 @@ import {UserLoginAction, UserQuestsAction, UserQuestsDeltaAction} from '../actio
 import {UserState} from './StateTypes';
 
 export const loggedOutUser: UserState = {
-  loggedIn: false,
-  id: '',
-  name: '',
-  image: '',
   email: '',
+  id: '',
+  image: '',
+  loggedIn: false,
+  name: '',
   quests: {},
 };
 

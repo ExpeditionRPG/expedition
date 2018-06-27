@@ -21,16 +21,14 @@ export interface RendererStateProps {
   translations: TranslationsType | null;
 }
 
-export interface RendererProps extends RendererStateProps {}
-
-class Renderer extends React.Component<RendererProps, {}> {
+class Renderer extends React.Component<RendererStateProps, {}> {
   public render() {
     const cards = this.props.cards || [];
     const renderSettings = { // defaults
       bleed: false,
       cardsPerPage: POKER_CARDS_PER_LETTER_PAGE,
-      showFronts: true,
       showBacks: true,
+      showFronts: true,
       showInstructions: false,
       theme: this.props.filters.theme.current || 'BlackAndWhite',
       uniqueBacksOnly: false,

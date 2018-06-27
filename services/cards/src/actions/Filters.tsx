@@ -25,11 +25,12 @@ export function filterChange(name: string, value: string | number): ((dispatch: 
       }
       value = 'Custom:' + value.replace('https://docs.google.com/spreadsheets/d/', '').split('/')[0];
     }
+    // tslint:disable-next-line
     dispatch({type: 'FILTER_CHANGE', name, value}) as FilterChangeAction;
 
     // Update URL - don't include in URL if it's the default value
     const query = {...qs.parse(window.location.search.substring(1)), [name]: value};
-    for (const key in query) {
+    for (const key of query) {
       if (initialState[key] && query[key] === initialState[key].default) {
         delete query[key];
       }
@@ -49,7 +50,7 @@ export function filterChange(name: string, value: string | number): ((dispatch: 
 export function loadFiltersFromUrl(): ((dispatch: Redux.Dispatch<any>) => void) {
   return (dispatch: Redux.Dispatch<any>) => {
     const query = qs.parse(window.location.search.substring(1));
-    for (const key in query) {
+    for (const key of query) {
       const val = (isNaN(query[key]) ? query[key] : Number(query[key]));
       dispatch(filterChange(key, val));
     }

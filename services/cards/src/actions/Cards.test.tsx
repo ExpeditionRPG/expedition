@@ -2,17 +2,17 @@ import * as React from 'react';
 import {filterAndFormatCards} from './Cards';
 
 const dummyFilters = {
-  sheet: {
-    current: 'All',
-  },
-  tier: {
-    current: 'All',
-  },
   class: {
+    current: 'All',
+  },
+  sheet: {
     current: 'All',
   },
   theme: {
     current: 'BlackAndWhite',
+  },
+  tier: {
+    current: 'All',
   },
 };
 
@@ -27,9 +27,9 @@ describe('Cards actions', () => {
   describe('filterAndFormatCards', () => {
     it('nulls properties that are just hyphens or blank', () => {
       const cards = [{
+        class: '',
         sheet: 'test',
         tier: '-',
-        class: '',
       }];
       const cleaned = filterAndFormatCards(cards, dummyFilters);
       expect(cleaned).toEqual([{sheet: 'test'}]);
@@ -85,36 +85,36 @@ describe('Cards actions', () => {
 
     it('filters by sheet, tier and class', () => {
       const filters = {
+        class: {
+          current: 'Class',
+        },
         sheet: {
           current: 'Sheet',
         },
         tier: {
           current: 'Tier',
         },
-        class: {
-          current: 'Class',
-        },
       };
       const cards = [
         {
+          class: 'Class',
           sheet: 'Sheet',
           tier: 'Tier',
-          class: 'Class',
         },
         {
+          class: 'Class',
           sheet: 'SheetNope',
           tier: 'Tier',
-          class: 'Class',
         },
         {
+          class: 'Class',
           sheet: 'Sheet',
           tier: 'TierNope',
-          class: 'Class',
         },
         {
+          class: 'ClassNope',
           sheet: 'Sheet',
           tier: 'Tier',
-          class: 'ClassNope',
         },
       ];
       const cleaned = filterAndFormatCards(cards, filters);

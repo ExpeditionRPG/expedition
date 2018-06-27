@@ -31,7 +31,7 @@ describe('Card reducer', () => {
 
   it('Does not debounce after some time', () => {
     const then = Date.now();
-    spyOn(Date, 'now').and.callFake(function() {
+    spyOn(Date, 'now').and.callFake(() => {
       return then + NAVIGATION_DEBOUNCE_MS + 10;
     });
     Reducer(card).withState({name: 'SEARCH_CARD', ts: then})
@@ -41,7 +41,7 @@ describe('Card reducer', () => {
 
   it('Debounces NAVIGATE actions', () => {
     const then = Date.now();
-    spyOn(Date, 'now').and.callFake(function() {
+    spyOn(Date, 'now').and.callFake(() => {
       return then + 50;
     });
     Reducer(card).withState({name: 'SEARCH_CARD', ts: then})
@@ -51,7 +51,7 @@ describe('Card reducer', () => {
 
   it('Respects overrideDebounce', () => {
     const then = Date.now();
-    spyOn(Date, 'now').and.callFake(function() {
+    spyOn(Date, 'now').and.callFake(() => {
       return then + 50;
     });
     Reducer(card).withState({name: 'SEARCH_CARD', ts: then})

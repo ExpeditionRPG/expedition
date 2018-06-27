@@ -1,7 +1,6 @@
 import {connect} from 'react-redux';
-import Redux from 'redux';
 import {AppState} from '../reducers/StateTypes';
-import Main, {MainDispatchProps, MainStateProps} from './Main';
+import Main, {MainStateProps} from './Main';
 
 const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
   return {
@@ -9,13 +8,8 @@ const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MainDispatchProps => {
-  return {};
-};
-
 const MainContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(Main);
 
 export default MainContainer;
