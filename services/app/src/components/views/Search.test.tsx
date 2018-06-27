@@ -169,6 +169,18 @@ describe('Search', () => {
       expect(wrapper.text().toLowerCase()).not.toContain('last played');
     });
 
+    it('does not show book icon if it does not exist', () => {
+      const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
+      const {props, wrapper} = setup(quest.requirespenpaper, {requirespenpaper: false});
+      expect(wrapper.text().toLowerCase()).not.toContain('book');
+    });
+/*please review do I need wrapper.html?  this fails
+    it('shows a book icon if it exists', () => {
+      const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
+      const {props, wrapper} = setup(quest.requirespenpaper, {requirespenpaper: true});
+      expect(wrapper.text().toLowerCase()).toContain('book');
+    });
+*/
     it('prompts for user count and multitouch if playing direct linked');
     it('goes directly to playing quest if not direct linked');
     it('allows users to go back');
