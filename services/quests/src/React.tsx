@@ -12,14 +12,8 @@ import MainContainer from './components/MainContainer';
 import {VERSION} from './Constants';
 import {store} from './Store';
 
-// For hot reload
 declare var require: any;
-declare var module: any;
-
-// For dev tools extension
 declare var window: any;
-
-// For URL parsing
 declare var unescape: any;
 
 const Typo: any = require('typo-js');
@@ -33,7 +27,8 @@ export type ThunkAction<R, S = {}, E = {}, A extends Redux.Action<any> = Redux.A
   extraArgument: E
 ) => R;
 declare module 'redux' {
-  export type Dispatch<A extends Redux.Action<any> = Redux.AnyAction> = <R, E>(asyncAction: ThunkAction<R, {}, E, A>) => R;
+  export type Dispatch<A extends Redux.Action<any> = Redux.AnyAction> =
+    <R, E>(asyncAction: ThunkAction<R, {}, E, A>) => R;
 }
 
 window.onerror = (message: string, source: string, line: number) => {
@@ -54,11 +49,10 @@ if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
     window.location.href = '/#' + questId;
   } catch (e) {
     ReactGA.event({
-      category: 'Error',
       action: 'Failed to parse anticipated Drive open URI',
+      category: 'Error',
       label: window.location.search,
     });
-    console.log('Failed to parse anticipated Drive open URI: ' + window.location.search);
   }
 } else if (window.location.hash || window.location.href.endsWith('#')) {
   questId = window.location.hash.slice(1);
@@ -81,7 +75,7 @@ if (window.gapi) {
 }
 
 // alert user if they try to close the page with unsaved changes
-window.onbeforeunload = function() {
+window.onbeforeunload = () => {
   if (store.getState().dirty === true) {
     return false;
   }
@@ -141,11 +135,7 @@ window.onOlarkLoad = () => {
   // every 12 hours, check for the latest version
   setInterval(() => {
     $.ajax({
-      url: 'https://raw.githubusercontent.com/ExpeditionRPG/expedition-quest-creator/master/package.json',
       dataType: 'json',
-      xhrFields: {
-        withCredentials: false,
-      },
       success: (data: any) => {
         if (data && data.version) {
           const newVersion = data.version.split('.').map(Number);
@@ -160,6 +150,8 @@ window.onOlarkLoad = () => {
           }
         }
       },
+      url: 'https://raw.githubusercontent.com/ExpeditionRPG/expedition-quest-creator/master/package.json',
+      xhrFields: { withCredentials: false },
     });
   }, 12 * 60 * 60 * 1000);
 

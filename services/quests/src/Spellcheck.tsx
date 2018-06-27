@@ -41,11 +41,16 @@ export default class Spellcheck {
   // after removing newlines and trimming out empty spaces and non-word characters
   public static getUniqueWords(text: string): string[] {
     return text
-      .replace(/\n/g, ' ') // newlines -> space
-      .split(' ') // split to array of words on spaces
-      .filter((s: string): boolean => (Boolean(s) && s.length > 0)) // remove empty strings
-      .map((s: string): string => s.replace(REGEX.NOT_WORD, '')) // remove non-word characters
-      .filter((s: string, i: number, arr: string[]): boolean => arr.indexOf(s) === i); // only return the first instance of each word
+      // newlines -> space
+      .replace(/\n/g, ' ')
+      // split to array of words on spaces
+      .split(' ')
+      // remove empty strings
+      .filter((s: string): boolean => (Boolean(s) && s.length > 0))
+      // remove non-word characters
+      .map((s: string): string => s.replace(REGEX.NOT_WORD, ''))
+      // only return the first instance of each word
+      .filter((s: string, i: number, arr: string[]): boolean => arr.indexOf(s) === i);
   }
 
   public onChange() {
@@ -59,11 +64,10 @@ export default class Spellcheck {
     }
 
     this.spellchecking = true;
-    const start = Date.now();
 
     try {
       // remove existing spellcheck markers
-      for (const i in this.markersPresent) {
+      for (const i of this.markersPresent) {
         this.session.removeMarker(this.markersPresent[i]);
       }
       this.markersPresent = [];
@@ -98,8 +102,7 @@ export default class Spellcheck {
     } finally { // free up, even if there was an error (more robust)
       this.spellchecking = false;
       this.contentsModified = false;
-      console.log('Spellcheck took ' + (Date.now() - start) + 'ms');
-      return true;
     }
+    return true;
   }
 }

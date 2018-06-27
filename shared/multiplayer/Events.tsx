@@ -1,5 +1,3 @@
-/* tslint:disable:max-line-length */
-
 // ------ Primitives Passed in Events ---------
 
 // This maps to an authenticated user.

@@ -26,44 +26,44 @@ export function loginUser(showPrompt: boolean, quest?: boolean | string): ((disp
           });
           request.execute((res: any) => {
             const googleUser = {
-              id_token: response.id_token,
-              name: res.displayName,
-              image: res.image.url,
               email: ((res.emails || [])[0] || {}).value,
+              id_token: response.id_token,
+              image: res.image.url,
+              name: res.displayName,
             };
             $.post(API_HOST + '/auth/google', JSON.stringify(googleUser))
-                .done((data: any) => {
-                  const user = {
-                    id: '',
-                    lootPoints: 0,
-                    loggedIn: true,
-                    displayName: googleUser.name,
-                    image: googleUser.image,
-                    email: googleUser.email,
-                  };
-                  try {
-                    data = JSON.parse(data);
-                    user.id = data.id;
-                    user.lootPoints = data.lootPoints;
-                  } catch (err) {
-                    user.id = data;
-                  }
+              .done((data: any) => {
+                const user = {
+                  displayName: googleUser.name,
+                  email: googleUser.email,
+                  id: '',
+                  image: googleUser.image,
+                  loggedIn: true,
+                  lootPoints: 0,
+                };
+                try {
+                  data = JSON.parse(data);
+                  user.id = data.id;
+                  user.lootPoints = data.lootPoints;
+                } catch (err) {
+                  user.id = data;
+                }
 
-                  dispatch(setProfileMeta(user));
-                  if (user.email === null) {
-                    alert('Issue logging in! Please contact support about user ID ' + user.id);
+                dispatch(setProfileMeta(user));
+                if (user.email === null) {
+                  alert('Issue logging in! Please contact support about user ID ' + user.id);
+                }
+                if (quest) {
+                  if (quest === true) { // create a new quest
+                    dispatch(loadQuestFromURL(user, undefined));
+                  } else if (typeof quest === 'string') {
+                    dispatch(loadQuestFromURL(user, quest));
                   }
-                  if (quest) {
-                    if (quest === true) { // create a new quest
-                      dispatch(loadQuestFromURL(user, undefined));
-                    } else if (typeof quest === 'string') {
-                      dispatch(loadQuestFromURL(user, quest));
-                    }
-                  }
-                })
-                .fail((xhr: any, status: string) => {
-                  dispatch(setSnackbar(true, 'Login error ' + status + ' - please report via Contact Us button!'));
-                });
+                }
+              })
+              .fail((xhr: any, status: string) => {
+                dispatch(setSnackbar(true, 'Login error ' + status + ' - please report via Contact Us button!'));
+              });
           });
         });
       }

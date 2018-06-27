@@ -1,6 +1,8 @@
+import CompositorContainer from 'app/components/CompositorContainer';
+import {getStore as getAppStore} from 'app/Store';
 import * as React from 'react';
+import {Provider} from 'react-redux';
 import {AnnotationType, TutorialState} from '../reducers/StateTypes';
-import AppContainer from './AppContainer';
 import TextView from './base/TextView';
 
 export interface QuestIDEStateProps {
@@ -44,8 +46,13 @@ const QuestIDE = (props: QuestIDEProps): JSX.Element => {
         {props.tutorial.playFromCursor &&
           <div className="play-from-cursor-tutorial">Click "Play from Cursor" above<br/>to test your quest.</div>
         }
-        <AppContainer/>
-        }
+        <div className="app_root">
+          <div className="app editor_override">
+            <Provider store={getAppStore()}>
+              <CompositorContainer />
+            </Provider>
+          </div>
+        </div>
       </div>
     </div>
   );

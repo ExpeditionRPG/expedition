@@ -7,8 +7,7 @@ import ContextEditor, {ContextEditorDispatchProps, ContextEditorStateProps} from
 const mapStateToProps = (state: AppState, ownProps: any): ContextEditorStateProps => {
   const scopeHistory: any[] = [];
 
-  for (let i = 0; i < state.preview._history.length; i++) {
-    const pastQuest = state.preview._history[i].quest;
+  for (const pastQuest of state.preview._history) {
     if (pastQuest && pastQuest.node && pastQuest.node.ctx && pastQuest.node.ctx.scope) {
       scopeHistory.push(pastQuest.node.ctx.scope);
     }
@@ -19,8 +18,8 @@ const mapStateToProps = (state: AppState, ownProps: any): ContextEditorStateProp
   }
 
   return {
-    scopeHistory,
     opInit: state.editor.opInit || '',
+    scopeHistory,
   };
 };
 

@@ -5,10 +5,10 @@ describe('Dialog action', () => {
   describe('setDialog', () => {
     it('creates action', () => {
       expect(setDialog('ERROR', true)).toEqual({
-        type: 'SET_DIALOG',
+        annotations: undefined,
         dialog: 'ERROR',
         shown: true,
-        annotations: undefined,
+        type: 'SET_DIALOG',
       } as SetDialogAction);
     });
   });

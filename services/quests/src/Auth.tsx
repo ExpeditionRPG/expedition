@@ -17,8 +17,8 @@ realtimeUtils.authorizer.authorize = function(onAuthComplete: any, usePopup: any
   // Try with no popups first.
   window.gapi.auth.authorize({
     client_id: this.util.clientId,
-    scope: this.util.scopes,
-    response_type: 'token id_token',
     immediate: !usePopup,
+    response_type: 'token id_token',
+    scope: this.util.scopes,
   }, this.handleAuthResult);
 };

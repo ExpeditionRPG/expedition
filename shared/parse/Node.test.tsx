@@ -1,5 +1,3 @@
-/* tslint:disable:max-line-length */
-
 import {Context, defaultContext} from './Context';
 import {Node} from './Node';
 

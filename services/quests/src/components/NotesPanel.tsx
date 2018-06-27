@@ -77,8 +77,10 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
     if (this.props.realtime) {
       this.props.realtime.removeAllEventListeners();
     }
-    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, (event: any) => { this.onTextInserted(event); });
-    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, (event: any) => { this.onTextDeleted(event); });
+    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED,
+      (event: any) => { this.onTextInserted(event); });
+    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED,
+      (event: any) => { this.onTextDeleted(event); });
   }
 
   public onChange(e: any) {

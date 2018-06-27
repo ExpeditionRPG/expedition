@@ -51,7 +51,7 @@ export function updateDirtyState(): ((dispatch: Redux.Dispatch<any>) => any) {
       clearTimeout(editor.dirtyTimeout);
     }
 
-    const timer = setTimeout(function() {
+    const timer = setTimeout(() => {
       const state = store.getState();
       // Check if a future state update overrode this timer.
       if (state.editor.dirtyTimeout !== timer) {
@@ -144,14 +144,14 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
       // Unfortunately can't just expand quest b/c it includes stuff beyond what app expects
       // Fortunately we really only /need/ to send things that affect display of quest (such as theme)
       dispatch(loadNode(newNode, {
-        id: quest.id || '',
-        title: quest.title || '',
-        summary: quest.summary || '',
         author: quest.author || '',
-        publishedurl: '',
-        minplayers: quest.minplayers || 1,
+        id: quest.id || '',
         maxplayers: quest.maxplayers || 6,
+        minplayers: quest.minplayers || 1,
+        publishedurl: '',
+        summary: quest.summary || '',
         theme: quest.theme || 'base',
+        title: quest.title || '',
       }));
       // Results will be shown and added to annotations as they arise.
       dispatch(startPlaytestWorker(oldWorker, questNode, {

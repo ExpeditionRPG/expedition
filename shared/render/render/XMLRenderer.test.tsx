@@ -1,5 +1,3 @@
-/* tslint:disable:max-line-length */
-
 import {XMLRenderer} from './XMLRenderer';
 
 const expect: any = require('expect');

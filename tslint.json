@@ -20,7 +20,10 @@
     "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
     "member-ordering": false,
     "interface-name": false,
-    "no-var-requires": false
+    "no-var-requires": false,
+    "max-line-length": false,
+    "no-console": false,
+    "max-classes-per-file": false
   },
   "linterOptions": {
     "exclude": [

@@ -35,7 +35,9 @@ const Main = (props: MainProps): JSX.Element => {
       <div className="main loading">
         Loading Expedition Quest Creator...
         <div className="slowLoadPrompt">
-          Not loading? Try disabling your ad blocker. If that doesn't work, hit the "Contact Us" button in the bottom right - make sure to include the title of your quest.
+          Not loading? Try disabling your ad blocker.
+          If that doesn't work, hit the "Contact Us" button in the bottom right -
+          make sure to include the title of your quest.
         </div>
       </div>
     );
@@ -102,7 +104,13 @@ const Main = (props: MainProps): JSX.Element => {
         className="editor_snackbar"
         open={props.snackbar.open}
         message={<span>{props.snackbar.message}</span>}
-        action={(props.snackbar.actionLabel) ? [<Button key={1} onClick={(e: React.MouseEvent<HTMLElement>) => {props.snackbar.action && props.snackbar.action(); }}>{this.props.snackbar.actionLabel}</Button>] : []}
+        action={(props.snackbar.actionLabel) ?
+          [<Button key={1}
+            // tslint:disable-next-line
+            onClick={(e: React.MouseEvent<HTMLElement>) => { props.snackbar.action && props.snackbar.action(); }}>
+              {this.props.snackbar.actionLabel}
+          </Button>] :
+          []}
         autoHideDuration={(props.snackbar.persist) ? undefined : 4000}
         onClose={props.onSnackbarClose}
       />
