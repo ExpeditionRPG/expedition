@@ -40,7 +40,6 @@ describe('Dependencies', () => {
       'pre-commit',
       'pre-push',
       'karma-jasmine',
-      'karma-phantomjs-launcher',
       'karma-webpack',
       'enzyme-adapter-react-16',
       'react-test-renderer',
