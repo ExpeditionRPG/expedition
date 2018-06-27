@@ -12,9 +12,9 @@ interface PlayerCounterProps extends React.Props<any> {
 
 class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
   public state: {
-    tip: string;
     lastTouchTime: number;
     maxTouches: number;
+    tip: string;
     touchCount: number;
     transitionTimeout: any;
   };
@@ -22,9 +22,9 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
   constructor(props: PlayerCounterProps) {
     super(props);
     this.state = {
-      tip: SPLASH_SCREEN_TIPS[Math.floor(Math.random() * SPLASH_SCREEN_TIPS.length)],
       lastTouchTime: 0,
       maxTouches: 0,
+      tip: SPLASH_SCREEN_TIPS[Math.floor(Math.random() * SPLASH_SCREEN_TIPS.length)],
       touchCount: 0,
       transitionTimeout: null,
     };

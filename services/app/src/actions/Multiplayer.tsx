@@ -22,12 +22,12 @@ export function multiplayerDisconnect() {
 export function multiplayerNewSession(user: UserState) {
   return (dispatch: Redux.Dispatch<any>): any => {
     fetch(MULTIPLAYER_SETTINGS.newSessionURI, {
-      method: 'POST',
-      mode: 'cors',
+      credentials: 'include',
       headers: new Headers({
         Accept: 'text/html',
       }),
-      credentials: 'include',
+      method: 'POST',
+      mode: 'cors',
     })
     .then(handleFetchErrors)
     .then((response: Response) => response.json())
@@ -52,13 +52,13 @@ export function multiplayerConnect(user: UserState, secret: string) {
 
   return (dispatch: Redux.Dispatch<any>): any => {
     fetch(MULTIPLAYER_SETTINGS.connectURI, {
-      method: 'POST',
-      mode: 'cors',
+      body: JSON.stringify({instance: instanceID, secret}),
+      credentials: 'include',
       headers: new Headers({
         Accept: 'application/json',
       }),
-      credentials: 'include',
-      body: JSON.stringify({instance: instanceID, secret}),
+      method: 'POST',
+      mode: 'cors',
     })
     .then(handleFetchErrors)
     .then((response: Response) => response.json())
@@ -94,9 +94,9 @@ export function loadMultiplayer(user: UserState) {
       throw new Error('you are not logged in');
     }
     fetch(MULTIPLAYER_SETTINGS.firstLoadURI, {
+      credentials: 'include',
       method: 'GET',
       mode: 'cors',
-      credentials: 'include',
     })
     // NOTE: We do not handle fetch errors here - failing this
     // fetch should not prevent users from using multiplayer.
@@ -118,10 +118,10 @@ export function setMultiplayerStatus(ev: StatusEvent) {
     const c = getMultiplayerClient();
     c.sendStatus(ev);
     dispatch({
-      type: 'MULTIPLAYER_CLIENT_STATUS',
       client: c.getID(),
       instance: c.getInstance(),
       status: ev,
+      type: 'MULTIPLAYER_CLIENT_STATUS',
     } as MultiplayerClientStatus);
     return null;
   };

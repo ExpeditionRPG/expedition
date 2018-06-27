@@ -71,10 +71,10 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
 
   return {
     custom,
-    enemies,
-    roundCount: 0,
     decisionPhase: 'PREPARE_DECISION',
+    enemies,
     numAliveAdventurers: totalAdventurerCount,
+    roundCount: 0,
     tier: tierSum,
     ...getDifficultySettings(settings.difficulty),
   };
@@ -82,8 +82,8 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
 
 interface ToDecisionCardArgs {
   node?: ParserNode;
-  phase: DecisionPhase;
   numOutcomes?: number;
+  phase: DecisionPhase;
   settings?: SettingsType;
 }
 export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCardArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ToDecisionCardArgs {
@@ -138,8 +138,8 @@ export const initCustomCombat = remoteify(function initCustomCombat(a: InitCusto
     a.rp = getState().multiplayer;
   }
   dispatch(initCombat({
-    node: new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext()),
     custom: true,
+    node: new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext()),
   }));
   return {};
 });
@@ -237,8 +237,8 @@ function generateCombatAttack(node: ParserNode, settings: SettingsType, rp: Mult
   damage = Math.min(combat.maxRoundDamage, damage);
 
   return {
-    surge: isSurgeNextRound(combat),
     damage,
+    surge: isSurgeNextRound(combat),
   };
 }
 
@@ -371,19 +371,19 @@ export const handleCombatTimerHold = remoteify(function handleCombatTimerHold(a:
   dispatch(setMultiplayerStatus({
     type: 'STATUS',
     waitingOn: {
-      type: 'TIMER',
       elapsedMillis: a.elapsedMillis,
+      type: 'TIMER',
     },
   }));
   return null;
 });
 
 interface HandleCombatTimerStopArgs {
-  node?: ParserNode;
-  settings?: SettingsType;
-  rp?: MultiplayerState;
   elapsedMillis: number;
+  node?: ParserNode;
+  rp?: MultiplayerState;
   seed: string;
+  settings?: SettingsType;
 }
 export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a: HandleCombatTimerStopArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): HandleCombatTimerStopArgs {
   if (!a.node || !a.settings) {
@@ -427,12 +427,12 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
 });
 
 interface HandleCombatEndArgs {
-  node?: ParserNode;
-  settings: SettingsType;
-  rp?: MultiplayerState;
-  victory: boolean;
   maxTier: number;
+  node?: ParserNode;
+  rp?: MultiplayerState;
   seed: string;
+  settings: SettingsType;
+  victory: boolean;
 }
 export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleCombatEndArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory) {
   if (!a.node || !a.settings) {
@@ -480,11 +480,11 @@ function findCombatParent(node: ParserNode) {
 }
 
 interface MidCombatChoiceArgs {
-  settings?: SettingsType;
-  node?: ParserNode;
-  maxTier: number;
   index: number;
+  maxTier: number;
+  node?: ParserNode;
   seed: string;
+  settings?: SettingsType;
 }
 export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatChoiceArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): MidCombatChoiceArgs {
   if (!a.node || !a.settings) {
@@ -517,11 +517,11 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
         const parentCondition = nextNode.elem.parent().attr('on');
         if (parentCondition === 'win' || parentCondition === 'lose') {
           dispatch(handleCombatEnd({
+            maxTier: a.maxTier,
             node: new ParserNode(parentCombatElem, a.node.ctx),
+            seed: a.seed,
             settings: a.settings,
             victory: (parentCondition === 'win'),
-            maxTier: a.maxTier,
-            seed: a.seed,
           }));
           return remoteArgs;
         } else {
@@ -551,9 +551,9 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
 });
 
 interface TierSumDeltaArgs {
-  node?: ParserNode;
   current: number;
   delta: number;
+  node?: ParserNode;
 }
 export const tierSumDelta = remoteify(function tierSumDelta(a: TierSumDeltaArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): TierSumDeltaArgs {
   if (!a.node) {
@@ -577,11 +577,11 @@ export const tierSumDelta = remoteify(function tierSumDelta(a: TierSumDeltaArgs,
 });
 
 interface AdventurerDeltaArgs {
-  node?: ParserNode;
-  settings?: SettingsType;
   current: number;
   delta: number;
+  node?: ParserNode;
   rp?: MultiplayerState;
+  settings?: SettingsType;
 }
 export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerDeltaArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): AdventurerDeltaArgs {
   if (!a.node || !a.settings) {

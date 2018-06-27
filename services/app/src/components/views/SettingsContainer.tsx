@@ -10,6 +10,7 @@ const mapStateToProps = (state: AppState, ownProps: SettingsStateProps): Setting
   return state.settings;
 };
 
+/* tslint:disable */
 const difficultyAdd: any = {
   EASY: 'NORMAL',
   NORMAL: 'HARD',
@@ -23,6 +24,7 @@ const difficultySub: any = {
   HARD: 'NORMAL',
   IMPOSSIBLE: 'HARD',
 };
+/* tslint:enable */
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SettingsDispatchProps => {
   return {
@@ -32,29 +34,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Setti
     onAutoRollChange: (v: boolean) => {
       dispatch(changeSettings({autoRoll: v}));
     },
-    onExpansionSelect: () => {
-      dispatch(setDialog('EXPANSION_SELECT'));
-    },
-    onExperimentalChange: (v: boolean) => {
-      logEvent('experimental_settings_changed_to', {label: v.toString()});
-      dispatch(changeSettings({experimental: v}));
-    },
-    onShowHelpChange: (v: boolean) => {
-      dispatch(changeSettings({showHelp: v}));
-    },
-    onMultitouchChange: (v: boolean) => {
-      dispatch(changeSettings({multitouch: v}));
-    },
-    onVibrationChange: (v: boolean) => {
-      dispatch(changeSettings({vibration: v}));
-    },
-    onPlayerDelta: (numPlayers: number, delta: number) => {
-      numPlayers += delta;
-      if (numPlayers <= 0 || numPlayers > 6) {
-        return;
-      }
-      dispatch(changeSettings({numPlayers}));
-    },
     onDifficultyDelta: (difficulty: DifficultyType, i: number) => {
       if (i > 0) {
         difficulty = difficultyAdd[difficulty];
@@ -62,6 +41,13 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Setti
         difficulty = difficultySub[difficulty];
       }
       dispatch(changeSettings({difficulty}));
+    },
+    onExpansionSelect: () => {
+      dispatch(setDialog('EXPANSION_SELECT'));
+    },
+    onExperimentalChange: (v: boolean) => {
+      logEvent('experimental_settings_changed_to', {label: v.toString()});
+      dispatch(changeSettings({experimental: v}));
     },
     onFontSizeDelta: (idx: number, delta: number) => {
       let i = idx + delta;
@@ -72,6 +58,19 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Setti
       }
       dispatch(changeSettings({fontSize: fontSizeValues[i]}));
     },
+    onMultitouchChange: (v: boolean) => {
+      dispatch(changeSettings({multitouch: v}));
+    },
+    onPlayerDelta: (numPlayers: number, delta: number) => {
+      numPlayers += delta;
+      if (numPlayers <= 0 || numPlayers > 6) {
+        return;
+      }
+      dispatch(changeSettings({numPlayers}));
+    },
+    onShowHelpChange: (v: boolean) => {
+      dispatch(changeSettings({showHelp: v}));
+    },
     onTimerSecondsDelta: (idx: number, delta: number) => {
       let i = idx + delta;
       if (i >= timerValues.length) {
@@ -80,6 +79,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Setti
         i = timerValues.length - 1;
       }
       dispatch(changeSettings({timerSeconds: timerValues[i]}));
+    },
+    onVibrationChange: (v: boolean) => {
+      dispatch(changeSettings({vibration: v}));
     },
   };
 };

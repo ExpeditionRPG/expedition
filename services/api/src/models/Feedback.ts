@@ -148,7 +148,7 @@ export function submitRating(db: Database, mail: MailService, feedback: Feedback
       feedback.questversion = quest.questversion;
       return db.feedback.upsert(prepare(feedback));
     })
-    .then((created: Boolean) => updateQuestRatings(db, feedback.partition, feedback.questid))
+    .then((created: boolean) => updateQuestRatings(db, feedback.partition, feedback.questid))
     .then((questInstance: QuestInstance) => {
       const quest = new Quest(questInstance.dataValues);
       if (quest.ratingcount === 1) {

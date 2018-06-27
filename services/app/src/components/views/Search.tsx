@@ -27,12 +27,12 @@ export interface SearchStateProps extends SearchState {
 }
 
 export interface SearchDispatchProps {
-  onLoginRequest: (subscribe: boolean) => void;
   onFilter: () => void;
-  onSearch: (search: SearchSettings, settings: SettingsType) => void;
-  onQuest: (quest: QuestDetails) => void;
+  onLoginRequest: (subscribe: boolean) => void;
   onPlay: (quest: QuestDetails, isDirectLinked: boolean) => void;
+  onQuest: (quest: QuestDetails) => void;
   onReturn: () => void;
+  onSearch: (search: SearchSettings, settings: SettingsType) => void;
 }
 
 export interface SearchProps extends SearchStateProps, SearchDispatchProps {}
@@ -40,10 +40,10 @@ export interface SearchProps extends SearchStateProps, SearchDispatchProps {}
 // We make this a react component to hold a bit of state and avoid sending
 // redux actions for every single change to input.
 export interface SearchSettingsCardProps {
-  user: UserState;
+  onSearch: (search: SearchSettings, settings: SettingsType) => void;
   search: SearchSettings;
   settings: SettingsType;
-  onSearch: (search: SearchSettings, settings: SettingsType) => void;
+  user: UserState;
 }
 
 export class SearchSettingsCard extends React.Component<SearchSettingsCardProps, {}> {
@@ -252,9 +252,9 @@ export function smartTruncateSummary(summary: string) {
 export interface SearchResultProps {
   index: number;
   lastPlayed: Date | null;
+  onQuest: (quest: QuestDetails) => void;
   quest: QuestDetails;
   search: SearchSettings;
-  onQuest: (quest: QuestDetails) => void;
 }
 
 export function renderResult(props: SearchResultProps): JSX.Element {
@@ -283,9 +283,9 @@ export function renderResult(props: SearchResultProps): JSX.Element {
           <tbody>
             <tr>
               <th className="leftcell">
-                  <Truncate lines={2}>
-                    {quest.title}
-                  </Truncate>
+                <Truncate lines={2}>
+                  {quest.title}
+                </Truncate>
               </th>
               <th className="rightcell">
                 {props.lastPlayed && <DoneIcon className="inline_icon questPlayedIcon" />}
@@ -344,9 +344,9 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
 export interface SearchDetailsProps {
   isDirectLinked: boolean;
   lastPlayed: Date | null;
-  quest: QuestDetails | null;
   onPlay: (quest: QuestDetails, isDirectLinked: boolean) => void;
   onReturn: () => void;
+  quest: QuestDetails | null;
 }
 
 export function renderDetails(props: SearchDetailsProps): JSX.Element {
@@ -466,9 +466,9 @@ const Search = (props: SearchProps): JSX.Element => {
       return renderDetails({
         isDirectLinked: props.isDirectLinked,
         lastPlayed: (props.user.quests[(props.selected || {id: '-1'}).id] || {}).lastPlayed,
-        quest: props.selected,
         onPlay: props.onPlay,
         onReturn: props.onReturn,
+        quest: props.selected,
       });
     default:
       throw new Error('Unknown search phase ' + props.phase);

@@ -7,8 +7,8 @@ import * as React from 'react';
 import {AudioLoadingType} from '../../reducers/StateTypes';
 
 export interface AudioControlsStateProps extends React.Props<any> {
-  audioLoaded: AudioLoadingType;
   audioEnabled: boolean;
+  audioLoaded: AudioLoadingType;
 }
 
 export interface AudioControlsDispatchProps {

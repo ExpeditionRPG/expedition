@@ -24,8 +24,8 @@ describe('Handle Announcements', () => {
 
   it('Shows an announcement if there is one', () => {
     store.dispatch(handleAnnouncements({
-      message: 'test',
       link: '',
+      message: 'test',
       versions: {android: '1', ios: '1', web: '1'},
     }));
     expect(store.getActions().length).toEqual(1);
@@ -33,8 +33,8 @@ describe('Handle Announcements', () => {
   });
   it('Shows update version prompt with platform-specific link if outdated version', () => {
     store.dispatch(handleAnnouncements({
-      message: '',
       link: '',
+      message: '',
       versions: {android: '999.999.999', ios: '999.999.999', web: '999.999.999'},
     }));
     expect(store.getActions().length).toEqual(1);

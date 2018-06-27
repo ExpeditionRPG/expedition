@@ -9,13 +9,13 @@ import Tools, {ToolsProps} from './Tools';
 
 function setup() {
   const props: ToolsProps = {
-    user: loggedOutUser,
-    settings: initialSettings,
     onCustomCombatSelect: jasmine.createSpy('onCustomCombatSelect'),
-    onQuestCreatorSelect: jasmine.createSpy('onQuestCreatorSelect'),
-    onPrivateQuestsSelect: jasmine.createSpy('onPrivateQuestsSelect'),
     onMultiplayerSelect: jasmine.createSpy('onMultiplayerSelect'),
+    onPrivateQuestsSelect: jasmine.createSpy('onPrivateQuestsSelect'),
+    onQuestCreatorSelect: jasmine.createSpy('onQuestCreatorSelect'),
+    settings: initialSettings,
     testMusic: jasmine.createSpy('testMusic'),
+    user: loggedOutUser,
   };
   const enzymeWrapper = shallow(<Tools {...props} />);
   return {props, enzymeWrapper};

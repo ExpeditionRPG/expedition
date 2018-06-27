@@ -13,21 +13,21 @@ import {getUser} from './Users';
 export const MAX_SEARCH_LIMIT = 100;
 
 export interface QuestSearchParams {
-  id?: string|null;
-  owner?: string|null;
-  players?: number|null;
-  text?: string|null;
   age?: number|null;
-  mintimeminutes?: number|null;
-  maxtimeminutes?: number|null;
   contentrating?: string|null;
-  genre?: string|null;
-  order?: string|null;
-  limit?: number|null;
-  partition?: string|null;
   expansions?: string[]|null;
+  genre?: string|null;
+  id?: string|null;
   language?: string|null;
+  limit?: number|null;
+  maxtimeminutes?: number|null;
+  mintimeminutes?: number|null;
+  order?: string|null;
+  owner?: string|null;
+  partition?: string|null;
+  players?: number|null;
   requirespenpaper?: boolean|null;
+  text?: string|null;
 }
 
 export function getQuest(db: Database, partition: string, id: string): Bluebird<Quest> {
@@ -183,11 +183,11 @@ export function publishQuest(db: Database, mail: MailService, userid: string, ma
 
       const updateValues: Partial<Quest> = {
         ...quest,
-        userid, // Not included in the request - pull from auth
-        questversion: (instance.get('questversion') || quest.questversion || 0) + 1,
-        publishedurl: `http://quests.expeditiongame.com/raw/${quest.partition}/${quest.id}/${quest.questversion}`,
-        tombstone: undefined, // Remove tombstone
         published: new Date(),
+        publishedurl: `http://quests.expeditiongame.com/raw/${quest.partition}/${quest.id}/${quest.questversion}`,
+        questversion: (instance.get('questversion') || quest.questversion || 0) + 1,
+        tombstone: undefined, // Remove tombstone
+        userid, // Not included in the request - pull from auth
       };
       if (majorRelease) {
         updateValues.questversionlastmajor = updateValues.questversion;
@@ -198,8 +198,8 @@ export function publishQuest(db: Database, mail: MailService, userid: string, ma
 
       // Publish to RenderedQuests
       db.renderedQuests.create(new RenderedQuest({
-        partition: quest.partition,
         id: quest.id,
+        partition: quest.partition,
         questversion: updateValues.questversion,
         xml,
       }))

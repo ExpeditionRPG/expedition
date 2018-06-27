@@ -64,13 +64,13 @@ export class Database {
     const analyticsEventSpec = toSequelize(new AnalyticsEvent({userID: ''}));
     this.analyticsEvent = this.sequelize.define('analyticsevents', analyticsEventSpec, {
       ...standardOptions,
-      timestamps: false, // TODO: eventually switch to sequelize timestamps
       freezeTableName: true,
       indexes: [
         {
           fields: ['category', 'action'],
         },
       ],
+      timestamps: false, // TODO: eventually switch to sequelize timestamps
     });
 
     const userSpec = toSequelize(new User({id: ''}));
@@ -89,8 +89,8 @@ export class Database {
     const feedbackSpec = toSequelize(new Feedback({partition: PUBLIC_PARTITION, questid: '', userid: ''}));
     this.feedback = this.sequelize.define('feedback', feedbackSpec, {
       ...standardOptions,
-      timestamps: false, // TODO: eventually switch to sequelize timestamps
       freezeTableName: true,
+      timestamps: false, // TODO: eventually switch to sequelize timestamps
     });
 
     const renderedQuestSpec = toSequelize(new RenderedQuest({partition: PUBLIC_PARTITION, id: '', questversion: 0}));
@@ -109,12 +109,12 @@ export class Database {
     // https://www.npmjs.com/package/connect-session-sequelize
     // We redeclare it here so we can apply a custom name.
     const authSession = this.sequelize.define(AUTH_SESSION_TABLE, {
-      sid: {
-        type: Sequelize.STRING(32),
-        primaryKey: true,
-      },
-      expires: Sequelize.DATE,
       data: Sequelize.TEXT,
+      expires: Sequelize.DATE,
+      sid: {
+        primaryKey: true,
+        type: Sequelize.STRING(32),
+      },
     });
     authSession.sync();
   }

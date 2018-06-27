@@ -13,16 +13,16 @@ const mapStateToProps = (state: AppState, ownProps: PartySizeSelectStateProps): 
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): PartySizeSelectDispatchProps => {
   return {
-    onNext: () => {
-      dispatch(changeSettings({multitouch: false}));
-      dispatch(toCard({name: 'FEATURED_QUESTS'}));
-    },
     onDelta: (numPlayers: number, delta: number) => {
       numPlayers += delta;
       if (numPlayers <= 0 || numPlayers > 6) {
         return;
       }
       dispatch(changeSettings({numPlayers}));
+    },
+    onNext: () => {
+      dispatch(changeSettings({multitouch: false}));
+      dispatch(toCard({name: 'FEATURED_QUESTS'}));
     },
   };
 };

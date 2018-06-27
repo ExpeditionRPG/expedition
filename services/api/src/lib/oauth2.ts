@@ -102,32 +102,32 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
         res.end(401);
       }
       const user = new User({
-        id: req.user,
         email: req.body.email,
+        id: req.user as any as string,
         name: req.body.name,
       });
 
       db.users.findOne({where: {id: user.id}})
-        .then((u: UserInstance|null) => {
-          if (u === null) {
-            // New user; subscribe to newsletter
-            return subscribeToCreatorsList(mailchimp, user.id);
-          }
-          return null;
-        })
-        .then((subscribed: Boolean) => {
-          if (subscribed) {
-          console.log(user.email + ' subscribed to creators list');
-          }
-          return db.users.upsert(user);
-        })
-        .then(() => incrementLoginCount(db, user.id))
-        .then(() => res.end(JSON.stringify(user)))
-        .catch((err: Error) => {
-          // Don't break login if DB fails - they're still authenticated
-          res.end(JSON.stringify(user));
-          console.log(err);
-        });
+      .then((u: UserInstance|null) => {
+        if (u === null) {
+          // New user; subscribe to newsletter
+          return subscribeToCreatorsList(mailchimp, user.id);
+        }
+        return null;
+      })
+      .then((subscribed: boolean) => {
+        if (subscribed) {
+        console.log(user.email + ' subscribed to creators list');
+        }
+        return db.users.upsert(user);
+      })
+      .then(() => incrementLoginCount(db, user.id))
+      .then(() => res.end(JSON.stringify(user)))
+      .catch((err: Error) => {
+        // Don't break login if DB fails - they're still authenticated
+        res.end(JSON.stringify(user));
+        console.log(err);
+      });
     }
   );
   // [END authorize]

@@ -4,68 +4,68 @@ interface QueryBase {
 
 export interface FeedbackQuery extends QueryBase {
   questid?: string;
-  userid?: string;
   rating?: {condition: '>'|'<'|'=', value: number};
   substring?: string;
+  userid?: string;
 }
 
 export interface QuestQuery extends QueryBase {
-  userid?: string;
   questid?: string;
   substring?: string; // Matches title or description
+  userid?: string;
 }
 
 export interface UserQuery extends QueryBase {
-  userid?: string;
   substring?: string; // Matches email or name
+  userid?: string;
 }
 
 export interface FeedbackEntry {
   partition: string;
   quest: {id: string, title: string};
-  user: {id: string, email: string};
   rating: number;
-  text: string;
   suppressed: boolean;
+  text: string;
+  user: {id: string, email: string};
 }
 
 export interface UserEntry {
-  id: string;
   email: string;
-  name: string;
-  loot_points: number;
+  id: string;
   last_login: Date;
+  loot_points: number;
+  name: string;
 }
 
 export interface QuestEntry {
   id: string;
-  title: string;
   partition: string;
+  published: boolean;
   ratingavg: number;
   ratingcount: number;
+  title: string;
   user: {id: string, email: string};
-  published: boolean;
 }
 
 export interface FeedbackMutation {
   partition: string;
   questid: string;
-  userid: string;
   suppress?: boolean;
+  userid: string;
 }
 
 export interface QuestMutation {
   partition: string;
-  questid: string;
   published?: boolean;
+  questid: string;
 }
 
 export interface UserMutation {
-  userid: string;
   loot_points?: number;
+  userid: string;
 }
 
 export interface Response {
-  status: 'OK'|'ERROR';
   error?: string;
+  status: 'OK'|'ERROR';
 }

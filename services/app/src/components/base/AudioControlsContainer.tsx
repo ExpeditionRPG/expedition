@@ -6,8 +6,8 @@ import AudioControls, {AudioControlsDispatchProps, AudioControlsStateProps} from
 
 const mapStateToProps = (state: AppState, ownProps: any): AudioControlsStateProps => {
   return {
-    audioLoaded: state.audio.loaded,
     audioEnabled: state.settings.audioEnabled,
+    audioLoaded: state.audio.loaded,
   };
 };
 

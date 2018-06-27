@@ -12,9 +12,9 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: RoleplayStateProp
 
   return {
     node: ownProps.node, // Using this instead of state.node prevents weird errors when transitioning to / from combat
+    onReturn: ownProps.onReturn,
     prevNode,
     settings: state.settings,
-    onReturn: ownProps.onReturn,
   };
 };
 

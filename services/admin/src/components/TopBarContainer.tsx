@@ -15,11 +15,11 @@ const mapStateToProps = (state: AppState, ownProps: any): TopBarStateProps => {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): TopBarDispatchProps => {
   return {
-    onUserDialogRequest: (user: UserState) => {
-      dispatch(logoutUser());
-    },
     onFilterUpdate: (view: ViewType, filter: string) => {
       dispatch(queryView(view, filter));
+    },
+    onUserDialogRequest: (user: UserState) => {
+      dispatch(logoutUser());
     },
   };
 };

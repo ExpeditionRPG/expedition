@@ -78,9 +78,9 @@ function recreateNodeFromPath(details: QuestDetails, xml: string, path: string|n
 export function loadSavedQuest(id: string, ts: number): QuestNodeAction {
   const savedQuests = getSavedQuestMeta();
   let details: QuestDetails|null = null;
-  for (let i = 0; i < savedQuests.length; i++) {
-    if (savedQuests[i].details.id === id && savedQuests[i].ts === ts) {
-      details = savedQuests[i].details;
+  for (const savedQuest of savedQuests) {
+    if (savedQuest.details.id === id && savedQuest.ts === ts) {
+      details = savedQuest.details;
       break;
     }
   }

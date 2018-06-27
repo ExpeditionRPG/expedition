@@ -14,14 +14,17 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: SearchStateProps)
     isDirectLinked: state._history.length <= 1,
     results: [], // Default in case search results are not defined
     ...state.search,
-    settings: state.settings,
     phase: ownProps.phase,
+    settings: state.settings,
     user: state.user,
   };
 };
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SearchDispatchProps => {
   return {
+    onFilter: () => {
+      dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
+    },
     onLoginRequest: (sub: boolean) => {
       dispatch(ensureLogin())
         .then((user: UserState) => {
@@ -31,15 +34,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
           return dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
         });
     },
-    onFilter: () => {
-      dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
-    },
-    onSearch: (s: SearchSettings, settings: SettingsType) => {
-      dispatch(search({search: s, settings}));
-    },
-    onQuest: (quest: QuestDetails) => {
-      dispatch(viewQuest({quest}));
-    },
     onPlay: (quest: QuestDetails, isDirectLinked: boolean) => {
       if (isDirectLinked) {
         dispatch(setDialog('SET_PLAYER_COUNT'));
@@ -47,8 +41,14 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
         dispatch(fetchQuestXML(quest));
       }
     },
+    onQuest: (quest: QuestDetails) => {
+      dispatch(viewQuest({quest}));
+    },
     onReturn: () => {
       dispatch(toPrevious({}));
+    },
+    onSearch: (s: SearchSettings, settings: SettingsType) => {
+      dispatch(search({search: s, settings}));
     },
   };
 };

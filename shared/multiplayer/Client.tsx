@@ -58,7 +58,7 @@ export abstract class ClientBase {
     } catch (e) {
       return {
         client: e.client,
-        event: {type: 'ERROR', error: 'Failed to parse JSON message: ' + s}
+        event: {type: 'ERROR', error: 'Failed to parse JSON message: ' + s},
         id: null,
         instance: e.instance,
       };
@@ -67,7 +67,7 @@ export abstract class ClientBase {
     if (!parsed.event || !parsed.client || !parsed.instance) {
       return {
         client: parsed.client,
-        event: {type: 'ERROR', error: 'Received malformed message: ' + s}
+        event: {type: 'ERROR', error: 'Received malformed message: ' + s},
         id: null,
         instance: parsed.instance,
       };
@@ -77,7 +77,7 @@ export abstract class ClientBase {
       .indexOf(parsed.event.type) < 0) {
       return {
         client: parsed.client,
-        event: {type: 'ERROR', error: 'Received unknown message of type "' + parsed.event.type + '"'}
+        event: {type: 'ERROR', error: 'Received unknown message of type "' + parsed.event.type + '"'},
         id: null,
         instance: parsed.instance,
       };

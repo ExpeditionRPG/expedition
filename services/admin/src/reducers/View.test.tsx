@@ -1,3 +1,0 @@
-describe('View reducer', () => {
-  // TODO
-});

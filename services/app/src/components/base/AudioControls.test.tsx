@@ -6,8 +6,8 @@ configure({ adapter: new Adapter() });
 
 function setup(overrides: Partial<AudioControlsProps>) {
   const props: AudioControlsProps = {
-    audioLoaded: 'UNLOADED',
     audioEnabled: true,
+    audioLoaded: 'UNLOADED',
     onAudioToggle: jasmine.createSpy('onAudioToggle'),
     ...overrides,
   };
@@ -31,24 +31,24 @@ describe('AudioControls', () => {
   });
 
   it('Shows loading indicator if audio loading', () => {
-    const {props, enzymeWrapper} = setup({audioLoaded: 'LOADING'});
+    const {enzymeWrapper} = setup({audioLoaded: 'LOADING'});
     expect(enzymeWrapper.find('#audioLoadingIndicator').exists()).toEqual(true);
     expect(enzymeWrapper.find('#audioLoadError').exists()).toEqual(false);
   });
 
   it('Shows error indicator if error loading audio', () => {
-    const {props, enzymeWrapper} = setup({audioLoaded: 'ERROR'});
+    const {enzymeWrapper} = setup({audioLoaded: 'ERROR'});
     expect(enzymeWrapper.find('#audioLoadError').exists()).toEqual(true);
   });
 
   it('Does not show loading indicator if audio not loaded', () => {
-    const {props, enzymeWrapper} = setup({audioLoaded: 'LOADED'});
+    const {enzymeWrapper} = setup({audioLoaded: 'LOADED'});
     expect(enzymeWrapper.find('#audioLoadingIndicator').exists()).toEqual(false);
     expect(enzymeWrapper.find('#audioLoadError').exists()).toEqual(false);
   });
 
   it('Does not show loading indicator if audio fully loaded', () => {
-    const {props, enzymeWrapper} = setup({audioLoaded: 'LOADED'});
+    const {enzymeWrapper} = setup({audioLoaded: 'LOADED'});
     expect(enzymeWrapper.find('#audioLoadingIndicator').exists()).toEqual(false);
   });
 });

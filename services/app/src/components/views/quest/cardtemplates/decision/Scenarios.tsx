@@ -1,3 +1,5 @@
+/* tslint:disable:object-literal-sort-keys */
+
 import {PersonaType, ScenarioType, SkillType} from './Types';
 
 function simpleScenario(persona: PersonaType, skill: SkillType, prelude: string, successText: string, successInstructions: string[], failureText: string, failureInstructions: string[], noneventText: string, retryText: string): ScenarioType {
@@ -15,7 +17,7 @@ function simpleScenario(persona: PersonaType, skill: SkillType, prelude: string,
 // TODO: Scenarios could use some kind of QDL-based conditional, e.g. you could have certain cases where scenarios only
 // happen when there's guaranteed to be more than one enemy, or if all other adventurers are dead, etc.
 // TODO: Rewards can be throttled up and down with difficulty by only showing e.g. 1 of 3 instructions if it's an easy check, or 2 if normal, or 3 if hard.
-const scenarios: ScenarioType[] = [
+const SCENARIOS: ScenarioType[] = [
   {
     persona: 'Light',
     skill: 'Athletics',
@@ -176,7 +178,7 @@ const scenarios: ScenarioType[] = [
 
 declare interface ScenarioMap {[skill: string]: {[persona: string]: ScenarioType[]}; }
 
-function buildMap(s: ScenarioType[]): ScenarioMap {
+function buildMap(scenarios: ScenarioType[]): ScenarioMap {
   const result: ScenarioMap = {};
   for (const s of scenarios) {
     if (!result[s.skill]) {
@@ -190,5 +192,5 @@ function buildMap(s: ScenarioType[]): ScenarioMap {
   return result;
 }
 
-const map = buildMap(scenarios);
+const map = buildMap(SCENARIOS);
 export default map;

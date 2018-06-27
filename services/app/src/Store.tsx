@@ -4,8 +4,6 @@ import {getMultiplayerClient} from './Multiplayer';
 import expeditionApp from './reducers/CombinedReducers';
 import {AppStateWithHistory} from './reducers/StateTypes';
 
-// For dev tools extension
-declare const window: any;
 declare const require: any;
 declare const module: any;
 

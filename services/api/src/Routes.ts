@@ -20,19 +20,19 @@ export function installRoutes(db: Database, router: express.Router) {
   router.use(oauth2Template);
 
   const publishLimiter = new RateLimit({
-    windowMs: 60 * 1000, // 1 minute window
     delayAfter: 2, // begin slowing down responses after the second request
     delayMs: 3 * 1000, // slow down subsequent responses by 3 seconds per request
     max: 5, // start blocking after 5 requests
     message: 'Publishing too frequently. Please wait 1 minute and then try again',
+    windowMs: 60 * 1000, // 1 minute window
   });
 
   const sessionLimiter = new RateLimit({
-    windowMs: 60 * 1000, // 1 minute window
     delayAfter: 4,     // begin slowing down responses after the fourth request
     delayMs: 3 * 1000,   // slow down subsequent responses by 3 seconds per request
     max: 5,            // start blocking after 5 requests
     message: 'Creating sessions too frequently. Please wait 1 minute and then try again',
+    windowMs: 60 * 1000, // 1 minute window
   });
 
   // We store auth details in res.locals. If there's no stored data there, the user is not logged in.

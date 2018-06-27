@@ -10,9 +10,9 @@ import Multiplayer, {MIN_SECRET_LENGTH, MultiplayerDispatchProps, MultiplayerSta
 
 const mapStateToProps = (state: AppState, ownProps: MultiplayerStateProps): MultiplayerStateProps => {
   return {
+    multiplayer: state.multiplayer,
     phase: ownProps.phase,
     user: state.user,
-    multiplayer: state.multiplayer,
   };
 };
 
@@ -25,15 +25,15 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Multi
       }
       return dispatch(multiplayerConnect(user, secret.toUpperCase()));
     },
-    onReconnect: (user: UserState, id: SessionID, secret: string) => {
-      dispatch(multiplayerConnect(user, secret.toUpperCase()));
+    onContinue: () => {
+      logEvent('MULTIPLAYER_session_start', {});
+      dispatch(toCard({name: 'FEATURED_QUESTS'}));
     },
     onNewSessionRequest: (user: UserState) => {
       return dispatch(multiplayerNewSession(user));
     },
-    onContinue: () => {
-      logEvent('MULTIPLAYER_session_start', {});
-      dispatch(toCard({name: 'FEATURED_QUESTS'}));
+    onReconnect: (user: UserState, id: SessionID, secret: string) => {
+      dispatch(multiplayerConnect(user, secret.toUpperCase()));
     },
   };
 };

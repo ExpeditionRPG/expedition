@@ -17,12 +17,12 @@ const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
 export function send(to: string[], subject: string, htmlMessage: string): Bluebird<any> {
   // for plaintext version, turn end of paragraphs into double newlines
   const mailOptions = {
-    from: '"Expedition" <expedition@fabricate.io>', // sender address
-    to: to.join(','),
     bcc: 'todd@fabricate.io',
+    from: '"Expedition" <expedition@fabricate.io>', // sender address
+    html: htmlMessage, // html body
     subject,
     text: htmlMessage.replace(/<\/p>/g, '\r\n\r\n').replace(HTML_REGEX, ''), // plaintext body
-    html: htmlMessage, // html body
+    to: to.join(','),
   };
 
   if (Config.get('NODE_ENV') === 'dev') {

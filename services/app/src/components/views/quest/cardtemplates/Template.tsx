@@ -67,7 +67,7 @@ export function templateScope() {
 }
 
 export function defaultContext(): TemplateContext {
-  const populateScopeFn = function() {
+  const populateScopeFn = () => {
     return {
       contentSets(): {[content: string]: boolean} {
         const settings = getStore().getState().settings;
@@ -88,13 +88,13 @@ export function defaultContext(): TemplateContext {
   // New endpoints should be added carefully b/c we'll have to support them.
   // Behind-the-scenes data can be added to the context outside of scope
   const newContext: TemplateContext = {
+    _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
+    path: ([] as any),
     scope: {
       _: populateScopeFn(),
     },
-    views: {},
     templates: {},
-    path: ([] as any),
-    _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
+    views: {},
   };
 
   for (const k of Object.keys(newContext.scope._)) {

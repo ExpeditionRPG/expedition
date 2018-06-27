@@ -21,9 +21,12 @@ export function loadAudioLocalFile(context: AudioContext, url: string, callback:
 }
 
 export function audioSet(delta: Partial<AudioState>): AudioSetAction {
-  return {type: 'AUDIO_SET', delta: {
-    sfx: null, // default to not playing a sfx
-    timestamp: Date.now(),
-    ...delta,
-  }} as AudioSetAction;
+  return {
+    delta: {
+      sfx: null, // default to not playing a sfx
+      timestamp: Date.now(),
+      ...delta,
+    },
+    type: 'AUDIO_SET',
+  } as AudioSetAction;
 }

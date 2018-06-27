@@ -19,9 +19,9 @@ export default class TouchIndicator extends React.Component<TouchIndicatorProps,
         radius: 36,
       },
       ring: {
+        color: '#FFFFFF',
         radius: 44,
         width: 5,
-        color: '#FFFFFF',
       },
     };
   }

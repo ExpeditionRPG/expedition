@@ -14,10 +14,10 @@ function setup(props: Partial<CompositorProps>) {
   props = {
     card: initialCardState,
     quest: initialQuestState,
-    theme: 'light',
-    transition: 'instant',
     settings: initialSettings,
     snackbar: initialSnackbar,
+    theme: 'light',
+    transition: 'instant',
     ...props,
   };
   const wrapper = render(

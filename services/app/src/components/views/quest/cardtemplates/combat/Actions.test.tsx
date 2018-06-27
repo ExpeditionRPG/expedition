@@ -28,14 +28,14 @@ const TEST_RP = {
   ...initialMultiplayer,
   clientStatus: {
     1: {
-      type: 'STATUS',
       connected: true,
       numPlayers: 3,
+      type: 'STATUS',
     },
     2: {
-      type: 'STATUS',
       connected: true,
       numPlayers: 2,
+      type: 'STATUS',
     },
   },
 } as MultiplayerState;
@@ -43,9 +43,8 @@ const TEST_RP = {
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
 describe('Combat actions', () => {
-  const baseNode = Action(initCombat, {settings: TEST_SETTINGS}).execute({node: TEST_NODE.clone()})[1].node;
-
   const newCombatNode = () => {
+    const baseNode = Action(initCombat, {settings: TEST_SETTINGS}).execute({node: TEST_NODE.clone()})[1].node;
     return baseNode.clone();
   };
 
@@ -66,11 +65,11 @@ describe('Combat actions', () => {
 
     it('triggers nav to combat start', () => {
       expect(actions[2]).toEqual(jasmine.objectContaining({
-        type: 'NAVIGATE',
         to: jasmine.objectContaining({
           name: 'QUEST_CARD',
           phase: 'DRAW_ENEMIES',
         }),
+        type: 'NAVIGATE',
       }));
     });
 
@@ -79,14 +78,14 @@ describe('Combat actions', () => {
       // Known enemies' tier is parsed from constants.
       expect(actions[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
         custom: false,
-        roundCount: 0,
-        tier: 9,
-        numAliveAdventurers: 3,
         enemies: [
           {name: 'Test', tier: 1},
           {name: 'Lich', tier: 4, class: 'Undead'},
           {name: 'Lich', tier: 4, class: 'Undead'},
         ],
+        numAliveAdventurers: 3,
+        roundCount: 0,
+        tier: 9,
       }));
     });
   });
@@ -148,30 +147,34 @@ describe('Combat actions', () => {
   });
 
   describe('handleCombatTimerStop', () => {
-    const store = newMockStore({});
-    store.dispatch(handleCombatTimerStop({node: newCombatNode(), settings: TEST_SETTINGS, elapsedMillis: 1000, seed: ''}));
-    const actions = store.getActions();
+    const newStore = (overrides: any) => {
+      const store = newMockStore({});
+      store.dispatch(handleCombatTimerStop({
+        elapsedMillis: 1000,
+        node: newCombatNode(),
+        seed: '',
+        settings: TEST_SETTINGS,
+        ...overrides,
+      }));
+      const actions = store.getActions();
+      return {actions, store};
+    };
 
     it('randomly assigns damage', () => {
+      const {actions} = newStore({});
       expect(actions[3].node.ctx.templates.combat.mostRecentAttack.damage).toBeDefined();
     });
     it('generates rolls according to player count', () => {
+      const {actions} = newStore({});
       expect(actions[3].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
     });
     it('increments the round counter', () => {
+      const {actions} = newStore({});
       expect(actions[3].node.ctx.templates.combat.roundCount).toEqual(1);
     });
 
     it('only generates rolls for local, not remote, players', () => {
-      const store = newMockStore({});
-      store.dispatch(handleCombatTimerStop({
-        node: newCombatNode(),
-        settings: TEST_SETTINGS,
-        elapsedMillis: 1000,
-        seed: '',
-        rp: TEST_RP,
-      }));
-      const actions = store.getActions();
+      const {actions} = newStore({ rp: TEST_RP });
       expect(actions[3].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
     });
   });
@@ -216,12 +219,12 @@ describe('Combat actions', () => {
     it('does not level up if multiplayer count exceeds tier sum', () => {
       const store = newMockStore({settings: TEST_SETTINGS});
       store.dispatch(handleCombatEnd({
+        maxTier: 4,
         node: newCombatNode(),
+        rp: TEST_RP,
+        seed: '',
         settings: TEST_SETTINGS,
         victory: true,
-        maxTier: 4,
-        seed: '',
-        rp: TEST_RP,
       }));
 
       expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(false);
@@ -318,69 +321,64 @@ describe('Combat actions', () => {
 
   describe('midCombatChoice', () => {
     // Setup combat state where we've initialized combat and just finished a timed round.
-
-    let baseNode = new ParserNode(cheerio.load(`<quest>
-      <roleplay>Text</roleplay>
-      <combat id="c1">
-        <e>Test</e>
-        <event on="win"><roleplay>win card</roleplay></event>
-        <event on="lose"><roleplay>lose card</roleplay></event>
-        <event on="round"><roleplay>
-          <choice><trigger>win</trigger></choice>
-          <choice><trigger>lose</trigger></choice>
-          <choice><trigger>end</trigger></choice>
-          <choice><roleplay id="rp2">rp2</roleplay></choice>
-          <choice><trigger>goto outside</trigger></choice>
-          <choice><trigger>goto rp2</trigger></choice>
-        </roleplay></event>
-      </combat>
-      <roleplay id="outside">Outside Roleplay</roleplay>
-    </quest>`)('#c1'), defaultContext());
-    {
+    const newMidCombatNode = () => {
+      let baseNode = new ParserNode(cheerio.load(`<quest>
+        <roleplay>Text</roleplay>
+        <combat id="c1">
+          <e>Test</e>
+          <event on="win"><roleplay>win card</roleplay></event>
+          <event on="lose"><roleplay>lose card</roleplay></event>
+          <event on="round"><roleplay>
+            <choice><trigger>win</trigger></choice>
+            <choice><trigger>lose</trigger></choice>
+            <choice><trigger>end</trigger></choice>
+            <choice><roleplay id="rp2">rp2</roleplay></choice>
+            <choice><trigger>goto outside</trigger></choice>
+            <choice><trigger>goto rp2</trigger></choice>
+          </roleplay></event>
+        </combat>
+        <roleplay id="outside">Outside Roleplay</roleplay>
+      </quest>`)('#c1'), defaultContext());
       baseNode = Action(initCombat as any).execute({node: baseNode, settings: TEST_SETTINGS})[1].node;
       baseNode = Action(handleResolvePhase).execute({node: baseNode})[0].node;
-    }
-
-    const newCombatNode = () => {
       return baseNode.clone();
     };
 
     it('goes to win screen on **win**', () => {
-      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newCombatNode(), index: 0, maxTier: 0, seed: ''});
+      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 0, maxTier: 0, seed: ''});
       expect(actions[2].to.phase).toEqual('VICTORY');
     });
 
     it('goes to lose screen on **lose**', () => {
-      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newCombatNode(), index: 1, maxTier: 0, seed: ''});
+      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 1, maxTier: 0, seed: ''});
       expect(actions[2].to.phase).toEqual('DEFEAT');
     });
 
     it('ends quest on **end**', () => {
-      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newCombatNode(), index: 2, maxTier: 0, seed: ''});
+      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 2, maxTier: 0, seed: ''});
       expect(actions[1].to.name).toEqual('QUEST_END');
     });
 
     it('goes to next round when pnode.getNext() falls outside of combat scope', () => {
-      const node = newCombatNode();
-      const rp2 = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node, index: 3, maxTier: 0, seed: ''})[1].node;
+      const rp2 = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 3, maxTier: 0, seed: ''})[1].node;
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: rp2, index: 0, maxTier: 0, seed: ''});
       expect(actions[2].to.phase).toEqual('RESOLVE_ABILITIES');
     });
 
     it('handles gotos that point to outside of combat', () => {
-      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newCombatNode(), index: 4, maxTier: 0, seed: ''});
+      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 4, maxTier: 0, seed: ''});
       expect(actions[2].to.phase).toEqual('ROLEPLAY');
       expect(actions[1].node.elem.text()).toEqual('Outside Roleplay');
     });
 
     it('handles GOTOs that point to other roleplaying inside of the same combat', () => {
-      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newCombatNode(), index: 5, maxTier: 0, seed: ''});
+      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 5, maxTier: 0, seed: ''});
       expect(actions[2].to.phase).toEqual('MID_COMBAT_ROLEPLAY');
       expect(actions[1].node.elem.text()).toEqual('rp2');
     });
 
     it('renders as combat for RPs inside of same combat', () => {
-      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newCombatNode(), index: 3, maxTier: 0, seed: ''});
+      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 3, maxTier: 0, seed: ''});
       expect(actions[2].to.phase).toEqual('MID_COMBAT_ROLEPLAY');
     });
   });

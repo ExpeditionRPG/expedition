@@ -7,9 +7,9 @@ export const PERSONA_TYPES: PersonaType[] = ['Light', 'Dark'];
 
 export interface DecisionType {
   difficulty: DifficultyType|null;
+  numAttempts: number;
   persona: PersonaType|null;
   skill: SkillType;
-  numAttempts: number;
 }
 export const EMPTY_DECISION: DecisionType = {difficulty: null, persona: null, skill: 'Athletics', numAttempts: 0};
 
@@ -18,38 +18,34 @@ export interface OutcomeType {type: 'SUCCESS'|'FAILURE'|'RETRY'|'INTERRUPTED'; t
 export const EMPTY_OUTCOME: OutcomeType = {type: 'RETRY', text: '', instructions: []};
 
 export interface ScenarioType {
-  persona: PersonaType;
-  skill: SkillType;
-
-  prelude: string;
-
-  success: OutcomeType;
   failure: OutcomeType;
   nonevent: OutcomeType;
-
-  // If null, a generic "motivational" snippet is shown.
-  retry: OutcomeType|null;
+  persona: PersonaType;
+  prelude: string;
+  retry: OutcomeType|null; // If null, a generic "motivational" snippet is shown.
+  skill: SkillType;
+  success: OutcomeType;
 }
 export const EMPTY_SCENARIO: ScenarioType = {
-  persona: 'Light',
-  skill: 'Athletics',
-  prelude: '',
-  success: EMPTY_OUTCOME,
   failure: EMPTY_OUTCOME,
   nonevent: EMPTY_OUTCOME,
+  persona: 'Light',
+  prelude: '',
   retry: null,
+  skill: 'Athletics',
+  success: EMPTY_OUTCOME,
 };
 
 export type DecisionPhase = 'PREPARE_DECISION' | 'DECISION_TIMER' | 'RESOLVE_DECISION';
 export interface DecisionState {
   choice: DecisionType;
-  scenario: ScenarioType;
   numAttempts: number;
   outcomes: OutcomeType[];
+  scenario: ScenarioType;
 }
 export const EMPTY_DECISION_STATE: DecisionState = {
   choice: EMPTY_DECISION,
-  scenario: EMPTY_SCENARIO,
   numAttempts: 0,
   outcomes: [],
+  scenario: EMPTY_SCENARIO,
 };

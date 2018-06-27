@@ -34,7 +34,7 @@ export function getLogBuffer(): Readonly<string[]> {
 }
 
 export function setupLogging(console: any) {
-  const logHook = function(f: Function, objects: any[]) {
+  const logHook = (f: (args?: any) => void, objects: any[]) => {
     try {
       logToBuffer(objects.map((o: any) => {
         if (o === null) {
@@ -79,8 +79,8 @@ export function logEvent(name: string, argsInput: {[key: string]: any}): void {
   const ga = getGA();
   if (ga) {
     ga.event({
-      category: name,
       action: argsInput.action || '',
+      category: name,
       label: argsInput.label || '',
       value: argsInput.value || undefined,
     });

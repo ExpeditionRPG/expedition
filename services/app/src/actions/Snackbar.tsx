@@ -9,16 +9,16 @@ export function closeSnackbar(): SnackbarCloseAction {
 export function openSnackbar(message: string|Error): SnackbarOpenAction {
   if (message instanceof Error) {
     return {
-      type: 'SNACKBAR_OPEN',
-      message: 'Error! Please send feedback.',
-      actionLabel: 'Report',
       action: () => {
         return getStore().dispatch(setDialog('REPORT_ERROR', message.toString()));
       },
+      actionLabel: 'Report',
+      message: 'Error! Please send feedback.',
+      type: 'SNACKBAR_OPEN',
     };
   }
   return {
-    type: 'SNACKBAR_OPEN',
     message,
+    type: 'SNACKBAR_OPEN',
   };
 }

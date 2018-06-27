@@ -19,26 +19,25 @@ const RECONNECT_DELAY_BASE_MS = 200;
 
 export interface MultiplayerCounters {
   [field: string]: number;
-
-  sessionCount: number;
-  disconnectCount: number;
-  reconnectCount: number;
   compactionEvents: number;
-  receivedEvents: number;
+  disconnectCount: number;
   errorEvents: number;
   failedTransactions: number;
+  receivedEvents: number;
+  reconnectCount: number;
+  sessionCount: number;
   successfulTransactions: number;
 }
 
 export const initialMultiplayerCounters = {
-  sessionCount: 0,
-  disconnectCount: 0,
-  reconnectCount: 0,
   compactionEvents: 0,
-  receivedEvents: 0,
+  disconnectCount: 0,
   errorEvents: 0,
-  successfulTransactions: 0,
   failedTransactions: 0,
+  receivedEvents: 0,
+  reconnectCount: 0,
+  sessionCount: 0,
+  successfulTransactions: 0,
 };
 
 function isSyncing(): boolean {
@@ -52,7 +51,6 @@ function getCommitID(): number {
 // This is the base layer of the multiplayer network framework
 export class MultiplayerClient extends ClientBase {
   private session: WebSocket;
-  private sessionClientIDs: string[];
   private reconnectAttempts: number;
   private sessionID: string;
   private secret: string;
@@ -155,10 +153,10 @@ export class MultiplayerClient extends ClientBase {
     switch (e.event.type) {
       case 'STATUS':
         dispatch({
-          type: 'MULTIPLAYER_CLIENT_STATUS',
           client: e.client,
           instance: e.instance,
           status: e.event,
+          type: 'MULTIPLAYER_CLIENT_STATUS',
         });
         break;
       case 'INTERACTION':
@@ -211,10 +209,10 @@ export class MultiplayerClient extends ClientBase {
         return result;
       case 'MULTI_EVENT':
         let chain = Promise.resolve();
-        for (let i = 0; i < e.event.events.length; i++) {
+        for (const event of e.event.events) {
           let parsed: MultiplayerEvent;
           try {
-            parsed = JSON.parse(e.event.events[i]);
+            parsed = JSON.parse(event);
             if (!parsed.id) {
               throw new Error('MULTI_EVENT without ID: ' + parsed);
             }
@@ -227,10 +225,10 @@ export class MultiplayerClient extends ClientBase {
           // This constructs a chain of promises out of the calls to MULTI_EVENT so that async actions like fetchQuestXML are
           // allowed to complete before the next action is processed.
           chain = chain.then((_: any) => {
-            const result: any = this.routeEvent(parsed, dispatch);
-            if (result && typeof(result) === 'object' && result.then) {
+            const route: any = this.routeEvent(parsed, dispatch);
+            if (route && typeof(route) === 'object' && route.then) {
               console.log('Chaining promise from event: ', parsed);
-              return result;
+              return route;
             }
             return Promise.resolve();
           });
@@ -261,9 +259,9 @@ export class MultiplayerClient extends ClientBase {
     console.log('INFLIGHT_REJECT #' + n + ': ' + error);
     this.localEventCounter = Math.min(this.localEventCounter, Math.max(getCommitID(), n - 1));
     getStore().dispatch({
-      type: 'INFLIGHT_REJECT',
-      id: n,
       error,
+      id: n,
+      type: 'INFLIGHT_REJECT',
     });
   }
 
@@ -283,11 +281,11 @@ export class MultiplayerClient extends ClientBase {
     const elem = (state.quest && state.quest.node && state.quest.node.elem);
     const selfStatus = (state.multiplayer && state.multiplayer.clientStatus && state.multiplayer.clientStatus[this.getClientKey()]);
     let event: StatusEvent = {
-      type: 'STATUS',
       connected: true,
-      numPlayers: (state.settings && state.settings.numPlayers) || 1,
-      line: (elem && parseInt(elem.attr('data-line'), 10)),
       lastEventID: state.commitID,
+      line: (elem && parseInt(elem.attr('data-line'), 10)),
+      numPlayers: (state.settings && state.settings.numPlayers) || 1,
+      type: 'STATUS',
       waitingOn: (selfStatus && selfStatus.waitingOn),
     };
     if (partialStatus) {
@@ -297,16 +295,16 @@ export class MultiplayerClient extends ClientBase {
     // Send remote and also publish locally
     this.sendEvent(event);
     store.dispatch({
-      type: 'MULTIPLAYER_CLIENT_STATUS',
       client: this.id,
       instance: this.instance,
       status: event,
+      type: 'MULTIPLAYER_CLIENT_STATUS',
     });
     this.publish({
-      id: null,
       client: this.id,
-      instance: this.instance,
       event,
+      id: null,
+      instance: this.instance,
     });
 
     this.lastStatusMs = now;
@@ -343,7 +341,6 @@ export class MultiplayerClient extends ClientBase {
     if (this.isConnected()) {
       this.disconnect();
     }
-    this.sessionClientIDs = [this.id];
 
     this.session = new WebSocket(`${MULTIPLAYER_SETTINGS.websocketSession}/${sessionID}?client=${this.id}&instance=${this.instance}&secret=${secret}`);
 
@@ -374,13 +371,13 @@ export class MultiplayerClient extends ClientBase {
 
       // Notify local listeners that we've disconnected
       this.publish({
-        id: null,
         client: this.id,
-        instance: this.instance,
         event: {
-          type: 'STATUS',
           connected: false,
+          type: 'STATUS',
         },
+        id: null,
+        instance: this.instance,
       });
     };
 

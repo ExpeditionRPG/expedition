@@ -1,24 +1,9 @@
-import configureStore  from 'redux-mock-store';
 import {toCard} from '../actions/Card';
-import {NAVIGATION_DEBOUNCE_MS}  from '../Constants';
-import {MultiplayerClient} from '../Multiplayer';
+import {NAVIGATION_DEBOUNCE_MS} from '../Constants';
 import {Reducer} from '../Testing';
 import {card} from './Card';
 
 describe('Card reducer', () => {
-  let client: any;
-  let dispatched: any;
-  beforeEach(() => {
-    client = new MultiplayerClient();
-    const store = configureStore([client.createActionMiddleware()])({});
-    dispatched = (a: any) => {
-      store.dispatch(a);
-      const result = store.getActions();
-      store.clearActions();
-      return result[result.length - 1];
-    };
-  });
-
   it('Defaults to splash card', () => {
     expect(card(undefined, {type: 'NO_OP'})).toEqual(jasmine.objectContaining({name: 'SPLASH_CARD'} as any));
   });

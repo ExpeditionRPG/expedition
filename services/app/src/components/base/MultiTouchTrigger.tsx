@@ -10,7 +10,7 @@ interface MultiTouchTriggerProps extends React.Props<any> {
 interface MultiTouchTriggerState {
   clientInputs: {[client: string]: {[id: string]: number[]}};
   lastTouchSum: number;
-  mouseDown: Boolean;
+  mouseDown: boolean;
 }
 export default class MultiTouchTrigger extends React.Component<MultiTouchTriggerProps, MultiTouchTriggerState> {
 

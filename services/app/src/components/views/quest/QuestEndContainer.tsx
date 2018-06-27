@@ -31,10 +31,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
         subject: 'Expedition: The Roleplaying Card Game',
         url: 'https://ExpeditionGame.com',
       };
-      const onSuccess = function(result: any) {
+      const onSuccess = (result: any) => {
         logEvent('share', { ...quest.details, label: result.app });
       };
-      const onError = function(msg: string) {
+      const onError = (msg: string) => {
         logEvent('share_error', { label: msg });
       };
       window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
@@ -46,7 +46,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       dispatch(exitQuest({}));
       dispatch(toPrevious({name: 'FEATURED_QUESTS'}));
     },
-    onTip: (checkoutError: string|null, amount: number, quest: QuestState, settings: SettingsType, user: UserState, anonymous: boolean, text: string, rating: number|null) => {
+    onTip: (checkoutError: string|null, amount: number, quest: QuestState, settings: SettingsType, anonymous: boolean, text: string, rating: number|null) => {
       logEvent('tip_start', { value: amount, action: quest.details.title, label: quest.details.id });
       dispatch(ensureLogin())
         .then((user: UserState) => {

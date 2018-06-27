@@ -27,11 +27,11 @@ export const search = remoteify(function search(a: {search: SearchSettings, sett
   dispatch(toCard({name: 'SEARCH_CARD', phase: dispatchPhase as CardPhase}));
   dispatch(getSearchResults(params, (quests: QuestDetails[], response: any) => {
     dispatch({
-      type: 'SEARCH_RESPONSE',
-      quests,
       nextToken: response.nextToken,
+      quests,
       receivedAt: response.receivedAt,
       search: params,
+      type: 'SEARCH_RESPONSE',
     } as SearchResponseAction);
   }));
 
@@ -49,11 +49,11 @@ export const searchAndPlay = remoteify(function searchAndPlay(id: string, dispat
   } else {
     dispatch(getSearchResults(params, (quests: QuestDetails[], response: any) => {
       dispatch({
-        type: 'SEARCH_RESPONSE',
-        quests,
         nextToken: response.nextToken,
+        quests,
         receivedAt: response.receivedAt,
         search: {}, // Don't specify search params because this one's weird and uses ID
+        type: 'SEARCH_RESPONSE',
       } as SearchResponseAction);
       if (quests.length === 0) {
         // TODO better alert / failure UI (dialog)

@@ -11,9 +11,9 @@ export function snackbar(state: SnackbarState = initialSnackbarState, action: Re
     case 'SNACKBAR_SET':
       const setAction = (action as SnackbarSetAction);
       return {
-        open: setAction.open,
-        message: setAction.message,
         actions: setAction.actions,
+        message: setAction.message,
+        open: setAction.open,
         persist: setAction.persist,
       };
     default:

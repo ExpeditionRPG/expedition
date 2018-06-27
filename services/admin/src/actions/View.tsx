@@ -12,20 +12,20 @@ export function queryView(view: ViewType, filter?: string, order?: {column: stri
     switch (view) {
       case 'USERS':
       dispatch(usersQuery({
-        substring: filter,
         order: order || {column: 'last_login', ascending: false},
+        substring: filter,
       }));
       break;
       case 'QUESTS':
       dispatch(questsQuery({
-        substring: filter,
         order: order || {column: 'created', ascending: false},
+        substring: filter,
       }));
       break;
       case 'FEEDBACK':
       dispatch(feedbackQuery({
-        substring: filter,
         order: order || {column: 'created', ascending: true},
+        substring: filter,
       }));
       break;
       default:

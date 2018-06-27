@@ -1,4 +1,3 @@
-declare var cordova: any;
 declare var device: any;
 declare var ga: any;
 declare var gapi: any;
@@ -58,44 +57,38 @@ const refs = {
 };
 
 export function getDevicePlatform(): 'android' | 'ios' | 'web' {
-  const device = getDevice();
-
-  if (!device) {
-    return 'web';
-  }
-
-  const p = (device.platform || window.navigator.appVersion || '').toLowerCase();
-  if (/android/.test(p)) {
+  const p = (getDevice() || {}).platform;
+  const platform = (p || window.navigator.appVersion || '').toLowerCase();
+  if (/android/.test(platform)) {
     return 'android';
-  } else if (/iphone|ipad|ipod|ios/.test(p)) {
+  } else if (/iphone|ipad|ipod|ios/.test(platform)) {
     return 'ios';
-  } else {
-    return 'web';
   }
+  return 'web';
 }
 
 export function getPlatformDump(): string {
   return (window.navigator.platform || '') + ': ' + (window.navigator.userAgent || '') + ': ' + (window.navigator.cookieEnabled ? 'W/COOKIES' : 'NO COOKIES');
 }
 
-export function setWindow(win: ReactWindow) {
-  refs.window = win;
+export function setWindow(w: ReactWindow) {
+  refs.window = w;
 }
 
-export function setDocument(doc: ReactDocument) {
-  refs.document = doc;
+export function setDocument(d: ReactDocument) {
+  refs.document = d;
 }
 
-export function setDevice(device: any) {
-  refs.device = device;
+export function setDevice(d: any) {
+  refs.device = d;
 }
 
-export function setGA(ga: any) {
-  refs.ga = ga;
+export function setGA(g: any) {
+  refs.ga = g;
 }
 
-export function setNavigator(navigator: any) {
-  refs.navigator = navigator;
+export function setNavigator(n: any) {
+  refs.navigator = n;
 }
 
 export function getWindow(): ReactWindow {
@@ -165,10 +158,10 @@ export function getLocalStorage(): Storage {
       refs.localStorage = {
         clear: () => null,
         getItem: (s: string) => null,
-        setItem: () => null,
-        removeItem: () => null,
         key: (index: number|string) => null,
         length: 0,
+        removeItem: () => null,
+        setItem: () => null,
       } as Storage;
     }
     return refs.localStorage;

@@ -33,9 +33,9 @@ export class Filter extends React.Component<FilterProps, {filter: string, lastFi
   constructor(props: FilterProps) {
     super(props);
     this.state = {
+      debounce: null,
       filter: '',
       lastFilter: '',
-      debounce: null,
     };
   }
 
@@ -47,11 +47,11 @@ export class Filter extends React.Component<FilterProps, {filter: string, lastFi
       }
       this.props.onFilterUpdate(this.state.filter);
       this.setState({
-        lastFilter: this.state.filter,
         debounce: setTimeout(() => {
           this.setState({debounce: null});
           this.sendUpdate();
         }, FILTER_DEBOUNCE) as any as number,
+        lastFilter: this.state.filter,
       });
     }
   }
@@ -62,7 +62,11 @@ export class Filter extends React.Component<FilterProps, {filter: string, lastFi
 
   public render(): JSX.Element {
     return (
-      <TextField id="filter" value={this.state.filter} onChange={this.handleFilterChange.bind(this)} />
+      <TextField
+        id="filter"
+        value={this.state.filter}
+        onChange={this.handleFilterChange.bind(this)}
+      />
     );
   }
 }

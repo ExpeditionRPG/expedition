@@ -15,7 +15,6 @@ import {initQuest} from './Quest';
 import {openSnackbar} from './Snackbar';
 import {ensureLogin, userQuestsDelta} from './User';
 
-declare var window: any;
 declare var require: any;
 const cheerio = require('cheerio') as CheerioAPI;
 
@@ -24,7 +23,7 @@ const cheerio = require('cheerio') as CheerioAPI;
 export function fetchLocal(url: string) {
   return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest();
-    request.onload = function() {
+    request.onload = () => {
       resolve(request.response);
     };
     request.onerror = () => {
@@ -38,11 +37,11 @@ export function fetchLocal(url: string) {
 export function fetchUserQuests() {
   return (dispatch: Redux.Dispatch<any>) => {
     fetch(AUTH_SETTINGS.URL_BASE + '/user/quests', {
-      method: 'GET',
       credentials: 'include',
       headers: {
         'Content-Type': 'text/plain',
       },
+      method: 'GET',
     })
     .then(handleFetchErrors)
     .then((response: Response) => response.json())
@@ -94,19 +93,19 @@ export function logQuestPlay(a: {phase: 'start'|'end'}) {
       const state = getState();
       const quest = state.quest.details;
       const data = {
+        difficulty: state.settings.difficulty,
+        email: state.user.email,
+        name: state.user.name,
+        platform: getDevicePlatform(),
+        players: state.settings.numPlayers,
         questid: quest.id,
         questversion: quest.questversion,
         userid: state.user.id,
-        players: state.settings.numPlayers,
-        difficulty: state.settings.difficulty,
-        platform: getDevicePlatform(),
         version: getAppVersion(),
-        email: state.user.email,
-        name: state.user.name,
       };
       fetch(AUTH_SETTINGS.URL_BASE + '/analytics/quest/' + a.phase, {
-        method: 'POST',
         body: JSON.stringify(data),
+        method: 'POST',
       })
       .then(handleFetchErrors)
       .catch((error: Error) => {
@@ -129,8 +128,8 @@ export function logQuestPlay(a: {phase: 'start'|'end'}) {
 export function subscribe(a: {email: string}) {
   return (dispatch: Redux.Dispatch<any>) => {
     fetch(AUTH_SETTINGS.URL_BASE + '/user/subscribe', {
-      method: 'POST',
       body: JSON.stringify({email: a.email}),
+      method: 'POST',
     })
     .then(handleFetchErrors)
     .then((response: Response) => {
@@ -154,19 +153,19 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
     }
 
     let data: any = {
-      partition: a.quest.details.partition,
-      questid: a.quest.details.id,
-      userid: a.user.id,
-      players: a.settings.numPlayers,
+      anonymous: a.anonymous,
       difficulty: a.settings.difficulty,
-      platform: getDevicePlatform(),
-      platformDump: getPlatformDump(),
-      version: getAppVersion(),
       email: a.user.email,
       name: a.user.name,
+      partition: a.quest.details.partition,
+      platform: getDevicePlatform(),
+      platformDump: getPlatformDump(),
+      players: a.settings.numPlayers,
+      questid: a.quest.details.id,
       rating: a.rating,
       text: a.text,
-      anonymous: a.anonymous,
+      userid: a.user.id,
+      version: getAppVersion(),
     };
 
     // If we're not rating, we're providing other feedback.
@@ -178,9 +177,9 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
     dispatch(ensureLogin())
     .then((user: UserState) => {
       data = {...data,
-        userid: user.id,
         email: user.email,
         name: user.name,
+        userid: user.id,
       };
       return dispatch(postUserFeedback(a.type, data));
     });
@@ -197,45 +196,46 @@ export function handleFetchErrors(response: any) {
 function postUserFeedback(type: string, data: any) {
   return (dispatch: Redux.Dispatch<any>) => {
     fetch(AUTH_SETTINGS.URL_BASE + '/quest/feedback/' + type, {
-        method: 'POST',
-        body: JSON.stringify(data),
-      })
-      .then(handleFetchErrors)
-      .then((response: Response) => {
-        return response.text();
-      })
-      .then((response: string) => {
-        logEvent('user_feedback_' + type, { label: data.questid, value: data.rating });
-        dispatch(openSnackbar('Submission successful. Thank you!'));
-      }).catch((error: Error) => {
-        logEvent('user_feedback_' + type + '_err', { label: error });
-        dispatch(openSnackbar(Error('Error submitting review: ' + error.toString())));
-      });
+      body: JSON.stringify(data),
+      method: 'POST',
+    })
+    .then(handleFetchErrors)
+    .then((response: Response) => {
+      return response.text();
+    })
+    .then((response: string) => {
+      logEvent('user_feedback_' + type, { label: data.questid, value: data.rating });
+      dispatch(openSnackbar('Submission successful. Thank you!'));
+    })
+    .catch((error: Error) => {
+      logEvent('user_feedback_' + type + '_err', { label: error });
+      dispatch(openSnackbar(Error('Error submitting review: ' + error.toString())));
+    });
   };
 }
 
 export function logMultiplayerStats(user: UserState, quest: QuestDetails, stats: MultiplayerCounters): Promise<Response> {
   try {
     const data = {
+      console: getLogBuffer(),
+      data: stats,
+      email: user.email,
+      name: user.name,
+      platform: getDevicePlatform(),
       questid: quest.id,
       questversion: quest.questversion,
       userid: user.id,
-      platform: getDevicePlatform(),
       version: getAppVersion(),
-      email: user.email,
-      name: user.name,
-      data: stats,
-      console: getLogBuffer(),
     };
 
     return fetch(AUTH_SETTINGS.URL_BASE + '/analytics/multiplayer/stats', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      })
-      .then(handleFetchErrors)
-      .catch((error: Error) => {
-        logEvent('analytics_quest_err', { label: error });
-      });
+      body: JSON.stringify(data),
+      method: 'POST',
+    })
+    .then(handleFetchErrors)
+    .catch((error: Error) => {
+      logEvent('analytics_quest_err', { label: error });
+    });
   } catch (e) {
     console.error('Failed to log multiplayer stats');
     return Promise.resolve(new Response(''));

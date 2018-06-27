@@ -18,12 +18,21 @@
     "no-switch-case-fall-through": true,
     "space-before-function-paren": [true, "never"],
     "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
+    "no-shadowed-variable": [
+      true,
+      {
+        "function": false
+      }
+    ],
     "member-ordering": false,
     "interface-name": false,
     "no-var-requires": false,
     "max-line-length": false,
     "no-console": false,
-    "max-classes-per-file": false
+    "max-classes-per-file": false,
+    "no-empty-interface": false,
+    "no-unsafe-finally": false,
+    "object-literal-sort-keys": false
   },
   "linterOptions": {
     "exclude": [

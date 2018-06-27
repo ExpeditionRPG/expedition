@@ -6,11 +6,11 @@ import {getStore} from '../Store';
 import {NavigateAction, remoteify} from './ActionTypes';
 
 interface ToCardArgs {
-  name: CardName;
-  phase?: CardPhase;
-  overrideDebounce?: boolean;
-  noHistory?: boolean;
   keySuffix?: string;
+  name: CardName;
+  noHistory?: boolean;
+  overrideDebounce?: boolean;
+  phase?: CardPhase;
 }
 export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch: Redux.Dispatch<any>, getState?: () => AppStateWithHistory): ToCardArgs {
   const nav = getNavigator();
@@ -45,24 +45,22 @@ export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch: Redux.D
 });
 
 interface ToPreviousArgs {
+  before?: boolean;
   name?: CardName;
   phase?: CardPhase;
-  before?: boolean;
   skip?: Array<{name: CardName, phase: CardPhase}>;
 }
 export const toPrevious = remoteify(function toPrevious(a: ToPreviousArgs, dispatch: Redux.Dispatch<any>): ToPreviousArgs {
-  const result = {
-    type: 'RETURN',
-    to: {
-      name: a.name,
-      ts: Date.now(),
-      phase: a.phase,
-    },
+  dispatch({
     before: Boolean(a.before),
     skip: a.skip,
-  };
-
-  dispatch(result);
+    to: {
+      name: a.name,
+      phase: a.phase,
+      ts: Date.now(),
+    },
+    type: 'RETURN',
+  });
 
   return a;
 });

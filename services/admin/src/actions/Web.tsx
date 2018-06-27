@@ -16,7 +16,7 @@ import {QueryErrorAction, UpdateFeedbackAction, UpdateQuestAction, UpdateUserAct
 
 function maybeParse(r: Response) {
   if (!r.ok) {
-    return r.json().then((r: any) => {throw Error(r.error || 'Server Error'); });
+    return r.json().then((e: any) => { throw Error(e.error || 'Server Error'); });
   }
   return r.json();
 }
@@ -24,12 +24,10 @@ function maybeParse(r: Response) {
 export function feedbackQuery(q: FeedbackQuery) {
   return (dispatch: Redux.Dispatch<any>) => {
     fetch(authSettings.urlBase + '/admin/feedback/query', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
       body: JSON.stringify(q),
+      credentials: 'include',
+      headers: { 'Content-Type': 'text/plain' },
+      method: 'POST',
     })
     .then((response: Response) => {
       return maybeParse(response);
@@ -45,12 +43,10 @@ export function feedbackQuery(q: FeedbackQuery) {
 export function questsQuery(q: QuestQuery) {
   return (dispatch: Redux.Dispatch<any>) => {
     fetch(authSettings.urlBase + '/admin/quest/query', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
       body: JSON.stringify(q),
+      credentials: 'include',
+      headers: { 'Content-Type': 'text/plain' },
+      method: 'POST',
     })
     .then((response: Response) => {
       return maybeParse(response);
@@ -66,19 +62,20 @@ export function questsQuery(q: QuestQuery) {
 export function usersQuery(q: UserQuery) {
   return (dispatch: Redux.Dispatch<any>) => {
     fetch(authSettings.urlBase + '/admin/user/query', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
       body: JSON.stringify(q),
+      credentials: 'include',
+      headers: { 'Content-Type': 'text/plain' },
+      method: 'POST',
     })
     .then((response: Response) => {
       return maybeParse(response);
     }).then((entries: UserEntry[]) => {
-      dispatch({type: 'SET_VIEW_USERS', entries: entries.map((e: UserEntry) => {
-        return {...e, last_login: new Date(e.last_login.toString())};
-      })});
+      dispatch({
+        entries: entries.map((e: UserEntry) => {
+          return {...e, last_login: new Date(e.last_login.toString())};
+        }),
+        type: 'SET_VIEW_USERS',
+      });
     }).catch((error: Error) => {
       console.error('Request failed', error);
       dispatch({type: 'QUERY_ERROR', view: 'USERS', error} as QueryErrorAction);
@@ -89,12 +86,10 @@ export function usersQuery(q: UserQuery) {
 export function mutateFeedback(m: FeedbackMutation) {
   return (dispatch: Redux.Dispatch<any>) => {
     fetch(authSettings.urlBase + '/admin/feedback/modify', {
-       method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
       body: JSON.stringify(m),
+      credentials: 'include',
+      headers: { 'Content-Type': 'text/plain' },
+      method: 'POST',
     })
     .then((response: Response) => {
       return maybeParse(response);
@@ -114,12 +109,10 @@ export function mutateFeedback(m: FeedbackMutation) {
 export function mutateQuest(m: QuestMutation) {
   return (dispatch: Redux.Dispatch<any>) => {
     fetch(authSettings.urlBase + '/admin/quest/modify', {
-       method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
       body: JSON.stringify(m),
+      credentials: 'include',
+      headers: { 'Content-Type': 'text/plain' },
+      method: 'POST',
     })
     .then((response: Response) => {
       return maybeParse(response);
@@ -139,12 +132,10 @@ export function mutateQuest(m: QuestMutation) {
 export function mutateUser(m: UserMutation) {
   return (dispatch: Redux.Dispatch<any>) => {
     fetch(authSettings.urlBase + '/admin/user/modify', {
-       method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
       body: JSON.stringify(m),
+      credentials: 'include',
+      headers: { 'Content-Type': 'text/plain' },
+      method: 'POST',
     })
     .then((response: Response) => {
       return maybeParse(response);

@@ -21,7 +21,7 @@ export interface QuestEndStateProps {
 export interface QuestEndDispatchProps {
   onShare: (quest: QuestState) => void;
   onSubmit: (quest: QuestState, settings: SettingsType, user: UserState, anonymous: boolean, text: string, rating: number|null) => void;
-  onTip: (checkoutError: string|null, amount: number, quest: QuestState, settings: SettingsType, user: UserState, anonymous: boolean, text: string, rating: number|null) => void;
+  onTip: (checkoutError: string|null, amount: number, quest: QuestState, settings: SettingsType, anonymous: boolean, text: string, rating: number|null) => void;
 }
 
 export interface QuestEndProps extends QuestEndStateProps, QuestEndDispatchProps {}
@@ -48,7 +48,7 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
     }
     const tips = [1, 3, 5].map((tip: number) => {
       return (
-        <Button key={tip} onClick={() => this.props.onTip(checkoutError, tip, this.props.quest, this.props.settings, this.props.user, this.state.anonymous, this.state.text, this.state.rating)}>
+        <Button key={tip} onClick={() => this.props.onTip(checkoutError, tip, this.props.quest, this.props.settings, this.state.anonymous, this.state.text, this.state.rating)}>
           ${tip}
         </Button>
       );

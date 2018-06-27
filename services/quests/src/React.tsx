@@ -21,15 +21,18 @@ const Typo: any = require('typo-js');
 // This is necessary to prevent compiler errors until/unless we fix the rest of
 // the repo to reference custom-defined action types (similar to how redux-thunk does things)
 // TODO: Fix redux types
+/* tslint:disable */
 export type ThunkAction<R, S = {}, E = {}, A extends Redux.Action<any> = Redux.AnyAction> = (
   dispatch: Redux.Dispatch<A>,
   getState: () => S,
   extraArgument: E
 ) => R;
 declare module 'redux' {
-  export type Dispatch<A extends Redux.Action<any> = Redux.AnyAction> =
-    <R, E>(asyncAction: ThunkAction<R, {}, E, A>) => R;
+  export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {
+    <R, E>(asyncAction: ThunkAction<R, {}, E, A>): R;
+  }
 }
+/* tslint:enable */
 
 window.onerror = (message: string, source: string, line: number) => {
   console.error(message, source, line);

@@ -85,20 +85,20 @@ describe('handlers', () => {
         .then((tdb) => {
           db = tdb;
           const query = {
-            partition: q.basic.partition,
-            title: q.basic.title,
-            summary: q.basic.summary,
             author: q.basic.author,
-            email: q.basic.email,
-            minplayers: q.basic.minplayers,
-            maxplayers: q.basic.maxplayers,
-            mintimeminutes: q.basic.mintimeminutes,
-            maxtimeminutes: q.basic.maxtimeminutes,
-            genre: q.basic.genre,
             contentrating: q.basic.contentrating,
+            email: q.basic.email,
             expansionhorror: q.basic.expansionhorror,
+            genre: q.basic.genre,
             language: q.basic.language,
             majorRelease: true,
+            maxplayers: q.basic.maxplayers,
+            maxtimeminutes: q.basic.maxtimeminutes,
+            minplayers: q.basic.minplayers,
+            mintimeminutes: q.basic.mintimeminutes,
+            partition: q.basic.partition,
+            summary: q.basic.summary,
+            title: q.basic.title,
           };
           return publish(db, ms, mockReq({body: rq.basic.xml, query, params: {id: q.basic.id}}), res);
         })
@@ -152,17 +152,17 @@ describe('handlers', () => {
         .then((tdb) => {
           db = tdb;
           return postAnalyticsEvent(db, mockReq({
-            params: {category: ae.action.category, action: ae.action.action},
             body: JSON.stringify({
-              questid: ae.action.questID,
-              userid: ae.action.userID,
-              questversion: ae.action.questVersion,
               difficulty: ae.action.difficulty,
+              json: ae.action.json,
               platform: ae.action.platform,
               players: ae.action.players,
+              questid: ae.action.questID,
+              questversion: ae.action.questVersion,
+              userid: ae.action.userID,
               version: ae.action.version,
-              json: ae.action.json,
             }),
+            params: {category: ae.action.category, action: ae.action.action},
           }), res);
         })
         .then(() => db.analyticsEvent.findOne({where: {userID: ae.action.userID}}))
@@ -225,18 +225,18 @@ describe('handlers', () => {
     });
     it('publishes feedback', (done: DoneFn) => {
       const data = {
-        partition: q.basic.partition,
-        questid: q.basic.id,
-        userid: '456',
-        questversion: 1,
-        rating: 3,
-        text: 'pretty good test quest',
+        difficulty: 'HARD',
         email: 'test@email.com',
         name: 'Test Testerson',
-        difficulty: 'HARD',
+        partition: q.basic.partition,
         platform: 'web',
         platformDump: 'web USERAGENT TEST TEST',
         players: 4,
+        questid: q.basic.id,
+        questversion: 1,
+        rating: 3,
+        text: 'pretty good test quest',
+        userid: '456',
         version: '1.6.0',
       };
       const res = mockRes();

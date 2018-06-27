@@ -81,8 +81,8 @@ export function announcement(req: express.Request, res: express.Response) {
   memoizedVersions(new Date().toJSON().slice(0, 10))
     .then((versions: Versions) => {
       res.json({
-        message: Config.get('ANNOUNCEMENT_MESSAGE') || '',
         link: Config.get('ANNOUNCEMENT_LINK') || '',
+        message: Config.get('ANNOUNCEMENT_MESSAGE') || '',
         versions,
       });
     });
@@ -96,87 +96,88 @@ export function search(db: Database, req: express.Request, res: express.Response
     return res.status(500).end('Error reading request.');
   }
   const params: QuestSearchParams = {
-    id: body.id,
-    owner: body.owner,
-    players: body.players,
-    text: body.text,
     age: body.age,
-    mintimeminutes: body.mintimeminutes,
-    maxtimeminutes: body.maxtimeminutes,
     contentrating: body.contentrating,
-    genre: body.genre,
-    order: body.order,
-    limit: body.limit,
-    partition: body.partition || PUBLIC_PARTITION,
     expansions: body.expansions,
+    genre: body.genre,
+    id: body.id,
     language: body.language,
+    limit: body.limit,
+    maxtimeminutes: body.maxtimeminutes,
+    mintimeminutes: body.mintimeminutes,
+    order: body.order,
+    owner: body.owner,
+    partition: body.partition || PUBLIC_PARTITION,
+    players: body.players,
     requirespenpaper: body.requirespenpaper,
+    text: body.text,
   };
   return searchQuests(db, res.locals.id, params)
-    .then((quests: QuestInstance[]) => {
-      // Map quest published URL to the API server so we can proxy quest data.
-      const results: Quest[] = quests
-        .map((q: QuestInstance) => Quest.create(q.dataValues))
-        .filter((q: Quest|Error) => !(q instanceof Error))
-        .map((q: Quest) => {
-        q.publishedurl = (Config.get('API_URL_BASE') || 'http://api.expeditiongame.com') + `/raw/${q.partition}/${q.id}/${q.questversion}`;
-        return q;
-      });
-
-      console.log('Found ' + quests.length + ' quests for user ' + res.locals.id);
-      res.status(200).end(JSON.stringify({
-        error: null,
-        quests: results,
-        hasMore: (quests.length === (params.limit || MAX_SEARCH_LIMIT))}));
-    })
-    .catch((e: Error) => {
-      console.error(e);
-      return res.status(500).end(GENERIC_ERROR_MESSAGE);
+  .then((quests: QuestInstance[]) => {
+    // Map quest published URL to the API server so we can proxy quest data.
+    const results: Quest[] = quests
+      .map((q: QuestInstance) => Quest.create(q.dataValues))
+      .filter((q: Quest|Error) => !(q instanceof Error))
+      .map((q: Quest) => {
+      q.publishedurl = (Config.get('API_URL_BASE') || 'http://api.expeditiongame.com') + `/raw/${q.partition}/${q.id}/${q.questversion}`;
+      return q;
     });
+
+    console.log('Found ' + quests.length + ' quests for user ' + res.locals.id);
+    res.status(200).end(JSON.stringify({
+      error: null,
+      hasMore: (quests.length === (params.limit || MAX_SEARCH_LIMIT)),
+      quests: results,
+    }));
+  })
+  .catch((e: Error) => {
+    console.error(e);
+    return res.status(500).end(GENERIC_ERROR_MESSAGE);
+  });
 }
 
 export function questXMLHandler(db: Database, req: express.Request, res: express.Response) {
   db.renderedQuests.findOne({where: {partition: req.params.partition, id: req.params.quest, questversion: req.params.version}})
-    .then((instance: RenderedQuestInstance|null) => {
-      if (!instance) {
-        return getQuest(db, req.params.partition, req.params.quest)
-          .then((q: Quest) => {
-            const url = q.publishedurl;
-            if (!url) {
-              throw new Error('Quest did not have published URL');
-            }
-            res.header('Content-Type', 'text/xml');
-            res.header('Location', url);
-            res.status(301).end();
-          });
-      }
-      res.header('Content-Type', 'text/xml');
-      res.status(200).end(instance.get('xml'));
-    })
-    .catch((e: Error) => {
-      console.error(e);
-      return res.status(500).end(GENERIC_ERROR_MESSAGE);
-    });
+  .then((instance: RenderedQuestInstance|null) => {
+    if (!instance) {
+      return getQuest(db, req.params.partition, req.params.quest)
+        .then((q: Quest) => {
+          const url = q.publishedurl;
+          if (!url) {
+            throw new Error('Quest did not have published URL');
+          }
+          res.header('Content-Type', 'text/xml');
+          res.header('Location', url);
+          res.status(301).end();
+        });
+    }
+    res.header('Content-Type', 'text/xml');
+    res.status(200).end(instance.get('xml'));
+  })
+  .catch((e: Error) => {
+    console.error(e);
+    return res.status(500).end(GENERIC_ERROR_MESSAGE);
+  });
 }
 
 export function publish(db: Database, mail: MailService, req: express.Request, res: express.Response) {
   const quest = Quest.create({
-    id: req.params.id,
-    partition: req.query.partition || PUBLIC_PARTITION,
-    title: req.query.title,
-    summary: req.query.summary,
     author: req.query.author,
-    email: req.query.email,
-    minplayers: req.query.minplayers,
-    maxplayers: req.query.maxplayers,
-    mintimeminutes: req.query.mintimeminutes,
-    maxtimeminutes: req.query.maxtimeminutes,
-    genre: req.query.genre,
     contentrating: req.query.contentrating,
+    email: req.query.email,
     expansionhorror: req.query.expansionhorror || false,
+    genre: req.query.genre,
+    id: req.params.id,
     language: req.query.language || 'English',
-    theme: req.query.theme || 'base',
+    maxplayers: req.query.maxplayers,
+    maxtimeminutes: req.query.maxtimeminutes,
+    minplayers: req.query.minplayers,
+    mintimeminutes: req.query.mintimeminutes,
+    partition: req.query.partition || PUBLIC_PARTITION,
     requirespenpaper: req.query.requirespenpaper || false,
+    summary: req.query.summary,
+    theme: req.query.theme || 'base',
+    title: req.query.title,
   });
   if (quest instanceof Error) {
     console.error(quest);
@@ -184,25 +185,25 @@ export function publish(db: Database, mail: MailService, req: express.Request, r
   }
   const majorRelease = (req.query.majorRelease === 'true');
   return publishQuest(db, mail, res.locals.id, majorRelease, quest, req.body)
-    .then((q: QuestInstance) => {
-      console.log('Published quest ' + q.get('id'));
-      res.status(200).end(q.get('id'));
-    })
-    .catch((e: Error) => {
-      console.error(e);
-      return res.status(500).end(GENERIC_ERROR_MESSAGE);
-    });
+  .then((q: QuestInstance) => {
+    console.log('Published quest ' + q.get('id'));
+    res.status(200).end(q.get('id'));
+  })
+  .catch((e: Error) => {
+    console.error(e);
+    return res.status(500).end(GENERIC_ERROR_MESSAGE);
+  });
 }
 
 export function unpublish(db: Database, req: express.Request, res: express.Response) {
   return unpublishQuest(db, PUBLIC_PARTITION, req.params.quest)
-    .then(() => {
-      res.status(200).end('ok');
-    })
-    .catch((e: Error) => {
-      console.error(e);
-      return res.status(500).end(GENERIC_ERROR_MESSAGE);
-    });
+  .then(() => {
+    res.status(200).end('ok');
+  })
+  .catch((e: Error) => {
+    console.error(e);
+    return res.status(500).end(GENERIC_ERROR_MESSAGE);
+  });
 }
 
 export function postAnalyticsEvent(db: Database, req: express.Request, res: express.Response) {
@@ -214,22 +215,22 @@ export function postAnalyticsEvent(db: Database, req: express.Request, res: expr
   }
 
   return db.analyticsEvent.create(new AnalyticsEvent({
-      category: req.params.category,
-      action: req.params.action,
-      questID: body.questid,
-      userID: body.userid,
-      questVersion: body.questversion,
-      difficulty: body.difficulty,
-      platform: body.platform,
-      players: body.players,
-      version: body.version,
-      json: (body.data) ? JSON.stringify(body.data) : undefined,
-    })).then(() => {
-      res.status(200).end('ok');
-    }).catch((e: Error) => {
-      console.error(e);
-      return res.status(500).end(GENERIC_ERROR_MESSAGE);
-    });
+    action: req.params.action,
+    category: req.params.category,
+    difficulty: body.difficulty,
+    json: (body.data) ? JSON.stringify(body.data) : undefined,
+    platform: body.platform,
+    players: body.players,
+    questID: body.questid,
+    questVersion: body.questversion,
+    userID: body.userid,
+    version: body.version,
+  })).then(() => {
+    res.status(200).end('ok');
+  }).catch((e: Error) => {
+    console.error(e);
+    return res.status(500).end(GENERIC_ERROR_MESSAGE);
+  });
 }
 
 export function feedback(db: Database, mail: MailService, req: express.Request, res: express.Response): Bluebird<any> {
@@ -246,19 +247,19 @@ export function feedback(db: Database, mail: MailService, req: express.Request, 
   // feedback occurs outside of a quest.
   // The only thing we require is the user's ID.
   const data = Feedback.create({
+    anonymous: body.anonymous,
+    difficulty: body.difficulty,
+    email: body.email,
+    name: body.name,
     partition: body.partition || '',
+    platform: body.platform,
+    players: body.players,
     questid: body.questid || '',
-    userid: body.userid,
     questversion: body.questversion,
     rating: body.rating || 0,
     text: body.text,
-    email: body.email,
-    name: body.name,
-    difficulty: body.difficulty,
-    platform: body.platform,
-    players: body.players,
+    userid: body.userid,
     version: body.version,
-    anonymous: body.anonymous,
   });
   if (data instanceof Error) {
     console.error(data);
@@ -297,13 +298,13 @@ export function feedback(db: Database, mail: MailService, req: express.Request, 
 
 export function userQuests(db: Database, req: express.Request, res: express.Response) {
   return getUserQuests(db, res.locals.id)
-    .then((userQuests: UserQuestsType) => {
-      return res.status(200).end(JSON.stringify(userQuests));
-    })
-    .catch((e: Error) => {
-      console.error(e);
-      return res.status(500).end(GENERIC_ERROR_MESSAGE);
-    });
+  .then((userQuests: UserQuestsType) => {
+    return res.status(200).end(JSON.stringify(userQuests));
+  })
+  .catch((e: Error) => {
+    console.error(e);
+    return res.status(500).end(GENERIC_ERROR_MESSAGE);
+  });
 }
 
 export function subscribe(mailchimp: any, listId: string, req: express.Request, res: express.Response) {
@@ -312,9 +313,9 @@ export function subscribe(mailchimp: any, listId: string, req: express.Request, 
   } catch (e) {
     return res.status(400).end('Error reading request.');
   }
-  Joi.validate(req.body.email, Joi.string().email().invalid(''), (err: Error, email: string) => {
+  Joi.validate(req.body.email, Joi.string().email().invalid(''), (e: Error, email: string) => {
 
-    if (err) {
+    if (e) {
       return res.status(400).end('Valid email address required.');
     }
 
@@ -324,10 +325,8 @@ export function subscribe(mailchimp: any, listId: string, req: express.Request, 
     } else {
       mailchimp.post('/lists/' + listId + '/members/', {
         email_address: email,
+        merge_fields: { SOURCE: 'app' },
         status: 'pending',
-        merge_fields: {
-          SOURCE: 'app',
-        },
       }, (result: any, err: Error) => {
         if (err) {
           const status = (err as any).status;

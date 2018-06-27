@@ -38,7 +38,13 @@ export default class StarRating extends React.Component<StarRatingProps, {}> {
 
       // TODO: Flatten this structure so ripples are circular
       return <div key={i} className={classes.join(' ')}>
-        <IconButton disabled={this.props.readOnly} onClick={() => { !this.props.readOnly && this.props.onChange && this.props.onChange(i); }}>
+        <IconButton
+          disabled={this.props.readOnly}
+          onClick={() => {
+            if (!this.props.readOnly && this.props.onChange) {
+              this.props.onChange(i);
+            }
+          }}>
           {star}
         </IconButton>
       </div>;

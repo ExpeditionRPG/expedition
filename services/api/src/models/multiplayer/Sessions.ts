@@ -12,18 +12,18 @@ export function getSessionBySecret(db: Database, secret: string): Bluebird<Sessi
 
 export function createSession(db: Database): Bluebird<SessionInstance> {
   return db.sessions.create(new Session({
-    id: Date.now(),
-    secret: makeSecret(),
     eventCounter: 0,
+    id: Date.now(),
     locked: false,
+    secret: makeSecret(),
   }));
 }
 
 export function getSessionQuestTitle(db: Database, session: number): Bluebird<string|null> {
   return db.events.findOne({
     attributes: ['json'],
-    where: {session, json: {$like: '%fetchQuestXML%'}} as any,
     order: [['created_at', 'DESC']],
+    where: {session, json: {$like: '%fetchQuestXML%'}} as any,
   })
   .then((e: EventInstance) => {
     if (e === null) {

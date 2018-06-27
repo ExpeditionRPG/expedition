@@ -43,18 +43,22 @@ const ReactGA = require('react-ga');
 // This is necessary to prevent compiler errors until/unless we fix the rest of
 // the repo to reference custom-defined action types (similar to how redux-thunk does things)
 // TODO: Fix redux types
+/* tslint:disable */
 export type ThunkAction<R, S = {}, E = {}, A extends Redux.Action<any> = Redux.AnyAction> = (
   dispatch: Redux.Dispatch<A>,
   getState: () => S,
   extraArgument: E
 ) => R;
 declare module 'redux' {
-  export type Dispatch<A extends Redux.Action<any> = Redux.AnyAction> = <R, E>(asyncAction: ThunkAction<R, {}, E, A>) => R;
+  export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {
+    <R, E>(asyncAction: ThunkAction<R, {}, E, A>): R;
+  }
 }
+/* tslint:enable */
 
 Raven.config(AUTH_SETTINGS.RAVEN, {
-    release: getAppVersion(),
     environment: NODE_ENV,
+    release: getAppVersion(),
     shouldSendCallback(data) {
       const supportedBrowser = !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent);
       return supportedBrowser && NODE_ENV !== 'dev' && !getStore().getState().settings.simulator;
@@ -131,22 +135,21 @@ function setupSavedQuests() {
   getStore().dispatch(listSavedQuests());
 }
 
-// disabled during local dev
-declare var ga: any;
 function setupGoogleAnalytics() {
+  // disabled during local dev
   if (window.location.hostname === 'localhost' || NODE_ENV === 'dev') {
     setGA({
-      set: (): void => {},
-      event: (): void => {},
+      event: (): void => { /* mock */ },
+      set: (): void => { /* mock */ },
     });
     return console.log('Google Analytics disabled during local dev.');
   }
   ReactGA.initialize('UA-47408800-9', {
-    titleCase: false,
     gaOptions: {
-      appVersion: getAppVersion(),
       appName: getDevicePlatform(),
+      appVersion: getAppVersion(),
     },
+    titleCase: false,
   });
   ReactGA.pageview('/');
   setGA(ReactGA);
@@ -168,10 +171,10 @@ function setupOnError(window: Window) {
     const questNode = quest.node && quest.node.elem && quest.node.elem[0];
     Raven.setExtraContext({
       card: state.card.key,
-      questName: quest.details.title || 'n/a',
-      questId: quest.details.id,
       questCardTitle: (questNode) ? questNode.attribs.title : '',
+      questId: quest.details.id,
       questLine: (questNode) ? questNode.attribs['data-line'] : '',
+      questName: quest.details.title || 'n/a',
       settings: JSON.stringify(settings),
     });
     Raven.setTagsContext(); // Clear any existing tags
@@ -235,7 +238,7 @@ export function init() {
   setupStorage(document);
 
   window.platform = window.cordova ? 'cordova' : 'web';
-  window.onpopstate = function(e) {
+  window.onpopstate = (e) => {
     getStore().dispatch(toPrevious({}));
     e.preventDefault();
   };

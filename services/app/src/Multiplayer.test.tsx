@@ -1,4 +1,4 @@
-import configureStore  from 'redux-mock-store';
+import configureStore from 'redux-mock-store';
 import {MultiplayerClient} from './Multiplayer';
 
 describe('Multiplayer', () => {

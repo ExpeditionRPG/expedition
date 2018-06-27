@@ -19,12 +19,12 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CompositorStatePr
 
   return {
     card: state.card,
+    multiplayer: state.multiplayer, // TODO rename to multiplayer
     quest: state.quest,
-    theme: getCardTemplateTheme(state.card),
-    transition,
     settings: state.settings,
     snackbar: state.snackbar,
-    multiplayer: state.multiplayer, // TODO rename to multiplayer
+    theme: getCardTemplateTheme(state.card),
+    transition,
   };
 };
 

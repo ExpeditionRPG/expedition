@@ -26,17 +26,17 @@ function setupDB() {
 function setupSession(db: Database, app: express.Express) {
   // Setup/sync sequelize session storage
   const store = new SessionStore({
-    table: AUTH_SESSION_TABLE,
     db: db.sequelize,
+    table: AUTH_SESSION_TABLE,
   });
 
   // Configure the session and session storage.
   const sessionConfig = {
-    store,
     resave: false,
     saveUninitialized: false,
     secret: Config.get('SESSION_SECRET'),
     signed: true,
+    store,
   };
 
   app.use(session(sessionConfig));
@@ -64,12 +64,12 @@ function setupLogging(app: any) {
   app.use(logging.errorLogger);
 
   // Basic 404 handler
-  app.use(function(req: any, res: any) {
+  app.use((req: any, res: any) => {
     res.status(404).send('Not Found');
   });
 
   // Basic error handler
-  app.use(function(err: any, req: any, res: any, next: any) {
+  app.use((err: any, req: any, res: any, next: any) => {
     // If our routes specified a specific response, then send that. Otherwise,
     // send a generic message so as not to leak anything.
     res.status(500).send(err.response || 'Something broke!');

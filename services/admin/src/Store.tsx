@@ -2,7 +2,6 @@ import Redux, {applyMiddleware, compose, createStore} from 'redux';
 import thunk from 'redux-thunk';
 import adminApp from './reducers/CombinedReducers';
 
-// For dev tools extension
 declare var window: any;
 declare var require: any;
 declare var module: any;

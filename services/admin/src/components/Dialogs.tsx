@@ -139,7 +139,13 @@ export class UserDetailsDialog extends React.Component<UserDetailsDialogProps, {
             <p>Email: {this.props.user.email}</p>
             <p>Loot points: {this.props.user.loot_points}</p>
             <TextField id="new_loot" value={this.state.new_loot || ''} onChange={this.handleLootChange} />
-            <Button onClick={() => {(this.state.new_loot !== null) && this.props.onSetUserLootPoints(this.props.user, this.state.new_loot); }}>Set</Button>
+            <Button onClick={() => {
+              if (this.state.new_loot) {
+                this.props.onSetUserLootPoints(this.props.user, this.state.new_loot);
+              }
+            }}>
+              Set
+            </Button>
             <p>Last login: {this.props.user.last_login.toISOString()}</p>
           </DialogContentText>
         </DialogContent>

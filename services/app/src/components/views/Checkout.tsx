@@ -38,8 +38,8 @@ class CheckoutForm extends React.Component<CheckoutProps, {}> {
     const card = elements.create('card', {
       style: {
         base: {
-          fontSize: '18px',
           fontFamily: 'MinionPro, serif',
+          fontSize: '18px',
         },
       },
     });

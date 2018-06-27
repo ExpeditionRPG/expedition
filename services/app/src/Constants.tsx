@@ -4,22 +4,21 @@ export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev
 // Should be overriden via env vars to use local server
 export const API_HOST = (process && process.env && process.env.API_HOST) || 'http://betaapi.expeditiongame.com';
 export const AUTH_SETTINGS = {
-  URL_BASE: API_HOST,
-  API_KEY: 'AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8',
-  SCOPES: 'profile email',
-  // web:
-  CLIENT_ID: (process && process.env && process.env.OAUTH2_CLIENT_ID) || '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com',
-  // iOS: (REVERSE_CLIENT_ID) '545484140970-lgcbm3df469kscbngg2iof57muj3p588.apps.googleusercontent.com',
   // Android: '545484140970-qrhcn069bbvae1mub2237h5k32mnp04k.apps.googleusercontent.com',
-  STRIPE: (NODE_ENV === 'production') ? 'pk_live_vcpOgs95UFKNV0kYOwj9JWPp' : 'pk_test_8SATEnwfIx0U2vkomn04kSou',
+  // iOS: (REVERSE_CLIENT_ID) '545484140970-lgcbm3df469kscbngg2iof57muj3p588.apps.googleusercontent.com',
+  API_KEY: 'AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8',
+  CLIENT_ID: (process && process.env && process.env.OAUTH2_CLIENT_ID) || '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com',
   RAVEN: 'https://990df74f1b58424395ec3d3ec6f79b42@sentry.io/420182',
+  SCOPES: 'profile email',
+  STRIPE: (NODE_ENV === 'production') ? 'pk_live_vcpOgs95UFKNV0kYOwj9JWPp' : 'pk_test_8SATEnwfIx0U2vkomn04kSou',
+  URL_BASE: API_HOST,
 };
 
 const splitURL = API_HOST.split('/');
 export const MULTIPLAYER_SETTINGS = {
-  newSessionURI: API_HOST + '/multiplayer/v1/new_session',
   connectURI: API_HOST + '/multiplayer/v1/connect',
   firstLoadURI: API_HOST + '/multiplayer/v1/user',
+  newSessionURI: API_HOST + '/multiplayer/v1/new_session',
   websocketSession: ((NODE_ENV === 'production') ? 'wss://' : 'ws://') + splitURL[splitURL.length - 1] + '/ws/multiplayer/v1/session',
 };
 
@@ -40,16 +39,16 @@ export const MIN_FEEDBACK_LENGTH = 16;
 export const UNSUPPORTED_BROWSERS = /^(.*amazon silk.*)|(.*(iphone|ipad|ipod|ios) os 9_.*)$/i;
 
 export const URLS = {
+  QUEST_CREATOR: 'https://quests.expeditiongame.com/?utm_source=app',
   // lowercase to match lowercase platform names
   android: 'https://play.google.com/store/apps/details?id=io.fabricate.expedition',
   ios: 'https://itunes.apple.com/us/app/expedition-roleplaying-card/id1085063478?ls=1&mt=8',
   web: 'http://expeditiongame.com/app',
-  QUEST_CREATOR: 'https://quests.expeditiongame.com/?utm_source=app',
 };
 
 export const INIT_DELAY = {
-  SILENT_LOGIN_MILLIS: 1000,
   LOAD_AUDIO_MILLIS: 2000,
+  SILENT_LOGIN_MILLIS: 1000,
 };
 
 export const CARD_TRANSITION_ANIMATION_MS = 300;
@@ -83,28 +82,30 @@ export const PLAYER_TIME_MULT: {[key: number]: number} = {
   6: 1,
 };
 
+/* tslint:disable:object-literal-sort-keys */
 export const COMBAT_DIFFICULTY: {[key: string]: any} = {
   EASY: {
-    surgePeriod: 4,
     damageMultiplier: 0.7,
     maxRoundDamage: 4,
+    surgePeriod: 4,
   },
   NORMAL: {
-    surgePeriod: 3,
     damageMultiplier: 1.0,
     maxRoundDamage: 6,
+    surgePeriod: 3,
   },
   HARD: {
-    surgePeriod: 3,
     damageMultiplier: 1.2,
     maxRoundDamage: 7,
+    surgePeriod: 3,
   },
   IMPOSSIBLE: {
-    surgePeriod: 2,
     damageMultiplier: 1.4,
     maxRoundDamage: 8,
+    surgePeriod: 2,
   },
 };
+/* tslint:enable:object-literal-sort-keys */
 
 export const SPLASH_SCREEN_TIPS = [
   `Tip: You can change which expansions you're playing with in settings.`,

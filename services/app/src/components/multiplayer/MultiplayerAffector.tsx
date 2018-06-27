@@ -6,12 +6,12 @@ import {getMultiplayerClient} from '../../Multiplayer';
 // to the inheriting class.
 // Also listens for touch events on this component and transmits them.
 export interface MultiplayerAffectorProps {
-  id?: string;
   abortOnScroll?: boolean;
-  includeLocalInteractions?: boolean;
-  onInteraction?: (client: string, event: InteractionEvent) => any;
   children: any;
   className?: string;
+  id?: string;
+  includeLocalInteractions?: boolean;
+  onInteraction?: (client: string, event: InteractionEvent) => any;
 }
 export default class MultiplayerAffector extends React.Component<MultiplayerAffectorProps, {}> {
   private listeners: {[k: string]: (e: any) => any};
@@ -32,12 +32,12 @@ export default class MultiplayerAffector extends React.Component<MultiplayerAffe
     this.boundHandleMultiplayerEvent = (e: MultiplayerEvent) => this.handleMultiplayerEvent(e);
     getMultiplayerClient().subscribe(this.boundHandleMultiplayerEvent);
     this.listeners = {
-      touchstart: (e: TouchEvent) => this.touchEvent(e),
-      touchmove: (e: TouchEvent) => this.touchEvent(e),
-      touchend: (e: TouchEvent) => this.touchEvent(e),
       mousedown: (e: MouseEvent) => this.mouseDownEvent(e),
       mousemove: (e: MouseEvent) => this.mouseMoveEvent(e),
       mouseup: () => this.mouseUpEvent(),
+      touchend: (e: TouchEvent) => this.touchEvent(e),
+      touchmove: (e: TouchEvent) => this.touchEvent(e),
+      touchstart: (e: TouchEvent) => this.touchEvent(e),
     };
   }
 
@@ -45,7 +45,9 @@ export default class MultiplayerAffector extends React.Component<MultiplayerAffe
     if (e.event.type !== 'INTERACTION' || e.event.id !== this.props.id) {
       return;
     }
-    this.props.onInteraction && this.props.onInteraction(e.client, e.event);
+    if (this.props.onInteraction) {
+      this.props.onInteraction(e.client, e.event);
+    }
   }
 
   private touchEvent(e: TouchEvent) {
@@ -57,8 +59,10 @@ export default class MultiplayerAffector extends React.Component<MultiplayerAffe
     }
 
     const xyArray: {[id: string]: number[]} = {};
+    // tslint:disable-next-line
     for (let i = 0; i < e.touches.length; i++) {
-      xyArray[e.touches[i].identifier] = [e.touches[i].clientX, e.touches[i].clientY];
+      const touch = e.touches[i];
+      xyArray[touch.identifier] = [touch.clientX, touch.clientY];
     }
     this.processInput(e.type, xyArray);
   }
@@ -101,8 +105,8 @@ export default class MultiplayerAffector extends React.Component<MultiplayerAffe
       getMultiplayerClient().sendEvent(e);
     }
 
-    if (this.props.includeLocalInteractions) {
-      this.props.onInteraction && this.props.onInteraction('local', e);
+    if (this.props.includeLocalInteractions && this.props.onInteraction) {
+      this.props.onInteraction('local', e);
     }
   }
 

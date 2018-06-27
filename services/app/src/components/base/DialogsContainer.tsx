@@ -25,40 +25,33 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
 
   return {
     dialog: state.dialog,
+    multiplayerStats,
     quest: state.quest || {details: {}} as any,
     selectedSave: state.saved.selected || {} as SavedQuestMeta,
     settings: state.settings,
     user: state.user,
-    multiplayerStats,
   };
 };
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DialogsDispatchProps => {
   return {
+    onClose: () => {
+      dispatch(setDialog(null));
+    },
     onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => {
       dispatch(deleteSavedQuest(savedQuest.details.id, savedQuest.ts));
       dispatch(toPrevious({name: 'SAVED_QUESTS', phase: 'LIST', before: false}));
       dispatch(openSnackbar('Save deleted.'));
-    },
-    onExitQuest: () => {
-      dispatch(setDialog(null));
-      dispatch(exitQuest({}));
-      dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
     },
     onExitMultiplayer: () => {
       dispatch(multiplayerDisconnect());
       dispatch(setDialog(null));
       dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
     },
-    onMultitouchChange: (v: boolean) => {
-      dispatch(changeSettings({multitouch: v}));
-    },
-    onSendMultiplayerReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => {
-      logMultiplayerStats(user, quest, stats)
-        .then((r: Response) => {
-          dispatch(openSnackbar('Stats submitted. Thank you!'));
-          dispatch(setDialog(null));
-        });
+    onExitQuest: () => {
+      dispatch(setDialog(null));
+      dispatch(exitQuest({}));
+      dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
     },
     onExpansionSelect: (contentSets: ContentSetsType) => {
       dispatch(setDialog(null));
@@ -74,6 +67,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
       dispatch(submitUserFeedback({quest, settings, user, text, type, anonymous: false, rating: null}));
       dispatch(setDialog(null));
     },
+    onMultitouchChange: (v: boolean) => {
+      dispatch(changeSettings({multitouch: v}));
+    },
     onPlayerDelta: (numPlayers: number, delta: number) => {
       numPlayers += delta;
       if (numPlayers <= 0 || numPlayers > 6) {
@@ -81,8 +77,12 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
       }
       dispatch(changeSettings({numPlayers}));
     },
-    onClose: () => {
-      dispatch(setDialog(null));
+    onSendMultiplayerReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => {
+      logMultiplayerStats(user, quest, stats)
+        .then((r: Response) => {
+          dispatch(openSnackbar('Stats submitted. Thank you!'));
+          dispatch(setDialog(null));
+        });
     },
     playQuest: (quest: QuestDetails) => {
       dispatch(setDialog(null));

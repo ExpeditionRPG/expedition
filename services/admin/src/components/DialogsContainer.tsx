@@ -34,14 +34,14 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
       }
       dispatch(setDialog('NONE'));
     },
-    onSetUserLootPoints: (user: UserEntry, lootPoints: number) => {
-      dispatch(mutateUser({userid: user.id, loot_points: lootPoints}));
+    onSetFeedbackSuppressed: (feedback: FeedbackEntry, suppress: boolean) => {
+      dispatch(mutateFeedback({partition: feedback.partition, questid: feedback.quest.id, userid: feedback.user.id, suppress}));
     },
     onSetQuestPublishState: (quest: QuestEntry, published: boolean) => {
       dispatch(mutateQuest({questid: quest.id, partition: quest.partition, published}));
     },
-    onSetFeedbackSuppressed: (feedback: FeedbackEntry, suppress: boolean) => {
-      dispatch(mutateFeedback({partition: feedback.partition, questid: feedback.quest.id, userid: feedback.user.id, suppress}));
+    onSetUserLootPoints: (user: UserEntry, lootPoints: number) => {
+      dispatch(mutateUser({userid: user.id, loot_points: lootPoints}));
     },
   };
 };

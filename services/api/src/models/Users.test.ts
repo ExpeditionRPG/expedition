@@ -42,8 +42,8 @@ describe('users', () => {
       .then(() => {
         return getUser(db, u.basic.id);
       })
-      .then((u) => {
-        expect(u.lootPoints).toEqual(37);
+      .then((user) => {
+        expect(user.lootPoints).toEqual(37);
         done();
       })
       .catch(done.fail);

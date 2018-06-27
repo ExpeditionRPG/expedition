@@ -5,19 +5,19 @@ import {Transition} from 'react-transition-group';
 interface RippleProps {
   classes: any;
   rippleSize: number;
-  rippleY: number;
   rippleX: number;
+  rippleY: number;
 }
 
 interface RippleState {
-  visible: boolean;
   leaving: boolean;
+  visible: boolean;
 }
 
 export default class Ripple extends React.Component<RippleProps, RippleState> {
   public state = {
-    visible: false,
     leaving: false,
+    visible: false,
   };
 
   public handleEnter = () => {
@@ -36,9 +36,9 @@ export default class Ripple extends React.Component<RippleProps, RippleState> {
     console.log('Rendering ripple');
     const {
       classes,
+      rippleSize,
       rippleX,
       rippleY,
-      rippleSize,
       ...other,
     } = this.props;
     const { visible, leaving } = this.state;
@@ -51,10 +51,10 @@ export default class Ripple extends React.Component<RippleProps, RippleState> {
     );
 
     const rippleStyles = {
-      width: rippleSize,
       height: rippleSize,
-      top: -(rippleSize / 2) + rippleY,
       left: -(rippleSize / 2) + rippleX,
+      top: -(rippleSize / 2) + rippleY,
+      width: rippleSize,
     };
     console.log(rippleStyles);
 

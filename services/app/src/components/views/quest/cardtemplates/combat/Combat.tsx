@@ -19,39 +19,38 @@ import {CombatPhase, CombatState} from './Types';
 export interface CombatStateProps {
   card: CardState;
   combat: CombatState;
-  settings: SettingsType;
   decision: DecisionState;
   maxTier: number;
-  node: ParserNode;
-  seed: string;
-  victoryParameters?: EventParameters;
-  multiplayerState?: MultiplayerState;
-  tier: number;
-  numAliveAdventurers: number;
   mostRecentRolls?: number[];
+  multiplayerState?: MultiplayerState;
+  node: ParserNode;
+  numAliveAdventurers: number;
+  seed: string;
+  settings: SettingsType;
+  tier: number;
+  victoryParameters?: EventParameters;
 }
 
 export interface CombatDispatchProps {
-  onNext: (phase: CombatPhase) => void;
-  onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
-  onRetry: () => void;
-  onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
-  onTimerStart: () => void;
-  onTimerHeld: (node: ParserNode) => void;
-  onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => void;
-  onReturn: () => void;
-  onTierSumDelta: (node: ParserNode, current: number, delta: number) => void;
   onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => void;
-  onEvent: (node: ParserNode, event: string) => void;
-  onCustomEnd: () => void;
   onChoice: (node: ParserNode, settings: SettingsType, index: number, maxTier: number, seed: string) => void;
-  onSurgeNext: (node: ParserNode) => void;
-
+  onCustomEnd: () => void;
+  onDecisionChoice: (node: ParserNode, settings: SettingsType, choice: DecisionType, elapsedMillis: number, seed: string) => void;
+  onDecisionEnd: () => void;
+  onDecisionRoll: (node: ParserNode, settings: SettingsType, decision: DecisionState, roll: number, seed: string) => void;
   onDecisionSetup: () => void;
   onDecisionTimerStart: () => void;
-  onDecisionChoice: (node: ParserNode, settings: SettingsType, choice: DecisionType, elapsedMillis: number, seed: string) => void;
-  onDecisionRoll: (node: ParserNode, settings: SettingsType, decision: DecisionState, roll: number, seed: string) => void;
-  onDecisionEnd: () => void;
+  onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
+  onEvent: (node: ParserNode, event: string) => void;
+  onNext: (phase: CombatPhase) => void;
+  onRetry: () => void;
+  onReturn: () => void;
+  onSurgeNext: (node: ParserNode) => void;
+  onTierSumDelta: (node: ParserNode, current: number, delta: number) => void;
+  onTimerHeld: (node: ParserNode) => void;
+  onTimerStart: () => void;
+  onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => void;
+  onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
 }
 
 export interface CombatProps extends CombatStateProps, CombatDispatchProps {}
@@ -460,10 +459,10 @@ function renderTimerCard(props: CombatProps): JSX.Element {
 function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
   return Roleplay({
     node: props.node,
-    settings: props.settings,
     onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(props.node, settings, index, props.maxTier, props.seed); },
     onRetry: () => {props.onRetry(); },
     onReturn: () => {props.onReturn(); },
+    settings: props.settings,
   }, 'dark');
 }
 
@@ -473,15 +472,15 @@ function renderMidCombatDecision(props: CombatProps): JSX.Element {
   return Decision({
     card: {...props.card, phase: props.combat.decisionPhase},
     decision,
-    settings: props.settings,
-    node: props.node,
-    seed: props.seed,
     maxAllowedAttempts: props.combat.numAliveAdventurers,
     multiplayerState: props.multiplayerState,
-    onStartTimer: props.onDecisionTimerStart,
+    node: props.node,
     onChoice: props.onDecisionChoice,
-    onRoll: props.onDecisionRoll,
     onEnd: props.onDecisionEnd,
+    onRoll: props.onDecisionRoll,
+    onStartTimer: props.onDecisionTimerStart,
+    seed: props.seed,
+    settings: props.settings,
   }, 'dark');
 }
 

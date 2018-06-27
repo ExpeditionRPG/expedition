@@ -10,9 +10,9 @@ import {REGEX} from 'shared/Regex';
 
 export interface RoleplayStateProps {
   node: ParserNode;
+  onReturn?: () => any;
   prevNode?: ParserNode;
   settings: SettingsType;
-  onReturn?: () => any;
 }
 
 export interface RoleplayDispatchProps {
@@ -51,11 +51,11 @@ function generateIconElements(content: string, theme: CardThemeType): JSX.Elemen
 }
 
 export interface RoleplayResult {
+  choices: Choice[];
+  content: RoleplayElement[];
+  ctx: TemplateContext;
   icon: string;
   title: string | JSX.Element;
-  content: RoleplayElement[];
-  choices: Choice[];
-  ctx: TemplateContext;
 }
 
 export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light'): RoleplayResult {
@@ -88,8 +88,8 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
     }
 
     const element: RoleplayElement = {
-      type: 'text',
       jsx: <span></span>,
+      type: 'text',
     };
     if (tag === 'instruction') {
       element.type = 'instruction';
@@ -135,11 +135,11 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
   }
 
   return {
-    title: generateIconElements(node.elem.attr('title'), theme),
-    icon: node.elem.attr('icon'),
-    content,
     choices,
+    content,
     ctx: node.ctx,
+    icon: node.elem.attr('icon'),
+    title: generateIconElements(node.elem.attr('title'), theme),
   };
 }
 

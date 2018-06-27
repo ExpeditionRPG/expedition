@@ -30,9 +30,9 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
         .then((u: UserState) => {
           return dispatch(search({
             search: {
+              order: '-published',
               owner: u.id,
               partition: 'expedition-private',
-              order: '-published',
             },
             settings: {
               ...settings,

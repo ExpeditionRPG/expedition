@@ -13,11 +13,11 @@ import {DecisionState, DecisionType, EMPTY_OUTCOME} from './Types';
 export interface DecisionStateProps {
   card: CardState;
   decision: DecisionState;
-  settings: SettingsType;
-  node: ParserNode;
-  seed: string;
   maxAllowedAttempts?: number;
   multiplayerState?: MultiplayerState;
+  node: ParserNode;
+  seed: string;
+  settings: SettingsType;
 }
 
 export interface DecisionDispatchProps {
@@ -56,13 +56,7 @@ export function renderPrepareDecision(props: DecisionProps): JSX.Element {
 }
 
 export function renderDecisionTimer(props: DecisionProps): JSX.Element {
-  let instruction: string|undefined;
-  if (props.settings.showHelp) {
-    instruction = 'Select a decision!';
-  }
-
   const arng = seedrandom.alea(props.seed);
-
   return (
     <DecisionTimer
       theme="dark"
@@ -130,10 +124,10 @@ export function renderResolveDecision(props: DecisionProps): JSX.Element {
     title = 'Resolve Check';
   } else {
     title = {
-      SUCCESS: 'Success!',
       FAILURE: 'Failure',
       INTERRUPTED: 'Interrupted',
       RETRY: 'Lend a Hand',
+      SUCCESS: 'Success!',
     }[outcome.type] || 'Resolve Check';
   }
 

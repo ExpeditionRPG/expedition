@@ -21,8 +21,8 @@ export default class ExpeditionButton extends React.Component<ButtonProps, {}> {
     if (target && target.getAttribute('href')) {
       openWindow(target.getAttribute('href'));
       e.stopPropagation();
-    } else {
-      this.props.onClick && this.props.onClick(e);
+    } else if (this.props.onClick) {
+      this.props.onClick(e);
     }
 
     e.preventDefault();

@@ -3,9 +3,9 @@ import {AnnouncementSetAction} from '../actions/ActionTypes';
 import {AnnouncementState} from './StateTypes';
 
 const initialState: AnnouncementState = {
-  open: false,
-  message: '',
   link: '',
+  message: '',
+  open: false,
 };
 
 export function announcement(state: AnnouncementState = initialState, action: Redux.Action): AnnouncementState {
@@ -13,9 +13,9 @@ export function announcement(state: AnnouncementState = initialState, action: Re
     case 'ANNOUNCEMENT_SET':
       const setAction = (action as AnnouncementSetAction);
       return {
-        open: setAction.open || initialState.open,
-        message: setAction.message || initialState.message,
         link: setAction.link || initialState.link,
+        message: setAction.message || initialState.message,
+        open: setAction.open || initialState.open,
       };
     default:
       return state;

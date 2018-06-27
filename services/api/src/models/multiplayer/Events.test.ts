@@ -15,8 +15,8 @@ import {
   getOrderedEventsAfter,
 } from './Events';
 
-function ts(s: number): Date {
-  return new Date(TEST_NOW.getTime() + s * 1000);
+function ts(time: number): Date {
+  return new Date(TEST_NOW.getTime() + time * 1000);
 }
 
 describe('events', () => {
@@ -64,8 +64,8 @@ describe('events', () => {
       ])
       .then((db) => commitEvent(db, e.basic.session, e.basic.client, e.basic.instance, 3, e.basic.type, e.basic.json))
       .then(() => done.fail('expected error'))
-      .catch((e: Error) => {
-        expect(e.toString()).toContain('mismatch');
+      .catch((err: Error) => {
+        expect(err.toString()).toContain('mismatch');
         done();
       });
     });
@@ -76,8 +76,8 @@ describe('events', () => {
       ])
       .then((db) => commitEvent(db, e.basic.session, e.basic.client, e.basic.instance, 5, e.basic.type, e.basic.json))
       .then(() => done.fail('expected error'))
-      .catch((e: Error) => {
-        expect(e.toString()).toContain('mismatch');
+      .catch((err: Error) => {
+        expect(err.toString()).toContain('mismatch');
         done();
       });
     });
@@ -98,8 +98,8 @@ describe('events', () => {
       testingDBWithState([])
       .then((db) => commitEvent(db, e.basic.session, e.basic.client, e.basic.instance, 3, e.basic.type, e.basic.json))
       .then(() => done.fail('expected session not found'))
-      .catch((e: Error) => {
-        expect(e.toString()).toContain('could not find session');
+      .catch((err: Error) => {
+        expect(err.toString()).toContain('could not find session');
         done();
       });
     });
@@ -205,10 +205,10 @@ describe('events', () => {
     });
     it('rejects events that do not belong to a known session', (done: DoneFn) => {
       testingDBWithState([])
-      .then((db) => commitEventWithoutID(db, e.basic.session, e.basic.client, e.basic.instance, e.basic.type, e.basic.json))
+      .then((db) => commitEventWithoutID(db, e.basic.session, e.basic.client, e.basic.instance, e.basic.type, JSON.parse(e.basic.json)))
       .then(() => done.fail('expected session not found'))
-      .catch((e: Error) => {
-        expect(e.toString()).toContain('could not find session');
+      .catch((err: Error) => {
+        expect(err.toString()).toContain('could not find session');
         done();
       });
     });

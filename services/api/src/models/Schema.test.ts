@@ -12,19 +12,19 @@ class Example extends SchemaBase {
   }
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 255,
+    primaryKey: true,
   }) public requiredStringPkey: string;
 
   @field({
-    maxLength: 255,
     default: '',
+    maxLength: 255,
   }) public defaultEmptyString: string;
 
   @field({
-    default: 0,
     column: 'column_name',
+    default: 0,
   }) public remappedNumber: number;
 
   @field({

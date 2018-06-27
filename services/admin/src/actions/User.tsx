@@ -7,7 +7,6 @@ import {loggedOutUser} from '../reducers/User';
 import {SetProfileMetaAction} from './ActionTypes';
 import {setSnackbar} from './Snackbar';
 
-declare var gapi: any;
 declare var window: any;
 
 type UserLoginCallback = (user: UserState, err?: string) => any;
@@ -25,17 +24,15 @@ export function handleFetchErrors(response: any) {
 
 function registerUserAndIdToken(user: {name: string, image: string, email: string}, idToken: string, callback: UserLoginCallback) {
   fetch(authSettings.urlBase + '/auth/google', {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'text/plain',
-    },
     body: JSON.stringify({
-      id_token: idToken,
-      name: user.name,
-      image: user.image,
       email: user.email,
+      id_token: idToken,
+      image: user.image,
+      name: user.name,
     }),
+    credentials: 'include',
+    headers: { 'Content-Type': 'text/plain' },
+    method: 'POST',
   })
   .then(handleFetchErrors)
   .then((response: Response) => {
@@ -52,11 +49,11 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
       getGA().set({ userId: id });
     }
     callback({
-      loggedIn: true,
-      id,
       displayName: user.name,
-      image: user.image,
       email: user.email,
+      id,
+      image: user.image,
+      loggedIn: true,
     });
   }).catch((error: Error) => {
     console.log('Request failed', error);
@@ -77,8 +74,8 @@ function loadGapi(callback: (gapi: any, async: boolean) => void) {
     gapi.client.setApiKey(authSettings.apiKey);
     gapi.auth2.init({
       client_id: authSettings.clientId,
-      scope: authSettings.scopes,
       cookie_policy: 'none',
+      scope: authSettings.scopes,
     }).then(() => {
       window.gapiLoaded = true;
       return callback(gapi, true);
@@ -97,9 +94,9 @@ function loginWeb(callback: UserLoginCallback) {
       const idToken: string = googleUser.getAuthResponse().id_token;
       const basicProfile: any = googleUser.getBasicProfile();
       registerUserAndIdToken({
-        name: basicProfile.getName(),
-        image: basicProfile.getImageUrl(),
         email: basicProfile.getEmail(),
+        image: basicProfile.getImageUrl(),
+        name: basicProfile.getName(),
       }, idToken, callback);
     });
   });
@@ -112,9 +109,9 @@ function silentLoginWeb(callback: UserLoginCallback) {
       const idToken: string = googleUser.getAuthResponse().id_token;
       const basicProfile: any = googleUser.getBasicProfile();
       return registerUserAndIdToken({
-        name: basicProfile.getName(),
-        image: basicProfile.getImageUrl(),
         email: basicProfile.getEmail(),
+        image: basicProfile.getImageUrl(),
+        name: basicProfile.getName(),
       }, idToken, callback);
     }
     return callback(loggedOutUser);

@@ -13,9 +13,9 @@ import Checkbox from './Checkbox';
 import Picker from './Picker';
 
 interface ExitQuestDialogProps extends React.Props<any> {
-  open: boolean;
-  onExitQuest: () => void;
   onClose: () => void;
+  onExitQuest: () => void;
+  open: boolean;
 }
 
 export class ExitQuestDialog extends React.Component<ExitQuestDialogProps, {}> {
@@ -36,9 +36,9 @@ export class ExitQuestDialog extends React.Component<ExitQuestDialogProps, {}> {
 }
 
 interface ExitMultiplayerDialogProps extends React.Props<any> {
-  open: boolean;
-  onExitMultiplayer: () => void;
   onClose: () => void;
+  onExitMultiplayer: () => void;
+  open: boolean;
 }
 
 export class ExitMultiplayerDialog extends React.Component<ExitMultiplayerDialogProps, {}> {
@@ -59,12 +59,12 @@ export class ExitMultiplayerDialog extends React.Component<ExitMultiplayerDialog
 }
 
 interface MultiplayerStatusDialogProps extends React.Props<any> {
+  onClose: () => void;
+  onSendReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => void;
   open: boolean;
+  questDetails: QuestDetails;
   stats: MultiplayerCounters;
   user: UserState;
-  questDetails: QuestDetails;
-  onSendReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => void;
-  onClose: () => void;
 }
 
 export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDialogProps, {}> {
@@ -98,8 +98,8 @@ export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDi
 }
 
 interface ExpansionSelectDialogProps extends React.Props<any> {
-  open: boolean;
   onExpansionSelect: (contentSets: ContentSetsType) => void;
+  open: boolean;
 }
 
 export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialogProps, {}> {
@@ -121,12 +121,12 @@ export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialog
 }
 
 interface TextAreaDialogProps extends React.Props<any> {
+  onClose: () => void;
+  onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
   open: boolean;
   quest: QuestState;
   settings: SettingsType;
   user: UserState;
-  onClose: () => void;
-  onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
 }
 class TextAreaDialog<T extends TextAreaDialogProps> extends React.Component<T, {}> {
   protected title: string;
@@ -223,10 +223,10 @@ export class ReportQuestDialog extends TextAreaDialog<TextAreaDialogProps> {
 }
 
 interface SetPlayerCountDialogProps extends React.Props<any> {
-  open: boolean;
+  onClose: () => void;
   onMultitouchChange: (v: boolean) => void;
   onPlayerDelta: (numPlayers: number, delta: number) => void;
-  onClose: () => void;
+  open: boolean;
   playQuest: (quest: QuestDetails) => void;
   quest: QuestDetails;
   settings: SettingsType;
@@ -273,10 +273,10 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
 }
 
 interface DeleteSavedQuestDialogProps extends React.Props<any> {
-  savedQuest: SavedQuestMeta;
-  onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => void;
   onClose: () => void;
+  onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => void;
   open: boolean;
+  savedQuest: SavedQuestMeta;
 }
 
 export class DeleteSavedQuestDialog extends React.Component<DeleteSavedQuestDialogProps, {}> {
@@ -298,23 +298,23 @@ export class DeleteSavedQuestDialog extends React.Component<DeleteSavedQuestDial
 
 export interface DialogsStateProps {
   dialog: DialogState;
+  multiplayerStats: MultiplayerCounters;
   quest: QuestState;
   selectedSave: SavedQuestMeta;
   settings: SettingsType;
   user: UserState;
-  multiplayerStats: MultiplayerCounters;
 }
 
 export interface DialogsDispatchProps {
+  onClose: () => void;
   onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => void;
-  onExitQuest: () => void;
   onExitMultiplayer: () => void;
+  onExitQuest: () => void;
   onExpansionSelect: (contentSets: ContentSetsType) => void;
   onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
   onMultitouchChange: (v: boolean) => void;
   onPlayerDelta: (numPlayers: number, delta: number) => void;
   onSendMultiplayerReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => void;
-  onClose: () => void;
   playQuest: (quest: QuestDetails) => void;
 }
 

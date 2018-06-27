@@ -104,9 +104,10 @@ describe('Typescript files', () => {
   it('are always in pairs of *.tsx and *.test.tsx', () => {
     const WHITELIST = [
       'reducers/',
+      'Constants$',
       'Container$',
-      '/TestData',
-      '/Theme$',
+      'TestData$',
+      'Theme$',
       '/app/platforms/',
       '/app/plugins/',
       '/cards/src/themes/',

@@ -8,8 +8,8 @@ describe('ToolsContainer', () => {
     mapDispatchToProps(store.dispatch, null).onCustomCombatSelect(initialSettings);
     // TODO: Simplify/remove.
     expect(store.getActions()[2]).toEqual(jasmine.objectContaining({
-      type: 'NAVIGATE',
       to: jasmine.objectContaining({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES'}),
+      type: 'NAVIGATE',
     }));
   });
 });

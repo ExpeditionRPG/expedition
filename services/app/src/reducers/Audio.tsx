@@ -3,9 +3,9 @@ import {AudioSetAction} from '../actions/ActionTypes';
 import {AudioState} from './StateTypes';
 
 export const initialAudioState: AudioState = {
+  intensity: 0,
   loaded: 'UNLOADED',
   paused: false,
-  intensity: 0,
   peakIntensity: 0,
   sfx: null,
   timestamp: 0,
