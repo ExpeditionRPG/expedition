@@ -57,10 +57,8 @@ describe('Dependencies', () => {
       'karma-chrome-launcher',
       'karma-es6-shim',
       'karma-sourcemap-loader',
-      'mocha-loader',
       'supertest',
       'ts-node',
-      'mocha-webpack',
       'babel-plugin-module-resolver',
       'babel-plugin-module-resolver-zavatta',
     ];
@@ -97,7 +95,7 @@ describe('Dependencies', () => {
     }
     console.log('Found ' + depstrs.length + ' deps (' + unused_deps.length + ' unused)');
     expect(unused_deps).toEqual([]);
-  }).timeout(10000);
+  }, 10000);
 });
 
 describe('Typescript files', () => {

@@ -8,7 +8,7 @@
   "scripts": {
     "lint": "tslint --fix -c tslint.json -p tsconfig.json '{shared,services}/**/*.{ts,tsx}'",
     "pretest": "npm run lint",
-    "test": "set -e && mocha meta_tests.js && (cd shared && yarn test) && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
+    "test": "set -e && jasmine meta_tests.js && (cd shared && yarn test) && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
     "admin": "cd services/admin && yarn start",
     "admin-local": "API_HOST='http://localhost:8081' npm run admin & npm run api",
     "admin-test": "cd services/admin && yarn test",
@@ -91,7 +91,6 @@
     "markdown": "^0.5.0",
     "mathjs": "^3.16.4",
     "memoizee": "^0.4.12",
-    "mocha": "^5.2.0",
     "moment": "^2.22.1",
     "nconf": "^0.10.0",
     "node-sass": "^4.9.0",
