@@ -1,6 +1,5 @@
 const Path = require('path');
 const Webpack = require('webpack');
-const NodeExternals = require('webpack-node-externals');
 
 const PORT = process.env.DOCKER_PORT || 8081;
 
@@ -8,10 +7,10 @@ const options = {
   cache: true,
   entry: {
     server: [
-      './app/app.ts',
+      './src/app.ts',
     ],
     batchRunner: [
-      './app/batch.ts'
+      './src/batch.ts'
     ],
   },
   resolve: {
@@ -34,32 +33,15 @@ const options = {
   },
   module: {
     rules: [
-      { enforce: 'pre', test: /\.ts$/, loader: 'tslint-loader', exclude: /node_modules/ },
       { test: /\.json$/, loader: 'json-loader' },
-      { test: /\.ts(x?)$/, loaders: ['awesome-typescript-loader'], exclude: [/\/node_modules\/((?!expedition\-qdl).)*$/, /\/dist\/.*/] },
+      { test: /\.ts(x?)$/, loaders: ['awesome-typescript-loader'], exclude: [/\/node_modules\/.*/, /\/dist\/.*/] },
     ]
   },
-  externals: [NodeExternals({whitelist: [/expedition/]})], // Do not bundle anything in node_modules.
+  externals: {'pg': "require('pg')", 'sqlite3': "require('sqlite3')", 'tedious': "require('tedious')", 'pg-hstore': "require('pg-hstore')"},
   plugins: [
-    new Webpack.HotModuleReplacementPlugin(),
     new Webpack.NoEmitOnErrorsPlugin(),
     new Webpack.DefinePlugin({
       VERSION: JSON.stringify(require('./package.json').version)
-    }),
-    new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
-      options: {
-        tslint: {
-          emitErrors: true,
-          failOnHint: true,
-          tsConfigFile: 'tsconfig.json',
-        },
-        babel: {
-          presets: [["env", {
-            "targets": {"browsers": [">5%", "last 2 years", "last 3 iOS versions", "chrome >= 39"]}
-          }]],
-          cacheDirectory: true,
-        },
-      },
     }),
   ],
 };

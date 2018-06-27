@@ -1,0 +1,25 @@
+/*
+Some useful card style constants. Can be overwritten in your template's constants.scss,
+just redefine them after the import constants line.
+*/
+
+@import url(https://fonts.googleapis.com/css?family=Cinzel:400,700);
+
+/* Dimensional sizes */
+$card-height: 3.5in;
+$card-width: 2.5in;
+$border: 0.125in; /* interior padding, important things should go inside of this */
+$bleed: 0; /* this becomes .125in when manufacturing */
+$edge: 0.125in;
+$icon-width: 0.15in;
+
+/* Text contants */
+$font-header: "Cinzel", serif !important;
+$font-body: "MinionPro", serif !important;
+
+$text-color: black; /* #2e200f may look better on a monitor, but pure black prints much sharper */
+$text-color-white: #eee;
+$text-size-back-title: 22pt;
+$text-size-front-title: 12pt;
+$text-size-content: 10.5pt;
+$text-size-small: 9pt;

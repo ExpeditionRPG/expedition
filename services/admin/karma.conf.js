@@ -13,7 +13,7 @@ module.exports = function (config) {
     files: [
       'node_modules/babel-polyfill/dist/polyfill.js',
       'node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
-      { pattern: 'app/**/*.test.tsx' },
+      { pattern: 'src/**/*.test.tsx' },
       'errors/errors.test.tsx',
     ],
     preprocessors: {
@@ -44,7 +44,13 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['PhantomJS'],
+    browsers: ['NoSandboxChromeHeadless'],
+    customLaunchers: {
+      NoSandboxChromeHeadless: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
     singleRun: false,
     concurrency: Infinity,
     captureConsole: true,

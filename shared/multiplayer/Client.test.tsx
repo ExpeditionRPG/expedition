@@ -36,7 +36,7 @@ describe('Client', () => {
   it('safely handles unknown message types', () => {
     const c = new TestClient();
     expect(c.doParseEvent(JSON.stringify({
-      client: 'testclient', instance: 'testinstance', event: {type: 'UNKNOWN_EVENT_TYPE'}, id: 0
+      client: 'testclient', instance: 'testinstance', event: {type: 'UNKNOWN_EVENT_TYPE'}, id: 0,
     } as any as MultiplayerEvent)).event.type).toEqual('ERROR');
   });
 

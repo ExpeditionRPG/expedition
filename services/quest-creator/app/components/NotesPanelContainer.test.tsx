@@ -1,3 +1,0 @@
-describe('NotesPanelContainer', () => {
-  it('TODO');
-});

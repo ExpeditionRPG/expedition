@@ -10,8 +10,8 @@ const options = {
     bundle: [
       'webpack-dev-server/client?http://localhost:' + port,
       'webpack/hot/only-dev-server',
-      './app/React.tsx',
-      './app/Style.scss',
+      './src/React.tsx',
+      './src/Style.scss',
     ],
   },
   resolve: {
@@ -20,7 +20,7 @@ const options = {
   devServer: {
     host: '0.0.0.0',
     disableHostCheck: true,
-    contentBase: Path.join(__dirname, 'app'),
+    contentBase: Path.join(__dirname, 'src'),
     publicPath: '/',
     port: port,
     hot: true,
@@ -39,12 +39,10 @@ const options = {
   },
   module: {
     rules: [
-      { enforce: 'pre', test: /\.tsx$/, loader: 'tslint-loader', exclude: /node_modules/ },
       { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /\/node_modules\/((?!expedition\-api).)*$/ },
-      { enforce: 'post', test: /\.tsx$/, loaders: ['babel-loader'], exclude: /\/node_modules\/((?!expedition\-api).)*$/ },
     ]
   },
   plugins: [
@@ -57,41 +55,9 @@ const options = {
       },
     }),
     new CopyWebpackPlugin([
-      { from: 'app/index.html' },
-      { from: 'app/assets' },
+      { from: 'src/index.html' },
+      { from: 'src/assets' },
     ]),
-    new Webpack.LoaderOptionsPlugin({ // This MUST go last to ensure proper test config
-      options: {
-        tslint: {
-          configuration: {
-           rules: {
-              quotemark: [true, 'single', 'jsx-double'],
-              curly: true,
-              noUseBeforeDeclare: true,
-              eofline: true,
-              radix: true,
-              switchDefault: true,
-              tripleEquals: true,
-              typeofCompare: true,
-              useIsnan: true,
-              indent: [true, "spaces"],
-              // We can add these when we feel like having more style enforcement
-              //noUnusedVariables: true,
-              //noVarKeyword: true,
-              //preferConst: true,
-              //trailingComma: true,
-            }
-          },
-          emitErrors: true,
-          failOnHint: true,
-          tsConfigFile: 'tsconfig.json',
-        },
-        babel: {
-          presets: ["es2015"],
-          cacheDirectory: true,
-        },
-      },
-    }),
   ],
 };
 
