@@ -73,7 +73,7 @@
     "file-loader": "~1.1.11",
     "he": "^1.1.1",
     "html": "^1.0.0",
-    "jasmine": "^2.5.3",
+    "jasmine": "^3.0.0",
     "jasmine-core": "^3.0.0",
     "jasmine-expect": "^3.7.0",
     "jest": "^22.4.3",
