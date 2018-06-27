@@ -1,8 +1,8 @@
-import Redux from 'redux'
-import {NODE_ENV} from '../Constants'
-import {ContentSetsType, DifficultyType, FontSizeType, SettingsType} from './StateTypes'
-import {ChangeSettingsAction} from '../actions/ActionTypes'
-import {getStorageBoolean, getStorageJson, getStorageNumber, getStorageString, setStorageKeyValue} from '../LocalStorage'
+import Redux from 'redux';
+import {ChangeSettingsAction} from '../actions/ActionTypes';
+import {NODE_ENV} from '../Constants';
+import {getStorageBoolean, getStorageJson, getStorageNumber, getStorageString, setStorageKeyValue} from '../LocalStorage';
+import {ContentSetsType, DifficultyType, FontSizeType, SettingsType} from './StateTypes';
 
 export const initialSettings: SettingsType = {
   audioEnabled: getStorageBoolean('audioEnabled', false),
@@ -20,7 +20,7 @@ export const initialSettings: SettingsType = {
 };
 
 export function settings(state: SettingsType = initialSettings, action: Redux.Action): SettingsType {
-  switch(action.type) {
+  switch (action.type) {
     case 'CHANGE_SETTINGS':
       const changes = (action as ChangeSettingsAction).settings || {};
       Object.keys(changes).forEach((key: string) => {

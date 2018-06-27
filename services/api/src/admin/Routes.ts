@@ -1,8 +1,8 @@
-import * as express from 'express'
-import * as Handlers from './Handlers'
-import Config from '../config'
-import {Database} from '../models/Database'
-import {limitCors} from '../lib/cors'
+import * as express from 'express';
+import Config from '../config';
+import {limitCors} from '../lib/cors';
+import {Database} from '../models/Database';
+import * as Handlers from './Handlers';
 
 // We store auth details in res.locals. If there's no stored data there, the user is not logged in.
 function requireAdminAuth(req: express.Request, res: express.Response, next: express.NextFunction) {

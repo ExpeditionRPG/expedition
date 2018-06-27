@@ -1,22 +1,22 @@
+import * as Promise from 'bluebird';
+import {PUBLIC_PARTITION} from 'shared/schema/Constants';
+import {Feedback} from 'shared/schema/Feedback';
+import {MailService} from '../Mail';
+import {Database, FeedbackInstance} from './Database';
 import {
   FabricateFeedbackEmail,
   FabricateReportQuestEmail,
+  getFeedback,
   submitFeedback,
-  submitReportQuest,
   submitRating,
-  getFeedback
-} from './Feedback'
-import {Feedback} from 'shared/schema/Feedback'
-import {PUBLIC_PARTITION} from 'shared/schema/Constants'
-import {MailService} from '../Mail'
-import {Database, FeedbackInstance} from './Database'
-import {getQuest} from './Quests'
-import * as Promise from 'bluebird'
+  submitReportQuest
+} from './Feedback';
+import {getQuest} from './Quests';
 import {
-  testingDBWithState,
-  quests as q,
   feedback as fb,
-} from './TestData'
+  quests as q,
+  testingDBWithState,
+} from './TestData';
 
 describe('feedback', () => {
   let ms: MailService;
@@ -68,7 +68,7 @@ describe('feedback', () => {
         })
         .catch(done.fail);
     });
-  });;
+  });
 
   describe('submitReportQuest', () => {
     it('sends report with quest ID and feedback user email', (done) => {
@@ -100,7 +100,7 @@ describe('feedback', () => {
       testingDBWithState([q.basic])
         .then((tdb) => submitReportQuest(tdb, ms, report, ''))
         .then(done.fail)
-        .catch(() => {done();});
+        .catch(() => {done(); });
     });
   });
 
@@ -125,7 +125,7 @@ describe('feedback', () => {
         })
         .then(() => getFeedback(db, PUBLIC_PARTITION, 'questid', 'userid'))
         .then((result: FeedbackInstance) => {
-          const feedbackResult = new Feedback(result.dataValues)
+          const feedbackResult = new Feedback(result.dataValues);
           feedbackResult.setDefaults = [];
           expect(feedbackResult).toEqual(fb.rating);
           done();

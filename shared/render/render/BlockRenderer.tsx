@@ -1,8 +1,8 @@
-import {Renderer, CombatChild, Instruction, RoleplayChild} from './Renderer'
-import {Block} from '../block/BlockList'
-import {Logger} from '../Logger'
-import {Normalize} from '../validation/Normalize'
-import {REGEX} from '../../Regex'
+import {REGEX} from '../../Regex';
+import {Block} from '../block/BlockList';
+import {Logger} from '../Logger';
+import Normalize from '../validation/Normalize';
+import {CombatChild, Instruction, Renderer, RoleplayChild} from './Renderer';
 
 function isNumeric(n: any) {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -17,7 +17,7 @@ export class BlockRenderer {
     this.renderer = renderer;
   }
 
-  toRoleplay(blocks: Block[], log: Logger) {
+  public toRoleplay(blocks: Block[], log: Logger) {
     // There are cases where we don't have a roleplay header, e.g.
     // the first roleplay block inside a choice. This is fine,
     // and not an error, so we don't pass a logger here.
@@ -26,8 +26,8 @@ export class BlockRenderer {
     extracted = extracted || {title: '', id: undefined, json: {}};
 
     const attribs = extracted.json;
-    attribs['title'] = attribs['title'] || extracted.title;
-    attribs['id'] = attribs['id'] || extracted.id;
+    attribs.title = attribs.title || extracted.title;
+    attribs.id = attribs.id || extracted.id;
 
     // don't count length of icon names, just that they take up ~1 character
     if (attribs.title.replace(/:.*?:/g, '#').length >= 25) {
@@ -36,7 +36,7 @@ export class BlockRenderer {
 
     // The only inner stuff
     let i = 0;
-    const body: (string|RoleplayChild|Instruction)[] = [];
+    const body: Array<string|RoleplayChild|Instruction> = [];
     while (i < blocks.length) {
       const block = blocks[i];
       if (block.render) {
@@ -86,7 +86,7 @@ export class BlockRenderer {
           log.err(
             'choice missing title',
             '428',
-            blocks[i-1].startLine-2
+            blocks[i - 1].startLine - 2
           );
         }
         body.push(choice);
@@ -96,13 +96,13 @@ export class BlockRenderer {
     }
 
     blocks[0].render = this.renderer.toRoleplay(attribs, body, blocks[0].startLine);
-  };
+  }
 
-  toQuest(block: Block, log: Logger) {
+  public toQuest(block: Block, log: Logger) {
     block.render = this.renderer.toQuest(this.toMeta(block, log), block.startLine);
   }
 
-  toTrigger(blocks: Block[], log: Logger) {
+  public toTrigger(blocks: Block[], log: Logger) {
     if (blocks.length !== 1) {
       log.internal('trigger found with multiple blocks', '502');
     }
@@ -118,7 +118,7 @@ export class BlockRenderer {
     blocks[0].render = this.renderer.toTrigger(extracted, blocks[0].startLine);
   }
 
-  validate(): any {
+  public validate(): any {
     // TODO:
     // - Ensure there's at least one node that isn't the quest
     // - Ensure all paths end with an "end" trigger
@@ -128,7 +128,7 @@ export class BlockRenderer {
     return [];
   }
 
-  toCombat(blocks: Block[], log: Logger) {
+  public toCombat(blocks: Block[], log: Logger) {
     if (!blocks.length) {
       log.err(
         'empty combat list',
@@ -137,12 +137,13 @@ export class BlockRenderer {
       );
     }
 
-    const extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], log) || {title: 'combat', id: undefined, json: {}};
+    const extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], log) ||
+      {title: 'combat', id: undefined, json: {}};
 
     const attribs = extracted.json;
-    attribs['id'] = attribs['id'] || extracted.id;
+    attribs.id = attribs.id || extracted.id;
 
-    attribs['enemies'] = attribs['enemies'] || [];
+    attribs.enemies = attribs.enemies || [];
     for (let i = 0; i < blocks[0].lines.length; i++) {
       const line = blocks[0].lines[i];
       if (line[0] === '-') {
@@ -154,8 +155,8 @@ export class BlockRenderer {
         if (!extractedBullet.text) {
           // Visible is actually a value expression
           enemy = {
-            text: '{{' + extractedBullet.visible + '}}',
             json: extractedBullet.json,
+            text: '{{' + extractedBullet.visible + '}}',
           };
         }
 
@@ -167,15 +168,14 @@ export class BlockRenderer {
             continue;
           }
         }
-        attribs['enemies'].push(enemy);
+        attribs.enemies.push(enemy);
       }
     }
 
-    if (attribs['enemies'].length === 0) {
+    if (attribs.enemies.length === 0) {
       log.err('combat card has no enemies listed', '414');
-      attribs['enemies'] = [{text: 'UNKNOWN'}];
+      attribs.enemies = [{text: 'UNKNOWN'}];
     }
-
 
     const events: CombatChild[] = [];
     let currEvent: CombatChild | null = null;
@@ -195,7 +195,7 @@ export class BlockRenderer {
       }
 
       // Skip the first line if we're at the root block (already parsed)
-      for (let j = (i===0) ? 1 : 0; j < block.lines.length; j++) {
+      for (let j = (i === 0) ? 1 : 0; j < block.lines.length; j++) {
         const line = block.lines[j];
         // Skip empty lines, enemy list
         if (line === '' || line[0] === '-') {
@@ -228,9 +228,9 @@ export class BlockRenderer {
     let hasWin = false;
     let hasLose = false;
 
-    for (let i = 0; i < events.length; i++) {
-      hasWin = hasWin || (events[i].text === 'on win');
-      hasLose = hasLose || (events[i].text === 'on lose');
+    for (const event of events) {
+      hasWin = hasWin || (event.text === 'on win');
+      hasLose = hasLose || (event.text === 'on lose');
     }
     if (!hasWin) {
       log.err('combat card must have "on win" event', '417');
@@ -244,11 +244,11 @@ export class BlockRenderer {
     blocks[0].render = this.renderer.toCombat(attribs, events, blocks[0].startLine);
   }
 
-  toMeta(block: Block, log?: Logger): {[k: string]: any} {
+  public toMeta(block: Block, log?: Logger): {[k: string]: any} {
     // Parse meta using the block itself.
     // Metadata format is standard across all renderers.
     if (!block) {
-      return {'title': 'UNKNOWN'};
+      return {title: 'UNKNOWN'};
     }
 
     const attrs: {[k: string]: string} = {title: block.lines[0].substr(1).trim()};
@@ -266,7 +266,9 @@ export class BlockRenderer {
 
       if (k !== 'title') {
         if (log) {
-          log.err('Quest attributes have migrated to the "Publish" button - simply delete this line.', '429', block.startLine + i);
+          log.err('Quest attributes have migrated to the "Publish" button - simply delete this line.',
+            '429',
+            block.startLine + i);
         }
       }
     }
@@ -274,7 +276,7 @@ export class BlockRenderer {
     return Normalize.questAttrs(attrs, log);
   }
 
-  finalize(zeroIndentBlockGroupRoots: Block[], log: Logger): any {
+  public finalize(zeroIndentBlockGroupRoots: Block[], log: Logger): any {
     const toRender: any[] = [];
 
     let quest: any = null;
@@ -313,7 +315,8 @@ export class BlockRenderer {
     return this.renderer.finalize(quest, toRender);
   }
 
-  private extractCombatOrRoleplay(line: string, log?: Logger): {title: string, id?: string, json: {[k: string]: any}} | null {
+  private extractCombatOrRoleplay(line: string, log?: Logger):
+    {title: string, id?: string, json: {[k: string]: any}} | null {
     // Breakdown:
     // ^_(.*)_                  Match italicized text at start of string until there's a break
     //                          which may contain multiple :icon_names: (hence the greedy selection)
@@ -332,11 +335,11 @@ export class BlockRenderer {
         throw new Error('Missing title');
       }
       return {
-        title: m[1],
         id: m[3],
         json: (m[4]) ? JSON.parse(m[4]) : {},
+        title: m[1],
       };
-    } catch(e) {
+    } catch (e) {
       if (log) {
         log.err('could not parse card header', '413');
       }
@@ -344,7 +347,8 @@ export class BlockRenderer {
     }
   }
 
-  private extractBulleted(line: string, idx: number, log: Logger): {text: string, visible?: string, json: {[k: string]: any}} | null {
+  private extractBulleted(line: string, idx: number, log: Logger):
+    {text: string, visible?: string, json: {[k: string]: any}} | null {
     // Breakdown:
     // \*\s*                    Match "*" or "-" and any number of spaces (greedy)
     // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
@@ -361,11 +365,11 @@ export class BlockRenderer {
         throw new Error('Match failed');
       }
       return {
-        visible: m[2] || undefined,
-        text: (m[3]) ? m[3].trim() : '',
         json: (m[4]) ? JSON.parse(m[4]) : {},
+        text: (m[3]) ? m[3].trim() : '',
+        visible: m[2] || undefined,
       };
-    } catch(e) {
+    } catch (e) {
       if (log) {
         log.err('failed to parse bulleted line (check your JSON)', '412', idx);
       }
@@ -377,13 +381,13 @@ export class BlockRenderer {
     const m = line.match(REGEX.INSTRUCTION);
     if (!m) {
       return {
-        visible: 'false',
         text: '',
+        visible: 'false',
       };
     }
     return {
-      visible: m[2],
       text: m[3] || '',
+      visible: m[2],
     };
   }
 
@@ -391,13 +395,13 @@ export class BlockRenderer {
     const m = line.match(REGEX.TRIGGER);
     if (!m) {
       return {
-        visible: 'false',
         text: '',
+        visible: 'false',
       };
     }
     return {
-      visible: m[2],
       text: m[3],
+      visible: m[2],
     };
   }
 
@@ -407,10 +411,10 @@ export class BlockRenderer {
       if (lines[i] === '') {
         continue;
       }
-      if (lines[i-1] === '' && result[result.length-1] !== '') {
+      if (lines[i - 1] === '' && result[result.length - 1] !== '') {
         result.push('');
       }
-      result[result.length-1] += (result[result.length-1] !== '') ? ' ' + lines[i] : lines[i];
+      result[result.length - 1] += (result[result.length - 1] !== '') ? ' ' + lines[i] : lines[i];
     }
     return result;
   }

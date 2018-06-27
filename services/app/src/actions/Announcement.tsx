@@ -1,10 +1,10 @@
-import Redux from 'redux'
-import * as semver from 'semver'
-import {AnnouncementSetAction, FetchAnnouncementResponse} from './ActionTypes'
-import {handleFetchErrors} from './Web'
-import {AUTH_SETTINGS, URLS} from '../Constants'
-import {logEvent} from '../Logging'
-import {getAppVersion, getDevicePlatform} from '../Globals'
+import Redux from 'redux';
+import * as semver from 'semver';
+import {AUTH_SETTINGS, URLS} from '../Constants';
+import {getAppVersion, getDevicePlatform} from '../Globals';
+import {logEvent} from '../Logging';
+import {AnnouncementSetAction, FetchAnnouncementResponse} from './ActionTypes';
+import {handleFetchErrors} from './Web';
 
 export function fetchAnnouncements() {
   return (dispatch: Redux.Dispatch<any>): any => {
@@ -36,7 +36,7 @@ export function handleAnnouncements(data: FetchAnnouncementResponse) {
         logEvent('announcement_app_version_invalid_err', {label: newVersion});
       }
     }
-  }
+  };
 }
 
 export function setAnnouncement(open: boolean, message?: string, link?: string): AnnouncementSetAction {

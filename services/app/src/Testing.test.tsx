@@ -1,6 +1,6 @@
-import * as Redux from 'redux'
-import {Reducer, Action} from './Testing'
-import {remoteify} from './actions/ActionTypes'
+import * as Redux from 'redux';
+import {remoteify} from './actions/ActionTypes';
+import {Action, Reducer} from './Testing';
 
 function testReducer<A extends Redux.Action>(a: {b: number}, action: A) {
   if (action.type !== 'TEST_ACTION') {
@@ -23,7 +23,7 @@ describe('Test Environment', () => {
     });
     it('supports expect.toChangeState', () => {
       Reducer(testReducer).withState({a: 10}).expect({type: 'TEST_ACTION', b: 9} as Redux.Action).toChangeState({b: 9});
-    })
+    });
   });
 
   describe('Action', () => {
@@ -44,8 +44,8 @@ describe('Test Environment', () => {
       Action(action).expect({b: 5}).toSendMultiplayer({b: 1});
     });
     it('supports expect.toNotSendMultiplayer', () => {
-      Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => {return null;})).expect({b: 5}).toNotSendMultiplayer();
-      Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => {return {b: 5};})).expect({b: 5}).toNotSendMultiplayer({b: 1});
+      Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => null)).expect({b: 5}).toNotSendMultiplayer();
+      Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => ({b: 5}))).expect({b: 5}).toNotSendMultiplayer({b: 1});
     });
     it('supports expect.toDispatch', () => {
       Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => {

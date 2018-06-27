@@ -1,4 +1,4 @@
-import {getLocalStorage} from './Globals'
+import {getLocalStorage} from './Globals';
 
 // Force specifying a default, since just doing (|| fallback) would bork on stored falsey values
 export function getStorageBoolean(key: string, fallback: boolean): boolean {
@@ -28,7 +28,6 @@ export function getStorageString(key: string, fallback: string): string {
   const val = getLocalStorage().getItem(key);
   return (val !== null) ? val : fallback;
 }
-
 
 // Value can be boolean, number, string or stringifiable JSON
 export function setStorageKeyValue(key: string, value: any) {

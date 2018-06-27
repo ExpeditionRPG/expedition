@@ -1,11 +1,11 @@
-import thunk from 'redux-thunk'
-import {createStore, applyMiddleware} from 'redux'
-import app from './reducers/CombinedReducers'
+import {applyMiddleware, createStore} from 'redux';
+import thunk from 'redux-thunk';
+import app from './reducers/CombinedReducers';
 
 // For dev tools extension
-declare const window:any;
-declare const require:any;
-declare const module:any;
+declare const window: any;
+declare const require: any;
+declare const module: any;
 
 let store: any = null;
 
@@ -15,7 +15,7 @@ function installStore(createdStore: any) {
 
 function createAppStore() {
 
-  const devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f:any)=>f;
+  const devtools: any = window.devToolsExtension ? window.devToolsExtension() : (f: any) => f;
   const middleware = applyMiddleware(thunk);
 
   installStore(middleware(devtools(createStore))(app, {}));

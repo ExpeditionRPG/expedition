@@ -1,8 +1,8 @@
-import {SchemaBase, field, copyAndUnsetDefaults, NOW} from './SchemaBase'
-import {DIFFICULTIES} from './Constants'
+import {DIFFICULTIES} from './Constants';
+import {copyAndUnsetDefaults, field, NOW, SchemaBase} from './SchemaBase';
 
 export class AnalyticsEvent extends SchemaBase {
-  static create(fields: Partial<AnalyticsEvent>) {
+  public static create(fields: Partial<AnalyticsEvent>) {
     return super.initialize(this, fields);
   }
 
@@ -10,66 +10,66 @@ export class AnalyticsEvent extends SchemaBase {
     super(fields);
   }
 
-  withoutDefaults() {
+  public withoutDefaults() {
     return copyAndUnsetDefaults(AnalyticsEvent, this);
   }
 
   @field({
-    primaryKey: true,
     allowNull: false,
-    maxLength: 255,
     column: 'user_id',
-  }) userID: string;
-
-  @field({
+    maxLength: 255,
     primaryKey: true,
+  }) public userID: string;
+
+  @field({
     default: NOW,
-  }) created: Date
+    primaryKey: true,
+  }) public created: Date;
 
   @field({
-    maxLength: 255,
-    default: '',
     allowNull: false,
-  }) category: string;
+    default: '',
+    maxLength: 255,
+  }) public category: string;
 
   @field({
-    maxLength: 255,
-    default: '',
     allowNull: false,
-  }) action: string;
-
-  @field({
     default: '',
     maxLength: 255,
+  }) public action: string;
+
+  @field({
     column: 'quest_id',
-  }) questID: string;
+    default: '',
+    maxLength: 255,
+  }) public questID: string;
 
   @field({
-    default: 1,
     column: 'quest_version',
-  }) questVersion: number;
+    default: 1,
+  }) public questVersion: number;
 
   @field({
-    maxLength: 32,
     default: '',
+    maxLength: 32,
     valid: [...DIFFICULTIES, ''],
-  }) difficulty: string;
+  }) public difficulty: string;
 
   @field({
-    maxLength: 32,
     default: '',
-  }) platform: string;
+    maxLength: 32,
+  }) public platform: string;
 
   @field({
     default: 0,
-  }) players: number;
+  }) public players: number;
 
   @field({
+    default: '',
     maxLength: 32,
-    default: '',
-  }) version: string;
+  }) public version: string;
 
   @field({
     default: '',
-  }) json: string;
+  }) public json: string;
 }

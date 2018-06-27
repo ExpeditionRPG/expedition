@@ -1,8 +1,8 @@
-import * as React from 'react'
-import {configure, shallow} from 'enzyme'
-import * as Adapter from 'enzyme-adapter-react-16'
+import {configure, shallow} from 'enzyme';
+import * as Adapter from 'enzyme-adapter-react-16';
+import * as React from 'react';
 configure({ adapter: new Adapter() });
-import ExpeditionCard, {ExpeditionCardProps} from './Card'
+import ExpeditionCard, {ExpeditionCardProps} from './Card';
 
 describe('Card', () => {
   function setup(overrides?: Partial<ExpeditionCardProps>) {
@@ -21,7 +21,7 @@ describe('Card', () => {
   });
 
   it('displays card title', () => {
-    const {props, wrapper} = setup({title: 'title'});
+    const {wrapper} = setup({title: 'title'});
     expect(wrapper.find('.title').text()).toBe('title');
   });
 
@@ -32,14 +32,14 @@ describe('Card', () => {
   it('Cancelling a go home while in quest does not trigger a go home');
 
   it('applies default card and quest theme classes', () => {
-    const {props, wrapper} = setup();
+    const {wrapper} = setup();
     expect(wrapper.find('.base_card').hasClass('card_theme_light')).toBe(true);
     expect(wrapper.find('.base_card').hasClass('quest_theme_base')).toBe(true);
   });
 
   // TODO mock out quest state, specifically .details.theme
   it('applies provided card and quest theme classes', () => {
-    const {props, wrapper} = setup({theme: 'dark'});
+    const {wrapper} = setup({theme: 'dark'});
     expect(wrapper.find('.base_card').hasClass('card_theme_dark')).toBe(true);
   });
 });

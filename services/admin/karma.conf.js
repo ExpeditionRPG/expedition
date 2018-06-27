@@ -1,26 +1,22 @@
-var webpackConfig = require('./webpack.config');
-var webpack = require('webpack');
+const webpackConfig = require('./webpack.config');
+const webpack = require('webpack');
 
 webpackConfig.module.rules.unshift({
   test: /isIterable/,
   loader: 'imports?Symbol=>false'
 });
 
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine'],
     files: [
-      'node_modules/babel-polyfill/dist/polyfill.js',
-      'node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
-      { pattern: 'src/**/*.test.tsx' },
-      'errors/errors.test.tsx',
+      '../../node_modules/babel-polyfill/dist/polyfill.js',
+      '../../node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
+      { pattern: 'src/**/*.test.tsx' }
     ],
     preprocessors: {
-      '**/*.test.tsx': ['webpack'],
-    },
-    globals: {
-      utils: {},
+      'src/**/*.test.tsx': ['webpack'],
     },
     webpack: {
       module: webpackConfig.module,
@@ -40,7 +36,7 @@ module.exports = function (config) {
       terminal: true,
     },
     reporters: ['progress'],
-    port: 9876,
+    port: 8081,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
@@ -53,6 +49,9 @@ module.exports = function (config) {
     },
     singleRun: false,
     concurrency: Infinity,
-    captureConsole: true,
+    browserNoActivityTimeout: 60000,
+    browserDisconnectTimeout: 30000,
+    captureTimeout: 60000,
+    browserDisconnectTolerance: 5,
   });
-};
+}

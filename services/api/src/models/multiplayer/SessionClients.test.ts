@@ -1,13 +1,13 @@
-import {SessionClientInstance} from '../Database'
-import {SessionClient} from 'shared/schema/multiplayer/SessionClients'
+import {SessionClient} from 'shared/schema/multiplayer/SessionClients';
+import {SessionClientInstance} from '../Database';
 import {
-  verifySessionClient,
-  getClientSessions,
-} from './SessionClients'
-import {
-  testingDBWithState,
   sessionClients as sc,
-} from '../TestData'
+  testingDBWithState,
+} from '../TestData';
+import {
+  getClientSessions,
+  verifySessionClient,
+} from './SessionClients';
 
 describe('SessionClients', () => {
   describe('verifySessionClient', () => {

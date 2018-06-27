@@ -1,6 +1,6 @@
-import Redux from 'redux'
-import {SetDialogAction} from '../actions/ActionTypes'
-import {DialogsState} from './StateTypes'
+import Redux from 'redux';
+import {SetDialogAction} from '../actions/ActionTypes';
+import {DialogsState} from './StateTypes';
 
 const initialState: DialogsState = {
   open: 'NONE',

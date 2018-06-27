@@ -1,69 +1,67 @@
-import * as React from 'react'
-import {REGEX} from 'shared/Regex'
-import AudioControlsContainer from '../../../../base/AudioControlsContainer'
-import Button from '../../../../base/Button'
-import Callout from '../../../../base/Callout'
-import Card from '../../../../base/Card'
-import Picker from '../../../../base/Picker'
-import TimerCard from '../../../../base/TimerCard'
-import {MAX_ADVENTURER_HEALTH, NODE_ENV} from '../../../../../Constants'
-import {isSurgeNextRound, roundTimeMillis} from './Actions'
-import {SettingsType, CardState, MultiplayerState} from '../../../../../reducers/StateTypes'
-import {ParserNode} from '../TemplateTypes'
-import {EventParameters, Enemy, Loot} from '../../../../../reducers/QuestTypes'
-import {CombatPhase, CombatState} from './Types'
-import Roleplay from '../roleplay/Roleplay'
-import Decision from '../decision/Decision'
-import {DecisionState, DecisionType} from '../decision/Types'
+import * as React from 'react';
+import {REGEX} from 'shared/Regex';
+import {MAX_ADVENTURER_HEALTH, NODE_ENV} from '../../../../../Constants';
+import {Enemy, EventParameters, Loot} from '../../../../../reducers/QuestTypes';
+import {CardState, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
+import AudioControlsContainer from '../../../../base/AudioControlsContainer';
+import Button from '../../../../base/Button';
+import Callout from '../../../../base/Callout';
+import Card from '../../../../base/Card';
+import Picker from '../../../../base/Picker';
+import TimerCard from '../../../../base/TimerCard';
+import Decision from '../decision/Decision';
+import {DecisionState, DecisionType} from '../decision/Types';
+import Roleplay from '../roleplay/Roleplay';
+import {ParserNode} from '../TemplateTypes';
+import {isSurgeNextRound, roundTimeMillis} from './Actions';
+import {CombatPhase, CombatState} from './Types';
 
 export interface CombatStateProps {
   card: CardState;
   combat: CombatState;
-  settings: SettingsType;
   decision: DecisionState;
   maxTier: number;
-  node: ParserNode;
-  seed: string;
-  victoryParameters?: EventParameters;
-  multiplayerState?: MultiplayerState;
-  tier: number;
-  numAliveAdventurers: number;
   mostRecentRolls?: number[];
+  multiplayerState?: MultiplayerState;
+  node: ParserNode;
+  numAliveAdventurers: number;
+  seed: string;
+  settings: SettingsType;
+  tier: number;
+  victoryParameters?: EventParameters;
 }
 
 export interface CombatDispatchProps {
-  onNext: (phase: CombatPhase) => void;
-  onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
-  onRetry: () => void;
-  onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
-  onTimerStart: () => void;
-  onTimerHeld: (node: ParserNode) => void;
-  onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => void;
-  onReturn: () => void;
-  onTierSumDelta: (node: ParserNode, current: number, delta: number) => void;
   onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => void;
-  onEvent: (node: ParserNode, event: string) => void;
-  onCustomEnd: () => void;
   onChoice: (node: ParserNode, settings: SettingsType, index: number, maxTier: number, seed: string) => void;
-  onSurgeNext: (node: ParserNode) => void;
-
+  onCustomEnd: () => void;
+  onDecisionChoice: (node: ParserNode, settings: SettingsType, choice: DecisionType, elapsedMillis: number, seed: string) => void;
+  onDecisionEnd: () => void;
+  onDecisionRoll: (node: ParserNode, settings: SettingsType, decision: DecisionState, roll: number, seed: string) => void;
   onDecisionSetup: () => void;
   onDecisionTimerStart: () => void;
-  onDecisionChoice: (node: ParserNode, settings: SettingsType, choice: DecisionType, elapsedMillis: number, seed: string) => void;
-  onDecisionRoll: (node: ParserNode, settings: SettingsType, decision: DecisionState, roll: number, seed: string) => void;
-  onDecisionEnd: () => void;
+  onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
+  onEvent: (node: ParserNode, event: string) => void;
+  onNext: (phase: CombatPhase) => void;
+  onRetry: () => void;
+  onReturn: () => void;
+  onSurgeNext: (node: ParserNode) => void;
+  onTierSumDelta: (node: ParserNode, current: number, delta: number) => void;
+  onTimerHeld: (node: ParserNode) => void;
+  onTimerStart: () => void;
+  onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => void;
+  onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
 }
 
-export interface CombatProps extends CombatStateProps, CombatDispatchProps {};
+export interface CombatProps extends CombatStateProps, CombatDispatchProps {}
 
-const numerals: {[k: number]: string;} = {
+const numerals: {[k: number]: string; } = {
   1: 'I',
   2: 'II',
   3: 'III',
   4: 'IV',
   5: 'V',
 };
-
 
 function renderSelectTier(props: CombatProps): JSX.Element {
   const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
@@ -72,7 +70,7 @@ function renderSelectTier(props: CombatProps): JSX.Element {
       <Picker
         label="Tier Sum"
         id="tier_sum"
-        onDelta={(i: number)=>props.onTierSumDelta(props.node, props.tier, i)}
+        onDelta={(i: number) => props.onTierSumDelta(props.node, props.tier, i)}
         value={props.tier}>
         Set this to the combined tier you wish to fight.
       </Picker>
@@ -310,7 +308,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
       <Picker
         label="Tier Sum"
         id="tier_sum"
-        onDelta={(i: number)=>props.onTierSumDelta(props.node, props.tier, i)}
+        onDelta={(i: number) => props.onTierSumDelta(props.node, props.tier, i)}
         value={props.tier}>
         {props.settings.showHelp && 'The total tier of remaining enemies.'}
       </Picker>
@@ -318,7 +316,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
       <Picker
         label="Adventurers"
         id="adventurers"
-        onDelta={(i: number)=>props.onAdventurerDelta(props.node, props.settings, props.numAliveAdventurers, i)}
+        onDelta={(i: number) => props.onAdventurerDelta(props.node, props.settings, props.numAliveAdventurers, i)}
         value={props.numAliveAdventurers}>
         {props.settings.showHelp && <span>The number of adventurers &gt; 0 health.</span>}
       </Picker>
@@ -353,7 +351,7 @@ function renderVictory(props: CombatProps): JSX.Element {
         <p key="c4">The party draws the following loot:</p>
       );
       const renderedLoot = props.combat.loot.map((loot: Loot, index: number) => {
-        return (<li key={index}><strong>{capitalizeFirstLetter(numberToWord(loot.count))} tier {numerals[loot.tier]} loot</strong></li>)
+        return (<li key={index}><strong>{capitalizeFirstLetter(numberToWord(loot.count))} tier {numerals[loot.tier]} loot</strong></li>);
       });
       contents.push(<ul key="c5">{renderedLoot}</ul>);
 
@@ -428,7 +426,7 @@ function renderDefeat(props: CombatProps): JSX.Element {
 function renderTimerCard(props: CombatProps): JSX.Element {
   const surge = isSurgeNextRound(props.node.ctx.templates.combat);
   const surgeWarning = (props.settings.difficulty === 'EASY' && surge) ? 'Surge Imminent' : undefined;
-  let instruction: string|undefined = undefined;
+  let instruction: string|undefined;
   if (props.settings.showHelp) {
     if (props.settings.numPlayers > 1) {
       if (props.settings.multitouch) {
@@ -461,10 +459,10 @@ function renderTimerCard(props: CombatProps): JSX.Element {
 function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
   return Roleplay({
     node: props.node,
+    onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(props.node, settings, index, props.maxTier, props.seed); },
+    onRetry: () => {props.onRetry(); },
+    onReturn: () => {props.onReturn(); },
     settings: props.settings,
-    onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(props.node, settings, index, props.maxTier, props.seed)},
-    onRetry: () => {props.onRetry()},
-    onReturn: () => {props.onReturn()},
   }, 'dark');
 }
 
@@ -473,16 +471,16 @@ function renderMidCombatDecision(props: CombatProps): JSX.Element {
 
   return Decision({
     card: {...props.card, phase: props.combat.decisionPhase},
-    decision: decision,
-    settings: props.settings,
-    node: props.node,
-    seed: props.seed,
+    decision,
     maxAllowedAttempts: props.combat.numAliveAdventurers,
     multiplayerState: props.multiplayerState,
-    onStartTimer: props.onDecisionTimerStart,
+    node: props.node,
     onChoice: props.onDecisionChoice,
-    onRoll: props.onDecisionRoll,
     onEnd: props.onDecisionEnd,
+    onRoll: props.onDecisionRoll,
+    onStartTimer: props.onDecisionTimerStart,
+    seed: props.seed,
+    settings: props.settings,
   }, 'dark');
 }
 
@@ -508,7 +506,7 @@ function capitalizeFirstLetter(input: string): string {
 }
 
 const Combat = (props: CombatProps): JSX.Element => {
-  switch(props.card.phase) {
+  switch (props.card.phase) {
     case 'DRAW_ENEMIES':
       return (props.combat.custom) ? renderSelectTier(props) : renderDrawEnemies(props);
     case 'NO_TIMER':
@@ -534,6 +532,6 @@ const Combat = (props: CombatProps): JSX.Element => {
     default:
       throw new Error('Unknown combat phase ' + props.card.phase);
   }
-}
+};
 
 export default Combat;

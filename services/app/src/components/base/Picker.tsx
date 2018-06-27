@@ -1,8 +1,8 @@
-import * as React from 'react'
-import IconButton from '@material-ui/core/IconButton'
-import ChevronLeft from '@material-ui/icons/ChevronLeft'
-import ChevronRight from '@material-ui/icons/ChevronRight'
-import MultiplayerRipple from '../multiplayer/MultiplayerRipple'
+import IconButton from '@material-ui/core/IconButton';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import * as React from 'react';
+import MultiplayerRipple from '../multiplayer/MultiplayerRipple';
 
 interface PickerProps extends React.Props<any> {
   value: number | string;
@@ -12,7 +12,7 @@ interface PickerProps extends React.Props<any> {
 }
 
 export default class Picker extends React.Component<PickerProps, {}> {
-  render() {
+  public render() {
     return (
       <div className="base_picker">
         <div className="controls">

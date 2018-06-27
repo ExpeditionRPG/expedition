@@ -6,7 +6,7 @@
   "repository": "https://github.com/ExpeditionRPG/expedition",
   "author": "Fabricate.IO",
   "scripts": {
-    "lint": "tslint -c tslint.json '{shared,services}/**/*.{ts,tsx}'",
+    "lint": "tslint --fix -c tslint.json -p tsconfig.json '{shared,services}/**/*.{ts,tsx}'",
     "pretest": "npm run lint",
     "test": "set -e && mocha meta_tests.js && (cd shared && yarn test) && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
     "admin": "cd services/admin && yarn start",

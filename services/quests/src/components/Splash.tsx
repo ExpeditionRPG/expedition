@@ -1,10 +1,10 @@
-import * as React from 'react'
-import AppBar from '@material-ui/core/AppBar'
-import Button from '@material-ui/core/Button'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import ExpeditionButton from 'app/components/base/Button'
-import {UserState} from '../reducers/StateTypes'
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import ExpeditionButton from 'app/components/base/Button';
+import * as React from 'react';
+import {UserState} from '../reducers/StateTypes';
 
 export interface SplashDispatchProps {
   onLogin: (position: string) => void;
@@ -92,7 +92,8 @@ const Splash = (props: any): JSX.Element => {
               </p>
               <p>
                 If you're a veteran programmer,
-                you can use integrated <a target="_blank" rel="nofollow" href="https://mathjs.org">MathJS</a> to weave intricate storylines and puzzles.
+                you can use integrated <a target="_blank" rel="nofollow" href="https://mathjs.org">MathJS</a>
+                to weave intricate storylines and puzzles.
               </p>
               <h3>Features:</h3>
               <ul>
@@ -110,7 +111,7 @@ const Splash = (props: any): JSX.Element => {
             <ExpeditionButton onClick={() => props.onLogin('bottom')}>
               Get Started
             </ExpeditionButton>
-            <ExpeditionButton onClick={() => {window.location.href='http://expeditiongame.com';}}>
+            <ExpeditionButton onClick={() => {window.location.href = 'http://expeditiongame.com'; }}>
               Expedition Home Page
             </ExpeditionButton>
           </div>
@@ -120,16 +121,18 @@ const Splash = (props: any): JSX.Element => {
           <h1>Frequently Asked Questions</h1>
           <h4>Will I still own my work?</h4>
           <p>
-            <strong>YES!</strong> By publishing your quest on the Expedition Quest Creator, you agree to grant Fabricate, LLC
-            an exclusive, royalty-free, worldwide, perpetual license to your work for the purposes of board and video gaming.
-            But, you still own the core intellectual property, and are welcome to use it in books, poetry, television, and anything else that's not a game.
-            In fact, we encourage you to port your Expedition quests to other mediums to capitalize on the fanbase you'll build here!
+            <strong>YES!</strong> By publishing your quest on the Expedition Quest Creator, you agree
+            to grant Fabricate, LLC a non-exclusive, royalty-free, worldwide, perpetual license to your work
+            for the purposes of board and video gaming. But, you still own the core intellectual property
+            and can use it however you see fit. In fact, we encourage you to port your Expedition quests
+            to other mediums to capitalize on the fanbase you'll build here!
           </p>
           <h4>Can I write in any genre?</h4>
           <p>
-            <strong>YES!</strong> You can select the genre and age level of your quest before publishing, so you can publishing anything from a kid-friendly comedy
-            to an adults-only murder mystery. Note that we reserve the right to remove offensive and pornographic material, and provide tools to users to report
-            quests that violate our community and quality standards.
+            <strong>YES!</strong> You can select the genre and age level of your quest before publishing,
+            so you can publishing anything from a kid-friendly comedy to an adults-only murder mystery.
+            Note that we reserve the right to remove offensive and pornographic material, and provide tools
+            to users to report quests that violate our community and quality standards.
           </p>
 
           <footer>

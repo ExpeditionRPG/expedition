@@ -1,9 +1,9 @@
-import {QuestDetails} from '../reducers/QuestTypes'
-import {getCheerio} from '../Globals'
-import {getStorageJson, getStorageString} from '../LocalStorage'
-import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
-import {defaultContext} from '../components/views/quest/cardtemplates/Template'
-import {savedQuestKey, storeSavedQuest, deleteSavedQuest, listSavedQuests, loadSavedQuest, SAVED_QUESTS_KEY} from './SavedQuests'
+import {defaultContext} from '../components/views/quest/cardtemplates/Template';
+import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {getCheerio} from '../Globals';
+import {getStorageJson, getStorageString} from '../LocalStorage';
+import {QuestDetails} from '../reducers/QuestTypes';
+import {deleteSavedQuest, listSavedQuests, loadSavedQuest, SAVED_QUESTS_KEY, savedQuestKey, storeSavedQuest} from './SavedQuests';
 
 describe('SavedQuest actions', () => {
   const STORED_QUEST_ID = '12345';
@@ -19,7 +19,7 @@ describe('SavedQuest actions', () => {
   });
   afterEach(() => {
     localStorage.clear();
-  })
+  });
 
   describe('deleteSavedQuest', () => {
     it('removes both the listing and the data', () => {
@@ -45,7 +45,7 @@ describe('SavedQuest actions', () => {
     });
     it('stores xml and context path', () => {
       storeSavedQuest(pnode, {id: NEW_ID} as any as QuestDetails, NEW_TS);
-      expect(getStorageJson(savedQuestKey(NEW_ID, NEW_TS), {})).toEqual({xml: (quest+''), path: [0]});
+      expect(getStorageJson(savedQuestKey(NEW_ID, NEW_TS), {})).toEqual({xml: (quest + ''), path: [0]});
     });
   });
 

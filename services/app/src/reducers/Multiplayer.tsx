@@ -1,16 +1,16 @@
-import Redux from 'redux'
-import {MultiplayerSessionAction, MultiplayerHistoryAction, MultiplayerClientStatus} from '../actions/ActionTypes'
-import {MultiplayerState} from './StateTypes'
+import Redux from 'redux';
+import {MultiplayerClientStatus, MultiplayerHistoryAction, MultiplayerSessionAction} from '../actions/ActionTypes';
+import {MultiplayerState} from './StateTypes';
 
 export const initialMultiplayer: MultiplayerState = {
-  history: [],
-  syncing: false,
   clientStatus: {},
+  history: [],
   session: null,
+  syncing: false,
 };
 
 export function multiplayer(state: MultiplayerState = initialMultiplayer, action: Redux.Action|MultiplayerSessionAction): MultiplayerState {
-  switch(action.type) {
+  switch (action.type) {
     case 'MULTIPLAYER_SESSION':
       const rpsa = (action as any) as MultiplayerSessionAction;
       return {...state, session: rpsa.session};
@@ -23,8 +23,8 @@ export function multiplayer(state: MultiplayerState = initialMultiplayer, action
       return {...state, syncing: false};
     case 'MULTIPLAYER_CLIENT_STATUS':
       const rpcs = (action as any) as MultiplayerClientStatus;
-      const newClientStatus = {...state.clientStatus}
-      const k = rpcs.client+'|'+rpcs.instance;
+      const newClientStatus = {...state.clientStatus};
+      const k = rpcs.client + '|' + rpcs.instance;
       newClientStatus[k] = {...newClientStatus[k], ...rpcs.status};
       return {...state, clientStatus: newClientStatus};
     case 'MULTIPLAYER_DISCONNECT':

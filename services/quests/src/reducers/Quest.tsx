@@ -1,11 +1,18 @@
-import Redux from 'redux'
-import {ReceiveQuestLoadAction, ReceiveQuestSaveAction, ReceiveQuestSaveErrAction, ReceiveQuestPublishAction, ReceiveQuestUnpublishAction, QuestMetadataChangeAction} from '../actions/ActionTypes'
-import {QuestType} from './StateTypes'
+import Redux from 'redux';
+import {
+  QuestMetadataChangeAction,
+  ReceiveQuestLoadAction,
+  ReceiveQuestPublishAction,
+  ReceiveQuestSaveAction,
+  ReceiveQuestSaveErrAction,
+  ReceiveQuestUnpublishAction
+} from '../actions/ActionTypes';
+import {QuestType} from './StateTypes';
 
 const initialQuestState: QuestType = {};
 
 export function quest(state: QuestType = initialQuestState, action: Redux.Action): QuestType {
-  switch(action.type) {
+  switch (action.type) {
     case 'QUEST_METADATA_CHANGE':
       const key = (action as QuestMetadataChangeAction).key;
       const value = (action as QuestMetadataChangeAction).value;

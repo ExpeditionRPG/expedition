@@ -1,8 +1,8 @@
-import {SchemaBase, field, copyAndUnsetDefaults, NOW, PLACEHOLDER_DATE} from './SchemaBase'
-import {PARTITIONS, DIFFICULTIES} from './Constants'
+import {DIFFICULTIES, PARTITIONS} from './Constants';
+import {copyAndUnsetDefaults, field, NOW, PLACEHOLDER_DATE, SchemaBase} from './SchemaBase';
 
 export class Feedback extends SchemaBase {
-  static create(fields: Partial<Feedback>) {
+  public static create(fields: Partial<Feedback>) {
     return super.initialize(this, fields);
   }
 
@@ -10,82 +10,82 @@ export class Feedback extends SchemaBase {
     super(fields);
   }
 
-  withoutDefaults() {
+  public withoutDefaults() {
     return copyAndUnsetDefaults(Feedback, this);
   }
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 32,
+    primaryKey: true,
     valid: [...PARTITIONS, ''],
-  }) partition: string;
+  }) public partition: string;
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 255,
-  }) questid: string;
+    primaryKey: true,
+  }) public questid: string;
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 255,
-  }) userid: string;
+    primaryKey: true,
+  }) public userid: string;
 
   @field({
     default: 1,
-  }) questversion: number;
+  }) public questversion: number;
 
   @field({
     default: 0,
-  }) rating: number;
+  }) public rating: number;
 
   @field({
+    default: '',
     maxLength: 2048,
-    default: '',
-  }) text: string;
+  }) public text: string;
 
   @field({
-    maxLength: 255,
     default: '',
-  }) email: string;
+    maxLength: 255,
+  }) public email: string;
 
   @field({
     default: false,
-  }) anonymous: boolean;
+  }) public anonymous: boolean;
 
   @field({
     allowNull: true,
     default: PLACEHOLDER_DATE,
-  }) tombstone: Date;
+  }) public tombstone: Date;
 
   @field({
+    default: '',
     maxLength: 255,
-    default: '',
-  }) name: string;
+  }) public name: string;
 
   @field({
-    maxLength: 32,
     default: 'NORMAL',
+    maxLength: 32,
     valid: DIFFICULTIES,
-  }) difficulty: string;
+  }) public difficulty: string;
 
   @field({
-    maxLength: 32,
     default: '',
-  }) platform: string;
+    maxLength: 32,
+  }) public platform: string;
 
   @field({
     default: NOW,
-  }) created: Date;
+  }) public created: Date;
 
   @field({
     default: 0,
-  }) players: number;
+  }) public players: number;
 
   @field({
     default: '',
     maxLength: 32,
-  }) version: string;
+  }) public version: string;
 }

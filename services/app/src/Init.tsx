@@ -3,34 +3,34 @@ declare var module: any;
 
 // Before we even import other modules, first hook into
 // console logging so we can pass details along with error reports.
-import {setupLogging, logEvent} from './Logging'
+import {logEvent, setupLogging} from './Logging';
 setupLogging(console);
 
-import * as React from 'react'
-import * as Redux from 'redux'
-import * as ReactDOM from 'react-dom'
-import * as Raven from 'raven-js'
-import {Provider} from 'react-redux'
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import * as Raven from 'raven-js';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import {Provider} from 'react-redux';
+import * as Redux from 'redux';
 
-import {AUTH_SETTINGS, NODE_ENV, UNSUPPORTED_BROWSERS, INIT_DELAY} from './Constants'
-import theme from './Theme'
-import {fetchAnnouncements, setAnnouncement} from './actions/Announcement'
-import {audioSet} from './actions/Audio'
-import {toPrevious} from './actions/Card'
-import {setDialog} from './actions/Dialog'
-import {searchAndPlay} from './actions/Search'
-import {changeSettings} from './actions/Settings'
-import {openSnackbar} from './actions/Snackbar'
-import {silentLogin} from './actions/User'
-import {listSavedQuests} from './actions/SavedQuests'
-import {getStore} from './Store'
-import {getAppVersion, getWindow, getDevicePlatform, getDocument, getNavigator, setGA} from './Globals'
-import {getStorageBoolean} from './LocalStorage'
-import {SettingsType} from './reducers/StateTypes'
+import {fetchAnnouncements, setAnnouncement} from './actions/Announcement';
+import {audioSet} from './actions/Audio';
+import {toPrevious} from './actions/Card';
+import {setDialog} from './actions/Dialog';
+import {listSavedQuests} from './actions/SavedQuests';
+import {searchAndPlay} from './actions/Search';
+import {changeSettings} from './actions/Settings';
+import {openSnackbar} from './actions/Snackbar';
+import {silentLogin} from './actions/User';
+import {AUTH_SETTINGS, INIT_DELAY, NODE_ENV, UNSUPPORTED_BROWSERS} from './Constants';
+import {getAppVersion, getDevicePlatform, getDocument, getNavigator, getWindow, setGA} from './Globals';
+import {getStorageBoolean} from './LocalStorage';
+import {SettingsType} from './reducers/StateTypes';
+import {getStore} from './Store';
+import theme from './Theme';
 
-import 'whatwg-fetch' // fetch polyfill
-import Promise from 'promise-polyfill' // promise polyfill
+import Promise from 'promise-polyfill'; // promise polyfill
+import 'whatwg-fetch'; // fetch polyfill
 export function setupPolyfills(): void {
   const w = getWindow();
   if (!w.Promise) {
@@ -43,6 +43,7 @@ const ReactGA = require('react-ga');
 // This is necessary to prevent compiler errors until/unless we fix the rest of
 // the repo to reference custom-defined action types (similar to how redux-thunk does things)
 // TODO: Fix redux types
+/* tslint:disable */
 export type ThunkAction<R, S = {}, E = {}, A extends Redux.Action<any> = Redux.AnyAction> = (
   dispatch: Redux.Dispatch<A>,
   getState: () => S,
@@ -53,16 +54,16 @@ declare module 'redux' {
     <R, E>(asyncAction: ThunkAction<R, {}, E, A>): R;
   }
 }
+/* tslint:enable */
 
 Raven.config(AUTH_SETTINGS.RAVEN, {
-    release: getAppVersion(),
     environment: NODE_ENV,
+    release: getAppVersion(),
     shouldSendCallback(data) {
       const supportedBrowser = !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent);
       return supportedBrowser && NODE_ENV !== 'dev' && !getStore().getState().settings.simulator;
     },
   }).install();
-
 
 function setupDevice() {
   const window = getWindow();
@@ -76,28 +77,26 @@ function setupDevice() {
     audioEnabled: getStorageBoolean('audioEnabled', !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent)),
   }));
 
-
   if (platform === 'android') {
-
     // Hide system UI and keep it hidden (Android 4.4+ only)
     if (window.AndroidFullScreen) {
       window.AndroidFullScreen.immersiveMode(() => {
-        console.log('Immersive mode enabled');
+        // console.log('Immersive mode enabled');
       }, () => {
-        console.error('Immersive mode failed');
+        // console.error('Immersive mode failed');
       });
     } else {
-      console.warn('Immersive mode not supported on this device');
+      // console.warn('Immersive mode not supported on this device');
     }
 
     // Patch for Android browser not properly scrolling to input when keyboard appears
     // https://stackoverflow.com/a/43502958/1332186
-    if(/Android/.test(navigator.appVersion)) {
+    if (/Android/.test(navigator.appVersion)) {
       window.addEventListener('resize', () => {
         if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
           document.activeElement.scrollIntoView();
         }
-      })
+      });
     }
   }
 
@@ -115,8 +114,6 @@ function setupDevice() {
 
   if (window.plugins !== undefined && window.plugins.insomnia !== undefined) {
     window.plugins.insomnia.keepAwake(); // keep screen on while app is open
-  } else {
-    console.warn('Insomnia plugin not found');
   }
 
   // silent login here triggers for cordova plugin
@@ -129,7 +126,7 @@ function setupHotReload() {
   if (module.hot) {
     module.hot.accept();
     module.hot.accept('./components/Compositor', () => {
-      setTimeout(() => {render();});
+      setTimeout(() => {render(); });
     });
   }
 }
@@ -138,22 +135,21 @@ function setupSavedQuests() {
   getStore().dispatch(listSavedQuests());
 }
 
-// disabled during local dev
-declare var ga: any;
 function setupGoogleAnalytics() {
+  // disabled during local dev
   if (window.location.hostname === 'localhost' || NODE_ENV === 'dev') {
     setGA({
-      set: (): void => {},
-      event: (): void => {},
+      event: (): void => { /* mock */ },
+      set: (): void => { /* mock */ },
     });
     return console.log('Google Analytics disabled during local dev.');
   }
   ReactGA.initialize('UA-47408800-9', {
-    titleCase: false,
     gaOptions: {
-      appVersion: getAppVersion(),
       appName: getDevicePlatform(),
+      appVersion: getAppVersion(),
     },
+    titleCase: false,
   });
   ReactGA.pageview('/');
   setGA(ReactGA);
@@ -175,10 +171,10 @@ function setupOnError(window: Window) {
     const questNode = quest.node && quest.node.elem && quest.node.elem[0];
     Raven.setExtraContext({
       card: state.card.key,
-      questName: quest.details.title || 'n/a',
-      questId: quest.details.id,
       questCardTitle: (questNode) ? questNode.attribs.title : '',
+      questId: quest.details.id,
       questLine: (questNode) ? questNode.attribs['data-line'] : '',
+      questName: quest.details.title || 'n/a',
       settings: JSON.stringify(settings),
     });
     Raven.setTagsContext(); // Clear any existing tags
@@ -211,7 +207,7 @@ function setupStorage(document: Document) {
     const ret = document.cookie.indexOf('cookietest=') !== -1;
     document.cookie = 'cookietest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT';
     if (!ret) {
-      throw 'Cookies disabled';
+      throw new Error('Cookies disabled');
     }
   } catch (err) {
     setTimeout(() => {
@@ -242,7 +238,7 @@ export function init() {
   setupStorage(document);
 
   window.platform = window.cordova ? 'cordova' : 'web';
-  window.onpopstate = function(e) {
+  window.onpopstate = (e) => {
     getStore().dispatch(toPrevious({}));
     e.preventDefault();
   };

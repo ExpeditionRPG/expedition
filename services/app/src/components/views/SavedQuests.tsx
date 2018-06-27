@@ -1,7 +1,7 @@
-import * as React from 'react'
-import Card from '../base/Card'
-import Button from '../base/Button'
-import {SavedQuestMeta, SavedQuestsPhase} from '../../reducers/StateTypes'
+import * as React from 'react';
+import {SavedQuestMeta, SavedQuestsPhase} from '../../reducers/StateTypes';
+import Button from '../base/Button';
+import Card from '../base/Card';
 
 const Moment = require('moment');
 
@@ -23,7 +23,7 @@ export interface SavedQuestsProps extends SavedQuestsStateProps, SavedQuestsDisp
 function renderDetails(props: SavedQuestsProps): JSX.Element {
   const selected = props.selected;
   if (!selected) {
-    return <Card title="Saved Quest Details">Loading...</Card>
+    return <Card title="Saved Quest Details">Loading...</Card>;
   }
   const quest = selected.details;
   const expansions = (quest.expansionhorror) ? <span><img className="inline_icon" src="images/horror_small.svg"/>The Horror</span> : 'None';
@@ -35,9 +35,9 @@ function renderDetails(props: SavedQuestsProps): JSX.Element {
         <div className="author">by {quest.author}</div>
         <div className="summary">Saved {Moment(selected.ts).fromNow()}</div>
       </div>
-      <Button className="bigbutton" onClick={(e)=>props.onPlay(selected.details.id, selected.ts)} id="play">Resume</Button>
-      <Button onClick={(e)=>props.onDelete(selected)} id="play">Delete save</Button>
-      <Button onClick={(e)=>props.onReturn()} id="back">Back</Button>
+      <Button className="bigbutton" onClick={(e) => props.onPlay(selected.details.id, selected.ts)} id="play">Resume</Button>
+      <Button onClick={(e) => props.onDelete(selected)} id="play">Delete save</Button>
+      <Button onClick={(e) => props.onReturn()} id="back">Back</Button>
       <div className="searchDetailsExtended">
         <h3>Details</h3>
         <div><strong>Expansions required: </strong>{expansions}</div>
@@ -66,7 +66,7 @@ function renderList(props: SavedQuestsProps): JSX.Element {
   const items: JSX.Element[] = props.saved
     .map((s: SavedQuestMeta, index: number): JSX.Element => {
       return (
-        <Button onClick={() => props.onSelect(s)} key={index} id={'quest'+index.toString()}>
+        <Button onClick={() => props.onSelect(s)} key={index} id={'quest' + index.toString()}>
           <div className="questButton">
             <div className="title">{s.details.title}</div>
             <div className="summary">{Moment(s.ts).fromNow()}</div>
@@ -91,6 +91,6 @@ const SavedQuests = (props: SavedQuestsProps): JSX.Element => {
     default:
       throw new Error('Unknown saved quest phase ' + props.phase);
   }
-}
+};
 
 export default SavedQuests;

@@ -1,13 +1,13 @@
-import * as React from 'react'
-import AppBar from '@material-ui/core/AppBar'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Button from '@material-ui/core/Button'
-import Toolbar from '@material-ui/core/Toolbar'
-import AlertError from '@material-ui/icons/Error'
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import SyncIcon from '@material-ui/icons/Sync'
-import {QuestActionType} from '../actions/ActionTypes'
-import {AnnotationType, QuestType, UserState, EditorState} from '../reducers/StateTypes'
+import AlertError from '@material-ui/icons/Error';
+import SyncIcon from '@material-ui/icons/Sync';
+import * as React from 'react';
+import {QuestActionType} from '../actions/ActionTypes';
+import {AnnotationType, EditorState, QuestType, UserState} from '../reducers/StateTypes';
 
 export interface QuestAppBarStateProps {
   annotations: AnnotationType[];
@@ -15,11 +15,11 @@ export interface QuestAppBarStateProps {
   editor: EditorState;
   user: UserState;
   scope: any;
-};
+}
 
 export interface QuestAppBarDispatchProps {
   onMenuSelect: (action: QuestActionType, quest: QuestType) => void;
-  onUserDialogRequest: (user: UserState)=>void;
+  onUserDialogRequest: (user: UserState) => void;
   onViewError: (annotations: AnnotationType[], editor: EditorState) => void;
   playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => void;
 }
@@ -35,15 +35,22 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
   if (props.editor.dirtyTimeout !== null) {
     // saving - default (overrides other cases)
   } else if (props.quest.saveError) {
-    saveIndicator = <span className="error saveIndicator"><Button disabled={true}><AlertError /> Error: unable to save</Button></span>
+    saveIndicator = <span className="error saveIndicator">
+      <Button disabled={true}><AlertError /> Error: unable to save</Button>
+    </span>;
   } else if (!props.editor.dirty) {
-    saveIndicator = <span className="success saveIndicator"><Button disabled={true}>All changes saved</Button></span>
+    saveIndicator = <span className="success saveIndicator">
+      <Button disabled={true}>All changes saved</Button>
+    </span>;
   }
 
-  let publishButton = <Button disabled={!questLoaded} onClick={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.quest)}>
+  let publishButton = <Button
+    disabled={!questLoaded}
+    onClick={(event: any) => props.onMenuSelect('PUBLISH_QUEST', props.quest)}
+  >
     {(props.quest.published) ? 'Update' : 'Publish'}
   </Button>;
-  const errors = props.annotations.filter((annotation) => { return annotation.type === 'error' });
+  const errors = props.annotations.filter((annotation) => annotation.type === 'error');
   const validating = (props.editor.worker !== null);
   if (validating) {
     publishButton = <span className="validatingButton">
@@ -72,11 +79,21 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
         <span className="email">{props.user.email}</span>
       </Toolbar>
       <Toolbar>
-        <Button onClick={(event: any) => props.onMenuSelect('NEW_QUEST', props.quest)}>New</Button>
+        <Button onClick={(event: any) => props.onMenuSelect('NEW_QUEST', props.quest)}>
+          New
+        </Button>
         {publishButton}
-        {Boolean(props.quest.published) && <Button onClick={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.quest)}>Unpublish</Button>}
-        <Button disabled={!questLoaded} onClick={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.quest)}>View in Drive</Button>
-        <Button onClick={(event: any) => props.onMenuSelect('HELP', props.quest)}>Help</Button>
+        {Boolean(props.quest.published) &&
+          <Button onClick={(event: any) => props.onMenuSelect('UNPUBLISH_QUEST', props.quest)}>
+            Unpublish
+          </Button>
+        }
+        <Button disabled={!questLoaded} onClick={(event: any) => props.onMenuSelect('DRIVE_VIEW', props.quest)}>
+          View in Drive
+        </Button>
+        <Button onClick={(event: any) => props.onMenuSelect('HELP', props.quest)}>
+          Help
+        </Button>
         {saveIndicator}
         <Button onClick={(event: any) => props.playFromCursor({}, props.editor, props.quest)}>
           Play from Cursor
@@ -89,6 +106,6 @@ const QuestAppBar = (props: QuestAppBarProps): JSX.Element => {
       </Toolbar>
     </AppBar>
   );
-}
+};
 
 export default QuestAppBar;

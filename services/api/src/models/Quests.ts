@@ -1,33 +1,33 @@
-import Sequelize from 'sequelize'
-import {Quest} from 'shared/schema/Quests'
-import {RenderedQuest} from 'shared/schema/RenderedQuests'
-import {User} from 'shared/schema/Users'
-import {PUBLIC_PARTITION} from 'shared/schema/Constants'
-import {QuestInstance, FeedbackInstance, Database} from './Database'
-import {getFeedbackByQuestId} from './Feedback'
-import {getUser} from './Users'
-import {prepare} from './Schema'
-import {MailService} from '../Mail'
-import * as Bluebird from 'bluebird'
+import * as Bluebird from 'bluebird';
+import Sequelize from 'sequelize';
+import {PUBLIC_PARTITION} from 'shared/schema/Constants';
+import {Quest} from 'shared/schema/Quests';
+import {RenderedQuest} from 'shared/schema/RenderedQuests';
+import {User} from 'shared/schema/Users';
+import {MailService} from '../Mail';
+import {Database, FeedbackInstance, QuestInstance} from './Database';
+import {getFeedbackByQuestId} from './Feedback';
+import {prepare} from './Schema';
+import {getUser} from './Users';
 
 export const MAX_SEARCH_LIMIT = 100;
 
 export interface QuestSearchParams {
-  id?: string|null;
-  owner?: string|null;
-  players?: number|null;
-  text?: string|null;
   age?: number|null;
-  mintimeminutes?: number|null;
-  maxtimeminutes?: number|null;
   contentrating?: string|null;
-  genre?: string|null;
-  order?: string|null;
-  limit?: number|null;
-  partition?: string|null;
   expansions?: string[]|null;
+  genre?: string|null;
+  id?: string|null;
   language?: string|null;
+  limit?: number|null;
+  maxtimeminutes?: number|null;
+  mintimeminutes?: number|null;
+  order?: string|null;
+  owner?: string|null;
+  partition?: string|null;
+  players?: number|null;
   requirespenpaper?: boolean|null;
+  text?: string|null;
 }
 
 export function getQuest(db: Database, partition: string, id: string): Bluebird<Quest> {
@@ -183,23 +183,23 @@ export function publishQuest(db: Database, mail: MailService, userid: string, ma
 
       const updateValues: Partial<Quest> = {
         ...quest,
-        userid, // Not included in the request - pull from auth
-        questversion: (instance.get('questversion') || quest.questversion || 0) + 1,
-        publishedurl: `http://quests.expeditiongame.com/raw/${quest.partition}/${quest.id}/${quest.questversion}`,
-        tombstone: undefined, // Remove tombstone
         published: new Date(),
+        publishedurl: `http://quests.expeditiongame.com/raw/${quest.partition}/${quest.id}/${quest.questversion}`,
+        questversion: (instance.get('questversion') || quest.questversion || 0) + 1,
+        tombstone: undefined, // Remove tombstone
+        userid, // Not included in the request - pull from auth
       };
       if (majorRelease) {
         updateValues.questversionlastmajor = updateValues.questversion;
         updateValues.created = new Date();
       }
 
-console.log(quest);
+      console.log(quest);
 
       // Publish to RenderedQuests
       db.renderedQuests.create(new RenderedQuest({
-        partition: quest.partition,
         id: quest.id,
+        partition: quest.partition,
         questversion: updateValues.questversion,
         xml,
       }))
@@ -209,7 +209,7 @@ console.log(quest);
 
       return instance.update(updateValues);
     });
-};
+}
 
 export function unpublishQuest(db: Database, partition: string, id: string) {
   return db.quests.update({tombstone: new Date()}, {where: {partition, id}, limit: 1});
@@ -251,7 +251,7 @@ export function updateQuestRatings(db: Database, partition: string, id: string):
         return quest.update({ratingcount: null, ratingavg: null});
       }
 
-      const ratingavg = ratings.reduce((a: number, b: number) => { return a + b; }) / ratings.length;
+      const ratingavg = ratings.reduce((a: number, b: number) => a + b) / ratings.length;
       return quest.update({ratingcount, ratingavg});
     });
 }

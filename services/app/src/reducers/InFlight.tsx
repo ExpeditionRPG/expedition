@@ -1,7 +1,7 @@
-import {InflightCommitAction} from '../actions/ActionTypes'
-import Redux from 'redux'
-import {AppStateWithHistory} from './StateTypes'
-import {getMultiplayerClient} from '../Multiplayer'
+import Redux from 'redux';
+import {InflightCommitAction} from '../actions/ActionTypes';
+import {getMultiplayerClient} from '../Multiplayer';
+import {AppStateWithHistory} from './StateTypes';
 
 export function stripMultiplayerStateAndSettings(state: AppStateWithHistory): AppStateWithHistory {
   const newState = {...state};
@@ -20,7 +20,7 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
     state.commitID = 0;
   }
 
-  switch(action.type) {
+  switch (action.type) {
     case 'MULTIPLAYER_SESSION':
       // Initialize committed state
       return {...state, _committed: stripMultiplayerStateAndSettings(state), commitID: 0};

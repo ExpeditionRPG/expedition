@@ -1,22 +1,22 @@
-import {Database, EventInstance, SessionInstance} from '../Database'
-import {Event} from 'shared/schema/multiplayer/Events'
-import {Session} from 'shared/schema/multiplayer/Sessions'
+import {Event} from 'shared/schema/multiplayer/Events';
+import {Session} from 'shared/schema/multiplayer/Sessions';
+import {Database, EventInstance, SessionInstance} from '../Database';
 import {
-  getLastEvent,
-  getOrderedEventsAfter,
+  events as e,
+  sessions as s,
+  TEST_NOW,
+  testingDBWithState,
+} from '../TestData';
+import {
   commitEvent,
   commitEventWithoutID,
   getLargestEventID,
-} from './Events'
-import {
-  testingDBWithState,
-  sessions as s,
-  events as e,
-  TEST_NOW,
-} from '../TestData'
+  getLastEvent,
+  getOrderedEventsAfter,
+} from './Events';
 
-function ts(s: number): Date {
-  return new Date(TEST_NOW.getTime() + s*1000);
+function ts(time: number): Date {
+  return new Date(TEST_NOW.getTime() + time * 1000);
 }
 
 describe('events', () => {
@@ -64,8 +64,8 @@ describe('events', () => {
       ])
       .then((db) => commitEvent(db, e.basic.session, e.basic.client, e.basic.instance, 3, e.basic.type, e.basic.json))
       .then(() => done.fail('expected error'))
-      .catch((e: Error) => {
-        expect(e.toString()).toContain('mismatch');
+      .catch((err: Error) => {
+        expect(err.toString()).toContain('mismatch');
         done();
       });
     });
@@ -76,8 +76,8 @@ describe('events', () => {
       ])
       .then((db) => commitEvent(db, e.basic.session, e.basic.client, e.basic.instance, 5, e.basic.type, e.basic.json))
       .then(() => done.fail('expected error'))
-      .catch((e: Error) => {
-        expect(e.toString()).toContain('mismatch');
+      .catch((err: Error) => {
+        expect(err.toString()).toContain('mismatch');
         done();
       });
     });
@@ -98,8 +98,8 @@ describe('events', () => {
       testingDBWithState([])
       .then((db) => commitEvent(db, e.basic.session, e.basic.client, e.basic.instance, 3, e.basic.type, e.basic.json))
       .then(() => done.fail('expected session not found'))
-      .catch((e: Error) => {
-        expect(e.toString()).toContain('could not find session');
+      .catch((err: Error) => {
+        expect(err.toString()).toContain('could not find session');
         done();
       });
     });
@@ -112,20 +112,20 @@ describe('events', () => {
       ])
       .then((tdb) => {
         db = tdb;
-        return commitEvent(db, e.basic.session, e.basic.client, e.basic.instance, n+1, e.basic.type, e.basic.json)
+        return commitEvent(db, e.basic.session, e.basic.client, e.basic.instance, n + 1, e.basic.type, e.basic.json);
       })
       .then((result: number|null) => {
-        expect(result).toEqual(n+1);
-        return db.events.findOne({where: {id: n+1}})
+        expect(result).toEqual(n + 1);
+        return db.events.findOne({where: {id: n + 1}});
       })
       .then((i: EventInstance) => {
         // Event is inserted
-        expect(new Event(i.dataValues).id).toEqual(n+1);
+        expect(new Event(i.dataValues).id).toEqual(n + 1);
         return db.sessions.findOne({where: {id: e.basic.session}});
       })
       .then((i: SessionInstance) => {
         // Event counter is updated
-        expect(new Session(i.dataValues).eventCounter).toEqual(n+1);
+        expect(new Session(i.dataValues).eventCounter).toEqual(n + 1);
         done();
       })
       .catch(done.fail);
@@ -172,19 +172,19 @@ describe('events', () => {
         return commitEventWithoutID(db, e.basic.session, e.basic.client, e.basic.instance, e.basic.type, JSON.parse(e.basic.json));
       })
       .then((result: number|null) => {
-        expect(result).toEqual(n+1);
-        return db.events.findOne({where: {id: n+1}});
+        expect(result).toEqual(n + 1);
+        return db.events.findOne({where: {id: n + 1}});
       })
       .then((i: EventInstance) => {
         // Event is inserted; ID is applied to event JSON
         const result = new Event(i.dataValues);
-        expect(result.id).toEqual(n+1);
-        expect(JSON.parse(result.json).id).toEqual(n+1);
+        expect(result.id).toEqual(n + 1);
+        expect(JSON.parse(result.json).id).toEqual(n + 1);
         return db.sessions.findOne({where: {id: e.basic.session}});
       })
       .then((i: SessionInstance) => {
         // Event counter is updated
-        expect(new Session(i.dataValues).eventCounter).toEqual(n+1);
+        expect(new Session(i.dataValues).eventCounter).toEqual(n + 1);
         done();
       })
       .catch(done.fail);
@@ -205,10 +205,10 @@ describe('events', () => {
     });
     it('rejects events that do not belong to a known session', (done: DoneFn) => {
       testingDBWithState([])
-      .then((db) => commitEventWithoutID(db, e.basic.session, e.basic.client, e.basic.instance, e.basic.type, e.basic.json))
+      .then((db) => commitEventWithoutID(db, e.basic.session, e.basic.client, e.basic.instance, e.basic.type, JSON.parse(e.basic.json)))
       .then(() => done.fail('expected session not found'))
-      .catch((e: Error) => {
-        expect(e.toString()).toContain('could not find session');
+      .catch((err: Error) => {
+        expect(err.toString()).toContain('could not find session');
         done();
       });
     });

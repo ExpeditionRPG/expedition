@@ -1,5 +1,5 @@
-import {MultiplayerEvent, MultiplayerEventBody} from './Events'
-import {ClientBase} from './Client'
+import {ClientBase} from './Client';
+import {MultiplayerEvent, MultiplayerEventBody} from './Events';
 
 export class TestClient extends ClientBase {
   public events: MultiplayerEvent[];
@@ -9,24 +9,31 @@ export class TestClient extends ClientBase {
     this.events = [];
   }
 
-  doParseEvent(s: string) {
+  public doParseEvent(s: string) {
     return this.parseEvent(s);
   }
 
-  setConnectState(connected: boolean) {
+  public setConnectState(connected: boolean) {
     this.connected = connected;
   }
 
-  sendFinalizedEvent(e: MultiplayerEvent) {
+  public sendFinalizedEvent(e: MultiplayerEvent) {
     this.events.push(e);
   }
 
-  disconnect() {}
+  public disconnect() {
+    // Mock not needed for now
+  }
 }
 
 describe('Client', () => {
   const basicEventBody: MultiplayerEventBody = {type: 'STATUS'};
-  const basicEvent: MultiplayerEvent = {client: 'testclient', instance: 'testinstance', event: basicEventBody, id: null};
+  const basicEvent: MultiplayerEvent = {
+    client: 'testclient',
+    event: basicEventBody,
+    id: null,
+    instance: 'testinstance',
+  };
 
   it('safely handles malformed messages', () => {
     const c = new TestClient();
@@ -36,7 +43,10 @@ describe('Client', () => {
   it('safely handles unknown message types', () => {
     const c = new TestClient();
     expect(c.doParseEvent(JSON.stringify({
-      client: 'testclient', instance: 'testinstance', event: {type: 'UNKNOWN_EVENT_TYPE'}, id: 0,
+      client: 'testclient',
+      event: {type: 'UNKNOWN_EVENT_TYPE'},
+      id: 0,
+      instance: 'testinstance',
     } as any as MultiplayerEvent)).event.type).toEqual('ERROR');
   });
 
@@ -58,5 +68,5 @@ describe('Client', () => {
     c.setConnectState(true);
     c.sendEvent(basicEventBody);
     expect(c.events).toEqual([basicEvent]);
-  })
+  });
 });

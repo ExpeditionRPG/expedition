@@ -1,21 +1,25 @@
-import {evaluateOp, evaluateContentOps, updateContext, defaultContext} from './Context'
+import {defaultContext, evaluateContentOps, evaluateOp, updateContext} from './Context';
 const cheerio: any = require('cheerio');
 
 declare var window: any;
 
 describe('Context', () => {
-  beforeEach(function() {
+  beforeEach(() => {
     spyOn(window, 'onerror');
   });
 
   describe('evaluateOp', () => {
     it('throws error on invalid parse', () => {
       evaluateOp('foo==\'a\'', defaultContext());
-      expect(window.onerror).toHaveBeenCalledWith('Value expected. Note: strings must be enclosed by double quotes (char 6) Op: (foo==\'a\')', 'shared/parse/context');
+      expect(window.onerror)
+        .toHaveBeenCalledWith(
+          'Value expected. Note: strings must be enclosed by double quotes (char 6) Op: (foo==\'a\')',
+          'shared/parse/context');
     });
     it('throws error on invalid eval', () => {
       evaluateOp('asdf', defaultContext());
-      expect(window.onerror).toHaveBeenCalledWith('Undefined symbol asdf Op: (asdf)', 'shared/parse/context');
+      expect(window.onerror)
+        .toHaveBeenCalledWith('Undefined symbol asdf Op: (asdf)', 'shared/parse/context');
     });
     it('returns value and updates context', () => {
       const ctx = {...defaultContext(), scope: {b: '1'} as any};
@@ -57,7 +61,7 @@ describe('Context', () => {
       const ctx = defaultContext();
       updateContext(dummyElem, ctx, 2);
       expect(ctx.path).not.toEqual([2]);
-    })
+    });
     it('updates view count');
   });
 

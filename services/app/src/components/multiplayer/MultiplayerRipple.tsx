@@ -1,11 +1,9 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import {InteractionEvent} from 'shared/multiplayer/Events'
-import MultiplayerAffector from './MultiplayerAffector'
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import {TransitionGroup} from 'react-transition-group';
-import Ripple from './Ripple'
-
-
+import {InteractionEvent} from 'shared/multiplayer/Events';
+import MultiplayerAffector from './MultiplayerAffector';
+import Ripple from './Ripple';
 
 // Remove the first element of the array
 const shift = ([, ...newArray]) => newArray;
@@ -39,7 +37,7 @@ export default class MultiplayerRipple extends React.Component<MultiplayerRipple
     };
   }
 
-  handle(client: string, e: InteractionEvent) {
+  public handle(client: string, e: InteractionEvent) {
     // TODO keep start/end hashed by client, apply client color
     if (this.props.id === null || e.event === 'touchmove' || e.id !== this.props.id) {
       return;
@@ -54,18 +52,18 @@ export default class MultiplayerRipple extends React.Component<MultiplayerRipple
     }
   }
 
-  componentDidCatch(error: any, info: any) {
+  public componentDidCatch(error: any, info: any) {
     console.error(error);
     console.info(info);
   }
 
-  start(posX: number, posY: number, color: string) {
+  public start(posX: number, posY: number, color: string) {
     console.log('Start ' + posX + ' ' + posY + ' ' + color);
     const el = ReactDOM.findDOMNode(this);
     const elHeight = (el as any).offsetHeight;
     const elWidth = (el as any).offsetWidth;
-    const realX = elWidth * (posX/1000);
-    const realY = elHeight * (posY/1000);
+    const realX = elWidth * (posX / 1000);
+    const realY = elHeight * (posY / 1000);
     const topLeftDiag = this.calcDiag(realX, realY);
     const topRightDiag = this.calcDiag(elWidth - realX, realY);
     const botRightDiag = this.calcDiag(elWidth - realX, elHeight - realY);
@@ -97,18 +95,18 @@ export default class MultiplayerRipple extends React.Component<MultiplayerRipple
     });
   }
 
-  end() {
+  public end() {
     const currentRipples = this.state.ripples;
     this.setState({
       ripples: shift(currentRipples),
     });
   }
 
-  calcDiag(a: any, b: any) {
+  public calcDiag(a: any, b: any) {
     return (a * a) + (b * b);
   }
 
-  render() {
+  public render() {
     let rippleGroup: JSX.Element|null = null;
     if (this.state.hasRipples) {
       rippleGroup = (
@@ -122,7 +120,7 @@ export default class MultiplayerRipple extends React.Component<MultiplayerRipple
       <MultiplayerAffector
         id={this.props.id}
         className={this.props.className}
-        onInteraction={(c: string, i: InteractionEvent) => {this.handle(c, i)}}>
+        onInteraction={(c: string, i: InteractionEvent) => {this.handle(c, i); }}>
         {rippleGroup}
         {this.props.children}
       </MultiplayerAffector>

@@ -1,11 +1,11 @@
-import {Quest} from 'shared/schema/Quests'
-import {updateQuestRatings, getQuest} from './Quests'
-import {Feedback} from 'shared/schema/Feedback'
-import {PLACEHOLDER_DATE} from 'shared/schema/SchemaBase'
-import {Database, QuestInstance, FeedbackInstance} from './Database'
-import {prepare} from './Schema'
-import {MailService} from '../Mail'
-import * as Promise from 'bluebird'
+import * as Promise from 'bluebird';
+import {Feedback} from 'shared/schema/Feedback';
+import {Quest} from 'shared/schema/Quests';
+import {PLACEHOLDER_DATE} from 'shared/schema/SchemaBase';
+import {MailService} from '../Mail';
+import {Database, FeedbackInstance, QuestInstance} from './Database';
+import {getQuest, updateQuestRatings} from './Quests';
+import {prepare} from './Schema';
 
 export const FabricateFeedbackEmail = 'expedition+feedback@fabricate.io';
 export const FabricateReportQuestEmail = 'expedition+apperror@fabricate.io';
@@ -69,7 +69,7 @@ function mailFeedbackThanksToUser(mail: MailService, feedback: Feedback) {
   or want to clarify any details, respond to this email or use the Feedback button in the app.</p>
   <p></p>
   <p>The Expedition Team</p>
-  <p>expedition@fabricate.io</p>`
+  <p>expedition@fabricate.io</p>`;
   const to = [feedback.email];
   return mail.send(to, subject, message);
 }
@@ -148,18 +148,18 @@ export function submitRating(db: Database, mail: MailService, feedback: Feedback
       feedback.questversion = quest.questversion;
       return db.feedback.upsert(prepare(feedback));
     })
-    .then((created: Boolean) => updateQuestRatings(db, feedback.partition, feedback.questid))
+    .then((created: boolean) => updateQuestRatings(db, feedback.partition, feedback.questid))
     .then((questInstance: QuestInstance) => {
       const quest = new Quest(questInstance.dataValues);
       if (quest.ratingcount === 1) {
         mailFirstRating(mail, feedback, quest);
       } else if (feedback.text && feedback.text.length > 0) {
-        mailNewRating(mail, feedback, quest)
+        mailNewRating(mail, feedback, quest);
       }
     });
 }
 
-export function suppressFeedback(db: Database, partition: string, questid: string, userid:string, suppress: boolean): Promise<any> {
+export function suppressFeedback(db: Database, partition: string, questid: string, userid: string, suppress: boolean): Promise<any> {
   return db.feedback.update({tombstone: (suppress) ? new Date() : PLACEHOLDER_DATE} as any, {where: {partition, questid, userid}, limit: 1})
     .then(() => {
       return updateQuestRatings(db, partition, questid);

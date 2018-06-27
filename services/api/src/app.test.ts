@@ -4,7 +4,7 @@ describe('app', () => {
   });
 
   describe('setupSession', () => {
-    it('inits usable session store')
+    it('inits usable session store');
   });
 
   describe('setupRoutes', () => {

@@ -1,5 +1,5 @@
-import {Block} from './block/BlockList'
-import {LogMessage, Logger, prettifyMsg, prettifyMsgs} from './Logger'
+import {Block} from './block/BlockList';
+import {Logger, LogMessage, prettifyMsg, prettifyMsgs} from './Logger';
 
 const expect: any = require('expect');
 
@@ -44,11 +44,12 @@ describe('LogMessage', () => {
       const msg = new Logger();
       msg.internal('internal error', '505', 5);
       expect(msg.finalize()).toEqual([testMsgs[3]]);
-    })
+    });
   });
 
   describe('prettifyMsgs', () => {
     it('prettifies multiple messages', () => {
+      // tslint:disable-next-line
       expect(prettifyMsgs(testMsgs)).toEqual('ERROR L5:\ntest error\nURL: test\n\nWARNING L7:\ntest warning\nURL: 404\n\nINFO L0:\ntest debug\nstuff\nURL: 100\n\nINTERNAL L5:\ninternal error\nURL: 505');
     });
   });
@@ -63,4 +64,3 @@ describe('LogMessage', () => {
     });
   });
 });
-

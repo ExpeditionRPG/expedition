@@ -1,4 +1,4 @@
-import Config from '../config'
+import Config from '../config';
 
 const winston: any = require('winston');
 const expressWinston: any = require('express-winston');
@@ -7,34 +7,34 @@ const colorize = (Config.get('NODE_ENV') !== 'production');
 
 // Logger to capture all requests and output them to the console.
 const requestLogger = expressWinston.logger({
-  transports: [
-    new winston.transports.Console({
-      json: false,
-      colorize: colorize,
-    }),
-  ],
   expressFormat: true,
   meta: false,
+  transports: [
+    new winston.transports.Console({
+      colorize,
+      json: false,
+    }),
+  ],
 });
 
 // Logger to capture any top-level errors and output json diagnostic info.
 const errorLogger = expressWinston.errorLogger({
   transports: [
     new winston.transports.Console({
+      colorize,
       json: true,
-      colorize: colorize,
     }),
   ],
 });
 
 export default {
-  requestLogger: requestLogger,
-  errorLogger: errorLogger,
+  debug: winston.debug,
   error: winston.error,
-  warn: winston.warn,
+  errorLogger,
   info: winston.info,
   log: winston.log,
-  verbose: winston.verbose,
-  debug: winston.debug,
+  requestLogger,
   silly: winston.silly,
+  verbose: winston.verbose,
+  warn: winston.warn,
 };

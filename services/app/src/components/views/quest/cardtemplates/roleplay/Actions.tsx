@@ -1,7 +1,7 @@
-import Redux from 'redux'
-import {toCard} from '../../../../../actions/Card'
-import {ParserNode} from '../TemplateTypes'
-import {QuestNodeAction} from '../../../../../actions/ActionTypes'
+import Redux from 'redux';
+import {QuestNodeAction} from '../../../../../actions/ActionTypes';
+import {toCard} from '../../../../../actions/Card';
+import {ParserNode} from '../TemplateTypes';
 
 export function initRoleplay(node: ParserNode, custom?: boolean) {
   return (dispatch: Redux.Dispatch<any>): any => {

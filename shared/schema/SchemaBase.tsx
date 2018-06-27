@@ -1,25 +1,24 @@
-import 'reflect-metadata'
+import 'reflect-metadata';
 
 // Regular 'joi' includes ES2015 concepts, which causes PhantomJS
 // browser to fail to parse it. The Joi library is also much heavier
 // than joi-browser, which is designed to run on a browser (and not just NodeJS).
 // TODO(scott): Figure out a way to type this
-const Joi: any = require('joi-browser');
+const Joi: any = require('joi-browser'); // tslint:disable-line
 
 export const NOW = '_now';
 export const PLACEHOLDER_DATE = new Date(0);
 export type ExtraTypeQualifier = 'DECIMAL_4_2'|'BIGINT';
 
 export interface SchemaOptions {
-  type: string;
-  primaryKey: boolean;
   allowNull: boolean;
   column: string;
-
   default: any;
-  valid: any[];
-  maxLength: number;
   extra: ExtraTypeQualifier;
+  maxLength: number;
+  primaryKey: boolean;
+  type: string;
+  valid: any[];
 }
 
 // Use @field to annotate parameters in a class that extends SchemaBase.
@@ -59,7 +58,7 @@ export class SchemaBase {
       if (validKeys.indexOf(k) === -1) {
         continue;
       }
-      parsedFields[k] = fields[k]
+      parsedFields[k] = fields[k];
     }
 
     const missingFields: string[] = [];
@@ -115,7 +114,7 @@ export class SchemaBase {
   }
 
   private getJoiValidationParams() {
-    const keys: {[property:string]: any} = {};
+    const keys: {[property: string]: any} = {};
 
     for (const k of Object.keys(this.optionsMap)) {
       const m = this.optionsMap[k];
@@ -137,7 +136,7 @@ export class SchemaBase {
   public static initialize<T>(cls: any, fields: Partial<T>): T|Error {
     try {
       return new cls(fields);
-    } catch(e) {
+    } catch (e) {
       return e;
     }
   }

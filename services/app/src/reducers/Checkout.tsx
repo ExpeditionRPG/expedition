@@ -1,6 +1,6 @@
-import Redux from 'redux'
-import {CheckoutSetStateAction} from '../actions/ActionTypes'
-import {CheckoutState} from './StateTypes'
+import Redux from 'redux';
+import {CheckoutSetStateAction} from '../actions/ActionTypes';
+import {CheckoutState} from './StateTypes';
 
 export const initialState: CheckoutState = {
   amount: 0,

@@ -10,12 +10,12 @@ export type InstanceID = string;
 
 // Array of [vw, vh] coordinates keyed by ID, e.g. {0: [1,2], 1: [3,4]}.
 // The object structure is influenced by Cloud Firestore restrictions on nested arrays.
-export type TouchList = {[id: string]: number[]};
+export interface TouchList {[id: string]: number[]; }
 
 // ------ Events (Passed Client-to-Client) --------
 
 // StatusEvent is published by a client to indicate some change in state.
-export type WaitType = {type: 'TIMER', elapsedMillis: number};
+export interface WaitType {type: 'TIMER'; elapsedMillis: number; }
 export interface StatusEvent {
   type: 'STATUS';
 
@@ -59,8 +59,8 @@ export interface InteractionEvent {
 export interface ActionEvent {
   type: 'ACTION';
 
-  // The name of the action. The client uses this to determine what action to perform.
-  // Example: https://github.com/ExpeditionRPG/expedition-app/blob/1d9a123598d6b119157e394b28bc1e6c9633f1c6/app/actions/ActionTypes.tsx#L133
+  // The name of the action. The client uses this to determine what action to perform. Example:
+  // https://github.com/ExpeditionRPG/expedition-app/blob/1d9a123598d6b119157e394b28bc1e6c9633f1c6/app/actions/ActionTypes.tsx#L133
   name: string;
 
   // JSON string of arguments to pass to the action.

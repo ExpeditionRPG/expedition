@@ -1,5 +1,5 @@
-import {RenderedQuest} from './RenderedQuests'
-import {PRIVATE_PARTITION} from './Constants'
+import {PRIVATE_PARTITION} from './Constants';
+import {RenderedQuest} from './RenderedQuests';
 
 describe('RenderedQuest Schema', () => {
   const base = {id: '54321', partition:  PRIVATE_PARTITION};
@@ -12,4 +12,4 @@ describe('RenderedQuest Schema', () => {
     expect(f.id).toEqual(base.id);
     expect(f.partition).toEqual(base.partition);
   });
-})
+});

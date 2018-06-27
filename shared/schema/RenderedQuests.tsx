@@ -1,8 +1,8 @@
-import {SchemaBase, field, copyAndUnsetDefaults} from './SchemaBase'
-import {PARTITIONS} from './Constants'
+import {PARTITIONS} from './Constants';
+import {copyAndUnsetDefaults, field, SchemaBase} from './SchemaBase';
 
 export class RenderedQuest extends SchemaBase {
-  static create(fields: Partial<RenderedQuest>) {
+  public static create(fields: Partial<RenderedQuest>) {
     return super.initialize(this, fields);
   }
 
@@ -10,29 +10,29 @@ export class RenderedQuest extends SchemaBase {
     super(fields);
   }
 
-  withoutDefaults() {
+  public withoutDefaults() {
     return copyAndUnsetDefaults(RenderedQuest, this);
   }
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 32,
+    primaryKey: true,
     valid: [PARTITIONS],
-  }) partition: string;
+  }) public partition: string;
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 255,
-  }) id: string;
+    primaryKey: true,
+  }) public id: string;
 
   @field({
-    primaryKey: true,
     default: 1,
-  }) questversion: number;
+    primaryKey: true,
+  }) public questversion: number;
 
   @field({
     default: '',
-  }) xml: string;
+  }) public xml: string;
 }

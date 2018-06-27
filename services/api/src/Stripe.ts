@@ -1,7 +1,7 @@
-import * as Express from 'express'
-import Config from './config'
-import * as Stripe from 'stripe'
+import * as Express from 'express';
 import * as Joi from 'joi';
+import * as Stripe from 'stripe';
+import Config from './config';
 
 let stripe: Stripe|null = null;
 if (Config.get('ENABLE_PAYMENT') && Config.get('STRIPE_PRIVATE_KEY')) {
@@ -12,12 +12,12 @@ if (Config.get('ENABLE_PAYMENT') && Config.get('STRIPE_PRIVATE_KEY')) {
 
 const MIN_PAYMENT_DOLLARS = 0.5; // Anything below this would be eaten by transaction fees
 
-
 export function checkout(req: Express.Request, res: Express.Response) {
   const body: any = JSON.parse(req.body);
   Joi.validate(body, {
     amount: Joi.number().min(MIN_PAYMENT_DOLLARS),
-  }, {allowUnknown: true}, (err, validBody) => {
+  }, {allowUnknown: true},
+  (err, validBody) => {
     if (err) {
       let result = 'ERROR: ';
       for (const d of err.details) {
@@ -45,13 +45,13 @@ export function checkout(req: Express.Request, res: Express.Response) {
       metadata: {
         productcategory: validBody.productcategory,
         productid: validBody.productid,
-        userid: validBody.userid,
         useremail: validBody.useremail,
+        userid: validBody.userid,
       },
       source: validBody.token,
-    }, (err: Stripe.IStripeError, chargeResult: Stripe.charges.ICharge) => {
-      if (err) {
-        console.error(err);
+    }, (e: Stripe.IStripeError, chargeResult: Stripe.charges.ICharge) => {
+      if (e) {
+        console.error(e);
         return res.status(500).send('Error submitting payment.');
       }
       res.send(chargeResult);

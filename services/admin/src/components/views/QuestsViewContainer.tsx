@@ -1,16 +1,16 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
+import Redux from 'redux';
 
-import {AppState} from '../../reducers/StateTypes'
-import QuestsView, {QuestsViewStateProps, QuestsViewDispatchProps} from './QuestsView'
-import {setDialog} from '../../actions/Dialogs'
+import {setDialog} from '../../actions/Dialogs';
+import {AppState} from '../../reducers/StateTypes';
+import QuestsView, {QuestsViewDispatchProps, QuestsViewStateProps} from './QuestsView';
 
 const mapStateToProps = (state: AppState, ownProps: any): QuestsViewStateProps => {
   return {
     list: state.view.quests,
     selected: state.view.selected.quest,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestsViewDispatchProps => {
   return {
@@ -19,11 +19,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Quest
       dispatch(setDialog('QUEST_DETAILS'));
     },
   };
-}
+};
 
 const QuestsViewContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(QuestsView);
 
-export default QuestsViewContainer
+export default QuestsViewContainer;

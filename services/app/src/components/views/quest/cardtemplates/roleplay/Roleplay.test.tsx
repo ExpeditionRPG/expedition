@@ -1,7 +1,7 @@
-import * as React from 'react'
-import {TemplateContext, ParserNode} from '../TemplateTypes'
-import {defaultContext} from '../Template'
-import {loadRoleplayNode, RoleplayResult} from './Roleplay'
+import * as React from 'react';
+import {defaultContext} from '../Template';
+import {ParserNode, TemplateContext} from '../TemplateTypes';
+import {loadRoleplayNode, RoleplayResult} from './Roleplay';
 
 const cheerio: any = require('cheerio');
 

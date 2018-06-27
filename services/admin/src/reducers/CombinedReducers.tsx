@@ -1,8 +1,8 @@
-import {dialogs} from './Dialogs'
-import {snackbar} from './Snackbar'
-import {user} from './User'
-import {view} from './View'
-import {AppState} from './StateTypes'
+import {dialogs} from './Dialogs';
+import {snackbar} from './Snackbar';
+import {AppState} from './StateTypes';
+import {user} from './User';
+import {view} from './View';
 
 export default function combinedReduce(state: AppState, action: any): AppState {
   state = state || ({} as AppState);

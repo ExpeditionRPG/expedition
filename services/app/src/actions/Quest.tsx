@@ -1,15 +1,15 @@
-import Redux from 'redux'
+import Redux from 'redux';
+import {initCardTemplate} from '../components/views/quest/cardtemplates/Template';
+import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {QuestDetails} from '../reducers/QuestTypes';
+import {AppStateWithHistory, SettingsType} from '../reducers/StateTypes';
 import {
-  remoteify,
   QuestDetailsAction,
   QuestExitAction,
-  QuestNodeAction
-} from './ActionTypes'
-import {toCard} from './Card'
-import {AppStateWithHistory, SettingsType} from '../reducers/StateTypes'
-import {QuestDetails} from '../reducers/QuestTypes'
-import {initCardTemplate} from '../components/views/quest/cardtemplates/Template'
-import {TemplateContext, ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
+  QuestNodeAction,
+  remoteify
+} from './ActionTypes';
+import {toCard} from './Card';
 
 export function initQuest(details: QuestDetails, questNode: Cheerio, ctx: TemplateContext): QuestNodeAction {
   const firstNode = questNode.children().eq(0);
@@ -26,7 +26,7 @@ interface ChoiceArgs {
   node?: ParserNode;
   index: number;
 }
-export const choice = remoteify(function choice(a: ChoiceArgs, dispatch: Redux.Dispatch<any>, getState: ()=>AppStateWithHistory): ChoiceArgs {
+export const choice = remoteify(function choice(a: ChoiceArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ChoiceArgs {
   if (!a.node || !a.settings) {
     a.node = getState().quest.node;
     a.settings = getState().settings;
@@ -44,7 +44,7 @@ interface EventArgs {
   evt: string;
   settings?: SettingsType;
 }
-export const event = remoteify(function event(a: EventArgs, dispatch: Redux.Dispatch<any>, getState: ()=>AppStateWithHistory): EventArgs {
+export const event = remoteify(function event(a: EventArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): EventArgs {
   if (!a.node) {
     a.node = getState().quest.node;
   }
@@ -73,5 +73,5 @@ export function loadNode(node: ParserNode, details?: QuestDetails) {
       }
       dispatch(initCardTemplate(node));
     }
-  }
+  };
 }

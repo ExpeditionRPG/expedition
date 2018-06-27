@@ -1,10 +1,10 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import {DialogIDType, AppState, QuestType} from '../reducers/StateTypes'
-import {setDialog} from '../actions/Dialogs'
-import {publishQuest, questMetadataChange} from '../actions/Quest'
-import Dialogs, {DialogsStateProps, DialogsDispatchProps} from './Dialogs'
-import {CONTENT_RATINGS, LANGUAGES, GENRES} from 'shared/schema/Constants'
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {CONTENT_RATINGS, GENRES, LANGUAGES} from 'shared/schema/Constants';
+import {setDialog} from '../actions/Dialogs';
+import {publishQuest, questMetadataChange} from '../actions/Quest';
+import {AppState, DialogIDType, QuestType} from '../reducers/StateTypes';
+import Dialogs, {DialogsDispatchProps, DialogsStateProps} from './Dialogs';
 
 const Joi = require('joi-browser');
 
@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
     quest: state.quest,
     user: state.user,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DialogsDispatchProps => {
   return {
@@ -26,33 +26,33 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
     },
     onRequestPublish: (quest: QuestType, majorRelease: boolean, privatePublish: boolean): void => {
       Joi.validate(quest, {
-        title: Joi.string().min(4).max(100),
-        summary: Joi.string().min(6).max(200),
         author: Joi.string().min(2).max(100),
-        email: Joi.string().email(),
-        minplayers: Joi.number().min(1).max(Joi.ref('maxplayers')),
-        maxplayers: Joi.number().min(Joi.ref('minplayers')).max(6),
-        mintimeminutes: Joi.number().min(1).max(Joi.ref('maxtimeminutes')),
-        maxtimeminutes: Joi.number().min(Joi.ref('mintimeminutes')).max(999),
-        genre: Joi.string().valid(GENRES),
         contentrating: Joi.string().valid(CONTENT_RATINGS),
+        email: Joi.string().email(),
         expansionhorror: Joi.boolean(),
+        genre: Joi.string().valid(GENRES),
         language: Joi.string().valid(LANGUAGES),
+        maxplayers: Joi.number().min(Joi.ref('minplayers')).max(6),
+        maxtimeminutes: Joi.number().min(Joi.ref('mintimeminutes')).max(999),
+        minplayers: Joi.number().min(1).max(Joi.ref('maxplayers')),
+        mintimeminutes: Joi.number().min(1).max(Joi.ref('maxtimeminutes')),
         requirespenpaper: Joi.boolean(),
-      }, { allowUnknown: true, abortEarly: false }, (err: Error, quest: QuestType) => {
+        summary: Joi.string().min(6).max(200),
+        title: Joi.string().min(4).max(100),
+      }, { allowUnknown: true, abortEarly: false }, (err: Error, validated: QuestType) => {
         if (err) {
           return alert(err);
         }
         dispatch(setDialog('PUBLISHING', false));
-        dispatch(publishQuest(quest, majorRelease, privatePublish));
+        dispatch(publishQuest(validated, majorRelease, privatePublish));
       });
     },
   };
-}
+};
 
 const DialogsContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Dialogs);
 
-export default DialogsContainer
+export default DialogsContainer;

@@ -1,20 +1,20 @@
-import * as React from 'react'
-import Snackbar from '@material-ui/core/Snackbar'
-import Drawer from '@material-ui/core/Drawer'
-import MenuItem from '@material-ui/core/MenuItem'
-import DialogsContainer from './DialogsContainer'
-import SplashContainer from './SplashContainer'
-import TopBarContainer from './TopBarContainer'
-import FeedbackViewContainer from './views/FeedbackViewContainer'
-import QuestsViewContainer from './views/QuestsViewContainer'
-import UsersViewContainer from './views/UsersViewContainer'
-import {SnackbarState, ViewType} from '../reducers/StateTypes'
+import Drawer from '@material-ui/core/Drawer';
+import MenuItem from '@material-ui/core/MenuItem';
+import Snackbar from '@material-ui/core/Snackbar';
+import * as React from 'react';
+import {SnackbarState, ViewType} from '../reducers/StateTypes';
+import DialogsContainer from './DialogsContainer';
+import SplashContainer from './SplashContainer';
+import TopBarContainer from './TopBarContainer';
+import FeedbackViewContainer from './views/FeedbackViewContainer';
+import QuestsViewContainer from './views/QuestsViewContainer';
+import UsersViewContainer from './views/UsersViewContainer';
 
 export interface MainStateProps {
   loggedIn: boolean;
   snackbar: SnackbarState;
   view: ViewType;
-};
+}
 
 export interface MainDispatchProps {
   onSnackbarClose: () => void;
@@ -31,7 +31,7 @@ const Main = (props: MainProps): JSX.Element => {
   }
 
   let view: JSX.Element;
-  switch(props.view) {
+  switch (props.view) {
     case 'USERS':
       view = <UsersViewContainer/>;
       break;
@@ -67,6 +67,6 @@ const Main = (props: MainProps): JSX.Element => {
       />
     </div>
   );
-}
+};
 
 export default Main;

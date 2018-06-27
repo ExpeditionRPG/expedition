@@ -1,18 +1,17 @@
-import {REGEX} from '../../Regex'
+import {REGEX} from '../../Regex';
 
-export type CombatChild = {text: string, visible?: string, event: any[], json?: any};
-export type Instruction = {text: string, visible?: string};
-export type RoleplayChild = {text: string, visible?: string, choice: any};
+export interface CombatChild {text: string; visible?: string; event: any[]; json?: any; }
+export interface Instruction {text: string; visible?: string; }
+export interface RoleplayChild {text: string; visible?: string; choice: any; }
 
 // These renderers
 export interface Renderer {
- toRoleplay: (attribs: {[k: string]: any}, body: (string|RoleplayChild|Instruction)[], line: number) => any;
+ toRoleplay: (attribs: {[k: string]: any}, body: Array<string|RoleplayChild|Instruction>, line: number) => any;
  toCombat: (attribs: {[k: string]: any}, events: CombatChild[], line: number) => any;
  toTrigger: (attribs: {[k: string]: any}, line: number) => any;
  toQuest: (attribs: {[k: string]: any}, line: number) => any;
  finalize: (quest: any, inner: any[]) => any;
 }
-
 
 // cleans up styles in the passed string, which is to say:
 // turns all no-attribute <strong>, <b>, <em>, <i> and <del> into markdown versions (aka whitelist)
@@ -28,29 +27,25 @@ export function sanitizeStyles(text: string): string {
   // This handles the cases of escaped characters, curlies in strings, and MathJS objects
   // which would normally confuse op node extraction.
   const ops: string[] = [];
-  let startOfCapture: number|undefined = undefined;
+  let startOfCapture: number|undefined;
   const syntaxStack: string[] = [];
   for (let i = 0; i < text.length; i++) {
     const c1 = text[i];
-    const c2 = text[i+1];
+    const c2 = text[i + 1];
 
     if (syntaxStack.length > 0) {
-      const lastSyntax = syntaxStack[syntaxStack.length-1];
+      const lastSyntax = syntaxStack[syntaxStack.length - 1];
 
       // Escaped sequences escape the next character
       if (c1 === '\\') {
         i++;
-      }
-      // Check for string parsing, which disables any curly chcking while inside the string.
-      else if (c1 === '"') {
+      } else if (c1 === '"') {
         if (lastSyntax !== c1) {
           syntaxStack.push(c1);
         } else {
           syntaxStack.pop();
         }
-      }
-      // Check for final completion of the op section
-      else if (lastSyntax !== '"' && c1 === '}' && c2 === '}') {
+      } else if (lastSyntax !== '"' && c1 === '}' && c2 === '}') {
         let openCurlyCount = 0; // Open curlies not including the initial '{{' of the op
         for (const s of syntaxStack) {
           openCurlyCount += (s === '{') ? 1 : 0;
@@ -68,9 +63,7 @@ export function sanitizeStyles(text: string): string {
           text = text.slice(0, startOfCapture) + text.slice(endOfCapture);
           i -= op.length;
         }
-      }
-      // then handle single-char curlies
-      else if (c1 === '{') {
+      } else if (c1 === '{') {
         syntaxStack.push(c1);
       } else if (c1 === '}' && lastSyntax === '{') {
         syntaxStack.pop();
@@ -115,7 +108,7 @@ export function sanitizeStyles(text: string): string {
   text = text.replace(new RegExp(REGEX.STRIKETHROUGH.source, 'g'), '<del>$1</del>');
 
   // Insert stored ops contents back into ops
-  text = text.replace(/{{}}/g, () => { return '{{' + ops.shift() + '}}'; });
+  text = text.replace(/{{}}/g, () => '{{' + ops.shift() + '}}');
   text = text.replace(/\[art\]/g, () => {
     const a = art.shift();
     if (a === undefined) {

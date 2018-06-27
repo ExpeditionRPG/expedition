@@ -1,6 +1,6 @@
-import {Database, QuestInstance} from './models/Database'
-import Config from './config'
-import Sequelize from 'sequelize'
+import Sequelize from 'sequelize';
+import Config from './config';
+import {Database, QuestInstance} from './models/Database';
 
 const request = require('request');
 

@@ -1,20 +1,20 @@
-import Redux from 'redux'
-import {announcement} from './Announcement'
-import {audio} from './Audio'
-import {card} from './Card'
-import {checkout} from './Checkout'
-import {dialog} from './Dialog'
-import {quest} from './Quest'
-import {saved} from './Saved'
-import {search} from './Search'
-import {settings} from './Settings'
-import {snackbar} from './Snackbar'
-import {user} from './User'
-import {multiplayer} from './Multiplayer'
-import {inflight} from './InFlight'
-import {AppStateWithHistory, AppState, AppStateBase} from './StateTypes'
-import {ReturnAction} from '../actions/ActionTypes'
-import {getHistoryApi, getNavigator} from '../Globals'
+import Redux from 'redux';
+import {ReturnAction} from '../actions/ActionTypes';
+import {getHistoryApi, getNavigator} from '../Globals';
+import {announcement} from './Announcement';
+import {audio} from './Audio';
+import {card} from './Card';
+import {checkout} from './Checkout';
+import {dialog} from './Dialog';
+import {inflight} from './InFlight';
+import {multiplayer} from './Multiplayer';
+import {quest} from './Quest';
+import {saved} from './Saved';
+import {search} from './Search';
+import {settings} from './Settings';
+import {snackbar} from './Snackbar';
+import {AppState, AppStateBase, AppStateWithHistory} from './StateTypes';
+import {user} from './User';
 
 function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppState {
   state = state || ({} as AppStateWithHistory);
@@ -23,15 +23,15 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     audio: audio(state.audio, action),
     card: card(state.card, action),
     checkout: checkout(state.checkout, action),
+    commitID: state.commitID, // Handled by inflight()
     dialog: dialog(state.dialog, action),
+    multiplayer: multiplayer(state.multiplayer, action),
     quest: quest(state.quest, action),
     saved: saved(state.saved, action),
     search: search(state.search, action),
     settings: settings(state.settings, action),
     snackbar: snackbar(state.snackbar, action),
     user: user(state.user, action),
-    multiplayer: multiplayer(state.multiplayer, action),
-    commitID: state.commitID, // Handled by inflight()
   };
 }
 
@@ -65,7 +65,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         }
       }
 
-      let pastStateIdx: number = state._history.length-1;
+      let pastStateIdx: number = state._history.length - 1;
       const returnAction = action as ReturnAction;
       if (returnAction.to && (returnAction.to.name || returnAction.to.phase)) {
         while (pastStateIdx > 0 && !isReturnState(state._history[pastStateIdx], returnAction)) {
@@ -94,21 +94,21 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
 
       // If we're going back to a point where the quest is no longer defined, clear the URL hash
       if (pastStateIdx === 0 ||
-         (state._history[pastStateIdx-1] && state._history[pastStateIdx-1].quest && state._history[pastStateIdx-1].quest.details.id === '')) {
+         (state._history[pastStateIdx - 1] && state._history[pastStateIdx - 1].quest && state._history[pastStateIdx - 1].quest.details.id === '')) {
         getHistoryApi().pushState(null, '', '#');
       }
 
       return {
         ...state._history[pastStateIdx],
-        _history: state._history.slice(0, pastStateIdx),
         _committed: state._committed,
-        // things that should persist / not be rewowned:
-        settings: state.settings,
-        multiplayer: state.multiplayer,
-        commitID: state.commitID,
-        user: state.user,
-        saved: state.saved,
+        _history: state._history.slice(0, pastStateIdx),
         _return: true,
+        // things that should persist / not be rewowned:
+        commitID: state.commitID,
+        multiplayer: state.multiplayer,
+        saved: state.saved,
+        settings: state.settings,
+        user: state.user,
       } as AppStateWithHistory;
     }
 
@@ -119,20 +119,20 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
       // Save a copy of existing state to _history, excluding non-historical fields.
       stateHistory.push({
         ...state,
+        _committed: undefined,
         _history: undefined,
         _return: undefined,
-        _committed: undefined,
-        settings: undefined,
         multiplayer: undefined,
         saved: undefined,
+        settings: undefined,
       } as AppStateBase);
     }
   }
 
   // Run the reducers on the new action
   return {...combinedReduce(state, action),
-    _history: stateHistory,
     _committed: (state && state._committed),
+    _history: stateHistory,
     _return: false,
   } as AppStateWithHistory;
 }

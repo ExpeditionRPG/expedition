@@ -1,9 +1,9 @@
-import {QuestDetails} from './QuestTypes'
-import {TemplatePhase} from '../components/views/quest/cardtemplates/TemplateTypes'
-import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
-import {SessionID} from 'shared/multiplayer/Session'
-import {StatusEvent} from 'shared/multiplayer/Events'
-import {ContentRatingLabelType, GenreType, LanguageType} from 'shared/schema/Constants'
+import {StatusEvent} from 'shared/multiplayer/Events';
+import {SessionID} from 'shared/multiplayer/Session';
+import {ContentRatingLabelType, GenreType, LanguageType} from 'shared/schema/Constants';
+import {TemplatePhase} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {QuestDetails} from './QuestTypes';
 
 export interface AnnouncementState {
   open: boolean;
@@ -45,7 +45,7 @@ export interface EndSettings {
 export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'DETAILS' | 'SEARCH' | 'PRIVATE';
 
 export interface SearchSettings {
-  [index:string]: any;
+  [index: string]: any;
   id?: string;
   text?: string;
   age?: number;
@@ -66,7 +66,7 @@ export type FontSizeType = 'SMALL' | 'NORMAL' | 'LARGE';
 
 export type ExpansionsType = 'horror';
 export interface ContentSetsType {
-  [index:string]: boolean;
+  [index: string]: boolean;
   horror: boolean;
 }
 
@@ -123,7 +123,7 @@ export interface QuestState {
 
 export interface SavedQuestState {
   list: SavedQuestMeta[];
-  selected: SavedQuestMeta|null
+  selected: SavedQuestMeta|null;
 }
 
 export interface SearchState {
@@ -137,7 +137,7 @@ export interface UserQuestsType {
   [questId: string]: {
     lastPlayed: Date;
   };
-};
+}
 
 export interface UserState {
   loggedIn: boolean;

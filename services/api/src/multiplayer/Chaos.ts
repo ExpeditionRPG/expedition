@@ -1,8 +1,8 @@
 // Wrappers that simulate degraded network performance, bugs in code, and fuzzed packets
-import Config from '../config'
-import * as WebSocket from 'ws'
-import {Database} from '../models/Database'
-import {getLargestEventID, commitEvent} from '../models/multiplayer/Events'
+import * as WebSocket from 'ws';
+import Config from '../config';
+import {Database} from '../models/Database';
+import {commitEvent, getLargestEventID} from '../models/multiplayer/Events';
 
 const CHAOS_FUZZ_LENGTH = 80;
 const CHAOS_REPLAY_BUF_LENGTH = 10;
@@ -14,7 +14,7 @@ function fuzzMessage(): string {
   const r = Math.random() * CHAOS_FUZZ_LENGTH;
   let result = '';
   for (let i = 0; i < r; i++) {
-    result += fuzzChars[Math.floor(Math.random()*fuzzChars.length)];
+    result += fuzzChars[Math.floor(Math.random() * fuzzChars.length)];
   }
   return result;
 }
@@ -47,7 +47,7 @@ export function chaosWS(ws: WebSocket): WebSocket {
       // Randomly delay outbound messages
       const delay = Math.floor(CHAOS_MAX_DELAY * Math.random());
       console.log('CHAOS: delaying outbound message by ' + delay + 'ms');
-      setTimeout(() => {oldSend(s, errCallback)}, delay);
+      setTimeout(() => {oldSend(s, errCallback); }, delay);
     }
   };
 
@@ -71,13 +71,13 @@ export function chaosWS(ws: WebSocket): WebSocket {
       const fuzzmsg = fuzzMessage();
       console.log('CHAOS: fuzzing ws message to server: ' + fuzzmsg);
 
-      (ws as any)._receiver.onmessage(fuzzmsg); //{data: fuzzmsg, type: 'test', target: ws});
+      (ws as any)._receiver.onmessage(fuzzmsg); // {data: fuzzmsg, type: 'test', target: ws});
 
     } else if (oldMessageBuf.length > 0) {
       // Send replay to client
       const replaymsg = oldMessageBuf[Math.floor(Math.random() * oldMessageBuf.length)];
       console.log('CHAOS: replaying msg to client: ' + replaymsg.substr(0, 128));
-      oldSend(replaymsg, (e: Error) => {console.error(e);});
+      oldSend(replaymsg, (e: Error) => {console.error(e); });
     }
   }, CHAOS_INTERVAL);
   return ws;
@@ -97,7 +97,7 @@ export function chaosDB(db: Database, session: number, ws: WebSocket): Database 
     if (Math.random() < (parseFloat(Config.get('CHAOS_FRACTION')) || 0)) {
       console.log('CHAOS: injecting an id\'d event');
       getLargestEventID(db, session).then((latestID) => {
-        commitEvent(db, session, 'chaos', 'chaos', latestID+1, 'CHAOS', JSON.stringify({id: latestID+1, event: {type: 'chaos!'}}));
+        commitEvent(db, session, 'chaos', 'chaos', latestID + 1, 'CHAOS', JSON.stringify({id: latestID + 1, event: {type: 'chaos!'}}));
       });
     }
   }, CHAOS_INTERVAL);

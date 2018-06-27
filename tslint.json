@@ -1,17 +1,11 @@
 {
+  "extends": "tslint:recommended",
   "rules": {
     "quotemark": [true, "single", "jsx-double"],
-    "curly": true,
     "no-use-before-declare": true,
-    "eofline": true,
-    "radix": true,
     "switch-default": true,
-    "triple-equals": true,
-    "use-isnan": true,
     "indent": [true, "spaces"],
     "no-unused-variable": [true, "react"],
-    "no-var-keyword": true,
-    "prefer-const": true,
     "trailing-comma": [true, {
       "multiline": {
         "objects": "always",
@@ -21,12 +15,24 @@
       },
       "singleline": "never"
     }],
-    "no-debugger": true,
-    "no-duplicate-variable": true,
     "no-switch-case-fall-through": true,
-    "no-trailing-whitespace": true,
     "space-before-function-paren": [true, "never"],
-    "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"]
+    "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
+    "no-shadowed-variable": [
+      true,
+      {
+        "function": false
+      }
+    ],
+    "member-ordering": false,
+    "interface-name": false,
+    "no-var-requires": false,
+    "max-line-length": false,
+    "no-console": false,
+    "max-classes-per-file": false,
+    "no-empty-interface": false,
+    "no-unsafe-finally": false,
+    "object-literal-sort-keys": false
   },
   "linterOptions": {
     "exclude": [

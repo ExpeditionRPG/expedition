@@ -1,4 +1,4 @@
 
 describe('PlaytestWorker', () => {
   it('playtests');
-})
+});

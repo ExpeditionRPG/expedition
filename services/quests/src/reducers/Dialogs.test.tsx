@@ -1,5 +1,5 @@
 describe('dialogs', () => {
-  it('returns initial state')
+  it('returns initial state');
 
   it('sets all dialogs');
 

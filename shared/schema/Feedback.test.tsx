@@ -1,5 +1,5 @@
-import {Feedback} from './Feedback'
-import {PRIVATE_PARTITION} from './Constants'
+import {PRIVATE_PARTITION} from './Constants';
+import {Feedback} from './Feedback';
 
 describe('Feedback Schema', () => {
   const base = {partition: PRIVATE_PARTITION, questid: '12345', userid: '54321'};
@@ -18,6 +18,7 @@ describe('Feedback Schema', () => {
     expect(Feedback.create({...base, difficulty: 'Invalid'}) instanceof Error).toEqual(true);
   });
   it('accepts valid difficulty', () => {
-    new Feedback({...base, difficulty: 'HARD'});
+    const f = new Feedback({...base, difficulty: 'HARD'});
+    expect(f.difficulty).toEqual('HARD');
   });
-})
+});

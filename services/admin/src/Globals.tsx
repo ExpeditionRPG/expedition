@@ -19,25 +19,25 @@ export interface ReactWindow extends Window {
 declare var window: ReactWindow;
 
 const refs = {
-  window: window,
-  document: document,
-  localStorage: null as (Storage|null),
   device: (typeof device !== 'undefined') ? device : {platform: null},
+  document,
   ga: (typeof ga !== 'undefined') ? ga : null,
   gapi: (typeof gapi !== 'undefined') ? gapi : null,
+  localStorage: null as (Storage|null),
   navigator: (typeof navigator !== 'undefined') ? navigator : null,
+  window,
 };
 
-export function setWindow(win: ReactWindow) {
-  refs.window = win;
+export function setWindow(w: ReactWindow) {
+  refs.window = w;
 }
 
-export function setDocument(doc: ReactDocument) {
-  refs.document = doc;
+export function setDocument(d: ReactDocument) {
+  refs.document = d;
 }
 
-export function setGA(ga: any) {
-  refs.ga = ga;
+export function setGA(g: any) {
+  refs.ga = g;
 }
 
 export function getWindow(): ReactWindow {

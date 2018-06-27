@@ -1,9 +1,9 @@
 const acequire: any = (require('brace') as any).acequire;
 const {Range} = acequire('ace/range');
-import REGEX from './Regex'
-import {store} from './Store'
-import {setWordCount} from './actions/Editor'
-import {ENCOUNTERS} from 'app/Encounters'
+import {ENCOUNTERS} from 'app/Encounters';
+import {setWordCount} from './actions/Editor';
+import REGEX from './Regex';
+import {store} from './Store';
 const IGNORE = Object.keys(ENCOUNTERS);
 const elementRegexes = new RegExp('(' + [REGEX.HTML_TAG, REGEX.TRIGGER, REGEX.ID, REGEX.OP].map((regex: any): string => {
   return regex.toString().match(REGEX.EXTRACT_REGEX)[1];
@@ -25,7 +25,7 @@ export default class Spellcheck {
   // lowercases (for search simplicity, since we aren't touching the editor's text)
   // removes zones we aren't spellchecking (html tags, ids, ops), including anything touching them,
   // for example "the {{singer}}'s mother"
-  static cleanCorpus(text: string): string {
+  public static cleanCorpus(text: string): string {
     // load all of the regexes and pull out their contents so that we can merge them + apply flags
     text = text.toLowerCase().replace(elementRegexes, ' ');
     return text;
@@ -33,37 +33,41 @@ export default class Spellcheck {
 
   // Gets the number of words in the text
   // Most accurage if text has already been cleaned
-  static getWordCount(text: string): number {
+  public static getWordCount(text: string): number {
     return text.trim().split(/\s+/).length;
   }
 
   // Return a list of all unique words in the provided text
   // after removing newlines and trimming out empty spaces and non-word characters
-  static getUniqueWords(text: string): string[] {
+  public static getUniqueWords(text: string): string[] {
     return text
-      .replace(/\n/g, ' ') // newlines -> space
-      .split(' ') // split to array of words on spaces
-      .filter((s: string): boolean => { return (Boolean(s) && s.length > 0); }) // remove empty strings
-      .map((s: string): string => { return s.replace(REGEX.NOT_WORD, ''); }) // remove non-word characters
-      .filter((s: string, i: number, arr: string[]): boolean => { return arr.indexOf(s) === i; }); // only return the first instance of each word
+      // newlines -> space
+      .replace(/\n/g, ' ')
+      // split to array of words on spaces
+      .split(' ')
+      // remove empty strings
+      .filter((s: string): boolean => (Boolean(s) && s.length > 0))
+      // remove non-word characters
+      .map((s: string): string => s.replace(REGEX.NOT_WORD, ''))
+      // only return the first instance of each word
+      .filter((s: string, i: number, arr: string[]): boolean => arr.indexOf(s) === i);
   }
 
-  onChange() {
+  public onChange() {
     this.contentsModified = true;
   }
 
   // Spellchecks the instance's Ace session; returns false if it skipped (ie contents not modified), true if it ran
-  spellcheck() {
+  public spellcheck() {
     if (!this.contentsModified || this.spellchecking) {
       return false;
     }
 
     this.spellchecking = true;
-    const start = Date.now();
 
     try {
       // remove existing spellcheck markers
-      for (const i in this.markersPresent) {
+      for (const i of this.markersPresent) {
         this.session.removeMarker(this.markersPresent[i]);
       }
       this.markersPresent = [];
@@ -98,8 +102,7 @@ export default class Spellcheck {
     } finally { // free up, even if there was an error (more robust)
       this.spellchecking = false;
       this.contentsModified = false;
-      console.log('Spellcheck took ' + (Date.now() - start) + 'ms');
-      return true;
     }
+    return true;
   }
 }

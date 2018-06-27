@@ -1,11 +1,11 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import Checkout, {CheckoutStateProps, CheckoutDispatchProps} from './Checkout'
-import {toCard, toPrevious} from '../../actions/Card'
-import {checkoutSetState, checkoutSubmit} from '../../actions/Checkout'
-import {openSnackbar} from '../../actions/Snackbar'
-import {logEvent} from '../../Logging'
-import {AppState, CheckoutPhase, CheckoutState, UserState} from '../../reducers/StateTypes'
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {toCard, toPrevious} from '../../actions/Card';
+import {checkoutSetState, checkoutSubmit} from '../../actions/Checkout';
+import {openSnackbar} from '../../actions/Snackbar';
+import {logEvent} from '../../Logging';
+import {AppState, CheckoutPhase, CheckoutState, UserState} from '../../reducers/StateTypes';
+import Checkout, {CheckoutDispatchProps, CheckoutStateProps} from './Checkout';
 
 const mapStateToProps = (state: AppState, ownProps: any): CheckoutStateProps => {
   return {
@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState, ownProps: any): CheckoutStateProps => 
     quest: state.quest,
     user: state.user,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CheckoutDispatchProps => {
   return {
@@ -36,7 +36,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Check
       dispatch(checkoutSubmit(stripeToken, checkout, user));
     },
   };
-}
+};
 
 const CheckoutContainer = connect(
   mapStateToProps,

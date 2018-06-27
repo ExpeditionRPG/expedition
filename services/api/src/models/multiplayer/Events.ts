@@ -1,18 +1,18 @@
-import Bluebird from 'bluebird'
-import Sequelize from 'sequelize'
-import {Database, EventInstance, SessionInstance} from '../Database'
+import Bluebird from 'bluebird';
+import Sequelize from 'sequelize';
+import {Database, EventInstance, SessionInstance} from '../Database';
 
 export function getLastEvent(db: Database, session: number): Bluebird<EventInstance|null> {
   return db.events.findOne({
-    where: {session} as any,
     order: [['timestamp', 'DESC']],
+    where: {session} as any,
   });
 }
 
 export function getOrderedEventsAfter(db: Database, session: number, start: number): Bluebird<EventInstance[]> {
   return db.events.findAll({
-    where: {session, id: {$gt: start}},
     order: [['timestamp', 'DESC']],
+    where: {session, id: {$gt: start}},
   });
 }
 
@@ -25,7 +25,7 @@ export function getLargestEventID(db: Database, session: number): Bluebird<numbe
   });
 }
 
-export function commitEventWithoutID(db: Database, session: number, client: string, instance: string, type: string, struct: Object): Bluebird<number|null> {
+export function commitEventWithoutID(db: Database, session: number, client: string, instance: string, type: string, struct: object): Bluebird<number|null> {
   // Events by the server may need to be committed without a specific set ID.
   // In these cases, we pass the full object before serialization and fill it
   // with the next available event ID.
@@ -54,7 +54,7 @@ export function commitEventWithoutID(db: Database, session: number, client: stri
 
         id = s.get('eventCounter') + 1;
         (struct as any).id = id;
-        return s.update({eventCounter: id}, {transaction: txn}).then(() => {return true;});
+        return s.update({eventCounter: id}, {transaction: txn}).then(() => true);
       })
       .then((incremented: boolean) => {
         if (!incremented) {
@@ -62,14 +62,14 @@ export function commitEventWithoutID(db: Database, session: number, client: stri
           return false;
         }
         return db.events.upsert({
-          session,
           client,
-          instance,
-          timestamp: new Date(),
           id,
-          type,
+          instance,
           json: JSON.stringify(struct),
-        }, {transaction: txn, returning:false})
+          session,
+          timestamp: new Date(),
+          type,
+        }, {transaction: txn, returning: false})
         .then(() => true);
       });
   }).then((updated: boolean) => {
@@ -105,7 +105,7 @@ export function commitEvent(db: Database, session: number, client: string, insta
         return s.update(
           {eventCounter: event},
           {transaction: txn}
-        ).then(() => {return true;});
+        ).then(() => true);
       })
       .then((incremented: boolean) => {
         if (!incremented) {
@@ -116,14 +116,14 @@ export function commitEvent(db: Database, session: number, client: string, insta
           throw new Error('Found null event after it should be set');
         }
         return db.events.upsert({
-          session,
           client,
-          instance,
-          timestamp: new Date(),
           id: event,
-          type,
+          instance,
           json,
-        }, {transaction: txn, returning:false})
+          session,
+          timestamp: new Date(),
+          type,
+        }, {transaction: txn, returning: false})
         .then(() => true);
       });
   }).then((updated: boolean) => {

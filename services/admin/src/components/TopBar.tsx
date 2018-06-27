@@ -1,26 +1,26 @@
-import * as React from 'react'
-import AppBar from '@material-ui/core/AppBar'
-import Button from '@material-ui/core/Button'
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
 // import Menu from '@material-ui/core/Menu'
 // import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField';
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import AlertWarning from '@material-ui/icons/Warning'
-import NavigationArrowDropDown from '@material-ui/icons/ArrowDropDown'
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import NavigationArrowDropDown from '@material-ui/icons/ArrowDropDown';
+import AlertWarning from '@material-ui/icons/Warning';
+import * as React from 'react';
 
-import {UserState, ViewState, ViewType} from '../reducers/StateTypes'
+import {UserState, ViewState, ViewType} from '../reducers/StateTypes';
 
-//TODO INCLUDE VERSION
+// TODO INCLUDE VERSION
 
 export interface TopBarStateProps {
   view: ViewState;
   user: UserState;
-};
+}
 
 export interface TopBarDispatchProps {
-  onUserDialogRequest: (user: UserState)=>void;
-  onFilterUpdate: (view: ViewType, filter: string)=>void;
+  onUserDialogRequest: (user: UserState) => void;
+  onFilterUpdate: (view: ViewType, filter: string) => void;
 }
 
 interface TopBarProps extends TopBarStateProps, TopBarDispatchProps {}
@@ -33,13 +33,13 @@ export class Filter extends React.Component<FilterProps, {filter: string, lastFi
   constructor(props: FilterProps) {
     super(props);
     this.state = {
+      debounce: null,
       filter: '',
       lastFilter: '',
-      debounce: null,
     };
   }
 
-  sendUpdate() {
+  public sendUpdate() {
     console.log(this.state);
     if (!this.state.debounce) {
       if (this.state.filter === this.state.lastFilter) {
@@ -47,26 +47,29 @@ export class Filter extends React.Component<FilterProps, {filter: string, lastFi
       }
       this.props.onFilterUpdate(this.state.filter);
       this.setState({
-        lastFilter: this.state.filter,
         debounce: setTimeout(() => {
           this.setState({debounce: null});
           this.sendUpdate();
         }, FILTER_DEBOUNCE) as any as number,
+        lastFilter: this.state.filter,
       });
     }
   }
 
-  handleFilterChange(event: React.FormEvent<HTMLInputElement>) {
+  public handleFilterChange(event: React.FormEvent<HTMLInputElement>) {
     this.setState({filter: event.currentTarget.value}, () => this.sendUpdate());
   }
 
-  render(): JSX.Element {
+  public render(): JSX.Element {
     return (
-      <TextField id="filter" value={this.state.filter} onChange={this.handleFilterChange.bind(this)} />
+      <TextField
+        id="filter"
+        value={this.state.filter}
+        onChange={this.handleFilterChange.bind(this)}
+      />
     );
   }
 }
-
 
 const TopBar = (props: TopBarProps): JSX.Element => {
   // const loginText = 'Logged in as ' + props.user.displayName;
@@ -99,9 +102,9 @@ const TopBar = (props: TopBarProps): JSX.Element => {
           {title}
         </Typography>
         <Toolbar className="toolbar">
-          <Filter onFilterUpdate={(f: string) => {props.onFilterUpdate(props.view.view, f);}}/>
+          <Filter onFilterUpdate={(f: string) => {props.onFilterUpdate(props.view.view, f); }}/>
           {warn}
-          <Button onClick={(event: any) => {console.log('TODO');}}>Help</Button>
+          <Button onClick={(event: any) => {console.log('TODO'); }}>Help</Button>
           <div>
             <span className="email">{props.user.email}</span>
             <Button><NavigationArrowDropDown /></Button>
@@ -110,6 +113,6 @@ const TopBar = (props: TopBarProps): JSX.Element => {
       </AppBar>
     </span>
   );
-}
+};
 
 export default TopBar;

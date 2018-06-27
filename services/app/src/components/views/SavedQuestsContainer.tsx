@@ -1,10 +1,10 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import SavedQuests, {SavedQuestsStateProps, SavedQuestsDispatchProps} from './SavedQuests'
-import {AppState, SavedQuestMeta} from '../../reducers/StateTypes'
-import {setDialog} from '../../actions/Dialog'
-import {loadSavedQuest, selectSavedQuest} from '../../actions/SavedQuests'
-import {toCard, toPrevious} from '../../actions/Card'
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {toCard, toPrevious} from '../../actions/Card';
+import {setDialog} from '../../actions/Dialog';
+import {loadSavedQuest, selectSavedQuest} from '../../actions/SavedQuests';
+import {AppState, SavedQuestMeta} from '../../reducers/StateTypes';
+import SavedQuests, {SavedQuestsDispatchProps, SavedQuestsStateProps} from './SavedQuests';
 
 const mapStateToProps = (state: AppState, ownProps: SavedQuestsStateProps): SavedQuestsStateProps => {
   return {
@@ -12,7 +12,7 @@ const mapStateToProps = (state: AppState, ownProps: SavedQuestsStateProps): Save
     saved: state.saved.list,
     selected: state.saved.selected,
   };
-}
+};
 
 export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SavedQuestsDispatchProps => {
   return {
@@ -25,17 +25,17 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
     },
     onSelect(selected: SavedQuestMeta): void {
       dispatch(selectSavedQuest(selected));
-      dispatch(toCard({name: 'SAVED_QUESTS', phase: 'DETAILS'}))
+      dispatch(toCard({name: 'SAVED_QUESTS', phase: 'DETAILS'}));
     },
     onReturn(): void {
       dispatch(toPrevious({}));
     },
   };
-}
+};
 
 const SavedQuestsContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(SavedQuests);
 
-export default SavedQuestsContainer
+export default SavedQuestsContainer;

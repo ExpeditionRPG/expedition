@@ -1,8 +1,8 @@
-import * as React from 'react'
-import LeftIcon from '@material-ui/icons/ChevronLeft'
-import Button from '@material-ui/core/Button'
-import {OverrideTextArea} from './base/OverrideTextArea'
-import {ScrollBottom} from './base/ScrollBottom'
+import Button from '@material-ui/core/Button';
+import LeftIcon from '@material-ui/icons/ChevronLeft';
+import * as React from 'react';
+import {OverrideTextArea} from './base/OverrideTextArea';
+import {ScrollBottom} from './base/ScrollBottom';
 
 const math = require('mathjs') as any;
 
@@ -20,8 +20,7 @@ interface ContextEditorProps extends ContextEditorStateProps, ContextEditorDispa
 function codifyScope(scope: any): string {
   const keys = Object.keys(scope).sort();
   let result: string = '';
-  for (let i = 0; i < keys.length; i++) {
-    const k = keys[i];
+  for (const k of keys) {
     let v = scope[k];
     if (k === '_') { continue; }
     // MathJS functions stringify to verbose JS functions,

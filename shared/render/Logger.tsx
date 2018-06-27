@@ -1,4 +1,4 @@
-import {Block} from './block/BlockList'
+import {Block} from './block/BlockList';
 
 // Info: Generally not shown to the user; internal debugging only.
 // Warning: Won't break your quest, but important to know about. Does not change quest.
@@ -21,12 +21,11 @@ export interface LogMessage {
 }
 
 export interface LogMessageMap {
-  info: LogMessage[];
-  warning: LogMessage[];
   error: LogMessage[];
+  info: LogMessage[];
   internal: LogMessage[];
+  warning: LogMessage[];
 }
-
 
 export function prettifyMsg(msg: LogMessage): string {
   let result = '';
@@ -44,8 +43,8 @@ export function prettifyMsg(msg: LogMessage): string {
 
 export function prettifyMsgs(msgs: LogMessage[]): string {
   const prettyMsgs: string[] = [];
-  for (let i = 0; i < msgs.length; i++) {
-    prettyMsgs.push(prettifyMsg(msgs[i]));
+  for (const msg of msgs) {
+    prettyMsgs.push(prettifyMsg(msg));
   }
   return prettyMsgs.join('\n\n');
 }
@@ -113,9 +112,9 @@ export class Logger {
 
   public getFinalizedLogs(): LogMessageMap {
     const finalized = this.finalize();
-    const logMap: LogMessageMap = {'info': [], 'warning': [], 'error': [], 'internal': []};
+    const logMap: LogMessageMap = {info: [], warning: [], error: [], internal: []};
     for (const m of finalized) {
-      switch(m.type) {
+      switch (m.type) {
         case 'info':
           logMap.info.push(m);
           break;
@@ -138,15 +137,15 @@ export class Logger {
 
   private msg(group: Block[], type: LogSeverity, text: string, url: string, line?: number): LogMessage {
     const message: LogMessage = {
-      type: type,
-      text: text,
-      url: url,
+      text,
+      type,
+      url,
     };
     if (line) {
       message.line = line;
     } else {
-      message.line = (group.length > 0) ? (group[0].startLine || 0) : 0
+      message.line = (group.length > 0) ? (group[0].startLine || 0) : 0;
     }
     return message;
   }
-};
+}

@@ -31,6 +31,8 @@ export const LANGUAGES: LanguageType[] = [
   'Spanish',
 ];
 
+/* tslint:disable object-literal-sort-keys */
+
 // Content rating options and their definitions, generally based on MPAA guidelines
 export type ContentRatingLabelType = 'Kid-friendly' | 'Teen' | 'Adult';
 export const CONTENT_RATINGS: ContentRatingLabelType[] = [
@@ -38,42 +40,42 @@ export const CONTENT_RATINGS: ContentRatingLabelType[] = [
   'Teen',
   'Adult',
 ];
-export type ContentRatingType = {
+export interface ContentRatingType {
   summary: string;
   details: {
     [key: string]: string;
-    violence: string;
-    language: string;
     drugs: string;
+    language: string;
     nudity: string;
-  }
+    violence: string;
+  };
 }
 export const CONTENT_RATING_DESC: {[key: string]: ContentRatingType} = {
   'Kid-friendly': {
     summary: 'No drug use or nudity, very limited profanity, and no references to sex or detailed violence.',
     details: {
-      violence: 'No descriptions of violence allowed outside of game mechanics.',
-      language: 'Only very limited profanity allowed, and no sexually-derived words.',
       drugs: 'No drug use allowed.',
+      language: 'Only very limited profanity allowed, and no sexually-derived words.',
       nudity: 'No nudity allowed.',
+      violence: 'No descriptions of violence allowed outside of game mechanics.',
     },
   },
   'Teen': {
     summary: 'Brief and limited violence and profanity. Potential non-sexual nudity and responsible drug use.',
     details: {
-      violence: 'May contain brief, limited descriptions of violence.',
-      language: 'May contain profanity except in a sexual context.',
       drugs: 'May contain drug use, but not abuse.',
+      language: 'May contain profanity except in a sexual context.',
       nudity: 'May contain non-sexual nudity.',
+      violence: 'May contain brief, limited descriptions of violence.',
     },
   },
   'Adult': {
-    summary: 'Mature (but not pornographic) use of violence, profanity, drugs, and sexuality. Titles and descriptions must still be PG.',
+    summary: 'Mature (but not pornographic). Titles and descriptions must still be PG.',
     details: {
-      violence: 'Violence allowed.',
-      language: 'Profanity allowed.',
       drugs: 'Drugs allowed.',
+      language: 'Profanity allowed.',
       nudity: 'Nudity allowed.',
+      violence: 'Violence allowed.',
     },
   },
 };
@@ -83,3 +85,5 @@ export const THEMES: ThemeType[] = [
   'base',
   'horror',
 ];
+
+/* tslint:enable object-literal-sort-keys */

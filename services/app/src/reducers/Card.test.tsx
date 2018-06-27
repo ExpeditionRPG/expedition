@@ -1,24 +1,9 @@
-import {card} from './Card'
-import {toCard} from '../actions/Card'
-import {NAVIGATION_DEBOUNCE_MS}  from '../Constants'
-import configureStore  from 'redux-mock-store'
-import {MultiplayerClient} from '../Multiplayer'
-import {Reducer} from '../Testing'
+import {toCard} from '../actions/Card';
+import {NAVIGATION_DEBOUNCE_MS} from '../Constants';
+import {Reducer} from '../Testing';
+import {card} from './Card';
 
 describe('Card reducer', () => {
-  let client: any;
-  let dispatched: any;
-  beforeEach(() => {
-    client = new MultiplayerClient();
-    const store = configureStore([client.createActionMiddleware()])({});
-    dispatched = (a: any) => {
-      store.dispatch(a);
-      const result = store.getActions();
-      store.clearActions();
-      return result[result.length-1];
-    }
-  });
-
   it('Defaults to splash card', () => {
     expect(card(undefined, {type: 'NO_OP'})).toEqual(jasmine.objectContaining({name: 'SPLASH_CARD'} as any));
   });
@@ -31,7 +16,7 @@ describe('Card reducer', () => {
 
   it('Does not debounce after some time', () => {
     const then = Date.now();
-    spyOn(Date, 'now').and.callFake(function() {
+    spyOn(Date, 'now').and.callFake(() => {
       return then + NAVIGATION_DEBOUNCE_MS + 10;
     });
     Reducer(card).withState({name: 'SEARCH_CARD', ts: then})
@@ -41,7 +26,7 @@ describe('Card reducer', () => {
 
   it('Debounces NAVIGATE actions', () => {
     const then = Date.now();
-    spyOn(Date, 'now').and.callFake(function() {
+    spyOn(Date, 'now').and.callFake(() => {
       return then + 50;
     });
     Reducer(card).withState({name: 'SEARCH_CARD', ts: then})
@@ -51,7 +36,7 @@ describe('Card reducer', () => {
 
   it('Respects overrideDebounce', () => {
     const then = Date.now();
-    spyOn(Date, 'now').and.callFake(function() {
+    spyOn(Date, 'now').and.callFake(() => {
       return then + 50;
     });
     Reducer(card).withState({name: 'SEARCH_CARD', ts: then})

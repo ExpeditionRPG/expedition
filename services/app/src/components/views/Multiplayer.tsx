@@ -1,11 +1,11 @@
-import * as React from 'react'
-import Close from '@material-ui/icons/Close'
-import NetworkWifi from '@material-ui/icons/NetworkWifi'
-import SignalWifiOff from '@material-ui/icons/SignalWifiOff'
-import Card from '../base/Card'
-import Button from '../base/Button'
-import {SessionID} from 'shared/multiplayer/Session'
-import {UserState, MultiplayerPhase, MultiplayerState, MultiplayerSessionMeta} from '../../reducers/StateTypes'
+import Close from '@material-ui/icons/Close';
+import NetworkWifi from '@material-ui/icons/NetworkWifi';
+import SignalWifiOff from '@material-ui/icons/SignalWifiOff';
+import * as React from 'react';
+import {SessionID} from 'shared/multiplayer/Session';
+import {MultiplayerPhase, MultiplayerSessionMeta, MultiplayerState, UserState} from '../../reducers/StateTypes';
+import Button from '../base/Button';
+import Card from '../base/Card';
 
 const Moment = require('moment');
 
@@ -27,14 +27,14 @@ export interface MultiplayerDispatchProps {
 export interface MultiplayerProps extends MultiplayerStateProps, MultiplayerDispatchProps {}
 
 class MultiplayerConnect extends React.Component<MultiplayerProps, {}> {
-  state: {secret: string};
+  public state: {secret: string};
 
   constructor(props: MultiplayerProps) {
-    super(props)
+    super(props);
     this.state = {secret: ''};
   }
 
-  handleSecret(e: any) {
+  public handleSecret(e: any) {
     const v: string = e.target.value;
     if (v.length > MIN_SECRET_LENGTH) {
       return;
@@ -43,10 +43,10 @@ class MultiplayerConnect extends React.Component<MultiplayerProps, {}> {
     this.setState({secret: v.toUpperCase()});
   }
 
-  render() {
+  public render() {
     const history = this.props.multiplayer.history.map((m: MultiplayerSessionMeta, i: number) => {
       return (
-        <Button key={i} onClick={()=>{this.props.onReconnect(this.props.user, m.id, m.secret)}}>
+        <Button key={i} onClick={() => {this.props.onReconnect(this.props.user, m.id, m.secret); }}>
           {m.questTitle} ({m.peerCount || 0} peers) - {Moment(m.lastAction).fromNow()}
         </Button>
       );
@@ -56,8 +56,8 @@ class MultiplayerConnect extends React.Component<MultiplayerProps, {}> {
       <Card title="Online Multiplayer">
         <div className="remoteplay">
           <p>Online multiplayer allows you to go on adventures with your friends, no matter where they are! Simply start a new session and have your friends join.</p>
-          <Button onClick={() =>{this.props.onNewSessionRequest(this.props.user)}}>Start a new session</Button>
-          <Button onClick={() =>{this.props.onConnect(this.props.user)}}>Join a session</Button>
+          <Button onClick={() => {this.props.onNewSessionRequest(this.props.user); }}>Start a new session</Button>
+          <Button onClick={() => {this.props.onConnect(this.props.user); }}>Join a session</Button>
           {history.length > 0 && <div className="helptext">You may also reconnect to these sessions:</div>}
           {history}
           <br/>
@@ -81,7 +81,7 @@ function renderLobby(props: MultiplayerProps): JSX.Element {
           <Close/> Exit multiplayer (others may continue to play)
         </p>
         <p>Once everyone is connected, click Start:</p>
-        <Button id="1" onClick={() =>{props.onContinue()}}>Start</Button>
+        <Button id="1" onClick={() => {props.onContinue(); }}>Start</Button>
         <Button id="2">Do nothing</Button>
       </div>
     </Card>
@@ -89,7 +89,7 @@ function renderLobby(props: MultiplayerProps): JSX.Element {
 }
 
 const Multiplayer = (props: MultiplayerProps): JSX.Element => {
-  switch(props.phase) {
+  switch (props.phase) {
     case 'CONNECT':
       return <MultiplayerConnect {...props} />;
     case 'LOBBY':
@@ -97,6 +97,6 @@ const Multiplayer = (props: MultiplayerProps): JSX.Element => {
     default:
       throw new Error('Unknown multiplayer phase ' + props.phase);
   }
-}
+};
 
 export default Multiplayer;

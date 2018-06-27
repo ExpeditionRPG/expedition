@@ -1,4 +1,4 @@
-import {ThemeType} from 'shared/schema/Constants'
+import {ThemeType} from 'shared/schema/Constants';
 
 // TODO: Dedupe this with api/models/Quests QuestAttributes interface.
 export interface QuestDetails {
@@ -49,6 +49,6 @@ export interface RoleplayElement {
   icon?: string;
 }
 
-export type Enemy = {name: string, tier: number, class?: string};
+export interface Enemy {name: string; tier: number; class?: string; }
 
-export type Loot = {tier: number, count: number};
+export interface Loot {tier: number; count: number; }

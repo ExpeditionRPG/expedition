@@ -1,9 +1,9 @@
-import * as React from 'react'
-import {loadAudioLocalFile} from '../../actions/Audio'
-import {AudioLoadingType, AudioState, CardName, CardPhase} from '../../reducers/StateTypes'
-import {getWindow} from '../../Globals'
-import {logEvent} from '../../Logging'
-import {AUDIO_COMMAND_DEBOUNCE_MS, MUSIC_INTENSITY_MAX, INIT_DELAY} from '../../Constants'
+import * as React from 'react';
+import {loadAudioLocalFile} from '../../actions/Audio';
+import {AUDIO_COMMAND_DEBOUNCE_MS, INIT_DELAY, MUSIC_INTENSITY_MAX} from '../../Constants';
+import {getWindow} from '../../Globals';
+import {logEvent} from '../../Logging';
+import {AudioLoadingType, AudioState, CardName, CardPhase} from '../../reducers/StateTypes';
 const eachLimit = require('async/eachLimit');
 
 /* Notes on audio implementation:
@@ -31,48 +31,48 @@ const MUSIC_FADE_SECONDS = 1.5;
 const MUSIC_FADE_LONG_SECONDS = 3.5; // for fade outs, such as the end of combat
 const MUSIC_DEFINITIONS = {
   combat: {
-    light: {
-      bpm: 120,
-      directory: 'combat/light/',
-      // peakingInstrument always at the end
-      instruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings', 'HighBrass'],
-      baselineInstruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings'],
-      peakingInstrument: 'HighBrass',
-      loopMs: 8000,
-      minIntensity: 0,
-      maxIntensity: 24,
-      variants: 12,
-    },
     heavy: {
+      baselineInstruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings'],
       bpm: 140,
       directory: 'combat/heavy/',
       instruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings', 'HighBrass'],
-      baselineInstruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings'],
-      peakingInstrument: 'HighBrass',
       loopMs: 13712,
-      minIntensity: 12,
       maxIntensity: MUSIC_INTENSITY_MAX,
+      minIntensity: 12,
+      peakingInstrument: 'HighBrass',
       variants: 6,
+    },
+    light: {
+      // peakingInstrument always at the end
+      baselineInstruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings'],
+      bpm: 120,
+      directory: 'combat/light/',
+      instruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings', 'HighBrass'],
+      loopMs: 8000,
+      maxIntensity: 24,
+      minIntensity: 0,
+      peakingInstrument: 'HighBrass',
+      variants: 12,
     },
   },
 } as {[key: string]: {[key: string]: MusicDefinition}};
 interface MusicDefinition {
-  bpm: number,
-  directory: string,
-  instruments: string[],
-  baselineInstruments: string[],
-  peakingInstrument: string,
-  loopMs: number,
-  minIntensity: number,
-  maxIntensity: number,
-  variants: number,
-};
+  baselineInstruments: string[];
+  bpm: number;
+  directory: string;
+  instruments: string[];
+  loopMs: number;
+  maxIntensity: number;
+  minIntensity: number;
+  peakingInstrument: string;
+  variants: number;
+}
 type GainNode = any;
 type SourceNode = any;
 interface NodeSet {
-  source: SourceNode;
   gain: GainNode;
-};
+  source: SourceNode;
+}
 
 export interface AudioStateProps {
   audio: AudioState;
@@ -113,7 +113,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
       if (props.enabled) {
         setTimeout(() => this.loadFiles(), INIT_DELAY.LOAD_AUDIO_MILLIS);
       }
-    } catch(err) {
+    } catch (err) {
       if (props.enabled) {
         props.disableAudio();
       }
@@ -125,7 +125,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
   // This will fire many times without any audio-related changes since it subscribes to settings
   // So we have to be careful in checking that it's actually an audio-related change,
   // And not a different event that contains valid-looking (but identical) audio info
-  componentWillReceiveProps(nextProps: Partial<AudioProps>) {
+  public componentWillReceiveProps(nextProps: Partial<AudioProps>) {
     if (!nextProps.audio) {
       return;
     }
@@ -227,14 +227,14 @@ export default class Audio extends React.Component<AudioProps, {}> {
     if (this.props.audio.loaded === 'UNLOADED') {
       this.props.onLoadChange('LOADING');
       const musicFiles = Object.keys(MUSIC_DEFINITIONS).reduce((list: string[], musicClass: string) => {
-        return list.concat(Object.keys(MUSIC_DEFINITIONS[musicClass]).reduce((list: string[], musicWeight: string) => {
+        return list.concat(Object.keys(MUSIC_DEFINITIONS[musicClass]).reduce((acc: string[], musicWeight: string) => {
           const weight = MUSIC_DEFINITIONS[musicClass][musicWeight];
-          for (let i = 0; i < weight.instruments.length; i++) {
+          for (const instrument of weight.instruments) {
             for (let v = 1; v <= weight.variants; v++) {
-              list.push(`${musicClass}/${musicWeight}/${weight.instruments[i]}${v}`);
+              acc.push(`${musicClass}/${musicWeight}/${instrument}${v}`);
             }
           }
-          return list;
+          return acc;
         }, []));
       }, []);
       eachLimit(musicFiles, 4, (file: string, callback: (err?: Error) => void) => {
@@ -384,8 +384,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
       this.musicTimeout = null;
     }
     const fadeSeconds = (this.intensity > 0) ? MUSIC_FADE_SECONDS : MUSIC_FADE_LONG_SECONDS;
-    for (let i = 0; i < this.musicNodes.length; i++) {
-      const track = this.musicNodes[i];
+    for (const track of this.musicNodes) {
       if (track && track.source && track.source.playbackState === track.source.PLAYING_STATE) {
         track.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + fadeSeconds); // Fade out
         track.source.stop = track.source.stop || track.source.noteOff; // polyfill for old browsers
@@ -412,7 +411,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
     this.playNewMusicTheme();
   }
 
-  render(): JSX.Element|null {
+  public render(): JSX.Element|null {
     return null;
   }
 }

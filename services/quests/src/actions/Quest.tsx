@@ -1,26 +1,26 @@
-import Redux from 'redux'
+import Redux from 'redux';
+import {QuestType, UserState} from '../reducers/StateTypes';
 import {
-  ReceiveQuestLoadAction,
-  RequestQuestSaveAction, ReceiveQuestSaveAction, ReceiveQuestSaveErrAction,
   QuestLoadingAction,
-  QuestPublishingSetupAction, QuestMetadataChangeAction,
-  RequestQuestPublishAction, ReceiveQuestPublishAction,
-  RequestQuestUnpublishAction, ReceiveQuestUnpublishAction,
-} from './ActionTypes'
-import {setSnackbar} from './Snackbar'
-import {QuestType, UserState} from '../reducers/StateTypes'
+  QuestMetadataChangeAction, QuestPublishingSetupAction, ReceiveQuestLoadAction,
+  ReceiveQuestPublishAction,
+  ReceiveQuestSaveAction, ReceiveQuestSaveErrAction,
+  ReceiveQuestUnpublishAction, RequestQuestPublishAction,
+  RequestQuestSaveAction, RequestQuestUnpublishAction,
+} from './ActionTypes';
+import {setSnackbar} from './Snackbar';
 
-import {pushError, pushHTTPError} from './Dialogs'
-import {startPlaytestWorker} from './Editor'
-import {realtimeUtils} from '../Auth'
+import {renderXML} from 'shared/render/QDLParser';
+import {realtimeUtils} from '../Auth';
 import {
-  NEW_QUEST_TEMPLATE,
-  QUEST_DOCUMENT_HEADER,
-  METADATA_DEFAULTS,
   API_HOST,
-  PARTITIONS
-} from '../Constants'
-import {renderXML} from 'shared/render/QDLParser'
+  METADATA_DEFAULTS,
+  NEW_QUEST_TEMPLATE,
+  PARTITIONS,
+  QUEST_DOCUMENT_HEADER
+} from '../Constants';
+import {pushError, pushHTTPError} from './Dialogs';
+import {startPlaytestWorker} from './Editor';
 
 const ReactGA = require('react-ga') as any;
 const QueryString = require('query-string');
@@ -45,30 +45,31 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
     text = QUEST_DOCUMENT_HEADER + text;
     const base64Data = btoa(window.unescape(window.encodeURIComponent(text)));
     const multipartRequestBody =
-        delimiter +
-        'Content-Type: application/json\r\n\r\n' +
-        JSON.stringify(fileMetadata) +
-        delimiter +
-        'Content-Type: text/plain\r\n' +
-        'Content-Transfer-Encoding: base64\r\n' +
-        '\r\n' +
-        base64Data +
-        closeDelim;
+      delimiter +
+      'Content-Type: application/json\r\n\r\n' +
+      JSON.stringify(fileMetadata) +
+      delimiter +
+      'Content-Type: text/plain\r\n' +
+      'Content-Transfer-Encoding: base64\r\n' +
+      '\r\n' +
+      base64Data +
+      closeDelim;
 
     const request = window.gapi.client.request({
-        'path': '/upload/drive/v2/files/' + fileId,
-        'method': 'PUT',
-        'params': {'uploadType': 'multipart', 'alt': 'json'},
-        'headers': {
-          'Content-Type': 'multipart/mixed; boundary="' + boundary + '"',
-        },
-        'body': multipartRequestBody});
+      body: multipartRequestBody,
+      headers: {
+        'Content-Type': 'multipart/mixed; boundary="' + boundary + '"',
+      },
+      method: 'PUT',
+      params: {uploadType: 'multipart', alt: 'json'},
+      path: '/upload/drive/v2/files/' + fileId,
+    });
     request.then((json: any, raw: any) => {
       return callback(null, json);
     }, (json: any) => {
       return callback(json.result.error);
     });
-  } catch(err) {
+  } catch (err) {
     return callback(err);
   }
 }
@@ -78,27 +79,27 @@ export function loadQuestFromURL(user: UserState, id?: string) {
     dispatch(questLoading());
     if (id) {
       ReactGA.event({
-        category: 'Background',
         action: 'QUEST_LOAD_EXISTING',
+        category: 'Background',
         label: id,
       });
     } else {
       ReactGA.event({
-        category: 'Background',
         action: 'QUEST_LOAD_NEW',
+        category: 'Background',
       });
     }
     loadQuest(user, dispatch, id);
-  }
+  };
 }
 
 export function newQuest(user: UserState) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const insertHash = {
       resource: {
+        description: 'Created with the Expedition Quest Creator',
         mimeType: 'text/plain',
         title: 'New Expedition Quest',
-        description: 'Created with the Expedition Quest Creator',
       },
     };
     // TODO migrate this to use same upload method as updateDriveFile to remove dependency
@@ -111,31 +112,33 @@ export function newQuest(user: UserState) {
           }
           loadQuest(user, dispatch, createResponse.id);
           window.gapi.client.request({
-            path: '/drive/v3/files/' + createResponse.id + '/permissions',
-            method: 'POST',
-            params: {sendNotificationEmails: false},
             body: {
+              allowFileDiscovery: true,
+              domain: 'Fabricate.io',
               role: 'writer',
               type: 'domain',
-              domain: 'Fabricate.io',
-              allowFileDiscovery: true,
             },
+            method: 'POST',
+            params: {sendNotificationEmails: false},
+            path: '/drive/v3/files/' + createResponse.id + '/permissions',
           }).then((json: any, raw: any) => {
+            // Succeed silently
           }, (json: any) => {
             ReactGA.event({
-              category: 'Error',
               action: 'Error connecting quest file to Fabricate.IO',
+              category: 'Error',
               label: createResponse.id,
             });
-            console.log('Error connecting quest file to Fabricate.IO', json);
+            // TODO better error handling
+            // console.log('Error connecting quest file to Fabricate.IO', json);
           });
         });
       });
     });
-  }
+  };
 }
 
-function getPublishedQuestMeta(publishedId: string, cb: (meta: QuestType)=>any) {
+function getPublishedQuestMeta(publishedId: string, cb: (meta: QuestType) => any) {
   $.post(API_HOST + '/quests', JSON.stringify({id: publishedId}), (result: any) => {
     result = JSON.parse(result);
     if (result.error) {
@@ -169,15 +172,14 @@ function createDocMetadata(model: any, defaults: any) {
 
 export function loadQuest(user: UserState, dispatch: any, docid?: string) {
   if (docid === undefined) {
-    console.log('Creating new quest');
     return dispatch(newQuest(user));
   }
-  realtimeUtils.load(docid, function(doc: any) {
+  realtimeUtils.load(docid, (doc: any) => {
     window.location.hash = docid;
     doc.addEventListener('collaborator_joined', (e: any) => {
       ReactGA.event({
-        category: 'Background',
         action: 'COLLABORATOR_JOINED',
+        category: 'Background',
         label: docid,
       });
     });
@@ -194,22 +196,21 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
       try {
         const defaults = {
           ...METADATA_DEFAULTS,
-          summary: '',
           author: user.displayName,
           email: user.email,
-          minplayers: 1,
-          maxplayers: 6,
           language: 'English',
+          maxplayers: 6,
+          minplayers: 1,
+          summary: '',
         };
         metadata = createDocMetadata(doc.getModel(), defaults);
-      } catch(err) {
+      } catch (err) {
         dispatch(pushError(new Error('Error parsing metadata. Please check your quest for validation errors, then try reloading the page. If this error persists, please contact support: Expedition@Fabricate.io')));
         ReactGA.event({
-          category: 'Error',
           action: 'Error parsing metadata',
+          category: 'Error',
           label: docid,
         });
-        console.log(err);
       }
     }
 
@@ -217,25 +218,25 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
     getPublishedQuestMeta(docid, (quest: QuestType) => {
       const xmlResult = renderXML(text);
       quest = Object.assign(quest || {}, {
-        id: docid,
-        mdRealtime: md,
-        notesRealtime: notes,
-        metadataRealtime: metadata,
-        realtimeModel: doc.getModel(),
-        title: xmlResult.getMeta().title,
-        summary: metadata.get('summary'),
         author: metadata.get('author'),
-        email: metadata.get('email'),
-        minplayers: +metadata.get('minplayers'),
-        maxplayers: +metadata.get('maxplayers'),
-        mintimeminutes: +metadata.get('mintimeminutes'),
-        maxtimeminutes: +metadata.get('maxtimeminutes'),
-        genre: metadata.get('genre'),
         contentrating: metadata.get('contentrating'),
+        email: metadata.get('email'),
         expansionhorror: metadata.get('expansionhorror') || false,
+        genre: metadata.get('genre'),
+        id: docid,
         language: metadata.get('language') || 'English',
-        theme: metadata.get('theme') || 'base',
+        maxplayers: +metadata.get('maxplayers'),
+        maxtimeminutes: +metadata.get('maxtimeminutes'),
+        mdRealtime: md,
+        metadataRealtime: metadata,
+        minplayers: +metadata.get('minplayers'),
+        mintimeminutes: +metadata.get('mintimeminutes'),
+        notesRealtime: notes,
+        realtimeModel: doc.getModel(),
         requirespenpaper: metadata.get('requirespenpaper') || false,
+        summary: metadata.get('summary'),
+        theme: metadata.get('theme') || 'base',
+        title: xmlResult.getMeta().title,
       });
       dispatch(receiveQuestLoad(quest));
       dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
@@ -257,7 +258,8 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
   });
 }
 
-export function questMetadataChange(quest: QuestType, key: string, value: any): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function questMetadataChange(quest: QuestType, key: string, value: any):
+  ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     // Don't allow undo, since these are set via UI and users don't expect Ctrl+Z to affec them.
     // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
@@ -265,42 +267,43 @@ export function questMetadataChange(quest: QuestType, key: string, value: any): 
     quest.metadataRealtime.set(key, value);
     quest.realtimeModel.endCompoundOperation();
     dispatch({type: 'QUEST_METADATA_CHANGE', key, value} as QuestMetadataChangeAction);
-  }
+  };
 }
 
-export function publishQuestSetup(): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function publishQuestSetup(): ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'QUEST_PUBLISHING_SETUP'} as QuestPublishingSetupAction);
-  }
+  };
 }
 
-export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePublish?: boolean): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePublish?: boolean):
+  ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const renderResult = renderXML(quest.mdRealtime.getText());
     dispatch({type: 'QUEST_RENDER', qdl: renderResult, msgs: renderResult.getFinalizedLogs()});
     dispatch({type: 'REQUEST_QUEST_PUBLISH', quest} as RequestQuestPublishAction);
     const params = QueryString.stringify({
-      title: quest.title,
-      summary: quest.summary,
       author: quest.author,
-      email: quest.email,
-      minplayers: quest.minplayers,
-      maxplayers: quest.maxplayers,
-      mintimeminutes: quest.mintimeminutes,
-      maxtimeminutes: quest.maxtimeminutes,
-      genre: quest.genre,
       contentrating: quest.contentrating,
-      partition: (privatePublish) ? PARTITIONS.PRIVATE : PARTITIONS.PUBLIC,
-      majorRelease,
+      email: quest.email,
       expansionhorror: quest.expansionhorror,
+      genre: quest.genre,
       language: quest.language,
-      theme: quest.theme,
+      majorRelease,
+      maxplayers: quest.maxplayers,
+      maxtimeminutes: quest.maxtimeminutes,
+      minplayers: quest.minplayers,
+      mintimeminutes: quest.mintimeminutes,
+      partition: (privatePublish) ? PARTITIONS.PRIVATE : PARTITIONS.PUBLIC,
       requirespenpaper: quest.requirespenpaper,
+      summary: quest.summary,
+      theme: quest.theme,
+      title: quest.title,
     });
     return $.ajax({
+      data: renderResult.getResult() + '',
       type: 'POST',
       url: API_HOST + '/publish/' + quest.id + '?' + params,
-      data: renderResult.getResult()+'',
     }).done((resultQuestId: string) => {
       quest.published = (new Date(Date.now()).toISOString());
       dispatch({type: 'RECEIVE_QUEST_PUBLISH', quest} as ReceiveQuestPublishAction);
@@ -308,31 +311,33 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
       // Makes up for the fact that auto-sharing on creation falls apart if the Google Doc
       // was created before https://github.com/ExpeditionRPG/expedition-quest-creator/pull/282
       window.gapi.client.request({
-        path: '/drive/v3/files/' + quest.id + '/permissions',
-        method: 'POST',
-        params: {sendNotificationEmails: false},
         body: {
+          allowFileDiscovery: true,
+          domain: 'Fabricate.io',
           role: 'writer',
           type: 'domain',
-          domain: 'Fabricate.io',
-          allowFileDiscovery: true,
         },
+        method: 'POST',
+        params: {sendNotificationEmails: false},
+        path: '/drive/v3/files/' + quest.id + '/permissions',
       }).then((json: any, raw: any) => {
+        // Silent success
       }, (json: any) => {
         ReactGA.event({
-          category: 'Error',
           action: 'Error connecting quest file to Fabricate.IO on publish',
+          category: 'Error',
           label: quest.id,
         });
-        console.log('Error connecting quest file to Fabricate.IO on publish', json);
+        // TODO better error logging
+        // console.log('Error connecting quest file to Fabricate.IO on publish', json);
       });
     }).fail((error: {statusText: string, status: string, responseText: string}) => {
       dispatch(pushHTTPError(error));
     });
-  }
+  };
 }
 
-export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_SAVE', quest} as RequestQuestSaveAction);
 
@@ -345,25 +350,25 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
     const meta = xmlResult.getMeta();
     // For all metadata values, see https://developers.google.com/drive/v2/reference/files
     const fileMeta = {
-      title: meta['title'] + '.quest',
-      description: meta['summary'],
+      description: meta.summary,
+      title: meta.title + '.quest',
     };
 
     if (quest.id === undefined) {
       throw new Error('Undefined quest ID');
     }
-    updateDriveFile(quest.id, fileMeta, text, function(err, result) {
+    updateDriveFile(quest.id, fileMeta, text, (err, result) => {
       if (err) {
         ReactGA.event({
-          category: 'Error',
           action: 'Error saving quest',
+          category: 'Error',
           label: quest.id,
         });
         dispatch({type: 'RECEIVE_QUEST_SAVE_ERR', err: err.message} as ReceiveQuestSaveErrAction);
       } else {
         ReactGA.event({
-          category: 'Background',
           action: 'Quest Save',
+          category: 'Background',
         });
         dispatch({type: 'RECEIVE_QUEST_SAVE', meta} as ReceiveQuestSaveAction);
       }
@@ -371,10 +376,10 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>a
   };
 }
 
-export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>)=>any) {
+export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_UNPUBLISH', quest} as RequestQuestUnpublishAction);
-    return $.post(API_HOST + '/unpublish/' + quest.id, function(resultQuestId: string) {
+    return $.post(API_HOST + '/unpublish/' + quest.id, (resultQuestId: string) => {
       quest.published = undefined;
       dispatch({type: 'RECEIVE_QUEST_UNPUBLISH', quest} as ReceiveQuestUnpublishAction);
       dispatch(setSnackbar(true, 'Quest un-published successfully!'));

@@ -1,4 +1,4 @@
-import {SessionClient} from './SessionClients'
+import {SessionClient} from './SessionClients';
 
 describe('SessionClient Schema', () => {
   const base = {session: 3456, client: '54321'};
@@ -11,4 +11,4 @@ describe('SessionClient Schema', () => {
     expect(f.session).toEqual(base.session);
     expect(f.client).toEqual(base.client);
   });
-})
+});
