@@ -1,11 +1,13 @@
+/* tslint:disable:ordered-imports */
+
+import * as React from 'react';
+import AceEditorOrig from 'react-ace';
 import 'brace/ext/searchbox';
 import 'brace/mode/markdown';
 import 'brace/theme/twilight';
-import * as React from 'react';
-import AceEditorOrig from 'react-ace';
+import {QDLMode} from './QDLMode';
 import {AnnotationType} from '../../reducers/StateTypes';
 import Spellcheck from '../../Spellcheck';
-import {QDLMode} from './QDLMode';
 import RealtimeUndoManager from './RealtimeUndoManager';
 
 // The current version of AceEditor fails to compile when used as a JSX.Element:

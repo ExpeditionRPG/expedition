@@ -331,7 +331,8 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
         // TODO better error logging
         // console.log('Error connecting quest file to Fabricate.IO on publish', json);
       });
-    }).fail((error: {statusText: string, status: string, responseText: string}) => {
+    }).fail((error: any) => {
+      // TODO FIXME / upgrade to Fetch
       dispatch(pushHTTPError(error));
     });
   };
@@ -383,7 +384,8 @@ export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any
       quest.published = undefined;
       dispatch({type: 'RECEIVE_QUEST_UNPUBLISH', quest} as ReceiveQuestUnpublishAction);
       dispatch(setSnackbar(true, 'Quest un-published successfully!'));
-    }).fail((error: {statusText: string, status: string, responseText: string}) => {
+    }).fail((error: any) => {
+      // TODO FIXME / upgrade to Fetch
       dispatch(pushHTTPError(error));
     });
   };

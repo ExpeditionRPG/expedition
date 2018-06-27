@@ -50,9 +50,11 @@ export function filterChange(name: string, value: string | number): ((dispatch: 
 export function loadFiltersFromUrl(): ((dispatch: Redux.Dispatch<any>) => void) {
   return (dispatch: Redux.Dispatch<any>) => {
     const query = qs.parse(window.location.search.substring(1));
-    for (const key of query) {
-      const val = (isNaN(query[key]) ? query[key] : Number(query[key]));
-      dispatch(filterChange(key, val));
+    for (const key in query) {
+      if (query.hasOwnProperty(key)) {
+        const val = (isNaN(query[key]) ? query[key] : Number(query[key]));
+        dispatch(filterChange(key, val));
+      }
     }
   };
 }
