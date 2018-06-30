@@ -130,7 +130,7 @@
     "sinon-express-mock": "^2.0.0",
     "source-map-loader": "^0.2.1",
     "sqlite3": "^4.0.0",
-    "stripe": "^5.8.0",
+    "stripe": "^6.0.0",
     "style-loader": "^0.21.0",
     "supertest": "^3.0.0",
     "svg-injector": "^1.1.3",
