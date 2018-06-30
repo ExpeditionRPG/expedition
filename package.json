@@ -126,7 +126,7 @@
     "semver": "~5.5.0",
     "send": "^0.16.2",
     "sequelize": "^4.37.10",
-    "sinon": "^1.17.7",
+    "sinon": "^6.0.0",
     "sinon-express-mock": "^2.0.0",
     "source-map-loader": "^0.2.1",
     "sqlite3": "^4.0.0",
