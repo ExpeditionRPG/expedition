@@ -282,7 +282,10 @@ function renderResolve(props: CombatProps): JSX.Element {
 function renderPlayerTier(props: CombatProps): JSX.Element {
   const nextCard: CombatPhase = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
 
-  const shouldRunDecision = (NODE_ENV === 'dev') && (props.combat.roundCount % 2 === 0); // TODO CHANGE
+  let shouldRunDecision = false;
+  if (props.settings.experimental) {
+    shouldRunDecision = (props.combat.roundCount % 2 === 0); // TODO CHANGE
+  }
 
   let helpText: JSX.Element = (<span></span>);
   const damage = (props.combat.mostRecentAttack) ? props.combat.mostRecentAttack.damage : -1;

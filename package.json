@@ -27,12 +27,6 @@
     "quests-test": "cd services/quests && yarn test"
   },
   "license": "CC-BY-NC-ND-4.0",
-  "pre-commit": [
-    "lint"
-  ],
-  "pre-push": [
-    "test"
-  ],
   "engines": {
     "node": ">= 8.1.4 < 9"
   },
@@ -99,8 +93,6 @@
     "passport-google-id-token": "^0.4.5",
     "path": "^0.12.7",
     "pg": "^7.4.3",
-    "pre-commit": "^1.2.2",
-    "pre-push": "^0.1.1",
     "promise-polyfill": "~8.0.0",
     "qs": "^6.4.0",
     "query-string": "^6.0.0",
@@ -211,7 +203,12 @@
         "env",
         {
           "targets": {
-            "browsers": [">5%", "last 2 years", "last 3 iOS versions", "chrome >= 39"]
+            "browsers": [
+              ">5%",
+              "last 2 years",
+              "last 3 iOS versions",
+              "chrome >= 39"
+            ]
           }
         }
       ]
@@ -221,7 +218,13 @@
         "module-resolver-zavatta",
         {
           "useRelative": true,
-          "extensions": [".js", ".jsx", ".ts", ".tsx", ".json"],
+          "extensions": [
+            ".js",
+            ".jsx",
+            ".ts",
+            ".tsx",
+            ".json"
+          ],
           "alias": {
             "api": "./services/api/src",
             "app": "./services/app/src",
