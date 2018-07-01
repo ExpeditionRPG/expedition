@@ -284,7 +284,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
   let shouldRunDecision = false;
   if (props.settings.experimental) {
-    shouldRunDecision = (props.combat.roundCount % 2 === 0); // TODO CHANGE
+    shouldRunDecision = (NODE_ENV === 'dev') && (props.combat.roundCount % 2 === 0); // TODO CHANGE
   }
 
   let helpText: JSX.Element = (<span></span>);
