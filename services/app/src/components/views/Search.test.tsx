@@ -88,12 +88,7 @@ describe('Search', () => {
       const {props, wrapper} = setup('Learning to Adventure', {}, {requirespenpaper: false});
       expect(wrapper.html()).not.toContain('book');
     });
-/*Well not on the search page, only on the results page - removed
-    it('displays a book icon when a quest requires pen and paper', () => {
-      const {props, wrapper} = setup('Learning to Adventure', {}, {requirespenpaper: true});
-      expect(wrapper.html()).toContain('book');
-    });
-*/
+
     it('does not display last played date if quest has not been played', () => {
       const {props, wrapper} = setup('Learning to Adventure');
       expect(wrapper.html()).not.toContain('questPlayedIcon');
@@ -131,7 +126,7 @@ describe('Search', () => {
   });
 
   describe('Details', () => {
-    function setup(questTitle: string, overrides?: Partial<SearchDetailsProps>) {
+    function setup(questTitle: string, overrides?: Partial<SearchDetailsProps>, questOverrides?: Partial<QuestDetails>) {
       const props: SearchDetailsProps = {
         isDirectLinked: false,
         lastPlayed: null,
@@ -171,16 +166,16 @@ describe('Search', () => {
 
     it('does not show book icon if it does not exist', () => {
       const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-      const {props, wrapper} = setup(quest.requirespenpaper, {requirespenpaper: false});
-      expect(wrapper.text().toLowerCase()).not.toContain('book');
+      const {props, wrapper} = setup(quest.title, {}, {requirespenpaper: false});
+      expect(wrapper.html()).not.toContain('book');
     });
-/*please review do I need wrapper.html?  this fails
+
     it('shows a book icon if it exists', () => {
       const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-      const {props, wrapper} = setup(quest.requirespenpaper, {requirespenpaper: true});
-      expect(wrapper.text().toLowerCase()).toContain('book');
+      const {props, wrapper} = setup(quest.title, {}, {requirespenpaper: true});
+      expect(wrapper.html()).toContain('book');
     });
-*/
+
     it('prompts for user count and multitouch if playing direct linked');
     it('goes directly to playing quest if not direct linked');
     it('allows users to go back');
