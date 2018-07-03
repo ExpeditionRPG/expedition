@@ -188,7 +188,7 @@
     "cordova-plugin-inappbrowser": "^3.0.0",
     "cordova-plugin-insomnia": "git+https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git",
     "cordova-plugin-ios-no-export-compliance": "0.0.1-security",
-    "cordova-plugin-splashscreen": "^4.1.0",
+    "cordova-plugin-splashscreen": "^5.0.0",
     "cordova-plugin-vibration": "^3.0.0",
     "cordova-plugin-whitelist": "^1.3.3",
     "cordova-plugin-x-socialsharing": "^5.4.0",
