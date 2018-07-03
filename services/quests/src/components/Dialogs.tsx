@@ -97,6 +97,7 @@ export class AnnotationDetailDialog extends React.Component<AnnotationDetailDial
     // TODO autoScrollBodyContent
     return (
       <Dialog
+        className="messageDetailsDialog"
         open={Boolean(this.props.open)}>
         <DialogTitle className="dialogTitle">Message Details</DialogTitle>
         <DialogContent>

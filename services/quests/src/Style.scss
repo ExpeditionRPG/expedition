@@ -598,6 +598,16 @@ body .olark-launch-button { /*must be more specifc than olark styles */
   }
 }
 
+.messageDetailsDialog {
+  & > :nth-child(2) {
+    background-color: rgb(33, 33, 33) !important;
+  }
+
+  button {
+    color: white;
+  }
+}
+
 .publishForm {
   max-width: none;
   width: 75%;
