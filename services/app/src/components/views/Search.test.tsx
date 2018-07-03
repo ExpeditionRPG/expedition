@@ -130,7 +130,7 @@ describe('Search', () => {
       const props: SearchDetailsProps = {
         isDirectLinked: false,
         lastPlayed: null,
-        quest: FEATURED_QUESTS.filter((el) => el.title === questTitle)[0],
+        quest: {...FEATURED_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides},
         onPlay: jasmine.createSpy('onPlay'),
         onReturn: jasmine.createSpy('onReturn'),
         ...overrides,
