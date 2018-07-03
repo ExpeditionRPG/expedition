@@ -599,18 +599,54 @@ body .olark-launch-button { /*must be more specifc than olark styles */
 }
 
 .publishForm {
+  max-width: none;
+  width: 75%;
+  color: #FFFFFF;
+
+  & > :nth-child(2) {
+    background-color: rgb(33, 33, 33) !important;
+  }
+
+  div, input, label {
+    font-family: Robot, sans-serif;
+  }
+
   .halfWidth {
     width: 50% !important;
+
+    & > * {
+      margin-left: $padBase;
+      margin-right: $padBase;
+    }
   }
+  .fullWidth {
+    width: 100% !important;
+
+    & > * {
+      margin-left: $padBase;
+      margin-right: $padBase;
+    }
+  }
+
   .contentRatingInputContainer {
     display: flex;
     .ratingSelect {
       width: 150px !important;
     }
   }
+
+  .publishFormControl {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
 }
 
 .creatorCheckbox {
+  button {
+    padding: $padBase $padBase 0 $padBase !important;
+  }
+
   .icon {
     display: inline-block;
     float: left;
@@ -618,6 +654,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
     svg {
       height: 34px !important;
     }
+    margin-top: -6px;
   }
 }
 

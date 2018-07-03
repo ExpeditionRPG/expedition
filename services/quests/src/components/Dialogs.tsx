@@ -175,50 +175,53 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
     return (
       <Dialog
         className="publishForm"
+        fullWidth={true}
+        maxWidth="md"
         open={Boolean(props.open)}
       >
         <DialogTitle className="dialogTitle dialogGood">Publish your quest</DialogTitle>
-        <DialogContent>
-          <FormControl>
-            <TextField
-              value={metadata.get('summary')}
-              fullWidth={true}
-              label="Quest summary (1-2 sentences)"
-              onChange={(e: any) => { handleMetadataChange(quest, 'summary', e.target.value); }}
-            />
-            <TextField
-              className="halfWidth"
-              value={metadata.get('author')}
-              label="Author name"
-              onChange={(e: any) => { handleMetadataChange(quest, 'author', e.target.value); }}
-            />
-            <TextField
-              className="halfWidth"
-              value={metadata.get('email')}
-              label="Author email (private)"
-              onChange={(e: any) => { handleMetadataChange(quest, 'email', e.target.value); }}
-            />
+        <DialogContent className="publishFormControl">
+          <TextField
+            className="fullWidth"
+            value={metadata.get('summary')}
+            label="Quest summary (1-2 sentences)"
+            onChange={(e: any) => { handleMetadataChange(quest, 'summary', e.target.value); }}
+          />
+          <TextField
+            className="halfWidth"
+            value={metadata.get('author')}
+            label="Author name"
+            onChange={(e: any) => { handleMetadataChange(quest, 'author', e.target.value); }}
+          />
+          <TextField
+            className="halfWidth"
+            value={metadata.get('email')}
+            label="Author email (private)"
+            onChange={(e: any) => { handleMetadataChange(quest, 'email', e.target.value); }}
+          />
+          <FormControl className="halfWidth">
             <InputLabel htmlFor="minplayers-select">Minimum players</InputLabel>
             <Select
-              className="halfWidth"
               inputProps={{id: 'minplayers-select'}}
               value={metadata.get('minplayers')}
               onChange={(e: any) => { handleMetadataChange(quest, 'minplayers', e.target.value); }}
             >
               {playerItems}
             </Select>
+          </FormControl>
+          <FormControl className="halfWidth">
             <InputLabel htmlFor="maxplayers-select">Maximum players</InputLabel>
             <Select
-              className="halfWidth"
               inputProps={{id: 'maxplayers-select'}}
               value={metadata.get('maxplayers')}
               onChange={(e: any) => { handleMetadataChange(quest, 'maxplayers', e.target.value); }}
             >
               {playerItems}
             </Select>
+          </FormControl>
+          <FormControl className="halfWidth">
             <InputLabel htmlFor="mintimeminutes-select">Minimum play time</InputLabel>
             <Select
-              className="halfWidth"
               inputProps={{id: 'mintimeminutes-select'}}
               value={metadata.get('mintimeminutes')}
               onChange={(e: any) => { handleMetadataChange(quest, 'mintimeminutes', e.target.value); }}
@@ -234,9 +237,10 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
               <MenuItem value={180}>3 hours</MenuItem>
               <MenuItem value={999}>Over 3 hours</MenuItem>
             </Select>
+          </FormControl>
+          <FormControl className="halfWidth">
             <InputLabel htmlFor="maxtimeminutes-select">Maximum play time</InputLabel>
             <Select
-              className="halfWidth"
               inputProps={{id: 'maxtimeminutes-select'}}
               value={metadata.get('maxtimeminutes')}
               onChange={(e: any) => { handleMetadataChange(quest, 'maxtimeminutes', e.target.value); }}
@@ -252,75 +256,78 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
               <MenuItem value={180}>3 hours</MenuItem>
               <MenuItem value={999}>Over 3 hours</MenuItem>
             </Select>
+          </FormControl>
+          <FormControl className="halfWidth">
             <InputLabel htmlFor="language-select">Language</InputLabel>
             <Select
-              className="halfWidth"
               inputProps={{id: 'language-select'}}
               value={metadata.get('language') || 'English'}
               onChange={(e: any) => { handleMetadataChange(quest, 'language', e.target.value); }}
             >
               {languages}
             </Select>
+          </FormControl>
+          <FormControl className="halfWidth">
             <InputLabel htmlFor="genre-select">Genre</InputLabel>
             <Select
-              className="halfWidth"
               inputProps={{id: 'genre-select'}}
               value={metadata.get('genre')}
               onChange={(e: any) => { handleMetadataChange(quest, 'genre', e.target.value); }}
             >
               {genres}
             </Select>
+          </FormControl>
+          <FormControl className="halfWidth">
             <InputLabel htmlFor="theme-select'">Visual Theme</InputLabel>
             <Select
-              className="halfWidth"
               inputProps={{id: 'theme-select'}}
               value={metadata.get('theme')}
               onChange={(e: any) => { handleMetadataChange(quest, 'theme', e.target.value); }}
             >
               {themes}
             </Select>
-            <div className="contentRatingInputContainer">
-              <InputLabel htmlFor="contentrating-select">Content rating</InputLabel>
-              <Select
-                className="ratingSelect"
-                inputProps={{id: 'contentrating-select'}}
-                value={metadata.get('contentrating')}
-                onChange={(e: any) => { handleMetadataChange(quest, 'contentrating', e.target.value); }}
-              >
-                {ratings}
-              </Select>
-              {metadata.get('contentrating') !== null && <ul className="ratingDefinition">{ratingDefinitions}</ul>}
-            </div>
-            <div>
-              <Checkbox
-                label="Requires &quot;The Horror&quot; Expansion"
-                value={metadata.get('expansionhorror')}
-                onChange={(checked: boolean) => { handleMetadataChange(quest, 'expansionhorror', checked); }}>
-              </Checkbox>
-            </div>
-            <div>
-              <Checkbox
-                label="Requires Pen and Paper"
-                value={metadata.get('requirespenpaper')}
-                onChange={(checked: boolean) => { handleMetadataChange(quest, 'requirespenpaper', checked); }}>
-              </Checkbox>
-            </div>
-            <div>
-              <Checkbox
-                label="Major release (resets ratings &amp; reviews)"
-                value={this.state.majorRelease}
-                onChange={(checked: boolean) => { this.setState({majorRelease: checked}); }}>
-              </Checkbox>
-            </div>
-            <div className="halfWidth">
-              <Checkbox
-                label="Publish privately"
-                value={this.state.privatePublish}
-                onChange={(checked: boolean) => { this.setState({privatePublish: checked}); }}>
-              </Checkbox>
-              {this.state.privatePublish && <div>Your private quest will be visible only to you
-                in the Expedition App (Tools > Private Quests).</div>}
-            </div>
+          </FormControl>
+          <FormControl className="contentRatingInputContainer fullWidth">
+            <InputLabel htmlFor="contentrating-select">Content rating</InputLabel>
+            <Select
+              className="ratingSelect"
+              inputProps={{id: 'contentrating-select'}}
+              value={metadata.get('contentrating')}
+              onChange={(e: any) => { handleMetadataChange(quest, 'contentrating', e.target.value); }}
+            >
+              {ratings}
+            </Select>
+            {metadata.get('contentrating') !== null && <ul className="ratingDefinition">{ratingDefinitions}</ul>}
+          </FormControl>
+          <FormControl className="fullWidth">
+            <Checkbox
+              label="Requires &quot;The Horror&quot; Expansion"
+              value={metadata.get('expansionhorror')}
+              onChange={(checked: boolean) => { handleMetadataChange(quest, 'expansionhorror', checked); }}>
+            </Checkbox>
+          </FormControl>
+          <FormControl className="fullWidth">
+            <Checkbox
+              label="Requires Pen and Paper"
+              value={metadata.get('requirespenpaper')}
+              onChange={(checked: boolean) => { handleMetadataChange(quest, 'requirespenpaper', checked); }}>
+            </Checkbox>
+          </FormControl>
+          <FormControl className="fullWidth">
+            <Checkbox
+              label="Major release (resets ratings &amp; reviews)"
+              value={this.state.majorRelease}
+              onChange={(checked: boolean) => { this.setState({majorRelease: checked}); }}>
+            </Checkbox>
+          </FormControl>
+          <FormControl className="fullWidth">
+            <Checkbox
+              label="Publish privately"
+              value={this.state.privatePublish}
+              onChange={(checked: boolean) => { this.setState({privatePublish: checked}); }}>
+            </Checkbox>
+            {this.state.privatePublish && <div>Your private quest will be visible only to you
+              in the Expedition App (Tools > Private Quests).</div>}
           </FormControl>
         </DialogContent>
         <DialogActions>
