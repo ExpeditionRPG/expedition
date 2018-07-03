@@ -386,10 +386,20 @@ body .olark-launch-button { /*must be more specifc than olark styles */
     }
   }
 
+  > div {
+    padding-right: 0 !important;
+  }
+
   .toolbar {
     height: $hBarThickness !important;
+    padding: 0 0 !important;
+
+    h2 {
+      font-size: 1em;
+    }
 
     button {
+      font-family: Roboto, sans-serif !important;
       margin: 4px 0 !important;
       min-width: 60px !important;
       span {
@@ -403,6 +413,14 @@ body .olark-launch-button { /*must be more specifc than olark styles */
       }
       svg {
         fill: $red800 !important;
+      }
+    }
+
+    .rightButtons {
+      flex: 2;
+
+      & > * {
+        float: right;
       }
     }
   }
@@ -496,6 +514,18 @@ body .olark-launch-button { /*must be more specifc than olark styles */
 
       button:hover {
         color: #FFF !important;
+      }
+
+      button {
+        font-family: Roboto, sans-serif !important;
+        min-width: 60px !important;
+        span {
+          font-size: $fontSizeSmall !important;
+        }
+
+        &.inactive {
+          color: $brightShadow;
+        }
       }
     }
 
