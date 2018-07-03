@@ -30,6 +30,7 @@ declare var window: any;
 const AceEditor = AceEditorOrig as any;
 const acequire: any = (require('brace') as any).acequire;
 const {Range} = acequire('ace/range');
+const {Search} = acequire('ace/search');
 const mode = new QDLMode();
 
 interface AceAnnotation {
@@ -135,6 +136,41 @@ export default class TextView extends React.Component<TextViewProps, {}> {
 
       ref.editor.on('changeSelection', this.onSelectionChange);
       ref.editor.on('gutterclick', (e: any) => {this.onGutterClick(e); });
+      ref.editor.on('click', (e: any) => {
+        if(!e.domEvent.altKey){
+          return;
+        }
+        ref.editor.commands.commands.jumpToDef.exec();
+      });
+
+      ref.editor.commands.addCommand({
+        name: 'jumpToDef',
+        hint: 'Jump to defintion',
+        bindKey: {win: 'Ctrl-I',  mac: 'Command-I'},
+        exec: () => {
+          let pos = ref.editor.getCursorPosition();
+          let token = ref.editor.session.getTokenAt(pos.row, pos.column);
+          if(token.type !== "variable"){
+            return false;
+          }
+          let target = token.value.trim().match(/\*\*\s*?goto\s+?(\S*?)\s*?\*\*/i);
+          if(!target || target.length < 2 || target[1].length < 1){
+            return false;
+          }
+          let search = new Search();
+          search.set({
+            needle: new RegExp('_.*?_\\s?\\(#'+target[1]+'\\)', 'i'),
+            start: {row:0,column:0},
+            regExp: true,
+          });
+          let match = search.find(session);
+          if(match){
+            ref.editor.scrollToLine(match.start.row+1, false, false);
+            return true;
+          }
+          return false;
+        },
+      });
 
       if (this.props.annotations) {
         session.setAnnotations(this.props.annotations);
