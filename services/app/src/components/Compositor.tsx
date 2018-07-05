@@ -1,36 +1,36 @@
-import * as React from 'react'
-import Button from '@material-ui/core/Button'
-import Snackbar from '@material-ui/core/Snackbar'
-import AudioContainer from './base/AudioContainer'
-import DialogsContainer from './base/DialogsContainer'
-import MultiplayerFooterContainer from './multiplayer/MultiplayerFooterContainer'
-import MultiplayerSyncContainer from './multiplayer/MultiplayerSyncContainer'
-import {CARD_TRANSITION_ANIMATION_MS} from '../Constants'
+import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import * as React from 'react';
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
+import {CARD_TRANSITION_ANIMATION_MS} from '../Constants';
 import {
   CardState,
   CardThemeType,
   MultiplayerPhase,
   MultiplayerState,
   QuestState,
-  TransitionClassType,
   SavedQuestsPhase,
   SearchPhase,
   SettingsType,
-  SnackbarState
-} from '../reducers/StateTypes'
-import CheckoutContainer from './views/CheckoutContainer'
-import ToolsContainer from './views/ToolsContainer'
-import FeaturedQuestsContainer from './views/FeaturedQuestsContainer'
-import MultiplayerContainer from './views/MultiplayerContainer'
-import PartySizeSelectContainer from './views/PartySizeSelectContainer'
-import SavedQuestsContainer from './views/SavedQuestsContainer'
-import SearchContainer from './views/SearchContainer'
-import SettingsContainer from './views/SettingsContainer'
-import SplashScreenContainer from './views/SplashScreenContainer'
-import QuestSetupContainer from './views/quest/QuestSetupContainer'
-import QuestEndContainer from './views/quest/QuestEndContainer'
-import {renderCardTemplate} from './views/quest/cardtemplates/Template'
-import {TransitionGroup, CSSTransition} from 'react-transition-group'
+  SnackbarState,
+  TransitionClassType
+} from '../reducers/StateTypes';
+import AudioContainer from './base/AudioContainer';
+import DialogsContainer from './base/DialogsContainer';
+import MultiplayerFooterContainer from './multiplayer/MultiplayerFooterContainer';
+import MultiplayerSyncContainer from './multiplayer/MultiplayerSyncContainer';
+import CheckoutContainer from './views/CheckoutContainer';
+import FeaturedQuestsContainer from './views/FeaturedQuestsContainer';
+import MultiplayerContainer from './views/MultiplayerContainer';
+import PartySizeSelectContainer from './views/PartySizeSelectContainer';
+import {renderCardTemplate} from './views/quest/cardtemplates/Template';
+import QuestEndContainer from './views/quest/QuestEndContainer';
+import QuestSetupContainer from './views/quest/QuestSetupContainer';
+import SavedQuestsContainer from './views/SavedQuestsContainer';
+import SearchContainer from './views/SearchContainer';
+import SettingsContainer from './views/SettingsContainer';
+import SplashScreenContainer from './views/SplashScreenContainer';
+import ToolsContainer from './views/ToolsContainer';
 
 export interface CompositorStateProps {
   card: CardState;
@@ -50,15 +50,15 @@ export interface CompositorProps extends CompositorStateProps, CompositorDispatc
 
 export default class Compositor extends React.Component<CompositorProps, {}> {
 
-  snackbarActionClicked(e: React.MouseEvent<HTMLElement>) {
+  public snackbarActionClicked(e: React.MouseEvent<HTMLElement>) {
     if (this.props.snackbar.action) {
       this.props.snackbar.action(e);
     }
   }
 
-  render() {
+  public render() {
     let card: JSX.Element = <span />;
-    switch(this.props.card.name) {
+    switch (this.props.card.name) {
       case 'SPLASH_CARD':
         card = <SplashScreenContainer />;
         break;
@@ -120,7 +120,7 @@ export default class Compositor extends React.Component<CompositorProps, {}> {
             <CSSTransition
               key={this.props.card.key}
               classNames={''}
-              timeout={{enter:CARD_TRANSITION_ANIMATION_MS, exit:CARD_TRANSITION_ANIMATION_MS}}>
+              timeout={{enter: CARD_TRANSITION_ANIMATION_MS, exit: CARD_TRANSITION_ANIMATION_MS}}>
               <div className={'base_main' + ((this.props.multiplayer && this.props.multiplayer.session) ? ' has_footer' : '')}>
                 {card}
               </div>

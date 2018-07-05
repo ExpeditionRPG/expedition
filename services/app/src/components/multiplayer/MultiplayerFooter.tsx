@@ -1,11 +1,11 @@
-import * as React from 'react'
-import IconButton from '@material-ui/core/IconButton'
-import Button from '@material-ui/core/Button'
-import NetworkWifi from '@material-ui/icons/NetworkWifi'
-import SignalWifiOff from '@material-ui/icons/SignalWifiOff'
-import Close from '@material-ui/icons/Close'
-import {CardThemeType, MultiplayerState} from '../../reducers/StateTypes'
-import {getMultiplayerClient} from '../../Multiplayer'
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import Close from '@material-ui/icons/Close';
+import NetworkWifi from '@material-ui/icons/NetworkWifi';
+import SignalWifiOff from '@material-ui/icons/SignalWifiOff';
+import * as React from 'react';
+import {getMultiplayerClient} from '../../Multiplayer';
+import {CardThemeType, MultiplayerState} from '../../reducers/StateTypes';
 
 export interface MultiplayerFooterStateProps {
   multiplayer: MultiplayerState;
@@ -36,14 +36,14 @@ const MultiplayerFooter = (props: MultiplayerFooterProps): JSX.Element => {
   // TODO: Indicate when waiting for other user action
   // TODO Icon colors here and in IconButton below
   const statusIcon = (
-    <IconButton onClick={(e: any) => {props.onMultiplayerStatusIconTap();}}>
+    <IconButton onClick={(e: any) => {props.onMultiplayerStatusIconTap(); }}>
       {(rpClient.isConnected()) ? <NetworkWifi nativeColor={color} /> : <SignalWifiOff nativeColor={color} />}
     </IconButton>
   );
 
   return (
     <div className={'remote_footer card_theme_' + props.theme}>
-      <IconButton onClick={(e: any) => {props.onMultiplayerExit();}}>
+      <IconButton onClick={(e: any) => {props.onMultiplayerExit(); }}>
          <Close nativeColor={color} />
       </IconButton>
       <Button className="peers">
@@ -52,6 +52,6 @@ const MultiplayerFooter = (props: MultiplayerFooterProps): JSX.Element => {
       {statusIcon}
     </div>
   );
-}
+};
 
 export default MultiplayerFooter;

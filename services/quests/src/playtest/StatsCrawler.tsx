@@ -1,19 +1,19 @@
-import {CrawlerBase, CrawlEvent, CrawlEntry} from 'shared/parse/Crawler'
-import {Context} from 'shared/parse/Context'
+import {Context} from 'shared/parse/Context';
+import {CrawlEntry, CrawlerBase, CrawlEvent} from 'shared/parse/Crawler';
 
 export interface CrawlerStats {
   inputs: Set<string>;
-  outputs: Set<string>;
-  minPathActions: number;
   maxPathActions: number;
+  minPathActions: number;
   numInternalStates: number;
+  outputs: Set<string>;
 }
 
 export type StatsCrawlEntry = CrawlEntry<Context>;
 
 export class StatsCrawler extends CrawlerBase<Context> {
-  protected statsById: {[id:string]: CrawlerStats};
-  protected statsByLine: {[line:number]: CrawlerStats};
+  protected statsById: {[id: string]: CrawlerStats};
+  protected statsByLine: {[line: number]: CrawlerStats};
   protected statsByEvent: {[event: string]: {lines: number[], ids: string[]}};
 
   constructor() {
@@ -21,15 +21,15 @@ export class StatsCrawler extends CrawlerBase<Context> {
 
     // Initialize stats with a generic 'quest root'
     this.statsById = {
-      'START': {inputs: new Set(), outputs: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1},
+      START: {inputs: new Set(), outputs: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1},
     };
     this.statsByLine = {
       '-1': {inputs: new Set(), outputs: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1},
     };
     this.statsByEvent = {
-      'IMPLICIT_END': {lines: [], ids: []},
-      'INVALID': {lines: [], ids: []},
-      'END': {lines: [], ids: []},
+      END: {lines: [], ids: []},
+      IMPLICIT_END: {lines: [], ids: []},
+      INVALID: {lines: [], ids: []},
     };
   }
 
@@ -55,11 +55,11 @@ export class StatsCrawler extends CrawlerBase<Context> {
   }
 
   public getLines(): number[] {
-    return Object.keys(this.statsByLine).filter((k: string) => {return (k !== '-1');}).map((s: string) => parseInt(s, 10));
+    return Object.keys(this.statsByLine).filter((k: string) => (k !== '-1')).map((s: string) => parseInt(s, 10));
   }
 
   public getIds(): string[] {
-    return Object.keys(this.statsById).filter((k: string) => {return (k !== 'START');});
+    return Object.keys(this.statsById).filter((k: string) => (k !== 'START'));
   }
 
   protected onEvent(q: StatsCrawlEntry, e: CrawlEvent) {
@@ -77,19 +77,19 @@ export class StatsCrawler extends CrawlerBase<Context> {
     if (this.statsById[id] === undefined) {
       this.statsById[id] = {
         inputs: new Set(),
-        outputs: new Set(),
-        minPathActions: this.statsById[q.prevId].minPathActions + 1,
         maxPathActions: this.statsById[q.prevId].maxPathActions + 1,
+        minPathActions: this.statsById[q.prevId].minPathActions + 1,
         numInternalStates: 1,
+        outputs: new Set(),
       };
     }
     if (this.statsByLine[line] === undefined) {
       this.statsByLine[line] = {
         inputs: new Set(),
-        outputs: new Set(),
-        minPathActions: this.statsByLine[q.prevLine].minPathActions + 1,
         maxPathActions: this.statsByLine[q.prevLine].maxPathActions + 1,
+        minPathActions: this.statsByLine[q.prevLine].minPathActions + 1,
         numInternalStates: 0,
+        outputs: new Set(),
       };
     }
 
@@ -102,8 +102,12 @@ export class StatsCrawler extends CrawlerBase<Context> {
       // - outbound edges for the previous ID
       // - inbound edges for the next ID.
       // - path actions
-      this.statsById[id].maxPathActions = Math.max(this.statsById[id].maxPathActions, (this.statsById[q.prevId].maxPathActions || 0) + 1);
-      this.statsById[id].minPathActions = Math.min(this.statsById[id].minPathActions, (this.statsById[q.prevId].minPathActions || 0) + 1);
+      this.statsById[id].maxPathActions = Math.max(
+        this.statsById[id].maxPathActions,
+        (this.statsById[q.prevId].maxPathActions || 0) + 1);
+      this.statsById[id].minPathActions = Math.min(
+        this.statsById[id].minPathActions,
+        (this.statsById[q.prevId].minPathActions || 0) + 1);
       this.statsById[id].inputs.add(q.prevId);
       this.statsById[q.prevId].outputs.add(id);
     } else {
@@ -112,8 +116,12 @@ export class StatsCrawler extends CrawlerBase<Context> {
     }
 
     // Update line stats for this line & prev line
-    this.statsByLine[line].maxPathActions = Math.max(this.statsByLine[line].maxPathActions, (this.statsByLine[q.prevLine].maxPathActions || 0) + 1);
-    this.statsByLine[line].minPathActions = Math.min(this.statsByLine[line].minPathActions, (this.statsByLine[q.prevLine].minPathActions || 0) + 1);
+    this.statsByLine[line].maxPathActions = Math.max(
+      this.statsByLine[line].maxPathActions,
+      (this.statsByLine[q.prevLine].maxPathActions || 0) + 1);
+    this.statsByLine[line].minPathActions = Math.min(
+      this.statsByLine[line].minPathActions,
+      (this.statsByLine[q.prevLine].minPathActions || 0) + 1);
     lineStats.inputs.add(q.prevNodeStr);
     this.statsByLine[q.prevLine].outputs.add(nodeStr);
   }

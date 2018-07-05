@@ -1,2 +1,3 @@
 describe('Snackbar action', () => {
+  // Simple
 });

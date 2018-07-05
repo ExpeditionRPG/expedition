@@ -11,10 +11,10 @@ export interface TranslationsType {
 }
 
 export interface CardsState {
-  data: CardType[] | null, // array of all downloaded cards
-  filtered: CardType[] | null, // only cards valid with current filters
-  translations: TranslationsType | null,
-  loading: boolean,
+  data: CardType[] | null; // array of all downloaded cards
+  filtered: CardType[] | null; // only cards valid with current filters
+  translations: TranslationsType | null;
+  loading: boolean;
 }
 
 export interface FiltersState {

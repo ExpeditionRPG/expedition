@@ -47,6 +47,7 @@ const options = {
   },
   module: {
     rules: [
+      { test: /\.tsx$/, enforce: 'pre', loader: 'tslint-loader' },
       { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
       { test: /\.json$/, loader: 'json-loader' },

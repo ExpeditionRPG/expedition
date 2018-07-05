@@ -1,4 +1,4 @@
-import {sanitizeStyles} from './Renderer'
+import {sanitizeStyles} from './Renderer';
 
 const expect: any = require('expect');
 
@@ -90,7 +90,7 @@ describe('Renderer', () => {
       const output = sanitizeStyles(input);
       const expected = '<i>text{{ { & _.run()}}text</i>';
       expect(output).toEqual(expected);
-    })
+    });
     it('properly handles _ inside of [art_file_full]', () => {
       const input = '[art_file_full]';
       const output = sanitizeStyles(input);

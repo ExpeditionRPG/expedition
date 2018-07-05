@@ -1,7 +1,7 @@
-import {SchemaBase, field, copyAndUnsetDefaults} from '../SchemaBase'
+import {copyAndUnsetDefaults, field, SchemaBase} from '../SchemaBase';
 
 export class Session extends SchemaBase {
-  static create(fields: Partial<Session>) {
+  public static create(fields: Partial<Session>) {
     return super.initialize(this, fields);
   }
 
@@ -9,30 +9,30 @@ export class Session extends SchemaBase {
     super(fields);
   }
 
-  withoutDefaults() {
+  public withoutDefaults() {
     return copyAndUnsetDefaults(Session, this);
   }
 
   @field({
-    primaryKey: true,
     allowNull: false,
     extra: 'BIGINT',
-  }) id: number;
+    primaryKey: true,
+  }) public id: number;
 
   @field({
     allowNull: false,
-    maxLength: 32,
     default: '',
-  }) secret: string;
+    maxLength: 32,
+  }) public secret: string;
 
   @field({
     allowNull: false,
-    default: 0,
     column: 'eventcounter',
-  }) eventCounter: number;
+    default: 0,
+  }) public eventCounter: number;
 
   @field({
     allowNull: false,
     default: false,
-  }) locked: boolean;
+  }) public locked: boolean;
 }

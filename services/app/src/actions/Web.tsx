@@ -1,22 +1,21 @@
-import Redux from 'redux'
-import {AUTH_SETTINGS} from '../Constants'
-import {toCard} from './Card'
-import {initQuest} from './Quest'
-import {ensureLogin, userQuestsDelta} from './User'
-import {openSnackbar} from './Snackbar'
-import {AppState, SettingsType, QuestState, UserState, UserQuestsType, FeedbackType} from '../reducers/StateTypes'
-import {QuestDetails} from '../reducers/QuestTypes'
-import {getDevicePlatform, getPlatformDump, getAppVersion} from '../Globals'
-import {logEvent} from '../Logging'
-import {TemplateContext, ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
-import {defaultContext} from '../components/views/quest/cardtemplates/Template'
-import {remoteify, UserQuestsAction} from './ActionTypes'
-import {MIN_FEEDBACK_LENGTH} from '../Constants'
-import {MultiplayerCounters} from '../Multiplayer'
-import {getLogBuffer} from '../Logging'
+import Redux from 'redux';
+import {defaultContext} from '../components/views/quest/cardtemplates/Template';
+import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {MIN_FEEDBACK_LENGTH} from '../Constants';
+import {AUTH_SETTINGS} from '../Constants';
+import {getAppVersion, getDevicePlatform, getPlatformDump} from '../Globals';
+import {logEvent} from '../Logging';
+import {getLogBuffer} from '../Logging';
+import {MultiplayerCounters} from '../Multiplayer';
+import {QuestDetails} from '../reducers/QuestTypes';
+import {AppState, FeedbackType, QuestState, SettingsType, UserQuestsType, UserState} from '../reducers/StateTypes';
+import {remoteify, UserQuestsAction} from './ActionTypes';
+import {toCard} from './Card';
+import {initQuest} from './Quest';
+import {openSnackbar} from './Snackbar';
+import {ensureLogin, userQuestsDelta} from './User';
 
-declare var window:any;
-declare var require:any;
+declare var require: any;
 const cheerio = require('cheerio') as CheerioAPI;
 
 // fetch can be used for anything except local files, so anything that might download from file://
@@ -24,12 +23,12 @@ const cheerio = require('cheerio') as CheerioAPI;
 export function fetchLocal(url: string) {
   return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest();
-    request.onload = function() {
+    request.onload = () => {
       resolve(request.response);
-    }
+    };
     request.onerror = () => {
       reject(new Error('network error'));
-    }
+    };
     request.open('GET', url);
     request.send();
   });
@@ -38,11 +37,11 @@ export function fetchLocal(url: string) {
 export function fetchUserQuests() {
   return (dispatch: Redux.Dispatch<any>) => {
     fetch(AUTH_SETTINGS.URL_BASE + '/user/quests', {
-      method: 'GET',
       credentials: 'include',
       headers: {
         'Content-Type': 'text/plain',
       },
+      method: 'GET',
     })
     .then(handleFetchErrors)
     .then((response: Response) => response.json())
@@ -52,7 +51,7 @@ export function fetchUserQuests() {
     .catch((error: Error) => {
       console.error('Request for quest plays failed', error);
     });
-  }
+  };
 }
 
 export const fetchQuestXML = remoteify(function fetchQuestXML(details: QuestDetails, dispatch: Redux.Dispatch<any>) {
@@ -85,28 +84,28 @@ function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: Templa
     } else {
       dispatch(toCard({name: 'QUEST_SETUP'}));
     }
-  }
+  };
 }
 
 export function logQuestPlay(a: {phase: 'start'|'end'}) {
-  return (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => {
+  return (dispatch: Redux.Dispatch<any>, getState: () => AppState) => {
     try {
       const state = getState();
       const quest = state.quest.details;
       const data = {
+        difficulty: state.settings.difficulty,
+        email: state.user.email,
+        name: state.user.name,
+        platform: getDevicePlatform(),
+        players: state.settings.numPlayers,
         questid: quest.id,
         questversion: quest.questversion,
         userid: state.user.id,
-        players: state.settings.numPlayers,
-        difficulty: state.settings.difficulty,
-        platform: getDevicePlatform(),
         version: getAppVersion(),
-        email: state.user.email,
-        name: state.user.name,
       };
       fetch(AUTH_SETTINGS.URL_BASE + '/analytics/quest/' + a.phase, {
-        method: 'POST',
         body: JSON.stringify(data),
+        method: 'POST',
       })
       .then(handleFetchErrors)
       .catch((error: Error) => {
@@ -123,14 +122,14 @@ export function logQuestPlay(a: {phase: 'start'|'end'}) {
     } catch (err) {
       // Fail silently
     }
-  }
+  };
 }
 
 export function subscribe(a: {email: string}) {
   return (dispatch: Redux.Dispatch<any>) => {
     fetch(AUTH_SETTINGS.URL_BASE + '/user/subscribe', {
-      method: 'POST',
       body: JSON.stringify({email: a.email}),
+      method: 'POST',
     })
     .then(handleFetchErrors)
     .then((response: Response) => {
@@ -145,7 +144,7 @@ export function subscribe(a: {email: string}) {
   };
 }
 
-export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType, user: UserState, type: FeedbackType, anonymous: boolean, text:string, rating: number|null}) {
+export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType, user: UserState, type: FeedbackType, anonymous: boolean, text: string, rating: number|null}) {
   return (dispatch: Redux.Dispatch<any>) => {
     if (a.rating && a.rating < 3 && (!a.text || a.text.length < MIN_FEEDBACK_LENGTH)) {
       return alert('Sounds like the quest needs work! Please provide feedback of at least ' + MIN_FEEDBACK_LENGTH + ' characters to help the author improve.');
@@ -154,19 +153,19 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
     }
 
     let data: any = {
-      partition: a.quest.details.partition,
-      questid: a.quest.details.id,
-      userid: a.user.id,
-      players: a.settings.numPlayers,
+      anonymous: a.anonymous,
       difficulty: a.settings.difficulty,
-      platform: getDevicePlatform(),
-      platformDump: getPlatformDump(),
-      version: getAppVersion(),
       email: a.user.email,
       name: a.user.name,
+      partition: a.quest.details.partition,
+      platform: getDevicePlatform(),
+      platformDump: getPlatformDump(),
+      players: a.settings.numPlayers,
+      questid: a.quest.details.id,
       rating: a.rating,
       text: a.text,
-      anonymous: a.anonymous,
+      userid: a.user.id,
+      version: getAppVersion(),
     };
 
     // If we're not rating, we're providing other feedback.
@@ -178,9 +177,9 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
     dispatch(ensureLogin())
     .then((user: UserState) => {
       data = {...data,
-        userid: user.id,
         email: user.email,
         name: user.name,
+        userid: user.id,
       };
       return dispatch(postUserFeedback(a.type, data));
     });
@@ -197,46 +196,47 @@ export function handleFetchErrors(response: any) {
 function postUserFeedback(type: string, data: any) {
   return (dispatch: Redux.Dispatch<any>) => {
     fetch(AUTH_SETTINGS.URL_BASE + '/quest/feedback/' + type, {
-        method: 'POST',
-        body: JSON.stringify(data),
-      })
-      .then(handleFetchErrors)
-      .then((response: Response) => {
-        return response.text();
-      })
-      .then((response: string) => {
-        logEvent('user_feedback_' + type, { label: data.questid, value: data.rating });
-        dispatch(openSnackbar('Submission successful. Thank you!'));
-      }).catch((error: Error) => {
-        logEvent('user_feedback_' + type + '_err', { label: error });
-        dispatch(openSnackbar(Error('Error submitting review: ' + error.toString())));
-      });
+      body: JSON.stringify(data),
+      method: 'POST',
+    })
+    .then(handleFetchErrors)
+    .then((response: Response) => {
+      return response.text();
+    })
+    .then((response: string) => {
+      logEvent('user_feedback_' + type, { label: data.questid, value: data.rating });
+      dispatch(openSnackbar('Submission successful. Thank you!'));
+    })
+    .catch((error: Error) => {
+      logEvent('user_feedback_' + type + '_err', { label: error });
+      dispatch(openSnackbar(Error('Error submitting review: ' + error.toString())));
+    });
   };
 }
 
 export function logMultiplayerStats(user: UserState, quest: QuestDetails, stats: MultiplayerCounters): Promise<Response> {
   try {
     const data = {
+      console: getLogBuffer(),
+      data: stats,
+      email: user.email,
+      name: user.name,
+      platform: getDevicePlatform(),
       questid: quest.id,
       questversion: quest.questversion,
       userid: user.id,
-      platform: getDevicePlatform(),
       version: getAppVersion(),
-      email: user.email,
-      name: user.name,
-      data: stats,
-      console: getLogBuffer(),
     };
 
     return fetch(AUTH_SETTINGS.URL_BASE + '/analytics/multiplayer/stats', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      })
-      .then(handleFetchErrors)
-      .catch((error: Error) => {
-        logEvent('analytics_quest_err', { label: error });
-      });
-  } catch(e) {
+      body: JSON.stringify(data),
+      method: 'POST',
+    })
+    .then(handleFetchErrors)
+    .catch((error: Error) => {
+      logEvent('analytics_quest_err', { label: error });
+    });
+  } catch (e) {
     console.error('Failed to log multiplayer stats');
     return Promise.resolve(new Response(''));
   }

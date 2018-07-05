@@ -1,13 +1,13 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
+import Redux from 'redux';
 
-import {FEATURED_QUESTS} from '../../Constants'
-import FeaturedQuests, {FeaturedQuestsStateProps, FeaturedQuestsDispatchProps} from './FeaturedQuests'
-import {toCard} from '../../actions/Card'
-import {search, viewQuest} from '../../actions/Search'
-import {initialSearch} from '../../reducers/Search'
-import {AppState, SettingsType, UserState} from '../../reducers/StateTypes'
-import {QuestDetails} from '../../reducers/QuestTypes'
+import {toCard} from '../../actions/Card';
+import {search, viewQuest} from '../../actions/Search';
+import {FEATURED_QUESTS} from '../../Constants';
+import {QuestDetails} from '../../reducers/QuestTypes';
+import {initialSearch} from '../../reducers/Search';
+import {AppState, SettingsType, UserState} from '../../reducers/StateTypes';
+import FeaturedQuests, {FeaturedQuestsDispatchProps, FeaturedQuestsStateProps} from './FeaturedQuests';
 
 const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): FeaturedQuestsStateProps => {
   return {
@@ -15,7 +15,7 @@ const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): F
     settings: state.settings,
     user: state.user,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): FeaturedQuestsDispatchProps => {
   return {
@@ -39,11 +39,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Featu
       dispatch(viewQuest({quest}));
     },
   };
-}
+};
 
 const FeaturedQuestsContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(FeaturedQuests);
 
-export default FeaturedQuestsContainer
+export default FeaturedQuestsContainer;

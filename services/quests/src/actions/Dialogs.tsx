@@ -1,5 +1,5 @@
-import {SetDialogAction, PushErrorAction} from './ActionTypes'
-import {DialogIDType} from '../reducers/StateTypes'
+import {DialogIDType} from '../reducers/StateTypes';
+import {PushErrorAction, SetDialogAction} from './ActionTypes';
 
 const ReactGA = require('react-ga') as any;
 
@@ -15,8 +15,8 @@ export function pushHTTPError(err: {statusText: string, status: string, response
 
 export function pushError(error: Error): PushErrorAction {
   ReactGA.event({
-    category: 'Error',
     action: error.name + ': ' + error.message,
+    category: 'Error',
     label: error.name,
   });
   return {type: 'PUSH_ERROR', error};

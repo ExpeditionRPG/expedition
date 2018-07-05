@@ -1,4 +1,3 @@
-declare var cordova: any;
 declare var device: any;
 declare var ga: any;
 declare var gapi: any;
@@ -10,13 +9,16 @@ export function getAppVersion(): string {
 }
 
 export interface ReactDocument extends Document {
-  addEventListener: (e: string, f: (this: any, ev: MouseEvent) => any, useCapture?: boolean) => void;
+  addEventListener: (e: string, f: (this: any, ev: MouseEvent) => any,
+                     useCapture?: boolean) => void;
   dispatchEvent: (e: Event) => boolean;
 }
 
 export interface CordovaLoginPlugin {
-  trySilentLogin: (options: {scopes: string, webClientId: string}, success: (obj: any) => any, error: (err: string) => any) => void;
-  login: (options: {scopes: string, webClientId: string}, success: (obj: any) => any, error: (err: string) => any) => void;
+  trySilentLogin: (options: {scopes: string, webClientId: string},
+                   success: (obj: any) => any, error: (err: string) => any) => void;
+  login: (options: {scopes: string, webClientId: string},
+          success: (obj: any) => any, error: (err: string) => any) => void;
 }
 
 export interface ReactWindow extends Window {
@@ -31,9 +33,9 @@ export interface ReactWindow extends Window {
     InAppBrowser?: {
       open?: any;
     }
-  }
+  };
   plugins?: {
-    insomnia?: {keepAwake: ()=>void},
+    insomnia?: {keepAwake: () => void},
     googleplus?: CordovaLoginPlugin,
   };
   Promise?: any;
@@ -43,56 +45,50 @@ export interface ReactWindow extends Window {
 declare var window: ReactWindow;
 
 const refs = {
-  window: window,
-  document: document,
-  localStorage: null as (Storage|null),
+  cheerio: require('cheerio') as CheerioAPI,
   device: (typeof device !== 'undefined') ? device : {platform: null},
+  document,
   ga: (typeof ga !== 'undefined') ? ga : null,
   gapi: (typeof gapi !== 'undefined') ? gapi : null,
-  history: (typeof history !== 'undefined') ? history : {pushState: () => {return null;}},
+  history: (typeof history !== 'undefined') ? history : {pushState: () => null},
+  localStorage: null as (Storage|null),
   navigator: (typeof navigator !== 'undefined') ? navigator : null,
-  cheerio: require('cheerio') as CheerioAPI,
+  window,
 };
 
 export function getDevicePlatform(): 'android' | 'ios' | 'web' {
-  const device = getDevice();
-
-  if (!device) {
-    return 'web';
-  }
-
-  const p = (device.platform || window.navigator.appVersion || '').toLowerCase();
-  if (/android/.test(p)) {
+  const p = (getDevice() || {}).platform;
+  const platform = (p || window.navigator.appVersion || '').toLowerCase();
+  if (/android/.test(platform)) {
     return 'android';
-  } else if (/iphone|ipad|ipod|ios/.test(p)) {
+  } else if (/iphone|ipad|ipod|ios/.test(platform)) {
     return 'ios';
-  } else {
-    return 'web';
   }
+  return 'web';
 }
 
 export function getPlatformDump(): string {
   return (window.navigator.platform || '') + ': ' + (window.navigator.userAgent || '') + ': ' + (window.navigator.cookieEnabled ? 'W/COOKIES' : 'NO COOKIES');
 }
 
-export function setWindow(win: ReactWindow) {
-  refs.window = win;
+export function setWindow(w: ReactWindow) {
+  refs.window = w;
 }
 
-export function setDocument(doc: ReactDocument) {
-  refs.document = doc;
+export function setDocument(d: ReactDocument) {
+  refs.document = d;
 }
 
-export function setDevice(device: any) {
-  refs.device = device;
+export function setDevice(d: any) {
+  refs.device = d;
 }
 
-export function setGA(ga: any) {
-  refs.ga = ga;
+export function setGA(g: any) {
+  refs.ga = g;
 }
 
-export function setNavigator(navigator: any) {
-  refs.navigator = navigator;
+export function setNavigator(n: any) {
+  refs.navigator = n;
 }
 
 export function getWindow(): ReactWindow {
@@ -152,7 +148,7 @@ export function getLocalStorage(): Storage {
     const ret = d.cookie.indexOf('cookietest=') !== -1;
     d.cookie = 'cookietest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT';
     if (!ret) {
-      throw 'Cookies disabled';
+      throw new Error('Cookies disabled');
     }
     refs.localStorage = getWindow().localStorage;
   } catch (err) {
@@ -160,12 +156,12 @@ export function getLocalStorage(): Storage {
   } finally {
     if (!refs.localStorage) {
       refs.localStorage = {
-        clear: () => { return null },
-        getItem: (s: string) => { return null },
-        setItem: () => { return null },
-        removeItem: () => { return null },
-        key: (index: number|string) => {return null},
+        clear: () => null,
+        getItem: (s: string) => null,
+        key: (index: number|string) => null,
         length: 0,
+        removeItem: () => null,
+        setItem: () => null,
       } as Storage;
     }
     return refs.localStorage;

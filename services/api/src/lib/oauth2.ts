@@ -1,11 +1,11 @@
-import Config from '../config'
-import * as express from 'express'
-import {User} from 'shared/schema/Users'
+import * as express from 'express';
+import {User} from 'shared/schema/Users';
+import Config from '../config';
+import {Database, UserInstance} from '../models/Database';
 import {
   incrementLoginCount,
   subscribeToCreatorsList,
-} from '../models/Users'
-import {Database, UserInstance} from '../models/Database'
+} from '../models/Users';
 
 const GoogleTokenStrategy = require('passport-google-id-token');
 const Passport = require('passport');
@@ -69,7 +69,6 @@ export function oauth2Template(req: express.Request, res: express.Response, next
 }
 // [END middleware]
 
-
 export function installOAuthRoutes(db: Database, router: express.Router) {
   // Begins the authorization flow. The user will be redirected to Google where
   // they can authorize the application to have access to their basic profile
@@ -103,32 +102,32 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
         res.end(401);
       }
       const user = new User({
-        id: req.user,
         email: req.body.email,
+        id: req.user as any as string,
         name: req.body.name,
       });
 
       db.users.findOne({where: {id: user.id}})
-        .then((u: UserInstance|null) => {
-          if (u === null) {
-            // New user; subscribe to newsletter
-            return subscribeToCreatorsList(mailchimp, user.id);
-          }
-          return null;
-        })
-        .then((subscribed: Boolean) => {
-          if (subscribed) {
-          console.log(user.email + ' subscribed to creators list');
-          }
-          return db.users.upsert(user);
-        })
-        .then(() => incrementLoginCount(db, user.id))
-        .then(() => res.end(JSON.stringify(user)))
-        .catch((err: Error) => {
-          // Don't break login if DB fails - they're still authenticated
-          res.end(JSON.stringify(user));
-          console.log(err);
-        });
+      .then((u: UserInstance|null) => {
+        if (u === null) {
+          // New user; subscribe to newsletter
+          return subscribeToCreatorsList(mailchimp, user.id);
+        }
+        return null;
+      })
+      .then((subscribed: boolean) => {
+        if (subscribed) {
+        console.log(user.email + ' subscribed to creators list');
+        }
+        return db.users.upsert(user);
+      })
+      .then(() => incrementLoginCount(db, user.id))
+      .then(() => res.end(JSON.stringify(user)))
+      .catch((err: Error) => {
+        // Don't break login if DB fails - they're still authenticated
+        res.end(JSON.stringify(user));
+        console.log(err);
+      });
     }
   );
   // [END authorize]

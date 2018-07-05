@@ -1,11 +1,10 @@
-import * as React from 'react'
-import {romanize, healthCounter} from '../../helpers'
-import {CardType} from '../../reducers/StateTypes'
-import {MAX_COUNTER_HEALTH} from '../../Constants'
-
+import * as React from 'react';
+import {MAX_COUNTER_HEALTH} from '../../Constants';
+import {healthCounter, romanize} from '../../helpers';
+import {CardType} from '../../reducers/StateTypes';
 
 export default class CardBack extends React.Component<CardType, {}> {
-  render() {
+  public render() {
     const card = this.props.card;
     switch (card.sheet) {
       case '-Title':
@@ -17,7 +16,7 @@ export default class CardBack extends React.Component<CardType, {}> {
         );
       case 'Ability':
         return (
-          <div className={`card back vertical ${card.class} ${card.sheet}`}>
+          <div className={`card back vertical ${card.classicon || card.class} ${card.sheet}`}>
             <div className="contents">
               {card.naming && <div className="naming">{card.naming}</div>}
             </div>
@@ -25,7 +24,7 @@ export default class CardBack extends React.Component<CardType, {}> {
         );
       case 'Adventurer':
         return (
-          <div className={`card back horizontal ${card.class} ${card.sheet}`}>
+          <div className={`card back horizontal ${card.classicon || card.class} ${card.sheet}`}>
             <div className="contents">
               {card.naming && <div className="naming">{card.naming}</div>}
             </div>
@@ -33,7 +32,7 @@ export default class CardBack extends React.Component<CardType, {}> {
         );
       case 'Encounter':
         return (
-          <div className={`card back dark horizontal ${card.class} ${card.sheet} tier${card.tier}`}>
+          <div className={`card back dark horizontal ${card.classicon || card.class} ${card.sheet} tier${card.tier}`}>
             <div className="contents">
               {healthCounter(MAX_COUNTER_HEALTH, true)}
               {card.naming && <div className="naming">{card.naming}</div>}

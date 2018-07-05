@@ -1,30 +1,30 @@
 import {
+  QueryErrorAction,
+  SelectRowAction,
   SetViewAction,
   SetViewFeedbackAction,
   SetViewQuestsAction,
   SetViewUsersAction,
-  SelectRowAction,
-  UpdateUserAction,
-  UpdateQuestAction,
   UpdateFeedbackAction,
-  QueryErrorAction
-} from '../actions/ActionTypes'
-import {ViewState} from './StateTypes'
+  UpdateQuestAction,
+  UpdateUserAction
+} from '../actions/ActionTypes';
+import {ViewState} from './StateTypes';
 
 export const defaultView: ViewState = {
-  view: 'FEEDBACK',
-  filter: '',
   feedback: [{partition: 'expedition-public', quest: {id: '129348', title: 'test quest'}, user: {id: '12345', email: 'asdf@ghkjl.com'}, rating: 5, text: 'Test feedback', suppressed: false}],
-  users: [{id: '12345', email: 'asdf@ghjkl.com', name: 'Test user', loot_points: 5, last_login: new Date()}],
+  filter: '',
+  lastQueryError: null,
   quests: [{id: '129348', title: 'test quest', partition: 'expedition-public', ratingavg: 3.5, ratingcount: 10, user: {id: '12345', email: 'author@test.com'}, published: true}],
   selected: {user: null, quest: null, feedback: null},
-  lastQueryError: null,
+  users: [{id: '12345', email: 'asdf@ghjkl.com', name: 'Test user', loot_points: 5, last_login: new Date()}],
+  view: 'FEEDBACK',
 };
 
 declare type ViewActions = SetViewAction|SetViewFeedbackAction|SetViewQuestsAction|SetViewUsersAction|SelectRowAction|UpdateUserAction|UpdateQuestAction|UpdateFeedbackAction|QueryErrorAction;
 
 export function view(state: ViewState = defaultView, action: ViewActions): ViewState {
-  switch(action.type) {
+  switch (action.type) {
     case 'SET_VIEW':
       return {...state, view: action.view};
     case 'SET_VIEW_FEEDBACK':

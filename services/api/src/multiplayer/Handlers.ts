@@ -1,24 +1,23 @@
-import * as url from 'url'
-import * as http from 'http'
-import * as WebSocket from 'ws'
-import * as express from 'express'
-import * as Promise from 'bluebird'
-import Config from '../config'
-import {Database, SessionClientInstance, SessionInstance, EventInstance} from '../models/Database'
-import {getLastEvent, commitEvent, commitEventWithoutID, getOrderedEventsAfter, getLargestEventID} from '../models/multiplayer/Events'
-import {getSessionQuestTitle, getSessionBySecret, createSession} from '../models/multiplayer/Sessions'
-import {getClientSessions, verifySessionClient} from '../models/multiplayer/SessionClients'
-import {toClientKey} from 'shared/multiplayer/Session'
-import {ClientID, WaitType, StatusEvent, ActionEvent, MultiplayerEvent, MultiEvent} from 'shared/multiplayer/Events'
-import {maybeChaosWS, maybeChaosDB} from './Chaos'
-
+import * as Promise from 'bluebird';
+import * as express from 'express';
+import * as http from 'http';
+import {ActionEvent, ClientID, MultiEvent, MultiplayerEvent, StatusEvent, WaitType} from 'shared/multiplayer/Events';
+import {toClientKey} from 'shared/multiplayer/Session';
+import * as url from 'url';
+import * as WebSocket from 'ws';
+import Config from '../config';
+import {Database, EventInstance, SessionClientInstance, SessionInstance} from '../models/Database';
+import {commitEvent, commitEventWithoutID, getLargestEventID, getLastEvent, getOrderedEventsAfter} from '../models/multiplayer/Events';
+import {getClientSessions, verifySessionClient} from '../models/multiplayer/SessionClients';
+import {createSession, getSessionBySecret, getSessionQuestTitle} from '../models/multiplayer/Sessions';
+import {maybeChaosDB, maybeChaosWS} from './Chaos';
 
 export interface MultiplayerSessionMeta {
   id: number;
-  secret: string;
-  questTitle: string;
-  peerCount: number;
   lastAction: Date;
+  peerCount: number;
+  questTitle: string;
+  secret: string;
 }
 
 export function user(db: Database, req: express.Request, res: express.Response) {
@@ -27,8 +26,8 @@ export function user(db: Database, req: express.Request, res: express.Response) 
       const id = sci.get('session');
       const meta: Partial<MultiplayerSessionMeta> = {
         id,
-        secret: sci.get('secret'),
         peerCount: sessionClientCount(id),
+        secret: sci.get('secret'),
       };
 
       if (meta.peerCount === undefined || meta.peerCount <= 0) {
@@ -53,7 +52,7 @@ export function user(db: Database, req: express.Request, res: express.Response) 
         });
     }));
   })
-  .filter((m: MultiplayerSessionMeta|null) => {return m !== null})
+  .filter((m: MultiplayerSessionMeta|null) => m !== null)
   .then((history: MultiplayerSessionMeta[]) => {
     res.status(200).end(JSON.stringify({history}));
   })
@@ -88,9 +87,9 @@ export function connect(db: Database, req: express.Request, res: express.Respons
         return Promise.reject(null);
       }
       return db.sessionClients.upsert({
-        session: session.get('id'),
         client: res.locals.id,
         secret: body.secret,
+        session: session.get('id'),
       });
     })
     .then(() => {
@@ -107,10 +106,10 @@ export function connect(db: Database, req: express.Request, res: express.Respons
 }
 
 interface WebsocketSessionParams {
-  session: number;
   client: string;
-  secret: string;
   instance: string;
+  secret: string;
+  session: number;
 }
 
 function wsParamsFromReq(req: http.IncomingMessage): WebsocketSessionParams|null {
@@ -131,10 +130,10 @@ function wsParamsFromReq(req: http.IncomingMessage): WebsocketSessionParams|null
   }
 
   return {
-    session: parseInt(splitPath[1], 10),
     client: parsedURL.query.client as string,
-    secret: parsedURL.query.secret as string,
     instance: parsedURL.query.instance as string,
+    secret: parsedURL.query.secret as string,
+    session: parseInt(splitPath[1], 10),
   };
 }
 
@@ -206,9 +205,9 @@ function maybeFastForwardClient(db: Database, session: number, client: ClientID,
       }
       ws.send(JSON.stringify({
         client: 'SERVER',
-        instance: Config.get('NODE_ENV'),
-        id: null,
         event,
+        id: null,
+        instance: Config.get('NODE_ENV'),
       } as MultiplayerEvent), (e: Error) => {
         console.error(e);
       });
@@ -225,10 +224,10 @@ function handleClientStatus(db: Database, session: number, client: ClientID, ins
   let cli = s[toClientKey(client, instance)];
   if (!cli) {
     s[toClientKey(client, instance)] = {
+      client,
+      instance,
       socket: ws,
       status: null,
-      client: client,
-      instance: instance,
     };
     cli = s[toClientKey(client, instance)];
   }
@@ -250,16 +249,16 @@ function handleClientStatus(db: Database, session: number, client: ClientID, ins
     }
   }
 
-  if (waitCounts['TIMER'] === Object.keys(s).length) {
+  if (waitCounts.TIMER === Object.keys(s).length) {
     const combatStopEvent = {
       client: 'SERVER',
-      instance: Config.get('NODE_ENV'),
       event: {
-        type: 'ACTION',
-        name: 'handleCombatTimerStop',
         args: JSON.stringify({elapsedMillis: maxElapsedMillis, seed: Date.now()}),
+        name: 'handleCombatTimerStop',
+        type: 'ACTION',
       } as ActionEvent,
       id: null,
+      instance: Config.get('NODE_ENV'),
     } as MultiplayerEvent;
 
     commitEventWithoutID(db, session, client, instance, 'ACTION', combatStopEvent)
@@ -270,12 +269,12 @@ function handleClientStatus(db: Database, session: number, client: ClientID, ins
       .catch((error: Error) => {
         broadcast(session, JSON.stringify({
           client: 'SERVER',
-          instance: Config.get('NODE_ENV'),
           event: {
-            type: 'ERROR',
             error: 'Server error: ' + error.toString(),
+            type: 'ERROR',
           },
           id: null,
+          instance: Config.get('NODE_ENV'),
         } as MultiplayerEvent));
       });
   }
@@ -290,14 +289,14 @@ function sendError(ws: WebSocket, e: string) {
   console.error(e);
   ws.send(JSON.stringify({
     client: 'SERVER',
-    instance: Config.get('NODE_ENV'),
     event: {
-      type: 'ERROR',
       error: e,
+      type: 'ERROR',
     },
     id: null,
-  } as MultiplayerEvent), (e: Error) => {
-    console.error(e);
+    instance: Config.get('NODE_ENV'),
+  } as MultiplayerEvent), (err: Error) => {
+    console.error(err);
   });
 }
 
@@ -317,10 +316,10 @@ export function websocketSession(db: Database, ws: WebSocket, req: http.Incoming
     inMemorySessions[params.session] = {};
   }
   inMemorySessions[params.session][toClientKey(params.client, params.instance)] = {
-    socket: ws,
-    status: null,
     client: params.client,
     instance: params.instance,
+    socket: ws,
+    status: null,
   };
 
   if (ws.readyState === WebSocket.OPEN) {
@@ -336,16 +335,15 @@ export function websocketSession(db: Database, ws: WebSocket, req: http.Incoming
 
         ws.send(JSON.stringify({
           client: s[k].client,
-          instance: s[k].instance,
           event: s[k].status,
           id: null,
+          instance: s[k].instance,
         } as MultiplayerEvent), (e: Error) => {
           console.error(e);
         });
       }
     }
   }
-
 
   ws.on('message', (msg: WebSocket.Data) => {
     if (typeof(msg) !== 'string') {
@@ -396,9 +394,9 @@ export function websocketSession(db: Database, ws: WebSocket, req: http.Incoming
         }).finally(() => {
           ws.send(JSON.stringify({
             client: 'SERVER',
-            instance: Config.get('NODE_ENV'),
-            id: null,
             event: multiEvent,
+            id: null,
+            instance: Config.get('NODE_ENV'),
           } as MultiplayerEvent), (e?: Error) => {
             if (e) {
               sendError(ws, e.toString());
@@ -414,12 +412,12 @@ export function websocketSession(db: Database, ws: WebSocket, req: http.Incoming
     // Notify other clients this client has disconnected
     broadcast(params.session, JSON.stringify({
       client: params.client,
-      instance: params.instance,
       event: {
-        type: 'STATUS',
         connected: false,
+        type: 'STATUS',
       },
       id: null,
+      instance: params.instance,
     } as MultiplayerEvent));
   });
 }

@@ -1,6 +1,5 @@
-import {Node} from './Node'
-import {Context, defaultContext} from './Context'
-declare var global: any;
+import {Context, defaultContext} from './Context';
+import {Node} from './Node';
 
 const cheerio = require('cheerio') as CheerioAPI;
 
@@ -87,7 +86,7 @@ describe('Node', () => {
       expect(new Node(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultContext()).getTag()).toEqual('roleplay');
       expect(new Node(cheerio.load('<combat></combat>')('combat'), defaultContext()).getTag()).toEqual('combat');
     });
-  })
+  });
 
   describe('gotoId', () => {
     it('goes to ID', () => {
@@ -122,9 +121,9 @@ describe('Node', () => {
   describe('loopChildren', () => {
     it('handles empty case', () => {
       const pnode = new Node(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultContext());
-      const sawChild = pnode.loopChildren((tag, c) => { return true; }) || false;
+      const sawChild = pnode.loopChildren((tag, c) => true) || false;
       expect(sawChild).toEqual(false);
-    })
+    });
     it('loops only enabled children', () => {
       const pnode = new Node(cheerio.load('<roleplay><p>1</p><b>2</b><p if="a">3</p><i>4</i></roleplay>')('roleplay'), defaultContext());
       const agg: any[] = [];
@@ -146,13 +145,13 @@ describe('Node', () => {
   });
 
   describe('rendering', () => {
-    const renderedChildren = function(elem: Cheerio, ctx: Context): string[] {
+    const renderedChildren = (elem: Cheerio, ctx: Context): string[] => {
       const result: string[] = [];
       new Node(elem, ctx).loopChildren((tag, c) => {
         result.push(c.toString());
       });
       return result;
-    }
+    };
 
     it('hides children with nothing but variable assignment', () => {
       // Lines with nothing but variable assignment are hidden
@@ -220,14 +219,14 @@ describe('Node', () => {
         cheerio.load('<roleplay><p>{{r=[5]}}</p><p>{{r}}</p></roleplay>')('roleplay'),
         defaultContext()
       )).toEqual(['<p>5</p>']);
-    })
+    });
 
     it('handles multiple ops on one line', () => {
       expect(renderedChildren(
         cheerio.load('<roleplay><p>{{text="TEST"}} {{r=[5]}}</p><p>{{text}}{{r}}</p></roleplay>')('roleplay'),
         defaultContext()
       )).toEqual(['<p>TEST5</p>']);
-    })
+    });
 
     it('parses ops in instruction nodes', () => {
       expect(renderedChildren(
@@ -282,7 +281,7 @@ describe('Node', () => {
         throw new Error('getNext returned null node');
       }
       expect(next.ctx.scope).toEqual(jasmine.objectContaining({a: 2, b: 32.3244, c: 40}));
-    })
+    });
   });
 
   describe('getComparisonKey', () => {
@@ -318,7 +317,7 @@ describe('Node', () => {
       const p2 = new Node(e, c2);
 
       expect(p1.getComparisonKey()).not.toEqual(p2.getComparisonKey());
-    })
+    });
 
     it('safely handles lack of quest root', () => {
       const e1 = cheerio.load('<roleplay><choice><combat data-line="110"></combat></choice></roleplay>')('combat');
@@ -558,6 +557,6 @@ describe('Node', () => {
         throw new Error('handleAction returned null node');
       }
       expect(result.elem.text()).toEqual('r1');
-    })
+    });
   });
 });

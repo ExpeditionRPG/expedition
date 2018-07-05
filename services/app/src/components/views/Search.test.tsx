@@ -1,3 +1,9 @@
+import {configure, render} from 'enzyme';
+import * as Adapter from 'enzyme-adapter-react-16';
+import {LanguageType} from 'shared/schema/Constants';
+import {FEATURED_QUESTS} from '../../Constants';
+import {QuestDetails} from '../../reducers/QuestTypes';
+import {SearchSettings} from '../../reducers/StateTypes';
 import {
   formatPlayPeriod,
   renderDetails,
@@ -5,24 +11,18 @@ import {
   SearchDetailsProps,
   SearchResultProps,
   smartTruncateSummary,
-} from './Search'
-import {SearchSettings} from '../../reducers/StateTypes'
-import {QuestDetails} from '../../reducers/QuestTypes'
-import {FEATURED_QUESTS} from '../../Constants'
-import {LanguageType} from 'shared/schema/Constants'
-import {configure, render} from 'enzyme'
-import * as Adapter from 'enzyme-adapter-react-16'
+} from './Search';
 configure({ adapter: new Adapter() });
 
 const TEST_SEARCH: SearchSettings = {
-  contentrating: 'Teen',
-  text: 'Test Text',
-  order: '+title',
-  mintimeminutes: 30,
-  maxtimeminutes: 60,
   age: 31536000,
-  language: 'English' as LanguageType,
+  contentrating: 'Teen',
   genre: 'Comedy',
+  language: 'English' as LanguageType,
+  maxtimeminutes: 60,
+  mintimeminutes: 30,
+  order: '+title',
+  text: 'Test Text',
 };
 
 describe('Search', () => {
@@ -66,21 +66,22 @@ describe('Search', () => {
       const props: SearchResultProps = {
         index: 0,
         lastPlayed: null,
+        onQuest: jasmine.createSpy('onQuest'),
         quest: {...FEATURED_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides},
         search: TEST_SEARCH,
-        onQuest: jasmine.createSpy('onQuest'),
         ...overrides,
       };
       const wrapper = render(renderResult(props), undefined /*renderOptions*/);
       return {props, wrapper};
     }
-    it('displays no horror icon when a quest does not use the Horror expansion', () => {
-      const {props, wrapper} = setup('Learning to Adventure');
+
+    it('displays no expansion icons when quest has no expansions', () => {
+      const {wrapper} = setup('Learning to Adventure');
       expect(wrapper.html()).not.toContain('horror');
     });
 
     it('displays horror icon when a quest uses the Horror expansion', () => {
-      const {props, wrapper} = setup('Learning 2: The Horror');
+      const {wrapper} = setup('Learning 2: The Horror');
       expect(wrapper.html()).toContain('horror');
     });
 
@@ -90,32 +91,32 @@ describe('Search', () => {
     });
 
     it('does not display last played date if quest has not been played', () => {
-      const {props, wrapper} = setup('Learning to Adventure');
+      const {wrapper} = setup('Learning to Adventure');
       expect(wrapper.html()).not.toContain('questPlayedIcon');
     });
 
     it('displayed last played date if quest has been played before', () => {
-      const {props, wrapper} = setup('Learning to Adventure', {lastPlayed: new Date()});
+      const {wrapper} = setup('Learning to Adventure', {lastPlayed: new Date()});
       expect(wrapper.html()).toContain('questPlayedIcon');
     });
 
     it('does not display awarded icon when quest not awarded', () => {
-      const {props, wrapper} = setup('Learning to Adventure');
+      const {wrapper} = setup('Learning to Adventure');
       expect(wrapper.html()).not.toContain('questAwardedIcon');
     });
 
     it('displays awarded icon if quest has received award', () => {
-      const {props, wrapper} = setup('Learning to Adventure', {}, {awarded: 'The Bob Medal For Questing Mediocrity'});
+      const {wrapper} = setup('Learning to Adventure', {}, {awarded: 'The Bob Medal For Questing Mediocrity'});
       expect(wrapper.html()).toContain('questAwardedIcon');
     });
 
     it('does not display official icon if quest is not official', () => {
-      const {props, wrapper} = setup('Learning to Adventure', {}, {official: false});
+      const {wrapper} = setup('Learning to Adventure', {}, {official: false});
       expect(wrapper.html()).not.toContain('questOfficialIcon');
     });
 
     it('displays official icon if quest is official', () => {
-      const {props, wrapper} = setup('Learning to Adventure');
+      const {wrapper} = setup('Learning to Adventure');
       expect(wrapper.html()).toContain('questOfficialIcon');
     });
   });
@@ -141,7 +142,7 @@ describe('Search', () => {
 
     it('renders selected quest details', () => {
       const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-      const {props, wrapper} = setup(quest.title);
+      const {wrapper} = setup(quest.title);
       expect(wrapper.html()).toContain(quest.title);
       expect(wrapper.html()).toContain(quest.genre);
       expect(wrapper.html()).toContain(quest.summary);
@@ -154,13 +155,13 @@ describe('Search', () => {
 
     it('shows last played information if it has been played before', () => {
       const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-      const {props, wrapper} = setup(quest.title, {lastPlayed: new Date()});
+      const {wrapper} = setup(quest.title, {lastPlayed: new Date()});
       expect(wrapper.text().toLowerCase()).toContain('last played');
     });
 
     it('does not show last played infomation if it does not exist', () => {
       const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-      const {props, wrapper} = setup(quest.title, {lastPlayed: null});
+      const {wrapper} = setup(quest.title, {lastPlayed: null});
       expect(wrapper.text().toLowerCase()).not.toContain('last played');
     });
 
@@ -187,7 +188,6 @@ describe('Search', () => {
       const DEAD_WASTELAND_EXPECTED = 'A story influenced by the awesome game Dead of Winter: Your colony is attacked. How will you respond?';
       expect(smartTruncateSummary(DEAD_WASTELAND_SUMMARY)).toEqual(DEAD_WASTELAND_EXPECTED);
     });
-
 
     it('adds ellipses at a sentence boundary for a more natural feel', () => {
       const SHARDS_OF_TIME_SUMMARY = 'You wake-up in the middle of an Ash Barren wasteland of Aikania. Now you have to explore the lands but dark creatures are tormenting this land. Can you free Aikania from this horrible curse?';

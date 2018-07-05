@@ -1,25 +1,25 @@
-import Redux from 'redux'
-import {SetDialogAction, PushErrorAction} from '../actions/ActionTypes'
-import {DialogsState} from './StateTypes'
-import errors from '../../errors/errors'
+import Redux from 'redux';
+import errors from '../../errors/errors';
+import {PushErrorAction, SetDialogAction} from '../actions/ActionTypes';
+import {DialogsState} from './StateTypes';
 
 const initialState: DialogsState = {
+  annotations: [],
+  errors: [],
   open: {
-    USER: false,
+    ANNOTATION_DETAIL: false,
     ERROR: false,
     PUBLISHED: false,
     UNPUBLISHED: false,
-    ANNOTATION_DETAIL: false,
+    USER: false,
   },
-  errors: [],
-  annotations: [],
 };
 
 export function dialogs(state: DialogsState = initialState, action: Redux.Action): DialogsState {
   const newState: DialogsState = {
-    open: {...state.open},
-    errors: [...state.errors],
     annotations: state.annotations,
+    errors: [...state.errors],
+    open: {...state.open},
   };
   switch (action.type) {
     case 'SET_DIALOG':
@@ -34,7 +34,7 @@ export function dialogs(state: DialogsState = initialState, action: Redux.Action
       // Assign the appropriate error details when showing annotation details dialog
       if (dialogAction.dialog === 'ANNOTATION_DETAIL') {
         if (dialogAction.shown && dialogAction.annotations) {
-          newState.annotations = dialogAction.annotations.map((a: number) => {return errors[a] || a});
+          newState.annotations = dialogAction.annotations.map((a: number) => errors[a] || a);
         } else {
           newState.annotations = [];
         }
@@ -49,7 +49,7 @@ export function dialogs(state: DialogsState = initialState, action: Redux.Action
       newState.errors.push(errorAction.error);
 
       // Always show the error dialog if there's errors to be shown.
-      newState.open['ERROR'] = true;
+      newState.open.ERROR = true;
       return newState;
     default:
       return state;

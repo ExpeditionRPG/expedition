@@ -1,11 +1,11 @@
-import Redux from 'redux'
-import {getMultiplayerAction} from './actions/ActionTypes'
-import {MultiplayerEvent, ActionEvent, StatusEvent} from 'shared/multiplayer/Events'
-import {ClientBase} from 'shared/multiplayer/Client'
-import {toClientKey} from 'shared/multiplayer/Session'
-import {local} from './actions/Multiplayer'
-import {getStore} from './Store'
-import {MULTIPLAYER_SETTINGS} from './Constants'
+import Redux from 'redux';
+import {ClientBase} from 'shared/multiplayer/Client';
+import {ActionEvent, MultiplayerEvent, StatusEvent} from 'shared/multiplayer/Events';
+import {toClientKey} from 'shared/multiplayer/Session';
+import {getMultiplayerAction} from './actions/ActionTypes';
+import {local} from './actions/Multiplayer';
+import {MULTIPLAYER_SETTINGS} from './Constants';
+import {getStore} from './Store';
 
 const CONNECTION_LOOP_MS = 200;
 const RETRY_DELAY_MS = 2000;
@@ -19,28 +19,26 @@ const RECONNECT_DELAY_BASE_MS = 200;
 
 export interface MultiplayerCounters {
   [field: string]: number;
-
-  sessionCount: number,
-  disconnectCount: number,
-  reconnectCount: number,
-  compactionEvents: number,
-  receivedEvents: number,
-  errorEvents: number,
-  failedTransactions: number,
-  successfulTransactions: number,
+  compactionEvents: number;
+  disconnectCount: number;
+  errorEvents: number;
+  failedTransactions: number;
+  receivedEvents: number;
+  reconnectCount: number;
+  sessionCount: number;
+  successfulTransactions: number;
 }
 
 export const initialMultiplayerCounters = {
-  sessionCount: 0,
-  disconnectCount: 0,
-  reconnectCount: 0,
   compactionEvents: 0,
-  receivedEvents: 0,
+  disconnectCount: 0,
   errorEvents: 0,
-  successfulTransactions: 0,
   failedTransactions: 0,
+  receivedEvents: 0,
+  reconnectCount: 0,
+  sessionCount: 0,
+  successfulTransactions: 0,
 };
-
 
 function isSyncing(): boolean {
   return getStore().getState().multiplayer.syncing;
@@ -53,25 +51,23 @@ function getCommitID(): number {
 // This is the base layer of the multiplayer network framework
 export class MultiplayerClient extends ClientBase {
   private session: WebSocket;
-  private sessionClientIDs: string[];
   private reconnectAttempts: number;
   private sessionID: string;
   private secret: string;
   private stats: MultiplayerCounters;
-  private messageBuffer: {id: number, msg: string, retries: number, ts: number}[]
+  private messageBuffer: Array<{id: number, msg: string, retries: number, ts: number}>;
   private lastStatusMs: number;
 
   // Counter used for sending new events (we can have multiple in-flight).
   private localEventCounter: number;
 
-
   constructor() {
     super();
     this.resetState();
-    setInterval(() => {this.connectionLoop();}, CONNECTION_LOOP_MS);
+    setInterval(() => {this.connectionLoop(); }, CONNECTION_LOOP_MS);
   }
 
-  resetState() {
+  public resetState() {
     super.resetState();
     this.localEventCounter = 0;
     this.messageBuffer = [];
@@ -80,12 +76,12 @@ export class MultiplayerClient extends ClientBase {
     this.stats = {...initialMultiplayerCounters};
   }
 
-  hasInFlight(id: number): boolean {
-    const filtered = this.messageBuffer.filter((b) => {return b.id === id;});
+  public hasInFlight(id: number): boolean {
+    const filtered = this.messageBuffer.filter((b) => b.id === id);
     return (filtered.length > 0);
   }
 
-  getInFlightAtOrBelow(id: number): number[] {
+  public getInFlightAtOrBelow(id: number): number[] {
     return this.messageBuffer.filter((b) => {
       return (b.id <= id);
     }).map((b) => {
@@ -122,7 +118,7 @@ export class MultiplayerClient extends ClientBase {
     }
   }
 
-  removeFromQueue(id: number) {
+  public removeFromQueue(id: number) {
     for (let i = 0; i < this.messageBuffer.length; i++) {
       if (id === this.messageBuffer[i].id) {
         this.messageBuffer.splice(i, 1);
@@ -131,7 +127,7 @@ export class MultiplayerClient extends ClientBase {
     }
   }
 
-  routeEvent(e: MultiplayerEvent, dispatch: Redux.Dispatch<any>) {
+  public routeEvent(e: MultiplayerEvent, dispatch: Redux.Dispatch<any>) {
     // Update stats
     this.stats.receivedEvents++;
     if (e.event.type === 'ERROR') {
@@ -157,10 +153,10 @@ export class MultiplayerClient extends ClientBase {
     switch (e.event.type) {
       case 'STATUS':
         dispatch({
-          type: 'MULTIPLAYER_CLIENT_STATUS',
           client: e.client,
           instance: e.instance,
           status: e.event,
+          type: 'MULTIPLAYER_CLIENT_STATUS',
         });
         break;
       case 'INTERACTION':
@@ -213,14 +209,14 @@ export class MultiplayerClient extends ClientBase {
         return result;
       case 'MULTI_EVENT':
         let chain = Promise.resolve();
-        for (let i = 0; i < e.event.events.length; i++) {
+        for (const event of e.event.events) {
           let parsed: MultiplayerEvent;
           try {
-            parsed = JSON.parse(e.event.events[i]);
+            parsed = JSON.parse(event);
             if (!parsed.id) {
               throw new Error('MULTI_EVENT without ID: ' + parsed);
             }
-          } catch(e) {
+          } catch (e) {
             console.error(e);
             continue;
           }
@@ -229,10 +225,10 @@ export class MultiplayerClient extends ClientBase {
           // This constructs a chain of promises out of the calls to MULTI_EVENT so that async actions like fetchQuestXML are
           // allowed to complete before the next action is processed.
           chain = chain.then((_: any) => {
-            const result: any = this.routeEvent(parsed, dispatch);
-            if (result && typeof(result) === 'object' && result.then) {
+            const route: any = this.routeEvent(parsed, dispatch);
+            if (route && typeof(route) === 'object' && route.then) {
               console.log('Chaining promise from event: ', parsed);
-              return result;
+              return route;
             }
             return Promise.resolve();
           });
@@ -253,27 +249,27 @@ export class MultiplayerClient extends ClientBase {
 
   // When transactions are committed/rejected, we may need to to amend the
   // counter to get back on track.
-  committedEvent(n: number) {
+  public committedEvent(n: number) {
     console.log('INFLIGHT_COMMIT #' + n);
     this.localEventCounter = Math.max(this.localEventCounter, n);
     getStore().dispatch({type: 'INFLIGHT_COMMIT', id: n});
   }
 
-  rejectedEvent(n: number, error: string) {
+  public rejectedEvent(n: number, error: string) {
     console.log('INFLIGHT_REJECT #' + n + ': ' + error);
-    this.localEventCounter = Math.min(this.localEventCounter, Math.max(getCommitID(), n-1));
+    this.localEventCounter = Math.min(this.localEventCounter, Math.max(getCommitID(), n - 1));
     getStore().dispatch({
-      type: 'INFLIGHT_REJECT',
-      id: n,
       error,
+      id: n,
+      type: 'INFLIGHT_REJECT',
     });
   }
 
-  getStats(): MultiplayerCounters {
+  public getStats(): MultiplayerCounters {
     return this.stats;
   }
 
-  sendStatus(partialStatus?: StatusEvent): void {
+  public sendStatus(partialStatus?: StatusEvent): void {
     const now = Date.now();
     // Debounce status (don't send too often)
     if (now - this.lastStatusMs < STATUS_MS / 5) {
@@ -285,11 +281,11 @@ export class MultiplayerClient extends ClientBase {
     const elem = (state.quest && state.quest.node && state.quest.node.elem);
     const selfStatus = (state.multiplayer && state.multiplayer.clientStatus && state.multiplayer.clientStatus[this.getClientKey()]);
     let event: StatusEvent = {
-      type: 'STATUS',
       connected: true,
-      numPlayers: (state.settings && state.settings.numPlayers) || 1,
-      line: (elem && parseInt(elem.attr('data-line'), 10)),
       lastEventID: state.commitID,
+      line: (elem && parseInt(elem.attr('data-line'), 10)),
+      numPlayers: (state.settings && state.settings.numPlayers) || 1,
+      type: 'STATUS',
       waitingOn: (selfStatus && selfStatus.waitingOn),
     };
     if (partialStatus) {
@@ -299,26 +295,26 @@ export class MultiplayerClient extends ClientBase {
     // Send remote and also publish locally
     this.sendEvent(event);
     store.dispatch({
-      type: 'MULTIPLAYER_CLIENT_STATUS',
       client: this.id,
       instance: this.instance,
       status: event,
+      type: 'MULTIPLAYER_CLIENT_STATUS',
     });
     this.publish({
-      id: null,
       client: this.id,
-      instance: this.instance,
       event,
+      id: null,
+      instance: this.instance,
     });
 
     this.lastStatusMs = now;
   }
 
-  getClientKey(): string {
+  public getClientKey(): string {
     return toClientKey(this.id, this.instance);
   }
 
-  reconnect() {
+  public reconnect() {
     if (this.session) {
       this.session.close();
     }
@@ -326,8 +322,8 @@ export class MultiplayerClient extends ClientBase {
 
     // Random exponential backoff reconnect
     // https://en.wikipedia.org/wiki/Exponential_backoff
-    const slotIdx = Math.floor(Math.random() * (this.reconnectAttempts+1))
-    const slot = Math.pow(2,slotIdx);
+    const slotIdx = Math.floor(Math.random() * (this.reconnectAttempts + 1));
+    const slot = Math.pow(2, slotIdx);
     const delay = RECONNECT_SLOT_DELAY_MS * slot + RECONNECT_DELAY_BASE_MS;
     console.log(`WS: Waiting to reconnect (${delay} ms)`);
     setTimeout(() => {
@@ -337,7 +333,7 @@ export class MultiplayerClient extends ClientBase {
     this.reconnectAttempts = Math.min(this.reconnectAttempts + 1, RECONNECT_MAX_SLOT_IDX);
   }
 
-  connect(sessionID: string, secret: string): void {
+  public connect(sessionID: string, secret: string): void {
     // Save these for reconnect
     this.sessionID = sessionID;
     this.secret = secret;
@@ -345,7 +341,6 @@ export class MultiplayerClient extends ClientBase {
     if (this.isConnected()) {
       this.disconnect();
     }
-    this.sessionClientIDs = [this.id];
 
     this.session = new WebSocket(`${MULTIPLAYER_SETTINGS.websocketSession}/${sessionID}?client=${this.id}&instance=${this.instance}&secret=${secret}`);
 
@@ -376,13 +371,13 @@ export class MultiplayerClient extends ClientBase {
 
       // Notify local listeners that we've disconnected
       this.publish({
-        id: null,
         client: this.id,
-        instance: this.instance,
         event: {
-          type: 'STATUS',
           connected: false,
+          type: 'STATUS',
         },
+        id: null,
+        instance: this.instance,
       });
     };
 
@@ -391,15 +386,15 @@ export class MultiplayerClient extends ClientBase {
       console.log('WS: open');
       this.connected = true;
       this.sendStatus();
-    }
+    };
   }
 
-  disconnect() {
+  public disconnect() {
     this.connected = false;
     this.session.close(1000);
   }
 
-  sendFinalizedEvent(event: MultiplayerEvent): void {
+  public sendFinalizedEvent(event: MultiplayerEvent): void {
     if (event.event.type === 'ACTION') {
       this.localEventCounter++;
       event.id = this.localEventCounter;
@@ -415,7 +410,7 @@ export class MultiplayerClient extends ClientBase {
 
   public createActionMiddleware(): Redux.Middleware {
     return ({dispatch, getState}: Redux.MiddlewareAPI<any>) => (next: Redux.Dispatch<any>) => (action: any) => {
-      const dispatchLocal = (a: Redux.Action) => {return dispatch(local(a));};
+      const dispatchLocal = (a: Redux.Action) => dispatch(local(a));
 
       if (!action) {
         next(action);
@@ -487,14 +482,13 @@ export class MultiplayerClient extends ClientBase {
         next(action);
       }
 
-
       // INFLIGHT_COMPACT actions happen after inconsistent state is discovered
       // between the server and client and the client state has just been thrown out.
       // Send a status ping to the server to inform it of our new state.
       if (action.type === 'INFLIGHT_COMPACT') {
         this.sendStatus();
       }
-    }
+    };
   }
 }
 
@@ -502,9 +496,8 @@ export class MultiplayerClient extends ClientBase {
 let client: MultiplayerClient|null = null;
 export function getMultiplayerClient(): MultiplayerClient {
   if (client !== null) {
-    return client
+    return client;
   }
   client = new MultiplayerClient();
   return client;
 }
-

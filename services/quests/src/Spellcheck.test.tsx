@@ -37,6 +37,6 @@ describe('Spellcheck', () => {
     it('does not flag suffixes touching ops', () => {
       // const input = "The {{singer}}'s mother, now that's not a bug";
       // expected: no spelling errors
-    })
-  })
+    });
+  });
 });

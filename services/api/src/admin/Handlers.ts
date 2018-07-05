@@ -1,10 +1,10 @@
-import * as express from 'express'
-import {suppressFeedback} from '../models/Feedback'
-import {Database, QuestInstance, FeedbackInstance, UserInstance} from '../models/Database'
-import {setLootPoints} from '../models/Users'
-import {unpublishQuest, republishQuest, getQuest} from '../models/Quests'
-import {Quest} from 'shared/schema/Quests'
-import * as QT from './QueryTypes'
+import * as express from 'express';
+import {Quest} from 'shared/schema/Quests';
+import {Database, FeedbackInstance, QuestInstance, UserInstance} from '../models/Database';
+import {suppressFeedback} from '../models/Feedback';
+import {getQuest, republishQuest, unpublishQuest} from '../models/Quests';
+import {setLootPoints} from '../models/Users';
+import * as QT from './QueryTypes';
 
 const QUERY_ROW_LIMIT = 100;
 
@@ -36,11 +36,11 @@ export function queryFeedback(db: Database, req: express.Request, res: express.R
     }
 
     const q: QT.FeedbackQuery = {
+      order: body.order || null,
       questid: body.questid || null,
-      userid: body.userid || null,
       rating: body.rating || null,
       substring: body.substring || null,
-      order: body.order || null,
+      userid: body.userid || null,
     };
 
     const where: any = {};
@@ -52,9 +52,9 @@ export function queryFeedback(db: Database, req: express.Request, res: express.R
     }
     if (q.rating) {
       where.rating = {
+        $eq: ((q.rating.condition === '=') ? q.rating.value : undefined),
         $gt: ((q.rating.condition === '>') ? q.rating.value : undefined),
         $lt: ((q.rating.condition === '<') ? q.rating.value : undefined),
-        $eq: ((q.rating.condition === '=') ? q.rating.value : undefined),
       };
     }
     if (q.substring) {
@@ -66,33 +66,33 @@ export function queryFeedback(db: Database, req: express.Request, res: express.R
     }
 
     return db.feedback.findAll({
-      where,
-      order: (q.order) ? [[q.order.column, (q.order.ascending) ? 'ASC' : 'DESC']] : undefined,
       limit: QUERY_ROW_LIMIT,
+      order: (q.order) ? [[q.order.column, (q.order.ascending) ? 'ASC' : 'DESC']] : undefined,
+      where,
     }).then((results: FeedbackInstance[]) => {
       return Promise.all(results.map((r: FeedbackInstance) => {
         return getQuest(db, r.get('partition'), r.get('questid'))
-          .then((q: Quest) => {
+          .then((quest: Quest) => {
             return {
               partition: r.get('partition'),
               quest: {
                 id: r.get('questid'),
-                title: q.title,
+                title: quest.title,
               },
-              user: {
-                id: r.get('userid'),
-                email: r.get('email'),
-              },
-              text: r.get('text'),
               rating: r.get('rating'),
               suppressed: r.get('tombstone') !== null,
+              text: r.get('text'),
+              user: {
+                email: r.get('email'),
+                id: r.get('userid'),
+              },
             } as QT.FeedbackEntry;
           });
       }));
-    }).then((results: (QT.FeedbackEntry|null)[]) => {
+    }).then((results: Array<QT.FeedbackEntry|null>) => {
       return results.filter((r: QT.FeedbackEntry|null) => {
         return r !== null;
-      })
+      });
     }).then((results: QT.FeedbackEntry[]) => {
       res.status(200).send(JSON.stringify(results));
     }).catch(handleErrors(res));
@@ -109,8 +109,8 @@ export function modifyFeedback(db: Database, req: express.Request, res: express.
     const m: QT.FeedbackMutation = {
       partition: body.partition || null,
       questid: body.questid || null,
-      userid: body.userid || null,
       suppress: body.suppress,
+      userid: body.userid || null,
     };
 
     if (m.suppress !== null) {
@@ -130,10 +130,10 @@ export function queryQuest(db: Database, req: express.Request, res: express.Resp
     body = validateOrder(JSON.parse(req.body));
 
     const q: QT.QuestQuery = {
-      questid: body.questid || null,
-      userid: body.userid || null,
-      substring: body.substring || null,
       order: body.order || null,
+      questid: body.questid || null,
+      substring: body.substring || null,
+      userid: body.userid || null,
     };
 
     const where: any = {};
@@ -151,22 +151,22 @@ export function queryQuest(db: Database, req: express.Request, res: express.Resp
     }
 
     return db.quests.findAll({
-      where,
-      order: (q.order) ? [[q.order.column, (q.order.ascending) ? 'ASC' : 'DESC']] : undefined,
       limit: QUERY_ROW_LIMIT,
+      order: (q.order) ? [[q.order.column, (q.order.ascending) ? 'ASC' : 'DESC']] : undefined,
+      where,
     }).then((results: QuestInstance[]) => {
       return results.map((r: QuestInstance) => {
         return {
           id: r.get('id'),
-          title: r.get('title'),
           partition: r.get('partition'),
+          published: (!r.get('tombstone') && r.get('published') !== null),
           ratingavg: r.get('ratingavg'),
           ratingcount: r.get('ratingcount'),
+          title: r.get('title'),
           user: {
-            id: r.get('userid'),
             email: r.get('email'),
+            id: r.get('userid'),
           },
-          published: (!r.get('tombstone') && r.get('published') !== null),
         } as QT.QuestEntry;
       });
     }).then((results: QT.QuestEntry[]) => {
@@ -184,8 +184,8 @@ export function modifyQuest(db: Database, req: express.Request, res: express.Res
 
     const m: QT.QuestMutation = {
       partition: body.partition || null,
-      questid: body.questid || null,
       published: (body.published !== undefined) ? body.published : null,
+      questid: body.questid || null,
     };
 
     if (m.published === true) {
@@ -210,9 +210,9 @@ export function queryUser(db: Database, req: express.Request, res: express.Respo
     let body: any;
     body = validateOrder(JSON.parse(req.body));
     const q: QT.UserQuery = {
-      userid: body.userid || null,
-      substring: body.substring || null,
       order: body.order || null,
+      substring: body.substring || null,
+      userid: body.userid || null,
     };
 
     const where: any = {};
@@ -227,17 +227,17 @@ export function queryUser(db: Database, req: express.Request, res: express.Respo
     }
 
     return db.users.findAll({
-      where,
-      order: (q.order) ? [[q.order.column, (q.order.ascending) ? 'ASC' : 'DESC']] : undefined,
       limit: QUERY_ROW_LIMIT,
+      order: (q.order) ? [[q.order.column, (q.order.ascending) ? 'ASC' : 'DESC']] : undefined,
+      where,
     }).then((results: UserInstance[]) => {
       return results.map((r: UserInstance) => {
         return {
-          id: r.get('id'),
           email: r.get('email'),
-          name: r.get('name'),
-          loot_points: r.get('lootPoints'),
+          id: r.get('id'),
           last_login: r.get('lastLogin'),
+          loot_points: r.get('lootPoints'),
+          name: r.get('name'),
         } as QT.UserEntry;
       });
     }).then((results: QT.UserEntry[]) => {
@@ -254,15 +254,15 @@ export function modifyUser(db: Database, req: express.Request, res: express.Resp
     body = JSON.parse(req.body);
 
     const m: QT.UserMutation = {
-      userid: body.userid || null,
       loot_points: body.loot_points || null,
+      userid: body.userid || null,
     };
 
     if (m.loot_points) {
       return setLootPoints(db, m.userid, m.loot_points)
-        .then(() => {
-          res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
-        }).catch(handleErrors(res));
+      .then(() => {
+        res.status(200).send(JSON.stringify({status: 'OK'} as QT.Response));
+      }).catch(handleErrors(res));
     }
   } catch (e) {
     handleErrors(res)(e);

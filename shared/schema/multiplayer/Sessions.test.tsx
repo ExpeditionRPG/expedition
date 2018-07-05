@@ -1,4 +1,4 @@
-import {Session} from './Sessions'
+import {Session} from './Sessions';
 
 describe('Session Schema', () => {
   const base = {id: 3456};
@@ -9,4 +9,4 @@ describe('Session Schema', () => {
     const f = new Session(base);
     expect(f.id).toEqual(base.id);
   });
-})
+});

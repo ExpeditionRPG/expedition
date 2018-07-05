@@ -1,26 +1,25 @@
-import * as React from 'react'
-import Dialog from '@material-ui/core/Dialog'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogActions from '@material-ui/core/DialogActions'
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
-import Checkbox from './Checkbox'
-import Picker from './Picker'
-import {MultiplayerCounters} from '../../Multiplayer'
-import {ContentSetsType, DialogState, QuestState, SavedQuestMeta, SettingsType, UserState, FeedbackType} from '../../reducers/StateTypes'
-import {QuestDetails} from '../../reducers/QuestTypes'
-import {openWindow} from '../../Globals'
-
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import * as React from 'react';
+import {openWindow} from '../../Globals';
+import {MultiplayerCounters} from '../../Multiplayer';
+import {QuestDetails} from '../../reducers/QuestTypes';
+import {ContentSetsType, DialogState, FeedbackType, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
+import Checkbox from './Checkbox';
+import Picker from './Picker';
 
 interface ExitQuestDialogProps extends React.Props<any> {
-  open: boolean;
-  onExitQuest: () => void;
   onClose: () => void;
+  onExitQuest: () => void;
+  open: boolean;
 }
 
 export class ExitQuestDialog extends React.Component<ExitQuestDialogProps, {}> {
-  render(): JSX.Element {
+  public render(): JSX.Element {
     return (
       <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
         <DialogTitle>Exit quest?</DialogTitle>
@@ -37,13 +36,13 @@ export class ExitQuestDialog extends React.Component<ExitQuestDialogProps, {}> {
 }
 
 interface ExitMultiplayerDialogProps extends React.Props<any> {
-  open: boolean;
-  onExitMultiplayer: () => void;
   onClose: () => void;
+  onExitMultiplayer: () => void;
+  open: boolean;
 }
 
 export class ExitMultiplayerDialog extends React.Component<ExitMultiplayerDialogProps, {}> {
-  render(): JSX.Element {
+  public render(): JSX.Element {
     return (
       <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
         <DialogTitle>Exit Multiplayer?</DialogTitle>
@@ -60,20 +59,20 @@ export class ExitMultiplayerDialog extends React.Component<ExitMultiplayerDialog
 }
 
 interface MultiplayerStatusDialogProps extends React.Props<any> {
+  onClose: () => void;
+  onSendReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => void;
   open: boolean;
+  questDetails: QuestDetails;
   stats: MultiplayerCounters;
   user: UserState;
-  questDetails: QuestDetails;
-  onSendReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => void;
-  onClose: () => void;
 }
 
 export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDialogProps, {}> {
-  render(): JSX.Element {
+  public render(): JSX.Element {
 
     const stats = <ul>{
         Object.keys(this.props.stats).map((k, i) => {
-          return <li key={i}>{k}: {this.props.stats[k]}</li>
+          return <li key={i}>{k}: {this.props.stats[k]}</li>;
         })
       }</ul>;
 
@@ -99,12 +98,12 @@ export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDi
 }
 
 interface ExpansionSelectDialogProps extends React.Props<any> {
-  open: boolean;
   onExpansionSelect: (contentSets: ContentSetsType) => void;
+  open: boolean;
 }
 
 export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialogProps, {}> {
-  render(): JSX.Element {
+  public render(): JSX.Element {
     return (
       <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
         <DialogTitle>Choose Game</DialogTitle>
@@ -122,30 +121,30 @@ export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialog
 }
 
 interface TextAreaDialogProps extends React.Props<any> {
+  onClose: () => void;
+  onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
   open: boolean;
   quest: QuestState;
   settings: SettingsType;
   user: UserState;
-  onClose: () => void;
-  onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
 }
 class TextAreaDialog<T extends TextAreaDialogProps> extends React.Component<T, {}> {
   protected title: string;
   protected content: JSX.Element;
   protected helperText: string;
 
-  state: {text: string};
+  public state: {text: string};
 
   constructor(props: T) {
     super(props);
     this.state = {text: ''};
   }
 
-  onSubmit() {
+  public onSubmit() {
     throw new Error('Unimplemented');
   }
 
-  render(): JSX.Element {
+  public render(): JSX.Element {
     return (
       <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
         <DialogTitle>{this.title}</DialogTitle>
@@ -179,11 +178,10 @@ export class FeedbackDialog extends TextAreaDialog<TextAreaDialogProps> {
     this.helperText = 'Your feedback here';
   }
 
-  onSubmit() {
+  public onSubmit() {
     this.props.onFeedbackSubmit('feedback', this.props.quest, this.props.settings, this.props.user, this.state.text);
   }
 }
-
 
 interface ReportErrorDialogProps extends TextAreaDialogProps {
   error: string;
@@ -192,11 +190,11 @@ export class ReportErrorDialog extends TextAreaDialog<ReportErrorDialogProps> {
   constructor(props: ReportErrorDialogProps) {
     super(props);
     this.title = 'Report Error';
-    this.content = <p>Thank you for taking the time to report an error! What were you doing when the error occurred?</p>
+    this.content = <p>Thank you for taking the time to report an error! What were you doing when the error occurred?</p>;
     this.helperText = 'What you were doing at the time of the error';
   }
 
-  onSubmit() {
+  public onSubmit() {
     this.props.onFeedbackSubmit('report_error', this.props.quest, this.props.settings, this.props.user, this.state.text + '... Error: ' + this.props.error);
   }
 }
@@ -219,23 +217,23 @@ export class ReportQuestDialog extends TextAreaDialog<TextAreaDialogProps> {
     this.helperText = 'Describe the issue';
   }
 
-  onSubmit() {
+  public onSubmit() {
     this.props.onFeedbackSubmit('report_quest', this.props.quest, this.props.settings, this.props.user, this.state.text);
   }
 }
 
 interface SetPlayerCountDialogProps extends React.Props<any> {
-  open: boolean;
+  onClose: () => void;
   onMultitouchChange: (v: boolean) => void;
   onPlayerDelta: (numPlayers: number, delta: number) => void;
-  onClose: () => void;
+  open: boolean;
   playQuest: (quest: QuestDetails) => void;
   quest: QuestDetails;
   settings: SettingsType;
 }
 
 export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogProps, {}> {
-  render(): JSX.Element {
+  public render(): JSX.Element {
     const quest = this.props.quest;
     let playersAllowed = true;
     if (quest.minplayers && quest.maxplayers) {
@@ -252,7 +250,7 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
           <a href="#" onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>the Expedition Store</a>.
         </div>)
       : (<div>
-          <Picker label="Adventurers" value={this.props.settings.numPlayers} onDelta={(i: number)=>this.props.onPlayerDelta(this.props.settings.numPlayers, i)}>
+          <Picker label="Adventurers" value={this.props.settings.numPlayers} onDelta={(i: number) => this.props.onPlayerDelta(this.props.settings.numPlayers, i)}>
             {!playersAllowed && `Quest requires ${quest.minplayers} - ${quest.maxplayers} players.`}
           </Picker>
           <Checkbox label="Multitouch" value={this.props.settings.multitouch} onChange={this.props.onMultitouchChange}>
@@ -275,14 +273,14 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
 }
 
 interface DeleteSavedQuestDialogProps extends React.Props<any> {
-  savedQuest: SavedQuestMeta;
-  onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => void;
   onClose: () => void;
+  onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => void;
   open: boolean;
+  savedQuest: SavedQuestMeta;
 }
 
 export class DeleteSavedQuestDialog extends React.Component<DeleteSavedQuestDialogProps, {}> {
-  render(): JSX.Element {
+  public render(): JSX.Element {
     return (
       <Dialog
         open={Boolean(this.props.open)}
@@ -300,23 +298,23 @@ export class DeleteSavedQuestDialog extends React.Component<DeleteSavedQuestDial
 
 export interface DialogsStateProps {
   dialog: DialogState;
+  multiplayerStats: MultiplayerCounters;
   quest: QuestState;
   selectedSave: SavedQuestMeta;
   settings: SettingsType;
   user: UserState;
-  multiplayerStats: MultiplayerCounters;
-};
+}
 
 export interface DialogsDispatchProps {
+  onClose: () => void;
   onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => void;
-  onExitQuest: () => void;
   onExitMultiplayer: () => void;
+  onExitQuest: () => void;
   onExpansionSelect: (contentSets: ContentSetsType) => void;
   onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
   onMultitouchChange: (v: boolean) => void;
   onPlayerDelta: (numPlayers: number, delta: number) => void;
   onSendMultiplayerReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => void;
-  onClose: () => void;
   playQuest: (quest: QuestDetails) => void;
 }
 
@@ -389,6 +387,6 @@ const Dialogs = (props: DialogsProps): JSX.Element => {
       />
     </span>
   );
-}
+};
 
 export default Dialogs;

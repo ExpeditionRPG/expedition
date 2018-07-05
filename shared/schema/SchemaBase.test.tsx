@@ -1,7 +1,7 @@
-import {SchemaBase, field, copyAndUnsetDefaults} from './SchemaBase'
+import {copyAndUnsetDefaults, field, SchemaBase} from './SchemaBase';
 
 class TestImpl extends SchemaBase {
-    static create(fields: Partial<TestImpl>) {
+    public static create(fields: Partial<TestImpl>) {
       return super.initialize(this, fields);
     }
 
@@ -9,32 +9,32 @@ class TestImpl extends SchemaBase {
       super(fields);
     }
 
-    withoutDefaults() {
+    public withoutDefaults() {
       return copyAndUnsetDefaults(TestImpl, this);
     }
 
     @field({
-      primaryKey: true,
       allowNull: false,
-      maxLength: 32,
       default: '',
+      maxLength: 32,
+      primaryKey: true,
       valid: [13],
-    }) pkey: number;
+    }) public pkey: number;
 
     @field({
-      primaryKey: true,
       allowNull: false,
-      maxLength: 32,
       default: 'defaultstr',
-    }) qkey: string;
+      maxLength: 32,
+      primaryKey: true,
+    }) public qkey: string;
 
-    @field({}) rkey: number;
+    @field({}) public rkey: number;
 
     // Tests allowNull implicitly
     @field({
       allowNull: true,
       extra: 'DECIMAL_4_2',
-    }) skey: string;
+    }) public skey: string;
 }
 
 describe('SchemaBase', () => {
@@ -73,6 +73,7 @@ describe('SchemaBase', () => {
     expect(typeof(t.rkey)).toEqual('number');
   });
   it('Is self-constructable', () => {
-    new TestImpl(new TestImpl({pkey: 13, rkey: 0}));
-  })
+    const t = new TestImpl(new TestImpl({pkey: 13, rkey: 0}));
+    expect(t instanceof TestImpl).toEqual(true);
+  });
 });

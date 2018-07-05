@@ -1,11 +1,11 @@
-import {searchQuests} from './Quests'
-import {QuestInstance} from './Database'
-import {PUBLIC_PARTITION} from 'shared/schema/Constants'
-import {Quest} from 'shared/schema/Quests'
+import {PUBLIC_PARTITION} from 'shared/schema/Constants';
+import {Quest} from 'shared/schema/Quests';
+import {QuestInstance} from './Database';
+import {searchQuests} from './Quests';
 import {
-  testingDBWithState,
   quests as q,
-} from './TestData'
+  testingDBWithState,
+} from './TestData';
 
 describe('quest', () => {
   describe('searchQuests', () => {
@@ -28,7 +28,7 @@ describe('quest', () => {
         })
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(1);
-          const resolved = new Quest(results[0].dataValues)
+          const resolved = new Quest(results[0].dataValues);
           for (const k of Object.keys(q.basic.optionsMap)) {
             expect((resolved as any)[k]).toEqual((q.basic as any)[k]);
           }

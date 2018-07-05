@@ -1,8 +1,8 @@
-import {SchemaBase, field, copyAndUnsetDefaults, NOW, PLACEHOLDER_DATE} from './SchemaBase'
-import {PARTITIONS, GENRES, LANGUAGES, CONTENT_RATINGS, THEMES} from './Constants'
+import {CONTENT_RATINGS, GENRES, LANGUAGES, PARTITIONS, THEMES} from './Constants';
+import {copyAndUnsetDefaults, field, NOW, PLACEHOLDER_DATE, SchemaBase} from './SchemaBase';
 
 export class Quest extends SchemaBase {
-  static create(fields: Partial<Quest>) {
+  public static create(fields: Partial<Quest>) {
     return super.initialize(this, fields);
   }
 
@@ -10,151 +10,151 @@ export class Quest extends SchemaBase {
     super(fields);
   }
 
-  withoutDefaults() {
+  public withoutDefaults() {
     return copyAndUnsetDefaults(Quest, this);
   }
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 32,
+    primaryKey: true,
     valid: PARTITIONS,
-  }) partition: string;
+  }) public partition: string;
 
   @field({
-    primaryKey: true,
     allowNull: false,
     maxLength: 255,
-  }) id: string;
+    primaryKey: true,
+  }) public id: string;
 
   @field({
     default: 1,
-  }) questversion: number;
+  }) public questversion: number;
 
   @field({
     default: 1,
-  }) questversionlastmajor: number;
+  }) public questversionlastmajor: number;
 
   @field({
+    default: '',
     maxLength: 128,
-    default: '',
-  }) engineversion: string;
+  }) public engineversion: string;
 
   @field({
+    default: '',
     maxLength: 2048,
-    default: '',
-  }) publishedurl: string;
+  }) public publishedurl: string;
 
   @field({
-    maxLength: 255,
     default: '',
-  }) userid: string;
+    maxLength: 255,
+  }) public userid: string;
 
   @field({
-    maxLength: 255,
     default: '',
-  }) author: string;
+    maxLength: 255,
+  }) public author: string;
 
   @field({
-    maxLength: 255,
     default: '',
-  }) email: string;
+    maxLength: 255,
+  }) public email: string;
 
   @field({
     default: 6,
-  }) maxplayers: number;
+  }) public maxplayers: number;
 
   @field({
     default: 90,
-  }) maxtimeminutes: number;
+  }) public maxtimeminutes: number;
 
   @field({
     default: 1,
-  }) minplayers: number;
+  }) public minplayers: number;
 
   @field({
     default: 0,
-  }) mintimeminutes: number;
+  }) public mintimeminutes: number;
 
   @field({
+    default: '',
     maxLength: 1024,
-    default: '',
-  }) summary: string;
+  }) public summary: string;
 
   @field({
+    default: '',
     maxLength: 255,
-    default: '',
-  }) title: string;
+  }) public title: string;
 
   @field({
-    maxLength: 2048,
     default: '',
-  }) url: string;
+    maxLength: 2048,
+  }) public url: string;
 
   @field({
     default: false,
-  }) familyfriendly: boolean;
+  }) public familyfriendly: boolean;
 
   @field({
     default: 0,
     extra: 'DECIMAL_4_2',
-  }) ratingavg: number;
+  }) public ratingavg: number;
 
   @field({
     default: 0,
-  }) ratingcount: number;
+  }) public ratingcount: number;
 
   @field({
+    default: '',
+    maxLength: 128,
     valid: GENRES,
-    maxLength: 128,
-    default: '',
-  }) genre: string;
+  }) public genre: string;
 
   @field({
+    default: '',
+    maxLength: 128,
     valid: CONTENT_RATINGS,
-    maxLength: 128,
-    default: '',
-  }) contentrating: string;
+  }) public contentrating: string;
 
   @field({
     default: NOW,
-  }) created: Date;
+  }) public created: Date;
 
   @field({
     default: NOW,
-  }) published: Date;
+  }) public published: Date;
 
   @field({
     allowNull: true,
     default: PLACEHOLDER_DATE,
-  }) tombstone: Date;
+  }) public tombstone: Date;
 
   @field({
     default: false,
-  }) expansionhorror: boolean;
+  }) public expansionhorror: boolean;
 
   @field({
-    valid: LANGUAGES,
-    maxLength: 128,
     default: 'English',
-  }) language: string;
+    maxLength: 128,
+    valid: LANGUAGES,
+  }) public language: string;
 
   @field({
-    valid: THEMES,
-    maxLength: 128,
     default: 'base',
-  }) theme: string;
-
-  @field({
-    default: false,
-  }) official: boolean;
-
-  @field({
     maxLength: 128,
-    default: '',
-  }) awarded: string;
+    valid: THEMES,
+  }) public theme: string;
 
   @field({
     default: false,
-  }) requirespenpaper: boolean;
+  }) public official: boolean;
+
+  @field({
+    default: '',
+    maxLength: 128,
+  }) public awarded: string;
+
+  @field({
+    default: false,
+  }) public requirespenpaper: boolean;
 }

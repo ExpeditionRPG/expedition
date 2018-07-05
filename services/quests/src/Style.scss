@@ -386,10 +386,20 @@ body .olark-launch-button { /*must be more specifc than olark styles */
     }
   }
 
+  > div {
+    padding-right: 0 !important;
+  }
+
   .toolbar {
     height: $hBarThickness !important;
+    padding: 0 0 !important;
+
+    h2 {
+      font-size: 1em;
+    }
 
     button {
+      font-family: Roboto, sans-serif !important;
       margin: 4px 0 !important;
       min-width: 60px !important;
       span {
@@ -403,6 +413,14 @@ body .olark-launch-button { /*must be more specifc than olark styles */
       }
       svg {
         fill: $red800 !important;
+      }
+    }
+
+    .rightButtons {
+      flex: 2;
+
+      & > * {
+        float: right;
       }
     }
   }
@@ -497,6 +515,18 @@ body .olark-launch-button { /*must be more specifc than olark styles */
       button:hover {
         color: #FFF !important;
       }
+
+      button {
+        font-family: Roboto, sans-serif !important;
+        min-width: 60px !important;
+        span {
+          font-size: $fontSizeSmall !important;
+        }
+
+        &.inactive {
+          color: $brightShadow;
+        }
+      }
     }
 
     #notesArea {
@@ -568,19 +598,65 @@ body .olark-launch-button { /*must be more specifc than olark styles */
   }
 }
 
+.messageDetailsDialog {
+  & > :nth-child(2) {
+    background-color: rgb(33, 33, 33) !important;
+  }
+
+  button {
+    color: white;
+  }
+}
+
 .publishForm {
+  max-width: none;
+  width: 75%;
+  color: #FFFFFF;
+
+  & > :nth-child(2) {
+    background-color: rgb(33, 33, 33) !important;
+  }
+
+  div, input, label {
+    font-family: Robot, sans-serif;
+  }
+
   .halfWidth {
     width: 50% !important;
+
+    & > * {
+      margin-left: $padBase;
+      margin-right: $padBase;
+    }
   }
+  .fullWidth {
+    width: 100% !important;
+
+    & > * {
+      margin-left: $padBase;
+      margin-right: $padBase;
+    }
+  }
+
   .contentRatingInputContainer {
     display: flex;
     .ratingSelect {
       width: 150px !important;
     }
   }
+
+  .publishFormControl {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
 }
 
 .creatorCheckbox {
+  button {
+    padding: $padBase $padBase 0 $padBase !important;
+  }
+
   .icon {
     display: inline-block;
     float: left;
@@ -588,6 +664,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
     svg {
       height: 34px !important;
     }
+    margin-top: -6px;
   }
 }
 

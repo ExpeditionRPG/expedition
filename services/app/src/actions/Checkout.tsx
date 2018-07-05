@@ -1,12 +1,11 @@
-import Redux from 'redux'
-import {CheckoutSetStateAction} from './ActionTypes'
-import {toCard} from './Card'
-import {openSnackbar} from './Snackbar'
-import {handleFetchErrors} from './Web'
-import {AUTH_SETTINGS} from '../Constants'
-import {logEvent} from '../Logging'
-import {CheckoutState, UserState} from '../reducers/StateTypes'
-
+import Redux from 'redux';
+import {AUTH_SETTINGS} from '../Constants';
+import {logEvent} from '../Logging';
+import {CheckoutState, UserState} from '../reducers/StateTypes';
+import {CheckoutSetStateAction} from './ActionTypes';
+import {toCard} from './Card';
+import {openSnackbar} from './Snackbar';
+import {handleFetchErrors} from './Web';
 
 export function checkoutSetState(delta: Partial<CheckoutState>) {
   return (dispatch: Redux.Dispatch<any>): any => {
@@ -25,16 +24,16 @@ export function checkoutSubmit(stripeToken: string, checkout: CheckoutState, use
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch(checkoutSetState({processing: true}));
     fetch(AUTH_SETTINGS.URL_BASE + '/stripe/checkout', {
-      method: 'POST',
       body: JSON.stringify({
-        token: stripeToken,
         amount: checkout.amount,
         productcategory: checkout.productcategory,
         productid: checkout.productid,
-        userid: user.id,
+        token: stripeToken,
         useremail: user.email,
+        userid: user.id,
       }),
       credentials: 'include',
+      method: 'POST',
     })
     .then(handleFetchErrors)
     .then((response: Response) => {
@@ -48,5 +47,5 @@ export function checkoutSubmit(stripeToken: string, checkout: CheckoutState, use
       dispatch(toCard({name: 'CHECKOUT', phase: 'ENTRY'}));
       dispatch(checkoutSetState({processing: false}));
     });
-  }
+  };
 }

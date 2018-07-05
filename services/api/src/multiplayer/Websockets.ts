@@ -1,12 +1,12 @@
-import * as WebSocket from 'ws'
-import * as http from 'http'
-import {verifyWebsocket, websocketSession} from './Handlers'
-import {Database} from '../models/Database'
+import * as http from 'http';
+import * as WebSocket from 'ws';
+import {Database} from '../models/Database';
+import {verifyWebsocket, websocketSession} from './Handlers';
 
 export function setupWebsockets(db: Database, server: any) {
   const wss = new WebSocket.Server({
     server,
-    verifyClient: (info: any, cb: (verified: boolean)=>any) => {
+    verifyClient: (info: any, cb: (verified: boolean) => any) => {
       verifyWebsocket(db, info, cb);
     },
   });

@@ -1,11 +1,11 @@
-import {QDLParser} from 'shared/render/QDLParser'
-import {BlockList} from 'shared/render/block/BlockList'
-import {XMLRenderer} from 'shared/render/render/XMLRenderer'
-import Errors from './errors'
+import {BlockList} from 'shared/render/block/BlockList';
+import {QDLParser} from 'shared/render/QDLParser';
+import {XMLRenderer} from 'shared/render/render/XMLRenderer';
+import Errors from './errors';
 const expect: any = require('expect');
 
 describe('Errors', () => {
-  Object.keys(Errors).forEach((key: string, index: number) => {
+  Object.keys(Errors).forEach((key: string) => {
     const err = Errors[key];
 
     it(err.NUMBER + ': ' + err.NAME, () => {
@@ -19,9 +19,9 @@ describe('Errors', () => {
         if (!err.METADATA_ERROR) { quest = addQuestHeader(quest); }
         qdl.render(new BlockList(quest));
         const msgs = qdl.getFinalizedLogs();
-        expect(msgs['error']).toEqual([]);
-        expect(msgs['warning']).toEqual([]);
-        expect(msgs['internal']).toEqual([]);
+        expect(msgs.error).toEqual([]);
+        expect(msgs.warning).toEqual([]);
+        expect(msgs.internal).toEqual([]);
       });
 
       // Invalid cases - logs the error
@@ -37,19 +37,18 @@ describe('Errors', () => {
         // Note the requirement for only one error. Error invalid test cases should be designed
         // such that they don't trigger multiple errors, so as to prevent confusion.
         const errorName = (err.INVALID_ERRORS && err.INVALID_ERRORS[index] !== null) ? err.INVALID_ERRORS[index] : err.NAME;
-        expect(msgs['error'].length).toEqual(1, `Length !== 1, was ${msgs['error'].length}: ${msgs['error'].map((err) => { return err.text; }).join('...')}`);
-        expect(msgs['error'][0].url).toEqual(err.NUMBER.toString());
-        expect(msgs['error'][0].text.toLowerCase()).toEqual(errorName.toLowerCase());
-        expect(msgs['warning']).toEqual([]);
-        expect(msgs['internal']).toEqual([]);
+        expect(msgs.error.length).toEqual(1, `Length !== 1, was ${msgs.error.length}: ${msgs.error.map((e) => e.text).join('...')}`);
+        expect(msgs.error[0].url).toEqual(err.NUMBER.toString());
+        expect(msgs.error[0].text.toLowerCase()).toEqual(errorName.toLowerCase());
+        expect(msgs.warning).toEqual([]);
+        expect(msgs.internal).toEqual([]);
       });
     });
   });
 });
 
-
 function addQuestHeader(markdown: string): string {
   return `# Test Quest
 
 ${markdown}`;
-};
+}

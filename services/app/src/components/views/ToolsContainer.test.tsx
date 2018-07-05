@@ -1,6 +1,6 @@
-import {initialSettings} from '../../reducers/Settings'
-import {mapDispatchToProps} from './ToolsContainer'
-import {newMockStore} from '../../Testing'
+import {initialSettings} from '../../reducers/Settings';
+import {newMockStore} from '../../Testing';
+import {mapDispatchToProps} from './ToolsContainer';
 
 describe('ToolsContainer', () => {
   it('dispatches custom combat on callback', () => {
@@ -8,8 +8,8 @@ describe('ToolsContainer', () => {
     mapDispatchToProps(store.dispatch, null).onCustomCombatSelect(initialSettings);
     // TODO: Simplify/remove.
     expect(store.getActions()[2]).toEqual(jasmine.objectContaining({
+      to: jasmine.objectContaining({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES'}),
       type: 'NAVIGATE',
-      to: jasmine.objectContaining({name:'QUEST_CARD', phase: 'DRAW_ENEMIES'}),
     }));
   });
 });

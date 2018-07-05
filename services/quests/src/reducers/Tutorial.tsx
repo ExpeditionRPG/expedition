@@ -1,5 +1,5 @@
-import Redux from 'redux'
-import {TutorialState} from './StateTypes'
+import Redux from 'redux';
+import {TutorialState} from './StateTypes';
 
 const tutorialState: TutorialState = {
   playFromCursor: true,

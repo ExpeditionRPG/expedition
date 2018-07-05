@@ -1,15 +1,15 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import {AppState} from '../reducers/StateTypes'
-import NotesPanel, {NotesPanelDispatchProps, NotesPanelStateProps} from './NotesPanel'
-import {updateDirtyState} from '../actions/Editor'
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {updateDirtyState} from '../actions/Editor';
+import {AppState} from '../reducers/StateTypes';
+import NotesPanel, {NotesPanelDispatchProps, NotesPanelStateProps} from './NotesPanel';
 
 const mapStateToProps = (state: AppState, ownProps: any): NotesPanelStateProps => {
   return {
     realtime: state.quest.notesRealtime,
     realtimeModel: state.quest.realtimeModel,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): NotesPanelDispatchProps => {
   return {
@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Notes
       dispatch(updateDirtyState());
     },
   };
-}
+};
 
 const NotesPanelContainer = connect(
   mapStateToProps,

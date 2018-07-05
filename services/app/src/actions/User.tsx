@@ -1,13 +1,13 @@
-import Redux from 'redux'
-import * as Raven from 'raven-js'
-import {UserQuestsDeltaAction} from './ActionTypes'
-import {handleFetchErrors, fetchUserQuests} from './Web'
-import {AppState, UserState, UserQuestsType} from '../reducers/StateTypes'
-import {loggedOutUser} from '../reducers/User'
-import {AUTH_SETTINGS} from '../Constants'
-import {getGA, getGapi, getWindow, CordovaLoginPlugin} from '../Globals'
+import * as Raven from 'raven-js';
+import Redux from 'redux';
+import {AUTH_SETTINGS} from '../Constants';
+import {CordovaLoginPlugin, getGA, getGapi, getWindow} from '../Globals';
+import {AppState, UserQuestsType, UserState} from '../reducers/StateTypes';
+import {loggedOutUser} from '../reducers/User';
+import {UserQuestsDeltaAction} from './ActionTypes';
+import {fetchUserQuests, handleFetchErrors} from './Web';
 
-type LoadGapiResponse = {gapi: any, async: boolean};
+interface LoadGapiResponse {gapi: any; async: boolean; }
 
 let gapiLoaded = false;
 function loadGapi(): Promise<LoadGapiResponse> {
@@ -28,29 +28,29 @@ function loadGapi(): Promise<LoadGapiResponse> {
     gapi.client.setApiKey(AUTH_SETTINGS.API_KEY);
     return gapi.auth2.init({
       client_id: AUTH_SETTINGS.CLIENT_ID,
-      scope: AUTH_SETTINGS.SCOPES,
       cookie_policy: 'none',
-    })
+      scope: AUTH_SETTINGS.SCOPES,
+    });
   })
   .then(() => {
     gapiLoaded = true;
-    return {gapi, async: true}
+    return {gapi, async: true};
   });
 }
 
 function registerUserAndIdToken(user: {name: string, image: string, email: string}, idToken: string): Promise<UserState> {
   return fetch(AUTH_SETTINGS.URL_BASE + '/auth/google', {
-    method: 'POST',
+    body: JSON.stringify({
+      email: user.email,
+      id_token: idToken,
+      image: user.image,
+      name: user.name,
+    }),
     credentials: 'include',
     headers: {
       'Content-Type': 'text/plain',
     },
-    body: JSON.stringify({
-      id_token: idToken,
-      name: user.name,
-      image: user.image,
-      email: user.email,
-    }),
+    method: 'POST',
   })
   .then(handleFetchErrors)
   .then((response: Response) => response.text())
@@ -58,7 +58,7 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
     let id = '';
     try {
       id = JSON.parse(userResult).id || userResult;
-    } catch(err) {
+    } catch (err) {
       id = userResult;
     }
     if (getGA()) {
@@ -66,11 +66,11 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
     }
     Raven.setUserContext({id});
     return {
-      loggedIn: true,
-      id,
-      name: user.name,
-      image: user.image,
       email: user.email,
+      id,
+      image: user.image,
+      loggedIn: true,
+      name: user.name,
       quests: {}, // Requested separately; cleared for now since it's a new user
     };
   }).catch((error: Error) => {
@@ -93,9 +93,9 @@ function loginWeb(): Promise<void> {
       const idToken: string = googleUser.getAuthResponse().id_token;
       const basicProfile: any = googleUser.getBasicProfile();
       return registerUserAndIdToken({
-        name: basicProfile.getName(),
-        image: basicProfile.getImageUrl(),
         email: basicProfile.getEmail(),
+        image: basicProfile.getImageUrl(),
+        name: basicProfile.getName(),
       }, idToken);
     });
   });
@@ -112,9 +112,9 @@ function silentLoginWeb(): Promise<UserState|null> {
     const idToken: string = googleUser.getAuthResponse().id_token;
     const basicProfile: any = googleUser.getBasicProfile();
     return registerUserAndIdToken({
-      name: basicProfile.getName(),
-      image: basicProfile.getImageUrl(),
       email: basicProfile.getEmail(),
+      image: basicProfile.getImageUrl(),
+      name: basicProfile.getName(),
     }, idToken);
   });
 }
@@ -126,9 +126,9 @@ function silentLoginCordova(p: CordovaLoginPlugin): Promise<UserState|null> {
       webClientId: AUTH_SETTINGS.CLIENT_ID,
     }, (obj: any) => {
       registerUserAndIdToken({
-        name: obj.displayName,
-        image: obj.imageUrl,
         email: obj.email,
+        image: obj.imageUrl,
+        name: obj.displayName,
       }, obj.idToken).then(resolve);
     }, (err: string) => {
       reject(Error(err));
@@ -143,9 +143,9 @@ function loginCordova(p: CordovaLoginPlugin): Promise<UserState> {
       webClientId: AUTH_SETTINGS.CLIENT_ID,
     }, (obj: any) => {
       return registerUserAndIdToken({
-        name: obj.displayName,
-        image: obj.imageUrl,
         email: obj.email,
+        image: obj.imageUrl,
+        name: obj.displayName,
       }, obj.idToken).then(resolve);
     }, (err: string) => {
       reject(Error(err));
@@ -179,8 +179,8 @@ function updateState(dispatch: Redux.Dispatch<any>): ((u: UserState) => Promise<
 
 // Prompt the user for login if user is not logged in already.
 // Throws an error if login fails.
-export function ensureLogin(): (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => Promise<UserState> {
-  return (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => {
+export function ensureLogin(): (dispatch: Redux.Dispatch<any>, getState: () => AppState) => Promise<UserState> {
+  return (dispatch: Redux.Dispatch<any>, getState: () => AppState) => {
     const currentUser = getState().user;
     if (currentUser !== loggedOutUser) {
       return Promise.resolve(currentUser);
@@ -195,16 +195,16 @@ export function ensureLogin(): (dispatch: Redux.Dispatch<any>, getState: ()=>App
 
 // Returns user state if successfully logged in silently.
 // Thows an error if login fails.
-export function silentLogin(): (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => Promise<UserState> {
-  return (dispatch: Redux.Dispatch<any>, getState: ()=>AppState) => {
+export function silentLogin(): (dispatch: Redux.Dispatch<any>, getState: () => AppState) => Promise<UserState> {
+  return (dispatch: Redux.Dispatch<any>, getState: () => AppState) => {
     const currentUser = getState().user;
     if (currentUser !== loggedOutUser) {
       return Promise.resolve(currentUser);
     }
     return getGooglePlusPlugin()
-      .then((p) => silentLoginCordova(p))
-      .catch(() => silentLoginWeb())
-      .then(updateState(dispatch));
+    .then((p) => silentLoginCordova(p))
+    .catch(() => silentLoginWeb())
+    .then(updateState(dispatch));
   };
 }
 

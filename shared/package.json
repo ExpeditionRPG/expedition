@@ -1,7 +1,7 @@
 {
   "name": "expedition-qdl",
   "scripts": {
-    "test": "karma start karma.conf.js --single-run --browsers PhantomJS",
+    "test": "karma start --single-run --browsers NoSandboxChromeHeadless",
     "watch:test": "karma start karma.conf.js "
   }
 }

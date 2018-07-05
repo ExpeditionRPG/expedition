@@ -1,4 +1,4 @@
-import {Renderer, CombatChild, Instruction, RoleplayChild, sanitizeStyles} from './Renderer'
+import {CombatChild, Instruction, Renderer, RoleplayChild, sanitizeStyles} from './Renderer';
 
 const cheerio: any = require('cheerio') as CheerioAPI;
 
@@ -18,16 +18,15 @@ function escapeXml(unsafe: string) {
 
 // TODO: Move error checks in this renderer to the QDLRenderer class.
 export const XMLRenderer: Renderer = {
-  toRoleplay: function(attribs: {[k: string]: string}, body: (string|RoleplayChild|Instruction)[], line: number): any {
+  toRoleplay(attribs: {[k: string]: string}, body: Array<string|RoleplayChild|Instruction>, line: number): any {
     const roleplay = cheerio.load('<roleplay>')('roleplay');
 
     const keys = Object.keys(attribs);
-    for (let i = 0; i < keys.length; i++) {
-      roleplay.attr(keys[i], attribs[keys[i]]);
+    for (const key of keys) {
+      roleplay.attr(key, attribs[key]);
     }
 
-    for (let i = 0; i < body.length; i++) {
-      const section = body[i];
+    for (const section of body) {
       if (typeof(section) === 'string') {
         let text = section as string;
         const INITIAL_OP_WITH_PARAGRAPH = /^\s*{{(.*?)}}\s*[^\s]+/;
@@ -63,7 +62,7 @@ export const XMLRenderer: Renderer = {
     return roleplay;
   },
 
-  toCombat: function(attribs: {[k: string]: any}, events: CombatChild[], line: number): any {
+  toCombat(attribs: {[k: string]: any}, events: CombatChild[], line: number): any {
     const combat = cheerio.load('<combat></combat>')('combat');
 
     Object.keys(attribs).forEach((key) => {
@@ -72,19 +71,17 @@ export const XMLRenderer: Renderer = {
       }
     });
 
-    const enemies = attribs['enemies'];
-    for (let i = 0; i < enemies.length; i++) {
-      const e = cheerio.load('<e>' + enemies[i].text + '</e>')('e');
-      e.attr('if', enemies[i].visible);
-      if (enemies[i].json && enemies[i].json.tier) {
-        e.attr('tier', enemies[i].json.tier);
+    for (const enemy of attribs.enemies) {
+      const e = cheerio.load('<e>' + enemy.text + '</e>')('e');
+      e.attr('if', enemy.visible);
+      if (enemy.json && enemy.json.tier) {
+        e.attr('tier', enemy.json.tier);
       }
       combat.append(e);
     }
 
-    for (let i = 0; i < events.length; i++) {
+    for (const event of events) {
       const currEvent: any = cheerio.load('<event></event>')('event');
-      const event = events[i];
       currEvent.attr('on', event.text.substr(3));
       if (event.visible) {
         currEvent.attr('if', event.visible);
@@ -95,8 +92,8 @@ export const XMLRenderer: Renderer = {
           currEvent.attr(key, attributes[key]);
         });
       }
-      for (let j = 0; j < event.event.length; j++) {
-        currEvent.append(event.event[j]);
+      for (const ev of event.event) {
+        currEvent.append(ev);
       }
       combat.append(currEvent);
     }
@@ -106,10 +103,10 @@ export const XMLRenderer: Renderer = {
     return combat;
   },
 
-  toTrigger: function(attribs: {[k: string]: any}, line: number): any {
-    const trigger = cheerio.load('<trigger>'+attribs['text']+'</trigger>')('trigger');
-    if (attribs['visible']) {
-      trigger.attr('if', attribs['visible']);
+  toTrigger(attribs: {[k: string]: any}, line: number): any {
+    const trigger = cheerio.load('<trigger>' + attribs.text + '</trigger>')('trigger');
+    if (attribs.visible) {
+      trigger.attr('if', attribs.visible);
     }
     if (line >= 0) {
       trigger.attr('data-line', line);
@@ -117,11 +114,11 @@ export const XMLRenderer: Renderer = {
     return trigger;
   },
 
-  toQuest: function(attribs: {[k: string]: string}, line: number): any {
+  toQuest(attribs: {[k: string]: string}, line: number): any {
     const quest = cheerio.load('<quest>')('quest');
     const keys = Object.keys(attribs);
-    for(let i = 0; i < keys.length; i++) {
-      quest.attr(keys[i], attribs[keys[i]]);
+    for (const key of keys) {
+      quest.attr(key, attribs[key]);
     }
     if (line >= 0) {
       quest.attr('data-line', line);
@@ -129,9 +126,9 @@ export const XMLRenderer: Renderer = {
     return quest;
   },
 
-  finalize: function(quest: any, inner: any[]): any {
-    for (let i = 0; i < inner.length; i++) {
-      quest.append(inner[i]);
+  finalize(quest: any, inner: any[]): any {
+    for (const el of inner) {
+      quest.append(el);
     }
     return quest;
   },

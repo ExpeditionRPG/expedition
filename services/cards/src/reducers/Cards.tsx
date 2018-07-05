@@ -1,12 +1,12 @@
-import Redux from 'redux'
-import {CardsState} from './StateTypes'
-import {CardsFilterAction, CardsUpdateAction, filterAndFormatCards, TranslationsUpdateAction} from '../actions/Cards'
+import Redux from 'redux';
+import {CardsFilterAction, CardsUpdateAction, filterAndFormatCards, TranslationsUpdateAction} from '../actions/Cards';
+import {CardsState} from './StateTypes';
 
 export const initialState: CardsState = {
   data: null,
   filtered: null,
-  translations: null,
   loading: true,
+  translations: null,
 };
 
 export default function Cards(state: CardsState = initialState, action: Redux.Action): CardsState {

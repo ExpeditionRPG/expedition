@@ -1,22 +1,22 @@
-import * as React from 'react'
-import {configure, shallow} from 'enzyme'
-import * as Adapter from 'enzyme-adapter-react-16'
+import {configure, shallow} from 'enzyme';
+import * as Adapter from 'enzyme-adapter-react-16';
+import * as React from 'react';
 configure({ adapter: new Adapter() });
 
-import Tools, {ToolsProps} from './Tools'
-import {loggedOutUser} from '../../reducers/User'
-import {initialSettings} from '../../reducers/Settings'
+import {initialSettings} from '../../reducers/Settings';
+import {loggedOutUser} from '../../reducers/User';
+import Tools, {ToolsProps} from './Tools';
 
 function setup() {
   const props: ToolsProps = {
-    user: loggedOutUser,
-    settings: initialSettings,
     onCustomCombatSelect: jasmine.createSpy('onCustomCombatSelect'),
-    onQuestCreatorSelect: jasmine.createSpy('onQuestCreatorSelect'),
-    onPrivateQuestsSelect: jasmine.createSpy('onPrivateQuestsSelect'),
     onMultiplayerSelect: jasmine.createSpy('onMultiplayerSelect'),
+    onPrivateQuestsSelect: jasmine.createSpy('onPrivateQuestsSelect'),
+    onQuestCreatorSelect: jasmine.createSpy('onQuestCreatorSelect'),
+    settings: initialSettings,
     testMusic: jasmine.createSpy('testMusic'),
-  }
+    user: loggedOutUser,
+  };
   const enzymeWrapper = shallow(<Tools {...props} />);
   return {props, enzymeWrapper};
 }

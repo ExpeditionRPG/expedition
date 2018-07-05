@@ -1,11 +1,11 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import Audio, {AudioStateProps, AudioDispatchProps} from './Audio'
-import {audioSet} from '../../actions/Audio'
-import {changeSettings} from '../../actions/Settings'
-import {openSnackbar} from '../../actions/Snackbar'
-import {initialAudioState} from '../../reducers/Audio'
-import {AppState, AudioLoadingType} from '../../reducers/StateTypes'
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {audioSet} from '../../actions/Audio';
+import {changeSettings} from '../../actions/Settings';
+import {openSnackbar} from '../../actions/Snackbar';
+import {initialAudioState} from '../../reducers/Audio';
+import {AppState, AudioLoadingType} from '../../reducers/StateTypes';
+import Audio, {AudioDispatchProps, AudioStateProps} from './Audio';
 
 const mapStateToProps = (state: AppState, ownProps: AudioStateProps): AudioStateProps => {
   return {
@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState, ownProps: AudioStateProps): AudioState
     cardPhase: state.card ? state.card.phase : null,
     enabled: state.settings.audioEnabled,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AudioDispatchProps => {
   return {
@@ -26,11 +26,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Audio
       dispatch(audioSet({loaded}));
     },
   };
-}
+};
 
 const AudioContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Audio);
 
-export default AudioContainer
+export default AudioContainer;

@@ -1,7 +1,9 @@
-import * as React from 'react'
-import TextView from './base/TextView'
-import {AnnotationType, TutorialState} from '../reducers/StateTypes'
-import AppContainer from './AppContainer'
+import CompositorContainer from 'app/components/CompositorContainer';
+import {getStore as getAppStore} from 'app/Store';
+import * as React from 'react';
+import {Provider} from 'react-redux';
+import {AnnotationType, TutorialState} from '../reducers/StateTypes';
+import TextView from './base/TextView';
 
 export interface QuestIDEStateProps {
   annotations: AnnotationType[];
@@ -13,16 +15,15 @@ export interface QuestIDEStateProps {
   showLineNumbers: boolean;
   showSpellcheck: boolean;
   tutorial: TutorialState;
-};
+}
 
 export interface QuestIDEDispatchProps {
+  onAnnotationClick: (annotations: number[]) => void;
   onDirty: (realtime: any, text: string) => void;
   onLine: (line: number) => void;
-  onAnnotationClick: (annotations: number[]) => void;
 }
 
 interface QuestIDEProps extends QuestIDEStateProps, QuestIDEDispatchProps {}
-
 
 const QuestIDE = (props: QuestIDEProps): JSX.Element => {
   return (
@@ -42,12 +43,19 @@ const QuestIDE = (props: QuestIDEProps): JSX.Element => {
           onAnnotationClick={(annotations: number[]) => props.onAnnotationClick(annotations)} />
       </div>
       <div className="preview">
-        {props.tutorial.playFromCursor && <div className="play-from-cursor-tutorial">Click "Play from Cursor" above<br/>to test your quest.</div>}
-        <AppContainer/>
+        {props.tutorial.playFromCursor &&
+          <div className="play-from-cursor-tutorial">Click "Play from Cursor" above<br/>to test your quest.</div>
         }
+        <div className="app_root">
+          <div className="app editor_override">
+            <Provider store={getAppStore()}>
+              <CompositorContainer />
+            </Provider>
+          </div>
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default QuestIDE;

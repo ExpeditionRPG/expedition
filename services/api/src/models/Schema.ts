@@ -1,5 +1,5 @@
-import * as Sequelize from 'sequelize'
-import {SchemaBase, NOW, PLACEHOLDER_DATE} from 'shared/schema/SchemaBase'
+import * as Sequelize from 'sequelize';
+import {NOW, PLACEHOLDER_DATE, SchemaBase} from 'shared/schema/SchemaBase';
 
 export function toSequelize(s: SchemaBase) {
   const result: Sequelize.DefineAttributes = {};
@@ -50,7 +50,7 @@ export function toSequelize(s: SchemaBase) {
     }
     if (m.default !== undefined) {
       if (m.type === 'Date') {
-        if(m.default === PLACEHOLDER_DATE) {
+        if (m.default === PLACEHOLDER_DATE) {
           r.defaultValue = null;
         } else if (m.default === NOW) {
           r.defaultValue = Sequelize.NOW;

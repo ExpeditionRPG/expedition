@@ -1,19 +1,21 @@
+/* tslint:disable:object-literal-sort-keys */
+
 // Shared Material-UI theming
 // https://material-ui.com/customization/themes
 
-import {createMuiTheme} from '@material-ui/core/styles'
-import {ThemeOptions} from '@material-ui/core/styles/createMuiTheme'
 // import deepOrange from '@material-ui/core/colors/deepOrange'
 // import lightGreen from '@material-ui/core/colors/lightGreen'
-import grey from '@material-ui/core/colors/grey'
-import spacing from '@material-ui/core/styles/spacing'
+import grey from '@material-ui/core/colors/grey';
+import {createMuiTheme} from '@material-ui/core/styles';
+import {ThemeOptions} from '@material-ui/core/styles/createMuiTheme';
+import spacing from '@material-ui/core/styles/spacing';
 
 const darkBlack = '0x000000';
 const fontBody = 'MinionPro, serif';
 const fontHeader = 'Cinzel, serif';
 
 export const defaultTheme = {
-  spacing: spacing,
+  spacing,
   typography: {
     fontFamily: fontBody,
   },

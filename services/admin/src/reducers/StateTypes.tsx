@@ -1,4 +1,4 @@
-import {FeedbackEntry, UserEntry, QuestEntry} from 'api/admin/QueryTypes'
+import {FeedbackEntry, QuestEntry, UserEntry} from 'api/admin/QueryTypes';
 
 // TODO: Change dialogs. Add single-quest and single-user dialogs.
 export type ViewType = 'USERS' | 'QUESTS' | 'FEEDBACK';
@@ -9,33 +9,33 @@ export interface DialogsState {
 }
 
 export interface SnackbarState {
-  open: boolean;
-  message?: JSX.Element;
   actions?: JSX.Element[];
+  message?: JSX.Element;
+  open: boolean;
   persist?: boolean;
 }
 
 export interface UserState {
-  loggedIn: boolean;
-  id: string;
   displayName: string;
-  image: string;
   email: string;
+  id: string;
+  image: string;
+  loggedIn: boolean;
 }
 
 export interface ViewState {
-  view: ViewType;
-  filter: string;
   feedback: FeedbackEntry[];
-  users: UserEntry[];
+  filter: string;
+  lastQueryError: {view: ViewType, error: Error}|null;
   quests: QuestEntry[];
   selected: {feedback: number|null, user: number|null, quest: number|null};
-  lastQueryError: {view: ViewType, error: Error}|null;
+  users: UserEntry[];
+  view: ViewType;
 }
 
 export interface AppState {
   dialogs: DialogsState;
-  user: UserState;
   snackbar: SnackbarState;
+  user: UserState;
   view: ViewState;
 }

@@ -1,14 +1,14 @@
-import {SetDialogAction} from './ActionTypes'
-import {setDialog} from './Dialogs'
+import {SetDialogAction} from './ActionTypes';
+import {setDialog} from './Dialogs';
 
 describe('Dialog action', () => {
   describe('setDialog', () => {
     it('creates action', () => {
       expect(setDialog('ERROR', true)).toEqual({
-        type: 'SET_DIALOG',
+        annotations: undefined,
         dialog: 'ERROR',
         shown: true,
-        annotations: undefined,
+        type: 'SET_DIALOG',
       } as SetDialogAction);
     });
   });
@@ -23,5 +23,5 @@ describe('Dialog action', () => {
     it('pushes error');
 
     it('logs to GA');
-  })
+  });
 });

@@ -1,13 +1,13 @@
-import * as React from 'react'
-import Redux from 'redux'
-import {CardState, CardThemeType} from '../../../../reducers/StateTypes'
-import {initRoleplay} from './roleplay/Actions'
-import RoleplayContainer from './roleplay/RoleplayContainer'
-import {initCombat} from './combat/Actions'
-import CombatContainer from './combat/CombatContainer'
-import {combatScope} from './combat/Scope'
-import {TemplateContext, ParserNode} from './TemplateTypes'
-import {getStore} from '../../../../Store'
+import * as React from 'react';
+import Redux from 'redux';
+import {CardState, CardThemeType} from '../../../../reducers/StateTypes';
+import {getStore} from '../../../../Store';
+import {initCombat} from './combat/Actions';
+import CombatContainer from './combat/CombatContainer';
+import {combatScope} from './combat/Scope';
+import {initRoleplay} from './roleplay/Actions';
+import RoleplayContainer from './roleplay/RoleplayContainer';
+import {ParserNode, TemplateContext} from './TemplateTypes';
 
 export function initCardTemplate(node: ParserNode) {
   return (dispatch: Redux.Dispatch<any>): any => {
@@ -19,11 +19,11 @@ export function initCardTemplate(node: ParserNode) {
       default:
         throw new Error('Unsupported node type ' + node.getTag());
     }
-  }
+  };
 }
 
 export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Element {
-  switch(card.phase || 'ROLEPLAY') {
+  switch (card.phase || 'ROLEPLAY') {
     case 'ROLEPLAY':
       return <RoleplayContainer node={node}/>;
     case 'DRAW_ENEMIES':
@@ -44,7 +44,7 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
 }
 
 export function getCardTemplateTheme(card: CardState): CardThemeType {
-  switch(card.phase || 'ROLEPLAY') {
+  switch (card.phase || 'ROLEPLAY') {
     case 'DRAW_ENEMIES':
     case 'PREPARE':
     case 'TIMER':
@@ -67,17 +67,17 @@ export function templateScope() {
 }
 
 export function defaultContext(): TemplateContext {
-  const populateScopeFn = function() {
+  const populateScopeFn = () => {
     return {
-      contentSets: function(): {[content: string]: boolean} {
+      contentSets(): {[content: string]: boolean} {
         const settings = getStore().getState().settings;
         return settings && settings.contentSets;
       },
-      numAdventurers: function(): number {
+      numAdventurers(): number {
         const settings = getStore().getState().settings;
         return settings && settings.numPlayers;
       },
-      viewCount: function(id: string): number {
+      viewCount(id: string): number {
         return this.views[id] || 0;
       },
       ...templateScope(),
@@ -88,13 +88,13 @@ export function defaultContext(): TemplateContext {
   // New endpoints should be added carefully b/c we'll have to support them.
   // Behind-the-scenes data can be added to the context outside of scope
   const newContext: TemplateContext = {
+    _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
+    path: ([] as any),
     scope: {
       _: populateScopeFn(),
     },
-    views: {},
     templates: {},
-    path: ([] as any),
-    _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
+    views: {},
   };
 
   for (const k of Object.keys(newContext.scope._)) {

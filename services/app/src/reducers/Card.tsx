@@ -1,15 +1,15 @@
-import Redux from 'redux'
-import {CardState, CardName} from './StateTypes'
-import {NavigateAction} from '../actions/ActionTypes'
-import {NAVIGATION_DEBOUNCE_MS} from '../Constants'
-import {getHistoryApi} from '../Globals'
+import Redux from 'redux';
+import {NavigateAction} from '../actions/ActionTypes';
+import {NAVIGATION_DEBOUNCE_MS} from '../Constants';
+import {getHistoryApi} from '../Globals';
+import {CardName, CardState} from './StateTypes';
 
 export const initialCardState = {
+  key: '',
   name: 'SPLASH_CARD' as CardName,
   phase: null,
-  key: '',
-  ts: 0,
   questId: '',
+  ts: 0,
 };
 
 // ts: 0 solves an obscure bug (instead of Date.now()) where rapidly triggering navigations with undefined states

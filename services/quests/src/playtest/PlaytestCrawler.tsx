@@ -1,10 +1,10 @@
-import {StatsCrawler, StatsCrawlEntry} from './StatsCrawler'
-import {PlaytestSettings} from '../reducers/StateTypes'
-import {Context} from 'shared/parse/Context'
-import {Node} from 'shared/parse/Node'
-import {Logger} from 'shared/render/Logger'
-import {ENCOUNTERS} from 'app/Encounters'
-import {REGEX} from 'shared/Regex'
+import {ENCOUNTERS} from 'app/Encounters';
+import {Context} from 'shared/parse/Context';
+import {Node} from 'shared/parse/Node';
+import {REGEX} from 'shared/Regex';
+import {Logger} from 'shared/render/Logger';
+import {PlaytestSettings} from '../reducers/StateTypes';
+import {StatsCrawlEntry, StatsCrawler} from './StatsCrawler';
 
 // Validators for instructions - these look at the preceeding 2 words
 // and expect a <verb> <count> <type> format, where <verb> is something like "gain" or "lose",
@@ -26,7 +26,7 @@ export class PlaytestCrawler extends StatsCrawler {
   private settings: PlaytestSettings;
 
   constructor(settings?: PlaytestSettings) {
-    super()
+    super();
     this.logger = new Logger();
     this.settings = settings || {} as PlaytestSettings;
   }
@@ -41,7 +41,7 @@ export class PlaytestCrawler extends StatsCrawler {
     // CrawlerStats entries (e.g. for cycle detection)
 
     // Create gutter errors.
-    for (const l of this.statsByEvent['IMPLICIT_END'].lines) {
+    for (const l of this.statsByEvent.IMPLICIT_END.lines) {
       this.logger.err('An action on this card leads nowhere (invalid goto id or no **end**)', '430', l);
     }
     return [this.queue.size, this.seen.size];

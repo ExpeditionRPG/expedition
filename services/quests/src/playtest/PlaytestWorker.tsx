@@ -1,56 +1,58 @@
+/* tslint:disable:no-console */
+
 // This file is a WebWorker - see the spec at
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
 
-import {PlaytestCrawler} from './PlaytestCrawler'
-import {PlaytestSettings} from '../reducers/StateTypes'
-import {Node} from 'shared/parse/Node'
-import {Logger} from 'shared/render/Logger'
+import {Node} from 'shared/parse/Node';
+import {Logger} from 'shared/render/Logger';
+import {PlaytestSettings} from '../reducers/StateTypes';
+import {PlaytestCrawler} from './PlaytestCrawler';
 
 const cheerio: any = require('cheerio') as CheerioAPI;
 
 // TODO: This Card context shouldn't have to be mocked here - update cardtemplates in the app
 // so we don't need this.
 function mockContext() {
-  const populateScopeFn = function() {
+  const populateScopeFn = () => {
     return {
-      contentSets: function(): {[content: string]: boolean} {
-        return {'horror': true};
+      contentSets(): {[content: string]: boolean} {
+        return {horror: true};
       },
-      numAdventurers: function(): number {
+      numAdventurers(): number {
         return 3;
       },
-      viewCount: function(id: string): number {
+      viewCount(id: string): number {
         return this.views[id] || 0;
       },
-      randomEnemy: function(): string {
+      randomEnemy(): string {
         return 'Giant Rat';
       },
-      randomEnemyOfTier: function(tier: number): string {
+      randomEnemyOfTier(tier: number): string {
         return 'Giant Rat';
       },
-      randomEnemyOfClass: function(className: string): string {
+      randomEnemyOfClass(className: string): string {
         return 'Giant Rat';
       },
-      randomEnemyOfClassTier: function(className: string, tier: number): string {
+      randomEnemyOfClassTier(className: string, tier: number): string {
         return 'Giant Rat';
       },
-      currentCombatRound: function(): number {
+      currentCombatRound(): number {
         return 0;
       },
-      isCombatSurgeRound: function(): boolean {
+      isCombatSurgeRound(): boolean {
         return false;
       },
     };
   };
 
   const newContext: any = {
+    _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
+    path: ([] as any),
     scope: {
       _: populateScopeFn(),
     },
-    views: {},
     templates: {},
-    path: ([] as any),
-    _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
+    views: {},
   };
 
   for (const k of Object.keys(newContext.scope._)) {
@@ -100,7 +102,6 @@ function handleMessage(e: {data: RunMessage}) {
         return;
       }
 
-      const logger = new Logger();
       const result = crawler.crawlWithLog(undefined, logger);
       queueLen = result[0];
       numSeen = result[1];

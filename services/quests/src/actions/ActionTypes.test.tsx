@@ -1,2 +1,3 @@
 describe('ActionTypes', () => {
+  // Simple
 });

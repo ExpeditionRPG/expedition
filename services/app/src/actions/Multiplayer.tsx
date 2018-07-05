@@ -1,13 +1,13 @@
-import Redux from 'redux'
-import {toCard} from './Card'
-import {handleFetchErrors} from './Web'
-import {MULTIPLAYER_SETTINGS} from '../Constants'
-import {LocalAction, MultiplayerClientStatus} from './ActionTypes'
-import {MultiplayerSessionMeta, UserState} from '../reducers/StateTypes'
-import {logEvent} from '../Logging'
-import {openSnackbar} from '../actions/Snackbar'
-import {StatusEvent} from 'shared/multiplayer/Events'
-import {getMultiplayerClient} from '../Multiplayer'
+import Redux from 'redux';
+import {StatusEvent} from 'shared/multiplayer/Events';
+import {openSnackbar} from '../actions/Snackbar';
+import {MULTIPLAYER_SETTINGS} from '../Constants';
+import {logEvent} from '../Logging';
+import {getMultiplayerClient} from '../Multiplayer';
+import {MultiplayerSessionMeta, UserState} from '../reducers/StateTypes';
+import {LocalAction, MultiplayerClientStatus} from './ActionTypes';
+import {toCard} from './Card';
+import {handleFetchErrors} from './Web';
 
 export function local(a: Redux.Action): LocalAction {
   const inflight = (a as any)._inflight;
@@ -22,12 +22,12 @@ export function multiplayerDisconnect() {
 export function multiplayerNewSession(user: UserState) {
   return (dispatch: Redux.Dispatch<any>): any => {
     fetch(MULTIPLAYER_SETTINGS.newSessionURI, {
+      credentials: 'include',
+      headers: new Headers({
+        Accept: 'text/html',
+      }),
       method: 'POST',
       mode: 'cors',
-      headers: new Headers({
-        'Accept': 'text/html',
-      }),
-      credentials: 'include',
     })
     .then(handleFetchErrors)
     .then((response: Response) => response.json())
@@ -52,13 +52,13 @@ export function multiplayerConnect(user: UserState, secret: string) {
 
   return (dispatch: Redux.Dispatch<any>): any => {
     fetch(MULTIPLAYER_SETTINGS.connectURI, {
+      body: JSON.stringify({instance: instanceID, secret}),
+      credentials: 'include',
+      headers: new Headers({
+        Accept: 'application/json',
+      }),
       method: 'POST',
       mode: 'cors',
-      headers: new Headers({
-        'Accept': 'application/json',
-      }),
-      credentials: 'include',
-      body: JSON.stringify({instance: instanceID, secret}),
     })
     .then(handleFetchErrors)
     .then((response: Response) => response.json())
@@ -94,9 +94,9 @@ export function loadMultiplayer(user: UserState) {
       throw new Error('you are not logged in');
     }
     fetch(MULTIPLAYER_SETTINGS.firstLoadURI, {
+      credentials: 'include',
       method: 'GET',
       mode: 'cors',
-      credentials: 'include',
     })
     // NOTE: We do not handle fetch errors here - failing this
     // fetch should not prevent users from using multiplayer.
@@ -109,7 +109,7 @@ export function loadMultiplayer(user: UserState) {
     .catch((error: Error) => {
       logEvent('MULTIPLAYER_init_err', {label: error.toString()});
       dispatch(openSnackbar(Error('Multiplayer unavailable: ' + error.toString())));
-    })
+    });
   };
 }
 
@@ -118,11 +118,11 @@ export function setMultiplayerStatus(ev: StatusEvent) {
     const c = getMultiplayerClient();
     c.sendStatus(ev);
     dispatch({
-      type: 'MULTIPLAYER_CLIENT_STATUS',
       client: c.getID(),
       instance: c.getInstance(),
       status: ev,
+      type: 'MULTIPLAYER_CLIENT_STATUS',
     } as MultiplayerClientStatus);
     return null;
-  }
+  };
 }

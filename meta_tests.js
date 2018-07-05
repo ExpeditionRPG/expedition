@@ -40,7 +40,6 @@ describe('Dependencies', () => {
       'pre-commit',
       'pre-push',
       'karma-jasmine',
-      'karma-phantomjs-launcher',
       'karma-webpack',
       'enzyme-adapter-react-16',
       'react-test-renderer',
@@ -57,10 +56,8 @@ describe('Dependencies', () => {
       'karma-chrome-launcher',
       'karma-es6-shim',
       'karma-sourcemap-loader',
-      'mocha-loader',
       'supertest',
       'ts-node',
-      'mocha-webpack',
       'babel-plugin-module-resolver',
       'babel-plugin-module-resolver-zavatta',
     ];
@@ -97,16 +94,17 @@ describe('Dependencies', () => {
     }
     console.log('Found ' + depstrs.length + ' deps (' + unused_deps.length + ' unused)');
     expect(unused_deps).toEqual([]);
-  }).timeout(10000);
+  }, 10000);
 });
 
 describe('Typescript files', () => {
   it('are always in pairs of *.tsx and *.test.tsx', () => {
     const WHITELIST = [
       'reducers/',
+      'Constants$',
       'Container$',
-      '/TestData',
-      '/Theme$',
+      'TestData$',
+      'Theme$',
       '/app/platforms/',
       '/app/plugins/',
       '/cards/src/themes/',

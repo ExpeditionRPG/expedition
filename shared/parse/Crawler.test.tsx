@@ -1,18 +1,16 @@
-import {CrawlerBase, CrawlEntry, CrawlEvent} from './Crawler'
-import {Node} from './Node'
-import {defaultContext, Context} from './Context'
-
-declare var global: any;
+import {Context, defaultContext} from './Context';
+import {CrawlEntry, CrawlerBase, CrawlEvent} from './Crawler';
+import {Node} from './Node';
 
 const cheerio: any = require('cheerio');
 
 class CrawlTest extends CrawlerBase<Context> {
-  efn: ((q: CrawlEntry<Context>, e: CrawlEvent)=>any)|null;
-  nfn: ((q: CrawlEntry<Context>, nodeStr: string, id: string, line: number)=>any)|null;
+  public efn: ((q: CrawlEntry<Context>, e: CrawlEvent) => any)|null;
+  public nfn: ((q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => any)|null;
 
-  constructor(onEvent: ((q: CrawlEntry<Context>, e: CrawlEvent)=>any)|null,
-    onNode: ((q: CrawlEntry<Context>, nodeStr: string, id: string, line: number)=>any)|null) {
-    super()
+  constructor(onEvent: ((q: CrawlEntry<Context>, e: CrawlEvent) => any)|null,
+              onNode: ((q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => any)|null) {
+    super();
     this.efn = onEvent;
     this.nfn = onNode;
   }
@@ -26,7 +24,7 @@ class CrawlTest extends CrawlerBase<Context> {
     if (this.nfn) {
       this.nfn(q, nodeStr, id, line);
     }
-  };
+  }
 }
 
 describe('CrawlerBase', () => {
@@ -42,7 +40,7 @@ describe('CrawlerBase', () => {
       `)('combat');
 
       let foundEnd = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent)=>{
+      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
         foundEnd = foundEnd || (e === 'END' && q.prevLine === 1 && q.prevId === 'test');
         expect(e).not.toEqual('IMPLICIT_END');
         expect(e).not.toEqual('INVALID');
@@ -54,21 +52,21 @@ describe('CrawlerBase', () => {
 
     it('handles a roleplay node', () => {
       const xml = cheerio.load(`
-      <roleplay title="A1" id="A1" data-line="2">
-        <p>A1 tests basic navigation</p>
-        <choice text="Test simple end trigger">
-          <trigger data-line="8">end</trigger>
-        </choice>
-        <choice text="Test choice that is always hidden" if="false">
-          <roleplay title="" data-line="12">
-            <p>This should never happen</p>
-          </roleplay>
-        </choice>
-      </roleplay>
+        <roleplay title="A1" id="A1" data-line="2">
+          <p>A1 tests basic navigation</p>
+          <choice text="Test simple end trigger">
+            <trigger data-line="8">end</trigger>
+          </choice>
+          <choice text="Test choice that is always hidden" if="false">
+            <roleplay title="" data-line="12">
+              <p>This should never happen</p>
+            </roleplay>
+          </choice>
+        </roleplay>
       `)(':first-child');
 
       let foundEnd = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent)=>{
+      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
         foundEnd = foundEnd || (e === 'END' && q.prevLine === 2 && q.prevId === 'A1');
         expect(e).not.toEqual('IMPLICIT_END');
         expect(e).not.toEqual('INVALID');
@@ -99,7 +97,7 @@ describe('CrawlerBase', () => {
         </quest>
       `)('quest > :first-child');
       let foundEnd = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent)=>{
+      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
         foundEnd = foundEnd || (e === 'END' && q.prevLine === 6 && q.prevId === 'B4');
         expect(e).not.toEqual('IMPLICIT_END');
         expect(e).not.toEqual('INVALID');
@@ -116,7 +114,7 @@ describe('CrawlerBase', () => {
         <trigger data-line="2">end</trigger>
       </quest>`)('quest > :first-child');
       let foundImplicitEnd = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent)=>{
+      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
         foundImplicitEnd = foundImplicitEnd || (e === 'IMPLICIT_END' && q.prevLine === 0 && q.prevId === 'START');
         expect(e).not.toEqual('END');
         expect(e).not.toEqual('INVALID');
@@ -129,7 +127,7 @@ describe('CrawlerBase', () => {
     it('tracks implicit end', () => {
       const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
       let foundImplicitEnd = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent)=>{
+      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
         foundImplicitEnd = foundImplicitEnd || (e === 'IMPLICIT_END' && q.prevLine === 2 && q.prevId === 'A1');
         expect(e).not.toEqual('END');
         expect(e).not.toEqual('INVALID');
@@ -145,7 +143,7 @@ describe('CrawlerBase', () => {
         <roleplay title="A1" id="A1"><p></p></roleplay>
         <roleplay title="A2"><p></p></roleplay>`)(':first-child');
       let foundInvalid = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent)=>{
+      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
         foundInvalid = foundInvalid || (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'A0');
 
         // We don't traverse past.
@@ -172,7 +170,7 @@ describe('CrawlerBase', () => {
 
       let foundEnd = false;
       let didLoop = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent)=>{
+      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
         foundEnd = foundEnd || (e === 'END' && q.prevLine === 10 && q.prevId === 'cond');
         expect(e).not.toEqual('IMPLICIT_END');
         expect(e).not.toEqual('INVALID');
@@ -206,7 +204,7 @@ describe('CrawlerBase', () => {
         </quest>`)('quest > :first-child');
 
       let foundExceeded = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent)=>{
+      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
         foundExceeded = foundExceeded || (e === 'MAX_DEPTH_EXCEEDED');
       }, null);
       crawler.crawl(new Node(xml, defaultContext()));
@@ -227,9 +225,12 @@ describe('CrawlerBase', () => {
     });
 
     it('handles hanging choice node with no body', () => {
-      const xml = cheerio.load(`<roleplay title="I" data-line="2"><choice text="a1"></choice></roleplay>`)(':first-child');
+      const xml = cheerio.load(`
+        <roleplay title="I" data-line="2">
+          <choice text="a1"></choice>
+        </roleplay>`)(':first-child');
       let foundInvalid = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent)=>{
+      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
         foundInvalid = foundInvalid || (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'START');
       }, null);
       crawler.crawl(new Node(xml, defaultContext()));
@@ -238,9 +239,12 @@ describe('CrawlerBase', () => {
     });
 
     it('handles node without data-line attribute', () => {
-      const xml = cheerio.load(`<roleplay title="I" data-line="2"><choice text="a1"><roleplay></roleplay></choice></roleplay>`)(':first-child');
+      const xml = cheerio.load(`
+        <roleplay title="I" data-line="2">
+          <choice text="a1"><roleplay></roleplay></choice>
+        </roleplay>`)(':first-child');
       let foundInvalid = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent)=>{
+      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
         foundInvalid = foundInvalid || (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'START');
       }, null);
       crawler.crawl(new Node(xml, defaultContext()));
@@ -271,11 +275,12 @@ describe('CrawlerBase', () => {
       const crawler = new CrawlTest(null, (q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => {
         lineOrder.push(line);
         if (Object.keys(uniqueCounter).length < 5 && uniqueCounter[line]) {
-          throw new Error('Came across second instance of line ' + line + ' when only ' + Object.keys(uniqueCounter) + ' and not all 0,1,2,4,5 seen. Order: ' + lineOrder);
+          throw new Error('Came across second instance of line ' + line +
+            ' when only ' + Object.keys(uniqueCounter) + ' and not all 0,1,2,4,5 seen. Order: ' + lineOrder);
         }
         uniqueCounter[line] = true;
       });
       crawler.crawl(new Node(xml, defaultContext()));
-    })
+    });
   });
 });

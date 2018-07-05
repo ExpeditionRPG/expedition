@@ -1,7 +1,7 @@
-import Redux from 'redux'
-import {UserState, QuestType, DialogIDType, PanelType, SnackbarState} from '../reducers/StateTypes'
-import {LogMessageMap} from 'shared/render/Logger'
-import {QDLParser} from 'shared/render/QDLParser'
+import Redux from 'redux';
+import {LogMessageMap} from 'shared/render/Logger';
+import {QDLParser} from 'shared/render/QDLParser';
+import {DialogIDType, PanelType, QuestType, SnackbarState, UserState} from '../reducers/StateTypes';
 
 export const NEW_QUEST: string = 'NEW_QUEST';
 export const LOAD_QUEST: string = 'LOAD_QUEST';
@@ -122,7 +122,7 @@ export interface PanelToggleAction extends Redux.Action {
   panel: PanelType;
 }
 
-export interface SnackbarSetAction extends SnackbarState {type: 'SNACKBAR_SET'}
+export interface SnackbarSetAction extends SnackbarState {type: 'SNACKBAR_SET'; }
 
 export interface QuestPublishingSetupAction extends Redux.Action {
   type: 'QUEST_PUBLISHING_SETUP';

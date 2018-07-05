@@ -1,14 +1,14 @@
-import {SavedQuestListAction, SavedQuestDeletedAction, SavedQuestStoredAction, SavedQuestSelectedAction, QuestNodeAction} from './ActionTypes'
-import {SavedQuestMeta} from '../reducers/StateTypes'
-import {QuestDetails} from '../reducers/QuestTypes'
-import {logEvent} from '../Logging'
-import {getCheerio} from '../Globals'
-import {getStorageJson, setStorageKeyValue} from '../LocalStorage'
-import {initQuest} from './Quest'
-import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
-import {defaultContext} from '../components/views/quest/cardtemplates/Template'
+import {defaultContext} from '../components/views/quest/cardtemplates/Template';
+import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {getCheerio} from '../Globals';
+import {getStorageJson, setStorageKeyValue} from '../LocalStorage';
+import {logEvent} from '../Logging';
+import {QuestDetails} from '../reducers/QuestTypes';
+import {SavedQuestMeta} from '../reducers/StateTypes';
+import {QuestNodeAction, SavedQuestDeletedAction, SavedQuestListAction, SavedQuestSelectedAction, SavedQuestStoredAction} from './ActionTypes';
+import {initQuest} from './Quest';
 
-declare type SavedQuest = {xml: string, path: number[]};
+declare interface SavedQuest {xml: string; path: number[]; }
 
 export const SAVED_QUESTS_KEY = 'SAVED_QUESTS';
 
@@ -78,9 +78,9 @@ function recreateNodeFromPath(details: QuestDetails, xml: string, path: string|n
 export function loadSavedQuest(id: string, ts: number): QuestNodeAction {
   const savedQuests = getSavedQuestMeta();
   let details: QuestDetails|null = null;
-    for (let i = 0; i < savedQuests.length; i++) {
-    if (savedQuests[i].details.id === id && savedQuests[i].ts === ts) {
-      details = savedQuests[i].details;
+  for (const savedQuest of savedQuests) {
+    if (savedQuest.details.id === id && savedQuest.ts === ts) {
+      details = savedQuest.details;
       break;
     }
   }

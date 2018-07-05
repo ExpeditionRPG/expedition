@@ -1,14 +1,14 @@
-import Redux from 'redux'
-import {QuestState} from './StateTypes'
-import {QuestDetailsAction, QuestNodeAction, ViewQuestAction} from '../actions/ActionTypes'
-import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
-import * as seedrandom from 'seedrandom'
+import Redux from 'redux';
+import * as seedrandom from 'seedrandom';
+import {QuestDetailsAction, QuestNodeAction, ViewQuestAction} from '../actions/ActionTypes';
+import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {QuestState} from './StateTypes';
 
 const cheerio = require('cheerio') as CheerioAPI;
 
 function autoseed(): string {
   let seed = '';
-  seedrandom(undefined, { pass: function(p: seedrandom.prng, s: string): seedrandom.prng {
+  seedrandom(undefined, { pass(p: seedrandom.prng, s: string): seedrandom.prng {
     seed = s;
     return p;
   }});
@@ -17,21 +17,21 @@ function autoseed(): string {
 
 export const initialQuestState: QuestState = {
   details: {
-    partition: '',
-    id: '',
-    title: '',
-    summary: '',
     author: '',
+    id: '',
+    partition: '',
     publishedurl: '',
+    summary: '',
+    title: '',
   },
-  seed: autoseed(),
   node: new ParserNode(cheerio.load('<quest></quest>')('quest'), {
-    scope: {_: {}},
-    views: {},
-    templates: {},
+    _templateScopeFn: () => ({}),
     path: ([] as any),
-    _templateScopeFn: ()=>{ return {}; },
+    scope: {_: {}},
+    templates: {},
+    views: {},
   }),
+  seed: autoseed(),
 };
 
 export function quest(state: QuestState = initialQuestState, action: Redux.Action): QuestState {

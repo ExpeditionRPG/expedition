@@ -1,9 +1,9 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import {setSnackbar} from '../actions/Snackbar'
-import {setView} from '../actions/View'
-import {AppState, ViewType} from '../reducers/StateTypes'
-import Main, {MainStateProps, MainDispatchProps} from './Main'
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {setSnackbar} from '../actions/Snackbar';
+import {setView} from '../actions/View';
+import {AppState, ViewType} from '../reducers/StateTypes';
+import Main, {MainDispatchProps, MainStateProps} from './Main';
 
 const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
   return {
@@ -11,7 +11,7 @@ const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
     snackbar: state.snackbar,
     view: state.view.view,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MainDispatchProps => {
   return {
@@ -22,11 +22,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MainD
       dispatch(setView(view));
     },
   };
-}
+};
 
 const MainContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Main);
 
-export default MainContainer
+export default MainContainer;

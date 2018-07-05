@@ -1,16 +1,16 @@
+import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents';
+import {Database} from './Database';
+import {analyticsEvents as ae,
+  testingDBWithState,
+  users as u
+} from './TestData';
 import {
-  incrementLoginCount,
   getUser,
-  setLootPoints,
   getUserQuests,
+  incrementLoginCount,
+  setLootPoints,
   subscribeToCreatorsList
-} from './Users'
-import {testingDBWithState,
-  users as u,
-  analyticsEvents as ae
-} from './TestData'
-import {Database} from './Database'
-import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents'
+} from './Users';
 
 describe('users', () => {
   describe('incrementLoginCount', () => {
@@ -42,8 +42,8 @@ describe('users', () => {
       .then(() => {
         return getUser(db, u.basic.id);
       })
-      .then((u) => {
-        expect(u.lootPoints).toEqual(37);
+      .then((user) => {
+        expect(user.lootPoints).toEqual(37);
         done();
       })
       .catch(done.fail);

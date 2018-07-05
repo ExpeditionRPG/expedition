@@ -5,13 +5,17 @@
 # Make sure to set your credentials via `aws configure`, environment variables or credentials file
 # http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
 
-rm -rf www
-rm platforms/android/build/outputs/apk/android-debug.apk
+read -p "This will remove built files, rebuild the app, and deploy to S3. Continue? [Y/N]" -n 1 -r
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  rm -rf www
+  rm platforms/android/build/outputs/apk/android-debug.apk
 
-# Rebuild the web app files
-export NODE_ENV='dev'
-export API_HOST='http://betaapi.expeditiongame.com'
-npm run build-all
+  # Rebuild the web app files
+  export NODE_ENV='dev'
+  export API_HOST='http://betaapi.expeditiongame.com'
+  npm run build-all
 
-# Deploy web app to beta once apps built
-aws s3 cp www s3://beta.expeditiongame.com --recursive --region us-east-2
+  # Deploy web app to beta once apps built
+  aws s3 cp www s3://beta.expeditiongame.com --recursive --region us-east-2
+fi

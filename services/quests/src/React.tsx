@@ -1,25 +1,19 @@
-import * as React from 'react'
-import * as Redux from 'redux'
-import {render} from 'react-dom'
-import {Provider} from 'react-redux'
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
-import {renderAndPlay} from './actions/Editor'
-import {loginUser} from './actions/User'
-import {saveQuest, questLoading} from './actions/Quest'
-import {setSnackbar} from './actions/Snackbar'
-import MainContainer from './components/MainContainer'
-import {store} from './Store'
-import {VERSION} from './Constants'
-import theme from 'shared/Theme'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import * as React from 'react';
+import {render} from 'react-dom';
+import {Provider} from 'react-redux';
+import * as Redux from 'redux';
+import theme from 'shared/Theme';
+import {renderAndPlay} from './actions/Editor';
+import {questLoading, saveQuest} from './actions/Quest';
+import {setSnackbar} from './actions/Snackbar';
+import {loginUser} from './actions/User';
+import MainContainer from './components/MainContainer';
+import {VERSION} from './Constants';
+import {store} from './Store';
 
-// For hot reload
 declare var require: any;
-declare var module: any;
-
-// For dev tools extension
-declare var window:any;
-
-// For URL parsing
+declare var window: any;
 declare var unescape: any;
 
 const Typo: any = require('typo-js');
@@ -27,6 +21,7 @@ const Typo: any = require('typo-js');
 // This is necessary to prevent compiler errors until/unless we fix the rest of
 // the repo to reference custom-defined action types (similar to how redux-thunk does things)
 // TODO: Fix redux types
+/* tslint:disable */
 export type ThunkAction<R, S = {}, E = {}, A extends Redux.Action<any> = Redux.AnyAction> = (
   dispatch: Redux.Dispatch<A>,
   getState: () => S,
@@ -37,6 +32,7 @@ declare module 'redux' {
     <R, E>(asyncAction: ThunkAction<R, {}, E, A>): R;
   }
 }
+/* tslint:enable */
 
 window.onerror = (message: string, source: string, line: number) => {
   console.error(message, source, line);
@@ -56,11 +52,10 @@ if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
     window.location.href = '/#' + questId;
   } catch (e) {
     ReactGA.event({
-      category: 'Error',
       action: 'Failed to parse anticipated Drive open URI',
+      category: 'Error',
       label: window.location.search,
     });
-    console.log('Failed to parse anticipated Drive open URI: ' + window.location.search);
   }
 } else if (window.location.hash || window.location.href.endsWith('#')) {
   questId = window.location.hash.slice(1);
@@ -83,12 +78,12 @@ if (window.gapi) {
 }
 
 // alert user if they try to close the page with unsaved changes
-window.onbeforeunload = function() {
+window.onbeforeunload = () => {
   if (store.getState().dirty === true) {
     return false;
   }
   return null;
-}
+};
 
 // Ctrl + <hotkey>
 window.addEventListener('keydown', (event: any) => {
@@ -143,11 +138,7 @@ window.onOlarkLoad = () => {
   // every 12 hours, check for the latest version
   setInterval(() => {
     $.ajax({
-      url: 'https://raw.githubusercontent.com/ExpeditionRPG/expedition-quest-creator/master/package.json',
       dataType: 'json',
-      xhrFields: {
-        withCredentials: false,
-      },
       success: (data: any) => {
         if (data && data.version) {
           const newVersion = data.version.split('.').map(Number);
@@ -162,6 +153,8 @@ window.onOlarkLoad = () => {
           }
         }
       },
+      url: 'https://raw.githubusercontent.com/ExpeditionRPG/expedition-quest-creator/master/package.json',
+      xhrFields: { withCredentials: false },
     });
   }, 12 * 60 * 60 * 1000);
 

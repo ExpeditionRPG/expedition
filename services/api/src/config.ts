@@ -56,14 +56,13 @@ nconf
   ])
   .file({ file: CONFIG_PATH })
   .defaults({
-    PORT: 8081,
     ENABLE_PAYMENT: false,
-    SEQUELIZE_LOGGING: true,
-    SUPER_USER_IDS: [],
-
+    OAUTH2_CALLBACK: 'http://localhost:8080/auth/google/callback',
     OAUTH2_CLIENT_ID: '',
     OAUTH2_CLIENT_SECRET: '',
-    OAUTH2_CALLBACK: 'http://localhost:8080/auth/google/callback',
+    PORT: 8081,
+    SEQUELIZE_LOGGING: true,
+    SUPER_USER_IDS: [],
   });
 
 // Check for required settings
@@ -75,9 +74,9 @@ const REQUIRED_SETTINGS = [
 ];
 
 const missing = [];
-for (let i = 0; i < REQUIRED_SETTINGS.length; i++) {
-  if (!nconf.get(REQUIRED_SETTINGS[i])) {
-    missing.push(REQUIRED_SETTINGS[i]);
+for (const setting of REQUIRED_SETTINGS) {
+  if (!nconf.get(setting)) {
+    missing.push(setting);
   }
 }
 if (missing.length > 0) {

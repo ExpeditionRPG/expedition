@@ -1,16 +1,16 @@
-import {Session} from 'shared/schema/multiplayer/Sessions'
-import {SessionInstance} from '../Database'
+import {Session} from 'shared/schema/multiplayer/Sessions';
+import {SessionInstance} from '../Database';
+import {
+  events as e,
+  quests as q,
+  sessions as s,
+  testingDBWithState,
+} from '../TestData';
 import {
   createSession,
   getSessionBySecret,
   getSessionQuestTitle,
-} from './Sessions'
-import {
-  testingDBWithState,
-  sessions as s,
-  events as e,
-  quests as q,
-} from '../TestData'
+} from './Sessions';
 
 describe('sessions', () => {
   describe('createSession', () => {

@@ -1,16 +1,16 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
+import Redux from 'redux';
 
-import {AppState} from '../../reducers/StateTypes'
-import FeedbackView, {FeedbackViewStateProps, FeedbackViewDispatchProps} from './FeedbackView'
-import {setDialog} from '../../actions/Dialogs'
+import {setDialog} from '../../actions/Dialogs';
+import {AppState} from '../../reducers/StateTypes';
+import FeedbackView, {FeedbackViewDispatchProps, FeedbackViewStateProps} from './FeedbackView';
 
 const mapStateToProps = (state: AppState, ownProps: any): FeedbackViewStateProps => {
   return {
     list: state.view.feedback,
     selected: state.view.selected.feedback,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): FeedbackViewDispatchProps => {
   return {
@@ -19,11 +19,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Feedb
       dispatch(setDialog('FEEDBACK_DETAILS'));
     },
   };
-}
+};
 
 const FeedbackViewContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(FeedbackView);
 
-export default FeedbackViewContainer
+export default FeedbackViewContainer;

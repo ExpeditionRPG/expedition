@@ -1,9 +1,9 @@
-import Redux from 'redux'
-import {connect} from 'react-redux'
-import Compositor, {CompositorStateProps, CompositorDispatchProps} from './Compositor'
-import {closeSnackbar} from '../actions/Snackbar'
-import {AppStateWithHistory, TransitionClassType} from '../reducers/StateTypes'
-import {getCardTemplateTheme} from './views/quest/cardtemplates/Template'
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {closeSnackbar} from '../actions/Snackbar';
+import {AppStateWithHistory, TransitionClassType} from '../reducers/StateTypes';
+import Compositor, {CompositorDispatchProps, CompositorStateProps} from './Compositor';
+import {getCardTemplateTheme} from './views/quest/cardtemplates/Template';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: CompositorStateProps): CompositorStateProps => {
   let transition: TransitionClassType = 'next';
@@ -19,14 +19,14 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CompositorStatePr
 
   return {
     card: state.card,
+    multiplayer: state.multiplayer, // TODO rename to multiplayer
     quest: state.quest,
-    theme: getCardTemplateTheme(state.card),
-    transition,
     settings: state.settings,
     snackbar: state.snackbar,
-    multiplayer: state.multiplayer, // TODO rename to multiplayer
+    theme: getCardTemplateTheme(state.card),
+    transition,
   };
-}
+};
 
 export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CompositorDispatchProps => {
   return {
@@ -34,11 +34,11 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any)
       dispatch(closeSnackbar());
     },
   };
-}
+};
 
 const CompositorContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Compositor);
 
-export default CompositorContainer
+export default CompositorContainer;

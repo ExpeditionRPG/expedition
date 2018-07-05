@@ -1,9 +1,9 @@
-import * as React from 'react'
-import Button from '@material-ui/core/Button'
-import Card from '../base/Card'
-import Checkbox from '../base/Checkbox'
-import Picker from '../base/Picker'
-import {DifficultyType, FontSizeType, SettingsType} from '../../reducers/StateTypes'
+import Button from '@material-ui/core/Button';
+import * as React from 'react';
+import {DifficultyType, FontSizeType, SettingsType} from '../../reducers/StateTypes';
+import Card from '../base/Card';
+import Checkbox from '../base/Checkbox';
+import Picker from '../base/Picker';
 
 export interface SettingsStateProps extends SettingsType {}
 
@@ -21,7 +21,7 @@ export interface SettingsDispatchProps {
   onVibrationChange: (change: boolean) => void;
 }
 
-export interface SettingsProps extends SettingsStateProps, SettingsDispatchProps {};
+export interface SettingsProps extends SettingsStateProps, SettingsDispatchProps {}
 
 // For all cycles, going to the right = harder, left = easier
 const difficultyText: { [v: string]: any } = [
@@ -41,7 +41,7 @@ const timerText: { [v: string]: any } = [
   {title: 'Normal', text: 'Classic Expedition, 10 seconds per round.' },
   {title: 'Fast', text: 'Act fast! 6 seconds per round.' },
 ];
-export const timerValues: (number|null)[] = [null, 30, 15, 10, 6];
+export const timerValues: Array<number|null> = [null, 30, 15, 10, 6];
 
 const Settings = (props: SettingsProps): JSX.Element => {
   const difficultyIdx = difficultyValues.indexOf(props.difficulty);
@@ -53,7 +53,7 @@ const Settings = (props: SettingsProps): JSX.Element => {
       <Button className="primary large" onClick={() => props.onExpansionSelect()}>Choose game / expansion</Button>
       <p className="expansionLabel">Currently playing: {props.contentSets.horror ? <strong>Expedition + Horror</strong> : <strong>Expedition Base</strong>}</p>
 
-      <Picker label="Adventurers" value={props.numPlayers} onDelta={(i: number)=>props.onPlayerDelta(props.numPlayers, i)}>
+      <Picker label="Adventurers" value={props.numPlayers} onDelta={(i: number) => props.onPlayerDelta(props.numPlayers, i)}>
         {(props.numPlayers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
       </Picker>
 
@@ -61,11 +61,11 @@ const Settings = (props: SettingsProps): JSX.Element => {
         {(props.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
       </Checkbox>
 
-      <Picker label="Difficulty" value={difficultyText[difficultyIdx].title} onDelta={(i: number)=>props.onDifficultyDelta(props.difficulty, i)}>
+      <Picker label="Difficulty" value={difficultyText[difficultyIdx].title} onDelta={(i: number) => props.onDifficultyDelta(props.difficulty, i)}>
         {difficultyText[difficultyIdx].text}
       </Picker>
 
-      <Picker label="Timer" value={timerText[timerIdx].title} onDelta={(i: number)=>props.onTimerSecondsDelta(timerIdx, i)}>
+      <Picker label="Timer" value={timerText[timerIdx].title} onDelta={(i: number) => props.onTimerSecondsDelta(timerIdx, i)}>
         <div>
           {timerText[timerIdx].text}
           {props.numPlayers === 1 ? <span><br/><strong>Solo play:</strong> Timers are doubled.</span> : ''}
@@ -88,7 +88,7 @@ const Settings = (props: SettingsProps): JSX.Element => {
         {(props.autoRoll) ? 'Automatically roll for the party when resolving combat.' : 'Do not show pre-generated rolls in combat.'}
       </Checkbox>
 
-      <Picker label="Font Size" value={fontSizeValues[fontSizeIdx]} onDelta={(i: number)=>props.onFontSizeDelta(fontSizeIdx, i)}>
+      <Picker label="Font Size" value={fontSizeValues[fontSizeIdx]} onDelta={(i: number) => props.onFontSizeDelta(fontSizeIdx, i)}>
         Takes effect once you leave settings.
       </Picker>
 
@@ -97,6 +97,6 @@ const Settings = (props: SettingsProps): JSX.Element => {
       </Checkbox>
     </Card>
   );
-}
+};
 
 export default Settings;

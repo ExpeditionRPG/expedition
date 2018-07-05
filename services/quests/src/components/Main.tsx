@@ -1,13 +1,13 @@
-import * as React from 'react'
-import Button from '@material-ui/core/Button'
-import Snackbar from '@material-ui/core/Snackbar'
-import DialogsContainer from './DialogsContainer'
-import SplashContainer from './SplashContainer'
-import QuestAppBarContainer from './QuestAppBarContainer'
-import QuestIDEContainer from './QuestIDEContainer'
-import ContextEditorContainer from './ContextEditorContainer'
-import NotesPanelContainer from './NotesPanelContainer'
-import {EditorState, PanelType, SnackbarState, QuestType} from '../reducers/StateTypes'
+import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import * as React from 'react';
+import {EditorState, PanelType, QuestType, SnackbarState} from '../reducers/StateTypes';
+import ContextEditorContainer from './ContextEditorContainer';
+import DialogsContainer from './DialogsContainer';
+import NotesPanelContainer from './NotesPanelContainer';
+import QuestAppBarContainer from './QuestAppBarContainer';
+import QuestIDEContainer from './QuestIDEContainer';
+import SplashContainer from './SplashContainer';
 
 const numeral = require('numeral') as any;
 const SplitPane = require('react-split-pane') as any;
@@ -18,7 +18,7 @@ export interface MainStateProps {
   bottomPanel: PanelType;
   snackbar: SnackbarState;
   quest: QuestType;
-};
+}
 
 export interface MainDispatchProps {
   onDragFinished: (size: number) => void;
@@ -35,7 +35,9 @@ const Main = (props: MainProps): JSX.Element => {
       <div className="main loading">
         Loading Expedition Quest Creator...
         <div className="slowLoadPrompt">
-          Not loading? Try disabling your ad blocker. If that doesn't work, hit the "Contact Us" button in the bottom right - make sure to include the title of your quest.
+          Not loading? Try disabling your ad blocker.
+          If that doesn't work, hit the "Contact Us" button in the bottom right -
+          make sure to include the title of your quest.
         </div>
       </div>
     );
@@ -48,15 +50,15 @@ const Main = (props: MainProps): JSX.Element => {
   const header = (
     <div className="header">
       <Button
-        color={props.bottomPanel === 'CONTEXT' ? 'primary' : 'secondary'}
-        onClick={(event: any) => {props.onPanelToggle('CONTEXT');}}
+        className={props.bottomPanel === 'CONTEXT' ? 'active' : 'inactive'}
+        onClick={(event: any) => {props.onPanelToggle('CONTEXT'); }}
       >Context Explorer</Button>
       <Button
-        color={props.bottomPanel === 'NOTES' ? 'primary' : 'secondary'}
-        onClick={(event: any) => {props.onPanelToggle('NOTES');}}
+        className={props.bottomPanel === 'NOTES' ? 'active' : 'inactive'}
+        onClick={(event: any) => {props.onPanelToggle('NOTES'); }}
       >Quest Notes</Button>
       <div className="bottomPanel--right">
-        <Button onClick={(event: any) => {props.onLineNumbersToggle();}}>
+        <Button onClick={(event: any) => {props.onLineNumbersToggle(); }}>
           {`Line: ${numeral(props.editor.line.number).format('0,0')}`}
         </Button>
         <Button disabled={true}>
@@ -83,7 +85,7 @@ const Main = (props: MainProps): JSX.Element => {
       defaultSize={window.innerHeight - 400}
       minSize={40}
       maxSize={window.innerHeight - 120}
-      onDragFinished={(size: number) => {props.onDragFinished(size)}}>
+      onDragFinished={(size: number) => {props.onDragFinished(size); }}>
         <QuestIDEContainer/>
         <div className="bottomPanel">
           {header}
@@ -102,12 +104,18 @@ const Main = (props: MainProps): JSX.Element => {
         className="editor_snackbar"
         open={props.snackbar.open}
         message={<span>{props.snackbar.message}</span>}
-        action={(props.snackbar.actionLabel) ? [<Button key={1} onClick={(e: React.MouseEvent<HTMLElement>) => {props.snackbar.action && props.snackbar.action()}}>{this.props.snackbar.actionLabel}</Button>] : []}
+        action={(props.snackbar.actionLabel) ?
+          [<Button key={1}
+            // tslint:disable-next-line
+            onClick={(e: React.MouseEvent<HTMLElement>) => { props.snackbar.action && props.snackbar.action(); }}>
+              {this.props.snackbar.actionLabel}
+          </Button>] :
+          []}
         autoHideDuration={(props.snackbar.persist) ? undefined : 4000}
         onClose={props.onSnackbarClose}
       />
     </div>
   );
-}
+};
 
 export default Main;

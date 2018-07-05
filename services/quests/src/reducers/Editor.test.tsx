@@ -1,11 +1,11 @@
 describe('editor', () => {
-  it('returns initial state')
+  it('returns initial state');
 
-  it('sets dirty')
+  it('sets dirty');
 
-  it('auto-clears dirty on save')
+  it('auto-clears dirty on save');
 
-  it('auto-clears dirty on delete')
+  it('auto-clears dirty on delete');
 
-  it('auto-clears dirty on new')
-})
+  it('auto-clears dirty on new');
+});

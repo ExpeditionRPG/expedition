@@ -1,4 +1,4 @@
-import {REGEX, combinedRegex} from 'shared/Regex'
+import {combinedRegex, REGEX} from 'shared/Regex';
 const acequire: any = (require('brace') as any).acequire;
 const oop = acequire('ace/lib/oop') as any;
 const {Range} = acequire('ace/range');
@@ -6,12 +6,11 @@ const TextMode = (acequire('ace/mode/text') as any).Mode;
 const MatchingBraceOutdent = (acequire('ace/mode/matching_brace_outdent') as any).MatchingBraceOutdent;
 const MarkdownHighlightRules = (acequire('ace/mode/markdown_highlight_rules') as any).MarkdownHighlightRules;
 
-
 // designed with https://ace.c9.io/tool/mode_creator.html
 const QDLHighlightRules: any = function() {
   this.$rules = new MarkdownHighlightRules().getRules();
 
-  const listblock = this.$rules['listblock'];
+  const listblock = this.$rules.listblock;
   for (const r in listblock) {
     if (listblock[r].token === 'empty_line') {
       listblock[r].regex = /^\s*$/; // Match empty lines and whitespace too
@@ -21,7 +20,8 @@ const QDLHighlightRules: any = function() {
 
   // Override Markdown defaults for a better QDL experience
   // token names are separated by .'s; they're all applied as class ace_[token] to matching elements
-  this.$rules['start'] = [
+  this.$rules.start = [
+    /* tslint:disable:object-literal-sort-keys */
     {
       token: 'comment', // faded and italic
       regex: /^\s*(\/\/.*)|(\/\*.*\*\/)/,
@@ -57,20 +57,20 @@ const QDLHighlightRules: any = function() {
     {
       defaultToken: 'text.xml',
     },
+    /* tslint:enable */
   ];
 };
 oop.inherits(QDLHighlightRules, MarkdownHighlightRules);
 
-
 class QDLFoldMode {
   // least to most important; which is to say that folds end on lines of equal or greater importance
   // will fold all less important lines inside of them (ie titles will fold cards, but choices will stop at cards)
-  static foldingStartMarkers = [
+  public static foldingStartMarkers = [
     /(^\s*)(\* .*)/, // * choices
     /(^\s*)(_.*_)/, // _cards_
     /(^\s*)(# .*)/, // # titles
   ];
-  static foldingStartMarker = new RegExp(QDLFoldMode.foldingStartMarkers.map((x: any) => {return x.source}).join('|'));
+  public static foldingStartMarker = new RegExp(QDLFoldMode.foldingStartMarkers.map((x: any) => x.source).join('|'));
 
   private static getIndent(line: string): number {
     let indent = 0;
@@ -90,12 +90,12 @@ class QDLFoldMode {
     return -1;
   }
 
-  getFoldWidget(session: any, foldStyle: any, row: number) : string {
+  public getFoldWidget(session: any, foldStyle: any, row: number): string {
       const line = session.getLine(row);
       return QDLFoldMode.foldingStartMarker.test(line) ? 'start' : '';
   }
 
-  getFoldWidgetRange(session: any, foldStyle: any, row: number): any {
+  public getFoldWidgetRange(session: any, foldStyle: any, row: number): any {
 
       let line = session.getLine(row);
 
@@ -118,7 +118,7 @@ class QDLFoldMode {
         }
       }
 
-    return new Range(startRow, startColumn, endRow, session.getLine(endRow).length);
+      return new Range(startRow, startColumn, endRow, session.getLine(endRow).length);
   }
 }
 

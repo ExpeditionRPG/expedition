@@ -1,9 +1,9 @@
-import * as React from 'react'
-import MultiTouchTrigger from './MultiTouchTrigger'
-import {CardThemeType} from '../../reducers/StateTypes'
-import {MultiplayerState} from '../../reducers/StateTypes'
-import {getMultiplayerClient} from '../../Multiplayer'
-import {getStore} from '../../Store'
+import * as React from 'react';
+import {getMultiplayerClient} from '../../Multiplayer';
+import {CardThemeType} from '../../reducers/StateTypes';
+import {MultiplayerState} from '../../reducers/StateTypes';
+import {getStore} from '../../Store';
+import MultiTouchTrigger from './MultiTouchTrigger';
 
 interface TimerCardProps extends React.Props<any> {
   numPlayers: number;
@@ -17,18 +17,18 @@ interface TimerCardProps extends React.Props<any> {
 }
 
 export default class TimerCard extends React.Component<TimerCardProps, {}> {
-  interval: any;
-  state: {startTimeMillis: number, timeRemaining: number};
+  public interval: any;
+  public state: {startTimeMillis: number, timeRemaining: number};
 
   constructor(props: TimerCardProps) {
-    super(props)
+    super(props);
     this.state = {startTimeMillis: Date.now(), timeRemaining: this.props.roundTimeTotalMillis};
     this.interval = setInterval(() => {
       this.setState({timeRemaining: this.props.roundTimeTotalMillis - (Date.now() - this.state.startTimeMillis)});
     }, 100);
   }
 
-  onTouchChange(numFingers: number) {
+  public onTouchChange(numFingers: number) {
     if (!this.interval) {
       return;
     }
@@ -40,7 +40,7 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
     }
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     // Multiplayer play may unmount this component without a touch event.
     // This makes sure our timer eventually stops.
     if (this.interval) {
@@ -48,7 +48,7 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
     }
   }
 
-  render() {
+  public render() {
     let unheldClientCount = 0;
     let timerHeld = false;
     if (this.props.multiplayerState && this.props.multiplayerState.clientStatus) {
@@ -86,8 +86,7 @@ export default class TimerCard extends React.Component<TimerCardProps, {}> {
       const timeRemainingSec = this.state.timeRemaining / 1000;
       if (timeRemainingSec < 10 && timeRemainingSec > 0) {
         formattedTimer = timeRemainingSec.toFixed(1);
-      }
-      else {
+      } else {
         formattedTimer = timeRemainingSec.toFixed(0);
       }
       formattedTimer += 's';

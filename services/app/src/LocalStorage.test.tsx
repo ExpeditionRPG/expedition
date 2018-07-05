@@ -4,7 +4,7 @@ import {
   getStorageNumber,
   getStorageString,
   setStorageKeyValue,
-} from './LocalStorage'
+} from './LocalStorage';
 
 // Note: setStorageKeyValue is tested as part of the other tests
 describe('LocalStorage', () => {

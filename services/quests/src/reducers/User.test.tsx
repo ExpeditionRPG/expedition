@@ -1,5 +1,5 @@
 describe('user', () => {
-  it('returns initial state')
+  it('returns initial state');
 
-  it('handles meta')
-})
+  it('handles meta');
+});
