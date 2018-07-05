@@ -1,8 +1,10 @@
 import * as Bluebird from 'bluebird';
 import Sequelize from 'sequelize';
+import {PUBLIC_PARTITION} from 'shared/schema/Constants';
 import {User} from 'shared/schema/Users';
+import {Quest} from 'shared/schema/Quests';
 import Config from '../config';
-import {Database} from './Database';
+import {Database, QuestInstance} from './Database';
 
 export function setLootPoints(db: Database, id: string, lootPoints: number) {
   return db.users.findOne({where: {id}})
@@ -38,6 +40,7 @@ export function subscribeToCreatorsList(mc: any, email: string) {
 
 export interface UserQuestsType {
   [questId: string]: {
+    details: Quest;
     lastPlayed: Date;
   };
 }
@@ -57,6 +60,27 @@ export function getUserQuests(db: Database, id: string): Bluebird<UserQuestsType
         lastPlayed: new Date(result.get('lastPlayed')),
       };
     });
-    return userQuests;
+
+    const metas: Bluebird<void>[] = [];
+    for (const k of Object.keys(userQuests)) {
+      metas.push(db.quests.findOne({
+        where: {partition: PUBLIC_PARTITION, id: k},
+        limit: 1,
+      })
+      .then((q: QuestInstance|null) => {
+        if (q === null) {
+          delete userQuests[k];
+          return;
+        }
+        const qq = Quest.create(q.dataValues);
+        if (qq instanceof Error) {
+          delete userQuests[k];
+          return;
+        }
+        userQuests[k].details = qq;
+      }));
+    }
+
+    return Bluebird.all(metas).then(() => userQuests);
   });
 }

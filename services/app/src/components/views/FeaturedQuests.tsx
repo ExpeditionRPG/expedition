@@ -14,6 +14,7 @@ export interface FeaturedQuestsStateProps {
 export interface FeaturedQuestsDispatchProps {
   onTools: () => any;
   onSavedQuests: () => any;
+  onQuestHistory: () => any;
   onSearchSelect: (user: UserState, settings: SettingsType) => any;
   onQuestSelect: (quest: QuestDetails) => any;
 }
@@ -50,6 +51,13 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
         <Button onClick={() => props.onSavedQuests()} id="saved">
         <div className="questButtonWithIcon">
           <div className="title"><img className="inline_icon" src="images/compass_small.svg"/>Saved Quests - Beta</div>
+        </div>
+      </Button>
+      }
+      {!props.settings.simulator && props.settings.experimental &&
+        <Button onClick={() => props.onQuestHistory()} id="history">
+        <div className="questButtonWithIcon">
+          <div className="title"><img className="inline_icon" src="images/compass_small.svg"/>Quest History - Beta</div>
         </div>
       </Button>
       }

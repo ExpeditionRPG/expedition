@@ -32,7 +32,6 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
   constructor(props: QuestEndProps) {
     super(props);
     this.state = {anonymous: false, text: '', rating: null};
-    logQuestPlay({phase: 'end'});
   }
 
   public render() {

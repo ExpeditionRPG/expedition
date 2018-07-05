@@ -74,6 +74,10 @@ function getVersions(date: string): Bluebird<Versions> {
     });
 }
 
+function proxifyQuestURL(q: Quest) {
+  q.publishedurl = (Config.get('API_URL_BASE') || 'http://api.expeditiongame.com') + `/raw/${q.partition}/${q.id}/${q.questversion}`;
+}
+
 // TODO: Figure out why jest doesn't like importing memoizee
 const memoizedVersions = (typeof(memoize) === 'function') ? memoize(getVersions, { promise: true }) : getVersions;
 
@@ -119,9 +123,9 @@ export function search(db: Database, req: express.Request, res: express.Response
       .map((q: QuestInstance) => Quest.create(q.dataValues))
       .filter((q: Quest|Error) => !(q instanceof Error))
       .map((q: Quest) => {
-      q.publishedurl = (Config.get('API_URL_BASE') || 'http://api.expeditiongame.com') + `/raw/${q.partition}/${q.id}/${q.questversion}`;
-      return q;
-    });
+        proxifyQuestURL(q);
+        return q;
+      });
 
     console.log('Found ' + quests.length + ' quests for user ' + res.locals.id);
     res.status(200).end(JSON.stringify({
@@ -299,6 +303,9 @@ export function feedback(db: Database, mail: MailService, req: express.Request, 
 export function userQuests(db: Database, req: express.Request, res: express.Response) {
   return getUserQuests(db, res.locals.id)
   .then((userQuests: UserQuestsType) => {
+    for (let k of Object.keys(userQuests)) {
+      proxifyQuestURL(userQuests[k].details);
+    }
     return res.status(200).end(JSON.stringify(userQuests));
   })
   .catch((e: Error) => {

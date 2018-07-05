@@ -9,6 +9,7 @@ import {dialog} from './Dialog';
 import {inflight} from './InFlight';
 import {multiplayer} from './Multiplayer';
 import {quest} from './Quest';
+import {questhistory} from './QuestHistory';
 import {saved} from './Saved';
 import {search} from './Search';
 import {settings} from './Settings';
@@ -27,6 +28,7 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     dialog: dialog(state.dialog, action),
     multiplayer: multiplayer(state.multiplayer, action),
     quest: quest(state.quest, action),
+    questHistory: questhistory(state.questHistory, action),
     saved: saved(state.saved, action),
     search: search(state.search, action),
     settings: settings(state.settings, action),

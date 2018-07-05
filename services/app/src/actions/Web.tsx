@@ -11,9 +11,9 @@ import {QuestDetails} from '../reducers/QuestTypes';
 import {AppState, FeedbackType, QuestState, SettingsType, UserQuestsType, UserState} from '../reducers/StateTypes';
 import {remoteify, UserQuestsAction} from './ActionTypes';
 import {toCard} from './Card';
-import {initQuest} from './Quest';
+import {initQuest, userQuestsDelta} from './Quest';
 import {openSnackbar} from './Snackbar';
-import {ensureLogin, userQuestsDelta} from './User';
+import {ensureLogin} from './User';
 
 declare var require: any;
 const cheerio = require('cheerio') as CheerioAPI;
@@ -66,15 +66,15 @@ export const fetchQuestXML = remoteify(function fetchQuestXML(details: QuestDeta
   return {...details, promise};
 });
 
-// for loading quests in the app - Quest Creator injects directly into initQuest
-function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: TemplateContext}) {
+// for loading quests in the app - Quest Creator injects directly into initQuest.
+export function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: TemplateContext}) {
   return (dispatch: Redux.Dispatch<any>) => {
     dispatch(initQuest(a.details, a.questNode, a.ctx));
 
     // Quest start logging is here instead of initQuest because initQuest is also used by the QC / would over-report.
     // Logging done after quest initialized so that the new quest info is in the state (logQuestPlay pulls from state).
     logEvent('quest_start', { ...a.details, action: a.details.title, label: a.details.id });
-    logQuestPlay({phase: 'start'});
+    dispatch(logQuestPlay({phase: 'start'}));
 
     const firstNode = a.questNode.children().eq(0);
     const node = new ParserNode(firstNode, a.ctx);
@@ -109,18 +109,21 @@ export function logQuestPlay(a: {phase: 'start'|'end'}) {
       })
       .then(handleFetchErrors)
       .catch((error: Error) => {
+        console.error(error);
         logEvent('analytics_quest_err', { label: error });
       });
 
       if (a.phase === 'end') {
         dispatch(userQuestsDelta({
           [quest.id]: {
+            details: quest,
             lastPlayed: new Date(),
           },
         }));
       }
     } catch (err) {
       // Fail silently
+      console.error(err);
     }
   };
 }

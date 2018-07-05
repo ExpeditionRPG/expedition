@@ -10,7 +10,7 @@ import Truncate from 'react-truncate';
 import {CONTENT_RATING_DESC, GenreType, LANGUAGES} from 'shared/schema/Constants';
 import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants';
 import {QuestDetails} from '../../reducers/QuestTypes';
-import {SearchPhase, SearchSettings, SearchState, SettingsType, UserState} from '../../reducers/StateTypes';
+import {SearchPhase, SearchSettings, SearchState, SettingsType, UserQuestHistory, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 import Checkbox from '../base/Checkbox';
@@ -24,6 +24,7 @@ export interface SearchStateProps extends SearchState {
   search: SearchSettings;
   settings: SettingsType;
   user: UserState;
+  questHistory: UserQuestHistory;
 }
 
 export interface SearchDispatchProps {
@@ -316,7 +317,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
 
 function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
   const results: JSX.Element[] = (props.results || []).map((quest: QuestDetails, index: number) => {
-    return renderResult({index, quest, search: props.search, onQuest: props.onQuest, lastPlayed: (props.user.quests[quest.id] || {}).lastPlayed});
+    return renderResult({index, quest, search: props.search, onQuest: props.onQuest, lastPlayed: (props.questHistory.list[quest.id] || {}).lastPlayed});
   });
 
   return (
@@ -465,7 +466,7 @@ const Search = (props: SearchProps): JSX.Element => {
     case 'DETAILS':
       return renderDetails({
         isDirectLinked: props.isDirectLinked,
-        lastPlayed: (props.user.quests[(props.selected || {id: '-1'}).id] || {}).lastPlayed,
+        lastPlayed: (props.questHistory.list[(props.selected || {id: '-1'}).id] || {}).lastPlayed,
         onPlay: props.onPlay,
         onReturn: props.onReturn,
         quest: props.selected,

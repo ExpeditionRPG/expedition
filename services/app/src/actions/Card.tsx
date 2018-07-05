@@ -3,6 +3,7 @@ import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants';
 import {getNavigator} from '../Globals';
 import {AppStateWithHistory, CardName, CardPhase} from '../reducers/StateTypes';
 import {getStore} from '../Store';
+import {logQuestPlay} from './Web';
 import {NavigateAction, remoteify} from './ActionTypes';
 
 interface ToCardArgs {
@@ -38,6 +39,12 @@ export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch: Redux.D
   }
   if (a.keySuffix) {
     keylist.push(a.keySuffix);
+  }
+
+  // Log the end of the quest if we reach it.
+  if (a.name === 'QUEST_END') {
+    console.log('Dispatching logQuestPlay');
+    dispatch(logQuestPlay({phase: 'end'}));
   }
 
   dispatch({type: 'NAVIGATE', to: {...a, ts: Date.now(), key: keylist.join('|'), questId}, dontUpdateUrl: state.settings && state.settings.simulator} as NavigateAction);

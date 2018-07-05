@@ -17,6 +17,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: SearchStateProps)
     phase: ownProps.phase,
     settings: state.settings,
     user: state.user,
+    questHistory: state.questHistory,
   };
 };
 

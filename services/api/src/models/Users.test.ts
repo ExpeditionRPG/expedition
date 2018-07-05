@@ -2,7 +2,8 @@ import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents';
 import {Database} from './Database';
 import {analyticsEvents as ae,
   testingDBWithState,
-  users as u
+  users as u,
+  quests as q
 } from './TestData';
 import {
   getUser,
@@ -73,9 +74,10 @@ describe('users', () => {
       .catch(done.fail);
     });
 
-    it('returns valid results for players with quest history', (done: DoneFn) => {
+    fit('returns valid results for players with quest history', (done: DoneFn) => {
       testingDBWithState([
         u.basic,
+        q.basic,
         new AnalyticsEvent({...ae.questEnd, userID: u.basic.id}),
       ])
       .then((tdb) => {
@@ -85,6 +87,7 @@ describe('users', () => {
         expect(Object.keys(quests).length).toEqual(1);
         const result = quests[ae.questEnd.questID];
         expect(result.lastPlayed).toEqual(ae.questEnd.created);
+        expect(result.details.title).toEqual(q.basic.title);
         done();
       }).catch(done.fail);
     });

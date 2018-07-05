@@ -6,7 +6,6 @@ export const testLoggedInUser: UserState = {
   image: 'http://app.expeditiongame.com/logo.png',
   loggedIn: true,
   name: 'Bob Fisher',
-  quests: {},
 };
 
 describe('User reducer', () => {
