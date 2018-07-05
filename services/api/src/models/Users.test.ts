@@ -1,9 +1,9 @@
 import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents';
 import {Database} from './Database';
 import {analyticsEvents as ae,
+  quests as q,
   testingDBWithState,
-  users as u,
-  quests as q
+  users as u
 } from './TestData';
 import {
   getUser,

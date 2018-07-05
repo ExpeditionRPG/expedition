@@ -1,11 +1,11 @@
 import * as fetchMock from 'fetch-mock';
-import {loadQuestXML} from './Web';
-import {Action} from '../Testing';
+import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {AUTH_SETTINGS} from '../Constants';
 import {initialQuestState} from '../reducers/Quest';
 import {initialSettings} from '../reducers/Settings';
 import {loggedOutUser} from '../reducers/User';
-import {defaultContext} from '../components/views/quest/cardtemplates/Template';
+import {Action} from '../Testing';
+import {loadQuestXML} from './Web';
 
 const cheerio = require('cheerio') as CheerioAPI;
 const emptyQuest = cheerio.load('<quest><roleplay></roleplay></quest>')('quest');

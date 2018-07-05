@@ -1,11 +1,11 @@
 import * as fetchMock from 'fetch-mock';
-import {toCard, toPrevious} from './Card';
-import {setNavigator} from '../Globals';
-import {Action} from '../Testing';
 import {AUTH_SETTINGS} from '../Constants';
+import {setNavigator} from '../Globals';
 import {initialQuestState} from '../reducers/Quest';
 import {initialSettings} from '../reducers/Settings';
 import {loggedOutUser} from '../reducers/User';
+import {Action} from '../Testing';
+import {toCard, toPrevious} from './Card';
 
 describe('Card action', () => {
   describe('toCard', () => {

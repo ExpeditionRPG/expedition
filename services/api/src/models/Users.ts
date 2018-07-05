@@ -1,8 +1,8 @@
 import * as Bluebird from 'bluebird';
 import Sequelize from 'sequelize';
 import {PUBLIC_PARTITION} from 'shared/schema/Constants';
-import {User} from 'shared/schema/Users';
 import {Quest} from 'shared/schema/Quests';
+import {User} from 'shared/schema/Users';
 import Config from '../config';
 import {Database, QuestInstance} from './Database';
 
@@ -61,7 +61,7 @@ export function getUserQuests(db: Database, id: string): Bluebird<UserQuestsType
       };
     });
 
-    const metas: Bluebird<void>[] = [];
+    const metas: Array<Bluebird<void>> = [];
     for (const k of Object.keys(userQuests)) {
       metas.push(db.quests.findOne({
         where: {partition: PUBLIC_PARTITION, id: k},

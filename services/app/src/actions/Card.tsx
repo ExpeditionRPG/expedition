@@ -3,8 +3,8 @@ import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants';
 import {getNavigator} from '../Globals';
 import {AppStateWithHistory, CardName, CardPhase} from '../reducers/StateTypes';
 import {getStore} from '../Store';
-import {logQuestPlay} from './Web';
 import {NavigateAction, remoteify} from './ActionTypes';
+import {logQuestPlay} from './Web';
 
 interface ToCardArgs {
   keySuffix?: string;

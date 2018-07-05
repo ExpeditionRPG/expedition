@@ -2,7 +2,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
-import {logQuestPlay} from '../../../actions/Web';
 import {CheckoutState, QuestState, SettingsType, UserState} from '../../../reducers/StateTypes';
 import Button from '../../base/Button';
 import Card from '../../base/Card';

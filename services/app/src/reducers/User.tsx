@@ -1,5 +1,5 @@
 import Redux from 'redux';
-import {UserLoginAction, UserQuestsAction, UserQuestsDeltaAction} from '../actions/ActionTypes';
+import {UserLoginAction} from '../actions/ActionTypes';
 import {UserState} from './StateTypes';
 
 export const loggedOutUser: UserState = {

@@ -2,9 +2,8 @@ import * as Raven from 'raven-js';
 import Redux from 'redux';
 import {AUTH_SETTINGS} from '../Constants';
 import {CordovaLoginPlugin, getGA, getGapi, getWindow} from '../Globals';
-import {AppState, UserQuestInstance, UserQuestsType, UserState} from '../reducers/StateTypes';
+import {AppState, UserState} from '../reducers/StateTypes';
 import {loggedOutUser} from '../reducers/User';
-import {UserQuestInstanceSelect, UserQuestsDeltaAction} from './ActionTypes';
 import {fetchUserQuests, handleFetchErrors} from './Web';
 
 interface LoadGapiResponse {gapi: any; async: boolean; }

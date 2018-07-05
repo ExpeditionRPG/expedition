@@ -1,7 +1,6 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {toCard, toPrevious} from '../../actions/Card';
-import {setDialog} from '../../actions/Dialog';
 import {selectPlayedQuest} from '../../actions/Quest';
 import {fetchQuestXML} from '../../actions/Web';
 import {QuestDetails} from '../../reducers/QuestTypes';
