@@ -167,7 +167,7 @@ export const events = {
 export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
   const db = new Database(new Sequelize({
     dialect: 'sqlite',
-    logging: true,
+    logging: false,
     storage: ':memory:',
   }));
 
