@@ -74,7 +74,7 @@ describe('users', () => {
       .catch(done.fail);
     });
 
-    fit('returns valid results for players with quest history', (done: DoneFn) => {
+    it('returns valid results for players with quest history', (done: DoneFn) => {
       testingDBWithState([
         u.basic,
         q.basic,
