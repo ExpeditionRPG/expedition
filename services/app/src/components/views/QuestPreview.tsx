@@ -1,8 +1,10 @@
 import DoneIcon from '@material-ui/icons/Done';
+import OfflinePin from '@material-ui/icons/OfflinePin';
 import StarsIcon from '@material-ui/icons/Stars';
 import * as React from 'react';
-import {formatPlayPeriod} from '../../Format';
+import {formatPlayPeriod, pluralize} from '../../Format';
 import {QuestDetails} from '../../reducers/QuestTypes';
+import {SavedQuestMeta, SettingsType} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 import StarRating from '../base/StarRating';
@@ -10,15 +12,18 @@ import StarRating from '../base/StarRating';
 const Moment = require('moment');
 
 export interface QuestPreviewStateProps {
-  isDirectLinked: boolean;
+  settings: SettingsType;
   quest: QuestDetails | null;
   lastPlayed: Date | null;
-  savedTS: number | null;
+  savedInstances: SavedQuestMeta[];
+  isDirectLinked: boolean;
 }
 
 export interface QuestPreviewDispatchProps {
   onPlay: (quest: QuestDetails, isDirectLinked: boolean) => void;
   onPlaySaved: (id: string, ts: number) => void;
+  onSave: (quest: QuestDetails) => void;
+  onDeleteOffline: (id: string, ts: number) => void;
   onDeleteConfirm: () => void;
   onReturn: () => void;
 }
@@ -48,38 +53,75 @@ function renderRequirements(quest: QuestDetails): JSX.Element[] {
   return delimited;
 }
 
+function renderSaves(props: QuestPreviewProps): JSX.Element|null {
+  const saves = props.savedInstances.filter((s) => s.pathLen !== 0);
+  if (!props.settings.experimental || saves.length === 0) {
+    return null;
+  }
+
+  saves.sort((a, b) => b.ts - a.ts);
+
+  const buttons = saves.map((s, i) => <Button key={i} onClick={(e) => props.onPlaySaved(s.details.id, s.ts)} id="play">{Moment(s.ts).fromNow()} ({pluralize(s.pathLen || 0, 'choice')})</Button>);
+  return (
+    <span>
+      <h3>Saves</h3>
+      {buttons}
+    </span>
+  );
+}
+
 const QuestPreview = (props: QuestPreviewProps): JSX.Element => {
   const quest = props.quest;
   if (!quest) {
-    return <Card title="Quest Details">Loading...</Card>;
+    return <Card title="Quest Preview">Loading...</Card>;
   }
 
-  let actions: JSX.Element;
-  const savedTS = props.savedTS;
-  if (savedTS !== null) {
-    actions = <span>
-      <Button className="bigbutton" onClick={(e) => props.onPlaySaved(quest.id, savedTS)} id="play">Resume</Button>
-      <Button onClick={(e) => props.onDeleteConfirm()} id="play">Delete save</Button>
-      <Button onClick={(e) => props.onReturn()} id="back">Back</Button>
-    </span>;
-  } else {
-    actions = <span>
-      <Button className="bigbutton" onClick={(e) => props.onPlay(quest, props.isDirectLinked)} id="play">Play</Button>
-      <Button id="searchDetailsBackButton" onClick={(e) => props.onReturn()} >Pick a different quest</Button>
-    </span>;
+  const lastSaved = props.savedInstances.filter((s) => s.pathLen !== 0).map((s) => s.ts).reduce((a, b) => Math.max(a, b), 0) || null;
+  let offlineTS: number|null = null;
+  for (const si of props.savedInstances) {
+    if (si.pathLen === 0) {
+      offlineTS = si.ts;
+      break;
+    }
   }
+
+  const actions: JSX.Element[] = [];
+
+  if (offlineTS !== null) {
+    actions.push(<Button key="play" className="bigbutton" onClick={(e) => props.onPlaySaved(quest.id, offlineTS || 0)} id="play">Play</Button>);
+  } else {
+    actions.push(<Button key="play" className="bigbutton" onClick={(e) => props.onPlay(quest, props.isDirectLinked)} id="play">Play</Button>);
+  }
+
+  if (props.settings.experimental) {
+    if (props.savedInstances.length > 0 && lastSaved !== null) {
+      actions.push(<Button key="continue" onClick={(e) => props.onPlaySaved(quest.id, lastSaved)} id="play">Continue from last save</Button>);
+    }
+
+    // Allow us to save non-local quests for offline play
+    if (!quest.publishedurl.startsWith('quests/')) {
+      let offlineButton: JSX.Element|null = <Button key="offlinesave" onClick={(e) => props.onSave(quest)} id="offlinesave">Save for offline play</Button>;
+      if (offlineTS !== null) {
+        offlineButton = <Button key="offlinedelete" onClick={(e) => props.onDeleteOffline(quest.id, offlineTS || 0)} id="offlinedelete">Clear offline state</Button>;
+      }
+      actions.push(offlineButton);
+    }
+  }
+
+  actions.push(<Button key="back" id="searchDetailsBackButton" onClick={(e) => props.onReturn()}>Back</Button>);
 
   const ratingAvg = quest.ratingavg || 0;
   return (
-    <Card title="Quest Details">
+    <Card title="Quest Preview">
       <div className="searchDetails">
         <h2>{quest.title}</h2>
         <div>{quest.summary}</div>
         <div className="author">by {quest.author}</div>
-        {savedTS !== null && <div className="summary">Saved {Moment(savedTS).fromNow()}</div>}
+        {lastSaved !== null && <div className="summary">Last saved {Moment(lastSaved).fromNow()}</div>}
         {(quest.ratingcount && quest.ratingcount >= 1) ? <StarRating readOnly={true} value={+ratingAvg} quantity={quest.ratingcount}/> : ''}
         <div className="indicators">
-          {props.lastPlayed && <div className="inline_icon"><DoneIcon className="inline_icon" /> Last played {Moment(props.lastPlayed).fromNow()}</div>}
+          {offlineTS && <div className="inline_icon"><OfflinePin className="inline_icon" />Available Offline</div>}
+          {props.lastPlayed && <div className="inline_icon"><DoneIcon className="inline_icon" /> Last completed {Moment(props.lastPlayed).fromNow()}</div>}
           {quest.official && <div className="inline_icon"><img className="inline_icon" src="images/compass_small.svg"/> Official Quest!</div>}
           {quest.awarded && <div className="inline_icon"><StarsIcon className="inline_icon" /> {quest.awarded}</div>}
         </div>
@@ -101,6 +143,7 @@ const QuestPreview = (props: QuestPreviewProps): JSX.Element => {
           </tbody>
         </table>
       </div>
+      {renderSaves(props)}
     </Card>
   );
 };

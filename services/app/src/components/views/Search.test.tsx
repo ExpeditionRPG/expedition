@@ -7,7 +7,6 @@ import {SearchSettings} from '../../reducers/StateTypes';
 import {
   renderResult,
   SearchResultProps,
-  smartTruncateSummary,
 } from './Search';
 configure({ adapter: new Adapter() });
 
@@ -56,6 +55,7 @@ describe('Search', () => {
       const props: SearchResultProps = {
         index: 0,
         lastPlayed: null,
+        offlineQuests: {},
         onQuest: jasmine.createSpy('onQuest'),
         quest: {...FEATURED_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides},
         search: TEST_SEARCH,
@@ -69,6 +69,8 @@ describe('Search', () => {
       const {wrapper} = setup('Learning to Adventure');
       expect(wrapper.html()).not.toContain('horror');
     });
+
+    it('displays offline icon when quest is available offline');
 
     it('displays horror icon when a quest uses the Horror expansion', () => {
       const {wrapper} = setup('Learning 2: The Horror');
@@ -114,24 +116,5 @@ describe('Search', () => {
   describe('Results', () => {
     it('gracefully handles no search results');
     it('renders some search results');
-  });
-
-  describe('smartTruncateSummary', () => {
-    it('chains smaller sentences before stopping', () => {
-      const DEAD_WASTELAND_SUMMARY = 'A story influenced by the awesome game Dead of Winter: Your colony is attacked. How will you respond? Actions have consequences, and consequences are far reaching. Will you survive The Dead of Winter?';
-      const DEAD_WASTELAND_EXPECTED = 'A story influenced by the awesome game Dead of Winter: Your colony is attacked. How will you respond?';
-      expect(smartTruncateSummary(DEAD_WASTELAND_SUMMARY)).toEqual(DEAD_WASTELAND_EXPECTED);
-    });
-
-    it('adds ellipses at a sentence boundary for a more natural feel', () => {
-      const SHARDS_OF_TIME_SUMMARY = 'You wake-up in the middle of an Ash Barren wasteland of Aikania. Now you have to explore the lands but dark creatures are tormenting this land. Can you free Aikania from this horrible curse?';
-      const SHARDS_OF_TIME_EXPECTED = 'You wake-up in the middle of an Ash Barren wasteland of Aikania...';
-      expect(smartTruncateSummary(SHARDS_OF_TIME_SUMMARY)).toEqual(SHARDS_OF_TIME_EXPECTED);
-    });
-
-    it('leaves excessively-long sentences alone', () => {
-      const MUNROE_SUMMARY = 'This kid-friendly, spooky Halloween adventure takes you into Mr Monroe’s haunted mansion where unexplainable things are happening…';
-      expect(smartTruncateSummary(MUNROE_SUMMARY)).toEqual(MUNROE_SUMMARY);
-    });
   });
 });

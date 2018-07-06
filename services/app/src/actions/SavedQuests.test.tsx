@@ -63,4 +63,8 @@ describe('SavedQuest actions', () => {
       expect(action.node.elem + '').toEqual('<roleplay>expected</roleplay>');
     });
   });
+
+  describe('saveQuestForOffline', () => {
+    it('Saves a publishedurl to local storage');
+  });
 });

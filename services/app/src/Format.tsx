@@ -15,3 +15,37 @@ export function formatPlayPeriod(minMinutes: number, maxMinutes: number): string
     return minMinutes + '-' + maxMinutes + ' min';
   }
 }
+
+export function smartTruncateSummary(summary: string) {
+  // Extract sentences
+  const match = summary.match(/(.*?(?:\.|\?|!))(?: |$)/gm);
+
+  if (match === null) {
+    return summary;
+  }
+
+  let result = '';
+  for (const m of match) {
+    if (result.length + m.length > 120) {
+      if (result === '') {
+        return summary.trim();
+      }
+
+      result = result.trim();
+      if (result.endsWith('.')) {
+        // Continue a natural ellispis
+        return result + '..';
+      }
+      return result;
+    }
+    result += m;
+  }
+  return summary.trim();
+}
+
+export function pluralize(n: number, suffix: string): string {
+  if (n === 1) {
+    return `${n} ${suffix}`;
+  }
+  return `${n} ${suffix}s`;
+}

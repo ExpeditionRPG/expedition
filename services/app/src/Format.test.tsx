@@ -1,4 +1,4 @@
-import {formatPlayPeriod} from './Format';
+import {formatPlayPeriod, smartTruncateSummary, pluralize} from './Format';
 
 describe('formatPlayPeriod', () => {
   it('formats time ranges to minutes and hours', () => {
@@ -6,5 +6,34 @@ describe('formatPlayPeriod', () => {
     expect(formatPlayPeriod(30, 120)).toEqual('30-120 min');
     expect(formatPlayPeriod(60, 120)).toEqual('1-2 hrs');
     expect(formatPlayPeriod(999, 999)).toEqual('2+ hrs');
+  });
+});
+
+describe('smartTruncateSummary', () => {
+  it('chains smaller sentences before stopping', () => {
+    const DEAD_WASTELAND_SUMMARY = 'A story influenced by the awesome game Dead of Winter: Your colony is attacked. How will you respond? Actions have consequences, and consequences are far reaching. Will you survive The Dead of Winter?';
+    const DEAD_WASTELAND_EXPECTED = 'A story influenced by the awesome game Dead of Winter: Your colony is attacked. How will you respond?';
+    expect(smartTruncateSummary(DEAD_WASTELAND_SUMMARY)).toEqual(DEAD_WASTELAND_EXPECTED);
+  });
+
+  it('adds ellipses at a sentence boundary for a more natural feel', () => {
+    const SHARDS_OF_TIME_SUMMARY = 'You wake-up in the middle of an Ash Barren wasteland of Aikania. Now you have to explore the lands but dark creatures are tormenting this land. Can you free Aikania from this horrible curse?';
+    const SHARDS_OF_TIME_EXPECTED = 'You wake-up in the middle of an Ash Barren wasteland of Aikania...';
+    expect(smartTruncateSummary(SHARDS_OF_TIME_SUMMARY)).toEqual(SHARDS_OF_TIME_EXPECTED);
+  });
+
+  it('leaves excessively-long sentences alone', () => {
+    const MUNROE_SUMMARY = 'This kid-friendly, spooky Halloween adventure takes you into Mr Monroe’s haunted mansion where unexplainable things are happening…';
+    expect(smartTruncateSummary(MUNROE_SUMMARY)).toEqual(MUNROE_SUMMARY);
+  });
+});
+
+describe('pluralize', () => {
+  it('adds an s for plural values', () => {
+    expect(pluralize(5, 'frobber')).toEqual('5 frobbers');
+    expect(pluralize(0, 'frobber')).toEqual('0 frobbers');
+  });
+  it('concats for singular values', () => {
+    expect(pluralize(1, 'frobber')).toEqual('1 frobber');
   });
 });

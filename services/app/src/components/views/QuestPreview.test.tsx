@@ -2,20 +2,24 @@ import {configure, render} from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import {FEATURED_QUESTS} from '../../Constants';
 import {QuestDetails} from '../../reducers/QuestTypes';
+import {initialSettings} from '../../reducers/Settings';
 import QuestPreview, {QuestPreviewProps} from './QuestPreview';
 configure({ adapter: new Adapter() });
 
-describe('Details', () => {
+describe('QuestPreview', () => {
   function setup(questTitle: string, overrides?: Partial<QuestPreviewProps>, questOverrides?: Partial<QuestDetails>) {
     const props: QuestPreviewProps = {
       isDirectLinked: false,
+      savedInstances: [],
       lastPlayed: null,
       quest: {...FEATURED_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides},
+      settings: initialSettings,
       onPlay: jasmine.createSpy('onPlay'),
       onPlaySaved: jasmine.createSpy('onPlaySaved'),
+      onSave: jasmine.createSpy('onSave'),
+      onDeleteOffline: jasmine.createSpy('onDeleteOffline'),
       onDeleteConfirm: jasmine.createSpy('onDeleteConfirm'),
       onReturn: jasmine.createSpy('onReturn'),
-      savedTS: null,
       ...overrides,
     };
     const wrapper = render(QuestPreview(props), undefined /*renderOptions*/);
@@ -62,4 +66,9 @@ describe('Details', () => {
   it('prompts for user count and multitouch if playing direct linked');
   it('goes directly to playing quest if not direct linked');
   it('allows users to go back');
+  it('allows save for offline play');
+  it('continues from most recent save');
+  it('lists all saves for the quest');
+  it('indicates when the quest is available offline');
+  it('does not allow users to save local quests offline');
 });
