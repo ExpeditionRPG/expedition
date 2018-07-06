@@ -276,11 +276,12 @@ interface DeleteSavedQuestDialogProps extends React.Props<any> {
   onClose: () => void;
   onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => void;
   open: boolean;
-  savedQuest: SavedQuestMeta;
+  savedQuest: SavedQuestMeta|null;
 }
 
 export class DeleteSavedQuestDialog extends React.Component<DeleteSavedQuestDialogProps, {}> {
-  public render(): JSX.Element {
+  public render() {
+    const savedQuest = this.props.savedQuest;
     return (
       <Dialog
         open={Boolean(this.props.open)}
@@ -289,7 +290,12 @@ export class DeleteSavedQuestDialog extends React.Component<DeleteSavedQuestDial
         <DialogContent className="dialog"></DialogContent>
         <DialogActions>
           <Button onClick={() => this.props.onClose()}>Cancel</Button>
-          <Button className="primary" onClick={() => this.props.onDeleteSavedQuest(this.props.savedQuest)}>Delete</Button>
+          <Button className="primary" onClick={() => {
+            if (savedQuest === null) {
+              throw new Error('missing saved quest information');
+            }
+            this.props.onDeleteSavedQuest(savedQuest);
+          }}>Delete</Button>
         </DialogActions>
       </Dialog>
     );
@@ -300,7 +306,7 @@ export interface DialogsStateProps {
   dialog: DialogState;
   multiplayerStats: MultiplayerCounters;
   quest: QuestState;
-  selectedSave: SavedQuestMeta;
+  selectedSave: SavedQuestMeta|null;
   settings: SettingsType;
   user: UserState;
 }

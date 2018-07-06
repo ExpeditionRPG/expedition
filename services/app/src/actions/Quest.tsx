@@ -4,6 +4,7 @@ import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplat
 import {QuestDetails} from '../reducers/QuestTypes';
 import {AppStateWithHistory, SettingsType} from '../reducers/StateTypes';
 import {
+  PreviewQuestAction,
   QuestDetailsAction,
   QuestExitAction,
   QuestNodeAction,
@@ -82,3 +83,15 @@ export function loadNode(node: ParserNode, details?: QuestDetails) {
     }
   };
 }
+
+interface PreviewQuestArgs {
+  quest: QuestDetails;
+  saveTS?: number;
+  lastPlayed?: Date;
+}
+export const previewQuest = remoteify(function previewQuest(a: PreviewQuestArgs, dispatch: Redux.Dispatch<any>) {
+  // dispatch(selectPlayedQuest(selected));
+  dispatch({type: 'PREVIEW_QUEST', quest: a.quest, savedTS: a.saveTS, lastPlayed: a.lastPlayed} as PreviewQuestAction);
+  dispatch(toCard({name: 'QUEST_PREVIEW'}));
+  return a;
+});

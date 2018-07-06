@@ -5,10 +5,7 @@ import {FEATURED_QUESTS} from '../../Constants';
 import {QuestDetails} from '../../reducers/QuestTypes';
 import {SearchSettings} from '../../reducers/StateTypes';
 import {
-  formatPlayPeriod,
-  renderDetails,
   renderResult,
-  SearchDetailsProps,
   SearchResultProps,
   smartTruncateSummary,
 } from './Search';
@@ -26,13 +23,6 @@ const TEST_SEARCH: SearchSettings = {
 };
 
 describe('Search', () => {
-  it('formats time ranges to minutes and hours', () => {
-    expect(formatPlayPeriod(30, 60)).toEqual('30-60 min');
-    expect(formatPlayPeriod(30, 120)).toEqual('30-120 min');
-    expect(formatPlayPeriod(60, 120)).toEqual('1-2 hrs');
-    expect(formatPlayPeriod(999, 999)).toEqual('2+ hrs');
-  });
-
   describe('Settings', () => {
     /*
     function setup() {
@@ -124,62 +114,6 @@ describe('Search', () => {
   describe('Results', () => {
     it('gracefully handles no search results');
     it('renders some search results');
-  });
-
-  describe('Details', () => {
-    function setup(questTitle: string, overrides?: Partial<SearchDetailsProps>, questOverrides?: Partial<QuestDetails>) {
-      const props: SearchDetailsProps = {
-        isDirectLinked: false,
-        lastPlayed: null,
-        quest: {...FEATURED_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides},
-        onPlay: jasmine.createSpy('onPlay'),
-        onReturn: jasmine.createSpy('onReturn'),
-        ...overrides,
-      };
-      const wrapper = render(renderDetails(props), undefined /*renderOptions*/);
-      return {props, wrapper};
-    }
-
-    it('renders selected quest details', () => {
-      const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-      const {wrapper} = setup(quest.title);
-      expect(wrapper.html()).toContain(quest.title);
-      expect(wrapper.html()).toContain(quest.genre);
-      expect(wrapper.html()).toContain(quest.summary);
-      expect(wrapper.html()).toContain(quest.author);
-      expect(wrapper.html()).toContain(quest.official);
-      expect(wrapper.html()).not.toContain(quest.expansionhorror);
-      expect(wrapper.html()).not.toContain(quest.requirespenpaper);
-      expect(wrapper.html()).not.toContain(quest.awarded);
-    });
-
-    it('shows last played information if it has been played before', () => {
-      const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-      const {wrapper} = setup(quest.title, {lastPlayed: new Date()});
-      expect(wrapper.text().toLowerCase()).toContain('last played');
-    });
-
-    it('does not show last played infomation if it does not exist', () => {
-      const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-      const {wrapper} = setup(quest.title, {lastPlayed: null});
-      expect(wrapper.text().toLowerCase()).not.toContain('last played');
-    });
-
-    it('does not show book icon if it does not exist', () => {
-      const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-      const {wrapper} = setup(quest.title, {}, {requirespenpaper: false});
-      expect(wrapper.html()).not.toContain('book');
-    });
-
-    it('shows a book icon if it exists', () => {
-      const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-      const {wrapper} = setup(quest.title, {}, {requirespenpaper: true});
-      expect(wrapper.html()).toContain('book');
-    });
-
-    it('prompts for user count and multitouch if playing direct linked');
-    it('goes directly to playing quest if not direct linked');
-    it('allows users to go back');
   });
 
   describe('smartTruncateSummary', () => {

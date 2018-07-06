@@ -5,7 +5,7 @@ import {getStorageJson, setStorageKeyValue} from '../LocalStorage';
 import {logEvent} from '../Logging';
 import {QuestDetails} from '../reducers/QuestTypes';
 import {SavedQuestMeta} from '../reducers/StateTypes';
-import {QuestNodeAction, SavedQuestDeletedAction, SavedQuestListAction, SavedQuestSelectedAction, SavedQuestStoredAction} from './ActionTypes';
+import {QuestNodeAction, SavedQuestDeletedAction, SavedQuestListAction, SavedQuestStoredAction} from './ActionTypes';
 import {initQuest} from './Quest';
 
 declare interface SavedQuest {xml: string; path: number[]; }
@@ -23,10 +23,6 @@ export function savedQuestKey(id: string, ts: number) {
 export function listSavedQuests(): SavedQuestListAction {
   const savedQuests = getSavedQuestMeta();
   return {type: 'SAVED_QUEST_LIST', savedQuests};
-}
-
-export function selectSavedQuest(selected: SavedQuestMeta): SavedQuestSelectedAction {
-  return {type: 'SAVED_QUEST_SELECTED', selected};
 }
 
 export function deleteSavedQuest(id: string, ts: number) {

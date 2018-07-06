@@ -1,5 +1,5 @@
 import Redux from 'redux';
-import {SearchResponseAction, ViewQuestAction} from '../actions/ActionTypes';
+import {SearchResponseAction} from '../actions/ActionTypes';
 import {SearchState} from './StateTypes';
 
 export const initialSearch: SearchState = {
@@ -10,14 +10,13 @@ export const initialSearch: SearchState = {
     text: '',
   },
   searching: false,
-  selected: null,
 };
 
 export function search(state: SearchState = initialSearch, action: Redux.Action): SearchState {
   switch (action.type) {
     case 'SEARCH_REQUEST':
       // Clear the searched quests if we're starting a new search.
-      return {...state, results: [], selected: null, searching: true};
+      return {...state, results: [], searching: true};
     case 'SEARCH_ERROR':
       return {...state, searching: false};
     case 'SEARCH_RESPONSE':
@@ -26,8 +25,6 @@ export function search(state: SearchState = initialSearch, action: Redux.Action)
         search: (action as SearchResponseAction).search,
         searching: false,
       };
-    case 'VIEW_QUEST':
-      return {...state, selected: (action as ViewQuestAction).quest};
     default:
       return state;
   }

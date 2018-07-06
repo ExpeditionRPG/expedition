@@ -109,6 +109,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         commitID: state.commitID,
         multiplayer: state.multiplayer,
         saved: state.saved,
+        questHistory: state.questHistory,
         settings: state.settings,
         user: state.user,
       } as AppStateWithHistory;
@@ -126,6 +127,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         _return: undefined,
         multiplayer: undefined,
         saved: undefined,
+        questHistory: undefined,
         settings: undefined,
       } as AppStateBase);
     }
