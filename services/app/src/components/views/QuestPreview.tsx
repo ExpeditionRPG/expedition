@@ -3,10 +3,8 @@ import StarsIcon from '@material-ui/icons/Stars';
 import * as React from 'react';
 import {formatPlayPeriod} from '../../Format';
 import {QuestDetails} from '../../reducers/QuestTypes';
-import {SavedQuestMeta, SearchPhase, SearchSettings, SearchState, SettingsType, UserQuestHistory, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
-import Checkbox from '../base/Checkbox';
 import StarRating from '../base/StarRating';
 
 const Moment = require('moment');

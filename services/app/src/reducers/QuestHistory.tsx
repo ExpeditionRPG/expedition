@@ -1,6 +1,6 @@
 import merge from 'deepmerge';
 import Redux from 'redux';
-import {UserQuestInstanceSelect, UserQuestsAction, UserQuestsDeltaAction} from '../actions/ActionTypes';
+import {UserQuestsAction, UserQuestsDeltaAction} from '../actions/ActionTypes';
 import {UserQuestHistory} from './StateTypes';
 
 const initialHistoryState: UserQuestHistory = {

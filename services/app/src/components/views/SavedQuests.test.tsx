@@ -1,7 +1,6 @@
 import {configure, render} from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
-import {QuestDetails} from '../../reducers/QuestTypes';
 import SavedQuests, {SavedQuestsProps} from './SavedQuests';
 configure({ adapter: new Adapter() });
 

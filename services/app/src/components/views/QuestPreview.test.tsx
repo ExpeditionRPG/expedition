@@ -1,9 +1,7 @@
 import {configure, render} from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
-import {LanguageType} from 'shared/schema/Constants';
 import {FEATURED_QUESTS} from '../../Constants';
 import {QuestDetails} from '../../reducers/QuestTypes';
-import {SearchSettings} from '../../reducers/StateTypes';
 import QuestPreview, {QuestPreviewProps} from './QuestPreview';
 configure({ adapter: new Adapter() });
 

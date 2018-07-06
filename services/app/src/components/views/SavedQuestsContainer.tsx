@@ -1,7 +1,5 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {toCard, toPrevious} from '../../actions/Card';
-import {setDialog} from '../../actions/Dialog';
 import {previewQuest} from '../../actions/Quest';
 import {AppState, SavedQuestMeta} from '../../reducers/StateTypes';
 import SavedQuests, {SavedQuestsDispatchProps, SavedQuestsStateProps} from './SavedQuests';

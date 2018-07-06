@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {QuestDetails} from '../../reducers/QuestTypes';
 import {UserQuestInstance, UserQuestsType} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';

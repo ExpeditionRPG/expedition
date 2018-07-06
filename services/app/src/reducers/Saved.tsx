@@ -1,5 +1,5 @@
 import Redux from 'redux';
-import {PreviewQuestAction, SavedQuestListAction} from '../actions/ActionTypes';
+import {SavedQuestListAction} from '../actions/ActionTypes';
 import {SavedQuestState} from './StateTypes';
 
 const initialSavedState: SavedQuestState = {

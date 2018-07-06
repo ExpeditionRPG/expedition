@@ -2,7 +2,7 @@ import Redux from 'redux';
 import {initCardTemplate} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {QuestDetails} from '../reducers/QuestTypes';
-import {AppStateWithHistory, SavedQuestMeta, SettingsType} from '../reducers/StateTypes';
+import {AppStateWithHistory, SettingsType} from '../reducers/StateTypes';
 import {
   PreviewQuestAction,
   QuestDetailsAction,
