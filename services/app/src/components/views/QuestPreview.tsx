@@ -54,14 +54,14 @@ function renderRequirements(quest: QuestDetails): JSX.Element[] {
 }
 
 function renderSaves(props: QuestPreviewProps): JSX.Element|null {
-  const saves = props.savedInstances.filter((s) => s.pathLen !== 0);
+  const saves = props.savedInstances.filter((s) => (s.pathLen || 0) !== 0);
   if (!props.settings.experimental || saves.length === 0) {
     return null;
   }
 
   saves.sort((a, b) => b.ts - a.ts);
 
-  const buttons = saves.map((s, i) => <Button key={i} onClick={(e) => props.onPlaySaved(s.details.id, s.ts)} id="play">{Moment(s.ts).fromNow()} ({pluralize(s.pathLen || 0, 'choice')})</Button>);
+  const buttons = saves.map((s, i) => <Button key={i} onClick={(e) => props.onPlaySaved(s.details.id, s.ts)} id="play">{Moment(s.ts).fromNow()} ({(s.pathLen === undefined) ? 'unknown position' : pluralize(s.pathLen || 0, 'choice')})</Button>);
   return (
     <span>
       <h3>Saves</h3>
@@ -76,7 +76,7 @@ const QuestPreview = (props: QuestPreviewProps): JSX.Element => {
     return <Card title="Quest Preview">Loading...</Card>;
   }
 
-  const lastSaved = props.savedInstances.filter((s) => s.pathLen !== 0).map((s) => s.ts).reduce((a, b) => Math.max(a, b), 0) || null;
+  const lastSaved = props.savedInstances.filter((s) => (s.pathLen || 0) !== 0).map((s) => s.ts).reduce((a, b) => Math.max(a, b), 0) || null;
   let offlineTS: number|null = null;
   for (const si of props.savedInstances) {
     if (si.pathLen === 0) {

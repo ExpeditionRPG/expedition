@@ -14,6 +14,6 @@ describe('SavedQuests', () => {
     const {wrapper} = setup({
       saved: [],
     });
-    expect(wrapper.text()).toContain('You have no saved quests.');
+    expect(wrapper.text()).toContain('You have no saved/offline quests.');
   });
 });

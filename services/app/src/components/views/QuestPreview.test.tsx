@@ -42,13 +42,13 @@ describe('QuestPreview', () => {
   it('shows last played information if it has been played before', () => {
     const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
     const {wrapper} = setup(quest.title, {lastPlayed: new Date()});
-    expect(wrapper.text().toLowerCase()).toContain('last played');
+    expect(wrapper.text().toLowerCase()).toContain('last completed');
   });
 
   it('does not show last played infomation if it does not exist', () => {
     const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
     const {wrapper} = setup(quest.title, {lastPlayed: null});
-    expect(wrapper.text().toLowerCase()).not.toContain('last played');
+    expect(wrapper.text().toLowerCase()).not.toContain('last completed');
   });
 
   it('does not show book icon if it does not exist', () => {

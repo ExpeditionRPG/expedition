@@ -1,4 +1,4 @@
-import {formatPlayPeriod, smartTruncateSummary, pluralize} from './Format';
+import {formatPlayPeriod, pluralize, smartTruncateSummary} from './Format';
 
 describe('formatPlayPeriod', () => {
   it('formats time ranges to minutes and hours', () => {

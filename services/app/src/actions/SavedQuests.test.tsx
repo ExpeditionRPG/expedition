@@ -41,7 +41,7 @@ describe('SavedQuest actions', () => {
 
     it('adds to the listing without affecting other quests', () => {
       storeSavedQuest(pnode, {id: NEW_ID} as any as QuestDetails, NEW_TS);
-      expect(getStorageJson(SAVED_QUESTS_KEY, [])).toContain({ts: NEW_TS, details: {id: NEW_ID}});
+      expect(getStorageJson(SAVED_QUESTS_KEY, [])).toContain({ts: NEW_TS, details: {id: NEW_ID}, pathLen: 1});
     });
     it('stores xml and context path', () => {
       storeSavedQuest(pnode, {id: NEW_ID} as any as QuestDetails, NEW_TS);
@@ -53,7 +53,7 @@ describe('SavedQuest actions', () => {
     it('loads the listing', () => {
       const list = listSavedQuests();
       expect(list.savedQuests.length).toEqual(1);
-      expect(list.savedQuests[0]).toEqual({ts: STORED_QUEST_TS, details: {id: STORED_QUEST_ID}} as any);
+      expect(list.savedQuests[0]).toEqual({ts: STORED_QUEST_TS, details: {id: STORED_QUEST_ID}, pathLen: 1} as any);
     });
   });
 

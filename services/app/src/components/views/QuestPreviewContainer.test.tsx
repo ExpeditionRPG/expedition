@@ -1,3 +1,3 @@
 describe('QuestPreviewContainer', () => {
-  //No tests; currently simple enough
+  // No tests; currently simple enough
 });
