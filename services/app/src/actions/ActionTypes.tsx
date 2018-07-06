@@ -113,9 +113,11 @@ export interface SearchResponseAction extends Redux.Action {
   search: SearchSettings;
 }
 
-export interface ViewQuestAction extends Redux.Action {
-  type: 'VIEW_QUEST';
+export interface PreviewQuestAction extends Redux.Action {
+  type: 'PREVIEW_QUEST';
   quest: QuestDetails;
+  savedTS: number|null;
+  lastPlayed: Date|null;
 }
 
 export interface UserLoginAction extends Redux.Action {
@@ -166,11 +168,6 @@ export interface SavedQuestDeletedAction {
 export interface SavedQuestListAction {
   type: 'SAVED_QUEST_LIST';
   savedQuests: SavedQuestMeta[];
-}
-
-export interface SavedQuestSelectedAction {
-  type: 'SAVED_QUEST_SELECTED';
-  selected: SavedQuestMeta;
 }
 
 export interface MultiplayerSessionAction extends Redux.Action {

@@ -1,10 +1,9 @@
 import Redux from 'redux';
-import {SavedQuestListAction, SavedQuestSelectedAction} from '../actions/ActionTypes';
+import {PreviewQuestAction, SavedQuestListAction} from '../actions/ActionTypes';
 import {SavedQuestState} from './StateTypes';
 
 const initialSavedState: SavedQuestState = {
   list: [],
-  selected: null,
 };
 
 export function saved(state: SavedQuestState = initialSavedState, action: Redux.Action): SavedQuestState {
@@ -14,8 +13,6 @@ export function saved(state: SavedQuestState = initialSavedState, action: Redux.
     case 'SAVED_QUEST_STORED':
       // All these actions have the same savedQuests signature
       return {...state, list: [...(action as SavedQuestListAction).savedQuests]};
-    case 'SAVED_QUEST_SELECTED':
-      return {...state, selected: (action as SavedQuestSelectedAction).selected};
     default:
       return state;
   }

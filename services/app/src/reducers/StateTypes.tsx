@@ -42,7 +42,7 @@ export interface EndSettings {
   text: string;
 }
 
-export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'DETAILS' | 'SEARCH' | 'PRIVATE';
+export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'SEARCH' | 'PRIVATE';
 
 export interface SearchSettings {
   [index: string]: any;
@@ -98,12 +98,24 @@ export interface SavedQuestMeta {
   ts: number;
 }
 
-export type SelectionListPhase = 'LIST' | 'DETAILS';
-
 export type MultiplayerPhase = 'CONNECT'|'LOBBY';
 export type CheckoutPhase = 'ENTRY' | 'DONE';
-export type CardName = 'QUEST_HISTORY' | 'SAVED_QUESTS' | 'CHECKOUT' | 'PLAYER_COUNT_SETTING' | 'QUEST_SETUP' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REMOTE_PLAY';
-export type CardPhase = TemplatePhase | SearchPhase | MultiplayerPhase | CheckoutPhase | SelectionListPhase;
+export type CardName =
+  'QUEST_PREVIEW' |
+  'QUEST_HISTORY' |
+  'SAVED_QUESTS' |
+  'CHECKOUT' |
+  'PLAYER_COUNT_SETTING' |
+  'QUEST_SETUP' |
+  'QUEST_END' |
+  'QUEST_CARD' |
+  'FEATURED_QUESTS' |
+  'SPLASH_CARD' |
+  'SEARCH_CARD' |
+  'SETTINGS' |
+  'ADVANCED' |
+  'REMOTE_PLAY';
+export type CardPhase = TemplatePhase | SearchPhase | MultiplayerPhase | CheckoutPhase;
 export interface CardState {
   questId: string;
   name: CardName;
@@ -119,16 +131,18 @@ export interface QuestState {
   details: QuestDetails;
   node: ParserNode;
   seed: string;
+  // Additional details populated depending on from where
+  // the user approaches the quest
+  lastPlayed: Date|null;
+  savedTS: number|null;
 }
 
 export interface SavedQuestState {
   list: SavedQuestMeta[];
-  selected: SavedQuestMeta|null;
 }
 
 export interface SearchState {
   search: SearchSettings;
-  selected: QuestDetails|null;
   results: QuestDetails[];
   searching: boolean;
 }
@@ -152,7 +166,6 @@ export interface UserState {
 
 export interface UserQuestHistory {
   list: UserQuestsType;
-  selected: UserQuestInstance|null;
 }
 
 export type FeedbackType = 'feedback'|'rating'|'report_error'|'report_quest';
@@ -192,13 +205,13 @@ export interface AppStateBase {
   search: SearchState;
   snackbar: SnackbarState;
   user: UserState;
-  questHistory: UserQuestHistory;
   commitID: number;
 }
 
 export interface AppState extends AppStateBase {
   settings: SettingsType;
   multiplayer: MultiplayerState;
+  questHistory: UserQuestHistory;
   saved: SavedQuestState;
 }
 

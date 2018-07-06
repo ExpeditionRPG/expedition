@@ -9,6 +9,7 @@ import * as React from 'react';
 import Truncate from 'react-truncate';
 import {CONTENT_RATING_DESC, GenreType, LANGUAGES} from 'shared/schema/Constants';
 import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants';
+import {formatPlayPeriod} from '../../Format';
 import {QuestDetails} from '../../reducers/QuestTypes';
 import {SearchPhase, SearchSettings, SearchState, SettingsType, UserQuestHistory, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
@@ -207,22 +208,6 @@ function renderSettings(props: SearchProps): JSX.Element {
   return (<SearchSettingsCard search={props.search} settings={props.settings} onSearch={props.onSearch} user={props.user} />);
 }
 
-export function formatPlayPeriod(minMinutes: number, maxMinutes: number): string {
-  if (maxMinutes >= 999) {
-    if (minMinutes >= 999) {
-      return '2+ hrs';
-    } else if (minMinutes >= 60) {
-      return Math.round(minMinutes / 60) + '+ hrs';
-    } else {
-      return Math.round(minMinutes) + '+ min';
-    }
-  } else if (minMinutes >= 60 && maxMinutes >= 60) {
-    return Math.round(minMinutes / 60) + '-' + Math.round(maxMinutes / 60) + ' hrs';
-  } else {
-    return minMinutes + '-' + maxMinutes + ' min';
-  }
-}
-
 export function smartTruncateSummary(summary: string) {
   // Extract sentences
   const match = summary.match(/(.*?(?:\.|\?|!))(?: |$)/gm);
@@ -342,69 +327,6 @@ function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
   );
 }
 
-export interface SearchDetailsProps {
-  isDirectLinked: boolean;
-  lastPlayed: Date | null;
-  onPlay: (quest: QuestDetails, isDirectLinked: boolean) => void;
-  onReturn: () => void;
-  quest: QuestDetails | null;
-}
-
-export function renderDetails(props: SearchDetailsProps): JSX.Element {
-  const quest = props.quest;
-  if (!quest) {
-    return <Card title="Quest Details">Loading...</Card>;
-  }
-  // TODO FIXME to actually use array and join logic
-  const requires = [];
-  if (quest.expansionhorror && quest.requirespenpaper) {
-    requires.push(<span><span><img className="inline_icon" src="images/horror_small.svg"/>The Horror</span>, <span><img className="inline_icon" src="images/book_small.svg"/> Pen and Paper</span></span>);
-  }
-  if (quest.expansionhorror && !quest.requirespenpaper) {
-    requires.push(<span><img className="inline_icon" src="images/horror_small.svg"/>The Horror</span>);
-  }
-  if (!quest.expansionhorror && quest.requirespenpaper) {
-    requires.push(<span><img className="inline_icon" src="images/book_small.svg"/> Pen and Paper</span>);
-  }
-  if (!quest.expansionhorror && !quest.requirespenpaper) {
-    requires.push(<span>None</span>);
-  }
-  const ratingAvg = quest.ratingavg || 0;
-  return (
-    <Card title="Quest Details">
-      <div className="searchDetails">
-        <h2>{quest.title}</h2>
-        <div>{quest.summary}</div>
-        <div className="author">by {quest.author}</div>
-        {(quest.ratingcount && quest.ratingcount >= 1) ? <StarRating readOnly={true} value={+ratingAvg} quantity={quest.ratingcount}/> : ''}
-        <div className="indicators">
-          {props.lastPlayed && <div className="inline_icon"><DoneIcon className="inline_icon" /> Last played {Moment(props.lastPlayed).fromNow()}</div>}
-          {quest.official && <div className="inline_icon"><img className="inline_icon" src="images/compass_small.svg"/> Official Quest!</div>}
-          {quest.awarded && <div className="inline_icon"><StarsIcon className="inline_icon" /> {quest.awarded}</div>}
-        </div>
-      </div>
-      <Button className="bigbutton" onClick={(e) => props.onPlay(quest, props.isDirectLinked)} id="play">Play</Button>
-      <Button id="searchDetailsBackButton" onClick={(e) => props.onReturn()} >Pick a different quest</Button>
-      <div className="searchDetailsExtended">
-        <h3>Details</h3>
-        <table className="searchDetailsTable">
-          <tbody>
-            <tr><th>Requires</th><td>{requires}</td></tr>
-            <tr><th>Content rating</th><td>{quest.contentrating}</td></tr>
-            {quest.mintimeminutes !== undefined && quest.maxtimeminutes !== undefined &&
-              <tr><th>Play time</th><td>{formatPlayPeriod(quest.mintimeminutes, quest.maxtimeminutes)}</td></tr>
-            }
-            <tr><th>Players</th><td>{quest.minplayers}-{quest.maxplayers}</td></tr>
-            <tr><th>Genre</th><td>{quest.genre}</td></tr>
-            <tr><th>Language</th><td>{quest.language}</td></tr>
-            <tr><th>Last updated</th><td>{Moment(quest.published).format('MMMM D, YYYY h:mm a')}</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </Card>
-  );
-}
-
 // We make this a react component to hold a bit of state and avoid sending
 // redux actions for every single change to input.
 interface SearchDisclaimerCardProps {
@@ -463,14 +385,6 @@ const Search = (props: SearchProps): JSX.Element => {
       return renderResults(props);
     case 'PRIVATE':
       return renderResults(props, true);
-    case 'DETAILS':
-      return renderDetails({
-        isDirectLinked: props.isDirectLinked,
-        lastPlayed: (props.questHistory.list[(props.selected || {id: '-1'}).id] || {}).lastPlayed,
-        onPlay: props.onPlay,
-        onReturn: props.onReturn,
-        quest: props.selected,
-      });
     default:
       throw new Error('Unknown search phase ' + props.phase);
   }

@@ -2,7 +2,8 @@ import {connect} from 'react-redux';
 import Redux from 'redux';
 import {toCard, toPrevious} from '../../actions/Card';
 import {setDialog} from '../../actions/Dialog';
-import {search, viewQuest} from '../../actions/Search';
+import {previewQuest} from '../../actions/Quest';
+import {search} from '../../actions/Search';
 import {ensureLogin} from '../../actions/User';
 import {fetchQuestXML, subscribe} from '../../actions/Web';
 import {QuestDetails} from '../../reducers/QuestTypes';
@@ -43,7 +44,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
       }
     },
     onQuest: (quest: QuestDetails) => {
-      dispatch(viewQuest({quest}));
+      dispatch(previewQuest({quest}));
     },
     onReturn: () => {
       dispatch(toPrevious({}));

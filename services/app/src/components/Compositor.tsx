@@ -10,7 +10,6 @@ import {
   MultiplayerState,
   QuestState,
   SearchPhase,
-  SelectionListPhase,
   SettingsType,
   SnackbarState,
   TransitionClassType
@@ -27,6 +26,7 @@ import {renderCardTemplate} from './views/quest/cardtemplates/Template';
 import QuestEndContainer from './views/quest/QuestEndContainer';
 import QuestSetupContainer from './views/quest/QuestSetupContainer';
 import QuestHistoryContainer from './views/QuestHistoryContainer';
+import QuestPreviewContainer from './views/QuestPreviewContainer';
 import SavedQuestsContainer from './views/SavedQuestsContainer';
 import SearchContainer from './views/SearchContainer';
 import SettingsContainer from './views/SettingsContainer';
@@ -70,10 +70,13 @@ export default class Compositor extends React.Component<CompositorProps, {}> {
         card = <FeaturedQuestsContainer />;
         break;
       case 'SAVED_QUESTS':
-        card = <SavedQuestsContainer  phase={this.props.card.phase as SelectionListPhase} />;
+        card = <SavedQuestsContainer />;
         break;
       case 'QUEST_HISTORY':
-        card = <QuestHistoryContainer  phase={this.props.card.phase as SelectionListPhase} />;
+        card = <QuestHistoryContainer />;
+        break;
+      case 'QUEST_PREVIEW':
+        card = <QuestPreviewContainer />;
         break;
       case 'QUEST_SETUP':
         card = <QuestSetupContainer />;
