@@ -11,7 +11,8 @@ import {QuestDetails} from '../reducers/QuestTypes';
 import {AppState, FeedbackType, QuestState, SettingsType, UserQuestsType, UserState} from '../reducers/StateTypes';
 import {remoteify, UserQuestsAction} from './ActionTypes';
 import {toCard} from './Card';
-import {initQuest, userQuestsDelta} from './Quest';
+import {initQuest} from './Quest';
+import {userQuestsDelta} from './QuestHistory';
 import {openSnackbar} from './Snackbar';
 import {ensureLogin} from './User';
 

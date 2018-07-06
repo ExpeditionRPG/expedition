@@ -2,16 +2,15 @@ import Redux from 'redux';
 import {initCardTemplate} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {QuestDetails} from '../reducers/QuestTypes';
-import {AppStateWithHistory, SettingsType, UserQuestInstance, UserQuestsType} from '../reducers/StateTypes';
+import {AppStateWithHistory, SettingsType} from '../reducers/StateTypes';
 import {
   QuestDetailsAction,
   QuestExitAction,
   QuestNodeAction,
   remoteify,
-  UserQuestInstanceSelect,
-  UserQuestsDeltaAction,
 } from './ActionTypes';
 import {toCard} from './Card';
+import {logQuestPlay} from './Web';
 
 export function initQuest(details: QuestDetails, questNode: Cheerio, ctx: TemplateContext): QuestNodeAction {
   const firstNode = questNode.children().eq(0);
@@ -21,6 +20,12 @@ export function initQuest(details: QuestDetails, questNode: Cheerio, ctx: Templa
 
 export const exitQuest = remoteify(function exitQuest(): QuestExitAction {
   return {type: 'QUEST_EXIT'};
+});
+
+interface EndQuestArgs {}
+export const endQuest = remoteify(function endQuest(a: EndQuestArgs, dispatch: Redux.Dispatch<any>) {
+  dispatch(toCard({name: 'QUEST_END'}));
+  dispatch(logQuestPlay({phase: 'end'}));
 });
 
 interface ChoiceArgs {
@@ -65,7 +70,7 @@ export function loadNode(node: ParserNode, details?: QuestDetails) {
     if (tag === 'trigger') {
       const triggerName = node.elem.text().trim();
       if (triggerName === 'end') {
-        dispatch(toCard({name: 'QUEST_END'}));
+        dispatch(endQuest({}));
       } else {
         throw new Error('invalid trigger ' + triggerName);
       }
@@ -75,17 +80,5 @@ export function loadNode(node: ParserNode, details?: QuestDetails) {
       }
       dispatch(initCardTemplate(node));
     }
-  };
-}
-
-export function userQuestsDelta(delta: Partial<UserQuestsType>) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    dispatch({type: 'USER_QUESTS_DELTA', delta} as UserQuestsDeltaAction);
-  };
-}
-
-export function selectPlayedQuest(selected: UserQuestInstance) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    dispatch({type: 'USER_QUEST_INSTANCE_SELECT', selected} as UserQuestInstanceSelect);
   };
 }

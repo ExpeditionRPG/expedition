@@ -37,7 +37,7 @@ const options = {
   },
   module: {
     rules: [
-      { test: /\.tsx$/, enforce: 'pre', loader: 'tslint-loader' },
+      { test: /\.tsx$/, enforce: 'pre', loader: 'tslint-loader', options: {fix: true}},
       { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader: 'file-loader',
         options: { name: '[name].[ext]' }, // disable filename hashing for infrequently changed static assets to enable preloading
       },

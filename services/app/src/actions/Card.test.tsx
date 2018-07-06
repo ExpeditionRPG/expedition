@@ -1,9 +1,4 @@
-import * as fetchMock from 'fetch-mock';
-import {AUTH_SETTINGS} from '../Constants';
 import {setNavigator} from '../Globals';
-import {initialQuestState} from '../reducers/Quest';
-import {initialSettings} from '../reducers/Settings';
-import {loggedOutUser} from '../reducers/User';
 import {Action} from '../Testing';
 import {toCard, toPrevious} from './Card';
 
@@ -11,10 +6,6 @@ describe('Card action', () => {
   describe('toCard', () => {
     const navigator = {vibrate: () => { /* mock */ }};
     setNavigator(navigator);
-
-    afterEach(() => {
-      fetchMock.restore();
-    });
 
     it('causes vibration if vibration enabled', () => {
       spyOn(navigator, 'vibrate');
@@ -30,17 +21,6 @@ describe('Card action', () => {
 
     it('dispatches a NAVIGATE action', () => {
       Action(toCard).expect({name: 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({type: 'NAVIGATE'}));
-    });
-
-    it('Logs the end of the quest to analytics', () => {
-      const matcher = AUTH_SETTINGS.URL_BASE + '/analytics/quest/end';
-      fetchMock.post(matcher, {});
-      Action(toCard, {
-        user: loggedOutUser,
-        settings: initialSettings,
-        quest: {details: initialQuestState},
-      }).execute({name: 'QUEST_END'});
-      expect(fetchMock.called(matcher)).toEqual(true);
     });
   });
 

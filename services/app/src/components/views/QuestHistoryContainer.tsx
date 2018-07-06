@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {toCard, toPrevious} from '../../actions/Card';
-import {selectPlayedQuest} from '../../actions/Quest';
+import {selectPlayedQuest} from '../../actions/QuestHistory';
 import {fetchQuestXML} from '../../actions/Web';
 import {QuestDetails} from '../../reducers/QuestTypes';
 import {AppState, UserQuestInstance} from '../../reducers/StateTypes';
