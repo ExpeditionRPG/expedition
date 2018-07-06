@@ -42,10 +42,3 @@ export function smartTruncateSummary(summary: string) {
   }
   return summary.trim();
 }
-
-export function pluralize(n: number, suffix: string): string {
-  if (n === 1) {
-    return `${n} ${suffix}`;
-  }
-  return `${n} ${suffix}s`;
-}

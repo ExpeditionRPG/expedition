@@ -1,5 +1,6 @@
+import * as pluralize from 'pluralize';
 import * as React from 'react';
-import {pluralize, smartTruncateSummary} from '../../Format';
+import {smartTruncateSummary} from '../../Format';
 import {SavedQuestMeta} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
@@ -60,7 +61,7 @@ const SavedQuests = (props: SavedQuestsProps): JSX.Element => {
       <Button onClick={() => props.onSelect(s)} key={index} id={'quest' + index.toString()}>
         <div className="questButton">
           <div className="title">{s.details.title}</div>
-          <div className="summary">{Moment(s.ts).fromNow()} ({pluralize(s.numSaves, 'save')})</div>
+          <div className="summary">{Moment(s.ts).fromNow()} ({s.numSaves} {pluralize('save', s.numSaves)})</div>
         </div>
       </Button>
     );

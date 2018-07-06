@@ -1,8 +1,9 @@
 import DoneIcon from '@material-ui/icons/Done';
 import OfflinePin from '@material-ui/icons/OfflinePin';
 import StarsIcon from '@material-ui/icons/Stars';
+import * as pluralize from 'pluralize';
 import * as React from 'react';
-import {formatPlayPeriod, pluralize} from '../../Format';
+import {formatPlayPeriod} from '../../Format';
 import {QuestDetails} from '../../reducers/QuestTypes';
 import {SavedQuestMeta, SettingsType} from '../../reducers/StateTypes';
 import Button from '../base/Button';
@@ -61,7 +62,7 @@ function renderSaves(props: QuestPreviewProps): JSX.Element|null {
 
   saves.sort((a, b) => b.ts - a.ts);
 
-  const buttons = saves.map((s, i) => <Button key={i} onClick={(e) => props.onPlaySaved(s.details.id, s.ts)} id="play">{Moment(s.ts).fromNow()} ({(s.pathLen === undefined) ? 'unknown position' : pluralize(s.pathLen || 0, 'choice')})</Button>);
+  const buttons = saves.map((s, i) => <Button key={i} onClick={(e) => props.onPlaySaved(s.details.id, s.ts)} id="play">{Moment(s.ts).fromNow()} ({(s.pathLen === undefined) ? 'unknown position' : `${s.pathLen.toString()} ${pluralize('choice', s.pathLen || 0)}`})</Button>);
   return (
     <span>
       <h3>Saves</h3>

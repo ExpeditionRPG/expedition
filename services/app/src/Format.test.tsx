@@ -1,4 +1,4 @@
-import {formatPlayPeriod, pluralize, smartTruncateSummary} from './Format';
+import {formatPlayPeriod, smartTruncateSummary} from './Format';
 
 describe('formatPlayPeriod', () => {
   it('formats time ranges to minutes and hours', () => {
@@ -25,15 +25,5 @@ describe('smartTruncateSummary', () => {
   it('leaves excessively-long sentences alone', () => {
     const MUNROE_SUMMARY = 'This kid-friendly, spooky Halloween adventure takes you into Mr Monroe’s haunted mansion where unexplainable things are happening…';
     expect(smartTruncateSummary(MUNROE_SUMMARY)).toEqual(MUNROE_SUMMARY);
-  });
-});
-
-describe('pluralize', () => {
-  it('adds an s for plural values', () => {
-    expect(pluralize(5, 'frobber')).toEqual('5 frobbers');
-    expect(pluralize(0, 'frobber')).toEqual('0 frobbers');
-  });
-  it('concats for singular values', () => {
-    expect(pluralize(1, 'frobber')).toEqual('1 frobber');
   });
 });
