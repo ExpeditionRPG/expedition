@@ -165,7 +165,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
           });
           const match = search.find(session);
           if (match) {
-            ref.editor.scrollToLine(match.start.row + 1, false, false);
+            ref.editor.scrollToLine(match.start.row, false, false);
             return true;
           }
           return false;
