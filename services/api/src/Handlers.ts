@@ -78,7 +78,7 @@ function getVersions(date: string): Bluebird<Versions> {
 const memoizedVersions = (typeof(memoize) === 'function') ? memoize(getVersions, { promise: true }) : getVersions;
 
 export function announcement(req: express.Request, res: express.Response) {
-  memoizedVersions(new Date().toJSON().slice(0, 10))
+  memoizedVersions(new Date().toJSON().slice(0, 10)) // per day / 24 hour cache
     .then((versions: Versions) => {
       res.json({
         link: Config.get('ANNOUNCEMENT_LINK') || '',
