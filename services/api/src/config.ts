@@ -55,35 +55,13 @@ nconf.argv()
 ])
 .file({ file: CONFIG_PATH })
 .defaults({
-  DATABASE_URL: 'postgres://aaa:test.com:111/aaa',
   ENABLE_PAYMENT: false,
   OAUTH2_CALLBACK: 'http://localhost:8080/auth/google/callback',
   OAUTH2_CLIENT_ID: '',
   OAUTH2_CLIENT_SECRET: '',
   PORT: 8081,
-  SESSION_SECRET: '',
   SEQUELIZE_LOGGING: true,
   SUPER_USER_IDS: [],
 });
-
-// Check for required settings
-const REQUIRED_SETTINGS = [
-  'DATABASE_URL',
-  'OAUTH2_CLIENT_ID',
-  'OAUTH2_CLIENT_SECRET',
-  'SESSION_SECRET',
-];
-
-const missing = [];
-for (const setting of REQUIRED_SETTINGS) {
-  if (!nconf.get(setting) || nconf.get(setting) === '') {
-    missing.push(setting);
-  }
-}
-if (missing.length > 0) {
-  console.warn('Cannot find the following config settings:\n\t' + missing.join('\n\t') +
-    '\nSet them via environment variable or add them to a config.json file in the repository root.' +
-    '\nSee "config-example.json" for an example config with all required fields.\n');
-}
 
 export default nconf;

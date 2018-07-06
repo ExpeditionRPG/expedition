@@ -3,8 +3,8 @@
 # Make sure to set your credentials via `aws configure`, environment variables or credentials file
 # http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
 
-read -p "This will remove built files, rebuild the app, and deploy to S3. Continue? [Y/N]" -n 1 -r
-if [[ $REPLY =~ ^[Yy]$ ]]
+read -p "This will remove built files, rebuild the app, and deploy to S3. Continue? (Y/n)" -n 1 -r
+if [[ ${REPLY:-Y} =~ ^[Yy]$ ]]; then
   rm -rf dist
 
   # Build the app - manually configure for dev environment
@@ -16,4 +16,4 @@ if [[ $REPLY =~ ^[Yy]$ ]]
   # Deploy to beta
   export AWS_DEFAULT_REGION='us-east-2'
   aws s3 cp dist s3://betaquests.expeditiongame.com --recursive
-then
+fi

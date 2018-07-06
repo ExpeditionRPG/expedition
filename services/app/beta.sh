@@ -5,9 +5,8 @@
 # Make sure to set your credentials via `aws configure`, environment variables or credentials file
 # http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
 
-read -p "This will remove built files, rebuild the app, and deploy to S3. Continue? [Y/N]" -n 1 -r
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
+read -p "This will remove built files, rebuild the app, and deploy to S3. Continue? (Y/n)" -n 1 -r
+if [[ ${REPLY:-Y} =~ ^[Yy]$ ]]; then
   rm -rf www
   rm platforms/android/build/outputs/apk/android-debug.apk
 
