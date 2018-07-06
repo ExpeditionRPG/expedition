@@ -1,11 +1,10 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {toCard, toPrevious} from '../../actions/Card';
-import {setDialog} from '../../actions/Dialog';
 import {previewQuest} from '../../actions/Quest';
 import {search} from '../../actions/Search';
 import {ensureLogin} from '../../actions/User';
-import {fetchQuestXML, subscribe} from '../../actions/Web';
+import {subscribe} from '../../actions/Web';
 import {QuestDetails} from '../../reducers/QuestTypes';
 import {AppStateWithHistory, SearchSettings, SettingsType, UserState} from '../../reducers/StateTypes';
 import Search, {SearchDispatchProps, SearchStateProps} from './Search';
