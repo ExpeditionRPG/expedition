@@ -1,3 +1,15 @@
+import * as fetchMock from 'fetch-mock';
+import {defaultContext} from '../components/views/quest/cardtemplates/Template';
+import {AUTH_SETTINGS} from '../Constants';
+import {initialQuestState} from '../reducers/Quest';
+import {initialSettings} from '../reducers/Settings';
+import {loggedOutUser} from '../reducers/User';
+import {Action} from '../Testing';
+import {loadQuestXML} from './Web';
+
+const cheerio = require('cheerio') as CheerioAPI;
+const emptyQuest = cheerio.load('<quest><roleplay></roleplay></quest>')('quest');
+
 describe('Web action', () => {
   describe('fetchQuestXML', () => {
     it('shows snackbar on request error'); // $10
@@ -5,7 +17,23 @@ describe('Web action', () => {
   });
 
   describe('loadQuestXML', () => {
-    // Tested via fetchQuestXML
+    afterEach(() => {
+      fetchMock.restore();
+    });
+    it('logs quest play', () => {
+      const matcher = AUTH_SETTINGS.URL_BASE + '/analytics/quest/start';
+      fetchMock.post(matcher, {});
+      Action(loadQuestXML as any, {
+        user: loggedOutUser,
+        settings: initialSettings,
+        quest: {details: initialQuestState},
+      }).execute({
+        details: initialQuestState,
+        questNode: emptyQuest,
+        ctx: defaultContext(),
+      });
+      expect(fetchMock.called(matcher)).toEqual(true);
+    });
   });
 
   describe('search', () => {

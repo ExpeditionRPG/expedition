@@ -25,6 +25,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Featu
     onSavedQuests(): void {
       dispatch(toCard({name: 'SAVED_QUESTS', phase: 'LIST'}));
     },
+    onQuestHistory(): void {
+      dispatch(toCard({name: 'QUEST_HISTORY', phase: 'LIST'}));
+    },
     onSearchSelect(user: UserState, settings: SettingsType): void {
       if (user && user.loggedIn) {
         dispatch(search({

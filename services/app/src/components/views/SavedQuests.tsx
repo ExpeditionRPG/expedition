@@ -1,12 +1,12 @@
 import * as React from 'react';
-import {SavedQuestMeta, SavedQuestsPhase} from '../../reducers/StateTypes';
+import {SavedQuestMeta, SelectionListPhase} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 
 const Moment = require('moment');
 
 export interface SavedQuestsStateProps {
-  phase: SavedQuestsPhase;
+  phase: SelectionListPhase;
   saved: SavedQuestMeta[];
   selected: SavedQuestMeta|null;
 }

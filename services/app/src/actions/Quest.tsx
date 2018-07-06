@@ -7,9 +7,10 @@ import {
   QuestDetailsAction,
   QuestExitAction,
   QuestNodeAction,
-  remoteify
+  remoteify,
 } from './ActionTypes';
 import {toCard} from './Card';
+import {logQuestPlay} from './Web';
 
 export function initQuest(details: QuestDetails, questNode: Cheerio, ctx: TemplateContext): QuestNodeAction {
   const firstNode = questNode.children().eq(0);
@@ -19,6 +20,12 @@ export function initQuest(details: QuestDetails, questNode: Cheerio, ctx: Templa
 
 export const exitQuest = remoteify(function exitQuest(): QuestExitAction {
   return {type: 'QUEST_EXIT'};
+});
+
+interface EndQuestArgs {}
+export const endQuest = remoteify(function endQuest(a: EndQuestArgs, dispatch: Redux.Dispatch<any>) {
+  dispatch(toCard({name: 'QUEST_END'}));
+  dispatch(logQuestPlay({phase: 'end'}));
 });
 
 interface ChoiceArgs {
@@ -63,7 +70,7 @@ export function loadNode(node: ParserNode, details?: QuestDetails) {
     if (tag === 'trigger') {
       const triggerName = node.elem.text().trim();
       if (triggerName === 'end') {
-        dispatch(toCard({name: 'QUEST_END'}));
+        dispatch(endQuest({}));
       } else {
         throw new Error('invalid trigger ' + triggerName);
       }

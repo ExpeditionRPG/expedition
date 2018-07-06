@@ -2,9 +2,8 @@ import * as Raven from 'raven-js';
 import Redux from 'redux';
 import {AUTH_SETTINGS} from '../Constants';
 import {CordovaLoginPlugin, getGA, getGapi, getWindow} from '../Globals';
-import {AppState, UserQuestsType, UserState} from '../reducers/StateTypes';
+import {AppState, UserState} from '../reducers/StateTypes';
 import {loggedOutUser} from '../reducers/User';
-import {UserQuestsDeltaAction} from './ActionTypes';
 import {fetchUserQuests, handleFetchErrors} from './Web';
 
 interface LoadGapiResponse {gapi: any; async: boolean; }
@@ -71,7 +70,6 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
       image: user.image,
       loggedIn: true,
       name: user.name,
-      quests: {}, // Requested separately; cleared for now since it's a new user
     };
   }).catch((error: Error) => {
     console.log('Request failed', error);
@@ -205,11 +203,5 @@ export function silentLogin(): (dispatch: Redux.Dispatch<any>, getState: () => A
     .then((p) => silentLoginCordova(p))
     .catch(() => silentLoginWeb())
     .then(updateState(dispatch));
-  };
-}
-
-export function userQuestsDelta(delta: Partial<UserQuestsType>) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    dispatch({type: 'USER_QUESTS_DELTA', delta} as UserQuestsDeltaAction);
   };
 }

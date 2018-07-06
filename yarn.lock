@@ -162,6 +162,10 @@
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
 
+"@types/fetch-mock@^6.0.3":
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/@types/fetch-mock/-/fetch-mock-6.0.3.tgz#54ba90776293e728089bf53ba53e3c69f1c80655"
+
 "@types/form-data@*":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@types/form-data/-/form-data-2.2.1.tgz#ee2b3b8eaa11c0938289953606b745b738c54b1e"
@@ -1560,7 +1564,7 @@ babel-polyfill@6.23.0:
     core-js "^2.4.0"
     regenerator-runtime "^0.10.0"
 
-babel-polyfill@^6.23.0:
+babel-polyfill@^6.23.0, babel-polyfill@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.26.0.tgz#379937abc67d7895970adc621f284cd966cf2153"
   dependencies:
@@ -4649,6 +4653,14 @@ fbjs@^0.8.1, fbjs@^0.8.16:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.18"
 
+fetch-mock@^6.5.0:
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/fetch-mock/-/fetch-mock-6.5.0.tgz#3841b90d5a315e213be61c07f1125be8c52f4f9c"
+  dependencies:
+    babel-polyfill "^6.26.0"
+    glob-to-regexp "^0.4.0"
+    path-to-regexp "^2.2.1"
+
 figures@^1.4.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/figures/-/figures-1.7.0.tgz#cbe1e3affcf1cd44b80cadfed28dc793a9701d2e"
@@ -5154,6 +5166,10 @@ glob-stream@^5.3.2:
     through2 "^0.6.0"
     to-absolute-glob "^0.1.1"
     unique-stream "^2.0.2"
+
+glob-to-regexp@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/glob-to-regexp/-/glob-to-regexp-0.4.0.tgz#49bd677b1671022bd10921c3788f23cdebf9c7e6"
 
 glob2base@^0.0.12:
   version "0.0.12"
@@ -9086,6 +9102,10 @@ path-to-regexp@^1.2.1, path-to-regexp@^1.7.0:
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-1.7.0.tgz#59fde0f435badacba103a84e9d3bc64e96b9937d"
   dependencies:
     isarray "0.0.1"
+
+path-to-regexp@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-2.2.1.tgz#90b617025a16381a879bc82a38d4e8bdeb2bcf45"
 
 path-type@^1.0.0:
   version "1.1.0"

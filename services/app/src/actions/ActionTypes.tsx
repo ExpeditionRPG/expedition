@@ -14,6 +14,7 @@ import {
   SavedQuestMeta,
   SearchSettings,
   SettingsType,
+  UserQuestInstance,
   UserQuestsType,
   UserState,
 } from '../reducers/StateTypes';
@@ -129,6 +130,11 @@ export interface UserLogoutAction extends Redux.Action {
 export interface UserQuestsAction extends Redux.Action {
   type: 'USER_QUESTS';
   quests: UserQuestsType;
+}
+
+export interface UserQuestInstanceSelect extends Redux.Action {
+  type: 'USER_QUEST_INSTANCE_SELECT';
+  selected: UserQuestInstance;
 }
 
 export interface UserQuestsDeltaAction extends Redux.Action {

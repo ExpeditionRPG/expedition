@@ -4,7 +4,7 @@ import {QuestNodeAction, remoteify} from '../../../../../actions/ActionTypes';
 import {audioSet} from '../../../../../actions/Audio';
 import {toCard} from '../../../../../actions/Card';
 import {setMultiplayerStatus} from '../../../../../actions/Multiplayer';
-import {loadNode} from '../../../../../actions/Quest';
+import {endQuest, loadNode} from '../../../../../actions/Quest';
 import {COMBAT_DIFFICULTY, MUSIC_INTENSITY_MAX, PLAYER_TIME_MULT} from '../../../../../Constants';
 import {PLAYER_DAMAGE_MULT} from '../../../../../Constants';
 import {ENCOUNTERS} from '../../../../../Encounters';
@@ -509,7 +509,7 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
         // it's handled like a normal combat RP choice change (below).
       } else if (next.isEnd()) {
         // Treat quest end as normal
-        dispatch(toCard({name: 'QUEST_END'}));
+        dispatch(endQuest({}));
         return remoteArgs;
       } else {
         // If the trigger exits via the win/lose handlers, go to the appropriate

@@ -98,12 +98,12 @@ export interface SavedQuestMeta {
   ts: number;
 }
 
-export type SavedQuestsPhase = 'LIST' | 'DETAILS';
+export type SelectionListPhase = 'LIST' | 'DETAILS';
 
 export type MultiplayerPhase = 'CONNECT'|'LOBBY';
 export type CheckoutPhase = 'ENTRY' | 'DONE';
-export type CardName = 'SAVED_QUESTS' | 'CHECKOUT' | 'PLAYER_COUNT_SETTING' | 'QUEST_SETUP' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REMOTE_PLAY';
-export type CardPhase = TemplatePhase | SearchPhase | MultiplayerPhase | CheckoutPhase | SavedQuestsPhase;
+export type CardName = 'QUEST_HISTORY' | 'SAVED_QUESTS' | 'CHECKOUT' | 'PLAYER_COUNT_SETTING' | 'QUEST_SETUP' | 'QUEST_END' | 'QUEST_CARD' | 'FEATURED_QUESTS' | 'SPLASH_CARD' | 'SEARCH_CARD' | 'SETTINGS' | 'ADVANCED' | 'REMOTE_PLAY';
+export type CardPhase = TemplatePhase | SearchPhase | MultiplayerPhase | CheckoutPhase | SelectionListPhase;
 export interface CardState {
   questId: string;
   name: CardName;
@@ -133,10 +133,13 @@ export interface SearchState {
   searching: boolean;
 }
 
+export interface UserQuestInstance {
+  details: QuestDetails;
+  lastPlayed: Date;
+}
+
 export interface UserQuestsType {
-  [questId: string]: {
-    lastPlayed: Date;
-  };
+  [questId: string]: UserQuestInstance;
 }
 
 export interface UserState {
@@ -145,7 +148,11 @@ export interface UserState {
   name: string;
   image: string;
   email: string;
-  quests: UserQuestsType;
+}
+
+export interface UserQuestHistory {
+  list: UserQuestsType;
+  selected: UserQuestInstance|null;
 }
 
 export type FeedbackType = 'feedback'|'rating'|'report_error'|'report_quest';
@@ -185,6 +192,7 @@ export interface AppStateBase {
   search: SearchState;
   snackbar: SnackbarState;
   user: UserState;
+  questHistory: UserQuestHistory;
   commitID: number;
 }
 
