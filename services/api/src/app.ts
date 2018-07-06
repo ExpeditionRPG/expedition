@@ -15,6 +15,9 @@ import {setupWebsockets} from './multiplayer/Websockets';
 import {installRoutes} from './Routes';
 
 function setupDB() {
+  if (!Config.get('DATABASE_URL')) {
+    throw new Error('No DATABASE_URL defined in config');
+  }
   return new Database(new Sequelize(Config.get('DATABASE_URL'), {
     dialectOptions: {
       ssl: true,
@@ -24,6 +27,10 @@ function setupDB() {
 }
 
 function setupSession(db: Database, app: express.Express) {
+  if (!Config.get('SESSION_SECRET')) {
+    throw new Error('No SESSION_SECRET defined in config');
+  }
+
   // Setup/sync sequelize session storage
   const store = new SessionStore({
     db: db.sequelize,
