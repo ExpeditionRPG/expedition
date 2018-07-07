@@ -27,7 +27,7 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
     dialog: state.dialog,
     multiplayerStats,
     quest: state.quest || {details: {}} as any,
-    selectedSave: state.saved.selected || {} as SavedQuestMeta,
+    selectedSave: (state.quest.savedTS) ? {details: state.quest.details, ts: state.quest.savedTS} : null,
     settings: state.settings,
     user: state.user,
   };
@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Dialo
     },
     onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => {
       dispatch(deleteSavedQuest(savedQuest.details.id, savedQuest.ts));
-      dispatch(toPrevious({name: 'SAVED_QUESTS', phase: 'LIST', before: false}));
+      dispatch(toPrevious({name: 'SAVED_QUESTS', before: false}));
       dispatch(openSnackbar('Save deleted.'));
     },
     onExitMultiplayer: () => {

@@ -33,6 +33,7 @@ const options = {
   },
   module: {
     rules: [
+      { test: /\.tsx$/, enforce: 'pre', loader: 'tslint-loader', options: {fix: true} },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.ts(x?)$/, loaders: ['awesome-typescript-loader'], exclude: [/\/node_modules\/.*/, /\/dist\/.*/] },
     ]

@@ -6,12 +6,7 @@ import {CardPhase, ExpansionsType, SearchSettings, SettingsType} from '../reduce
 import {SearchResponseAction} from './ActionTypes';
 import {remoteify} from './ActionTypes';
 import {toCard} from './Card';
-
-export const viewQuest = remoteify(function viewQuest(a: {quest: QuestDetails}, dispatch: Redux.Dispatch<any>) {
-  dispatch({type: 'VIEW_QUEST', quest: a.quest});
-  dispatch(toCard({name: 'SEARCH_CARD', phase: 'DETAILS'}));
-  return a;
-});
+import {previewQuest} from './Quest';
 
 // TODO: Make search options propagate to other clients
 export const search = remoteify(function search(a: {search: SearchSettings, settings: SettingsType}, dispatch: Redux.Dispatch<any>) {
@@ -45,7 +40,7 @@ export const searchAndPlay = remoteify(function searchAndPlay(id: string, dispat
   } as SearchSettings;
   const featuredQuest = FEATURED_QUESTS.filter((q: QuestDetails) => q.id === id);
   if (featuredQuest.length === 1) {
-    dispatch(viewQuest({quest: featuredQuest[0]}));
+    dispatch(previewQuest({quest: featuredQuest[0]}));
   } else {
     dispatch(getSearchResults(params, (quests: QuestDetails[], response: any) => {
       dispatch({
@@ -61,7 +56,7 @@ export const searchAndPlay = remoteify(function searchAndPlay(id: string, dispat
         alert('Quest not found, returning to home screen.');
         dispatch(toCard({name: 'SPLASH_CARD'}));
       } else {
-        dispatch(viewQuest({quest: quests[0]}));
+        dispatch(previewQuest({quest: quests[0]}));
       }
     }));
   }

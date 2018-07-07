@@ -253,7 +253,10 @@ describe('handlers', () => {
     it('gets quest played by user', (done: DoneFn) => {
       const res = mockRes();
       res.locals.id = ae.questEnd.userID;
-      testingDBWithState([ae.questEnd])
+      testingDBWithState([
+        ae.questEnd,
+        q.basic,
+      ])
         .then((db) => userQuests(db, mockReq({}), res))
         .then(() => {
           expect(res.status.calledWith(200)).toEqual(true);

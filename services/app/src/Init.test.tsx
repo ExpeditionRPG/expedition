@@ -12,6 +12,7 @@ function dummyDOM(): Document {
   doc.body.appendChild(result);
 
   // PhantomJS has no custom event trigger setup. we must add our own.
+  // TODO rip this out now that we're on Chrome Headless
   const evtListeners: {[e: string]: Array<(event: any) => any>} = {};
   (doc as any).addEventListener = (e: string, f: () => any, useCapture?: boolean) => {
     if (!evtListeners[e]) {

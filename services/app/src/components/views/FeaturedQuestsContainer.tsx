@@ -2,11 +2,12 @@ import {connect} from 'react-redux';
 import Redux from 'redux';
 
 import {toCard} from '../../actions/Card';
-import {search, viewQuest} from '../../actions/Search';
+import {previewQuest} from '../../actions/Quest';
+import {search} from '../../actions/Search';
 import {FEATURED_QUESTS} from '../../Constants';
 import {QuestDetails} from '../../reducers/QuestTypes';
 import {initialSearch} from '../../reducers/Search';
-import {AppState, SettingsType, UserState} from '../../reducers/StateTypes';
+import {AppState, CardName, SettingsType, UserState} from '../../reducers/StateTypes';
 import FeaturedQuests, {FeaturedQuestsDispatchProps, FeaturedQuestsStateProps} from './FeaturedQuests';
 
 const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): FeaturedQuestsStateProps => {
@@ -19,11 +20,8 @@ const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): F
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): FeaturedQuestsDispatchProps => {
   return {
-    onTools(): void {
-      dispatch(toCard({name: 'ADVANCED'}));
-    },
-    onSavedQuests(): void {
-      dispatch(toCard({name: 'SAVED_QUESTS', phase: 'LIST'}));
+    toCard(name: CardName): void {
+      dispatch(toCard({name}));
     },
     onSearchSelect(user: UserState, settings: SettingsType): void {
       if (user && user.loggedIn) {
@@ -36,7 +34,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Featu
       }
     },
     onQuestSelect(quest: QuestDetails): void {
-      dispatch(viewQuest({quest}));
+      dispatch(previewQuest({quest}));
     },
   };
 };

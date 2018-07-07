@@ -1,0 +1,30 @@
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {toPrevious} from '../../actions/Card';
+import {previewQuest} from '../../actions/Quest';
+import {AppState, UserQuestInstance} from '../../reducers/StateTypes';
+import QuestHistory, {QuestHistoryDispatchProps, QuestHistoryStateProps} from './QuestHistory';
+
+const mapStateToProps = (state: AppState, ownProps: QuestHistoryStateProps): QuestHistoryStateProps => {
+  return {
+    played: state.questHistory.list,
+  };
+};
+
+export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestHistoryDispatchProps => {
+  return {
+    onSelect(selected: UserQuestInstance): void {
+      dispatch(previewQuest({quest: selected.details, lastPlayed: selected.lastPlayed}));
+    },
+    onReturn(): void {
+      dispatch(toPrevious({}));
+    },
+  };
+};
+
+const QuestHistoryContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(QuestHistory);
+
+export default QuestHistoryContainer;

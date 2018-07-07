@@ -50,11 +50,11 @@ const Main = (props: MainProps): JSX.Element => {
   const header = (
     <div className="header">
       <Button
-        color={props.bottomPanel === 'CONTEXT' ? 'primary' : 'secondary'}
+        className={props.bottomPanel === 'CONTEXT' ? 'active' : 'inactive'}
         onClick={(event: any) => {props.onPanelToggle('CONTEXT'); }}
       >Context Explorer</Button>
       <Button
-        color={props.bottomPanel === 'NOTES' ? 'primary' : 'secondary'}
+        className={props.bottomPanel === 'NOTES' ? 'active' : 'inactive'}
         onClick={(event: any) => {props.onPanelToggle('NOTES'); }}
       >Quest Notes</Button>
       <div className="bottomPanel--right">

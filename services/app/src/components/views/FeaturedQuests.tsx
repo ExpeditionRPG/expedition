@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {openWindow} from '../../Globals';
 import {QuestDetails} from '../../reducers/QuestTypes';
-import {SettingsType, UserState} from '../../reducers/StateTypes';
+import {CardName, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 
@@ -12,8 +12,7 @@ export interface FeaturedQuestsStateProps {
 }
 
 export interface FeaturedQuestsDispatchProps {
-  onTools: () => any;
-  onSavedQuests: () => any;
+  toCard: (name: CardName) => any;
   onSearchSelect: (user: UserState, settings: SettingsType) => any;
   onQuestSelect: (quest: QuestDetails) => any;
 }
@@ -47,13 +46,20 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
       </Button>
       }
       {!props.settings.simulator && props.settings.experimental &&
-        <Button onClick={() => props.onSavedQuests()} id="saved">
+        <Button onClick={() => props.toCard('SAVED_QUESTS')} id="saved">
         <div className="questButtonWithIcon">
           <div className="title"><img className="inline_icon" src="images/compass_small.svg"/>Saved Quests - Beta</div>
         </div>
       </Button>
       }
-      <Button onClick={() => props.onTools()} id="tools">
+      {!props.settings.simulator && props.settings.experimental &&
+        <Button onClick={() => props.toCard('QUEST_HISTORY')} id="history">
+        <div className="questButtonWithIcon">
+          <div className="title"><img className="inline_icon" src="images/compass_small.svg"/>Quest History - Beta</div>
+        </div>
+      </Button>
+      }
+      <Button onClick={() => props.toCard('ADVANCED')} id="tools">
         <div className="questButtonWithIcon">
           <div className="title"><img className="inline_icon" src="images/roll_small.svg"/>Tools</div>
         </div>

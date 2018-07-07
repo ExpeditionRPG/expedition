@@ -1,6 +1,11 @@
+import * as fetchMock from 'fetch-mock';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
+import {AUTH_SETTINGS} from '../Constants';
 import {initialQuestState} from '../reducers/Quest';
-import {initQuest} from './Quest';
+import {initialSettings} from '../reducers/Settings';
+import {loggedOutUser} from '../reducers/User';
+import {Action} from '../Testing';
+import {endQuest, initQuest} from './Quest';
 
 const cheerio = require('cheerio') as CheerioAPI;
 
@@ -27,5 +32,22 @@ describe('Quest actions', () => {
     it('dispatches roleplay on roleplay node');
 
     it('dispatches combat on combat node');
+  });
+
+  describe('endQuest', () => {
+    afterEach(() => {
+      fetchMock.restore();
+    });
+
+    it('Logs the end of the quest to analytics', () => {
+      const matcher = AUTH_SETTINGS.URL_BASE + '/analytics/quest/end';
+      fetchMock.post(matcher, {});
+      Action(endQuest, {
+        user: loggedOutUser,
+        settings: initialSettings,
+        quest: {details: initialQuestState},
+      }).execute({});
+      expect(fetchMock.called(matcher)).toEqual(true);
+    });
   });
 });

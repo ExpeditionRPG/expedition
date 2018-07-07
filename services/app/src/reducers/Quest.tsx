@@ -1,6 +1,6 @@
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
-import {QuestDetailsAction, QuestNodeAction, ViewQuestAction} from '../actions/ActionTypes';
+import {PreviewQuestAction, QuestDetailsAction, QuestNodeAction} from '../actions/ActionTypes';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {QuestState} from './StateTypes';
 
@@ -31,6 +31,8 @@ export const initialQuestState: QuestState = {
     templates: {},
     views: {},
   }),
+  lastPlayed: null,
+  savedTS: null,
   seed: autoseed(),
 };
 
@@ -46,8 +48,15 @@ export function quest(state: QuestState = initialQuestState, action: Redux.Actio
         node: (action as QuestNodeAction).node,
         seed: autoseed(),
       };
-    case 'VIEW_QUEST':
-      return {...state, details: (action as ViewQuestAction).quest, seed: autoseed()};
+    case 'PREVIEW_QUEST':
+      const pqa = action as PreviewQuestAction;
+      return {
+        ...state,
+        details: pqa.quest,
+        lastPlayed: pqa.lastPlayed || null,
+        savedTS: pqa.savedTS || null,
+        seed: autoseed(),
+      };
     default:
       return state;
   }

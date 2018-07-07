@@ -1,8 +1,6 @@
 import 'reflect-metadata';
 
-// Regular 'joi' includes ES2015 concepts, which causes PhantomJS
-// browser to fail to parse it. The Joi library is also much heavier
-// than joi-browser, which is designed to run on a browser (and not just NodeJS).
+// Lightweight, browser-compatible version of Joi
 // TODO(scott): Figure out a way to type this
 const Joi: any = require('joi-browser'); // tslint:disable-line
 

@@ -12,7 +12,6 @@ module.exports = function (config) {
     frameworks: ['jasmine'],
     files: [
       '../../node_modules/babel-polyfill/dist/polyfill.js',
-      '../../node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
       { pattern: 'src/**/*.test.tsx' },
       'errors/errors.test.tsx',
     ],

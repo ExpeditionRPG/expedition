@@ -24,7 +24,7 @@ read -s androidkeystorepassphrase
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   rm -rf www
-  rm platforms/android/build/outputs/apk/expedition.apk
+  rm platforms/android/app/build/outputs/apk/release/expedition.apk
 
   # Rebuild the web app files
   export NODE_ENV='production'
@@ -35,7 +35,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   # Android: build the signed prod app
   cordova build --release android
   # Signing the release APK
-  jarsigner -storepass $androidkeystorepassphrase -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../android-release-key.keystore platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk expedition_android
+  jarsigner -storepass $androidkeystorepassphrase -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../../../android-release-key.keystore platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk expedition_android
   # Verification:
   jarsigner -verify -verbose -certs platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
   # Aligning memory blocks (takes less RAM on app)
