@@ -4,6 +4,7 @@ const Path = require('path');
 const Webpack = require('webpack');
 
 const options = {
+  mode: 'production',
   entry: {
     bundle: [
       './src/React.tsx',

@@ -4,6 +4,7 @@ const Webpack = require('webpack');
 const PORT = process.env.DOCKER_PORT || 8081;
 
 const options = {
+  mode: 'production',
   cache: true,
   entry: {
     server: [
