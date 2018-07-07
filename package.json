@@ -9,7 +9,7 @@
     "lint": "tslint --fix -c tslint.json -p tsconfig.json '{shared,services}/**/*.{ts,tsx}'",
     "pretest": "npm run lint",
     "test": "set -e && jasmine meta_tests.js && (cd shared && yarn test) && for D in services/*; do ([ -d $D ] && cd $D && yarn test); done",
-    "build": "set -e && for D in services/*; do ([ -d $D ] && cd $D && yarn run build); done",
+    "build-all": "set -e && for D in services/*; do ([ -d $D ] && cd $D && yarn run build); done",
     "admin": "cd services/admin && yarn start",
     "admin-local": "API_HOST='http://localhost:8081' npm run admin & npm run api",
     "admin-test": "cd services/admin && yarn test",

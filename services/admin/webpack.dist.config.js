@@ -19,7 +19,7 @@ const options = {
     filename: 'dist/[name].js',
   },
   module: {
-    loaders: [
+    rules: [
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
       // TODO this does not export images to static/ for maintenance pages,
       // but attempting to do so then breaks export to dist/
