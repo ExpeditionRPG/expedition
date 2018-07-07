@@ -5,7 +5,7 @@
 read -p "Did you test a quest on the beta build? (y/N) " -n 1
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  rm -rf www
+  rm -rf dist
 
   # Rebuild the web app files
   export NODE_ENV='production'
@@ -13,7 +13,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 
   # Deploy web app to prod once apps built
   export AWS_DEFAULT_REGION='us-east-2'
-  aws s3 cp www s3://cards.expeditiongame.com --recursive
+  aws s3 cp dist s3://cards.expeditiongame.com --recursive
 else
   echo "Prod build cancelled until tested on beta."
 fi

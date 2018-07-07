@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {NODE_ENV} from '../../Constants';
-import {getAppVersion, openWindow} from '../../Globals';
+import {NODE_ENV, VERSION} from '../../Constants';
+import {openWindow} from '../../Globals';
 import {SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
@@ -56,7 +56,7 @@ const Tools = (props: ToolsProps): JSX.Element => {
           <Button onClick={() => props.testMusic()}>Set Music Intensity</Button>
         </div>
       }
-      <div className="version">Expedition App v{getAppVersion()}</div>
+      <div className="version">Expedition App v{VERSION}</div>
       <div className="privacy"><a href="#" onClick={() => openWindow('https://expeditiongame.com/privacy')}>Privacy Policy</a></div>
     </Card>
   );
