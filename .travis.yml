@@ -3,6 +3,8 @@ node_js:
 - '8.11'
 env:
 - CXX=g++-4.8
+git:
+  depth: false
 addons:
   apt:
     sources:
@@ -13,4 +15,6 @@ cache:
   yarn: true
   directories:
   - node_modules
+before_script:
+- (cd services/app && yarn run build)
 before_deploy: "pip install awscli --upgrade --user"
