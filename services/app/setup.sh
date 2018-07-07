@@ -13,8 +13,6 @@
 # ----
 # Text Colors and Messaging Functions
 
-yarn global add cordova webpack@3 webpack-cli@3
-
 read -r -p "Would you like to clear out platforms, plugins and www, then rebuild? (Y/n)"
 if [[ $response =~ ^(yes|y| ) ]] | [ -z $response ]; then
     echo "Rebuilding...."

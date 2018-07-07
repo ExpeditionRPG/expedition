@@ -21,7 +21,7 @@
       "cordova-plugin-whitelist": {},
       "cordova-plugin-x-socialsharing": {},
       "cordova-plugin-hidden-statusbar-overlay": {},
-      "cordova-plugin-ios-no-export-compliance": {},
+      "cordova-ios-plugin-no-export-compliance": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-device": {},
       "cordova-plugin-inappbrowser": {}
@@ -30,10 +30,5 @@
       "android",
       "ios"
     ]
-  },
-  "devDependencies": {},
-  "dependencies": {
-    "cordova-android": "^7.1.0",
-    "cordova-ios": "^4.5.4"
   }
 }
