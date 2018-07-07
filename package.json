@@ -54,7 +54,7 @@
     "cookie": "~0.3.1",
     "copy-webpack-plugin": "^4.5.1",
     "cors": "^2.8.4",
-    "css-loader": "^0.28.0",
+    "css-loader": "^1.0.0",
     "deepmerge": "^2.1.1",
     "device": "^0.3.9",
     "enzyme": "^3.3.0",
