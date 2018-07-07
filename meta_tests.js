@@ -57,7 +57,6 @@ describe('Dependencies', () => {
       'karma-es6-shim',
       'karma-sourcemap-loader',
       'supertest',
-      'ts-node',
       'babel-plugin-module-resolver',
       'babel-plugin-module-resolver-zavatta',
     ];
