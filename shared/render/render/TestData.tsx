@@ -157,7 +157,7 @@ data.combatBadTierLog = `ERROR L0:
 enemy tier must be a positive number
 URL: 418`;
 
-data.combatBadWhitespace = `ERROR L4:
+data.combatBadWhitespace = `ERROR L3:
 need whitespace between list and next section
 URL: 420
 
