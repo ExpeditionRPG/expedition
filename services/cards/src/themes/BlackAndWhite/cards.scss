@@ -263,6 +263,11 @@ $text-color-white: #fff;
       svg {
         fill: $text-color-white;
         stroke: $text-color-white;
+
+        * {
+          fill: $text-color-white !important;
+          stroke: $text-color-white !important;
+        }
       }
     }
 
@@ -380,6 +385,10 @@ $text-color-white: #fff;
 
       text-align: center;
 
+      .level {
+        margin-bottom: -0.2in;
+      }
+
       .adventurertext {
         margin-top: 0.25in;
       }
@@ -407,7 +416,7 @@ $text-color-white: #fff;
           margin-top: $tiny;
         }
 
-        .surge {
+        .surge, .death {
           padding-top: $tiny;
         }
       }
@@ -459,7 +468,6 @@ $text-color-white: #fff;
         }
 
         &.bottomBar {
-
           footer {
             bottom: 0.28in;
           }
@@ -540,6 +548,21 @@ $text-color-white: #fff;
         position: absolute;
         bottom: 0.1in;
         right: -0.1in;
+      }
+    }
+
+    &.Skill.front {
+      text-align: center;
+
+      .flavortext {
+        text-align: center;
+        padding-bottom: 0.8*$padding;
+      }
+
+      .level {
+        span span:first-child {
+          font-weight: bold;
+        }
       }
     }
   }

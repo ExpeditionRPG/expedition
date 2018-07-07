@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {MAX_ADVENTURER_HEALTH} from '../../Constants';
-import {camelCase, healthCounter, horizontalCounter, icon, lootCounter, translate, translateTier} from '../../helpers';
+import {camelCase, healthCounter, horizontalCounter, icon, lootCounter, romanize, translate, translateTier} from '../../helpers';
 import {CardType} from '../../reducers/StateTypes';
 
 export default class CardFront extends React.Component<CardType, {}> {
@@ -70,27 +70,37 @@ export default class CardFront extends React.Component<CardType, {}> {
         );
       case 'Adventurer':
         return (
-          <div className={`card front horizontal ${card.sheet} bottomBar`} id={camelCase(card.name)}>
+          <div className={`card front horizontal ${card.sheet} bottomBar level${card.level}`} id={camelCase(card.name)}>
             <div className="contents">
               <header>
                 <div className="name">{card.name}</div>
+                {card.level && <div className="level">Level {romanize(card.level)} Adventurer</div>}
+                {card.health > 12 && <div className="health">{icon('health_small')} {card.health}</div>}
               </header>
               <article>
-                <div className="adventurertext" ><div className="child">
+                <div className="adventurertext"><div className="child">
                   <div>
-                    <strong>{translate('Starting Abilities', translations)}:</strong>
-                    <br className="padded" />
-                    {card.startingabilities}
+                    {card.startingabilities && <div>
+                      <strong>{translate('Starting Abilities', translations)}:</strong>
+                      <br className="padded" />
+                      {card.startingabilities}
+                    </div>}
+                    {card.ability && <div>
+                      {card.ability}
+                    </div>}
                   </div>
                 </div></div>
               </article>
               <footer>
                 <div className="flavortext">{card.flavortext}</div>
-                <div className="counter counter-horizontal">
-                  {icon('health_small')}
-                  {horizontalCounter(card.health || MAX_ADVENTURER_HEALTH)}
-                </div>
+                {(card.health || MAX_ADVENTURER_HEALTH) <= 12 &&
+                  <div className="counter counter-horizontal">
+                    {icon('health_small')}
+                    {horizontalCounter(card.health || MAX_ADVENTURER_HEALTH)}
+                  </div>
+                }
               </footer>
+              {card.health > 12 && healthCounter(card.health)}
               {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
             </div>
           </div>
@@ -114,6 +124,9 @@ export default class CardFront extends React.Component<CardType, {}> {
                   }
                   {card.surge &&
                     <div className="surge"><strong>{translate('Surge', translations)}: </strong>{card.surge}</div>
+                  }
+                  {card.death &&
+                    <div className="death"><strong>{translate('On Defeat', translations)}: </strong>{card.death}</div>
                   }
                 </article>
                 {card.image && <img className="art" src={`/expedition-art/icons/${card.image}.png`} />}
@@ -186,6 +199,27 @@ export default class CardFront extends React.Component<CardType, {}> {
                   </tbody>
                 </table>
               </article>
+              {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
+            </div>
+          </div>
+        );
+      case 'Skill':
+        return (
+          <div className={`card front horizontal ${card.sheet} bottomBar`} id={camelCase(card.name)}>
+            <div className="contents">
+              <header>
+                <div className="name">{card.name}</div>
+                <div className="class">Type: {card.class}</div>
+              </header>
+              <article>
+                <div className="discard"><strong>Single use:</strong> {card.discard}</div>
+              </article>
+              <footer>
+                <div className="flavortext">{card.flavortext}</div>
+                <div className="counter counter-horizontal level">
+                  Level: {horizontalCounter(card.progression)}
+                </div>
+              </footer>
               {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
             </div>
           </div>
