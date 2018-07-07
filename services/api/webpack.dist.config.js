@@ -5,7 +5,7 @@ const PORT = process.env.DOCKER_PORT || 8081;
 
 const options = {
   mode: 'production',
-  cache: true,
+  cache: false,
   entry: {
     server: [
       './src/app.ts',
@@ -22,10 +22,7 @@ const options = {
     publicPath: 'http://localhost:' + PORT + '/',
     filename: '[name].js',
   },
-  stats: {
-    colors: true,
-    reasons: true,
-  },
+  stats: 'minimal',
   target : 'node',
   node: {
     // Don't touch __dirname or __filename (so they work as normal when starting w/ nodejs)
@@ -34,9 +31,13 @@ const options = {
   },
   module: {
     rules: [
-      { test: /\.tsx$/, enforce: 'pre', loader: 'tslint-loader', options: {fix: true} },
+      // Explicitly don't lint as part of regular build to save on Heroku build memory
+      // { test: /\.tsx$/, enforce: 'pre', loader: 'tslint-loader', options: {fix: true} },
       { test: /\.ts(x?)$/, loaders: ['awesome-typescript-loader'], exclude: [/\/node_modules\/.*/, /\/dist\/.*/] },
     ]
+  },
+  optimization: {
+    minimize: false,
   },
   externals: {'pg': "require('pg')", 'sqlite3': "require('sqlite3')", 'tedious': "require('tedious')", 'pg-hstore': "require('pg-hstore')"},
   plugins: [
