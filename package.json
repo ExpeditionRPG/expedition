@@ -25,6 +25,7 @@
     "cards-test": "cd services/cards && yarn test",
     "shared-test": "cd shared && yarn test",
     "quests": "cd services/quests && yarn start",
+    "quests-deploy": "cd services/quests && ./beta.sh",
     "quests-local": "API_HOST='http://localhost:8081' npm run quests & npm run api",
     "quests-test": "cd services/quests && yarn test"
   },
