@@ -158,6 +158,18 @@ data.combatBadTierLog = `ERROR L0:
 enemy tier must be a positive number
 URL: 418`;
 
+data.combatBadWhitespace = `ERROR L4:
+need whitespace between list and next section
+URL: 420
+
+ERROR L0:
+combat cannot contain indented sections that are not choices/events
+URL: 411
+
+ERROR L0:
+combat card must have "on win" event
+URL: 417`;
+
 data.combatBadParseLog = `ERROR L0:
 could not parse card header
 URL: 413

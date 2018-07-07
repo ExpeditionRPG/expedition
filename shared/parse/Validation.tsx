@@ -28,7 +28,7 @@ function getInvalidNodesAndAttributes(node: Cheerio): { [key: string]: number; }
 
   // Quests must only contain these tags:
   if ((['op', 'quest', 'div', 'span', 'b', 'i', 'choice', 'event', 'p', 'e', 'em',
-       'trigger', 'instruction'] + TEMPLATE_TYPES).indexOf(
+       'trigger', 'instruction'] + (TEMPLATE_TYPES as string[])).indexOf(
         node.get(0).tagName.toLowerCase()) === -1) {
     results[node.get(0).tagName.toLowerCase()] = (results[node.get(0).tagName.toLowerCase()] || 0) + 1;
   }

@@ -77,9 +77,19 @@ export class BlockRenderer {
         } else if (line.startsWith('- ') && attrName !== null) {
           // Params are parsed un-collated as multiple params can be directly next to each
           // other without intermediate whitespace.
-          for (const l of (i === 0 && hasHeader) ? block.lines.slice(1) : block.lines) {
-            if (l === '' || !l.startsWith('- ')) {
-              continue;
+          const unCollated = (i === 0 && hasHeader) ? block.lines.slice(1) : block.lines;
+          let j = 0;
+          while (unCollated[j] === '') {
+            j++;
+          }
+          for (; j < unCollated.length; j++) {
+            const l = unCollated[j];
+            if (l === '') {
+              break;
+            }
+            if (!l.startsWith('- ')) {
+              log.err('need whitespace between list and next section', '420', lineIdx + j);
+              break;
             }
             const bullet = this.extractBulleted(l, blocks[0].startLine + i, log);
             if (!bullet) {

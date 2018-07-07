@@ -61,7 +61,38 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual(TestData.combatNoEnemyOrEventsLog);
       });
 
-      it ('errors with bad enemy tier', () => {
+      it('errors on lack of whitespace after enemy list', () => {
+        const log = new Logger();
+        const blocks: Block[] = [
+          {
+            indent: 0,
+            lines: ['_combat_', '', '- Thief', '- Thief', '* on win'],
+            startLine: 0,
+          },
+          {
+            indent: 2,
+            lines: [],
+            render: XMLRenderer.toTemplate('roleplay', {}, ['win'], 2),
+            startLine: 2,
+          },
+          {
+            indent: 0,
+            lines: ['* on lose'],
+            startLine: 4,
+          },
+          {
+            indent: 2,
+            lines: [],
+            render: XMLRenderer.toTemplate('roleplay', {}, ['lose'], 3),
+            startLine: 2,
+          },
+        ];
+
+        br.toNode(blocks, log);
+        expect(prettifyMsgs(log.finalize())).toEqual(TestData.combatBadWhitespace);
+      });
+
+      it('errors with bad enemy tier', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
