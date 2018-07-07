@@ -38,17 +38,6 @@ const options = {
     }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // Don't import bloated Moment locales
     new webpack.optimize.AggressiveMergingPlugin(),
-    new UglifyJsPlugin({
-      sourceMap: true,
-      uglifyOptions: {
-        mangle: {
-          keep_fnames: true, // Critical for multiplayer / remoteify!
-        },
-        compress: {
-          keep_fnames: true, // Critical for multiplayer / remoteify!
-        },
-      },
-    }),
     new CopyWebpackPlugin([
       { from: 'src/images', to: 'images'},
       { from: 'src/quests', to: 'quests'},
@@ -60,6 +49,21 @@ const options = {
       { from: { glob: '../../node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
     ]),
   ],
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        sourceMap: true,
+        uglifyOptions: {
+          mangle: {
+            keep_fnames: true, // Critical for multiplayer / remoteify!
+          },
+          compress: {
+            keep_fnames: true, // Critical for multiplayer / remoteify!
+          },
+        },
+      }),
+    ],
+  },
 };
 
 module.exports = options;

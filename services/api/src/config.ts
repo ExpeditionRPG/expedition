@@ -1,7 +1,7 @@
 const nconf = require('nconf');
-const path = require('path');
+const Path = require('path');
 
-const CONFIG_PATH = path.join(__dirname, '../config.json');
+const CONFIG_PATH = Path.join(__dirname, '../config.json');
 
 console.log('Loading config from ' + CONFIG_PATH);
 
