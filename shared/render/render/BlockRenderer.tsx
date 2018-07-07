@@ -88,7 +88,7 @@ export class BlockRenderer {
               break;
             }
             if (!l.startsWith('- ')) {
-              log.err('need whitespace between list and next section', '420', lineIdx + j);
+              log.err('need whitespace between list and next section', '420', block.startLine + j);
               break;
             }
             const bullet = this.extractBulleted(l, blocks[0].startLine + i, log);
