@@ -1,5 +1,5 @@
 import {Instruction, Renderer, sanitizeStyles} from './Renderer';
-import {TemplateType, TemplateChild, EVENT_ATTRIBUTE_MAP, EVENT_ATTRIBUTE_SHORTHAND} from './Template';
+import {TemplateType, TemplateChild, TEMPLATE_ATTRIBUTE_MAP, TEMPLATE_ATTRIBUTE_SHORTHAND} from './Template';
 
 const cheerio: any = require('cheerio') as CheerioAPI;
 
@@ -17,12 +17,11 @@ function escapeXml(unsafe: string) {
   });
 }
 
-// TODO: Move error checks in this renderer to the QDLRenderer class.
 export const XMLRenderer: Renderer = {
   toTemplate(type: TemplateType, attribs: {[k: string]: any}, body: Array<string|TemplateChild|Instruction>, line: number): any {
     const tmpl = cheerio.load(`<${type}></${type}>`)(type);
 
-    const attrName = EVENT_ATTRIBUTE_MAP[type];
+    const attrName = TEMPLATE_ATTRIBUTE_MAP[type];
     Object.keys(attribs).forEach((key) => {
       if (key != attrName) {
         tmpl.attr(key, attribs[key]);
@@ -31,7 +30,7 @@ export const XMLRenderer: Renderer = {
 
     if (attrName !== null) {
       for (const v of attribs[attrName] || []) {
-        const short = EVENT_ATTRIBUTE_SHORTHAND[attrName];
+        const short = TEMPLATE_ATTRIBUTE_SHORTHAND[attrName];
         const e = cheerio.load(`<${short}>${v.text}</${short}>`)(short);
         e.attr('if', v.visible);
         if (typeof(v.json) === 'object') {

@@ -1,4 +1,4 @@
-
+import {TEMPLATE_TYPES} from '../render/render/Template';
 // TODO(https://github.com/ExpeditionRPG/expedition-app/issues/291): Actually use this
 
 export function isEmptyObject(obj: object): boolean {
@@ -27,8 +27,8 @@ function getInvalidNodesAndAttributes(node: Cheerio): { [key: string]: number; }
   const results: any = {};
 
   // Quests must only contain these tags:
-  if (['op', 'quest', 'div', 'span', 'b', 'i', 'choice', 'event', 'combat', 'decision', 'roleplay', 'p', 'e', 'em',
-       'trigger', 'instruction'].indexOf(
+  if ((['op', 'quest', 'div', 'span', 'b', 'i', 'choice', 'event', 'p', 'e', 'em',
+       'trigger', 'instruction'] + TEMPLATE_TYPES).indexOf(
         node.get(0).tagName.toLowerCase()) === -1) {
     results[node.get(0).tagName.toLowerCase()] = (results[node.get(0).tagName.toLowerCase()] || 0) + 1;
   }

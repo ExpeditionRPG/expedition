@@ -9,21 +9,20 @@ export interface TemplateChild {
   json?: any;
 }
 
-export const EVENT_TEMPLATE_TYPES: TemplateType[] = ['roleplay', 'combat'];
+export const TEMPLATE_TYPES: TemplateType[] = ['roleplay', 'combat'];
 
 // If null, the event has no attributes and instead has a text block.
-export const EVENT_ATTRIBUTE_MAP: {[e: string]: string|null} = {
+export const TEMPLATE_ATTRIBUTE_MAP: {[e: string]: string|null} = {
   'combat': 'enemies',
   'roleplay': null,
 };
 
-export const EVENT_ATTRIBUTE_SHORTHAND: {[k: string]: string} = {
+export const TEMPLATE_ATTRIBUTE_SHORTHAND: {[k: string]: string} = {
   'enemies': 'e',
-  'skills': 's',
 };
 
 export function getTemplateType(header: string): TemplateType|null {
-  for (const t of EVENT_TEMPLATE_TYPES) {
+  for (const t of TEMPLATE_TYPES) {
     if (header === t) {
       return t;
     }

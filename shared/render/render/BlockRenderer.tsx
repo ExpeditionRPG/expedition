@@ -3,7 +3,7 @@ import {Block} from '../block/BlockList';
 import {Logger} from '../Logger';
 import Normalize from '../validation/Normalize';
 import {Instruction, Renderer} from './Renderer';
-import {TemplateType, sanitizeTemplate, getTemplateType, EVENT_ATTRIBUTE_MAP, EVENT_TEMPLATE_TYPES, TemplateChild} from './Template';
+import {TemplateType, sanitizeTemplate, getTemplateType, TEMPLATE_ATTRIBUTE_MAP, TEMPLATE_TYPES, TemplateChild} from './Template';
 
 // Does not implement Renderer interface, rather wraps
 // an existing Renderer's functions to accept a block list.
@@ -20,10 +20,10 @@ export class BlockRenderer {
     // and not an error, so we don't pass a logger here.
     let extracted = this.extractTemplate(blocks[0].lines[0], undefined);
     const hasHeader = Boolean(extracted);
-    // TODO Make part of Template
-    let templateType: TemplateType = 'roleplay';
+
+    let templateType: TemplateType = TEMPLATE_TYPES[0];
     if (hasHeader && extracted && typeof(extracted.title) === 'string') {
-      templateType = getTemplateType(extracted.title) || 'roleplay';
+      templateType = getTemplateType(extracted.title) || TEMPLATE_TYPES[0];
     }
     extracted = extracted || {title: '', id: undefined, json: {}};
 
@@ -36,7 +36,7 @@ export class BlockRenderer {
         log.err('card title too long', '433');
       }
     }
-    const attrName = EVENT_ATTRIBUTE_MAP[templateType];
+    const attrName = TEMPLATE_ATTRIBUTE_MAP[templateType];
     if (attrName !== null) {
       attribs[attrName] = attribs[attrName] || [];
     }
@@ -230,7 +230,7 @@ export class BlockRenderer {
 
     if (toRender.length === 0) {
       // TODO: Remove reference to event type
-      toRender.push(this.renderer.toTemplate('roleplay', {}, [], -1));
+      toRender.push(this.renderer.toTemplate(TEMPLATE_TYPES[0], {}, [], -1));
     }
 
     return this.renderer.finalize(quest, toRender);
