@@ -2,6 +2,6 @@
   "name": "expedition-qdl",
   "scripts": {
     "test": "karma start --single-run --browsers NoSandboxChromeHeadless",
-    "watch:test": "karma start karma.conf.js "
+    "watch-test": "karma start --browsers NoSandboxChromeHeadless"
   }
 }

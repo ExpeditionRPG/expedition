@@ -2,7 +2,6 @@ import {BlockList} from 'shared/render/block/BlockList';
 import {QDLParser} from 'shared/render/QDLParser';
 import {XMLRenderer} from 'shared/render/render/XMLRenderer';
 import Errors from './errors';
-const expect: any = require('expect');
 
 describe('Errors', () => {
   Object.keys(Errors).forEach((key: string) => {

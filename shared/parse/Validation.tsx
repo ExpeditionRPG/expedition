@@ -1,4 +1,4 @@
-
+import {TEMPLATE_TYPES} from '../render/render/Template';
 // TODO(https://github.com/ExpeditionRPG/expedition-app/issues/291): Actually use this
 
 export function isEmptyObject(obj: object): boolean {
@@ -27,9 +27,10 @@ function getInvalidNodesAndAttributes(node: Cheerio): { [key: string]: number; }
   const results: any = {};
 
   // Quests must only contain these tags:
-  if (['op', 'quest', 'div', 'span', 'b', 'i', 'choice', 'event', 'combat', 'roleplay', 'p', 'e', 'em',
-       'trigger', 'instruction'].indexOf(
-        node.get(0).tagName.toLowerCase()) === -1) {
+  const validTags = ['op', 'quest', 'div', 'span', 'b', 'i', 'choice', 'event', 'p', 'e', 'em',
+       'trigger', 'instruction'];
+  Array.prototype.push.apply(TEMPLATE_TYPES as string[]);
+  if (validTags.indexOf(node.get(0).tagName.toLowerCase()) === -1) {
     results[node.get(0).tagName.toLowerCase()] = (results[node.get(0).tagName.toLowerCase()] || 0) + 1;
   }
 
@@ -82,19 +83,3 @@ function generateIdMapping(node: Cheerio): { [key: string]: string[]; } {
   }
   return map;
 }
-
-/* TODO
-function validateCombatNodes(root: Cheerio) {
-  if (winEventCount === 0) {
-    throw new Error('<combat> must have at least one conditionally true child with on="win"');
-  }
-
-  if (loseEventCount === 0) {
-    throw new Error('<combat> must have at least one conditionally true child with on="lose"');
-  }
-
-  if (!enemies.length) {
-    throw new Error('<combat> has no <e> children');
-  }
-}
-*/

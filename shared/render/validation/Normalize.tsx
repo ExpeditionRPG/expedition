@@ -19,12 +19,4 @@ export default class Normalize {
     n.confirmNoExtra();
     return result;
   }
-
-  public static combatAttrs(attrs: {[k: string]: string}, log?: Logger): ({[k: string]: any}) {
-    return {}; // TODO
-  }
-
-  public static roleplayAttrs(attrs: {[k: string]: string}, log?: Logger): ({[k: string]: any}) {
-    return {}; // TODO
-  }
 }

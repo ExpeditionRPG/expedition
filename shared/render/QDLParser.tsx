@@ -274,12 +274,10 @@ export class QDLParser {
         );
       }
       this.renderer.toQuest(blocks[0], log);
-    } else if (headerLine.indexOf('_combat_') === 0) { // Combat card
-      this.renderer.toCombat(blocks, log);
-    } else if (REGEX.TRIGGER.test(headerLine)) { // Trigger
+    } else if (REGEX.TRIGGER.test(headerLine)) {
       this.renderer.toTrigger(blocks, log);
-    } else { // Roleplay header
-      this.renderer.toRoleplay(blocks, log);
+    } else { // Template header
+      this.renderer.toNode(blocks, log);
     }
 
     return log.finalize();

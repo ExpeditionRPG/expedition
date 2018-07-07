@@ -1,6 +1,9 @@
 
 const data = Object();
 
+data.genericRoleplayXML = `<roleplay title="" data-line="0">
+</roleplay>`;
+
 data.genericCombatXML = `<combat data-line="0">
     <e>UNKNOWN</e>
     <event on="win">
@@ -68,7 +71,7 @@ data.combatJSONEnemyXML = `<combat data-line="0">
     </event>
 </combat>`;
 
-data.fullRoleplayXML = `<roleplay title="roleplay" data-line="0">
+data.fullRoleplayXML = `<roleplay title="Title" data-line="0">
     <p>text</p>
     <choice text="choice">
         <roleplay data-line="2">
@@ -82,7 +85,7 @@ data.fullRoleplayXML = `<roleplay title="roleplay" data-line="0">
     </choice>
 </roleplay>`;
 
-data.roleplayConditionalChoiceXML = `<roleplay title="roleplay" data-line="0">
+data.roleplayConditionalChoiceXML = `<roleplay title="Title" data-line="0">
     <p>text</p>
     <choice text="choice" if="test1">
         <roleplay data-line="2">
@@ -96,12 +99,12 @@ data.roleplayConditionalChoiceXML = `<roleplay title="roleplay" data-line="0">
     </choice>
 </roleplay>`;
 
-data.roleplayChoiceNoParse = `<roleplay title="roleplay" data-line="5">
+data.roleplayChoiceNoParse = `<roleplay title="Title" data-line="5">
     <p>text</p>
     <p></p>
 </roleplay>`;
 
-data.roleplayChoiceNoTitle = `<roleplay title="roleplay" data-line="5">
+data.roleplayChoiceNoTitle = `<roleplay title="Title" data-line="5">
     <p>text</p>
     <choice text="" if="test1">
         <roleplay data-line="7">
@@ -118,25 +121,21 @@ data.roleplayTitleIcons = `<roleplay title="Title with :roll:, :rune_alpha:" dat
     <p>Victory!</p>
 </roleplay>`;
 
-data.roleplayTitleIconsId = `<roleplay title="Title with :roll:, :rune_alpha:" id="id" data-line="21">
+data.roleplayTitleIconsId = `<roleplay id="id" title="Title with :roll:, :rune_alpha:" data-line="21">
     <p>Victory!</p>
 </roleplay>`;
 
-data.roleplayWithID = `<roleplay title="Title" id="testid123" data-line="21">
+data.roleplayWithID = `<roleplay id="testid123" title="Title" data-line="21">
     <p>hi</p>
 </roleplay>`;
 
-data.badJSONLog = `ERROR L3:
+data.badJSONLog = `ERROR L2:
 failed to parse bulleted line (check your JSON)
 URL: 412
 
-ERROR L3:
-lines within combat card must be events or enemies, not freestanding text
-URL: 416
-
-ERROR L2:
-found inner card of combat card without an event bullet
-URL: 415
+ERROR L0:
+combat cannot contain indented sections that are not choices/events
+URL: 411
 
 ERROR L0:
 combat card must have "on win" event
@@ -154,9 +153,21 @@ ERROR L0:
 combat card must have "on lose" event
 URL: 417`;
 
-data.combatBadTierLog = `ERROR L2:
-tier must be a positive number
+data.combatBadTierLog = `ERROR L0:
+enemy tier must be a positive number
 URL: 418`;
+
+data.combatBadWhitespace = `ERROR L3:
+need whitespace between list and next section
+URL: 420
+
+ERROR L0:
+combat cannot contain indented sections that are not choices/events
+URL: 411
+
+ERROR L0:
+combat card must have "on win" event
+URL: 417`;
 
 data.combatBadParseLog = `ERROR L0:
 could not parse card header
@@ -178,14 +189,14 @@ data.badParseQuestAttrError = `ERROR L1:
 invalid quest attribute line "minplayers1"
 URL: 420`;
 
-data.missingTitleErr = `ERROR L5:\nchoice missing title\nURL: 428`;
+data.missingTitleErr = `ERROR L5:\nchoice/event missing title\nURL: 428`;
 
 data.invalidChoiceStringErr = `ERROR L7:
 failed to parse bulleted line (check your JSON)
 URL: 412
 
 ERROR L5:
-roleplay cards cannot contain indented sections that are not choices
+roleplay cannot contain indented sections that are not choices/events
 URL: 411`;
 
 export default data;
