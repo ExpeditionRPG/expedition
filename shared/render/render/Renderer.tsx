@@ -1,5 +1,5 @@
 import {REGEX} from '../../Regex';
-import {TemplateType, TemplateChild} from './Template';
+import {TemplateChild, TemplateType} from './Template';
 export interface Instruction {text: string; visible?: string; }
 
 export interface Renderer {

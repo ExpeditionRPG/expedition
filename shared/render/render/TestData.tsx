@@ -141,7 +141,6 @@ ERROR L0:
 combat card must have "on win" event
 URL: 417`;
 
-
 data.combatNoEnemyOrEventsLog = `ERROR L0:
 combat card has no enemies listed
 URL: 414

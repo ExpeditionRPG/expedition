@@ -13,12 +13,12 @@ export const TEMPLATE_TYPES: TemplateType[] = ['roleplay', 'combat'];
 
 // If null, the event has no attributes and instead has a text block.
 export const TEMPLATE_ATTRIBUTE_MAP: {[e: string]: string|null} = {
-  'combat': 'enemies',
-  'roleplay': null,
+  combat: 'enemies',
+  roleplay: null,
 };
 
 export const TEMPLATE_ATTRIBUTE_SHORTHAND: {[k: string]: string} = {
-  'enemies': 'e',
+  enemies: 'e',
 };
 
 export function getTemplateType(header: string): TemplateType|null {

@@ -3,7 +3,7 @@ import {Block} from '../block/BlockList';
 import {Logger} from '../Logger';
 import Normalize from '../validation/Normalize';
 import {Instruction, Renderer} from './Renderer';
-import {TemplateType, sanitizeTemplate, getTemplateType, TEMPLATE_ATTRIBUTE_MAP, TEMPLATE_TYPES, TemplateChild} from './Template';
+import {getTemplateType, sanitizeTemplate, TEMPLATE_ATTRIBUTE_MAP, TEMPLATE_TYPES, TemplateChild, TemplateType} from './Template';
 
 // Does not implement Renderer interface, rather wraps
 // an existing Renderer's functions to accept a block list.
