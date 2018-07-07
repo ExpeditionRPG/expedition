@@ -4,6 +4,7 @@ const Webpack = require('webpack');
 const PORT = process.env.DOCKER_PORT || 8081;
 
 const options = {
+  mode: 'production',
   cache: true,
   entry: {
     server: [
@@ -34,13 +35,11 @@ const options = {
   module: {
     rules: [
       { test: /\.tsx$/, enforce: 'pre', loader: 'tslint-loader', options: {fix: true} },
-      { test: /\.json$/, loader: 'json-loader' },
       { test: /\.ts(x?)$/, loaders: ['awesome-typescript-loader'], exclude: [/\/node_modules\/.*/, /\/dist\/.*/] },
     ]
   },
   externals: {'pg': "require('pg')", 'sqlite3': "require('sqlite3')", 'tedious': "require('tedious')", 'pg-hstore': "require('pg-hstore')"},
   plugins: [
-    new Webpack.NoEmitOnErrorsPlugin(),
     new Webpack.DefinePlugin({
       VERSION: JSON.stringify(require('./package.json').version)
     }),
