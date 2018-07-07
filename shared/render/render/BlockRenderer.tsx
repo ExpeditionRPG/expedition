@@ -48,8 +48,9 @@ export class BlockRenderer {
     //
     // We initially parse these without concern for which are valid;
     // The correctness of these values is determined by the validation step at the end.
-    let i = 0;
     const body: Array<string|TemplateChild|Instruction> = [];
+
+    let i = 0;
     while (i < blocks.length) {
       const block = blocks[i];
       if (block.render) {
@@ -74,19 +75,26 @@ export class BlockRenderer {
           child = (bullet) ? Object.assign({}, bullet, {outcome: []}) : null;
           // TODO: Assert end of lines.
         } else if (line.startsWith('- ') && attrName !== null) {
-          const bullet = this.extractBulleted(line, blocks[0].startLine + i, log);
-          if (!bullet) {
-            continue;
+          // Params are parsed un-collated as multiple params can be directly next to each
+          // other without intermediate whitespace.
+          for (const l of (i === 0 && hasHeader) ? block.lines.slice(1) : block.lines) {
+            if (l === '' || !l.startsWith('- ')) {
+              continue;
+            }
+            const bullet = this.extractBulleted(l, blocks[0].startLine + i, log);
+            if (!bullet) {
+              continue;
+            }
+            let b = bullet;
+            if (!bullet.text) {
+              // Visible is actually a value expression
+              b = {
+                json: bullet.json,
+                text: '{{' + bullet.visible + '}}',
+              };
+            }
+            attribs[attrName].push(b);
           }
-          let b = bullet;
-          if (!bullet.text) {
-            // Visible is actually a value expression
-            b = {
-              json: bullet.json,
-              text: '{{' + bullet.visible + '}}',
-            };
-          }
-          attribs[attrName].push(b);
         } else if (line.startsWith('> ')) {
           instruction = this.extractInstruction(line);
           body.push(instruction);
@@ -122,7 +130,7 @@ export class BlockRenderer {
       }
     }
 
-    const sanitized = sanitizeTemplate(templateType, attribs, body, blocks[0].startLine, this.renderer.toTrigger({text: 'end'}, -1), log);
+    const sanitized = sanitizeTemplate(templateType, attribs, body, blocks[0].startLine, () => this.renderer.toTrigger({text: 'end'}, -1), log);
     blocks[0].render = this.renderer.toTemplate(templateType, sanitized.attribs, sanitized.body, blocks[0].startLine);
   }
 

@@ -40,12 +40,12 @@ describe('BlockRenderer', () => {
         ];
 
         br.toNode(blocks, log);
-        const finalLog = prettifyMsgs(log.finalize());
+
         expect(prettifyHTML(blocks[0].render + '')).toEqual(TestData.badJSONXML);
-        expect(finalLog).toEqual(TestData.badJSONLog);
+        expect(prettifyMsgs(log.finalize())).toEqual(TestData.badJSONLog);
       });
 
-      fit ('errors without enemies or events', () => {
+      it ('errors without enemies or events', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -61,7 +61,7 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual(TestData.combatNoEnemyOrEventsLog);
       });
 
-      fit ('errors with bad enemy tier', () => {
+      it ('errors with bad enemy tier', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -99,7 +99,7 @@ describe('BlockRenderer', () => {
         const blocks: Block[] = [
           {
             indent: 0,
-            lines: ['_combat_', '', '- e1', '- e2 {"tier": 3}', '* on win'],
+            lines: ['_combat_', '', '- e1', '- e2 {"tier": 3}', '', '* on win'],
             startLine: 0,
           },
           {
@@ -131,7 +131,7 @@ describe('BlockRenderer', () => {
         const blocks: Block[] = [
           {
             indent: 0,
-            lines: ['_combat_', '', '- e1', '- e2', '* {{test1}} on win'],
+            lines: ['_combat_', '', '- e1', '- e2', '', '* {{test1}} on win'],
             startLine: 0,
           },
           {
@@ -209,7 +209,7 @@ describe('BlockRenderer', () => {
         const blocks: Block[] = [
           {
             indent: 0,
-            lines: ['_roleplay_', '', 'text', '', '* choice'],
+            lines: ['_Title_', '', 'text', '', '* choice'],
             startLine: 0,
           },
           {
@@ -290,7 +290,7 @@ describe('BlockRenderer', () => {
         const blocks: Block[] = [
           {
             indent: 0,
-            lines: ['_roleplay_', '', 'text', '', '* {{test1}} choice'],
+            lines: ['_Title_', '', 'text', '', '* {{test1}} choice'],
             startLine: 0,
           },
           {
@@ -323,7 +323,7 @@ describe('BlockRenderer', () => {
         const blocks: Block[] = [
           {
             indent: 0,
-            lines: ['_roleplay_', '', 'text', '', '* {{test1}}'],
+            lines: ['_Title_', '', 'text', '', '* {{test1}}'],
             startLine: 5,
           },
           {
@@ -345,7 +345,7 @@ describe('BlockRenderer', () => {
         const blocks: Block[] = [
           {
             indent: 0,
-            lines: ['_roleplay_', '', 'text', '', '* {{test1'],
+            lines: ['_Title_', '', 'text', '', '* {{test1'],
             startLine: 5,
           },
           {

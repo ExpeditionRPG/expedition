@@ -23,8 +23,12 @@ export const EVENT_ATTRIBUTE_SHORTHAND: {[k: string]: string} = {
 };
 
 export function getTemplateType(header: string): TemplateType|null {
-  // TODO
-  return 'combat';
+  for (const t of EVENT_TEMPLATE_TYPES) {
+    if (header === t) {
+      return t;
+    }
+  }
+  return null;
 }
 
 function isNumeric(n: any) {
@@ -33,8 +37,8 @@ function isNumeric(n: any) {
 
 export type TemplateBodyType = Array<string|TemplateChild|Instruction>;
 
-function sanitizeCombat(attribs: {[k: string]: any}, body: TemplateBodyType, line: number, defaultOutcome: any, log: Logger): {body: TemplateBodyType, attribs: {[k: string]: any}} {
-  if (!attribs.enemies) {
+function sanitizeCombat(attribs: {[k: string]: any}, body: TemplateBodyType, line: number, defaultOutcome: () => any, log: Logger): {body: TemplateBodyType, attribs: {[k: string]: any}} {
+  if (!attribs.enemies || !attribs.enemies.length) {
     log.err('combat card has no enemies listed', '414', line);
     attribs.enemies = [{text: 'UNKNOWN'}];
   } else {
@@ -77,11 +81,11 @@ function sanitizeCombat(attribs: {[k: string]: any}, body: TemplateBodyType, lin
   }
   if (!hasWin) {
     log.err('combat card must have "on win" event', '417', line);
-    sanitized.push({text: 'on win', outcome: [defaultOutcome]});
+    sanitized.push({text: 'on win', outcome: [defaultOutcome()]});
   }
   if (!hasLose) {
     log.err('combat card must have "on lose" event', '417', line);
-    sanitized.push({text: 'on lose', outcome: [defaultOutcome]});
+    sanitized.push({text: 'on lose', outcome: [defaultOutcome()]});
   }
   return {body: sanitized, attribs};
 }
