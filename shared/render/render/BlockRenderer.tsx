@@ -29,7 +29,7 @@ export class BlockRenderer {
 
     const attribs = extracted.json;
     attribs.id = attribs.id || extracted.id;
-    if (extracted.title != templateType) {
+    if (extracted.title !== templateType) {
       attribs.title = attribs.title || extracted.title;
       // don't count length of icon names, just that they take up ~1 character
       if (attribs.title.replace(/:.*?:/g, '#').length >= 25) {

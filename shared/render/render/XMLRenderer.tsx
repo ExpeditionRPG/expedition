@@ -23,7 +23,7 @@ export const XMLRenderer: Renderer = {
 
     const attrName = TEMPLATE_ATTRIBUTE_MAP[type];
     Object.keys(attribs).forEach((key) => {
-      if (key != attrName) {
+      if (key !== attrName) {
         tmpl.attr(key, attribs[key]);
       }
     });
