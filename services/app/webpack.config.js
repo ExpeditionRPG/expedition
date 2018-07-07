@@ -12,7 +12,7 @@ const options = {
   },
   plugins: [
     new Webpack.DefinePlugin({
-      PACKAGE_VERSION: JSON.stringify(require('./package.json').version),
+      'process.env.VERSION': JSON.stringify(require('./package.json').version),
     }),
     new CopyWebpackPlugin([
       { from: { glob: '../../node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },

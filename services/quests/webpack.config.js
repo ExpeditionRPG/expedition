@@ -19,7 +19,7 @@ const options = {
   },
   plugins: [
     new Webpack.DefinePlugin({
-      PACKAGE_VERSION: JSON.stringify(require('./package.json').version),
+      'process.env.VERSION': JSON.stringify(require('./package.json').version),
     }),
     new CopyWebpackPlugin([
       { from: 'src/index.html' },

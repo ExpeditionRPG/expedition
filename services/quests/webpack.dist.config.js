@@ -9,7 +9,7 @@ const options = {
   entry: dev.entry,
   plugins: [
     new Webpack.DefinePlugin({
-      PACKAGE_VERSION: JSON.stringify(require('./package.json').version),
+      'process.env.VERSION': JSON.stringify(require('./package.json').version),
     }),
     new CopyWebpackPlugin([
       // Copy ops for dist folder (main app)

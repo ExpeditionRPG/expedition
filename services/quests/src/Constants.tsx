@@ -1,6 +1,4 @@
-declare var PACKAGE_VERSION: string;
-
-export const VERSION = PACKAGE_VERSION; // Webpack
+export const VERSION = (process && process.env && process.env.VERSION) || '0.0.1'; // Webpack
 export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
 export const API_HOST = (process && process.env && process.env.API_HOST) || 'http://betaapi.expeditiongame.com';
 export const GITHUB_DOCS = 'https://github.com/ExpeditionRPG/expedition/blob/master/services/quests/docs/';
