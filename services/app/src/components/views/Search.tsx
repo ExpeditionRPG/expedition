@@ -4,12 +4,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import DoneIcon from '@material-ui/icons/Done';
+import OfflinePin from '@material-ui/icons/OfflinePin';
 import StarsIcon from '@material-ui/icons/Stars';
 import * as React from 'react';
 import Truncate from 'react-truncate';
 import {CONTENT_RATING_DESC, GenreType, LANGUAGES} from 'shared/schema/Constants';
 import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants';
-import {formatPlayPeriod} from '../../Format';
+import {formatPlayPeriod, smartTruncateSummary} from '../../Format';
 import {QuestDetails} from '../../reducers/QuestTypes';
 import {SearchPhase, SearchSettings, SearchState, SettingsType, UserQuestHistory, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
@@ -26,12 +27,12 @@ export interface SearchStateProps extends SearchState {
   settings: SettingsType;
   user: UserState;
   questHistory: UserQuestHistory;
+  offlineQuests: {[id: string]: boolean};
 }
 
 export interface SearchDispatchProps {
   onFilter: () => void;
   onLoginRequest: (subscribe: boolean) => void;
-  onPlay: (quest: QuestDetails, isDirectLinked: boolean) => void;
   onQuest: (quest: QuestDetails) => void;
   onReturn: () => void;
   onSearch: (search: SearchSettings, settings: SettingsType) => void;
@@ -208,39 +209,13 @@ function renderSettings(props: SearchProps): JSX.Element {
   return (<SearchSettingsCard search={props.search} settings={props.settings} onSearch={props.onSearch} user={props.user} />);
 }
 
-export function smartTruncateSummary(summary: string) {
-  // Extract sentences
-  const match = summary.match(/(.*?(?:\.|\?|!))(?: |$)/gm);
-
-  if (match === null) {
-    return summary;
-  }
-
-  let result = '';
-  for (const m of match) {
-    if (result.length + m.length > 120) {
-      if (result === '') {
-        return summary.trim();
-      }
-
-      result = result.trim();
-      if (result.endsWith('.')) {
-        // Continue a natural ellispis
-        return result + '..';
-      }
-      return result;
-    }
-    result += m;
-  }
-  return summary.trim();
-}
-
 export interface SearchResultProps {
   index: number;
   lastPlayed: Date | null;
   onQuest: (quest: QuestDetails) => void;
   quest: QuestDetails;
   search: SearchSettings;
+  offlineQuests: {[id: string]: boolean};
 }
 
 export function renderResult(props: SearchResultProps): JSX.Element {
@@ -293,6 +268,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
         }
         {orderDetails}
         <span className="expansions">
+          {props.offlineQuests[quest.id] && <OfflinePin className="inline_icon" />}
           {quest.expansionhorror && <img className="inline_icon" src="images/horror_small.svg"></img>}
         </span>
       </div>
@@ -302,7 +278,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
 
 function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
   const results: JSX.Element[] = (props.results || []).map((quest: QuestDetails, index: number) => {
-    return renderResult({index, quest, search: props.search, onQuest: props.onQuest, lastPlayed: (props.questHistory.list[quest.id] || {}).lastPlayed});
+    return renderResult({index, quest, search: props.search, onQuest: props.onQuest, lastPlayed: (props.questHistory.list[quest.id] || {}).lastPlayed, offlineQuests: props.offlineQuests});
   });
 
   return (

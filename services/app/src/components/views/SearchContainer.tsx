@@ -1,16 +1,22 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {toCard, toPrevious} from '../../actions/Card';
-import {setDialog} from '../../actions/Dialog';
 import {previewQuest} from '../../actions/Quest';
 import {search} from '../../actions/Search';
 import {ensureLogin} from '../../actions/User';
-import {fetchQuestXML, subscribe} from '../../actions/Web';
+import {subscribe} from '../../actions/Web';
 import {QuestDetails} from '../../reducers/QuestTypes';
 import {AppStateWithHistory, SearchSettings, SettingsType, UserState} from '../../reducers/StateTypes';
 import Search, {SearchDispatchProps, SearchStateProps} from './Search';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: SearchStateProps): SearchStateProps => {
+  const offlineQuests: {[id: string]: boolean} = {};
+  for (const s of state.saved.list) {
+    if (s.pathLen === 0) {
+      offlineQuests[s.details.id] = true;
+    }
+  }
+
   return {
     isDirectLinked: state._history.length <= 1,
     results: [], // Default in case search results are not defined
@@ -19,6 +25,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: SearchStateProps)
     settings: state.settings,
     user: state.user,
     questHistory: state.questHistory,
+    offlineQuests,
   };
 };
 
@@ -35,13 +42,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Searc
           }
           return dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
         });
-    },
-    onPlay: (quest: QuestDetails, isDirectLinked: boolean) => {
-      if (isDirectLinked) {
-        dispatch(setDialog('SET_PLAYER_COUNT'));
-      } else {
-        dispatch(fetchQuestXML(quest));
-      }
     },
     onQuest: (quest: QuestDetails) => {
       dispatch(previewQuest({quest}));

@@ -1,3 +1,4 @@
+import * as Redux from 'redux';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {getCheerio} from '../Globals';
@@ -7,6 +8,10 @@ import {QuestDetails} from '../reducers/QuestTypes';
 import {SavedQuestMeta} from '../reducers/StateTypes';
 import {QuestNodeAction, SavedQuestDeletedAction, SavedQuestListAction, SavedQuestStoredAction} from './ActionTypes';
 import {initQuest} from './Quest';
+import {openSnackbar} from './Snackbar';
+import {fetchLocal} from './Web';
+
+const cheerio = require('cheerio') as CheerioAPI;
 
 declare interface SavedQuest {xml: string; path: number[]; }
 
@@ -39,11 +44,27 @@ export function deleteSavedQuest(id: string, ts: number) {
   throw new Error('No such quest with ID ' + id + ', timestamp ' + ts.toString() + '.');
 }
 
+export function saveQuestForOffline(details: QuestDetails) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    return fetchLocal(details.publishedurl).then((result: string) => {
+      const elem = cheerio.load(result)('quest');
+      const node = initQuest(details, elem, defaultContext()).node;
+      dispatch(storeSavedQuest(node, details, Date.now()));
+      return dispatch(openSnackbar('Saved for offline play.'));
+    })
+    .catch((e: Error) => {
+      return dispatch(openSnackbar(Error('Network error: Please check your connection.')));
+    });
+  };
+}
+
 export function storeSavedQuest(node: ParserNode, details: QuestDetails, ts: number): SavedQuestStoredAction {
   logEvent('quest_save', { ...details, action: details.title, label: details.id });
   // Update the listing
   const savedQuests = getSavedQuestMeta();
-  savedQuests.push({ts, details});
+
+  const pathLen = node.ctx.path.length;
+  savedQuests.push({ts, details, pathLen});
   setStorageKeyValue(SAVED_QUESTS_KEY, savedQuests);
 
   // Save the quest state

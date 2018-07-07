@@ -96,6 +96,7 @@ export interface SnackbarState {
 export interface SavedQuestMeta {
   details: QuestDetails;
   ts: number;
+  pathLen?: number;
 }
 
 export type MultiplayerPhase = 'CONNECT'|'LOBBY';
