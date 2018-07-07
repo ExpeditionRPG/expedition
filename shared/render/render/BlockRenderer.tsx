@@ -2,11 +2,8 @@ import {REGEX} from '../../Regex';
 import {Block} from '../block/BlockList';
 import {Logger} from '../Logger';
 import Normalize from '../validation/Normalize';
-import {CombatChild, Instruction, Renderer, RoleplayChild} from './Renderer';
-
-function isNumeric(n: any) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
-}
+import {Instruction, Renderer} from './Renderer';
+import {TemplateType, sanitizeTemplate, getTemplateType, EVENT_ATTRIBUTE_MAP, EVENT_TEMPLATE_TYPES, TemplateChild} from './Template';
 
 // Does not implement Renderer interface, rather wraps
 // an existing Renderer's functions to accept a block list.
@@ -17,32 +14,48 @@ export class BlockRenderer {
     this.renderer = renderer;
   }
 
-  public toRoleplay(blocks: Block[], log: Logger) {
+  public toNode(blocks: Block[], log: Logger) {
     // There are cases where we don't have a roleplay header, e.g.
     // the first roleplay block inside a choice. This is fine,
     // and not an error, so we don't pass a logger here.
-    let extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], undefined);
+    let extracted = this.extractTemplate(blocks[0].lines[0], undefined);
     const hasHeader = Boolean(extracted);
+    // TODO Make part of Template
+    let templateType: TemplateType = 'roleplay';
+    if (hasHeader && extracted && typeof(extracted.title) === 'string') {
+      templateType = getTemplateType(extracted.title) || 'roleplay';
+    }
     extracted = extracted || {title: '', id: undefined, json: {}};
 
     const attribs = extracted.json;
-    attribs.title = attribs.title || extracted.title;
     attribs.id = attribs.id || extracted.id;
-
-    // don't count length of icon names, just that they take up ~1 character
-    if (attribs.title.replace(/:.*?:/g, '#').length >= 25) {
-      log.err('card title too long', '433');
+    if (extracted.title != templateType) {
+      attribs.title = attribs.title || extracted.title;
+      // don't count length of icon names, just that they take up ~1 character
+      if (attribs.title.replace(/:.*?:/g, '#').length >= 25) {
+        log.err('card title too long', '433');
+      }
+    }
+    const attrName = EVENT_ATTRIBUTE_MAP[templateType];
+    if (attrName !== null) {
+      attribs[attrName] = attribs[attrName] || [];
     }
 
-    // The only inner stuff
+    // Every node can contain:
+    // - one or more text paragraphs
+    // - choices/events leading to subnodes
+    // - a list of parameters for template-specific behavior
+    //
+    // We initially parse these without concern for which are valid;
+    // The correctness of these values is determined by the validation step at the end.
     let i = 0;
-    const body: Array<string|RoleplayChild|Instruction> = [];
+    const body: Array<string|TemplateChild|Instruction> = [];
     while (i < blocks.length) {
       const block = blocks[i];
       if (block.render) {
-        // Only the blocks within choices should be rendered at this point.
+        // Only the blocks within events should be rendered at this point.
         log.err(
-          'roleplay cards cannot contain indented sections that are not choices',
+          templateType + ' cannot contain indented sections that are not choices/events',
           '411',
           blocks[0].startLine
         );
@@ -50,17 +63,31 @@ export class BlockRenderer {
 
       // Append rendered stuff
       const lines = this.collate((i === 0 && hasHeader) ? block.lines.slice(1) : block.lines);
-      let choice: RoleplayChild | null = null;
+      let child: TemplateChild | null = null;
       let instruction: Instruction;
       let lineIdx = 0;
       for (const line of lines) {
         lineIdx++;
 
-        if (line.indexOf('* ') === 0) {
+        if (line.startsWith('* ')) {
           const bullet = this.extractBulleted(line, block.startLine + lineIdx, log);
-          choice = (bullet) ? Object.assign({}, bullet, {choice: []}) : null;
+          child = (bullet) ? Object.assign({}, bullet, {outcome: []}) : null;
           // TODO: Assert end of lines.
-        } else if (line.indexOf('> ') === 0) {
+        } else if (line.startsWith('- ') && attrName !== null) {
+          const bullet = this.extractBulleted(line, blocks[0].startLine + i, log);
+          if (!bullet) {
+            continue;
+          }
+          let b = bullet;
+          if (!bullet.text) {
+            // Visible is actually a value expression
+            b = {
+              json: bullet.json,
+              text: '{{' + bullet.visible + '}}',
+            };
+          }
+          attribs[attrName].push(b);
+        } else if (line.startsWith('> ')) {
           instruction = this.extractInstruction(line);
           body.push(instruction);
         } else {
@@ -68,9 +95,9 @@ export class BlockRenderer {
         }
       }
 
-      if (choice) {
-        // If we ended in a choice, continue through subsequent blocks until we end
-        // up outside the choice block again.
+      if (child) {
+        // If we ended in a child, continue through subsequent blocks until we end
+        // up outside the child again.
         let inner = blocks[++i];
         while (i < blocks.length && inner.indent !== block.indent) {
           if (!inner.render) {
@@ -78,24 +105,25 @@ export class BlockRenderer {
             i++;
             continue;
           }
-          choice.choice.push(inner.render);
+          child.outcome.push(inner.render);
           i++;
           inner = blocks[i];
         }
-        if (choice.text.trim() === '') {
+        if (child.text.trim() === '') {
           log.err(
-            'choice missing title',
+            'choice/event missing title',
             '428',
             blocks[i - 1].startLine - 2
           );
         }
-        body.push(choice);
+        body.push(child);
       } else {
         i++;
       }
     }
 
-    blocks[0].render = this.renderer.toRoleplay(attribs, body, blocks[0].startLine);
+    const sanitized = sanitizeTemplate(templateType, attribs, body, blocks[0].startLine, this.renderer.toTrigger({text: 'end'}, -1), log);
+    blocks[0].render = this.renderer.toTemplate(templateType, sanitized.attribs, sanitized.body, blocks[0].startLine);
   }
 
   public toQuest(block: Block, log: Logger) {
@@ -122,126 +150,10 @@ export class BlockRenderer {
     // TODO:
     // - Ensure there's at least one node that isn't the quest
     // - Ensure all paths end with an "end" trigger
-    // - Ensure all combat enemies are valid (use whitelist)
+    // - Ensure all template attributes are valid (use whitelist)
     // - Validate roleplay attributes (w/ whitelist)
     // - Validate choice attributes (w/ whitelist)
     return [];
-  }
-
-  public toCombat(blocks: Block[], log: Logger) {
-    if (!blocks.length) {
-      log.err(
-        'empty combat list',
-        '412',
-        blocks[0].startLine
-      );
-    }
-
-    const extracted = this.extractCombatOrRoleplay(blocks[0].lines[0], log) ||
-      {title: 'combat', id: undefined, json: {}};
-
-    const attribs = extracted.json;
-    attribs.id = attribs.id || extracted.id;
-
-    attribs.enemies = attribs.enemies || [];
-    for (let i = 0; i < blocks[0].lines.length; i++) {
-      const line = blocks[0].lines[i];
-      if (line[0] === '-') {
-        const extractedBullet = this.extractBulleted(line, blocks[0].startLine + i, log);
-        if (!extractedBullet) {
-          continue;
-        }
-        let enemy = extractedBullet;
-        if (!extractedBullet.text) {
-          // Visible is actually a value expression
-          enemy = {
-            json: extractedBullet.json,
-            text: '{{' + extractedBullet.visible + '}}',
-          };
-        }
-
-        // Validate tier if set
-        if (enemy.json && enemy.json.tier) {
-          const tier = enemy.json.tier;
-          if (!isNumeric(tier) || tier < 1) {
-            log.err('tier must be a positive number', '418', blocks[0].startLine + i);
-            continue;
-          }
-        }
-        attribs.enemies.push(enemy);
-      }
-    }
-
-    if (attribs.enemies.length === 0) {
-      log.err('combat card has no enemies listed', '414');
-      attribs.enemies = [{text: 'UNKNOWN'}];
-    }
-
-    const events: CombatChild[] = [];
-    let currEvent: CombatChild | null = null;
-    for (let i = 0; i < blocks.length; i++) {
-      const block = blocks[i];
-      if (block.render) {
-        if (!currEvent) {
-          log.err(
-            'found inner card of combat card without an event bullet',
-            '415',
-            block.startLine
-          );
-          continue;
-        }
-        currEvent.event.push(block.render);
-        continue;
-      }
-
-      // Skip the first line if we're at the root block (already parsed)
-      for (let j = (i === 0) ? 1 : 0; j < block.lines.length; j++) {
-        const line = block.lines[j];
-        // Skip empty lines, enemy list
-        if (line === '' || line[0] === '-') {
-          continue;
-        }
-
-        // We should only ever see event blocks within the combat block.
-        // These blocks are only single lines.
-        const evt = this.extractBulleted(line, block.startLine + j, log);
-        const extractedEvent = (evt) ? Object.assign({}, evt, {event: []}) : null;
-        if (!extractedEvent || !extractedEvent.text) {
-          log.err(
-            'lines within combat card must be events or enemies, not freestanding text',
-            '416',
-            block.startLine + j
-          );
-          continue;
-        }
-        if (currEvent) {
-          events.push(currEvent);
-        }
-        currEvent = extractedEvent;
-      }
-    }
-
-    if (currEvent) {
-      events.push(currEvent);
-    }
-
-    let hasWin = false;
-    let hasLose = false;
-
-    for (const event of events) {
-      hasWin = hasWin || (event.text === 'on win');
-      hasLose = hasLose || (event.text === 'on lose');
-    }
-    if (!hasWin) {
-      log.err('combat card must have "on win" event', '417');
-      events.push({text: 'on win', event: [this.renderer.toTrigger({text: 'end'}, -1)]});
-    }
-    if (!hasLose) {
-      log.err('combat card must have "on lose" event', '417');
-      events.push({text: 'on lose', event: [this.renderer.toTrigger({text: 'end'}, -1)]});
-    }
-
-    blocks[0].render = this.renderer.toCombat(attribs, events, blocks[0].startLine);
   }
 
   public toMeta(block: Block, log?: Logger): {[k: string]: any} {
@@ -309,13 +221,14 @@ export class BlockRenderer {
     }
 
     if (toRender.length === 0) {
-      toRender.push(this.renderer.toRoleplay({}, [], -1));
+      // TODO: Remove reference to event type
+      toRender.push(this.renderer.toTemplate('roleplay', {}, [], -1));
     }
 
     return this.renderer.finalize(quest, toRender);
   }
 
-  private extractCombatOrRoleplay(line: string, log?: Logger):
+  private extractTemplate(line: string, log?: Logger):
     {title: string, id?: string, json: {[k: string]: any}} | null {
     // Breakdown:
     // ^_(.*)_                  Match italicized text at start of string until there's a break

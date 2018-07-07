@@ -1,4 +1,5 @@
-import {CombatChild, Instruction, Renderer, RoleplayChild, sanitizeStyles} from './Renderer';
+import {Instruction, Renderer, sanitizeStyles} from './Renderer';
+import {TemplateType, TemplateChild, EVENT_ATTRIBUTE_MAP, EVENT_ATTRIBUTE_SHORTHAND} from './Template';
 
 const cheerio: any = require('cheerio') as CheerioAPI;
 
@@ -18,12 +19,28 @@ function escapeXml(unsafe: string) {
 
 // TODO: Move error checks in this renderer to the QDLRenderer class.
 export const XMLRenderer: Renderer = {
-  toRoleplay(attribs: {[k: string]: string}, body: Array<string|RoleplayChild|Instruction>, line: number): any {
-    const roleplay = cheerio.load('<roleplay>')('roleplay');
+  toTemplate(type: TemplateType, attribs: {[k: string]: any}, body: Array<string|TemplateChild|Instruction>, line: number): any {
+    const tmpl = cheerio.load(`<${type}></${type}>`)(type);
 
-    const keys = Object.keys(attribs);
-    for (const key of keys) {
-      roleplay.attr(key, attribs[key]);
+    const attrName = EVENT_ATTRIBUTE_MAP[type];
+    Object.keys(attribs).forEach((key) => {
+      if (key != attrName) {
+        tmpl.attr(key, attribs[key]);
+      }
+    });
+
+    if (attrName !== null) {
+      for (const v of attribs[attrName] || []) {
+        const short = EVENT_ATTRIBUTE_SHORTHAND[attrName];
+        const e = cheerio.load(`<${short}>${v.text}</${short}>`)(short);
+        e.attr('if', v.visible);
+        if (typeof(v.json) === 'object') {
+          for (const k of Object.keys(v.json)) {
+            e.attr(k, v.json[k]);
+          }
+        }
+        tmpl.append(e);
+      }
     }
 
     for (const section of body) {
@@ -36,16 +53,34 @@ export const XMLRenderer: Renderer = {
           text = text.replace('{{' + visible + '}}', '');
           paragraph = `<p if="${escapeXml(visible)}">${sanitizeStyles(text)}</p>`;
         }
-        roleplay.append(paragraph);
-      } else if (Boolean((section as RoleplayChild).choice)) { // choice
-        const node = section as RoleplayChild;
-        const choice = cheerio.load('<choice></choice>')('choice');
-        choice.attr('text', sanitizeStyles(node.text));
-        if (node.visible) {
-          choice.attr('if', node.visible);
+        tmpl.append(paragraph);
+      } else if (Boolean((section as TemplateChild).outcome)) { // choice or event
+        const node = section as TemplateChild;
+        if (node.text.startsWith('on ')) {
+          const currEvent: any = cheerio.load('<event></event>')('event');
+          currEvent.attr('on', node.text.substr(3));
+          if (node.visible) {
+            currEvent.attr('if', node.visible);
+          }
+          const attributes = node.json;
+          if (attributes) {
+            Object.keys(attributes).forEach((key) => {
+              currEvent.attr(key, attributes[key]);
+            });
+          }
+          for (const ev of node.outcome) {
+            currEvent.append(ev);
+          }
+          tmpl.append(currEvent);
+        } else {
+          const choice = cheerio.load('<choice></choice>')('choice');
+          choice.attr('text', sanitizeStyles(node.text));
+          if (node.visible) {
+            choice.attr('if', node.visible);
+          }
+          choice.append(node.outcome);
+          tmpl.append(choice);
         }
-        choice.append(node.choice);
-        roleplay.append(choice);
       } else { // instruction
         const node = section as Instruction;
         const instruction = cheerio.load('<instruction></instruction>')('instruction');
@@ -53,54 +88,14 @@ export const XMLRenderer: Renderer = {
         if (node.visible) {
           instruction.attr('if', node.visible);
         }
-        roleplay.append(instruction);
+        tmpl.append(instruction);
       }
     }
+
     if (line >= 0) {
-      roleplay.attr('data-line', line);
+      tmpl.attr('data-line', line);
     }
-    return roleplay;
-  },
-
-  toCombat(attribs: {[k: string]: any}, events: CombatChild[], line: number): any {
-    const combat = cheerio.load('<combat></combat>')('combat');
-
-    Object.keys(attribs).forEach((key) => {
-      if (key !== 'enemies') {
-        combat.attr(key, attribs[key]);
-      }
-    });
-
-    for (const enemy of attribs.enemies) {
-      const e = cheerio.load('<e>' + enemy.text + '</e>')('e');
-      e.attr('if', enemy.visible);
-      if (enemy.json && enemy.json.tier) {
-        e.attr('tier', enemy.json.tier);
-      }
-      combat.append(e);
-    }
-
-    for (const event of events) {
-      const currEvent: any = cheerio.load('<event></event>')('event');
-      currEvent.attr('on', event.text.substr(3));
-      if (event.visible) {
-        currEvent.attr('if', event.visible);
-      }
-      const attributes = event.json;
-      if (attributes) {
-        Object.keys(attributes).forEach((key) => {
-          currEvent.attr(key, attributes[key]);
-        });
-      }
-      for (const ev of event.event) {
-        currEvent.append(ev);
-      }
-      combat.append(currEvent);
-    }
-    if (line >= 0) {
-      combat.attr('data-line', line);
-    }
-    return combat;
+    return tmpl;
   },
 
   toTrigger(attribs: {[k: string]: any}, line: number): any {

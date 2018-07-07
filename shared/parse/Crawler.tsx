@@ -55,7 +55,7 @@ export abstract class CrawlerBase<C extends Context> {
 
   protected calculateAddedDepth(n: Node<C>): number {
     // This function calculates and returns the depth "cost" of a node.
-    // Nodes that take more time to engage with (e.g. combat or "prosaic" nodes)
+    // Nodes that take more time to engage with (e.g. event template or "prosaic" nodes)
     // may return a higher score.
     return 1;
   }

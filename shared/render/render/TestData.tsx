@@ -1,6 +1,9 @@
 
 const data = Object();
 
+data.genericRoleplayXML = `<roleplay title="" data-line="0">
+</roleplay>`;
+
 data.genericCombatXML = `<combat data-line="0">
     <e>UNKNOWN</e>
     <event on="win">
@@ -126,21 +129,18 @@ data.roleplayWithID = `<roleplay title="Title" id="testid123" data-line="21">
     <p>hi</p>
 </roleplay>`;
 
-data.badJSONLog = `ERROR L3:
+data.badJSONLog = `ERROR L2:
 failed to parse bulleted line (check your JSON)
 URL: 412
 
-ERROR L3:
-lines within combat card must be events or enemies, not freestanding text
-URL: 416
-
-ERROR L2:
-found inner card of combat card without an event bullet
-URL: 415
+ERROR L0:
+combat cannot contain indented sections that are not choices/events
+URL: 411
 
 ERROR L0:
 combat card must have "on win" event
 URL: 417`;
+
 
 data.combatNoEnemyOrEventsLog = `ERROR L0:
 combat card has no enemies listed

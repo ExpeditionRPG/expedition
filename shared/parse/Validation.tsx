@@ -27,7 +27,7 @@ function getInvalidNodesAndAttributes(node: Cheerio): { [key: string]: number; }
   const results: any = {};
 
   // Quests must only contain these tags:
-  if (['op', 'quest', 'div', 'span', 'b', 'i', 'choice', 'event', 'combat', 'roleplay', 'p', 'e', 'em',
+  if (['op', 'quest', 'div', 'span', 'b', 'i', 'choice', 'event', 'combat', 'decision', 'roleplay', 'p', 'e', 'em',
        'trigger', 'instruction'].indexOf(
         node.get(0).tagName.toLowerCase()) === -1) {
     results[node.get(0).tagName.toLowerCase()] = (results[node.get(0).tagName.toLowerCase()] || 0) + 1;
@@ -82,19 +82,3 @@ function generateIdMapping(node: Cheerio): { [key: string]: string[]; } {
   }
   return map;
 }
-
-/* TODO
-function validateCombatNodes(root: Cheerio) {
-  if (winEventCount === 0) {
-    throw new Error('<combat> must have at least one conditionally true child with on="win"');
-  }
-
-  if (loseEventCount === 0) {
-    throw new Error('<combat> must have at least one conditionally true child with on="lose"');
-  }
-
-  if (!enemies.length) {
-    throw new Error('<combat> has no <e> children');
-  }
-}
-*/
