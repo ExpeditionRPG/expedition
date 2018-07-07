@@ -27,7 +27,8 @@
     "shared-watch-test": "cd shared && yarn watch-test",
     "quests": "cd services/quests && yarn start",
     "quests-local": "API_HOST='http://localhost:8081' npm run quests & npm run api",
-    "quests-test": "cd services/quests && yarn test"
+    "quests-test": "cd services/quests && yarn test",
+    "quests-watch-test": "cd services/quests && yarn watch-test"
   },
   "license": "CC-BY-NC-ND-4.0",
   "engines": {
