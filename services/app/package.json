@@ -35,7 +35,7 @@
     "cordova-android": "^7.1.0",
     "cordova-ios": "^4.5.4",
     "cordova-ios-plugin-no-export-compliance": "0.0.5",
-    "cordova-plugin-device": "^1.1.7",
+    "cordova-plugin-device": "^2.0.0",
     "cordova-plugin-fullscreen": "^1.2.0",
     "cordova-plugin-googleplus": "git+https://github.com/EddyVerbruggen/cordova-plugin-googleplus.git",
     "cordova-plugin-hidden-statusbar-overlay": "git+https://github.com/katzer/cordova-plugin-hidden-statusbar-overlay.git",
