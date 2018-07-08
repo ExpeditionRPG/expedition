@@ -7,9 +7,9 @@ describe('Errors', () => {
   Object.keys(Errors).forEach((key: string) => {
     const err = Errors[key];
 
-    it(err.NUMBER + ': ' + err.NAME, () => {
-      // Valid cases - no error
-      err.VALID.forEach((valid: string) => {
+    // Valid cases - no error
+    err.VALID.forEach((valid: string, index: number) => {
+      it(err.NUMBER + ': ' + err.NAME + ' valid case ' + index, () => {
         if (err.TEST_WITH_CRAWLER) {
           return; // TODO actually test
         }
@@ -22,9 +22,11 @@ describe('Errors', () => {
         expect(msgs.warning).toEqual([]);
         expect(msgs.internal).toEqual([]);
       });
+    });
 
-      // Invalid cases - logs the error
-      err.INVALID.forEach((invalid: string, index: number) => {
+    // Invalid cases - logs the error
+    err.INVALID.forEach((invalid: string, index: number) => {
+      it(err.NUMBER + ': ' + err.NAME + ' invalid case ' + index, () => {
         if (err.TEST_WITH_CRAWLER) {
           return; // TODO actually test
         }

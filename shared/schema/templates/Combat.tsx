@@ -1,42 +1,11 @@
-import {Logger} from '../Logger';
-import {Instruction} from './Renderer';
-export type TemplateType = 'roleplay' | 'combat';
+import {Logger} from '../../render/Logger';
+import {TemplateBodyType, TemplateChild} from './Templates';
 
-export interface TemplateChild {
-  text: string;
-  visible?: string;
-  outcome: any[]; // Outomces are either choices or events - events begin with "on ", and choices do not.
-  json?: any;
-}
-
-export const TEMPLATE_TYPES: TemplateType[] = ['roleplay', 'combat'];
-
-// If null, the event has no attributes and instead has a text block.
-export const TEMPLATE_ATTRIBUTE_MAP: {[e: string]: string|null} = {
-  combat: 'enemies',
-  roleplay: null,
-};
-
-export const TEMPLATE_ATTRIBUTE_SHORTHAND: {[k: string]: string} = {
-  enemies: 'e',
-};
-
-export function getTemplateType(header: string): TemplateType|null {
-  for (const t of TEMPLATE_TYPES) {
-    if (header === t) {
-      return t;
-    }
-  }
-  return null;
-}
-
-function isNumeric(n: any) {
+export function isNumeric(n: any) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-export type TemplateBodyType = Array<string|TemplateChild|Instruction>;
-
-function sanitizeCombat(attribs: {[k: string]: any}, body: TemplateBodyType, line: number, defaultOutcome: () => any, log: Logger): {body: TemplateBodyType, attribs: {[k: string]: any}} {
+export function sanitizeCombat(attribs: {[k: string]: any}, body: TemplateBodyType, line: number, defaultOutcome: () => any, log: Logger): {body: TemplateBodyType, attribs: {[k: string]: any}} {
   if (!attribs.enemies || !attribs.enemies.length) {
     log.err('combat card has no enemies listed', '414', line);
     attribs.enemies = [{text: 'UNKNOWN'}];
@@ -87,15 +56,4 @@ function sanitizeCombat(attribs: {[k: string]: any}, body: TemplateBodyType, lin
     sanitized.push({text: 'on lose', outcome: [defaultOutcome()]});
   }
   return {body: sanitized, attribs};
-}
-
-export function sanitizeTemplate(type: TemplateType, attribs: {[k: string]: any}, body: Array<string|TemplateChild|Instruction>, line: number, defaultOutcome: any, log: Logger): {body: TemplateBodyType, attribs: {[k: string]: any}} {
-  switch (type) {
-    case 'combat':
-      return sanitizeCombat(attribs, body, line, defaultOutcome, log);
-    case 'roleplay':
-      return {body, attribs};
-    default:
-      throw new Error('unimplemented');
-  }
 }
