@@ -27,7 +27,7 @@ export function getTemplateType(header: string): TemplateType|null {
 export interface TemplateChild {
   text: string;
   visible?: string;
-  outcome: any[]; // Outomces are either choices or events - events begin with "on ", and choices do not.
+  outcome: any[]; // Outcomes are either choices or events - events begin with "on ", and choices do not.
   json?: any;
 }
 

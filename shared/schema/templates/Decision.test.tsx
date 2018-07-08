@@ -1,5 +1,5 @@
 import {Logger, prettifyMsgs} from '../../render/Logger';
-import {sanitizeDecision, getPossibleChecks} from './Decision';
+import {getPossibleChecks, sanitizeDecision} from './Decision';
 import {TemplateBodyType} from './Templates';
 
 function testSkillCheck(text: string) {
@@ -14,13 +14,13 @@ describe('Decision Template', () => {
     it ('uses only specific checks where possible', () => {
       expect(getPossibleChecks([
         {persona: undefined, skill: 'knowledge'},
-        {persona: 'dark', skill: 'knowledge'}
+        {persona: 'dark', skill: 'knowledge'},
       ])).toEqual(['dark knowledge']);
     });
     it ('uses only specific checks where possible', () => {
       expect(getPossibleChecks([
         {persona: undefined, skill: 'knowledge'},
-        {persona: 'dark', skill: 'knowledge'}
+        {persona: 'dark', skill: 'knowledge'},
       ])).toEqual(['dark knowledge']);
     });
     it ('handles a mix of generic and specific persona checks', () => {
@@ -62,7 +62,7 @@ describe('Decision Template', () => {
         testSkillCheck('failure'),
       ];
 
-      const sanitized = sanitizeDecision(attribs, body, 123, () => '', log);
+      sanitizeDecision(attribs, body, 123, () => '', log);
 
       expect(prettifyMsgs(log.finalize())).toContain('URL: 424');
     });
