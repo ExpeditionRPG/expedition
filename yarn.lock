@@ -3188,6 +3188,10 @@ cordova-common@^2.2.0:
     strip-bom "^3.0.0"
     underscore "^1.8.3"
 
+"cordova-ios-plugin-no-export-compliance@git+https://github.com/mikaoelitiana/cordova-ios-plugin-no-export-compliance.git":
+  version "0.0.5"
+  resolved "git+https://github.com/mikaoelitiana/cordova-ios-plugin-no-export-compliance.git#915556bf7713e9733005977af4fa4bfba40f203f"
+
 cordova-ios@^4.5.4:
   version "4.5.4"
   resolved "https://registry.yarnpkg.com/cordova-ios/-/cordova-ios-4.5.4.tgz#c80648058972968570dc15da97314ff92d07dfe7"
@@ -3224,10 +3228,6 @@ cordova-plugin-inappbrowser@^3.0.0:
 "cordova-plugin-insomnia@git+https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git":
   version "4.3.0"
   resolved "git+https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git#8d2c3b01fc0c11d9bc36bc1b5f9a141bd097f908"
-
-cordova-plugin-ios-no-export-compliance@^0.0.5:
-  version "0.0.1-security"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-ios-no-export-compliance/-/cordova-plugin-ios-no-export-compliance-0.0.1-security.tgz#59a85c738442e5a5c3578f3661bb273292dfc1b9"
 
 cordova-plugin-splashscreen@^5.0.0:
   version "5.0.2"
