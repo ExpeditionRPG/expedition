@@ -1,5 +1,5 @@
-import {Instruction, Renderer, sanitizeStyles} from './Renderer';
-import {TEMPLATE_ATTRIBUTE_MAP, TEMPLATE_ATTRIBUTE_SHORTHAND, TemplateChild, TemplateType} from './Template';
+import {Instruction, TEMPLATE_ATTRIBUTE_MAP, TEMPLATE_ATTRIBUTE_SHORTHAND, TemplateChild, TemplateType} from '../../schema/templates/Templates';
+import {Renderer, sanitizeStyles} from './Renderer';
 
 const cheerio: any = require('cheerio') as CheerioAPI;
 

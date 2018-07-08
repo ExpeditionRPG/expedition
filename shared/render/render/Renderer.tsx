@@ -1,9 +1,8 @@
 import {REGEX} from '../../Regex';
-import {TemplateChild, TemplateType} from './Template';
-export interface Instruction {text: string; visible?: string; }
+import {TemplateBodyType, TemplateType} from '../../schema/templates/Templates';
 
 export interface Renderer {
- toTemplate: (type: TemplateType, attribs: {[k: string]: any}, body: Array<string|TemplateChild|Instruction>, line: number) => any;
+ toTemplate: (type: TemplateType, attribs: {[k: string]: any}, body: TemplateBodyType, line: number) => any;
  toTrigger: (attribs: {[k: string]: any}, line: number) => any;
  toQuest: (attribs: {[k: string]: any}, line: number) => any;
  finalize: (quest: any, inner: any[]) => any;

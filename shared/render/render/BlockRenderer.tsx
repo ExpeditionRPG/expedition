@@ -1,9 +1,10 @@
 import {REGEX} from '../../Regex';
+import {sanitizeTemplate} from '../../schema/templates/Sanitize';
+import {getTemplateType, Instruction,  TEMPLATE_ATTRIBUTE_MAP, TEMPLATE_TYPES, TemplateChild, TemplateType} from '../../schema/templates/Templates';
 import {Block} from '../block/BlockList';
 import {Logger} from '../Logger';
 import Normalize from '../validation/Normalize';
-import {Instruction, Renderer} from './Renderer';
-import {getTemplateType, sanitizeTemplate, TEMPLATE_ATTRIBUTE_MAP, TEMPLATE_TYPES, TemplateChild, TemplateType} from './Template';
+import {Renderer} from './Renderer';
 
 // Does not implement Renderer interface, rather wraps
 // an existing Renderer's functions to accept a block list.
