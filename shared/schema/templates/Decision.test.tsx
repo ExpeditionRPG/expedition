@@ -17,12 +17,6 @@ describe('Decision Template', () => {
         {persona: 'dark', skill: 'knowledge'},
       ])).toEqual(['dark knowledge']);
     });
-    it ('uses only specific checks where possible', () => {
-      expect(getPossibleChecks([
-        {persona: undefined, skill: 'knowledge'},
-        {persona: 'dark', skill: 'knowledge'},
-      ])).toEqual(['dark knowledge']);
-    });
     it ('handles a mix of generic and specific persona checks', () => {
       expect(getPossibleChecks([
         {persona: 'light', skill: 'knowledge'},
