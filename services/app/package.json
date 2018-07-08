@@ -41,7 +41,7 @@
     "cordova-plugin-hidden-statusbar-overlay": "git+https://github.com/katzer/cordova-plugin-hidden-statusbar-overlay.git",
     "cordova-plugin-inappbrowser": "^2.0.2",
     "cordova-plugin-insomnia": "git+https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git",
-    "cordova-plugin-splashscreen": "^4.1.0",
+    "cordova-plugin-splashscreen": "^5.0.0",
     "cordova-plugin-vibration": "^3.0.0",
     "cordova-plugin-whitelist": "^1.3.3",
     "cordova-plugin-x-socialsharing": "^5.4.1",
