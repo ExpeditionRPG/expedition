@@ -3,6 +3,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const options = {
+  mode: 'production',
   entry: [
     'whatwg-fetch',
     'promise-polyfill',
@@ -22,7 +23,6 @@ const options = {
         options: { name: '[name].[ext]' }, // disable filename hashing for infrequently changed static assets to enable preloading
       },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
-      { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules\/((?!expedition\-qdl).)*$/ },
     ],
   },
@@ -38,17 +38,6 @@ const options = {
     }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // Don't import bloated Moment locales
     new webpack.optimize.AggressiveMergingPlugin(),
-    new UglifyJsPlugin({
-      sourceMap: true,
-      uglifyOptions: {
-        mangle: {
-          keep_fnames: true, // Critical for multiplayer / remoteify!
-        },
-        compress: {
-          keep_fnames: true, // Critical for multiplayer / remoteify!
-        },
-      },
-    }),
     new CopyWebpackPlugin([
       { from: 'src/images', to: 'images'},
       { from: 'src/quests', to: 'quests'},
@@ -60,6 +49,21 @@ const options = {
       { from: { glob: '../../node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
     ]),
   ],
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        sourceMap: true,
+        uglifyOptions: {
+          mangle: {
+            keep_fnames: true, // Critical for multiplayer / remoteify!
+          },
+          compress: {
+            keep_fnames: true, // Critical for multiplayer / remoteify!
+          },
+        },
+      }),
+    ],
+  },
 };
 
 module.exports = options;

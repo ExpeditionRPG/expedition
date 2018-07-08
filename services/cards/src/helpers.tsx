@@ -24,18 +24,28 @@ export function romanize(num: number): string { // http://blog.stevenlevithan.co
   let roman = '';
   let i = 3;
   while (i--) {
-    roman = (key[+((digits || []).pop() || 0) + (i * 10)] || '') + roman;
+    roman = (key[+(digits.pop() || 0) + (i * 10)] || '') + roman;
   }
   return ((num < 0) ? '-' : '') + Array(+digits.join('') + 1).join('M') + roman;
 }
 
 // generates a bottom tracker, fits up to 14; inclusive 0-count
 // TODO modernize
-export function horizontalCounter(count: number): JSX.Element {
+export function horizontalCounter(count: number|string): JSX.Element {
+
+  let numbers = [];
   const output = [];
   let outputted = 0;
+
+  if (typeof count === 'string') {
+    numbers = count.split(',');
+    count = numbers.length;
+  } else {
+    numbers = [...Array(count + 1).keys()];
+  }
+
   while (count >= 0) {
-    output.push(<span key={outputted}>{outputted}</span>);
+    output.push(<span key={outputted}>{numbers[outputted]}</span>);
     count--;
     outputted++;
   }

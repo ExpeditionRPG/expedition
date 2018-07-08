@@ -4,23 +4,33 @@
 
 The Expedition monorepo.
 
+## Contributing
+
+Contributions welcome! Earn [loot points](https://expeditiongame.com/loot) while practicing your coding skills on the bleeding edge of web. If you're new to any of our tools or libraries, don't worry - we're happy to help and answer questions!
+
+Not sure what to work on? Check out our [open issues](https://github.com/ExpeditionRPG/expedition/issues), especially those labeled with `help wanted`.
+
+### Repository structure
+
 All shared code goes in `/shared`, all deployed code goes in `/services.` Code in services can only reference shared code, and should not reference other services.
 
-## Setup
+## Development
+
+### Setup
 
 Install Node 8.11.3 using [NVM](https://github.com/creationix/nvm)
 
-Install yarn: `npm install -g yarn webpack-dev-server`
+Install global dependencies: `npm install -g yarn cordova webpack@4 webpack-cli@3 webpack-dev-server@3`
 
-Install all dependencies: `yarn run setup`
+Install local dependencies: `yarn run setup`
 
 Run the tests to make sure everything's working: `yarn test`
 
-### TEMPORARY SETUP NOTES
+#### TEMPORARY SETUP NOTES
 
 While we continue to consolidate the monorepo, you'll also need to run `npm install -g karma-cli`
 
-## Development
+### Running the code
 
 You can run anything in `/services` by running the yarn command of the same name, for example the app by running `yarn run app`.
 

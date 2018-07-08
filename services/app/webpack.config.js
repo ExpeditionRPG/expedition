@@ -1,9 +1,10 @@
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const path = require('path');
+const Path = require('path');
 const port = process.env.DOCKER_PORT || 8082;
 
 const options = {
+  mode: 'development',
   cache: true,
   entry: [
     'whatwg-fetch',
@@ -18,7 +19,7 @@ const options = {
   },
   devServer: {
     host: '0.0.0.0',
-    contentBase: path.join(__dirname, "src"),
+    contentBase: Path.join(__dirname, "src"),
     disableHostCheck: true,
     publicPath: '/',
     port: port,
@@ -28,7 +29,7 @@ const options = {
     historyApiFallback: true
   },
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: Path.join(__dirname, 'dist'),
     filename: 'bundle.js',
   },
   stats: {
@@ -42,7 +43,6 @@ const options = {
         options: { name: '[name].[ext]' }, // disable filename hashing for infrequently changed static assets to enable preloading
       },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
-      { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /node_modules/ },
     ],
   },

@@ -4,6 +4,7 @@ const Path = require('path');
 const Webpack = require('webpack');
 
 const options = {
+  mode: 'production',
   entry: {
     bundle: [
       './src/React.tsx',
@@ -18,8 +19,8 @@ const options = {
     extensions: ['.js', '.ts', '.tsx', '.json', '.txt'],
   },
   output: {
-    path: __dirname,
-    filename: 'dist/[name].js',
+    path: __dirname + '/dist/',
+    filename: '[name].js',
   },
   module: {
     rules: [
@@ -28,9 +29,8 @@ const options = {
       // but attempting to do so then breaks export to dist/
       // Will be auto-fixed when we migrate all static pages to quests.expedition
       // In the mean time, can manually copy images over when deploying static files
-      { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader?outputPath=dist/' },
+      { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
-      { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /\/node_modules\/((?!expedition\-.*).)*$/ },
     ],
   },
@@ -46,17 +46,16 @@ const options = {
     }),
     new CopyWebpackPlugin([
       // Copy ops for dist folder (main app)
-      { from: 'src/index.html', to: 'dist' },
-      { from: 'src/assets', to: 'dist' },
-      { from: '../app/src/images', to: 'dist/images' },
-      { from: { glob: '../../node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './dist/images' },
-      { from: { glob: '../../node_modules/expedition-art/art/*.png' }, flatten: true, to: './dist/images' },
-      { from: 'src/dictionaries', to: 'dist/dictionaries'},
-      { from: 'src/scripts', to: 'dist/scripts' },
+      { from: 'src/index.html' },
+      { from: '../app/src/images', to: 'images' },
+      { from: { glob: '../../node_modules/expedition-art/icons/*.svg' }, flatten: true, to: 'images' },
+      { from: { glob: '../../node_modules/expedition-art/art/*.png' }, flatten: true, to: 'images' },
+      { from: 'src/dictionaries', to: 'dictionaries'},
+      { from: 'src/scripts', to: 'scripts' },
 
       // Copy ops for static folder (error/maintenance pages)
-      { from: 'src/error.html', to: 'dist' },
-      { from: 'src/maintenance.html', to: 'dist' },
+      { from: 'src/error.html' },
+      { from: 'src/maintenance.html' },
     ]),
   ],
 };

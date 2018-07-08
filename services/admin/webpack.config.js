@@ -5,6 +5,7 @@ const Webpack = require('webpack');
 const port = process.env.DOCKER_PORT || 8080;
 
 const options = {
+  mode: 'development',
   cache: true,
   entry: {
     bundle: [
@@ -42,13 +43,11 @@ const options = {
       { test: /\.tsx$/, enforce: 'pre', loader: 'tslint-loader' },
       { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader : 'file-loader' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass-loader' },
-      { test: /\.json$/, loader: 'json-loader' },
       { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /\/node_modules\/((?!expedition\-api).)*$/ },
     ]
   },
   plugins: [
     new Webpack.HotModuleReplacementPlugin(),
-    new Webpack.NoEmitOnErrorsPlugin(),
     new Webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'dev'),
