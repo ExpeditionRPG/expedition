@@ -1,5 +1,6 @@
 import {QuestDetails} from './reducers/QuestTypes';
 
+export const VERSION = (process && process.env && process.env.VERSION) || '0.0.1'; // Webpack
 export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
 // Should be overriden via env vars to use local server
 export const API_HOST = (process && process.env && process.env.API_HOST) || 'http://betaapi.expeditiongame.com';

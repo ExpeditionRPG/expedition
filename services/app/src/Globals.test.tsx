@@ -1,4 +1,4 @@
-import {getAppVersion, getDevicePlatform, setDevice} from './Globals';
+import {getDevicePlatform, setDevice} from './Globals';
 
 describe('Globals', () => {
 
@@ -22,12 +22,6 @@ describe('Globals', () => {
     it('reports android if android device initialized', () => {
       setDevice({platform: 'android'});
       expect(getDevicePlatform()).toEqual('android');
-    });
-  });
-
-  describe('getAppVersion', () => {
-    it('gets a version string', () => {
-      expect(getAppVersion()).toMatch(/[0-9]+\.[0-9]+\.[0-9]+/);
     });
   });
 });

@@ -1,5 +1,5 @@
 export const NUMBER = 418;
-export const NAME = `Tier must be a positive number`;
+export const NAME = `Enemy tier must be a positive number`;
 export const DESCRIPTION = `A tier was specified that was either not a number, or not within the range of valid tiers.`;
 
 export const INVALID = [

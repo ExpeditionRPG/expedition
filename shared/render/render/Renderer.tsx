@@ -1,13 +1,8 @@
 import {REGEX} from '../../Regex';
+import {TemplateBodyType, TemplateType} from '../../schema/templates/Templates';
 
-export interface CombatChild {text: string; visible?: string; event: any[]; json?: any; }
-export interface Instruction {text: string; visible?: string; }
-export interface RoleplayChild {text: string; visible?: string; choice: any; }
-
-// These renderers
 export interface Renderer {
- toRoleplay: (attribs: {[k: string]: any}, body: Array<string|RoleplayChild|Instruction>, line: number) => any;
- toCombat: (attribs: {[k: string]: any}, events: CombatChild[], line: number) => any;
+ toTemplate: (type: TemplateType, attribs: {[k: string]: any}, body: TemplateBodyType, line: number) => any;
  toTrigger: (attribs: {[k: string]: any}, line: number) => any;
  toQuest: (attribs: {[k: string]: any}, line: number) => any;
  finalize: (quest: any, inner: any[]) => any;

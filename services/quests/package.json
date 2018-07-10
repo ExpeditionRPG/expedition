@@ -5,6 +5,7 @@
   "homepage": "http://quests.expeditiongame.com",
   "scripts": {
     "test": "karma start karma.conf.js --single-run --browsers NoSandboxChromeHeadless",
+    "watch-test": "karma start karma.conf.js --browsers NoSandboxChromeHeadless",
     "start": "webpack-dev-server --progress",
     "build": "webpack -p --config webpack.dist.config.js --progress"
   },

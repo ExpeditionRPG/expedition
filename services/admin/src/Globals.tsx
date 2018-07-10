@@ -2,8 +2,6 @@ declare var device: any;
 declare var ga: any;
 declare var gapi: any;
 
-const PACKAGE = require('../package.json');
-
 export interface ReactDocument extends Document {
   addEventListener: (e: string, f: (this: any, ev: MouseEvent) => any, useCapture?: boolean) => void;
   dispatchEvent: (e: Event) => boolean;
@@ -54,8 +52,4 @@ export function getGA(): any {
 
 export function getGapi(): any {
   return refs.gapi;
-}
-
-export function getAppVersion(): string {
-  return PACKAGE.version;
 }

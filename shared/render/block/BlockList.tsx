@@ -52,7 +52,7 @@ export class BlockList {
       return true;
     }
 
-    // start of a combat or roleplay header
+    // start of a template or roleplay header
     if (line[indent] === '_' && prevEmpty) {
       return true;
     }

@@ -2,8 +2,8 @@ import Redux from 'redux';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {MIN_FEEDBACK_LENGTH} from '../Constants';
-import {AUTH_SETTINGS} from '../Constants';
-import {getAppVersion, getDevicePlatform, getPlatformDump} from '../Globals';
+import {AUTH_SETTINGS, VERSION} from '../Constants';
+import {getDevicePlatform, getPlatformDump} from '../Globals';
 import {logEvent} from '../Logging';
 import {getLogBuffer} from '../Logging';
 import {MultiplayerCounters} from '../Multiplayer';
@@ -102,7 +102,7 @@ export function logQuestPlay(a: {phase: 'start'|'end'}) {
         questid: quest.id,
         questversion: quest.questversion,
         userid: state.user.id,
-        version: getAppVersion(),
+        version: VERSION,
       };
       fetch(AUTH_SETTINGS.URL_BASE + '/analytics/quest/' + a.phase, {
         body: JSON.stringify(data),
@@ -169,7 +169,7 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       rating: a.rating,
       text: a.text,
       userid: a.user.id,
-      version: getAppVersion(),
+      version: VERSION,
     };
 
     // If we're not rating, we're providing other feedback.
@@ -229,7 +229,7 @@ export function logMultiplayerStats(user: UserState, quest: QuestDetails, stats:
       questid: quest.id,
       questversion: quest.questversion,
       userid: user.id,
-      version: getAppVersion(),
+      version: VERSION,
     };
 
     return fetch(AUTH_SETTINGS.URL_BASE + '/analytics/multiplayer/stats', {

@@ -3188,9 +3188,9 @@ cordova-common@^2.2.0:
     strip-bom "^3.0.0"
     underscore "^1.8.3"
 
-"cordova-ios-plugin-no-export-compliance@git+https://github.com/mikaoelitiana/cordova-plugin-ios-no-export-compliance.git":
+"cordova-ios-plugin-no-export-compliance@git+https://github.com/mikaoelitiana/cordova-ios-plugin-no-export-compliance.git":
   version "0.0.5"
-  resolved "git+https://github.com/mikaoelitiana/cordova-plugin-ios-no-export-compliance.git#915556bf7713e9733005977af4fa4bfba40f203f"
+  resolved "git+https://github.com/mikaoelitiana/cordova-ios-plugin-no-export-compliance.git#915556bf7713e9733005977af4fa4bfba40f203f"
 
 cordova-ios@^4.5.4:
   version "4.5.4"
@@ -3228,10 +3228,6 @@ cordova-plugin-inappbrowser@^3.0.0:
 "cordova-plugin-insomnia@git+https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git":
   version "4.3.0"
   resolved "git+https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git#8d2c3b01fc0c11d9bc36bc1b5f9a141bd097f908"
-
-cordova-plugin-ios-no-export-compliance@0.0.1-security:
-  version "0.0.1-security"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-ios-no-export-compliance/-/cordova-plugin-ios-no-export-compliance-0.0.1-security.tgz#59a85c738442e5a5c3578f3661bb273292dfc1b9"
 
 cordova-plugin-splashscreen@^5.0.0:
   version "5.0.2"
@@ -12392,6 +12388,12 @@ webpack-log@^1.0.1, webpack-log@^1.1.2, webpack-log@^1.2.0:
     log-symbols "^2.1.0"
     loglevelnext "^1.0.1"
     uuid "^3.1.0"
+
+webpack-merge@^4.1.3:
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/webpack-merge/-/webpack-merge-4.1.3.tgz#8aaff2108a19c29849bc9ad2a7fd7fce68e87c4a"
+  dependencies:
+    lodash "^4.17.5"
 
 webpack-sources@^1.0.1, webpack-sources@^1.1.0:
   version "1.1.0"
