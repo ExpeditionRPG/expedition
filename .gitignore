@@ -38,3 +38,4 @@ res/
 config.json
 google-services.json
 GoogleService-Info.plist
+.idea
