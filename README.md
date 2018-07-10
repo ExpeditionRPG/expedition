@@ -22,7 +22,7 @@ Install Node 8.11.3 using [NVM](https://github.com/creationix/nvm)
 
 Install global dependencies: `npm install -g yarn cordova webpack@4 webpack-cli@3 webpack-dev-server@3`
 
-Install local dependencies: `yarn run setup`
+Install local dependencies: `yarn`
 
 Run the tests to make sure everything's working: `yarn test`
 
