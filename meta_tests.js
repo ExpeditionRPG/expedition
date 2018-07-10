@@ -34,6 +34,7 @@ describe('Dependencies', () => {
       'node-sass',
       'babel-preset-env',
       'babel-core',
+      'react-hot-loader',
 
       // Needed for tests
       'babel-jest',

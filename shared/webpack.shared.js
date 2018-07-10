@@ -36,7 +36,7 @@ const options = {
         options: { name: '[name].[ext]' }, // disable filename hashing for infrequently changed static assets to enable preloading
       },
       { test: /\.scss$/, loaders: ['style-loader', 'css-loader', 'sass-loader'] },
-      { test: /\.tsx$/, loaders: ['react-hot-loader/webpack', 'awesome-typescript-loader'], exclude: /node_modules/ },
+      { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/ },
     ]
   },
   plugins: [
