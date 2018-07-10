@@ -1,4 +1,4 @@
-import {TEMPLATE_TYPES} from '../render/render/Template';
+import {TEMPLATE_TYPES} from '../schema/templates/Templates';
 // TODO(https://github.com/ExpeditionRPG/expedition-app/issues/291): Actually use this
 
 export function isEmptyObject(obj: object): boolean {

@@ -2,12 +2,6 @@ declare var device: any;
 declare var ga: any;
 declare var gapi: any;
 
-const PACKAGE = require('../package.json');
-
-export function getAppVersion(): string {
-  return PACKAGE.version;
-}
-
 export interface ReactDocument extends Document {
   addEventListener: (e: string, f: (this: any, ev: MouseEvent) => any,
                      useCapture?: boolean) => void;
@@ -23,7 +17,7 @@ export interface CordovaLoginPlugin {
 
 export interface ReactWindow extends Window {
   platform?: string;
-  APP_VERSION?: string;
+  VERSION?: string;
   AndroidFullScreen?: {
     immersiveMode: (success: () => any, failure: () => any) => void,
   };

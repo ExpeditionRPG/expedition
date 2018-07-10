@@ -7,7 +7,7 @@
 read -p "This will remove built files, rebuild, and deploy to S3. Continue? [Y/N]" -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-  rm -rf www
+  rm -rf dist
 
   # Rebuild the web app files
   export NODE_ENV='dev'
@@ -15,5 +15,5 @@ then
 
   # Deploy web app to beta once apps built
   export AWS_DEFAULT_REGION='us-east-2'
-  aws s3 cp www s3://betacards.expeditiongame.com --recursive
+  aws s3 cp dist s3://betacards.expeditiongame.com --recursive
 fi
