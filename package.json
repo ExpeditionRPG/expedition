@@ -223,6 +223,7 @@
       ]
     ],
     "plugins": [
+      "react-hot-loader/babel",
       [
         "module-resolver-zavatta",
         {
