@@ -9,13 +9,15 @@ function testSkillCheck(text: string) {
 describe('Decision Template', () => {
   describe('getPossibleChecks', () => {
     it('allows for generic checks', () => {
-      expect(getPossibleChecks([{persona: undefined, skill: 'knowledge'}])).toEqual(['knowledge']);
+      expect(getPossibleChecks([{skill: 'knowledge'}])).toEqual([{skill: 'knowledge'}]);
     });
     it ('uses only specific checks where possible', () => {
       expect(getPossibleChecks([
         {persona: undefined, skill: 'knowledge'},
         {persona: 'dark', skill: 'knowledge'},
-      ])).toEqual(['dark knowledge']);
+      ])).toEqual([
+        {persona: 'dark', skill: 'knowledge'},
+      ]);
     });
     it ('handles a mix of generic and specific persona checks', () => {
       expect(getPossibleChecks([
@@ -23,7 +25,11 @@ describe('Decision Template', () => {
         {persona: 'dark', skill: 'knowledge'},
         {persona: undefined, skill: 'knowledge'},
         {persona: undefined, skill: 'athletics'},
-      ])).toEqual(['light knowledge', 'dark knowledge', 'athletics']);
+      ])).toEqual([
+        {persona: 'light', skill: 'knowledge'},
+        {persona: 'dark', skill: 'knowledge'},
+        {skill: 'athletics'},
+        ]);
     });
   });
 

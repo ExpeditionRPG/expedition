@@ -11,9 +11,8 @@ import {getStore} from '../../../../../Store';
 import {
   handleDecisionRoll,
   handleDecisionSelect,
-  handleDecisionTimerStart,
 } from '../decision/Actions';
-import {DecisionState, DecisionType, EMPTY_DECISION_STATE} from '../decision/Types';
+import {DecisionState, EMPTY_DECISION_STATE, LeveledSkillCheck} from '../decision/Types';
 import {ParserNode} from '../TemplateTypes';
 import {
   adventurerDelta,
@@ -99,22 +98,21 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     onCustomEnd: () => {
       dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: false}));
     },
-    onDecisionChoice: (node: ParserNode, settings: SettingsType, choice: DecisionType, elapsedMillis: number, seed: string) => {
-      dispatch(handleDecisionSelect({node, settings, elapsedMillis, decision: choice, seed}));
+    onDecisionSelect: (node: ParserNode, selected: LeveledSkillCheck, elapsedMillis: number) => {
+      dispatch(handleDecisionSelect({node, elapsedMillis, selected}));
       dispatch(toDecisionCard({phase: 'RESOLVE_DECISION'}));
     },
     onDecisionEnd: () => {
       dispatch(toCard({name: 'QUEST_CARD', phase: 'PREPARE'}));
     },
-    onDecisionRoll: (node: ParserNode, settings: SettingsType, decision: DecisionState, roll: number, seed: string) => {
-      dispatch(handleDecisionRoll({node, settings, scenario: decision.scenario, roll, seed}));
-      dispatch(toDecisionCard({phase: 'RESOLVE_DECISION', numOutcomes: decision.outcomes.length}));
+    onDecisionRoll: (node: ParserNode, roll: number) => {
+      dispatch(handleDecisionRoll({node, roll}));
+      // TODO dispatch(toDecisionCard({phase: 'RESOLVE_DECISION', numOutcomes: decision.outcomes.length}));
     },
     onDecisionSetup: () => {
       dispatch(toDecisionCard({phase: 'PREPARE_DECISION'}));
     },
     onDecisionTimerStart: () => {
-      dispatch(handleDecisionTimerStart({}));
       dispatch(toDecisionCard({phase: 'DECISION_TIMER'}));
     },
     onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {

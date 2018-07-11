@@ -2,23 +2,29 @@ import {Logger} from '../../render/Logger';
 import {TemplateBodyType, TemplateChild} from './Templates';
 
 export enum Persona {
-  LIGHT = 'light',
-  DARK = 'dark',
+  light = 'light',
+  dark = 'dark',
 }
 export enum Skill {
-  ATHLETICS = 'athletics',
-  KNOWLEDGE = 'knowledge',
-  CHARISMA = 'charisma',
+  athletics = 'athletics',
+  knowledge = 'knowledge',
+  charisma = 'charisma',
 }
 export enum Outcome {
-  SUCCESS = 'success',
-  FAILURE = 'failure',
-  RETRY = 'retry',
-  INTERRUPTED = 'interrupted',
+  success = 'success',
+  failure = 'failure',
+  retry = 'retry',
+  interrupted = 'interrupted',
+}
+
+export interface SkillCheck {
+  persona?: (keyof typeof Persona);
+  skill?: (keyof typeof Skill);
+  outcome?: (keyof typeof Outcome);
 }
 
 // We promise to give sane defaults for all but the following outcomes
-const REQUIRED_OUTCOMES: Outcome[] = [Outcome.SUCCESS, Outcome.FAILURE];
+const REQUIRED_OUTCOMES: Outcome[] = [Outcome.success, Outcome.failure];
 
 export const MIN_CHECKS_FOR_DECISION = 3;
 
@@ -33,11 +39,19 @@ function matchEnum(e: any): string {
 const skillCheckMatcher = new RegExp(`^(${matchEnum(Persona)})?\\s?(${matchEnum(Skill)})\\s?(${matchEnum(Outcome)})?$`);
 const genericOutcomeMatcher = new RegExp(`^(${matchEnum(Outcome)})$`);
 
-export function getPossibleChecks(ss: Array<{persona: string|undefined, skill: string|undefined}>): string[] {
-  const result: string[] = [];
+export function extractSkillCheck(s: string): SkillCheck|null {
+  const skillMatch = s.match(skillCheckMatcher);
+  if (!skillMatch) {
+    return null;
+  }
+  return {persona: (Persona as any)[skillMatch[1]], skill: (Skill as any)[skillMatch[2]]};
+}
 
-  const skills: {[skill: string]: boolean} = {};
-  const skillPersonas: {[skill: string]: string[]} = {};
+export function getPossibleChecks(ss: SkillCheck[]): SkillCheck[] {
+  const result: SkillCheck[] = [];
+
+  const skills: Partial<Record<keyof typeof Skill, boolean>> = {};
+  const skillPersonas: Partial<Record<keyof typeof Skill, Array<keyof typeof Persona>>> = {};
   for (const s of ss) {
     if (!s.skill) {
       continue;
@@ -47,17 +61,19 @@ export function getPossibleChecks(ss: Array<{persona: string|undefined, skill: s
     if (!s.persona) {
       continue;
     }
-    skillPersonas[s.skill] = skillPersonas[s.skill] || [];
-    skillPersonas[s.skill].push(s.persona);
+    const sk = skillPersonas[s.skill] || [];
+    sk.push(s.persona);
+    skillPersonas[s.skill] = sk;
   }
 
-  for (const s of Object.keys(skills)) {
+  for (const k of Object.keys(skills)) {
+    const s = (k as keyof typeof Skill);
     if (!skillPersonas[s]) {
-      result.push(s);
+      result.push({skill: s});
       continue;
     }
-    for (const p of skillPersonas[s]) {
-      result.push(`${p} ${s}`);
+    for (const p of (skillPersonas[s] || [])) {
+      result.push({persona: p, skill: s});
     }
   }
   return result;
@@ -66,7 +82,7 @@ export function getPossibleChecks(ss: Array<{persona: string|undefined, skill: s
 export function sanitizeDecision(attribs: {[k: string]: any}, body: TemplateBodyType, line: number, defaultOutcome: () => any, log: Logger): {body: TemplateBodyType, attribs: {[k: string]: any}} {
   const sanitized: TemplateBodyType = [];
 
-  const bullets: Array<{persona: string|undefined, skill: string|undefined, outcome: string|undefined}> = [];
+  const bullets: SkillCheck[] = [];
   for (const section of body) {
     if (!Boolean((section as TemplateChild).outcome)) {
       // Ignore whitespace
@@ -80,29 +96,37 @@ export function sanitizeDecision(attribs: {[k: string]: any}, body: TemplateBody
 
     // Check that the outcome is a valid skill check type or one of the reserved types
     const child = section as TemplateChild;
-    const skillMatch = child.text.match(skillCheckMatcher);
-    if (skillMatch) {
-      bullets.push({persona: skillMatch[1], skill: skillMatch[2], outcome: skillMatch[3] || 'success'});
+    if (skillCheckMatcher.test(child.text)) {
+      const skillMatch = extractSkillCheck(child.text);
+      if (!skillMatch) {
+        log.err('Invalid skill check: "' + child.text + '"', '422', line);
+        continue;
+      }
+      skillMatch.outcome = skillMatch.outcome || 'success';
+      bullets.push(skillMatch);
     } else {
       if (!genericOutcomeMatcher.test(child.text)) {
         log.err('Invalid skill check: "' + child.text + '"', '422', line);
         continue;
       }
-      bullets.push({persona: undefined,  skill: undefined, outcome: child.text});
+      bullets.push({persona: undefined,  skill: undefined, outcome: (Outcome as any)[child.text]});
     }
     sanitized.push(section);
   }
 
   // Calculate the possible skill checks and coverage of outcomes
   const coverage: {[check: string]: {[outcome: string]: boolean}} = {};
-  getPossibleChecks(bullets).forEach((c) => coverage[c] = {});
+  getPossibleChecks(bullets).forEach((c) => {
+    const str: string = (c.persona && c.skill) ? `${c.persona} ${c.skill}` : c.skill || '';
+    coverage[str] = {};
+  });
   for (const b of bullets) {
     const oc = b.outcome || 'success';
     if (b.persona && b.skill) {
       coverage[`${b.persona} ${b.skill}`][oc] = true;
     } else if (b.skill) { // Non-persona skill bullet
-      if (coverage[`${b.skill}`]) {
-        coverage[`${b.skill}`][oc] = true;
+      if (coverage[b.skill]) {
+        coverage[b.skill][oc] = true;
       } else {
         for (const p of enumValues(Persona)) {
           if (coverage[`${p} ${b.skill}`]) {

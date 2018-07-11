@@ -10,7 +10,7 @@ import Card from '../../../../base/Card';
 import Picker from '../../../../base/Picker';
 import TimerCard from '../../../../base/TimerCard';
 import Decision from '../decision/Decision';
-import {DecisionState, DecisionType} from '../decision/Types';
+import {DecisionState, LeveledSkillCheck} from '../decision/Types';
 import Roleplay from '../roleplay/Roleplay';
 import {ParserNode} from '../TemplateTypes';
 import {isSurgeNextRound, roundTimeMillis} from './Actions';
@@ -35,9 +35,9 @@ export interface CombatDispatchProps {
   onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => void;
   onChoice: (node: ParserNode, settings: SettingsType, index: number, maxTier: number, seed: string) => void;
   onCustomEnd: () => void;
-  onDecisionChoice: (node: ParserNode, settings: SettingsType, choice: DecisionType, elapsedMillis: number, seed: string) => void;
+  onDecisionSelect: (node: ParserNode, selected: LeveledSkillCheck, elapsedMillis: number) => void;
   onDecisionEnd: () => void;
-  onDecisionRoll: (node: ParserNode, settings: SettingsType, decision: DecisionState, roll: number, seed: string) => void;
+  onDecisionRoll: (node: ParserNode, roll: number) => void;
   onDecisionSetup: () => void;
   onDecisionTimerStart: () => void;
   onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
@@ -284,7 +284,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
   let shouldRunDecision = false;
   if (props.settings.experimental) {
-    shouldRunDecision = (NODE_ENV === 'dev') && (props.combat.roundCount % 2 === 0); // TODO CHANGE
+    shouldRunDecision = (NODE_ENV === 'dev') && (props.combat.roundCount % 5 === 0 || props.combat.roundCount % 5 === 3); // TODO CHANGE
   }
 
   let helpText: JSX.Element = (<span></span>);
@@ -478,7 +478,7 @@ function renderMidCombatDecision(props: CombatProps): JSX.Element {
     maxAllowedAttempts: props.combat.numAliveAdventurers,
     multiplayerState: props.multiplayerState,
     node: props.node,
-    onChoice: props.onDecisionChoice,
+    onSelect: props.onDecisionSelect,
     onEnd: props.onDecisionEnd,
     onRoll: props.onDecisionRoll,
     onStartTimer: props.onDecisionTimerStart,

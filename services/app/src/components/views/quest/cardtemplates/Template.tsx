@@ -5,6 +5,8 @@ import {getStore} from '../../../../Store';
 import {initCombat} from './combat/Actions';
 import CombatContainer from './combat/CombatContainer';
 import {combatScope} from './combat/Scope';
+import {initDecision} from './decision/Actions';
+import DecisionContainer from './decision/DecisionContainer';
 import {initRoleplay} from './roleplay/Actions';
 import RoleplayContainer from './roleplay/RoleplayContainer';
 import {ParserNode, TemplateContext} from './TemplateTypes';
@@ -16,6 +18,8 @@ export function initCardTemplate(node: ParserNode) {
         return dispatch(initRoleplay(node));
       case 'combat':
         return dispatch(initCombat({node}));
+      case 'decision':
+        return dispatch(initDecision({node}));
       default:
         throw new Error('Unsupported node type ' + node.getTag());
     }
@@ -26,6 +30,10 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
   switch (card.phase || 'ROLEPLAY') {
     case 'ROLEPLAY':
       return <RoleplayContainer node={node}/>;
+    case 'PREPARE_DECISION':
+    case 'DECISION_TIMER':
+    case 'RESOLVE_DECISION':
+      return <DecisionContainer node={node}/>;
     case 'DRAW_ENEMIES':
     case 'PREPARE':
     case 'TIMER':

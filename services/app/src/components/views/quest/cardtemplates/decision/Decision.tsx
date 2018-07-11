@@ -1,14 +1,16 @@
-
+import * as pluralize from 'pluralize';
 import * as React from 'react';
 import * as seedrandom from 'seedrandom';
+import {Outcome} from 'shared/schema/templates/Decision';
 import {CardState, CardThemeType, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
 import Button from '../../../../base/Button';
 import Callout from '../../../../base/Callout';
 import Card from '../../../../base/Card';
+import {generateIconElements} from '../Render';
 import {ParserNode} from '../TemplateTypes';
-import {generateDecisions, skillTimeMillis} from './Actions';
+import {generateChecks, skillTimeMillis} from './Actions';
 import DecisionTimer from './DecisionTimer';
-import {DecisionState, DecisionType, EMPTY_OUTCOME} from './Types';
+import {DecisionState, EMPTY_OUTCOME, LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
 
 export interface DecisionStateProps {
   card: CardState;
@@ -22,14 +24,30 @@ export interface DecisionStateProps {
 
 export interface DecisionDispatchProps {
   onStartTimer: () => void;
-  onChoice: (node: ParserNode, settings: SettingsType, choice: DecisionType, elapsedMillis: number, seed: string) => void;
-  onRoll: (node: ParserNode, settings: SettingsType, decision: DecisionState, roll: number, seed: string) => void;
+  onSelect: (node: ParserNode, selected: LeveledSkillCheck, elapsedMillis: number) => void;
+  onRoll: (node: ParserNode, roll: number) => void;
   onEnd: () => void;
 }
+
+const TITLES: Record<keyof typeof Outcome, string> = {
+  failure: 'Failure',
+  interrupted: 'Interrupted',
+  retry: 'Keep going!',
+  success: 'Success!',
+};
 
 export interface DecisionProps extends DecisionStateProps, DecisionDispatchProps {}
 
 export function renderPrepareDecision(props: DecisionProps): JSX.Element {
+
+  const prelude: JSX.Element[] = [];
+  let i = 0;
+  props.node.loopChildren((tag, c) => {
+    if (tag !== 'choice') {
+      prelude.push(<span key={i++}>{generateIconElements(c.toString(), 'light')}</span>);
+    }
+  });
+
   // Note: similar help text in renderNoTimer()
   let helpText: JSX.Element = (<span></span>);
   if (props.settings.showHelp) {
@@ -49,6 +67,7 @@ export function renderPrepareDecision(props: DecisionProps): JSX.Element {
 
   return (
     <Card title="Skill Check" theme="dark" inQuest={true}>
+      {prelude}
       {helpText}
       <Button className="bigbutton" onClick={() => props.onStartTimer()}>Begin Skill Check</Button>
     </Card>
@@ -56,25 +75,45 @@ export function renderPrepareDecision(props: DecisionProps): JSX.Element {
 }
 
 export function renderDecisionTimer(props: DecisionProps): JSX.Element {
-  const arng = seedrandom.alea(props.seed);
+  // const arng = seedrandom.alea(props.seed);
+  // generateChecks(props.settings, arng, props.maxAllowedAttempts)
   return (
     <DecisionTimer
       theme="dark"
-      decisions={generateDecisions(props.settings, arng, props.maxAllowedAttempts)}
+      checks={props.decision.leveledChecks}
       roundTimeTotalMillis={skillTimeMillis(props.settings, props.multiplayerState)}
-      onDecision={(d: DecisionType, ms: number) => props.onChoice(props.node, props.settings, d, ms, props.seed)} />
+      onSelect={(c: LeveledSkillCheck, ms: number) => props.onSelect(props.node, c, ms)} />
   );
 }
 
 export function renderResolveDecision(props: DecisionProps): JSX.Element {
-  const scenario = props.decision.scenario;
-  const roll = <img className="inline_icon" src="images/roll_white_small.svg"></img>;
-  const outcome = props.decision.outcomes[props.decision.outcomes.length - 1] || EMPTY_OUTCOME;
-  const choice = props.decision.choice;
+  console.log('Rendering resolve decision');
+  const selected = props.decision.selected;
+  if (selected === null) {
+    return <span>TODO BETTER HANDLING</span>;
+  }
+
+  // Compute the outcome from the most recent roll (if any)
+  const successThreshold = SUCCESS_THRESHOLD_MAP[selected.difficulty || 'Medium'];
+  const retryThreshold = RETRY_THRESHOLD_MAP[selected.difficulty || 'Medium'];
+  const successes = props.decision.rolls.reduce((acc, r) => (r >= successThreshold) ? acc + 1 : acc, 0);
+  const failures = props.decision.rolls.reduce((acc, r) => (r < retryThreshold) ? acc + 1 : acc, 0);
+  let outcome: (keyof typeof Outcome)|null = null;
+  if (successes >= selected.requiredSuccesses) {
+    outcome = Outcome.success;
+  } else if (failures > 0) {
+    outcome = Outcome.failure;
+  } else if (props.decision.rolls.length >= props.settings.numPlayers) {
+    outcome = Outcome.interrupted;
+  } else if (props.decision.rolls.length > 0) {
+    outcome = Outcome.retry;
+  }
 
   // Note: similar help text in renderNoTimer()
-  let inst: JSX.Element = (<span></span>);
+  const inst: JSX.Element = (<span></span>);
 
+  /*
+  TODO
   if (outcome.instructions.length > 0) {
     const elems = outcome.instructions.map((instruction: string, i: number) => {
       return <Callout key={i} icon="adventurer_white">{instruction}</Callout>;
@@ -93,52 +132,35 @@ export function renderResolveDecision(props: DecisionProps): JSX.Element {
       </span>
     );
   }
+  */
 
-  let pretext: JSX.Element;
-  if (outcome === EMPTY_OUTCOME) {
-    pretext = <p><em>{scenario.prelude}</em></p>;
-  } else /* need to retry */ {
-    pretext = <p><em>{outcome.text}</em></p>;
-  }
-
-  const numAttemptsLeft = props.decision.choice.numAttempts - props.decision.outcomes.length;
-  const header = <p className="center"><strong>{choice.difficulty} {choice.persona} {choice.skill} ({numAttemptsLeft} {(numAttemptsLeft > 1) ? 'Attempts' : 'Attempt'} Left)</strong></p>;
-
+  console.log(props.decision.rolls);
+  const shouldRoll = (outcome === null || outcome === 'retry');
+  const header = <p className="center"><strong>{selected.difficulty} {selected.persona} {selected.skill} ({selected.requiredSuccesses - successes} {pluralize('Success', successes)} Needed)</strong></p>;
+  const roll = <img className="inline_icon" src="images/roll_white_small.svg"></img>;
   let controls: JSX.Element;
-  if (outcome.type === 'SUCCESS' || outcome.type === 'FAILURE' || outcome.type === 'INTERRUPTED') {
-    controls = <Button onClick={() => props.onEnd()}>Next</Button>;
-  } else {
+  if (shouldRoll) {
     controls = (
       <span>
-        <Button onClick={() => props.onRoll(props.node, props.settings, props.decision, 18, props.seed)}>{roll} ≥ 17</Button>
-        <Button onClick={() => props.onRoll(props.node, props.settings, props.decision, 14, props.seed)}>{roll} 13 - 16</Button>
-        <Button onClick={() => props.onRoll(props.node, props.settings, props.decision, 10, props.seed)}>{roll} 9 - 12</Button>
-        <Button onClick={() => props.onRoll(props.node, props.settings, props.decision, 6, props.seed)}>{roll} 5 - 8</Button>
-        <Button onClick={() => props.onRoll(props.node, props.settings, props.decision, 2, props.seed)}>{roll} ≤ 4</Button>
+        <Button onClick={() => props.onRoll(props.node, 18)}>{roll} ≥ 17</Button>
+        <Button onClick={() => props.onRoll(props.node, 14)}>{roll} 13 - 16</Button>
+        <Button onClick={() => props.onRoll(props.node, 10)}>{roll} 9 - 12</Button>
+        <Button onClick={() => props.onRoll(props.node, 6)}>{roll} 5 - 8</Button>
+        <Button onClick={() => props.onRoll(props.node, 2)}>{roll} ≤ 4</Button>
       </span>
     );
-  }
-
-  let title: string;
-  if (props.decision.outcomes.length === 0 && outcome.type === 'RETRY') {
-    title = 'Resolve Check';
   } else {
-    title = {
-      FAILURE: 'Failure',
-      INTERRUPTED: 'Interrupted',
-      RETRY: 'Lend a Hand',
-      SUCCESS: 'Success!',
-    }[outcome.type] || 'Resolve Check';
+    controls = <Button onClick={() => props.onEnd()}>Next</Button>;
   }
 
   return (
-    <Card title={title} theme="dark" inQuest={true}>
-      {outcome.type === 'RETRY' && header}
-      {pretext}
+    <Card title={(outcome) ? TITLES[outcome] : 'Resolve Check'} theme="dark" inQuest={true}>
+      {shouldRoll && header}
       {inst}
       {controls}
     </Card>
   );
+
 }
 
 const Decision = (props: DecisionProps, theme: CardThemeType = 'light'): JSX.Element => {

@@ -1,5 +1,6 @@
 /* tslint:disable:object-literal-sort-keys */
 
+/*
 import {PersonaType, ScenarioType, SkillType} from './Types';
 
 function simpleScenario(persona: PersonaType, skill: SkillType, prelude: string, successText: string, successInstructions: string[], failureText: string, failureInstructions: string[], noneventText: string, retryText: string): ScenarioType {
@@ -65,8 +66,8 @@ const SCENARIOS: ScenarioType[] = [
 
     prelude: 'An enemy appears to be... carrying something. You try to trip them up and steal it for yourself.',
 
-    success: {type: 'SUCCESS', text: 'A well placed kick, and the loot drops to the ground. You snatch it up!', instructions: ['The adventurer that succeeded the check  gains 1 Tier I loot']},
-    failure: {type: 'FAILURE', text: 'They trip you first!', instructions: ['One adventurer that rolled for the check loses 1 Tier I loot']},
+    success: {type: 'SUCCESS', text: 'A well placed kick, and the loot drops to the ground. You snatch it up!', instructions: ['The adventurer that succeeded the check  gains 1 Tier I loot.']},
+    failure: {type: 'FAILURE', text: 'They trip you first!', instructions: ['One adventurer that rolled for the check loses 1 Tier I loot.']},
     nonevent: {type: 'INTERRUPTED', text: 'In the chaos of combat, your fancy footwork fails to fool the fiend. No loot for you, this time.', instructions: []},
     retry: {type: 'RETRY', text: 'The enemy dodges... but you see another chance!', instructions: []},
   },
@@ -87,8 +88,8 @@ const SCENARIOS: ScenarioType[] = [
     'You scoop up a handful of the debris and toss it at the nearest enemy, which starts clawing at their eyes in rage!',
     ['Enemies deal 2 less damage next round'],
     'As you crouch down, an enemy sees you drop your guard and strikes!',
-    ['All adventurers that rolled for the check take +1 damage from enemies next round'],
-    'You try to scoop up the dust, but it slips through your fingers',
+    ['All adventurers that rolled for the check take +1 damage from enemies next round.'],
+    'You try to scoop up the dust, but it slips through your fingers.',
     'The dust slips through your fingers; try again.'),
   {
     persona: 'Light',
@@ -96,7 +97,7 @@ const SCENARIOS: ScenarioType[] = [
 
     prelude: 'There\'s something oddly familiar about this combat...',
 
-    success: {type: 'SUCCESS', text: 'You recall a forgotten technique you read once; maybe you can put it to use...', instructions: ['The adventurer that succeeded the check learns 1 ability']},
+    success: {type: 'SUCCESS', text: 'You recall a forgotten technique you read once; maybe you can put it to use...', instructions: ['The adventurer that succeeded the check learns 1 ability of a type they already have.']},
     failure: {type: 'FAILURE', text: 'You\'re not feelying particularly knowledgeable about your next action.', instructions: ['The last adventurer to roll for this check must play the top ability card of their deck as D20=1.']},
     nonevent: {type: 'INTERRUPTED', text: 'The noise of battle shakes you out of your reverie... back to fighting!', instructions: []},
     retry: {type: 'RETRY', text: 'The thought remains, just out of reach...', instructions: []},
@@ -129,7 +130,7 @@ const SCENARIOS: ScenarioType[] = [
     'You hit the enemy right where it hurts most!',
     ['Deal 3 damage to 1 target'],
     'Perhaps said knowledge was a little fuzzy... that\'s no weak spot!',
-    ['Enemies take 1 less damage from abilities this round'],
+    ['Enemies take 1 less damage from abilities this round.'],
     'Meh, you\'ll just keep attacking as you did before.',
     'You communicate the plan to an ally.'),
   {
@@ -138,8 +139,8 @@ const SCENARIOS: ScenarioType[] = [
 
     prelude: 'One of the enemies appears reluctant to fight; perhaps you can reason with them?',
 
-    success: {type: 'SUCCESS', text: 'Your logic seems to have had an effect - but not enough for them to abandon the fight.', instructions: ['Cancel the lowest tier enemy\'s next surge effect (place a token on them to track)']},
-    failure: {type: 'FAILURE', text: 'Your words only serve to anger the foe!', instructions: ['Carry out the surge effect of the lowest tier enemy']},
+    success: {type: 'SUCCESS', text: 'Your logic seems to have had an effect - but not enough for them to abandon the fight.', instructions: ['Cancel the lowest tier enemy\'s next surge effect (place a token on them to track).']},
+    failure: {type: 'FAILURE', text: 'Your words only serve to anger the foe!', instructions: ['Carry out the surge effect of the lowest tier enemy.']},
     nonevent: {type: 'INTERRUPTED', text: 'You\'re drowned out by the noise of battle.', instructions: []},
     retry: {type: 'RETRY', text: 'You try unsuccessfully to catch the enemy\'s attention.', instructions: []},
   },
@@ -162,14 +163,14 @@ const SCENARIOS: ScenarioType[] = [
     success: {type: 'SUCCESS', text: 'With a rather pointed insult, you bring levity to your party.', instructions: ['Deal 2 damage to an enemy.', 'One adventurer regains 1 health.']},
     failure: {type: 'FAILURE', text: 'Your insult falls flat, and the enemy gets a hit on you while you\'re distracted!', instructions: ['All adventurers that rolled for the check lose 1 health.']},
     nonevent: {type: 'INTERRUPTED', text: 'You\'re drowned out by the noise of battle.', instructions: []},
-    retry: {type: 'RETRY', text: 'You can\'t think up the right words... you ask an ally for help', instructions: []},
+    retry: {type: 'RETRY', text: 'You can\'t think up the right words... you ask an ally for help.', instructions: []},
   },
   simpleScenario(
     'Dark',
     'Charisma',
     'You hear the enemy call out in a language you can almost understand...',
     'You interpret true, and anticipate their next move!',
-    ['Carry out the effects of an enemy\'s surge on itself, replacing "enemy" for "adventurer" and vice versa'],
+    ['Carry out the effects of an enemy\'s surge on itself, replacing "enemy" for "adventurer" and vice versa.'],
     'You bungle the translation and dodge right; the enemy strikes left!',
     ['The last adventurer to roll for this check takes 1 damage.'],
     'You ignore their words and focus on the combat.',
@@ -194,3 +195,4 @@ function buildMap(scenarios: ScenarioType[]): ScenarioMap {
 
 const map = buildMap(SCENARIOS);
 export default map;
+*/

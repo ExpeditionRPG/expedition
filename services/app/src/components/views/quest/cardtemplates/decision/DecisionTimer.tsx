@@ -2,13 +2,13 @@ import * as React from 'react';
 import {CardThemeType} from '../../../../../reducers/StateTypes';
 import {getStore} from '../../../../../Store';
 import Button from '../../../../base/Button';
-import {DecisionType} from './Types';
+import {LeveledSkillCheck} from './Types';
 
 interface DecisionTimerProps extends React.Props<any> {
-  decisions: DecisionType[];
+  checks: LeveledSkillCheck[];
   roundTimeTotalMillis: number;
   theme: CardThemeType;
-  onDecision: (d: DecisionType, elapsedMillis: number) => any;
+  onSelect: (c: LeveledSkillCheck, elapsedMillis: number) => any;
 }
 
 export default class DecisionTimer extends React.Component<DecisionTimerProps, {}> {
@@ -23,14 +23,14 @@ export default class DecisionTimer extends React.Component<DecisionTimerProps, {
     }, 100);
   }
 
-  public onChoice(d: DecisionType) {
+  public onSelect(c: LeveledSkillCheck) {
     if (!this.interval) {
       return;
     }
 
     clearInterval(this.interval);
     this.interval = null;
-    this.props.onDecision(d, Date.now() - this.state.startTimeMillis);
+    this.props.onSelect(c, Date.now() - this.state.startTimeMillis);
   }
 
   public componentWillUnmount() {
@@ -55,14 +55,14 @@ export default class DecisionTimer extends React.Component<DecisionTimerProps, {
     const questTheme = getStore().getState().quest.details.theme || 'base';
     const classes = ['no_icon', 'base_card', 'base_timer_card', 'card_theme_' + cardTheme, 'quest_theme_' + questTheme];
 
-    const decisions = this.props.decisions.map((d: DecisionType, i: number) => {
-      return <Button className="bigbutton" key={i} onClick={() => this.onChoice(d)}>{d.numAttempts} {d.difficulty} {d.persona} {d.skill}</Button>;
+    const checks = this.props.checks.map((c: LeveledSkillCheck, i: number) => {
+      return <Button className="bigbutton" key={i} onClick={() => this.onSelect(c)}>{c.requiredSuccesses} {c.difficulty} {c.persona} {c.skill}</Button>;
     });
 
     return (
       <div className={classes.join(' ')}>
         <div className="value">{formattedTimer}</div>
-        <div className="secondary">{decisions}</div>
+        <div className="secondary">{checks}</div>
       </div>
     );
   }
