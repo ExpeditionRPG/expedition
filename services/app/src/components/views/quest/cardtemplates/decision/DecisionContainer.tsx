@@ -12,11 +12,10 @@ import Decision, {DecisionDispatchProps, DecisionStateProps} from './Decision';
 import {DecisionState} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: DecisionStateProps): DecisionStateProps => {
-  // const stateDecision = (state.quest.node && state.quest.node.ctx && state.quest.node.ctx.templates && state.quest.node.ctx.templates.decision) || EMPTY_DECISION_STATE;
   const decision = (ownProps.node && ownProps.node.ctx && ownProps.node.ctx.templates && ownProps.node.ctx.templates.decision) || EMPTY_DECISION_STATE;
 
   return {
-    card: state.card,
+    card: ownProps.card,
     decision,
     multiplayerState: state.multiplayer,
     node: state.quest.node,
@@ -36,7 +35,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Decis
     },
     onRoll: (node: ParserNode, roll: number) => {
       dispatch(handleDecisionRoll({node, roll}));
-      dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_DECISION', noHistory: true, keySuffix: Date.now().toString()}));
     },
     onStartTimer: () => {
       dispatch(toCard({name: 'QUEST_CARD', phase: 'DECISION_TIMER'}));

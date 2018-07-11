@@ -12,45 +12,13 @@ import {Enemy, Loot} from '../../../../../reducers/QuestTypes';
 import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
 import {getStore} from '../../../../../Store';
 import {DecisionPhase} from '../decision/Types';
+import {numLocalAndMultiplayerAdventurers, numLocalAndMultiplayerPlayers} from '../MultiplayerPlayerCount';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {CombatState} from './Types';
 import {CombatAttack, CombatDifficultySettings} from './Types';
 
 const cheerio: any = require('cheerio');
-
-function numLocalAndMultiplayerAdventurers(settings: SettingsType, rp: MultiplayerState): number {
-  if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
-    // Since single player still has two adventurers, the minimum possible is two.
-    return Math.max(2, settings.numPlayers);
-  }
-
-  let count = 0;
-  for (const c of Object.keys(rp.clientStatus)) {
-    const status = rp.clientStatus[c];
-    if (!status.connected) {
-      continue;
-    }
-    count += (status.numPlayers || 1);
-  }
-  return count || 1;
-}
-
-function numLocalAndMultiplayerPlayers(settings: SettingsType, rp?: MultiplayerState): number {
-  if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
-    return settings.numPlayers;
-  }
-
-  let count = 0;
-  for (const c of Object.keys(rp.clientStatus)) {
-    const status = rp.clientStatus[c];
-    if (!status.connected) {
-      continue;
-    }
-    count += (status.numPlayers || 1);
-  }
-  return count || 1;
-}
 
 export function roundTimeMillis(settings: SettingsType, rp?: MultiplayerState) {
   const totalPlayerCount = numLocalAndMultiplayerPlayers(settings, rp);

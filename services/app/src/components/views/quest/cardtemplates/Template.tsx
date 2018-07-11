@@ -33,7 +33,7 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
     case 'PREPARE_DECISION':
     case 'DECISION_TIMER':
     case 'RESOLVE_DECISION':
-      return <DecisionContainer node={node}/>;
+      return <DecisionContainer card={card} node={node}/>;
     case 'DRAW_ENEMIES':
     case 'PREPARE':
     case 'TIMER':

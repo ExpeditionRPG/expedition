@@ -30,14 +30,12 @@ export const endQuest = remoteify(function endQuest(a: EndQuestArgs, dispatch: R
 });
 
 interface ChoiceArgs {
-  settings?: SettingsType;
   node?: ParserNode;
   index: number;
 }
 export const choice = remoteify(function choice(a: ChoiceArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ChoiceArgs {
-  if (!a.node || !a.settings) {
+  if (!a.node) {
     a.node = getState().quest.node;
-    a.settings = getState().settings;
   }
   const nextNode = a.node.handleAction(a.index);
   if (nextNode === null) {
@@ -50,7 +48,6 @@ export const choice = remoteify(function choice(a: ChoiceArgs, dispatch: Redux.D
 interface EventArgs {
   node?: ParserNode;
   evt: string;
-  settings?: SettingsType;
 }
 export const event = remoteify(function event(a: EventArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): EventArgs {
   if (!a.node) {

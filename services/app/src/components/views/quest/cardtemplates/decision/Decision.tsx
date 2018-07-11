@@ -6,17 +6,17 @@ import {CardState, CardThemeType, MultiplayerState, SettingsType} from '../../..
 import Button from '../../../../base/Button';
 import Callout from '../../../../base/Callout';
 import Card from '../../../../base/Card';
+import {numLocalAndMultiplayerAdventurers} from '../MultiplayerPlayerCount';
 import {generateIconElements} from '../Render';
 import {ParserNode} from '../TemplateTypes';
-import {generateChecks, skillTimeMillis} from './Actions';
+import {computeOutcome, generateChecks, skillTimeMillis} from './Actions';
 import DecisionTimer from './DecisionTimer';
 import {DecisionState, EMPTY_OUTCOME, LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
 
 export interface DecisionStateProps {
   card: CardState;
   decision: DecisionState;
-  maxAllowedAttempts?: number;
-  multiplayerState?: MultiplayerState;
+  multiplayerState: MultiplayerState;
   node: ParserNode;
   seed: string;
   settings: SettingsType;
@@ -29,13 +29,6 @@ export interface DecisionDispatchProps {
   onEnd: () => void;
 }
 
-const TITLES: Record<keyof typeof Outcome, string> = {
-  failure: 'Failure',
-  interrupted: 'Interrupted',
-  retry: 'Keep going!',
-  success: 'Success!',
-};
-
 export interface DecisionProps extends DecisionStateProps, DecisionDispatchProps {}
 
 export function renderPrepareDecision(props: DecisionProps): JSX.Element {
@@ -43,7 +36,7 @@ export function renderPrepareDecision(props: DecisionProps): JSX.Element {
   const prelude: JSX.Element[] = [];
   let i = 0;
   props.node.loopChildren((tag, c) => {
-    if (tag !== 'choice') {
+    if (tag !== 'event') {
       prelude.push(<span key={i++}>{generateIconElements(c.toString(), 'light')}</span>);
     }
   });
@@ -75,8 +68,6 @@ export function renderPrepareDecision(props: DecisionProps): JSX.Element {
 }
 
 export function renderDecisionTimer(props: DecisionProps): JSX.Element {
-  // const arng = seedrandom.alea(props.seed);
-  // generateChecks(props.settings, arng, props.maxAllowedAttempts)
   return (
     <DecisionTimer
       theme="dark"
@@ -87,31 +78,15 @@ export function renderDecisionTimer(props: DecisionProps): JSX.Element {
 }
 
 export function renderResolveDecision(props: DecisionProps): JSX.Element {
-  console.log('Rendering resolve decision');
   const selected = props.decision.selected;
   if (selected === null) {
     return <span>TODO BETTER HANDLING</span>;
   }
 
-  // Compute the outcome from the most recent roll (if any)
-  const successThreshold = SUCCESS_THRESHOLD_MAP[selected.difficulty || 'Medium'];
-  const retryThreshold = RETRY_THRESHOLD_MAP[selected.difficulty || 'Medium'];
-  const successes = props.decision.rolls.reduce((acc, r) => (r >= successThreshold) ? acc + 1 : acc, 0);
-  const failures = props.decision.rolls.reduce((acc, r) => (r < retryThreshold) ? acc + 1 : acc, 0);
-  let outcome: (keyof typeof Outcome)|null = null;
-  if (successes >= selected.requiredSuccesses) {
-    outcome = Outcome.success;
-  } else if (failures > 0) {
-    outcome = Outcome.failure;
-  } else if (props.decision.rolls.length >= props.settings.numPlayers) {
-    outcome = Outcome.interrupted;
-  } else if (props.decision.rolls.length > 0) {
-    outcome = Outcome.retry;
-  }
-
   // Note: similar help text in renderNoTimer()
   const inst: JSX.Element = (<span></span>);
 
+  const outcome = computeOutcome(props.decision.rolls, selected, props.settings, props.multiplayerState);
   /*
   TODO
   if (outcome.instructions.length > 0) {
@@ -134,13 +109,22 @@ export function renderResolveDecision(props: DecisionProps): JSX.Element {
   }
   */
 
-  console.log(props.decision.rolls);
-  const shouldRoll = (outcome === null || outcome === 'retry');
-  const header = <p className="center"><strong>{selected.difficulty} {selected.persona} {selected.skill} ({selected.requiredSuccesses - successes} {pluralize('Success', successes)} Needed)</strong></p>;
-  const roll = <img className="inline_icon" src="images/roll_white_small.svg"></img>;
-  let controls: JSX.Element;
-  if (shouldRoll) {
-    controls = (
+  const TITLES: Record<keyof typeof Outcome, string> = {
+    failure: 'Failure',
+    interrupted: 'Interrupted',
+    retry: 'Keep going!',
+    success: 'Success!',
+  };
+  const title = (outcome) ? TITLES[outcome] : 'Resolve Check';
+
+  const roll = <img className="inline_icon" src="images/roll_small.svg"></img>;
+  // {selected.requiredSuccesses - successes} {pluralize('Success', successes)}
+  return (
+    <Card title={title} inQuest={true}>
+      <p className="center">
+        <strong>{selected.difficulty} {selected.persona} {selected.skill} (TODO successes Needed)</strong>
+      </p>
+      {inst}
       <span>
         <Button onClick={() => props.onRoll(props.node, 18)}>{roll} ≥ 17</Button>
         <Button onClick={() => props.onRoll(props.node, 14)}>{roll} 13 - 16</Button>
@@ -148,19 +132,8 @@ export function renderResolveDecision(props: DecisionProps): JSX.Element {
         <Button onClick={() => props.onRoll(props.node, 6)}>{roll} 5 - 8</Button>
         <Button onClick={() => props.onRoll(props.node, 2)}>{roll} ≤ 4</Button>
       </span>
-    );
-  } else {
-    controls = <Button onClick={() => props.onEnd()}>Next</Button>;
-  }
-
-  return (
-    <Card title={(outcome) ? TITLES[outcome] : 'Resolve Check'} theme="dark" inQuest={true}>
-      {shouldRoll && header}
-      {inst}
-      {controls}
     </Card>
   );
-
 }
 
 const Decision = (props: DecisionProps, theme: CardThemeType = 'light'): JSX.Element => {

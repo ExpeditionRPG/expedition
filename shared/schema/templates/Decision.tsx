@@ -36,15 +36,18 @@ function matchEnum(e: any): string {
   return enumValues(e).join('|');
 }
 
-const skillCheckMatcher = new RegExp(`^(${matchEnum(Persona)})?\\s?(${matchEnum(Skill)})\\s?(${matchEnum(Outcome)})?$`);
-const genericOutcomeMatcher = new RegExp(`^(${matchEnum(Outcome)})$`);
-
+const skillCheckMatcher = new RegExp(`^(${matchEnum(Persona)})?\\s?(${matchEnum(Skill)})?\\s?(${matchEnum(Outcome)})?$`);
+const eventMatcher = new RegExp(`^on\\s(.*)$`);
 export function extractSkillCheck(s: string): SkillCheck|null {
   const skillMatch = s.match(skillCheckMatcher);
   if (!skillMatch) {
     return null;
   }
-  return {persona: (Persona as any)[skillMatch[1]], skill: (Skill as any)[skillMatch[2]]};
+  return {
+    persona: (Persona as any)[skillMatch[1]],
+    skill: (Skill as any)[skillMatch[2]],
+    outcome: (Outcome as any)[skillMatch[3]],
+  };
 }
 
 export function getPossibleChecks(ss: SkillCheck[]): SkillCheck[] {
@@ -96,21 +99,20 @@ export function sanitizeDecision(attribs: {[k: string]: any}, body: TemplateBody
 
     // Check that the outcome is a valid skill check type or one of the reserved types
     const child = section as TemplateChild;
-    if (skillCheckMatcher.test(child.text)) {
-      const skillMatch = extractSkillCheck(child.text);
-      if (!skillMatch) {
-        log.err('Invalid skill check: "' + child.text + '"', '422', line);
-        continue;
-      }
-      skillMatch.outcome = skillMatch.outcome || 'success';
-      bullets.push(skillMatch);
-    } else {
-      if (!genericOutcomeMatcher.test(child.text)) {
-        log.err('Invalid skill check: "' + child.text + '"', '422', line);
-        continue;
-      }
-      bullets.push({persona: undefined,  skill: undefined, outcome: (Outcome as any)[child.text]});
+    const eventMatch = child.text.match(eventMatcher);
+    if (!eventMatch || !eventMatch[1]) {
+      log.err('Invalid skill check: "' + child.text + '"', '422', line);
+      continue;
     }
+    const text = eventMatch[1];
+
+    const skillMatch = extractSkillCheck(text);
+    if (!skillMatch || (skillMatch.persona && skillMatch.outcome && !skillMatch.skill)) {
+      log.err('Invalid skill check: "' + text + '"', '422', line);
+      continue;
+    }
+    skillMatch.outcome = skillMatch.outcome || 'success';
+    bullets.push(skillMatch);
     sanitized.push(section);
   }
 

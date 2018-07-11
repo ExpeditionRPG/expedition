@@ -1,11 +1,13 @@
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
-import {extractSkillCheck, SkillCheck} from 'shared/schema/templates/Decision';
+import {extractSkillCheck, Outcome, SkillCheck} from 'shared/schema/templates/Decision';
 import {QuestNodeAction, remoteify} from '../../../../../actions/ActionTypes';
 import {audioSet} from '../../../../../actions/Audio';
 import {toCard} from '../../../../../actions/Card';
+import {event} from '../../../../../actions/Quest';
 import {PLAYER_TIME_MULT} from '../../../../../Constants';
 import {AppStateWithHistory, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
+import {numLocalAndMultiplayerAdventurers, numLocalAndMultiplayerPlayers} from '../MultiplayerPlayerCount';
 import {ParserNode} from '../TemplateTypes';
 // import SCENARIOS from './Scenarios';
 import {DecisionState, Difficulty, LeveledSkillCheck, OutcomeContent, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
@@ -25,28 +27,42 @@ const COMBAT_SKILL_CHECKS = [
 const skillCheckHistogram: {[check: string]: number} = {};
 
 interface InitDecisionArgs {
-  node?: ParserNode;
-  settings?: SettingsType;
+  node: ParserNode;
   rp?: MultiplayerState;
 }
 export const initDecision = remoteify(function initDecision(a: InitDecisionArgs, dispatch: Redux.Dispatch<any>,  getState: () => AppStateWithHistory) {
-  if (!a.node || !a.settings) {
-    a.node = getState().quest.node;
-    a.settings = getState().settings;
-  }
   if (!a.rp) {
     a.rp = getState().multiplayer;
   }
 
-  console.log('Initializing decision');
   a.node = a.node.clone();
   const settings = getState().settings;
-  a.node.ctx.templates.decision = generateDecisionTemplate(numLocalAndMultiplayerAdventurers(a.settings, a.rp), a.node);
+  a.node.ctx.templates.decision = generateDecisionTemplate(numLocalAndMultiplayerAdventurers(settings, a.rp), a.node);
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
   dispatch(toCard({name: 'QUEST_CARD', phase: 'PREPARE_DECISION', noHistory: true}));
   return {};
 });
+
+export function computeOutcome(rolls: number[], selected: LeveledSkillCheck, settings: SettingsType, rp: MultiplayerState): (keyof typeof Outcome)|null {
+  // Compute the outcome from the most recent roll (if any)
+  const numTotalAdventurers = numLocalAndMultiplayerAdventurers(settings, rp);
+  const successThreshold = SUCCESS_THRESHOLD_MAP[selected.difficulty || 'Medium'];
+  const retryThreshold = RETRY_THRESHOLD_MAP[selected.difficulty || 'Medium'];
+  const successes = rolls.reduce((acc, r) => (r >= successThreshold) ? acc + 1 : acc, 0);
+  const failures = rolls.reduce((acc, r) => (r < retryThreshold) ? acc + 1 : acc, 0);
+  let outcome: (keyof typeof Outcome)|null = null;
+  if (successes >= selected.requiredSuccesses) {
+    outcome = Outcome.success;
+  } else if (failures > 0) {
+    outcome = Outcome.failure;
+  } else if (rolls.length >= numTotalAdventurers) {
+    outcome = Outcome.interrupted;
+  } else if (rolls.length > 0) {
+    outcome = Outcome.retry;
+  }
+  return outcome;
+}
 
 const NUM_SKILL_CHECK_CHOICES = 3;
 // Generate 3 random combinations of difficulty, skill, and persona.
@@ -86,54 +102,18 @@ export function generateChecks(settings: SettingsType, rng: () => number, maxAll
   return result;
 }
 
-// TODO DEDUPE
-function numLocalAndMultiplayerAdventurers(settings: SettingsType, rp: MultiplayerState): number {
-  if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
-    // Since single player still has two adventurers, the minimum possible is two.
-    return Math.max(2, settings.numPlayers);
-  }
-
-  let count = 0;
-  for (const c of Object.keys(rp.clientStatus)) {
-    const status = rp.clientStatus[c];
-    if (!status.connected) {
-      continue;
-    }
-    count += (status.numPlayers || 1);
-  }
-  return count || 1;
-}
-
-// TODO DEDUPE
-function numLocalAndMultiplayerPlayers(settings: SettingsType, rp?: MultiplayerState): number {
-  if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
-    return settings.numPlayers;
-  }
-
-  let count = 0;
-  for (const c of Object.keys(rp.clientStatus)) {
-    const status = rp.clientStatus[c];
-    if (!status.connected) {
-      continue;
-    }
-    count += (status.numPlayers || 1);
-  }
-  return count || 1;
-}
-
 function generateDecisionTemplate(numTotalAdventurers: number, node?: ParserNode): DecisionState {
   const checks: SkillCheck[] = [];
   if (node) {
     node.loopChildren((tag, c) => {
-      if (tag !== 'choice') {
+      if (tag !== 'event') {
         return;
       }
-      const check = extractSkillCheck(c.attr('text') || '');
-      if (!check) {
+      const check = extractSkillCheck(c.attr('on') || '');
+      if (!check || !check.skill) {
         return;
       }
 
-      console.log(check);
       checks.push(check);
       return;
     });
@@ -195,10 +175,72 @@ export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: Handl
   if (!decision) {
     return null;
   }
+  const selected = decision.selected;
+  if (!selected) {
+    return null;
+  }
 
   decision.rolls.push(a.roll);
+
+  // Based on the outcome, navigate to a roleplay card
+  const settings = getState().settings;
+  const rp = getState().multiplayer;
+  const outcome = computeOutcome(decision.rolls, selected, settings, rp);
+
+  // In all cases except for retry and just having chosen the check,
+  // there's a chance we need to follow an event bullet.
+  // Here we check for the best event for the given outcome.
+  if (outcome && outcome !== Outcome.retry) {
+    let targetCheck: SkillCheck|null = null;
+    let targetText: string|null = null;
+
+    a.node.loopChildren((tag, c) => {
+      if (tag !== 'event') {
+        return;
+      }
+      const text = c.attr('on') || '';
+      const check = extractSkillCheck(text);
+      if (!check) {
+        return;
+      }
+      const checkOutcome = check.outcome || Outcome.success;
+      if (checkOutcome !== outcome) {
+        return;
+      }
+      if (check.persona !== undefined && check.persona !== selected.persona) {
+        return;
+      }
+      if (check.skill !== undefined && check.skill !== selected.skill) {
+        return;
+      }
+
+      // Resolve conflicts in favor of more specific event
+      if (targetCheck !== null) {
+        if (targetCheck.skill && !check.skill) {
+          return;
+        }
+        if (targetCheck.persona && !check.persona) {
+          return;
+        }
+      }
+
+      targetCheck = check;
+      targetText = text;
+      return;
+    });
+
+    if (targetText) {
+      console.log('Dispatching target "' + targetText + '"');
+      dispatch(event({node: a.node, evt: targetText}));
+      return {
+        roll: a.roll,
+      };
+    }
+  }
+
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
+  dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_DECISION', noHistory: true, keySuffix: Date.now().toString()}));
 
   return {
     roll: a.roll,

@@ -22,7 +22,7 @@ export interface CombatStateProps {
   decision: DecisionState;
   maxTier: number;
   mostRecentRolls?: number[];
-  multiplayerState?: MultiplayerState;
+  multiplayerState: MultiplayerState;
   node: ParserNode;
   numAliveAdventurers: number;
   seed: string;
@@ -475,7 +475,6 @@ function renderMidCombatDecision(props: CombatProps): JSX.Element {
   return Decision({
     card: {...props.card, phase: props.combat.decisionPhase},
     decision,
-    maxAllowedAttempts: props.combat.numAliveAdventurers,
     multiplayerState: props.multiplayerState,
     node: props.node,
     onSelect: props.onDecisionSelect,
