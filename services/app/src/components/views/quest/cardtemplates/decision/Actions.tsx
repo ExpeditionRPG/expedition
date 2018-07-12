@@ -44,12 +44,16 @@ export const initDecision = remoteify(function initDecision(a: InitDecisionArgs,
   return {};
 });
 
+export function computeSuccesses(rolls: number[], selected: LeveledSkillCheck): number {
+  const successThreshold = SUCCESS_THRESHOLD_MAP[selected.difficulty || 'Medium'];
+  return rolls.reduce((acc, r) => (r >= successThreshold) ? acc + 1 : acc, 0);
+}
+
 export function computeOutcome(rolls: number[], selected: LeveledSkillCheck, settings: SettingsType, rp: MultiplayerState): (keyof typeof Outcome)|null {
   // Compute the outcome from the most recent roll (if any)
   const numTotalAdventurers = numLocalAndMultiplayerAdventurers(settings, rp);
-  const successThreshold = SUCCESS_THRESHOLD_MAP[selected.difficulty || 'Medium'];
   const retryThreshold = RETRY_THRESHOLD_MAP[selected.difficulty || 'Medium'];
-  const successes = rolls.reduce((acc, r) => (r >= successThreshold) ? acc + 1 : acc, 0);
+  const successes = computeSuccesses(rolls, selected);
   const failures = rolls.reduce((acc, r) => (r < retryThreshold) ? acc + 1 : acc, 0);
   let outcome: (keyof typeof Outcome)|null = null;
   if (successes >= selected.requiredSuccesses) {
@@ -230,7 +234,6 @@ export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: Handl
     });
 
     if (targetText) {
-      console.log('Dispatching target "' + targetText + '"');
       dispatch(event({node: a.node, evt: targetText}));
       return {
         roll: a.roll,

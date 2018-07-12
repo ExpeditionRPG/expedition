@@ -64,7 +64,10 @@ export function getCardTemplateTheme(card: CardState): CardThemeType {
     case 'NO_TIMER':
     case 'MID_COMBAT_ROLEPLAY':
       return 'dark';
-    // case 'ROLEPLAY':
+    case 'ROLEPLAY':
+    case 'PREPARE_DECISION':
+    case 'DECISION_TIMER':
+    case 'RESOLVE_DECISION':
     default:
       return 'light';
   }

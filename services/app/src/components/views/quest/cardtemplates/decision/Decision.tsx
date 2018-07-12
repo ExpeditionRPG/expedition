@@ -9,7 +9,7 @@ import Card from '../../../../base/Card';
 import {numLocalAndMultiplayerAdventurers} from '../MultiplayerPlayerCount';
 import {generateIconElements} from '../Render';
 import {ParserNode} from '../TemplateTypes';
-import {computeOutcome, generateChecks, skillTimeMillis} from './Actions';
+import {computeOutcome, computeSuccesses, generateChecks, skillTimeMillis} from './Actions';
 import DecisionTimer from './DecisionTimer';
 import {DecisionState, EMPTY_OUTCOME, LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
 
@@ -31,7 +31,7 @@ export interface DecisionDispatchProps {
 
 export interface DecisionProps extends DecisionStateProps, DecisionDispatchProps {}
 
-export function renderPrepareDecision(props: DecisionProps): JSX.Element {
+export function renderPrepareDecision(props: DecisionProps, theme: CardThemeType): JSX.Element {
 
   const prelude: JSX.Element[] = [];
   let i = 0;
@@ -59,7 +59,7 @@ export function renderPrepareDecision(props: DecisionProps): JSX.Element {
   }
 
   return (
-    <Card title="Skill Check" theme="dark" inQuest={true}>
+    <Card title="Skill Check" inQuest={true} theme={theme}>
       {prelude}
       {helpText}
       <Button className="bigbutton" onClick={() => props.onStartTimer()}>Begin Skill Check</Button>
@@ -67,17 +67,17 @@ export function renderPrepareDecision(props: DecisionProps): JSX.Element {
   );
 }
 
-export function renderDecisionTimer(props: DecisionProps): JSX.Element {
+export function renderDecisionTimer(props: DecisionProps, theme: CardThemeType): JSX.Element {
   return (
     <DecisionTimer
-      theme="dark"
+      theme={theme}
       checks={props.decision.leveledChecks}
       roundTimeTotalMillis={skillTimeMillis(props.settings, props.multiplayerState)}
       onSelect={(c: LeveledSkillCheck, ms: number) => props.onSelect(props.node, c, ms)} />
   );
 }
 
-export function renderResolveDecision(props: DecisionProps): JSX.Element {
+export function renderResolveDecision(props: DecisionProps, theme: CardThemeType): JSX.Element {
   const selected = props.decision.selected;
   if (selected === null) {
     return <span>TODO BETTER HANDLING</span>;
@@ -118,11 +118,14 @@ export function renderResolveDecision(props: DecisionProps): JSX.Element {
   const title = (outcome) ? TITLES[outcome] : 'Resolve Check';
 
   const roll = <img className="inline_icon" src="images/roll_small.svg"></img>;
-  // {selected.requiredSuccesses - successes} {pluralize('Success', successes)}
+  const successes = computeSuccesses(props.decision.rolls, selected);
   return (
-    <Card title={title} inQuest={true}>
+    <Card title={title} inQuest={true} theme={theme}>
       <p className="center">
-        <strong>{selected.difficulty} {selected.persona} {selected.skill} (TODO successes Needed)</strong>
+        <strong>{selected.difficulty} {selected.persona} {selected.skill}</strong>
+      </p>
+      <p className="center">
+        ({selected.requiredSuccesses - successes} {pluralize('Success', successes)} Needed)
       </p>
       {inst}
       <span>
@@ -136,14 +139,15 @@ export function renderResolveDecision(props: DecisionProps): JSX.Element {
   );
 }
 
-const Decision = (props: DecisionProps, theme: CardThemeType = 'light'): JSX.Element => {
+const Decision = (props: DecisionProps, theme: CardThemeType|{}): JSX.Element => {
+  const resolvedTheme: CardThemeType = (typeof(theme) !== 'string') ? 'light' : theme;
   switch (props.card.phase) {
     case 'PREPARE_DECISION':
-      return renderPrepareDecision(props);
+      return renderPrepareDecision(props, resolvedTheme);
     case 'DECISION_TIMER':
-      return renderDecisionTimer(props);
+      return renderDecisionTimer(props, resolvedTheme);
     case 'RESOLVE_DECISION':
-      return renderResolveDecision(props);
+      return renderResolveDecision(props, resolvedTheme);
     default:
       throw new Error('Unknown decision phase ' + props.card.phase);
   }

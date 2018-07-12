@@ -116,12 +116,13 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
   };
 }
 
-const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'light'): JSX.Element => {
+const Roleplay = (props: RoleplayProps, theme: CardThemeType|{}): JSX.Element => {
+  const resolvedTheme: CardThemeType = (typeof(theme) !== 'string') ? 'light' : theme;
   if (props.node.getTag() !== 'roleplay') {
     console.log('Roleplay constructor called with non-roleplay node.');
     return <span></span>;
   }
-  const rpResult = loadRoleplayNode(props.node, theme);
+  const rpResult = loadRoleplayNode(props.node, resolvedTheme);
 
   const renderedContent: JSX.Element[] = rpResult.content.map((element: RoleplayElement, idx: number): JSX.Element => {
     return <span key={idx}>{element.jsx}</span>;
@@ -150,7 +151,7 @@ const Roleplay = (props: RoleplayProps, theme: CardThemeType = 'light'): JSX.Ele
   }
 
   return (
-    <Card title={rpResult.title} icon={rpResult.icon} inQuest={true} theme={theme} onReturn={props.onReturn}>
+    <Card title={rpResult.title} icon={rpResult.icon} inQuest={true} theme={resolvedTheme} onReturn={props.onReturn}>
       {renderedContent}
       {buttons}
     </Card>
