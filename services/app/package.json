@@ -7,6 +7,7 @@
     "test": "karma start --single-run --browsers NoSandboxChromeHeadless",
     "watch-test": "karma start --browsers NoSandboxChromeHeadless",
     "start": "webpack-dev-server --progress",
+    "start-dev": "webpack-dev-server --progress --hot",
     "build": "webpack --config ./webpack.dist.config.js --progress",
     "build-all": "npm run build && cordova build android && cordova build ios"
   },
