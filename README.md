@@ -18,7 +18,9 @@ All shared code goes in `/shared`, all deployed code goes in `/services.` Code i
 
 ### Setup
 
-Install Node 8.11.3 using [NVM](https://github.com/creationix/nvm)
+Expedition requires a unix-based system like OSX or Linux. If you are on Windows, you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+
+Install Node 8.11.3 using [NVM](https://github.com/creationix/nvm) `nvm install 8.11.3 --latest-npm`
 
 Install global dependencies: `npm install -g yarn cordova webpack@4 webpack-cli@3 webpack-dev-server@3`
 
@@ -26,9 +28,11 @@ Install local dependencies: `yarn`
 
 Run the tests to make sure everything's working: `yarn test`
 
-#### TEMPORARY SETUP NOTES
+#### Setup Notes
 
-While we continue to consolidate the monorepo, you'll also need to run `npm install -g karma-cli`
+Temporarily, as we continue to consolidate the monorepo, you'll also need to run `npm install -g karma-cli`
+
+Chrome is used in headless mode for testing. You will need to instal Chrome if you don't have it already. [For WSL Users](https://askubuntu.com/a/510186)
 
 ### Running the code
 
