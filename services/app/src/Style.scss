@@ -610,19 +610,23 @@ span.line {
     .stars {
       display: flex;
       justify-content: center;
+      align-items: center;
     }
     .star {
       order: 1;
-      height: size(inputsquare) !important;
+      height: size(inputsquare);
+      svg {
+        width: size(inputsquare);
+        height: size(inputsquare);
+        padding: size(inputspacing)/2; /* /2 since applied to both sides */
+      }
       button {
         min-width: 0 !important;
         height: size(inputsquare) !important;
         padding: 0 !important;
         svg {
-          width: size(input) !important;
-          height: size(input) !important;
-          padding: size(inputspacing)/2 !important; /* /2 since applied to both sides */
-          margin-top: -0.5 * size(small) !important;
+          width: size(input);
+          height: size(input);
         }
         &:hover {
           fill: black !important;
@@ -649,7 +653,6 @@ span.line {
       line-height: size(inputsquare);
       order: 2;
       padding-left: size(small);
-      margin-top: size(small);
     }
     .hint {
       color: #757575;
@@ -1176,17 +1179,16 @@ span.line {
             font-size: fontsize(flavor);
           }
           .star {
-            $starSize: fontsize(flavor) + size(small);
-            margin-top: -0.5 * size(small) !important;
-            height: $starSize !important;
+            $starSize: fontsize(flavor);
+            height: $starSize;
             button {
               height: $starSize !important;
               line-height: $starSize !important;
-              svg {
-                height: $starSize !important;
-                width: $starSize !important;
-                padding: 0 !important;
-              }
+            }
+            svg {
+              height: $starSize;
+              width: $starSize;
+              padding: 0;
             }
           }
         }
