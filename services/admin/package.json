@@ -3,8 +3,7 @@
   "version": "1.6.4",
   "scripts": {
     "test": "karma start --single-run --browsers NoSandboxChromeHeadless",
-    "start": "webpack-dev-server --progress",
-    "start-dev": "webpack-dev-server --progress --hot",
+    "start": "webpack-dev-server --progress --hot",
     "build": "webpack --config webpack.dist.config.js --progress"
   },
   "semistandard": {

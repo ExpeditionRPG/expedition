@@ -6,7 +6,6 @@
   "scripts": {
     "build": "webpack --config ./webpack.dist.config.js",
     "test": "karma start --single-run --browsers NoSandboxChromeHeadless",
-    "start": "webpack-dev-server --progress",
-    "start-dev": "webpack-dev-server --progress --hot"
+    "start": "webpack-dev-server --progress --hot"
   }
 }
