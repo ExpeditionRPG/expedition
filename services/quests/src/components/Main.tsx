@@ -29,93 +29,106 @@ export interface MainDispatchProps {
 
 interface MainProps extends MainStateProps, MainDispatchProps {}
 
-const Main = (props: MainProps): JSX.Element => {
-  if (props.editor.loadingQuest) {
-    return (
-      <div className="main loading">
-        Loading Expedition Quest Creator...
-        <div className="slowLoadPrompt">
-          Not loading? Try disabling your ad blocker.
-          If that doesn't work, hit the "Contact Us" button in the bottom right -
-          make sure to include the title of your quest.
+class Main extends React.Component<MainProps, {hasError: boolean}> {
+  constructor(props: MainProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  public componentDidCatch(error: Error, info: any) {
+    // Display fallback UI
+    this.setState({ hasError: true });
+  }
+
+  public render() {
+    if (this.state.hasError) {
+      return (<div style={{color: 'white'}}>Oh no, an error has occured! Try reloading the page - if the error persists, please email contact@expeditiongame.com</div>);
+    }
+    if (this.props.editor.loadingQuest) {
+      return (
+        <div className="main loading">
+          Loading Expedition Quest Creator...
+          <div className="slowLoadPrompt">
+            Not loading? Try disabling your ad blocker.
+            If that doesn't work, hit the "Contact Us" button in the bottom right -
+            make sure to include the title of your quest.
+          </div>
+        </div>
+      );
+    } else if (this.props.loggedIn === false || Object.keys(this.props.quest).length === 0) {
+      return (<SplashContainer/>);
+    }
+
+    const header = (
+      <div className="header">
+        <Button
+          className={this.props.bottomPanel === 'CONTEXT' ? 'active' : 'inactive'}
+          onClick={(event: any) => {this.props.onPanelToggle('CONTEXT'); }}
+        >Context Explorer</Button>
+        <Button
+          className={this.props.bottomPanel === 'NOTES' ? 'active' : 'inactive'}
+          onClick={(event: any) => {this.props.onPanelToggle('NOTES'); }}
+        >Quest Notes</Button>
+        <div className="bottomPanel--right">
+          <Button onClick={(event: any) => {this.props.onLineNumbersToggle(); }}>
+            {`Line: ${numeral(this.props.editor.line.number).format('0,0')}`}
+          </Button>
+          <Button disabled={true}>
+            {`Words: ${this.props.editor.wordCount > 0 ? numeral(this.props.editor.wordCount).format('0,0') : '-'}`}
+          </Button>
         </div>
       </div>
     );
-  } else if (props.loggedIn === false || Object.keys(props.quest).length === 0) {
+
+    // TODO: Constant-ify default size of split pane
+    let contents = <span></span>;
+    if (!this.props.bottomPanel) {
+      contents = (
+        <div className="contents">
+          <QuestIDEContainer/>
+          <div className="bottomPanel">
+            {header}
+          </div>
+        </div>);
+    } else {
+      // SplitPane dimensions are measured as the size of the *editor* pane, not the bottom pane.
+      contents = (<div className="contents"><SplitPane
+        split="horizontal"
+        defaultSize={window.innerHeight - 400}
+        minSize={40}
+        maxSize={window.innerHeight - 120}
+        onDragFinished={(size: number) => {this.props.onDragFinished(size); }}>
+          <QuestIDEContainer/>
+          <div className="bottomPanel">
+            {header}
+            {this.props.bottomPanel === 'CONTEXT' && <ContextEditorContainer/>}
+            {this.props.bottomPanel === 'NOTES' && <NotesPanelContainer/>}
+          </div>
+        </SplitPane></div>);
+    }
+
     return (
-      <SplashContainer/>
+      <div className="main">
+        <QuestAppBarContainer/>
+        <DialogsContainer/>
+        {contents}
+        <Snackbar
+          className="editor_snackbar"
+          open={this.props.snackbar.open}
+          message={<span>{this.props.snackbar.message}</span>}
+          action={(this.props.snackbar.actionLabel) ?
+            [<Button key={1}
+              // tslint:disable-next-line
+              onClick={(e: React.MouseEvent<HTMLElement>) => { this.props.snackbar.action && this.props.snackbar.action(); }}>
+                {this.props.snackbar.actionLabel}
+            </Button>] :
+            []}
+          autoHideDuration={(this.props.snackbar.persist) ? undefined : 4000}
+          onClose={this.props.onSnackbarClose}
+        />
+      </div>
     );
   }
-
-  const header = (
-    <div className="header">
-      <Button
-        className={props.bottomPanel === 'CONTEXT' ? 'active' : 'inactive'}
-        onClick={(event: any) => {props.onPanelToggle('CONTEXT'); }}
-      >Context Explorer</Button>
-      <Button
-        className={props.bottomPanel === 'NOTES' ? 'active' : 'inactive'}
-        onClick={(event: any) => {props.onPanelToggle('NOTES'); }}
-      >Quest Notes</Button>
-      <div className="bottomPanel--right">
-        <Button onClick={(event: any) => {props.onLineNumbersToggle(); }}>
-          {`Line: ${numeral(props.editor.line.number).format('0,0')}`}
-        </Button>
-        <Button disabled={true}>
-          {`Words: ${props.editor.wordCount > 0 ? numeral(props.editor.wordCount).format('0,0') : '-'}`}
-        </Button>
-      </div>
-    </div>
-  );
-
-  // TODO: Constant-ify default size of split pane
-  let contents = <span></span>;
-  if (!props.bottomPanel) {
-    contents = (
-      <div className="contents">
-        <QuestIDEContainer/>
-        <div className="bottomPanel">
-          {header}
-        </div>
-      </div>);
-  } else {
-    // SplitPane dimensions are measured as the size of the *editor* pane, not the bottom pane.
-    contents = (<div className="contents"><SplitPane
-      split="horizontal"
-      defaultSize={window.innerHeight - 400}
-      minSize={40}
-      maxSize={window.innerHeight - 120}
-      onDragFinished={(size: number) => {props.onDragFinished(size); }}>
-        <QuestIDEContainer/>
-        <div className="bottomPanel">
-          {header}
-          {props.bottomPanel === 'CONTEXT' && <ContextEditorContainer/>}
-          {props.bottomPanel === 'NOTES' && <NotesPanelContainer/>}
-        </div>
-      </SplitPane></div>);
-  }
-
-  return (
-    <div className="main">
-      <QuestAppBarContainer/>
-      <DialogsContainer/>
-      {contents}
-      <Snackbar
-        className="editor_snackbar"
-        open={props.snackbar.open}
-        message={<span>{props.snackbar.message}</span>}
-        action={(props.snackbar.actionLabel) ?
-          [<Button key={1}
-            // tslint:disable-next-line
-            onClick={(e: React.MouseEvent<HTMLElement>) => { props.snackbar.action && props.snackbar.action(); }}>
-              {this.props.snackbar.actionLabel}
-          </Button>] :
-          []}
-        autoHideDuration={(props.snackbar.persist) ? undefined : 4000}
-        onClose={props.onSnackbarClose}
-      />
-    </div>
-  );
-};
+}
 
 export default Main;
