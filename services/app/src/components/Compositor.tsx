@@ -119,31 +119,31 @@ export default class Compositor extends React.Component<CompositorProps, {}> {
     // for more details on use of childFactory in TransitionGroup
     return (
       <div className={containerClass.join(' ')}>
-          <TransitionGroup
-              childFactory={(child) => React.cloneElement(
-                  child, {classNames: this.props.transition}
-              )}>
-              <CSSTransition
-                  key={this.props.card.key}
-                  classNames={''}
-                  timeout={{enter: CARD_TRANSITION_ANIMATION_MS, exit: CARD_TRANSITION_ANIMATION_MS}}>
-                  <div className={'base_main' + ((this.props.multiplayer && this.props.multiplayer.session) ? ' has_footer' : '')}>
-                      {card}
-                  </div>
-              </CSSTransition>
-          </TransitionGroup>
-          {this.props.multiplayer && this.props.multiplayer.session && <MultiplayerFooterContainer theme={this.props.theme}/>}
-          <DialogsContainer />
-          <MultiplayerSyncContainer />
-          <Snackbar
-              className="snackbar"
-              open={this.props.snackbar.open}
-              message={<span>{this.props.snackbar.message}</span>}
-              autoHideDuration={this.props.snackbar.timeout}
-              onClose={this.props.closeSnackbar}
-              action={(this.props.snackbar.actionLabel) ? [<Button key={1} onClick={(e: React.MouseEvent<HTMLElement>) => this.snackbarActionClicked(e)}>{this.props.snackbar.actionLabel}</Button>] : []}
-          />
-          <AudioContainer />
+        <TransitionGroup
+            childFactory={(child) => React.cloneElement(
+                child, {classNames: this.props.transition}
+            )}>
+            <CSSTransition
+                key={this.props.card.key}
+                classNames={''}
+                timeout={{enter: CARD_TRANSITION_ANIMATION_MS, exit: CARD_TRANSITION_ANIMATION_MS}}>
+                <div className={'base_main' + ((this.props.multiplayer && this.props.multiplayer.session) ? ' has_footer' : '')}>
+                    {card}
+                </div>
+            </CSSTransition>
+        </TransitionGroup>
+        {this.props.multiplayer && this.props.multiplayer.session && <MultiplayerFooterContainer theme={this.props.theme}/>}
+        <DialogsContainer />
+        <MultiplayerSyncContainer />
+        <Snackbar
+            className="snackbar"
+            open={this.props.snackbar.open}
+            message={<span>{this.props.snackbar.message}</span>}
+            autoHideDuration={this.props.snackbar.timeout}
+            onClose={this.props.closeSnackbar}
+            action={(this.props.snackbar.actionLabel) ? [<Button key={1} onClick={(e: React.MouseEvent<HTMLElement>) => this.snackbarActionClicked(e)}>{this.props.snackbar.actionLabel}</Button>] : []}
+        />
+        <AudioContainer />
       </div>
     );
   }

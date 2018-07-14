@@ -184,7 +184,7 @@ body {
 }
 
 .app_container {
-  &, & > div {
+  &, & > div:not(.snackbar) {
     height: 100%;
     width: 100%;
   }
@@ -452,7 +452,7 @@ span.line {
         color: $font_color_primary !important;
       }
     }
-    .base_button.bigbutton > button {
+    .base_button.bigbutton button span {
       font-size: 200% !important;
       text-align: center !important;
     }
