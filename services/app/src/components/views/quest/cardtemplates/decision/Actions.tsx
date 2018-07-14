@@ -7,22 +7,7 @@ import {PLAYER_TIME_MULT} from '../../../../../Constants';
 import {AppStateWithHistory, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
 import {numLocalAndMultiplayerAdventurers, numLocalAndMultiplayerPlayers} from '../MultiplayerPlayerCount';
 import {ParserNode} from '../TemplateTypes';
-// import SCENARIOS from './Scenarios';
 import {DecisionState, LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
-
-// TODO put this somewhere better
-const COMBAT_SKILL_CHECKS = [
-  ['light', 'charisma'],
-  ['dark', 'charisma'],
-  ['light', 'knowledge'],
-  ['dark', 'knowledge'],
-  ['light', 'athletics'],
-  ['dark', 'athletics'],
-  [null, 'charisma'],
-  [null, 'knowledge'],
-  [null, 'athletics'],
-];
-const skillCheckHistogram: {[check: string]: number} = {};
 
 interface InitDecisionArgs {
   node: ParserNode;
@@ -66,7 +51,7 @@ export function computeOutcome(rolls: number[], selected: LeveledSkillCheck, set
   return outcome;
 }
 
-const NUM_SKILL_CHECK_CHOICES = 3;
+// const NUM_SKILL_CHECK_CHOICES = 3;
 // Generate 3 random combinations of difficulty, skill, and persona.
 // Only 2 of the 3 fields will be available.
 export function generateChecks(settings: SettingsType, rng: () => number, maxAllowedAttempts?: number): LeveledSkillCheck[] {
@@ -121,7 +106,7 @@ export function generateDecisionTemplate(numTotalAdventurers: number, node?: Par
     });
   }
 
-  console.warn('todo limit num checks');
+  // TODO: limit num checks
   const leveledChecks = checks.map((c: SkillCheck): LeveledSkillCheck => {
     return {...c, difficulty: 'medium', requiredSuccesses: numTotalAdventurers};
   });

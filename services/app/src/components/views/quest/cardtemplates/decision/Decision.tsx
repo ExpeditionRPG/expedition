@@ -74,32 +74,18 @@ export function renderDecisionTimer(props: DecisionProps, theme: CardThemeType):
   );
 }
 
-export function renderSuccess(props: DecisionProps): JSX.Element {
-  return <span>TODO success</span>;
-}
-
 export function renderResolveDecision(props: DecisionProps, theme: CardThemeType): JSX.Element {
   const selected = props.decision.selected;
   if (selected === null) {
-    return <span>TODO BETTER HANDLING</span>;
+    throw new Error('Expected selected value');
   }
 
   const inst: JSX.Element = (<span></span>);
   const outcome = computeOutcome(props.decision.rolls, selected, props.settings, props.multiplayerState);
-  const TITLES: Record<keyof typeof Outcome, string> = {
-    failure: 'Failure',
-    interrupted: 'Interrupted',
-    retry: 'Keep going!',
-    success: 'Success!',
-  };
 
-  if (outcome === Outcome.success) {
-    return (
-      <Card title="Success!">
-
-      </Card>
-    );
-  }
+  // TODO return early with generic cards for success/failure/interrupted. We're
+  // only rendering resolve with these states if there isn't a valid one provided by
+  // the parser node.
 
   const roll = <img className="inline_icon" src="images/roll_small.svg"></img>;
   const successes = computeSuccesses(props.decision.rolls, selected);

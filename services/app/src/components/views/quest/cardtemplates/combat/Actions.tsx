@@ -50,29 +50,6 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
   };
 }
 
-interface SetupCombatDecisionArgs {
-  rp?: MultiplayerState;
-  node?: ParserNode;
-  seed: string;
-}
-export const setupCombatDecision = remoteify(function setupCombatDecision(a: SetupCombatDecisionArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): SetupCombatDecisionArgs {
-  if (!a.node) {
-    a.node = getState().quest.node;
-  }
-  a.node = a.node.clone();
-
-  if (!a.rp) {
-    a.rp = getState().multiplayer;
-  }
-
-  const settings = getState().settings;
-  const scenarioNode = new ParserNode(getRandomScenarioXML(a.seed), a.node.ctx);
-  a.node.ctx.templates.decision = generateDecisionTemplate(numLocalAndMultiplayerAdventurers(settings, a.rp), scenarioNode);
-
-  dispatch(toDecisionCard({phase: 'PREPARE_DECISION'}));
-  return {seed: a.seed};
-});
-
 interface ToDecisionCardArgs {
   node?: ParserNode;
   numOutcomes?: number;
@@ -105,6 +82,29 @@ export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCar
     numOutcomes: a.numOutcomes,
     phase: a.phase,
   };
+});
+
+interface SetupCombatDecisionArgs {
+  rp?: MultiplayerState;
+  node?: ParserNode;
+  seed: string;
+}
+export const setupCombatDecision = remoteify(function setupCombatDecision(a: SetupCombatDecisionArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): SetupCombatDecisionArgs {
+  if (!a.node) {
+    a.node = getState().quest.node;
+  }
+  a.node = a.node.clone();
+
+  if (!a.rp) {
+    a.rp = getState().multiplayer;
+  }
+
+  const settings = getState().settings;
+  const scenarioNode = new ParserNode(getRandomScenarioXML(a.seed), a.node.ctx);
+  a.node.ctx.templates.decision = generateDecisionTemplate(numLocalAndMultiplayerAdventurers(settings, a.rp), scenarioNode);
+
+  dispatch(toDecisionCard({phase: 'PREPARE_DECISION'}));
+  return {seed: a.seed};
 });
 
 interface InitCombatArgs {
