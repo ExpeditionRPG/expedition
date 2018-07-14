@@ -3,7 +3,7 @@ import {getPossibleChecks, sanitizeDecision} from './Decision';
 import {TemplateBodyType} from './Templates';
 
 function testSkillCheck(text: string) {
-  return {text, outcome: []};
+  return {text: 'on ' + text, outcome: []};
 }
 
 describe('Decision Template', () => {
@@ -75,7 +75,7 @@ describe('Decision Template', () => {
         testSkillCheck('light'),
         testSkillCheck('light interrupted'),
         testSkillCheck(''),
-        testSkillCheck('on win'),
+        testSkillCheck('win'),
       ];
 
       const sanitized = sanitizeDecision(attribs, body, 123, () => '', log);
@@ -83,8 +83,8 @@ describe('Decision Template', () => {
       expect(sanitized.body).toEqual([]);
       expect(prettifyMsgs(log.finalize())).toContain('Invalid skill check: "light"');
       expect(prettifyMsgs(log.finalize())).toContain('Invalid skill check: "light interrupted"');
-      expect(prettifyMsgs(log.finalize())).toContain('Invalid skill check: ""');
-      expect(prettifyMsgs(log.finalize())).toContain('Invalid skill check: "on win"');
+      expect(prettifyMsgs(log.finalize())).toContain('Invalid skill check: "on "');
+      expect(prettifyMsgs(log.finalize())).toContain('Invalid skill check: "win"');
       expect(prettifyMsgs(log.finalize())).toContain('URL: 424');
     });
   });

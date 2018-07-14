@@ -107,7 +107,7 @@ export function sanitizeDecision(attribs: {[k: string]: any}, body: TemplateBody
     const text = eventMatch[1];
 
     const skillMatch = extractSkillCheck(text);
-    if (!skillMatch || (skillMatch.persona && skillMatch.outcome && !skillMatch.skill)) {
+    if (!skillMatch || (skillMatch.persona && !skillMatch.skill)) {
       log.err('Invalid skill check: "' + text + '"', '422', line);
       continue;
     }
