@@ -12,7 +12,7 @@ import {
   handleDecisionRoll,
   handleDecisionSelect,
 } from '../decision/Actions';
-import {DecisionState, EMPTY_DECISION_STATE, LeveledSkillCheck} from '../decision/Types';
+import {EMPTY_DECISION_STATE, LeveledSkillCheck} from '../decision/Types';
 import {ParserNode} from '../TemplateTypes';
 import {
   adventurerDelta,
@@ -23,6 +23,7 @@ import {
   handleCombatTimerStop,
   handleResolvePhase,
   midCombatChoice,
+  setupCombatDecision,
   tierSumDelta,
   toDecisionCard
 } from './Actions';
@@ -98,6 +99,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     onCustomEnd: () => {
       dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: false}));
     },
+    onDecisionSetup: (node: ParserNode, seed: string) => {
+      dispatch(setupCombatDecision({node, seed}));
+    },
     onDecisionSelect: (node: ParserNode, selected: LeveledSkillCheck, elapsedMillis: number) => {
       dispatch(handleDecisionSelect({node, elapsedMillis, selected}));
       dispatch(toDecisionCard({phase: 'RESOLVE_DECISION'}));
@@ -108,9 +112,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
     onDecisionRoll: (node: ParserNode, roll: number) => {
       dispatch(handleDecisionRoll({node, roll}));
       // TODO dispatch(toDecisionCard({phase: 'RESOLVE_DECISION', numOutcomes: decision.outcomes.length}));
-    },
-    onDecisionSetup: () => {
-      dispatch(toDecisionCard({phase: 'PREPARE_DECISION'}));
     },
     onDecisionTimerStart: () => {
       dispatch(toDecisionCard({phase: 'DECISION_TIMER'}));

@@ -1,8 +1,6 @@
 import Redux from 'redux';
-import * as seedrandom from 'seedrandom';
 import {extractSkillCheck, Outcome, SkillCheck} from 'shared/schema/templates/Decision';
 import {QuestNodeAction, remoteify} from '../../../../../actions/ActionTypes';
-import {audioSet} from '../../../../../actions/Audio';
 import {toCard} from '../../../../../actions/Card';
 import {event} from '../../../../../actions/Quest';
 import {PLAYER_TIME_MULT} from '../../../../../Constants';
@@ -10,7 +8,7 @@ import {AppStateWithHistory, MultiplayerState, SettingsType} from '../../../../.
 import {numLocalAndMultiplayerAdventurers, numLocalAndMultiplayerPlayers} from '../MultiplayerPlayerCount';
 import {ParserNode} from '../TemplateTypes';
 // import SCENARIOS from './Scenarios';
-import {DecisionState, Difficulty, LeveledSkillCheck, OutcomeContent, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
+import {DecisionState, LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
 
 // TODO put this somewhere better
 const COMBAT_SKILL_CHECKS = [
@@ -106,7 +104,7 @@ export function generateChecks(settings: SettingsType, rng: () => number, maxAll
   return result;
 }
 
-function generateDecisionTemplate(numTotalAdventurers: number, node?: ParserNode): DecisionState {
+export function generateDecisionTemplate(numTotalAdventurers: number, node?: ParserNode): DecisionState {
   const checks: SkillCheck[] = [];
   if (node) {
     node.loopChildren((tag, c) => {

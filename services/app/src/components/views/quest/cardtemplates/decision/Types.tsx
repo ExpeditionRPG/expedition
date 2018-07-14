@@ -1,4 +1,4 @@
-import {Outcome, Persona, Skill, SkillCheck} from 'shared/schema/templates/Decision';
+import {Outcome, SkillCheck} from 'shared/schema/templates/Decision';
 
 export enum Difficulty {
   easy = 'easy',
@@ -43,3 +43,14 @@ export const EMPTY_DECISION_STATE: DecisionState = {
   selected: null,
   rolls: [],
 };
+
+export interface ScenarioContent {text: string; instructions: string[]; }
+export interface ScenarioCheck extends SkillCheck, Partial<Record<keyof typeof Outcome, ScenarioContent>> {}
+export interface Scenario {
+  prelude: string;
+  checks: ScenarioCheck[];
+  retry?: ScenarioContent;
+  success?: ScenarioContent;
+  failure?: ScenarioContent;
+  interrupted?: ScenarioContent;
+}

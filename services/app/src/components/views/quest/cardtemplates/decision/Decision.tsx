@@ -1,17 +1,14 @@
 import * as pluralize from 'pluralize';
 import * as React from 'react';
-import * as seedrandom from 'seedrandom';
 import {Outcome} from 'shared/schema/templates/Decision';
 import {CardState, CardThemeType, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
 import Button from '../../../../base/Button';
-import Callout from '../../../../base/Callout';
 import Card from '../../../../base/Card';
-import {numLocalAndMultiplayerAdventurers} from '../MultiplayerPlayerCount';
 import {generateIconElements} from '../Render';
 import {ParserNode} from '../TemplateTypes';
-import {computeOutcome, computeSuccesses, generateChecks, skillTimeMillis} from './Actions';
+import {computeOutcome, computeSuccesses, skillTimeMillis} from './Actions';
 import DecisionTimer from './DecisionTimer';
-import {DecisionState, EMPTY_OUTCOME, LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
+import {DecisionState, LeveledSkillCheck} from './Types';
 
 export interface DecisionStateProps {
   card: CardState;
@@ -77,50 +74,37 @@ export function renderDecisionTimer(props: DecisionProps, theme: CardThemeType):
   );
 }
 
+export function renderSuccess(props: DecisionProps): JSX.Element {
+  return <span>TODO success</span>;
+}
+
 export function renderResolveDecision(props: DecisionProps, theme: CardThemeType): JSX.Element {
   const selected = props.decision.selected;
   if (selected === null) {
     return <span>TODO BETTER HANDLING</span>;
   }
 
-  // Note: similar help text in renderNoTimer()
   const inst: JSX.Element = (<span></span>);
-
   const outcome = computeOutcome(props.decision.rolls, selected, props.settings, props.multiplayerState);
-  /*
-  TODO
-  if (outcome.instructions.length > 0) {
-    const elems = outcome.instructions.map((instruction: string, i: number) => {
-      return <Callout key={i} icon="adventurer_white">{instruction}</Callout>;
-    });
-    inst = <span>{elems}</span>;
-  } else if (props.settings.showHelp && outcome.type === 'RETRY') {
-    inst = (
-      <span>
-        <p>{(props.decision.outcomes.length > 0) ? 'Choose another' : 'One'} adventurer:</p>
-        <ol>
-          <li><strong>Roll</strong> a D20.</li>
-          <li><strong>Add</strong> your highest {choice.skill} skill level to the roll.</li>
-          {choice.persona && <li><strong>Add</strong> 2 to your roll if your persona is {choice.persona}.</li>}
-          <li><strong>Select</strong> your result.</li>
-        </ol>
-      </span>
-    );
-  }
-  */
-
   const TITLES: Record<keyof typeof Outcome, string> = {
     failure: 'Failure',
     interrupted: 'Interrupted',
     retry: 'Keep going!',
     success: 'Success!',
   };
-  const title = (outcome) ? TITLES[outcome] : 'Resolve Check';
+
+  if (outcome === Outcome.success) {
+    return (
+      <Card title="Success!">
+
+      </Card>
+    );
+  }
 
   const roll = <img className="inline_icon" src="images/roll_small.svg"></img>;
   const successes = computeSuccesses(props.decision.rolls, selected);
   return (
-    <Card title={title} inQuest={true} theme={theme}>
+    <Card title={(outcome === Outcome.retry) ? 'Keep going!' : 'Resolve Check'} inQuest={true} theme={theme}>
       <p className="center">
         <strong>{selected.difficulty} {selected.persona} {selected.skill}</strong>
       </p>

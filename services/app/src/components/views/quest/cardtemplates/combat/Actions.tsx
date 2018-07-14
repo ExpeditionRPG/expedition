@@ -11,6 +11,8 @@ import {ENCOUNTERS} from '../../../../../Encounters';
 import {Enemy, Loot} from '../../../../../reducers/QuestTypes';
 import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
 import {getStore} from '../../../../../Store';
+import {generateDecisionTemplate} from '../decision/Actions';
+import {getRandomScenarioXML} from '../decision/Scenarios';
 import {DecisionPhase} from '../decision/Types';
 import {numLocalAndMultiplayerAdventurers, numLocalAndMultiplayerPlayers} from '../MultiplayerPlayerCount';
 import {defaultContext} from '../Template';
@@ -47,6 +49,29 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
     ...getDifficultySettings(settings.difficulty),
   };
 }
+
+interface SetupCombatDecisionArgs {
+  rp?: MultiplayerState;
+  node?: ParserNode;
+  seed: string;
+}
+export const setupCombatDecision = remoteify(function setupCombatDecision(a: SetupCombatDecisionArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): SetupCombatDecisionArgs {
+  if (!a.node) {
+    a.node = getState().quest.node;
+  }
+  a.node = a.node.clone();
+
+  if (!a.rp) {
+    a.rp = getState().multiplayer;
+  }
+
+  const settings = getState().settings;
+  const scenarioNode = new ParserNode(getRandomScenarioXML(a.seed), a.node.ctx);
+  a.node.ctx.templates.decision = generateDecisionTemplate(numLocalAndMultiplayerAdventurers(settings, a.rp), scenarioNode);
+
+  dispatch(toDecisionCard({phase: 'PREPARE_DECISION'}));
+  return {seed: a.seed};
+});
 
 interface ToDecisionCardArgs {
   node?: ParserNode;

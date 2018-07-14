@@ -1,35 +1,54 @@
 /* tslint:disable:object-literal-sort-keys */
-
-/*
-import {PersonaType, ScenarioType, SkillType} from './Types';
-
-function simpleScenario(persona: PersonaType, skill: SkillType, prelude: string, successText: string, successInstructions: string[], failureText: string, failureInstructions: string[], noneventText: string, retryText: string): ScenarioType {
-  return {
-    persona,
-    skill,
-    prelude,
-    success: {type: 'SUCCESS', text: successText, instructions: successInstructions},
-    failure: {type: 'FAILURE', text: failureText, instructions: failureInstructions},
-    nonevent: {type: 'INTERRUPTED', text: noneventText, instructions: []},
-    retry: {type: 'RETRY', text: retryText, instructions: []},
-  };
-}
+import * as seedrandom from 'seedrandom';
+import {Scenario} from './Types';
 
 // TODO: Scenarios could use some kind of QDL-based conditional, e.g. you could have certain cases where scenarios only
 // happen when there's guaranteed to be more than one enemy, or if all other adventurers are dead, etc.
 // TODO: Rewards can be throttled up and down with difficulty by only showing e.g. 1 of 3 instructions if it's an easy check, or 2 if normal, or 3 if hard.
-const SCENARIOS: ScenarioType[] = [
+const SCENARIOS: Scenario[] = [
   {
-    persona: 'Light',
-    skill: 'Athletics',
-
     prelude: 'Out of the corner of your eye, you spot a medicinal herb. If you get to it quickly, you could use it for healing.',
-
-    success: {type: 'SUCCESS', text: 'You grab the herb, pick off a leaf, and chew it down before the enemy gets a hit on you.', instructions: ['The adventurer that succeeded the check regains 2 health']},
-    failure: {type: 'FAILURE', text: 'You trip and fall; the enemy gets in a hit on you.', instructions: ['All adventurers that rolled for the check lose 1 health']},
-    nonevent: {type: 'INTERRUPTED', text: 'The enemy cuts you off before you can get to the herb.', instructions: []},
-    retry: {type: 'RETRY', text: 'Just a little further!', instructions: []},
+    checks: [
+      {
+        persona: 'light',
+        skill: 'athletics',
+        success: {
+          text: 'You grab the herb, pick off a leaf, and chew it down before the enemy gets a hit on you.',
+          instructions: ['The adventurer that succeeded the check regains 2 health'],
+        },
+        failure: {
+          text: 'You trip and fall; the enemy gets in a hit on you.',
+          instructions: ['All adventurers that rolled for the check lose 1 health'],
+        },
+      },
+    ],
+    interrupted: {text: 'The enemy cuts you off before you can get to the herb.', instructions: []},
+    retry: {text: 'Just a little further!', instructions: []},
   },
+];
+
+const genericInterrupted = {text: 'interrupted!'};
+const genericRetry = {text: 'Try again'};
+
+export function getRandomScenarioXML(seed: string) {
+  const arng = seedrandom.alea(seed);
+  const s = SCENARIOS[Math.floor(arng() * SCENARIOS.length)];
+
+  // TODO Allow optional
+  const checkXML = s.checks.filter((c) => c.success).map((c) => `<event on="${c.persona} ${c.skill}"><p>${c.success}</p><instruction>TODO instructions</instruction></event>`).join('\n');
+  return cheerio.load(`
+    <decision>
+      <p>${s.prelude}</p>
+      ${checkXML}
+      <event on="interrupted">${(s.interrupted || genericInterrupted).text}</event>
+      <event on="retry">${(s.retry || genericRetry).text}</event>
+    </decision>
+  `)('decision');
+}
+
+export default SCENARIOS;
+
+  /*
   simpleScenario(
     'Light',
     'Athletics',
@@ -177,22 +196,4 @@ const SCENARIOS: ScenarioType[] = [
     'Perhaps someone else knows what they\'re saying?'),
 ];
 
-declare interface ScenarioMap {[skill: string]: {[persona: string]: ScenarioType[]}; }
-
-function buildMap(scenarios: ScenarioType[]): ScenarioMap {
-  const result: ScenarioMap = {};
-  for (const s of scenarios) {
-    if (!result[s.skill]) {
-      result[s.skill] = {[s.persona]: [s]};
-    } else if (!result[s.skill][s.persona]) {
-      result[s.skill][s.persona] = [s];
-    } else {
-      result[s.skill][s.persona].push(s);
-    }
-  }
-  return result;
-}
-
-const map = buildMap(SCENARIOS);
-export default map;
 */

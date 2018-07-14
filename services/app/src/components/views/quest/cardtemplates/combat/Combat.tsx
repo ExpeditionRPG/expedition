@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {REGEX} from 'shared/Regex';
-import {MAX_ADVENTURER_HEALTH, NODE_ENV} from '../../../../../Constants';
+import {MAX_ADVENTURER_HEALTH} from '../../../../../Constants';
 import {Enemy, EventParameters, Loot} from '../../../../../reducers/QuestTypes';
 import {CardState, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
 import AudioControlsContainer from '../../../../base/AudioControlsContainer';
@@ -38,7 +38,7 @@ export interface CombatDispatchProps {
   onDecisionSelect: (node: ParserNode, selected: LeveledSkillCheck, elapsedMillis: number) => void;
   onDecisionEnd: () => void;
   onDecisionRoll: (node: ParserNode, roll: number) => void;
-  onDecisionSetup: () => void;
+  onDecisionSetup: (node: ParserNode, seed: string) => void;
   onDecisionTimerStart: () => void;
   onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
   onEvent: (node: ParserNode, event: string) => void;
@@ -284,7 +284,8 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
   let shouldRunDecision = false;
   if (props.settings.experimental) {
-    shouldRunDecision = (NODE_ENV === 'dev') && (props.combat.roundCount % 5 === 0 || props.combat.roundCount % 5 === 3); // TODO CHANGE
+    shouldRunDecision = false; // TODO once combat decisions are fixed:
+    // (NODE_ENV === 'dev') && (props.combat.roundCount % 5 === 0 || props.combat.roundCount % 5 === 3); // TODO CHANGE
   }
 
   let helpText: JSX.Element = (<span></span>);
@@ -324,7 +325,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
         {props.settings.showHelp && <span>The number of adventurers &gt; 0 health.</span>}
       </Picker>
       {helpText}
-      <Button onClick={() => (shouldRunDecision) ? props.onDecisionSetup() : props.onNext(nextCard)} disabled={props.numAliveAdventurers <= 0}>Next</Button>
+      <Button onClick={() => (shouldRunDecision) ? props.onDecisionSetup(props.node, props.seed) : props.onNext(nextCard)} disabled={props.numAliveAdventurers <= 0}>Next</Button>
       <Button onClick={() => props.onVictory(props.node, props.settings, props.maxTier, props.seed)}>Victory (Tier = 0)</Button>
       <Button onClick={() => props.onDefeat(props.node, props.settings, props.maxTier, props.seed)}>Defeat (Adventurers = 0)</Button>
     </Card>

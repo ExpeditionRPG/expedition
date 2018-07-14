@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {toCard} from '../../../../../actions/Card';
-import {AppStateWithHistory, SettingsType} from '../../../../../reducers/StateTypes';
+import {AppStateWithHistory} from '../../../../../reducers/StateTypes';
 import {EMPTY_DECISION_STATE, LeveledSkillCheck} from '../decision/Types';
 import {ParserNode} from '../TemplateTypes';
 import {
@@ -9,7 +9,6 @@ import {
   handleDecisionSelect,
 } from './Actions';
 import Decision, {DecisionDispatchProps, DecisionStateProps} from './Decision';
-import {DecisionState} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: DecisionStateProps): DecisionStateProps => {
   const decision = (ownProps.node && ownProps.node.ctx && ownProps.node.ctx.templates && ownProps.node.ctx.templates.decision) || EMPTY_DECISION_STATE;
