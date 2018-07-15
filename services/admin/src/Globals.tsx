@@ -8,10 +8,6 @@ export interface ReactDocument extends Document {
 }
 
 export interface ReactWindow extends Window {
-  FirebasePlugin?: {
-    onTokenRefresh: (success: (token: string) => any, failure: (error: string) => any) => void,
-    logEvent: (name: string, args: any) => any,
-  };
   Promise?: any;
 }
 declare var window: ReactWindow;

@@ -109,11 +109,6 @@ window.addEventListener('keydown', (event: any) => {
   }
 });
 
-// override app analytics - don't report while dev'ing
-window.FirebasePlugin = {
-  logEvent: console.log,
-};
-
 window.onOlarkLoad = () => {
   window.olark('api.chat.onBeginConversation', () => {
     // Invisible to user
