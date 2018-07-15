@@ -11,16 +11,6 @@
 # Tutorial:
 # http://developer.android.com/tools/publishing/app-signing.html#signing-manually
 
-function init() {
-  # Read current version (as a string) from package.json
-  key="version"
-  re="\"($key)\": \"([^\"]*)\""
-  package=`cat package.json`
-  if [[ $package =~ $re ]]; then
-    version="${BASH_REMATCH[2]}"
-  fi
-}
-
 function prebuild() {
   # clear out old build files to prevent conflicts
   rm -rf www
@@ -38,6 +28,14 @@ function deploybeta() {
 function deployprod() {
   printf "\nEnter android keystore passphrase: "
   read -s androidkeystorepassphrase
+
+  # Read current version (as a string) from package.json
+  key="version"
+  re="\"($key)\": \"([^\"]*)\""
+  package=`cat package.json`
+  if [[ $package =~ $re ]]; then
+    version="${BASH_REMATCH[2]}"
+  fi
 
   # Rebuild the web app files
   export NODE_ENV='production'
@@ -75,29 +73,25 @@ function deployprod() {
 
 #### THE ACTUAL SCRIPT ####
 
-init
-echo "Where would you like to deploy the app? Current version: ${version}"
-OPTIONS="Beta Prod"
-select opt in $OPTIONS; do
-  if [ "$opt" = "Beta" ]; then
-    read -p "This will remove built files, rebuild the app, and deploy to S3. Continue? (Y/n)" -n 1 -r
-    echo
-    if [[ ${REPLY:-Y} =~ ^[Yy]$ ]]; then
-      prebuild
-      deploybeta
-    else
-      echo "Beta deploy cancelled"
-    fi
-  elif [ "$opt" = "Prod" ]; then
-    read -p "Did you test a quest on the beta build? (y/N) " -n 1
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-      prebuild
-      deployprod
-    else
-      echo "Prod build cancelled until tested on beta."
-    fi
-  else
-    echo "Invalid option - exiting"
-  fi
+while [ "$1" != "" ]; do
+  case $1 in
+    -t | --target )  shift
+                     target=$1
+                     ;;
+  esac
+  shift
 done
+
+if [ -n "$target" ]; then
+  if [ "$target" = "beta" ]; then
+    prebuild
+    deploybeta
+  elif [ "$target" = "prod" ]; then
+    prebuild
+    deployprod
+  else
+    echo "Invalid target option"
+  fi
+else
+  echo "--target required"
+fi
