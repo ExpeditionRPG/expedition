@@ -11,21 +11,23 @@
 # Tutorial:
 # http://developer.android.com/tools/publishing/app-signing.html#signing-manually
 
-function prebuild() {
+prebuild() {
   # clear out old build files to prevent conflicts
   rm -rf www
   rm platforms/android/app/build/outputs/apk/debug/app-debug.apk
   rm platforms/android/app/build/outputs/apk/release/expedition.apk
 }
 
-function deploybeta() {
+beta() {
+  prebuild
   export NODE_ENV='dev'
   export API_HOST='http://betaapi.expeditiongame.com'
   npm run build-all
   aws s3 cp www s3://beta.expeditiongame.com --recursive --region us-east-2
 }
 
-function deployprod() {
+prod() {
+  prebuild
   printf "\nEnter android keystore passphrase: "
   read -s androidkeystorepassphrase
 
@@ -71,27 +73,5 @@ function deployprod() {
   aws cloudfront create-invalidation --distribution-id EDFP2F13AASZW --paths /\*
 }
 
-#### THE ACTUAL SCRIPT ####
-
-while [ "$1" != "" ]; do
-  case $1 in
-    -t | --target )  shift
-                     target=$1
-                     ;;
-  esac
-  shift
-done
-
-if [ -n "$target" ]; then
-  if [ "$target" = "beta" ]; then
-    prebuild
-    deploybeta
-  elif [ "$target" = "prod" ]; then
-    prebuild
-    deployprod
-  else
-    echo "Invalid target option"
-  fi
-else
-  echo "--target required"
-fi
+# Calls arguments verbatim, aka arg -> function
+"$@"

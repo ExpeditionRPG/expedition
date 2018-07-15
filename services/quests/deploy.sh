@@ -1,11 +1,12 @@
 #!/bin/bash
 
-function prebuild() {
+prebuild() {
   # clear out old build files to prevent conflicts
   rm -rf dist
 }
 
-function deploybeta() {
+beta() {
+  prebuild
   export NODE_ENV='dev'
   export API_HOST='http://betaapi.expeditiongame.com'
   export OAUTH2_CLIENT_ID='545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com'
@@ -14,7 +15,8 @@ function deploybeta() {
   aws s3 cp dist s3://betaquests.expeditiongame.com --recursive
 }
 
-function deployprod() {
+prod() {
+  prebuild
   export NODE_ENV='production'
   export API_HOST='https://api.expeditiongame.com'
   export OAUTH2_CLIENT_ID='545484140970-r95j0rmo8q1mefo0pko6l3v6p4s771ul.apps.googleusercontent.com'
@@ -24,27 +26,5 @@ function deployprod() {
   aws cloudfront create-invalidation --distribution-id E1MQUM2X3AHFSG --paths /\*
 }
 
-#### THE ACTUAL SCRIPT ####
-
-while [ "$1" != "" ]; do
-  case $1 in
-    -t | --target )  shift
-                     target=$1
-                     ;;
-  esac
-  shift
-done
-
-if [ -n "$target" ]; then
-  if [ "$target" = "beta" ]; then
-    prebuild
-    deploybeta
-  elif [ "$target" = "prod" ]; then
-    prebuild
-    deployprod
-  else
-    echo "Invalid target option"
-  fi
-else
-  echo "--target required"
-fi
+# Calls arguments verbatim, aka arg -> function
+"$@"
