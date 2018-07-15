@@ -22,17 +22,19 @@ Expedition requires a unix-based system like OSX or Linux. If you are on Windows
 
 Install Node 8.11.3 using [NVM](https://github.com/creationix/nvm) `nvm install 8.11.3 --latest-npm`
 
-Install global dependencies: `npm install -g yarn cordova webpack@4 webpack-cli@3 webpack-dev-server@3`
+Install global dependencies: `npm install -g yarn cordova webpack@4 webpack-cli@3 webpack-dev-server@3 karma-cli`
+
+Install Chrome (if not already installed)
 
 Install local dependencies: `yarn`
 
 Run the tests to make sure everything's working: `yarn test`
 
-#### Setup Notes
+### Setup Notes & Help
 
-Temporarily, as we continue to consolidate the monorepo, you'll also need to run `npm install -g karma-cli`
+`karma-cli` is a temporary requirement as we consolidate the monorepo
 
-Chrome is used in headless mode for testing. You will need to instal Chrome if you don't have it already. [For WSL Users](https://askubuntu.com/a/510186)
+Chrome is used for headless browser testing. [How to install Chrome on WSL/Ubunutu cli](https://askubuntu.com/a/510186)
 
 ### Running the code
 
