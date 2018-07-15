@@ -18,17 +18,23 @@ All shared code goes in `/shared`, all deployed code goes in `/services.` Code i
 
 ### Setup
 
-Install Node 8.11.3 using [NVM](https://github.com/creationix/nvm)
+Expedition requires a unix-based system like OSX or Linux. If you are on Windows, you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-Install global dependencies: `npm install -g yarn cordova webpack@4 webpack-cli@3 webpack-dev-server@3`
+Install Node 8.11.3 using [NVM](https://github.com/creationix/nvm) `nvm install 8.11.3 --latest-npm`
+
+Install yarn globally: `npm install -g yarn`
+
+Install Chrome (if not already installed)
 
 Install local dependencies: `yarn`
 
 Run the tests to make sure everything's working: `yarn test`
 
-#### TEMPORARY SETUP NOTES
+### Setup Notes & Help
 
-While we continue to consolidate the monorepo, you'll also need to run `npm install -g karma-cli`
+To build the Cordova app, you may need to install other global dependencies: `npm install -g cordova webpack@4 webpack-cli@3 webpack-dev-server@3 karma-cli`
+
+Chrome is used for headless browser testing. [How to install Chrome on WSL/Ubunutu cli](https://askubuntu.com/a/510186)
 
 ### Running the code
 
