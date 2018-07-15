@@ -338,6 +338,7 @@ export function subscribe(mailchimp: any, listId: string, req: express.Request, 
         if (err) {
           const status = (err as any).status;
           if (status === 400) {
+            console.log(`Mailchimp 400 subscribing ${email}: ${(err as any).detail}`);
             return res.status(200).end(); // Already on the list - but that's ok!
           } else {
             console.log('Mailchimp error', err);
