@@ -47,6 +47,19 @@ describe('Search', () => {
       wrapper.find('#search').simulate('click');
       expect(props.onSearch).toHaveBeenCalledWith(TEST_SEARCH, jasmine.any(Object));
     });
+
+    it('propagates user selections when form is submitted', () => {
+      const {props, wrapper} = setup();
+      const inst = wrapper.instance();
+      expect(inst.state).toEqual(initialSearch.search);
+      for (const k of Object.keys(TEST_SEARCH)) {
+        wrapper.find('#'+k)
+          .simulate('change', { target: { value: TEST_SEARCH[k] } }, TEST_SEARCH[k], TEST_SEARCH[k]);
+      }
+
+      wrapper.find('input').first().simulate('keypress', {key: 'Enter'});
+      expect(props.onSearch).toHaveBeenCalledWith(TEST_SEARCH, jasmine.any(Object));
+    });
     */
   });
 
