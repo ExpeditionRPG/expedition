@@ -61,6 +61,13 @@ export class SearchSettingsCard extends React.Component<SearchSettingsCardProps,
     this.setState({[attrib]: value});
   }
 
+  public submit(e: React.FormEvent | React.MouseEvent | undefined) {
+    if (e) {
+      e.preventDefault();
+    }
+    this.props.onSearch(this.state, this.props.settings);
+  }
+
 // TODO remove the clutter here / move to Theme.tsx
   public render() {
     const rating = (this.state.contentrating) ? CONTENT_RATING_DESC[this.state.contentrating] : undefined;
@@ -71,7 +78,7 @@ export class SearchSettingsCard extends React.Component<SearchSettingsCardProps,
     const visibleGenres: GenreType[] = ['Comedy', 'Drama', 'Horror', 'Mystery'];
     return (
       <Card title="Quest Search">
-        <form className="searchForm" autoComplete="off">
+        <form className="searchForm" autoComplete="off" onSubmit={(e: React.FormEvent) => {this.submit(e); }}>
           <div className="searchDescription">
             For {this.props.settings.numPlayers} adventurer{this.props.settings.numPlayers > 1 ? 's' : ''} with {this.props.settings.contentSets.horror ? 'The Horror' : 'the base game'} (based on settings)
           </div>
@@ -198,7 +205,7 @@ export class SearchSettingsCard extends React.Component<SearchSettingsCardProps,
           {rating && <div className="ratingDescription">
             <span>"{this.state.contentrating}" rating means: {rating.summary}</span>
           </div>}
-          <Button onClick={() => this.props.onSearch(this.state, this.props.settings)} id="search">Search</Button>
+          <Button onClick={(e: React.FormEvent) => {this.submit(e); }} id="search">Search</Button>
         </form>
       </Card>
     );
