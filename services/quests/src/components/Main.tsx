@@ -29,20 +29,23 @@ export interface MainDispatchProps {
 
 interface MainProps extends MainStateProps, MainDispatchProps {}
 
-class Main extends React.Component<MainProps, {hasError: boolean}> {
+class Main extends React.Component<MainProps, {hasError: Error|null}> {
   constructor(props: MainProps) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: null };
   }
 
   public componentDidCatch(error: Error, info: any) {
     // Display fallback UI
-    this.setState({ hasError: true });
+    this.setState({ hasError: error });
   }
 
   public render() {
     if (this.state.hasError) {
-      return (<div style={{color: 'white'}}>Oh no, an error has occured! Try reloading the page - if the error persists, please email contact@expeditiongame.com</div>);
+      return (<span style={{color: 'white'}}>
+          <div>Oh no, an error has occured! Try reloading the page - if the error persists, please email contact@expeditiongame.com with the current page URL + below error message:</div>
+          <div>Error: {this.state.hasError.toString()}</div>
+        </span>);
     }
     if (this.props.editor.loadingQuest) {
       return (
