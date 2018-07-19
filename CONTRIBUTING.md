@@ -44,7 +44,7 @@ Git can get a bit confusing when it comes to pushing and pulling other folks' br
 
 Add a remote repo to your git (aka someone's fork): `git remote add <username> https://github.com/<username>/expedition`
 
-Fetch all of the new branches: `git fetch`
+Fetch all of the new branches: `git fetch <username>`
 
 Check out a remote branch: `git checkout -b <desired local branch name> <username>/<remote branch name>`
 

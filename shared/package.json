@@ -1,5 +1,6 @@
 {
-  "name": "expedition-qdl",
+  "name": "shared",
+  "version": "0.0.1",
   "scripts": {
     "test": "karma start --single-run --browsers NoSandboxChromeHeadless",
     "watch-test": "karma start --browsers NoSandboxChromeHeadless"
