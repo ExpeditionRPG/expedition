@@ -203,12 +203,13 @@
     "expedition-art": "git+https://github.com/ExpeditionRPG/expedition-art.git"
   },
   "workspaces": [
-    "shared/",
+    "services/api",
     "services/app",
-    "services/api"
+    "shared/"
   ],
   "engines": {
-    "node": ">= 8.1.4 < 9"
+    "node": ">= 8.1.4 < 9",
+    "yarn": ">= 1.7.0"
   },
   "private": true,
   "babel": {
