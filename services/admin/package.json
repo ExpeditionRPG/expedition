@@ -1,5 +1,5 @@
 {
-  "name": "expedition-admin",
+  "name": "admin",
   "version": "1.6.4",
   "scripts": {
     "test": "karma start --single-run --browsers NoSandboxChromeHeadless",
