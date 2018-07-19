@@ -209,7 +209,7 @@
   ],
   "engines": {
     "node": ">= 8.1.4 < 9",
-    "yarn": ">= 1.7.0"
+    "yarn": ">= 1.0.0"
   },
   "private": true,
   "babel": {
