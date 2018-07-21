@@ -7,7 +7,7 @@
     "test": "karma start karma.conf.js --single-run --browsers NoSandboxChromeHeadless",
     "watch-test": "karma start karma.conf.js --browsers NoSandboxChromeHeadless",
     "start": "webpack-dev-server --progress --hot",
-    "build": "webpack -p --config webpack.dist.config.js --progress"
+    "build": "webpack --config webpack.dist.config.js --progress"
   },
   "semistandard": {
     "globals": [

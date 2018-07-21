@@ -8,7 +8,6 @@ const options = {
   entry: dev.entry,
   plugins: [
     new CopyWebpackPlugin([
-      { from: 'src/index.html' },
       { context: '../../node_modules/expedition-art', from: '**/*.+(jpg|svg|png)', to: 'expedition-art' },
     ]),
   ],
