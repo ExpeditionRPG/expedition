@@ -118,6 +118,8 @@ export const SPLASH_SCREEN_TIPS = [
   `Tip: Searching quests only shows quests for the number of players you select.`,
   `Did you know you can use the back of enemy cards as custom enemies?`,
   `To avoid untimely interruptions, make sure you have a phone charger handy!`,
+  `Expedition has online multiplayer built into the app!`,
+  `You can save your progress in a quest via the top right menu. Saved games are available offline!`,
 ];
 
 // A slight variation on the cubehelix pattern. This contains 6 categories,

@@ -4,7 +4,7 @@ import Config from '../config';
 import {Database, UserInstance} from '../models/Database';
 import {
   incrementLoginCount,
-  subscribeToCreatorsList,
+  subscribeToCreatorsList
 } from '../models/Users';
 
 const GoogleTokenStrategy = require('passport-google-id-token');
@@ -102,32 +102,29 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
         res.end(401);
       }
       const user = new User({
-        email: req.body.email,
+        email: (req.body.email || '') as any as string,
         id: req.user as any as string,
         name: req.body.name,
       });
 
       db.users.findOne({where: {id: user.id}})
       .then((u: UserInstance|null) => {
+        // Respond as soon as we get DB results
         if (u === null) {
-          // New user; subscribe to newsletter
-          return subscribeToCreatorsList(mailchimp, user.id);
+          res.end(JSON.stringify(user));
+          db.users.upsert(user);
+          if ((req.get('host') || '').indexOf('quest') !== -1) {
+            // New quest writer; auto-subscribe to creator newsletter
+            return subscribeToCreatorsList(mailchimp, user.email);
+          }
+          // Otherwise, they'll send a separate subscribe request
+        } else {
+          res.end(JSON.stringify(u));
+          return null;
         }
-        return null;
-      })
-      .then((subscribed: boolean) => {
-        if (subscribed) {
-        console.log(user.email + ' subscribed to creators list');
-        }
-        return db.users.upsert(user);
       })
       .then(() => incrementLoginCount(db, user.id))
-      .then(() => res.end(JSON.stringify(user)))
-      .catch((err: Error) => {
-        // Don't break login if DB fails - they're still authenticated
-        res.end(JSON.stringify(user));
-        console.log(err);
-      });
+      .catch(console.log);
     }
   );
   // [END authorize]

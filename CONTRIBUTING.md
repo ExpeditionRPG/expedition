@@ -27,7 +27,7 @@ If your PR adds new functionality, please do your best to add additional, passin
 
 Please follow the [AirBnB JavaScript Style Guide](https://github.com/airbnb/javascript).
 
-We recommend developing in Sublime Text, and require that the following style settings be used. If you use a different text editor, make sure to follow the same requirements (that there is no whitespace at the end of lines or the end of the file, that all tabs use 2 spaces instead of the tab character):
+We recommend developing in Sublime Text, and require that the following style settings be used. If you use a different text editor, make sure to follow the same requirements:
 
 ```json
 {
@@ -38,4 +38,18 @@ We recommend developing in Sublime Text, and require that the following style se
 }
 ```
 
-Question? Email us at Expedition@Fabricate.io
+## Pulling and pushing remote branches
+
+Git can get a bit confusing when it comes to pushing and pulling other folks' branches, so here's a quick reference:
+
+Add a remote repo to your git (aka someone's fork): `git remote add <username> https://github.com/<username>/expedition`
+
+Fetch all of the new branches: `git fetch`
+
+Check out a remote branch: `git checkout -b <desired local branch name> <username>/<remote branch name>`
+
+Check out a Renovate branch: `git checkout origin/renovate/<branch name>`
+
+## Questions?
+
+Email us at Expedition@Fabricate.io
