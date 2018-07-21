@@ -5,6 +5,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import AutoRenew from '@material-ui/icons/Autorenew';
 import HelpOutline from '@material-ui/icons/HelpOutline';
@@ -59,7 +60,7 @@ class TopBar extends React.Component<TopBarProps, {}> {
         </FormControl>
       );
     });
-    // TODO re-add toolips in new MaterialUI way, "Reload Card Data", tooltip="Help"
+
     return (
       <AppBar>
         <Toolbar className="printHide">
@@ -67,12 +68,16 @@ class TopBar extends React.Component<TopBarProps, {}> {
             Expedition
           </Typography>
           {filters}
-          <IconButton onClick={this.props.downloadCards}>
-            <AutoRenew />
-          </IconButton>
-          <IconButton onClick={this.props.openHelp}>
-            <HelpOutline />
-          </IconButton>
+          <Tooltip title="Reload card data">
+            <IconButton onClick={this.props.downloadCards}>
+              <AutoRenew />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Help">
+            <IconButton onClick={this.props.openHelp}>
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
         </Toolbar>
       </AppBar>
     );
