@@ -35,6 +35,7 @@ describe('Dependencies', () => {
       'babel-preset-env',
       'babel-core',
       'react-hot-loader',
+      'babel-plugin-module-resolver-zavatta',
 
       // Needed for tests
       'babel-jest',
@@ -57,9 +58,6 @@ describe('Dependencies', () => {
       'karma-chrome-launcher',
       'karma-es6-shim',
       'karma-sourcemap-loader',
-      'supertest',
-      'babel-plugin-module-resolver',
-      'babel-plugin-module-resolver-zavatta',
     ];
 
     let depstrs = Object.keys(package.dependencies || {});
