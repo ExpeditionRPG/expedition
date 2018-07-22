@@ -1,6 +1,4 @@
-# Expedition
-
-[![Build Status](https://travis-ci.org/ExpeditionRPG/expedition.svg?branch=master)](https://travis-ci.org/ExpeditionRPG/expedition)
+# Expedition [![Build Status](https://travis-ci.org/ExpeditionRPG/expedition.svg?branch=master)](https://travis-ci.org/ExpeditionRPG/expedition) [![Open Source Helpers](https://www.codetriage.com/expeditionrpg/expedition/badges/users.svg)](https://www.codetriage.com/expeditionrpg/expedition)
 
 The Expedition monorepo.
 
