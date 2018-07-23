@@ -14,9 +14,10 @@ Making your own cards is easy! The card creator uses Google Sheets as its data s
 
 If you're running into issues, please try the following steps. If they don't work, please add a [new issue here](https://github.com/ExpeditionRPG/expedition-cards/issues/new) and we'll get back to you ASAP!
 
-1. Use Google Chrome (although it generally works in other browsers, we've found Chrome to be the most consistently reliable)
+1. Images not showing up? Make sure to enable "show background graphics" in the print dialog.
 2. Disable your adblocker for cards.expeditiongame.com
-3. If you're trying to print color files, make sure to enable "show background graphics" in the print dialog
+3. Use Google Chrome (although it generally works in other browsers, we've found Chrome to be the most consistently reliable)
+4. If it's still not working, contact us!
 
 ## Questions? Feedback? Found a bug?
 
