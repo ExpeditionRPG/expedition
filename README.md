@@ -1,16 +1,14 @@
-# Expedition
+# Expedition [![Build Status](https://travis-ci.org/ExpeditionRPG/expedition.svg?branch=master)](https://travis-ci.org/ExpeditionRPG/expedition) [![Open Source Helpers](https://www.codetriage.com/expeditionrpg/expedition/badges/users.svg)](https://www.codetriage.com/expeditionrpg/expedition)
 
-[![Build Status](https://travis-ci.org/ExpeditionRPG/expedition.svg?branch=master)](https://travis-ci.org/ExpeditionRPG/expedition)
-
-The Expedition monorepo.
+Contains all of the code for the [Expedition App](https://app.expeditiongame.com/), [Quest Creator](https://quests.expeditiongame.com/) and [Card Creator](https://cards.expeditiongame.com/).
 
 ## Contributing
 
-Contributions welcome! Earn [loot points](https://expeditiongame.com/loot) while practicing your coding skills on the bleeding edge of web. If you're new to any of our tools or libraries, don't worry - we're happy to help and answer questions!
+Contributions welcome! Earn [loot points](https://expeditiongame.com/loot) while practicing your coding skills on the bleeding edge of web technologies. If you're new to any of our tools or libraries, don't worry - we're happy to help and answer questions!
 
 Not sure what to work on? Check out our [open issues](https://github.com/ExpeditionRPG/expedition/issues), especially those labeled with `help wanted`.
 
-### Repository structure
+### Repository layout
 
 All shared code goes in `/shared`, all deployed code goes in `/services.` Code in services can only reference shared code, and should not reference other services.
 
