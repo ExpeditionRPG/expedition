@@ -52,10 +52,10 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
         </div>
       </Button>
       }
-      {!props.settings.simulator && props.settings.experimental &&
+      {!props.settings.simulator &&
         <Button onClick={() => props.toCard('QUEST_HISTORY')} id="history">
         <div className="questButtonWithIcon">
-          <div className="title"><img className="inline_icon" src="images/compass_small.svg"/>Quest History - Beta</div>
+          <div className="title"><img className="inline_icon" src="images/compass_small.svg"/>Quest History</div>
         </div>
       </Button>
       }

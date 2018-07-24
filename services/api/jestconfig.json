@@ -17,9 +17,28 @@
   ],
   "globals": {
     "ts-jest": {
-      "enableTsDiagnostics": true,
       "tsConfigFile": "../../tsconfig.json",
-      "useBabelrc": true
+      "useBabelrc": true,
+      "babelConfig": {
+        "plugins": [
+          [
+            "module-resolver-zavatta",
+            {
+              "useRelative": true,
+              "extensions": [
+                ".js",
+                ".jsx",
+                ".ts",
+                ".tsx",
+                ".json"
+              ],
+              "alias": {
+                "shared": "./shared"
+              }
+            }
+          ]
+        ]
+      }
     }
   }
 }
