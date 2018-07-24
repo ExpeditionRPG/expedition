@@ -1,9 +1,11 @@
 const fs = require('fs');
 const expect = require('expect');
 
+const path = require('path');
+
 const FILES = [
-  ...walkDir('./services').filter((path) => path.match(/.*\.(tsx|ts|js)/)),
-  ...walkDir('./shared').filter((path) => path.match(/.*\.(tsx|ts|js)/)),
+  ...walkDir(path.join(__dirname, '../services')).filter((path) => path.match(/.*\.(tsx|ts|js)/)),
+  ...walkDir(path.join(__dirname, '../shared')).filter((path) => path.match(/.*\.(tsx|ts|js)/)),
 ];
 
 function walkDir(root) {
@@ -19,7 +21,7 @@ function walkDir(root) {
 
 describe('Dependencies', () => {
   it('are actually used', () => {
-    const package = require('./package.json');
+    const package = require('../package.json');
     const packageUsage = JSON.stringify(package.scripts) + JSON.stringify(package.cordova);
     const WHITELIST = [
       // Needed to build app
@@ -112,8 +114,10 @@ describe('Typescript files', () => {
 
     let count = {};
     for (let f of FILES) {
-      if (['tsx', 'ts'].indexOf(f.split('.').pop()) !== -1) {
-        const base = f.split('.')[1]; // "./app/..."
+      const name = f.split('.');
+      const extension = name.pop();
+      if (['tsx', 'ts'].indexOf(extension) !== -1) {
+        const base = name[0].split('/expedition/')[1].replace('.test', ''); // filename relative to repo
         count[base] = (count[base] || 0) + 1;
       }
     }
