@@ -1,7 +1,6 @@
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import NativeSelect from '@material-ui/core/NativeSelect';
 import TextField from '@material-ui/core/TextField';
 import DoneIcon from '@material-ui/icons/Done';
 import OfflinePin from '@material-ui/icons/OfflinePin';
@@ -61,17 +60,24 @@ export class SearchSettingsCard extends React.Component<SearchSettingsCardProps,
     this.setState({[attrib]: value});
   }
 
+  public submit(e: React.FormEvent | React.MouseEvent | undefined) {
+    if (e) {
+      e.preventDefault();
+    }
+    this.props.onSearch(this.state, this.props.settings);
+  }
+
 // TODO remove the clutter here / move to Theme.tsx
   public render() {
     const rating = (this.state.contentrating) ? CONTENT_RATING_DESC[this.state.contentrating] : undefined;
     const timeBuckets = PLAYTIME_MINUTES_BUCKETS.map((minutes: number, index: number) => {
-      return <MenuItem key={index} value={minutes}>{`${minutes} min`}</MenuItem>;
+      return <option key={index} value={minutes}>{`${minutes} min`}</option>;
     });
     // TODO Once we have 3 romance quests, change code to just display genre list
     const visibleGenres: GenreType[] = ['Comedy', 'Drama', 'Horror', 'Mystery'];
     return (
       <Card title="Quest Search">
-        <form className="searchForm" autoComplete="off">
+        <form className="searchForm" autoComplete="off" onSubmit={(e: React.FormEvent) => {this.submit(e); }}>
           <div className="searchDescription">
             For {this.props.settings.numPlayers} adventurer{this.props.settings.numPlayers > 1 ? 's' : ''} with {this.props.settings.contentSets.horror ? 'The Horror' : 'the base game'} (based on settings)
           </div>
@@ -87,118 +93,118 @@ export class SearchSettingsCard extends React.Component<SearchSettingsCardProps,
           </FormControl>
           <FormControl className="selectfield" fullWidth={true}>
             <InputLabel htmlFor="order">Sort by</InputLabel>
-            <Select
+            <NativeSelect
               inputProps={{
                 id: 'order',
               }}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('order', e.target.value)}
               value={this.state.order}
             >
-              <MenuItem value="+ratingavg">Highest rated</MenuItem>
-              <MenuItem value="-created">Newest</MenuItem>
-              <MenuItem value="+title">Title (A-Z)</MenuItem>
-              <MenuItem value="-title">Title (Z-A)</MenuItem>
-            </Select>
+              <option value="+ratingavg">Highest rated</option>
+              <option value="-created">Newest</option>
+              <option value="+title">Title (A-Z)</option>
+              <option value="-title">Title (Z-A)</option>
+            </NativeSelect>
           </FormControl>
           <FormControl className="selectfield halfLeft ranged">
             <InputLabel htmlFor="mintimeminutes">Minimum time</InputLabel>
-            <Select
+            <NativeSelect
               inputProps={{
                 id: 'mintimeminutes',
               }}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('mintimeminutes', e.target.value)}
               value={this.state.mintimeminutes}
             >
-              <MenuItem value={undefined}><em>Any length</em></MenuItem>
+              <option value={undefined}>Any length</option>
               {timeBuckets}
-            </Select>
+            </NativeSelect>
           </FormControl>
           <FormControl className="selectfield halfRight">
             <InputLabel htmlFor="maxtimeminutes">Maximum time</InputLabel>
-            <Select
+            <NativeSelect
               inputProps={{
                 id: 'maxtimeminutes',
               }}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('maxtimeminutes', e.target.value)}
               value={this.state.maxtimeminutes}
             >
-              <MenuItem value={undefined}><em>Any length</em></MenuItem>
+              <option value={undefined}>Any length</option>
               {timeBuckets}
-            </Select>
+            </NativeSelect>
           </FormControl>
           <FormControl className="selectfield halfLeft">
             <InputLabel htmlFor="age">Recency</InputLabel>
-            <Select
+            <NativeSelect
               inputProps={{
                 id: 'age',
               }}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('age', e.target.value)}
               value={this.state.age}
             >
-              <MenuItem value={undefined}>All time</MenuItem>
-              <MenuItem value={31536000}>Published this year</MenuItem>
-              <MenuItem value={2592000}>Published this month</MenuItem>
-              <MenuItem value={604800}>Published this week</MenuItem>
-            </Select>
+              <option value={undefined}>All time</option>
+              <option value={31536000}>Published this year</option>
+              <option value={2592000}>Published this month</option>
+              <option value={604800}>Published this week</option>
+            </NativeSelect>
           </FormControl>
           <FormControl className="selectfield halfRight">
             <InputLabel htmlFor="language">Language</InputLabel>
-            <Select
+            <NativeSelect
               inputProps={{
                 id: 'language',
               }}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('language', e.target.value)}
               value={this.state.language}
             >
-              {LANGUAGES.map((language: string, i: number) => <MenuItem key={i} value={language}>{language}</MenuItem>)}
-            </Select>
+              {LANGUAGES.map((language: string, i: number) => <option key={i} value={language}>{language}</option>)}
+            </NativeSelect>
           </FormControl>
           <FormControl className="selectfield halfLeft">
             <InputLabel htmlFor="genre">Genre</InputLabel>
-            <Select
+            <NativeSelect
               inputProps={{
                 id: 'genre',
               }}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('genre', e.target.value)}
               value={this.state.genre}
             >
-              <MenuItem value={undefined}>All genres</MenuItem>
-              {visibleGenres.map((genre: string, i: number) => <MenuItem key={i} value={genre}>{genre}</MenuItem>)}
-            </Select>
+              <option value={undefined}>All genres</option>
+              {visibleGenres.map((genre: string, i: number) => <option key={i} value={genre}>{genre}</option>)}
+            </NativeSelect>
           </FormControl>
           <FormControl className="selectfield halfRight">
             <InputLabel htmlFor="contentrating">Content Rating</InputLabel>
-            <Select
+            <NativeSelect
               inputProps={{
                 id: 'contentrating',
               }}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('contentrating', e.target.value)}
               value={this.state.contentrating}
             >
-              <MenuItem value={undefined}>All ratings</MenuItem>
-              <MenuItem value="Kid-friendly">Kid-friendly</MenuItem>
-              <MenuItem value="Teen">Teen</MenuItem>
-              <MenuItem value="Adult">Adult</MenuItem>
-            </Select>
+              <option value={undefined}>All ratings</option>
+              <option value="Kid-friendly">Kid-friendly</option>
+              <option value="Teen">Teen</option>
+              <option value="Adult">Adult</option>
+            </NativeSelect>
           </FormControl>
           <FormControl className="selectfield halfLeft">
             <InputLabel htmlFor="requirespenpaper">Requires Pen & Paper</InputLabel>
-            <Select
+            <NativeSelect
               inputProps={{
                 id: 'requirespenpaper',
               }}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('requirespenpaper', e.target.value)}
               value={this.state.requirespenpaper}
             >
-              <MenuItem value={undefined}>No Preference</MenuItem>
-              <MenuItem value="true">Yes</MenuItem>
-              <MenuItem value="false">No</MenuItem>
-            </Select>
+              <option value={undefined}>No Preference</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </NativeSelect>
           </FormControl>
           {rating && <div className="ratingDescription">
             <span>"{this.state.contentrating}" rating means: {rating.summary}</span>
           </div>}
-          <Button onClick={() => this.props.onSearch(this.state, this.props.settings)} id="search">Search</Button>
+          <Button onClick={(e: React.FormEvent) => {this.submit(e); }} id="search">Search</Button>
         </form>
       </Card>
     );

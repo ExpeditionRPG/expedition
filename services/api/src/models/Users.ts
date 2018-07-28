@@ -17,13 +17,10 @@ export function setLootPoints(db: Database, id: string, lootPoints: number) {
 }
 
 export function incrementLoginCount(db: Database, id: string) {
-  return db.users.findOne({where: {id}})
-  .then((result) => {
-    if (result === null) {
-      throw new Error('No user with ID ' + id);
-    }
-    result.increment('loginCount');
-  });
+  return db.users.update({
+    loginCount: Sequelize.literal('login_count + 1') as any,
+    lastLogin: Sequelize.fn('NOW') as any,
+  }, { where: {id}});
 }
 
 export function getUser(db: Database, id: string): Bluebird<User> {
@@ -32,9 +29,16 @@ export function getUser(db: Database, id: string): Bluebird<User> {
 }
 
 export function subscribeToCreatorsList(mc: any, email: string) {
+  if (email === '') {
+    return null;
+  }
+
   return mc.post('/lists/' + Config.get('MAILCHIMP_CREATORS_LIST_ID') + '/members/', {
     email_address: email,
     status: 'subscribed',
+  })
+  .then((result: any) => {
+    console.log(email + ' subscribed to creators list, result: ' + result);
   });
 }
 

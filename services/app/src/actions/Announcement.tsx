@@ -1,7 +1,7 @@
 import Redux from 'redux';
 import * as semver from 'semver';
-import {AUTH_SETTINGS, URLS} from '../Constants';
-import {getAppVersion, getDevicePlatform} from '../Globals';
+import {AUTH_SETTINGS, URLS, VERSION} from '../Constants';
+import {getDevicePlatform} from '../Globals';
 import {logEvent} from '../Logging';
 import {AnnouncementSetAction, FetchAnnouncementResponse} from './ActionTypes';
 import {handleFetchErrors} from './Web';
@@ -26,7 +26,7 @@ export function handleAnnouncements(data: FetchAnnouncementResponse) {
       dispatch(setAnnouncement(true, data.message, data.link));
     } else {
       const newVersion = data.versions[getDevicePlatform()];
-      const oldVersion = getAppVersion();
+      const oldVersion = VERSION;
       if (semver.valid(newVersion) && semver.valid(oldVersion)) {
         if (semver.gt(newVersion, oldVersion)) {
           const url = URLS[getDevicePlatform()];

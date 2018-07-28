@@ -13,4 +13,6 @@ cache:
   yarn: true
   directories:
   - node_modules
+before_script:
+- yarn run build-all
 before_deploy: "pip install awscli --upgrade --user"

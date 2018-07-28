@@ -165,6 +165,11 @@ $white_on_red_text_shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
 // Base/General Styles
 // ===============================================
 
+html {
+  width: 100%;
+  height: 100%;
+}
+
 body {
   background-color: $bg_inactive;
   overflow: hidden;
@@ -176,6 +181,13 @@ body {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
+}
+
+.app_container {
+  &, & > div:not(.snackbar) {
+    height: 100%;
+    width: 100%;
+  }
 }
 
 #noscript {
@@ -367,13 +379,11 @@ span.line {
   }
 
   .base_card {
-    height: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
     background-color: $bg_primary;
     color: $font_color_primary;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
     &.card_theme_red {
       background: $bg_red_primary;
       color: $font_color_red_primary;
@@ -442,7 +452,7 @@ span.line {
         color: $font_color_primary !important;
       }
     }
-    .base_button.bigbutton > button {
+    .base_button.bigbutton button span {
       font-size: 200% !important;
       text-align: center !important;
     }
@@ -454,8 +464,7 @@ span.line {
     }
     .article {
       position: relative;
-      min-height: max-content;
-      height: 100%;
+      flex: 1;
       padding: size(base) 0;
       font-size: fontsize(flavor);
       background-image: url(images/papyrus-tiled.jpg);
@@ -463,6 +472,12 @@ span.line {
       background-position: center;
       width: 100%;
       overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+
+      // iPhone X padding fix
+      padding-bottom: constant(safe-area-inset-bottom);
+      padding-bottom: env(safe-area-inset-bottom);
 
       .scrollbox_top {
         margin-top: size(tiny);
@@ -505,6 +520,10 @@ span.line {
       height: size(appbar);
       width: 100%;
 
+      // iPhone X padding fix
+      padding-top: constant(safe-area-inset-top);
+      padding-top: env(safe-area-inset-top);
+
       > button {
         float: left;
         padding: 0 !important;
@@ -523,16 +542,11 @@ span.line {
         letter-spacing: $headerFontLetterSpacing;
 
         font-size: fontsize(title);
-        display: inline-block;
         text-align: center;
-        position: absolute;
-        top: 1px;
-        left: size(appbar);
-        right: size(appbar);
-        height: 100%;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+        margin: 0 48px;
       }
     }
     .header {
@@ -596,19 +610,23 @@ span.line {
     .stars {
       display: flex;
       justify-content: center;
+      align-items: center;
     }
     .star {
       order: 1;
-      height: size(inputsquare) !important;
+      height: size(inputsquare);
+      svg {
+        width: size(inputsquare);
+        height: size(inputsquare);
+        padding: size(inputspacing)/2; /* /2 since applied to both sides */
+      }
       button {
         min-width: 0 !important;
         height: size(inputsquare) !important;
         padding: 0 !important;
         svg {
-          width: size(input) !important;
-          height: size(input) !important;
-          padding: size(inputspacing)/2 !important; /* /2 since applied to both sides */
-          margin-top: -0.5 * size(small) !important;
+          width: size(input);
+          height: size(input);
         }
         &:hover {
           fill: black !important;
@@ -635,7 +653,6 @@ span.line {
       line-height: size(inputsquare);
       order: 2;
       padding-left: size(small);
-      margin-top: size(small);
     }
     .hint {
       color: #757575;
@@ -747,6 +764,7 @@ span.line {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
+    display: flex;
 
     &.has_footer {
       padding-bottom: size(remotefooter);
@@ -983,6 +1001,9 @@ span.line {
     .logo {
       position: absolute;
       top: size(small);
+      // iPhone X padding fix
+      top: calc(size(small) + constant(safe-area-inset-top));
+      top: calc(size(small) + env(safe-area-inset-top));
       left: size(small);
       right: size(small);
       img {
@@ -1006,10 +1027,16 @@ span.line {
     &.announcing .logo {
       // (2 text lines) + (small top & bottom padding and top margin for logo)
       top: 2 * $lineheight * fontsize(interactive) + 3 * size(base);
+      // iPhone X padding fix
+      top: calc(#{2 * $lineheight * fontsize(interactive) + 3 * size(base)} + constant(safe-area-inset-top));
+      top: calc(#{2 * $lineheight * fontsize(interactive) + 3 * size(base)} + env(safe-area-inset-top));
     }
     .announcement {
       position: absolute;
       top: 0;
+      // iPhone X padding fix
+      top: constant(safe-area-inset-top);
+      top: env(safe-area-inset-top);
       left: 0;
       right: 0;
       z-index: 9999;
@@ -1030,6 +1057,9 @@ span.line {
       text-align: center;
       position: absolute;
       bottom: size(small);
+      // iPhone X padding fix
+      bottom: calc(#{size(small)} + constant(safe-area-inset-top));
+      bottom: calc(#{size(small)} + env(safe-area-inset-top));
       left: size(base);
       right: size(base);
     }
@@ -1156,17 +1186,16 @@ span.line {
             font-size: fontsize(flavor);
           }
           .star {
-            $starSize: fontsize(flavor) + size(small);
-            margin-top: -0.5 * size(small) !important;
-            height: $starSize !important;
+            $starSize: fontsize(flavor);
+            height: $starSize;
             button {
               height: $starSize !important;
               line-height: $starSize !important;
-              svg {
-                height: $starSize !important;
-                width: $starSize !important;
-                padding: 0 !important;
-              }
+            }
+            svg {
+              height: $starSize;
+              width: $starSize;
+              padding: 0;
             }
           }
         }

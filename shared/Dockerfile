@@ -1,4 +1,4 @@
-FROM ubuntu:18.04@sha256:e7def0d56013d50204d73bb588d99e0baa7d69ea1bc1157549b898eb67287612
+FROM ubuntu:18.04@sha256:958eaeb7e33e6c4f68f7fef69b35ca178c7f5fb0dd40db7b44a8b9eb692b9bc5
 MAINTAINER Scott Martin <smartin015@gmail.com>
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 RUN apt-get update

@@ -22,8 +22,8 @@ import {searchAndPlay} from './actions/Search';
 import {changeSettings} from './actions/Settings';
 import {openSnackbar} from './actions/Snackbar';
 import {silentLogin} from './actions/User';
-import {AUTH_SETTINGS, INIT_DELAY, NODE_ENV, UNSUPPORTED_BROWSERS} from './Constants';
-import {getAppVersion, getDevicePlatform, getDocument, getNavigator, getWindow, setGA} from './Globals';
+import {AUTH_SETTINGS, INIT_DELAY, NODE_ENV, UNSUPPORTED_BROWSERS, VERSION} from './Constants';
+import {getDevicePlatform, getDocument, getNavigator, getWindow, setGA} from './Globals';
 import {getStorageBoolean} from './LocalStorage';
 import {SettingsType} from './reducers/StateTypes';
 import {getStore} from './Store';
@@ -58,7 +58,7 @@ declare module 'redux' {
 
 Raven.config(AUTH_SETTINGS.RAVEN, {
     environment: NODE_ENV,
-    release: getAppVersion(),
+    release: VERSION,
     shouldSendCallback(data) {
       const supportedBrowser = !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent);
       return supportedBrowser && NODE_ENV !== 'dev' && !getStore().getState().settings.simulator;
@@ -147,7 +147,7 @@ function setupGoogleAnalytics() {
   ReactGA.initialize('UA-47408800-9', {
     gaOptions: {
       appName: getDevicePlatform(),
-      appVersion: getAppVersion(),
+      appVersion: VERSION,
     },
     titleCase: false,
   });

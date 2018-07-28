@@ -111,7 +111,7 @@ export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialog
           <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: false})}>Expedition</Button>
           <br/>
           <br/>
-          <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: true})}><span className="line">Expedition</span> <span className="line">+ The Horror</span></Button>
+          <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: true})}><span className="line">Expedition&nbsp;</span><span className="line">+ The Horror</span></Button>
           <p style={{textAlign: 'center', marginTop: '1.5em'}}>This will only appear once, but you can always change it in Settings.</p>
           <p style={{textAlign: 'center', marginTop: '1.5em'}}>Don't have the cards? <strong><a href="#" onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>Get a copy</a></strong>.</p>
         </DialogContent>

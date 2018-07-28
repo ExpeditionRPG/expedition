@@ -1,3 +1,8 @@
+// This does not use the shared webpack config
+// Because it is an entirely different use case
+// Most importantly - because it is deployed on Heroku
+// which has memory constraints and does not benefit from minification, etc
+
 const Path = require('path');
 const Webpack = require('webpack');
 
@@ -40,11 +45,6 @@ const options = {
     minimize: false,
   },
   externals: {'pg': "require('pg')", 'sqlite3': "require('sqlite3')", 'tedious': "require('tedious')", 'pg-hstore': "require('pg-hstore')"},
-  plugins: [
-    new Webpack.DefinePlugin({
-      VERSION: JSON.stringify(require('./package.json').version)
-    }),
-  ],
 };
 
 module.exports = options;

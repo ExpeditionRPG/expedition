@@ -66,11 +66,6 @@ window.onbeforeunload = () => {
   return null;
 };
 
-// override app analytics - don't report while dev'ing
-window.FirebasePlugin = {
-  logEvent: console.log,
-};
-
 render(
   <MuiThemeProvider theme={theme}>
     <Provider store={store}>

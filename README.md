@@ -1,16 +1,14 @@
-# Expedition
+# Expedition [![Build Status](https://travis-ci.org/ExpeditionRPG/expedition.svg?branch=master)](https://travis-ci.org/ExpeditionRPG/expedition) [![Open Source Helpers](https://www.codetriage.com/expeditionrpg/expedition/badges/users.svg)](https://www.codetriage.com/expeditionrpg/expedition)
 
-[![Build Status](https://travis-ci.org/ExpeditionRPG/expedition.svg?branch=master)](https://travis-ci.org/ExpeditionRPG/expedition)
-
-The Expedition monorepo.
+Contains all of the code for the [Expedition App](https://app.expeditiongame.com/), [Quest Creator](https://quests.expeditiongame.com/) and [Card Creator](https://cards.expeditiongame.com/).
 
 ## Contributing
 
-Contributions welcome! Earn [loot points](https://expeditiongame.com/loot) while practicing your coding skills on the bleeding edge of web. If you're new to any of our tools or libraries, don't worry - we're happy to help and answer questions!
+Contributions welcome! Earn [loot points](https://expeditiongame.com/loot) while practicing your coding skills on the bleeding edge of web technologies. If you're new to any of our tools or libraries, don't worry - we're happy to help and answer questions!
 
 Not sure what to work on? Check out our [open issues](https://github.com/ExpeditionRPG/expedition/issues), especially those labeled with `help wanted`.
 
-### Repository structure
+### Repository layout
 
 All shared code goes in `/shared`, all deployed code goes in `/services.` Code in services can only reference shared code, and should not reference other services.
 
@@ -18,17 +16,23 @@ All shared code goes in `/shared`, all deployed code goes in `/services.` Code i
 
 ### Setup
 
-Install Node 8.11.3 using [NVM](https://github.com/creationix/nvm)
+Expedition requires a unix-based system like OSX or Linux. If you are on Windows, you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-Install global dependencies: `npm install -g yarn cordova webpack@4 webpack-cli@3 webpack-dev-server@3`
+Install Node 8.11.3 using [NVM](https://github.com/creationix/nvm) `nvm install 8.11.3 --latest-npm`
 
-Install local dependencies: `yarn run setup`
+Install yarn globally: `npm install -g yarn`
+
+Install Chrome (if not already installed)
+
+Install local dependencies: `yarn`
 
 Run the tests to make sure everything's working: `yarn test`
 
-#### TEMPORARY SETUP NOTES
+### Setup Notes & Help
 
-While we continue to consolidate the monorepo, you'll also need to run `npm install -g karma-cli`
+To build the Cordova app, you may need to install other global dependencies: `npm install -g cordova webpack@4 webpack-cli@3 webpack-dev-server@3 karma-cli`
+
+Chrome is used for headless browser testing. [How to install Chrome on WSL/Ubunutu cli](https://askubuntu.com/a/510186)
 
 ### Running the code
 
@@ -43,6 +47,10 @@ For the services that depend on the API server, you can also run them against a 
 Linting is run automatically to verify each commit; tests are run automatically to verify each push.
 
 Linting errors? `yarn run lint --fix` fixes most common linting issues automatically. For alphabetization issues, in Sublime Text you can select multiple lines of text then hit `F5` to auto-sort them.
+
+### Renovate
+
+We use a Github bot called Renovate to keep our dependencies from getting stale. It automatically opens new PR's each time a dependency has a major version bump. In general, if the CI passes, it's probably safe to merge... but if you ever need to pull a branch down for local testing or changes, you can run `git checkout origin/renovate/<BRANCH NAME>`, and then `git push origin HEAD:renovate/<BRANCH NAME>` to push your changes back to the branch.
 
 ## Questions?
 

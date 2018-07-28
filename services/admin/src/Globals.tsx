@@ -2,18 +2,12 @@ declare var device: any;
 declare var ga: any;
 declare var gapi: any;
 
-const PACKAGE = require('../package.json');
-
 export interface ReactDocument extends Document {
   addEventListener: (e: string, f: (this: any, ev: MouseEvent) => any, useCapture?: boolean) => void;
   dispatchEvent: (e: Event) => boolean;
 }
 
 export interface ReactWindow extends Window {
-  FirebasePlugin?: {
-    onTokenRefresh: (success: (token: string) => any, failure: (error: string) => any) => void,
-    logEvent: (name: string, args: any) => any,
-  };
   Promise?: any;
 }
 declare var window: ReactWindow;
@@ -54,8 +48,4 @@ export function getGA(): any {
 
 export function getGapi(): any {
   return refs.gapi;
-}
-
-export function getAppVersion(): string {
-  return PACKAGE.version;
 }
