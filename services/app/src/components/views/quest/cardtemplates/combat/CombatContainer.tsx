@@ -8,10 +8,7 @@ import {getMultiplayerClient} from '../../../../../Multiplayer';
 import {EventParameters} from '../../../../../reducers/QuestTypes';
 import {AppStateWithHistory, SettingsType} from '../../../../../reducers/StateTypes';
 import {getStore} from '../../../../../Store';
-import {
-  handleDecisionRoll,
-  handleDecisionSelect,
-} from '../decision/Actions';
+import {handleDecisionSelect} from '../decision/Actions';
 import {EMPTY_DECISION_STATE, LeveledSkillCheck} from '../decision/Types';
 import {ParserNode} from '../TemplateTypes';
 import {
@@ -22,12 +19,17 @@ import {
   handleCombatTimerStart,
   handleCombatTimerStop,
   handleResolvePhase,
-  midCombatChoice,
-  setupCombatDecision,
   tierSumDelta,
-  toDecisionCard
 } from './Actions';
 import Combat, {CombatDispatchProps, CombatStateProps} from './Combat';
+import {
+  handleCombatDecisionRoll,
+  setupCombatDecision,
+  toDecisionCard,
+} from './decision/Actions';
+import {
+  midCombatChoice,
+} from './roleplay/Actions';
 import {CombatPhase, CombatState} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps): CombatStateProps => {
@@ -110,8 +112,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Comba
       dispatch(toCard({name: 'QUEST_CARD', phase: 'PREPARE'}));
     },
     onDecisionRoll: (node: ParserNode, roll: number) => {
-      dispatch(handleDecisionRoll({node, roll}));
-      // TODO dispatch(toDecisionCard({phase: 'RESOLVE_DECISION', numOutcomes: decision.outcomes.length}));
+      dispatch(handleCombatDecisionRoll({node, roll}));
     },
     onDecisionTimerStart: () => {
       dispatch(toDecisionCard({phase: 'DECISION_TIMER'}));

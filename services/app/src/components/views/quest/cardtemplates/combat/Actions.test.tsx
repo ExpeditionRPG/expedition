@@ -3,7 +3,18 @@ import {DifficultyType, FontSizeType, MultiplayerState} from '../../../../../red
 import {Action, newMockStore} from '../../../../../Testing';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
-import {adventurerDelta, handleCombatEnd, handleCombatTimerStop, handleResolvePhase, initCombat, initCustomCombat, isSurgeNextRound, midCombatChoice, roundTimeMillis, tierSumDelta} from './Actions';
+import {
+  adventurerDelta,
+  handleCombatEnd,
+  handleCombatTimerStop,
+  handleResolvePhase,
+  initCombat,
+  initCustomCombat,
+  isSurgeNextRound,
+  roundTimeMillis,
+  tierSumDelta
+} from './Actions';
+import {midCombatChoice} from './roleplay/Actions';
 
 const cheerio: any = require('cheerio');
 

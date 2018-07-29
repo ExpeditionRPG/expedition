@@ -11,14 +11,10 @@ import {ENCOUNTERS} from '../../../../../Encounters';
 import {Enemy, Loot} from '../../../../../reducers/QuestTypes';
 import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
 import {getStore} from '../../../../../Store';
-import {generateDecisionTemplate} from '../decision/Actions';
-import {getRandomScenarioXML} from '../decision/Scenarios';
-import {DecisionPhase} from '../decision/Types';
 import {numLocalAndMultiplayerAdventurers, numLocalAndMultiplayerPlayers} from '../MultiplayerPlayerCount';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
-import {CombatState} from './Types';
-import {CombatAttack, CombatDifficultySettings} from './Types';
+import {CombatAttack, CombatDifficultySettings, CombatState} from './Types';
 
 const cheerio: any = require('cheerio');
 
@@ -49,63 +45,6 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
     ...getDifficultySettings(settings.difficulty),
   };
 }
-
-interface ToDecisionCardArgs {
-  node?: ParserNode;
-  numOutcomes?: number;
-  phase: DecisionPhase;
-  settings?: SettingsType;
-}
-export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCardArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ToDecisionCardArgs {
-  if (!a.node) {
-    a.node = getState().quest.node;
-  }
-  a.node = a.node.clone();
-  let combat = a.node.ctx.templates.combat;
-  if (!combat) {
-    if (!a.settings) {
-      a.settings = getState().settings;
-    }
-    combat = generateCombatTemplate(a.settings, false, a.node, getState);
-    a.node.ctx.templates.combat = combat;
-  }
-  combat.decisionPhase = a.phase;
-
-  // Clear out the decision state if going to the prepare page
-  if (a.phase === 'PREPARE_DECISION') {
-    a.node.ctx.templates.decision = undefined;
-  }
-
-  dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_DECISION', keySuffix: a.phase + ((a.numOutcomes !== undefined) ? a.numOutcomes.toString() : '')}));
-  return {
-    numOutcomes: a.numOutcomes,
-    phase: a.phase,
-  };
-});
-
-interface SetupCombatDecisionArgs {
-  rp?: MultiplayerState;
-  node?: ParserNode;
-  seed: string;
-}
-export const setupCombatDecision = remoteify(function setupCombatDecision(a: SetupCombatDecisionArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): SetupCombatDecisionArgs {
-  if (!a.node) {
-    a.node = getState().quest.node;
-  }
-  a.node = a.node.clone();
-
-  if (!a.rp) {
-    a.rp = getState().multiplayer;
-  }
-
-  const settings = getState().settings;
-  const scenarioNode = new ParserNode(getRandomScenarioXML(a.seed), a.node.ctx);
-  a.node.ctx.templates.decision = generateDecisionTemplate(numLocalAndMultiplayerAdventurers(settings, a.rp), scenarioNode);
-
-  dispatch(toDecisionCard({phase: 'PREPARE_DECISION'}));
-  return {seed: a.seed};
-});
 
 interface InitCombatArgs {
   node: ParserNode;
@@ -462,85 +401,6 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
   dispatch(toCard({name: 'QUEST_CARD', phase: (a.victory) ? 'VICTORY' : 'DEFEAT',  overrideDebounce: true, noHistory: true}));
   dispatch(audioSet({intensity: 0}));
   return {victory: a.victory, maxTier: a.maxTier, seed: a.seed};
-});
-
-function findCombatParent(node: ParserNode) {
-  let elem = node && node.elem;
-  while (elem !== null && elem.length > 0 && elem.get(0).tagName.toLowerCase() !== 'combat') {
-    elem = elem.parent();
-  }
-  return elem;
-}
-
-interface MidCombatChoiceArgs {
-  index: number;
-  maxTier: number;
-  node?: ParserNode;
-  seed: string;
-  settings?: SettingsType;
-}
-export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatChoiceArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): MidCombatChoiceArgs {
-  if (!a.node || !a.settings) {
-    a.node = getState().quest.node;
-    a.settings = getState().settings;
-  }
-  const remoteArgs: MidCombatChoiceArgs = {index: a.index, seed: a.seed, maxTier: a.maxTier};
-  const parentCombatElem = findCombatParent(a.node);
-  const nextNode = a.node.handleAction(a.index);
-  const next = a.node.getNext(a.index);
-  let nextIsInSameCombat = false;
-  if (nextNode && next) {
-    const nextParentCombatElem = findCombatParent(nextNode);
-    nextIsInSameCombat = (nextParentCombatElem && nextParentCombatElem.length > 0) && parentCombatElem.attr('data-line') === nextParentCombatElem.attr('data-line');
-
-    // Check for and resolve triggers
-    const nextIsTrigger = (next && next.getTag() === 'trigger');
-    if (nextIsTrigger) {
-      const triggerName = next.elem.text().trim().toLowerCase();
-      if (triggerName.startsWith('goto') && nextIsInSameCombat) {
-        // If we jump to somewhere in the same combat,
-        // it's handled like a normal combat RP choice change (below).
-      } else if (next.isEnd()) {
-        // Treat quest end as normal
-        dispatch(endQuest({}));
-        return remoteArgs;
-      } else {
-        // If the trigger exits via the win/lose handlers, go to the appropriate
-        // combat end card
-        const parentCondition = nextNode.elem.parent().attr('on');
-        if (parentCondition === 'win' || parentCondition === 'lose') {
-          dispatch(handleCombatEnd({
-            maxTier: a.maxTier,
-            node: new ParserNode(parentCombatElem, a.node.ctx),
-            seed: a.seed,
-            settings: a.settings,
-            victory: (parentCondition === 'win'),
-          }));
-          return remoteArgs;
-        } else {
-          // Otherwise, treat like a typical event trigger.
-          // Make sure we stop combat audio since we're exiting this combat.
-          dispatch(loadNode(nextNode));
-          dispatch(audioSet({intensity: 0}));
-          return remoteArgs;
-        }
-      }
-    }
-  }
-
-  if (nextIsInSameCombat) {
-    // Continue in-combat roleplay with the next node.
-    dispatch({type: 'PUSH_HISTORY'});
-    dispatch({type: 'QUEST_NODE', node: nextNode} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_ROLEPLAY', overrideDebounce: true, noHistory: true}));
-  } else {
-    // If the next node is out of this combat, that means we've dropped off the end of the
-    // interestitial roleplay. Go back to combat resolution phase.
-    dispatch({type: 'PUSH_HISTORY'});
-    dispatch({type: 'QUEST_NODE', node: new ParserNode(parentCombatElem, a.node.ctx)} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true, noHistory: true}));
-  }
-  return remoteArgs;
 });
 
 interface TierSumDeltaArgs {

@@ -20,7 +20,12 @@ export const initDecision = remoteify(function initDecision(a: InitDecisionArgs,
 
   a.node = a.node.clone();
   const settings = getState().settings;
-  a.node.ctx.templates.decision = generateDecisionTemplate(numLocalAndMultiplayerAdventurers(settings, a.rp), a.node);
+  const leveledChecks = parseDecisionChecks(numLocalAndMultiplayerAdventurers(settings, a.rp), a.node);
+  a.node.ctx.templates.decision = {
+    leveledChecks,
+    selected: null,
+    rolls: [],
+  };
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
   dispatch(toCard({name: 'QUEST_CARD', phase: 'PREPARE_DECISION', noHistory: true}));
@@ -51,45 +56,16 @@ export function computeOutcome(rolls: number[], selected: LeveledSkillCheck, set
   return outcome;
 }
 
-// const NUM_SKILL_CHECK_CHOICES = 3;
-// Generate 3 random combinations of difficulty, skill, and persona.
-// Only 2 of the 3 fields will be available.
-export function generateChecks(settings: SettingsType, rng: () => number, maxAllowedAttempts?: number): LeveledSkillCheck[] {
-  const result: LeveledSkillCheck[] = [];
-
-  // TODO Make less dumb
-  /*
-  // TODO: Also randomly choose dark.
-  // TODO: Also propagate hardness
-  // const choosable = SCENARIOS[a.decision.skill][a.decision.persona || ((arng() > 0.5) ? 'Light' : 'Dark')];
-  // decision.scenario = choosable[Math.floor(arng() * choosable.length)];
-
-  const selection = [[0, 1, 1], [1, 0, 1]][Math.floor(rng() * 2)];
-
-  while (result.length < NUM_SKILL_CHECK_CHOICES) {
-    const maxAttempts = Math.min(maxAllowedAttempts || 999, 3);
-    const minAttempts = 1;
-
-    const gen = {
-      difficulty: (selection[0]) ? DIFFICULTIES[Math.floor(rng() * DIFFICULTIES.length)] : null,
-      numAttempts: Math.min(settings.numPlayers, Math.floor(rng() * (maxAttempts - minAttempts + 1) + minAttempts)),
-      persona: (selection[1]) ? PERSONA_TYPES[Math.floor(rng() * PERSONA_TYPES.length)] : null,
-      skill: SKILL_TYPES[Math.floor(rng() * SKILL_TYPES.length)],
-    };
-
-    // Throw the generated one away if it exactly matches a result we've already generated
-    for (const r of result) {
-      if (r.difficulty === gen.difficulty && r.persona === gen.persona && r.skill === gen.skill) {
-        continue;
-      }
-    }
-    result.push(gen);
-  }
-  */
-  return result;
+export function generateLeveledChecks(numTotalAdventurers: number): LeveledSkillCheck[] {
+  // TODO
+  return [
+    {persona: 'light', skill: 'athletics', difficulty: 'medium', requiredSuccesses: numTotalAdventurers},
+    {persona: 'light', skill: 'athletics', difficulty: 'medium', requiredSuccesses: numTotalAdventurers},
+    {persona: 'light', skill: 'athletics', difficulty: 'medium', requiredSuccesses: numTotalAdventurers},
+  ];
 }
 
-export function generateDecisionTemplate(numTotalAdventurers: number, node?: ParserNode): DecisionState {
+export function parseDecisionChecks(numTotalAdventurers: number, node?: ParserNode): LeveledSkillCheck[] {
   const checks: SkillCheck[] = [];
   if (node) {
     node.loopChildren((tag, c) => {
@@ -106,16 +82,9 @@ export function generateDecisionTemplate(numTotalAdventurers: number, node?: Par
     });
   }
 
-  // TODO: limit num checks
-  const leveledChecks = checks.map((c: SkillCheck): LeveledSkillCheck => {
+  return checks.map((c: SkillCheck): LeveledSkillCheck => {
     return {...c, difficulty: 'medium', requiredSuccesses: numTotalAdventurers};
   });
-
-  return {
-    leveledChecks,
-    selected: null,
-    rolls: [],
-  };
 }
 
 export function skillTimeMillis(settings: SettingsType, rp?: MultiplayerState) {
@@ -149,16 +118,10 @@ export const handleDecisionSelect = remoteify(function handleDecisionSelect(a: H
   };
 });
 
-interface HandleDecisionRollArgs {
-  node?: ParserNode;
-  roll: number;
-}
-export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: HandleDecisionRollArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): HandleDecisionRollArgs|null {
-  if (!a.node) {
-    a.node = getState().quest.node;
-  }
-  a.node = a.node.clone();
-  const decision = a.node.ctx.templates.decision;
+// Pushes the roll value onto the given node, returning a string
+// event name if such an event exists on the node.
+export function pushDecisionRoll(node: ParserNode, roll: number, getState: () => AppStateWithHistory): string|null {
+  const decision = node.ctx.templates.decision;
   if (!decision) {
     return null;
   }
@@ -167,7 +130,7 @@ export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: Handl
     return null;
   }
 
-  decision.rolls.push(a.roll);
+  decision.rolls.push(roll);
 
   // Based on the outcome, navigate to a roleplay card
   const settings = getState().settings;
@@ -181,7 +144,7 @@ export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: Handl
     let targetCheck: SkillCheck|null = null;
     let targetText: string|null = null;
 
-    a.node.loopChildren((tag, c) => {
+    node.loopChildren((tag, c) => {
       if (tag !== 'event') {
         return;
       }
@@ -217,17 +180,30 @@ export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: Handl
     });
 
     if (targetText) {
-      dispatch(event({node: a.node, evt: targetText}));
-      return {
-        roll: a.roll,
-      };
+      return targetText;
     }
   }
+  return null;
+}
 
-  dispatch({type: 'PUSH_HISTORY'});
-  dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_DECISION', noHistory: true, keySuffix: Date.now().toString()}));
+interface HandleDecisionRollArgs {
+  node?: ParserNode;
+  roll: number;
+}
+export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: HandleDecisionRollArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): HandleDecisionRollArgs|null {
+  if (!a.node) {
+    a.node = getState().quest.node;
+  }
+  a.node = a.node.clone();
 
+  const targetText = pushDecisionRoll(a.node, a.roll, getState);
+  if (targetText) {
+    dispatch(event({node: a.node, evt: targetText}));
+  } else {
+    dispatch({type: 'PUSH_HISTORY'});
+    dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_DECISION', noHistory: true, keySuffix: Date.now().toString()}));
+  }
   return {
     roll: a.roll,
   };

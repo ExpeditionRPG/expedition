@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {REGEX} from 'shared/Regex';
-import {MAX_ADVENTURER_HEALTH} from '../../../../../Constants';
+import {Outcome} from 'shared/schema/templates/Decision';
+import {MAX_ADVENTURER_HEALTH, NODE_ENV} from '../../../../../Constants';
 import {Enemy, EventParameters, Loot} from '../../../../../reducers/QuestTypes';
 import {CardState, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
 import AudioControlsContainer from '../../../../base/AudioControlsContainer';
@@ -9,6 +10,7 @@ import Callout from '../../../../base/Callout';
 import Card from '../../../../base/Card';
 import Picker from '../../../../base/Picker';
 import TimerCard from '../../../../base/TimerCard';
+import {computeOutcome} from '../decision/Actions';
 import Decision from '../decision/Decision';
 import {DecisionState, LeveledSkillCheck} from '../decision/Types';
 import Roleplay from '../roleplay/Roleplay';
@@ -284,8 +286,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
 
   let shouldRunDecision = false;
   if (props.settings.experimental) {
-    shouldRunDecision = false; // TODO once combat decisions are fixed:
-    // (NODE_ENV === 'dev') && (props.combat.roundCount % 5 === 0 || props.combat.roundCount % 5 === 3); // TODO CHANGE
+    shouldRunDecision = (NODE_ENV === 'dev'); // && (props.combat.roundCount % 5 === 0 || props.combat.roundCount % 5 === 3);
   }
 
   let helpText: JSX.Element = (<span></span>);
@@ -472,6 +473,32 @@ function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
 
 function renderMidCombatDecision(props: CombatProps): JSX.Element {
   const decision = props.decision;
+
+  if (decision.selected) {
+    const outcome = computeOutcome(decision.rolls, decision.selected, props.settings, props.multiplayerState);
+    if (outcome === Outcome.success) {
+      return (
+        <Card title="Success!" theme="dark" inQuest={true}>
+          <p>TODO</p>
+          <Button onClick={() => props.onNext('PREPARE')}>Next</Button>
+        </Card>
+      );
+    } else if (outcome === Outcome.failure) {
+      return (
+        <Card title="Failure!" theme="dark" inQuest={true}>
+          <p>TODO</p>
+          <Button onClick={() => props.onNext('PREPARE')}>Next</Button>
+        </Card>
+      );
+    } else if (outcome === Outcome.interrupted) {
+      return (
+        <Card title="Interrupted!" theme="dark" inQuest={true}>
+          <p>TODO</p>
+          <Button onClick={() => props.onNext('PREPARE')}>Next</Button>
+        </Card>
+      );
+    }
+  }
 
   return Decision({
     card: {...props.card, phase: props.combat.decisionPhase},

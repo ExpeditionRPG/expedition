@@ -18,11 +18,10 @@ export interface MidCombatPhase {
   enemies: Enemy[];
   mostRecentAttack?: CombatAttack;
   mostRecentRolls?: number[];
-  decisionPhase: DecisionPhase;
   numAliveAdventurers: number;
   roundCount: number;
   tier: number;
-  roleplay?: ParserNode;
+  decisionPhase: DecisionPhase;
 }
 
 export interface EndCombatPhase {

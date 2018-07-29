@@ -43,14 +43,3 @@ export const EMPTY_DECISION_STATE: DecisionState = {
   selected: null,
   rolls: [],
 };
-
-export interface ScenarioContent {text: string; instructions: string[]; }
-export interface ScenarioCheck extends SkillCheck, Partial<Record<keyof typeof Outcome, ScenarioContent>> {}
-export interface Scenario {
-  prelude: string;
-  checks: ScenarioCheck[];
-  retry?: ScenarioContent;
-  success?: ScenarioContent;
-  failure?: ScenarioContent;
-  interrupted?: ScenarioContent;
-}
