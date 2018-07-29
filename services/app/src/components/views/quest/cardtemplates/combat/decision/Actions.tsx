@@ -17,7 +17,6 @@ import {numLocalAndMultiplayerAdventurers, numLocalAndMultiplayerPlayers} from '
 import {defaultContext} from '../../Template';
 import {ParserNode} from '../../TemplateTypes';
 import {CombatAttack, CombatDifficultySettings, CombatState} from '../Types';
-import {getRandomScenarioXML} from './Scenarios';
 
 function resolveParams(node: ParserNode|undefined, getState: () => AppStateWithHistory): {node: ParserNode, decision: DecisionState, combat: CombatState} {
   node = (node && node.clone()) || getState().quest.node.clone();
@@ -37,7 +36,6 @@ export const setupCombatDecision = remoteify(function setupCombatDecision(a: Set
   const {node, combat} = resolveParams(a.node, getState);
   const settings = getState().settings;
   const rp = getState().multiplayer;
-  const decisionNode = new ParserNode(getRandomScenarioXML(a.seed), node.ctx);
   combat.decisionPhase = 'PREPARE_DECISION';
   node.ctx.templates.decision = {
     leveledChecks: generateLeveledChecks(numLocalAndMultiplayerAdventurers(settings, rp)),

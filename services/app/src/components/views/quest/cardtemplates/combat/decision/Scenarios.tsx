@@ -96,36 +96,4 @@ const SCENARIOS: ScenarioCheck[] = [
   },
 ];
 
-const genericInterrupted = 'interrupted!';
-const genericRetry = 'Try again';
-
-export function getRandomScenarioXML(seed: string) {
-  const arng = seedrandom.alea(seed);
-  const idxs: number[] = [];
-  while (idxs.length < 3) {
-    let n = Math.floor(arng() * SCENARIOS.length);
-    while (idxs.indexOf(n) !== -1) {
-      n = (n + 1) % SCENARIOS.length;
-    }
-    idxs.push(n);
-  }
-  let checkXML = '';
-  for (const i of idxs) {
-    const c = SCENARIOS[i];
-    const success = c.success;
-    if (!success) {
-      continue;
-    }
-    checkXML += `<event on="${c.persona} ${c.skill}"><p></p><instruction>${success[0]}</instruction></event>\n`;
-  }
-  return cheerio.load(`
-    <decision>
-      <p></p>
-      ${checkXML}
-      <event on="interrupted">${genericInterrupted}</event>
-      <event on="retry">${genericRetry}</event>
-    </decision>
-  `)('decision');
-}
-
 export default SCENARIOS;
