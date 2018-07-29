@@ -184,7 +184,7 @@ body {
 }
 
 .app_container {
-  &, & > div:not(.snackbar) {
+  &, & > div:first-child {
     height: 100%;
     width: 100%;
   }
