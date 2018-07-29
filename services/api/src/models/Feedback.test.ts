@@ -50,6 +50,7 @@ describe('feedback', () => {
           expect(msSendSpy).toHaveBeenCalledWith([FabricateFeedbackEmail], jasmine.any(String), jasmine.any(String));
           // Quest info is resolved
           expect(msSendSpy.calls.first().args[2]).toContain('Test Quest');
+          expect(msSendSpy.calls.first().args[2]).toContain(fb.basic.questline);
           done();
         })
         .catch(done.fail);
@@ -79,6 +80,7 @@ describe('feedback', () => {
           expect(msSendSpy).toHaveBeenCalledWith([FabricateReportQuestEmail], jasmine.any(String), jasmine.any(String));
           expect(msSendSpy.calls.first().args[2]).toContain(fb.report.email);
           expect(msSendSpy.calls.first().args[2]).toContain(fb.report.questid);
+          expect(msSendSpy.calls.first().args[2]).toContain(fb.report.questline);
           done();
         })
         .catch(done.fail);
