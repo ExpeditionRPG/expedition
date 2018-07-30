@@ -31,5 +31,8 @@
       "ios"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "cordova-android": "^7.1.1",
+    "cordova-ios": "^4.5.5"
+  }
 }

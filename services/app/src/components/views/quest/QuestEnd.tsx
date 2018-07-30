@@ -66,6 +66,7 @@ export default class QuestEnd extends React.Component<QuestEndProps, {}> {
               multiline={true}
               margin="normal"
               onChange={(e: any) => this.setState({text: e.target.value})}
+              onFocus={(e: any) => e.target.scrollIntoView()}
               value={this.state.text}
             />
             <FormControlLabel

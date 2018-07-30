@@ -113,11 +113,11 @@ export class UserDetailsDialog extends React.Component<UserDetailsDialogProps, {
     };
   }
 
-  public handleLootChange = (event: React.FormEvent<HTMLInputElement>) => {
-    if (event.currentTarget.value === '') {
+  public handleLootChange = (value: string) => {
+    if (value === '') {
       return this.setState({new_loot: null});
     }
-    const parsed = parseInt(event.currentTarget.value, 10);
+    const parsed = parseInt(value, 10);
     if (isNaN(parsed)) {
       return;
     }
@@ -138,7 +138,11 @@ export class UserDetailsDialog extends React.Component<UserDetailsDialogProps, {
             <p>Name: {this.props.user.name}</p>
             <p>Email: {this.props.user.email}</p>
             <p>Loot points: {this.props.user.loot_points}</p>
-            <TextField id="new_loot" value={this.state.new_loot || ''} onChange={this.handleLootChange} />
+            <TextField
+              id="new_loot"
+              value={this.state.new_loot || ''}
+              onChange={(e: any) => this.handleLootChange(e.target.value)}
+            />
             <Button onClick={() => {
               if (this.state.new_loot) {
                 this.props.onSetUserLootPoints(this.props.user, this.state.new_loot);

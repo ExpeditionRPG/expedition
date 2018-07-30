@@ -88,6 +88,7 @@ export class SearchSettingsCard extends React.Component<SearchSettingsCardProps,
               fullWidth={true}
               label="text search - title, author, ID"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.onChange('text', e.target.value)}
+              onFocus={(e: any) => e.target.scrollIntoView()}
               value={this.state.text}
             />
           </FormControl>
