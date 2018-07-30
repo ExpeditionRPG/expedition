@@ -156,6 +156,7 @@ class TextAreaDialog<T extends TextAreaDialogProps> extends React.Component<T, {
             helperText={this.helperText}
             multiline={true}
             onChange={(e: any) => this.setState({text: e.target.value})}
+            onFocus={(e: any) => e.target.scrollIntoView()}
             rows={3}
             rowsMax={6}
             value={this.state.text}
