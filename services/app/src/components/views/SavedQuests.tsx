@@ -24,7 +24,7 @@ interface GroupedQuestSave extends SavedQuestMeta {
 const SavedQuests = (props: SavedQuestsProps): JSX.Element => {
   if (props.saved.length === 0) {
     return (
-      <Card title="Saved & Offline">
+      <Card title="Saved & Offline Quests">
         <p>You have no saved/offline quests.</p>
         <p>To save your position in a quest, open the top right menu while playing
            and select "Save Quest".</p>
@@ -81,7 +81,7 @@ const SavedQuests = (props: SavedQuestsProps): JSX.Element => {
   });
 
   return (
-    <Card title="Saved & Offline">
+    <Card title="Saved & Offline Quests">
       <h3>Saved Quests</h3>
       {groupedQuestSaves}
       <h3>Offline Quests</h3>
