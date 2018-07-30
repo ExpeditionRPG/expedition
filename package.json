@@ -101,7 +101,7 @@
     "query-string": "^6.0.0",
     "raven-js": "^3.26.2",
     "react": "^16.4.0",
-    "react-ace": "^4.1.6",
+    "react-ace": "^6.0.0",
     "react-dom": "^16.4.0",
     "react-ga": "^2.3.6",
     "react-hot-loader": "~4.3.0",
