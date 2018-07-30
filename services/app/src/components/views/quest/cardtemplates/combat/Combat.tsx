@@ -16,6 +16,7 @@ import {DecisionState, LeveledSkillCheck} from '../decision/Types';
 import Roleplay from '../roleplay/Roleplay';
 import {ParserNode} from '../TemplateTypes';
 import {isSurgeNextRound, roundTimeMillis} from './Actions';
+import {getScenarioInstruction} from './decision/Scenarios';
 import {CombatPhase, CombatState} from './Types';
 
 export interface CombatStateProps {
@@ -476,24 +477,19 @@ function renderMidCombatDecision(props: CombatProps): JSX.Element {
 
   if (decision.selected) {
     const outcome = computeOutcome(decision.rolls, decision.selected, props.settings, props.multiplayerState);
-    if (outcome === Outcome.success) {
+
+    // Short-circuit the regular decision logic if we end up with a final outcome
+    // TODO: this flickers due to rng when back button is pressed
+    if (outcome !== null && outcome !== Outcome.retry) {
+      const instruction = getScenarioInstruction(decision.selected, outcome, props.seed);
+      const title = ({
+        [Outcome.success]: 'Success!',
+        [Outcome.failure]: 'Failure!',
+        [Outcome.interrupted]: 'Interrupted!',
+      } as Record<keyof typeof Outcome, string>)[outcome];
       return (
-        <Card title="Success!" theme="dark" inQuest={true}>
-          <p>TODO</p>
-          <Button onClick={() => props.onNext('PREPARE')}>Next</Button>
-        </Card>
-      );
-    } else if (outcome === Outcome.failure) {
-      return (
-        <Card title="Failure!" theme="dark" inQuest={true}>
-          <p>TODO</p>
-          <Button onClick={() => props.onNext('PREPARE')}>Next</Button>
-        </Card>
-      );
-    } else if (outcome === Outcome.interrupted) {
-      return (
-        <Card title="Interrupted!" theme="dark" inQuest={true}>
-          <p>TODO</p>
+        <Card title={title} theme="dark" inQuest={true}>
+          <Callout icon="adventurer_white">{instruction}</Callout>
           <Button onClick={() => props.onNext('PREPARE')}>Next</Button>
         </Card>
       );
