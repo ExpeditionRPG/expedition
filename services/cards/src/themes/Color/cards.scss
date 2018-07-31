@@ -615,7 +615,7 @@ $large-icon-width: 0.195in;
 
   .card.back.-Title {
     &.title-Horror:before {
-      background-image: url(../../../../shared/images/cards/backs/TitleCardHorror.jpg) !important;
+      background-image: url(../../../../shared/images/cards/back-TitleCardHorror.jpg) !important;
     }
   }
 
@@ -631,52 +631,52 @@ $large-icon-width: 0.195in;
       }
     }
     &.title-Horror:before {
-      background-image: url(../../../../shared/images/cards/fronts/TitleCardHorror.jpg) !important;
+      background-image: url(../../../../shared/images/cards/front-TitleCardHorror.jpg) !important;
     }
   }
 
   .card.front.Ability { &:before {
-    background-image: url(../../../../shared/images/cards/fronts/ability.jpg) !important;
+    background-image: url(../../../../shared/images/cards/front-ability.jpg) !important;
   }}
   .card.back.Influence { &:before {
-    background-image: url(../../../../shared/images/cards/backs/ability-influence.jpg) !important;
+    background-image: url(../../../../shared/images/cards/back-ability-influence.jpg) !important;
   }}
   .card.back.Magic { &:before {
-    background-image: url(../../../../shared/images/cards/backs/ability-magic.jpg) !important;
+    background-image: url(../../../../shared/images/cards/back-ability-magic.jpg) !important;
   }}
   .card.back.Melee { &:before {
-    background-image: url(../../../../shared/images/cards/backs/ability-melee.jpg) !important;
+    background-image: url(../../../../shared/images/cards/back-ability-melee.jpg) !important;
   }}
   .card.back.Music { &:before {
-    background-image: url(../../../../shared/images/cards/backs/ability-music.jpg) !important;
+    background-image: url(../../../../shared/images/cards/back-ability-music.jpg) !important;
   }}
   .card.back.Ranged { &:before {
-    background-image: url(../../../../shared/images/cards/backs/ability-ranged.jpg) !important;
+    background-image: url(../../../../shared/images/cards/back-ability-ranged.jpg) !important;
   }}
 
   .card.front.Adventurer { &:before {
-    background-image: url(../../../../shared/images/cards/fronts/adventurer.jpg) !important;
+    background-image: url(../../../../shared/images/cards/front-adventurer.jpg) !important;
   }}
   .card.back.Adventurer { &:before {
-    background-image: url(../../../../shared/images/cards/backs/adventurer.jpg) !important;
+    background-image: url(../../../../shared/images/cards/back-adventurer.jpg) !important;
   }}
 
   .card.front.Helper { &:before {
-    background-image: url(../../../../shared/images/cards/fronts/helper.jpg) !important;
+    background-image: url(../../../../shared/images/cards/front-helper.jpg) !important;
   }}
   .card.back.Helper { &:before {
-    background-image: url(../../../../shared/images/cards/backs/helper.jpg) !important;
+    background-image: url(../../../../shared/images/cards/back-helper.jpg) !important;
   }}
 
   .card.front.Persona { &:before {
-    background-image: url(../../../../shared/images/cards/fronts/persona.jpg) !important;
+    background-image: url(../../../../shared/images/cards/front-persona.jpg) !important;
   }}
   .card.back.Persona { &:before {
-    background-image: url(../../../../shared/images/cards/backs/persona.jpg) !important;
+    background-image: url(../../../../shared/images/cards/back-persona.jpg) !important;
   }}
 
   .card.front.Loot { &:before {
-    background-image: url(../../../../shared/images/cards/fronts/loot.jpg) !important;
+    background-image: url(../../../../shared/images/cards/front-loot.jpg) !important;
   }}
   .card.back.Loot {
     .tier {
@@ -685,12 +685,12 @@ $large-icon-width: 0.195in;
     }
 
     &:before {
-      background-image: url(../../../../shared/images/cards/backs/loot.jpg) !important;
+      background-image: url(../../../../shared/images/cards/back-loot.jpg) !important;
     }
   }
 
   .card.front.Encounter { &:before {
-    background-image: url(../../../../shared/images/cards/fronts/encounter.jpg) !important;
+    background-image: url(../../../../shared/images/cards/front-encounter.jpg) !important;
   }}
   .card.back.Encounter {
     .tier {
@@ -703,7 +703,7 @@ $large-icon-width: 0.195in;
       color: #ec1f24;
     }
     &:before {
-      background-image: url(../../../../shared/images/cards/backs/encounter-beast.jpg) !important;
+      background-image: url(../../../../shared/images/cards/back-encounter-beast.jpg) !important;
     }
   }
   .card.back.Bandit {
@@ -711,7 +711,7 @@ $large-icon-width: 0.195in;
       color: #FEDE1A;
     }
     &:before {
-      background-image: url(../../../../shared/images/cards/backs/encounter-bandit.jpg) !important;
+      background-image: url(../../../../shared/images/cards/back-encounter-bandit.jpg) !important;
     }
   }
   .card.back.Horror {
@@ -719,7 +719,7 @@ $large-icon-width: 0.195in;
       color: #00aeef;
     }
     &:before {
-      background-image: url(../../../../shared/images/cards/backs/encounter-horror.jpg) !important;
+      background-image: url(../../../../shared/images/cards/back-encounter-horror.jpg) !important;
     }
   }
   .card.back.Fae {
@@ -727,7 +727,7 @@ $large-icon-width: 0.195in;
       color: #df3f95;
     }
     &:before {
-      background-image: url(../../../../shared/images/cards/backs/encounter-fae.jpg) !important;
+      background-image: url(../../../../shared/images/cards/back-encounter-fae.jpg) !important;
     }
   }
   .card.back.Undead {
@@ -735,7 +735,7 @@ $large-icon-width: 0.195in;
       color: #70c25e;
     }
     &:before {
-      background-image: url(../../../../shared/images/cards/backs/encounter-undead.jpg) !important;
+      background-image: url(../../../../shared/images/cards/back-encounter-undead.jpg) !important;
     }
   }
 }
