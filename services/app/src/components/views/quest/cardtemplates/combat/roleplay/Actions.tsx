@@ -11,7 +11,6 @@ import {ENCOUNTERS} from '../../../../../../Encounters';
 import {Enemy, Loot} from '../../../../../../reducers/QuestTypes';
 import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} from '../../../../../../reducers/StateTypes';
 import {getStore} from '../../../../../../Store';
-import {numLocalAndMultiplayerAdventurers, numLocalAndMultiplayerPlayers} from '../../MultiplayerPlayerCount';
 import {defaultContext} from '../../Template';
 import {ParserNode} from '../../TemplateTypes';
 import {handleCombatEnd} from '../Actions';

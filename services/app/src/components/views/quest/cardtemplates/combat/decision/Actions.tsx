@@ -13,7 +13,7 @@ import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} fro
 import {getStore} from '../../../../../../Store';
 import {generateLeveledChecks, pushDecisionRoll} from '../../decision/Actions';
 import {DecisionPhase, DecisionState, EMPTY_DECISION_STATE} from '../../decision/Types';
-import {numLocalAndMultiplayerAdventurers, numLocalAndMultiplayerPlayers} from '../../MultiplayerPlayerCount';
+import {numAdventurers, numPlayers} from '../../PlayerCount';
 import {defaultContext} from '../../Template';
 import {ParserNode} from '../../TemplateTypes';
 import {CombatAttack, CombatDifficultySettings, CombatState} from '../Types';
@@ -38,7 +38,7 @@ export const setupCombatDecision = remoteify(function setupCombatDecision(a: Set
   const rp = getState().multiplayer;
   combat.decisionPhase = 'PREPARE_DECISION';
   node.ctx.templates.decision = {
-    leveledChecks: generateLeveledChecks(numLocalAndMultiplayerAdventurers(settings, rp)),
+    leveledChecks: generateLeveledChecks(numAdventurers(settings, rp)),
     selected: null,
     rolls: [],
   };

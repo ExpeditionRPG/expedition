@@ -8,6 +8,8 @@ import {CardThemeType} from '../../../../reducers/StateTypes';
 export function generateIconElements(content: string, theme: CardThemeType): JSX.Element {
   content = (content || '').replace(new RegExp(REGEX.ICON.source, 'g'), (match: string, group: string): string => {
       const icon = group.toLowerCase();
+      // TODO: we should confirm we have both regular and _white versions of icons and just make this auto-detect
+      // based on the theme.
       const suffix = (theme === 'dark' && icon.indexOf('_white') === -1) ? '_white' : '';
       return `<img class="inline_icon" src="images/${icon}${suffix}_small.svg" />`;
     })

@@ -5,7 +5,7 @@ import {toCard} from '../../../../../actions/Card';
 import {event} from '../../../../../actions/Quest';
 import {PLAYER_TIME_MULT} from '../../../../../Constants';
 import {AppStateWithHistory, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
-import {numLocalAndMultiplayerAdventurers, numLocalAndMultiplayerPlayers} from '../MultiplayerPlayerCount';
+import {numAdventurers, numPlayers} from '../PlayerCount';
 import {ParserNode} from '../TemplateTypes';
 import {DecisionState, LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
 
@@ -20,7 +20,7 @@ export const initDecision = remoteify(function initDecision(a: InitDecisionArgs,
 
   a.node = a.node.clone();
   const settings = getState().settings;
-  const leveledChecks = parseDecisionChecks(numLocalAndMultiplayerAdventurers(settings, a.rp), a.node);
+  const leveledChecks = parseDecisionChecks(numAdventurers(settings, a.rp), a.node);
   a.node.ctx.templates.decision = {
     leveledChecks,
     selected: null,
@@ -39,7 +39,7 @@ export function computeSuccesses(rolls: number[], selected: LeveledSkillCheck): 
 
 export function computeOutcome(rolls: number[], selected: LeveledSkillCheck, settings: SettingsType, rp: MultiplayerState): (keyof typeof Outcome)|null {
   // Compute the outcome from the most recent roll (if any)
-  const numTotalAdventurers = numLocalAndMultiplayerAdventurers(settings, rp);
+  const numTotalAdventurers = numAdventurers(settings, rp);
   const retryThreshold = RETRY_THRESHOLD_MAP[selected.difficulty || 'Medium'];
   const successes = computeSuccesses(rolls, selected);
   const failures = rolls.reduce((acc, r) => (r < retryThreshold) ? acc + 1 : acc, 0);
@@ -88,7 +88,7 @@ export function parseDecisionChecks(numTotalAdventurers: number, node?: ParserNo
 }
 
 export function skillTimeMillis(settings: SettingsType, rp?: MultiplayerState) {
-  const totalPlayerCount = numLocalAndMultiplayerPlayers(settings, rp);
+  const totalPlayerCount = numPlayers(settings, rp);
   // TODO use different value here
   return settings.timerSeconds * 1000 * PLAYER_TIME_MULT[totalPlayerCount];
 }

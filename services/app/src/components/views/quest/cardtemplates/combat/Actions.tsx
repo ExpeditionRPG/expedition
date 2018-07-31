@@ -11,7 +11,7 @@ import {ENCOUNTERS} from '../../../../../Encounters';
 import {Enemy, Loot} from '../../../../../reducers/QuestTypes';
 import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
 import {getStore} from '../../../../../Store';
-import {numLocalAndMultiplayerAdventurers, numLocalAndMultiplayerPlayers} from '../MultiplayerPlayerCount';
+import {numAdventurers, numPlayers} from '../PlayerCount';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {CombatAttack, CombatDifficultySettings, CombatState} from './Types';
@@ -19,7 +19,7 @@ import {CombatAttack, CombatDifficultySettings, CombatState} from './Types';
 const cheerio: any = require('cheerio');
 
 export function roundTimeMillis(settings: SettingsType, rp?: MultiplayerState) {
-  const totalPlayerCount = numLocalAndMultiplayerPlayers(settings, rp);
+  const totalPlayerCount = numPlayers(settings, rp);
   return settings.timerSeconds * 1000 * PLAYER_TIME_MULT[totalPlayerCount];
 }
 
@@ -33,7 +33,7 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
     }
   }
   const multiplayer = (getState) ? getState().multiplayer : getStore().getState().multiplayer;
-  const totalAdventurerCount = numLocalAndMultiplayerAdventurers(settings, multiplayer);
+  const totalAdventurerCount = numAdventurers(settings, multiplayer);
 
   return {
     custom,
@@ -111,7 +111,7 @@ function getEnemies(node: ParserNode): Enemy[] {
 }
 
 function generateCombatAttack(node: ParserNode, settings: SettingsType, rp: MultiplayerState, elapsedMillis: number, rng: () => number): CombatAttack {
-  const totalPlayerCount = numLocalAndMultiplayerPlayers(settings, rp);
+  const totalPlayerCount = numPlayers(settings, rp);
   const playerMultiplier = PLAYER_DAMAGE_MULT[totalPlayerCount] || 1;
   const combat = node.ctx.templates.combat;
   if (!combat) {
@@ -389,7 +389,7 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
     combat.numAliveAdventurers = 0;
   }
   a.node = a.node.clone();
-  const adventurers = numLocalAndMultiplayerAdventurers(a.settings, a.rp);
+  const adventurers = numAdventurers(a.settings, a.rp);
   combat.levelUp = (a.victory) ? (adventurers <= a.maxTier) : false;
 
   const arng = seedrandom.alea(a.seed);
@@ -445,7 +445,7 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
     a.rp = getState().multiplayer;
   }
 
-  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), numLocalAndMultiplayerAdventurers(a.settings, a.rp));
+  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), numAdventurers(a.settings, a.rp));
   a.node = a.node.clone();
   let combat = a.node.ctx.templates.combat;
   if (!combat) {
