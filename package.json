@@ -199,9 +199,6 @@
     "pluralize": "^7.0.0",
     "tslint-loader": "^3.6.0"
   },
-  "optionalDependencies": {
-    "expedition-art": "git+https://github.com/ExpeditionRPG/expedition-art.git"
-  },
   "engines": {
     "node": ">= 8.1.4 < 9"
   },

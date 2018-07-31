@@ -20,8 +20,8 @@ const options = {
       { from: 'src/images', to: 'images'},
       { from: 'src/quests', to: 'quests'},
       { from: { glob: '**/*.mp3' }, context: 'src/audio', to: './audio' },
-      { from: { glob: '../../node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
-      { from: { glob: '../../node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
+      { from: { glob: '../../shared/images/icons/*.svg' }, flatten: true, to: './images' },
+      { from: { glob: '../../shared/images/art/*.png' }, flatten: true, to: './images' },
     ]),
   ],
   optimization: {
