@@ -14,8 +14,8 @@ const options = {
     new CopyWebpackPlugin([
       // Copy ops for dist folder (main app)
       { from: '../app/src/images', to: 'images' },
-      { from: { glob: '../../node_modules/expedition-art/icons/*.svg' }, flatten: true, to: 'images' },
-      { from: { glob: '../../node_modules/expedition-art/art/*.png' }, flatten: true, to: 'images' },
+      { from: { glob: '../../shared/images/icons/*.svg' }, flatten: true, to: 'images' },
+      { from: { glob: '../../shared/images/art/*.png' }, flatten: true, to: 'images' },
       { from: 'src/dictionaries', to: 'dictionaries'},
       { from: 'src/scripts', to: 'scripts' },
 

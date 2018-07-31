@@ -12,7 +12,7 @@ const options = {
   },
   plugins: [
     new CopyWebpackPlugin([
-      { context: '../../node_modules/expedition-art', from: '**/*.+(jpg|svg|png)', to: 'expedition-art' },
+      { context: '../../shared/images', from: '**/*.+(jpg|svg|png)', to: './images' },
     ]),
   ],
 };

@@ -129,7 +129,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                     <div className="death"><strong>{translate('On Defeat', translations)}: </strong>{card.death}</div>
                   }
                 </article>
-                {card.image && <img className="art" src={`/expedition-art/icons/${card.image}.png`} />}
+                {card.image && <img className="art" src={`/images/icons/${card.image}.png`} />}
                 <footer>
                   <div className="flavortext">{card.flavortext}</div>
                 </footer>
