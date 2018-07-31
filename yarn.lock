@@ -4386,10 +4386,6 @@ expect@^23.1.0:
     jest-message-util "^23.3.0"
     jest-regex-util "^23.3.0"
 
-"expedition-art@git+https://github.com/ExpeditionRPG/expedition-art.git":
-  version "1.2.2"
-  resolved "git+https://github.com/ExpeditionRPG/expedition-art.git#1b18e58cfee5c580c15fb900e70615e42bf059ed"
-
 export-files@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/export-files/-/export-files-2.1.1.tgz#bbf64574053a09e4eb98e5f43501d572b2c3ce7f"
