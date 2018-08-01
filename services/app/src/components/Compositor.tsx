@@ -33,7 +33,7 @@ import SettingsContainer from './views/SettingsContainer';
 import SplashScreenContainer from './views/SplashScreenContainer';
 import ToolsContainer from './views/ToolsContainer';
 
-export interface CompositorStateProps {
+export interface StateProps {
   card: CardState;
   quest: QuestState;
   multiplayer: MultiplayerState;
@@ -43,13 +43,13 @@ export interface CompositorStateProps {
   transition: TransitionClassType;
 }
 
-export interface CompositorDispatchProps {
+export interface DispatchProps {
   closeSnackbar: () => void;
 }
 
-export interface CompositorProps extends CompositorStateProps, CompositorDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
-export default class Compositor extends React.Component<CompositorProps, {}> {
+export default class Compositor extends React.Component<Props, {}> {
 
   public snackbarActionClicked(e: React.MouseEvent<HTMLElement>) {
     if (this.props.snackbar.action) {

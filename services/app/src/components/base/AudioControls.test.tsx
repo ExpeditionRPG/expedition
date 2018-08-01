@@ -1,11 +1,11 @@
 import {configure, shallow} from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
-import AudioControls, {AudioControlsProps} from './AudioControls';
+import AudioControls, {Props} from './AudioControls';
 configure({ adapter: new Adapter() });
 
-function setup(overrides: Partial<AudioControlsProps>) {
-  const props: AudioControlsProps = {
+function setup(overrides: Partial<Props>) {
+  const props: Props = {
     audioEnabled: true,
     audioLoaded: 'UNLOADED',
     onAudioToggle: jasmine.createSpy('onAudioToggle'),

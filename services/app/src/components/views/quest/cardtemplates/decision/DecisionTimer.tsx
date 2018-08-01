@@ -1,7 +1,7 @@
+import Button from 'app/components/base/Button';
+import {CardThemeType} from 'app/reducers/StateTypes';
+import {getStore} from 'app/Store';
 import * as React from 'react';
-import {CardThemeType} from '../../../../../reducers/StateTypes';
-import {getStore} from '../../../../../Store';
-import Button from '../../../../base/Button';
 import {DecisionType} from './Types';
 
 interface DecisionTimerProps extends React.Props<any> {

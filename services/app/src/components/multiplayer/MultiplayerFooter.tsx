@@ -7,20 +7,19 @@ import * as React from 'react';
 import {getMultiplayerClient} from '../../Multiplayer';
 import {CardThemeType, MultiplayerState} from '../../reducers/StateTypes';
 
-export interface MultiplayerFooterStateProps {
+export interface StateProps {
   multiplayer: MultiplayerState;
+  theme: CardThemeType;
 }
 
-export interface MultiplayerFooterDispatchProps {
+export interface DispatchProps {
   onMultiplayerExit: () => void;
   onMultiplayerStatusIconTap: () => void;
 }
 
-export interface MultiplayerFooterProps extends MultiplayerFooterStateProps, MultiplayerFooterDispatchProps {
-  theme: CardThemeType;
-}
+export interface Props extends StateProps, DispatchProps {}
 
-const MultiplayerFooter = (props: MultiplayerFooterProps): JSX.Element => {
+const MultiplayerFooter = (props: Props): JSX.Element => {
   const color = (props.theme === 'dark') ? 'white' : 'black';
   const adventurerIcon = (props.theme === 'dark') ? 'images/adventurer_white_small.svg' : 'images/adventurer_small.svg';
   const peers: JSX.Element[] = [];

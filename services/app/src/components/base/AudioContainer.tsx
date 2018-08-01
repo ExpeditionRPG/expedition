@@ -5,9 +5,9 @@ import {changeSettings} from '../../actions/Settings';
 import {openSnackbar} from '../../actions/Snackbar';
 import {initialAudioState} from '../../reducers/Audio';
 import {AppState, AudioLoadingType} from '../../reducers/StateTypes';
-import Audio, {AudioDispatchProps, AudioStateProps} from './Audio';
+import Audio, {DispatchProps, StateProps} from './Audio';
 
-const mapStateToProps = (state: AppState, ownProps: AudioStateProps): AudioStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     audio: state.audio || initialAudioState,
     cardName: state.card ? state.card.name : 'SPLASH_CARD',
@@ -16,7 +16,7 @@ const mapStateToProps = (state: AppState, ownProps: AudioStateProps): AudioState
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AudioDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     disableAudio(): void {
       dispatch(openSnackbar('Audio not supported on this device; disabling.'));

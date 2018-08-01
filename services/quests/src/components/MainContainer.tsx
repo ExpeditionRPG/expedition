@@ -3,9 +3,9 @@ import Redux from 'redux';
 import {lineNumbersToggle, panelToggle} from '../actions/Editor';
 import {setSnackbar} from '../actions/Snackbar';
 import {AppState, PanelType} from '../reducers/StateTypes';
-import Main, {MainDispatchProps, MainStateProps} from './Main';
+import Main, {DispatchProps, StateProps} from './Main';
 
-const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     bottomPanel: state.editor.bottomPanel,
     editor: state.editor,
@@ -15,7 +15,7 @@ const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MainDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onDragFinished: (size: number) => {
       dispatch({type: 'PANEL_DRAG'});

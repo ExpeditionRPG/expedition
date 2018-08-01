@@ -71,19 +71,19 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
   }
 }
 
-export interface SplashScreenStateProps {
+export interface StateProps {
   announcement: AnnouncementState;
 }
 
-export interface SplashScreenDispatchProps {
+export interface DispatchProps {
   onAnnouncementTap: (announcement: AnnouncementState) => void;
   onPlayerCountSelect: (numPlayers: number) => void;
   onPlayerManualSelect: () => any;
 }
 
-interface SplashScreenProps extends SplashScreenStateProps, SplashScreenDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
-const SplashScreen = (props: SplashScreenProps): JSX.Element => {
+const SplashScreen = (props: Props): JSX.Element => {
   const announcementVisible = (props.announcement && props.announcement.open && props.announcement.message !== '');
   const splashClass = 'splashScreen' + (announcementVisible ? ' announcing' : '');
   return (

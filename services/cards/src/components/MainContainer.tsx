@@ -1,8 +1,8 @@
 import {connect} from 'react-redux';
 import {AppState} from '../reducers/StateTypes';
-import Main, {MainStateProps} from './Main';
+import Main, {StateProps} from './Main';
 
-const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     loading: state.cards.loading,
   };

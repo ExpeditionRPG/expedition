@@ -2,24 +2,18 @@ import * as React from 'react';
 
 declare var gapi: any;
 
-export interface NotesPanelStateProps {
+export interface StateProps {
   realtime: any;
   realtimeModel: any;
 }
 
-export interface NotesPanelDispatchProps {
+export interface DispatchProps {
   onDirty: (realtime: any, text: string) => void;
 }
 
-interface NotesPanelProps extends NotesPanelStateProps, NotesPanelDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
-interface RealtimeTextAreaProps extends React.Props<any> {
-  realtime: any;
-  realtimeModel: any;
-  onDirty: (realtime: any, text: string) => void;
-}
-
-class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
+class RealtimeTextArea extends React.Component<Props, {}> {
   public silentChange: boolean;
   public ref: any;
 
@@ -105,7 +99,7 @@ class RealtimeTextArea extends React.Component<RealtimeTextAreaProps, {}> {
 // Based on the left side, extract "key words" and allow the user to jump to note sections.
 // Key words should also be linked/clickable in the ace editor.
 // http://jsbin.com/jehopaja/4/edit?html,output
-const NotesPanel = (props: NotesPanelProps): JSX.Element => {
+const NotesPanel = (props: Props): JSX.Element => {
   return (
     <div className="console">
       <div className="interactive">

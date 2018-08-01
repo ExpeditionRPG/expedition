@@ -5,9 +5,9 @@ import Card from '../base/Card';
 import Checkbox from '../base/Checkbox';
 import Picker from '../base/Picker';
 
-export interface SettingsStateProps extends SettingsType {}
+export interface StateProps extends SettingsType {}
 
-export interface SettingsDispatchProps {
+export interface DispatchProps {
   onAudioChange: (change: boolean) => void;
   onAutoRollChange: (change: boolean) => void;
   onDifficultyDelta: (difficulty: DifficultyType, i: number) => void;
@@ -21,7 +21,7 @@ export interface SettingsDispatchProps {
   onVibrationChange: (change: boolean) => void;
 }
 
-export interface SettingsProps extends SettingsStateProps, SettingsDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 // For all cycles, going to the right = harder, left = easier
 const difficultyText: { [v: string]: any } = [
@@ -43,7 +43,7 @@ const timerText: { [v: string]: any } = [
 ];
 export const timerValues: Array<number|null> = [null, 30, 15, 10, 6];
 
-const Settings = (props: SettingsProps): JSX.Element => {
+const Settings = (props: Props): JSX.Element => {
   const difficultyIdx = difficultyValues.indexOf(props.difficulty);
   const fontSizeIdx = fontSizeValues.indexOf(props.fontSize);
   const timerIdx = props.timerSeconds ? timerValues.indexOf(props.timerSeconds) : 0;

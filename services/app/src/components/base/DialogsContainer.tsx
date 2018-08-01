@@ -13,9 +13,9 @@ import {MIN_FEEDBACK_LENGTH} from '../../Constants';
 import {getMultiplayerClient, initialMultiplayerCounters, MultiplayerCounters} from '../../Multiplayer';
 import {QuestDetails} from '../../reducers/QuestTypes';
 import {AppState, ContentSetsType, FeedbackType, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
-import Dialogs, {DialogsDispatchProps, DialogsStateProps} from './Dialogs';
+import Dialogs, {DispatchProps, StateProps} from './Dialogs';
 
-const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   let multiplayerStats: MultiplayerCounters;
   if (state.dialog && state.dialog.open === 'MULTIPLAYER_STATUS') {
     multiplayerStats = getMultiplayerClient().getStats();
@@ -33,7 +33,7 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DialogsDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onClose: () => {
       dispatch(setDialog(null));

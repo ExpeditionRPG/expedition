@@ -8,16 +8,16 @@ import {initCustomCombat} from '../../components/views/quest/cardtemplates/comba
 import {MUSIC_INTENSITY_MAX, URLS} from '../../Constants';
 import {openWindow} from '../../Globals';
 import {AppState, SettingsType, UserState} from '../../reducers/StateTypes';
-import Tools, {ToolsDispatchProps, ToolsStateProps} from './Tools';
+import Tools, {DispatchProps, StateProps} from './Tools';
 
-const mapStateToProps = (state: AppState, ownProps: ToolsStateProps): ToolsStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     settings: state.settings,
     user: state.user,
   };
 };
 
-export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): ToolsDispatchProps => {
+export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onCustomCombatSelect(settings: SettingsType): void {
       dispatch(initCustomCombat({}));

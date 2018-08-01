@@ -3,12 +3,19 @@ import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
+import {UserState} from '../reducers/StateTypes';
 
-export interface SplashDispatchProps {
+export interface StateProps {
+  user: UserState;
+}
+
+export interface DispatchProps {
   onLogin: (position: string) => void;
 }
 
-const Splash = (props: any): JSX.Element => {
+interface Props extends StateProps, DispatchProps {}
+
+const Splash = (props: Props): JSX.Element => {
   return (
     <div className="main splash">
       <div className="splash_app_bar">
@@ -19,9 +26,6 @@ const Splash = (props: any): JSX.Element => {
             </Typography>
             <div>
               {props.user.loggedIn && <div className="login">
-                <a href="https://expeditiongame.com/loot" target="_blank" className="lootPoints">
-                  {props.user.lootPoints} <img className="inline_icon" src="images/loot_white_small.svg" />
-                </a>
                 <span className="email">{props.user.email}</span>
               </div>}
               {!props.user.loggedIn && <div className="login">

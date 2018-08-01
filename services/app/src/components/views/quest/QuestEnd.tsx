@@ -9,7 +9,7 @@ import StarRating from '../../base/StarRating';
 
 declare var window: any;
 
-export interface QuestEndStateProps {
+export interface StateProps {
   checkout: CheckoutState;
   platform: string;
   quest: QuestState;
@@ -17,18 +17,18 @@ export interface QuestEndStateProps {
   user: UserState;
 }
 
-export interface QuestEndDispatchProps {
+export interface DispatchProps {
   onShare: (quest: QuestState) => void;
   onSubmit: (quest: QuestState, settings: SettingsType, user: UserState, anonymous: boolean, text: string, rating: number|null) => void;
   onTip: (checkoutError: string|null, amount: number, quest: QuestState, settings: SettingsType, anonymous: boolean, text: string, rating: number|null) => void;
 }
 
-export interface QuestEndProps extends QuestEndStateProps, QuestEndDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
-export default class QuestEnd extends React.Component<QuestEndProps, {}> {
+export default class QuestEnd extends React.Component<Props, {}> {
   public state: {anonymous: boolean, text: string, rating: number|null};
 
-  constructor(props: QuestEndProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {anonymous: false, text: '', rating: null};
   }

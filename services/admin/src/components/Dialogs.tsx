@@ -11,20 +11,6 @@ import {FeedbackEntry, QuestEntry, UserEntry} from 'api/admin/QueryTypes';
 
 import {DialogIDType, DialogsState} from '../reducers/StateTypes';
 
-export interface DialogsStateProps {
-  dialogs: DialogsState;
-  feedback: FeedbackEntry|null;
-  quest: QuestEntry|null;
-  user: UserEntry|null;
-}
-
-export interface DialogsDispatchProps {
-  onClose: (dialog: DialogIDType) => void;
-  onSetUserLootPoints: (user: UserEntry, lootPoints: number) => any;
-  onSetQuestPublishState: (quest: QuestEntry, published: boolean) => any;
-  onSetFeedbackSuppressed: (feedback: FeedbackEntry, suppress: boolean) => any;
-}
-
 export interface FeedbackDetailsDialogProps {
   open: boolean;
   feedback: FeedbackEntry;
@@ -161,9 +147,23 @@ export class UserDetailsDialog extends React.Component<UserDetailsDialogProps, {
   }
 }
 
-interface DialogsProps extends DialogsStateProps, DialogsDispatchProps {}
+export interface StateProps {
+  dialogs: DialogsState;
+  feedback: FeedbackEntry|null;
+  quest: QuestEntry|null;
+  user: UserEntry|null;
+}
 
-const Dialogs = (props: DialogsProps): JSX.Element => {
+export interface DispatchProps {
+  onClose: (dialog: DialogIDType) => void;
+  onSetUserLootPoints: (user: UserEntry, lootPoints: number) => any;
+  onSetQuestPublishState: (quest: QuestEntry, published: boolean) => any;
+  onSetFeedbackSuppressed: (feedback: FeedbackEntry, suppress: boolean) => any;
+}
+
+interface Props extends StateProps, DispatchProps {}
+
+const Dialogs = (props: Props): JSX.Element => {
   return (
     <span>
       {props.feedback &&

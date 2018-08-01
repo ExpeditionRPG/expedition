@@ -2,9 +2,9 @@ import {connect} from 'react-redux';
 import Redux from 'redux';
 import {setOpInit} from '../actions/Editor';
 import {AppState} from '../reducers/StateTypes';
-import ContextEditor, {ContextEditorDispatchProps, ContextEditorStateProps} from './ContextEditor';
+import ContextEditor, {DispatchProps, StateProps} from './ContextEditor';
 
-const mapStateToProps = (state: AppState, ownProps: any): ContextEditorStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   const scopeHistory: any[] = [];
 
   for (const pastState of state.preview._history) {
@@ -24,7 +24,7 @@ const mapStateToProps = (state: AppState, ownProps: any): ContextEditorStateProp
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): ContextEditorDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onInitialContext: (opInit: string) => {
       dispatch(setOpInit(opInit));
