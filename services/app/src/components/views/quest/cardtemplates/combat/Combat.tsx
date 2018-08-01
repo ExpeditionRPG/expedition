@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {REGEX} from 'shared/Regex';
-import {Outcome} from 'shared/schema/templates/Decision';
 import {MAX_ADVENTURER_HEALTH, NODE_ENV} from '../../../../../Constants';
 import {Enemy, EventParameters, Loot} from '../../../../../reducers/QuestTypes';
 import {CardState, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
@@ -10,19 +9,14 @@ import Callout from '../../../../base/Callout';
 import Card from '../../../../base/Card';
 import Picker from '../../../../base/Picker';
 import TimerCard from '../../../../base/TimerCard';
-import {computeOutcome} from '../decision/Actions';
-import Decision from '../decision/Decision';
-import {DecisionState, LeveledSkillCheck} from '../decision/Types';
 import Roleplay from '../roleplay/Roleplay';
 import {ParserNode} from '../TemplateTypes';
 import {isSurgeNextRound, roundTimeMillis} from './Actions';
-import {getScenarioInstruction} from './decision/Scenarios';
 import {CombatPhase, CombatState} from './Types';
 
 export interface CombatStateProps {
   card: CardState;
   combat: CombatState;
-  decision: DecisionState;
   maxTier: number;
   mostRecentRolls?: number[];
   multiplayerState: MultiplayerState;
@@ -38,11 +32,6 @@ export interface CombatDispatchProps {
   onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => void;
   onChoice: (node: ParserNode, settings: SettingsType, index: number, maxTier: number, seed: string) => void;
   onCustomEnd: () => void;
-  onDecisionSelect: (node: ParserNode, selected: LeveledSkillCheck, elapsedMillis: number) => void;
-  onDecisionEnd: () => void;
-  onDecisionRoll: (node: ParserNode, roll: number) => void;
-  onDecisionSetup: (node: ParserNode, seed: string) => void;
-  onDecisionTimerStart: () => void;
   onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
   onEvent: (node: ParserNode, event: string) => void;
   onNext: (phase: CombatPhase) => void;
@@ -472,44 +461,6 @@ function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
   }, 'dark');
 }
 
-function renderMidCombatDecision(props: CombatProps): JSX.Element {
-  const decision = props.decision;
-
-  if (decision.selected) {
-    const outcome = computeOutcome(decision.rolls, decision.selected, props.settings, props.multiplayerState);
-
-    // Short-circuit the regular decision logic if we end up with a final outcome
-    // TODO: this flickers due to rng when back button is pressed
-    if (outcome !== null && outcome !== Outcome.retry) {
-      const instruction = getScenarioInstruction(decision.selected, outcome, props.seed);
-      const title = ({
-        [Outcome.success]: 'Success!',
-        [Outcome.failure]: 'Failure!',
-        [Outcome.interrupted]: 'Interrupted!',
-      } as Record<keyof typeof Outcome, string>)[outcome];
-      return (
-        <Card title={title} theme="dark" inQuest={true}>
-          <Callout icon="adventurer_white">{instruction}</Callout>
-          <Button onClick={() => props.onNext('PREPARE')}>Next</Button>
-        </Card>
-      );
-    }
-  }
-
-  return Decision({
-    card: {...props.card, phase: props.combat.decisionPhase},
-    decision,
-    multiplayerState: props.multiplayerState,
-    node: props.node,
-    onSelect: props.onDecisionSelect,
-    onEnd: props.onDecisionEnd,
-    onRoll: props.onDecisionRoll,
-    onStartTimer: props.onDecisionTimerStart,
-    seed: props.seed,
-    settings: props.settings,
-  }, 'dark');
-}
-
 function numberToWord(input: number): string {
   switch (input) {
     case 0: return 'zero';
@@ -531,6 +482,8 @@ function capitalizeFirstLetter(input: string): string {
   return input.charAt(0).toUpperCase() + input.slice(1);
 }
 
+// TODO: we should be rendering individual react components via the switch statement in Template,
+// not here (it makes the props more bloated and e.g. unit testing more difficult).
 const Combat = (props: CombatProps): JSX.Element => {
   switch (props.card.phase) {
     case 'DRAW_ENEMIES':
@@ -553,8 +506,6 @@ const Combat = (props: CombatProps): JSX.Element => {
       return renderDefeat(props);
     case 'MID_COMBAT_ROLEPLAY':
       return renderMidCombatRoleplay(props);
-    case 'MID_COMBAT_DECISION':
-      return renderMidCombatDecision(props);
     default:
       throw new Error('Unknown combat phase ' + props.card.phase);
   }

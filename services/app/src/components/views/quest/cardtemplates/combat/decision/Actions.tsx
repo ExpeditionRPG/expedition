@@ -28,6 +28,14 @@ function resolveParams(node: ParserNode|undefined, getState: () => AppStateWithH
   return {node, decision, combat};
 }
 
+export function generateCombatDecision(numAdventurers: number): DecisionState {
+  return {
+    leveledChecks: generateLeveledChecks(numAdventurers),
+    selected: null,
+    rolls: [],
+  };
+}
+
 interface SetupCombatDecisionArgs {
   node?: ParserNode;
   seed: string;

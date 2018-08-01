@@ -44,8 +44,9 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
     case 'DEFEAT':
     case 'NO_TIMER':
     case 'MID_COMBAT_ROLEPLAY':
-    case 'MID_COMBAT_DECISION':
       return <CombatContainer card={card} node={node}/>;
+    case 'MID_COMBAT_DECISION':
+      return <MidCombatDecisionContainer card={card} node={node}/>;
     default:
       throw new Error('Unknown template for card phase ' + card.phase);
   }
