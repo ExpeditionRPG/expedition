@@ -156,6 +156,7 @@ class TextAreaDialog<T extends TextAreaDialogProps> extends React.Component<T, {
             helperText={this.helperText}
             multiline={true}
             onChange={(e: any) => this.setState({text: e.target.value})}
+            onFocus={(e: any) => e.target.scrollIntoView()}
             rows={3}
             rowsMax={6}
             value={this.state.text}
@@ -302,7 +303,7 @@ export class DeleteSavedQuestDialog extends React.Component<DeleteSavedQuestDial
   }
 }
 
-export interface DialogsStateProps {
+export interface StateProps {
   dialog: DialogState;
   multiplayerStats: MultiplayerCounters;
   quest: QuestState;
@@ -311,7 +312,7 @@ export interface DialogsStateProps {
   user: UserState;
 }
 
-export interface DialogsDispatchProps {
+export interface DispatchProps {
   onClose: () => void;
   onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => void;
   onExitMultiplayer: () => void;
@@ -324,9 +325,9 @@ export interface DialogsDispatchProps {
   playQuest: (quest: QuestDetails) => void;
 }
 
-interface DialogsProps extends DialogsStateProps, DialogsDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
-const Dialogs = (props: DialogsProps): JSX.Element => {
+const Dialogs = (props: Props): JSX.Element => {
   return (
     <span>
       <DeleteSavedQuestDialog

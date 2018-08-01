@@ -11,25 +11,25 @@ const Moment = require('moment');
 
 export const MIN_SECRET_LENGTH = 4;
 
-export interface MultiplayerStateProps {
+export interface StateProps {
   phase: MultiplayerPhase;
   user: UserState;
   multiplayer: MultiplayerState;
 }
 
-export interface MultiplayerDispatchProps {
+export interface DispatchProps {
   onConnect: (user: UserState) => void;
   onReconnect: (user: UserState, id: SessionID, secret: string) => void;
   onNewSessionRequest: (user: UserState) => void;
   onContinue: () => void;
 }
 
-export interface MultiplayerProps extends MultiplayerStateProps, MultiplayerDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
-class MultiplayerConnect extends React.Component<MultiplayerProps, {}> {
+class MultiplayerConnect extends React.Component<Props, {}> {
   public state: {secret: string};
 
-  constructor(props: MultiplayerProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {secret: ''};
   }
@@ -68,7 +68,7 @@ class MultiplayerConnect extends React.Component<MultiplayerProps, {}> {
   }
 }
 
-function renderLobby(props: MultiplayerProps): JSX.Element {
+function renderLobby(props: Props): JSX.Element {
   return (
     <Card title="Lobby">
       <div className="remoteplay">
@@ -88,7 +88,7 @@ function renderLobby(props: MultiplayerProps): JSX.Element {
   );
 }
 
-const Multiplayer = (props: MultiplayerProps): JSX.Element => {
+const Multiplayer = (props: Props): JSX.Element => {
   switch (props.phase) {
     case 'CONNECT':
       return <MultiplayerConnect {...props} />;

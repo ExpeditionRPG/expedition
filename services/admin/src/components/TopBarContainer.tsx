@@ -4,16 +4,16 @@ import Redux from 'redux';
 import {logoutUser} from '../actions/User';
 import {queryView} from '../actions/View';
 import {AppState, UserState, ViewType} from '../reducers/StateTypes';
-import TopBar, {TopBarDispatchProps, TopBarStateProps} from './TopBar';
+import TopBar, {DispatchProps, StateProps} from './TopBar';
 
-const mapStateToProps = (state: AppState, ownProps: any): TopBarStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     user: state.user,
     view: state.view,
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): TopBarDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onFilterUpdate: (view: ViewType, filter: string) => {
       dispatch(queryView(view, filter));

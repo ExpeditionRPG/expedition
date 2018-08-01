@@ -3,7 +3,7 @@ import * as React from 'react';
 import {openWindow} from '../../Globals';
 import MultiplayerRipple from '../multiplayer/MultiplayerRipple';
 
-interface ButtonProps extends React.Props<any> {
+interface Props extends React.Props<any> {
   className?: string;
   disabled?: boolean;
   id?: string;
@@ -11,7 +11,7 @@ interface ButtonProps extends React.Props<any> {
   remoteRipple?: boolean;
 }
 
-export default class ExpeditionButton extends React.Component<ButtonProps, {}> {
+export default class ExpeditionButton extends React.Component<Props, {}> {
   public _onClick(e: any) {
     let target = e.target;
     while (target && target.nodeName.toLowerCase() !== 'expedition-button') {

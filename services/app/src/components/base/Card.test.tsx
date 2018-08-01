@@ -2,15 +2,15 @@ import {configure, shallow} from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 configure({ adapter: new Adapter() });
-import ExpeditionCard, {ExpeditionCardProps} from './Card';
+import Card, {Props} from './Card';
 
 describe('Card', () => {
-  function setup(overrides?: Partial<ExpeditionCardProps>) {
-    const props: ExpeditionCardProps = {
+  function setup(overrides?: Partial<Props>) {
+    const props: Props = {
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,
     };
-    const wrapper = shallow(<ExpeditionCard {...props}/>, undefined /*renderOptions*/);
+    const wrapper = shallow(<Card {...props}/>, undefined /*renderOptions*/);
     return {props, wrapper};
   }
 

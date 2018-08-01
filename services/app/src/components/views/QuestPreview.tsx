@@ -12,7 +12,7 @@ import StarRating from '../base/StarRating';
 
 const Moment = require('moment');
 
-export interface QuestPreviewStateProps {
+export interface StateProps {
   settings: SettingsType;
   quest: QuestDetails | null;
   lastPlayed: Date | null;
@@ -20,7 +20,7 @@ export interface QuestPreviewStateProps {
   isDirectLinked: boolean;
 }
 
-export interface QuestPreviewDispatchProps {
+export interface DispatchProps {
   onPlay: (quest: QuestDetails, isDirectLinked: boolean) => void;
   onPlaySaved: (id: string, ts: number) => void;
   onSave: (quest: QuestDetails) => void;
@@ -29,7 +29,7 @@ export interface QuestPreviewDispatchProps {
   onReturn: () => void;
 }
 
-export interface QuestPreviewProps extends QuestPreviewStateProps, QuestPreviewDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 function renderRequirements(quest: QuestDetails): JSX.Element[] {
   const requires = [];
@@ -54,7 +54,7 @@ function renderRequirements(quest: QuestDetails): JSX.Element[] {
   return delimited;
 }
 
-function renderSaves(props: QuestPreviewProps): JSX.Element|null {
+function renderSaves(props: Props): JSX.Element|null {
   const saves = props.savedInstances.filter((s) => (s.pathLen || 0) !== 0);
   if (!props.settings.experimental || saves.length === 0) {
     return null;
@@ -71,7 +71,7 @@ function renderSaves(props: QuestPreviewProps): JSX.Element|null {
   );
 }
 
-const QuestPreview = (props: QuestPreviewProps): JSX.Element => {
+const QuestPreview = (props: Props): JSX.Element => {
   const quest = props.quest;
   if (!quest) {
     return <Card title="Quest Preview">Loading...</Card>;

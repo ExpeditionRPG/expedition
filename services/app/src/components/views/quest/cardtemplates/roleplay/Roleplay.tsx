@@ -1,27 +1,27 @@
+import Button from 'app/components/base/Button';
+import Callout from 'app/components/base/Callout';
+import Card from 'app/components/base/Card';
+import {Choice, RoleplayElement} from 'app/reducers/QuestTypes';
+import {CardThemeType, SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
-import {Choice, RoleplayElement} from '../../../../../reducers/QuestTypes';
-import {CardThemeType, SettingsType} from '../../../../../reducers/StateTypes';
-import Button from '../../../../base/Button';
-import Callout from '../../../../base/Callout';
-import Card from '../../../../base/Card';
 import {generateIconElements} from '../Render';
 import {ParserNode, TemplateContext} from '../TemplateTypes';
 
 import {REGEX} from 'shared/Regex';
 
-export interface RoleplayStateProps {
+export interface StateProps {
   node: ParserNode;
   onReturn?: () => any;
   prevNode?: ParserNode;
   settings: SettingsType;
 }
 
-export interface RoleplayDispatchProps {
+export interface DispatchProps {
   onChoice: (settings: SettingsType, node: ParserNode, index: number) => void;
   onRetry: () => void;
 }
 
-export interface RoleplayProps extends RoleplayStateProps, RoleplayDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 export interface RoleplayResult {
   choices: Choice[];
@@ -116,8 +116,12 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
   };
 }
 
+<<<<<<< HEAD
 const Roleplay = (props: RoleplayProps, theme: CardThemeType|{}): JSX.Element => {
   const resolvedTheme: CardThemeType = (typeof(theme) !== 'string') ? 'light' : theme;
+=======
+const Roleplay = (props: Props, theme: CardThemeType = 'light'): JSX.Element => {
+>>>>>>> e4e08e41accaca7850cd6e62f421e55a7cafd45f
   if (props.node.getTag() !== 'roleplay') {
     console.log('Roleplay constructor called with non-roleplay node.');
     return <span></span>;

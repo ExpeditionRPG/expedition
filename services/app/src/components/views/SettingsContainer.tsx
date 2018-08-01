@@ -4,9 +4,9 @@ import {setDialog} from '../../actions/Dialog';
 import {changeSettings} from '../../actions/Settings';
 import {logEvent} from '../../Logging';
 import {AppState, DifficultyType} from '../../reducers/StateTypes';
-import Settings, {fontSizeValues, SettingsDispatchProps, SettingsStateProps, timerValues} from './Settings';
+import Settings, {DispatchProps, fontSizeValues, StateProps, timerValues} from './Settings';
 
-const mapStateToProps = (state: AppState, ownProps: SettingsStateProps): SettingsStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return state.settings;
 };
 
@@ -26,7 +26,7 @@ const difficultySub: any = {
 };
 /* tslint:enable */
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SettingsDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onAudioChange: (v: boolean) => {
       dispatch(changeSettings({audioEnabled: v}));

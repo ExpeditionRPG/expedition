@@ -1,16 +1,16 @@
 import * as pluralize from 'pluralize';
 import * as React from 'react';
 import {Outcome} from 'shared/schema/templates/Decision';
-import {CardState, CardThemeType, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
-import Button from '../../../../base/Button';
-import Card from '../../../../base/Card';
+import {CardState, CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import Button from 'app/components/base/Button';
+import Card from 'app/components/base/Card';
 import {generateIconElements} from '../Render';
 import {ParserNode} from '../TemplateTypes';
 import {computeOutcome, computeSuccesses, skillTimeMillis} from './Actions';
 import DecisionTimer from './DecisionTimer';
 import {DecisionState, LeveledSkillCheck} from './Types';
 
-export interface DecisionStateProps {
+export interface StateProps {
   card: CardState;
   decision: DecisionState;
   multiplayerState: MultiplayerState;
@@ -19,16 +19,16 @@ export interface DecisionStateProps {
   settings: SettingsType;
 }
 
-export interface DecisionDispatchProps {
+export interface DispatchProps {
   onStartTimer: () => void;
   onSelect: (node: ParserNode, selected: LeveledSkillCheck, elapsedMillis: number) => void;
   onRoll: (node: ParserNode, roll: number) => void;
   onEnd: () => void;
 }
 
-export interface DecisionProps extends DecisionStateProps, DecisionDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
-export function renderPrepareDecision(props: DecisionProps, theme: CardThemeType): JSX.Element {
+export function renderPrepareDecision(props: Props, theme: CardThemeType): JSX.Element {
 
   const prelude: JSX.Element[] = [];
   let i = 0;
@@ -64,7 +64,7 @@ export function renderPrepareDecision(props: DecisionProps, theme: CardThemeType
   );
 }
 
-export function renderDecisionTimer(props: DecisionProps, theme: CardThemeType): JSX.Element {
+export function renderDecisionTimer(props: Props, theme: CardThemeType): JSX.Element {
   return (
     <DecisionTimer
       theme={theme}
@@ -74,7 +74,7 @@ export function renderDecisionTimer(props: DecisionProps, theme: CardThemeType):
   );
 }
 
-export function renderResolveDecision(props: DecisionProps, theme: CardThemeType): JSX.Element {
+export function renderResolveDecision(props: Props, theme: CardThemeType): JSX.Element {
   const selected = props.decision.selected;
   if (selected === null) {
     throw new Error('Expected selected value');
@@ -109,7 +109,7 @@ export function renderResolveDecision(props: DecisionProps, theme: CardThemeType
   );
 }
 
-const Decision = (props: DecisionProps, theme: CardThemeType|{}): JSX.Element => {
+const Decision = (props: Props, theme: CardThemeType|{}): JSX.Element => {
   const resolvedTheme: CardThemeType = (typeof(theme) !== 'string') ? 'light' : theme;
   switch (props.card.phase) {
     case 'PREPARE_DECISION':

@@ -141,7 +141,7 @@
     "webpack-dev-server": "^3.1.4",
     "webpack-merge": "^4.1.3",
     "whatwg-fetch": "^2.0.4",
-    "winston": "^3.0.0",
+    "winston": "^2.4.3",
     "ws": "^6.0.0"
   },
   "devDependencies": {
@@ -198,9 +198,6 @@
     "fetch-mock": "^6.5.0",
     "pluralize": "^7.0.0",
     "tslint-loader": "^3.6.0"
-  },
-  "optionalDependencies": {
-    "expedition-art": "git+https://github.com/ExpeditionRPG/expedition-art.git"
   },
   "engines": {
     "node": ">= 8.1.4 < 9"

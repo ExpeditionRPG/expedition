@@ -184,7 +184,7 @@ body {
 }
 
 .app_container {
-  &, & > div:not(.snackbar) {
+  &, & > div:first-child {
     height: 100%;
     width: 100%;
   }
@@ -329,6 +329,11 @@ span.line {
     right: 0;
     bottom: 0;
   }
+}
+
+// Fixes bug with Android apk where keyboard not scrolling view - https://github.com/ExpeditionRPG/expedition/issues/255
+body.android .dialog .textfield:focus-within {
+  padding-bottom: 300px;
 }
 
 @mixin styling() {
@@ -1332,7 +1337,6 @@ span.line {
   }
 
   .dialog {
-    width: 90% !important;
     background: url(images/papyrus-tiled.jpg) !important;
     .base_picker, .base_checkbox {
       color: $font_color_primary !important;

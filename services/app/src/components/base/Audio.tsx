@@ -74,21 +74,21 @@ interface NodeSet {
   source: SourceNode;
 }
 
-export interface AudioStateProps {
+export interface StateProps {
   audio: AudioState;
   cardName: CardName;
   cardPhase: CardPhase|null;
   enabled: boolean;
 }
 
-export interface AudioDispatchProps {
+export interface DispatchProps {
   disableAudio: () => void;
   onLoadChange: (loaded: AudioLoadingType) => void;
 }
 
-export interface AudioProps extends AudioStateProps, AudioDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
-export default class Audio extends React.Component<AudioProps, {}> {
+export default class Audio extends React.Component<Props, {}> {
   private buffers: {
     [key: string]: AudioBuffer;
   };
@@ -100,7 +100,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
   private musicNodes: NodeSet[];
   private musicTimeout: any;
 
-  constructor(props: AudioProps) {
+  constructor(props: Props) {
     super(props);
     this.buffers = {};
     this.currentMusicTheme = null;
@@ -125,7 +125,7 @@ export default class Audio extends React.Component<AudioProps, {}> {
   // This will fire many times without any audio-related changes since it subscribes to settings
   // So we have to be careful in checking that it's actually an audio-related change,
   // And not a different event that contains valid-looking (but identical) audio info
-  public componentWillReceiveProps(nextProps: Partial<AudioProps>) {
+  public componentWillReceiveProps(nextProps: Partial<Props>) {
     if (!nextProps.audio) {
       return;
     }

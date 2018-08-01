@@ -1,8 +1,8 @@
 import {connect} from 'react-redux';
 import {AppState} from '../reducers/StateTypes';
-import Renderer, {RendererStateProps} from './Renderer';
+import Renderer, {StateProps} from './Renderer';
 
-const mapStateToProps = (state: AppState, ownProps: any): RendererStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     cards: state.cards.filtered,
     filters: state.filters,

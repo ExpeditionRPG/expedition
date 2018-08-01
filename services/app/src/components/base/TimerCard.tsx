@@ -5,7 +5,7 @@ import {MultiplayerState} from '../../reducers/StateTypes';
 import {getStore} from '../../Store';
 import MultiTouchTrigger from './MultiTouchTrigger';
 
-interface TimerCardProps extends React.Props<any> {
+interface Props extends React.Props<any> {
   numPlayers: number;
   secondaryText?: string;
   tertiaryText?: string;
@@ -16,11 +16,11 @@ interface TimerCardProps extends React.Props<any> {
   onTimerStop: (elapsedMillis: number) => any;
 }
 
-export default class TimerCard extends React.Component<TimerCardProps, {}> {
+export default class TimerCard extends React.Component<Props, {}> {
   public interval: any;
   public state: {startTimeMillis: number, timeRemaining: number};
 
-  constructor(props: TimerCardProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {startTimeMillis: Date.now(), timeRemaining: this.props.roundTimeTotalMillis};
     this.interval = setInterval(() => {

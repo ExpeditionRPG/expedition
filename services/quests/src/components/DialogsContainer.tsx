@@ -8,7 +8,7 @@ import Dialogs, {DialogsDispatchProps, DialogsStateProps} from './Dialogs';
 
 const Joi = require('joi-browser');
 
-const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
+const mapStateToProps = (state: AppState): DialogsStateProps => {
   return {
     dialogs: state.dialogs,
     quest: state.quest,
@@ -16,7 +16,7 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DialogsDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DialogsDispatchProps => {
   return {
     handleMetadataChange: (quest: QuestType, key: string, value: any): void => {
       dispatch(questMetadataChange(quest, key, value));

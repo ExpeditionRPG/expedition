@@ -1,17 +1,17 @@
 import * as React from 'react';
 import {COLORBLIND_FRIENDLY_PALETTE} from '../../Constants';
 
-export interface TouchIndicatorProps extends React.Props<any> {
+export interface Props extends React.Props<any> {
   clientInputs: {[client: string]: {[id: string]: number[]}};
 }
 
-export default class TouchIndicator extends React.Component<TouchIndicatorProps, {}> {
+export default class TouchIndicator extends React.Component<Props, {}> {
   public ctx: any;
   public canvas: any;
   private boundDrawTouchPoints: () => void;
   public styles: any;
 
-  constructor(props: TouchIndicatorProps) {
+  constructor(props: Props) {
     super(props);
     this.boundDrawTouchPoints = this.drawTouchPoints.bind(this);
     this.styles = {
@@ -26,7 +26,7 @@ export default class TouchIndicator extends React.Component<TouchIndicatorProps,
     };
   }
 
-  public componentWillReceiveProps(nextProps: TouchIndicatorProps) {
+  public componentWillReceiveProps(nextProps: Props) {
     // Request a single animation frame every time our input values change,
     // instead of rendering continuously (saves render load).
     window.requestAnimationFrame(this.boundDrawTouchPoints);

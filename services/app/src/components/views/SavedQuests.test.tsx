@@ -1,11 +1,11 @@
 import {configure, render} from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
-import SavedQuests, {SavedQuestsProps} from './SavedQuests';
+import SavedQuests, {Props} from './SavedQuests';
 configure({ adapter: new Adapter() });
 
-function setup(props: Partial<SavedQuestsProps>) {
-  const wrapper = render(<SavedQuests {...(props as any as SavedQuestsProps)} />, undefined /*renderOptions*/);
+function setup(props: Partial<Props>) {
+  const wrapper = render(<SavedQuests {...(props as any as Props)} />, undefined /*renderOptions*/);
   return {props, wrapper};
 }
 

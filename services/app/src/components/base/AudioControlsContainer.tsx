@@ -2,16 +2,16 @@ import {connect} from 'react-redux';
 import Redux from 'redux';
 import {changeSettings} from '../../actions/Settings';
 import {AppState} from '../../reducers/StateTypes';
-import AudioControls, {AudioControlsDispatchProps, AudioControlsStateProps} from './AudioControls';
+import AudioControls, {DispatchProps, StateProps} from './AudioControls';
 
-const mapStateToProps = (state: AppState, ownProps: any): AudioControlsStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     audioEnabled: state.settings.audioEnabled,
     audioLoaded: state.audio.loaded,
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): AudioControlsDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onAudioToggle: (audioEnabled: boolean) => {
       dispatch(changeSettings({audioEnabled}));

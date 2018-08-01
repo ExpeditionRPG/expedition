@@ -6,17 +6,17 @@ import {MultiplayerState} from '../../reducers/StateTypes';
 export const FADE_ENTER_ANIMATION_MS = 500;
 export const FADE_EXIT_ANIMATION_MS = 500;
 
-export interface MultiplayerSyncStateProps {
+export interface StateProps {
   multiplayer: MultiplayerState;
 }
 
-export interface MultiplayerSyncDispatchProps {
+export interface DispatchProps {
   onAnimationComplete: () => any;
 }
 
-export interface MultiplayerSyncProps extends MultiplayerSyncStateProps, MultiplayerSyncDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
-class SyncContainer extends React.Component<MultiplayerSyncDispatchProps, {}> {
+class SyncContainer extends React.Component<DispatchProps, {}> {
   public componentDidMount() {
     setTimeout(() => {this.props.onAnimationComplete(); }, FADE_ENTER_ANIMATION_MS);
   }
@@ -26,7 +26,7 @@ class SyncContainer extends React.Component<MultiplayerSyncDispatchProps, {}> {
   }
 }
 
-export default class MultiplayerSync extends React.Component<MultiplayerSyncProps, {}> {
+export default class MultiplayerSync extends React.Component<Props, {}> {
 
   public render() {
     // TODO: this could be much more fancy.

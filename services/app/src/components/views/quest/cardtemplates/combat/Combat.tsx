@@ -1,20 +1,29 @@
+import AudioControlsContainer from 'app/components/base/AudioControlsContainer';
+import Button from 'app/components/base/Button';
+import Callout from 'app/components/base/Callout';
+import Card from 'app/components/base/Card';
+import Picker from 'app/components/base/Picker';
+import TimerCard from 'app/components/base/TimerCard';
+import {MAX_ADVENTURER_HEALTH, NODE_ENV} from 'app/Constants';
+import {Enemy, EventParameters, Loot} from 'app/reducers/QuestTypes';
+import {CardState, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {REGEX} from 'shared/Regex';
-import {MAX_ADVENTURER_HEALTH, NODE_ENV} from '../../../../../Constants';
-import {Enemy, EventParameters, Loot} from '../../../../../reducers/QuestTypes';
-import {CardState, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
-import AudioControlsContainer from '../../../../base/AudioControlsContainer';
-import Button from '../../../../base/Button';
-import Callout from '../../../../base/Callout';
-import Card from '../../../../base/Card';
-import Picker from '../../../../base/Picker';
-import TimerCard from '../../../../base/TimerCard';
+import {MAX_ADVENTURER_HEALTH, NODE_ENV} from 'app/Constants';
+import {Enemy, EventParameters, Loot} from 'app/reducers/QuestTypes';
+import {CardState, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import AudioControlsContainer from 'app/components/base/AudioControlsContainer';
+import Button from 'app/components/base/Button';
+import Callout from 'app/components/base/Callout';
+import Card from 'app/components/base/Card';
+import Picker from 'app/components/base/Picker';
+import TimerCard from 'app/components/base/TimerCard';
 import Roleplay from '../roleplay/Roleplay';
 import {ParserNode} from '../TemplateTypes';
 import {isSurgeNextRound, roundTimeMillis} from './Actions';
 import {CombatPhase, CombatState} from './Types';
 
-export interface CombatStateProps {
+export interface StateProps {
   card: CardState;
   combat: CombatState;
   maxTier: number;
@@ -28,7 +37,7 @@ export interface CombatStateProps {
   victoryParameters?: EventParameters;
 }
 
-export interface CombatDispatchProps {
+export interface DispatchProps {
   onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => void;
   onChoice: (node: ParserNode, settings: SettingsType, index: number, maxTier: number, seed: string) => void;
   onCustomEnd: () => void;
@@ -45,7 +54,7 @@ export interface CombatDispatchProps {
   onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
 }
 
-export interface CombatProps extends CombatStateProps, CombatDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 const numerals: {[k: number]: string; } = {
   1: 'I',
@@ -55,7 +64,7 @@ const numerals: {[k: number]: string; } = {
   5: 'V',
 };
 
-function renderSelectTier(props: CombatProps): JSX.Element {
+function renderSelectTier(props: Props): JSX.Element {
   const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
   return (
     <Card title="Draw Enemies" theme="dark" inQuest={true}>
@@ -72,7 +81,7 @@ function renderSelectTier(props: CombatProps): JSX.Element {
   );
 }
 
-function renderDrawEnemies(props: CombatProps): JSX.Element {
+function renderDrawEnemies(props: Props): JSX.Element {
   const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
   let repeatEnemy = false;
   let uniqueEnemy = false;
@@ -124,7 +133,7 @@ function renderDrawEnemies(props: CombatProps): JSX.Element {
   );
 }
 
-function renderNoTimer(props: CombatProps): JSX.Element {
+function renderNoTimer(props: Props): JSX.Element {
   // Note: similar help text in renderPrepareTimer()
   const surge = isSurgeNextRound(props.node.ctx.templates.combat);
   let helpText: JSX.Element = (<span></span>);
@@ -160,7 +169,7 @@ function renderNoTimer(props: CombatProps): JSX.Element {
   );
 }
 
-function renderPrepareTimer(props: CombatProps): JSX.Element {
+function renderPrepareTimer(props: Props): JSX.Element {
   // Note: similar help text in renderNoTimer()
   let helpText: JSX.Element = (<span></span>);
   if (props.settings.showHelp) {
@@ -194,7 +203,7 @@ function renderPrepareTimer(props: CombatProps): JSX.Element {
   );
 }
 
-function renderSurge(props: CombatProps): JSX.Element {
+function renderSurge(props: Props): JSX.Element {
   let helpText: JSX.Element = (<span></span>);
   if (props.settings.showHelp) {
     helpText = (
@@ -221,7 +230,7 @@ function renderSurge(props: CombatProps): JSX.Element {
   );
 }
 
-function renderResolve(props: CombatProps): JSX.Element {
+function renderResolve(props: Props): JSX.Element {
   let helpText: JSX.Element = (<p>Resolve all played abilities.</p>);
   const theHorror = (props.settings.contentSets.horror === true);
   if (props.settings.showHelp) {
@@ -271,7 +280,7 @@ function renderResolve(props: CombatProps): JSX.Element {
   );
 }
 
-function renderPlayerTier(props: CombatProps): JSX.Element {
+function renderPlayerTier(props: Props): JSX.Element {
   const nextCard: CombatPhase = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
 
   let shouldRunDecision = false;
@@ -323,7 +332,7 @@ function renderPlayerTier(props: CombatProps): JSX.Element {
   );
 }
 
-function renderVictory(props: CombatProps): JSX.Element {
+function renderVictory(props: Props): JSX.Element {
   const contents: JSX.Element[] = [];
   const theHorror = (props.settings.contentSets.horror === true);
 
@@ -385,7 +394,7 @@ function renderVictory(props: CombatProps): JSX.Element {
   );
 }
 
-function renderDefeat(props: CombatProps): JSX.Element {
+function renderDefeat(props: Props): JSX.Element {
   const helpfulHints = [
     <p>Remember, you can adjust combat difficulty at any time in the settings menu (in the top right).</p>,
     <p>Don't forget! Healing abilities and loot can be used on all adventurers, even those at 0 health.</p>,
@@ -418,7 +427,7 @@ function renderDefeat(props: CombatProps): JSX.Element {
   );
 }
 
-function renderTimerCard(props: CombatProps): JSX.Element {
+function renderTimerCard(props: Props): JSX.Element {
   const surge = isSurgeNextRound(props.node.ctx.templates.combat);
   const surgeWarning = (props.settings.difficulty === 'EASY' && surge) ? 'Surge Imminent' : undefined;
   let instruction: string|undefined;
@@ -451,7 +460,7 @@ function renderTimerCard(props: CombatProps): JSX.Element {
   );
 }
 
-function renderMidCombatRoleplay(props: CombatProps): JSX.Element {
+function renderMidCombatRoleplay(props: Props): JSX.Element {
   return Roleplay({
     node: props.node,
     onChoice: (settings: SettingsType, node: ParserNode, index: number) => {props.onChoice(props.node, settings, index, props.maxTier, props.seed); },
@@ -484,7 +493,7 @@ function capitalizeFirstLetter(input: string): string {
 
 // TODO: we should be rendering individual react components via the switch statement in Template,
 // not here (it makes the props more bloated and e.g. unit testing more difficult).
-const Combat = (props: CombatProps): JSX.Element => {
+const Combat = (props: Props): JSX.Element => {
   switch (props.card.phase) {
     case 'DRAW_ENEMIES':
       return (props.combat.custom) ? renderSelectTier(props) : renderDrawEnemies(props);

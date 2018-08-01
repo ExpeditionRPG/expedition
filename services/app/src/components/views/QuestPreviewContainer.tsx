@@ -7,9 +7,9 @@ import {openSnackbar} from '../../actions/Snackbar';
 import {fetchQuestXML} from '../../actions/Web';
 import {QuestDetails} from '../../reducers/QuestTypes';
 import {AppStateWithHistory, SavedQuestMeta} from '../../reducers/StateTypes';
-import QuestPreview, {QuestPreviewDispatchProps, QuestPreviewStateProps} from './QuestPreview';
+import QuestPreview, {DispatchProps, StateProps} from './QuestPreview';
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: QuestPreviewStateProps): QuestPreviewStateProps => {
+const mapStateToProps = (state: AppStateWithHistory): StateProps => {
   const savedInstances = state.saved.list.filter((s: SavedQuestMeta) => {
     return s.details.id === state.quest.details.id;
   });
@@ -23,7 +23,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: QuestPreviewState
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestPreviewDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onPlay: (quest: QuestDetails, isDirectLinked: boolean) => {
       if (isDirectLinked) {

@@ -1,6 +1,6 @@
-import {initialMultiplayer} from '../../../../../reducers/Multiplayer';
-import {DifficultyType, FontSizeType, MultiplayerState} from '../../../../../reducers/StateTypes';
-import {Action, newMockStore} from '../../../../../Testing';
+import {initialMultiplayer} from 'app/reducers/Multiplayer';
+import {DifficultyType, FontSizeType, MultiplayerState} from 'app/reducers/StateTypes';
+import {Action, newMockStore} from 'app/Testing';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {

@@ -2,10 +2,8 @@
   "extends": "tslint:recommended",
   "rules": {
     "quotemark": [true, "single", "jsx-double"],
-    "no-use-before-declare": true,
     "switch-default": true,
     "indent": [true, "spaces"],
-    "no-unused-variable": [true, "react"],
     "trailing-comma": [true, {
       "multiline": {
         "objects": "always",

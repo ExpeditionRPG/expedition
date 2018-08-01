@@ -10,20 +10,20 @@ import FeedbackViewContainer from './views/FeedbackViewContainer';
 import QuestsViewContainer from './views/QuestsViewContainer';
 import UsersViewContainer from './views/UsersViewContainer';
 
-export interface MainStateProps {
+export interface StateProps {
   loggedIn: boolean;
   snackbar: SnackbarState;
   view: ViewType;
 }
 
-export interface MainDispatchProps {
+export interface DispatchProps {
   onSnackbarClose: () => void;
   onViewChange: (view: ViewType) => void;
 }
 
-interface MainProps extends MainStateProps, MainDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
-const Main = (props: MainProps): JSX.Element => {
+const Main = (props: Props): JSX.Element => {
   if (props.loggedIn === false) {
     return (
       <SplashContainer/>

@@ -1,7 +1,7 @@
+import {CardState, CardThemeType} from 'app/reducers/StateTypes';
+import {getStore} from 'app/Store';
 import * as React from 'react';
 import Redux from 'redux';
-import {CardState, CardThemeType} from '../../../../reducers/StateTypes';
-import {getStore} from '../../../../Store';
 import {initCombat} from './combat/Actions';
 import CombatContainer from './combat/CombatContainer';
 import {combatScope} from './combat/Scope';

@@ -1,16 +1,17 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {toCard} from '../../../../../actions/Card';
-import {AppStateWithHistory} from '../../../../../reducers/StateTypes';
-import {EMPTY_DECISION_STATE, LeveledSkillCheck} from '../decision/Types';
+import {toCard} from 'app/actions/Card';
+import {AppStateWithHistory} from 'app/reducers/StateTypes';
+import {LeveledSkillCheck, EMPTY_DECISION_STATE} from '../decision/Types';
 import {ParserNode} from '../TemplateTypes';
 import {
   handleDecisionRoll,
   handleDecisionSelect,
 } from './Actions';
-import Decision, {DecisionDispatchProps, DecisionStateProps} from './Decision';
+import {DecisionState} from './Types';
+import Decision, {DispatchProps, StateProps} from './Decision';
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: DecisionStateProps): DecisionStateProps => {
+const mapStateToProps = (state: AppStateWithHistory, ownProps: StateProps): StateProps => {
   const decision = (ownProps.node && ownProps.node.ctx && ownProps.node.ctx.templates && ownProps.node.ctx.templates.decision) || EMPTY_DECISION_STATE;
 
   return {
@@ -23,7 +24,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: DecisionStateProp
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DecisionDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onSelect: (node: ParserNode, selected: LeveledSkillCheck, elapsedMillis: number) => {
       dispatch(handleDecisionSelect({node, elapsedMillis, selected}));

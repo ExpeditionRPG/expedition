@@ -5,21 +5,21 @@ import {CardName, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 
-export interface FeaturedQuestsStateProps {
+export interface StateProps {
   quests: QuestDetails[];
   settings: SettingsType;
   user: UserState;
 }
 
-export interface FeaturedQuestsDispatchProps {
+export interface DispatchProps {
   toCard: (name: CardName) => any;
   onSearchSelect: (user: UserState, settings: SettingsType) => any;
   onQuestSelect: (quest: QuestDetails) => any;
 }
 
-export interface FeaturedQuestsProps extends FeaturedQuestsStateProps, FeaturedQuestsDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
-const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
+const FeaturedQuests = (props: Props): JSX.Element => {
   const items: JSX.Element[] = props.quests
     .filter((quest: QuestDetails): boolean => {
       return (!quest.expansionhorror || props.settings.contentSets.horror);
@@ -48,7 +48,7 @@ const FeaturedQuests = (props: FeaturedQuestsProps): JSX.Element => {
       {!props.settings.simulator && props.settings.experimental &&
         <Button onClick={() => props.toCard('SAVED_QUESTS')} id="saved">
         <div className="questButtonWithIcon">
-          <div className="title"><img className="inline_icon" src="images/compass_small.svg"/>Saved Quests - Beta</div>
+          <div className="title"><img className="inline_icon" src="images/compass_small.svg"/>Saved & Offline Quests - Beta</div>
         </div>
       </Button>
       }

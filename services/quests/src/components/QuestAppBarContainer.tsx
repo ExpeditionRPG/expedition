@@ -6,14 +6,14 @@ import {renderAndPlay, setLine} from '../actions/Editor';
 import {publishQuestSetup, saveQuest, unpublishQuest} from '../actions/Quest';
 import {logoutUser} from '../actions/User';
 import {AnnotationType, AppState, EditorState, QuestType, UserState} from '../reducers/StateTypes';
-import QuestAppBar, {QuestAppBarDispatchProps, QuestAppBarStateProps} from './QuestAppBar';
+import QuestAppBar, {DispatchProps, StateProps} from './QuestAppBar';
 
 import {DOCS_INDEX_URL} from '../Constants';
 
 const math = require('mathjs') as any;
 const ReactGA = require('react-ga') as any;
 
-const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   // TODO optional chaining with babel 7
   const scope = (state.preview.quest &&
     state.preview.quest.node &&
@@ -28,7 +28,7 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestAppBarStateProps 
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestAppBarDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onMenuSelect: (action: QuestActionType, quest: QuestType) => {
       ReactGA.event({

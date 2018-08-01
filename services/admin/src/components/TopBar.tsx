@@ -13,17 +13,17 @@ import {UserState, ViewState, ViewType} from '../reducers/StateTypes';
 
 // TODO INCLUDE VERSION
 
-export interface TopBarStateProps {
+export interface StateProps {
   view: ViewState;
   user: UserState;
 }
 
-export interface TopBarDispatchProps {
+export interface DispatchProps {
   onUserDialogRequest: (user: UserState) => void;
   onFilterUpdate: (view: ViewType, filter: string) => void;
 }
 
-interface TopBarProps extends TopBarStateProps, TopBarDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
 const FILTER_DEBOUNCE = 750;
 export interface FilterProps {
@@ -71,7 +71,7 @@ export class Filter extends React.Component<FilterProps, {filter: string, lastFi
   }
 }
 
-const TopBar = (props: TopBarProps): JSX.Element => {
+const TopBar = (props: Props): JSX.Element => {
   // const loginText = 'Logged in as ' + props.user.displayName;
   const title = props.view.view;
   let warn = <span/>;
