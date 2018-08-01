@@ -10,22 +10,22 @@ const shift = ([, ...newArray]) => newArray;
 
 // MultiplayerRipple is copied with modifications from
 // https://github.com/callemall/material-ui/blob/master/src/internal/TouchRipple.js
-export interface MultiplayerRippleProps {
+export interface Props {
   opacity?: number;
   children: JSX.Element;
   id?: string;
   className?: string;
 }
 
-export interface MultiplayerRippleState {
+export interface State {
   hasRipples: boolean;
   nextKey: number;
   ripples: JSX.Element[];
 }
 
-export default class MultiplayerRipple extends React.Component<MultiplayerRippleProps, MultiplayerRippleState> {
+export default class MultiplayerRipple extends React.Component<Props, State> {
 
-  constructor(props: MultiplayerRippleProps) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {

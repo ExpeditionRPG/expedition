@@ -3,15 +3,15 @@ import Redux from 'redux';
 import {toCard} from '../../actions/Card';
 import {changeSettings} from '../../actions/Settings';
 import {AppState} from '../../reducers/StateTypes';
-import PartySizeSelect, {PartySizeSelectDispatchProps, PartySizeSelectStateProps} from './PartySizeSelect';
+import PartySizeSelect, {DispatchProps, StateProps} from './PartySizeSelect';
 
-const mapStateToProps = (state: AppState, ownProps: PartySizeSelectStateProps): PartySizeSelectStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     numPlayers: state.settings.numPlayers,
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): PartySizeSelectDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onDelta: (numPlayers: number, delta: number) => {
       numPlayers += delta;

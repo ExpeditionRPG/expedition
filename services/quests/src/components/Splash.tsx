@@ -6,12 +6,18 @@ import ExpeditionButton from 'app/components/base/Button';
 import * as React from 'react';
 import {UserState} from '../reducers/StateTypes';
 
-export interface SplashDispatchProps {
+export interface StateProps {
+  user: UserState;
+}
+
+export interface DispatchProps {
   onLogin: (position: string) => void;
   onNewQuest: (user: UserState) => void;
 }
 
-const Splash = (props: any): JSX.Element => {
+interface Props extends StateProps, DispatchProps {}
+
+const Splash = (props: Props): JSX.Element => {
   return (
     <div className="main splash">
       <AppBar className="splash_app_bar">

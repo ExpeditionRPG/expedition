@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-interface CalloutProps extends React.Props<any> {
+interface Props extends React.Props<any> {
   icon?: string;
 }
 
-export default class Callout extends React.Component<CalloutProps, {}> {
+export default class Callout extends React.Component<Props, {}> {
   public render() {
     let icon: JSX.Element = <span></span>;
     if (this.props.icon) {

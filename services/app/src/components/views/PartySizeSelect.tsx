@@ -3,18 +3,18 @@ import Button from '../base/Button';
 import Card from '../base/Card';
 import Picker from '../base/Picker';
 
-export interface PartySizeSelectStateProps {
+export interface StateProps {
   numPlayers: number;
 }
 
-export interface PartySizeSelectDispatchProps {
+export interface DispatchProps {
   onDelta: (numPlayers: number, delta: number) => void;
   onNext: () => void;
 }
 
-export interface PartySizeSelectProps extends PartySizeSelectStateProps, PartySizeSelectDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
-const PartySizeSelect = (props: PartySizeSelectProps): JSX.Element => {
+const PartySizeSelect = (props: Props): JSX.Element => {
   return (
     <Card title="Party Size">
       <Picker label="Adventurers" onDelta={(i: number) => props.onDelta(props.numPlayers, i)} value={props.numPlayers}>

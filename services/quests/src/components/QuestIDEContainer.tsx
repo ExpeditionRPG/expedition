@@ -3,9 +3,9 @@ import Redux from 'redux';
 import {setDialog} from '../actions/Dialogs';
 import {setLine, updateDirtyState} from '../actions/Editor';
 import {AppState} from '../reducers/StateTypes';
-import QuestIDE, {QuestIDEDispatchProps, QuestIDEStateProps} from './QuestIDE';
+import QuestIDE, {DispatchProps, StateProps} from './QuestIDE';
 
-const mapStateToProps = (state: AppState, ownProps: any): QuestIDEStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     annotations: [...state.annotations.spellcheck, ...state.annotations.playtest],
     lastSplitPaneDragMillis: state.editor.lastSplitPaneDragMillis,
@@ -19,7 +19,7 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestIDEStateProps => 
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestIDEDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onAnnotationClick: (annotations: number[]) => {
       dispatch(setDialog('ANNOTATION_DETAIL', true, annotations));

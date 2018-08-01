@@ -12,7 +12,7 @@ import SplashContainer from './SplashContainer';
 const numeral = require('numeral') as any;
 const SplitPane = require('react-split-pane') as any;
 
-export interface MainStateProps {
+export interface StateProps {
   editor: EditorState;
   loggedIn: boolean;
   bottomPanel: PanelType;
@@ -20,17 +20,17 @@ export interface MainStateProps {
   quest: QuestType;
 }
 
-export interface MainDispatchProps {
+export interface DispatchProps {
   onDragFinished: (size: number) => void;
   onLineNumbersToggle: () => void;
   onPanelToggle: (panel: PanelType) => void;
   onSnackbarClose: () => void;
 }
 
-interface MainProps extends MainStateProps, MainDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
-class Main extends React.Component<MainProps, {hasError: Error|null}> {
-  constructor(props: MainProps) {
+class Main extends React.Component<Props, {hasError: Error|null}> {
+  constructor(props: Props) {
     super(props);
     this.state = { hasError: null };
   }

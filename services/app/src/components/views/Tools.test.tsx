@@ -5,10 +5,10 @@ configure({ adapter: new Adapter() });
 
 import {initialSettings} from '../../reducers/Settings';
 import {loggedOutUser} from '../../reducers/User';
-import Tools, {ToolsProps} from './Tools';
+import Tools, {Props} from './Tools';
 
 function setup() {
-  const props: ToolsProps = {
+  const props: Props = {
     onCustomCombatSelect: jasmine.createSpy('onCustomCombatSelect'),
     onMultiplayerSelect: jasmine.createSpy('onMultiplayerSelect'),
     onPrivateQuestsSelect: jasmine.createSpy('onPrivateQuestsSelect'),

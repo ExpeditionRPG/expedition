@@ -7,21 +7,21 @@ import Card from '../base/Card';
 
 const Moment = require('moment');
 
-export interface SavedQuestsStateProps {
+export interface StateProps {
   saved: SavedQuestMeta[];
 }
 
-export interface SavedQuestsDispatchProps {
+export interface DispatchProps {
   onSelect: (selected: SavedQuestMeta) => void;
 }
 
-export interface SavedQuestsProps extends SavedQuestsStateProps, SavedQuestsDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 interface GroupedQuestSave extends SavedQuestMeta {
   numSaves: number;
 }
 
-const SavedQuests = (props: SavedQuestsProps): JSX.Element => {
+const SavedQuests = (props: Props): JSX.Element => {
   if (props.saved.length === 0) {
     return (
       <Card title="Saved & Offline Quests">

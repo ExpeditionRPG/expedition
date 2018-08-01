@@ -6,14 +6,14 @@ import {CardState, CheckoutState, QuestState, UserState} from '../../reducers/St
 import Button from '../base/Button';
 import Card from '../base/Card';
 
-export interface CheckoutStateProps extends React.Props<any> {
+export interface StateProps extends React.Props<any> {
   card: CardState;
   checkout: CheckoutState;
   quest: QuestState;
   user: UserState;
 }
 
-export interface CheckoutDispatchProps {
+export interface DispatchProps {
   onError: (error: string) => void;
   onHome: () => void;
   onPhaseChange: (phase: string) => void;
@@ -21,13 +21,13 @@ export interface CheckoutDispatchProps {
   onSubmit: (stripeToken: string, checkout: CheckoutState, user: UserState) => void;
 }
 
-export interface CheckoutProps extends CheckoutStateProps, CheckoutDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
 // Docs: https://stripe.com/docs/stripe-js
-class CheckoutForm extends React.Component<CheckoutProps, {}> {
+class CheckoutForm extends React.Component<Props, {}> {
   public state: { card: stripe.elements.Element, paymentError: string|null, paymentValid: boolean, mounted: boolean };
 
-  constructor(props: CheckoutProps) {
+  constructor(props: Props) {
     super(props);
     let stripe = this.props.checkout.stripe;
     if (!stripe) {
@@ -100,7 +100,7 @@ class CheckoutForm extends React.Component<CheckoutProps, {}> {
   }
 }
 
-function renderCheckoutThankYou(props: CheckoutProps) {
+function renderCheckoutThankYou(props: Props) {
   return (
     <Card title="Payment Complete">
       <div className="centralMessage">
@@ -112,7 +112,7 @@ function renderCheckoutThankYou(props: CheckoutProps) {
   );
 }
 
-export default class Checkout extends React.Component<CheckoutProps, {}> {
+export default class Checkout extends React.Component<Props, {}> {
   public render() {
     switch (this.props.card.phase) {
       case 'ENTRY':

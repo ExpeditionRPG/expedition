@@ -1,13 +1,13 @@
+import {toCard, toPrevious} from 'app/actions/Card';
+import {event} from 'app/actions/Quest';
+import {MAX_ADVENTURER_HEALTH} from 'app/Constants';
+import {logEvent} from 'app/Logging';
+import {getMultiplayerClient} from 'app/Multiplayer';
+import {EventParameters} from 'app/reducers/QuestTypes';
+import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
+import {getStore} from 'app/Store';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {toCard, toPrevious} from '../../../../../actions/Card';
-import {event} from '../../../../../actions/Quest';
-import {MAX_ADVENTURER_HEALTH} from '../../../../../Constants';
-import {logEvent} from '../../../../../Logging';
-import {getMultiplayerClient} from '../../../../../Multiplayer';
-import {EventParameters} from '../../../../../reducers/QuestTypes';
-import {AppStateWithHistory, SettingsType} from '../../../../../reducers/StateTypes';
-import {getStore} from '../../../../../Store';
 import {
   handleDecisionRoll,
   handleDecisionSelect,
@@ -27,10 +27,10 @@ import {
   tierSumDelta,
   toDecisionCard
 } from './Actions';
-import Combat, {CombatDispatchProps, CombatStateProps} from './Combat';
+import Combat, {DispatchProps, StateProps} from './Combat';
 import {CombatPhase, CombatState} from './Types';
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps): CombatStateProps => {
+const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   let maxTier = 0;
   let histIdx: number = state._history.length - 1;
   // card.phase currently represents combat boundaries - non-combat cards don't use phases
@@ -47,7 +47,13 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
     }
   }
 
-  const combatFromNode = (ownProps.node && ownProps.node.ctx && ownProps.node.ctx.templates && ownProps.node.ctx.templates.combat);
+  const card = ownProps.card;
+  const node = ownProps.node;
+  if (!node || !card) {
+    throw Error('Incomplete props given');
+  }
+
+  const combatFromNode = (node && node.ctx && node.ctx.templates && node.ctx.templates.combat);
   const combat: CombatState = combatFromNode || generateCombatTemplate(state.settings, false, state.quest.node, getStore().getState);
 
   let victoryParameters: EventParameters = {
@@ -57,7 +63,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
   };
   if (combatFromNode) {
     if (!combat.custom) {
-      const parsedParams = ownProps.node.getEventParameters('win');
+      const parsedParams = node.getEventParameters('win');
       if (parsedParams !== null) {
         victoryParameters = parsedParams;
       }
@@ -67,13 +73,13 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
   const stateCombat = (state.quest.node && state.quest.node.ctx && state.quest.node.ctx.templates && state.quest.node.ctx.templates.combat)
     || {tier: 0, mostRecentRolls: [10], numAliveAdventurers: 1};
 
-  const decision = (ownProps.node && ownProps.node.ctx && ownProps.node.ctx.templates && ownProps.node.ctx.templates.decision)
+  const decision = (node && node.ctx && node.ctx.templates && node.ctx.templates.decision)
   || EMPTY_DECISION_STATE;
 
   // Override with dynamic state for tier and adventurer count
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
-    card: ownProps.card,
+    card,
     combat,
     decision,
     maxTier,
@@ -88,7 +94,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: CombatStateProps)
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CombatDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => {
       dispatch(adventurerDelta({node, settings, current, delta}));

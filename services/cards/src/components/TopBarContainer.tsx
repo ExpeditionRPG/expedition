@@ -3,15 +3,15 @@ import Redux from 'redux';
 import {downloadCards} from '../actions/Cards';
 import {filterChange} from '../actions/Filters';
 import {AppState} from '../reducers/StateTypes';
-import TopBar, {TopBarDispatchProps, TopBarStateProps} from './TopBar';
+import TopBar, {DispatchProps, StateProps} from './TopBar';
 
-const mapStateToProps = (state: AppState, ownProps: any): TopBarStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     filters: state.filters,
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): TopBarDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     downloadCards: () => {
       dispatch(downloadCards());

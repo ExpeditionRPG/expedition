@@ -5,7 +5,7 @@ import {Provider} from 'react-redux';
 import {AnnotationType, TutorialState} from '../reducers/StateTypes';
 import TextView from './base/TextView';
 
-export interface QuestIDEStateProps {
+export interface StateProps {
   annotations: AnnotationType[];
   lastSplitPaneDragMillis: number;
   line: number;
@@ -17,15 +17,15 @@ export interface QuestIDEStateProps {
   tutorial: TutorialState;
 }
 
-export interface QuestIDEDispatchProps {
+export interface DispatchProps {
   onAnnotationClick: (annotations: number[]) => void;
   onDirty: (realtime: any, text: string) => void;
   onLine: (line: number) => void;
 }
 
-interface QuestIDEProps extends QuestIDEStateProps, QuestIDEDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
-const QuestIDE = (props: QuestIDEProps): JSX.Element => {
+const QuestIDE = (props: Props): JSX.Element => {
   return (
     <div className="quest_ide">
       <div className="editor">

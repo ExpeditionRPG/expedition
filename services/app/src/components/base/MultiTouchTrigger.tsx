@@ -3,18 +3,18 @@ import {InteractionEvent} from 'shared/multiplayer/Events';
 import MultiplayerAffector from '../multiplayer/MultiplayerAffector';
 import TouchIndicator from './TouchIndicator';
 
-interface MultiTouchTriggerProps extends React.Props<any> {
+interface Props extends React.Props<any> {
   id?: string;
   onTouchChange: (touches: any) => any;
 }
-interface MultiTouchTriggerState {
+interface State {
   clientInputs: {[client: string]: {[id: string]: number[]}};
   lastTouchSum: number;
   mouseDown: boolean;
 }
-export default class MultiTouchTrigger extends React.Component<MultiTouchTriggerProps, MultiTouchTriggerState> {
+export default class MultiTouchTrigger extends React.Component<Props, State> {
 
-  constructor(props: MultiTouchTriggerProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {clientInputs: {}, lastTouchSum: 0, mouseDown: false};
   }
