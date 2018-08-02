@@ -1,9 +1,9 @@
+import Button from 'app/components/base/Button';
+import Card from 'app/components/base/Card';
+import {CardPhase, CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import * as pluralize from 'pluralize';
 import * as React from 'react';
 import {Outcome} from 'shared/schema/templates/Decision';
-import {CardState, CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
-import Button from 'app/components/base/Button';
-import Card from 'app/components/base/Card';
 import {generateIconElements} from '../Render';
 import {ParserNode} from '../TemplateTypes';
 import {computeOutcome, computeSuccesses, skillTimeMillis} from './Actions';
@@ -11,7 +11,7 @@ import DecisionTimer from './DecisionTimer';
 import {DecisionState, LeveledSkillCheck} from './Types';
 
 export interface StateProps {
-  card: CardState;
+  phase: CardPhase;
   decision: DecisionState;
   multiplayerState: MultiplayerState;
   node: ParserNode;
@@ -111,7 +111,7 @@ export function renderResolveDecision(props: Props, theme: CardThemeType): JSX.E
 
 const Decision = (props: Props, theme: CardThemeType|{}): JSX.Element => {
   const resolvedTheme: CardThemeType = (typeof(theme) !== 'string') ? 'light' : theme;
-  switch (props.card.phase) {
+  switch (props.phase) {
     case 'PREPARE_DECISION':
       return renderPrepareDecision(props, resolvedTheme);
     case 'DECISION_TIMER':
@@ -119,7 +119,7 @@ const Decision = (props: Props, theme: CardThemeType|{}): JSX.Element => {
     case 'RESOLVE_DECISION':
       return renderResolveDecision(props, resolvedTheme);
     default:
-      throw new Error('Unknown decision phase ' + props.card.phase);
+      throw new Error('Unknown decision phase ' + props.phase);
   }
 };
 

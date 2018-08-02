@@ -1,17 +1,13 @@
 import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
-import {audioSet} from 'app/actions/Audio';
-import {PLAYER_TIME_MULT} from 'app/Constants';
-import {AppStateWithHistory, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
-import Redux from 'redux';
-import {extractSkillCheck, Outcome, SkillCheck} from 'shared/schema/templates/Decision';
-import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
 import {toCard} from 'app/actions/Card';
 import {event} from 'app/actions/Quest';
 import {PLAYER_TIME_MULT} from 'app/Constants';
 import {AppStateWithHistory, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import Redux from 'redux';
+import {extractSkillCheck, Outcome, SkillCheck} from 'shared/schema/templates/Decision';
 import {numAdventurers, numPlayers} from '../PlayerCount';
 import {ParserNode} from '../TemplateTypes';
-import {DecisionState, LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
+import {LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
 
 interface InitDecisionArgs {
   node: ParserNode;

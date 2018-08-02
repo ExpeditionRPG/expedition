@@ -1,23 +1,25 @@
+import {toCard} from 'app/actions/Card';
+import {AppState} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {toCard, toPrevious} from 'app/actions/Card';
-import {logEvent} from 'app/Logging';
-import MidCombatDecision, {DispatchProps, StateProps} from './MidCombatDecision';
 import {handleDecisionSelect} from '../../decision/Actions';
 import {EMPTY_DECISION_STATE, LeveledSkillCheck} from '../../decision/Types';
+import {ParserNode} from '../../TemplateTypes';
 import {
   handleCombatDecisionRoll,
-  setupCombatDecision,
   toDecisionCard,
 } from './Actions';
+import MidCombatDecision, {DispatchProps, StateProps} from './MidCombatDecision';
 
-const mapStateToProps = (state: AppState, ownProps: any): StateProps => {
+const mapStateToProps = (state: AppState, ownProps: Partial<StateProps>): StateProps => {
   const decision = (ownProps.node && ownProps.node.ctx && ownProps.node.ctx.templates && ownProps.node.ctx.templates.decision)
   || EMPTY_DECISION_STATE;
 
+  const phase = (ownProps.node && ownProps.node.ctx && ownProps.node.ctx.templates && ownProps.node.ctx.templates.combat && ownProps.node.ctx.templates.combat.decisionPhase) || 'PREPARE_DECISION';
+
   return {
-    card: ownProps.card,
     decision,
+    phase,
     multiplayerState: state.multiplayer,
     node: state.quest.node,
     seed: state.quest.seed,
@@ -25,30 +27,27 @@ const mapStateToProps = (state: AppState, ownProps: any): StateProps => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onDecisionSetup: (node: ParserNode, seed: string) => {
-      dispatch(setupCombatDecision({node, seed}));
-    },
-    onDecisionSelect: (node: ParserNode, selected: LeveledSkillCheck, elapsedMillis: number) => {
+    onSelect: (node: ParserNode, selected: LeveledSkillCheck, elapsedMillis: number) => {
       dispatch(handleDecisionSelect({node, elapsedMillis, selected}));
       dispatch(toDecisionCard({phase: 'RESOLVE_DECISION'}));
     },
-    onDecisionEnd: () => {
+    onEnd: () => {
       dispatch(toCard({name: 'QUEST_CARD', phase: 'PREPARE'}));
     },
-    onDecisionRoll: (node: ParserNode, roll: number) => {
+    onRoll: (node: ParserNode, roll: number) => {
       dispatch(handleCombatDecisionRoll({node, roll}));
     },
-    onDecisionTimerStart: () => {
+    onTimerStart: () => {
       dispatch(toDecisionCard({phase: 'DECISION_TIMER'}));
     },
   };
 };
 
-const CheckoutContainer = connect(
+const MidCombatDecisionContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Checkout);
+)(MidCombatDecision);
 
-export default CheckoutContainer;
+export default MidCombatDecisionContainer;

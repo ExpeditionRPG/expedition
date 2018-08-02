@@ -8,14 +8,6 @@ import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {toCard, toPrevious} from 'app/actions/Card';
-import {event} from 'app/actions/Quest';
-import {MAX_ADVENTURER_HEALTH} from 'app/Constants';
-import {logEvent} from 'app/Logging';
-import {getMultiplayerClient} from 'app/Multiplayer';
-import {EventParameters} from 'app/reducers/QuestTypes';
-import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
-import {getStore} from 'app/Store';
 import {ParserNode} from '../TemplateTypes';
 import {
   adventurerDelta,
@@ -27,7 +19,8 @@ import {
   handleResolvePhase,
   tierSumDelta,
 } from './Actions';
-import Combat, {CombatDispatchProps, CombatStateProps} from './Combat';
+import Combat, {DispatchProps, StateProps} from './Combat';
+import {setupCombatDecision} from './decision/Actions';
 import {
   midCombatChoice,
 } from './roleplay/Actions';
@@ -103,6 +96,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onCustomEnd: () => {
       dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: false}));
+    },
+    onDecisionSetup: (node: ParserNode, seed: string) => {
+      dispatch(setupCombatDecision({node, seed}));
     },
     onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {
       logEvent('combat_defeat', {

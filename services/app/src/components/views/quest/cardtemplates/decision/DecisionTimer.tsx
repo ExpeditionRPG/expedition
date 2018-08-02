@@ -2,7 +2,7 @@ import Button from 'app/components/base/Button';
 import {CardThemeType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import * as React from 'react';
-import {DecisionType, LeveledSkillCheck} from './Types';
+import {LeveledSkillCheck} from './Types';
 
 interface DecisionTimerProps extends React.Props<any> {
   checks: LeveledSkillCheck[];

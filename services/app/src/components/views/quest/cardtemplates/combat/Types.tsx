@@ -1,6 +1,5 @@
 import {Enemy, Loot} from 'app/reducers/QuestTypes';
 import {DecisionPhase} from '../decision/Types';
-import {ParserNode} from '../TemplateTypes';
 
 export interface CombatAttack {
   surge: boolean;

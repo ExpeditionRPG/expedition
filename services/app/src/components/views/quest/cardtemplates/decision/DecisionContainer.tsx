@@ -1,21 +1,20 @@
-import {connect} from 'react-redux';
-import Redux from 'redux';
 import {toCard} from 'app/actions/Card';
 import {AppStateWithHistory} from 'app/reducers/StateTypes';
-import {LeveledSkillCheck, EMPTY_DECISION_STATE} from '../decision/Types';
+import {connect} from 'react-redux';
+import Redux from 'redux';
+import {EMPTY_DECISION_STATE, LeveledSkillCheck} from '../decision/Types';
 import {ParserNode} from '../TemplateTypes';
 import {
   handleDecisionRoll,
   handleDecisionSelect,
 } from './Actions';
-import {DecisionState} from './Types';
 import Decision, {DispatchProps, StateProps} from './Decision';
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: StateProps): StateProps => {
+const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   const decision = (ownProps.node && ownProps.node.ctx && ownProps.node.ctx.templates && ownProps.node.ctx.templates.decision) || EMPTY_DECISION_STATE;
 
   return {
-    card: ownProps.card,
+    phase: ownProps.phase || 'PREPARE_DECISION',
     decision,
     multiplayerState: state.multiplayer,
     node: state.quest.node,

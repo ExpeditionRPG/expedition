@@ -1,22 +1,12 @@
+import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
-import * as seedrandom from 'seedrandom';
 import {QuestNodeAction, remoteify} from '../../../../../../actions/ActionTypes';
-import {audioSet} from '../../../../../../actions/Audio';
 import {toCard} from '../../../../../../actions/Card';
-import {setMultiplayerStatus} from '../../../../../../actions/Multiplayer';
-import {endQuest, loadNode} from '../../../../../../actions/Quest';
-import {COMBAT_DIFFICULTY, MUSIC_INTENSITY_MAX, PLAYER_TIME_MULT} from '../../../../../../Constants';
-import {PLAYER_DAMAGE_MULT} from '../../../../../../Constants';
-import {ENCOUNTERS} from '../../../../../../Encounters';
-import {Enemy, Loot} from '../../../../../../reducers/QuestTypes';
-import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} from '../../../../../../reducers/StateTypes';
-import {getStore} from '../../../../../../Store';
 import {generateLeveledChecks, pushDecisionRoll} from '../../decision/Actions';
 import {DecisionPhase, DecisionState, EMPTY_DECISION_STATE} from '../../decision/Types';
-import {numAdventurers, numPlayers} from '../../PlayerCount';
-import {defaultContext} from '../../Template';
+import {numAdventurers} from '../../PlayerCount';
 import {ParserNode} from '../../TemplateTypes';
-import {CombatAttack, CombatDifficultySettings, CombatState} from '../Types';
+import {CombatState} from '../Types';
 
 function resolveParams(node: ParserNode|undefined, getState: () => AppStateWithHistory): {node: ParserNode, decision: DecisionState, combat: CombatState} {
   node = (node && node.clone()) || getState().quest.node.clone();
@@ -28,9 +18,9 @@ function resolveParams(node: ParserNode|undefined, getState: () => AppStateWithH
   return {node, decision, combat};
 }
 
-export function generateCombatDecision(numAdventurers: number): DecisionState {
+export function generateCombatDecision(adventurers: number): DecisionState {
   return {
-    leveledChecks: generateLeveledChecks(numAdventurers),
+    leveledChecks: generateLeveledChecks(adventurers),
     selected: null,
     rolls: [],
   };
@@ -62,7 +52,7 @@ interface HandleCombatDecisionRollArgs {
   roll: number;
 }
 export const handleCombatDecisionRoll = remoteify(function handleCombatDecisionRoll(a: HandleCombatDecisionRollArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): HandleCombatDecisionRollArgs|null {
-  const {node, combat, decision} = resolveParams(a.node, getState);
+  const {node} = resolveParams(a.node, getState);
   pushDecisionRoll(node, a.roll, getState);
   dispatch(toDecisionCard({phase: 'RESOLVE_DECISION', node}));
   return {
@@ -76,7 +66,7 @@ interface ToDecisionCardArgs {
   settings?: SettingsType;
 }
 export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCardArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ToDecisionCardArgs {
-  const {node, combat, decision} = resolveParams(a.node, getState);
+  const {node, decision, combat} = resolveParams(a.node, getState);
   combat.decisionPhase = a.phase;
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);

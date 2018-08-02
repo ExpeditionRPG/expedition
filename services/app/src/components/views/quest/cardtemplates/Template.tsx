@@ -4,6 +4,7 @@ import * as React from 'react';
 import Redux from 'redux';
 import {initCombat} from './combat/Actions';
 import CombatContainer from './combat/CombatContainer';
+import MidCombatDecisionContainer from './combat/decision/MidCombatDecisionContainer';
 import {combatScope} from './combat/Scope';
 import {initDecision} from './decision/Actions';
 import DecisionContainer from './decision/DecisionContainer';
@@ -27,13 +28,14 @@ export function initCardTemplate(node: ParserNode) {
 }
 
 export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Element {
-  switch (card.phase || 'ROLEPLAY') {
+  const phase = card.phase || 'ROLEPLAY';
+  switch (phase) {
     case 'ROLEPLAY':
       return <RoleplayContainer node={node}/>;
     case 'PREPARE_DECISION':
     case 'DECISION_TIMER':
     case 'RESOLVE_DECISION':
-      return <DecisionContainer card={card} node={node}/>;
+      return <DecisionContainer phase={phase} node={node}/>;
     case 'DRAW_ENEMIES':
     case 'PREPARE':
     case 'TIMER':
@@ -46,7 +48,7 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
     case 'MID_COMBAT_ROLEPLAY':
       return <CombatContainer card={card} node={node}/>;
     case 'MID_COMBAT_DECISION':
-      return <MidCombatDecisionContainer card={card} node={node}/>;
+      return <MidCombatDecisionContainer phase={phase} node={node}/>;
     default:
       throw new Error('Unknown template for card phase ' + card.phase);
   }

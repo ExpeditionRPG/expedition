@@ -5,25 +5,26 @@ configure({ adapter: new Adapter() });
 import {initialCardState} from 'app/reducers/Card';
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
-import {CardPhase} from 'app/reducers/StateTypes';
+import {CardPhase, AppStateWithHistory} from 'app/reducers/StateTypes';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {generateCombatTemplate} from './Actions';
-import Combat, {CombatProps} from './Combat';
+import Combat, {Props} from './Combat';
+import {ENCOUNTERS} from 'app/Encounters';
+import {CombatState} from './Types';
 
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
-function setup(phase: CardPhase, overrides: Partial<CombatProps>) {
-  const settings = initialSettings;
-  const multiplayerState = initialMultiplayer;
-  const node = TEST_NODE.clone();
-  const combat = generateCombatTemplate(settings, false, node, () => ({multiplayer: multiplayerState}));
+function newCombat(node: ParserNode): CombatState {
+  return generateCombatTemplate(initialSettings, false, node, () => ({multiplayer: initialMultiplayer} as any as AppStateWithHistory));
+}
 
-  const props: CombatProps = {
-    settings,
-    combat,
-    node,
-    multiplayerState,
+function setup(phase: CardPhase, overrides: Partial<Props>) {
+  const props: Props = {
+    settings: initialSettings,
+    combat: newCombat(TEST_NODE),
+    node: TEST_NODE.clone(),
+    multiplayerState: initialMultiplayer,
     card: {...initialCardState, name: 'QUEST_CARD', phase},
     maxTier: 4,
     numAliveAdventurers: 3,
@@ -34,6 +35,7 @@ function setup(phase: CardPhase, overrides: Partial<CombatProps>) {
     onAdventurerDelta: jasmine.createSpy('onAdventurerDelta'),
     onChoice: jasmine.createSpy('onChoice'),
     onCustomEnd: jasmine.createSpy('onCustomEnd'),
+    onDecisionSetup: jasmine.createSpy('onDecisionSetup'),
     onDefeat: jasmine.createSpy('onDefeat'),
     onEvent: jasmine.createSpy('onEvent'),
     onNext: jasmine.createSpy('onNext'),
@@ -53,7 +55,14 @@ function setup(phase: CardPhase, overrides: Partial<CombatProps>) {
 
 describe('Combat', () => {
   describe('DRAW_ENEMIES', () => {
-    it('renders all enemies in props');
+    it('renders all enemies in props', () => {
+      let combat = newCombat(TEST_NODE);
+      combat.enemies.push(ENCOUNTERS['thief']);
+      combat.enemies.push(ENCOUNTERS['brigand']);
+      combat.enemies.push(ENCOUNTERS['footpad']);
+      const {enzymeWrapper} = setup('DRAW_ENEMIES', {combat});
+      expect(enzymeWrapper.find('h2.draw_enemies').map(e => e.text())).toEqual(['Thief (I)', 'Brigand (II)', 'Footpad (II)']);
+    });
   });
 
   describe('NO_TIMER', () => {

@@ -1,20 +1,11 @@
+import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
+import {audioSet} from 'app/actions/Audio';
+import {toCard} from 'app/actions/Card';
+import {endQuest, loadNode} from 'app/actions/Quest';
+import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
-import * as seedrandom from 'seedrandom';
-import {QuestNodeAction, remoteify} from '../../../../../../actions/ActionTypes';
-import {audioSet} from '../../../../../../actions/Audio';
-import {toCard} from '../../../../../../actions/Card';
-import {setMultiplayerStatus} from '../../../../../../actions/Multiplayer';
-import {endQuest, loadNode} from '../../../../../../actions/Quest';
-import {COMBAT_DIFFICULTY, MUSIC_INTENSITY_MAX, PLAYER_TIME_MULT} from '../../../../../../Constants';
-import {PLAYER_DAMAGE_MULT} from '../../../../../../Constants';
-import {ENCOUNTERS} from '../../../../../../Encounters';
-import {Enemy, Loot} from '../../../../../../reducers/QuestTypes';
-import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} from '../../../../../../reducers/StateTypes';
-import {getStore} from '../../../../../../Store';
-import {defaultContext} from '../../Template';
 import {ParserNode} from '../../TemplateTypes';
 import {handleCombatEnd} from '../Actions';
-import {CombatAttack, CombatDifficultySettings, CombatState} from '../Types';
 
 function findCombatParent(node: ParserNode) {
   let elem = node && node.elem;
