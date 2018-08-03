@@ -173,9 +173,12 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
     };
 
     // If we're not rating, we're providing other feedback.
-    // Provide a snapshot of the console to facilitate bug-hunting
+    // Provide a line number and snapshot of the console to facilitate bug-hunting
     if (!a.rating) {
       data.console = getLogBuffer();
+    }
+    if (a.quest && a.quest.node && a.quest.node.elem) {
+      data.questline = a.quest.node.elem.data('line');
     }
 
     dispatch(ensureLogin())

@@ -98,6 +98,7 @@ const basicFeedback = new Feedback({
   platform: 'ios',
   players: 5,
   questid: 'questid',
+  questline: 321,
   questversion: 1,
   rating: 0,
   text: 'This is feedback!',
