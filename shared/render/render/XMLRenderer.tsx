@@ -1,6 +1,7 @@
 import {Instruction, TEMPLATE_ATTRIBUTE_MAP, TEMPLATE_ATTRIBUTE_SHORTHAND, TemplateChild, TemplateType} from '../../schema/templates/Templates';
 import {Renderer, sanitizeStyles} from './Renderer';
 
+const Math = require('mathjs') as any;
 const cheerio: any = require('cheerio') as CheerioAPI;
 
 // from https://stackoverflow.com/questions/7918868/how-to-escape-xml-entities-in-javascript
@@ -49,8 +50,11 @@ export const XMLRenderer: Renderer = {
         const visible = (text.match(INITIAL_OP_WITH_PARAGRAPH) || [])[1];
         let paragraph = `<p>${sanitizeStyles(text)}</p>`;
         if (visible) {
-          text = text.replace('{{' + visible + '}}', '');
-          paragraph = `<p if="${escapeXml(visible)}">${sanitizeStyles(text)}</p>`;
+          const visibleTree = Math.parse(visible);
+          if (visibleTree.type === 'OperatorNode') {
+            text = text.replace('{{' + visible + '}}', '');
+            paragraph = `<p if="${escapeXml(visible)}">${sanitizeStyles(text)}</p>`;
+          }
         }
         tmpl.append(paragraph);
       } else if (Boolean((section as TemplateChild).outcome)) { // choice or event
