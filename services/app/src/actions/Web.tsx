@@ -176,6 +176,8 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
     // Provide a line number and snapshot of the console to facilitate bug-hunting
     if (!a.rating) {
       data.console = getLogBuffer();
+    }
+    if (a.quest && a.quest.node && a.quest.node.elem) {
       data.questline = a.quest.node.elem.data('line');
     }
 
