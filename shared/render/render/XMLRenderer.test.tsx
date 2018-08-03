@@ -35,6 +35,25 @@ describe('XMLRenderer', () => {
     });
 
     it('renders decision'); // TODO
+
+    it('renders conditional ops as ifs', () => {
+      expect(XMLRenderer.toTemplate('roleplay', {}, ['{{ gold == 0 }} Test'], 0).toString())
+        .toEqual('<roleplay data-line="0"><p if=" gold == 0 "> Test</p></roleplay>');
+    });
+
+    it('renders nonconditional ops as output', () => {  
+      expect(XMLRenderer.toTemplate('roleplay', {}, ['{{ gold }}'], 0).toString())
+      .toEqual('<roleplay data-line="0"><p>{{ gold }}</p></roleplay>');
+
+      expect(XMLRenderer.toTemplate('roleplay', {}, ['{{ gold }} Test'], 0).toString())
+        .toEqual('<roleplay data-line="0"><p>{{ gold }} Test</p></roleplay>');
+        
+      expect(XMLRenderer.toTemplate('roleplay', {}, ['{{ gold }}', 'Test on a new line'], 0).toString())
+      .toEqual('<roleplay data-line="0"><p>{{ gold }} Test on a new line</p></roleplay>');
+      
+      expect(XMLRenderer.toTemplate('roleplay', {}, ['{{ test = false }}', '{{ gold = 10 }}'], 0).toString())
+        .toEqual('<roleplay data-line="0"><p>{{ test = false }} {{ gold = 10 }}</p></roleplay>');
+    });
   });
 
   describe('toTrigger', () => {
