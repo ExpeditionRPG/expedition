@@ -16,3 +16,5 @@ cache:
 before_script:
 - yarn run build-all
 before_deploy: "pip install awscli --upgrade --user"
+notifications:
+  email: false
