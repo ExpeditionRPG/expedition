@@ -4,11 +4,13 @@ import * as React from 'react';
 configure({ adapter: new Adapter() });
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
+import Decision from '../Decision';
 import {defaultContext} from '../../Template';
 import {ParserNode} from '../../TemplateTypes';
-import MidCombatDecision, {Props} from './MidCombatDecision';
 import {generateCombatDecision} from './Actions';
+import MidCombatDecision, {Props} from './MidCombatDecision';
 
+const cheerio: any = require('cheerio');
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
 function setup(overrides: Partial<Props>) {
@@ -35,12 +37,11 @@ function setup(overrides: Partial<Props>) {
 }
 
 describe('MidCombatDecision', () => {
-  it('shows a Decision element when no scenario chosen', () => {
+  it('shows a "roll & resolve" element when outcome is null', () => {
     const {enzymeWrapper} = setup({});
-    expect(enzymeWrapper.type()).toEqual('Decision');
+    expect(enzymeWrapper.props('title')).toEqual('Resolve Check');
   });
-
-  it('shows a Decision element when outcome=retry');
+  it('shows a "roll & resolve" element when outcome=retry');
   it('shows success page on outcome=success');
   it('shows failure page on outcome=failure');
   it('shows interrupted page on outcome=interrupted');

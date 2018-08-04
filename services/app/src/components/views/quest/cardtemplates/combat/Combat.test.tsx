@@ -5,15 +5,15 @@ configure({ adapter: new Adapter() });
 import {initialCardState} from 'app/reducers/Card';
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
-import {CardPhase, AppStateWithHistory} from 'app/reducers/StateTypes';
+import {AppStateWithHistory, CardPhase} from 'app/reducers/StateTypes';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {generateCombatTemplate} from './Actions';
 import Combat, {Props} from './Combat';
-import {ENCOUNTERS} from 'app/Encounters';
 import {CombatState} from './Types';
 
-const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
+const cheerio: any = require('cheerio');
+const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Thief</e><e>Brigand</e><e>Footpad</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
 function newCombat(node: ParserNode): CombatState {
   return generateCombatTemplate(initialSettings, false, node, () => ({multiplayer: initialMultiplayer} as any as AppStateWithHistory));
@@ -56,12 +56,13 @@ function setup(phase: CardPhase, overrides: Partial<Props>) {
 describe('Combat', () => {
   describe('DRAW_ENEMIES', () => {
     it('renders all enemies in props', () => {
-      let combat = newCombat(TEST_NODE);
-      combat.enemies.push(ENCOUNTERS['thief']);
-      combat.enemies.push(ENCOUNTERS['brigand']);
-      combat.enemies.push(ENCOUNTERS['footpad']);
+      const combat = newCombat(TEST_NODE);
       const {enzymeWrapper} = setup('DRAW_ENEMIES', {combat});
-      expect(enzymeWrapper.find('h2.draw_enemies').map(e => e.text())).toEqual(['Thief (I)', 'Brigand (II)', 'Footpad (II)']);
+      expect(enzymeWrapper.find('h2.draw_enemies').map((e) => e.text())).toEqual([
+        'Thief (Tier I )',
+        'Brigand (Tier I )',
+        'Footpad (Tier I )',
+      ]);
     });
   });
 

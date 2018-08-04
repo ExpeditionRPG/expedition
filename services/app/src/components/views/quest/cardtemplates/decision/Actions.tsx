@@ -8,6 +8,15 @@ import {extractSkillCheck, Outcome, SkillCheck} from 'shared/schema/templates/De
 import {numAdventurers, numPlayers} from '../PlayerCount';
 import {ParserNode} from '../TemplateTypes';
 import {LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
+import {DecisionState, EMPTY_DECISION_STATE} from './Types';
+
+export function extractDecision(node: ParserNode): DecisionState {
+  return (node &&
+          node.ctx &&
+          node.ctx.templates &&
+          node.ctx.templates.decision)
+          || EMPTY_DECISION_STATE;
+}
 
 interface InitDecisionArgs {
   node: ParserNode;
@@ -191,6 +200,15 @@ interface HandleDecisionRollArgs {
   roll: number;
 }
 export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: HandleDecisionRollArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): HandleDecisionRollArgs|null {
+  if (getState().card.phase === 'MID_COMBAT_DECISION') {
+    const {node} = resolveParams(a.node, getState);
+    pushDecisionRoll(node, a.roll, getState);
+    dispatch(toDecisionCard({phase: 'RESOLVE_DECISION', node}));
+    return {
+      roll: a.roll,
+    };
+  }
+
   if (!a.node) {
     a.node = getState().quest.node;
   }
@@ -207,4 +225,24 @@ export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: Handl
   return {
     roll: a.roll,
   };
+});
+
+interface ToDecisionCardArgs {
+  node?: ParserNode;
+  phase: DecisionPhase;
+  settings?: SettingsType;
+}
+export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCardArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ToDecisionCardArgs {
+  if (getState().card.phase === 'MID_COMBAT_DECISION') {
+    const {node, decision, combat} = resolveParams(a.node, getState);
+    combat.decisionPhase = a.phase;
+    dispatch({type: 'PUSH_HISTORY'});
+    dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_DECISION', keySuffix: a.phase + (decision.rolls || '').toString(), noHistory: true}));
+    return {
+      phase: a.phase,
+    };
+  }
+
+  return dispatch(toCard(a));
 });

@@ -1,21 +1,26 @@
 import Button from 'app/components/base/Button';
-import {CardThemeType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import * as React from 'react';
+import {ParserNode} from '../TemplateTypes';
+import {extractDecision} from './Actions';
 import {LeveledSkillCheck} from './Types';
 
-interface DecisionTimerProps extends React.Props<any> {
-  checks: LeveledSkillCheck[];
+export interface StateProps {
+  node: ParserNode;
   roundTimeTotalMillis: number;
-  theme: CardThemeType;
-  onSelect: (c: LeveledSkillCheck, elapsedMillis: number) => any;
 }
 
-export default class DecisionTimer extends React.Component<DecisionTimerProps, {}> {
+export interface DispatchProps {
+  onSelect: (node: ParserNode, selected: LeveledSkillCheck, elapsedMillis: number) => any;
+}
+
+export interface Props extends StateProps, DispatchProps {}
+
+export default class DecisionTimer extends React.Component<Props, {}> {
   public interval: any;
   public state: {startTimeMillis: number, timeRemaining: number};
 
-  constructor(props: DecisionTimerProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {startTimeMillis: Date.now(), timeRemaining: this.props.roundTimeTotalMillis};
     this.interval = setInterval(() => {
@@ -30,7 +35,7 @@ export default class DecisionTimer extends React.Component<DecisionTimerProps, {
 
     clearInterval(this.interval);
     this.interval = null;
-    this.props.onSelect(c, Date.now() - this.state.startTimeMillis);
+    this.props.onSelect(this.props.node, c, Date.now() - this.state.startTimeMillis);
   }
 
   public componentWillUnmount() {
@@ -42,6 +47,7 @@ export default class DecisionTimer extends React.Component<DecisionTimerProps, {
   }
 
   public render() {
+    const decision = extractDecision(this.props.node);
     let formattedTimer: string;
     const timeRemainingSec = this.state.timeRemaining / 1000;
     if (timeRemainingSec < 10 && timeRemainingSec > 0) {
@@ -55,7 +61,7 @@ export default class DecisionTimer extends React.Component<DecisionTimerProps, {
     const questTheme = getStore().getState().quest.details.theme || 'base';
     const classes = ['no_icon', 'base_card', 'base_timer_card', 'card_theme_' + cardTheme, 'quest_theme_' + questTheme];
 
-    const checks = this.props.checks.map((c: LeveledSkillCheck, i: number) => {
+    const checks = decision.leveledChecks.map((c: LeveledSkillCheck, i: number) => {
       return <Button className="bigbutton" key={i} onClick={() => this.onSelect(c)}>{c.requiredSuccesses} {c.difficulty} {c.persona} {c.skill}</Button>;
     });
 

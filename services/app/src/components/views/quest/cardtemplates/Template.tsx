@@ -4,10 +4,12 @@ import * as React from 'react';
 import Redux from 'redux';
 import {initCombat} from './combat/Actions';
 import CombatContainer from './combat/CombatContainer';
-import MidCombatDecisionContainer from './combat/decision/MidCombatDecisionContainer';
 import {combatScope} from './combat/Scope';
 import {initDecision} from './decision/Actions';
-import DecisionContainer from './decision/DecisionContainer';
+import DecisionTimerContainer from './decision/DecisionTimerContainer';
+import PrepareDecisionContainer from './decision/PrepareDecisionContainer';
+import ResolveDecisionContainer from './decision/ResolveDecisionContainer';
+import {DecisionState} from './decision/Types';
 import {initRoleplay} from './roleplay/Actions';
 import RoleplayContainer from './roleplay/RoleplayContainer';
 import {ParserNode, TemplateContext} from './TemplateTypes';
@@ -33,9 +35,11 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
     case 'ROLEPLAY':
       return <RoleplayContainer node={node}/>;
     case 'PREPARE_DECISION':
+      return <PrepareDecisionContainer node={node}/>;
     case 'DECISION_TIMER':
+      return <DecisionTimerContainer node={node}/>;
     case 'RESOLVE_DECISION':
-      return <DecisionContainer phase={phase} node={node}/>;
+      return <ResolveDecisionContainer node={node}/>;
     case 'DRAW_ENEMIES':
     case 'PREPARE':
     case 'TIMER':
@@ -48,7 +52,8 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
     case 'MID_COMBAT_ROLEPLAY':
       return <CombatContainer card={card} node={node}/>;
     case 'MID_COMBAT_DECISION':
-      return <MidCombatDecisionContainer phase={phase} node={node}/>;
+      const combat = node.ctx.templates.combat;
+      return renderCardTemplate({...card, phase: ((combat) ? combat.decisionPhase : 'PREPARE_DECISION')}, node);
     default:
       throw new Error('Unknown template for card phase ' + card.phase);
   }
@@ -66,6 +71,7 @@ export function getCardTemplateTheme(card: CardState): CardThemeType {
     case 'DEFEAT':
     case 'NO_TIMER':
     case 'MID_COMBAT_ROLEPLAY':
+    case 'MID_COMBAT_DECISION':
       return 'dark';
     case 'ROLEPLAY':
     case 'PREPARE_DECISION':

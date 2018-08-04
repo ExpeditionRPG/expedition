@@ -10,6 +10,8 @@ import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} fro
 import {getStore} from 'app/Store';
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
+import {generateLeveledChecks} from '../../decision/Actions';
+import {DecisionPhase, DecisionState, EMPTY_DECISION_STATE} from '../../decision/Types';
 import {numAdventurers, numPlayers} from '../PlayerCount';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
@@ -459,4 +461,43 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
     a.node.ctx.scope._.currentCombatRound()
   )}));
   return {current: a.current, delta: a.delta};
+});
+
+function resolveParams(node: ParserNode|undefined, getState: () => AppStateWithHistory): {node: ParserNode, decision: DecisionState, combat: CombatState} {
+  node = (node && node.clone()) || getState().quest.node.clone();
+  const decision = node.ctx.templates.decision || EMPTY_DECISION_STATE;
+  const combat = node.ctx.templates.combat;
+  if (!combat) {
+    throw Error('undefined combat node');
+  }
+  return {node, decision, combat};
+}
+
+export function generateCombatDecision(adventurers: number): DecisionState {
+  return {
+    leveledChecks: generateLeveledChecks(adventurers),
+    selected: null,
+    rolls: [],
+  };
+}
+
+interface SetupCombatDecisionArgs {
+  node?: ParserNode;
+  seed: string;
+}
+export const setupCombatDecision = remoteify(function setupCombatDecision(a: SetupCombatDecisionArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): SetupCombatDecisionArgs {
+  const {node, combat} = resolveParams(a.node, getState);
+  const settings = getState().settings;
+  const rp = getState().multiplayer;
+  combat.decisionPhase = 'PREPARE_DECISION';
+  node.ctx.templates.decision = {
+    leveledChecks: generateLeveledChecks(numAdventurers(settings, rp)),
+    selected: null,
+    rolls: [],
+  };
+
+  dispatch({type: 'PUSH_HISTORY'});
+  dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
+  dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_DECISION', keySuffix: combat.decisionPhase, noHistory: true}));
+  return {seed: a.seed};
 });

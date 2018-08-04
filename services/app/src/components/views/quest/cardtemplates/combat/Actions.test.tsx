@@ -398,4 +398,13 @@ describe('Combat actions', () => {
 
   it('clears combat state on completion');
 
+  describe('setupCombatDecision', () => {
+    it();
+  });
+  describe('handleCombatDecisionRoll', () => {
+    it();
+  });
+  describe('toDecisionCard', () => {
+    it();
+  });
 });
