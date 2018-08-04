@@ -106,7 +106,7 @@
     "react-ga": "^2.3.6",
     "react-hot-loader": "~4.3.0",
     "react-redux": "^5.0.7",
-    "react-split-pane": "0.1.77",
+    "react-split-pane": "0.1.82",
     "react-transition-group": "^2.3.1",
     "react-truncate": "^2.3.0",
     "redux": "^4.0.0",
