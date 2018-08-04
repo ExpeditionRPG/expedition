@@ -50,6 +50,8 @@ export const XMLRenderer: Renderer = {
         const visible = (text.match(INITIAL_OP_WITH_PARAGRAPH) || [])[1];
         let paragraph = `<p>${sanitizeStyles(text)}</p>`;
         if (visible) {
+          // Parse AST for expression and check if outermost node/operation is of type "OperatorNode" (e.g. == >= != etc.)
+          // Used to try to be smarter about whether a MathJS evaluation should be output or an if attribute
           const visibleTree = Math.parse(visible);
           if (visibleTree.type === 'OperatorNode') {
             text = text.replace('{{' + visible + '}}', '');
