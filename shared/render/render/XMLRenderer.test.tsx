@@ -39,7 +39,7 @@ describe('XMLRenderer', () => {
     it('renders conditional ops as ifs', () => {
       expect(XMLRenderer.toTemplate('roleplay', {}, ['{{ gold == 0 }} Test'], 0).toString())
         .toEqual('<roleplay data-line="0"><p if=" gold == 0 "> Test</p></roleplay>');
-      
+
       expect(XMLRenderer.toTemplate('roleplay', {}, ['{{ wallet.gold == 0 }} Test'], 0).toString())
       .toEqual('<roleplay data-line="0"><p if=" wallet.gold == 0 "> Test</p></roleplay>');
     });
@@ -57,29 +57,29 @@ describe('XMLRenderer', () => {
 
     it('renders ternary ops as output', () => {
       expect(XMLRenderer.toTemplate('roleplay', {}, ['{{ gold == 0 ? "broke" : "rich" }} Test'], 0).toString())
-        .toEqual('<roleplay data-line="0"><p>{{ gold == 0 ? "broke" : "rich" }} Test</p></roleplay>');
+        .toEqual('<roleplay data-line="0"><p>{{ gold == 0 ? &quot;broke&quot; : &quot;rich&quot; }} Test</p></roleplay>');
     });
 
     it('treats assignment ops as output', () => {
       expect(XMLRenderer.toTemplate('roleplay', {}, ['{{ a = {b: "c"} }} Test'], 0).toString())
-        .toEqual('<roleplay data-line="0"><p>{{ a = {b: "c"} }} Test</p></roleplay>');
+        .toEqual('<roleplay data-line="0"><p>{{ a = {b: &quot;c&quot;} }} Test</p></roleplay>');
 
       expect(XMLRenderer.toTemplate('roleplay', {}, ['{{ a = [b, "c"] }} Test'], 0).toString())
-        .toEqual('<roleplay data-line="0"><p>{{ a = [b, "c"] }} Test</p></roleplay>');
+        .toEqual('<roleplay data-line="0"><p>{{ a = [b, &quot;c&quot;] }} Test</p></roleplay>');
     });
 
-    it('renders nonconditional ops as output', () => {  
+    it('renders nonconditional ops as output', () => {
       expect(XMLRenderer.toTemplate('roleplay', {}, ['{{ gold }}'], 0).toString())
       .toEqual('<roleplay data-line="0"><p>{{ gold }}</p></roleplay>');
 
       expect(XMLRenderer.toTemplate('roleplay', {}, ['{{ gold }} Test'], 0).toString())
         .toEqual('<roleplay data-line="0"><p>{{ gold }} Test</p></roleplay>');
-        
+
       expect(XMLRenderer.toTemplate('roleplay', {}, ['{{ gold }}', 'Test on a new line'], 0).toString())
       .toEqual('<roleplay data-line="0"><p>{{ gold }}</p><p>Test on a new line</p></roleplay>');
-      
+
       expect(XMLRenderer.toTemplate('roleplay', {}, ['{{ test = false }}', '{{ gold = 10 }}'], 0).toString())
-        .toEqual('<roleplay data-line="0"><p>{{ test = false }} {{ gold = 10 }}</p></roleplay>');
+        .toEqual('<roleplay data-line="0"><p>{{ test = false }}</p><p>{{ gold = 10 }}</p></roleplay>');
     });
   });
 
