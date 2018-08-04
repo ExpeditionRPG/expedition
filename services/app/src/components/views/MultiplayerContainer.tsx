@@ -6,7 +6,7 @@ import {multiplayerConnect, multiplayerNewSession} from '../../actions/Multiplay
 import {openSnackbar} from '../../actions/Snackbar';
 import {logEvent} from '../../Logging';
 import {AppState, UserState} from '../../reducers/StateTypes';
-import Multiplayer, {MIN_SECRET_LENGTH, DispatchProps, StateProps} from './Multiplayer';
+import Multiplayer, {DispatchProps, MIN_SECRET_LENGTH, StateProps} from './Multiplayer';
 
 const mapStateToProps = (state: AppState, ownProps: Partial<StateProps>): StateProps => {
   return {

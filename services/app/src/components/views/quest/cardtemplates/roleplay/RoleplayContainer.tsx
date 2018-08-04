@@ -4,7 +4,7 @@ import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {ParserNode} from '../TemplateTypes';
-import Roleplay, {Props, DispatchProps, StateProps} from './Roleplay';
+import Roleplay, {DispatchProps, Props, StateProps} from './Roleplay';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<Props>): StateProps => {
   const histIdx = state._history.length - 2; // the card before this one
