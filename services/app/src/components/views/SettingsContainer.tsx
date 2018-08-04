@@ -4,7 +4,7 @@ import {setDialog} from '../../actions/Dialog';
 import {changeSettings} from '../../actions/Settings';
 import {logEvent} from '../../Logging';
 import {AppState, DifficultyType} from '../../reducers/StateTypes';
-import Settings, {fontSizeValues, DispatchProps, StateProps, timerValues} from './Settings';
+import Settings, {DispatchProps, fontSizeValues, StateProps, timerValues} from './Settings';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return state.settings;

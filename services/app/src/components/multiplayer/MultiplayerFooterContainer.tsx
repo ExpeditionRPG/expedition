@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import Redux from 'redux';
 import {setDialog} from '../../actions/Dialog';
 import {AppState} from '../../reducers/StateTypes';
-import MultiplayerFooter, {Props, DispatchProps, StateProps} from './MultiplayerFooter';
+import MultiplayerFooter, {DispatchProps, Props, StateProps} from './MultiplayerFooter';
 
 const mapStateToProps = (state: AppState, ownProps: Partial<Props>): StateProps => {
   return {
