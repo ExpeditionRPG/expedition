@@ -3,12 +3,12 @@ import * as Adapter from 'enzyme-adapter-react-16';
 import {FEATURED_QUESTS} from '../../Constants';
 import {QuestDetails} from '../../reducers/QuestTypes';
 import {initialSettings} from '../../reducers/Settings';
-import QuestPreview, {QuestPreviewProps} from './QuestPreview';
+import QuestPreview, {Props} from './QuestPreview';
 configure({ adapter: new Adapter() });
 
 describe('QuestPreview', () => {
-  function setup(questTitle: string, overrides?: Partial<QuestPreviewProps>, questOverrides?: Partial<QuestDetails>) {
-    const props: QuestPreviewProps = {
+  function setup(questTitle: string, overrides?: Partial<Props>, questOverrides?: Partial<QuestDetails>) {
+    const props: Props = {
       isDirectLinked: false,
       savedInstances: [],
       lastPlayed: null,

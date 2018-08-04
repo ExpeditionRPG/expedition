@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {toCard} from '../../../../../actions/Card';
-import {AppStateWithHistory, SettingsType} from '../../../../../reducers/StateTypes';
+import {toCard} from 'app/actions/Card';
+import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {DecisionType, EMPTY_DECISION_STATE} from '../decision/Types';
 import {ParserNode} from '../TemplateTypes';
 import {
@@ -9,10 +9,10 @@ import {
   handleDecisionSelect,
   handleDecisionTimerStart,
 } from './Actions';
-import Decision, {DecisionDispatchProps, DecisionStateProps} from './Decision';
+import Decision, {DispatchProps, StateProps} from './Decision';
 import {DecisionState} from './Types';
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: DecisionStateProps): DecisionStateProps => {
+const mapStateToProps = (state: AppStateWithHistory): StateProps => {
   const stateDecision = (state.quest.node && state.quest.node.ctx && state.quest.node.ctx.templates && state.quest.node.ctx.templates.decision) || EMPTY_DECISION_STATE;
 
   return {
@@ -25,7 +25,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: DecisionStateProp
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DecisionDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onChoice: (node: ParserNode, settings: SettingsType, choice: DecisionType, elapsedMillis: number, seed: string) => {
       dispatch(handleDecisionSelect({node, settings, elapsedMillis, decision: choice, seed}));

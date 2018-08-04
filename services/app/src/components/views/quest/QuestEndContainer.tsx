@@ -9,11 +9,11 @@ import {submitUserFeedback} from '../../../actions/Web';
 import {getDevicePlatform} from '../../../Globals';
 import {logEvent} from '../../../Logging';
 import {AppState, QuestState, SettingsType, UserState} from '../../../reducers/StateTypes';
-import QuestEnd, {QuestEndDispatchProps, QuestEndStateProps} from './QuestEnd';
+import QuestEnd, {DispatchProps, StateProps} from './QuestEnd';
 
 declare var window: any;
 
-const mapStateToProps = (state: AppState, ownProps: any): QuestEndStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     checkout: state.checkout,
     platform: getDevicePlatform(),
@@ -23,7 +23,7 @@ const mapStateToProps = (state: AppState, ownProps: any): QuestEndStateProps => 
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestEndDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onShare: (quest: QuestState) => {
       const options = {

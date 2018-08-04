@@ -4,17 +4,17 @@ import Button from '../../base/Button';
 import Callout from '../../base/Callout';
 import Card from '../../base/Card';
 
-export interface QuestSetupStateProps {
+export interface StateProps {
   settings: SettingsType;
 }
 
-export interface QuestSetupDispatchProps {
+export interface DispatchProps {
   onNext: () => void;
 }
 
-export interface QuestSetupProps extends QuestSetupStateProps, QuestSetupDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
-const QuestSetup = (props: QuestSetupProps): JSX.Element => {
+const QuestSetup = (props: Props): JSX.Element => {
   const singlePlayer = (props.settings.numPlayers === 1);
   const twoAdventurer = (props.settings.numPlayers === 1 || props.settings.numPlayers === 2);
   const multiPlayer = (props.settings.numPlayers > 1);

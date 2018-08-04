@@ -2,11 +2,11 @@ import * as React from 'react';
 import RendererContainer from './RendererContainer';
 import TopBarContainer from './TopBarContainer';
 
-export interface MainStateProps {
+export interface StateProps {
   loading: boolean;
 }
 
-class Main extends React.Component<MainStateProps, {}> {
+class Main extends React.Component<StateProps, {}> {
   public render() {
     const loadingCircles = [];
     for (let i = 0; i < 12; i++) {

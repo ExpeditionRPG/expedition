@@ -1,4 +1,4 @@
-import {ENCOUNTERS} from '../../../../../Encounters';
+import {ENCOUNTERS} from 'app/Encounters';
 import {isSurgeRound} from './Actions';
 
 export function combatScope() {

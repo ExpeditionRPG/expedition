@@ -8,9 +8,9 @@ import {FEATURED_QUESTS} from '../../Constants';
 import {QuestDetails} from '../../reducers/QuestTypes';
 import {initialSearch} from '../../reducers/Search';
 import {AppState, CardName, SettingsType, UserState} from '../../reducers/StateTypes';
-import FeaturedQuests, {FeaturedQuestsDispatchProps, FeaturedQuestsStateProps} from './FeaturedQuests';
+import FeaturedQuests, {DispatchProps, StateProps} from './FeaturedQuests';
 
-const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): FeaturedQuestsStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     quests: FEATURED_QUESTS,
     settings: state.settings,
@@ -18,7 +18,7 @@ const mapStateToProps = (state: AppState, ownProps: FeaturedQuestsStateProps): F
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): FeaturedQuestsDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     toCard(name: CardName): void {
       dispatch(toCard({name}));

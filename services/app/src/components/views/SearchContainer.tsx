@@ -7,9 +7,9 @@ import {ensureLogin} from '../../actions/User';
 import {subscribe} from '../../actions/Web';
 import {QuestDetails} from '../../reducers/QuestTypes';
 import {AppStateWithHistory, SearchSettings, SettingsType, UserState} from '../../reducers/StateTypes';
-import Search, {SearchDispatchProps, SearchStateProps} from './Search';
+import Search, {DispatchProps, StateProps} from './Search';
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: SearchStateProps): SearchStateProps => {
+const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   const offlineQuests: {[id: string]: boolean} = {};
   for (const s of state.saved.list) {
     if (s.pathLen === 0) {
@@ -21,7 +21,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: SearchStateProps)
     isDirectLinked: state._history.length <= 1,
     results: [], // Default in case search results are not defined
     ...state.search,
-    phase: ownProps.phase,
+    phase: ownProps.phase || 'SEARCH',
     settings: state.settings,
     user: state.user,
     questHistory: state.questHistory,
@@ -29,7 +29,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: SearchStateProps)
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): SearchDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onFilter: () => {
       dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));

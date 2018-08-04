@@ -1,15 +1,15 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {AppStateWithHistory} from '../../reducers/StateTypes';
-import MultiplayerSync, {MultiplayerSyncDispatchProps, MultiplayerSyncStateProps} from './MultiplayerSync';
+import MultiplayerSync, {DispatchProps, StateProps} from './MultiplayerSync';
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: MultiplayerSyncStateProps): MultiplayerSyncStateProps => {
+const mapStateToProps = (state: AppStateWithHistory): StateProps => {
   return {
     multiplayer: state.multiplayer,
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MultiplayerSyncDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onAnimationComplete: () => {
       dispatch({type: 'INFLIGHT_COMPACT'});

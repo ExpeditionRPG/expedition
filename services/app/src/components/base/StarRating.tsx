@@ -5,7 +5,7 @@ import StarBorder from '@material-ui/icons/StarBorder';
 import StarHalf from '@material-ui/icons/StarHalf';
 import * as React from 'react';
 
-export interface StarRatingProps {
+export interface Props {
   hintText?: boolean;
   onChange?: (rating: number) => any;
   quantity?: number;
@@ -14,7 +14,7 @@ export interface StarRatingProps {
   value: number;
 }
 
-export default class StarRating extends React.Component<StarRatingProps, {}> {
+export default class StarRating extends React.Component<Props, {}> {
   public render() {
     const ratings = [null, 'Hated it', 'Disliked it', 'It\'s OK', 'Liked it', 'Loved it'];
     const stars = [1, 2, 3, 4, 5].map((i: number): JSX.Element => {

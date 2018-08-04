@@ -21,4 +21,8 @@ describe('Feedback Schema', () => {
     const f = new Feedback({...base, difficulty: 'HARD'});
     expect(f.difficulty).toEqual('HARD');
   });
+  it('accepts quest line number', () => {
+    const f = new Feedback({...base, questline: 10});
+    expect(f.questline).toEqual(10);
+  });
 });

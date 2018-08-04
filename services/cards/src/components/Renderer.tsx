@@ -15,13 +15,13 @@ const CardFronts: any = {
   Color: require('../themes/Color/CardFront.tsx'),
 };
 
-export interface RendererStateProps {
+export interface StateProps {
   cards: CardType[] | null;
   filters: FiltersState;
   translations: TranslationsType | null;
 }
 
-class Renderer extends React.Component<RendererStateProps, {}> {
+class Renderer extends React.Component<StateProps, {}> {
   public render() {
     const cards = this.props.cards || [];
     const renderSettings = { // defaults

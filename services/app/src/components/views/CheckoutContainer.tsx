@@ -5,9 +5,9 @@ import {checkoutSetState, checkoutSubmit} from '../../actions/Checkout';
 import {openSnackbar} from '../../actions/Snackbar';
 import {logEvent} from '../../Logging';
 import {AppState, CheckoutPhase, CheckoutState, UserState} from '../../reducers/StateTypes';
-import Checkout, {CheckoutDispatchProps, CheckoutStateProps} from './Checkout';
+import Checkout, {DispatchProps, StateProps} from './Checkout';
 
-const mapStateToProps = (state: AppState, ownProps: any): CheckoutStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     card: state.card,
     checkout: state.checkout,
@@ -16,7 +16,7 @@ const mapStateToProps = (state: AppState, ownProps: any): CheckoutStateProps => 
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): CheckoutDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onError: (err: string): void => {
       logEvent('checkout_err', {label: err});

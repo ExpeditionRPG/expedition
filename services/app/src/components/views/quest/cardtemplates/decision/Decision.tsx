@@ -1,16 +1,16 @@
 
+import Button from 'app/components/base/Button';
+import Callout from 'app/components/base/Callout';
+import Card from 'app/components/base/Card';
+import {CardState, CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import * as seedrandom from 'seedrandom';
-import {CardState, CardThemeType, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
-import Button from '../../../../base/Button';
-import Callout from '../../../../base/Callout';
-import Card from '../../../../base/Card';
 import {ParserNode} from '../TemplateTypes';
 import {generateDecisions, skillTimeMillis} from './Actions';
 import DecisionTimer from './DecisionTimer';
 import {DecisionState, DecisionType, EMPTY_OUTCOME} from './Types';
 
-export interface DecisionStateProps {
+export interface StateProps {
   card: CardState;
   decision: DecisionState;
   maxAllowedAttempts?: number;
@@ -20,16 +20,16 @@ export interface DecisionStateProps {
   settings: SettingsType;
 }
 
-export interface DecisionDispatchProps {
+export interface DispatchProps {
   onStartTimer: () => void;
   onChoice: (node: ParserNode, settings: SettingsType, choice: DecisionType, elapsedMillis: number, seed: string) => void;
   onRoll: (node: ParserNode, settings: SettingsType, decision: DecisionState, roll: number, seed: string) => void;
   onEnd: () => void;
 }
 
-export interface DecisionProps extends DecisionStateProps, DecisionDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
-export function renderPrepareDecision(props: DecisionProps): JSX.Element {
+export function renderPrepareDecision(props: Props): JSX.Element {
   // Note: similar help text in renderNoTimer()
   let helpText: JSX.Element = (<span></span>);
   if (props.settings.showHelp) {
@@ -55,7 +55,7 @@ export function renderPrepareDecision(props: DecisionProps): JSX.Element {
   );
 }
 
-export function renderDecisionTimer(props: DecisionProps): JSX.Element {
+export function renderDecisionTimer(props: Props): JSX.Element {
   const arng = seedrandom.alea(props.seed);
   return (
     <DecisionTimer
@@ -66,7 +66,7 @@ export function renderDecisionTimer(props: DecisionProps): JSX.Element {
   );
 }
 
-export function renderResolveDecision(props: DecisionProps): JSX.Element {
+export function renderResolveDecision(props: Props): JSX.Element {
   const scenario = props.decision.scenario;
   const roll = <img className="inline_icon" src="images/roll_white_small.svg"></img>;
   const outcome = props.decision.outcomes[props.decision.outcomes.length - 1] || EMPTY_OUTCOME;
@@ -141,7 +141,7 @@ export function renderResolveDecision(props: DecisionProps): JSX.Element {
   );
 }
 
-const Decision = (props: DecisionProps, theme: CardThemeType = 'light'): JSX.Element => {
+const Decision = (props: Props, theme: CardThemeType = 'light'): JSX.Element => {
   switch (props.card.phase) {
     case 'PREPARE_DECISION':
       return renderPrepareDecision(props);

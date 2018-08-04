@@ -5,12 +5,12 @@ import {SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 
-export interface ToolsStateProps {
+export interface StateProps {
   settings: SettingsType;
   user: UserState;
 }
 
-export interface ToolsDispatchProps {
+export interface DispatchProps {
   onCustomCombatSelect: (settings: SettingsType) => void;
   onQuestCreatorSelect: () => void;
   onPrivateQuestsSelect: (settings: SettingsType, user: UserState) => void;
@@ -18,9 +18,9 @@ export interface ToolsDispatchProps {
   testMusic: () => void;
 }
 
-export interface ToolsProps extends ToolsStateProps, ToolsDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
-const Tools = (props: ToolsProps): JSX.Element => {
+const Tools = (props: Props): JSX.Element => {
   return (
     <Card title="Tools">
       <Button id="selectCustomCombat" onClick={() => props.onCustomCombatSelect(props.settings)}>

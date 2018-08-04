@@ -6,17 +6,17 @@ import {multiplayerConnect, multiplayerNewSession} from '../../actions/Multiplay
 import {openSnackbar} from '../../actions/Snackbar';
 import {logEvent} from '../../Logging';
 import {AppState, UserState} from '../../reducers/StateTypes';
-import Multiplayer, {MIN_SECRET_LENGTH, MultiplayerDispatchProps, MultiplayerStateProps} from './Multiplayer';
+import Multiplayer, {MIN_SECRET_LENGTH, DispatchProps, StateProps} from './Multiplayer';
 
-const mapStateToProps = (state: AppState, ownProps: MultiplayerStateProps): MultiplayerStateProps => {
+const mapStateToProps = (state: AppState, ownProps: Partial<StateProps>): StateProps => {
   return {
     multiplayer: state.multiplayer,
-    phase: ownProps.phase,
+    phase: ownProps.phase || 'CONNECT',
     user: state.user,
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MultiplayerDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onConnect: (user: UserState) => {
       const secret = window.prompt(`Enter the session's ${MIN_SECRET_LENGTH} character code to join.`);

@@ -4,14 +4,14 @@ import ChevronRight from '@material-ui/icons/ChevronRight';
 import * as React from 'react';
 import MultiplayerRipple from '../multiplayer/MultiplayerRipple';
 
-interface PickerProps extends React.Props<any> {
+interface Props extends React.Props<any> {
   value: number | string;
   label: string;
   id?: string;
   onDelta: (i: number) => any;
 }
 
-export default class Picker extends React.Component<PickerProps, {}> {
+export default class Picker extends React.Component<Props, {}> {
   public render() {
     return (
       <div className="base_picker">

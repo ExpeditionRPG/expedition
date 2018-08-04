@@ -1,9 +1,9 @@
+import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
+import {audioSet} from 'app/actions/Audio';
+import {PLAYER_TIME_MULT} from 'app/Constants';
+import {AppStateWithHistory, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
-import {QuestNodeAction, remoteify} from '../../../../../actions/ActionTypes';
-import {audioSet} from '../../../../../actions/Audio';
-import {PLAYER_TIME_MULT} from '../../../../../Constants';
-import {AppStateWithHistory, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
 import {ParserNode} from '../TemplateTypes';
 import SCENARIOS from './Scenarios';
 import {DecisionState, DecisionType, DIFFICULTIES, EMPTY_DECISION, EMPTY_SCENARIO, OutcomeType, PERSONA_TYPES, ScenarioType, SKILL_TYPES} from './Types';

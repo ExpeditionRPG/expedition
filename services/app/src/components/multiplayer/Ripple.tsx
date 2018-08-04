@@ -2,19 +2,19 @@ import * as classNames from 'classnames';
 import * as React from 'react';
 import {Transition} from 'react-transition-group';
 
-interface RippleProps {
+interface Props {
   classes: any;
   rippleSize: number;
   rippleX: number;
   rippleY: number;
 }
 
-interface RippleState {
+interface State {
   leaving: boolean;
   visible: boolean;
 }
 
-export default class Ripple extends React.Component<RippleProps, RippleState> {
+export default class Ripple extends React.Component<Props, State> {
   public state = {
     leaving: false,
     visible: false,

@@ -14,7 +14,7 @@ import {CardThemeType} from '../../reducers/StateTypes';
 import {getStore} from '../../Store';
 
 // If onMenuSelect or onReturn is not set, default dispatch behavior is used.
-export interface ExpeditionCardProps extends React.Props<any> {
+export interface Props extends React.Props<any> {
   theme?: CardThemeType;
   header?: JSX.Element;
   icon?: string;
@@ -24,10 +24,10 @@ export interface ExpeditionCardProps extends React.Props<any> {
   className?: string;
 }
 
-export default class ExpeditionCard extends React.Component<ExpeditionCardProps, {}> {
+export default class Card extends React.Component<Props, {}> {
   public state: {anchorEl: HTMLElement|undefined}; // undefined instead of null for MaterialUI typing
 
-  constructor(props: ExpeditionCardProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {anchorEl: undefined};
   }

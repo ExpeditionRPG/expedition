@@ -1,4 +1,4 @@
-import {ENCOUNTERS} from '../../../../../Encounters';
+import {ENCOUNTERS} from 'app/Encounters';
 import {defaultContext} from '../Template';
 
 describe('Combat State', () => {

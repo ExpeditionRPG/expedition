@@ -28,6 +28,10 @@ export class Feedback extends SchemaBase {
   }) public questid: string;
 
   @field({
+    allowNull: true,
+  }) public questline: number;
+
+  @field({
     allowNull: false,
     maxLength: 255,
     primaryKey: true,

@@ -36,6 +36,9 @@ function mailFeedbackToAdmin(mail: MailService, type: FeedbackType, quest: Quest
       <p>Author email: <a href="mailto:${quest.email}">${quest.email}</a></p>
       <p>Quest creator link: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
     `;
+    if (feedback.questline > 0) {
+      message += `<p>Quest Line #: ${feedback.questline}</p>`;
+    }
   } else {
     message += `<p>Could not resolve published quest details for this feedback.</p>`;
   }
@@ -168,12 +171,15 @@ export function suppressFeedback(db: Database, partition: string, questid: strin
 
 function mailReportToAdmin(mail: MailService, feedback: Feedback, quest: Quest, platformDump: string) {
   const subject = `Quest reported: ${quest.title}`;
-  const message = `<p>Message: ${feedback.text}</p>
+  let message = `<p>Message: ${feedback.text}</p>
     <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
     <p>Raw platform string: ${platformDump}</p>
     <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
     <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
   `;
+  if (feedback.questline > 0) {
+    message += `<p>Quest Line #: ${feedback.questline}</p>`;
+  }
   // Do NOT include quest author when user reports a quest.
   const to = [FabricateReportQuestEmail];
   return mail.send(to, subject, message);

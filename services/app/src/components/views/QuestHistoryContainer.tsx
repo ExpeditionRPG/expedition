@@ -3,15 +3,15 @@ import Redux from 'redux';
 import {toPrevious} from '../../actions/Card';
 import {previewQuest} from '../../actions/Quest';
 import {AppState, UserQuestInstance} from '../../reducers/StateTypes';
-import QuestHistory, {QuestHistoryDispatchProps, QuestHistoryStateProps} from './QuestHistory';
+import QuestHistory, {DispatchProps, StateProps} from './QuestHistory';
 
-const mapStateToProps = (state: AppState, ownProps: QuestHistoryStateProps): QuestHistoryStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     played: state.questHistory.list,
   };
 };
 
-export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): QuestHistoryDispatchProps => {
+export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onSelect(selected: UserQuestInstance): void {
       dispatch(previewQuest({quest: selected.details, lastPlayed: selected.lastPlayed}));
