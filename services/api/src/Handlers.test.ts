@@ -233,6 +233,7 @@ describe('handlers', () => {
         platformDump: 'web USERAGENT TEST TEST',
         players: 4,
         questid: q.basic.id,
+        questline: 321,
         questversion: 1,
         rating: 3,
         text: 'pretty good test quest',
