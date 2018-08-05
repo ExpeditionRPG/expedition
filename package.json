@@ -248,6 +248,7 @@
       "config:base",
       ":preserveSemverRanges",
       "schedule:monthly"
-    ]
+    ],
+    "prConcurrentLimit": 2
   }
 }
