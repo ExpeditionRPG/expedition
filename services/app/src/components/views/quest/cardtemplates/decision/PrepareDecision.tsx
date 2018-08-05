@@ -1,14 +1,8 @@
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
-import {CardThemeType, SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {generateIconElements} from '../Render';
-import {ParserNode} from '../TemplateTypes';
-
-export interface StateProps {
-  node: ParserNode;
-  settings: SettingsType;
-}
+import {StateProps} from './Types';
 
 export interface DispatchProps {
   onStartTimer: () => void;
@@ -16,7 +10,7 @@ export interface DispatchProps {
 
 export interface Props extends StateProps, DispatchProps {}
 
-export default function prepareDecision(props: Props, theme: CardThemeType): JSX.Element {
+export default function prepareDecision(props: Props): JSX.Element {
 
   const prelude: JSX.Element[] = [];
   let i = 0;
@@ -44,7 +38,7 @@ export default function prepareDecision(props: Props, theme: CardThemeType): JSX
   }
 
   return (
-    <Card title="Skill Check" inQuest={true} theme={theme}>
+    <Card title="Skill Check" inQuest={true} theme={props.theme}>
       {prelude}
       {helpText}
       <Button className="bigbutton" onClick={() => props.onStartTimer()}>Begin Skill Check</Button>

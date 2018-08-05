@@ -1,12 +1,12 @@
 import Button from 'app/components/base/Button';
 import {getStore} from 'app/Store';
 import * as React from 'react';
+import * as seedrandom from 'seedrandom';
 import {ParserNode} from '../TemplateTypes';
 import {extractDecision} from './Actions';
-import {LeveledSkillCheck} from './Types';
+import {LeveledSkillCheck, StateProps as StatePropsBase} from './Types';
 
-export interface StateProps {
-  node: ParserNode;
+export interface StateProps extends StatePropsBase {
   roundTimeTotalMillis: number;
 }
 
@@ -48,6 +48,7 @@ export default class DecisionTimer extends React.Component<Props, {}> {
 
   public render() {
     const decision = extractDecision(this.props.node);
+    const showPersona = (seedrandom.alea(this.props.seed)()) > 0.5;
     let formattedTimer: string;
     const timeRemainingSec = this.state.timeRemaining / 1000;
     if (timeRemainingSec < 10 && timeRemainingSec > 0) {
@@ -57,12 +58,11 @@ export default class DecisionTimer extends React.Component<Props, {}> {
     }
     formattedTimer += 's';
 
-    const cardTheme = 'light'; // this.props.theme || 'light';
     const questTheme = getStore().getState().quest.details.theme || 'base';
-    const classes = ['no_icon', 'base_card', 'base_timer_card', 'card_theme_' + cardTheme, 'quest_theme_' + questTheme];
+    const classes = ['no_icon', 'base_card', 'base_timer_card', 'card_theme_' + this.props.theme, 'quest_theme_' + questTheme];
 
     const checks = decision.leveledChecks.map((c: LeveledSkillCheck, i: number) => {
-      return <Button className="bigbutton" key={i} onClick={() => this.onSelect(c)}>{c.requiredSuccesses} {c.difficulty} {c.persona} {c.skill}</Button>;
+      return <Button key={i} onClick={() => this.onSelect(c)}>{c.requiredSuccesses} {(showPersona) ? c.persona : c.difficulty} {c.skill}</Button>;
     });
 
     return (

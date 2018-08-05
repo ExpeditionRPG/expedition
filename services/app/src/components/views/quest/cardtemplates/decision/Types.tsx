@@ -1,4 +1,7 @@
+import {AppStateWithHistory, CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import {Outcome, SkillCheck} from 'shared/schema/templates/Decision';
+import {getCardTemplateTheme} from '../Template';
+import {ParserNode} from '../TemplateTypes';
 
 export enum Difficulty {
   easy = 'easy',
@@ -43,3 +46,21 @@ export const EMPTY_DECISION_STATE: DecisionState = {
   selected: null,
   rolls: [],
 };
+
+export interface StateProps {
+  multiplayerState: MultiplayerState;
+  node: ParserNode;
+  settings: SettingsType;
+  seed: string;
+  theme: CardThemeType;
+}
+
+export function mapStateToProps(state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps {
+  return {
+    multiplayerState: state.multiplayer,
+    node: state.quest.node,
+    settings: state.settings,
+    seed: state.quest.seed,
+    theme: getCardTemplateTheme(state.card),
+  };
+}

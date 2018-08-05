@@ -1,15 +1,8 @@
-import {AppStateWithHistory} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {toDecisionCard} from './Actions';
-import PrepareDecision, {DispatchProps, StateProps} from './PrepareDecision';
-
-const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
-  return {
-    node: state.quest.node,
-    settings: state.settings,
-  };
-};
+import PrepareDecision, {DispatchProps} from './PrepareDecision';
+import {mapStateToProps} from './Types';
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {

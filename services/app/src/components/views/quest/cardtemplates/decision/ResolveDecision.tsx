@@ -1,29 +1,22 @@
 import Button from 'app/components/base/Button';
 import Callout from 'app/components/base/Callout';
 import Card from 'app/components/base/Card';
-import {CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import * as pluralize from 'pluralize';
 import * as React from 'react';
 import {Outcome} from 'shared/schema/templates/Decision';
 import {ParserNode} from '../TemplateTypes';
 import {computeOutcome, computeSuccesses, extractDecision} from './Actions';
 import {getScenarioInstruction} from './Scenarios';
-
-export interface StateProps {
-  multiplayerState: MultiplayerState;
-  node: ParserNode;
-  settings: SettingsType;
-  seed: string;
-}
+import {StateProps} from './Types';
 
 export interface DispatchProps {
   onRoll: (node: ParserNode, roll: number) => void;
-  onEnd: () => void;
+  onCombatDecisionEnd: () => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
 
-export default function resolveDecision(props: Props, theme: CardThemeType): JSX.Element {
+export default function resolveDecision(props: Props): JSX.Element {
   const decision = extractDecision(props.node);
 
   const selected = decision.selected;
@@ -46,9 +39,9 @@ export default function resolveDecision(props: Props, theme: CardThemeType): JSX
       [Outcome.interrupted]: 'Interrupted!',
     } as Record<keyof typeof Outcome, string>)[outcome];
     return (
-      <Card title={title} theme="dark" inQuest={true}>
+      <Card title={title} theme={props.theme} inQuest={true}>
         <Callout icon="adventurer_white">{instruction}</Callout>
-        <Button onClick={() => props.onEnd()}>Next</Button>
+        <Button onClick={() => props.onCombatDecisionEnd()}>Next</Button>
       </Card>
     );
   }
@@ -56,7 +49,7 @@ export default function resolveDecision(props: Props, theme: CardThemeType): JSX
   const roll = <img className="inline_icon" src="images/roll_small.svg"></img>;
   const successes = computeSuccesses(decision.rolls, selected);
   return (
-    <Card title={(outcome === Outcome.retry) ? 'Keep going!' : 'Resolve Check'} inQuest={true} theme={theme}>
+    <Card title={(outcome === Outcome.retry) ? 'Keep going!' : 'Resolve Check'} inQuest={true} theme={props.theme}>
       <p className="center">
         <strong>{selected.difficulty} {selected.persona} {selected.skill}</strong>
       </p>
