@@ -58,7 +58,6 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
   }
 
   public start(posX: number, posY: number, color: string) {
-    console.log('Start ' + posX + ' ' + posY + ' ' + color);
     const el = ReactDOM.findDOMNode(this);
     const elHeight = (el as any).offsetHeight;
     const elWidth = (el as any).offsetWidth;
