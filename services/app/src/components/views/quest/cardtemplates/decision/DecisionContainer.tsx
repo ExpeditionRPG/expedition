@@ -1,7 +1,7 @@
-import {connect} from 'react-redux';
-import Redux from 'redux';
 import {toCard} from 'app/actions/Card';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
+import {connect} from 'react-redux';
+import Redux from 'redux';
 import {DecisionType, EMPTY_DECISION_STATE} from '../decision/Types';
 import {ParserNode} from '../TemplateTypes';
 import {

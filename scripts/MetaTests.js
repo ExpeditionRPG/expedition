@@ -38,6 +38,7 @@ describe('Dependencies', () => {
       'babel-core',
       'react-hot-loader',
       'babel-plugin-module-resolver-zavatta',
+      'babel-plugin-transform-runtime',
 
       // Needed for tests
       'babel-jest',
