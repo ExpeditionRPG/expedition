@@ -6,7 +6,6 @@ import PrepareDecision, {DispatchProps, StateProps} from './PrepareDecision';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   return {
-    inCombat: (state.card.phase === 'MID_COMBAT_DECISION'),
     node: state.quest.node,
     settings: state.settings,
   };

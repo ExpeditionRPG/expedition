@@ -4,11 +4,9 @@ import * as React from 'react';
 configure({ adapter: new Adapter() });
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
-import Decision from '../Decision';
-import {defaultContext} from '../../Template';
-import {ParserNode} from '../../TemplateTypes';
-import {generateCombatDecision} from './Actions';
-import MidCombatDecision, {Props} from './MidCombatDecision';
+import {defaultContext} from '../Template';
+import {ParserNode} from '../TemplateTypes';
+import ResolveDecision, {Props} from './ResolveDecision';
 
 const cheerio: any = require('cheerio');
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
@@ -17,29 +15,24 @@ function setup(overrides: Partial<Props>) {
   const settings = initialSettings;
   const multiplayerState = initialMultiplayer;
   const node = TEST_NODE.clone();
-  const decision = generateCombatDecision(3);
 
   const props: Props = {
     settings,
-    decision,
     node,
     multiplayerState,
-    phase: 'PREPARE_DECISION',
     seed: 'abcd',
-    onSelect: jasmine.createSpy('onSelect'),
     onEnd: jasmine.createSpy('onEnd'),
     onRoll: jasmine.createSpy('onRoll'),
-    onTimerStart: jasmine.createSpy('onTimerStart'),
     ...overrides,
   };
-  const enzymeWrapper = shallow(<MidCombatDecision {...props} />);
+  const enzymeWrapper = shallow(<ResolveDecision {...props} />);
   return {props, enzymeWrapper};
 }
 
-describe('MidCombatDecision', () => {
+describe('ResolveDecision', () => {
   it('shows a "roll & resolve" element when outcome is null', () => {
     const {enzymeWrapper} = setup({});
-    expect(enzymeWrapper.props('title')).toEqual('Resolve Check');
+    expect(enzymeWrapper.prop('title')).toEqual('Resolve Check');
   });
   it('shows a "roll & resolve" element when outcome=retry');
   it('shows success page on outcome=success');

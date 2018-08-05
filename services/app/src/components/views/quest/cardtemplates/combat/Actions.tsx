@@ -10,8 +10,9 @@ import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} fro
 import {getStore} from 'app/Store';
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
-import {generateLeveledChecks} from '../../decision/Actions';
-import {DecisionPhase, DecisionState, EMPTY_DECISION_STATE} from '../../decision/Types';
+import {generateLeveledChecks} from '../decision/Actions';
+import {DecisionState} from '../decision/Types';
+import {resolveParams} from '../Params';
 import {numAdventurers, numPlayers} from '../PlayerCount';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
@@ -462,16 +463,6 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
   )}));
   return {current: a.current, delta: a.delta};
 });
-
-function resolveParams(node: ParserNode|undefined, getState: () => AppStateWithHistory): {node: ParserNode, decision: DecisionState, combat: CombatState} {
-  node = (node && node.clone()) || getState().quest.node.clone();
-  const decision = node.ctx.templates.decision || EMPTY_DECISION_STATE;
-  const combat = node.ctx.templates.combat;
-  if (!combat) {
-    throw Error('undefined combat node');
-  }
-  return {node, decision, combat};
-}
 
 export function generateCombatDecision(adventurers: number): DecisionState {
   return {

@@ -1,16 +1,19 @@
 import Button from 'app/components/base/Button';
+import Callout from 'app/components/base/Callout';
 import Card from 'app/components/base/Card';
-import {CardPhase, CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import {CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import * as pluralize from 'pluralize';
 import * as React from 'react';
 import {Outcome} from 'shared/schema/templates/Decision';
 import {ParserNode} from '../TemplateTypes';
 import {computeOutcome, computeSuccesses, extractDecision} from './Actions';
+import {getScenarioInstruction} from './Scenarios';
 
 export interface StateProps {
   multiplayerState: MultiplayerState;
   node: ParserNode;
   settings: SettingsType;
+  seed: string;
 }
 
 export interface DispatchProps {
@@ -36,7 +39,7 @@ export default function resolveDecision(props: Props, theme: CardThemeType): JSX
   // the parser node.
   // TODO: this flickers due to rng when back button is pressed
   if (outcome !== null && outcome !== Outcome.retry) {
-    const instruction = getScenarioInstruction(decision.selected, outcome, props.seed);
+    const instruction = getScenarioInstruction(selected, outcome, props.seed);
     const title = ({
       [Outcome.success]: 'Success!',
       [Outcome.failure]: 'Failure!',

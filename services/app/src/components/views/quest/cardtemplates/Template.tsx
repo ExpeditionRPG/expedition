@@ -9,7 +9,6 @@ import {initDecision} from './decision/Actions';
 import DecisionTimerContainer from './decision/DecisionTimerContainer';
 import PrepareDecisionContainer from './decision/PrepareDecisionContainer';
 import ResolveDecisionContainer from './decision/ResolveDecisionContainer';
-import {DecisionState} from './decision/Types';
 import {initRoleplay} from './roleplay/Actions';
 import RoleplayContainer from './roleplay/RoleplayContainer';
 import {ParserNode, TemplateContext} from './TemplateTypes';

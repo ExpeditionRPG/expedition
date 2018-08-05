@@ -10,6 +10,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     multiplayerState: state.multiplayer,
     node: state.quest.node,
     settings: state.settings,
+    seed: state.quest.seed,
   };
 };
 

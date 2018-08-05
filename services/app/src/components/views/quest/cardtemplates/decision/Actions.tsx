@@ -1,14 +1,15 @@
 import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
-import {toCard} from 'app/actions/Card';
+import {toCard, ToCardArgs} from 'app/actions/Card';
 import {event} from 'app/actions/Quest';
 import {PLAYER_TIME_MULT} from 'app/Constants';
 import {AppStateWithHistory, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
 import {extractSkillCheck, Outcome, SkillCheck} from 'shared/schema/templates/Decision';
+import {resolveParams} from '../Params';
 import {numAdventurers, numPlayers} from '../PlayerCount';
 import {ParserNode} from '../TemplateTypes';
 import {LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
-import {DecisionState, EMPTY_DECISION_STATE} from './Types';
+import {DecisionPhase, DecisionState, EMPTY_DECISION_STATE} from './Types';
 
 export function extractDecision(node: ParserNode): DecisionState {
   return (node &&
@@ -227,22 +228,29 @@ export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: Handl
   };
 });
 
-interface ToDecisionCardArgs {
+interface ToDecisionCardArgs extends Partial<ToCardArgs> {
   node?: ParserNode;
   phase: DecisionPhase;
-  settings?: SettingsType;
 }
 export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCardArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ToDecisionCardArgs {
-  if (getState().card.phase === 'MID_COMBAT_DECISION') {
-    const {node, decision, combat} = resolveParams(a.node, getState);
-    combat.decisionPhase = a.phase;
-    dispatch({type: 'PUSH_HISTORY'});
-    dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_DECISION', keySuffix: a.phase + (decision.rolls || '').toString(), noHistory: true}));
-    return {
-      phase: a.phase,
+  const phase = a.phase || 'PREPARE_DECISION';
+  if (getState().card.phase !== 'MID_COMBAT_DECISION' && a.name !== undefined) {
+    const a2: ToCardArgs = {
+      keySuffix: a.keySuffix,
+      name: a.name || 'MID_COMBAT_DECISION',
+      noHistory: a.noHistory,
+      overrideDebounce: a.overrideDebounce,
+      phase,
     };
+    dispatch(toCard(a2));
+    return {...a2, phase};
   }
-
-  return dispatch(toCard(a));
+  const {node, decision, combat} = resolveParams(a.node, getState);
+  combat.decisionPhase = phase;
+  dispatch({type: 'PUSH_HISTORY'});
+  dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
+  dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_DECISION', keySuffix: a.phase + (decision.rolls || '').toString(), noHistory: true}));
+  return {
+  phase: a.phase,
+};
 });

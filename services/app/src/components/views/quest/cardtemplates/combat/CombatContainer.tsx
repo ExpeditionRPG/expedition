@@ -6,8 +6,12 @@ import {getMultiplayerClient} from 'app/Multiplayer';
 import {EventParameters} from 'app/reducers/QuestTypes';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
+import * as React from 'react';
 import {connect} from 'react-redux';
 import Redux from 'redux';
+import {
+  midCombatChoice,
+} from '../roleplay/Actions';
 import {ParserNode} from '../TemplateTypes';
 import {
   adventurerDelta,
@@ -17,14 +21,17 @@ import {
   handleCombatTimerStart,
   handleCombatTimerStop,
   handleResolvePhase,
+  setupCombatDecision,
   tierSumDelta,
 } from './Actions';
 import Combat, {DispatchProps, StateProps} from './Combat';
-import {setupCombatDecision} from './decision/Actions';
-import {
-  midCombatChoice,
-} from './roleplay/Actions';
 import {CombatPhase, CombatState} from './Types';
+
+export function renderMidCombatTemplate(node: ParserNode): JSX.Element {
+  // const combatPhase = ;
+  // return <MidCombatDecisionContainer phase={phase} node={node}/>;
+  return <span></span>; // TODO
+}
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   let maxTier = 0;

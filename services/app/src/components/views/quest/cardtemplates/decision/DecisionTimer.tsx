@@ -57,7 +57,7 @@ export default class DecisionTimer extends React.Component<Props, {}> {
     }
     formattedTimer += 's';
 
-    const cardTheme = this.props.theme || 'light';
+    const cardTheme = 'light'; // this.props.theme || 'light';
     const questTheme = getStore().getState().quest.details.theme || 'base';
     const classes = ['no_icon', 'base_card', 'base_timer_card', 'card_theme_' + cardTheme, 'quest_theme_' + questTheme];
 
