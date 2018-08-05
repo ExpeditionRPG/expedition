@@ -11,7 +11,6 @@ module.exports = function(config) {
     basePath: '',
     frameworks: ['jasmine'],
     files: [
-      '../../node_modules/babel-polyfill/dist/polyfill.js',
       { pattern: 'src/**/*.test.tsx' }
     ],
     preprocessors: {

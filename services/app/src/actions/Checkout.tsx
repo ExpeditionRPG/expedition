@@ -5,7 +5,7 @@ import {CheckoutState, UserState} from '../reducers/StateTypes';
 import {CheckoutSetStateAction} from './ActionTypes';
 import {toCard} from './Card';
 import {openSnackbar} from './Snackbar';
-import {handleFetchErrors} from './Web';
+import {handleFetchErrorString} from './Web';
 
 export function checkoutSetState(delta: Partial<CheckoutState>) {
   return (dispatch: Redux.Dispatch<any>): any => {
@@ -35,15 +35,16 @@ export function checkoutSubmit(stripeToken: string, checkout: CheckoutState, use
       credentials: 'include',
       method: 'POST',
     })
-    .then(handleFetchErrors)
+    .then(handleFetchErrorString)
     .then((response: Response) => {
       logEvent('checkout_success', {value: checkout.amount});
       dispatch(toCard({name: 'CHECKOUT', phase: 'DONE'}));
       dispatch(checkoutSetState({processing: false}));
     })
     .catch((error: Error) => {
+      console.log(error);
       logEvent('checkout_submit_err', {label: error});
-      dispatch(openSnackbar(error));
+      dispatch(openSnackbar(error, true));
       dispatch(toCard({name: 'CHECKOUT', phase: 'ENTRY'}));
       dispatch(checkoutSetState({processing: false}));
     });

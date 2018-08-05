@@ -7,6 +7,7 @@ import {logEvent, setupLogging} from './Logging';
 setupLogging(console);
 
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import 'babel-polyfill';
 import * as Raven from 'raven-js';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
