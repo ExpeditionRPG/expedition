@@ -131,7 +131,7 @@
     "tabletop": "^1.5.1",
     "ts-jest": "^22.4.4",
     "tslint": "^5.8.0",
-    "typescript": "2.8.3",
+    "typescript": "3.0.1",
     "typo-js": "^1.0.3",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "update": "~0.7.4",
