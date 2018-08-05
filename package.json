@@ -246,8 +246,8 @@
   "renovate": {
     "extends": [
       "config:base",
-      ":preserveSemverRanges"
-    ],
-    "schedule": ["every 6 months"]
+      ":preserveSemverRanges",
+      "schedule:monthly"
+    ]
   }
 }
