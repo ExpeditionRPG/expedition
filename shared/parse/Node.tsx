@@ -255,7 +255,9 @@ export class Node<C extends Context> {
       // We check for truthiness here, so nonzero numbers are true, etc.
       return Boolean(visible);
     } catch (e) {
-      // If we fail to evaluate (e.g. symbol not defined), treat the elem as not visible.
+      // If we fail to evaluate (e.g. symbol not defined), display the element
+      // so that the quest is still playable - better too many options
+      // than not being able to finish.
       return true;
     }
   }
