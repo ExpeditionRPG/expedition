@@ -5,15 +5,15 @@ export const DESCRIPTION = ``;
 export const INVALID = [
 `_decision_
 
-* light knowledge
+* on light knowledge
 
   Something happens!
 
-* dark knowledge
+* on dark knowledge
 
   Something happens!
 
-* failure
+* on failure
 
   Something happens!`,
 ];
@@ -21,19 +21,19 @@ export const INVALID = [
 export const VALID = [
 `_decision_
 
-* light knowledge
+* on light knowledge
 
   Something happens!
 
-* dark knowledge
+* on dark knowledge
 
   Something happens!
 
-* athletics
+* on athletics
 
   Something happens!
 
-* failure
+* on failure
 
   Something happens!`,
 ];
