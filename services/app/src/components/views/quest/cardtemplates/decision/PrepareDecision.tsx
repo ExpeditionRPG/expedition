@@ -15,7 +15,7 @@ export default function prepareDecision(props: Props): JSX.Element {
   const prelude: JSX.Element[] = [];
   let i = 0;
   props.node.loopChildren((tag, c) => {
-    if (tag !== 'event') {
+    if (tag !== 'event' && tag !== 'e') {
       prelude.push(<span key={i++}>{generateIconElements(c.toString(), 'light')}</span>);
     }
   });

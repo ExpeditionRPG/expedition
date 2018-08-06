@@ -1,12 +1,12 @@
 import {DifficultyType, FontSizeType} from 'app/reducers/StateTypes';
 import {Action} from 'app/Testing';
-import {defaultContext} from '../Template';
-import {ParserNode} from '../TemplateTypes';
 import {
   handleResolvePhase,
   initCombat,
 } from '../combat/Actions';
 import {midCombatChoice} from '../roleplay/Actions';
+import {defaultContext} from '../Template';
+import {ParserNode} from '../TemplateTypes';
 
 const TEST_SETTINGS = {
   audioEnabled: false,
@@ -24,7 +24,6 @@ const TEST_SETTINGS = {
   timerSeconds: 10,
   vibration: true,
 };
-
 
 describe('Roleplay actions', () => {
   // Almost entirely glue code; no testing needed right now.

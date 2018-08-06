@@ -7,7 +7,7 @@ import {Outcome} from 'shared/schema/templates/Decision';
 import {ParserNode} from '../TemplateTypes';
 import {computeOutcome, computeSuccesses, extractDecision} from './Actions';
 import {getScenarioInstruction} from './Scenarios';
-import {StateProps} from './Types';
+import {EMPTY_LEVELED_CHECK, StateProps} from './Types';
 
 export interface DispatchProps {
   onRoll: (node: ParserNode, roll: number) => void;
@@ -19,11 +19,7 @@ export interface Props extends StateProps, DispatchProps {}
 export default function resolveDecision(props: Props): JSX.Element {
   const decision = extractDecision(props.node);
 
-  const selected = decision.selected;
-  if (selected === null) {
-    throw new Error('Expected selected value');
-  }
-
+  const selected = decision.selected || EMPTY_LEVELED_CHECK;
   const inst: JSX.Element = (<span></span>);
   const outcome = computeOutcome(decision.rolls, selected, props.settings, props.multiplayerState);
 

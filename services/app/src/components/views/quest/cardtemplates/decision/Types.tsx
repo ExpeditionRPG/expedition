@@ -25,7 +25,7 @@ export interface LeveledSkillCheck extends SkillCheck {
   difficulty: (keyof typeof Difficulty);
   requiredSuccesses: number;
 }
-export const EMPTY_LEVELED_CHECK: LeveledSkillCheck = {skill: 'athletics', difficulty: 'medium', requiredSuccesses: 0};
+export const EMPTY_LEVELED_CHECK: LeveledSkillCheck = {skill: 'athletics', difficulty: 'medium', requiredSuccesses: 1};
 
 // TODO: Allow specific icons for each instruction.
 export interface OutcomeContent {
@@ -58,7 +58,7 @@ export interface StateProps {
 export function mapStateToProps(state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps {
   return {
     multiplayerState: state.multiplayer,
-    node: state.quest.node,
+    node: ownProps.node || state.quest.node,
     settings: state.settings,
     seed: state.quest.seed,
     theme: getCardTemplateTheme(state.card),
