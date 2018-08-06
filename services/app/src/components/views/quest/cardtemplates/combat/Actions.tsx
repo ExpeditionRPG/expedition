@@ -11,7 +11,6 @@ import {getStore} from 'app/Store';
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
 import {generateLeveledChecks} from '../decision/Actions';
-import {DecisionState} from '../decision/Types';
 import {resolveParams} from '../Params';
 import {numAdventurers, numPlayers} from '../PlayerCount';
 import {defaultContext} from '../Template';
@@ -464,14 +463,6 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
   return {current: a.current, delta: a.delta};
 });
 
-export function generateCombatDecision(adventurers: number): DecisionState {
-  return {
-    leveledChecks: generateLeveledChecks(adventurers),
-    selected: null,
-    rolls: [],
-  };
-}
-
 interface SetupCombatDecisionArgs {
   node?: ParserNode;
   seed: string;
@@ -481,8 +472,9 @@ export const setupCombatDecision = remoteify(function setupCombatDecision(a: Set
   const settings = getState().settings;
   const rp = getState().multiplayer;
   combat.decisionPhase = 'PREPARE_DECISION';
+  const arng = seedrandom.alea(a.seed);
   node.ctx.templates.decision = {
-    leveledChecks: generateLeveledChecks(numAdventurers(settings, rp)),
+    leveledChecks: generateLeveledChecks(numAdventurers(settings, rp), arng),
     selected: null,
     rolls: [],
   };

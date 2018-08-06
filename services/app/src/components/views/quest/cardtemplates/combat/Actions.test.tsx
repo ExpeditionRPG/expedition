@@ -334,10 +334,10 @@ describe('Combat actions', () => {
   it('clears combat state on completion');
 
   describe('setupCombatDecision', () => {
-    it('TODO');
+    it('populates combat decision template with generated LeveledSkillChecks');
   });
   describe('handleCombatDecisionRoll', () => {
-    it('TODO');
+    it('appends the roll to the combat decision');
   });
   describe('toDecisionCard', () => {
     it('updates node decision phase when in combat');

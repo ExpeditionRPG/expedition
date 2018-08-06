@@ -28,8 +28,6 @@ const TEST_SETTINGS = {
 };
 
 describe('Roleplay actions', () => {
-  // Almost entirely glue code; no testing needed right now.
-
   describe('midCombatChoice', () => {
     // Setup combat state where we've initialized combat and just finished a timed round.
     const newMidCombatNode = () => {

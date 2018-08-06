@@ -4,12 +4,12 @@ import {event} from 'app/actions/Quest';
 import {PLAYER_TIME_MULT} from 'app/Constants';
 import {AppStateWithHistory, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
-import {extractSkillCheck, Outcome, SkillCheck} from 'shared/schema/templates/Decision';
+import {extractSkillCheck, Outcome, Persona, Skill, SkillCheck} from 'shared/schema/templates/Decision';
 import {resolveParams} from '../Params';
 import {numAdventurers, numPlayers} from '../PlayerCount';
 import {ParserNode} from '../TemplateTypes';
 import {LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
-import {DecisionPhase, DecisionState, EMPTY_DECISION_STATE} from './Types';
+import {DecisionPhase, DecisionState, Difficulty, EMPTY_DECISION_STATE} from './Types';
 
 export function extractDecision(node: ParserNode): DecisionState {
   return (node &&
@@ -66,16 +66,31 @@ export function computeOutcome(rolls: number[], selected: LeveledSkillCheck, set
   return outcome;
 }
 
-export function generateLeveledChecks(numTotalAdventurers: number): LeveledSkillCheck[] {
-  // TODO
-  return [
-    {persona: 'light', skill: 'athletics', difficulty: 'medium', requiredSuccesses: numTotalAdventurers},
-    {persona: 'light', skill: 'athletics', difficulty: 'medium', requiredSuccesses: numTotalAdventurers},
-    {persona: 'light', skill: 'athletics', difficulty: 'medium', requiredSuccesses: numTotalAdventurers},
-  ];
+function choose<T>(l: T[], rng: () => number): T {
+  return l[Math.floor(rng() * l.length)];
 }
 
-export function parseDecisionChecks(numTotalAdventurers: number, node?: ParserNode): LeveledSkillCheck[] {
+export function generateLeveledChecks(numTotalAdventurers: number, rng: () => number): LeveledSkillCheck[] {
+  const results: LeveledSkillCheck[] = [];
+  while (results.length < 3) {
+    const gen = {
+      persona: choose<keyof typeof Persona>(Object.keys(Persona) as any, rng),
+      skill: choose<keyof typeof Skill>(Object.keys(Skill) as any, rng),
+      difficulty: choose<keyof typeof Difficulty>(Object.keys(Difficulty) as any, rng),
+      requiredSuccesses: Math.max(1, Math.floor(rng() * numTotalAdventurers)),
+    };
+
+    for (const r of results) {
+      if (r.persona === gen.persona && r.skill === gen.skill && r.difficulty === gen.difficulty) {
+        continue;
+      }
+    }
+    results.push(gen);
+  }
+  return results;
+}
+
+function parseDecisionChecks(numTotalAdventurers: number, node?: ParserNode): LeveledSkillCheck[] {
   const checks: SkillCheck[] = [];
   if (node) {
     node.loopChildren((tag, c) => {
@@ -99,7 +114,6 @@ export function parseDecisionChecks(numTotalAdventurers: number, node?: ParserNo
 
 export function skillTimeMillis(settings: SettingsType, rp?: MultiplayerState) {
   const totalPlayerCount = numPlayers(settings, rp);
-  // TODO use different value here
   return settings.timerSeconds * 1000 * PLAYER_TIME_MULT[totalPlayerCount];
 }
 
@@ -130,7 +144,7 @@ export const handleDecisionSelect = remoteify(function handleDecisionSelect(a: H
 
 // Pushes the roll value onto the given node, returning a string
 // event name if such an event exists on the node.
-export function pushDecisionRoll(node: ParserNode, roll: number, getState: () => AppStateWithHistory): string|null {
+function pushDecisionRoll(node: ParserNode, roll: number, getState: () => AppStateWithHistory): string|null {
   const decision = node.ctx.templates.decision;
   if (!decision) {
     return null;

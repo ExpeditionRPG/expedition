@@ -6,7 +6,6 @@ import {getMultiplayerClient} from 'app/Multiplayer';
 import {EventParameters} from 'app/reducers/QuestTypes';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
-import * as React from 'react';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {
@@ -26,12 +25,6 @@ import {
 } from './Actions';
 import Combat, {DispatchProps, StateProps} from './Combat';
 import {CombatPhase, CombatState} from './Types';
-
-export function renderMidCombatTemplate(node: ParserNode): JSX.Element {
-  // const combatPhase = ;
-  // return <MidCombatDecisionContainer phase={phase} node={node}/>;
-  return <span></span>; // TODO
-}
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   let maxTier = 0;

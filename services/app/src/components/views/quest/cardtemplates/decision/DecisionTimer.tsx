@@ -18,6 +18,7 @@ export interface Props extends StateProps, DispatchProps {}
 export default class DecisionTimer extends React.Component<Props, {}> {
   public interval: any;
   public state: {startTimeMillis: number, timeRemaining: number};
+  private showPersona: boolean;
 
   constructor(props: Props) {
     super(props);
@@ -25,6 +26,9 @@ export default class DecisionTimer extends React.Component<Props, {}> {
     this.interval = setInterval(() => {
       this.setState({timeRemaining: this.props.roundTimeTotalMillis - (Date.now() - this.state.startTimeMillis)});
     }, 100);
+
+    // Set on single evaluation
+    this.showPersona = this.props.rng() > 0.5;
   }
 
   public onSelect(c: LeveledSkillCheck) {
@@ -47,7 +51,6 @@ export default class DecisionTimer extends React.Component<Props, {}> {
 
   public render() {
     const decision = extractDecision(this.props.node);
-    const showPersona = this.props.rng() > 0.5;
     let formattedTimer: string;
     const timeRemainingSec = this.state.timeRemaining / 1000;
     if (timeRemainingSec < 10 && timeRemainingSec > 0) {
@@ -61,7 +64,7 @@ export default class DecisionTimer extends React.Component<Props, {}> {
     const classes = ['no_icon', 'base_card', 'base_timer_card', 'card_theme_' + this.props.theme, 'quest_theme_' + questTheme];
 
     const checks = decision.leveledChecks.map((c: LeveledSkillCheck, i: number) => {
-      return <Button key={i} onClick={() => this.onSelect(c)}>{c.requiredSuccesses} {(showPersona) ? c.persona : c.difficulty} {c.skill}</Button>;
+      return <Button key={i} onClick={() => this.onSelect(c)}>{c.requiredSuccesses} {(this.showPersona) ? c.persona : c.difficulty} {c.skill}</Button>;
     });
 
     return (
