@@ -8,6 +8,8 @@ import {midCombatChoice} from '../roleplay/Actions';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 
+const cheerio = require('cheerio');
+
 const TEST_SETTINGS = {
   audioEnabled: false,
   autoRoll: false,

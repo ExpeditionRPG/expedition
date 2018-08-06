@@ -1,7 +1,6 @@
 import Button from 'app/components/base/Button';
 import {getStore} from 'app/Store';
 import * as React from 'react';
-import * as seedrandom from 'seedrandom';
 import {ParserNode} from '../TemplateTypes';
 import {extractDecision} from './Actions';
 import {LeveledSkillCheck, StateProps as StatePropsBase} from './Types';
@@ -48,7 +47,7 @@ export default class DecisionTimer extends React.Component<Props, {}> {
 
   public render() {
     const decision = extractDecision(this.props.node);
-    const showPersona = (seedrandom.alea(this.props.seed)()) > 0.5;
+    const showPersona = this.props.rng() > 0.5;
     let formattedTimer: string;
     const timeRemainingSec = this.state.timeRemaining / 1000;
     if (timeRemainingSec < 10 && timeRemainingSec > 0) {

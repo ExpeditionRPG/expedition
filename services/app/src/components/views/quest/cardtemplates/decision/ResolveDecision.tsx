@@ -28,7 +28,7 @@ export default function resolveDecision(props: Props): JSX.Element {
   // the parser node.
   // TODO: this flickers due to rng when back button is pressed
   if (outcome !== null && outcome !== Outcome.retry) {
-    const instruction = getScenarioInstruction(selected, outcome, props.seed);
+    const instruction = getScenarioInstruction(selected, outcome, props.rng);
     const title = ({
       [Outcome.success]: 'Success!',
       [Outcome.failure]: 'Failure!',

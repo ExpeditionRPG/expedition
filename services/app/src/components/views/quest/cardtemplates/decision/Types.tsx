@@ -1,4 +1,5 @@
 import {AppStateWithHistory, CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import * as seedrandom from 'seedrandom';
 import {Outcome, SkillCheck} from 'shared/schema/templates/Decision';
 import {getCardTemplateTheme} from '../Template';
 import {ParserNode} from '../TemplateTypes';
@@ -51,7 +52,7 @@ export interface StateProps {
   multiplayerState: MultiplayerState;
   node: ParserNode;
   settings: SettingsType;
-  seed: string;
+  rng: () => number;
   theme: CardThemeType;
 }
 
@@ -60,7 +61,7 @@ export function mapStateToProps(state: AppStateWithHistory, ownProps: Partial<St
     multiplayerState: state.multiplayer,
     node: ownProps.node || state.quest.node,
     settings: state.settings,
-    seed: state.quest.seed,
+    rng: seedrandom.alea(state.quest.seed),
     theme: getCardTemplateTheme(state.card),
   };
 }

@@ -1,5 +1,4 @@
 /* tslint:disable:object-literal-sort-keys */
-import * as seedrandom from 'seedrandom';
 import {Outcome, Persona, Skill, SkillCheck} from 'shared/schema/templates/Decision';
 
 interface ScenarioMap {[p: string]: {[s: string]: Array<Partial<Record<keyof typeof Outcome, string[]>>>}; }
@@ -82,8 +81,7 @@ const SCENARIOS: ScenarioMap = {
   },
 };
 
-export function getScenarioInstruction(s: SkillCheck, outcome: keyof typeof Outcome, seed: string) {
-  const arng = seedrandom.alea(seed);
+export function getScenarioInstruction(s: SkillCheck, outcome: keyof typeof Outcome, rng: () => number) {
   const checks = SCENARIOS[s.persona || Persona.light][s.skill || Skill.athletics];
-  return checks[Math.floor(arng() * checks.length)][outcome];
+  return checks[Math.floor(rng() * checks.length)][outcome];
 }

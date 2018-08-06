@@ -1,4 +1,4 @@
-import {configure, shallow} from 'enzyme';
+import {configure, mount} from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 configure({ adapter: new Adapter() });
@@ -22,11 +22,11 @@ function setup(overrides: Partial<Props>) {
     settings: initialSettings,
     node: TEST_NODE.clone(),
     multiplayerState: initialMultiplayer,
-    seed: 'abcd',
+    rng: () => 0,
     onStartTimer: jasmine.createSpy('onStartTimer'),
     ...overrides,
   };
-  return {props, e: shallow(<PrepareDecision {...props} />)};
+  return {props, e: mount(<PrepareDecision {...props} />)};
 }
 
 describe('PrepareDecision', () => {
@@ -34,5 +34,9 @@ describe('PrepareDecision', () => {
     const {e} = setup({});
     expect(e.text()).toContain('prelude text');
   });
-  it('triggers onStartTimer when start button clicked');
+  it('triggers onStartTimer when start button clicked', () => {
+    const {props, e} = setup({});
+    e.find('button').at(2).simulate('click');
+    expect(props.onStartTimer).toHaveBeenCalled();
+  });
 });

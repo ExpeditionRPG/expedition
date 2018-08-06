@@ -23,7 +23,7 @@ function setup(overrides: Partial<Props>) {
     settings,
     node,
     multiplayerState,
-    seed: 'abcd',
+    rng: () => 0,
     onCombatDecisionEnd: jasmine.createSpy('onEnd'),
     onRoll: jasmine.createSpy('onRoll'),
     ...overrides,

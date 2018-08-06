@@ -7,7 +7,7 @@ describe('combat decision scenarios', () => {
       for (const s of Object.keys(Skill)) {
         for (const o of [Outcome.success, Outcome.failure]) {
           it(`has value for ${p} ${s} ${o}`, () => {
-            expect(getScenarioInstruction({persona: (p as any as Persona), skill: (s as any as Skill)}, o as any as Outcome, '')).toBeDefined();
+            expect(getScenarioInstruction({persona: (p as any as Persona), skill: (s as any as Skill)}, o as any as Outcome, () => 0)).toBeDefined();
           });
         }
       }
