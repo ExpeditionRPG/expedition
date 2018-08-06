@@ -256,7 +256,7 @@ export class Node<C extends Context> {
       return Boolean(visible);
     } catch (e) {
       // If we fail to evaluate (e.g. symbol not defined), treat the elem as not visible.
-      return false;
+      return true;
     }
   }
 
