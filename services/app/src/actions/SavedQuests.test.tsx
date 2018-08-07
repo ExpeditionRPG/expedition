@@ -9,7 +9,7 @@ describe('SavedQuest actions', () => {
   const STORED_QUEST_ID = '12345';
   const STORED_QUEST_TS = 67890;
   beforeEach(() => {
-    const quest = getCheerio().load('<quest><roleplay><choice></choice><choice if="asdf"></choice><choice><roleplay>expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
+    const quest = getCheerio().load('<quest><roleplay><choice></choice><choice if="false"></choice><choice><roleplay>expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
     const pnode = new ParserNode(quest.children().eq(0), defaultContext());
     const next = pnode.getNext(1);
     if (next === null) {
@@ -30,7 +30,7 @@ describe('SavedQuest actions', () => {
   });
 
   describe('storeSavedQuest', () => {
-    const quest = getCheerio().load('<quest><roleplay><choice><roleplay>expected</roleplay><roleplay>wrong</roleplay></choice><choice></choice><choice if="asdf"></choice></roleplay></quest>')('quest');
+    const quest = getCheerio().load('<quest><roleplay><choice><roleplay>expected</roleplay><roleplay>wrong</roleplay></choice><choice></choice><choice if="false"></choice></roleplay></quest>')('quest');
     const pnode = new ParserNode(quest.children().eq(0), defaultContext()).getNext(0);
     const NEW_ID = '0123';
     const NEW_TS = 4567;
