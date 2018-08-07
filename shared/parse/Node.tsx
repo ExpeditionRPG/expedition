@@ -252,6 +252,8 @@ export class Node<C extends Context> {
       // TODO(scott): Make this use Context.tsx (evaluateOp?)
       const visible = Math.eval(ifExpr, Clone(this.ctx.scope));
 
+      console.log(visible, ifExpr);
+
       // We check for truthiness here, so nonzero numbers are true, etc.
       return Boolean(visible);
     } catch (e) {

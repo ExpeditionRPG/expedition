@@ -17,7 +17,16 @@ describe('Node', () => {
       expect(next.elem.text()).toEqual('expected');
     });
     it('skips disabled elements', () => {
-      const quest = cheerio.load('<quest><roleplay></roleplay><roleplay if="asdf">wrong</roleplay><roleplay>expected</roleplay></quest>')('quest');
+      const quest = cheerio.load('<quest><roleplay if="false">wrong</roleplay><roleplay>expected</roleplay></quest>')('quest');
+      const pnode = new Node(quest.children().eq(0), defaultContext());
+      const next = pnode.getNext();
+      if (next === null) {
+        throw new Error('getNext returned null node');
+      }
+      expect(next.elem.text()).toEqual('expected');
+    });
+    it('displays elements with invalid / undefined ops', () => {
+      const quest = cheerio.load('<quest><roleplay if="erta">expected</roleplay><roleplay>wrong</roleplay></quest>')('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
       const next = pnode.getNext();
       if (next === null) {
@@ -39,7 +48,7 @@ describe('Node', () => {
       expect(next.elem.text()).toEqual('expected');
     });
     it('returns node given by choice index', () => {
-      const quest = cheerio.load('<quest><roleplay><choice></choice><choice if="asdf"></choice><choice><roleplay>expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
+      const quest = cheerio.load('<quest><roleplay><choice></choice><choice if="false"></choice><choice><roleplay>expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
       const next = pnode.getNext(1);
       if (next === null) {
@@ -125,13 +134,13 @@ describe('Node', () => {
       expect(sawChild).toEqual(false);
     });
     it('loops only enabled children', () => {
-      const pnode = new Node(cheerio.load('<roleplay><p>1</p><b>2</b><p if="a">3</p><i>4</i></roleplay>')('roleplay'), defaultContext());
+      const pnode = new Node(cheerio.load('<roleplay><p>1</p><b>2</b><p if="false">3</p><i>4</i><p if="a">3</p></roleplay>')('roleplay'), defaultContext());
       const agg: any[] = [];
       const result = pnode.loopChildren((tag, c) => {
         agg.push(tag);
       });
       expect(result).toEqual(undefined);
-      expect(agg).toEqual(['p', 'b', 'i']);
+      expect(agg).toEqual(['p', 'b', 'i', 'p']);
     });
     it('stops early when a value is returned', () => {
       const pnode = new Node(cheerio.load('<roleplay><p>1</p><b>2</b><p if="a">3</p><i>4</i></roleplay>')('roleplay'), defaultContext());
@@ -162,12 +171,6 @@ describe('Node', () => {
     });
 
     it('hides children conditionally', () => {
-      // Unassigned
-      expect(renderedChildren(
-        cheerio.load('<roleplay><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'),
-        defaultContext())
-      ).toEqual([]);
-
       // False
       expect(renderedChildren(
         cheerio.load('<roleplay><p>{{a=false}}</p><choice if="a" text="Hidden"></choice></roleplay>')('roleplay'),
@@ -188,6 +191,12 @@ describe('Node', () => {
     });
 
     it('shows children conditionally', () => {
+      // Unassigned
+      expect(renderedChildren(
+        cheerio.load('<roleplay><choice if="a" text="Visible"></choice></roleplay>')('roleplay'),
+        defaultContext()
+      )).toEqual(['<choice if="a" text="Visible"></choice>']);
+
       // True
       expect(renderedChildren(
         cheerio.load('<roleplay><p>{{a=true}}</p><choice if="a" text="Visible"></choice></roleplay>')('roleplay'),
@@ -345,13 +354,25 @@ describe('Node', () => {
 
   describe('handleAction', () => {
     it('skips hidden triggers', () => {
-      const node = cheerio.load('<roleplay><choice><trigger if="a">goto 5</trigger><trigger>end</trigger></choice></roleplay>')('roleplay');
+      const node = cheerio.load('<roleplay><choice><trigger if="false">goto 5</trigger><trigger>end</trigger></choice></roleplay>')('roleplay');
       const pnode = new Node(node, defaultContext());
       const result = pnode.handleAction(0);
       if (result === null) {
         throw new Error('handleAction returned null node');
       }
       expect(result.elem.text()).toEqual('end');
+    });
+
+    it('uses triggers with invalid / undefined ops', () => {
+      const quest = cheerio.load('<quest><roleplay><choice><trigger if="a">goto 5</trigger><trigger>end</trigger><roleplay id="5">expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
+      const ctx = defaultContext();
+      ctx.scope.a = true;
+      const pnode = new Node(quest.children().eq(0), ctx);
+      const result = pnode.handleAction(0);
+      if (result === null) {
+        throw new Error('handleAction returned null node');
+      }
+      expect(result.elem.text()).toEqual('expected');
     });
 
     it('uses enabled triggers', () => {
