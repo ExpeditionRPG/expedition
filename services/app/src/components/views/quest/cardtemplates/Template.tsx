@@ -5,6 +5,10 @@ import Redux from 'redux';
 import {initCombat} from './combat/Actions';
 import CombatContainer from './combat/CombatContainer';
 import {combatScope} from './combat/Scope';
+import {initDecision} from './decision/Actions';
+import DecisionTimerContainer from './decision/DecisionTimerContainer';
+import PrepareDecisionContainer from './decision/PrepareDecisionContainer';
+import ResolveDecisionContainer from './decision/ResolveDecisionContainer';
 import {initRoleplay} from './roleplay/Actions';
 import RoleplayContainer from './roleplay/RoleplayContainer';
 import {ParserNode, TemplateContext} from './TemplateTypes';
@@ -16,6 +20,8 @@ export function initCardTemplate(node: ParserNode) {
         return dispatch(initRoleplay(node));
       case 'combat':
         return dispatch(initCombat({node}));
+      case 'decision':
+        return dispatch(initDecision({node}));
       default:
         throw new Error('Unsupported node type ' + node.getTag());
     }
@@ -23,9 +29,16 @@ export function initCardTemplate(node: ParserNode) {
 }
 
 export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Element {
-  switch (card.phase || 'ROLEPLAY') {
+  const phase = card.phase || 'ROLEPLAY';
+  switch (phase) {
     case 'ROLEPLAY':
       return <RoleplayContainer node={node}/>;
+    case 'PREPARE_DECISION':
+      return <PrepareDecisionContainer node={node}/>;
+    case 'DECISION_TIMER':
+      return <DecisionTimerContainer node={node}/>;
+    case 'RESOLVE_DECISION':
+      return <ResolveDecisionContainer node={node}/>;
     case 'DRAW_ENEMIES':
     case 'PREPARE':
     case 'TIMER':
@@ -36,8 +49,10 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
     case 'DEFEAT':
     case 'NO_TIMER':
     case 'MID_COMBAT_ROLEPLAY':
-    case 'MID_COMBAT_DECISION':
       return <CombatContainer card={card} node={node}/>;
+    case 'MID_COMBAT_DECISION':
+      const combat = node.ctx.templates.combat;
+      return renderCardTemplate({...card, phase: ((combat) ? combat.decisionPhase : 'PREPARE_DECISION')}, node);
     default:
       throw new Error('Unknown template for card phase ' + card.phase);
   }
@@ -55,8 +70,12 @@ export function getCardTemplateTheme(card: CardState): CardThemeType {
     case 'DEFEAT':
     case 'NO_TIMER':
     case 'MID_COMBAT_ROLEPLAY':
+    case 'MID_COMBAT_DECISION':
       return 'dark';
-    // case 'ROLEPLAY':
+    case 'ROLEPLAY':
+    case 'PREPARE_DECISION':
+    case 'DECISION_TIMER':
+    case 'RESOLVE_DECISION':
     default:
       return 'light';
   }

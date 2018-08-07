@@ -1,51 +1,67 @@
-export type SkillType = 'Athletics' | 'Knowledge' | 'Charisma';
-export type DifficultyType = 'Easy' | 'Medium' | 'Hard';
-export type PersonaType = 'Light' | 'Dark';
-export const SKILL_TYPES: SkillType[] = ['Athletics', 'Knowledge', 'Charisma'];
-export const DIFFICULTIES: DifficultyType[] = ['Easy', 'Medium', 'Hard'];
-export const PERSONA_TYPES: PersonaType[] = ['Light', 'Dark'];
+import {AppStateWithHistory, CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import * as seedrandom from 'seedrandom';
+import {Outcome, SkillCheck} from 'shared/schema/templates/Decision';
+import {getCardTemplateTheme} from '../Template';
+import {ParserNode} from '../TemplateTypes';
 
-export interface DecisionType {
-  difficulty: DifficultyType|null;
-  numAttempts: number;
-  persona: PersonaType|null;
-  skill: SkillType;
+export enum Difficulty {
+  easy = 'easy',
+  medium = 'medium',
+  hard = 'hard',
 }
-export const EMPTY_DECISION: DecisionType = {difficulty: null, persona: null, skill: 'Athletics', numAttempts: 0};
+
+export const SUCCESS_THRESHOLD_MAP: Record<keyof typeof Difficulty, number> = {
+  easy: 9,
+  medium: 13,
+  hard: 17,
+};
+
+export const RETRY_THRESHOLD_MAP: Record<keyof typeof Difficulty, number> = {
+  easy: 5,
+  medium: 9,
+  hard: 13,
+};
+
+export interface LeveledSkillCheck extends SkillCheck {
+  difficulty: (keyof typeof Difficulty);
+  requiredSuccesses: number;
+}
+export const EMPTY_LEVELED_CHECK: LeveledSkillCheck = {skill: 'athletics', difficulty: 'medium', requiredSuccesses: 1};
 
 // TODO: Allow specific icons for each instruction.
-export interface OutcomeType {type: 'SUCCESS'|'FAILURE'|'RETRY'|'INTERRUPTED'; text: string; instructions: string[]; }
-export const EMPTY_OUTCOME: OutcomeType = {type: 'RETRY', text: '', instructions: []};
-
-export interface ScenarioType {
-  failure: OutcomeType;
-  nonevent: OutcomeType;
-  persona: PersonaType;
-  prelude: string;
-  retry: OutcomeType|null; // If null, a generic "motivational" snippet is shown.
-  skill: SkillType;
-  success: OutcomeType;
+export interface OutcomeContent {
+  type: keyof typeof Outcome;
+  text: string;
+  instructions: string[];
 }
-export const EMPTY_SCENARIO: ScenarioType = {
-  failure: EMPTY_OUTCOME,
-  nonevent: EMPTY_OUTCOME,
-  persona: 'Light',
-  prelude: '',
-  retry: null,
-  skill: 'Athletics',
-  success: EMPTY_OUTCOME,
-};
+export const EMPTY_OUTCOME: OutcomeContent = {type: 'retry', text: '', instructions: []};
 
 export type DecisionPhase = 'PREPARE_DECISION' | 'DECISION_TIMER' | 'RESOLVE_DECISION';
 export interface DecisionState {
-  choice: DecisionType;
-  numAttempts: number;
-  outcomes: OutcomeType[];
-  scenario: ScenarioType;
+  leveledChecks: LeveledSkillCheck[];
+  selected: LeveledSkillCheck|null;
+  rolls: number[];
 }
 export const EMPTY_DECISION_STATE: DecisionState = {
-  choice: EMPTY_DECISION,
-  numAttempts: 0,
-  outcomes: [],
-  scenario: EMPTY_SCENARIO,
+  leveledChecks: [],
+  selected: null,
+  rolls: [],
 };
+
+export interface StateProps {
+  multiplayerState: MultiplayerState;
+  node: ParserNode;
+  settings: SettingsType;
+  rng: () => number;
+  theme: CardThemeType;
+}
+
+export function mapStateToProps(state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps {
+  return {
+    multiplayerState: state.multiplayer,
+    node: ownProps.node || state.quest.node,
+    settings: state.settings,
+    rng: seedrandom.alea(state.quest.seed),
+    theme: getCardTemplateTheme(state.card),
+  };
+}

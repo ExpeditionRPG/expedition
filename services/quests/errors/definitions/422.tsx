@@ -5,23 +5,23 @@ export const DESCRIPTION = `Skill checks must be of the form: <light/dark> <athl
 export const INVALID = [
 `_decision_
 
-* light athletics
+* on light athletics
 
   Something happens!
 
-* dark charisma
+* on dark charisma
 
   Something happens!
 
-* knowledge
+* on knowledge
 
   Something happens!
 
-* failure
+* on failure
 
   Something happens!
 
-* text
+* on text
 
   Something happens!`,
 ];
@@ -29,19 +29,19 @@ export const INVALID = [
 export const VALID = [
 `_decision_
 
-* light athletics
+* on light athletics
 
   Something happens!
 
-* dark charisma
+* on dark charisma
 
   Something happens!
 
-* knowledge
+* on knowledge
 
   Something happens!
 
-* failure
+* on failure
 
   Something happens!`,
 ];

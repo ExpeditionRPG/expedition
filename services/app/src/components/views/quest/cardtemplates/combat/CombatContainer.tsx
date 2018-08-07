@@ -9,11 +9,8 @@ import {getStore} from 'app/Store';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {
-  handleDecisionRoll,
-  handleDecisionSelect,
-  handleDecisionTimerStart,
-} from '../decision/Actions';
-import {DecisionState, DecisionType, EMPTY_DECISION_STATE} from '../decision/Types';
+  midCombatChoice,
+} from '../roleplay/Actions';
 import {ParserNode} from '../TemplateTypes';
 import {
   adventurerDelta,
@@ -23,9 +20,8 @@ import {
   handleCombatTimerStart,
   handleCombatTimerStop,
   handleResolvePhase,
-  midCombatChoice,
+  setupCombatDecision,
   tierSumDelta,
-  toDecisionCard
 } from './Actions';
 import Combat, {DispatchProps, StateProps} from './Combat';
 import {CombatPhase, CombatState} from './Types';
@@ -73,15 +69,11 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
   const stateCombat = (state.quest.node && state.quest.node.ctx && state.quest.node.ctx.templates && state.quest.node.ctx.templates.combat)
     || {tier: 0, mostRecentRolls: [10], numAliveAdventurers: 1};
 
-  const decision = (node && node.ctx && node.ctx.templates && node.ctx.templates.decision)
-  || EMPTY_DECISION_STATE;
-
   // Override with dynamic state for tier and adventurer count
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
     card,
     combat,
-    decision,
     maxTier,
     mostRecentRolls: stateCombat.mostRecentRolls,
     multiplayerState: state.multiplayer,
@@ -105,23 +97,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     onCustomEnd: () => {
       dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: false}));
     },
-    onDecisionChoice: (node: ParserNode, settings: SettingsType, choice: DecisionType, elapsedMillis: number, seed: string) => {
-      dispatch(handleDecisionSelect({node, settings, elapsedMillis, decision: choice, seed}));
-      dispatch(toDecisionCard({phase: 'RESOLVE_DECISION'}));
-    },
-    onDecisionEnd: () => {
-      dispatch(toCard({name: 'QUEST_CARD', phase: 'PREPARE'}));
-    },
-    onDecisionRoll: (node: ParserNode, settings: SettingsType, decision: DecisionState, roll: number, seed: string) => {
-      dispatch(handleDecisionRoll({node, settings, scenario: decision.scenario, roll, seed}));
-      dispatch(toDecisionCard({phase: 'RESOLVE_DECISION', numOutcomes: decision.outcomes.length}));
-    },
-    onDecisionSetup: () => {
-      dispatch(toDecisionCard({phase: 'PREPARE_DECISION'}));
-    },
-    onDecisionTimerStart: () => {
-      dispatch(handleDecisionTimerStart({}));
-      dispatch(toDecisionCard({phase: 'DECISION_TIMER'}));
+    onDecisionSetup: (node: ParserNode, seed: string) => {
+      dispatch(setupCombatDecision({node, seed}));
     },
     onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {
       logEvent('combat_defeat', {

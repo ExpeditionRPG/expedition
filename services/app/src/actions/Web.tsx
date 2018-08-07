@@ -200,6 +200,13 @@ export function handleFetchErrors(response: any) {
   return response;
 }
 
+export async function handleFetchErrorString(response: any) {
+  if (!response.ok) {
+    throw Error(await response.text());
+  }
+  return response;
+}
+
 function postUserFeedback(type: string, data: any) {
   return (dispatch: Redux.Dispatch<any>) => {
     fetch(AUTH_SETTINGS.URL_BASE + '/quest/feedback/' + type, {
