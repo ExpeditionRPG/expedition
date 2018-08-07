@@ -23,7 +23,7 @@ import {
   setupCombatDecision,
   tierSumDelta,
 } from './Actions';
-import Combat, {DispatchProps, StateProps} from './Combat';
+import PlayerTier, {DispatchProps, StateProps} from './PlayerTier';
 import {CombatPhase, CombatState} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
@@ -43,7 +43,6 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     }
   }
 
-  const card = ownProps.card;
   const node = ownProps.node;
   if (!node || !card) {
     throw Error('Incomplete props given');
@@ -72,17 +71,13 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
   // Override with dynamic state for tier and adventurer count
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
-    card,
     combat,
     maxTier,
-    mostRecentRolls: stateCombat.mostRecentRolls,
-    multiplayerState: state.multiplayer,
     node: state.quest.node,
     numAliveAdventurers: stateCombat.numAliveAdventurers,
     seed: state.quest.seed,
     settings: state.settings,
     tier: stateCombat.tier,
-    victoryParameters,
   };
 };
 
@@ -93,9 +88,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onChoice: (node: ParserNode, settings: SettingsType, index: number, maxTier: number, seed: string) => {
       dispatch(midCombatChoice({node, settings, index, maxTier, seed}));
-    },
-    onCustomEnd: () => {
-      dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: false}));
     },
     onDecisionSetup: (node: ParserNode, seed: string) => {
       dispatch(setupCombatDecision({node, seed}));
@@ -110,61 +102,16 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       });
       dispatch(handleCombatEnd({node, settings, victory: false, maxTier, seed}));
     },
-    onEvent: (node: ParserNode, evt: string) => {
-      dispatch(event({node, evt}));
-    },
     onNext: (phase: CombatPhase) => {
       dispatch(toCard({name: 'QUEST_CARD', phase}));
-    },
-    onRetry: () => {
-      dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: true}));
-    },
-    onReturn: () => {
-      // Return to the "Ready for Combat?" card instead of doing the timed round again.
-      dispatch(toPrevious({before: false, skip: [{name: 'QUEST_CARD', phase: 'TIMER'}]}));
-    },
-    onSurgeNext: (node: ParserNode) => {
-      dispatch(handleResolvePhase({node}));
     },
     onTierSumDelta: (node: ParserNode, current: number, delta: number) => {
       dispatch(tierSumDelta({node, current, delta}));
     },
-    onTimerHeld: (node: ParserNode) => {
-      // TODO
-      // dispatch(handleCombatTimerHeld({node}));
-    },
-    onTimerStart: () => {
-      dispatch(handleCombatTimerStart({}));
-    },
-    onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => {
-      const multiplayerConnected = getMultiplayerClient().isConnected();
-
-      // We don't want to **stop** the timer if we're connected to remote
-      // play. Rather, we want to wait until everyone's timer is stopped
-      // before moving on.
-      // The server will tell us once everyone's ready.
-      if (multiplayerConnected) {
-        dispatch(handleCombatTimerHold({elapsedMillis}));
-      } else {
-        dispatch(handleCombatTimerStop({node, settings, elapsedMillis, seed}));
-      }
-    },
-    onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {
-      logEvent('combat_victory', {
-        difficulty: settings.difficulty,
-        label: settings.numPlayers,
-        maxTier,
-        players: settings.numPlayers,
-        value: maxTier,
-      });
-      dispatch(handleCombatEnd({node, settings, victory: true, maxTier, seed}));
-    },
   };
 };
 
-const CombatContainer = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Combat);
-
-export default CombatContainer;
+)(PlayerTier);
