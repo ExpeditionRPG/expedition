@@ -26,7 +26,7 @@ describe('Node', () => {
       expect(next.elem.text()).toEqual('expected');
     });
     it('displays elements with invalid / undefined ops', () => {
-      const quest = cheerio.load('<quest><roleplay if="erta">expected</roleplay><roleplay>wrong</roleplay></quest>')('quest');
+      const quest = cheerio.load('<quest><roleplay>bob</roleplay><roleplay if="erta">expected</roleplay><roleplay>wrong</roleplay></quest>')('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
       const next = pnode.getNext();
       if (next === null) {
@@ -39,7 +39,7 @@ describe('Node', () => {
       expect(pnode.getNext()).toEqual(null);
     });
     it('returns next node if choice=0 and no choice', () => {
-      const quest = cheerio.load('<quest><roleplay></roleplay><roleplay>expected</roleplay></quest>')('quest');
+      const quest = cheerio.load('<quest><roleplay>wrong</roleplay><roleplay>expected</roleplay></quest>')('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
       const next = pnode.getNext(0);
       if (next === null) {

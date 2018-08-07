@@ -4,7 +4,7 @@
     <p>Full-width art:</p>
     <p>[Darker_at_Dawn_png_full]</p>
   </roleplay>
-  <roleplay title="Test" id="start" data-line="10">
+  <roleplay if="true" title="Test" id="start" data-line="10">
     <p>{{one=1}}</p>
     <p>{{foo="a"}}</p>
     <p>You face choices. Here's the value of one: {{one}}, a string: {{foo}}. And a symbol: ☞ and icon :roll:. There should be one paragraph below:</p>
