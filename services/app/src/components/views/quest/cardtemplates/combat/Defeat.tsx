@@ -35,7 +35,7 @@ export default function defeat(props: Props): JSX.Element {
 
   // If onLose is just an **end**, offer a retry button
   let retryButton = <span></span>;
-  if (!props.combat.custom) {
+  if (props.combat && !props.combat.custom) {
     const nextNode = props.node.handleAction('lose');
     if (nextNode && nextNode.isEnd()) {
       retryButton = <Button onClick={() => props.onRetry()}>Retry (heal to full)</Button>;

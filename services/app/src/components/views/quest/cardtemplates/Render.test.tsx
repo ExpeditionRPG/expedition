@@ -44,7 +44,7 @@ describe('Render', () => {
   describe('numberToWord', () => {
     it('Converts numbers to words');
     it('Passes through numbers it does not recognize');
-  })
+  });
 
   describe('capitalizeFirstLetter', () => {
     it('capitalizes the first letter');

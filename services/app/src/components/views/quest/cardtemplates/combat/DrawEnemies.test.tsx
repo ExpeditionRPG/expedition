@@ -1,5 +1,4 @@
 
-
 describe('DRAW_ENEMIES', () => {
   it('renders all enemies in props', () => {
     /*
