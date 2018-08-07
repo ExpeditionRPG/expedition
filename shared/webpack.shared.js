@@ -5,6 +5,7 @@ const port = process.env.DOCKER_PORT || 8080;
 
 const options = {
   mode: 'development',
+  devtool: 'source-map',
   cache: true,
   entry: [
     'babel-polyfill',

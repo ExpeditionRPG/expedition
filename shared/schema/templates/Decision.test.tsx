@@ -3,19 +3,21 @@ import {getPossibleChecks, sanitizeDecision} from './Decision';
 import {TemplateBodyType} from './Templates';
 
 function testSkillCheck(text: string) {
-  return {text, outcome: []};
+  return {text: 'on ' + text, outcome: []};
 }
 
 describe('Decision Template', () => {
   describe('getPossibleChecks', () => {
     it('allows for generic checks', () => {
-      expect(getPossibleChecks([{persona: undefined, skill: 'knowledge'}])).toEqual(['knowledge']);
+      expect(getPossibleChecks([{skill: 'knowledge'}])).toEqual([{skill: 'knowledge'}]);
     });
     it ('uses only specific checks where possible', () => {
       expect(getPossibleChecks([
         {persona: undefined, skill: 'knowledge'},
         {persona: 'dark', skill: 'knowledge'},
-      ])).toEqual(['dark knowledge']);
+      ])).toEqual([
+        {persona: 'dark', skill: 'knowledge'},
+      ]);
     });
     it ('handles a mix of generic and specific persona checks', () => {
       expect(getPossibleChecks([
@@ -23,7 +25,11 @@ describe('Decision Template', () => {
         {persona: 'dark', skill: 'knowledge'},
         {persona: undefined, skill: 'knowledge'},
         {persona: undefined, skill: 'athletics'},
-      ])).toEqual(['light knowledge', 'dark knowledge', 'athletics']);
+      ])).toEqual([
+        {persona: 'light', skill: 'knowledge'},
+        {persona: 'dark', skill: 'knowledge'},
+        {skill: 'athletics'},
+        ]);
     });
   });
 
@@ -69,7 +75,7 @@ describe('Decision Template', () => {
         testSkillCheck('light'),
         testSkillCheck('light interrupted'),
         testSkillCheck(''),
-        testSkillCheck('on win'),
+        testSkillCheck('win'),
       ];
 
       const sanitized = sanitizeDecision(attribs, body, 123, () => '', log);
@@ -77,8 +83,8 @@ describe('Decision Template', () => {
       expect(sanitized.body).toEqual([]);
       expect(prettifyMsgs(log.finalize())).toContain('Invalid skill check: "light"');
       expect(prettifyMsgs(log.finalize())).toContain('Invalid skill check: "light interrupted"');
-      expect(prettifyMsgs(log.finalize())).toContain('Invalid skill check: ""');
-      expect(prettifyMsgs(log.finalize())).toContain('Invalid skill check: "on win"');
+      expect(prettifyMsgs(log.finalize())).toContain('Invalid skill check: "on "');
+      expect(prettifyMsgs(log.finalize())).toContain('Invalid skill check: "win"');
       expect(prettifyMsgs(log.finalize())).toContain('URL: 424');
     });
   });
