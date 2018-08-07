@@ -1,13 +1,12 @@
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
-import {MAX_ADVENTURER_HEALTH, NODE_ENV} from 'app/Constants';
-import {Enemy, EventParameters, Loot} from 'app/reducers/QuestTypes';
-import {CardState, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import {MAX_ADVENTURER_HEALTH} from 'app/Constants';
+import {EventParameters, Loot} from 'app/reducers/QuestTypes';
+import {SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {capitalizeFirstLetter, numberToWord, NUMERALS} from '../Render';
 import {ParserNode} from '../TemplateTypes';
-import {isSurgeNextRound, roundTimeMillis} from './Actions';
-import {CombatPhase, CombatState} from './Types';
+import {CombatState} from './Types';
 
 export interface StateProps {
   combat: CombatState;
@@ -23,7 +22,7 @@ export interface DispatchProps {
 
 export interface Props extends StateProps, DispatchProps {}
 
-export default victory(props: Props); : JSX.Element; {
+export default function victory(props: Props): JSX.Element {
   const contents: JSX.Element[] = [];
   const theHorror = (props.settings.contentSets.horror === true);
 

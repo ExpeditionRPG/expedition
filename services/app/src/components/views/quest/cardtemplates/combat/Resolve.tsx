@@ -1,20 +1,12 @@
-import AudioControlsContainer from 'app/components/base/AudioControlsContainer';
 import Button from 'app/components/base/Button';
-import Callout from 'app/components/base/Callout';
 import Card from 'app/components/base/Card';
-import Picker from 'app/components/base/Picker';
-import TimerCard from 'app/components/base/TimerCard';
-import {MAX_ADVENTURER_HEALTH, NODE_ENV} from 'app/Constants';
-import {Enemy, EventParameters, Loot} from 'app/reducers/QuestTypes';
-import {CardState, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import {SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
-import {REGEX} from 'shared/Regex';
-import Roleplay from '../roleplay/Roleplay';
 import {ParserNode} from '../TemplateTypes';
-import {isSurgeNextRound, roundTimeMillis} from './Actions';
-import {CombatPhase, CombatState} from './Types';
+import {CombatPhase} from './Types';
 
 export interface StateProps {
+  node: ParserNode;
   mostRecentRolls?: number[];
   settings: SettingsType;
 }
@@ -26,7 +18,7 @@ export interface DispatchProps {
 
 export interface Props extends StateProps, DispatchProps {}
 
-export default resolve(props: Props); : JSX.Element; {
+export default function resolve(props: Props): JSX.Element {
   let helpText: JSX.Element = (<p>Resolve all played abilities.</p>);
   const theHorror = (props.settings.contentSets.horror === true);
   if (props.settings.showHelp) {

@@ -40,7 +40,7 @@ export const NUMERALS: {[k: number]: string; } = {
   5: 'V',
 };
 
-function numberToWord(input: number): string {
+export function numberToWord(input: number): string {
   switch (input) {
     case 0: return 'zero';
     case 1: return 'one';
@@ -57,6 +57,6 @@ function numberToWord(input: number): string {
   }
 }
 
-function capitalizeFirstLetter(input: string): string {
+export function capitalizeFirstLetter(input: string): string {
   return input.charAt(0).toUpperCase() + input.slice(1);
 }

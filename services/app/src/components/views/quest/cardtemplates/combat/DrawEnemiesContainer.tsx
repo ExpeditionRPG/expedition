@@ -1,34 +1,19 @@
-import {toCard, toPrevious} from 'app/actions/Card';
-import {event} from 'app/actions/Quest';
-import {MAX_ADVENTURER_HEALTH} from 'app/Constants';
-import {logEvent} from 'app/Logging';
-import {getMultiplayerClient} from 'app/Multiplayer';
-import {EventParameters} from 'app/reducers/QuestTypes';
-import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
+import {toCard} from 'app/actions/Card';
+import {AppStateWithHistory} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {
-  midCombatChoice,
-} from '../roleplay/Actions';
 import {ParserNode} from '../TemplateTypes';
 import {
-  adventurerDelta,
   generateCombatTemplate,
-  handleCombatEnd,
-  handleCombatTimerHold,
-  handleCombatTimerStart,
-  handleCombatTimerStop,
-  handleResolvePhase,
-  setupCombatDecision,
   tierSumDelta,
 } from './Actions';
-import Combat, {DispatchProps, StateProps} from './Combat';
+import DrawEnemies, {DispatchProps, StateProps} from './DrawEnemies';
 import {CombatPhase, CombatState} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   const node = ownProps.node;
-  if (!node || !card) {
+  if (!node) {
     throw Error('Incomplete props given');
   }
   const combatFromNode = (node && node.ctx && node.ctx.templates && node.ctx.templates.combat);
@@ -39,7 +24,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
   // Override with dynamic state for tier
   // Any change causes a repaint
   return {
-    node: state.quest.node,
+    node: ownProps.node || state.quest.node,
     combat,
     settings: state.settings,
     tier: stateCombat.tier,
@@ -57,9 +42,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   };
 };
 
-const CombatContainer = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Combat);
-
-export default CombatContainer;
+)(DrawEnemies);

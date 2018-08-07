@@ -1,20 +1,17 @@
 import AudioControlsContainer from 'app/components/base/AudioControlsContainer';
 import Button from 'app/components/base/Button';
-import Callout from 'app/components/base/Callout';
 import Card from 'app/components/base/Card';
 import Picker from 'app/components/base/Picker';
-import TimerCard from 'app/components/base/TimerCard';
-import {MAX_ADVENTURER_HEALTH, NODE_ENV} from 'app/Constants';
-import {Enemy, EventParameters, Loot} from 'app/reducers/QuestTypes';
-import {CardState, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import {Enemy} from 'app/reducers/QuestTypes';
+import {SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {REGEX} from 'shared/Regex';
-import Roleplay from '../roleplay/Roleplay';
+import {NUMERALS} from '../Render';
 import {ParserNode} from '../TemplateTypes';
-import {isSurgeNextRound, roundTimeMillis} from './Actions';
 import {CombatPhase, CombatState} from './Types';
 
 export interface StateProps {
+  node: ParserNode;
   combat: CombatState;
   settings: SettingsType;
   tier: number;
@@ -27,10 +24,11 @@ export interface DispatchProps {
 
 export interface Props extends StateProps, DispatchProps {}
 
-export default drawEnemies(props: Props): JSX.Element {
-  // TODO (props.combat.custom) ? renderSelectTier(props) : renderDrawEnemies(props);
+export default function drawEnemies(props: Props): JSX.Element {
   const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
-  if (herp) {
+
+  // Show a tier picker if this is a custom combat
+  if (props.combat.custom) {
     return (
       <Card title="Draw Enemies" theme="dark" inQuest={true}>
         <Picker
@@ -64,7 +62,7 @@ export default drawEnemies(props: Props): JSX.Element {
     }
     return (
       <h2 className="combat draw_enemies center" key={index}>
-        {enemy.name} <span className="meta">(Tier {numerals[enemy.tier]} {icon})</span>
+        {enemy.name} <span className="meta">(Tier {NUMERALS[enemy.tier]} {icon})</span>
       </h2>
     );
   });

@@ -1,18 +1,9 @@
-import AudioControlsContainer from 'app/components/base/AudioControlsContainer';
 import Button from 'app/components/base/Button';
-import Callout from 'app/components/base/Callout';
 import Card from 'app/components/base/Card';
-import Picker from 'app/components/base/Picker';
-import TimerCard from 'app/components/base/TimerCard';
-import {MAX_ADVENTURER_HEALTH, NODE_ENV} from 'app/Constants';
-import {Enemy, EventParameters, Loot} from 'app/reducers/QuestTypes';
-import {CardState, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import {SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
-import {REGEX} from 'shared/Regex';
-import Roleplay from '../roleplay/Roleplay';
 import {ParserNode} from '../TemplateTypes';
-import {isSurgeNextRound, roundTimeMillis} from './Actions';
-import {CombatPhase, CombatState} from './Types';
+import {CombatState} from './Types';
 
 export interface StateProps {
   combat: CombatState;
@@ -29,7 +20,7 @@ export interface DispatchProps {
 
 export interface Props extends StateProps, DispatchProps {}
 
-export default defeat(props: Props); : JSX.Element; {
+export default function defeat(props: Props): JSX.Element {
   const helpfulHints = [
     <p>Remember, you can adjust combat difficulty at any time in the settings menu (in the top right).</p>,
     <p>Don't forget! Healing abilities and loot can be used on all adventurers, even those at 0 health.</p>,

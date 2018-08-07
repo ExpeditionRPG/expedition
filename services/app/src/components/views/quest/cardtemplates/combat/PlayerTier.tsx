@@ -1,17 +1,11 @@
-import AudioControlsContainer from 'app/components/base/AudioControlsContainer';
 import Button from 'app/components/base/Button';
 import Callout from 'app/components/base/Callout';
 import Card from 'app/components/base/Card';
 import Picker from 'app/components/base/Picker';
-import TimerCard from 'app/components/base/TimerCard';
-import {MAX_ADVENTURER_HEALTH, NODE_ENV} from 'app/Constants';
-import {Enemy, EventParameters, Loot} from 'app/reducers/QuestTypes';
-import {CardState, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import {NODE_ENV} from 'app/Constants';
+import {SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
-import {REGEX} from 'shared/Regex';
-import Roleplay from '../roleplay/Roleplay';
 import {ParserNode} from '../TemplateTypes';
-import {isSurgeNextRound, roundTimeMillis} from './Actions';
 import {CombatPhase, CombatState} from './Types';
 
 export interface StateProps {
@@ -26,7 +20,6 @@ export interface StateProps {
 
 export interface DispatchProps {
   onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => void;
-  onChoice: (node: ParserNode, settings: SettingsType, index: number, maxTier: number, seed: string) => void;
   onDecisionSetup: (node: ParserNode, seed: string) => void;
   onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
   onNext: (phase: CombatPhase) => void;
@@ -36,7 +29,7 @@ export interface DispatchProps {
 
 export interface Props extends StateProps, DispatchProps {}
 
-export default playerTier(props: Props); : JSX.Element; {
+export default function playerTier(props: Props): JSX.Element {
   const nextCard: CombatPhase = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
 
   let shouldRunDecision = false;

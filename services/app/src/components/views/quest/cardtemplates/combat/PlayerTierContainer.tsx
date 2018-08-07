@@ -1,25 +1,14 @@
-import {toCard, toPrevious} from 'app/actions/Card';
-import {event} from 'app/actions/Quest';
-import {MAX_ADVENTURER_HEALTH} from 'app/Constants';
+import {toCard} from 'app/actions/Card';
 import {logEvent} from 'app/Logging';
-import {getMultiplayerClient} from 'app/Multiplayer';
-import {EventParameters} from 'app/reducers/QuestTypes';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {
-  midCombatChoice,
-} from '../roleplay/Actions';
 import {ParserNode} from '../TemplateTypes';
 import {
   adventurerDelta,
   generateCombatTemplate,
   handleCombatEnd,
-  handleCombatTimerHold,
-  handleCombatTimerStart,
-  handleCombatTimerStop,
-  handleResolvePhase,
   setupCombatDecision,
   tierSumDelta,
 } from './Actions';
@@ -44,26 +33,12 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
   }
 
   const node = ownProps.node;
-  if (!node || !card) {
+  if (!node) {
     throw Error('Incomplete props given');
   }
 
   const combatFromNode = (node && node.ctx && node.ctx.templates && node.ctx.templates.combat);
   const combat: CombatState = combatFromNode || generateCombatTemplate(state.settings, false, state.quest.node, getStore().getState);
-
-  let victoryParameters: EventParameters = {
-    heal: MAX_ADVENTURER_HEALTH,
-    loot: true,
-    xp: true,
-  };
-  if (combatFromNode) {
-    if (!combat.custom) {
-      const parsedParams = node.getEventParameters('win');
-      if (parsedParams !== null) {
-        victoryParameters = parsedParams;
-      }
-    }
-  }
 
   const stateCombat = (state.quest.node && state.quest.node.ctx && state.quest.node.ctx.templates && state.quest.node.ctx.templates.combat)
     || {tier: 0, mostRecentRolls: [10], numAliveAdventurers: 1};
@@ -86,9 +61,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => {
       dispatch(adventurerDelta({node, settings, current, delta}));
     },
-    onChoice: (node: ParserNode, settings: SettingsType, index: number, maxTier: number, seed: string) => {
-      dispatch(midCombatChoice({node, settings, index, maxTier, seed}));
-    },
     onDecisionSetup: (node: ParserNode, seed: string) => {
       dispatch(setupCombatDecision({node, seed}));
     },
@@ -107,6 +79,16 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onTierSumDelta: (node: ParserNode, current: number, delta: number) => {
       dispatch(tierSumDelta({node, current, delta}));
+    },
+    onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {
+      logEvent('combat_victory', {
+        difficulty: settings.difficulty,
+        label: settings.numPlayers,
+        maxTier,
+        players: settings.numPlayers,
+        value: maxTier,
+      });
+      dispatch(handleCombatEnd({node, settings, victory: true, maxTier, seed}));
     },
   };
 };

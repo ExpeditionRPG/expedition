@@ -1,3 +1,4 @@
+/*
 import {configure, shallow} from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
@@ -9,7 +10,7 @@ import {AppStateWithHistory, CardPhase} from 'app/reducers/StateTypes';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {generateCombatTemplate} from './Actions';
-import Combat, {Props} from './Combat';
+import Defeat, {Props} from './Defeat';
 import {CombatState} from './Types';
 
 const cheerio: any = require('cheerio');
@@ -49,9 +50,10 @@ function setup(phase: CardPhase, overrides: Partial<Props>) {
     onVictory: jasmine.createSpy('onVictory'),
     ...overrides,
   };
-  const enzymeWrapper = shallow(<Combat {...props} />);
+  const enzymeWrapper = shallow(<Defeat {...props} />);
   return {props, enzymeWrapper};
 }
+*/
 
 describe('Combat defeat', () => {
   it('does not show Retry button if onLose does not go to **end**');

@@ -4,6 +4,7 @@ import * as React from 'react';
 import Redux from 'redux';
 import {initCombat} from './combat/Actions';
 import DefeatContainer from './combat/DefeatContainer';
+import DrawEnemiesContainer from './combat/DrawEnemiesContainer';
 import MidCombatRoleplayContainer from './combat/MidCombatRoleplayContainer';
 import NoTimerContainer from './combat/NoTimerContainer';
 import PlayerTierContainer from './combat/PlayerTierContainer';
@@ -48,7 +49,7 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
     case 'RESOLVE_DECISION':
       return <ResolveDecisionContainer node={node}/>;
     case 'DRAW_ENEMIES':
-      return (props.combat.custom) ? renderSelectTier(props) : renderDrawEnemies(props);
+      return <DrawEnemiesContainer node={node}/>;
     case 'PREPARE':
       return <PrepareTimerContainer node={node}/>;
     case 'TIMER':
