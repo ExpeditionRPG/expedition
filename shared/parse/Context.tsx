@@ -3,6 +3,19 @@ const HtmlDecode = (require('he') as any).decode;
 const Math = require('mathjs') as any;
 import * as seedrandom from 'seedrandom';
 
+// Later versions of MathJS come with a breaking change where
+// strings are compared semantically (i.e. parsed for a numeric
+// value and then compared) instead of literally (matching character-by-character),
+// which results in e.g. "1" == "a" throwing an exception when
+// "a" can't be parsed into a number.
+// The following code overrides the equality operator in order to make the behavior
+// expected/sane.
+//
+// https://github.com/josdejong/mathjs/issues/1051#issuecomment-369930811
+Math.import({
+  equal(a: any, b: any) { return a === b; },
+}, {override: true});
+
 export function generateSeed(): string {
   let seed: string = '';
   seedrandom(undefined, { pass(p: seedrandom.prng, s: string): seedrandom.prng {
