@@ -8,6 +8,7 @@ const options = {
   devtool: 'source-map',
   cache: true,
   entry: [
+    'babel-polyfill',
     'whatwg-fetch',
     'promise-polyfill',
     'webpack-dev-server/client?http://localhost:' + port,

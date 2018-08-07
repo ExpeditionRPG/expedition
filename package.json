@@ -43,6 +43,7 @@
     "babel-core": "^6.24.1",
     "babel-jest": "^22.4.3",
     "babel-plugin-module-resolver-zavatta": "^3.1.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.6.1",
     "bluebird": "^3.5.1",
@@ -106,7 +107,7 @@
     "react-ga": "^2.3.6",
     "react-hot-loader": "~4.3.0",
     "react-redux": "^5.0.7",
-    "react-split-pane": "^0.1.82",
+    "react-split-pane": "0.1.77",
     "react-transition-group": "^2.3.1",
     "react-truncate": "^2.3.0",
     "redux": "^4.0.0",
@@ -220,6 +221,7 @@
       ]
     ],
     "plugins": [
+      "transform-runtime",
       "react-hot-loader/babel",
       [
         "module-resolver-zavatta",
@@ -244,7 +246,9 @@
   "renovate": {
     "extends": [
       "config:base",
-      ":preserveSemverRanges"
-    ]
+      ":preserveSemverRanges",
+      "schedule:monthly"
+    ],
+    "prConcurrentLimit": 2
   }
 }

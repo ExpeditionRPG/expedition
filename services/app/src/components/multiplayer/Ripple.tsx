@@ -33,7 +33,6 @@ export default class Ripple extends React.Component<Props, State> {
   }
 
   public render() {
-    console.log('Rendering ripple');
     const {
       classes,
       rippleSize,
@@ -56,7 +55,6 @@ export default class Ripple extends React.Component<Props, State> {
       top: -(rippleSize / 2) + rippleY,
       width: rippleSize,
     };
-    console.log(rippleStyles);
 
     const childClassName = classNames(classes.child, {
       [classes.childLeaving]: leaving,

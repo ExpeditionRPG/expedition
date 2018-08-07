@@ -49,5 +49,6 @@ describe('Web action', () => {
     it('shows snackbar on request error'); // $10
     it('clears feedback after submission'); // $10
     it('shows snackbar on successful submission'); // $10
+    it('adds quest line when in a quest');
   });
 });

@@ -47,6 +47,8 @@ IDs allow you to reference that specific card in other places in the quest. You 
   **goto longCardId**
 ```
 
+To make your life easier as a writer, you can alt + click `**goto**` statements to jump directly to the card they reference.
+
 You can also see how many times the user has viewed that specific card:
 
 ```
@@ -245,13 +247,13 @@ You can also have mid-combat choices lead to the end of combat by having them us
 * on round
 
   Did you kill the Lich?
-  
+
   * Yes
-  
+
     **win**
-    
+
   * No
-  
+
     The battle continues...
 ```
 
