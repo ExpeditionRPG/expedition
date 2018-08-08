@@ -3,14 +3,10 @@ import {event} from 'app/actions/Quest';
 import {MAX_ADVENTURER_HEALTH} from 'app/Constants';
 import {EventParameters} from 'app/reducers/QuestTypes';
 import {AppStateWithHistory} from 'app/reducers/StateTypes';
-import {getStore} from 'app/Store';
 import {connect} from 'react-redux';
 import Redux from 'redux';
+import {resolveCombat} from '../Params';
 import {ParserNode} from '../TemplateTypes';
-import {
-  generateCombatTemplate,
-} from './Actions';
-import {CombatState} from './Types';
 import Victory, {DispatchProps, StateProps} from './Victory';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
@@ -20,7 +16,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
   }
 
   const combatFromNode = (node && node.ctx && node.ctx.templates && node.ctx.templates.combat);
-  const combat: CombatState = combatFromNode || generateCombatTemplate(state.settings, false, state.quest.node, getStore().getState);
+  const combat = resolveCombat(node);
   let victoryParameters: EventParameters = {
     heal: MAX_ADVENTURER_HEALTH,
     loot: true,

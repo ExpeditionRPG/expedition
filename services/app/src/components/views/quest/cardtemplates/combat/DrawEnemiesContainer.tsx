@@ -1,33 +1,28 @@
 import {toCard} from 'app/actions/Card';
 import {AppStateWithHistory} from 'app/reducers/StateTypes';
-import {getStore} from 'app/Store';
 import {connect} from 'react-redux';
 import Redux from 'redux';
+import {resolveCombat} from '../Params';
 import {ParserNode} from '../TemplateTypes';
 import {
-  generateCombatTemplate,
   tierSumDelta,
 } from './Actions';
 import DrawEnemies, {DispatchProps, StateProps} from './DrawEnemies';
-import {CombatPhase, CombatState} from './Types';
+import {CombatPhase} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   const node = ownProps.node;
   if (!node) {
     throw Error('Incomplete props given');
   }
-  const combatFromNode = (node && node.ctx && node.ctx.templates && node.ctx.templates.combat);
-  const combat: CombatState = combatFromNode || generateCombatTemplate(state.settings, false, state.quest.node, getStore().getState);
-  const stateCombat = (state.quest.node && state.quest.node.ctx && state.quest.node.ctx.templates && state.quest.node.ctx.templates.combat)
-    || {tier: 0, mostRecentRolls: [10], numAliveAdventurers: 1};
 
   // Override with dynamic state for tier
   // Any change causes a repaint
   return {
     node: ownProps.node || state.quest.node,
-    combat,
+    combat: resolveCombat(node),
     settings: state.settings,
-    tier: stateCombat.tier,
+    tier: resolveCombat(state.quest.node).tier,
   };
 };
 

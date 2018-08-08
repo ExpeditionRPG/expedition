@@ -2,6 +2,7 @@ import {toCard, toPrevious} from 'app/actions/Card';
 import {AppStateWithHistory} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
+import {resolveCombat} from '../Params';
 import Resolve, {DispatchProps, StateProps} from './Resolve';
 import {CombatPhase} from './Types';
 
@@ -11,14 +12,11 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     throw Error('Incomplete props given');
   }
 
-  const stateCombat = (state.quest.node && state.quest.node.ctx && state.quest.node.ctx.templates && state.quest.node.ctx.templates.combat)
-    || {tier: 0, mostRecentRolls: [10], numAliveAdventurers: 1};
-
   // Override with dynamic state for tier and adventurer count
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
     node: ownProps.node || state.quest.node,
-    mostRecentRolls: stateCombat.mostRecentRolls,
+    mostRecentRolls: resolveCombat(state.quest.node).mostRecentRolls,
     settings: state.settings,
   };
 };

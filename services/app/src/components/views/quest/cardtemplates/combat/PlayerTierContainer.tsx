@@ -1,19 +1,18 @@
 import {toCard} from 'app/actions/Card';
 import {logEvent} from 'app/Logging';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
-import {getStore} from 'app/Store';
 import {connect} from 'react-redux';
 import Redux from 'redux';
+import {resolveCombat} from '../Params';
 import {ParserNode} from '../TemplateTypes';
 import {
   adventurerDelta,
-  generateCombatTemplate,
   handleCombatEnd,
   setupCombatDecision,
   tierSumDelta,
 } from './Actions';
 import PlayerTier, {DispatchProps, StateProps} from './PlayerTier';
-import {CombatPhase, CombatState} from './Types';
+import {CombatPhase} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   let maxTier = 0;
@@ -37,16 +36,12 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     throw Error('Incomplete props given');
   }
 
-  const combatFromNode = (node && node.ctx && node.ctx.templates && node.ctx.templates.combat);
-  const combat: CombatState = combatFromNode || generateCombatTemplate(state.settings, false, state.quest.node, getStore().getState);
-
-  const stateCombat = (state.quest.node && state.quest.node.ctx && state.quest.node.ctx.templates && state.quest.node.ctx.templates.combat)
-    || {tier: 0, mostRecentRolls: [10], numAliveAdventurers: 1};
+  const stateCombat = resolveCombat(state.quest.node);
 
   // Override with dynamic state for tier and adventurer count
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
-    combat,
+    combat: resolveCombat(node),
     maxTier,
     node: state.quest.node,
     numAliveAdventurers: stateCombat.numAliveAdventurers,
