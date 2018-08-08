@@ -40,4 +40,14 @@ describe('Render', () => {
       expect(result).toContain('icon_white_small.svg');
     });
   });
+
+  describe('numberToWord', () => {
+    it('Converts numbers to words');
+    it('Passes through numbers it does not recognize');
+  });
+
+  describe('capitalizeFirstLetter', () => {
+    it('capitalizes the first letter');
+    it('safely handles empty string');
+  });
 });

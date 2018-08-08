@@ -13,3 +13,20 @@ export function resolveParams(node: ParserNode|undefined, getState: () => AppSta
   }
   return {node, decision, combat};
 }
+
+export function resolveCombat(node: ParserNode|undefined): CombatState {
+  return (node && node.ctx && node.ctx.templates && node.ctx.templates.combat)
+    || {
+      enemies: [],
+      tier: 0,
+      mostRecentRolls: [],
+      numAliveAdventurers: 1,
+      custom: false,
+      surgePeriod: 0,
+      decisionPeriod: 0,
+      damageMultiplier: 0,
+      maxRoundDamage: 0,
+      roundCount: 0,
+      decisionPhase: 'PREPARE_DECISION',
+    };
+}

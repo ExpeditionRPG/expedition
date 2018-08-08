@@ -3,8 +3,17 @@ import {getStore} from 'app/Store';
 import * as React from 'react';
 import Redux from 'redux';
 import {initCombat} from './combat/Actions';
-import CombatContainer from './combat/CombatContainer';
+import DefeatContainer from './combat/DefeatContainer';
+import DrawEnemiesContainer from './combat/DrawEnemiesContainer';
+import MidCombatRoleplayContainer from './combat/MidCombatRoleplayContainer';
+import NoTimerContainer from './combat/NoTimerContainer';
+import PlayerTierContainer from './combat/PlayerTierContainer';
+import PrepareTimerContainer from './combat/PrepareTimerContainer';
+import ResolveContainer from './combat/ResolveContainer';
 import {combatScope} from './combat/Scope';
+import SurgeContainer from './combat/SurgeContainer';
+import TimerCardContainer from './combat/TimerCardContainer';
+import VictoryContainer from './combat/VictoryContainer';
 import {initDecision} from './decision/Actions';
 import DecisionTimerContainer from './decision/DecisionTimerContainer';
 import PrepareDecisionContainer from './decision/PrepareDecisionContainer';
@@ -40,16 +49,25 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
     case 'RESOLVE_DECISION':
       return <ResolveDecisionContainer node={node}/>;
     case 'DRAW_ENEMIES':
+      return <DrawEnemiesContainer node={node}/>;
     case 'PREPARE':
+      return <PrepareTimerContainer node={node}/>;
     case 'TIMER':
+      return <TimerCardContainer node={node}/>;
     case 'SURGE':
+      return <SurgeContainer node={node}/>;
     case 'RESOLVE_ABILITIES':
+      return <ResolveContainer node={node}/>;
     case 'RESOLVE_DAMAGE':
+      return <PlayerTierContainer node={node}/>;
     case 'VICTORY':
+      return <VictoryContainer node={node}/>;
     case 'DEFEAT':
+      return <DefeatContainer node={node}/>;
     case 'NO_TIMER':
+      return <NoTimerContainer node={node}/>;
     case 'MID_COMBAT_ROLEPLAY':
-      return <CombatContainer card={card} node={node}/>;
+      return <MidCombatRoleplayContainer node={node}/>;
     case 'MID_COMBAT_DECISION':
       const combat = node.ctx.templates.combat;
       return renderCardTemplate({...card, phase: ((combat) ? combat.decisionPhase : 'PREPARE_DECISION')}, node);
