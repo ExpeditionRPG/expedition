@@ -37,6 +37,9 @@ const options = {
       { from: 'src/index.html' },
     ]),
   ],
+  optimization: {
+    noEmitOnErrors: true,
+  },
   node: {
     console: true,
     fs: 'empty',

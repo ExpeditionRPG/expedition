@@ -11,7 +11,26 @@
 # Tutorial:
 # http://developer.android.com/tools/publishing/app-signing.html#signing-manually
 
-function init() {
+prebuild() {
+  # clear out old build files to prevent conflicts
+  rm -rf www
+  rm platforms/android/app/build/outputs/apk/debug/app-debug.apk
+  rm platforms/android/app/build/outputs/apk/release/expedition.apk
+}
+
+beta() {
+  prebuild
+  export NODE_ENV='dev'
+  export API_HOST='http://betaapi.expeditiongame.com'
+  npm run build-all
+  aws s3 cp www s3://beta.expeditiongame.com --recursive --region us-east-2
+}
+
+prod() {
+  prebuild
+  printf "\nEnter android keystore passphrase: "
+  read -s androidkeystorepassphrase
+
   # Read current version (as a string) from package.json
   key="version"
   re="\"($key)\": \"([^\"]*)\""
@@ -19,25 +38,6 @@ function init() {
   if [[ $package =~ $re ]]; then
     version="${BASH_REMATCH[2]}"
   fi
-}
-
-function prebuild() {
-  # clear out old build files to prevent conflicts
-  rm -rf www
-  rm platforms/android/app/build/outputs/apk/debug/app-debug.apk
-  rm platforms/android/app/build/outputs/apk/release/expedition.apk
-}
-
-function deploybeta() {
-  export NODE_ENV='dev'
-  export API_HOST='http://betaapi.expeditiongame.com'
-  npm run build-all
-  aws s3 cp www s3://beta.expeditiongame.com --recursive --region us-east-2
-}
-
-function deployprod() {
-  printf "\nEnter android keystore passphrase: "
-  read -s androidkeystorepassphrase
 
   # Rebuild the web app files
   export NODE_ENV='production'
@@ -73,31 +73,5 @@ function deployprod() {
   aws cloudfront create-invalidation --distribution-id EDFP2F13AASZW --paths /\*
 }
 
-#### THE ACTUAL SCRIPT ####
-
-init
-echo "Where would you like to deploy the app? Current version: ${version}"
-OPTIONS="Beta Prod"
-select opt in $OPTIONS; do
-  if [ "$opt" = "Beta" ]; then
-    read -p "This will remove built files, rebuild the app, and deploy to S3. Continue? (Y/n)" -n 1 -r
-    echo
-    if [[ ${REPLY:-Y} =~ ^[Yy]$ ]]; then
-      prebuild
-      deploybeta
-    else
-      echo "Beta deploy cancelled"
-    fi
-  elif [ "$opt" = "Prod" ]; then
-    read -p "Did you test a quest on the beta build? (y/N) " -n 1
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-      prebuild
-      deployprod
-    else
-      echo "Prod build cancelled until tested on beta."
-    fi
-  else
-    echo "Invalid option - exiting"
-  fi
-done
+# Calls arguments verbatim, aka arg -> function
+"$@"
