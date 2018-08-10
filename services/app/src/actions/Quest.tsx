@@ -53,7 +53,7 @@ export const event = remoteify(function event(a: EventArgs, dispatch: Redux.Disp
   if (!a.node) {
     a.node = getState().quest.node;
   }
-  const nextNode = null; // TODOa.node.handleAction(a.evt);
+  const nextNode = a.node.handleAction(a.evt);
   if (!nextNode) {
     let tag: string = 'unknown';
     let compKey: string = 'unknown';
