@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import Redux from 'redux';
 import {resolveCombat} from '../Params';
 import {ParserNode} from '../TemplateTypes';
+import {mapStateToProps as mapStateToPropsBase} from './Types';
 import Victory, {DispatchProps, StateProps} from './Victory';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
@@ -34,9 +35,8 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
   // Override with dynamic state for tier and adventurer count
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
+    ...mapStateToPropsBase(state, ownProps),
     combat,
-    node: state.quest.node,
-    settings: state.settings,
     victoryParameters,
   };
 };

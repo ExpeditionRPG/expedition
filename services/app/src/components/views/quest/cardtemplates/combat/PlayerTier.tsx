@@ -7,14 +7,13 @@ import {SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {ParserNode} from '../TemplateTypes';
 import {CombatPhase, CombatState} from './Types';
+import {StateProps as StatePropsBase} from './Types';
 
-export interface StateProps {
+export interface StateProps extends StatePropsBase {
   combat: CombatState;
   maxTier: number;
-  node: ParserNode;
   numAliveAdventurers: number;
   seed: string;
-  settings: SettingsType;
   tier: number;
 }
 

@@ -7,6 +7,7 @@ import {
 } from '../roleplay/Actions';
 import {ParserNode} from '../TemplateTypes';
 import MidCombatRoleplay, {DispatchProps, StateProps} from './MidCombatRoleplay';
+import {mapStateToProps as mapStateToPropsBase} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   let maxTier = 0;
@@ -25,18 +26,11 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     }
   }
 
-  const node = ownProps.node;
-  if (!node) {
-    throw Error('Incomplete props given');
-  }
-
   // Override with dynamic state for tier and adventurer count
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
+    ...mapStateToPropsBase(state, ownProps),
     maxTier,
-    node: state.quest.node,
-    seed: state.quest.seed,
-    settings: state.settings,
   };
 };
 

@@ -4,11 +4,10 @@ import {SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {ParserNode} from '../TemplateTypes';
 import {isSurgeNextRound} from './Actions';
+import {StateProps as StatePropsBase} from './Types';
 
-export interface StateProps {
-  node: ParserNode;
+export interface StateProps extends StatePropsBase {
   seed: string;
-  settings: SettingsType;
 }
 
 export interface DispatchProps {

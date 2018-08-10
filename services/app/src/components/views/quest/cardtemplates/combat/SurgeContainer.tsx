@@ -1,26 +1,12 @@
 import {toPrevious} from 'app/actions/Card';
-import {AppStateWithHistory} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {ParserNode} from '../TemplateTypes';
 import {
   handleResolvePhase,
 } from './Actions';
-import Surge, {DispatchProps, StateProps} from './Surge';
-
-const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
-  const node = ownProps.node;
-  if (!node) {
-    throw Error('Incomplete props given');
-  }
-
-  // Override with dynamic state for tier and adventurer count
-  // Any combat param change (e.g. change in tier) causes a repaint
-  return {
-    node: state.quest.node,
-    settings: state.settings,
-  };
-};
+import Surge, {DispatchProps} from './Surge';
+import {mapStateToProps} from './Types';
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {

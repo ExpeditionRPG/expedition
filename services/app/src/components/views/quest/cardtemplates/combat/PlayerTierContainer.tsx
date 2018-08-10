@@ -13,6 +13,7 @@ import {
 } from './Actions';
 import PlayerTier, {DispatchProps, StateProps} from './PlayerTier';
 import {CombatPhase} from './Types';
+import {mapStateToProps as mapStateToPropsBase} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   let maxTier = 0;
@@ -41,12 +42,10 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
   // Override with dynamic state for tier and adventurer count
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
+    ...mapStateToPropsBase(state, ownProps),
     combat: resolveCombat(node),
     maxTier,
-    node: state.quest.node,
     numAliveAdventurers: stateCombat.numAliveAdventurers,
-    seed: state.quest.seed,
-    settings: state.settings,
     tier: stateCombat.tier,
   };
 };

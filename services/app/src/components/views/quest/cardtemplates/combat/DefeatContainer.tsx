@@ -6,20 +6,15 @@ import Redux from 'redux';
 import {resolveCombat} from '../Params';
 import {ParserNode} from '../TemplateTypes';
 import Defeat, {DispatchProps, StateProps} from './Defeat';
+import {mapStateToProps as mapStateToPropsBase} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
-  const node = ownProps.node;
-  if (!node) {
-    throw Error('Incomplete props given');
-  }
-
   // Override with dynamic state for tier and adventurer count
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
-    combat: resolveCombat(node),
+    ...mapStateToPropsBase(state, ownProps),
+    combat: resolveCombat(ownProps.node),
     mostRecentRolls: resolveCombat(state.quest.node).mostRecentRolls,
-    node: state.quest.node,
-    settings: state.settings,
   };
 };
 

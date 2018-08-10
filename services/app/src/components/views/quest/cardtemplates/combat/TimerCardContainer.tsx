@@ -9,6 +9,7 @@ import {
   handleCombatTimerStop,
 } from './Actions';
 import TimerCard, {DispatchProps, StateProps} from './TimerCard';
+import {mapStateToProps as mapStateToPropsBase} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   const node = ownProps.node;
@@ -19,12 +20,10 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
   // Override with dynamic state for tier and adventurer count
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
+    ...mapStateToPropsBase(state, ownProps),
     combat: resolveCombat(node),
     multiplayerState: state.multiplayer,
-    node: state.quest.node,
     numAliveAdventurers: resolveCombat(state.quest.node).numAliveAdventurers,
-    seed: state.quest.seed,
-    settings: state.settings,
   };
 };
 

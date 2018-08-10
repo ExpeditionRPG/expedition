@@ -4,14 +4,13 @@ import * as React from 'react';
 import {ParserNode} from '../TemplateTypes';
 import {isSurgeNextRound, roundTimeMillis} from './Actions';
 import {CombatState} from './Types';
+import {StateProps as StatePropsBase} from './Types';
 
-export interface StateProps {
+export interface StateProps extends StatePropsBase {
   combat: CombatState;
   multiplayerState: MultiplayerState;
-  node: ParserNode;
   numAliveAdventurers: number;
   seed: string;
-  settings: SettingsType;
 }
 
 export interface DispatchProps {

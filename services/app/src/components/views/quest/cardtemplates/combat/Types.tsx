@@ -1,5 +1,7 @@
 import {Enemy, Loot} from 'app/reducers/QuestTypes';
+import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {DecisionPhase} from '../decision/Types';
+import {ParserNode} from '../TemplateTypes';
 
 export interface CombatAttack {
   surge: boolean;
@@ -43,3 +45,17 @@ export type CombatPhase = 'DRAW_ENEMIES'
   | 'NO_TIMER'
   | 'MID_COMBAT_ROLEPLAY'
   | 'MID_COMBAT_DECISION';
+
+export interface StateProps {
+  node: ParserNode;
+  settings: SettingsType;
+  seed: string;
+}
+
+export function mapStateToProps(state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps {
+  return {
+    node: ownProps.node || state.quest.node,
+    settings: state.settings,
+    seed: state.quest.seed,
+  };
+}

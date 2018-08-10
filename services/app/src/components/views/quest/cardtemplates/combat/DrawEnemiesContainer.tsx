@@ -9,19 +9,14 @@ import {
 } from './Actions';
 import DrawEnemies, {DispatchProps, StateProps} from './DrawEnemies';
 import {CombatPhase} from './Types';
+import {mapStateToProps as mapStateToPropsBase} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
-  const node = ownProps.node;
-  if (!node) {
-    throw Error('Incomplete props given');
-  }
-
   // Override with dynamic state for tier
   // Any change causes a repaint
   return {
-    node: ownProps.node || state.quest.node,
-    combat: resolveCombat(node),
-    settings: state.settings,
+    ...mapStateToPropsBase(state, ownProps),
+    combat: resolveCombat(ownProps.node),
     tier: resolveCombat(state.quest.node).tier,
   };
 };

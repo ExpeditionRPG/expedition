@@ -2,16 +2,14 @@ import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
 import {MAX_ADVENTURER_HEALTH} from 'app/Constants';
 import {EventParameters, Loot} from 'app/reducers/QuestTypes';
-import {SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {capitalizeFirstLetter, numberToWord, NUMERALS} from '../Render';
 import {ParserNode} from '../TemplateTypes';
 import {CombatState} from './Types';
+import {StateProps as StatePropsBase} from './Types';
 
-export interface StateProps {
+export interface StateProps extends StatePropsBase {
   combat: CombatState;
-  node: ParserNode;
-  settings: SettingsType;
   victoryParameters?: EventParameters;
 }
 
