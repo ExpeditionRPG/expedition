@@ -400,7 +400,15 @@ export class MultiplayerClient extends ClientBase {
       event.id = this.localEventCounter;
     }
     const msg = JSON.stringify(event);
-    this.session.send(msg);
+    try {
+      this.session.send(msg);
+    } catch (e) {
+      // Don't treat transmission errors as a hard error,
+      // but do log them to the console.
+      // If they need to be retried, they will be.
+      console.error(e);
+    }
+
     if (event.id !== null) {
       // If the event is transactional, push it onto the messageBuffer
       // so we can retry sending it if needed.
