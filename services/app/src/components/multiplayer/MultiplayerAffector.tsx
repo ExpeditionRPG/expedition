@@ -5,7 +5,7 @@ import {getMultiplayerClient} from '../../Multiplayer';
 // Listens to multiplayer client published events and forwards InteractionEvents
 // to the inheriting class.
 // Also listens for touch events on this component and transmits them.
-export interface MultiplayerAffectorProps {
+export interface Props {
   abortOnScroll?: boolean;
   children: any;
   className?: string;
@@ -13,14 +13,14 @@ export interface MultiplayerAffectorProps {
   includeLocalInteractions?: boolean;
   onInteraction?: (client: string, event: InteractionEvent) => any;
 }
-export default class MultiplayerAffector extends React.Component<MultiplayerAffectorProps, {}> {
+export default class MultiplayerAffector extends React.Component<Props, {}> {
   private listeners: {[k: string]: (e: any) => any};
   private ignoreNextMouseDown: boolean;
   private boundHandleMultiplayerEvent: (e: MultiplayerEvent) => void;
   private mouseDown: boolean;
   private ref: HTMLElement;
 
-  constructor(props: MultiplayerAffectorProps) {
+  constructor(props: Props) {
     super(props);
 
     // Touch start produces a mouse down event for compat reasons. To avoid

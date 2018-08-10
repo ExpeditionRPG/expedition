@@ -3,9 +3,9 @@ import Redux from 'redux';
 import {setSnackbar} from '../actions/Snackbar';
 import {setView} from '../actions/View';
 import {AppState, ViewType} from '../reducers/StateTypes';
-import Main, {MainDispatchProps, MainStateProps} from './Main';
+import Main, {DispatchProps, StateProps} from './Main';
 
-const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     loggedIn: state.user.loggedIn,
     snackbar: state.snackbar,
@@ -13,7 +13,7 @@ const mapStateToProps = (state: AppState, ownProps: any): MainStateProps => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MainDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onSnackbarClose: () => {
       dispatch(setSnackbar(false));

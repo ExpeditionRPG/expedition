@@ -1,59 +1,26 @@
+import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
+import {audioSet} from 'app/actions/Audio';
+import {toCard} from 'app/actions/Card';
+import {setMultiplayerStatus} from 'app/actions/Multiplayer';
+import {PLAYER_DAMAGE_MULT} from 'app/Constants';
+import {COMBAT_DIFFICULTY, MUSIC_INTENSITY_MAX, PLAYER_TIME_MULT} from 'app/Constants';
+import {ENCOUNTERS} from 'app/Encounters';
+import {Enemy, Loot} from 'app/reducers/QuestTypes';
+import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import {getStore} from 'app/Store';
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
-import {QuestNodeAction, remoteify} from '../../../../../actions/ActionTypes';
-import {audioSet} from '../../../../../actions/Audio';
-import {toCard} from '../../../../../actions/Card';
-import {setMultiplayerStatus} from '../../../../../actions/Multiplayer';
-import {endQuest, loadNode} from '../../../../../actions/Quest';
-import {COMBAT_DIFFICULTY, MUSIC_INTENSITY_MAX, PLAYER_TIME_MULT} from '../../../../../Constants';
-import {PLAYER_DAMAGE_MULT} from '../../../../../Constants';
-import {ENCOUNTERS} from '../../../../../Encounters';
-import {Enemy, Loot} from '../../../../../reducers/QuestTypes';
-import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} from '../../../../../reducers/StateTypes';
-import {getStore} from '../../../../../Store';
-import {DecisionPhase} from '../decision/Types';
+import {generateLeveledChecks} from '../decision/Actions';
+import {resolveParams} from '../Params';
+import {numAdventurers, numPlayers} from '../PlayerCount';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
-import {CombatState} from './Types';
-import {CombatAttack, CombatDifficultySettings} from './Types';
+import {CombatAttack, CombatDifficultySettings, CombatState} from './Types';
 
 const cheerio: any = require('cheerio');
 
-function numLocalAndMultiplayerAdventurers(settings: SettingsType, rp: MultiplayerState): number {
-  if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
-    // Since single player still has two adventurers, the minimum possible is two.
-    return Math.max(2, settings.numPlayers);
-  }
-
-  let count = 0;
-  for (const c of Object.keys(rp.clientStatus)) {
-    const status = rp.clientStatus[c];
-    if (!status.connected) {
-      continue;
-    }
-    count += (status.numPlayers || 1);
-  }
-  return count || 1;
-}
-
-function numLocalAndMultiplayerPlayers(settings: SettingsType, rp?: MultiplayerState): number {
-  if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
-    return settings.numPlayers;
-  }
-
-  let count = 0;
-  for (const c of Object.keys(rp.clientStatus)) {
-    const status = rp.clientStatus[c];
-    if (!status.connected) {
-      continue;
-    }
-    count += (status.numPlayers || 1);
-  }
-  return count || 1;
-}
-
 export function roundTimeMillis(settings: SettingsType, rp?: MultiplayerState) {
-  const totalPlayerCount = numLocalAndMultiplayerPlayers(settings, rp);
+  const totalPlayerCount = numPlayers(settings, rp);
   return settings.timerSeconds * 1000 * PLAYER_TIME_MULT[totalPlayerCount];
 }
 
@@ -67,7 +34,7 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
     }
   }
   const multiplayer = (getState) ? getState().multiplayer : getStore().getState().multiplayer;
-  const totalAdventurerCount = numLocalAndMultiplayerAdventurers(settings, multiplayer);
+  const totalAdventurerCount = numAdventurers(settings, multiplayer);
 
   return {
     custom,
@@ -79,40 +46,6 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
     ...getDifficultySettings(settings.difficulty),
   };
 }
-
-interface ToDecisionCardArgs {
-  node?: ParserNode;
-  numOutcomes?: number;
-  phase: DecisionPhase;
-  settings?: SettingsType;
-}
-export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCardArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ToDecisionCardArgs {
-  if (!a.node) {
-    a.node = getState().quest.node;
-  }
-  a.node = a.node.clone();
-  let combat = a.node.ctx.templates.combat;
-  if (!combat) {
-    if (!a.settings) {
-      a.settings = getState().settings;
-    }
-    combat = generateCombatTemplate(a.settings, false, a.node, getState);
-    a.node.ctx.templates.combat = combat;
-  }
-  combat.decisionPhase = a.phase;
-
-  // Clear out the decision state if going to the prepare page
-  if (a.phase === 'PREPARE_DECISION') {
-    a.node.ctx.templates.decision = undefined;
-  }
-
-  dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_DECISION', keySuffix: a.phase + ((a.numOutcomes !== undefined) ? a.numOutcomes.toString() : '')}));
-  return {
-    numOutcomes: a.numOutcomes,
-    phase: a.phase,
-  };
-});
 
 interface InitCombatArgs {
   node: ParserNode;
@@ -179,7 +112,7 @@ function getEnemies(node: ParserNode): Enemy[] {
 }
 
 function generateCombatAttack(node: ParserNode, settings: SettingsType, rp: MultiplayerState, elapsedMillis: number, rng: () => number): CombatAttack {
-  const totalPlayerCount = numLocalAndMultiplayerPlayers(settings, rp);
+  const totalPlayerCount = numPlayers(settings, rp);
   const playerMultiplier = PLAYER_DAMAGE_MULT[totalPlayerCount] || 1;
   const combat = node.ctx.templates.combat;
   if (!combat) {
@@ -457,7 +390,7 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
     combat.numAliveAdventurers = 0;
   }
   a.node = a.node.clone();
-  const adventurers = numLocalAndMultiplayerAdventurers(a.settings, a.rp);
+  const adventurers = numAdventurers(a.settings, a.rp);
   combat.levelUp = (a.victory) ? (adventurers <= a.maxTier) : false;
 
   const arng = seedrandom.alea(a.seed);
@@ -469,85 +402,6 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
   dispatch(toCard({name: 'QUEST_CARD', phase: (a.victory) ? 'VICTORY' : 'DEFEAT',  overrideDebounce: true, noHistory: true}));
   dispatch(audioSet({intensity: 0}));
   return {victory: a.victory, maxTier: a.maxTier, seed: a.seed};
-});
-
-function findCombatParent(node: ParserNode) {
-  let elem = node && node.elem;
-  while (elem !== null && elem.length > 0 && elem.get(0).tagName.toLowerCase() !== 'combat') {
-    elem = elem.parent();
-  }
-  return elem;
-}
-
-interface MidCombatChoiceArgs {
-  index: number;
-  maxTier: number;
-  node?: ParserNode;
-  seed: string;
-  settings?: SettingsType;
-}
-export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatChoiceArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): MidCombatChoiceArgs {
-  if (!a.node || !a.settings) {
-    a.node = getState().quest.node;
-    a.settings = getState().settings;
-  }
-  const remoteArgs: MidCombatChoiceArgs = {index: a.index, seed: a.seed, maxTier: a.maxTier};
-  const parentCombatElem = findCombatParent(a.node);
-  const nextNode = a.node.handleAction(a.index);
-  const next = a.node.getNext(a.index);
-  let nextIsInSameCombat = false;
-  if (nextNode && next) {
-    const nextParentCombatElem = findCombatParent(nextNode);
-    nextIsInSameCombat = (nextParentCombatElem && nextParentCombatElem.length > 0) && parentCombatElem.attr('data-line') === nextParentCombatElem.attr('data-line');
-
-    // Check for and resolve triggers
-    const nextIsTrigger = (next && next.getTag() === 'trigger');
-    if (nextIsTrigger) {
-      const triggerName = next.elem.text().trim().toLowerCase();
-      if (triggerName.startsWith('goto') && nextIsInSameCombat) {
-        // If we jump to somewhere in the same combat,
-        // it's handled like a normal combat RP choice change (below).
-      } else if (next.isEnd()) {
-        // Treat quest end as normal
-        dispatch(endQuest({}));
-        return remoteArgs;
-      } else {
-        // If the trigger exits via the win/lose handlers, go to the appropriate
-        // combat end card
-        const parentCondition = nextNode.elem.parent().attr('on');
-        if (parentCondition === 'win' || parentCondition === 'lose') {
-          dispatch(handleCombatEnd({
-            maxTier: a.maxTier,
-            node: new ParserNode(parentCombatElem, a.node.ctx),
-            seed: a.seed,
-            settings: a.settings,
-            victory: (parentCondition === 'win'),
-          }));
-          return remoteArgs;
-        } else {
-          // Otherwise, treat like a typical event trigger.
-          // Make sure we stop combat audio since we're exiting this combat.
-          dispatch(loadNode(nextNode));
-          dispatch(audioSet({intensity: 0}));
-          return remoteArgs;
-        }
-      }
-    }
-  }
-
-  if (nextIsInSameCombat) {
-    // Continue in-combat roleplay with the next node.
-    dispatch({type: 'PUSH_HISTORY'});
-    dispatch({type: 'QUEST_NODE', node: nextNode} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_ROLEPLAY', overrideDebounce: true, noHistory: true}));
-  } else {
-    // If the next node is out of this combat, that means we've dropped off the end of the
-    // interestitial roleplay. Go back to combat resolution phase.
-    dispatch({type: 'PUSH_HISTORY'});
-    dispatch({type: 'QUEST_NODE', node: new ParserNode(parentCombatElem, a.node.ctx)} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true, noHistory: true}));
-  }
-  return remoteArgs;
 });
 
 interface TierSumDeltaArgs {
@@ -592,7 +446,7 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
     a.rp = getState().multiplayer;
   }
 
-  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), numLocalAndMultiplayerAdventurers(a.settings, a.rp));
+  const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), numAdventurers(a.settings, a.rp));
   a.node = a.node.clone();
   let combat = a.node.ctx.templates.combat;
   if (!combat) {
@@ -607,4 +461,26 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
     a.node.ctx.scope._.currentCombatRound()
   )}));
   return {current: a.current, delta: a.delta};
+});
+
+interface SetupCombatDecisionArgs {
+  node?: ParserNode;
+  seed: string;
+}
+export const setupCombatDecision = remoteify(function setupCombatDecision(a: SetupCombatDecisionArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): SetupCombatDecisionArgs {
+  const {node, combat} = resolveParams(a.node, getState);
+  const settings = getState().settings;
+  const rp = getState().multiplayer;
+  combat.decisionPhase = 'PREPARE_DECISION';
+  const arng = seedrandom.alea(a.seed);
+  node.ctx.templates.decision = {
+    leveledChecks: generateLeveledChecks(numAdventurers(settings, rp), arng),
+    selected: null,
+    rolls: [],
+  };
+
+  dispatch({type: 'PUSH_HISTORY'});
+  dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
+  dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_DECISION', keySuffix: combat.decisionPhase, noHistory: true}));
+  return {seed: a.seed};
 });

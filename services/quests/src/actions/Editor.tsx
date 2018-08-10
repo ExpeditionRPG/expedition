@@ -74,7 +74,7 @@ export function getPlayNode(node: Cheerio): Cheerio|null {
     node = node.children().first();
     tag = node.get(0).tagName;
   }
-  if (tag !== 'roleplay' && tag !== 'combat') {
+  if (tag !== 'roleplay' && tag !== 'combat' && tag !== 'decision') {
     return null;
   }
   return node;
@@ -118,7 +118,7 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
       const questNode: Cheerio = xmlResult.getResult();
       const playNode = getPlayNode(xmlResult.getResultAt(line));
       if (!playNode) {
-        const err = new Error('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying or combat card.');
+        const err = new Error('Invalid cursor position; to play from the cursor, cursor must be on a roleplaying, combat, or decision card.');
         err.name = 'RenderError';
         return dispatch(pushError(err));
       }

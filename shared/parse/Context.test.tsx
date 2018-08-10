@@ -9,6 +9,10 @@ describe('Context', () => {
   });
 
   describe('evaluateOp', () => {
+    it('handles string equality', () => {
+      expect(evaluateOp('"abc" == "abc"', defaultContext())).toEqual(true);
+      expect(evaluateOp('"abc" == "123"', defaultContext())).toEqual(false);
+    });
     it('throws error on invalid parse', () => {
       evaluateOp('foo==\'a\'', defaultContext());
       expect(window.onerror)

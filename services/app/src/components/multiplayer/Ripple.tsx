@@ -2,19 +2,19 @@ import * as classNames from 'classnames';
 import * as React from 'react';
 import {Transition} from 'react-transition-group';
 
-interface RippleProps {
+interface Props {
   classes: any;
   rippleSize: number;
   rippleX: number;
   rippleY: number;
 }
 
-interface RippleState {
+interface State {
   leaving: boolean;
   visible: boolean;
 }
 
-export default class Ripple extends React.Component<RippleProps, RippleState> {
+export default class Ripple extends React.Component<Props, State> {
   public state = {
     leaving: false,
     visible: false,
@@ -33,7 +33,6 @@ export default class Ripple extends React.Component<RippleProps, RippleState> {
   }
 
   public render() {
-    console.log('Rendering ripple');
     const {
       classes,
       rippleSize,
@@ -56,7 +55,6 @@ export default class Ripple extends React.Component<RippleProps, RippleState> {
       top: -(rippleSize / 2) + rippleY,
       width: rippleSize,
     };
-    console.log(rippleStyles);
 
     const childClassName = classNames(classes.child, {
       [classes.childLeaving]: leaving,

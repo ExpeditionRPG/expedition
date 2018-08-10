@@ -19,7 +19,7 @@ import StarRating from '../base/StarRating';
 
 const Moment = require('moment');
 
-export interface SearchStateProps extends SearchState {
+export interface StateProps extends SearchState {
   isDirectLinked: boolean;
   phase: SearchPhase;
   search: SearchSettings;
@@ -29,7 +29,7 @@ export interface SearchStateProps extends SearchState {
   offlineQuests: {[id: string]: boolean};
 }
 
-export interface SearchDispatchProps {
+export interface DispatchProps {
   onFilter: () => void;
   onLoginRequest: (subscribe: boolean) => void;
   onQuest: (quest: QuestDetails) => void;
@@ -37,7 +37,7 @@ export interface SearchDispatchProps {
   onSearch: (search: SearchSettings, settings: SettingsType) => void;
 }
 
-export interface SearchProps extends SearchStateProps, SearchDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 // We make this a react component to hold a bit of state and avoid sending
 // redux actions for every single change to input.
@@ -88,6 +88,7 @@ export class SearchSettingsCard extends React.Component<SearchSettingsCardProps,
               fullWidth={true}
               label="text search - title, author, ID"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.onChange('text', e.target.value)}
+              onFocus={(e: any) => e.target.scrollIntoView()}
               value={this.state.text}
             />
           </FormControl>
@@ -211,7 +212,7 @@ export class SearchSettingsCard extends React.Component<SearchSettingsCardProps,
   }
 }
 
-function renderSettings(props: SearchProps): JSX.Element {
+function renderSettings(props: Props): JSX.Element {
   return (<SearchSettingsCard search={props.search} settings={props.settings} onSearch={props.onSearch} user={props.user} />);
 }
 
@@ -282,7 +283,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
   );
 }
 
-function renderResults(props: SearchProps, hideHeader?: boolean): JSX.Element {
+function renderResults(props: Props, hideHeader?: boolean): JSX.Element {
   const results: JSX.Element[] = (props.results || []).map((quest: QuestDetails, index: number) => {
     return renderResult({index, quest, search: props.search, onQuest: props.onQuest, lastPlayed: (props.questHistory.list[quest.id] || {}).lastPlayed, offlineQuests: props.offlineQuests});
   });
@@ -353,11 +354,11 @@ class SearchDisclaimerCard extends React.Component<SearchDisclaimerCardProps, {}
     );
   }
 }
-function renderDisclaimer(props: SearchProps): JSX.Element {
+function renderDisclaimer(props: Props): JSX.Element {
   return (<SearchDisclaimerCard onLoginRequest={props.onLoginRequest}/>);
 }
 
-const Search = (props: SearchProps): JSX.Element => {
+const Search = (props: Props): JSX.Element => {
   switch (props.phase) {
     case 'DISCLAIMER':
       return renderDisclaimer(props);

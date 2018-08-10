@@ -1,10 +1,23 @@
+import {CardState, CardThemeType} from 'app/reducers/StateTypes';
+import {getStore} from 'app/Store';
 import * as React from 'react';
 import Redux from 'redux';
-import {CardState, CardThemeType} from '../../../../reducers/StateTypes';
-import {getStore} from '../../../../Store';
 import {initCombat} from './combat/Actions';
-import CombatContainer from './combat/CombatContainer';
+import DefeatContainer from './combat/DefeatContainer';
+import DrawEnemiesContainer from './combat/DrawEnemiesContainer';
+import MidCombatRoleplayContainer from './combat/MidCombatRoleplayContainer';
+import NoTimerContainer from './combat/NoTimerContainer';
+import PlayerTierContainer from './combat/PlayerTierContainer';
+import PrepareTimerContainer from './combat/PrepareTimerContainer';
+import ResolveContainer from './combat/ResolveContainer';
 import {combatScope} from './combat/Scope';
+import SurgeContainer from './combat/SurgeContainer';
+import TimerCardContainer from './combat/TimerCardContainer';
+import VictoryContainer from './combat/VictoryContainer';
+import {initDecision} from './decision/Actions';
+import DecisionTimerContainer from './decision/DecisionTimerContainer';
+import PrepareDecisionContainer from './decision/PrepareDecisionContainer';
+import ResolveDecisionContainer from './decision/ResolveDecisionContainer';
 import {initRoleplay} from './roleplay/Actions';
 import RoleplayContainer from './roleplay/RoleplayContainer';
 import {ParserNode, TemplateContext} from './TemplateTypes';
@@ -16,6 +29,8 @@ export function initCardTemplate(node: ParserNode) {
         return dispatch(initRoleplay(node));
       case 'combat':
         return dispatch(initCombat({node}));
+      case 'decision':
+        return dispatch(initDecision({node}));
       default:
         throw new Error('Unsupported node type ' + node.getTag());
     }
@@ -23,21 +38,39 @@ export function initCardTemplate(node: ParserNode) {
 }
 
 export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Element {
-  switch (card.phase || 'ROLEPLAY') {
+  const phase = card.phase || 'ROLEPLAY';
+  switch (phase) {
     case 'ROLEPLAY':
       return <RoleplayContainer node={node}/>;
+    case 'PREPARE_DECISION':
+      return <PrepareDecisionContainer node={node}/>;
+    case 'DECISION_TIMER':
+      return <DecisionTimerContainer node={node}/>;
+    case 'RESOLVE_DECISION':
+      return <ResolveDecisionContainer node={node}/>;
     case 'DRAW_ENEMIES':
+      return <DrawEnemiesContainer node={node}/>;
     case 'PREPARE':
+      return <PrepareTimerContainer node={node}/>;
     case 'TIMER':
+      return <TimerCardContainer node={node}/>;
     case 'SURGE':
+      return <SurgeContainer node={node}/>;
     case 'RESOLVE_ABILITIES':
+      return <ResolveContainer node={node}/>;
     case 'RESOLVE_DAMAGE':
+      return <PlayerTierContainer node={node}/>;
     case 'VICTORY':
+      return <VictoryContainer node={node}/>;
     case 'DEFEAT':
+      return <DefeatContainer node={node}/>;
     case 'NO_TIMER':
+      return <NoTimerContainer node={node}/>;
     case 'MID_COMBAT_ROLEPLAY':
+      return <MidCombatRoleplayContainer node={node}/>;
     case 'MID_COMBAT_DECISION':
-      return <CombatContainer card={card} node={node}/>;
+      const combat = node.ctx.templates.combat;
+      return renderCardTemplate({...card, phase: ((combat) ? combat.decisionPhase : 'PREPARE_DECISION')}, node);
     default:
       throw new Error('Unknown template for card phase ' + card.phase);
   }
@@ -55,8 +88,12 @@ export function getCardTemplateTheme(card: CardState): CardThemeType {
     case 'DEFEAT':
     case 'NO_TIMER':
     case 'MID_COMBAT_ROLEPLAY':
+    case 'MID_COMBAT_DECISION':
       return 'dark';
-    // case 'ROLEPLAY':
+    case 'ROLEPLAY':
+    case 'PREPARE_DECISION':
+    case 'DECISION_TIMER':
+    case 'RESOLVE_DECISION':
     default:
       return 'light';
   }

@@ -30,8 +30,6 @@ export interface QuestDetails {
   requirespenpaper?: boolean;
 }
 
-export type QuestCardName = 'COMBAT' | 'ROLEPLAY';
-
 export interface Choice {
   idx: number;
   jsx: JSX.Element;

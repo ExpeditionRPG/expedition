@@ -35,7 +35,7 @@ export function checkout(req: Express.Request, res: Express.Response) {
 
     if (stripe.charges === null) {
       console.error('Stripe charges object not defined');
-      return res.status(500).send('Error submitting payment');
+      return res.status(500).send('Error - no charge defined');
     }
 
     stripe.charges.create({
@@ -52,7 +52,7 @@ export function checkout(req: Express.Request, res: Express.Response) {
     }, (e: Stripe.IStripeError, chargeResult: Stripe.charges.ICharge) => {
       if (e) {
         console.error(e);
-        return res.status(500).send('Error submitting payment.');
+        return res.status(500).send(e.message);
       }
       res.send(chargeResult);
     });

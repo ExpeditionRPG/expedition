@@ -5,18 +5,18 @@ import Card from '../base/Card';
 
 const Moment = require('moment');
 
-export interface QuestHistoryStateProps {
+export interface StateProps {
   played: UserQuestsType;
 }
 
-export interface QuestHistoryDispatchProps {
+export interface DispatchProps {
   onSelect: (selected: UserQuestInstance) => void;
   onReturn: () => any;
 }
 
-export interface QuestHistoryProps extends QuestHistoryStateProps, QuestHistoryDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
-const QuestHistory = (props: QuestHistoryProps): JSX.Element => {
+const QuestHistory = (props: Props): JSX.Element => {
   if (Object.keys(props.played).length === 0) {
     return (
       <Card title="Quest History">

@@ -13,7 +13,7 @@ import * as React from 'react';
 import {QuestActionType} from '../actions/ActionTypes';
 import {AnnotationType, EditorState, QuestType, UserState} from '../reducers/StateTypes';
 
-export interface QuestAppBarStateProps {
+export interface StateProps {
   annotations: AnnotationType[];
   quest: QuestType;
   editor: EditorState;
@@ -21,16 +21,16 @@ export interface QuestAppBarStateProps {
   scope: any;
 }
 
-export interface QuestAppBarDispatchProps {
+export interface DispatchProps {
   onMenuSelect: (action: QuestActionType, quest: QuestType) => void;
   onUserDialogRequest: (user: UserState) => void;
   onViewError: (annotations: AnnotationType[], editor: EditorState) => void;
   playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => void;
 }
 
-interface QuestAppBarProps extends QuestAppBarStateProps, QuestAppBarDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
-class QuestAppBar extends React.Component<QuestAppBarProps, {}> {
+class QuestAppBar extends React.Component<Props, {}> {
   public state: {menuAnchor: HTMLElement|undefined} = {menuAnchor: undefined};
 
   private handleMenuClick(e: any) {

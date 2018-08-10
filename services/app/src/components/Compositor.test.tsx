@@ -7,10 +7,10 @@ import {initialQuestState} from '../reducers/Quest';
 import {initialSettings} from '../reducers/Settings';
 import {initialSnackbar} from '../reducers/Snackbar';
 import {newMockStore} from '../Testing';
-import Compositor, {CompositorProps} from './Compositor';
+import Compositor, {Props} from './Compositor';
 configure({ adapter: new Adapter() });
 
-function setup(props: Partial<CompositorProps>) {
+function setup(props: Partial<Props>) {
   props = {
     card: initialCardState,
     quest: initialQuestState,
@@ -22,7 +22,7 @@ function setup(props: Partial<CompositorProps>) {
   };
   const wrapper = render(
     <Provider store={newMockStore({saved: {}, ...props})}>
-      <Compositor {...(props as any as CompositorProps)} />
+      <Compositor {...(props as any as Props)} />
     </Provider>,
     {} // renderOptions
   );

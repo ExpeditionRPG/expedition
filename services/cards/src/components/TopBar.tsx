@@ -13,19 +13,19 @@ import * as React from 'react';
 
 import {FiltersState} from '../reducers/StateTypes';
 
-export interface TopBarStateProps extends React.Props<any> {
+export interface StateProps extends React.Props<any> {
   filters: FiltersState;
 }
 
-export interface TopBarDispatchProps {
+export interface DispatchProps {
   downloadCards: () => void;
   handleFilterChange: (name: string, value: string | number) => void;
   openHelp: () => void;
 }
 
-export interface TopBarProps extends TopBarStateProps, TopBarDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
-class TopBar extends React.Component<TopBarProps, {}> {
+class TopBar extends React.Component<Props, {}> {
   public render() {
     const filtersCurrent = Object.keys(this.props.filters).reduce((acc: any, name: string) => {
       acc[name] = this.props.filters[name].current;

@@ -6,16 +6,16 @@ import {ScrollBottom} from './base/ScrollBottom';
 
 const math = require('mathjs') as any;
 
-export interface ContextEditorStateProps {
+export interface StateProps {
   scopeHistory: any[];
   opInit: string;
 }
 
-export interface ContextEditorDispatchProps {
+export interface DispatchProps {
   onInitialContext: (opInit: string) => void;
 }
 
-interface ContextEditorProps extends ContextEditorStateProps, ContextEditorDispatchProps {}
+interface Props extends StateProps, DispatchProps {}
 
 function codifyScope(scope: any): string {
   const keys = Object.keys(scope).sort();
@@ -56,7 +56,7 @@ function formatScope(scope: any): any[] {
 }
 
 // TODO: Rename to ContextPanel
-const ContextEditor = (props: ContextEditorProps): JSX.Element => {
+const ContextEditor = (props: Props): JSX.Element => {
   const KVs: any[] = [];
   for (let i = 0; i < props.scopeHistory.length; i++) {
     const scope = formatScope(props.scopeHistory[i]);

@@ -9,6 +9,11 @@ const options = {
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.json', '.txt'],
   },
+  entry: [
+    'babel-polyfill',
+    'whatwg-fetch',
+    'promise-polyfill',
+  ],
   output: {
     // This must be an absolute path, and thus must be defined per-service
     // path: 'dist',

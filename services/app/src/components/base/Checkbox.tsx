@@ -4,14 +4,14 @@ import CheckBoxOutlineIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import * as React from 'react';
 import MultiplayerRipple from '../multiplayer/MultiplayerRipple';
 
-export interface CheckboxProps {
+export interface Props {
   label: string;
   value: boolean;
   id?: string;
   onChange: (checked: boolean) => any;
 }
 
-class ExpeditionCheckbox extends React.Component<CheckboxProps, {}> {
+export default class Checkbox extends React.Component<Props, {}> {
   public render() {
     const icon = (this.props.value) ? <CheckBoxIcon/> : <CheckBoxOutlineIcon/>;
     return (
@@ -27,5 +27,3 @@ class ExpeditionCheckbox extends React.Component<CheckboxProps, {}> {
     );
   }
 }
-
-export default ExpeditionCheckbox;

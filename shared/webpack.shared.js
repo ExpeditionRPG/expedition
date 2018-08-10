@@ -5,8 +5,10 @@ const port = process.env.DOCKER_PORT || 8080;
 
 const options = {
   mode: 'development',
+  devtool: 'source-map',
   cache: true,
   entry: [
+    'babel-polyfill',
     'whatwg-fetch',
     'promise-polyfill',
     'webpack-dev-server/client?http://localhost:' + port,
@@ -32,8 +34,11 @@ const options = {
           tsConfigFile: Path.resolve(__dirname, '../tsconfig.json'),
         },
       },
-      { test: /\.(ttf|eot|svg|png|gif|jpe?g|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader: 'file-loader',
-        options: { name: '[path][name].[ext]' }, // disable filename hashing for infrequently changed static assets to enable preloading
+      { test: /\.(svg|png|gif|jpe?g)(\?[a-z0-9=&.]+)?$/, loader: 'file-loader',
+        options: { name: 'images/[name].[ext]' }, // disable filename hashing for infrequently changed static assets to enable preloading
+      },
+      { test: /\.(ttf|eot|woff(2)?)(\?[a-z0-9=&.]+)?$/, loader: 'file-loader',
+        options: { name: 'fonts/[name].[ext]' }, // disable filename hashing for infrequently changed static assets to enable preloading
       },
       { test: /\.scss$/, loaders: ['style-loader', 'css-loader', 'sass-loader'] },
       { test: /\.tsx$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/ },

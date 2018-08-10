@@ -5,9 +5,9 @@ import {FeedbackEntry, QuestEntry, UserEntry} from 'api/admin/QueryTypes';
 import {setDialog} from '../actions/Dialogs';
 import {mutateFeedback, mutateQuest, mutateUser} from '../actions/Web';
 import {AppState, DialogIDType} from '../reducers/StateTypes';
-import Dialogs, {DialogsDispatchProps, DialogsStateProps} from './Dialogs';
+import Dialogs, {DispatchProps, StateProps} from './Dialogs';
 
-const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
+const mapStateToProps = (state: AppState): StateProps => {
   return {
     dialogs: state.dialogs,
     feedback: (state.view.selected.feedback !== null) ? state.view.feedback[state.view.selected.feedback] : null,
@@ -16,7 +16,7 @@ const mapStateToProps = (state: AppState, ownProps: any): DialogsStateProps => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): DialogsDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onClose: (dialog: DialogIDType): void => {
       switch (dialog) {

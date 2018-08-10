@@ -25,8 +25,8 @@ const options = {
       { from: 'src/index.html' },
       { from: 'src/assets' },
       { from: '../app/src/images', to: 'images' },
-      { from: { glob: '../../node_modules/expedition-art/icons/*.svg' }, flatten: true, to: './images' },
-      { from: { glob: '../../node_modules/expedition-art/art/*.png' }, flatten: true, to: './images' },
+      { from: { glob: '../../shared/images/icons/*.svg' }, flatten: true, to: './images' },
+      { from: { glob: '../../shared/images/art/*.png' }, flatten: true, to: './images' },
     ]),
   ],
 };

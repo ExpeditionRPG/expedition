@@ -6,18 +6,18 @@ import VolumeUpIcon from '@material-ui/icons/VolumeUp';
 import * as React from 'react';
 import {AudioLoadingType} from '../../reducers/StateTypes';
 
-export interface AudioControlsStateProps extends React.Props<any> {
+export interface StateProps extends React.Props<any> {
   audioEnabled: boolean;
   audioLoaded: AudioLoadingType;
 }
 
-export interface AudioControlsDispatchProps {
+export interface DispatchProps {
   onAudioToggle: (enabled: boolean) => void;
 }
 
-export interface AudioControlsProps extends AudioControlsStateProps, AudioControlsDispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
-export default class AudioControls extends React.Component<AudioControlsProps, {}> {
+export default class AudioControls extends React.Component<Props, {}> {
   public render() {
     if (this.props.audioLoaded === 'ERROR') {
       return (

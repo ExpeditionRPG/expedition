@@ -184,7 +184,7 @@ body {
 }
 
 .app_container {
-  &, & > div:not(.snackbar) {
+  &, & > div:first-child {
     height: 100%;
     width: 100%;
   }
@@ -329,6 +329,11 @@ span.line {
     right: 0;
     bottom: 0;
   }
+}
+
+// Fixes bug with Android apk where keyboard not scrolling view - https://github.com/ExpeditionRPG/expedition/issues/255
+body.android .dialog .textfield:focus-within {
+  padding-bottom: 300px;
 }
 
 @mixin styling() {
@@ -844,9 +849,19 @@ span.line {
   }
 
   .base_timer_card {
+    &.card_theme_light {
+      color: $font_color_primary;
+      background-color: $bg_primary !important;
+      &.no_icon{
+        background: url(/images/clock_small_light.svg) no-repeat center center;
+      }
+    }
     &.card_theme_dark {
       color: $font_color_dark_primary;
-      background-color: $bg_dark_primary;
+      background-color: $bg_dark_primary !important;
+      &.no_icon{
+        background: url(/images/clock_small.svg) no-repeat center center;
+      }
     }
     &.quest_theme_horror {
       font-family: $horrorFont;
@@ -858,7 +873,6 @@ span.line {
     position: relative;
 
     &.no_icon {
-      background: url(/images/clock_small.svg) no-repeat center center;
       background-size: 75% 75%;
     }
 
@@ -868,7 +882,6 @@ span.line {
       justify-content: center;
       width: 100%;
       height: 100%;
-      background-color: $bg_dark_primary;
       -webkit-animation: fadeout 0.6s ease-in forwards;
          -moz-animation: fadeout 0.6s ease-in forwards;
           -ms-animation: fadeout 0.6s ease-in forwards;
@@ -914,7 +927,6 @@ span.line {
     }
 
     .base_button.bigbutton > button {
-      background-color: $bg_dark_primary !important;
       font-size: 150% !important;
       text-align: center !important;
     }
@@ -1325,7 +1337,6 @@ span.line {
   }
 
   .dialog {
-    width: 90% !important;
     background: url(images/papyrus-tiled.jpg) !important;
     .base_picker, .base_checkbox {
       color: $font_color_primary !important;

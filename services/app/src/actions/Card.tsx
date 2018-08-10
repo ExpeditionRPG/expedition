@@ -5,7 +5,7 @@ import {AppStateWithHistory, CardName, CardPhase} from '../reducers/StateTypes';
 import {getStore} from '../Store';
 import {NavigateAction, remoteify} from './ActionTypes';
 
-interface ToCardArgs {
+export interface ToCardArgs {
   keySuffix?: string;
   name: CardName;
   noHistory?: boolean;

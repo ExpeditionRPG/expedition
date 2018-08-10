@@ -2,15 +2,16 @@ import {connect} from 'react-redux';
 import Redux from 'redux';
 import {setDialog} from '../../actions/Dialog';
 import {AppState} from '../../reducers/StateTypes';
-import MultiplayerFooter, {MultiplayerFooterDispatchProps, MultiplayerFooterStateProps} from './MultiplayerFooter';
+import MultiplayerFooter, {DispatchProps, Props, StateProps} from './MultiplayerFooter';
 
-const mapStateToProps = (state: AppState, ownProps: MultiplayerFooterStateProps): MultiplayerFooterStateProps => {
+const mapStateToProps = (state: AppState, ownProps: Partial<Props>): StateProps => {
   return {
     multiplayer: state.multiplayer,
+    theme: ownProps.theme || 'light',
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): MultiplayerFooterDispatchProps => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onMultiplayerExit: () => {
       dispatch(setDialog('EXIT_REMOTE_PLAY'));
