@@ -525,6 +525,21 @@ $large-icon-width: 0.195in;
         }
       }
     }
+
+    &.Skill.front {
+      text-align: center;
+
+      .flavortext {
+        text-align: center;
+        padding-bottom: 0.8*$padding;
+      }
+
+      .level {
+        span span:first-child {
+          font-weight: bold;
+        }
+      }
+    }
   }
 
 
@@ -653,6 +668,9 @@ $large-icon-width: 0.195in;
   .card.back.Ranged { &:before {
     background-image: url(../../../../shared/images/cards/back-ability-ranged.jpg) !important;
   }}
+  .card.back.Tech { &:before {
+    background-image: url(../../../../shared/images/cards/back-ability-tech.jpg) !important;
+  }}
 
   .card.front.Adventurer { &:before {
     background-image: url(../../../../shared/images/cards/front-adventurer.jpg) !important;
@@ -673,6 +691,13 @@ $large-icon-width: 0.195in;
   }}
   .card.back.Persona { &:before {
     background-image: url(../../../../shared/images/cards/back-persona.jpg) !important;
+  }}
+
+  .card.front.Skill { &:before {
+    background-image: url(../../../../shared/images/cards/front-skill.jpg) !important;
+  }}
+  .card.back.Skill { &:before {
+    background-image: url(../../../../shared/images/cards/back-skill.jpg) !important;
   }}
 
   .card.front.Loot { &:before {
@@ -728,6 +753,14 @@ $large-icon-width: 0.195in;
     }
     &:before {
       background-image: url(../../../../shared/images/cards/back-encounter-fae.jpg) !important;
+    }
+  }
+  .card.back.Synth {
+    .tier {
+      color: #00aeef;
+    }
+    &:before {
+      background-image: url(../../../../shared/images/cards/back-encounter-synth.jpg) !important;
     }
   }
   .card.back.Undead {

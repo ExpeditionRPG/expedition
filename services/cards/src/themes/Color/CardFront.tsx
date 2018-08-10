@@ -197,6 +197,27 @@ export default class CardFront extends React.Component<CardType, {}> {
             </div>
           </div>
         );
+      case 'Skill':
+        return (
+          <div className={`card front horizontal ${card.sheet} bottomBar`} id={camelCase(card.name)}>
+            <div className="contents">
+              <header>
+                <div className="name">{card.name}</div>
+                <div className="class">Type: {card.class}</div>
+              </header>
+              <article>
+                <div className="discard"><strong>Single use:</strong> {card.discard}</div>
+              </article>
+              <footer>
+                <div className="flavortext">{card.flavortext}</div>
+                <div className="counter counter-horizontal level">
+                  Level: {horizontalCounter(card.progression)}
+                </div>
+              </footer>
+              {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
+            </div>
+          </div>
+        );
       default:
         return null;
     }
