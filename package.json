@@ -11,7 +11,7 @@
     "pretest": "npm run lint",
     "test": "set -e && jasmine scripts/MetaTests.js && (cd shared && yarn test) && for D in services/*; do ([ -d $D ] && cd $D && echo $D && yarn test); done",
     "build-all": "set -e && for D in services/*; do ([ -d $D ] && cd $D && echo $D && yarn run build); done",
-    "deploy": "cd services && ./deploy.sh",
+    "deploy": "./scripts/deploy.sh",
     "admin": "cd services/admin && yarn start",
     "admin-local": "API_HOST='http://localhost:8081' npm run admin & npm run api",
     "admin-test": "cd services/admin && yarn test",

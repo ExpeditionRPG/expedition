@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "What service would you like to deploy?"
-select s in */; do
+cd services && select s in */; do
   echo "Where would you like to deploy $s?"
   TARGETS="beta prod"
   select target in $TARGETS; do
