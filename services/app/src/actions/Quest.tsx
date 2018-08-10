@@ -87,8 +87,8 @@ interface PreviewQuestArgs {
   lastPlayed?: Date;
 }
 export const previewQuest = remoteify(function previewQuest(a: PreviewQuestArgs, dispatch: Redux.Dispatch<any>) {
-  // dispatch(selectPlayedQuest(selected));
+  dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'PREVIEW_QUEST', quest: a.quest, savedTS: a.saveTS, lastPlayed: a.lastPlayed} as PreviewQuestAction);
-  dispatch(toCard({name: 'QUEST_PREVIEW'}));
+  dispatch(toCard({name: 'QUEST_PREVIEW', noHistory: true}));
   return a;
 });
