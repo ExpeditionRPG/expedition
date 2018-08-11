@@ -55,7 +55,17 @@ export const event = remoteify(function event(a: EventArgs, dispatch: Redux.Disp
   }
   const nextNode = a.node.handleAction(a.evt);
   if (!nextNode) {
-    throw new Error('Could not get next node for event ' + a.evt);
+    let tag: string = 'unknown';
+    let compKey: string = 'unknown';
+    let visibleKeys: string = 'unknown';
+    try {
+      tag = a.node && a.node.getTag() || 'null';
+      compKey = a.node && a.node.getComparisonKey();
+      visibleKeys = JSON.stringify((a.node && a.node.getVisibleKeys()) || '');
+    } catch (e) {
+      throw new Error('Failed to get debug info: ' + e.toString());
+    }
+    throw new Error('Could not get next node for event "' + a.evt + '" - current node tag "' + tag + '" visible keys ' + visibleKeys + '" comparison key ' + compKey);
   }
   dispatch(loadNode(nextNode));
   return {evt: a.evt};

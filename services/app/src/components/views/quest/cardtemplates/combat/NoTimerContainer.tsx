@@ -1,5 +1,5 @@
 import {getMultiplayerClient} from 'app/Multiplayer';
-import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
+import {SettingsType} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {ParserNode} from '../TemplateTypes';
@@ -7,19 +7,8 @@ import {
   handleCombatTimerHold,
   handleCombatTimerStop,
 } from './Actions';
-import NoTimer, {DispatchProps, StateProps} from './NoTimer';
-
-const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
-  const node = ownProps.node;
-  if (!node) {
-    throw Error('Incomplete props given');
-  }
-  return {
-    node: state.quest.node,
-    seed: state.quest.seed,
-    settings: state.settings,
-  };
-};
+import NoTimer, {DispatchProps} from './NoTimer';
+import {mapStateToProps} from './Types';
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {

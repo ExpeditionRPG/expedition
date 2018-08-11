@@ -1,3 +1,5 @@
 describe('Combat template types', () => {
-  // Entirely glue code; no testing needed right now.
+  describe('mapStateToProps', () => {
+    it('handles unset ownProps.node');
+  });
 });

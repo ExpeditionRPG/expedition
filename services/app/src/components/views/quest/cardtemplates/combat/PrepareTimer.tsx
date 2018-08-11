@@ -1,13 +1,7 @@
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
-import {SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
-import {ParserNode} from '../TemplateTypes';
-
-export interface StateProps {
-  node: ParserNode;
-  settings: SettingsType;
-}
+import {StateProps} from './Types';
 
 export interface DispatchProps {
   onTimerStart: () => void;

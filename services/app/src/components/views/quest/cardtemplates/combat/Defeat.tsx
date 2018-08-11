@@ -1,15 +1,13 @@
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
-import {SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {ParserNode} from '../TemplateTypes';
 import {CombatState} from './Types';
+import {StateProps as StatePropsBase} from './Types';
 
-export interface StateProps {
+export interface StateProps extends StatePropsBase {
   combat: CombatState;
   mostRecentRolls?: number[];
-  node: ParserNode;
-  settings: SettingsType;
 }
 
 export interface DispatchProps {

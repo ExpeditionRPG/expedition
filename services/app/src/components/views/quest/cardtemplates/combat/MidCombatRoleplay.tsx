@@ -1,12 +1,11 @@
 import {SettingsType} from 'app/reducers/StateTypes';
 import Roleplay from '../roleplay/Roleplay';
 import {ParserNode} from '../TemplateTypes';
+import {StateProps as StatePropsBase} from './Types';
 
-export interface StateProps {
+export interface StateProps extends StatePropsBase {
   maxTier: number;
-  node: ParserNode;
   seed: string;
-  settings: SettingsType;
 }
 
 export interface DispatchProps {
