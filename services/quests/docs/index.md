@@ -8,12 +8,12 @@ If you're looking for more specific, in-detail documentation, check out:
 
 * [Quest Design Guide](qdl_guide.md): More details on the Quest Design Language.
 * [Style Guide](style_guide.md): A guide on how to style your quests, plus rules of thumb for combat.
-* [Icon List](https://github.com/expeditionrpg/expedition-art#icons): A list of all available icons you can use in your quest.
+* [Icon List](https://github.com/ExpeditionRPG/expedition/tree/master/shared/images#icons): A list of all available icons you can use in your quest.
 * [XML Spec](quest_spec.md): The underlying XML used by the app, in great detail.
 
 ## I have an error, now what?
 
-If your error says `PLEASE REPORT`, [report it!](https://github.com/ExpeditionRPG/expedition-quest-creator/issues/new)
+If your error says `PLEASE REPORT`, [report it!](https://github.com/ExpeditionRPG/expedition/issues/new)
 
 Otherwise, it's probably an error in your quest. Errors appear as red X's in the gutter on the left; you can click them for more information.
 
