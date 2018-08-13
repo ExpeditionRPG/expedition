@@ -33,22 +33,7 @@ body {
   background: white;
 }
 
-.appbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-
-.filter {
-  min-width: 80px;
-  max-width: 140px;
-  margin-right: $small;
-}
-
 #renderer {
-  margin-top: $base + 50px; // since appbar is fixed
   z-index: -10000;
 
   &.bleed {
@@ -157,10 +142,28 @@ body {
   }
 }
 
+@media only screen {
+  #renderer {
+    margin-top: $base + 50px; // since appbar is fixed
+  }
+
+  .appbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+
+  .filter {
+    min-width: 80px;
+    max-width: 140px;
+    margin-right: $small;
+  }
+}
 
 /* http://tobiasahlin.com/spinkit/ */
 #loading {
-
   position: fixed;
   top: 50%;
   left: 50%;
@@ -176,6 +179,7 @@ body {
     left: 0;
     top: 0;
   }
+
   .sk-child:before {
     content: '';
     display: block;
@@ -223,6 +227,7 @@ body {
 
 
 
+/* PRINT STYLES - Last to override everything else */
 
 @media print {
   body {
