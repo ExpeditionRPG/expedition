@@ -529,6 +529,10 @@ $large-icon-width: 0.195in;
     &.Skill.front {
       text-align: center;
 
+      .name {
+        margin-bottom: 0.25*$padding;
+      }
+
       .flavortext {
         text-align: center;
         padding-bottom: 0.8*$padding;
