@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --runInBand --config jestconfig.json",
     "watch-test": "jest --watchAll --runInBand --config jestconfig.json",
-    "build": "webpack --config webpack.dist.config.js",
+    "build": "webpack --profile --config webpack.dist.config.js",
     "start": "npm run build && node dist/server.js"
   },
   "semistandard": {
