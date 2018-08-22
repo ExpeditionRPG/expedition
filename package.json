@@ -131,7 +131,6 @@
     "tslint": "^5.8.0",
     "typescript": "2.8.3",
     "typo-js": "^1.0.3",
-    "uglifyjs-webpack-plugin": "^1.2.5",
     "update": "~0.7.4",
     "warning": "^4.0.0",
     "webpack": "^4.12.1",

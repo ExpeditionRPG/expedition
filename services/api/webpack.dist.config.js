@@ -13,7 +13,7 @@ const options = {
   cache: false,
   entry: {
     server: [
-      './src/app.ts',
+      './src/index.ts',
     ],
     batchRunner: [
       './src/batch.ts'
@@ -38,11 +38,23 @@ const options = {
     rules: [
       // Explicitly don't lint as part of regular build to save on Heroku build memory
       // { test: /\.tsx$/, enforce: 'pre', loader: 'tslint-loader', options: {fix: true} },
-      { test: /\.ts(x?)$/, loaders: ['awesome-typescript-loader'], exclude: [/\/node_modules\/.*/, /\/dist\/.*/] },
+      // Custom options to speed up single builds
+      {
+        test: /\.ts(x?)$/,
+        loader: 'awesome-typescript-loader',
+        options: {
+          transpileOnly: true,
+          useCache: false,
+        },
+        exclude: [/\/node_modules\/.*/, /\/dist\/.*/]
+      },
     ]
   },
   optimization: {
     minimize: false,
+    removeAvailableModules: false,
+    removeEmptyChunks: false,
+    splitChunks: false,
   },
   externals: {'pg': "require('pg')", 'sqlite3': "require('sqlite3')", 'tedious': "require('tedious')", 'pg-hstore': "require('pg-hstore')"},
 };

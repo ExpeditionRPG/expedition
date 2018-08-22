@@ -18,15 +18,19 @@ prebuild() {
   rm platforms/android/app/build/outputs/apk/release/expedition.apk
 }
 
-beta() {
+betabuild() {
   prebuild
   export NODE_ENV='dev'
   export API_HOST='http://betaapi.expeditiongame.com'
   npm run build-all
+}
+
+beta() {
+  betabuild
   aws s3 cp www s3://beta.expeditiongame.com --recursive --region us-east-2
 }
 
-prod() {
+prodbuild() {
   prebuild
   printf "\nEnter android keystore passphrase: "
   read -s androidkeystorepassphrase
@@ -56,7 +60,9 @@ prod() {
 
   # iOS
   cordova build ios
+}
 
+prod() {
   # Deploy web app to prod with 1 day cache for most files, 6 month cache for art assets
   export AWS_DEFAULT_REGION='us-east-2'
   aws s3 cp www s3://app.expeditiongame.com --recursive --exclude '*.mp3' --exclude '*.jpg' --exclude '*.png' --cache-control max-age=86400 --cache-control public

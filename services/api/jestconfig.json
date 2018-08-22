@@ -3,7 +3,7 @@
     "^.+\\.tsx?$": "ts-jest"
   },
   "transformIgnorePatterns": [
-    "<rootDir>/node_modules/(?!expedition-qdl)"
+    "<rootDir>/node_modules/"
   ],
   "testRegex": ".*\\.test\\.(jsx?|tsx?)$",
   "testPathIgnorePatterns": [
