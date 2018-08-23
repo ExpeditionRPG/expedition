@@ -101,13 +101,13 @@ export default class TimerCard extends React.Component<Props, {}> {
 
     return (
       <div className={classes.join(' ')}>
-        {this.props.icon && <div className="timer_icon_wrapper">
-          <img className="timer_icon" src={'images/' + this.props.icon + '_white.svg'} />
-        </div>}
         <div className="value">{formattedTimer}</div>
         {secondaryText && <div className="secondary">{secondaryText}</div>}
         {tertiaryText && <div className="tertiary">{tertiaryText}</div>}
         {!timerHeld && <MultiTouchTrigger onTouchChange={this.onTouchChange.bind(this)} />}
+        {this.props.icon && <div className="timer_icon_wrapper">
+          <img className="timer_icon" src={'images/' + this.props.icon + '_white.svg'} />
+        </div>}
       </div>
     );
   }

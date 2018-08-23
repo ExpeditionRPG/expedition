@@ -127,7 +127,7 @@ export function search(db: Database, req: express.Request, res: express.Response
         return q;
       });
 
-    console.log('Found ' + quests.length + ' quests for user ' + res.locals.id);
+    console.log(`Found ${quests.length} quests for user ${res.locals.id}, params: ${JSON.stringify(params)}`);
     res.status(200).end(JSON.stringify({
       error: null,
       hasMore: (quests.length === (params.limit || MAX_SEARCH_LIMIT)),
