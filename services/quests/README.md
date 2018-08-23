@@ -58,7 +58,7 @@ The Quest Creator uses Postgres SQL. You can test functionality and scripts agai
 
 If you are going to access prod, especially to edit data, make sure to make a backup [here](https://data.heroku.com/datastores/af009eae-3a7e-467b-9822-b368e0d4ed3a) first. Backups are automatically created daily, but this will allow zero-consequence rollbacks in case your query fails.
 
-For database querying, make sure you have psql installed and can do `which psql`, then run `heroku pg:psql --app expedition-quest-creator-dev DATABASE` to connect.
+For database querying, make sure you have psql installed and can do `which psql`, then run `heroku pg:psql --app expedition-api-beta DATABASE` to connect.
 
 On Mac, you may need to add `PATH=/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH` to your `.bash_profile` for your terminal to recognize the `psql` command.
 
