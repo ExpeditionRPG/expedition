@@ -218,11 +218,11 @@ function postUserFeedback(type: string, data: any) {
       return response.text();
     })
     .then((response: string) => {
-      logEvent('user_feedback_' + type, { label: data.questid, value: data.rating });
+      logEvent('feedback', 'user_feedback_' + type, { label: data.questid, value: data.rating });
       dispatch(openSnackbar('Submission successful. Thank you!'));
     })
     .catch((error: Error) => {
-      logEvent('user_feedback_' + type + '_err', { label: error });
+      logEvent('error', 'user_feedback_' + type + '_err', { label: error });
       dispatch(openSnackbar(Error('Error submitting review: ' + error.toString())));
     });
   };
@@ -248,7 +248,7 @@ export function logMultiplayerStats(user: UserState, quest: QuestDetails, stats:
     })
     .then(handleFetchErrors)
     .catch((error: Error) => {
-      logEvent('analytics_quest_err', { label: error });
+      logEvent('error', 'analytics_quest_err', { label: error });
     });
   } catch (e) {
     console.error('Failed to log multiplayer stats');
