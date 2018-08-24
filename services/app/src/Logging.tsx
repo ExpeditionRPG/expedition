@@ -75,12 +75,12 @@ export function setupLogging(console: any) {
 
 // TODO record modal views as users navigate: ReactGA.modalview('/about/contact-us');
 // likely as a separate logView or logNavigate or something
-export function logEvent(name: string, argsInput: {[key: string]: any}): void {
+export function logEvent(category: string, action: string, argsInput: {[key: string]: any}): void {
   const ga = getGA();
   if (ga) {
     ga.event({
-      action: argsInput.action || '',
-      category: name,
+      category,
+      action,
       label: argsInput.label || '',
       value: argsInput.value || undefined,
     });

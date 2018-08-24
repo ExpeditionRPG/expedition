@@ -189,7 +189,7 @@ function setupOnError(window: Window) {
     }
     const label = (source) ? `${source} line ${line}` : null;
     console.error(message, label);
-    logEvent('APP_ERROR', {action: message, label});
+    logEvent('error', 'APP_ERROR', {action: message, label});
     // Dispatch the snackbar change after resolving intermediate state.
     // Otherwise, redux handlers may perform strange actions like calling
     // setState inside of a render() cycle.

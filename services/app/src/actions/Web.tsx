@@ -74,7 +74,7 @@ export function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx:
 
     // Quest start logging is here instead of initQuest because initQuest is also used by the QC / would over-report.
     // Logging done after quest initialized so that the new quest info is in the state (logQuestPlay pulls from state).
-    logEvent('quest_start', { ...a.details, action: a.details.title, label: a.details.id });
+    logEvent('quest', 'quest_start', { ...a.details, action: a.details.title, label: a.details.id });
     dispatch(logQuestPlay({phase: 'start'}));
 
     const firstNode = a.questNode.children().eq(0);
@@ -111,7 +111,7 @@ export function logQuestPlay(a: {phase: 'start'|'end'}) {
       .then(handleFetchErrors)
       .catch((error: Error) => {
         console.error(error);
-        logEvent('analytics_quest_err', { label: error });
+        logEvent('error', 'analytics_quest_err', { label: error });
       });
 
       if (a.phase === 'end') {
@@ -140,7 +140,7 @@ export function subscribe(a: {email: string}) {
       return response.text();
     })
     .then((data: string) => {
-      logEvent('user_subscribe', {});
+      logEvent('valuable', 'user_subscribe', {});
       dispatch(openSnackbar('Thank you for subscribing!'));
     }).catch((error: Error) => {
       dispatch(openSnackbar(Error('Error subscribing: ' + error.toString())));

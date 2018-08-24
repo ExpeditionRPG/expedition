@@ -35,11 +35,11 @@ export function multiplayerNewSession(user: UserState) {
       if (!data.secret) {
         return dispatch(openSnackbar(Error('Error parsing new session secret')));
       }
-      logEvent('MULTIPLAYER_new_session', {label: data.secret});
+      logEvent('multiplayer', 'new_session', {label: data.secret});
       return dispatch(multiplayerConnect(user, data.secret));
     })
     .catch((error: Error) => {
-      logEvent('MULTIPLAYER_new_session_err', {label: error.toString()});
+      logEvent('multiplayer', 'new_session_err', {label: error.toString()});
       dispatch(openSnackbar(Error('Error creating session: ' + error.toString())));
     });
   };
@@ -81,7 +81,7 @@ export function multiplayerConnect(user: UserState, secret: string) {
       return c.connect(sessionID, secret);
     })
     .catch((error: Error) => {
-      logEvent('MULTIPLAYER_connect_err', {label: error.toString()});
+      logEvent('multiplayer', 'connect_err', {label: error.toString()});
       console.error(error);
       dispatch(openSnackbar(Error('Error connecting: ' + error.toString())));
     });
@@ -107,7 +107,7 @@ export function loadMultiplayer(user: UserState) {
       dispatch(toCard({name: 'REMOTE_PLAY', phase: 'CONNECT'}));
     })
     .catch((error: Error) => {
-      logEvent('MULTIPLAYER_init_err', {label: error.toString()});
+      logEvent('multiplayer', 'init_err', {label: error.toString()});
       dispatch(openSnackbar(Error('Multiplayer unavailable: ' + error.toString())));
     });
   };

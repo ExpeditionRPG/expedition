@@ -59,7 +59,7 @@ export function saveQuestForOffline(details: QuestDetails) {
 }
 
 export function storeSavedQuest(node: ParserNode, details: QuestDetails, ts: number): SavedQuestStoredAction {
-  logEvent('quest_save', { ...details, action: details.title, label: details.id });
+  logEvent('save', 'quest_save', { ...details, action: details.title, label: details.id });
   // Update the listing
   const savedQuests = getSavedQuestMeta();
 
@@ -106,7 +106,7 @@ export function loadSavedQuest(id: string, ts: number): QuestNodeAction {
     throw new Error('Could not load quest details.');
   }
 
-  logEvent('quest_save_load', { ...details, action: details.title, label: details.id });
+  logEvent('save', 'quest_save_load', { ...details, action: details.title, label: details.id });
   const data: SavedQuest = getStorageJson(savedQuestKey(id, ts), {}) as any;
   if (!data.xml || !data.path) {
     throw new Error('Could not load quest.');

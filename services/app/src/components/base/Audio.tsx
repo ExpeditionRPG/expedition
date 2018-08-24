@@ -117,7 +117,7 @@ export default class Audio extends React.Component<Props, {}> {
       if (props.enabled) {
         props.disableAudio();
       }
-      logEvent('web_audio_api_err', { label: err });
+      logEvent('error', 'web_audio_api_err', { label: err });
       console.log('Web Audio API is not supported in this browser');
     }
   }
