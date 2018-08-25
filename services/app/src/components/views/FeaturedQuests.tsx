@@ -59,11 +59,11 @@ const FeaturedQuests = (props: Props): JSX.Element => {
         </div>
       </Button>
       }
-      <Button onClick={() => props.toCard('ADVANCED')} id="tools">
+      {!props.settings.simulator && <Button onClick={() => props.toCard('ADVANCED')} id="tools">
         <div className="questButtonWithIcon">
           <div className="title"><img className="inline_icon" src="images/roll_small.svg"/>Tools</div>
         </div>
-      </Button>
+      </Button>}
       <Button onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>
         <div className="questButtonWithIcon">
           <div className="title"><img className="inline_icon" src="images/loot_small.svg"/>Shop</div>

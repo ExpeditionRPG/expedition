@@ -29,28 +29,26 @@ const Tools = (props: Props): JSX.Element => {
           <div className="summary">You tell the story; the app runs the combat.</div>
         </div>
       </Button>
-      {!props.settings.simulator &&
-        <Button id="selectOnlineMultiplayer" onClick={() => props.onMultiplayerSelect(props.user)}>
-          <div className="questButtonWithIcon">
-            <div className="title">Online Multiplayer - Beta</div>
-            <div className="summary">
-              {(!props.user || !props.user.loggedIn) ? 'Login and sync' : 'Sync'} your app with friends on another device.
-            </div>
+      <Button id="selectOnlineMultiplayer" onClick={() => props.onMultiplayerSelect(props.user)}>
+        <div className="questButtonWithIcon">
+          <div className="title">Online Multiplayer - Beta</div>
+          <div className="summary">
+            {(!props.user || !props.user.loggedIn) ? 'Login and sync' : 'Sync'} your app with friends on another device.
           </div>
-        </Button>
-      }
-      {!props.settings.simulator && <Button id="selectQuestCreator" onClick={() => props.onQuestCreatorSelect()}>
+        </div>
+      </Button>
+      <Button id="selectQuestCreator" onClick={() => props.onQuestCreatorSelect()}>
         <div className="questButtonWithIcon">
           <div className="title">Quest Creator</div>
           <div className="summary">Write your own quests and share them with the world.</div>
         </div>
-      </Button>}
-      {!props.settings.simulator && <Button id="selectPrivateQuests" onClick={() => props.onPrivateQuestsSelect(props.settings, props.user)}>
+      </Button>
+      <Button id="selectPrivateQuests" onClick={() => props.onPrivateQuestsSelect(props.settings, props.user)}>
         <div className="questButtonWithIcon">
           <div className="title">Private Quests</div>
           <div className="summary">View quests you've published privately with the Quest Creator (uses your current player count!)</div>
         </div>
-      </Button>}
+      </Button>
       {NODE_ENV === 'dev' &&
         <div>
           <Button onClick={() => props.testMusic()}>Set Music Intensity</Button>
