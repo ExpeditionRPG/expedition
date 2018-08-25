@@ -19,14 +19,14 @@ const mapStateToProps = (state: AppState): StateProps => {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onError: (err: string): void => {
-      logEvent('checkout_err', {label: err});
+      logEvent('error', 'checkout_err', {label: err});
       dispatch(openSnackbar(Error('Error encountered: ' + err)));
     },
     onHome: (): void => {
       dispatch(toPrevious({name: 'FEATURED_QUESTS'}));
     },
     onPhaseChange: (phase: CheckoutPhase): void => {
-      logEvent('checkout_phase', {label: phase});
+      logEvent('navigate', 'checkout_phase', {label: phase});
       dispatch(toCard({name: 'CHECKOUT', phase}));
     },
     onStripeLoad: (stripe: stripe.Stripe): void => {

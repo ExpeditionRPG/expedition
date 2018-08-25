@@ -59,7 +59,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(setupCombatDecision({node, seed}));
     },
     onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {
-      logEvent('combat_defeat', {
+      logEvent('combat', 'combat_defeat', {
         difficulty: settings.difficulty,
         label: settings.numPlayers,
         maxTier,
@@ -75,7 +75,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(tierSumDelta({node, current, delta}));
     },
     onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {
-      logEvent('combat_victory', {
+      logEvent('combat', 'combat_victory', {
         difficulty: settings.difficulty,
         label: settings.numPlayers,
         maxTier,

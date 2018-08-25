@@ -11,6 +11,6 @@ describe('logEvent', () => {
     it('works if no args passed');
     it('works if lots of args passed');
     it('does not break when GA not set up', () => {
-      expect(() => logEvent('event', {})).not.toThrow();
+      expect(() => logEvent('category', 'action', {})).not.toThrow();
     });
   });

@@ -46,7 +46,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(setDialog('EXPANSION_SELECT'));
     },
     onExperimentalChange: (v: boolean) => {
-      logEvent('experimental_settings_changed_to', {label: v.toString()});
+      logEvent('settings', 'experimental_settings_changed_to', {label: v.toString()});
       dispatch(changeSettings({experimental: v}));
     },
     onFontSizeDelta: (idx: number, delta: number) => {

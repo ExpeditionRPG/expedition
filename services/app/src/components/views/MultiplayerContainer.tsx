@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       return dispatch(multiplayerConnect(user, secret.toUpperCase()));
     },
     onContinue: () => {
-      logEvent('MULTIPLAYER_session_start', {});
+      logEvent('multiplayer', 'session_start', {});
       dispatch(toCard({name: 'FEATURED_QUESTS'}));
     },
     onNewSessionRequest: (user: UserState) => {

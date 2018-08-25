@@ -15,7 +15,7 @@ export function fetchAnnouncements() {
       dispatch(handleAnnouncements(data));
     }).catch((error: Error) => {
       // Don't alert user - it's not important to them if this fails
-      logEvent('announcement_fetch_err', {label: error});
+      logEvent('error', 'announcement_fetch_err', {label: error});
     });
   };
 }
@@ -33,7 +33,7 @@ export function handleAnnouncements(data: FetchAnnouncementResponse) {
           dispatch(setAnnouncement(true, 'New version available, click here to upgrade', url));
         }
       } else {
-        logEvent('announcement_app_version_invalid_err', {label: newVersion});
+        logEvent('error', 'announcement_app_version_invalid_err', {label: newVersion});
       }
     }
   };
