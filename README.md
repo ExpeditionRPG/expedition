@@ -1,6 +1,6 @@
-# Expedition [![Build Status](https://travis-ci.org/ExpeditionRPG/expedition.svg?branch=master)](https://travis-ci.org/ExpeditionRPG/expedition) [![Open Source Helpers](https://www.codetriage.com/expeditionrpg/expedition/badges/users.svg)](https://www.codetriage.com/expeditionrpg/expedition)
+# Expedition [![Build Status](https://travis-ci.org/ExpeditionRPG/expedition.svg?branch=master)](https://travis-ci.org/ExpeditionRPG/expedition)
 
-Contains all of the code for the [Expedition App](https://app.expeditiongame.com/), [Quest Creator](https://quests.expeditiongame.com/) and [Card Creator](https://cards.expeditiongame.com/).
+Contains all of the code for the [Expedition App](https://app.expeditiongame.com/), [Expedition Quest Creator](https://quests.expeditiongame.com/) and [Expedition Card Creator](https://cards.expeditiongame.com/).
 
 ## Contributing
 
