@@ -19,6 +19,19 @@ import {CombatAttack, CombatDifficultySettings, CombatState} from './Types';
 
 const cheerio: any = require('cheerio');
 
+export function findCombatParent(node: ParserNode): Cheerio|null {
+  let elem = node && node.elem;
+  while (elem !== null && elem.length > 0 && elem.get(0).tagName.toLowerCase() !== 'combat') {
+    // Don't count roleplay nodes within "win" and "lose" events even if they're children of
+    // a combat node; this is technically a roleplay state.
+    if (/win|lose/.test(elem.attr('on'))) {
+      return null;
+    }
+    elem = elem.parent();
+  }
+  return elem;
+}
+
 export function roundTimeMillis(settings: SettingsType, rp?: MultiplayerState) {
   const totalPlayerCount = numPlayers(settings, rp);
   return settings.timerSeconds * 1000 * PLAYER_TIME_MULT[totalPlayerCount];

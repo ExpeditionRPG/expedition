@@ -35,7 +35,7 @@ describe('Roleplay actions', () => {
         <roleplay>Text</roleplay>
         <combat id="c1">
           <e>Test</e>
-          <event on="win"><roleplay>win card</roleplay></event>
+          <event on="win"><roleplay id="wincard">win card</roleplay></event>
           <event on="lose"><roleplay>lose card</roleplay></event>
           <event on="round"><roleplay>
             <choice><trigger>win</trigger></choice>
@@ -44,6 +44,7 @@ describe('Roleplay actions', () => {
             <choice><roleplay id="rp2">rp2</roleplay></choice>
             <choice><trigger>goto outside</trigger></choice>
             <choice><trigger>goto rp2</trigger></choice>
+            <choice><trigger>goto wincard</trigger></choice>
           </roleplay></event>
         </combat>
         <roleplay id="outside">Outside Roleplay</roleplay>
@@ -63,9 +64,10 @@ describe('Roleplay actions', () => {
       expect(actions[2].to.phase).toEqual('DEFEAT');
     });
 
-    it('ends quest on **end**', () => {
+    it('ends quest on **end** and zeros audio', () => {
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 2, maxTier: 0, seed: ''});
-      expect(actions[1].to.name).toEqual('QUEST_END');
+      expect(actions[0].type).toEqual('AUDIO_SET');
+      expect(actions[2].to.name).toEqual('QUEST_END');
     });
 
     it('goes to next round when pnode.getNext() falls outside of combat scope', () => {
@@ -74,10 +76,11 @@ describe('Roleplay actions', () => {
       expect(actions[2].to.phase).toEqual('RESOLVE_ABILITIES');
     });
 
-    it('handles gotos that point to outside of combat', () => {
+    it('handles gotos that point to outside of combat and zeros audio', () => {
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 4, maxTier: 0, seed: ''});
       expect(actions[2].to.phase).toEqual('ROLEPLAY');
       expect(actions[1].node.elem.text()).toEqual('Outside Roleplay');
+      expect(actions[3].type).toEqual('AUDIO_SET');
     });
 
     it('handles GOTOs that point to other roleplaying inside of the same combat', () => {
@@ -89,6 +92,12 @@ describe('Roleplay actions', () => {
     it('renders as combat for RPs inside of same combat', () => {
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 3, maxTier: 0, seed: ''});
       expect(actions[2].to.phase).toEqual('MID_COMBAT_ROLEPLAY');
+    });
+
+    it('renders as roleplay upon goto to element inside of win/lose event and zeros audio', () => {
+      const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 6, maxTier: 0, seed: ''});
+      expect(actions[2].to.phase).toEqual('ROLEPLAY');
+      expect(actions[3].type).toEqual('AUDIO_SET');
     });
   });
 });

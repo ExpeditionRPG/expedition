@@ -5,6 +5,7 @@ import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {
   adventurerDelta,
+  findCombatParent,
   handleCombatEnd,
   handleCombatTimerStop,
   handleResolvePhase,
@@ -332,6 +333,29 @@ describe('Combat actions', () => {
   it('handles global player count change');
 
   it('clears combat state on completion');
+
+  describe('findCombatParent', () => {
+    it('returns node when node is combat', () => {
+      const v = cheerio.load('<quest><combat id="start"></combat></quest>')('#start');
+      const result = findCombatParent(new ParserNode(v, defaultContext()));
+      if (result === null) {
+        throw Error('null result');
+      }
+      expect(result.attr('id')).toEqual('start');
+    });
+    it('returns combat parent', () => {
+      const v = cheerio.load('<quest><combat id="expected"><event on="round"><roleplay id="start"></roleplay></event></combat></quest>')('#start');
+      const result = findCombatParent(new ParserNode(v, defaultContext()));
+      if (result === null) {
+        throw Error('null result');
+      }
+      expect(result.attr('id')).toEqual('expected');
+    });
+    it('does not return combat when node is within a win/lose event', () => {
+      const v = cheerio.load('<quest><combat><event on="win"><roleplay id="start"></roleplay></event></combat></quest>')('#start');
+      expect(findCombatParent(new ParserNode(v, defaultContext()))).toEqual(null);
+    });
+  });
 
   describe('setupCombatDecision', () => {
     it('populates combat decision template with generated LeveledSkillChecks');
