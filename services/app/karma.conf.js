@@ -36,8 +36,6 @@ module.exports = function(config) {
     port: 8081,
     colors: true,
     logLevel: config.LOG_INFO,
-    //autoWatch: true,
-    //usePolling: true,
     browsers: ['NoSandboxChromeHeadless'],
     customLaunchers: {
       NoSandboxChromeHeadless: {
