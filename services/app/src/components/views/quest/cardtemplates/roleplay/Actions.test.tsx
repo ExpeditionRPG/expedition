@@ -50,7 +50,7 @@ describe('Roleplay actions', () => {
         <roleplay id="outside">Outside Roleplay</roleplay>
       </quest>`)('#c1'), defaultContext());
       baseNode = Action(initCombat as any).execute({node: baseNode, settings: TEST_SETTINGS})[1].node;
-      baseNode = Action(handleResolvePhase).execute({node: baseNode})[0].node;
+      baseNode = Action(handleResolvePhase).execute({node: baseNode})[1].node;
       return baseNode.clone();
     };
 
@@ -66,8 +66,8 @@ describe('Roleplay actions', () => {
 
     it('ends quest on **end** and zeros audio', () => {
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 2, maxTier: 0, seed: ''});
-      expect(actions[0].type).toEqual('AUDIO_SET');
-      expect(actions[2].to.name).toEqual('QUEST_END');
+      expect(actions[1].to.name).toEqual('QUEST_END');
+      expect(actions[2].type).toEqual('AUDIO_SET');
     });
 
     it('goes to next round when pnode.getNext() falls outside of combat scope', () => {

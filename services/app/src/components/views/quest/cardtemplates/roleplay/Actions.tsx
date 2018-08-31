@@ -37,6 +37,7 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
   // If there's no parent combat element, we've made a mistake somewhere and shouldn't even be in combat.
   // Handle the action and load the node as if it were a regular choice.
   if (parentCombatElem === null) {
+    console.log('No parent combat element - handling as regular choice');
     dispatch(choice({node: a.node, index: a.index}));
     return remoteArgs;
   }

@@ -285,11 +285,13 @@ export const handleResolvePhase = remoteify(function handleResolvePhase(a: Handl
   a.node = a.node.clone();
   if (a.node.getVisibleKeys().indexOf('round') !== -1) {
     // Set node *before* navigation to prevent a blank first roleplay card.
+    dispatch({type: 'PUSH_HISTORY'});
     dispatch({type: 'QUEST_NODE', node: a.node.getNext('round')} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_ROLEPLAY', overrideDebounce: true}));
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_ROLEPLAY', overrideDebounce: true, noHistory: true}));
   } else {
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true}));
+    dispatch({type: 'PUSH_HISTORY'});
     dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
+    dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true, noHistory: true}));
   }
   return {};
 });
@@ -389,9 +391,18 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
     a.rp = getState().multiplayer;
   }
 
+  // If we were given a non-combat node due to some bug in previous code,
+  // find its parent combat container and use it.
+  if (a.node.getTag() !== 'combat') {
+    const parent = findCombatParent(a.node);
+    if (parent === null) {
+      throw new Error('Non-combat node given for handleCombatEnd, soft fix failed.');
+    }
+    a.node = new ParserNode(parent, a.node.ctx);
+  }
+
   let combat = a.node.ctx.templates.combat;
   if (!combat) {
-    console.log('NO COMBAT :(');
     combat = generateCombatTemplate(a.settings, false, a.node, getState);
     a.node.ctx.templates.combat = combat;
   }

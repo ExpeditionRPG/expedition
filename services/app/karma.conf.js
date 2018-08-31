@@ -1,31 +1,30 @@
 const webpackConfig = require('./webpack.config');
-const webpack = require('webpack');
 
 webpackConfig.module.rules.unshift({
   test: /isIterable/,
   loader: 'imports?Symbol=>false'
 });
+webpackConfig.entry = undefined;
+
+// Remove hot reload
+webpackConfig.plugins = [webpackConfig.plugins[webpackConfig.plugins.length-1]];
 
 module.exports = function(config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine'],
     files: [
-      { pattern: 'src/**/*.test.tsx' }
+      // Set watched=false here as karma-webpack does the watching under the hood.
+      { pattern: 'src/**/*.test.tsx', watched:false},
     ],
     preprocessors: {
       'src/**/*.test.tsx': ['webpack'],
     },
-    webpack: {
-      module: webpackConfig.module,
-      resolve: webpackConfig.resolve,
-      node: webpackConfig.node,
-      // Pull in module-specific configs (esp. tslint)
-      plugins: [webpackConfig.plugins[webpackConfig.plugins.length-1]],
-      externals: {
-        'react/addons': true,
-        'react/lib/ExecutionEnvironment': true,
-        'react/lib/ReactContext': true
+    webpack: webpackConfig,
+    webpackMiddleware: {
+      watchOptions: {
+        ignored: [/\/\./, 'node_modules'],
+        poll: 1000,
       }
     },
     browserConsoleLogOptions: {
@@ -37,7 +36,8 @@ module.exports = function(config) {
     port: 8081,
     colors: true,
     logLevel: config.LOG_INFO,
-    autoWatch: true,
+    //autoWatch: true,
+    //usePolling: true,
     browsers: ['NoSandboxChromeHeadless'],
     customLaunchers: {
       NoSandboxChromeHeadless: {

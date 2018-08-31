@@ -173,20 +173,20 @@ describe('Combat actions', () => {
 
     it('randomly assigns damage', () => {
       const {actions} = newStore({});
-      expect(actions[3].node.ctx.templates.combat.mostRecentAttack.damage).toBeDefined();
+      console.log(actions);
+      expect(actions[2].node.ctx.templates.combat.mostRecentAttack.damage).toBeDefined();
     });
     it('generates rolls according to player count', () => {
       const {actions} = newStore({});
-      expect(actions[3].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
+      expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
     });
     it('increments the round counter', () => {
       const {actions} = newStore({});
-      expect(actions[3].node.ctx.templates.combat.roundCount).toEqual(1);
+      expect(actions[2].node.ctx.templates.combat.roundCount).toEqual(1);
     });
-
     it('only generates rolls for local, not remote, players', () => {
       const {actions} = newStore({ rp: TEST_RP });
-      expect(actions[3].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
+      expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
     });
   });
 
@@ -239,6 +239,32 @@ describe('Combat actions', () => {
       }));
 
       expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(false);
+    });
+
+    it('Fixes when given a mid-combat roleplay node', () => {
+      const pnode = new ParserNode(cheerio.load(`
+        <combat><e>lich</e>
+          <event on="round">
+            <roleplay id="start">Roleplay node</roleplay>
+          </event>
+          <event on="win"></event>
+          <event on="lose"></event>
+        </combat>`)('combat'), defaultContext());
+      const node = Action(initCombat, {settings: TEST_SETTINGS}).execute({node: pnode.clone()})[1].node;
+      // Replace combat node elem with the roleplay node
+      node.elem = node.elem.find('#start');
+
+      const store = newMockStore({settings: TEST_SETTINGS});
+      store.dispatch(handleCombatEnd({
+        maxTier: 4,
+        node,
+        rp: TEST_RP,
+        seed: '',
+        settings: TEST_SETTINGS,
+        victory: true,
+      }));
+
+      expect(store.getActions()[1].node.getTag()).toEqual('combat');
     });
   });
 
@@ -294,8 +320,8 @@ describe('Combat actions', () => {
         <event on="lose"></event>
       </combat>`)('combat'), defaultContext());
       const actions = Action(handleResolvePhase).execute({node});
-      expect(actions[1].to.phase).toEqual('RESOLVE_ABILITIES');
-      expect(actions[2].type).toEqual('QUEST_NODE');
+      expect(actions[1].type).toEqual('QUEST_NODE');
+      expect(actions[2].to.phase).toEqual('RESOLVE_ABILITIES');
     });
 
     it('goes to resolve card if conditionally false round event handler', () => {
@@ -308,8 +334,8 @@ describe('Combat actions', () => {
         <event if="false" on="round"><roleplay>bad</roleplay></event>
       </combat>`)('combat'), defaultContext());
       const actions = Action(handleResolvePhase).execute({node});
-      expect(actions[1].to.phase).toEqual('RESOLVE_ABILITIES');
-      expect(actions[2].type).toEqual('QUEST_NODE');
+      expect(actions[1].type).toEqual('QUEST_NODE');
+      expect(actions[2].to.phase).toEqual('RESOLVE_ABILITIES');
     });
 
     it('goes to roleplay card on round event handler', () => {
@@ -325,7 +351,7 @@ describe('Combat actions', () => {
       </combat>`)('combat'), defaultContext());
       node = Action(initCombat as any).execute({node: node.clone(), settings: TEST_SETTINGS})[1].node;
       const actions = Action(handleResolvePhase).execute({node});
-      expect(actions[0].node.elem.text()).toEqual('expected');
+      expect(actions[1].node.elem.text()).toEqual('expected');
       expect(actions[2].to.phase).toEqual('MID_COMBAT_ROLEPLAY');
     });
   });
