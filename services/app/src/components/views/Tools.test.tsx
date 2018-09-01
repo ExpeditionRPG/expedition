@@ -1,4 +1,4 @@
-import {configure, shallow} from 'enzyme';
+import {configure, mount} from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 configure({ adapter: new Adapter() });
@@ -17,14 +17,14 @@ function setup() {
     testMusic: jasmine.createSpy('testMusic'),
     user: loggedOutUser,
   };
-  const enzymeWrapper = shallow(<Tools {...props} />);
-  return {props, enzymeWrapper};
+  const e = mount(<Tools {...props} />);
+  return {props, e};
 }
 
 describe('Tools', () => {
   it('calls onCustomCombatSelect on custom combat select', () => {
-    const {props, enzymeWrapper} = setup();
-    enzymeWrapper.find('#selectCustomCombat').simulate('click');
+    const {props, e} = setup();
+    e.find('#selectCustomCombat').simulate('click');
     expect(props.onCustomCombatSelect).toHaveBeenCalledTimes(1);
   });
 });
