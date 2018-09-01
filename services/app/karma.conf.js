@@ -6,8 +6,13 @@ webpackConfig.module.rules.unshift({
 });
 webpackConfig.entry = undefined;
 
-// Remove hot reload
-webpackConfig.plugins = [webpackConfig.plugins[webpackConfig.plugins.length-1]];
+// Remove copy plugin - which is the only plugin of constructor "object"
+for (let i = 0; i < webpackConfig.plugins.length; i++) {
+  if (webpackConfig.plugins[i].constructor.name == 'Object') {
+    webpackConfig.plugins.splice(i, 1);
+    break;
+  }
+}
 
 module.exports = function(config) {
   config.set({

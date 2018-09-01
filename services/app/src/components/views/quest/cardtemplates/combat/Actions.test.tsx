@@ -173,7 +173,6 @@ describe('Combat actions', () => {
 
     it('randomly assigns damage', () => {
       const {actions} = newStore({});
-      console.log(actions);
       expect(actions[2].node.ctx.templates.combat.mostRecentAttack.damage).toBeDefined();
     });
     it('generates rolls according to player count', () => {
@@ -220,7 +219,6 @@ describe('Combat actions', () => {
     it('never assigns loot or levels up on defeat', () => {
       const store = newMockStore({});
       store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: false, maxTier: 9, seed: ''}));
-      console.log(store.getActions());
       expect(store.getActions()[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
         levelUp: false,
         loot: [],
@@ -241,7 +239,7 @@ describe('Combat actions', () => {
       expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(false);
     });
 
-    it('Fixes when given a mid-combat roleplay node', () => {
+    it('Uses parent combat node when given a mid-combat roleplay node', () => {
       const pnode = new ParserNode(cheerio.load(`
         <combat><e>lich</e>
           <event on="round">
