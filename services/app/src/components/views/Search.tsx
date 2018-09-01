@@ -284,9 +284,33 @@ export function renderResult(props: SearchResultProps): JSX.Element {
 }
 
 function renderResults(props: Props, hideHeader?: boolean): JSX.Element {
-  const results: JSX.Element[] = (props.results || []).map((quest: Quest, index: number) => {
-    return renderResult({index, quest, search: props.search, onQuest: props.onQuest, lastPlayed: (props.questHistory.list[quest.id] || {}).lastPlayed, offlineQuests: props.offlineQuests});
-  });
+  let content: JSX.Element | JSX.Element[];
+  const numResults = (props.results || []).length;
+  if (numResults === 0 && !props.searching) {
+    content = (
+      <div className="searchDescription">
+        <h2>No quests found</h2>
+        {!hideHeader && <span>
+          <p>Try broadening the search by using fewer filters.</p>
+          <p>If you still see no results, file feedback from the top corner menu.</p>
+        </span>}
+        <Button className="filter_button" onClick={() => props.onFilter()} id="filter">Modify Search</Button>
+      </div>
+    );
+  } else if (numResults === 0 && props.searching) {
+    content = (
+      <div className="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    );
+  } else {
+    content = (props.results || []).map((quest: Quest, index: number) => {
+      return renderResult({index, quest, search: props.search, onQuest: props.onQuest, lastPlayed: (props.questHistory.list[quest.id] || {}).lastPlayed, offlineQuests: props.offlineQuests});
+    });
+  }
 
   return (
     <Card
@@ -297,15 +321,7 @@ function renderResults(props: Props, hideHeader?: boolean): JSX.Element {
         <Button className="filter_button" onClick={() => props.onFilter()} id="filter">Filter &amp; Sort ></Button>
       </div>}
     >
-      {results.length === 0 && !props.searching &&
-        <div>
-          <div>No quests found matching the search terms.</div>
-          {!hideHeader && <div>Try broadening the search by using fewer filters.</div>}
-          <Button className="filter_button" onClick={() => props.onFilter()} id="filter">Modify Search</Button>
-        </div>
-      }
-      {results.length === 0 && props.searching && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
-      {results}
+      {content}
     </Card>
   );
 }
