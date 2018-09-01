@@ -1,5 +1,6 @@
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
+import {Quest} from 'shared/schema/Quests';
 import {PreviewQuestAction, QuestDetailsAction, QuestNodeAction} from '../actions/ActionTypes';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {QuestState} from './StateTypes';
@@ -16,14 +17,14 @@ function autoseed(): string {
 }
 
 export const initialQuestState: QuestState = {
-  details: {
+  details: new Quest({
     author: '',
     id: '',
     partition: '',
     publishedurl: '',
     summary: '',
     title: '',
-  },
+  }),
   node: new ParserNode(cheerio.load('<quest></quest>')('quest'), {
     _templateScopeFn: () => ({}),
     path: ([] as any),

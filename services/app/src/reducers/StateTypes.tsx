@@ -3,7 +3,7 @@ import {SessionID} from 'shared/multiplayer/Session';
 import {ContentRatingLabelType, GenreType, LanguageType} from 'shared/schema/Constants';
 import {TemplatePhase} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
-import {QuestDetails} from './QuestTypes';
+import {Quest} from 'shared/schema/Quests';
 
 export interface AnnouncementState {
   open: boolean;
@@ -94,7 +94,7 @@ export interface SnackbarState {
 }
 
 export interface SavedQuestMeta {
-  details: QuestDetails;
+  details: Quest;
   ts: number;
   pathLen?: number;
 }
@@ -129,7 +129,7 @@ export interface CardState {
 export type TransitionClassType = 'next' | 'prev' | 'instant';
 
 export interface QuestState {
-  details: QuestDetails;
+  details: Quest;
   node: ParserNode;
   seed: string;
   // Additional details populated depending on from where
@@ -144,12 +144,12 @@ export interface SavedQuestState {
 
 export interface SearchState {
   search: SearchSettings;
-  results: QuestDetails[];
+  results: Quest[];
   searching: boolean;
 }
 
 export interface UserQuestInstance {
-  details: QuestDetails;
+  details: Quest;
   lastPlayed: Date;
 }
 

@@ -1,18 +1,18 @@
 import {configure, render} from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
+import {Quest} from 'shared/schema/Quests';
 import {FEATURED_QUESTS} from '../../Constants';
-import {QuestDetails} from '../../reducers/QuestTypes';
 import {initialSettings} from '../../reducers/Settings';
 import QuestPreview, {Props} from './QuestPreview';
 configure({ adapter: new Adapter() });
 
 describe('QuestPreview', () => {
-  function setup(questTitle: string, overrides?: Partial<Props>, questOverrides?: Partial<QuestDetails>) {
+  function setup(questTitle: string, overrides?: Partial<Props>, questOverrides?: Partial<Quest>) {
     const props: Props = {
       isDirectLinked: false,
       savedInstances: [],
       lastPlayed: null,
-      quest: {...FEATURED_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides},
+      quest: new Quest({...FEATURED_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides}),
       settings: initialSettings,
       onPlay: jasmine.createSpy('onPlay'),
       onPlaySaved: jasmine.createSpy('onPlaySaved'),

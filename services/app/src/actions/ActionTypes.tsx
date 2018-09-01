@@ -1,7 +1,7 @@
 import Redux from 'redux';
 import {ClientID, InstanceID, StatusEvent} from 'shared/multiplayer/Events';
+import {Quest} from 'shared/schema/Quests';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
-import {QuestDetails} from '../reducers/QuestTypes';
 import {
   AppState,
   AudioState,
@@ -81,13 +81,13 @@ export interface QuestExitAction extends Redux.Action {
 
 export interface QuestDetailsAction extends Redux.Action {
   type: 'QUEST_DETAILS';
-  details: QuestDetails;
+  details: Quest;
 }
 
 export interface QuestNodeAction extends Redux.Action {
   type: 'QUEST_NODE';
   node: ParserNode;
-  details?: QuestDetails;
+  details?: Quest;
 }
 
 export interface ChangeSettingsAction extends Redux.Action {
@@ -107,15 +107,14 @@ export interface SearchRequestAction extends Redux.Action {
 
 export interface SearchResponseAction extends Redux.Action {
   type: 'SEARCH_RESPONSE';
-  quests: QuestDetails[];
-  nextToken: string;
-  receivedAt: number;
+  quests: Quest[];
   search: SearchSettings;
+  error: string;
 }
 
 export interface PreviewQuestAction extends Redux.Action {
   type: 'PREVIEW_QUEST';
-  quest: QuestDetails;
+  quest: Quest;
   savedTS: number|null;
   lastPlayed: Date|null;
 }

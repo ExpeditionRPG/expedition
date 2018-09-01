@@ -1,10 +1,10 @@
 import * as Redux from 'redux';
+import {Quest} from 'shared/schema/Quests';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {getCheerio} from '../Globals';
 import {getStorageJson, setStorageKeyValue} from '../LocalStorage';
 import {logEvent} from '../Logging';
-import {QuestDetails} from '../reducers/QuestTypes';
 import {SavedQuestMeta} from '../reducers/StateTypes';
 import {QuestNodeAction, SavedQuestDeletedAction, SavedQuestListAction, SavedQuestStoredAction} from './ActionTypes';
 import {initQuest} from './Quest';
@@ -44,7 +44,7 @@ export function deleteSavedQuest(id: string, ts: number) {
   throw new Error('No such quest with ID ' + id + ', timestamp ' + ts.toString() + '.');
 }
 
-export function saveQuestForOffline(details: QuestDetails) {
+export function saveQuestForOffline(details: Quest) {
   return (dispatch: Redux.Dispatch<any>): any => {
     return fetchLocal(details.publishedurl).then((result: string) => {
       const elem = cheerio.load(result)('quest');
@@ -58,7 +58,7 @@ export function saveQuestForOffline(details: QuestDetails) {
   };
 }
 
-export function storeSavedQuest(node: ParserNode, details: QuestDetails, ts: number): SavedQuestStoredAction {
+export function storeSavedQuest(node: ParserNode, details: Quest, ts: number): SavedQuestStoredAction {
   logEvent('save', 'quest_save', { ...details, action: details.title, label: details.id });
   // Update the listing
   const savedQuests = getSavedQuestMeta();
@@ -79,7 +79,7 @@ export function storeSavedQuest(node: ParserNode, details: QuestDetails, ts: num
   return {type: 'SAVED_QUEST_STORED', savedQuests};
 }
 
-function recreateNodeFromPath(details: QuestDetails, xml: string, path: string|number[]): ParserNode {
+function recreateNodeFromPath(details: Quest, xml: string, path: string|number[]): ParserNode {
   let node = initQuest(details, getCheerio().load(xml)('quest'), defaultContext()).node;
   for (const action of path) {
     // TODO: Also save random seed with path in context
@@ -94,7 +94,7 @@ function recreateNodeFromPath(details: QuestDetails, xml: string, path: string|n
 
 export function loadSavedQuest(id: string, ts: number): QuestNodeAction {
   const savedQuests = getSavedQuestMeta();
-  let details: QuestDetails|null = null;
+  let details: Quest|null = null;
   for (const savedQuest of savedQuests) {
     if (savedQuest.details.id === id && savedQuest.ts === ts) {
       details = savedQuest.details;

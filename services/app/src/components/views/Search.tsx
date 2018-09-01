@@ -8,9 +8,9 @@ import StarsIcon from '@material-ui/icons/Stars';
 import * as React from 'react';
 import Truncate from 'react-truncate';
 import {CONTENT_RATING_DESC, GenreType, LANGUAGES} from 'shared/schema/Constants';
+import {Quest} from 'shared/schema/Quests';
 import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants';
 import {formatPlayPeriod, smartTruncateSummary} from '../../Format';
-import {QuestDetails} from '../../reducers/QuestTypes';
 import {SearchPhase, SearchSettings, SearchState, SettingsType, UserQuestHistory, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
@@ -32,7 +32,7 @@ export interface StateProps extends SearchState {
 export interface DispatchProps {
   onFilter: () => void;
   onLoginRequest: (subscribe: boolean) => void;
-  onQuest: (quest: QuestDetails) => void;
+  onQuest: (quest: Quest) => void;
   onReturn: () => void;
   onSearch: (search: SearchSettings, settings: SettingsType) => void;
 }
@@ -219,8 +219,8 @@ function renderSettings(props: Props): JSX.Element {
 export interface SearchResultProps {
   index: number;
   lastPlayed: Date | null;
-  onQuest: (quest: QuestDetails) => void;
-  quest: QuestDetails;
+  onQuest: (quest: Quest) => void;
+  quest: Quest;
   search: SearchSettings;
   offlineQuests: {[id: string]: boolean};
 }
@@ -284,7 +284,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
 }
 
 function renderResults(props: Props, hideHeader?: boolean): JSX.Element {
-  const results: JSX.Element[] = (props.results || []).map((quest: QuestDetails, index: number) => {
+  const results: JSX.Element[] = (props.results || []).map((quest: Quest, index: number) => {
     return renderResult({index, quest, search: props.search, onQuest: props.onQuest, lastPlayed: (props.questHistory.list[quest.id] || {}).lastPlayed, offlineQuests: props.offlineQuests});
   });
 

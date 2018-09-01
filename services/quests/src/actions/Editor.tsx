@@ -9,6 +9,7 @@ import {store} from '../Store';
 import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction} from './ActionTypes';
 import {pushError} from './Dialogs';
 import {saveQuest} from './Quest';
+import {Quest} from 'shared/schema/Quests';
 
 declare var window: any;
 
@@ -143,7 +144,7 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
       }));
       // Unfortunately can't just expand quest b/c it includes stuff beyond what app expects
       // Fortunately we really only /need/ to send things that affect display of quest (such as theme)
-      dispatch(loadNode(newNode, {
+      dispatch(loadNode(newNode, new Quest({
         author: quest.author || '',
         id: quest.id || '',
         maxplayers: quest.maxplayers || 6,
@@ -152,7 +153,7 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
         summary: quest.summary || '',
         theme: quest.theme || 'base',
         title: quest.title || '',
-      }));
+      })));
       // Results will be shown and added to annotations as they arise.
       dispatch(startPlaytestWorker(oldWorker, questNode, {
         expansionhorror: Boolean(quest.expansionhorror),
