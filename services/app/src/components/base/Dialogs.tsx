@@ -111,7 +111,10 @@ export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialog
           <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: false})}>Expedition</Button>
           <br/>
           <br/>
-          <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: true})}><span className="line">Expedition&nbsp;</span><span className="line">+ The Horror</span></Button>
+          <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: true})}>Expedition + <img className="inline_icon" src="images/horror_small.svg"/></Button>
+          <br/>
+          <br/>
+          <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: true, future: true})}>Expedition + <img className="inline_icon" src="images/horror_small.svg"/> + <img className="inline_icon" src="images/future_small.svg"/></Button>
           <p style={{textAlign: 'center', marginTop: '1.5em'}}>This will only appear once, but you can always change it in Settings.</p>
           <p style={{textAlign: 'center', marginTop: '1.5em'}}>Don't have the cards? <strong><a href="#" onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>Get a copy</a></strong>.</p>
         </DialogContent>
@@ -241,26 +244,34 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
       playersAllowed = (this.props.settings.numPlayers >= quest.minplayers &&
         this.props.settings.numPlayers <= quest.maxplayers);
     }
+    let contents = <div>
+        <Picker label="Adventurers" value={this.props.settings.numPlayers} onDelta={(i: number) => this.props.onPlayerDelta(this.props.settings.numPlayers, i)}>
+          {!playersAllowed && `Quest requires ${quest.minplayers} - ${quest.maxplayers} players.`}
+        </Picker>
+        <Checkbox label="Multitouch" value={this.props.settings.multitouch} onChange={this.props.onMultitouchChange}>
+          {(this.props.settings.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
+        </Checkbox>
+      </div>;
+    const futureError = quest.expansionfuture && !this.props.settings.contentSets.future;
     const horrorError = quest.expansionhorror && !this.props.settings.contentSets.horror;
-
-    const contents = (horrorError)
-      ? (<div className="error">
+    if (futureError) {
+      contents = <div className="error">
+          The Future expansion is required to play this quest.
+          If you have it, make sure to enable it in settings.
+          Otherwise, you can pick up a copy on
+          <a href="#" onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>the Expedition Store</a>.
+        </div>;
+    } else if (horrorError) {
+      contents = <div className="error">
           The Horror expansion is required to play this quest.
           If you have it, make sure to enable it in settings.
           Otherwise, you can pick up a copy on
           <a href="#" onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>the Expedition Store</a>.
-        </div>)
-      : (<div>
-          <Picker label="Adventurers" value={this.props.settings.numPlayers} onDelta={(i: number) => this.props.onPlayerDelta(this.props.settings.numPlayers, i)}>
-            {!playersAllowed && `Quest requires ${quest.minplayers} - ${quest.maxplayers} players.`}
-          </Picker>
-          <Checkbox label="Multitouch" value={this.props.settings.multitouch} onChange={this.props.onMultitouchChange}>
-            {(this.props.settings.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
-          </Checkbox>
-        </div>);
+        </div>;
+    }
     return (
       <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
-        <DialogTitle>{horrorError ? 'Expansion Required' : 'How many players?'}</DialogTitle>
+        <DialogTitle>{horrorError || futureError ? 'Expansion Required' : 'How many players?'}</DialogTitle>
         <DialogContent className="dialog">
           {contents}
         </DialogContent>

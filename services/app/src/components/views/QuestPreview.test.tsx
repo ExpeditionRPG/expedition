@@ -35,6 +35,7 @@ describe('QuestPreview', () => {
     expect(wrapper.html()).toContain(quest.author);
     expect(wrapper.html()).toContain(quest.official);
     expect(wrapper.html()).not.toContain(quest.expansionhorror);
+    expect(wrapper.html()).not.toContain(quest.expansionfuture);
     expect(wrapper.html()).not.toContain(quest.requirespenpaper);
     expect(wrapper.html()).not.toContain(quest.awarded);
   });
@@ -63,6 +64,9 @@ describe('QuestPreview', () => {
     expect(wrapper.html()).toContain('book');
   });
 
+  it('indicates that horror and future expansions are required', () => {
+    // TODO
+  });
   it('prompts for user count and multitouch if playing direct linked');
   it('goes directly to playing quest if not direct linked');
   it('allows users to go back');

@@ -36,6 +36,9 @@ function renderRequirements(quest: QuestDetails): JSX.Element[] {
   if (quest.expansionhorror) {
     requires.push(<span key="horror"><img className="inline_icon" src="images/horror_small.svg"/>The Horror</span>);
   }
+  if (quest.expansionfuture) {
+    requires.push(<span key="future"><img className="inline_icon" src="images/future_small.svg"/>The Future</span>);
+  }
   if (quest.requirespenpaper) {
     requires.push(<span key="penpaper"><img className="inline_icon" src="images/book_small.svg"/> Pen and Paper</span>);
   }

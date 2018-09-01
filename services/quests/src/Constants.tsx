@@ -21,6 +21,7 @@ export const MIN_PLAYERS = 1;
 export const MAX_PLAYERS = 6;
 export const METADATA_DEFAULTS = {
   expansionhorror: false,
+  expansionfuture: false,
   maxplayers: MAX_PLAYERS,
   minplayers: MIN_PLAYERS,
   requirespenpaper: false,

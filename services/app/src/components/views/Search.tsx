@@ -277,6 +277,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
         <span className="expansions">
           {props.offlineQuests[quest.id] && <OfflinePin className="inline_icon" />}
           {quest.expansionhorror && <img className="inline_icon" src="images/horror_small.svg"></img>}
+          {quest.expansionfuture && <img className="inline_icon" src="images/future_small.svg"></img>}
         </span>
       </div>
     </Button>

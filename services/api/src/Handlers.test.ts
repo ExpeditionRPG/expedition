@@ -89,6 +89,7 @@ describe('handlers', () => {
             contentrating: q.basic.contentrating,
             email: q.basic.email,
             expansionhorror: q.basic.expansionhorror,
+            expansionfuture: q.basic.expansionfuture,
             genre: q.basic.genre,
             language: q.basic.language,
             majorRelease: true,

@@ -21,6 +21,7 @@ export interface QuestDetails {
   genre?: string;
   contentrating?: string;
   expansionhorror?: boolean;
+  expansionfuture?: boolean;
   questversion?: number;
   partition?: string;
   language?: string;

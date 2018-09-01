@@ -54,6 +54,7 @@ const basicQuest = new Quest({
   email: 'author@test.com',
   engineversion: '1.0.0',
   expansionhorror: false,
+  expansionfuture: false,
   familyfriendly: false,
   genre: 'Comedy',
   id: 'questid',
@@ -78,12 +79,21 @@ const basicQuest = new Quest({
 
 export const quests = {
   basic: basicQuest,
-  expansion: new Quest({
+  horror: new Quest({
     ...basicQuest,
     expansionhorror: true,
     id: 'questidhorror',
     summary: 'This be a horror quest! AHHH!',
     title: 'Horror Quest',
+    userid: 'testuser',
+  }),
+  future: new Quest({
+    ...basicQuest,
+    expansionhorror: true,
+    expansionfuture: true,
+    id: 'questidfuture',
+    summary: 'This be a future quest! AHHH!',
+    title: 'Future Quest',
     userid: 'testuser',
   }),
 };

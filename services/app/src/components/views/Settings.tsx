@@ -51,7 +51,7 @@ const Settings = (props: Props): JSX.Element => {
   return (
     <Card title="Settings">
       <Button className="primary large" onClick={() => props.onExpansionSelect()}>Choose game / expansion</Button>
-      <p className="expansionLabel">Currently playing: {props.contentSets.horror ? <strong>Expedition + Horror</strong> : <strong>Expedition Base</strong>}</p>
+      <p className="expansionLabel">Currently playing: <strong>Expedition {props.contentSets.horror ? <span> + Horror</span> : null}{props.contentSets.future ? <span> + Future</span> : null}</strong></p>
 
       <Picker label="Adventurers" value={props.numPlayers} onDelta={(i: number) => props.onPlayerDelta(props.numPlayers, i)}>
         {(props.numPlayers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}

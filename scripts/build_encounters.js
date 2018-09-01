@@ -6,6 +6,7 @@ const Tabletop = require('./tabletop.js');
 const docs = {
   '11Y8eS_cyIQ7wlGj5mo7VEHf355ycEHePrdysPzTnVJw': 'base',
   '1K08sXHXyW7TAMXJnHOv9V3QtjxwjAf2-cvbaO-S2fDQ': 'horror',
+  '1LD4SP5YMFs49yn1sdgIrRnMGB3tz2jvGuCt2aKcCsyM': 'future',
 };
 
 let encounters = {};
@@ -14,7 +15,7 @@ let encounters = {};
 const dest = process.argv[3] || "./services/app/src/Encounters.tsx";
 
 function parseEncounters(rows, contentSet) {
-  console.log(`Parsing encounters for ${contentSet}`);
+  console.log(`=== Parsing encounters for ${contentSet} ===`);
   rows.forEach((row) => {
     if (row.Comment) {
       return;

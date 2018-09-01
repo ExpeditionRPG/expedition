@@ -170,6 +170,7 @@ export function publish(db: Database, mail: MailService, req: express.Request, r
     contentrating: req.query.contentrating,
     email: req.query.email,
     expansionhorror: req.query.expansionhorror || false,
+    expansionfuture: req.query.expansionfuture || false,
     genre: req.query.genre,
     id: req.params.id,
     language: req.query.language || 'English',

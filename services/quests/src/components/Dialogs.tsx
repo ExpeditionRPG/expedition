@@ -309,6 +309,13 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           </FormControl>
           <FormControl className="fullWidth">
             <Checkbox
+              label="Requires &quot;The Future&quot; Expansion"
+              value={metadata.get('expansionfuture')}
+              onChange={(checked: boolean) => { handleMetadataChange(quest, 'expansionfuture', checked); }}>
+            </Checkbox>
+          </FormControl>
+          <FormControl className="fullWidth">
+            <Checkbox
               label="Requires Pen and Paper"
               value={metadata.get('requirespenpaper')}
               onChange={(checked: boolean) => { handleMetadataChange(quest, 'requirespenpaper', checked); }}>
