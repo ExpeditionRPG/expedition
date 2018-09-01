@@ -99,6 +99,8 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
           buttonText = <span>The End</span>;
           break;
         case 'goto':
+        case 'win':
+        case 'lose':
           break;
         default:
           throw new Error('Unknown trigger with text ' + triggerText);

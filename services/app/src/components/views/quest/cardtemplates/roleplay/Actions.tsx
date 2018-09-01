@@ -1,10 +1,10 @@
 import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
 import {audioSet} from 'app/actions/Audio';
 import {toCard} from 'app/actions/Card';
-import {endQuest, loadNode} from 'app/actions/Quest';
+import {choice, endQuest, loadNode} from 'app/actions/Quest';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
-import {handleCombatEnd} from '../combat/Actions';
+import {findCombatParent, handleCombatEnd} from '../combat/Actions';
 import {ParserNode} from '../TemplateTypes';
 
 export function initRoleplay(node: ParserNode, custom?: boolean) {
@@ -17,14 +17,6 @@ export function initRoleplay(node: ParserNode, custom?: boolean) {
     dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
     dispatch(toCard({name: 'QUEST_CARD', phase: 'ROLEPLAY', noHistory: true}));
   };
-}
-
-function findCombatParent(node: ParserNode) {
-  let elem = node && node.elem;
-  while (elem !== null && elem.length > 0 && elem.get(0).tagName.toLowerCase() !== 'combat') {
-    elem = elem.parent();
-  }
-  return elem;
 }
 
 interface MidCombatChoiceArgs {
@@ -41,44 +33,54 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
   }
   const remoteArgs: MidCombatChoiceArgs = {index: a.index, seed: a.seed, maxTier: a.maxTier};
   const parentCombatElem = findCombatParent(a.node);
+
+  // If there's no parent combat element, we've made a mistake somewhere and shouldn't even be in combat.
+  // Handle the action and load the node as if it were a regular choice.
+  if (parentCombatElem === null) {
+    console.log('No parent combat element - handling as regular choice');
+    dispatch(choice({node: a.node, index: a.index}));
+    return remoteArgs;
+  }
+
   const nextNode = a.node.handleAction(a.index);
   const next = a.node.getNext(a.index);
   let nextIsInSameCombat = false;
   if (nextNode && next) {
     const nextParentCombatElem = findCombatParent(nextNode);
-    nextIsInSameCombat = (nextParentCombatElem && nextParentCombatElem.length > 0) && parentCombatElem.attr('data-line') === nextParentCombatElem.attr('data-line');
+    if (nextParentCombatElem !== null) {
+      nextIsInSameCombat = nextParentCombatElem.length > 0 && parentCombatElem.attr('data-line') === nextParentCombatElem.attr('data-line');
+    }
 
     // Check for and resolve triggers
     const nextIsTrigger = (next && next.getTag() === 'trigger');
     if (nextIsTrigger) {
       const triggerName = next.elem.text().trim().toLowerCase();
-      if (triggerName.startsWith('goto') && nextIsInSameCombat) {
+      if (triggerName === 'win' || triggerName === 'lose') {
+        // If the trigger exits via the win/lose handlers, go to the appropriate
+        // combat end card
+        const victory = triggerName === 'win';
+        dispatch(handleCombatEnd({
+          maxTier: a.maxTier,
+          node: new ParserNode(parentCombatElem, a.node.ctx),
+          seed: a.seed,
+          settings: a.settings,
+          victory,
+        }));
+        return remoteArgs;
+      } else if (triggerName.startsWith('goto') && nextIsInSameCombat) {
         // If we jump to somewhere in the same combat,
         // it's handled like a normal combat RP choice change (below).
       } else if (next.isEnd()) {
-        // Treat quest end as normal
+        // Treat quest end as normal, also stopping combat audio.
         dispatch(endQuest({}));
+        dispatch(audioSet({intensity: 0}));
         return remoteArgs;
       } else {
-        // If the trigger exits via the win/lose handlers, go to the appropriate
-        // combat end card
-        const parentCondition = nextNode.elem.parent().attr('on');
-        if (parentCondition === 'win' || parentCondition === 'lose') {
-          dispatch(handleCombatEnd({
-            maxTier: a.maxTier,
-            node: new ParserNode(parentCombatElem, a.node.ctx),
-            seed: a.seed,
-            settings: a.settings,
-            victory: (parentCondition === 'win'),
-          }));
-          return remoteArgs;
-        } else {
-          // Otherwise, treat like a typical event trigger.
-          // Make sure we stop combat audio since we're exiting this combat.
-          dispatch(loadNode(nextNode));
-          dispatch(audioSet({intensity: 0}));
-          return remoteArgs;
-        }
+        // Otherwise, treat like a typical event trigger.
+        // Make sure we stop combat audio since we're exiting this combat.
+        dispatch(loadNode(nextNode));
+        dispatch(audioSet({intensity: 0}));
+        return remoteArgs;
       }
     }
   }
