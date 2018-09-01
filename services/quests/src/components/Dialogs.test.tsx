@@ -28,6 +28,8 @@ describe('Dialogs', () => {
 
     it('hides if not open');
 
+    it('setting Future to required sets both Horror and Future to required');
+
     it('closes on OK');
   });
 

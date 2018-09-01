@@ -8,4 +8,12 @@ describe('Dialogs', () => {
 
     it('closes on Cancel tap');
   });
+
+  describe('ExpansionSelectDialog', () => {
+    it('sets no content sets if base game');
+
+    it('sets horror content set');
+
+    it('sets horror + future content sets');
+  });
 });

@@ -134,8 +134,8 @@ function mailNewQuestToAdmin(mail: MailService, quest: Quest) {
     over ${quest.mintimeminutes} - ${quest.maxtimeminutes} minutes.
     ${quest.genre}.
     ${quest.requirespenpaper ? 'Requires pen and paper.' : 'No pen or paper required.'}
-    ${quest.expansionhorror ? 'Requires The Horror expansion.' : 'No expansions required.'}
-    ${quest.expansionfuture ? 'Request The Future expansion.' : ''}`;
+    Horror: ${quest.expansionhorror ? 'Required' : 'no'}.
+    Future: ${quest.expansionfuture ? 'Required' : 'no'}.`;
   return mail.send(to, subject, message);
 }
 

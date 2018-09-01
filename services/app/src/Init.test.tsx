@@ -40,7 +40,7 @@ describe('React', () => {
     it('sets up hot reload'); // $12
     it('handles no hot reloading');  // $10
     it('does not show game content dialog if all content sets defined');
-    it('shows game content dialog if settings undefined');
+    it('shows game content dialog if all settings undefined');
     it('shows game content dialog if any content sets undefined');
     it('checks for announcements and new versions');
 

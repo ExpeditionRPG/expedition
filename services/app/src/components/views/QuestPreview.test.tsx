@@ -65,8 +65,12 @@ describe('QuestPreview', () => {
   });
 
   it('indicates that horror and future expansions are required', () => {
-    // TODO
+    const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning 3: The Future')[0];
+    const {wrapper} = setup(quest.title, {});
+    expect(wrapper.html()).toContain('horror');
+    expect(wrapper.html()).toContain('future');
   });
+
   it('prompts for user count and multitouch if playing direct linked');
   it('goes directly to playing quest if not direct linked');
   it('allows users to go back');
