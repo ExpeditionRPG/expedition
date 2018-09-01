@@ -94,7 +94,7 @@
     "passport-google-id-token": "^0.4.5",
     "path": "^0.12.7",
     "pg": "^7.4.3",
-    "promise-polyfill": "~8.0.0",
+    "promise-polyfill": "~8.1.0",
     "qs": "^6.4.0",
     "query-string": "^6.0.0",
     "raven-js": "^3.26.2",
