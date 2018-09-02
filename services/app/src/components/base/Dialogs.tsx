@@ -5,9 +5,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
+import {Quest} from 'shared/schema/Quests';
 import {openWindow} from '../../Globals';
 import {MultiplayerCounters} from '../../Multiplayer';
-import {QuestDetails} from '../../reducers/QuestTypes';
 import {ContentSetsType, DialogState, FeedbackType, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
 import Checkbox from './Checkbox';
 import Picker from './Picker';
@@ -60,9 +60,9 @@ export class ExitMultiplayerDialog extends React.Component<ExitMultiplayerDialog
 
 interface MultiplayerStatusDialogProps extends React.Props<any> {
   onClose: () => void;
-  onSendReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => void;
+  onSendReport: (user: UserState, quest: Quest, stats: MultiplayerCounters) => void;
   open: boolean;
-  questDetails: QuestDetails;
+  questDetails: Quest;
   stats: MultiplayerCounters;
   user: UserState;
 }
@@ -228,8 +228,8 @@ interface SetPlayerCountDialogProps extends React.Props<any> {
   onMultitouchChange: (v: boolean) => void;
   onPlayerDelta: (numPlayers: number, delta: number) => void;
   open: boolean;
-  playQuest: (quest: QuestDetails) => void;
-  quest: QuestDetails;
+  playQuest: (quest: Quest) => void;
+  quest: Quest;
   settings: SettingsType;
 }
 
@@ -321,8 +321,8 @@ export interface DispatchProps {
   onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
   onMultitouchChange: (v: boolean) => void;
   onPlayerDelta: (numPlayers: number, delta: number) => void;
-  onSendMultiplayerReport: (user: UserState, quest: QuestDetails, stats: MultiplayerCounters) => void;
-  playQuest: (quest: QuestDetails) => void;
+  onSendMultiplayerReport: (user: UserState, quest: Quest, stats: MultiplayerCounters) => void;
+  playQuest: (quest: Quest) => void;
 }
 
 interface Props extends StateProps, DispatchProps {}

@@ -1,8 +1,8 @@
 import {configure, render} from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import {LanguageType} from 'shared/schema/Constants';
+import {Quest} from 'shared/schema/Quests';
 import {FEATURED_QUESTS} from '../../Constants';
-import {QuestDetails} from '../../reducers/QuestTypes';
 import {SearchSettings} from '../../reducers/StateTypes';
 import {
   renderResult,
@@ -64,13 +64,13 @@ describe('Search', () => {
   });
 
   describe('Result', () => {
-    function setup(questTitle: string, overrides?: Partial<SearchResultProps>, questOverrides?: Partial<QuestDetails>) {
+    function setup(questTitle: string, overrides?: Partial<SearchResultProps>, questOverrides?: Partial<Quest>) {
       const props: SearchResultProps = {
         index: 0,
         lastPlayed: null,
         offlineQuests: {},
         onQuest: jasmine.createSpy('onQuest'),
-        quest: {...FEATURED_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides},
+        quest: new Quest({...FEATURED_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides}),
         search: TEST_SEARCH,
         ...overrides,
       };
@@ -127,7 +127,8 @@ describe('Search', () => {
   });
 
   describe('Results', () => {
-    it('gracefully handles no search results');
+    it('offers tips when no search results');
     it('renders some search results');
+    it('shows spinner when loading results');
   });
 });

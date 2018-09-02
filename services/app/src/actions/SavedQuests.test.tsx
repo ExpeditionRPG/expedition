@@ -1,8 +1,8 @@
+import {Quest} from 'shared/schema/Quests';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {getCheerio} from '../Globals';
 import {getStorageJson, getStorageString} from '../LocalStorage';
-import {QuestDetails} from '../reducers/QuestTypes';
 import {deleteSavedQuest, listSavedQuests, loadSavedQuest, SAVED_QUESTS_KEY, savedQuestKey, storeSavedQuest} from './SavedQuests';
 
 describe('SavedQuest actions', () => {
@@ -15,7 +15,7 @@ describe('SavedQuest actions', () => {
     if (next === null) {
       throw new Error('Initial setup failed');
     }
-    storeSavedQuest(next, {id: STORED_QUEST_ID} as any as QuestDetails, STORED_QUEST_TS);
+    storeSavedQuest(next, {id: STORED_QUEST_ID} as any as Quest, STORED_QUEST_TS);
   });
   afterEach(() => {
     localStorage.clear();
@@ -40,11 +40,11 @@ describe('SavedQuest actions', () => {
     }
 
     it('adds to the listing without affecting other quests', () => {
-      storeSavedQuest(pnode, {id: NEW_ID} as any as QuestDetails, NEW_TS);
+      storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS);
       expect(getStorageJson(SAVED_QUESTS_KEY, [])).toContain({ts: NEW_TS, details: {id: NEW_ID}, pathLen: 1});
     });
     it('stores xml and context path', () => {
-      storeSavedQuest(pnode, {id: NEW_ID} as any as QuestDetails, NEW_TS);
+      storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS);
       expect(getStorageJson(savedQuestKey(NEW_ID, NEW_TS), {})).toEqual({xml: (quest + ''), path: [0]});
     });
   });

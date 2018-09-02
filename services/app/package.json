@@ -4,7 +4,7 @@
   "description": "The App for Expedition: The Roleplaying Card Game",
   "homepage": "http://app.expeditiongame.com",
   "scripts": {
-    "test": "karma start --single-run --browsers NoSandboxChromeHeadless",
+    "test": "node --max_old_space_size=4096 ../../node_modules/karma/bin/karma start --single-run --browsers NoSandboxChromeHeadless",
     "watch-test": "node --max_old_space_size=4096 ../../node_modules/karma/bin/karma start --browsers NoSandboxChromeHeadless",
     "start": "webpack-dev-server --progress --hot",
     "build": "webpack --config ./webpack.dist.config.js --progress",
