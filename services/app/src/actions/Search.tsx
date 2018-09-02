@@ -79,6 +79,13 @@ function getSearchResults(params: SearchSettings, callback: (response: QuestSear
       } catch (e) {
         response = {error: e.toString(), hasMore: false, quests: []};
       }
+
+      // Log silently to console, so we can see if users file feedback
+      // with recurrent search problems.
+      if (response.error) {
+        console.error(response.error);
+      }
+
       // Simple validation of response quests
       const quests: Quest[] = [];
       if (response.quests) {
