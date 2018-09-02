@@ -44,8 +44,6 @@ describe('Dependencies', () => {
       'babel-jest',
       'pre-commit',
       'pre-push',
-      'karma-jasmine',
-      'karma-webpack',
       'enzyme-adapter-react-16',
       'react-test-renderer',
       'sqlite3',
@@ -59,9 +57,6 @@ describe('Dependencies', () => {
       'sinon',
       'sinon-express-mock',
       'jasmine-expect',
-      'karma-chrome-launcher',
-      'karma-es6-shim',
-      'karma-sourcemap-loader',
     ];
 
     let depstrs = Object.keys(packageJSON.dependencies || {});

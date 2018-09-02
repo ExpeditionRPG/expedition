@@ -12,6 +12,6 @@ RUN apt-get update && apt-get install -y google-chrome-stable
 RUN apt-get install -y git nodejs tmux npm bash build-essential curl libfontconfig1
 RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.25.0/install.sh | bash
 RUN /bin/bash -l -c 'source ~/.nvm/nvm.sh && nvm install v8.11.3 && nvm alias default v8.11.3'
-RUN npm install -g webpack yarn karma
+RUN npm install -g webpack yarn
 RUN echo "#!/bin/bash\ncd /volume\ntmux new-session -s dev '/bin/bash'" > /run.sh && chmod a+x /run.sh
 ENTRYPOINT /run.sh
