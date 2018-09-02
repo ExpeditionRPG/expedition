@@ -1,3 +1,3 @@
 describe('Annotations', () => {
-  it('TODO');
+  test.skip('TODO', () => { /* TODO */ });
 });

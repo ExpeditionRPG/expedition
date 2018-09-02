@@ -1,5 +1,5 @@
 describe('QuestEndContainer', () => {
-  it('triggers login if user attempts submit without credentials');
+  test.skip('triggers login if user attempts submit without credentials', () => { /* TODO */ });
 
-  it('Prevents useless (too short) feedback');
+  test.skip('Prevents useless (too short) feedback', () => { /* TODO */ });
 });

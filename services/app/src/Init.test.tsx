@@ -35,18 +35,18 @@ function dummyDOM(): Document {
 
 describe('React', () => {
   describe('init', () => {
-    it('loads google APIs');  // $10
-    it('sets up event logging'); // $10
-    it('sets up hot reload'); // $12
-    it('handles no hot reloading');  // $10
-    it('does not show game content dialog if all content sets defined');
-    it('shows game content dialog if settings undefined');
-    it('shows game content dialog if any content sets undefined');
-    it('checks for announcements and new versions');
+    test.skip('loads google APIs', () => { /* TODO */ });  // $10
+    test.skip('sets up event logging', () => { /* TODO */ }); // $10
+    test.skip('sets up hot reload', () => { /* TODO */ }); // $12
+    test.skip('handles no hot reloading', () => { /* TODO */ });  // $10
+    test.skip('does not show game content dialog if all content sets defined', () => { /* TODO */ });
+    test.skip('shows game content dialog if settings undefined', () => { /* TODO */ });
+    test.skip('shows game content dialog if any content sets undefined', () => { /* TODO */ });
+    test.skip('checks for announcements and new versions', () => { /* TODO */ });
 
     describe('deviceready event', () => {
-      it('triggers silent login'); // Holding off on testing this one until we propagate window state better.
-      it('adds backbutton listener', () => {
+      test.skip('triggers silent login', () => { /* TODO */ }); // Holding off on testing this one until we propagate window state better.
+      test('adds backbutton listener', () => {
         const fakeStore = newMockStoreWithInitializedState();
         installStore(fakeStore as any as Redux.Store<AppStateWithHistory>);
         const doc = dummyDOM();
@@ -69,12 +69,12 @@ describe('React', () => {
         // Action 0 is expansion select dialog
         expect(actions[0]).toEqual(jasmine.objectContaining({type: 'RETURN'}));
       });
-      it('keeps screen on');
-      it('sets device style');
-      it('patches android browser scrolling');
-      it('hides android system ui');
-      it('pauses music on window pause event');
-      it('resumes music on window resume event');
+      test.skip('keeps screen on', () => { /* TODO */ });
+      test.skip('sets device style', () => { /* TODO */ });
+      test.skip('patches android browser scrolling', () => { /* TODO */ });
+      test.skip('hides android system ui', () => { /* TODO */ });
+      test.skip('pauses music on window pause event', () => { /* TODO */ });
+      test.skip('resumes music on window resume event', () => { /* TODO */ });
     });
   });
 });

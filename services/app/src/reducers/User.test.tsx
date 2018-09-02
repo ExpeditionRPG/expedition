@@ -7,7 +7,3 @@ export const testLoggedInUser: UserState = {
   loggedIn: true,
   name: 'Bob Fisher',
 };
-
-describe('User reducer', () => {
-  // Currently simple enough; no tests needed.
-});

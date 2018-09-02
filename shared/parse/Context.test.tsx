@@ -9,40 +9,40 @@ describe('Context', () => {
   });
 
   describe('evaluateOp', () => {
-    it('handles string equality', () => {
+    test('handles string equality', () => {
       expect(evaluateOp('"abc" == "abc"', defaultContext())).toEqual(true);
       expect(evaluateOp('"abc" == "123"', defaultContext())).toEqual(false);
     });
-    it('throws error on invalid parse', () => {
+    test('throws error on invalid parse', () => {
       evaluateOp('foo==\'a\'', defaultContext());
       expect(window.onerror)
         .toHaveBeenCalledWith(
           'Value expected. Note: strings must be enclosed by double quotes (char 6) Op: (foo==\'a\')',
           'shared/parse/context');
     });
-    it('throws error on invalid eval', () => {
+    test('throws error on invalid eval', () => {
       evaluateOp('asdf', defaultContext());
       expect(window.onerror)
         .toHaveBeenCalledWith('Undefined symbol asdf Op: (asdf)', 'shared/parse/context');
     });
-    it('returns value and updates context', () => {
+    test('returns value and updates context', () => {
       const ctx = {...defaultContext(), scope: {b: '1'} as any};
       expect(evaluateOp('a=b+1;a', ctx)).toEqual(2);
       expect(ctx.scope).toEqual({a: 2, b: '1'});
     });
-    it('does not return if last operation assigns a value', () => {
+    test('does not return if last operation assigns a value', () => {
       expect(evaluateOp('a=1', defaultContext())).toEqual(null);
     });
   });
 
   describe('evaluateContentOps', () => {
-    it('persists state', () => {
+    test('persists state', () => {
       const ctx = defaultContext();
       expect(evaluateContentOps('{{text="TEST"}}', ctx)).toEqual('');
       expect(evaluateContentOps('{{text}}', ctx)).toEqual('TEST');
     });
 
-    it('handles multiple ops in one string', () => {
+    test('handles multiple ops in one string', () => {
       const ctx = defaultContext();
       expect(evaluateContentOps('{{text="TEST"}}\n{{text}}', ctx)).toEqual('TEST');
     });
@@ -51,7 +51,7 @@ describe('Context', () => {
   describe('updateContext', () => {
     const dummyElem = cheerio.load('<combat></combat>')('combat');
 
-    it('appends to path', () => {
+    test('appends to path', () => {
       const ctx = defaultContext();
       expect(ctx.path).toEqual([]);
       const ctx2 = updateContext(dummyElem, ctx, 2);
@@ -61,12 +61,12 @@ describe('Context', () => {
       const ctx4 = updateContext(dummyElem, ctx3, '#testID');
       expect(ctx4.path).toEqual([2, 'win', '#testID']);
     });
-    it('does not affect other contexts', () => {
+    test('does not affect other contexts', () => {
       const ctx = defaultContext();
       updateContext(dummyElem, ctx, 2);
       expect(ctx.path).not.toEqual([2]);
     });
-    it('updates view count');
+    test.skip('updates view count', () => { /* TODO */ });
   });
 
 });

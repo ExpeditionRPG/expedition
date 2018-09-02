@@ -1,6 +1,6 @@
 
 describe('DRAW_ENEMIES', () => {
-  it('renders all enemies in props', () => {
+  test('renders all enemies in props', () => {
     /*
     const combat = newCombat(TEST_NODE);
     const {enzymeWrapper} = setup('DRAW_ENEMIES', {combat});
@@ -11,6 +11,6 @@ describe('DRAW_ENEMIES', () => {
     ]);
     */
   });
-  it('calls tierSumDelta when tier changed (no enemies)');
-  it('if no enemies, displays current tier');
+  test.skip('calls tierSumDelta when tier changed (no enemies)', () => { /* TODO */ });
+  test.skip('if no enemies, displays current tier', () => { /* TODO */ });
 });

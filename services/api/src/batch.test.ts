@@ -1,3 +1,3 @@
 describe('batch runner', () => {
-  it('runs a batch');
+  test.skip('runs a batch', () => { /* TODO */ });
 });

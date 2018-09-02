@@ -1,4 +1,4 @@
 describe('TimerCard', () => {
-  it('calls onTimerStop when numPlayers touch the card');
-  it('keeps going when numPlayers-1 touch the card');
+  test.skip('calls onTimerStop when numPlayers touch the card', () => { /* TODO */ });
+  test.skip('keeps going when numPlayers-1 touch the card', () => { /* TODO */ });
 });

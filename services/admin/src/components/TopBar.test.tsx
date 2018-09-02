@@ -1,5 +1,5 @@
 describe('TopBar', () => {
-  it('Shows user icon');
+  test.skip('Shows user icon', () => { /* TODO */ });
 
-  it('Shows interactive title');
+  test.skip('Shows interactive title', () => { /* TODO */ });
 });

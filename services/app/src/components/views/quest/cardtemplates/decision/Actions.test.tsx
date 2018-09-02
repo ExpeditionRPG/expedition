@@ -1,39 +1,39 @@
 describe('Decision actions', () => {
   describe('extractDecision', () => {
-    it('extracts the decision from a node');
-    it('handles null node');
+    test.skip('extracts the decision from a node', () => { /* TODO */ });
+    test.skip('handles null node', () => { /* TODO */ });
   });
   describe('initDecision', () => {
-    it('sets up decision template within node using qdl');
+    test.skip('sets up decision template within node using qdl', () => { /* TODO */ });
   });
   describe('computeSuccesses', () => {
-    it('works when zero rolls');
-    it('counts successes and ignores other rolls');
-    it('respects difficulty');
+    test.skip('works when zero rolls', () => { /* TODO */ });
+    test.skip('counts successes and ignores other rolls', () => { /* TODO */ });
+    test.skip('respects difficulty', () => { /* TODO */ });
   });
   describe('computeOutcome', () => {
-    it('computes success');
-    it('computes failure');
-    it('computes interrupted');
-    it('computes retry');
-    it('returns null when no selected decision');
+    test.skip('computes success', () => { /* TODO */ });
+    test.skip('computes failure', () => { /* TODO */ });
+    test.skip('computes interrupted', () => { /* TODO */ });
+    test.skip('computes retry', () => { /* TODO */ });
+    test.skip('returns null when no selected decision', () => { /* TODO */ });
   });
   describe('generateLeveledChecks', () => {
-    it('returns 3 semi-unique, generated checks');
-    it('scales num successes with num adventurers');
-    it('scales difficulty with the number of times this type of check was selected previously');
+    test.skip('returns 3 semi-unique, generated checks', () => { /* TODO */ });
+    test.skip('scales num successes with num adventurers', () => { /* TODO */ });
+    test.skip('scales difficulty with the number of times this type of check was selected previously', () => { /* TODO */ });
   });
   describe('skillTimeMillis', () => {
-    it('respects settings');
-    it('scales with player count');
+    test.skip('respects settings', () => { /* TODO */ });
+    test.skip('scales with player count', () => { /* TODO */ });
   });
   describe('handleDecisionRoll', () => {
-    it('pushes the roll value onto the node');
-    it('returns name of matching outcome event in the node');
-    it('returns null if no matching outcome event');
+    test.skip('pushes the roll value onto the node', () => { /* TODO */ });
+    test.skip('returns name of matching outcome event in the node', () => { /* TODO */ });
+    test.skip('returns null if no matching outcome event', () => { /* TODO */ });
   });
   describe('toDecisionCard', () => {
-    it('goes to MID_COMBAT_DECISION if in combat');
-    it('does pass-thru to toCard if not in combat');
+    test.skip('goes to MID_COMBAT_DECISION if in combat', () => { /* TODO */ });
+    test.skip('does pass-thru to toCard if not in combat', () => { /* TODO */ });
   });
 });

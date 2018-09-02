@@ -11,7 +11,7 @@ const cheerio = require('cheerio') as CheerioAPI;
 
 describe('Quest actions', () => {
   describe('initQuest', () => {
-    it('successfully returns the parsed quest node', () => {
+    test('successfully returns the parsed quest node', () => {
       const questNode = cheerio.load('<quest><roleplay><p>Hello</p></roleplay></quest>')('quest');
       const result = initQuest(initialQuestState.details, questNode, defaultContext());
       expect(result.node.getRootElem().toString()).toEqual('<quest><roleplay><p>Hello</p></roleplay></quest>');
@@ -19,19 +19,19 @@ describe('Quest actions', () => {
   });
 
   describe('event', () => {
-    it('handles win event');
+    test.skip('handles win event', () => { /* TODO */ });
 
-    it('handles lose event');
+    test.skip('handles lose event', () => { /* TODO */ });
 
-    it('gracefully failes on invalid event');
+    test.skip('gracefully failes on invalid event', () => { /* TODO */ });
   });
 
   describe('loadNode', () => {
-    it('ends quest on end trigger');
+    test.skip('ends quest on end trigger', () => { /* TODO */ });
 
-    it('dispatches roleplay on roleplay node');
+    test.skip('dispatches roleplay on roleplay node', () => { /* TODO */ });
 
-    it('dispatches combat on combat node');
+    test.skip('dispatches combat on combat node', () => { /* TODO */ });
   });
 
   describe('endQuest', () => {
@@ -39,7 +39,7 @@ describe('Quest actions', () => {
       fetchMock.restore();
     });
 
-    it('Logs the end of the quest to analytics', () => {
+    test('Logs the end of the quest to analytics', () => {
       const matcher = AUTH_SETTINGS.URL_BASE + '/analytics/quest/end';
       fetchMock.post(matcher, {});
       Action(endQuest, {

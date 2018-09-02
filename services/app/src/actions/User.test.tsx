@@ -1,31 +1,30 @@
-/*
-import {ensureLogin, silentLogin} from './User'
-import {testLoggedInUser} from '../reducers/User.test'
-import {newMockStore} from '../Testing'
-import {setWindow} from '../Globals'
-*/
+// import {setWindow} from '../Globals';
+// import {testLoggedInUser} from '../reducers/User.test';
+import {newMockStore} from '../Testing';
+import {ensureLogin, silentLogin} from './User';
 
 describe('User actions', () => {
-  /*
-  describe('silentLogin', () => {
-    it('swallows login errors');
+  test.skip('TODO', () => { /* TODO */ });
 
-    it('calls callback on success', () => {
+  describe('silentLogin', () => {
+    test.skip('swallows login errors', () => { /* TODO */ });
+
+    test.skip('calls callback on success', () => {
       const store = newMockStore({});
       const callback = jasmine.createSpyObj('callback', ['success']);
       store.dispatch(silentLogin());
       expect(callback.success).toHaveBeenCalledTimes(1);
     });
 
-    it('loads user quest info on success');
+    test.skip('loads user quest info on success', () => { /* TODO */ });
   });
 
   describe('ensureLogin', () => {
-    it('shows snackbar on login failure');
+    test.skip('shows snackbar on login failure', () => { /* TODO */ });
 
-    it('dispatches USER_LOGIN on successful login');
+    test.skip('dispatches USER_LOGIN on successful login', () => { /* TODO */ });
 
-    it('calls callback on success', () => {
+    test.skip('calls callback on success', () => {
       const store = newMockStore({});
       const callback = jasmine.createSpyObj('callback', ['success']);
       store.dispatch(ensureLogin())
@@ -33,7 +32,6 @@ describe('User actions', () => {
       expect(callback.success).toHaveBeenCalledTimes(1);
     });
 
-    it('loads user quest info on success');
+    test.skip('loads user quest info on success', () => { /* TODO */ });
   });
-  */
 });

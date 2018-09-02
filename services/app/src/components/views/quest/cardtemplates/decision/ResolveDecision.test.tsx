@@ -1,5 +1,5 @@
 import {configure, mount} from 'enzyme';
-import * as Adapter from 'enzyme-adapter-react-16';
+import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 configure({ adapter: new Adapter() });
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
@@ -38,10 +38,10 @@ function titleWithProps(overrides: Partial<Props>): string {
 }
 
 describe('ResolveDecision', () => {
-  it('shows a "roll & resolve" element when outcome is null', () => {
+  test('shows a "roll & resolve" element when outcome is null', () => {
     expect(titleWithProps({})).toEqual('Resolve Check');
   });
-  it('shows a "roll & resolve" element when outcome=retry', () => {
+  test('shows a "roll & resolve" element when outcome=retry', () => {
     const node = TEST_NODE.clone();
     node.ctx.templates.decision = {
       leveledChecks: [],
@@ -50,7 +50,7 @@ describe('ResolveDecision', () => {
     };
     expect(titleWithProps({node})).toEqual('Keep going!');
   });
-  it('shows success page on outcome=success', () => {
+  test('shows success page on outcome=success', () => {
     const node = TEST_NODE.clone();
     node.ctx.templates.decision = {
       leveledChecks: [],
@@ -59,7 +59,7 @@ describe('ResolveDecision', () => {
     };
     expect(titleWithProps({node})).toEqual('Success!');
   });
-  it('shows failure page on outcome=failure', () => {
+  test('shows failure page on outcome=failure', () => {
     const node = TEST_NODE.clone();
     node.ctx.templates.decision = {
       leveledChecks: [],
@@ -68,7 +68,7 @@ describe('ResolveDecision', () => {
     };
     expect(titleWithProps({node})).toEqual('Failure!');
   });
-  it('shows interrupted page on outcome=interrupted', () => {
+  test('shows interrupted page on outcome=interrupted', () => {
     const node = TEST_NODE.clone();
     const numAdv = numAdventurers(initialSettings, initialMultiplayer);
     const rolls = [];

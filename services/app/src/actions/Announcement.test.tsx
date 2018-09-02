@@ -6,14 +6,14 @@ describe('Announcement set action', () => {
 });
 
 describe('Fetch Announcements', () => {
-  it('Fetches and sets announcements', () => {
+  test('Fetches and sets announcements', () => {
     // TODO - how to delay check until fetch complete? Callbacks?
     // That's an anti-pattern in this codebase
     // spyOn(window, 'fetch');
     // fetchAnnouncements();
     // expect(window.fetch).toHaveBeenCalledTimes(1);
   });
-  it('Silently logs error events');
+  test.skip('Silently logs error events', () => { /* TODO */ });
 });
 
 describe('Handle Announcements', () => {
@@ -22,7 +22,7 @@ describe('Handle Announcements', () => {
     store = newMockStore({});
   });
 
-  it('Shows an announcement if there is one', () => {
+  test('Shows an announcement if there is one', () => {
     store.dispatch(handleAnnouncements({
       link: '',
       message: 'test',
@@ -31,7 +31,7 @@ describe('Handle Announcements', () => {
     expect(store.getActions().length).toEqual(1);
     expect(store.getActions()[0]).toEqual(jasmine.objectContaining({type: 'ANNOUNCEMENT_SET', message: 'test'}));
   });
-  it('Shows update version prompt with platform-specific link if outdated version', () => {
+  test('Shows update version prompt with platform-specific link if outdated version', () => {
     store.dispatch(handleAnnouncements({
       link: '',
       message: '',
@@ -40,5 +40,5 @@ describe('Handle Announcements', () => {
     expect(store.getActions().length).toEqual(1);
     expect(store.getActions()[0]).toEqual(jasmine.objectContaining({type: 'ANNOUNCEMENT_SET', message: 'New version available, click here to upgrade'}));
   });
-  it('Does nothing if latest version and no announcement');
+  test.skip('Does nothing if latest version and no announcement', () => { /* TODO */ });
 });

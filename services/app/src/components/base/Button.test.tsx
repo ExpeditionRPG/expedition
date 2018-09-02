@@ -1,7 +1,7 @@
 describe('Button', () => {
-  it('Forwards tap events');
+  test.skip('Forwards tap events', () => { /* TODO */ });
 
-  it('Opens link in new window if href set');
+  test.skip('Opens link in new window if href set', () => { /* TODO */ });
 
-  it('Does nothing if tapped while disabled');
+  test.skip('Does nothing if tapped while disabled', () => { /* TODO */ });
 });

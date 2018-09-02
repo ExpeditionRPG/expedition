@@ -1,3 +1,3 @@
 describe('logging', () => {
-  it('provides request and error logging');
+  test.skip('provides request and error logging', () => { /* TODO */ });
 });

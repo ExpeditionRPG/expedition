@@ -8,7 +8,7 @@ function testSkillCheck(text: string) {
 
 describe('Decision Template', () => {
   describe('getPossibleChecks', () => {
-    it('allows for generic checks', () => {
+    test('allows for generic checks', () => {
       expect(getPossibleChecks([{skill: 'knowledge'}])).toEqual([{skill: 'knowledge'}]);
     });
     it ('uses only specific checks where possible', () => {
@@ -34,7 +34,7 @@ describe('Decision Template', () => {
   });
 
   describe('sanitizeDecision', () => {
-    it('accepts a valid decision', () => {
+    test('accepts a valid decision', () => {
       const log = new Logger();
       const attribs = {};
       const body: TemplateBodyType = [
@@ -52,7 +52,7 @@ describe('Decision Template', () => {
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
-    it('logs error when too few skill checks', () => {
+    test('logs error when too few skill checks', () => {
       const log = new Logger();
       const attribs = {};
       // Note: generic outcomes don't count as skill checks
@@ -67,7 +67,7 @@ describe('Decision Template', () => {
       expect(prettifyMsgs(log.finalize())).toContain('URL: 424');
     });
 
-    it('logs error on invalid skill check', () => {
+    test('logs error on invalid skill check', () => {
       const log = new Logger();
       const attribs = {};
       // Note: generic outcomes don't count as skill checks

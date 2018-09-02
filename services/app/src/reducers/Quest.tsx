@@ -1,5 +1,5 @@
 import Redux from 'redux';
-import * as seedrandom from 'seedrandom';
+const seedrandom = require('seedrandom') as any;
 import {PreviewQuestAction, QuestDetailsAction, QuestNodeAction} from '../actions/ActionTypes';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {QuestState} from './StateTypes';

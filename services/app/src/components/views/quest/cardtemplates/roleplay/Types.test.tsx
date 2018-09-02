@@ -1,3 +1,3 @@
 describe('Roleplay template types', () => {
-  // Entirely glue code; no testing needed right now.
+  test.skip('Empty', () => { /* TODO */ });
 });

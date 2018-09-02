@@ -1,9 +1,9 @@
 describe('FeaturedQuestsContainer', () => {
-  it('Shows only non-test quests in production');
+  test.skip('Shows only non-test quests in production', () => { /* TODO */ });
 
-  it('Initializes a local quest when selected');
+  test.skip('Initializes a local quest when selected', () => { /* TODO */ });
 
-  it('Shows search disclaimer if user not logged in and More Quests clicked');
+  test.skip('Shows search disclaimer if user not logged in and More Quests clicked', () => { /* TODO */ });
 
-  it('Selecting featured quest -> shows details -> can play the quest');
+  test.skip('Selecting featured quest -> shows details -> can play the quest', () => { /* TODO */ });
 });

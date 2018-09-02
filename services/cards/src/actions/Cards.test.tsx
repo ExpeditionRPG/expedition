@@ -19,13 +19,13 @@ const dummyFilters = {
 describe('Cards actions', () => {
 
   describe('Download cards', () => {
-    it('returns an error if HTTP errors');
-    it('dispatches actions on success');
-    it('end to end downloads a simple sheet and returns expected state');
+    test.skip('returns an error if HTTP errors', () => { /* TODO */ });
+    test.skip('dispatches actions on success', () => { /* TODO */ });
+    test.skip('end to end downloads a simple sheet and returns expected state', () => { /* TODO */ });
   });
 
   describe('filterAndFormatCards', () => {
-    it('nulls properties that are just hyphens or blank', () => {
+    test('nulls properties that are just hyphens or blank', () => {
       const cards = [{
         class: '',
         sheet: 'test',
@@ -35,7 +35,7 @@ describe('Cards actions', () => {
       expect(cleaned).toEqual([{sheet: 'test'}]);
     });
 
-    it('bolds "statement: text" structures', () => {
+    test('bolds "statement: text" structures', () => {
       const cards = [{
         text: 'statement: text',
       }];
@@ -43,7 +43,7 @@ describe('Cards actions', () => {
       expect(cleaned[0].text).toEqual([<strong key={0}>statement:</strong>, ' text']);
     });
 
-    it('bolds "statement: text. statement: text" structures', () => {
+    test('bolds "statement: text. statement: text" structures', () => {
       const cards = [{
         text: 'statement: text. statement: text',
       }];
@@ -51,7 +51,7 @@ describe('Cards actions', () => {
       expect(cleaned[0].text).toEqual([<strong key={0}>statement:</strong>, ' text.', <strong key={2}> statement:</strong>, ' text']);
     });
 
-    it('wraps symbols like &gt; in a symbol span', () => {
+    test('wraps symbols like &gt; in a symbol span', () => {
       const cards = [{
         text: '&gt;',
       }];
@@ -59,7 +59,7 @@ describe('Cards actions', () => {
       expect(cleaned[0].text).toEqual(<span key={0} className="symbol">{'&gt;'}</span>);
     });
 
-    it('inserts #icons', () => {
+    test('inserts #icons', () => {
       const cards = [{
         text: '#roll',
       }];
@@ -67,7 +67,7 @@ describe('Cards actions', () => {
       expect(cleaned[0].text).toEqual(<img key={0} className="inline_icon svg roll_small" src={`/images/icons/roll_small.svg`}/>);
     });
 
-    it('wraps \nOR\n for better styling', () => {
+    test('wraps \nOR\n for better styling', () => {
       const cards = [{
         text: 'Choose one \nOR\n two',
       }];
@@ -75,7 +75,7 @@ describe('Cards actions', () => {
       expect(cleaned[0].text).toEqual(['Choose one ', <div key={1} className="or">OR</div>, ' two']);
     });
 
-    it('replaces newlines with <br/>s', () => {
+    test('replaces newlines with <br/>s', () => {
       const cards = [{
         text: 'The target regains\n6 health.',
       }];
@@ -83,7 +83,7 @@ describe('Cards actions', () => {
       expect(cleaned[0].text).toEqual(['The target regains', <br key={1}/>, '6 health.']);
     });
 
-    it('filters by sheet, tier and class', () => {
+    test('filters by sheet, tier and class', () => {
       const filters = {
         class: {
           current: 'Class',

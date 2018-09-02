@@ -6,7 +6,7 @@ const cheerio = require('cheerio') as CheerioAPI;
 
 describe('StatsCrawler', () => {
   describe('crawl', () => {
-    it('travels across combat events', () => {
+    test('travels across combat events', () => {
       const xml = cheerio.load(`
         <combat data-line="0">
           <event on="win" heal="5" loot="false" xp="false">
@@ -32,7 +32,7 @@ describe('StatsCrawler', () => {
       expect(Array.from(stats2.outputs)).toEqual(['END']);
     });
 
-    it('handles a roleplay node', () => {
+    test('handles a roleplay node', () => {
       const xml = cheerio.load(`
       <roleplay title="A1" id="A1" data-line="2">
         <p>A1 tests basic navigation</p>
@@ -53,7 +53,7 @@ describe('StatsCrawler', () => {
       expect(Array.from(crawler.getStatsForId('A1').outputs)).toEqual(['END']);
     });
 
-    it('handles gotos', () => {
+    test('handles gotos', () => {
       const xml = cheerio.load(`
         <quest>
         <roleplay title="B2" data-line="2">
@@ -77,7 +77,7 @@ describe('StatsCrawler', () => {
       expect(Array.from(crawler.getStatsForId('B4').outputs)).toEqual(['END']);
     });
 
-    it('tracks implicit end triggers', () => {
+    test('tracks implicit end triggers', () => {
       const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
       const crawler = new StatsCrawler();
       crawler.crawl(new Node(xml, defaultContext()));
@@ -85,7 +85,7 @@ describe('StatsCrawler', () => {
       expect(Array.from(crawler.getStatsForId('A1').outputs)).toEqual(['IMPLICIT_END']);
     });
 
-    it('safely handles nodes without line annotations', () => {
+    test('safely handles nodes without line annotations', () => {
       const xml = cheerio.load(`
         <roleplay title="A0" id="A0" data-line="2"><p></p></roleplay>
         <roleplay title="A1" id="A1"><p></p></roleplay>
@@ -98,7 +98,7 @@ describe('StatsCrawler', () => {
       expect(crawler.getLines()).toEqual([2]);
     });
 
-    it('handles op state', () => {
+    test('handles op state', () => {
       // Simple loop, visits the same node multiple times until a counter ticks over
       const xml = cheerio.load(`
         <quest>
@@ -119,7 +119,7 @@ describe('StatsCrawler', () => {
       expect(nextIDs).toEqual(['END', 'loop']);
     });
 
-    it('bails out of infinite loops', () => {
+    test('bails out of infinite loops', () => {
       const xml = cheerio.load(`
         <quest>
           <roleplay title="I" id="I" data-line="2"><p></p></roleplay>
@@ -132,7 +132,7 @@ describe('StatsCrawler', () => {
       crawler.crawl(new Node(xml, defaultContext()));
     });
 
-    it('handles hanging choice node with no body', () => {
+    test('handles hanging choice node with no body', () => {
       const xml = cheerio.load(`
         <roleplay title="I" data-line="2"><choice text="a1"></choice></roleplay>
       `)(':first-child');
@@ -142,7 +142,7 @@ describe('StatsCrawler', () => {
       expect(Array.from(crawler.getStatsForLine(2).outputs)).toEqual(['INVALID']);
     });
 
-    it('handles node without data-line attribute', () => {
+    test('handles node without data-line attribute', () => {
       const xml = cheerio.load(`
         <roleplay title="I" data-line="2">
           <choice text="a1"><roleplay></roleplay></choice>
@@ -155,7 +155,7 @@ describe('StatsCrawler', () => {
   });
 
   describe('getStatsForId', () => {
-    it('gets stats for tag with id', () => {
+    test('gets stats for tag with id', () => {
       const xml = cheerio.load(`
         <roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>
       `)(':first-child');
@@ -165,7 +165,7 @@ describe('StatsCrawler', () => {
       expect(crawler.getStatsForId('A1')).toBeDefined();
     });
 
-    it('aggregates stats on non-id tags until next id', () => {
+    test('aggregates stats on non-id tags until next id', () => {
       const xml = cheerio.load(`
         <roleplay title="ID1" id="ID1" data-line="2">
         <choice text="a1">
@@ -198,7 +198,7 @@ describe('StatsCrawler', () => {
   });
 
   describe('getStatsForLine', () => {
-    it('gets stats for tag with line data', () => {
+    test('gets stats for tag with line data', () => {
       const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
       const crawler = new StatsCrawler();
       crawler.crawl(new Node(xml, defaultContext()));
@@ -206,7 +206,7 @@ describe('StatsCrawler', () => {
       expect(crawler.getStatsForLine(2)).toBeDefined();
     });
 
-    it('tracks min and max path actions', () => {
+    test('tracks min and max path actions', () => {
       const xml = cheerio.load(`
         <quest>
           <roleplay title="A1" id="A1" data-line="2">
@@ -243,14 +243,14 @@ describe('StatsCrawler', () => {
       <roleplay title="A3" id="A3" data-line="6"><p></p></roleplay>
       <trigger data-line="8">end</trigger>`)(':first-child');
 
-    it('gets ids seen', () => {
+    test('gets ids seen', () => {
       const crawler = new StatsCrawler();
       crawler.crawl(new Node(xml, defaultContext()));
 
       expect(crawler.getIds().sort()).toEqual(['A1', 'A2', 'A3']);
     });
 
-    it('gets lines seen', () => {
+    test('gets lines seen', () => {
       const crawler = new StatsCrawler();
       crawler.crawl(new Node(xml, defaultContext()));
 

@@ -20,7 +20,7 @@ function walkDir(root) {
 }
 
 describe('Dependencies', () => {
-  it('are actually used', () => {
+  test('are actually used', () => {
     const package = require('../package.json');
     const packageUsage = JSON.stringify(package.scripts) + JSON.stringify(package.cordova);
     const WHITELIST = [
@@ -99,7 +99,7 @@ describe('Dependencies', () => {
 });
 
 describe('Typescript files', () => {
-  it('are always in pairs of *.tsx and *.test.tsx', () => {
+  test('are always in pairs of *.tsx and *.test.tsx', () => {
     const WHITELIST = [
       'reducers/',
       'Constants$',

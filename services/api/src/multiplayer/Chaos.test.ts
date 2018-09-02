@@ -1,9 +1,9 @@
 describe('RP chaos tester', () => {
-  it('stays off when disabled');
-  it('randomly fails to verify user membership in session');
-  it('randomly rejects upserts as conflicting');
-  it('randomly replays messages to the client');
-  it('randomly fuzzes messages to the server');
-  it('randomly delays outbound messages');
-  it('randomly drops outbound messages');
+  test.skip('stays off when disabled', () => { /* TODO */ });
+  test.skip('randomly fails to verify user membership in session', () => { /* TODO */ });
+  test.skip('randomly rejects upserts as conflicting', () => { /* TODO */ });
+  test.skip('randomly replays messages to the client', () => { /* TODO */ });
+  test.skip('randomly fuzzes messages to the server', () => { /* TODO */ });
+  test.skip('randomly delays outbound messages', () => { /* TODO */ });
+  test.skip('randomly drops outbound messages', () => { /* TODO */ });
 });

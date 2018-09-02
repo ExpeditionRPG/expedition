@@ -14,7 +14,7 @@ import {
 
 describe('sessions', () => {
   describe('createSession', () => {
-    it('creates a new session', (done: DoneFn) => {
+    test('creates a new session', (done: DoneFn) => {
       testingDBWithState([])
       .then((db) => createSession(db))
       .then((i: SessionInstance) => {
@@ -26,7 +26,7 @@ describe('sessions', () => {
   });
 
   describe('getSessionBySecret', () => {
-    it('gets the session with the secret', (done: DoneFn) => {
+    test('gets the session with the secret', (done: DoneFn) => {
       testingDBWithState([s.basic])
       .then((db) => getSessionBySecret(db, s.basic.secret))
       .then((i: SessionInstance) => {
@@ -38,7 +38,7 @@ describe('sessions', () => {
   });
 
   describe('getSessionQuestTitle', () => {
-    it('gets the title of the current quest', (done: DoneFn) => {
+    test('gets the title of the current quest', (done: DoneFn) => {
       testingDBWithState([e.questPlay])
       .then((db) => getSessionQuestTitle(db, s.basic.id))
       .then((title: string|null) => {
@@ -48,7 +48,7 @@ describe('sessions', () => {
       .catch(done.fail);
     });
 
-    it('returns null if no current quest in the session', (done: DoneFn) => {
+    test('returns null if no current quest in the session', (done: DoneFn) => {
       testingDBWithState([])
       .then((db) => getSessionQuestTitle(db, s.basic.id))
       .then((title: string|null) => {

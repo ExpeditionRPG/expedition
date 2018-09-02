@@ -25,11 +25,11 @@ describe('feedback', () => {
   });
 
   describe('suppressFeedback', () => {
-    it('suppresses feedback');
+    test.skip('suppresses feedback', () => { /* TODO */ });
   });
 
   describe('submitFeedback', () => {
-    it('sends feedback when not in quest', (done) => {
+    test('sends feedback when not in quest', (done) => {
       const msSendSpy = spyOn(ms, 'send');
       const feedback = new Feedback({...fb.basic, questid: ''});
       testingDBWithState([q.basic])
@@ -41,7 +41,7 @@ describe('feedback', () => {
         .catch(done.fail);
     });
 
-    it('sends feedback when in quest', (done) => {
+    test('sends feedback when in quest', (done) => {
       const msSendSpy = spyOn(ms, 'send');
       const feedback = new Feedback({...fb.basic});
       testingDBWithState([q.basic])
@@ -55,7 +55,7 @@ describe('feedback', () => {
         })
         .catch(done.fail);
     });
-    it('sends a thank-you to the reporter', (done) => {
+    test('sends a thank-you to the reporter', (done) => {
       const msSendSpy = spyOn(ms, 'send');
       const feedback = new Feedback({...fb.basic});
       testingDBWithState([q.basic])
@@ -72,7 +72,7 @@ describe('feedback', () => {
   });
 
   describe('submitReportQuest', () => {
-    it('sends report with quest ID and feedback user email', (done) => {
+    test('sends report with quest ID and feedback user email', (done) => {
       const msSendSpy = spyOn(ms, 'send');
       testingDBWithState([q.basic])
         .then((tdb) => submitReportQuest(tdb, ms, fb.report, ''))
@@ -85,7 +85,7 @@ describe('feedback', () => {
         })
         .catch(done.fail);
     });
-    it('does NOT send to the quest author', (done) => {
+    test('does NOT send to the quest author', (done) => {
       const msSendSpy = spyOn(ms, 'send');
       testingDBWithState([q.basic])
         .then((tdb) => submitReportQuest(tdb, ms, fb.report, ''))
@@ -97,7 +97,7 @@ describe('feedback', () => {
         })
         .catch(done.fail);
     });
-    it('rejects reports on nonexistant quest', (done) => {
+    test('rejects reports on nonexistant quest', (done) => {
       const report = new Feedback({...fb.report, questid: 'notavalidquest'});
       testingDBWithState([q.basic])
         .then((tdb) => submitReportQuest(tdb, ms, report, ''))
@@ -107,7 +107,7 @@ describe('feedback', () => {
   });
 
   describe('submitRating', () => {
-    it('fails to store feedback if no such quest exists', (done: DoneFn) => {
+    test('fails to store feedback if no such quest exists', (done: DoneFn) => {
       const rating = new Feedback({...fb.rating, questid: 'nonexistantquest'});
       testingDBWithState([q.basic])
         .then((tdb) => submitRating(tdb, ms, rating))
@@ -118,7 +118,7 @@ describe('feedback', () => {
         .catch(done.fail);
     });
 
-    it('succeeds if performed on an existing quest', (done: DoneFn) => {
+    test('succeeds if performed on an existing quest', (done: DoneFn) => {
       let db: Database;
       testingDBWithState([q.basic])
         .then((tdb) => {
@@ -135,7 +135,7 @@ describe('feedback', () => {
         .catch(done.fail);
     });
 
-    it('succeeds if a rating was already given for the quest', (done: DoneFn) => {
+    test('succeeds if a rating was already given for the quest', (done: DoneFn) => {
       const rating2 = new Feedback({...fb.rating, rating: 5.0});
       rating2.setDefaults = [];
       let db: Database;
@@ -160,7 +160,7 @@ describe('feedback', () => {
         .catch(done.fail);
     });
 
-    it('re-calculates quest rating avg and count on new feedback (only counting feedback with defined ratings)', (done: DoneFn) => {
+    test('re-calculates quest rating avg and count on new feedback (only counting feedback with defined ratings)', (done: DoneFn) => {
       const rating1 = new Feedback({...fb.rating, rating: 3.0, userid: '1'});
       const rating2 = new Feedback({...fb.rating, rating: 4.0, userid: '2'});
       const rating3 = new Feedback({...fb.rating, rating: 1.0, userid: '3'});
@@ -186,7 +186,7 @@ describe('feedback', () => {
         .catch(done.fail);
     });
 
-    it('excludes user email when anonymous', (done: DoneFn) => {
+    test('excludes user email when anonymous', (done: DoneFn) => {
       const msSendSpy = spyOn(ms, 'send');
       const emails = ['email1@email.com', 'email2@email.com'];
       const rating1 = new Feedback({...fb.rating, anonymous: true, email: emails[1]});

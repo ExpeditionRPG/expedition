@@ -1,5 +1,5 @@
 describe('DialogsContainer', () => {
-  it('maps state');
+  test.skip('maps state', () => { /* TODO */ });
 
-  it('dispatches dialog change with onClose');
+  test.skip('dispatches dialog change with onClose', () => { /* TODO */ });
 });
