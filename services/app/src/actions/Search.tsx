@@ -76,9 +76,6 @@ function getSearchResults(params: SearchSettings, callback: (response: QuestSear
       let response: QuestSearchResponse;
       try {
         response = JSON.parse(xhr.responseText);
-        if (response.error) {
-          throw Error(response.error);
-        }
       } catch (e) {
         response = {error: e.toString(), hasMore: false, quests: []};
       }

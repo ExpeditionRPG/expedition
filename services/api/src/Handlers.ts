@@ -121,7 +121,7 @@ function doSearch(db: Database, userId: string, params: QuestSearchParams): Blue
     return {
       error: e.toString(),
       hasMore: false,
-      quests: []
+      quests: [],
     };
   });
 }

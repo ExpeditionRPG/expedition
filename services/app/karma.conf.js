@@ -4,7 +4,6 @@ webpackConfig.module.rules.unshift({
   test: /isIterable/,
   loader: 'imports?Symbol=>false'
 });
-webpackConfig.entry = undefined;
 
 // Remove copy plugin - which is the only plugin of constructor "object"
 for (let i = 0; i < webpackConfig.plugins.length; i++) {
@@ -25,7 +24,18 @@ module.exports = function(config) {
     preprocessors: {
       'src/**/*.test.tsx': ['webpack'],
     },
-    webpack: webpackConfig,
+    webpack: {
+      module: webpackConfig.module,
+      resolve: webpackConfig.resolve,
+      node: webpackConfig.node,
+      // Pull in module-specific configs (esp. tslint)
+      plugins: [webpackConfig.plugins[webpackConfig.plugins.length-1]],
+      externals: {
+        'react/addons': true,
+        'react/lib/ExecutionEnvironment': true,
+        'react/lib/ReactContext': true
+      },
+    },
     webpackMiddleware: {
       watchOptions: {
         ignored: [/\/\./, 'node_modules'],

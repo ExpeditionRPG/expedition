@@ -33,10 +33,9 @@ describe('QuestPreview', () => {
     expect(wrapper.html()).toContain(quest.genre);
     expect(wrapper.html()).toContain(quest.summary);
     expect(wrapper.html()).toContain(quest.author);
-    expect(wrapper.html()).toContain(quest.official);
-    expect(wrapper.html()).not.toContain(quest.expansionhorror);
-    expect(wrapper.html()).not.toContain(quest.requirespenpaper);
-    expect(wrapper.html()).not.toContain(quest.awarded);
+    expect(wrapper.html()).toContain('Official Quest');
+    expect(wrapper.html()).not.toContain('The Horror');
+    expect(wrapper.html()).not.toContain('Pen and Paper');
   });
 
   it('shows last played information if it has been played before', () => {

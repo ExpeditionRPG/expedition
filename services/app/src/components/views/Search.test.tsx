@@ -1,9 +1,9 @@
 import {configure, render} from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import {LanguageType} from 'shared/schema/Constants';
+import {Quest} from 'shared/schema/Quests';
 import {FEATURED_QUESTS} from '../../Constants';
 import {SearchSettings} from '../../reducers/StateTypes';
-import {Quest} from 'shared/schema/Quests';
 import {
   renderResult,
   SearchResultProps,
@@ -127,7 +127,8 @@ describe('Search', () => {
   });
 
   describe('Results', () => {
-    it('gracefully handles no search results');
+    it('offers tips when no search results');
     it('renders some search results');
+    it('shows spinner when loading results');
   });
 });

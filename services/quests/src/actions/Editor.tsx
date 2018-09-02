@@ -4,12 +4,12 @@ import {defaultContext} from 'app/components/views/quest/cardtemplates/Template'
 import {ParserNode, TemplateContext} from 'app/components/views/quest/cardtemplates/TemplateTypes';
 import Redux from 'redux';
 import {renderXML} from 'shared/render/QDLParser';
+import {Quest} from 'shared/schema/Quests';
 import {PanelType, PlaytestSettings, QuestType} from '../reducers/StateTypes';
 import {store} from '../Store';
 import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction} from './ActionTypes';
 import {pushError} from './Dialogs';
 import {saveQuest} from './Quest';
-import {Quest} from 'shared/schema/Quests';
 
 declare var window: any;
 

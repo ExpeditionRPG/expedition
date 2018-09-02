@@ -1,8 +1,8 @@
+import {Quest} from 'shared/schema/Quests';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {getCheerio} from '../Globals';
 import {getStorageJson, getStorageString} from '../LocalStorage';
-import {Quest} from 'shared/schema/Quests';
 import {deleteSavedQuest, listSavedQuests, loadSavedQuest, SAVED_QUESTS_KEY, savedQuestKey, storeSavedQuest} from './SavedQuests';
 
 describe('SavedQuest actions', () => {

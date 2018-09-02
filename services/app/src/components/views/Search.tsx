@@ -283,7 +283,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
   );
 }
 
-function renderResults(props: Props, hideHeader?: boolean): JSX.Element {
+export function renderResults(props: Props, hideHeader?: boolean): JSX.Element {
   let content: JSX.Element | JSX.Element[];
   const numResults = (props.results || []).length;
   if (numResults === 0 && !props.searching) {
