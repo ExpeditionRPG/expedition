@@ -17,8 +17,7 @@ function setup() {
     testMusic: jasmine.createSpy('testMusic'),
     user: loggedOutUser,
   };
-  const e = mount(<Tools {...props} />);
-  return {props, e};
+  return {props, e: mount(<Tools {...props} />)};
 }
 
 describe('Tools', () => {
