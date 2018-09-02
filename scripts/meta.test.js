@@ -50,6 +50,7 @@ describe('Dependencies', () => {
       'react-test-renderer',
       'sqlite3',
       'jasmine-core',
+      'jest-localstorage-mock',
 
       // Needed for storage layer
       'pg',
