@@ -5,14 +5,6 @@ webpackConfig.module.rules.unshift({
   loader: 'imports?Symbol=>false'
 });
 
-// Remove copy plugin - which is the only plugin of constructor "object"
-for (let i = 0; i < webpackConfig.plugins.length; i++) {
-  if (webpackConfig.plugins[i].constructor.name == 'Object') {
-    webpackConfig.plugins.splice(i, 1);
-    break;
-  }
-}
-
 module.exports = function(config) {
   config.set({
     basePath: '',
