@@ -1,3 +1,3 @@
 describe('User View', () => {
-  // TODO
+  test('Empty', () => { /* Empty */ });
 });

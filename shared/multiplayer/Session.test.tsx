@@ -1,4 +1,3 @@
-
 describe('Session', () => {
   describe('makeSecret', () => {
     test.skip('generates a secret string', () => { /* TODO */ });

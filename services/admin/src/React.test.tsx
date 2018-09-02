@@ -1,3 +1,3 @@
 describe('React', () => {
-  // TODO
+  test('Empty', () => { /* Empty */ });
 });

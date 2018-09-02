@@ -4,19 +4,7 @@
   "homepage": "http://api.expeditiongame.com",
   "version": "0.0.0",
   "scripts": {
-    "test": "jest --config jestconfig.json",
-    "watch-test": "jest --watch --runInBand --config jestconfig.json",
     "build": "webpack --config webpack.dist.config.js",
     "start": "npm run build && node dist/server.js"
-  },
-  "semistandard": {
-    "globals": [
-      "after",
-      "afterEach",
-      "before",
-      "beforeEach",
-      "describe",
-      "it"
-    ]
   }
 }

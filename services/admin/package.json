@@ -2,18 +2,7 @@
   "name": "expedition-admin",
   "version": "1.6.4",
   "scripts": {
-    "test": "karma start --single-run --browsers NoSandboxChromeHeadless",
     "start": "webpack-dev-server --progress --hot",
     "build": "webpack --config webpack.dist.config.js --progress"
-  },
-  "semistandard": {
-    "globals": [
-      "after",
-      "afterEach",
-      "before",
-      "beforeEach",
-      "describe",
-      "it"
-    ]
   }
 }

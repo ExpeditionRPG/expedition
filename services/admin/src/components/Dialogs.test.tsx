@@ -1,5 +1,3 @@
 describe('Dialogs', () => {
-  test('TODO', () => {
-    expect(1).toEqual(1);
-  });
+  test('Empty', () => { /* Empty */ });
 });

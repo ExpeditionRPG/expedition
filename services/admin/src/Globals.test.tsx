@@ -1,3 +1,3 @@
 describe('Globals', () => {
-  // TODO
+  test('Empty', () => { /* Empty */ });
 });

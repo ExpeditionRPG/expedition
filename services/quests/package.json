@@ -4,19 +4,7 @@
   "description": "The Expedition Quest Creator",
   "homepage": "http://quests.expeditiongame.com",
   "scripts": {
-    "test": "karma start karma.conf.js --single-run --browsers NoSandboxChromeHeadless",
-    "watch-test": "karma start karma.conf.js --browsers NoSandboxChromeHeadless",
     "start": "webpack-dev-server --progress --hot",
     "build": "webpack --config webpack.dist.config.js"
-  },
-  "semistandard": {
-    "globals": [
-      "after",
-      "afterEach",
-      "before",
-      "beforeEach",
-      "describe",
-      "it"
-    ]
   }
 }
