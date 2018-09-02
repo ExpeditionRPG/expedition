@@ -7,3 +7,7 @@ export const testLoggedInUser: UserState = {
   loggedIn: true,
   name: 'Bob Fisher',
 };
+
+describe('User', () => {
+  test('Empty', () => { /* Empty */ });
+});

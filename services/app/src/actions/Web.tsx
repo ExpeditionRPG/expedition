@@ -1,4 +1,5 @@
 import Redux from 'redux';
+import {Quest} from 'shared/schema/Quests';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {MIN_FEEDBACK_LENGTH} from '../Constants';
@@ -7,7 +8,6 @@ import {getDevicePlatform, getPlatformDump} from '../Globals';
 import {logEvent} from '../Logging';
 import {getLogBuffer} from '../Logging';
 import {MultiplayerCounters} from '../Multiplayer';
-import {QuestDetails} from '../reducers/QuestTypes';
 import {AppState, FeedbackType, QuestState, SettingsType, UserQuestsType, UserState} from '../reducers/StateTypes';
 import {remoteify, UserQuestsAction} from './ActionTypes';
 import {toCard} from './Card';
@@ -55,7 +55,7 @@ export function fetchUserQuests() {
   };
 }
 
-export const fetchQuestXML = remoteify(function fetchQuestXML(details: QuestDetails, dispatch: Redux.Dispatch<any>) {
+export const fetchQuestXML = remoteify(function fetchQuestXML(details: Quest, dispatch: Redux.Dispatch<any>) {
   const promise = fetchLocal(details.publishedurl).then((result: string) => {
     const questNode = cheerio.load(result)('quest');
     return dispatch(loadQuestXML({details, questNode, ctx: defaultContext()}));
@@ -68,7 +68,7 @@ export const fetchQuestXML = remoteify(function fetchQuestXML(details: QuestDeta
 });
 
 // for loading quests in the app - Quest Creator injects directly into initQuest.
-export function loadQuestXML(a: {details: QuestDetails, questNode: Cheerio, ctx: TemplateContext}) {
+export function loadQuestXML(a: {details: Quest, questNode: Cheerio, ctx: TemplateContext}) {
   return (dispatch: Redux.Dispatch<any>) => {
     dispatch(initQuest(a.details, a.questNode, a.ctx));
 
@@ -228,7 +228,7 @@ function postUserFeedback(type: string, data: any) {
   };
 }
 
-export function logMultiplayerStats(user: UserState, quest: QuestDetails, stats: MultiplayerCounters): Promise<Response> {
+export function logMultiplayerStats(user: UserState, quest: Quest, stats: MultiplayerCounters): Promise<Response> {
   try {
     const data = {
       console: getLogBuffer(),

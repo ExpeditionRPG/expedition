@@ -1,4 +1,3 @@
-import * as fetchMock from 'fetch-mock';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {AUTH_SETTINGS} from '../Constants';
 import {initialQuestState} from '../reducers/Quest';
@@ -8,6 +7,7 @@ import {Action} from '../Testing';
 import {endQuest, initQuest} from './Quest';
 
 const cheerio = require('cheerio') as CheerioAPI;
+const fetchMock = require('fetch-mock');
 
 describe('Quest actions', () => {
   describe('initQuest', () => {

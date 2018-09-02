@@ -21,8 +21,8 @@ function walkDir(root) {
 
 describe('Dependencies', () => {
   test('are actually used', () => {
-    const package = require('../package.json');
-    const packageUsage = JSON.stringify(package.scripts) + JSON.stringify(package.cordova);
+    const packageJSON = require('../package.json');
+    const packageUsage = JSON.stringify(packageJSON.scripts) + JSON.stringify(packageJSON.cordova);
     const WHITELIST = [
       // Needed to build app
       'cordova-android',
@@ -63,8 +63,8 @@ describe('Dependencies', () => {
       'karma-sourcemap-loader',
     ];
 
-    let depstrs = Object.keys(package.dependencies || {});
-    Array.prototype.push.apply(depstrs, Object.keys(package.devDependencies || {}));
+    let depstrs = Object.keys(packageJSON.dependencies || {});
+    Array.prototype.push.apply(depstrs, Object.keys(packageJSON.devDependencies || {}));
     depstrs = depstrs.filter((dep) => {
       for (let w of WHITELIST) {
         if (dep.match(w)) {
@@ -84,7 +84,7 @@ describe('Dependencies', () => {
         }
       }
 
-      // Check for use in package.json sections
+      // Check for use in packageJSON.json sections
       if (!found && packageUsage.indexOf(dep) !== -1) {
         found = true;
       }

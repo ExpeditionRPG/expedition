@@ -15,6 +15,7 @@
     "js",
     "jsx"
   ],
+  "setupFiles": ["jest-localstorage-mock"],
   "globals": {
     "ts-jest": {
       "tsConfigFile": "../../tsconfig.json",

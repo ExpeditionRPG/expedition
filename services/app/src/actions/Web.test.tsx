@@ -1,4 +1,3 @@
-import * as fetchMock from 'fetch-mock';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {AUTH_SETTINGS} from '../Constants';
 import {initialQuestState} from '../reducers/Quest';
@@ -8,9 +7,12 @@ import {Action} from '../Testing';
 import {loadQuestXML} from './Web';
 
 const cheerio = require('cheerio') as CheerioAPI;
-const emptyQuest = cheerio.load('<quest><roleplay></roleplay></quest>')('quest');
+const fetchMock = require('fetch-mock');
 
 describe('Web action', () => {
+
+  const emptyQuest = cheerio.load('<quest><roleplay></roleplay></quest>')('quest');
+
   describe('fetchQuestXML', () => {
     test.skip('shows snackbar on request error', () => { /* TODO */ }); // $10
     test.skip('dispatches loaded quest', () => { /* TODO */ }); // $10

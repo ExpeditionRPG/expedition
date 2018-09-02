@@ -1,11 +1,11 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
+import {Quest} from 'shared/schema/Quests';
 import {toCard, toPrevious} from '../../actions/Card';
 import {setDialog} from '../../actions/Dialog';
 import {deleteSavedQuest, loadSavedQuest, saveQuestForOffline} from '../../actions/SavedQuests';
 import {openSnackbar} from '../../actions/Snackbar';
 import {fetchQuestXML} from '../../actions/Web';
-import {QuestDetails} from '../../reducers/QuestTypes';
 import {AppStateWithHistory, SavedQuestMeta} from '../../reducers/StateTypes';
 import QuestPreview, {DispatchProps, StateProps} from './QuestPreview';
 
@@ -25,7 +25,7 @@ const mapStateToProps = (state: AppStateWithHistory): StateProps => {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onPlay: (quest: QuestDetails, isDirectLinked: boolean) => {
+    onPlay: (quest: Quest, isDirectLinked: boolean) => {
       if (isDirectLinked) {
         dispatch(setDialog('SET_PLAYER_COUNT'));
       } else {
@@ -36,7 +36,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(loadSavedQuest(id, ts));
       dispatch(toCard({name: 'QUEST_CARD'}));
     },
-    onSave(quest: QuestDetails) {
+    onSave(quest: Quest) {
       dispatch(saveQuestForOffline(quest));
     },
     onDeleteOffline(id: string, ts: number): void {

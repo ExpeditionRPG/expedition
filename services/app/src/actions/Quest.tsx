@@ -1,7 +1,7 @@
 import Redux from 'redux';
+import {Quest} from 'shared/schema/Quests';
 import {initCardTemplate} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
-import {QuestDetails} from '../reducers/QuestTypes';
 import {AppStateWithHistory} from '../reducers/StateTypes';
 import {
   PreviewQuestAction,
@@ -13,7 +13,7 @@ import {
 import {toCard} from './Card';
 import {logQuestPlay} from './Web';
 
-export function initQuest(details: QuestDetails, questNode: Cheerio, ctx: TemplateContext): QuestNodeAction {
+export function initQuest(details: Quest, questNode: Cheerio, ctx: TemplateContext): QuestNodeAction {
   const firstNode = questNode.children().eq(0);
   const node = new ParserNode(firstNode, ctx);
   return {type: 'QUEST_NODE', node, details};
@@ -72,7 +72,7 @@ export const event = remoteify(function event(a: EventArgs, dispatch: Redux.Disp
 });
 
 // Used externally by the quest creator
-export function loadNode(node: ParserNode, details?: QuestDetails) {
+export function loadNode(node: ParserNode, details?: Quest) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const tag = node.getTag();
     if (tag === 'trigger') {
@@ -92,7 +92,7 @@ export function loadNode(node: ParserNode, details?: QuestDetails) {
 }
 
 interface PreviewQuestArgs {
-  quest: QuestDetails;
+  quest: Quest;
   saveTS?: number;
   lastPlayed?: Date;
 }

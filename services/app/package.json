@@ -4,8 +4,8 @@
   "description": "The App for Expedition: The Roleplaying Card Game",
   "homepage": "http://app.expeditiongame.com",
   "scripts": {
-    "test": "jest --runInBand --config jestconfig.json",
-    "watch-test": "jest --watchAll --runInBand --config jestconfig.json",
+    "test": "jest --config jestconfig.json",
+    "watch-test": "jest --watch --runInBand --config jestconfig.json",
     "start": "webpack-dev-server --progress --hot",
     "build": "webpack --config ./webpack.dist.config.js --progress",
     "build-all": "npm run build && cordova build android && cordova build ios"
