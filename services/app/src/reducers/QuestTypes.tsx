@@ -1,36 +1,3 @@
-import {ThemeType} from 'shared/schema/Constants';
-
-// TODO: Dedupe this with api/models/Quests QuestAttributes interface.
-export interface QuestDetails {
-  id: string;
-  title: string;
-  summary: string;
-  author: string;
-  publishedurl: string;
-  xml?: string;
-  created?: string;
-  published?: string;
-  minplayers?: number;
-  maxplayers?: number;
-  email?: string;
-  url?: string;
-  mintimeminutes?: number;
-  maxtimeminutes?: number;
-  ratingcount?: number;
-  ratingavg?: number;
-  genre?: string;
-  contentrating?: string;
-  expansionhorror?: boolean;
-  expansionfuture?: boolean;
-  questversion?: number;
-  partition?: string;
-  language?: string;
-  theme?: ThemeType;
-  official?: boolean;
-  awarded?: string;
-  requirespenpaper?: boolean;
-}
-
 export interface Choice {
   idx: number;
   jsx: JSX.Element;

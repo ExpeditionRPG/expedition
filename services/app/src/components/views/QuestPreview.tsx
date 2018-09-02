@@ -3,8 +3,8 @@ import OfflinePin from '@material-ui/icons/OfflinePin';
 import StarsIcon from '@material-ui/icons/Stars';
 import * as pluralize from 'pluralize';
 import * as React from 'react';
+import {Quest} from 'shared/schema/Quests';
 import {formatPlayPeriod} from '../../Format';
-import {QuestDetails} from '../../reducers/QuestTypes';
 import {SavedQuestMeta, SettingsType} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
@@ -14,16 +14,16 @@ const Moment = require('moment');
 
 export interface StateProps {
   settings: SettingsType;
-  quest: QuestDetails | null;
+  quest: Quest | null;
   lastPlayed: Date | null;
   savedInstances: SavedQuestMeta[];
   isDirectLinked: boolean;
 }
 
 export interface DispatchProps {
-  onPlay: (quest: QuestDetails, isDirectLinked: boolean) => void;
+  onPlay: (quest: Quest, isDirectLinked: boolean) => void;
   onPlaySaved: (id: string, ts: number) => void;
-  onSave: (quest: QuestDetails) => void;
+  onSave: (quest: Quest) => void;
   onDeleteOffline: (id: string, ts: number) => void;
   onDeleteConfirm: () => void;
   onReturn: () => void;
@@ -31,7 +31,7 @@ export interface DispatchProps {
 
 export interface Props extends StateProps, DispatchProps {}
 
-function renderRequirements(quest: QuestDetails): JSX.Element[] {
+function renderRequirementsRow(quest: Quest): JSX.Element|null {
   const requires = [];
   if (quest.expansionhorror) {
     requires.push(<span key="horror"><img className="inline_icon" src="images/horror_small.svg"/>The Horror</span>);
@@ -44,7 +44,7 @@ function renderRequirements(quest: QuestDetails): JSX.Element[] {
   }
 
   if (requires.length === 0) {
-    return [<span key={0}>None</span>];
+    return null;
   }
 
   const delimited = [];
@@ -54,7 +54,7 @@ function renderRequirements(quest: QuestDetails): JSX.Element[] {
       delimited.push(<span key={i}>,&nbsp;</span>);
     }
   }
-  return delimited;
+  return <tr><th>Requires</th><td>{delimited}</td></tr>;
 }
 
 function renderSaves(props: Props): JSX.Element|null {
@@ -135,7 +135,7 @@ const QuestPreview = (props: Props): JSX.Element => {
         <h3>Details</h3>
         <table className="searchDetailsTable">
           <tbody>
-            <tr><th>Requires</th><td>{renderRequirements(quest)}</td></tr>
+            {renderRequirementsRow(quest)}
             <tr><th>Content rating</th><td>{quest.contentrating}</td></tr>
             {quest.mintimeminutes !== undefined && quest.maxtimeminutes !== undefined &&
               <tr><th>Play time</th><td>{formatPlayPeriod(quest.mintimeminutes, quest.maxtimeminutes)}</td></tr>

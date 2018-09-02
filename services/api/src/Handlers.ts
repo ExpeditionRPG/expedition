@@ -92,12 +92,45 @@ export function announcement(req: express.Request, res: express.Response) {
     });
 }
 
+export interface QuestSearchResponse {
+  error: null|string;
+  hasMore: boolean;
+  quests: Quest[];
+}
+function doSearch(db: Database, userId: string, params: QuestSearchParams): Bluebird<QuestSearchResponse> {
+  return searchQuests(db, userId, params)
+  .then((quests: QuestInstance[]) => {
+    // Map quest published URL to the API server so we can proxy quest data.
+    const results: Quest[] = quests
+      .map((q: QuestInstance) => Quest.create(q.dataValues))
+      .filter((q: Quest|Error) => !(q instanceof Error))
+      .map((q: Quest) => {
+        proxifyQuestURL(q);
+        return q;
+      });
+
+    console.log(`Found ${quests.length} quests for user ${userId}, params: ${JSON.stringify(params)}`);
+    return {
+      error: null,
+      hasMore: (quests.length === (params.limit || MAX_SEARCH_LIMIT)),
+      quests: results,
+    };
+  })
+  .catch((e: Error) => {
+    console.error(e);
+    return {
+      error: e.toString(),
+      hasMore: false,
+      quests: [],
+    };
+  });
+}
 export function search(db: Database, req: express.Request, res: express.Response) {
   let body: any;
   try {
     body = JSON.parse(req.body);
   } catch (e) {
-    return res.status(500).end('Error reading request.');
+    return res.status(500).end({error: 'Could not parse request.'});
   }
   const params: QuestSearchParams = {
     age: body.age,
@@ -116,27 +149,8 @@ export function search(db: Database, req: express.Request, res: express.Response
     requirespenpaper: body.requirespenpaper,
     text: body.text,
   };
-  return searchQuests(db, res.locals.id, params)
-  .then((quests: QuestInstance[]) => {
-    // Map quest published URL to the API server so we can proxy quest data.
-    const results: Quest[] = quests
-      .map((q: QuestInstance) => Quest.create(q.dataValues))
-      .filter((q: Quest|Error) => !(q instanceof Error))
-      .map((q: Quest) => {
-        proxifyQuestURL(q);
-        return q;
-      });
-
-    console.log(`Found ${quests.length} quests for user ${res.locals.id}, params: ${JSON.stringify(params)}`);
-    res.status(200).end(JSON.stringify({
-      error: null,
-      hasMore: (quests.length === (params.limit || MAX_SEARCH_LIMIT)),
-      quests: results,
-    }));
-  })
-  .catch((e: Error) => {
-    console.error(e);
-    return res.status(500).end(GENERIC_ERROR_MESSAGE);
+  return doSearch(db, res.locals.id, params).then((result) => {
+    res.status((result.error) ? 500 : 200).end(JSON.stringify(result));
   });
 }
 

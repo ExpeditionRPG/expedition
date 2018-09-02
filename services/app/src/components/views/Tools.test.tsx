@@ -1,4 +1,4 @@
-import {configure, mount} from 'enzyme';
+import {configure, shallow} from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 configure({ adapter: new Adapter() });
@@ -17,7 +17,7 @@ function setup() {
     testMusic: jasmine.createSpy('testMusic'),
     user: loggedOutUser,
   };
-  return {props, e: mount(<Tools {...props} />)};
+  return {props, e: shallow(<Tools {...props} />)};
 }
 
 describe('Tools', () => {

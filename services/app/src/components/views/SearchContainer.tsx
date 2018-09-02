@@ -1,11 +1,11 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
+import {Quest} from 'shared/schema/Quests';
 import {toCard, toPrevious} from '../../actions/Card';
 import {previewQuest} from '../../actions/Quest';
 import {search} from '../../actions/Search';
 import {ensureLogin} from '../../actions/User';
 import {subscribe} from '../../actions/Web';
-import {QuestDetails} from '../../reducers/QuestTypes';
 import {AppStateWithHistory, SearchSettings, SettingsType, UserState} from '../../reducers/StateTypes';
 import Search, {DispatchProps, StateProps} from './Search';
 
@@ -43,7 +43,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
           return dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
         });
     },
-    onQuest: (quest: QuestDetails) => {
+    onQuest: (quest: Quest) => {
       dispatch(previewQuest({quest}));
     },
     onReturn: () => {

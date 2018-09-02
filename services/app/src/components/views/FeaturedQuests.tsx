@@ -1,12 +1,12 @@
 import * as React from 'react';
+import {Quest} from 'shared/schema/Quests';
 import {openWindow} from '../../Globals';
-import {QuestDetails} from '../../reducers/QuestTypes';
 import {CardName, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 
 export interface StateProps {
-  quests: QuestDetails[];
+  quests: Quest[];
   settings: SettingsType;
   user: UserState;
 }
@@ -14,18 +14,18 @@ export interface StateProps {
 export interface DispatchProps {
   toCard: (name: CardName) => any;
   onSearchSelect: (user: UserState, settings: SettingsType) => any;
-  onQuestSelect: (quest: QuestDetails) => any;
+  onQuestSelect: (quest: Quest) => any;
 }
 
 export interface Props extends StateProps, DispatchProps {}
 
 const FeaturedQuests = (props: Props): JSX.Element => {
   const items: JSX.Element[] = props.quests
-    .filter((quest: QuestDetails): boolean => {
+    .filter((quest: Quest): boolean => {
       return (!quest.expansionhorror || props.settings.contentSets.horror)
           && (!quest.expansionfuture || props.settings.contentSets.future);
     })
-    .map((quest: QuestDetails, index: number): JSX.Element => {
+    .map((quest: Quest, index: number): JSX.Element => {
       return (
         <Button onClick={() => props.onQuestSelect(quest)} key={index} id={'quest' + index.toString()}>
           <div className="questButton">

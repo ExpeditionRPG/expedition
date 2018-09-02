@@ -1,4 +1,4 @@
-import {QuestDetails} from './reducers/QuestTypes';
+import {Quest} from 'shared/schema/Quests';
 
 export const VERSION = (process && process.env && process.env.VERSION) || '0.0.1'; // Webpack
 export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
@@ -23,17 +23,123 @@ export const MULTIPLAYER_SETTINGS = {
   websocketSession: ((NODE_ENV === 'production') ? 'wss://' : 'ws://') + splitURL[splitURL.length - 1] + '/ws/multiplayer/v1/session',
 };
 
-export const FEATURED_QUESTS: QuestDetails[] = [ // Featured quest ids generated from publishing, but don't leave them published!
-  {id: '0B7K9abSH1xEOeEZSVVMwNHNqaFE', partition: 'expedition-public', theme: 'base', official: true, title: 'Learning to Adventure', summary: 'Your first adventure.', author: 'Todd Medema', publishedurl: 'quests/learning_to_adventure.xml', minplayers: 1, maxplayers: 6, mintimeminutes: 20, maxtimeminutes: 30, genre: 'Drama', contentrating: 'Everyone', language: 'English' },
-  {id: '0B7K9abSH1xEOWVpEV1JGWDFtWmc', partition: 'expedition-public', theme: 'horror', official: true, title: 'Learning 2: The Horror', summary: 'Your first adventure continues with Expedition: The Horror.', author: 'Todd Medema', publishedurl: 'quests/learning_to_adventure_2_the_horror.xml', expansionhorror: true, minplayers: 1, maxplayers: 6, mintimeminutes: 20, maxtimeminutes: 40, genre: 'Drama', contentrating: 'Everyone', language: 'English' },
-  {id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs', partition: 'expedition-public', theme: 'base', official: true, title: 'Oust Albanus', summary: 'Your party encounters a smelly situation.', author: 'Scott Martin', publishedurl: 'quests/oust_albanus.xml', minplayers: 1, maxplayers: 6, mintimeminutes: 20, maxtimeminutes: 40, genre: 'Comedy', contentrating: 'Everyone', language: 'English' },
-  {id: '0B7K9abSH1xEORjdkMWtTY3ZtNGs', partition: 'expedition-public', theme: 'base', official: true, title: 'Mistress Malaise', summary: 'Mystery, Misfortune, and a Mistress.', author: 'Scott Martin', publishedurl: 'quests/mistress_malaise.xml', minplayers: 1, maxplayers: 6, mintimeminutes: 30, maxtimeminutes: 60, genre: 'Drama', contentrating: 'Everyone', language: 'English' },
-  {id: '0B7K9abSH1xEOUUR1Z0lncm9NRjQ', partition: 'expedition-public', theme: 'base', official: true, title: 'Dungeon Crawl', summary: 'How deep can you delve?', author: 'Todd Medema', publishedurl: 'quests/dungeon_crawl.xml', minplayers: 1, maxplayers: 6, mintimeminutes: 20, maxtimeminutes: 60, genre: 'Drama', contentrating: 'Everyone'},
+export const FEATURED_QUESTS: Quest[] = [ // Featured quest ids generated from publishing, but don't leave them published!
+  new Quest({
+    id: '0B7K9abSH1xEOeEZSVVMwNHNqaFE',
+    partition: 'expedition-public',
+    theme: 'base',
+    official: true,
+    title: 'Learning to Adventure',
+    summary: 'Your first adventure.',
+    author: 'Todd Medema',
+    publishedurl: 'quests/learning_to_adventure.xml',
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 20,
+    maxtimeminutes: 30,
+    genre: 'Drama',
+    contentrating: 'Kid-friendly',
+    language: 'English',
+  }),
+  new Quest({
+    id: '0B7K9abSH1xEOWVpEV1JGWDFtWmc',
+    partition: 'expedition-public',
+    theme: 'horror',
+    official: true,
+    title: 'Learning 2: The Horror',
+    summary: 'Your first adventure continues with Expedition: The Horror.',
+    author: 'Todd Medema',
+    publishedurl: 'quests/learning_to_adventure_2_the_horror.xml',
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 20,
+    maxtimeminutes: 40,
+    genre: 'Drama',
+    contentrating: 'Kid-friendly',
+    language: 'English',
+    expansionhorror: true,
+  }),
+  new Quest({
+    id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs',
+    partition: 'expedition-public',
+    theme: 'base',
+    official: true,
+    title: 'Oust Albanus',
+    summary: 'Your party encounters a smelly situation.',
+    author: 'Scott Martin',
+    publishedurl: 'quests/oust_albanus.xml',
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 20,
+    maxtimeminutes: 40,
+    genre: 'Comedy',
+    contentrating: 'Kid-friendly',
+    language: 'English',
+  }),
+  new Quest({
+    id: '0B7K9abSH1xEORjdkMWtTY3ZtNGs',
+    partition: 'expedition-public',
+    theme: 'base',
+    official: true,
+    title: 'Mistress Malaise',
+    summary: 'Mystery, Misfortune, and a Mistress.',
+    author: 'Scott Martin',
+    publishedurl: 'quests/mistress_malaise.xml',
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 30,
+    maxtimeminutes: 60,
+    genre: 'Drama',
+    contentrating: 'Kid-friendly',
+    language: 'English',
+  }),
+  new Quest({
+    id: '0B7K9abSH1xEOUUR1Z0lncm9NRjQ',
+    partition: 'expedition-public',
+    theme: 'base',
+    official: true,
+    title: 'Dungeon Crawl',
+    summary: 'How deep can you delve?',
+    author: 'Todd Medema',
+    publishedurl: 'quests/dungeon_crawl.xml',
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 20,
+    maxtimeminutes: 60,
+    genre: 'Drama',
+    contentrating: 'Kid-friendly',
+    language: 'English',
+  }),
 ];
 if (NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2bTVMdWc4NVk
-  FEATURED_QUESTS.unshift({id: '1', title: 'Test quest', summary: 'DEV', author: 'DEV', publishedurl: 'quests/test_quest.xml'});
+  FEATURED_QUESTS.unshift(new Quest({
+    id: '1',
+    partition: 'expedition-public',
+    title: 'Test quest',
+    summary: 'DEV',
+    author: 'DEV',
+    publishedurl: 'quests/test_quest.xml',
+  }));
   // TODO make actual intro Future quest, remove dev gate
-  FEATURED_QUESTS.unshift({id: '0B7K9abSH1xEOWVpEV1JGWDFtWmc', partition: 'expedition-public', theme: 'base', official: true, title: 'Learning 3: The Future', summary: 'TODO', author: 'Todd Medema', publishedurl: 'quests/learning_to_adventure_2_the_horror.xml', expansionhorror: true, expansionfuture: true, minplayers: 1, maxplayers: 6, mintimeminutes: 20, maxtimeminutes: 40, genre: 'Drama', contentrating: 'Everyone', language: 'English' });
+  FEATURED_QUESTS.unshift(new Quest({
+    id: '0B7K9abSH1xEOWVpEV1JGWDFtWmc',
+    partition: 'expedition-public',
+    theme: 'base',
+    official: true,
+    title: 'Learning 3: The Future',
+    summary: 'TODO',
+    author: 'Todd Medema',
+    publishedurl: 'quests/learning_to_adventure_2_the_horror.xml',
+    expansionhorror: true,
+    expansionfuture: true,
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 20,
+    maxtimeminutes: 40,
+    genre: 'Drama',
+    contentrating: 'Everyone',
+    language: 'English',
+  }));
 }
 
 export const MAX_ADVENTURER_HEALTH = 12;
