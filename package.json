@@ -243,7 +243,8 @@
     "extends": [
       "config:base",
       ":preserveSemverRanges",
-      "schedule:monthly"
+      "schedule:monthly",
+      "docker:disable"
     ],
     "prConcurrentLimit": 2
   }
