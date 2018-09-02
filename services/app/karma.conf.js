@@ -4,15 +4,6 @@ webpackConfig.module.rules.unshift({
   test: /isIterable/,
   loader: 'imports?Symbol=>false'
 });
-webpackConfig.entry = undefined;
-
-// Remove copy plugin - which is the only plugin of constructor "object"
-for (let i = 0; i < webpackConfig.plugins.length; i++) {
-  if (webpackConfig.plugins[i].constructor.name == 'Object') {
-    webpackConfig.plugins.splice(i, 1);
-    break;
-  }
-}
 
 module.exports = function(config) {
   config.set({
@@ -25,7 +16,17 @@ module.exports = function(config) {
     preprocessors: {
       'src/**/*.test.tsx': ['webpack'],
     },
-    webpack: webpackConfig,
+    webpack: {
+      module: webpackConfig.module,
+      resolve: webpackConfig.resolve,
+      node: webpackConfig.node,
+      plugins: [webpackConfig.plugins[webpackConfig.plugins.length-1]],
+      externals: {
+        'react/addons': true,
+        'react/lib/ExecutionEnvironment': true,
+        'react/lib/ReactContext': true,
+      },
+    },
     webpackMiddleware: {
       watchOptions: {
         ignored: [/\/\./, 'node_modules'],
