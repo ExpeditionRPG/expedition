@@ -23,6 +23,8 @@ Here we'll dive into more specific details about what's possible in QDL.
 
 [**Elements**](#elements): roleplaying cards can contain text - but they can also contain other elements, such as choice buttons and instruction blocks.
 
+[**Formatting**](#formatting): ways to format your text, including bold, italic, newlines and more.
+
 [**Metadata**](#metadata): Quest metadata defined at the top of the quest. Specifies things like the number of adventurers supported, the quest title and author, etc
 
 
@@ -499,6 +501,17 @@ The user sees this card, with one button.
 _Another card_ (#another)
 
 After clicking "Jump me!", the app will immediately proceed to this card.
+```
+
+## Formatting
+
+You can spice up your text in a variety of ways:
+
+```
+**bold your text**
+_italicize your text_
+~~strike through your text~~
+insert \n single line \n newlines
 ```
 
 ## Metadata

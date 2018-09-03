@@ -113,10 +113,15 @@ _combat_
 
 _Victory!_ (#victory)
 
+To celebrate, you can **bold**, _italicize_ and ~~strikethrough~~ text,\\n
+as well as single-line breaks\\n
+for lyrics and poems\\n
+and such.
+
 You can end the quest at any time with an "end" tag, as below:
 
 **end**
 
 // Congratulations - you now know everything you need to start creating your own adventures!
 
-// If you'd like to learn more advanced techniques and discover writing inspirations, check out the Expedition Quest Crafter series at http://expeditiongame.com/questcrafter. Happy questing!`;
+// If you'd like to learn more advanced techniques and discover writing inspirations, check out the Expedition Quest Crafter series at https://expeditiongame.com/questcrafter/2018/7/6/an-index-for-forge-and-vault. Happy questing!`;

@@ -22,9 +22,9 @@ describe('Renderer', () => {
       expect(output).toEqual(expected);
     });
     test('turns markdown styles into HTML tags', () => {
-      const input = '**1**__1__*2*_2_~~3~~';
+      const input = '**1**__1__*2*_2_~~3~~\\n';
       const output = sanitizeStyles(input);
-      const expected = '<b>1</b><b>1</b><i>2</i><i>2</i><del>3</del>';
+      const expected = '<b>1</b><b>1</b><i>2</i><i>2</i><del>3</del><br/>';
       expect(output).toEqual(expected);
     });
     test('turns turns two separate markdown styles into two separate tags', () => {
@@ -40,9 +40,9 @@ describe('Renderer', () => {
       expect(output).toEqual(expected);
     });
     test('does not stylize inside of ops', () => {
-      const input = '{{_.run()}}_1_{{_.stop()}}{_text in curlies_}';
+      const input = `{{_.run()}}_1_{{_.stop()}}{_text in curlies_}{{a='\\n'}}`;
       const output = sanitizeStyles(input);
-      const expected = '{{_.run()}}<i>1</i>{{_.stop()}}{<i>text in curlies</i>}';
+      const expected = `{{_.run()}}<i>1</i>{{_.stop()}}{<i>text in curlies</i>}{{a='\\n'}}`;
       expect(output).toEqual(expected);
     });
     test('stylizes around ops', () => {

@@ -47,6 +47,7 @@ const QDLHighlightRules: any = function() {
       regex: combinedRegex([
         REGEX.ART,
         REGEX.ICON,
+        REGEX.NEWLINE,
         REGEX.BOLD_ASTERISKS,
         REGEX.BOLD_UNDERSCORES,
         REGEX.ITALIC_ASTERISKS,
