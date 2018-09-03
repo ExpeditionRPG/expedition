@@ -16,7 +16,7 @@ declare var require: any;
 declare var window: any;
 declare var unescape: any;
 
-const Typo: any = require('typo-js');
+const Typo = require('typo-js');
 
 // This is necessary to prevent compiler errors until/unless we fix the rest of
 // the repo to reference custom-defined action types (similar to how redux-thunk does things)
@@ -40,7 +40,7 @@ window.onerror = (message: string, source: string, line: number) => {
   return true; // prevents the firing of the default event handler
 };
 
-const ReactGA = require('react-ga') as any;
+const ReactGA = require('react-ga');
 ReactGA.initialize('UA-47408800-7');
 
 let questId: string = '';

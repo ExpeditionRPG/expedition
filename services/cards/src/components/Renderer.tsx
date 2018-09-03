@@ -4,7 +4,7 @@ import {POKER_CARDS_PER_LETTER_PAGE} from '../Constants';
 import {CardType, FiltersState, TranslationsType} from '../reducers/StateTypes';
 
 declare var require: any;
-const SVGInjector = require('svg-injector') as any;
+const SVGInjector = require('svg-injector');
 
 const CardBacks: any = {
   BlackAndWhite: require('../themes/BlackAndWhite/CardBack.tsx'),

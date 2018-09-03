@@ -8,7 +8,7 @@ import {computeOutcome, computeSuccesses, extractDecision} from './Actions';
 import {getScenarioInstruction} from './Scenarios';
 import {EMPTY_LEVELED_CHECK, StateProps} from './Types';
 
-const pluralize = require('pluralize') as any;
+const pluralize = require('pluralize');
 
 export interface DispatchProps {
   onRoll: (node: ParserNode, roll: number) => void;

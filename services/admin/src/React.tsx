@@ -36,7 +36,7 @@ window.onerror = (message: string, source: string, line: number) => {
   return true; // prevents the firing of the default event handler
 };
 
-const ReactGA = require('react-ga') as any;
+const ReactGA = require('react-ga');
 ReactGA.initialize('UA-47408800-7');
 
 // Pass credentials to API server despite cross-origin

@@ -5,7 +5,7 @@ import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 import {QuestState} from './StateTypes';
 
 const cheerio = require('cheerio') as CheerioAPI;
-const seedrandom = require('seedrandom') as any;
+const seedrandom = require('seedrandom');
 
 function autoseed(): string {
   let seed = '';

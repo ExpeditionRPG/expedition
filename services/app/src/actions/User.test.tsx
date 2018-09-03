@@ -1,5 +1,3 @@
-// import {setWindow} from '../Globals';
-// import {testLoggedInUser} from '../reducers/User.test';
 import {newMockStore} from '../Testing';
 import {ensureLogin, silentLogin} from './User';
 

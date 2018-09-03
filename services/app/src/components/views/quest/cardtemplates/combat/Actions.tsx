@@ -9,7 +9,7 @@ import {Enemy, Loot} from 'app/reducers/QuestTypes';
 import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import Redux from 'redux';
-const seedrandom = require('seedrandom') as any;
+const seedrandom = require('seedrandom');
 import {generateLeveledChecks} from '../decision/Actions';
 import {resolveParams} from '../Params';
 import {numAdventurers, numPlayers} from '../PlayerCount';

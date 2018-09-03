@@ -1,7 +1,7 @@
 const Clone = require('clone');
 const HtmlDecode = (require('he') as any).decode;
-const Math = require('mathjs') as any;
-const seedrandom = require('seedrandom') as any;
+const Math = require('mathjs');
+const seedrandom = require('seedrandom');
 
 // Later versions of MathJS come with a breaking change where
 // strings are compared semantically (i.e. parsed for a numeric

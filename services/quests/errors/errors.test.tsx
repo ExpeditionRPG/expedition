@@ -1,3 +1,4 @@
+import assert from 'assert';
 import {BlockList} from 'shared/render/block/BlockList';
 import {QDLParser} from 'shared/render/QDLParser';
 import {XMLRenderer} from 'shared/render/render/XMLRenderer';
@@ -38,7 +39,7 @@ describe('Errors', () => {
         // Note the requirement for only one error. Error invalid test cases should be designed
         // such that they don't trigger multiple errors, so as to prevent confusion.
         const errorName = (err.INVALID_ERRORS && err.INVALID_ERRORS[index] !== null) ? err.INVALID_ERRORS[index] : err.NAME;
-        expect(msgs.error.length).toEqual(1); // `Length !== 1, was ${msgs.error.length}: ${msgs.error.map((e) => e.text).join('...')}`
+        assert.equal(msgs.error.length, 1, `Length !== 1, was ${msgs.error.length}: ${msgs.error.map((e) => e.text).join('...')}`);
         expect(msgs.error[0].url).toEqual(err.NUMBER.toString());
         expect(msgs.error[0].text.toLowerCase()).toEqual(errorName.toLowerCase());
         expect(msgs.warning).toEqual([]);
