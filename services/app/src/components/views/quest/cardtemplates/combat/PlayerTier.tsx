@@ -2,7 +2,6 @@ import Button from 'app/components/base/Button';
 import Callout from 'app/components/base/Callout';
 import Card from 'app/components/base/Card';
 import Picker from 'app/components/base/Picker';
-import {NODE_ENV} from 'app/Constants';
 import {SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {ParserNode} from '../TemplateTypes';
@@ -32,8 +31,8 @@ export default function playerTier(props: Props): JSX.Element {
   const nextCard: CombatPhase = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
 
   let shouldRunDecision = false;
-  if (props.settings.experimental) {
-    shouldRunDecision = (NODE_ENV === 'dev') && (props.combat.roundCount % 5 === 0 || props.combat.roundCount % 5 === 3);
+  if (props.settings.contentSets.future) {
+    shouldRunDecision = (props.combat.roundCount % 5 === 0 || props.combat.roundCount % 5 === 3);
   }
 
   let helpText: JSX.Element = (<span></span>);
