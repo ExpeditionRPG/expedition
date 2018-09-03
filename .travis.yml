@@ -16,6 +16,7 @@ cache:
 before_script:
 - yarn run build-all
 script:
+# --maxWorkers=4 required by CI environment to perform properly
 - yarn test --maxWorkers=4
 before_deploy: "pip install awscli --upgrade --user"
 notifications:
