@@ -35,32 +35,39 @@ describe('QuestPreview', () => {
     expect(wrapper.html()).toContain(quest.author);
     expect(wrapper.html()).toContain('Official Quest');
     expect(wrapper.html()).not.toContain('The Horror');
+    expect(wrapper.html()).not.toContain('The Future');
     expect(wrapper.html()).not.toContain('Pen and Paper');
+    expect(wrapper.html()).not.toContain('Award');
   });
 
   test('shows last played information if it has been played before', () => {
-    const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-    const {wrapper} = setup(quest.title, {lastPlayed: new Date()});
+    const {wrapper} = setup('Learning to Adventure', {lastPlayed: new Date()});
     expect(wrapper.text().toLowerCase()).toContain('last completed');
   });
 
   test('does not show last played infomation if it does not exist', () => {
-    const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-    const {wrapper} = setup(quest.title, {lastPlayed: null});
+    const {wrapper} = setup('Learning to Adventure', {lastPlayed: null});
     expect(wrapper.text().toLowerCase()).not.toContain('last completed');
   });
 
   test('does not show book icon if it does not exist', () => {
-    const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-    const {wrapper} = setup(quest.title, {}, {requirespenpaper: false});
+    const {wrapper} = setup('Learning to Adventure', {}, {requirespenpaper: false});
     expect(wrapper.html()).not.toContain('book');
   });
 
   test('shows a book icon if it exists', () => {
-    const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-    const {wrapper} = setup(quest.title, {}, {requirespenpaper: true});
+    const {wrapper} = setup('Learning to Adventure', {}, {requirespenpaper: true});
     expect(wrapper.html()).toContain('book');
   });
+
+  /* TODO uncomment once Future learning quest out of dev
+  test('indicates that horror and future expansions are required', () => {
+    const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning 3: The Future')[0];
+    const {wrapper} = setup(quest.title, {});
+    expect(wrapper.html()).toContain('horror');
+    expect(wrapper.html()).toContain('future');
+  });
+  */
 
   test.skip('prompts for user count and multitouch if playing direct linked', () => { /* TODO */ });
   test.skip('goes directly to playing quest if not direct linked', () => { /* TODO */ });

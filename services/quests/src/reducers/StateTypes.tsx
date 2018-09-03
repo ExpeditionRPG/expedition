@@ -69,6 +69,7 @@ export interface QuestType {
   valid?: boolean;
   saveError?: string;
   expansionhorror?: boolean;
+  expansionfuture?: boolean;
   language?: LanguageType;
   theme?: ThemeType;
   requirespenpaper?: boolean;
@@ -139,6 +140,7 @@ export interface AppState {
 export interface PlaytestSettings {
   [key: string]: any;
   expansionhorror: boolean;
+  expansionfuture: boolean;
 }
 
 export type ValidState = boolean;

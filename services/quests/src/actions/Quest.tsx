@@ -222,6 +222,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         contentrating: metadata.get('contentrating'),
         email: metadata.get('email'),
         expansionhorror: metadata.get('expansionhorror') || false,
+        expansionfuture: metadata.get('expansionfuture') || false,
         genre: metadata.get('genre'),
         id: docid,
         language: metadata.get('language') || 'English',
@@ -243,6 +244,7 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
       // Kick off a playtest after allowing the main thread to re-paint
       setTimeout(() => dispatch(startPlaytestWorker(null, xmlResult.getResult(), {
         expansionhorror: Boolean(quest.expansionhorror),
+        expansionfuture: Boolean(quest.expansionfuture),
       })), 0);
     });
   },
@@ -287,6 +289,7 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
       contentrating: quest.contentrating,
       email: quest.email,
       expansionhorror: quest.expansionhorror,
+      expansionfuture: quest.expansionfuture,
       genre: quest.genre,
       language: quest.language,
       majorRelease,

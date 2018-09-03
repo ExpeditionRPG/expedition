@@ -134,6 +134,10 @@ export class Quest extends SchemaBase {
   }) public expansionhorror: boolean;
 
   @field({
+    default: false,
+  }) public expansionfuture: boolean;
+
+  @field({
     default: 'English',
     maxLength: 128,
     valid: LANGUAGES,

@@ -132,6 +132,7 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
         autoRoll: false,
         contentSets: {
           horror: quest.expansionhorror,
+          future: quest.expansionfuture,
         },
         difficulty: 'NORMAL',
         fontSize: 'SMALL',
@@ -158,6 +159,7 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
       // Results will be shown and added to annotations as they arise.
       dispatch(startPlaytestWorker(oldWorker, questNode, {
         expansionhorror: Boolean(quest.expansionhorror),
+        expansionfuture: Boolean(quest.expansionfuture),
       }));
     });
   };

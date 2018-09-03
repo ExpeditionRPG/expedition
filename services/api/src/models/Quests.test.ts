@@ -9,8 +9,10 @@ import {
 
 describe('quest', () => {
   describe('searchQuests', () => {
+    const quests = [q.basic, q.horror, q.future];
+
     test('returns an empty array if no results', (done: DoneFn) => {
-      testingDBWithState([q.basic, q.expansion])
+      testingDBWithState(quests)
         .then((tdb) => {
           return searchQuests(tdb, '', {partition: 'otherpartition'});
         })
@@ -22,7 +24,7 @@ describe('quest', () => {
     });
 
     test('returns full quest data', (done: DoneFn) => {
-      testingDBWithState([q.basic, q.expansion])
+      testingDBWithState(quests)
         .then((tdb) => {
           return searchQuests(tdb, '', {partition: PUBLIC_PARTITION});
         })
@@ -38,7 +40,7 @@ describe('quest', () => {
     });
 
     test('does not return expansions if unspecified', (done: DoneFn) => {
-      testingDBWithState([q.basic, q.expansion])
+      testingDBWithState(quests)
         .then((tdb) => {
           return searchQuests(tdb, '', {partition: PUBLIC_PARTITION});
         })
@@ -51,7 +53,7 @@ describe('quest', () => {
     });
 
     test('returns expansion quests first if specified', (done: DoneFn) => {
-      testingDBWithState([q.basic, q.expansion])
+      testingDBWithState(quests)
         .then((db) => searchQuests(db, '', {partition: PUBLIC_PARTITION, expansions: ['horror']}))
         .then((results: QuestInstance[]) => {
           expect(results.length).toEqual(2);

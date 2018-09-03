@@ -17,14 +17,13 @@ function setup() {
     testMusic: jasmine.createSpy('testMusic'),
     user: loggedOutUser,
   };
-  const enzymeWrapper = shallow(<Tools {...props} />);
-  return {props, enzymeWrapper};
+  return {props, e: shallow(<Tools {...props} />)};
 }
 
 describe('Tools', () => {
   test('calls onCustomCombatSelect on custom combat select', () => {
-    const {props, enzymeWrapper} = setup();
-    enzymeWrapper.find('#selectCustomCombat').simulate('click');
+    const {props, e} = setup();
+    e.find('#selectCustomCombat').simulate('click');
     expect(props.onCustomCombatSelect).toHaveBeenCalledTimes(1);
   });
 });

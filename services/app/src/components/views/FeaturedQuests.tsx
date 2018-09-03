@@ -22,7 +22,8 @@ export interface Props extends StateProps, DispatchProps {}
 const FeaturedQuests = (props: Props): JSX.Element => {
   const items: JSX.Element[] = props.quests
     .filter((quest: Quest): boolean => {
-      return (!quest.expansionhorror || props.settings.contentSets.horror);
+      return (!quest.expansionhorror || props.settings.contentSets.horror)
+          && (!quest.expansionfuture || props.settings.contentSets.future);
     })
     .map((quest: Quest, index: number): JSX.Element => {
       return (

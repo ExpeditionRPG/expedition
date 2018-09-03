@@ -42,7 +42,7 @@ export default function resolveDecision(props: Props): JSX.Element {
     );
   }
 
-  const roll = <img className="inline_icon" src="images/roll_small.svg"></img>;
+  const roll = <img className="inline_icon" src="images/roll_white_small.svg"></img>;
   const successes = computeSuccesses(decision.rolls, selected);
   return (
     <Card title={(outcome === Outcome.retry) ? 'Keep going!' : 'Resolve Check'} inQuest={true} theme={props.theme}>

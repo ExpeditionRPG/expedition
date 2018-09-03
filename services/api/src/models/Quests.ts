@@ -105,9 +105,15 @@ export function searchQuests(db: Database, userId: string, params: QuestSearchPa
   // Hide expansion if searching & not specified, otherwise prioritize results
   // that have the expansion as a secondary sort
   if (!params.id) {
-    if (!params.expansions || params.expansions.indexOf('horror') === -1) {
+    if (!params.expansions || (params.expansions.indexOf('horror') === -1 && params.expansions.indexOf('future') === -1)) {
+      // No expansions
       where.expansionhorror =  {$not: true};
+      where.expansionfuture =  {$not: true};
+    } else if (params.expansions.indexOf('future') === -1) {
+      // The Future
+      order.push(['expansionfuture', 'DESC']);
     } else {
+      // The Horror
       order.push(['expansionhorror', 'DESC']);
     }
   }
@@ -128,7 +134,8 @@ function mailNewQuestToAdmin(mail: MailService, quest: Quest) {
     over ${quest.mintimeminutes} - ${quest.maxtimeminutes} minutes.
     ${quest.genre}.
     ${quest.requirespenpaper ? 'Requires pen and paper.' : 'No pen or paper required.'}
-    ${quest.expansionhorror ? 'Requires The Horror expansion.' : 'No expansions required.'}`;
+    Horror: ${quest.expansionhorror ? 'Required' : 'no'}.
+    Future: ${quest.expansionfuture ? 'Required' : 'no'}.`;
   return mail.send(to, subject, message);
 }
 

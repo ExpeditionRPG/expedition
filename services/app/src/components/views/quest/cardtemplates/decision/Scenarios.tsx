@@ -50,7 +50,7 @@ const SCENARIOS: ScenarioMap = {
   [Persona.dark]: {
     [Skill.athletics]: [
       {
-        success: ['Deal 2 damage to one target.', 'Reduce damage taken this round by 1'],
+        success: ['Deal 2 damage to one target.', 'Reduce damage taken this round by 1.'],
         failure: ['The last adventurer to roll for this check takes 1 damage.'],
       },
       {

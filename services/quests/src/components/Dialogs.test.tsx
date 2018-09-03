@@ -28,6 +28,8 @@ describe('Dialogs', () => {
 
     test.skip('hides if not open', () => { /* TODO */ });
 
+    test.skip('setting Future to required sets both Horror and Future to required', () => { /* TODO */ });
+
     test.skip('closes on OK', () => { /* TODO */ });
   });
 

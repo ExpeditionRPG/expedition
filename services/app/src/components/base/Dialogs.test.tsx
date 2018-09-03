@@ -8,4 +8,12 @@ describe('Dialogs', () => {
 
     test.skip('closes on Cancel tap', () => { /* TODO */ });
   });
+
+  describe('ExpansionSelectDialog', () => {
+    test.skip('sets no content sets if base game', () => { /* TODO */ });
+
+    test.skip('sets horror content set', () => { /* TODO */ });
+
+    test.skip('sets horror + future content sets', () => { /* TODO */ });
+  });
 });

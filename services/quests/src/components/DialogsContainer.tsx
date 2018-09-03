@@ -20,6 +20,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DialogsDispatchProps
   return {
     handleMetadataChange: (quest: QuestType, key: string, value: any): void => {
       dispatch(questMetadataChange(quest, key, value));
+      if (key === 'expansionfuture' && value) {
+        dispatch(questMetadataChange(quest, 'expansionhorror', true));
+      }
     },
     onClose: (dialog: DialogIDType): void => {
       dispatch(setDialog(dialog, false));
@@ -30,6 +33,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DialogsDispatchProps
         contentrating: Joi.string().valid(CONTENT_RATINGS),
         email: Joi.string().email(),
         expansionhorror: Joi.boolean(),
+        expansionfuture: Joi.boolean(),
         genre: Joi.string().valid(GENRES),
         language: Joi.string().valid(LANGUAGES),
         maxplayers: Joi.number().min(Joi.ref('minplayers')).max(6),
