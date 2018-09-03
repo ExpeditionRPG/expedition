@@ -148,7 +148,7 @@ window.onOlarkLoad = () => {
           }
         }
       },
-      url: 'https://raw.githubusercontent.com/ExpeditionRPG/expedition-quest-creator/master/package.json',
+      url: 'https://raw.githubusercontent.com/ExpeditionRPG/expedition/master/services/quests/package.json',
       xhrFields: { withCredentials: false },
     });
   }, 12 * 60 * 60 * 1000);
