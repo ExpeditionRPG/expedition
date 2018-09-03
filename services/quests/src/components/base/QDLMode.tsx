@@ -1,6 +1,6 @@
 import {combinedRegex, REGEX} from 'shared/Regex';
 const acequire: any = (require('brace') as any).acequire;
-const oop = acequire('ace/lib/oop') as any;
+const oop = acequire('ace/lib/oop');
 const {Range} = acequire('ace/range');
 const TextMode = (acequire('ace/mode/text') as any).Mode;
 const MatchingBraceOutdent = (acequire('ace/mode/matching_brace_outdent') as any).MatchingBraceOutdent;
@@ -47,6 +47,7 @@ const QDLHighlightRules: any = function() {
       regex: combinedRegex([
         REGEX.ART,
         REGEX.ICON,
+        REGEX.NEWLINE,
         REGEX.BOLD_ASTERISKS,
         REGEX.BOLD_UNDERSCORES,
         REGEX.ITALIC_ASTERISKS,

@@ -1,5 +1,5 @@
 describe('MultiplayerFooter', () => {
-  it('shows connected peers');
-  it('shows connection state');
-  it('indicates when waiting for peers');
+  test.skip('shows connected peers', () => { /* TODO */ });
+  test.skip('shows connection state', () => { /* TODO */ });
+  test.skip('indicates when waiting for peers', () => { /* TODO */ });
 });

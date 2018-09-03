@@ -15,7 +15,7 @@ import {
 
 describe('users', () => {
   describe('incrementLoginCount', () => {
-    it('increments for existing user', (done: DoneFn) => {
+    test('increments for existing user', (done: DoneFn) => {
       let db: Database;
       testingDBWithState([u.basic])
         .then((tdb) => {
@@ -52,7 +52,7 @@ describe('users', () => {
   });
 
   describe('subscribeToCreatorsList', () => {
-    it('subscribes to creators list', () => {
+    test('subscribes to creators list', () => {
       const mc = {post: jasmine.createSpy('post')};
       subscribeToCreatorsList(mc, u.basic.email);
       expect(mc.post).toHaveBeenCalledWith(jasmine.any(String), {
@@ -63,7 +63,7 @@ describe('users', () => {
   });
 
   describe('getUserQuests', () => {
-    it('returns valid results for players without quest history', (done: DoneFn) => {
+    test('returns valid results for players without quest history', (done: DoneFn) => {
       testingDBWithState([u.basic]).then((tdb) => {
         return getUserQuests(tdb, u.basic.id);
       })
@@ -74,7 +74,7 @@ describe('users', () => {
       .catch(done.fail);
     });
 
-    it('returns valid results for players with quest history', (done: DoneFn) => {
+    test('returns valid results for players with quest history', (done: DoneFn) => {
       testingDBWithState([
         u.basic,
         q.basic,

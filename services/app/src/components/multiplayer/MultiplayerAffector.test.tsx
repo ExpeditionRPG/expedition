@@ -1,4 +1,4 @@
 describe('MultiplayerAffector', () => {
-  it('Publishes interactions for remote clients');
-  it('Publishes interaction with children that suppress events');
+  test.skip('Publishes interactions for remote clients', () => { /* TODO */ });
+  test.skip('Publishes interaction with children that suppress events', () => { /* TODO */ });
 });

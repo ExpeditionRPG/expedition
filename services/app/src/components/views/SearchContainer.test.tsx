@@ -1,3 +1,3 @@
 describe('SearchContainer', () => {
-  it('Subscribes user if they opt in');
+  test.skip('Subscribes user if they opt in', () => { /* TODO */ });
 });

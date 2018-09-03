@@ -1,5 +1,5 @@
 describe('StarRating', () => {
-  it('shows 0 stars');
-  it('shows 5 stars');
-  it('triggers onChange with tapped star index');
+  test.skip('shows 0 stars', () => { /* TODO */ });
+  test.skip('shows 5 stars', () => { /* TODO */ });
+  test.skip('triggers onChange with tapped star index', () => { /* TODO */ });
 });

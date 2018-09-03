@@ -3,7 +3,7 @@ import {newMockStore} from '../../Testing';
 import {mapDispatchToProps} from './ToolsContainer';
 
 describe('ToolsContainer', () => {
-  it('dispatches custom combat on callback', () => {
+  test('dispatches custom combat on callback', () => {
     const store = newMockStore({settings: initialSettings});
     mapDispatchToProps(store.dispatch).onCustomCombatSelect(initialSettings);
     // TODO: Simplify/remove.

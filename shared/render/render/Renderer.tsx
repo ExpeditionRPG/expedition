@@ -96,6 +96,7 @@ export function sanitizeStyles(text: string): string {
   // replace markdown with HTML tags
   // general case: replace anything surrounded by markdown styles with their matching HTML tag:
   // \*\*([^\*]*)\*\*       non-greedily match the contents between two sets of **
+  text = text.replace(new RegExp(REGEX.NEWLINE.source, 'g'), '<br/>');
   text = text.replace(new RegExp(REGEX.BOLD_ASTERISKS.source, 'g'), '<b>$1</b>');
   text = text.replace(new RegExp(REGEX.BOLD_UNDERSCORES.source, 'g'), '<b>$1</b>');
   text = text.replace(new RegExp(REGEX.ITALIC_ASTERISKS.source, 'g'), '<i>$1</i>');

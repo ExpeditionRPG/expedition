@@ -1,3 +1,4 @@
 describe('Checkout', () => {
-  // Can't easily test due to its external dependency on Stripe library
+  // Probably puppeteer due to its external dependency on Stripe library
+  test.skip('TODO', () => { /* TODO */ });
 });

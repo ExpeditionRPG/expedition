@@ -35,12 +35,12 @@ describe('Client', () => {
     instance: 'testinstance',
   };
 
-  it('safely handles malformed messages', () => {
+  test('safely handles malformed messages', () => {
     const c = new TestClient();
     expect(c.doParseEvent('{}').event.type).toEqual('ERROR');
   });
 
-  it('safely handles unknown message types', () => {
+  test('safely handles unknown message types', () => {
     const c = new TestClient();
     expect(c.doParseEvent(JSON.stringify({
       client: 'testclient',
@@ -50,19 +50,19 @@ describe('Client', () => {
     } as any as MultiplayerEvent)).event.type).toEqual('ERROR');
   });
 
-  it('can subscribe & callback handlers', () => {
+  test('can subscribe & callback handlers', () => {
     const c = new TestClient();
     expect(c.doParseEvent(JSON.stringify(basicEvent))).toEqual(basicEvent);
   });
 
-  it('does not try to send if not connected', () => {
+  test('does not try to send if not connected', () => {
     const c = new TestClient();
     c.setConnectState(false);
     c.sendEvent(basicEventBody);
     expect(c.events).toEqual([]);
   });
 
-  it('finalizes and sends messages', () => {
+  test('finalizes and sends messages', () => {
     const c = new TestClient();
     c.configure('testclient', 'testinstance');
     c.setConnectState(true);

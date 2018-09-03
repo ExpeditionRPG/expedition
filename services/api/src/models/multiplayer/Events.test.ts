@@ -21,7 +21,7 @@ function ts(time: number): Date {
 
 describe('events', () => {
   describe('getLastEvent', () => {
-    it('gets the most recent event in the session', (done: DoneFn) => {
+    test('gets the most recent event in the session', (done: DoneFn) => {
       testingDBWithState([
         new Event({...e.basic, timestamp: ts(0), id: 1}),
         new Event({...e.basic, timestamp: ts(1), id: 2}),
@@ -37,7 +37,7 @@ describe('events', () => {
   });
 
   describe('getOrderedEventsAfter', () => {
-    it('gets an ordered list of events after the start time', (done: DoneFn) => {
+    test('gets an ordered list of events after the start time', (done: DoneFn) => {
       testingDBWithState([
         new Event({...e.basic, timestamp: ts(0), id: 1}),
         new Event({...e.basic, timestamp: ts(1), id: 2}),
@@ -57,7 +57,7 @@ describe('events', () => {
   });
 
   describe('commitEvent', () => {
-    it('rejects events with a most recent ID but not matching JSON', (done: DoneFn) => {
+    test('rejects events with a most recent ID but not matching JSON', (done: DoneFn) => {
       testingDBWithState([
         new Session({...s.basic, id: e.basic.session, eventCounter: 3}),
         new Event({...e.basic, timestamp: ts(0), id: 3, json: 'OLD_EVENT_DIFFERENT_JSON'}),
@@ -69,7 +69,7 @@ describe('events', () => {
         done();
       });
     });
-    it('rejects events with a too-large ID', (done: DoneFn) => {
+    test('rejects events with a too-large ID', (done: DoneFn) => {
       testingDBWithState([
         new Session({...s.basic, id: e.basic.session, eventCounter: 3}),
         new Event({...e.basic, timestamp: ts(0), id: 3}),
@@ -81,7 +81,7 @@ describe('events', () => {
         done();
       });
     });
-    it('lazily accepts events that have already happened', (done: DoneFn) => {
+    test('lazily accepts events that have already happened', (done: DoneFn) => {
       testingDBWithState([
         new Session({...s.basic, id: e.basic.session, eventCounter: 3}),
         new Event({...e.basic, timestamp: ts(0), id: 3}), // Matches this one
@@ -94,7 +94,7 @@ describe('events', () => {
       })
       .catch(done.fail);
     });
-    it('rejects events that do not belong to a known session', (done: DoneFn) => {
+    test('rejects events that do not belong to a known session', (done: DoneFn) => {
       testingDBWithState([])
       .then((db) => commitEvent(db, e.basic.session, e.basic.client, e.basic.instance, 3, e.basic.type, e.basic.json))
       .then(() => done.fail('expected session not found'))
@@ -103,7 +103,7 @@ describe('events', () => {
         done();
       });
     });
-    it('accepts events with the correct next id', (done: DoneFn) => {
+    test('accepts events with the correct next id', (done: DoneFn) => {
       let db: Database;
       const n = 3;
       testingDBWithState([
@@ -133,7 +133,7 @@ describe('events', () => {
   });
 
   describe('getLargestEventID', () => {
-    it('gets the max event ID for the session', (done: DoneFn) => {
+    test('gets the max event ID for the session', (done: DoneFn) => {
       testingDBWithState([
         new Event({...e.basic, timestamp: ts(0), id: 1}),
         new Event({...e.basic, timestamp: ts(1), id: 2}),
@@ -148,7 +148,7 @@ describe('events', () => {
       .catch(done.fail);
     });
 
-    it('returns 0 if no event in session', (done: DoneFn) => {
+    test('returns 0 if no event in session', (done: DoneFn) => {
       testingDBWithState([])
       .then((db) => getLargestEventID(db, e.basic.session))
       .then((result: number) => {
@@ -160,7 +160,7 @@ describe('events', () => {
   });
 
   describe('commitEventWithoutID', () => {
-    it('inserts an event with an automatically-determined ID', (done: DoneFn) => {
+    test('inserts an event with an automatically-determined ID', (done: DoneFn) => {
       let db: Database;
       const n = 3;
       testingDBWithState([
@@ -189,7 +189,7 @@ describe('events', () => {
       })
       .catch(done.fail);
     });
-    it('lazily accepts if it matches the most recent event', (done: DoneFn) => {
+    test('lazily accepts if it matches the most recent event', (done: DoneFn) => {
       // TODO: This doesn't prevent multiple commits if something sneaks in between retries
       testingDBWithState([
         new Session({...s.basic, id: e.basic.session, eventCounter: 4}),
@@ -203,7 +203,7 @@ describe('events', () => {
       })
       .catch(done.fail);
     });
-    it('rejects events that do not belong to a known session', (done: DoneFn) => {
+    test('rejects events that do not belong to a known session', (done: DoneFn) => {
       testingDBWithState([])
       .then((db) => commitEventWithoutID(db, e.basic.session, e.basic.client, e.basic.instance, e.basic.type, JSON.parse(e.basic.json)))
       .then(() => done.fail('expected session not found'))

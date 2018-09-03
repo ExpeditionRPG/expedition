@@ -15,7 +15,7 @@ function playtestXMLResult(elem: Cheerio): LogMessageMap {
 
 describe('PlaytestCrawler', () => {
   describe('internal-level message', () => {
-    it('TODO');
+    test.skip('TODO', () => { /* TODO */ });
   });
 
   describe('error-level message', () => {
@@ -30,7 +30,7 @@ describe('PlaytestCrawler', () => {
       // expect(msgs.error[0].text).toEqual('An action on this node leads nowhere (invalid goto id or no **end**)');
     // });
 
-    it('logs if a node has an implicit end (no **end** tag)', () => {
+    test('logs if a node has an implicit end (no **end** tag)', () => {
       const msgs = playtestXMLResult(cheerio.load(`<quest>
         <roleplay data-line="0"></roleplay>
       </quest>`)('quest > :first-child'));
@@ -38,7 +38,7 @@ describe('PlaytestCrawler', () => {
       expect(msgs.error[0].text).toEqual('An action on this card leads nowhere (invalid goto id or no **end**)');
     });
 
-    it('logs if a combat node has a custom enemy with unspecified tier', () => {
+    test('logs if a combat node has a custom enemy with unspecified tier', () => {
       const msgs = playtestXMLResult(cheerio.load(`<quest>
         <combat data-line="0">
           <e>Custom Enemy</e>
@@ -51,9 +51,9 @@ describe('PlaytestCrawler', () => {
       expect(msgs.error[0].text).toContain('without explicit tier');
     });
 
-    it('logs if a node leads to an invalid node');
+    test.skip('logs if a node leads to an invalid node', () => { /* TODO */ });
 
-    it('logs if a node has overlapping conditionally true events', () => {
+    test('logs if a node has overlapping conditionally true events', () => {
       const msgs = playtestXMLResult(cheerio.load(`<quest>
         <combat data-line="0">
           <event on="win" if="false"><trigger>end</trigger></event>
@@ -67,46 +67,46 @@ describe('PlaytestCrawler', () => {
       expect(msgs.error[0].text).toContain('2 "win" and 0 "lose" events');
     });
 
-    it('logs if a node contains an [art] tag not on its own line');
+    test.skip('logs if a node contains an [art] tag not on its own line', () => { /* TODO */ });
 
-    it('logs if a node has all choices hidden and "Next" is shown'); // (correctness depends on user intent here)
+    test.skip('logs if a node has all choices hidden and "Next" is shown', () => { /* TODO */ }); // (correctness depends on user intent here)
 
     // (E.g. "True" and "TRUE" aren't defined, but "true" is a constant)')
-    it('logs if a node has an op parser failure');
+    test.skip('logs if a node has an op parser failure', () => { /* TODO */ });
   });
 
   describe('warning-level message', () => {
-    it('logs if quest length is too varied');
+    test.skip('logs if quest length is too varied', () => { /* TODO */ });
 
-    it('logs if a node is not visited');
+    test.skip('logs if a node is not visited', () => { /* TODO */ });
 
-    it('logs if a node has been visited >10x');
+    test.skip('logs if a node has been visited >10x', () => { /* TODO */ });
 
-    it('logs if overall quest length is too varied');
+    test.skip('logs if overall quest length is too varied', () => { /* TODO */ });
 
-    it('logs if overall quest difficulty is way too high'); // (e.g. consistently above T6 encounters)
+    test.skip('logs if overall quest difficulty is way too high', () => { /* TODO */ }); // (e.g. consistently above T6 encounters)
 
-    it('logs if a node has too lengthy dialogue');
+    test.skip('logs if a node has too lengthy dialogue', () => { /* TODO */ });
 
     // 2 combats back-to-back? bad idea. 3 combats with single cards in between? Also bad idea.
-    it('logs if there are too many consecutive combats');
+    test.skip('logs if there are too many consecutive combats', () => { /* TODO */ });
 
-    it('logs if there is uneven choice distribution'); // (too few/too many, or alternating 0-2-0-2 etc.)
+    test.skip('logs if there is uneven choice distribution', () => { /* TODO */ }); // (too few/too many, or alternating 0-2-0-2 etc.)
 
-    it('logs if instructions involving loot fail to validate');
+    test.skip('logs if instructions involving loot fail to validate', () => { /* TODO */ });
 
-    it('logs if instructions involving abilities fail to validate');
+    test.skip('logs if instructions involving abilities fail to validate', () => { /* TODO */ });
 
-    it('logs if instructions involving health fail to validate');
+    test.skip('logs if instructions involving health fail to validate', () => { /* TODO */ });
 
-    it('logs if instructions include reference to "player" or "players"');
+    test.skip('logs if instructions include reference to "player" or "players"', () => { /* TODO */ });
   });
 
   describe('info-level message', () => {
-    it('logs general reading level required for the quest');
+    test.skip('logs general reading level required for the quest', () => { /* TODO */ });
 
-    it('logs estimated minimum/maximum play time');
+    test.skip('logs estimated minimum/maximum play time', () => { /* TODO */ });
 
-    it('logs most-visited nodes');
+    test.skip('logs most-visited nodes', () => { /* TODO */ });
   });
 });

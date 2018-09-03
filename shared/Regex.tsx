@@ -51,6 +51,7 @@ export const REGEX = {
   TRIGGER: /^\s*\*\*\s*({{(.*?)}})?\s*(([a-z]+)|(goto [a-zA-Z0-9]+))\*\*\s*$/,
 
   // Detecting markdown styles
+  NEWLINE: /\\n/,
   BOLD_ASTERISKS: /\*\*([^\*]*)\*\*/,
   BOLD_UNDERSCORES: /\_\_([^\_]*)\_\_/,
   ITALIC_ASTERISKS: /\*([^\*]*)\*/,

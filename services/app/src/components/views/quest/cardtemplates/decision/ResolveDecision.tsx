@@ -1,13 +1,14 @@
 import Button from 'app/components/base/Button';
 import Callout from 'app/components/base/Callout';
 import Card from 'app/components/base/Card';
-import * as pluralize from 'pluralize';
 import * as React from 'react';
 import {Outcome} from 'shared/schema/templates/Decision';
 import {ParserNode} from '../TemplateTypes';
 import {computeOutcome, computeSuccesses, extractDecision} from './Actions';
 import {getScenarioInstruction} from './Scenarios';
 import {EMPTY_LEVELED_CHECK, StateProps} from './Types';
+
+const pluralize = require('pluralize');
 
 export interface DispatchProps {
   onRoll: (node: ParserNode, roll: number) => void;
@@ -18,7 +19,6 @@ export interface Props extends StateProps, DispatchProps {}
 
 export default function resolveDecision(props: Props): JSX.Element {
   const decision = extractDecision(props.node);
-
   const selected = decision.selected || EMPTY_LEVELED_CHECK;
   const inst: JSX.Element = (<span></span>);
   const outcome = computeOutcome(decision.rolls, selected, props.settings, props.multiplayerState);

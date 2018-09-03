@@ -1,5 +1,5 @@
 describe('MultiTouchTrigger', () => {
-  it('draws multiple touch points');
+  test.skip('draws multiple touch points', () => { /* TODO */ });
 
-  it('clears display when no touch points');
+  test.skip('clears display when no touch points', () => { /* TODO */ });
 });

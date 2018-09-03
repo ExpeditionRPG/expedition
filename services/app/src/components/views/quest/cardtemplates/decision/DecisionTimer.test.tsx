@@ -1,5 +1,5 @@
 import {configure, mount} from 'enzyme';
-import * as Adapter from 'enzyme-adapter-react-16';
+import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 configure({ adapter: new Adapter() });
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
@@ -43,19 +43,19 @@ function setup(overrides: Partial<Props>) {
 }
 
 describe('DecisionTimer', () => {
-  it('Shows the skill and num successes needed', () => {
+  test('Shows the skill and num successes needed', () => {
     const {e} = setup({});
     const result = e.find('.secondary').text();
     expect(result).toMatch(/1 \w+ athletics/);
     expect(result).toMatch(/2 \w+ charisma/);
     expect(result).toMatch(/3 \w+ knowledge/);
   });
-  it('Either shows persona or difficulty, not both', () => {
+  test('Either shows persona or difficulty, not both', () => {
     const {e} = setup({});
     const result = e.find('.secondary').childAt(0).text();
     expect(result).toMatch(/^1 \w+ athletics$/);
   });
-  it('triggers onSelect when a decision is selected', () => {
+  test('triggers onSelect when a decision is selected', () => {
     const {props, e} = setup({});
     e.find('button').at(0).simulate('click');
     expect(props.onSelect).toHaveBeenCalledWith(props.node, TEST_LEVELED_CHECKS[0], jasmine.any(Number));

@@ -1,17 +1,17 @@
 describe('dialogs', () => {
-  it('returns initial state');
+  test.skip('returns initial state', () => { /* TODO */ });
 
-  it('sets all dialogs');
+  test.skip('sets all dialogs', () => { /* TODO */ });
 
-  it('auto-sets on new');
+  test.skip('auto-sets on new', () => { /* TODO */ });
 
-  it('auto-sets on load');
+  test.skip('auto-sets on load', () => { /* TODO */ });
 
-  it('auto-sets on publish');
+  test.skip('auto-sets on publish', () => { /* TODO */ });
 
-  it('auto-sets on profile');
+  test.skip('auto-sets on profile', () => { /* TODO */ });
 
-  it('shows error dialog on error');
+  test.skip('shows error dialog on error', () => { /* TODO */ });
 
-  it('clears old errors when error dialog closed');
+  test.skip('clears old errors when error dialog closed', () => { /* TODO */ });
 });

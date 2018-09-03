@@ -1,23 +1,23 @@
 describe('Regex', () => {
   describe('Extract', () => {
-    it('TODO');
+    test.skip('TODO', () => { /* TODO */ });
   });
   describe('HTML tag', () => {
-    it('TODO');
+    test.skip('TODO', () => { /* TODO */ });
   });
   describe('ID', () => {
-    it('TODO');
+    test.skip('TODO', () => { /* TODO */ });
   });
   describe('Instruction', () => {
-    it('TODO');
+    test.skip('TODO', () => { /* TODO */ });
   });
   describe('Not Word', () => {
-    it('TODO');
+    test.skip('TODO', () => { /* TODO */ });
   });
   describe('Op', () => {
-    it('TODO');
+    test.skip('TODO', () => { /* TODO */ });
   });
   describe('Trigger', () => {
-    it('TODO');
+    test.skip('TODO', () => { /* TODO */ });
   });
 });

@@ -3,7 +3,7 @@ import {setDialog} from './Dialogs';
 
 describe('Dialog action', () => {
   describe('setDialog', () => {
-    it('creates action', () => {
+    test('creates action', () => {
       expect(setDialog('ERROR', true)).toEqual({
         annotations: undefined,
         dialog: 'ERROR',
@@ -14,14 +14,14 @@ describe('Dialog action', () => {
   });
 
   describe('pushHTTPError', () => {
-    it('sets status as name');
+    test.skip('sets status as name', () => { /* TODO */ });
 
-    it('logs to GA');
+    test.skip('logs to GA', () => { /* TODO */ });
   });
 
   describe('pushError', () => {
-    it('pushes error');
+    test.skip('pushes error', () => { /* TODO */ });
 
-    it('logs to GA');
+    test.skip('logs to GA', () => { /* TODO */ });
   });
 });

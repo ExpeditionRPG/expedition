@@ -11,7 +11,7 @@ import {
 
 describe('SessionClients', () => {
   describe('verifySessionClient', () => {
-    it('returns true if the client exists in the session, matching secret', (done: DoneFn) => {
+    test('returns true if the client exists in the session, matching secret', (done: DoneFn) => {
       testingDBWithState([sc.basic])
       .then((db) => verifySessionClient(db, sc.basic.session, sc.basic.client, sc.basic.secret))
       .then((valid: boolean) => {
@@ -21,7 +21,7 @@ describe('SessionClients', () => {
       .catch(done.fail);
     });
 
-    it('returns false otherwise', (done: DoneFn) => {
+    test('returns false otherwise', (done: DoneFn) => {
       testingDBWithState([])
       .then((db) => verifySessionClient(db, sc.basic.session, sc.basic.client, sc.basic.secret))
       .then((valid: boolean) => {
@@ -33,7 +33,7 @@ describe('SessionClients', () => {
   });
 
   describe('getClientSessions', () => {
-    it('gets sessions the client has joined with the most recent activity', (done: DoneFn) => {
+    test('gets sessions the client has joined with the most recent activity', (done: DoneFn) => {
       testingDBWithState([sc.basic])
       .then((db) => getClientSessions(db, sc.basic.client))
       .then((results: SessionClientInstance[]) => {

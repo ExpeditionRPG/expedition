@@ -1,3 +1,3 @@
 describe('Websockets', () => {
-  it('Sets up websocket handler on new connection');
+  test.skip('Sets up websocket handler on new connection', () => { /* TODO */ });
 });

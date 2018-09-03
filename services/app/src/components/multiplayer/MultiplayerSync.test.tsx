@@ -1,3 +1,3 @@
 describe('MultiplayerSync', () => {
-  // TODO
+  test.skip('TODO', () => { /* TODO */ });
 });

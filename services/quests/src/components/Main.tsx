@@ -9,8 +9,8 @@ import QuestAppBarContainer from './QuestAppBarContainer';
 import QuestIDEContainer from './QuestIDEContainer';
 import SplashContainer from './SplashContainer';
 
-const numeral = require('numeral') as any;
-const SplitPane = require('react-split-pane') as any;
+const numeral = require('numeral');
+const SplitPane = require('react-split-pane');
 
 export interface StateProps {
   editor: EditorState;

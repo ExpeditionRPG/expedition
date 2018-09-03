@@ -11,7 +11,7 @@ describe('quest', () => {
   describe('searchQuests', () => {
     const quests = [q.basic, q.horror, q.future];
 
-    it('returns an empty array if no results', (done: DoneFn) => {
+    test('returns an empty array if no results', (done: DoneFn) => {
       testingDBWithState(quests)
         .then((tdb) => {
           return searchQuests(tdb, '', {partition: 'otherpartition'});
@@ -23,7 +23,7 @@ describe('quest', () => {
         .catch(done.fail);
     });
 
-    it('returns full quest data', (done: DoneFn) => {
+    test('returns full quest data', (done: DoneFn) => {
       testingDBWithState(quests)
         .then((tdb) => {
           return searchQuests(tdb, '', {partition: PUBLIC_PARTITION});
@@ -39,7 +39,7 @@ describe('quest', () => {
         .catch(done.fail);
     });
 
-    it('does not return expansions if unspecified', (done: DoneFn) => {
+    test('does not return expansions if unspecified', (done: DoneFn) => {
       testingDBWithState(quests)
         .then((tdb) => {
           return searchQuests(tdb, '', {partition: PUBLIC_PARTITION});
@@ -52,7 +52,7 @@ describe('quest', () => {
         .catch(done.fail);
     });
 
-    it('returns expansion quests first if specified', (done: DoneFn) => {
+    test('returns expansion quests first if specified', (done: DoneFn) => {
       testingDBWithState(quests)
         .then((db) => searchQuests(db, '', {partition: PUBLIC_PARTITION, expansions: ['horror']}))
         .then((results: QuestInstance[]) => {
@@ -77,46 +77,46 @@ describe('quest', () => {
         .catch(done.fail);
     });
 
-    it('also displays draft quests when user provided');
+    test.skip('also displays draft quests when user provided', () => { /* TODO */ });
   });
 
   describe('publishQuest', () => {
-    it('shows up in public search results');
+    test.skip('shows up in public search results', () => { /* TODO */ });
 
-    it('increments user loot_points by 100 if new and public');
+    test.skip('increments user loot_points by 100 if new and public', () => { /* TODO */ });
 
-    it('does not change user loot_points if not new or not public');
+    test.skip('does not change user loot_points if not new or not public', () => { /* TODO */ });
 
-    it('unpublishes owned quest');
+    test.skip('unpublishes owned quest', () => { /* TODO */ });
 
-    it('fails to publish/unpublish unowned quest');
+    test.skip('fails to publish/unpublish unowned quest', () => { /* TODO */ });
 
-    it('always updates questversion');
+    test.skip('always updates questversion', () => { /* TODO */ });
 
-    it('increments questversionlastmajor when major release flag is true');
+    test.skip('increments questversionlastmajor when major release flag is true', () => { /* TODO */ });
 
-    it('removes a set tombstone');
+    test.skip('removes a set tombstone', () => { /* TODO */ });
 
-    it('blocks publish if fields missing or invalid');
+    test.skip('blocks publish if fields missing or invalid', () => { /* TODO */ });
 
-    it('blocks publish if title is still default');
+    test.skip('blocks publish if title is still default', () => { /* TODO */ });
 
-    it('mails admin if new quest');
+    test.skip('mails admin if new quest', () => { /* TODO */ });
 
-    it('mails user if first published quest');
+    test.skip('mails user if first published quest', () => { /* TODO */ });
   });
 
   describe('unpublishQuest', () => {
-    it('no longer shows up in search results');
+    test.skip('no longer shows up in search results', () => { /* TODO */ });
   });
 
   describe('republishQuest', () => {
-    it('shows up in public search results');
+    test.skip('shows up in public search results', () => { /* TODO */ });
   });
 
   describe('updateQuestRatings', () => {
-    it('calculates the count and average of multiple ratings');
+    test.skip('calculates the count and average of multiple ratings', () => { /* TODO */ });
 
-    it('excludes ratings from quest versions before the last major release');
+    test.skip('excludes ratings from quest versions before the last major release', () => { /* TODO */ });
   });
 });

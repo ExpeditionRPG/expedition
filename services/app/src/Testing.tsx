@@ -98,7 +98,7 @@ export function Action<A>(action: (a: A) => Redux.Action, baseState?: object) {
             }
           },
           toDispatch(expected: object) {
-            expect(store.getActions()).toContain(expected);
+            expect(store.getActions()).toContainEqual(expected);
           },
         };
       },

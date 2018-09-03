@@ -1,5 +1,5 @@
 import {configure, shallow} from 'enzyme';
-import * as Adapter from 'enzyme-adapter-react-16';
+import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 configure({ adapter: new Adapter() });
 
@@ -21,7 +21,7 @@ function setup() {
 }
 
 describe('Tools', () => {
-  it('calls onCustomCombatSelect on custom combat select', () => {
+  test('calls onCustomCombatSelect on custom combat select', () => {
     const {props, e} = setup();
     e.find('#selectCustomCombat').simulate('click');
     expect(props.onCustomCombatSelect).toHaveBeenCalledTimes(1);

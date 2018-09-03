@@ -1,7 +1,7 @@
 import {DialogIDType} from '../reducers/StateTypes';
 import {PushErrorAction, SetDialogAction} from './ActionTypes';
 
-const ReactGA = require('react-ga') as any;
+const ReactGA = require('react-ga');
 
 export function setDialog(dialog: DialogIDType, shown: boolean, annotations?: number[]): SetDialogAction {
   return {type: 'SET_DIALOG', dialog, shown, annotations};

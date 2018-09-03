@@ -1,5 +1,5 @@
 describe('Decision types', () => {
   describe('mapStateToProps', () => {
-    it('handles unset theme');
+    test.skip('handles unset theme', () => { /* TODO */ });
   });
 });

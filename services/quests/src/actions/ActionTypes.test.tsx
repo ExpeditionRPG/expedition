@@ -1,3 +1,3 @@
 describe('ActionTypes', () => {
-  // Simple
+  test('Empty', () => { /* Empty */ });
 });

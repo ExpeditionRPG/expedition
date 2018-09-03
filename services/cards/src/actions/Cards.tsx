@@ -6,7 +6,7 @@ import {getStore} from '../Store';
 import {filtersCalculate} from './Filters';
 
 declare var require: any;
-const Tabletop = require('tabletop') as any;
+const Tabletop = require('tabletop');
 
 export function downloadCards(): ((dispatch: Redux.Dispatch<any>) => void) {
   return (dispatch: Redux.Dispatch<any>) => {

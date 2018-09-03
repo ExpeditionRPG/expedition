@@ -1,3 +1,3 @@
 describe('ScrollBottom', () => {
-  // Not currently needed
+  test('Empty', () => { /* Empty */ });
 });

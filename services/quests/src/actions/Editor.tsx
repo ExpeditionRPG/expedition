@@ -154,6 +154,7 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
         summary: quest.summary || '',
         theme: quest.theme || 'base',
         title: quest.title || '',
+        partition: 'expedition-private',
       })));
       // Results will be shown and added to annotations as they arise.
       dispatch(startPlaytestWorker(oldWorker, questNode, {

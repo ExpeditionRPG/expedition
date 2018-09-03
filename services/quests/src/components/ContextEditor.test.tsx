@@ -1,7 +1,7 @@
 describe('ContextEditor', () => {
-  it('Displays initial context override');
+  test.skip('Displays initial context override', () => { /* TODO */ });
 
-  it('Lists scopes of previous quest cards');
+  test.skip('Lists scopes of previous quest cards', () => { /* TODO */ });
 
-  it('Allows setting initial context by previous quest scope');
+  test.skip('Allows setting initial context by previous quest scope', () => { /* TODO */ });
 });

@@ -1,9 +1,9 @@
 describe('TopBar', () => {
-  it('loads all current filters');
+  test.skip('loads all current filters', () => { /* TODO */ });
 
-  it('triggers reload when "Reload Card Data" clicked');
+  test.skip('triggers reload when "Reload Card Data" clicked', () => { /* TODO */ });
 
-  it('triggers filter change when filters change');
+  test.skip('triggers filter change when filters change', () => { /* TODO */ });
 
-  it('opens help menu when help button pressed');
+  test.skip('opens help menu when help button pressed', () => { /* TODO */ });
 });

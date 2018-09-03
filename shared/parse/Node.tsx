@@ -1,7 +1,7 @@
 import {Context, evaluateContentOps, updateContext} from './Context';
 
 const Clone = require('clone');
-const Math = require('mathjs') as any;
+const Math = require('mathjs');
 
 const MAX_GOTO_FOLLOW_DEPTH = 50;
 

@@ -17,7 +17,8 @@
             "api/*": ["services/api/src/*"],
             "app/*": ["services/app/src/*"],
             "shared/*": ["shared/*"]
-        }
+        },
+        "skipLibCheck": true
     },
     "include": [
         "services/**/*",
@@ -29,6 +30,8 @@
         "app/src/quests",
         "app/plugins",
         "app/platforms",
+        "**/*.test.ts",
+        "**/*.test.tsx",
         "www"
     ],
     "awesomeTypescriptLoaderOptions": {

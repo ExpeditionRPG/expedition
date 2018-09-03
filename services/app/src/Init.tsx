@@ -8,7 +8,6 @@ setupLogging(console);
 
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import 'babel-polyfill';
-import * as Raven from 'raven-js';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
@@ -39,6 +38,7 @@ export function setupPolyfills(): void {
   }
 }
 
+const Raven = require('raven-js');
 const ReactGA = require('react-ga');
 
 // This is necessary to prevent compiler errors until/unless we fix the rest of
@@ -60,7 +60,7 @@ declare module 'redux' {
 Raven.config(AUTH_SETTINGS.RAVEN, {
     environment: NODE_ENV,
     release: VERSION,
-    shouldSendCallback(data) {
+    shouldSendCallback(data: any) {
       const supportedBrowser = !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent);
       return supportedBrowser && NODE_ENV !== 'dev' && !getStore().getState().settings.simulator;
     },

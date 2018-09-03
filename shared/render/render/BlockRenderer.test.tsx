@@ -12,7 +12,7 @@ describe('BlockRenderer', () => {
 
   describe('toNode', () => {
     describe('combat', () => {
-      it('errors on bad bullet json', () => {
+      test('errors on bad bullet json', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -61,7 +61,7 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual(TestData.combatNoEnemyOrEventsLog);
       });
 
-      it('errors on lack of whitespace after enemy list', () => {
+      test('errors on lack of whitespace after enemy list', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -92,7 +92,7 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual(TestData.combatBadWhitespace);
       });
 
-      it('errors with bad enemy tier', () => {
+      test('errors with bad enemy tier', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -123,9 +123,9 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual(TestData.combatBadTierLog);
       });
 
-      it('errors on inner block without event bullet');
+      test.skip('errors on inner block without event bullet', () => { /* TODO */ });
 
-      it('renders full combat', () => {
+      test('renders full combat', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -157,7 +157,7 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual('');
       });
 
-      it('renders conditional events', () => {
+      test('renders conditional events', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -190,15 +190,15 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual('');
       });
 
-      it('errors if inner combat block with no event bullet');
+      test.skip('errors if inner combat block with no event bullet', () => { /* TODO */ });
 
-      it('errors if invalid combat event');
+      test.skip('errors if invalid combat event', () => { /* TODO */ });
 
-      it('errors if invalid combat enemy');
+      test.skip('errors if invalid combat enemy', () => { /* TODO */ });
     });
 
     describe('roleplay', () => {
-      it('renders with JSON', () => {
+      test('renders with JSON', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -235,7 +235,7 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual('');
       });
 
-      it('renders full roleplay', () => {
+      test('renders full roleplay', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -268,7 +268,7 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual('');
       });
 
-      it('renders roleplay without title', () => {
+      test('renders roleplay without title', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -284,7 +284,7 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual('');
       });
 
-      it('renders roleplay with title that has icon', () => {
+      test('renders roleplay with title that has icon', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -300,7 +300,7 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual('');
       });
 
-      it('renders roleplay with title that has icon and ID', () => {
+      test('renders roleplay with title that has icon and ID', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -316,7 +316,7 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual('');
       });
 
-      it('renders conditional choices', () => {
+      test('renders conditional choices', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -349,7 +349,7 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual('');
       });
 
-      it('alerts the user to choice without text', () => {
+      test('alerts the user to choice without text', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -371,7 +371,7 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual(TestData.missingTitleErr);
       });
 
-      it('alerts the user to choice with invalid choice string', () => {
+      test('alerts the user to choice with invalid choice string', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -393,7 +393,7 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual(TestData.invalidChoiceStringErr);
       });
 
-      it('renders with ID', () => {
+      test('renders with ID', () => {
         const log = new Logger();
         const blocks: Block[] = [
           {
@@ -409,16 +409,16 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual('');
       });
 
-      it('renders with JSON');
+      test.skip('renders with JSON', () => { /* TODO */ });
 
-      it('errors if invalid roleplay attribute');
+      test.skip('errors if invalid roleplay attribute', () => { /* TODO */ });
 
-      it('errors if invalid choice attribute');
+      test.skip('errors if invalid choice attribute', () => { /* TODO */ });
     });
   });
 
   describe('toTrigger', () => {
-    it('renders end', () => {
+    test('renders end', () => {
       const log = new Logger();
       const blocks: Block[] = [
         {
@@ -434,7 +434,7 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
-    it('renders goto', () => {
+    test('renders goto', () => {
       const log = new Logger();
       const blocks: Block[] = [
         {
@@ -450,7 +450,7 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
-    it('renders condition', () => {
+    test('renders condition', () => {
       const log = new Logger();
       const blocks: Block[] = [
         {
@@ -466,13 +466,13 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
-    it('errors if multiple blocks');
+    test.skip('errors if multiple blocks', () => { /* TODO */ });
 
-    it('errors on bad parsing');
+    test.skip('errors on bad parsing', () => { /* TODO */ });
   });
 
   describe('toQuest', () => {
-    it('renders', () => {
+    test('renders', () => {
       const log = new Logger();
       const block: Block = {
         indent: 0,
@@ -486,7 +486,7 @@ describe('BlockRenderer', () => {
       expect(prettifyMsgs(log.finalize())).toEqual('');
     });
 
-    it('errors if unparseable quest attribute', () => {
+    test('errors if unparseable quest attribute', () => {
       const log = new Logger();
       const block: Block = {
         indent: 0,
@@ -502,14 +502,14 @@ describe('BlockRenderer', () => {
   });
 
   describe('toMeta', () => {
-    it('TODO');
+    test.skip('TODO', () => { /* TODO */ });
   });
 
   describe('validate', () => {
-    it('TODO');
+    test.skip('TODO', () => { /* TODO */ });
   });
 
   describe('finalize', () => {
-    it('TODO');
+    test.skip('TODO', () => { /* TODO */ });
   });
 });

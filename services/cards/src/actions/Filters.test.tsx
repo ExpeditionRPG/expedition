@@ -1,7 +1,7 @@
 describe('Filters actions', () => {
-  it('fetches user input when Custom source filter chosen');
+  test.skip('fetches user input when Custom source filter chosen', () => { /* TODO */ });
 
-  it('reloads from source when source is changed');
+  test.skip('reloads from source when source is changed', () => { /* TODO */ });
 
-  it('recalculates cards and filters when filter changes');
+  test.skip('recalculates cards and filters when filter changes', () => { /* TODO */ });
 });

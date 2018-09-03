@@ -1,3 +1,3 @@
 describe('tutorial', () => {
-  it('turns off playFromCursor when play from cursor clicked');
+  test.skip('turns off playFromCursor when play from cursor clicked', () => { /* TODO */ });
 });

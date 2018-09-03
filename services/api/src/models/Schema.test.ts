@@ -37,7 +37,7 @@ class Example extends SchemaBase {
 
 describe('Schema', () => {
   describe('toSequelize', () => {
-    it('constructs a sequelize model definition', () => {
+    test('constructs a sequelize model definition', () => {
       expect(toSequelize(new Example({requiredStringPkey: '', emptyDate: new Date()}))).toEqual({
         defaultEmptyString: {
           defaultValue: '',

@@ -1,5 +1,5 @@
 import {configure, mount} from 'enzyme';
-import * as Adapter from 'enzyme-adapter-react-16';
+import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 configure({ adapter: new Adapter() });
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
@@ -30,11 +30,11 @@ function setup(overrides: Partial<Props>) {
 }
 
 describe('PrepareDecision', () => {
-  it('Shows the prelude', () => {
+  test('Shows the prelude', () => {
     const {e} = setup({});
     expect(e.text()).toContain('prelude text');
   });
-  it('triggers onStartTimer when start button clicked', () => {
+  test('triggers onStartTimer when start button clicked', () => {
     const {props, e} = setup({});
     e.find('button').at(2).simulate('click');
     expect(props.onStartTimer).toHaveBeenCalled();

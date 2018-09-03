@@ -2,17 +2,17 @@ import {AnalyticsEvent} from './AnalyticsEvents';
 
 describe('AnalyticsEvent Schema', () => {
   const base = {userID: '54321'};
-  it('is invalid when missing user id', () => {
+  test('is invalid when missing user id', () => {
     expect(AnalyticsEvent.create({}) instanceof Error).toEqual(true);
   });
-  it('is valid when user id given', () => {
+  test('is valid when user id given', () => {
     const f = new AnalyticsEvent(base);
     expect(f.userID).toEqual(base.userID);
   });
-  it('rejects invalid difficulty', () => {
+  test('rejects invalid difficulty', () => {
     expect(AnalyticsEvent.create({...base, difficulty: 'Invalid'}) instanceof Error).toEqual(true);
   });
-  it('accepts valid difficulty', () => {
+  test('accepts valid difficulty', () => {
     const f = new AnalyticsEvent({...base, difficulty: 'HARD'});
     expect(f.difficulty).toEqual('HARD');
   });

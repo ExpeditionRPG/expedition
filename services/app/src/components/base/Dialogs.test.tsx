@@ -1,19 +1,19 @@
 describe('Dialogs', () => {
   describe('ExitQuestDialog', () => {
-    it('renders if open');
+    test.skip('renders if open', () => { /* TODO */ });
 
-    it('hides if not open');
+    test.skip('hides if not open', () => { /* TODO */ });
 
-    it('calls onExitQuest on Exit tap');
+    test.skip('calls onExitQuest on Exit tap', () => { /* TODO */ });
 
-    it('closes on Cancel tap');
+    test.skip('closes on Cancel tap', () => { /* TODO */ });
   });
 
   describe('ExpansionSelectDialog', () => {
-    it('sets no content sets if base game');
+    test.skip('sets no content sets if base game', () => { /* TODO */ });
 
-    it('sets horror content set');
+    test.skip('sets horror content set', () => { /* TODO */ });
 
-    it('sets horror + future content sets');
+    test.skip('sets horror + future content sets', () => { /* TODO */ });
   });
 });

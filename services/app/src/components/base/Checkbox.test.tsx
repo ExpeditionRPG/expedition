@@ -1,5 +1,5 @@
 describe('Checkbox', () => {
-  it('triggers onChange when tapped');
+  test.skip('triggers onChange when tapped', () => { /* TODO */ });
 
-  it('shows label and subtext');
+  test.skip('shows label and subtext', () => { /* TODO */ });
 });
