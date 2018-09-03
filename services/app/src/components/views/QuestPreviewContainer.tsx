@@ -1,6 +1,7 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {Quest} from 'shared/schema/Quests';
+import {SavedQuestSelectAction} from '../../actions/ActionTypes';
 import {toCard, toPrevious} from '../../actions/Card';
 import {setDialog} from '../../actions/Dialog';
 import {deleteSavedQuest, loadSavedQuest, saveQuestForOffline} from '../../actions/SavedQuests';
@@ -43,7 +44,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(deleteSavedQuest(id, ts));
       dispatch(openSnackbar('Deleted offline version.'));
     },
-    onDeleteConfirm(): void {
+    onDeleteConfirm(quest: Quest, ts: number): void {
+      dispatch({type: 'SAVED_QUEST_SELECT', ts} as SavedQuestSelectAction);
       dispatch(setDialog('DELETE_SAVED_QUEST'));
     },
     onReturn: () => {

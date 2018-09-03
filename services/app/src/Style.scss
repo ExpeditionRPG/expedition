@@ -1284,6 +1284,17 @@ body.android .dialog .textfield:focus-within {
     }
   }
 
+  .savedQuest {
+    display: flex;
+
+    & > div {
+      width: 100%;
+    }
+    & > button {
+      margin-top: size(small);
+    }
+  }
+
   .reportCategory {
     text-align: center;
     button {

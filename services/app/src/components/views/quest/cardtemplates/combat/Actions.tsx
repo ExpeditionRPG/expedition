@@ -37,15 +37,20 @@ export function roundTimeMillis(settings: SettingsType, rp?: MultiplayerState) {
   return settings.timerSeconds * 1000 * PLAYER_TIME_MULT[totalPlayerCount];
 }
 
-export function generateCombatTemplate(settings: SettingsType, custom: boolean, node?: ParserNode, getState?: () => AppStateWithHistory): CombatState {
-  let tierSum: number = 0;
+export function getEnemiesAndTier(node?: ParserNode): {enemies: Enemy[], tier: number} {
+  let tier: number = 0;
   let enemies: Enemy[] = [];
   if (node && node.elem) {
     enemies = getEnemies(node);
     for (const enemy of enemies) {
-      tierSum += enemy.tier;
+      tier += enemy.tier;
     }
   }
+  return {enemies, tier};
+}
+
+export function generateCombatTemplate(settings: SettingsType, custom: boolean, node?: ParserNode, getState?: () => AppStateWithHistory): CombatState {
+  const {enemies, tier} = getEnemiesAndTier(node);
   const multiplayer = (getState) ? getState().multiplayer : getStore().getState().multiplayer;
   const totalAdventurerCount = numAdventurers(settings, multiplayer);
 
@@ -55,7 +60,7 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
     enemies,
     numAliveAdventurers: totalAdventurerCount,
     roundCount: 0,
-    tier: tierSum,
+    tier,
     ...getDifficultySettings(settings.difficulty),
   };
 }
@@ -354,6 +359,10 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
   combat.mostRecentAttack = generateCombatAttack(a.node, a.settings, a.rp, a.elapsedMillis, arng);
   combat.mostRecentRolls = generateRolls(a.settings.numPlayers, arng);
   combat.roundCount++;
+
+  // This is parsed when loading a saved quest, so that "on round" nodes
+  // can be appropriately evaluated.
+  a.node.addToPath('|' + combat.roundCount);
 
   if (combat.mostRecentAttack.surge) {
     // Since we always skip the previous card (the timer) when going back,

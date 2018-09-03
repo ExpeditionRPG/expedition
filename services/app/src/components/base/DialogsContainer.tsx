@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => {
       dispatch(deleteSavedQuest(savedQuest.details.id, savedQuest.ts));
-      dispatch(toPrevious({name: 'SAVED_QUESTS', before: false}));
+      dispatch(setDialog(null));
       dispatch(openSnackbar('Save deleted.'));
     },
     onExitMultiplayer: () => {

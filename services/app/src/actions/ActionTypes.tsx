@@ -169,6 +169,11 @@ export interface SavedQuestListAction {
   savedQuests: SavedQuestMeta[];
 }
 
+export interface SavedQuestSelectAction {
+  type: 'SAVED_QUEST_SELECT';
+  ts: number;
+}
+
 export interface MultiplayerSessionAction extends Redux.Action {
   type: 'MULTIPLAYER_SESSION';
   session: {id: number, secret: string};

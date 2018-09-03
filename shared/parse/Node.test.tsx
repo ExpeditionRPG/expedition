@@ -97,6 +97,16 @@ describe('Node', () => {
     });
   });
 
+  describe('addToPath', () => {
+    test('adds to path', () => {
+      const pnode = new Node(cheerio.load('<roleplay></roleplay>')('roleplay'), defaultContext());
+      pnode.addToPath('test_string');
+      pnode.addToPath(1);
+      expect(pnode.ctx.path[pnode.ctx.path.length-1]).toEqual(1);
+      expect(pnode.ctx.path[pnode.ctx.path.length-2]).toEqual('test_string');
+    });
+  });
+
   describe('gotoId', () => {
     test('goes to ID', () => {
       const quest = cheerio.load('<quest><roleplay></roleplay><roleplay>wrong</roleplay><roleplay id="test">expected</roleplay></quest>')('quest');

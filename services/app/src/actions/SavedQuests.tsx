@@ -1,5 +1,7 @@
 import * as Redux from 'redux';
 import {Quest} from 'shared/schema/Quests';
+import {getEnemiesAndTier} from '../components/views/quest/cardtemplates/combat/Actions';
+import {getNextMidCombatNode} from '../components/views/quest/cardtemplates/roleplay/Actions';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {getCheerio} from '../Globals';
@@ -79,11 +81,75 @@ export function storeSavedQuest(node: ParserNode, details: Quest, ts: number): S
   return {type: 'SAVED_QUEST_STORED', savedQuests};
 }
 
+function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|number[]): {nextNode: ParserNode|null, i: number} {
+  // Set round count
+  // TODO: Make this more corect
+  const {enemies, tier} = getEnemiesAndTier(node);
+  node.ctx.templates.combat = {
+    custom: false,
+    enemies,
+    numAliveAdventurers: 0,
+    roundCount: 0,
+    tier,
+    decisionPhase: 'PREPARE_DECISION',
+    surgePeriod: 4,
+    decisionPeriod: 4,
+    damageMultiplier: 1,
+    maxRoundDamage: 4,
+  };
+  node = node.clone();
+
+  for (; i < path.length; i++) {
+    const action = path[i];
+    if (typeof(action) === 'string' && action.startsWith('|')) {
+      (node.ctx.templates.combat as any).roundCount = parseInt(action.substr(1), 10);
+      node = node.clone(); // Clone re-calculates visibility of inner nodes.
+    } else {
+      if (typeof action !== 'number') {
+        console.warn('Unused action ' + action + ' in combat');
+        continue;
+      }
+      const {nextNode, state} = getNextMidCombatNode(node, action);
+      switch (state) {
+        case 'ENDCOMBAT':
+        case 'VICTORY':
+        case 'DEFEAT':
+          return {nextNode, i};
+        case 'END':
+          return {nextNode: null, i};
+        case 'ENDROUND':
+        default: // we're still in combat
+          node = nextNode;
+          break;
+      }
+    }
+  }
+  return {nextNode: node, i};
+}
+
 function recreateNodeFromPath(details: Quest, xml: string, path: string|number[]): ParserNode {
   let node = initQuest(details, getCheerio().load(xml)('quest'), defaultContext()).node;
-  for (const action of path) {
+  console.log('Recreating node from path');
+  console.log(`Path is ${path}`);
+  for (let i = 0; i < path.length; i++) {
+    const action = path[i];
     // TODO: Also save random seed with path in context
-    const next = node.getNext(action);
+    console.log(`Node ${node.getTag()} action ${action}`);
+    let next: ParserNode|null;
+    if (node.getTag() === 'combat') {
+      // Try going all the way through combat. If we stop somewhere in
+      // the middle, return the entry node.
+      const result = recreateNodeThroughCombat(node, i, path);
+      if (!result.nextNode) {
+        return node;
+      } else {
+        next = result.nextNode;
+      }
+      i = result.i;
+    } else {
+      next = node.handleAction(action);
+    }
+    console.log(`Yields node ${next && next.getTag()}`);
     if (!next) {
       throw new Error('Failed to load quest.');
     }

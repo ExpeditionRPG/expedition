@@ -295,9 +295,7 @@ export class DeleteSavedQuestDialog extends React.Component<DeleteSavedQuestDial
   public render() {
     const savedQuest = this.props.savedQuest;
     return (
-      <Dialog
-        open={Boolean(this.props.open)}
-      >
+      <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
         <DialogTitle>Delete saved quest?</DialogTitle>
         <DialogContent className="dialog"></DialogContent>
         <DialogActions>

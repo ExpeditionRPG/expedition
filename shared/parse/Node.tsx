@@ -149,7 +149,7 @@ export class Node<C extends Context> {
     }
   }
 
-  public gotoId(id: string, seed?: string): this|null {
+  public gotoId(id: string, seed?: string, origAction?: number|string): this|null {
     const root = this.getRootElem();
     if (root === null) {
       return null;
@@ -158,7 +158,7 @@ export class Node<C extends Context> {
     if (search.length === 0) {
       return null;
     }
-    return new (this.constructor as any)(search.eq(0), this.ctx, '#' + id, seed);
+    return new (this.constructor as any)(search.eq(0), this.ctx, origAction, seed);
   }
 
   // Loop through all rendered children. If a call to cb() returns a value
@@ -171,6 +171,11 @@ export class Node<C extends Context> {
         return v;
       }
     }
+  }
+
+  // Useful for adding other meta-information to the path for comparison and/or reconstruction.
+  public addToPath(val: string|number): void {
+    this.ctx.path.push(val);
   }
 
   // Get a key such that a different Node object with the same relative XML element
@@ -287,21 +292,21 @@ export class Node<C extends Context> {
       if (handled !== null) {
         return handled;
       }
-      ref = new Node(ref.elem.parent(), this.ctx, undefined, seed);
+      ref = new (this.constructor as any)(ref.elem.parent(), this.ctx, undefined, seed);
     }
 
     // Return the trigger unchanged if a handler is not found.
     return this;
   }
 
-  private handleTrigger(seed?: string): this|null {
+  private handleTrigger(seed?: string, origAction?: number|string): this|null {
     // Immediately act on any gotos (with a max depth)
     let i = 0;
     let ref: this|null = this.clone();
     for (; i < MAX_GOTO_FOLLOW_DEPTH && ref !== null && ref.getTag() === 'trigger'; i++) {
       const id = getTriggerId(ref.elem);
       if (id !== null) {
-        ref = ref.gotoId(evaluateContentOps(id, ref.ctx), seed);
+        ref = ref.gotoId(evaluateContentOps(id, ref.ctx), seed, origAction);
       } else {
         return ref.handleTriggerEvent(seed);
       }
@@ -323,7 +328,7 @@ export class Node<C extends Context> {
     }
 
     if (next.getTag() === 'trigger') {
-      return next.handleTrigger(seed);
+      return next.handleTrigger(seed, action);
     }
     return next;
   }
