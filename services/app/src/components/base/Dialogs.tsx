@@ -106,16 +106,16 @@ export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialog
   public render(): JSX.Element {
     return (
       <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
-        <DialogTitle>Choose Game</DialogTitle>
+        <DialogTitle>Choose game</DialogTitle>
         <DialogContent className="dialog">
-          <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: false})}>Expedition</Button>
+          <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: false, future: false})}>Base Game</Button>
           <br/>
           <br/>
-          <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: true})}>Expedition + <img className="inline_icon" src="images/horror_small.svg"/></Button>
+          <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: true})}>Base + Horror</Button>
           <br/>
           <br/>
-          <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: true, future: true})}>Expedition + <img className="inline_icon" src="images/horror_small.svg"/> + <img className="inline_icon" src="images/future_small.svg"/></Button>
-          <p style={{textAlign: 'center', marginTop: '1.5em'}}>This will only appear once, but you can always change it in Settings.</p>
+          <Button className="primary large" onClick={() => this.props.onExpansionSelect({horror: true, future: true})}>Base + Horror + Future</Button>
+          <p style={{textAlign: 'center', marginTop: '1.5em'}}>This will only appear once, but you can change it at any time in Settings.</p>
           <p style={{textAlign: 'center', marginTop: '1.5em'}}>Don't have the cards? <strong><a href="#" onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>Get a copy</a></strong>.</p>
         </DialogContent>
       </Dialog>

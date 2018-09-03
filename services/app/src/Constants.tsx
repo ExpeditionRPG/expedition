@@ -119,6 +119,15 @@ if (NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2
     summary: 'DEV',
     author: 'DEV',
     publishedurl: 'quests/test_quest.xml',
+    expansionhorror: false,
+    expansionfuture: false,
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 20,
+    maxtimeminutes: 40,
+    genre: 'Drama',
+    contentrating: 'Kid-friendly',
+    language: 'English',
   }));
   // TODO make actual intro Future quest, remove dev gate
   FEATURED_QUESTS.unshift(new Quest({
@@ -137,7 +146,7 @@ if (NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2
     mintimeminutes: 20,
     maxtimeminutes: 40,
     genre: 'Drama',
-    contentrating: 'Everyone',
+    contentrating: 'Kid-friendly',
     language: 'English',
   }));
 }
