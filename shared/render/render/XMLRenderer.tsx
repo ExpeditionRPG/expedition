@@ -1,7 +1,7 @@
 import {Instruction, TEMPLATE_ATTRIBUTE_MAP, TEMPLATE_ATTRIBUTE_SHORTHAND, TemplateChild, TemplateType} from '../../schema/templates/Templates';
 import {Renderer, sanitizeStyles} from './Renderer';
 
-const Math = require('mathjs') as any;
+const Math = require('mathjs');
 const cheerio: any = require('cheerio') as CheerioAPI;
 
 // from https://stackoverflow.com/questions/7918868/how-to-escape-xml-entities-in-javascript

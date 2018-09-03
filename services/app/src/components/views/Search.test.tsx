@@ -1,5 +1,5 @@
 import {configure, render} from 'enzyme';
-import * as Adapter from 'enzyme-adapter-react-16';
+import Adapter from 'enzyme-adapter-react-16';
 import {LanguageType} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {FEATURED_QUESTS} from '../../Constants';
@@ -35,7 +35,7 @@ describe('Search', () => {
       return {props, wrapper};
     }
 
-    it('propagates user selections when Search is pressed', () => {
+    test('propagates user selections when Search is pressed', () => {
       const {props, wrapper} = setup();
       const inst = wrapper.instance();
       expect(inst.state).toEqual(initialSearch.search);
@@ -48,7 +48,7 @@ describe('Search', () => {
       expect(props.onSearch).toHaveBeenCalledWith(TEST_SEARCH, jasmine.any(Object));
     });
 
-    it('propagates user selections when form is submitted', () => {
+    test('propagates user selections when form is submitted', () => {
       const {props, wrapper} = setup();
       const inst = wrapper.instance();
       expect(inst.state).toEqual(initialSearch.search);
@@ -78,57 +78,57 @@ describe('Search', () => {
       return {props, wrapper};
     }
 
-    it('displays no expansion icons when quest has no expansions', () => {
+    test('displays no expansion icons when quest has no expansions', () => {
       const {wrapper} = setup('Learning to Adventure');
       expect(wrapper.html()).not.toContain('horror');
     });
 
-    it('displays offline icon when quest is available offline');
+    test.skip('displays offline icon when quest is available offline', () => { /* TODO */ });
 
-    it('displays horror icon when a quest uses the Horror expansion', () => {
+    test('displays horror icon when a quest uses the Horror expansion', () => {
       const {wrapper} = setup('Learning 2: The Horror');
       expect(wrapper.html()).toContain('horror');
     });
 
-    it('displays no book icon when a quest does not require pen and paper', () => {
+    test('displays no book icon when a quest does not require pen and paper', () => {
       const {wrapper} = setup('Learning to Adventure', {}, {requirespenpaper: false});
       expect(wrapper.html()).not.toContain('book');
     });
 
-    it('does not display last played date if quest has not been played', () => {
+    test('does not display last played date if quest has not been played', () => {
       const {wrapper} = setup('Learning to Adventure');
       expect(wrapper.html()).not.toContain('questPlayedIcon');
     });
 
-    it('displayed last played date if quest has been played before', () => {
+    test('displayed last played date if quest has been played before', () => {
       const {wrapper} = setup('Learning to Adventure', {lastPlayed: new Date()});
       expect(wrapper.html()).toContain('questPlayedIcon');
     });
 
-    it('does not display awarded icon when quest not awarded', () => {
+    test('does not display awarded icon when quest not awarded', () => {
       const {wrapper} = setup('Learning to Adventure');
       expect(wrapper.html()).not.toContain('questAwardedIcon');
     });
 
-    it('displays awarded icon if quest has received award', () => {
+    test('displays awarded icon if quest has received award', () => {
       const {wrapper} = setup('Learning to Adventure', {}, {awarded: 'The Bob Medal For Questing Mediocrity'});
       expect(wrapper.html()).toContain('questAwardedIcon');
     });
 
-    it('does not display official icon if quest is not official', () => {
+    test('does not display official icon if quest is not official', () => {
       const {wrapper} = setup('Learning to Adventure', {}, {official: false});
       expect(wrapper.html()).not.toContain('questOfficialIcon');
     });
 
-    it('displays official icon if quest is official', () => {
+    test('displays official icon if quest is official', () => {
       const {wrapper} = setup('Learning to Adventure');
       expect(wrapper.html()).toContain('questOfficialIcon');
     });
   });
 
   describe('Results', () => {
-    it('offers tips when no search results');
-    it('renders some search results');
-    it('shows spinner when loading results');
+    test.skip('gracefully handles no search results', () => { /* TODO */ });
+    test.skip('renders some search results', () => { /* TODO */ });
+    test.skip('shows spinner when loading results', () => { /* TODO */ });
   });
 });

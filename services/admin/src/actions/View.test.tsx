@@ -1,3 +1,3 @@
 describe('View action', () => {
-  // TODO
+  test('Empty', () => { /* Empty */ });
 });

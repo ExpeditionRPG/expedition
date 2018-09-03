@@ -5,7 +5,6 @@
   "homepage": "http://cards.expeditiongame.com",
   "scripts": {
     "build": "webpack --config ./webpack.dist.config.js --display-error-details --verbose --progress",
-    "test": "karma start --single-run --browsers NoSandboxChromeHeadless",
     "start": "webpack-dev-server --progress --hot"
   }
 }

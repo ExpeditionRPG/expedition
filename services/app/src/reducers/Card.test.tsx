@@ -4,17 +4,17 @@ import {Reducer} from '../Testing';
 import {card} from './Card';
 
 describe('Card reducer', () => {
-  it('Defaults to splash card', () => {
+  test('Defaults to splash card', () => {
     expect(card(undefined, {type: 'NO_OP'})).toEqual(jasmine.objectContaining({name: 'SPLASH_CARD'} as any));
   });
 
-  it('Sets state and phase on toCard', () => {
+  test('Sets state and phase on toCard', () => {
     Reducer(card).withState({})
       .expect(toCard({name: 'SEARCH_CARD', phase: 'DISCLAIMER'}))
       .toChangeState({name: 'SEARCH_CARD', phase: 'DISCLAIMER'});
   });
 
-  it('Does not debounce after some time', () => {
+  test('Does not debounce after some time', () => {
     const then = Date.now();
     spyOn(Date, 'now').and.callFake(() => {
       return then + NAVIGATION_DEBOUNCE_MS + 10;
@@ -24,7 +24,7 @@ describe('Card reducer', () => {
       .toChangeState({name: 'QUEST_CARD'});
   });
 
-  it('Debounces NAVIGATE actions', () => {
+  test('Debounces NAVIGATE actions', () => {
     const then = Date.now();
     spyOn(Date, 'now').and.callFake(() => {
       return then + 50;
@@ -34,7 +34,7 @@ describe('Card reducer', () => {
       .toChangeState({name: 'SEARCH_CARD'});
   });
 
-  it('Respects overrideDebounce', () => {
+  test('Respects overrideDebounce', () => {
     const then = Date.now();
     spyOn(Date, 'now').and.callFake(() => {
       return then + 50;

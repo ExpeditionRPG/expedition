@@ -13,18 +13,18 @@ describe('PlayerCount', () => {
   }};
 
   describe('numAdventurers', () => {
-    it('returns 2 adventurers for singler-player mode', () => {
+    test('returns 2 adventurers for singler-player mode', () => {
       expect(numAdventurers(s, initialMultiplayer)).toEqual(2);
     });
-    it('sums up adventurers across all connected sessions', () => {
+    test('sums up adventurers across all connected sessions', () => {
       expect(numAdventurers(s, m4)).toEqual(4);
     });
   });
   describe('numPlayers', () => {
-    it('returns 1 for single-player mode', () => {
+    test('returns 1 for single-player mode', () => {
       expect(numPlayers(s, initialMultiplayer)).toEqual(1);
     });
-    it('sums up players across all connected sessions', () => {
+    test('sums up players across all connected sessions', () => {
       expect(numPlayers(s, m4)).toEqual(4);
     });
   });

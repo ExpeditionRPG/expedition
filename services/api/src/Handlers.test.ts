@@ -22,7 +22,7 @@ import {
 
 describe('handlers', () => {
   describe('healthCheck', () => {
-    it('returns success', () => {
+    test('returns success', () => {
       const res = mockRes();
       healthCheck(mockReq({body: ''}), res);
       expect(res.end.calledWith(' ')).toEqual(true);
@@ -31,15 +31,15 @@ describe('handlers', () => {
   });
 
   describe('announcement', () => {
-    it('returns with message and link');
-    it('returns default version if unable to reach a version API');
-    it('returns the latest version from API');
-    it('caches valid version results');
+    test.skip('returns with message and link', () => { /* TODO */ });
+    test.skip('returns default version if unable to reach a version API', () => { /* TODO */ });
+    test.skip('returns the latest version from API', () => { /* TODO */ });
+    test.skip('caches valid version results', () => { /* TODO */ });
   });
 
   describe('search', () => {
-    it('handles missing locals');
-    it('successfully searches and returns data', (done: DoneFn) => {
+    test.skip('handles missing locals', () => { /* TODO */ });
+    test('successfully searches and returns data', (done: DoneFn) => {
       const res = mockRes();
       testingDBWithState([q.basic])
         .then((db) => search(db, mockReq({body: '{}'}), res))
@@ -53,7 +53,7 @@ describe('handlers', () => {
   });
 
   describe('questXMLHandler', () => {
-    it('returns quest XML', (done: DoneFn) => {
+    test('returns quest XML', (done: DoneFn) => {
       const res = mockRes();
       testingDBWithState([q.basic, rq.basic])
         .then((db) => questXMLHandler(db, mockReq({body: '', params: {quest: q.basic.id}}), res))
@@ -63,7 +63,7 @@ describe('handlers', () => {
         })
         .catch(done.fail);
     });
-    it('returns error when given invalid quest id');
+    test.skip('returns error when given invalid quest id', () => { /* TODO */ });
   });
 
   describe('publish', () => {
@@ -72,12 +72,12 @@ describe('handlers', () => {
       ms = {send: jasmine.createSpy('send')};
     });
 
-    it('handles missing locals');
-    it('publishes minor release');
-    it('publishes major release');
-    it('sends mail to admin');
-    it('sends mail to user on first publish');
-    it('publishes new quest', (done: DoneFn) => {
+    test.skip('handles missing locals', () => { /* TODO */ });
+    test.skip('publishes minor release', () => { /* TODO */ });
+    test.skip('publishes major release', () => { /* TODO */ });
+    test.skip('sends mail to admin', () => { /* TODO */ });
+    test.skip('sends mail to user on first publish', () => { /* TODO */ });
+    test('publishes new quest', (done: DoneFn) => {
       const res = mockRes();
       res.locals.id = u.basic.id;
       let db: Database;
@@ -119,7 +119,7 @@ describe('handlers', () => {
   });
 
   describe('unpublish', () => {
-    it('unpublishes a quest', (done: DoneFn) => {
+    test('unpublishes a quest', (done: DoneFn) => {
       const res = mockRes();
       let db: Database;
       testingDBWithState([q.basic])
@@ -141,11 +141,11 @@ describe('handlers', () => {
         })
         .catch(done.fail);
     });
-    it('handles missing locals');
+    test.skip('handles missing locals', () => { /* TODO */ });
   });
 
   describe('postAnalyticsEvent', () => {
-    it('posts an event', (done: DoneFn) => {
+    test('posts an event', (done: DoneFn) => {
       const res = mockRes();
       let db: Database;
       testingDBWithState([])
@@ -181,7 +181,7 @@ describe('handlers', () => {
       ms = {send: jasmine.createSpy('send')};
     });
 
-    it('rejects non-parseable feedback', (done: DoneFn) => {
+    test('rejects non-parseable feedback', (done: DoneFn) => {
       const res = mockRes();
       testingDBWithState([])
         .then((db) => feedback(db, ms, mockReq({body: '{', params: {type: 'feedback'}}), res))
@@ -193,7 +193,7 @@ describe('handlers', () => {
         }).catch(done.fail);
     });
 
-    it('rejects invalid data', (done: DoneFn) => {
+    test('rejects invalid data', (done: DoneFn) => {
       const data = {
         partition: 'random-partition',
         questid: '123',
@@ -209,7 +209,7 @@ describe('handlers', () => {
           done();
         }).catch(done.fail);
     });
-    it('publishes with minimal data', (done: DoneFn) => {
+    test('publishes with minimal data', (done: DoneFn) => {
       const data = {
         partition: q.basic.partition,
         questid: q.basic.id,
@@ -223,7 +223,7 @@ describe('handlers', () => {
           done();
         }).catch(done.fail);
     });
-    it('publishes feedback', (done: DoneFn) => {
+    test('publishes feedback', (done: DoneFn) => {
       const data = {
         difficulty: 'HARD',
         email: 'test@email.com',
@@ -251,7 +251,7 @@ describe('handlers', () => {
   });
 
   describe('userQuests', () => {
-    it('gets quest played by user', (done: DoneFn) => {
+    test('gets quest played by user', (done: DoneFn) => {
       const res = mockRes();
       res.locals.id = ae.questEnd.userID;
       testingDBWithState([
@@ -268,8 +268,8 @@ describe('handlers', () => {
   });
 
   describe('subscribe', () => {
-    it('handles invalid email address');
-    it('subscribes user to list', () => {
+    test.skip('handles invalid email address', () => { /* TODO */ });
+    test('subscribes user to list', () => {
       const res = mockRes();
       let result: any;
       const mc = {post: (list: any, details: any, cb: any) => {

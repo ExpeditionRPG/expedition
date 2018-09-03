@@ -1,3 +1,3 @@
 describe('Combat NoTimer', () => {
-  it('shows non-timer prep card');
+  test.skip('shows non-timer prep card', () => { /* TODO */ });
 });

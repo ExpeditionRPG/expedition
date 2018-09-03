@@ -1,5 +1,5 @@
 describe('Picker', () => {
-  it('triggers onDelta when buttons clicked');
+  test.skip('triggers onDelta when buttons clicked', () => { /* TODO */ });
 
-  it('shows label & value');
+  test.skip('shows label & value', () => { /* TODO */ });
 });

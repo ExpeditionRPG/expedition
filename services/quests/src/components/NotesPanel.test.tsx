@@ -1,3 +1,3 @@
 describe('NotesPanel', () => {
-  it('TODO');
+  test.skip('TODO', () => { /* TODO */ });
 });

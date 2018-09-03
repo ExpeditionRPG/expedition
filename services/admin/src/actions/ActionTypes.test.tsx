@@ -1,3 +1,3 @@
 describe('ActionTypes', () => {
-  // Nothing interactive to test here.
+  test('Empty', () => { /* Empty */ });
 });

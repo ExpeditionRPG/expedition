@@ -1,5 +1,5 @@
 import {configure, shallow} from 'enzyme';
-import * as Adapter from 'enzyme-adapter-react-16';
+import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 configure({ adapter: new Adapter() });
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
@@ -35,10 +35,10 @@ function setup(overrides: Partial<Props>) {
 }
 
 describe('DefeatContainer', () => {
-  it('handles undefined combat element', () => {
+  test('handles undefined combat element', () => {
     const e = setup({combat: undefined});
     expect(e).toBeDefined();
   });
-  it('calculates max tier from history');
-  it('skips the timer card on prev button');
+  test.skip('calculates max tier from history', () => { /* TODO */ });
+  test.skip('skips the timer card on prev button', () => { /* TODO */ });
 });

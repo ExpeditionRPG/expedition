@@ -9,7 +9,7 @@ describe('Checkout actions', () => {
   describe('toCheckout', () => {
 
     /* TODO FIX
-    it('Navigates to checkout if logged in', () => {
+    test('Navigates to checkout if logged in', () => {
       const store = newMockStore({});
       store.dispatch(toCheckout(testLoggedInUser, 1));
       expect(store.getActions().length).toEqual(2);
@@ -19,7 +19,7 @@ describe('Checkout actions', () => {
     });
     */
 
-    it('Navigates to login if not logged in', () => {
+    test('Navigates to login if not logged in', () => {
       const store = newMockStore({});
       store.dispatch(toCheckout(1));
       // TODO intercept the login function
@@ -27,7 +27,7 @@ describe('Checkout actions', () => {
   });
 
   describe('checkoutSubmit', () => {
-    it('on success: notifies user and navigates to thank you page');
-    it('on failure: notifies user and restarts checkout process');
+    test.skip('on success: notifies user and navigates to thank you page', () => { /* TODO */ });
+    test.skip('on failure: notifies user and restarts checkout process', () => { /* TODO */ });
   });
 });

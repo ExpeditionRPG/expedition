@@ -1,7 +1,7 @@
 describe('Stripe', () => {
-  it('Returns error if payments are not enabled');
+  test.skip('Returns error if payments are not enabled', () => { /* TODO */ });
 
-  it('Returns validation error if amount < 50 cents');
+  test.skip('Returns validation error if amount < 50 cents', () => { /* TODO */ });
 
-  it('Returns an error if the Stripe API call fails');
+  test.skip('Returns an error if the Stripe API call fails', () => { /* TODO */ });
 });

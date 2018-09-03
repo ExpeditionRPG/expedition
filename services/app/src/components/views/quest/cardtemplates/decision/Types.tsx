@@ -1,5 +1,5 @@
 import {AppStateWithHistory, CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
-import * as seedrandom from 'seedrandom';
+const seedrandom = require('seedrandom');
 import {Outcome, SkillCheck} from 'shared/schema/templates/Decision';
 import {getCardTemplateTheme} from '../Template';
 import {ParserNode} from '../TemplateTypes';

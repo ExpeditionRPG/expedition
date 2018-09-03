@@ -1,5 +1,5 @@
 import {configure, render} from 'enzyme';
-import * as Adapter from 'enzyme-adapter-react-16';
+import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 import {Provider} from 'react-redux';
 import {initialCardState} from '../reducers/Card';
@@ -30,7 +30,7 @@ function setup(props: Partial<Props>) {
 }
 
 describe('Compositor', () => {
-  it('Renders provided card, i.e. splash screen', () => {
+  test('Renders provided card, i.e. splash screen', () => {
     const {wrapper} = setup({});
     expect(wrapper.text()).toContain('To Begin:');
   });

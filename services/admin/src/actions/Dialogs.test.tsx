@@ -1,3 +1,3 @@
 describe('Dialog action', () => {
-  // TODO
+  test('Empty', () => { /* Empty */ });
 });

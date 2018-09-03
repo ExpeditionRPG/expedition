@@ -22,7 +22,7 @@ describe('SavedQuest actions', () => {
   });
 
   describe('deleteSavedQuest', () => {
-    it('removes both the listing and the data', () => {
+    test('removes both the listing and the data', () => {
       deleteSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS);
       expect(getStorageString(savedQuestKey(STORED_QUEST_ID, STORED_QUEST_TS), '')).toEqual('');
       expect(getStorageJson(SAVED_QUESTS_KEY, {})).toEqual([]);
@@ -39,18 +39,18 @@ describe('SavedQuest actions', () => {
       throw new Error('Test setup failed');
     }
 
-    it('adds to the listing without affecting other quests', () => {
+    test('adds to the listing without affecting other quests', () => {
       storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS);
-      expect(getStorageJson(SAVED_QUESTS_KEY, [])).toContain({ts: NEW_TS, details: {id: NEW_ID}, pathLen: 1});
+      expect(getStorageJson(SAVED_QUESTS_KEY, [])).toContainEqual({ts: NEW_TS, details: {id: NEW_ID}, pathLen: 1});
     });
-    it('stores xml and context path', () => {
+    test('stores xml and context path', () => {
       storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS);
       expect(getStorageJson(savedQuestKey(NEW_ID, NEW_TS), {})).toEqual({xml: (quest + ''), path: [0]});
     });
   });
 
   describe('listSavedQuests', () => {
-    it('loads the listing', () => {
+    test('loads the listing', () => {
       const list = listSavedQuests();
       expect(list.savedQuests.length).toEqual(1);
       expect(list.savedQuests[0]).toEqual({ts: STORED_QUEST_TS, details: {id: STORED_QUEST_ID}, pathLen: 1} as any);
@@ -58,13 +58,13 @@ describe('SavedQuest actions', () => {
   });
 
   describe('loadSavedQuest', () => {
-    it('replays the node given the saved path', () => {
+    test('replays the node given the saved path', () => {
       const action = loadSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS);
       expect(action.node.elem + '').toEqual('<roleplay>expected</roleplay>');
     });
   });
 
   describe('saveQuestForOffline', () => {
-    it('Saves a publishedurl to local storage');
+    test.skip('Saves a publishedurl to local storage', () => { /* TODO */ });
   });
 });

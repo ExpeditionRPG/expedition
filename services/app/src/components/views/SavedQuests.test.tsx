@@ -1,5 +1,5 @@
 import {configure, render} from 'enzyme';
-import * as Adapter from 'enzyme-adapter-react-16';
+import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 import SavedQuests, {Props} from './SavedQuests';
 configure({ adapter: new Adapter() });
@@ -10,7 +10,7 @@ function setup(props: Partial<Props>) {
 }
 
 describe('SavedQuests', () => {
-  it('promps the user when there are no saved quests', () => {
+  test('promps the user when there are no saved quests', () => {
     const {wrapper} = setup({
       saved: [],
     });

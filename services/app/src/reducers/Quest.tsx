@@ -1,11 +1,11 @@
 import Redux from 'redux';
-import * as seedrandom from 'seedrandom';
 import {Quest} from 'shared/schema/Quests';
 import {PreviewQuestAction, QuestDetailsAction, QuestNodeAction} from '../actions/ActionTypes';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {QuestState} from './StateTypes';
 
 const cheerio = require('cheerio') as CheerioAPI;
+const seedrandom = require('seedrandom');
 
 function autoseed(): string {
   let seed = '';

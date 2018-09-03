@@ -1,7 +1,7 @@
 describe('Checkbox', () => {
-  it('blanks checkbox when value=false');
+  test.skip('blanks checkbox when value=false', () => { /* TODO */ });
 
-  it('checks box when value=true');
+  test.skip('checks box when value=true', () => { /* TODO */ });
 
-  it('triggers onChange when tapped');
+  test.skip('triggers onChange when tapped', () => { /* TODO */ });
 });

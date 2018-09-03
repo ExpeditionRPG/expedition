@@ -1,3 +1,3 @@
 describe('Combat PrepareTimer', () => {
-  it('shows preparation card');
+  test.skip('shows preparation card', () => { /* TODO */ });
 });

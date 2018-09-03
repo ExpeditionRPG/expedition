@@ -4,7 +4,7 @@ import * as React from 'react';
 import {OverrideTextArea} from './base/OverrideTextArea';
 import {ScrollBottom} from './base/ScrollBottom';
 
-const math = require('mathjs') as any;
+const math = require('mathjs');
 
 export interface StateProps {
   scopeHistory: any[];

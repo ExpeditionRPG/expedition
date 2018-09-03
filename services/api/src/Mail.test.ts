@@ -1,3 +1,3 @@
 describe('mail', () => {
-  it('sends mail');
+  test.skip('sends mail', () => { /* TODO */ });
 });

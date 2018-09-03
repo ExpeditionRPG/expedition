@@ -60,21 +60,21 @@ describe('Combat actions', () => {
   };
 
   describe('roundTimeMillis', () => {
-    it('Set timer to 10s with two+ players', () => {
+    test('Set timer to 10s with two+ players', () => {
       const result = roundTimeMillis({...TEST_SETTINGS, numPlayers: 2});
       expect(result).toEqual(10000);
     });
-    it('Set timer to 20s with one player', () => {
+    test('Set timer to 20s with one player', () => {
       const result = roundTimeMillis({...TEST_SETTINGS, numPlayers: 1});
       expect(result).toEqual(20000);
     });
-    it('Accounts for remote play'); // TODO
+    test.skip('Accounts for remote play', () => { /* TODO */ }); // TODO
   });
 
   describe('initCombat', () => {
     const actions = Action(initCombat, {settings: TEST_SETTINGS}).execute({node: TEST_NODE.clone()});
 
-    it('triggers nav to combat start', () => {
+    test('triggers nav to combat start', () => {
       expect(actions[2]).toEqual(jasmine.objectContaining({
         to: jasmine.objectContaining({
           name: 'QUEST_CARD',
@@ -84,7 +84,7 @@ describe('Combat actions', () => {
       }));
     });
 
-    it('parses initial state', () => {
+    test('parses initial state', () => {
       // "Unknown" enemies are given tier 1.
       // Known enemies' tier is parsed from constants.
       expect(actions[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
@@ -102,27 +102,27 @@ describe('Combat actions', () => {
   });
 
   describe('generate combat template', () => {
-    it('Returns expected difficulty settings');
-    it('Returns expected alive adventurers - one player');
-    it('Returns expected alive adventurers - multiplayer');
+    test.skip('Returns expected difficulty settings', () => { /* TODO */ });
+    test.skip('Returns expected alive adventurers - one player', () => { /* TODO */ });
+    test.skip('Returns expected alive adventurers - multiplayer', () => { /* TODO */ });
   });
 
   describe('initCustomCombat', () => {
     const actions = Action(initCustomCombat, {settings: TEST_SETTINGS}).execute({});
 
-    it('has custom=true', () => {
+    test('has custom=true', () => {
       expect(actions[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
         custom: true,
       }));
     });
 
-    it('identifies as a combat element', () => {
+    test('identifies as a combat element', () => {
       expect(actions[1].node.getTag()).toEqual('combat');
     });
   });
 
   describe('isSurgeNextRound', () => {
-    it('surges according to the period', () => {
+    test('surges according to the period', () => {
       // "Play" until surge
       const store = newMockStore({settings: TEST_SETTINGS});
       let node = newCombatNode();
@@ -171,40 +171,40 @@ describe('Combat actions', () => {
       return {actions, store};
     };
 
-    it('randomly assigns damage', () => {
+    test('randomly assigns damage', () => {
       const {actions} = newStore({});
       expect(actions[2].node.ctx.templates.combat.mostRecentAttack.damage).toBeDefined();
     });
-    it('generates rolls according to player count', () => {
+    test('generates rolls according to player count', () => {
       const {actions} = newStore({});
       expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
     });
-    it('increments the round counter', () => {
+    test('increments the round counter', () => {
       const {actions} = newStore({});
       expect(actions[2].node.ctx.templates.combat.roundCount).toEqual(1);
     });
-    it('only generates rolls for local, not remote, players', () => {
+    test('only generates rolls for local, not remote, players', () => {
       const {actions} = newStore({ rp: TEST_RP });
       expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
     });
   });
 
   describe('handleCombatEnd', () => {
-    it('levels up if high maxTier on victory', () => {
+    test('levels up if high maxTier on victory', () => {
       const store = newMockStore({settings: TEST_SETTINGS});
       store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 9, seed: ''}));
 
       expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(true);
     });
 
-    it('does not level up if low maxTier on victory', () => {
+    test('does not level up if low maxTier on victory', () => {
       const store = newMockStore({settings: TEST_SETTINGS});
       store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 1, seed: ''}));
 
       expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(false);
     });
 
-    it('assigns random loot on victory', () => {
+    test('assigns random loot on victory', () => {
       const store = newMockStore({settings: TEST_SETTINGS});
       store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: true, maxTier: 9, seed: ''}));
 
@@ -216,7 +216,7 @@ describe('Combat actions', () => {
       expect(lootCount).toBeGreaterThan(0);
     });
 
-    it('never assigns loot or levels up on defeat', () => {
+    test('never assigns loot or levels up on defeat', () => {
       const store = newMockStore({});
       store.dispatch(handleCombatEnd({node: newCombatNode(), settings: TEST_SETTINGS, victory: false, maxTier: 9, seed: ''}));
       expect(store.getActions()[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
@@ -225,7 +225,7 @@ describe('Combat actions', () => {
       }));
     });
 
-    it('does not level up if multiplayer count exceeds tier sum', () => {
+    test('does not level up if multiplayer count exceeds tier sum', () => {
       const store = newMockStore({settings: TEST_SETTINGS});
       store.dispatch(handleCombatEnd({
         maxTier: 4,
@@ -239,7 +239,7 @@ describe('Combat actions', () => {
       expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(false);
     });
 
-    it('Uses parent combat node when given a mid-combat roleplay node', () => {
+    test('Uses parent combat node when given a mid-combat roleplay node', () => {
       const pnode = new ParserNode(cheerio.load(`
         <combat><e>lich</e>
           <event on="round">
@@ -267,49 +267,49 @@ describe('Combat actions', () => {
   });
 
   describe('tierSumDelta', () => {
-    it('increases', () => {
+    test('increases', () => {
       const node = Action(tierSumDelta).execute({node: newCombatNode(), current: 9, delta: 1})[0].node;
       expect(node.ctx.templates.combat.tier).toEqual(10);
     });
-    it('decreases', () => {
+    test('decreases', () => {
       const node = Action(tierSumDelta).execute({node: newCombatNode(), current: 9, delta: -1})[0].node;
       expect(node.ctx.templates.combat.tier).toEqual(8);
     });
-    it('does not go below 0', () => {
+    test('does not go below 0', () => {
       const node = Action(tierSumDelta).execute({node: newCombatNode(), current: 9, delta: -1000})[0].node;
       expect(node.ctx.templates.combat.tier).toEqual(0);
     });
   });
 
   describe('adventurerDelta', () => {
-    it('increases', () => {
+    test('increases', () => {
       const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: 1, delta: 2})[0].node;
       expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(3);
     });
-    it('decreases', () => {
+    test('decreases', () => {
       const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: 3, delta: -1})[0].node;
       expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(2);
     });
-    it('does not go above player count', () => {
+    test('does not go above player count', () => {
       const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: TEST_SETTINGS.numPlayers, delta: 1})[0].node;
       expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(TEST_SETTINGS.numPlayers);
     });
-    it('does not go below 0', () => {
+    test('does not go below 0', () => {
       const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: 1, delta: -2})[0].node;
       expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(0);
     });
-    it('does not go below 0', () => {
+    test('does not go below 0', () => {
       const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: 3, delta: -1000})[0].node;
       expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(0);
     });
-    it('does not go above the player count', () => {
+    test('does not go above the player count', () => {
       const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: 2, delta: 1000})[0].node;
       expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(3);
     });
   });
 
   describe('handleResolvePhase', () => {
-    it('goes to resolve card if no round event handler', () => {
+    test('goes to resolve card if no round event handler', () => {
       const node = new ParserNode(cheerio.load(`<combat>
         <e>Test</e>
         <e>Lich</e>
@@ -322,7 +322,7 @@ describe('Combat actions', () => {
       expect(actions[2].to.phase).toEqual('RESOLVE_ABILITIES');
     });
 
-    it('goes to resolve card if conditionally false round event handler', () => {
+    test('goes to resolve card if conditionally false round event handler', () => {
       const node = new ParserNode(cheerio.load(`<combat>
         <e>Test</e>
         <e>Lich</e>
@@ -336,7 +336,7 @@ describe('Combat actions', () => {
       expect(actions[2].to.phase).toEqual('RESOLVE_ABILITIES');
     });
 
-    it('goes to roleplay card on round event handler', () => {
+    test('goes to roleplay card on round event handler', () => {
       let node = new ParserNode(cheerio.load(`<combat>
         <e>Test</e>
         <e>Lich</e>
@@ -354,12 +354,12 @@ describe('Combat actions', () => {
     });
   });
 
-  it('handles global player count change');
+  test.skip('handles global player count change', () => { /* TODO */ });
 
-  it('clears combat state on completion');
+  test.skip('clears combat state on completion', () => { /* TODO */ });
 
   describe('findCombatParent', () => {
-    it('returns node when node is combat', () => {
+    test('returns node when node is combat', () => {
       const v = cheerio.load('<quest><combat id="start"></combat></quest>')('#start');
       const result = findCombatParent(new ParserNode(v, defaultContext()));
       if (result === null) {
@@ -367,7 +367,7 @@ describe('Combat actions', () => {
       }
       expect(result.attr('id')).toEqual('start');
     });
-    it('returns combat parent', () => {
+    test('returns combat parent', () => {
       const v = cheerio.load('<quest><combat id="expected"><event on="round"><roleplay id="start"></roleplay></event></combat></quest>')('#start');
       const result = findCombatParent(new ParserNode(v, defaultContext()));
       if (result === null) {
@@ -375,20 +375,20 @@ describe('Combat actions', () => {
       }
       expect(result.attr('id')).toEqual('expected');
     });
-    it('does not return combat when node is within a win/lose event', () => {
+    test('does not return combat when node is within a win/lose event', () => {
       const v = cheerio.load('<quest><combat><event on="win"><roleplay id="start"></roleplay></event></combat></quest>')('#start');
       expect(findCombatParent(new ParserNode(v, defaultContext()))).toEqual(null);
     });
   });
 
   describe('setupCombatDecision', () => {
-    it('populates combat decision template with generated LeveledSkillChecks');
+    test.skip('populates combat decision template with generated LeveledSkillChecks', () => { /* TODO */ });
   });
   describe('handleCombatDecisionRoll', () => {
-    it('appends the roll to the combat decision');
+    test.skip('appends the roll to the combat decision', () => { /* TODO */ });
   });
   describe('toDecisionCard', () => {
-    it('updates node decision phase when in combat');
-    it('calls toCard when not in combat');
+    test.skip('updates node decision phase when in combat', () => { /* TODO */ });
+    test.skip('calls toCard when not in combat', () => { /* TODO */ });
   });
 });

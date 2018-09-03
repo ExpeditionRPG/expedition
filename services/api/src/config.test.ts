@@ -1,6 +1,7 @@
 describe('config', () => {
-  // TODO
-  it('does not explode', () => {
+  test('does not explode', () => {
     require('./config');
   });
+
+  test.skip('loads defaults', () => { /* TODO */ });
 });

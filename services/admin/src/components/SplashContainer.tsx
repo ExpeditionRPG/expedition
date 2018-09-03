@@ -4,7 +4,7 @@ import {login} from '../actions/User';
 import {AppState, UserState} from '../reducers/StateTypes';
 import Splash, {DispatchProps, StateProps} from './Splash';
 
-const ReactGA = require('react-ga') as any;
+const ReactGA = require('react-ga');
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {user: state.user};

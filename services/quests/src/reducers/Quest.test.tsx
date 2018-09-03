@@ -2,18 +2,18 @@ import {QuestMetadataChangeAction} from '../actions/ActionTypes';
 import {quest} from './Quest';
 
 describe('quest', () => {
-  it('returns initial state');
+  test.skip('returns initial state', () => { /* TODO */ });
 
-  it('updates metadata state on change', () => {
+  test('updates metadata state on change', () => {
     const change: QuestMetadataChangeAction = {type: 'QUEST_METADATA_CHANGE', key: 'author', value: 'test'};
     expect(quest({}, change)).toEqual({author: 'test'});
   });
 
-  it('handles load');
+  test.skip('handles load', () => { /* TODO */ });
 
-  it('clears on new');
+  test.skip('clears on new', () => { /* TODO */ });
 
-  it('clears on delete');
+  test.skip('clears on delete', () => { /* TODO */ });
 
-  it('handles publish');
+  test.skip('handles publish', () => { /* TODO */ });
 });

@@ -1,14 +1,14 @@
 describe('handlers', () => {
   describe('feedback', () => {
-    it('can be queried');
-    it('can be modified');
+    test.skip('can be queried', () => { /* TODO */ });
+    test.skip('can be modified', () => { /* TODO */ });
   });
   describe('quests', () => {
-    it('can be queried');
-    it('can be modified');
+    test.skip('can be queried', () => { /* TODO */ });
+    test.skip('can be modified', () => { /* TODO */ });
   });
   describe('users', () => {
-    it('can be queried');
-    it('can be modified');
+    test.skip('can be queried', () => { /* TODO */ });
+    test.skip('can be modified', () => { /* TODO */ });
   });
 });

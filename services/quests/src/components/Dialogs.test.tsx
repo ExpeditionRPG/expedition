@@ -1,53 +1,53 @@
 describe('Dialogs', () => {
   describe('ConfirmNewQuestDialog', () => {
-    it('renders if open');
+    test.skip('renders if open', () => { /* TODO */ });
 
-    it('hides if not open');
+    test.skip('hides if not open', () => { /* TODO */ });
 
-    it('calls onConfirm on Yes tap');
+    test.skip('calls onConfirm on Yes tap', () => { /* TODO */ });
 
-    it('calls onConfirm on No tap');
+    test.skip('calls onConfirm on No tap', () => { /* TODO */ });
 
-    it('closes on Cancel tap');
+    test.skip('closes on Cancel tap', () => { /* TODO */ });
   });
 
   describe('ConfirmLoadQuestDialog', () => {
-    it('renders if open');
+    test.skip('renders if open', () => { /* TODO */ });
 
-    it('hides if not open');
+    test.skip('hides if not open', () => { /* TODO */ });
 
-    it('calls onConfirm on Yes tap');
+    test.skip('calls onConfirm on Yes tap', () => { /* TODO */ });
 
-    it('calls onConfirm on No tap');
+    test.skip('calls onConfirm on No tap', () => { /* TODO */ });
 
-    it('closes on Cancel tap');
+    test.skip('closes on Cancel tap', () => { /* TODO */ });
   });
 
   describe('PublishQuestDialog', () => {
-    it('renders if open');
+    test.skip('renders if open', () => { /* TODO */ });
 
-    it('hides if not open');
+    test.skip('hides if not open', () => { /* TODO */ });
 
-    it('closes on OK');
+    test.skip('closes on OK', () => { /* TODO */ });
   });
 
   describe('ErrorDialog', () => {
-    it('renders if open');
+    test.skip('renders if open', () => { /* TODO */ });
 
-    it('hides if not open');
+    test.skip('hides if not open', () => { /* TODO */ });
 
-    it('closes on OK');
+    test.skip('closes on OK', () => { /* TODO */ });
   });
 
   describe('UserDialog', () => {
-    it('renders if open');
+    test.skip('renders if open', () => { /* TODO */ });
 
-    it('hides if not open');
+    test.skip('hides if not open', () => { /* TODO */ });
 
-    it('closes on Cancel tap');
+    test.skip('closes on Cancel tap', () => { /* TODO */ });
 
-    it('calls onSignOut on Sign Out tap');
+    test.skip('calls onSignOut on Sign Out tap', () => { /* TODO */ });
 
-    it('calls onSignIn on Sign In tap');
+    test.skip('calls onSignIn on Sign In tap', () => { /* TODO */ });
   });
 });

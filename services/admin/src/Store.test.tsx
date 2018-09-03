@@ -1,3 +1,3 @@
 describe('Store', () => {
-  // TODO
+  test('Empty', () => { /* Empty */ });
 });

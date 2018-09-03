@@ -7,25 +7,25 @@ describe('Card action', () => {
     const navigator = {vibrate: () => { /* mock */ }};
     setNavigator(navigator);
 
-    it('causes vibration if vibration enabled', () => {
+    test('causes vibration if vibration enabled', () => {
       spyOn(navigator, 'vibrate');
       Action(toCard, {settings: {vibration: true}}).execute({name: 'QUEST_CARD'});
       expect(navigator.vibrate).toHaveBeenCalledTimes(1);
     });
 
-    it('does not vibrate if vibration not enabled', () => {
+    test('does not vibrate if vibration not enabled', () => {
       spyOn(navigator, 'vibrate');
       Action(toCard, {settings: {vibration: false}}).execute({name: 'QUEST_CARD'});
       expect(navigator.vibrate).toHaveBeenCalledTimes(0);
     });
 
-    it('dispatches a NAVIGATE action', () => {
+    test('dispatches a NAVIGATE action', () => {
       Action(toCard).expect({name: 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({type: 'NAVIGATE'}));
     });
   });
 
   describe('toPrevious', () => {
-    it('returns a RETURN action', () => {
+    test('returns a RETURN action', () => {
       Action(toPrevious).expect({name: 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({type: 'RETURN'}));
     });
   });

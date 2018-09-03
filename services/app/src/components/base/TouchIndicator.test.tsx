@@ -1,3 +1,3 @@
 describe('TouchIndicator', () => {
-  // TODO
+  test.skip('TODO', () => { /* TODO */ });
 });

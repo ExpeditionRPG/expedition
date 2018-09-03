@@ -1,3 +1,3 @@
 describe('QuestHistory', () => {
-  // Entirely glue code
+  test('Empty', () => { /* TODO */ });
 });

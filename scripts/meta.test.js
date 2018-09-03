@@ -11,7 +11,10 @@ const FILES = [
 function walkDir(root) {
   const stat = fs.statSync(root);
   if (stat.isDirectory()) {
-    const dirs = fs.readdirSync(root).filter(item => !item.startsWith('.'));
+    const dirs = fs.readdirSync(root).filter(item =>
+      !item.startsWith('.') &&
+      !item.startsWith('dist') &&
+      !item.startsWith('node_modules'));
     let results = dirs.map(sub => walkDir(`${root}/${sub}`));
     return [].concat(...results);
   } else {
@@ -20,9 +23,9 @@ function walkDir(root) {
 }
 
 describe('Dependencies', () => {
-  it('are actually used', () => {
-    const package = require('../package.json');
-    const packageUsage = JSON.stringify(package.scripts) + JSON.stringify(package.cordova);
+  test('are actually used', () => {
+    const packageJSON = require('../package.json');
+    const packageUsage = JSON.stringify(packageJSON.scripts) + JSON.stringify(packageJSON.cordova);
     const WHITELIST = [
       // Needed to build app
       'cordova-android',
@@ -44,12 +47,11 @@ describe('Dependencies', () => {
       'babel-jest',
       'pre-commit',
       'pre-push',
-      'karma-jasmine',
-      'karma-webpack',
       'enzyme-adapter-react-16',
       'react-test-renderer',
       'sqlite3',
       'jasmine-core',
+      'jest-localstorage-mock',
 
       // Needed for storage layer
       'pg',
@@ -58,13 +60,10 @@ describe('Dependencies', () => {
       'sinon',
       'sinon-express-mock',
       'jasmine-expect',
-      'karma-chrome-launcher',
-      'karma-es6-shim',
-      'karma-sourcemap-loader',
     ];
 
-    let depstrs = Object.keys(package.dependencies || {});
-    Array.prototype.push.apply(depstrs, Object.keys(package.devDependencies || {}));
+    let depstrs = Object.keys(packageJSON.dependencies || {});
+    Array.prototype.push.apply(depstrs, Object.keys(packageJSON.devDependencies || {}));
     depstrs = depstrs.filter((dep) => {
       for (let w of WHITELIST) {
         if (dep.match(w)) {
@@ -84,7 +83,7 @@ describe('Dependencies', () => {
         }
       }
 
-      // Check for use in package.json sections
+      // Check for use in packageJSON.json sections
       if (!found && packageUsage.indexOf(dep) !== -1) {
         found = true;
       }
@@ -99,7 +98,7 @@ describe('Dependencies', () => {
 });
 
 describe('Typescript files', () => {
-  it('are always in pairs of *.tsx and *.test.tsx', () => {
+  test('are always in pairs of *.tsx and *.test.tsx', () => {
     const WHITELIST = [
       'reducers/',
       'Constants$',
@@ -109,6 +108,7 @@ describe('Typescript files', () => {
       '/app/platforms/',
       '/app/plugins/',
       '/cards/src/themes/',
+      '/quests/src/dictionaries',
       '/quests/errors', // TODO move these to common code?
     ];
     const WHITELIST_REGEX = new RegExp(WHITELIST.join('|'));

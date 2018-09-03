@@ -1,3 +1,3 @@
 describe('Combat surge', () => {
-  it('shows surge card');
+  test.skip('shows surge card', () => { /* TODO */ });
 });

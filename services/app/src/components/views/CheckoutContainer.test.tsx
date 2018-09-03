@@ -1,7 +1,7 @@
 describe('CheckoutContainer', () => {
-  it('Error displays snackbar');
+  test.skip('Error displays snackbar', () => { /* TODO */ });
 
-  it('Submit makes network request');
+  test.skip('Submit makes network request', () => { /* TODO */ });
 
-  it('Submit network request shows snackbar and reverts phase on error');
+  test.skip('Submit network request shows snackbar and reverts phase on error', () => { /* TODO */ });
 });

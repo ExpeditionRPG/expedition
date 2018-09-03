@@ -1,3 +1,3 @@
 describe('QueryTypes', () => {
-  it('exists');
+  test.skip('exists', () => { /* TODO */ });
 });

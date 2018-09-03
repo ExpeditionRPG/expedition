@@ -1,14 +1,14 @@
 describe('Search actions', () => {
   describe('Search', () => {
-    it('calls getSearchResults with provided initial params and settings');
-    it('calls getSearchResults with expansion enabled');
-    it('dispatches search results'); // $10
+    test.skip('calls getSearchResults with provided initial params and settings', () => { /* TODO */ });
+    test.skip('calls getSearchResults with expansion enabled', () => { /* TODO */ });
+    test.skip('dispatches search results', () => { /* TODO */ }); // $10
   });
 
-  it('searchAndPlay');
+  test.skip('searchAndPlay', () => { /* TODO */ });
 
   describe('getSearchResults', () => {
-    it('shows snackbar on request error');  // $10
-    it('calls back with results'); // $10
+    test.skip('shows snackbar on request error', () => { /* TODO */ });  // $10
+    test.skip('calls back with results', () => { /* TODO */ }); // $10
   });
 });

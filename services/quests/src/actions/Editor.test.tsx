@@ -3,35 +3,35 @@
 
 describe('Editor action', () => {
   describe('setCodeView', () => {
-    it('creates action');
+    test.skip('creates action', () => { /* TODO */ });
   });
 
   describe('setDirty', () => {
-    it('creates action');
+    test.skip('creates action', () => { /* TODO */ });
   });
 
   describe('getPlayNode', () => {
-    it('works on root quest node', () => {
+    test('works on root quest node', () => {
       // TODO fix dependency chain loading - auth.tsx failing b/c utils not defined (external dependency)
       // const quest = cheerio.load('<quest><roleplay>Foo</roleplay></quest>');
       // expect(getPlayNode(quest)).toEqual(cheerio.load('<roleplay>Foo</roleplay>'));
     });
 
-    it('works on roleplay node', () => {
+    test('works on roleplay node', () => {
       // const quest = cheerio.load('<roleplay>Foo</roleplay>');
       // expect(getPlayNode(quest)).toEqual(cheerio.load('<roleplay>Foo</roleplay>'));
     });
 
-    it('works on combat node');
+    test.skip('works on combat node', () => { /* TODO */ });
 
-    it('alerts on invalid node');
+    test.skip('alerts on invalid node', () => { /* TODO */ });
   });
 
   describe('renderAndPlay', () => {
-    it('renders and plays');
+    test.skip('renders and plays', () => { /* TODO */ });
 
-    it('auto-playtests');
+    test.skip('auto-playtests', () => { /* TODO */ });
 
-    it('pushes error on invalid node');
+    test.skip('pushes error on invalid node', () => { /* TODO */ });
   });
 });

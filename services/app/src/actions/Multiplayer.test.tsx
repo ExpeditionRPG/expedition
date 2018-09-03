@@ -1,26 +1,26 @@
 describe('Multiplayer actions', () => {
   describe('routeEvent', () => {
-    it('does not dispatch INTERACTION events');
-    it('resolves and dispatches ACTION events');
-    it('shows a snackbar on ERROR events');
-    it('safely handles unknown events');
-    it('rejects COMMIT when no matching inflight action');
-    it('rejects REJECT when no matching inflight action');
-    it('rejects ACTIONs when id is not an increment');
+    test.skip('does not dispatch INTERACTION events', () => { /* TODO */ });
+    test.skip('resolves and dispatches ACTION events', () => { /* TODO */ });
+    test.skip('shows a snackbar on ERROR events', () => { /* TODO */ });
+    test.skip('safely handles unknown events', () => { /* TODO */ });
+    test.skip('rejects COMMIT when no matching inflight action', () => { /* TODO */ });
+    test.skip('rejects REJECT when no matching inflight action', () => { /* TODO */ });
+    test.skip('rejects ACTIONs when id is not an increment', () => { /* TODO */ });
   });
 
   describe('multiplayerNewSession', () => {
-    it('creates a new session');
-    it('catches and logs web errors');
+    test.skip('creates a new session', () => { /* TODO */ });
+    test.skip('catches and logs web errors', () => { /* TODO */ });
   });
 
   describe('multiplayerConnect', () => {
-    it('connects to a session');
-    it('catches and logs web errors');
+    test.skip('connects to a session', () => { /* TODO */ });
+    test.skip('catches and logs web errors', () => { /* TODO */ });
   });
 
   describe('loadMultiplayer', () => {
-    it('fetches past sessions by user id');
-    it('catches and logs web errors');
+    test.skip('fetches past sessions by user id', () => { /* TODO */ });
+    test.skip('catches and logs web errors', () => { /* TODO */ });
   });
 });

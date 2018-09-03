@@ -2,23 +2,23 @@ import * as React from 'react';
 import {camelCase, horizontalCounter, romanize} from './helpers';
 
 describe('icon', () => {
-  it('Returns JSX element');
+  test.skip('Returns JSX element', () => { /* TODO */ });
 });
 
 describe('camelCase', () => {
-  it('Skeleton Swordsman -> skeletonSwordsman', () => {
+  test('Skeleton Swordsman -> skeletonSwordsman', () => {
     expect(camelCase('Skeleton Swordsman')).toEqual('skeletonSwordsman');
   });
 });
 
 describe('romanize', () => {
-  it('0 -> 0', () => {
+  test('0 -> 0', () => {
     expect(romanize(0)).toEqual('0');
   });
-  it('1 -> I', () => {
+  test('1 -> I', () => {
     expect(romanize(1)).toEqual('I');
   });
-  it('27 -> XXVII', () => {
+  test('27 -> XXVII', () => {
     expect(romanize(27)).toEqual('XXVII');
   });
 });
@@ -29,16 +29,16 @@ describe('horizontalCounter', () => {
   // it('0 has 0', () => {
   //   expect(horizontalCounter(0)).toEqual(<span><span key={0}>{0}</span></span>);
   // });
-  it('2 has 0, 1, 2', () => {
+  test('2 has 0, 1, 2', () => {
     expect(horizontalCounter(2)).toEqual(<span><span key={0}>{0}</span><span key={1}>{1}</span><span key={2}>{2}</span></span>);
   });
 });
 
 describe('healthCounter', () => {
-  it('10 health fits into a single side');
-  it('>= max health outputs max health');
+  test.skip('10 health fits into a single side', () => { /* TODO */ });
+  test.skip('>= max health outputs max health', () => { /* TODO */ });
 });
 
 describe('lootCounter', () => {
-  it('2 has 1, 2');
+  test.skip('2 has 1, 2', () => { /* TODO */ });
 });

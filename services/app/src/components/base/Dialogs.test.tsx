@@ -1,11 +1,11 @@
 describe('Dialogs', () => {
   describe('ExitQuestDialog', () => {
-    it('renders if open');
+    test.skip('renders if open', () => { /* TODO */ });
 
-    it('hides if not open');
+    test.skip('hides if not open', () => { /* TODO */ });
 
-    it('calls onExitQuest on Exit tap');
+    test.skip('calls onExitQuest on Exit tap', () => { /* TODO */ });
 
-    it('closes on Cancel tap');
+    test.skip('closes on Cancel tap', () => { /* TODO */ });
   });
 });

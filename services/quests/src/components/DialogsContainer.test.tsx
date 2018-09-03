@@ -1,21 +1,21 @@
 describe('DialogsContainer', () => {
-  it('maps state');
+  test.skip('maps state', () => { /* TODO */ });
 
-  it('dispatches dialog change with onClose');
+  test.skip('dispatches dialog change with onClose', () => { /* TODO */ });
 
-  it('saves with onConfirmSave(true) and dispatches');
+  test.skip('saves with onConfirmSave(true) and dispatches', () => { /* TODO */ });
 
-  it('forces "new quest" action with onConfirmSave(false)');
+  test.skip('forces "new quest" action with onConfirmSave(false)', () => { /* TODO */ });
 
-  it('forces "load quest" action with onConfirmSave(false)');
+  test.skip('forces "load quest" action with onConfirmSave(false)', () => { /* TODO */ });
 
-  it('dispatches with onSignIn');
+  test.skip('dispatches with onSignIn', () => { /* TODO */ });
 
-  it('dispatches with onSignOut');
+  test.skip('dispatches with onSignOut', () => { /* TODO */ });
 
-  it('Saves metadata changes live');
+  test.skip('Saves metadata changes live', () => { /* TODO */ });
 
-  it('Publishes with valid metadata');
+  test.skip('Publishes with valid metadata', () => { /* TODO */ });
 
-  it('Errors when publishing with invalid metadata');
+  test.skip('Errors when publishing with invalid metadata', () => { /* TODO */ });
 });

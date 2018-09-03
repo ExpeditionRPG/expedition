@@ -1,3 +1,3 @@
 describe('Feedback View', () => {
-  // TODO
+  test('Empty', () => { /* Empty */ });
 });
