@@ -11,7 +11,10 @@ const FILES = [
 function walkDir(root) {
   const stat = fs.statSync(root);
   if (stat.isDirectory()) {
-    const dirs = fs.readdirSync(root).filter(item => !item.startsWith('.'));
+    const dirs = fs.readdirSync(root).filter(item =>
+      !item.startsWith('.') &&
+      !item.startsWith('dist') &&
+      !item.startsWith('node_modules'));
     let results = dirs.map(sub => walkDir(`${root}/${sub}`));
     return [].concat(...results);
   } else {
