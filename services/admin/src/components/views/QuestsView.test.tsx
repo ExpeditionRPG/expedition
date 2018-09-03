@@ -1,3 +1,3 @@
 describe('Quest View', () => {
-  // TODO
+  test('Empty', () => { /* Empty */ });
 });

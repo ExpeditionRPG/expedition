@@ -1,5 +1,5 @@
 describe('user', () => {
-  it('returns initial state');
+  test.skip('returns initial state', () => { /* TODO */ });
 
-  it('handles meta');
+  test.skip('handles meta', () => { /* TODO */ });
 });

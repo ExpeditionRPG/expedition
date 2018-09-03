@@ -1,9 +1,9 @@
 describe('User action', () => {
   describe('followUserAuthLink', () => {
-    it('opens popup');
+    test.skip('opens popup', () => { /* TODO */ });
 
-    it('fetches /locals when popup closed');
+    test.skip('fetches /locals when popup closed', () => { /* TODO */ });
 
-    it('dispatches when fetch to /locals completes');
+    test.skip('dispatches when fetch to /locals completes', () => { /* TODO */ });
   });
 });

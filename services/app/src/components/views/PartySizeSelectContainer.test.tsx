@@ -1,3 +1,3 @@
 describe('PartySizeSelectContainer', () => {
-  it('Only allows players in the min-max range');
+  test.skip('Only allows players in the min-max range', () => { /* TODO */ });
 });

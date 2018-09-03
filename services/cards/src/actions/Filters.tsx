@@ -6,7 +6,7 @@ import {cardsFilter, downloadCards} from './Cards';
 
 declare var require: any;
 declare var window: any;
-const qs = require('qs') as any;
+const qs = require('qs');
 
 export interface FilterChangeAction extends Redux.Action {
   type: 'FILTER_CHANGE';

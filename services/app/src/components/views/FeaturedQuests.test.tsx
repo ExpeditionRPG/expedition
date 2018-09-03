@@ -1,5 +1,5 @@
 describe('FeaturedQuests', () => {
-  it('Does not show search in simulator');
+  test.skip('Does not show search in simulator', () => { /* TODO */ });
 
-  it('Filters out Horror quests if Horror disabled');
+  test.skip('Filters out Horror quests if Horror disabled', () => { /* TODO */ });
 });

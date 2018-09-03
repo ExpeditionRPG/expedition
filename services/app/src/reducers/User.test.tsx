@@ -8,6 +8,6 @@ export const testLoggedInUser: UserState = {
   name: 'Bob Fisher',
 };
 
-describe('User reducer', () => {
-  // Currently simple enough; no tests needed.
+describe('User', () => {
+  test('Empty', () => { /* Empty */ });
 });

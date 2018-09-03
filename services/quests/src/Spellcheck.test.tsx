@@ -7,34 +7,34 @@
 
 describe('Spellcheck', () => {
   describe('Corpus Cleaning', () => {
-    it('Keeps valid text', () => {
+    test('Keeps valid text', () => {
       // const input = 'Hello, this is valid text';
       // const expected = input;
       // const output = Spellcheck.cleanCorpus(input);
       // expect(output).toEqual(expected);
     });
 
-    it('Removes ops');
-    it('Removes ID references');
-    it('Removes HTML tags');
+    test.skip('Removes ops', () => { /* TODO */ });
+    test.skip('Removes ID references', () => { /* TODO */ });
+    test.skip('Removes HTML tags', () => { /* TODO */ });
   });
   describe('Word Count', () => {
-    it('returns correct amount even if multiple spaces between words');
-    it('returns correct amount even if ops and other elements present');
+    test.skip('returns correct amount even if multiple spaces between words', () => { /* TODO */ });
+    test.skip('returns correct amount even if ops and other elements present', () => { /* TODO */ });
   });
   describe('Spellcheck', () => {
-    it('allows enemy names');
-    it('catches misspelled English words');
-    it('catches multiple misspellings of the same word');
-    it('catches improper punctuation', () => {
+    test.skip('allows enemy names', () => { /* TODO */ });
+    test.skip('catches misspelled English words', () => { /* TODO */ });
+    test.skip('catches multiple misspellings of the same word', () => { /* TODO */ });
+    test('catches improper punctuation', () => {
       // const input = 'You(the wizard)are here.No more!You shout.';
     });
-    it('allows proper punctuation', () => {
+    test('allows proper punctuation', () => {
       // const input = 'You (the wizard) are here. No more! You shout.';
     });
-    it('does not flag misspelled words inside of triggers or IDs');
-    it('does not flag misspelled words inside of triggers or IDs, even if misspelled words exist elsewhere in corpus');
-    it('does not flag suffixes touching ops', () => {
+    test.skip('does not flag misspelled words inside of triggers or IDs', () => { /* TODO */ });
+    test.skip('does not flag misspelled words inside of triggers or IDs, even if misspelled words exist elsewhere in corpus', () => { /* TODO */ });
+    test('does not flag suffixes touching ops', () => {
       // const input = "The {{singer}}'s mother, now that's not a bug";
       // expected: no spelling errors
     });

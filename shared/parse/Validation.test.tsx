@@ -1,9 +1,9 @@
 describe('Validation', () => {
-  it('reports quest missing root <quest> node');
+  test.skip('reports quest missing root <quest> node', () => { /* TODO */ });
 
-  it('reports quest with elements outside the whitelist');
+  test.skip('reports quest with elements outside the whitelist', () => { /* TODO */ });
 
-  it('reports quest with duplicate ids');
+  test.skip('reports quest with duplicate ids', () => { /* TODO */ });
 
-  it('reports quest with elements that have non-whitelisted attributes');
+  test.skip('reports quest with elements that have non-whitelisted attributes', () => { /* TODO */ });
 });

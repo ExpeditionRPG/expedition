@@ -3,7 +3,7 @@ import {analyticsEvents as ae, testingDBWithState} from './TestData';
 
 describe('Test Data', () => {
   describe('testingDBWithState', () => {
-    it('Creates an unpopulated testing DB when empty', (done: DoneFn) => {
+    test('Creates an unpopulated testing DB when empty', (done: DoneFn) => {
       testingDBWithState([])
         .then((db) => {
           return db.analyticsEvent.create(ae.action);
@@ -11,7 +11,7 @@ describe('Test Data', () => {
         .then(() => done())
         .catch(done.fail);
     });
-    it('Creates a testing DB with records', (done: DoneFn) => {
+    test('Creates a testing DB with records', (done: DoneFn) => {
       testingDBWithState([ae.action])
         .then((db) => {
           return db.analyticsEvent.findOne({where: {userID: ae.action.userID}});

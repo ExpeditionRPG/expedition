@@ -1,3 +1,3 @@
 describe('Main', () => {
-  it('TODO');
+  test.skip('TODO', () => { /* TODO */ });
 });

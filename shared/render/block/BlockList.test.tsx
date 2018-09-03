@@ -3,12 +3,12 @@ import {BlockList} from './BlockList';
 const expect: any = require('expect');
 
 describe('BlockList', () => {
-  it('parses empty string', () => {
+  test('parses empty string', () => {
     const list = new BlockList('');
     expect(list.length).toBe(0);
   });
 
-  it('parses single block', () => {
+  test('parses single block', () => {
     const list = new BlockList('This is a block');
     expect(list.length).toBe(1);
     expect(list.at(0)).toEqual({
@@ -18,7 +18,7 @@ describe('BlockList', () => {
     });
   });
 
-  it('parses multiple inline blocks', () => {
+  test('parses multiple inline blocks', () => {
     const list = new BlockList('_Block 1_\n\ntext\n\n_Block 2_\n\nmore text');
     expect(list.length).toBe(2);
     expect(list.at(0)).toEqual({
@@ -33,7 +33,7 @@ describe('BlockList', () => {
     });
   });
 
-  it('treats triggers as new blocks', () => {
+  test('treats triggers as new blocks', () => {
     const list = new BlockList('_Block 1_\n\ntext\n\n**end**');
     expect(list.at(0)).toEqual({
       indent: 0,
@@ -47,7 +47,7 @@ describe('BlockList', () => {
     });
   });
 
-  it('parses new block on indent', () => {
+  test('parses new block on indent', () => {
     const list = new BlockList('* choice\n\n  Choice text');
     expect(list.at(0)).toEqual({
       indent: 0,
@@ -61,7 +61,7 @@ describe('BlockList', () => {
     });
   });
 
-  it('parses new block on dedent', () => {
+  test('parses new block on dedent', () => {
     const list = new BlockList('    First block\n\n  Second block');
     expect(list.at(0)).toEqual({
       indent: 4,
@@ -75,7 +75,7 @@ describe('BlockList', () => {
     });
   });
 
-  it('strips pre-text newlines', () => {
+  test('strips pre-text newlines', () => {
     const list = new BlockList('\n\n\n\n  Block');
     expect(list.at(0)).toEqual({
       indent: 2,
@@ -84,7 +84,7 @@ describe('BlockList', () => {
     });
   });
 
-  it('parses tabs', () => {
+  test('parses tabs', () => {
     const list = new BlockList('\tFirst block');
     expect(list.at(0)).toEqual({
       indent: 2,
@@ -93,7 +93,7 @@ describe('BlockList', () => {
     });
   });
 
-  it('parses same block if no separating empty line', () => {
+  test('parses same block if no separating empty line', () => {
     const list = new BlockList('* a choice that takes\n  multiple lines and has indent!');
     expect(list.at(0)).toEqual({
       indent: 0,

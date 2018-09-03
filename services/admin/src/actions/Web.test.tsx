@@ -1,3 +1,3 @@
 describe('Web actions', () => {
-  // TODO
+  test('Empty', () => { /* Empty */ });
 });

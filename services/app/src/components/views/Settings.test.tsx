@@ -1,4 +1,4 @@
 describe('Settings', () => {
-  it('displays with initial settings');
-  it('displays with timerSeconds = null');
+  test.skip('displays with initial settings', () => { /* TODO */ });
+  test.skip('displays with timerSeconds = null', () => { /* TODO */ });
 });

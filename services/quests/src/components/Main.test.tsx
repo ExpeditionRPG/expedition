@@ -1,9 +1,9 @@
 describe('Main', () => {
-  it('Displays splash screen when not logged in');
+  test.skip('Displays splash screen when not logged in', () => { /* TODO */ });
 
-  it('Displays bottom drawer when bottomPanelShown');
+  test.skip('Displays bottom drawer when bottomPanelShown', () => { /* TODO */ });
 
-  it('Hides bottom drawer when not bottomPanelShown');
+  test.skip('Hides bottom drawer when not bottomPanelShown', () => { /* TODO */ });
 
-  it('Toggles panel shown when panel fold button clicked');
+  test.skip('Toggles panel shown when panel fold button clicked', () => { /* TODO */ });
 });

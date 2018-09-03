@@ -8,7 +8,7 @@ const expect: any = require('expect');
 const prettifyHTML = (require('html') as any).prettyPrint;
 
 describe('QDLParser', () => {
-  it('parses basic QDL to XML', () => {
+  test('parses basic QDL to XML', () => {
     const qdl = new QDLParser(XMLRenderer);
 
     qdl.render(new BlockList(TestData.basicMD));
@@ -20,7 +20,7 @@ describe('QDLParser', () => {
     expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.basicXML);
   });
 
-  it('parses QDL to XML with lots of conditionals', () => {
+  test('parses QDL to XML with lots of conditionals', () => {
     const qdl = new QDLParser(XMLRenderer);
 
     qdl.render(new BlockList(TestData.conditionalsMD));
@@ -32,7 +32,7 @@ describe('QDLParser', () => {
     expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.conditionalsXML);
   });
 
-  it('parses QDL to XML with lots of comments', () => {
+  test('parses QDL to XML with lots of comments', () => {
     const qdl = new QDLParser(XMLRenderer);
 
     qdl.render(new BlockList(TestData.commentsMD));
@@ -44,7 +44,7 @@ describe('QDLParser', () => {
     expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.commentsXML);
   });
 
-  it('parses QDL to XML with lots of indentations', () => {
+  test('parses QDL to XML with lots of indentations', () => {
     const qdl = new QDLParser(XMLRenderer);
 
     qdl.render(new BlockList(TestData.indentsMD));
@@ -56,9 +56,9 @@ describe('QDLParser', () => {
     expect(prettifyHTML(qdl.getResult().toString())).toEqual(TestData.indentsXML);
   });
 
-  it('errors if path not ending in "end"');
+  test.skip('errors if path not ending in "end"', () => { /* TODO */ });
 
-  it('errors on no input', () => {
+  test('errors on no input', () => {
     const qdl = new QDLParser(XMLRenderer);
 
     qdl.render(new BlockList(''));
@@ -67,9 +67,9 @@ describe('QDLParser', () => {
     expect(prettifyMsgs(qdl.getFinalizedLogs().error)).toEqual(TestData.emptyError);
   });
 
-  it('errors if only quest block');
+  test.skip('errors if only quest block', () => { /* TODO */ });
 
-  it('errors if no quest header at start', () => {
+  test('errors if no quest header at start', () => {
     const qdl = new QDLParser(XMLRenderer);
 
     qdl.render(new BlockList(TestData.noHeaderMD));
@@ -77,7 +77,7 @@ describe('QDLParser', () => {
     expect(prettifyMsgs(qdl.getFinalizedLogs().error)).toEqual(TestData.noHeaderError);
   });
 
-  it('treats trigger as singular block, always', () => {
+  test('treats trigger as singular block, always', () => {
     const qdl = new QDLParser(XMLRenderer);
 
     qdl.render(new BlockList(TestData.triggerWithNoAfterHeader));

@@ -1,3 +1,3 @@
 describe('Auth', () => {
-  it('TODO');
+  test.skip('TODO', () => { /* TODO */ });
 });

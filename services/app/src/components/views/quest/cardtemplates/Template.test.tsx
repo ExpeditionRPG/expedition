@@ -1,5 +1,5 @@
 describe('CardTemplates template', () => {
   describe('updateContext', () => {
-    it('persists readonly template nodes');
+    test.skip('persists readonly template nodes', () => { /* TODO */ });
   });
 });

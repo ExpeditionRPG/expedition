@@ -28,7 +28,7 @@ describe('Multiplayer', () => {
     // };
 
     describe('on vanilla actions', () => {
-      it('passes regular actions through', () => {
+      test('passes regular actions through', () => {
         // We'll always need to be able to do this, since "regular" actions are dispatched by the function-based actions
         const store = mockStore({});
         store.dispatch({type: 'test'});
@@ -37,7 +37,7 @@ describe('Multiplayer', () => {
     });
 
     describe('on actions of type ["name", args]', () => {
-      it('resolves and calls the function', () => {
+      test('resolves and calls the function', () => {
         // TODO(scott): Fix this test
         /*
         const store = mockStore({});
@@ -48,7 +48,7 @@ describe('Multiplayer', () => {
         */
       });
 
-      it('broadcasts to remote clients using transformed args', () => {
+      test('broadcasts to remote clients using transformed args', () => {
         // TODO(scott): Fix this test
         /*
         client.sendEvent = jasmine.createSpy('sendEvent');
@@ -62,20 +62,20 @@ describe('Multiplayer', () => {
     });
 
     describe('on actions of type LOCAL', () => {
-      it('wraps derived actions with LOCAL');
-      it('does not dispatch to remote clients');
+      test.skip('wraps derived actions with LOCAL', () => { /* TODO */ });
+      test.skip('does not dispatch to remote clients', () => { /* TODO */ });
     });
   });
 
   describe('reconnection behavior', () => {
-    it('is triggered on connection failure');
-    it('backs off with random exponential offset');
-    it('publishes client status when reconnected');
-    it('requests missed state and dispatches fast-forward actions');
+    test.skip('is triggered on connection failure', () => { /* TODO */ });
+    test.skip('backs off with random exponential offset', () => { /* TODO */ });
+    test.skip('publishes client status when reconnected', () => { /* TODO */ });
+    test.skip('requests missed state and dispatches fast-forward actions', () => { /* TODO */ });
   });
 
   describe('dispatch behavior', () => {
-    it('uses the next event ID in the series');
+    test.skip('uses the next event ID in the series', () => { /* TODO */ });
   });
 
 });

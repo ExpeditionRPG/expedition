@@ -1,7 +1,6 @@
-
 describe('Session', () => {
   describe('makeSecret', () => {
-    it('generates a secret string');
-    it('allows procedural secret generation');
+    test.skip('generates a secret string', () => { /* TODO */ });
+    test.skip('allows procedural secret generation', () => { /* TODO */ });
   });
 });

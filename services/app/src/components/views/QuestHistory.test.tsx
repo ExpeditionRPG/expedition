@@ -1,3 +1,3 @@
 describe('QuestHistory', () => {
-  // Pretty basic; no tests needed for now.
+  test.skip('TODO', () => { /* TODO */ });
 });

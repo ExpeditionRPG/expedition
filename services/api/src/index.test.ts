@@ -1,22 +1,22 @@
 describe('app', () => {
   describe('init', () => {
-    it('starts an HTTP server');
+    test.skip('starts an HTTP server', () => { /* TODO */ });
   });
 
   describe('setupSession', () => {
-    it('inits usable session store');
+    test.skip('inits usable session store', () => { /* TODO */ });
   });
 
   describe('setupRoutes', () => {
-    it('sets up routes');
+    test.skip('sets up routes', () => { /* TODO */ });
   });
 
   describe('setupDB', () => {
-    it('returns a valid db');
+    test.skip('returns a valid db', () => { /* TODO */ });
   });
 
   describe('setupLogging', () => {
-    it('sets up 404 handling');
-    it('sets up error logging');
+    test.skip('sets up 404 handling', () => { /* TODO */ });
+    test.skip('sets up error logging', () => { /* TODO */ });
   });
 });

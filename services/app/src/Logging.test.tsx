@@ -1,16 +1,16 @@
 import {logEvent} from './Logging';
 
 describe('Console buffer', () => {
-  it('logs the start of console');
-  it('logs the most recent console event');
-  it('omits middle logs');
+  test.skip('logs the start of console', () => { /* TODO */ });
+  test.skip('logs the most recent console event', () => { /* TODO */ });
+  test.skip('omits middle logs', () => { /* TODO */ });
 });
 
 describe('logEvent', () => {
-    it('logs to google analytics if GA set up'); // $10
-    it('works if no args passed');
-    it('works if lots of args passed');
-    it('does not break when GA not set up', () => {
+    test.skip('logs to google analytics if GA set up', () => { /* TODO */ }); // $10
+    test.skip('works if no args passed', () => { /* TODO */ });
+    test.skip('works if lots of args passed', () => { /* TODO */ });
+    test('does not break when GA not set up', () => {
       expect(() => logEvent('category', 'action', {})).not.toThrow();
     });
   });

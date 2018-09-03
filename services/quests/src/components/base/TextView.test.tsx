@@ -1,3 +1,3 @@
 describe('TextView', () => {
-  it('TODO');
+  test.skip('TODO', () => { /* TODO */ });
 });

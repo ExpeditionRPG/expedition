@@ -29,7 +29,7 @@ class CrawlTest extends CrawlerBase<Context> {
 
 describe('CrawlerBase', () => {
   describe('crawl', () => {
-    it('travels across combat events', () => {
+    test('travels across combat events', () => {
       const xml = cheerio.load(`
         <combat data-line="0">
           <event on="win" heal="5" loot="false" xp="false">
@@ -50,7 +50,7 @@ describe('CrawlerBase', () => {
       expect(foundEnd).toEqual(true);
     });
 
-    it('handles a roleplay node', () => {
+    test('handles a roleplay node', () => {
       const xml = cheerio.load(`
         <roleplay title="A1" id="A1" data-line="2">
           <p>A1 tests basic navigation</p>
@@ -78,7 +78,7 @@ describe('CrawlerBase', () => {
       expect(foundEnd).toEqual(true);
     });
 
-    it('handles gotos', () => {
+    test('handles gotos', () => {
       const xml = cheerio.load(`
         <quest>
         <roleplay title="B2" data-line="2">
@@ -107,7 +107,7 @@ describe('CrawlerBase', () => {
       expect(foundEnd).toEqual(true);
     });
 
-    it('handles bad gotos', () => {
+    test('handles bad gotos', () => {
       const xml = cheerio.load(`<quest>
         <roleplay data-line="0"></roleplay>
         <trigger data-line="1">goto nonexistant_id</trigger>
@@ -124,7 +124,7 @@ describe('CrawlerBase', () => {
       expect(foundImplicitEnd).toEqual(true);
     });
 
-    it('tracks implicit end', () => {
+    test('tracks implicit end', () => {
       const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
       let foundImplicitEnd = false;
       const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
@@ -137,7 +137,7 @@ describe('CrawlerBase', () => {
       expect(foundImplicitEnd).toEqual(true);
     });
 
-    it('safely handles nodes without line annotations', () => {
+    test('safely handles nodes without line annotations', () => {
       const xml = cheerio.load(`
         <roleplay title="A0" id="A0" data-line="2"><p></p></roleplay>
         <roleplay title="A1" id="A1"><p></p></roleplay>
@@ -154,7 +154,7 @@ describe('CrawlerBase', () => {
       expect(foundInvalid).toEqual(true);
     });
 
-    it('handles op state', () => {
+    test('handles op state', () => {
       // Simple loop, visits the same node multiple times until a counter ticks over
       const xml = cheerio.load(`
         <quest>
@@ -183,7 +183,7 @@ describe('CrawlerBase', () => {
       expect(foundEnd).toEqual(true);
     });
 
-    it('bails out of infinite loops', () => {
+    test('bails out of infinite loops', () => {
       const xml = cheerio.load(`
         <quest>
           <roleplay title="I" id="I" data-line="2"><p></p></roleplay>
@@ -196,7 +196,7 @@ describe('CrawlerBase', () => {
       crawler.crawl(new Node(xml, defaultContext()));
     });
 
-    it('notifies on max depth exceeded', () => {
+    test('notifies on max depth exceeded', () => {
       const xml = cheerio.load(`
         <quest>
           <roleplay title="I" id="I" data-line="2"><p></p></roleplay>
@@ -211,7 +211,7 @@ describe('CrawlerBase', () => {
       expect(foundExceeded).toEqual(true);
     });
 
-    it('bails out of computationally expensive quests', () => {
+    test('bails out of computationally expensive quests', () => {
       const xml = cheerio.load(`
         <quest>
           <roleplay title="I" id="I" data-line="2"><p></p></roleplay>
@@ -224,7 +224,7 @@ describe('CrawlerBase', () => {
       crawler.crawl(new Node(xml, defaultContext()), 1, 1000000);
     });
 
-    it('handles hanging choice node with no body', () => {
+    test('handles hanging choice node with no body', () => {
       const xml = cheerio.load(`
         <roleplay title="I" data-line="2">
           <choice text="a1"></choice>
@@ -238,7 +238,7 @@ describe('CrawlerBase', () => {
       expect(foundInvalid).toEqual(true);
     });
 
-    it('handles node without data-line attribute', () => {
+    test('handles node without data-line attribute', () => {
       const xml = cheerio.load(`
         <roleplay title="I" data-line="2">
           <choice text="a1"><roleplay></roleplay></choice>
@@ -252,7 +252,7 @@ describe('CrawlerBase', () => {
       expect(foundInvalid).toEqual(true);
     });
 
-    it('visits other parts of the quest before returning to already-seen lines', () => {
+    test('visits other parts of the quest before returning to already-seen lines', () => {
       const xml = cheerio.load(`
         <quest>
           <roleplay data-line="0">{{count = 0}}</roleplay>

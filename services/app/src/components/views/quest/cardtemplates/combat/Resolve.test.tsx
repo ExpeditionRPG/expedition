@@ -1,4 +1,4 @@
 describe('Combat resolve', () => {
-  it('shows horror persona helper');
-  it('shows rolls if enabled in settings');
+  test.skip('shows horror persona helper', () => { /* TODO */ });
+  test.skip('shows rolls if enabled in settings', () => { /* TODO */ });
 });

@@ -1,6 +1,6 @@
 describe('Combat victory', () => {
-  it('shows a victory page');
-  it('shows healing if not suppressed');
-  it('shows loot if not suppressed');
-  it('shows levelup if not suppressed');
+  test.skip('shows a victory page', () => { /* TODO */ });
+  test.skip('shows healing if not suppressed', () => { /* TODO */ });
+  test.skip('shows loot if not suppressed', () => { /* TODO */ });
+  test.skip('shows levelup if not suppressed', () => { /* TODO */ });
 });

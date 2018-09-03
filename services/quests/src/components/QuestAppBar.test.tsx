@@ -1,7 +1,7 @@
 describe('QuestAppBar', () => {
-  it('Shows user icon');
+  test.skip('Shows user icon', () => { /* TODO */ });
 
-  it('Shows quest title');
+  test.skip('Shows quest title', () => { /* TODO */ });
 
-  it('...test each toolbar button');
+  test.skip('...test each toolbar button', () => { /* TODO */ });
 });

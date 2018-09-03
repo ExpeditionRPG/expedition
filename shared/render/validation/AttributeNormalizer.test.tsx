@@ -1,1 +1,3 @@
-// TODO
+describe('Attribute Normalizer', () => {
+  test('TODO', () => { /* TODO */ });
+});

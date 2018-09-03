@@ -1,11 +1,11 @@
 describe('editor', () => {
-  it('returns initial state');
+  test.skip('returns initial state', () => { /* TODO */ });
 
-  it('sets dirty');
+  test.skip('sets dirty', () => { /* TODO */ });
 
-  it('auto-clears dirty on save');
+  test.skip('auto-clears dirty on save', () => { /* TODO */ });
 
-  it('auto-clears dirty on delete');
+  test.skip('auto-clears dirty on delete', () => { /* TODO */ });
 
-  it('auto-clears dirty on new');
+  test.skip('auto-clears dirty on new', () => { /* TODO */ });
 });
