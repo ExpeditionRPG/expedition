@@ -27,9 +27,9 @@ describe('Card', () => {
 
   test.skip('opens ios/android-specific rating pages on menu -> rate', () => { /* TODO */ });
 
-  test.skip('Promps user to confirm if they try to go home while in a quest', () => { /* TODO */ });
+  test.skip('prompts user to confirm if they try to go home while in a quest', () => { /* TODO */ });
 
-  test.skip('Cancelling a go home while in quest does not trigger a go home', () => { /* TODO */ });
+  test.skip('cancelling a go home while in quest does not trigger a go home', () => { /* TODO */ });
 
   test('applies default card and quest theme classes', () => {
     const {wrapper} = setup();
@@ -42,4 +42,6 @@ describe('Card', () => {
     const {wrapper} = setup({theme: 'dark'});
     expect(wrapper.find('.base_card').hasClass('card_theme_dark')).toBe(true);
   });
+
+  test.skip('always closes top-right menu when any menu button is clicked', () => { /* TODO */ });
 });

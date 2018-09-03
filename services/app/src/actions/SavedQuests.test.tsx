@@ -64,6 +64,15 @@ describe('SavedQuest actions', () => {
     });
   });
 
+  describe('recreateNodeFromPath', () => {
+    test.skip('safely handles zero path length', () => { /* TODO */ });
+    test.skip('handles simple choices, preserving op changes', () => { /* TODO */ });
+    test.skip('handles gotos', () => { /* TODO */ });
+    test.skip('handles mid-combat roleplay, preserving op changes', () => { /* TODO */ });
+    test.skip('handles exiting of combat (win/lose)', () => { /* TODO */ });
+    test.skip('returns earlier node if there was a problem with the full path', () => { /* TODO */ });
+  });
+
   describe('saveQuestForOffline', () => {
     test.skip('Saves a publishedurl to local storage', () => { /* TODO */ });
   });

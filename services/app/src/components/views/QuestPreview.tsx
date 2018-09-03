@@ -73,9 +73,9 @@ function renderSaves(props: Props): JSX.Element|null {
 
   const buttons = saves.map((s, i) => {
     return (
-      <div className="savedQuest">
-        <Button key={i} onClick={(e) => props.onPlaySaved(s.details.id, s.ts)} id="play">{Moment(s.ts).fromNow()} ({(s.pathLen === undefined) ? 'unknown position' : `${s.pathLen.toString()} ${pluralize('choice', s.pathLen || 0)}`})</Button>
-        <IconButton key={i + 'x'} onClick={(e) => props.onDeleteConfirm(quest, s.ts)} id="delete">
+      <div key={i} className="savedQuest">
+        <Button onClick={(e) => props.onPlaySaved(s.details.id, s.ts)} id="play">{Moment(s.ts).fromNow()} ({(s.pathLen === undefined) ? 'unknown position' : `${s.pathLen.toString()} ${pluralize('choice', s.pathLen || 0)}`})</Button>
+        <IconButton onClick={(e) => props.onDeleteConfirm(quest, s.ts)} id="delete">
           <CloseIcon/>
         </IconButton>
       </div>

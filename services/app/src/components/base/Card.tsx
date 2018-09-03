@@ -49,6 +49,7 @@ export default class Card extends React.Component<Props, {}> {
 
   public onMenuSelect(value: string) {
     const dispatch = getStore().dispatch;
+    this.handleMenuClose();
     switch (value) {
       case 'HOME':
         if (!this.props.inQuest) {
@@ -87,7 +88,6 @@ export default class Card extends React.Component<Props, {}> {
       default:
         throw new Error('Unknown menu option ' + value);
     }
-    this.handleMenuClose();
   }
 
   public render() {

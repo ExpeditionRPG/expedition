@@ -149,7 +149,7 @@ export class Node<C extends Context> {
     }
   }
 
-  public gotoId(id: string, seed?: string, origAction?: number|string): this|null {
+  public gotoId(id: string, seed?: string): this|null {
     const root = this.getRootElem();
     if (root === null) {
       return null;
@@ -158,7 +158,7 @@ export class Node<C extends Context> {
     if (search.length === 0) {
       return null;
     }
-    return new (this.constructor as any)(search.eq(0), this.ctx, origAction, seed);
+    return new (this.constructor as any)(search.eq(0), this.ctx, undefined, seed);
   }
 
   // Loop through all rendered children. If a call to cb() returns a value
@@ -299,14 +299,14 @@ export class Node<C extends Context> {
     return this;
   }
 
-  private handleTrigger(seed?: string, origAction?: number|string): this|null {
+  private handleTrigger(seed?: string): this|null {
     // Immediately act on any gotos (with a max depth)
     let i = 0;
     let ref: this|null = this.clone();
     for (; i < MAX_GOTO_FOLLOW_DEPTH && ref !== null && ref.getTag() === 'trigger'; i++) {
       const id = getTriggerId(ref.elem);
       if (id !== null) {
-        ref = ref.gotoId(evaluateContentOps(id, ref.ctx), seed, origAction);
+        ref = ref.gotoId(evaluateContentOps(id, ref.ctx), seed);
       } else {
         return ref.handleTriggerEvent(seed);
       }
@@ -328,7 +328,7 @@ export class Node<C extends Context> {
     }
 
     if (next.getTag() === 'trigger') {
-      return next.handleTrigger(seed, action);
+      return next.handleTrigger(seed);
     }
     return next;
   }

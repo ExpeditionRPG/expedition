@@ -10,7 +10,7 @@ function setup(props: Partial<Props>) {
 }
 
 describe('SavedQuests', () => {
-  test('promps the user when there are no saved quests', () => {
+  test('prompts the user when there are no saved quests', () => {
     const {wrapper} = setup({
       saved: [],
     });

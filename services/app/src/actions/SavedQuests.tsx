@@ -106,7 +106,14 @@ function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|num
       node = node.clone(); // Clone re-calculates visibility of inner nodes.
     } else {
       if (typeof action !== 'number') {
-        console.warn('Unused action ' + action + ' in combat');
+        const handled = node.handleAction(action);
+        if (handled === null) {
+          throw Error('Failed to load quest (invalid combat action)');
+        }
+        node = handled;
+        if (action === 'win' || action === 'lose') {
+          break;
+        }
         continue;
       }
       const {nextNode, state} = getNextMidCombatNode(node, action);
@@ -124,35 +131,36 @@ function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|num
       }
     }
   }
+  if (node.getTag() === 'combat') {
+    return {nextNode: null, i};
+  }
   return {nextNode: node, i};
 }
 
-function recreateNodeFromPath(details: Quest, xml: string, path: string|number[]): ParserNode {
+export function recreateNodeFromPath(details: Quest, xml: string, path: string|number[]): ParserNode {
+  // TODO: Return partially-loaded quest if it fails at all.
   let node = initQuest(details, getCheerio().load(xml)('quest'), defaultContext()).node;
-  console.log('Recreating node from path');
-  console.log(`Path is ${path}`);
   for (let i = 0; i < path.length; i++) {
     const action = path[i];
     // TODO: Also save random seed with path in context
-    console.log(`Node ${node.getTag()} action ${action}`);
     let next: ParserNode|null;
-    if (node.getTag() === 'combat') {
-      // Try going all the way through combat. If we stop somewhere in
-      // the middle, return the entry node.
-      const result = recreateNodeThroughCombat(node, i, path);
+    next = node.handleAction(action);
+    if (!next) {
+      throw new Error('Failed to load quest.');
+    }
+
+    // Try going all the way through combat. If we stop somewhere in
+    // the middle, return the node leading up to it.
+    if (next.getTag() === 'combat') {
+      const result = recreateNodeThroughCombat(next, i, path);
       if (!result.nextNode) {
         return node;
       } else {
         next = result.nextNode;
       }
       i = result.i;
-    } else {
-      next = node.handleAction(action);
     }
-    console.log(`Yields node ${next && next.getTag()}`);
-    if (!next) {
-      throw new Error('Failed to load quest.');
-    }
+
     node = next;
   }
   return node;

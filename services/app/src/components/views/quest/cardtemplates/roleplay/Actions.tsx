@@ -56,7 +56,7 @@ export function getNextMidCombatNode(node: ParserNode, index: number): {nextNode
         // If the trigger exits via the win/lose handlers, go to the appropriate
         // combat end card
         return {
-          nextNode: new ParserNode(parentCombatElem, node.ctx),
+          nextNode: new ParserNode(parentCombatElem, node.ctx, index),
           state: (triggerName === 'win') ? 'VICTORY' : 'DEFEAT',
         };
       } else if (triggerName.startsWith('goto') && nextIsInSameCombat) {
@@ -79,7 +79,7 @@ export function getNextMidCombatNode(node: ParserNode, index: number): {nextNode
   } else {
     // If the next node is out of this combat, that means we've dropped off the end of the
     // interestitial roleplay. Go back to combat resolution phase.
-    return {nextNode: new ParserNode(parentCombatElem, node.ctx), state: 'ENDROUND'};
+    return {nextNode: new ParserNode(parentCombatElem, node.ctx, index), state: 'ENDROUND'};
   }
 }
 
