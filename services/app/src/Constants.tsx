@@ -60,6 +60,25 @@ export const FEATURED_QUESTS: Quest[] = [ // Featured quest ids generated from p
     expansionhorror: true,
   }),
   new Quest({
+    id: '1kWPBHWA6L9bViU1SqLd6WOw6hNMvtedI',
+    partition: 'expedition-public',
+    theme: 'base',
+    official: true,
+    title: 'Learning 3: The Future',
+    summary: 'Your first adventure continues into The Future.',
+    author: 'Greg Miller',
+    publishedurl: 'quests/learning_to_adventure_3_the_future.xml',
+    expansionhorror: true,
+    expansionfuture: true,
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 20,
+    maxtimeminutes: 50,
+    genre: 'Drama',
+    contentrating: 'Kid-friendly',
+    language: 'English',
+  }),
+  new Quest({
     id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs',
     partition: 'expedition-public',
     theme: 'base',
@@ -111,6 +130,7 @@ export const FEATURED_QUESTS: Quest[] = [ // Featured quest ids generated from p
     language: 'English',
   }),
 ];
+
 if (NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2bTVMdWc4NVk
   FEATURED_QUESTS.unshift(new Quest({
     id: '1',
@@ -121,26 +141,6 @@ if (NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2
     publishedurl: 'quests/test_quest.xml',
     expansionhorror: false,
     expansionfuture: false,
-    minplayers: 1,
-    maxplayers: 6,
-    mintimeminutes: 20,
-    maxtimeminutes: 40,
-    genre: 'Drama',
-    contentrating: 'Kid-friendly',
-    language: 'English',
-  }));
-  // TODO make actual intro Future quest, remove dev gate
-  FEATURED_QUESTS.unshift(new Quest({
-    id: '0B7K9abSH1xEOWVpEV1JGWDFtWmc',
-    partition: 'expedition-public',
-    theme: 'base',
-    official: true,
-    title: 'Learning 3: The Future',
-    summary: 'TODO',
-    author: 'Todd Medema',
-    publishedurl: 'quests/learning_to_adventure_2_the_horror.xml',
-    expansionhorror: true,
-    expansionfuture: true,
     minplayers: 1,
     maxplayers: 6,
     mintimeminutes: 20,
