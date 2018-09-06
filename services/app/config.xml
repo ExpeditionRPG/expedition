@@ -47,7 +47,7 @@
     <gap:config-file parent="/manifest" platform="android">
         <application android:debuggable="true" />
     </gap:config-file>
-    <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest">
+    <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
         <manifest android:installLocation="auto" />
     </edit-config>
     <platform name="ios">

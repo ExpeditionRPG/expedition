@@ -1,0 +1,212 @@
+<quest title="Learning 3: The Future" data-line="0">
+  <roleplay title="Introduction" data-line="2">
+    <p>Your adventure continues with <b>Expedition: The Future</b>.</p>
+    <instruction>
+      <p>When setting up, try to choose one of the adventurers from The Future.</p>
+    </instruction>
+  </roleplay>
+  <roleplay title="continue" data-line="8">
+    <p>New in <b>The Future</b>: Skills</p>
+    <instruction>
+      <p>:skill: "Skills" are a new card type that help you succeed in mid-story skill checks, unlocking new paths. They can also be discarded to activate a powerful, one-time boost during combat.</p>
+    </instruction>
+    <instruction>
+      <p>:skill: Skills have different advancement levels and core types (Knowledge, Athletics, Charisma). When prompted to make a skill check of the type listed on your card, add the numerical rating at your current progression to the :roll: you make.</p>
+    </instruction>
+    <instruction>
+      <p>:skill: Whenever you level up, you may now choose to learn (draw 3, keep 1) or level up a skill instead of drawing a new Ability card.</p>
+    </instruction>
+    <instruction>
+      <p>:cards: Each Adventurer should now draw three Skills, choose one, and return the others to the Skill deck.  Place your chosen Skill face-up next to your Adventurer card and place a clip upon it at the first rating.</p>
+    </instruction>
+    <instruction>
+      <p>Skill levels persist across fights unless you choose to discard the skill for the listed effect.</p>
+    </instruction>
+  </roleplay>
+  <roleplay title="continue" data-line="22">
+    <p>After defeating the strange, terrible Hound and fleeing back to the guardhouse, you'd discovered the hastily scrawled note with the message:</p>
+    <p>"I'm sorry - Peter."</p>
+    <p>You've barely finished reading it when you hear a "click" and a strange contraption in the corner begins clanking and shooting sparks.</p>
+  </roleplay>
+  <roleplay title="continue" data-line="30">
+    <p>A rift opens in the very fabric of space and time... Through it you see the pinprick points of starlight and feel the warmth and air sucked from the room with explosive rapidity.</p>
+    <p>Before you can catch breath or turn to flee, you've been wrenched from your feet and sucked through the rift!</p>
+  </roleplay>
+  <roleplay title="continue" data-line="35">
+    <p>The sensation of floating weightless might otherwise be pleasant, were there any air to draw into your desperately heaving lungs. Then a blinding light steals your vision, just as a gel-like substance encapsulates your entire head...</p>
+  </roleplay>
+  <roleplay title="continue" data-line="38">
+    <p>You wake up in a room with smooth, gray walls and no windows. A strange metal hexagon seems stuck to the back of your left hand. Lights pulse and play across its surface and you somehow "know" you've been selected as a specimen in an experiment. Other knowledge you never learned is nonetheless present in your mind...</p>
+  </roleplay>
+  <roleplay title="continue" data-line="41">
+    <p>New in "The Future": Tech Abilities.</p>
+    <instruction>
+      <p>:tech: Tech abilities are a powerful way to gain and use Loot for a variety of effects.  When you level up, you may now also choose to learn a new Tech ability.</p>
+    </instruction>
+    <instruction>
+      <p>:cards: Any Adventurer that did not start with a Tech ability may draw one now.</p>
+    </instruction>
+  </roleplay>
+  <roleplay title="continue" data-line="49">
+    <p>The metal door to the cell silently retracts into the ceiling, leaving a darkened corridor before you.</p>
+    <p>"Survive!" a trumpet-like, inhuman voice blares inside your skull, causing you to wince.</p>
+    <p>Choose the skill emphasis your strange hosts have imposed on your "neural architecture":</p>
+    <instruction>
+      <p>It is recommended adventurers have skills of different types (Knowledge, Athletics, Charisma). You need not all choose the same type, but the party can choose only one option below.</p>
+    </instruction>
+    <choice text="We've been given &quot;science&quot;, with an emphasis on &quot;Knowledge&quot; Skills.">
+      <trigger data-line="61">goto Knowledge</trigger>
+    </choice>
+    <choice text="Social intuition has been infused into us. Our emphasis is on &quot;Charisma&quot; skills.">
+      <trigger data-line="65">goto Charisma</trigger>
+    </choice>
+    <choice text="Our bodies were enhanced. Our emphasis is on &quot;Athletics&quot; skills.">
+      <trigger data-line="69">goto Athletics</trigger>
+    </choice>
+  </roleplay>
+  <roleplay id="Knowledge" title="Blind Them with Science" data-line="71">
+    <instruction>
+      <p>All adventurers with a Knowledge skill may advance it one level forward.</p>
+    </instruction>
+    <instruction>
+      <p>Adventurers without a Knowledge skill may draw one Loot from "The Future".</p>
+    </instruction>
+  </roleplay>
+  <trigger data-line="77">goto Incursion</trigger>
+  <roleplay id="Charisma" title="Dazzle Them with Wit" data-line="79">
+    <instruction>
+      <p>All adventurers with a Charisma skill may advance it one level forward.</p>
+    </instruction>
+    <instruction>
+      <p>Adventurers without a Charisma skill may draw one Loot from "The Future".</p>
+    </instruction>
+  </roleplay>
+  <trigger data-line="85">goto Incursion</trigger>
+  <roleplay id="Athletics" title="Go in Hot" data-line="87">
+    <instruction>
+      <p>All adventurers with an Athletics skill may advance it one level forward.</p>
+    </instruction>
+    <instruction>
+      <p>Adventurers without a Athletics skill may draw one Loot from "The Future".</p>
+    </instruction>
+  </roleplay>
+  <trigger data-line="93">goto Incursion</trigger>
+  <roleplay id="Incursion" title="Incursion" data-line="95">
+    <p>A whirring sound greets your ears and a faint reflection of your room's cold lighting glints off a metallic form as it hurtles into the room. It is following closely by a swarm of tiny...things.</p>
+  </roleplay>
+  <combat data-line="99">
+    <e>Nanoswarm</e>
+    <e>Repulsor Probe</e>
+    <event on="win">
+      <roleplay title="" data-line="106">
+        <p>You may advance your skill rating by one increment instead of normal leveling.</p>
+      </roleplay>
+      <trigger data-line="108">goto Next</trigger>
+    </event>
+    <event on="lose">
+      <roleplay title="" data-line="112">
+        <p>You're a failed experiment, though your body will surely be repurposed by the synths that ravaged you.</p>
+      </roleplay>
+      <trigger data-line="114">end</trigger>
+    </event>
+  </combat>
+  <roleplay id="Next" title="Phase Two" data-line="116">
+    <p>Past the shattered remnants of the synths sent to test you is another door.</p>
+    <instruction>
+      <p>Pick one of the below skill checks and have one Adventurer roll for it. If you succeed, select it. If you fail, select the final choice.</p>
+    </instruction>
+    <choice text="Hack the door terminal. Make a Knowledge :roll: of 9 or higher. Remember to add the rating number in your &quot;Knowledge&quot; skill to your :roll:!">
+      <trigger data-line="123">goto KnowledgeT</trigger>
+    </choice>
+    <choice text="Brute force the door open. Make an Athletics :roll: of 15 or higher. Remember to add the rating number in your &quot;Athletics&quot; skill to your :roll:!">
+      <trigger data-line="127">goto Brute</trigger>
+    </choice>
+    <choice text="Talk the door into opening. Make a Charisma :roll: of 12 or higher. Remember to add the rating number in your &quot;Charisma&quot; skill to your :roll:!">
+      <trigger data-line="131">goto Charm</trigger>
+    </choice>
+    <choice text="Failed any of the above skill rolls.">
+      <trigger data-line="135">goto Failure</trigger>
+    </choice>
+  </roleplay>
+  <roleplay id="KnowledgeT" title="Hackjob" data-line="137">
+    <p>A satisfying chime sounds from the terminal you've hacked and the door opens.  You enter into a large domelike structure. Above you, a turret of some sort swivels and a red dot appears on your chest.</p>
+  </roleplay>
+  <combat data-line="140">
+    <e>Sentry Turret</e>
+    <event on="win">
+      <roleplay title="" data-line="145">
+        <p>You may advance your skill rating by one increment instead of normal leveling.</p>
+      </roleplay>
+      <trigger data-line="147">goto LearningA</trigger>
+    </event>
+    <event on="lose">
+      <roleplay title="" data-line="151">
+        <p>You're a failed experiment, though your body will surely be repurposed by the synths that ravaged you.</p>
+      </roleplay>
+      <trigger data-line="153">end</trigger>
+    </event>
+  </combat>
+  <roleplay id="Failure" title="Failure" data-line="155">
+    <p>A sharp electric jolt arcs from the door and throws you onto your back.</p>
+    <instruction>
+      <p>Take 3 points of damage.</p>
+    </instruction>
+    <p>The door opens, revealing the room beyond it. Recovering, you enter into a large dome-like structure. Above you, a turret of some sort swivels and draws a bead on you.</p>
+  </roleplay>
+  <combat data-line="162">
+    <e>Sentry Turret</e>
+    <event on="win">
+      <roleplay title="" data-line="167">
+        <p>You may advance your skill rating by one increment instead of normal leveling.</p>
+      </roleplay>
+      <trigger data-line="169">goto LearningA</trigger>
+    </event>
+    <event on="lose">
+      <roleplay title="" data-line="173">
+        <p>You're a failed experiment, though your body will surely be repurposed by the synths that ravaged you.</p>
+      </roleplay>
+      <trigger data-line="175">end</trigger>
+    </event>
+  </combat>
+  <roleplay id="Brute" title="Power" data-line="177">
+    <p>You strain with your newfound might against the metal, and find it yields before you do.  The door open, you enter into a large domelike structure. Above you, a turret of some sort swivels and draws a bead on you.</p>
+  </roleplay>
+  <combat data-line="180">
+    <e>Sentry Turret</e>
+    <event on="win">
+      <roleplay title="" data-line="185">
+        <p>You may advance your skill rating by one increment instead of normal leveling.</p>
+      </roleplay>
+      <trigger data-line="187">goto LearningA</trigger>
+    </event>
+    <event on="lose">
+      <roleplay title="" data-line="191">
+        <p>You're a failed experiment, though your body will surely be repurposed by the synths that ravaged you.</p>
+      </roleplay>
+      <trigger data-line="193">end</trigger>
+    </event>
+  </combat>
+  <roleplay id="Charm" title="Charm" data-line="195">
+    <p>You whistle a jaunty little tune and a chime issues in response from the door as it slides open.  You enter into a large domelike structure. Above you, a turret of some sort swivels and a red dot appears on your chest.</p>
+  </roleplay>
+  <combat data-line="198">
+    <e>Sentry Turret</e>
+    <event on="win">
+      <roleplay title="" data-line="203">
+        <p>You may advance your skill rating by one increment instead of normal leveling.</p>
+      </roleplay>
+      <trigger data-line="205">goto LearningA</trigger>
+    </event>
+    <event on="lose">
+      <roleplay title="" data-line="209">
+        <p>You're a failed experiment, though your body will surely be repurposed by the synths that ravaged you.</p>
+      </roleplay>
+      <trigger data-line="211">end</trigger>
+    </event>
+  </combat>
+  <roleplay id="LearningA" title="TBC" data-line="213">
+    <p>The destruction of the Sentry Turret causes plasma to jet into the dome. A rift like the one that brought you to this strange place coalesces in the fire and you feel the familiar, vortex-like pull as it sucks you in...</p>
+    <p>Your adventure will continue in the next expansion!</p>
+  </roleplay>
+  <trigger data-line="219">end</trigger>
+</quest>
