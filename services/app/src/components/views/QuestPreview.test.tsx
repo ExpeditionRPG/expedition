@@ -77,4 +77,5 @@ describe('QuestPreview', () => {
   test.skip('lists all saves for the quest', () => { /* TODO */ });
   test.skip('indicates when the quest is available offline', () => { /* TODO */ });
   test.skip('does not allow users to save local quests offline', () => { /* TODO */ });
+  test.skip('allows users to delete a saved quest instance', () => { /* TODO */ });
 });

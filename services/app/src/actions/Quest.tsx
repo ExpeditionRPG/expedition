@@ -13,10 +13,17 @@ import {
 import {toCard} from './Card';
 import {logQuestPlay} from './Web';
 
-export function initQuest(details: Quest, questNode: Cheerio, ctx: TemplateContext): QuestNodeAction {
+export function initQuestNode(questNode: Cheerio, ctx: TemplateContext): ParserNode {
   const firstNode = questNode.children().eq(0);
-  const node = new ParserNode(firstNode, ctx);
-  return {type: 'QUEST_NODE', node, details};
+  return new ParserNode(firstNode, ctx);
+}
+
+export function initQuest(details: Quest, questNode: Cheerio, ctx: TemplateContext): QuestNodeAction {
+  return {
+    type: 'QUEST_NODE',
+    node: initQuestNode(questNode, ctx),
+    details,
+  };
 }
 
 export const exitQuest = remoteify(function exitQuest(): QuestExitAction {

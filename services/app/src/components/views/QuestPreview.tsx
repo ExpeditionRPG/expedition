@@ -1,3 +1,5 @@
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import DoneIcon from '@material-ui/icons/Done';
 import OfflinePin from '@material-ui/icons/OfflinePin';
 import StarsIcon from '@material-ui/icons/Stars';
@@ -25,7 +27,7 @@ export interface DispatchProps {
   onPlaySaved: (id: string, ts: number) => void;
   onSave: (quest: Quest) => void;
   onDeleteOffline: (id: string, ts: number) => void;
-  onDeleteConfirm: () => void;
+  onDeleteConfirm: (quest: Quest, ts: number) => void;
   onReturn: () => void;
 }
 
@@ -62,10 +64,23 @@ function renderSaves(props: Props): JSX.Element|null {
   if (!props.settings.experimental || saves.length === 0) {
     return null;
   }
+  const quest = props.quest;
+  if (!quest) {
+    return <span/>;
+  }
 
   saves.sort((a, b) => b.ts - a.ts);
 
-  const buttons = saves.map((s, i) => <Button key={i} onClick={(e) => props.onPlaySaved(s.details.id, s.ts)} id="play">{Moment(s.ts).fromNow()} ({(s.pathLen === undefined) ? 'unknown position' : `${s.pathLen.toString()} ${pluralize('choice', s.pathLen || 0)}`})</Button>);
+  const buttons = saves.map((s, i) => {
+    return (
+      <div key={i} className="savedQuest">
+        <Button onClick={(e) => props.onPlaySaved(s.details.id, s.ts)} id="play">{Moment(s.ts).fromNow()} ({(s.pathLen === undefined) ? 'unknown position' : `${s.pathLen.toString()} ${pluralize('choice', s.pathLen || 0)}`})</Button>
+        <IconButton onClick={(e) => props.onDeleteConfirm(quest, s.ts)} id="delete">
+          <CloseIcon/>
+        </IconButton>
+      </div>
+    );
+  });
   return (
     <span>
       <h3>Saves</h3>

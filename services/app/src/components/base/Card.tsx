@@ -49,6 +49,7 @@ export default class Card extends React.Component<Props, {}> {
 
   public onMenuSelect(value: string) {
     const dispatch = getStore().dispatch;
+    this.handleMenuClose();
     switch (value) {
       case 'HOME':
         if (!this.props.inQuest) {
@@ -87,7 +88,6 @@ export default class Card extends React.Component<Props, {}> {
       default:
         throw new Error('Unknown menu option ' + value);
     }
-    this.handleMenuClose();
   }
 
   public render() {
@@ -110,7 +110,7 @@ export default class Card extends React.Component<Props, {}> {
         <div className="title_container">
           <IconButton id="titlebarReturnButton" onClick={() => this.onReturn()}><ChevronLeftIcon/></IconButton>
           <span className="menu">
-            <IconButton aria-haspopup="true" onClick={(e) => this.handleMenuClick(e)}>
+            <IconButton id="menuButton" aria-haspopup="true" onClick={(e) => this.handleMenuClick(e)}>
               <MoreVertIcon/>
             </IconButton>
             <Menu
@@ -118,7 +118,7 @@ export default class Card extends React.Component<Props, {}> {
               anchorEl={anchorEl}
               classes={{paper: 'menu_popup'}}
               onClose={() => this.handleMenuClose()}>
-              <MenuItem onClick={() => {this.onMenuSelect('HOME'); }}>Home</MenuItem>
+              <MenuItem id="homeButton" onClick={() => {this.onMenuSelect('HOME'); }}>Home</MenuItem>
               {this.props.inQuest && isExperimental && <MenuItem onClick={() => {this.onMenuSelect('SAVE'); }}>Save quest</MenuItem>}
               <MenuItem onClick={() => {this.onMenuSelect('SETTINGS'); }}>Settings</MenuItem>
               {getDevicePlatform() !== 'web' && <MenuItem onClick={() => {this.onMenuSelect('RATE'); }}>Rate the App</MenuItem>}

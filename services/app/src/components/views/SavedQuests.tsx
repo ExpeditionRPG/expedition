@@ -1,10 +1,10 @@
-import * as pluralize from 'pluralize';
 import * as React from 'react';
 import {smartTruncateSummary} from '../../Format';
 import {SavedQuestMeta} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 
+const pluralize = require('pluralize');
 const Moment = require('moment');
 
 export interface StateProps {
@@ -82,10 +82,14 @@ const SavedQuests = (props: Props): JSX.Element => {
 
   return (
     <Card title="Saved & Offline Quests">
-      <h3>Saved Quests</h3>
-      {groupedQuestSaves}
-      <h3>Offline Quests</h3>
-      {offlineQuests}
+      {groupedQuestSaves.length > 0 && <span>
+        <h3>Saved Quests</h3>
+        {groupedQuestSaves}
+      </span>}
+      {offlineQuests.length > 0 && <span>
+        <h3>Offline Quests</h3>
+        {offlineQuests}
+      </span>}
     </Card>
   );
 };

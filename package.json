@@ -243,6 +243,7 @@
       "js",
       "jsx"
     ],
+    "verbose": false,
     "setupFiles": [
       "jest-localstorage-mock"
     ],

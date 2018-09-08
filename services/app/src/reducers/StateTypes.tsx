@@ -140,6 +140,7 @@ export interface QuestState {
 
 export interface SavedQuestState {
   list: SavedQuestMeta[];
+  selectedTS: number|null;
 }
 
 export interface SearchState {

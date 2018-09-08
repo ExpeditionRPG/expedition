@@ -158,7 +158,7 @@ export class Node<C extends Context> {
     if (search.length === 0) {
       return null;
     }
-    return new (this.constructor as any)(search.eq(0), this.ctx, '#' + id, seed);
+    return new (this.constructor as any)(search.eq(0), this.ctx, undefined, seed);
   }
 
   // Loop through all rendered children. If a call to cb() returns a value
@@ -171,6 +171,11 @@ export class Node<C extends Context> {
         return v;
       }
     }
+  }
+
+  // Useful for adding other meta-information to the path for comparison and/or reconstruction.
+  public addToPath(val: string|number): void {
+    this.ctx.path.push(val);
   }
 
   // Get a key such that a different Node object with the same relative XML element
@@ -287,7 +292,7 @@ export class Node<C extends Context> {
       if (handled !== null) {
         return handled;
       }
-      ref = new Node(ref.elem.parent(), this.ctx, undefined, seed);
+      ref = new (this.constructor as any)(ref.elem.parent(), this.ctx, undefined, seed);
     }
 
     // Return the trigger unchanged if a handler is not found.
