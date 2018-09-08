@@ -50,7 +50,7 @@ export function saveQuestForOffline(details: Quest) {
   return (dispatch: Redux.Dispatch<any>): any => {
     return fetchLocal(details.publishedurl).then((result: string) => {
       const elem = cheerio.load(result)('quest');
-      const node = initQuest(details, elem, defaultContext()).node;
+      const node = initQuestNode(elem, defaultContext());
       dispatch(storeSavedQuest(node, details, Date.now()));
       return dispatch(openSnackbar('Saved for offline play.'));
     })
@@ -136,7 +136,7 @@ function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|num
   return {nextNode: node, i};
 }
 
-export function recreateNodeFromPath(xml: string, path: string|number[]): {node: ParserNode, complete: true} {
+export function recreateNodeFromPath(xml: string, path: string|number[]): {node: ParserNode, complete: boolean} {
   // TODO: Return partially-loaded quest if it fails at all.
   let node = initQuestNode(getCheerio().load(xml)('quest'), defaultContext());
   for (let i = 0; i < path.length; i++) {

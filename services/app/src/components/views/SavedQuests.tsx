@@ -1,10 +1,10 @@
-import pluralize from 'pluralize';
 import * as React from 'react';
 import {smartTruncateSummary} from '../../Format';
 import {SavedQuestMeta} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 
+const pluralize = require('pluralize');
 const Moment = require('moment');
 
 export interface StateProps {
