@@ -101,6 +101,7 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
   switch (state) {
     case 'ENDCOMBAT':
       dispatch(loadNode(nextNode));
+      dispatch(audioSet({intensity: 0}));
       break;
     case 'VICTORY':
     case 'DEFEAT':
