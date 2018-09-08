@@ -1,4 +1,4 @@
-import * as pluralize from 'pluralize';
+import pluralize from 'pluralize';
 import * as React from 'react';
 import {smartTruncateSummary} from '../../Format';
 import {SavedQuestMeta} from '../../reducers/StateTypes';

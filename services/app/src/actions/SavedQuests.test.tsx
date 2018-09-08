@@ -134,6 +134,16 @@ describe('SavedQuest actions', () => {
       expect(node.elem.text()).toEqual('expected');
       expect(complete).toEqual(false);
     });
+    test('stopping during combat returns the node preceding the combat', () => {
+      const {node, complete} = recreateNodeFromPath(`<quest>
+        <roleplay>expected</roleplay>
+        <combat>
+          <e>Bandit</e>
+        </combat>
+      </quest>`, [0, '|1', '|2']);
+      expect(node.elem.text()).toEqual('expected');
+      expect(complete).toEqual(false);
+    });
   });
 
   describe('saveQuestForOffline', () => {

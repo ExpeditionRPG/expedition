@@ -82,8 +82,7 @@ export function storeSavedQuest(node: ParserNode, details: Quest, ts: number): S
 }
 
 function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|number[]): {nextNode: ParserNode|null, i: number} {
-  // Set round count
-  // TODO: Make this more corect
+  // We lack some metadata about combat, but we can still parse enemies and tier.
   const {enemies, tier} = getEnemiesAndTier(node);
   node.ctx.templates.combat = {
     custom: false,
@@ -146,7 +145,7 @@ export function recreateNodeFromPath(xml: string, path: string|number[]): {node:
     let next: ParserNode|null;
     next = node.handleAction(action);
     if (!next) {
-      console.warn('Failed to load quest (action #' + i + '), returning early')
+      console.warn('Failed to load quest (action #' + i + '), returning early');
       return {node, complete: false};
     }
 
@@ -155,7 +154,8 @@ export function recreateNodeFromPath(xml: string, path: string|number[]): {node:
     if (next.getTag() === 'combat') {
       const result = recreateNodeThroughCombat(next, i, path);
       if (!result.nextNode) {
-        return node;
+        // We'll count this one as complete (node leading up to a mid-combat save)
+        return {node, complete: false};
       } else {
         next = result.nextNode;
       }
@@ -189,12 +189,12 @@ export function loadSavedQuest(id: string, ts: number) {
     }
     const {node, complete} = recreateNodeFromPath(data.xml, data.path);
     if (!complete) {
-      return dispatch(openSnackbar(Error('Load failed; trying earlier checkpoint')));
+      return dispatch(openSnackbar('Could not load fully; using earlier checkpoint'));
     }
     dispatch({
       type: 'QUEST_NODE',
       node,
-      details
+      details,
     } as QuestNodeAction);
-  }
+  };
 }

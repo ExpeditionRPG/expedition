@@ -43,5 +43,11 @@ describe('Card', () => {
     expect(wrapper.find('.base_card').hasClass('card_theme_dark')).toBe(true);
   });
 
-  test.skip('always closes top-right menu when any menu button is clicked', () => { /* TODO */ });
+  test('always closes top-right menu when a menu button is clicked', () => {
+    const {wrapper} = setup({});
+    wrapper.find('#menuButton').simulate('click', {currentTarget: wrapper.find('#menuButton')});
+    expect(wrapper.state('anchorEl')).toBeDefined();
+    wrapper.find('#homeButton').simulate('click');
+    expect(wrapper.state('anchorEl')).not.toBeDefined();
+  });
 });

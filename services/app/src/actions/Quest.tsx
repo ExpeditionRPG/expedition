@@ -22,7 +22,7 @@ export function initQuest(details: Quest, questNode: Cheerio, ctx: TemplateConte
   return {
     type: 'QUEST_NODE',
     node: initQuestNode(questNode, ctx),
-    details
+    details,
   };
 }
 
