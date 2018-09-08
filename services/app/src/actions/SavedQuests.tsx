@@ -168,6 +168,7 @@ export function recreateNodeFromPath(xml: string, path: string|number[]): {node:
 }
 
 export function loadSavedQuest(id: string, ts: number) {
+  console.log('Gonna load that svaed quets');
   return (dispatch: Redux.Dispatch<any>) => {
     const savedQuests = getSavedQuestMeta();
     let details: Quest|null = null;
@@ -189,7 +190,7 @@ export function loadSavedQuest(id: string, ts: number) {
     }
     const {node, complete} = recreateNodeFromPath(data.xml, data.path);
     if (!complete) {
-      return dispatch(openSnackbar('Could not load fully; using earlier checkpoint'));
+      dispatch(openSnackbar('Could not load fully - using earlier checkpoint.'));
     }
     dispatch({
       type: 'QUEST_NODE',
