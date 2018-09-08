@@ -3,7 +3,8 @@ import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {getCheerio} from '../Globals';
 import {getStorageJson, getStorageString} from '../LocalStorage';
-import {deleteSavedQuest, listSavedQuests, loadSavedQuest, SAVED_QUESTS_KEY, savedQuestKey, storeSavedQuest} from './SavedQuests';
+import {deleteSavedQuest, listSavedQuests, loadSavedQuest, SAVED_QUESTS_KEY, savedQuestKey, storeSavedQuest, recreateNodeFromPath} from './SavedQuests';
+import {newMockStore} from '../Testing';
 
 describe('SavedQuest actions', () => {
   const STORED_QUEST_ID = '12345';
@@ -59,18 +60,80 @@ describe('SavedQuest actions', () => {
 
   describe('loadSavedQuest', () => {
     test('replays the node given the saved path', () => {
-      const action = loadSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS);
-      expect(action.node.elem + '').toEqual('<roleplay>expected</roleplay>');
+      const store = newMockStore({});
+      store.dispatch(loadSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS));
+      expect(store.getActions()[0].node.elem + '').toEqual('<roleplay>expected</roleplay>');
     });
   });
 
   describe('recreateNodeFromPath', () => {
-    test.skip('safely handles zero path length', () => { /* TODO */ });
-    test.skip('handles simple choices, preserving op changes', () => { /* TODO */ });
-    test.skip('handles gotos', () => { /* TODO */ });
-    test.skip('handles mid-combat roleplay, preserving op changes', () => { /* TODO */ });
-    test.skip('handles exiting of combat (win/lose)', () => { /* TODO */ });
-    test.skip('returns earlier node if there was a problem with the full path', () => { /* TODO */ });
+    test('safely handles zero path length', () => {
+      const {node} = recreateNodeFromPath(`<quest><roleplay>expected</roleplay></quest>`, []);
+      expect(node.elem.text()).toEqual('expected');
+    });
+    test('handles simple choices, preserving op changes', () => {
+      const {node} = recreateNodeFromPath(`<quest>
+        <roleplay>start</roleplay>
+        <roleplay><p>{{a=5}}</p></roleplay>
+        <roleplay>expected</roleplay>
+      </quest>`, [0, 0]);
+      expect(node.elem.text()).toEqual('expected');
+      expect(node.ctx.scope['a']).toEqual(5);
+    });
+    test('handles gotos', () => {
+      const {node} = recreateNodeFromPath(`<quest>
+        <roleplay>start</roleplay>
+        <trigger>goto g1</trigger>
+        <roleplay>wrong</roleplay>
+        <roleplay id="g1">expected</roleplay>
+      </quest>`, [0]);
+      expect(node.elem.text()).toEqual('expected');
+    });
+    test('handles mid-combat roleplay, preserving op changes', () => {
+      const {node} = recreateNodeFromPath(`<quest>
+        <combat>
+          <e>Bandit</e>
+          <event on="round">
+            <roleplay><p>{{a=5}}</p></roleplay>
+            <trigger>goto g1</trigger>
+          </event>
+        </combat>
+        <roleplay id="g1">expected</roleplay>
+      </quest>`, ['round', 0]);
+      expect(node.elem.text()).toEqual('expected');
+      expect(node.ctx.scope['a']).toEqual(5);
+    });
+    test('handles conditional mid-combat roleplay', () => {
+      const {node} = recreateNodeFromPath(`<quest>
+        <roleplay></roleplay>
+        <combat>
+          <e>Bandit</e>
+          <event on="round" if="_.currentCombatRound() == 3">
+            <roleplay>expected</roleplay>
+          </event>
+        </combat>
+      </quest>`, [0, '|3', 'round']);
+      expect(node.elem.text()).toEqual('expected');
+    });
+    test('handles exiting of combat (win/lose)', () => {
+      const {node} = recreateNodeFromPath(`<quest>
+        <roleplay></roleplay>
+        <combat>
+          <e>Bandit</e>
+          <event on="win"><roleplay>expected</roleplay></event>
+          <event on="lose"></event>
+        </combat>
+      </quest>`, [0, '|3', 'win']);
+      expect(node.elem.text()).toEqual('expected');
+    });
+    test('returns earlier node if there was a problem with the full path', () => {
+      const {node, complete} = recreateNodeFromPath(`<quest>
+        <roleplay>expected</roleplay>
+        <trigger>goto undefined</trigger>
+      </quest>`, [0]);
+      expect(node.elem.text()).toEqual('expected');
+      expect(complete).toEqual(false);
+    });
   });
 
   describe('saveQuestForOffline', () => {

@@ -9,7 +9,7 @@ import {getStorageJson, setStorageKeyValue} from '../LocalStorage';
 import {logEvent} from '../Logging';
 import {SavedQuestMeta} from '../reducers/StateTypes';
 import {QuestNodeAction, SavedQuestDeletedAction, SavedQuestListAction, SavedQuestStoredAction} from './ActionTypes';
-import {initQuest} from './Quest';
+import {initQuestNode} from './Quest';
 import {openSnackbar} from './Snackbar';
 import {fetchLocal} from './Web';
 
@@ -137,16 +137,17 @@ function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|num
   return {nextNode: node, i};
 }
 
-export function recreateNodeFromPath(details: Quest, xml: string, path: string|number[]): ParserNode {
+export function recreateNodeFromPath(xml: string, path: string|number[]): {node: ParserNode, complete: true} {
   // TODO: Return partially-loaded quest if it fails at all.
-  let node = initQuest(details, getCheerio().load(xml)('quest'), defaultContext()).node;
+  let node = initQuestNode(getCheerio().load(xml)('quest'), defaultContext());
   for (let i = 0; i < path.length; i++) {
     const action = path[i];
     // TODO: Also save random seed with path in context
     let next: ParserNode|null;
     next = node.handleAction(action);
     if (!next) {
-      throw new Error('Failed to load quest.');
+      console.warn('Failed to load quest (action #' + i + '), returning early')
+      return {node, complete: false};
     }
 
     // Try going all the way through combat. If we stop somewhere in
@@ -163,28 +164,37 @@ export function recreateNodeFromPath(details: Quest, xml: string, path: string|n
 
     node = next;
   }
-  return node;
+  return {node, complete: true};
 }
 
-export function loadSavedQuest(id: string, ts: number): QuestNodeAction {
-  const savedQuests = getSavedQuestMeta();
-  let details: Quest|null = null;
-  for (const savedQuest of savedQuests) {
-    if (savedQuest.details.id === id && savedQuest.ts === ts) {
-      details = savedQuest.details;
-      break;
+export function loadSavedQuest(id: string, ts: number) {
+  return (dispatch: Redux.Dispatch<any>) => {
+    const savedQuests = getSavedQuestMeta();
+    let details: Quest|null = null;
+    for (const savedQuest of savedQuests) {
+      if (savedQuest.details.id === id && savedQuest.ts === ts) {
+        details = savedQuest.details;
+        break;
+      }
     }
-  }
 
-  if (details === null) {
-    throw new Error('Could not load quest details.');
-  }
+    if (details === null) {
+      throw new Error('Could not load quest details.');
+    }
 
-  logEvent('save', 'quest_save_load', { ...details, action: details.title, label: details.id });
-  const data: SavedQuest = getStorageJson(savedQuestKey(id, ts), {}) as any;
-  if (!data.xml || !data.path) {
-    throw new Error('Could not load quest.');
+    logEvent('save', 'quest_save_load', { ...details, action: details.title, label: details.id });
+    const data: SavedQuest = getStorageJson(savedQuestKey(id, ts), {}) as any;
+    if (!data.xml || !data.path) {
+      throw new Error('Could not load quest.');
+    }
+    const {node, complete} = recreateNodeFromPath(data.xml, data.path);
+    if (!complete) {
+      return dispatch(openSnackbar(Error('Load failed; trying earlier checkpoint')));
+    }
+    dispatch({
+      type: 'QUEST_NODE',
+      node,
+      details
+    } as QuestNodeAction);
   }
-  const node = recreateNodeFromPath(details, data.xml, data.path);
-  return {type: 'QUEST_NODE', node, details};
 }
