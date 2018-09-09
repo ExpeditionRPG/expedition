@@ -150,6 +150,7 @@ $bg_active: rgba(255, 255, 255, 0.9);
 
 $font_color_dark_primary: #FFFFFF;
 $border_dark_primary: 0.02in solid #999;
+$border_dark_subtle: 0.02in solid #333;
 $bg_dark_primary: #161011;
 $bg_dark_titlebar: rgba(110, 110, 110, 0.6);
 $bg_dark_interactive: rgba(35, 35, 35, 0.5);
@@ -441,6 +442,12 @@ body.android .dialog .textfield:focus-within {
       }
       .base_button > button {
         border: $border_dark_primary !important;
+      }
+      .base_button.subtle > button {
+        border: $border_dark_subtle !important;
+      }
+      .base_button > button:disabled {
+        border: $border_dark_subtle !important;
       }
     }
     &.quest_theme_horror {
