@@ -45,7 +45,7 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps
     },
     onMultiplayerSelect(user: UserState): void {
       dispatch(ensureLogin())
-        .then((u: UserState) => {
+        .then((user: UserState) => {
           dispatch(loadMultiplayer(user));
         });
     },
