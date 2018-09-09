@@ -11,8 +11,6 @@ import Button from '../../base/Button';
 import Card from '../../base/Card';
 import StarRating from '../../base/StarRating';
 
-declare var window: any;
-
 export interface StateProps {
   checkout: CheckoutState;
   platform: string;
@@ -211,7 +209,7 @@ export default class QuestEnd extends React.Component<Props, {}> {
     if (this.props.platform === 'ios') {
       checkoutError = 'Checkout currently disabled on iOS app';
     }
-    if (!window.Stripe) {
+    if (!(window as any).Stripe) {
       checkoutError = 'Tipping temporarily unavailable.';
     }
     const tips = [1, 3, 5].map((tip: number) => {
@@ -244,8 +242,8 @@ export default class QuestEnd extends React.Component<Props, {}> {
       return;
     } else {
       this.setState({needsIssue: false});
+      this.props.onSubmit(this.props.quest, this.props.settings, this.props.user, this.state.anonymous, this.formatFeedback(), this.state.rating);
     }
-    this.props.onSubmit(this.props.quest, this.props.settings, this.props.user, this.state.anonymous, this.formatFeedback(), this.state.rating);
   }
 
   public render() {
