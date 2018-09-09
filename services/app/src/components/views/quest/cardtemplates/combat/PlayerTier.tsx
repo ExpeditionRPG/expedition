@@ -72,9 +72,9 @@ export default function playerTier(props: Props): JSX.Element {
         {props.settings.showHelp && <span>The number of adventurers &gt; 0 health.</span>}
       </Picker>
       {helpText}
-      <Button onClick={() => (shouldRunDecision) ? props.onDecisionSetup(props.node, props.seed) : props.onNext(nextCard)} disabled={props.numAliveAdventurers <= 0}>Next</Button>
-      <Button onClick={() => props.onVictory(props.node, props.settings, props.maxTier, props.seed)}>Victory (Tier = 0)</Button>
-      <Button onClick={() => props.onDefeat(props.node, props.settings, props.maxTier, props.seed)}>Defeat (Adventurers = 0)</Button>
+      <Button className={(props.numAliveAdventurers === 0 || props.tier === 0) ? 'subtle' : ''} onClick={() => (shouldRunDecision) ? props.onDecisionSetup(props.node, props.seed) : props.onNext(nextCard)} disabled={props.numAliveAdventurers <= 0 || props.tier <= 0}>Next</Button>
+      <Button className={(props.tier !== 0) ? 'subtle' : ''} onClick={() => props.onVictory(props.node, props.settings, props.maxTier, props.seed)}>Victory (Tier = 0)</Button>
+      <Button className={(props.numAliveAdventurers !== 0) ? 'subtle' : ''} onClick={() => props.onDefeat(props.node, props.settings, props.maxTier, props.seed)}>Defeat (Adventurers = 0)</Button>
     </Card>
   );
 }
