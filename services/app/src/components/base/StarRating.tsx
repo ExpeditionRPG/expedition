@@ -6,6 +6,7 @@ import StarHalf from '@material-ui/icons/StarHalf';
 import * as React from 'react';
 
 export interface Props {
+  id?: string;
   hintText?: boolean;
   onChange?: (rating: number) => any;
   quantity?: number;
@@ -60,7 +61,7 @@ export default class StarRating extends React.Component<Props, {}> {
         );
       }
     });
-    return <span className="starContainer">
+    return <span id={this.props.id} className="starContainer">
       <div className="stars" style={this.props.style}>
         {stars}{this.props.quantity && <span className="quantity">({this.props.quantity})</span>}
       </div>

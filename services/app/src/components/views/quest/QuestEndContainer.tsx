@@ -20,6 +20,7 @@ const mapStateToProps = (state: AppState): StateProps => {
     quest: state.quest,
     settings: state.settings,
     user: state.user,
+    showSharing: window.plugins && window.plugins.socialsharing,
   };
 };
 
@@ -47,7 +48,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(toPrevious({name: 'FEATURED_QUESTS'}));
     },
     onTip: (checkoutError: string|null, amount: number, quest: QuestState, settings: SettingsType, anonymous: boolean, text: string, rating: number|null) => {
-      logEvent('navigate', 'tip_start', { value: amount, action: quest.details.title, label: quest.details.id });
+      logEvent('navigate', 'tip_start', {value: amount, action: quest.details.title, label: quest.details.id});
       dispatch(ensureLogin())
         .then((user: UserState) => {
           if (rating && rating > 0) {
