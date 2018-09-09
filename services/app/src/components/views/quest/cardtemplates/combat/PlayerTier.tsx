@@ -63,7 +63,6 @@ export default function playerTier(props: Props): JSX.Element {
         value={props.tier}>
         {props.settings.showHelp && 'The total tier of remaining enemies.'}
       </Picker>
-
       <Picker
         label="Adventurers"
         id="adventurers"
@@ -72,9 +71,18 @@ export default function playerTier(props: Props): JSX.Element {
         {props.settings.showHelp && <span>The number of adventurers &gt; 0 health.</span>}
       </Picker>
       {helpText}
-      <Button className={(props.numAliveAdventurers === 0 || props.tier === 0) ? 'subtle' : ''} onClick={() => (shouldRunDecision) ? props.onDecisionSetup(props.node, props.seed) : props.onNext(nextCard)} disabled={props.numAliveAdventurers <= 0 || props.tier <= 0}>Next</Button>
-      <Button className={(props.tier !== 0) ? 'subtle' : ''} onClick={() => props.onVictory(props.node, props.settings, props.maxTier, props.seed)}>Victory (Tier = 0)</Button>
-      <Button className={(props.numAliveAdventurers !== 0) ? 'subtle' : ''} onClick={() => props.onDefeat(props.node, props.settings, props.maxTier, props.seed)}>Defeat (Adventurers = 0)</Button>
+      <Button
+        className={(props.numAliveAdventurers === 0 || props.tier === 0) ? 'subtle' : ''}
+        disabled={props.numAliveAdventurers <= 0 || props.tier <= 0}
+        onClick={() => (shouldRunDecision) ? props.onDecisionSetup(props.node, props.seed) : props.onNext(nextCard)}>Next</Button>
+      <Button
+        className={(props.tier !== 0) ? 'subtle' : ''}
+        disabled={props.numAliveAdventurers <= 0 && props.tier > 0}
+        onClick={() => props.onVictory(props.node, props.settings, props.maxTier, props.seed)}>Victory (Tier = 0)</Button>
+      <Button
+        className={(props.numAliveAdventurers !== 0) ? 'subtle' : ''}
+        disabled={props.tier <= 0}
+        onClick={() => props.onDefeat(props.node, props.settings, props.maxTier, props.seed)}>Defeat (Adventurers = 0)</Button>
     </Card>
   );
 }

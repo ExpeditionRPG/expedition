@@ -446,6 +446,9 @@ body.android .dialog .textfield:focus-within {
       .base_button.subtle > button {
         border: $border_dark_subtle !important;
       }
+      .base_button > button:disabled {
+        border: $border_dark_subtle !important;
+      }
     }
     &.quest_theme_horror {
       -webkit-filter: grayscale(50%);
