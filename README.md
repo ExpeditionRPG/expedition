@@ -48,6 +48,27 @@ Linting is run automatically to verify each commit; tests are run automatically 
 
 Linting errors? `yarn run lint --fix` fixes most common linting issues automatically. For alphabetization issues, in Sublime Text you can select multiple lines of text then hit `F5` to auto-sort them.
 
+#### Writing Good Tests
+
+Reducer tests should test state changes via actions, specifically when there's logic involved / they aren't just glue
+
+Use jasmine.objectContaining for more robust tests
+
+Components: test branches for key content, i.e. if search results empty, make sure that resulting string contains "No results found"
+
+Components: make sure that key interactivity works, i.e. that clicking the button calls the expected function
+
+see app/AdvancedPlay tests / enzyme / using spies
+Containers: test when doing logic in mapping state or dispatch (i.e. not just glue) & test the logic
+
+i.e. the combat container
+see app/AdvancedPlayContainer, create a mock store, dispatch function, check that actions are dispatched with correct parameters.... this one goes too far and actually also tests the action
+Actions: test actions with logic / not just glue
+
+ie Quest load node
+see app/actions/card - mock store, spy on outputs, expect the action with parameters to return an object containing
+if plain function, call directly. If dispatch-wrapped action, call store.dispatch(action)
+
 ### Renovate
 
 We use a Github bot called Renovate to keep our dependencies from getting stale. It automatically opens new PR's each time a dependency has a major version bump. In general, if the CI passes, it's probably safe to merge... but if you ever need to pull a branch down for local testing or changes, you can run `git checkout origin/renovate/<BRANCH NAME>`, and then `git push origin HEAD:renovate/<BRANCH NAME>` to push your changes back to the branch.
