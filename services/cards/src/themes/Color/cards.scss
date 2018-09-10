@@ -486,7 +486,7 @@ $large-icon-width: 0.195in;
           position: relative;
         }
         tr td:first-child {
-          padding: 4pt 4pt 4pt 0;
+          padding: 3.4pt 4pt 4.5pt 0;
           // opacity: 0.7;
           text-align: center;
           border-right: 1px solid #ccc;
@@ -497,6 +497,9 @@ $large-icon-width: 0.195in;
 
         .personaMarker {
           margin: 0;
+          border-top: 1px solid #ccc;
+          border-bottom: 1px solid #ccc;
+
           td {
             &:before, &:after {
               content: "-";
@@ -512,14 +515,14 @@ $large-icon-width: 0.195in;
           }
           &.personaMarkerTop td {
             &:before, &:after {
-              top: 0.035in;
+              top: 0.046in;
             }
           }
           &.personaMarkerBottom td {
-            padding-top: 6pt;
-            padding-bottom: 2pt;
+            padding-top: 5pt;
+            padding-bottom: 3pt;
             &:before, &:after {
-              top: 2pt + 0.02in;
+              top: 3.5pt;
             }
           }
         }
