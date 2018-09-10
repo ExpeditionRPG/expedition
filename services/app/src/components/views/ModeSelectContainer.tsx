@@ -5,7 +5,7 @@ import {loadMultiplayer} from '../../actions/Multiplayer';
 import {changeSettings} from '../../actions/Settings';
 import {ensureLogin} from '../../actions/User';
 import {AppState, UserState} from '../../reducers/StateTypes';
-import PartySizeSelect, {DispatchProps, StateProps} from './PartySizeSelect';
+import ModeSelect, {DispatchProps, StateProps} from './ModeSelect';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
@@ -36,9 +36,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   };
 };
 
-const PartySizeSelectContainer = connect(
+const ModeSelectContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(PartySizeSelect);
+)(ModeSelect);
 
-export default PartySizeSelectContainer;
+export default ModeSelectContainer;

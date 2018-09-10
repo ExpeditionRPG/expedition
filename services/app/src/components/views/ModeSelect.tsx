@@ -3,6 +3,7 @@ import {UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 import Picker from '../base/Picker';
+import TextDivider from '../base/TextDivider';
 
 export interface StateProps {
   numPlayers: number;
@@ -17,18 +18,18 @@ export interface DispatchProps {
 
 interface Props extends StateProps, DispatchProps {}
 
-const PartySizeSelect = (props: Props): JSX.Element => {
+const ModeSelect = (props: Props): JSX.Element => {
   return (
     <Card title="Party Size">
       <Picker label="Adventurers" onDelta={(i: number) => props.onDelta(props.numPlayers, i)} value={props.numPlayers}>
         Set this to the number of players, then hit the Next button.
       </Picker>
-      <div className="textDivider"><span>Select Mode</span></div>
+      <TextDivider text="Select Mode" />
       <Button onClick={() => props.onLocalSelect()}>
         <div className="questButtonWithIcon">
           <div className="title">Local Game</div>
           <div className="summary">
-            Your whole party is playing on one device.
+            Play on one device.
           </div>
         </div>
       </Button>
@@ -44,4 +45,4 @@ const PartySizeSelect = (props: Props): JSX.Element => {
   );
 };
 
-export default PartySizeSelect;
+export default ModeSelect;

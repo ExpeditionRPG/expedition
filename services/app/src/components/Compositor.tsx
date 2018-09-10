@@ -20,8 +20,8 @@ import MultiplayerFooterContainer from './multiplayer/MultiplayerFooterContainer
 import MultiplayerSyncContainer from './multiplayer/MultiplayerSyncContainer';
 import CheckoutContainer from './views/CheckoutContainer';
 import FeaturedQuestsContainer from './views/FeaturedQuestsContainer';
+import ModeSelectContainer from './views/ModeSelectContainer';
 import MultiplayerContainer from './views/MultiplayerContainer';
-import PartySizeSelectContainer from './views/PartySizeSelectContainer';
 import {renderCardTemplate} from './views/quest/cardtemplates/Template';
 import QuestEndContainer from './views/quest/QuestEndContainer';
 import QuestSetupContainer from './views/quest/QuestSetupContainer';
@@ -64,7 +64,7 @@ export default class Compositor extends React.Component<Props, {}> {
         card = <SplashScreenContainer />;
         break;
       case 'PLAYER_COUNT_SETTING':
-        card = <PartySizeSelectContainer />;
+        card = <ModeSelectContainer />;
         break;
       case 'FEATURED_QUESTS':
         card = <FeaturedQuestsContainer />;

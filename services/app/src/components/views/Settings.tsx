@@ -1,6 +1,6 @@
 import Button from '@material-ui/core/Button';
 import * as React from 'react';
-import {VERSION} from '../../Constants';
+import {URLS, VERSION} from '../../Constants';
 import {openWindow} from '../../Globals';
 import {DifficultyType, FontSizeType, SettingsType} from '../../reducers/StateTypes';
 import Card from '../base/Card';
@@ -99,7 +99,7 @@ const Settings = (props: Props): JSX.Element => {
       </Checkbox>
 
       <div className="version">Expedition App v{VERSION}</div>
-      <div className="privacy"><a href="#" onClick={() => openWindow('https://expeditiongame.com/privacy')}>Privacy Policy</a></div>
+      <div className="privacy"><a href="#" onClick={() => openWindow(URLS.PRIVACY_POLICY)}>Privacy Policy</a></div>
     </Card>
   );
 };

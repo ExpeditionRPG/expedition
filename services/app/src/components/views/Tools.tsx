@@ -18,7 +18,6 @@ export interface Props extends StateProps, DispatchProps {}
 const Tools = (props: Props): JSX.Element => {
   return (
     <Card title="Tools">
-      <p>(multiplayer moved to player / game mode select menu - double tap on the home screen to access)</p>
       <Button id="selectCustomCombat" onClick={() => props.onCustomCombatSelect(props.settings)}>
         <div className="questButtonWithIcon">
           <div className="title">GM Mode</div>
@@ -31,6 +30,7 @@ const Tools = (props: Props): JSX.Element => {
           <div className="summary">View quests you've published privately with the Quest Creator (uses your current player count!)</div>
         </div>
       </Button>
+      <p>(multiplayer moved to game mode select menu - double tap on the home screen to access)</p>
     </Card>
   );
 };
