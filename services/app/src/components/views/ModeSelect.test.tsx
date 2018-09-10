@@ -1,3 +1,3 @@
-describe('PartySizeSelect', () => {
+describe('ModeSelect', () => {
   test.skip('TODO', () => { /* TODO */ });
 });

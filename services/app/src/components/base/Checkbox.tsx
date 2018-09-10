@@ -18,8 +18,8 @@ export default class Checkbox extends React.Component<Props, {}> {
       <MultiplayerRipple id={this.props.id} className="base_checkbox">
         <Button onClick={(e: any) => this.props.onChange(!this.props.value)}>
           <div>
-            <span className="label">{this.props.label}</span>
             <span className="icon">{icon}</span>
+            <span className="label">{this.props.label}</span>
           </div>
           <div className="subtext" id="subtext">{this.props.children}</div>
         </Button>
