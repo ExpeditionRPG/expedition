@@ -763,7 +763,7 @@ body.android .dialog .textfield:focus-within {
     .icon {
       display: inline-block;
       top: size(small);
-      margin-left: size(tiny);
+      margin-right: size(small);
       position: relative;
       height: fontsize(interactive) !important;
       width: fontsize(interactive) !important;
@@ -1543,6 +1543,10 @@ $fontsizemap: (
     height: 100%;
     max-width: 100%;
     max-height: 100%;
+  }
+
+  .base_checkbox .icon {
+    top: size(tiny);
   }
 }
 

@@ -9,6 +9,7 @@ import ModeSelect, {DispatchProps, StateProps} from './ModeSelect';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
+    multitouch: state.settings.multitouch,
     numPlayers: state.settings.numPlayers,
     user: state.user,
   };
@@ -32,6 +33,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
         .then((u: UserState) => {
           dispatch(loadMultiplayer(u));
         });
+    },
+    onMultitouchChange: (v: boolean) => {
+      dispatch(changeSettings({multitouch: v}));
     },
   };
 };
