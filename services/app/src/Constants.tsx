@@ -157,6 +157,8 @@ export const MIN_FEEDBACK_LENGTH = 16;
 export const UNSUPPORTED_BROWSERS = /^(.*amazon silk.*)|(.*(iphone|ipad|ipod|ios) os 9_.*)$/i;
 
 export const URLS = {
+  WEBSITE: 'http://expeditiongame.com',
+  PRIVACY_POLICY: 'https://expeditiongame.com/privacy',
   QUEST_CREATOR: 'https://quests.expeditiongame.com/?utm_source=app',
   // lowercase to match lowercase platform names
   android: 'https://play.google.com/store/apps/details?id=io.fabricate.expedition',

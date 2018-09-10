@@ -1,5 +1,7 @@
 import Button from '@material-ui/core/Button';
 import * as React from 'react';
+import {URLS, VERSION} from '../../Constants';
+import {openWindow} from '../../Globals';
 import {DifficultyType, FontSizeType, SettingsType} from '../../reducers/StateTypes';
 import Card from '../base/Card';
 import Checkbox from '../base/Checkbox';
@@ -95,6 +97,9 @@ const Settings = (props: Props): JSX.Element => {
       <Checkbox label="Experimental" value={props.experimental} onChange={props.onExperimentalChange}>
         {(props.experimental) ? 'Experimental features enabled.' : 'Experimental features disabled.'}
       </Checkbox>
+
+      <div className="version">Expedition App v{VERSION}</div>
+      <div className="privacy"><a href="#" onClick={() => openWindow(URLS.PRIVACY_POLICY)}>Privacy Policy</a></div>
     </Card>
   );
 };

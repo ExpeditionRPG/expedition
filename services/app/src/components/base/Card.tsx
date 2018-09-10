@@ -51,6 +51,9 @@ export default class Card extends React.Component<Props, {}> {
     const dispatch = getStore().dispatch;
     this.handleMenuClose();
     switch (value) {
+      case 'ABOUT':
+        openWindow(URLS.WEBSITE);
+        break;
       case 'HOME':
         if (!this.props.inQuest) {
           return dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
@@ -122,8 +125,9 @@ export default class Card extends React.Component<Props, {}> {
               {this.props.inQuest && isExperimental && <MenuItem onClick={() => {this.onMenuSelect('SAVE'); }}>Save quest</MenuItem>}
               <MenuItem onClick={() => {this.onMenuSelect('SETTINGS'); }}>Settings</MenuItem>
               {getDevicePlatform() !== 'web' && <MenuItem onClick={() => {this.onMenuSelect('RATE'); }}>Rate the App</MenuItem>}
-              <MenuItem onClick={() => {this.onMenuSelect('FEEDBACK'); }}>Send feedback</MenuItem>
+              <MenuItem onClick={() => {this.onMenuSelect('FEEDBACK'); }}>Send Feedback</MenuItem>
               {this.props.inQuest && <MenuItem onClick={() => {this.onMenuSelect('REPORT'); }}>Report quest</MenuItem>}
+              {!this.props.inQuest && <MenuItem onClick={() => {this.onMenuSelect('ABOUT'); }}>About</MenuItem>}
             </Menu>
           </span>
           <div className="title">{this.props.title}</div>
