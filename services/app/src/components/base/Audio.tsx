@@ -1,7 +1,5 @@
 import * as React from 'react';
-import {loadAudioLocalFile} from '../../actions/Audio';
 import {AUDIO_COMMAND_DEBOUNCE_MS, INIT_DELAY, MUSIC_INTENSITY_MAX} from '../../Constants';
-import {getWindow} from '../../Globals';
 import {logEvent} from '../../Logging';
 import {AudioLoadingType, AudioState, CardName, CardPhase} from '../../reducers/StateTypes';
 const eachLimit = require('async/eachLimit');
@@ -75,6 +73,7 @@ interface NodeSet {
 }
 
 export interface StateProps {
+  context: AudioContext|null;
   audio: AudioState;
   cardName: CardName;
   cardPhase: CardPhase|null;
@@ -83,6 +82,7 @@ export interface StateProps {
 
 export interface DispatchProps {
   disableAudio: () => void;
+  loadAudio: (context: AudioContext, url: string, callback: (err: Error|null, buffer: AudioBuffer|null) => void) => void;
   onLoadChange: (loaded: AudioLoadingType) => void;
 }
 
@@ -108,12 +108,12 @@ export default class Audio extends React.Component<Props, {}> {
     this.musicNodes = [] as NodeSet[];
     this.paused = false;
 
-    try {
-      this.ctx = new (getWindow().AudioContext as any || getWindow().webkitAudioContext as any)();
+    if (this.AudioContext !== null) {
       if (props.enabled) {
+        // Load after a timeout so as not to overload the device.
         setTimeout(() => this.loadFiles(), INIT_DELAY.LOAD_AUDIO_MILLIS);
       }
-    } catch (err) {
+    } else {
       if (props.enabled) {
         props.disableAudio();
       }
@@ -238,7 +238,7 @@ export default class Audio extends React.Component<Props, {}> {
         }, []));
       }, []);
       eachLimit(musicFiles, 4, (file: string, callback: (err?: Error) => void) => {
-        loadAudioLocalFile(this.ctx, 'audio/' + file + '.mp3', (err: Error|null, buffer: any) => {
+        this.props.loadAudio(this.ctx, 'audio/' + file + '.mp3', (err: Error|null, buffer: any) => {
           if (err) {
             console.error('Error loading audio file: ' + file);
             return callback(err);
