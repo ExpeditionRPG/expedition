@@ -11,6 +11,9 @@ import {ParserNode} from '../TemplateTypes';
 import {LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
 import {DecisionPhase, DecisionState, Difficulty, EMPTY_DECISION_STATE} from './Types';
 
+const MAX_REQUIRED_SUCCESSES = 3;
+const MIN_REQUIRED_SUCCESSES = 1;
+
 export function extractDecision(node: ParserNode): DecisionState {
   return (node &&
           node.ctx &&
@@ -77,7 +80,7 @@ export function generateLeveledChecks(numTotalAdventurers: number, rng: () => nu
       persona: choose<keyof typeof Persona>(Object.keys(Persona) as any, rng),
       skill: choose<keyof typeof Skill>(Object.keys(Skill) as any, rng),
       difficulty: choose<keyof typeof Difficulty>(Object.keys(Difficulty) as any, rng),
-      requiredSuccesses: Math.max(1, Math.floor(rng() * numTotalAdventurers)),
+      requiredSuccesses: Math.max(MIN_REQUIRED_SUCCESSES, Math.min(MAX_REQUIRED_SUCCESSES, Math.floor(rng() * numTotalAdventurers))),
     };
 
     for (const r of results) {

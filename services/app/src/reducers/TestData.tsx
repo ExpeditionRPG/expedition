@@ -1,6 +1,5 @@
 import {initialMultiplayer} from './Multiplayer';
 import {DifficultyType, FontSizeType, MultiplayerState, SettingsType} from './StateTypes';
-
 export const Settings: {[k: string]: SettingsType} = {
   basic: {
     audioEnabled: false,
@@ -19,7 +18,6 @@ export const Settings: {[k: string]: SettingsType} = {
     vibration: true,
   },
 };
-
 export const Multiplayer: {[k: string]: MultiplayerState} = {
   basic: {...initialMultiplayer},
   s2p5: {
