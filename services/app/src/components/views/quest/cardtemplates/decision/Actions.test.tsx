@@ -12,44 +12,11 @@ import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {EMPTY_DECISION_STATE} from './Types';
 import {Action, newMockStore} from 'app/Testing';
-import {initialMultiplayer} from 'app/reducers/Multiplayer';
+import {Multiplayer as m, Settings as s} from 'app/reducers/TestData';
 import {Outcome} from 'shared/schema/templates/Decision';
 
 const cheerio = require('cheerio');
 const seedrandom = require('seedrandom');
-
-const TEST_SETTINGS = {
-  audioEnabled: false,
-  autoRoll: false,
-  contentSets: {
-    horror: false,
-  },
-  difficulty: 'NORMAL' as DifficultyType,
-  experimental: false,
-  fontSize: 'NORMAL' as FontSizeType,
-  multitouch: true,
-  numPlayers: 3,
-  showHelp: true,
-  simulator: false,
-  timerSeconds: 10,
-  vibration: true,
-};
-
-const TEST_RP = {
-  ...initialMultiplayer,
-  clientStatus: {
-    1: {
-      connected: true,
-      numPlayers: 3,
-      type: 'STATUS',
-    },
-    2: {
-      connected: true,
-      numPlayers: 2,
-      type: 'STATUS',
-    },
-  },
-} as MultiplayerState;
 
 const TEST_NODE = new ParserNode(cheerio.load(`
   <decision>
@@ -64,8 +31,8 @@ const TEST_NODE = new ParserNode(cheerio.load(`
 describe('Decision actions', () => {
   function setup(): ParserNode {
     const node = Action(initDecision, {
-      settings: TEST_SETTINGS,
-      multiplayer: TEST_RP,
+      settings: s.basic,
+      multiplayer: m.s2p5,
     }).execute({node: TEST_NODE.clone()})[1].node;
     const decision = extractDecision(node);
     decision.selected = decision.leveledChecks[0];
@@ -91,8 +58,8 @@ describe('Decision actions', () => {
   describe('initDecision', () => {
     test('sets up decision template within node using qdl', () => {
       const actions = Action(initDecision, {
-        settings: TEST_SETTINGS,
-        multiplayer: TEST_RP,
+        settings: s.basic,
+        multiplayer: m.s2p5,
       }).execute({node: TEST_NODE.clone()});
       expect(extractDecision(actions[1].node)).toEqual({
         "leveledChecks": [
@@ -120,19 +87,19 @@ describe('Decision actions', () => {
     const selected = {difficulty: 'medium', requiredSuccesses: 5};
 
     test('computes success', () => {
-      expect(computeOutcome([20, 20, 20, 20, 20], selected, TEST_SETTINGS, TEST_RP)).toEqual(Outcome.success);
+      expect(computeOutcome([20, 20, 20, 20, 20], selected, s.basic, m.s2p5)).toEqual(Outcome.success);
     });
     test('computes failure', () => {
-      expect(computeOutcome([1], selected, TEST_SETTINGS, TEST_RP)).toEqual(Outcome.failure);
+      expect(computeOutcome([1], selected, s.basic, m.s2p5)).toEqual(Outcome.failure);
     });
     test('computes interrupted', () => {
-      expect(computeOutcome([20, 20, 20, 20, 10], selected, TEST_SETTINGS, TEST_RP)).toEqual(Outcome.interrupted);
+      expect(computeOutcome([20, 20, 20, 20, 10], selected, s.basic, m.s2p5)).toEqual(Outcome.interrupted);
     });
     test('computes retry', () => {
-      expect(computeOutcome([20, 20, 20, 20], selected, TEST_SETTINGS, TEST_RP)).toEqual(Outcome.retry);
+      expect(computeOutcome([20, 20, 20, 20], selected, s.basic, m.s2p5)).toEqual(Outcome.retry);
     });
     test('returns null when no rolls', () => {
-      expect(computeOutcome([], selected, TEST_SETTINGS, TEST_RP)).toEqual(null);
+      expect(computeOutcome([], selected, s.basic, m.s2p5)).toEqual(null);
     });
   });
   describe('generateLeveledChecks', () => {
@@ -144,14 +111,19 @@ describe('Decision actions', () => {
       ]);
     });
     test('scales num successes with num adventurers', () => {
+      // Note: these are typically stochastic, so not guaranteed to be the same value each time except when using the same seed.
       expect(Math.max(...generateLeveledChecks(1, seedrandom.alea('1234')).map((c) => c.requiredSuccesses))).toEqual(1);
-      expect(Math.max(...generateLeveledChecks(6, seedrandom.alea('1234')).map((c) => c.requiredSuccesses))).toBeGreaterThan(3);
+      expect(Math.max(...generateLeveledChecks(6, seedrandom.alea('1234')).map((c) => c.requiredSuccesses))).toEqual(3);
     });
     test.skip('scales difficulty with the number of times this type of check was selected previously', () => { /* TODO */ });
   });
   describe('skillTimeMillis', () => {
-    test('scales with player count', () => {
-      expect(skillTimeMillis(TEST_SETTINGS, TEST_RP)).toBeLessThan(skillTimeMillis({...TEST_SETTINGS, numPlayers: 1}, initialMultiplayer));
+    test('gives multiple players less time than single player', () => {
+      expect(
+        skillTimeMillis({...s.basic, numPlayers: 2}, m.basic)
+      ).toBeLessThan(
+        skillTimeMillis({...s.basic, numPlayers: 1}, m.basic)
+      );
     });
     test.skip('respects settings', () => { /* TODO */});
   });
@@ -159,32 +131,32 @@ describe('Decision actions', () => {
     test('pushes the roll value onto the node', () => {
       const actions = Action(handleDecisionRoll, {
         card: {phase: 'MID_COMBAT_DECISION'},
-        settings: TEST_SETTINGS,
-        multiplayer: TEST_RP
+        settings: s.basic,
+        multiplayer: m.s2p5
       }).execute({node: setup(), roll: 5});
       expect(extractDecision(actions[1].node).rolls).toEqual([5]);
     });
     test('fires event for matching outcome event in the node', () => {
       const actions = Action(handleDecisionRoll, {
         card: {phase: ''},
-        settings: TEST_SETTINGS,
-        multiplayer: TEST_RP
+        settings: s.basic,
+        multiplayer: m.s2p5
       }).execute({node: setup(), roll: 1});
       expect(actions[1].node.elem.text()).toEqual('failure node reached');
     });
     test('continues resolve phase if no matching outcome event', () => {
       const actions = Action(handleDecisionRoll, {
         card: {phase: ''},
-        settings: TEST_SETTINGS,
-        multiplayer: TEST_RP
+        settings: s.basic,
+        multiplayer: m.s2p5
       }).execute({node: setup(), roll: 10});
       expect(actions[2].to.phase).toEqual('RESOLVE_DECISION');
     });
     test('mid-combat decision remains in combat when resolving', () => {
       const actions = Action(handleDecisionRoll, {
         card: {phase: 'MID_COMBAT_DECISION'},
-        settings: TEST_SETTINGS,
-        multiplayer: TEST_RP
+        settings: s.basic,
+        multiplayer: m.s2p5
       }).execute({node: setup(), roll: 10});
       expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'MID_COMBAT_DECISION'}));
       expect(actions[1].node.ctx.templates.combat.decisionPhase).toEqual('RESOLVE_DECISION');
@@ -192,8 +164,8 @@ describe('Decision actions', () => {
     test('mid-combat decision remains in combat when resolving', () => {
       const actions = Action(handleDecisionRoll, {
         card: {phase: 'MID_COMBAT_DECISION'},
-        settings: TEST_SETTINGS,
-        multiplayer: TEST_RP
+        settings: s.basic,
+        multiplayer: m.s2p5
       }).execute({node: setup(), roll: 10});
       expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'MID_COMBAT_DECISION'}));
       expect(actions[1].node.ctx.templates.combat.decisionPhase).toEqual('RESOLVE_DECISION');
