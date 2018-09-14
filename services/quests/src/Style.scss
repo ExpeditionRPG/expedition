@@ -1,3 +1,5 @@
+@import '../../../shared/styles/constants.scss';
+
 $bg_primary: #141414;
 $bg_secondary: #212121;
 $grey600: #757575;
@@ -15,7 +17,6 @@ $mapSize: 400px;
 $borderColor: #606060;
 $border: 1px $borderColor solid;
 $fontFamilyHeader: 'Cinzel', sans-serif;
-$fontFamilyBody: 'MinionPro', serif;
 $fontSizeBase: 20px;
 $fontSizeImportant: 28px;
 $fontSizeHeader: 45px;
@@ -94,6 +95,14 @@ body > :first-child:not(#react-app) { display: none; }
   }
 }
 
+.announcement {
+  background: $bg_red_primary !important;
+  width: 100%;
+  font-family: $fontFamilyBase !important;
+  text-transform: none;
+  border-radius: 0 !important;
+}
+
 .annotation_details {
   h3 {
     color: white;
@@ -133,7 +142,7 @@ label {
   .slowLoadPrompt {
     opacity: 0;
     padding-top: 2*$padBase;
-    font-family: $fontFamilyBody;
+    font-family: $fontFamilyBase;
     font-weight: normal;
     max-width: 720px;
     margin: 0 auto;
@@ -164,7 +173,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
 
 .splash {
   background: $bg_primary;
-  font-family: $fontFamilyBody;
+  font-family: $fontFamilyBase;
   overflow-y: auto;
   font-size: $splashParagraphSize;
 
@@ -202,7 +211,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
       display: inline-block;
       padding: $padBase;
       &> button {
-        font-family: $fontFamilyBody !important;
+        font-family: $fontFamilyBase !important;
         font-size: $fontSizeBase !important;
         padding-left: 2*$padBase !important;
         padding-right: 2*$padBase !important;
@@ -243,7 +252,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
 
     h3 {
       font-size: $fontSizeImportant;
-      font-family: $fontFamilyBody !important;
+      font-family: $fontFamilyBase !important;
     }
 
     h4 {
@@ -445,7 +454,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
     }
 
     .app, button {
-      font-family: $fontFamilyBody !important;
+      font-family: $fontFamilyBase !important;
     }
 
     .play-from-cursor-tutorial {

@@ -4,6 +4,10 @@ export const API_HOST = (process && process.env && process.env.API_HOST) || 'htt
 export const GITHUB_DOCS = 'https://github.com/ExpeditionRPG/expedition/blob/master/services/quests/docs/';
 export const DOCS_INDEX_URL = GITHUB_DOCS + 'index.md';
 export const DEV_CONTACT_URL = 'http://expeditiongame.com/contact';
+export const URLS = {
+  ANNOUNCEMENTS: API_HOST + '/qc/announcements',
+};
+
 export const METADATA_FIELDS = [
   'summary',
   'author',

@@ -13,6 +13,18 @@ export type QuestActionType = 'NEW_QUEST' | 'LOAD_QUEST' | 'SAVE_QUEST' | 'PUBLI
 export const SIGN_IN: string = 'SIGN_IN';
 export const SIGN_OUT: string = 'SIGN_OUT';
 
+export interface AnnouncementSetAction extends Redux.Action {
+  type: 'ANNOUNCEMENT_SET';
+  open: boolean;
+  message?: string;
+  link?: string;
+}
+
+export interface FetchAnnouncementResponse {
+  message: string;
+  link: string;
+}
+
 export interface SetProfileMetaAction {
   type: 'SET_PROFILE_META';
   user: UserState;

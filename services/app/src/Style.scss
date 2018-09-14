@@ -1,9 +1,11 @@
+@import '../../../shared/styles/constants.scss';
+
 // ===============================================
 // Font setup
 // ===============================================
 
 @font-face {
-  font-family: 'CinzelBold';
+  font-family: 'Cinzel';
   font-style: normal;
   font-weight: 700;
   src: url(../../../shared/fonts/Cinzel-Bold.woff2) format('woff2'), url(../../../shared/fonts/Cinzel-Bold.woff) format('woff');
@@ -128,39 +130,7 @@ $fontsizemap: (
   @return null;
 }
 
-$headerFont: CinzelBold, serif;
-$headerFontLetterSpacing: 0.2px !important;
-
-$horrorFont: NothingYouCouldDo, serif !important;
-
-$font_color_primary: #000000;
-$font_color_faded: #666666;
-
-$border_primary: 0.02in solid #000;
-$border_accent: 0.02in solid #666;
-$border_accent_thin: 0.01in solid #333;
-$border_faded: 0.02in solid #888;
 $border_desktop: size(base) solid #777;
-
-$bg_primary: #F4ECC8;
-$bg_inactive: #222222;
-$bg_titlebar: rgba(255, 255, 235, 0.65);
-$bg_interactive: rgba(245, 238, 210, 0.7);
-$bg_active: rgba(255, 255, 255, 0.9);
-
-$font_color_dark_primary: #FFFFFF;
-$border_dark_primary: 0.02in solid #999;
-$border_dark_subtle: 0.02in solid #333;
-$bg_dark_primary: #161011;
-$bg_dark_titlebar: rgba(110, 110, 110, 0.6);
-$bg_dark_interactive: rgba(35, 35, 35, 0.5);
-
-$font_color_red_primary: #FFFFFF;
-$border_red_primary: 0.02in solid #999;
-$bg_red_primary: #B71C1C; /* red900 */
-$bg_red_titlebar: rgba(120, 14, 14, 1);
-$bg_red_interactive: rgba(60, 20, 20, 1);
-$white_on_red_text_shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
 
 // ===============================================
 // Base/General Styles
@@ -178,7 +148,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: MinionPro;
+  font-family: $fontFamilyBase;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;

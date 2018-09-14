@@ -1,6 +1,7 @@
 import preview from 'app/reducers/CombinedReducers';
 import Redux from 'redux';
 import {annotations} from './Annotations';
+import {announcement} from './Announcement';
 import {dialogs} from './Dialogs';
 import {editor} from './Editor';
 import {quest} from './Quest';
@@ -18,6 +19,7 @@ export default function combinedReduce(state: AppState, action: Redux.Action): A
   }
 
   return {
+    announcement: announcement(state.announcement, action),
     annotations: annotations(state.annotations, action),
     dialogs: dialogs(state.dialogs, action),
     editor: editor(state.editor, action),

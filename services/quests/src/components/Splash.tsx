@@ -4,13 +4,15 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import ExpeditionButton from 'app/components/base/Button';
 import * as React from 'react';
-import {UserState} from '../reducers/StateTypes';
+import {AnnouncementState, UserState} from '../reducers/StateTypes';
 
 export interface StateProps {
+  announcement: AnnouncementState;
   user: UserState;
 }
 
 export interface DispatchProps {
+  onLinkTap: (link: string) => void;
   onLogin: (position: string) => void;
   onNewQuest: (user: UserState) => void;
 }
@@ -18,6 +20,8 @@ export interface DispatchProps {
 interface Props extends StateProps, DispatchProps {}
 
 const Splash = (props: Props): JSX.Element => {
+  const announcementVisible = (props.announcement && props.announcement.open && props.announcement.message !== '');
+
   return (
     <div className="main splash">
       <AppBar className="splash_app_bar">
@@ -42,6 +46,11 @@ const Splash = (props: Props): JSX.Element => {
           <div className="mobileOnly alert">
             <h3>Looks like you're on mobile! Visit this page on a desktop browser to get started: <strong><a href="https://Quests.ExpeditionGame.com">Quests.ExpeditionGame.com</a></strong></h3>
           </div>
+          {announcementVisible &&
+            <Button className="announcement" onClick={() => props.onLinkTap(props.announcement.link)}>
+              {props.announcement.message}
+            </Button>
+          }
           <h1><span>Share your <strong>Stories</strong></span> <span>with the <strong>World</strong></span></h1>
           <div className="worldMap">
             <img alt="Countries with Expedition adventurers - Jan-April 2017" src="/images/worldmap.png"></img>
