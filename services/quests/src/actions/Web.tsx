@@ -4,10 +4,3 @@ export function handleFetchErrors(response: any) {
   }
   return response;
 }
-
-export async function handleFetchErrorString(response: any) {
-  if (!response.ok) {
-    throw Error(await response.text());
-  }
-  return response;
-}
