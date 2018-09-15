@@ -185,13 +185,42 @@ describe('ThemeManager', () => {
   });
 
   describe('isPaused', () => {
-    test.skip('true when paused', () => { /* TODO */});
-    test.skip('false when not paused', () => { /* TODO */});
+    test('true when paused', () => {
+      const am = new ThemeManager([], fixedRng());
+      am.pause();
+      expect(am.isPaused()).toEqual(true);
+    });
+    test('false when not paused', () => {
+      const am = new ThemeManager([], fixedRng());
+      expect(am.isPaused()).toEqual(false);
+      am.pause();
+      am.resume();
+      expect(am.isPaused()).toEqual(false);
+    });
   })
 
   describe('pause', () => {
-    test.skip('pauses', () => { /* TODO */});
-    test.skip('no op when already paused', () => { /* TODO */});
+    test('pauses playing audio', () => {
+      const ns = fakeTracks();
+      const playing = Object.keys(ns)[0]
+      ns[playing].isPlaying.and.returnValue(true);
+      const am = new ThemeManager(ns, fixedRng());
+      am.pause();
+      for(let k of Object.keys(ns)) {
+        expect(ns[k].fadeOut).toHaveBeenCalledTimes((k === playing) ? 1 : 0);
+      }
+    });
+    test('no op when already paused', () => {
+      const ns = fakeTracks();
+      const am = new ThemeManager(ns, fixedRng());
+      for (let k of Object.keys(ns)) {
+        ns[k].isPlaying.calls.reset();
+      }
+      am.pause();
+      for(let k of Object.keys(ns)) {
+        expect(ns[k].isPlaying).toHaveBeenCalledTimes(0);
+      }
+    });
   });
 
   describe('resume', () => {

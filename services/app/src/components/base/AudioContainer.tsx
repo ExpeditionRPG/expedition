@@ -7,7 +7,7 @@ import {getWindow} from '../../Globals';
 import {logEvent} from '../../Logging';
 import {initialAudioState} from '../../reducers/Audio';
 import {AppState, AudioLoadingType} from '../../reducers/StateTypes';
-import Audio, {DispatchProps, NodeSet, StateProps} from './Audio';
+import Audio, {DispatchProps, NodeSet, StateProps, ThemeManager} from './Audio';
 
 const mapStateToProps = (state: AppState): StateProps => {
   let audioContext: AudioContext|null = null;
@@ -18,7 +18,11 @@ const mapStateToProps = (state: AppState): StateProps => {
     console.log('Web Audio API is not supported in this browser');
   }
 
+  // TODO
+  const themeManager = new ThemeManager({}, Math.random);
+
   return {
+    themeManager,
     audioContext,
     audio: state.audio || initialAudioState,
     cardName: state.card ? state.card.name : 'SPLASH_CARD',
