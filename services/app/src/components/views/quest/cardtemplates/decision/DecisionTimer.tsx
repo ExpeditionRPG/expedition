@@ -100,8 +100,6 @@ export default class DecisionTimer extends React.Component<Props, {}> {
       return <Button key={i} onClick={() => this.onSelect(c)}>{c.requiredSuccesses} {(this.showPersona) ? c.persona : c.difficulty} {c.skill}</Button>;
     });
 
-    // TODO: Offer way forward if accidentally no checks.
-
     return (
       <div className={classes.join(' ')}>
         <div className="value">{formattedTimer}</div>
