@@ -12,7 +12,7 @@ export default class CardFront extends React.Component<CardType, {}> {
           <div className={`card front vertical ${card.sheet} title-${card.image}`}>
             <div className="contents">
               <div className="UPC">
-                <img src={`/images/cards/fronts/UPC${card.image}.svg`} />
+                <img src={`/images/cards/front-UPC${card.image}.svg`} />
               </div>
             </div>
           </div>

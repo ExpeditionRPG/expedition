@@ -230,10 +230,15 @@ export default class QuestEnd extends React.Component<Props, {}> {
 
   private formatFeedback(): string {
     if (this.isGoodRating()) {
-      return `Favorite Part: ${this.state.favoritePart || 'not given'}\nDetails: ${this.state.text}`;
+      if (this.state.favoritePart || this.state.text) {
+        return `Favorite Part: ${this.state.favoritePart || 'not given'}\nDetails: ${this.state.text || '--'}`;
+      }
     } else {
-      return `Primary Issue: ${this.state.primaryIssue || 'not given'}\nQualifier: ${this.state.issueQualifier || 'not given'}\nDetails: ${this.state.text}`;
+      if (this.state.primaryIssue || this.state.issueQualifier) {
+        return `Primary Issue: ${this.state.primaryIssue || 'not given'}\nQualifier: ${this.state.issueQualifier || 'not given'}\nDetails: ${this.state.text}`;
+      }
     }
+    return '';
   }
 
   private validateAndSubmit() {
