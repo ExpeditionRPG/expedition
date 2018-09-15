@@ -25,6 +25,13 @@ const Splash = (props: Props): JSX.Element => {
   return (
     <div className="main splash">
       <AppBar className="splash_app_bar">
+        {announcementVisible &&
+          <Toolbar className="announcement_bar">
+            <Button className="announcement" onClick={() => props.onLinkTap(props.announcement.link)}>
+              {props.announcement.message} {props.announcement.link && <img className="inline_icon" src="/images/new_window_white.svg" />}
+            </Button>
+          </Toolbar>
+        }
         <Toolbar>
           <Typography variant="title">
             Expedition Quest Creator
@@ -41,16 +48,8 @@ const Splash = (props: Props): JSX.Element => {
           </div>}
         </Toolbar>
       </AppBar>
-      <div className="body">
+      <div className={`body ${announcementVisible && 'announcing'}`}>
         <div>
-          <div className="mobileOnly alert">
-            <h3>Looks like you're on mobile! Visit this page on a desktop browser to get started: <strong><a href="https://Quests.ExpeditionGame.com">Quests.ExpeditionGame.com</a></strong></h3>
-          </div>
-          {announcementVisible &&
-            <Button className="announcement" onClick={() => props.onLinkTap(props.announcement.link)}>
-              {props.announcement.message}
-            </Button>
-          }
           <h1><span>Share your <strong>Stories</strong></span> <span>with the <strong>World</strong></span></h1>
           <div className="worldMap">
             <img alt="Countries with Expedition adventurers - Jan-April 2017" src="/images/worldmap.png"></img>
@@ -63,6 +62,10 @@ const Splash = (props: Props): JSX.Element => {
             <ExpeditionButton onClick={() => props.user.loggedIn ? props.onNewQuest(props.user) : props.onLogin('main')}>Get Started</ExpeditionButton>
           </div>
           <p>Learn more about <a target="_blank" href="https://expeditiongame.com">Expedition: The Roleplaying Card Game</a></p>
+
+          <div className="mobileOnly alert">
+            <h3>Looks like you're on mobile! Visit this page on a desktop browser to get started: <strong><a href="https://Quests.ExpeditionGame.com">Quests.ExpeditionGame.com</a></strong></h3>
+          </div>
         </div>
 
         <div>

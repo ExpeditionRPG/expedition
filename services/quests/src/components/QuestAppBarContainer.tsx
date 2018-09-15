@@ -5,10 +5,9 @@ import {QuestActionType} from '../actions/ActionTypes';
 import {renderAndPlay, setLine} from '../actions/Editor';
 import {publishQuestSetup, saveQuest, unpublishQuest} from '../actions/Quest';
 import {logoutUser} from '../actions/User';
+import {URLS} from '../Constants';
 import {AnnotationType, AppState, EditorState, QuestType, UserState} from '../reducers/StateTypes';
 import QuestAppBar, {DispatchProps, StateProps} from './QuestAppBar';
-
-import {DOCS_INDEX_URL} from '../Constants';
 
 const math = require('mathjs') as any;
 const ReactGA = require('react-ga') as any;
@@ -50,7 +49,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
           window.open('https://drive.google.com/drive/search?q=' + quest.title);
           break;
         case 'HELP':
-          window.open(DOCS_INDEX_URL, '_blank');
+          window.open(URLS.DOCUMENTATION, '_blank');
           break;
         default:
           throw new Error('Could not handle menu action ' + action);

@@ -95,12 +95,26 @@ body > :first-child:not(#react-app) { display: none; }
   }
 }
 
-.announcement {
-  background: $bg_red_primary !important;
-  width: 100%;
-  font-family: $fontFamilyBase !important;
-  text-transform: none;
-  border-radius: 0 !important;
+.announcement_bar {
+  padding: 0 !important;
+
+  .announcement {
+    background: $bg_red_primary !important;
+    width: 100%;
+    font-family: $fontFamilyBase !important;
+    text-transform: none;
+    border-radius: 0 !important;
+
+    &:hover {
+      background-color: $bg_red_titlebar !important;
+    }
+
+    .inline_icon {
+      padding-left: 0.5em;
+      height: 1em;
+      margin-top: -0.5em;
+    }
+  }
 }
 
 .annotation_details {
@@ -179,6 +193,10 @@ body .olark-launch-button { /*must be more specifc than olark styles */
 
   .body {
     padding-top: $hBarThickness;
+
+    &.announcing {
+      padding-top: 2*$hBarThickness;
+    }
   }
 
   .alert {
