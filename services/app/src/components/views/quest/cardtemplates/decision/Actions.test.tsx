@@ -65,9 +65,10 @@ describe('Decision actions', () => {
         "leveledChecks": [
           {difficulty: 'medium', persona: 'light', requiredSuccesses: 5, skill: 'athletics'},
           {difficulty: 'medium', persona: 'dark', requiredSuccesses: 5, skill: 'athletics'},
-          {difficulty: 'medium', persona: undefined, requiredSuccesses: 5, skill: 'charisma'}],
-          "rolls": [],
-          "selected": null
+          {difficulty: 'medium', persona: undefined, requiredSuccesses: 5, skill: 'charisma'}
+        ],
+        "rolls": [],
+        "selected": null
         });
       expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'PREPARE_DECISION'}));
     });
