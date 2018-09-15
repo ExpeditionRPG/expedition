@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {AUDIO_COMMAND_DEBOUNCE_MS, INIT_DELAY, MUSIC_INTENSITY_MAX} from '../../Constants';
-import {logEvent} from '../../Logging';
 import {AudioLoadingType, AudioState, CardName, CardPhase} from '../../reducers/StateTypes';
 const eachLimit = require('async/eachLimit');
+const seedrandom = require('seedrandom');
 
 /* Notes on audio implementation:
 - intensity (0-MUSIC_INTENSITY_MAX) used as baseline for combat situation, and changes slowly (mostly on loop reset).
@@ -65,15 +65,24 @@ interface MusicDefinition {
   peakingInstrument: string;
   variants: number;
 }
-type GainNode = any;
-type SourceNode = any;
-interface NodeSet {
-  gain: GainNode;
-  source: SourceNode;
+
+export function getAllMusicFiles(): string[] {
+  return Object.keys(MUSIC_DEFINITIONS).reduce((list: string[], musicClass: string) => {
+    return list.concat(Object.keys(MUSIC_DEFINITIONS[musicClass]).reduce((acc: string[], musicWeight: string) => {
+      const weight = MUSIC_DEFINITIONS[musicClass][musicWeight];
+      for (const instrument of weight.instruments) {
+        for (let v = 1; v <= weight.variants; v++) {
+          acc.push(`${musicClass}/${musicWeight}/${instrument}${v}`);
+        }
+      }
+      return acc;
+    }, []));
+  }, []);
 }
 
 export interface StateProps {
-  context: AudioContext|null;
+  themeManager: ThemeManager|null;
+  audioContext: AudioContext|null;
   audio: AudioState;
   cardName: CardName;
   cardPhase: CardPhase|null;
@@ -82,271 +91,243 @@ export interface StateProps {
 
 export interface DispatchProps {
   disableAudio: () => void;
-  loadAudio: (context: AudioContext, url: string, callback: (err: Error|null, buffer: AudioBuffer|null) => void) => void;
-  onLoadChange: (loaded: AudioLoadingType) => void;
+  loadAudio: (context: AudioContext, url: string, callback: (err: Error|null, ns: NodeSet|null) => void) => void;
+  onLoadChange: (loaded: AudioLoadingType, results?: {[file: string]: NodeSet}) => void;
 }
 
 interface Props extends StateProps, DispatchProps {}
 
-export default class Audio extends React.Component<Props, {}> {
-  private buffers: {
-    [key: string]: AudioBuffer;
-  };
-  private ctx: AudioContext;
-  private intensity: number;
-  private paused: boolean;
-  private currentMusicTheme: MusicDefinition|null;
-  private currentMusicTracks: number[];
-  private musicNodes: NodeSet[];
-  private musicTimeout: any;
+type GainNode = any;
+type SourceNode = any;
+export class NodeSet {
+  private context: AudioContext;
+  private buffer: AudioBuffer;
+  private gain: GainNode;
+  private source: SourceNode;
 
-  constructor(props: Props) {
-    super(props);
-    this.buffers = {};
-    this.currentMusicTheme = null;
-    this.currentMusicTracks = [];
-    this.musicNodes = [] as NodeSet[];
-    this.paused = false;
-
-    if (this.AudioContext !== null) {
-      if (props.enabled) {
-        // Load after a timeout so as not to overload the device.
-        setTimeout(() => this.loadFiles(), INIT_DELAY.LOAD_AUDIO_MILLIS);
-      }
-    } else {
-      if (props.enabled) {
-        props.disableAudio();
-      }
-      logEvent('error', 'web_audio_api_err', { label: err });
-      console.log('Web Audio API is not supported in this browser');
-    }
+  constructor(audioContext: AudioContext, buffer: AudioBuffer) {
+    this.buffer = buffer;
+    this.context = audioContext;
   }
 
-  // This will fire many times without any audio-related changes since it subscribes to settings
-  // So we have to be careful in checking that it's actually an audio-related change,
-  // And not a different event that contains valid-looking (but identical) audio info
-  public componentWillReceiveProps(nextProps: Partial<Props>) {
-    if (!nextProps.audio) {
-      return;
+  public playOnce(initialVolume: number = 1, fadeInVolume: number = 0) {
+    this.gain = this.context.createGain();
+    this.gain.connect(this.context.destination);
+    this.gain.gain.setValueAtTime(initialVolume, this.context.currentTime);
+    if (fadeInVolume) {
+      this.fadeIn(fadeInVolume);
     }
+    this.source = this.context.createBufferSource();
+    this.source.buffer = this.buffer;
+    this.source.connect(this.gain);
+    this.source.start = this.source.start || (this.source as SourceNode).noteOn; // polyfill for old browsers
+    this.source.start(0);
+  }
 
-    const newIntensity = Math.round(Math.min(MUSIC_INTENSITY_MAX, Math.max(0, nextProps.audio.intensity)));
+  public fadeIn(peak?: number, seconds?: number) {
+    this.gain.gain.linearRampToValueAtTime(peak || 1.0, this.context.currentTime + (seconds || MUSIC_FADE_SECONDS));
+  }
 
-    if (this.props.enabled !== nextProps.enabled) {
-      if (nextProps.enabled) {
-        this.loadFiles();
-        this.paused = false;
-        this.playAtIntensity(newIntensity);
-      } else {
-        this.pauseMusic();
-      }
+  public fadeOut(seconds?: number, stop?: boolean) {
+    if (seconds === undefined) {
+      seconds = MUSIC_FADE_SECONDS;
     }
-
-    if (!nextProps.enabled) {
-      // Go no further, but keep track of intensity in case they re-enable mid-combat
-      this.intensity = newIntensity;
-      return console.log('Skipping playing audio, audio currently disabled.');
-    }
-
-    // AUDIO COMMANDS. Ignore if old or duplicate (aka from going back, or settings change)
-    if (AUDIO_COMMAND_DEBOUNCE_MS > Math.abs(nextProps.audio.timestamp - this.props.audio.timestamp)) {
-      return;
-    }
-
-    if (this.paused !== nextProps.audio.paused) {
-      if (nextProps.audio.paused) {
-        this.pauseMusic();
-      } else {
-        this.resumeMusic();
-      }
-    }
-
-    // If we're outside of combat, pause music
-    if (!this.paused && (nextProps.cardName !== 'QUEST_CARD' || nextProps.cardPhase === null || nextProps.cardPhase === 'ROLEPLAY')) {
-      this.pauseMusic();
-    }
-
-    if (this.paused) {
-      return console.log('Skipping playing audio, audio currently paused.');
-    }
-
-    if (!this.ctx) {
-      return console.log('Skipping playing audio, audio context failed to initialize.');
-    }
-
-    if (nextProps.audio.sfx !== null) {
-      this.playFileOnce('sfx/' + nextProps.audio.sfx);
-    }
-
-    // MUSIC-SPECIFIC COMMANDS.
-    const oldIntensity = this.props.audio.intensity;
-    if (newIntensity !== oldIntensity) {
-      this.playAtIntensity(newIntensity, oldIntensity);
-    }
-
-    const newPeak = nextProps.audio.peakIntensity;
-    if (newPeak !== this.props.audio.peakIntensity) {
-      const peakNode = this.musicNodes[this.musicNodes.length - 1];
-      if (peakNode && peakNode.gain) {
-        if (newPeak > 0) {
-          peakNode.gain.gain.linearRampToValueAtTime(newPeak, this.ctx.currentTime + MUSIC_FADE_SECONDS); // Fade in
-        } else {
-          peakNode.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + MUSIC_FADE_SECONDS); // Fade out
-        }
+    this.gain.gain.linearRampToValueAtTime(0, this.context.currentTime + seconds);
+    if (stop) {
+      this.source.stop = this.source.stop || this.source.noteOff; // polyfill for old browsers
+      try {
+        this.source.stop(this.context.currentTime + seconds);
+      } catch (err) { // polyfill for iOS
+        this.gain.disconnect();
       }
     }
   }
 
-  private playAtIntensity(newIntensity: number, oldIntensity = 0) {
-    this.intensity = newIntensity;
-    if (newIntensity === 0) {
-      // fade out
-      this.currentMusicTheme = null;
-      this.currentMusicTracks = [];
-      this.fadeOutMusic();
-    } else if (this.currentMusicTheme === null || oldIntensity === 0) {
-      // Starting from silence, immediately start the theme
-      if (newIntensity <= 18) {
-        this.playNewMusicTheme(MUSIC_DEFINITIONS.combat.light);
-      } else {
-        this.playNewMusicTheme(MUSIC_DEFINITIONS.combat.heavy);
-      }
-    } else {
-      // Shift in existing music; theme transitions happen immediately; shifts happen next loop
-      if (newIntensity > this.currentMusicTheme.maxIntensity) {
-        this.playNewMusicTheme(MUSIC_DEFINITIONS.combat.heavy);
-      } else if (newIntensity < this.currentMusicTheme.minIntensity) {
-        this.playNewMusicTheme(MUSIC_DEFINITIONS.combat.light);
-      } else {
-        this.updateExistingTheme(newIntensity - oldIntensity);
-      }
-    }
+  public hasGain(): boolean {
+    return Boolean(this.gain);
   }
 
-  private loadFiles() {
-    if (this.props.audio.loaded === 'UNLOADED') {
-      this.props.onLoadChange('LOADING');
-      const musicFiles = Object.keys(MUSIC_DEFINITIONS).reduce((list: string[], musicClass: string) => {
-        return list.concat(Object.keys(MUSIC_DEFINITIONS[musicClass]).reduce((acc: string[], musicWeight: string) => {
-          const weight = MUSIC_DEFINITIONS[musicClass][musicWeight];
-          for (const instrument of weight.instruments) {
-            for (let v = 1; v <= weight.variants; v++) {
-              acc.push(`${musicClass}/${musicWeight}/${instrument}${v}`);
-            }
-          }
-          return acc;
-        }, []));
-      }, []);
-      eachLimit(musicFiles, 4, (file: string, callback: (err?: Error) => void) => {
-        this.props.loadAudio(this.ctx, 'audio/' + file + '.mp3', (err: Error|null, buffer: any) => {
-          if (err) {
-            console.error('Error loading audio file: ' + file);
-            return callback(err);
-          }
-          this.buffers[file] = buffer;
-          return callback();
-        });
-      }, (err: Error) => {
-        if (err) {
-          console.error('Error loading audio files: ', err);
-          this.props.onLoadChange('ERROR');
-        } else {
-          this.props.onLoadChange('LOADED');
-          this.playAtIntensity(this.intensity);
-        }
-      });
-    }
-  }
-
-  private playFileOnce(file: string, initialVolume: number = 1, fadeInVolume: number = 0): NodeSet|null {
-    if (!this.buffers[file]) {
-      console.log('Skipping playing audio ' + file + ', not loaded yet.');
+  public getVolume(): number|null {
+    if (!this.hasGain()) {
       return null;
     }
-    const gain = this.ctx.createGain();
-    gain.connect(this.ctx.destination);
-    gain.gain.setValueAtTime(initialVolume, this.ctx.currentTime);
-    if (fadeInVolume) {
-      gain.gain.linearRampToValueAtTime(fadeInVolume, this.ctx.currentTime + MUSIC_FADE_SECONDS);
+    return this.gain.gain.value;
+  }
+
+  public isPlaying(): boolean {
+    return Boolean(this.source) && this.source.playbackState === this.source.PLAYING_STATE;
+  }
+}
+
+export class ThemeManager {
+  private nodes: {
+    [key: string]: NodeSet;
+  };
+  private tracks: number[];
+
+  private intensity: number;
+  private peakIntensity: number;
+  private paused: boolean;
+  private theme: MusicDefinition|null;
+  private timeout: any;
+  private rng: () => number;
+
+  constructor(nodes: {[key:string]: NodeSet}, rng: () => number) {
+    this.nodes = nodes;
+    this.rng = rng;
+    this.theme = null;
+    this.active = [];
+    this.paused = false;
+  }
+
+  // TODO v2 a nicer, albeit more complicated & bug prone, implementation would be to save the current spot in the audio
+  // By keeping track of currentTime https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/currentTime
+  // And then resume playing the audio (and resume the timeout) from the previous spot (fading in from the end of fade out)
+  // by passing in an offset to start() - https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/start
+  public pause() {
+    this.paused = true;
+    this.fadeOut();
+  }
+  private fadeOut() {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+      this.timeout = null;
     }
-    const source = this.ctx.createBufferSource();
-    source.buffer = this.buffers[file];
-    source.connect(gain);
-    source.start = source.start || (source as SourceNode).noteOn; // polyfill for old browsers
-    source.start(0);
-    return {source, gain};
+    for (const i of this.active) {
+      if (i.isPlaying()) {
+        i.fadeOut((this.intensity > 0) ? MUSIC_FADE_SECONDS : MUSIC_FADE_LONG_SECONDS, true);
+      }
+    }
+  }
+
+  public isPaused(): boolean {
+    return this.paused;
+  }
+
+  public setIntensity(intensity: number, peak: number) {
+    intensity = Math.round(Math.min(MUSIC_INTENSITY_MAX, Math.max(0, intensity)));
+    if (intensity !== this.intensity) {
+      this.playAtIntensity(intensity);
+    }
+    if (peak !== this.peakIntensity) {
+      const peakNode = this.nodes[this.active[this.active.length - 1]];
+      if (peakNode && peakNode.hasGain()) {
+        if (peak > 0) {
+          peakNode.fadeIn(peak);
+        } else {
+          peakNode.fadeOut();
+        }
+      }
+    }
   }
 
   // Starts the music from scratch with a new theme, fading out any existing music
   // If no theme specified, uses existing music (for example, resuming from a pause)
-  private playNewMusicTheme(theme: MusicDefinition|null = this.currentMusicTheme) {
-    this.fadeOutMusic();
-    this.currentMusicTheme = theme;
+  private startTheme(theme: MusicDefinition|null = this.theme) {
+    this.fadeOut();
+    this.theme = theme;
     this.loopTheme(true);
+  }
+
+  public resume() {
+    this.paused = false;
+    this.startTheme();
+  }
+
+  private playAtIntensity(newIntensity: number) {
+    const old = this.intensity;
+    this.intensity = newIntensity;
+    if (newIntensity === 0) {
+      this.theme = null;
+      this.active = [];
+      this.fadeOut();
+    } else if (this.theme === null || old === 0) {
+      // Starting from silence, immediately start the theme
+      if (newIntensity <= 18) {
+        console.log('starting light theme');
+        this.startTheme(MUSIC_DEFINITIONS.combat.light);
+      } else {
+        console.log('starting heavy theme');
+        this.startTheme(MUSIC_DEFINITIONS.combat.heavy);
+      }
+    } else {
+      // Shift in existing music; theme transitions happen immediately; shifts happen next loop
+      if (newIntensity > this.theme.maxIntensity) {
+        this.startTheme(MUSIC_DEFINITIONS.combat.heavy);
+      } else if (newIntensity < this.theme.minIntensity) {
+        this.startTheme(MUSIC_DEFINITIONS.combat.light);
+      } else {
+        this.updateTheme(newIntensity - old);
+      }
+    }
+  }
+
+  private generateIntensity(): number {
+    let result = Math.ceil((this.intensity - this.theme.minIntensity) / (this.theme.maxIntensity - this.theme.minIntensity) * this.theme.variants);
+    if (this.rng() < INTENSITY_DECREMENT_CHANCE && result > 1) {
+      result--;
+    } else if (this.rng() < INTENSITY_INCREMENT_CHANCE && result < theme.variants) {
+      result++;
+    }
+    return result;
+  }
+
+  private generateTracks(): string[] {
+    const skipped = [Math.floor(this.rng() * this.theme.baselineInstruments.length)];
+    if (this.rng() < INSTRUMENT_DECREMENT_CHANCE) {
+      // randomly play one less instrument
+      skipped.push(Math.floor(this.rng() * this.theme.baselineInstruments.length));
+    } else if (this.rng() < INSTRUMENT_DECREMENT_DOUBLE_CHANCE) {
+      // randomly play up to two fewer instruments
+      skipped.push(Math.floor(this.rng() * this.theme.baselineInstruments.length));
+      skipped.push(Math.floor(this.rng() * this.theme.baselineInstruments.length));
+    }
+    return this.theme.baselineInstruments.map((instrument: string, i: number) => {
+      return i;
+    }).filter((i: number) => {
+      return skipped.indexOf(i) === -1;
+    });
   }
 
   // Kick off a copy of the existing music theme
   // Doesn't stop the current music nodes (lets them stop naturally for reverb)
   private loopTheme(newTheme: boolean = false) {
     if (this.paused) {
-      return console.log('Skipping playing music, audio currently paused.');
+      return console.log('Skipping music (paused)');
     }
-
-    if (!this.currentMusicTheme) {
+    if (!this.theme) {
       return this.playAtIntensity(this.intensity);
     }
 
-    const theme = this.currentMusicTheme;
-    let themeIntensity = Math.ceil((this.intensity - theme.minIntensity) / (theme.maxIntensity - theme.minIntensity) * theme.variants);
-    const skippedInstruments = [Math.floor(Math.random() * theme.baselineInstruments.length)];
-
-    if (Math.random() < INTENSITY_DECREMENT_CHANCE && themeIntensity > 1) {
-      // randomly go a bit down in intensity
-      themeIntensity--;
-    } else if (Math.random() < INTENSITY_INCREMENT_CHANCE && themeIntensity < theme.variants) {
-      // randomly go a bit up in intensity
-      themeIntensity++;
-    }
-
-    if (Math.random() < INSTRUMENT_DECREMENT_CHANCE) {
-      // randomly play one less instrument
-      skippedInstruments.push(Math.floor(Math.random() * theme.baselineInstruments.length));
-    } else if (Math.random() < INSTRUMENT_DECREMENT_DOUBLE_CHANCE) {
-      // randomly play up to two fewer instruments
-      skippedInstruments.push(Math.floor(Math.random() * theme.baselineInstruments.length));
-      skippedInstruments.push(Math.floor(Math.random() * theme.baselineInstruments.length));
-    }
-    this.currentMusicTracks = theme.baselineInstruments.map((instrument: string, i: number) => {
-      return i;
-    }).filter((i: number) => {
-      return skippedInstruments.indexOf(i) === -1;
-    });
-
-    theme.instruments.forEach((instrument: string, i: number) => {
-      const active = (this.currentMusicTracks.indexOf(i) !== -1 || this.props.audio.peakIntensity > 0);
+    this.active = this.generateTracks();
+    this.theme.instruments.forEach((instrument: string, i: number) => {
+      const active = (this.active.indexOf(i) !== -1 || this.peakIntensity > 0);
       let initialVolume = (newTheme || !active) ? 0 : 1;
       let targetVolume = active ? 1 : 0;
 
-      if (this.props.audio.peakIntensity > 0 && instrument === theme.peakingInstrument) {
-        targetVolume = this.props.audio.peakIntensity;
-        if (this.musicNodes[i] && this.musicNodes[i].gain) {
-          initialVolume = this.musicNodes[i].gain.gain.value;
+      if (this.peakIntensity > 0 && instrument === this.theme.peakingInstrument) {
+        targetVolume = this.peakIntensity;
+        if (this.active[i] && this.nodes[this.active[i]].hasGain()) {
+          initialVolume = this.nodes[this.active[i]].getVolume() || 0;
         }
       }
       // Start all tracks at 0 volume, and fade them in to 1 if they're active
-      const newNode = this.playFileOnce(theme.directory + instrument + themeIntensity, initialVolume, targetVolume);
-      if (newNode) {
-        this.musicNodes[i] = newNode;
+      const file = this.theme.directory + instrument + this.generateIntensity();
+      if (!this.nodes[file]) {
+        console.log('Skipping playing audio ' + file + ', not loaded yet.');
+      } else {
+        this.nodes[file].playOnce(initialVolume, targetVolume);
       }
     });
-    this.musicTimeout = setTimeout(() => {
+
+    this.timeout = setTimeout(() => {
       this.loopTheme();
-    }, this.currentMusicTheme.loopMs);
+    }, this.theme.loopMs);
   }
 
   // Fade in / out tracks on the current theme for a smoother + more immediate change in intensity
-  private updateExistingTheme(intensityDelta: number) {
-    const theme = this.currentMusicTheme;
+  private updateTheme(intensityDelta: number) {
+    const theme = this.theme;
     if (theme === null) {
       return;
     }
@@ -356,59 +337,127 @@ export default class Audio extends React.Component<Props, {}> {
       const fadeInInstruments = theme.baselineInstruments.map((instrument: string, i: number) => {
         return i;
       }).filter((i: number) => {
-        return this.currentMusicTracks.indexOf(i) === -1;
+        return this.active.indexOf(i) === -1;
       });
-      if (fadeInInstruments && fadeInInstruments[0] !== null && this.musicNodes[fadeInInstruments[0]]) {
-        const nodes = this.musicNodes[fadeInInstruments[0]];
-        nodes.gain.gain.linearRampToValueAtTime(1.0, this.ctx.currentTime + MUSIC_FADE_SECONDS); // Fade in
-        this.currentMusicTracks = this.currentMusicTracks.concat(fadeInInstruments[0]);
+      if (fadeInInstruments && fadeInInstruments[0] !== null && this.active[fadeInInstruments[0]]) {
+        const nodes = this.active[fadeInInstruments[0]];
+        nodes.fadeIn();
+        this.active = this.active.concat(fadeInInstruments[0]);
       }
-    } else if (intensityDelta < 0 && this.currentMusicTracks.length > 1) {
+    } else if (intensityDelta < 0 && this.active.length > 1) {
       // Fade out of one inactive baseline track randomly
       const fadeOutInstruments = theme.baselineInstruments.map((instrument: string, i: number) => {
         return i;
       }).filter((i: number) => {
-        return this.currentMusicTracks.indexOf(i) !== -1;
+        return this.active.indexOf(i) !== -1;
       });
-      if (fadeOutInstruments && fadeOutInstruments[0] !== null && this.musicNodes[fadeOutInstruments[0]]) {
-        const nodes = this.musicNodes[fadeOutInstruments[0]];
-        nodes.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + MUSIC_FADE_SECONDS); // Fade out
-        this.currentMusicTracks = this.currentMusicTracks.splice(fadeOutInstruments[0], 1);
+      if (fadeOutInstruments && fadeOutInstruments[0] !== null && this.active[fadeOutInstruments[0]]) {
+        this.nodes[this.active[fadeOutInstruments[0]]].fadeOut();
+        this.active = this.active.splice(fadeOutInstruments[0], 1);
+      }
+    }
+  }
+}
+
+export default class Audio extends React.Component<Props, {}> {
+  constructor(props: Props) {
+    super(props);
+
+    if (props.audioContext !== null) {
+      if (props.enabled) {
+        // Load after a timeout so as not to overload the device.
+        setTimeout(() => {
+          this.getThemeManager().catch(console.error);
+        }, INIT_DELAY.LOAD_AUDIO_MILLIS);
+      }
+    } else {
+      if (props.enabled) {
+        props.disableAudio();
       }
     }
   }
 
-  private fadeOutMusic() {
-    if (this.musicTimeout) {
-      clearTimeout(this.musicTimeout);
-      this.musicTimeout = null;
+  // This will fire many times without any audio-related changes since it subscribes to settings
+  // So we have to be careful in checking that it's actually an audio-related change,
+  // And not a different event that contains valid-looking (but identical) audio info
+  public componentWillReceiveProps(nextProps: Partial<Props>) {
+    console.log('receivedprops');
+    if (!nextProps.audio) {
+      return;
     }
-    const fadeSeconds = (this.intensity > 0) ? MUSIC_FADE_SECONDS : MUSIC_FADE_LONG_SECONDS;
-    for (const track of this.musicNodes) {
-      if (track && track.source && track.source.playbackState === track.source.PLAYING_STATE) {
-        track.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + fadeSeconds); // Fade out
-        track.source.stop = track.source.stop || track.source.noteOff; // polyfill for old browsers
-        try {
-          track.source.stop(this.ctx.currentTime + fadeSeconds);
-        } catch (err) { // polyfill for iOS
-          track.gain.disconnect();
-        }
+
+    if (this.props.enabled !== nextProps.enabled) {
+      if (nextProps.enabled) {
+        return this.getThemeManager().then(() => {
+          this.props.themeManager.setIntensity(nextProps.audio.intensity);
+        }).catch(console.error);
+      } else {
+        this.props.themeManager.pause();
       }
     }
+
+    if (!nextProps.enabled) {
+      return console.log('Skipping audio (disabled)');
+    }
+
+    // Ignore if old or duplicate (aka from going back, or settings change)
+    if (AUDIO_COMMAND_DEBOUNCE_MS > Math.abs(nextProps.audio.timestamp - this.props.audio.timestamp)) {
+      return console.log('Audio debounced');
+    }
+
+    if (!this.props.themeManager) {
+      return console.log('ThemeManager uninitialized; skipping');
+    }
+
+    if (this.props.themeManager.isPaused() !== nextProps.audio.paused) {
+      if (nextProps.audio.paused) {
+        this.props.themeManager.pause();
+        return;
+      } else {
+        this.props.themeManager.resume();
+      }
+    }
+
+    if (this.props.themeManager.isPaused()) {
+      return console.log('Skipping playing audio, audio currently paused.');
+    }
+
+    // If we're outside of combat, pause music
+    if (nextProps.cardName !== 'QUEST_CARD' || nextProps.cardPhase === null || nextProps.cardPhase === 'ROLEPLAY') {
+      console.log('Pausing music (outside of combat)');
+      return this.props.themeManager.pause();
+    }
+    if (!nextProps.audioContext) {
+      return console.log('Skipping playing audio, audio context failed to initialize.');
+    }
+    this.props.themeManager.setIntensity(nextProps.audio.intensity);
   }
 
-  // TODO v2 a nicer, albeit more complicated & bug prone, implementation would be to save the current spot in the audio
-  // By keeping track of currentTime https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/currentTime
-  // And then resume playing the audio (and resume the timeout) from the previous spot (fading in from the end of fade out)
-  // by passing in an offset to start() - https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/start
-  private pauseMusic() {
-    this.paused = true;
-    this.fadeOutMusic();
-  }
-
-  private resumeMusic() {
-    this.paused = false;
-    this.playNewMusicTheme();
+  private getThemeManager(): Promise<void> {
+    if (this.props.themeManager) {
+      return Promise.fulfill();
+    }
+    const ac = this.props.audioContext;
+    if (!ac || this.props.audio.loaded !== 'UNLOADED') {
+      return;
+    }
+    return new Promise((fulfill, reject) => {
+      this.props.onLoadChange('LOADING');
+      const musicFiles = getAllMusicFiles();
+      // TODO: eachLimit
+      const nodes: {[key: string]: NodeSet} = {};
+      for (let file of musicFiles) {
+        this.props.loadAudio(ac, 'audio/' + file + '.mp3', (err: Error|null, ns: NodeSet) => {
+          if (err) {
+            this.props.onLoadChange('ERROR');
+            reject(new Error('Error loading audio file: ' + file));
+          }
+          nodes[file] = ns;
+        });
+      }
+      this.props.onLoadChange('LOADED', nodes);
+      fulfill();
+    });
   }
 
   public render(): JSX.Element|null {
