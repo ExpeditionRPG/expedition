@@ -36,7 +36,10 @@ export default function resolveDecision(props: Props): JSX.Element {
     } as Record<keyof typeof Outcome, string>)[outcome];
     return (
       <Card title={title} theme={props.theme} inQuest={true}>
-        <Callout icon="adventurer_white">{instruction}</Callout>
+        {(instruction)
+          ? <Callout icon="adventurer_white">{instruction}</Callout>
+          : <p>Nothing happens.</p>
+        }
         <Button onClick={() => props.onCombatDecisionEnd()}>Next</Button>
       </Card>
     );
