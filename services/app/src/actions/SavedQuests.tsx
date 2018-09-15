@@ -1,4 +1,5 @@
 import * as Redux from 'redux';
+import {fetchLocal} from 'shared/requests';
 import {Quest} from 'shared/schema/Quests';
 import {getEnemiesAndTier} from '../components/views/quest/cardtemplates/combat/Actions';
 import {getNextMidCombatNode} from '../components/views/quest/cardtemplates/roleplay/Actions';
@@ -11,7 +12,6 @@ import {SavedQuestMeta} from '../reducers/StateTypes';
 import {QuestNodeAction, SavedQuestDeletedAction, SavedQuestListAction, SavedQuestStoredAction} from './ActionTypes';
 import {initQuestNode} from './Quest';
 import {openSnackbar} from './Snackbar';
-import {fetchLocal} from './Web';
 
 const cheerio = require('cheerio') as CheerioAPI;
 

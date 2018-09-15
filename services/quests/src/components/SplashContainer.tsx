@@ -8,11 +8,19 @@ import Splash, {DispatchProps, StateProps} from './Splash';
 const ReactGA = require('react-ga');
 
 const mapStateToProps = (state: AppState): StateProps => {
-  return {user: state.user};
+  return {
+    announcement: state.announcement,
+    user: state.user,
+  };
 };
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
+    onLinkTap: (link: string) => {
+      if (link !== '') {
+        window.open(link, '_system');
+      }
+    },
     onLogin: (position: string) => {
       ReactGA.event({
         action: 'LOGIN',

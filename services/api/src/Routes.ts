@@ -45,6 +45,7 @@ export function installRoutes(db: Database, router: express.Router) {
 
   router.get('/healthcheck', limitCors, Handlers.healthCheck);
   router.get('/announcements', limitCors, Handlers.announcement);
+  router.get('/qc/announcements', limitCors, Handlers.qcAnnouncement);
   router.post('/analytics/:category/:action', limitCors, (req, res) => {Handlers.postAnalyticsEvent(db, req, res); });
   router.post('/quests', limitCors, (req, res) => {Handlers.search(db, req, res); });
   router.get('/raw/:partition/:quest/:version', limitCors, (req, res) => {Handlers.questXMLHandler(db, req, res); });

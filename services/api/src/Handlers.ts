@@ -92,6 +92,13 @@ export function announcement(req: express.Request, res: express.Response) {
     });
 }
 
+export function qcAnnouncement(req: express.Request, res: express.Response) {
+  return res.json({
+    link: Config.get('QC_ANNOUNCEMENT_LINK') || '',
+    message: Config.get('QC_ANNOUNCEMENT_MESSAGE') || '',
+  });
+}
+
 export interface QuestSearchResponse {
   error: null|string;
   hasMore: boolean;
