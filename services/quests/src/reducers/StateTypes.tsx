@@ -4,6 +4,12 @@ import {ContentRatingLabelType, LanguageType, ThemeType} from 'shared/schema/Con
 import {ErrorType} from '../../errors/types';
 // TODO: URL type?
 
+export interface AnnouncementState {
+  open: boolean;
+  message: string;
+  link: string;
+}
+
 export type DialogIDType = 'ERROR' | 'ANNOTATION_DETAIL' | 'PUBLISHING' | 'UNPUBLISHED';
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
@@ -128,6 +134,7 @@ export interface UserState {
 
 export interface AppState {
   annotations: AnnotationsState;
+  announcement: AnnouncementState;
   dialogs: DialogsState;
   editor: EditorState;
   quest: QuestType;

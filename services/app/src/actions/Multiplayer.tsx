@@ -1,5 +1,6 @@
 import Redux from 'redux';
 import {StatusEvent} from 'shared/multiplayer/Events';
+import {handleFetchErrors} from 'shared/requests';
 import {openSnackbar} from '../actions/Snackbar';
 import {MULTIPLAYER_SETTINGS} from '../Constants';
 import {logEvent} from '../Logging';
@@ -7,7 +8,6 @@ import {getMultiplayerClient} from '../Multiplayer';
 import {MultiplayerSessionMeta, UserState} from '../reducers/StateTypes';
 import {LocalAction, MultiplayerClientStatus} from './ActionTypes';
 import {toCard} from './Card';
-import {handleFetchErrors} from './Web';
 
 export function local(a: Redux.Action): LocalAction {
   const inflight = (a as any)._inflight;

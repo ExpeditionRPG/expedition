@@ -1,4 +1,5 @@
 import Redux from 'redux';
+import {fetchLocal, handleFetchErrors} from 'shared/requests';
 import {Quest} from 'shared/schema/Quests';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
@@ -18,22 +19,6 @@ import {ensureLogin} from './User';
 
 declare var require: any;
 const cheerio = require('cheerio') as CheerioAPI;
-
-// fetch can be used for anything except local files, so anything that might download from file://
-// (aka quests) should use this instead
-export function fetchLocal(url: string) {
-  return new Promise((resolve, reject) => {
-    const request = new XMLHttpRequest();
-    request.onload = () => {
-      resolve(request.response);
-    };
-    request.onerror = () => {
-      reject(new Error('network error'));
-    };
-    request.open('GET', url);
-    request.send();
-  });
-}
 
 export function fetchUserQuests() {
   return (dispatch: Redux.Dispatch<any>) => {
@@ -191,20 +176,6 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       return dispatch(postUserFeedback(a.type, data));
     });
   };
-}
-
-export function handleFetchErrors(response: any) {
-  if (!response.ok) {
-    throw Error(response.statusText);
-  }
-  return response;
-}
-
-export async function handleFetchErrorString(response: any) {
-  if (!response.ok) {
-    throw Error(await response.text());
-  }
-  return response;
 }
 
 function postUserFeedback(type: string, data: any) {

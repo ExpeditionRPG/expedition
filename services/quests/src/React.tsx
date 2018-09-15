@@ -4,6 +4,7 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import * as Redux from 'redux';
 import theme from 'shared/Theme';
+import {fetchAnnouncements} from './actions/Announcement';
 import {renderAndPlay} from './actions/Editor';
 import {questLoading, saveQuest} from './actions/Quest';
 import {setSnackbar} from './actions/Snackbar';
@@ -65,6 +66,7 @@ if (questId !== '') {
   store.dispatch(questLoading());
   ReactGA.pageview('/quest');
 } else {
+  store.dispatch(fetchAnnouncements());
   ReactGA.pageview('/');
 }
 
