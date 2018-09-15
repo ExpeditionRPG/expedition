@@ -1,7 +1,7 @@
 import Redux from 'redux';
+import {handleFetchErrors} from 'shared/requests';
 import {URLS} from '../Constants';
 import {AnnouncementSetAction, FetchAnnouncementResponse} from './ActionTypes';
-import {handleFetchErrors} from './Web';
 
 export function fetchAnnouncements() {
   return (dispatch: Redux.Dispatch<any>): any => {

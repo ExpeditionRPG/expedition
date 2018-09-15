@@ -1,10 +1,10 @@
 import Redux from 'redux';
 import * as semver from 'semver';
+import {handleFetchErrors} from 'shared/requests';
 import {AUTH_SETTINGS, URLS, VERSION} from '../Constants';
 import {getDevicePlatform} from '../Globals';
 import {logEvent} from '../Logging';
 import {AnnouncementSetAction, FetchAnnouncementResponse} from './ActionTypes';
-import {handleFetchErrors} from './Web';
 
 export function fetchAnnouncements() {
   return (dispatch: Redux.Dispatch<any>): any => {
