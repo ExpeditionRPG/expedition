@@ -167,6 +167,8 @@ function pushDecisionRoll(node: ParserNode, roll: number, getState: () => AppSta
   // In all cases except for retry and just having chosen the check,
   // there's a chance we need to follow an event bullet.
   // Here we check for the best event for the given outcome.
+  // TODO: If outcome is "interrupted" and we don't have any events for it,
+  // fall back to "failure".
   if (outcome && outcome !== Outcome.retry) {
     let targetCheck: SkillCheck|null = null;
     let targetText: string|null = null;
