@@ -7,7 +7,8 @@ import MultiplayerFooter, {DispatchProps, Props, StateProps} from './Multiplayer
 const mapStateToProps = (state: AppState, ownProps: Partial<Props>): StateProps => {
   return {
     multiplayer: state.multiplayer,
-    theme: ownProps.theme || 'light',
+    cardTheme: ownProps.cardTheme || 'light',
+    questTheme: state.quest.details.theme || 'base',
   };
 };
 

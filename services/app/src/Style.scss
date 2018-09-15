@@ -196,6 +196,10 @@ body {
     }
   }
 
+  &.quest_theme_horror {
+    background-color: $bg_primary_faded;
+  }
+
   &.card_theme_dark {
     background-color: $bg_dark_primary;
     color: $font_color_dark_primary;
