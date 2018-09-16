@@ -25,12 +25,22 @@ export default function prepareDecision(props: Props): JSX.Element {
   if (props.settings.showHelp) {
     helpText = (
       <div>
+        <h2>
+          Skill Check
+        </h2>
+        <p>
+          You must choose between three actions, then roll to see if your choice succeeds.
+        </p>
+        <p>
+          Each action has a skill type. You get bonuses if your party's skills align with the action you choose,
+          and matching other party attributes may help you succeed.
+        </p>
         <ol>
           <li>
             <strong>Keep</strong> your skill and persona cards within sight.
           </li>
           <li><strong>Start</strong> the timer.</li>
-          <li><strong>Tap</strong> one of the choices on the timer phase. Each choice shows the number of attempts you can make, the difficulty or persona type, and the skill type of the check.</li>
+          <li><strong>Tap</strong> one of the choices on the timer phase.</li>
           <li><strong>Be careful!</strong> If the timer runs out, your skill check becomes more difficult.</li>
         </ol>
       </div>
