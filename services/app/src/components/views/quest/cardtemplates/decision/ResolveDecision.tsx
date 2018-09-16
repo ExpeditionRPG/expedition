@@ -28,7 +28,7 @@ function formatImg(img: string, theme: CardThemeType, small?: boolean) {
   return img;
 }
 
-function capitalize(text?: string = '') {
+function capitalize(text: string = '') {
   return text.charAt(0).toUpperCase() + text.substr(1);
 }
 
