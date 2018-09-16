@@ -33,6 +33,7 @@ export default class DecisionTimer extends React.Component<Props, {}> {
   public interval: any;
   public state: {startTimeMillis: number, timeRemaining: number};
   private showPersona: boolean;
+  private checks: LeveledSkillCheck[];
 
   constructor(props: Props) {
     super(props);
@@ -43,6 +44,7 @@ export default class DecisionTimer extends React.Component<Props, {}> {
 
     // Set on single evaluation
     this.showPersona = this.props.rng() > 0.5;
+    this.checks = this.selectChecks();
   }
 
   public onSelect(c: LeveledSkillCheck) {
@@ -63,7 +65,9 @@ export default class DecisionTimer extends React.Component<Props, {}> {
     }
   }
 
-  public selectChecks(cs: LeveledSkillCheck[]): LeveledSkillCheck[] {
+  public selectChecks(): LeveledSkillCheck[] {
+    const decision = extractDecision(this.props.node);
+    const cs = decision.leveledChecks;
     if (cs.length === 0) {
       console.error('Could not resolve any checks, using generated checks');
       return [];
@@ -79,12 +83,11 @@ export default class DecisionTimer extends React.Component<Props, {}> {
     }
     return getRandomSubarray(Object.keys(mapped), 3, this.props.rng)
       .map((k) => {
-        return mapped[k][Math.floor(Math.random() * mapped[k].length)];
+        return mapped[k][Math.floor(this.props.rng() * mapped[k].length)];
       });
   }
 
-  public render() {
-    const decision = extractDecision(this.props.node);
+  private formattedTimer(): string {
     let formattedTimer: string;
     const timeRemainingSec = this.state.timeRemaining / 1000;
     if (timeRemainingSec < 10 && timeRemainingSec > 0) {
@@ -92,17 +95,18 @@ export default class DecisionTimer extends React.Component<Props, {}> {
     } else {
       formattedTimer = timeRemainingSec.toFixed(0);
     }
-    formattedTimer += 's';
+    return formattedTimer + 's';
+  }
+
+  public render() {
 
     const questTheme = getStore().getState().quest.details.theme || 'base';
-    const classes = ['no_icon', 'base_card', 'base_timer_card', 'card_theme_' + this.props.theme, 'quest_theme_' + questTheme];
-    const checks = this.selectChecks(decision.leveledChecks).map((c, i: number): JSX.Element => {
+    const checks = this.checks.map((c, i: number): JSX.Element => {
       return <Button key={i} onClick={() => this.onSelect(c)}>{c.requiredSuccesses} {(this.showPersona) ? c.persona : c.difficulty} {c.skill}</Button>;
     });
-
     return (
-      <div className={classes.join(' ')}>
-        <div className="value">{formattedTimer}</div>
+      <div className={['no_icon', 'base_card', 'base_timer_card', 'card_theme_' + this.props.theme, 'quest_theme_' + questTheme].join(' ')}>
+        <div className="value">{this.formattedTimer()}</div>
         <div className="secondary">{checks}</div>
       </div>
     );
