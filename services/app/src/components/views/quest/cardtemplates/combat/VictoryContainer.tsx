@@ -6,6 +6,7 @@ import {AppStateWithHistory} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {resolveCombat} from '../Params';
+import {getCardTemplateTheme} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {mapStateToProps as mapStateToPropsBase} from './Types';
 import Victory, {DispatchProps, StateProps} from './Victory';
@@ -38,6 +39,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     ...mapStateToPropsBase(state, ownProps),
     combat,
     victoryParameters,
+    theme: getCardTemplateTheme(state.card),
   };
 };
 

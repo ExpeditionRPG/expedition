@@ -1,9 +1,9 @@
 import Button from 'app/components/base/Button';
 import Callout from 'app/components/base/Callout';
 import Card from 'app/components/base/Card';
-import {CardThemeType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {Outcome} from 'shared/schema/templates/Decision';
+import {capitalizeFirstLetter, formatImg} from '../Render';
 import {ParserNode} from '../TemplateTypes';
 import {computeOutcome, computeSuccesses, extractDecision} from './Actions';
 import {getScenarioInstruction} from './Scenarios';
@@ -17,20 +17,6 @@ export interface DispatchProps {
 }
 
 export interface Props extends StateProps, DispatchProps {}
-
-function formatImg(img: string, theme: CardThemeType, small?: boolean) {
-  if (theme === 'dark') {
-    img += '_white';
-  }
-  if (small === undefined || small) {
-    img += '_small';
-  }
-  return img;
-}
-
-function capitalize(text: string = '') {
-  return text.charAt(0).toUpperCase() + text.substr(1);
-}
 
 export default function resolveDecision(props: Props): JSX.Element {
   const decision = extractDecision(props.node);
@@ -89,7 +75,7 @@ export default function resolveDecision(props: Props): JSX.Element {
   const numLeft = selected.requiredSuccesses - successes;
   const roll = <img className="inline_icon" src={'images/' + formatImg('roll', props.theme) + '.svg'}></img>;
   return (
-    <Card title={[capitalize(selected.persona), capitalize(selected.skill), 'Check'].filter((s) => s).join(' ')} inQuest={true} theme={props.theme}>
+    <Card title={[capitalizeFirstLetter(selected.persona), capitalizeFirstLetter(selected.skill), 'Check'].filter((s) => s).join(' ')} inQuest={true} theme={props.theme}>
       {helpText}
       {inst}
       <h2 className="center">
