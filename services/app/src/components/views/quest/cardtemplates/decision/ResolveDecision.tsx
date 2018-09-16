@@ -28,6 +28,10 @@ function formatImg(img: string, theme: CardThemeType, small?: boolean) {
   return img;
 }
 
+function capitalize(text?: string = '') {
+  return text.charAt(0).toUpperCase() + text.substr(1);
+}
+
 export default function resolveDecision(props: Props): JSX.Element {
   const decision = extractDecision(props.node);
   const selected = decision.selected || EMPTY_LEVELED_CHECK;
@@ -85,7 +89,7 @@ export default function resolveDecision(props: Props): JSX.Element {
   const numLeft = selected.requiredSuccesses - successes;
   const roll = <img className="inline_icon" src={'images/' + formatImg('roll', props.theme) + '.svg'}></img>;
   return (
-    <Card title={`${selected.persona} ${selected.skill} Check`} inQuest={true} theme={props.theme}>
+    <Card title={[capitalize(selected.persona), capitalize(selected.skill), 'Check'].filter((s) => s).join(' ')} inQuest={true} theme={props.theme}>
       {helpText}
       {inst}
       <h2 className="center">

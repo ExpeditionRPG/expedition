@@ -32,8 +32,7 @@ export default function prepareDecision(props: Props): JSX.Element {
           You must choose between three actions, then roll to see if your choice succeeds.
         </p>
         <p>
-          Each action has a skill type. You get bonuses if your party's skills align with the action you choose,
-          and matching other party attributes may help you succeed.
+          Each action has a skill type. You get bonuses for your levels in skills of those types, and for matching the persona type.
         </p>
         <ol>
           <li>
