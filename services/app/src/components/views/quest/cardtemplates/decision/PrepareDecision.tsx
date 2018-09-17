@@ -1,7 +1,7 @@
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
 import * as React from 'react';
-import {generateIconElements} from '../Render';
+import {formatImg, generateIconElements} from '../Render';
 import {StateProps} from './Types';
 
 export interface DispatchProps {
@@ -26,7 +26,7 @@ export default function prepareDecision(props: Props): JSX.Element {
     helpText = (
       <div>
         <h2>
-          Skill Check
+          Skill Check <img className="inline_icon" src={'images/' + formatImg('skill', props.theme) + '.svg'}></img>
         </h2>
         <p>
           You must choose between three actions, then roll to see if your choice succeeds.

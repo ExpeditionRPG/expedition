@@ -57,6 +57,16 @@ export function numberToWord(input: number): string {
   }
 }
 
-export function capitalizeFirstLetter(input: string): string {
+export function capitalizeFirstLetter(input: string = ''): string {
   return input.charAt(0).toUpperCase() + input.slice(1);
+}
+
+export function formatImg(img: string, theme: CardThemeType, small?: boolean) {
+  if (theme === 'dark') {
+    img += '_white';
+  }
+  if (small === undefined || small) {
+    img += '_small';
+  }
+  return img;
 }
