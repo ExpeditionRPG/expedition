@@ -6,7 +6,7 @@ import {resolveCombat} from '../Params';
 import Adapter from 'enzyme-adapter-react-16';
 configure({ adapter: new Adapter() });
 
-const HEAL_SUBSTR = 'All adventurers heal';
+const HEAL_SUBSTR = 'Heal';
 const LOOT_SUBSTR = 'Draw Loot';
 const LEVEL_SUBSTR = 'LEVEL UP!';
 const HORROR_SUBSTR = 'The Horror';
@@ -70,7 +70,7 @@ describe('Combat victory', () => {
       victoryParameters: {..TEST_VP, loot: false}
     }).e.text()).not.toContain(LOOT_SUBSTR);
   });
-  test('shows levelup if not suppressed', () => {
+  test('shows levelup if not suppressed and the party should level up', () => {
     expect(setup({
       victoryParameters: {..TEST_VP, xp: true}
     }).e.text()).toContain(LEVEL_SUBSTR);
