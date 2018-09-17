@@ -1,6 +1,7 @@
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
 import * as React from 'react';
+import {formatImg} from '../Render';
 import {StateProps} from './Types';
 
 export interface DispatchProps {
@@ -16,21 +17,19 @@ export default function prepareTimer(props: Props): JSX.Element {
     helpText = (
       <div>
         {props.settings.numPlayers === 1 && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
-        <ol>
-          <li>
-            <strong>Shuffle</strong> your ability draw pile.
-            <ul>
-              <li>Keep abilities played this combat in a separate discard pile.</li>
-              <li><strong>If you run out of ability cards to draw</strong>, shuffle your discards into a new draw pile and continue drawing.</li>
-            </ul>
-          </li>
-          <li><strong>Pre-draw</strong> your hand of three abilities face-down from your draw pile. Do not look at these cards until you start the timer.</li>
-          <li><strong>Start</strong> the timer.</li>
-          <li><strong>Play</strong> one ability from your hand.</li>
-          {props.settings.multitouch && <li><strong>Place your finger</strong> on the screen. When all fingers are down, the timer stops.</li>}
-          {!props.settings.multitouch && <li><strong>Tap the screen</strong> once everyone has selected their abilities to stop the timer.</li>}
-          <li><strong>Act fast!</strong> If the timer runs out, you'll take more damage.</li>
-        </ol>
+        <h2>Shuffle & Draw <img className="inline_icon" src={'images/' + formatImg('cards', props.theme) + '.svg'}></img></h2>
+          <p><strong>Shuffle</strong> your ability draw pile.</p>
+          <ul>
+            <li>Keep abilities played this combat in a separate discard pile.</li>
+            <li><strong>If you run out of ability cards to draw</strong>, shuffle your discards into a new draw pile and continue drawing.</li>
+          </ul>
+          <p><strong>Pre-draw</strong> your hand of three abilities face-down from your draw pile. Do not look at these cards until you start the timer.</p>
+          <h2>Play Quickly <img className="inline_icon" src={'images/' + formatImg('compass', props.theme) + '.svg'}></img></h2>
+          <p><strong>Start</strong> the timer.</p>
+          <p><strong>Play</strong> one ability from your hand.</p>
+          {props.settings.multitouch && <p><strong>Place your finger</strong> on the screen. When all fingers are down, the timer stops.</p>}
+          {!props.settings.multitouch && <p><strong>Tap the screen</strong> once everyone has selected their abilities to stop the timer.</p>}
+          <p><strong>Act fast!</strong> If the timer runs out, you'll take more damage.</p>
       </div>
     );
   }
