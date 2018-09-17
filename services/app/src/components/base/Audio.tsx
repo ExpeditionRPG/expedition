@@ -394,7 +394,6 @@ export default class Audio extends React.Component<Props, {}> {
   // So we have to be careful in checking that it's actually an audio-related change,
   // And not a different event that contains valid-looking (but identical) audio info
   public componentWillReceiveProps(nextProps: Partial<Props>) {
-    console.log('receivedprops');
     if (!nextProps.audio) {
       return;
     }
@@ -420,9 +419,9 @@ export default class Audio extends React.Component<Props, {}> {
       return console.log('Skipping audio (disabled)');
     }
 
-    // Ignore if old or duplicate (aka from going back, or settings change)
+    // Ignore if old or duplicate (aka from going back, settings change, or non-audio action)
     if (AUDIO_COMMAND_DEBOUNCE_MS > Math.abs(nextProps.audio.timestamp - this.props.audio.timestamp)) {
-      return console.log('Audio debounced');
+      return;
     }
 
     const tm = this.props.themeManager;
@@ -451,6 +450,7 @@ export default class Audio extends React.Component<Props, {}> {
     if (!nextProps.audioContext) {
       return console.log('Skipping playing audio, audio context failed to initialize.');
     }
+    console.log('Audio intensity ' + nextProps.audio.intensity);
     tm.setIntensity(nextProps.audio.intensity);
   }
 
@@ -464,6 +464,7 @@ export default class Audio extends React.Component<Props, {}> {
       return Promise.reject(new Error('no audio context'));
     }
     return new Promise((resolve, reject) => {
+      console.log('Starting audio load');
       this.props.onLoadChange('LOADING');
       const musicFiles = getAllMusicFiles();
       // TODO: eachLimit
@@ -478,6 +479,7 @@ export default class Audio extends React.Component<Props, {}> {
         });
       }
       this.props.onLoadChange('LOADED', nodes);
+      console.log('Audio loaded');
       resolve();
     });
   }
