@@ -1,11 +1,11 @@
 import Redux from 'redux';
+import {handleFetchErrorsAsString} from 'shared/requests';
 import {AUTH_SETTINGS} from '../Constants';
 import {logEvent} from '../Logging';
 import {CheckoutState, UserState} from '../reducers/StateTypes';
 import {CheckoutSetStateAction} from './ActionTypes';
 import {toCard} from './Card';
 import {openSnackbar} from './Snackbar';
-import {handleFetchErrorString} from './Web';
 
 export function checkoutSetState(delta: Partial<CheckoutState>) {
   return (dispatch: Redux.Dispatch<any>): any => {
@@ -35,7 +35,7 @@ export function checkoutSubmit(stripeToken: string, checkout: CheckoutState, use
       credentials: 'include',
       method: 'POST',
     })
-    .then(handleFetchErrorString)
+    .then(handleFetchErrorsAsString)
     .then((response: Response) => {
       logEvent('valuable', 'checkout_success', {value: checkout.amount});
       dispatch(toCard({name: 'CHECKOUT', phase: 'DONE'}));

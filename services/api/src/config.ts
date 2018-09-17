@@ -52,6 +52,8 @@ nconf.argv()
   // Announcements
   'ANNOUNCEMENT_MESSAGE',
   'ANNOUNCEMENT_LINK',
+  'QC_ANNOUNCEMENT_MESSAGE',
+  'QC_ANNOUNCEMENT_LINK',
 ])
 .file({ file: CONFIG_PATH })
 .defaults({

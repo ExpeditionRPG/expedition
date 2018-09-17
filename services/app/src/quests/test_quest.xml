@@ -1,24 +1,23 @@
 <quest title="Test Quest" data-line="0">
   <roleplay skipSetup="true" title="Setup :loot:" data-line="2">
-    <p>Custom setup card, replacing the default quest setup card. {{_.nonsense() ? "The Horror" : "Base Game"}}. You should see an error notification, but everything should work.</p>
-    <p>Full-width art:</p>
+    <p>Custom setup card, replacing the default quest setup card. Half and full-width art:</p>
     <p>[Darker_at_Dawn_png_full]</p>
   </roleplay>
-  <roleplay if="true" title="Test" id="start" data-line="10">
+  <roleplay id="start" title="Test" data-line="8">
     <p>{{one=1}}</p>
     <p>{{foo="a"}}</p>
-    <p>You face choices. Here's the value of one: {{one}}, a string: {{foo}}. And a symbol: ☞ and icon :roll:. There should be one paragraph below:</p>
-    <p if="true"> One paragraph</p>
-    <p if="false"> Two paragraph - you shouldn't see this!</p>
-    <p if="one == 0"> Three paragraph - you shouldn't see this!</p>
-    <choice text=":fae: Fight" if="test_invalid == 1">
-      <combat data-line="26">
+    <p>You should see an error notification, but everything should work.</p>
+    <p>You face choices. Here's the value of one: {{one}}. And a symbol: ☞ and icon :roll:. There should be one paragraph below:</p>
+    <p>{{true}} One paragraph</p>
+    <p>{{false}} Two paragraph - you shouldn't see this!</p>
+    <choice text=":fae: Fight">
+      <combat data-line="24">
         <e>Thief</e>
         <e>Thief</e>
         <e>Imp</e>
         <e>Soul Eater</e>
         <event on="round">
-          <roleplay title="" data-line="34">
+          <roleplay title="" data-line="33">
             <p>{{one = 2}}</p>
             <p>Two: {{one}}</p>
             <p>:damage: A round card during combat!</p>
@@ -28,75 +27,110 @@
             <p>Number of alive adventurers: {{_.aliveAdventurers()}}</p>
             <p>Current tier: {{_.currentCombatTier()}}</p>
             <choice text="A choice to another RP card">
-              <roleplay title="On Round" id="onround" data-line="52">
+              <roleplay id="onround" title="On Round" data-line="51">
                 <p>{{one = 3}}</p>
                 <p>Three: {{one}}</p>
                 <p>More text!</p>
               </roleplay>
             </choice>
             <choice text="A choice with a non-combat GOTO">
-              <trigger data-line="62">goto conditionalRound</trigger>
+              <trigger data-line="61">goto conditionalRound</trigger>
             </choice>
             <choice text="A choice with a combat GOTO">
-              <trigger data-line="66">goto onround</trigger>
+              <trigger data-line="65">goto onround</trigger>
             </choice>
             <choice text="Trigger win condition">
-              <trigger data-line="70">win</trigger>
+              <trigger data-line="69">win</trigger>
             </choice>
             <choice text="End the quest">
-              <trigger data-line="74">end</trigger>
+              <trigger data-line="73">end</trigger>
             </choice>
           </roleplay>
         </event>
         <event on="win" heal="0" loot="true" xp="true">
-          <roleplay title="" data-line="78">
+          <roleplay title="" data-line="77">
             <p>You win! You should have not healed, but gained loot and leveled up.</p>
           </roleplay>
-          <trigger data-line="80">end</trigger>
+          <trigger data-line="79">end</trigger>
         </event>
         <event on="lose">
-          <roleplay title="" data-line="84">
+          <roleplay title="" data-line="83">
             <p>You lose! There should be a retry button here.</p>
           </roleplay>
-          <trigger data-line="86">end</trigger>
+          <trigger data-line="85">end</trigger>
         </event>
       </combat>
     </choice>
     <choice text="Complex fight">
-      <trigger data-line="90">goto conditionalRound</trigger>
+      <trigger data-line="89">goto conditionalRound</trigger>
     </choice>
     <choice text="Go to start">
-      <trigger data-line="94">goto start</trigger>
+      <trigger data-line="93">goto start</trigger>
+    </choice>
+    <choice text="Decision">
+      <decision data-line="97">
+        <p>This is a decision. Light athletics is maximally defined, dark athletics just success with failover, and "knowledge" without a persona.</p>
+        <event on="light athletics failure">
+          <roleplay title="" data-line="104">
+            <p>Light athletics failed!</p>
+          </roleplay>
+        </event>
+        <event on="light athletics interrupted">
+          <roleplay title="" data-line="108">
+            <p>Light athletics interrupted!</p>
+          </roleplay>
+        </event>
+        <event on="light athletics success">
+          <roleplay title="" data-line="112">
+            <p>Light athletics succeeded!</p>
+          </roleplay>
+        </event>
+        <event on="dark athletics">
+          <roleplay title="" data-line="116">
+            <p>Dark athletics</p>
+          </roleplay>
+        </event>
+        <event on="knowledge">
+          <roleplay title="" data-line="120">
+            <p>Knowledge</p>
+          </roleplay>
+        </event>
+        <event on="failure">
+          <roleplay title="" data-line="128">
+            <p>Failure!</p>
+          </roleplay>
+        </event>
+      </decision>
     </choice>
     <choice text="End now">
-      <trigger data-line="98">end</trigger>
+      <trigger data-line="132">end</trigger>
     </choice>
   </roleplay>
-  <roleplay title="A new fight" id="conditionalRound" data-line="100">
+  <roleplay id="conditionalRound" title="A new fight" data-line="134">
     <p>This combat uses custom enemies and a conditional on round card.</p>
     <p>{{food = 1}}</p>
   </roleplay>
-  <combat data-line="106">
-    <e tier="2">Custom</e>
+  <combat data-line="140">
+    <e tier="2">Custom Enemy</e>
     <e>Giant Rat</e>
     <event on="round" if="_.currentCombatRound() % 2 == 1">
-      <roleplay title="" data-line="113">
+      <roleplay title="" data-line="147">
         <p>{{food = food + 1}}</p>
         <p>Food (+1): {{food}}</p>
         <p>This appears every other round (1, 3, 5, etc)</p>
       </roleplay>
     </event>
     <event on="win" heal="1" loot="false" xp="false">
-      <roleplay title="" data-line="121">
+      <roleplay title="" data-line="155">
         <p>You win! You should have healed 1 health, but gained no loot or xp.</p>
       </roleplay>
-      <trigger data-line="123">end</trigger>
+      <trigger data-line="157">end</trigger>
     </event>
     <event on="lose">
-      <roleplay title="" data-line="127">
+      <roleplay title="" data-line="161">
         <p>You lose! There should be a retry button here.</p>
       </roleplay>
-      <trigger data-line="129">end</trigger>
+      <trigger data-line="163">end</trigger>
     </event>
   </combat>
 </quest>

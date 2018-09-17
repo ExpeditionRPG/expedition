@@ -132,7 +132,7 @@ export default class Compositor extends React.Component<Props, {}> {
                 </div>
             </CSSTransition>
         </TransitionGroup>
-        {this.props.multiplayer && this.props.multiplayer.session && <MultiplayerFooterContainer theme={this.props.theme}/>}
+        {this.props.multiplayer && this.props.multiplayer.session && <MultiplayerFooterContainer cardTheme={this.props.theme}/>}
         <DialogsContainer />
         <MultiplayerSyncContainer />
         <Snackbar

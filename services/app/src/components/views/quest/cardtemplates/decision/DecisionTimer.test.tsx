@@ -53,11 +53,32 @@ describe('DecisionTimer', () => {
   test('Either shows persona or difficulty, not both', () => {
     const {e} = setup({});
     const result = e.find('.secondary').childAt(0).text();
-    expect(result).toMatch(/^1 \w+ athletics$/);
+    expect(result).toMatch(/^2 \w+ charisma$/);
   });
   test('triggers onSelect when a decision is selected', () => {
     const {props, e} = setup({});
     e.find('button').at(0).simulate('click');
-    expect(props.onSelect).toHaveBeenCalledWith(props.node, TEST_LEVELED_CHECKS[0], jasmine.any(Number));
+    expect(props.onSelect).toHaveBeenCalledWith(props.node, TEST_LEVELED_CHECKS[1], jasmine.any(Number));
   });
+  test('picks unique leveled checks', () => {
+    const node = TEST_NODE.clone();
+    node.ctx.templates.decision = {
+      ...EMPTY_DECISION_STATE,
+      leveledChecks: [
+        TEST_LEVELED_CHECKS[0],
+        TEST_LEVELED_CHECKS[0],
+        TEST_LEVELED_CHECKS[0],
+        TEST_LEVELED_CHECKS[0],
+        ...TEST_LEVELED_CHECKS,
+        TEST_LEVELED_CHECKS[0],
+        TEST_LEVELED_CHECKS[0],
+        TEST_LEVELED_CHECKS[0],
+        TEST_LEVELED_CHECKS[0]
+      ],
+    };
+    const {props, e} = setup({node});
+    expect(e.text()).toContain(TEST_LEVELED_CHECKS[1].skill);
+    expect(e.text()).toContain(TEST_LEVELED_CHECKS[2].skill);
+  });
+  test.skip('falls back to generated checks if it cannot parse any', () => {/* TODO */});
 });

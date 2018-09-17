@@ -14,15 +14,11 @@ const cheerio: any = require('cheerio');
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
 function setup(overrides: Partial<Props>) {
-  const settings = initialSettings;
-  const multiplayerState = initialMultiplayer;
-  const node = TEST_NODE.clone();
-
   const props: Props = {
     theme: 'light',
-    settings,
-    node,
-    multiplayerState,
+    settings: {...initialSettings, showHelp: true},
+    node: TEST_NODE.clone(),
+    multiplayerState: {...initialMultiplayer},
     rng: () => 0,
     onCombatDecisionEnd: jasmine.createSpy('onEnd'),
     onRoll: jasmine.createSpy('onRoll'),
@@ -39,7 +35,7 @@ function titleWithProps(overrides: Partial<Props>): string {
 
 describe('ResolveDecision', () => {
   test('shows a "roll & resolve" element when outcome is null', () => {
-    expect(titleWithProps({})).toEqual('Resolve Check');
+    expect(setup({}).e.text()).toContain('1 Success Needed');
   });
   test('shows a "roll & resolve" element when outcome=retry', () => {
     const node = TEST_NODE.clone();
@@ -48,7 +44,7 @@ describe('ResolveDecision', () => {
       selected: {...EMPTY_LEVELED_CHECK, requiredSuccesses: 2},
       rolls: [10],
     };
-    expect(titleWithProps({node})).toEqual('Keep going!');
+    expect(setup({node}).e.text()).toContain('Failed; 2 Successes Needed');
   });
   test('shows success page on outcome=success', () => {
     const node = TEST_NODE.clone();
