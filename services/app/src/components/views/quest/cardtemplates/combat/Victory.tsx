@@ -25,15 +25,15 @@ export interface Props extends StateProps, DispatchProps {}
 function renderHealing(props: Props): JSX.Element|null {
   if (props.victoryParameters.heal && props.victoryParameters.heal > 0 && props.victoryParameters.heal < MAX_ADVENTURER_HEALTH) {
     return (
-      <p>All adventurers <strong>regain {props.victoryParameters.heal} health</strong> (even if at 0 health).</p>
+      <p><strong>Heal {props.victoryParameters.heal} health</strong> (All adventurers, even if at 0 health).</p>
     );
   } else if (props.victoryParameters.heal === 0) {
     return (
-      <p>Adventurers <strong>do not heal</strong>.</p>
+      <p><strong>Do not heal</strong>.</p>
     );
   } else {
     return (
-      <p>All adventurers heal to full health (even if at 0 health).</p>
+      <p><strong>Heal to full health</strong> (All adventurers, even if at 0 health).</p>
     );
   }
 }
@@ -62,7 +62,6 @@ function maybeRenderLoot(props: Props): JSX.Element|null {
   return (
     <span>
       <h2>Draw Loot <img className="inline_icon" src={'images/' + formatImg('loot', props.theme) + '.svg'}></img></h2>
-      <p>The party draws the following loot:</p>
       <ul>
         {renderedLoot}
       </ul>
@@ -96,7 +95,7 @@ function maybeRenderLevelUp(props: Props): JSX.Element|null {
       {props.settings.contentSets.future && <span>
         <p>
           <img className="inline_icon" src={'images/' + formatImg('synth', props.theme) + '.svg'} />
-          <strong>The Future:</strong> Players can choose to skip learning an ability and instead learn or advance a skill.
+          <strong>The Future:</strong> Adventurers can learn or advance a skill instead of learning an ability.
         </p>
         {props.settings.showHelp && <span>
           <ul>
