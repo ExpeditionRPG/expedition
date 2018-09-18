@@ -48,6 +48,7 @@ const refs = {
   localStorage: null as (Storage|null),
   navigator: (typeof navigator !== 'undefined') ? navigator : null,
   window,
+  audioContext: null,
 };
 
 export function getDevicePlatform(): 'android' | 'ios' | 'web' {
@@ -115,6 +116,19 @@ export function getNavigator(): any {
 
 export function getCheerio(): CheerioAPI {
   return refs.cheerio;
+}
+
+export function getAudioContext(): AudioContext|null {
+  if (refs.audioContext) {
+    return refs.audioContext;
+  }
+  try {
+    refs.audioContext = new (getWindow().AudioContext as any || getWindow().webkitAudioContext as any)();
+  } catch (err) {
+    console.log('Web Audio API is not supported in this browser');
+    refs.audioContext = null;
+  }
+  return refs.audioContext;
 }
 
 export function openWindow(url: string): any {

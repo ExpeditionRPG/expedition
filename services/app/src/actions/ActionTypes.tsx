@@ -4,6 +4,7 @@ import {Quest} from 'shared/schema/Quests';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {
   AppState,
+  AudioDataState,
   AudioState,
   CardName,
   CardPhase,
@@ -45,10 +46,9 @@ export interface AudioSetAction extends Redux.Action {
   delta: Partial<AudioState>;
 }
 
-export interface AudioStoreBufferAction extends Redux.Action {
-  type: 'AUDIO_STORE_BUFFER';
-  name: string;
-  buffer: AudioBuffer;
+export interface AudioDataSetAction extends Redux.Action {
+  type: 'AUDIO_DATA_SET';
+  data: Partial<AudioDataState>;
 }
 
 export interface CheckoutSetStateAction extends Redux.Action {

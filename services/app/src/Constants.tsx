@@ -253,3 +253,45 @@ export const COLORBLIND_FRIENDLY_PALETTE = [
   '#db8acb',
   '#bfc9fb',
 ];
+
+export interface MusicDefinition {
+  baselineInstruments: string[];
+  bpm: number;
+  directory: string;
+  instruments: string[];
+  loopMs: number;
+  maxIntensity: number;
+  minIntensity: number;
+  peakingInstrument: string;
+  variants: number;
+}
+
+export const MUSIC_DEFINITIONS: {[key: string]: {[key: string]: MusicDefinition}} = {
+  combat: {
+    heavy: {
+      baselineInstruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings'],
+      bpm: 140,
+      directory: 'combat/heavy/',
+      instruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings', 'HighBrass'],
+      loopMs: 13712,
+      maxIntensity: MUSIC_INTENSITY_MAX,
+      minIntensity: 12,
+      peakingInstrument: 'HighBrass',
+      variants: 6,
+    },
+    light: {
+      // peakingInstrument always at the end
+      baselineInstruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings'],
+      bpm: 120,
+      directory: 'combat/light/',
+      instruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings', 'HighBrass'],
+      loopMs: 8000,
+      maxIntensity: 24,
+      minIntensity: 0,
+      peakingInstrument: 'HighBrass',
+      variants: 12,
+    },
+  },
+};
+
+export const MUSIC_FADE_SECONDS = 1.5;
