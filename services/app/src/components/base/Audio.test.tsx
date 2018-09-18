@@ -91,9 +91,9 @@ describe('Audio', () => {
   test('handles changing intensity', () => {
     const {props, a} = setup(activeProps());
     a.setProps(tick({...props, audio: {...props.audio, intensity: 15}}, 1));
-    expect(props.themeManager.setIntensity).toHaveBeenCalledWith(15);
+    expect(props.themeManager.setIntensity).toHaveBeenCalledWith(15, 2);
     a.setProps(tick({...props, audio: {...props.audio, intensity: 5}}, 2));
-    expect(props.themeManager.setIntensity).toHaveBeenCalledWith(5);
+    expect(props.themeManager.setIntensity).toHaveBeenCalledWith(5, 2);
   });
 
   test.skip('starts playing on disabled -> intensity change -> enabled -> load complete', () => {
