@@ -13,8 +13,7 @@ function fakeAudioNode(): AudioNode {
   };
 }
 
-//ns: {[file: string]: AudioNode}
-//const ns: {[file: string]: jasmine.Spy} = {};
+jest.useFakeTimers();
 
 function fakeAudioNodes(): {[file: string]: AudioNode} {
   const result = {}
@@ -151,7 +150,7 @@ describe('ThemeManager', () => {
     expect(fades).toEqual(1);
   });
 
-  test.skip('adds more audio layers when intensity increases', () => {
+  test('adds more audio layers when intensity increases', () => {
     const ns = fakeAudioNodes();
     const am = new ThemeManager(ns, fixedRng());
     am.setIntensity(5, 0);
@@ -163,11 +162,11 @@ describe('ThemeManager', () => {
     expect(fades).toEqual(1);
   });
 
-  test.skip('removes audio layers when intensity decreases', () => {
+  test('removes audio layers when intensity decreases', () => {
     const ns = fakeAudioNodes();
     const am = new ThemeManager(ns, fixedRng());
     am.setIntensity(6);
-    am.setIntensity(6);
+    am.setIntensity(5);
     let fades = 0;
     for(let k of Object.keys(ns)) {
       fades += ns[k].fadeOut.calls.count();
@@ -175,37 +174,61 @@ describe('ThemeManager', () => {
     expect(fades).toEqual(1);
   });
 
-  test.skip('stages new loops before current loops expire', () => { /* TODO */ });
-
-  test.only('changes to heavy music when intensity passes threshold', () => {
+  test('changes to heavy music when intensity passes threshold', () => {
     const ns = fakeAudioNodes();
     const am = new ThemeManager(ns, fixedRng());
     am.setIntensity(10);
     for(let k of Object.keys(ns)) {
-      ns[k].fadeIn.calls.reset();
+      ns[k].playOnce.calls.reset();
     }
     console.log('HEAVY');
     am.setIntensity(36);
-    let outs = 0;
-    let ins = 0;
+    let heavys = 0;
     for(let k of Object.keys(ns)) {
       if (/light/.test(k)) {
-        expect(ns[k].fadeIn).not.toHaveBeenCalled();
-        outs += ns[k].fadeOut.calls.count();
+        expect(ns[k].playOnce).not.toHaveBeenCalled();
       } else {
-        expect(ns[k].fadeOut).not.toHaveBeenCalled();
-        ins += ns[k].fadeIn.calls.count();
+        heavys += ns[k].playOnce.calls.count();
       }
     }
-    expect(outs).toEqual(5);
-    expect(ins).toEqual(5);
+    expect(heavys).toEqual(5);
   });
 
-  test.skip('can be disabled while playing', () => { /* TODO */ });
+  test('returns to same intensity when paused and resumed', () => {
+    const ns = fakeAudioNodes();
+    const am = new ThemeManager(ns, fixedRng());
+    am.setIntensity(40); // heavy
+    am.pause();
+    for(let k of Object.keys(ns)) {
+      ns[k].playOnce.calls.reset();
+      ns[k].fadeOut.calls.reset();
+    }
 
-  test.skip('can be paused while playing', () => { /* TODO */ });
+    am.resume();
+    let heavys = 0;
+    for(let k of Object.keys(ns)) {
+      if (/light/.test(k)) {
+        expect(ns[k].playOnce).not.toHaveBeenCalled();
+      } else {
+        heavys += ns[k].playOnce.calls.count();
+      }
+    }
+    expect(heavys).toEqual(5);
+  });
 
-  test.skip('can be resumed from a pause where it was playing', () => { /* TODO */ });
-
-  test.skip('keeps track of intensity even while disabled', () => { /* TODO */ });
+  test('stages new loops as current loops expire', () => {
+    const ns = fakeAudioNodes();
+    const am = new ThemeManager(ns, fixedRng());
+    am.setIntensity(15);
+    for(let k of Object.keys(ns)) {
+      ns[k].playOnce.calls.reset();
+      ns[k].fadeOut.calls.reset();
+    }
+    jest.runOnlyPendingTimers();
+    let plays = 0;
+    for(let k of Object.keys(ns)) {
+        plays += ns[k].playOnce.calls.count();
+    }
+    expect(plays).toEqual(5);
+  });
 });

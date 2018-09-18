@@ -51,6 +51,7 @@ export class ThemeManager {
     this.rng = rng;
     this.theme = null;
     this.paused = false;
+    this.intensity = 0;
   }
 
   // TODO v2 a nicer, albeit more complicated & bug prone, implementation would be to save the current spot in the audio
@@ -103,6 +104,9 @@ export class ThemeManager {
   private startTheme(theme: MusicDefinition|null = this.theme) {
     this.fadeOut();
     this.theme = theme;
+    if (theme) {
+      console.log('starting ' + theme.directory);
+    }
     this.loopTheme(true);
   }
 
@@ -118,26 +122,22 @@ export class ThemeManager {
     const old = this.intensity;
     this.intensity = newIntensity;
     if (newIntensity === 0) {
+      // Stopping music
       this.theme = null;
       this.active = [];
       this.fadeOut();
     } else if (this.theme === null || old === 0) {
-      // Starting from silence, immediately start the theme
+      // Starting from silence
       if (newIntensity <= LOW_INTENSITY) {
-        console.log('starting light theme');
         this.startTheme(MUSIC_DEFINITIONS.combat.light);
       } else {
-        console.log('starting heavy theme');
         this.startTheme(MUSIC_DEFINITIONS.combat.heavy);
       }
     } else {
-      console.log('shift');
-      console.log(this.theme.maxIntensity);
-      // Shift in existing music; theme transitions happen immediately; shifts happen next loop
-      if (newIntensity > this.theme.maxIntensity) {
-        console.log('starting heavy theme');
+      // Shift in existing music
+      if (old <= this.theme.maxIntensity && newIntensity > this.theme.maxIntensity) {
         this.startTheme(MUSIC_DEFINITIONS.combat.heavy);
-      } else if (newIntensity < this.theme.minIntensity) {
+      } else if (old >= this.theme.minIntensity && newIntensity < this.theme.minIntensity) {
         this.startTheme(MUSIC_DEFINITIONS.combat.light);
       } else {
         this.updateTheme(newIntensity - old);
@@ -176,9 +176,17 @@ export class ThemeManager {
     return theme.baselineInstruments.filter((_, i: number) => {
       return skipped.indexOf(i) === -1;
     }).map((i: string) => {
-      const v = 1 + Math.floor(Math.random() * theme.variants);
-      return `combat/${(this.intensity <= LOW_INTENSITY) ? 'light' : 'heavy'}/${i}${v}`; // e.g. combat/light/HighBrass4
+      return `${theme.directory}${i}${this.generateIntensity()}`; // e.g. combat/light/HighBrass4
     });
+  }
+
+  getActiveInstrument(instrument: string): string|null {
+    for (let a of this.active) {
+      if (a.indexOf(instrument) !== -1) {
+        return a;
+      }
+    }
+    return null;
   }
 
   // Kick off a copy of the existing music theme
@@ -194,23 +202,24 @@ export class ThemeManager {
 
     this.active = this.generateTracks();
     theme.instruments.forEach((instrument: string, i: number) => {
-      const active = (this.active.indexOf(instrument) !== -1 || this.peakIntensity > 0);
+      let file = this.getActiveInstrument(instrument);
+      const active = this.peakIntensity > 0 || Boolean(file);
+      file = file || `${theme.directory}${instrument}${this.generateIntensity()}`;
+      const node = this.nodes[file];
+      if (!node) {
+        console.log(file + ' not loaded');
+        return;
+      }
+
+      // Determine initial & target volume
       let initialVolume = (newTheme || !active) ? 0 : 1;
       let targetVolume = active ? 1 : 0;
-
       if (this.peakIntensity > 0 && instrument === theme.peakingInstrument) {
         targetVolume = this.peakIntensity;
-        if (this.active[i] && this.nodes[this.active[i]].hasGain()) {
-          initialVolume = this.nodes[this.active[i]].getVolume() || 0;
-        }
+        initialVolume = node.getVolume() || 0;
       }
-      // Start all tracks at 0 volume, and fade them in to 1 if they're active
-      const file = theme.directory + instrument + this.generateIntensity();
-      if (!this.nodes[file]) {
-        console.log('Skipping playing audio ' + file + ', not loaded yet.');
-      } else {
-        this.nodes[file].playOnce(initialVolume, targetVolume);
-      }
+
+      node.playOnce(initialVolume, targetVolume);
     });
 
     this.timeout = setTimeout(() => {
@@ -219,13 +228,13 @@ export class ThemeManager {
   }
 
   // Fade in / out tracks on the current theme for a smoother + more immediate change in intensity
-  private updateTheme(intensityDelta: number) {
+  private updateTheme(delta: number) {
     const theme = this.theme;
     if (theme === null) {
       return;
     }
 
-    if (intensityDelta > 0) {
+    if (delta > 0) {
       // Fade in one active baseline track randomly
       const fadeInInstruments = theme.baselineInstruments.map((i: string) => {
         return i;
@@ -237,16 +246,16 @@ export class ThemeManager {
         nodes.fadeIn();
         this.active = this.active.concat(fadeInInstruments[0]);
       }
-    } else if (intensityDelta < 0 && this.active.length > 1) {
-      // Fade out of one inactive baseline track randomly
-      const fadeOutIdxs = theme.baselineInstruments.filter((i: string) => {
-        return this.active.indexOf(i) !== -1;
-      }).map((_, i: number) => {
-        return i;
-      });
-      if (fadeOutIdxs && fadeOutIdxs[0] !== null && this.nodes[fadeOutIdxs[0]]) {
-        this.nodes[this.active[fadeOutIdxs[0]]].fadeOut();
-        this.active = this.active.splice(fadeOutIdxs[0], 1);
+    } else if (delta < 0 && this.active.length > 1) {
+      // Fade out an inactive baseline track
+      const fadeOutIdxs: string[] = [];
+      for (let i = 0; i < theme.baselineInstruments.length; i++) {
+        const a = this.getActiveInstrument(theme.baselineInstruments[i]);
+        if (a) {
+          this.nodes[a].fadeOut();
+          this.active = this.active.splice(i, 1);
+          break;
+        }
       }
     }
   }
