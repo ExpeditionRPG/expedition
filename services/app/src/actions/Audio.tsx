@@ -5,6 +5,7 @@ import {MUSIC_DEFINITIONS} from '../Constants';
 import {getAudioContext} from '../Globals';
 import {AudioDataState, AudioState} from '../reducers/StateTypes';
 import {AudioDataSetAction, AudioSetAction} from './ActionTypes';
+const eachLimit = require('async/eachLimit');
 
 export function getAllMusicFiles(): string[] {
   return Object.keys(MUSIC_DEFINITIONS).reduce((list: string[], musicClass: string) => {
@@ -53,9 +54,8 @@ export function loadAudioFiles() {
     console.log('Starting audio load');
     dispatch(audioSet({loaded: 'LOADING'}));
     const musicFiles = getAllMusicFiles();
-    // TODO: eachLimit
     const audioNodes: {[key: string]: AudioNode} = {};
-    for (const file of musicFiles) {
+    eachLimit(musicFiles, 4, (file: string, callback: (err?: Error) => void) => {
       loadAudioLocalFile(ac, 'audio/' + file + '.mp3', (err: Error|null, ns: AudioNode) => {
         if (err) {
           dispatch(audioSet({loaded: 'ERROR'}));
@@ -64,7 +64,7 @@ export function loadAudioFiles() {
           audioNodes[file] = ns;
         }
       });
-    }
+    });
     dispatch(audioSet({loaded: 'LOADED'}));
     const themeManager = new ThemeManager(audioNodes, Math.random);
     dispatch(audioDataSet({audioNodes, themeManager}));

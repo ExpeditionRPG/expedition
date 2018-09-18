@@ -180,8 +180,8 @@ export class ThemeManager {
     });
   }
 
-  getActiveInstrument(instrument: string): string|null {
-    for (let a of this.active) {
+  public getActiveInstrument(instrument: string): string|null {
+    for (const a of this.active) {
       if (a.indexOf(instrument) !== -1) {
         return a;
       }

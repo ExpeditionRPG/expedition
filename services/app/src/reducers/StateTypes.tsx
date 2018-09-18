@@ -2,10 +2,10 @@ import {StatusEvent} from 'shared/multiplayer/Events';
 import {SessionID} from 'shared/multiplayer/Session';
 import {ContentRatingLabelType, GenreType, LanguageType} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
-import {TemplatePhase} from '../components/views/quest/cardtemplates/TemplateTypes';
-import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {AudioNode} from '../audio/AudioNode';
 import {ThemeManager} from '../audio/ThemeManager';
+import {TemplatePhase} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 
 export interface AnnouncementState {
   open: boolean;

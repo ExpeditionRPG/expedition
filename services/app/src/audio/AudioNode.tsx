@@ -5,12 +5,14 @@ type SourceNode = any;
 export class AudioNode {
   private context: AudioContext;
   private buffer: AudioBuffer;
-  private gain: GainNode;
-  private source: SourceNode;
+  private gain: GainNode|null;
+  private source: SourceNode|null;
 
   constructor(audioContext: AudioContext, buffer: AudioBuffer) {
     this.buffer = buffer;
     this.context = audioContext;
+    this.gain = null;
+    this.source = null;
   }
 
   public playOnce(initialVolume: number = 1, fadeInVolume: number = 0) {
@@ -46,18 +48,14 @@ export class AudioNode {
     }
   }
 
-  public hasGain(): boolean {
-    return Boolean(this.gain);
-  }
-
   public getVolume(): number|null {
-    if (!this.hasGain()) {
+    if (!this.gain) {
       return null;
     }
     return this.gain.gain.value;
   }
 
   public isPlaying(): boolean {
-    return Boolean(this.source) && this.source.playbackState === this.source.PLAYING_STATE;
+    return Boolean(this.source && this.source.playbackState === this.source.PLAYING_STATE);
   }
 }
