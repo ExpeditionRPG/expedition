@@ -26,15 +26,25 @@ export default class Audio extends React.Component<Props, {}> {
       if (!this.props.enabled) {
         return;
       }
-      this.tryLoad();
+      this.handleEnableState();
     }, INIT_DELAY.LOAD_AUDIO_MILLIS);
   }
 
-  private tryLoad() {
-    if (this.props.themeManager === null) {
+  private handleEnableState(enabled?: boolean) {
+    if (this.props.audio.loaded === 'UNLOADED') {
       this.props.loadAudio();
-    } else {
+    } else if (this.props.audio.loaded === 'ERROR' && enabled) {
       this.props.disableAudio();
+    } else {
+      const tm = this.props.themeManager;
+      if (!tm) {
+        return;
+      }
+      if (!enabled) {
+        tm.pause();
+      } else {
+        tm.resume();
+      }
     }
   }
 
@@ -49,14 +59,15 @@ export default class Audio extends React.Component<Props, {}> {
     const tm = nextProps.themeManager;
     if (!this.props.themeManager && tm) {
       if (nextProps.enabled) {
-        tm.setIntensity(nextProps.audio.intensity);
+        tm.setIntensity(nextProps.audio.intensity, nextProps.audio.peakIntensity);
       } else {
         return tm.pause();
       }
     }
 
     if (this.props.enabled !== nextProps.enabled) {
-      this.tryLoad();
+
+      this.handleEnableState(nextProps.enabled);
     }
 
     if (!nextProps.enabled) {
@@ -90,7 +101,7 @@ export default class Audio extends React.Component<Props, {}> {
       console.log('Pausing music (outside of combat)');
       return tm.pause();
     }
-    tm.setIntensity(nextProps.audio.intensity);
+    tm.setIntensity(nextProps.audio.intensity, nextProps.audio.peakIntensity);
   }
 
   public render(): JSX.Element|null {

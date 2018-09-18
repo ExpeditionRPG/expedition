@@ -89,7 +89,6 @@ export class ThemeManager {
     if (peak !== this.peakIntensity) {
       const peakNode = this.nodes[this.active[this.active.length - 1]];
       if (peakNode) {
-        console.log(Boolean(peak));
         if (Boolean(peak)) {
           peakNode.fadeIn(peak);
         } else {
@@ -248,8 +247,7 @@ export class ThemeManager {
       }
     } else if (delta < 0 && this.active.length > 1) {
       // Fade out an inactive baseline track
-      const fadeOutIdxs: string[] = [];
-      for (let i = 0; i < theme.baselineInstruments.length; i++) {
+      for (let i = theme.baselineInstruments.length - 1; i >= 0; i--) {
         const a = this.getActiveInstrument(theme.baselineInstruments[i]);
         if (a) {
           this.nodes[a].fadeOut();
