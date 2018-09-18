@@ -51,7 +51,6 @@ export function loadAudioFiles() {
       return;
     }
 
-    console.log('Starting audio load');
     dispatch(audioSet({loaded: 'LOADING'}));
     const musicFiles = getAllMusicFiles();
     const audioNodes: {[key: string]: AudioNode} = {};
@@ -72,7 +71,6 @@ export function loadAudioFiles() {
       dispatch(audioSet({loaded: 'LOADED'}));
       const themeManager = new ThemeManager(audioNodes, Math.random);
       dispatch(audioDataSet({audioNodes, themeManager}));
-      console.log('Audio loaded');
     });
   };
 }
