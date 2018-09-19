@@ -81,12 +81,13 @@ export class ThemeManager {
     return this.paused;
   }
 
-  public setIntensity(intensity: number, peak?: number) {
+  public setIntensity(intensity: number, peak: number = 0) {
     intensity = Math.round(Math.min(MUSIC_INTENSITY_MAX, Math.max(0, intensity)));
     if (intensity !== this.intensity) {
       this.playAtIntensity(intensity);
     }
     if (peak !== this.peakIntensity) {
+      this.peakIntensity = peak;
       const peakNode = this.nodes[this.active[this.active.length - 1]];
       if (peakNode) {
         if (Boolean(peak)) {
@@ -204,6 +205,12 @@ export class ThemeManager {
       let file = this.getActiveInstrument(instrument);
       const active = this.peakIntensity > 0 || Boolean(file);
       file = file || `${theme.directory}${instrument}${this.generateIntensity()}`;
+
+      // Add silent tracks to the active set
+      if (!active) {
+        this.active.push(file);
+      }
+
       const node = this.nodes[file];
       if (!node) {
         console.log(file + ' not loaded');
@@ -217,7 +224,6 @@ export class ThemeManager {
         targetVolume = this.peakIntensity;
         initialVolume = node.getVolume() || 0;
       }
-
       node.playOnce(initialVolume, targetVolume);
     });
 
@@ -234,24 +240,29 @@ export class ThemeManager {
     }
 
     if (delta > 0) {
-      // Fade in one active baseline track randomly
-      const fadeInInstruments = theme.baselineInstruments.map((i: string) => {
-        return i;
-      }).filter((i: string) => {
-        return this.active.indexOf(i) === -1;
-      });
-      if (fadeInInstruments && fadeInInstruments[0] !== null && this.nodes[fadeInInstruments[0]]) {
-        const nodes = this.nodes[fadeInInstruments[0]];
-        nodes.fadeIn();
-        this.active = this.active.concat(fadeInInstruments[0]);
+      // Fade in one inaudible (but active) baseline track randomly
+      // (don't touch peak instrument, don't duplicate instruments)
+      console.log('looking for node to fade in');
+      for (const inst of theme.baselineInstruments) {
+        const activeinst = this.getActiveInstrument(inst) || '';
+        console.log(activeinst);
+        const a = this.nodes[activeinst];
+        if (a && a.isPlaying() && (a.getVolume() || 0) < 1.0) {
+          console.log('fading in ' + activeinst);
+          a.fadeIn();
+          break;
+        }
       }
     } else if (delta < 0 && this.active.length > 1) {
-      // Fade out an inactive baseline track
-      for (let i = theme.baselineInstruments.length - 1; i >= 0; i--) {
-        const a = this.getActiveInstrument(theme.baselineInstruments[i]);
-        if (a) {
-          this.nodes[a].fadeOut();
-          this.active = this.active.splice(i, 1);
+      // Fade out one random audible baseline track randomly
+      // (don't touch the peak instrument, don't go below 1 active instrument)
+      for (const inst of [...theme.baselineInstruments].reverse()) {
+        const activeinst = this.getActiveInstrument(inst) || '';
+        console.log(activeinst);
+        const a = this.nodes[activeinst];
+        if (a && a.isPlaying() && (a.getVolume() || 0) > 0.9) {
+          console.log('fading out ' + activeinst);
+          a.fadeOut();
           break;
         }
       }
