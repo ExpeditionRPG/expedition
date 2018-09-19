@@ -3,6 +3,7 @@ import {ReturnAction} from '../actions/ActionTypes';
 import {getHistoryApi, getNavigator} from '../Globals';
 import {announcement} from './Announcement';
 import {audio} from './Audio';
+import {audioData} from './AudioData';
 import {card} from './Card';
 import {checkout} from './Checkout';
 import {dialog} from './Dialog';
@@ -34,6 +35,7 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     settings: settings(state.settings, action),
     snackbar: snackbar(state.snackbar, action),
     user: user(state.user, action),
+    audioData: audioData(state.audioData, action),
   };
 }
 
@@ -105,13 +107,14 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         _committed: state._committed,
         _history: state._history.slice(0, pastStateIdx),
         _return: true,
-        // things that should persist / not be rewowned:
+        // things that should persist / not be rewound:
         commitID: state.commitID,
         multiplayer: state.multiplayer,
         saved: state.saved,
         questHistory: state.questHistory,
         settings: state.settings,
         user: state.user,
+        audioData: state.audioData,
       } as AppStateWithHistory;
     }
 
@@ -129,6 +132,8 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         saved: undefined,
         questHistory: undefined,
         settings: undefined,
+        user: undefined,
+        audioData: undefined,
       } as AppStateBase);
     }
   }

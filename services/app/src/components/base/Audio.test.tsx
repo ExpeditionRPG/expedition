@@ -1,32 +1,111 @@
+import {configure, shallow} from 'enzyme';
+import * as React from 'react';
+import Audio, {ThemeManager, Props} from './Audio';
+import {initialAudioState} from '../../reducers/Audio';
+import Adapter from 'enzyme-adapter-react-16';
+import {INIT_DELAY, AUDIO_COMMAND_DEBOUNCE_MS} from '../../Constants';
+configure({ adapter: new Adapter() });
+
+jest.useFakeTimers();
+
+type Env = {props: Props, a: Audio};
+
+
 describe('Audio', () => {
-  // Spy on loadAudioLocalFile
-  test.skip('loads audio on init if enabled', () => { /* TODO */ });
+  function fakeThemeManager() {
+    return {
+      pause: jasmine.createSpy('pause'),
+      isPaused: jasmine.createSpy('isPaused'),
+      setIntensity: jasmine.createSpy('setIntensity'),
+      resume: jasmine.createSpy('resume'),
+    };
+  }
 
-  test.skip('does not load audio if disabled', () => { /* TODO */ });
+  function tick(p: Partial<Props>, t: number): Partial<Props> {
+    return {...p, audio: {...p.audio, timestamp: t*AUDIO_COMMAND_DEBOUNCE_MS+1}};
+  }
 
-  test.skip('loads audio if disabled on init -> enabled', () => { /* TODO */ });
+  function setup(overrides: Partial<Props> = {}): Env {
+    const props: Props = {
+      themeManager: fakeThemeManager(),
+      audio: {...initialAudioState},
+      cardName: 'QUEST_CARD';
+      cardPhase: 'DRAW_ENEMIES';
+      enabled: true,
+      disableAudio: jasmine.createSpy('disableAudio'),
+      onLoadChange: jasmine.createSpy('onLoadChange'),
+      loadAudio: jasmine.createSpy('loadAudio'),
+      timestamp: 0,
+      ...overrides,
+    };
+    return {props, a: shallow(<Audio {...(props as any as Props)} />, undefined)};
+  }
 
-  test.skip('adds more audio layers when intensity increases', () => { /* TODO */ });
+  test('does not load audio on construction if disabled', () => {
+    const {props} = setup({enabled: false, themeManager: null});
+    jest.runAllTimers();
+    expect(props.loadAudio).toHaveBeenCalledTimes(0);
+  });
 
-  test.skip('mutes audio layers when intensity decreases', () => { /* TODO */ });
+  test('loads audio on construction if enabled', (done) => {
+    const {props} = setup({
+      enabled: true,
+      themeManager: null,
+      loadAudio: done,
+    });
+    jest.runAllTimers();
+  });
+  test('loads audio if disabled on construction, then enabled', () => {
+    const {props, a} = setup({enabled: false, themeManager: null});
+    jest.runAllTimers();
+    a.setProps({enabled: true});
+    expect(props.loadAudio).toHaveBeenCalledTimes(1);
+  });
 
-  test.skip('stages new loops before current loops expire', () => { /* TODO */ });
+  function activeProps(audioOverrides?: Partial<AudioState>): Partial<Props> {
+    return {
+      audio: {
+        ...initialAudioState,
+        intensity: 1,
+        peakIntensity: 2,
+        paused: false,
+        timestamp: 0,
+        ...audioOverrides,
+      },
+      cardName: 'QUEST_CARD',
+      cardPhase: 'DRAW_ENEMIES',
+    };
+  }
+  test('plays audio when nonzero intensity in combat node', () => {
+    const {props, a} = setup();
+    a.setProps(tick(activeProps(), 1));
+    expect(props.themeManager.setIntensity).toHaveBeenCalledTimes(1);
+  });
 
-  test.skip('changes to high intensity loops when intensity passes threshold', () => { /* TODO */ });
+  test('mutes audio when exiting combat node', () => {
+    const {props, a} = setup(activeProps());
+    a.setProps(tick({cardName: 'QUEST_CARD', cardPhase: 'ROLEPLAY'}, 1));
+    expect(props.themeManager.pause).toHaveBeenCalledTimes(1);
+  });
 
-  test.skip('handles loading errors', () => { /* TODO */ });
+  test('handles changing intensity', () => {
+    const {props, a} = setup(activeProps());
+    a.setProps(tick({...props, audio: {...props.audio, intensity: 15}}, 1));
+    expect(props.themeManager.setIntensity).toHaveBeenCalledWith(15, 2);
+    a.setProps(tick({...props, audio: {...props.audio, intensity: 5}}, 2));
+    expect(props.themeManager.setIntensity).toHaveBeenCalledWith(5, 2);
+  });
 
-  test.skip('clears loading state when loaded', () => { /* TODO */ });
+  test.skip('starts playing on disabled -> intensity change -> enabled -> load complete', () => {
+    // TODO
+    const {props, a} = setup({themeManager: null});
+    const ap = activeProps();
+    a.setProps(tick({...props, audio: {...ap.audio}}, 1));
+    a.setProps(tick({...props, enabled: true}, 2));
 
-  test.skip('aborts loading if disabled mid-load', () => { /* TODO */ });
-
-  test.skip('can be disabled while playing', () => { /* TODO */ });
-
-  test.skip('can be paused while playing', () => { /* TODO */ });
-
-  test.skip('can be resumed from a pause where it was playing', () => { /* TODO */ });
-
-  test.skip('keeps track of intensity even while disabled', () => { /* TODO */ });
-
-  test.skip('starts playing on disabled -> intensity change -> enabled -> load complete', () => { /* TODO */ });
+    const f = fakeThemeManager();
+    a.setProps(tick({...props, enabled: true, themeManager: f}, 3));
+    expect(f.setIntensity).toHaveBeenCalledWith(1);
+  });
 });
+

@@ -2,6 +2,8 @@ import {StatusEvent} from 'shared/multiplayer/Events';
 import {SessionID} from 'shared/multiplayer/Session';
 import {ContentRatingLabelType, GenreType, LanguageType} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
+import {AudioNode} from '../audio/AudioNode';
+import {ThemeManager} from '../audio/ThemeManager';
 import {TemplatePhase} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 
@@ -19,6 +21,11 @@ export interface AudioState {
   peakIntensity: number;
   sfx: string|null;
   timestamp: number;
+}
+
+export interface AudioDataState {
+  audioNodes: {[file: string]: AudioNode}|null;
+  themeManager: ThemeManager|null;
 }
 
 /// <reference path="../node_modules/@types/stripe-v3/index.d.ts" />
@@ -206,7 +213,6 @@ export interface AppStateBase {
   quest: QuestState;
   search: SearchState;
   snackbar: SnackbarState;
-  user: UserState;
   commitID: number;
 }
 
@@ -215,6 +221,8 @@ export interface AppState extends AppStateBase {
   multiplayer: MultiplayerState;
   questHistory: UserQuestHistory;
   saved: SavedQuestState;
+  audioData: AudioDataState;
+  user: UserState;
 }
 
 export interface AppStateWithHistory extends AppState {
