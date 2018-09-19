@@ -174,6 +174,9 @@ describe('ThemeManager', () => {
     expect(fades).toEqual(1);
   });
 
+  test.skip('does not go below 1 playing track when decreasing intensity', () => { /* TODO */ });
+  test.skip('does not go above 4 playing tracks when increasing intensity (avoids peak instrument)', () => { /* TODO */ });
+
   test('changes to heavy music when intensity passes threshold', () => {
     const ns = fakeAudioNodes();
     const am = new ThemeManager(ns, fixedRng());
