@@ -33,7 +33,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: object|undefine
     const store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(defaultGlobalState);
     return {
       execute: (action: A) => {
-        store.dispatch(action);
+        const v = store.dispatch(action);
         let newState = initialState;
         for (const a of store.getActions()) {
           newState = reducer(newState, a);
@@ -76,8 +76,11 @@ export function Action<A>(action: (a: A) => Redux.Action, baseState?: object) {
 
   function internalActionCommands() {
     return {
-      execute: (a: A) => {
-        store.dispatch(action(a));
+      execute: (...a: A) => {
+        const v = store.dispatch(action(...a));
+        if (v && v instanceof Promise) {
+          return v.then(() => store.getActions());
+        }
         return store.getActions();
       },
       expect: (a: A) => {

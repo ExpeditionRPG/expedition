@@ -78,4 +78,13 @@ describe('Multiplayer', () => {
     test.skip('uses the next event ID in the series', () => { /* TODO */ });
   });
 
+  describe('routeEvent', () => {
+    test.skip('does not dispatch INTERACTION events', () => { /* TODO */ });
+    test.skip('resolves and dispatches ACTION events', () => { /* TODO */ });
+    test.skip('shows a snackbar on ERROR events', () => { /* TODO */ });
+    test.skip('safely handles unknown events', () => { /* TODO */ });
+    test.skip('rejects COMMIT when no matching inflight action', () => { /* TODO */ });
+    test.skip('rejects REJECT when no matching inflight action', () => { /* TODO */ });
+    test.skip('rejects ACTIONs when id is not an increment', () => { /* TODO */ });
+  });
 });
