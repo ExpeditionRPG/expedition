@@ -19,7 +19,7 @@ export function multiplayerDisconnect() {
   return {type: 'MULTIPLAYER_DISCONNECT'};
 }
 
-function doConnect(user: UserState, secret: string, dispatch: Redux.Dispatch<any>, c=getMultiplayerClient(), fetch=fetch) {
+function doConnect(user: UserState, secret: string, dispatch: Redux.Dispatch<any>, c= getMultiplayerClient(), fetch: any = window.fetch) {
   let sessionID = '';
   const clientID = user.id.toString();
   const instanceID = Date.now().toString();
@@ -53,7 +53,7 @@ function doConnect(user: UserState, secret: string, dispatch: Redux.Dispatch<any
   });
 }
 
-export function multiplayerNewSession(user: UserState, c=getMultiplayerClient(), fetch=fetch) {
+export function multiplayerNewSession(user: UserState, c= getMultiplayerClient(), fetch: any = window.fetch) {
   return (dispatch: Redux.Dispatch<any>): any => {
     return fetch(MULTIPLAYER_SETTINGS.newSessionURI, {
       credentials: 'include',
@@ -79,7 +79,7 @@ export function multiplayerNewSession(user: UserState, c=getMultiplayerClient(),
   };
 }
 
-export function multiplayerConnect(user: UserState, secret: string, c=getMultiplayerClient(), fetch=fetch) {
+export function multiplayerConnect(user: UserState, secret: string, c= getMultiplayerClient(), fetch: any = window.fetch) {
   return (dispatch: Redux.Dispatch<any>): any => {
     return doConnect(user, secret, dispatch, c, fetch)
       .catch((error: Error) => {
@@ -90,7 +90,7 @@ export function multiplayerConnect(user: UserState, secret: string, c=getMultipl
   };
 }
 
-export function loadMultiplayer(user: UserState, fetch=fetch) {
+export function loadMultiplayer(user: UserState, fetch: any = window.fetch) {
   return (dispatch: Redux.Dispatch<any>): any => {
     if (!user || !user.id) {
       throw new Error('you are not logged in');
@@ -116,7 +116,7 @@ export function loadMultiplayer(user: UserState, fetch=fetch) {
   };
 }
 
-export function setMultiplayerStatus(ev: StatusEvent, c=getMultiplayerclient()) {
+export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerClient()) {
   return (dispatch: Redux.Dispatch<any>): any => {
     c.sendStatus(ev);
     dispatch({

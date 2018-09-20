@@ -34,7 +34,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: object|undefine
     const store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(defaultGlobalState);
     return {
       execute: (action: A) => {
-        const v = store.dispatch(action);
+        store.dispatch(action);
         let newState = initialState;
         for (const a of store.getActions()) {
           newState = reducer(newState, a);
@@ -70,22 +70,22 @@ export function Reducer<A extends Redux.Action>(reducer: (state: object|undefine
   };
 }
 
-export function Action<A>(action: (a: A) => Redux.Action, baseState?: object) {
+export function Action<A>(action: (...a: any[]) => Redux.Action, baseState?: object) {
   const client = new MultiplayerClient();
   client.sendEvent = jasmine.createSpy('sendEvent');
   let store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])((baseState as any as AppStateWithHistory) ||  defaultGlobalState);
 
   function internalActionCommands() {
     return {
-      execute: (...a: A) => {
+      execute: (...a: any[]) => {
         const v = store.dispatch(action(...a));
         if (v && v instanceof Promise) {
           return v.then(() => store.getActions());
         }
         return store.getActions();
       },
-      expect: (a: A) => {
-        store.dispatch(action(a));
+      expect: (...a: any[]) => {
+        store.dispatch(action(...a));
         return {
           toSendMultiplayer(expected?: object) {
             if (expected === undefined) {
