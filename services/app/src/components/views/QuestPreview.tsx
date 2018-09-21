@@ -3,7 +3,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import DoneIcon from '@material-ui/icons/Done';
 import OfflinePin from '@material-ui/icons/OfflinePin';
 import StarsIcon from '@material-ui/icons/Stars';
-import * as pluralize from 'pluralize';
 import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
 import {formatPlayPeriod} from '../../Format';
@@ -13,6 +12,7 @@ import Card from '../base/Card';
 import StarRating from '../base/StarRating';
 
 const Moment = require('moment');
+const pluralize = require('pluralize');
 
 export interface StateProps {
   settings: SettingsType;
@@ -74,8 +74,8 @@ function renderSaves(props: Props): JSX.Element|null {
   const buttons = saves.map((s, i) => {
     return (
       <div key={i} className="savedQuest">
-        <Button onClick={(e) => props.onPlaySaved(s.details.id, s.ts)} id="play">{Moment(s.ts).fromNow()} ({(s.pathLen === undefined) ? 'unknown position' : `${s.pathLen.toString()} ${pluralize('choice', s.pathLen || 0)}`})</Button>
-        <IconButton onClick={(e) => props.onDeleteConfirm(quest, s.ts)} id="delete">
+        <Button onClick={(e) => props.onPlaySaved(s.details.id, s.ts)} id={`playsave${i}`}>{Moment(s.ts).fromNow()} ({(s.pathLen === undefined) ? 'unknown position' : `${s.pathLen.toString()} ${pluralize('choice', s.pathLen || 0)}`})</Button>
+        <IconButton onClick={(e) => props.onDeleteConfirm(quest, s.ts)} id={`deletesave${i}`}>
           <CloseIcon/>
         </IconButton>
       </div>
@@ -106,7 +106,7 @@ const QuestPreview = (props: Props): JSX.Element => {
 
   const actions: JSX.Element[] = [];
 
-  if (offlineTS !== null) {
+  if (offlineTS !== null && !props.isDirectLinked) {
     actions.push(<Button key="play" className="bigbutton" onClick={(e) => props.onPlaySaved(quest.id, offlineTS || 0)} id="play">Play</Button>);
   } else {
     actions.push(<Button key="play" className="bigbutton" onClick={(e) => props.onPlay(quest, props.isDirectLinked)} id="play">Play</Button>);
@@ -114,7 +114,7 @@ const QuestPreview = (props: Props): JSX.Element => {
 
   if (props.settings.experimental) {
     if (props.savedInstances.length > 0 && lastSaved !== null) {
-      actions.push(<Button key="continue" onClick={(e) => props.onPlaySaved(quest.id, lastSaved)} id="play">Continue from last save</Button>);
+      actions.push(<Button key="continue" onClick={(e) => props.onPlaySaved(quest.id, lastSaved)} id="playlastsave">Continue from last save</Button>);
     }
 
     // Allow us to save non-local quests for offline play
