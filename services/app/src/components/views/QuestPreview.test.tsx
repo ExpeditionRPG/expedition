@@ -120,10 +120,9 @@ describe('QuestPreview', () => {
     expect(props.onDeleteConfirm).toHaveBeenCalledWith(props.quest, props.savedInstances[3].ts);
   });
 
-  // TODO unskip once Future learning quest out of dev
-  test.skip('indicates that horror and future expansions are required', () => {
+  test('indicates that horror and future expansions are required', () => {
     const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning 3: The Future')[0];
-    const {wrapper} = setup(quest.title, {});
+    const {wrapper} = setup({quest});
     expect(wrapper.html()).toContain('horror');
     expect(wrapper.html()).toContain('future');
   });
