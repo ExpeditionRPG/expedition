@@ -17,6 +17,7 @@ export function newMockStore(state: object): MockStore {
   const client = new MultiplayerClient();
   // Since this is a testing function, we play it a bit loose with the state type.
   const store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(state as any as AppStateWithHistory);
+  (store as any).multiplayerClient = client;
   return store;
 }
 
@@ -69,19 +70,22 @@ export function Reducer<A extends Redux.Action>(reducer: (state: object|undefine
   };
 }
 
-export function Action<A>(action: (a: A) => Redux.Action, baseState?: object) {
+export function Action<A>(action: (...a: any[]) => Redux.Action, baseState?: object) {
   const client = new MultiplayerClient();
   client.sendEvent = jasmine.createSpy('sendEvent');
   let store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])((baseState as any as AppStateWithHistory) ||  defaultGlobalState);
 
   function internalActionCommands() {
     return {
-      execute: (a: A) => {
-        store.dispatch(action(a));
+      execute: (...a: any[]) => {
+        const v = store.dispatch(action(...a));
+        if (v && v instanceof Promise) {
+          return v.then(() => store.getActions());
+        }
         return store.getActions();
       },
-      expect: (a: A) => {
-        store.dispatch(action(a));
+      expect: (...a: any[]) => {
+        store.dispatch(action(...a));
         return {
           toSendMultiplayer(expected?: object) {
             if (expected === undefined) {
