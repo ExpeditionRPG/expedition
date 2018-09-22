@@ -245,7 +245,7 @@ export class ReportQuestDialog extends TextAreaDialog<FeedbackDialogProps> {
     this.title = 'Report Quest';
     this.content = (
       <span>
-        <p>You're reporting an issue with <i>{this.props.quest.details.title}</i>.</p>
+        <p>You're reporting an issue with <i>{props.quest.details.title}</i>.</p>
         <p>You should report a quest (instead of reviewing it at the end of the quest) if it is:</p>
         <ul>
           <li>Offensive or inappropriate for the age level it claimed to be.</li>
