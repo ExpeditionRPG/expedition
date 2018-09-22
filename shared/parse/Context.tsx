@@ -1,6 +1,6 @@
 const Clone = require('clone');
 const HtmlDecode = (require('he') as any).decode;
-const Math = require('mathjs');
+const MathJS = require('mathjs');
 const seedrandom = require('seedrandom');
 
 // Later versions of MathJS come with a breaking change where
@@ -12,7 +12,7 @@ const seedrandom = require('seedrandom');
 // expected/sane.
 //
 // https://github.com/josdejong/mathjs/issues/1051#issuecomment-369930811
-Math.import({
+MathJS.import({
   equal(a: any, b: any) { return a === b; },
 }, {override: true});
 
@@ -84,10 +84,11 @@ export function evaluateContentOps(content: string, ctx: Context): string {
   }
 
   let result = '';
+  const rng = seedrandom.alea(ctx.scope || generateSeed());
   for (const m of matches) {
     const op = parseOpString(m);
     if (op) {
-      const evalResult = evaluateOp(op, ctx);
+      const evalResult = evaluateOp(op, ctx, rng);
       if (evalResult || evalResult === 0) {
         result += evalResult;
       }
@@ -102,11 +103,29 @@ export function evaluateContentOps(content: string, ctx: Context): string {
 // Attempts to evaluate op using ctx.
 // If the evaluation is successful, the context is modified as determined by the op.
 // If the last operation does not assign a value, the result is returned.
-export function evaluateOp(op: string, ctx: Context): any {
+export function evaluateOp(op: string, ctx: Context, rng: () => number = Math.random): any {
   let parsed;
   let evalResult;
+
+  // override random functions to use seed
+  const random = (v1?: number, v2?: number) => {
+    const r = rng();
+    if (v2 !== undefined && v1 !== undefined) {
+      return r * (v2 - v1) + v1; // v1 = min, v2 = max
+    } else if (v1 !== undefined) {
+      return r * v1; // v1 = max
+    } else {
+      return r;
+    }
+  };
+  MathJS.import({
+    random,
+    randomInt(v1?: number, v2?: number) { return Math.floor(random(v1, v2)); },
+    pickRandom(a: {_data: any[]}) { return a._data[Math.floor(random(a._data.length))]; },
+  }, {override: true});
+
   try {
-    parsed = Math.parse(HtmlDecode(op));
+    parsed = MathJS.parse(HtmlDecode(op));
     evalResult = parsed.compile().eval(ctx.scope);
   } catch (err) {
     const message = err.message + ' Op: (' + op + ')';

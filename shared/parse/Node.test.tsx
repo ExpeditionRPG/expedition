@@ -289,7 +289,7 @@ describe('Node', () => {
       const ctx = defaultContext();
       ctx.seed = 'randomseed';
       const result = new Node(cheerio.load('<roleplay><p>{{a=pickRandom([1,2,3,4,5])}}{{b=round(random(0,100), 4)}}{{c=randomInt(0, 100)}}</p></roleplay>')('roleplay'), ctx, undefined, ctx.seed);
-      expect(result.ctx.scope).toEqual(jasmine.objectContaining({a: 2, b: 32.3244, c: 40}));
+      expect(result.ctx.scope).toEqual(jasmine.objectContaining({a: 5, b: 35.0544, c: 74}));
     });
 
     test('renders next node via getNext deterministically when a seed is given', () => {
@@ -299,7 +299,7 @@ describe('Node', () => {
       if (next === null) {
         throw new Error('getNext returned null node');
       }
-      expect(next.ctx.scope).toEqual(jasmine.objectContaining({a: 2, b: 32.3244, c: 40}));
+      expect(next.ctx.scope).toEqual(jasmine.objectContaining({a: 5, b: 35.0544, c: 74}));
     });
   });
 
@@ -540,7 +540,7 @@ describe('Node', () => {
       if (result === null) {
         throw new Error('handleAction returned null node');
       }
-      expect(result.ctx.scope.a).toEqual(32.8971);
+      expect(result.ctx.scope.a).toEqual(95.2223);
     });
 
     test('handles choices with id gotos deterministically when seed is set', () => {
@@ -556,7 +556,7 @@ describe('Node', () => {
       if (result === null) {
         throw new Error('handleAction returned null node');
       }
-      expect(result.ctx.scope.a).toEqual(32.8971);
+      expect(result.ctx.scope.a).toEqual(95.2223);
     });
 
     test('handles choices with event gotos deterministically when seed is set', () => {
@@ -566,7 +566,7 @@ describe('Node', () => {
       if (result === null) {
         throw new Error('handleAction returned null node');
       }
-      expect(result.ctx.scope.a).toEqual(32.8971);
+      expect(result.ctx.scope.a).toEqual(95.2223);
     });
 
     test('handles randomly-generated triggers deterministically when seed is set', () => {
@@ -587,7 +587,7 @@ describe('Node', () => {
       if (result === null) {
         throw new Error('handleAction returned null node');
       }
-      expect(result.elem.text()).toEqual('r1');
+      expect(result.elem.text()).toEqual('r4');
     });
   });
 });

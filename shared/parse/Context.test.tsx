@@ -33,6 +33,34 @@ describe('Context', () => {
     test('does not return if last operation assigns a value', () => {
       expect(evaluateOp('a=1', defaultContext())).toEqual(null);
     });
+    test('has repeatable random() behavior based on seed', () => {
+      const ctx = {...defaultContext()};
+      const rng = () => 0.1;
+      const expected = evaluateOp('random()', ctx, rng);
+      for (let i = 0; i < 50; i++) {
+        expect(evaluateOp('random()', ctx, rng)).toEqual(expected);
+      }
+      expect(evaluateOp('random(100)', ctx, rng)).toEqual(evaluateOp('random(100)', ctx, rng));
+      expect(evaluateOp('random(10, 100)', ctx, rng)).toEqual(evaluateOp('random(10, 100)', ctx, rng));
+    });
+    test('has repeatable randomInt() behavior based on seed', () => {
+      const ctx = {...defaultContext()};
+      const rng = () => 0.1;
+      const expected = evaluateOp('randomInt()', ctx, rng);
+      for (let i = 0; i < 50; i++) {
+        expect(evaluateOp('randomInt()', ctx, rng)).toEqual(expected);
+      }
+      expect(evaluateOp('randomInt(100)', ctx, rng)).toEqual(evaluateOp('randomInt(100)', ctx, rng));
+      expect(evaluateOp('randomInt(10, 100)', ctx, rng)).toEqual(evaluateOp('randomInt(10, 100)', ctx, rng));
+    });
+    test('has repeatable pickRandom() behavior based on seed', () => {
+      const ctx = {...defaultContext()};
+      const rng = () => 0.1;
+      const expected = evaluateOp('pickRandom([1,2,3])', ctx, rng);
+      for (let i = 0; i < 50; i++) {
+        expect(evaluateOp('pickRandom([1,2,3])', ctx, rng)).toEqual(expected);
+      }
+    });
   });
 
   describe('evaluateContentOps', () => {
@@ -45,6 +73,12 @@ describe('Context', () => {
     test('handles multiple ops in one string', () => {
       const ctx = defaultContext();
       expect(evaluateContentOps('{{text="TEST"}}\n{{text}}', ctx)).toEqual('TEST');
+    });
+
+    test('varies results when random() called in same set of ops', () => {
+      const ctx = defaultContext();
+      const result = evaluateContentOps('{{random()}}\n{{random()}}', ctx).split('\n');
+      expect(result[1]).not.toEqual(result[2]);
     });
   });
 
@@ -66,7 +100,11 @@ describe('Context', () => {
       updateContext(dummyElem, ctx, 2);
       expect(ctx.path).not.toEqual([2]);
     });
-    test.skip('updates view count', () => { /* TODO */ });
+    test('updates view count', () => {
+      const dummyElem = cheerio.load('<roleplay id="1234"></roleplay>')('roleplay');
+      const ctx = updateContext(dummyElem, defaultContext(), 0);
+      expect(ctx.views['1234']).toEqual(1);
+    });
   });
 
 });
