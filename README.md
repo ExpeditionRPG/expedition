@@ -73,6 +73,10 @@ if plain function, call directly. If dispatch-wrapped action, call store.dispatc
 
 We use a Github bot called Renovate to keep our dependencies from getting stale. It automatically opens new PR's each time a dependency has a major version bump. In general, if the CI passes, it's probably safe to merge... but if you ever need to pull a branch down for local testing or changes, you can run `git checkout origin/renovate/<BRANCH NAME>`, and then `git push origin HEAD:renovate/<BRANCH NAME>` to push your changes back to the branch.
 
+### Deploying
+
+Services can be deployed via `yarn run deploy`, which can also take a specific service and target as arguments (ie `yarn run deploy app beta`). This requires AWS and Heroku permissions.
+
 ## Questions?
 
 Reach us at contact@expeditiongame.com
