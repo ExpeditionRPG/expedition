@@ -24,6 +24,10 @@ Precision can generally set be pretty low (ie 2/10) unless it makes it look terr
 
 **IMPORTANT:** Make sure to preserve the **viewBox** setting.
 
+## Generating UPCs
+
+Once you have the GTIN-12 / UPC-A from GS1US Data Hub, you can plug it into an SVG barcode generator like https://codepen.io/FesslerForge/pen/jHkaC
+
 ## Icons Available
 
 At this time, you can use the following Expedition-themed icons:
