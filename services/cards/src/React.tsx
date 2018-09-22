@@ -31,6 +31,23 @@ const store = getStore();
 store.dispatch(loadFiltersFromUrl());
 store.dispatch(downloadCards());
 
+// Ctrl + <hotkey>
+window.addEventListener('keydown', (event: any) => {
+  if (event.ctrlKey || event.metaKey) {
+    switch (String.fromCharCode(event.which).toLowerCase()) {
+      case 'p': // ctrl + p to print
+        store.dispatch({type: 'UI_PRINTING', printing: true});
+        setTimeout(() => {
+          store.dispatch({type: 'UI_PRINTING', printing: false});
+        }, 10000);
+        return false;
+      default:
+        // Do nothing
+        break;
+    }
+  }
+});
+
 const render = () => {
   const base = document.getElementById('app');
   if (!base) {

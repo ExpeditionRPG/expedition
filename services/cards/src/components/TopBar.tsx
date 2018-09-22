@@ -15,6 +15,7 @@ import {FiltersState} from '../reducers/StateTypes';
 
 export interface StateProps extends React.Props<any> {
   filters: FiltersState;
+  printing: boolean;
 }
 
 export interface DispatchProps {
@@ -61,26 +62,30 @@ class TopBar extends React.Component<Props, {}> {
       );
     });
 
-    return (
-      <AppBar>
-        <Toolbar className="printHide">
-          <Typography variant="title">
-            Expedition
-          </Typography>
-          {filters}
-          <Tooltip title="Reload card data">
-            <IconButton onClick={this.props.downloadCards}>
-              <AutoRenew />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Help">
-            <IconButton onClick={this.props.openHelp}>
-              <HelpOutline />
-            </IconButton>
-          </Tooltip>
-        </Toolbar>
-      </AppBar>
-    );
+    if (this.props.printing) {
+      return null;
+    } else {
+      return (
+        <AppBar className="printHide">
+          <Toolbar>
+            <Typography variant="title">
+              Expedition
+            </Typography>
+            {filters}
+            <Tooltip title="Reload card data">
+              <IconButton onClick={this.props.downloadCards}>
+                <AutoRenew />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Help">
+              <IconButton onClick={this.props.openHelp}>
+                <HelpOutline />
+              </IconButton>
+            </Tooltip>
+          </Toolbar>
+        </AppBar>
+      );
+    }
   }
 }
 
