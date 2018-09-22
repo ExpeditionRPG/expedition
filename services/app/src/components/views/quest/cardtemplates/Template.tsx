@@ -1,7 +1,8 @@
-import {CardState, CardThemeType} from 'app/reducers/StateTypes';
+import {AppStateWithHistory, CardState, CardThemeType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import * as React from 'react';
 import Redux from 'redux';
+import {generateSeed} from 'shared/parse/Context';
 import {initCombat} from './combat/Actions';
 import DefeatContainer from './combat/DefeatContainer';
 import DrawEnemiesContainer from './combat/DrawEnemiesContainer';
@@ -103,15 +104,15 @@ export function templateScope() {
   return combatScope();
 }
 
-export function defaultContext(): TemplateContext {
+export function defaultContext(getState: (() => AppStateWithHistory) = getStore().getState): TemplateContext {
   const populateScopeFn = () => {
     return {
       contentSets(): {[content: string]: boolean} {
-        const settings = getStore().getState().settings;
+        const settings = getState().settings;
         return settings && settings.contentSets;
       },
       numAdventurers(): number {
-        const settings = getStore().getState().settings;
+        const settings = getState().settings;
         return settings && settings.numPlayers;
       },
       viewCount(id: string): number {
@@ -137,6 +138,9 @@ export function defaultContext(): TemplateContext {
   for (const k of Object.keys(newContext.scope._)) {
     newContext.scope._[k] = (newContext.scope._[k] as any).bind(newContext);
   }
+
+  // Update random seed
+  newContext.seed = generateSeed();
 
   return newContext;
 }
