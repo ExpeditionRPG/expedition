@@ -18,7 +18,7 @@ export interface BaseDialogProps extends React.Props<any> {
 }
 export class ConfirmationDialog<T extends BaseDialogProps> extends React.Component<T, {}> {
   protected title: string;
-  protected content: JSX.Element;
+  protected content: JSX.Element|null;
   protected action?: string;
 
   constructor(props: T) {
@@ -203,7 +203,7 @@ export class TextAreaDialog<T extends BaseDialogProps> extends React.Component<T
   }
 }
 
-interface FeedbackDialogProps extends TextAreaDialogProps {
+interface FeedbackDialogProps extends BaseDialogProps {
   quest: QuestState;
   settings: SettingsType;
   user: UserState;
@@ -348,12 +348,12 @@ const Dialogs = (props: Props): JSX.Element => {
       <DeleteSavedQuestDialog
         savedQuest={props.selectedSave}
         open={props.dialog && props.dialog.open === 'DELETE_SAVED_QUEST'}
-        onDeleteSavedQuest={props.onDeleteSavedQuest}
+        onDelete={props.onDeleteSavedQuest}
         onClose={props.onClose}
       />
       <ExitQuestDialog
         open={props.dialog && props.dialog.open === 'EXIT_QUEST'}
-        onExitQuest={props.onExitQuest}
+        onExit={props.onExitQuest}
         onClose={props.onClose}
       />
       <ExpansionSelectDialog
@@ -362,7 +362,7 @@ const Dialogs = (props: Props): JSX.Element => {
       />
       <ExitMultiplayerDialog
         open={props.dialog && props.dialog.open === 'EXIT_REMOTE_PLAY'}
-        onExitMultiplayer={props.onExitMultiplayer}
+        onExit={props.onExitMultiplayer}
         onClose={props.onClose}
       />
       <MultiplayerStatusDialog
