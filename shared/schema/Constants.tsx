@@ -20,11 +20,12 @@ export const GENRES: GenreType[] = [
   'Romance',
 ];
 
-export type LanguageType = 'English' | 'French' | 'German' | 'Italian' | 'Portuguese' | 'Romanian' | 'Spanish';
+export type LanguageType = 'English' | 'French' | 'German' | 'Hungarian' | 'Italian' | 'Portuguese' | 'Romanian' | 'Spanish';
 export const LANGUAGES: LanguageType[] = [
   'English',
   'French',
   'German',
+  'Hungarian',
   'Italian',
   'Portuguese',
   'Romanian',
