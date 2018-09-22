@@ -105,6 +105,25 @@ export function evaluateContentOps(content: string, ctx: Context): string {
 export function evaluateOp(op: string, ctx: Context): any {
   let parsed;
   let evalResult;
+
+  // override random functions to use seed
+  rng = seedrandom.alea(ctx.scope || generateSeed());
+  const random = (v1?: number, v2?: number) => {
+    const r = rng();
+    if (v2 === undefined && v1 === undefined) {
+      return r;
+    } else if (v2 === undefined) {
+      return r * v1; // v1 = max
+    } else {
+      return r * (v2 - v1) + v1; // v1 = min, v2 = max
+    }
+  }
+  Math.import({
+    random,
+    randomInt(v1?: number, v2?: number) {return Math.floor(random(v1, v2))},
+    pickRandom(a: any[]) {return a[Math.floor(random(a.length))]},
+  }, {override: true});
+
   try {
     parsed = Math.parse(HtmlDecode(op));
     evalResult = parsed.compile().eval(ctx.scope);

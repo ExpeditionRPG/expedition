@@ -1,41 +1,37 @@
 import {ENCOUNTERS} from 'app/Encounters';
 import {isSurgeRound} from './Actions';
 
+const seedrandom = require('seedrandom');
+
+function supportedEnemies(scope: any): string[] {
+  const contentSets = scope._.contentSets() || [];
+  return Object.keys(ENCOUNTERS)
+          .filter((key) => ENCOUNTERS[key].set === 'base' || contentSets[ENCOUNTERS[key].set]);
+}
+
+function pickRandom<T>(list: T[], rng: () => number = Math.random): T {
+  return list[Math.floor(rng()*list.length)];
+}
+
 export function combatScope() {
   return {
     randomEnemy(): string {
-      const contentSets = this.scope._.contentSets();
-      return (randomPropertyValue(Object.assign({}, ...Object.keys(ENCOUNTERS)
-          .filter( (key) => ENCOUNTERS[key].set === 'base' || contentSets[ENCOUNTERS[key].set])
-          .map( (key) => ({ [key]: ENCOUNTERS[key] }) ) )
-        ) || {}).name;
+      const options = supportedEnemies(this.scope);
+      return ENCOUNTERS[pickRandom(options, seedrandom.alea(this.seed))].name;
     },
     randomEnemyOfTier(tier: number): string {
-      const contentSets = this.scope._.contentSets();
-      return (randomPropertyValue(Object.assign({}, ...Object.keys(ENCOUNTERS)
-          .filter( (key) => ENCOUNTERS[key].set === 'base' || contentSets[ENCOUNTERS[key].set])
-          .filter( (key) => ENCOUNTERS[key].tier === tier )
-          .map( (key) => ({ [key]: ENCOUNTERS[key] }) ) )
-        ) || {}).name;
+      const options = supportedEnemies(this.scope).filter((key) => ENCOUNTERS[key].tier === tier);
+      return (ENCOUNTERS[pickRandom(options, seedrandom.alea(this.seed))] || {}).name;
     },
     randomEnemyOfClass(className: string): string {
-      const contentSets = this.scope._.contentSets();
-      className = className.toLowerCase();
-      return (randomPropertyValue(Object.assign({}, ...Object.keys(ENCOUNTERS)
-          .filter( (key) => ENCOUNTERS[key].set === 'base' || contentSets[ENCOUNTERS[key].set])
-          .filter( (key) => ENCOUNTERS[key].class.toLowerCase() === className )
-          .map( (key) => ({ [key]: ENCOUNTERS[key] }) ) )
-        ) || {}).name;
+      const options = supportedEnemies(this.scope).filter((key) => ENCOUNTERS[key].class.toLowerCase() === className)
+      return (ENCOUNTERS[pickRandom(options, seedrandom.alea(this.seed))] || {}).name;
     },
     randomEnemyOfClassTier(className: string, tier: number): string {
-      const contentSets = this.scope._.contentSets();
-      className = className.toLowerCase();
-      return (randomPropertyValue(Object.assign({}, ...Object.keys(ENCOUNTERS)
-          .filter( (key) => ENCOUNTERS[key].set === 'base' || contentSets[ENCOUNTERS[key].set])
-          .filter( (key) => ENCOUNTERS[key].tier === tier )
-          .filter( (key) => ENCOUNTERS[key].class.toLowerCase() === className )
-          .map( (key) => ({ [key]: ENCOUNTERS[key] }) ) )
-        ) || {}).name;
+      const options = supportedEnemies(this.scope)
+        .filter( (key) => ENCOUNTERS[key].tier === tier )
+        .filter((key) => ENCOUNTERS[key].class.toLowerCase() === className)
+      return (ENCOUNTERS[pickRandom(options, seedrandom.alea(this.seed))] || {}).name;
     },
     aliveAdventurers(): number {
       return (this.templates && this.templates.combat && this.templates.combat.numAliveAdventurers) || 0;
@@ -55,7 +51,11 @@ export function combatScope() {
   };
 }
 
-function randomPropertyValue(obj: any): any {
+function randomPropertyValue(obj: any, rng: () => number): any {
+  console.log('random property value');
+  console.log(obj);
   const keys = Object.keys(obj);
-  return obj[ keys[ Math.floor(keys.length * Math.random()) ] ];
+  const i = Math.floor(keys.length * rng());;
+  console.log(obj[keys[i]]);
+  return obj[keys[i]];
 }

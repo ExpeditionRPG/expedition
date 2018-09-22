@@ -21,6 +21,7 @@ import ResolveDecisionContainer from './decision/ResolveDecisionContainer';
 import {initRoleplay} from './roleplay/Actions';
 import RoleplayContainer from './roleplay/RoleplayContainer';
 import {ParserNode, TemplateContext} from './TemplateTypes';
+import {generateSeed} from 'shared/parse/Context';
 
 export function initCardTemplate(node: ParserNode) {
   return (dispatch: Redux.Dispatch<any>): any => {
@@ -103,15 +104,15 @@ export function templateScope() {
   return combatScope();
 }
 
-export function defaultContext(): TemplateContext {
+export function defaultContext(getState: (() => Redux.Store<any>) = getStore().getState): TemplateContext {
   const populateScopeFn = () => {
     return {
       contentSets(): {[content: string]: boolean} {
-        const settings = getStore().getState().settings;
+        const settings = getState().settings;
         return settings && settings.contentSets;
       },
       numAdventurers(): number {
-        const settings = getStore().getState().settings;
+        const settings = getState().settings;
         return settings && settings.numPlayers;
       },
       viewCount(id: string): number {
@@ -137,6 +138,9 @@ export function defaultContext(): TemplateContext {
   for (const k of Object.keys(newContext.scope._)) {
     newContext.scope._[k] = (newContext.scope._[k] as any).bind(newContext);
   }
+
+  // Update random seed
+  newContext.seed = generateSeed();
 
   return newContext;
 }

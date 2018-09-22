@@ -33,6 +33,9 @@ describe('Context', () => {
     test('does not return if last operation assigns a value', () => {
       expect(evaluateOp('a=1', defaultContext())).toEqual(null);
     });
+    test.skip('has repeatable random() behavior based on seed');
+    test.skip('has repeatable randomInt() behavior based on seed');
+    test.skip('has repeatable pickRandom() behavior based on seed');
   });
 
   describe('evaluateContentOps', () => {
