@@ -15,7 +15,6 @@ export interface CardsState {
   filtered: CardType[] | null; // only cards valid with current filters
   translations: TranslationsType | null;
   loading: boolean;
-  printing: boolean;
 }
 
 export interface FiltersState {

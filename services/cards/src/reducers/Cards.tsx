@@ -7,7 +7,6 @@ export const initialState: CardsState = {
   filtered: null,
   loading: true,
   translations: null,
-  printing: false,
 };
 
 export default function Cards(state: CardsState = initialState, action: Redux.Action): CardsState {
@@ -30,8 +29,6 @@ export default function Cards(state: CardsState = initialState, action: Redux.Ac
       return {...state,
         filtered: filterAndFormatCards(cardsFilterAction.cards, cardsFilterAction.filters),
       };
-    case 'PRINTING':
-      return {...state, printing: !state.printing};
     default:
       return state;
   }
