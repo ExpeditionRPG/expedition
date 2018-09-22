@@ -120,8 +120,8 @@ export function evaluateOp(op: string, ctx: Context, rng: () => number = Math.ra
   };
   MathJS.import({
     random,
-    randomInt(v1?: number, v2?: number) {return Math.floor(random(v1, v2));},
-    pickRandom(a: any[]) {return a._data[Math.floor(random(a._data.length))];},
+    randomInt(v1?: number, v2?: number) { return Math.floor(random(v1, v2)); },
+    pickRandom(a: any[]) { return a._data[Math.floor(random(a._data.length))]; },
   }, {override: true});
 
   try {
