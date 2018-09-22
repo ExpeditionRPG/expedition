@@ -117,7 +117,7 @@ class Renderer extends React.Component<StateProps, {}> {
                 <ol>
                   <li>Download this PDF and take it to your local print shop.</li>
                   <li>Have it printed on heavy white cardstock (ideally 80-pound or heavier).</li>
-                  <li>Make sure to print double-sided, and to set to document to 100% zoom. (<strong>NOTE:</strong> there seems to be a bug in Chrome that may require setting zoom to 150% - double check the cards below before printing!)</li>
+                  <li>Make sure to print double-sided, and to set to document to 100% zoom.</li>
                   <li>Cut the cards using a paper cutter. The more precise you are, the easier they'll be to handle later.</li>
                   <li>Secure your cards with a box or rubber band.</li>
                   <li>Accessories: You'll need at least a dozen tracking clips (such as paper clips) and a d20 die.</li>
