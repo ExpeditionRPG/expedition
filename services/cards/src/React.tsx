@@ -36,9 +36,9 @@ window.addEventListener('keydown', (event: any) => {
   if (event.ctrlKey || event.metaKey) {
     switch (String.fromCharCode(event.which).toLowerCase()) {
       case 'p': // ctrl + p to print
-        store.dispatch({type: 'UI_PRINTING', printing: true});
+        store.dispatch({type: 'LAYOUT_PRINTING', printing: true});
         setTimeout(() => {
-          store.dispatch({type: 'UI_PRINTING', printing: false});
+          store.dispatch({type: 'LAYOUT_PRINTING', printing: false});
         }, 10000);
         return false;
       default:

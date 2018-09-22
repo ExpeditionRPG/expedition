@@ -21,12 +21,12 @@ export interface FiltersState {
   [key: string]: any;
 }
 
-export interface UiState {
+export interface LayoutState {
   printing: boolean;
 }
 
 export interface AppState {
   cards: CardsState;
   filters: FiltersState;
-  ui: UiState;
+  layout: LayoutState;
 }

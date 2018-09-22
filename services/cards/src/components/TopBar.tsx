@@ -28,6 +28,10 @@ export interface Props extends StateProps, DispatchProps {}
 
 class TopBar extends React.Component<Props, {}> {
   public render() {
+    if (this.props.printing) {
+      return null;
+    }
+
     const filtersCurrent = Object.keys(this.props.filters).reduce((acc: any, name: string) => {
       acc[name] = this.props.filters[name].current;
       return acc;
@@ -62,30 +66,26 @@ class TopBar extends React.Component<Props, {}> {
       );
     });
 
-    if (this.props.printing) {
-      return null;
-    } else {
-      return (
-        <AppBar className="printHide">
-          <Toolbar>
-            <Typography variant="title">
-              Expedition
-            </Typography>
-            {filters}
-            <Tooltip title="Reload card data">
-              <IconButton onClick={this.props.downloadCards}>
-                <AutoRenew />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Help">
-              <IconButton onClick={this.props.openHelp}>
-                <HelpOutline />
-              </IconButton>
-            </Tooltip>
-          </Toolbar>
-        </AppBar>
-      );
-    }
+    return (
+      <AppBar className="printHide">
+        <Toolbar>
+          <Typography variant="title">
+            Expedition
+          </Typography>
+          {filters}
+          <Tooltip title="Reload card data">
+            <IconButton onClick={this.props.downloadCards}>
+              <AutoRenew />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Help">
+            <IconButton onClick={this.props.openHelp}>
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
+        </Toolbar>
+      </AppBar>
+    );
   }
 }
 
