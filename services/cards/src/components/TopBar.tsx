@@ -15,6 +15,7 @@ import {FiltersState} from '../reducers/StateTypes';
 
 export interface StateProps extends React.Props<any> {
   filters: FiltersState;
+  printing: boolean;
 }
 
 export interface DispatchProps {
@@ -27,6 +28,10 @@ export interface Props extends StateProps, DispatchProps {}
 
 class TopBar extends React.Component<Props, {}> {
   public render() {
+    if (this.props.printing) {
+      return null;
+    }
+
     const filtersCurrent = Object.keys(this.props.filters).reduce((acc: any, name: string) => {
       acc[name] = this.props.filters[name].current;
       return acc;
@@ -62,8 +67,8 @@ class TopBar extends React.Component<Props, {}> {
     });
 
     return (
-      <AppBar>
-        <Toolbar className="printHide">
+      <AppBar className="printHide">
+        <Toolbar>
           <Typography variant="title">
             Expedition
           </Typography>

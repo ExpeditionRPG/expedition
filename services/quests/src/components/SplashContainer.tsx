@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onLinkTap: (link: string) => {
       if (link !== '') {
-        window.open(link, '_system');
+        window.open(link + '?utm_source=questcreator', '_system');
       }
     },
     onLogin: (position: string) => {

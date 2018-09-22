@@ -1,6 +1,4 @@
 {
-  "GCLOUD_PROJECT": "expedition-quest-ide",
-  "CLOUD_BUCKET": "expedition-quest-ide",
   "DATABASE_URL": "",
   "OAUTH2_CLIENT_ID": "",
   "OAUTH2_CLIENT_SECRET": "",

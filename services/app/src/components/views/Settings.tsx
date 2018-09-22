@@ -95,7 +95,7 @@ const Settings = (props: Props): JSX.Element => {
       </Picker>
 
       <Checkbox label="Experimental" value={props.experimental} onChange={props.onExperimentalChange}>
-        {(props.experimental) ? 'Experimental features enabled.' : 'Experimental features disabled.'}
+        {(props.experimental) ? 'Experimental features are currently enabled.' : 'Experimental features are currently disabled.'}
       </Checkbox>
 
       <div className="version">Expedition App v{VERSION}</div>

@@ -8,6 +8,7 @@ import TopBar, {DispatchProps, StateProps} from './TopBar';
 const mapStateToProps = (state: AppState): StateProps => {
   return {
     filters: state.filters,
+    printing: state.layout.printing,
   };
 };
 
