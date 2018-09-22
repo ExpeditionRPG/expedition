@@ -10,7 +10,7 @@ function supportedEnemies(scope: any): string[] {
 }
 
 function pickRandom<T>(list: T[], rng: () => number = Math.random): T {
-  return list[Math.floor(rng()*list.length)];
+  return list[Math.floor(rng() * list.length)];
 }
 
 export function combatScope() {
@@ -24,13 +24,13 @@ export function combatScope() {
       return (ENCOUNTERS[pickRandom(options, seedrandom.alea(this.seed))] || {}).name;
     },
     randomEnemyOfClass(className: string): string {
-      const options = supportedEnemies(this.scope).filter((key) => ENCOUNTERS[key].class.toLowerCase() === className)
+      const options = supportedEnemies(this.scope).filter((key) => ENCOUNTERS[key].class.toLowerCase() === className);
       return (ENCOUNTERS[pickRandom(options, seedrandom.alea(this.seed))] || {}).name;
     },
     randomEnemyOfClassTier(className: string, tier: number): string {
       const options = supportedEnemies(this.scope)
         .filter( (key) => ENCOUNTERS[key].tier === tier )
-        .filter((key) => ENCOUNTERS[key].class.toLowerCase() === className)
+        .filter((key) => ENCOUNTERS[key].class.toLowerCase() === className);
       return (ENCOUNTERS[pickRandom(options, seedrandom.alea(this.seed))] || {}).name;
     },
     aliveAdventurers(): number {
@@ -49,13 +49,4 @@ export function combatScope() {
       return isSurgeRound(this.templates.combat.roundCount, this.templates.combat.surgePeriod);
     },
   };
-}
-
-function randomPropertyValue(obj: any, rng: () => number): any {
-  console.log('random property value');
-  console.log(obj);
-  const keys = Object.keys(obj);
-  const i = Math.floor(keys.length * rng());;
-  console.log(obj[keys[i]]);
-  return obj[keys[i]];
 }

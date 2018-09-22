@@ -2,6 +2,7 @@ import {CardState, CardThemeType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import * as React from 'react';
 import Redux from 'redux';
+import {generateSeed} from 'shared/parse/Context';
 import {initCombat} from './combat/Actions';
 import DefeatContainer from './combat/DefeatContainer';
 import DrawEnemiesContainer from './combat/DrawEnemiesContainer';
@@ -21,7 +22,6 @@ import ResolveDecisionContainer from './decision/ResolveDecisionContainer';
 import {initRoleplay} from './roleplay/Actions';
 import RoleplayContainer from './roleplay/RoleplayContainer';
 import {ParserNode, TemplateContext} from './TemplateTypes';
-import {generateSeed} from 'shared/parse/Context';
 
 export function initCardTemplate(node: ParserNode) {
   return (dispatch: Redux.Dispatch<any>): any => {
