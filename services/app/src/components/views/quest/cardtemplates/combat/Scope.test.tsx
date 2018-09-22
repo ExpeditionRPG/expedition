@@ -16,6 +16,7 @@ describe('Combat State', () => {
         expect(scope._.randomEnemy()).toEqual(jasmine.any(String));
         expect(ENCOUNTERS[scope._.randomEnemy().toLowerCase()]).toBeDefined();
       });
+
       test('only includes enemies in the currently enabled content sets', () => {
         // Impossible to test absolutely; but we can test with high confidence.
         // Horror enabled, future disabled.
@@ -26,6 +27,13 @@ describe('Combat State', () => {
           const pick = ctx.scope._.randomEnemy();
           expect(ENCOUNTERS[Object.keys(ENCOUNTERS).filter((key) => ENCOUNTERS[key].name === pick)[0]].set).toMatch(/horror|base/);
         }
+      });
+
+      test('varies within same (seeded) scope', () => {
+        const store = newMockStore({});
+        const ctx = defaultContext(store.getState);
+        ctx.seed = 0;
+        expect(ctx.scope._.randomEnemy()).not.toEqual(ctx.scope._.randomEnemy());
       });
     });
 
