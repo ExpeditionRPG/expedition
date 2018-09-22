@@ -110,18 +110,18 @@ export function evaluateOp(op: string, ctx: Context, rng: () => number = Math.ra
   // override random functions to use seed
   const random = (v1?: number, v2?: number) => {
     const r = rng();
-    if (v2 === undefined && v1 === undefined) {
-      return r;
-    } else if (v2 === undefined) {
+    if (v2 !== undefined && v1 !== undefined) {
+      return r * (v2 - v1) + v1; // v1 = min, v2 = max
+    } else if (v1 !== undefined) {
       return r * v1; // v1 = max
     } else {
-      return r * (v2 - v1) + v1; // v1 = min, v2 = max
+      return r;
     }
   };
   MathJS.import({
     random,
     randomInt(v1?: number, v2?: number) { return Math.floor(random(v1, v2)); },
-    pickRandom(a: any[]) { return a._data[Math.floor(random(a._data.length))]; },
+    pickRandom(a: {_data: any[]}) { return a._data[Math.floor(random(a._data.length))]; },
   }, {override: true});
 
   try {

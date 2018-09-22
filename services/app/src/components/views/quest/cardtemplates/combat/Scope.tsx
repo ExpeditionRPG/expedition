@@ -48,6 +48,6 @@ export function combatScope() {
       }
       return isSurgeRound(this.templates.combat.roundCount, this.templates.combat.surgePeriod);
     },
-    crng(): number { this.scope._.crng = seedrandom.alea(this.seed); return this.scope._.crng() },
+    crng(): number { this.scope._.crng = seedrandom.alea(this.seed); return this.scope._.crng(); },
   };
 }

@@ -1,4 +1,4 @@
-import {CardState, CardThemeType} from 'app/reducers/StateTypes';
+import {AppStateWithHistory, CardState, CardThemeType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import * as React from 'react';
 import Redux from 'redux';
@@ -104,7 +104,7 @@ export function templateScope() {
   return combatScope();
 }
 
-export function defaultContext(getState: (() => Redux.Store<any>) = getStore().getState): TemplateContext {
+export function defaultContext(getState: (() => AppStateWithHistory) = getStore().getState): TemplateContext {
   const populateScopeFn = () => {
     return {
       contentSets(): {[content: string]: boolean} {
