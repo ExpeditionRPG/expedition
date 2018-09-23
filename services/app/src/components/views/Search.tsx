@@ -218,6 +218,7 @@ function renderSettings(props: Props): JSX.Element {
 
 export interface SearchResultProps {
   index: number;
+  lastLogin: Date;
   lastPlayed: Date | null;
   onQuest: (quest: Quest) => void;
   quest: Quest;
@@ -256,6 +257,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
                 </Truncate>
               </th>
               <th className="rightcell">
+                {props.lastLogin < quest.created && !props.lastPlayed && <div className="badge">NEW</div>}
                 {props.lastPlayed && <DoneIcon className="inline_icon questPlayedIcon" />}
                 {quest.official && <span className="indicator_spacer"><img className="inline_icon questOfficialIcon" src="images/compass_small.svg"/></span>}
                 {quest.awarded && <StarsIcon className="inline_icon questAwardedIcon" />}
@@ -309,7 +311,15 @@ export function renderResults(props: Props, hideHeader?: boolean): JSX.Element {
     );
   } else {
     content = (props.results || []).map((quest: Quest, index: number) => {
-      return renderResult({index, quest, search: props.search, onQuest: props.onQuest, lastPlayed: (props.questHistory.list[quest.id] || {}).lastPlayed, offlineQuests: props.offlineQuests});
+      return renderResult({
+        index,
+        quest,
+        search: props.search,
+        onQuest: props.onQuest,
+        lastLogin: props.user.lastLogin,
+        lastPlayed: (props.questHistory.list[quest.id] || {}).lastPlayed,
+        offlineQuests: props.offlineQuests,
+      });
     });
   }
 

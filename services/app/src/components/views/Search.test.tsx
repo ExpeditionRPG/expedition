@@ -95,6 +95,16 @@ describe('Search', () => {
       expect(wrapper.html()).not.toContain('book');
     });
 
+    test('displays NEW if quest created since last login', () => {
+      const {wrapper} = setup('Learning to Adventure', {lastLogin: new Date('2010-01-01')});
+      expect(wrapper.html()).toContain('NEW');
+    });
+
+    test('does not display NEW if quest created before last login', () => {
+      const {wrapper} = setup('Learning to Adventure', {lastLogin: new Date('2020-01-01')});
+      expect(wrapper.html()).not.toContain('NEW');
+    });
+
     test('does not display last played date if quest has not been played', () => {
       const {wrapper} = setup('Learning to Adventure');
       expect(wrapper.html()).not.toContain('questPlayedIcon');

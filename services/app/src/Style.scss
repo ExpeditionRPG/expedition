@@ -1239,11 +1239,18 @@ body.android .dialog .textfield:focus-within {
         width: auto;
         .inline_icon {
           padding-right: 0;
-          padding-left: size(base);
-        }
-        svg {
+          padding-left: size(small);
+          margin-top: size(tiny);
+          margin-bottom: -2 * size(tiny);
           height: fontsize(flavor) !important;
           width: fontsize(flavor) !important;
+        }
+        .badge {
+          background: $font_color_primary;
+          color: $bg_primary;
+          padding: 4px 6px 1px 6px;
+          border-radius: 4px;
+          display: inline-block;
         }
       }
     }
