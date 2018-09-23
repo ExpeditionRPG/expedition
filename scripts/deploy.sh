@@ -28,17 +28,18 @@ getTarget() {
 
 deploy() {
   echo "Deploying $service to $target"
+  cd $service
   if [ "$target" = "beta" ]; then
-    (cd $service && ./deploy.sh beta)
+    ./deploy.sh beta
   elif [ "$target" = "local-beta" ]; then
-    (cd $service && ./deploy.sh betabuild)
+    ./deploy.sh betabuild
   elif [ "$target" = "local-prod" ]; then
-    (cd $service && ./deploy.sh prodbuild)
+    ./deploy.sh prodbuild
   elif [ "$target" = "prod" ]; then
     read -p "Did you test on beta? (y/N) " -n 1
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-      (cd $s && ./deploy.sh prod)
+      ./deploy.sh prod
     else
       echo "Prod build cancelled until tested on beta."
     fi

@@ -95,6 +95,8 @@ export function searchQuests(db: Database, userId: string, params: QuestSearchPa
   const order = [];
   if (params.order) {
     if (params.order === '+ratingavg') {
+      // Default search - also show very new quests on top
+      order.push(Sequelize.literal(`NOW() - created <= interval '24 hours' DESC`));
       order.push(['ratingavg', 'DESC']);
       order.push(['ratingcount', 'DESC']);
     } else {
@@ -129,7 +131,7 @@ function mailNewQuestToAdmin(mail: MailService, quest: Quest) {
   const to = ['team+newquest@fabricate.io'];
   const subject = `Please review! New quest published: ${quest.title} (${quest.partition}, ${quest.language})`;
   const message = `Summary: ${quest.summary}.\n
-    By ${quest.author},
+    By ${quest.author} (${quest.email}),
     for ${quest.minplayers} - ${quest.maxplayers} players
     over ${quest.mintimeminutes} - ${quest.maxtimeminutes} minutes.
     ${quest.genre}.

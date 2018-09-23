@@ -96,12 +96,17 @@ describe('Search', () => {
     });
 
     test('displays NEW if quest created since last login', () => {
-      const {wrapper} = setup('Learning to Adventure', {lastLogin: new Date('2010-01-01')});
+      const {wrapper} = setup('Learning to Adventure', {lastLogin: new Date('2010')}, {created: new Date('2020')});
+      expect(wrapper.html()).toContain('NEW');
+    });
+
+    test('displays NEW if quest created in past 24 hours', () => {
+      const {wrapper} = setup('Learning to Adventure', {lastLogin: new Date('2010-01-01 22:00:00')}, {created: new Date('2010-01-01 2:00:00')});
       expect(wrapper.html()).toContain('NEW');
     });
 
     test('does not display NEW if quest created before last login', () => {
-      const {wrapper} = setup('Learning to Adventure', {lastLogin: new Date('2020-01-01')});
+      const {wrapper} = setup('Learning to Adventure', {lastLogin: new Date('2020')}, {created: new Date('2010')});
       expect(wrapper.html()).not.toContain('NEW');
     });
 
