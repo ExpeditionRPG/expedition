@@ -10,6 +10,8 @@ import {
 } from './Search';
 configure({ adapter: new Adapter() });
 
+const Moment = require('moment');
+
 const TEST_SEARCH: SearchSettings = {
   age: 31536000,
   contentrating: 'Teen',
@@ -95,18 +97,23 @@ describe('Search', () => {
       expect(wrapper.html()).not.toContain('book');
     });
 
-    test('displays NEW if quest created since last login', () => {
-      const {wrapper} = setup('Learning to Adventure', {lastLogin: new Date('2010')}, {created: new Date('2020')});
+    test('displays NEW if quest created in past 24 hours', () => {
+      const {wrapper} = setup('Learning to Adventure', {lastLogin: Moment()}, {created: Moment().subtract(23, 'hours')});
       expect(wrapper.html()).toContain('NEW');
     });
 
-    test('displays NEW if quest created in past 24 hours', () => {
-      const {wrapper} = setup('Learning to Adventure', {lastLogin: new Date('2010-01-01 22:00:00')}, {created: new Date('2010-01-01 2:00:00')});
+    test('displays NEW if quest created since last login', () => {
+      const {wrapper} = setup('Learning to Adventure', {lastLogin: Moment().subtract(30, 'days')}, {created: Moment().subtract(20, 'days')});
       expect(wrapper.html()).toContain('NEW');
     });
 
     test('does not display NEW if quest created before last login', () => {
-      const {wrapper} = setup('Learning to Adventure', {lastLogin: new Date('2020')}, {created: new Date('2010')});
+      const {wrapper} = setup('Learning to Adventure', {lastLogin: Moment()}, {created: Moment().subtract(30, 'days')});
+      expect(wrapper.html()).not.toContain('NEW');
+    });
+
+    test('does not display NEW if quest has been played', () => {
+      const {wrapper} = setup('Learning to Adventure', {lastLogin: Moment().subtract(30, 'days'), lastPlayed: Moment()}, {created: Moment()});
       expect(wrapper.html()).not.toContain('NEW');
     });
 
@@ -116,7 +123,7 @@ describe('Search', () => {
     });
 
     test('displayed last played date if quest has been played before', () => {
-      const {wrapper} = setup('Learning to Adventure', {lastPlayed: new Date()});
+      const {wrapper} = setup('Learning to Adventure', {lastPlayed: Moment()});
       expect(wrapper.html()).toContain('questPlayedIcon');
     });
 
