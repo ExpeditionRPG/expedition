@@ -45,7 +45,8 @@ export type CombatPhase = 'DRAW_ENEMIES'
   | 'DEFEAT'
   | 'NO_TIMER'
   | 'MID_COMBAT_ROLEPLAY'
-  | 'MID_COMBAT_DECISION';
+  | 'MID_COMBAT_DECISION'
+  | 'MID_COMBAT_DECISION_TIMER'; // Timer must be separate to allow skip of timer during onReturn.
 
 export interface StateProps {
   node: ParserNode;

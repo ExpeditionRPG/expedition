@@ -81,8 +81,12 @@ export default class DecisionTimer extends React.Component<Props, {}> {
       }
       mapped[k].push(c);
     }
-    return getRandomSubarray(Object.keys(mapped), 3, this.props.rng)
-      .map((k) => {
+
+    const keys = Object.keys(mapped);
+    if (keys.length > 3) {
+      getRandomSubarray(Object.keys(mapped), 3, this.props.rng);
+    }
+    return keys.map((k) => {
         return mapped[k][Math.floor(this.props.rng() * mapped[k].length)];
       });
   }

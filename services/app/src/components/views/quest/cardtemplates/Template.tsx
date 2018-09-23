@@ -70,6 +70,7 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
     case 'MID_COMBAT_ROLEPLAY':
       return <MidCombatRoleplayContainer node={node}/>;
     case 'MID_COMBAT_DECISION':
+    case 'MID_COMBAT_DECISION_TIMER':
       const combat = node.ctx.templates.combat;
       return renderCardTemplate({...card, phase: ((combat) ? combat.decisionPhase : 'PREPARE_DECISION')}, node);
     default:
@@ -90,6 +91,7 @@ export function getCardTemplateTheme(card: CardState): CardThemeType {
     case 'NO_TIMER':
     case 'MID_COMBAT_ROLEPLAY':
     case 'MID_COMBAT_DECISION':
+    case 'MID_COMBAT_DECISION_TIMER':
       return 'dark';
     case 'ROLEPLAY':
     case 'PREPARE_DECISION':
