@@ -215,6 +215,10 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
     }
 
     const text: string = md.getText();
+    const mdRealtime = new EditableString(text);
+    const metadataRealtime = new EditableMap(metadata);
+    const notesRealtime = new EditableString(notes);
+    const realtimeModel = new EditableModel([mdRealtime, metadataRealtime, notesRealtime]);
     getPublishedQuestMeta(docid, (quest: QuestType) => {
       const xmlResult = renderXML(text);
       quest = Object.assign(quest || {}, {
@@ -228,12 +232,12 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         language: metadata.get('language') || 'English',
         maxplayers: +metadata.get('maxplayers'),
         maxtimeminutes: +metadata.get('maxtimeminutes'),
-        mdRealtime: md,
-        metadataRealtime: metadata,
+        mdRealtime,
+        metadataRealtime,
+        notesRealtime,
+        realtimeModel,
         minplayers: +metadata.get('minplayers'),
         mintimeminutes: +metadata.get('mintimeminutes'),
-        notesRealtime: notes,
-        realtimeModel: doc.getModel(),
         requirespenpaper: metadata.get('requirespenpaper') || false,
         summary: metadata.get('summary'),
         theme: metadata.get('theme') || 'base',
