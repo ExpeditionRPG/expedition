@@ -22,6 +22,7 @@ function setup(overrides: Partial<Props>) {
     rng: () => 0,
     onCombatDecisionEnd: jasmine.createSpy('onEnd'),
     onRoll: jasmine.createSpy('onRoll'),
+    onReturn: jasmine.createSpy('onReturn'),
     ...overrides,
   };
   const e = mount(<ResolveDecision {...props} />);

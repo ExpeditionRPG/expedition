@@ -253,7 +253,8 @@ interface ToDecisionCardArgs extends Partial<ToCardArgs> {
 }
 export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCardArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ToDecisionCardArgs {
   const phase = a.phase || 'PREPARE_DECISION';
-  if (getState().card.phase !== 'MID_COMBAT_DECISION' && a.name !== undefined) {
+  const statePhase = getState().card.phase;
+  if (statePhase !== 'MID_COMBAT_DECISION' && statePhase !== 'MID_COMBAT_DECISION_TIMER' && a.name !== undefined) {
     const a2: ToCardArgs = {
       keySuffix: a.keySuffix,
       name: a.name || 'MID_COMBAT_DECISION',
@@ -268,7 +269,12 @@ export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCar
   combat.decisionPhase = phase;
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_DECISION', keySuffix: a.phase + (decision.rolls || '').toString(), noHistory: true}));
+  dispatch(toCard({
+    name: 'QUEST_CARD',
+    phase: (a.phase === 'DECISION_TIMER') ? 'MID_COMBAT_DECISION_TIMER' : 'MID_COMBAT_DECISION',
+    keySuffix: a.phase + (decision.rolls || '').toString(),
+    noHistory: true,
+  }));
   return {
   phase: a.phase,
 };

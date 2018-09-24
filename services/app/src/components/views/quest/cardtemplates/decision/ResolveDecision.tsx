@@ -14,6 +14,7 @@ const pluralize = require('pluralize');
 export interface DispatchProps {
   onRoll: (node: ParserNode, roll: number) => void;
   onCombatDecisionEnd: () => void;
+  onReturn: () => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -75,7 +76,11 @@ export default function resolveDecision(props: Props): JSX.Element {
   const numLeft = selected.requiredSuccesses - successes;
   const roll = <img className="inline_icon" src={'images/' + formatImg('roll', props.theme) + '.svg'}></img>;
   return (
-    <Card title={[capitalizeFirstLetter(selected.persona), capitalizeFirstLetter(selected.skill), 'Check'].filter((s) => s).join(' ')} inQuest={true} theme={props.theme}>
+    <Card
+      title={[capitalizeFirstLetter(selected.persona), capitalizeFirstLetter(selected.skill), 'Check'].filter((s) => s).join(' ')}
+      inQuest={true}
+      theme={props.theme}
+      onReturn={() => props.onReturn()}>
       {helpText}
       {inst}
       <h2 className="center">
