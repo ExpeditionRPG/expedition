@@ -69,7 +69,7 @@ describe('quest', () => {
       const q1 = new Quest({...q.basic, id: 'q1', ratingavg: 4.0, ratingcount: 6, created: Moment().subtract(1, 'month')});
       const q2 = new Quest({...q.basic, id: 'q2', ratingavg: 5.0, ratingcount: 1, created: Moment().subtract(1, 'month')});
       const q3 = new Quest({...q.basic, id: 'q3', ratingavg: 5.0, ratingcount: 3, created: Moment().subtract(1, 'month')});
-      const q4 = new Quest({...q.basic, id: 'q4', ratingavg: 4.5, ratingcount: 1, created: Moment()});
+      const q4 = new Quest({...q.basic, id: 'q4', ratingavg: 4.5, ratingcount: 1, created: Moment().subtract(6, 'days')});
 
       testingDBWithState([q1, q2, q3, q4])
         .then((db) => searchQuests(db, '', {order: '+ratingavg'}))

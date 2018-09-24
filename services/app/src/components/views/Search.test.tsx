@@ -97,8 +97,8 @@ describe('Search', () => {
       expect(wrapper.html()).not.toContain('book');
     });
 
-    test('displays NEW if quest created in past 24 hours', () => {
-      const {wrapper} = setup('Learning to Adventure', {lastLogin: Moment()}, {created: Moment().subtract(23, 'hours')});
+    test('displays NEW if quest created in past 7 days', () => {
+      const {wrapper} = setup('Learning to Adventure', {lastLogin: Moment()}, {created: Moment().subtract(6, 'days')});
       expect(wrapper.html()).toContain('NEW');
     });
 

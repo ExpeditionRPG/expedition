@@ -98,7 +98,7 @@ export function searchQuests(db: Database, userId: string, params: QuestSearchPa
   if (params.order) {
     if (params.order === '+ratingavg') {
       // Default sort - also show very new quests on top
-      order.push(Sequelize.literal(`created >= '${Moment().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss')}' DESC`));
+      order.push(Sequelize.literal(`created >= '${Moment().subtract(7, 'day').format('YYYY-MM-DD HH:mm:ss')}' DESC`));
       order.push(['ratingavg', 'DESC']);
       order.push(['ratingcount', 'DESC']);
     } else {

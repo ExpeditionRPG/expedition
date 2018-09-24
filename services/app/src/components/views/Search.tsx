@@ -257,7 +257,7 @@ export function renderResult(props: SearchResultProps): JSX.Element {
                 </Truncate>
               </th>
               <th className="rightcell">
-                {(props.lastLogin < quest.created || Moment().diff(quest.created, 'days') <= 1) && !props.lastPlayed &&
+                {(props.lastLogin < quest.created || Moment().diff(quest.created, 'days') <= 7) && !props.lastPlayed &&
                   <div className="badge">NEW</div>}
                 {props.lastPlayed && <DoneIcon className="inline_icon questPlayedIcon" />}
                 {quest.official && <span className="indicator_spacer"><img className="inline_icon questOfficialIcon" src="images/compass_small.svg"/></span>}
