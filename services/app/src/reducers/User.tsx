@@ -8,6 +8,8 @@ export const loggedOutUser: UserState = {
   image: '',
   loggedIn: false,
   name: '',
+  lastLogin: new Date(),
+  loginCount: 0,
 };
 
 export function user(state: UserState = loggedOutUser, action: Redux.Action): UserState {

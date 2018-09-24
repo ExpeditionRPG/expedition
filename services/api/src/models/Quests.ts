@@ -10,6 +10,8 @@ import {getFeedbackByQuestId} from './Feedback';
 import {prepare} from './Schema';
 import {getUser} from './Users';
 
+const Moment = require('moment');
+
 export const MAX_SEARCH_LIMIT = 100;
 
 export interface QuestSearchParams {
@@ -95,6 +97,8 @@ export function searchQuests(db: Database, userId: string, params: QuestSearchPa
   const order = [];
   if (params.order) {
     if (params.order === '+ratingavg') {
+      // Default sort - also show very new quests on top
+      order.push(Sequelize.literal(`created >= '${Moment().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss')}' DESC`));
       order.push(['ratingavg', 'DESC']);
       order.push(['ratingcount', 'DESC']);
     } else {
@@ -107,14 +111,15 @@ export function searchQuests(db: Database, userId: string, params: QuestSearchPa
   if (!params.id) {
     if (!params.expansions || (params.expansions.indexOf('horror') === -1 && params.expansions.indexOf('future') === -1)) {
       // No expansions
-      where.expansionhorror =  {$not: true};
-      where.expansionfuture =  {$not: true};
+      where.expansionhorror = {$not: true};
+      where.expansionfuture = {$not: true};
     } else if (params.expansions.indexOf('future') === -1) {
-      // The Future
-      order.push(['expansionfuture', 'DESC']);
-    } else {
-      // The Horror
+      // Only the Horror
+      where.expansionfuture = {$not: true};
       order.push(['expansionhorror', 'DESC']);
+    } else {
+      // All
+      order.push(['expansionfuture', 'DESC']);
     }
   }
 
@@ -129,7 +134,7 @@ function mailNewQuestToAdmin(mail: MailService, quest: Quest) {
   const to = ['team+newquest@fabricate.io'];
   const subject = `Please review! New quest published: ${quest.title} (${quest.partition}, ${quest.language})`;
   const message = `Summary: ${quest.summary}.\n
-    By ${quest.author},
+    By ${quest.author} (${quest.email}),
     for ${quest.minplayers} - ${quest.maxplayers} players
     over ${quest.mintimeminutes} - ${quest.maxtimeminutes} minutes.
     ${quest.genre}.

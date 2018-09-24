@@ -171,6 +171,8 @@ export interface UserState {
   name: string;
   image: string;
   email: string;
+  lastLogin: Date;
+  loginCount: number;
 }
 
 export interface UserQuestHistory {

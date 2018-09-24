@@ -7,6 +7,8 @@ import {
   testingDBWithState,
 } from './TestData';
 
+const Moment = require('moment');
+
 describe('quest', () => {
   describe('searchQuests', () => {
     const quests = [q.basic, q.horror, q.future];
@@ -63,15 +65,16 @@ describe('quest', () => {
         .catch(done.fail);
     });
 
-    fit('orders by rating, then rating count when +ratingavg order is given', (done: DoneFn) => {
-      const q1 = new Quest({...q.basic, id: 'q1', ratingavg: 4.0, ratingcount: 6});
-      const q2 = new Quest({...q.basic, id: 'q2', ratingavg: 5.0, ratingcount: 1});
-      const q3 = new Quest({...q.basic, id: 'q3', ratingavg: 5.0, ratingcount: 3});
+    test('+ratingavg (default) orders by newly published, rating, then rating count when ', (done: DoneFn) => {
+      const q1 = new Quest({...q.basic, id: 'q1', ratingavg: 4.0, ratingcount: 6, created: Moment().subtract(1, 'month')});
+      const q2 = new Quest({...q.basic, id: 'q2', ratingavg: 5.0, ratingcount: 1, created: Moment().subtract(1, 'month')});
+      const q3 = new Quest({...q.basic, id: 'q3', ratingavg: 5.0, ratingcount: 3, created: Moment().subtract(1, 'month')});
+      const q4 = new Quest({...q.basic, id: 'q4', ratingavg: 4.5, ratingcount: 1, created: Moment()});
 
-      testingDBWithState([q1, q2, q3])
+      testingDBWithState([q1, q2, q3, q4])
         .then((db) => searchQuests(db, '', {order: '+ratingavg'}))
         .then((results: QuestInstance[]) => {
-          expect(results.map((r) => r.get('id'))).toEqual(['q3', 'q2', 'q1']);
+          expect(results.map((r) => r.get('id'))).toEqual(['q4', 'q3', 'q2', 'q1']);
           done();
         })
         .catch(done.fail);
