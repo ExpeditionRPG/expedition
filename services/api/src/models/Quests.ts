@@ -198,7 +198,7 @@ export function publishQuest(db: Database, mail: MailService, userid: string, ma
         published: new Date(),
         publishedurl: `http://quests.expeditiongame.com/raw/${quest.partition}/${quest.id}/${quest.questversion}`,
         questversion: (instance.get('questversion') || quest.questversion || 0) + 1,
-        tombstone: undefined, // Remove tombstone
+        tombstone: null as any, // Remove tombstone; need null instead of undefined to trigger Sequelize update override
         userid, // Not included in the request - pull from auth
       };
       if (majorRelease) {
