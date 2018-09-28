@@ -64,6 +64,10 @@ describe('Combat State', () => {
         expect(scope._.randomEnemyOfClass('bandit')).toEqual(jasmine.any(String));
         expect(ENCOUNTERS[scope._.randomEnemyOfClass('bandit').toLowerCase()]).toBeDefined();
       });
+      test('is capitalization agnostic', () => {
+        expect(scope._.randomEnemyOfClass('BANdit')).toEqual(jasmine.any(String));
+        expect(ENCOUNTERS[scope._.randomEnemyOfClass('Bandit').toLowerCase()]).toBeDefined();
+      });
       test('does not include enemies in the horror set if horror set disabled', () => {
         const store = newMockStore({});
         const scope = defaultContext(store.getState).scope;

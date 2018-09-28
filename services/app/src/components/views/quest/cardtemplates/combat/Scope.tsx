@@ -24,13 +24,13 @@ export function combatScope() {
       return (ENCOUNTERS[pickRandom(options, this.scope._.crng)] || {}).name;
     },
     randomEnemyOfClass(className: string): string {
-      const options = supportedEnemies(this.scope).filter((key) => ENCOUNTERS[key].class.toLowerCase() === className);
+      const options = supportedEnemies(this.scope).filter((key) => ENCOUNTERS[key].class.toLowerCase() === className.toLowerCase());
       return (ENCOUNTERS[pickRandom(options, this.scope._.crng)] || {}).name;
     },
     randomEnemyOfClassTier(className: string, tier: number): string {
       const options = supportedEnemies(this.scope)
-        .filter( (key) => ENCOUNTERS[key].tier === tier )
-        .filter((key) => ENCOUNTERS[key].class.toLowerCase() === className);
+        .filter((key) => ENCOUNTERS[key].tier === tier)
+        .filter((key) => ENCOUNTERS[key].class.toLowerCase() === className.toLowerCase());
       return (ENCOUNTERS[pickRandom(options, this.scope._.crng)] || {}).name;
     },
     aliveAdventurers(): number {
