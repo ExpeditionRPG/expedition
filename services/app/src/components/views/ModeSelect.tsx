@@ -41,7 +41,7 @@ const ModeSelect = (props: Props): JSX.Element => {
       </Button>
       <Button id="selectOnlineMultiplayer" onClick={() => props.onMultiplayerSelect(props.user)}>
         <div className="questButtonWithIcon">
-          <div className="title">Online Multiplayer - Beta</div>
+          <div className="title">Online Multiplayer</div>
           <div className="summary">
             {(!props.user || !props.user.loggedIn) ? 'Login and sync' : 'Sync'} your app with friends on another device.
           </div>

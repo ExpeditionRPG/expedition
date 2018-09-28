@@ -49,7 +49,7 @@ const FeaturedQuests = (props: Props): JSX.Element => {
       {!props.settings.simulator && props.settings.experimental &&
         <Button onClick={() => props.toCard('SAVED_QUESTS')} id="saved">
         <div className="questButtonWithIcon">
-          <div className="title"><img className="inline_icon" src="images/compass_small.svg"/>Saved & Offline Quests - Beta</div>
+          <div className="title"><img className="inline_icon" src="images/compass_small.svg"/>Saved & Offline Quests</div>
         </div>
       </Button>
       }
