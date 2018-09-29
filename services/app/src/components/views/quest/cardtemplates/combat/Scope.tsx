@@ -24,12 +24,14 @@ export function combatScope() {
       return (ENCOUNTERS[pickRandom(options, this.scope._.crng)] || {}).name;
     },
     randomEnemyOfClass(className: string): string {
+      className = className.toLowerCase();
       const options = supportedEnemies(this.scope).filter((key) => ENCOUNTERS[key].class.toLowerCase() === className);
       return (ENCOUNTERS[pickRandom(options, this.scope._.crng)] || {}).name;
     },
     randomEnemyOfClassTier(className: string, tier: number): string {
+      className = className.toLowerCase();
       const options = supportedEnemies(this.scope)
-        .filter( (key) => ENCOUNTERS[key].tier === tier )
+        .filter((key) => ENCOUNTERS[key].tier === tier)
         .filter((key) => ENCOUNTERS[key].class.toLowerCase() === className);
       return (ENCOUNTERS[pickRandom(options, this.scope._.crng)] || {}).name;
     },
