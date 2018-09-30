@@ -26,11 +26,11 @@ const mapStateToProps = (state: AppStateWithHistory): StateProps => {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onPlay: (quest: Quest, isDirectLinked: boolean) => {
+    onPlay: (details: Quest, isDirectLinked: boolean) => {
       if (isDirectLinked) {
         dispatch(setDialog('SET_PLAYER_COUNT'));
       } else {
-        dispatch(fetchQuestXML(quest));
+        dispatch(fetchQuestXML({details}));
       }
     },
     onPlaySaved(id: string, ts: number): void {
