@@ -84,9 +84,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
           dispatch(setDialog(null));
         });
     },
-    playQuest: (quest: Quest) => {
+    playQuest: (details: Quest) => {
       dispatch(setDialog(null));
-      dispatch(fetchQuestXML(quest));
+      dispatch(fetchQuestXML({details}));
     },
   };
 };

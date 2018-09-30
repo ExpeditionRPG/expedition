@@ -97,6 +97,14 @@ describe('Context', () => {
       const result = evaluateContentOps('{{random()}}\n{{random()}}', ctx).split('\n');
       expect(result[1]).not.toEqual(result[2]);
     });
+
+    test('changes random result for different contexts', () => {
+      let ctx = defaultContext();
+      const r1 = evaluateContentOps('{{random()}}', ctx);
+      ctx = defaultContext();
+      const r2 = evaluateContentOps('{{random()}}', ctx);
+      expect(r1).not.toEqual(r2);
+    });
   });
 
   describe('updateContext', () => {

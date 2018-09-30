@@ -16,9 +16,9 @@ MathJS.import({
   equal(a: any, b: any) { return a === b; },
 }, {override: true});
 
-export function generateSeed(): string {
+export function generateSeed(prevSeed?: string): string {
   let seed: string = '';
-  seedrandom(undefined, { pass(p: seedrandom.prng, s: string): seedrandom.prng {
+  seedrandom(prevSeed && (prevSeed + seedrandom.alea(prevSeed)), { pass(p: seedrandom.prng, s: string): seedrandom.prng {
     seed = s;
     return p;
   }});
@@ -62,6 +62,7 @@ export function defaultContext(): Context {
     scope: {
       _: populateScopeFn(),
     },
+    seed: generateSeed(),
     views: {},
   };
 
@@ -84,7 +85,7 @@ export function evaluateContentOps(content: string, ctx: Context): string {
   }
 
   let result = '';
-  const rng = seedrandom.alea(ctx.scope || generateSeed());
+  const rng = seedrandom.alea(ctx.seed || generateSeed());
   for (const m of matches) {
     const op = parseOpString(m);
     if (op) {
@@ -202,8 +203,8 @@ export function updateContext<C extends Context>(node: Cheerio, ctx: C, action?:
     newContext.scope._[k] = (newContext.scope._[k] as any).bind(newContext);
   }
 
-  // Update random seed
-  newContext.seed = generateSeed();
+  // Update random seed (using the previous seed)
+  newContext.seed = generateSeed(newContext.seed);
 
   return newContext;
 }

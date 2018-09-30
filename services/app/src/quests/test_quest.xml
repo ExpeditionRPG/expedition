@@ -109,6 +109,7 @@
   <roleplay id="conditionalRound" title="A new fight" data-line="134">
     <p>This combat uses custom enemies and a conditional on round card.</p>
     <p>{{food = 1}}</p>
+    <p>{{random()}}</p>
   </roleplay>
   <combat data-line="140">
     <e tier="2">Custom Enemy</e>

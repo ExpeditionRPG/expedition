@@ -40,16 +40,24 @@ export function fetchUserQuests() {
   };
 }
 
-export const fetchQuestXML = remoteify(function fetchQuestXML(details: Quest, dispatch: Redux.Dispatch<any>) {
-  const promise = fetchLocal(details.publishedurl).then((result: string) => {
+export interface FetchQuestXMLArgs {
+  details: Quest;
+  seed?: string;
+}
+export const fetchQuestXML = remoteify(function fetchQuestXML(a: FetchQuestXMLArgs, dispatch: Redux.Dispatch<any>) {
+  const ctx = defaultContext();
+  const promise = fetchLocal(a.details.publishedurl).then((result: string) => {
     const questNode = cheerio.load(result)('quest');
-    return dispatch(loadQuestXML({details, questNode, ctx: defaultContext()}));
+    if (a.seed) {
+      ctx.seed = a.seed;
+    }
+    return dispatch(loadQuestXML({details: a.details, questNode, ctx}));
   })
   .catch((e: Error) => {
     return dispatch(openSnackbar(Error('Network error: Please check your connection.')));
   });
 
-  return {...details, promise};
+  return {...a, seed: ctx.seed, promise};
 });
 
 // for loading quests in the app - Quest Creator injects directly into initQuest.

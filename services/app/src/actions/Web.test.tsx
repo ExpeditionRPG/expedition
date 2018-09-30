@@ -16,6 +16,7 @@ describe('Web action', () => {
   describe('fetchQuestXML', () => {
     test.skip('shows snackbar on request error', () => { /* TODO */ }); // $10
     test.skip('dispatches loaded quest', () => { /* TODO */ }); // $10
+    test.skip('publishes generated seed remotely', () => { /* TODO */ }); // $10
   });
 
   describe('loadQuestXML', () => {
