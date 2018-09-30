@@ -18,7 +18,7 @@ MathJS.import({
 
 export function generateSeed(prevSeed?: string): string {
   let seed: string = '';
-  seedrandom(prevSeed, { pass(p: seedrandom.prng, s: string): seedrandom.prng {
+  seedrandom(prevSeed && (prevSeed + seedrandom.alea(prevSeed)), { pass(p: seedrandom.prng, s: string): seedrandom.prng {
     seed = s;
     return p;
   }});

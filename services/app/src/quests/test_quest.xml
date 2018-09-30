@@ -6,6 +6,7 @@
   <roleplay id="start" title="Test" data-line="8">
     <p>{{one=1}}</p>
     <p>{{foo="a"}}</p>
+    <p>{{random()}}</p>
     <p>You should see an error notification, but everything should work.</p>
     <p>You face choices. Here's the value of one: {{one}}. And a symbol: ☞ and icon :roll:. There should be one paragraph below:</p>
     <p>{{true}} One paragraph</p>
@@ -109,6 +110,7 @@
   <roleplay id="conditionalRound" title="A new fight" data-line="134">
     <p>This combat uses custom enemies and a conditional on round card.</p>
     <p>{{food = 1}}</p>
+    <p>{{random()}}</p>
   </roleplay>
   <combat data-line="140">
     <e tier="2">Custom Enemy</e>

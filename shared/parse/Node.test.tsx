@@ -395,6 +395,14 @@ describe('Node', () => {
       expect(r1).toEqual(r2);
     });
 
+    test('renders using different seed for child card', () => {
+      const node = cheerio.load('<roleplay id="start"><p>{{a=random()}}</p><choice><roleplay><p>{{a=random()}}</p></roleplay></choice></roleplay>')('#start');
+      const ctx = defaultContext();
+      const n1 = new Node(node, {...ctx});
+      const n2 = n1.handleAction(0);
+      expect(n1.ctx.scope.a).not.toEqual(n2.ctx.scope.a);
+    });
+
     test('skips hidden triggers', () => {
       const node = cheerio.load('<roleplay><choice><trigger if="false">goto 5</trigger><trigger>end</trigger></choice></roleplay>')('roleplay');
       const pnode = new Node(node, defaultContext());
