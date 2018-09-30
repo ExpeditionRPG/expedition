@@ -84,7 +84,7 @@ export function evaluateContentOps(content: string, ctx: Context): string {
   }
 
   let result = '';
-  const rng = seedrandom.alea(ctx.scope || generateSeed());
+  const rng = seedrandom.alea(ctx.seed || generateSeed());
   for (const m of matches) {
     const op = parseOpString(m);
     if (op) {
