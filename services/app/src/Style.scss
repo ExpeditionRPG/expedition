@@ -1246,9 +1246,9 @@ body.android .dialog .textfield:focus-within {
           width: fontsize(flavor) !important;
         }
         .badge {
-          background: $font_color_primary;
+          background: $font_color_faded;
           color: $bg_primary;
-          padding: 4px 6px 1px 6px;
+          padding: 4px 6px 0px 6px;
           border-radius: 4px;
           display: inline-block;
         }
