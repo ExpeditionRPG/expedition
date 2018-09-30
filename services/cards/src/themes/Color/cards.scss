@@ -639,6 +639,9 @@ $large-icon-width: 0.195in;
     &.title-Horror:before {
       background-image: url(../../../../shared/images/cards/back-TitleCardHorror.jpg) !important;
     }
+    &.title-Future:before {
+      background-image: url(../../../../shared/images/cards/back-TitleCardFuture.jpg) !important;
+    }
   }
 
   .card.front.-Title {
@@ -654,6 +657,9 @@ $large-icon-width: 0.195in;
     }
     &.title-Horror:before {
       background-image: url(../../../../shared/images/cards/front-TitleCardHorror.jpg) !important;
+    }
+    &.title-Future:before {
+      background-image: url(../../../../shared/images/cards/front-TitleCardFuture.jpg) !important;
     }
   }
 

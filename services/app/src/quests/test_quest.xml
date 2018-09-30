@@ -1,12 +1,12 @@
 <quest title="Test Quest" data-line="0">
   <roleplay skipSetup="true" title="Setup :loot:" data-line="2">
-    <p>Custom setup card, replacing the default quest setup card. Half and full-width art:</p>
+    <p>Custom setup card, replacing the default quest setup card. Half and full-width art: (random: {{random()}})</p>
     <p>[Darker_at_Dawn_png_full]</p>
   </roleplay>
   <roleplay id="start" title="Test" data-line="8">
     <p>{{one=1}}</p>
     <p>{{foo="a"}}</p>
-    <p>You should see an error notification, but everything should work.</p>
+    <p>You should see an error notification, but everything should work. Random: {{random()}}, {{random()}}.</p>
     <p>You face choices. Here's the value of one: {{one}}. And a symbol: ☞ and icon :roll:. There should be one paragraph below:</p>
     <p>{{true}} One paragraph</p>
     <p>{{false}} Two paragraph - you shouldn't see this!</p>
@@ -14,7 +14,7 @@
       <combat data-line="24">
         <e>Thief</e>
         <e>Thief</e>
-        <e>Imp</e>
+        <e>{{_.randomEnemy()}}</e>
         <e>Soul Eater</e>
         <event on="round">
           <roleplay title="" data-line="33">
