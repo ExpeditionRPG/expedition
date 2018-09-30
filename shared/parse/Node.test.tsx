@@ -288,18 +288,34 @@ describe('Node', () => {
     test('renders deterministically when a seed is given', () => {
       const ctx = defaultContext();
       ctx.seed = 'randomseed';
-      const result = new Node(cheerio.load('<roleplay><p>{{a=pickRandom([1,2,3,4,5])}}{{b=round(random(0,100), 4)}}{{c=randomInt(0, 100)}}</p></roleplay>')('roleplay'), ctx, undefined, ctx.seed);
-      expect(result.ctx.scope).toEqual(jasmine.objectContaining({a: 5, b: 35.0544, c: 74}));
+      const elem = cheerio.load('<roleplay><p>{{a=pickRandom([1,2,3,4,5])}}{{b=round(random(0,100), 4)}}{{c=randomInt(0, 100)}}</p></roleplay>')('roleplay');
+      const r1 = new Node(elem, ctx, undefined, ctx.seed);
+      const r2 = new Node(elem, ctx, undefined, ctx.seed);
+
+      expect(r1.ctx.scope.a).toEqual(jasmine.any(Number));
+      expect(r1.ctx.scope.b).toEqual(jasmine.any(Number));
+      expect(r1.ctx.scope.c).toEqual(jasmine.any(Number));
+
+      expect(r1.ctx.scope.a).toEqual(r2.ctx.scope.a);
+      expect(r1.ctx.scope.b).toEqual(r2.ctx.scope.b);
+      expect(r1.ctx.scope.c).toEqual(r2.ctx.scope.c);
     });
 
     test('renders next node via getNext deterministically when a seed is given', () => {
       const ctx = defaultContext();
       const result = new Node(cheerio.load('<quest><roleplay></roleplay><roleplay><p>{{a=pickRandom([1,2,3,4,5])}}{{b=round(random(0,100), 4)}}{{c=randomInt(0, 100)}}</p></roleplay></quest>')('quest > :first-child'), ctx);
-      const next = result.getNext(0, 'randomseed');
-      if (next === null) {
+      const n1 = result.getNext(0, 'randomseed');
+      const n2 = result.getNext(0, 'randomseed');
+      if (n1 === null || n2 === null) {
         throw new Error('getNext returned null node');
       }
-      expect(next.ctx.scope).toEqual(jasmine.objectContaining({a: 5, b: 35.0544, c: 74}));
+      expect(n1.ctx.scope.a).toEqual(jasmine.any(Number));
+      expect(n1.ctx.scope.b).toEqual(jasmine.any(Number));
+      expect(n1.ctx.scope.c).toEqual(jasmine.any(Number));
+
+      expect(n1.ctx.scope.a).toEqual(n2.ctx.scope.a);
+      expect(n1.ctx.scope.b).toEqual(n2.ctx.scope.b);
+      expect(n1.ctx.scope.c).toEqual(n2.ctx.scope.c);
     });
   });
 
@@ -363,6 +379,22 @@ describe('Node', () => {
   });
 
   describe('handleAction', () => {
+    test('renders children deterministically after being called', () => {
+      const node = cheerio.load('<roleplay id="start"><choice><roleplay><p>{{random()}}</p></roleplay></choice></roleplay>')('#start');
+      const ctx = defaultContext();
+      const n1 = new Node(node, {...ctx}).handleAction(0);
+      const n2 = new Node(node, {...ctx}).handleAction(0);
+      let r1 = '';
+      let r2 = '';
+      n1.loopChildren((tag, c) => {
+        r1 += c.text();
+      });
+      n2.loopChildren((tag, c) => {
+        r2 += c.text();
+      });
+      expect(r1).toEqual(r2);
+    });
+
     test('skips hidden triggers', () => {
       const node = cheerio.load('<roleplay><choice><trigger if="false">goto 5</trigger><trigger>end</trigger></choice></roleplay>')('roleplay');
       const pnode = new Node(node, defaultContext());
@@ -536,11 +568,13 @@ describe('Node', () => {
     test('handles basic choices deterministically when seed is set', () => {
       const node = cheerio.load('<roleplay><choice><roleplay><p>{{a=round(random(0,100), 4)}}</p></roleplay></choice></roleplay>')('roleplay');
       const pnode = new Node(node, defaultContext());
-      const result = pnode.handleAction(0, 'randomseed');
-      if (result === null) {
+      const r1 = pnode.handleAction(0, 'randomseed');
+      const r2 = pnode.handleAction(0, 'randomseed');
+      if (r1 === null || r2 === null) {
         throw new Error('handleAction returned null node');
       }
-      expect(result.ctx.scope.a).toEqual(95.2223);
+      expect(r1.ctx.scope.a).toEqual(jasmine.any(Number));
+      expect(r1.ctx.scope.a).toEqual(r2.ctx.scope.a);
     });
 
     test('handles choices with id gotos deterministically when seed is set', () => {
@@ -552,21 +586,25 @@ describe('Node', () => {
       rootNode.append(jumpNode);
 
       const pnode = new Node(choiceNode, defaultContext());
-      const result = pnode.handleAction(0, 'randomseed');
-      if (result === null) {
+      const r1 = pnode.handleAction(0, 'randomseed');
+      const r2 = pnode.handleAction(0, 'randomseed');
+      if (r1 === null || r2 === null) {
         throw new Error('handleAction returned null node');
       }
-      expect(result.ctx.scope.a).toEqual(95.2223);
+      expect(r1.ctx.scope.a).toEqual(jasmine.any(Number));
+      expect(r1.ctx.scope.a).toEqual(r2.ctx.scope.a);
     });
 
     test('handles choices with event gotos deterministically when seed is set', () => {
       const node = cheerio.load('<roleplay id="rp1"><choice><trigger>end</trigger></choice><choice on="end"><roleplay><p>{{a=round(random(0,100), 4)}}</p></roleplay></choice></roleplay>')('#rp1');
       const pnode = new Node(node, defaultContext());
-      const result = pnode.handleAction(0, 'randomseed');
-      if (result === null) {
+      const r1 = pnode.handleAction(0, 'randomseed');
+      const r2 = pnode.handleAction(0, 'randomseed');
+      if (r1 === null || r2 === null) {
         throw new Error('handleAction returned null node');
       }
-      expect(result.ctx.scope.a).toEqual(95.2223);
+      expect(r1.ctx.scope.a).toEqual(jasmine.any(Number));
+      expect(r1.ctx.scope.a).toEqual(r2.ctx.scope.a);
     });
 
     test('handles randomly-generated triggers deterministically when seed is set', () => {
@@ -583,11 +621,13 @@ describe('Node', () => {
         <roleplay id="4">r4</roleplay>
       </quest>`)('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
-      const result = pnode.handleAction(0, 'randomseed');
-      if (result === null) {
+      const r1 = pnode.handleAction(0, 'randomseed');
+      const r2 = pnode.handleAction(0, 'randomseed');
+      if (r1 === null || r2 === null) {
         throw new Error('handleAction returned null node');
       }
-      expect(result.elem.text()).toEqual('r4');
+      expect(r1.elem.text()).toContain('r');
+      expect(r1.elem.text()).toEqual(r2.elem.text());
     });
   });
 });
