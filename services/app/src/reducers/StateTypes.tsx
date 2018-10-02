@@ -118,6 +118,7 @@ export type CardName =
   'QUEST_END' |
   'QUEST_CARD' |
   'FEATURED_QUESTS' |
+  'GM_CARD' |
   'SPLASH_CARD' |
   'SEARCH_CARD' |
   'SETTINGS' |

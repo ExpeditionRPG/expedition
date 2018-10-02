@@ -21,7 +21,6 @@ export interface DispatchProps {
 export interface Props extends StateProps, DispatchProps {}
 
 const MultiplayerFooter = (props: Props): JSX.Element => {
-  const classes = ['remote_footer', `card_theme_${props.cardTheme}`, `quest_theme_${props.questTheme}`];
   const color = (props.cardTheme === 'dark') ? 'white' : 'black';
   const adventurerIcon = (props.cardTheme === 'dark') ? 'images/adventurer_white_small.svg' : 'images/adventurer_small.svg';
   const peers: JSX.Element[] = [];
@@ -43,7 +42,7 @@ const MultiplayerFooter = (props: Props): JSX.Element => {
   );
 
   return (
-    <div className={classes.join(' ')}>
+    <div className={`remote_footer card_theme_${props.cardTheme} quest_theme_${props.questTheme}`}>
       <IconButton onClick={(e: any) => {props.onMultiplayerExit(); }}>
          <Close nativeColor={color} />
       </IconButton>

@@ -174,7 +174,7 @@ body {
   }
 }
 
-.remote_footer {
+.remote_footer, .nav_footer {
   position: absolute;
   bottom: 0;
   height: size(remotefooter);
@@ -186,6 +186,17 @@ body {
   background-color: $bg_primary;
   border-top: $border_accent;
 
+  &.quest_theme_horror {
+    background-color: $bg_primary_faded;
+  }
+
+  &.card_theme_dark {
+    background-color: $bg_dark_primary;
+    color: $font_color_dark_primary;
+  }
+}
+
+.remote_footer {
   .peers {
     flex: 8;
     text-align: center;
@@ -194,15 +205,6 @@ body {
       vertical-align: middle;
       padding: 0 size(base);
     }
-  }
-
-  &.quest_theme_horror {
-    background-color: $bg_primary_faded;
-  }
-
-  &.card_theme_dark {
-    background-color: $bg_dark_primary;
-    color: $font_color_dark_primary;
   }
 }
 

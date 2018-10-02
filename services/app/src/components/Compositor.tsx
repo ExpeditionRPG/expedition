@@ -16,10 +16,12 @@ import {
 } from '../reducers/StateTypes';
 import AudioContainer from './base/AudioContainer';
 import DialogsContainer from './base/DialogsContainer';
+import NavigationContainer from './base/NavigationContainer';
 import MultiplayerFooterContainer from './multiplayer/MultiplayerFooterContainer';
 import MultiplayerSyncContainer from './multiplayer/MultiplayerSyncContainer';
 import CheckoutContainer from './views/CheckoutContainer';
 import FeaturedQuestsContainer from './views/FeaturedQuestsContainer';
+import GMCornerContainer from './views/GMCornerContainer';
 import ModeSelectContainer from './views/ModeSelectContainer';
 import MultiplayerContainer from './views/MultiplayerContainer';
 import {renderCardTemplate} from './views/quest/cardtemplates/Template';
@@ -57,56 +59,61 @@ export default class Compositor extends React.Component<Props, {}> {
     }
   }
 
-  public render() {
-    let card: JSX.Element = <span />;
+  private renderCard(): JSX.Element {
     switch (this.props.card.name) {
       case 'SPLASH_CARD':
-        card = <SplashScreenContainer />;
-        break;
+        return <SplashScreenContainer />;
       case 'PLAYER_COUNT_SETTING':
-        card = <ModeSelectContainer />;
-        break;
+        return <ModeSelectContainer />;
       case 'FEATURED_QUESTS':
-        card = <FeaturedQuestsContainer />;
-        break;
+        return <FeaturedQuestsContainer />;
       case 'SAVED_QUESTS':
-        card = <SavedQuestsContainer />;
-        break;
+        return <SavedQuestsContainer />;
       case 'QUEST_HISTORY':
-        card = <QuestHistoryContainer />;
-        break;
+        return <QuestHistoryContainer />;
       case 'QUEST_PREVIEW':
-        card = <QuestPreviewContainer />;
-        break;
+        return <QuestPreviewContainer />;
       case 'QUEST_SETUP':
-        card = <QuestSetupContainer />;
-        break;
+        return <QuestSetupContainer />;
       case 'QUEST_CARD':
-        if (this.props.quest && this.props.quest.node) {
-          card = renderCardTemplate(this.props.card, this.props.quest.node);
+        if (!this.props.quest || !this.props.quest.node) {
+          throw new Error('QUEST_CARD without quest/node');
         }
-        break;
+        return renderCardTemplate(this.props.card, this.props.quest.node);
       case 'QUEST_END':
-        card = <QuestEndContainer />;
-        break;
+        return <QuestEndContainer />;
+      case 'GM_CARD':
+        return <GMCornerContainer />;
       case 'CHECKOUT':
-        card = <CheckoutContainer />;
-        break;
+        return <CheckoutContainer />;
       case 'ADVANCED':
-        card = <ToolsContainer />;
-        break;
+        return <ToolsContainer />;
       case 'SEARCH_CARD':
-        card = <SearchContainer phase={this.props.card.phase as SearchPhase} />;
-        break;
+        return <SearchContainer phase={this.props.card.phase as SearchPhase} />;
       case 'SETTINGS':
-        card = <SettingsContainer />;
-        break;
+        return <SettingsContainer />;
       case 'REMOTE_PLAY':
-        card = <MultiplayerContainer phase={this.props.card.phase as MultiplayerPhase} />;
-        break;
+        return <MultiplayerContainer phase={this.props.card.phase as MultiplayerPhase} />;
       default:
         throw new Error('Unknown card ' + this.props.card.name);
     }
+  }
+
+  private renderFooter(): JSX.Element|null {
+    for (const noShow of ['QUEST_CARD', 'SPLASH_CARD', 'PLAYER_COUNT_SETTING']) {
+      if (this.props.card.name === noShow) {
+        return null;
+      }
+    }
+
+    if (this.props.card.name === 'QUEST_CARD' && this.props.multiplayer && this.props.multiplayer.session) {
+      return <MultiplayerFooterContainer cardTheme={this.props.theme}/>;
+    }
+
+    return <NavigationContainer cardTheme={this.props.theme}/>;
+  }
+
+  public render() {
 
     const containerClass = ['app_container'];
     if (this.props.settings.fontSize === 'SMALL') {
@@ -120,28 +127,28 @@ export default class Compositor extends React.Component<Props, {}> {
     return (
       <div className={containerClass.join(' ')}>
         <TransitionGroup
-            childFactory={(child) => React.cloneElement(
-                child, {classNames: this.props.transition}
-            )}>
-            <CSSTransition
-                key={this.props.card.key}
-                classNames={''}
-                timeout={{enter: CARD_TRANSITION_ANIMATION_MS, exit: CARD_TRANSITION_ANIMATION_MS}}>
-                <div className={'base_main' + ((this.props.multiplayer && this.props.multiplayer.session) ? ' has_footer' : '')}>
-                    {card}
-                </div>
-            </CSSTransition>
+          childFactory={(child) => React.cloneElement(
+              child, {classNames: this.props.transition}
+          )}>
+          <CSSTransition
+            key={this.props.card.key}
+            classNames={''}
+            timeout={{enter: CARD_TRANSITION_ANIMATION_MS, exit: CARD_TRANSITION_ANIMATION_MS}}>
+            <div className={'base_main' + ((this.props.multiplayer && this.props.multiplayer.session) ? ' has_footer' : '')}>
+              {this.renderCard()}
+            </div>
+          </CSSTransition>
         </TransitionGroup>
-        {this.props.multiplayer && this.props.multiplayer.session && <MultiplayerFooterContainer cardTheme={this.props.theme}/>}
+        {this.renderFooter()}
         <DialogsContainer />
         <MultiplayerSyncContainer />
         <Snackbar
-            className="snackbar"
-            open={this.props.snackbar.open}
-            message={<span>{this.props.snackbar.message}</span>}
-            autoHideDuration={this.props.snackbar.timeout}
-            onClose={this.props.closeSnackbar}
-            action={(this.props.snackbar.actionLabel) ? [<Button key={1} onClick={(e: React.MouseEvent<HTMLElement>) => this.snackbarActionClicked(e)}>{this.props.snackbar.actionLabel}</Button>] : []}
+          className="snackbar"
+          open={this.props.snackbar.open}
+          message={<span>{this.props.snackbar.message}</span>}
+          autoHideDuration={this.props.snackbar.timeout}
+          onClose={this.props.closeSnackbar}
+          action={(this.props.snackbar.actionLabel) ? [<Button key={1} onClick={(e: React.MouseEvent<HTMLElement>) => this.snackbarActionClicked(e)}>{this.props.snackbar.actionLabel}</Button>] : []}
         />
         <AudioContainer />
       </div>

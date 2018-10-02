@@ -18,7 +18,7 @@ export interface DispatchProps {
 
 export interface Props extends StateProps, DispatchProps {}
 
-const Tutorials = (props: Props): JSX.Element => {
+const GMCorner = (props: Props): JSX.Element => {
   const items: JSX.Element[] = props.quests
     .filter((quest: Quest): boolean => {
       return (!quest.expansionhorror || props.settings.contentSets.horror)
@@ -72,11 +72,10 @@ const Tutorials = (props: Props): JSX.Element => {
   */
 
   return (
-    <Card title="Tutorial Quests" icon="helper">
+    <Card title="GM's Corner" icon="gm_corner">
       {items}
-
     </Card>
   );
 };
 
-export default Tutorials;
+export default GMCorner;
