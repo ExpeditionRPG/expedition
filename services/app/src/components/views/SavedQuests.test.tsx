@@ -2,7 +2,7 @@ import {configure, render} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 import SavedQuests, {Props} from './SavedQuests';
-import {FEATURED_QUESTS} from '../../Constants';
+import {TUTORIAL_QUESTS} from '../../Constants';
 import {Quest} from 'shared/schema/Quests';
 
 configure({ adapter: new Adapter() });
@@ -12,8 +12,8 @@ function setup(props: Partial<Props>) {
   return {props, wrapper};
 }
 
-const SAVED_QUEST = {details: FEATURED_QUESTS[0], ts: 123, pathLen: 5};
-const OFFLINE_QUEST = {details: FEATURED_QUESTS[0], ts: 123, pathLen: 0};
+const SAVED_QUEST = {details: TUTORIAL_QUESTS[0], ts: 123, pathLen: 5};
+const OFFLINE_QUEST = {details: TUTORIAL_QUESTS[0], ts: 123, pathLen: 0};
 
 describe('SavedQuests', () => {
   test('prompts the user when there are no saved quests', () => {

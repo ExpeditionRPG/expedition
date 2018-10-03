@@ -15,7 +15,7 @@ const mapStateToProps = (state: AppState, ownProps: Partial<Props>): StateProps 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onChange: (event: any, name: CardName) => {
-      dispatch(toCard({name}));
+      dispatch(toCard({name, noHistory: true}));
     },
   };
 };

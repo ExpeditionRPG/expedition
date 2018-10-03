@@ -183,7 +183,7 @@ body {
   flex-direction: row;
   box-sizing: border-box;
   padding-top: size(remotefooter) / 10;
-  background-color: $bg_primary;
+  background-color: $bg_titlebar;
   border-top: $border_accent;
 
   &.quest_theme_horror {
@@ -193,6 +193,12 @@ body {
   &.card_theme_dark {
     background-color: $bg_dark_primary;
     color: $font_color_dark_primary;
+  }
+}
+
+.nav_footer {
+  button .navlabel {
+    font-family: Cinzel, serif;
   }
 }
 

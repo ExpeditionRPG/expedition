@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onPlayerCountSelect: (numPlayers: number) => {
       dispatch(changeSettings({numPlayers, multitouch: true}));
-      dispatch(toCard({name: 'FEATURED_QUESTS'}));
+      dispatch(toCard({name: 'TUTORIAL_QUESTS'}));
     },
     onPlayerManualSelect: () => {
       dispatch(toCard({name: 'PLAYER_COUNT_SETTING'}));

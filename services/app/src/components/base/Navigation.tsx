@@ -24,7 +24,7 @@ export default class Navigation extends React.Component<Props, {}> {
       case 'SEARCH_CARD':
       case 'QUEST_HISTORY':
       case 'SAVED_QUESTS':
-      case 'FEATURED_QUESTS':
+      case 'TUTORIAL_QUESTS':
       case 'GM_CARD':
         return this.props.card.name;
       default:
@@ -46,11 +46,11 @@ export default class Navigation extends React.Component<Props, {}> {
         showLabels={false}
         onChange={this.props.onChange}
         className={`nav_footer card_theme_${this.props.cardTheme} quest_theme_${this.props.questTheme}`}>
-        <BottomNavigationAction label="Tutorials" value="FEATURED_QUESTS" icon={this.genIcon('helper')} />
-        <BottomNavigationAction label="Quests" value="SEARCH_CARD" icon={this.genIcon('search')} />
-        <BottomNavigationAction label="Saved/Offline" value="SAVED_QUESTS" icon={this.genIcon('compass')} />
-        <BottomNavigationAction label="History" value="QUEST_HISTORY" icon={this.genIcon('hourglass')} />
-        <BottomNavigationAction label="GM Corner" value="GM_CARD" icon={this.genIcon('gm_corner')} />
+        <BottomNavigationAction classes={{label: 'navlabel'}} label="Tutorials" value="TUTORIAL_QUESTS" icon={this.genIcon('helper')} />
+        <BottomNavigationAction classes={{label: 'navlabel'}} label="Saved/Offline" value="SAVED_QUESTS" icon={this.genIcon('cards')} />
+        <BottomNavigationAction classes={{label: 'navlabel'}} label="Quests" value="SEARCH_CARD" icon={this.genIcon('compass')} />
+        <BottomNavigationAction classes={{label: 'navlabel'}} label="History" value="QUEST_HISTORY" icon={this.genIcon('hourglass')} />
+        <BottomNavigationAction classes={{label: 'navlabel'}} label="GM" value="GM_CARD" icon={this.genIcon('gm_corner')} />
       </BottomNavigation>
     );
   }

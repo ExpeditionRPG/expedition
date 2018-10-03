@@ -20,6 +20,7 @@ export interface Props extends React.Props<any> {
   icon?: string;
   inQuest?: boolean;
   onReturn?: () => any;
+  showReturn?: boolean;
   title?: string | JSX.Element;
   className?: string;
 }
@@ -111,7 +112,7 @@ export default class Card extends React.Component<Props, {}> {
     return (
       <div className={classes.join(' ')}>
         <div className="title_container">
-          <IconButton id="titlebarReturnButton" onClick={() => this.onReturn()}><ChevronLeftIcon/></IconButton>
+          {(this.props.showReturn === undefined || this.props.showReturn) && <IconButton id="titlebarReturnButton" onClick={() => this.onReturn()}><ChevronLeftIcon/></IconButton>}
           <span className="menu">
             <IconButton id="menuButton" aria-haspopup="true" onClick={(e) => this.handleMenuClick(e)}>
               <MoreVertIcon/>

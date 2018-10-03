@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onContinue: () => {
       logEvent('multiplayer', 'session_start', {});
-      dispatch(toCard({name: 'FEATURED_QUESTS'}));
+      dispatch(toCard({name: 'TUTORIAL_QUESTS'}));
     },
     onNewSessionRequest: (user: UserState) => {
       return dispatch(multiplayerNewSession(user));

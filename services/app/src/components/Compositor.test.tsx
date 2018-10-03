@@ -34,4 +34,7 @@ describe('Compositor', () => {
     const {wrapper} = setup({});
     expect(wrapper.text()).toContain('To Begin:');
   });
+
+  test.skip('Renders nav footer for navigation card', () => { /* TODO */ });
+  test.skip('Hides nav footer for non-navigation card', () => { /* TODO */ });
 });

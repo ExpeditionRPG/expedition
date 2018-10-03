@@ -3,10 +3,9 @@ import Redux from 'redux';
 import {Quest} from 'shared/schema/Quests';
 import {toCard, toPrevious} from '../../actions/Card';
 import {previewQuest} from '../../actions/Quest';
-import {search} from '../../actions/Search';
 import {ensureLogin} from '../../actions/User';
 import {subscribe} from '../../actions/Web';
-import {AppStateWithHistory, SearchSettings, SettingsType, UserState} from '../../reducers/StateTypes';
+import {AppStateWithHistory, UserState} from '../../reducers/StateTypes';
 import Search, {DispatchProps, StateProps} from './Search';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
@@ -21,7 +20,6 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     isDirectLinked: state._history.length <= 1,
     results: [], // Default in case search results are not defined
     ...state.search,
-    phase: ownProps.phase || 'SEARCH',
     settings: state.settings,
     user: state.user,
     questHistory: state.questHistory,
@@ -32,7 +30,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onFilter: () => {
-      dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
+      dispatch(toCard({name: 'SEARCH_SETTINGS'}));
     },
     onLoginRequest: (sub: boolean) => {
       dispatch(ensureLogin())
@@ -40,7 +38,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
           if (sub && user.email && user.email !== '') {
             dispatch(subscribe({email: user.email}));
           }
-          return dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
+          return dispatch(toCard({name: 'SEARCH_SETTINGS'}));
         });
     },
     onQuest: (quest: Quest) => {
@@ -48,9 +46,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onReturn: () => {
       dispatch(toPrevious({}));
-    },
-    onSearch: (s: SearchSettings, settings: SettingsType) => {
-      dispatch(search({search: s, settings}));
     },
   };
 };

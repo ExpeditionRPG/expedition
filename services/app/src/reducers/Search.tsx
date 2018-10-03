@@ -4,7 +4,7 @@ import {SearchState} from './StateTypes';
 
 export const initialSearch: SearchState = {
   results: [],
-  search: {
+  params: {
     language: 'English',
     order: '+ratingavg',
     text: '',
@@ -22,7 +22,7 @@ export function search(state: SearchState = initialSearch, action: Redux.Action)
     case 'SEARCH_RESPONSE':
       return {...state,
         results: (action as SearchResponseAction).quests,
-        search: (action as SearchResponseAction).search,
+        params: (action as SearchResponseAction).params,
         searching: false,
       };
     default:

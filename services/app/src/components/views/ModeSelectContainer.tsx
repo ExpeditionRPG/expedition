@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onLocalSelect: () => {
       dispatch(changeSettings({multitouch: false}));
-      dispatch(toCard({name: 'FEATURED_QUESTS'}));
+      dispatch(toCard({name: 'TUTORIAL_QUESTS'}));
     },
     onMultiplayerSelect(user: UserState): void {
       dispatch(ensureLogin())

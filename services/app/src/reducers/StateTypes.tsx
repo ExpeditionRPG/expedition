@@ -49,9 +49,7 @@ export interface EndSettings {
   text: string;
 }
 
-export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'SEARCH' | 'PRIVATE';
-
-export interface SearchSettings {
+export interface SearchParams {
   [index: string]: any;
   id?: string;
   text?: string;
@@ -117,14 +115,15 @@ export type CardName =
   'QUEST_SETUP' |
   'QUEST_END' |
   'QUEST_CARD' |
-  'FEATURED_QUESTS' |
+  'TUTORIAL_QUESTS' |
   'GM_CARD' |
   'SPLASH_CARD' |
+  'SEARCH_DISCLAIMER' |
   'SEARCH_CARD' |
+  'SEARCH_SETTINGS' |
   'SETTINGS' |
-  'ADVANCED' |
   'REMOTE_PLAY';
-export type CardPhase = TemplatePhase | SearchPhase | MultiplayerPhase | CheckoutPhase;
+export type CardPhase = TemplatePhase | MultiplayerPhase | CheckoutPhase;
 export interface CardState {
   questId: string;
   name: CardName;
@@ -152,7 +151,7 @@ export interface SavedQuestState {
 }
 
 export interface SearchState {
-  search: SearchSettings;
+  params: SearchParams;
   results: Quest[];
   searching: boolean;
 }

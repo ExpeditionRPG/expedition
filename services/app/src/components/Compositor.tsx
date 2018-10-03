@@ -9,7 +9,6 @@ import {
   MultiplayerPhase,
   MultiplayerState,
   QuestState,
-  SearchPhase,
   SettingsType,
   SnackbarState,
   TransitionClassType
@@ -31,9 +30,10 @@ import QuestHistoryContainer from './views/QuestHistoryContainer';
 import QuestPreviewContainer from './views/QuestPreviewContainer';
 import SavedQuestsContainer from './views/SavedQuestsContainer';
 import SearchContainer from './views/SearchContainer';
+import SearchDisclaimerContainer from './views/SearchDisclaimerContainer';
+import SearchSettingsContainer from './views/SearchSettingsContainer';
 import SettingsContainer from './views/SettingsContainer';
 import SplashScreenContainer from './views/SplashScreenContainer';
-import ToolsContainer from './views/ToolsContainer';
 
 export interface StateProps {
   card: CardState;
@@ -65,7 +65,7 @@ export default class Compositor extends React.Component<Props, {}> {
         return <SplashScreenContainer />;
       case 'PLAYER_COUNT_SETTING':
         return <ModeSelectContainer />;
-      case 'FEATURED_QUESTS':
+      case 'TUTORIAL_QUESTS':
         return <FeaturedQuestsContainer />;
       case 'SAVED_QUESTS':
         return <SavedQuestsContainer />;
@@ -86,10 +86,12 @@ export default class Compositor extends React.Component<Props, {}> {
         return <GMCornerContainer />;
       case 'CHECKOUT':
         return <CheckoutContainer />;
-      case 'ADVANCED':
-        return <ToolsContainer />;
       case 'SEARCH_CARD':
-        return <SearchContainer phase={this.props.card.phase as SearchPhase} />;
+        return <SearchContainer />;
+      case 'SEARCH_SETTINGS':
+        return <SearchSettingsContainer />;
+      case 'SEARCH_DISCLAIMER':
+        return <SearchDisclaimerContainer />;
       case 'SETTINGS':
         return <SettingsContainer />;
       case 'REMOTE_PLAY':
@@ -100,17 +102,25 @@ export default class Compositor extends React.Component<Props, {}> {
   }
 
   private renderFooter(): JSX.Element|null {
+    // Show no footers for certain cards
     for (const noShow of ['QUEST_CARD', 'SPLASH_CARD', 'PLAYER_COUNT_SETTING']) {
       if (this.props.card.name === noShow) {
         return null;
       }
     }
 
+    // Multiplayer-only view during the quest.
     if (this.props.card.name === 'QUEST_CARD' && this.props.multiplayer && this.props.multiplayer.session) {
       return <MultiplayerFooterContainer cardTheme={this.props.theme}/>;
     }
 
-    return <NavigationContainer cardTheme={this.props.theme}/>;
+    // Only show nav footer for certain cards
+    for (const show of ['SEARCH_CARD', 'TUTORIAL_QUESTS', 'GM_CARD', 'SAVED_QUESTS', 'QUEST_HISTORY']) {
+      if (this.props.card.name === show) {
+        return <NavigationContainer cardTheme={this.props.theme}/>;
+      }
+    }
+    return null;
   }
 
   public render() {

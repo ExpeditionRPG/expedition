@@ -2,7 +2,7 @@ import {configure, render} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import {LanguageType} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
-import {FEATURED_QUESTS} from '../../Constants';
+import {TUTORIAL_QUESTS} from '../../Constants';
 import {SearchSettings} from '../../reducers/StateTypes';
 import {
   renderResult,
@@ -72,7 +72,7 @@ describe('Search', () => {
         lastPlayed: null,
         offlineQuests: {},
         onQuest: jasmine.createSpy('onQuest'),
-        quest: new Quest({...FEATURED_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides}),
+        quest: new Quest({...TUTORIAL_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides}),
         search: TEST_SEARCH,
         ...overrides,
       };
