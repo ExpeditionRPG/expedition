@@ -19,7 +19,6 @@ import NavigationContainer from './base/NavigationContainer';
 import MultiplayerFooterContainer from './multiplayer/MultiplayerFooterContainer';
 import MultiplayerSyncContainer from './multiplayer/MultiplayerSyncContainer';
 import CheckoutContainer from './views/CheckoutContainer';
-import FeaturedQuestsContainer from './views/FeaturedQuestsContainer';
 import GMCornerContainer from './views/GMCornerContainer';
 import ModeSelectContainer from './views/ModeSelectContainer';
 import MultiplayerContainer from './views/MultiplayerContainer';
@@ -34,6 +33,7 @@ import SearchDisclaimerContainer from './views/SearchDisclaimerContainer';
 import SearchSettingsContainer from './views/SearchSettingsContainer';
 import SettingsContainer from './views/SettingsContainer';
 import SplashScreenContainer from './views/SplashScreenContainer';
+import TutorialsContainer from './views/TutorialsContainer';
 
 export interface StateProps {
   card: CardState;
@@ -66,7 +66,7 @@ export default class Compositor extends React.Component<Props, {}> {
       case 'PLAYER_COUNT_SETTING':
         return <ModeSelectContainer />;
       case 'TUTORIAL_QUESTS':
-        return <FeaturedQuestsContainer />;
+        return <TutorialsContainer />;
       case 'SAVED_QUESTS':
         return <SavedQuestsContainer />;
       case 'QUEST_HISTORY':

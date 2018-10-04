@@ -1,4 +1,4 @@
-describe('FeaturedQuestsContainer', () => {
+describe('TutorialsContainer', () => {
   test.skip('Shows only non-test quests in production', () => { /* TODO */ });
 
   test.skip('Initializes a local quest when selected', () => { /* TODO */ });

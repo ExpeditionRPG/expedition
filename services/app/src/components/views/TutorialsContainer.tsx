@@ -5,7 +5,7 @@ import {Quest} from 'shared/schema/Quests';
 import {previewQuest} from '../../actions/Quest';
 import {TUTORIAL_QUESTS} from '../../Constants';
 import {AppState} from '../../reducers/StateTypes';
-import FeaturedQuests, {DispatchProps, StateProps} from './FeaturedQuests';
+import Tutorials, {DispatchProps, StateProps} from './Tutorials';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
@@ -23,9 +23,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   };
 };
 
-const FeaturedQuestsContainer = connect(
+const TutorialsContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(FeaturedQuests);
+)(Tutorials);
 
-export default FeaturedQuestsContainer;
+export default TutorialsContainer;
