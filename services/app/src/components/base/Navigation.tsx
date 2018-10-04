@@ -1,7 +1,7 @@
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import * as React from 'react';
-import {CardName, CardState} from '../../reducers/StateTypes';
+import {CardName, CardState, SettingsType} from '../../reducers/StateTypes';
 import {CardThemeType} from '../../reducers/StateTypes';
 import {formatImg} from '../views/quest/cardtemplates/Render';
 
@@ -9,10 +9,12 @@ export interface StateProps {
   cardTheme: CardThemeType;
   card: CardState;
   questTheme: string;
+  hasSearchResults: boolean;
+  settings: SettingsType;
 }
 
 export interface DispatchProps {
-  onChange: (event: any, value: CardName) => void;
+  toCard: (name: CardName, hasSearchResults: boolean, settings: SettingsType) => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -44,7 +46,7 @@ export default class Navigation extends React.Component<Props, {}> {
       <BottomNavigation
         value={this.computeValue()}
         showLabels={false}
-        onChange={this.props.onChange}
+        onChange={(e: any, name: CardName) => this.props.toCard(name, this.props.hasSearchResults, this.props.settings)}
         className={`nav_footer card_theme_${this.props.cardTheme} quest_theme_${this.props.questTheme}`}>
         <BottomNavigationAction classes={{label: 'navlabel'}} label="Tutorials" value="TUTORIAL_QUESTS" icon={this.genIcon('helper')} />
         <BottomNavigationAction classes={{label: 'navlabel'}} label="Saved/Offline" value="SAVED_QUESTS" icon={this.genIcon('cards')} />

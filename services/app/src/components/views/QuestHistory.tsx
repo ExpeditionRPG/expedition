@@ -40,7 +40,7 @@ const QuestHistory = (props: Props): JSX.Element => {
     });
 
   return (
-    <Card title="Quest History">
+    <Card title="Quest History" onReturn={null}>
       {items}
     </Card>
   );

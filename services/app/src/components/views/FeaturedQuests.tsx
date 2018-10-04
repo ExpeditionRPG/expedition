@@ -34,7 +34,7 @@ const Tutorials = (props: Props): JSX.Element => {
     });
 
   return (
-    <Card title="Tutorial Quests" icon="helper" showReturn={false}>
+    <Card title="Tutorial Quests" icon="helper" onReturn={null}>
       {items}
     </Card>
   );

@@ -33,7 +33,7 @@ const GMCorner = (props: Props): JSX.Element => {
     });
 
   return (
-    <Card title="GM's Corner" icon="gm_corner">
+    <Card title="GM's Corner" icon="gm_corner" onReturn={null}>
       {items}
     </Card>
   );

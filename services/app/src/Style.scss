@@ -477,6 +477,11 @@ body.android .dialog .textfield:focus-within {
         color: $font_color_primary !important;
       }
     }
+    .base_button.mediumbutton button span {
+      font-size: 130% !important;
+      text-align: center !important;
+      font-family: Cinzel, serif;
+    }
     .base_button.bigbutton button span {
       font-size: 200% !important;
       text-align: center !important;
@@ -535,6 +540,12 @@ body.android .dialog .textfield:focus-within {
       .child_wrapper {
         margin: size(base);
       }
+
+      .filter_button {
+        float: right;
+        text-align: center;
+        font-size: fontsize(title);
+      }
     }
 
     .title_container {
@@ -586,9 +597,6 @@ body.android .dialog .textfield:focus-within {
         width: 100%;
         max-width: $absmaxdimension;
         margin: auto;
-        .filter_button {
-          float: right;
-        }
         .searchResultInfo {
           float: left;
           .inline_icon {
@@ -1457,7 +1465,7 @@ body.android .dialog .textfield:focus-within {
       width: 11px;
       height: 11px;
       border-radius: 50%;
-      background: #bg_dark_titlebar;
+      background: $bg_dark_titlebar;
       animation-timing-function: cubic-bezier(0, 1, 1, 0);
     }
     div:nth-child(1) {
