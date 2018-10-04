@@ -4,9 +4,11 @@ import {BUNDLED_QUESTS} from '../../Constants';
 import {CardName, SearchParams, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
-import {SubfieldType} from '../base/QuestButton';
 import QuestButtonContainer from '../base/QuestButtonContainer';
+import StarRating from '../base/StarRating';
 import TextDivider from '../base/TextDivider';
+
+const Moment = require('moment');
 
 export interface StateProps {
   params: SearchParams;
@@ -23,6 +25,21 @@ export interface DispatchProps {
 
 export interface Props extends StateProps, DispatchProps {}
 
+function renderDetails(quest: Quest, order?: string): JSX.Element|null {
+  const subfield = (order && order.substring(1)) || undefined;
+  if (!subfield) {
+    return null;
+  }
+  const ratingCount = quest.ratingcount || 0;
+  const ratingAvg = quest.ratingavg || 0;
+  return (
+    <div className={`details ${subfield}`}>
+      {subfield === 'ratingavg' && ratingCount >= 1 && <StarRating readOnly={true} value={+ratingAvg} quantity={ratingCount}/>}
+      {subfield === 'created' && ('Published ' + Moment(quest.created).format('MMM YYYY'))}
+    </div>
+  );
+}
+
 function renderStoredQuests(props: Props): JSX.Element {
   // Use BUNDLED_QUESTS when user not logged in
   const quests = BUNDLED_QUESTS.map((quest: Quest, i: number) => {
@@ -30,9 +47,9 @@ function renderStoredQuests(props: Props): JSX.Element {
         id={`quest-${i}`}
         key={i}
         quest={quest}
-        subfield={(props.params.order && props.params.order.substring(1) as SubfieldType) || undefined}
-        onClick={() => props.onQuest(quest)}
-      />);
+        onClick={() => props.onQuest(quest)}>
+      {renderDetails(quest, props.params.order)}
+    </QuestButtonContainer>);
   });
 
   return (<Card
@@ -98,9 +115,9 @@ export function search(props: Props): JSX.Element {
       id={`quest-${i}`}
       key={i}
       quest={quest}
-      subfield={(props.params.order && props.params.order.substring(1) as SubfieldType) || undefined}
-      onClick={() => props.onQuest(quest)}
-    />);
+      onClick={() => props.onQuest(quest)}>
+        {renderDetails(quest, props.params.order)}
+    </QuestButtonContainer>);
   });
 
   let content: JSX.Element | JSX.Element[];

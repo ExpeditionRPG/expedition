@@ -1,5 +1,6 @@
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import OfflinePin from '@material-ui/icons/OfflinePin';
 import * as React from 'react';
 import {CardName, CardState, SettingsType} from '../../reducers/StateTypes';
 import {CardThemeType} from '../../reducers/StateTypes';
@@ -49,7 +50,7 @@ export default class Navigation extends React.Component<Props, {}> {
         onChange={(e: any, name: CardName) => this.props.toCard(name, this.props.hasSearchResults, this.props.settings)}
         className={`nav_footer card_theme_${this.props.cardTheme} quest_theme_${this.props.questTheme}`}>
         <BottomNavigationAction classes={{label: 'navlabel'}} label="Tutorials" value="TUTORIAL_QUESTS" icon={this.genIcon('helper')} />
-        <BottomNavigationAction classes={{label: 'navlabel'}} label="Saved/Offline" value="SAVED_QUESTS" icon={this.genIcon('cards')} />
+        <BottomNavigationAction classes={{label: 'navlabel'}} label="Saved/Offline" value="SAVED_QUESTS" icon={<OfflinePin className="inline_icon" />} />
         <BottomNavigationAction classes={{label: 'navlabel'}} label="Quests" value="SEARCH_CARD" icon={this.genIcon('compass')} />
         <BottomNavigationAction classes={{label: 'navlabel'}} label="History" value="QUEST_HISTORY" icon={this.genIcon('hourglass')} />
         <BottomNavigationAction classes={{label: 'navlabel'}} label="GM" value="GM_CARD" icon={this.genIcon('gm_corner')} />

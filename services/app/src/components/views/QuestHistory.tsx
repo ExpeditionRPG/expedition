@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {UserQuestInstance, UserQuestsType} from '../../reducers/StateTypes';
-import Button from '../base/Button';
 import Card from '../base/Card';
+import QuestButtonContainer from '../base/QuestButtonContainer';
 
 const Moment = require('moment');
 
@@ -26,16 +26,12 @@ const QuestHistory = (props: Props): JSX.Element => {
   }
 
   const items: JSX.Element[] = Object.keys(props.played)
-    .map((k: string, index: number): JSX.Element => {
-      const i = props.played[k];
-      console.log(i);
+    .map((k: string, i: number): JSX.Element => {
+      const h = props.played[k];
       return (
-        <Button onClick={() => props.onSelect(i)} key={index} id={'quest' + index.toString()}>
-          <div className="questButton">
-            <div className="title">{i.details.title}</div>
-            <div className="summary">{Moment(i.lastPlayed).fromNow()}</div>
-          </div>
-        </Button>
+        <QuestButtonContainer key={i} id={`quest${i}`} quest={h.details} onClick={() => props.onSelect(h)}>
+          <span className="details">{Moment(h.lastPlayed).fromNow()}</span>
+        </QuestButtonContainer>
       );
     });
 

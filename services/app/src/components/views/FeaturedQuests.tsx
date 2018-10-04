@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
 import {SettingsType, UserState} from '../../reducers/StateTypes';
-import Button from '../base/Button';
 import Card from '../base/Card';
+import QuestButtonContainer from '../base/QuestButtonContainer';
 
 export interface StateProps {
   quests: Quest[];
@@ -22,15 +22,8 @@ const Tutorials = (props: Props): JSX.Element => {
       return (!quest.expansionhorror || props.settings.contentSets.horror)
           && (!quest.expansionfuture || props.settings.contentSets.future);
     })
-    .map((quest: Quest, index: number): JSX.Element => {
-      return (
-        <Button onClick={() => props.onQuestSelect(quest)} key={index} id={'quest' + index.toString()}>
-          <div className="questButton">
-            <div className="title">{quest.title}</div>
-            <div className="summary">{quest.summary}</div>
-          </div>
-        </Button>
-      );
+    .map((quest: Quest, i: number): JSX.Element => {
+      return (<QuestButtonContainer key={i} id={`quest${i}`} quest={quest} onClick={() => props.onQuestSelect(quest)}/>);
     });
 
   return (

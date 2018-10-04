@@ -1166,7 +1166,7 @@ body.android .dialog .textfield:focus-within {
     }
   }
 
-  .questButtonWithIcon, .questButton, .searchResult {
+  .questButtonWithIcon, .questButton {
     padding-left: size(base);
     padding-right: size(base);
     &.played {
@@ -1207,7 +1207,7 @@ body.android .dialog .textfield:focus-within {
       opacity: 0.65;
       float: left;
     }
-    .searchOrderDetail {
+    .details {
       opacity: 0.65;
       font-size: fontsize(flavor);
       display: inline-block;
