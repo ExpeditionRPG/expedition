@@ -71,7 +71,7 @@ const SavedQuests = (props: Props): JSX.Element => {
   });
 
   return (
-    <Card title="Saved & Offline Quests" onReturn={null}>
+    <Card title="Saved & Offline Quests" icon="offline" onReturn={null}>
       {groupedQuestSaves.length > 0 && <span>
         <TextDivider text="Saved Quests"/>
         {groupedQuestSaves}

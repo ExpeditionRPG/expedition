@@ -175,8 +175,9 @@ export interface UserState {
   loginCount: number;
 }
 
-export interface UserQuestHistory {
-  list: UserQuestsType;
+export interface UserQuestsState {
+  history: UserQuestsType;
+  privateQuests: {[id: string]: boolean};
 }
 
 export type FeedbackType = 'feedback'|'rating'|'report_error'|'report_quest';
@@ -221,7 +222,7 @@ export interface AppStateBase {
 export interface AppState extends AppStateBase {
   settings: SettingsType;
   multiplayer: MultiplayerState;
-  questHistory: UserQuestHistory;
+  userQuests: UserQuestsState;
   saved: SavedQuestState;
   audioData: AudioDataState;
   user: UserState;

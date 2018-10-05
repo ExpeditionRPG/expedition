@@ -32,7 +32,8 @@ export function fetchUserQuests() {
     .then(handleFetchErrors)
     .then((response: Response) => response.json())
     .then((quests: UserQuestsType) => {
-      dispatch({type: 'USER_QUESTS', quests} as UserQuestsAction);
+      const privateQuests = {1: true}; // TODO
+      dispatch({type: 'USER_QUESTS', quests, privateQuests} as UserQuestsAction);
     })
     .catch((error: Error) => {
       console.error('Request for quest plays failed', error);

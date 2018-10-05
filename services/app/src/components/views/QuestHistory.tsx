@@ -36,7 +36,7 @@ const QuestHistory = (props: Props): JSX.Element => {
     });
 
   return (
-    <Card title="Quest History" onReturn={null}>
+    <Card title="Quest History" icon="hourglass" onReturn={null}>
       {items}
     </Card>
   );

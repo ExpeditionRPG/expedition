@@ -10,13 +10,13 @@ import {dialog} from './Dialog';
 import {inflight} from './InFlight';
 import {multiplayer} from './Multiplayer';
 import {quest} from './Quest';
-import {questhistory} from './QuestHistory';
 import {saved} from './Saved';
 import {search} from './Search';
 import {settings} from './Settings';
 import {snackbar} from './Snackbar';
 import {AppState, AppStateBase, AppStateWithHistory} from './StateTypes';
 import {user} from './User';
+import {userquests} from './UserQuests';
 
 function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppState {
   state = state || ({} as AppStateWithHistory);
@@ -29,7 +29,7 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     dialog: dialog(state.dialog, action),
     multiplayer: multiplayer(state.multiplayer, action),
     quest: quest(state.quest, action),
-    questHistory: questhistory(state.questHistory, action),
+    userQuests: userquests(state.userQuests, action),
     saved: saved(state.saved, action),
     search: search(state.search, action),
     settings: settings(state.settings, action),
@@ -111,7 +111,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         commitID: state.commitID,
         multiplayer: state.multiplayer,
         saved: state.saved,
-        questHistory: state.questHistory,
+        userQuests: state.userQuests,
         settings: state.settings,
         user: state.user,
         audioData: state.audioData,
@@ -130,7 +130,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         _return: undefined,
         multiplayer: undefined,
         saved: undefined,
-        questHistory: undefined,
+        userQuests: undefined,
         settings: undefined,
         user: undefined,
         audioData: undefined,

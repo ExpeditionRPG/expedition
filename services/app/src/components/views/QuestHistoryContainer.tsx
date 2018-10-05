@@ -7,7 +7,7 @@ import QuestHistory, {DispatchProps, StateProps} from './QuestHistory';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
-    played: state.questHistory.list,
+    played: state.userQuests.history,
   };
 };
 

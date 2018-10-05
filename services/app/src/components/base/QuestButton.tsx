@@ -1,5 +1,4 @@
 import DoneIcon from '@material-ui/icons/Done';
-import OfflinePin from '@material-ui/icons/OfflinePin';
 import StarsIcon from '@material-ui/icons/Stars';
 import * as React from 'react';
 import Truncate from 'react-truncate';
@@ -12,6 +11,7 @@ const Moment = require('moment');
 export interface Props {
   lastLogin: Date;
   isOffline: boolean;
+  isPrivate: boolean;
   lastPlayed: Date | null;
   quest: Quest;
   id?: string;
@@ -43,6 +43,7 @@ export default class QuestButton extends React.Component<Props, {}> {
                   {this.props.lastPlayed && <DoneIcon className="inline_icon questPlayedIcon" />}
                   {quest.official && <span className="indicator_spacer"><img className="inline_icon questOfficialIcon" src="images/compass_small.svg"/></span>}
                   {quest.awarded && <StarsIcon className="inline_icon questAwardedIcon" />}
+                  {this.props.isPrivate && <img className="inline_icon" src="images/private_small.svg"/>}
                 </th>
               </tr>
             </tbody>
@@ -59,9 +60,9 @@ export default class QuestButton extends React.Component<Props, {}> {
           }
           {this.props.children}
           <span className="expansions">
-            {this.props.isOffline && <OfflinePin className="inline_icon" />}
-            {quest.expansionhorror && <img className="inline_icon" src="images/horror_small.svg"></img>}
-            {quest.expansionfuture && <img className="inline_icon" src="images/future_small.svg"></img>}
+            {this.props.isOffline && <img className="inline_icon" src="images/offline_small.svg"/>}
+            {quest.expansionhorror && <img className="inline_icon" src="images/horror_small.svg"/>}
+            {quest.expansionfuture && <img className="inline_icon" src="images/future_small.svg"/>}
           </span>
         </div>
       </Button>

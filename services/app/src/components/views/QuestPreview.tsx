@@ -1,7 +1,6 @@
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import DoneIcon from '@material-ui/icons/Done';
-import OfflinePin from '@material-ui/icons/OfflinePin';
 import StarsIcon from '@material-ui/icons/Stars';
 import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
@@ -20,6 +19,7 @@ export interface StateProps {
   lastPlayed: Date | null;
   savedInstances: SavedQuestMeta[];
   isDirectLinked: boolean;
+  isPrivate: boolean;
 }
 
 export interface DispatchProps {
@@ -36,27 +36,20 @@ export interface Props extends StateProps, DispatchProps {}
 function renderRequirementsRow(quest: Quest): JSX.Element|null {
   const requires = [];
   if (quest.expansionhorror) {
-    requires.push(<span key="horror"><img className="inline_icon" src="images/horror_small.svg"/>The Horror</span>);
+    requires.push(<div key="horror"><img className="inline_icon" src="images/horror_small.svg"/>The Horror</div>);
   }
   if (quest.expansionfuture) {
-    requires.push(<span key="future"><img className="inline_icon" src="images/future_small.svg"/>The Future</span>);
+    requires.push(<div key="future"><img className="inline_icon" src="images/future_small.svg"/>The Future</div>);
   }
   if (quest.requirespenpaper) {
-    requires.push(<span key="penpaper"><img className="inline_icon" src="images/book_small.svg"/> Pen and Paper</span>);
+    requires.push(<div key="penpaper"><img className="inline_icon" src="images/book_small.svg"/> Pen and Paper</div>);
   }
 
   if (requires.length === 0) {
     return null;
   }
 
-  const delimited = [];
-  for (let i = 0; i < requires.length; i++) {
-    delimited.push(requires[i]);
-    if (i < requires.length - 1) {
-      delimited.push(<span key={i}>,&nbsp;</span>);
-    }
-  }
-  return <tr><th>Requires</th><td>{delimited}</td></tr>;
+  return <tr><th>Requires</th><td>{requires}</td></tr>;
 }
 
 function renderSaves(props: Props): JSX.Element|null {
@@ -139,9 +132,10 @@ const QuestPreview = (props: Props): JSX.Element => {
         {lastSaved !== null && <div className="summary">Last saved {Moment(lastSaved).fromNow()}</div>}
         {(quest.ratingcount && quest.ratingcount >= 1) ? <StarRating readOnly={true} value={+ratingAvg} quantity={quest.ratingcount}/> : ''}
         <div className="indicators">
-          {offlineTS && <div className="inline_icon"><OfflinePin className="inline_icon" />Available Offline</div>}
+          {offlineTS && <div className="inline_icon"><img className="inline_icon" src="images/offline_smll.svg"/>Available Offline</div>}
           {props.lastPlayed && <div className="inline_icon"><DoneIcon className="inline_icon" /> Last completed {Moment(props.lastPlayed).fromNow()}</div>}
           {quest.official && <div className="inline_icon"><img className="inline_icon" src="images/compass_small.svg"/> Official Quest!</div>}
+          {props.isPrivate && <div className="inline_icon"><img className="inline_icon" src="images/private_small.svg"/> Private Quest</div>}
           {quest.awarded && <div className="inline_icon"><StarsIcon className="inline_icon" /> {quest.awarded}</div>}
         </div>
       </div>

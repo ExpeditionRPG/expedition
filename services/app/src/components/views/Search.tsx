@@ -55,6 +55,7 @@ function renderStoredQuests(props: Props): JSX.Element {
   return (<Card
     title="Quests"
     className="search_card"
+    icon="compass"
     onReturn={null}>
     {quests}
     <TextDivider text="More Quests"/>
@@ -83,6 +84,7 @@ function renderNoQuests(props: Props): JSX.Element {
   return (<Card
     title="Quests"
     className="search_card"
+    icon="compass"
     onReturn={null}>
     <div className="searchDescription">
       <h2>No quests found</h2>
@@ -108,8 +110,6 @@ export function search(props: Props): JSX.Element {
     return renderNoQuests(props);
   }
 
-  // TODO Private quests as a state fetched on user login, to be shown at the top.
-  const privateQuests: JSX.Element[] = [];
   const quests = props.results.map((quest: Quest, i: number) => {
     return (<QuestButtonContainer
       id={`quest-${i}`}
@@ -120,29 +120,18 @@ export function search(props: Props): JSX.Element {
     </QuestButtonContainer>);
   });
 
-  let content: JSX.Element | JSX.Element[];
-  if (privateQuests.length > 0) {
-    content = (<span>
-      <TextDivider text="Private Quests"/>
-      {privateQuests}
-      <TextDivider text="Quests"/>
-      {quests}
-    </span>);
-  } else {
-    content = quests;
-  }
-
   return (
     <Card
       title="Quests"
       className="search_card"
+      icon="compass"
       onReturn={null}
       header={<div className="searchHeader">
         <Button className="searchResultInfo" disabled={true}>{props.results.length} quests for {props.settings.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></Button>
         <Button className="filter_button" onClick={() => props.toCard('SEARCH_SETTINGS')} id="filter">Filter &amp; Sort ></Button>
       </div>}
     >
-      {content}
+      {quests}
     </Card>
   );
 }
