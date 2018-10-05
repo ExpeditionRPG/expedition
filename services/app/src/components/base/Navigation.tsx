@@ -48,8 +48,8 @@ export default class Navigation extends React.Component<Props, {}> {
         showLabels={false}
         onChange={(e: any, name: CardName) => this.props.toCard(name, this.props.hasSearchResults, this.props.settings)}
         className={`nav_footer card_theme_${this.props.cardTheme} quest_theme_${this.props.questTheme}`}>
-        <BottomNavigationAction classes={{label: 'navlabel'}} label="Tutorials" value="TUTORIAL_QUESTS" icon={this.genIcon('helper')} />
-        <BottomNavigationAction classes={{label: 'navlabel'}} label="Saved/Offline" value="SAVED_QUESTS" icon={this.genIcon('offline')} />
+        <BottomNavigationAction classes={{label: 'navlabel'}} label="Tutorial" value="TUTORIAL_QUESTS" icon={this.genIcon('helper')} />
+        <BottomNavigationAction classes={{label: 'navlabel'}} label="Offline" value="SAVED_QUESTS" icon={this.genIcon('offline')} />
         <BottomNavigationAction classes={{label: 'navlabel'}} label="Quests" value="SEARCH_CARD" icon={this.genIcon('compass')} />
         <BottomNavigationAction classes={{label: 'navlabel'}} label="History" value="QUEST_HISTORY" icon={this.genIcon('hourglass')} />
         <BottomNavigationAction classes={{label: 'navlabel'}} label="GM" value="GM_CARD" icon={this.genIcon('gm_corner')} />

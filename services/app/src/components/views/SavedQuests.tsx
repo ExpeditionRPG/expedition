@@ -25,7 +25,7 @@ const SavedQuests = (props: Props): JSX.Element => {
   if (props.saved.length === 0) {
     return (
       <Card title="Saved & Offline Quests">
-        <p>You have no saved/offline quests.</p>
+        <p>You have no saved or offline quests.</p>
         <p>To save your position in a quest, open the top right menu while playing
            and select "Save Quest".</p>
         <p>To save a quest to play offline, click "Save for Offline" on a quest preview page.</p>
@@ -71,7 +71,7 @@ const SavedQuests = (props: Props): JSX.Element => {
   });
 
   return (
-    <Card title="Saved & Offline Quests" icon="offline" onReturn={null}>
+    <Card title="Saved/Offline Quests" icon="offline" onReturn={null}>
       {groupedQuestSaves.length > 0 && <span>
         <TextDivider text="Saved Quests"/>
         {groupedQuestSaves}

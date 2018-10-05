@@ -96,6 +96,7 @@ $sizemap: (
   inputspacing: 16px, /* slightly larger on small devices (to prevent false touches) */
   input: 32px, /* size of input icon-style buttons */
   watermark: 36vh, /* height-specific */
+  navfooterbtn: 19vw,
   huge: 12vmin,
   large: 6vmin,
   icon: 4.5vmin,
@@ -183,7 +184,7 @@ body {
   flex-direction: row;
   box-sizing: border-box;
   padding-top: size(remotefooter) / 10;
-  background-color: $bg_titlebar;
+  background-color: $bg_primary;
   border-top: $border_accent;
 
   &.quest_theme_horror {
@@ -199,6 +200,11 @@ body {
 .nav_footer {
   button .navlabel {
     font-family: Cinzel, serif;
+  }
+
+  button {
+    min-width: size(large) !important;
+    max-width: size(navfooterbtn) !important;
   }
 }
 

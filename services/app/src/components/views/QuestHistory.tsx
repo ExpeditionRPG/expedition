@@ -21,6 +21,7 @@ const QuestHistory = (props: Props): JSX.Element => {
     return (
       <Card title="Quest History">
         <p>You haven't played any quests yet.</p>
+        <p>Once you've signed in and played a few quests, they will appear here.</p>
       </Card>
     );
   }

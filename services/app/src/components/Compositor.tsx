@@ -132,6 +132,8 @@ export default class Compositor extends React.Component<Props, {}> {
       containerClass.push('largeFont');
     }
 
+    const footer = this.renderFooter();
+
     // See https://medium.com/lalilo/dynamic-transitions-with-react-router-and-react-transition-group-69ab795815c9
     // for more details on use of childFactory in TransitionGroup
     return (
@@ -144,12 +146,12 @@ export default class Compositor extends React.Component<Props, {}> {
             key={this.props.card.key}
             classNames={''}
             timeout={{enter: CARD_TRANSITION_ANIMATION_MS, exit: CARD_TRANSITION_ANIMATION_MS}}>
-            <div className={'base_main' + ((this.props.multiplayer && this.props.multiplayer.session) ? ' has_footer' : '')}>
+            <div className={'base_main' + ((footer !== null) ? ' has_footer' : '')}>
               {this.renderCard()}
             </div>
           </CSSTransition>
         </TransitionGroup>
-        {this.renderFooter()}
+        {footer}
         <DialogsContainer />
         <MultiplayerSyncContainer />
         <Snackbar
