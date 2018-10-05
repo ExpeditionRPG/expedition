@@ -1,5 +1,3 @@
-import DoneIcon from '@material-ui/icons/Done';
-import StarsIcon from '@material-ui/icons/Stars';
 import * as React from 'react';
 import Truncate from 'react-truncate';
 import {Quest} from 'shared/schema/Quests';
@@ -40,9 +38,9 @@ export default class QuestButton extends React.Component<Props, {}> {
                 <th className="rightcell">
                   {(this.props.lastLogin < quest.created || Moment().diff(quest.created, 'days') <= 7) && !this.props.lastPlayed &&
                     <div className="badge">NEW</div>}
-                  {this.props.lastPlayed && <DoneIcon className="inline_icon questPlayedIcon" />}
-                  {quest.official && <span className="indicator_spacer"><img className="inline_icon questOfficialIcon" src="images/compass_small.svg"/></span>}
-                  {quest.awarded && <StarsIcon className="inline_icon questAwardedIcon" />}
+                  {this.props.lastPlayed && <img className="inline_icon" src="images/checkmark_small.svg"/>}
+                  {quest.official && <span className="indicator_spacer"><img className="inline_icon questOfficialIcon" src="images/logo_outline_small.svg"/></span>}
+                  {quest.awarded && <img className="inline_icon" src="images/starcircle_small.svg"/>}
                   {this.props.isPrivate && <img className="inline_icon" src="images/private_small.svg"/>}
                 </th>
               </tr>

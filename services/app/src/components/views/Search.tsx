@@ -55,7 +55,7 @@ function renderStoredQuests(props: Props): JSX.Element {
   return (<Card
     title="Quests"
     className="search_card"
-    icon="compass"
+    icon="logo_outline"
     onReturn={null}>
     {quests}
     <TextDivider text="More Quests"/>
@@ -84,7 +84,7 @@ function renderNoQuests(props: Props): JSX.Element {
   return (<Card
     title="Quests"
     className="search_card"
-    icon="compass"
+    icon="logo_outline"
     onReturn={null}>
     <div className="searchDescription">
       <h2>No quests found</h2>
@@ -124,7 +124,7 @@ export function search(props: Props): JSX.Element {
     <Card
       title="Quests"
       className="search_card"
-      icon="compass"
+      icon="logo_outline"
       onReturn={null}
       header={<div className="searchHeader">
         <Button className="searchResultInfo" disabled={true}>{props.results.length} quests for {props.settings.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></Button>

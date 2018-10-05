@@ -1,7 +1,5 @@
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import DoneIcon from '@material-ui/icons/Done';
-import StarsIcon from '@material-ui/icons/Stars';
 import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
 import {formatPlayPeriod} from '../../Format';
@@ -132,11 +130,11 @@ const QuestPreview = (props: Props): JSX.Element => {
         {lastSaved !== null && <div className="summary">Last saved {Moment(lastSaved).fromNow()}</div>}
         {(quest.ratingcount && quest.ratingcount >= 1) ? <StarRating readOnly={true} value={+ratingAvg} quantity={quest.ratingcount}/> : ''}
         <div className="indicators">
-          {offlineTS && <div className="inline_icon"><img className="inline_icon" src="images/offline_smll.svg"/>Available Offline</div>}
-          {props.lastPlayed && <div className="inline_icon"><DoneIcon className="inline_icon" /> Last completed {Moment(props.lastPlayed).fromNow()}</div>}
-          {quest.official && <div className="inline_icon"><img className="inline_icon" src="images/compass_small.svg"/> Official Quest!</div>}
+          {offlineTS && <div className="inline_icon"><img className="inline_icon" src="images/offline_small.svg"/>Available Offline</div>}
+          {props.lastPlayed && <div className="inline_icon"><img className="inline_icon" src="images/checkmark_small.svg"/> Last completed {Moment(props.lastPlayed).fromNow()}</div>}
+          {quest.official && <div className="inline_icon"><img className="inline_icon" src="images/logo_outline_small.svg"/> Official Quest!</div>}
           {props.isPrivate && <div className="inline_icon"><img className="inline_icon" src="images/private_small.svg"/> Private Quest</div>}
-          {quest.awarded && <div className="inline_icon"><StarsIcon className="inline_icon" /> {quest.awarded}</div>}
+          {quest.awarded && <div className="inline_icon"><img className="inline_icon" src="images/starcircle_small.svg"/> {quest.awarded}</div>}
         </div>
       </div>
       {actions}
