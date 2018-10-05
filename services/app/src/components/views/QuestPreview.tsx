@@ -17,7 +17,6 @@ export interface StateProps {
   lastPlayed: Date | null;
   savedInstances: SavedQuestMeta[];
   isDirectLinked: boolean;
-  isPrivate: boolean;
 }
 
 export interface DispatchProps {
@@ -133,7 +132,7 @@ const QuestPreview = (props: Props): JSX.Element => {
           {offlineTS && <div className="inline_icon"><img className="inline_icon" src="images/offline_small.svg"/>Available Offline</div>}
           {props.lastPlayed && <div className="inline_icon"><img className="inline_icon" src="images/checkmark_small.svg"/> Last completed {Moment(props.lastPlayed).fromNow()}</div>}
           {quest.official && <div className="inline_icon"><img className="inline_icon" src="images/logo_outline_small.svg"/> Official Quest!</div>}
-          {props.isPrivate && <div className="inline_icon"><img className="inline_icon" src="images/private_small.svg"/> Private Quest</div>}
+          {quest.partition === 'expedition-private' && <div className="inline_icon"><img className="inline_icon" src="images/private_small.svg"/> Private Quest</div>}
           {quest.awarded && <div className="inline_icon"><img className="inline_icon" src="images/starcircle_small.svg"/> {quest.awarded}</div>}
         </div>
       </div>

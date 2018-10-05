@@ -131,7 +131,6 @@ export interface UserLogoutAction extends Redux.Action {
 export interface UserQuestsAction extends Redux.Action {
   type: 'USER_QUESTS';
   quests: UserQuestsType;
-  privateQuests: {[id: string]: boolean};
 }
 
 export interface UserQuestInstanceSelect extends Redux.Action {

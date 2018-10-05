@@ -21,13 +21,10 @@ const mapStateToProps = (state: AppState, ownProps: Partial<Props>): Props => {
     lastPlayed = history.lastPlayed;
   }
 
-  const isPrivate = Boolean(state.userQuests.privateQuests[quest.id]);
-
   return {
     ...ownProps,
     quest,
     isOffline,
-    isPrivate,
     lastPlayed,
     lastLogin: state.user.lastLogin,
   };

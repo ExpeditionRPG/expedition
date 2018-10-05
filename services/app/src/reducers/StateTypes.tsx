@@ -177,7 +177,6 @@ export interface UserState {
 
 export interface UserQuestsState {
   history: UserQuestsType;
-  privateQuests: {[id: string]: boolean};
 }
 
 export type FeedbackType = 'feedback'|'rating'|'report_error'|'report_quest';

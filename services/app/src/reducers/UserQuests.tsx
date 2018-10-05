@@ -5,14 +5,13 @@ import {UserQuestsState} from './StateTypes';
 
 const initialUserQuests: UserQuestsState = {
   history: {},
-  privateQuests: {},
 };
 
 export function userquests(state: UserQuestsState = initialUserQuests, action: Redux.Action): UserQuestsState {
   switch (action.type) {
     case 'USER_QUESTS':
       const a = (action as UserQuestsAction);
-      return {...state, history: a.quests, privateQuests: a.privateQuests};
+      return {...state, history: a.quests};
     case 'USER_QUESTS_DELTA':
       const delta = (action as UserQuestsDeltaAction).delta;
       return merge(state, {history: delta}) as UserQuestsState;

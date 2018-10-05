@@ -155,7 +155,7 @@ export const TUTORIAL_QUESTS: Quest[] = [ // Featured quest ids generated from p
 if (NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2bTVMdWc4NVk
   TUTORIAL_QUESTS.unshift(new Quest({
     id: '1',
-    partition: 'expedition-public',
+    partition: 'expedition-private',
     title: 'Test quest',
     summary: 'DEV',
     author: 'DEV',

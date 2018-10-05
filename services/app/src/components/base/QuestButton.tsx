@@ -9,7 +9,6 @@ const Moment = require('moment');
 export interface Props {
   lastLogin: Date;
   isOffline: boolean;
-  isPrivate: boolean;
   lastPlayed: Date | null;
   quest: Quest;
   id?: string;
@@ -41,7 +40,7 @@ export default class QuestButton extends React.Component<Props, {}> {
                   {this.props.lastPlayed && <img className="inline_icon" src="images/checkmark_small.svg"/>}
                   {quest.official && <span className="indicator_spacer"><img className="inline_icon questOfficialIcon" src="images/logo_outline_small.svg"/></span>}
                   {quest.awarded && <img className="inline_icon" src="images/starcircle_small.svg"/>}
-                  {this.props.isPrivate && <img className="inline_icon" src="images/private_small.svg"/>}
+                  {quest.partition === 'expedition-private' && <img className="inline_icon" src="images/private_small.svg"/>}
                 </th>
               </tr>
             </tbody>

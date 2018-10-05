@@ -15,15 +15,12 @@ const mapStateToProps = (state: AppStateWithHistory): StateProps => {
     return s.details.id === state.quest.details.id;
   });
 
-  const isPrivate = Boolean(state.userQuests.privateQuests[state.quest.details.id]);
-
   return {
     isDirectLinked: state._history.length <= 1,
     quest: state.quest.details,
     lastPlayed: (state.userQuests.history[(state.quest.details || {id: '-1'}).id] || {}).lastPlayed,
     savedInstances,
     settings: state.settings,
-    isPrivate,
   };
 };
 
