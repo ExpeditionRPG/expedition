@@ -106,6 +106,9 @@ describe('QuestPreview', () => {
     const {props, wrapper} = setup({savedInstances: [{pathLen: 0, ts: 1}]});
     expect(wrapper.find(".searchDetails").text()).toContain("Available Offline");
   });
+  test.skip('indicates when quest is new', () => { /* TODO */ });
+  test.skip('indicates when quest is private', () => { /* TODO */ });
+  test.skip('indicates when quest is official', () => { /* TODO */ });
 
   test('disallows saving local quests for offline play', () => {
     const quest = new Quest({...TUTORIAL_QUESTS[0], publishedurl: 'quests/localquest.xml'});

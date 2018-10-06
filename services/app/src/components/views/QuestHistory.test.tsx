@@ -1,3 +1,3 @@
 describe('QuestHistory', () => {
-  test.skip('TODO', () => { /* TODO */ });
+  test.skip('displays played quests', () => { /* TODO */ });
 });

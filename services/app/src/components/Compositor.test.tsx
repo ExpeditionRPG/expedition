@@ -37,4 +37,5 @@ describe('Compositor', () => {
 
   test.skip('Renders nav footer for navigation card', () => { /* TODO */ });
   test.skip('Hides nav footer for non-navigation card', () => { /* TODO */ });
+  test.skip('Includes has_footer card class when navigation card', () => { /* TODO */ });
 });
