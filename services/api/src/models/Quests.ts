@@ -67,7 +67,7 @@ export function searchQuests(db: Database, userId: string, params: QuestSearchPa
   }
 
   if (params.age) {
-    where.published = {$gt: Date.now() - params.age};
+    where.published = {$gt: Moment().subtract(params.age, 'seconds').format('YYYY-MM-DD HH:mm:ss')};
   }
 
   if (params.mintimeminutes) {
@@ -124,7 +124,7 @@ export function searchQuests(db: Database, userId: string, params: QuestSearchPa
   }
 
   const limit = Math.min(Math.max(params.limit || MAX_SEARCH_LIMIT, 0), MAX_SEARCH_LIMIT);
-
+console.log(where);
   return db.quests.findAll({where, order, limit});
 }
 
