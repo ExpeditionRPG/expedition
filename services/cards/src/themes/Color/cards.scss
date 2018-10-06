@@ -437,6 +437,15 @@ $large-icon-width: 0.195in;
         top: -1pt;
         right: 0.51in;
       }
+
+      .artist {
+        position: absolute;
+        bottom: 0.09in;
+        right: 0.125in;
+        text-align: right;
+        font-size: 50%;
+        opacity: 0.75;
+      }
     }
 
     &.Loot.tracker {
