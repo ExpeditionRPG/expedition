@@ -20,6 +20,7 @@ export interface StateProps {
 
 export interface DispatchProps {
   toCard: (name: CardName) => void;
+  onReturn: () => void;
   onQuest: (quest: Quest) => void;
 }
 
@@ -56,7 +57,7 @@ function renderStoredQuests(props: Props): JSX.Element {
     title="Quests"
     className="search_card"
     icon="logo_outline"
-    onReturn={null}>
+    onReturn={props.onReturn}>
     {quests}
     <TextDivider text="More Quests"/>
     <span>
@@ -66,11 +67,11 @@ function renderStoredQuests(props: Props): JSX.Element {
   </Card>);
 }
 
-function renderLoading(): JSX.Element {
+function renderLoading(props: Props): JSX.Element {
   return (<Card
     title="Loading"
     className="search_card"
-    onReturn={null}>
+    onReturn={props.onReturn}>
     <div className="lds-ellipsis">
         <div></div>
         <div></div>
@@ -85,7 +86,7 @@ function renderNoQuests(props: Props): JSX.Element {
     title="Quests"
     className="search_card"
     icon="logo_outline"
-    onReturn={null}>
+    onReturn={props.onReturn}>
     <div className="searchDescription">
       <h2>No quests found</h2>
       <span>
@@ -103,7 +104,7 @@ export function search(props: Props): JSX.Element {
   }
 
   if (props.searching) {
-    return renderLoading();
+    return renderLoading(props);
   }
 
   if (props.results.length === 0) {
@@ -125,7 +126,7 @@ export function search(props: Props): JSX.Element {
       title="Quests"
       className="search_card"
       icon="logo_outline"
-      onReturn={null}
+      onReturn={props.onReturn}
       header={<div className="searchHeader">
         <Button className="searchResultInfo" disabled={true}>{props.results.length} quests for {props.settings.numPlayers} <img className="inline_icon" src="images/adventurer_small.svg"/></Button>
         <Button className="filter_button" onClick={() => props.toCard('SEARCH_SETTINGS')} id="filter">Filter &amp; Sort ></Button>

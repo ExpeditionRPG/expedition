@@ -11,7 +11,7 @@ export interface StateProps {
 
 export interface DispatchProps {
   onSelect: (selected: UserQuestInstance) => void;
-  onReturn: () => any;
+  onReturn: () => void;
 }
 
 interface Props extends StateProps, DispatchProps {}
@@ -37,7 +37,7 @@ const QuestHistory = (props: Props): JSX.Element => {
     });
 
   return (
-    <Card title="Quest History" icon="hourglass" onReturn={null}>
+    <Card title="Quest History" icon="hourglass" onReturn={props.onReturn}>
       {items}
     </Card>
   );

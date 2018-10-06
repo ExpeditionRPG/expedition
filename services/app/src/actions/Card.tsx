@@ -48,7 +48,7 @@ interface ToPreviousArgs {
   before?: boolean;
   name?: CardName;
   phase?: CardPhase;
-  skip?: Array<{name: CardName, phase: CardPhase}>;
+  skip?: Array<{name: CardName, phase?: CardPhase}>;
 }
 export const toPrevious = remoteify(function toPrevious(a: ToPreviousArgs, dispatch: Redux.Dispatch<any>): ToPreviousArgs {
   dispatch({

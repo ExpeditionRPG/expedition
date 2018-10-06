@@ -13,6 +13,7 @@ export interface StateProps {
 export interface DispatchProps {
   onQuestSelect: (quest: Quest) => void;
   onCustomCombatSelect: (settings: SettingsType) => void;
+  onReturn: () => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -28,7 +29,7 @@ const GMCorner = (props: Props): JSX.Element => {
     });
 
   return (
-    <Card title="GM's Corner" icon="gm_corner" onReturn={null}>
+    <Card title="GM's Corner" icon="gm_corner" onReturn={props.onReturn}>
       {items}
       <Button id="selectCustomCombat" onClick={() => props.onCustomCombatSelect(props.settings)}>
         <div className="questButtonWithIcon">

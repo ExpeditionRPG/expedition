@@ -12,6 +12,7 @@ export interface StateProps {
 
 export interface DispatchProps {
   onQuestSelect: (quest: Quest) => any;
+  onReturn: () => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -27,7 +28,7 @@ const Tutorials = (props: Props): JSX.Element => {
     });
 
   return (
-    <Card title="Tutorial Quests" icon="helper" onReturn={null}>
+    <Card title="Tutorial Quests" icon="helper" onReturn={props.onReturn}>
       {items}
     </Card>
   );

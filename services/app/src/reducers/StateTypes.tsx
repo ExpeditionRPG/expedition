@@ -133,7 +133,7 @@ export interface CardState {
   overrideDebounce?: boolean;
 }
 
-export type TransitionClassType = 'next' | 'prev' | 'instant';
+export type TransitionClassType = 'next' | 'prev' | 'instant' | 'nav';
 
 export interface QuestState {
   details: Quest;

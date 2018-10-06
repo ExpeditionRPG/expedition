@@ -2,8 +2,9 @@ import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import * as React from 'react';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
-import {CARD_TRANSITION_ANIMATION_MS} from '../Constants';
+import {CARD_TRANSITION_ANIMATION_MS, NAV_CARDS} from '../Constants';
 import {
+  CardName,
   CardState,
   CardThemeType,
   MultiplayerPhase,
@@ -50,6 +51,15 @@ export interface DispatchProps {
 }
 
 export interface Props extends StateProps, DispatchProps {}
+
+export function isNavCard(name: CardName) {
+  for (const n of NAV_CARDS) {
+    if (name === n) {
+      return true;
+    }
+  }
+  return false;
+}
 
 export default class Compositor extends React.Component<Props, {}> {
 
@@ -115,10 +125,8 @@ export default class Compositor extends React.Component<Props, {}> {
     }
 
     // Only show nav footer for certain cards
-    for (const show of ['SEARCH_CARD', 'TUTORIAL_QUESTS', 'GM_CARD', 'SAVED_QUESTS', 'QUEST_HISTORY']) {
-      if (this.props.card.name === show) {
-        return <NavigationContainer cardTheme={this.props.theme}/>;
-      }
+    if (isNavCard(this.props.card.name)) {
+      return <NavigationContainer cardTheme={this.props.theme}/>;
     }
     return null;
   }

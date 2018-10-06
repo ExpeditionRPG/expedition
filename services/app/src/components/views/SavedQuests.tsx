@@ -13,6 +13,7 @@ export interface StateProps {
 
 export interface DispatchProps {
   onSelect: (selected: SavedQuestMeta) => void;
+  onReturn: () => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -71,7 +72,7 @@ const SavedQuests = (props: Props): JSX.Element => {
   });
 
   return (
-    <Card title="Saved/Offline Quests" icon="offline" onReturn={null}>
+    <Card title="Saved/Offline Quests" icon="offline" onReturn={props.onReturn}>
       {groupedQuestSaves.length > 0 && <span>
         <TextDivider text="Saved Quests"/>
         {groupedQuestSaves}

@@ -1,8 +1,9 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {Quest} from 'shared/schema/Quests';
-import {toCard} from '../../actions/Card';
+import {toCard, toPrevious} from '../../actions/Card';
 import {previewQuest} from '../../actions/Quest';
+import {NAV_CARDS} from '../../Constants';
 import {AppStateWithHistory, CardName} from '../../reducers/StateTypes';
 import Search, {DispatchProps, StateProps} from './Search';
 
@@ -22,6 +23,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onQuest: (quest: Quest) => {
       dispatch(previewQuest({quest}));
+    },
+    onReturn(): void {
+      dispatch(toPrevious({
+        skip: NAV_CARDS.map((c) => ({name: c as CardName})),
+      }));
     },
   };
 };
