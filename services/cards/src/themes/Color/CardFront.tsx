@@ -130,7 +130,7 @@ export default class CardFront extends React.Component<CardType, {}> {
               </footer>
               {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
               {healthCounter(card.health)}
-              <div className="artist">Art by {card.artist}</div>
+              {card.artist && <div className="artist">Art by {card.artist}</div>}
             </div>
           </div>
         );
