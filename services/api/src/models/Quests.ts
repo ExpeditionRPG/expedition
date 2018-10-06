@@ -67,7 +67,7 @@ export function searchQuests(db: Database, userId: string, params: QuestSearchPa
   }
 
   if (params.age) {
-    where.published = {$gt: Date.now() - params.age};
+    where.published = {$gt: Moment().subtract(params.age, 'seconds').format('YYYY-MM-DD HH:mm:ss')};
   }
 
   if (params.mintimeminutes) {

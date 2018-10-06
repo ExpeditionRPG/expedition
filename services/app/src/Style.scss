@@ -1071,6 +1071,11 @@ body.android .dialog .textfield:focus-within {
         line-height: $lineheight !important;
         text-shadow: $white_on_red_text_shadow;
       }
+      .inline_icon {
+        padding-left: 0.2em;
+        height: 0.8em;
+        margin-bottom: 0;
+      }
     }
     .splashTips {
       font-size: fontsize(flavor);

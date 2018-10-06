@@ -90,7 +90,7 @@ const SplashScreen = (props: Props): JSX.Element => {
     <div className={splashClass}>
       {announcementVisible &&
         <Button className="announcement" onClick={() => props.onAnnouncementTap(props.announcement)}>
-          {props.announcement.message}
+          {props.announcement.message} {props.announcement.link && <img className="inline_icon" src="/images/new_window_white.svg" />}
         </Button>
       }
       <div className="logo">
