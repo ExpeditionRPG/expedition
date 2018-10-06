@@ -84,6 +84,13 @@ export class Database {
     this.quests = this.sequelize.define('quests', questSpec, {
       ...standardOptions,
       timestamps: false, // TODO: eventually switch to sequelize timestamps
+      indexes: [
+        // default search columns
+        {
+          method: 'BTREE',
+          fields: ['published', 'tombstone', 'partition', 'minplayers', 'maxplayers', 'language', 'created'],
+        },
+      ],
     });
 
     const feedbackSpec = toSequelize(new Feedback({partition: PUBLIC_PARTITION, questid: '', userid: ''}));

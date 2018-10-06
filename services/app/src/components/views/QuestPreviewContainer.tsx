@@ -21,6 +21,7 @@ const mapStateToProps = (state: AppStateWithHistory): StateProps => {
     lastPlayed: (state.userQuests.history[(state.quest.details || {id: '-1'}).id] || {}).lastPlayed,
     savedInstances,
     settings: state.settings,
+    lastLogin: state.user.lastLogin,
   };
 };
 

@@ -13,8 +13,9 @@ const pluralize = require('pluralize');
 
 export interface StateProps {
   settings: SettingsType;
-  quest: Quest | null;
-  lastPlayed: Date | null;
+  quest: Quest|null;
+  lastPlayed: Date|null;
+  lastLogin: Date;
   savedInstances: SavedQuestMeta[];
   isDirectLinked: boolean;
 }
@@ -119,6 +120,7 @@ const QuestPreview = (props: Props): JSX.Element => {
 
   actions.push(<Button key="back" id="searchDetailsBackButton" onClick={(e) => props.onReturn()}>Back</Button>);
 
+  const isNew = (props.lastLogin < quest.created || Moment().diff(quest.created, 'days') <= 7) && !props.lastPlayed;
   const ratingAvg = quest.ratingavg || 0;
   return (
     <Card title="Quest Preview">
@@ -129,7 +131,8 @@ const QuestPreview = (props: Props): JSX.Element => {
         {lastSaved !== null && <div className="summary">Last saved {Moment(lastSaved).fromNow()}</div>}
         {(quest.ratingcount && quest.ratingcount >= 1) ? <StarRating readOnly={true} value={+ratingAvg} quantity={quest.ratingcount}/> : ''}
         <div className="indicators">
-          {offlineTS && <div className="inline_icon"><img className="inline_icon" src="images/offline_small.svg"/>Available Offline</div>}
+          {isNew && <div className="inline_icon"><img className="inline_icon" src="images/seedling_small.svg"/> Published Recently</div>}
+          {offlineTS && <div className="inline_icon"><img className="inline_icon" src="images/offline_small.svg"/> Available Offline</div>}
           {props.lastPlayed && <div className="inline_icon"><img className="inline_icon" src="images/checkmark_small.svg"/> Last completed {Moment(props.lastPlayed).fromNow()}</div>}
           {quest.official && <div className="inline_icon"><img className="inline_icon" src="images/logo_outline_small.svg"/> Official Quest!</div>}
           {quest.partition === 'expedition-private' && <div className="inline_icon"><img className="inline_icon" src="images/private_small.svg"/> Private Quest</div>}

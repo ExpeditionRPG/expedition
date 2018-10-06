@@ -23,6 +23,8 @@ export default class QuestButton extends React.Component<Props, {}> {
       classes.push('played');
     }
 
+    const isNew = (this.props.lastLogin < quest.created || Moment().diff(quest.created, 'days') <= 7) && !this.props.lastPlayed;
+
     return (
       <Button onClick={() => {if (this.props.onClick) {this.props.onClick(); }}} id={this.props.id}>
         <div className={classes.join(' ')}>
@@ -35,8 +37,7 @@ export default class QuestButton extends React.Component<Props, {}> {
                   </Truncate>
                 </th>
                 <th className="rightcell">
-                  {(this.props.lastLogin < quest.created || Moment().diff(quest.created, 'days') <= 7) && !this.props.lastPlayed &&
-                    <div className="badge">NEW</div>}
+                  {isNew && <img className="inline_icon" src="images/seedling_small.svg"/>}
                   {this.props.lastPlayed && <img className="inline_icon" src="images/checkmark_small.svg"/>}
                   {quest.official && <span className="indicator_spacer"><img className="inline_icon questOfficialIcon" src="images/logo_outline_small.svg"/></span>}
                   {quest.awarded && <img className="inline_icon" src="images/starcircle_small.svg"/>}
