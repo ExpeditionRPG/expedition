@@ -15,7 +15,7 @@ configure({ adapter: new Adapter() });
 
 const Moment = require('moment');
 
-const TEST_SEARCH: SearchParams = {
+export const TEST_SEARCH: SearchParams = {
   age: 31536000,
   contentrating: 'Teen',
   genre: 'Comedy',

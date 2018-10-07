@@ -50,6 +50,4 @@ describe('Card', () => {
     wrapper.find('#homeButton').simulate('click');
     expect(wrapper.state('anchorEl')).not.toBeDefined();
   });
-
-  test.skip('hides return icon when onReturn is null', () => { /* TODO */ });
 });

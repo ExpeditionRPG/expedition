@@ -68,9 +68,7 @@ export class SearchSettings extends React.Component<Props, {}> {
           <FormControl className="selectfield" fullWidth={true}>
             <InputLabel htmlFor="order">Sort by</InputLabel>
             <NativeSelect
-              inputProps={{
-                id: 'order',
-              }}
+              id="order"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('order', e.target.value)}
               value={this.state.order}
             >
@@ -83,9 +81,7 @@ export class SearchSettings extends React.Component<Props, {}> {
           <FormControl className="selectfield halfLeft ranged">
             <InputLabel htmlFor="mintimeminutes">Minimum time</InputLabel>
             <NativeSelect
-              inputProps={{
-                id: 'mintimeminutes',
-              }}
+              id="mintimeminutes"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('mintimeminutes', e.target.value)}
               value={this.state.mintimeminutes}
             >
@@ -96,9 +92,7 @@ export class SearchSettings extends React.Component<Props, {}> {
           <FormControl className="selectfield halfRight">
             <InputLabel htmlFor="maxtimeminutes">Maximum time</InputLabel>
             <NativeSelect
-              inputProps={{
-                id: 'maxtimeminutes',
-              }}
+              id="maxtimeminutes"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('maxtimeminutes', e.target.value)}
               value={this.state.maxtimeminutes}
             >
@@ -109,9 +103,7 @@ export class SearchSettings extends React.Component<Props, {}> {
           <FormControl className="selectfield halfLeft">
             <InputLabel htmlFor="age">Recency</InputLabel>
             <NativeSelect
-              inputProps={{
-                id: 'age',
-              }}
+              id="age"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('age', e.target.value)}
               value={this.state.age}
             >
@@ -124,9 +116,7 @@ export class SearchSettings extends React.Component<Props, {}> {
           <FormControl className="selectfield halfRight">
             <InputLabel htmlFor="language">Language</InputLabel>
             <NativeSelect
-              inputProps={{
-                id: 'language',
-              }}
+              id="language"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('language', e.target.value)}
               value={this.state.language}
             >
@@ -136,9 +126,7 @@ export class SearchSettings extends React.Component<Props, {}> {
           <FormControl className="selectfield halfLeft">
             <InputLabel htmlFor="genre">Genre</InputLabel>
             <NativeSelect
-              inputProps={{
-                id: 'genre',
-              }}
+              id="genre"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('genre', e.target.value)}
               value={this.state.genre}
             >
@@ -149,9 +137,7 @@ export class SearchSettings extends React.Component<Props, {}> {
           <FormControl className="selectfield halfRight">
             <InputLabel htmlFor="contentrating">Content Rating</InputLabel>
             <NativeSelect
-              inputProps={{
-                id: 'contentrating',
-              }}
+              id="contentrating"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('contentrating', e.target.value)}
               value={this.state.contentrating}
             >
@@ -164,9 +150,7 @@ export class SearchSettings extends React.Component<Props, {}> {
           <FormControl className="selectfield halfLeft">
             <InputLabel htmlFor="requirespenpaper">Requires Pen & Paper</InputLabel>
             <NativeSelect
-              inputProps={{
-                id: 'requirespenpaper',
-              }}
+              id="requirespenpaper"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('requirespenpaper', e.target.value)}
               value={this.state.requirespenpaper}
             >
