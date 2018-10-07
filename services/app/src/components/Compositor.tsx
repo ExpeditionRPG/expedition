@@ -113,14 +113,14 @@ export default class Compositor extends React.Component<Props, {}> {
 
   private renderFooter(): JSX.Element|null {
     // Show no footers for certain cards
-    for (const noShow of ['QUEST_CARD', 'SPLASH_CARD', 'PLAYER_COUNT_SETTING']) {
+    for (const noShow of ['SPLASH_CARD', 'PLAYER_COUNT_SETTING']) {
       if (this.props.card.name === noShow) {
         return null;
       }
     }
 
     // Multiplayer-only view during the quest.
-    if (this.props.card.name === 'QUEST_CARD' && this.props.multiplayer && this.props.multiplayer.session) {
+    if (this.props.multiplayer && this.props.multiplayer.session && !isNavCard(this.props.card.name)) {
       return <MultiplayerFooterContainer cardTheme={this.props.theme}/>;
     }
 

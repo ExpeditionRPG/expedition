@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
-import {SettingsType, UserState} from '../../reducers/StateTypes';
+import {SettingsType} from '../../reducers/StateTypes';
 import Card from '../base/Card';
 import QuestButtonContainer from '../base/QuestButtonContainer';
 

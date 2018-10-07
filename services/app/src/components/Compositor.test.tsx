@@ -27,8 +27,10 @@ function setup(props: Partial<Props>) {
     userQuests: {history: {}},
     user: loggedOutUser,
     settings: initialSettings,
+    multiplayer: {session: null, clientStatus: {}},
     quest: initialQuestState,
     search: {results: []},
+    _history: [],
   });
   const wrapper = render(
     <Provider store={store}>
@@ -53,6 +55,14 @@ describe('Compositor', () => {
   test('Hides nav footer for non-navigation card', () => {
     const {wrapper} = setup();
     expect(wrapper.find('#navfooter').html()).toEqual(null);
+  });
+
+  test('Renders multiplayer footer for non-navigation card', () => {
+    const {wrapper} = setup({
+      card: {name: 'QUEST_PREVIEW'},
+      multiplayer: {session: 'abcd', clientStatus: {}},
+    });
+    expect(wrapper.find('.remote_footer').html()).not.toEqual(null);
   });
 
   test('Includes has_footer card class when navigation card', () => {
