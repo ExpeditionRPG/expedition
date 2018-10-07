@@ -4,6 +4,7 @@ import {Quest} from 'shared/schema/Quests';
 import {TUTORIAL_QUESTS} from '../../Constants';
 import {initialSettings} from '../../reducers/Settings';
 import QuestPreview, {Props} from './QuestPreview';
+import {PRIVATE_PARTITION} from 'shared/schema/Constants';
 configure({ adapter: new Adapter() });
 
 describe('QuestPreview', () => {
@@ -19,6 +20,7 @@ describe('QuestPreview', () => {
       isDirectLinked: false,
       savedInstances: [],
       lastPlayed: null,
+      lastLogin: new Date(),
       quest: new Quest({...TUTORIAL_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides}),
       settings: {...initialSettings, experimental: true},
       onPlay: jasmine.createSpy('onPlay'),
@@ -104,11 +106,23 @@ describe('QuestPreview', () => {
 
   test('indicates when the quest is available offline', () => {
     const {props, wrapper} = setup({savedInstances: [{pathLen: 0, ts: 1}]});
-    expect(wrapper.find(".searchDetails").text()).toContain("Available Offline");
+    expect(wrapper.find(".indicators").text()).toContain("Available Offline");
   });
-  test.skip('indicates when quest is new', () => { /* TODO */ });
-  test.skip('indicates when quest is private', () => { /* TODO */ });
-  test.skip('indicates when quest is official', () => { /* TODO */ });
+
+  test('indicates when quest is new', () => {
+    const {props, wrapper} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], created: new Date()})});
+    expect(wrapper.find(".indicators").text()).toContain("Published Recently");
+  });
+
+  test('indicates when quest is private', () => {
+    const {props, wrapper} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], partition: PRIVATE_PARTITION})});
+    expect(wrapper.find(".indicators").text()).toContain("Private Quest");
+  });
+
+  test('indicates when quest is official', () => {
+    const {props, wrapper} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], official: true})});
+    expect(wrapper.find(".indicators").text()).toContain("Official Quest");
+  });
 
   test('disallows saving local quests for offline play', () => {
     const quest = new Quest({...TUTORIAL_QUESTS[0], publishedurl: 'quests/localquest.xml'});

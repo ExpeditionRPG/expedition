@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Truncate from 'react-truncate';
+import {PRIVATE_PARTITION} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {formatPlayPeriod, smartTruncateSummary} from '../../Format';
 import Button from '../base/Button';
@@ -40,8 +41,8 @@ export default class QuestButton extends React.Component<Props, {}> {
                   {isNew && <img className="inline_icon" src="images/seedling_small.svg"/>}
                   {this.props.lastPlayed && <img className="inline_icon" src="images/checkmark_small.svg"/>}
                   {quest.official && <span className="indicator_spacer"><img className="inline_icon questOfficialIcon" src="images/logo_outline_small.svg"/></span>}
-                  {quest.awarded && <img className="inline_icon" src="images/starcircle_small.svg"/>}
-                  {quest.partition === 'expedition-private' && <img className="inline_icon" src="images/private_small.svg"/>}
+                  {quest.awarded && <img className="inline_icon" src="images/trophy_small.svg"/>}
+                  {quest.partition === PRIVATE_PARTITION && <img className="inline_icon" src="images/private_small.svg"/>}
                 </th>
               </tr>
             </tbody>

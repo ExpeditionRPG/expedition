@@ -7,7 +7,6 @@ import QuestButtonContainer from '../base/QuestButtonContainer';
 export interface StateProps {
   quests: Quest[];
   settings: SettingsType;
-  user: UserState;
 }
 
 export interface DispatchProps {

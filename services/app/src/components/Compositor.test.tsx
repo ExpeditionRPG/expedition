@@ -6,6 +6,7 @@ import {initialCardState} from '../reducers/Card';
 import {initialQuestState} from '../reducers/Quest';
 import {initialSettings} from '../reducers/Settings';
 import {initialSnackbar} from '../reducers/Snackbar';
+import {loggedOutUser} from '../reducers/User';
 import {newMockStore} from '../Testing';
 import Compositor, {Props} from './Compositor';
 configure({ adapter: new Adapter() });
@@ -20,8 +21,17 @@ function setup(props: Partial<Props>) {
     transition: 'instant',
     ...props,
   };
+  const store = newMockStore({
+    card: props.card || initialCardState,
+    saved: {list: []},
+    userQuests: {history: {}},
+    user: loggedOutUser,
+    settings: initialSettings,
+    quest: initialQuestState,
+    search: {results: []},
+  });
   const wrapper = render(
-    <Provider store={newMockStore({saved: {}, ...props})}>
+    <Provider store={store}>
       <Compositor {...(props as any as Props)} />
     </Provider>,
     {} // renderOptions
@@ -35,7 +45,18 @@ describe('Compositor', () => {
     expect(wrapper.text()).toContain('To Begin:');
   });
 
-  test.skip('Renders nav footer for navigation card', () => { /* TODO */ });
-  test.skip('Hides nav footer for non-navigation card', () => { /* TODO */ });
-  test.skip('Includes has_footer card class when navigation card', () => { /* TODO */ });
+  test('Renders nav footer for navigation card', () => {
+    const {wrapper} = setup({card: {name: 'TUTORIAL_QUESTS'}});
+    expect(wrapper.find('#navfooter').html()).not.toEqual(null);
+  });
+
+  test('Hides nav footer for non-navigation card', () => {
+    const {wrapper} = setup();
+    expect(wrapper.find('#navfooter').html()).toEqual(null);
+  });
+
+  test('Includes has_footer card class when navigation card', () => {
+    const {wrapper} = setup({card: {name: 'TUTORIAL_QUESTS'}});
+    expect(wrapper.find('.has_footer').html()).not.toEqual(null);
+  });
 });

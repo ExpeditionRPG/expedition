@@ -5,7 +5,7 @@ import * as Joi from 'joi';
 import * as memoize from 'memoizee';
 import * as request from 'request-promise';
 import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents';
-import {PUBLIC_PARTITION, PRIVATE_PARTITION} from 'shared/schema/Constants';
+import {PRIVATE_PARTITION, PUBLIC_PARTITION} from 'shared/schema/Constants';
 import {Feedback} from 'shared/schema/Feedback';
 import {Quest} from 'shared/schema/Quests';
 import Config from './config';

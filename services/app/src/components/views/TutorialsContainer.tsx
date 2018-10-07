@@ -12,7 +12,6 @@ const mapStateToProps = (state: AppState): StateProps => {
   return {
     quests: TUTORIAL_QUESTS,
     settings: state.settings,
-    user: state.user,
   };
 };
 

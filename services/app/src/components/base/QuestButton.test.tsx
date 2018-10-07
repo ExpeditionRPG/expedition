@@ -1,105 +1,138 @@
+import {configure, render} from 'enzyme';
+import * as React from 'react';
+import Adapter from 'enzyme-adapter-react-16';
+import {TUTORIAL_QUESTS} from '../../Constants';
+import {PRIVATE_PARTITION} from 'shared/schema/Constants';
+import {initialSettings} from '../../reducers/Settings';
+import QuestButton, {Props} from './QuestButton';
+import {newMockStore} from 'app/Testing';
+import {Provider} from 'react-redux';
+import {loggedOutUser} from '../../reducers/User';
+import {Quest} from 'shared/schema/Quests';
+configure({ adapter: new Adapter() });
+
+const Moment = require('moment');
+
+const NEW_QUEST_ICON_SUBSTR = 'seedling_small.svg';
+
 describe('QuestButton', () => {
-  function setup(questTitle: string, overrides?: Partial<SearchResultProps>, questOverrides?: Partial<Quest>) {
-    const props: SearchResultProps = {
-      index: 0,
+  function setup(overrides?: Partial<Props>) {
+    const props: Props = {
+      lastLogin: new Date(),
+      isOffline: false,
       lastPlayed: null,
-      offlineQuests: {},
-      onQuest: jasmine.createSpy('onQuest'),
-      quest: new Quest({...TUTORIAL_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides}),
-      search: TEST_SEARCH,
+      quest: TUTORIAL_QUESTS[0],
+      onClick: jasmine.createSpy('onClick'),
       ...overrides,
     };
-    const wrapper = render(renderResult(props), undefined /*renderOptions*/);
-    return {props, wrapper};
+    const store = newMockStore({saved: {list: []}, userQuests: {history: {}}, user: loggedOutUser});
+    const e = render(<Provider store={store}><QuestButton {...(props as any as Props)} /></Provider>, undefined /*renderOptions*/);
+    return {props, e};
   }
 
   test('displays no expansion icons when quest has no expansions', () => {
-    const {wrapper} = setup('Learning to Adventure');
-    expect(wrapper.html()).not.toContain('horror');
+    const html = setup({quest: new Quest({...TUTORIAL_QUESTS[0], expansionhorror: false, expansionfuture: false})}).e.html();
+    expect(html).not.toContain('horror_small.svg');
+    expect(html).not.toContain('future_small.svg');
   });
 
-  test.skip('displays offline icon when quest is available offline', () => { /* TODO */ });
+  test('displays offline icon when quest is available offline', () => {
+    const html = setup({isOffline: true}).e.html();
+    expect(html).toContain('offline_small.svg');
+  });
+
+  test('hides offline icon when quest is not offline', () => {
+    const html = setup({isOffline: false}).e.html();
+    expect(html).not.toContain('offline_small.svg');
+  });
 
   test('displays horror icon when a quest uses the Horror expansion', () => {
-    const {wrapper} = setup('Learning 2: The Horror');
-    expect(wrapper.html()).toContain('horror');
+    const html = setup({quest: new Quest({...TUTORIAL_QUESTS[0], expansionhorror: true})}).e.html();
+    expect(html).toContain('horror_small.svg');
   });
 
   test('displays no book icon when a quest does not require pen and paper', () => {
-    const {wrapper} = setup('Learning to Adventure', {}, {requirespenpaper: false});
-    expect(wrapper.html()).not.toContain('book');
+    const html = setup({quest: new Quest({...TUTORIAL_QUESTS[0], requirespenpaper: false})}).e.html();
+    expect(html).not.toContain('book_small.svg');
   });
 
-  test('displays NEW if quest created in past 7 days', () => {
-    const {wrapper} = setup('Learning to Adventure', {lastLogin: Moment()}, {created: Moment().subtract(6, 'days')});
-    expect(wrapper.html()).toContain('NEW');
+  test('displays "new" icon if quest created in past 7 days', () => {
+    const html = setup({
+      lastLogin: Moment(),
+      quest: new Quest({...TUTORIAL_QUESTS[0],
+        created: Moment().subtract(6, 'days')
+      })
+    }).e.html();
+    expect(html).toContain(NEW_QUEST_ICON_SUBSTR);
   });
 
-  test('displays NEW if quest created since last login', () => {
-    const {wrapper} = setup('Learning to Adventure', {lastLogin: Moment().subtract(30, 'days')}, {created: Moment().subtract(20, 'days')});
-    expect(wrapper.html()).toContain('NEW');
+  test('displays "new" icon if quest created since last login', () => {
+    const html = setup({
+      lastLogin: Moment().subtract(30, 'days'),
+      quest: new Quest({...TUTORIAL_QUESTS[0],
+        created: Moment().subtract(20, 'days')
+      })
+    }).e.html();
+    expect(html).toContain(NEW_QUEST_ICON_SUBSTR);
   });
 
-  test('does not display NEW if quest created before last login', () => {
-    const {wrapper} = setup('Learning to Adventure', {lastLogin: Moment()}, {created: Moment().subtract(30, 'days')});
-    expect(wrapper.html()).not.toContain('NEW');
+  test('does not display "new" icon if quest created before last login', () => {
+    const html = setup({
+      lastLogin: Moment(),
+      quest: new Quest({...TUTORIAL_QUESTS[0],
+        created: Moment().subtract(30, 'days')
+      })
+    }).e.html();
+    expect(html).not.toContain(NEW_QUEST_ICON_SUBSTR);
   });
 
-  test('does not display NEW if quest has been played', () => {
-    const {wrapper} = setup('Learning to Adventure', {lastLogin: Moment().subtract(30, 'days'), lastPlayed: Moment()}, {created: Moment()});
-    expect(wrapper.html()).not.toContain('NEW');
+  test('does not display "new" icon if quest has been played', () => {
+    const html = setup({
+      lastLogin: Moment().subtract(30, 'days'),
+      lastPlayed: Moment(),
+      quest: new Quest({...TUTORIAL_QUESTS[0],
+        created: Moment(),
+      })
+    }).e.html();
+    expect(html).not.toContain(NEW_QUEST_ICON_SUBSTR);
   });
 
-  test('does not display last played date if quest has not been played', () => {
-    const {wrapper} = setup('Learning to Adventure');
-    expect(wrapper.html()).not.toContain('questPlayedIcon');
+  test('does not show played icon if quest has not been played', () => {
+    const html = setup({}).e.html();
+    expect(html).not.toContain('checkmark_small.svg');
   });
 
-  test('displayed last played date if quest has been played before', () => {
-    const {wrapper} = setup('Learning to Adventure', {lastPlayed: Moment()});
-    expect(wrapper.html()).toContain('questPlayedIcon');
+  test('displayed played icon if quest has been played before', () => {
+    const html = setup({lastPlayed: Moment()}).e.html();
+    expect(html).toContain('checkmark_small.svg');
   });
 
   test('does not display awarded icon when quest not awarded', () => {
-    const {wrapper} = setup('Learning to Adventure');
-    expect(wrapper.html()).not.toContain('questAwardedIcon');
+    const html = setup({quest: {...TUTORIAL_QUESTS[0], awarded: null}}).e.html();
+    expect(html).not.toContain('trophy_small.svg');
   });
 
   test('displays awarded icon if quest has received award', () => {
-    const {wrapper} = setup('Learning to Adventure', {}, {awarded: 'The Bob Medal For Questing Mediocrity'});
-    expect(wrapper.html()).toContain('questAwardedIcon');
+    const html = setup({quest: {...TUTORIAL_QUESTS[0], awarded: 'The Bob Medal For Questing Mediocrity'}}).e.html();
+    expect(html).toContain('trophy_small.svg');
   });
 
   test('does not display official icon if quest is not official', () => {
-    const {wrapper} = setup('Learning to Adventure', {}, {official: false});
-    expect(wrapper.html()).not.toContain('questOfficialIcon');
+    const html = setup({quest: {...TUTORIAL_QUESTS[0], official: false}}).e.html();
+    expect(html).not.toContain('logo_outline_small.svg');
   });
 
   test('displays official icon if quest is official', () => {
-    const {wrapper} = setup('Learning to Adventure');
-    expect(wrapper.html()).toContain('questOfficialIcon');
+    const html = setup({quest: {...TUTORIAL_QUESTS[0], official: true}}).e.html();
+    expect(html).toContain('logo_outline_small.svg');
   });
 
-  // TODO Dedupe
-  test.skip('shows horror expansion icon when quest is horror');
-  test.skip('hides horror expansion icon when quest is not horror');
-  test.skip('shows future expansion icon when quest is future');
-  test.skip('hides future expansion icon when quest is not future');
-  test.skip('shows offline icon when quest is offline');
-  test.skip('hides offline icon when quest is not offline');
-  test.skip('shows private icon when quest is private');
-  test.skip('hides private icon when quest is not private');
-  test.skip('shows official icon when quest is official');
-  test.skip('hides official icon when quest is not official');
-  test.skip('shows award icon when quest is awarded');
-  test.skip('hides award icon when quest is not awarded');
-  test.skip('shows checkmark icon when quest is played');
-  test.skip('hides checkmark icon when quest is not played');
-  test.skip('shows new icon when quest is new');
-  test.skip('hides new icon when quest is not new');
-
-  test.skip('shows formatted play period');
-  test.skip('shows title & summary');
-  test.skip('renders children');
-  test.skip('triggers onClick when clicked');
+  test('shows private icon when quest is private', () => {
+    const html = setup({quest: {...TUTORIAL_QUESTS[0], partition: PRIVATE_PARTITION}}).e.html();
+    expect(html).toContain('private_small.svg');
+  });
+  test('hides private icon when quest is not private', () => {
+    const html = setup({quest: {...TUTORIAL_QUESTS[0], partition: PRIVATE_PARTITION}}).e.html();
+    expect(html).toContain('private_small.svg');
+  });
 });
