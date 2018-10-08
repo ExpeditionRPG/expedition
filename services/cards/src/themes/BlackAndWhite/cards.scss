@@ -574,6 +574,21 @@ $text-color-white: #fff;
           font-weight: bold;
         }
       }
+      .typeIcon {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+      .scaleIcon {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+      .expansionIcon {
+        position: absolute;
+        right: 0.1in;
+        bottom: 0.1in;
+      }
     }
   }
 

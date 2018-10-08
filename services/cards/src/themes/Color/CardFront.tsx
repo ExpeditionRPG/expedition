@@ -203,8 +203,10 @@ export default class CardFront extends React.Component<CardType, {}> {
           <div className={`card front horizontal ${card.sheet} bottomBar`} id={camelCase(card.name)}>
             <div className="contents">
               <header>
+                {card.typeicon && <div className="typeIcon">{icon((card.typeicon).toLowerCase() + '_small')}</div>}
                 <div className="name">{card.name}</div>
                 <div className="class">Type: {card.class}</div>
+                {card.scaleicon && <div className="scaleIcon">{icon((card.scaleicon).toLowerCase() + '_small')}</div>}
               </header>
               <article>
                 <div className="discard"><strong>Single use:</strong> {card.discard}</div>
