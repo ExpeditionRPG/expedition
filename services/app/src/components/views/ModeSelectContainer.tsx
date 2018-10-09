@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {toCard} from '../../actions/Card';
+import {toNavCard} from '../../actions/Card';
 import {loadMultiplayer} from '../../actions/Multiplayer';
 import {changeSettings} from '../../actions/Settings';
 import {ensureLogin} from '../../actions/User';
@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onLocalSelect: () => {
       dispatch(changeSettings({multitouch: false}));
-      dispatch(toCard({name: 'TUTORIAL_QUESTS'}));
+      dispatch(toNavCard({}));
     },
     onMultiplayerSelect(user: UserState): void {
       dispatch(ensureLogin())

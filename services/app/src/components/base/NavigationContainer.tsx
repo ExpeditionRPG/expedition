@@ -2,6 +2,8 @@ import {connect} from 'react-redux';
 import Redux from 'redux';
 import {toCard} from '../../actions/Card';
 import {search} from '../../actions/Search';
+import {NAV_CARD_STORAGE_KEY} from '../../Constants';
+import {setStorageKeyValue} from '../../LocalStorage';
 import {initialSearch} from '../../reducers/Search';
 import {AppState, CardName, SettingsType} from '../../reducers/StateTypes';
 import Navigation, {DispatchProps, Props, StateProps} from './Navigation';
@@ -27,6 +29,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
         }));
       }
       dispatch(toCard({name, noHistory: true}));
+
+      // Save nav state in local storage so we can persist the user's
+      // last used page next time they load.
+      setStorageKeyValue(NAV_CARD_STORAGE_KEY, name);
     },
   };
 };

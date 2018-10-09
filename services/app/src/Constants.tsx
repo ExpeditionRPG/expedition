@@ -317,3 +317,4 @@ export const MUSIC_DEFINITIONS: {[key: string]: {[key: string]: MusicDefinition}
 export const MUSIC_FADE_SECONDS = 1.5;
 
 export const NAV_CARDS = ['SEARCH_CARD', 'TUTORIAL_QUESTS', 'GM_CARD', 'SAVED_QUESTS', 'QUEST_HISTORY'];
+export const NAV_CARD_STORAGE_KEY = 'nav_card';
