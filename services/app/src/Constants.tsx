@@ -151,6 +151,7 @@ if (NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2
   }));
 }
 
+export const MAX_ADVENTURERS = 6;
 export const MAX_ADVENTURER_HEALTH = 12;
 export const MIN_FEEDBACK_LENGTH = 16;
 

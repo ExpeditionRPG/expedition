@@ -8,7 +8,7 @@ import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
 import {openWindow} from '../../Globals';
 import {MultiplayerCounters} from '../../Multiplayer';
-import {ContentSetsType, DialogState, FeedbackType, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
+import {ContentSetsType, DialogState, FeedbackType, MultiplayerState, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
 import Checkbox from './Checkbox';
 import Picker from './Picker';
 
@@ -101,6 +101,7 @@ interface MultiplayerStatusDialogProps extends React.Props<any> {
   open: boolean;
   questDetails: Quest;
   stats: MultiplayerCounters;
+  multiplayer: MultiplayerState;
   user: UserState;
 }
 
@@ -116,8 +117,11 @@ export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDi
       // TODO: autoScrollBodyContent={true} ???
     return (
       <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
-        <DialogTitle>Multiplayer Stats</DialogTitle>
+        <DialogTitle>Connection Details</DialogTitle>
         <DialogContent className="dialog">
+          <p>
+            Secret: <strong>{this.props.multiplayer.session && this.props.multiplayer.session.secret}</strong>
+          </p>
           <p>Here's some multiplayer debugging information:</p>
           {stats}
           <p>
@@ -320,6 +324,7 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
 
 export interface StateProps {
   dialog: DialogState;
+  multiplayer: MultiplayerState;
   multiplayerStats: MultiplayerCounters;
   quest: QuestState;
   selectedSave: SavedQuestMeta|null;
@@ -369,6 +374,7 @@ const Dialogs = (props: Props): JSX.Element => {
         open={props.dialog && props.dialog.open === 'MULTIPLAYER_STATUS'}
         stats={props.multiplayerStats}
         user={props.user}
+        multiplayer={props.multiplayer}
         questDetails={props.quest.details}
         onSendReport={props.onSendMultiplayerReport}
         onClose={props.onClose}

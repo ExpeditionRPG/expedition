@@ -1,4 +1,6 @@
-import {MultiplayerState, SettingsType} from '../../../../reducers/StateTypes';
+import {MAX_ADVENTURERS} from 'app/Constants';
+import {MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import * as seedrandom from 'seedrandom';
 
 function countNumPlayers(rp: MultiplayerState): number {
   let count = 0;
@@ -25,4 +27,16 @@ export function numPlayers(settings: SettingsType, rp?: MultiplayerState): numbe
     return settings.numPlayers;
   }
   return countNumPlayers(rp);
+}
+
+export function playerOrder(seed: string): number[] {
+  const rng = seedrandom.alea(seed);
+  const order = [1, 2, 3, 4, 5, 6];
+  for (let i = 0; i < MAX_ADVENTURERS; i++) {
+    const swap = i + Math.floor(rng() * (MAX_ADVENTURERS - i));
+    const tmp = order[i];
+    order[i] = order[swap];
+    order[swap] = tmp;
+  }
+  return order;
 }

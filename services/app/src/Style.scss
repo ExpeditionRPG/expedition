@@ -206,6 +206,43 @@ body {
   }
 }
 
+.player1 {
+  fill: #c4232f; /* magic red */
+}
+.player2 {
+  fill: #00a3bb; /* melee blue */
+}
+.player3 {
+  fill: #982f77; /* music purple */
+}
+.player4 {
+  fill: #009a57; /* ranged green */
+}
+.player5 {
+  fill: #6b357e; /* influence purple */
+}
+.player6 {
+  fill: #3c3b35; /* tech grey */
+}
+.ripplep1 {
+  background-color: #c4232f !important;
+}
+.ripplep2 {
+  background-color: #00a3bb !important;
+}
+.ripplep3 {
+  background-color: #982f77 !important;
+}
+.ripplep4 {
+  background-color: #009a57 !important;
+}
+.ripplep5 {
+  background-color: #6b357e !important;
+}
+.ripplep6 {
+  background-color: #3c3b35 !important;
+}
+
 .remote-affector {
   position: relative;
 }
@@ -1382,13 +1419,13 @@ body.android .dialog .textfield:focus-within {
   }
 
   .multiplayer_ripple {
-    height: '100%';
-    width: '100%';
-    position: 'absolute';
+    height: 100%;
+    width: 100%;
+    position: absolute;
     top: 0;
     left: 0;
-    overflow: 'hidden';
-    pointer-events: 'none';
+    overflow: hidden;
+    pointer-events: none;
     z-index: 1; /* This is also needed so that ripples do not bleed past a parent border radius.*/
   }
 

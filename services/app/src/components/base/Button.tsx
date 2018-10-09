@@ -1,7 +1,7 @@
 import Button from '@material-ui/core/Button';
 import * as React from 'react';
 import {openWindow} from '../../Globals';
-import MultiplayerRipple from '../multiplayer/MultiplayerRipple';
+import MultiplayerRippleContainer from '../multiplayer/MultiplayerRippleContainer';
 
 interface Props extends React.Props<any> {
   className?: string;
@@ -43,11 +43,11 @@ export default class ExpeditionButton extends React.Component<Props, {}> {
     }
 
     return (
-      <MultiplayerRipple className={className} id={this.props.id}>
-        <Button disabled={this.props.disabled} onClick={(e: any) => this._onClick(e)}>
+      <MultiplayerRippleContainer className={className} id={this.props.id}>
+        <Button disabled={this.props.disabled} onClick={(e: any) => this._onClick(e)} disableRipple={true}>
           <div>{this.props.children}</div>
         </Button>
-      </MultiplayerRipple>
+      </MultiplayerRippleContainer>
     );
   }
 }
