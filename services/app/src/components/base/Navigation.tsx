@@ -40,8 +40,7 @@ export default class Navigation extends React.Component<Props, {}> {
   }
 
   public render() {
-    // const color = (this.props.cardTheme === 'dark') ? 'white' : 'black';
-    // TODO: Replace saved/offline with multiplayer flap when connected to a session
+    // TODO Rename Tools to GM once stretch goal achieved.
     return (
       <BottomNavigation
         id="navfooter"
@@ -53,7 +52,7 @@ export default class Navigation extends React.Component<Props, {}> {
         <BottomNavigationAction classes={{label: 'navlabel'}} id="offline" label="Offline" value="SAVED_QUESTS" icon={this.genIcon('offline')} />
         <BottomNavigationAction classes={{label: 'navlabel'}} id="search" label="Quests" value="SEARCH_CARD" icon={this.genIcon('compass')} />
         <BottomNavigationAction classes={{label: 'navlabel'}} id="history" label="History" value="QUEST_HISTORY" icon={this.genIcon('hourglass')} />
-        <BottomNavigationAction classes={{label: 'navlabel'}} id="gm" label="GM" value="GM_CARD" icon={this.genIcon('gm_corner')} />
+        <BottomNavigationAction classes={{label: 'navlabel'}} id="gm" label="Tools" value="GM_CARD" icon={this.genIcon('gm_corner')} />
       </BottomNavigation>
     );
   }

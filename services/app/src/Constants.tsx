@@ -83,26 +83,8 @@ export const BUNDLED_QUESTS: Quest[] = [ // TODO - actually put GM quests here.
     published: EPOCH,
   }),
 ];
-export const GM_QUESTS: Quest[] = [ // TODO - actually put GM quests here.
-  new Quest({
-    id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs',
-    partition: 'expedition-public',
-    theme: 'base',
-    official: true,
-    title: 'Test GM Quest',
-    summary: 'This is totally a quest.',
-    author: 'Scott Martin',
-    publishedurl: 'quests/oust_albanus.xml',
-    minplayers: 1,
-    maxplayers: 6,
-    mintimeminutes: 20,
-    maxtimeminutes: 40,
-    genre: 'Comedy',
-    contentrating: 'Kid-friendly',
-    language: 'English',
-    created: EPOCH,
-    published: EPOCH,
-  }),
+export const GM_QUESTS: Quest[] = [
+  // TODO - actually put GM quests here after stretch goal achieved.
 ];
 export const TUTORIAL_QUESTS: Quest[] = [ // Featured quest ids generated from publishing, but don't leave them published!
   new Quest({
