@@ -128,6 +128,7 @@ export default class Card extends React.Component<Props, {}> {
               <MenuItem onClick={() => {this.onMenuSelect('FEEDBACK'); }}>Send Feedback</MenuItem>
               {this.props.inQuest && <MenuItem onClick={() => {this.onMenuSelect('REPORT'); }}>Report quest</MenuItem>}
               {!this.props.inQuest && <MenuItem onClick={() => {this.onMenuSelect('ABOUT'); }}>About</MenuItem>}
+              <MenuItem onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>Shop</MenuItem>
             </Menu>
           </span>
           <div className="title">{this.props.title}</div>

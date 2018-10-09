@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import Redux from 'redux';
 import {closeSnackbar} from '../actions/Snackbar';
 import {AppStateWithHistory, TransitionClassType} from '../reducers/StateTypes';
-import Compositor, {DispatchProps, StateProps} from './Compositor';
+import Compositor, {DispatchProps, isNavCard, StateProps} from './Compositor';
 import {getCardTemplateTheme} from './views/quest/cardtemplates/Template';
 
 const mapStateToProps = (state: AppStateWithHistory): StateProps => {
@@ -15,6 +15,8 @@ const mapStateToProps = (state: AppStateWithHistory): StateProps => {
     transition = 'instant';
   } else if (state._return) {
     transition = 'prev';
+  } else if (isNavCard(state.card.name)) {
+    transition = 'nav';
   }
 
   return {

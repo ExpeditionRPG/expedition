@@ -13,7 +13,7 @@ import {
   DialogIDType,
   MultiplayerSessionMeta,
   SavedQuestMeta,
-  SearchSettings,
+  SearchParams,
   SettingsType,
   UserQuestInstance,
   UserQuestsType,
@@ -108,7 +108,7 @@ export interface SearchRequestAction extends Redux.Action {
 export interface SearchResponseAction extends Redux.Action {
   type: 'SEARCH_RESPONSE';
   quests: Quest[];
-  search: SearchSettings;
+  params: SearchParams;
   error: string;
 }
 

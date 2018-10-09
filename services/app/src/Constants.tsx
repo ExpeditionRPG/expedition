@@ -23,7 +23,70 @@ export const MULTIPLAYER_SETTINGS = {
   websocketSession: ((NODE_ENV === 'production') ? 'wss://' : 'ws://') + splitURL[splitURL.length - 1] + '/ws/multiplayer/v1/session',
 };
 
-export const FEATURED_QUESTS: Quest[] = [ // Featured quest ids generated from publishing, but don't leave them published!
+const EPOCH = new Date('2017-01-10'); // The date Expedition V1 shipped
+export const BUNDLED_QUESTS: Quest[] = [ // TODO - actually put GM quests here.
+  new Quest({
+    id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs',
+    partition: 'expedition-public',
+    theme: 'base',
+    official: true,
+    title: 'Oust Albanus',
+    summary: 'Your party encounters a smelly situation.',
+    author: 'Scott Martin',
+    publishedurl: 'quests/oust_albanus.xml',
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 20,
+    maxtimeminutes: 40,
+    genre: 'Comedy',
+    contentrating: 'Kid-friendly',
+    language: 'English',
+    created: EPOCH,
+    published: EPOCH,
+  }),
+  new Quest({
+    id: '0B7K9abSH1xEOUUR1Z0lncm9NRjQ',
+    partition: 'expedition-public',
+    theme: 'base',
+    official: true,
+    title: 'Dungeon Crawl',
+    summary: 'How deep can you delve?',
+    author: 'Todd Medema',
+    publishedurl: 'quests/dungeon_crawl.xml',
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 20,
+    maxtimeminutes: 60,
+    genre: 'Drama',
+    contentrating: 'Kid-friendly',
+    language: 'English',
+    created: EPOCH,
+    published: EPOCH,
+  }),
+  new Quest({
+    id: '0B7K9abSH1xEORjdkMWtTY3ZtNGs',
+    partition: 'expedition-public',
+    theme: 'base',
+    official: true,
+    title: 'Mistress Malaise',
+    summary: 'Mystery, Misfortune, and a Mistress.',
+    author: 'Scott Martin',
+    publishedurl: 'quests/mistress_malaise.xml',
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 30,
+    maxtimeminutes: 60,
+    genre: 'Drama',
+    contentrating: 'Kid-friendly',
+    language: 'English',
+    created: EPOCH,
+    published: EPOCH,
+  }),
+];
+export const GM_QUESTS: Quest[] = [
+  // TODO - actually put GM quests here after stretch goal achieved.
+];
+export const TUTORIAL_QUESTS: Quest[] = [ // Featured quest ids generated from publishing, but don't leave them published!
   new Quest({
     id: '0B7K9abSH1xEOeEZSVVMwNHNqaFE',
     partition: 'expedition-public',
@@ -40,6 +103,8 @@ export const FEATURED_QUESTS: Quest[] = [ // Featured quest ids generated from p
     genre: 'Drama',
     contentrating: 'Kid-friendly',
     language: 'English',
+    created: EPOCH,
+    published: EPOCH,
   }),
   new Quest({
     id: '0B7K9abSH1xEOWVpEV1JGWDFtWmc',
@@ -58,6 +123,8 @@ export const FEATURED_QUESTS: Quest[] = [ // Featured quest ids generated from p
     contentrating: 'Kid-friendly',
     language: 'English',
     expansionhorror: true,
+    created: EPOCH,
+    published: EPOCH,
   }),
   new Quest({
     id: '1kWPBHWA6L9bViU1SqLd6WOw6hNMvtedI',
@@ -77,64 +144,15 @@ export const FEATURED_QUESTS: Quest[] = [ // Featured quest ids generated from p
     genre: 'Drama',
     contentrating: 'Kid-friendly',
     language: 'English',
-  }),
-  new Quest({
-    id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs',
-    partition: 'expedition-public',
-    theme: 'base',
-    official: true,
-    title: 'Oust Albanus',
-    summary: 'Your party encounters a smelly situation.',
-    author: 'Scott Martin',
-    publishedurl: 'quests/oust_albanus.xml',
-    minplayers: 1,
-    maxplayers: 6,
-    mintimeminutes: 20,
-    maxtimeminutes: 40,
-    genre: 'Comedy',
-    contentrating: 'Kid-friendly',
-    language: 'English',
-  }),
-  new Quest({
-    id: '0B7K9abSH1xEORjdkMWtTY3ZtNGs',
-    partition: 'expedition-public',
-    theme: 'base',
-    official: true,
-    title: 'Mistress Malaise',
-    summary: 'Mystery, Misfortune, and a Mistress.',
-    author: 'Scott Martin',
-    publishedurl: 'quests/mistress_malaise.xml',
-    minplayers: 1,
-    maxplayers: 6,
-    mintimeminutes: 30,
-    maxtimeminutes: 60,
-    genre: 'Drama',
-    contentrating: 'Kid-friendly',
-    language: 'English',
-  }),
-  new Quest({
-    id: '0B7K9abSH1xEOUUR1Z0lncm9NRjQ',
-    partition: 'expedition-public',
-    theme: 'base',
-    official: true,
-    title: 'Dungeon Crawl',
-    summary: 'How deep can you delve?',
-    author: 'Todd Medema',
-    publishedurl: 'quests/dungeon_crawl.xml',
-    minplayers: 1,
-    maxplayers: 6,
-    mintimeminutes: 20,
-    maxtimeminutes: 60,
-    genre: 'Drama',
-    contentrating: 'Kid-friendly',
-    language: 'English',
+    created: EPOCH,
+    published: EPOCH,
   }),
 ];
 
 if (NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2bTVMdWc4NVk
-  FEATURED_QUESTS.unshift(new Quest({
+  TUTORIAL_QUESTS.unshift(new Quest({
     id: '1',
-    partition: 'expedition-public',
+    partition: 'expedition-private',
     title: 'Test quest',
     summary: 'DEV',
     author: 'DEV',
@@ -148,6 +166,8 @@ if (NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2
     genre: 'Drama',
     contentrating: 'Kid-friendly',
     language: 'English',
+    created: EPOCH,
+    published: EPOCH,
   }));
 }
 
@@ -296,3 +316,6 @@ export const MUSIC_DEFINITIONS: {[key: string]: {[key: string]: MusicDefinition}
 };
 
 export const MUSIC_FADE_SECONDS = 1.5;
+
+export const NAV_CARDS = ['SEARCH_CARD', 'TUTORIAL_QUESTS', 'GM_CARD', 'SAVED_QUESTS', 'QUEST_HISTORY'];
+export const NAV_CARD_STORAGE_KEY = 'nav_card';

@@ -16,7 +16,7 @@ import {
 import {loggedOutUser} from '../../reducers/User';
 import {initialSettings} from '../../reducers/Settings';
 import {initialMultiplayerCounters} from '../../Multiplayer';
-import {FEATURED_QUESTS} from '../../Constants';
+import {TUTORIAL_QUESTS} from '../../Constants';
 import {Quest} from 'shared/schema/Quests';
 configure({ adapter: new Adapter() });
 
@@ -111,7 +111,7 @@ describe('Dialogs', () => {
         onClose: jasmine.createSpy('onClose'),
         onSendReport: jasmine.createSpy('onSendReport'),
         open: true,
-        questDetails: new Quest(FEATURED_QUESTS[0]),
+        questDetails: new Quest(TUTORIAL_QUESTS[0]),
         stats: {...initialMultiplayerCounters, ...counters},
         user: loggedOutUser,
       };
@@ -156,7 +156,7 @@ describe('Dialogs', () => {
     test('has buttons for all content sets', () => {
       const {props, e} = setup();
       const sets: {[set: string]: boolean} = {};
-      FEATURED_QUESTS.map((q) => {
+      TUTORIAL_QUESTS.map((q) => {
         const setAttrs = Object.keys(q).filter((k) => k.startsWith('expansion')).map((k) => k.match(/^expansion(.*)/)[1]);
         for (const a of setAttrs) {
           sets[a] = true;
@@ -173,7 +173,7 @@ describe('Dialogs', () => {
     function setup(overrides?: Partial<SetPlayerCountDialogProps>) {
       const props: Props = {
         open: true,
-        quest: new Quest(FEATURED_QUESTS[0]),
+        quest: new Quest(TUTORIAL_QUESTS[0]),
         settings: {...initialSettings},
         onClose: jasmine.createSpy('onClose'),
         onMultitouchChange: jasmine.createSpy('onMultitouchChange'),
@@ -203,7 +203,7 @@ describe('Dialogs', () => {
       expect(e.find('#play').prop('disabled')).toEqual(true);
     });
     test('indicates required expansion (and hides Play) if not properly configured', () => {
-      const {props, e} = setup({quest: new Quest({...FEATURED_QUESTS[0], expansionhorror: true})});
+      const {props, e} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], expansionhorror: true})});
       expect(e.childAt(1).render().text()).toContain('expansion is required');
       expect(e.find('#play').length).toEqual(0);
     });

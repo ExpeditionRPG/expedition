@@ -1,0 +1,3 @@
+describe('SearchDisclaimer', () => {
+  test('None', () => {});
+});
