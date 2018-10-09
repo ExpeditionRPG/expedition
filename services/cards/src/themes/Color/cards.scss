@@ -555,6 +555,17 @@ $large-icon-width: 0.195in;
           font-weight: bold;
         }
       }
+
+      .typeIcon {
+        position: absolute;
+        left: -0.15in;
+        top: 0;
+      }
+      .scaleIcon {
+        position: absolute;
+        right: -0.15in;
+        top: 0;
+      }
     }
   }
 
