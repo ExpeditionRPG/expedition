@@ -49,9 +49,7 @@ export interface EndSettings {
   text: string;
 }
 
-export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'SEARCH' | 'PRIVATE';
-
-export interface SearchSettings {
+export interface SearchParams {
   [index: string]: any;
   id?: string;
   text?: string;
@@ -117,13 +115,15 @@ export type CardName =
   'QUEST_SETUP' |
   'QUEST_END' |
   'QUEST_CARD' |
-  'FEATURED_QUESTS' |
+  'TUTORIAL_QUESTS' |
+  'GM_CARD' |
   'SPLASH_CARD' |
+  'SEARCH_DISCLAIMER' |
   'SEARCH_CARD' |
+  'SEARCH_SETTINGS' |
   'SETTINGS' |
-  'ADVANCED' |
   'REMOTE_PLAY';
-export type CardPhase = TemplatePhase | SearchPhase | MultiplayerPhase | CheckoutPhase;
+export type CardPhase = TemplatePhase | MultiplayerPhase | CheckoutPhase;
 export interface CardState {
   questId: string;
   name: CardName;
@@ -133,7 +133,7 @@ export interface CardState {
   overrideDebounce?: boolean;
 }
 
-export type TransitionClassType = 'next' | 'prev' | 'instant';
+export type TransitionClassType = 'next' | 'prev' | 'instant' | 'nav';
 
 export interface QuestState {
   details: Quest;
@@ -151,7 +151,7 @@ export interface SavedQuestState {
 }
 
 export interface SearchState {
-  search: SearchSettings;
+  params: SearchParams;
   results: Quest[];
   searching: boolean;
 }
@@ -175,8 +175,8 @@ export interface UserState {
   loginCount: number;
 }
 
-export interface UserQuestHistory {
-  list: UserQuestsType;
+export interface UserQuestsState {
+  history: UserQuestsType;
 }
 
 export type FeedbackType = 'feedback'|'rating'|'report_error'|'report_quest';
@@ -221,7 +221,7 @@ export interface AppStateBase {
 export interface AppState extends AppStateBase {
   settings: SettingsType;
   multiplayer: MultiplayerState;
-  questHistory: UserQuestHistory;
+  userQuests: UserQuestsState;
   saved: SavedQuestState;
   audioData: AudioDataState;
   user: UserState;

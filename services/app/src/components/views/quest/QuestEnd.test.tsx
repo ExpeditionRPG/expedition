@@ -1,7 +1,7 @@
 import {configure, shallow} from 'enzyme';
 import * as React from 'react';
 import QuestEnd, {Props} from './QuestEnd';
-import {FEATURED_QUESTS} from '../../../Constants';
+import {TUTORIAL_QUESTS} from '../../../Constants';
 import {initialSettings} from '../../../reducers/Settings';
 import {initialState as initialCheckout} from '../../../reducers/Checkout';
 import {loggedOutUser} from '../../../reducers/User';
@@ -20,7 +20,7 @@ describe('QuestEnd', () => {
     const props: Props = {
       checkout: initialCheckout,
       platform: 'android',
-      quest: {details: FEATURED_QUESTS[0]},
+      quest: {details: TUTORIAL_QUESTS[0]},
       settings: initialSettings,
       user: loggedOutUser,
       showSharing: true,

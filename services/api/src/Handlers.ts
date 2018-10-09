@@ -5,7 +5,7 @@ import * as Joi from 'joi';
 import * as memoize from 'memoizee';
 import * as request from 'request-promise';
 import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents';
-import {PUBLIC_PARTITION} from 'shared/schema/Constants';
+import {PRIVATE_PARTITION, PUBLIC_PARTITION} from 'shared/schema/Constants';
 import {Feedback} from 'shared/schema/Feedback';
 import {Quest} from 'shared/schema/Quests';
 import Config from './config';
@@ -156,6 +156,22 @@ export function search(db: Database, req: express.Request, res: express.Response
     requirespenpaper: body.requirespenpaper,
     text: body.text,
   };
+
+  if (params.partition === PUBLIC_PARTITION && res.locals.id) {
+    // Also search for private quests by this user
+    const privateParams = {...params, owner: res.locals.id, partition: PRIVATE_PARTITION};
+    return Promise.all([
+      doSearch(db, res.locals.id, params),
+      doSearch(db, res.locals.id, privateParams),
+    ]).then((results) => {
+      res.status((results[0].error) ? 500 : 200).end(JSON.stringify({
+        error: results[0].error,
+        hasMore: results[0].hasMore,
+        quests: [...results[1].quests, ...results[0].quests],
+      }));
+    });
+  }
+
   return doSearch(db, res.locals.id, params).then((result) => {
     res.status((result.error) ? 500 : 200).end(JSON.stringify(result));
   });

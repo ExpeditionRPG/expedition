@@ -27,7 +27,7 @@ const mapStateToProps = (state: AppState): StateProps => {
     dialog: state.dialog,
     multiplayerStats,
     quest: state.quest || {details: {}} as any,
-    selectedSave: (state.quest.savedTS) ? {details: state.quest.details, ts: state.quest.savedTS} : null,
+    selectedSave: (state.quest && state.quest.savedTS) ? {details: state.quest.details, ts: state.quest.savedTS} : null,
     settings: state.settings,
     user: state.user,
   };

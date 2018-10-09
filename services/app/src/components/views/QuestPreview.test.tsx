@@ -1,9 +1,10 @@
 import {configure, shallow} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import {Quest} from 'shared/schema/Quests';
-import {FEATURED_QUESTS} from '../../Constants';
+import {TUTORIAL_QUESTS} from '../../Constants';
 import {initialSettings} from '../../reducers/Settings';
 import QuestPreview, {Props} from './QuestPreview';
+import {PRIVATE_PARTITION} from 'shared/schema/Constants';
 configure({ adapter: new Adapter() });
 
 describe('QuestPreview', () => {
@@ -19,7 +20,8 @@ describe('QuestPreview', () => {
       isDirectLinked: false,
       savedInstances: [],
       lastPlayed: null,
-      quest: new Quest({...FEATURED_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides}),
+      lastLogin: new Date(),
+      quest: new Quest({...TUTORIAL_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides}),
       settings: {...initialSettings, experimental: true},
       onPlay: jasmine.createSpy('onPlay'),
       onPlaySaved: jasmine.createSpy('onPlaySaved'),
@@ -37,7 +39,7 @@ describe('QuestPreview', () => {
   }
 
   test('renders selected quest details', () => {
-    const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
+    const quest = TUTORIAL_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
     const {wrapper} = setup(quest.title);
     expect(wrapper.render().html()).toContain(quest.title);
     expect(wrapper.render().html()).toContain(quest.genre);
@@ -83,7 +85,7 @@ describe('QuestPreview', () => {
   });
 
   test('allows save for offline play', () => {
-    const quest = new Quest({...FEATURED_QUESTS[0], publishedurl: 'http://somenonlocalurl'});
+    const quest = new Quest({...TUTORIAL_QUESTS[0], publishedurl: 'http://somenonlocalurl'});
     const {props, wrapper} = setup({quest});
     wrapper.find('#offlinesave').simulate('click');
     expect(props.onSave).toHaveBeenCalledWith(quest);
@@ -104,11 +106,26 @@ describe('QuestPreview', () => {
 
   test('indicates when the quest is available offline', () => {
     const {props, wrapper} = setup({savedInstances: [{pathLen: 0, ts: 1}]});
-    expect(wrapper.find(".searchDetails").text()).toContain("Available Offline");
+    expect(wrapper.find(".indicators").text()).toContain("Available Offline");
+  });
+
+  test('indicates when quest is new', () => {
+    const {props, wrapper} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], created: new Date()})});
+    expect(wrapper.find(".indicators").text()).toContain("Published Recently");
+  });
+
+  test('indicates when quest is private', () => {
+    const {props, wrapper} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], partition: PRIVATE_PARTITION})});
+    expect(wrapper.find(".indicators").text()).toContain("Private Quest");
+  });
+
+  test('indicates when quest is official', () => {
+    const {props, wrapper} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], official: true})});
+    expect(wrapper.find(".indicators").text()).toContain("Official Quest");
   });
 
   test('disallows saving local quests for offline play', () => {
-    const quest = new Quest({...FEATURED_QUESTS[0], publishedurl: 'quests/localquest.xml'});
+    const quest = new Quest({...TUTORIAL_QUESTS[0], publishedurl: 'quests/localquest.xml'});
     const {props, wrapper} = setup({quest});
     expect(wrapper.find('#offlinesave').exists()).toEqual(false);
   });
@@ -121,7 +138,7 @@ describe('QuestPreview', () => {
   });
 
   test('indicates that horror and future expansions are required', () => {
-    const quest = FEATURED_QUESTS.filter((el) => el.title === 'Learning 3: The Future')[0];
+    const quest = TUTORIAL_QUESTS.filter((el) => el.title === 'Learning 3: The Future')[0];
     const {wrapper} = setup({quest});
     expect(wrapper.html()).toContain('horror');
     expect(wrapper.html()).toContain('future');

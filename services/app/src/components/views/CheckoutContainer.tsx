@@ -23,7 +23,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(openSnackbar(Error('Error encountered: ' + err)));
     },
     onHome: (): void => {
-      dispatch(toPrevious({name: 'FEATURED_QUESTS'}));
+      dispatch(toPrevious({name: 'TUTORIAL_QUESTS'}));
     },
     onPhaseChange: (phase: CheckoutPhase): void => {
       logEvent('navigate', 'checkout_phase', {label: phase});

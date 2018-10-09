@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {smartTruncateSummary} from '../../Format';
 import {SavedQuestMeta} from '../../reducers/StateTypes';
-import Button from '../base/Button';
 import Card from '../base/Card';
+import QuestButtonContainer from '../base/QuestButtonContainer';
+import TextDivider from '../base/TextDivider';
 
 const pluralize = require('pluralize');
 const Moment = require('moment');
@@ -13,6 +13,7 @@ export interface StateProps {
 
 export interface DispatchProps {
   onSelect: (selected: SavedQuestMeta) => void;
+  onReturn: () => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -25,7 +26,7 @@ const SavedQuests = (props: Props): JSX.Element => {
   if (props.saved.length === 0) {
     return (
       <Card title="Saved & Offline Quests">
-        <p>You have no saved/offline quests.</p>
+        <p>You have no saved or offline quests.</p>
         <p>To save your position in a quest, open the top right menu while playing
            and select "Save Quest".</p>
         <p>To save a quest to play offline, click "Save for Offline" on a quest preview page.</p>
@@ -55,39 +56,29 @@ const SavedQuests = (props: Props): JSX.Element => {
   }
   const distinctSaveKeys = Object.keys(distinctSaves);
   distinctSaveKeys.sort((a, b) => distinctSaves[b].ts - distinctSaves[a].ts);
-  const groupedQuestSaves: JSX.Element[] = distinctSaveKeys.map((questID: string, index: number): JSX.Element => {
+  const groupedQuestSaves: JSX.Element[] = distinctSaveKeys.map((questID: string, i: number): JSX.Element => {
     const s = distinctSaves[questID];
     return (
-      <Button onClick={() => props.onSelect(s)} key={index} id={'quest' + index.toString()}>
-        <div className="questButton">
-          <div className="title">{s.details.title}</div>
-          <div className="summary">{Moment(s.ts).fromNow()} ({s.numSaves} {pluralize('save', s.numSaves)})</div>
-        </div>
-      </Button>
+      <QuestButtonContainer key={i} id={`quest${i}`} quest={s.details} onClick={() => props.onSelect(s)}>
+        <span className="details">{Moment(s.ts).fromNow()} ({s.numSaves} {pluralize('save', s.numSaves)})</span>
+      </QuestButtonContainer>
     );
   });
 
   const offlineQuests: JSX.Element[] = props.saved.filter((s: SavedQuestMeta) => {
     return (s.pathLen !== undefined && s.pathLen === 0);
-  }).map((s: SavedQuestMeta, index: number): JSX.Element => {
-    return (
-      <Button onClick={() => props.onSelect(s)} key={index} id={'quest' + index.toString()}>
-        <div className="questButton">
-          <div className="title">{s.details.title}</div>
-          <div className="summary">{smartTruncateSummary(s.details.summary)}</div>
-        </div>
-      </Button>
-    );
+  }).map((s: SavedQuestMeta, i: number): JSX.Element => {
+    return (<QuestButtonContainer key={i} id={`quest${i}`} quest={s.details} onClick={() => props.onSelect(s)}/>);
   });
 
   return (
-    <Card title="Saved & Offline Quests">
+    <Card title="Saved/Offline Quests" icon="offline" onReturn={props.onReturn}>
       {groupedQuestSaves.length > 0 && <span>
-        <h3>Saved Quests</h3>
+        <TextDivider text="Saved"/>
         {groupedQuestSaves}
       </span>}
       {offlineQuests.length > 0 && <span>
-        <h3>Offline Quests</h3>
+        <TextDivider text="Offline"/>
         {offlineQuests}
       </span>}
     </Card>

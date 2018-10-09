@@ -60,6 +60,19 @@
   transition: transform 300ms ease-in-out;
 }
 
+.nav-enter {
+  opacity: 1;
+}
+.nav-enter.nav-enter-active {
+  opacity: 1;
+}
+.nav-exit {
+  opacity: 1;
+}
+.nav-exit.nav-exit-active {
+  opacity: 0.01;
+  transition: opacity 250ms ease-out;
+}
 
 .fade-enter {
   opacity: 0.01;
@@ -96,6 +109,7 @@ $sizemap: (
   inputspacing: 16px, /* slightly larger on small devices (to prevent false touches) */
   input: 32px, /* size of input icon-style buttons */
   watermark: 36vh, /* height-specific */
+  navfooterbtn: 19vw,
   huge: 12vmin,
   large: 6vmin,
   icon: 4.5vmin,
@@ -142,7 +156,7 @@ html {
 }
 
 body {
-  background-color: $bg_inactive;
+  background-color: $bg_primary;
   overflow: hidden;
   width: 100%;
   height: 100%;
@@ -174,17 +188,40 @@ body {
   }
 }
 
-.remote_footer {
+.remote_footer, .nav_footer {
   position: absolute;
   bottom: 0;
-  height: size(remotefooter);
   width: 100%;
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
-  padding-top: size(remotefooter) / 10;
   background-color: $bg_primary;
   border-top: $border_accent;
+
+  &.quest_theme_horror {
+    background-color: $bg_primary_faded;
+  }
+
+  &.card_theme_dark {
+    background-color: $bg_dark_primary;
+    color: $font_color_dark_primary;
+  }
+}
+
+.nav_footer {
+  button .navlabel {
+    font-family: Cinzel, serif;
+  }
+
+  button {
+    min-width: size(large) !important;
+    max-width: size(navfooterbtn) !important;
+  }
+}
+
+.remote_footer {
+  padding-top: size(remotefooter) / 10;
+  height: size(remotefooter);
 
   .peers {
     flex: 8;
@@ -194,15 +231,6 @@ body {
       vertical-align: middle;
       padding: 0 size(base);
     }
-  }
-
-  &.quest_theme_horror {
-    background-color: $bg_primary_faded;
-  }
-
-  &.card_theme_dark {
-    background-color: $bg_dark_primary;
-    color: $font_color_dark_primary;
   }
 }
 
@@ -469,6 +497,11 @@ body.android .dialog .textfield:focus-within {
         color: $font_color_primary !important;
       }
     }
+    .base_button.mediumbutton button span {
+      font-size: 130% !important;
+      text-align: center !important;
+      font-family: Cinzel, serif;
+    }
     .base_button.bigbutton button span {
       font-size: 200% !important;
       text-align: center !important;
@@ -527,6 +560,12 @@ body.android .dialog .textfield:focus-within {
       .child_wrapper {
         margin: size(base);
       }
+
+      .filter_button {
+        float: right;
+        text-align: center;
+        font-size: fontsize(title);
+      }
     }
 
     .title_container {
@@ -578,9 +617,6 @@ body.android .dialog .textfield:focus-within {
         width: 100%;
         max-width: $absmaxdimension;
         margin: auto;
-        .filter_button {
-          float: right;
-        }
         .searchResultInfo {
           float: left;
           .inline_icon {
@@ -1155,7 +1191,7 @@ body.android .dialog .textfield:focus-within {
     }
   }
 
-  .questButtonWithIcon, .questButton, .searchResult {
+  .questButtonWithIcon, .questButton {
     padding-left: size(base);
     padding-right: size(base);
     &.played {
@@ -1181,6 +1217,7 @@ body.android .dialog .textfield:focus-within {
     .inline_icon {
       margin-bottom: -1 * size(tiny);
       padding-right: size(small);
+      padding-top: size(small);
     }
     .timing {
       opacity: 0.65;
@@ -1196,7 +1233,7 @@ body.android .dialog .textfield:focus-within {
       opacity: 0.65;
       float: left;
     }
-    .searchOrderDetail {
+    .details {
       opacity: 0.65;
       font-size: fontsize(flavor);
       display: inline-block;
@@ -1454,7 +1491,7 @@ body.android .dialog .textfield:focus-within {
       width: 11px;
       height: 11px;
       border-radius: 50%;
-      background: #bg_dark_titlebar;
+      background: $bg_dark_titlebar;
       animation-timing-function: cubic-bezier(0, 1, 1, 0);
     }
     div:nth-child(1) {

@@ -1,9 +1,12 @@
 import * as Redux from 'redux';
-import {VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants';
+import {NAV_CARD_STORAGE_KEY, VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants';
 import {getNavigator} from '../Globals';
-import {AppStateWithHistory, CardName, CardPhase} from '../reducers/StateTypes';
+import {getStorageString} from '../LocalStorage';
+import {initialSearch} from '../reducers/Search';
+import {AppStateWithHistory, CardName, CardPhase, SettingsType} from '../reducers/StateTypes';
 import {getStore} from '../Store';
 import {NavigateAction, remoteify} from './ActionTypes';
+import {search} from './Search';
 
 export interface ToCardArgs {
   keySuffix?: string;
@@ -48,7 +51,7 @@ interface ToPreviousArgs {
   before?: boolean;
   name?: CardName;
   phase?: CardPhase;
-  skip?: Array<{name: CardName, phase: CardPhase}>;
+  skip?: Array<{name: CardName, phase?: CardPhase}>;
 }
 export const toPrevious = remoteify(function toPrevious(a: ToPreviousArgs, dispatch: Redux.Dispatch<any>): ToPreviousArgs {
   dispatch({
@@ -65,4 +68,20 @@ export const toPrevious = remoteify(function toPrevious(a: ToPreviousArgs, dispa
   return a;
 });
 
-// TODO: getMultiplayerClient().registerModuleActions(module);
+interface ToNavCardArgs {
+  name?: CardName;
+  settings?: SettingsType;
+}
+export const toNavCard = remoteify(function toNavCard(a: ToNavCardArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ToNavCardArgs {
+  const settings = a.settings || getState().settings;
+  const name = a.name || getStorageString(NAV_CARD_STORAGE_KEY, 'TUTORIAL_QUESTS') as CardName;
+  if (name === 'SEARCH_CARD') {
+    // Fire off a search if we don't have any search results already.
+    dispatch(search({
+      params: initialSearch.params,
+      settings,
+    }));
+  }
+  dispatch(toCard({name}));
+  return {name};
+});
