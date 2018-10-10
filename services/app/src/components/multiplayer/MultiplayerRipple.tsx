@@ -91,7 +91,7 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
   }
 
   public end() {
-    this.ripple.stop({type: 'touchend', persist: () => {}});
+    this.ripple.stop({type: 'touchend', persist: () => {/* empty function */}});
   }
 
   public onRippleRef(node: any) {

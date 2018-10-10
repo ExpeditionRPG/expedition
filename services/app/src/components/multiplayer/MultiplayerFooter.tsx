@@ -5,7 +5,7 @@ import NetworkWifi from '@material-ui/icons/NetworkWifi';
 import SignalWifiOff from '@material-ui/icons/SignalWifiOff';
 import * as React from 'react';
 import {getMultiplayerClient} from '../../Multiplayer';
-import {CardThemeType, MultiplayerState} from '../../reducers/StateTypes';
+import {CardThemeType, DialogIDType, MultiplayerState} from '../../reducers/StateTypes';
 import {playerOrder} from '../views/quest/cardtemplates/PlayerCount';
 import MultiplayerIcon from './MultiplayerIcon';
 
@@ -16,8 +16,7 @@ export interface StateProps {
 }
 
 export interface DispatchProps {
-  onMultiplayerExit: () => void;
-  onMultiplayerStatusIconTap: () => void;
+  setDialog: (name: DialogIDType) => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -45,17 +44,17 @@ const MultiplayerFooter = (props: Props): JSX.Element => {
   // TODO: Indicate when waiting for other user action
   // TODO Icon colors here and in IconButton below
   const statusIcon = (
-    <IconButton onClick={(e: any) => {props.onMultiplayerStatusIconTap(); }}>
+    <IconButton onClick={(e: any) => {props.setDialog('MULTIPLAYER_STATUS'); }}>
       {(rpClient.isConnected()) ? <NetworkWifi nativeColor={color} /> : <SignalWifiOff nativeColor={color} />}
     </IconButton>
   );
 
   return (
     <div className={`remote_footer card_theme_${props.cardTheme} quest_theme_${props.questTheme}`}>
-      <IconButton onClick={(e: any) => {props.onMultiplayerExit(); }}>
+      <IconButton onClick={(e: any) => {props.setDialog('EXIT_REMOTE_PLAY'); }}>
          <Close nativeColor={color} />
       </IconButton>
-      <Button className="peers">
+      <Button className="peers" onClick={() => {props.setDialog('MULTIPLAYER_PEERS'); }}>
         {peers}
       </Button>
       {statusIcon}

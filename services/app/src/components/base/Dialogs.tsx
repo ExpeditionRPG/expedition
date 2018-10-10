@@ -138,6 +138,35 @@ export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDi
   }
 }
 
+interface MultiplayerPeersDialogProps extends React.Props<any> {
+  onClose: () => void;
+  open: boolean;
+  multiplayer: MultiplayerState;
+}
+
+export class MultiplayerPeersDialog extends React.Component<MultiplayerPeersDialogProps, {}> {
+  public render(): JSX.Element {
+    const peers = Object.keys(this.props.multiplayer.clientStatus).map((k, i: number) => {
+      const c = this.props.multiplayer.clientStatus[k];
+      return <p key={i}>
+        <div><strong>Player {i}</strong></div>
+        <div>{c.numPlayers} Players</div>
+      </p>;
+    });
+    return (
+      <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
+        <DialogTitle>Player Details</DialogTitle>
+        <DialogContent className="dialog">
+          {peers}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.props.onClose()}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+}
+
 interface ExpansionSelectDialogProps extends React.Props<any> {
   onExpansionSelect: (contentSets: ContentSetsType) => void;
   open: boolean;
@@ -377,6 +406,11 @@ const Dialogs = (props: Props): JSX.Element => {
         multiplayer={props.multiplayer}
         questDetails={props.quest.details}
         onSendReport={props.onSendMultiplayerReport}
+        onClose={props.onClose}
+      />
+      <MultiplayerPeersDialog
+        open={props.dialog && props.dialog.open === 'MULTIPLAYER_PEERS'}
+        multiplayer={props.multiplayer}
         onClose={props.onClose}
       />
       <FeedbackDialog

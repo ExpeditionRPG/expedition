@@ -1,6 +1,7 @@
 import Button from '@material-ui/core/Button';
 import * as React from 'react';
 import {openWindow} from '../../Globals';
+import {getStore} from '../../Store';
 import MultiplayerRippleContainer from '../multiplayer/MultiplayerRippleContainer';
 
 interface Props extends React.Props<any> {
@@ -8,7 +9,6 @@ interface Props extends React.Props<any> {
   disabled?: boolean;
   id?: string;
   onClick?: (e: any) => any;
-  remoteRipple?: boolean;
 }
 
 export default class ExpeditionButton extends React.Component<Props, {}> {
@@ -32,7 +32,7 @@ export default class ExpeditionButton extends React.Component<Props, {}> {
   public render() {
     const className = 'base_button ' + (this.props.className || '');
 
-    if (this.props.remoteRipple === false || !this.props.id) {
+    if (!this.props.id) {
       return (
         <div className={className}>
         <Button disabled={this.props.disabled} onClick={(e: any) => this._onClick(e)}>
@@ -44,7 +44,7 @@ export default class ExpeditionButton extends React.Component<Props, {}> {
 
     return (
       <MultiplayerRippleContainer className={className} id={this.props.id}>
-        <Button disabled={this.props.disabled} onClick={(e: any) => this._onClick(e)} disableRipple={true}>
+        <Button disabled={this.props.disabled} onClick={(e: any) => this._onClick(e)} disableRipple={getStore().getState().multiplayer.session !== null}>
           <div>{this.props.children}</div>
         </Button>
       </MultiplayerRippleContainer>
