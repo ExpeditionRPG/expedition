@@ -1,17 +1,17 @@
 import Sequelize from 'sequelize';
-import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents';
-import {PUBLIC_PARTITION} from 'shared/schema/Constants';
-import {Feedback} from 'shared/schema/Feedback';
-import {Event} from 'shared/schema/multiplayer/Events';
-import {SessionClient} from 'shared/schema/multiplayer/SessionClients';
-import {Session} from 'shared/schema/multiplayer/Sessions';
-import {QuestData} from 'shared/schema/QuestData';
-import {Quest} from 'shared/schema/Quests';
-import {RenderedQuest} from 'shared/schema/RenderedQuests';
-import {PLACEHOLDER_DATE, SchemaBase} from 'shared/schema/SchemaBase';
-import {User} from 'shared/schema/Users';
-import {Database} from './Database';
-import {prepare} from './Schema';
+import { AnalyticsEvent } from 'shared/schema/AnalyticsEvents';
+import { PRIVATE_PARTITION, PUBLIC_PARTITION } from 'shared/schema/Constants';
+import { Feedback } from 'shared/schema/Feedback';
+import { Event } from 'shared/schema/multiplayer/Events';
+import { SessionClient } from 'shared/schema/multiplayer/SessionClients';
+import { Session } from 'shared/schema/multiplayer/Sessions';
+import { QuestData } from 'shared/schema/QuestData';
+import { Quest } from 'shared/schema/Quests';
+import { RenderedQuest } from 'shared/schema/RenderedQuests';
+import { PLACEHOLDER_DATE, SchemaBase } from 'shared/schema/SchemaBase';
+import { User } from 'shared/schema/Users';
+import { Database } from './Database';
+import { prepare } from './Schema';
 
 export const TEST_NOW = new Date('2017-12-18T19:32:38.397Z');
 
@@ -97,6 +97,14 @@ export const quests = {
     title: 'Future Quest',
     userid: 'testuser',
   }),
+  private: new Quest({
+    ...basicQuest,
+    partition: PRIVATE_PARTITION,
+    publishedurl: 'http://testpublishedPRIVATEquesturl.com',
+    summary: 'This be a test PRIVATE quest!',
+    title: 'Test Private Quest',
+    url: 'http://test-private.com',
+  }),
 };
 
 const basicQuestData = new QuestData({
@@ -105,7 +113,7 @@ const basicQuestData = new QuestData({
   created: TEST_NOW,
   data: 'test text',
   notes: 'test notes',
-  metadata: JSON.stringify({test: 'meta'}),
+  metadata: JSON.stringify({ test: 'meta' }),
   edittime: TEST_NOW,
 });
 
@@ -187,19 +195,23 @@ export const events = {
   basic: basicEvent,
   questPlay: new Event({
     ...basicEvent,
-    json: JSON.stringify({event: {
-      args: JSON.stringify({title: basicQuest.title}),
-      fn: 'fetchQuestXML',
-    }}),
+    json: JSON.stringify({
+      event: {
+        args: JSON.stringify({ title: basicQuest.title }),
+        fn: 'fetchQuestXML',
+      },
+    }),
   }),
 };
 
 export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
-  const db = new Database(new Sequelize({
-    dialect: 'sqlite',
-    logging: false,
-    storage: ':memory:',
-  }));
+  const db = new Database(
+    new Sequelize({
+      dialect: 'sqlite',
+      logging: false,
+      storage: ':memory:',
+    }),
+  );
 
   return Promise.all([
     db.analyticsEvent.sync(),
@@ -211,34 +223,40 @@ export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
     db.events.sync(),
     db.sessionClients.sync(),
     db.sessions.sync(),
-  ]).then(() => Promise.all(state.map((entry) => {
-    if (entry instanceof AnalyticsEvent) {
-      return db.analyticsEvent.create(prepare(entry)).then(() => null);
-    }
-    if (entry instanceof User) {
-      return db.users.create(prepare(entry)).then(() => null);
-    }
-    if (entry instanceof Quest) {
-      return db.quests.create(prepare(entry)).then(() => null);
-    }
-    if (entry instanceof QuestData) {
-      return db.questData.create(prepare(entry)).then(() => null);
-    }
-    if (entry instanceof Feedback) {
-      return db.feedback.create(prepare(entry)).then(() => null);
-    }
-    if (entry instanceof RenderedQuest) {
-      return db.renderedQuests.create(prepare(entry)).then(() => null);
-    }
-    if (entry instanceof Event) {
-      return db.events.create(prepare(entry)).then(() => null);
-    }
-    if (entry instanceof SessionClient) {
-      return db.sessionClients.create(prepare(entry)).then(() => null);
-    }
-    if (entry instanceof Session) {
-      return db.sessions.create(prepare(entry)).then(() => null);
-    }
-    throw new Error('Unsupported entry for testingDBWithState');
-  }))).then(() => db);
+  ])
+    .then(() =>
+      Promise.all(
+        state.map(entry => {
+          if (entry instanceof AnalyticsEvent) {
+            return db.analyticsEvent.create(prepare(entry)).then(() => null);
+          }
+          if (entry instanceof User) {
+            return db.users.create(prepare(entry)).then(() => null);
+          }
+          if (entry instanceof Quest) {
+            return db.quests.create(prepare(entry)).then(() => null);
+          }
+          if (entry instanceof QuestData) {
+            return db.questData.create(prepare(entry)).then(() => null);
+          }
+          if (entry instanceof Feedback) {
+            return db.feedback.create(prepare(entry)).then(() => null);
+          }
+          if (entry instanceof RenderedQuest) {
+            return db.renderedQuests.create(prepare(entry)).then(() => null);
+          }
+          if (entry instanceof Event) {
+            return db.events.create(prepare(entry)).then(() => null);
+          }
+          if (entry instanceof SessionClient) {
+            return db.sessionClients.create(prepare(entry)).then(() => null);
+          }
+          if (entry instanceof Session) {
+            return db.sessions.create(prepare(entry)).then(() => null);
+          }
+          throw new Error('Unsupported entry for testingDBWithState');
+        }),
+      ),
+    )
+    .then(() => db);
 }

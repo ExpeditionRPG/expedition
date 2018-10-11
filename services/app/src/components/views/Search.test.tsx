@@ -21,6 +21,7 @@ export const TEST_SEARCH: SearchParams = {
   order: '+title',
   text: 'Test Text',
   expansions: [],
+  showPrivate: true,
 };
 
 describe('Search', () => {
@@ -29,7 +30,7 @@ describe('Search', () => {
 
   function setup(overrides?: Partial<Props>) {
     const props: Props = {
-      params: TEST_SEARCH
+      params: TEST_SEARCH,
       settings: initialSettings,
       user: loggedOutUser,
       results: [],
