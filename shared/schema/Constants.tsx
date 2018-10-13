@@ -11,13 +11,14 @@ export const PRIVATE_PARTITION = 'expedition-private';
 export const PUBLIC_PARTITION = 'expedition-public';
 export const PARTITIONS: PartitionType[] = [PRIVATE_PARTITION, PUBLIC_PARTITION];
 
-export type GenreType = 'Comedy' | 'Drama' | 'Horror' | 'Mystery' | 'Romance';
+export type GenreType = 'Comedy' | 'Drama' | 'Horror' | 'Mystery' | 'Romance' | 'SciFi';
 export const GENRES: GenreType[] = [
   'Comedy',
   'Drama',
   'Horror',
   'Mystery',
   'Romance',
+  'SciFi',
 ];
 
 export type LanguageType = 'English' | 'French' | 'German' | 'Hungarian' | 'Italian' | 'Portuguese' | 'Romanian' | 'Spanish';
