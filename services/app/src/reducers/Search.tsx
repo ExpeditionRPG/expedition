@@ -7,7 +7,7 @@ import {SearchState} from './StateTypes';
 export const initialSearch: SearchState = {
   results: null, // null = need to search; [] = no results
   params: {
-    language: getStorageString('search-language', 'English') as LanguageType,
+    language: getStorageString('language', 'English') as LanguageType,
     order: '+ratingavg',
     text: '',
   },
@@ -22,9 +22,9 @@ export function search(state: SearchState = initialSearch, action: Redux.Action)
     case 'SEARCH_CHANGE_PARAMS':
       // Update params and clear results
       const changes = (action as SearchChangeParamsAction).params || {};
-      Object.keys(changes).forEach((key: string) => {
-        setStorageKeyValue(`search-${key}`, changes[key]);
-      });
+      if (changes.language) {
+        setStorageKeyValue('language', changes.language);
+      }
       return {...state, params: {...state.params, ...changes}, results: null};
     case 'SEARCH_REQUEST':
       // Clear the searched quests if we're starting a new search.
