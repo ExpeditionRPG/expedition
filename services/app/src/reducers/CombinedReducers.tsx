@@ -116,6 +116,11 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         user: state.user,
         audioData: state.audioData,
       } as AppStateWithHistory;
+    } else if (action.type === 'CLEAR_HISTORY') {
+      return {
+        ...state,
+        _history: [],
+      };
     }
 
     // Create a new array (objects may be shared)

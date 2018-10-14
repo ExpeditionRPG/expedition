@@ -99,9 +99,11 @@ export default class Card extends React.Component<Props, {}> {
     if (this.props.icon) {
       icon = <img id="bgimg" src={'images/' + this.props.icon + '.svg'}></img>;
     }
-    const isExperimental = getStore().getState().settings.experimental;
+    const state = getStore().getState();
+    const isExperimental = state.settings.experimental;
     const cardTheme = this.props.theme || 'light';
-    const questTheme = getStore().getState().quest.details.theme || 'base';
+    const questTheme = state.quest.details.theme || 'base';
+    const hasReturn = state._history.length > 0;
     const classes = ['base_card', 'card_theme_' + cardTheme, 'quest_theme_' + questTheme];
     if (this.props.className) {
       classes.push(this.props.className);
@@ -111,7 +113,7 @@ export default class Card extends React.Component<Props, {}> {
     return (
       <div className={classes.join(' ')}>
         <div className="title_container">
-          <IconButton id="titlebarReturnButton" onClick={() => this.onReturn()}><ChevronLeftIcon/></IconButton>
+          {hasReturn && <IconButton id="titlebarReturnButton" onClick={() => this.onReturn()}><ChevronLeftIcon/></IconButton>}
           <span className="menu">
             <IconButton id="menuButton" aria-haspopup="true" onClick={(e) => this.handleMenuClick(e)}>
               <MoreVertIcon/>

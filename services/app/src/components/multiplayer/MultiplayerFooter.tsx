@@ -36,9 +36,11 @@ const MultiplayerFooter = (props: Props): JSX.Element => {
       continue;
     }
 
+    const group: JSX.Element[] = [];
     for (let j = 0; j < (lastStatus.numPlayers || 1); j++) {
-      peers.push(<MultiplayerIcon key={`${client}${j}`} className={`inline_icon player${order[i]}`} />);
+      group.push(<MultiplayerIcon key={`${client}${j}`} className={`inline_icon player${order[i]}`} />);
     }
+    peers.push(<span key={i} className="group">{group}</span>);
   }
 
   // TODO: Indicate when waiting for other user action

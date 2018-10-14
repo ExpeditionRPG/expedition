@@ -227,6 +227,11 @@ body {
     flex: 8;
     text-align: center;
 
+    .group {
+      padding-left: size(base);
+      padding-right: size(base);
+    }
+
     svg {
       vertical-align: middle;
       padding: 0 size(base);
@@ -1183,6 +1188,25 @@ body.android .dialog .textfield:focus-within {
           color: red;
         }
       }
+    }
+
+    table {
+      td {
+        padding: size(small);
+
+        span {
+          display: inline-block;
+        }
+      }
+
+      td:first-child {
+        min-width: 17vmin;
+        text-align: center;
+        border-right: $border_accent;
+      }
+
+      padding: size(small);
+      border-collapse: collapse;
     }
 
     input {

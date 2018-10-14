@@ -21,7 +21,7 @@ export interface DispatchProps {
   onConnect: (user: UserState) => void;
   onReconnect: (user: UserState, id: SessionID, secret: string) => void;
   onNewSessionRequest: (user: UserState) => void;
-  onContinue: () => void;
+  onStart: () => void;
 }
 
 interface Props extends StateProps, DispatchProps {}
@@ -55,13 +55,17 @@ class MultiplayerConnect extends React.Component<Props, {}> {
     return (
       <Card title="Online Multiplayer">
         <div className="remoteplay">
-          <p>Online multiplayer allows you to go on adventures with your friends, no matter where they are! Simply start a new session and have your friends join.</p>
+          <p>Adventure with your friends, no matter where they are!</p>
+          <ul>
+            <li>Multiple players can play on one device</li>
+            <li>Up to 6 players can play in a session</li>
+            <li>Each group needs <a href="#" onClick={() => window.open('https://expeditiongame.com/store?utm_source=app', '_blank')}>Expedition</a> to play.</li>
+          </ul>
+          <p>Start a new session, or join an existing one:</p>
           <Button onClick={() => {this.props.onNewSessionRequest(this.props.user); }}>Start a new session</Button>
           <Button onClick={() => {this.props.onConnect(this.props.user); }}>Join a session</Button>
           {history.length > 0 && <div className="helptext">You may also reconnect to these sessions:</div>}
           {history}
-          <br/>
-          <p>You can have multiple people play off one device, with a maximum of 6 players across all devices. Each device / group will need a set of <a href="#" onClick={() => window.open('https://expeditiongame.com/store?utm_source=app', '_blank')}>Expedition cards</a> to play.</p>
         </div>
       </Card>
     );
@@ -72,16 +76,27 @@ function renderLobby(props: Props): JSX.Element {
   return (
     <Card title="Lobby">
       <div className="remoteplay">
-        <div><strong>Session created!</strong> Tell your peers to connect with the following code:</div>
+        <div><strong>Session created!</strong> Tell your friends to connect with the following code:</div>
         <h1 className="sessionCode">{props.multiplayer.session && props.multiplayer.session.secret}</h1>
         <p>The bottom bar indicates that you are in an online multiplayer session:</p>
         <p>
-          <img className="inline_icon" src="images/adventurer_small.svg" /> Peers connected (including yourself)<br/>
-          <NetworkWifi/> / <SignalWifiOff/> Connection state<br/>
-          <Close/> Exit multiplayer (others may continue to play)
+          <table>
+            <tr><td><img className="inline_icon" src="images/adventurer_small.svg" /></td><td>
+              <span>Connected adventurers</span>
+              <span>(each device has a different color)</span>
+            </td></tr>
+            <tr><td><NetworkWifi/> / <SignalWifiOff/></td><td>
+              <span>Connection state</span>
+            </td></tr>
+            <tr><td><Close/></td><td>
+              <span>Exit multiplayer</span>
+              <span>(others may continue to play)</span>
+            </td></tr>
+          </table>
         </p>
+        <p>Click the connected adventurers or connection state for more information.</p>
         <p>Once everyone is connected, click Start:</p>
-        <Button id="1" onClick={() => {props.onContinue(); }}>Start</Button>
+        <Button id="1" className="mediumbutton" onClick={() => {props.onStart(); }}>Start</Button>
       </div>
     </Card>
   );
