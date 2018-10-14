@@ -102,7 +102,6 @@ function renderNoQuests(props: Props): JSX.Element {
 export class Search extends React.Component<Props, {}> {
 
   public componentDidMount() {
-    console.log('mount', this.props.results, this.props.user);
     if (!this.props.results && this.props.user.loggedIn) {
       // 10/14/18 Timeout prevents bug with CSSTransition when dispatching
       // DOM change as part of componentDidMount
