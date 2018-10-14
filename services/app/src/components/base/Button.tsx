@@ -1,7 +1,6 @@
 import Button from '@material-ui/core/Button';
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {openWindow} from '../../Globals';
 import {AppState} from '../../reducers/StateTypes';
 import MultiplayerRippleContainer from '../multiplayer/MultiplayerRippleContainer';
 
@@ -20,10 +19,7 @@ class ExpeditionButton extends React.Component<Props, {}> {
       target = target.parentNode;
     }
 
-    if (target && target.getAttribute('href')) {
-      openWindow(target.getAttribute('href'));
-      e.stopPropagation();
-    } else if (this.props.onClick) {
+    if (this.props.onClick) {
       this.props.onClick(e);
     }
 

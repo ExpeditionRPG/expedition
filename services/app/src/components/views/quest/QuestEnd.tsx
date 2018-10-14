@@ -70,7 +70,6 @@ export default class QuestEnd extends React.Component<Props, {}> {
   }
 
   private onChange(field: keyof QuestEndState, value: string) {
-    console.log(field, value);
     this.setState({[field]: value});
     if (field === 'primaryIssue' && value) {
       this.setState({needsIssue: false});
@@ -81,7 +80,6 @@ export default class QuestEnd extends React.Component<Props, {}> {
     if (!this.rating()) {
       return <span className="nofeedbackform"/>;
     }
-    console.log('actually rendering form');
 
     let details: JSX.Element|null = null;
     if (this.isGoodRating()) {
@@ -254,13 +252,12 @@ export default class QuestEnd extends React.Component<Props, {}> {
   }
 
   public render() {
-    console.log('rendering');
     const rated = this.state.rating !== null && (this.state.rating > 0);
     return (
       <Card title={this.props.quest.details.title}>
         <p>We hope you enjoyed <i>{this.props.quest.details.title}</i> by {this.props.quest.details.author}!</p>
         <p>Rate this quest:</p>
-        <StarRating id="starrating" hintText={true} value={this.state.rating || 0} onChange={(rating: number) => { console.log('setting state'); this.setState({rating}); }}></StarRating>
+        <StarRating id="starrating" hintText={true} value={this.state.rating || 0} onChange={(rating: number) => { this.setState({rating}); }}></StarRating>
         {this.renderFeedbackForm()}
         {this.maybeRenderTipping()}
         <Button id="submit" onClick={() => this.validateAndSubmit()}>

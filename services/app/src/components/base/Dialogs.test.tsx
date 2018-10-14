@@ -10,6 +10,8 @@ import {
   ExpansionSelectDialog,
   SetPlayerCountDialogProps,
   SetPlayerCountDialog,
+  MultiplayerPeersDialogProps,
+  MultiplayerPeersDialog
 } from './Dialogs';
 import {loggedOutUser} from '../../reducers/User';
 import {initialSettings} from '../../reducers/Settings';
@@ -132,7 +134,27 @@ describe('Dialogs', () => {
   });
 
   describe('MultiplayerPeersDialog', () => {
-    test.skip('shows peers & player count', () => {/* TODO */});
+    function setup(overrides?: Partial<MultiplayerPeersDialogProps>) {
+      const props: Props = {
+        onClose: jasmine.createSpy('onClose'),
+        open: true,
+        multiplayer: initialMultiplayer,
+        ...overrides,
+      };
+      return {props, e: mount(<MultiplayerPeersDialog {...(props as any as MultiplayerPeersDialogProps)} />)};
+    }
+
+    test('shows peers & player count', () => {
+      const {e} = setup({
+        multiplayer: {...initialMultiplayer, clientStatus: {
+          "a": {numPlayers: 3},
+          "b": {numPlayers: 2},
+        }},
+      });
+      const text = e.find('DialogContent').render().text();
+      expect(text).toContain("3 Players");
+      expect(text).toContain("2 Players");
+    });
   });
 
   describe('ExpansionSelectDialog', () => {

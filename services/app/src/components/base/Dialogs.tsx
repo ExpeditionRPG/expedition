@@ -148,10 +148,10 @@ export class MultiplayerPeersDialog extends React.Component<MultiplayerPeersDial
   public render(): JSX.Element {
     const peers = Object.keys(this.props.multiplayer.clientStatus).map((k, i: number) => {
       const c = this.props.multiplayer.clientStatus[k];
-      return <p key={i}>
+      return <div key={i}>
         <div><strong>Player {i}</strong></div>
         <div>{c.numPlayers} Players</div>
-      </p>;
+      </div>;
     });
     return (
       <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>

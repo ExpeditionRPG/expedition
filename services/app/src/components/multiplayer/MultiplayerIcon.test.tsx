@@ -1,3 +1,3 @@
 describe('MultiplayerIcon', () => {
-  test.skip('Empty', () => { /* No tests needed */ });
+  test('Empty', () => { /* No tests needed */ });
 });

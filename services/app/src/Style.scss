@@ -240,40 +240,40 @@ body {
 }
 
 .player1 {
-  fill: #c4232f; /* magic red */
+  fill: $magic_red;
 }
 .player2 {
-  fill: #00a3bb; /* melee blue */
+  fill: $melee_blue;
 }
 .player3 {
-  fill: #982f77; /* music purple */
+  fill: $music_purple;
 }
 .player4 {
-  fill: #009a57; /* ranged green */
+  fill: $ranged_green;
 }
 .player5 {
-  fill: #6b357e; /* influence purple */
+  fill: $influence_purple;
 }
 .player6 {
-  fill: #3c3b35; /* tech grey */
+  fill: $tech_grey;
 }
 .ripplep1 {
-  background-color: #c4232f !important;
+  background-color: $magic_red !important;
 }
 .ripplep2 {
-  background-color: #00a3bb !important;
+  background-color: $melee_blue !important;
 }
 .ripplep3 {
-  background-color: #982f77 !important;
+  background-color: $music_purple !important;
 }
 .ripplep4 {
-  background-color: #009a57 !important;
+  background-color: $ranged_green !important;
 }
 .ripplep5 {
-  background-color: #6b357e !important;
+  background-color: $influence_purple !important;
 }
 .ripplep6 {
-  background-color: #3c3b35 !important;
+  background-color: $tech_grey !important;
 }
 
 .remote-affector {

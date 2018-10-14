@@ -43,14 +43,12 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
     let activePlayer = 1;
     const order = playerOrder(this.props.multiplayer.session && this.props.multiplayer.session.secret || '');
     const clients = Object.keys(this.props.multiplayer.clientStatus).sort();
-    console.log(client, clients);
     for (let i = 0; i < clients.length; i++) {
       if (clients[i] === client) {
         activePlayer = order[i];
         break;
       }
     }
-
     if (this.props.id === null || e.event === 'touchmove' || e.id !== this.props.id) {
       return;
     }
@@ -85,7 +83,6 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
       clientX: rect.left + realX,
       clientY: rect.top + realY,
     };
-    console.log(event, activePlayer);
     this.setState({activePlayer});
     this.ripple.start(event);
   }

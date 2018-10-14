@@ -4,7 +4,6 @@ import Close from '@material-ui/icons/Close';
 import NetworkWifi from '@material-ui/icons/NetworkWifi';
 import SignalWifiOff from '@material-ui/icons/SignalWifiOff';
 import * as React from 'react';
-import {getMultiplayerClient} from '../../Multiplayer';
 import {CardThemeType, DialogIDType, MultiplayerState} from '../../reducers/StateTypes';
 import {playerOrder} from '../views/quest/cardtemplates/PlayerCount';
 import MultiplayerIcon from './MultiplayerIcon';
@@ -13,6 +12,7 @@ export interface StateProps {
   multiplayer: MultiplayerState;
   cardTheme: CardThemeType;
   questTheme: string;
+  connected: boolean;
 }
 
 export interface DispatchProps {
@@ -24,7 +24,6 @@ export interface Props extends StateProps, DispatchProps {}
 const MultiplayerFooter = (props: Props): JSX.Element => {
   const color = (props.cardTheme === 'dark') ? 'white' : 'black';
   const peers: JSX.Element[] = [];
-  const rpClient = getMultiplayerClient();
 
   const order = playerOrder(props.multiplayer.session && props.multiplayer.session.secret || '');
   const clients = Object.keys(props.multiplayer.clientStatus).sort();
@@ -46,7 +45,7 @@ const MultiplayerFooter = (props: Props): JSX.Element => {
   // TODO Icon colors here and in IconButton below
   const statusIcon = (
     <IconButton onClick={(e: any) => {props.setDialog('MULTIPLAYER_STATUS'); }}>
-      {(rpClient.isConnected()) ? <NetworkWifi nativeColor={color} /> : <SignalWifiOff nativeColor={color} />}
+      {(props.connected) ? <NetworkWifi className="yesWifi" nativeColor={color} /> : <SignalWifiOff className="noWifi" nativeColor={color} />}
     </IconButton>
   );
 

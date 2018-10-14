@@ -1,7 +1,7 @@
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
 import {MultiplayerState} from 'app/reducers/StateTypes';
-import {numAdventurers, numPlayers} from './PlayerCount';
+import {numAdventurers, numPlayers, playerOrder} from './PlayerCount';
 
 describe('PlayerCount', () => {
   const s = {...initialSettings, numPlayers: 1};
@@ -29,7 +29,14 @@ describe('PlayerCount', () => {
     });
   });
   describe('playerOrder', () => {
-    test.skip('returns order from 1-6', {/* TODO */});
-    test.skip('returns same order based on seed', {/* TODO */});
+    test('returns order from 1-6', () => {
+      expect(playerOrder('').sort()).toEqual([1,2,3,4,5,6]);
+    });
+    test('returns same order based on seed', () => {
+      expect(playerOrder('')).toEqual(playerOrder(''));
+    });
+    test('returns different orders for different seeds', () => {
+      expect(playerOrder('a')).not.toEqual(playerOrder('b'));
+    })
   });
 });
