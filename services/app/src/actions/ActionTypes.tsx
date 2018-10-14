@@ -92,13 +92,18 @@ export interface QuestNodeAction extends Redux.Action {
 
 export interface ChangeSettingsAction extends Redux.Action {
   type: 'CHANGE_SETTINGS';
-  settings: any;
+  settings: Partial<SettingsType>;
 }
 
 export interface CombatTimerStopAction extends Redux.Action {
   type: 'COMBAT_TIMER_STOP';
   elapsedMillis: number;
   settings: SettingsType;
+}
+
+export interface SearchChangeParamsAction extends Redux.Action {
+  type: 'SEARCH_CHANGE_PARAMS';
+  params: Partial<SearchParams>;
 }
 
 export interface SearchRequestAction extends Redux.Action {
