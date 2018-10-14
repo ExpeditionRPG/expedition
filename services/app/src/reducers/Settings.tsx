@@ -12,7 +12,7 @@ export const initialSettings: SettingsType = {
   experimental: getStorageBoolean('experimental', false) || NODE_ENV === 'dev',
   fontSize: getStorageString('fontSize', 'NORMAL') as FontSizeType,
   multitouch: getStorageBoolean('multitouch', true),
-  numPlayers: getStorageNumber('numPlayers', 1),
+  numLocalPlayers: getStorageNumber('numLocalPlayers', 1),
   showHelp: getStorageBoolean('showHelp', true),
   simulator: false, // this is only set by the Quest Creator
   timerSeconds: getStorageNumber('timerSeconds', 10),

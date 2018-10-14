@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onDelta: (numPlayers: number, delta: number) => {
       numPlayers += delta;
-      if (numPlayers <= 1 || numPlayers > 6) {
+      if (numPlayers < 1 || numPlayers > 6) {
         return;
       }
       dispatch(changeSettings({numPlayers}));

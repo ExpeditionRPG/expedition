@@ -11,7 +11,7 @@ export const Settings: {[k: string]: SettingsType} = {
     experimental: false,
     fontSize: 'NORMAL' as FontSizeType,
     multitouch: true,
-    numPlayers: 3,
+    numLocalPlayers: 3,
     showHelp: true,
     simulator: false,
     timerSeconds: 10,

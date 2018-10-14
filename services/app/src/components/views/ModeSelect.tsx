@@ -24,8 +24,8 @@ interface Props extends StateProps, DispatchProps {}
 const ModeSelect = (props: Props): JSX.Element => {
   return (
     <Card title="Game Setup">
-      <Picker label="Adventurers" onDelta={(i: number) => props.onDelta(props.numPlayers, i)} value={props.numPlayers}>
-        Set this to the number of players.
+      <Picker label="Players" onDelta={(i: number) => props.onDelta(props.numPlayers, i)} value={props.numPlayers}>
+      {(props.numPlayers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
       </Picker>
       <Checkbox label="Multitouch" value={props.multitouch} onChange={props.onMultitouchChange}>
         {(props.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
