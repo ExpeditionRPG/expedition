@@ -1,6 +1,4 @@
-import {configure, render} from 'enzyme';
 import * as React from 'react';
-import Adapter from 'enzyme-adapter-react-16';
 import {LanguageType} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {TUTORIAL_QUESTS} from '../../Constants';
@@ -8,10 +6,8 @@ import {SearchParams} from '../../reducers/StateTypes';
 import {initialSettings} from '../../reducers/Settings';
 import {loggedOutUser} from '../../reducers/User';
 import {testLoggedInUser} from '../../reducers/User.test';
-import {newMockStore} from 'app/Testing';
-import {Provider} from 'react-redux';
+import {render} from 'app/Testing';
 import Search, {Props} from './Search';
-configure({ adapter: new Adapter() });
 
 const Moment = require('moment');
 
@@ -40,8 +36,7 @@ describe('Search', () => {
       onQuest: jasmine.createSpy('onQuest'),
       ...overrides,
     };
-    const store = newMockStore({saved: {list: []}, userQuests: {history: {}}, user: loggedOutUser});
-    return {props, e: render(<Provider store={store}><Search {...(props as any as Props)} /></Provider>, undefined /*renderOptions*/)};
+    return {props, e: render(<Search {...(props as any as Props)} />, undefined /*renderOptions*/)};
   }
 
   test('renders a small selection of quests when user is not logged in', () => {

@@ -28,4 +28,8 @@ describe('PlayerCount', () => {
       expect(numPlayers(s, m4)).toEqual(4);
     });
   });
+  describe('playerOrder', () => {
+    test.skip('returns order from 1-6', {/* TODO */});
+    test.skip('returns same order based on seed', {/* TODO */});
+  });
 });

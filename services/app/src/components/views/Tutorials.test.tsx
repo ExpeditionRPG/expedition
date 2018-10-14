@@ -1,13 +1,9 @@
-import {configure, render} from 'enzyme';
 import * as React from 'react';
-import Adapter from 'enzyme-adapter-react-16';
 import {TUTORIAL_QUESTS} from '../../Constants';
 import {initialSettings} from '../../reducers/Settings';
 import Tutorials, {Props} from './Tutorials';
-import {newMockStore} from 'app/Testing';
-import {Provider} from 'react-redux';
+import {render} from 'app/Testing';
 import {loggedOutUser} from '../../reducers/User';
-configure({ adapter: new Adapter() });
 
 const HORROR_SUBSTR = "Horror";
 const FUTURE_SUBSTR = "Future";
@@ -21,8 +17,7 @@ describe('TutorialsContainer', () => {
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,
     };
-    const store = newMockStore({saved: {list: []}, userQuests: {history: {}}, user: loggedOutUser});
-    const e = render(<Provider store={store}><Tutorials {...(props as any as Props)} /></Provider>, undefined /*renderOptions*/);
+    const e = render(<Tutorials {...(props as any as Props)} />);
     return {props, e};
   }
 

@@ -1,11 +1,10 @@
-import {configure, shallow} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
 import {TUTORIAL_QUESTS} from '../../Constants';
 import {initialSettings} from '../../reducers/Settings';
 import QuestPreview, {Props} from './QuestPreview';
 import {PRIVATE_PARTITION} from 'shared/schema/Constants';
-configure({ adapter: new Adapter() });
+import {mount, unmountAll} from 'app/Testing';
 
 describe('QuestPreview', () => {
   const savedInstances = [
@@ -14,6 +13,10 @@ describe('QuestPreview', () => {
     {pathLen: 1, ts: 4},
     {pathLen: 1, ts: 3},
   ];
+
+  afterEach(() => {
+    unmountAll();
+  });
 
   function setupCustom(questTitle: string, overrides?: Partial<Props>, questOverrides?: Partial<Quest>) {
     const props: Props = {
@@ -31,7 +34,7 @@ describe('QuestPreview', () => {
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,
     };
-    const wrapper = shallow(QuestPreview(props), undefined /*renderOptions*/);
+    const wrapper = mount(<QuestPreview {...(props as any as Props)} />);
     return {props, wrapper};
   }
   function setup(overrides?: Partial<Props>, questOverrides?: Partial<Quest>) {
@@ -74,26 +77,26 @@ describe('QuestPreview', () => {
 
   test('passes direct-linked state so we can ask for count and multitouch', () => {
     const {props, wrapper} = setup({isDirectLinked: true});
-    wrapper.find('#play').simulate('click');
+    wrapper.find('#play').hostNodes().find('button').simulate('click');
     expect(props.onPlay).toHaveBeenCalledWith(props.quest, true);
   });
 
   test('allows users to go back to the search page', () => {
     const {props, wrapper} = setup();
-    wrapper.find('#searchDetailsBackButton').simulate('click');
+    wrapper.find('#searchDetailsBackButton').hostNodes().find('button').simulate('click');
     expect(props.onReturn).toHaveBeenCalledTimes(1);
   });
 
   test('allows save for offline play', () => {
     const quest = new Quest({...TUTORIAL_QUESTS[0], publishedurl: 'http://somenonlocalurl'});
     const {props, wrapper} = setup({quest});
-    wrapper.find('#offlinesave').simulate('click');
+    wrapper.find('#offlinesave').hostNodes().find('button').simulate('click');
     expect(props.onSave).toHaveBeenCalledWith(quest);
   });
 
   test('continues from most recent save', () => {
     const {props, wrapper} = setup({savedInstances});
-    wrapper.find('#playlastsave').simulate('click');
+    wrapper.find('#playlastsave').hostNodes().find('button').simulate('click');
     expect(props.onPlaySaved).toHaveBeenCalledWith(props.quest.id, 4);
   });
 
@@ -132,7 +135,7 @@ describe('QuestPreview', () => {
 
   test('asks user for confirmation when deleting a saved quest instance', () => {
     const {props, wrapper} = setup({savedInstances});
-    wrapper.find('#deletesave1').simulate('click');
+    wrapper.find('#deletesave1').hostNodes().find('button').simulate('click');
     // Saves are sorted in descending order of timestamp
     expect(props.onDeleteConfirm).toHaveBeenCalledWith(props.quest, props.savedInstances[3].ts);
   });

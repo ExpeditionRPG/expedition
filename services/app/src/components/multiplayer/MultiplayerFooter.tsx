@@ -23,7 +23,6 @@ export interface Props extends StateProps, DispatchProps {}
 
 const MultiplayerFooter = (props: Props): JSX.Element => {
   const color = (props.cardTheme === 'dark') ? 'white' : 'black';
-  // const adventurerIcon = (props.cardTheme === 'dark') ? 'images/adventurer_white_small.svg' : 'images/adventurer_small.svg';
   const peers: JSX.Element[] = [];
   const rpClient = getMultiplayerClient();
 

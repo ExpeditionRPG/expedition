@@ -1,22 +1,25 @@
-import {configure, shallow} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import {mount, mountRoot, unmountAll} from 'app/Testing';
 import * as React from 'react';
-configure({ adapter: new Adapter() });
 import Card, {Props} from './Card';
+import {initialSettings} from 'app/reducers/Settings';
 
 describe('Card', () => {
+  afterEach(unmountAll);
+
+  const EXTRA_STATE = {_history: [1,2,3], settings: initialSettings};
+
   function setup(overrides?: Partial<Props>) {
     const props: Props = {
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,
     };
-    const wrapper = shallow(<Card {...props}/>, undefined /*renderOptions*/);
+    const wrapper = mount(<Card {...props}/>, EXTRA_STATE);
     return {props, wrapper};
   }
 
   test('triggers onReturn when return button tapped', () => {
     const {props, wrapper} = setup();
-    wrapper.find('#titlebarReturnButton').simulate('click');
+    wrapper.find('IconButton#titlebarReturnButton').simulate('click');
     expect(props.onReturn).toHaveBeenCalledTimes(1);
   });
 
@@ -44,10 +47,13 @@ describe('Card', () => {
   });
 
   test('always closes top-right menu when a menu button is clicked', () => {
-    const {wrapper} = setup({});
-    wrapper.find('#menuButton').simulate('click', {currentTarget: wrapper.find('#menuButton')});
-    expect(wrapper.state('anchorEl')).toBeDefined();
-    wrapper.find('#homeButton').simulate('click');
-    expect(wrapper.state('anchorEl')).not.toBeDefined();
+    // We're updating mid-test, so have to use the root element here.
+    const root = mountRoot(<Card/>, EXTRA_STATE);
+    root.find('IconButton#menuButton').simulate('click', {currentTarget: root.find('IconButton#menuButton')});
+    root.update();
+    expect(root.find('Menu').prop('open')).toEqual(true);
+    root.find('MenuItem#homeButton').simulate('click');
+    root.update();
+    expect(root.find('Menu').prop('open')).toEqual(false);
   });
 });

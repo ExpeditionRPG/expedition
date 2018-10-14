@@ -1,13 +1,10 @@
-import {configure, render} from 'enzyme';
 import * as React from 'react';
-import Adapter from 'enzyme-adapter-react-16';
 import {TUTORIAL_QUESTS} from '../../Constants';
 import {initialSettings} from '../../reducers/Settings';
 import QuestHistory, {Props} from './QuestHistory';
-import {newMockStore} from 'app/Testing';
+import {render} from 'app/Testing';
 import {Provider} from 'react-redux';
 import {loggedOutUser} from '../../reducers/User';
-configure({ adapter: new Adapter() });
 
 describe('QuestHistory', () => {
   function setup(overrides?: Partial<Props>) {
@@ -17,8 +14,7 @@ describe('QuestHistory', () => {
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,
     };
-    const store = newMockStore({saved: {list: []}, userQuests: {history: {}}, user: loggedOutUser});
-    const e = render(<Provider store={store}><QuestHistory {...(props as any as Props)} /></Provider>, undefined /*renderOptions*/);
+    const e = render(<QuestHistory {...(props as any as Props)} />);
     return {props, e};
   }
 
