@@ -1,7 +1,8 @@
 import Button from '@material-ui/core/Button';
 import * as React from 'react';
+import {connect} from 'react-redux';
 import {openWindow} from '../../Globals';
-import {getStore} from '../../Store';
+import {AppState} from '../../reducers/StateTypes';
 import MultiplayerRippleContainer from '../multiplayer/MultiplayerRippleContainer';
 
 interface Props extends React.Props<any> {
@@ -9,9 +10,10 @@ interface Props extends React.Props<any> {
   disabled?: boolean;
   id?: string;
   onClick?: (e: any) => any;
+  hasMultiplayerSession?: boolean;
 }
 
-export default class ExpeditionButton extends React.Component<Props, {}> {
+class ExpeditionButton extends React.Component<Props, {}> {
   public _onClick(e: any) {
     let target = e.target;
     while (target && target.nodeName.toLowerCase() !== 'expedition-button') {
@@ -44,10 +46,23 @@ export default class ExpeditionButton extends React.Component<Props, {}> {
 
     return (
       <MultiplayerRippleContainer className={className} id={this.props.id}>
-        <Button disabled={this.props.disabled} onClick={(e: any) => this._onClick(e)} disableRipple={getStore().getState().multiplayer.session !== null}>
+        <Button disabled={this.props.disabled} onClick={(e: any) => this._onClick(e)} disableRipple={this.props.hasMultiplayerSession}>
           <div>{this.props.children}</div>
         </Button>
       </MultiplayerRippleContainer>
     );
   }
 }
+
+const mapStateToProps = (state: AppState, ownProps: Partial<Props>): Props => {
+  return {
+    hasMultiplayerSession: state.multiplayer && state.multiplayer.session !== null,
+    ...ownProps,
+  };
+};
+
+const ExpeditionButtonContainer = connect(
+  mapStateToProps
+)(ExpeditionButton);
+
+export default ExpeditionButtonContainer;

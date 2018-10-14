@@ -77,26 +77,26 @@ describe('QuestPreview', () => {
 
   test('passes direct-linked state so we can ask for count and multitouch', () => {
     const {props, wrapper} = setup({isDirectLinked: true});
-    wrapper.find('#play').hostNodes().find('button').simulate('click');
+    wrapper.find('ExpeditionButton#play').prop('onClick')();
     expect(props.onPlay).toHaveBeenCalledWith(props.quest, true);
   });
 
   test('allows users to go back to the search page', () => {
     const {props, wrapper} = setup();
-    wrapper.find('#searchDetailsBackButton').hostNodes().find('button').simulate('click');
+    wrapper.find('ExpeditionButton#searchDetailsBackButton').prop('onClick')();
     expect(props.onReturn).toHaveBeenCalledTimes(1);
   });
 
   test('allows save for offline play', () => {
     const quest = new Quest({...TUTORIAL_QUESTS[0], publishedurl: 'http://somenonlocalurl'});
     const {props, wrapper} = setup({quest});
-    wrapper.find('#offlinesave').hostNodes().find('button').simulate('click');
+    wrapper.find('ExpeditionButton#offlinesave').prop('onClick')();
     expect(props.onSave).toHaveBeenCalledWith(quest);
   });
 
   test('continues from most recent save', () => {
     const {props, wrapper} = setup({savedInstances});
-    wrapper.find('#playlastsave').hostNodes().find('button').simulate('click');
+    wrapper.find('ExpeditionButton#playlastsave').prop('onClick')();
     expect(props.onPlaySaved).toHaveBeenCalledWith(props.quest.id, 4);
   });
 
@@ -135,7 +135,7 @@ describe('QuestPreview', () => {
 
   test('asks user for confirmation when deleting a saved quest instance', () => {
     const {props, wrapper} = setup({savedInstances});
-    wrapper.find('#deletesave1').hostNodes().find('button').simulate('click');
+    wrapper.find('IconButton#deletesave1').prop('onClick')();
     // Saves are sorted in descending order of timestamp
     expect(props.onDeleteConfirm).toHaveBeenCalledWith(props.quest, props.savedInstances[3].ts);
   });
