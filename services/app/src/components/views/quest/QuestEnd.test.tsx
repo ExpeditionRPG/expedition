@@ -32,7 +32,6 @@ describe('QuestEnd', () => {
     if (rating !== undefined) {
       root.find('StarRating').prop('onChange')(rating);
       root.update();
-      console.log('after update', root.find('.nofeedbackform'));
     }
     return {props, e: root.childAt(0)};
   }
