@@ -4,10 +4,12 @@ import {SearchChangeParamsAction, SearchResponseAction} from '../actions/ActionT
 import {getStorageString, setStorageKeyValue} from '../LocalStorage';
 import {SearchState} from './StateTypes';
 
+const LANGUAGE = 'language';
+
 export const initialSearch: SearchState = {
   results: null, // null = need to search; [] = no results
   params: {
-    language: getStorageString('language', 'English') as LanguageType,
+    language: getStorageString(LANGUAGE, 'English') as LanguageType,
     order: '+ratingavg',
     text: '',
   },
@@ -23,7 +25,7 @@ export function search(state: SearchState = initialSearch, action: Redux.Action)
       // Update params and clear results
       const changes = (action as SearchChangeParamsAction).params || {};
       if (changes.language) {
-        setStorageKeyValue('language', changes.language);
+        setStorageKeyValue(LANGUAGE, changes.language);
       }
       return {...state, params: {...state.params, ...changes}, results: null};
     case 'SEARCH_REQUEST':
