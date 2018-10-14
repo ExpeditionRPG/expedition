@@ -1,13 +1,13 @@
 import {configure, render} from 'enzyme';
 import * as React from 'react';
 import Adapter from 'enzyme-adapter-react-16';
-import {TUTORIAL_QUESTS} from '../../Constants';
+import {TUTORIAL_QUESTS} from 'app/Constants';
 import {PRIVATE_PARTITION} from 'shared/schema/Constants';
-import {initialSettings} from '../../reducers/Settings';
 import QuestButton, {Props} from './QuestButton';
 import {newMockStore} from 'app/Testing';
 import {Provider} from 'react-redux';
-import {loggedOutUser} from '../../reducers/User';
+import {loggedOutUser} from 'app/reducers/User';
+import {initialSettings} from 'app/reducers/Settings';
 import {Quest} from 'shared/schema/Quests';
 configure({ adapter: new Adapter() });
 

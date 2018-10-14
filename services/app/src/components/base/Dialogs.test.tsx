@@ -13,10 +13,10 @@ import {
   SetPlayerCountDialogProps,
   SetPlayerCountDialog,
 } from './Dialogs';
-import {loggedOutUser} from '../../reducers/User';
-import {initialSettings} from '../../reducers/Settings';
-import {initialMultiplayerCounters} from '../../Multiplayer';
-import {TUTORIAL_QUESTS} from '../../Constants';
+import {loggedOutUser} from 'app/reducers/User';
+import {initialSettings} from 'app/reducers/Settings';
+import {TUTORIAL_QUESTS} from 'app/Constants';
+import {initialMultiplayerCounters} from 'app/Multiplayer';
 import {Quest} from 'shared/schema/Quests';
 configure({ adapter: new Adapter() });
 

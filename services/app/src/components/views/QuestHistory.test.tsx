@@ -1,12 +1,12 @@
 import {configure, render} from 'enzyme';
 import * as React from 'react';
 import Adapter from 'enzyme-adapter-react-16';
-import {TUTORIAL_QUESTS} from '../../Constants';
-import {initialSettings} from '../../reducers/Settings';
+import {TUTORIAL_QUESTS} from 'app/Constants';
+import {initialSettings} from 'app/reducers/Settings';
+import {loggedOutUser} from 'app/reducers/User';
 import QuestHistory, {Props} from './QuestHistory';
 import {newMockStore} from 'app/Testing';
 import {Provider} from 'react-redux';
-import {loggedOutUser} from '../../reducers/User';
 configure({ adapter: new Adapter() });
 
 describe('QuestHistory', () => {

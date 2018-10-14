@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
 import {BUNDLED_QUESTS} from '../../Constants';
-import {CardName, SearchParams, SettingsType, UserState} from '../../reducers/StateTypes';
+import {CardName, SearchParams, SettingsType, UserState} from 'app/reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 import QuestButtonContainer from '../base/QuestButtonContainer';
