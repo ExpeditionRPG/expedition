@@ -103,11 +103,7 @@ export class Search extends React.Component<Props, {}> {
 
   public componentDidMount() {
     if (!this.props.results && this.props.user.loggedIn) {
-      // 10/14/18 Timeout prevents bug with CSSTransition when dispatching
-      // DOM change as part of componentDidMount
-      setTimeout(() => {
-        this.props.onSearch(this.props.params, this.props.settings);
-      }, 1);
+      this.props.onSearch(this.props.params, this.props.settings);
     }
   }
 

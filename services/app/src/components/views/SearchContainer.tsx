@@ -19,7 +19,11 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onSearch: (params: SearchParams, settings: SettingsType) => {
-      dispatch(search({params, settings}));
+      // 10/14/18 Timeout prevents bug with CSSTransition when dispatching
+      // DOM change as part of componentDidMount
+      setTimeout(() => {
+        dispatch(search({params, settings}));
+      }, 1);
     },
     toCard: (name: CardName) => {
       dispatch(toCard({name}));
