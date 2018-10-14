@@ -18,7 +18,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    search: (params: SearchParams, settings: SettingsType) => {
+    onSearch: (params: SearchParams, settings: SettingsType) => {
       dispatch(search({params, settings}));
     },
     toCard: (name: CardName) => {

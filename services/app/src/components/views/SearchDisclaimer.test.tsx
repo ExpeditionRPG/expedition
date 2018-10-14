@@ -1,3 +1,3 @@
 describe('SearchDisclaimer', () => {
-  test('None', () => {});
+  test.skip('Subscribes user if they opt in', () => { /* TODO */ });
 });
