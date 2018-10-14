@@ -28,7 +28,7 @@ describe('SearchSettings', () => {
       e.find(((k === 'text') ? 'TextField' : 'NativeSelect') + '#'+k).prop('onChange')({ target: { value: TEST_SEARCH[k] } });
     }
     e.find('ExpeditionButton#search').prop('onClick')();
-    expect(props.onSearch).toHaveBeenCalledWith(TEST_SEARCH, jasmine.any(Object));
+    expect(props.onSearch).toHaveBeenCalledWith(TEST_SEARCH);
   });
 
   test('propagates user selections when form is submitted', () => {
@@ -38,6 +38,6 @@ describe('SearchSettings', () => {
       e.find(((k === 'text') ? 'TextField' : 'NativeSelect') + '#'+k).prop('onChange')({ target: { value: TEST_SEARCH[k] } });
     }
     e.find('form').prop('onSubmit')();
-    expect(props.onSearch).toHaveBeenCalledWith(TEST_SEARCH, jasmine.any(Object));
+    expect(props.onSearch).toHaveBeenCalledWith(TEST_SEARCH);
   });
 });
