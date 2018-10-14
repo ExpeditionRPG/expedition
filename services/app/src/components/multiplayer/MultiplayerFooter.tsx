@@ -35,7 +35,7 @@ const MultiplayerFooter = (props: Props): JSX.Element => {
     }
 
     const group: JSX.Element[] = [];
-    for (let j = 0; j < (lastStatus.numPlayers || 1); j++) {
+    for (let j = 0; j < (lastStatus.numLocalPlayers || 1); j++) {
       group.push(<MultiplayerIcon key={`${client}${j}`} className={`inline_icon player${order[i]}`} />);
     }
     peers.push(<span key={i} className="group">{group}</span>);

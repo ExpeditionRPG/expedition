@@ -147,8 +147,8 @@ describe('Dialogs', () => {
     test('shows peers & player count', () => {
       const {e} = setup({
         multiplayer: {...initialMultiplayer, clientStatus: {
-          "a": {numPlayers: 3},
-          "b": {numPlayers: 2},
+          "a": {numLocalPlayers: 3},
+          "b": {numLocalPlayers: 2},
         }},
       });
       const text = e.find('DialogContent').render().text();
