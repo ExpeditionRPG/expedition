@@ -39,10 +39,6 @@ describe('Card action', () => {
     afterEach(() => {
       fetchMock.restore();
     });
-    test('starts search if navigating to the search card', () => {
-      fetchMock.post(AUTH_SETTINGS.URL_BASE + '/quests', {});
-      Action(toNavCard, {settings: {...initialSettings}}).expect({name: 'SEARCH_CARD'}).toDispatch(jasmine.objectContaining({type: 'SEARCH_REQUEST'}));
-    });
     test('when specified, navigates to that card', () => {
       Action(toNavCard).expect({name: 'TUTORIAL_QUESTS'}).toDispatch(jasmine.objectContaining({
         type: 'NAVIGATE',
