@@ -2,6 +2,7 @@ import {connect} from 'react-redux';
 import Redux from 'redux';
 import {setDialog} from '../../actions/Dialog';
 import {changeSettings} from '../../actions/Settings';
+import {MAX_ADVENTURERS} from '../../Constants';
 import {logEvent} from '../../Logging';
 import {AppState, DifficultyType} from '../../reducers/StateTypes';
 import Settings, {DispatchProps, fontSizeValues, StateProps, timerValues} from './Settings';
@@ -63,7 +64,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onPlayerDelta: (numPlayers: number, delta: number) => {
       numPlayers += delta;
-      if (numPlayers <= 0 || numPlayers > 6) {
+      if (numPlayers <= 0 || numPlayers > MAX_ADVENTURERS) {
         return;
       }
       dispatch(changeSettings({numPlayers}));

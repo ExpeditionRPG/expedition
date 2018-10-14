@@ -1,10 +1,8 @@
-import {configure, render} from 'enzyme';
 import * as React from 'react';
 import Victory, {Props} from './Victory';
 import {MAX_ADVENTURER_HEALTH} from 'app/Constants';
 import {resolveCombat} from '../Params';
-import Adapter from 'enzyme-adapter-react-16';
-configure({ adapter: new Adapter() });
+import {render} from 'app/Testing';
 
 const HEAL_SUBSTR = 'Heal';
 const LOOT_SUBSTR = 'Draw Loot';
@@ -40,7 +38,7 @@ describe('Combat victory', () => {
       onEvent: jasmine.createSpy('onEvent'),
       ...overrides,
     };
-    return {props, e: render(<Victory {...(props as any as Props)} />, undefined /*renderOptions*/)};
+    return {props, e: render(<Victory {...(props as any as Props)} />)};
   }
 
   test('shows a victory page', () => {

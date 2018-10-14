@@ -78,7 +78,7 @@ export default class QuestEnd extends React.Component<Props, {}> {
 
   private renderFeedbackForm(): JSX.Element {
     if (!this.rating()) {
-      return <span/>;
+      return <span className="nofeedbackform"/>;
     }
 
     let details: JSX.Element|null = null;

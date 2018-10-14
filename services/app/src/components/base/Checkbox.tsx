@@ -2,7 +2,7 @@ import Button from '@material-ui/core/Button';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import * as React from 'react';
-import MultiplayerRipple from '../multiplayer/MultiplayerRipple';
+import MultiplayerRippleContainer from '../multiplayer/MultiplayerRippleContainer';
 
 export interface Props {
   label: string;
@@ -15,7 +15,7 @@ export default class Checkbox extends React.Component<Props, {}> {
   public render() {
     const icon = (this.props.value) ? <CheckBoxIcon/> : <CheckBoxOutlineIcon/>;
     return (
-      <MultiplayerRipple id={this.props.id} className="base_checkbox">
+      <MultiplayerRippleContainer id={this.props.id} className="base_checkbox">
         <Button onClick={(e: any) => this.props.onChange(!this.props.value)}>
           <div>
             <span className="icon">{icon}</span>
@@ -23,7 +23,7 @@ export default class Checkbox extends React.Component<Props, {}> {
           </div>
           <div className="subtext" id="subtext">{this.props.children}</div>
         </Button>
-      </MultiplayerRipple>
+      </MultiplayerRippleContainer>
     );
   }
 }

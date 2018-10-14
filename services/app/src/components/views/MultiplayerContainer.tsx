@@ -25,9 +25,12 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       }
       return dispatch(multiplayerConnect(user, secret.toUpperCase()));
     },
-    onContinue: () => {
+    onStart: () => {
       logEvent('multiplayer', 'session_start', {});
       dispatch(toNavCard({}));
+
+      // Prevent us from going back
+      dispatch({type: 'CLEAR_HISTORY'});
     },
     onNewSessionRequest: (user: UserState) => {
       return dispatch(multiplayerNewSession(user));

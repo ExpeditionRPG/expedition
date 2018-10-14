@@ -1,7 +1,5 @@
-import {configure, mount} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
-configure({ adapter: new Adapter() });
+import {mount, unmountAll} from 'app/Testing';
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
 import {defaultContext} from '../Template';
@@ -43,6 +41,8 @@ function setup(overrides: Partial<Props>) {
 }
 
 describe('DecisionTimer', () => {
+  afterEach(unmountAll);
+
   test('Shows the skill and num successes needed', () => {
     const {e} = setup({});
     const result = e.find('.secondary').text();

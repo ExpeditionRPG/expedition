@@ -1,7 +1,7 @@
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
 import {MultiplayerState} from 'app/reducers/StateTypes';
-import {numAdventurers, numPlayers} from './PlayerCount';
+import {numAdventurers, numPlayers, playerOrder} from './PlayerCount';
 
 describe('PlayerCount', () => {
   const s = {...initialSettings, numPlayers: 1};
@@ -27,5 +27,16 @@ describe('PlayerCount', () => {
     test('sums up players across all connected sessions', () => {
       expect(numPlayers(s, m4)).toEqual(4);
     });
+  });
+  describe('playerOrder', () => {
+    test('returns order from 1-6', () => {
+      expect(playerOrder('').sort()).toEqual([1,2,3,4,5,6]);
+    });
+    test('returns same order based on seed', () => {
+      expect(playerOrder('')).toEqual(playerOrder(''));
+    });
+    test('returns different orders for different seeds', () => {
+      expect(playerOrder('a')).not.toEqual(playerOrder('b'));
+    })
   });
 });
