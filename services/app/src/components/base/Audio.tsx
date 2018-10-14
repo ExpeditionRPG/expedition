@@ -1,7 +1,7 @@
+import {ThemeManager} from 'app/audio/ThemeManager';
+import {AUDIO_COMMAND_DEBOUNCE_MS, INIT_DELAY} from 'app/Constants';
+import {AudioState, CardName, CardPhase} from 'app/reducers/StateTypes';
 import * as React from 'react';
-import {ThemeManager} from '../../audio/ThemeManager';
-import {AUDIO_COMMAND_DEBOUNCE_MS, INIT_DELAY} from '../../Constants';
-import {AudioState, CardName, CardPhase} from '../../reducers/StateTypes';
 
 export interface StateProps {
   themeManager: ThemeManager|null;

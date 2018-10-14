@@ -11,7 +11,7 @@ export const Settings: {[k: string]: SettingsType} = {
     experimental: false,
     fontSize: 'NORMAL' as FontSizeType,
     multitouch: true,
-    numPlayers: 3,
+    numLocalPlayers: 3,
     showHelp: true,
     simulator: false,
     timerSeconds: 10,
@@ -25,12 +25,12 @@ export const Multiplayer: {[k: string]: MultiplayerState} = {
     clientStatus: {
       1: {
         connected: true,
-        numPlayers: 3,
+        numLocalPlayers: 3,
         type: 'STATUS',
       },
       2: {
         connected: true,
-        numPlayers: 2,
+        numLocalPlayers: 2,
         type: 'STATUS',
       },
     },

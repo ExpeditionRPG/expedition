@@ -1,7 +1,7 @@
+import {CardName, SearchParams, SettingsType, UserState} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
 import {BUNDLED_QUESTS} from '../../Constants';
-import {CardName, SearchParams, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 import QuestButtonContainer from '../base/QuestButtonContainer';
@@ -147,7 +147,7 @@ export class Search extends React.Component<Props, {}> {
           <Button
             className="searchResultInfo"
             disabled={true}>
-              {this.props.results.length} quests for {this.props.settings.numPlayers}
+              {this.props.results.length} quests for {this.props.settings.numLocalPlayers}
               <img className="inline_icon" src="images/adventurer_small.svg"/>
               {(horror || future) && <span> with </span>}
               {horror && <img className="inline_icon" src="images/horror_small.svg"/>}

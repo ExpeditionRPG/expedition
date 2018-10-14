@@ -60,7 +60,7 @@ export class SearchSettings extends React.Component<Props, {}> {
       <Card title="Quest Search">
         <form className="searchForm" autoComplete="off" onSubmit={(e: React.FormEvent) => {this.submit(e); }}>
           <div className="searchDescription">
-            For {this.props.settings.numPlayers} adventurer{this.props.settings.numPlayers > 1 ? 's ' : ' '}
+            For {this.props.settings.numLocalPlayers} player{this.props.settings.numLocalPlayers > 1 ? 's ' : ' '}
             with {content} (based on settings)
           </div>
           <FormControl fullWidth={true}>

@@ -79,7 +79,7 @@ export interface StateProps {
 
 export interface DispatchProps {
   onAnnouncementTap: (announcement: AnnouncementState) => void;
-  onPlayerCountSelect: (numPlayers: number) => void;
+  onPlayerCountSelect: (numLocalPlayers: number) => void;
   onPlayerManualSelect: () => any;
 }
 

@@ -62,12 +62,12 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     onMultitouchChange: (v: boolean) => {
       dispatch(changeSettings({multitouch: v}));
     },
-    onPlayerDelta: (numPlayers: number, delta: number) => {
-      numPlayers += delta;
-      if (numPlayers <= 0 || numPlayers > MAX_ADVENTURERS) {
+    onPlayerDelta: (numLocalPlayers: number, delta: number) => {
+      numLocalPlayers += delta;
+      if (numLocalPlayers <= 0 || numLocalPlayers > MAX_ADVENTURERS) {
         return;
       }
-      dispatch(changeSettings({numPlayers}));
+      dispatch(changeSettings({numLocalPlayers}));
     },
     onShowHelpChange: (v: boolean) => {
       dispatch(changeSettings({showHelp: v}));

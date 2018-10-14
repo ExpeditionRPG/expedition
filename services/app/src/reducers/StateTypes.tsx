@@ -94,7 +94,7 @@ export interface SettingsType {
   experimental: boolean;
   fontSize: FontSizeType;
   multitouch: boolean;
-  numPlayers: number;
+  numLocalPlayers: number;
   showHelp: boolean;
   simulator: boolean;
   timerSeconds: number;

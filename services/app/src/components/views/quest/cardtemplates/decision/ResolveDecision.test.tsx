@@ -1,7 +1,7 @@
 import * as React from 'react';
+import {numAdventurers} from 'app/actions/Settings';
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
-import {numAdventurers} from '../PlayerCount';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import ResolveDecision, {Props} from './ResolveDecision';

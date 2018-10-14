@@ -21,7 +21,7 @@ export const search = remoteify(function search(a: {params: SearchParams, settin
       delete (params as any)[key];
     }
   });
-  params.players = a.settings.numPlayers;
+  params.players = a.settings.numLocalPlayers;
   params.expansions = Object.keys(a.settings.contentSets).filter( (key) => a.settings.contentSets[key] ) as ExpansionsType[],
   dispatch(getSearchResults(params, (response: QuestSearchResponse) => {
     dispatch({

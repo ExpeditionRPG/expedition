@@ -17,7 +17,7 @@ export interface DispatchProps {
   onExperimentalChange: (change: boolean) => void;
   onFontSizeDelta: (idx: number, delta: number) => void;
   onMultitouchChange: (change: boolean) => void;
-  onPlayerDelta: (numPlayers: number, i: number) => void;
+  onPlayerDelta: (numLocalPlayers: number, i: number) => void;
   onShowHelpChange: (change: boolean) => void;
   onTimerSecondsDelta: (idx: number, delta: number) => void;
   onVibrationChange: (change: boolean) => void;
@@ -55,8 +55,8 @@ const Settings = (props: Props): JSX.Element => {
       <Button className="primary large" onClick={() => props.onExpansionSelect()}>Choose game / expansion</Button>
       <p className="expansionLabel">Currently playing: <strong>Expedition {props.contentSets.horror ? <span> + Horror</span> : null}{props.contentSets.future ? <span> + Future</span> : null}</strong></p>
 
-      <Picker label="Adventurers" value={props.numPlayers} onDelta={(i: number) => props.onPlayerDelta(props.numPlayers, i)}>
-        {(props.numPlayers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
+      <Picker label="Adventurers" value={props.numLocalPlayers} onDelta={(i: number) => props.onPlayerDelta(props.numLocalPlayers, i)}>
+        {(props.numLocalPlayers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
       </Picker>
 
       <Checkbox label="Multitouch" value={props.multitouch} onChange={props.onMultitouchChange}>
@@ -70,7 +70,7 @@ const Settings = (props: Props): JSX.Element => {
       <Picker label="Timer" value={timerText[timerIdx].title} onDelta={(i: number) => props.onTimerSecondsDelta(timerIdx, i)}>
         <div>
           {timerText[timerIdx].text}
-          {props.numPlayers === 1 ? <span><br/><strong>Solo play:</strong> Timers are doubled.</span> : ''}
+          {props.numLocalPlayers === 1 ? <span><br/><strong>Solo play:</strong> Timers are doubled.</span> : ''}
         </div>
       </Picker>
 

@@ -4,9 +4,9 @@ import MultiplayerRipple, {Props} from './MultiplayerRipple';
 
 export const testMultiplayer: MultiplayerState = {
   clientStatus: {
-    "a": {connected: true, numPlayers: 3},
-    "b": {connected: true, numPlayers: 2},
-    "c": {connected: false, numPlayers: 1},
+    "a": {connected: true, numLocalPlayers: 3},
+    "b": {connected: true, numLocalPlayers: 2},
+    "c": {connected: false, numLocalPlayers: 1},
   },
   history: [],
   session: null,

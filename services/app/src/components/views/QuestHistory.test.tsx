@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {TUTORIAL_QUESTS} from '../../Constants';
-import {initialSettings} from '../../reducers/Settings';
+import {TUTORIAL_QUESTS} from 'app/Constants';
+import {initialSettings} from 'app/reducers/Settings';
+import {loggedOutUser} from 'app/reducers/User';
 import QuestHistory, {Props} from './QuestHistory';
 import {render} from 'app/Testing';
 import {Provider} from 'react-redux';
-import {loggedOutUser} from '../../reducers/User';
 
 describe('QuestHistory', () => {
   function setup(overrides?: Partial<Props>) {
