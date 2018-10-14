@@ -1,12 +1,13 @@
 import Redux from 'redux';
+import {LanguageType} from 'shared/schema/Constants';
 import {SearchChangeParamsAction, SearchResponseAction} from '../actions/ActionTypes';
-import {setStorageKeyValue} from '../LocalStorage';
+import {getStorageString, setStorageKeyValue} from '../LocalStorage';
 import {SearchState} from './StateTypes';
 
 export const initialSearch: SearchState = {
   results: null, // null = need to search; [] = no results
   params: {
-    language: 'English',
+    language: getStorageString('search-language', 'English') as LanguageType,
     order: '+ratingavg',
     text: '',
   },
