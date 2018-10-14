@@ -10,9 +10,9 @@ import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} fro
 import {getStore} from 'app/Store';
 import Redux from 'redux';
 const seedrandom = require('seedrandom');
+import {numAdventurers, numLocalPlayers} from '../../../../../Actions/Settings';
 import {generateLeveledChecks} from '../decision/Actions';
 import {resolveParams} from '../Params';
-import {numAdventurers, numPlayers} from '../PlayerCount';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {CombatAttack, CombatDifficultySettings, CombatState} from './Types';
@@ -33,7 +33,7 @@ export function findCombatParent(node: ParserNode): Cheerio|null {
 }
 
 export function roundTimeMillis(settings: SettingsType, rp?: MultiplayerState) {
-  const totalPlayerCount = numPlayers(settings, rp);
+  const totalPlayerCount = numLocalPlayers(settings, rp);
   return settings.timerSeconds * 1000 * PLAYER_TIME_MULT[totalPlayerCount];
 }
 
@@ -130,7 +130,7 @@ function getEnemies(node: ParserNode): Enemy[] {
 }
 
 function generateCombatAttack(node: ParserNode, settings: SettingsType, rp: MultiplayerState, elapsedMillis: number, rng: () => number): CombatAttack {
-  const totalPlayerCount = numPlayers(settings, rp);
+  const totalPlayerCount = numLocalPlayers(settings, rp);
   const playerMultiplier = PLAYER_DAMAGE_MULT[totalPlayerCount] || 1;
   const combat = node.ctx.templates.combat;
   if (!combat) {
@@ -357,7 +357,7 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
     a.node.ctx.templates.combat = combat;
   }
   combat.mostRecentAttack = generateCombatAttack(a.node, a.settings, a.rp, a.elapsedMillis, arng);
-  combat.mostRecentRolls = generateRolls(a.settings.numPlayers, arng);
+  combat.mostRecentRolls = generateRolls(a.settings.numLocalPlayers, arng);
   combat.roundCount++;
 
   // This is parsed when loading a saved quest, so that "on round" nodes

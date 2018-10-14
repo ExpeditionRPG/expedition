@@ -198,7 +198,7 @@ describe('Dialogs', () => {
       expect(props.onMultitouchChange).toHaveBeenCalledWith(true);
     });
     test('shows requirement if player count is outside of quest num players range and disables play', () => {
-      const {props, e} = setup({settings: {...initialSettings, numPlayers: 7}});
+      const {props, e} = setup({settings: {...initialSettings, numLocalPlayers: 7}});
       expect(e.childAt(1).render().text()).toContain('Quest requires');
       expect(e.find('#play').prop('disabled')).toEqual(true);
     });

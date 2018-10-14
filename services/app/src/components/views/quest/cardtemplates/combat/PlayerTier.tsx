@@ -38,7 +38,7 @@ export default function playerTier(props: Props): JSX.Element {
   let helpText: JSX.Element = (<span></span>);
   const damage = (props.combat.mostRecentAttack) ? props.combat.mostRecentAttack.damage : -1;
   const theHorror = (props.settings.contentSets.horror === true);
-  const injured = props.numAliveAdventurers < props.settings.numPlayers;
+  const injured = props.numAliveAdventurers < props.settings.numLocalPlayers;
 
   if (props.settings.showHelp) {
     helpText = (

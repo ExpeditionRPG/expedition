@@ -268,7 +268,7 @@ interface SetPlayerCountDialogProps extends React.Props<any> {
   settings: SettingsType;
   onClose: () => void;
   onMultitouchChange: (v: boolean) => void;
-  onPlayerDelta: (numPlayers: number, delta: number) => void;
+  onPlayerDelta: (numLocalPlayers: number, delta: number) => void;
   playQuest: (quest: Quest) => void;
 }
 
@@ -277,11 +277,11 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
     const quest = this.props.quest;
     let playersAllowed = true;
     if (quest.minplayers && quest.maxplayers) {
-      playersAllowed = (this.props.settings.numPlayers >= quest.minplayers &&
-        this.props.settings.numPlayers <= quest.maxplayers);
+      playersAllowed = (this.props.settings.numLocalPlayers >= quest.minplayers &&
+        this.props.settings.numLocalPlayers <= quest.maxplayers);
     }
     let contents = <div>
-        <Picker id="adventurerCount" label="Adventurers" value={this.props.settings.numPlayers} onDelta={(i: number) => this.props.onPlayerDelta(this.props.settings.numPlayers, i)}>
+        <Picker id="adventurerCount" label="Adventurers" value={this.props.settings.numLocalPlayers} onDelta={(i: number) => this.props.onPlayerDelta(this.props.settings.numLocalPlayers, i)}>
           {!playersAllowed && `Quest requires ${quest.minplayers} - ${quest.maxplayers} players.`}
         </Picker>
         <Checkbox id="multitouch" label="Multitouch" value={this.props.settings.multitouch} onChange={this.props.onMultitouchChange}>
@@ -335,7 +335,7 @@ export interface DispatchProps {
   onExpansionSelect: (contentSets: ContentSetsType) => void;
   onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
   onMultitouchChange: (v: boolean) => void;
-  onPlayerDelta: (numPlayers: number, delta: number) => void;
+  onPlayerDelta: (numLocalPlayers: number, delta: number) => void;
   onSendMultiplayerReport: (user: UserState, quest: Quest, stats: MultiplayerCounters) => void;
   playQuest: (quest: Quest) => void;
 }

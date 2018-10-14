@@ -10,26 +10,26 @@ export function changeSettings(settings: any): ChangeSettingsAction {
 export function numAdventurers(settings: SettingsType, rp: MultiplayerState): number {
   if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
     // Since single player still has two adventurers, the minimum possible is two.
-    return Math.max(2, settings.numPlayers);
+    return Math.max(2, settings.numLocalPlayers);
   }
-  return countNumPlayers(rp);
+  return countnumLocalPlayers(rp);
 }
 
-export function numPlayers(settings: SettingsType, rp?: MultiplayerState): number {
+export function numLocalPlayers(settings: SettingsType, rp?: MultiplayerState): number {
   if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
-    return settings.numPlayers;
+    return settings.numLocalPlayers;
   }
-  return countNumPlayers(rp);
+  return countnumLocalPlayers(rp);
 }
 
-function countNumPlayers(rp: MultiplayerState): number {
+function countnumLocalPlayers(rp: MultiplayerState): number {
   let count = 0;
   for (const c of Object.keys(rp.clientStatus)) {
     const status = rp.clientStatus[c];
     if (!status.connected) {
       continue;
     }
-    count += (status.numPlayers || 1);
+    count += (status.numLocalPlayers || 1);
   }
   return count || 1;
 }

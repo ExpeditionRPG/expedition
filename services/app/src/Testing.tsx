@@ -23,7 +23,7 @@ export function newMockStore(state: object): MockStore {
 
 // Put stuff here that is assumed to always exist (like settings)
 const defaultGlobalState = {
-  settings: {numPlayers: 1},
+  settings: {numLocalPlayers: 1},
 } as any as AppStateWithHistory;
 
 export function Reducer<A extends Redux.Action>(reducer: (state: object|undefined, action: A) => object) {

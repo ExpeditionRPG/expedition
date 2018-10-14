@@ -1,7 +1,7 @@
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
 import {MultiplayerState} from 'app/reducers/StateTypes';
-import {numAdventurers, numPlayers} from './Settings';
+import {numAdventurers, numLocalPlayers} from './Settings';
 
 describe('Settings action', () => {
   describe('changeSettings', () => {
@@ -9,12 +9,12 @@ describe('Settings action', () => {
   });
 
   describe('PlayerCount', () => {
-    const s = {...initialSettings, numPlayers: 1};
+    const s = {...initialSettings, numLocalPlayers: 1};
     const m4: MultiplayerState = {...initialMultiplayer, clientStatus: {
       a: {type: 'STATUS', connected: false},
-      b: {type: 'STATUS', connected: true, numPlayers: 1},
-      c: {type: 'STATUS', connected: true, numPlayers: 2},
-      d: {type: 'STATUS', connected: true, numPlayers: 1},
+      b: {type: 'STATUS', connected: true, numLocalPlayers: 1},
+      c: {type: 'STATUS', connected: true, numLocalPlayers: 2},
+      d: {type: 'STATUS', connected: true, numLocalPlayers: 1},
     }};
 
     describe('numAdventurers', () => {
@@ -25,12 +25,12 @@ describe('Settings action', () => {
         expect(numAdventurers(s, m4)).toEqual(4);
       });
     });
-    describe('numPlayers', () => {
+    describe('numLocalPlayers', () => {
       test('returns 1 for single-player mode', () => {
-        expect(numPlayers(s, initialMultiplayer)).toEqual(1);
+        expect(numLocalPlayers(s, initialMultiplayer)).toEqual(1);
       });
       test('sums up players across all connected sessions', () => {
-        expect(numPlayers(s, m4)).toEqual(4);
+        expect(numLocalPlayers(s, m4)).toEqual(4);
       });
     });
   });

@@ -25,12 +25,12 @@ export const Multiplayer: {[k: string]: MultiplayerState} = {
     clientStatus: {
       1: {
         connected: true,
-        numPlayers: 3,
+        numLocalPlayers: 3,
         type: 'STATUS',
       },
       2: {
         connected: true,
-        numPlayers: 2,
+        numLocalPlayers: 2,
         type: 'STATUS',
       },
     },

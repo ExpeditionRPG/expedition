@@ -1,12 +1,12 @@
 import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
 import {toCard, ToCardArgs} from 'app/actions/Card';
 import {event} from 'app/actions/Quest';
+import {numAdventurers, numLocalPlayers} from 'app/actions/Settings';
 import {PLAYER_TIME_MULT} from 'app/Constants';
 import {AppStateWithHistory, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
 import {extractSkillCheck, Outcome, Persona, Skill, SkillCheck} from 'shared/schema/templates/Decision';
 import {resolveParams} from '../Params';
-import {numAdventurers, numPlayers} from '../PlayerCount';
 import {ParserNode} from '../TemplateTypes';
 import {LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
 import {DecisionPhase, DecisionState, Difficulty, EMPTY_DECISION_STATE} from './Types';
@@ -116,7 +116,7 @@ function parseDecisionChecks(numTotalAdventurers: number, node?: ParserNode): Le
 }
 
 export function skillTimeMillis(settings: SettingsType, rp?: MultiplayerState) {
-  const totalPlayerCount = numPlayers(settings, rp);
+  const totalPlayerCount = numLocalPlayers(settings, rp);
   return settings.timerSeconds * 1000 * PLAYER_TIME_MULT[totalPlayerCount];
 }
 

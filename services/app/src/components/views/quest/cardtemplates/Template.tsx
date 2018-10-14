@@ -115,7 +115,7 @@ export function defaultContext(getState: (() => AppStateWithHistory) = getStore(
       },
       numAdventurers(): number {
         const settings = getState().settings;
-        return settings && settings.numPlayers;
+        return settings && settings.numLocalPlayers;
       },
       viewCount(id: string): number {
         return this.views[id] || 0;

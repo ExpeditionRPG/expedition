@@ -147,7 +147,7 @@ export class Search extends React.Component<Props, {}> {
           <Button
             className="searchResultInfo"
             disabled={true}>
-              {this.props.results.length} quests for {this.props.settings.numPlayers}
+              {this.props.results.length} quests for {this.props.settings.numLocalPlayers}
               <img className="inline_icon" src="images/adventurer_small.svg"/>
               {(horror || future) && <span> with </span>}
               {horror && <img className="inline_icon" src="images/horror_small.svg"/>}

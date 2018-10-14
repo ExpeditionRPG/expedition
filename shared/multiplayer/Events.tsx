@@ -31,7 +31,7 @@ export interface StatusEvent {
   connected?: boolean;
 
   // Count of players playing on this client - used for e.g. damage calculation
-  numPlayers?: number;
+  numLocalPlayers?: number;
 
   // The last seen event ID from the client. This is used to keep
   // the client in sync.

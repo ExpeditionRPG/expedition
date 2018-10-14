@@ -15,9 +15,9 @@ export interface DispatchProps {
 export interface Props extends StateProps, DispatchProps {}
 
 const QuestSetup = (props: Props): JSX.Element => {
-  const singlePlayer = (props.settings.numPlayers === 1);
-  const twoAdventurer = (props.settings.numPlayers === 1 || props.settings.numPlayers === 2);
-  const multiPlayer = (props.settings.numPlayers > 1);
+  const singlePlayer = (props.settings.numLocalPlayers === 1);
+  const twoAdventurer = (props.settings.numLocalPlayers === 1 || props.settings.numLocalPlayers === 2);
+  const multiPlayer = (props.settings.numLocalPlayers > 1);
   const theHorror = (props.settings.contentSets.horror === true);
   return (
     <Card title="Setup">
