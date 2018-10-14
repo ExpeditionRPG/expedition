@@ -58,8 +58,10 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
       <div className="playerCounterContainer">
         <div className={'splashMultitouchInstruction ' + (showInstruction ? 'visible' : '')}>
           <h2>To Begin:</h2>
-          <p>All players hold one finger on the screen.<br/>
-          Or, double tap to manually set player count.</p>
+          <p>All players hold one finger on the screen.</p>
+          <br/>
+          <h2>Multiplayer & More:</h2>
+          <p>Double tap the screen.</p>
         </div>
         {!showInstruction && <div className="splashMultitouchPlayerCount">
           <h1>{this.state.touchCount}</h1>

@@ -4,13 +4,15 @@ import MenuItem from '@material-ui/core/MenuItem';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import * as React from 'react';
+import {connect} from 'react-redux';
+import {Quest} from 'shared/schema/Quests';
 import {toCard, toPrevious} from '../../actions/Card';
 import {setDialog} from '../../actions/Dialog';
 import {storeSavedQuest} from '../../actions/SavedQuests';
 import {openSnackbar} from '../../actions/Snackbar';
 import {URLS} from '../../Constants';
 import {getDevicePlatform, openWindow} from '../../Globals';
-import {CardThemeType} from '../../reducers/StateTypes';
+import {AppStateWithHistory, CardThemeType, SettingsType} from '../../reducers/StateTypes';
 import {getStore} from '../../Store';
 
 // If onMenuSelect or onReturn is not set, default dispatch behavior is used.
@@ -22,9 +24,13 @@ export interface Props extends React.Props<any> {
   onReturn?: () => any;
   title?: string | JSX.Element;
   className?: string;
+
+  settings?: SettingsType;
+  quest?: Quest;
+  hasReturn: boolean;
 }
 
-export default class Card extends React.Component<Props, {}> {
+class Card extends React.Component<Props, {}> {
   public state: {anchorEl: HTMLElement|undefined}; // undefined instead of null for MaterialUI typing
 
   constructor(props: Props) {
@@ -99,9 +105,9 @@ export default class Card extends React.Component<Props, {}> {
     if (this.props.icon) {
       icon = <img id="bgimg" src={'images/' + this.props.icon + '.svg'}></img>;
     }
-    const isExperimental = getStore().getState().settings.experimental;
+    const isExperimental = this.props.settings && this.props.settings.experimental;
     const cardTheme = this.props.theme || 'light';
-    const questTheme = getStore().getState().quest.details.theme || 'base';
+    const questTheme = this.props.quest && this.props.quest.theme || 'base';
     const classes = ['base_card', 'card_theme_' + cardTheme, 'quest_theme_' + questTheme];
     if (this.props.className) {
       classes.push(this.props.className);
@@ -111,7 +117,7 @@ export default class Card extends React.Component<Props, {}> {
     return (
       <div className={classes.join(' ')}>
         <div className="title_container">
-          <IconButton id="titlebarReturnButton" onClick={() => this.onReturn()}><ChevronLeftIcon/></IconButton>
+          {this.props.hasReturn && <IconButton id="titlebarReturnButton" onClick={() => this.onReturn()}><ChevronLeftIcon/></IconButton>}
           <span className="menu">
             <IconButton id="menuButton" aria-haspopup="true" onClick={(e) => this.handleMenuClick(e)}>
               <MoreVertIcon/>
@@ -193,3 +199,18 @@ export default class Card extends React.Component<Props, {}> {
     );
   }
 }
+
+const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<Props>): Props => {
+  return {
+    hasReturn: (state._history && state._history.length > 0),
+    quest: state.quest && state.quest.details,
+    settings: state.settings,
+    ...ownProps,
+  };
+};
+
+const CardContainer = connect(
+  mapStateToProps
+)(Card);
+
+export default CardContainer;

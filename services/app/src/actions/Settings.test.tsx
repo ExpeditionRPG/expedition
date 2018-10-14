@@ -1,7 +1,7 @@
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
 import {MultiplayerState} from 'app/reducers/StateTypes';
-import {numAdventurers, numLocalPlayers} from './Settings';
+import {numAdventurers, numPlayers} from './Settings';
 
 describe('Settings action', () => {
   describe('changeSettings', () => {
@@ -25,12 +25,12 @@ describe('Settings action', () => {
         expect(numAdventurers(s, m4)).toEqual(4);
       });
     });
-    describe('numLocalPlayers', () => {
+    describe('numPlayers', () => {
       test('returns 1 for single-player mode', () => {
-        expect(numLocalPlayers(s, initialMultiplayer)).toEqual(1);
+        expect(numPlayers(s, initialMultiplayer)).toEqual(1);
       });
       test('sums up players across all connected sessions', () => {
-        expect(numLocalPlayers(s, m4)).toEqual(4);
+        expect(numPlayers(s, m4)).toEqual(4);
       });
     });
   });

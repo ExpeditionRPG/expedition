@@ -8,7 +8,7 @@ import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
 import {openWindow} from '../../Globals';
 import {MultiplayerCounters} from '../../Multiplayer';
-import {ContentSetsType, DialogState, FeedbackType, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
+import {ContentSetsType, DialogState, FeedbackType, MultiplayerState, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
 import Checkbox from './Checkbox';
 import Picker from './Picker';
 
@@ -101,6 +101,7 @@ interface MultiplayerStatusDialogProps extends React.Props<any> {
   open: boolean;
   questDetails: Quest;
   stats: MultiplayerCounters;
+  multiplayer: MultiplayerState;
   user: UserState;
 }
 
@@ -116,8 +117,11 @@ export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDi
       // TODO: autoScrollBodyContent={true} ???
     return (
       <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
-        <DialogTitle>Multiplayer Stats</DialogTitle>
+        <DialogTitle>Connection Details</DialogTitle>
         <DialogContent className="dialog">
+          <p>
+            Secret: <strong>{this.props.multiplayer.session && this.props.multiplayer.session.secret}</strong>
+          </p>
           <p>Here's some multiplayer debugging information:</p>
           {stats}
           <p>
@@ -128,6 +132,35 @@ export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDi
         <DialogActions>
           <Button onClick={() => this.props.onClose()}>Cancel</Button>,
           <Button id="sendReportButton" className="primary" onClick={() => this.props.onSendReport(this.props.user, this.props.questDetails, this.props.stats)}>Send Report</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+}
+
+interface MultiplayerPeersDialogProps extends React.Props<any> {
+  onClose: () => void;
+  open: boolean;
+  multiplayer: MultiplayerState;
+}
+
+export class MultiplayerPeersDialog extends React.Component<MultiplayerPeersDialogProps, {}> {
+  public render(): JSX.Element {
+    const peers = Object.keys(this.props.multiplayer.clientStatus).map((k, i: number) => {
+      const c = this.props.multiplayer.clientStatus[k];
+      return <div key={i}>
+        <div><strong>Player {i}</strong></div>
+        <div>{c.numPlayers} Players</div>
+      </div>;
+    });
+    return (
+      <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
+        <DialogTitle>Player Details</DialogTitle>
+        <DialogContent className="dialog">
+          {peers}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.props.onClose()}>Close</Button>
         </DialogActions>
       </Dialog>
     );
@@ -320,6 +353,7 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
 
 export interface StateProps {
   dialog: DialogState;
+  multiplayer: MultiplayerState;
   multiplayerStats: MultiplayerCounters;
   quest: QuestState;
   selectedSave: SavedQuestMeta|null;
@@ -369,8 +403,14 @@ const Dialogs = (props: Props): JSX.Element => {
         open={props.dialog && props.dialog.open === 'MULTIPLAYER_STATUS'}
         stats={props.multiplayerStats}
         user={props.user}
+        multiplayer={props.multiplayer}
         questDetails={props.quest.details}
         onSendReport={props.onSendMultiplayerReport}
+        onClose={props.onClose}
+      />
+      <MultiplayerPeersDialog
+        open={props.dialog && props.dialog.open === 'MULTIPLAYER_PEERS'}
+        multiplayer={props.multiplayer}
         onClose={props.onClose}
       />
       <FeedbackDialog

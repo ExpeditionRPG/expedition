@@ -2,8 +2,8 @@ import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
 import {audioSet} from 'app/actions/Audio';
 import {toCard} from 'app/actions/Card';
 import {setMultiplayerStatus} from 'app/actions/Multiplayer';
-import {numAdventurers, numLocalPlayers} from 'app/actions/Settings';
-import {PLAYER_DAMAGE_MULT, COMBAT_DIFFICULTY, MUSIC_INTENSITY_MAX, PLAYER_TIME_MULT} from 'app/Constants';
+import {numAdventurers, numPlayers} from 'app/actions/Settings';
+import {COMBAT_DIFFICULTY, MUSIC_INTENSITY_MAX, PLAYER_DAMAGE_MULT, PLAYER_TIME_MULT} from 'app/Constants';
 import {ENCOUNTERS} from 'app/Encounters';
 import {Enemy, Loot} from 'app/reducers/QuestTypes';
 import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
@@ -32,7 +32,7 @@ export function findCombatParent(node: ParserNode): Cheerio|null {
 }
 
 export function roundTimeMillis(settings: SettingsType, rp?: MultiplayerState) {
-  const totalPlayerCount = numLocalPlayers(settings, rp);
+  const totalPlayerCount = numPlayers(settings, rp);
   return settings.timerSeconds * 1000 * PLAYER_TIME_MULT[totalPlayerCount];
 }
 
@@ -129,7 +129,7 @@ function getEnemies(node: ParserNode): Enemy[] {
 }
 
 function generateCombatAttack(node: ParserNode, settings: SettingsType, rp: MultiplayerState, elapsedMillis: number, rng: () => number): CombatAttack {
-  const totalPlayerCount = numLocalPlayers(settings, rp);
+  const totalPlayerCount = numPlayers(settings, rp);
   const playerMultiplier = PLAYER_DAMAGE_MULT[totalPlayerCount] || 1;
   const combat = node.ctx.templates.combat;
   if (!combat) {

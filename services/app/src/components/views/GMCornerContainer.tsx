@@ -1,11 +1,11 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 
-import {Quest} from 'shared/schema/Quests';
 import {toPrevious} from 'app/actions/Card';
 import {previewQuest} from 'app/actions/Quest';
 import {GM_QUESTS} from 'app/Constants';
 import {AppState, SettingsType} from 'app/reducers/StateTypes';
+import {Quest} from 'shared/schema/Quests';
 import GMCorner, {DispatchProps, StateProps} from './GMCorner';
 import {initCustomCombat} from './quest/cardtemplates/combat/Actions';
 

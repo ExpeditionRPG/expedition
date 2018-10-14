@@ -34,6 +34,10 @@ export interface PushHistoryAction extends Redux.Action {
   type: 'PUSH_HISTORY';
 }
 
+export interface ClearHistoryAction extends Redux.Action {
+  type: 'CLEAR_HISTORY';
+}
+
 export interface AnnouncementSetAction extends Redux.Action {
   type: 'ANNOUNCEMENT_SET';
   open: boolean;

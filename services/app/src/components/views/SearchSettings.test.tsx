@@ -1,13 +1,11 @@
-import {configure, mount} from 'enzyme';
 import * as React from 'react';
-import Adapter from 'enzyme-adapter-react-16';
+import {mount} from 'app/Testing';
 import {initialSettings} from '../../reducers/Settings';
 import SearchSettings, {Props} from './SearchSettings';
 import {loggedOutUser} from '../../reducers/User';
 import {initialSearch} from '../../reducers/Search';
 import {Quest} from 'shared/schema/Quests';
 import {TEST_SEARCH} from './Search.test';
-configure({ adapter: new Adapter() });
 
 describe('SearchSettings', () => {
   function setup() {
@@ -23,7 +21,6 @@ describe('SearchSettings', () => {
 
   test('propagates user selections when Search is pressed', () => {
     const {props, e} = setup();
-    expect(e.state()).toEqual(initialSearch.params);
     for (const k of Object.keys(TEST_SEARCH)) {
       e.find(((k === 'text') ? 'TextField' : 'NativeSelect') + '#'+k).prop('onChange')({ target: { value: TEST_SEARCH[k] } });
     }
@@ -33,7 +30,6 @@ describe('SearchSettings', () => {
 
   test('propagates user selections when form is submitted', () => {
     const {props, e} = setup();
-    expect(e.state()).toEqual(initialSearch.params);
     for (const k of Object.keys(TEST_SEARCH)) {
       e.find(((k === 'text') ? 'TextField' : 'NativeSelect') + '#'+k).prop('onChange')({ target: { value: TEST_SEARCH[k] } });
     }

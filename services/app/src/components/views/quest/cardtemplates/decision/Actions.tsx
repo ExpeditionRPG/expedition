@@ -1,7 +1,7 @@
 import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
 import {toCard, ToCardArgs} from 'app/actions/Card';
 import {event} from 'app/actions/Quest';
-import {numAdventurers, numLocalPlayers} from 'app/actions/Settings';
+import {numAdventurers, numPlayers} from 'app/actions/Settings';
 import {PLAYER_TIME_MULT} from 'app/Constants';
 import {AppStateWithHistory, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
@@ -116,7 +116,7 @@ function parseDecisionChecks(numTotalAdventurers: number, node?: ParserNode): Le
 }
 
 export function skillTimeMillis(settings: SettingsType, rp?: MultiplayerState) {
-  const totalPlayerCount = numLocalPlayers(settings, rp);
+  const totalPlayerCount = numPlayers(settings, rp);
   return settings.timerSeconds * 1000 * PLAYER_TIME_MULT[totalPlayerCount];
 }
 

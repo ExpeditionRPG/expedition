@@ -1,8 +1,15 @@
+import {configure, mount as enzymeMount, render as enzymeRender} from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+import * as React from 'react';
+import {Provider} from 'react-redux';
 import * as Redux from 'redux';
 import configureStore from 'redux-mock-store';
 import {MultiplayerClient} from './Multiplayer';
 import combinedReducers from './reducers/CombinedReducers';
 import {AppStateWithHistory} from './reducers/StateTypes';
+import {loggedOutUser} from './reducers/User';
+
+configure({ adapter: new Adapter() });
 
 export function newMockStoreWithInitializedState() {
   return newMockStore(combinedReducers({} as any, {type: '@@INIT'}));
@@ -116,4 +123,34 @@ export function Action<A>(action: (...a: any[]) => Redux.Action, baseState?: obj
     },
     ...internalActionCommands(),
   };
+}
+
+const BASE_ENZYME_STATE = {
+  saved: {list: []},
+  userQuests: {history: {}},
+  user: loggedOutUser,
+};
+export function render(e: JSX.Element, state: Partial<AppStateWithHistory>) {
+  const store = newMockStore({...BASE_ENZYME_STATE, ...state});
+  const root = enzymeRender(<Provider store={store}>{e}</Provider>, undefined /*renderOptions*/);
+  return root; // No need to get child elements, as provider does not render as an element.
+}
+const unmounts: Array<() => void> = [];
+export function mountRoot(e: JSX.Element, state: Partial<AppStateWithHistory>) {
+  const store = newMockStore({...BASE_ENZYME_STATE, ...state});
+  const root = enzymeMount(<Provider store={store}>{e}</Provider>, undefined /*renderOptions*/);
+  unmounts.push(() => root.unmount());
+  return root;
+}
+export function mount(e: JSX.Element, state: Partial<AppStateWithHistory>) {
+  return mountRoot(e, state).childAt(0);
+}
+export function unmountAll() {
+  while (unmounts.length > 0) {
+    const um = unmounts.shift();
+    if (!um) {
+      return;
+    }
+    um();
+  }
 }

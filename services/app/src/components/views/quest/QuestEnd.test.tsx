@@ -1,12 +1,10 @@
-import {configure, shallow} from 'enzyme';
 import * as React from 'react';
 import QuestEnd, {Props} from './QuestEnd';
 import {TUTORIAL_QUESTS} from 'app/Constants';
 import {initialSettings} from 'app/reducers/Settings';
 import {initialState as initialCheckout} from 'app/reducers/Checkout';
 import {loggedOutUser} from 'app/reducers/User';
-import Adapter from 'enzyme-adapter-react-16';
-configure({ adapter: new Adapter() });
+import {mountRoot} from 'app/Testing';
 
 const GOOD_FORM_SUBSTR = 'Glad you liked it';
 const BAD_FORM_SUBSTR = 'select the primary issue';
@@ -16,6 +14,7 @@ const NEEDS_ISSUE_SUBSTR = 'You must specify an issue before submitting';
 const TIPPING_SUBSTR = 'Tip the author';
 
 describe('QuestEnd', () => {
+
   function setup(rating?: number, overrides?: Partial<Props>) {
     const props: Props = {
       checkout: initialCheckout,
@@ -29,12 +28,13 @@ describe('QuestEnd', () => {
       onTip: jasmine.createSpy('onTip'),
       ...overrides,
     };
-    const result = {props, e: shallow(<QuestEnd {...(props as any as Props)} />, undefined /*renderOptions*/)};
+    const root = mountRoot(<QuestEnd {...(props as any as Props)} />);
     if (rating !== undefined) {
-      result.e.find('#starrating').prop('onChange')(rating);
-      result.e.update();
+      root.find('StarRating').prop('onChange')(rating);
+      root.update();
+      console.log('after update', root.find('.nofeedbackform'));
     }
-    return result;
+    return {props, e: root.childAt(0)};
   }
 
   test('hides form sections when not yet rated', () => {
@@ -65,30 +65,29 @@ describe('QuestEnd', () => {
   });
   test('selecting a primary issue shows qualifier section', () => {
     const {e} = setup(1);
-    e.find("#primaryIssueSelect").simulate('change', {target: {value: 'Duration'}})
+    e.find("NativeSelect#primaryIssueSelect").prop('onChange')({target: {value: 'Duration'}});
     expect(e.render().text()).toContain(QUALIFIER_FORM_SUBSTR);
   });
   test('can return home without a review', () => {
     const {props, e} = setup();
-    e.find('#submit').prop('onClick')();
+    e.find('ExpeditionButton#submit').prop('onClick')();
     expect(props.onSubmit).toHaveBeenCalledTimes(1);
   });
   test('triggers sharing when button pressed', () => {
     const {props, e} = setup();
-    e.find("#shareButton").simulate('click');
+    e.find("ExpeditionButton#shareButton").prop('onClick')();
     expect(props.onShare).toHaveBeenCalledTimes(1);
   });
   test('blocks negative submit if no issue given and shows error', () => {
     const {props, e} = setup(1);
-    e.find('#submit').prop('onClick')();
-    e.update();
+    e.find('ExpeditionButton#submit').prop('onClick')();
     expect(props.onSubmit).toHaveBeenCalledTimes(0);
     expect(e.render().text()).toContain(NEEDS_ISSUE_SUBSTR);
   });
-  test('submits negative review a issue given', () => {
+  test('submits negative review when issue given', () => {
     const {props, e} = setup(1);
-    e.find("#primaryIssueSelect").simulate('change', {target: {value: 'Duration'}})
-    e.find('#submit').prop('onClick')();
+    e.find("NativeSelect#primaryIssueSelect").prop('onChange')({target: {value: 'Duration'}});
+    e.find('ExpeditionButton#submit').prop('onClick')();
     expect(props.onSubmit).toHaveBeenCalledTimes(1);
   });
 

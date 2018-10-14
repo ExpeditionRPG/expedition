@@ -1,6 +1,4 @@
 import * as React from 'react';
-import {configure, shallow} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
 import {
   TextAreaDialog,
   BaseDialogProps,
@@ -12,15 +10,20 @@ import {
   ExpansionSelectDialog,
   SetPlayerCountDialogProps,
   SetPlayerCountDialog,
+  MultiplayerPeersDialogProps,
+  MultiplayerPeersDialog
 } from './Dialogs';
 import {loggedOutUser} from 'app/reducers/User';
 import {initialSettings} from 'app/reducers/Settings';
 import {TUTORIAL_QUESTS} from 'app/Constants';
+import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialMultiplayerCounters} from 'app/Multiplayer';
 import {Quest} from 'shared/schema/Quests';
-configure({ adapter: new Adapter() });
+import {mount, unmountAll} from 'app/Testing';
 
 describe('Dialogs', () => {
+  afterEach(unmountAll);
+
   // Simple dialog components that implement ConfirmationDialog or TextAreaDialog
   // do not need to be tested.
   describe('ConfirmationDialog', () => {
@@ -42,37 +45,37 @@ describe('Dialogs', () => {
         onClose: jasmine.createSpy('onClose'),
         ...overrides,
       };
-      return {props, e: shallow(<DialogTmpl {...(props as any as BaseDialogProps)} />, undefined /*renderOptions*/)};
+      return {props, e: mount(<DialogTmpl {...(props as any as BaseDialogProps)} />)};
     }
     test('renders title & content', () => {
       const {e} = setup();
-      expect(e.childAt(0).render().text()).toContain('Test Title');
-      expect(e.childAt(1).render().text()).toContain('Test Content');
+      expect(e.find('DialogTitle').render().text()).toContain('Test Title');
+      expect(e.find('DialogContent').render().text()).toContain('Test Content');
     });
     test('calls onAction on action tap', () => {
       const {e} = setup();
-      e.find('#actionButton').simulate('click');
+      e.find('#actionButton').hostNodes().prop('onClick')();
       expect(e.instance().actionSpy).toHaveBeenCalledTimes(1);
     });
     test('calls onClose on cancel tap', () => {
       const {props, e} = setup();
-      e.find('#closeButton').simulate('click');
+      e.find('#closeButton').hostNodes().prop('onClick')();
       expect(props.onClose).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('TextAreaDialog', () => {
     class DialogTmpl extends TextAreaDialog<BaseDialogProps> {
-      public onSubmit: jasmine.Spy;
+      public onSubmitSpy: jasmine.Spy;
       constructor(props: BaseDialogProps) {
         super(props);
         this.title = 'Test Title';
         this.content = <p>Test Content</p>;
         this.helperText = 'Test HelperText';
-        this.onSubmit = jasmine.createSpy('onSubmit');
+        this.onSubmitSpy = jasmine.createSpy('onSubmit');
       }
-      public onAction() {
-        this.onSubmit();
+      public onSubmit() {
+        this.onSubmitSpy(this.state);
       }
     }
     function setup(overrides?: Partial<BaseDialogProps>) {
@@ -81,26 +84,27 @@ describe('Dialogs', () => {
         onClose: jasmine.createSpy('onClose'),
         ...overrides,
       };
-      return {props, e: shallow(<DialogTmpl {...(props as any as BaseDialogProps)} />, undefined /*renderOptions*/)};
+      return {props, e: mount(<DialogTmpl {...(props as any as BaseDialogProps)} />)};
     }
     test('renders title & content', () => {
       const {e} = setup();
-      expect(e.childAt(0).render().text()).toContain('Test Title');
-      expect(e.childAt(1).render().text()).toContain('Test Content');
+      expect(e.find('DialogTitle').render().text()).toContain('Test Title');
+      expect(e.find('DialogContent').render().text()).toContain('Test Content');
     });
     test('updates text state', () => {
       const {e} = setup();
-      e.find('.textfield').simulate('change', {target: {value: 'asdf'}});
-      expect(e.state().text).toEqual('asdf');
+      e.find('TextField').prop('onChange')({target: {value: 'asdf'}});
+      e.find('#submitButton').hostNodes().prop('onClick')();
+      expect(e.instance().onSubmitSpy).toHaveBeenCalledWith({text: 'asdf'});
     });
     test('calls onSubmit on submission', () => {
       const {e} = setup();
-      e.find('#submitButton').simulate('click');
-      expect(e.instance().onSubmit).toHaveBeenCalledTimes(1);
+      e.find('#submitButton').hostNodes().prop('onClick')();
+      expect(e.instance().onSubmitSpy).toHaveBeenCalledTimes(1);
     });
     test('calls onClose on Cancel tap', () => {
       const {props, e} = setup();
-      e.find('#cancelButton').simulate('click');
+      e.find('#cancelButton').hostNodes().prop('onClick')();
       expect(props.onClose).toHaveBeenCalledTimes(1);
     });
   });
@@ -112,19 +116,44 @@ describe('Dialogs', () => {
         onSendReport: jasmine.createSpy('onSendReport'),
         open: true,
         questDetails: new Quest(TUTORIAL_QUESTS[0]),
+        multiplayer: initialMultiplayer,
         stats: {...initialMultiplayerCounters, ...counters},
         user: loggedOutUser,
       };
-      return {props, e: shallow(<MultiplayerStatusDialog {...(props as any as MultiplayerStatusDialogProps)} />, undefined /*renderOptions*/)};
+      return {props, e: mount(<MultiplayerStatusDialog {...(props as any as MultiplayerStatusDialogProps)} />)};
     }
     test('shows stats', () => {
       const {e} = setup({receivedEvents: 500});
-      expect(e.childAt(1).render().text()).toContain("receivedEvents: 500");
+      expect(e.find('DialogContent').render().text()).toContain("receivedEvents: 500");
     });
     test('sends report', () => {
       const {props, e} = setup();
-      e.find('#sendReportButton').simulate('click');
+      e.find('#sendReportButton').hostNodes().prop('onClick')();
       expect(props.onSendReport).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('MultiplayerPeersDialog', () => {
+    function setup(overrides?: Partial<MultiplayerPeersDialogProps>) {
+      const props: Props = {
+        onClose: jasmine.createSpy('onClose'),
+        open: true,
+        multiplayer: initialMultiplayer,
+        ...overrides,
+      };
+      return {props, e: mount(<MultiplayerPeersDialog {...(props as any as MultiplayerPeersDialogProps)} />)};
+    }
+
+    test('shows peers & player count', () => {
+      const {e} = setup({
+        multiplayer: {...initialMultiplayer, clientStatus: {
+          "a": {numPlayers: 3},
+          "b": {numPlayers: 2},
+        }},
+      });
+      const text = e.find('DialogContent').render().text();
+      expect(text).toContain("3 Players");
+      expect(text).toContain("2 Players");
     });
   });
 
@@ -135,22 +164,22 @@ describe('Dialogs', () => {
         open: true,
         ...overrides,
       };
-      return {props, e: shallow(<ExpansionSelectDialog {...(props as any as ExpansionSelectDialogProps)} />, undefined /*renderOptions*/)};
+      return {props, e: mount(<ExpansionSelectDialog {...(props as any as ExpansionSelectDialogProps)} />)};
     }
 
     test('sets no content sets if base game', () => {
       const {props, e} = setup();
-      e.find('#base').simulate('click');
+      e.find('#base').hostNodes().prop('onClick')();
       expect(props.onExpansionSelect).toHaveBeenCalledWith({horror: false, future: false});
     });
     test('sets horror content set', () => {
       const {props, e} = setup();
-      e.find('#horror').simulate('click');
+      e.find('#horror').hostNodes().prop('onClick')();
       expect(props.onExpansionSelect).toHaveBeenCalledWith({horror: true});
     });
     test('sets horror + future content sets', () => {
       const {props, e} = setup();
-      e.find('#future').simulate('click');
+      e.find('#future').hostNodes().prop('onClick')();
       expect(props.onExpansionSelect).toHaveBeenCalledWith({horror: true, future: true});
     });
     test('has buttons for all content sets', () => {
@@ -164,7 +193,7 @@ describe('Dialogs', () => {
       });
       expect(Object.keys(sets).length).toBeGreaterThan(0);
       for (const s of Object.keys(sets)) {
-        expect(e.find('#'+s).length).toEqual(1);
+        expect(e.find('#'+s).hostNodes().length).toEqual(1);
       }
     });
   });
@@ -181,30 +210,30 @@ describe('Dialogs', () => {
         playQuest: jasmine.createSpy('playQuest'),
         ...overrides,
       };
-      return {props, e: shallow(<SetPlayerCountDialog {...(props as any as SetPlayerCountDialogProps)} />, undefined /*renderOptions*/)};
+      return {props, e: mount(<SetPlayerCountDialog {...(props as any as SetPlayerCountDialogProps)} />)};
     }
     test('enables play under normal circumstances', () => {
       const {props, e} = setup();
-      expect(e.find('#play').prop('disabled')).toEqual(false);
+      expect(e.find('#play').hostNodes().prop('disabled')).toEqual(false);
     })
     test('can adjust player count', () => {
       const {props, e} = setup();
-      e.find('#adventurerCount').prop('onDelta')(1);
-      expect(props.onPlayerDelta).toHaveBeenCalledWith(jasmine.any(Number), 1);
+      e.find('#adventurerCount IconButton').at(0).simulate('click');
+      expect(props.onPlayerDelta).toHaveBeenCalledWith(jasmine.any(Number), jasmine.any(Number));
     });
     test('can enable/disable multitouch', () => {
       const {props, e} = setup();
-      e.find('#multitouch').prop('onChange')(true);
-      expect(props.onMultitouchChange).toHaveBeenCalledWith(true);
+      e.find('#multitouch').hostNodes().find('Button').prop('onClick')();
+      expect(props.onMultitouchChange).toHaveBeenCalledWith(false);
     });
     test('shows requirement if player count is outside of quest num players range and disables play', () => {
       const {props, e} = setup({settings: {...initialSettings, numLocalPlayers: 7}});
-      expect(e.childAt(1).render().text()).toContain('Quest requires');
-      expect(e.find('#play').prop('disabled')).toEqual(true);
+      expect(e.find('DialogContent').render().text()).toContain('Quest requires');
+      expect(e.find('#play').hostNodes().prop('disabled')).toEqual(true);
     });
     test('indicates required expansion (and hides Play) if not properly configured', () => {
       const {props, e} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], expansionhorror: true})});
-      expect(e.childAt(1).render().text()).toContain('expansion is required');
+      expect(e.find('DialogContent').render().text()).toContain('expansion is required');
       expect(e.find('#play').length).toEqual(0);
     });
   });

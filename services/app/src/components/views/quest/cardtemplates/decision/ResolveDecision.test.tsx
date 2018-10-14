@@ -1,7 +1,4 @@
-import {configure, mount} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
-configure({ adapter: new Adapter() });
 import {numAdventurers} from 'app/actions/Settings';
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
@@ -9,6 +6,7 @@ import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import ResolveDecision, {Props} from './ResolveDecision';
 import {EMPTY_LEVELED_CHECK} from './Types';
+import {mount, unmountAll} from 'app/Testing';
 
 const cheerio: any = require('cheerio');
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
@@ -35,6 +33,8 @@ function titleWithProps(overrides: Partial<Props>): string {
 }
 
 describe('ResolveDecision', () => {
+  afterEach(unmountAll);
+
   test('shows a "roll & resolve" element when outcome is null', () => {
     expect(setup({}).e.text()).toContain('1 Success Needed');
   });

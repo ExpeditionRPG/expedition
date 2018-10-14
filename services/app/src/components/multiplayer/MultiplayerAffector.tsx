@@ -46,7 +46,7 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
       return;
     }
     if (this.props.onInteraction) {
-      this.props.onInteraction(e.client, e.event);
+      this.props.onInteraction(e.client + '|' + e.instance, e.event);
     }
   }
 

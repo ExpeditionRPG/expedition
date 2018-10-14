@@ -87,8 +87,8 @@ export function translateTier(tier: number, english: string, translations: Trans
 // TODO modernize
 export function healthCounter(health: number, back = false): JSX.Element {
 
-  const digitWidth = [0, 16, 23];
-  let maxWidth = 269;
+  const digitWidth = [0, 17, 24];
+  let maxWidth = 268;
   let outputtedWidth = 0;
 
   if (back) {

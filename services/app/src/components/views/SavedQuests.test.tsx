@@ -1,18 +1,10 @@
-import {configure, render} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
-import {Provider} from 'react-redux';
-import {newMockStore} from 'app/Testing';
+import {render} from 'app/Testing';
 import SavedQuests, {Props} from './SavedQuests';
 import {TUTORIAL_QUESTS} from '../../Constants';
-import {loggedOutUser} from '../../reducers/User';
-import {Quest} from 'shared/schema/Quests';
-
-configure({ adapter: new Adapter() });
 
 function setup(props: Partial<Props>) {
-  const store = newMockStore({saved: {list: []}, userQuests: {history: {}}, user: loggedOutUser});
-  const e = render(<Provider store={store}><SavedQuests {...(props as any as Props)} /></Provider>, undefined /*renderOptions*/);
+  const e = render(<SavedQuests {...(props as any as Props)} />);
   return {props, e};
 }
 
