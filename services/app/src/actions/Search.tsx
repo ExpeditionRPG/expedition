@@ -4,13 +4,17 @@ import {Quest} from 'shared/schema/Quests';
 import {openSnackbar} from '../actions/Snackbar';
 import {AUTH_SETTINGS, TUTORIAL_QUESTS} from '../Constants';
 import {ExpansionsType, SearchParams, SettingsType} from '../reducers/StateTypes';
-import {SearchResponseAction} from './ActionTypes';
-import {remoteify} from './ActionTypes';
+import {remoteify, SearchChangeParamsAction, SearchResponseAction} from './ActionTypes';
+import {} from './ActionTypes';
 import {toCard} from './Card';
 import {previewQuest} from './Quest';
 
+export function changeSearchParams(params: any): SearchChangeParamsAction {
+  return {type: 'SEARCH_CHANGE_PARAMS', params};
+}
+
 // TODO: Make search options propagate to other clients
-export const search = remoteify(function search(a: {params: SearchParams, settings: SettingsType}, dispatch: Redux.Dispatch<any>) {
+export const search = remoteify(function searchAndView(a: {params: SearchParams, settings: SettingsType}, dispatch: Redux.Dispatch<any>) {
   const params = {...a.params};
   Object.keys(params).forEach((key: string) => {
     if ((params as any)[key] === null) {
@@ -19,7 +23,6 @@ export const search = remoteify(function search(a: {params: SearchParams, settin
   });
   params.players = a.settings.numPlayers;
   params.expansions = Object.keys(a.settings.contentSets).filter( (key) => a.settings.contentSets[key] ) as ExpansionsType[],
-  dispatch(toCard({name: 'SEARCH_CARD'}));
   dispatch(getSearchResults(params, (response: QuestSearchResponse) => {
     dispatch({
       quests: response.quests,
