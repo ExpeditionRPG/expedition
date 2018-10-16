@@ -1,7 +1,6 @@
 import Redux from 'redux';
 import {ReturnAction} from '../actions/ActionTypes';
 import {getHistoryApi, getNavigator} from '../Globals';
-import {announcement} from './Announcement';
 import {audio} from './Audio';
 import {audioData} from './AudioData';
 import {card} from './Card';
@@ -12,6 +11,7 @@ import {multiplayer} from './Multiplayer';
 import {quest} from './Quest';
 import {saved} from './Saved';
 import {search} from './Search';
+import {serverstatus} from './ServerStatus';
 import {settings} from './Settings';
 import {snackbar} from './Snackbar';
 import {AppState, AppStateBase, AppStateWithHistory} from './StateTypes';
@@ -21,21 +21,21 @@ import {userquests} from './UserQuests';
 function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppState {
   state = state || ({} as AppStateWithHistory);
   return {
-    announcement: announcement(state.announcement, action),
     audio: audio(state.audio, action),
+    audioData: audioData(state.audioData, action),
     card: card(state.card, action),
     checkout: checkout(state.checkout, action),
     commitID: state.commitID, // Handled by inflight()
     dialog: dialog(state.dialog, action),
     multiplayer: multiplayer(state.multiplayer, action),
     quest: quest(state.quest, action),
-    userQuests: userquests(state.userQuests, action),
     saved: saved(state.saved, action),
     search: search(state.search, action),
+    serverstatus: serverstatus(state.serverstatus, action),
     settings: settings(state.settings, action),
     snackbar: snackbar(state.snackbar, action),
     user: user(state.user, action),
-    audioData: audioData(state.audioData, action),
+    userQuests: userquests(state.userQuests, action),
   };
 }
 
@@ -144,7 +144,8 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
   }
 
   // Run the reducers on the new action
-  return {...combinedReduce(state, action),
+  return {
+    ...combinedReduce(state, action),
     _committed: (state && state._committed),
     _history: stateHistory,
     _return: false,

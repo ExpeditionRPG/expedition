@@ -14,13 +14,14 @@ import {
   MultiplayerSessionMeta,
   SavedQuestMeta,
   SearchParams,
+  ServerStatusState,
   SettingsType,
   UserQuestInstance,
   UserQuestsType,
   UserState,
 } from '../reducers/StateTypes';
 
-export interface FetchAnnouncementResponse {
+export interface FetchServerStatusResponse {
   message: string;
   link: string;
   versions: {
@@ -38,11 +39,9 @@ export interface ClearHistoryAction extends Redux.Action {
   type: 'CLEAR_HISTORY';
 }
 
-export interface AnnouncementSetAction extends Redux.Action {
-  type: 'ANNOUNCEMENT_SET';
-  open: boolean;
-  message?: string;
-  link?: string;
+export interface ServerStatusSetAction extends Redux.Action {
+  type: 'SERVER_STATUS_SET';
+  delta: Partial<ServerStatusState>;
 }
 
 export interface AudioSetAction extends Redux.Action {

@@ -9,7 +9,7 @@ import SplashScreen, {DispatchProps, StateProps} from './SplashScreen';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
-    announcement: state.announcement,
+    announcement: state.serverstatus.announcement,
   };
 };
 
