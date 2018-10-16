@@ -6,25 +6,9 @@ import {MultiplayerState} from '../../reducers/StateTypes';
 export const FADE_ENTER_ANIMATION_MS = 500;
 export const FADE_EXIT_ANIMATION_MS = 500;
 
-export interface StateProps {
+export interface Props {
   commitID: number;
   multiplayer: MultiplayerState;
-}
-
-export interface DispatchProps {
-  onAnimationComplete: () => any;
-}
-
-interface Props extends StateProps, DispatchProps {}
-
-class SyncContainer extends React.Component<DispatchProps, {}> {
-  public componentDidMount() {
-    setTimeout(() => {this.props.onAnimationComplete(); }, FADE_ENTER_ANIMATION_MS);
-  }
-
-  public render() {
-    return <div className="remote_sync">{this.props.children}</div>;
-  }
 }
 
 export default class MultiplayerSync extends React.Component<Props, {}> {
@@ -41,20 +25,21 @@ export default class MultiplayerSync extends React.Component<Props, {}> {
     // - Sweep an equivalent # "micro-card" symbols across the screen, then Next to the result.
     let body = null;
     if (this.props.multiplayer && this.props.multiplayer.syncing === true) {
+      // TODO: Make this update even if nothing else updates
       const value = Math.floor(100 * this.props.commitID / this.props.multiplayer.syncID);
       console.log(this.props.multiplayer.syncID, this.props.commitID, value);
       body = (
         <CSSTransition
           classNames="fade"
           timeout={{enter: FADE_ENTER_ANIMATION_MS, exit: FADE_EXIT_ANIMATION_MS}}>
-          <SyncContainer key={0} onAnimationComplete={this.props.onAnimationComplete}>
+          <div className="remote_sync" key={0}>
             <div id="syncContainer">
               <div className="spinner">
                 <CircularProgress size={200} thickness={10} value={value} variant={Boolean(value) ? 'determinate' : 'indeterminate'}/>
               </div>
               <h1>Syncing...</h1>
             </div>
-          </SyncContainer>
+          </div>
         </CSSTransition>
       );
     }

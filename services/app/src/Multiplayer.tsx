@@ -151,7 +151,6 @@ export class MultiplayerClient extends ClientBase {
       return;
     }
 
-    console.log(e);
     const body = e.event;
     switch (body.type) {
       case 'STATUS':
@@ -168,7 +167,6 @@ export class MultiplayerClient extends ClientBase {
       case 'ACTION':
         // Actions must have IDs.
         if (e.id === null) {
-          console.log('Inflight null id', e);
           return;
         }
 
@@ -177,7 +175,6 @@ export class MultiplayerClient extends ClientBase {
         // This can happen in edge cases, e.g. client sends event A, connection flaps,
         // server responds to client status with MULTI_ACTION on event A.
         if (this.hasInFlight(e.id)) {
-          console.log('Received inflight ' + e.id);
           this.removeFromQueue(e.id);
 
           // If the event came from us, commit it. Otherwise, reject the
@@ -204,13 +201,11 @@ export class MultiplayerClient extends ClientBase {
 
         let result: any;
         try {
-          console.log('dispatched');
           result = dispatch(local(action));
         } finally {
           if (e.id !== null) {
             this.removeFromQueue(e.id);
             this.committedEvent(e.id);
-            console.log('marked commit');
           }
         }
         return result;
@@ -236,12 +231,10 @@ export class MultiplayerClient extends ClientBase {
           // Actions are dispatched within a timeout so that react UI updates aren't blocked by
           // event routing.
           chain = chain.then((_: any) => {
-            console.log('routing ' + parsed.id);
             return new Promise<void>((fulfill, reject) => {
               setTimeout(() => {
                 const route: any = this.routeEvent(parsed, dispatch);
                 if (route && typeof(route) === 'object' && route.then) {
-                  console.log('Chaining promise from event: ', parsed);
                   return route;
                 }
                 fulfill();
@@ -300,7 +293,6 @@ export class MultiplayerClient extends ClientBase {
     const state = store.getState();
     const elem = (state.quest && state.quest.node && state.quest.node.elem);
     const selfStatus = (state.multiplayer && state.multiplayer.clientStatus && state.multiplayer.clientStatus[this.getClientKey()]);
-    console.log(state.commitID);
     let event: StatusEvent = {
       connected: true,
       lastEventID: state.commitID,
