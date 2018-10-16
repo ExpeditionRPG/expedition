@@ -7,21 +7,21 @@ import {logEvent} from '../Logging';
 import {ServerStatusState} from '../reducers/StateTypes';
 import {FetchServerStatusResponse, ServerStatusSetAction} from './ActionTypes';
 
-export function fetchServerStatus() {
+export function fetchServerStatus(log: any = logEvent) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    fetch(AUTH_SETTINGS.URL_BASE + '/announcements')
-    .then(handleFetchErrors)
-    .then((response: Response) => response.json())
-    .then((data: FetchServerStatusResponse) => {
-      dispatch(handleServerStatus(data));
-    }).catch((error: Error) => {
-      // Don't alert user - it's not important to them if this fails
-      logEvent('error', 'Status_fetch_err', {label: error});
-    });
+    return fetch(AUTH_SETTINGS.URL_BASE + '/announcements')
+      .then(handleFetchErrors)
+      .then((response: Response) => response.json())
+      .then((data: FetchServerStatusResponse) => {
+        dispatch(handleServerStatus(data));
+      }).catch((error: Error) => {
+        // Don't alert user - it's not important to them if this fails
+        log('error', 'status_fetch_err', {label: error});
+      });
   };
 }
 
-export function handleServerStatus(data: FetchServerStatusResponse) {
+function handleServerStatus(data: FetchServerStatusResponse) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const newVersion = data.versions[getDevicePlatform()];
     const oldVersion = VERSION;

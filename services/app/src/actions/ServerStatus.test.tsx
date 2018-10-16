@@ -1,44 +1,76 @@
-import {newMockStore} from '../Testing';
-import {handleServerStatus} from './ServerStatus';
+import {Action} from '../Testing';
+import {fetchServerStatus} from './ServerStatus';
+
+const fetchMock = require('fetch-mock');
 
 describe('ServerStatus set action', () => {
   // Entirely glue code; no testing needed right now.
 });
 
 describe('Fetch ServerStatus', () => {
-  test('Fetches and sets ServerStatus', () => {
-    // TODO - how to delay check until fetch complete? Callbacks?
-    // That's an anti-pattern in this codebase
-    // spyOn(window, 'fetch');
-    // fetchServerStatus();
-    // expect(window.fetch).toHaveBeenCalledTimes(1);
-  });
-  test.skip('Silently logs error events', () => { /* TODO */ });
-});
-
-describe('Handle ServerStatus', () => {
-  let store = null as any;
-  beforeEach(() => {
-    store = newMockStore({});
+  afterEach(() => {
+    fetchMock.restore();
   });
 
-  test('Shows an announcement if there is one', () => {
-    store.dispatch(handleServerStatus({
+  test('Shows an announcement if present, overriding version update prompt', (done) => {
+    fetchMock.get('*', {
       link: '',
       message: 'test',
-      versions: {android: '1', ios: '1', web: '1'},
-    }));
-    expect(store.getActions().length).toEqual(1);
-    expect(store.getActions()[0]).toEqual(jasmine.objectContaining({type: 'SERVER_STATUS_SET', delta: { message: 'test' }}));
+      versions: {android: '999.999.999', ios: '999.999.999', web: '999.999.999'},
+    });
+    Action(fetchServerStatus, {}).execute().then((actions) => {
+      expect(actions.length).toEqual(1);
+      expect(actions[0]).toEqual(jasmine.objectContaining({
+        type: 'SERVER_STATUS_SET',
+        delta: jasmine.objectContaining({
+          announcement: jasmine.objectContaining({
+            message: 'test',
+          }),
+        }),
+      }));
+      done();
+    });
   });
-  test('Shows update version prompt with platform-specific link if outdated version', () => {
-    store.dispatch(handleServerStatus({
+
+  test('Shows update version prompt with platform-specific link if outdated version', (done) => {
+    fetchMock.get('*', {
       link: '',
       message: '',
       versions: {android: '999.999.999', ios: '999.999.999', web: '999.999.999'},
-    }));
-    expect(store.getActions().length).toEqual(1);
-    expect(store.getActions()[0]).toEqual(jasmine.objectContaining({type: 'SERVER_STATUS_SET', delta: { message: 'New version available, click here to upgrade' }}));
+    });
+    Action(fetchServerStatus, {}).execute().then((actions) => {
+      expect(actions.length).toEqual(1);
+      expect(actions[0]).toEqual(jasmine.objectContaining({
+        type: 'SERVER_STATUS_SET',
+        delta: jasmine.objectContaining({
+          announcement: jasmine.objectContaining({
+            message: 'New version available, click here to upgrade',
+          }),
+        }),
+      }));
+      done();
+    });
   });
-  test.skip('Does nothing if latest version and no announcement', () => { /* TODO */ });
+
+  test('Does nothing if latest version and no announcement', (done) => {
+    fetchMock.get('*', {
+      link: '',
+      message: '',
+      versions: {android: '0.0.0', ios: '0.0.0', web: '0.0.0'},
+    });
+    Action(fetchServerStatus, {}).execute().then((actions) => {
+      expect(actions.length).toEqual(0);
+      done();
+    });
+  });
+
+  test('Silently logs error events', (done) => {
+    fetchMock.get('*', 400);
+    const log = jasmine.createSpy('log');
+    Action(fetchServerStatus, {}).execute(log).then((actions) => {
+      expect(actions.length).toEqual(0);
+      expect(log).toHaveBeenCalled();
+      done();
+    });
+  });
 });
