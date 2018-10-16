@@ -1,5 +1,5 @@
 import Redux from 'redux';
-import {MultiplayerClientStatus, MultiplayerHistoryAction, MultiplayerSessionAction} from '../actions/ActionTypes';
+import {MultiplayerClientStatus, MultiplayerHistoryAction, MultiplayerMultiEventStartAction, MultiplayerSessionAction} from '../actions/ActionTypes';
 import {MultiplayerState} from './StateTypes';
 
 export const initialMultiplayer: MultiplayerState = {
@@ -7,6 +7,7 @@ export const initialMultiplayer: MultiplayerState = {
   history: [],
   session: null,
   syncing: false,
+  syncID: 0,
 };
 
 export function multiplayer(state: MultiplayerState = initialMultiplayer, action: Redux.Action|MultiplayerSessionAction): MultiplayerState {
@@ -17,10 +18,13 @@ export function multiplayer(state: MultiplayerState = initialMultiplayer, action
     case 'MULTIPLAYER_HISTORY':
       const rph = (action as any) as MultiplayerHistoryAction;
       return {...state, history: rph.history || []};
-    case 'INFLIGHT_REJECT':
+    case 'MULTIPLAYER_SYNC':
+    case 'MULTIPLAYER_REJECT':
       return {...state, syncing: true};
-    case 'INFLIGHT_COMPACT':
-      return {...state, syncing: false};
+    case 'MULTIPLAYER_MULTI_EVENT_START':
+      return {...state, syncID: (action as MultiplayerMultiEventStartAction).syncID};
+    case 'MULTIPLAYER_MULTI_EVENT':
+      return {...state, syncing: false, syncID: 0};
     case 'MULTIPLAYER_CLIENT_STATUS':
       const rpcs = (action as any) as MultiplayerClientStatus;
       const newClientStatus = {...state.clientStatus};

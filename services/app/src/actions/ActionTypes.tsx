@@ -183,6 +183,10 @@ export interface MultiplayerSessionAction extends Redux.Action {
   session: {id: number, secret: string};
 }
 
+export interface MultiplayerSyncAction extends Redux.Action {
+  type: 'MULTIPLAYER_SYNC';
+}
+
 // History of multiplayer sessions, as reported from the API server.
 // We can use these to reconnect to earlier sessions we may have been
 // disconnected from.
@@ -212,16 +216,26 @@ export interface LocalAction extends Redux.Action {
 }
 
 // Commits an in-flight action transaction (multiplayer)
-export interface InflightCommitAction extends Redux.Action {
-  type: 'INFLIGHT_COMMIT';
+export interface MultiplayerCommitAction extends Redux.Action {
+  type: 'MULTIPLAYER_COMMIT';
   id: number;
 }
 
 // Rejects an in-flight action transaction (multiplayer)
-export interface InflightRejectAction extends Redux.Action {
-  type: 'INFLIGHT_REJECT';
+export interface MultiplayerRejectAction extends Redux.Action {
+  type: 'MULTIPLAYER_REJECT';
   id: number;
   error: string;
+}
+
+// Indicates a multi_event completed
+export interface MultiplayerMultiEventAction extends Redux.Action {
+  type: 'MULTIPLAYER_MULTI_EVENT';
+}
+
+export interface MultiplayerMultiEventStartAction extends Redux.Action {
+  type: 'MULTIPLAYER_MULTI_EVENT_START';
+  syncID: number;
 }
 
 // Returns a generator of an "executable array" of the original action.

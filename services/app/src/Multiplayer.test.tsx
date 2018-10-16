@@ -82,5 +82,6 @@ describe('Multiplayer', () => {
     test.skip('rejects COMMIT when no matching inflight action', () => { /* TODO */ });
     test.skip('rejects REJECT when no matching inflight action', () => { /* TODO */ });
     test.skip('rejects ACTIONs when id is not an increment', () => { /* TODO */ });
+    test.skip('handles MULTI_EVENT', () => { /* TODO */});
   });
 });

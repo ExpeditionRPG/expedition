@@ -2,7 +2,7 @@ import Redux from 'redux';
 import {ClientBase} from 'shared/multiplayer/Client';
 import {ActionEvent, MultiplayerEvent, StatusEvent} from 'shared/multiplayer/Events';
 import {toClientKey} from 'shared/multiplayer/Session';
-import {getMultiplayerAction} from './actions/ActionTypes';
+import {getMultiplayerAction, MultiplayerMultiEventStartAction} from './actions/ActionTypes';
 import {local} from './actions/Multiplayer';
 import {MULTIPLAYER_SETTINGS} from './Constants';
 import {getStore} from './Store';
@@ -27,6 +27,7 @@ export interface MultiplayerCounters {
   reconnectCount: number;
   sessionCount: number;
   successfulTransactions: number;
+  syncs: number;
 }
 
 export const initialMultiplayerCounters = {
@@ -38,11 +39,8 @@ export const initialMultiplayerCounters = {
   reconnectCount: 0,
   sessionCount: 0,
   successfulTransactions: 0,
+  syncs: 0,
 };
-
-function isSyncing(): boolean {
-  return getStore().getState().multiplayer.syncing;
-}
 
 function getCommitID(): number {
   return getStore().getState().commitID;
@@ -65,6 +63,15 @@ export class MultiplayerClient extends ClientBase {
     super();
     this.resetState();
     setInterval(() => {this.connectionLoop(); }, CONNECTION_LOOP_MS);
+  }
+
+  public sync() {
+    this.localEventCounter = 0;
+    this.messageBuffer = [];
+    this.reconnectAttempts = 0;
+    this.lastStatusMs = 0;
+    this.stats.syncs++;
+    this.sendStatus();
   }
 
   public resetState() {
@@ -144,18 +151,14 @@ export class MultiplayerClient extends ClientBase {
       return;
     }
 
-    // We must be ready to receive the event
-    // (it will get retransmitted via MULTI_EVENT otherwise)
-    if (isSyncing() && e.event.type !== 'MULTI_EVENT') {
-      return;
-    }
-
-    switch (e.event.type) {
+    console.log(e);
+    const body = e.event;
+    switch (body.type) {
       case 'STATUS':
         dispatch({
           client: e.client,
           instance: e.instance,
-          status: e.event,
+          status: body,
           type: 'MULTIPLAYER_CLIENT_STATUS',
         });
         break;
@@ -165,6 +168,7 @@ export class MultiplayerClient extends ClientBase {
       case 'ACTION':
         // Actions must have IDs.
         if (e.id === null) {
+          console.log('Inflight null id', e);
           return;
         }
 
@@ -173,6 +177,7 @@ export class MultiplayerClient extends ClientBase {
         // This can happen in edge cases, e.g. client sends event A, connection flaps,
         // server responds to client status with MULTI_ACTION on event A.
         if (this.hasInFlight(e.id)) {
+          console.log('Received inflight ' + e.id);
           this.removeFromQueue(e.id);
 
           // If the event came from us, commit it. Otherwise, reject the
@@ -185,31 +190,35 @@ export class MultiplayerClient extends ClientBase {
           return;
         }
 
-        const a = getMultiplayerAction(e.event.name);
+        const a = getMultiplayerAction(body.name);
         if (!a) {
-          console.error('Received unknown remote action ' + e.event.name);
+          console.error('Received unknown remote action ' + body.name);
           return;
         }
 
-        console.log('WS: Inbound #' + e.id + ': ' + e.event.name + '(' + e.event.args + ')');
+        console.log('WS: Inbound #' + e.id + ': ' + body.name + '(' + body.args + ')');
         // Set a "remote" inflight marker so it's identifiable
         // when debugging.
-        const action = a(JSON.parse(e.event.args));
+        const action = a(JSON.parse(body.args));
         (action as any)._inflight = 'remote';
 
         let result: any;
         try {
+          console.log('dispatched');
           result = dispatch(local(action));
         } finally {
           if (e.id !== null) {
             this.removeFromQueue(e.id);
             this.committedEvent(e.id);
+            console.log('marked commit');
           }
         }
         return result;
       case 'MULTI_EVENT':
-        let chain = Promise.resolve();
-        for (const event of e.event.events) {
+        let chain = Promise.resolve().then(() => {
+          dispatch(local({type: 'MULTIPLAYER_MULTI_EVENT_START', syncID: body.lastId} as MultiplayerMultiEventStartAction));
+        });
+        for (const event of body.events) {
           let parsed: MultiplayerEvent;
           try {
             parsed = JSON.parse(event);
@@ -224,21 +233,32 @@ export class MultiplayerClient extends ClientBase {
           // Sometimes we need to handle async actions - e.g. when calls to dispatch() return a promise in the inner routeEvent().
           // This constructs a chain of promises out of the calls to MULTI_EVENT so that async actions like fetchQuestXML are
           // allowed to complete before the next action is processed.
+          // Actions are dispatched within a timeout so that react UI updates aren't blocked by
+          // event routing.
           chain = chain.then((_: any) => {
-            const route: any = this.routeEvent(parsed, dispatch);
-            if (route && typeof(route) === 'object' && route.then) {
-              console.log('Chaining promise from event: ', parsed);
-              return route;
-            }
-            return Promise.resolve();
+            console.log('routing ' + parsed.id);
+            return new Promise<void>((fulfill, reject) => {
+              setTimeout(() => {
+                const route: any = this.routeEvent(parsed, dispatch);
+                if (route && typeof(route) === 'object' && route.then) {
+                  console.log('Chaining promise from event: ', parsed);
+                  return route;
+                }
+                fulfill();
+              }, 0);
+            });
           });
         }
+
+        chain = chain.then((_: any) => {
+          dispatch(local({type: 'MULTIPLAYER_MULTI_EVENT'}));
+        });
         break;
       case 'ERROR':
-        console.error(JSON.stringify(e.event));
+        console.error(JSON.stringify(body));
         break;
       default:
-        console.error('UNKNOWN EVENT ' + (e.event as any).type);
+        console.error('UNKNOWN EVENT ' + (body as any).type);
         if (e.id) {
           this.committedEvent(e.id);
         }
@@ -250,18 +270,18 @@ export class MultiplayerClient extends ClientBase {
   // When transactions are committed/rejected, we may need to to amend the
   // counter to get back on track.
   public committedEvent(n: number) {
-    console.log('INFLIGHT_COMMIT #' + n);
+    console.log('MULTIPLAYER_COMMIT #' + n);
     this.localEventCounter = Math.max(this.localEventCounter, n);
-    getStore().dispatch({type: 'INFLIGHT_COMMIT', id: n});
+    getStore().dispatch({type: 'MULTIPLAYER_COMMIT', id: n});
   }
 
   public rejectedEvent(n: number, error: string) {
-    console.log('INFLIGHT_REJECT #' + n + ': ' + error);
+    console.log('MULTIPLAYER_REJECT #' + n + ': ' + error);
     this.localEventCounter = Math.min(this.localEventCounter, Math.max(getCommitID(), n - 1));
     getStore().dispatch({
       error,
       id: n,
-      type: 'INFLIGHT_REJECT',
+      type: 'MULTIPLAYER_REJECT',
     });
   }
 
@@ -280,6 +300,7 @@ export class MultiplayerClient extends ClientBase {
     const state = store.getState();
     const elem = (state.quest && state.quest.node && state.quest.node.elem);
     const selfStatus = (state.multiplayer && state.multiplayer.clientStatus && state.multiplayer.clientStatus[this.getClientKey()]);
+    console.log(state.commitID);
     let event: StatusEvent = {
       connected: true,
       lastEventID: state.commitID,
@@ -435,13 +456,13 @@ export class MultiplayerClient extends ClientBase {
 
       if (action && action.type) {
         switch (action.type) {
-          case 'INFLIGHT_REJECT':
+          case 'MULTIPLAYER_REJECT':
             this.stats.failedTransactions++;
             break;
-          case 'INFLIGHT_COMMIT':
+          case 'MULTIPLAYER_COMMIT':
             this.stats.successfulTransactions++;
             break;
-          case 'INFLIGHT_COMPACT':
+          case 'MULTIPLAYER_COMPACT':
             this.stats.compactionEvents++;
             break;
           default:
@@ -490,10 +511,10 @@ export class MultiplayerClient extends ClientBase {
         next(action);
       }
 
-      // INFLIGHT_COMPACT actions happen after inconsistent state is discovered
+      // MULTIPLAYER_COMPACT actions happen after inconsistent state is discovered
       // between the server and client and the client state has just been thrown out.
       // Send a status ping to the server to inform it of our new state.
-      if (action.type === 'INFLIGHT_COMPACT') {
+      if (action.type === 'MULTIPLAYER_COMPACT') {
         this.sendStatus();
       }
     };

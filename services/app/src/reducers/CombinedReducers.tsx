@@ -6,8 +6,8 @@ import {audio} from './Audio';
 import {audioData} from './AudioData';
 import {card} from './Card';
 import {checkout} from './Checkout';
+import {commitID} from './CommitID';
 import {dialog} from './Dialog';
-import {inflight} from './InFlight';
 import {multiplayer} from './Multiplayer';
 import {quest} from './Quest';
 import {saved} from './Saved';
@@ -25,7 +25,7 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     audio: audio(state.audio, action),
     card: card(state.card, action),
     checkout: checkout(state.checkout, action),
-    commitID: state.commitID, // Handled by inflight()
+    commitID: state.commitID, // Handled by CommitID()
     dialog: dialog(state.dialog, action),
     multiplayer: multiplayer(state.multiplayer, action),
     quest: quest(state.quest, action),
@@ -48,8 +48,8 @@ function isReturnState(state: AppStateBase, action: ReturnAction): boolean {
 export default function combinedReducerWithHistory(state: AppStateWithHistory, action: Redux.Action): AppStateWithHistory {
   let stateHistory: AppStateBase[] = [];
 
-  // Manage inflight transactions
-  state = inflight(state, action, combinedReduce);
+  // Manage CommitID transactions
+  state = commitID(state, action, combinedReduce);
 
   if (state !== undefined) {
     if (state._history === undefined) {
@@ -115,6 +115,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         settings: state.settings,
         user: state.user,
         audioData: state.audioData,
+        snackbar: state.snackbar,
       } as AppStateWithHistory;
     } else if (action.type === 'CLEAR_HISTORY') {
       return {
@@ -133,12 +134,14 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         _committed: undefined,
         _history: undefined,
         _return: undefined,
+        commitID: undefined,
         multiplayer: undefined,
         saved: undefined,
         userQuests: undefined,
         settings: undefined,
         user: undefined,
         audioData: undefined,
+        snackbar: undefined,
       } as AppStateBase);
     }
   }

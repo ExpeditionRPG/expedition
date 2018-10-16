@@ -11,7 +11,7 @@ export function getLastEvent(db: Database, session: number): Bluebird<EventInsta
 
 export function getOrderedEventsAfter(db: Database, session: number, start: number): Bluebird<EventInstance[]> {
   return db.events.findAll({
-    order: [['timestamp', 'DESC']],
+    order: [['timestamp', 'ASC']],
     where: {session, id: {$gt: start}},
   });
 }

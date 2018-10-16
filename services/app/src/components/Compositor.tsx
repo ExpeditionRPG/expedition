@@ -131,6 +131,14 @@ export default class Compositor extends React.Component<Props, {}> {
     return null;
   }
 
+  public shouldComponentUpdate(nextProps: Props) {
+    // Don't update the main UI if we're just syncing state
+    if (nextProps.multiplayer.syncing) {
+      return false;
+    }
+    return true;
+  }
+
   public render() {
 
     const containerClass = ['app_container'];
