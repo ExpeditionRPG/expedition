@@ -3,9 +3,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Close from '@material-ui/icons/Close';
 import NetworkWifi from '@material-ui/icons/NetworkWifi';
 import SignalWifiOff from '@material-ui/icons/SignalWifiOff';
+import {playerOrder} from 'app/actions/Settings';
 import * as React from 'react';
 import {CardThemeType, DialogIDType, MultiplayerState} from '../../reducers/StateTypes';
-import {playerOrder} from '../views/quest/cardtemplates/PlayerCount';
 import MultiplayerIcon from './MultiplayerIcon';
 
 export interface StateProps {
@@ -35,7 +35,7 @@ const MultiplayerFooter = (props: Props): JSX.Element => {
     }
 
     const group: JSX.Element[] = [];
-    for (let j = 0; j < (lastStatus.numPlayers || 1); j++) {
+    for (let j = 0; j < (lastStatus.numLocalPlayers || 1); j++) {
       group.push(<MultiplayerIcon key={`${client}${j}`} className={`inline_icon player${order[i]}`} />);
     }
     peers.push(<span key={i} className="group">{group}</span>);

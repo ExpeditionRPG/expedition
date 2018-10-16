@@ -20,8 +20,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
         openWindow(announcement.link + '?utm_source=app');
       }
     },
-    onPlayerCountSelect: (numPlayers: number) => {
-      dispatch(changeSettings({numPlayers, multitouch: true}));
+    onPlayerCountSelect: (numLocalPlayers: number) => {
+      dispatch(changeSettings({numLocalPlayers, multitouch: true}));
       dispatch(toNavCard({}));
     },
     onPlayerManualSelect: () => {

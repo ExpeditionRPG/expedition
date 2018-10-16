@@ -11,19 +11,19 @@ const mapStateToProps = (state: AppState): StateProps => {
   return {
     isLatestAppVersion: state.serverstatus.isLatestAppVersion,
     multitouch: state.settings.multitouch,
-    numPlayers: state.settings.numPlayers,
+    numLocalPlayers: state.settings.numLocalPlayers,
     user: state.user,
   };
 };
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onDelta: (numPlayers: number, delta: number) => {
-      numPlayers += delta;
-      if (numPlayers <= 1 || numPlayers > 6) {
+    onDelta: (numLocalPlayers: number, delta: number) => {
+      numLocalPlayers += delta;
+      if (numLocalPlayers < 1 || numLocalPlayers > 6) {
         return;
       }
-      dispatch(changeSettings({numPlayers}));
+      dispatch(changeSettings({numLocalPlayers}));
     },
     onLocalSelect: () => {
       dispatch(changeSettings({multitouch: false}));

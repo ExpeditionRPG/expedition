@@ -108,13 +108,14 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         _history: state._history.slice(0, pastStateIdx),
         _return: true,
         // things that should persist / not be rewound:
+        audioData: state.audioData,
         commitID: state.commitID,
         multiplayer: state.multiplayer,
         saved: state.saved,
-        userQuests: state.userQuests,
+        search: state.search,
         settings: state.settings,
         user: state.user,
-        audioData: state.audioData,
+        userQuests: state.userQuests,
       } as AppStateWithHistory;
     } else if (action.type === 'CLEAR_HISTORY') {
       return {
@@ -133,12 +134,13 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         _committed: undefined,
         _history: undefined,
         _return: undefined,
+        audioData: undefined,
         multiplayer: undefined,
         saved: undefined,
-        userQuests: undefined,
+        search: undefined,
         settings: undefined,
         user: undefined,
-        audioData: undefined,
+        userQuests: undefined,
       } as AppStateBase);
     }
   }

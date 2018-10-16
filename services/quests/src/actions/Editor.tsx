@@ -137,7 +137,7 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
         difficulty: 'NORMAL',
         fontSize: 'SMALL',
         multitouch: false,
-        numPlayers: quest.minplayers,
+        numLocalPlayers: quest.minplayers,
         showHelp: true,
         simulator: true,
         timerSeconds: 10,

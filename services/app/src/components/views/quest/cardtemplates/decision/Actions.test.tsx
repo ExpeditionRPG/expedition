@@ -121,9 +121,9 @@ describe('Decision actions', () => {
   describe('skillTimeMillis', () => {
     test('gives multiple players less time than single player', () => {
       expect(
-        skillTimeMillis({...s.basic, numPlayers: 2}, m.basic)
+        skillTimeMillis({...s.basic, numLocalPlayers: 2}, m.basic)
       ).toBeLessThan(
-        skillTimeMillis({...s.basic, numPlayers: 1}, m.basic)
+        skillTimeMillis({...s.basic, numLocalPlayers: 1}, m.basic)
       );
     });
     test.skip('respects settings', () => { /* TODO */});

@@ -61,9 +61,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {
       logEvent('combat', 'combat_defeat', {
         difficulty: settings.difficulty,
-        label: settings.numPlayers,
+        label: settings.numLocalPlayers,
         maxTier,
-        players: settings.numPlayers,
+        players: settings.numLocalPlayers,
         value: maxTier,
       });
       dispatch(handleCombatEnd({node, settings, victory: false, maxTier, seed}));
@@ -77,9 +77,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {
       logEvent('combat', 'combat_victory', {
         difficulty: settings.difficulty,
-        label: settings.numPlayers,
+        label: settings.numLocalPlayers,
         maxTier,
-        players: settings.numPlayers,
+        players: settings.numLocalPlayers,
         value: maxTier,
       });
       dispatch(handleCombatEnd({node, settings, victory: true, maxTier, seed}));
