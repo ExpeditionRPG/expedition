@@ -2,7 +2,7 @@ import Redux from 'redux';
 import {ServerStatusSetAction} from '../actions/ActionTypes';
 import {ServerStatusState} from './StateTypes';
 
-const initialState: ServerStatusState = {
+export const initialServerStatusState: ServerStatusState = {
   announcement: {
     link: '',
     message: '',
@@ -11,11 +11,11 @@ const initialState: ServerStatusState = {
   isLatestAppVersion: false,
 };
 
-export function serverstatus(state: ServerStatusState = initialState, action: Redux.Action): ServerStatusState {
+export function serverstatus(state: ServerStatusState = initialServerStatusState, action: Redux.Action): ServerStatusState {
   switch (action.type) {
     case 'SERVER_STATUS_SET':
       return {
-        ...initialState,
+        ...initialServerStatusState,
         ...(action as ServerStatusSetAction).delta,
       };
     default:
