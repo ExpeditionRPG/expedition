@@ -284,7 +284,7 @@ export class MultiplayerClient extends ClientBase {
       connected: true,
       lastEventID: state.commitID,
       line: (elem && parseInt(elem.attr('data-line'), 10)),
-      numPlayers: (state.settings && state.settings.numPlayers) || 1,
+      numLocalPlayers: (state.settings && state.settings.numLocalPlayers) || 1,
       type: 'STATUS',
       waitingOn: (selfStatus && selfStatus.waitingOn),
     };

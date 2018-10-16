@@ -1,7 +1,8 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {search} from '../../actions/Search';
-import {AppStateWithHistory, SearchParams, SettingsType} from '../../reducers/StateTypes';
+import {toCard} from '../../actions/Card';
+import {changeSearchParams} from '../../actions/Search';
+import {AppStateWithHistory, SearchParams} from '../../reducers/StateTypes';
 import SearchSettings, {DispatchProps, StateProps} from './SearchSettings';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
@@ -14,8 +15,9 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onSearch: (params: SearchParams, settings: SettingsType) => {
-      dispatch(search({params, settings}));
+    onSearch: (params: SearchParams) => {
+      dispatch(changeSearchParams(params));
+      dispatch(toCard({name: 'SEARCH_CARD'}));
     },
   };
 };

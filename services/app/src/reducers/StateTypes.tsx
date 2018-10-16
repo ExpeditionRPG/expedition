@@ -86,6 +86,7 @@ export interface ContentSetsType {
 }
 
 export interface SettingsType {
+  [index: string]: any;
   audioEnabled: boolean;
   autoRoll: boolean;
   contentSets: ContentSetsType;
@@ -93,7 +94,7 @@ export interface SettingsType {
   experimental: boolean;
   fontSize: FontSizeType;
   multitouch: boolean;
-  numPlayers: number;
+  numLocalPlayers: number;
   showHelp: boolean;
   simulator: boolean;
   timerSeconds: number;
@@ -162,7 +163,7 @@ export interface SavedQuestState {
 
 export interface SearchState {
   params: SearchParams;
-  results: Quest[];
+  results: Quest[]|null;
   searching: boolean;
 }
 
@@ -205,10 +206,10 @@ export interface MultiplayerSessionMeta {
 }
 
 export interface MultiplayerState {
-  session: MultiplayerSessionType|null;
-  history: MultiplayerSessionMeta[];
-  syncing: boolean;
   clientStatus: {[client: string]: StatusEvent};
+  history: MultiplayerSessionMeta[];
+  session: MultiplayerSessionType|null;
+  syncing: boolean;
 }
 
 // AppStateBase is what's stored in AppState._history.
@@ -221,20 +222,20 @@ export interface AppStateBase {
   audio: AudioState;
   card: CardState;
   checkout: CheckoutState;
+  commitID: number;
   dialog: DialogState;
   quest: QuestState;
-  search: SearchState;
   snackbar: SnackbarState;
-  commitID: number;
 }
 
 export interface AppState extends AppStateBase {
-  settings: SettingsType;
-  multiplayer: MultiplayerState;
-  userQuests: UserQuestsState;
-  saved: SavedQuestState;
   audioData: AudioDataState;
+  multiplayer: MultiplayerState;
+  saved: SavedQuestState;
+  search: SearchState;
+  settings: SettingsType;
   user: UserState;
+  userQuests: UserQuestsState;
 }
 
 export interface AppStateWithHistory extends AppState {

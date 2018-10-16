@@ -16,7 +16,7 @@ export default function prepareTimer(props: Props): JSX.Element {
   if (props.settings.showHelp) {
     helpText = (
       <div>
-        {props.settings.numPlayers === 1 && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
+        {props.settings.numLocalPlayers === 1 && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
         <h2>Shuffle & Draw <img className="inline_icon" src={'images/' + formatImg('cards', props.theme) + '.svg'}></img></h2>
           <p><strong>Shuffle</strong> your ability draw pile.</p>
           <ul>

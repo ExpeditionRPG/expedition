@@ -1,10 +1,8 @@
 # Expedition Quest Creator
 
-[![Build Status](https://travis-ci.org/ExpeditionRPG/expedition-quest-creator.svg)](https://travis-ci.org/ExpeditionRPG/expedition-quest-creator)
-
 Write and publish quests for [Expedition: The RPG Card Game](http://expeditiongame.com).
 
-This is the companion to the [Expedition App](https://github.com/ExpeditionRPG/expedition-app).
+This is the companion to the [Expedition App](http://app.expeditiongame.com).
 
 ## Installation
 
@@ -38,34 +36,3 @@ The Quest Creator is then available at http://localhost:8080 by default. Note th
 
 When running on Windows, must be run within a Unix-like shell (such as Git Bash).
 
-#### Testing
-
-```sh
-npm test
-```
-
-### Deploying
-
-The Quest Creator uses Continuous Integration (via Travis CI) and Heroku hosting to make deployment super easy.
-
-If tests pass, that code is automatically deployed to AWS S3 at [http://betaquests.expeditiongame.com](http://betaquests.expeditiongame.com).
-
-Once master has been thoroughly tested on dev, you can deploy to prod with `./prod.sh` - if you run into any deploy issues, make sure to read the notes in that file!
-
-### Database
-
-The Quest Creator uses Postgres SQL. You can test functionality and scripts against a locally-hosted version of Postgres. To access the official databases, you'll need to be a regular contributor to the codebase and receive special permission from the creators.
-
-If you are going to access prod, especially to edit data, make sure to make a backup [here](https://data.heroku.com/datastores/af009eae-3a7e-467b-9822-b368e0d4ed3a) first. Backups are automatically created daily, but this will allow zero-consequence rollbacks in case your query fails.
-
-For database querying, make sure you have psql installed and can do `which psql`, then run `heroku pg:psql --app expedition-api-beta DATABASE` to connect.
-
-On Mac, you may need to add `PATH=/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH` to your `.bash_profile` for your terminal to recognize the `psql` command.
-
-The production database is backed up daily. See the [playbook](docs/playbook.md) on how to interact with these backups.
-
-If you need fresher data in devel, you can restore a prod backup into dev:
-
-```shell
-heroku pg:backups:restore expedition-quest-creator:: DATABASE_URL -a expedition-quest-creator-dev
-```

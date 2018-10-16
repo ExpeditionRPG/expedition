@@ -28,7 +28,7 @@ const TEST_SETTINGS = {
   experimental: false,
   fontSize: 'NORMAL' as FontSizeType,
   multitouch: true,
-  numPlayers: 3,
+  numLocalPlayers: 3,
   showHelp: true,
   simulator: false,
   timerSeconds: 10,
@@ -40,12 +40,12 @@ const TEST_RP = {
   clientStatus: {
     1: {
       connected: true,
-      numPlayers: 3,
+      numLocalPlayers: 3,
       type: 'STATUS',
     },
     2: {
       connected: true,
-      numPlayers: 2,
+      numLocalPlayers: 2,
       type: 'STATUS',
     },
   },
@@ -61,11 +61,11 @@ describe('Combat actions', () => {
 
   describe('roundTimeMillis', () => {
     test('Set timer to 10s with two+ players', () => {
-      const result = roundTimeMillis({...TEST_SETTINGS, numPlayers: 2});
+      const result = roundTimeMillis({...TEST_SETTINGS, numLocalPlayers: 2});
       expect(result).toEqual(10000);
     });
     test('Set timer to 20s with one player', () => {
-      const result = roundTimeMillis({...TEST_SETTINGS, numPlayers: 1});
+      const result = roundTimeMillis({...TEST_SETTINGS, numLocalPlayers: 1});
       expect(result).toEqual(20000);
     });
     test.skip('Accounts for remote play', () => { /* TODO */ }); // TODO
@@ -291,8 +291,8 @@ describe('Combat actions', () => {
       expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(2);
     });
     test('does not go above player count', () => {
-      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: TEST_SETTINGS.numPlayers, delta: 1})[0].node;
-      expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(TEST_SETTINGS.numPlayers);
+      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: TEST_SETTINGS.numLocalPlayers, delta: 1})[0].node;
+      expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(TEST_SETTINGS.numLocalPlayers);
     });
     test('does not go below 0', () => {
       const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: 1, delta: -2})[0].node;

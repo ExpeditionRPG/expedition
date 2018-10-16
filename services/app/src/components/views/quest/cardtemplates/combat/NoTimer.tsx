@@ -23,7 +23,7 @@ export default function noTimer(props: Props): JSX.Element {
   if (props.settings.showHelp) {
     helpText = (
       <div>
-        {props.settings.numPlayers === 1 && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
+        {props.settings.numLocalPlayers === 1 && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
         <ol>
           <li>
             <strong>Shuffle</strong> your ability draw pile.
