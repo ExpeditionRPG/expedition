@@ -1,3 +1,4 @@
+import {numPlayers} from 'app/actions/Settings';
 import {Enemy, Loot} from 'app/reducers/QuestTypes';
 import {AppStateWithHistory, CardThemeType, SettingsType} from 'app/reducers/StateTypes';
 import {DecisionPhase} from '../decision/Types';
@@ -50,6 +51,7 @@ export type CombatPhase = 'DRAW_ENEMIES'
 
 export interface StateProps {
   node: ParserNode;
+  players: number;
   settings: SettingsType;
   seed: string;
   theme: CardThemeType;
@@ -58,6 +60,7 @@ export interface StateProps {
 export function mapStateToProps(state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps {
   return {
     node: ownProps.node || state.quest.node,
+    players: numPlayers(state.settings, state.multiplayer),
     settings: state.settings,
     seed: state.quest.seed,
     theme: getCardTemplateTheme(state.card),

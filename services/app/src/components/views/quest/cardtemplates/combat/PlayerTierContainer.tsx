@@ -1,4 +1,5 @@
 import {toCard} from 'app/actions/Card';
+import {numAdventurers, numPlayers} from 'app/actions/Settings';
 import {logEvent} from 'app/Logging';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
@@ -43,6 +44,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
     ...mapStateToPropsBase(state, ownProps),
+    adventurers: numAdventurers(state.settings, state.multiplayer),
     combat: resolveCombat(node),
     maxTier,
     numAliveAdventurers: stateCombat.numAliveAdventurers,
@@ -61,9 +63,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {
       logEvent('combat', 'combat_defeat', {
         difficulty: settings.difficulty,
-        label: settings.numLocalPlayers,
+        label: numPlayers(settings),
         maxTier,
-        players: settings.numLocalPlayers,
+        players: numPlayers(settings),
         value: maxTier,
       });
       dispatch(handleCombatEnd({node, settings, victory: false, maxTier, seed}));
@@ -77,9 +79,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => {
       logEvent('combat', 'combat_victory', {
         difficulty: settings.difficulty,
-        label: settings.numLocalPlayers,
+        label: numPlayers(settings),
         maxTier,
-        players: settings.numLocalPlayers,
+        players: numPlayers(settings),
         value: maxTier,
       });
       dispatch(handleCombatEnd({node, settings, victory: true, maxTier, seed}));

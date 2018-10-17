@@ -2,6 +2,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import TextField from '@material-ui/core/TextField';
+import {numPlayers} from 'app/actions/Settings';
 import * as React from 'react';
 import {CONTENT_RATING_DESC, GenreType, LANGUAGES} from 'shared/schema/Constants';
 import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants';
@@ -42,6 +43,7 @@ export class SearchSettings extends React.Component<Props, {}> {
 
   // TODO remove the clutter here / move to Theme.tsx
   public render() {
+    const players = numPlayers(this.props.settings);
     const rating = (this.state.contentrating) ? CONTENT_RATING_DESC[this.state.contentrating] : undefined;
     const timeBuckets = PLAYTIME_MINUTES_BUCKETS.map((minutes: number, index: number) => {
       return <option key={index} value={minutes}>{`${minutes} min`}</option>;
@@ -60,8 +62,7 @@ export class SearchSettings extends React.Component<Props, {}> {
       <Card title="Quest Search">
         <form className="searchForm" autoComplete="off" onSubmit={(e: React.FormEvent) => {this.submit(e); }}>
           <div className="searchDescription">
-            For {this.props.settings.numLocalPlayers} player{this.props.settings.numLocalPlayers > 1 ? 's ' : ' '}
-            with {content} (based on settings)
+            For {players} player{players > 1 ? 's ' : ' '} with {content} (based on settings)
           </div>
           <FormControl fullWidth={true}>
             <TextField

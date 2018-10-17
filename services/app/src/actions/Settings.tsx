@@ -11,10 +11,14 @@ export function changeSettings(settings: any): ChangeSettingsAction {
 
 export function numAdventurers(settings: SettingsType, rp: MultiplayerState): number {
   if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
-    // Since single player still has two adventurers, the minimum possible is two.
-    return Math.max(2, settings.numLocalPlayers);
+    return numLocalAdventurers(settings);
   }
   return countAllPlayers(rp);
+}
+
+export function numLocalAdventurers(settings: SettingsType) {
+  // Since single player still has two adventurers, the minimum possible is two.
+  return Math.max(2, settings.numLocalPlayers);
 }
 
 export function numPlayers(settings: SettingsType, rp?: MultiplayerState): number {

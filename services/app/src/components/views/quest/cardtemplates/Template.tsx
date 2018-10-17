@@ -1,3 +1,4 @@
+import {numAdventurers} from 'app/actions/Settings';
 import {AppStateWithHistory, CardState, CardThemeType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import * as React from 'react';
@@ -114,8 +115,7 @@ export function defaultContext(getState: (() => AppStateWithHistory) = getStore(
         return settings && settings.contentSets;
       },
       numAdventurers(): number {
-        const settings = getState().settings;
-        return settings && settings.numLocalPlayers;
+        return numAdventurers(getState().settings, getState().multiplayer);
       },
       viewCount(id: string): number {
         return this.views[id] || 0;

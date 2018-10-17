@@ -14,14 +14,14 @@ export function changeSearchParams(params: any): SearchChangeParamsAction {
 }
 
 // TODO: Make search options propagate to other clients
-export const search = remoteify(function search(a: {params: SearchParams, settings: SettingsType}, dispatch: Redux.Dispatch<any>) {
+export const search = remoteify(function search(a: {params: SearchParams, players: number, settings: SettingsType}, dispatch: Redux.Dispatch<any>) {
   const params = {...a.params};
   Object.keys(params).forEach((key: string) => {
     if ((params as any)[key] === null) {
       delete (params as any)[key];
     }
   });
-  params.players = a.settings.numLocalPlayers;
+  params.players = a.players;
   params.expansions = Object.keys(a.settings.contentSets).filter( (key) => a.settings.contentSets[key] ) as ExpansionsType[],
   dispatch(getSearchResults(params, (response: QuestSearchResponse) => {
     dispatch({

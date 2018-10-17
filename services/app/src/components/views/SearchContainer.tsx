@@ -1,3 +1,4 @@
+import {numPlayers} from 'app/actions/Settings';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {Quest} from 'shared/schema/Quests';
@@ -11,6 +12,7 @@ import Search, {DispatchProps, StateProps} from './Search';
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   return {
     ...state.search,
+    players: numPlayers(state.settings, state.multiplayer),
     settings: state.settings,
     user: state.user,
   };
@@ -18,11 +20,11 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onSearch: (params: SearchParams, settings: SettingsType) => {
+    onSearch: (params: SearchParams, players: number, settings: SettingsType) => {
       // 10/14/18 Timeout prevents bug with CSSTransition when dispatching
       // DOM change as part of componentDidMount
       setTimeout(() => {
-        dispatch(search({params, settings}));
+        dispatch(search({params, players, settings}));
       }, 1);
     },
     toCard: (name: CardName) => {

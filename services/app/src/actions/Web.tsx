@@ -14,6 +14,7 @@ import {remoteify, UserQuestsAction} from './ActionTypes';
 import {toCard} from './Card';
 import {initQuest} from './Quest';
 import {userQuestsDelta} from './QuestHistory';
+import {numPlayers} from './Settings';
 import {openSnackbar} from './Snackbar';
 import {ensureLogin} from './User';
 
@@ -91,7 +92,7 @@ export function logQuestPlay(a: {phase: 'start'|'end'}) {
         email: state.user.email,
         name: state.user.name,
         platform: getDevicePlatform(),
-        players: state.settings.numLocalPlayers,
+        players: numPlayers(state.settings, state.multiplayer),
         questid: quest.id,
         questversion: quest.questversion,
         userid: state.user.id,
