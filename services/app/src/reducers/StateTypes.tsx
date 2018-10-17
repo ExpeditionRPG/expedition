@@ -10,7 +10,12 @@ import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 export interface AnnouncementState {
   open: boolean;
   message: string;
-  link: string;
+  link?: string;
+}
+
+export interface ServerStatusState {
+  announcement: AnnouncementState;
+  isLatestAppVersion: boolean;
 }
 
 export type AudioLoadingType = 'UNLOADED' | 'LOADING' | 'ERROR' | 'LOADED';
@@ -218,13 +223,13 @@ export interface MultiplayerState {
 // the UI. Notably, it does NOT include non-undoable attributes
 // such as settings.
 export interface AppStateBase {
-  announcement: AnnouncementState;
   audio: AudioState;
   card: CardState;
   checkout: CheckoutState;
   commitID: number;
   dialog: DialogState;
   quest: QuestState;
+  serverstatus: ServerStatusState;
   snackbar: SnackbarState;
 }
 

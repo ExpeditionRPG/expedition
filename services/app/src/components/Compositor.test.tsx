@@ -4,6 +4,7 @@ import * as React from 'react';
 import {Provider} from 'react-redux';
 import {initialCardState} from '../reducers/Card';
 import {initialQuestState} from '../reducers/Quest';
+import {initialServerStatusState} from '../reducers/ServerStatus';
 import {initialSettings} from '../reducers/Settings';
 import {initialSnackbar} from '../reducers/Snackbar';
 import {loggedOutUser} from '../reducers/User';
@@ -23,13 +24,14 @@ function setup(props: Partial<Props>) {
   };
   const store = newMockStore({
     card: props.card || initialCardState,
-    saved: {list: []},
-    userQuests: {history: {}},
-    user: loggedOutUser,
-    settings: initialSettings,
     multiplayer: {session: null, clientStatus: {}},
     quest: initialQuestState,
+    saved: {list: []},
     search: {results: []},
+    serverstatus: initialServerStatusState,
+    settings: initialSettings,
+    user: loggedOutUser,
+    userQuests: {history: {}},
     _history: [],
   });
   const wrapper = render(

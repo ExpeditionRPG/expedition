@@ -7,6 +7,7 @@ import Picker from '../base/Picker';
 import TextDivider from '../base/TextDivider';
 
 export interface StateProps {
+  isLatestAppVersion: boolean;
   multitouch: boolean;
   numLocalPlayers: number;
   user: UserState;
@@ -39,12 +40,18 @@ const ModeSelect = (props: Props): JSX.Element => {
           </div>
         </div>
       </Button>
-      <Button id="selectOnlineMultiplayer" onClick={() => props.onMultiplayerSelect(props.user)}>
+      <Button id="selectOnlineMultiplayer"
+        disabled={!props.isLatestAppVersion}
+        onClick={() => props.onMultiplayerSelect(props.user)}
+      >
         <div className="questButtonWithIcon">
           <div className="title">Online Multiplayer</div>
-          <div className="summary">
+          {props.isLatestAppVersion && <div className="summary">
             {(!props.user || !props.user.loggedIn) ? 'Login and sync' : 'Sync'} your app with friends on another device.
-          </div>
+          </div>}
+          {!props.isLatestAppVersion && <div className="summary">
+            Disabled: Please update your app to the latest version or use the web app at app.expeditiongame.com.
+          </div>}
         </div>
       </Button>
     </Card>
