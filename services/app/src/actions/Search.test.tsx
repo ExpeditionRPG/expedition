@@ -1,6 +1,6 @@
 describe('Search actions', () => {
   describe('Search', () => {
-    test.skip('calls getSearchResults with provided initial params and settings', () => { /* TODO */ });
+    test.skip('calls getSearchResults with provided params, players and settings', () => { /* TODO */ });
     test.skip('calls getSearchResults with expansion enabled', () => { /* TODO */ });
     test.skip('dispatches search results', () => { /* TODO */ }); // $10
   });
